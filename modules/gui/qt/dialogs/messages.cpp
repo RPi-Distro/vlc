@@ -2,7 +2,7 @@
  * messages.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: f550bfa23f2036482b8b60dc1542f4c22c17aaac $
+ * $Id: cb3836a9392558e64ec347dc780d945536d6f2fd $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -258,7 +258,7 @@ bool MessagesDialog::save()
     QString saveLogFileName = QFileDialog::getSaveFileName(
             this, qtr( "Save log file as..." ),
             QVLCUserDir( VLC_DOCUMENTS_DIR ),
-            qtr( "Texts / Logs (*.log *.txt);; All (*.*) ") );
+            qtr( "Texts / Logs (*.log *.txt);; All (*.*)") );
 
     if( !saveLogFileName.isNull() )
     {

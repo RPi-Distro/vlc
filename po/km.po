@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-17 02:18+0000\n"
+"POT-Creation-Date: 2017-11-23 02:19+0000\n"
 "PO-Revision-Date: 2014-04-02 04:57+0000\n"
 "Last-Translator: soksophea <sksophea@gmail.com>\n"
 "Language-Team: Khmer (http://www.transifex.com/projects/p/vlc-trans/language/"
@@ -1764,7 +1764,7 @@ msgstr ""
 "បង្កើន​បាន​ជា​បទពិសោធន៍​របស់​អ្នក​ដែរ ជា​ពិសេស​នៅ​ពេល​ដែល​បាន​បន្សំ​ជាមួយ​នឹង​កម្មវិធី​លាយ​ឆានែល​កាស​ពាក់​"
 "ត្រចៀក ។"
 
-#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
+#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:942
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:65
@@ -2071,7 +2071,8 @@ msgid "Always place the video window on top of other windows."
 msgstr "ដាក់​បង្អួច​វីដេអូ​នៅ​លើ​បង្អួច​ផ្សេងទៀត​ជា​និច្ច។"
 
 #: src/libvlc-module.c:319
-msgid "Enable wallpaper mode "
+#, fuzzy
+msgid "Enable wallpaper mode"
 msgstr "បើក​របៀប​ផ្ទាំង​រូបភាព "
 
 #: src/libvlc-module.c:321
@@ -3437,7 +3438,8 @@ msgid "Stream filter module"
 msgstr "ម៉ូឌុល​តម្រង​ស្ទ្រីម"
 
 #: src/libvlc-module.c:1005
-msgid "Stream filters are used to modify the stream that is being read. "
+#, fuzzy
+msgid "Stream filters are used to modify the stream that is being read."
 msgstr "តម្រង​ស្ទ្រីម​ត្រូវ​បាន​ប្រើ​​ដើម្បី​កែប្រែ​ស្ទ្រីម​ដែល​កំពុង​អាន។"
 
 #: src/libvlc-module.c:1007
@@ -3447,8 +3449,7 @@ msgstr "ម៉ូឌុល​តម្រង​ស្ទ្រីម"
 
 #: src/libvlc-module.c:1009
 #, fuzzy
-msgid ""
-"Demux filters are used to modify/control the stream that is being read. "
+msgid "Demux filters are used to modify/control the stream that is being read."
 msgstr "តម្រង​ស្ទ្រីម​ត្រូវ​បាន​ប្រើ​​ដើម្បី​កែប្រែ​ស្ទ្រីម​ដែល​កំពុង​អាន។"
 
 #: src/libvlc-module.c:1011
@@ -5044,7 +5045,7 @@ msgstr "ពេលវេលា​មេឌៀ"
 msgid "Media View"
 msgstr "ទិដ្ឋភាព​មេឌៀ"
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:567
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:568
 msgid "Menu"
 msgstr "ម៉ឺនុយ"
 
@@ -5168,7 +5169,7 @@ msgstr "ការ​រក្សាទុក​ឯកសារ​បាន​ប
 msgid "Failed to open \"%s\" for writing"
 msgstr "បាន​បរាជ័យ​ក្នុង​កា​របើក \"%s\" ដើម្បី​សរសេរ"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2681
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2679
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -6392,9 +6393,10 @@ msgid "Audio device name"
 msgstr "ឈ្មោះ​ឧបករណ៍​អូឌីយ៉ូ"
 
 #: modules/access/dshow/dshow.cpp:137
+#, fuzzy
 msgid ""
 "Name of the audio device that will be used by the DirectShow plugin. If you "
-"don't specify anything, the default device will be used. "
+"don't specify anything, the default device will be used."
 msgstr ""
 "ឈ្មោះ​ឧបករណ៍​អូឌីយ៉ូ​ដែល​នឹង​ត្រូវ​បាន​ប្រើ​ដោយ​កម្មវិធី​ជំនួយ DirectShow ។ ប្រសិនបើ​មិន​បញ្ជាក់​ទេ នោះ​វា​នឹង​ប្រើ​"
 "ឧបករណ៍​លំនាំដើម។ "
@@ -8069,7 +8071,8 @@ msgid "Genre description"
 msgstr "សេចក្ដី​ពណ៌នា​ចង្វាក់"
 
 #: modules/access_output/shout.c:83
-msgid "Genre of the content. "
+#, fuzzy
+msgid "Genre of the content."
 msgstr "ចង្វាក់​របស់​មាតិកា។ "
 
 #: modules/access_output/shout.c:85
@@ -8077,15 +8080,18 @@ msgid "URL description"
 msgstr "សេចក្ដី​ពណ៌នា URL"
 
 #: modules/access_output/shout.c:86
-msgid "URL with information about the stream or your channel. "
+#, fuzzy
+msgid "URL with information about the stream or your channel."
 msgstr "URL ដែល​មាន​ព័ត៌មាន​អំពី​ស្ទ្រីម ឬ​ឆានែល​របស់​អ្នក។"
 
 #: modules/access_output/shout.c:93
-msgid "Bitrate information of the transcoded stream. "
+#, fuzzy
+msgid "Bitrate information of the transcoded stream."
 msgstr "ព័ត៌មាន​អត្រា​ប៊ីត​របស់​ស្ទ្រីម​បម្លែង​ត្រឡប់។ "
 
 #: modules/access_output/shout.c:96
-msgid "Samplerate information of the transcoded stream. "
+#, fuzzy
+msgid "Samplerate information of the transcoded stream."
 msgstr "ព័ត៌មាន​អត្រា​គំរូ​របស់​ស្ទ្រីម​បម្លែង​ត្រឡប់។ "
 
 #: modules/access_output/shout.c:98
@@ -8093,7 +8099,8 @@ msgid "Number of channels"
 msgstr "ចំនួន​ឆានែល"
 
 #: modules/access_output/shout.c:99
-msgid "Number of channels information of the transcoded stream. "
+#, fuzzy
+msgid "Number of channels information of the transcoded stream."
 msgstr "ចំនួន​ព័ត៌មាន​ឆានែល​របស់​ស្ទ្រីម​បម្លែង​ត្រឡប់។ "
 
 #: modules/access_output/shout.c:101
@@ -8101,7 +8108,8 @@ msgid "Ogg Vorbis Quality"
 msgstr "គុណភាព Ogg Vorbis"
 
 #: modules/access_output/shout.c:102
-msgid "Ogg Vorbis Quality information of the transcoded stream. "
+#, fuzzy
+msgid "Ogg Vorbis Quality information of the transcoded stream."
 msgstr "ព័ត៌មាន​គុណភាព Ogg Vorbis របស់​ស្ទ្រីម​បម្លែង​ត្រឡប់។ "
 
 #: modules/access_output/shout.c:104
@@ -8410,7 +8418,8 @@ msgid "Display ID"
 msgstr "លេខ​សម្គាល់​ការ​បង្ហាញ"
 
 #: modules/access/screen/screen.c:82
-msgid "Display ID. If not specified, main display ID is used. "
+#, fuzzy
+msgid "Display ID. If not specified, main display ID is used."
 msgstr "លេខ​សម្គាល់​ការ​បង្ហាញ។ ប្រសិនបើ​មិន​បាន​បញ្ជាក់​ទេ វា​នឹង​ប្រើ​លេខ​សម្គាល់​ដើម។"
 
 #: modules/access/screen/screen.c:83
@@ -8642,7 +8651,8 @@ msgid "VBI capture device"
 msgstr "ឧបករណ៍​ចាប់​យក VBI"
 
 #: modules/access/v4l2/v4l2.c:48
-msgid "The device node where VBI data can be read  (for closed captions) "
+#, fuzzy
+msgid "The device node where VBI data can be read  (for closed captions)."
 msgstr "តំណ​ឧបករណ៍​ដែល​ទិន្នន័យ VBI អាច​​អាន​បាន (សម្រាប់​ចំណងជើង​បិទ) "
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -10926,12 +10936,12 @@ msgstr ""
 "ចម្បង, ទាប, ssr (មិន​គាំទ្រ), ltp, hev1, hev2 (លំនាំដើម៖ ទាប) hev1 ហើយ hev2 គឺ​បច្ចុប្បន្ន​"
 "ត្រូវ​បាន​គាំទ្រ​តែ​ជាមួយ libfdk-aac បាន​បើក libavcodec ប៉ុណ្ណោះ"
 
-#: modules/codec/avcodec/d3d11va.c:64
+#: modules/codec/avcodec/d3d11va.c:63
 #, fuzzy
 msgid "Direct3D11 Video Acceleration"
 msgstr "DirectX Video Acceleration (DXVA) 2.0"
 
-#: modules/codec/avcodec/dxva2.c:52
+#: modules/codec/avcodec/dxva2.c:51
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr "DirectX Video Acceleration (DXVA) 2.0"
 
@@ -11750,9 +11760,10 @@ msgid "Group of Picture Reference Distance"
 msgstr "ក្រុម​រូបភាព​ចម្ងាយ​យោង"
 
 #: modules/codec/qsv.c:81
+#, fuzzy
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used. "
+"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
 msgstr ""
 "ចម្ងាយ​រវាង I- ឬ P- key frames; ប្រសិនបើ​វា​សូន្យ រចនាសមព័ន្ធ GOP គឺ​មិន​បាន​បញ្ជាក់។ ចំណាំ៖ បើ "
 "GopRefDist = 1 នោះ​គឺ​មិន​មាន B- ណាមួយ​ត្រូវ​បាន​ប្រើ​ទេ។"
@@ -11774,13 +11785,14 @@ msgid "IDR interval"
 msgstr "ចន្លោះ​ពេល IDR"
 
 #: modules/codec/qsv.c:92
+#, fuzzy
 msgid ""
 "For H.264, IdrInterval specifies IDR-frame interval in terms of I- frames; "
 "if IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
-"SDK inserts the sequence header once at the beginning of the stream. "
+"SDK inserts the sequence header once at the beginning of the stream."
 msgstr ""
 "សម្រាប់ H.264, IdrInterval បញ្ជាក់​ចន្លោះ​ពេល IDR-frame នៅ​ក្នុង​លក្ខខណ្ឌ​របស់ I- frames; "
 "បើ IdrInterval=0 នោះ I-frame ទាំងអស់​គឺជា IDR-frame ។ បើ IdrInterval=1 នោះ I-"
@@ -11884,9 +11896,10 @@ msgid "Convergence time of 'avbr' RateControl"
 msgstr "ពេលវេលា​រួម​នៃ​ការ​គ្រប់គ្រង​អត្រា 'avbr'"
 
 #: modules/codec/qsv.c:135
+#, fuzzy
 msgid ""
 "Number of 100 frames before the 'avbr' rate control method reaches the "
-"requested bitrate with the requested accuracy. See the accuracy parameter. "
+"requested bitrate with the requested accuracy. See the accuracy parameter."
 msgstr ""
 "ចំនួន​នៃ​ស៊ុម 100 មុន​ពេល​ដែល​វិធីសាស្ត្រ​គ្រប់គ្រង​អត្រា 'avbr' ឡើង​ដល់​អត្រា​ប៊ីត និង​សុក្រឹតភាព​ដែល​បាន​ស្នើ។ "
 "មើល​ប៉ារ៉ាម៉ែត្រ​សុក្រឹតភាព។"
@@ -12669,7 +12682,7 @@ msgstr "កម្មវិធី​ដោះ​លេខ​កូដ​ចំណ
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:100
+#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:97
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr "CP1252"
@@ -13438,8 +13451,9 @@ msgid "Weighted prediction for P-frames"
 msgstr "ការ​ទស្សន៍ទាយ​ដែល​បាន​ថ្លឹង​សម្រាប់ P-frames"
 
 #: modules/codec/x264.c:295
+#, fuzzy
 msgid ""
-" Weighted prediction for P-frames:  - 0: Disabled\n"
+"Weighted prediction for P-frames:  - 0: Disabled\n"
 " - 1: Blind offset\n"
 " - 2: Smart analysis\n"
 msgstr ""
@@ -13909,14 +13923,14 @@ msgstr "ចំណុច​ប្រទាក់​ឧបករណ៍​បញ្
 #: modules/gui/macosx/VLCMainWindow.m:669
 #: modules/gui/macosx/VLCMainWindow.m:675
 #: modules/gui/macosx/VLCMainWindow.m:1273 modules/gui/ncurses.c:1035
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1206
-#: modules/gui/qt/main_interface.cpp:1210
-#: modules/gui/qt/main_interface.cpp:1249
-#: modules/gui/qt/main_interface.cpp:1251
-#: modules/gui/qt/main_interface.cpp:1360
-#: modules/gui/qt/main_interface.cpp:1377
-#: modules/gui/qt/main_interface.cpp:1385
-#: modules/gui/qt/main_interface.cpp:1408 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1213
+#: modules/gui/qt/main_interface.cpp:1217
+#: modules/gui/qt/main_interface.cpp:1256
+#: modules/gui/qt/main_interface.cpp:1258
+#: modules/gui/qt/main_interface.cpp:1367
+#: modules/gui/qt/main_interface.cpp:1384
+#: modules/gui/qt/main_interface.cpp:1392
+#: modules/gui/qt/main_interface.cpp:1415 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -14804,27 +14818,27 @@ msgstr ""
 "បង្កើត​លិបិក្រម​សម្រាប់​ឯកសារ AVI ឡើងវិញ ។ ប្រើ​វា ប្រសិន​បើ​ឯកសារ AVI របស់​អ្នក​ខូច ឬ​មិន​បញ្ចប់​"
 "ទាំងស្រុង (មិន​អាច​រក​ឃើញ) ។"
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:66
 msgid "Ask for action"
 msgstr "សួរ​រក​សកម្មភាព"
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:67
 msgid "Always fix"
 msgstr "ជួសជុល​ជា​និច្ច"
 
-#: modules/demux/avi/avi.c:71
+#: modules/demux/avi/avi.c:68
 msgid "Never fix"
 msgstr "កុំ​ជួស​ជុល"
 
-#: modules/demux/avi/avi.c:72
+#: modules/demux/avi/avi.c:69
 msgid "Fix when necessary"
 msgstr "ជួសជុល​នៅ​ពេល​ចាំបាច់"
 
-#: modules/demux/avi/avi.c:76
+#: modules/demux/avi/avi.c:73
 msgid "AVI demuxer"
 msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស AVI"
 
-#: modules/demux/avi/avi.c:802 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:797 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -14840,28 +14854,28 @@ msgstr ""
 "ជំហាន​នេះ​អាច​ប្រើ​ពេលវេលា​យូរ​សម្រាប់​ឯកសារ​ដែល​មាន​ទំហំ​ធំ។\n"
 "តើ​អ្នក​ចង់​ធ្វើ​អ្វី?"
 
-#: modules/demux/avi/avi.c:810
+#: modules/demux/avi/avi.c:805
 msgid "Do not play"
 msgstr "កុំ​ចាក់"
 
-#: modules/demux/avi/avi.c:811
+#: modules/demux/avi/avi.c:806
 msgid "Build index then play"
 msgstr "បង្កើត​លិបិក្រម រួច​ចាក់"
 
-#: modules/demux/avi/avi.c:812
+#: modules/demux/avi/avi.c:807
 msgid "Play as is"
 msgstr "ចាក់"
 
-#: modules/demux/avi/avi.c:813 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:808 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "លិបិក្រម AVI បាន​ខូច ឬ​បាត់"
 
-#: modules/demux/avi/avi.c:2682
+#: modules/demux/avi/avi.c:2680
 msgid "Broken or missing AVI Index"
 msgstr "លិបិក្រម AVI បាន​ខូច ឬ​បាត់"
 
-#: modules/demux/avi/avi.c:2683
+#: modules/demux/avi/avi.c:2681
 msgid "Fixing AVI Index..."
 msgstr "កំពុង​ជួសជុល​លិបិក្រម AVI..."
 
@@ -15249,9 +15263,10 @@ msgid "Packet size in bytes to decrypt"
 msgstr "ទំហំ​កញ្ចប់​ដែល​ត្រូវ​ឌិគ្រីប គិតជា​បៃ"
 
 #: modules/demux/mpeg/ts.c:100
+#, fuzzy
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
-"subtract the TS-header from the value before decrypting. "
+"subtract the TS-header from the value before decrypting."
 msgstr "បញ្ជាក់​ទំហំ​​កញ្ចប់ TS ដែល​ត្រូវ​ឌិគ្រីប ។ ការ​ឌិគ្រីប​នឹង​ដក​បឋមកថា TS ចេញ​ពី​តម្លៃ មុន​ពេល​ឌិគ្រីប ។ "
 
 #: modules/demux/mpeg/ts.c:104
@@ -15548,9 +15563,10 @@ msgid "Forces the audio language"
 msgstr "បង្ខំ​ភាសា​អូឌីយ៉ូ"
 
 #: modules/demux/rawaud.c:54
+#, fuzzy
 msgid ""
 "Forces the audio language for the output mux. Three letter ISO639 code. "
-"Default is 'eng'. "
+"Default is 'eng'."
 msgstr "បង្ខំ​ភាសា​អូឌីយ៉ូ​សម្រាប់​លទ្ធផល​ទ្វេទិស ។ កូដ ISO639 បី​តួអក្សរ​ ។ លំនាំដើម​គឺ 'eng' ។"
 
 #: modules/demux/rawaud.c:64
@@ -18589,11 +18605,13 @@ msgid " <up>,<down>            Seek +/-5%%"
 msgstr " <up>,<down>            ស្វែងរក +/-5%%"
 
 #: modules/gui/ncurses.c:1055
-msgid "[Repeat] "
+#, fuzzy
+msgid "[Repeat]"
 msgstr "[ចាក់​ឡើងវិញ]"
 
 #: modules/gui/ncurses.c:1056
-msgid "[Random] "
+#, fuzzy
+msgid "[Random]"
 msgstr "[ចៃដន្យ]"
 
 #: modules/gui/ncurses.c:1057
@@ -18652,28 +18670,29 @@ msgstr "បើក៖ %s"
 msgid "Find: %s"
 msgstr "រក៖ %s"
 
-#: modules/gui/qt/components/controller.cpp:342
+#: modules/gui/qt/components/controller.cpp:343
 msgid "Shift+L"
 msgstr "ប្ដូរ+L (Shift+L)"
 
-#: modules/gui/qt/components/controller.cpp:447
+#: modules/gui/qt/components/controller.cpp:448
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr "ចុច​ដើម្បី​បិទ/បើក​ការ​ចាក់​វិល​ជុំ​ទាំងអស់ ការ​ចាក់​វិល​ជុំ​ម្ដង និង​មិន​ចាក់​វិល​ជុំ"
 
-#: modules/gui/qt/components/controller.cpp:548
+#: modules/gui/qt/components/controller.cpp:549
 msgid "Previous Chapter/Title"
 msgstr "ចំណង​ជង/ជំពូក​មុន"
 
-#: modules/gui/qt/components/controller.cpp:554
+#: modules/gui/qt/components/controller.cpp:555
 msgid "Next Chapter/Title"
 msgstr "ចំណង​ជើង/ជំពូក​បន្ទាប់"
 
-#: modules/gui/qt/components/controller.cpp:603
+#: modules/gui/qt/components/controller.cpp:604
 msgid "Teletext Activation"
 msgstr "ការ​ធ្វើ​ឲ្យ​ព័ត៌មាន​ទូរទស្សន៍​សកម្ម"
 
-#: modules/gui/qt/components/controller.cpp:619
-msgid "Toggle Transparency "
+#: modules/gui/qt/components/controller.cpp:620
+#, fuzzy
+msgid "Toggle Transparency"
 msgstr "បិទ/បើក​ភាព​ថ្លា"
 
 #: modules/gui/qt/components/controller.hpp:43
@@ -19897,7 +19916,8 @@ msgid "Save log file as..."
 msgstr "រក្សាទុក​ឯកសារ​កំណត់ហេតុ​ជា..."
 
 #: modules/gui/qt/dialogs/messages.cpp:261
-msgid "Texts / Logs (*.log *.txt);; All (*.*) "
+#, fuzzy
+msgid "Texts / Logs (*.log *.txt);; All (*.*)"
 msgstr "អត្ថបទ/កំណត់ហេតុ (*.log *.txt);; ទាំងអស់ (*.*)"
 
 #: modules/gui/qt/dialogs/messages.cpp:267
@@ -20422,20 +20442,20 @@ msgstr "កាលវិភាគ ៖"
 msgid "VOD: "
 msgstr "VOD ៖"
 
-#: modules/gui/qt/main_interface.cpp:369
+#: modules/gui/qt/main_interface.cpp:372
 msgid "Do you want to restart the playback where left off?"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:375
+#: modules/gui/qt/main_interface.cpp:378
 #, fuzzy
 msgid "&Continue"
 msgstr "បន្ត"
 
-#: modules/gui/qt/main_interface.cpp:1361
+#: modules/gui/qt/main_interface.cpp:1368
 msgid "Control menu for the player"
 msgstr "ម៉ឺនុយ​បញ្ជា​សម្រាប់​កម្មវិធី​ចាក់"
 
-#: modules/gui/qt/main_interface.cpp:1405
+#: modules/gui/qt/main_interface.cpp:1412
 msgid "Paused"
 msgstr "បាន​ផ្អាក"
 
@@ -20879,15 +20899,17 @@ msgid "Regular expression used to filter the recent items played in the player"
 msgstr "កន្សោម​ធម្មតា​ដែល​បាន​ប្រើ​ដើម្បី​ត្រង​ធាតុ​ដែល​បាន​ចាក់​បច្ចុប្បន្ន​នៅ​ក្នុង​កម្មវិធី​ចាក់"
 
 #: modules/gui/qt/qt.cpp:139
-msgid "Define the colors of the volume slider "
+#, fuzzy
+msgid "Define the colors of the volume slider"
 msgstr "កំណត់​ពណ៌​របស់​គ្រាប់​រំកិល​កម្រិត​សំឡេង"
 
 #: modules/gui/qt/qt.cpp:140
+#, fuzzy
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
 "Default is '255;255;255;20;226;20;255;176;15;235;30;20'\n"
-"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255' "
+"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255'"
 msgstr ""
 "កំណត់​ពណ៌​របស់​គ្រាប់​រំកិល​កម្រិត​សំឡេង\n"
 "ដោយ​បញ្ជាក់​លេខ​ចំនួន ១២ ខ្ទង់ ដែល​បំបែក​ដោយ​សញ្ញា​ចុច​ក្បៀស (;)\n"
@@ -20895,7 +20917,8 @@ msgstr ""
 "ឬ​អាច​បញ្ច្រាស​មកវិញ​គឺ '30;30;50;40;40;100;50;50;160;150;150;255' "
 
 #: modules/gui/qt/qt.cpp:145
-msgid "Selection of the starting mode and look "
+#, fuzzy
+msgid "Selection of the starting mode and look"
 msgstr "ជម្រើស​នៃ​រូបរាង និង​របៀប​ចាប់ផ្ដើម "
 
 #: modules/gui/qt/qt.cpp:146
@@ -22081,7 +22104,7 @@ msgstr ""
 msgid ""
 "However, the security certificate presented by the server changed since the "
 "previous visit and was not authenticated by any trusted Certificate "
-"Authority. "
+"Authority."
 msgstr ""
 "អ្នក​បាន​ព្យាយាម​ដល់ %s ។ ទោះ​យ៉ាងណា​វិញ្ញាបនបត្រ​សុវត្ថិភាព​ដែល​បាន​បង្ហាញ​ដោយ​ម៉ាស៊ីន​មេ​ត្រូវ​បាន​ផ្លាស់ប្ដូរ​"
 "តាំងពី​ការ​ទស្សនា​មុន ហើយ​មិន​អាច​ផ្ទៀងផ្ទាត់​ដោយ​ប្រភព​វិញ្ញាបនបត្រ​ដែល​ទុកចិត្ត​បាន។ បញ្ហា​នេះ​អាច​បណ្ដាល​"
@@ -22722,7 +22745,8 @@ msgid "Timeout (ms)"
 msgstr "អស់ពេល (មិ.វិ.)"
 
 #: modules/notify/notify.c:56
-msgid "How long the notification will be displayed "
+#, fuzzy
+msgid "How long the notification will be displayed."
 msgstr "រយៈពេល​ដែល​ត្រូវ​បង្ហាញ​ការ​ជូន​ដំណឹង"
 
 #: modules/notify/notify.c:61
@@ -23045,7 +23069,7 @@ msgid "Applications"
 msgstr "កម្មវិធី"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:320
+#: modules/video_output/win32/direct3d9.c:315
 msgid "Desktop"
 msgstr "ផ្ទៃតុ​"
 
@@ -23271,9 +23295,10 @@ msgstr ""
 "អក្សរ​ទ្រង់ទ្រាយ​ពេលវេលា ។"
 
 #: modules/spu/marq.c:109
+#, fuzzy
 msgid ""
 "Opacity (inverse of transparency) of overlayed text. 0 = transparent, 255 = "
-"totally opaque. "
+"totally opaque."
 msgstr ""
 "ភាព​ស្រអាប់ (ច្រាស​ពី​ភាព​ថ្លា) របស់​អត្ថបទ​ដែល​បាន​ត្រួត​គ្នា ។ ០ = ថ្លា ២៥៥ = ស្រអាប់​ទាំង​ស្រុង ។ "
 
@@ -23527,8 +23552,8 @@ msgid "VNC poll interval"
 msgstr "ចន្លោះ​ពេល​សំណួរ VNC"
 
 #: modules/spu/remoteosd.c:85
-msgid ""
-"In this interval an update from VNC is requested, default every 300 ms. "
+#, fuzzy
+msgid "In this interval an update from VNC is requested, default every 300 ms."
 msgstr ""
 "នៅ​ក្នុង​ចន្លោះ​ពេល​នេះ​មាន​ការ​ស្នើ​ធ្វើ​បច្ចុប្បន្នភាព​ពី VNC លំនាំដើម​គឺ​រៀងរាល់ ៣០០ មិល្លីវិនាទី ។ "
 
@@ -23933,11 +23958,12 @@ msgid "Fallback to placeholder stream when out of data"
 msgstr "ត្រឡប់​ក្រោយ​ទៅកាន់​ស្ទ្រីម​កន្លែង​ដាក់​នៅ​ពេល​អស់​ទិន្នន័យ"
 
 #: modules/stream_out/bridge.c:67
+#, fuzzy
 msgid ""
 "If set to true, the bridge will discard all input elementary streams except "
 "if it doesn't receive data from another bridge-in. This can be used to "
 "configure a place holder stream when the real source breaks. Source and "
-"placeholder streams should have the same format. "
+"placeholder streams should have the same format."
 msgstr ""
 "ប្រសិនបើ​កំណត់​ថា​ពិត bridge នឹង​បោះបង់​ស្ទ្រីម​ព័ត៌មាន​បញ្ចូល​ដំបូង​ទាំង​អស់ លើកលែង​តែ​ទិន្នន័យ​ដែល​វា​បាន​មិន​ទទួល​"
 "ពី bridge-in ផ្សេង​ទៀត​ប៉ុណ្ណោះ ។ វា​អាច​ត្រូវ​បាន​ប្រើ​ដើម្បី​កំណត់​រចនាសម្ព័ន្ធ​ស្ទ្រីម​កន្លែង​ដាក់ នៅ​ពេល​"
@@ -24791,9 +24817,10 @@ msgid "Text opacity"
 msgstr "ភាព​ស្រអាប់​របស់​អត្ថបទ"
 
 #: modules/text_renderer/freetype/freetype.c:92
+#, fuzzy
 msgid ""
 "The opacity (inverse of transparency) of the text that will be rendered on "
-"the video. 0 = transparent, 255 = totally opaque. "
+"the video. 0 = transparent, 255 = totally opaque."
 msgstr ""
 "ភាព​ស្រអាប់ (ច្រាស​ពី​ភាព​ថ្លា) របស់​អត្ថបទ​ដែល​នឹង​ត្រូវ​បង្ហាញ​នៅ​លើ​វីដេអូ ។ ០ = ថ្លា ២៥៥ = ស្រអាប់​ទាំង​"
 "ស្រុង ។"
@@ -27370,7 +27397,7 @@ msgstr "បដិសេធ​ប៉ារ៉ាម៉ែត្រ"
 #: modules/visualization/visual/visual.c:67
 msgid ""
 "The parameter alpha for the Kaiser window. Increasing alpha increases the "
-"main-lobe width and decreases the side-lobe amplitude. "
+"main-lobe width and decreases the side-lobe amplitude."
 msgstr ""
 
 #: modules/visualization/visual/visual.c:70

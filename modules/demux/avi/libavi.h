@@ -2,7 +2,7 @@
  * libavi.h : LibAVI library
  ******************************************************************************
  * Copyright (C) 2001-2003 VLC authors and VideoLAN
- * $Id: 5092996412d7a83790ed0e6a7cb6f8ad576d9844 $
+ * $Id: e1c283bc01e7e6cb82fe931b2961311a509dc290 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -19,6 +19,19 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+enum biCompression
+{
+    BI_RGB = 0x00,
+    BI_RLE8,
+    BI_RLE4,
+    BI_BITFIELDS,
+    BI_JPEG,
+    BI_PNG,
+    BI_CMYK = 0x0B,
+    BI_CMYKRLE8,
+    BI_CMYKRLE4
+};
 
 /* flags for use in <dwFlags> in AVIFileHdr */
 #define AVIF_HASINDEX       0x00000010  /* Index at end of file? */
@@ -44,8 +57,7 @@
     uint64_t i_chunk_pos;          \
     union  avi_chunk_u *p_next;    \
     union  avi_chunk_u *p_father;  \
-    union  avi_chunk_u *p_first;   \
-    union  avi_chunk_u *p_last;
+    union  avi_chunk_u *p_first;
 
 #define AVI_CHUNK( p_chk ) (avi_chunk_t*)(p_chk)
 
@@ -254,17 +266,17 @@ int     AVI_ChunkRead( stream_t *,
                        avi_chunk_t *p_father );
 void    AVI_ChunkClean( stream_t *, avi_chunk_t * );
 
-int     AVI_ChunkCount_( avi_chunk_t *, vlc_fourcc_t );
-void   *AVI_ChunkFind_ ( avi_chunk_t *, vlc_fourcc_t, int );
+int     AVI_ChunkCount_( avi_chunk_t *, vlc_fourcc_t, bool );
+void   *AVI_ChunkFind_ ( avi_chunk_t *, vlc_fourcc_t, int, bool );
 
 int     AVI_ChunkReadRoot( stream_t *, avi_chunk_t *p_root );
 void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t *p_chk  );
 int     AVI_ChunkFetchIndexes( stream_t *, avi_chunk_t *p_riff );
 
-#define AVI_ChunkCount( p_chk, i_fourcc ) \
-    AVI_ChunkCount_( AVI_CHUNK(p_chk), i_fourcc )
-#define AVI_ChunkFind( p_chk, i_fourcc, i_number ) \
-    AVI_ChunkFind_( AVI_CHUNK(p_chk), i_fourcc, i_number )
+#define AVI_ChunkCount( p_chk, i_fourcc, b_list ) \
+    AVI_ChunkCount_( AVI_CHUNK(p_chk), i_fourcc, b_list )
+#define AVI_ChunkFind( p_chk, i_fourcc, i_number, b_list ) \
+    AVI_ChunkFind_( AVI_CHUNK(p_chk), i_fourcc, i_number, b_list )
 
 /* *** avi stuff *** */
 

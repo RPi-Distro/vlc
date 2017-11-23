@@ -102,8 +102,19 @@ FillPictureFromVAImage(picture_t *dest,
         break;
     }
     case VA_FOURCC_P010:
-        assert(dest->format.i_chroma == VLC_CODEC_P010);
-        Copy420_SP_to_SP(dest, src_planes, src_pitches, src_img->height, cache);
+        switch (dest->format.i_chroma)
+        {
+            case VLC_CODEC_P010:
+                Copy420_SP_to_SP(dest, src_planes, src_pitches, src_img->height,
+                                 cache);
+                break;
+            case VLC_CODEC_I420_10B:
+                Copy420_16_SP_to_P(dest, src_planes, src_pitches,
+                                   src_img->height, cache);
+                break;
+            default:
+                vlc_assert_unreachable();
+        }
         break;
     default:
         vlc_assert_unreachable();
@@ -183,40 +194,36 @@ FillVAImageFromPicture(VAImage *dest_img, uint8_t *dest_buf,
                        picture_t *dest_pic, picture_t *src,
                        copy_cache_t *cache)
 {
+    const uint8_t * src_planes[3] = { src->p[Y_PLANE].p_pixels,
+                                      src->p[U_PLANE].p_pixels,
+                                      src->p[V_PLANE].p_pixels };
+    const size_t    src_pitches[3] = { src->p[Y_PLANE].i_pitch,
+                                       src->p[U_PLANE].i_pitch,
+                                       src->p[V_PLANE].i_pitch };
+    void *const     tmp[2] = { dest_pic->p[0].p_pixels,
+                               dest_pic->p[1].p_pixels };
+
+    dest_pic->p[0].p_pixels = dest_buf + dest_img->offsets[0];
+    dest_pic->p[1].p_pixels = dest_buf + dest_img->offsets[1];
+    dest_pic->p[0].i_pitch = dest_img->pitches[0];
+    dest_pic->p[1].i_pitch = dest_img->pitches[1];
+
     switch (src->format.i_chroma)
     {
     case VLC_CODEC_I420:
-    {
         assert(dest_pic->format.i_chroma == VLC_CODEC_VAAPI_420);
-        const uint8_t * src_planes[3] = { src->p[Y_PLANE].p_pixels,
-                                          src->p[U_PLANE].p_pixels,
-                                          src->p[V_PLANE].p_pixels };
-        const size_t    src_pitches[3] = { src->p[Y_PLANE].i_pitch,
-                                           src->p[U_PLANE].i_pitch,
-                                           src->p[V_PLANE].i_pitch };
-        void *const     tmp[2] = { dest_pic->p[0].p_pixels,
-                                   dest_pic->p[1].p_pixels };
-
-        dest_pic->p[0].p_pixels = dest_buf + dest_img->offsets[0];
-        dest_pic->p[1].p_pixels = dest_buf + dest_img->offsets[1];
-        dest_pic->p[0].i_pitch = dest_img->pitches[0];
-        dest_pic->p[1].i_pitch = dest_img->pitches[1];
-
         Copy420_P_to_SP(dest_pic, src_planes, src_pitches,
-                           src->format.i_height, cache);
-
-        dest_pic->p[0].p_pixels = tmp[0];
-        dest_pic->p[1].p_pixels = tmp[1];
+                        src->format.i_height, cache);
 
         break;
-    }
+    case VLC_CODEC_I420_10B:
+        assert(dest_pic->format.i_chroma == VLC_CODEC_VAAPI_420_10BPP);
+        Copy420_16_P_to_SP(dest_pic, src_planes, src_pitches,
+                           src->format.i_height, cache);
+        break;
     case VLC_CODEC_P010:
     {
         assert(dest_pic->format.i_chroma == VLC_CODEC_VAAPI_420_10BPP);
-        const uint8_t * src_planes[2] = { src->p[0].p_pixels,
-                                          src->p[1].p_pixels };
-        const size_t    src_pitches[2] = { src->p[0].i_pitch,
-                                           src->p[1].i_pitch };
         Copy420_SP_to_SP(dest_pic,  src_planes, src_pitches,
                          src->format.i_height, cache);
         break;
@@ -224,6 +231,9 @@ FillVAImageFromPicture(VAImage *dest_img, uint8_t *dest_buf,
     default:
         vlc_assert_unreachable();
     }
+
+    dest_pic->p[0].p_pixels = tmp[0];
+    dest_pic->p[1].p_pixels = tmp[1];
 }
 
 static picture_t *
@@ -266,34 +276,64 @@ error:
     goto ret;
 }
 
+static int CheckFmt(const video_format_t *in, const video_format_t *out,
+                    bool *upload, uint8_t *pixel_bytes)
+{
+    *pixel_bytes = 1;
+    *upload = false;
+    switch (in->i_chroma)
+    {
+        case VLC_CODEC_VAAPI_420:
+            if (out->i_chroma == VLC_CODEC_I420)
+                return VLC_SUCCESS;
+            break;
+        case VLC_CODEC_VAAPI_420_10BPP:
+            if (out->i_chroma == VLC_CODEC_P010
+             || out->i_chroma == VLC_CODEC_I420_10B)
+            {
+                *pixel_bytes = 2;
+                return VLC_SUCCESS;
+            }
+            break;
+    }
+
+    *upload = true;
+    switch (out->i_chroma)
+    {
+        case VLC_CODEC_VAAPI_420:
+            if (in->i_chroma == VLC_CODEC_I420)
+                return VLC_SUCCESS;
+            break;
+        case VLC_CODEC_VAAPI_420_10BPP:
+            if (in->i_chroma == VLC_CODEC_P010
+             || in->i_chroma == VLC_CODEC_I420_10B)
+            {
+                *pixel_bytes = 2;
+                return VLC_SUCCESS;
+            }
+            break;
+    }
+    return VLC_EGENERIC;
+}
+
 int
 vlc_vaapi_OpenChroma(vlc_object_t *obj)
 {
     filter_t *const     filter = (filter_t *)obj;
     filter_sys_t *      filter_sys;
-    bool                is_upload;
 
-    if (filter->fmt_in.video.orientation != filter->fmt_out.video.orientation)
+    if (filter->fmt_in.video.i_height != filter->fmt_out.video.i_height
+     || filter->fmt_in.video.i_width != filter->fmt_out.video.i_width
+     || filter->fmt_in.video.orientation != filter->fmt_out.video.orientation)
         return VLC_EGENERIC;
 
-    if ((filter->fmt_in.video.i_chroma == VLC_CODEC_VAAPI_420
-      && filter->fmt_out.video.i_chroma == VLC_CODEC_I420)
-     || (filter->fmt_in.video.i_chroma == VLC_CODEC_VAAPI_420_10BPP
-      && filter->fmt_out.video.i_chroma == VLC_CODEC_P010))
-    {
-        is_upload = false;
-        filter->pf_video_filter = DownloadSurface;
-    }
-    else if ((filter->fmt_in.video.i_chroma == VLC_CODEC_I420
-           && filter->fmt_out.video.i_chroma == VLC_CODEC_VAAPI_420)
-          || (filter->fmt_in.video.i_chroma == VLC_CODEC_P010
-           && filter->fmt_out.video.i_chroma == VLC_CODEC_VAAPI_420_10BPP))
-    {
-        is_upload = true;
-        filter->pf_video_filter = UploadSurface;
-    }
-    else
+    bool is_upload;
+    uint8_t pixel_bytes;
+    if (CheckFmt(&filter->fmt_in.video, &filter->fmt_out.video, &is_upload,
+                 &pixel_bytes))
         return VLC_EGENERIC;
+
+    filter->pf_video_filter = is_upload ? UploadSurface : DownloadSurface;
 
     if (!(filter_sys = calloc(1, sizeof(filter_sys_t))))
     {
@@ -333,7 +373,8 @@ vlc_vaapi_OpenChroma(vlc_object_t *obj)
         filter_sys->dest_pics = NULL;
     }
 
-    if (CopyInitCache(&filter_sys->cache, filter->fmt_in.video.i_width))
+    if (CopyInitCache(&filter_sys->cache, filter->fmt_in.video.i_width
+                      * pixel_bytes))
     {
         if (is_upload)
         {
@@ -345,6 +386,11 @@ vlc_vaapi_OpenChroma(vlc_object_t *obj)
     }
 
     filter->p_sys = filter_sys;
+    msg_Warn(obj, "Using SW chroma filter for %dx%d %4.4s -> %4.4s",
+             filter->fmt_in.video.i_width,
+             filter->fmt_in.video.i_height,
+             (const char *) &filter->fmt_in.video.i_chroma,
+             (const char *) &filter->fmt_out.video.i_chroma);
 
     return VLC_SUCCESS;
 }

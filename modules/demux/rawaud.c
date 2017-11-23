@@ -2,7 +2,7 @@
  * rawaud.c : raw audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: 241900a1c3abcc986ce5046dd7154822a0328da7 $
+ * $Id: 375bdb12444cbf50677c665692e81986182029e2 $
  *
  * Authors: Jarmo Torvinen <jarmo.torvinen@jutel.fi>
  *
@@ -51,7 +51,7 @@ static void Close( vlc_object_t * );
     "FOURCC code of the raw input format. This is a four character string." )
 
 #define LANG_TEXT N_("Forces the audio language")
-#define LANG_LONGTEXT N_("Forces the audio language for the output mux. Three letter ISO639 code. Default is 'eng'. ")
+#define LANG_LONGTEXT N_("Forces the audio language for the output mux. Three letter ISO639 code. Default is 'eng'.")
 
 #ifdef WORDS_BIGENDIAN
 # define FOURCC_DEFAULT "s16b"

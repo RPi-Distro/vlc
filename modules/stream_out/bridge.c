@@ -2,7 +2,7 @@
  * bridge.c: bridge stream output module
  *****************************************************************************
  * Copyright (C) 2005-2008 VLC authors and VideoLAN
- * $Id: 31d745824a8f2777f58dcdb8ab08c3e6eaad8dd0 $
+ * $Id: a26c6685e03fdca7e44c2b6a9cb229949481ef79 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -67,7 +67,7 @@
     "If set to true, the bridge will discard all input elementary streams " \
     "except if it doesn't receive data from another bridge-in. This can " \
     "be used to configure a place holder stream when the real source " \
-    "breaks. Source and placeholder streams should have the same format. " )
+    "breaks. Source and placeholder streams should have the same format." )
 
 #define PLACEHOLDER_DELAY_TEXT N_( "Placeholder delay" )
 #define PLACEHOLDER_DELAY_LONGTEXT N_( \

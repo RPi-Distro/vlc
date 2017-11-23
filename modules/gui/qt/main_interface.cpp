@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: b5bbeaf71049f53a3b924d30b5366d9cddde4d10 $
+ * $Id: 787abbf81f3ad4a4b06a7e7a0a9127708bf293a9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -54,11 +54,13 @@
 #include <QDate>
 #include <QMimeData>
 
+#include <QWindow>
 #include <QMenu>
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QLabel>
 #include <QStackedWidget>
+#include <QScreen>
 #ifdef _WIN32
 #include <QFileInfo>
 #endif
@@ -96,6 +98,7 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     videoWidget          = NULL;
     playlistWidget       = NULL;
     stackCentralOldWidget= NULL;
+    lastWinScreen        = NULL;
     sysTray              = NULL;
     fullscreenControls   = NULL;
     cryptedLabel         = NULL;
@@ -857,10 +860,12 @@ void MainInterface::setVideoFullScreen( bool fs )
          * than current number of screens, take screennumber where current interface
          * is
          */
-        if( numscreen == -1 || numscreen > QApplication::desktop()->numScreens() )
+        if( numscreen == -1 || numscreen > QApplication::desktop()->screenCount() )
             numscreen = QApplication::desktop()->screenNumber( p_intf->p_sys->p_mi );
 
         QRect screenres = QApplication::desktop()->screenGeometry( numscreen );
+        lastWinScreen = windowHandle()->screen();
+        windowHandle()->setScreen(QGuiApplication::screens()[numscreen]);
 
         /* To be sure window is on proper-screen in xinerama */
         if( !screenres.contains( pos() ) )
@@ -885,6 +890,8 @@ void MainInterface::setVideoFullScreen( bool fs )
     {
         setMinimalView( b_minimalView );
         setInterfaceFullScreen( b_interfaceFullScreen );
+        if (lastWinScreen != NULL)
+            windowHandle()->setScreen(lastWinScreen);
         if( lastWinPosition.isNull() == false )
         {
             move( lastWinPosition );

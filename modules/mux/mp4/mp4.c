@@ -2,7 +2,7 @@
  * mp4.c: mp4/mov muxer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003, 2006 VLC authors and VideoLAN
- * $Id: 1017cfb7744692ec27f9036d2bbf3ec132055f13 $
+ * $Id: b3393c7afd50b40dfe242c1d0cc9b48da596a537 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin at videolan dot org>
@@ -602,10 +602,13 @@ static int Mux(sout_mux_t *p_mux)
         /* Reset reference dts in case of discontinuity (ex: gather sout) */
         if (p_data->i_flags & BLOCK_FLAG_DISCONTINUITY && p_stream->mux.i_entry_count)
         {
-            if(!CreateCurrentEdit(p_stream, p_sys->i_start_dts, p_sys->b_fragmented))
+            if(p_stream->i_first_dts != VLC_TS_INVALID)
             {
-                block_Release( p_data );
-                return VLC_ENOMEM;
+                if(!CreateCurrentEdit(p_stream, p_sys->i_start_dts, p_sys->b_fragmented))
+                {
+                    block_Release( p_data );
+                    return VLC_ENOMEM;
+                }
             }
 
             p_stream->i_length_neg = 0;

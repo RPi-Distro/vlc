@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 8e9a29dea02fabf131cadb8c00aa3687da01fb34 $
+ * $Id: a482bdca8011af37b40ccc8cb365f812ac12d6db $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -316,7 +316,7 @@ static const char *const ppsz_align_descriptions[] =
 #define VIDEO_ON_TOP_LONGTEXT N_( \
     "Always place the video window on top of other windows." )
 
-#define WALLPAPER_TEXT N_("Enable wallpaper mode ")
+#define WALLPAPER_TEXT N_("Enable wallpaper mode")
 #define WALLPAPER_LONGTEXT N_( \
     "The wallpaper mode allows you to display the video as the desktop " \
     "background." )
@@ -1002,11 +1002,11 @@ static const char *const ppsz_prefres[] = {
 
 #define STREAM_FILTER_TEXT N_("Stream filter module")
 #define STREAM_FILTER_LONGTEXT N_( \
-    "Stream filters are used to modify the stream that is being read. " )
+    "Stream filters are used to modify the stream that is being read." )
 
 #define DEMUX_FILTER_TEXT N_("Demux filter module")
 #define DEMUX_FILTER_LONGTEXT N_( \
-    "Demux filters are used to modify/control the stream that is being read. " )
+    "Demux filters are used to modify/control the stream that is being read." )
 
 #define DEMUX_TEXT N_("Demux module")
 #define DEMUX_LONGTEXT N_( \
@@ -2809,3 +2809,7 @@ vlc_module_end ()
 /*****************************************************************************
  * End configuration.
  *****************************************************************************/
+
+#ifdef HAVE_DYNAMIC_PLUGINS
+const char vlc_module_name[] = "main";
+#endif

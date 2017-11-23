@@ -228,9 +228,7 @@ libwebvtt_plugin_la_SOURCES = codec/webvtt/subsvtt.c \
                               demux/webvtt.c \
                               demux/mp4/minibox.h
 codec_LTLIBRARIES += libwebvtt_plugin.la
-AM_YFLAGS = -d
 if ENABLE_CSS
-SUFFIXES += .l .y
 # dependency: we need grammar build first
 BUILT_SOURCES += codec/webvtt/CSSGrammar.h
 libwebvtt_plugin_la_CFLAGS = $(AM_CFLAGS) -I$(srcdir)/codec/webvtt/ -I$(builddir)/codec/webvtt/
@@ -417,13 +415,18 @@ endif
 codec_LTLIBRARIES += libvaapi_plugin.la
 endif
 
+libd3d9_common_la_SOURCES = video_chroma/d3d9_fmt.c video_chroma/d3d9_fmt.h
+libd3d9_common_la_LDFLAGS = -static
+if HAVE_WIN32_DESKTOP
+noinst_LTLIBRARIES += libd3d9_common.la
+endif
+
 libdxva2_plugin_la_SOURCES = \
 	codec/avcodec/dxva2.c codec/avcodec/directx_va.c codec/avcodec/directx_va.h \
-        codec/avcodec/va_surface.c codec/avcodec/va_surface.h codec/avcodec/va_surface_internal.h \
+	codec/avcodec/va_surface.c codec/avcodec/va_surface.h codec/avcodec/va_surface_internal.h \
 	packetizer/h264_nal.c packetizer/h264_nal.h \
-	packetizer/hevc_nal.c packetizer/hevc_nal.h \
-	video_chroma/d3d9_fmt.h
-libdxva2_plugin_la_LIBADD = $(LIBCOM) -lshlwapi -luuid
+	packetizer/hevc_nal.c packetizer/hevc_nal.h
+libdxva2_plugin_la_LIBADD = libd3d9_common.la $(LIBCOM) -lshlwapi -luuid
 if HAVE_AVCODEC_DXVA2
 codec_LTLIBRARIES += libdxva2_plugin.la
 endif

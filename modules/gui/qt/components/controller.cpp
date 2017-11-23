@@ -2,7 +2,7 @@
  * controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 98c2754e2f3971ff3e647824643c35a7f830a460 $
+ * $Id: 08a08d22124fcdf90af01fac2e0d1a4f74483cf3 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -50,6 +50,7 @@
 #include <QSignalMapper>
 #include <QTimer>
 #include <QApplication>
+#include <QWindow>
 #include <QScreen>
 
 //#define DEBUG_LAYOUT 1
@@ -616,7 +617,7 @@ QFrame *AbstractController::telexFrame()
     QToolButton *telexTransparent = new QToolButton;
     setupButton( telexTransparent );
     BUTTON_SET_BAR2( telexTransparent, toolbar/tvtelx,
-                     qtr( "Toggle Transparency " ) );
+                     qtr( "Toggle Transparency" ) );
     telexTransparent->setEnabled( false );
     telexTransparent->setCheckable( true );
     telexLayout->addWidget( telexTransparent );
@@ -869,6 +870,7 @@ void FullscreenControllerWidget::restoreFSC()
         adjustSize();
 
         QRect currentRes = QApplication::desktop()->screenGeometry( targetScreen() );
+        windowHandle()->setScreen(QGuiApplication::screens()[targetScreen()]);
 
         if( currentRes == screenRes &&
             QApplication::desktop()->screen()->geometry().contains( previousPosition, true ) )
@@ -984,7 +986,7 @@ void FullscreenControllerWidget::toggleFullwidth()
 
 int FullscreenControllerWidget::targetScreen()
 {
-    if( i_screennumber < 0 || i_screennumber > QApplication::desktop()->numScreens() )
+    if( i_screennumber < 0 || i_screennumber > QApplication::desktop()->screenCount() )
         return QApplication::desktop()->screenNumber( p_intf->p_sys->p_mi );
     return i_screennumber;
 }

@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-17 02:18+0000\n"
+"POT-Creation-Date: 2017-11-23 02:19+0000\n"
 "PO-Revision-Date: 2014-05-23 17:36+0000\n"
 "Last-Translator: Kaya Zeren <kayazeren@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/vlc-trans/"
@@ -1814,7 +1814,7 @@ msgstr ""
 "Kulaklık Kanal Karıştırıcısı ile birlikte kullanıldığında, bu ayarın "
 "etkinleştirmesi ses kalitesini artırabilir."
 
-#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
+#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:942
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:65
@@ -2140,7 +2140,8 @@ msgid "Always place the video window on top of other windows."
 msgstr "Görüntü penceresi her zaman diğer pencerelerin üzerinde tutulur."
 
 #: src/libvlc-module.c:319
-msgid "Enable wallpaper mode "
+#, fuzzy
+msgid "Enable wallpaper mode"
 msgstr "Duvar kağıdı kipi kullanılsın"
 
 #: src/libvlc-module.c:321
@@ -3580,7 +3581,8 @@ msgid "Stream filter module"
 msgstr "Akış süzgeci modülü"
 
 #: src/libvlc-module.c:1005
-msgid "Stream filters are used to modify the stream that is being read. "
+#, fuzzy
+msgid "Stream filters are used to modify the stream that is being read."
 msgstr "Akış süzgeçleri, okunmakta olan akışı değiştirmekte kullanılırlar."
 
 #: src/libvlc-module.c:1007
@@ -3590,8 +3592,7 @@ msgstr "Akış süzgeci modülü"
 
 #: src/libvlc-module.c:1009
 #, fuzzy
-msgid ""
-"Demux filters are used to modify/control the stream that is being read. "
+msgid "Demux filters are used to modify/control the stream that is being read."
 msgstr "Akış süzgeçleri, okunmakta olan akışı değiştirmekte kullanılırlar."
 
 #: src/libvlc-module.c:1011
@@ -5258,7 +5259,7 @@ msgstr "Ortam Süre"
 msgid "Media View"
 msgstr "Ortam Görünüm"
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:567
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:568
 msgid "Menu"
 msgstr "Menü"
 
@@ -5382,7 +5383,7 @@ msgstr "Dosya kaydetme başarısız oldu."
 msgid "Failed to open \"%s\" for writing"
 msgstr "\"%s\" yazmak için açılamadı"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2681
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2679
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -6625,9 +6626,10 @@ msgid "Audio device name"
 msgstr "Ses aygıtının adı"
 
 #: modules/access/dshow/dshow.cpp:137
+#, fuzzy
 msgid ""
 "Name of the audio device that will be used by the DirectShow plugin. If you "
-"don't specify anything, the default device will be used. "
+"don't specify anything, the default device will be used."
 msgstr ""
 "DirectShow uyumlu eki tarafından kullanılacak ses aygıtı. Bir seçim "
 "yapılmazsa varsayılan aygıt kullanılır."
@@ -8343,7 +8345,8 @@ msgid "Genre description"
 msgstr "Tür açıklaması"
 
 #: modules/access_output/shout.c:83
-msgid "Genre of the content. "
+#, fuzzy
+msgid "Genre of the content."
 msgstr "İçeriğin türü."
 
 #: modules/access_output/shout.c:85
@@ -8351,15 +8354,18 @@ msgid "URL description"
 msgstr "İnternet adresi"
 
 #: modules/access_output/shout.c:86
-msgid "URL with information about the stream or your channel. "
+#, fuzzy
+msgid "URL with information about the stream or your channel."
 msgstr "Akış ya da kanalınız ile ilgili bilgilendirici İnternet adresi."
 
 #: modules/access_output/shout.c:93
-msgid "Bitrate information of the transcoded stream. "
+#, fuzzy
+msgid "Bitrate information of the transcoded stream."
 msgstr "Dönüştürülen akışın bit hızı bilgisi."
 
 #: modules/access_output/shout.c:96
-msgid "Samplerate information of the transcoded stream. "
+#, fuzzy
+msgid "Samplerate information of the transcoded stream."
 msgstr "Dönüştürülen akışın örnekleme hızı bilgisi."
 
 #: modules/access_output/shout.c:98
@@ -8367,7 +8373,8 @@ msgid "Number of channels"
 msgstr "Kanal sayısı"
 
 #: modules/access_output/shout.c:99
-msgid "Number of channels information of the transcoded stream. "
+#, fuzzy
+msgid "Number of channels information of the transcoded stream."
 msgstr "Dönüştürülen akışın kanal sayısı bilgisi."
 
 #: modules/access_output/shout.c:101
@@ -8375,7 +8382,8 @@ msgid "Ogg Vorbis Quality"
 msgstr "Ogg Vorbis Kalitesi"
 
 #: modules/access_output/shout.c:102
-msgid "Ogg Vorbis Quality information of the transcoded stream. "
+#, fuzzy
+msgid "Ogg Vorbis Quality information of the transcoded stream."
 msgstr "Dönüştürülen akışın Ogg Vorbis kalitesi."
 
 #: modules/access_output/shout.c:104
@@ -8688,7 +8696,8 @@ msgid "Display ID"
 msgstr "Kod Görüntülensin"
 
 #: modules/access/screen/screen.c:82
-msgid "Display ID. If not specified, main display ID is used. "
+#, fuzzy
+msgid "Display ID. If not specified, main display ID is used."
 msgstr "Ekran kodu. Belirtilmemiş ise ana ekran kodu kullanılır."
 
 #: modules/access/screen/screen.c:83
@@ -8924,7 +8933,8 @@ msgid "VBI capture device"
 msgstr "VBI yakalama aygıtı"
 
 #: modules/access/v4l2/v4l2.c:48
-msgid "The device node where VBI data can be read  (for closed captions) "
+#, fuzzy
+msgid "The device node where VBI data can be read  (for closed captions)."
 msgstr "VBI verisinin okunacağı aygıt düğümü (kapalı başlıklar için)"
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -11260,12 +11270,12 @@ msgstr ""
 "(varsayılan: main). hev1 ve hev2 yalnız libfdk-aac kullanan libavcodec ile "
 "desteklenmektedir"
 
-#: modules/codec/avcodec/d3d11va.c:64
+#: modules/codec/avcodec/d3d11va.c:63
 #, fuzzy
 msgid "Direct3D11 Video Acceleration"
 msgstr "DirectX Video Hızlandırma (DXVA) 2.0"
 
-#: modules/codec/avcodec/dxva2.c:52
+#: modules/codec/avcodec/dxva2.c:51
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr "DirectX Video Hızlandırma (DXVA) 2.0"
 
@@ -12110,9 +12120,10 @@ msgid "Group of Picture Reference Distance"
 msgstr "Grup Görüntüleri Referans Aralığı"
 
 #: modules/codec/qsv.c:81
+#, fuzzy
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used. "
+"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
 msgstr ""
 "I ya da P anahtar kareleri arasındaki aralık. 0 ise grup görüntüsü yapısı "
 "belirtilmemiştir. Not: GopRefDist=1 ise B kareleri kullanılmaz."
@@ -12134,13 +12145,14 @@ msgid "IDR interval"
 msgstr "IDR aralığı"
 
 #: modules/codec/qsv.c:92
+#, fuzzy
 msgid ""
 "For H.264, IdrInterval specifies IDR-frame interval in terms of I- frames; "
 "if IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
-"SDK inserts the sequence header once at the beginning of the stream. "
+"SDK inserts the sequence header once at the beginning of the stream."
 msgstr ""
 "H.264 için, IdrInterval, I kareleri üzerinden IDR kare aralığını belilrler. "
 "IdrInterval=0 ise her I karesi IDR karesi olur. IdrInterval=1 ise I karesi "
@@ -12247,9 +12259,10 @@ msgid "Convergence time of 'avbr' RateControl"
 msgstr "'avbr' hız denetimi yakınsama zamanı"
 
 #: modules/codec/qsv.c:135
+#, fuzzy
 msgid ""
 "Number of 100 frames before the 'avbr' rate control method reaches the "
-"requested bitrate with the requested accuracy. See the accuracy parameter. "
+"requested bitrate with the requested accuracy. See the accuracy parameter."
 msgstr ""
 "'avbr' hız denetimi yönteminin istenen kararlılıkta istenen bit hızına "
 "ulaşmasından 100 kare öncesi. Kararlılık parametresine bakın."
@@ -13051,7 +13064,7 @@ msgstr "Metin Altyazı Kod Çözücüsü"
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:100
+#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:97
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr "CP1254"
@@ -13849,8 +13862,9 @@ msgid "Weighted prediction for P-frames"
 msgstr "P karelerinin ağırlıklı öngörülmesi"
 
 #: modules/codec/x264.c:295
+#, fuzzy
 msgid ""
-" Weighted prediction for P-frames:  - 0: Disabled\n"
+"Weighted prediction for P-frames:  - 0: Disabled\n"
 " - 1: Blind offset\n"
 " - 2: Smart analysis\n"
 msgstr ""
@@ -14340,14 +14354,14 @@ msgstr "D-Bus denetim arayüzü"
 #: modules/gui/macosx/VLCMainWindow.m:669
 #: modules/gui/macosx/VLCMainWindow.m:675
 #: modules/gui/macosx/VLCMainWindow.m:1273 modules/gui/ncurses.c:1035
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1206
-#: modules/gui/qt/main_interface.cpp:1210
-#: modules/gui/qt/main_interface.cpp:1249
-#: modules/gui/qt/main_interface.cpp:1251
-#: modules/gui/qt/main_interface.cpp:1360
-#: modules/gui/qt/main_interface.cpp:1377
-#: modules/gui/qt/main_interface.cpp:1385
-#: modules/gui/qt/main_interface.cpp:1408 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1213
+#: modules/gui/qt/main_interface.cpp:1217
+#: modules/gui/qt/main_interface.cpp:1256
+#: modules/gui/qt/main_interface.cpp:1258
+#: modules/gui/qt/main_interface.cpp:1367
+#: modules/gui/qt/main_interface.cpp:1384
+#: modules/gui/qt/main_interface.cpp:1392
+#: modules/gui/qt/main_interface.cpp:1415 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -15248,27 +15262,27 @@ msgstr ""
 "AVI dosyası dizinini yeniden oluşturur. AVI dosyanız bozuk ya da eksik ise "
 "(içinde gezilebilir değilse) bu seçeneği kullanın."
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:66
 msgid "Ask for action"
 msgstr "Ne yapılacağını sor"
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:67
 msgid "Always fix"
 msgstr "Her zaman onar"
 
-#: modules/demux/avi/avi.c:71
+#: modules/demux/avi/avi.c:68
 msgid "Never fix"
 msgstr "Asla onarma"
 
-#: modules/demux/avi/avi.c:72
+#: modules/demux/avi/avi.c:69
 msgid "Fix when necessary"
 msgstr "Gerektiğinde düzelt"
 
-#: modules/demux/avi/avi.c:76
+#: modules/demux/avi/avi.c:73
 msgid "AVI demuxer"
 msgstr "AVI tekleyici"
 
-#: modules/demux/avi/avi.c:802 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:797 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -15286,28 +15300,28 @@ msgstr ""
 "Ne yapmak istersiniz?\n"
 " "
 
-#: modules/demux/avi/avi.c:810
+#: modules/demux/avi/avi.c:805
 msgid "Do not play"
 msgstr "Oynatma"
 
-#: modules/demux/avi/avi.c:811
+#: modules/demux/avi/avi.c:806
 msgid "Build index then play"
 msgstr "Dizin oluştur ve oynat"
 
-#: modules/demux/avi/avi.c:812
+#: modules/demux/avi/avi.c:807
 msgid "Play as is"
 msgstr "Olduğu gibi oynat"
 
-#: modules/demux/avi/avi.c:813 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:808 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "Bozuk ya da kayıp AVI dizini"
 
-#: modules/demux/avi/avi.c:2682
+#: modules/demux/avi/avi.c:2680
 msgid "Broken or missing AVI Index"
 msgstr "Bozuk ya da kayıp AVI dizini"
 
-#: modules/demux/avi/avi.c:2683
+#: modules/demux/avi/avi.c:2681
 msgid "Fixing AVI Index..."
 msgstr "AVI İndeksi Düzeltiliyor..."
 
@@ -15709,9 +15723,10 @@ msgid "Packet size in bytes to decrypt"
 msgstr "Bayt cinsinden, çözülecek paket sayısı"
 
 #: modules/demux/mpeg/ts.c:100
+#, fuzzy
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
-"subtract the TS-header from the value before decrypting. "
+"subtract the TS-header from the value before decrypting."
 msgstr ""
 "Çözülecek aktarılan akış paketinin boyutunu belirtin. Çözme programları "
 "işleme başlamadan önce aktarılan akış başlığını bu değerden çıkarır."
@@ -16013,9 +16028,10 @@ msgid "Forces the audio language"
 msgstr "Ses dilini seçin"
 
 #: modules/demux/rawaud.c:54
+#, fuzzy
 msgid ""
 "Forces the audio language for the output mux. Three letter ISO639 code. "
-"Default is 'eng'. "
+"Default is 'eng'."
 msgstr ""
 "Çıkış çoklayıcının ses dilini belirler. Üç harfli ISO639 kodu. Varsayılan "
 "'eng'."
@@ -19095,11 +19111,13 @@ msgid " <up>,<down>            Seek +/-5%%"
 msgstr " <up>,<down>            Tara +/-5%%"
 
 #: modules/gui/ncurses.c:1055
-msgid "[Repeat] "
+#, fuzzy
+msgid "[Repeat]"
 msgstr "[Yinele]"
 
 #: modules/gui/ncurses.c:1056
-msgid "[Random] "
+#, fuzzy
+msgid "[Random]"
 msgstr "[Rastgele]"
 
 #: modules/gui/ncurses.c:1057
@@ -19158,28 +19176,29 @@ msgstr "Açın: %s"
 msgid "Find: %s"
 msgstr "Bulun: %s"
 
-#: modules/gui/qt/components/controller.cpp:342
+#: modules/gui/qt/components/controller.cpp:343
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt/components/controller.cpp:447
+#: modules/gui/qt/components/controller.cpp:448
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr "Biri, Tümü ya da Hiç biri çevrim kipleri arasında geçiş yapar"
 
-#: modules/gui/qt/components/controller.cpp:548
+#: modules/gui/qt/components/controller.cpp:549
 msgid "Previous Chapter/Title"
 msgstr "Önceki Bölüm/Başlık"
 
-#: modules/gui/qt/components/controller.cpp:554
+#: modules/gui/qt/components/controller.cpp:555
 msgid "Next Chapter/Title"
 msgstr "Sonraki Bölüm/Başlık"
 
-#: modules/gui/qt/components/controller.cpp:603
+#: modules/gui/qt/components/controller.cpp:604
 msgid "Teletext Activation"
 msgstr "Teletext Etkinleştirme"
 
-#: modules/gui/qt/components/controller.cpp:619
-msgid "Toggle Transparency "
+#: modules/gui/qt/components/controller.cpp:620
+#, fuzzy
+msgid "Toggle Transparency"
 msgstr "Saydamlık"
 
 #: modules/gui/qt/components/controller.hpp:43
@@ -20416,7 +20435,8 @@ msgid "Save log file as..."
 msgstr "Günlük Dosyasını Farklı Kaydet..."
 
 #: modules/gui/qt/dialogs/messages.cpp:261
-msgid "Texts / Logs (*.log *.txt);; All (*.*) "
+#, fuzzy
+msgid "Texts / Logs (*.log *.txt);; All (*.*)"
 msgstr "Metinler / Günlükler (*.log *.txt);; All (*.*) "
 
 #: modules/gui/qt/dialogs/messages.cpp:267
@@ -20942,20 +20962,20 @@ msgstr "Zaman çizelgesi"
 msgid "VOD: "
 msgstr "VOD:"
 
-#: modules/gui/qt/main_interface.cpp:369
+#: modules/gui/qt/main_interface.cpp:372
 msgid "Do you want to restart the playback where left off?"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:375
+#: modules/gui/qt/main_interface.cpp:378
 #, fuzzy
 msgid "&Continue"
 msgstr "Devam"
 
-#: modules/gui/qt/main_interface.cpp:1361
+#: modules/gui/qt/main_interface.cpp:1368
 msgid "Control menu for the player"
 msgstr "Oynatıcı için denetim menüsü"
 
-#: modules/gui/qt/main_interface.cpp:1405
+#: modules/gui/qt/main_interface.cpp:1412
 msgid "Paused"
 msgstr "Duraklatıldı"
 
@@ -21405,15 +21425,17 @@ msgid "Regular expression used to filter the recent items played in the player"
 msgstr "VLC yazılımında oynatılan son öğeleri süzmekte kullanılacak ifade"
 
 #: modules/gui/qt/qt.cpp:139
-msgid "Define the colors of the volume slider "
+#, fuzzy
+msgid "Define the colors of the volume slider"
 msgstr "Ses ayar sürgüsünün renklerini belirleyin"
 
 #: modules/gui/qt/qt.cpp:140
+#, fuzzy
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
 "Default is '255;255;255;20;226;20;255;176;15;235;30;20'\n"
-"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255' "
+"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255'"
 msgstr ""
 "Ses ayar sürgüsünün rengini ayarlamak için\n"
 "';' ile ayrılmış 12 sayı yazın\n"
@@ -21421,7 +21443,8 @@ msgstr ""
 "Farklı bir dizge şöyle olabilir '30;30;50;40;40;100;50;50;160;150;150;255'."
 
 #: modules/gui/qt/qt.cpp:145
-msgid "Selection of the starting mode and look "
+#, fuzzy
+msgid "Selection of the starting mode and look"
 msgstr "Başlangıç kipi ve görünümünü seçin"
 
 #: modules/gui/qt/qt.cpp:146
@@ -22617,7 +22640,7 @@ msgstr ""
 msgid ""
 "However, the security certificate presented by the server changed since the "
 "previous visit and was not authenticated by any trusted Certificate "
-"Authority. "
+"Authority."
 msgstr ""
 "%s üzerine erişmeye çalıştınız. Sunucu tarafındaki güvenlik sertifikası "
 "önceki ziyaretinizden farklı ve herhangi bir Sertifika Otoritesi tarafından "
@@ -23282,7 +23305,8 @@ msgid "Timeout (ms)"
 msgstr "Zaman aşımı (ms)"
 
 #: modules/notify/notify.c:56
-msgid "How long the notification will be displayed "
+#, fuzzy
+msgid "How long the notification will be displayed."
 msgstr "Uyarının ne kadar süreyle görüntüleneceği"
 
 #: modules/notify/notify.c:61
@@ -23605,7 +23629,7 @@ msgid "Applications"
 msgstr "Uygulamalar"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:320
+#: modules/video_output/win32/direct3d9.c:315
 msgid "Desktop"
 msgstr "Masaüstü"
 
@@ -23839,9 +23863,10 @@ msgstr ""
 "özellikle üstveri ya da zamana bağlı metinler kullanıyorsanız işe yarar."
 
 #: modules/spu/marq.c:109
+#, fuzzy
 msgid ""
 "Opacity (inverse of transparency) of overlayed text. 0 = transparent, 255 = "
-"totally opaque. "
+"totally opaque."
 msgstr ""
 "Bindirilen yazının matlığı (saydamlığın karşıtı). 0 (tamamen saydam) ile 255 "
 "(tamamen mat) arasındadır."
@@ -24106,8 +24131,8 @@ msgid "VNC poll interval"
 msgstr "VNC yoklama aralığı"
 
 #: modules/spu/remoteosd.c:85
-msgid ""
-"In this interval an update from VNC is requested, default every 300 ms. "
+#, fuzzy
+msgid "In this interval an update from VNC is requested, default every 300 ms."
 msgstr ""
 "VNC tarafından bu aralıkta bir güncelleme istenir, varsayılan 300 ms'dir."
 
@@ -24528,11 +24553,12 @@ msgid "Fallback to placeholder stream when out of data"
 msgstr "Veri bittiğinde yer alacak akış"
 
 #: modules/stream_out/bridge.c:67
+#, fuzzy
 msgid ""
 "If set to true, the bridge will discard all input elementary streams except "
 "if it doesn't receive data from another bridge-in. This can be used to "
 "configure a place holder stream when the real source breaks. Source and "
-"placeholder streams should have the same format. "
+"placeholder streams should have the same format."
 msgstr ""
 "'Doğru' olarak ayarlanırsa, köprü, başka bir içeri köprüden veri almadığında "
 "tüm temel akışları eleyecektir. Bu ayar, gerçek kaynakta kesinti olduğunda "
@@ -25402,9 +25428,10 @@ msgid "Text opacity"
 msgstr "Metin matlığı"
 
 #: modules/text_renderer/freetype/freetype.c:92
+#, fuzzy
 msgid ""
 "The opacity (inverse of transparency) of the text that will be rendered on "
-"the video. 0 = transparent, 255 = totally opaque. "
+"the video. 0 = transparent, 255 = totally opaque."
 msgstr ""
 "Görüntü üzerine eklenecek metnin matlığı (saydamlığın tersi). 0 tamamen "
 "saydam, 255 tamamen mat."
@@ -28044,7 +28071,7 @@ msgstr "Yerine konacak parametreler"
 #: modules/visualization/visual/visual.c:67
 msgid ""
 "The parameter alpha for the Kaiser window. Increasing alpha increases the "
-"main-lobe width and decreases the side-lobe amplitude. "
+"main-lobe width and decreases the side-lobe amplitude."
 msgstr ""
 
 #: modules/visualization/visual/visual.c:70

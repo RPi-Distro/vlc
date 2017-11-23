@@ -33,6 +33,17 @@ typedef struct
 {
     ID3D11Device             *d3ddevice;       /* D3D device */
     ID3D11DeviceContext      *d3dcontext;      /* D3D context */
+    bool                     owner;
+} d3d11_device_t;
+
+typedef struct
+{
+#if !VLC_WINSTORE_APP
+    HINSTANCE                 hdll;       /* handle of the opened d3d11 dll */
+#if !defined(NDEBUG) && defined(HAVE_DXGIDEBUG_H)
+    HINSTANCE                 dxgidebug_dll;
+#endif
+#endif
 } d3d11_handle_t;
 
 /* owned by the vout for VLC_CODEC_D3D11_OPAQUE */
@@ -75,9 +86,16 @@ int AllocateShaderView(vlc_object_t *obj, ID3D11Device *d3ddevice,
                               ID3D11Texture2D *p_texture[D3D11_MAX_SHADER_VIEW], UINT slice_index,
                               ID3D11ShaderResourceView *resourceView[D3D11_MAX_SHADER_VIEW]);
 
-HRESULT D3D11_CreateDevice(vlc_object_t *obj, HINSTANCE hdecoder_dll,
-                                         bool hw_decoding,
-                                         d3d11_handle_t *p_hd3d11);
+HRESULT D3D11_CreateDevice(vlc_object_t *obj, d3d11_handle_t *,
+                           bool hw_decoding, d3d11_device_t *out);
+#define D3D11_CreateDevice(a,b,c,d)  D3D11_CreateDevice( VLC_OBJECT(a), b, c, d )
+
+void D3D11_ReleaseDevice(d3d11_device_t *);
+
+int D3D11_Create(vlc_object_t *, d3d11_handle_t *);
+#define D3D11_Create(a,b) D3D11_Create( VLC_OBJECT(a), b )
+
+void D3D11_Destroy(d3d11_handle_t *);
 
 bool isXboxHardware(ID3D11Device *d3ddev);
 bool isNvidiaHardware(ID3D11Device *d3ddev);
@@ -98,7 +116,7 @@ const d3d_format_t *FindD3D11Format(ID3D11Device *d3ddevice,
                                                   bool allow_opaque,
                                                   UINT supportFlags);
 
-int AllocateTextures(vlc_object_t *obj, d3d11_handle_t *hd3d11,
+int AllocateTextures(vlc_object_t *obj, d3d11_device_t *d3d_dev,
                      const d3d_format_t *cfg, const video_format_t *fmt,
                      unsigned pool_size, ID3D11Texture2D *textures[]);
 

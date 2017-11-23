@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-17 02:18+0000\n"
+"POT-Creation-Date: 2017-11-23 02:19+0000\n"
 "PO-Revision-Date: 2008-08-23 18:31+0200\n"
 "Last-Translator: Alexander Didebulidze <didebuli@in.tum.de>\n"
 "Language-Team: Georgian <geognome@googlegroups.com>\n"
@@ -1710,7 +1710,7 @@ msgid ""
 "your experience, especially when combined with the Headphone Channel Mixer."
 msgstr ""
 
-#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
+#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:942
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:65
@@ -2014,7 +2014,7 @@ msgstr ""
 
 #: src/libvlc-module.c:319
 #, fuzzy
-msgid "Enable wallpaper mode "
+msgid "Enable wallpaper mode"
 msgstr "ჩართვა რეჟიმი "
 
 #: src/libvlc-module.c:321
@@ -3296,8 +3296,9 @@ msgid "Stream filter module"
 msgstr "ვიდეო ფილტრის მოდული"
 
 #: src/libvlc-module.c:1005
-msgid "Stream filters are used to modify the stream that is being read. "
-msgstr ""
+#, fuzzy
+msgid "Stream filters are used to modify the stream that is being read."
+msgstr "ჩარჩო ვიდეო."
 
 #: src/libvlc-module.c:1007
 #, fuzzy
@@ -3306,8 +3307,7 @@ msgstr "ვიდეო ფილტრის მოდული"
 
 #: src/libvlc-module.c:1009
 #, fuzzy
-msgid ""
-"Demux filters are used to modify/control the stream that is being read. "
+msgid "Demux filters are used to modify/control the stream that is being read."
 msgstr "ჩარჩო ვიდეო."
 
 #: src/libvlc-module.c:1011
@@ -4936,7 +4936,7 @@ msgstr "ფაილები"
 msgid "Media View"
 msgstr "ფაილები"
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:567
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:568
 msgid "Menu"
 msgstr "მენიუ"
 
@@ -5074,7 +5074,7 @@ msgstr "ფაილის შენახვა"
 msgid "Failed to open \"%s\" for writing"
 msgstr ""
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2681
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2679
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -6349,7 +6349,7 @@ msgstr "აუდიო მოწყობილობის სახელი"
 #, fuzzy
 msgid ""
 "Name of the audio device that will be used by the DirectShow plugin. If you "
-"don't specify anything, the default device will be used. "
+"don't specify anything, the default device will be used."
 msgstr "ნაგულისხმევი VCD -სკენ a."
 
 #: modules/access/dshow/dshow.cpp:140
@@ -8082,7 +8082,7 @@ msgid "Genre description"
 msgstr "ნაკადი აღწერა"
 
 #: modules/access_output/shout.c:83
-msgid "Genre of the content. "
+msgid "Genre of the content."
 msgstr ""
 
 #: modules/access_output/shout.c:85
@@ -8091,17 +8091,17 @@ msgid "URL description"
 msgstr "აღწერილობა"
 
 #: modules/access_output/shout.c:86
-msgid "URL with information about the stream or your channel. "
+msgid "URL with information about the stream or your channel."
 msgstr ""
 
 #: modules/access_output/shout.c:93
 #, fuzzy
-msgid "Bitrate information of the transcoded stream. "
+msgid "Bitrate information of the transcoded stream."
 msgstr "ის ვიდეო."
 
 #: modules/access_output/shout.c:96
 #, fuzzy
-msgid "Samplerate information of the transcoded stream. "
+msgid "Samplerate information of the transcoded stream."
 msgstr "ის ვიდეო."
 
 #: modules/access_output/shout.c:98
@@ -8111,7 +8111,7 @@ msgstr "ის"
 
 #: modules/access_output/shout.c:99
 #, fuzzy
-msgid "Number of channels information of the transcoded stream. "
+msgid "Number of channels information of the transcoded stream."
 msgstr "ის აუდიო დუიმი."
 
 #: modules/access_output/shout.c:101
@@ -8120,7 +8120,7 @@ msgstr ""
 
 #: modules/access_output/shout.c:102
 #, fuzzy
-msgid "Ogg Vorbis Quality information of the transcoded stream. "
+msgid "Ogg Vorbis Quality information of the transcoded stream."
 msgstr "ის ვიდეო."
 
 #: modules/access_output/shout.c:104
@@ -8425,7 +8425,7 @@ msgid "Display ID"
 msgstr "დისპლეი"
 
 #: modules/access/screen/screen.c:82
-msgid "Display ID. If not specified, main display ID is used. "
+msgid "Display ID. If not specified, main display ID is used."
 msgstr ""
 
 #: modules/access/screen/screen.c:83
@@ -8689,7 +8689,7 @@ msgid "VBI capture device"
 msgstr "გახსენი ჩაწერე მოწყობილობა."
 
 #: modules/access/v4l2/v4l2.c:48
-msgid "The device node where VBI data can be read  (for closed captions) "
+msgid "The device node where VBI data can be read  (for closed captions)."
 msgstr ""
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -11053,12 +11053,12 @@ msgid ""
 "enabled libavcodec"
 msgstr ""
 
-#: modules/codec/avcodec/d3d11va.c:64
+#: modules/codec/avcodec/d3d11va.c:63
 #, fuzzy
 msgid "Direct3D11 Video Acceleration"
 msgstr "OpenGL ვიდეო გასავალი"
 
-#: modules/codec/avcodec/dxva2.c:52
+#: modules/codec/avcodec/dxva2.c:51
 #, fuzzy
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr "OpenGL ვიდეო გასავალი"
@@ -11903,7 +11903,7 @@ msgstr "ახლანდელი ელემენტის გამეო�
 #: modules/codec/qsv.c:81
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used. "
+"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
 msgstr ""
 
 #: modules/codec/qsv.c:85
@@ -11928,7 +11928,7 @@ msgid ""
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
-"SDK inserts the sequence header once at the beginning of the stream. "
+"SDK inserts the sequence header once at the beginning of the stream."
 msgstr ""
 
 #: modules/codec/qsv.c:100
@@ -12018,7 +12018,7 @@ msgstr ""
 #: modules/codec/qsv.c:135
 msgid ""
 "Number of 100 frames before the 'avbr' rate control method reaches the "
-"requested bitrate with the requested accuracy. See the accuracy parameter. "
+"requested bitrate with the requested accuracy. See the accuracy parameter."
 msgstr ""
 
 #: modules/codec/qsv.c:139
@@ -12858,7 +12858,7 @@ msgstr "ტიტრების ტექსტის დეკოდერი"
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:100
+#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:97
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr ""
@@ -13577,7 +13577,7 @@ msgstr ""
 
 #: modules/codec/x264.c:295
 msgid ""
-" Weighted prediction for P-frames:  - 0: Disabled\n"
+"Weighted prediction for P-frames:  - 0: Disabled\n"
 " - 1: Blind offset\n"
 " - 2: Smart analysis\n"
 msgstr ""
@@ -14041,14 +14041,14 @@ msgstr "მართვის ინტერფეისები"
 #: modules/gui/macosx/VLCMainWindow.m:669
 #: modules/gui/macosx/VLCMainWindow.m:675
 #: modules/gui/macosx/VLCMainWindow.m:1273 modules/gui/ncurses.c:1035
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1206
-#: modules/gui/qt/main_interface.cpp:1210
-#: modules/gui/qt/main_interface.cpp:1249
-#: modules/gui/qt/main_interface.cpp:1251
-#: modules/gui/qt/main_interface.cpp:1360
-#: modules/gui/qt/main_interface.cpp:1377
-#: modules/gui/qt/main_interface.cpp:1385
-#: modules/gui/qt/main_interface.cpp:1408 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1213
+#: modules/gui/qt/main_interface.cpp:1217
+#: modules/gui/qt/main_interface.cpp:1256
+#: modules/gui/qt/main_interface.cpp:1258
+#: modules/gui/qt/main_interface.cpp:1367
+#: modules/gui/qt/main_interface.cpp:1384
+#: modules/gui/qt/main_interface.cpp:1392
+#: modules/gui/qt/main_interface.cpp:1415 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -15012,30 +15012,30 @@ msgid ""
 "incomplete (not seekable)."
 msgstr "a ინდექსი AVI ფაილი AVI ფაილი არა."
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:66
 #, fuzzy
 msgid "Ask for action"
 msgstr " ინფორმაცია "
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:67
 #, fuzzy
 msgid "Always fix"
 msgstr "მუდმივად წინა პლანზე"
 
-#: modules/demux/avi/avi.c:71
+#: modules/demux/avi/avi.c:68
 #, fuzzy
 msgid "Never fix"
 msgstr "ახალი"
 
-#: modules/demux/avi/avi.c:72
+#: modules/demux/avi/avi.c:69
 msgid "Fix when necessary"
 msgstr ""
 
-#: modules/demux/avi/avi.c:76
+#: modules/demux/avi/avi.c:73
 msgid "AVI demuxer"
 msgstr "AVI დემუქსერი"
 
-#: modules/demux/avi/avi.c:802 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:797 modules/demux/mp4/mp4.c:1673
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15045,30 +15045,30 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:810
+#: modules/demux/avi/avi.c:805
 msgid "Do not play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:811
+#: modules/demux/avi/avi.c:806
 msgid "Build index then play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:812
+#: modules/demux/avi/avi.c:807
 #, fuzzy
 msgid "Play as is"
 msgstr "დაკვრა და შეჩერება"
 
-#: modules/demux/avi/avi.c:813 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:808 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "AVI ინდექსი"
 
-#: modules/demux/avi/avi.c:2682
+#: modules/demux/avi/avi.c:2680
 #, fuzzy
 msgid "Broken or missing AVI Index"
 msgstr "AVI ინდექსი"
 
-#: modules/demux/avi/avi.c:2683
+#: modules/demux/avi/avi.c:2681
 #, fuzzy
 msgid "Fixing AVI Index..."
 msgstr "AVI ინდექსი"
@@ -15487,7 +15487,7 @@ msgstr ""
 #: modules/demux/mpeg/ts.c:100
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
-"subtract the TS-header from the value before decrypting. "
+"subtract the TS-header from the value before decrypting."
 msgstr ""
 
 #: modules/demux/mpeg/ts.c:104
@@ -15804,7 +15804,7 @@ msgstr "აუდიოს ენა"
 #: modules/demux/rawaud.c:54
 msgid ""
 "Forces the audio language for the output mux. Three letter ISO639 code. "
-"Default is 'eng'. "
+"Default is 'eng'."
 msgstr ""
 
 #: modules/demux/rawaud.c:64
@@ -19051,11 +19051,12 @@ msgstr ""
 
 #: modules/gui/ncurses.c:1055
 #, fuzzy
-msgid "[Repeat] "
+msgid "[Repeat]"
 msgstr "ყველას გამეორება"
 
 #: modules/gui/ncurses.c:1056
-msgid "[Random] "
+#, fuzzy
+msgid "[Random]"
 msgstr "[შემთხვევითი] "
 
 #: modules/gui/ncurses.c:1057
@@ -19117,32 +19118,32 @@ msgstr "გახსენი: %s"
 msgid "Find: %s"
 msgstr "იპოვე: %s"
 
-#: modules/gui/qt/components/controller.cpp:342
+#: modules/gui/qt/components/controller.cpp:343
 msgid "Shift+L"
 msgstr ""
 
-#: modules/gui/qt/components/controller.cpp:447
+#: modules/gui/qt/components/controller.cpp:448
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr ""
 
-#: modules/gui/qt/components/controller.cpp:548
+#: modules/gui/qt/components/controller.cpp:549
 #, fuzzy
 msgid "Previous Chapter/Title"
 msgstr "წინა თავი"
 
-#: modules/gui/qt/components/controller.cpp:554
+#: modules/gui/qt/components/controller.cpp:555
 #, fuzzy
 msgid "Next Chapter/Title"
 msgstr "შემდეგი თავი"
 
-#: modules/gui/qt/components/controller.cpp:603
+#: modules/gui/qt/components/controller.cpp:604
 #, fuzzy
 msgid "Teletext Activation"
 msgstr "ტიტრების ტექსტის დეკოდერი"
 
-#: modules/gui/qt/components/controller.cpp:619
+#: modules/gui/qt/components/controller.cpp:620
 #, fuzzy
-msgid "Toggle Transparency "
+msgid "Toggle Transparency"
 msgstr "გამჭირვალობა"
 
 #: modules/gui/qt/components/controller.hpp:43
@@ -20466,7 +20467,7 @@ msgid "Save log file as..."
 msgstr "შეინახე ფაილი..."
 
 #: modules/gui/qt/dialogs/messages.cpp:261
-msgid "Texts / Logs (*.log *.txt);; All (*.*) "
+msgid "Texts / Logs (*.log *.txt);; All (*.*)"
 msgstr ""
 
 #: modules/gui/qt/dialogs/messages.cpp:267
@@ -21052,20 +21053,20 @@ msgstr ""
 msgid "VOD: "
 msgstr "VOD"
 
-#: modules/gui/qt/main_interface.cpp:369
+#: modules/gui/qt/main_interface.cpp:372
 msgid "Do you want to restart the playback where left off?"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:375
+#: modules/gui/qt/main_interface.cpp:378
 #, fuzzy
 msgid "&Continue"
 msgstr "გაგრძელება"
 
-#: modules/gui/qt/main_interface.cpp:1361
+#: modules/gui/qt/main_interface.cpp:1368
 msgid "Control menu for the player"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:1405
+#: modules/gui/qt/main_interface.cpp:1412
 msgid "Paused"
 msgstr "დაპაუზებულია"
 
@@ -21571,7 +21572,7 @@ msgstr ""
 
 #: modules/gui/qt/qt.cpp:139
 #, fuzzy
-msgid "Define the colors of the volume slider "
+msgid "Define the colors of the volume slider"
 msgstr "ის ნახატი"
 
 #: modules/gui/qt/qt.cpp:140
@@ -21579,11 +21580,11 @@ msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
 "Default is '255;255;255;20;226;20;255;176;15;235;30;20'\n"
-"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255' "
+"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255'"
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:145
-msgid "Selection of the starting mode and look "
+msgid "Selection of the starting mode and look"
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:146
@@ -22826,7 +22827,7 @@ msgstr ""
 msgid ""
 "However, the security certificate presented by the server changed since the "
 "previous visit and was not authenticated by any trusted Certificate "
-"Authority. "
+"Authority."
 msgstr ""
 
 #: modules/misc/gnutls.c:494 modules/misc/gnutls.c:515
@@ -23477,7 +23478,7 @@ msgid "Timeout (ms)"
 msgstr "დაყოვნების დრო"
 
 #: modules/notify/notify.c:56
-msgid "How long the notification will be displayed "
+msgid "How long the notification will be displayed."
 msgstr ""
 
 #: modules/notify/notify.c:61
@@ -23827,7 +23828,7 @@ msgid "Applications"
 msgstr "პროგრამა"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:320
+#: modules/video_output/win32/direct3d9.c:315
 #, fuzzy
 msgid "Desktop"
 msgstr "შეჩერება"
@@ -24080,7 +24081,7 @@ msgstr ""
 #, fuzzy
 msgid ""
 "Opacity (inverse of transparency) of overlayed text. 0 = transparent, 255 = "
-"totally opaque. "
+"totally opaque."
 msgstr "ის გამჭირვალობა ის ტექსტი "
 
 #: modules/spu/marq.c:111 modules/spu/rss.c:148
@@ -24356,8 +24357,7 @@ msgid "VNC poll interval"
 msgstr "გასაღების ინტერვალი"
 
 #: modules/spu/remoteosd.c:85
-msgid ""
-"In this interval an update from VNC is requested, default every 300 ms. "
+msgid "In this interval an update from VNC is requested, default every 300 ms."
 msgstr ""
 
 #: modules/spu/remoteosd.c:87
@@ -24766,7 +24766,7 @@ msgid ""
 "If set to true, the bridge will discard all input elementary streams except "
 "if it doesn't receive data from another bridge-in. This can be used to "
 "configure a place holder stream when the real source breaks. Source and "
-"placeholder streams should have the same format. "
+"placeholder streams should have the same format."
 msgstr ""
 
 #: modules/stream_out/bridge.c:72
@@ -25673,7 +25673,7 @@ msgstr "ტექსტის ადგილმდებარეობა"
 #, fuzzy
 msgid ""
 "The opacity (inverse of transparency) of the text that will be rendered on "
-"the video. 0 = transparent, 255 = totally opaque. "
+"the video. 0 = transparent, 255 = totally opaque."
 msgstr "ის გამჭირვალობა ის ტექსტი "
 
 #: modules/text_renderer/freetype/freetype.c:95
@@ -28422,7 +28422,7 @@ msgstr "ვიდეო"
 #: modules/visualization/visual/visual.c:67
 msgid ""
 "The parameter alpha for the Kaiser window. Increasing alpha increases the "
-"main-lobe width and decreases the side-lobe amplitude. "
+"main-lobe width and decreases the side-lobe amplitude."
 msgstr ""
 
 #: modules/visualization/visual/visual.c:70

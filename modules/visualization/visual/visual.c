@@ -2,7 +2,7 @@
  * visual.c : Visualisation system
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: e3239789c1a55e0658e8bd4bde40d607ff1c3740 $
+ * $Id: e830efba67ad4510c093be57adc96b14276edf33 $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *
@@ -65,7 +65,7 @@
 #define KAISER_PARAMETER_TEXT N_( "Kaiser window parameter" )
 #define KAISER_PARAMETER_LONGTEXT N_( \
       "The parameter alpha for the Kaiser window. Increasing alpha " \
-      "increases the main-lobe width and decreases the side-lobe amplitude. " )
+      "increases the main-lobe width and decreases the side-lobe amplitude." )
 
 #define NBBANDS_TEXT N_( "Show 80 bands instead of 20" )
 #define SPNBBANDS_LONGTEXT N_( \

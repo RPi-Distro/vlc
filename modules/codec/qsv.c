@@ -2,7 +2,7 @@
  * qsv.c: mpeg4-part10/mpeg2 video encoder using Intel Media SDK
  *****************************************************************************
  * Copyright (C) 2013 VideoLabs
- * $Id: 59bb9ee1f9868ee2b92eae78324cbe16116dd750 $
+ * $Id: c9fec8f19a5c916c8f44388cb018d1f3e48578b2 $
  *
  * Authors: Julien 'Lta' BALLET <contact@lta.io>
  *
@@ -80,7 +80,7 @@ static void     Close(vlc_object_t *);
 #define GOP_REF_DIST_LONGTEXT N_( \
     "Distance between I- or P- key frames; if it is zero, the GOP " \
     "structure is unspecified. Note: If GopRefDist = 1, there are no B- " \
-    "frames used. ")
+    "frames used.")
 
 #define TARGET_USAGE_TEXT N_("Target Usage")
 #define TARGET_USAGE_LONGTEXT N_("The target usage allow to choose between " \
@@ -95,7 +95,7 @@ static void     Close(vlc_object_t *);
     "For MPEG2, IdrInterval defines sequence header interval in terms " \
     "of I-frames. If IdrInterval=N, SDK inserts the sequence header " \
     "before every Nth I-frame. If IdrInterval=0 (default), SDK inserts " \
-    "the sequence header once at the beginning of the stream. ")
+    "the sequence header once at the beginning of the stream.")
 
 #define RATE_CONTROL_TEXT N_("Rate Control Method")
 #define RATE_CONTROL_LONGTEXT N_( \
@@ -134,7 +134,7 @@ static void     Close(vlc_object_t *);
 #define CONVERGENCE_TEXT N_("Convergence time of 'avbr' RateControl")
 #define CONVERGENCE_LONGTEXT N_("Number of 100 frames before the " \
     "'avbr' rate control method reaches the requested bitrate with " \
-    "the requested accuracy. See the accuracy parameter. ")
+    "the requested accuracy. See the accuracy parameter.")
 
 #define NUM_SLICE_TEXT N_("Number of slices per frame")
 #define NUM_SLICE_LONGTEXT N_("Number of slices in each video frame; "\

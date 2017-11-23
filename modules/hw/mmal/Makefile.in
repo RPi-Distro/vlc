@@ -1065,7 +1065,8 @@ AM_LDFLAGS = -avoid-version -module -export-symbols-regex ^vlc_entry \
 	-shrext $(LIBEXT) -no-undefined \
 	$(top_builddir)/compat/libcompat.la $(LTLIBVLCCORE) \
 	$(am__append_3) -rpath '$(mmaldir)' $(LDFLAGS_mmal)
-SUFFIXES = 
+AM_YFLAGS = -d
+SUFFIXES = .l .y
 mmaldir = $(pluginsdir)/mmal
 libmmal_vout_plugin_la_SOURCES = vout.c mmal_picture.c mmal_picture.h
 libmmal_vout_plugin_la_CFLAGS = $(AM_CFLAGS)
@@ -1085,7 +1086,7 @@ all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .lo .o .obj
+.SUFFIXES: .l .y .c .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/modules/common.am $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \

@@ -2,7 +2,7 @@
  * screen.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004-2008 VLC authors and VideoLAN
- * $Id: 28798da0ae66924a569f36f9a0a937b7d03958d1 $
+ * $Id: 8f87d90171d57dac34bcd4274b9c455a38f65c25 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -79,7 +79,7 @@
 #ifdef SCREEN_DISPLAY_ID
 #define DISPLAY_ID_TEXT N_( "Display ID" )
 #define DISPLAY_ID_LONGTEXT N_( \
-    "Display ID. If not specified, main display ID is used. " )
+    "Display ID. If not specified, main display ID is used." )
 #define INDEX_TEXT N_( "Screen index" )
 #define INDEX_LONGTEXT N_( \
     "Index of screen (1, 2, 3, ...). Alternative to Display ID." )

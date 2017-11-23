@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-17 02:18+0000\n"
+"POT-Creation-Date: 2017-11-23 02:19+0000\n"
 "PO-Revision-Date: 2013-12-08 08:16+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Bengali (India) (http://www.transifex.com/projects/p/vlc-"
@@ -1772,7 +1772,7 @@ msgstr ""
 "এনকোড Dolby পারিপার্শ্বিক সাথে না, এই অপশনটি চালু আপনার অভিজ্ঞতা উন্নত হতে পারে, "
 "বিশেষত যখন মাথায় বাঁধিয়া ব্যবহার্য বেতারযন্ত্র চ্যানেল মিশুক সঙ্গে সংযুক্ত."
 
-#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
+#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:942
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:65
@@ -2088,7 +2088,8 @@ msgid "Always place the video window on top of other windows."
 msgstr "সর্বদা অন্যান্য জানালার উপরে ভিডিও উইন্ডোতে লিখুন."
 
 #: src/libvlc-module.c:319
-msgid "Enable wallpaper mode "
+#, fuzzy
+msgid "Enable wallpaper mode"
 msgstr "ওয়ালপেপার মোড সক্ষম করুন"
 
 #: src/libvlc-module.c:321
@@ -3490,7 +3491,8 @@ msgid "Stream filter module"
 msgstr "স্ট্রীম পরিশোধক মডিউল"
 
 #: src/libvlc-module.c:1005
-msgid "Stream filters are used to modify the stream that is being read. "
+#, fuzzy
+msgid "Stream filters are used to modify the stream that is being read."
 msgstr ""
 "যেই স্ট্রিমটি পড়া হচ্ছে সেটি পরিবর্ধন করার জন্য স্ট্রীম পরিশোধক ব্যবহার করা হয়।"
 
@@ -3501,8 +3503,7 @@ msgstr "স্ট্রীম পরিশোধক মডিউল"
 
 #: src/libvlc-module.c:1009
 #, fuzzy
-msgid ""
-"Demux filters are used to modify/control the stream that is being read. "
+msgid "Demux filters are used to modify/control the stream that is being read."
 msgstr ""
 "যেই স্ট্রিমটি পড়া হচ্ছে সেটি পরিবর্ধন করার জন্য স্ট্রীম পরিশোধক ব্যবহার করা হয়।"
 
@@ -5114,7 +5115,7 @@ msgstr ""
 msgid "Media View"
 msgstr ""
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:567
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:568
 msgid "Menu"
 msgstr "মেনু"
 
@@ -5238,7 +5239,7 @@ msgstr "ফাইল সংরক্ষণ করতে ব্যর্থ"
 msgid "Failed to open \"%s\" for writing"
 msgstr "লেখার জন্য \"%s\" খুলতে ব্যর্থ"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2681
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2679
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -6469,9 +6470,10 @@ msgid "Audio device name"
 msgstr "অডিও ডিভাইসের নাম"
 
 #: modules/access/dshow/dshow.cpp:137
+#, fuzzy
 msgid ""
 "Name of the audio device that will be used by the DirectShow plugin. If you "
-"don't specify anything, the default device will be used. "
+"don't specify anything, the default device will be used."
 msgstr ""
 "অডিও ডিভাইস যে ডাইরেক্ট দেখান প্লাগইন দ্বারা ব্যবহার করা নাম. আপনি যদি কিছু উল্লেখ "
 "না করা হলে, ডিফল্ট ডিভাইস ব্যবহার করা হবে."
@@ -8159,7 +8161,8 @@ msgid "Genre description"
 msgstr "শ্রেণীর বিবরন"
 
 #: modules/access_output/shout.c:83
-msgid "Genre of the content. "
+#, fuzzy
+msgid "Genre of the content."
 msgstr "বিষয়বস্তুর শ্রেণী।"
 
 #: modules/access_output/shout.c:85
@@ -8167,15 +8170,18 @@ msgid "URL description"
 msgstr "URL বিবরন"
 
 #: modules/access_output/shout.c:86
-msgid "URL with information about the stream or your channel. "
+#, fuzzy
+msgid "URL with information about the stream or your channel."
 msgstr "স্ট্রীম বা আপনার চ্যানেল সম্পর্কিত তথ্যসহ URL।"
 
 #: modules/access_output/shout.c:93
-msgid "Bitrate information of the transcoded stream. "
+#, fuzzy
+msgid "Bitrate information of the transcoded stream."
 msgstr "ট্রান্সকোড করা স্ট্রীমের বিটরেটের তথ্য।"
 
 #: modules/access_output/shout.c:96
-msgid "Samplerate information of the transcoded stream. "
+#, fuzzy
+msgid "Samplerate information of the transcoded stream."
 msgstr "ট্রান্সকোড করা স্ট্রীমের স্যাম্পলরেটের তথ্য।"
 
 #: modules/access_output/shout.c:98
@@ -8183,7 +8189,8 @@ msgid "Number of channels"
 msgstr "চ্যানেলের সংখ্যা"
 
 #: modules/access_output/shout.c:99
-msgid "Number of channels information of the transcoded stream. "
+#, fuzzy
+msgid "Number of channels information of the transcoded stream."
 msgstr "ট্রান্সকোড করা স্ট্রীমের চ্যানেল সংখ্যার তথ্য।"
 
 #: modules/access_output/shout.c:101
@@ -8191,7 +8198,8 @@ msgid "Ogg Vorbis Quality"
 msgstr "Ogg Vorbis গুণগত মান"
 
 #: modules/access_output/shout.c:102
-msgid "Ogg Vorbis Quality information of the transcoded stream. "
+#, fuzzy
+msgid "Ogg Vorbis Quality information of the transcoded stream."
 msgstr "ট্রান্সকোড করা স্ট্রীমের Ogg Vorbis গুণগত মানের তথ্য।"
 
 #: modules/access_output/shout.c:104
@@ -8502,7 +8510,7 @@ msgid "Display ID"
 msgstr ""
 
 #: modules/access/screen/screen.c:82
-msgid "Display ID. If not specified, main display ID is used. "
+msgid "Display ID. If not specified, main display ID is used."
 msgstr ""
 
 #: modules/access/screen/screen.c:83
@@ -8734,7 +8742,7 @@ msgid "VBI capture device"
 msgstr ""
 
 #: modules/access/v4l2/v4l2.c:48
-msgid "The device node where VBI data can be read  (for closed captions) "
+msgid "The device node where VBI data can be read  (for closed captions)."
 msgstr ""
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -11018,12 +11026,12 @@ msgid ""
 "enabled libavcodec"
 msgstr ""
 
-#: modules/codec/avcodec/d3d11va.c:64
+#: modules/codec/avcodec/d3d11va.c:63
 #, fuzzy
 msgid "Direct3D11 Video Acceleration"
 msgstr "কে ভিডিও ত্বরাণ্বিত ভিডিও আউটপুট"
 
-#: modules/codec/avcodec/dxva2.c:52
+#: modules/codec/avcodec/dxva2.c:51
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr ""
 
@@ -11832,7 +11840,7 @@ msgstr ""
 #: modules/codec/qsv.c:81
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used. "
+"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
 msgstr ""
 
 #: modules/codec/qsv.c:85
@@ -11856,7 +11864,7 @@ msgid ""
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
-"SDK inserts the sequence header once at the beginning of the stream. "
+"SDK inserts the sequence header once at the beginning of the stream."
 msgstr ""
 
 #: modules/codec/qsv.c:100
@@ -11940,7 +11948,7 @@ msgstr ""
 #: modules/codec/qsv.c:135
 msgid ""
 "Number of 100 frames before the 'avbr' rate control method reaches the "
-"requested bitrate with the requested accuracy. See the accuracy parameter. "
+"requested bitrate with the requested accuracy. See the accuracy parameter."
 msgstr ""
 
 #: modules/codec/qsv.c:139
@@ -12721,7 +12729,7 @@ msgstr ""
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:100
+#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:97
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr "CP1252"
@@ -13496,8 +13504,9 @@ msgid "Weighted prediction for P-frames"
 msgstr "P-ফ্রেমের জন্য ওয়েইটেড অনুমান"
 
 #: modules/codec/x264.c:295
+#, fuzzy
 msgid ""
-" Weighted prediction for P-frames:  - 0: Disabled\n"
+"Weighted prediction for P-frames:  - 0: Disabled\n"
 " - 1: Blind offset\n"
 " - 2: Smart analysis\n"
 msgstr ""
@@ -13977,14 +13986,14 @@ msgstr "D-Bus কন্ট্রোল ইন্টারফেস"
 #: modules/gui/macosx/VLCMainWindow.m:669
 #: modules/gui/macosx/VLCMainWindow.m:675
 #: modules/gui/macosx/VLCMainWindow.m:1273 modules/gui/ncurses.c:1035
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1206
-#: modules/gui/qt/main_interface.cpp:1210
-#: modules/gui/qt/main_interface.cpp:1249
-#: modules/gui/qt/main_interface.cpp:1251
-#: modules/gui/qt/main_interface.cpp:1360
-#: modules/gui/qt/main_interface.cpp:1377
-#: modules/gui/qt/main_interface.cpp:1385
-#: modules/gui/qt/main_interface.cpp:1408 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1213
+#: modules/gui/qt/main_interface.cpp:1217
+#: modules/gui/qt/main_interface.cpp:1256
+#: modules/gui/qt/main_interface.cpp:1258
+#: modules/gui/qt/main_interface.cpp:1367
+#: modules/gui/qt/main_interface.cpp:1384
+#: modules/gui/qt/main_interface.cpp:1392
+#: modules/gui/qt/main_interface.cpp:1415 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -14880,27 +14889,27 @@ msgstr ""
 "AVI ফাইলের জন্য একটি সূচী তৈরি করা হবে। আপনার AVI ফাইলটি নষ্ট হয়ে গেলে বা "
 "অসম্পূর্ণ থাকলে (খোঁজার যোগ্য নয়) এটি ব্যবহার করা হবে।"
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:66
 msgid "Ask for action"
 msgstr "কাজের জন্য জিজ্ঞাসা করা হবে"
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:67
 msgid "Always fix"
 msgstr "সবসময় মেরামত করা হবে"
 
-#: modules/demux/avi/avi.c:71
+#: modules/demux/avi/avi.c:68
 msgid "Never fix"
 msgstr "কখনো মেরামত করবেন না"
 
-#: modules/demux/avi/avi.c:72
+#: modules/demux/avi/avi.c:69
 msgid "Fix when necessary"
 msgstr ""
 
-#: modules/demux/avi/avi.c:76
+#: modules/demux/avi/avi.c:73
 msgid "AVI demuxer"
 msgstr "AVI ডিমাক্সার"
 
-#: modules/demux/avi/avi.c:802 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:797 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -14916,28 +14925,28 @@ msgstr ""
 "এই পদক্ষেপ একটি বড় ফাইল সম্পর্কে একটি দীর্ঘ সময় নিতে পারে.\n"
 "আপনি কি চান?"
 
-#: modules/demux/avi/avi.c:810
+#: modules/demux/avi/avi.c:805
 msgid "Do not play"
 msgstr "খেলা করবেন না"
 
-#: modules/demux/avi/avi.c:811
+#: modules/demux/avi/avi.c:806
 msgid "Build index then play"
 msgstr "সূচক তারপর বিল্ড খেলা"
 
-#: modules/demux/avi/avi.c:812
+#: modules/demux/avi/avi.c:807
 msgid "Play as is"
 msgstr "একটি হিসাবে খেলুন"
 
-#: modules/demux/avi/avi.c:813 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:808 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "ভগ্ন বা AVI সূচক অনুপস্থিত"
 
-#: modules/demux/avi/avi.c:2682
+#: modules/demux/avi/avi.c:2680
 msgid "Broken or missing AVI Index"
 msgstr "ভগ্ন বা AVI সূচক অনুপস্থিত"
 
-#: modules/demux/avi/avi.c:2683
+#: modules/demux/avi/avi.c:2681
 msgid "Fixing AVI Index..."
 msgstr "AVI ইনডেক্স মেরামত করা হচ্ছে..."
 
@@ -15337,9 +15346,10 @@ msgid "Packet size in bytes to decrypt"
 msgstr "ডিক্রিপ্ট করার প্যাকেটের আকার (বাইটে)"
 
 #: modules/demux/mpeg/ts.c:100
+#, fuzzy
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
-"subtract the TS-header from the value before decrypting. "
+"subtract the TS-header from the value before decrypting."
 msgstr ""
 "ডিক্রিপ্ট করার TS প্যাকেটের আকার উল্লেখ করা হবে। ডিক্রিপশন রুটিন ডিক্রিপ্ট করার পূর্বে "
 "মান থেকে TS-শীর্ষচরণ বাদ দিয়ে দেয়।"
@@ -15640,9 +15650,10 @@ msgid "Forces the audio language"
 msgstr "অডিও ভাষা ফোর্স করা হয়"
 
 #: modules/demux/rawaud.c:54
+#, fuzzy
 msgid ""
 "Forces the audio language for the output mux. Three letter ISO639 code. "
-"Default is 'eng'. "
+"Default is 'eng'."
 msgstr ""
 "অডিও ল্যাংগুয়েজকে আউটপুট মাক্সের জন্য জোর করা হয়। তিন অক্ষরের ISO639 কোড। "
 "পূর্বনির্ধারিত মান 'eng'।"
@@ -18652,11 +18663,13 @@ msgid " <up>,<down>            Seek +/-5%%"
 msgstr " <up>,<down>            Seek +/-5%%"
 
 #: modules/gui/ncurses.c:1055
-msgid "[Repeat] "
+#, fuzzy
+msgid "[Repeat]"
 msgstr "[পুনরাবৃত্তি] "
 
 #: modules/gui/ncurses.c:1056
-msgid "[Random] "
+#, fuzzy
+msgid "[Random]"
 msgstr "[র‍্যান্ডম] "
 
 #: modules/gui/ncurses.c:1057
@@ -18715,28 +18728,29 @@ msgstr ""
 msgid "Find: %s"
 msgstr ""
 
-#: modules/gui/qt/components/controller.cpp:342
+#: modules/gui/qt/components/controller.cpp:343
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt/components/controller.cpp:447
+#: modules/gui/qt/components/controller.cpp:448
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr "লুপ মধ্যে সব, এক লুপ এবং কোন লুপ টগল দেখার জন্য ক্লিক করুন"
 
-#: modules/gui/qt/components/controller.cpp:548
+#: modules/gui/qt/components/controller.cpp:549
 msgid "Previous Chapter/Title"
 msgstr "পূর্ববর্তী অধ্যায়/শিরোনাম"
 
-#: modules/gui/qt/components/controller.cpp:554
+#: modules/gui/qt/components/controller.cpp:555
 msgid "Next Chapter/Title"
 msgstr "পরবর্তী অধ্যায়/শিরোনাম"
 
-#: modules/gui/qt/components/controller.cpp:603
+#: modules/gui/qt/components/controller.cpp:604
 msgid "Teletext Activation"
 msgstr "টেলিটেক্সট সক্রিয়করণ"
 
-#: modules/gui/qt/components/controller.cpp:619
-msgid "Toggle Transparency "
+#: modules/gui/qt/components/controller.cpp:620
+#, fuzzy
+msgid "Toggle Transparency"
 msgstr "স্বচ্ছতা টগল করা হবে"
 
 #: modules/gui/qt/components/controller.hpp:43
@@ -19954,7 +19968,8 @@ msgid "Save log file as..."
 msgstr "লগ ফাইল নতুন নামে সংরক্ষণ করা হবে..."
 
 #: modules/gui/qt/dialogs/messages.cpp:261
-msgid "Texts / Logs (*.log *.txt);; All (*.*) "
+#, fuzzy
+msgid "Texts / Logs (*.log *.txt);; All (*.*)"
 msgstr "পাঠ্য / লগ (*.log *.txt);; সব (*.*) "
 
 #: modules/gui/qt/dialogs/messages.cpp:267
@@ -20476,20 +20491,20 @@ msgstr "সময়সূচী:"
 msgid "VOD: "
 msgstr "VOD: "
 
-#: modules/gui/qt/main_interface.cpp:369
+#: modules/gui/qt/main_interface.cpp:372
 msgid "Do you want to restart the playback where left off?"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:375
+#: modules/gui/qt/main_interface.cpp:378
 #, fuzzy
 msgid "&Continue"
 msgstr "চালিয়ে যান"
 
-#: modules/gui/qt/main_interface.cpp:1361
+#: modules/gui/qt/main_interface.cpp:1368
 msgid "Control menu for the player"
 msgstr "প্লেয়ারের জন্য কন্ট্রোল মেনু"
 
-#: modules/gui/qt/main_interface.cpp:1405
+#: modules/gui/qt/main_interface.cpp:1412
 msgid "Paused"
 msgstr "বিরত"
 
@@ -20939,15 +20954,17 @@ msgstr ""
 "প্লেয়ারে চালানো সাম্প্রতিক উপাদানগুলো পরিশোধন করার জন্য ব্যবহৃত রেগুলার এক্সপ্রেশন"
 
 #: modules/gui/qt/qt.cpp:139
-msgid "Define the colors of the volume slider "
+#, fuzzy
+msgid "Define the colors of the volume slider"
 msgstr "ভলিউম স্লাইডারের রং সংজ্ঞায়িত করা হবে"
 
 #: modules/gui/qt/qt.cpp:140
+#, fuzzy
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
 "Default is '255;255;255;20;226;20;255;176;15;235;30;20'\n"
-"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255' "
+"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255'"
 msgstr ""
 "ভলিউম স্লাইডারের রং সংজ্ঞায়িত করা হবে\n"
 "১২ টি সংখ্যা ';' দ্বারা পৃথক করে উল্লেখ করে\n"
@@ -20955,7 +20972,8 @@ msgstr ""
 "একটি অপশন হতে পারে '30;30;50;40;40;100;50;50;160;150;150;255' "
 
 #: modules/gui/qt/qt.cpp:145
-msgid "Selection of the starting mode and look "
+#, fuzzy
+msgid "Selection of the starting mode and look"
 msgstr "শুরুর মোড এবং দর্শন নির্বাচন"
 
 #: modules/gui/qt/qt.cpp:146
@@ -22135,7 +22153,7 @@ msgstr ""
 msgid ""
 "However, the security certificate presented by the server changed since the "
 "previous visit and was not authenticated by any trusted Certificate "
-"Authority. "
+"Authority."
 msgstr ""
 
 #: modules/misc/gnutls.c:494 modules/misc/gnutls.c:515
@@ -22775,7 +22793,8 @@ msgid "Timeout (ms)"
 msgstr "টাইমআউট (মিলিসেকেন্ড)"
 
 #: modules/notify/notify.c:56
-msgid "How long the notification will be displayed "
+#, fuzzy
+msgid "How long the notification will be displayed."
 msgstr "কতক্ষন ধরে ঘোষনাটি প্রদর্শিত হবে"
 
 #: modules/notify/notify.c:61
@@ -23101,7 +23120,7 @@ msgid "Applications"
 msgstr "অ্যাপ্লিকেশন"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:320
+#: modules/video_output/win32/direct3d9.c:315
 msgid "Desktop"
 msgstr "ডেস্কটপ"
 
@@ -23327,9 +23346,10 @@ msgstr ""
 "স্ট্রিং এর ক্রমানুসার ব্যবহারের সময় কার্যকর।"
 
 #: modules/spu/marq.c:109
+#, fuzzy
 msgid ""
 "Opacity (inverse of transparency) of overlayed text. 0 = transparent, 255 = "
-"totally opaque. "
+"totally opaque."
 msgstr "ওভারলে লেখা এর অস্বচ্ছতা (স্বচ্ছতার বিপরীত)। ০ = স্বচ্ছ, ২৫৫ = সম্পূর্ণ অনচ্ছ।"
 
 #: modules/spu/marq.c:111 modules/spu/rss.c:148
@@ -23586,8 +23606,8 @@ msgid "VNC poll interval"
 msgstr "VNC পোল বিরতি"
 
 #: modules/spu/remoteosd.c:85
-msgid ""
-"In this interval an update from VNC is requested, default every 300 ms. "
+#, fuzzy
+msgid "In this interval an update from VNC is requested, default every 300 ms."
 msgstr ""
 "পূর্বনির্ধারিত মান প্রতি ৩০০ মিলিসেকেন্ড অন্তর এই বিরতিতে VNC থেকে হালনাগাদ অনুরোধ "
 "করা হয়।"
@@ -23997,11 +24017,12 @@ msgid "Fallback to placeholder stream when out of data"
 msgstr "যখন ডেটা থাকবে না তখন প্লেসহোল্ডার স্ট্রীমে ফলব্যাক করা হবে"
 
 #: modules/stream_out/bridge.c:67
+#, fuzzy
 msgid ""
 "If set to true, the bridge will discard all input elementary streams except "
 "if it doesn't receive data from another bridge-in. This can be used to "
 "configure a place holder stream when the real source breaks. Source and "
-"placeholder streams should have the same format. "
+"placeholder streams should have the same format."
 msgstr ""
 "যদি সত্যতে সেট করা থাকে, যদি এটি অন্য ব্রিজ-ইন থেকে ডাটা গ্রহণ করে তাহলে ব্রিজটি "
 "সব প্রাথমিক স্ট্রীম মুছে দিবে। যখন প্রকৃত সোর্স ভেঙ্গে যায় তখন একটি প্লেস হোল্ডার "
@@ -24864,9 +24885,10 @@ msgid "Text opacity"
 msgstr "শিরোনাম অস্বচ্ছতা"
 
 #: modules/text_renderer/freetype/freetype.c:92
+#, fuzzy
 msgid ""
 "The opacity (inverse of transparency) of the text that will be rendered on "
-"the video. 0 = transparent, 255 = totally opaque. "
+"the video. 0 = transparent, 255 = totally opaque."
 msgstr ""
 "যে লেখকে ভিডিওর ওপর রেন্ডার করা হবে তার অনচ্ছতা (স্বচ্ছতার বিপরীত)। ০ = স্বচ্ছ, "
 "২৫৫ = সম্পূর্ণ অনচ্ছ।"
@@ -27461,7 +27483,7 @@ msgstr "পরামিতি অগ্রাহ্য করা"
 #: modules/visualization/visual/visual.c:67
 msgid ""
 "The parameter alpha for the Kaiser window. Increasing alpha increases the "
-"main-lobe width and decreases the side-lobe amplitude. "
+"main-lobe width and decreases the side-lobe amplitude."
 msgstr ""
 
 #: modules/visualization/visual/visual.c:70

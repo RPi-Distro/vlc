@@ -2,7 +2,7 @@
  * dshow.cpp : DirectShow access and access_demux module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2004, 2006, 2008, 2010 the VideoLAN team
- * $Id: a24f010a1e4de73f232b089e048212f1d0b29d4f $
+ * $Id: 0bc457cc2f7fa7a1ffe379b926e1a8d8f527bcfa $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *         Damien Fouilleul <damienf@videolan.org>
@@ -136,7 +136,7 @@ static const char *const ppsz_standards_list_text[] =
 #define ADEV_LONGTEXT N_( \
     "Name of the audio device that will be used by the " \
     "DirectShow plugin. If you don't specify anything, the default device " \
-    "will be used. ")
+    "will be used.")
 #define SIZE_TEXT N_("Video size")
 #define SIZE_LONGTEXT N_( \
     "Size of the video that will be displayed by the " \

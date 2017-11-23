@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: a769a07a7547f6cb0b2f26399275ce53d9e90340 $
+ * $Id: 21bf37613ee95f85adde4f132f1107c02cc37366 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -57,9 +57,6 @@
 #define INDEX_LONGTEXT N_( \
     "Recreate a index for the AVI file. Use this if your AVI file is damaged "\
     "or incomplete (not seekable)." )
-
-#define BI_RAWRGB 0x00
-#define BI_RGBBITFIELDS 0x03
 
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
@@ -236,9 +233,6 @@ static mtime_t  AVI_MovieGetLength( demux_t * );
 
 static void AVI_MetaLoad( demux_t *, avi_chunk_list_t *p_riff, avi_chunk_avih_t *p_avih );
 
-block_t * ReadFrame( demux_t *p_demux, const avi_track_t *tk,
-                     const int i_header, const int i_size );
-
 /*****************************************************************************
  * Stream management
  *****************************************************************************/
@@ -330,8 +324,8 @@ static int Open( vlc_object_t * p_this )
     if( unlikely(!p_sys) )
         return VLC_EGENERIC;
     p_sys->b_odml   = false;
-    p_sys->track    = NULL;
     p_sys->meta     = NULL;
+    TAB_INIT(p_sys->i_track, p_sys->track);
     TAB_INIT(p_sys->i_attachment, p_sys->attachment);
 
     vlc_stream_Control( p_demux->s, STREAM_CAN_FASTSEEK,
@@ -350,18 +344,18 @@ static int Open( vlc_object_t * p_this )
         return VLC_EGENERIC;
     }
 
-    if( AVI_ChunkCount( &p_sys->ck_root, AVIFOURCC_RIFF ) > 1 )
+    if( AVI_ChunkCount( &p_sys->ck_root, AVIFOURCC_RIFF, true ) > 1 )
     {
         unsigned int i_count =
-            AVI_ChunkCount( &p_sys->ck_root, AVIFOURCC_RIFF );
+            AVI_ChunkCount( &p_sys->ck_root, AVIFOURCC_RIFF, true );
 
         msg_Warn( p_demux, "multiple riff -> OpenDML ?" );
         for( unsigned i = 1; i < i_count; i++ )
         {
             avi_chunk_list_t *p_sysx;
 
-            p_sysx = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, i );
-            if( p_sysx->i_type == AVIFOURCC_AVIX )
+            p_sysx = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, i, true );
+            if( p_sysx && p_sysx->i_type == AVIFOURCC_AVIX )
             {
                 msg_Warn( p_demux, "detected OpenDML file" );
                 p_sys->b_odml = true;
@@ -370,11 +364,11 @@ static int Open( vlc_object_t * p_this )
         }
     }
 
-    p_riff  = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, 0 );
-    p_hdrl  = AVI_ChunkFind( p_riff, AVIFOURCC_hdrl, 0 );
-    p_movi  = AVI_ChunkFind( p_riff, AVIFOURCC_movi, 0 );
+    p_riff  = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, 0, true );
+    p_hdrl  = AVI_ChunkFind( p_riff, AVIFOURCC_hdrl, 0, true );
+    p_movi  = AVI_ChunkFind( p_riff, AVIFOURCC_movi, 0, true );
     if( !p_movi )
-        p_movi  = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_movi, 0 );
+        p_movi  = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_movi, 0, true );
 
     if( !p_hdrl || !p_movi )
     {
@@ -382,12 +376,12 @@ static int Open( vlc_object_t * p_this )
         goto error;
     }
 
-    if( !( p_avih = AVI_ChunkFind( p_hdrl, AVIFOURCC_avih, 0 ) ) )
+    if( !( p_avih = AVI_ChunkFind( p_hdrl, AVIFOURCC_avih, 0, false ) ) )
     {
         msg_Err( p_demux, "invalid file: cannot find avih chunk" );
         goto error;
     }
-    i_track = AVI_ChunkCount( p_hdrl, AVIFOURCC_strl );
+    i_track = AVI_ChunkCount( p_hdrl, AVIFOURCC_strl, true );
     if( p_avih->i_streams != i_track )
     {
         msg_Warn( p_demux,
@@ -426,16 +420,16 @@ static int Open( vlc_object_t * p_this )
         if( unlikely( !tk ) )
             goto error;
 
-        avi_chunk_list_t      *p_strl = AVI_ChunkFind( p_hdrl, AVIFOURCC_strl, i );
-        avi_chunk_strh_t      *p_strh = AVI_ChunkFind( p_strl, AVIFOURCC_strh, 0 );
-        avi_chunk_STRING_t    *p_strn = AVI_ChunkFind( p_strl, AVIFOURCC_strn, 0 );
+        avi_chunk_list_t      *p_strl = AVI_ChunkFind( p_hdrl, AVIFOURCC_strl, i, true );
+        avi_chunk_strh_t      *p_strh = AVI_ChunkFind( p_strl, AVIFOURCC_strh, 0, false );
+        avi_chunk_STRING_t    *p_strn = AVI_ChunkFind( p_strl, AVIFOURCC_strn, 0, false );
         avi_chunk_strf_auds_t *p_auds = NULL;
         avi_chunk_strf_vids_t *p_vids = NULL;
 
         tk->b_eof = false;
         tk->b_activated = true;
 
-        p_vids = (avi_chunk_strf_vids_t*)AVI_ChunkFind( p_strl, AVIFOURCC_strf, 0 );
+        p_vids = (avi_chunk_strf_vids_t*)AVI_ChunkFind( p_strl, AVIFOURCC_strf, 0, false );
         p_auds = (avi_chunk_strf_auds_t*)p_vids;
 
         if( p_strl == NULL || p_strh == NULL || p_vids == NULL )
@@ -515,11 +509,11 @@ static int Open( vlc_object_t * p_this )
                 tk->fmt.audio.i_bitspersample   = p_auds->p_wf->wBitsPerSample;
                 tk->fmt.b_packetized            = !tk->i_blocksize;
 
-                avi_chunk_list_t *p_info = AVI_ChunkFind( p_riff, AVIFOURCC_INFO, 0 );
+                avi_chunk_list_t *p_info = AVI_ChunkFind( p_riff, AVIFOURCC_INFO, 0, true );
                 if( p_info )
                 {
                     int i_chunk = AVIFOURCC_IAS1 + ((i - 1) << 24);
-                    avi_chunk_STRING_t *p_lang = AVI_ChunkFind( p_info, i_chunk, 0 );
+                    avi_chunk_STRING_t *p_lang = AVI_ChunkFind( p_info, i_chunk, 0, false );
                     if( p_lang != NULL && p_lang->p_str != NULL )
                         tk->fmt.psz_language = FromACP( p_lang->p_str );
                 }
@@ -561,7 +555,7 @@ static int Open( vlc_object_t * p_this )
                 es_format_Init( &tk->fmt, VIDEO_ES,
                         AVI_FourccGetCodec( VIDEO_ES, p_vids->p_bih->biCompression ) );
 
-                if( p_vids->p_bih->biCompression == BI_RAWRGB )
+                if( p_vids->p_bih->biCompression == BI_RGB )
                 {
                     switch( p_vids->p_bih->biBitCount )
                     {
@@ -651,7 +645,7 @@ static int Open( vlc_object_t * p_this )
                     tk->fmt.video.i_height =
                         (unsigned int)(-(int)p_vids->p_bih->biHeight);
 
-                avi_chunk_vprp_t *p_vprp = AVI_ChunkFind( p_strl, AVIFOURCC_vprp, 0 );
+                avi_chunk_vprp_t *p_vprp = AVI_ChunkFind( p_strl, AVIFOURCC_vprp, 0, false );
                 if( p_vprp )
                 {
                     uint32_t i_frame_aspect_ratio = p_vprp->i_frame_aspect_ratio;
@@ -732,6 +726,7 @@ static int Open( vlc_object_t * p_this )
 
             case( AVIFOURCC_mids):
                 msg_Dbg( p_demux, "stream[%u] midi is UNSUPPORTED", i );
+                /* fall through */
 
             default:
                 msg_Warn( p_demux, "stream[%u] unknown type %4.4s", i, (char *)&p_strh->i_type );
@@ -848,10 +843,11 @@ aviindex:
         {
             continue;
         }
-        p_strl = AVI_ChunkFind( p_hdrl, AVIFOURCC_strl, i );
-        p_auds = AVI_ChunkFind( p_strl, AVIFOURCC_strf, 0 );
+        p_strl = AVI_ChunkFind( p_hdrl, AVIFOURCC_strl, i, true );
+        p_auds = AVI_ChunkFind( p_strl, AVIFOURCC_strf, 0, false );
 
-        if( p_auds->p_wf->wFormatTag != WAVE_FORMAT_PCM &&
+        if( p_auds &&
+            p_auds->p_wf->wFormatTag != WAVE_FORMAT_PCM &&
             tk->i_rate == p_auds->p_wf->nSamplesPerSec )
         {
             int64_t i_track_length =
@@ -893,8 +889,8 @@ error:
  * ReadFrame: Reads frame, using stride if necessary
  *****************************************************************************/
 
-block_t * ReadFrame( demux_t *p_demux, const avi_track_t *tk,
-                     const int i_header, const int i_size )
+static block_t * ReadFrame( demux_t *p_demux, const avi_track_t *tk,
+                     const unsigned int i_header, const int i_size )
 {
     block_t *p_frame = vlc_stream_Block( p_demux->s, __EVEN( i_size ) );
     if ( !p_frame ) return p_frame;
@@ -914,12 +910,12 @@ block_t * ReadFrame( demux_t *p_demux, const avi_track_t *tk,
     p_frame->p_buffer += i_header;
     p_frame->i_buffer -= i_header;
 
-    if ( !tk->i_width_bytes )
-        return p_frame;
-
     const unsigned int i_stride_bytes = ((( (tk->i_width_bytes << 3) + 31) & ~31) >> 3);
 
-    if ( p_frame->i_buffer < i_stride_bytes )
+    if ( !tk->i_width_bytes || !i_stride_bytes )
+        return p_frame;
+
+    if( p_frame->i_buffer < i_stride_bytes )
     {
         p_frame->i_buffer = 0;
         return p_frame;
@@ -1512,7 +1508,7 @@ static int Seek( demux_t *p_demux, mtime_t i_date, int i_percent, bool b_accurat
         /* Check and lazy load indexes if it was not done (not fastseekable) */
         if ( !p_sys->b_indexloaded && ( p_sys->i_avih_flags & AVIF_HASINDEX ) )
         {
-            avi_chunk_t *p_riff = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, 0 );
+            avi_chunk_t *p_riff = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, 0, true );
             if (unlikely( !p_riff ))
                 return VLC_EGENERIC;
 
@@ -2370,8 +2366,8 @@ static int AVI_IndexFind_idx1( demux_t *p_demux,
 {
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    avi_chunk_list_t *p_riff = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, 0);
-    avi_chunk_idx1_t *p_idx1 = AVI_ChunkFind( p_riff, AVIFOURCC_idx1, 0);
+    avi_chunk_list_t *p_riff = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, 0, true);
+    avi_chunk_idx1_t *p_idx1 = AVI_ChunkFind( p_riff, AVIFOURCC_idx1, 0, false);
 
     if( !p_idx1 )
     {
@@ -2385,7 +2381,9 @@ static int AVI_IndexFind_idx1( demux_t *p_demux,
      * checking the offset of the first packet is not enough as some files
      * has unused chunk at the beginning of the movi content.
      */
-    avi_chunk_list_t *p_movi = AVI_ChunkFind( p_riff, AVIFOURCC_movi, 0);
+    avi_chunk_list_t *p_movi = AVI_ChunkFind( p_riff, AVIFOURCC_movi, 0, true );
+    if( !p_movi )
+        return VLC_EGENERIC;
     uint64_t i_first_pos = UINT64_MAX;
     for( unsigned i = 0; i < __MIN( p_idx1->i_entry_count, 100 ); i++ )
     {
@@ -2532,8 +2530,8 @@ static void AVI_IndexLoad_indx( demux_t *p_demux,
     avi_chunk_list_t    *p_riff;
     avi_chunk_list_t    *p_hdrl;
 
-    p_riff = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, 0);
-    p_hdrl = AVI_ChunkFind( p_riff, AVIFOURCC_hdrl, 0 );
+    p_riff = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, 0, true);
+    p_hdrl = AVI_ChunkFind( p_riff, AVIFOURCC_hdrl, 0, true );
 
     for( unsigned i_stream = 0; i_stream < p_sys->i_track; i_stream++ )
     {
@@ -2541,8 +2539,8 @@ static void AVI_IndexLoad_indx( demux_t *p_demux,
         avi_chunk_indx_t    *p_indx;
 
 #define p_stream  p_sys->track[i_stream]
-        p_strl = AVI_ChunkFind( p_hdrl, AVIFOURCC_strl, i_stream );
-        p_indx = AVI_ChunkFind( p_strl, AVIFOURCC_indx, 0 );
+        p_strl = AVI_ChunkFind( p_hdrl, AVIFOURCC_strl, i_stream, true );
+        p_indx = AVI_ChunkFind( p_strl, AVIFOURCC_indx, 0, false );
 
         if( !p_indx )
         {
@@ -2654,8 +2652,8 @@ static void AVI_IndexCreate( demux_t *p_demux )
     mtime_t i_dialog_update;
     vlc_dialog_id *p_dialog_id = NULL;
 
-    p_riff = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, 0);
-    p_movi = AVI_ChunkFind( p_riff, AVIFOURCC_movi, 0);
+    p_riff = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, 0, true );
+    p_movi = AVI_ChunkFind( p_riff, AVIFOURCC_movi, 0, true );
 
     if( !p_movi )
     {
@@ -2726,10 +2724,10 @@ static void AVI_IndexCreate( demux_t *p_demux )
                 {
                     avi_chunk_list_t *p_sysx;
                     p_sysx = AVI_ChunkFind( &p_sys->ck_root,
-                                            AVIFOURCC_RIFF, 1 );
+                                            AVIFOURCC_RIFF, 1, true );
 
                     msg_Dbg( p_demux, "looking for new RIFF chunk" );
-                    if( vlc_stream_Seek( p_demux->s,
+                    if( !p_sysx || vlc_stream_Seek( p_demux->s,
                                          p_sysx->i_chunk_pos + 24 ) )
                         goto print_stat;
                     break;
@@ -2790,7 +2788,7 @@ static void AVI_MetaLoad( demux_t *p_demux,
               p_avih->i_flags&AVIF_TRUSTCKTYPE   ? " TRUST_CKTYPE"   : "" );
     vlc_meta_SetSetting( p_meta, buffer );
 
-    avi_chunk_list_t *p_info = AVI_ChunkFind( p_riff, AVIFOURCC_INFO, 0 );
+    avi_chunk_list_t *p_info = AVI_ChunkFind( p_riff, AVIFOURCC_INFO, 0, true );
     if( !p_info )
         return;
 
@@ -2813,7 +2811,7 @@ static void AVI_MetaLoad( demux_t *p_demux,
     };
     for( int i = 0; p_dsc[i].i_id != 0; i++ )
     {
-        avi_chunk_STRING_t *p_strz = AVI_ChunkFind( p_info, p_dsc[i].i_id, 0 );
+        avi_chunk_STRING_t *p_strz = AVI_ChunkFind( p_info, p_dsc[i].i_id, 0, false );
         if( !p_strz || !p_strz->p_str )
             continue;
         char *psz_value = FromACP( p_strz->p_str );
@@ -2837,7 +2835,7 @@ static void AVI_MetaLoad( demux_t *p_demux,
 
     for( int i = 0; p_extra[i] != 0; i++ )
     {
-        avi_chunk_STRING_t *p_strz = AVI_ChunkFind( p_info, p_extra[i], 0 );
+        avi_chunk_STRING_t *p_strz = AVI_ChunkFind( p_info, p_extra[i], 0, false );
         if( !p_strz || !p_strz->p_str )
             continue;
         char *psz_value = FromACP( p_strz->p_str );
@@ -2901,7 +2899,7 @@ static void AVI_ExtractSubtitle( demux_t *p_demux,
     if( !p_sys->b_seekable )
         goto exit;
 
-    p_indx = AVI_ChunkFind( p_strl, AVIFOURCC_indx, 0 );
+    p_indx = AVI_ChunkFind( p_strl, AVIFOURCC_indx, 0, false );
     avi_chunk_t ck;
     int64_t  i_position;
     unsigned i_size;

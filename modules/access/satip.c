@@ -231,9 +231,8 @@ static char *net_readln_timeout(vlc_object_t *obj, int fd, int timeout, bool *in
             };
             int ret;
 
-            while((ret = poll(&pfd, 1, timeout)) < 0);
-            if (ret < 0)
-                goto error;
+            while((ret = poll(&pfd, 1, timeout)) < 0)
+                ;
 
             val = recv(fd, buf + len, size - len, MSG_PEEK);
             if (val <= 0)
@@ -633,6 +632,8 @@ static int satip_open(vlc_object_t *obj)
     msg_Dbg(access, "try to open '%s'", access->psz_url);
 
     char *psz_host = var_InheritString(access, "satip-host");
+    if (psz_host == NULL)
+        return VLC_ENOMEM;
 
     sys->udp_sock = -1;
     sys->rtcp_sock = -1;
@@ -644,7 +645,10 @@ static int satip_open(vlc_object_t *obj)
      * */
     char *psz_lower_url = strdup(access->psz_url);
     if (psz_lower_url == NULL)
-        goto error;
+    {
+        free( psz_host );
+        return VLC_ENOMEM;
+    }
 
     for (unsigned i = 0; i < strlen(psz_lower_url); i++)
         psz_lower_url[i] = tolower(psz_lower_url[i]);

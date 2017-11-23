@@ -2,7 +2,7 @@
  * ntservice.c: Windows NT/2K/XP service interface
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: eecfee88461e35696c7b07f9807a89f62ebd993e $
+ * $Id: 995aa9dbb29f3e8f0669289a65749012c144ab0e $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -194,7 +194,7 @@ static int NTServiceInstall( intf_thread_t *p_intf )
     /* Find out the filename of ourselves so we can install it to the
      * service control manager */
     GetModuleFileName( NULL, psz_pathtmp, MAX_PATH );
-    sprintf( psz_path, "\"%s\" -I "MODULE_STRING, FromT(psz_pathtmp) );
+    sprintf( psz_path, "\"%s\" -I ntservice", FromT(psz_pathtmp) );
 
     psz_extra = var_InheritString( p_intf, "ntservice-extraintf" );
     if( psz_extra && *psz_extra )

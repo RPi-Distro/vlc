@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: fe8a4b61f09c7e4e5a84ff6a70281f5f13c3a5c8 $
+ * $Id: 8977bd4007271d7c47114ab001e3218b528bd413 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -51,6 +51,7 @@ class FullscreenControllerWidget;
 class QVBoxLayout;
 class QMenu;
 class QSize;
+class QScreen;
 class QTimer;
 class StandardPLPanel;
 struct vout_window_t;
@@ -166,6 +167,7 @@ protected:
     QWidget             *stackCentralOldWidget;
     QPoint              lastWinPosition;
     QSize               lastWinSize;  /// To restore the same window size when leaving fullscreen
+    QScreen             *lastWinScreen;
 
     QMap<QWidget *, QSize> stackWidgetsSizes;
 

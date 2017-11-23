@@ -4,7 +4,7 @@
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
  * Copyright (C) 2015 Steve Lhomme
- * $Id: df745298f31001e26356671b4e71fc58d302b413 $
+ * $Id: 7dbef97abb0997c8d79cad1fe5c625a3098c6fdc $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -59,13 +59,6 @@ typedef struct
     /* for pre allocation */
     D3D_DecoderSurface     *hw_surface[MAX_SURFACE_COUNT];
 
-    /* DLL */
-    HINSTANCE             hdecoder_dll;
-    const TCHAR           *psz_decoder_dll;
-
-    /* Direct3D */
-    D3D_Device            *d3ddev;
-
     /* Video service */
     GUID                   input;
     D3D_DecoderDevice      *d3ddec;
@@ -85,7 +78,7 @@ typedef struct
 
 } directx_sys_t;
 
-int directx_va_Open(vlc_va_t *, directx_sys_t *, bool b_dll);
+int directx_va_Open(vlc_va_t *, directx_sys_t *);
 void directx_va_Close(vlc_va_t *, directx_sys_t *);
 int directx_va_Setup(vlc_va_t *, directx_sys_t *, const AVCodecContext *avctx, const es_format_t *);
 char *directx_va_GetDecoderName(const GUID *guid);

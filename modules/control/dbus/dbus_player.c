@@ -5,7 +5,7 @@
  * Copyright © 2007-2011 Mirsal Ennaime
  * Copyright © 2009-2011 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: 02413a636ca70f8ee624a365e2b8119301b19f38 $
+ * $Id: 15680ec26de48b99d5fdcbe57936743e1910e0c7 $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
@@ -766,9 +766,20 @@ int SeekedEmit( intf_thread_t * p_intf )
     { \
         if( VLC_SUCCESS != AddProperty( (intf_thread_t*) p_intf, \
                     &changed_properties, #prop, signature, Marshal##prop ) ) \
-            return DBUS_HANDLER_RESULT_NEED_MEMORY; \
+            { \
+                for( ; ppsz_properties[i]; ++i ) free( ppsz_properties[i] ); \
+                free( ppsz_properties ); \
+                dbus_message_iter_abandon_container( &args, &changed_properties ); \
+                return DBUS_HANDLER_RESULT_NEED_MEMORY; \
+            } \
     }
-#define PROPERTY_MAPPING_END else { return DBUS_HANDLER_RESULT_NOT_YET_HANDLED; }
+#define PROPERTY_MAPPING_END else \
+    { \
+        for( ; ppsz_properties[i]; ++i ) free( ppsz_properties[i] ); \
+        free( ppsz_properties ); \
+        dbus_message_iter_abandon_container( &args, &changed_properties ); \
+        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED; \
+    }
 
 /**
  * PropertiesChangedSignal() synthetizes and sends the

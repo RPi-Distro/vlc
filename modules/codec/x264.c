@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2010 the VideoLAN team
- * $Id: 27d9bc0319d00ec1cd95519be0fe66d41981f2e6 $
+ * $Id: a1f0f984a1fb468d949d25b22aaa5d7984d6fcc7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Ilkka Ollakka <ileoo (at)videolan org>
@@ -292,7 +292,7 @@ static void x264_log( void *, int i_level, const char *psz, va_list );
 #define WEIGHTB_LONGTEXT N_( "Weighted prediction for B-frames.")
 
 #define WEIGHTP_TEXT N_("Weighted prediction for P-frames")
-#define WEIGHTP_LONGTEXT N_(" Weighted prediction for P-frames: "\
+#define WEIGHTP_LONGTEXT N_("Weighted prediction for P-frames: "\
     " - 0: Disabled\n"\
     " - 1: Blind offset\n"\
     " - 2: Smart analysis\n" )
