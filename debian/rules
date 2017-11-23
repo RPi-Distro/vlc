@@ -296,8 +296,6 @@ override_dh_install:
 	find debian/tmp -name LICENSE -delete
 	# Remove examples installed in -dev packages
 	rm -rf debian/tmp/usr/share/doc/vlc-data/libvlc
-	# Contains only a 404 link
-	find debian/tmp -name bugreport-howto.txt -delete
 	# Remove MacOS X resources
 	rm -rf debian/tmp/usr/share/macosx
 	# Install
