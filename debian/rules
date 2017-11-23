@@ -191,8 +191,7 @@ endif
 ifeq (,$(filter-out kfreebsd,$(DEB_HOST_ARCH_OS)))
 confflags += --enable-oss
 else
-# Note: Use ALSA on Linux instead of OSS.
-#       Ubuntu has disabled OSS support in their Linux kernel.
+# Note: Use PulseAudio/ALSA on Linux instead of OSS.
 confflags += --disable-oss
 removeplugins += oss
 endif
