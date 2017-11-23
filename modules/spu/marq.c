@@ -2,7 +2,7 @@
  * marq.c : marquee display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2008 VLC authors and VideoLAN
- * $Id: 1834e57f55e0ae21ef8ce399d8f282e11a39c23c $
+ * $Id: 516838ef63dfdd1a4fc1b8d6a737d0559c0e9f9a $
  *
  * Authors: Mark Moriarty
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -107,7 +107,7 @@ struct filter_sys_t
                             "or time format string sequences.")
 #define OPACITY_TEXT N_("Opacity")
 #define OPACITY_LONGTEXT N_("Opacity (inverse of transparency) of " \
-    "overlayed text. 0 = transparent, 255 = totally opaque. " )
+    "overlayed text. 0 = transparent, 255 = totally opaque." )
 #define SIZE_TEXT N_("Font size, pixels")
 #define SIZE_LONGTEXT N_("Font size, in pixels. Default is 0 (use default " \
     "font size)." )

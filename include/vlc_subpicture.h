@@ -2,7 +2,7 @@
  * vlc_subpicture.h: subpicture definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2009 VLC authors and VideoLAN
- * $Id: cb368c3a61341485f967da8e3b198d2a9d7e5124 $
+ * $Id: b9de52c0493687f2f9920753562e2f1eebfd1b7b $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -70,8 +70,8 @@ struct subpicture_region_t
     bool            b_noregionbg;    /**< render background under text only */
     bool            b_gridmode;      /** if the decoder sends row/cols based output */
     bool            b_balanced_text; /** try to balance wrapped text lines */
-    int             i_max_width;     /** horizontal rendering/cropping limit */
-    int             i_max_height;    /** vertical rendering/cropping limit */
+    int             i_max_width;     /** horizontal rendering/cropping target/limit */
+    int             i_max_height;    /** vertical rendering/cropping target/limit */
 
     subpicture_region_t *p_next;                /**< next region in the list */
     subpicture_region_private_t *p_private;  /**< Private data for spu_t *only* */

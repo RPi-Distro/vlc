@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 7bfe6a9273822d181f55b63663518c1ca4b0a58e $
+ * $Id: f6ecc020e778e219584aa2844ddb32dc31ce131f $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -38,7 +38,6 @@
 #include <libavcodec/dxva2.h>
 #include "../../video_chroma/d3d9_fmt.h"
 
-#define D3D_Device          IDirect3DDevice9
 #define D3D_DecoderType     IDirectXVideoDecoder
 #define D3D_DecoderDevice   IDirectXVideoDecoderService
 #define D3D_DecoderSurface  IDirect3DSurface9
@@ -112,12 +111,12 @@ struct vlc_va_sys_t
 {
     directx_sys_t         dx_sys;
 
-    /* DLL */
-    HINSTANCE             hd3d9_dll;
-
     /* Direct3D */
-    LPDIRECT3D9            d3dobj;
-    D3DADAPTER_IDENTIFIER9 d3dai;
+    d3d9_handle_t          hd3d;
+    d3d9_device_t          d3d_dev;
+
+    /* DLL */
+    HINSTANCE              dxva2_dll;
 
     /* Device manager */
     IDirect3DDeviceManager9  *devmng;
@@ -245,8 +244,8 @@ static void Close(vlc_va_t *va, void **ctx)
 
     directx_va_Close(va, &sys->dx_sys);
 
-    if (sys->hd3d9_dll)
-        FreeLibrary(sys->hd3d9_dll);
+    if (sys->dxva2_dll)
+        FreeLibrary(sys->dxva2_dll);
 
     free((char *)va->description);
     free(sys);
@@ -268,9 +267,15 @@ static int Open(vlc_va_t *va, AVCodecContext *ctx, enum PixelFormat pix_fmt,
         return VLC_ENOMEM;
 
     /* Load dll*/
-    sys->hd3d9_dll = LoadLibrary(TEXT("D3D9.DLL"));
-    if (!sys->hd3d9_dll) {
+    if (D3D9_Create(va, &sys->hd3d) != VLC_SUCCESS) {
         msg_Warn(va, "cannot load d3d9.dll");
+        goto error;
+    }
+
+    /* Load dll*/
+    sys->dxva2_dll = LoadLibrary(TEXT("DXVA2.DLL"));
+    if (!sys->dxva2_dll) {
+        msg_Warn(va, "cannot load DXVA2 decoder DLL");
         goto error;
     }
 
@@ -288,20 +293,19 @@ static int Open(vlc_va_t *va, AVCodecContext *ctx, enum PixelFormat pix_fmt,
     dx_sys->va_pool.pf_new_surface_context     = NewSurfacePicContext;
     dx_sys->pf_get_input_list          = DxGetInputList;
     dx_sys->pf_setup_output            = DxSetupOutput;
-    dx_sys->psz_decoder_dll            = TEXT("DXVA2.DLL");
 
     va->sys = sys;
 
-    dx_sys->d3ddev = NULL;
     if (p_sys!=NULL)
     {
         D3DSURFACE_DESC src;
         if (SUCCEEDED(IDirect3DSurface9_GetDesc(p_sys->surface, &src)))
             sys->render = src.Format;
-        IDirect3DSurface9_GetDevice(p_sys->surface, &dx_sys->d3ddev );
+        IDirect3DSurface9_GetDevice(p_sys->surface, &sys->d3d_dev.dev );
+        sys->d3d_dev.owner = false;
     }
 
-    err = directx_va_Open(va, &sys->dx_sys, true);
+    err = directx_va_Open(va, &sys->dx_sys);
     if (err!=VLC_SUCCESS)
         goto error;
 
@@ -329,64 +333,18 @@ static int D3dCreateDevice(vlc_va_t *va)
 {
     vlc_va_sys_t *sys = va->sys;
 
-    if (sys->dx_sys.d3ddev) {
+    if (sys->d3d_dev.dev) {
         msg_Dbg(va, "Reusing Direct3D9 device");
         return VLC_SUCCESS;
     }
 
-    /* */
-    LPDIRECT3D9 (WINAPI *Create9)(UINT SDKVersion);
-    Create9 = (void *)GetProcAddress(sys->hd3d9_dll, "Direct3DCreate9");
-    if (!Create9) {
-        msg_Err(va, "Cannot locate reference to Direct3DCreate9 ABI in DLL");
-        return VLC_EGENERIC;
-    }
-
-    /* */
-    LPDIRECT3D9 d3dobj;
-    d3dobj = Create9(D3D_SDK_VERSION);
-    if (!d3dobj) {
-        msg_Err(va, "Direct3DCreate9 failed");
-        return VLC_EGENERIC;
-    }
-    sys->d3dobj = d3dobj;
-
-    /* */
-    D3DADAPTER_IDENTIFIER9 *d3dai = &sys->d3dai;
-    if (FAILED(IDirect3D9_GetAdapterIdentifier(sys->d3dobj,
-                                               D3DADAPTER_DEFAULT, 0, d3dai))) {
-        msg_Warn(va, "IDirect3D9_GetAdapterIdentifier failed");
-        ZeroMemory(d3dai, sizeof(*d3dai));
-    }
-
-    /* */
-    D3DPRESENT_PARAMETERS d3dpp;
-    ZeroMemory(&d3dpp, sizeof(d3dpp));
-    d3dpp.Flags                  = D3DPRESENTFLAG_VIDEO;
-    d3dpp.Windowed               = TRUE;
-    d3dpp.hDeviceWindow          = NULL;
-    d3dpp.SwapEffect             = D3DSWAPEFFECT_DISCARD;
-    d3dpp.MultiSampleType        = D3DMULTISAMPLE_NONE;
-    d3dpp.PresentationInterval   = D3DPRESENT_INTERVAL_DEFAULT;
-    d3dpp.BackBufferCount        = 0;                  /* FIXME what to put here */
-    d3dpp.BackBufferFormat       = D3DFMT_X8R8G8B8;    /* FIXME what to put here */
-    d3dpp.BackBufferWidth        = 0;
-    d3dpp.BackBufferHeight       = 0;
-    d3dpp.EnableAutoDepthStencil = FALSE;
-
-    /* Direct3D needs a HWND to create a device, even without using ::Present
-    this HWND is used to alert Direct3D when there's a change of focus window.
-    For now, use GetDesktopWindow, as it looks harmless */
-    LPDIRECT3DDEVICE9 d3ddev;
-    if (FAILED(IDirect3D9_CreateDevice(d3dobj, D3DADAPTER_DEFAULT,
-                                       D3DDEVTYPE_HAL, GetDesktopWindow(),
-                                       D3DCREATE_SOFTWARE_VERTEXPROCESSING |
-                                       D3DCREATE_MULTITHREADED,
-                                       &d3dpp, &d3ddev))) {
+    video_format_t fmt = { 0 };
+    HRESULT hr = D3D9_CreateDevice(va, &sys->hd3d, GetDesktopWindow(), &fmt, &sys->d3d_dev);
+    if (FAILED(hr))
+    {
         msg_Err(va, "IDirect3D9_CreateDevice failed");
         return VLC_EGENERIC;
     }
-    sys->dx_sys.d3ddev = d3ddev;
 
     return VLC_SUCCESS;
 }
@@ -396,16 +354,14 @@ static int D3dCreateDevice(vlc_va_t *va)
  */
 static void D3dDestroyDevice(vlc_va_t *va)
 {
-    directx_sys_t *dx_sys = &va->sys->dx_sys;
-    if (va->sys->d3dobj)
-        IDirect3D9_Release(va->sys->d3dobj);
-    if (dx_sys->d3ddev)
-        IDirect3DDevice9_Release(dx_sys->d3ddev);
+    vlc_va_sys_t *sys = va->sys;
+    D3D9_ReleaseDevice(&sys->d3d_dev);
+    D3D9_Destroy( &sys->hd3d );
 }
 /**
  * It describes our Direct3D object
  */
-static char *DxDescribe(vlc_va_sys_t *va)
+static char *DxDescribe(vlc_va_sys_t *sys)
 {
     static const struct {
         unsigned id;
@@ -418,11 +374,16 @@ static char *DxDescribe(vlc_va_sys_t *va)
         { 0x5333, "S3 Graphics" },
         { 0, "" }
     };
-    D3DADAPTER_IDENTIFIER9 *id = &va->d3dai;
+
+    D3DADAPTER_IDENTIFIER9 d3dai;
+    if (FAILED(IDirect3D9_GetAdapterIdentifier(sys->hd3d.obj,
+                                               sys->d3d_dev.adapterId, 0, &d3dai))) {
+        return NULL;
+    }
 
     const char *vendor = "Unknown";
     for (int i = 0; vendors[i].id != 0; i++) {
-        if (vendors[i].id == id->VendorId) {
+        if (vendors[i].id == d3dai.VendorId) {
             vendor = vendors[i].name;
             break;
         }
@@ -430,8 +391,8 @@ static char *DxDescribe(vlc_va_sys_t *va)
 
     char *description;
     if (asprintf(&description, "DXVA2 (%.*s, vendor %lu(%s), device %lu, revision %lu)",
-                 (int)sizeof(id->Description), id->Description,
-                 id->VendorId, vendor, id->DeviceId, id->Revision) < 0)
+                 (int)sizeof(d3dai.Description), d3dai.Description,
+                 d3dai.VendorId, vendor, d3dai.DeviceId, d3dai.Revision) < 0)
         return NULL;
     return description;
 }
@@ -442,12 +403,11 @@ static char *DxDescribe(vlc_va_sys_t *va)
 static int D3dCreateDeviceManager(vlc_va_t *va)
 {
     vlc_va_sys_t *sys = va->sys;
-    directx_sys_t *dx_sys = &va->sys->dx_sys;
 
     HRESULT (WINAPI *CreateDeviceManager9)(UINT *pResetToken,
                                            IDirect3DDeviceManager9 **);
     CreateDeviceManager9 =
-      (void *)GetProcAddress(dx_sys->hdecoder_dll,
+      (void *)GetProcAddress(sys->dxva2_dll,
                              "DXVA2CreateDirect3DDeviceManager9");
 
     if (!CreateDeviceManager9) {
@@ -465,7 +425,7 @@ static int D3dCreateDeviceManager(vlc_va_t *va)
     sys->devmng = devmng;
     msg_Dbg(va, "obtained IDirect3DDeviceManager9");
 
-    HRESULT hr = IDirect3DDeviceManager9_ResetDevice(devmng, dx_sys->d3ddev, token);
+    HRESULT hr = IDirect3DDeviceManager9_ResetDevice(devmng, sys->d3d_dev.dev, token);
     if (FAILED(hr)) {
         msg_Err(va, "IDirect3DDeviceManager9_ResetDevice failed: %08x", (unsigned)hr);
         return VLC_EGENERIC;

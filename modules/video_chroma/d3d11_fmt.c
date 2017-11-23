@@ -30,6 +30,10 @@
 #define COBJMACROS
 #include <d3d11.h>
 #include <assert.h>
+#if !defined(NDEBUG) && defined(HAVE_DXGIDEBUG_H)
+# include <initguid.h>
+# include <dxgidebug.h>
+#endif
 
 #include "d3d11_fmt.h"
 
@@ -130,15 +134,30 @@ int AllocateShaderView(vlc_object_t *obj, ID3D11Device *d3ddevice,
     return VLC_SUCCESS;
 }
 
-HRESULT D3D11_CreateDevice(vlc_object_t *obj, HINSTANCE hdecoder_dll,
-                                         bool hw_decoding,
-                                         d3d11_handle_t *p_hd3d11)
+void D3D11_ReleaseDevice(d3d11_device_t *d3d_dev)
+{
+    if (d3d_dev->d3dcontext)
+    {
+        ID3D11DeviceContext_Flush(d3d_dev->d3dcontext);
+        ID3D11DeviceContext_Release(d3d_dev->d3dcontext);
+        d3d_dev->d3dcontext = NULL;
+    }
+    if (d3d_dev->d3ddevice)
+    {
+        ID3D11Device_Release(d3d_dev->d3ddevice);
+        d3d_dev->d3ddevice = NULL;
+    }
+}
+
+#undef D3D11_CreateDevice
+HRESULT D3D11_CreateDevice(vlc_object_t *obj, d3d11_handle_t *hd3d,
+                           bool hw_decoding, d3d11_device_t *out)
 {
 #if !VLC_WINSTORE_APP
 # define D3D11CreateDevice(args...)             pf_CreateDevice(args)
     /* */
     PFN_D3D11_CREATE_DEVICE pf_CreateDevice;
-    pf_CreateDevice = (void *)GetProcAddress(hdecoder_dll, "D3D11CreateDevice");
+    pf_CreateDevice = (void *)GetProcAddress(hd3d->hdll, "D3D11CreateDevice");
     if (!pf_CreateDevice) {
         msg_Err(obj, "Cannot locate reference to D3D11CreateDevice ABI in DLL");
         return E_NOINTERFACE;
@@ -181,24 +200,30 @@ HRESULT D3D11_CreateDevice(vlc_object_t *obj, HINSTANCE hdecoder_dll,
         D3D_FEATURE_LEVEL i_feature_level;
         hr = D3D11CreateDevice(NULL, driverAttempts[driver], NULL, creationFlags,
                     D3D11_features, ARRAY_SIZE(D3D11_features), D3D11_SDK_VERSION,
-                    &p_hd3d11->d3ddevice, &i_feature_level, &p_hd3d11->d3dcontext);
+                    &out->d3ddevice, &i_feature_level, &out->d3dcontext);
         if (SUCCEEDED(hr)) {
 #ifndef NDEBUG
             msg_Dbg(obj, "Created the D3D11 device 0x%p ctx 0x%p type %d level %x.",
-                    (void *)p_hd3d11->d3ddevice, (void *)p_hd3d11->d3dcontext,
+                    (void *)out->d3ddevice, (void *)out->d3dcontext,
                     driverAttempts[driver], i_feature_level);
 #endif
             /* we can work with legacy levels but only if forced */
             if ( obj->obj.force || i_feature_level >= D3D_FEATURE_LEVEL_11_0 )
                 break;
             msg_Dbg(obj, "Incompatible feature level %x", i_feature_level);
-            ID3D11DeviceContext_Release(p_hd3d11->d3dcontext);
-            ID3D11Device_Release(p_hd3d11->d3ddevice);
-            p_hd3d11->d3dcontext = NULL;
-            p_hd3d11->d3ddevice = NULL;
+            ID3D11DeviceContext_Release(out->d3dcontext);
+            ID3D11Device_Release(out->d3ddevice);
+            out->d3dcontext = NULL;
+            out->d3ddevice = NULL;
             hr = E_NOTIMPL;
         }
     }
+
+    if (SUCCEEDED(hr))
+    {
+        out->owner = true;
+    }
+
     return hr;
 }
 
@@ -284,7 +309,7 @@ const d3d_format_t *FindD3D11Format(ID3D11Device *d3ddevice,
     return NULL;
 }
 
-int AllocateTextures( vlc_object_t *obj, d3d11_handle_t *hd3d11,
+int AllocateTextures( vlc_object_t *obj, d3d11_device_t *d3d_dev,
                       const d3d_format_t *cfg, const video_format_t *fmt,
                       unsigned pool_size, ID3D11Texture2D *textures[] )
 {
@@ -341,7 +366,7 @@ int AllocateTextures( vlc_object_t *obj, d3d11_handle_t *hd3d11,
         texDesc.Height = fmt->i_height;
         texDesc.Width = fmt->i_width;
 
-        hr = ID3D11Device_CreateTexture2D( hd3d11->d3ddevice, &texDesc, NULL, &slicedTexture );
+        hr = ID3D11Device_CreateTexture2D( d3d_dev->d3ddevice, &texDesc, NULL, &slicedTexture );
         if (FAILED(hr)) {
             msg_Err(obj, "CreateTexture2D failed for the %d pool. (hr=0x%0lx)", pool_size, hr);
             goto error;
@@ -357,7 +382,7 @@ int AllocateTextures( vlc_object_t *obj, d3d11_handle_t *hd3d11,
             } else {
                 texDesc.Height = planes[plane].i_lines;
                 texDesc.Width = planes[plane].i_pitch;
-                hr = ID3D11Device_CreateTexture2D( hd3d11->d3ddevice, &texDesc, NULL, &textures[picture_count * D3D11_MAX_SHADER_VIEW + plane] );
+                hr = ID3D11Device_CreateTexture2D( d3d_dev->d3ddevice, &texDesc, NULL, &textures[picture_count * D3D11_MAX_SHADER_VIEW + plane] );
                 if (FAILED(hr)) {
                     msg_Err(obj, "CreateTexture2D failed for the %d pool. (hr=0x%0lx)", pool_size, hr);
                     goto error;
@@ -377,12 +402,12 @@ int AllocateTextures( vlc_object_t *obj, d3d11_handle_t *hd3d11,
 
     if (!is_d3d11_opaque(fmt->i_chroma) && cfg->formatTexture != DXGI_FORMAT_UNKNOWN) {
         D3D11_MAPPED_SUBRESOURCE mappedResource;
-        hr = ID3D11DeviceContext_Map(hd3d11->d3dcontext, (ID3D11Resource*)textures[0], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+        hr = ID3D11DeviceContext_Map(d3d_dev->d3dcontext, (ID3D11Resource*)textures[0], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
         if( FAILED(hr) ) {
             msg_Err(obj, "The texture cannot be mapped. (hr=0x%lX)", hr);
             goto error;
         }
-        ID3D11DeviceContext_Unmap(hd3d11->d3dcontext, (ID3D11Resource*)textures[0], 0);
+        ID3D11DeviceContext_Unmap(d3d_dev->d3dcontext, (ID3D11Resource*)textures[0], 0);
         if (mappedResource.RowPitch < p_chroma_desc->pixel_size * texDesc.Width) {
             msg_Err( obj, "The texture row pitch is too small (%d instead of %d)", mappedResource.RowPitch,
                      p_chroma_desc->pixel_size * texDesc.Width );
@@ -397,4 +422,47 @@ error:
     if (slicedTexture)
         ID3D11Texture2D_Release(slicedTexture);
     return VLC_EGENERIC;
+}
+
+#undef D3D11_Create
+int D3D11_Create(vlc_object_t *obj, d3d11_handle_t *hd3d)
+{
+#if !VLC_WINSTORE_APP
+    hd3d->hdll = LoadLibrary(TEXT("D3D11.DLL"));
+    if (!hd3d->hdll)
+    {
+        msg_Warn(obj, "cannot load d3d11.dll, aborting");
+        return VLC_EGENERIC;
+    }
+
+# if !defined(NDEBUG) && defined(HAVE_DXGIDEBUG_H)
+    if (IsDebuggerPresent())
+    {
+        hd3d->dxgidebug_dll = LoadLibrary(TEXT("DXGIDEBUG.DLL"));
+        HRESULT (WINAPI * pf_DXGIGetDebugInterface)(const GUID *riid, void **ppDebug) = NULL;
+        if (hd3d->dxgidebug_dll)
+            pf_DXGIGetDebugInterface =
+                    (void *)GetProcAddress(hd3d->dxgidebug_dll, "DXGIGetDebugInterface");
+        if (pf_DXGIGetDebugInterface) {
+            IDXGIDebug *pDXGIDebug;
+            if (SUCCEEDED(pf_DXGIGetDebugInterface(&IID_IDXGIDebug, (void**)&pDXGIDebug)))
+                IDXGIDebug_ReportLiveObjects(pDXGIDebug, DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+        }
+    }
+# endif
+#endif
+    return VLC_SUCCESS;
+}
+
+void D3D11_Destroy(d3d11_handle_t *hd3d)
+{
+#if !VLC_WINSTORE_APP
+    if (hd3d->hdll)
+        FreeLibrary(hd3d->hdll);
+
+#if !defined(NDEBUG) && defined(HAVE_DXGIDEBUG_H)
+    if (hd3d->dxgidebug_dll)
+        FreeLibrary(hd3d->dxgidebug_dll);
+#endif
+#endif
 }

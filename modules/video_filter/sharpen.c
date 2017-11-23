@@ -2,7 +2,7 @@
  * sharpen.c: Sharpen video filter
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: f3c62cb913f91e464275dd8d3a186f5ae334f3fe $
+ * $Id: e01fec0664b151af415ad82324ee0f43398bcfa9 $
  *
  * Author: Jérémy DEMEULE <dj_mulder at djduron dot no-ip dot org>
  *         Jean-Baptiste Kempf <jb at videolan dot org>
@@ -196,8 +196,8 @@ static void Destroy( vlc_object_t *p_this )
                 p_out[i * i_out_line_len + j] =                         \
                     VLC_CLIP( p_src[line_idx_2 + j] + pix, 0, maxval);  \
             }                                                           \
-            p_out[i * i_out_line_len + i_visible_pitch / 2 - 1] =       \
-                p_src[i * i_src_line_len + i_visible_pitch / 2 - 1];    \
+            p_out[i * i_out_line_len + i_visible_pitch / data_sz - 1] = \
+                p_src[i * i_src_line_len + i_visible_pitch / data_sz - 1];  \
         }                                                               \
         memcpy(&p_out[(i_visible_lines - 1) * i_out_line_len],          \
                &p_src[(i_visible_lines - 1) * i_src_line_len],          \

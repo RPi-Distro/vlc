@@ -1744,7 +1744,7 @@ libvlccore_la_LIBADD = $(LIBS_libvlccore) ../compat/libcompat.la \
 	$(SOCKET_LIBS) $(LIBRT) $(LIBDL) $(LIBM) $(am__append_14) \
 	$(am__append_21) $(am__append_25)
 libvlccore_la_LDFLAGS = $(LDFLAGS_libvlccore) -no-undefined \
-	-export-symbols $(srcdir)/libvlccore.sym -version-info 8:0:0 \
+	-export-symbols $(srcdir)/libvlccore.sym -version-info 9:0:0 \
 	$(am__append_23) $(am__append_24) $(am__append_26)
 libvlccore_la_DEPENDENCIES = libvlccore.sym $(am__append_22)
 MOSTLYCLEANFILES = fourcc_gen$(BUILDEXEEXT)

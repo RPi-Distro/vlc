@@ -1,3 +1,971 @@
+commit be9ea17a8cb29c23cbbf8bc3b3ab2f57ee5503ac
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sun Nov 12 14:54:35 2017 +0100
+
+    text_renderer: freetype: add support for regions larger than text
+    
+    fixes sized regions positioning
+
+commit 5640f9814c4ed2edb9b33086f3465837e1fc4adc
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 20:48:46 2017 +0100
+
+    demux: avi: use enum for compressions
+
+commit b50e8f4388696aa1698fd7c3846b5d7962e5ca02
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 19:42:36 2017 +0100
+
+    demux: avi: fix null deref
+
+commit 6298967bf63cccbdc290a78c53dc97df69bd3d71
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 20:16:35 2017 +0100
+
+    demux: avi: check stride width
+
+commit 9b390db4f96aba85575ff4caab470628a2109390
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 18:40:45 2017 +0100
+
+    demux: ts: fix potential null deref (cid #1412981)
+
+commit 521ad3353d1708a69a2d5cbfc718d51fec0eca58
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Nov 22 18:41:55 2017 +0100
+
+    win32: fix PATH for build script
+
+commit 59e8bcb143b689c49377f2d287b5bc6650fa33ca
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 15:02:22 2017 +0100
+
+    access: dvb: fix null deref/wrong member (cid 1362061, 1362062)
+
+commit 75788c0b975d5b12d843c3ebccec1c08119b5c51
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 14:57:17 2017 +0100
+
+    access: dvb: fix null deref/wrong var (cid #1362060)
+
+commit bde2f74f988d5325f6eb40d93c54ddfbf6435d20
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 14:53:07 2017 +0100
+
+    access: dvb: fix null deref (cid #1362059)
+
+commit aa70bdf272a58147208707f712ad75e817039432
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 14:49:37 2017 +0100
+
+    demux: ts: remove useless check (cid #1349948)
+
+commit c6cc3c609996e7210d5d63a17acbe4cadf77e56a
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 17:59:07 2017 +0100
+
+    es_out_timeshift: Remove duplicated check
+    
+    p_storage_r != NULL is already implied by the earlier call to TsStorageIsEmpty
+    CID #1048960
+
+commit 43badef3905f076cda655c5ae281b1720b6c8dfa
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 17:41:20 2017 +0100
+
+    kate: Remove useless if
+    
+    p_block is checked for nullity in all code path leading to ProcessPacket
+
+commit cb96ac02ce0efad7624e67b22a7d15d4ff8032ac
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 17:26:48 2017 +0100
+
+    dbus_player: Fix leaks on error
+    
+    CID #1048913
+
+commit e95b11e2c0c730599d66241047de0760e0bea40f
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 16:20:24 2017 +0100
+
+    satip: Add missing allocation check
+
+commit ef6a67527b816b81d3a0d18f31a83daaae3e1553
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 16:19:37 2017 +0100
+
+    satip: Fix potential use of uninitializer pointer
+    
+    CID #1372952
+
+commit 476ff61846bab006f78c8e2bc774623981f05f25
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 16:15:01 2017 +0100
+
+    satip: Remove dead code
+    
+    CID #1372922
+
+commit 44fdc78bc52fd784175fb5f1bb9e865382439abc
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 22 16:45:33 2017 +0100
+
+    codec: vt_utils don't use picture_t p_sys
+    
+    Use picture context instead. p_sys is generally reserved by the vout.
+
+commit 3d81768c9e365b012e9e8faae4d92c52461e55dd
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 22 16:12:32 2017 +0100
+
+    opengl: try to load GL functions from GLES2
+    
+    These functions can be available via an extension.
+
+commit 1d828f2916141c690cb3b0410d52230662834d0c
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 22 16:11:04 2017 +0100
+
+    opengl: fill opengl_tex_converter_t on success
+
+commit 162fbc7401a7372f32e543211d41a4954dac375d
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 16:00:41 2017 +0100
+
+    theora: Display the frame rate as a fraction.
+    
+    Fix a potential FPE CID #1048728
+
+commit 09abd918efcbe2f017636d742af04347cd993ae9
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 15:45:00 2017 +0100
+
+    linsys_sdi: Simplify and fix potential FPE
+    
+    CID #1048725
+
+commit 557d7491cde27e9e682cc29f5e98879d3f9de5a3
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 15:30:21 2017 +0100
+
+    linsys_hdsdi: Simplify & fix potential FPE
+    
+    CID #1048724
+
+commit 842869d498dd540d95d236e2521be1d3a23eb2fa
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 15:14:09 2017 +0100
+
+    skins2: Remove dead code
+    
+    And assuming it should have checked for getData directly, no
+    GenericBitmap::getData implementation can return a null pointer.
+
+commit 7a86528cc305631562a307b6b249fe072848c322
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 15:06:24 2017 +0100
+
+    avi: ReadFrame: Take header size as unsigned
+
+commit b425b20d0d3ebb970be399cb9b3ab8d779ec1c30
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 15:01:40 2017 +0100
+
+    avi: Remove unneeded forward declaration
+
+commit 5b73bae846ccd071de0a1cf3edcf60bedbdfabfe
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 15:00:42 2017 +0100
+
+    avi: Mark fall through as intended
+    
+    CID #1048797
+
+commit afc2a325f035544db7c84fc374c573fdc1316356
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Nov 22 14:59:25 2017 +0100
+
+    avi: Explicitely initialize i_track/track as a vlc tab
+    
+    This might help coverity understand CID #1062545 better
+
+commit 66ad43d12f8829287a551d5ece9bc384e822aeda
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Nov 17 15:40:49 2017 +0100
+
+    configure.ac: Don't link with -ladvapi32 when building for winstore
+    
+    The functions we're trying to link with are already present in
+    libwinstorecompat
+
+commit a51c896c71689ca98a2264784f9e63b19e36e0b4
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 13:15:31 2017 +0100
+
+    codec: atsc a65: convert latin-1 to utf8
+
+commit 4523786e48364d4d9b5bb3b69e596058160b8ae9
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 13:14:02 2017 +0100
+
+    codec: atsc a65: don't expect null terminated strings
+
+commit eb46af662809b554ba8beb16ea5401535b2cdbd4
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 12:01:36 2017 +0100
+
+    demux: avi: really fix chunk type check
+
+commit 713e1e6e587278f18ca6163b49a439b98ddaf0e2
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 11:26:55 2017 +0100
+
+    demux: libavi: remove useless member
+
+commit d5bab708ae9a99561d5965383e0a7c31f09abfbb
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 11:22:36 2017 +0100
+
+    demux: libavi: fix null deref regression (cid #1422265)
+
+commit 4a0a805858f0c931231265095f13d482b96c32a7
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 11:19:00 2017 +0100
+
+    mux: mp4: don't create edts if no valid data/timestamp has been sent
+    
+    otherwise creates offset from TS_INVALID
+
+commit c2f2689917d26daa65fd9c883429b4b9e8da778c
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 10:16:51 2017 +0100
+
+    mux: mp4: fix hevc test
+
+commit e1da2b0f54fcfc3abdbacfefa3687ed4175f7dbc
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Nov 22 10:45:41 2017 +0100
+
+    mux: mp4: use hxxx iterator
+
+commit 68ebdf180b49a56bca8364ea5aeb8e5bd69f6090
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 22 09:13:51 2017 +0100
+
+    opengl: cvpx: fill opengl_tex_converter_t on success
+    
+    This fixes a black screen when shader generation fails. Only saw it happening
+    on IOS 8.1 simulator.
+
+commit 7edf23a71a995efffcb5ce9415d258c2c6a82af3
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 22 08:46:32 2017 +0100
+
+    videotoolbox: fix "videotoolbox-hw-decoder-only" option type
+
+commit 75391aa0670790d5dc87af0d407765f50bff8eab
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Tue Nov 21 21:59:35 2017 +0100
+
+    youtube.lua: update video format selection to website changes
+    
+    The format of the Youtube API parameters used to list the available
+    video resolutions changed slightly. This fixes usage of the
+    --preferred-resolution option.
+
+commit 2be0155e2895ad45d6f8bae3e1e8ef712182a57c
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 21 15:57:26 2017 +0100
+
+    demux: libavi: force chunk type check
+    
+    avi breakable since 2002 by mutating single chunks as LIST
+
+commit ed0edfbadda0471a5ded1f4390854f0be5f92f8f
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 21 14:06:47 2017 +0100
+
+    demux: libavi: discard broken chunks
+
+commit 28e5cd0e0573acd9a7e05e2bc1119b8813728f42
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 21 13:54:51 2017 +0100
+
+    demux: libavi: use parent for boundary check on chunk read
+
+commit 991db3b94305ecadccc32003ebee4752ced48ed1
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 21 16:39:43 2017 +0100
+
+    packetizer: hevc: hevc_get_xps_id should work on nal data only
+
+commit a692bf04c940430ce38058f4d73cacf35c4ffce1
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 21 11:19:54 2017 +0100
+
+    demux: libavi: use helpers for correct chunk size checks
+
+commit eaf1c02331f65c272c8f8044cd6901faa2f6c403
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 21 11:18:19 2017 +0100
+
+    demux: libavi: fix root size before reads
+    
+    otherwise checks will fail
+
+commit ba142f0e91c640afe42c96b82cb3dfc877c998e4
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 21 10:54:09 2017 +0100
+
+    demux: libavi: remove useless init
+
+commit f57318b3d33a4314c041aa9fef9da519bcabe0a5
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Mon Nov 20 10:28:59 2017 +0100
+
+    demux/mpeg: Mark p_demux as VLC_UNUSED
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 65c5f31b423ab54a7006980ad50ac3994f9e12e3
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 21 15:04:27 2017 +0100
+
+    contrib:gme: always build a static library on Windows
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 06df19ba15a8073651e2ad4c610b684f123f2447
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 21 15:03:53 2017 +0100
+
+    direct3d11: link with d3d11 on Winstore builds
+    
+    It's not implied by libd3d11_common
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0ab53a3652fb341a084cd9e103c449f0f9eaa158
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 21 15:03:37 2017 +0100
+
+    direct3d11: fix compilation for Winstore
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f85977ff31b6b8f72939e87b5b88bffa0d8a3a18
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 21 15:03:11 2017 +0100
+
+    d3d11va: fix Winstore compilation
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ff4b90c15a9ea6c4f33362b152c289fc528f3609
+Author: Adrien Maglo <magsoft@videolan.org>
+Date:   Tue Nov 21 14:02:37 2017 +0100
+
+    Qt: fix the qt-fullscreen-screennumber option
+    
+    numScreens() is deprecated.
+    To set the window fullscreen on the defined monitor, a call to setScreen()
+    is needed.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d78a9a20d3bafcdd9bc77d0d13fbf6f1f6d1add9
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 21 15:21:19 2017 +0100
+
+    chroma: copy: fix typo
+    
+    Harmless since the typo was done everywhere
+
+commit bf57d10f575f358f1f0fc47bc9a526ad80990d00
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 21 15:19:59 2017 +0100
+
+    chroma: copy: disable SSSE3 with chroma_copy_test
+
+commit df314a7dfc7a9f2204aefb11559dff6efe6025a6
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 21 15:18:46 2017 +0100
+
+    chroma: copy: 16bits functions need SSSE3
+
+commit 9d91bec64d73900cd496a6763dc647871569354c
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 21 14:46:39 2017 +0100
+
+    ci_filters: use -Wpartial-availability in source
+
+commit 6223224368e6b5bb978ba3d9d6a08f064719e2ee
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 21 14:39:47 2017 +0100
+
+    chroma: copy: fix assert when testing
+
+commit e1aff4673be3087a453ac56497143cfc9df1fc15
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 21 14:38:41 2017 +0100
+
+    chroma: copy: remove old debug code
+
+commit 645537b8ae9b42a829021a53dd165282a0434547
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 21 14:06:18 2017 +0100
+
+    ci_filters: build with -Wpartial-availability
+    
+    Symbols availability are checked at entry point.
+
+commit 96d59814184976a30b558b0e9d10bcbdbe3cc940
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 21 13:36:22 2017 +0100
+
+    extras: m4: fix snprintf for macOS 10.13
+    
+    Same patches than the bison ones since the same lib is used on both project.
+
+commit 10ea136a9297aa6b1b01b66fb078770910d93f55
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 21 11:51:33 2017 +0100
+
+    extras: m4: update to 1.4.18
+
+commit a663cd63c0aaddb28d1cf29138f10141d2364556
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 21 13:11:46 2017 +0100
+
+    cf_filters: remove -miphoneos-version-min=9.0 OBJCFLAGS
+    
+    This will hopefully fix crashes on iOS 8*.
+    
+    irc-log:
+    <ePirat> ... it will not make the symbols weak (because they already exist on
+    the lowest version you specified) and things will just crash/error at runtime.
+
+commit 32b60c98389e22adf94dde4f12b08e3a56aba72a
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Mon Nov 20 19:46:16 2017 +0100
+
+    macOS: codesign: Add additional operations for Breakpad codesign
+    
+    Also covers breakpad helper application. Additionally, sign a helper
+    utility for sparkles autoupdate app.
+
+commit 1bef550d805bdc2770c41ae9cdf297eef3dcd9ae
+Author: Salah-Eddin Shaban <salah@videolan.org>
+Date:   Sun Nov 19 22:53:33 2017 +0200
+
+    direct3d11: fix orientation
+    
+    refs #11778, #18368
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c8d4e05cf956e3a99ba66a944961f6cbfde75f6a
+Author: Salah-Eddin Shaban <salah@videolan.org>
+Date:   Fri Nov 17 22:46:46 2017 +0200
+
+    direct3d9: fix orientation
+    
+    refs #11778, #18368
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0cd9200eed5f876504b5f32e849955884ebbae70
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 20 08:35:50 2017 +0100
+
+    d3d11_fmt: move the DXGI debug handling in D3D11_CreateDevice
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0bcdc1c4d5fb1797ebd882493519e9bcec855733
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:28 2017 +0100
+
+    directx_va: move the DXVA2 loading outside of directx_va
+    
+    For D3D11 the same DLL used to create the device is used to create the decoder.
+    For DXVA2 we need an extra DLL but we don't need to make this code generic.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit da8ec5c315536c90b8abeb08786306e2acdbc24b
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:27 2017 +0100
+
+    directx_va: remove unused d3ddev
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8245920db976689f81f2212c1db7c08e4867d73c
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:26 2017 +0100
+
+    directx_va: do not load the DLL if it's already loaded
+    
+    For D3D11 we always load it.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e3f5fb031cffdeef3b8e0239b9117ac449e6dd73
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:25 2017 +0100
+
+    d3d11_fmt: keep track if we own the device or not
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d54b3f1440ada4d3317e3c0797b30ae08279fcbb
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:23 2017 +0100
+
+    d3d11: use D3D11_Create and D3D11_Destroy
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5a6f415d17faf8036af2e6ed488fbdb47583bd5f
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:22 2017 +0100
+
+    d3d11_fmt: add D3D11_Create and D3D11_Destroy
+    
+    Similar to the D3D9 API
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 46be40b89f2876f5c3757284125798dcea579904
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:21 2017 +0100
+
+    d3d11va: make use of d3d11_device_t rather than internal variables
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d0df361e19aa47ec96490926c12d9211a288fa94
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:20 2017 +0100
+
+    direct3d11: use D3D11_ReleaseDevice()
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 070f516f4ef8dc093b3aa49e3905f64d7a937356
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:19 2017 +0100
+
+    d3d11_fmt: add D3D11_ReleaseDevice()
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 44a778a905351eb110ca3b8e4e2fa539b72c3e7b
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:18 2017 +0100
+
+    d3d11_fmt: simplify the call to D3D11_CreateDevice()
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 7d0abd461446efd1c048c31ac1ebe77e2fdca37f
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:17 2017 +0100
+
+    d3d11_fmt: introduce d3d11_handle_t to keep a handle on the DLL
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bc346168cc285ecb0995a2ad9e76aeddfdc96c15
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:16 2017 +0100
+
+    direct3d11: rename hd3d11 to d3d_dev
+    
+    Similar to the same variable in D3D99
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 7d4b0581b666a5b0ae1db125cfdca2215aecb76b
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:29:15 2017 +0100
+
+    d3d11: rename d3d11_handle_t to d3d11_device_t
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fd392748533668976cbc9e1f8d87bb1f44c33c95
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:47 2017 +0100
+
+    d3d9_fmt: make IDirect3D9_GetAdapterDisplayMode simpler
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 78b063319066640774d60b8dfdd0ee43fbb16c27
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:46 2017 +0100
+
+    d3d9_fmt: always tie the adapter ID to the d3d9_device_t
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5664e1649e37f6ce7e7075a235763b7b65b47c99
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:45 2017 +0100
+
+    direct3d9: remove the d3dctx structure
+    
+    Just use d3d9_handle_t and d3d9_device_t
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 98e9c553e61d588ef03bc781cc66caf0da64a4d5
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:44 2017 +0100
+
+    direct3d9: remove the intermediate d3dctx from the openGL module
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit cf9b13f19952e98d00ae699ce19c9cedbc6c6e5e
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:43 2017 +0100
+
+    direct3d9: remove the secondary HWND storage
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 28cf4fbd1389a2494cbe343156550947b35846f5
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:42 2017 +0100
+
+    direct3d9: move the hxdll in vout_display_sys_t
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4f4a4049d55e6efbfdcbf7185b6ef60d789d626b
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:41 2017 +0100
+
+    dxva2: make use of the DLL loading/Device creation from libd3d9_common
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 12c630d074f2b903c4f6adf98903dfeb3ea0918f
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:40 2017 +0100
+
+    d3d9_fmt: create a simpler D3D9Device for empty output
+    
+    Suitable just for decoding.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c7369881619914442a0f7f17cf0d9452ac0d5bc9
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:39 2017 +0100
+
+    direct3d9: move D3D9_Create/D3D9_Destroy in libd3d9_cmmon
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d0e6e1492dc0373e8cc30961c3baa3572058190c
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:38 2017 +0100
+
+    direct3d9: make the D3D9_Create/D3D9_Release more generic
+    
+    Move the DLL in d3d9_handle_t
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8e00a8615536069350780831d0c9d2b0ab9193a7
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:37 2017 +0100
+
+    d3d9_fmt: add D3D9_ReleaseDevice() to match D3D9_CreateDevice()
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit efa18c5997c9ccc30d85cc94487574cf67416241
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:36 2017 +0100
+
+    direct3d9: query the capabilities just before creating the device
+    
+    And use the proper adapter.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 2ef2b693e71f1c0b0cd0425e28234dfaca2daceb
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:35 2017 +0100
+
+    d3d9: move the device creation in libd3d9_common
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b9194848ff4fc09503150b51e1671683b8a9320c
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Sat Nov 18 14:26:34 2017 +0100
+
+    d3d9_fmt: group some D3D9 objects together
+    
+    And make the D3D9 device creation more generic
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0547c4a97b60636335eeab84e8d6aa45432b96ff
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 20 18:54:31 2017 +0100
+
+    packetizer: a52: fix assertion on E-AC3 substreams
+
+commit 0c218a0f4559a1b46c9e705477fb6b332dc7966e
+Author: Alexander Lakhin <exclusion@gmail.com>
+Date:   Mon Nov 20 18:54:50 2017 +0200
+
+    Remove unnecessary spaces from messages
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 570962da1d77ab1bcf5dfa713476e50be107605d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 20 18:38:57 2017 +0200
+
+    win32: fix vlc_threadvar_set() return (fixes #19124)
+    
+    This was not noticed since none of the call sites check for error.
+
+commit 69409cf5917c8934d1903d979c4998ac074c7f74
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 19 11:40:55 2017 +0200
+
+    configure: allow CSS even without Bison or Flex
+    
+    Building CSS support from tarball works fine even without those tools.
+
+commit f2ba10497e9437b36a910cb980c6907b04844ebb
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 19 11:38:18 2017 +0200
+
+    Make Flex and Bison tests inconditional
+    
+    By GNU/automake design, those tools have to be present when building
+    from VCS, even if the generated code is not actually compiled. This
+    fixes #19086.
+    
+    Also this potentially allows more than one module to use them.
+
+commit a6b095982367a2d4cfb72686048633bf743593ff
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Sat Nov 18 15:30:58 2017 -0500
+
+    video_filter: sharpen: fix artifact in middle of 8bpp videos
+    
+    Fixes #19098, regression from commit 7dd8a23dc2b6a3ee15533e07c8c32771b4d230a2
+
+commit 72e7179e9e6387bc0631c6e1f53d62a5ade78dec
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 18 21:33:50 2017 +0200
+
+    chain: do not use MODULE_STRING
+
+commit b8a7536f85cf945aec465b1f49504d679ff02ab1
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 18 21:33:40 2017 +0200
+
+    ntservice: do not use MODULE_STRING
+
+commit 464ab9724e91436a6616ee66d8c667e0a3eb6f82
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 18 21:32:26 2017 +0200
+
+    svcdsub: fix obsolete setting name
+    
+    This should be the then plugin name, not the current one (not that I
+    expect it to change ever).
+
+commit e46fd2bfa69a2684736fbbfbe1dbf3fbce4d7356
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 18 21:18:24 2017 +0200
+
+    messages: resolve module name at link-time
+    
+    Within all the introduced static libraries, the module cannot be known
+    at compilation time. This moves the module name from a compilation
+    constant to a link time constant string symbol. That way, the same
+    compiled object within a static library can use a different and correct
+    module name depending on which plugin it is linked into.
+    
+    The symbol is hidden so it does not leak between shared objects. For
+    non-plugins shared libraries (vlccore, vlc, vlc_pulse and
+    vlc_xcb_events) the module name must be defined manually, unless the
+    library does not use msg_* macros at all (vlc_vdpau).
+
+commit d2cf1ff065c490a3f61847b156a65b2add42941c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 18 21:11:11 2017 +0200
+
+    http: force "http" as module name
+    
+    (not "connmgr.c")
+
+commit f82bc9e5f61b55a151bac4c25093ae89e0f807af
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 18 14:26:31 2017 +0200
+
+    Update libvlc SO version
+
+commit 91d83a530f96d67ffa95a0f364550834ee8013e9
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Nov 17 16:17:31 2017 +0100
+
+    subsdec: Fix infinite loop in case of invalid closing tag
+
+commit b351e72fc9b729b1782290bd3c865c5e9e93a4af
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Nov 17 11:23:32 2017 +0100
+
+    contribs: mpg123: Fix cross compilation for winstore
+
+commit a141bcc837a59d34cd50d05cba50aca6d9390725
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 17 14:29:18 2017 +0100
+
+    demux: ts: don't skip looking up  dts on seek if af
+
+commit 883a582306d606f033d437cdeb93ddef273a04cf
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 17 14:33:00 2017 +0100
+
+    demux: ts: only seek on pcr for current program
+
+commit fca9a302adb45595e91725b5fa04c501d90b604e
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 17 14:24:33 2017 +0100
+
+    demux: ts: fix oob read
+
+commit c618453309ed65611619272178621f5eb62a2822
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 17 13:51:57 2017 +0100
+
+    demux: ts: fix peek use after free
+
+commit e0fe3ddb3e9acaa4ee30cc684b0df774257c093a
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 17 10:26:56 2017 +0100
+
+    opengl: pass video_format_t with a pointer
+    
+    CID #1462006
+
+commit c128cc7e056885305921010490c99548ad70e8f4
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 14 18:45:25 2017 +0100
+
+    chroma: chain: add VLC_CODEC_I420_10B fallback
+
+commit 6e5e08677d9e279602397fcbc767e6d2a15b4ce5
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 17 09:56:14 2017 +0100
+
+    chroma: chain: force one level of iteration for filters
+
+commit 2fd76d91ba654a04bc88e4d4e9466054c5a3de13
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 14 18:44:56 2017 +0100
+
+    fourcc: vaapi: add VLC_CODEC_I420_10B fallback
+
+commit 2021d58821974d71848ba53d22dace7057b19a85
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 14 18:44:34 2017 +0100
+
+    vaapi: add a warning when doing sw conversion
+
+commit e24d08a054dfb0efac91441620facdde96af17c9
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 14 18:44:11 2017 +0100
+
+    vaapi: handle VLC_CODEC_VAAPI_420_10BPP <=> VLC_CODEC_I420_10B
+
+commit 7f99be78bd132d1b15066a1b34f0f3b77552fddf
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sun Nov 12 15:03:52 2017 +0100
+
+    vaapi: refactor chroma check
+
+commit aabcba93021d558d33afb59c772b93fffb96df01
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Nov 16 17:49:35 2017 +0100
+
+    chroma: copy: add tests
+    
+    Test most common YUV420 conversions with SSE and without SSE. These conversions
+    are used via VAAPI, direct3d* and via videotoolbox.
+    
+    There is no warranty that the source should be aligned when using copy.h, so
+    all tests are performed with a non aligned picture source. The destination is
+    always a picture allocated by VLC (so aligned).
+    
+    The test verify that there are no memory corruption (via asan or just crashing)
+    and verify that colors are preserved. It will now assert if someone introduce a
+    green line.
+
+commit b1ffa4467eded1af7da751f8738c412525f6c476
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Nov 16 18:56:09 2017 +0100
+
+    chroma: copy: add SP<=>P 16bits support
+    
+    Implemented without optimisation and with sse3.
+
+commit 5429463faaacb4cf2f46fc3c7969177e0fc315d2
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 17 09:03:35 2017 +0100
+
+    chroma: copy: increase max cache size
+    
+    For 4K 16bits frames.
+
+commit f4299fbb0d459fc6bba1780b549b44107e5b63c4
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Nov 16 12:09:49 2017 +0100
+
+    chroma: copy: add asserts
+
+commit c6f989c9d3eac9ddb5cf008f71dbc9c77e25b580
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Nov 16 16:18:34 2017 +0100
+
+    chroma: copy: fix heap-buffer-overflow from SSE_SplitUV
+    
+    Avoid splitting too far. This generally don't cause any crashes since src and
+    dst are aligned.
+
+commit ad3ceb947cf2929b9fb2e1dc9e8de74fabd6717a
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Nov 17 10:06:12 2017 +0100
+
+    contrib: mpg123: Fix winstore detection
+
+commit 9229f4c03bea6f4dd7b8e3c069060feb4b30b9bb
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Nov 16 17:32:57 2017 +0100
+
+    win32: dirs: Fix winstore build
+
+commit 780d9bdb3848cb974f697f7bd5ed031f3481511c
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 17 08:39:53 2017 +0100
+
+    opengl: dump shaders with msg_Dbg
+
 commit 96d506563f90b2c1401a80dd1dfc5b75c61c3633
 Author: Francois Cartegnie <fcvlcdev@free.fr>
 Date:   Thu Nov 16 23:22:50 2017 +0100

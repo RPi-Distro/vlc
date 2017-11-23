@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-17 02:18+0000\n"
+"POT-Creation-Date: 2017-11-23 02:19+0000\n"
 "PO-Revision-Date: 2013-12-12 16:26+0000\n"
 "Last-Translator: Fumio Nakayama <fumio.n6a@gmail.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/vlc-trans/"
@@ -1796,7 +1796,7 @@ msgstr ""
 "能な向上を得られるかも知れません。特にヘッドフォンのチャンネルミキサーと共に"
 "使用している場合には、効果を期待できます。"
 
-#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
+#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:942
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:65
@@ -2114,7 +2114,8 @@ msgid "Always place the video window on top of other windows."
 msgstr "常にビデオウィンドウを他のウィンドウの前面に表示します。"
 
 #: src/libvlc-module.c:319
-msgid "Enable wallpaper mode "
+#, fuzzy
+msgid "Enable wallpaper mode"
 msgstr "壁紙モードの有効化"
 
 #: src/libvlc-module.c:321
@@ -3525,7 +3526,8 @@ msgid "Stream filter module"
 msgstr "ストリームフィルターモジュール"
 
 #: src/libvlc-module.c:1005
-msgid "Stream filters are used to modify the stream that is being read. "
+#, fuzzy
+msgid "Stream filters are used to modify the stream that is being read."
 msgstr "ビデオフィルターはビデオストリームの処理に使用されます。"
 
 #: src/libvlc-module.c:1007
@@ -3535,8 +3537,7 @@ msgstr "ストリームフィルターモジュール"
 
 #: src/libvlc-module.c:1009
 #, fuzzy
-msgid ""
-"Demux filters are used to modify/control the stream that is being read. "
+msgid "Demux filters are used to modify/control the stream that is being read."
 msgstr "ビデオフィルターはビデオストリームの処理に使用されます。"
 
 #: src/libvlc-module.c:1011
@@ -5151,7 +5152,7 @@ msgstr "メディア 時間"
 msgid "Media View"
 msgstr "メディア ビュー"
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:567
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:568
 msgid "Menu"
 msgstr "メニュー"
 
@@ -5275,7 +5276,7 @@ msgstr "ファイルの保存に失敗しました"
 msgid "Failed to open \"%s\" for writing"
 msgstr "書き込みのために\"%s\"を開けませんでした"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2681
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2679
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -6520,9 +6521,10 @@ msgid "Audio device name"
 msgstr "オーディオデバイス名"
 
 #: modules/access/dshow/dshow.cpp:137
+#, fuzzy
 msgid ""
 "Name of the audio device that will be used by the DirectShow plugin. If you "
-"don't specify anything, the default device will be used. "
+"don't specify anything, the default device will be used."
 msgstr ""
 "DirectShowプラグインで使用されるオーディオデバイス名を指定します。もし何も指"
 "定されなければ、デフォルトのデバイスが使用されます。"
@@ -8241,7 +8243,8 @@ msgid "Genre description"
 msgstr "ジャンルの説明"
 
 #: modules/access_output/shout.c:83
-msgid "Genre of the content. "
+#, fuzzy
+msgid "Genre of the content."
 msgstr "コンテンツのジャンルです。"
 
 #: modules/access_output/shout.c:85
@@ -8249,15 +8252,18 @@ msgid "URL description"
 msgstr "URLの説明"
 
 #: modules/access_output/shout.c:86
-msgid "URL with information about the stream or your channel. "
+#, fuzzy
+msgid "URL with information about the stream or your channel."
 msgstr "ストリーム、またはチャンネルについての情報です。"
 
 #: modules/access_output/shout.c:93
-msgid "Bitrate information of the transcoded stream. "
+#, fuzzy
+msgid "Bitrate information of the transcoded stream."
 msgstr "トランスコーディングストリームのビットレート情報です。"
 
 #: modules/access_output/shout.c:96
-msgid "Samplerate information of the transcoded stream. "
+#, fuzzy
+msgid "Samplerate information of the transcoded stream."
 msgstr "トランスコーディングストリームのサンプリングレート情報です。"
 
 #: modules/access_output/shout.c:98
@@ -8265,7 +8271,8 @@ msgid "Number of channels"
 msgstr "チャンネル数"
 
 #: modules/access_output/shout.c:99
-msgid "Number of channels information of the transcoded stream. "
+#, fuzzy
+msgid "Number of channels information of the transcoded stream."
 msgstr "トランスコーディング処理されたストリームのチャンネル情報数です。"
 
 #: modules/access_output/shout.c:101
@@ -8273,7 +8280,8 @@ msgid "Ogg Vorbis Quality"
 msgstr "Ogg Vorbisの品質"
 
 #: modules/access_output/shout.c:102
-msgid "Ogg Vorbis Quality information of the transcoded stream. "
+#, fuzzy
+msgid "Ogg Vorbis Quality information of the transcoded stream."
 msgstr "トランスコーディング処理されたストリームのOgg Vorbisの品質情報です。"
 
 #: modules/access_output/shout.c:104
@@ -8584,7 +8592,8 @@ msgid "Display ID"
 msgstr "ディスプレイID"
 
 #: modules/access/screen/screen.c:82
-msgid "Display ID. If not specified, main display ID is used. "
+#, fuzzy
+msgid "Display ID. If not specified, main display ID is used."
 msgstr "ディスプレイID、指定しない場合はメインディスプレイIDが使用されます。"
 
 #: modules/access/screen/screen.c:83
@@ -8823,7 +8832,8 @@ msgid "VBI capture device"
 msgstr "VBIキャプチャーデバイス"
 
 #: modules/access/v4l2/v4l2.c:48
-msgid "The device node where VBI data can be read  (for closed captions) "
+#, fuzzy
+msgid "The device node where VBI data can be read  (for closed captions)."
 msgstr "VBIデータが読み込まれるデバイスノード (クローズドキャプション用)"
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -11147,12 +11157,12 @@ msgstr ""
 "ト), ltp, hev1, hev2 (デフォルトはlow)。hev1および、hev2はlibfdk-aacが有効化"
 "されたlibavcodecと共にのみサポートされます。"
 
-#: modules/codec/avcodec/d3d11va.c:64
+#: modules/codec/avcodec/d3d11va.c:63
 #, fuzzy
 msgid "Direct3D11 Video Acceleration"
 msgstr "DirectXビデオアクセラレーション (DXVA) 2.0"
 
-#: modules/codec/avcodec/dxva2.c:52
+#: modules/codec/avcodec/dxva2.c:51
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr "DirectXビデオアクセラレーション (DXVA) 2.0"
 
@@ -11992,9 +12002,10 @@ msgid "Group of Picture Reference Distance"
 msgstr "Group of Picture基準距離"
 
 #: modules/codec/qsv.c:81
+#, fuzzy
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used. "
+"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
 msgstr ""
 "Iまたは、Pキーフレーム間の距離; 0の場合、GOP構造は未設定となります。メモ: "
 "GopRefDist=1の場合、Bフレームは使用されません。"
@@ -12017,13 +12028,14 @@ msgid "IDR interval"
 msgstr "IDRインターバル"
 
 #: modules/codec/qsv.c:92
+#, fuzzy
 msgid ""
 "For H.264, IdrInterval specifies IDR-frame interval in terms of I- frames; "
 "if IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
-"SDK inserts the sequence header once at the beginning of the stream. "
+"SDK inserts the sequence header once at the beginning of the stream."
 msgstr ""
 "IDRインターバルはH.264のために、ＩフレームによってIDRフレームインターバルを指"
 "定します。IDRインターバルが0の場合、すべてのIフレームはIDRフレームとなりま"
@@ -12133,9 +12145,10 @@ msgid "Convergence time of 'avbr' RateControl"
 msgstr "'avbr'レート制御の収束時間"
 
 #: modules/codec/qsv.c:135
+#, fuzzy
 msgid ""
 "Number of 100 frames before the 'avbr' rate control method reaches the "
-"requested bitrate with the requested accuracy. See the accuracy parameter. "
+"requested bitrate with the requested accuracy. See the accuracy parameter."
 msgstr ""
 "'avbr'レート制御メソッドで要求されたビットレートの正確さに到達する前のフレー"
 "ム数、100フレーム単位。レート制御の正確性のパラメーターも参照してください。"
@@ -12927,7 +12940,7 @@ msgstr "テキスト字幕デコーダー"
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:100
+#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:97
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr "CP932"
@@ -13716,8 +13729,9 @@ msgid "Weighted prediction for P-frames"
 msgstr "Pフレームの重み付け予測"
 
 #: modules/codec/x264.c:295
+#, fuzzy
 msgid ""
-" Weighted prediction for P-frames:  - 0: Disabled\n"
+"Weighted prediction for P-frames:  - 0: Disabled\n"
 " - 1: Blind offset\n"
 " - 2: Smart analysis\n"
 msgstr ""
@@ -14201,14 +14215,14 @@ msgstr "D-Busコントロールインターフェース"
 #: modules/gui/macosx/VLCMainWindow.m:669
 #: modules/gui/macosx/VLCMainWindow.m:675
 #: modules/gui/macosx/VLCMainWindow.m:1273 modules/gui/ncurses.c:1035
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1206
-#: modules/gui/qt/main_interface.cpp:1210
-#: modules/gui/qt/main_interface.cpp:1249
-#: modules/gui/qt/main_interface.cpp:1251
-#: modules/gui/qt/main_interface.cpp:1360
-#: modules/gui/qt/main_interface.cpp:1377
-#: modules/gui/qt/main_interface.cpp:1385
-#: modules/gui/qt/main_interface.cpp:1408 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1213
+#: modules/gui/qt/main_interface.cpp:1217
+#: modules/gui/qt/main_interface.cpp:1256
+#: modules/gui/qt/main_interface.cpp:1258
+#: modules/gui/qt/main_interface.cpp:1367
+#: modules/gui/qt/main_interface.cpp:1384
+#: modules/gui/qt/main_interface.cpp:1392
+#: modules/gui/qt/main_interface.cpp:1415 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -15107,27 +15121,27 @@ msgstr ""
 "AVIファイルのインデックスを再作成します。AVIファイルが不完全か壊れている場合"
 "に指定します。"
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:66
 msgid "Ask for action"
 msgstr "アクションを確認"
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:67
 msgid "Always fix"
 msgstr "常に修正"
 
-#: modules/demux/avi/avi.c:71
+#: modules/demux/avi/avi.c:68
 msgid "Never fix"
 msgstr "常に修正しない"
 
-#: modules/demux/avi/avi.c:72
+#: modules/demux/avi/avi.c:69
 msgid "Fix when necessary"
 msgstr "必要時に修正"
 
-#: modules/demux/avi/avi.c:76
+#: modules/demux/avi/avi.c:73
 msgid "AVI demuxer"
 msgstr "AVIデマルチプレクサー"
 
-#: modules/demux/avi/avi.c:802 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:797 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -15143,28 +15157,28 @@ msgstr ""
 "この手順は大きなファイルの場合、時間がかかります。\n"
 "どうしますか?"
 
-#: modules/demux/avi/avi.c:810
+#: modules/demux/avi/avi.c:805
 msgid "Do not play"
 msgstr "再生しない"
 
-#: modules/demux/avi/avi.c:811
+#: modules/demux/avi/avi.c:806
 msgid "Build index then play"
 msgstr "インデックスを構築し、再生"
 
-#: modules/demux/avi/avi.c:812
+#: modules/demux/avi/avi.c:807
 msgid "Play as is"
 msgstr "そのまま再生"
 
-#: modules/demux/avi/avi.c:813 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:808 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "AVIインデックスが壊れているかありません"
 
-#: modules/demux/avi/avi.c:2682
+#: modules/demux/avi/avi.c:2680
 msgid "Broken or missing AVI Index"
 msgstr "AVIインデックスが壊れているかありません"
 
-#: modules/demux/avi/avi.c:2683
+#: modules/demux/avi/avi.c:2681
 msgid "Fixing AVI Index..."
 msgstr "AVIインデックスを修正しています..."
 
@@ -15561,9 +15575,10 @@ msgid "Packet size in bytes to decrypt"
 msgstr "復号化パケットサイズ(単位: バイト)"
 
 #: modules/demux/mpeg/ts.c:100
+#, fuzzy
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
-"subtract the TS-header from the value before decrypting. "
+"subtract the TS-header from the value before decrypting."
 msgstr ""
 "複合化するTSパケットのサイズを指定します。複合化ルーチンは複合処理の前にこの"
 "値からTSヘッダーを抜き出します。"
@@ -15866,9 +15881,10 @@ msgid "Forces the audio language"
 msgstr "音声言語の指定"
 
 #: modules/demux/rawaud.c:54
+#, fuzzy
 msgid ""
 "Forces the audio language for the output mux. Three letter ISO639 code. "
-"Default is 'eng'. "
+"Default is 'eng'."
 msgstr ""
 "出力マルチプレクサーのオーディオ言語をISO639の3文字のコードで指定します。デ"
 "フォルトは'eng'です。"
@@ -18942,11 +18958,13 @@ msgid " <up>,<down>            Seek +/-5%%"
 msgstr " <up>,<down>            +/-5%%のシーク"
 
 #: modules/gui/ncurses.c:1055
-msgid "[Repeat] "
+#, fuzzy
+msgid "[Repeat]"
 msgstr "[繰り返し] "
 
 #: modules/gui/ncurses.c:1056
-msgid "[Random] "
+#, fuzzy
+msgid "[Random]"
 msgstr "[ランダム] "
 
 #: modules/gui/ncurses.c:1057
@@ -19005,28 +19023,29 @@ msgstr "開く: %s"
 msgid "Find: %s"
 msgstr "検索: %s"
 
-#: modules/gui/qt/components/controller.cpp:342
+#: modules/gui/qt/components/controller.cpp:343
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt/components/controller.cpp:447
+#: modules/gui/qt/components/controller.cpp:448
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr "ループ再生モードの切り替え(すべて, 1項目のみ, ループなし)"
 
-#: modules/gui/qt/components/controller.cpp:548
+#: modules/gui/qt/components/controller.cpp:549
 msgid "Previous Chapter/Title"
 msgstr "前のチャプター/タイトル"
 
-#: modules/gui/qt/components/controller.cpp:554
+#: modules/gui/qt/components/controller.cpp:555
 msgid "Next Chapter/Title"
 msgstr "次のチャプター/タイトル"
 
-#: modules/gui/qt/components/controller.cpp:603
+#: modules/gui/qt/components/controller.cpp:604
 msgid "Teletext Activation"
 msgstr "テレテキストの有効化"
 
-#: modules/gui/qt/components/controller.cpp:619
-msgid "Toggle Transparency "
+#: modules/gui/qt/components/controller.cpp:620
+#, fuzzy
+msgid "Toggle Transparency"
 msgstr "透明度の切り替え"
 
 #: modules/gui/qt/components/controller.hpp:43
@@ -20271,7 +20290,8 @@ msgid "Save log file as..."
 msgstr "名前を付けてログを保存..."
 
 #: modules/gui/qt/dialogs/messages.cpp:261
-msgid "Texts / Logs (*.log *.txt);; All (*.*) "
+#, fuzzy
+msgid "Texts / Logs (*.log *.txt);; All (*.*)"
 msgstr "テキスト/ログ (*.log *.txt);; すべて (*.*) "
 
 #: modules/gui/qt/dialogs/messages.cpp:267
@@ -20795,20 +20815,20 @@ msgstr "スケジュール: "
 msgid "VOD: "
 msgstr "VOD: "
 
-#: modules/gui/qt/main_interface.cpp:369
+#: modules/gui/qt/main_interface.cpp:372
 msgid "Do you want to restart the playback where left off?"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:375
+#: modules/gui/qt/main_interface.cpp:378
 #, fuzzy
 msgid "&Continue"
 msgstr "続ける"
 
-#: modules/gui/qt/main_interface.cpp:1361
+#: modules/gui/qt/main_interface.cpp:1368
 msgid "Control menu for the player"
 msgstr "プレイヤーの制御メニュー"
 
-#: modules/gui/qt/main_interface.cpp:1405
+#: modules/gui/qt/main_interface.cpp:1412
 msgid "Paused"
 msgstr "一時停止"
 
@@ -21257,15 +21277,17 @@ msgid "Regular expression used to filter the recent items played in the player"
 msgstr "プレイヤーの最近再生された項目を正規表現でフィルタリングします。"
 
 #: modules/gui/qt/qt.cpp:139
-msgid "Define the colors of the volume slider "
+#, fuzzy
+msgid "Define the colors of the volume slider"
 msgstr "ボリュームスライダーの色"
 
 #: modules/gui/qt/qt.cpp:140
+#, fuzzy
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
 "Default is '255;255;255;20;226;20;255;176;15;235;30;20'\n"
-"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255' "
+"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255'"
 msgstr ""
 "音量スライダーの色を設定します。\n"
 "12の数字をセミコロン(;)で区切って指定します。\n"
@@ -21273,7 +21295,8 @@ msgstr ""
 "'30;30;50;40;40;100;50;50;160;150;150;255'も使用可能です。"
 
 #: modules/gui/qt/qt.cpp:145
-msgid "Selection of the starting mode and look "
+#, fuzzy
+msgid "Selection of the starting mode and look"
 msgstr "起動時のモードと外観の選択"
 
 #: modules/gui/qt/qt.cpp:146
@@ -22471,7 +22494,7 @@ msgstr ""
 msgid ""
 "However, the security certificate presented by the server changed since the "
 "previous visit and was not authenticated by any trusted Certificate "
-"Authority. "
+"Authority."
 msgstr ""
 "%sへのアクセスを試みましたが、サーバーが提示したセキュリティ証明書は前回のア"
 "クセスから変更されたため、信用できる認証局に認証されませんでした。この問題は"
@@ -23129,7 +23152,8 @@ msgid "Timeout (ms)"
 msgstr "タイムアウト(ミリ秒)"
 
 #: modules/notify/notify.c:56
-msgid "How long the notification will be displayed "
+#, fuzzy
+msgid "How long the notification will be displayed."
 msgstr "通知が表示される時間を設定します。"
 
 #: modules/notify/notify.c:61
@@ -23455,7 +23479,7 @@ msgid "Applications"
 msgstr "アプリケーション"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:320
+#: modules/video_output/win32/direct3d9.c:315
 msgid "Desktop"
 msgstr "デスクトップ"
 
@@ -23693,9 +23717,10 @@ msgstr ""
 "表示する場合に有効です。"
 
 #: modules/spu/marq.c:109
+#, fuzzy
 msgid ""
 "Opacity (inverse of transparency) of overlayed text. 0 = transparent, 255 = "
-"totally opaque. "
+"totally opaque."
 msgstr ""
 "オーバレイ表示されるテキストの不透明度を0:透明～255:不透明の範囲で指定しま"
 "す。"
@@ -23954,8 +23979,8 @@ msgid "VNC poll interval"
 msgstr "VNCポーリング間隔"
 
 #: modules/spu/remoteosd.c:85
-msgid ""
-"In this interval an update from VNC is requested, default every 300 ms. "
+#, fuzzy
+msgid "In this interval an update from VNC is requested, default every 300 ms."
 msgstr "VNCからの更新間隔をミリ秒で指定します。デフォルトは300ミリ秒です。"
 
 #: modules/spu/remoteosd.c:87
@@ -24369,11 +24394,12 @@ msgid "Fallback to placeholder stream when out of data"
 msgstr "データがなくなった場合にフォールバックするプレースホルダーストリーム"
 
 #: modules/stream_out/bridge.c:67
+#, fuzzy
 msgid ""
 "If set to true, the bridge will discard all input elementary streams except "
 "if it doesn't receive data from another bridge-in. This can be used to "
 "configure a place holder stream when the real source breaks. Source and "
-"placeholder streams should have the same format. "
+"placeholder streams should have the same format."
 msgstr ""
 "オプションが設定された場合、ブリッジは他の入力ブリッジからデータを受信しない"
 "場合を除き、すべての基本ストリームを廃棄します。これはソースからのデータが途"
@@ -25250,9 +25276,10 @@ msgid "Text opacity"
 msgstr "テキストの不透明度"
 
 #: modules/text_renderer/freetype/freetype.c:92
+#, fuzzy
 msgid ""
 "The opacity (inverse of transparency) of the text that will be rendered on "
-"the video. 0 = transparent, 255 = totally opaque. "
+"the video. 0 = transparent, 255 = totally opaque."
 msgstr ""
 "ビデオ上にレンダリングされるテキストの不透明度(透明度の逆)を指定します。0: 透"
 "明, 255: 完全に不透明"
@@ -27866,7 +27893,7 @@ msgstr "パラメーターの上書き"
 #: modules/visualization/visual/visual.c:67
 msgid ""
 "The parameter alpha for the Kaiser window. Increasing alpha increases the "
-"main-lobe width and decreases the side-lobe amplitude. "
+"main-lobe width and decreases the side-lobe amplitude."
 msgstr ""
 
 #: modules/visualization/visual/visual.c:70

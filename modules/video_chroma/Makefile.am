@@ -118,9 +118,8 @@ chroma_LTLIBRARIES += \
 endif
 
 # DXVA2
-libdxa9_plugin_la_SOURCES = video_chroma/dxa9.c \
-        video_chroma/d3d9_fmt.h
-libdxa9_plugin_la_LIBADD = libchroma_copy.la
+libdxa9_plugin_la_SOURCES = video_chroma/dxa9.c
+libdxa9_plugin_la_LIBADD = libd3d9_common.la libchroma_copy.la
 
 if HAVE_AVCODEC_DXVA2
 chroma_LTLIBRARIES += \
@@ -130,6 +129,9 @@ endif
 # D3D11VA
 libd3d11_surface_plugin_la_SOURCES = video_chroma/d3d11_surface.c
 libd3d11_surface_plugin_la_LIBADD = libchroma_copy.la libd3d11_common.la
+if HAVE_WINSTORE
+libd3d11_surface_plugin_la_LIBADD += -ld3d11
+endif
 
 if HAVE_AVCODEC_D3D11VA
 chroma_LTLIBRARIES += \
@@ -149,3 +151,19 @@ endif
 libcvpx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(chromadir)' -Wl,-framework,Foundation -Wl,-framework,VideoToolbox -Wl,-framework,CoreMedia -Wl,-framework,CoreVideo
 EXTRA_LTLIBRARIES += libcvpx_plugin.la
 chroma_LTLIBRARIES += $(LTLIBcvpx)
+
+# Tests
+chroma_copy_sse_test_SOURCES = $(libchroma_copy_la_SOURCES)
+chroma_copy_sse_test_CFLAGS = -DCOPY_TEST
+chroma_copy_sse_test_LDADD = ../src/libvlccore.la
+
+chroma_copy_test_SOURCES = $(libchroma_copy_la_SOURCES)
+chroma_copy_test_CFLAGS = -DCOPY_TEST -DCOPY_TEST_NOOPTIM
+chroma_copy_test_LDADD = ../src/libvlccore.la
+
+if HAVE_SSE2
+check_PROGRAMS += chroma_copy_sse_test
+TESTS += chroma_copy_sse_test
+endif
+check_PROGRAMS += chroma_copy_test
+TESTS += chroma_copy_test

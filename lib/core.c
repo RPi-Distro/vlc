@@ -2,7 +2,7 @@
  * core.c: Core libvlc new API functions : initialization
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: 8ca4b5cf4d35db6efcb26ed33b2033750a5d1ac5 $
+ * $Id: 5e8c614c837e49dbfa60f5b2cff74d61bbecc903 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -256,3 +256,5 @@ int64_t libvlc_clock(void)
 {
     return mdate();
 }
+
+const char vlc_module_name[] = "libvlc";

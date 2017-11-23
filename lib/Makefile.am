@@ -1,6 +1,5 @@
 AUTOMAKE_OPTIONS = subdir-objects
 pkgconfigdir = $(libdir)/pkgconfig
-AM_CPPFLAGS = -DMODULE_STRING=\"libvlc\"
 AM_CFLAGS = $(CFLAGS_libvlc)
 
 SUFFIXES = .pc.in .pc
@@ -61,7 +60,7 @@ libvlc_la_LIBADD = \
 libvlc_la_LDFLAGS = \
 	$(LDFLAGS_libvlc) \
 	-no-undefined \
-	-version-info 10:0:5 \
+	-version-info 11:0:6 \
 	-export-symbols $(srcdir)/libvlc.sym
 libvlc_la_DEPENDENCIES = libvlc.sym
 if HAVE_WIN32

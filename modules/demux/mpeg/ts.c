@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: 431e7b98c7637fe8f63e5a1c673d9486061bfb4b $
+ * $Id: 0b24ffd2ea2bdb70c6b3d5510ab4ce1dbcb8d25f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -99,7 +99,7 @@ static void Close ( vlc_object_t * );
 #define CPKT_TEXT N_("Packet size in bytes to decrypt")
 #define CPKT_LONGTEXT N_("Specify the size of the TS packet to decrypt. " \
     "The decryption routines subtract the TS-header from the value before " \
-    "decrypting. " )
+    "decrypting." )
 
 #define SPLIT_ES_TEXT N_("Separate sub-streams")
 #define SPLIT_ES_LONGTEXT N_( \
@@ -262,6 +262,7 @@ static int DetectPVRHeadersAndHeaderSize( demux_t *p_demux, unsigned *pi_header_
         vlc_stream_Peek( p_demux->s, &p_peek, TOPFIELD_HEADER_SIZE + TS_PACKET_SIZE_MAX )
             == TOPFIELD_HEADER_SIZE + TS_PACKET_SIZE_MAX )
     {
+        const int i_service = GetWBE(&p_peek[18]);
         i_packet_size = DetectPacketSize( p_demux, pi_header_size, TOPFIELD_HEADER_SIZE );
         if( i_packet_size != -1 )
         {
@@ -329,7 +330,7 @@ static int DetectPVRHeadersAndHeaderSize( demux_t *p_demux, unsigned *pi_header_
             msg_Dbg( p_demux, "extended event text=%s", psz_ext_text );
             // 52 bytes reserved Bslbf
 #endif
-            p_vdr->i_service = GetWBE(&p_peek[18]);
+            p_vdr->i_service = i_service;
 
             return i_packet_size;
             //return TS_PACKET_SIZE_188;
@@ -1923,11 +1924,13 @@ static int SeekToTime( demux_t *p_demux, const ts_pmt_t *p_pmt, int64_t i_scaled
                 {
                     if( p_pkt->i_buffer >= 4 + 2 + 5 )
                     {
-                        i_pcr = GetPCR( p_pkt );
-                        i_skip += 1 + p_pkt->p_buffer[4];
+                        if( p_pmt->i_pid_pcr == i_pid )
+                            i_pcr = GetPCR( p_pkt );
+                        i_skip += 1 + __MIN(p_pkt->p_buffer[4], 182);
                     }
                 }
-                else
+
+                if( i_pcr == -1 )
                 {
                     mtime_t i_dts = -1;
                     mtime_t i_pts = -1;
@@ -2019,7 +2022,7 @@ static int ProbeChunk( demux_t *p_demux, int i_program, bool b_end, int64_t *pi_
                 uint8_t i_stream_id;
                 unsigned i_skip = 4;
                 if ( b_adaptfield ) // adaptation field
-                    i_skip += 1 + p_pkt->p_buffer[4];
+                    i_skip += 1 + __MIN(p_pkt->p_buffer[4], 182);
 
                 if ( VLC_SUCCESS == ParsePESHeader( VLC_OBJECT(p_demux), &p_pkt->p_buffer[i_skip],
                                                     p_pkt->i_buffer - i_skip, &i_skip,

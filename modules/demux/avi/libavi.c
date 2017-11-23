@@ -2,7 +2,7 @@
  * libavi.c : LibAVI
  *****************************************************************************
  * Copyright (C) 2001 VLC authors and VideoLAN
- * $Id: c1456a82231425d2379946337ea851d9008b3b62 $
+ * $Id: 057fb84fa281c73e4ba454bff94a90378bc02d05 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -44,33 +44,53 @@ static vlc_fourcc_t GetFOURCC( const uint8_t *p_buff )
     return VLC_FOURCC( p_buff[0], p_buff[1], p_buff[2], p_buff[3] );
 }
 
+static uint64_t AVI_ChunkSize( const avi_chunk_t *p_ck )
+{
+    return __EVEN(p_ck->common.i_chunk_size) + 8;
+}
+
+static uint64_t AVI_ChunkEnd( const avi_chunk_t *p_ck )
+{
+    return p_ck->common.i_chunk_pos + AVI_ChunkSize( p_ck );
+}
+
 /****************************************************************************
  *
  * Basics functions to manipulates chunks
  *
  ****************************************************************************/
-static int AVI_ChunkReadCommon( stream_t *s, avi_chunk_t *p_chk )
+static int AVI_ChunkReadCommon( stream_t *s, avi_chunk_t *p_chk,
+                                const avi_chunk_t *p_father )
 {
     const uint8_t *p_peek;
 
     memset( p_chk, 0, sizeof( avi_chunk_t ) );
 
+    const uint64_t i_pos = vlc_stream_Tell( s );
     if( vlc_stream_Peek( s, &p_peek, 8 ) < 8 )
+    {
+        if( stream_Size( s ) > 0 && (uint64_t) stream_Size( s ) > i_pos )
+            msg_Warn( s, "can't peek at %"PRIu64, i_pos );
+        else
+            msg_Dbg( s, "no more data at %"PRIu64, i_pos );
         return VLC_EGENERIC;
+    }
 
     p_chk->common.i_chunk_fourcc = GetFOURCC( p_peek );
     p_chk->common.i_chunk_size   = GetDWLE( p_peek + 4 );
-    p_chk->common.i_chunk_pos    = vlc_stream_Tell( s );
+    p_chk->common.i_chunk_pos    = i_pos;
 
     if( p_chk->common.i_chunk_size >= UINT64_MAX - 8 ||
         p_chk->common.i_chunk_pos > UINT64_MAX - 8 ||
         UINT64_MAX - p_chk->common.i_chunk_pos - 8 < __EVEN(p_chk->common.i_chunk_size) )
         return VLC_EGENERIC;
 
-    p_chk->common.p_father = NULL;
-    p_chk->common.p_next = NULL;
-    p_chk->common.p_first = NULL;
-    p_chk->common.p_next = NULL;
+    if( p_father && AVI_ChunkEnd( p_chk ) > AVI_ChunkEnd( p_father ) )
+    {
+        msg_Warn( s, "chunk %4.4s does not fit into parent %ld",
+                     (char*)&p_chk->common.i_chunk_fourcc, AVI_ChunkEnd( p_father ) );
+        return VLC_EGENERIC;
+    }
 
 #ifdef AVI_DEBUG
     msg_Dbg( (vlc_object_t*)s,
@@ -88,27 +108,15 @@ static int AVI_NextChunk( stream_t *s, avi_chunk_t *p_chk )
 
     if( !p_chk )
     {
-        if( AVI_ChunkReadCommon( s, &chk ) )
+        if( AVI_ChunkReadCommon( s, &chk, NULL ) )
         {
             return VLC_EGENERIC;
         }
         p_chk = &chk;
     }
 
-    if( p_chk->common.p_father )
-    {
-        if( p_chk->common.p_father->common.i_chunk_pos +
-                __EVEN( p_chk->common.p_father->common.i_chunk_size ) + 8 <
-            p_chk->common.i_chunk_pos +
-                __EVEN( p_chk->common.i_chunk_size ) + 8 )
-        {
-            return VLC_EGENERIC;
-        }
-    }
-
     bool b_seekable = false;
-    uint64_t i_offset = p_chk->common.i_chunk_pos +
-                        __EVEN( p_chk->common.i_chunk_size ) + 8;
+    const uint64_t i_offset = AVI_ChunkEnd( p_chk );
     if ( !vlc_stream_Control(s, STREAM_CAN_SEEK, &b_seekable) && b_seekable )
     {
         return vlc_stream_Seek( s, i_offset );
@@ -177,31 +185,28 @@ static int AVI_ChunkRead_list( stream_t *s, avi_chunk_t *p_container )
              (char*)&p_container->list.i_type );
 #endif
     msg_Dbg( (vlc_object_t*)s, "<list \'%4.4s\'>", (char*)&p_container->list.i_type );
+
+    union  avi_chunk_u **pp_append = &p_container->common.p_first;
     for( ; ; )
     {
         p_chk = calloc( 1, sizeof( avi_chunk_t ) );
         if( !p_chk )
             return VLC_EGENERIC;
 
-        if( !p_container->common.p_first )
-        {
-            p_container->common.p_first = p_chk;
-        }
-        else
-        {
-            p_container->common.p_last->common.p_next = p_chk;
-        }
-        p_container->common.p_last = p_chk;
-
         i_ret = AVI_ChunkRead( s, p_chk, p_container );
         if( i_ret )
         {
+            AVI_ChunkClean( s, p_chk );
+            free( p_chk );
             break;
         }
-        if( p_chk->common.p_father->common.i_chunk_size > 0 &&
-           ( vlc_stream_Tell( s ) >
-             p_chk->common.p_father->common.i_chunk_pos +
-             __EVEN( p_chk->common.p_father->common.i_chunk_size ) ) )
+
+        *pp_append = p_chk;
+        while( *pp_append )
+            pp_append = &((*pp_append)->common.p_next);
+
+        if( p_container->common.i_chunk_size > 0 &&
+            vlc_stream_Tell( s ) >= AVI_ChunkEnd( p_container ) )
         {
             break;
         }
@@ -224,12 +229,12 @@ static int AVI_ChunkRead_list( stream_t *s, avi_chunk_t *p_container )
 /* Allow to append indexes after starting playback */
 int AVI_ChunkFetchIndexes( stream_t *s, avi_chunk_t *p_riff )
 {
-    avi_chunk_t *p_movi = AVI_ChunkFind( p_riff, AVIFOURCC_movi, 0 );
+    avi_chunk_t *p_movi = AVI_ChunkFind( p_riff, AVIFOURCC_movi, 0, true );
     if ( !p_movi )
         return VLC_EGENERIC;
 
     avi_chunk_t *p_chk;
-    uint64_t i_indexpos = 8 + p_movi->common.i_chunk_pos + p_movi->common.i_chunk_size;
+    const uint64_t i_indexpos = AVI_ChunkEnd( p_movi );
     bool b_seekable = false;
     int i_ret = VLC_SUCCESS;
 
@@ -237,6 +242,7 @@ int AVI_ChunkFetchIndexes( stream_t *s, avi_chunk_t *p_riff )
     if ( !b_seekable || vlc_stream_Seek( s, i_indexpos ) )
         return VLC_EGENERIC;
 
+    union  avi_chunk_u **pp_append = &p_riff->common.p_first;
     for( ; ; )
     {
         p_chk = calloc( 1, sizeof( avi_chunk_t ) );
@@ -246,15 +252,17 @@ int AVI_ChunkFetchIndexes( stream_t *s, avi_chunk_t *p_riff )
             break;
         }
 
-        if (unlikely( !p_riff->common.p_first ))
-            p_riff->common.p_first = p_chk;
-        else
-            p_riff->common.p_last->common.p_next = p_chk;
-        p_riff->common.p_last = p_chk;
-
         i_ret = AVI_ChunkRead( s, p_chk, p_riff );
         if( i_ret )
+        {
+            AVI_ChunkClean( s, p_chk );
+            free( p_chk );
             break;
+        }
+
+        *pp_append = p_chk;
+        while( *pp_append )
+            pp_append = &((*pp_append)->common.p_next);
 
         if( p_chk->common.p_father->common.i_chunk_size > 0 &&
            ( vlc_stream_Tell( s ) >
@@ -403,7 +411,7 @@ static int AVI_ChunkRead_strf( stream_t *s, avi_chunk_t *p_chk )
         msg_Err( (vlc_object_t*)s, "malformed avi file" );
         AVI_READCHUNK_EXIT( VLC_EGENERIC );
     }
-    if( !( p_strh = AVI_ChunkFind( p_chk->common.p_father, AVIFOURCC_strh, 0 ) ) )
+    if( !( p_strh = AVI_ChunkFind( p_chk->common.p_father, AVIFOURCC_strh, 0, false ) ) )
     {
         msg_Err( (vlc_object_t*)s, "malformed avi file" );
         AVI_READCHUNK_EXIT( p_chk->common.i_chunk_size > 0  ? VLC_EGENERIC : AVI_ZEROSIZED_CHUNK );
@@ -972,11 +980,8 @@ int  AVI_ChunkRead( stream_t *s, avi_chunk_t *p_chk, avi_chunk_t *p_father )
         return VLC_EGENERIC;
     }
 
-    if( AVI_ChunkReadCommon( s, p_chk ) )
-    {
-        msg_Warn( (vlc_object_t*)s, "cannot read one chunk" );
+    if( AVI_ChunkReadCommon( s, p_chk, p_father ) )
         return VLC_EGENERIC;
-    }
 
     if( p_chk->common.i_chunk_fourcc == VLC_FOURCC( 0, 0, 0, 0 ) )
     {
@@ -1042,13 +1047,12 @@ void AVI_ChunkClean( stream_t *s,
 #endif
         AVI_Chunk_Function[i_index].AVI_ChunkFree_function( p_chk);
     }
-    else
+    else if( p_chk->common.i_chunk_fourcc != 0 )
     {
         msg_Warn( (vlc_object_t*)s, "unknown chunk: %4.4s (not unloaded)",
                 (char*)&p_chk->common.i_chunk_fourcc );
     }
     p_chk->common.p_first = NULL;
-    p_chk->common.p_last  = NULL;
 
     return;
 }
@@ -1106,38 +1110,38 @@ int AVI_ChunkReadRoot( stream_t *s, avi_chunk_t *p_root )
     vlc_stream_Control( s, STREAM_CAN_SEEK, &b_seekable );
 
     p_list->i_chunk_pos  = 0;
-    p_list->i_chunk_size = stream_Size( s );
+    p_list->i_chunk_size = ((UINT64_MAX - 12) >> 1) << 1;
     p_list->i_chunk_fourcc = AVIFOURCC_LIST;
     p_list->p_father = NULL;
     p_list->p_next  = NULL;
     p_list->p_first = NULL;
-    p_list->p_last  = NULL;
 
     p_list->i_type = VLC_FOURCC( 'r', 'o', 'o', 't' );
 
+    union  avi_chunk_u **pp_append = &p_root->common.p_first;
     for( ; ; )
     {
         p_chk = calloc( 1, sizeof( avi_chunk_t ) );
         if( !p_chk )
             return VLC_EGENERIC;
 
-        if( !p_root->common.p_first )
+        if( AVI_ChunkRead( s, p_chk, p_root ) != VLC_SUCCESS )
         {
-            p_root->common.p_first = p_chk;
+            AVI_ChunkClean( s, p_chk );
+            free( p_chk );
+            break;
         }
-        else
-        {
-            p_root->common.p_last->common.p_next = p_chk;
-        }
-        p_root->common.p_last = p_chk;
-
-        if( AVI_ChunkRead( s, p_chk, p_root ) ||
-           ( vlc_stream_Tell( s ) >=
-             p_chk->common.p_father->common.i_chunk_pos +
-             __EVEN( p_chk->common.p_father->common.i_chunk_size ) ) )
+        else if( vlc_stream_Tell( s ) >=
+                 p_chk->common.p_father->common.i_chunk_pos +
+                 __EVEN( p_chk->common.p_father->common.i_chunk_size ) )
         {
             break;
         }
+
+        *pp_append = p_chk;
+        while( *pp_append )
+            pp_append = &((*pp_append)->common.p_next);
+
         /* If we can't seek then stop when we 've found first RIFF-AVI */
         if( p_chk->common.i_chunk_fourcc == AVIFOURCC_RIFF &&
             p_chk->list.i_type == AVIFOURCC_AVI && !b_seekable )
@@ -1145,6 +1149,8 @@ int AVI_ChunkReadRoot( stream_t *s, avi_chunk_t *p_root )
             break;
         }
     }
+
+    p_list->i_chunk_size = stream_Size( s );
 
     AVI_ChunkDumpDebug_level( (vlc_object_t*)s, p_root, 0 );
     return VLC_SUCCESS;
@@ -1157,57 +1163,48 @@ void AVI_ChunkFreeRoot( stream_t *s,
 }
 
 
-int  AVI_ChunkCount_( avi_chunk_t *p_chk, vlc_fourcc_t i_fourcc )
+int  AVI_ChunkCount_( avi_chunk_t *p_chk, vlc_fourcc_t i_fourcc, bool b_list )
 {
-    int i_count;
-    avi_chunk_t *p_child;
-
     if( !p_chk )
-    {
         return 0;
+
+    int i_count = 0;
+    for( avi_chunk_t *p_child = p_chk->common.p_first;
+                      p_child; p_child = p_child->common.p_next )
+    {
+        if( b_list && p_child->list.i_type == 0 )
+            continue;
+
+        if( p_child->common.i_chunk_fourcc != i_fourcc &&
+            (!b_list || p_child->list.i_type != i_fourcc) )
+            continue;
+
+        i_count++;
     }
 
-    i_count = 0;
-    p_child = p_chk->common.p_first;
-    while( p_child )
-    {
-        if( p_child->common.i_chunk_fourcc == i_fourcc ||
-            ( p_child->common.i_chunk_fourcc == AVIFOURCC_LIST &&
-              p_child->list.i_type == i_fourcc ) )
-        {
-            i_count++;
-        }
-        p_child = p_child->common.p_next;
-    }
     return i_count;
 }
 
 void *AVI_ChunkFind_( avi_chunk_t *p_chk,
-                      vlc_fourcc_t i_fourcc, int i_number )
+                      vlc_fourcc_t i_fourcc, int i_number, bool b_list )
 {
-    avi_chunk_t *p_child;
     if( !p_chk )
-    {
         return NULL;
-    }
-    p_child = p_chk->common.p_first;
 
-    while( p_child )
+    for( avi_chunk_t *p_child = p_chk->common.p_first;
+                      p_child; p_child = p_child->common.p_next )
     {
-        if( p_child->common.i_chunk_fourcc == i_fourcc ||
-            ( p_child->common.i_chunk_fourcc == AVIFOURCC_LIST &&
-              p_child->list.i_type == i_fourcc ) )
-        {
-            if( i_number == 0 )
-            {
-                /* We found it */
-                return p_child;
-            }
+        if( b_list && p_child->list.i_type == 0 )
+            continue;
 
-            i_number--;
-        }
-        p_child = p_child->common.p_next;
+        if( p_child->common.i_chunk_fourcc != i_fourcc &&
+            (!b_list || p_child->list.i_type != i_fourcc) )
+            continue;
+
+        if( i_number-- == 0 )
+            return p_child; /* We found it */
     }
+
     return NULL;
 }
 

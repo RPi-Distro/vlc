@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-17 02:18+0000\n"
+"POT-Creation-Date: 2017-11-23 02:19+0000\n"
 "PO-Revision-Date: 2013-12-08 08:25+0000\n"
 "Last-Translator: sheppaul <sheppaul@naver.com>\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/vlc-trans/"
@@ -1783,7 +1783,7 @@ msgstr ""
 "서라운드로 인코딩되지 않았더라도, 이 옵션을 켜는 것이 당신의 경험을 향상시킬 "
 "것입니다, 특히 헤드폰 채널 믹서와 결합할 때."
 
-#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
+#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:942
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:65
@@ -2098,7 +2098,8 @@ msgid "Always place the video window on top of other windows."
 msgstr "항상 비디오 출력창을 다른 창 위에 둡니다."
 
 #: src/libvlc-module.c:319
-msgid "Enable wallpaper mode "
+#, fuzzy
+msgid "Enable wallpaper mode"
 msgstr "배경 모드 사용하기"
 
 #: src/libvlc-module.c:321
@@ -3489,7 +3490,8 @@ msgid "Stream filter module"
 msgstr "스트림 필터 모듈"
 
 #: src/libvlc-module.c:1005
-msgid "Stream filters are used to modify the stream that is being read. "
+#, fuzzy
+msgid "Stream filters are used to modify the stream that is being read."
 msgstr "스트림 필터는 읽고 있는 스트림을 변경하는데 사용됩니다."
 
 #: src/libvlc-module.c:1007
@@ -3499,8 +3501,7 @@ msgstr "스트림 필터 모듈"
 
 #: src/libvlc-module.c:1009
 #, fuzzy
-msgid ""
-"Demux filters are used to modify/control the stream that is being read. "
+msgid "Demux filters are used to modify/control the stream that is being read."
 msgstr "스트림 필터는 읽고 있는 스트림을 변경하는데 사용됩니다."
 
 #: src/libvlc-module.c:1011
@@ -5105,7 +5106,7 @@ msgstr "미디어 시간"
 msgid "Media View"
 msgstr "미디어 보기"
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:567
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:568
 msgid "Menu"
 msgstr "메뉴"
 
@@ -5229,7 +5230,7 @@ msgstr "파일 저장 실패함"
 msgid "Failed to open \"%s\" for writing"
 msgstr "쓰기위해 \"%s\" 열기 실패"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2681
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2679
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -6463,9 +6464,10 @@ msgid "Audio device name"
 msgstr "오디오 장치 이름"
 
 #: modules/access/dshow/dshow.cpp:137
+#, fuzzy
 msgid ""
 "Name of the audio device that will be used by the DirectShow plugin. If you "
-"don't specify anything, the default device will be used. "
+"don't specify anything, the default device will be used."
 msgstr ""
 "DirectShow 플러그인이 사용하는 오디오 장치 이름. 아무것도 지정하지 않으면, 기"
 "본 장치가 사용됩니다."
@@ -8153,7 +8155,8 @@ msgid "Genre description"
 msgstr "장르 설명"
 
 #: modules/access_output/shout.c:83
-msgid "Genre of the content. "
+#, fuzzy
+msgid "Genre of the content."
 msgstr "컨텐츠 장르."
 
 #: modules/access_output/shout.c:85
@@ -8161,15 +8164,18 @@ msgid "URL description"
 msgstr "URL 설명"
 
 #: modules/access_output/shout.c:86
-msgid "URL with information about the stream or your channel. "
+#, fuzzy
+msgid "URL with information about the stream or your channel."
 msgstr "스트림 또는 당신의 채널에 대한 정보를 포함한 URL."
 
 #: modules/access_output/shout.c:93
-msgid "Bitrate information of the transcoded stream. "
+#, fuzzy
+msgid "Bitrate information of the transcoded stream."
 msgstr "변환된 스트림의 비트레이트 정보."
 
 #: modules/access_output/shout.c:96
-msgid "Samplerate information of the transcoded stream. "
+#, fuzzy
+msgid "Samplerate information of the transcoded stream."
 msgstr "변환된 스트림의 샘플레이트 정보"
 
 #: modules/access_output/shout.c:98
@@ -8177,7 +8183,8 @@ msgid "Number of channels"
 msgstr "채널수"
 
 #: modules/access_output/shout.c:99
-msgid "Number of channels information of the transcoded stream. "
+#, fuzzy
+msgid "Number of channels information of the transcoded stream."
 msgstr "변환된 스트림의 채널 정보 개수."
 
 #: modules/access_output/shout.c:101
@@ -8185,7 +8192,8 @@ msgid "Ogg Vorbis Quality"
 msgstr "Ogg Vorbis 품질"
 
 #: modules/access_output/shout.c:102
-msgid "Ogg Vorbis Quality information of the transcoded stream. "
+#, fuzzy
+msgid "Ogg Vorbis Quality information of the transcoded stream."
 msgstr "변환된 스트림의 Ogg Vorbis 품질 정보."
 
 #: modules/access_output/shout.c:104
@@ -8494,7 +8502,8 @@ msgid "Display ID"
 msgstr "디스플레이 ID"
 
 #: modules/access/screen/screen.c:82
-msgid "Display ID. If not specified, main display ID is used. "
+#, fuzzy
+msgid "Display ID. If not specified, main display ID is used."
 msgstr "디스플레이 ID. 지정하지 않으면 주 디스플레이 ID가 사용됩니다."
 
 #: modules/access/screen/screen.c:83
@@ -8726,7 +8735,8 @@ msgid "VBI capture device"
 msgstr "VBI 캡처 장치"
 
 #: modules/access/v4l2/v4l2.c:48
-msgid "The device node where VBI data can be read  (for closed captions) "
+#, fuzzy
+msgid "The device node where VBI data can be read  (for closed captions)."
 msgstr "VBI 데이터를 읽어올 수 있는 장치 노드 (클로즈드 캡션용)"
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -11022,12 +11032,12 @@ msgstr ""
 "의 옵션이 있습니다: main, low, ssr (지원하지 않음), ltp, hev1, hev2 (기본값: "
 "low). hev1과 hev2는 현재 libfdk-aac가 활성화된 libavcodec에서만 지원됩니다."
 
-#: modules/codec/avcodec/d3d11va.c:64
+#: modules/codec/avcodec/d3d11va.c:63
 #, fuzzy
 msgid "Direct3D11 Video Acceleration"
 msgstr "DirectX 비디오 가속 (DXVA) 2.0"
 
-#: modules/codec/avcodec/dxva2.c:52
+#: modules/codec/avcodec/dxva2.c:51
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr "DirectX 비디오 가속 (DXVA) 2.0"
 
@@ -11855,9 +11865,10 @@ msgid "Group of Picture Reference Distance"
 msgstr "GOP 레퍼런스 거리"
 
 #: modules/codec/qsv.c:81
+#, fuzzy
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used. "
+"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
 msgstr ""
 "I 나 P 프레임 사이의 거리; 만약 0이면, GOP 구조는 미지정입니다. 만약 "
 "GopRefDist = 1이면 사용되는 B 프레임이 없습니다."
@@ -11879,13 +11890,14 @@ msgid "IDR interval"
 msgstr "IDR 간격"
 
 #: modules/codec/qsv.c:92
+#, fuzzy
 msgid ""
 "For H.264, IdrInterval specifies IDR-frame interval in terms of I- frames; "
 "if IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
-"SDK inserts the sequence header once at the beginning of the stream. "
+"SDK inserts the sequence header once at the beginning of the stream."
 msgstr ""
 "H.264에서, IdrInterval은 I 프레임의 측면에서 IDR 프레임 간격을 지정합니다; "
 "IdrInterval=0 이면, 모든 I 프레임은 IDR 프레임입니다. IdrInterval=1 이면 두개"
@@ -11992,9 +12004,10 @@ msgid "Convergence time of 'avbr' RateControl"
 msgstr "'avbr' 속도제어의 수렴 시간"
 
 #: modules/codec/qsv.c:135
+#, fuzzy
 msgid ""
 "Number of 100 frames before the 'avbr' rate control method reaches the "
-"requested bitrate with the requested accuracy. See the accuracy parameter. "
+"requested bitrate with the requested accuracy. See the accuracy parameter."
 msgstr ""
 "'avbr' 속도 제어 방법이 요청 정밀도와 비트레이트에 도달하기 전 100 프레임의 "
 "수. 정밀도 변수를 보세요."
@@ -12779,7 +12792,7 @@ msgstr "텍스트 자막  디코더"
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:100
+#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:97
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr "CP949"
@@ -13557,8 +13570,9 @@ msgid "Weighted prediction for P-frames"
 msgstr "B-프레임 가중 예측"
 
 #: modules/codec/x264.c:295
+#, fuzzy
 msgid ""
-" Weighted prediction for P-frames:  - 0: Disabled\n"
+"Weighted prediction for P-frames:  - 0: Disabled\n"
 " - 1: Blind offset\n"
 " - 2: Smart analysis\n"
 msgstr ""
@@ -14027,14 +14041,14 @@ msgstr "D-Bus 제어 인터페이스"
 #: modules/gui/macosx/VLCMainWindow.m:669
 #: modules/gui/macosx/VLCMainWindow.m:675
 #: modules/gui/macosx/VLCMainWindow.m:1273 modules/gui/ncurses.c:1035
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1206
-#: modules/gui/qt/main_interface.cpp:1210
-#: modules/gui/qt/main_interface.cpp:1249
-#: modules/gui/qt/main_interface.cpp:1251
-#: modules/gui/qt/main_interface.cpp:1360
-#: modules/gui/qt/main_interface.cpp:1377
-#: modules/gui/qt/main_interface.cpp:1385
-#: modules/gui/qt/main_interface.cpp:1408 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1213
+#: modules/gui/qt/main_interface.cpp:1217
+#: modules/gui/qt/main_interface.cpp:1256
+#: modules/gui/qt/main_interface.cpp:1258
+#: modules/gui/qt/main_interface.cpp:1367
+#: modules/gui/qt/main_interface.cpp:1384
+#: modules/gui/qt/main_interface.cpp:1392
+#: modules/gui/qt/main_interface.cpp:1415 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -14926,27 +14940,27 @@ msgstr ""
 "AVI 파일의 인덱스를 재생성합니다. AVI 파일이 손상되었거나 불완전할 때 (탐색불"
 "능) 사용하세요."
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:66
 msgid "Ask for action"
 msgstr "실행 전 묻기"
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:67
 msgid "Always fix"
 msgstr "항상 고치기"
 
-#: modules/demux/avi/avi.c:71
+#: modules/demux/avi/avi.c:68
 msgid "Never fix"
 msgstr "고치지 않기"
 
-#: modules/demux/avi/avi.c:72
+#: modules/demux/avi/avi.c:69
 msgid "Fix when necessary"
 msgstr "필요시 고치기"
 
-#: modules/demux/avi/avi.c:76
+#: modules/demux/avi/avi.c:73
 msgid "AVI demuxer"
 msgstr "AVI 디먹서"
 
-#: modules/demux/avi/avi.c:802 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:797 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -14962,28 +14976,28 @@ msgstr ""
 "이 작업은 파일이 크면 시간이 오래 걸릴 수 있습니다.\n"
 "어떻게 할까요?"
 
-#: modules/demux/avi/avi.c:810
+#: modules/demux/avi/avi.c:805
 msgid "Do not play"
 msgstr "재생하지 않음"
 
-#: modules/demux/avi/avi.c:811
+#: modules/demux/avi/avi.c:806
 msgid "Build index then play"
 msgstr "인덱스를 만들고 재생"
 
-#: modules/demux/avi/avi.c:812
+#: modules/demux/avi/avi.c:807
 msgid "Play as is"
 msgstr "그대로 재생"
 
-#: modules/demux/avi/avi.c:813 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:808 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "깨지거나 없는 AVI 인덱스"
 
-#: modules/demux/avi/avi.c:2682
+#: modules/demux/avi/avi.c:2680
 msgid "Broken or missing AVI Index"
 msgstr "깨지거나 없는 AVI 인덱스"
 
-#: modules/demux/avi/avi.c:2683
+#: modules/demux/avi/avi.c:2681
 msgid "Fixing AVI Index..."
 msgstr "AVI 인덱스 수정..."
 
@@ -15379,9 +15393,10 @@ msgid "Packet size in bytes to decrypt"
 msgstr "복호화할 패킷 크기 (바이트)"
 
 #: modules/demux/mpeg/ts.c:100
+#, fuzzy
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
-"subtract the TS-header from the value before decrypting. "
+"subtract the TS-header from the value before decrypting."
 msgstr ""
 "복호화할 TS 패킷의 크기를 지정합니다. 암호해독 루틴은 암호해독 이전의 값에서 "
 "TS 헤더를 뺍니다."
@@ -15680,9 +15695,10 @@ msgid "Forces the audio language"
 msgstr "오디오 언어를 강제로 사용합니다"
 
 #: modules/demux/rawaud.c:54
+#, fuzzy
 msgid ""
 "Forces the audio language for the output mux. Three letter ISO639 code. "
-"Default is 'eng'. "
+"Default is 'eng'."
 msgstr ""
 "출력 먹스에 오디오 언어를 강제로 사용합니다. 3개 문자 ISO639 코드. 기본값은 "
 "'eng' 입니다."
@@ -18744,11 +18760,13 @@ msgid " <up>,<down>            Seek +/-5%%"
 msgstr " <up>,<down>            탐색하기 +/-5%%"
 
 #: modules/gui/ncurses.c:1055
-msgid "[Repeat] "
+#, fuzzy
+msgid "[Repeat]"
 msgstr "[반복] "
 
 #: modules/gui/ncurses.c:1056
-msgid "[Random] "
+#, fuzzy
+msgid "[Random]"
 msgstr "[무작위] "
 
 #: modules/gui/ncurses.c:1057
@@ -18807,28 +18825,29 @@ msgstr "열기: %s"
 msgid "Find: %s"
 msgstr "찾기: %s"
 
-#: modules/gui/qt/components/controller.cpp:342
+#: modules/gui/qt/components/controller.cpp:343
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt/components/controller.cpp:447
+#: modules/gui/qt/components/controller.cpp:448
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr "모두 반복, 한 개 반복, 반복 없음을 토글하려면 클릭하세요"
 
-#: modules/gui/qt/components/controller.cpp:548
+#: modules/gui/qt/components/controller.cpp:549
 msgid "Previous Chapter/Title"
 msgstr "이전 챕터/타이틀"
 
-#: modules/gui/qt/components/controller.cpp:554
+#: modules/gui/qt/components/controller.cpp:555
 msgid "Next Chapter/Title"
 msgstr "다음 챕터/타이틀"
 
-#: modules/gui/qt/components/controller.cpp:603
+#: modules/gui/qt/components/controller.cpp:604
 msgid "Teletext Activation"
 msgstr "문자다중방송 활성화"
 
-#: modules/gui/qt/components/controller.cpp:619
-msgid "Toggle Transparency "
+#: modules/gui/qt/components/controller.cpp:620
+#, fuzzy
+msgid "Toggle Transparency"
 msgstr "투명도 토글하기"
 
 #: modules/gui/qt/components/controller.hpp:43
@@ -20058,7 +20077,8 @@ msgid "Save log file as..."
 msgstr "로그 파일을 다른 이름으로 저장..."
 
 #: modules/gui/qt/dialogs/messages.cpp:261
-msgid "Texts / Logs (*.log *.txt);; All (*.*) "
+#, fuzzy
+msgid "Texts / Logs (*.log *.txt);; All (*.*)"
 msgstr "텍스트 / 로그 (*.log *.txt);; 모두 (*.*) "
 
 #: modules/gui/qt/dialogs/messages.cpp:267
@@ -20584,20 +20604,20 @@ msgstr "일정:"
 msgid "VOD: "
 msgstr "VOD: "
 
-#: modules/gui/qt/main_interface.cpp:369
+#: modules/gui/qt/main_interface.cpp:372
 msgid "Do you want to restart the playback where left off?"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:375
+#: modules/gui/qt/main_interface.cpp:378
 #, fuzzy
 msgid "&Continue"
 msgstr "계속"
 
-#: modules/gui/qt/main_interface.cpp:1361
+#: modules/gui/qt/main_interface.cpp:1368
 msgid "Control menu for the player"
 msgstr "재생기 제어 메뉴"
 
-#: modules/gui/qt/main_interface.cpp:1405
+#: modules/gui/qt/main_interface.cpp:1412
 msgid "Paused"
 msgstr "일시중지"
 
@@ -21042,15 +21062,17 @@ msgid "Regular expression used to filter the recent items played in the player"
 msgstr "재생기에서 재생한 최근 항목을 골라 내는데 사용하는 정규 표현식"
 
 #: modules/gui/qt/qt.cpp:139
-msgid "Define the colors of the volume slider "
+#, fuzzy
+msgid "Define the colors of the volume slider"
 msgstr "볼륨 슬라이더의 색상 정의하기"
 
 #: modules/gui/qt/qt.cpp:140
+#, fuzzy
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
 "Default is '255;255;255;20;226;20;255;176;15;235;30;20'\n"
-"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255' "
+"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255'"
 msgstr ""
 "볼륨 슬라이더의 색상을 정의합니다.\n"
 "';' 로 분리된 12 숫자로 지정하세요.\n"
@@ -21058,7 +21080,8 @@ msgstr ""
 "'30;30;50;40;40;100;50;50;160;150;150;255' 로 대체 가능합니다."
 
 #: modules/gui/qt/qt.cpp:145
-msgid "Selection of the starting mode and look "
+#, fuzzy
+msgid "Selection of the starting mode and look"
 msgstr "시작 모드 및 모양 선택"
 
 #: modules/gui/qt/qt.cpp:146
@@ -22249,7 +22272,7 @@ msgstr ""
 msgid ""
 "However, the security certificate presented by the server changed since the "
 "previous visit and was not authenticated by any trusted Certificate "
-"Authority. "
+"Authority."
 msgstr ""
 "%s 접근을 시도했습니다. 그러나 지난번 방문 이후로 서버가 제공하는 보안 증명"
 "이 바뀌었고, 어떤 신뢰된 인증 기관도 보안 증명을 보증할 수 없습니다. 이 문제"
@@ -22899,7 +22922,8 @@ msgid "Timeout (ms)"
 msgstr "시간제한 (ms)"
 
 #: modules/notify/notify.c:56
-msgid "How long the notification will be displayed "
+#, fuzzy
+msgid "How long the notification will be displayed."
 msgstr "알림을 표시할 기간"
 
 #: modules/notify/notify.c:61
@@ -23223,7 +23247,7 @@ msgid "Applications"
 msgstr "어플리케이션"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:320
+#: modules/video_output/win32/direct3d9.c:315
 msgid "Desktop"
 msgstr "데스크탑"
 
@@ -23449,9 +23473,10 @@ msgstr ""
 "스 사용시에 유용합니다."
 
 #: modules/spu/marq.c:109
+#, fuzzy
 msgid ""
 "Opacity (inverse of transparency) of overlayed text. 0 = transparent, 255 = "
-"totally opaque. "
+"totally opaque."
 msgstr ""
 "오버레이 텍스트의 불투명도 (투명도의 반대). 0 = 투명, 255 = 완전 불투명."
 
@@ -23706,8 +23731,8 @@ msgid "VNC poll interval"
 msgstr "VNC 폴 간견"
 
 #: modules/spu/remoteosd.c:85
-msgid ""
-"In this interval an update from VNC is requested, default every 300 ms. "
+#, fuzzy
+msgid "In this interval an update from VNC is requested, default every 300 ms."
 msgstr "이 간격으로 VNC로부터 업데이트가 필요합니다. 기본값은 매 300 ms."
 
 #: modules/spu/remoteosd.c:87
@@ -24117,11 +24142,12 @@ msgid "Fallback to placeholder stream when out of data"
 msgstr "데이터가 없을 때 플레이스홀더 스트림으로 돌아오기"
 
 #: modules/stream_out/bridge.c:67
+#, fuzzy
 msgid ""
 "If set to true, the bridge will discard all input elementary streams except "
 "if it doesn't receive data from another bridge-in. This can be used to "
 "configure a place holder stream when the real source breaks. Source and "
-"placeholder streams should have the same format. "
+"placeholder streams should have the same format."
 msgstr ""
 "true로 설정시, 만약 다른 bridge-in 에서 자료를 수신하지 않는다면, bridge는 모"
 "든 입력 엘리멘터리 스트림을 버릴 것입니다. 이것은 실제 소스가 중단될 때 플레"
@@ -24978,9 +25004,10 @@ msgid "Text opacity"
 msgstr "텍스트 투명도"
 
 #: modules/text_renderer/freetype/freetype.c:92
+#, fuzzy
 msgid ""
 "The opacity (inverse of transparency) of the text that will be rendered on "
-"the video. 0 = transparent, 255 = totally opaque. "
+"the video. 0 = transparent, 255 = totally opaque."
 msgstr ""
 "비디오에 렌더링될 문자 불투명도 (투명도의 반대). 0 = 투명, 255 = 완전 불투명."
 
@@ -27578,7 +27605,7 @@ msgstr "변수 무시하기"
 #: modules/visualization/visual/visual.c:67
 msgid ""
 "The parameter alpha for the Kaiser window. Increasing alpha increases the "
-"main-lobe width and decreases the side-lobe amplitude. "
+"main-lobe width and decreases the side-lobe amplitude."
 msgstr ""
 
 #: modules/visualization/visual/visual.c:70

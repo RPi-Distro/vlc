@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-17 02:18+0000\n"
+"POT-Creation-Date: 2017-11-23 02:19+0000\n"
 "PO-Revision-Date: 2013-12-08 09:55+0000\n"
 "Last-Translator: Dean Lee <xslidian@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/vlc-"
@@ -1748,7 +1748,7 @@ msgstr ""
 "如果流实际上不是使用杜比环绕进行编码的话，打开此选项可能会增强您的体验，特别"
 "是和耳机声道混音器一起使用时。"
 
-#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:941
+#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:942
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:443
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:65
@@ -2048,7 +2048,8 @@ msgid "Always place the video window on top of other windows."
 msgstr "总是将视频窗口放置在其它窗口的最前。"
 
 #: src/libvlc-module.c:319
-msgid "Enable wallpaper mode "
+#, fuzzy
+msgid "Enable wallpaper mode"
 msgstr "开启壁纸模式"
 
 #: src/libvlc-module.c:321
@@ -3376,7 +3377,8 @@ msgid "Stream filter module"
 msgstr "串流滤镜模块"
 
 #: src/libvlc-module.c:1005
-msgid "Stream filters are used to modify the stream that is being read. "
+#, fuzzy
+msgid "Stream filters are used to modify the stream that is being read."
 msgstr "串流滤镜被用于修改正在读取的串流。"
 
 #: src/libvlc-module.c:1007
@@ -3386,8 +3388,7 @@ msgstr "串流滤镜模块"
 
 #: src/libvlc-module.c:1009
 #, fuzzy
-msgid ""
-"Demux filters are used to modify/control the stream that is being read. "
+msgid "Demux filters are used to modify/control the stream that is being read."
 msgstr "串流滤镜被用于修改正在读取的串流。"
 
 #: src/libvlc-module.c:1011
@@ -4971,7 +4972,7 @@ msgstr "媒体时间"
 msgid "Media View"
 msgstr "媒体视图"
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:567
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:568
 msgid "Menu"
 msgstr "菜单"
 
@@ -5095,7 +5096,7 @@ msgstr "文件保存失败"
 msgid "Failed to open \"%s\" for writing"
 msgstr "无法打开 \"%s\" 供写入"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2681
+#: src/misc/update.c:596 src/misc/update.c:726 modules/demux/avi/avi.c:2679
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -6316,9 +6317,10 @@ msgid "Audio device name"
 msgstr "音频设备名称"
 
 #: modules/access/dshow/dshow.cpp:137
+#, fuzzy
 msgid ""
 "Name of the audio device that will be used by the DirectShow plugin. If you "
-"don't specify anything, the default device will be used. "
+"don't specify anything, the default device will be used."
 msgstr ""
 "将被 DirectShow 插件使用的音频设备名称。如果您不指定任何设备，则将使用默认的"
 "设备。"
@@ -7965,7 +7967,8 @@ msgid "Genre description"
 msgstr "流派描述"
 
 #: modules/access_output/shout.c:83
-msgid "Genre of the content. "
+#, fuzzy
+msgid "Genre of the content."
 msgstr "内容的流派。"
 
 #: modules/access_output/shout.c:85
@@ -7973,15 +7976,18 @@ msgid "URL description"
 msgstr "URL 描述"
 
 #: modules/access_output/shout.c:86
-msgid "URL with information about the stream or your channel. "
+#, fuzzy
+msgid "URL with information about the stream or your channel."
 msgstr "您的流或频道的 URL 信息。"
 
 #: modules/access_output/shout.c:93
-msgid "Bitrate information of the transcoded stream. "
+#, fuzzy
+msgid "Bitrate information of the transcoded stream."
 msgstr "被转码流的位率信息。"
 
 #: modules/access_output/shout.c:96
-msgid "Samplerate information of the transcoded stream. "
+#, fuzzy
+msgid "Samplerate information of the transcoded stream."
 msgstr "被转码流的采样率信息。"
 
 #: modules/access_output/shout.c:98
@@ -7989,7 +7995,8 @@ msgid "Number of channels"
 msgstr "频道编号"
 
 #: modules/access_output/shout.c:99
-msgid "Number of channels information of the transcoded stream. "
+#, fuzzy
+msgid "Number of channels information of the transcoded stream."
 msgstr "被转码流的频道编号信息。"
 
 #: modules/access_output/shout.c:101
@@ -7997,7 +8004,8 @@ msgid "Ogg Vorbis Quality"
 msgstr "Ogg Vorbis 质量"
 
 #: modules/access_output/shout.c:102
-msgid "Ogg Vorbis Quality information of the transcoded stream. "
+#, fuzzy
+msgid "Ogg Vorbis Quality information of the transcoded stream."
 msgstr "被转码流的 Ogg Vorbis 质量信息。"
 
 #: modules/access_output/shout.c:104
@@ -8299,7 +8307,8 @@ msgid "Display ID"
 msgstr "显示器 ID"
 
 #: modules/access/screen/screen.c:82
-msgid "Display ID. If not specified, main display ID is used. "
+#, fuzzy
+msgid "Display ID. If not specified, main display ID is used."
 msgstr "显示器 ID。若未指定，将采用主显示器 ID。"
 
 #: modules/access/screen/screen.c:83
@@ -8530,7 +8539,8 @@ msgid "VBI capture device"
 msgstr "VBI 捕获设备"
 
 #: modules/access/v4l2/v4l2.c:48
-msgid "The device node where VBI data can be read  (for closed captions) "
+#, fuzzy
+msgid "The device node where VBI data can be read  (for closed captions)."
 msgstr "可读取 VBI 数据的设备节点  (闭路字幕需要) "
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -10783,12 +10793,12 @@ msgstr ""
 "持)、ltp、hev1、hev2 (默认: low)。hev1 与 hev2 当前仅通过启用 libfdk-aac 的 "
 "libavcodec 支持"
 
-#: modules/codec/avcodec/d3d11va.c:64
+#: modules/codec/avcodec/d3d11va.c:63
 #, fuzzy
 msgid "Direct3D11 Video Acceleration"
 msgstr "DirectX 视频加速 (DXVA) 2.0"
 
-#: modules/codec/avcodec/dxva2.c:52
+#: modules/codec/avcodec/dxva2.c:51
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr "DirectX 视频加速 (DXVA) 2.0"
 
@@ -11597,9 +11607,10 @@ msgid "Group of Picture Reference Distance"
 msgstr "画面组参考距离"
 
 #: modules/codec/qsv.c:81
+#, fuzzy
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used. "
+"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
 msgstr ""
 "I 或 P 关键帧之间的距离; 若为零，则认为 GOP 结构未指定。注: 若 GopRefDist = "
 "1，则将不使用 B 帧。"
@@ -11621,13 +11632,14 @@ msgid "IDR interval"
 msgstr "IDR 间隔"
 
 #: modules/codec/qsv.c:92
+#, fuzzy
 msgid ""
 "For H.264, IdrInterval specifies IDR-frame interval in terms of I- frames; "
 "if IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
-"SDK inserts the sequence header once at the beginning of the stream. "
+"SDK inserts the sequence header once at the beginning of the stream."
 msgstr ""
 "对于 H.264，IdrInterval 指定了 IDR 帧的间隔，单位为 I 帧; 若 IdrInterval=0，"
 "则每个 I 帧均为 IDR 帧。若 IdrInterval=1，则每隔一个 I 帧均为 IDR 帧，以此类"
@@ -11727,9 +11739,10 @@ msgid "Convergence time of 'avbr' RateControl"
 msgstr "'avbr' 速率控制模式下的收敛时间"
 
 #: modules/codec/qsv.c:135
+#, fuzzy
 msgid ""
 "Number of 100 frames before the 'avbr' rate control method reaches the "
-"requested bitrate with the requested accuracy. See the accuracy parameter. "
+"requested bitrate with the requested accuracy. See the accuracy parameter."
 msgstr ""
 "'avbr' 速率控制方法达到指定精度下指定比特率之前允许的 100 帧的倍数。参见精度"
 "参数。"
@@ -12506,7 +12519,7 @@ msgstr "文本字幕解码器"
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:100
+#: modules/codec/subsdec.c:291 modules/demux/avi/avi.c:97
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr "GB18030"
@@ -13264,8 +13277,9 @@ msgid "Weighted prediction for P-frames"
 msgstr "P 帧加权预测"
 
 #: modules/codec/x264.c:295
+#, fuzzy
 msgid ""
-" Weighted prediction for P-frames:  - 0: Disabled\n"
+"Weighted prediction for P-frames:  - 0: Disabled\n"
 " - 1: Blind offset\n"
 " - 2: Smart analysis\n"
 msgstr ""
@@ -13727,14 +13741,14 @@ msgstr "D-Bus 控制界面"
 #: modules/gui/macosx/VLCMainWindow.m:669
 #: modules/gui/macosx/VLCMainWindow.m:675
 #: modules/gui/macosx/VLCMainWindow.m:1273 modules/gui/ncurses.c:1035
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1206
-#: modules/gui/qt/main_interface.cpp:1210
-#: modules/gui/qt/main_interface.cpp:1249
-#: modules/gui/qt/main_interface.cpp:1251
-#: modules/gui/qt/main_interface.cpp:1360
-#: modules/gui/qt/main_interface.cpp:1377
-#: modules/gui/qt/main_interface.cpp:1385
-#: modules/gui/qt/main_interface.cpp:1408 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1213
+#: modules/gui/qt/main_interface.cpp:1217
+#: modules/gui/qt/main_interface.cpp:1256
+#: modules/gui/qt/main_interface.cpp:1258
+#: modules/gui/qt/main_interface.cpp:1367
+#: modules/gui/qt/main_interface.cpp:1384
+#: modules/gui/qt/main_interface.cpp:1392
+#: modules/gui/qt/main_interface.cpp:1415 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -14616,27 +14630,27 @@ msgstr ""
 "为 AVI 文件创建一个索引。如果您的 AVI 文件已损坏或不完整 (无法搜索) 请使用此"
 "功能。"
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:66
 msgid "Ask for action"
 msgstr "询问操作"
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:67
 msgid "Always fix"
 msgstr "总是修复"
 
-#: modules/demux/avi/avi.c:71
+#: modules/demux/avi/avi.c:68
 msgid "Never fix"
 msgstr "不修复"
 
-#: modules/demux/avi/avi.c:72
+#: modules/demux/avi/avi.c:69
 msgid "Fix when necessary"
 msgstr "需要时修复"
 
-#: modules/demux/avi/avi.c:76
+#: modules/demux/avi/avi.c:73
 msgid "AVI demuxer"
 msgstr "AVI 去复用器"
 
-#: modules/demux/avi/avi.c:802 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:797 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -14651,28 +14665,28 @@ msgstr ""
 "这一步对于大文件可能要耗费较长时间。\n"
 "您打算如何操作?"
 
-#: modules/demux/avi/avi.c:810
+#: modules/demux/avi/avi.c:805
 msgid "Do not play"
 msgstr "不要播放"
 
-#: modules/demux/avi/avi.c:811
+#: modules/demux/avi/avi.c:806
 msgid "Build index then play"
 msgstr "建立索引再播放"
 
-#: modules/demux/avi/avi.c:812
+#: modules/demux/avi/avi.c:807
 msgid "Play as is"
 msgstr "原样播放"
 
-#: modules/demux/avi/avi.c:813 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:808 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "AVI 索引损坏或丢失"
 
-#: modules/demux/avi/avi.c:2682
+#: modules/demux/avi/avi.c:2680
 msgid "Broken or missing AVI Index"
 msgstr "AVI 索引损坏或丢失"
 
-#: modules/demux/avi/avi.c:2683
+#: modules/demux/avi/avi.c:2681
 msgid "Fixing AVI Index..."
 msgstr "正在修复 AVI 索引..."
 
@@ -15057,9 +15071,10 @@ msgid "Packet size in bytes to decrypt"
 msgstr "以字节为单位的要解密的数据包大小"
 
 #: modules/demux/mpeg/ts.c:100
+#, fuzzy
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
-"subtract the TS-header from the value before decrypting. "
+"subtract the TS-header from the value before decrypting."
 msgstr "指定要解密的 TS 数据包大小。解密通常要在之前从值中去掉 TS 头部。"
 
 #: modules/demux/mpeg/ts.c:104
@@ -15354,9 +15369,10 @@ msgid "Forces the audio language"
 msgstr "强制音频语言"
 
 #: modules/demux/rawaud.c:54
+#, fuzzy
 msgid ""
 "Forces the audio language for the output mux. Three letter ISO639 code. "
-"Default is 'eng'. "
+"Default is 'eng'."
 msgstr "强制输出混流的音频语言。三个字母的 ISO639 码。默认为 'eng'。"
 
 #: modules/demux/rawaud.c:64
@@ -18381,11 +18397,13 @@ msgid " <up>,<down>            Seek +/-5%%"
 msgstr " <up>,<down>            定位 +/-5%%"
 
 #: modules/gui/ncurses.c:1055
-msgid "[Repeat] "
+#, fuzzy
+msgid "[Repeat]"
 msgstr "[重复] "
 
 #: modules/gui/ncurses.c:1056
-msgid "[Random] "
+#, fuzzy
+msgid "[Random]"
 msgstr "[随机] "
 
 #: modules/gui/ncurses.c:1057
@@ -18444,28 +18462,29 @@ msgstr "打开: %s"
 msgid "Find: %s"
 msgstr "查找: %s"
 
-#: modules/gui/qt/components/controller.cpp:342
+#: modules/gui/qt/components/controller.cpp:343
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt/components/controller.cpp:447
+#: modules/gui/qt/components/controller.cpp:448
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr "单击可切换循环全部/循环单首/不循环"
 
-#: modules/gui/qt/components/controller.cpp:548
+#: modules/gui/qt/components/controller.cpp:549
 msgid "Previous Chapter/Title"
 msgstr "上一个章节/标题"
 
-#: modules/gui/qt/components/controller.cpp:554
+#: modules/gui/qt/components/controller.cpp:555
 msgid "Next Chapter/Title"
 msgstr "下一个章节/标题"
 
-#: modules/gui/qt/components/controller.cpp:603
+#: modules/gui/qt/components/controller.cpp:604
 msgid "Teletext Activation"
 msgstr "Teletext 激活"
 
-#: modules/gui/qt/components/controller.cpp:619
-msgid "Toggle Transparency "
+#: modules/gui/qt/components/controller.cpp:620
+#, fuzzy
+msgid "Toggle Transparency"
 msgstr "打开或关闭透明度"
 
 #: modules/gui/qt/components/controller.hpp:43
@@ -19686,7 +19705,8 @@ msgid "Save log file as..."
 msgstr "日志文件另存为..."
 
 #: modules/gui/qt/dialogs/messages.cpp:261
-msgid "Texts / Logs (*.log *.txt);; All (*.*) "
+#, fuzzy
+msgid "Texts / Logs (*.log *.txt);; All (*.*)"
 msgstr "文本 / 日志 (*.log *.txt);; 所有 (*.*) "
 
 #: modules/gui/qt/dialogs/messages.cpp:267
@@ -20208,20 +20228,20 @@ msgstr "计划:"
 msgid "VOD: "
 msgstr "VOD: "
 
-#: modules/gui/qt/main_interface.cpp:369
+#: modules/gui/qt/main_interface.cpp:372
 msgid "Do you want to restart the playback where left off?"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:375
+#: modules/gui/qt/main_interface.cpp:378
 #, fuzzy
 msgid "&Continue"
 msgstr "继续"
 
-#: modules/gui/qt/main_interface.cpp:1361
+#: modules/gui/qt/main_interface.cpp:1368
 msgid "Control menu for the player"
 msgstr "用于播放器的控制菜单"
 
-#: modules/gui/qt/main_interface.cpp:1405
+#: modules/gui/qt/main_interface.cpp:1412
 msgid "Paused"
 msgstr "已暂停"
 
@@ -20662,15 +20682,17 @@ msgid "Regular expression used to filter the recent items played in the player"
 msgstr "用于过滤播放器最近播放过的项目的正则表达式"
 
 #: modules/gui/qt/qt.cpp:139
-msgid "Define the colors of the volume slider "
+#, fuzzy
+msgid "Define the colors of the volume slider"
 msgstr "定义音量滑杆的颜色"
 
 #: modules/gui/qt/qt.cpp:140
+#, fuzzy
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
 "Default is '255;255;255;20;226;20;255;176;15;235;30;20'\n"
-"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255' "
+"An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255'"
 msgstr ""
 "定义音量滑杆的颜色\n"
 "通过一个由 ';' 分隔的 12 位数字指定\n"
@@ -20678,7 +20700,8 @@ msgstr ""
 "另一个选择是 '30;30;50;40;40;100;50;50;160;150;150;255'"
 
 #: modules/gui/qt/qt.cpp:145
-msgid "Selection of the starting mode and look "
+#, fuzzy
+msgid "Selection of the starting mode and look"
 msgstr "选择启动模式和外观"
 
 #: modules/gui/qt/qt.cpp:146
@@ -21852,7 +21875,7 @@ msgstr ""
 msgid ""
 "However, the security certificate presented by the server changed since the "
 "previous visit and was not authenticated by any trusted Certificate "
-"Authority. "
+"Authority."
 msgstr ""
 "您正尝试访问 %s。然而，服务器出示的安全证书与上次访问时出示的不同，并且无法通"
 "过任何可信证书颁发机构的验证。该问题可能因配置错误导致，也可能是因入侵或隐私"
@@ -22487,7 +22510,8 @@ msgid "Timeout (ms)"
 msgstr "超时 (毫秒)"
 
 #: modules/notify/notify.c:56
-msgid "How long the notification will be displayed "
+#, fuzzy
+msgid "How long the notification will be displayed."
 msgstr "提示将显示多长时间"
 
 #: modules/notify/notify.c:61
@@ -22808,7 +22832,7 @@ msgid "Applications"
 msgstr "应用程序"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:320
+#: modules/video_output/win32/direct3d9.c:315
 msgid "Desktop"
 msgstr "桌面"
 
@@ -23032,9 +23056,10 @@ msgstr ""
 "字串更新的间隔毫秒数。这在使用元数据或时间格式时间格式字串序列时很有用。"
 
 #: modules/spu/marq.c:109
+#, fuzzy
 msgid ""
 "Opacity (inverse of transparency) of overlayed text. 0 = transparent, 255 = "
-"totally opaque. "
+"totally opaque."
 msgstr "覆盖文本的不透明度 (相对于透明度)。0 = 透明，255 = 完全不透明。"
 
 #: modules/spu/marq.c:111 modules/spu/rss.c:148
@@ -23281,8 +23306,8 @@ msgid "VNC poll interval"
 msgstr "VNC 查询间隔"
 
 #: modules/spu/remoteosd.c:85
-msgid ""
-"In this interval an update from VNC is requested, default every 300 ms. "
+#, fuzzy
+msgid "In this interval an update from VNC is requested, default every 300 ms."
 msgstr "需要 VNC 的更新间隔，默认为每 300 毫秒。"
 
 #: modules/spu/remoteosd.c:87
@@ -23675,11 +23700,12 @@ msgid "Fallback to placeholder stream when out of data"
 msgstr "缺数据时退回到占位流"
 
 #: modules/stream_out/bridge.c:67
+#, fuzzy
 msgid ""
 "If set to true, the bridge will discard all input elementary streams except "
 "if it doesn't receive data from another bridge-in. This can be used to "
 "configure a place holder stream when the real source breaks. Source and "
-"placeholder streams should have the same format. "
+"placeholder streams should have the same format."
 msgstr ""
 "如果设为 true，桥没有从其他连入桥接收到数据时将忽略所有的输入基本流。这可在真"
 "实源中断时用于配置占位流。源与占位流的格式应该相同。"
@@ -24507,9 +24533,10 @@ msgid "Text opacity"
 msgstr "文本不透明度"
 
 #: modules/text_renderer/freetype/freetype.c:92
+#, fuzzy
 msgid ""
 "The opacity (inverse of transparency) of the text that will be rendered on "
-"the video. 0 = transparent, 255 = totally opaque. "
+"the video. 0 = transparent, 255 = totally opaque."
 msgstr ""
 "将要在视频上渲染的文本不透明度 (相对于透明度)。0 = 透明、255 = 完全不透明。"
 
@@ -27044,7 +27071,7 @@ msgstr "覆盖参数"
 #: modules/visualization/visual/visual.c:67
 msgid ""
 "The parameter alpha for the Kaiser window. Increasing alpha increases the "
-"main-lobe width and decreases the side-lobe amplitude. "
+"main-lobe width and decreases the side-lobe amplitude."
 msgstr ""
 
 #: modules/visualization/visual/visual.c:70

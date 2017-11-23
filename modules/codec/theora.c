@@ -2,7 +2,7 @@
  * theora.c: theora decoder module making use of libtheora.
  *****************************************************************************
  * Copyright (C) 1999-2012 VLC authors and VideoLAN
- * $Id: 14401263f462ff88d314ba93b21d6495113b65ef $
+ * $Id: d48edaab475d4a4e7d422d8984075e621e23f14b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -332,10 +332,10 @@ static int ProcessHeaders( decoder_t *p_dec )
         p_dec->fmt_out.video.i_frame_rate_base = p_sys->ti.fps_denominator;
     }
 
-    msg_Dbg( p_dec, "%dx%d %.02f fps video, frame content "
+    msg_Dbg( p_dec, "%dx%d %u/%u fps video, frame content "
              "is %dx%d with offset (%d,%d)",
              p_sys->ti.frame_width, p_sys->ti.frame_height,
-             (double)p_sys->ti.fps_numerator/p_sys->ti.fps_denominator,
+             p_sys->ti.fps_numerator, p_sys->ti.fps_denominator,
              p_sys->ti.pic_width, p_sys->ti.pic_height,
              p_sys->ti.pic_x, p_sys->ti.pic_y );
 

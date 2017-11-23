@@ -228,7 +228,7 @@ ALSA_CFLAGS = @ALSA_CFLAGS@
 ALSA_LIBS = @ALSA_LIBS@
 ALTIVEC_CFLAGS = @ALTIVEC_CFLAGS@
 AMTAR = @AMTAR@
-AM_CPPFLAGS = -DMODULE_STRING=\"libvlc\"
+AM_CPPFLAGS = @AM_CPPFLAGS@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AOM_CFLAGS = @AOM_CFLAGS@
 AOM_LIBS = @AOM_LIBS@
@@ -1077,7 +1077,7 @@ libvlc_la_LIBADD = \
 	../src/libvlccore.la ../compat/libcompat.la $(LIBPTHREAD) $(LIBM)
 
 libvlc_la_LDFLAGS = $(LDFLAGS_libvlc) -no-undefined -version-info \
-	10:0:5 -export-symbols $(srcdir)/libvlc.sym $(am__append_2) \
+	11:0:6 -export-symbols $(srcdir)/libvlc.sym $(am__append_2) \
 	$(am__append_3) $(am__append_4)
 libvlc_la_DEPENDENCIES = libvlc.sym $(am__append_1)
 pkgconfig_DATA = libvlc.pc

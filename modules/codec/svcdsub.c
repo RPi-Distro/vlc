@@ -2,7 +2,7 @@
  * svcdsub.c : Overlay Graphics Text (SVCD subtitles) decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 VLC authors and VideoLAN
- * $Id: 581c9c3059e5bdd0cc5ebfb8b9b29a6ecc96bf29 $
+ * $Id: 81291bda71d600aae3f8e3a0a3fdfe507c6c1918 $
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -51,7 +51,7 @@ vlc_module_begin ()
     set_capability( "spu decoder", 50 )
     set_callbacks( DecoderOpen, DecoderClose )
 
-    add_obsolete_integer ( MODULE_STRING "-debug" )
+    add_obsolete_integer ( "svcdsub-debug" )
 
     add_submodule ()
     set_description( N_("Philips OGT (SVCD subtitle) packetizer") )

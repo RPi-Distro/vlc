@@ -2,7 +2,7 @@
  * notify.c : libnotify notification plugin
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: bb8113852bd3def0610875a37a2d5587dd0b0566 $
+ * $Id: bd6bba6c32c8881bcb84c7d5030116a5508181ef $
  *
  * Authors: Christophe Mutricy <xtophe -at- videolan -dot- org>
  *
@@ -53,7 +53,7 @@ static void Close   ( vlc_object_t * );
 #define APPLICATION_NAME "VLC media player"
 
 #define TIMEOUT_TEXT N_("Timeout (ms)")
-#define TIMEOUT_LONGTEXT N_("How long the notification will be displayed ")
+#define TIMEOUT_LONGTEXT N_("How long the notification will be displayed.")
 
 vlc_module_begin ()
     set_category( CAT_INTERFACE )

@@ -2,7 +2,7 @@
  * subsdec.c : text subtitle decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: c8b82c034e6a66a4ab6477e46137965eb1a5e94d $
+ * $Id: af6ec13039494381e14eba7dabe4108ae592c9fa $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -904,6 +904,15 @@ static text_segment_t* ParseSubtitles( int *pi_align, const char *psz_subtitle )
                     if ( *psz_subtitle == '>' )
                         psz_subtitle++;
                     free( psz_tagname );
+                }
+                else
+                {
+                    /**
+                      * This doesn't appear to be a valid tag closing syntax.
+                      * Simply append the text
+                      */
+                    AppendString( p_segment, "</" );
+                    psz_subtitle += 2;
                 }
             }
             else

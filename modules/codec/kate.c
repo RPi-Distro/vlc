@@ -2,7 +2,7 @@
  * kate.c : a decoder for the kate bitstream format
  *****************************************************************************
  * Copyright (C) 2000-2008 VLC authors and VideoLAN
- * $Id: 3b62030534ab50e08c45833e90e51d40567b166c $
+ * $Id: cdff514f6e6f5391a5ff947a31ecc7fcc4e5491d $
  *
  * Authors: Vincent Penquerc'h <ogg.k.ogg.k@googlemail.com>
  *
@@ -647,8 +647,7 @@ static void *ProcessPacket( decoder_t *p_dec, kate_packet *p_kp,
     {
         subpicture_t *p_buf = DecodePacket( p_dec, p_kp, p_block );
 
-        if( p_block )
-            block_Release( p_block );
+        block_Release( p_block );
         return p_buf;
     }
 }

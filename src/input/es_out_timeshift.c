@@ -2,7 +2,7 @@
  * es_out_timeshift.c: Es Out timeshift.
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 722932c28dcb966b733e6084ef2223520e53914b $
+ * $Id: c6dd83ebb825d3d0172cc25dd35591c2006c1e3b $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org>
  *
@@ -894,7 +894,7 @@ static int TsPopCmdLocked( ts_thread_t *p_ts, ts_cmd_t *p_cmd, bool b_flush )
 
     TsStoragePopCmd( p_ts->p_storage_r, p_cmd, b_flush );
 
-    while( p_ts->p_storage_r && TsStorageIsEmpty( p_ts->p_storage_r ) )
+    while( TsStorageIsEmpty( p_ts->p_storage_r ) )
     {
         ts_storage_t *p_next = p_ts->p_storage_r->p_next;
         if( !p_next )

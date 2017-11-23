@@ -2,7 +2,7 @@
  * shout.c: This module forwards vorbis streams to an icecast server
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: 2beb131f69c5d1d8e8e77803e3fed2963052fcc1 $
+ * $Id: 59a5fe3bd11329a2c153fa7f2343e05a410a05c1 $
  *
  * Authors: Daniel Fischer <dan at subsignal dot org>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -80,26 +80,26 @@ static void Close( vlc_object_t * );
    are Alternative, Classical, Comedy, Country etc. */
 
 #define GENRE_TEXT N_("Genre description")
-#define GENRE_LONGTEXT N_("Genre of the content. " )
+#define GENRE_LONGTEXT N_("Genre of the content." )
 
 #define URL_TEXT N_("URL description")
-#define URL_LONGTEXT N_("URL with information about the stream or your channel. " )
+#define URL_LONGTEXT N_("URL with information about the stream or your channel." )
 
 /* The shout module only "transmits" data. It does not have direct access to
    "codec level" information. Stream information such as bitrate, samplerate,
    channel numbers and quality (in case of Ogg streaming) need to be set manually */
 
 #define BITRATE_TEXT N_("Bitrate")
-#define BITRATE_LONGTEXT N_("Bitrate information of the transcoded stream. " )
+#define BITRATE_LONGTEXT N_("Bitrate information of the transcoded stream." )
 
 #define SAMPLERATE_TEXT N_("Samplerate")
-#define SAMPLERATE_LONGTEXT N_("Samplerate information of the transcoded stream. " )
+#define SAMPLERATE_LONGTEXT N_("Samplerate information of the transcoded stream." )
 
 #define CHANNELS_TEXT N_("Number of channels")
-#define CHANNELS_LONGTEXT N_("Number of channels information of the transcoded stream. " )
+#define CHANNELS_LONGTEXT N_("Number of channels information of the transcoded stream." )
 
 #define QUALITY_TEXT N_("Ogg Vorbis Quality")
-#define QUALITY_LONGTEXT N_("Ogg Vorbis Quality information of the transcoded stream. " )
+#define QUALITY_LONGTEXT N_("Ogg Vorbis Quality information of the transcoded stream." )
 
 #define PUBLIC_TEXT N_("Stream public")
 #define PUBLIC_LONGTEXT N_("Make the server publicly available on the 'Yellow Pages' " \

@@ -2,7 +2,7 @@
  * ncurses.c : NCurses interface for vlc
  *****************************************************************************
  * Copyright © 2001-2011 the VideoLAN team
- * $Id: 1c593f88714e4547a9a6d85ac5be042958a3ab49 $
+ * $Id: 6ed98558ece88f50e6be4f54766c6e374497a9e1 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -1052,8 +1052,8 @@ static int DrawStatus(intf_thread_t *intf, input_thread_t *p_input)
 
     y++; /* leave a blank line */
 
-    repeat = var_GetBool(p_playlist, "repeat") ? _("[Repeat] ") : "";
-    random = var_GetBool(p_playlist, "random") ? _("[Random] ") : "";
+    repeat = var_GetBool(p_playlist, "repeat") ? _("[Repeat]") : "";
+    random = var_GetBool(p_playlist, "random") ? _("[Random]") : "";
     loop   = var_GetBool(p_playlist, "loop")   ? _("[Loop]")    : "";
 
     if (p_input) {

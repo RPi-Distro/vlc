@@ -2,7 +2,7 @@
  * remoteosd.c: remote osd over vnc filter module
  *****************************************************************************
  * Copyright (C) 2007-2008 Matthias Bauer
- * $Id: c112de94ecb81346503c7450a577a976c9a7711c $
+ * $Id: d01812c4b1e0e11f1256eaba81e85cfdbf6a8706 $
  *
  * Authors: Matthias Bauer <matthias dot bauer #_at_# gmx dot ch>
  *
@@ -82,7 +82,7 @@
 
 #define RMTOSD_UPDATE_TEXT N_("VNC poll interval" )
 #define RMTOSD_UPDATE_LONGTEXT N_( \
-    "In this interval an update from VNC is requested, default every 300 ms. ")
+    "In this interval an update from VNC is requested, default every 300 ms.")
 
 #define RMTOSD_POLL_TEXT N_("VNC polling")
 #define RMTOSD_POLL_LONGTEXT N_( \
