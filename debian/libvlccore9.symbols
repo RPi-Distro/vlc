@@ -1,4 +1,4 @@
-libvlccore.so.8 libvlccore8 #MINVER#
+libvlccore.so.9 libvlccore9 #MINVER#
  AddMD5@Base 2.0.0
  EndMD5@Base 2.0.0
  FromCharset@Base 2.0.0

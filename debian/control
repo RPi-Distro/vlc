@@ -210,7 +210,7 @@ Section: libdevel
 Architecture: any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
-Depends: libvlccore8 (= ${binary:Version}),
+Depends: libvlccore9 (= ${binary:Version}),
          pkg-config,
          ${misc:Depends}
 Description: development files for libvlccore
@@ -221,7 +221,7 @@ Description: development files for libvlccore
  This package contains headers and a static library required to build plugins
  for VLC.
 
-Package: libvlccore8
+Package: libvlccore9
 Section: libs
 Multi-Arch: same
 Architecture: any
