@@ -269,7 +269,7 @@ Package: vlc-data
 Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends}
-Description: Common data for VLC
+Description: common data for VLC
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
@@ -282,7 +282,7 @@ Section: localization
 Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends}
-Description: Translations for VLC
+Description: translations for VLC
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
@@ -416,7 +416,7 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
          ${vlc:PluginABI}
 Enhances: vlc
-Description: Jack audio plugins for VLC
+Description: JACK audio plugins for VLC
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
  podcasts, and multimedia streams from various network sources.
