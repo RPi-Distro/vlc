@@ -592,9 +592,9 @@ libvlccore.so.9 libvlccore9 #MINVER#
  vlc_mutex_unlock@Base 2.0.0
  vlc_mwait_i11e@Base 3.0.0~
  vlc_ngettext@Base 2.1.0
- vlc_obj_alloc@Base 3.0.0~
  vlc_obj_calloc@Base 3.0.0~
  vlc_obj_free@Base 3.0.0~
+ vlc_obj_malloc@Base 3.0.0~
  vlc_object_create@Base 2.0.0
  vlc_object_find_name@Base 2.0.0
  vlc_object_get_name@Base 2.0.0
