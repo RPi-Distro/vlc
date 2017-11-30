@@ -183,7 +183,6 @@ Architecture: any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libvlc5 (= ${binary:Version}),
-         pkg-config,
          ${misc:Depends}
 Description: development files for libvlc
  This package contains headers and a static library required to build
@@ -215,7 +214,6 @@ Architecture: any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libvlccore9 (= ${binary:Version}),
-         pkg-config,
          ${misc:Depends}
 Description: development files for libvlccore
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
