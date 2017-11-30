@@ -151,6 +151,8 @@ Recommends: vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-skins2 (= ${binary:Version}),
             vlc-plugin-video-splitter (= ${binary:Version}),
             vlc-plugin-visualization (= ${binary:Version})
+Breaks: vlc-plugin-zvbi (< 3.0.0~rc1-1~)
+Replaces: vlc-plugin-zvbi (< 3.0.0~rc1-1~)
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
@@ -474,3 +476,12 @@ Description: Samba plugin for VLC
  podcasts, and multimedia streams from various network sources.
  .
  This plugin adds support to access Samba shares from the VLC media player.
+
+Package: vlc-plugin-zvbi
+Architecture: any
+Multi-Arch: same
+Section: oldlibs
+Depends: ${misc:Depends},
+         vlc-plugin-base (= ${binary:Version})
+Description: transitional dummy package
+ This is a transitional dummypackage. It can safely be removed.
