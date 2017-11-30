@@ -479,4 +479,4 @@ Section: oldlibs
 Depends: ${misc:Depends},
          vlc-plugin-base (= ${binary:Version})
 Description: transitional dummy package
- This is a transitional dummypackage. It can safely be removed.
+ This is a transitional dummy package. It can safely be removed.
