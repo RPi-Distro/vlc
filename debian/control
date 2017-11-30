@@ -396,7 +396,6 @@ Description: multimedia player and streamer (Qt plugin)
 Package: vlc-plugin-fluidsynth
 Architecture: any
 Multi-Arch: same
-Pre-Depends: ${misc:Pre-Depends}
 Depends: fluid-soundfont-gm | timgm6mb-soundfont,
          ${misc:Depends},
          ${shlibs:Depends},
@@ -413,7 +412,6 @@ Description: FluidSynth plugin for VLC
 Package: vlc-plugin-jack
 Architecture: any
 Multi-Arch: same
-Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          ${vlc:PluginABI}
@@ -431,7 +429,6 @@ Description: Jack audio plugins for VLC
 Package: vlc-plugin-notify
 Architecture: any
 Multi-Arch: same
-Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          ${vlc:PluginABI}
@@ -447,7 +444,6 @@ Description: LibNotify plugin for VLC
 Package: vlc-plugin-svg
 Architecture: any
 Multi-Arch: same
-Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          ${vlc:PluginABI}
@@ -465,7 +461,6 @@ Description: SVG plugin for VLC
 Package: vlc-plugin-samba
 Architecture: kfreebsd-any linux-any
 Multi-Arch: same
-Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          ${vlc:PluginABI}
