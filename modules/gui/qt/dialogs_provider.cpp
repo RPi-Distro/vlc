@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 4f15bee9c0b16f1fa926a7c23301ec1372593b3e $
+ * $Id: 0908152d7ee28ccaa87ab403d6b478bea1d9e051 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -493,6 +493,7 @@ QStringList DialogsProvider::showSimpleOpen( const QString& help,
     }
     ADD_EXT_FILTER( fileTypes, EXTENSIONS_ALL );
     fileTypes.replace( ";*", " *");
+    fileTypes.chop(2); //remove trailling ";;"
 
     QStringList urls = getOpenURL( NULL,
         help.isEmpty() ? qtr(I_OP_SEL_FILES ) : help,
@@ -616,7 +617,14 @@ void DialogsProvider::openAPlaylist()
                                         EXT_FILTER_PLAYLIST );
     foreach( const QString &url, urls )
     {
-        playlist_Import( THEPL, qtu( url ) );
+        char* psz_path = vlc_uri2path(qtu( url ));
+        if ( !psz_path )
+        {
+            msg_Warn( p_intf, "unable to load playlist '%s'", qtu( url ) );
+            continue;
+        }
+        playlist_Import( THEPL, psz_path );
+        free( psz_path );
     }
 }
 

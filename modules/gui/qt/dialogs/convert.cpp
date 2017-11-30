@@ -2,7 +2,7 @@
  * convert.cpp : Convertion dialogs
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 88aa8e37c9c4789f3a25b0d30a565c1f9ebc410c $
+ * $Id: 1c7b1a85eda5c7d87219675fbcec35115fdf1994 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -55,7 +55,7 @@ ConvertDialog::ConvertDialog( QWidget *parent, intf_thread_t *_p_intf,
     }
     else
     {
-        inputBox->setMRL("Multiple files selected.");
+        inputBox->setMRL( qtr( "Multiple files selected." ) );
     }
     mainLayout->addWidget( inputBox, 0, 0, 1, -1  );
 
@@ -83,10 +83,10 @@ ConvertDialog::ConvertDialog( QWidget *parent, intf_thread_t *_p_intf,
     // but multiple files follow a naming convention
     else
     {
-        fileLine->setText("Multiple Files Selected.");
+        fileLine->setText( qtr( "Multiple Files Selected." ) );
         fileLine->setReadOnly(true);
-        fileLine->setToolTip("Files will be placed in the same directory "
-                "with the same name.");
+        fileLine->setToolTip( qtr( "Files will be placed in the same directory "
+                "with the same name." ) );
 
         appendBox = new QCheckBox( qtr( "Append '-converted' to filename" ) );
         destLayout->addWidget( appendBox, 1, 0 );

@@ -112,7 +112,7 @@ static int Open(vlc_object_t *object)
 {
     stream_t *access = (stream_t *)object;
 
-    access_sys_t *sys = vlc_obj_alloc(object, 1, sizeof (*sys));
+    access_sys_t *sys = vlc_obj_malloc(object, sizeof (*sys));
     if (unlikely(sys == NULL))
         return VLC_ENOMEM;
 
@@ -156,7 +156,7 @@ static void Close(vlc_object_t *object)
 }
 
 vlc_module_begin()
-    set_shortname(N_("Nemory stream"))
+    set_shortname(N_("Memory stream"))
     set_description(N_("In-memory stream input"))
     set_category(CAT_INPUT)
     set_subcategory(SUBCAT_INPUT_ACCESS)

@@ -1,4 +1,5 @@
 noinst_LTLIBRARIES =
+check_LTLIBRARIES =
 pkglib_LTLIBRARIES =
 noinst_HEADERS =
 check_PROGRAMS =
@@ -31,6 +32,8 @@ include codec/Makefile.am
 include control/Makefile.am
 include demux/Makefile.am
 include gui/Makefile.am
+include hw/d3d9/Makefile.am
+include hw/d3d11/Makefile.am
 include hw/vaapi/Makefile.am
 include hw/vdpau/Makefile.am
 include keystore/Makefile.am

@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: c285948f0775441d0909dc1fefdeee6ca2f79872 $
+ * $Id: b09b23a2c0990dec53988780f4138d59401c9cb0 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -242,17 +242,17 @@ static int Open (vlc_object_t *this)
 
         /* Setup vout_display_t once everything is fine */
         vd->info = info;
-        
+
         vd->pool = Pool;
         vd->prepare = PictureRender;
         vd->display = PictureDisplay;
         vd->control = Control;
-        
+
         /* */
         vout_display_SendEventDisplaySize (vd, vd->fmt.i_visible_width, vd->fmt.i_visible_height);
-        
+
         return VLC_SUCCESS;
-        
+
     error:
         Close(this);
         return VLC_EGENERIC;
@@ -355,9 +355,6 @@ static int Control (vout_display_t *vd, int query, va_list ap)
     vout_display_sys_t *sys = vd->sys;
 
     if (!vd->sys)
-        return VLC_EGENERIC;
-
-    if (!sys->embed)
         return VLC_EGENERIC;
 
     @autoreleasepool {

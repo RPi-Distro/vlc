@@ -2,7 +2,7 @@
  * update.c: VLC update checking and downloading
  *****************************************************************************
  * Copyright © 2005-2008 VLC authors and VideoLAN
- * $Id: d8e6ded003fa610c057f9d95ee701ab0856af59b $
+ * $Id: e991b930e425a259b22952e10da79a6cd3851e15 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rémi Duraffort <ivoire at via.ecp.fr>
@@ -720,8 +720,8 @@ static void* update_DownloadReal( void *obj )
 
 #ifdef _WIN32
     const char *psz_msg =
-        _("The new version was successfully downloaded."
-        "Do you want to close VLC and install it now?");
+        _("The new version was successfully downloaded. "
+          "Do you want to close VLC and install it now?");
     int answer = vlc_dialog_wait_question( p_udt, VLC_DIALOG_QUESTION_NORMAL,
                                            _("Cancel"), _("Install"), NULL,
                                            _("Update VLC media player"), "%s",

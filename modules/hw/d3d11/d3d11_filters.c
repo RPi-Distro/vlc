@@ -1,7 +1,7 @@
 /*****************************************************************************
- * d3d11_adjust.c: D3D11 adjust filter (no gamma)
+ * d3d11_adjust.c: D3D11 filters module callbacks
  *****************************************************************************
- * Copyright (C) 2017 Videolabs SAS
+ * Copyright © 2017 VLC authors, VideoLAN and VideoLabs
  *
  * Authors: Steve Lhomme <robux4@gmail.com>
  *
@@ -38,6 +38,7 @@
 #include <initguid.h>
 #include <d3d11.h>
 
+#include "d3d11_filters.h"
 #include "../../video_chroma/d3d11_fmt.h"
 
 #ifdef __MINGW32__
@@ -68,6 +69,7 @@ struct filter_sys_t
     struct filter_level Hue;
     struct filter_level Saturation;
 
+    d3d11_device_t                 d3d_dev;
     ID3D11VideoDevice              *d3dviddev;
     ID3D11VideoContext             *d3dvidctx;
     ID3D11VideoProcessor           *videoProcessor;
@@ -243,35 +245,60 @@ static picture_t *Filter(filter_t *p_filter, picture_t *p_pic)
         p_sys->procOutput[1]
     };
 
-    size_t idx = 0;
+    size_t idx = 0, count = 0;
     /* contrast */
     if ( ApplyFilter( p_sys,
                       D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, &p_sys->Contrast,
                       inputs[idx], outputs[idx] ) )
+    {
         idx++;
+        count++;
+    }
     /* brightness */
     if ( ApplyFilter( p_sys,
                       D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, &p_sys->Brightness,
                       inputs[idx], outputs[idx] ) )
+    {
         idx++;
+        count++;
+    }
     /* hue */
     if ( ApplyFilter( p_sys,
                       D3D11_VIDEO_PROCESSOR_FILTER_HUE, &p_sys->Hue,
                       inputs[idx], outputs[idx] ) )
+    {
         idx++;
+        count++;
+    }
     /* saturation */
     if ( ApplyFilter( p_sys,
                       D3D11_VIDEO_PROCESSOR_FILTER_SATURATION, &p_sys->Saturation,
                       inputs[idx], outputs[idx] ) )
+    {
         idx++;
+        count++;
+    }
 
-    ID3D11DeviceContext_CopySubresourceRegion(p_outpic->p_sys->context,
-                                              p_outpic->p_sys->resource[KNOWN_DXGI_INDEX],
-                                              p_outpic->p_sys->slice_index,
-                                              0, 0, 0,
-                                              p_sys->out[outputs[idx] == p_sys->procOutput[0] ? 1 : 0].resource,
-                                              0,
-                                              NULL);
+    if (count == 0)
+    {
+        ID3D11DeviceContext_CopySubresourceRegion(p_outpic->p_sys->context,
+                                                  p_outpic->p_sys->resource[KNOWN_DXGI_INDEX],
+                                                  p_outpic->p_sys->slice_index,
+                                                  0, 0, 0,
+                                                  p_src_sys->resource[KNOWN_DXGI_INDEX],
+                                                  p_src_sys->slice_index,
+                                                  NULL);
+    }
+    else
+    {
+        ID3D11DeviceContext_CopySubresourceRegion(p_outpic->p_sys->context,
+                                                  p_outpic->p_sys->resource[KNOWN_DXGI_INDEX],
+                                                  p_outpic->p_sys->slice_index,
+                                                  0, 0, 0,
+                                                  p_sys->out[outputs[idx] == p_sys->procOutput[0] ? 1 : 0].resource,
+                                                  0,
+                                                  NULL);
+    }
 
     if( p_sys->context_mutex  != INVALID_HANDLE_VALUE )
         ReleaseMutex( p_sys->context_mutex );
@@ -299,46 +326,38 @@ static int AdjustCallback( vlc_object_t *p_this, char const *psz_var,
     return VLC_SUCCESS;
 }
 
-static int Open(vlc_object_t *obj)
+static int D3D11OpenAdjust(vlc_object_t *obj)
 {
     filter_t *filter = (filter_t *)obj;
     HRESULT hr;
-    ID3D11Device *d3ddevice = NULL;
     ID3D11VideoProcessorEnumerator *processorEnumerator = NULL;
 
-    if (filter->fmt_in.video.i_chroma != VLC_CODEC_D3D11_OPAQUE
-     && filter->fmt_in.video.i_chroma != VLC_CODEC_D3D11_OPAQUE_10B)
+    if (!is_d3d11_opaque(filter->fmt_in.video.i_chroma))
         return VLC_EGENERIC;
     if (!video_format_IsSimilar(&filter->fmt_in.video, &filter->fmt_out.video))
         return VLC_EGENERIC;
 
-    picture_t *dst = filter_NewPicture(filter);
-    if (dst == NULL)
-        return VLC_EGENERIC;
-    if (!dst->p_sys)
-    {
-        msg_Dbg(filter, "D3D11 opaque without a texture");
-        picture_Release(dst);
-        return VLC_EGENERIC;
-    }
-
-    D3D11_TEXTURE2D_DESC dstDesc;
-    ID3D11Texture2D_GetDesc(dst->p_sys->texture[KNOWN_DXGI_INDEX], &dstDesc);
-
     filter_sys_t *sys = malloc(sizeof (*sys));
     if (unlikely(sys == NULL))
-        goto error;
+        return VLC_ENOMEM;
     memset(sys, 0, sizeof (*sys));
 
-    ID3D11DeviceContext_GetDevice(dst->p_sys->context, &d3ddevice);
+    D3D11_TEXTURE2D_DESC dstDesc;
+    D3D11_FilterHoldInstance(filter, &sys->d3d_dev, &dstDesc);
+    if (unlikely(sys->d3d_dev.d3dcontext==NULL))
+    {
+        msg_Dbg(filter, "Filter without a context");
+        free(sys);
+        return VLC_ENOOBJ;
+    }
 
-    hr = ID3D11Device_QueryInterface(d3ddevice, &IID_ID3D11VideoDevice, (void **)&sys->d3dviddev);
+    hr = ID3D11Device_QueryInterface(sys->d3d_dev.d3ddevice, &IID_ID3D11VideoDevice, (void **)&sys->d3dviddev);
     if (FAILED(hr)) {
        msg_Err(filter, "Could not Query ID3D11VideoDevice Interface. (hr=0x%lX)", hr);
        goto error;
     }
 
-    hr = ID3D11DeviceContext_QueryInterface(dst->p_sys->context, &IID_ID3D11VideoContext, (void **)&sys->d3dvidctx);
+    hr = ID3D11DeviceContext_QueryInterface(sys->d3d_dev.d3dcontext, &IID_ID3D11VideoContext, (void **)&sys->d3dvidctx);
     if (FAILED(hr)) {
        msg_Err(filter, "Could not Query ID3D11VideoContext Interface from the picture. (hr=0x%lX)", hr);
        goto error;
@@ -346,12 +365,12 @@ static int Open(vlc_object_t *obj)
 
     HANDLE context_lock = INVALID_HANDLE_VALUE;
     UINT dataSize = sizeof(context_lock);
-    hr = ID3D11Device_GetPrivateData(d3ddevice, &GUID_CONTEXT_MUTEX, &dataSize, &context_lock);
+    hr = ID3D11Device_GetPrivateData(sys->d3d_dev.d3ddevice, &GUID_CONTEXT_MUTEX, &dataSize, &context_lock);
     if (FAILED(hr))
         msg_Warn(filter, "No mutex found to lock the decoder");
     sys->context_mutex = context_lock;
 
-    const video_format_t *fmt = &dst->format;
+    const video_format_t *fmt = &filter->fmt_out.video;
 
     D3D11_VIDEO_PROCESSOR_CONTENT_DESC processorDesc = {
         .InputFrameFormat = D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE,
@@ -361,11 +380,11 @@ static int Open(vlc_object_t *obj)
         },
         .InputWidth   = fmt->i_width,
         .InputHeight  = fmt->i_height,
-        .OutputWidth  = dst->format.i_width,
-        .OutputHeight = dst->format.i_height,
+        .OutputWidth  = dstDesc.Width,
+        .OutputHeight = dstDesc.Height,
         .OutputFrameRate = {
-            .Numerator   = dst->format.i_frame_rate,
-            .Denominator = dst->format.i_frame_rate_base,
+            .Numerator   = fmt->i_frame_rate,
+            .Denominator = fmt->i_frame_rate_base,
         },
         .Usage = D3D11_VIDEO_USAGE_PLAYBACK_NORMAL,
     };
@@ -378,24 +397,18 @@ static int Open(vlc_object_t *obj)
 
     UINT flags;
 #ifndef NDEBUG
-    for (int format = 0; format < 188; format++) {
-        hr = ID3D11VideoProcessorEnumerator_CheckVideoProcessorFormat(processorEnumerator, format, &flags);
-        if (SUCCEEDED(hr) && (flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
-            msg_Dbg(filter, "processor format %s (%d) is supported for input", DxgiFormatToStr(format),format);
-        if (SUCCEEDED(hr) && (flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
-            msg_Dbg(filter, "processor format %s (%d) is supported for output", DxgiFormatToStr(format),format);
-    }
+    D3D11_LogProcessorSupport(filter, processorEnumerator);
 #endif
-    hr = ID3D11VideoProcessorEnumerator_CheckVideoProcessorFormat(processorEnumerator, dst->p_sys->formatTexture, &flags);
+    hr = ID3D11VideoProcessorEnumerator_CheckVideoProcessorFormat(processorEnumerator, dstDesc.Format, &flags);
     if (!SUCCEEDED(hr))
     {
-        msg_Dbg(filter, "can't read processor support for %s", DxgiFormatToStr(dst->p_sys->formatTexture));
+        msg_Dbg(filter, "can't read processor support for %s", DxgiFormatToStr(dstDesc.Format));
         goto error;
     }
     if ( !(flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT) ||
          !(flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT) )
     {
-        msg_Dbg(filter, "input/output %s is not supported", DxgiFormatToStr(dst->p_sys->formatTexture));
+        msg_Dbg(filter, "input/output %s is not supported", DxgiFormatToStr(dstDesc.Format));
         goto error;
     }
 
@@ -482,12 +495,12 @@ static int Open(vlc_object_t *obj)
     texDesc.Height = dstDesc.Height;
     texDesc.Width = dstDesc.Width;
 
-    hr = ID3D11Device_CreateTexture2D( d3ddevice, &texDesc, NULL, &sys->out[0].texture );
+    hr = ID3D11Device_CreateTexture2D( sys->d3d_dev.d3ddevice, &texDesc, NULL, &sys->out[0].texture );
     if (FAILED(hr)) {
         msg_Err(filter, "CreateTexture2D failed. (hr=0x%0lx)", hr);
         goto error;
     }
-    hr = ID3D11Device_CreateTexture2D( d3ddevice, &texDesc, NULL, &sys->out[1].texture );
+    hr = ID3D11Device_CreateTexture2D( sys->d3d_dev.d3ddevice, &texDesc, NULL, &sys->out[1].texture );
     if (FAILED(hr)) {
         ID3D11Texture2D_Release(sys->out[0].texture);
         msg_Err(filter, "CreateTexture2D failed. (hr=0x%0lx)", hr);
@@ -537,14 +550,8 @@ static int Open(vlc_object_t *obj)
     filter->pf_video_filter = Filter;
     filter->p_sys = sys;
 
-    ID3D11Device_Release(d3ddevice);
-    picture_Release(dst);
     return VLC_SUCCESS;
 error:
-    if (d3ddevice)
-        ID3D11Device_Release(d3ddevice);
-    picture_Release(dst);
-
     for (int i=0; i<PROCESSOR_SLICES; i++)
     {
         if (sys->procInput[i])
@@ -565,11 +572,14 @@ error:
         ID3D11VideoContext_Release(sys->d3dvidctx);
     if (sys->d3dviddev)
         ID3D11VideoDevice_Release(sys->d3dviddev);
+    if (sys->d3d_dev.d3dcontext)
+        D3D11_FilterReleaseInstance(&sys->d3d_dev);
+    free(sys);
 
     return VLC_EGENERIC;
 }
 
-static void Close(vlc_object_t *obj)
+static void D3D11CloseAdjust(vlc_object_t *obj)
 {
     filter_t *filter = (filter_t *)obj;
     filter_sys_t *sys = filter->p_sys;
@@ -594,15 +604,17 @@ static void Close(vlc_object_t *obj)
     ID3D11VideoContext_Release(sys->d3dvidctx);
     ID3D11VideoDevice_Release(sys->d3dviddev);
 
+    D3D11_FilterReleaseInstance(&sys->d3d_dev);
+
     free(sys);
 }
 
 vlc_module_begin()
-    set_description(N_("Direct3D11 adjust filter"))
+    set_description(N_("Direct3D11 filter"))
     set_capability("video filter", 0)
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
-    set_callbacks(Open, Close)
+    set_callbacks(D3D11OpenAdjust, D3D11CloseAdjust)
     add_shortcut( "adjust" )
 
     add_float_with_range( "contrast", 1.0, 0.0, 2.0,
@@ -623,5 +635,17 @@ vlc_module_begin()
     add_bool( "brightness-threshold", false,
               THRES_TEXT, THRES_LONGTEXT, false )
         change_safe()
+
+    add_submodule()
+    set_callbacks( D3D11OpenDeinterlace, D3D11CloseDeinterlace )
+    add_shortcut ("deinterlace")
+
+    add_submodule()
+    set_capability( "video converter", 10 )
+    set_callbacks( D3D11OpenConverter, D3D11CloseConverter )
+
+    add_submodule()
+    set_callbacks( D3D11OpenCPUConverter, D3D11CloseCPUConverter )
+    set_capability( "video converter", 10 )
 
 vlc_module_end()

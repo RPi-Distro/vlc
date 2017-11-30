@@ -2,7 +2,7 @@
  * subsusf.c : USF subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: 7e4a66e8d6acfe3db4a18ae7444770ea0d3f3078 $
+ * $Id: 9a84c7b7ea0da4036ae588cf48a28e45defc97da $
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *
@@ -867,7 +867,7 @@ static subpicture_region_t *ParseUSFString( decoder_t *p_dec,
             {
                 subpicture_region_t *p_image_region = NULL;
 
-                char *psz_end = strcasestr( psz_subtitle, "</image>" );
+                psz_end = strcasestr( psz_subtitle, "</image>" );
                 char *psz_content = strchr( psz_subtitle, '>' );
                 int   i_transparent = -1;
 
@@ -920,10 +920,7 @@ static subpicture_region_t *ParseUSFString( decoder_t *p_dec,
             {
                 subpicture_region_t  *p_text_region;
 
-                if( psz_end )
-                    psz_end += strcspn( psz_end, ">" ) + 1;
-                else
-                    psz_end = psz_subtitle + strlen( psz_subtitle );
+                psz_end = psz_subtitle + strlen( psz_subtitle );
 
                 p_text_region = CreateTextRegion( p_dec,
                                                   psz_subtitle,

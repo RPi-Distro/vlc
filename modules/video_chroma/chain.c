@@ -2,7 +2,7 @@
  * chain.c : chain multiple video filter modules as a last resort solution
  *****************************************************************************
  * Copyright (C) 2007-2017 VLC authors and VideoLAN
- * $Id: 74884aff428af4086464f117d229a3fee37560f1 $
+ * $Id: f13d3d635c1fdaef25d2171d04e6058013d9038f $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -155,8 +155,7 @@ static int Activate( filter_t *p_filter, int (*pf_build)(filter_t *) )
     {
         /* Hum ... looks like this really isn't going to work. Too bad. */
         if (p_sys->p_video_filter)
-            filter_DelProxyCallbacks( p_filter->obj.parent,
-                                      p_sys->p_video_filter,
+            filter_DelProxyCallbacks( p_filter, p_sys->p_video_filter,
                                       RestartFilterCallback );
         filter_chain_Delete( p_sys->p_chain );
         free( p_sys );
@@ -195,6 +194,8 @@ static int ActivateFilter( vlc_object_t *p_this )
 
     /* Force only one level of iteration when using the chain converter from a
      * filter. */
+    if( var_InheritInteger( p_filter, "chain-level" ) > 0 )
+        return VLC_EGENERIC;
     var_Create( p_filter, "chain-level", VLC_VAR_INTEGER );
     var_SetInteger( p_filter, "chain-level", CHAIN_LEVEL_MAX - 1 );
 
@@ -207,8 +208,7 @@ static void Destroy( vlc_object_t *p_this )
     filter_t *p_filter = (filter_t *)p_this;
 
     if (p_filter->p_sys->p_video_filter)
-        filter_DelProxyCallbacks( p_filter->obj.parent,
-                                  p_filter->p_sys->p_video_filter,
+        filter_DelProxyCallbacks( p_filter, p_filter->p_sys->p_video_filter,
                                   RestartFilterCallback );
     filter_chain_Delete( p_filter->p_sys->p_chain );
     free( p_filter->p_sys );
@@ -352,7 +352,7 @@ static int BuildFilterChain( filter_t *p_filter )
                                            &fmt_mid, &fmt_mid );
             if( p_filter->p_sys->p_video_filter )
             {
-                filter_AddProxyCallbacks( p_filter->obj.parent,
+                filter_AddProxyCallbacks( p_filter,
                                           p_filter->p_sys->p_video_filter,
                                           RestartFilterCallback );
                 if (p_filter->p_sys->p_video_filter->pf_video_mouse != NULL)

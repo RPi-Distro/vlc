@@ -66,8 +66,6 @@ struct hxxx_helper
             uint8_t i_sps_count;
             uint8_t i_pps_count;
             uint8_t i_vps_count;
-            void *p_annexb_config_nal;
-            size_t i_annexb_config_nal;
         } hevc;
     };
 
@@ -86,8 +84,10 @@ int hxxx_helper_set_extra(struct hxxx_helper *hh, const void *p_extra,
                           size_t i_extra);
 
 block_t *h264_helper_get_annexb_config(const struct hxxx_helper *hh);
+block_t *hevc_helper_get_annexb_config(const struct hxxx_helper *hh);
 
 block_t *h264_helper_get_avcc_config(const struct hxxx_helper *hh);
+block_t *hevc_helper_get_hvcc_config(const struct hxxx_helper *hh);
 
 int hxxx_helper_get_current_picture_size(const struct hxxx_helper *hh,
                                          unsigned *p_w, unsigned *p_h,

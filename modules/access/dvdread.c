@@ -2,7 +2,7 @@
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: c395bd229c8c48fee796827f2da02df25e3f59f9 $
+ * $Id: 0f8d7a10595a43bfd468a12ea36fedf5f9df7b7d $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -214,7 +214,7 @@ static int Open( vlc_object_t *p_this )
             if( DVDISOVolumeInfo( p_dvdread, rgsz_volid, 32, NULL, 0 ) == 0 )
             {
                 vlc_dialog_display_error( p_demux, _("Playback failure"),
-                              _("Cannot play a non UDF mastered DVD. (Found ISO9660 '%s')"), rgsz_volid );
+                              _("Cannot play a non-UDF mastered DVD." ) );
                 msg_Err( p_demux, "Invalid UDF DVD. (Found ISO9660 '%s')", rgsz_volid );
             }
         }

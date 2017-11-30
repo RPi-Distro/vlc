@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: ceb1a43dc0ff357274ac496ab0676c3e4c12bdba $
+ * $Id: fde9c16b0c5fa2af22b259e58c77e971fc2b45ef $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -44,7 +44,6 @@ public:
     }
 };
 
-#ifndef Q_OS_MAC
 class QFramelessButton;
 class SearchLineEdit : public QLineEdit
 {
@@ -71,29 +70,6 @@ private slots:
 signals:
     void searchDelayedChanged( const QString& );
 };
-#else
-
-/* On Mac, we try to use the native NSSearchField */
-#include <QMacCocoaViewContainer>
-
-class SearchLineEdit : public QMacCocoaViewContainer
-{
-    Q_OBJECT
-
-public:
-    SearchLineEdit(QWidget *parent = 0);
-    virtual ~SearchLineEdit() {}
-
-    QSize sizeHint() const Q_DECL_OVERRIDE { return QSize(150, 40); }
-
-public slots:
-    void clear() {}
-
-signals:
-    void searchDelayedChanged( const QString& );
-    void textEdited( const QString& );
-};
-#endif
 
 #endif
 

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2005 VLC authors and VideoLAN
  * Copyright (C) 2007 Remi Denis-Courmont
- * $Id: 9677f8279f33cc60b0925aa4324ce88109ac833b $
+ * $Id: cf6ebb7125402e6be9bd7fc2d80f3d5df14b6b78 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Tristan Leteurtre <tooney@via.ecp.fr>
@@ -100,7 +100,7 @@ static int Open( vlc_object_t *p_this )
     if( p_access->b_preparsing )
         return VLC_EGENERIC;
 
-    sys = vlc_obj_alloc( p_this, 1, sizeof( *sys ) );
+    sys = vlc_obj_malloc( p_this, sizeof( *sys ) );
     if( unlikely( sys == NULL ) )
         return VLC_ENOMEM;
 

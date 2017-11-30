@@ -2,7 +2,7 @@
  * scaletempo.c: Scale audio tempo while maintaining pitch
  *****************************************************************************
  * Copyright © 2008 VLC authors and VideoLAN
- * $Id: 26f57f00965192665fb5434265b4142419ad89dc $
+ * $Id: 5b2c408b9783467b0e538e82447719c51469b634 $
  *
  * Authors: Rov Juvano <rovjuvano@users.sourceforge.net>
  *
@@ -71,7 +71,7 @@ vlc_module_begin ()
         N_("Search Length"), N_("Length in milliseconds to search for best overlap position"), true )
 #ifdef PITCH_SHIFTER
     add_float_with_range( "pitch-shift", 0, -12, 12,
-        N_("Pitch Shift"), N_("Pitch shift in semitones"), false )
+        N_("Pitch Shift"), N_("Pitch shift in semitones."), false )
     set_callbacks( OpenPitch, ClosePitch )
 #else
     set_callbacks( Open, Close )

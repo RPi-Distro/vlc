@@ -2,7 +2,7 @@
  * dxa9.c : DXVA2 GPU surface conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2015 VLC authors, VideoLAN and VideoLabs
- * $Id: 281465ac34240f3a14a7d7cddbaf78aa20f3497c $
+ * $Id: 887b3bf8ee9c5d950f8eb98ffc33212ac05900eb $
  *
  * Authors: Steve Lhomme <robux4@gmail.com>
  *
@@ -30,27 +30,27 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_plugin.h>
 #include <vlc_filter.h>
 #include <vlc_picture.h>
 #include <vlc_modules.h>
 
-#include "copy.h"
+#include "d3d9_filters.h"
+
+#include "../../video_chroma/copy.h"
 
 #include <windows.h>
 #include <d3d9.h>
-#include "d3d9_fmt.h"
+#include "../../video_chroma/d3d9_fmt.h"
 
 struct filter_sys_t {
     /* GPU to CPU */
     copy_cache_t      cache;
 
     /* CPU to GPU */
-    IDirect3DDevice9  *d3ddev;
+    d3d9_handle_t     hd3d;
+    d3d9_device_t     d3d_dev;
     filter_t          *filter;
     picture_t         *staging;
-
-    HINSTANCE         hd3d_dll;
 };
 
 static bool GetLock(filter_t *p_filter, LPDIRECT3DSURFACE9 d3d,
@@ -78,14 +78,15 @@ static void DXA9_YV12(filter_t *p_filter, picture_t *src, picture_t *dst)
     if (!GetLock(p_filter, p_sys->surface, &lock, &desc))
         return;
 
-    if (dst->format.i_chroma == VLC_CODEC_I420) {
-        uint8_t *tmp = dst->p[1].p_pixels;
-        dst->p[1].p_pixels = dst->p[2].p_pixels;
-        dst->p[2].p_pixels = tmp;
-    }
-
     if (desc.Format == MAKEFOURCC('Y','V','1','2') ||
         desc.Format == MAKEFOURCC('I','M','C','3')) {
+
+        if (dst->format.i_chroma == VLC_CODEC_I420) {
+            uint8_t *tmp = dst->p[1].p_pixels;
+            dst->p[1].p_pixels = dst->p[2].p_pixels;
+            dst->p[2].p_pixels = tmp;
+        }
+
         bool imc3 = desc.Format == MAKEFOURCC('I','M','C','3');
         size_t chroma_pitch = imc3 ? lock.Pitch : (lock.Pitch / 2);
 
@@ -108,6 +109,12 @@ static void DXA9_YV12(filter_t *p_filter, picture_t *src, picture_t *dst)
             plane[2] = V;
         }
         Copy420_P_to_P(dst, plane, pitch, src->format.i_height, p_copy_cache);
+
+        if (dst->format.i_chroma == VLC_CODEC_I420) {
+            uint8_t *tmp = dst->p[1].p_pixels;
+            dst->p[1].p_pixels = dst->p[2].p_pixels;
+            dst->p[2].p_pixels = tmp;
+        }
     } else if (desc.Format == MAKEFOURCC('N','V','1','2')) {
         const uint8_t *plane[2] = {
             lock.pBits,
@@ -122,12 +129,6 @@ static void DXA9_YV12(filter_t *p_filter, picture_t *src, picture_t *dst)
         picture_SwapUV(dst);
     } else {
         msg_Err(p_filter, "Unsupported DXA9 conversion from 0x%08X to YV12", desc.Format);
-    }
-
-    if (dst->format.i_chroma == VLC_CODEC_I420) {
-        uint8_t *tmp = dst->p[1].p_pixels;
-        dst->p[1].p_pixels = dst->p[2].p_pixels;
-        dst->p[2].p_pixels = tmp;
     }
 
     /* */
@@ -264,7 +265,7 @@ static void YV12_D3D9(filter_t *p_filter, picture_t *src, picture_t *dst)
     RECT visibleSource = {
         .right = dst->format.i_width, .bottom = dst->format.i_height,
     };
-    IDirect3DDevice9_StretchRect( sys->d3ddev,
+    IDirect3DDevice9_StretchRect( sys->d3d_dev.dev,
                                   sys->staging->p_sys->surface, &visibleSource,
                                   dst->p_sys->surface, &visibleSource,
                                   D3DTEXF_NONE );
@@ -287,11 +288,9 @@ VIDEO_FILTER_WRAPPER (DXA9_YV12)
 VIDEO_FILTER_WRAPPER (DXA9_NV12)
 VIDEO_FILTER_WRAPPER (YV12_D3D9)
 
-static int OpenConverter( vlc_object_t *obj )
+int D3D9OpenConverter( vlc_object_t *obj )
 {
     filter_t *p_filter = (filter_t *)obj;
-    HINSTANCE hd3d_dll = NULL;
-    int err = VLC_EGENERIC;
 
     if ( p_filter->fmt_in.video.i_chroma != VLC_CODEC_D3D9_OPAQUE )
         return VLC_EGENERIC;
@@ -312,39 +311,28 @@ static int OpenConverter( vlc_object_t *obj )
         return VLC_EGENERIC;
     }
 
-    hd3d_dll = LoadLibrary(TEXT("D3D9.DLL"));
-    if (unlikely(!hd3d_dll)) {
+    filter_sys_t *p_sys = calloc(1, sizeof(filter_sys_t));
+    if (!p_sys)
+         return VLC_ENOMEM;
+
+    if (unlikely(D3D9_Create( p_filter, &p_sys->hd3d ) != VLC_SUCCESS)) {
         msg_Warn(p_filter, "cannot load d3d9.dll, aborting");
-        goto done;
+        free(p_sys);
+        return VLC_EGENERIC;
     }
 
-    filter_sys_t *p_sys = calloc(1, sizeof(filter_sys_t));
-    if (!p_sys) {
-         err = VLC_ENOMEM;
-         goto done;
-    }
     CopyInitCache(&p_sys->cache, p_filter->fmt_in.video.i_width );
     p_filter->p_sys = p_sys;
-    err = VLC_SUCCESS;
-
-done:
-    if (err != VLC_SUCCESS)
-    {
-        if (hd3d_dll)
-            FreeLibrary(hd3d_dll);
-    }
-    return err;
+    return VLC_SUCCESS;
 }
 
-static int OpenFromCPU( vlc_object_t *obj )
+int D3D9OpenCPUConverter( vlc_object_t *obj )
 {
     filter_t *p_filter = (filter_t *)obj;
     int err = VLC_EGENERIC;
     LPDIRECT3DSURFACE9 texture = NULL;
-    IDirect3DDevice9  *d3ddev = NULL;
     filter_t *p_cpu_filter = NULL;
     picture_t *p_dst = NULL;
-    HINSTANCE hd3d_dll = NULL;
     video_format_t fmt_staging;
 
     if ( p_filter->fmt_out.video.i_chroma != VLC_CODEC_D3D9_OPAQUE )
@@ -363,23 +351,28 @@ static int OpenFromCPU( vlc_object_t *obj )
         return VLC_EGENERIC;
     }
 
-    picture_t *peek = filter_NewPicture(p_filter);
-    if (peek == NULL)
-        return VLC_EGENERIC;
-    if (!peek->p_sys)
-    {
-        msg_Dbg(p_filter, "D3D9 opaque without a texture");
+    filter_sys_t *p_sys = calloc(1, sizeof(filter_sys_t));
+    if (!p_sys)
+         return VLC_ENOMEM;
+
+    video_format_Init(&fmt_staging, 0);
+    if (unlikely(D3D9_Create( p_filter, &p_sys->hd3d ) != VLC_SUCCESS)) {
+        msg_Warn(p_filter, "cannot load d3d9.dll, aborting");
+        free(p_sys);
         return VLC_EGENERIC;
     }
 
-    video_format_Init(&fmt_staging, 0);
     D3DSURFACE_DESC texDesc;
-    IDirect3DSurface9_GetDesc( peek->p_sys->surface, &texDesc);
-    vlc_fourcc_t d3d_fourcc = texDesc.Format;
-    if (d3d_fourcc == 0)
+    D3D9_FilterHoldInstance(p_filter, &p_sys->d3d_dev, &texDesc);
+    if (!p_sys->d3d_dev.dev)
+    {
+        msg_Dbg(p_filter, "Filter without a context");
+        goto done;
+    }
+    if (texDesc.Format == 0)
         goto done;
 
-    if ( p_filter->fmt_in.video.i_chroma != d3d_fourcc )
+    if ( p_filter->fmt_in.video.i_chroma != texDesc.Format )
     {
         picture_resource_t res;
         res.pf_destroy = DestroyPicture;
@@ -390,7 +383,7 @@ static int OpenFromCPU( vlc_object_t *obj )
         }
 
         video_format_Copy(&fmt_staging, &p_filter->fmt_out.video);
-        fmt_staging.i_chroma = d3d_fourcc;
+        fmt_staging.i_chroma = texDesc.Format;
         fmt_staging.i_height = texDesc.Height;
         fmt_staging.i_width  = texDesc.Width;
 
@@ -401,8 +394,7 @@ static int OpenFromCPU( vlc_object_t *obj )
         }
         picture_Setup(p_dst, &p_dst->format);
 
-        IDirect3DSurface9_GetDevice(peek->p_sys->surface, &d3ddev);
-        HRESULT hr = IDirect3DDevice9_CreateOffscreenPlainSurface(d3ddev,
+        HRESULT hr = IDirect3DDevice9_CreateOffscreenPlainSurface(p_sys->d3d_dev.dev,
                                                           p_dst->format.i_width,
                                                           p_dst->format.i_height,
                                                           texDesc.Format,
@@ -421,70 +413,42 @@ static int OpenFromCPU( vlc_object_t *obj )
             goto done;
     }
 
-    hd3d_dll = LoadLibrary(TEXT("D3D9.DLL"));
-    if (unlikely(!hd3d_dll)) {
-        msg_Warn(p_filter, "cannot load d3d9.dll, aborting");
-        goto done;
-    }
-
-    filter_sys_t *p_sys = calloc(1, sizeof(filter_sys_t));
-    if (!p_sys) {
-         err = VLC_ENOMEM;
-         goto done;
-    }
-    p_sys->d3ddev    = d3ddev;
     p_sys->filter    = p_cpu_filter;
     p_sys->staging   = p_dst;
-    p_sys->hd3d_dll = hd3d_dll;
     p_filter->p_sys = p_sys;
     err = VLC_SUCCESS;
 
 done:
     video_format_Clean(&fmt_staging);
-    picture_Release(peek);
     if (err != VLC_SUCCESS)
     {
-        if (d3ddev)
-            IDirect3DDevice9_Release(d3ddev);
-        if (p_cpu_filter)
-            DeleteFilter( p_cpu_filter );
         if (texture)
             IDirect3DSurface9_Release(texture);
-        if (hd3d_dll)
-            FreeLibrary(hd3d_dll);
+        D3D9_FilterReleaseInstance(&p_sys->d3d_dev);
+        D3D9_Destroy( &p_sys->hd3d );
+        free(p_sys);
     }
     return err;
 }
 
-static void CloseConverter( vlc_object_t *obj )
+void D3D9CloseConverter( vlc_object_t *obj )
 {
     filter_t *p_filter = (filter_t *)obj;
-    copy_cache_t *p_copy_cache = (copy_cache_t*) p_filter->p_sys;
-    CopyCleanCache(p_copy_cache);
-    free( p_copy_cache );
+    filter_sys_t *p_sys = (filter_sys_t*) p_filter->p_sys;
+    CopyCleanCache( &p_sys->cache );
+    D3D9_Destroy( &p_sys->hd3d );
+    free( p_sys );
     p_filter->p_sys = NULL;
 }
 
-static void CloseFromCPU( vlc_object_t *obj )
+void D3D9CloseCPUConverter( vlc_object_t *obj )
 {
     filter_t *p_filter = (filter_t *)obj;
     filter_sys_t *p_sys = (filter_sys_t*) p_filter->p_sys;
     DeleteFilter(p_sys->filter);
     picture_Release(p_sys->staging);
-    IDirect3DDevice9_Release(p_sys->d3ddev);
-    FreeLibrary(p_sys->hd3d_dll);
+    D3D9_FilterReleaseInstance(&p_sys->d3d_dev);
+    D3D9_Destroy( &p_sys->hd3d );
     free( p_sys );
     p_filter->p_sys = NULL;
 }
-
-/*****************************************************************************
- * Module descriptor.
- *****************************************************************************/
-vlc_module_begin ()
-    set_description( N_("Conversions from DxVA2 to YUV") )
-    set_capability( "video converter", 10 )
-    set_callbacks( OpenConverter, CloseConverter )
-    add_submodule()
-        set_callbacks( OpenFromCPU, CloseFromCPU )
-        set_capability( "video converter", 10 )
-vlc_module_end ()

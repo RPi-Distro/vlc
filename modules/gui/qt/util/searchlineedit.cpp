@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: bf0b8d85f72c2502c492d9fdf6e7e2b13741a016 $
+ * $Id: c4c7d8e2b6efea958c6e54cc4fd77fbea59c4f51 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -40,7 +40,6 @@
 
 #include <vlc_intf_strings.h>
 
-#ifndef Q_OS_MAC
 SearchLineEdit::SearchLineEdit( QWidget *parent ) : QLineEdit( parent )
 {
     clearButton = new QFramelessButton( this );
@@ -138,5 +137,3 @@ void SearchLineEdit::searchEditingFinished()
 {
     emit searchDelayedChanged( text() );
 }
-
-#endif

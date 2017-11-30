@@ -60,15 +60,22 @@
 
 #endif
 
+// Define stuff for older SDKs
+#if (TARGET_OS_OSX && MAC_OS_X_VERSION_MAX_ALLOWED < 101100) || \
+    (TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MAX_ALLOWED < 90000) || \
+    (TARGET_OS_TV && __TV_OS_VERSION_MAX_ALLOWED < 90000)
+enum { kCMVideoCodecType_HEVC = 'hvc1' };
+#endif
+
+#if (!TARGET_OS_OSX || MAC_OS_X_VERSION_MAX_ALLOWED < 1090)
+const CFStringRef kVTVideoDecoderSpecification_EnableHardwareAcceleratedVideoDecoder = CFSTR("EnableHardwareAcceleratedVideoDecoder");
+const CFStringRef kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder = CFSTR("RequireHardwareAcceleratedVideoDecoder");
+#endif
+
 #pragma mark - module descriptor
 
 static int OpenDecoder(vlc_object_t *);
 static void CloseDecoder(vlc_object_t *);
-
-#if MAC_OS_X_VERSION_MIN_ALLOWED < 1090
-const CFStringRef kVTVideoDecoderSpecification_EnableHardwareAcceleratedVideoDecoder = CFSTR("EnableHardwareAcceleratedVideoDecoder");
-const CFStringRef kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder = CFSTR("RequireHardwareAcceleratedVideoDecoder");
-#endif
 
 #define VT_REQUIRE_HW_DEC N_("Use Hardware decoders only")
 #define VT_TEMPO_DEINTERLACE N_("Deinterlacing")
@@ -99,16 +106,17 @@ enum vtsession_status
     VTSESSION_STATUS_ABORT,
 };
 
-static int SetH264DecoderInfo(decoder_t *, CFMutableDictionaryRef);
+static int ConfigureVout(decoder_t *);
 static CFMutableDictionaryRef ESDSExtradataInfoCreate(decoder_t *, uint8_t *, uint32_t);
 static CFMutableDictionaryRef ExtradataInfoCreate(CFStringRef, void *, size_t);
-static CFMutableDictionaryRef H264ExtradataInfoCreate(const struct hxxx_helper *hh);
+static CFMutableDictionaryRef CreateSessionDescriptionFormat(decoder_t *, unsigned, unsigned);
 static int HandleVTStatus(decoder_t *, OSStatus, enum vtsession_status *);
 static int DecodeBlock(decoder_t *, block_t *);
 static void RequestFlush(decoder_t *);
 static void Drain(decoder_t *p_dec, bool flush);
 static void DecoderCallback(void *, void *, OSStatus, VTDecodeInfoFlags,
                             CVPixelBufferRef, CMTime, CMTime);
+static BOOL deviceSupportsHEVC();
 static BOOL deviceSupportsAdvancedProfiles();
 static BOOL deviceSupportsAdvancedLevels();
 
@@ -138,11 +146,25 @@ struct decoder_sys_t
     CMVideoCodecType            codec;
     struct                      hxxx_helper hh;
 
+    /* Codec specific callbacks */
+    bool                        (*pf_codec_init)(decoder_t *);
+    void                        (*pf_codec_clean)(decoder_t *);
+    bool                        (*pf_codec_supported)(decoder_t *);
+    bool                        (*pf_late_start)(decoder_t *);
+    block_t*                    (*pf_process_block)(decoder_t *,
+                                                    block_t *, bool *);
+    bool                        (*pf_need_restart)(decoder_t *,
+                                                   VTDecompressionSessionRef);
+    bool                        (*pf_configure_vout)(decoder_t *);
+    CFMutableDictionaryRef      (*pf_get_extradata)(decoder_t *);
+    bool                        (*pf_fill_reorder_info)(decoder_t *, const block_t *,
+                                                        frame_info_t *);
+    /* !Codec specific callbacks */
+
     bool                        b_vt_feed;
     bool                        b_vt_flush;
     VTDecompressionSessionRef   session;
     CMVideoFormatDescriptionRef videoFormatDescription;
-    CFMutableDictionaryRef      extradataInfo;
 
     vlc_mutex_t                 lock;
     frame_info_t               *p_pic_reorder;
@@ -159,13 +181,26 @@ struct decoder_sys_t
 
     int                         i_forced_cvpx_format;
 
-    h264_poc_context_t          pocctx;
+    h264_poc_context_t          h264_pocctx;
+    hevc_poc_ctx_t              hevc_pocctx;
     date_t                      pts;
+
+    struct pic_holder          *pic_holder;
+};
+
+struct pic_holder
+{
+    bool        closed;
+    vlc_mutex_t lock;
+    vlc_cond_t  wait;
+    uint8_t     nb_out;
 };
 
 #pragma mark - start & stop
 
-static void GetSPSPPS(uint8_t i_pps_id, void *priv,
+/* Codec Specific */
+
+static void GetxPSH264(uint8_t i_pps_id, void *priv,
                       const h264_sequence_parameter_set_t **pp_sps,
                       const h264_picture_parameter_set_t **pp_pps)
 {
@@ -178,7 +213,7 @@ static void GetSPSPPS(uint8_t i_pps_id, void *priv,
         *pp_sps = p_sys->hh.h264.sps_list[(*pp_pps)->i_sps_id].h264_sps;
 }
 
-struct sei_callback_s
+struct sei_callback_h264_s
 {
     uint8_t i_pic_struct;
     const h264_sequence_parameter_set_t *p_sps;
@@ -186,10 +221,9 @@ struct sei_callback_s
 
 static bool ParseH264SEI(const hxxx_sei_data_t *p_sei_data, void *priv)
 {
-
     if(p_sei_data->i_type == HXXX_SEI_PIC_TIMING)
     {
-        struct sei_callback_s *s = priv;
+        struct sei_callback_h264_s *s = priv;
         if(s->p_sps && s->p_sps->vui.b_valid)
         {
             if(s->p_sps->vui.b_hrd_parameters_present_flag)
@@ -207,13 +241,13 @@ static bool ParseH264SEI(const hxxx_sei_data_t *p_sei_data, void *priv)
     return true;
 }
 
-static bool ParseH264NAL(decoder_t *p_dec,
-                         const uint8_t *p_buffer, size_t i_buffer,
-                         uint8_t i_nal_length_size, frame_info_t *p_info)
+static bool FillReorderInfoH264(decoder_t *p_dec, const block_t *p_block,
+                                frame_info_t *p_info)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     hxxx_iterator_ctx_t itctx;
-    hxxx_iterator_init(&itctx, p_buffer, i_buffer, i_nal_length_size);
+    hxxx_iterator_init(&itctx, p_block->p_buffer, p_block->i_buffer,
+                       p_sys->hh.i_nal_length_size);
 
     const uint8_t *p_nal; size_t i_nal;
     const uint8_t *p_sei_nal = NULL; size_t i_sei_nal = 0;
@@ -227,12 +261,12 @@ static bool ParseH264NAL(decoder_t *p_dec,
         if (i_nal_type <= H264_NAL_SLICE_IDR && i_nal_type != H264_NAL_UNKNOWN)
         {
             h264_slice_t slice;
-            if(!h264_decode_slice(p_nal, i_nal, GetSPSPPS, p_sys, &slice))
+            if(!h264_decode_slice(p_nal, i_nal, GetxPSH264, p_sys, &slice))
                 return false;
 
             const h264_sequence_parameter_set_t *p_sps;
             const h264_picture_parameter_set_t *p_pps;
-            GetSPSPPS(slice.i_pic_parameter_set_id, p_sys, &p_sps, &p_pps);
+            GetxPSH264(slice.i_pic_parameter_set_id, p_sys, &p_sps, &p_pps);
             if(p_sps)
             {
                 if(!p_sys->b_invalid_pic_reorder_max && i_nal_type == H264_NAL_SLICE_IDR)
@@ -246,7 +280,7 @@ static bool ParseH264NAL(decoder_t *p_dec,
                 }
 
                 int bFOC;
-                h264_compute_poc(p_sps, &slice, &p_sys->pocctx,
+                h264_compute_poc(p_sps, &slice, &p_sys->h264_pocctx,
                                  &p_info->i_poc, &p_info->i_foc, &bFOC);
 
                 p_info->b_flush = (slice.type == H264_SLICE_TYPE_I) || slice.has_mmco5;
@@ -254,7 +288,7 @@ static bool ParseH264NAL(decoder_t *p_dec,
                 p_info->b_progressive = !p_sps->mb_adaptive_frame_field_flag &&
                                         !slice.i_field_pic_flag;
 
-                struct sei_callback_s sei;
+                struct sei_callback_h264_s sei;
                 sei.p_sps = p_sps;
                 sei.i_pic_struct = UINT8_MAX;
 
@@ -288,6 +322,405 @@ static bool ParseH264NAL(decoder_t *p_dec,
 
     return false;
 }
+
+
+static block_t *ProcessBlockH264(decoder_t *p_dec, block_t *p_block, bool *pb_config_changed)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    return p_sys->hh.pf_process_block(&p_sys->hh, p_block, pb_config_changed);
+}
+
+
+static bool InitH264(decoder_t *p_dec)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    h264_poc_context_init(&p_sys->h264_pocctx);
+    hxxx_helper_init(&p_sys->hh, VLC_OBJECT(p_dec),
+                     p_dec->fmt_in.i_codec, true);
+    return hxxx_helper_set_extra(&p_sys->hh, p_dec->fmt_in.p_extra,
+                                             p_dec->fmt_in.i_extra) == VLC_SUCCESS;
+}
+
+static void CleanH264(decoder_t *p_dec)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    hxxx_helper_clean(&p_sys->hh);
+}
+
+static CFMutableDictionaryRef GetDecoderExtradataH264(decoder_t *p_dec)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    CFMutableDictionaryRef extradata = nil;
+    if(p_dec->fmt_in.i_extra) /* copy DecoderConfiguration */
+    {
+        extradata = ExtradataInfoCreate(CFSTR("avcC"),
+                                        p_dec->fmt_in.p_extra,
+                                        p_dec->fmt_in.i_extra);
+    }
+    else if (p_sys->hh.h264.i_pps_count && p_sys->hh.h264.i_sps_count)
+    {
+        /* build DecoderConfiguration from gathered */
+        block_t *p_avcC = h264_helper_get_avcc_config(&p_sys->hh);
+        if (p_avcC)
+        {
+            extradata = ExtradataInfoCreate(CFSTR("avcC"),
+                                            p_avcC->p_buffer,
+                                            p_avcC->i_buffer);
+            block_Release(p_avcC);
+        }
+    }
+    return extradata;
+}
+
+static bool CodecSupportedH264(decoder_t *p_dec)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    uint8_t i_profile, i_level;
+    if (hxxx_helper_get_current_profile_level(&p_sys->hh, &i_profile, &i_level))
+        return true;
+
+    switch (i_profile) {
+        case PROFILE_H264_BASELINE:
+        case PROFILE_H264_MAIN:
+        case PROFILE_H264_HIGH:
+            break;
+
+        case PROFILE_H264_HIGH_10:
+        {
+            if (deviceSupportsAdvancedProfiles())
+                break;
+            else
+            {
+                msg_Err(p_dec, "current device doesn't support H264 10bits");
+                return false;
+            }
+        }
+
+        default:
+        {
+            msg_Warn(p_dec, "unknown H264 profile %" PRIx8, i_profile);
+            return false;
+        }
+    }
+
+    /* A level higher than 5.2 was not tested, so don't dare to try to decode
+     * it. On SoC A8, 4.2 is the highest specified profile. on Twister, we can
+     * do up to 5.2 */
+    if (i_level > 52 || (i_level > 42 && !deviceSupportsAdvancedLevels()))
+    {
+        msg_Err(p_dec, "current device doesn't support this H264 level: %"
+                PRIx8, i_level);
+        return false;
+    }
+
+    return true;
+}
+
+static bool LateStartH264(decoder_t *p_dec)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    return (p_dec->fmt_in.i_extra == 0 &&
+            (!p_sys->hh.h264.i_pps_count || !p_sys->hh.h264.i_sps_count) );
+}
+
+static bool ConfigureVoutH264(decoder_t *p_dec)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    if(p_dec->fmt_in.video.primaries == COLOR_PRIMARIES_UNDEF)
+    {
+        video_color_primaries_t primaries;
+        video_transfer_func_t transfer;
+        video_color_space_t colorspace;
+        bool full_range;
+        if (hxxx_helper_get_colorimetry(&p_sys->hh,
+                                        &primaries,
+                                        &transfer,
+                                        &colorspace,
+                                        &full_range) == VLC_SUCCESS)
+        {
+            p_dec->fmt_out.video.primaries = primaries;
+            p_dec->fmt_out.video.transfer = transfer;
+            p_dec->fmt_out.video.space = colorspace;
+            p_dec->fmt_out.video.b_color_range_full = full_range;
+        }
+    }
+
+    if (!p_dec->fmt_in.video.i_visible_width || !p_dec->fmt_in.video.i_visible_height)
+    {
+        unsigned i_width, i_height, i_vis_width, i_vis_height;
+        if(VLC_SUCCESS ==
+           hxxx_helper_get_current_picture_size(&p_sys->hh,
+                                                &i_width, &i_height,
+                                                &i_vis_width, &i_vis_height))
+        {
+            p_dec->fmt_out.video.i_visible_width = i_vis_width;
+            p_dec->fmt_out.video.i_width = ALIGN_16( i_vis_width );
+            p_dec->fmt_out.video.i_visible_height = i_vis_height;
+            p_dec->fmt_out.video.i_height = ALIGN_16( i_vis_height );
+        }
+        else return false;
+    }
+
+    if(!p_dec->fmt_in.video.i_sar_num || !p_dec->fmt_in.video.i_sar_den)
+    {
+        int i_sar_num, i_sar_den;
+        if (VLC_SUCCESS ==
+            hxxx_helper_get_current_sar(&p_sys->hh, &i_sar_num, &i_sar_den))
+        {
+            p_dec->fmt_out.video.i_sar_num = i_sar_num;
+            p_dec->fmt_out.video.i_sar_den = i_sar_den;
+        }
+    }
+
+    return true;
+}
+
+static bool VideoToolboxNeedsToRestartH264(decoder_t *p_dec,
+                                           VTDecompressionSessionRef session)
+{
+    const struct hxxx_helper *hh = &p_dec->p_sys->hh;
+
+    unsigned w, h, vw, vh;
+    int sarn, sard;
+
+    if (hxxx_helper_get_current_picture_size(hh, &w, &h, &vw, &vh) != VLC_SUCCESS)
+        return true;
+
+    if (hxxx_helper_get_current_sar(hh, &sarn, &sard) != VLC_SUCCESS)
+        return true;
+
+    bool b_ret = true;
+
+    CFMutableDictionaryRef decoderConfiguration =
+            CreateSessionDescriptionFormat(p_dec, sarn, sard);
+    if (decoderConfiguration != nil)
+    {
+        CMFormatDescriptionRef newvideoFormatDesc;
+        /* create new video format description */
+        OSStatus status = CMVideoFormatDescriptionCreate(kCFAllocatorDefault,
+                                                         kCMVideoCodecType_H264,
+                                                         vw, vh,
+                                                         decoderConfiguration,
+                                                         &newvideoFormatDesc);
+        if (!status)
+        {
+            b_ret = !VTDecompressionSessionCanAcceptFormatDescription(session,
+                                                                      newvideoFormatDesc);
+            CFRelease(newvideoFormatDesc);
+        }
+        CFRelease(decoderConfiguration);
+    }
+
+    return b_ret;
+}
+
+static bool InitHEVC(decoder_t *p_dec)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    hevc_poc_cxt_init(&p_sys->hevc_pocctx);
+    hxxx_helper_init(&p_sys->hh, VLC_OBJECT(p_dec),
+                     p_dec->fmt_in.i_codec, true);
+    return hxxx_helper_set_extra(&p_sys->hh, p_dec->fmt_in.p_extra,
+                                             p_dec->fmt_in.i_extra) == VLC_SUCCESS;
+}
+
+#define CleanHEVC CleanH264
+
+static void GetxPSHEVC(uint8_t i_id, void *priv,
+                       hevc_picture_parameter_set_t **pp_pps,
+                       hevc_sequence_parameter_set_t **pp_sps,
+                       hevc_video_parameter_set_t **pp_vps)
+{
+    decoder_sys_t *p_sys = priv;
+
+    *pp_pps = p_sys->hh.hevc.pps_list[i_id].hevc_pps;
+    if (*pp_pps == NULL)
+    {
+        *pp_vps = NULL;
+        *pp_sps = NULL;
+    }
+    else
+    {
+        uint8_t i_sps_id = hevc_get_pps_sps_id(*pp_pps);
+        *pp_sps = p_sys->hh.hevc.sps_list[i_sps_id].hevc_sps;
+        if (*pp_sps == NULL)
+            *pp_vps = NULL;
+        else
+        {
+            uint8_t i_vps_id = hevc_get_sps_vps_id(*pp_sps);
+            *pp_vps = p_sys->hh.hevc.vps_list[i_vps_id].hevc_vps;
+        }
+    }
+}
+
+struct hevc_sei_callback_s
+{
+    hevc_sei_pic_timing_t *p_timing;
+    const hevc_sequence_parameter_set_t *p_sps;
+};
+
+static bool ParseHEVCSEI(const hxxx_sei_data_t *p_sei_data, void *priv)
+{
+    if(p_sei_data->i_type == HXXX_SEI_PIC_TIMING)
+    {
+        struct hevc_sei_callback_s *s = priv;
+        if(likely(s->p_sps))
+            s->p_timing = hevc_decode_sei_pic_timing(p_sei_data->p_bs, s->p_sps);
+        return false;
+    }
+    return true;
+}
+
+static bool FillReorderInfoHEVC(decoder_t *p_dec, const block_t *p_block,
+                                frame_info_t *p_info)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    hxxx_iterator_ctx_t itctx;
+    hxxx_iterator_init(&itctx, p_block->p_buffer, p_block->i_buffer,
+                       p_sys->hh.i_nal_length_size);
+
+    const uint8_t *p_nal; size_t i_nal;
+    const uint8_t *p_sei_nal = NULL; size_t i_sei_nal = 0;
+    while(hxxx_iterate_next(&itctx, &p_nal, &i_nal))
+    {
+        if(i_nal < 2 || hevc_getNALLayer(p_nal) > 0)
+            continue;
+
+        const enum hevc_nal_unit_type_e i_nal_type = hevc_getNALType(p_nal);
+        if (i_nal_type <= HEVC_NAL_IRAP_VCL23)
+        {
+            hevc_slice_segment_header_t *p_sli =
+                    hevc_decode_slice_header(p_nal, i_nal, true, GetxPSHEVC, p_sys);
+            if(!p_sli)
+                return false;
+
+            hevc_sequence_parameter_set_t *p_sps;
+            hevc_picture_parameter_set_t *p_pps;
+            hevc_video_parameter_set_t *p_vps;
+            GetxPSHEVC(hevc_get_slice_pps_id(p_sli), p_sys, &p_pps, &p_sps, &p_vps);
+            if(p_sps)
+            {
+                struct hevc_sei_callback_s sei;
+                sei.p_sps = p_sps;
+                sei.p_timing = NULL;
+
+                if(!p_sys->b_invalid_pic_reorder_max && p_vps)
+                {
+                    vlc_mutex_lock(&p_sys->lock);
+                    p_sys->i_pic_reorder_max = hevc_get_max_num_reorder(p_vps);
+                    vlc_mutex_unlock(&p_sys->lock);
+                }
+
+                const int POC = hevc_compute_picture_order_count(p_sps, p_sli,
+                                                                 &p_sys->hevc_pocctx);
+
+                if(p_sei_nal)
+                    HxxxParseSEI(p_sei_nal, i_sei_nal, 1, ParseHEVCSEI, &sei);
+
+                p_info->i_poc = POC;
+                p_info->i_foc = POC; /* clearly looks wrong :/ */
+                p_info->i_num_ts = hevc_get_num_clock_ts(p_sps, sei.p_timing);
+                p_info->b_flush = (POC == 0);
+                p_info->b_field = (p_info->i_num_ts == 1);
+                p_info->b_progressive = hevc_frame_is_progressive(p_sps, sei.p_timing);
+
+                /* Set frame rate for timings in case of missing rate */
+                if( (!p_dec->fmt_in.video.i_frame_rate_base ||
+                     !p_dec->fmt_in.video.i_frame_rate) )
+                {
+                    unsigned num, den;
+                    if(hevc_get_frame_rate(p_sps, p_vps, &num, &den))
+                        date_Change(&p_sys->pts, num, den);
+                }
+
+                if(sei.p_timing)
+                    hevc_release_sei_pic_timing(sei.p_timing);
+            }
+
+            hevc_rbsp_release_slice_header(p_sli);
+            return true; /* No need to parse further NAL */
+        }
+        else if(i_nal_type == HEVC_NAL_PREF_SEI)
+        {
+            p_sei_nal = p_nal;
+            i_sei_nal = i_nal;
+        }
+    }
+
+    return false;
+}
+
+static bool VideoToolboxNeedsToRestartHEVC(decoder_t *p_dec,
+                                           VTDecompressionSessionRef session)
+{
+    VLC_UNUSED(p_dec);
+    VLC_UNUSED(session);
+    return false;
+}
+
+static CFMutableDictionaryRef GetDecoderExtradataHEVC(decoder_t *p_dec)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    CFMutableDictionaryRef extradata = nil;
+    if(p_dec->fmt_in.i_extra) /* copy DecoderConfiguration */
+    {
+        extradata = ExtradataInfoCreate(CFSTR("hvcC"),
+                                        p_dec->fmt_in.p_extra,
+                                        p_dec->fmt_in.i_extra);
+    }
+    else if (p_sys->hh.hevc.i_pps_count &&
+             p_sys->hh.hevc.i_sps_count &&
+             p_sys->hh.hevc.i_vps_count)
+    {
+        /* build DecoderConfiguration from gathered */
+        block_t *p_hvcC = hevc_helper_get_hvcc_config(&p_sys->hh);
+        if (p_hvcC)
+        {
+            extradata = ExtradataInfoCreate(CFSTR("hvcC"),
+                                            p_hvcC->p_buffer,
+                                            p_hvcC->i_buffer);
+            block_Release(p_hvcC);
+        }
+    }
+    return extradata;
+}
+
+static bool LateStartHEVC(decoder_t *p_dec)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    return (p_dec->fmt_in.i_extra == 0 &&
+            (!p_sys->hh.hevc.i_pps_count ||
+             !p_sys->hh.hevc.i_sps_count ||
+             !p_sys->hh.hevc.i_vps_count) );
+}
+
+static bool CodecSupportedHEVC(decoder_t *p_dec)
+{
+    return true;
+}
+
+#define ConfigureVoutHEVC ConfigureVoutH264
+#define ProcessBlockHEVC ProcessBlockH264
+
+static CFMutableDictionaryRef GetDecoderExtradataMPEG4(decoder_t *p_dec)
+{
+    if (p_dec->fmt_in.i_extra)
+        return ESDSExtradataInfoCreate(p_dec, p_dec->fmt_in.p_extra,
+                                              p_dec->fmt_in.i_extra);
+    else
+        return nil; /* MPEG4 without esds ? */
+}
+
+static CFMutableDictionaryRef GetDecoderExtradataDefault(decoder_t *p_dec)
+{
+    return ExtradataInfoCreate(NULL, NULL, 0); /* Empty Needed ? */
+}
+
+/* !Codec Specific */
 
 static void InsertIntoDPB(decoder_sys_t *p_sys, frame_info_t *p_info)
 {
@@ -369,7 +802,7 @@ static picture_t * RemoveOneFrameFromDPB(decoder_sys_t *p_sys)
     return p_ret;
 }
 
-static void DrainDPB(decoder_t *p_dec, bool flush)
+static void DrainDPBLocked(decoder_t *p_dec, bool flush)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     for( ;; )
@@ -397,13 +830,10 @@ static frame_info_t * CreateReorderInfo(decoder_t *p_dec, const block_t *p_block
     if (!p_info)
         return NULL;
 
-    if (p_sys->b_poc_based_reorder)
+    if (p_sys->pf_fill_reorder_info)
     {
-        if (p_sys->codec != kCMVideoCodecType_H264 ||
-            !ParseH264NAL(p_dec, p_block->p_buffer, p_block->i_buffer,
-                          p_sys->hh.i_nal_length_size , p_info))
+        if(!p_sys->pf_fill_reorder_info(p_dec, p_block, p_info))
         {
-            assert(p_sys->codec == kCMVideoCodecType_H264);
             free(p_info);
             return NULL;
         }
@@ -478,6 +908,14 @@ static CMVideoCodecType CodecPrecheck(decoder_t *p_dec)
         case VLC_CODEC_H264:
             return kCMVideoCodecType_H264;
 
+        case VLC_CODEC_HEVC:
+            if (!deviceSupportsHEVC())
+            {
+                msg_Warn(p_dec, "device doesn't support HEVC");
+                return -1;
+            }
+            return kCMVideoCodecType_HEVC;
+
         case VLC_CODEC_MP4V:
         {
             if (p_dec->fmt_in.i_original_fourcc == VLC_FOURCC( 'X','V','I','D' )) {
@@ -548,17 +986,26 @@ static CMVideoCodecType CodecPrecheck(decoder_t *p_dec)
     vlc_assert_unreachable();
 }
 
-
 static CFMutableDictionaryRef CreateSessionDescriptionFormat(decoder_t *p_dec,
                                                              unsigned i_sar_num,
-                                                             unsigned i_sar_den,
-                                                             CFMutableDictionaryRef extradataInfo)
+                                                             unsigned i_sar_den)
 {
-    assert(extradataInfo != nil);
+    decoder_sys_t *p_sys = p_dec->p_sys;
 
     CFMutableDictionaryRef decoderConfiguration = cfdict_create(2);
     if (decoderConfiguration == NULL)
         return nil;
+
+    CFMutableDictionaryRef extradata = p_sys->pf_get_extradata
+                                     ? p_sys->pf_get_extradata(p_dec) : nil;
+    if(extradata)
+    {
+        /* then decoder will also fail if required, no need to handle it */
+        CFDictionarySetValue(decoderConfiguration,
+                             kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms,
+                             extradata);
+        CFRelease(extradata);
+    }
 
     CFDictionarySetValue(decoderConfiguration,
                          kCVImageBufferChromaLocationBottomFieldKey,
@@ -567,28 +1014,54 @@ static CFMutableDictionaryRef CreateSessionDescriptionFormat(decoder_t *p_dec,
                          kCVImageBufferChromaLocationTopFieldKey,
                          kCVImageBufferChromaLocation_Left);
 
-    CFDictionarySetValue(decoderConfiguration,
-                         kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms,
-                         extradataInfo);
-
     /* pixel aspect ratio */
-    CFMutableDictionaryRef pixelaspectratio = cfdict_create(2);
-    if(pixelaspectratio == NULL)
+    if(i_sar_num && i_sar_den)
     {
-        CFRelease(decoderConfiguration);
-        return nil;
+        CFMutableDictionaryRef pixelaspectratio = cfdict_create(2);
+        if(pixelaspectratio == NULL)
+        {
+            CFRelease(decoderConfiguration);
+            return nil;
+        }
+
+        cfdict_set_int32(pixelaspectratio,
+                         kCVImageBufferPixelAspectRatioHorizontalSpacingKey,
+                         i_sar_num);
+        cfdict_set_int32(pixelaspectratio,
+                         kCVImageBufferPixelAspectRatioVerticalSpacingKey,
+                         i_sar_den);
+        CFDictionarySetValue(decoderConfiguration,
+                             kCVImageBufferPixelAspectRatioKey,
+                             pixelaspectratio);
+        CFRelease(pixelaspectratio);
     }
 
-    cfdict_set_int32(pixelaspectratio,
-                     kCVImageBufferPixelAspectRatioHorizontalSpacingKey,
-                     i_sar_num);
-    cfdict_set_int32(pixelaspectratio,
-                     kCVImageBufferPixelAspectRatioVerticalSpacingKey,
-                     i_sar_den);
-    CFDictionarySetValue(decoderConfiguration,
-                         kCVImageBufferPixelAspectRatioKey,
-                         pixelaspectratio);
-    CFRelease(pixelaspectratio);
+    /* Setup YUV->RGB matrix since VT can output BGRA directly. Don't setup
+     * transfer and primaries since the transformation is done via the GL
+     * fragment shader. */
+    CFStringRef yuvmatrix;
+    switch (p_dec->fmt_out.video.space)
+    {
+        case COLOR_SPACE_BT601:
+            yuvmatrix = kCVImageBufferYCbCrMatrix_ITU_R_601_4;
+            break;
+        case COLOR_SPACE_BT2020:
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+            if (&kCVImageBufferColorPrimaries_ITU_R_2020 != nil)
+            {
+                yuvmatrix = kCVImageBufferColorPrimaries_ITU_R_2020;
+                break;
+            }
+#pragma clang diagnostic pop
+            /* fall through */
+        case COLOR_SPACE_BT709:
+        default:
+            yuvmatrix = kCVImageBufferColorPrimaries_ITU_R_709_2;
+            break;
+    }
+    CFDictionarySetValue(decoderConfiguration, kCVImageBufferYCbCrMatrixKey,
+                         yuvmatrix);
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpartial-availability"
@@ -619,52 +1092,32 @@ static CFMutableDictionaryRef CreateSessionDescriptionFormat(decoder_t *p_dec,
     return decoderConfiguration;
 }
 
-static bool VideoToolboxNeedsToRestartH264(decoder_t *p_dec,
-                                           VTDecompressionSessionRef session,
-                                           const struct hxxx_helper *hh)
+static void PtsInit(decoder_t *p_dec)
 {
-    unsigned w, h, vw, vh;
-    int sarn, sard;
+    decoder_sys_t *p_sys = p_dec->p_sys;
 
-    if (hxxx_helper_get_current_picture_size(hh, &w, &h, &vw, &vh) != VLC_SUCCESS)
-        return true;
-
-    if (hxxx_helper_get_current_sar(hh, &sarn, &sard) != VLC_SUCCESS)
-        return true;
-
-    CFMutableDictionaryRef extradataInfo = H264ExtradataInfoCreate(hh);
-    if(extradataInfo == nil)
-        return true;
-
-    bool b_ret = true;
-
-    CFMutableDictionaryRef decoderConfiguration =
-            CreateSessionDescriptionFormat(p_dec, sarn, sard, extradataInfo);
-    if (decoderConfiguration != nil)
+    if( p_dec->fmt_in.video.i_frame_rate_base && p_dec->fmt_in.video.i_frame_rate )
     {
-        CMFormatDescriptionRef newvideoFormatDesc;
-        /* create new video format description */
-        OSStatus status = CMVideoFormatDescriptionCreate(kCFAllocatorDefault,
-                                                         kCMVideoCodecType_H264,
-                                                         vw, vh,
-                                                         decoderConfiguration,
-                                                         &newvideoFormatDesc);
-        if (!status)
-        {
-            b_ret = !VTDecompressionSessionCanAcceptFormatDescription(session,
-                                                                      newvideoFormatDesc);
-            CFRelease(newvideoFormatDesc);
-        }
-        CFRelease(decoderConfiguration);
+        date_Init( &p_sys->pts, p_dec->fmt_in.video.i_frame_rate * 2,
+                   p_dec->fmt_in.video.i_frame_rate_base );
     }
-    CFRelease(extradataInfo);
-
-    return b_ret;
+    else date_Init( &p_sys->pts, 2 * 30000, 1001 );
 }
 
 static int StartVideoToolbox(decoder_t *p_dec)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
+
+    /* Late starts */
+    if(p_sys->pf_late_start && p_sys->pf_late_start(p_dec))
+    {
+        assert(p_sys->session == NULL);
+        return VLC_SUCCESS;
+    }
+
+    /* Fills fmt_out (from extradata if any) */
+    if(ConfigureVout(p_dec) != VLC_SUCCESS)
+        return VLC_EGENERIC;
 
     /* destination pixel buffer attributes */
     CFMutableDictionaryRef destinationPixelBufferAttributes = cfdict_create(2);
@@ -674,8 +1127,7 @@ static int StartVideoToolbox(decoder_t *p_dec)
     CFMutableDictionaryRef decoderConfiguration =
         CreateSessionDescriptionFormat(p_dec,
                                        p_dec->fmt_out.video.i_sar_num,
-                                       p_dec->fmt_out.video.i_sar_den,
-                                       p_sys->extradataInfo);
+                                       p_dec->fmt_out.video.i_sar_den);
     if(decoderConfiguration == nil)
     {
         CFRelease(destinationPixelBufferAttributes);
@@ -759,12 +1211,7 @@ static int StartVideoToolbox(decoder_t *p_dec)
     if (status == noErr)
         CFRelease(supportedProps);
 
-    if( p_dec->fmt_in.video.i_frame_rate_base && p_dec->fmt_in.video.i_frame_rate )
-    {
-        date_Init( &p_sys->pts, p_dec->fmt_in.video.i_frame_rate * 2,
-                   p_dec->fmt_in.video.i_frame_rate_base );
-    }
-    else date_Init( &p_sys->pts, 2 * 30000, 1001 );
+    PtsInit(p_dec);
 
     return VLC_SUCCESS;
 }
@@ -780,6 +1227,24 @@ static void StopVideoToolbox(decoder_t *p_dec, bool b_reset_format)
         VTDecompressionSessionInvalidate(p_sys->session);
         CFRelease(p_sys->session);
         p_sys->session = nil;
+
+#if TARGET_OS_IPHONE
+        /* In case of 4K 10bits (BGRA), we can easily reach the device max
+         * memory when flushing. Indeed, we'll create a new VT session that
+         * will reallocate frames while previous frames are still used by the
+         * vout (and not released). To work-around this issue, we force a vout
+         * change. */
+        if (p_dec->fmt_out.i_codec == VLC_CODEC_CVPX_BGRA
+         && p_dec->fmt_out.video.i_width * p_dec->fmt_out.video.i_height >= 8000000)
+        {
+            const video_format_t orig = p_dec->fmt_out.video;
+            p_dec->fmt_out.video.i_width = p_dec->fmt_out.video.i_height =
+            p_dec->fmt_out.video.i_visible_width = p_dec->fmt_out.video.i_visible_height = 64;
+            (void) decoder_UpdateVideoFormat(p_dec);
+            p_dec->fmt_out.video = orig;
+            b_reset_format = true;
+        }
+#endif
 
         if (b_reset_format)
         {
@@ -809,48 +1274,6 @@ static int RestartVideoToolbox(decoder_t *p_dec, bool b_reset_format)
 
 #pragma mark - module open and close
 
-static int SetupDecoderExtradata(decoder_t *p_dec)
-{
-    decoder_sys_t *p_sys = p_dec->p_sys;
-    CFMutableDictionaryRef extradata_info = NULL;
-
-    assert(p_sys->extradataInfo == nil);
-    if (p_sys->codec == kCMVideoCodecType_H264)
-    {
-        hxxx_helper_init(&p_sys->hh, VLC_OBJECT(p_dec),
-                         p_dec->fmt_in.i_codec, true);
-        int i_ret = hxxx_helper_set_extra(&p_sys->hh, p_dec->fmt_in.p_extra,
-                                          p_dec->fmt_in.i_extra);
-        if (i_ret != VLC_SUCCESS)
-            return i_ret;
-        assert(p_sys->hh.pf_process_block != NULL);
-
-        if (p_dec->fmt_in.p_extra)
-        {
-            p_sys->extradataInfo = ExtradataInfoCreate(CFSTR("avcC"),
-                                            p_dec->fmt_in.p_extra,
-                                            p_dec->fmt_in.i_extra);
-            if (SetH264DecoderInfo(p_dec, p_sys->extradataInfo) != VLC_SUCCESS)
-                return VLC_EGENERIC;
-        }
-        else
-        {
-            /* AnnexB case, we'll get extradata from first input blocks */
-            return VLC_SUCCESS;
-        }
-    }
-    else if (p_sys->codec == kCMVideoCodecType_MPEG4Video)
-    {
-        if (!p_dec->fmt_in.i_extra)
-            return VLC_EGENERIC;
-        p_sys->extradataInfo = ESDSExtradataInfoCreate(p_dec, p_dec->fmt_in.p_extra,
-                                                       p_dec->fmt_in.i_extra);
-    }
-    else
-        p_sys->extradataInfo = ExtradataInfoCreate(NULL, NULL, 0);
-
-    return p_sys->extradataInfo != nil ? VLC_SUCCESS : VLC_EGENERIC;
-}
 
 static int OpenDecoder(vlc_object_t *p_this)
 {
@@ -877,22 +1300,14 @@ static int OpenDecoder(vlc_object_t *p_this)
     /* now that we see a chance to decode anything, allocate the
      * internals and start the decoding session */
     decoder_sys_t *p_sys;
-    p_sys = malloc(sizeof(*p_sys));
+    p_sys = calloc(1, sizeof(*p_sys));
     if (!p_sys)
         return VLC_ENOMEM;
     p_dec->p_sys = p_sys;
     p_sys->session = nil;
-    p_sys->b_vt_feed = false;
-    p_sys->b_vt_flush = false;
     p_sys->codec = codec;
     p_sys->videoFormatDescription = nil;
-    p_sys->extradataInfo = nil;
-    p_sys->p_pic_reorder = NULL;
-    p_sys->i_pic_reorder = 0;
     p_sys->i_pic_reorder_max = 4;
-    p_sys->b_invalid_pic_reorder_max = false;
-    p_sys->b_poc_based_reorder = false;
-    p_sys->b_format_propagated = false;
     p_sys->vtsession_status = VTSESSION_STATUS_OK;
     p_sys->b_enable_temporal_processing =
         var_InheritBool(p_dec, "videotoolbox-temporal-deinterlacing");
@@ -911,54 +1326,86 @@ static int OpenDecoder(vlc_object_t *p_this)
         p_sys->i_forced_cvpx_format = ntohl(p_sys->i_forced_cvpx_format);
         free(cvpx_chroma);
     }
-    else
-        p_dec->p_sys->i_forced_cvpx_format = 0;
 
-    h264_poc_context_init( &p_sys->pocctx );
+    p_sys->pic_holder = malloc(sizeof(struct pic_holder));
+    if (!p_sys->pic_holder)
+    {
+        free(p_sys);
+        return VLC_ENOMEM;
+    }
+
+    vlc_mutex_init(&p_sys->pic_holder->lock);
+    vlc_cond_init(&p_sys->pic_holder->wait);
+    p_sys->pic_holder->nb_out = 0;
+    p_sys->pic_holder->closed = false;
+
     vlc_mutex_init(&p_sys->lock);
-
-    /* return our proper VLC internal state */
-    p_dec->fmt_out.video = p_dec->fmt_in.video;
-    if (!p_dec->fmt_out.video.i_sar_num || !p_dec->fmt_out.video.i_sar_den)
-    {
-        p_dec->fmt_out.video.i_sar_num = 1;
-        p_dec->fmt_out.video.i_sar_den = 1;
-    }
-    if (!p_dec->fmt_out.video.i_visible_width
-     || !p_dec->fmt_out.video.i_visible_height)
-    {
-        p_dec->fmt_out.video.i_visible_width = p_dec->fmt_out.video.i_width;
-        p_dec->fmt_out.video.i_visible_height = p_dec->fmt_out.video.i_height;
-    }
-    p_dec->fmt_out.video.i_width = ALIGN_16( p_dec->fmt_out.video.i_visible_width );
-    p_dec->fmt_out.video.i_height = ALIGN_16( p_dec->fmt_out.video.i_visible_height );
-
-    p_dec->fmt_out.i_codec = 0;
-
-    if( codec == kCMVideoCodecType_H264 )
-        p_sys->b_poc_based_reorder = true;
-
-    int i_ret = SetupDecoderExtradata(p_dec);
-    if (i_ret != VLC_SUCCESS)
-        goto error;
-
-    if (p_sys->extradataInfo != nil)
-    {
-        i_ret = StartVideoToolbox(p_dec);
-        if (i_ret != VLC_SUCCESS)
-            goto error;
-    } /* else: late opening */
 
     p_dec->pf_decode = DecodeBlock;
     p_dec->pf_flush  = RequestFlush;
 
-    msg_Info(p_dec, "Using Video Toolbox to decode '%4.4s'", (char *)&p_dec->fmt_in.i_codec);
+    switch(codec)
+    {
+        case kCMVideoCodecType_H264:
+            p_sys->pf_codec_init = InitH264;
+            p_sys->pf_codec_clean = CleanH264;
+            p_sys->pf_codec_supported = CodecSupportedH264;
+            p_sys->pf_late_start = LateStartH264;
+            p_sys->pf_process_block = ProcessBlockH264;
+            p_sys->pf_need_restart = VideoToolboxNeedsToRestartH264;
+            p_sys->pf_configure_vout = ConfigureVoutH264;
+            p_sys->pf_get_extradata = GetDecoderExtradataH264;
+            p_sys->pf_fill_reorder_info = FillReorderInfoH264;
+            p_sys->b_poc_based_reorder = true;
+            break;
 
-    return VLC_SUCCESS;
+        case kCMVideoCodecType_HEVC:
+            p_sys->pf_codec_init = InitHEVC;
+            p_sys->pf_codec_clean = CleanHEVC;
+            p_sys->pf_codec_supported = CodecSupportedHEVC;
+            p_sys->pf_late_start = LateStartHEVC;
+            p_sys->pf_process_block = ProcessBlockHEVC;
+            p_sys->pf_need_restart = VideoToolboxNeedsToRestartHEVC;
+            p_sys->pf_configure_vout = ConfigureVoutHEVC;
+            p_sys->pf_get_extradata = GetDecoderExtradataHEVC;
+            p_sys->pf_fill_reorder_info = FillReorderInfoHEVC;
+            p_sys->b_poc_based_reorder = true;
+            break;
 
-error:
-    CloseDecoder(p_this);
+        case kCMVideoCodecType_MPEG4Video:
+            p_sys->pf_get_extradata = GetDecoderExtradataMPEG4;
+            break;
+
+        default:
+            p_sys->pf_get_extradata = GetDecoderExtradataDefault;
+            break;
+    }
+
+    if (p_sys->pf_codec_init && !p_sys->pf_codec_init(p_dec))
+    {
+        CloseDecoder(p_this);
+        return VLC_EGENERIC;
+    }
+    if (p_sys->pf_codec_supported && !p_sys->pf_codec_supported(p_dec))
+    {
+        CloseDecoder(p_this);
+        return VLC_EGENERIC;
+    }
+
+    int i_ret = StartVideoToolbox(p_dec);
+    if (i_ret == VLC_SUCCESS)
+        msg_Info(p_dec, "Using Video Toolbox to decode '%4.4s'",
+                        (char *)&p_dec->fmt_in.i_codec);
+    else
+        CloseDecoder(p_this);
     return i_ret;
+}
+
+static void pic_holder_clean(struct pic_holder *pic_holder)
+{
+    vlc_mutex_destroy(&pic_holder->lock);
+    vlc_cond_destroy(&pic_holder->wait);
+    free(pic_holder);
 }
 
 static void CloseDecoder(vlc_object_t *p_this)
@@ -967,23 +1414,46 @@ static void CloseDecoder(vlc_object_t *p_this)
     decoder_sys_t *p_sys = p_dec->p_sys;
 
     StopVideoToolbox(p_dec, true);
-    if (p_sys->extradataInfo)
-        CFRelease(p_sys->extradataInfo);
 
-    if (p_sys->codec == kCMVideoCodecType_H264)
-        hxxx_helper_clean(&p_sys->hh);
+    if(p_sys->pf_codec_clean)
+        p_sys->pf_codec_clean(p_dec);
 
     vlc_mutex_destroy(&p_sys->lock);
+
+    vlc_mutex_lock(&p_sys->pic_holder->lock);
+    if (p_sys->pic_holder->nb_out == 0)
+    {
+        vlc_mutex_unlock(&p_sys->pic_holder->lock);
+        pic_holder_clean(p_sys->pic_holder);
+    }
+    else
+    {
+        p_sys->pic_holder->closed = true;
+        vlc_mutex_unlock(&p_sys->pic_holder->lock);
+    }
     free(p_sys);
 }
 
 #pragma mark - helpers
 
+static BOOL deviceSupportsHEVC()
+{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpartial-availability"
+
+#if (TARGET_OS_OSX && MAC_OS_X_VERSION_MAX_ALLOWED >= 101300) || \
+    (TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000) || \
+    (TARGET_OS_TV && __TV_OS_VERSION_MAX_ALLOWED >= 110000)
+    if (VTIsHardwareDecodeSupported != nil)
+        return VTIsHardwareDecodeSupported(kCMVideoCodecType_HEVC);
+    else
+#endif
+#pragma clang diagnostic pop
+        return NO;
+}
+
 static BOOL deviceSupportsAdvancedProfiles()
 {
-#if TARGET_IPHONE_SIMULATOR
-    return NO;
-#endif
 #if TARGET_OS_IPHONE
     size_t size;
     cpu_type_t type;
@@ -997,15 +1467,13 @@ static BOOL deviceSupportsAdvancedProfiles()
 
     return NO;
 #else
-    return NO;
+    /* Assume that the CPU support advanced profiles if it can handle HEVC */
+    return deviceSupportsHEVC();
 #endif
 }
 
 static BOOL deviceSupportsAdvancedLevels()
 {
-#if TARGET_IPHONE_SIMULATOR
-    return YES;
-#endif
 #if TARGET_OS_IPHONE
     #ifdef __LP64__
         size_t size;
@@ -1083,125 +1551,33 @@ static CFMutableDictionaryRef ESDSExtradataInfoCreate(decoder_t *p_dec,
     return extradataInfo;
 }
 
-static CFMutableDictionaryRef H264ExtradataInfoCreate(const struct hxxx_helper *hh)
+static int ConfigureVout(decoder_t *p_dec)
 {
-    CFMutableDictionaryRef extradataInfo = nil;
-    block_t *p_avcC = h264_helper_get_avcc_config(hh);
-    if (p_avcC)
-    {
-        extradataInfo = ExtradataInfoCreate(CFSTR("avcC"),
-                                            p_avcC->p_buffer, p_avcC->i_buffer);
-        block_Release(p_avcC);
-    }
-    return extradataInfo;
-}
+    /* return our proper VLC internal state */
+    p_dec->fmt_out.video = p_dec->fmt_in.video;
+    p_dec->fmt_out.video.p_palette = NULL;
+    p_dec->fmt_out.i_codec = 0;
 
-static bool IsH264ProfileLevelSupported(decoder_t *p_dec, uint8_t i_profile,
-                                        uint8_t i_level)
-{
-    switch (i_profile) {
-        case PROFILE_H264_BASELINE:
-        case PROFILE_H264_MAIN:
-        case PROFILE_H264_HIGH:
-            break;
-
-        case PROFILE_H264_HIGH_10:
-        {
-            if (deviceSupportsAdvancedProfiles())
-            {
-                /* FIXME: There is no YUV420 10bits chroma. The
-                 * decoder seems to output RGBA when decoding 10bits
-                 * content, but there is an unknown crash when
-                 * displaying such output, so force NV12 for now. */
-                if (p_dec->p_sys->i_forced_cvpx_format == 0)
-                    p_dec->p_sys->i_forced_cvpx_format =
-                        kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange;
-                break;
-            }
-            else
-            {
-                msg_Err(p_dec, "current device doesn't support H264 10bits");
-                return false;
-            }
-        }
-
-        default:
-        {
-            msg_Warn(p_dec, "unknown H264 profile %" PRIx8, i_profile);
-            return false;
-        }
-    }
-
-    /* A level higher than 5.2 was not tested, so don't dare to try to decode
-     * it. On SoC A8, 4.2 is the highest specified profile. on Twister, we can
-     * do up to 5.2 */
-    if (i_level > 52 || (i_level > 42 && !deviceSupportsAdvancedLevels()))
-    {
-        msg_Err(p_dec, "current device doesn't support this H264 level: %"
-                PRIx8, i_level);
-        return false;
-    }
-
-    return true;
-}
-
-static int SetH264DecoderInfo(decoder_t *p_dec, CFMutableDictionaryRef extradataInfo)
-{
-    decoder_sys_t *p_sys = p_dec->p_sys;
-
-    if (p_sys->hh.h264.i_sps_count == 0 || p_sys->hh.h264.i_pps_count == 0)
+    if(p_dec->p_sys->pf_configure_vout &&
+       !p_dec->p_sys->pf_configure_vout(p_dec))
         return VLC_EGENERIC;
 
-    uint8_t i_profile, i_level;
-    unsigned i_h264_width, i_h264_height, i_video_width, i_video_height;
-    int i_sar_num, i_sar_den, i_ret;
-
-    i_ret = hxxx_helper_get_current_profile_level(&p_sys->hh, &i_profile, &i_level);
-    if (i_ret != VLC_SUCCESS)
-        return i_ret;
-    if (!IsH264ProfileLevelSupported(p_dec, i_profile, i_level))
-        return VLC_ENOMOD; /* This error is critical */
-
-    i_ret = hxxx_helper_get_current_picture_size(&p_sys->hh,
-                                                 &i_h264_width, &i_h264_height,
-                                                 &i_video_width, &i_video_height);
-    if (i_ret != VLC_SUCCESS)
-        return i_ret;
-
-    i_ret = hxxx_helper_get_current_sar(&p_sys->hh, &i_sar_num, &i_sar_den);
-    if (i_ret != VLC_SUCCESS)
-        return i_ret;
-
-    video_color_primaries_t primaries;
-    video_transfer_func_t transfer;
-    video_color_space_t colorspace;
-    bool full_range;
-    if (hxxx_helper_get_colorimetry(&p_sys->hh, &primaries, &transfer,
-                                    &colorspace, &full_range) == VLC_SUCCESS
-      && primaries != COLOR_PRIMARIES_UNDEF && transfer != TRANSFER_FUNC_UNDEF
-      && colorspace != COLOR_SPACE_UNDEF)
+    if (!p_dec->fmt_out.video.i_sar_num || !p_dec->fmt_out.video.i_sar_den)
     {
-        p_dec->fmt_out.video.primaries = primaries;
-        p_dec->fmt_out.video.transfer = transfer;
-        p_dec->fmt_out.video.space = colorspace;
-        p_dec->fmt_out.video.b_color_range_full = full_range;
+        p_dec->fmt_out.video.i_sar_num = 1;
+        p_dec->fmt_out.video.i_sar_den = 1;
     }
 
-    p_dec->fmt_out.video.i_visible_width = i_video_width;
-    p_dec->fmt_out.video.i_width = ALIGN_16( i_video_width );
-    p_dec->fmt_out.video.i_visible_height = i_video_height;
-    p_dec->fmt_out.video.i_height = ALIGN_16( i_video_height );
-    p_dec->fmt_out.video.i_sar_num = i_sar_num;
-    p_dec->fmt_out.video.i_sar_den = i_sar_den;
-
-    if (extradataInfo == nil)
+    if (!p_dec->fmt_out.video.i_visible_width || !p_dec->fmt_out.video.i_visible_height)
     {
-        if (p_sys->extradataInfo != nil)
-            CFRelease(p_sys->extradataInfo);
-        p_sys->extradataInfo = H264ExtradataInfoCreate(&p_sys->hh);
+        p_dec->fmt_out.video.i_visible_width = p_dec->fmt_out.video.i_width;
+        p_dec->fmt_out.video.i_visible_height = p_dec->fmt_out.video.i_height;
     }
 
-    return (p_sys->extradataInfo == nil) ? VLC_EGENERIC: VLC_SUCCESS;
+    p_dec->fmt_out.video.i_width = ALIGN_16( p_dec->fmt_out.video.i_visible_width );
+    p_dec->fmt_out.video.i_height = ALIGN_16( p_dec->fmt_out.video.i_visible_height );
+
+    return VLC_SUCCESS;
 }
 
 static CFMutableDictionaryRef ExtradataInfoCreate(CFStringRef name,
@@ -1372,12 +1748,18 @@ static void Drain(decoder_t *p_dec, bool flush)
     decoder_sys_t *p_sys = p_dec->p_sys;
 
     /* draining: return last pictures of the reordered queue */
+    vlc_mutex_lock(&p_sys->lock);
+    p_sys->b_vt_flush = true;
+    DrainDPBLocked(p_dec, flush);
+    vlc_mutex_unlock(&p_sys->lock);
+
     if (p_sys->session)
         VTDecompressionSessionWaitForAsynchronousFrames(p_sys->session);
 
     vlc_mutex_lock(&p_sys->lock);
-    DrainDPB(p_dec, flush);
+    assert(RemoveOneFrameFromDPB(p_sys) == NULL);
     p_sys->b_vt_flush = false;
+    p_sys->b_vt_feed = false;
     vlc_mutex_unlock(&p_sys->lock);
 }
 
@@ -1386,7 +1768,10 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
     decoder_sys_t *p_sys = p_dec->p_sys;
 
     if (p_sys->b_vt_flush)
-        RestartVideoToolbox(p_dec, false);
+    {
+        Drain(p_dec, true);
+        PtsInit(p_dec);
+    }
 
     if (p_block == NULL)
     {
@@ -1438,9 +1823,9 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
     }
 
     bool b_config_changed = false;
-    if (p_sys->codec == kCMVideoCodecType_H264)
+    if(p_sys->pf_process_block)
     {
-        p_block = p_sys->hh.pf_process_block(&p_sys->hh, p_block, &b_config_changed);
+        p_block = p_sys->pf_process_block(p_dec, p_block, &b_config_changed);
         if (!p_block)
             return VLCDEC_SUCCESS;
     }
@@ -1449,40 +1834,35 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
     if(unlikely(!p_info))
         goto skip;
 
-    if (b_config_changed && p_info->b_flush)
+    if (!p_sys->session /* Late Start */||
+        (b_config_changed && p_info->b_flush))
     {
-        assert(p_sys->codec == kCMVideoCodecType_H264);
-        if (!p_sys->session ||
-            VideoToolboxNeedsToRestartH264(p_dec,p_sys->session, &p_sys->hh))
+        if (p_sys->session &&
+            p_sys->pf_need_restart &&
+            p_sys->pf_need_restart(p_dec,p_sys->session))
         {
-            if (p_sys->session)
-            {
-                msg_Dbg(p_dec, "SPS/PPS changed: draining H264 decoder");
-                Drain(p_dec, false);
-                msg_Dbg(p_dec, "SPS/PPS changed: restarting H264 decoder");
-                StopVideoToolbox(p_dec, true);
-            }
-            /* else decoding didn't start yet, which is ok for H264, let's see
-             * if we can use this block to get going */
+            msg_Dbg(p_dec, "parameters sets changed: draining decoder");
+            Drain(p_dec, false);
+            msg_Dbg(p_dec, "parameters sets changed: restarting decoder");
+            StopVideoToolbox(p_dec, true);
+        }
 
-            int i_ret = SetH264DecoderInfo(p_dec, nil);
-            if (i_ret == VLC_SUCCESS)
+        if(!p_sys->session)
+        {
+            if(!p_sys->pf_codec_supported || p_sys->pf_codec_supported(p_dec))
             {
-                msg_Dbg(p_dec, "Got SPS/PPS: late opening of H264 decoder");
                 StartVideoToolbox(p_dec);
             }
-            else if (i_ret == VLC_ENOMOD)
+            else
             {
-                /* The current device doesn't handle the h264 profile/level,
-                 * abort */
+                /* The current device doesn't handle the profile/level, abort */
                 vlc_mutex_lock(&p_sys->lock);
                 p_sys->vtsession_status = VTSESSION_STATUS_ABORT;
                 vlc_mutex_unlock(&p_sys->lock);
-                goto skip;
             }
         }
 
-        if (!p_sys->session)
+        if (!p_sys->session) /* Start Failed */
         {
             free(p_info);
             goto skip;
@@ -1622,6 +2002,40 @@ static int UpdateVideoFormat(decoder_t *p_dec, CVPixelBufferRef imageBuffer)
     return 0;
 }
 
+static void pic_holder_on_cvpx_released(void *data)
+{
+    struct pic_holder *pic_holder = data;
+
+    vlc_mutex_lock(&pic_holder->lock);
+    pic_holder->nb_out--;
+    if (pic_holder->nb_out == 0 && pic_holder->closed)
+    {
+        vlc_mutex_unlock(&pic_holder->lock);
+        pic_holder_clean(pic_holder);
+    }
+    else
+    {
+        vlc_cond_broadcast(&pic_holder->wait);
+        vlc_mutex_unlock(&pic_holder->lock);
+    }
+}
+
+static void pic_holder_wait(struct pic_holder *pic_holder, uint8_t pic_reorder_max)
+{
+    static const uint8_t reserved_picture = 2;
+
+    if (pic_reorder_max == 0)
+        pic_reorder_max = 1;
+
+    vlc_mutex_lock(&pic_holder->lock);
+
+    while (pic_holder->nb_out >= pic_reorder_max + reserved_picture)
+        vlc_cond_wait(&pic_holder->wait, &pic_holder->lock);
+    pic_holder->nb_out++;
+
+    vlc_mutex_unlock(&pic_holder->lock);
+}
+
 static void DecoderCallback(void *decompressionOutputRefCon,
                             void *sourceFrameRefCon,
                             OSStatus status,
@@ -1686,15 +2100,39 @@ static void DecoderCallback(void *decompressionOutputRefCon,
     {
         /* Unlock the mutex because decoder_NewPicture() is blocking. Indeed,
          * it can wait indefinitely when the input is paused. */
+
+        uint8_t i_pic_reorder_max = p_sys->i_pic_reorder_max;
+
         vlc_mutex_unlock(&p_sys->lock);
+
         picture_t *p_pic = decoder_NewPicture(p_dec);
+
+        if (!p_pic
+         || cvpxpic_attach_with_cb(p_pic, imageBuffer, pic_holder_on_cvpx_released,
+                                   p_sys->pic_holder) != VLC_SUCCESS)
+        {
+            vlc_mutex_lock(&p_sys->lock);
+            goto end;
+        }
+
+        /* VT is not pacing frame allocation. If we are not fast enough to
+         * render (release) the output pictures, the VT session can end up
+         * allocating way too many frames. This can be problematic for 4K
+         * 10bits. To fix this issue, we ensure that we don't have too many
+         * output frames allocated by waiting for the vout to release them.
+         *
+         * FIXME: A proper way to fix this issue is to allow decoder modules to
+         * specify the dpb and having the vout re-allocating output frames when
+         * this number changes. */
+        pic_holder_wait(p_sys->pic_holder, i_pic_reorder_max);
+
         vlc_mutex_lock(&p_sys->lock);
 
-        if (!p_pic)
+        if (p_sys->b_vt_flush)
+        {
+            picture_Release(p_pic);
             goto end;
-
-        if (cvpxpic_attach(p_pic, imageBuffer) != VLC_SUCCESS)
-            goto end;
+        }
 
         p_info->p_picture = p_pic;
 

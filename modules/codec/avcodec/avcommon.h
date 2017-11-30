@@ -2,7 +2,7 @@
  * avcommon.h: common code for libav*
  *****************************************************************************
  * Copyright (C) 2012 VLC authors and VideoLAN
- * $Id: d5ccdbc32dcf7aff908499c46e1ece058b015844 $
+ * $Id: 65ad35f4ada4d2b7549ace885cc8b38ddbe20aed $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -43,8 +43,8 @@
 # include <libavutil/cpu.h>
 # include <libavutil/log.h>
 
-#define AV_OPTIONS_TEXT     "Advanced options"
-#define AV_OPTIONS_LONGTEXT "Advanced options, in the form {opt=val,opt2=val2}."
+#define AV_OPTIONS_TEXT     N_("Advanced options")
+#define AV_OPTIONS_LONGTEXT N_("Advanced options, in the form {opt=val,opt2=val2}.")
 
 static inline void vlc_av_get_options(const char *psz_opts, AVDictionary** pp_dict)
 {

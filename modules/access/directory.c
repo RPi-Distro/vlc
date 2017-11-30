@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access_browser plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: e6d2f11587c8e12ef536b5ffb2cb35739dd86d5a $
+ * $Id: 59915de7673fb2563a62a20994b366058cefea1d $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Rémi Denis-Courmont
@@ -53,7 +53,7 @@ struct access_sys_t
  *****************************************************************************/
 int DirInit (stream_t *access, DIR *dir)
 {
-    access_sys_t *sys = vlc_obj_alloc(VLC_OBJECT(access), 1, sizeof (*sys));
+    access_sys_t *sys = vlc_obj_malloc(VLC_OBJECT(access), sizeof (*sys));
     if (unlikely(sys == NULL))
         goto error;
 

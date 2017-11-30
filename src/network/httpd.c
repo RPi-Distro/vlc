@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 VLC authors and VideoLAN
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: 3e27406b5ce854059302214ced87554795e1a2c1 $
+ * $Id: 1ff4f14d60b3ebcfea8ddaa02ad2ee5735fcf1f0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -133,13 +133,6 @@ enum
 
     HTTPD_CLIENT_TLS_HS_IN,
     HTTPD_CLIENT_TLS_HS_OUT
-};
-
-/* mode */
-enum
-{
-    HTTPD_CLIENT_FILE,      /* default */
-    HTTPD_CLIENT_STREAM,    /* regulary get data from cb */
 };
 
 struct httpd_client_t

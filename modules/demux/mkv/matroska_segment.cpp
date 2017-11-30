@@ -2,7 +2,7 @@
  * matroska_segment.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 58de05f4644d0eff10aff4688c60ca6dea462573 $
+ * $Id: bd2fd7e7bef033144566338702301e16d56a84cb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -208,20 +208,15 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
 
             if( track_id != 0 && cue_mk_time != -1 && cue_position != static_cast<uint64_t>( -1 ) ) {
 
-                if( tracks.find( track_id ) != tracks.end() )
+                SegmentSeeker::Seekpoint::TrustLevel level = SegmentSeeker::Seekpoint::DISABLED;
+
+                if( ! b_invalid_cue && tracks.find( track_id ) != tracks.end() )
                 {
-                    SegmentSeeker::Seekpoint::TrustLevel level = SegmentSeeker::Seekpoint::DISABLED;
-
-                    if( ! b_invalid_cue )
-                    {
-                        level = SegmentSeeker::Seekpoint::QUESTIONABLE; // TODO: var_InheritBool( ..., "mkv-trust-cues" );
-                    }
-
-                    _seeker.add_seekpoint( track_id,
-                        SegmentSeeker::Seekpoint( cue_position, cue_mk_time, level ) );
+                    level = SegmentSeeker::Seekpoint::QUESTIONABLE; // TODO: var_InheritBool( ..., "mkv-trust-cues" );
                 }
-                else
-                    msg_Warn( &sys.demuxer, "Found cue with invalid track id = %u", track_id );
+
+                _seeker.add_seekpoint( track_id,
+                    SegmentSeeker::Seekpoint( cue_position, cue_mk_time, level ) );
             }
         }
         else
@@ -327,7 +322,6 @@ bool matroska_segment_c::ParseSimpleTags( SimpleTag* pout_simple, KaxTagSimple *
     catch(...)
     {
         msg_Err( &sys.demuxer, "Error while reading Tag ");
-        delete ep;
         return false;
     }
 
@@ -1108,6 +1102,8 @@ bool matroska_segment_c::ESCreate()
 {
     /* add all es */
     msg_Dbg( &sys.demuxer, "found %d es", static_cast<int>( tracks.size() ) );
+    es_out_Control( sys.demuxer.out, ES_OUT_SET_ES_CAT_POLICY, VIDEO_ES,
+                    ES_OUT_ES_POLICY_EXCLUSIVE );
 
     for( tracks_map_t::iterator it = tracks.begin(); it != tracks.end(); ++it )
     {

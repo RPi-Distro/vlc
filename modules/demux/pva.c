@@ -2,7 +2,7 @@
  * pva.c: PVA demuxer
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 106a0fc0499f00e7ca6b0058ba7c065bc145e126 $
+ * $Id: 7b52249a21b3c377ba9b58f6f1d82c9a4d6979db $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -128,8 +128,8 @@ static void Close( vlc_object_t *p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    if( p_sys->p_es )  block_ChainRelease( p_sys->p_es );
-    if( p_sys->p_pes ) block_ChainRelease( p_sys->p_pes );
+    block_ChainRelease( p_sys->p_es );
+    block_ChainRelease( p_sys->p_pes );
 
     free( p_sys );
 }
@@ -219,6 +219,10 @@ static int Demux( demux_t *p_demux )
                     {
                         es_out_SetPCR( p_demux->out, p_frame->i_pts);
                     }
+
+                    p_frame = block_ChainGather( p_frame );
+                    if( unlikely(p_frame == NULL) )
+                        abort();
                     es_out_Send( p_demux->out, p_sys->p_video, p_frame );
 
                     p_sys->p_es = NULL;
@@ -429,6 +433,8 @@ static void ParsePES( demux_t *p_demux )
     }
 
     p_pes = block_ChainGather( p_pes );
+    if( unlikely(p_pes == NULL) )
+        abort();
     if( p_pes->i_buffer <= i_skip )
     {
         block_ChainRelease( p_pes );

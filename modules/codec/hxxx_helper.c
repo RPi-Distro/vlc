@@ -79,7 +79,6 @@ hxxx_helper_clean(struct hxxx_helper *hh)
                          hevc_rbsp_release_sps(hnal->hevc_sps));
             RELEASE_NALS(hh->hevc.pps_list, HEVC_PPS_ID_MAX,
                          hevc_rbsp_release_pps(hnal->hevc_pps));
-            free(hh->hevc.p_annexb_config_nal);
             break;
         default:
             vlc_assert_unreachable();
@@ -397,6 +396,45 @@ h264_helper_set_extra(struct hxxx_helper *hh, const void *p_extra,
 }
 
 static int
+helper_process_hvcC_hevc(struct hxxx_helper *hh, const uint8_t *p_buf,
+                         size_t i_buf)
+{
+    if (i_buf < HEVC_MIN_HVCC_SIZE)
+        return VLC_EGENERIC;
+
+    const uint8_t i_num_array = p_buf[22];
+    p_buf += 23; i_buf -= 23;
+
+    for( uint8_t i = 0; i < i_num_array; i++ )
+    {
+        if(i_buf < 3)
+            return VLC_EGENERIC;
+
+        const uint16_t i_num_nalu = p_buf[1] << 8 | p_buf[2];
+        p_buf += 3; i_buf -= 3;
+
+        for( uint16_t j = 0; j < i_num_nalu; j++ )
+        {
+            if(i_buf < 2)
+                return VLC_EGENERIC;
+
+            const uint16_t i_nalu_length = p_buf[0] << 8 | p_buf[1];
+            if(i_buf < (size_t)i_nalu_length + 2)
+                return VLC_EGENERIC;
+
+            bool foo;
+            hevc_helper_parse_nal( hh, &p_buf[0],
+                                   i_nalu_length + 2, 2, &foo );
+
+            p_buf += i_nalu_length + 2;
+            i_buf -= i_nalu_length + 2;
+        }
+    }
+
+    return VLC_SUCCESS;
+}
+
+static int
 hevc_helper_set_extra(struct hxxx_helper *hh, const void *p_extra,
                       size_t i_extra)
 {
@@ -413,23 +451,9 @@ hevc_helper_set_extra(struct hxxx_helper *hh, const void *p_extra,
             return VLC_EGENERIC;
         hh->b_is_xvcC = true;
 
-        if (hh->b_need_xvcC)
-            return VLC_SUCCESS;
-
-        size_t i_buf;
-        uint8_t *p_buf = hevc_hvcC_to_AnnexB_NAL(p_extra, i_extra, &i_buf,
-                                                 NULL);
-        if (!p_buf)
-        {
-            msg_Dbg(hh->p_obj, "hevc_hvcC_to_AnnexB_NAL failed");
-            return VLC_EGENERIC;
-        }
-
-        hh->hevc.p_annexb_config_nal = p_buf;
-        hh->hevc.i_annexb_config_nal = i_buf;
-        return VLC_SUCCESS;
+        return helper_process_hvcC_hevc( hh, p_extra, i_extra );
     }
-    else /* Can't handle extra that is not avcC */
+    else /* Can't handle extra that is not hvcC */
         return VLC_EGENERIC;
 }
 
@@ -595,21 +619,16 @@ hxxx_helper_set_extra(struct hxxx_helper *hh, const void *p_extra,
     return VLC_SUCCESS;;
 }
 
-block_t *
-h264_helper_get_annexb_config(const struct hxxx_helper *hh)
+static block_t *
+hxxx_helper_get_annexb_config( const struct hxxx_helper_nal *pp_nal_lists[],
+                               const size_t p_nal_counts[],
+                               const size_t p_nal_maxs[],
+                               size_t i_lists_size )
 {
     static const uint8_t annexb_startcode[] = { 0x00, 0x00, 0x00, 0x01 };
 
-    if (hh->h264.i_sps_count == 0 || hh->h264.i_pps_count == 0)
-        return NULL;
-
-    const struct hxxx_helper_nal *pp_nal_lists[] = {
-        hh->h264.sps_list, hh->h264.pps_list };
-    const size_t p_nal_counts[] = { hh->h264.i_sps_count, hh->h264.i_pps_count };
-    const size_t p_nal_maxs[] = { H264_SPS_ID_MAX+1, H264_PPS_ID_MAX+1 };
-
-    block_t *p_block_list = NULL;
-    for (size_t i = 0; i < 2; ++i)
+    block_t *p_block_list = NULL, *p_current;
+    for (size_t i = 0; i < i_lists_size; ++i)
     {
         size_t i_nals_size = 0;
         const struct hxxx_helper_nal *p_nal;
@@ -637,12 +656,45 @@ h264_helper_get_annexb_config(const struct hxxx_helper *hh)
             p_block->i_buffer += p_nal->b->i_buffer;
         }
         if (p_block_list == NULL)
-            p_block_list = p_block;
+            p_current = p_block_list = p_block;
         else
-            p_block_list->p_next = p_block;
+        {
+            p_current->p_next = p_block;
+            p_current = p_block;
+        }
     }
 
     return p_block_list;
+}
+
+block_t *
+h264_helper_get_annexb_config(const struct hxxx_helper *hh)
+{
+    if (hh->h264.i_sps_count == 0 || hh->h264.i_pps_count == 0)
+        return NULL;
+
+    const struct hxxx_helper_nal *pp_nal_lists[] = {
+        hh->h264.sps_list, hh->h264.pps_list };
+    const size_t p_nal_counts[] = { hh->h264.i_sps_count, hh->h264.i_pps_count };
+    const size_t p_nal_maxs[] = { H264_SPS_ID_MAX+1, H264_PPS_ID_MAX+1 };
+
+    return hxxx_helper_get_annexb_config( pp_nal_lists, p_nal_counts, p_nal_maxs, 2 );
+}
+
+block_t *
+hevc_helper_get_annexb_config(const struct hxxx_helper *hh)
+{
+    if (hh->hevc.i_vps_count == 0 || hh->hevc.i_sps_count == 0 ||
+        hh->hevc.i_pps_count == 0 )
+        return NULL;
+
+    const struct hxxx_helper_nal *pp_nal_lists[] = {
+        hh->hevc.vps_list, hh->hevc.sps_list, hh->hevc.pps_list };
+    const size_t p_nal_counts[] = { hh->hevc.i_vps_count, hh->hevc.i_sps_count,
+                                    hh->hevc.i_pps_count };
+    const size_t p_nal_maxs[] = { HEVC_VPS_ID_MAX+1, HEVC_SPS_ID_MAX+1, HEVC_PPS_ID_MAX+1 };
+
+    return hxxx_helper_get_annexb_config( pp_nal_lists, p_nal_counts, p_nal_maxs, 3 );
 }
 
 block_t *
@@ -672,6 +724,45 @@ h264_helper_get_avcc_config(const struct hxxx_helper *hh)
     }
     return h264_NAL_to_avcC(4, pp_sps_bufs, p_sps_sizes, hh->h264.i_sps_count,
                             pp_pps_bufs, p_pps_sizes, hh->h264.i_pps_count);
+}
+
+block_t *
+hevc_helper_get_hvcc_config(const struct hxxx_helper *hh)
+{
+    struct hevc_dcr_params params = {};
+    const struct hxxx_helper_nal *p_nal;
+    size_t i = 0;
+
+    HELPER_FOREACH_NAL(p_nal, hh->hevc.vps_list, hh->hevc.i_vps_count,
+                       HEVC_VPS_ID_MAX+1)
+    {
+        params.p_vps[params.i_vps_count] = p_nal->b->p_buffer;
+        params.rgi_vps[params.i_vps_count++] = p_nal->b->i_buffer;
+        ++i;
+    }
+
+    HELPER_FOREACH_NAL(p_nal, hh->hevc.sps_list, hh->hevc.i_sps_count,
+                       HEVC_SPS_ID_MAX+1)
+    {
+        params.p_sps[params.i_sps_count] = p_nal->b->p_buffer;
+        params.rgi_sps[params.i_sps_count++] = p_nal->b->i_buffer;
+        ++i;
+    }
+
+    HELPER_FOREACH_NAL(p_nal, hh->hevc.pps_list, hh->hevc.i_pps_count,
+                       HEVC_PPS_ID_MAX+1)
+    {
+        params.p_pps[params.i_pps_count] = p_nal->b->p_buffer;
+        params.rgi_pps[params.i_pps_count++] = p_nal->b->i_buffer;
+        ++i;
+    }
+
+    size_t i_dcr;
+    uint8_t *p_dcr = hevc_create_dcr(&params, 4, true, &i_dcr);
+    if(p_dcr == NULL)
+        return NULL;
+
+    return block_heap_Alloc(p_dcr, i_dcr);
 }
 
 static const struct hxxx_helper_nal *
@@ -787,8 +878,15 @@ hxxx_helper_get_colorimetry(const struct hxxx_helper *hh,
                 == true ? VLC_SUCCESS : VLC_EGENERIC;
         }
         case VLC_CODEC_HEVC:
-            /* FIXME */
-            return VLC_EGENERIC;
+        {
+            const struct hxxx_helper_nal *hsps = &hh->hevc.sps_list[hh->hevc.i_current_sps];
+            if (hsps == NULL)
+                return VLC_EGENERIC;
+
+            return hevc_get_colorimetry(hsps->hevc_sps, p_primaries, p_transfer,
+                                        p_colorspace, p_full_range)
+                == true ? VLC_SUCCESS : VLC_EGENERIC;
+        }
         default:
             vlc_assert_unreachable();
     }

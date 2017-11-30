@@ -2,7 +2,7 @@
  * avio.c: access using libavformat library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 7e27cbc6e5c59c3c821eec44948b3c3736a0d569 $
+ * $Id: c88e81216530d2b42929f75e1434177de936d272 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -83,7 +83,7 @@ struct sout_access_out_sys_t {
 int OpenAvio(vlc_object_t *object)
 {
     stream_t *access = (stream_t*)object;
-    access_sys_t *sys = vlc_obj_alloc(object, 1, sizeof(*sys));
+    access_sys_t *sys = vlc_obj_malloc(object, sizeof(*sys));
     if (!sys)
         return VLC_ENOMEM;
     sys->context = NULL;
@@ -159,7 +159,7 @@ int OutOpenAvio(vlc_object_t *object)
 
     config_ChainParse( access, "sout-avio-", ppsz_sout_options, access->p_cfg );
 
-    sout_access_out_sys_t *sys = vlc_obj_alloc(object, 1, sizeof(*sys));
+    sout_access_out_sys_t *sys = vlc_obj_malloc(object, sizeof(*sys));
     if (!sys)
         return VLC_ENOMEM;
     sys->context = NULL;

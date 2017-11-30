@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: 787abbf81f3ad4a4b06a7e7a0a9127708bf293a9 $
+ * $Id: 3b576ac23de7cc802db3f68dcdc0b20bcbda04cf $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -127,9 +127,6 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     setWindowRole( "vlc-main" );
     setWindowIcon( QApplication::windowIcon() );
     setWindowOpacity( var_InheritFloat( p_intf, "qt-opacity" ) );
-#ifdef Q_OS_MAC
-    setAttribute( Qt::WA_MacBrushedMetal );
-#endif
 
     /* Is video in embedded in the UI or not */
     b_videoEmbedded = var_InheritBool( p_intf, "embedded-video" );
@@ -152,6 +149,8 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     /* */
     b_plDocked = getSettings()->value( "MainWindow/pl-dock-status", true ).toBool();
 
+    /* Should the UI stays on top of other windows */
+    b_interfaceOnTop = var_InheritBool( p_intf, "video-on-top" );
 
     /**************************
      *  UI and Widgets design
@@ -524,6 +523,9 @@ void MainInterface::createMainWidget( QSettings *creationSettings )
             CONNECT( fullscreenControls, keyPressed( QKeyEvent * ),
                      this, handleKeyPress( QKeyEvent * ) );
         }
+
+    if ( b_interfaceOnTop )
+        setWindowFlags( windowFlags() | Qt::WindowStaysOnTopHint );
 }
 
 inline void MainInterface::initSystray()
@@ -860,7 +862,7 @@ void MainInterface::setVideoFullScreen( bool fs )
          * than current number of screens, take screennumber where current interface
          * is
          */
-        if( numscreen == -1 || numscreen > QApplication::desktop()->screenCount() )
+        if( numscreen < 0 || numscreen >= QApplication::desktop()->screenCount() )
             numscreen = QApplication::desktop()->screenNumber( p_intf->p_sys->p_mi );
 
         QRect screenres = QApplication::desktop()->screenGeometry( numscreen );
@@ -913,6 +915,10 @@ void MainInterface::setHideMouse( bool hide )
  * Emit askVideoOnTop() to invoke this from other thread. */
 void MainInterface::setVideoOnTop( bool on_top )
 {
+    //don't apply changes if user has already sets its interface on top
+    if ( b_interfaceOnTop )
+        return;
+
     Qt::WindowFlags oldflags = windowFlags(), newflags;
 
     if( on_top )
@@ -920,7 +926,22 @@ void MainInterface::setVideoOnTop( bool on_top )
     else
         newflags = oldflags & ~Qt::WindowStaysOnTopHint;
     if( newflags != oldflags && !b_videoFullScreen )
+    {
+        setWindowFlags( newflags );
+        show(); /* necessary to apply window flags */
+    }
+}
 
+void MainInterface::setInterfaceAlwaysOnTop( bool on_top )
+{
+    b_interfaceOnTop = on_top;
+    Qt::WindowFlags oldflags = windowFlags(), newflags;
+
+    if( on_top )
+        newflags = oldflags | Qt::WindowStaysOnTopHint;
+    else
+        newflags = oldflags & ~Qt::WindowStaysOnTopHint;
+    if( newflags != oldflags && !b_videoFullScreen )
     {
         setWindowFlags( newflags );
         show(); /* necessary to apply window flags */

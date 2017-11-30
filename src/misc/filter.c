@@ -2,7 +2,7 @@
  * filter.c : filter_t helpers.
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: d526c98720c9c0718311149afcadb1d51f437e7c $
+ * $Id: 505b0eddc7905cf713bc52ba86a412d8c1bae482 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -57,7 +57,10 @@ void filter_AddProxyCallbacks( vlc_object_t *obj, filter_t *filter,
         char *name = *pname;
         int var_type = var_Type(filter, name);
         if (var_Type(obj, name))
+        {
+            free(name);
             continue;
+        }
         var_Create(obj, name,
                    var_type | VLC_VAR_DOINHERIT | VLC_VAR_ISCOMMAND);
         if ((var_type & VLC_VAR_ISCOMMAND))

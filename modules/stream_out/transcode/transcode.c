@@ -2,7 +2,7 @@
  * transcode.c: transcoding stream output module
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 96baf8064aacd8e3d00266a390d501161288dce5 $
+ * $Id: 99784a3f99f9dec29543983a487fb7af80832353 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -115,10 +115,10 @@
 
 #define SFILTER_TEXT N_("Overlays")
 #define SFILTER_LONGTEXT N_( \
-    "This allows you to add overlays (also known as \"subpictures\" on the "\
+    "This allows you to add overlays (also known as \"subpictures\") on the "\
     "transcoded video stream. The subpictures produced by the filters will "\
     "be overlayed directly onto the video. You can specify a colon-separated "\
-    "list of subpicture modules" )
+    "list of subpicture modules." )
 
 #define THREADS_TEXT N_("Number of threads")
 #define THREADS_LONGTEXT N_( \

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: f6ecc020e778e219584aa2844ddb32dc31ce131f $
+ * $Id: 197116a1bda326a1a55c260a09a4666ecfa99b22 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -239,6 +239,8 @@ static int Get(vlc_va_t *va, picture_t *pic, uint8_t **data)
 static void Close(vlc_va_t *va, void **ctx)
 {
     vlc_va_sys_t *sys = va->sys;
+    if ( sys == NULL )
+        return;
 
     (void) ctx;
 
@@ -269,6 +271,7 @@ static int Open(vlc_va_t *va, AVCodecContext *ctx, enum PixelFormat pix_fmt,
     /* Load dll*/
     if (D3D9_Create(va, &sys->hd3d) != VLC_SUCCESS) {
         msg_Warn(va, "cannot load d3d9.dll");
+        free( sys );
         goto error;
     }
 
@@ -276,6 +279,8 @@ static int Open(vlc_va_t *va, AVCodecContext *ctx, enum PixelFormat pix_fmt,
     sys->dxva2_dll = LoadLibrary(TEXT("DXVA2.DLL"));
     if (!sys->dxva2_dll) {
         msg_Warn(va, "cannot load DXVA2 decoder DLL");
+        D3D9_Destroy( &sys->hd3d );
+        free( sys );
         goto error;
     }
 

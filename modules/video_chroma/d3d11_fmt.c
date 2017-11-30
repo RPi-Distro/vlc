@@ -167,7 +167,7 @@ HRESULT D3D11_CreateDevice(vlc_object_t *obj, d3d11_handle_t *hd3d,
     HRESULT hr = E_NOTIMPL;
     UINT creationFlags = 0;
 
-    if (hw_decoding)
+    if (hw_decoding || !obj->obj.force)
         creationFlags |= D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
 
 #if !defined(NDEBUG)
@@ -293,8 +293,7 @@ const d3d_format_t *FindD3D11Format(ID3D11Device *d3ddevice,
             continue;
         if (bits_per_channel && bits_per_channel > output_format->bitsPerChannel)
             continue;
-        if (!allow_opaque && (output_format->fourcc == VLC_CODEC_D3D11_OPAQUE ||
-                              output_format->fourcc == VLC_CODEC_D3D11_OPAQUE_10B))
+        if (!allow_opaque && is_d3d11_opaque(output_format->fourcc))
             continue;
 
         DXGI_FORMAT textureFormat;
@@ -413,6 +412,14 @@ int AllocateTextures( vlc_object_t *obj, d3d11_device_t *d3d_dev,
                      p_chroma_desc->pixel_size * texDesc.Width );
             goto error;
         }
+        if ( mappedResource.RowPitch >=
+             2* (fmt->i_width * p_chroma_desc->p[0].w.num / p_chroma_desc->p[0].w.den * p_chroma_desc->pixel_size) )
+        {
+            msg_Err(obj, "Bogus %4.4s pitch detected. %d vs %d", (const char*)&fmt->i_chroma,
+                    mappedResource.RowPitch,
+                    (fmt->i_width * p_chroma_desc->p[0].w.num / p_chroma_desc->p[0].w.den * p_chroma_desc->pixel_size));
+            goto error;
+        }
     }
 
     if (slicedTexture)
@@ -466,3 +473,35 @@ void D3D11_Destroy(d3d11_handle_t *hd3d)
 #endif
 #endif
 }
+
+#ifndef NDEBUG
+#undef D3D11_LogProcessorSupport
+void D3D11_LogProcessorSupport(vlc_object_t *o,
+                               ID3D11VideoProcessorEnumerator *processorEnumerator)
+{
+    UINT flags;
+    HRESULT hr;
+    for (int format = 0; format < 188; format++) {
+        hr = ID3D11VideoProcessorEnumerator_CheckVideoProcessorFormat(processorEnumerator, format, &flags);
+        if (FAILED(hr))
+            continue;
+        const char *name = DxgiFormatToStr(format);
+        const char *support = NULL;
+        if ((flags & (D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT|D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
+                 == (D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT|D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
+            support = "input/output";
+        else if (flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT)
+            support = "input";
+        else if (flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT)
+            support = "output";
+        if (support)
+        {
+            if (name)
+                msg_Dbg(o, "processor format %s is supported for %s", name, support);
+            else
+                msg_Dbg(o, "processor format (%d) is supported for %s", format, support);
+        }
+    }
+}
+
+#endif

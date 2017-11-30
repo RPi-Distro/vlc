@@ -2,7 +2,7 @@
  * chapter_command.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 0df2ec5f959d5d318a4d33f32c635ecf11530b75 $
+ * $Id: cff2d56f9c0d2a683bcdce5ff860186cb4f44e93 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -180,12 +180,12 @@ bool dvd_command_interpretor_c::Interpret( const binary * p_command, size_t i_si
         case 7:
             if ( ((p_command[1] >> 4) & 0x7) == 0)
             {
-                i_cr1 = p_command[2];
+                i_cr1 = p_command[4];
                 i_cr2 = (p_command[6] << 8) + p_command[7];
             }
             else
             {
-                i_cr1 = p_command[2];
+                i_cr1 = p_command[5];
                 i_cr2 = (p_command[6] << 8) + p_command[7];
             }
             break;

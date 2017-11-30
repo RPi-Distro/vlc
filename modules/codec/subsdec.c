@@ -2,7 +2,7 @@
  * subsdec.c : text subtitle decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: af6ec13039494381e14eba7dabe4108ae592c9fa $
+ * $Id: abc6786f29d0b54cf06ac471c9a85ef14c06fcc8 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -456,7 +456,8 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
 
     subpicture_updater_sys_t *p_spu_sys = p_spu->updater.p_sys;
 
-    p_spu_sys->region.inner_align = SUBPICTURE_ALIGN_BOTTOM | p_sys->i_align;
+    p_spu_sys->region.align = SUBPICTURE_ALIGN_BOTTOM | p_sys->i_align;
+    p_spu_sys->region.inner_align = p_sys->i_align;
     p_spu_sys->region.p_segments = ParseSubtitles( &p_spu_sys->region.inner_align, psz_subtitle );
 
     free( psz_subtitle );

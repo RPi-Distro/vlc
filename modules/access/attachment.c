@@ -2,7 +2,7 @@
  * attachment.c: Input reading an attachment.
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: f9a03eb3f68c2b6691bfbc3ecbc8dcc4f03b20ef $
+ * $Id: 9623f823693dca6d5ef894b5b1a0a6ec42173843 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -73,7 +73,7 @@ static int Open(vlc_object_t *object)
     if (!input)
         return VLC_EGENERIC;
 
-    access_sys_t *sys = vlc_obj_alloc(object, 1, sizeof (*sys));
+    access_sys_t *sys = vlc_obj_malloc(object, sizeof (*sys));
     if (unlikely(sys == NULL))
         return VLC_ENOMEM;
 

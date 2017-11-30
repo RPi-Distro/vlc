@@ -2,7 +2,7 @@
  * VLCStringUtility.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 742e045ba603de0fc0ef1c7759a231500074e901 $
+ * $Id: 448718765997ce58db5e77b3b2d3c7d744be20aa $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -63,23 +63,6 @@ NSString *const kVLCMediaUnknown = @"Unknown";
 
 #pragma mark -
 #pragma mark String utility
-
-- (NSString *)localizedString:(const char *)psz
-{
-    NSString * stringObject = nil;
-
-    if (psz != NULL) {
-        stringObject = toNSStr(_(psz));
-
-        if (stringObject == NULL) {
-            msg_Err(getIntf(), "could not translate: %s", psz);
-            return @"";
-        }
-    } else
-        return @"";
-
-    return stringObject;
-}
 
 /* i_width is in pixels */
 - (NSString *)wrapString:(NSString *)o_in_string toWidth:(int)i_width

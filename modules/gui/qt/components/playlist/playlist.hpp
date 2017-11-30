@@ -2,7 +2,7 @@
  * playlist.hpp : Playlist Widgets
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 1955370d22513e3383c4aa3aaa8e1b187f53b128 $
+ * $Id: 64e7cc112b406d6e055e8729a9f8a55b5ba747d6 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -81,32 +81,6 @@ private slots:
 
     friend class PlaylistDialog;
 };
-
-#ifdef Q_OS_MAC
-class PlaylistSplitter : public QSplitter
-{
-public:
-    PlaylistSplitter( QWidget *_parent ) : QSplitter( _parent ){}
-protected:
-    virtual QSplitterHandle *createHandle();
-};
-#else
- #define PlaylistSplitter QSplitter
-#endif
-
-#ifdef Q_OS_MAC
-class SplitterHandle : public QSplitterHandle
-{
-public:
-    SplitterHandle( Qt::Orientation orientation, QSplitter * parent );
-
-protected:
-    void paintEvent ( QPaintEvent * ) Q_DECL_OVERRIDE;
-
-private:
-    QSize sizeHint () const Q_DECL_OVERRIDE;
-};
-#endif /* __APPLE__ */
 
 class LocationButton : public QPushButton
 {
