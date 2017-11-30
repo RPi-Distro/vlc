@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 8977bd4007271d7c47114ab001e3218b528bd413 $
+ * $Id: 79abd5289455af40a15d8771e842b5da74a1fb38 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -95,6 +95,7 @@ public:
     int getControlsVisibilityStatus();
     bool isPlDocked() { return ( b_plDocked != false ); }
     bool isInterfaceFullScreen() { return b_interfaceFullScreen; }
+    bool isInterfaceAlwaysOnTop() { return b_interfaceOnTop; }
     StandardPLPanel* getPlaylistView();
 
 protected:
@@ -179,6 +180,7 @@ protected:
     bool                 b_hideAfterCreation;
     bool                 b_minimalView;         ///< Minimal video
     bool                 b_interfaceFullScreen;
+    bool                 b_interfaceOnTop;      ///keep UI on top
     bool                 b_pauseOnMinimize;
     bool                 b_maximizedView;
     bool                 b_isWindowTiled;
@@ -205,6 +207,7 @@ public slots:
     void toggleAdvancedButtons();
     void toggleInterfaceFullScreen();
     void toggleFSC();
+    void setInterfaceAlwaysOnTop( bool );
 
     void setStatusBarVisibility(bool b_visible);
     void setPlaylistVisibility(bool b_visible);

@@ -1,8 +1,8 @@
 /*****************************************************************************
- * intf.m: MacOS X interface module
+ * intf.m: macOS minimal interface module
  *****************************************************************************
- * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 78fb7510e39239490f251ffe9235f1ddf0cdc487 $
+ * Copyright (C) 2002-2017 VLC authors and VideoLAN
+ * $Id: a778e3bc56642d0c6ed4cd14ff1b5c7034988b03 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -25,19 +25,19 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#import <stdlib.h>                                      /* malloc(), free() */
-#import <sys/param.h>                                    /* for MAXPATHLEN */
+#import <stdlib.h>
 #import <string.h>
+#import <unistd.h>
+
 #ifdef HAVE_CONFIG_H
 # import "config.h"
 #endif
-#include <unistd.h>
 
-#include <vlc_common.h>
-#include <vlc_playlist.h>
-#include <vlc_vout_window.h>
+#import <vlc_common.h>
+#import <vlc_playlist.h>
+#import <vlc_interface.h>
+#import <vlc_vout_window.h>
 
-#import "VLCMain.h"
 #import "VLCMinimalVoutWindow.h"
 
 /*****************************************************************************
@@ -53,11 +53,7 @@ int OpenIntf (vlc_object_t *p_this)
     intf_thread_t *p_intf = (intf_thread_t*) p_this;
     msg_Dbg(p_intf, "Using minimal macosx interface");
 
-    p_intf->p_sys = malloc(sizeof(intf_sys_t));
-    if (p_intf->p_sys == NULL)
-        return VLC_ENOMEM;
-
-    memset(p_intf->p_sys, 0, sizeof(*p_intf->p_sys));
+    p_intf->p_sys = NULL;
 
     Run(p_intf);
 
@@ -136,7 +132,7 @@ int WindowOpen(vout_window_t *p_wnd, const vout_window_cfg_t *cfg)
 
 static int WindowControl(vout_window_t *p_wnd, int i_query, va_list args)
 {
-    NSWindow * o_window = [(__bridge id)p_wnd->handle.nsobject window];
+    NSWindow* o_window = [(__bridge id)p_wnd->handle.nsobject window];
     if (!o_window) {
         msg_Err(p_wnd, "failed to recover cocoa window");
         return VLC_EGENERIC;
@@ -147,31 +143,34 @@ static int WindowControl(vout_window_t *p_wnd, int i_query, va_list args)
         {
             unsigned i_state = va_arg(args, unsigned);
 
-            [o_window setLevel: i_state];
+            [o_window setLevel:i_state];
 
             return VLC_SUCCESS;
         }
         case VOUT_WINDOW_SET_SIZE:
         {
+            unsigned int i_width  = va_arg(args, unsigned int);
+            unsigned int i_height = va_arg(args, unsigned int);
             @autoreleasepool {
-                NSRect theFrame = [o_window frame];
-                unsigned int i_width  = va_arg(args, unsigned int);
-                unsigned int i_height = va_arg(args, unsigned int);
-                theFrame.size.width = i_width;
-                theFrame.size.height = i_height;
-                [o_window setFrame: theFrame display: YES animate: YES];
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    NSRect theFrame = [o_window frame];
+                    theFrame.size.width = i_width;
+                    theFrame.size.height = i_height;
+                    [o_window setFrame:theFrame display:YES animate:YES];
+                });
             }
             return VLC_SUCCESS;
         }
         case VOUT_WINDOW_SET_FULLSCREEN:
         {
+            int i_full = va_arg(args, int);
             @autoreleasepool {
-                int i_full = va_arg(args, int);
-
-                if (i_full)
-                    [o_window performSelectorOnMainThread:@selector(enterFullscreen) withObject:nil waitUntilDone:NO];
-                else
-                    [o_window performSelectorOnMainThread:@selector(leaveFullscreen) withObject:nil waitUntilDone:NO];
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    if (i_full)
+                        [(VLCMinimalVoutWindow*)o_window enterFullscreen];
+                    else
+                        [(VLCMinimalVoutWindow*)o_window leaveFullscreen];
+                });
             }
             return VLC_SUCCESS;
         }

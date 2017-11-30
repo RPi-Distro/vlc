@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 8d137af46b178f6841c7e24651ecde68336e08f5 $
+ * $Id: 29900aa3fcbc03283bcdc6a2d9f6ade5121628c4 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -2133,6 +2133,12 @@ o_moduleenabled = [NSNumber numberWithBool:NO];\
     return strdup([[o_textfield stringValue] UTF8String]);
 }
 
+/* FIXME:
+ * This is supposed to load the module list state from preferences
+ * and set the table items state (selected or unselected) accordingly,
+ * as far as I could figure out by reading the commit in which this was
+ * introduced. (d66f3c874786e9dd4692f9775bdd54b386c583dd)
+ */
 -(void)resetValues
 {
 #warning Reset prefs of the module selector is broken atm.

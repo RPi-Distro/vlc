@@ -2,7 +2,7 @@
  * common.c : audio output management of common data structures
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 391abf0557c4bd10cf69b35a572292ac4261b4e5 $
+ * $Id: f7dbc575578979ffa5588155fef8c08f4d2e14c5 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -197,6 +197,10 @@ const char * aout_FormatPrintChannels( const audio_sample_format_t * p_format )
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
           | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT | AOUT_CHAN_LFE:
         return "3F2M/LFE";
+    case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
+          | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_MIDDLELEFT
+          | AOUT_CHAN_MIDDLERIGHT:
+        return "2F2M2R";
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
           | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_MIDDLELEFT
           | AOUT_CHAN_MIDDLERIGHT:
@@ -377,7 +381,7 @@ do { \
     switch( fourcc )
     {
         case VLC_CODEC_U8:   INTERLEAVE_TYPE(uint8_t);  break;
-        case VLC_CODEC_S16N: INTERLEAVE_TYPE(uint16_t); break;
+        case VLC_CODEC_S16N: INTERLEAVE_TYPE(int16_t);  break;
         case VLC_CODEC_FL32: INTERLEAVE_TYPE(float);    break;
         case VLC_CODEC_S32N: INTERLEAVE_TYPE(int32_t);  break;
         case VLC_CODEC_FL64: INTERLEAVE_TYPE(double);   break;
@@ -413,7 +417,7 @@ do { \
     switch( fourcc )
     {
         case VLC_CODEC_U8:   DEINTERLEAVE_TYPE(uint8_t);  break;
-        case VLC_CODEC_S16N: DEINTERLEAVE_TYPE(uint16_t); break;
+        case VLC_CODEC_S16N: DEINTERLEAVE_TYPE(int16_t);  break;
         case VLC_CODEC_FL32: DEINTERLEAVE_TYPE(float);    break;
         case VLC_CODEC_S32N: DEINTERLEAVE_TYPE(int32_t);  break;
         case VLC_CODEC_FL64: DEINTERLEAVE_TYPE(double);   break;

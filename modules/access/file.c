@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: bb5e5df71c2b80038d11d1a645baba33555557ff $
+ * $Id: 4a6213b73a5e3425f424083c6dad69965eb613fe $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan # org>
@@ -205,7 +205,7 @@ int FileOpen( vlc_object_t *p_this )
 #endif
     }
 
-    access_sys_t *p_sys = vlc_obj_alloc(p_this, 1, sizeof (*p_sys));
+    access_sys_t *p_sys = vlc_obj_malloc(p_this, sizeof (*p_sys));
     if (unlikely(p_sys == NULL))
         goto error;
     p_access->pf_read = Read;

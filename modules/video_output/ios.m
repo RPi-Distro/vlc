@@ -2,7 +2,7 @@
  * ios.m: iOS OpenGL ES provider
  *****************************************************************************
  * Copyright (C) 2001-2017 VLC authors and VideoLAN
- * $Id: 0740c2624ce63755b598dd03e4ddc4cf9a979d3c $
+ * $Id: 67898521ab67d4dcf4dceb1bf112715bf25bcbbf $
  *
  * Authors: Pierre d'Herbemont <pdherbemont at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -183,7 +183,7 @@ static int Open(vlc_object_t *this)
             goto bailout;
 
         struct gl_sys *glsys = sys->gl->sys =
-            vlc_obj_alloc(this, 1, sizeof(struct gl_sys));
+            vlc_obj_malloc(this, sizeof(struct gl_sys));
         if (unlikely(!sys->gl->sys))
             goto bailout;
         glsys->glESView = sys->glESView;

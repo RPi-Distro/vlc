@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: 0b24ffd2ea2bdb70c6b3d5510ab4ce1dbcb8d25f $
+ * $Id: d0451896c988f2c9246a9bc72387d43e71cacabc $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -120,7 +120,7 @@ static const char *const ts_standards_list_text[] =
   { N_("Auto"), "MPEG", "DVB", "ARIB", "ATSC", "T-DMB" };
 
 #define STANDARD_TEXT N_("Digital TV Standard")
-#define STANDARD_LONGTEXT N_( "Selects mode for digital TV standard." \
+#define STANDARD_LONGTEXT N_( "Selects mode for digital TV standard. " \
                               "This feature affects EPG information and subtitles." )
 
 vlc_module_begin ()

@@ -5,7 +5,7 @@
  * Copyright © 2007-2011 Mirsal Ennaime
  * Copyright © 2009-2011 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: d663bc18cfd839ed24880e16658c023648c2fa68 $
+ * $Id: 9ff59ba4e1bdb70b49e8d02640393a797e74c564 $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
@@ -466,8 +466,14 @@ PropertiesChangedSignal( intf_thread_t    *p_intf,
         return DBUS_HANDLER_RESULT_NEED_MEMORY;
 
     if( vlc_dictionary_has_key( p_changed_properties, "Fullscreen" ) )
-        AddProperty( p_intf, &changed_properties, "Fullscreen", "b",
-                     MarshalFullscreen );
+    {
+        if( AddProperty( p_intf, &changed_properties, "Fullscreen", "b",
+                     MarshalFullscreen ) != VLC_SUCCESS )
+        {
+            dbus_message_iter_abandon_container( &args, &changed_properties );
+            return DBUS_HANDLER_RESULT_NEED_MEMORY;
+        }
+    }
 
     if( !dbus_message_iter_close_container( &args, &changed_properties ) )
         return DBUS_HANDLER_RESULT_NEED_MEMORY;

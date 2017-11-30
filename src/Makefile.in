@@ -1167,7 +1167,6 @@ LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_output_srt = @LTLIBaccess_output_srt@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
 LTLIBaccess_srt = @LTLIBaccess_srt@
-LTLIBaccesstweaks = @LTLIBaccesstweaks@
 LTLIBaom = @LTLIBaom@
 LTLIBarchive = @LTLIBarchive@
 LTLIBaribcam = @LTLIBaribcam@
@@ -1183,11 +1182,9 @@ LTLIBdaala = @LTLIBdaala@
 LTLIBdc1394 = @LTLIBdc1394@
 LTLIBdca = @LTLIBdca@
 LTLIBdirect3d11 = @LTLIBdirect3d11@
-LTLIBdirect3d11_adjust = @LTLIBdirect3d11_adjust@
-LTLIBdirect3d11_deinterlace = @LTLIBdirect3d11_deinterlace@
+LTLIBdirect3d11_filters = @LTLIBdirect3d11_filters@
 LTLIBdirect3d9 = @LTLIBdirect3d9@
-LTLIBdirect3d9_adjust = @LTLIBdirect3d9_adjust@
-LTLIBdirect3d9_deinterlace = @LTLIBdirect3d9_deinterlace@
+LTLIBdirect3d9_filters = @LTLIBdirect3d9_filters@
 LTLIBdirectdraw = @LTLIBdirectdraw@
 LTLIBdsm = @LTLIBdsm@
 LTLIBdv1394 = @LTLIBdv1394@
@@ -1632,6 +1629,7 @@ pluginsinclude_HEADERS = \
 	../include/vlc_subpicture.h \
 	../include/vlc_text_style.h \
 	../include/vlc_threads.h \
+	../include/vlc_timestamp_helper.h \
 	../include/vlc_tls.h \
 	../include/vlc_url.h \
 	../include/vlc_variables.h \

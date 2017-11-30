@@ -3,7 +3,7 @@
  * EbmlParser for the matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: eb76e780eb8f0b4bf9a4db13aeccb6f2a4c978a3 $
+ * $Id: 3f9a3ae66873507fe82c677728de10017baddbd0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -164,7 +164,20 @@ EbmlElement *EbmlParser::Get( int n_call )
     else if (!m_el[mi_level-1]->IsFiniteSize())
         i_max_read = UINT64_MAX;
     else if (!p_prev)
+    {
         i_max_read = m_el[mi_level-1]->GetSize();
+        if (i_max_read == 0)
+        {
+            /* check if the parent still has data to read */
+            if ( mi_level > 1 &&
+                 m_el[mi_level-1]->GetEndPosition() < m_el[mi_level-2]->GetEndPosition() )
+            {
+                uint64 top = m_el[mi_level-2]->GetEndPosition();
+                uint64 bom = m_el[mi_level-1]->GetEndPosition();
+                i_max_read = top - bom;
+            }
+        }
+    }
     else {
         size_t size_lvl = mi_level;
         while ( size_lvl && m_el[size_lvl-1]->IsFiniteSize() &&
@@ -187,7 +200,8 @@ EbmlElement *EbmlParser::Get( int n_call )
             : EBML_CONTEXT(m_el[mi_level - 1]);
 
     /* Ignore unknown level 0 or 1 elements */
-    m_el[mi_level] = m_es->FindNextElement( e_context,
+    m_el[mi_level] = unlikely(!i_max_read) ? NULL :
+                     m_es->FindNextElement( e_context,
                                             i_ulev, i_max_read,
                                             (  mb_dummy | (mi_level > 1) ), 1 );
     if( i_ulev > 0 )

@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 5e50f4cce596b4fbd590916f7432cbacb87af363 $
+ * $Id: 10dd4105a571bd16aee34c7f656885430f951a52 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -156,7 +156,7 @@ static int Open( vlc_object_t *p_this )
     int ret = VLC_EGENERIC;
     vlc_credential credential;
 
-    access_sys_t *p_sys = vlc_obj_alloc( p_this, 1, sizeof(*p_sys) );
+    access_sys_t *p_sys = vlc_obj_malloc( p_this, sizeof(*p_sys) );
     if( unlikely(p_sys == NULL) )
         return VLC_ENOMEM;
 

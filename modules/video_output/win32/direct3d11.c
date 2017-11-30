@@ -106,7 +106,6 @@ typedef struct
     UINT                       PSConstantsCount;
     ID3D11PixelShader         *d3dpixelShader;
     D3D11_VIEWPORT            cropViewport;
-    const vlc_chroma_description_t *p_chroma_sampling;
     unsigned int              i_width;
     unsigned int              i_height;
 } d3d_quad_t;
@@ -216,10 +215,12 @@ static void Display(vout_display_t *, picture_t *, subpicture_t *subpicture);
 static HINSTANCE Direct3D11LoadShaderLibrary(void);
 static void Direct3D11Destroy(vout_display_t *);
 
-static int  Direct3D11Open (vout_display_t *, video_format_t *);
+static int  Direct3D11Open (vout_display_t *);
 static void Direct3D11Close(vout_display_t *);
 
-static int  Direct3D11CreateResources (vout_display_t *, video_format_t *);
+static int SetupOutputFormat(vout_display_t *, video_format_t *);
+static int  Direct3D11CreateFormatResources (vout_display_t *, video_format_t *);
+static int  Direct3D11CreateGenericResources(vout_display_t *);
 static void Direct3D11DestroyResources(vout_display_t *);
 
 static void Direct3D11DestroyPool(vout_display_t *);
@@ -506,15 +507,15 @@ static int Open(vlc_object_t *object)
     vd->sys->sys.pf_GetRect = GetRect;
 #endif
 
-    video_format_t fmt;
-    video_format_Copy(&fmt, &vd->source);
-    if (Direct3D11Open(vd, &fmt)) {
+    if (Direct3D11Open(vd)) {
         msg_Err(vd, "Direct3D11 could not be opened");
         goto error;
     }
 
-    video_format_Clean(&vd->fmt);
-    vd->fmt = fmt;
+#if !VLC_WINSTORE_APP
+    EventThreadUpdateTitle(vd->sys->sys.event, VOUT_TITLE " (Direct3D11 output)");
+#endif
+    msg_Dbg(vd, "Direct3D11 device adapter successfully initialized");
 
     vd->info.has_double_click     = true;
     vd->info.has_pictures_invalid = vd->info.is_slow;
@@ -625,21 +626,7 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned pool_size)
     }
 
 #ifdef HAVE_ID3D11VIDEODECODER
-    if (!is_d3d11_opaque(surface_fmt.i_chroma) || sys->legacy_shader)
-    {
-        /* we need a staging texture */
-        if (AllocateTextures(VLC_OBJECT(vd), &sys->d3d_dev, sys->picQuadConfig, &surface_fmt, 1, textures))
-            goto error;
-
-        sys->picQuad.p_chroma_sampling = vlc_fourcc_GetChromaDescription( surface_fmt.i_chroma );
-
-        for (unsigned plane = 0; plane < D3D11_MAX_SHADER_VIEW; plane++)
-            sys->stagingSys.texture[plane] = textures[plane];
-
-        if (AllocateShaderView(VLC_OBJECT(vd), sys->d3d_dev.d3ddevice, sys->picQuadConfig,
-                               textures, 0, sys->stagingSys.resourceView))
-            goto error;
-    } else
+    if (is_d3d11_opaque(surface_fmt.i_chroma) && !sys->legacy_shader)
 #endif
     {
         for (picture_count = 0; picture_count < pool_size; picture_count++) {
@@ -1121,7 +1108,6 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
                  * display, do it preferrably when creating the texture */
                 assert(p_sys->resourceView[0]!=NULL);
             }
-
             if ( sys->picQuad.i_height != texDesc.Height ||
                  sys->picQuad.i_width != texDesc.Width )
             {
@@ -1428,7 +1414,7 @@ static const d3d_format_t *GetBlendableFormat(vout_display_t *vd, vlc_fourcc_t i
     return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, i_src_chroma, 0, false, supportFlags );
 }
 
-static int Direct3D11Open(vout_display_t *vd, video_format_t *fmt)
+static int Direct3D11Open(vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;
     IDXGIFactory2 *dxgifactory;
@@ -1442,9 +1428,9 @@ static int Direct3D11Open(vout_display_t *vd, video_format_t *fmt)
     scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     scd.SampleDesc.Count = 1;
     scd.SampleDesc.Quality = 0;
-    scd.Width = fmt->i_visible_width;
-    scd.Height = fmt->i_visible_height;
-    switch(fmt->i_chroma)
+    scd.Width = vd->source.i_visible_width;
+    scd.Height = vd->source.i_visible_height;
+    switch(vd->source.i_chroma)
     {
     case VLC_CODEC_D3D11_OPAQUE_10B:
         scd.Format = DXGI_FORMAT_R10G10B10A2_UNORM;
@@ -1457,7 +1443,7 @@ static int Direct3D11Open(vout_display_t *vd, video_format_t *fmt)
     scd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 
     hr = D3D11_CreateDevice(vd, &sys->hd3d,
-                            is_d3d11_opaque(fmt->i_chroma),
+                            is_d3d11_opaque(vd->source.i_chroma),
                             &sys->d3d_dev);
     if (FAILED(hr)) {
        msg_Err(vd, "Could not Create the D3D11 device. (hr=0x%lX)", hr);
@@ -1489,6 +1475,49 @@ static int Direct3D11Open(vout_display_t *vd, video_format_t *fmt)
     IDXGISwapChain_QueryInterface( sys->dxgiswapChain, &IID_IDXGISwapChain4, (void **)&sys->dxgiswapChain4);
 
     D3D11SetColorSpace(vd);
+
+    video_format_t fmt;
+    video_format_Copy(&fmt, &vd->source);
+    int err = SetupOutputFormat(vd, &fmt);
+    if (err != VLC_SUCCESS)
+    {
+        if (!is_d3d11_opaque(vd->source.i_chroma)
+#if !VLC_WINSTORE_APP
+            && vd->obj.force
+#endif
+                )
+        {
+            const vlc_fourcc_t *list = vlc_fourcc_IsYUV(vd->source.i_chroma) ?
+                        vlc_fourcc_GetYUVFallback(vd->source.i_chroma) :
+                        vlc_fourcc_GetRGBFallback(vd->source.i_chroma);
+            for (unsigned i = 0; list[i] != 0; i++) {
+                fmt.i_chroma = list[i];
+                if (fmt.i_chroma == vd->source.i_chroma)
+                    continue;
+                err = SetupOutputFormat(vd, &fmt);
+                if (err == VLC_SUCCESS)
+                    break;
+            }
+        }
+        if (err != VLC_SUCCESS)
+            return err;
+    }
+
+    if (Direct3D11CreateGenericResources(vd)) {
+        msg_Err(vd, "Failed to allocate resources");
+        Direct3D11DestroyResources(vd);
+        return VLC_EGENERIC;
+    }
+
+    video_format_Clean(&vd->fmt);
+    vd->fmt = fmt;
+
+    return VLC_SUCCESS;
+}
+
+static int SetupOutputFormat(vout_display_t *vd, video_format_t *fmt)
+{
+    vout_display_sys_t *sys = vd->sys;
 
     // look for the requested pixel format first
     sys->picQuadConfig = GetDirectRenderingFormat(vd, fmt->i_chroma);
@@ -1544,36 +1573,13 @@ static int Direct3D11Open(vout_display_t *vd, video_format_t *fmt)
     if (!sys->d3dregion_format)
         sys->d3dregion_format = GetBlendableFormat(vd, VLC_CODEC_BGRA);
 
-    sys->picQuad.i_width  = fmt->i_width;
-    sys->picQuad.i_height = fmt->i_height;
-    if (is_d3d11_opaque(fmt->i_chroma))
-    {
-        /* worst case scenario we need 128 alignment for HEVC */
-        sys->picQuad.i_width  = (sys->picQuad.i_width  + 0x7F) & ~0x7F;
-        sys->picQuad.i_height = (sys->picQuad.i_height + 0x7F) & ~0x7F;
-    }
-    else if ( sys->picQuadConfig->formatTexture != DXGI_FORMAT_R8G8B8A8_UNORM &&
-              sys->picQuadConfig->formatTexture != DXGI_FORMAT_B5G6R5_UNORM )
-    {
-        sys->picQuad.i_width  = (sys->picQuad.i_width  + 0x01) & ~0x01;
-        sys->picQuad.i_height = (sys->picQuad.i_height + 0x01) & ~0x01;
-    }
-
-    BEFORE_UPDATE_RECTS;
-    UpdateRects(vd, NULL, true);
-    AFTER_UPDATE_RECTS;
-
-    if (Direct3D11CreateResources(vd, fmt)) {
-        msg_Err(vd, "Failed to allocate resources");
+    if (Direct3D11CreateFormatResources(vd, fmt)) {
+        msg_Err(vd, "Failed to allocate format resources");
         Direct3D11DestroyResources(vd);
         return VLC_EGENERIC;
     }
+    vd->fmt = *fmt;
 
-#if !VLC_WINSTORE_APP
-    EventThreadUpdateTitle(sys->sys.event, VOUT_TITLE " (Direct3D11 output)");
-#endif
-
-    msg_Dbg(vd, "Direct3D11 device adapter successfully initialized");
     return VLC_SUCCESS;
 }
 
@@ -1999,7 +2005,80 @@ static bool CanUseTextureArray(vout_display_t *vd)
 
 /* TODO : handle errors better
    TODO : seperate out into smaller functions like createshaders */
-static int Direct3D11CreateResources(vout_display_t *vd, video_format_t *fmt)
+static int Direct3D11CreateFormatResources(vout_display_t *vd, video_format_t *fmt)
+{
+    vout_display_sys_t *sys = vd->sys;
+    HRESULT hr;
+
+    sys->legacy_shader = !CanUseTextureArray(vd);
+
+    hr = CompilePixelShader(vd, sys->picQuadConfig, fmt->transfer, fmt->b_color_range_full, &sys->picQuadPixelShader);
+    if (FAILED(hr))
+    {
+#ifdef HAVE_ID3D11VIDEODECODER
+        if (!sys->legacy_shader)
+        {
+            sys->legacy_shader = true;
+            msg_Dbg(vd, "fallback to legacy shader mode");
+            hr = CompilePixelShader(vd, sys->picQuadConfig, fmt->transfer, fmt->b_color_range_full, &sys->picQuadPixelShader);
+        }
+#endif
+        if (FAILED(hr))
+        {
+            msg_Err(vd, "Failed to create the pixel shader. (hr=0x%lX)", hr);
+            return VLC_EGENERIC;
+        }
+    }
+
+    if (!is_d3d11_opaque(fmt->i_chroma) || sys->legacy_shader)
+    {
+        sys->picQuad.i_width  = fmt->i_visible_width;
+        sys->picQuad.i_height = fmt->i_visible_height;
+    }
+    else
+    {
+        sys->picQuad.i_width  = fmt->i_width;
+        sys->picQuad.i_height = fmt->i_height;
+    }
+    if ( sys->picQuadConfig->formatTexture != DXGI_FORMAT_R8G8B8A8_UNORM &&
+         sys->picQuadConfig->formatTexture != DXGI_FORMAT_B5G6R5_UNORM )
+    {
+        sys->picQuad.i_width  = (sys->picQuad.i_width  + 0x01) & ~0x01;
+        sys->picQuad.i_height = (sys->picQuad.i_height + 0x01) & ~0x01;
+    }
+
+#ifdef HAVE_ID3D11VIDEODECODER
+    if (!is_d3d11_opaque(fmt->i_chroma) || sys->legacy_shader)
+    {
+        /* we need a staging texture */
+        ID3D11Texture2D *textures[D3D11_MAX_SHADER_VIEW] = {0};
+        video_format_t surface_fmt = *fmt;
+        surface_fmt.i_width  = sys->picQuad.i_width;
+        surface_fmt.i_height = sys->picQuad.i_height;
+
+        if (AllocateTextures(VLC_OBJECT(vd), &sys->d3d_dev, sys->picQuadConfig, &surface_fmt, 1, textures))
+        {
+            msg_Err(vd, "Failed to allocate the staging texture");
+            return VLC_EGENERIC;
+        }
+
+        if (AllocateShaderView(VLC_OBJECT(vd), sys->d3d_dev.d3ddevice, sys->picQuadConfig,
+                               textures, 0, sys->stagingSys.resourceView))
+        {
+            msg_Err(vd, "Failed to allocate the staging shader view");
+            return VLC_EGENERIC;
+        }
+
+        for (unsigned plane = 0; plane < D3D11_MAX_SHADER_VIEW; plane++)
+            sys->stagingSys.texture[plane] = textures[plane];
+    }
+#endif
+
+    vd->info.is_slow = !is_d3d11_opaque(fmt->i_chroma) && sys->picQuadConfig->formatTexture != DXGI_FORMAT_UNKNOWN;
+    return VLC_SUCCESS;
+}
+
+static int Direct3D11CreateGenericResources(vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;
     HRESULT hr;
@@ -2008,12 +2087,6 @@ static int Direct3D11CreateResources(vout_display_t *vd, video_format_t *fmt)
     sys->context_lock = CreateMutexEx( NULL, NULL, 0, SYNCHRONIZE );
     ID3D11Device_SetPrivateData( sys->d3d_dev.d3ddevice, &GUID_CONTEXT_MUTEX, sizeof( sys->context_lock ), &sys->context_lock );
 #endif
-
-    hr = UpdateBackBuffer(vd);
-    if (FAILED(hr)) {
-       msg_Err(vd, "Could not update the backbuffer. (hr=0x%lX)", hr);
-       return VLC_EGENERIC;
-    }
 
     ID3D11BlendState *pSpuBlendState;
     D3D11_BLEND_DESC spuBlendDesc = { 0 };
@@ -2060,25 +2133,14 @@ static int Direct3D11CreateResources(vout_display_t *vd, video_format_t *fmt)
         ID3D11DepthStencilState_Release(pDepthStencilState);
     }
 
-    sys->legacy_shader = !CanUseTextureArray(vd);
-    vd->info.is_slow = !is_d3d11_opaque(fmt->i_chroma) && sys->picQuadConfig->formatTexture != DXGI_FORMAT_UNKNOWN;
+    BEFORE_UPDATE_RECTS;
+    UpdateRects(vd, NULL, true);
+    AFTER_UPDATE_RECTS;
 
-    hr = CompilePixelShader(vd, sys->picQuadConfig, fmt->transfer, fmt->b_color_range_full, &sys->picQuadPixelShader);
-    if (FAILED(hr))
-    {
-#ifdef HAVE_ID3D11VIDEODECODER
-        if (!sys->legacy_shader)
-        {
-            sys->legacy_shader = true;
-            msg_Dbg(vd, "fallback to legacy shader mode");
-            hr = CompilePixelShader(vd, sys->picQuadConfig, fmt->transfer, fmt->b_color_range_full, &sys->picQuadPixelShader);
-        }
-#endif
-        if (FAILED(hr))
-        {
-            msg_Err(vd, "Failed to create the pixel shader. (hr=0x%lX)", hr);
-            return VLC_EGENERIC;
-        }
+    hr = UpdateBackBuffer(vd);
+    if (FAILED(hr)) {
+       msg_Err(vd, "Could not update the backbuffer. (hr=0x%lX)", hr);
+       return VLC_EGENERIC;
     }
 
     if (sys->d3dregion_format != NULL)

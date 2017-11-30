@@ -2,7 +2,7 @@
  * qt.cpp : Qt interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 6dfa04e3ffce66da7e3371315efe6e4ea64d88e3 $
+ * $Id: 96b1224ff706d2042bfb62bc61c213a791ef0f1f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -119,7 +119,6 @@ static void ShowDialog   ( intf_thread_t *, int, int, intf_dialog_args_t * );
                              " This option only works with Windows and " \
                              "X11 with composite extensions." )
 
-
 #define ERROR_TEXT N_( "Show unimportant error and warnings dialogs" )
 
 #define UPDATER_TEXT N_( "Activate the updates availability notification" )
@@ -211,7 +210,7 @@ static const int i_raise_list[] =
       MainInterface::RAISE_AUDIO, MainInterface::RAISE_AUDIOVIDEO,  };
 
 static const char *const psz_raise_list_text[] =
-    { N_( "Never" ), N_( "Video" ), N_( "Audio" ), _( "Both" ) };
+    { N_( "Never" ), N_( "Video" ), N_( "Audio" ), _( "Audio/Video" ) };
 
 /**********************************************************************/
 vlc_module_begin ()
@@ -557,13 +556,10 @@ static void *ThreadPlatform( void *obj, char *platform_name )
 #endif
             QSettings::UserScope, "vlc", "vlc-qt-interface" );
 
-    /* Icon setting, Mac uses icon from .icns */
-#ifndef Q_OS_MAC
     if( QDate::currentDate().dayOfYear() >= QT_XMAS_JOKE_DAY && var_InheritBool( p_intf, "qt-icon-change" ) )
         app.setWindowIcon( QIcon::fromTheme( "vlc-xmas", QIcon( ":/logo/vlc128-xmas.png" ) ) );
     else
         app.setWindowIcon( QIcon::fromTheme( "vlc", QIcon( ":/logo/vlc256.png" ) ) );
-#endif
 
     /* Initialize the Dialog Provider and the Main Input Manager */
     DialogsProvider::getInstance( p_intf );

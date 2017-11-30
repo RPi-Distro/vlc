@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 21bf37613ee95f85adde4f132f1107c02cc37366 $
+ * $Id: 9708cf8d3d24f5671b9ed5b523027a2f08daab9a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -689,6 +689,7 @@ static int Open( vlc_object_t * p_this )
                      * directly after BITMAPINFORHEADER in the BITMAPINFO structure */
                     if( tk->fmt.i_extra > 0 )
                     {
+                        free( tk->fmt.video.p_palette );
                         tk->fmt.video.p_palette = calloc( 1, sizeof(video_palette_t) );
                         if( likely(tk->fmt.video.p_palette) )
                         {

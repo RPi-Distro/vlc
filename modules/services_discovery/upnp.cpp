@@ -2,7 +2,7 @@
  * upnp.cpp :  UPnP discovery module (libupnp)
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: bdd3c55ee54fd3950372415a5c0872361aa47c0f $
+ * $Id: 82d43632f473d482fc6c1ba5f8eb036ec9b1b490 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -38,7 +38,7 @@
 #include <set>
 #include <string>
 
-#if UPNP_VERSION < 10800
+#if UPNP_VERSION < 10623
 /*
  * Compat functions and typedefs for libupnp prior to 1.8
  */

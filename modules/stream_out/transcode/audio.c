@@ -2,7 +2,7 @@
  * audio.c: transcoding stream output module (audio)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: fc59201e16f8ec0d4edfab4d7c6d70d2cf6b309f $
+ * $Id: 4829ea9c11055f19c2f0643617f9d65b70d13a24 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -168,8 +168,9 @@ static int transcode_audio_new( sout_stream_t *p_stream,
     /* No need to clean the fmt_out, it was freshly initialized by
      * es_format_Init in Add() */
     es_format_Copy( &id->p_decoder->fmt_out, &id->p_decoder->fmt_in );
+    free( id->p_decoder->fmt_out.p_extra );
     id->p_decoder->fmt_out.i_extra = 0;
-    id->p_decoder->fmt_out.p_extra = 0;
+    id->p_decoder->fmt_out.p_extra = NULL;
     id->p_decoder->pf_decode = NULL;
     id->p_decoder->pf_queue_audio = decoder_queue_audio;
     id->p_decoder->p_queue_ctx = id;

@@ -2,12 +2,12 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 1999-2017 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.0-git)
+AC_INIT(vlc, 3.0.0-rc1)
 VERSION_MAJOR=3
 VERSION_MINOR=0
 VERSION_REVISION=0
 VERSION_EXTRA=0
-VERSION_DEV=git
+VERSION_DEV=rc1
 
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -2612,7 +2612,7 @@ AS_IF([test "${enable_faad}" != "no"], [
 dnl
 dnl  AOM decoder plugin
 dnl
-PKG_ENABLE_MODULES_VLC([AOM], [], [aom], [experimental AV1 codec], [disabled])
+PKG_ENABLE_MODULES_VLC([AOM], [], [aom], [experimental AV1 codec (default auto)])
 
 dnl
 dnl libvpx decoder plugin
@@ -3321,7 +3321,7 @@ AS_IF([test "${enable_directx}" != "no"], [
 
   dnl Direct3D11
   AC_CHECK_HEADERS(d3d11.h, [
-    VLC_ADD_PLUGIN([direct3d11 direct3d11_deinterlace direct3d11_adjust])
+    VLC_ADD_PLUGIN([direct3d11 direct3d11_filters])
   ])
 
   dnl Direct3D9
@@ -3338,7 +3338,7 @@ AS_IF([test "${enable_directx}" != "no"], [
           #endif
         ]],[[;]])
       ],[
-        VLC_ADD_PLUGIN([direct3d9_deinterlace direct3d9_adjust])
+        VLC_ADD_PLUGIN([direct3d9_filters])
       ],
       [AC_MSG_WARN([Could not find required IDirectXVideoDecoder in dxva2api.h])])
 
@@ -3929,7 +3929,7 @@ AM_CONDITIONAL([HAVE_LIRC], [test "${have_lirc}" = "yes"])
 dnl
 dnl  SRT plugin
 dnl
-PKG_ENABLE_MODULES_VLC([SRT], [access_srt access_output_srt], [srt >= 1.2.0], [SRT input/output plugin], [auto], [], [], [-DENABLE_SRT])
+PKG_ENABLE_MODULES_VLC([SRT], [access_srt access_output_srt], [srt >= 1.2.2], [SRT input/output plugin], [auto], [], [], [-DENABLE_SRT])
 
 EXTEND_HELP_STRING([Visualisations and Video filter plugins:])
 dnl
@@ -4087,14 +4087,6 @@ AC_ARG_ENABLE(kwallet,
     [use kwallet (via D-Bus) for keystore (default enabled)])])
 AS_IF([test "${enable_kwallet}" != "no" -a "${have_dbus}" = "yes"], [
   VLC_ADD_PLUGIN([kwallet])
-])
-
-dnl
-dnl  Developers helper modules (should be hidden from configure help)
-dnl
-AC_ARG_ENABLE(devtools, [], [], [enable_devtools="no"])
-AS_IF([test "${enable_devtools}" != "no"], [
-  VLC_ADD_PLUGIN([accesstweaks])
 ])
 
 dnl

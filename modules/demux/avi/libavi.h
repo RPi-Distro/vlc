@@ -2,7 +2,7 @@
  * libavi.h : LibAVI library
  ******************************************************************************
  * Copyright (C) 2001-2003 VLC authors and VideoLAN
- * $Id: e1c283bc01e7e6cb82fe931b2961311a509dc290 $
+ * $Id: 26e1614a126d8f3d1af1e86b3378eaa29e1a6f59 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -20,18 +20,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-enum biCompression
-{
-    BI_RGB = 0x00,
-    BI_RLE8,
-    BI_RLE4,
-    BI_BITFIELDS,
-    BI_JPEG,
-    BI_PNG,
-    BI_CMYK = 0x0B,
-    BI_CMYKRLE8,
-    BI_CMYKRLE4
-};
+/* biCompression / Others are FourCC */
+#define BI_RGB              0x0000
+#define BI_RLE8             0x0001
+#define BI_RLE4             0x0002
+#define BI_BITFIELDS        0x0003
+#define BI_JPEG             0x0004
+#define BI_PNG              0x0005
+#define BI_CMYK             0x000B
+#define BI_CMYKRLE8         0x000C
+#define BI_CMYKRLE4         0x000D
 
 /* flags for use in <dwFlags> in AVIFileHdr */
 #define AVIF_HASINDEX       0x00000010  /* Index at end of file? */

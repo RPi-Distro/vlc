@@ -1,3 +1,1926 @@
+commit d4221c870595f3639a7138b73481f23eca35c352
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Nov 30 01:56:12 2017 +0100
+
+    On the road to the WeatherWax release!
+
+commit 8d432b090e08f141ce9156dc728afbed4636301b
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Nov 30 01:43:10 2017 +0100
+
+    Update NEWS for 3.0
+    
+    There are probably still some things missing, please report them!
+
+commit ddaa013e4295588d1024229c94ce5eff7f20f1f2
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Nov 26 05:08:21 2017 +0100
+
+    qt: Remove macOS special case for icon
+    
+    While it is still true that on macOS, the icon from the app bundle is
+    used, this is not true for our pseudo-bundle. And I do not think it's
+    worth a special case anymore.
+
+commit 417e99faa8daafab293ac2d6030bc76e9875f138
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Nov 26 04:52:47 2017 +0100
+
+    qt: Remove special playlist list color on macOS
+
+commit cecac520fa364fb990539298486e05765d13c6e3
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Nov 26 04:46:35 2017 +0100
+
+    qt: Remove macOS specific playlist splitter
+    
+    This makes the splitter look a little bit weird on macOS, but removes a
+    lot of code.
+
+commit ba8922fbd21ce64f7353556e1659f3da88a335eb
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Nov 26 04:37:49 2017 +0100
+
+    qt: Remove macOS specific main interface styling
+    
+    We already have the macosx interface, if the user wants something thats
+    native. No need to try hard here, additionally it looks much better
+    without this.
+
+commit 633113815666c011fd69a96e9a68445981af5a41
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 29 18:26:42 2017 +0100
+
+    hw:d3d11: Always request decoder support from the device unless forced for display
+    
+    On Win7 D3D11 will not be used anymore unless forced manually as it doesn't
+    support this flag.
+    
+    Fixes #19140 with automatic setup.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e9e5fe7ad510f03dd52c7bd9e0f6804ae29d48d6
+Author: Alexander Law <exclusion@gmail.com>
+Date:   Wed Nov 29 16:53:34 2017 +0100
+
+    i18n: add missing strings
+    
+    mp4, dcp/kdm, avcodec and decklink modules
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f9c5a343f1a8cad9c2c153f9c05e4e7201675a43
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Wed Nov 29 10:45:04 2017 -0500
+
+    upnp: don't clash with libupnp's own compat code
+    
+    Fixes build for upnp >= 1.6.23 and less than 1.8.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9bf243a1f95daa3654cb71e971923faeca2190f1
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Nov 29 16:31:04 2017 +0100
+
+    macosx: remove trailing spaces
+
+commit 14a2051d5b4cbde0e3093b3d7258829246ed4130
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Tue Nov 28 11:07:56 2017 +0100
+
+    vout/macosx: fix Control not working with libvlc
+    
+    fix: #14780
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 94a9cb085beb732819deac9ad4025705ea3057a5
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Nov 29 16:27:52 2017 +0100
+
+    configure: put aom as auto now
+
+commit 4d390cb3dc7d6c61052dacf1d646231ee9802aeb
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Wed Nov 29 03:01:52 2017 +0100
+
+    i18n: corrections of missing spaces and new lines
+    
+    Signed-off-by: Michał Trzebiatowski <michtrz@gmail.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit aac4bc7a6616b64b7c4577d2486f6cde60e6740d
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Nov 29 12:01:55 2017 +0100
+
+    qt: ConvertDialog translation
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 816b58613ef43586acbc6b531d4180e92a53a40a
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Nov 29 10:22:06 2017 +0100
+
+    qt: provide translation for filters in logo file selector
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 7f60868c48a397526f94fdfc0c301db5e8583d7d
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Nov 29 10:22:05 2017 +0100
+
+    qt: remove empty filter in file selector
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0c4bf9fe526e369e47a5ddf944ccad399f5b6fd6
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Nov 29 10:22:04 2017 +0100
+
+    qt: provide filters for Open Multiple Files
+    
+    fix: #19159
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 813bb12b6b591958fad38b23a6db9b2f964da4d9
+Author: Steve Lhomme <robux4@gmail.com>
+Date:   Wed Nov 29 09:13:12 2017 +0100
+
+    codec:aom: fix compilation with recent libaom versions
+    
+    Not sure we should support older versions at this point so no #ifdef
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit acadd3b9cc3351d4a68693bc215b0db55e6a0e0c
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 28 18:36:32 2017 +0100
+
+    access: live555: no teardown on shared sessions
+    
+    Substreams of a same session must not issue a shutdown
+    command, which always applies to the whole session.
+
+commit 105b13c813a864b51f409617e415a2b2fe747342
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 28 20:14:49 2017 +0200
+
+    bootstrap: warn if flex or bison are missing
+
+commit 3167e69ab7a4783b0e564bc4e0f9aa5304be444d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 28 19:51:17 2017 +0200
+
+    mp4: fix stream size handling
+
+commit bd372c9ebf4eda841c8c6397d3875e2eb39c63cf
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 28 19:30:46 2017 +0200
+
+    gme: reject streams with unknown size
+    
+    They never worked in this context (they would be treated as 0 bytes).
+
+commit 8ff4b51484d41f125e034b0fea69889dc77acf98
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 28 19:18:32 2017 +0200
+
+    accesstweaks: compile as part of test suite
+    
+    This avoids having to enable it explicitly in configure, while also not
+    installing it by default outside build trees. In the unlikely event
+    that you actually want to install the plugin, you can still do so but
+    manually (e.g. libtool install mode).
+
+commit 0ef201d8cc4a136a141516032b5a123027c02568
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 28 19:03:05 2017 +0200
+
+    accesstweaks: automatically probe
+    
+    accesstweaks no longer needs to be explicitly added to stream filters.
+    It is now enabled implicitly with --no-seek, --no-fastseek and/or
+     --no-stream-size.
+
+commit bf51e088023ae35dfba1a9b781fed853739c4a8c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 28 18:54:06 2017 +0200
+
+    objres: restore malloc() wrapper
+    
+    Regression from cf4676c1e8cdf69db4598f7d10ffdf6a695c3ba0.
+
+commit e3a9edee12661f798c4d405a79e4e105cde74129
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 27 20:15:33 2017 +0200
+
+    h264_nal: prevent infinite loops in PPS slice parsing
+    
+    If X_minus_one == UINT32_MAX, the for-loop condition is always true.
+    This patch uses X directly: parsing will be wrong anyway, but at
+    least it won't lead to an infinite busy loop.
+
+commit 7c898da4262adf468cdd0f9edc71095a27e4bf8b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 27 19:15:17 2017 +0200
+
+    es_out: assert single block on es_out_Send()
+    
+    The handling code ostensibly assumes that the block is single. So this
+    adds an assertion to ensure it.
+    
+    Alternatively, should we force p_next to NULL ?
+
+commit d5a0c83ca01578bcba04ab3f92489ee7e791457b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 27 19:00:30 2017 +0200
+
+    accesstweaks: add option to conceal stream size
+
+commit fb6f0b899a0212c7775ce82b01bbbe2ef7035467
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 27 19:48:27 2017 +0200
+
+    avi: fix leak
+
+commit e51ec531799fe0dca9f172356770cc784ac812a8
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 28 16:36:29 2017 +0100
+
+    subsdec: fix alignment regression
+
+commit d0734d5054a6dae87191dfce738621630f56a711
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 28 16:21:47 2017 +0100
+
+    hw:d3d9:dxa9: swap UV only when the source is YV12
+
+commit 4ef1d5a27b31b3576b8a0aa40d1dd3518592167f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 28 11:43:44 2017 +0100
+
+    winvlc: disable buffering on stderr
+    
+    cf. discussion on the gdb project:
+    http://sourceware.org/ml/gdb-patches/2013-08/msg00422.html
+    
+    stderr can be buffered on Windows when connected to a pipe.
+
+commit 35c2d3cfe16670ba232a20eb212cfdb007f213cb
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 28 16:07:39 2017 +0100
+
+    opengl: fix NV12 texture scale for SW fmts
+
+commit 9d1e03ad506a7ef4ceacd16c0bc67ee2dc357186
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 28 16:05:54 2017 +0100
+
+    opengl: vaapi: specify texture scale for NV12
+
+commit 470738ba8b3512ae59f1d6524e0e52b7e706dee0
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Nov 28 16:05:40 2017 +0100
+
+    opengl: cvpx: specify texture scale for NV12
+
+commit ce8ea99131e2bb343bdae844b777acf499b1ea0f
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 28 15:31:18 2017 +0100
+
+    demux:mkv: keep the cue info even if the track is not known (yet)
+    
+    Fixes #19131
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fb643da760c39b9542e5dfad3a28dae0b1f6aecc
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 28 15:32:18 2017 +0100
+
+    demux: libmp4: clear variable shadowing
+
+commit 2db96938bf3ea7f2c9c7faf0b7175f76f14f947b
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 28 15:26:57 2017 +0100
+
+    demux: libmp4: fix regression in trun reading (fix #19170)
+
+commit b4f155c52ddc498ce2803cce69e02e6ad95a48cf
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 28 15:24:04 2017 +0100
+
+    demux: libmp4: alias trun
+
+commit 95cc776fec3f44c99abee34f9bd0e5d20cfab40b
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Sat Nov 25 15:50:46 2017 +0100
+
+    i18n: Nemory stream -> Memory stream
+    
+    Signed-off-by: Michał Trzebiatowski <michtrz@gmail.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 676e46d8931a106f9a179f5ca802473f42a39112
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 28 11:19:26 2017 +0100
+
+    d3d11_fmt: detect bogus pitch
+    
+    Fixes #19162
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 870264fa05648d217a2ba876cc9946076bbc25c9
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 28 11:19:25 2017 +0100
+
+    direct3d11: assume the vout is forced for Winstore builds
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8049ee949103b1ee25bd67299feb5c0eabe3c845
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 28 11:19:24 2017 +0100
+
+    direct3d11: use a fallback chroma when default doesn't work and vout is forced
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d1e7dc1f7c76ba18c7fad11eab4c47b3fdfa065a
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 28 11:19:23 2017 +0100
+
+    direct3d11: move the output chroma setup in a separate function
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 176e2c07d6b2d88cc133b1fe90a95486fa37e160
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 28 11:19:22 2017 +0100
+
+    direct3d11: do the staging texture allocation early
+    
+    We might detect some issues before setting the format for good.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 63a6b5c36d0ec0073befd69de331f3541c7de638
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 28 11:19:21 2017 +0100
+
+    direct3d11: split the format specific allocations and generic allocations
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 99391951cf8951b1b5fec33362f7d218d218ea7d
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 28 11:19:20 2017 +0100
+
+    direct3d11: the device and swapchain only depend on the source chroma
+    
+    It doesn't matter the actual chroma it will use
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0f3194c4db45dceef235dd83e313e54545ff4ec6
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 28 11:19:19 2017 +0100
+
+    direct3d11: only set successful state when at the end
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 23c328d0f870ccbf9645011cb574ce88829752a9
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Nov 28 11:19:18 2017 +0100
+
+    direct3d11: remove write-only p_chroma_sampling
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5fb8b16e4505247e54f1bab40d581cc4e2e4485f
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 28 12:04:14 2017 +0100
+
+    codec: ttml: kill default spu margins (fix #19161)
+
+commit 1a7cc199a03f3ee85f9dc7b7da11b0b59caf0659
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Nov 28 11:04:22 2017 +0100
+
+    Contribs:srt: make sure gnutls is built before
+
+commit a8b9dc7f2ed16f7442a5ab2a155c0682fd0ebb78
+Author: Zhao Zhili <wantlamy@gmail.com>
+Date:   Sat Nov 25 01:35:06 2017 +0800
+
+    demux: adaptive: fix misordered output
+    
+    For packets like this:
+    A1, A2, B1, B2, A3...
+    which B1 has invalid timestamp and B2 has timestamp < barrier, B2 will
+    output but B1 is not, so misordered. A packet with invalid timestamp
+    should not output only if a packet with the same ES id has showed before
+    and timestamp larget than the barrier.
+    
+    Signed-off-by: Francois Cartegnie <fcvlcdev@free.fr>
+
+commit aad18acf8c22070eb007cb91b57886380cb08474
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 28 10:45:50 2017 +0100
+
+    demux: hls: workaround missing/invalid extinf duration
+    
+    as vimeo can't properly write extinf
+
+commit 00c6ac9055cd582d86cae89024cd2d909f61d2a2
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Nov 28 10:28:58 2017 +0100
+
+    demux: adaptive: use vlc_url_resolve (fix #19164)
+
+commit 59a3ab810c6be33aea8f121bb6d18f16bcd201e4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Nov 28 10:32:58 2017 +0100
+
+    Contribs:srt: use a normalized tarball name
+
+commit 5c3626cd995825c896f6a6b2e0bd0bf82f575059
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Nov 28 10:25:52 2017 +0100
+
+    Contribs:srt: use CMakeList directly
+
+commit 5cee58c749233b862812e3e9170af05013c40990
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Nov 28 10:23:40 2017 +0100
+
+    Contribs: unrestrict CMake toolchain in native case
+    
+    We can use the native libraries when building a CMake project, like
+    taglib or srt
+
+commit fcf79a696caf655429a9e9cb92dc8a0414a1b02f
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Nov 15 17:09:38 2017 +0100
+
+    qt: remove video-on-top from simple-pref
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b87cf2adb7da0a5b3b27eb4e1cc1de454aac49a2
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Nov 15 17:09:36 2017 +0100
+
+    qt: provide UI always on top option in "view" menu
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a254cd2de2fe4e0ba9b5480744afcd9f9003ee18
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Nov 15 17:09:35 2017 +0100
+
+    qt: provide always on top for main UI
+    
+    it defaults to video-on-top settings
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9dce7032797ed9ab54e46f944bb7f800bd69cee8
+Author: Justin Kim <justin.kim@collabora.com>
+Date:   Tue Nov 21 19:39:37 2017 +0900
+
+    contrib: Add srt 1.2.2
+    
+    Secure Reliable Transport library supports nettle backend
+    since 1.2.1, and the current released version is 1.2.2 which
+    has a fix of wrong version string.
+    With the option, `--with-gnutls`, in SRT, VLC can be sure
+    that non-GPL compatible library won't be linked.
+    
+    Signed-off-by: Justin Kim <justin.kim@collabora.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d83af09052999dd521cf54a717979a0b423d344c
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 27 13:50:10 2017 +0100
+
+    access:dshow: fix crash when opening dshow:// fails
+    
+    The MTA is never acquired but it's released on CommonClose(). So we acquire it
+    early.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e77202ea2d4e05b8e3b08ea8cb7a762cd239eae0
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 27 17:31:36 2017 +0100
+
+    demux:mkv: fix double free introduced
+    
+    Introduced by e527210321013fd477673c36c472e3ca9a2a9fff.
+    There is a local parser, we don't need to free it. Instead it freed an upper one.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 109ff7be075bd511902c18fdcd0db9ca8317cecd
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 27 17:31:55 2017 +0100
+
+    demux:mkv: keep reading data in the parent even if current element has no size
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 44979951e682e3c146422fa3bcd02f63684eb0d4
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 27 17:31:54 2017 +0100
+
+    demux:mkv: do not even try to read bogus data if the size is 0
+    
+    The parser will go up one level by itself
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 72d3b200b2dfca26ed0161fd6ac5b3a8217141e2
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 27 13:38:13 2017 +0100
+
+    vout:win32:common: no need to crop the source for D3D11
+    
+    We always give the right aligned texture size.
+    
+    Fixes #18928
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 170a6509dc5270a391c6031a67114c8c45e5ba12
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 27 13:38:12 2017 +0100
+
+    direct3d11: set the texture size after we know we use a staging one
+    
+    Use the visible size for the staging texture. Fixes #19078
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 96463352354232849dc73137dbf4aae3f621cb93
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 27 15:13:14 2017 +0100
+
+    vout: revamp sliders
+
+commit 3fbd68656b48722b296dd72f011894efa6722a5f
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 27 17:36:05 2017 +0100
+
+    vout: epg: use memset
+
+commit b796710dd7f3ab079b9b27fb2fea58da7c165306
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 27 19:21:04 2017 +0200
+
+    pva: fix leak
+    
+    Block chain MUST be gathered before sending out.
+
+commit 71cbdc473a93a94b03b076fdb1a8a8aa57174a24
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 27 19:10:25 2017 +0200
+
+    pva: remove redundant test
+
+commit 13088dda5dd16beb08c52553d37ab88142d4f572
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 27 18:15:09 2017 +0200
+
+    dshow: missing translation (fixes #19160)
+
+commit c5085da7ae4fcc52872b3f6cedb558c293401b63
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 27 15:15:23 2017 +0100
+
+    chroma: chain: setup proxy callbacks on filter object
+    
+    p_filter is already the parent of p_sys->p_video_filter. We don't need to touch
+    the grand parent.
+
+commit 7f99bb740790d1d45878f06b9894a1c8ad6695a4
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 27 16:26:56 2017 +0100
+
+    filter: fix name leak
+
+commit e6762ac5e67ccf18a63786001a5b3a848ff2b8aa
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 27 13:59:12 2017 +0100
+
+    vout: DrawTriangle: refactor
+
+commit d8476023cd8e402c59356733d0e0670ea19c95f2
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 27 12:53:38 2017 +0100
+
+    vout: DrawRect: refactor and memset
+
+commit b48a35bfafac382b97af42a9e3b40a65c4c67517
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 27 10:16:23 2017 +0100
+
+    vout: DrawRect/Triangle: pass color as param
+
+commit 2aaca35c09878ba1095b14367fa0a4ae06eac660
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 27 14:30:04 2017 +0100
+
+    chroma: chain: fix "force one level of iteration for filters"
+    
+    This commit fixes a regression from 6e5e08677d9e279602397fcbc767e6d2a15b4ce5
+    that caused filter loading to never stop until a stack overflow.
+
+commit a1bcc4857292dcc13c726b0f1c784ef3437d61a4
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Nov 27 14:09:05 2017 +0100
+
+    spu: logo: fix logo not displayed if pos x/y are -1
+
+commit d127141f6dd59e7cbd482070783a30bc1d3b634c
+Author: Justin Kim <justin.kim@collabora.com>
+Date:   Sun Nov 26 00:27:40 2017 +0900
+
+    access_output: srt: suppress warnings by unused variable and parameter
+    
+    Signed-off-by: Justin Kim <justin.kim@collabora.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 634fd3872e4cc6b9dd3927d06db41d92ec632e91
+Author: Justin Kim <justin.kim@collabora.com>
+Date:   Sun Nov 26 00:27:39 2017 +0900
+
+    access: srt: remove unused variable
+    
+    Signed-off-by: Justin Kim <justin.kim@collabora.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fc87adcd2ec86a1c15cd59ddb82527b082e2106f
+Author: KO Myung-Hun <komh78@gmail.com>
+Date:   Sat Nov 25 19:00:53 2017 +0900
+
+    kva: improve resizing of the embedded video window
+    
+    Sometimes the embedded video window is not resized properly. This
+    occurs due to mismatch of the cached video window size and the real
+    video window size. To avoid this, compare the parent window size with
+    the video window size directly.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f0ef8179711ee982ccf2269b858360948688b4e8
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 27 08:42:11 2017 +0100
+
+    hw:d3d9:dxva2_deinterlace: fix null pointer dereference
+    
+    CID #1462252
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a1de66ec36a753db7575cd5954de92a3cac9b726
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 27 08:42:27 2017 +0100
+
+    hw:d3d9:dxa9: remove dead code
+    
+    CID #1462253
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a1ed9f2c9b705a0a22fcf329a81e8669305c784a
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 27 09:25:10 2017 +0100
+
+    codec: Videotoolbox: fail reordering on incomplete set
+
+commit ab6efdcccc982b803fa74d2926e37b38d3d3ed94
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 24 19:43:04 2017 +0100
+
+    vout: epg: remove double defined macros
+
+commit 82e03ed7f9de2580ea91b9ed66053ee472130e63
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sun Nov 26 17:47:03 2017 +0100
+
+    videotoolbox: Fix compilation with older SDK
+    
+    Currently, this cannot compile with an older SDK due to linker
+    errors. Therefore, only enable the code path using the function
+    if the SDK version is high enough.
+    For this feature to work, code needs to be compiled with the SDK
+    which supports this function.
+
+commit 469001b71f99007d8097a7dd487a646558fd91f4
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sun Nov 26 17:44:06 2017 +0100
+
+    minimal macosx: Decrease priority for vout window provider
+    
+    If someone both compiles minimal_macosx and macosx, the macosx
+    window provider has now higher priority. If correctly set up,
+    both module should not be installed into the same installation
+    any way.
+
+commit 50e1f0711f918ae9cb1771f785b6cd32b92b1577
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Nov 26 04:18:09 2017 +0100
+
+    qt: Remove macOS specific searchlineedit file
+    
+    This is not used anymore.
+    
+    Ref. #7279
+
+commit 21b92d680c3128cbe6d12e89ef979f02254df187
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Nov 26 04:15:56 2017 +0100
+
+    qt: Fix searchlineedit linking on macOS
+    
+    The macOS specific file is not used anymore, so it's necessary to enable
+    this code again on macOS too, else linking will fail as there is no
+    implementation.
+    
+    Fix #7279
+
+commit fa78fe1663ad50f7281055df6f008cd3f8ab8742
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Nov 26 02:14:37 2017 +0100
+
+    gui/minimal_macosx: Cleanup includes
+
+commit eb26c513e53c270316fbc6f60cb2774e881825d1
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Nov 26 02:13:37 2017 +0100
+
+    gui/minimal_macosx: Clarify comments and update copyright
+
+commit 3d7477bb9674b51a678294411c4a53e239c01444
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Nov 26 02:08:05 2017 +0100
+
+    gui/minimal_macosx: Codestyle adjustments
+
+commit 093bbee6917d6b396e96a43cadf4411fa9a3e1a2
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Nov 26 02:04:45 2017 +0100
+
+    gui/minimal_macosx: Fix WindowControl handling
+    
+    This is still very buggy but does not crash anymore.
+
+commit bdd834f01f2547577795894547c9cc0c9670dbb5
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Nov 26 02:02:59 2017 +0100
+
+    gui/minimal_macosx: Fix compilation
+
+commit 80ac12378f3593a33a36c706c40935c57a6e0e8e
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sat Nov 25 15:14:58 2017 +0100
+
+    VT: Improve SDK version checks
+    
+    - Not only the macOS SDK should be checked, since VT is supported on
+      iOS, macOS and tvOS.
+    - Add missing SDK check for VTIsHardwareDecodeSupported.
+    - Fix SDK check for the kVTVideoDecoderSpecification_* constants.
+
+commit 5a838d0ea7dd4cd02aaaa5ed7800e835f717311e
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Fri Nov 24 18:13:06 2017 +0100
+
+    contrib: breakpad: Update to use VideoLAN fork
+
+commit 6e595cc820c47f3b374fd6174f8e0a71b9421cbe
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Nov 25 13:06:25 2017 +0100
+
+    VT: fix compilation with older SDKs
+    
+    The HEVC define arrived in SDK 10.11
+
+commit c7abb8525c73bdd099a3dd07a481dfa1108e396a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Nov 25 11:04:56 2017 +0100
+
+    TTML: don't use printf for debugging in normal VLC
+
+commit 36fbebe3bbc18c8955922138ef005e748b573a36
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 21:50:40 2017 +0200
+
+    mp4: use malloc() in SDTP box
+
+commit 7c25c3d9c062d569abb3db61463c456c27cc78b4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 21:45:41 2017 +0200
+
+    mp4: use vlc_alloc() for TREF box
+
+commit 0a366cf22a5aad23f1d1132ea4aa4cf97836494f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 21:45:41 2017 +0200
+
+    mp4: use vlc_alloc() for ELST box
+
+commit 83a6100b42bc0cc55ddcf6667e6e3ad5ae4761cf
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 21:37:35 2017 +0200
+
+    mp4: fix ELST signed overflow
+
+commit f6175b3f4263d4a4bc11179bac6add7eeeb032a4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 20:01:01 2017 +0200
+
+    mp4: check STSH size before allocation
+    
+    This avoids allocating stupid amounts of memory.
+    
+    Note: there is still an infinite loop if count == 0xffffffff
+    (with a suitably enormous input).
+
+commit 01c4480fa89c1df95eb181c40e95e566974fc5a1
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 20:01:01 2017 +0200
+
+    mp4: check STSS size before allocation
+    
+    This avoids allocating stupid amounts of memory.
+    
+    Note: there is still an infinite loop if count == 0xffffffff
+    (with a suitably enormous input).
+
+commit 90e610081180134d244d2f9220070916685d3fad
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 20:01:01 2017 +0200
+
+    mp4: check CTTS size before allocation
+    
+    This avoids allocating stupid amounts of memory.
+    
+    Note: there is still an infinite loop if count == 0xffffffff
+    (with a suitably enormous input).
+
+commit 398e5ff0411180d87a167cca665162fe8b767500
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 20:01:01 2017 +0200
+
+    mp4: check TRUN size before reading and allocation
+    
+    This fixes out-of-bound reads.
+    This avoids allocating stupid amounts of memory.
+    
+    Note: there is still an infinite loop if count == 0xffffffff
+    (with a suitably enormous input).
+
+commit c5b142bfde48b89537404ca6c3851a4ad1eaec1a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 21:08:51 2017 +0200
+
+    mp4: keep remaining buffer size unsigned
+    
+    This prevents integer underflow, defeating the boundary checks.
+
+commit 5e7f9ceb1f0cfc65a942c53f5957cf0ffb8613ec
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 20:01:01 2017 +0200
+
+    mp4: check STCO size before allocation
+    
+    This avoids allocating stupid amounts of memory.
+    
+    Note: there is still an infinite loop if count == 0xffffffff
+    (with a suitably enormous input).
+
+commit 4bf81a0e7170b504a090cc8303d3737401b416f1
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 20:01:01 2017 +0200
+
+    mp4: check STSC size before allocation
+    
+    This avoids allocating stupid amounts of memory.
+    
+    Note: there is still an infinite loop if count == 0xffffffff
+    (with a suitably enormous input).
+
+commit eab4f05a98fff46bf2f3b46bec8161b2a22e1266
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 20:01:01 2017 +0200
+
+    mp4: check STSZ size before allocation
+    
+    This avoids allocating stupid amounts of memory.
+    
+    Note: there is still an infinite loop if count == 0xffffffff
+    (with a suitably enormous input).
+
+commit 866b7cee553b868e7379a6282c300c3f6f37c137
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 20:01:01 2017 +0200
+
+    mp4: check STTS size before allocation
+    
+    This avoids allocating stupid amounts of memory.
+    
+    Note: there is still an infinite loop if count == 0xffffffff
+    (with a suitably enormous input).
+
+commit 94f3a3408e2067cc58dee62c434713b22435aa53
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 19:03:18 2017 +0200
+
+    mp4: fix PADB parsing
+    
+     - Fix interger overflow if sample count is 0xffffffff.
+     - Merge table pairs.
+     - Rationalize table sizes.
+     - Check data size before allocation.
+    
+    Not sure why we even extract those though - nothing reads the data.
+
+commit 794b54c8fb52ec0d2cdbadae92b0226f8fafd799
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Nov 24 19:01:53 2017 +0200
+
+    mp4: fix potential pointer overflow
+    
+    p_peek could go out-of-range, UB.
+
+commit 33371e518d851b82d075faaf9dce76ca2096138e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 23 22:41:15 2017 +0200
+
+    mp4: vector box entry
+
+commit 05f435640069ea4923e1bb49faf9a93e7bb6dc02
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 23 23:27:43 2017 +0200
+
+    mp4: preserve header size
+
+commit 106d8a5d75249cbc5123292d53558bc3f9cd59e0
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 23 22:41:15 2017 +0200
+
+    mp4: vector and fix string extraction
+
+commit 109f089e86fe46e3464d0e213b2c81cf765e05af
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 23 22:34:48 2017 +0200
+
+    mp4: privatize most reading macros
+
+commit fbb9d1fcbae45844a6f6331cc6322aa200bf26a7
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 23 22:10:33 2017 +0200
+
+    mp4: avoid assignment as predicate
+
+commit 12efcaae59cd6b4b141a43edd45c028e9a1160eb
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 23 22:09:17 2017 +0200
+
+    include: guard overflow builtins
+    
+    Pointed-out-by: KO Myung-Hun <komh78@gmail.com>
+
+commit 964e1c13f2856511d54752779a85fd1f7c5a5c0e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 23 20:23:30 2017 +0200
+
+    mp4: handle memory error and cleanup
+
+commit b7a62ba5c95d3c342d90e830028e3e75c7c8b0da
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Nov 24 18:25:13 2017 +0100
+
+    es_out: Remove duplicated code
+    
+    The "Type" info is set again a few lines below
+
+commit 5f52d4bd59048559b274a3f22b945c9824e9006b
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 24 18:18:19 2017 +0100
+
+    codec: ttml: handle missing default text alignment
+    
+    refs #19147 #19146
+
+commit 38227a2d61f311f588a7a6489fcdee38388a2c39
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 24 16:23:01 2017 +0100
+
+    demux: pes: change pts bitfield check
+    
+    allows incorrect 0010 (pts only) timestamp header
+    for 11 signaling (pts+dts)
+
+commit f34c7c0ab4dbca2abad9d4e287196ea2dca69695
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Nov 24 17:39:23 2017 +0100
+
+    mkv:chapter_command: use better values for registers
+    
+    The whole doesn't seem to match the VMI page though.
+    
+    CID #1253081
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fc5873764b65844550e79a1b9c0debf074e0033e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 17:38:18 2017 +0100
+
+    Add include/vlc_timestamp_helper.h to Makefile
+
+commit 08921902648f981a4dff2bf10324924d32bd00f7
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 17:02:32 2017 +0100
+
+    po: remove files that don't need processing
+
+commit 85933d7d2f86d0cbd488bedfa206b6b7a0ac3845
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 24 16:30:39 2017 +0100
+
+    ci_filters: don't force BT709 colorspace
+    
+    But match the colorspace of the cvpx buffer.
+
+commit 1993944b901b9feba5e668704230876c9d8dd8b2
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 16:36:20 2017 +0100
+
+    D3D11_deinterlace: remove debug message
+
+commit c3900ff6688f086555debceb52c8089a76750ed1
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Nov 24 16:28:24 2017 +0100
+
+    usf: Fix variable shadowing
+
+commit 4daf86699221d19e13fb4f2078dfee8137e50a6d
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Nov 24 16:06:34 2017 +0100
+
+    subsusf: Remove dead code
+    
+    CID #1346935
+
+commit 8166c271632c644a07a87ae148d37efb3bddf1b6
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Nov 24 15:08:24 2017 +0100
+
+    hds: Fix memory leak on errro
+    
+    CID #1224537
+
+commit 75de9dccf5815574e5a6b55777ac2b9d4512ea94
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Nov 24 15:04:18 2017 +0100
+
+    dbus: Add missing error check
+    
+    CID #1211816
+
+commit d192a702d6c9ddaf0ba7b55cbd6006e6189dc7a1
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Nov 24 15:03:33 2017 +0100
+
+    contrib: live555: Fix undefined behaviors
+
+commit ed24524923556b12a28645af4875de99626315c4
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Nov 24 10:30:07 2017 +0100
+
+    contrib: d3d9: Support prefix out of the contrib directory
+
+commit e4e905da5d07d6937133135194c46306cfa0d44a
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Nov 24 10:23:37 2017 +0100
+
+    direct3d11: do not use the padding size to compute the quad position
+    
+    Fixes #19141
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 299af0938ee39e2b2a97177f22ebf0032a3ece57
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Nov 24 16:24:48 2017 +0100
+
+    hw:d3d11:d3d11_filters: fix leak
+    
+    CID #1462210
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit dd6b71958d0ec80575f68f701ff5c95a61cce019
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Nov 24 16:24:47 2017 +0100
+
+    hw:d3d11:d3d11_deinterlace: check values are ok
+    
+    Also release unsused memory.
+    
+    CID #1462212, #1462211
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e5c3ae227b5bd85555cd5e4af2f6e71071ac4b52
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Nov 24 16:24:46 2017 +0100
+
+    hw:d3d9:dxva2_deinterlace: use D3D9_Create/Destroy
+    
+    CID #1462217
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9d14a01699c85d67c5aa8b351c673c1f82156aaa
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Nov 24 16:24:45 2017 +0100
+
+    hw:d3d11:d3d11_surface: release the local d3d_dev on error
+    
+    CID #1462215
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d947f063d8d3f7cc3cc8a3f512759e028705d48d
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Nov 24 16:24:44 2017 +0100
+
+    hw:d3d11:d3d11_instance: always set the d3dcontext even on failure
+    
+    CID #1462218
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 101daa0ae6462e3fdf9c82a55c9b66852e56da2c
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Nov 24 16:24:43 2017 +0100
+
+    hw:d3d9:dxa9: use D3D9_Create/Destroy to load/unload the D3D9 DLL
+    
+    Also fix fmt_staging release from uninitialized memory.
+    
+    CID #1462219, #1462216, #1462214, #1462213
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bee2a18aa920b7a7e19b19a3f78124ff07e6e091
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 24 14:28:59 2017 +0100
+
+    videotoolbox: fix frame leaks when closing decoder
+    
+    Set b_vt_flush to true to prevent the asynchronous callback to enqueue more
+    frames.
+    
+    This fixes a regression from f75db2e7ef22b2bb9bc6e2ade65793163ebea4e5.
+
+commit e685db60c625da8d44afda31bbe8cc2de043087f
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 15:57:19 2017 +0100
+
+    Update PO with new files
+
+commit a95651c1b4530bbacf09bdc277ca152440ca7821
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 16:11:17 2017 +0100
+
+    Keystore: capitalize correctly
+
+commit bb8cf576c160dadc6276278819b3307d558b1daa
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 16:08:33 2017 +0100
+
+    Resampler: don't translate complex technical strings
+
+commit 94db44030d4f3df7fe590064f5ef9bb06ec6e470
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 16:08:16 2017 +0100
+
+    mp4: don't translate iTunes and Youtube meta names
+
+commit d57639dabaa1fb74734ffc629d30c846846f5719
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 15:54:17 2017 +0100
+
+    Update MODULES_LIST
+
+commit f2937981fdddcb5a1ee97c2523edaf8b6b7ba6a4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 15:51:45 2017 +0100
+
+    Update POTFILES.in
+
+commit 71a533991f0413b04e48f331fb9a00c2b6ab6737
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 15:14:30 2017 +0100
+
+    Update PO files
+
+commit ab9d021d2e46252abe798cbe892146d631f447fd
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 15:10:24 2017 +0100
+
+    Strings simplification for translations
+
+commit dde7a83b2defc859048b88a105eb2884828c7de2
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 24 14:16:32 2017 +0100
+
+    demux: adaptive: continue non dated packets for the same ES (fix #19145)
+    
+    Otherwise creates misordered output.
+
+commit 5d1143695cd91c2c328ed78f07ed876d1b62c0f6
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 24 13:56:36 2017 +0100
+
+    codec: videotoolbox: fix leak
+
+commit 1056615da783d3e57a15ae795196499e48a9d965
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 14:25:08 2017 +0100
+
+    i18n: add Uighur translation
+
+commit 57e0a941374c1afd065621284063bd7c4b0d89a7
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 14:24:22 2017 +0100
+
+    i18n: add Maithili translation
+
+commit b0685c656f11551c5ccfc3c43f677f5ed8464355
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 14:23:44 2017 +0100
+
+    i18n: add Kashimiri (India) translation
+
+commit 96cb25a2437180729d3da7ce6bafd9f1c5dadd66
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 14:22:41 2017 +0100
+
+    i18n: Add West Frisian translation
+
+commit 1203f5aa26e28e9ce64e99611b8a8ccfea4f9cdb
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 14:22:12 2017 +0100
+
+    i18n: add Bodo translation
+
+commit c341be9cca29c456eec87164e25012bcc918074e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 14:21:30 2017 +0100
+
+    i18n: Add Assamese translation
+
+commit a1931e147461c5ce7e6b5eb0156b4b84d6c7b0a0
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Nov 24 14:14:38 2017 +0100
+
+    Update translations from 2.2.x branch
+    
+    This holds copyright from numerous people and from the VideoLAN entity
+
+commit e4fffa8b85d6cdb0a28621a76a1ae95b5144e4bd
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 24 13:31:55 2017 +0100
+
+    codec: videotoolbox: setup YUV->RGB matrix
+
+commit 918aea708b6a39106ae096cc8c8b907e0f7ac75e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 24 09:18:09 2017 +0100
+
+    codec: videotoolbox: don't force NV12 for 10bits
+
+commit f75db2e7ef22b2bb9bc6e2ade65793163ebea4e5
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 24 09:35:07 2017 +0100
+
+    codec: videotoolbox: drain when flushing
+    
+    Clear the DPB queue, wait for for asynchronous frames, re-init the PTS instead
+    of restarting the VT session.
+
+commit db7820b638e2626612f5685f78805eb2437f8a16
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 24 09:17:47 2017 +0100
+
+    codec: videotoolbox: force a vout flush with 4K10bits on iOS
+
+commit fcbc143659fce8da32e06032312aa5d942a84066
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 24 09:16:26 2017 +0100
+
+    codec: videotoolbox: pace output frames allocation
+    
+    VT is not pacing frame allocation. If we are not fast enough to render
+    (release) the output pictures, the VT session can end up allocating way too
+    many frames. This can be problematic for 4K 10bits. To fix this issue, we
+    ensure that we don't have too many output frames allocated by waiting for the
+    vout to release them.
+    
+    A proper way to fix this issue is to allow decoder modules to specify the dpb
+    and having the vout re-allocating output frames when this number changes.
+
+commit 884476a90e4a1237d57d29503510667a82f610b6
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 24 09:18:24 2017 +0100
+
+    codec: vt_utils: add cvpxpic_attach_with_cb
+    
+    In order to be notified when the cvpx buffer is released.
+
+commit 95c347087f2889445ecea305e476beb0384cb33c
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 24 09:05:25 2017 +0100
+
+    codec: videotoolbox: fix indent
+
+commit 9e88ebd2e06f0a20eccf2c71456a7c3476ebb672
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Nov 22 14:43:20 2017 +0100
+
+    codec: videotoolbox: rename DrainDPB to DrainDPBLocked
+
+commit 150c37c240c0a3f6c4d110d1ac51127a27beab58
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Oct 2 17:20:39 2017 +0200
+
+    codec: videotoolbox: add HEVC support
+    
+    Fixes #18855
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 64ee55927b51b023a70fd8b708ba62bfb600fdef
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 17 12:45:47 2017 +0100
+
+    codec: videotoolbox: improve deviceSupport tests
+
+commit e96c4427790ca7ae8847f30bea32345fc6d5b72a
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Oct 3 17:18:27 2017 +0200
+
+    codec: videotoolbox: refactor for other codecs support
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 02a958de663ec1069323a7398a879d8bf7c59c97
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Oct 3 15:01:17 2017 +0200
+
+    codec: videotoolbox: don't set directly extradata in decoder conf
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 23c823b896ac9f4a589d4aa8ad720a01f7c9bdf7
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 24 09:05:00 2017 +0100
+
+    opengl: cvpx: change CVOpenGLESTextureRef release order
+    
+    Release textures earlier before the texture cache flush.
+
+commit c97ba5ded1538307572e6ada843e9598e1568f71
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 20 16:49:09 2017 +0100
+
+    hxxx_helper: add hevc_helper_get_hvcc_config
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit bd105c968e201cb390d72ed450a970e165f399cc
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 20 16:09:46 2017 +0100
+
+    mux: libmp4mux: clear warning
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 81e8c7d0c03055309882e6c5ae2746d66d3ded4d
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 20 15:45:27 2017 +0100
+
+    mux: libmp4mux: use hevc_decconfig
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit aa324fea9962707e0f52b7cec5fc75ffb1df6e57
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Nov 20 15:01:34 2017 +0100
+
+    packetizer/mux: refactor hevc decoder config creation
+    
+    beause we'll need it for VT
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit fa2763a46474d67d4af5405f445529a35e7a4d11
+Author: François Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 24 12:51:34 2017 +0100
+
+    hxxx_helper: remove hevc annexb config chain storage
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit ac3da07e2a7f7b8e8fca90e51faae6b51955052a
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 17 16:33:47 2017 +0100
+
+    codec: mediacodec: use hevc_helper_get_annexb_config
+
+commit ddb5cc2fc825638bfd5766efc7ad51a401a4f444
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 17 16:15:16 2017 +0100
+
+    hxxx_helper: add hevc_helper_get_annexb_config
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit e4a180cd4823e4cd737b9cbd277940f28bde9644
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 17 16:08:12 2017 +0100
+
+    hxxx_helper: refactor h264_helper_get_annexb_config
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 01fedfc91a6f3140c26517ebc8ef51c3b4eadd77
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 17 16:03:12 2017 +0100
+
+    hxxx_helper: load HevcDEcoderConfiguration
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 41df966452ad9101208b067f9593dc45ccb9a244
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Nov 24 10:29:01 2017 +0100
+
+    codec: ttml: fix default alignment values
+    
+    refs #19147 #19146
+
+commit af7b35383052ca6b9d5bd5a0e3a8a5320b4a7b78
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Nov 23 16:55:17 2017 +0100
+
+    zvbi: Don't pass video_format_t by copy
+    
+    CID #1160816
+
+commit b2b4c42ccbe54759ea325f914fecc4cd42985869
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Nov 23 16:37:45 2017 +0100
+
+    svcdsub: Don't store unused values; skip over them
+
+commit 9ec6f1ee59bccadbfdd7450431ea6788a5966068
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Nov 23 16:35:11 2017 +0100
+
+    svcdsub: Use existing helper
+    
+    Should fix CID #1048969
+
+commit 801b2a6b329d1517a8bf7f3488e2955603de16a1
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Nov 23 16:35:00 2017 +0100
+
+    svcdsub: remove trailing whitespace
+
+commit 2e65002479e64839c16e65101ebd6e4a50341690
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Wed Aug 16 16:46:39 2017 +0100
+
+    httpd: Remove obsolete enum
+    
+    Un-named enum contains HTTPD_CLIENT_FILE and HTTPD_CLIENT_STREAM,
+    which became obsolete in 56ee33a212e60fecf7b0e075b67618e3e4744df2,
+    replaced with the b_stream_mode boolean.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9e64d40264f126ac02f3cd645af2deb348616578
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Wed May 24 21:18:44 2017 +0100
+
+    includes/aout: fix incorrect mention of 24-bit support
+    
+    Left over from 8d73a4d79b1fe7423d07d106281a96393f60115c
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 34ad26ff6cef1b0c6745a784f9051fb03375d301
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Sat Mar 18 17:34:25 2017 +0000
+
+    aout/common: fix type for S16N interleaving
+    
+    This mistake happens to have no impact at all on computations, but deserved correction.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 19fa2ebc91bdedfcb4302f9a893c837d17bf6825
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Sun Apr 9 18:06:06 2017 +0100
+
+    aout/common: add missing case for 2F2M2R (Dolby 6.0) in aout_FormatPrintChannels
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4fcb76f200c3171ed54789901ca86da142d2ff74
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Fri May 12 20:50:16 2017 +0100
+
+    MODULES_LIST: add missing entries
+    
+    * libdirectory_demux_plugin
+    * libsimple_channel_mixer_plugin_arm_neon
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8835da90323de306796e150aeacd2e4b300c3dce
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Wed Apr 26 15:07:29 2017 +0100
+
+    MODULES_LIST: fix count
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit cd6598579be9e5e0cf4c6d38ff31fdffb2cf5e79
+Author: Adrien Maglo <magsoft@videolan.org>
+Date:   Thu Nov 23 17:40:13 2017 +0100
+
+    Qt: fix a wrong logic for the check of the fullscreen screen number
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 32ab4fc98d97b6b0cb1728be79ebbd74d19b3e79
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Nov 23 15:25:39 2017 +0100
+
+    mkv: only allow one video track at a time
+    
+    This is how Matroska is supposed to work
+    
+    Fixes #19129
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fe367b762364e7935f7cc541370234e712e6a129
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Thu Nov 23 15:24:11 2017 +0100
+
+    dxva2: fix crash if dxva2.dll is not present (winXP)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 525fbd67d34cb9137345ea84da8daa432f0d367c
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Fri Nov 24 02:19:44 2017 +0100
+
+    macosx: FIXME for ModuleListConfigControl's resetValues
+
+commit c2786ac015bccef4155bef211c7ce30d29af06ce
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 23 22:25:10 2017 +0100
+
+    sout: transcode: fix leak
+
+commit 214cc7818f6b01120bf865cbe7c7641b3bf73be4
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Thu Nov 23 19:57:55 2017 +0100
+
+    macosx: Simplify translation macros
+    
+    The previous method had lots of dead code, so simplify by using
+    a one-line macro.
+
+commit 3264c9ed2e05ae841e8faaff7b217136cf31a99f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 23 19:07:08 2017 +0200
+
+    sap: fix off-by-one
+
+commit d72395dd8aaf50a722cf7bbe58e4d61e9943edf2
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 23 19:05:17 2017 +0200
+
+    sap: simplify
+
+commit 3b97a38005b94958efeb6a0d0023a6f35e77f16e
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 23 17:28:05 2017 +0100
+
+    es_out: don't tag preroll on blocks containing NEXT_DISPLAY_TIME
+    
+    avoids dropping those, especially SPU on seek
+    refs #18862
+
+commit 511eb7f9ce5b735ae6651e7614f0c9813df37623
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 23 13:45:04 2017 +0100
+
+    codec: atsc a65: fix truncated conversions
+
+commit 82da9eeee2c2e8a26c4400716d1a299f9ec77a03
+Author: KO Myung-Hun <komh78@gmail.com>
+Date:   Thu Nov 23 17:17:00 2017 +0900
+
+    vlc_common: include limits.h for UINT_MAX, ULONG_MAX and ULLONG_MAX
+    
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 81382ead7b52106a7492a8a101050c6aa546dbc3
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Thu Nov 23 13:26:07 2017 +0100
+
+    freetype: fix No subtitles on Win 7 with 64bit
+    
+      fix: #19093
+    
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 82d352ee32e403ae845a867e6145eb08e2b35dae
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Nov 23 13:03:12 2017 +0100
+
+    x264: Remove unused static variable
+    
+    This is unused since 2010 (87e5e733e51d5d7baff67da7b019cb613b81d228)
+
+commit 8a9ffc70f337a6d1adc3fe0589501f1cb0be8015
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Nov 23 11:04:47 2017 +0100
+
+    Revert "satip: Add missing allocation check"
+    
+    This reverts commit e95b11e2c0c730599d66241047de0760e0bea40f.
+    This breaks the logic a few lines below
+
+commit fc063b5195e11e03ac773874432757cbeef2693b
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Nov 23 10:36:26 2017 +0100
+
+    Update NEWS from 2.2.x branch
+
+commit 2a4afc3bb77eab39f154fc02b03cb721780b7171
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Nov 23 10:17:27 2017 +0100
+
+    Update PO files
+
+commit 0925621b548c0e2dd3f43233f781718d97228a8f
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Thu Nov 23 09:33:26 2017 +0100
+
+    skin2: fix opening playlist
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 39d49cef673e647938921d106089cd57bbdf4b01
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Thu Nov 23 10:03:50 2017 +0100
+
+    skin2: fix string can't be parsed by gettext
+    
+    fix: #19117
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit dbb5e3c3a6c0db25fa61e2e0efd4a7b4502d30c9
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 23 09:52:59 2017 +0100
+
+    demux: avi: remove enum/fix build
+    
+    move as defines,  we can't change member type
+    
+    This reverts commit 5640f9814c4ed2edb9b33086f3465837e1fc4adc.
+
+commit b0ab659f403db975d6a5bcbc923239b6ae7decb0
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:39 2017 +0100
+
+    dxva2_deinterlace: create the texture for pictures coming from a bogus pool
+    
+    Fixes #18936
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3ac5493a09e0c64d9ba7bdb4861f4678cf5312b9
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:38 2017 +0100
+
+    d3d11_deinterlace: create the texture for pictures coming from a bogus pool
+    
+    Fixes #18936
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 2de1dbfc357470977016c144de17621484380864
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:37 2017 +0100
+
+    hw:d3d9: make use of D3D9_FilterHoldInstance()
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 564c535dfd1c698bbf6da10324b3152f00e2f496
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:36 2017 +0100
+
+    hw:d3d11: make use of D3D11_FilterHoldInstance()
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fc35b698bb0df1f6f3c5d423b4e9261a0d511da8
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:35 2017 +0100
+
+    hw:d3d11: use d3d11_device_t instead of ID3D11Device
+    
+    Keep the device for the lifetime of the filter
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 00022da0e2544b72ba92597e49054ec0eb7575fe
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:34 2017 +0100
+
+    hw:d3d9: use d3d9_device_t instead of IDirect3DDevice9
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit cd37cf5dda25c402849b87959b99924e553ee2bf
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:33 2017 +0100
+
+    hw:d3d9: add a file to control the D3D9 device common to all filters
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8d73a6794f27a50098e3f7b90a3283045fa556cd
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:32 2017 +0100
+
+    hw:d3d11: add a file to control the D3D11 device common to all filters
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ea902a998665c568d08c2568c8d55bab82282f8d
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:31 2017 +0100
+
+    hw:d3d9: move all the filters into a single module
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 34a545f1f3d756390f24cf4465cf0c8829c727cf
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:30 2017 +0100
+
+    hw:d3d11: move all the filters into a single module
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a5d181248b18f4fe93161bfae778a2be677a652c
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:29 2017 +0100
+
+    hw:d3d9: rename the Open/Close for each module
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e9caa9b46a70839c82b54e58b6cee557dd3d6df8
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:28 2017 +0100
+
+    hw:d3d11: rename the Open/Close for each module
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 004264bc47633678722b632abcb511ecfee1d87b
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:27 2017 +0100
+
+    d3d11_filters: fix adjust output when all values are default
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 020975b40c8949cfccbfb0e742fecfc8889255ef
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:26 2017 +0100
+
+    dxva2_deinterlace: clean code
+    
+    Simplify the init, we don't know the order yet
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 12b76b3f9d5155a31e3184b5590dd839ca7cd820
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:25 2017 +0100
+
+    dxa9: clean code
+    
+    Use local variables when possible
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b2c55fee53e227d577db3ad4e7a0ac0209874978
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:24 2017 +0100
+
+    hw:d3d11: clean code
+    
+    Use local variables when possible
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0e5c11fa1520d5f4a7374c9eb1d236a576e573c3
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:23 2017 +0100
+
+    hw:d3d9: move the filters code in hw/d3d9
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9602b711f4c951f135dff54cb4191eb39ef1617e
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:22 2017 +0100
+
+    hw:d3d11: move the filters code in hw/d3d11
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ec0b3bc1a83d80de6aa04092cd89b96768850174
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:21 2017 +0100
+
+    hw:d3d9: move the filter modules declaration in modules/hw/d3d9
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ad428695a643fa0fff96b4fd663d8943948df6b7
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 18:18:20 2017 +0100
+
+    hw:d3d11: move the filter modules declaration in modules/hw/d3d11
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 40fa6b7a60de56968c209ac370257db592bd06aa
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 11:03:37 2017 +0100
+
+    d3d11: use is_d3d11_opaque() is more places
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 346cbef21bf0f3111728da4100ded5c0a9388903
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 11:03:36 2017 +0100
+
+    d3d11_surface: use D3D11_Create/D3D11_Destroy
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 20aa304bbfd8c8cb4f981509e33544f38391c46b
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 11:03:35 2017 +0100
+
+    d3d11_fmt: reduce the size of processor support logs
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 43b2b125db42a650121a121b252e5641456e2ad4
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Nov 22 11:03:34 2017 +0100
+
+    d3d11: move the processor input/output support logging in libd3d11_common
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
 commit be9ea17a8cb29c23cbbf8bc3b3ab2f57ee5503ac
 Author: Francois Cartegnie <fcvlcdev@free.fr>
 Date:   Sun Nov 12 14:54:35 2017 +0100

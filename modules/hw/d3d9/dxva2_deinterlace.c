@@ -28,7 +28,6 @@
 #include <assert.h>
 
 #include <vlc_common.h>
-#include <vlc_plugin.h>
 #include <vlc_filter.h>
 #include <vlc_picture.h>
 
@@ -39,12 +38,14 @@
 #include "../../video_chroma/d3d9_fmt.h"
 #include "../../video_filter/deinterlace/common.h"
 
+#include "d3d9_filters.h"
+
 struct filter_sys_t
 {
     HINSTANCE                      hdecoder_dll;
     /* keep a reference in case the vout is released first */
-    HINSTANCE                      d3d9_dll;
-    IDirect3DDevice9               *d3ddev;
+    d3d9_handle_t                  hd3d;
+    d3d9_device_t                  d3d_dev;
     IDirectXVideoProcessor         *processor;
     IDirect3DSurface9              *hw_surface;
 
@@ -192,7 +193,7 @@ static int RenderPic( filter_t *filter, picture_t *p_outpic, picture_t *src,
     if (FAILED(hr))
         return VLC_EGENERIC;
 
-    hr = IDirect3DDevice9_StretchRect( sys->d3ddev,
+    hr = IDirect3DDevice9_StretchRect( sys->d3d_dev.dev,
                                        sys->hw_surface, NULL,
                                        p_outpic->p_sys->surface, NULL,
                                        D3DTEXF_NONE);
@@ -248,11 +249,40 @@ static struct picture_context_t *d3d9_pic_context_copy(struct picture_context_t 
 
 static picture_t *NewOutputPicture( filter_t *p_filter )
 {
-    picture_t *pic = p_filter->p_sys->buffer_new( p_filter );
+    filter_sys_t *p_sys = p_filter->p_sys;
+    picture_t *pic = p_sys->buffer_new( p_filter );
     if ( !pic->context )
     {
+        bool b_local_texture = false;
+
+        if (!pic->p_sys )
+        {
+            D3DSURFACE_DESC dstDesc;
+            if ( !p_sys->hw_surface ||
+                 FAILED(IDirect3DSurface9_GetDesc( p_sys->hw_surface, &dstDesc )) )
+                return NULL;
+
+            pic->p_sys = calloc(1, sizeof(*pic->p_sys));
+            if (unlikely(pic->p_sys == NULL))
+                return NULL;
+
+            HRESULT hr = IDirect3DDevice9_CreateOffscreenPlainSurface(p_sys->d3d_dev.dev,
+                                                              p_filter->fmt_out.video.i_width,
+                                                              p_filter->fmt_out.video.i_height,
+                                                              dstDesc.Format,
+                                                              D3DPOOL_DEFAULT,
+                                                              &pic->p_sys->surface,
+                                                              NULL);
+
+            if (FAILED(hr))
+            {
+                free(pic->p_sys);
+                pic->p_sys = NULL;
+                return NULL;
+            }
+            b_local_texture = true;
+        }
         /* the picture might be duplicated for snapshots so it needs a context */
-        assert( pic->p_sys != NULL ); /* this opaque picture is wrong */
         struct va_pic_context *pic_ctx = calloc(1, sizeof(*pic_ctx));
         if (likely(pic_ctx!=NULL))
         {
@@ -262,18 +292,18 @@ static picture_t *NewOutputPicture( filter_t *p_filter )
             AcquirePictureSys( &pic_ctx->picsys );
             pic->context = &pic_ctx->s;
         }
+        if (b_local_texture)
+            IDirect3DSurface9_Release(pic->p_sys->surface);
     }
     return pic;
 }
 
-static int Open(vlc_object_t *obj)
+int D3D9OpenDeinterlace(vlc_object_t *obj)
 {
     filter_t *filter = (filter_t *)obj;
-    filter_sys_t *sys = NULL;
+    filter_sys_t *sys;
     HINSTANCE hdecoder_dll = NULL;
-    HINSTANCE d3d9_dll = NULL;
     HRESULT hr;
-    picture_t *dst = NULL;
     GUID *processorGUIDs = NULL;
     GUID *processorGUID = NULL;
     IDirectXVideoProcessorService *processor = NULL;
@@ -284,27 +314,27 @@ static int Open(vlc_object_t *obj)
     if (!video_format_IsSimilar(&filter->fmt_in.video, &filter->fmt_out.video))
         return VLC_EGENERIC;
 
-    d3d9_dll = LoadLibrary(TEXT("D3D9.DLL"));
-    if (!d3d9_dll)
-        goto error;
+    sys = calloc(1, sizeof (*sys));
+    if (unlikely(sys == NULL))
+        return VLC_ENOMEM;
+
+    if (unlikely(D3D9_Create( filter, &sys->hd3d ) != VLC_SUCCESS)) {
+        msg_Warn(filter, "cannot load d3d9.dll, aborting");
+        free(sys);
+        return VLC_EGENERIC;
+    }
 
     hdecoder_dll = LoadLibrary(TEXT("DXVA2.DLL"));
     if (!hdecoder_dll)
         goto error;
 
-    dst = filter_NewPicture(filter);
-    if (dst == NULL)
-        goto error;
-
-    if (!dst->p_sys)
+    D3DSURFACE_DESC dstDesc;
+    D3D9_FilterHoldInstance( filter, &sys->d3d_dev, &dstDesc );
+    if (!sys->d3d_dev.dev)
     {
-        msg_Dbg(filter, "D3D9 opaque without a texture");
+        msg_Dbg(filter, "Filter without a context");
         goto error;
     }
-
-    sys = calloc(1, sizeof (*sys));
-    if (unlikely(sys == NULL))
-        goto error;
 
     HRESULT (WINAPI *CreateVideoService)(IDirect3DDevice9 *,
                                          REFIID riid,
@@ -313,17 +343,7 @@ static int Open(vlc_object_t *obj)
       (void *)GetProcAddress(hdecoder_dll, "DXVA2CreateVideoService");
     if (CreateVideoService == NULL)
         goto error;
-
-    hr = IDirect3DSurface9_GetDevice( dst->p_sys->surface, &sys->d3ddev );
-    if (FAILED(hr))
-        goto error;
-
-    D3DSURFACE_DESC dstDesc;
-    hr = IDirect3DSurface9_GetDesc( dst->p_sys->surface, &dstDesc );
-    if (unlikely(FAILED(hr)))
-        goto error;
-
-    hr = CreateVideoService( sys->d3ddev, &IID_IDirectXVideoProcessorService,
+    hr = CreateVideoService( sys->d3d_dev.dev, &IID_IDirectXVideoProcessorService,
                             (void**)&processor);
     if (FAILED(hr))
         goto error;
@@ -341,11 +361,7 @@ static int Open(vlc_object_t *obj)
         dsc.InputSampleFreq.Denominator = 0;
     }
     dsc.OutputFrameFreq = dsc.InputSampleFreq;
-
-    DXVA2_ExtendedFormat *pFormat = &dsc.SampleFormat;
-    pFormat->SampleFormat = dst->b_top_field_first ?
-                DXVA2_SampleFieldInterleavedEvenFirst :
-                DXVA2_SampleFieldInterleavedOddFirst;
+    dsc.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
 
     UINT count = 0;
     hr = IDirectXVideoProcessorService_GetVideoProcessorDeviceGuids( processor,
@@ -442,7 +458,6 @@ static int Open(vlc_object_t *obj)
     sys->Saturation = Range.DefaultValue.Value;
 
     sys->hdecoder_dll = hdecoder_dll;
-    sys->d3d9_dll     = d3d9_dll;
     sys->decoder_caps = best_caps;
 
     InitDeinterlacingContext( &sys->context );
@@ -467,7 +482,6 @@ static int Open(vlc_object_t *obj)
 
     CoTaskMemFree(processorGUIDs);
     IDirectXVideoProcessorService_Release(processor);
-    picture_Release(dst);
 
     sys->buffer_new = filter->owner.video.buffer_new;
     filter->owner.video.buffer_new = NewOutputPicture;
@@ -478,43 +492,31 @@ static int Open(vlc_object_t *obj)
 
     return VLC_SUCCESS;
 error:
-    CoTaskMemFree(processorGUIDs);
+    if (processorGUIDs)
+        CoTaskMemFree(processorGUIDs);
     if (sys && sys->processor)
         IDirectXVideoProcessor_Release( sys->processor );
     if (processor)
         IDirectXVideoProcessorService_Release(processor);
-    if (sys && sys->d3ddev)
-        IDirect3DDevice9_Release( sys->d3ddev );
+    D3D9_FilterReleaseInstance( &sys->d3d_dev );
     if (hdecoder_dll)
         FreeLibrary(hdecoder_dll);
-    if (d3d9_dll)
-        FreeLibrary(d3d9_dll);
-    if (dst)
-        picture_Release(dst);
+    D3D9_Destroy( &sys->hd3d );
     free(sys);
 
     return VLC_EGENERIC;
 }
 
-static void Close(vlc_object_t *obj)
+void D3D9CloseDeinterlace(vlc_object_t *obj)
 {
     filter_t *filter = (filter_t *)obj;
     filter_sys_t *sys = filter->p_sys;
 
     IDirect3DSurface9_Release( sys->hw_surface );
     IDirectXVideoProcessor_Release( sys->processor );
-    IDirect3DDevice9_Release( sys->d3ddev );
+    D3D9_FilterReleaseInstance( &sys->d3d_dev );
     FreeLibrary( sys->hdecoder_dll );
-    FreeLibrary( sys->d3d9_dll );
+    D3D9_Destroy( &sys->hd3d );
 
     free(sys);
 }
-
-vlc_module_begin()
-    set_description(N_("Direct3D9 deinterlacing filter"))
-    set_capability("video filter", 0)
-    set_category(CAT_VIDEO)
-    set_subcategory(SUBCAT_VIDEO_VFILTER)
-    set_callbacks(Open, Close)
-    add_shortcut ("deinterlace")
-vlc_module_end()

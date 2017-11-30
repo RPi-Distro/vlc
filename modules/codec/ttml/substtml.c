@@ -64,6 +64,7 @@ typedef struct
     ttml_length_t   font_size;
     ttml_length_t   extent_h, extent_v;
     int             i_text_align;
+    bool            b_text_align_set;
     int             i_direction;
     bool            b_direction_set;
     bool            b_preserve_space;
@@ -187,8 +188,9 @@ static ttml_region_t *ttml_region_New( )
 
     SubpictureUpdaterSysRegionInit( &p_ttml_region->updt );
     p_ttml_region->pp_last_segment = &p_ttml_region->updt.p_segments;
-    /* Align to bottom by default. !Warn: center align is obtained with NO flags */
-    p_ttml_region->updt.align = SUBPICTURE_ALIGN_BOTTOM;
+    /* Align to top by default. !Warn: center align is obtained with NO flags */
+    p_ttml_region->updt.align = SUBPICTURE_ALIGN_TOP|SUBPICTURE_ALIGN_LEFT;
+    p_ttml_region->updt.inner_align = SUBPICTURE_ALIGN_TOP|SUBPICTURE_ALIGN_LEFT;
 
     return p_ttml_region;
 }
@@ -356,10 +358,11 @@ static void FillRegionStyle( const char *psz_attr, const char *psz_val,
     if( !strcasecmp( "tts:displayAlign", psz_attr ) )
     {
         p_region->updt.inner_align &= ~(SUBPICTURE_ALIGN_TOP|SUBPICTURE_ALIGN_BOTTOM);
-        if( !strcasecmp ( "before", psz_val ) )
-            p_region->updt.inner_align |= SUBPICTURE_ALIGN_TOP;
-        else if( !strcasecmp ( "after", psz_val ) )
+        if( !strcasecmp( "after", psz_val ) )
             p_region->updt.inner_align |= SUBPICTURE_ALIGN_BOTTOM;
+        else if( strcasecmp( "center", psz_val ) )
+            /* "before" */
+            p_region->updt.inner_align |= SUBPICTURE_ALIGN_TOP;
     }
     else if( !strcasecmp ( "tts:origin", psz_attr ) ||
              !strcasecmp ( "tts:extent", psz_attr ) )
@@ -459,10 +462,15 @@ static void FillTTMLStyle( const char *psz_attr, const char *psz_val,
             p_ttml_style->i_text_align |= SUBPICTURE_ALIGN_LEFT;
         else if( !strcasecmp ( "right", psz_val ) )
             p_ttml_style->i_text_align |= SUBPICTURE_ALIGN_RIGHT;
-        else if( !strcasecmp ( "start", psz_val ) ) /* FIXME: should be BIDI based */
-            p_ttml_style->i_text_align |= SUBPICTURE_ALIGN_LEFT;
         else if( !strcasecmp ( "end", psz_val ) )  /* FIXME: should be BIDI based */
             p_ttml_style->i_text_align |= SUBPICTURE_ALIGN_RIGHT;
+        else if( strcasecmp ( "center", psz_val ) )
+            /* == "start" FIXME: should be BIDI based */
+            p_ttml_style->i_text_align |= SUBPICTURE_ALIGN_LEFT;
+        p_ttml_style->b_text_align_set = true;
+#ifdef TTML_DEBUG
+        printf("**%s %x\n", psz_val, p_ttml_style->i_text_align);
+#endif
     }
     else if( !strcasecmp( "tts:fontSize", psz_attr ) )
     {
@@ -797,7 +805,11 @@ static void AppendTextToRegion( ttml_context_t *p_ctx, const tt_textnode_t *p_tt
             /* we don't have paragraph, so no per text line alignment.
              * Text style brings horizontal textAlign to region.
              * Region itself is styled with vertical displayAlign */
-            p_region->updt.inner_align |= s->i_text_align;
+            if( s->b_text_align_set )
+            {
+                p_region->updt.inner_align &= ~(SUBPICTURE_ALIGN_LEFT|SUBPICTURE_ALIGN_RIGHT);
+                p_region->updt.inner_align |= s->i_text_align;
+            }
 
             ttml_style_Delete( s );
         }
@@ -1026,7 +1038,7 @@ static int ParseBlock( decoder_t *p_dec, const block_t *p_block )
             p_spu->i_start    = VLC_TS_0 + tt_time_Convert( &p_timings_array[i] );
             p_spu->i_stop     = VLC_TS_0 + tt_time_Convert( &p_timings_array[i+1] ) - 1;
             p_spu->b_ephemer  = true;
-            p_spu->b_absolute = false;
+            p_spu->b_absolute = true;
 
             subpicture_updater_sys_t *p_spu_sys = p_spu->updater.p_sys;
             subpicture_updater_sys_region_t *p_updtregion = NULL;
@@ -1053,6 +1065,7 @@ static int ParseBlock( decoder_t *p_dec, const block_t *p_block )
                     p_spu_sys->region.align = p_dec->p_sys->i_align & (SUBPICTURE_ALIGN_BOTTOM|SUBPICTURE_ALIGN_TOP);
                     p_spu_sys->region.inner_align = p_dec->p_sys->i_align & (SUBPICTURE_ALIGN_LEFT|SUBPICTURE_ALIGN_RIGHT);
                 }
+                p_spu_sys->margin_ratio = 0.0;
 
                 /* copy and take ownership of pointeds */
                 *p_updtregion = p_region->updt;

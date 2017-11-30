@@ -2,7 +2,7 @@
  * vlc_objects.h: vlc_object_t definition and manipulation methods
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: aba548fe4b85b812778cacd09b9eb705cdc6f105 $
+ * $Id: a5b5dc21dcbf30692203bb46bcc755e454abe468 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -67,7 +67,7 @@ VLC_API char *vlc_object_get_name( const vlc_object_t * ) VLC_USED;
 #define vlc_list_children(a) \
     vlc_list_children( VLC_OBJECT(a) )
 
-VLC_API VLC_MALLOC void *vlc_obj_alloc(vlc_object_t *, size_t, size_t);
+VLC_API VLC_MALLOC void *vlc_obj_malloc(vlc_object_t *, size_t);
 VLC_API VLC_MALLOC void *vlc_obj_calloc(vlc_object_t *, size_t, size_t);
 VLC_API void vlc_obj_free(vlc_object_t *, void *);
 

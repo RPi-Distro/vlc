@@ -2,7 +2,7 @@
  * cmd_playlist.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: dc38840ddad0362f07b11cdd7ecabfcf9d327699 $
+ * $Id: ab5d94c1194f5d3be337b6887a141ec95c83c343 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -24,6 +24,7 @@
 
 #include "cmd_playlist.hpp"
 #include <vlc_playlist.h>
+#include <vlc_url.h>
 #include "../src/vlcproc.hpp"
 #include "../utils/var_bool.hpp"
 
@@ -64,7 +65,14 @@ void CmdPlaylistRepeat::execute()
 
 void CmdPlaylistLoad::execute()
 {
-    playlist_Import( getPL(), m_file.c_str() );
+    char* psz_path = vlc_uri2path( m_file.c_str() );
+    if ( !psz_path )
+    {
+        msg_Err(getIntf(),"unable to load playlist %s", m_file.c_str() );
+        return;
+    }
+    playlist_Import( getPL(), psz_path );
+    free( psz_path );
 }
 
 

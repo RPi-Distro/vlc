@@ -29,19 +29,20 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_plugin.h>
 #include <vlc_filter.h>
 #include <vlc_picture.h>
 #include <vlc_modules.h>
 
 #include <assert.h>
 
-#include "copy.h"
+#include "../../video_chroma/copy.h"
 
 #include <windows.h>
 #define COBJMACROS
 #include <d3d11.h>
-#include "d3d11_fmt.h"
+
+#include "d3d11_filters.h"
+#include "../../video_chroma/d3d11_fmt.h"
 
 #ifdef ID3D11VideoContext_VideoProcessorBlt
 #define CAN_PROCESSOR 1
@@ -69,12 +70,13 @@ struct filter_sys_t {
     ID3D11VideoProcessorEnumerator *procEnumerator;
     ID3D11VideoProcessor           *videoProcessor;
 #endif
+    d3d11_device_t                 d3d_dev;
 
     /* CPU to GPU */
     filter_t   *filter;
     picture_t  *staging_pic;
 
-    HINSTANCE  hd3d_dll;
+    d3d11_handle_t  hd3d;
 };
 
 #if CAN_PROCESSOR
@@ -116,13 +118,7 @@ static int SetupProcessor(filter_t *p_filter, ID3D11Device *d3ddevice,
 
     UINT flags;
 #ifndef NDEBUG
-    for (int format = 0; format < 188; format++) {
-        hr = ID3D11VideoProcessorEnumerator_CheckVideoProcessorFormat(processorEnumerator, format, &flags);
-        if (SUCCEEDED(hr) && (flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
-            msg_Dbg(p_filter, "processor format %s (%d) is supported for input", DxgiFormatToStr(format),format);
-        if (SUCCEEDED(hr) && (flags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
-            msg_Dbg(p_filter, "processor format %s (%d) is supported for output", DxgiFormatToStr(format),format);
-    }
+    D3D11_LogProcessorSupport(p_filter, processorEnumerator);
 #endif
     /* shortcut for the rendering output */
     hr = ID3D11VideoProcessorEnumerator_CheckVideoProcessorFormat(processorEnumerator, srcFormat, &flags);
@@ -630,10 +626,9 @@ VIDEO_FILTER_WRAPPER (D3D11_NV12)
 VIDEO_FILTER_WRAPPER (D3D11_YUY2)
 VIDEO_FILTER_WRAPPER (NV12_D3D11)
 
-static int OpenConverter( vlc_object_t *obj )
+int D3D11OpenConverter( vlc_object_t *obj )
 {
     filter_t *p_filter = (filter_t *)obj;
-    HINSTANCE hd3d_dll = NULL;
     int err = VLC_EGENERIC;
 
     if ( p_filter->fmt_in.video.i_chroma != VLC_CODEC_D3D11_OPAQUE )
@@ -655,37 +650,35 @@ static int OpenConverter( vlc_object_t *obj )
         return VLC_EGENERIC;
     }
 
-    hd3d_dll = LoadLibrary(TEXT("D3D11.DLL"));
-    if (unlikely(!hd3d_dll)) {
-        msg_Warn(p_filter, "cannot load d3d11.dll, aborting");
-        goto done;
-    }
-
     filter_sys_t *p_sys = calloc(1, sizeof(filter_sys_t));
     if (!p_sys)
          goto done;
 
+    if (D3D11_Create(p_filter, &p_sys->hd3d) != VLC_SUCCESS)
+    {
+        msg_Warn(p_filter, "cannot load d3d11.dll, aborting");
+        goto done;
+    }
+
     CopyInitCache(&p_sys->cache, p_filter->fmt_in.video.i_width );
     vlc_mutex_init(&p_sys->staging_lock);
-    p_sys->hd3d_dll = hd3d_dll;
     p_filter->p_sys = p_sys;
     err = VLC_SUCCESS;
 
 done:
     if (err != VLC_SUCCESS)
     {
-        if (hd3d_dll)
-            FreeLibrary(hd3d_dll);
+        free(p_sys);
     }
-    return err;}
+    return err;
+}
 
-static int OpenFromCPU( vlc_object_t *obj )
+int D3D11OpenCPUConverter( vlc_object_t *obj )
 {
     filter_t *p_filter = (filter_t *)obj;
     int err = VLC_EGENERIC;
     ID3D11Texture2D *texture = NULL;
     filter_t *p_cpu_filter = NULL;
-    HINSTANCE hd3d_dll = NULL;
     video_format_t fmt_staging;
 
     if ( p_filter->fmt_out.video.i_chroma != VLC_CODEC_D3D11_OPAQUE )
@@ -706,20 +699,17 @@ static int OpenFromCPU( vlc_object_t *obj )
         return VLC_EGENERIC;
     }
 
-    picture_t *peek = filter_NewPicture(p_filter);
-    if (peek == NULL)
-        return VLC_EGENERIC;
-    if (!peek->p_sys)
+    d3d11_device_t d3d_dev;
+    D3D11_TEXTURE2D_DESC texDesc;
+    D3D11_FilterHoldInstance(p_filter, &d3d_dev, &texDesc);
+    if (unlikely(!d3d_dev.d3dcontext))
     {
         msg_Dbg(p_filter, "D3D11 opaque without a texture");
-        picture_Release(peek);
         return VLC_EGENERIC;
     }
 
     video_format_Init(&fmt_staging, 0);
 
-    D3D11_TEXTURE2D_DESC texDesc;
-    ID3D11Texture2D_GetDesc( peek->p_sys->texture[KNOWN_DXGI_INDEX], &texDesc);
     vlc_fourcc_t d3d_fourcc = DxgiFormatFourcc(texDesc.Format);
     if (d3d_fourcc == 0)
         goto done;
@@ -731,7 +721,7 @@ static int OpenFromCPU( vlc_object_t *obj )
         err = VLC_ENOMEM;
         goto done;
     }
-    res.p_sys->context = peek->p_sys->context;
+    res.p_sys->context = d3d_dev.d3dcontext;
     res.p_sys->formatTexture = texDesc.Format;
 
     video_format_Copy(&fmt_staging, &p_filter->fmt_out.video);
@@ -755,10 +745,7 @@ static int OpenFromCPU( vlc_object_t *obj )
     texDesc.BindFlags = 0;
     texDesc.Height = p_dst->format.i_height; /* make sure we match picture_Setup() */
 
-    ID3D11Device *p_device;
-    ID3D11DeviceContext_GetDevice(peek->p_sys->context, &p_device);
-    HRESULT hr = ID3D11Device_CreateTexture2D( p_device, &texDesc, NULL, &texture);
-    ID3D11Device_Release(p_device);
+    HRESULT hr = ID3D11Device_CreateTexture2D( d3d_dev.d3ddevice, &texDesc, NULL, &texture);
     if (FAILED(hr)) {
         msg_Err(p_filter, "Failed to create a %s staging texture to extract surface pixels (hr=0x%0lx)", DxgiFormatToStr(texDesc.Format), hr );
         goto done;
@@ -774,39 +761,42 @@ static int OpenFromCPU( vlc_object_t *obj )
             goto done;
     }
 
-    hd3d_dll = LoadLibrary(TEXT("D3D11.DLL"));
-    if (unlikely(!hd3d_dll)) {
-        msg_Warn(p_filter, "cannot load d3d11.dll, aborting");
-        goto done;
-    }
-
     filter_sys_t *p_sys = calloc(1, sizeof(filter_sys_t));
     if (!p_sys) {
          err = VLC_ENOMEM;
          goto done;
     }
+
+    if (D3D11_Create(p_filter, &p_sys->hd3d) != VLC_SUCCESS)
+    {
+        msg_Warn(p_filter, "cannot load d3d11.dll, aborting");
+        goto done;
+    }
+
     p_sys->filter = p_cpu_filter;
     p_sys->staging_pic = p_dst;
-    p_sys->hd3d_dll = hd3d_dll;
     p_filter->p_sys = p_sys;
     err = VLC_SUCCESS;
 
 done:
     video_format_Clean(&fmt_staging);
-    picture_Release(peek);
     if (err != VLC_SUCCESS)
     {
         if (p_cpu_filter)
             DeleteFilter( p_cpu_filter );
         if (texture)
             ID3D11Texture2D_Release(texture);
-        if (hd3d_dll)
-            FreeLibrary(hd3d_dll);
+        D3D11_FilterReleaseInstance(&d3d_dev);
+        free(p_sys);
+    }
+    else
+    {
+        p_sys->d3d_dev = d3d_dev;
     }
     return err;
 }
 
-static void CloseConverter( vlc_object_t *obj )
+void D3D11CloseConverter( vlc_object_t *obj )
 {
     filter_t *p_filter = (filter_t *)obj;
     filter_sys_t *p_sys = (filter_sys_t*) p_filter->p_sys;
@@ -824,30 +814,19 @@ static void CloseConverter( vlc_object_t *obj )
     vlc_mutex_destroy(&p_sys->staging_lock);
     if (p_sys->staging)
         ID3D11Texture2D_Release(p_sys->staging);
-    FreeLibrary(p_sys->hd3d_dll);
+    D3D11_FilterReleaseInstance(&p_sys->d3d_dev);
+    D3D11_Destroy(&p_sys->hd3d);
     free( p_sys );
     p_filter->p_sys = NULL;
 }
 
-static void CloseFromCPU( vlc_object_t *obj )
+void D3D11CloseCPUConverter( vlc_object_t *obj )
 {
     filter_t *p_filter = (filter_t *)obj;
     filter_sys_t *p_sys = (filter_sys_t*) p_filter->p_sys;
     DeleteFilter(p_sys->filter);
     picture_Release(p_sys->staging_pic);
-    FreeLibrary(p_sys->hd3d_dll);
+    D3D11_Destroy(&p_sys->hd3d);
     free( p_sys );
     p_filter->p_sys = NULL;
 }
-
-/*****************************************************************************
- * Module descriptor.
- *****************************************************************************/
-vlc_module_begin ()
-    set_description( N_("Conversions from D3D11 to YUV") )
-    set_capability( "video converter", 10 )
-    set_callbacks( OpenConverter, CloseConverter )
-    add_submodule()
-        set_callbacks( OpenFromCPU, CloseFromCPU )
-        set_capability( "video converter", 10 )
-vlc_module_end ()

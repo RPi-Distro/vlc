@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 48de52746ba9a08a0acc9abeb452ef9772ffb917 $
+ * $Id: d848ca9e0b5ce550db1c9242540240693310e9ea $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -358,7 +358,6 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                      ui.videoZone, setEnabled( bool ) );
 
             CONFIG_BOOL( "fullscreen", fullscreen );
-            CONFIG_BOOL( "video-on-top", alwaysOnTop );
             CONFIG_BOOL( "video-deco", windowDecorations );
             CONFIG_GENERIC( "vout", StringList, ui.voutLabel, outputModule );
 

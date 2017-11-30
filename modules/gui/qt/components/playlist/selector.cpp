@@ -2,7 +2,7 @@
  * selector.cpp : Playlist source selector
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 168822726d1524c3c46271cf80fa73988f392f6e $
+ * $Id: bb654d41893810a93bea7a8766df9c191693af73 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf
@@ -124,12 +124,6 @@ PLSelector::PLSelector( QWidget *p, intf_thread_t *_p_intf )
     setDropIndicatorShown(true);
     invisibleRootItem()->setFlags( invisibleRootItem()->flags() & ~Qt::ItemIsDropEnabled );
 
-#ifdef Q_OS_MAC
-    setAutoFillBackground( true );
-    QPalette palette;
-    palette.setColor( QPalette::Window, QColor(209,215,226) );
-    setPalette( palette );
-#endif
     setMinimumHeight( 120 );
 
     /* Podcasts */

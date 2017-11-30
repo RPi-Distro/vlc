@@ -2,7 +2,7 @@
  * dialogs.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 79885ea5d8bb15965cfbc7f3d824284c867ebdad $
+ * $Id: f59ea71065e516bcc6886318cc332d217839d0d7 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,6 +22,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#include <sstream>
 #include "dialogs.hpp"
 #include "../commands/async_queue.hpp"
 #include "../commands/cmd_change_skin.hpp"
@@ -210,18 +211,19 @@ void Dialogs::showChangeSkin()
 
 void Dialogs::showPlaylistLoad()
 {
+    std::stringstream fileTypes;
+    fileTypes << _("Playlist Files |") << EXTENSIONS_PLAYLIST  << _("|All Files |*");
     showFileGeneric( _("Open playlist"),
-                     _("Playlist Files|" EXTENSIONS_PLAYLIST "|"
-                       "All Files|*"),
+                     fileTypes.str(),
                      showPlaylistLoadCB, kOPEN );
 }
 
 
 void Dialogs::showPlaylistSave()
 {
-    showFileGeneric( _("Save playlist"), _("XSPF playlist|*.xspf|"
-                                           "M3U file|*.m3u|"
-                                           "HTML playlist|*.html"),
+    showFileGeneric( _("Save playlist"), _("XSPF playlist |*.xspf|"
+                                           "M3U file |*.m3u|"
+                                           "HTML playlist |*.html"),
                      showPlaylistSaveCB, kSAVE );
 }
 

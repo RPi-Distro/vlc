@@ -60,14 +60,6 @@
 #define EPGOSD_TEXTSIZE_PROG    (OSDEPG_ROWS(2))
 #define EPGOSD_TEXTSIZE_NTWK    (OSDEPG_ROWS(2))
 
-#define RGB2YUV( R, G, B ) \
-    ((0.257 * R) + (0.504 * G) + (0.098 * B) + 16), \
-    (-(0.148 * R) - (0.291 * G) + (0.439 * B) + 128),\
-    ((0.439 * R) - (0.368 * G) - (0.071 * B) + 128)
-
-#define HEX2YUV( rgb ) \
-    RGB2YUV( (rgb >> 16), ((rgb & 0xFF00) >> 8), (rgb & 0xFF) )
-
 //#define RGB_COLOR1   0xf48b00
 //#define ARGB_BGCOLOR 0xC0333333
 
@@ -164,7 +156,7 @@ static subpicture_region_t * vout_OSDEpgSlider(int x, int y,
     int filled_part_width = ratio * width;
 
     for (int j = 0; j < height; j++) {
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < width; ) {
             /* Slider border. */
             bool is_outline = j == 0 || j == height - 1 ||
                               i == 0 || i == width  - 1;
@@ -174,7 +166,22 @@ static subpicture_region_t * vout_OSDEpgSlider(int x, int y,
                              i < 3 || i > width  - 4 ||
                              i < filled_part_width;
 
-            picture->p->p_pixels[picture->p->i_pitch * j + i] = 2 * is_border + is_outline;
+            uint8_t color = 2 * is_border + is_outline;
+            if(i >= 3 && i < width - 4)
+            {
+                if(filled_part_width > 4)
+                    memset(&picture->p->p_pixels[picture->p->i_pitch * j + i],
+                           color, filled_part_width - 4);
+                if(width > filled_part_width + 4)
+                    memset(&picture->p->p_pixels[picture->p->i_pitch * j + filled_part_width],
+                           color, width - filled_part_width - 4);
+                i = __MAX(i+1, filled_part_width - 1);
+            }
+            else
+            {
+                picture->p->p_pixels[picture->p->i_pitch * j + i] = color;
+                i++;
+            }
         }
     }
 

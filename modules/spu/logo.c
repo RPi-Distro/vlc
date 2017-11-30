@@ -2,7 +2,7 @@
  * logo.c : logo video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 VLC authors and VideoLAN
- * $Id: edc5936dee39fa1c829a31b63c49331e17407729 $
+ * $Id: 44b1bca6de636dd602bd8e214fd30f74d4fb72b0 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Simon Latapie <garf@videolan.org>
@@ -51,7 +51,7 @@
 "<image>[,<delay in ms>[,<alpha>]][;<image>[,<delay>[,<alpha>]]][;...]. " \
 "If you only have one file, simply enter its filename.")
 #define REPEAT_TEXT N_("Logo animation # of loops")
-#define REPEAT_LONGTEXT N_("Number of loops for the logo animation." \
+#define REPEAT_LONGTEXT N_("Number of loops for the logo animation. " \
         "-1 = continuous, 0 = disabled")
 #define DELAY_TEXT N_("Logo individual image time in ms")
 #define DELAY_LONGTEXT N_("Individual image display time of 0 - 60000 ms.")
@@ -411,8 +411,8 @@ static subpicture_t *FilterSub( filter_t *p_filter, mtime_t date )
         p_spu->b_absolute = false;
     }
 
-    p_region->i_x = p_sys->i_pos_x;
-    p_region->i_y = p_sys->i_pos_y;
+    p_region->i_x = p_sys->i_pos_x > 0 ? p_sys->i_pos_x : 0;
+    p_region->i_y = p_sys->i_pos_y > 0 ? p_sys->i_pos_y : 0;
 
     p_spu->p_region = p_region;
 

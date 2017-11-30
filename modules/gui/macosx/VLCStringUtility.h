@@ -2,7 +2,7 @@
  * VLCStringUtility.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 76dec00663c301247e68fcc4dbf691af959728a6 $
+ * $Id: e75666cc2c6896b2ea348da06c04e6d6b89c6830 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -25,13 +25,17 @@
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
+
+#import <vlc_common.h>
 #import <vlc_input.h>
 
-#define _NS(s) [[VLCStringUtility sharedInstance] localizedString: s]
+
+#define _NS(s) ((s) ? toNSStr(vlc_gettext(s)) : @"")
+
 /* Get an alternate version of the string.
  * This string is stored as '1:string' but when displayed it only displays
  * the translated string. the translation should be '1:translatedstring' though */
-#define _ANS(s) [[[VLCStringUtility sharedInstance] localizedString: _(s)] substringFromIndex:2]
+#define _ANS(s) [((s) ? toNSStr(vlc_gettext(s)) : @"") substringFromIndex:2]
 
 #define B64DecNSStr(s) [[VLCStringUtility sharedInstance] b64Decode: s]
 #define B64EncAndFree(s) [[VLCStringUtility sharedInstance] b64EncodeAndFree: s]
@@ -58,7 +62,6 @@ NSImage *imageFromRes(NSString *o_id);
 
 + (VLCStringUtility *)sharedInstance;
 
-- (NSString *)localizedString:(const char *)psz NS_FORMAT_ARGUMENT(1);
 - (NSString *)wrapString: (NSString *)o_in_string toWidth: (int)i_width;
 - (NSString *)getCurrentTimeAsString:(input_thread_t *)p_input negative:(BOOL)b_negative;
 - (NSString *)stringForTime:(long long int)time;

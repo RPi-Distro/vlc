@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 227f15faa0d29d15ac7d78f4dd7098034c86e0d3 $
+ * $Id: c4a848d5e904a15703b6bb2cd4ac3506e0dfdf34 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -2039,6 +2039,8 @@ static int EsOutSend( es_out_t *out, es_out_id_t *es, block_t *p_block )
     es_out_sys_t   *p_sys = out->p_sys;
     input_thread_t *p_input = p_sys->p_input;
 
+    assert( p_block->p_next == NULL );
+
     if( libvlc_stats( p_input ) )
     {
         uint64_t i_total;
@@ -2070,7 +2072,7 @@ static int EsOutSend( es_out_t *out, es_out_id_t *es, block_t *p_block )
         if( p_block->i_pts <= VLC_TS_INVALID )
             i_date = p_block->i_dts;
 
-        if( i_date < p_sys->i_preroll_end )
+        if( i_date + p_block->i_length < p_sys->i_preroll_end )
             p_block->i_flags |= BLOCK_FLAG_PREROLL;
     }
 
@@ -3055,26 +3057,6 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
         return;
 
     /* Add information */
-    const char *psz_type;
-    switch( fmt->i_cat )
-    {
-    case AUDIO_ES:
-        psz_type = _("Audio");
-        break;
-    case VIDEO_ES:
-        psz_type = _("Video");
-        break;
-    case SPU_ES:
-        psz_type = _("Subtitle");
-        break;
-    default:
-        psz_type = NULL;
-        break;
-    }
-
-    if( psz_type )
-        info_category_AddInfo( p_cat, _("Type"), "%s", psz_type );
-
     if( es->i_meta_id != es->i_id )
         info_category_AddInfo( p_cat, _("Original ID"),
                        "%d", es->i_id );
@@ -3284,12 +3266,12 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
        }
        if ( fmt->video.mastering.max_luminance )
        {
-           info_category_AddInfo( p_cat, _("Max luminance"), "%.4f cd/m²",
+           info_category_AddInfo( p_cat, _("Max. luminance"), "%.4f cd/m²",
                fmt->video.mastering.max_luminance / 10000.f );
        }
        if ( fmt->video.mastering.min_luminance )
        {
-           info_category_AddInfo( p_cat, _("Min luminance"), "%.4f cd/m²",
+           info_category_AddInfo( p_cat, _("Min. luminance"), "%.4f cd/m²",
                fmt->video.mastering.min_luminance / 10000.f );
        }
        if ( fmt->video.mastering.primaries[4] &&
@@ -3322,12 +3304,12 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
        }
        if ( fmt->video.lighting.MaxCLL )
        {
-           info_category_AddInfo( p_cat, _("MaxCLL"), "%d cd/m²",
+           info_category_AddInfo( p_cat, "MaxCLL", "%d cd/m²",
                                   fmt->video.lighting.MaxCLL );
        }
        if ( fmt->video.lighting.MaxFALL )
        {
-           info_category_AddInfo( p_cat, _("MaxFALL"), "%d cd/m²",
+           info_category_AddInfo( p_cat, "MaxFALL", "%d cd/m²",
                                   fmt->video.lighting.MaxFALL );
        }
        break;

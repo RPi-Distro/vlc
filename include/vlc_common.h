@@ -653,7 +653,7 @@ static inline uint64_t (bswap64)(uint64_t x)
 /* Integer overflow */
 static inline bool uadd_overflow(unsigned a, unsigned b, unsigned *res)
 {
-#if defined(__GNUC__) || defined(__clang__)
+#if VLC_GCC_VERSION(5,0) || defined(__clang__)
      return __builtin_uadd_overflow(a, b, res);
 #else
      *res = a + b;
@@ -664,7 +664,7 @@ static inline bool uadd_overflow(unsigned a, unsigned b, unsigned *res)
 static inline bool uaddl_overflow(unsigned long a, unsigned long b,
                                   unsigned long *res)
 {
-#if defined(__GNUC__) || defined(__clang__)
+#if VLC_GCC_VERSION(5,0) || defined(__clang__)
      return __builtin_uaddl_overflow(a, b, res);
 #else
      *res = a + b;
@@ -675,7 +675,7 @@ static inline bool uaddl_overflow(unsigned long a, unsigned long b,
 static inline bool uaddll_overflow(unsigned long long a, unsigned long long b,
                                    unsigned long long *res)
 {
-#if defined(__GNUC__) || defined(__clang__)
+#if VLC_GCC_VERSION(5,0) || defined(__clang__)
      return __builtin_uaddll_overflow(a, b, res);
 #else
      *res = a + b;
@@ -708,9 +708,13 @@ static inline bool add_overflow(unsigned long long a, unsigned long long b,
 }
 #endif
 
+#if !(VLC_GCC_VERSION(5,0) || defined(__clang__))
+# include <limits.h>
+#endif
+
 static inline bool umul_overflow(unsigned a, unsigned b, unsigned *res)
 {
-#if defined(__GNUC__) || defined(__clang__)
+#if VLC_GCC_VERSION(5,0) || defined(__clang__)
      return __builtin_umul_overflow(a, b, res);
 #else
      *res = a * b;
@@ -721,7 +725,7 @@ static inline bool umul_overflow(unsigned a, unsigned b, unsigned *res)
 static inline bool umull_overflow(unsigned long a, unsigned long b,
                                   unsigned long *res)
 {
-#if defined(__GNUC__) || defined(__clang__)
+#if VLC_GCC_VERSION(5,0) || defined(__clang__)
      return __builtin_umull_overflow(a, b, res);
 #else
      *res = a * b;
@@ -732,7 +736,7 @@ static inline bool umull_overflow(unsigned long a, unsigned long b,
 static inline bool umulll_overflow(unsigned long long a, unsigned long long b,
                                    unsigned long long *res)
 {
-#if defined(__GNUC__) || defined(__clang__)
+#if VLC_GCC_VERSION(5,0) || defined(__clang__)
      return __builtin_umulll_overflow(a, b, res);
 #else
      *res = a * b;

@@ -2,7 +2,7 @@
  * svcdsub.c : Overlay Graphics Text (SVCD subtitles) decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 VLC authors and VideoLAN
- * $Id: 81291bda71d600aae3f8e3a0a3fdfe507c6c1918 $
+ * $Id: e509effdbce524b8854874365d8b62d6f8f4d58e $
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -69,10 +69,9 @@ static void ParseHeader( decoder_t *, block_t * );
 static subpicture_t *DecodePacket( decoder_t *, block_t * );
 static void SVCDSubRenderImage( decoder_t *, block_t *, subpicture_region_t * );
 
-#define GETINT16(p) ( (p[0] <<  8) +   p[1] )  ; p +=2;
+#define GETINT16(p) GetWBE(p)  ; p +=2;
 
-#define GETINT32(p) ( (p[0] << 24) +  (p[1] << 16) +    \
-                      (p[2] <<  8) +  (p[3]) ) ; p += 4;
+#define GETINT32(p) GetDWBE(p) ; p += 4;
 
 typedef enum  {
   SUBTITLE_BLOCK_EMPTY    = 0,
@@ -331,7 +330,7 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
 
 /******************************************************************************
   The format is roughly as follows (everything is big-endian):
- 
+
    size     description
    -------------------------------------------
    byte     subtitle channel (0..7) in bits 0-3
@@ -363,12 +362,13 @@ static void ParseHeader( decoder_t *p_dec, block_t *p_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t *p = p_block->p_buffer;
-    uint8_t i_options, i_options2, i_cmd, i_cmd_arg;
+    uint8_t i_options, i_cmd;
     int i;
 
     p_sys->i_spu_size = GETINT16(p);
     i_options  = *p++;
-    i_options2 = *p++;
+    // Skip over unused value
+    p++;
 
     if( i_options & 0x08 ) { p_sys->i_duration = GETINT32(p); }
     else p_sys->i_duration = 0; /* Ephemer subtitle */
@@ -389,7 +389,7 @@ static void ParseHeader( decoder_t *p_dec, block_t *p_block )
 
     i_cmd = *p++;
     /* We do not really know this, FIXME */
-    if( i_cmd ) {i_cmd_arg = GETINT32(p);}
+    if( i_cmd ) { p += 4; }
 
     /* Actually, this is measured against a different origin, so we have to
      * adjust it */

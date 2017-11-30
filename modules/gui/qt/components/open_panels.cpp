@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: cbdc8ce92c75dd19271b6fb062f99e2ddc03551d $
+ * $Id: 9b154322e53f23e19eb73de716f9b71280e49c34 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -220,7 +220,7 @@ void FileOpenPanel::dropEvent( QDropEvent *event )
 
 void FileOpenPanel::browseFile()
 {
-    QStringList files = QFileDialog::getOpenFileNames( this, qtr( "Select one or multiple files" ), p_intf->p_sys->filepath );
+    QStringList files = THEDP->showSimpleOpen( qtr( "Select one or multiple files" ) );
     foreach( const QString &file, files )
     {
         QListWidgetItem *item =
