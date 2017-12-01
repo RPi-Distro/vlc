@@ -917,10 +917,12 @@ Copyright: 2003, ANEVIA
 License: LGPL-2.1+
 
 Files: debian/*
-License: GPL-2+ or LGPL-2.1+
-Comment: No explicit license found, using license(s) from:
- COPYING
- COPYING.LIB
+Copyright: 2010-2015, Benjamin Drung
+           2009-2011, Christophe Mutricy
+           2006-2014, Reinhard Tartler
+           2006-2007, Sam Hocevar
+           2013-2017, Sebastian Ramacher
+License: GPL-2+
 
 Files: modules/audio_output/TPCircularBuffer.*
 Copyright: 2011-2012, A Tasty Pixel
@@ -1038,8 +1040,7 @@ Copyright: 2012, Broadcom Europe Ltd
            2009, Steve Audette
 License: BSD-3-clause
 
-Files: autotools/install-sh
-       modules/codec/omxil/OMX_Audio.h
+Files: modules/codec/omxil/OMX_Audio.h
        modules/codec/omxil/OMX_Component.h
        modules/codec/omxil/OMX_Core.h
        modules/codec/omxil/OMX_IVCommon.h
@@ -1057,7 +1058,6 @@ Copyright: 2007-2009, Ariya Hidayat <ariya@kde.org>
            2015, Moti Zilberman
            Qxt Foundation
            2008, The Khronos Group Inc
-           1994, X Consortium
 License: Expat
 
 Files: modules/codec/wmafixed/wmafixed.c
@@ -1180,10 +1180,6 @@ Files: modules/control/unimotion.c
 Copyright: 2005, Christian Klein
            2006, Lincoln Ramsay
 License: BSD-2-clause or LGPL-2.1
-
-Files: autotools/ltmain.sh
-Copyright: 1996-2015, Free Software Foundation, Inc
-License: GPL-2+ with LibTool exception
 
 Files: compat/memrchr.c
 Copyright: 2007, Todd C. Miller <Todd.Miller@courtesan.com>
