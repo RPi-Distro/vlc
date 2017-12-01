@@ -939,9 +939,11 @@ License: BSD-3-clause
 Comment:
  See https://perspx.com/work/
 
-Files: share/lua/http/js/jquery.jstree.js
+Files: share/lua/http/css/ui-lightness/jquery-ui-1.8.13.custom.css
+       share/lua/http/js/jquery.jstree.js
 Copyright: 2010, Ivan Bozhanov
-License: Expat or GPL-2+
+           2010-2011, jQuery UI authors
+License: Expat or GPL-2
 
 Files: Makefile.in
        autotools/*
@@ -1150,10 +1152,6 @@ Copyright: protonux
            Rafaël Carré
            Vincent Schüßler
 License: WTFPL
-
-Files: share/lua/http/css/ui-lightness/jquery-ui-1.8.13.custom.css
-Copyright: 2010-2011, AUTHORS.txt (http://jqueryui.com/about)
-License: MIT or GPL-2
 
 Files: modules/access/v4l2/linux/v4l2-common.h
 Copyright: 2012, Nokia Corporation
