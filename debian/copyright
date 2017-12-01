@@ -6,6 +6,8 @@ Files: *
 Copyright: 1999, AT&T Laboratories Cambridge
            2013, Alex Merry
            2010, Antoine Cellerier
+           2005, Canonical Ltd, and Rosetta Contributors
+           2008-2015, Cédric Valmary
            2016, Collection
            2004, Daniel Molkentin
            2003, Daniel Moreno
@@ -28,28 +30,6 @@ Copyright: 1999, AT&T Laboratories Cambridge
            2002-2004, the xine project
 
            # to check:
-           2006, BBC and Fluendo - MIT License
-           2006, Behdad Esfahbod
-           2004-2012, Behdad Esfahbod, Dov Grobgeld, Roozbeh
-           2005, Canonical Ltd, and Rosetta Contributors 2005
-           2007, Chris Wilson
-           2006, Clément Stenac
-           2011, Codethink Limited
-           2002-2014, Communcations and Remote Sensing
-           2008-2015, Cédric Valmary (totenoc.eu)
-           1998-2014, Daniel Veillard - MIT License
-           2008, Danilo Šegan
-           2005, David Turner
-           1998-2004, David Turner and Werner Lemberg - Old MIT License
-           2002-2011, Erik de Castro Lopo - GPLv2 or later
-           2000-2012, Free Software Foundation, Inc. - LGPLv2.1 or
-           2004-2014, Glenn Randers-Perhson, . - libpng
-           2010-2015, Google Inc. - 3-clause BSD License
-           2010-2012, Google, Inc
-           2012, Google, Inc. - MIT License
-           2006-2015, Grigori Goronzy . - ISC License
-           1997-1999, H. Dietz and R. Fisher
-           2000-2003, Intel Corporation - 3-clause BSD License
            2010, Ivan Bozhanov (vakata.com)
            1995-2017, Jean-loup Gailly and Mark Adler - zlib license
            2001-2014, Josh Coalson . - Xiph.org BSD license
@@ -821,6 +801,7 @@ Files: bin/override.c
        modules/video_filter/deinterlace/merge.h
        modules/video_filter/deinterlace/merge_arm.S
        modules/video_filter/deinterlace/merge_arm64.S
+       modules/video_filter/deinterlace/mmx.h
        modules/video_filter/edgedetection.c
        modules/video_filter/erase.c
        modules/video_filter/extract.c
@@ -947,6 +928,7 @@ Copyright: 2003, ANEVIA
            1987-2009, Free Software Foundation, Inc
            2008-2010, Gabriel Finch
            2009, Geoffroy Couprie
+           1997-1999, H. Dietz and R. Fisher
            2016, Janne Grunau
            2016, Julian Scheel
            2010-2015, KO Myung-Hun
