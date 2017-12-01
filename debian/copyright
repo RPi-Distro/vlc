@@ -6,12 +6,13 @@ Files: *
 Copyright: 1999, AT&T Laboratories Cambridge
            2013, Alex Merry
            2010, Antoine Cellerier
-           2005, Canonical Ltd, and Rosetta Contributors
+           2005-2006, Canonical Ltd, and Rosetta Contributors
            2008-2015, Cédric Valmary
            2016, Collection
            2004, Daniel Molkentin
            2003, Daniel Moreno
            2009, Eirik U. Birkeland
+           2008-2015, Éric Lassauge
            2011-2015, Felix Paul Kühne
            1989-1999, Free Software Foundation, Inc
            2013, Guillaume Le Maout
@@ -21,73 +22,15 @@ Copyright: 1999, AT&T Laboratories Cambridge
            2006-2009, M2X
            2006, Michael Niedermayer
            2007-2012, Mirsal Ennaime
+           2008-2010, Pierre d'Herbemont
            2006-2014, Rafaël Carré
            2002, RealVNC Ltd
            2005-2016, Rémi Denis-Courmont
            2007, Savoir-faire Linux
            2007, Société des arts technologiques
+           2008-2015, Tòni Galhard
            1998-2017, VideoLAN team and VLC authors
            2002-2004, the xine project
-
-           # to check:
-           2010, Ivan Bozhanov (vakata.com)
-           1995-2017, Jean-loup Gailly and Mark Adler - zlib license
-           2001-2014, Josh Coalson . - Xiph.org BSD license
-           1992-2009, Jutta Degener & Carsten Bormann - GSM
-           2000-2007, Keith Packard
-           2009, Keith Stribley
-           2012, LGPLv2.1 or later
-           1996-2015, Live Networks, Inc. - LGPLv2.1 or later
-           1994-2008, Lua.org, PUC-Rio. - MIT License
-           2009, Martin Hosken
-           2001-2004, Michael Cheng
-           2007, Michael Giacomelli
-           2000-2003, Michael H. Schimek, Iñaki García
-           2001-2015, Michael Niedermayer, . - GPLv2 or
-           2000-2003, Michel Lespinasse <walken@zoy.org>
-           2012, Mozilla
-           Nero AG, www.nero.com" - GPLv2 or later
-           2008-2010, Nokia Corporation
-           2005, Patrick Lam
-           2003-2010, Peter Hanappe, Conrad Berhörster, Antoine
-           2008-2010, Pierre d'Herbemont
-           Rafaël Carré (licence WTFPL)
-           2007-2011, Rafaël Carré <funman@videolanorg>
-           2008-2009, Red Hat
-           2004-2010, Red Hat, Inc
-           2000-2004, Robert Leslie, . - GPLv2 or later
-           Robert de Bath, Joris van Rantwijk, Delian
-           2016, Robin Lobel - LGPLv2.1 or later
-           2009, Roozbeh Pournader
-           2006, Rosetta Contributors and Canonical Ltd 2006
-           2005-2015, Rémi Denis-Courmont
-           2004, Sam Hocevar - WTFPL / LGPLv2.1 or later
-           1997-2014, Sam Lantinga . - LGPLv2.1 or later
-           1988-1997, Sam Leffler
-           2004-2016, Scott Wheeler, . - LGPLv2.1 or later
-           1991-1997, Silicon Graphics
-           2002-2015, Steve Lhomme - LGPLv2.1 or later
-           2005-2011, The Musepack Development
-           2004-2006, The TwoLAME
-           2005-2008, The VideoLAN|bestran@mail.bg team
-           2008-2015, Tòni Galhard & Cédric Valmary - Team français
-           2008-2017, VideoLAN
-           2001-2017, VideoLAN and authors - GPLv2 or later
-           2001-2017, VideoLAN and authors - LGPLv2.1 or later
-           2006-2007, VideoLAN team
-           2008-2011, Vincent Penquerc'h - 3-clause BSD License
-           2001-2013, Xiph.Org, Skype Limited, Octasic, Jean-Marc Valin
-           2002-2015, Xiph.org Foundation - Xiph.org BSD
-           Xiph.org Foundation - Xiph.org BSD license
-           1992-2015, Xiph.org Foundation, Jean-Marc Valin
-           2002, date updates ...was quite old
-           2003-2013, g10 Code GmbH
-           2015, in the firstlines
-           2000-2017, the FFmpeg developers - LGPLv2.1 or later
-           1997-2011, the VideoLAN team
-           2000-2015, the libav developers - LGPLv2.1 or later
-           2004-2015, x265 project
-           2008-2015, Éric Lassauge
 License: GPL-2+
 
 Files: bin/override.c
@@ -996,6 +939,9 @@ License: BSD-3-clause
 Comment:
  See https://perspx.com/work/
 
+Files: share/lua/http/js/jquery.jstree.js
+Copyright: 2010, Ivan Bozhanov
+License: Expat or GPL-2+
 
 Files: Makefile.in
        autotools/*
@@ -1114,6 +1060,11 @@ Copyright: 2007-2009, Ariya Hidayat <ariya@kde.org>
            1994, X Consortium
 License: Expat
 
+Files: modules/codec/wmafixed/wmafixed.c
+       modules/codec/wmafixed/wmafixed.h
+Copyright: 2007, Michael Giacomelli
+Copyright: GPL-2+
+
 Files: modules/codec/webvtt/CSSGrammar.y
        modules/codec/wmafixed/fft.c
        modules/codec/wmafixed/fft.h
@@ -1183,10 +1134,6 @@ Copyright: 2012, James McLaughlin
            2012, Xiph.Org Foundation
 License: BSD-2-clause
 
-Files: doc/libvlc/QtPlayer/*
-Copyright: protonux
-License: WTFPL
-
 Files: modules/access/v4l2/linux/*
        modules/notify/osx_notifications.m
 Copyright: 2004-2005, The Growl Project
@@ -1194,9 +1141,14 @@ Copyright: 2004-2005, The Growl Project
            1999-2012, the contributors
 License: BSD-3-clause or GPL-2+
 
-Files: doc/libvlc/gtk_player.c
+Files: doc/libvlc/QtPlayer/*
+       doc/libvlc/gtk_player.c
        doc/libvlc/libvlc_DVD_ripper.c
        doc/libvlc/wx_player.cpp
+       doc/libvlc/vlc-thumb.c
+Copyright: protonux
+           Rafaël Carré
+           Vincent Schüßler
 License: WTFPL
 
 Files: share/lua/http/css/ui-lightness/jquery-ui-1.8.13.custom.css
