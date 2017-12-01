@@ -945,14 +945,7 @@ Copyright: 2010, Ivan Bozhanov
            2010-2011, jQuery UI authors
 License: Expat or GPL-2
 
-Files: Makefile.in
-       autotools/*
-       bin/Makefile.in
-       compat/Makefile.in
-       doc/Makefile.in
-       lib/Makefile.in
-       m4/Makefile.in
-       m4/codeset.m4
+Files: m4/codeset.m4
        m4/extern-inline.m4
        m4/gettext.m4
        m4/glibc2.m4
@@ -986,20 +979,12 @@ Files: Makefile.in
        m4/wchar_t.m4
        m4/wint_t.m4
        m4/xsize.m4
-       modules/Makefile.in
-       modules/hw/mmal/Makefile.in
-       share/Makefile.in
-       src/Makefile.in
-       test/Makefile.in
-Copyright: 2004-2015, Free Software
-           1995-2014, Free Software Foundation
-           1994-2017, Free Software Foundation, Inc
+Copyright: 1994-2017, Free Software Foundation
            2005-2008, Rémi Denis-Courmont
-           2005-2007, the VideoLAN team
+           2005-2007, VideoLAN team
 License: FSFULLR
 
-Files: contrib/src/asdcplib/port-to-nettle.patch
-       modules/access/linsys/linsys_sdi.h
+Files: modules/access/linsys/linsys_sdi.h
        modules/access/linsys/linsys_sdiaudio.h
        modules/access/linsys/linsys_sdivideo.h
        modules/codec/omxil/OMX_Broadcom.h
@@ -1083,39 +1068,28 @@ Copyright: 2006, Alexey Proskuryakov <ap@nypop.com>
            2017, VideoLabs, VideoLAN and VLC Authors
 License: LGPL-2+
 
-Files: autotools/compile
-       autotools/depcomp
-       autotools/missing
-       autotools/test-driver
-       autotools/ylwrap
-       m4/with_pkg.m4
-Copyright: Diego Pettenò <flameeyes@gentoo.org>
-           1996-2017, Free Software Foundation, Inc
-           Jean-Baptiste Kempf
-           2008, Luca Barbato <lu_zero@gentoo.org>
+Files: m4/with_pkg.m4
+Copyright: 2008, Diego Pettenò
+           2008, Jean-Baptiste Kempf
+           2008, Luca Barbato
 License: GPL-2+ with AutoConf exception
 
-Files: autotools/config.guess
-       autotools/config.sub
-       m4/ax_append_compile_flags.m4
+Files: m4/ax_append_compile_flags.m4
        m4/ax_append_flag.m4
        m4/ax_check_compile_flag.m4
-Copyright: 1992-2016, Free Software Foundation, Inc
-           2008, Guido U. Draheim <guidod@gmx.de>
+Copyright: 2008, Guido U. Draheim <guidod@gmx.de>
            2011, Maarten Bosmans <mkbosmans@gmail.com>
 License: GPL-3+ with AutoConf exception
 
 Files: m4/ax_require_defined.m4
        m4/dolt.m4
        m4/stdcxx_11.m4
-       po/Makefile.in.in
 Copyright: 2014, Alexey Sokolov <sokolov@google.com>
            2008, Benjamin Kosnik <bkoz@redhat.com>
            2014-2015, Google Inc
            2007-2010, Josh Triplett <josh@joshtriplett.org>
            2014, Mike Frysinger <vapier@gentoo.org>
            2013, Roy Stogner <roystgnr@ices.utexas.edu>
-           1995-2010, Ulrich Drepper <drepper@gnu.ai.mit.edu>
            2015-2016, VLC authors and VideoLAN
            2012, Zack Weinberg <zackw@panix.com>
 License: FSFAP
