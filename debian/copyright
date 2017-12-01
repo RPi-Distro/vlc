@@ -589,6 +589,7 @@ Files: bin/override.c
        modules/packetizer/avparser.c
        modules/packetizer/avparser.h
        modules/packetizer/copy.c
+       modules/packetizer/dirac.c
        modules/packetizer/dts.c
        modules/packetizer/dts_header.c
        modules/packetizer/dts_header.h
@@ -1052,20 +1053,26 @@ Files: modules/codec/wmafixed/wmafixed.c
 Copyright: 2007, Michael Giacomelli
 Copyright: GPL-2+
 
-Files: modules/codec/webvtt/CSSGrammar.y
+Files: include/vlc_update.h
+       modules/codec/webvtt/CSSGrammar.y
        modules/codec/wmafixed/fft.c
        modules/codec/wmafixed/fft.h
        modules/codec/wmafixed/mdct.c
        modules/codec/wmafixed/mdct.h
        modules/codec/wmafixed/wmadec.h
        modules/codec/wmafixed/wmadeci.c
+       src/misc/update.c
+       src/misc/update.h
+       src/misc/update_crypto.c
 Copyright: 2006, Alexey Proskuryakov <ap@nypop.com>
            2004-2010, Apple Inc
            2008, Eric Seidel <eric@webkit.org>
            2012, Intel Corporation
            2002-2003, Lars Knoll <knoll@kde.org>
            2002, The FFmpeg Project
+           1998, The Internet Society
            2017, VideoLabs, VideoLAN and VLC Authors
+           2005-2009, VLC authors and VideoLAN
 License: LGPL-2+
 
 Files: m4/with_pkg.m4
@@ -1093,14 +1100,6 @@ Copyright: 2014, Alexey Sokolov <sokolov@google.com>
            2015-2016, VLC authors and VideoLAN
            2012, Zack Weinberg <zackw@panix.com>
 License: FSFAP
-
-Files: include/vlc_update.h
-       src/misc/update.c
-       src/misc/update.h
-       src/misc/update_crypto.c
-Copyright: 1998, The Internet Society
-           2005-2009, VLC authors and VideoLAN
-License: LGPL
 
 Files: modules/codec/opus_header.c
        modules/codec/opus_header.h
@@ -1151,7 +1150,7 @@ License: FSFULLR or GPL-2+ with AutoConf exception
 Files: modules/control/unimotion.c
 Copyright: 2005, Christian Klein
            2006, Lincoln Ramsay
-License: BSD-2-clause or LGPL-2.1
+License: BSD-3-clause and LGPL-2.1
 
 Files: compat/memrchr.c
 Copyright: 2007, Todd C. Miller <Todd.Miller@courtesan.com>
@@ -1168,10 +1167,6 @@ License: BSD-2-clause or LGPL-2.1+
 Files: modules/control/unimotion.h
 Copyright: 2006, Lincoln Ramsay
 License: LGPL-2.1
-
-Files: modules/packetizer/dirac.c
-Copyright: 2008, VLC authors and VideoLAN
-License: LGPL-2
 
 Files: share/vlc.appdata.xml.in.in
 Copyright: 2016, Jean-Baptiste Kempf
@@ -1226,12 +1221,6 @@ License: GPL-3+ with Bison exception
 Comment: Add the corresponding license text here
 
 License: ISC
-Comment: Add the corresponding license text here
-
-License: LGPL
-Comment: Add the corresponding license text here
-
-License: LGPL-2
 Comment: Add the corresponding license text here
 
 License: LGPL-2+
