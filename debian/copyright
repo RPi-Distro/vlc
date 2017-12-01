@@ -83,8 +83,6 @@ Files: bin/override.c
        contrib/src/d3d11/dxgi1_4.idl
        contrib/src/d3d11/dxgi1_5.idl
        contrib/src/d3d11/dxgi1_6.idl
-       contrib/src/d3d11/dxgidebug.patch
-       contrib/src/libplacebo/0001-build-use-a-Makefile.patch
        extras/package/macosx/codesign.sh
        include/vlc/*
        include/vlc_access.h
@@ -858,8 +856,8 @@ Files: bin/override.c
        test/src/*
 Copyright: 2003, ANEVIA
            2010, Adrien Maglo
-           2010, Alan Fischer <alan@lightningtoads.com>
-           Arne Schirmacher <dvgrab@schirmacher.de>
+           2010, Alan Fischer
+           Arne Schirmacher
            2009, Baptiste Coudurier
            2017, Collabora Ltd
            2013, David Fuhrmann
@@ -867,7 +865,7 @@ Copyright: 2003, ANEVIA
            2012-2014, Edward Wang
            2000-2001, Fabrice Bellard
            2012-2014, Felix Paul Kühne
-           2016, François Revol <revol@free.fr>
+           2016, François Revol
            1987-2009, Free Software Foundation, Inc
            2008-2010, Gabriel Finch
            2009, Geoffroy Couprie
@@ -1029,12 +1027,14 @@ Files: contrib/src/asdcplib/port-to-nettle.patch
        modules/gui/macosx/VLCHUDTableView.m
        modules/gui/macosx/VLCHUDTextFieldCell.h
        modules/gui/macosx/VLCHUDTextFieldCell.m
+       modules/stream_out/chromecast/cast_channel.proto
 Copyright: 2012, Broadcom Europe Ltd
            2008-2009, CineCert, LLC
            2011, Joachim Bengtsson
            2003-2015, John Hurst
            2004-2010, Linear Systems Ltd
            2010, Spotify AB
+           2013, The Chromium Authors
            2008, Tim Davis
            2009, Tyler Bunnell
            2009, Steve Audette
@@ -1201,16 +1201,9 @@ Files: modules/packetizer/dirac.c
 Copyright: 2008, VLC authors and VideoLAN
 License: LGPL-2
 
-Files: modules/stream_out/chromecast/cast_channel.proto
-Copyright: 2013, The Chromium Authors
-License: BSD
-
 Files: share/vlc.appdata.xml.in.in
 Copyright: 2016, Jean-Baptiste Kempf
 License: CC0 or GPL-2+
-
-License: BSD
-Comment: Add the corresponding license text here
 
 License: BSD-2-clause
 Comment: Add the corresponding license text here
