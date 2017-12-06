@@ -151,8 +151,8 @@ Recommends: vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-skins2 (= ${binary:Version}),
             vlc-plugin-video-splitter (= ${binary:Version}),
             vlc-plugin-visualization (= ${binary:Version})
-Breaks: vlc-plugin-zvbi (< 3.0.0~rc1~20171206-1~)
-Replaces: vlc-plugin-zvbi (< 3.0.0~rc1~20171206-1~)
+Breaks: vlc-plugin-zvbi (<< 3.0.0~rc1~20171206-1~)
+Replaces: vlc-plugin-zvbi (<< 3.0.0~rc1~20171206-1~)
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
@@ -325,8 +325,8 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
          ${vlc:PluginABI}
 Enhances: vlc
-Breaks: vlc-plugin-base (< 3.0.0~rc1~20171206-1~)
-Replaces: vlc-plugin-base (< 3.0.0~rc1~20171206-1~)
+Breaks: vlc-plugin-base (<< 3.0.0~rc1~20171206-1~)
+Replaces: vlc-plugin-base (<< 3.0.0~rc1~20171206-1~)
 Description: multimedia player and streamer (video output plugins)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
