@@ -1,4 +1,4 @@
-vlc (3.0.0~rc1~20171130-1) UNRELEASED; urgency=medium
+vlc (3.0.0~rc1~20171206-1) UNRELEASED; urgency=medium
 
   * New upstream snapshot.
     - Install vlc_interface.h. (Closes: #768808)
