@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : Widgets for preferences displays
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 1321f8618a666c40f08b4c0dd7727292738ded79 $
+ * $Id: 1419bac1140479bad842488d190d99f50ab19005 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -1132,7 +1132,7 @@ KeySelectorControl::KeySelectorControl( vlc_object_t *_p_this,
 {
     label = new QLabel(
         qtr( "Select or double click an action to change the associated "
-             "hotkey. Use delete key to remove hotkeys"), p );
+             "hotkey. Use delete key to remove hotkeys."), p );
 
     label->setWordWrap( true );
     searchLabel = new QLabel( qtr( "Search" ), p );

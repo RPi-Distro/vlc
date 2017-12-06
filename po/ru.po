@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 2.2.7\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-30 03:16+0000\n"
+"POT-Creation-Date: 2017-12-06 02:15+0000\n"
 "PO-Revision-Date: 2017-09-23 19:54+0000\n"
 "Last-Translator: Alexander Lakhin <exclusion@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/yaron/vlc-trans/language/"
@@ -50,7 +50,7 @@ msgstr "Нажмите «Дополнительные параметры», чт
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
 #: modules/gui/qt/components/simple_preferences.cpp:222
-#: modules/gui/qt/menus.cpp:1095
+#: modules/gui/qt/menus.cpp:1090
 msgid "Interface"
 msgstr "Интерфейс"
 
@@ -371,7 +371,7 @@ msgstr "Реализация «видео по запросу» проигрыв
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:166
 #: modules/gui/qt/components/playlist/selector.cpp:227
-#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1122
+#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1117
 msgid "Playlist"
 msgstr "Плейлист"
 
@@ -639,7 +639,7 @@ msgstr "Достигнуто максимальное количество фи�
 
 #: src/audio_output/output.c:261 src/config/core.c:380 src/input/es_out.c:943
 #: src/libvlc-module.c:544 modules/gui/macosx/VLCMainMenu.m:234
-#: modules/gui/macosx/VLCMainWindow.m:1003 modules/video_filter/postproc.c:235
+#: modules/gui/macosx/VLCMainWindow.m:1006 modules/video_filter/postproc.c:235
 msgid "Disable"
 msgstr "отключить"
 
@@ -899,7 +899,7 @@ msgstr ""
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
 
-#: src/input/control.c:203
+#: src/input/control.c:204
 #, c-format
 msgid "Bookmark %i"
 msgstr "Закладка %i"
@@ -959,7 +959,7 @@ msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
 #: src/input/es_out.c:1186 src/input/es_out.c:1191 src/input/es_out.c:1206
-#: src/input/var.c:167 src/libvlc-module.c:568
+#: src/input/var.c:160 src/libvlc-module.c:568
 #: modules/gui/macosx/VLCMainMenu.m:397 modules/gui/macosx/VLCMainMenu.m:398
 msgid "Program"
 msgstr "Программа"
@@ -1288,17 +1288,17 @@ msgstr "Контрольные точки"
 msgid "Subtitle"
 msgstr "Субтитры"
 
-#: src/input/input.c:2655
+#: src/input/input.c:2657
 msgid "Your input can't be opened"
 msgstr "Этот источник не открывается"
 
-#: src/input/input.c:2656
+#: src/input/input.c:2658
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
 "VLC не может открыть MRL '%s'. Ищите более подробную информацию в лог-файле."
 
-#: src/input/meta.c:55 src/input/var.c:177 modules/gui/macosx/VLCMainMenu.m:399
+#: src/input/meta.c:55 src/input/var.c:170 modules/gui/macosx/VLCMainMenu.m:399
 #: modules/gui/macosx/VLCMainMenu.m:400
 #: modules/gui/macosx/VLCOpenWindowController.m:178
 #: modules/gui/macosx/VLCOpenWindowController.m:180
@@ -1403,68 +1403,68 @@ msgstr "Исполнитель"
 msgid "Disc number"
 msgstr "Номер дорожки"
 
-#: src/input/var.c:159
+#: src/input/var.c:152
 msgid "Bookmark"
 msgstr "В закладки"
 
-#: src/input/var.c:172 src/libvlc-module.c:574
+#: src/input/var.c:165 src/libvlc-module.c:574
 msgid "Programs"
 msgstr "Программы"
 
-#: src/input/var.c:182 modules/gui/macosx/VLCMainMenu.m:401
+#: src/input/var.c:175 modules/gui/macosx/VLCMainMenu.m:401
 #: modules/gui/macosx/VLCMainMenu.m:402
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
 msgid "Chapter"
 msgstr "Глава"
 
-#: src/input/var.c:195 modules/gui/macosx/VLCMainMenu.m:425
+#: src/input/var.c:188 modules/gui/macosx/VLCMainMenu.m:425
 #: modules/gui/macosx/VLCMainMenu.m:426
 msgid "Video Track"
 msgstr "Видеодорожка"
 
-#: src/input/var.c:201 modules/gui/macosx/VLCMainMenu.m:408
+#: src/input/var.c:194 modules/gui/macosx/VLCMainMenu.m:408
 #: modules/gui/macosx/VLCMainMenu.m:409
 msgid "Audio Track"
 msgstr "Аудиодорожка"
 
-#: src/input/var.c:207
+#: src/input/var.c:200
 msgid "Subtitle Track"
 msgstr "Дорожка субтитров"
 
-#: src/input/var.c:275
+#: src/input/var.c:264
 msgid "Next title"
 msgstr "Следующее заглавие"
 
-#: src/input/var.c:282
+#: src/input/var.c:271
 msgid "Previous title"
 msgstr "Предыдущее заглавие"
 
-#: src/input/var.c:289
+#: src/input/var.c:278
 #, fuzzy
 msgid "Menu title"
 msgstr "Задержка"
 
-#: src/input/var.c:296
+#: src/input/var.c:285
 #, fuzzy
 msgid "Menu popup"
 msgstr "Задержка"
 
-#: src/input/var.c:330
+#: src/input/var.c:319
 #, c-format
 msgid "Title %i%s"
 msgstr "Заглавие %i%s"
 
-#: src/input/var.c:355 src/input/var.c:412
+#: src/input/var.c:344 src/input/var.c:401
 #, c-format
 msgid "Chapter %i"
 msgstr "Глава %i"
 
-#: src/input/var.c:391 modules/gui/qt/dialogs/toolbar.cpp:505
+#: src/input/var.c:380 modules/gui/qt/dialogs/toolbar.cpp:505
 msgid "Next chapter"
 msgstr "Следующая глава"
 
-#: src/input/var.c:396 modules/gui/qt/dialogs/toolbar.cpp:495
+#: src/input/var.c:385 modules/gui/qt/dialogs/toolbar.cpp:495
 msgid "Previous chapter"
 msgstr "Предыдущая глава"
 
@@ -1599,8 +1599,9 @@ msgid "Color messages"
 msgstr "Цветные сообщения"
 
 #: src/libvlc-module.c:96
+#, fuzzy
 msgid ""
-"This enables colorization of the messages sent to the console Your terminal "
+"This enables colorization of the messages sent to the console. Your terminal "
 "needs Linux color support for this to work."
 msgstr ""
 "При включении этого параметра сообщения в консоли будут цветными. Терминал "
@@ -2591,7 +2592,7 @@ msgstr "по умолчанию"
 
 #: src/libvlc-module.c:544
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:223
-#: modules/gui/macosx/VLCMainWindow.m:1001
+#: modules/gui/macosx/VLCMainWindow.m:1004
 #: modules/gui/qt/components/extended_panels.cpp:928
 msgid "Enable"
 msgstr "включить"
@@ -4071,11 +4072,11 @@ msgid "Select the hotkey to set the playback rate back to normal."
 msgstr ""
 "Назначьте клавишу для восстановления нормальной скорости воспроизведения."
 
-#: src/libvlc-module.c:1236 modules/gui/qt/menus.cpp:885
+#: src/libvlc-module.c:1236 modules/gui/qt/menus.cpp:880
 msgid "Faster (fine)"
 msgstr "Немного быстрее"
 
-#: src/libvlc-module.c:1238 modules/gui/qt/menus.cpp:893
+#: src/libvlc-module.c:1238 modules/gui/qt/menus.cpp:888
 msgid "Slower (fine)"
 msgstr "Немного медленнее"
 
@@ -4237,8 +4238,8 @@ msgstr "Длина длинного скачка, в секундах."
 #: src/libvlc-module.c:1287 modules/control/hotkeys.c:361
 #: modules/gui/macosx/VLCStatusBarIcon.m:116
 #: modules/gui/qt/components/controller.hpp:111
-#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:956
-#: modules/gui/qt/menus.cpp:1142 modules/gui/skins2/commands/cmd_quit.cpp:45
+#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:951
+#: modules/gui/qt/menus.cpp:1137 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "Выход"
 
@@ -4740,7 +4741,7 @@ msgstr "Делает стоп-кадр видео и сохраняет его �
 
 #: src/libvlc-module.c:1417 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
-#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:859
+#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:854
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Запись"
@@ -5205,7 +5206,7 @@ msgstr "Page Up"
 #: modules/gui/macosx/VLCMainMenu.m:1331 modules/gui/macosx/VLCMainMenu.m:1332
 #: modules/gui/macosx/VLCMainMenu.m:1333
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
-#: modules/gui/qt/menus.cpp:833
+#: modules/gui/qt/menus.cpp:828
 msgid "Pause"
 msgstr "Пауза"
 
@@ -7308,7 +7309,8 @@ msgid "Satellite scanning config"
 msgstr "Конфигурация сканирования спутников"
 
 #: modules/access/dvb/access.c:71
-msgid "filename of config file in share/dvb/dvb-s"
+#, fuzzy
+msgid "Filename of config file in share/dvb/dvb-s."
 msgstr "Имя файла конфигурации в share/dvb/dvb-s"
 
 #: modules/access/dvb/access.c:73
@@ -7317,7 +7319,7 @@ msgid "Scan tuning list"
 msgstr "Качество масштабирования"
 
 #: modules/access/dvb/access.c:74
-msgid "filename containing initial scan tuning data"
+msgid "Filename containing initial scan tuning data."
 msgstr ""
 
 #: modules/access/dvb/access.c:76
@@ -7975,19 +7977,19 @@ msgstr "Порт туннеля HTTP"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "Порт для туннелирования RTSP/RTP по HTTP."
 
-#: modules/access/live555.cpp:645
+#: modules/access/live555.cpp:668
 msgid "RTSP authentication"
 msgstr "RTSP-авторизация"
 
-#: modules/access/live555.cpp:646
+#: modules/access/live555.cpp:669
 msgid "Please enter a valid login name and a password."
 msgstr "Пожалуйста, введите правильные имя и пароль пользователя."
 
-#: modules/access/live555.cpp:671
+#: modules/access/live555.cpp:694
 msgid "RTSP connection failed"
 msgstr "Сбой соединения RTSP"
 
-#: modules/access/live555.cpp:672
+#: modules/access/live555.cpp:695
 msgid "Access to the stream is denied by the server configuration."
 msgstr "Конфигурация сервера запрещает доступ к потоку."
 
@@ -8354,9 +8356,9 @@ msgstr "Абсцисса области захвата (в пикселах)."
 msgid "Capture region width"
 msgstr "Ширина области"
 
-#: modules/access/screen/screen.c:65
-#, fuzzy
-msgid "Capture region heigh"
+#: modules/access/screen/screen.c:65 modules/access/screen/wayland.c:468
+#: modules/access/screen/xcb.c:55
+msgid "Capture region height"
 msgstr "Высота области"
 
 #: modules/access/screen/screen.c:67 modules/access/screen/xcb.c:59
@@ -8419,10 +8421,6 @@ msgstr ""
 #: modules/access/screen/wayland.c:466 modules/access/screen/xcb.c:53
 msgid "Pixel width of the capture region, or 0 for full width"
 msgstr "Ширина области захвата (в пикселах) или 0 - максимальная ширина"
-
-#: modules/access/screen/wayland.c:468 modules/access/screen/xcb.c:55
-msgid "Capture region height"
-msgstr "Высота области"
 
 #: modules/access/screen/wayland.c:470 modules/access/screen/xcb.c:57
 msgid "Pixel height of the capture region, or 0 for full height"
@@ -8571,26 +8569,26 @@ msgid ""
 "username) and a password."
 msgstr ""
 
-#: modules/access/srt.c:296 modules/access_output/srt.c:316
+#: modules/access/srt.c:288 modules/access_output/srt.c:311
 #, fuzzy
 msgid "SRT"
 msgstr "RTP"
 
-#: modules/access/srt.c:297
+#: modules/access/srt.c:289
 #, fuzzy
 msgid "SRT input"
 msgstr "Ввод с SFTP"
 
-#: modules/access/srt.c:302 modules/access_output/srt.c:322
+#: modules/access/srt.c:294 modules/access_output/srt.c:317
 #, fuzzy
 msgid "SRT chunk size (bytes)"
 msgstr "Размер буфера приёма UDP (в байтах)"
 
-#: modules/access/srt.c:304 modules/access_output/srt.c:324
-msgid "Return poll wait after timeout miliseconds (-1 = infinite)"
+#: modules/access/srt.c:296 modules/access_output/srt.c:319
+msgid "Return poll wait after timeout milliseconds (-1 = infinite)"
 msgstr ""
 
-#: modules/access/srt.c:305 modules/access_output/srt.c:325
+#: modules/access/srt.c:297 modules/access_output/srt.c:320
 #, fuzzy
 msgid "SRT latency (ms)"
 msgstr "Задержка DTS (мс)"
@@ -9561,7 +9559,7 @@ msgstr ""
 msgid "IceCAST output"
 msgstr "Вывод в IceCAST"
 
-#: modules/access_output/srt.c:317
+#: modules/access_output/srt.c:312
 #, fuzzy
 msgid "SRT stream output"
 msgstr "Вывод RTP-потока"
@@ -9822,7 +9820,7 @@ msgid "HRTF file for the binauralization"
 msgstr ""
 
 #: modules/audio_filter/channel_mixer/spatialaudio.cpp:51
-msgid "Custom HRTF (Head-related transfer function) filein the SOFA format."
+msgid "Custom HRTF (Head-related transfer function) file in the SOFA format."
 msgstr ""
 
 #: modules/audio_filter/channel_mixer/spatialaudio.cpp:54
@@ -10687,7 +10685,7 @@ msgstr ""
 
 #: modules/audio_output/jack.c:94
 #, fuzzy
-msgid "Jack client name"
+msgid "JACK client name"
 msgstr "Доступ клиента VNC"
 
 #: modules/audio_output/jack.c:101
@@ -10837,13 +10835,33 @@ msgstr "Аудиодекодер Raw/Log Audio"
 msgid "Raw audio encoder"
 msgstr "Аудиокодер Raw"
 
+#: modules/codec/audiotoolbox_midi.c:47 modules/codec/fluidsynth.c:47
+#, fuzzy
+msgid "SoundFont file"
+msgstr "Банк инструментов"
+
+#: modules/codec/audiotoolbox_midi.c:49 modules/codec/fluidsynth.c:49
+#, fuzzy
+msgid "SoundFont file to use for software synthesis."
+msgstr "Для программного синтеза требуется банк инструментов SF2."
+
+#: modules/codec/audiotoolbox_midi.c:57
+#, fuzzy
+msgid "AudioToolbox MIDI synthesizer"
+msgstr "MIDI-синтезатор FluidSynth"
+
+#: modules/codec/audiotoolbox_midi.c:59
+msgid "AUMIDI"
+msgstr ""
+
 #: modules/codec/arib/aribsub.c:46
-msgid "Ignore ruby(furigana)"
+msgid "Ignore ruby (furigana)"
 msgstr ""
 
 #: modules/codec/arib/aribsub.c:47
-msgid "Ignore ruby(furigana) in the subtitle."
-msgstr ""
+#, fuzzy
+msgid "Ignore ruby (furigana) in the subtitle."
+msgstr "Координата X при декодировании субтитров"
 
 #: modules/codec/arib/aribsub.c:48
 #, fuzzy
@@ -11386,11 +11404,11 @@ msgstr "слои"
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr "VLC не может открыть кодер %4.4s %s."
 
-#: modules/codec/avcodec/vaapi.c:385
+#: modules/codec/avcodec/vaapi.c:349
 msgid "VA-API video decoder via DRM"
 msgstr "Видеодекодер VA-API через DRM"
 
-#: modules/codec/avcodec/vaapi.c:390
+#: modules/codec/avcodec/vaapi.c:354
 #, fuzzy
 msgid "VA-API video decoder"
 msgstr "Видеодекодер VA-API через X11"
@@ -11673,14 +11691,6 @@ msgstr "Аудиодекодер FLAC"
 #: modules/codec/flac.c:171
 msgid "Flac audio encoder"
 msgstr "Аудиокодер FLAC"
-
-#: modules/codec/fluidsynth.c:47
-msgid "Sound fonts"
-msgstr "Банк инструментов"
-
-#: modules/codec/fluidsynth.c:49
-msgid "A sound fonts file is required for software synthesis."
-msgstr "Для программного синтеза требуется банк инструментов SF2."
 
 #: modules/codec/fluidsynth.c:51 modules/meta_engine/ID3Genres.h:130
 msgid "Chorus"
@@ -12243,8 +12253,9 @@ msgid "Rate Control Method"
 msgstr "Метод управления скоростью"
 
 #: modules/codec/qsv.c:102
+#, fuzzy
 msgid ""
-"The rate control method to use when encoding. Can be one of 'crb', 'vbr', "
+"The rate control method to use when encoding. Can be one of 'cbr', 'vbr', "
 "'qp', 'avbr'. 'qp' mode isn't supported for mpeg2"
 msgstr ""
 "Метод управления скоростью потока при кодировании. Может принимать значения "
@@ -14496,7 +14507,7 @@ msgstr "Интерфейс управления D-Bus"
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:182
 #: modules/gui/macosx/VLCMainWindow.m:669
 #: modules/gui/macosx/VLCMainWindow.m:675
-#: modules/gui/macosx/VLCMainWindow.m:1273
+#: modules/gui/macosx/VLCMainWindow.m:1276
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1035
 #: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1234
 #: modules/gui/qt/main_interface.cpp:1238
@@ -15300,7 +15311,7 @@ msgid "Use regular HTTP modules"
 msgstr ""
 
 #: modules/demux/adaptive/adaptive.cpp:77
-msgid "Connect using http access instead of custom http code"
+msgid "Connect using HTTP access instead of custom HTTP code"
 msgstr ""
 
 #: modules/demux/adaptive/adaptive.cpp:98
@@ -16242,60 +16253,60 @@ msgstr "Импорт музыкальной библиотеки iTunes"
 msgid "WPL playlist import"
 msgstr "Импорт плейлиста WPL"
 
-#: modules/demux/playlist/podcast.c:231 modules/demux/playlist/podcast.c:243
-#: modules/demux/playlist/podcast.c:305 modules/demux/playlist/podcast.c:328
+#: modules/demux/playlist/podcast.c:230 modules/demux/playlist/podcast.c:242
+#: modules/demux/playlist/podcast.c:304 modules/demux/playlist/podcast.c:327
 msgid "Podcast Info"
 msgstr "Информация"
 
-#: modules/demux/playlist/podcast.c:233
+#: modules/demux/playlist/podcast.c:232
 msgid "Podcast Link"
 msgstr "Ссылка"
 
-#: modules/demux/playlist/podcast.c:234
+#: modules/demux/playlist/podcast.c:233
 msgid "Podcast Copyright"
 msgstr "Авторские права"
 
-#: modules/demux/playlist/podcast.c:235
+#: modules/demux/playlist/podcast.c:234
 msgid "Podcast Category"
 msgstr "Категория"
 
-#: modules/demux/playlist/podcast.c:236 modules/demux/playlist/podcast.c:312
+#: modules/demux/playlist/podcast.c:235 modules/demux/playlist/podcast.c:311
 msgid "Podcast Keywords"
 msgstr "Ключевые слова"
 
-#: modules/demux/playlist/podcast.c:237 modules/demux/playlist/podcast.c:313
+#: modules/demux/playlist/podcast.c:236 modules/demux/playlist/podcast.c:312
 msgid "Podcast Subtitle"
 msgstr "Субтитры"
 
-#: modules/demux/playlist/podcast.c:243 modules/demux/playlist/podcast.c:314
+#: modules/demux/playlist/podcast.c:242 modules/demux/playlist/podcast.c:313
 msgid "Podcast Summary"
 msgstr "Сводка"
 
-#: modules/demux/playlist/podcast.c:308
+#: modules/demux/playlist/podcast.c:307
 msgid "Podcast Publication Date"
 msgstr "Дата публикации"
 
-#: modules/demux/playlist/podcast.c:309
+#: modules/demux/playlist/podcast.c:308
 msgid "Podcast Author"
 msgstr "Автор"
 
-#: modules/demux/playlist/podcast.c:310
+#: modules/demux/playlist/podcast.c:309
 msgid "Podcast Subcategory"
 msgstr "Подкатегория"
 
-#: modules/demux/playlist/podcast.c:311
+#: modules/demux/playlist/podcast.c:310
 msgid "Podcast Duration"
 msgstr "Длительность"
 
-#: modules/demux/playlist/podcast.c:315
+#: modules/demux/playlist/podcast.c:314
 msgid "Podcast Type"
 msgstr "Тип"
 
-#: modules/demux/playlist/podcast.c:329
+#: modules/demux/playlist/podcast.c:328
 msgid "Podcast Size"
 msgstr "Размер"
 
-#: modules/demux/playlist/podcast.c:330
+#: modules/demux/playlist/podcast.c:329
 #, c-format
 msgid "%s bytes"
 msgstr "байт: %s"
@@ -17866,7 +17877,7 @@ msgid "Bring All to Front"
 msgstr "Вынести всё вперёд"
 
 #: modules/gui/macosx/VLCMainMenu.m:478 modules/gui/qt/dialogs/help.cpp:54
-#: modules/gui/qt/menus.cpp:952 modules/gui/qt/menus.cpp:1139
+#: modules/gui/qt/menus.cpp:947 modules/gui/qt/menus.cpp:1134
 msgid "Help"
 msgstr "Помощь"
 
@@ -20253,9 +20264,10 @@ msgid "Select File"
 msgstr "Выбор файла"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1134
+#, fuzzy
 msgid ""
 "Select or double click an action to change the associated hotkey. Use delete "
-"key to remove hotkeys"
+"key to remove hotkeys."
 msgstr ""
 "Выберите действие, чтобы назначить для него сочетание клавиш. Чтобы отменить "
 "назначение, нажмите Delete."
@@ -20825,8 +20837,8 @@ msgstr "Обновить дерево"
 msgid "Clear the messages"
 msgstr "Очистить сообщения"
 
-#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:936
-#: modules/gui/qt/menus.cpp:1133
+#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:931
+#: modules/gui/qt/menus.cpp:1128
 msgid "Open Media"
 msgstr "Источник"
 
@@ -20856,7 +20868,7 @@ msgid "&Enqueue"
 msgstr "Добавить в &очередь"
 
 #: modules/gui/qt/dialogs/open.cpp:117 modules/gui/qt/dialogs/open.cpp:214
-#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:825
+#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:820
 msgid "&Play"
 msgstr "Воспрои&звести"
 
@@ -21359,28 +21371,28 @@ msgstr "Медиа"
 msgid "P&layback"
 msgstr "Воспроизведение"
 
-#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1051
+#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1046
 msgid "&Audio"
 msgstr "Аудио"
 
-#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1058
+#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1053
 msgid "&Video"
 msgstr "Видео"
 
-#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1065
+#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1060
 msgid "Subti&tle"
 msgstr "Субтитры"
 
-#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1081
+#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1076
 #, fuzzy
 msgid "Tool&s"
 msgstr "Инструменты"
 
-#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1088
+#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1083
 msgid "V&iew"
 msgstr "Вид"
 
-#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:789
+#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:784
 msgid "&Help"
 msgstr "Помощь"
 
@@ -21392,7 +21404,7 @@ msgstr "Открыть &файл..."
 msgid "&Open Multiple Files..."
 msgstr "Открыть фа&йлы..."
 
-#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:941
+#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:936
 msgid "Open &Disc..."
 msgstr "Открыть &диск..."
 
@@ -21400,7 +21412,7 @@ msgstr "Открыть &диск..."
 msgid "Open &Network Stream..."
 msgstr "Отк&рыть URL..."
 
-#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:945
+#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:940
 msgid "Open &Capture Device..."
 msgstr "Открыть устройство &захвата..."
 
@@ -21428,7 +21440,7 @@ msgstr "Выход по окончании плейлиста"
 msgid "Close to systray"
 msgstr "Закрыть в системный лоток"
 
-#: modules/gui/qt/menus.cpp:403 modules/gui/qt/menus.cpp:1195
+#: modules/gui/qt/menus.cpp:403 modules/gui/qt/menus.cpp:1190
 msgid "&Quit"
 msgstr "В&ыход"
 
@@ -21468,7 +21480,7 @@ msgstr "Ctrl+L"
 msgid "Docked Playlist"
 msgstr "Встроенный плейлист"
 
-#: modules/gui/qt/menus.cpp:499 modules/gui/qt/menus.cpp:542
+#: modules/gui/qt/menus.cpp:499
 #, fuzzy
 msgid "Always on &top"
 msgstr "Поверх всех окон"
@@ -21497,182 +21509,182 @@ msgstr "Строка состояния"
 msgid "Visualizations selector"
 msgstr "Выбор визуализатора"
 
-#: modules/gui/qt/menus.cpp:599
+#: modules/gui/qt/menus.cpp:594
 msgid "&Increase Volume"
 msgstr "У&величить громкость"
 
-#: modules/gui/qt/menus.cpp:602
+#: modules/gui/qt/menus.cpp:597
 #, fuzzy
 msgid "D&ecrease Volume"
 msgstr "Уменьшить громкость"
 
-#: modules/gui/qt/menus.cpp:605
+#: modules/gui/qt/menus.cpp:600
 msgid "&Mute"
 msgstr "Выключить &звук"
 
-#: modules/gui/qt/menus.cpp:621
+#: modules/gui/qt/menus.cpp:616
 msgid "Audio &Device"
 msgstr "Аудиоустройство"
 
-#: modules/gui/qt/menus.cpp:625
+#: modules/gui/qt/menus.cpp:620
 msgid "Audio &Track"
 msgstr "А&удиодорожка"
 
-#: modules/gui/qt/menus.cpp:627
+#: modules/gui/qt/menus.cpp:622
 msgid "&Stereo Mode"
 msgstr "Режим &стерео"
 
-#: modules/gui/qt/menus.cpp:630
+#: modules/gui/qt/menus.cpp:625
 msgid "&Visualizations"
 msgstr "&Визуализация"
 
-#: modules/gui/qt/menus.cpp:656
+#: modules/gui/qt/menus.cpp:651
 msgid "Add &Subtitle File..."
 msgstr "Добавить файл &субтитров..."
 
-#: modules/gui/qt/menus.cpp:658
+#: modules/gui/qt/menus.cpp:653
 msgid "Sub &Track"
 msgstr "&Дорожка субтитров"
 
-#: modules/gui/qt/menus.cpp:683
+#: modules/gui/qt/menus.cpp:678
 msgid "Video &Track"
 msgstr "В&идеодорожка"
 
-#: modules/gui/qt/menus.cpp:690
+#: modules/gui/qt/menus.cpp:685
 msgid "&Fullscreen"
 msgstr "Во весь &экран"
 
-#: modules/gui/qt/menus.cpp:691
+#: modules/gui/qt/menus.cpp:686
 msgid "Always Fit &Window"
 msgstr "Подгонять под &окно"
 
-#: modules/gui/qt/menus.cpp:692
+#: modules/gui/qt/menus.cpp:687
 msgid "Set as Wall&paper"
 msgstr "&Фон рабочего стола"
 
-#: modules/gui/qt/menus.cpp:696
+#: modules/gui/qt/menus.cpp:691
 msgid "&Zoom"
 msgstr "Мас&штаб"
 
-#: modules/gui/qt/menus.cpp:697
+#: modules/gui/qt/menus.cpp:692
 msgid "&Aspect Ratio"
 msgstr "С&оотношение сторон"
 
-#: modules/gui/qt/menus.cpp:698
+#: modules/gui/qt/menus.cpp:693
 msgid "&Crop"
 msgstr "Кадрирование"
 
-#: modules/gui/qt/menus.cpp:702
+#: modules/gui/qt/menus.cpp:697
 msgid "&Deinterlace"
 msgstr "Устранение чересстрочности"
 
-#: modules/gui/qt/menus.cpp:703
+#: modules/gui/qt/menus.cpp:698
 msgid "&Deinterlace mode"
 msgstr "Режим устранения"
 
-#: modules/gui/qt/menus.cpp:707
+#: modules/gui/qt/menus.cpp:702
 msgid "Take &Snapshot"
 msgstr "Сделать &снимок"
 
-#: modules/gui/qt/menus.cpp:726
+#: modules/gui/qt/menus.cpp:721
 msgid "T&itle"
 msgstr "Заглавие"
 
-#: modules/gui/qt/menus.cpp:727
+#: modules/gui/qt/menus.cpp:722
 msgid "&Chapter"
 msgstr "Глава"
 
-#: modules/gui/qt/menus.cpp:729
+#: modules/gui/qt/menus.cpp:724
 msgid "&Program"
 msgstr "Программа"
 
-#: modules/gui/qt/menus.cpp:733
+#: modules/gui/qt/menus.cpp:728
 msgid "&Manage"
 msgstr "&Управление"
 
-#: modules/gui/qt/menus.cpp:792
+#: modules/gui/qt/menus.cpp:787
 msgid "Check for &Updates..."
 msgstr "Проверить обновления..."
 
-#: modules/gui/qt/menus.cpp:839
+#: modules/gui/qt/menus.cpp:834
 msgid "&Stop"
 msgstr "&Стоп"
 
-#: modules/gui/qt/menus.cpp:847
+#: modules/gui/qt/menus.cpp:842
 msgid "Pre&vious"
 msgstr "П&редыдущий"
 
-#: modules/gui/qt/menus.cpp:853
+#: modules/gui/qt/menus.cpp:848
 msgid "Ne&xt"
 msgstr "С&ледующий"
 
-#: modules/gui/qt/menus.cpp:871
+#: modules/gui/qt/menus.cpp:866
 msgid "Sp&eed"
 msgstr "&Скорость"
 
-#: modules/gui/qt/menus.cpp:877
+#: modules/gui/qt/menus.cpp:872
 msgid "&Faster"
 msgstr "Быстрее"
 
-#: modules/gui/qt/menus.cpp:889
+#: modules/gui/qt/menus.cpp:884
 msgid "N&ormal Speed"
 msgstr "Нормальная скорость"
 
-#: modules/gui/qt/menus.cpp:899
+#: modules/gui/qt/menus.cpp:894
 msgid "Slo&wer"
 msgstr "Медленнее"
 
-#: modules/gui/qt/menus.cpp:914
+#: modules/gui/qt/menus.cpp:909
 msgid "&Jump Forward"
 msgstr "Скачок вперёд"
 
-#: modules/gui/qt/menus.cpp:921
+#: modules/gui/qt/menus.cpp:916
 msgid "Jump Bac&kward"
 msgstr "Скачок назад"
 
-#: modules/gui/qt/menus.cpp:928
+#: modules/gui/qt/menus.cpp:923
 msgid "Ctrl+T"
 msgstr "Ctrl+T"
 
-#: modules/gui/qt/menus.cpp:943
+#: modules/gui/qt/menus.cpp:938
 msgid "Open &Network..."
 msgstr "Открыть сетевой ресурс..."
 
-#: modules/gui/qt/menus.cpp:1037
+#: modules/gui/qt/menus.cpp:1032
 msgid "Leave Fullscreen"
 msgstr "Выйти из полноэкранного режима"
 
-#: modules/gui/qt/menus.cpp:1071
+#: modules/gui/qt/menus.cpp:1066
 msgid "&Playback"
 msgstr "&Воспроизведение"
 
-#: modules/gui/qt/menus.cpp:1176
+#: modules/gui/qt/menus.cpp:1171
 msgid "&Hide VLC media player in taskbar"
 msgstr "&Свернуть VLC в панель задач"
 
-#: modules/gui/qt/menus.cpp:1182
+#: modules/gui/qt/menus.cpp:1177
 msgid "Sho&w VLC media player"
 msgstr "&Развернуть VLC"
 
-#: modules/gui/qt/menus.cpp:1193
+#: modules/gui/qt/menus.cpp:1188
 msgid "&Open Media"
 msgstr "&Источник"
 
-#: modules/gui/qt/menus.cpp:1633
+#: modules/gui/qt/menus.cpp:1628
 msgid "&Clear"
 msgstr "&Очистить"
 
-#: modules/gui/qt/menus.cpp:1641
+#: modules/gui/qt/menus.cpp:1636
 #, fuzzy
 msgid "&Renderer"
 msgstr "Визуализатор текста"
 
-#: modules/gui/qt/menus.cpp:1645
+#: modules/gui/qt/menus.cpp:1640
 #, fuzzy
 msgid "<Local>"
 msgstr "Вокал"
 
-#: modules/gui/qt/menus.cpp:1658
+#: modules/gui/qt/menus.cpp:1653
 msgid "Scan"
 msgstr ""
 
@@ -21704,7 +21716,8 @@ msgid "Start VLC with only a systray icon"
 msgstr "Запуск VLC в виде значка в области уведомлений"
 
 #: modules/gui/qt/qt.cpp:92
-msgid "VLC will start with just an icon in your taskbar"
+#, fuzzy
+msgid "VLC will start with just an icon in your taskbar."
 msgstr "Запускать VLC только как значок в панели задач"
 
 #: modules/gui/qt/qt.cpp:101
@@ -21788,7 +21801,9 @@ msgid "List of words separated by | to filter"
 msgstr "Список фильтруемых слов, через |"
 
 #: modules/gui/qt/qt.cpp:135
-msgid "Regular expression used to filter the recent items played in the player"
+#, fuzzy
+msgid ""
+"Regular expression used to filter the recent items played in the player."
 msgstr ""
 "Регулярное выражение, позволяющее отфильтровать имена последних "
 "воспроизводимых файлов"
@@ -21840,7 +21855,8 @@ msgid "Define which screen fullscreen goes"
 msgstr "Экран для полноэкранного показа"
 
 #: modules/gui/qt/qt.cpp:155
-msgid "Screennumber of fullscreen, instead of same screen where interface is"
+#, fuzzy
+msgid "Screennumber of fullscreen, instead of same screen where interface is."
 msgstr ""
 "Номер экрана для полноэкранного показа (если экран, где открыт интерфейс, не "
 "устраивает)"
@@ -21850,7 +21866,8 @@ msgid "Load extensions on startup"
 msgstr "Загружать модули при запуске"
 
 #: modules/gui/qt/qt.cpp:159
-msgid "Automatically load the extensions module on startup"
+#, fuzzy
+msgid "Automatically load the extensions module on startup."
 msgstr "Автоматически загружать модули при запуске программы"
 
 #: modules/gui/qt/qt.cpp:162
@@ -21870,11 +21887,13 @@ msgstr ""
 "воспроизводится. Можно отключить, чтобы предотвратить выгорание экрана."
 
 #: modules/gui/qt/qt.cpp:168
-msgid "Expanding background cone or art."
+#, fuzzy
+msgid "Expanding background cone or art"
 msgstr "Растягивать логотип/обложку"
 
 #: modules/gui/qt/qt.cpp:169
-msgid "Background art fits window's size"
+#, fuzzy
+msgid "Background art fits window's size."
 msgstr "Подгонять логотип/обложку под размер окна"
 
 #: modules/gui/qt/qt.cpp:171
@@ -21901,7 +21920,7 @@ msgstr "Настройки главного интерфейса"
 #, fuzzy
 msgid ""
 "This option allows the interface to be raised automatically when a video/"
-"audio playback starts, or never"
+"audio playback starts, or never."
 msgstr ""
 "Этот параметр разрешает VLC менять значок интерфейса в различных ситуациях."
 
@@ -22267,20 +22286,23 @@ msgstr "Видеофильтр повышения резкости VDPAU"
 
 #: modules/keystore/file.c:54
 #, fuzzy
-msgid "file keystore (plaintext)"
+msgid "File keystore (plaintext)"
 msgstr "Список предпочитаемых упаковщиков"
 
 #: modules/keystore/file.c:55
-msgid "secrets are stored on a file without any encryption"
-msgstr ""
+#, fuzzy
+msgid "Secrets are stored on a file without any encryption"
+msgstr "Использовать общую память"
 
 #: modules/keystore/file.c:65
-msgid "crypt keystore"
-msgstr ""
+#, fuzzy
+msgid "Crypt keystore"
+msgstr "Убрать выбранное"
 
 #: modules/keystore/file.c:66
-msgid "secrets are stored encrypted on a file"
-msgstr ""
+#, fuzzy
+msgid "Secrets are stored encrypted on a file"
+msgstr "Использовать общую память"
 
 #: modules/keystore/keychain.m:40
 #, fuzzy
@@ -22363,12 +22385,12 @@ msgstr "Использовать общую память"
 
 #: modules/keystore/memory.c:41
 #, fuzzy
-msgid "memory keystore"
+msgid "Memory keystore"
 msgstr "Убрать выбранное"
 
 #: modules/keystore/memory.c:42
 #, fuzzy
-msgid "secrets are stored in memory"
+msgid "Secrets are stored in memory"
 msgstr "Использовать общую память"
 
 #: modules/keystore/secret.c:39
@@ -25362,7 +25384,7 @@ msgstr "Вывод потока для отпечатка Chromaprint"
 
 #: modules/stream_out/chromecast/chromecast_demux.cpp:328
 #, fuzzy
-msgid "chromecast demux wrapper"
+msgid "Chromecast demux wrapper"
 msgstr "Демультиплексор Avformat"
 
 #: modules/stream_out/cycle.c:325
@@ -25921,26 +25943,30 @@ msgstr ""
 "path и bind"
 
 #: modules/stream_out/standard.c:51
-msgid "address to bind to (helper setting for dst)"
+#, fuzzy
+msgid "Address to bind to (helper setting for dst)"
 msgstr "Адрес для привязки (вспомог. параметр bind для dst)"
 
 #: modules/stream_out/standard.c:53
+#, fuzzy
 msgid ""
-"address:port to bind vlc to listening incoming streams helper setting for "
-"dst,dst=bind+'/'+path. dst-parameter overrides this"
+"address:port to bind vlc to listening incoming streams. Helper setting for "
+"dst, dst=bind+'/'+path. dst-parameter overrides this."
 msgstr ""
 "адрес:порт, к которому привязывается VLC для принятия входящих потоков "
 "(вспомогательный параметр для dst, dst=bind+'/'+path). Параметр dst "
 "переопределяет его"
 
 #: modules/stream_out/standard.c:55
-msgid "filename for stream (helper setting for dst)"
+#, fuzzy
+msgid "Filename for stream (helper setting for dst)"
 msgstr "Файл для потока (вспомог. параметр path для dst)"
 
 #: modules/stream_out/standard.c:57
+#, fuzzy
 msgid ""
-"Filename for stream helper setting for dst, dst=bind+'/'+path, dst-parameter "
-"overrides this"
+"Filename for stream. Helper setting for dst, dst=bind+'/'+path. dst-"
+"parameter overrides this."
 msgstr ""
 "Название файла для потока (вспомогательный параметр для dst, dst=bind"
 "+'/'+path). Параметр dst переопределяет его"
@@ -27325,8 +27351,9 @@ msgid "Scale factor (0.1-2.0)"
 msgstr "Коэффициент масштабирования (0,1-2,0)"
 
 #: modules/video_filter/opencv_wrapper.c:82
+#, fuzzy
 msgid ""
-"Ammount by which to scale the picture before sending it to the internal "
+"Amount by which to scale the picture before sending it to the internal "
 "OpenCV filter"
 msgstr ""
 "Коэффициент, используемый при масштабировании изображения, прежде чем "
@@ -29139,9 +29166,6 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr "Вы действительно хотите создать поток?"
 
-#~ msgid "Always &on Top"
-#~ msgstr "Поверх &всех окон"
-
 #~ msgid "Dialog"
 #~ msgstr "Диалог"
 
@@ -29612,6 +29636,10 @@ msgstr "Вы действительно хотите создать поток?"
 #~ msgid "Add a background"
 #~ msgstr "Добавить фон"
 
+#, fuzzy
+#~ msgid "O&utput"
+#~ msgstr "Вывод"
+
 #~ msgid "Accelerated video output (Overlay)"
 #~ msgstr "Ускоренный вывод видео (оверлей)"
 
@@ -29776,6 +29804,20 @@ msgstr "Вы действительно хотите создать поток?"
 
 #~ msgid "Media Manager List"
 #~ msgstr "Список настроек медиаменеджера"
+
+#, fuzzy
+#~ msgid "The Sound Font file (SF2/DLS) to use for synthesis."
+#~ msgstr "Для программного синтеза требуется банк инструментов SF2."
+
+#~ msgid "Sound fonts"
+#~ msgstr "Банк инструментов"
+
+#, fuzzy
+#~ msgid "Capture region heigh"
+#~ msgstr "Высота области"
+
+#~ msgid "Always &on Top"
+#~ msgstr "Поверх &всех окон"
 
 #, fuzzy
 #~ msgid "Sox Resampling quality"

@@ -271,12 +271,86 @@ bool isNvidiaHardware(ID3D11Device *d3ddev)
 
     bool result = false;
     DXGI_ADAPTER_DESC adapterDesc;
-    if (SUCCEEDED(IDXGIAdapter_GetDesc(p_adapter, &adapterDesc))) {
-        result = adapterDesc.VendorId == 0x10DE;
-    }
+    if (SUCCEEDED(IDXGIAdapter_GetDesc(p_adapter, &adapterDesc)))
+        result = adapterDesc.VendorId == GPU_MANUFACTURER_NVIDIA;
 
     IDXGIAdapter_Release(p_adapter);
     return result;
+}
+
+#if !VLC_WINSTORE_APP
+static HKEY GetAdapterRegistry(DXGI_ADAPTER_DESC *adapterDesc)
+{
+    HKEY hKey;
+    TCHAR key[128];
+    TCHAR szData[256], lookup[256];
+    DWORD len = 256;
+
+    _sntprintf(lookup, 256, TEXT("pci\\ven_%04x&dev_%04x"), adapterDesc->VendorId, adapterDesc->DeviceId);
+    for (int i=0;;i++)
+    {
+        _sntprintf(key, 128, TEXT("SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\%04d"), i);
+        if( RegOpenKeyEx(HKEY_LOCAL_MACHINE, key, 0, KEY_READ, &hKey) != ERROR_SUCCESS )
+            return NULL;
+
+        len = sizeof(szData);
+        if( RegQueryValueEx( hKey, TEXT("MatchingDeviceId"), NULL, NULL, (LPBYTE) &szData, &len ) == ERROR_SUCCESS ) {
+            if (_tcsncmp(lookup, szData, _tcslen(lookup)) == 0)
+                return hKey;
+        }
+
+        RegCloseKey(hKey);
+    }
+    return NULL;
+}
+#endif
+
+int D3D11CheckDriverVersion(ID3D11Device *d3ddev, UINT vendorId, const struct wdmm_version *min_ver)
+{
+    IDXGIAdapter *pAdapter = D3D11DeviceAdapter(d3ddev);
+    if (!pAdapter)
+        return VLC_EGENERIC;
+
+    DXGI_ADAPTER_DESC adapterDesc;
+    HRESULT hr = IDXGIAdapter_GetDesc(pAdapter, &adapterDesc);
+    IDXGIAdapter_Release(pAdapter);
+    if (FAILED(hr))
+        return VLC_EGENERIC;
+
+    if (vendorId && adapterDesc.VendorId != vendorId)
+        return VLC_SUCCESS;
+
+    LONG err = ERROR_ACCESS_DENIED;
+#if VLC_WINSTORE_APP
+    return VLC_SUCCESS;
+#else
+    TCHAR szData[256];
+    DWORD len = 256;
+    HKEY hKey = GetAdapterRegistry(&adapterDesc);
+    if (hKey == NULL)
+        return VLC_EGENERIC;
+
+    err = RegQueryValueEx( hKey, TEXT("DriverVersion"), NULL, NULL, (LPBYTE) &szData, &len );
+    RegCloseKey(hKey);
+
+    if (err != ERROR_SUCCESS )
+        return VLC_EGENERIC;
+
+    int wddm, d3d_features, revision, build;
+    /* see https://msdn.microsoft.com/windows/hardware/commercialize/design/compatibility/device-graphics */
+    if (_stscanf(szData, TEXT("%d.%d.%d.%d"), &wddm, &d3d_features, &revision, &build) != 4)
+        return VLC_EGENERIC;
+
+    bool newer =
+           wddm > min_ver->wddm ||
+          (wddm == min_ver->wddm && (d3d_features > min_ver->d3d_features ||
+                                    (d3d_features == min_ver->d3d_features &&
+                                                (revision > min_ver->revision ||
+                                                (revision == min_ver->revision &&
+                                                       build > min_ver->build)))));
+
+    return newer ? VLC_SUCCESS : VLC_EGENERIC;
+#endif
 }
 
 const d3d_format_t *FindD3D11Format(ID3D11Device *d3ddevice,

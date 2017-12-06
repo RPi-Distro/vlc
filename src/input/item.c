@@ -2,7 +2,7 @@
  * item.c: input_item management
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: 95198d4e6091839871deeb4948d435850a573107 $
+ * $Id: 2000de84a2be3f14bd1fe752d40ee6b2fd8945c7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -617,18 +617,37 @@ void input_item_ApplyOptions(vlc_object_t *obj, input_item_t *item)
     vlc_mutex_unlock(&item->lock);
 }
 
+static int bsearch_strcmp_cb(const void *a, const void *b)
+{
+    const char *const *entry = b;
+    return strcasecmp(a, *entry);
+}
+
+static bool input_item_IsMaster(const char *psz_filename)
+{
+    static const char *const ppsz_master_exts[] = { MASTER_EXTENSIONS };
+
+    const char *psz_ext = strrchr(psz_filename, '.');
+    if (psz_ext == NULL || *(++psz_ext) == '\0')
+        return false;
+
+    return bsearch(psz_ext, ppsz_master_exts, ARRAY_SIZE(ppsz_master_exts),
+                   sizeof(const char *), bsearch_strcmp_cb) != NULL;
+}
+
 bool input_item_slave_GetType(const char *psz_filename,
                               enum slave_type *p_slave_type)
 {
-    static const char *const ppsz_sub_exts[] = { SLAVE_SPU_EXTENSIONS, NULL };
-    static const char *const ppsz_audio_exts[] = { SLAVE_AUDIO_EXTENSIONS, NULL };
+    static const char *const ppsz_sub_exts[] = { SLAVE_SPU_EXTENSIONS };
+    static const char *const ppsz_audio_exts[] = { SLAVE_AUDIO_EXTENSIONS };
 
     static struct {
         enum slave_type i_type;
         const char *const *ppsz_exts;
+        size_t nmemb;
     } p_slave_list[] = {
-        { SLAVE_TYPE_SPU, ppsz_sub_exts },
-        { SLAVE_TYPE_AUDIO, ppsz_audio_exts },
+        { SLAVE_TYPE_SPU, ppsz_sub_exts, ARRAY_SIZE(ppsz_sub_exts) },
+        { SLAVE_TYPE_AUDIO, ppsz_audio_exts, ARRAY_SIZE(ppsz_audio_exts) },
     };
 
     const char *psz_ext = strrchr(psz_filename, '.');
@@ -637,14 +656,11 @@ bool input_item_slave_GetType(const char *psz_filename,
 
     for (unsigned int i = 0; i < sizeof(p_slave_list) / sizeof(*p_slave_list); ++i)
     {
-        for (const char *const *ppsz_slave_ext = p_slave_list[i].ppsz_exts;
-             *ppsz_slave_ext != NULL; ppsz_slave_ext++)
+        if (bsearch(psz_ext, p_slave_list[i].ppsz_exts, p_slave_list[i].nmemb,
+                    sizeof(const char *), bsearch_strcmp_cb))
         {
-            if (!strcasecmp(psz_ext, *ppsz_slave_ext))
-            {
-                *p_slave_type = p_slave_list[i].i_type;
-                return true;
-            }
+            *p_slave_type = p_slave_list[i].i_type;
+            return true;
         }
     }
     return false;
@@ -1554,7 +1570,8 @@ static void rdh_attach_slaves(struct vlc_readdir_helper *p_rdh,
         input_item_t *p_item = p_node->p_item;
 
         enum slave_type unused;
-        if (input_item_slave_GetType(p_item->psz_name, &unused))
+        if (!input_item_IsMaster(p_item->psz_name)
+         || input_item_slave_GetType(p_item->psz_name, &unused))
             continue; /* don't match 2 possible slaves between each others */
 
         for (size_t j = 0; j < p_rdh->i_slaves; j++)

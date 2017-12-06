@@ -187,17 +187,6 @@ case "${host_os}" in
              HAVE_OSX="0"
              ],)
 
-    dnl Allow binaries created on Lion to run on earlier releases
-    AC_EGREP_CPP(yes,
-           [#import <Cocoa/Cocoa.h>
-            #ifdef MAC_OS_X_VERSION_10_7
-            yes
-            #endif],
-            [AC_MSG_RESULT([yes])
-            AC_LIBOBJ([getdelim])
-            AC_LIBOBJ([strndup])
-            AC_LIBOBJ([strnlen])],)
-
     dnl
     dnl  Handle Mac OS X SDK flags
     dnl
@@ -3892,6 +3881,12 @@ AC_CHECK_HEADERS(VideoToolbox/VideoToolbox.h, [
     VLC_ADD_PLUGIN([videotoolbox])
     VLC_ADD_PLUGIN([cvpx])
   ])
+
+dnl
+dnl  AudioToolbox MIDI plugin
+AC_CHECK_HEADERS([AudioToolbox/AudioToolbox.h], [
+  VLC_ADD_PLUGIN([audiotoolboxmidi])
+])
 
 dnl
 dnl  ncurses module

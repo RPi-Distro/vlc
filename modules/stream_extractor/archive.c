@@ -2,7 +2,7 @@
  * archive.c: libarchive based stream filter
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 9796d0b7bd739d9dbe96713869f9f4f03e2b385a $
+ * $Id: 4fdb3b13786192f4a4bcc87c5bd0ee9ea869f429 $
  *
  * Authors: Filip Roséen <filip@atch.se>
  *
@@ -167,7 +167,7 @@ static la_int64_t libarchive_seek_cb( libarchive_t* p_arc, void* p_obj,
     {
         case SEEK_SET: whence_pos = 0;                           break;
         case SEEK_CUR: whence_pos = vlc_stream_Tell( p_source ); break;
-        case SEEK_END: whence_pos = stream_Size( p_source ) - 1; break;
+        case SEEK_END: whence_pos = stream_Size( p_source ); break;
               default: vlc_assert_unreachable();
 
     }

@@ -26,10 +26,6 @@
 
 #include <vlc_es.h>
 
-#define COBJMACROS
-#include <initguid.h>
-#include <d3d11.h>
-
 #include "dxgi_fmt.h"
 
 typedef struct
@@ -127,4 +123,27 @@ void DxgiFormatMask(DXGI_FORMAT format, video_format_t *fmt)
         fmt->i_gmask = 0x00ff0000;
         fmt->i_bmask = 0xff000000;
     }
+}
+
+const char *DxgiVendorStr(int gpu_vendor)
+{
+    static const struct {
+        unsigned   id;
+        const char name[32];
+    } vendors [] = {
+        { GPU_MANUFACTURER_AMD,      "ATI"         },
+        { GPU_MANUFACTURER_NVIDIA,   "NVIDIA"      },
+        { GPU_MANUFACTURER_VIA,      "VIA"         },
+        { GPU_MANUFACTURER_INTEL,    "Intel"       },
+        { GPU_MANUFACTURER_S3,       "S3 Graphics" },
+        { GPU_MANUFACTURER_QUALCOMM, "Qualcomm"    },
+        { 0,                         "Unknown" }
+    };
+
+    int i = 0;
+    for (i = 0; vendors[i].id != 0; i++) {
+        if (vendors[i].id == gpu_vendor)
+            break;
+    }
+    return vendors[i].name;
 }

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-30 03:16+0000\n"
+"POT-Creation-Date: 2017-12-06 02:15+0000\n"
 "PO-Revision-Date: 2011-03-09 11:32+0200\n"
 "Last-Translator: sipho <sipho@translate.org.za>\n"
 "Language-Team: SIpho\n"
@@ -38,7 +38,7 @@ msgstr "Bonisa zonke izinketho ezithuthukile ebhokisini."
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
 #: modules/gui/qt/components/simple_preferences.cpp:222
-#: modules/gui/qt/menus.cpp:1095
+#: modules/gui/qt/menus.cpp:1090
 msgid "Interface"
 msgstr "Isibonisi"
 
@@ -357,7 +357,7 @@ msgstr ""
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:166
 #: modules/gui/qt/components/playlist/selector.cpp:227
-#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1122
+#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1117
 msgid "Playlist"
 msgstr "Uhlu lokudlalwayo"
 
@@ -600,7 +600,7 @@ msgstr ""
 
 #: src/audio_output/output.c:261 src/config/core.c:380 src/input/es_out.c:943
 #: src/libvlc-module.c:544 modules/gui/macosx/VLCMainMenu.m:234
-#: modules/gui/macosx/VLCMainWindow.m:1003 modules/video_filter/postproc.c:235
+#: modules/gui/macosx/VLCMainWindow.m:1006 modules/video_filter/postproc.c:235
 #, fuzzy
 msgid "Disable"
 msgstr "Vumela"
@@ -823,7 +823,7 @@ msgstr ""
 msgid "Unknown error"
 msgstr ""
 
-#: src/input/control.c:203
+#: src/input/control.c:204
 #, fuzzy, c-format
 msgid "Bookmark %i"
 msgstr "Uphawu lokubekisa"
@@ -888,7 +888,7 @@ msgid "%s [%s %d]"
 msgstr ""
 
 #: src/input/es_out.c:1186 src/input/es_out.c:1191 src/input/es_out.c:1206
-#: src/input/var.c:167 src/libvlc-module.c:568
+#: src/input/var.c:160 src/libvlc-module.c:568
 #: modules/gui/macosx/VLCMainMenu.m:397 modules/gui/macosx/VLCMainMenu.m:398
 msgid "Program"
 msgstr "Uhlelo"
@@ -1219,16 +1219,16 @@ msgstr "Okumhlophe"
 msgid "Subtitle"
 msgstr "Izihlokwana"
 
-#: src/input/input.c:2655
+#: src/input/input.c:2657
 msgid "Your input can't be opened"
 msgstr ""
 
-#: src/input/input.c:2656
+#: src/input/input.c:2658
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
 
-#: src/input/meta.c:55 src/input/var.c:177 modules/gui/macosx/VLCMainMenu.m:399
+#: src/input/meta.c:55 src/input/var.c:170 modules/gui/macosx/VLCMainMenu.m:399
 #: modules/gui/macosx/VLCMainMenu.m:400
 #: modules/gui/macosx/VLCOpenWindowController.m:178
 #: modules/gui/macosx/VLCOpenWindowController.m:180
@@ -1340,74 +1340,74 @@ msgstr "Umculi"
 msgid "Disc number"
 msgstr "i-Disc"
 
-#: src/input/var.c:159
+#: src/input/var.c:152
 #, fuzzy
 msgid "Bookmark"
 msgstr "Uphawu lokubekisa"
 
-#: src/input/var.c:172 src/libvlc-module.c:574
+#: src/input/var.c:165 src/libvlc-module.c:574
 #, fuzzy
 msgid "Programs"
 msgstr "Uhlelo"
 
-#: src/input/var.c:182 modules/gui/macosx/VLCMainMenu.m:401
+#: src/input/var.c:175 modules/gui/macosx/VLCMainMenu.m:401
 #: modules/gui/macosx/VLCMainMenu.m:402
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
 msgid "Chapter"
 msgstr "Isahluko"
 
-#: src/input/var.c:195 modules/gui/macosx/VLCMainMenu.m:425
+#: src/input/var.c:188 modules/gui/macosx/VLCMainMenu.m:425
 #: modules/gui/macosx/VLCMainMenu.m:426
 msgid "Video Track"
 msgstr "Umugqa wevidiyo"
 
-#: src/input/var.c:201 modules/gui/macosx/VLCMainMenu.m:408
+#: src/input/var.c:194 modules/gui/macosx/VLCMainMenu.m:408
 #: modules/gui/macosx/VLCMainMenu.m:409
 msgid "Audio Track"
 msgstr "Umugqa womsindo"
 
-#: src/input/var.c:207
+#: src/input/var.c:200
 #, fuzzy
 msgid "Subtitle Track"
 msgstr "Umugqa wezihlokwana"
 
-#: src/input/var.c:275
+#: src/input/var.c:264
 #, fuzzy
 msgid "Next title"
 msgstr "isahluko/isihloko esilandelayo"
 
-#: src/input/var.c:282
+#: src/input/var.c:271
 #, fuzzy
 msgid "Previous title"
 msgstr "Isahluko/isihloko sesdlule"
 
-#: src/input/var.c:289
+#: src/input/var.c:278
 #, fuzzy
 msgid "Menu title"
 msgstr "isahluko/isihloko esilandelayo"
 
-#: src/input/var.c:296
+#: src/input/var.c:285
 #, fuzzy
 msgid "Menu popup"
 msgstr "Indawo"
 
-#: src/input/var.c:330
+#: src/input/var.c:319
 #, fuzzy, c-format
 msgid "Title %i%s"
 msgstr "Isihloko"
 
-#: src/input/var.c:355 src/input/var.c:412
+#: src/input/var.c:344 src/input/var.c:401
 #, fuzzy, c-format
 msgid "Chapter %i"
 msgstr "Isahluko"
 
-#: src/input/var.c:391 modules/gui/qt/dialogs/toolbar.cpp:505
+#: src/input/var.c:380 modules/gui/qt/dialogs/toolbar.cpp:505
 #, fuzzy
 msgid "Next chapter"
 msgstr "isahluko/isihloko esilandelayo"
 
-#: src/input/var.c:396 modules/gui/qt/dialogs/toolbar.cpp:495
+#: src/input/var.c:385 modules/gui/qt/dialogs/toolbar.cpp:495
 #, fuzzy
 msgid "Previous chapter"
 msgstr "Isahluko/isihloko sesdlule"
@@ -1539,7 +1539,7 @@ msgstr "Imiyalezo"
 
 #: src/libvlc-module.c:96
 msgid ""
-"This enables colorization of the messages sent to the console Your terminal "
+"This enables colorization of the messages sent to the console. Your terminal "
 "needs Linux color support for this to work."
 msgstr ""
 
@@ -2464,7 +2464,7 @@ msgstr "Ngokwakhona"
 
 #: src/libvlc-module.c:544
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:223
-#: modules/gui/macosx/VLCMainWindow.m:1001
+#: modules/gui/macosx/VLCMainWindow.m:1004
 #: modules/gui/qt/components/extended_panels.cpp:928
 msgid "Enable"
 msgstr "Vumela"
@@ -3815,11 +3815,11 @@ msgstr "Ngokijwayelekile"
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr ""
 
-#: src/libvlc-module.c:1236 modules/gui/qt/menus.cpp:885
+#: src/libvlc-module.c:1236 modules/gui/qt/menus.cpp:880
 msgid "Faster (fine)"
 msgstr "Ngokushesha (kahle)"
 
-#: src/libvlc-module.c:1238 modules/gui/qt/menus.cpp:893
+#: src/libvlc-module.c:1238 modules/gui/qt/menus.cpp:888
 msgid "Slower (fine)"
 msgstr "Kancane (kahle)"
 
@@ -3986,8 +3986,8 @@ msgstr ""
 #: src/libvlc-module.c:1287 modules/control/hotkeys.c:361
 #: modules/gui/macosx/VLCStatusBarIcon.m:116
 #: modules/gui/qt/components/controller.hpp:111
-#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:956
-#: modules/gui/qt/menus.cpp:1142 modules/gui/skins2/commands/cmd_quit.cpp:45
+#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:951
+#: modules/gui/qt/menus.cpp:1137 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "Phuma"
 
@@ -4543,7 +4543,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1417 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
-#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:859
+#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:854
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Qopha"
@@ -5046,7 +5046,7 @@ msgstr ""
 #: modules/gui/macosx/VLCMainMenu.m:1331 modules/gui/macosx/VLCMainMenu.m:1332
 #: modules/gui/macosx/VLCMainMenu.m:1333
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
-#: modules/gui/qt/menus.cpp:833
+#: modules/gui/qt/menus.cpp:828
 msgid "Pause"
 msgstr "Misa kancane"
 
@@ -7148,7 +7148,7 @@ msgid "Satellite scanning config"
 msgstr "Qala ukubeka endaweni"
 
 #: modules/access/dvb/access.c:71
-msgid "filename of config file in share/dvb/dvb-s"
+msgid "Filename of config file in share/dvb/dvb-s."
 msgstr ""
 
 #: modules/access/dvb/access.c:73
@@ -7157,7 +7157,7 @@ msgid "Scan tuning list"
 msgstr "Ikhwalithi yokucubungula okuthunyelwe"
 
 #: modules/access/dvb/access.c:74
-msgid "filename containing initial scan tuning data"
+msgid "Filename containing initial scan tuning data."
 msgstr ""
 
 #: modules/access/dvb/access.c:76
@@ -7825,20 +7825,20 @@ msgstr ""
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr ""
 
-#: modules/access/live555.cpp:645
+#: modules/access/live555.cpp:668
 msgid "RTSP authentication"
 msgstr ""
 
-#: modules/access/live555.cpp:646
+#: modules/access/live555.cpp:669
 msgid "Please enter a valid login name and a password."
 msgstr ""
 
-#: modules/access/live555.cpp:671
+#: modules/access/live555.cpp:694
 #, fuzzy
 msgid "RTSP connection failed"
 msgstr "Ifayela lendawo:"
 
-#: modules/access/live555.cpp:672
+#: modules/access/live555.cpp:695
 msgid "Access to the stream is denied by the server configuration."
 msgstr ""
 
@@ -8192,9 +8192,10 @@ msgstr "Ukuthwetshulwa kwezithombe zevidiyo"
 msgid "Capture region width"
 msgstr "Isimo sokuthwebula"
 
-#: modules/access/screen/screen.c:65
+#: modules/access/screen/screen.c:65 modules/access/screen/wayland.c:468
+#: modules/access/screen/xcb.c:55
 #, fuzzy
-msgid "Capture region heigh"
+msgid "Capture region height"
 msgstr "Ubude besikrini esingezansi:"
 
 #: modules/access/screen/screen.c:67 modules/access/screen/xcb.c:59
@@ -8257,11 +8258,6 @@ msgstr ""
 #: modules/access/screen/wayland.c:466 modules/access/screen/xcb.c:53
 msgid "Pixel width of the capture region, or 0 for full width"
 msgstr ""
-
-#: modules/access/screen/wayland.c:468 modules/access/screen/xcb.c:55
-#, fuzzy
-msgid "Capture region height"
-msgstr "Ubude besikrini esingezansi:"
 
 #: modules/access/screen/wayland.c:470 modules/access/screen/xcb.c:57
 msgid "Pixel height of the capture region, or 0 for full height"
@@ -8423,25 +8419,25 @@ msgid ""
 "username) and a password."
 msgstr ""
 
-#: modules/access/srt.c:296 modules/access_output/srt.c:316
+#: modules/access/srt.c:288 modules/access_output/srt.c:311
 msgid "SRT"
 msgstr ""
 
-#: modules/access/srt.c:297
+#: modules/access/srt.c:289
 #, fuzzy
 msgid "SRT input"
 msgstr "Akukho okufakiwe"
 
-#: modules/access/srt.c:302 modules/access_output/srt.c:322
+#: modules/access/srt.c:294 modules/access_output/srt.c:317
 #, fuzzy
 msgid "SRT chunk size (bytes)"
 msgstr "Isisetshenziswa se-Framebuffer"
 
-#: modules/access/srt.c:304 modules/access_output/srt.c:324
-msgid "Return poll wait after timeout miliseconds (-1 = infinite)"
+#: modules/access/srt.c:296 modules/access_output/srt.c:319
+msgid "Return poll wait after timeout milliseconds (-1 = infinite)"
 msgstr ""
 
-#: modules/access/srt.c:305 modules/access_output/srt.c:325
+#: modules/access/srt.c:297 modules/access_output/srt.c:320
 #, fuzzy
 msgid "SRT latency (ms)"
 msgstr "Ukubambeka"
@@ -9454,7 +9450,7 @@ msgstr ""
 msgid "IceCAST output"
 msgstr "Izilungiselelo sevidiyo"
 
-#: modules/access_output/srt.c:317
+#: modules/access_output/srt.c:312
 #, fuzzy
 msgid "SRT stream output"
 msgstr "Ukuphuma kokusakaza"
@@ -9700,7 +9696,7 @@ msgid "HRTF file for the binauralization"
 msgstr ""
 
 #: modules/audio_filter/channel_mixer/spatialaudio.cpp:51
-msgid "Custom HRTF (Head-related transfer function) filein the SOFA format."
+msgid "Custom HRTF (Head-related transfer function) file in the SOFA format."
 msgstr ""
 
 #: modules/audio_filter/channel_mixer/spatialaudio.cpp:54
@@ -10568,7 +10564,7 @@ msgid ""
 msgstr ""
 
 #: modules/audio_output/jack.c:94
-msgid "Jack client name"
+msgid "JACK client name"
 msgstr ""
 
 #: modules/audio_output/jack.c:101
@@ -10720,13 +10716,31 @@ msgstr "I-codec yomsindo"
 msgid "Raw audio encoder"
 msgstr "I-codec yomsindo"
 
+#: modules/codec/audiotoolbox_midi.c:47 modules/codec/fluidsynth.c:47
+#, fuzzy
+msgid "SoundFont file"
+msgstr "Vula ifayela lezihlokwana"
+
+#: modules/codec/audiotoolbox_midi.c:49 modules/codec/fluidsynth.c:49
+msgid "SoundFont file to use for software synthesis."
+msgstr ""
+
+#: modules/codec/audiotoolbox_midi.c:57
+msgid "AudioToolbox MIDI synthesizer"
+msgstr ""
+
+#: modules/codec/audiotoolbox_midi.c:59
+msgid "AUMIDI"
+msgstr ""
+
 #: modules/codec/arib/aribsub.c:46
-msgid "Ignore ruby(furigana)"
+msgid "Ignore ruby (furigana)"
 msgstr ""
 
 #: modules/codec/arib/aribsub.c:47
-msgid "Ignore ruby(furigana) in the subtitle."
-msgstr ""
+#, fuzzy
+msgid "Ignore ruby (furigana) in the subtitle."
+msgstr "Ukuhlanganisa kuka-X kwesithombe esisetshenzisiwe"
 
 #: modules/codec/arib/aribsub.c:48
 msgid "Use Core Text renderer"
@@ -11210,12 +11224,12 @@ msgstr "Ukuhlunga ngezithonjana"
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr ""
 
-#: modules/codec/avcodec/vaapi.c:385
+#: modules/codec/avcodec/vaapi.c:349
 #, fuzzy
 msgid "VA-API video decoder via DRM"
 msgstr "I-codec yevidiyo"
 
-#: modules/codec/avcodec/vaapi.c:390
+#: modules/codec/avcodec/vaapi.c:354
 #, fuzzy
 msgid "VA-API video decoder"
 msgstr "I-codec yevidiyo"
@@ -11509,14 +11523,6 @@ msgstr "I-codec yomsindo"
 #, fuzzy
 msgid "Flac audio encoder"
 msgstr "I-codec yomsindo"
-
-#: modules/codec/fluidsynth.c:47
-msgid "Sound fonts"
-msgstr ""
-
-#: modules/codec/fluidsynth.c:49
-msgid "A sound fonts file is required for software synthesis."
-msgstr ""
 
 #: modules/codec/fluidsynth.c:51 modules/meta_engine/ID3Genres.h:130
 msgid "Chorus"
@@ -12040,7 +12046,7 @@ msgstr "Buyisa okwakhona"
 
 #: modules/codec/qsv.c:102
 msgid ""
-"The rate control method to use when encoding. Can be one of 'crb', 'vbr', "
+"The rate control method to use when encoding. Can be one of 'cbr', 'vbr', "
 "'qp', 'avbr'. 'qp' mode isn't supported for mpeg2"
 msgstr ""
 
@@ -14158,7 +14164,7 @@ msgstr "Isibonisi se-Qt"
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:182
 #: modules/gui/macosx/VLCMainWindow.m:669
 #: modules/gui/macosx/VLCMainWindow.m:675
-#: modules/gui/macosx/VLCMainWindow.m:1273
+#: modules/gui/macosx/VLCMainWindow.m:1276
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1035
 #: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1234
 #: modules/gui/qt/main_interface.cpp:1238
@@ -14967,7 +14973,7 @@ msgid "Use regular HTTP modules"
 msgstr ""
 
 #: modules/demux/adaptive/adaptive.cpp:77
-msgid "Connect using http access instead of custom http code"
+msgid "Connect using HTTP access instead of custom HTTP code"
 msgstr ""
 
 #: modules/demux/adaptive/adaptive.cpp:98
@@ -15923,66 +15929,66 @@ msgstr ""
 msgid "WPL playlist import"
 msgstr "Amafayela wohlu lokudlalwayo"
 
-#: modules/demux/playlist/podcast.c:231 modules/demux/playlist/podcast.c:243
-#: modules/demux/playlist/podcast.c:305 modules/demux/playlist/podcast.c:328
+#: modules/demux/playlist/podcast.c:230 modules/demux/playlist/podcast.c:242
+#: modules/demux/playlist/podcast.c:304 modules/demux/playlist/podcast.c:327
 msgid "Podcast Info"
 msgstr ""
 
-#: modules/demux/playlist/podcast.c:233
+#: modules/demux/playlist/podcast.c:232
 #, fuzzy
 msgid "Podcast Link"
 msgstr "Uhlu lwama-URL we-Podcast"
 
-#: modules/demux/playlist/podcast.c:234
+#: modules/demux/playlist/podcast.c:233
 msgid "Podcast Copyright"
 msgstr ""
 
-#: modules/demux/playlist/podcast.c:235
+#: modules/demux/playlist/podcast.c:234
 msgid "Podcast Category"
 msgstr ""
 
-#: modules/demux/playlist/podcast.c:236 modules/demux/playlist/podcast.c:312
+#: modules/demux/playlist/podcast.c:235 modules/demux/playlist/podcast.c:311
 msgid "Podcast Keywords"
 msgstr ""
 
-#: modules/demux/playlist/podcast.c:237 modules/demux/playlist/podcast.c:313
+#: modules/demux/playlist/podcast.c:236 modules/demux/playlist/podcast.c:312
 #, fuzzy
 msgid "Podcast Subtitle"
 msgstr "Izihlokwana"
 
-#: modules/demux/playlist/podcast.c:243 modules/demux/playlist/podcast.c:314
+#: modules/demux/playlist/podcast.c:242 modules/demux/playlist/podcast.c:313
 #, fuzzy
 msgid "Podcast Summary"
 msgstr "Okufinqiwe"
 
-#: modules/demux/playlist/podcast.c:308
+#: modules/demux/playlist/podcast.c:307
 msgid "Podcast Publication Date"
 msgstr ""
 
-#: modules/demux/playlist/podcast.c:309
+#: modules/demux/playlist/podcast.c:308
 #, fuzzy
 msgid "Podcast Author"
 msgstr "Umlobi"
 
-#: modules/demux/playlist/podcast.c:310
+#: modules/demux/playlist/podcast.c:309
 msgid "Podcast Subcategory"
 msgstr ""
 
-#: modules/demux/playlist/podcast.c:311
+#: modules/demux/playlist/podcast.c:310
 #, fuzzy
 msgid "Podcast Duration"
 msgstr "Ukugcwaliswa"
 
-#: modules/demux/playlist/podcast.c:315
+#: modules/demux/playlist/podcast.c:314
 msgid "Podcast Type"
 msgstr ""
 
-#: modules/demux/playlist/podcast.c:329
+#: modules/demux/playlist/podcast.c:328
 #, fuzzy
 msgid "Podcast Size"
 msgstr "Usayizi wefonti"
 
-#: modules/demux/playlist/podcast.c:330
+#: modules/demux/playlist/podcast.c:329
 #, fuzzy, c-format
 msgid "%s bytes"
 msgstr "Ama-bytes athunyelwe"
@@ -17582,7 +17588,7 @@ msgid "Bring All to Front"
 msgstr "Letha konke phambili"
 
 #: modules/gui/macosx/VLCMainMenu.m:478 modules/gui/qt/dialogs/help.cpp:54
-#: modules/gui/qt/menus.cpp:952 modules/gui/qt/menus.cpp:1139
+#: modules/gui/qt/menus.cpp:947 modules/gui/qt/menus.cpp:1134
 msgid "Help"
 msgstr "Usizo"
 
@@ -20000,7 +20006,7 @@ msgstr "Khetha ifayela"
 #, fuzzy
 msgid ""
 "Select or double click an action to change the associated hotkey. Use delete "
-"key to remove hotkeys"
+"key to remove hotkeys."
 msgstr "Khetha isenzo ukuze ushintshe i-hoykey ehlobene"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1141
@@ -20569,8 +20575,8 @@ msgstr "Ngezansi kwevidiyo"
 msgid "Clear the messages"
 msgstr "Imiyalezo"
 
-#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:936
-#: modules/gui/qt/menus.cpp:1133
+#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:931
+#: modules/gui/qt/menus.cpp:1128
 msgid "Open Media"
 msgstr "Vula imidiya"
 
@@ -20600,7 +20606,7 @@ msgid "&Enqueue"
 msgstr "Faka ku&hlu"
 
 #: modules/gui/qt/dialogs/open.cpp:117 modules/gui/qt/dialogs/open.cpp:214
-#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:825
+#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:820
 msgid "&Play"
 msgstr "&Dlala"
 
@@ -21112,29 +21118,29 @@ msgstr "I&midiya"
 msgid "P&layback"
 msgstr "&Dlala"
 
-#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1051
+#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1046
 msgid "&Audio"
 msgstr "Um&sindo"
 
-#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1058
+#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1053
 msgid "&Video"
 msgstr "I&vidiyo"
 
-#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1065
+#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1060
 #, fuzzy
 msgid "Subti&tle"
 msgstr "Izihlokwana"
 
-#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1081
+#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1076
 #, fuzzy
 msgid "Tool&s"
 msgstr "Ama&thuluzi"
 
-#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1088
+#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1083
 msgid "V&iew"
 msgstr "&Buka"
 
-#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:789
+#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:784
 msgid "&Help"
 msgstr "Usi&zo"
 
@@ -21148,7 +21154,7 @@ msgstr "Vula ifayela..."
 msgid "&Open Multiple Files..."
 msgstr "&Vula ifayela..."
 
-#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:941
+#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:936
 msgid "Open &Disc..."
 msgstr "Vula i&diski..."
 
@@ -21156,7 +21162,7 @@ msgstr "Vula i&diski..."
 msgid "Open &Network Stream..."
 msgstr "Vula ukusakaza kwe&nethiwekhi..."
 
-#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:945
+#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:940
 msgid "Open &Capture Device..."
 msgstr "Vula isisetshenziswa soku&thwebula..."
 
@@ -21187,7 +21193,7 @@ msgstr "Azikho izinto kuhlu lokudlalwayo"
 msgid "Close to systray"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:403 modules/gui/qt/menus.cpp:1195
+#: modules/gui/qt/menus.cpp:403 modules/gui/qt/menus.cpp:1190
 msgid "&Quit"
 msgstr "&Phuma"
 
@@ -21227,7 +21233,7 @@ msgstr "Ctrl+L"
 msgid "Docked Playlist"
 msgstr "Uhlu lokudlalwayo lwedoki"
 
-#: modules/gui/qt/menus.cpp:499 modules/gui/qt/menus.cpp:542
+#: modules/gui/qt/menus.cpp:499
 #, fuzzy
 msgid "Always on &top"
 msgstr "Phezulu njalo"
@@ -21258,193 +21264,193 @@ msgstr "Isimo"
 msgid "Visualizations selector"
 msgstr "Ukukhetha okubonwayo"
 
-#: modules/gui/qt/menus.cpp:599
+#: modules/gui/qt/menus.cpp:594
 #, fuzzy
 msgid "&Increase Volume"
 msgstr "Engeza ivolumu"
 
-#: modules/gui/qt/menus.cpp:602
+#: modules/gui/qt/menus.cpp:597
 #, fuzzy
 msgid "D&ecrease Volume"
 msgstr "Yehlisa ivolumu"
 
-#: modules/gui/qt/menus.cpp:605
+#: modules/gui/qt/menus.cpp:600
 #, fuzzy
 msgid "&Mute"
 msgstr "Thulisa"
 
-#: modules/gui/qt/menus.cpp:621
+#: modules/gui/qt/menus.cpp:616
 msgid "Audio &Device"
 msgstr "I&sisetshenziswa somsindo"
 
-#: modules/gui/qt/menus.cpp:625
+#: modules/gui/qt/menus.cpp:620
 msgid "Audio &Track"
 msgstr "U&mugqa womsindo"
 
-#: modules/gui/qt/menus.cpp:627
+#: modules/gui/qt/menus.cpp:622
 #, fuzzy
 msgid "&Stereo Mode"
 msgstr "Isimo sokuthwebula"
 
-#: modules/gui/qt/menus.cpp:630
+#: modules/gui/qt/menus.cpp:625
 msgid "&Visualizations"
 msgstr "Oku&bonwayo"
 
-#: modules/gui/qt/menus.cpp:656
+#: modules/gui/qt/menus.cpp:651
 #, fuzzy
 msgid "Add &Subtitle File..."
 msgstr "Ifayela lezihlokwana"
 
-#: modules/gui/qt/menus.cpp:658
+#: modules/gui/qt/menus.cpp:653
 #, fuzzy
 msgid "Sub &Track"
 msgstr "U&mugqa womsindo"
 
-#: modules/gui/qt/menus.cpp:683
+#: modules/gui/qt/menus.cpp:678
 msgid "Video &Track"
 msgstr "Umugq&a wevidiyo"
 
-#: modules/gui/qt/menus.cpp:690
+#: modules/gui/qt/menus.cpp:685
 msgid "&Fullscreen"
 msgstr "Isikrini esig&cwele"
 
-#: modules/gui/qt/menus.cpp:691
+#: modules/gui/qt/menus.cpp:686
 #, fuzzy
 msgid "Always Fit &Window"
 msgstr "&Phezulu njalo"
 
-#: modules/gui/qt/menus.cpp:692
+#: modules/gui/qt/menus.cpp:687
 #, fuzzy
 msgid "Set as Wall&paper"
 msgstr "I-Wallpaper ye-DirectX"
 
-#: modules/gui/qt/menus.cpp:696
+#: modules/gui/qt/menus.cpp:691
 msgid "&Zoom"
 msgstr "Son&deza"
 
-#: modules/gui/qt/menus.cpp:697
+#: modules/gui/qt/menus.cpp:692
 msgid "&Aspect Ratio"
 msgstr "Ukubheka ngo&bukhulu bokulinganiselwa"
 
-#: modules/gui/qt/menus.cpp:698
+#: modules/gui/qt/menus.cpp:693
 msgid "&Crop"
 msgstr "&Lungisa"
 
-#: modules/gui/qt/menus.cpp:702
+#: modules/gui/qt/menus.cpp:697
 msgid "&Deinterlace"
 msgstr "i-&Deinterlace"
 
-#: modules/gui/qt/menus.cpp:703
+#: modules/gui/qt/menus.cpp:698
 msgid "&Deinterlace mode"
 msgstr "Isimo se-&Deinterlace"
 
-#: modules/gui/qt/menus.cpp:707
+#: modules/gui/qt/menus.cpp:702
 #, fuzzy
 msgid "Take &Snapshot"
 msgstr "Thwebula isithombe"
 
-#: modules/gui/qt/menus.cpp:726
+#: modules/gui/qt/menus.cpp:721
 msgid "T&itle"
 msgstr "Isi&hloko"
 
-#: modules/gui/qt/menus.cpp:727
+#: modules/gui/qt/menus.cpp:722
 msgid "&Chapter"
 msgstr "I&sahluko"
 
-#: modules/gui/qt/menus.cpp:729
+#: modules/gui/qt/menus.cpp:724
 msgid "&Program"
 msgstr "U&hlelo"
 
-#: modules/gui/qt/menus.cpp:733
+#: modules/gui/qt/menus.cpp:728
 #, fuzzy
 msgid "&Manage"
 msgstr "Ukuhlunga ividiyo"
 
-#: modules/gui/qt/menus.cpp:792
+#: modules/gui/qt/menus.cpp:787
 msgid "Check for &Updates..."
 msgstr "Hlolela u&kuvuselela..."
 
-#: modules/gui/qt/menus.cpp:839
+#: modules/gui/qt/menus.cpp:834
 msgid "&Stop"
 msgstr "I&ma"
 
-#: modules/gui/qt/menus.cpp:847
+#: modules/gui/qt/menus.cpp:842
 msgid "Pre&vious"
 msgstr "Okwe&dlulile"
 
-#: modules/gui/qt/menus.cpp:853
+#: modules/gui/qt/menus.cpp:848
 msgid "Ne&xt"
 msgstr "Okulande&layo"
 
-#: modules/gui/qt/menus.cpp:871
+#: modules/gui/qt/menus.cpp:866
 msgid "Sp&eed"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:877
+#: modules/gui/qt/menus.cpp:872
 msgid "&Faster"
 msgstr "Ngoku&shesha"
 
-#: modules/gui/qt/menus.cpp:889
+#: modules/gui/qt/menus.cpp:884
 msgid "N&ormal Speed"
 msgstr "Isivinini esi&vamile"
 
-#: modules/gui/qt/menus.cpp:899
+#: modules/gui/qt/menus.cpp:894
 msgid "Slo&wer"
 msgstr "Ka&ncane"
 
-#: modules/gui/qt/menus.cpp:914
+#: modules/gui/qt/menus.cpp:909
 msgid "&Jump Forward"
 msgstr "Yeqela &phambili"
 
-#: modules/gui/qt/menus.cpp:921
+#: modules/gui/qt/menus.cpp:916
 msgid "Jump Bac&kward"
 msgstr "Yeqela e&muva"
 
-#: modules/gui/qt/menus.cpp:928
+#: modules/gui/qt/menus.cpp:923
 #, fuzzy
 msgid "Ctrl+T"
 msgstr "Ctrl+L"
 
-#: modules/gui/qt/menus.cpp:943
+#: modules/gui/qt/menus.cpp:938
 msgid "Open &Network..."
 msgstr "Ivula i&nethiwekhi..."
 
-#: modules/gui/qt/menus.cpp:1037
+#: modules/gui/qt/menus.cpp:1032
 msgid "Leave Fullscreen"
 msgstr "Phuma esikrinini esigcwele"
 
-#: modules/gui/qt/menus.cpp:1071
+#: modules/gui/qt/menus.cpp:1066
 msgid "&Playback"
 msgstr "&Dlala"
 
-#: modules/gui/qt/menus.cpp:1176
+#: modules/gui/qt/menus.cpp:1171
 #, fuzzy
 msgid "&Hide VLC media player in taskbar"
 msgstr "Fihla isidlali semidiya se-VLC emugqeni womsebenzi"
 
-#: modules/gui/qt/menus.cpp:1182
+#: modules/gui/qt/menus.cpp:1177
 #, fuzzy
 msgid "Sho&w VLC media player"
 msgstr "Bonisa isidlali semidiya se-VLC"
 
-#: modules/gui/qt/menus.cpp:1193
+#: modules/gui/qt/menus.cpp:1188
 #, fuzzy
 msgid "&Open Media"
 msgstr "Vula imidiya"
 
-#: modules/gui/qt/menus.cpp:1633
+#: modules/gui/qt/menus.cpp:1628
 msgid "&Clear"
 msgstr "&Sula"
 
-#: modules/gui/qt/menus.cpp:1641
+#: modules/gui/qt/menus.cpp:1636
 msgid "&Renderer"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1645
+#: modules/gui/qt/menus.cpp:1640
 msgid "<Local>"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1658
+#: modules/gui/qt/menus.cpp:1653
 msgid "Scan"
 msgstr ""
 
@@ -21473,7 +21479,8 @@ msgid "Start VLC with only a systray icon"
 msgstr "Qala i-VLC ngesithonjana se-systray kuphela"
 
 #: modules/gui/qt/qt.cpp:92
-msgid "VLC will start with just an icon in your taskbar"
+#, fuzzy
+msgid "VLC will start with just an icon in your taskbar."
 msgstr "I-VLC izoqala ngesithonjana nje emugqeni wakho womsebenzi"
 
 #: modules/gui/qt/qt.cpp:101
@@ -21547,7 +21554,8 @@ msgid "List of words separated by | to filter"
 msgstr "Uhlu lwamagama ahlukaniswe nge-| ukuze uhlunge"
 
 #: modules/gui/qt/qt.cpp:135
-msgid "Regular expression used to filter the recent items played in the player"
+msgid ""
+"Regular expression used to filter the recent items played in the player."
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:138
@@ -21589,7 +21597,7 @@ msgstr "Chaza ukuthi yisiphi isikrini esigcwele eya kuso"
 
 #: modules/gui/qt/qt.cpp:155
 #, fuzzy
-msgid "Screennumber of fullscreen, instead of same screen where interface is"
+msgid "Screennumber of fullscreen, instead of same screen where interface is."
 msgstr ""
 "Izinombolo zesikrini esigcwele, endaweni yesikrini esisodwa lapho isibonisi "
 "si"
@@ -21599,7 +21607,8 @@ msgid "Load extensions on startup"
 msgstr "Layisha izandiso ekuqaleni"
 
 #: modules/gui/qt/qt.cpp:159
-msgid "Automatically load the extensions module on startup"
+#, fuzzy
+msgid "Automatically load the extensions module on startup."
 msgstr "Layisha ngokuzenzakalela imojula yezandiso ekuqaleni"
 
 #: modules/gui/qt/qt.cpp:162
@@ -21618,12 +21627,13 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:168
-msgid "Expanding background cone or art."
-msgstr ""
+#, fuzzy
+msgid "Expanding background cone or art"
+msgstr "Inqubomgomo ye-caching yangokwakhona"
 
 #: modules/gui/qt/qt.cpp:169
 #, fuzzy
-msgid "Background art fits window's size"
+msgid "Background art fits window's size."
 msgstr "Ukubheka ngobukhulu bokulinganiselwa ividiyo"
 
 #: modules/gui/qt/qt.cpp:171
@@ -21646,7 +21656,7 @@ msgstr "Isibonisi se-Maemo hildon"
 #: modules/gui/qt/qt.cpp:189
 msgid ""
 "This option allows the interface to be raised automatically when a video/"
-"audio playback starts, or never"
+"audio playback starts, or never."
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:192
@@ -22015,19 +22025,20 @@ msgstr "Mayelana nokuhlungwa kwevidiyo"
 
 #: modules/keystore/file.c:54
 #, fuzzy
-msgid "file keystore (plaintext)"
+msgid "File keystore (plaintext)"
 msgstr "Izintandokazi"
 
 #: modules/keystore/file.c:55
-msgid "secrets are stored on a file without any encryption"
+msgid "Secrets are stored on a file without any encryption"
 msgstr ""
 
 #: modules/keystore/file.c:65
-msgid "crypt keystore"
-msgstr ""
+#, fuzzy
+msgid "Crypt keystore"
+msgstr "Susa okukhethiwe"
 
 #: modules/keystore/file.c:66
-msgid "secrets are stored encrypted on a file"
+msgid "Secrets are stored encrypted on a file"
 msgstr ""
 
 #: modules/keystore/keychain.m:40
@@ -22109,11 +22120,11 @@ msgstr ""
 
 #: modules/keystore/memory.c:41
 #, fuzzy
-msgid "memory keystore"
+msgid "Memory keystore"
 msgstr "Susa okukhethiwe"
 
 #: modules/keystore/memory.c:42
-msgid "secrets are stored in memory"
+msgid "Secrets are stored in memory"
 msgstr ""
 
 #: modules/keystore/secret.c:39
@@ -25042,7 +25053,7 @@ msgstr "Uchungechunge lokusakaza okuphumayo olwenziwe"
 
 #: modules/stream_out/chromecast/chromecast_demux.cpp:328
 #, fuzzy
-msgid "chromecast demux wrapper"
+msgid "Chromecast demux wrapper"
 msgstr "Isakhiwo"
 
 #: modules/stream_out/cycle.c:325
@@ -25602,23 +25613,23 @@ msgid ""
 msgstr ""
 
 #: modules/stream_out/standard.c:51
-msgid "address to bind to (helper setting for dst)"
+msgid "Address to bind to (helper setting for dst)"
 msgstr ""
 
 #: modules/stream_out/standard.c:53
 msgid ""
-"address:port to bind vlc to listening incoming streams helper setting for "
-"dst,dst=bind+'/'+path. dst-parameter overrides this"
+"address:port to bind vlc to listening incoming streams. Helper setting for "
+"dst, dst=bind+'/'+path. dst-parameter overrides this."
 msgstr ""
 
 #: modules/stream_out/standard.c:55
-msgid "filename for stream (helper setting for dst)"
+msgid "Filename for stream (helper setting for dst)"
 msgstr ""
 
 #: modules/stream_out/standard.c:57
 msgid ""
-"Filename for stream helper setting for dst, dst=bind+'/'+path, dst-parameter "
-"overrides this"
+"Filename for stream. Helper setting for dst, dst=bind+'/'+path. dst-"
+"parameter overrides this."
 msgstr ""
 
 #: modules/stream_out/standard.c:93
@@ -27027,7 +27038,7 @@ msgstr ""
 
 #: modules/video_filter/opencv_wrapper.c:82
 msgid ""
-"Ammount by which to scale the picture before sending it to the internal "
+"Amount by which to scale the picture before sending it to the internal "
 "OpenCV filter"
 msgstr ""
 
@@ -28857,10 +28868,6 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr ""
 
-#, fuzzy
-#~ msgid "Always &on Top"
-#~ msgstr "&Phezulu njalo"
-
 #~ msgid "Dialog"
 #~ msgstr "Ibhokisi"
 
@@ -29308,6 +29315,10 @@ msgstr ""
 #~ msgid "Add a background"
 #~ msgstr "Inqubomgomo ye-caching yangokwakhona"
 
+#, fuzzy
+#~ msgid "O&utput"
+#~ msgstr "Okuphumayo"
+
 #~ msgid "Accelerated video output (Overlay)"
 #~ msgstr "Ukuphumayo kwevidiyo okusheshisiwe (Ukunqwabelanisa)"
 
@@ -29464,6 +29475,14 @@ msgstr ""
 
 #~ msgid "Media Manager List"
 #~ msgstr "Isiphathi sohlu semidiya"
+
+#, fuzzy
+#~ msgid "Capture region heigh"
+#~ msgstr "Ubude besikrini esingezansi:"
+
+#, fuzzy
+#~ msgid "Always &on Top"
+#~ msgstr "&Phezulu njalo"
 
 #, fuzzy
 #~ msgid "Sox Resampling quality"

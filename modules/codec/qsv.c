@@ -2,7 +2,7 @@
  * qsv.c: mpeg4-part10/mpeg2 video encoder using Intel Media SDK
  *****************************************************************************
  * Copyright (C) 2013 VideoLabs
- * $Id: c9fec8f19a5c916c8f44388cb018d1f3e48578b2 $
+ * $Id: 2abda2e6c60f9849d8cb417c74cb9ab2caa9961c $
  *
  * Authors: Julien 'Lta' BALLET <contact@lta.io>
  *
@@ -100,7 +100,7 @@ static void     Close(vlc_object_t *);
 #define RATE_CONTROL_TEXT N_("Rate Control Method")
 #define RATE_CONTROL_LONGTEXT N_( \
     "The rate control method to use when encoding. Can be one of " \
-    "'crb', 'vbr', 'qp', 'avbr'. 'qp' mode isn't supported for mpeg2")
+    "'cbr', 'vbr', 'qp', 'avbr'. 'qp' mode isn't supported for mpeg2")
 
 #define QP_TEXT N_("Quantization parameter")
 #define QP_LONGTEXT N_("Quantization parameter for all types of frames. " \

@@ -2,7 +2,7 @@
  * fluidsynth.c: Software MIDI synthesizer using libfluidsynth
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: b2455300b2a0e2ff59c426af5c166c5d09410332 $
+ * $Id: f461f3fd14716f2147a200ba614c53ae6c2712f4 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -44,9 +44,9 @@
 #include <fluidlite.h>
 #endif
 
-#define SOUNDFONT_TEXT N_("Sound fonts")
+#define SOUNDFONT_TEXT N_("SoundFont file")
 #define SOUNDFONT_LONGTEXT N_( \
-    "A sound fonts file is required for software synthesis." )
+    "SoundFont file to use for software synthesis." )
 
 #define CHORUS_TEXT N_("Chorus")
 

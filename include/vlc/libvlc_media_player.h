@@ -2,7 +2,7 @@
  * libvlc_media_player.h:  libvlc_media_player external API
  *****************************************************************************
  * Copyright (C) 1998-2015 VLC authors and VideoLAN
- * $Id: 2e0b56c0666e2c8dc5deb0dad8a7b6a9a11113df $
+ * $Id: 4336df9442b5bae28ec93d540f2ee5907f34e077 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -288,7 +288,7 @@ LIBVLC_API void libvlc_media_player_stop ( libvlc_media_player_t *p_mi );
  * \version LibVLC 3.0.0 or later
  */
 LIBVLC_API int libvlc_media_player_set_renderer( libvlc_media_player_t *p_mi,
-                                                 const libvlc_renderer_item_t *p_item );
+                                                 libvlc_renderer_item_t *p_item );
 
 /**
  * Callback prototype to allocate and lock a picture buffer.

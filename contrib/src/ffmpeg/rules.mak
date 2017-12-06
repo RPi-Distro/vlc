@@ -4,12 +4,12 @@
 #USE_LIBAV ?= 1
 #USE_FFMPEG ?= 1
 
-ifdef USE_FFMPEG
-FFMPEG_HASH=a82468514048fb87d9bf38689866bc3b9aaccd02
+ifndef USE_LIBAV
+FFMPEG_HASH=5a93a85fd0ad62c6c9cdf69415959f116c015f0e
 FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=$(FFMPEG_HASH);sf=tgz
 FFMPEG_GITURL := http://git.videolan.org/git/ffmpeg.git
 else
-FFMPEG_HASH=825e463a170c7004c63030dc484b2b2de869227b
+FFMPEG_HASH=e171022c24c42b1e88a51bb3b4c27f13c87c85cb
 FFMPEG_SNAPURL := http://git.libav.org/?p=libav.git;a=snapshot;h=$(FFMPEG_HASH);sf=tgz
 FFMPEG_GITURL := git://git.libav.org/libav.git
 endif
@@ -39,7 +39,8 @@ FFMPEGCONF += \
 	--disable-swresample \
 	--disable-iconv \
 	--disable-avisynth \
-	--disable-nvenc
+	--disable-nvenc \
+	--disable-linux-perf
 ifdef HAVE_DARWIN_OS
 FFMPEGCONF += \
 	--disable-videotoolbox
@@ -139,9 +140,6 @@ ifdef HAVE_NEON
 FFMPEGCONF += --as="$(AS)"
 endif
 endif
-ifdef HAVE_MACOSX
-FFMPEGCONF += --enable-vda
-endif
 endif
 
 # Linux
@@ -224,9 +222,6 @@ ffmpeg: ffmpeg-$(FFMPEG_BASENAME).tar.xz .sum-ffmpeg
 	rm -Rf $@ $@-$(FFMPEG_BASENAME)
 	mkdir -p $@-$(FFMPEG_BASENAME)
 	tar xvJf "$<" --strip-components=1 -C $@-$(FFMPEG_BASENAME)
-ifdef USE_FFMPEG
-	$(APPLY) $(SRC)/ffmpeg/force-unicode.patch
-endif
 	$(MOVE)
 
 .ffmpeg: ffmpeg

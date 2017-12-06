@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: e5d9e735ca8943c887d3151fd8c676596219c6ec $
+ * $Id: 741fda6e35bc3ebdde58480163c35ec30ae2982d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -189,6 +189,11 @@ typedef struct
 
 class RTSPClientVlc;
 
+#define CAP_RATE_CONTROL        (1 << 1)
+#define CAP_SUBSESSION_TEARDOWN (1 << 2)
+#define CAP_SUBSESSION_PAUSE    (1 << 3)
+#define CAPS_DEFAULT            CAP_RATE_CONTROL
+
 struct demux_sys_t
 {
     char            *p_sdp;    /* XXX mallocated */
@@ -199,6 +204,7 @@ struct demux_sys_t
     TaskScheduler    *scheduler;
     UsageEnvironment *env ;
     RTSPClientVlc    *rtsp;
+    int              capabilities; /* Server capabilities workaround */
 
     /* */
     int              i_track;
@@ -338,6 +344,13 @@ static int  Open ( vlc_object_t *p_this )
     }
 
     msg_Dbg( p_demux, "version " LIVEMEDIA_LIBRARY_VERSION_STRING );
+
+    p_sys->capabilities = CAPS_DEFAULT;
+    if( var_GetBool( p_demux, "rtsp-kasenna" ) ||
+        var_GetBool( p_demux, "rtsp-wmserver" ) )
+    {
+        p_sys->capabilities &= ~CAP_RATE_CONTROL;
+    }
 
     TAB_INIT( p_sys->i_track, p_sys->track );
     p_sys->b_no_data = true;
@@ -552,6 +565,16 @@ static void continueAfterDESCRIBE( RTSPClient* client, int result_code,
         p_sys->b_error = true;
     delete[] result_string;
     p_sys->event_rtsp = 1;
+#ifdef VLC_PATCH_RTSPCLIENT_SERVERSTRING
+    if( client_vlc->serverString() )
+    {
+        if( !strncmp(client_vlc->serverString(), "Kasenna", 7) ||
+            !strncmp(client_vlc->serverString(), "WMServer", 8) )
+            p_sys->capabilities &= ~CAP_RATE_CONTROL;
+        if( !strncmp(client_vlc->serverString(), "VLC/", 4) )
+            p_sys->capabilities |= (CAP_SUBSESSION_TEARDOWN|CAP_SUBSESSION_PAUSE);
+    }
+#endif
 }
 
 static void continueAfterOPTIONS( RTSPClient* client, int result_code,
@@ -1311,7 +1334,8 @@ static void ResumeTrack( demux_t *p_demux, live_track_t *tk )
         if( !wait_Live555_response(p_demux) )
         {
             msg_Err( p_demux, "RTSP PLAY failed %s", p_sys->env->getResultMsg() );
-            if( !HasSharedSession( tk->sub ) )
+            if( (p_sys->capabilities & CAP_SUBSESSION_TEARDOWN) ||
+                !HasSharedSession( tk->sub ) )
             {
                 tk->state = live_track_t::STATE_TEARDOWN;
                 p_sys->rtsp->sendTeardownCommand( *tk->sub, NULL );
@@ -1347,7 +1371,8 @@ static int Demux( demux_t *p_demux )
             es_out_Control( p_demux->out, ES_OUT_GET_ES_STATE, tk->p_es, &b );
             if( !b && (tk->state == live_track_t::STATE_SELECTED) && p_sys->rtsp )
             {
-                if( !HasSharedSession( tk->sub ) )
+                if( (p_sys->capabilities & CAP_SUBSESSION_TEARDOWN) ||
+                    !HasSharedSession( tk->sub ) )
                 {
                     tk->state = live_track_t::STATE_TEARDOWN;
                     p_sys->rtsp->sendTeardownCommand( *tk->sub, NULL );
@@ -1615,9 +1640,8 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             pb = va_arg( args, bool * );
 
             *pb = (p_sys->rtsp != NULL) &&
-                    (p_sys->f_npt_length > 0) &&
-                    ( !var_GetBool( p_demux, "rtsp-kasenna" ) ||
-                      !var_GetBool( p_demux, "rtsp-wmserver" ) );
+                  (p_sys->f_npt_length > 0) &&
+                  (p_sys->capabilities & CAP_RATE_CONTROL);
             return VLC_SUCCESS;
 
         case DEMUX_SET_RATE:
@@ -1626,8 +1650,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             double f_scale, f_old_scale;
 
             if( !p_sys->rtsp || (p_sys->f_npt_length <= 0) ||
-                var_GetBool( p_demux, "rtsp-kasenna" ) ||
-                var_GetBool( p_demux, "rtsp-wmserver" ) )
+                !(p_sys->capabilities & CAP_RATE_CONTROL) )
                 return VLC_EGENERIC;
 
             /* According to RFC 2326 p56 chapter 12.35 a RTSP server that

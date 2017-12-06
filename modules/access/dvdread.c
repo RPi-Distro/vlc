@@ -2,7 +2,7 @@
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: 0f8d7a10595a43bfd468a12ea36fedf5f9df7b7d $
+ * $Id: 8a406a999171254b68cd5c2727bacdf9403d8968 $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1213,6 +1213,7 @@ static void DvdReadHandleDSI( demux_t *p_demux, uint8_t *p_data )
 
                 break;
             }
+            /* fall through */
         case 0x6:
             /* vobu is beginning of ilvu */
         case 0x9:

@@ -2,7 +2,7 @@
  * subsdec.c : text subtitle decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: abc6786f29d0b54cf06ac471c9a85ef14c06fcc8 $
+ * $Id: 868174ba963fbf0cb5b2a50d6123426b7476e1bc $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -678,7 +678,7 @@ static text_style_t* DuplicateAndPushStyle(style_stack_t** pp_stack)
     style_stack_t* p_entry = malloc( sizeof( *p_entry ) );
     if ( unlikely( !p_entry ) )
     {
-        free( p_dup );
+        text_style_Delete( p_dup );
         return NULL;
     }
     // Give the style ownership to the segment.
@@ -792,12 +792,14 @@ static text_segment_t* ParseSubtitles( int *pi_align, const char *psz_subtitle )
                         }
                         if ( !strcasecmp( psz_attribute_name, "face" ) )
                         {
+                            free(p_segment->style->psz_fontname);
                             p_segment->style->psz_fontname = psz_attribute_value;
                             // We don't want to free the attribute value since it has become our fontname
                             psz_attribute_value = NULL;
                         }
                         else if ( !strcasecmp( psz_attribute_name, "family" ) )
                         {
+                            free(p_segment->style->psz_monofontname);
                             p_segment->style->psz_monofontname = psz_attribute_value;
                             psz_attribute_value = NULL;
                         }
@@ -1000,6 +1002,7 @@ static text_segment_t* ParseSubtitles( int *pi_align, const char *psz_subtitle )
             else if( psz_subtitle[1] == 'F' || psz_subtitle[1] == 'f' )
             {
                 p_segment = NewTextSegmentPushStyle( p_segment, &p_stack );
+                free(p_segment->style->psz_fontname);
                 p_segment->style->psz_fontname = strndup( &psz_subtitle[3], i_len );
             }
             else if( psz_subtitle[1] == 'S' || psz_subtitle[1] == 's' )

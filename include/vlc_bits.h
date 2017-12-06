@@ -2,7 +2,7 @@
  * vlc_bits.h : Bit handling helpers
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003, 2006, 2015 VLC authors and VideoLAN
- * $Id: 018e3067314f77263138a762bd63161317787e2b $
+ * $Id: 395a789eba46ac42413f5fb5418619332589f824 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin at videolan dot org>
@@ -96,8 +96,14 @@ static inline uint32_t bs_read( bs_t *s, int i_count )
         0x1fffff,  0x3fffff,  0x7fffff,  0xffffff,
         0x1ffffff, 0x3ffffff, 0x7ffffff, 0xfffffff,
         0x1fffffff,0x3fffffff,0x7fffffff,0xffffffff};
-    int      i_shr;
+    int      i_shr, i_drop = 0;
     uint32_t i_result = 0;
+
+    if( i_count > 32 )
+    {
+        i_drop = i_count - 32;
+        i_count = 32;
+    }
 
     while( i_count > 0 )
     {
@@ -116,17 +122,23 @@ static inline uint32_t bs_read( bs_t *s, int i_count )
                 bs_forward( s, 1 );
                 s->i_left = 8;
             }
-            return( i_result );
+            break;
         }
         else
         {
             /* less in the buffer than requested */
-           i_result |= (*s->p&i_mask[s->i_left]) << -i_shr;
+           if( -i_shr == 32 )
+               i_result = 0;
+           else
+               i_result |= (*s->p&i_mask[s->i_left]) << -i_shr;
            i_count  -= s->i_left;
            bs_forward( s, 1);
            s->i_left = 8;
         }
     }
+
+    if( i_drop )
+        bs_forward( s, i_drop );
 
     return( i_result );
 }

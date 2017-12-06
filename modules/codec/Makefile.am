@@ -60,6 +60,12 @@ if HAVE_DARWIN
 libfluidsynth_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-framework,CoreServices
 endif
 
+libaudiotoolboxmidi_plugin_la_SOURCES = codec/audiotoolbox_midi.c
+libaudiotoolboxmidi_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)'
+libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-framework,AudioUnit,-framework,AudioToolbox
+EXTRA_LTLIBRARIES += libaudiotoolboxmidi_plugin.la
+codec_LTLIBRARIES += $(LTLIBaudiotoolboxmidi)
+
 liblpcm_plugin_la_SOURCES = codec/lpcm.c
 codec_LTLIBRARIES += liblpcm_plugin.la
 
@@ -415,7 +421,8 @@ endif
 codec_LTLIBRARIES += libvaapi_plugin.la
 endif
 
-libd3d9_common_la_SOURCES = video_chroma/d3d9_fmt.c video_chroma/d3d9_fmt.h
+libd3d9_common_la_SOURCES = video_chroma/d3d9_fmt.c video_chroma/d3d9_fmt.h \
+	video_chroma/dxgi_fmt.c video_chroma/dxgi_fmt.h
 libd3d9_common_la_LDFLAGS = -static
 if HAVE_WIN32_DESKTOP
 noinst_LTLIBRARIES += libd3d9_common.la

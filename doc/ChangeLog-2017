@@ -1,3 +1,846 @@
+commit cf370719dedceb9173c83014a262ef7027b58e3e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 6 02:56:18 2017 +0100
+
+    Update PO files
+    
+    (cherry picked from commit 974e719ba54ecdb2d468048d3ac516020130a831)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d9bf3041054437508dab35ca8769e7eb357ba2f8
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 6 02:54:46 2017 +0100
+
+    MIDI: use only one i18n string for all the modules
+    
+    (cherry picked from commit a334e32182b96ac8dca8c81c1562a94a617da65d)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e16c86b0bc354abf46717147d93332080a70b870
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 6 00:25:13 2017 +0100
+
+    QSV: fix typo on CBR
+    
+    (cherry picked from commit 3be21393d4d40018d3241e4407b8428b072ee11a)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit dc881a4c19ebb54011a3f22d35ddec6046cee801
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 6 00:23:41 2017 +0100
+
+    SRT: fix typo
+    
+    (cherry picked from commit 52f8cf70f101113eeab9033d76b4771b81f05a46)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 425ea8e73b78f3f4b6b8c2610b7f1c3042b376a9
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Thu Nov 30 10:11:12 2017 +0100
+
+    configure: Remove obsolete OS X 10.7 workaround
+    
+    This was used in vlc 2.2 to disable symbols which were not available
+    in 10.6. They are available starting with 10.7 and we have a
+    different mechanism to disable symbols nowadays.
+    
+    (cherry picked from commit c9d802a63af4a8215ebb01114d540ad3ad8dad87)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit 1679ed33d3415ea61d38da24412d16335b084846
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Tue Dec 5 18:19:49 2017 +0100
+
+    macosx: Fix playlist duration calculation
+    
+    Manual backport of a99d9803133eafd8789a4fc4bbd30b0de0bb53f6, to remain
+    compatible with macOS < 10.10.
+    
+    Fix #19221
+    
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+
+commit 199747d9c8f7ff4fa3a962a7d3341934dbe97cd5
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Dec 5 17:16:25 2017 +0100
+
+    Contrib: FFmpeg, disable Linux perf because it fails on Android
+    
+    (cherry picked from commit 949fdc703a3451a7c1d201ba964a7821c0d4f3cd)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 3ba06ec852b69c0d60b22d172af3a4ac7e595af3
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Dec 5 17:01:59 2017 +0100
+
+    contribs: openjpeg2, don't build the tools (codec)
+    
+    This should fix build on Android.
+    
+    (cherry picked from commit e9a16db4c5096566e60c09423a7dda55f1cb1883)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1c5190e5b2db855f6075bee2b955be5eb3170d16
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Dec 5 16:46:32 2017 +0100
+
+    contrib: openjpeg: Add missing toolchain.cmake dependency
+    
+    Pointed out by: David Fuhrmann <dfuhrmann@videolan.org>
+    
+    (cherry picked from commit c8384b1f759bcd92f19587db4ebc3819fe3a498a)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 2b50d9fbbb1fcf9652674d200ea85095a1922809
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Dec 5 16:31:08 2017 +0100
+
+    subsdec: Fix memory leak
+    
+    (cherry picked from commit fc03009e41cbc0495e453b135792e57dc080a695)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit ccee27d12c5e4e8406744db18719950a4ac6ceda
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Mon Dec 4 15:31:23 2017 +0100
+
+    contrib: Do not build fluidlite on macOS
+    
+    There is now audiotoolbox_midi, which makes fluidlite unnecessary
+    on macOS
+    
+    (cherry picked from commit 6f345f9734c5e8352debbd0e5b9748300e812a81)
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+    Acked-By: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6ec841c515ecd9668092a0662a8a461017957ede
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Thu Nov 30 09:25:05 2017 +0100
+
+    codec/audiotoolbox_midi: Handle SysEx
+    
+    (cherry picked from commit 7b91213fa9636b6fb0e67d0e9c3e8aa3fde3a835)
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+    Acked-By: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f0c50478fd55bd9ab9003f262a2d4dc24f1e1db3
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Wed Nov 29 16:31:21 2017 +0100
+
+    package/macosx: Add audiotoolbox_midi to Xcode project
+    
+    (cherry picked from commit ca659050fa3c7f999330e5c792b8e872ea117a82)
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+    Acked-By: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 281f17acb9f246916c0a60730ff7ed3a2f261762
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Tue Nov 28 13:15:19 2017 +0100
+
+    codec/audiotoolbox_midi: Add AudioToolbox MIDI decoder
+    
+    (cherry picked from commit 27bb516b0c99e76875d95e785a3e61af032fd683)
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+    Acked-By: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 103010adc380c9f1962147e850cf21d7b419d2cf
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Dec 5 15:30:07 2017 +0100
+
+    subsdec: Fix memory leak
+    
+    (cherry picked from commit 589f928104478fee5901db0d0b2e1e829fbe30dd)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit d9315fcbc21f194c3af280f9c8f5555c314e4218
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Tue Dec 5 11:17:54 2017 +0300
+
+    contrib: cmake: set the Debug/Release target for all operating systems.
+    
+    Previously it was under HAVE_WIN32, which is probably not what was
+    intended.
+    
+    (cherry picked from commit 30b6a6691431a6245a7f27ffd3fb061c3f6b50c6)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 30f556edc2454e2ff94c2dece72c2b4ff76ad732
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Tue Dec 5 10:55:50 2017 +0300
+
+    contrib: soxr/openjpeg: don't explicitely set CMAKE_BUILD_TYPE.
+    
+    (cherry picked from commit 40489baa4fb9e410c815c47ef9907a285d1ed5d3)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 59fe3fa561ab7db25ab426a8a829fba5b0387a2b
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Tue Dec 5 07:52:48 2017 +0300
+
+    contrib: ffmpeg: don't force-enable vda on Darwin.
+    
+    The VLC code for that was removed in dc14ecb4f25874c364e6dabc902c540c94ac5556.
+    
+    (cherry picked from commit 5115a88a015dab91e810fda6f1814ca5b586813c)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 04ef5df19537426d25d6622efebb1132f5ea80a7
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Dec 4 01:50:16 2017 +0100
+
+    Contribs: update FFmpeg/libav hashes
+    
+    and make it easier to use a different FFmpeg fork
+    
+    (cherry picked from commit d7816e451372913185a7b94ce0bb117646b07bb5)
+    (cherry picked from commit b6c43967342dc0dab232f0428b6e898572a5128c)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 428fb11b556a97673b13edbfb092ae85736b7080
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Tue Dec 5 07:38:18 2017 +0300
+
+    contrib: openjpeg: added patch to fix install.
+    
+    While at it, use upstream-preferred cmake parameters.
+    
+    (cherry picked from commit 6d854372e2048ccab20aa80c40782dccb905f9f2)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 92f88013d60f89c0b5ccb9cd10d1b28674f915bf
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Dec 4 02:05:41 2017 +0100
+
+    Contribs: update openjpeg to 2.3.0
+    
+    And switch to CMake
+    
+    (cherry picked from commit de37944f020d532418722da1bbf368472439da4e)
+    (cherry picked from commit 68af3d0e2d5d5a02fe5d906b9e4a2d252b428441)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c6f3bba11eb36bfba5ecf579fb25322436267d5c
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Tue Dec 5 09:59:13 2017 +0300
+
+    contrib: srt: call pkg_static.
+    
+    (cherry picked from commit be00c0f748b60f06ca8730b8e89f9733d32e9385)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 998cca95c2b0a369119feddf7516599437f85ee2
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Tue Dec 5 06:39:39 2017 +0300
+
+    contribs: srt: override Werror=partial-availability for DARWIN_OS.
+    
+    (cherry picked from commit facf4da263c971db8b22dbf0070280c419c13c6b)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e9703740cd0aa78f263c36678c7ac733d974d667
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Sun Dec 3 15:34:43 2017 +0300
+
+    contrib: srt: disable test apps build.
+    
+    (cherry picked from commit 407f5719715165f8831af1521738839288961301)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c0ee8b2a8361f4fbeb474d8972214a79b9cef536
+Author: Justin Kim <justin.kim@collabora.com>
+Date:   Mon Dec 4 15:15:25 2017 +0900
+
+    access_out: srt: use pipe to detect interrupt
+    
+    `eventfd` is a linux-specific API. `pipe` can provide similar
+    mechanisms to be platform-independent.
+    
+    Signed-off-by: Justin Kim <justin.kim@collabora.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit c8bef6551e50cf4cef893a9d274571810e1895cb)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 236104d65b652bb31026b05b371ddf6f9c0f83d9
+Author: Justin Kim <justin.kim@collabora.com>
+Date:   Mon Dec 4 15:15:24 2017 +0900
+
+    access: srt: use pipe to detect interrupt
+    
+    `eventfd` is a linux-specific API. `pipe` can provide similar
+    mechanisms to be platform-independent.
+    
+    Signed-off-by: Justin Kim <justin.kim@collabora.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 20ccc2223554fb00876e5025a93917f0745a1c18)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9bf0ef7b771d5250002846a1ed9bce236393b04f
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Mon Dec 4 01:12:55 2017 +0100
+
+    i18n: capital letter at the beginning
+    
+    Signed-off-by: Michał Trzebiatowski <michtrz@gmail.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit ec0992fbfb5cca619b34da48502d317ab51a94c0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1a21eb17d67d90225e84d0514b120bd20c16a4db
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Mon Dec 4 01:12:54 2017 +0100
+
+    i18n: missing . in LONGTEXT variables
+    
+    Signed-off-by: Michał Trzebiatowski <michtrz@gmail.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 9230003b194fa774708b8017bd72aeb612131d70)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6ccf6b44cd42e8fb37457e6d57b709bfb436653b
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Mon Dec 4 01:12:53 2017 +0100
+
+    i18n: typo http -> HTTP
+    
+    Signed-off-by: Michał Trzebiatowski <michtrz@gmail.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 0bb5fb9dcd76ef40221c2c5cd18301172eddffc2)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e039a2a7867c1c6ae276a36a44bf76cac1597ee0
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Mon Dec 4 01:12:52 2017 +0100
+
+    i18n: typo fixes
+    
+    Signed-off-by: Michał Trzebiatowski <michtrz@gmail.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 293819990a488ec09e10b2a4a954673524f29358)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 7e796a0b348c72278287b5e8f5adce38c5c8e708
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Fri Dec 1 19:55:35 2017 +0100
+
+    i18n: typo on "amount"
+    
+    Signed-off-by: Michał Trzebiatowski <michtrz@gmail.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 512b4e55764d8f63ff9f836c7bc853c7c13892eb)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 46f5be093b1f7229ca533afd16a85edffa15687a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Dec 5 00:37:45 2017 +0100
+
+    Add missing subtitles extensions
+    
+    Ref #19228 #19229 #19230 #19231
+    
+    (cherry picked from commit 9108c985c600f8fa40f6095e7fd97dc7dcf9ace0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 173740fea3c0079364ca84f9cb2616d820bb3260
+Author: Zhao Zhili <quinkblack@foxmail.com>
+Date:   Fri Dec 1 17:52:53 2017 +0800
+
+    demux: hls: avoid redundant update of playlist
+    
+    Signed-off-by: Francois Cartegnie <fcvlcdev@free.fr>
+    (cherry picked from commit 390078318d4f62827a5f185bf922e9b03052a19b)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 68378c1fa6b8634d0bb69bc8770da7ecc4e38d6d
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Dec 4 17:59:42 2017 +0100
+
+    input: attach slaves to master only
+    
+    The previous logic was wrong. An input item is not necessarily a master if it's
+    not a slave.
+    
+    Fixes #19208
+    
+    (cherry picked from 55b62a9b3428b97b2eb792fbcca6121f01158c07)
+
+commit bc634c6cbf358a7be11914f306c0fefde4238810
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Dec 4 17:49:18 2017 +0100
+
+    input: use bsearch in input_item_slave_GetType
+    
+    (cherry picked from c7a229ab34e705446f87c28c0afe8387676efca6)
+
+commit 758a3891e15cdd70372b827ae1ccadb03eb3e038
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Dec 4 18:57:27 2017 +0200
+
+    nsv: fix flawed logic (fixes #19213)
+    
+    (cherry picked from commit 3d61f5d5a9bdd2ccd29fb627495c44371faf7cad)
+
+commit 01b569138a87a8c3d5d9392de5d366f9fc9d07c8
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Dec 4 10:22:23 2017 +0100
+
+    input: fix null-deref from input_ControlVarStop
+    
+    This commit fixes a NULL dereference introduced by
+    ee8f0516a22a975e44bec35ea1991b076133fd94 when demux_Control( DEMUX_GET_TITLE )
+    pass but the input doesn't have any title.
+    
+    The input_ControlVarStop() function cleans up chapters callback by destroying
+    the variables like input_ControlVarTitle() is already doing.
+    
+    Fixes #19218
+    
+    (cherry picked from b26c856b4c68fea71b4b8bb727c790ba7c867fd9)
+
+commit 0d9daeeb77d0b0ea9b9c7439a4e35dcc9abbbd69
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 1 11:15:35 2017 +0100
+
+    access: live555: re-enable subsession teardown for vlc
+    
+    (cherry picked from commit 9a647ec12d0d3a161110343028b60b7b3aa38e71)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9ad2e9f74ae5e9df52f5b17c18c458a5a9d77d52
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 1 11:04:26 2017 +0100
+
+    access: live555: set workarounds from server string if avail
+    
+    (cherry picked from commit 73b3614247dd47e07e94fb2d2f9040ea89b7c493)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 597873d66fb62bd0ad4e16b4553cb9dff2e66518
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 1 10:57:44 2017 +0100
+
+    access: live555: replace workaround vars with flags
+    
+    (cherry picked from commit 24c49aeccbe6c5d8512edff27416e67596f640b4)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a2d5cb08bbb1e3ba8cdd98c10b1283323581e7f1
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Nov 30 19:41:58 2017 +0100
+
+    contribs: live555: expose Server header
+    
+    (cherry picked from commit 300978f136fd38f0847901896f3da74b0fe3c182)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1640df6ea2d579693c86efcf14f8e690b816653d
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Dec 4 09:23:04 2017 +0100
+
+    Revert "vaapi: fix crash on error case"
+    
+    This case can't happen anymore.
+    
+    This reverts commit 10a562ee149e199529f917e53da9c4fc902cf629.
+    
+    (cherry picked from 37203287ee2b3c6865ce91ad4cc389562662e5d5)
+
+commit 46b2ac113a29879e4d534a9a142392d60bb40b09
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Dec 4 09:22:45 2017 +0100
+
+    opengl: vaapi: fix UB when surface type and module doesn't match
+    
+    Fixes #19204
+    
+    (cherry picked from 7c0a6a24a78f7b965732517605d78872abab87e8)
+
+commit 9bbfb0e51ee10e0b4a6967b382a0c3bf39a0f893
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Mon Dec 4 01:33:05 2017 +0100
+
+    i18n: missing . at the end of a sentence
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit aacce0f6113123226f2fe66268cac01e7b2c5d61)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 883925daf634b94e26f3a679c971df42bc80940d
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Mon Dec 4 01:21:40 2017 +0100
+
+    i18n: capital letter at the beginning
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 9924438b5c17a50aae5343017c1351e083db53e1)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1252b54882b511e3e0401bd629959baa257557a5
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Mon Dec 4 01:20:55 2017 +0100
+
+    i18n: missing . in LONGTEXT variables
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit cfbe65e6832fa82595adb7c7067748902b72de4f)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f60dfc31d8e8a7f3828128bbacd3aeddf5b791c4
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Thu Nov 30 19:47:27 2017 +0100
+
+    i18n: Capture region heigh -> height
+    
+    Signed-off-by: Michał Trzebiatowski <michtrz@gmail.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 60c6b2f79b8c1507f1a334c5ec498798c9de771f)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6dc57087c4b907d67e5d924f7200f3035faa7a4a
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Dec 1 11:30:11 2017 +0100
+
+    d3d11_fmt: consider drivers are always OK on the Winstore builds
+    
+    Too bad if they're not, there's no way to check.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit e501dc96a1e30a19ca5cc5d18b5d100ec4512369)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0b8b4fe611f0efbc372ce0942dcb7e542f3ae4d4
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Dec 1 09:55:15 2017 +0100
+
+    dxva2: disable HEVC 10 bits decoding on older Intel drivers
+    
+    See https://communities.intel.com/thread/116386?start=15&tstart=0
+    
+    Fixes #19171
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit fbf3555aae97391b8e64341eb5349c204f015d8a)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5c7b3032701e43545481f524bc69598bfe22a153
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Dec 1 09:55:14 2017 +0100
+
+    d3d9_fmt: add a function to check the driver vendor/version is OK
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 99b260eb557b85cc45b7f922cf97fc4665f37d17)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6e566fd92bba619c747cefb514d4f636113cffd1
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Dec 1 09:55:13 2017 +0100
+
+    dxgi_fmt: use a generic way to get the vendor string
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit eb10517a23e3dd1e885375977577d38bd5118709)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 54e8a00450f0ca92ad839cec8ce81861d1869f5f
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Dec 1 09:55:12 2017 +0100
+
+    dxgi_fmt: remove unneeded includes
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 25e716416142f0163f99a88e2a5772af991e1538)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bf1cc97d69fbd30087a1c5441b39d28e56f6bdc8
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Dec 1 09:55:11 2017 +0100
+
+    d3d9: include dxgi_fmt.h
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit c38cae6614b777dd0651d79a0489821ca5893c20)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit cf2aa67a79b36ff962b26613bd67caab5e422687
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Dec 1 09:55:10 2017 +0100
+
+    dxgi_fmt: move the manufacturer IDs in dxgi_fmt.h
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 9aadaa056ca72e2add3eb2b004c448e07db8289a)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0580071dd02944439050d1e00a45ba23bdb5031c
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Dec 3 23:26:31 2017 +0100
+
+    contribs: update libbluray to 1.0.2
+    
+    (partial UHD playback, yay!)
+    
+    (cherry picked from commit cd1ecfb8ec77bc117aba4f432a04ef1e3094c442)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ea6964dde717c2b17ba7236936a9e944fd0a80a9
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Dec 3 22:11:20 2017 +0100
+
+    Qt: fix menu double action
+    
+    Close #19200
+    
+    (cherry picked from commit 365e4967451fac3246f1eb4ab73c5257cda8abab)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a92fb5e63ef9f8611c65d25964e260b789bc2a81
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Dec 3 18:54:33 2017 +0100
+
+    vaapi: fix crash on error case
+    
+    Regression from f0c3cef078963f848e961088d452c488c88f4f7a
+    
+    Close #19204
+    
+    (cherry picked from commit 10a562ee149e199529f917e53da9c4fc902cf629)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 1c60a0f7db1a5153443bb3abd074e48ad7e68033
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Dec 3 14:56:48 2017 +0200
+
+    bootstrap: fail hard if flex or bison are missing and needed
+    
+    (cherry picked from commit 31acc2f0e75352c56b742d33d6852b209133b05e)
+
+commit 14f1d93894a45c507aee48723a33d0e4137d2a67
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Dec 3 12:34:18 2017 +0200
+
+    dvdread: fix switch warning
+    
+    (cherry picked from commit eddde94c1cb784cf2412b83ff0a32b443d06894b)
+
+commit d745c436248431f6f65700e56cb19b937032e13b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Dec 2 23:12:22 2017 +0200
+
+    hds: fix invalid cast / aliasing violation
+    
+    (cherry picked from commit cf542f06543319cb0b90de2619d7e0da8bbd52df)
+
+commit 19efb2ec4acee33c25d9803b5745d91a9f5172cd
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Dec 2 23:12:22 2017 +0200
+
+    wpl: fix invalid cast / aliasing violation
+    
+    (cherry picked from commit b6fc7cbd76a7b37e1274f65485926c14d928c4e5)
+
+commit 7f450d9369883b5efa9a46c5281ed253dca20e13
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Dec 2 23:12:22 2017 +0200
+
+    podcast: fix invalid cast / aliasing violation
+    
+    (cherry picked from commit 1c1f5a071ac8356e6455078f30e0f8c0effa67ec)
+
+commit 879d9501496d3c45ffb30a73847fd4fe5eb704a4
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Fri Dec 1 17:21:43 2017 +0100
+
+    se/archive: fix seeking with SEEK_END
+    
+    Fixes #19133
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+    
+    (cherry picked from commit 777514b42f0a3cea41fef9ee770831be03adeac5)
+
+commit 42916adc138e7aa46c938504a70c58b7d066cd79
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 1 16:08:51 2017 +0100
+
+    opengl: vaapi: use vlc_vaapi_InitializeInstanceDRM
+    
+    Fixes #19173
+    
+    (cherry picked from commit f6bbe4ecd098854cf7f6f1474ca8dac5a62ab5ac)
+
+commit a80faeaab70c27e9268072f2fb70ffafd833abd7
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 1 11:08:17 2017 +0100
+
+    opengl: vaapi: refactor vadpy/vainst initialization
+    
+    (cherry picked from commit f0c3cef078963f848e961088d452c488c88f4f7a)
+
+commit 0388f15d87d8047111df43de0eb11a28e8ebf047
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 1 16:07:31 2017 +0100
+
+    avcodec: vaapi: use vlc_vaapi_InitializeInstanceDRM
+    
+    Refs #19173
+    
+    (cherry picked from commit ac4427272da273ed8509f929bdf353ba94505eec)
+
+commit bbe561d3770bfde90f3019a21194292909d15eb8
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 1 16:28:13 2017 +0100
+
+    hw: vaapi: try more DRM devices
+    
+    Refs #19173
+    
+    (cherry picked from commit 9ed4df2e2873f1d7b9e790408e0270b15bc5602b)
+
+commit 499a739be14ccaab4e03570324cff14c48abdc47
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 1 16:07:14 2017 +0100
+
+    hw: vaapi: add vlc_vaapi_InitializeInstanceDRM
+    
+    Common function to open a DRM device, get a VADisplay and initialize it.
+    
+    Refs #19173
+    
+    (cherry picked from commit 513fb6e95b5eb418e4f0734380985f2928738db6)
+
+commit 2df9fea84e51e142868ba0ceefbc0062e65efae5
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 1 15:31:56 2017 +0100
+
+    packetizer: h264: skip instead of read
+    
+    (cherry picked from commit 0f4f98865afbd2aad3e2de3ecd23f0540c5694ca)
+
+commit e41d4ee7f475a8efba34ff810b119e5aff55a31b
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 1 15:31:34 2017 +0100
+
+    packetizer: h264: check num_slice_group range
+    
+    (cherry picked from commit f0eb9b6be694fbca9968ce279756f69a1499850b)
+
+commit 796f8ecf243736c88d123e70ba7b1c108dceeba1
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 1 15:09:30 2017 +0100
+
+    vlc_bits: add shift guard on bs_read
+    
+    and reject any reads > 32
+    
+    (cherry picked from commit 86c35629d7f095b372b00b1d3918528bbeb0b5a7)
+
+commit f41ad8d916b79535861ca41ab0d510f933b04944
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 1 15:06:07 2017 +0100
+
+    lib: fix libvlc_media_player_set_renderer
+    
+    Use the new input control: INPUT_SET_RENDERER to setup a renderer.
+    
+    (cherry picked from commit 3eaa1607ec817bca17a9f446902a8c418885fffb)
+
+commit 31f2a813d3bc5839e57a104c61c03d2de12ccf44
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 1 15:05:09 2017 +0100
+
+    input: hold the renderer_item from input_Create
+    
+    Doesn't fix anything, just for clarification.
+    
+    (cherry picked from commit c72a13b971f8af7f02402eafd3b74d13c1dc53c5)
+
+commit 86087fb424535b8bfb9fe6e31796d94dae0af953
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 1 11:25:57 2017 +0100
+
+    input: hold renderer_item when passing control
+    
+    This fix an invalid-read if more than one renderer items are passed in a row.
+    
+    (cherry picked from commit af123cc25b37976c34b2e342082493fc8405f4d6)
+
+commit e8a17b5f7c69adb9b9e53c8d769620376c0908ce
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 30 21:29:05 2017 +0200
+
+    mp4: fix leak in DVC1 box
+    
+    (cherry picked from commit fe8921433e5c59d9c3936fb610256c4adb54de8e)
+
+commit 2b5eef596431eaf7a4fc1938f57fb64122ffd5f0
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Nov 27 09:36:17 2017 +0100
+
+    contrib:ebml: do not read further than allowed
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit c1feca7b23cb70d538ce830a0e7b27196ae67dcd)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a20c033f03f6b3f2e22dd95f1003d7f799d321b6
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Nov 30 17:44:40 2017 +0100
+
+    d3d11va: disable HEVC 10 bits decoding on older drivers
+    
+    See https://communities.intel.com/thread/116386?start=15&tstart=0
+    
+    Fixes #19171
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 4d63f935fde9a2b494ac9811eb55d9aebaf9762d)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b2d06832b698ee1325e86f11d3a1f2328a8d01e2
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Nov 30 17:44:39 2017 +0100
+
+    direct3d11: use D3D11CheckDriverVersion() to check the AMD driver version
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 1212ce93b6281e68bdbe85f1ffb405d18267ee22)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8697167d13a11e0e68724468bb71c534d5823f10
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Nov 30 17:44:38 2017 +0100
+
+    d3d11_fmt: add a function to query the driver version
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 181e43279c82061f13a49772124168667ca3998e)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 384a67ca48693acd5c1379cae0a6aa856f9ea164
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Nov 30 17:44:37 2017 +0100
+
+    d3d11: use defines for the manufacturer IDs
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 5a6ce11ace90025e6284e82ebb14b12c9881a277)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c4a667202a1b3a0d3db8d138242c3066c1c250bc
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 30 18:30:23 2017 +0200
+
+    stream: clarify seeking documentation
+    
+    (cherry picked from commit ad303c60a766c417ccdc8968e83a181ce6a7d963)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a9535b9bee74dd1360083ae91f2350841a118045
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 30 19:32:58 2017 +0200
+
+    mp4: fix integer overflow in HLDR box
+
 commit d4221c870595f3639a7138b73481f23eca35c352
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Thu Nov 30 01:56:12 2017 +0100

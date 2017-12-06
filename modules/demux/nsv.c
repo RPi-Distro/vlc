@@ -2,7 +2,7 @@
  * nsv.c: NullSoft Video demuxer.
  *****************************************************************************
  * Copyright (C) 2004-2007 VLC authors and VideoLAN
- * $Id: 033149c22027a6b1db555c49a8f0e5d889491759 $
+ * $Id: 5fb0bc93c07aeb2cf51032ae9175c07dd1e81a74 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -442,7 +442,7 @@ static int ReSynch( demux_t *p_demux )
              || !memcmp( p_peek, "NSVs", 4 ) )
             {
                 if( i_skip > 0
-                 && vlc_stream_Read( p_demux->s, NULL, i_skip ) )
+                 && vlc_stream_Read( p_demux->s, NULL, i_skip ) < i_skip )
                     return VLC_EGENERIC;
                 return VLC_SUCCESS;
             }

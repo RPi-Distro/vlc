@@ -2,7 +2,7 @@
  * VLCMainWindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 1b10437f7b5638befe89aaa384e18c3dc20d3ede $
+ * $Id: 996aa3a6e8ed2510181958a496241f20ab4c14ce $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -882,16 +882,19 @@ static const float f_min_window_height = 307.;
 
     mt_duration = mt_duration / 1000000;
 
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:mt_duration];
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    if (mt_duration >= 86400) {
-        [formatter setDateFormat:@"dd:HH:mm:ss"];
-    } else {
-        [formatter setDateFormat:@"HH:mm:ss"];
-    }
-    [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    int sec = (mt_duration % 60);
+    int min = (mt_duration % 3600) / 60;
+    int hours = (mt_duration % 86400) / 3600;
+    int days = (int)(mt_duration / 86400);
 
-    return [NSString stringWithFormat:@" — %@",[formatter stringFromDate:date]];
+    NSString *result;
+    if (days > 0) {
+        result = [NSString stringWithFormat:@"%i:%i:%02i:%02i", days, hours, min, sec];
+    } else {
+        result = [NSString stringWithFormat:@"%i:%02i:%02i", hours, min, sec];
+    }
+
+    return [NSString stringWithFormat:@" — %@", result];
 }
 
 - (IBAction)searchItem:(id)sender

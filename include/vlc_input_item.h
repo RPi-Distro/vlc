@@ -2,7 +2,7 @@
  * vlc_input_item.h: Core input item
  *****************************************************************************
  * Copyright (C) 1999-2009 VLC authors and VideoLAN
- * $Id: 7d7928ede918fa5bf132acb5b802addde70be450 $
+ * $Id: 89b6324275b5236c4d87a92751d022525c1c7621 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -141,20 +141,34 @@ enum slave_priority
     SLAVE_PRIORITY_USER
 };
 
+/* Extensions must be in alphabetical order */
+#define MASTER_EXTENSIONS \
+    "asf", "avi", "divx", \
+    "f4v", "flv", "m1v", \
+    "m2v", "m4v", "mkv", \
+    "mov", "mp2", "mp2v", \
+    "mp4", "mp4v", "mpe", \
+    "mpeg", "mpeg1", "mpeg2", \
+    "mpeg4", "mpg", "mpv2", \
+    "mxf", "ogv", "ogx", \
+    "ps", "vro","webm", \
+    "wmv", "wtv"
+
 #define SLAVE_SPU_EXTENSIONS \
-    "idx", "sub",  "srt", \
-    "ssa", "ass",  "smi", \
-    "utf", "utf8", "utf-8", \
-    "rt",   "aqt", "txt", \
-    "usf", "jss",  "cdg", \
-    "psb", "mpsub","mpl2", \
-    "pjs", "dks", "stl", \
-    "vtt", "sbv", "ttml",\
-    "scc", "webvtt"
+    "aqt", "ass",  "cdg", \
+    "dks", "idx", "jss", \
+    "mpl2", "mpsub", "pjs", \
+    "psb", "rt", "sbv", \
+    "scc", "smi", "srt", \
+    "ssa",  "stl", "sub", \
+    "ttml", "txt", "usf", \
+    "utf", "utf-8", "utf8", \
+    "vtt", "webvtt"
+
 #define SLAVE_AUDIO_EXTENSIONS \
-    "ac3", "m4a", "aac", \
-    "eac3",  "dtshd", "flac", \
-    "pcm", "dts", "mp3"
+    "aac", "ac3", "dts", \
+    "dtshd", "eac3", "flac", \
+    "m4a", "mp3", "pcm" \
 
 struct input_item_slave
 {

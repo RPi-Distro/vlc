@@ -759,6 +759,7 @@ HAVE_NCURSES_FALSE
 HAVE_NCURSES_TRUE
 NCURSES_LIBS
 NCURSES_CFLAGS
+LTLIBaudiotoolboxmidi
 LTLIBcvpx
 LTLIBvideotoolbox
 HAVE_DMGBUILD_FALSE
@@ -1495,12 +1496,12 @@ HAVE_OS2_TRUE
 HAVE_LINUX_FALSE
 HAVE_LINUX_TRUE
 LIBCOM
+LIBOBJS
 PROGRAMFILES
 WINDOWS_ARCH
 U2D
 OBJCOPY
 WINDRES
-LIBOBJS
 LIBS_libvlccore
 LIBS_vlc
 LIBS_libvlc
@@ -9105,39 +9106,6 @@ if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
   HAVE_TVOS="1"
              HAVE_IOS="0"
              HAVE_OSX="0"
-
-fi
-rm -f conftest*
-
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#import <Cocoa/Cocoa.h>
-            #ifdef MAC_OS_X_VERSION_10_7
-            yes
-            #endif
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "yes" >/dev/null 2>&1; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-            case " $LIBOBJS " in
-  *" getdelim.$ac_objext "* ) ;;
-  *) LIBOBJS="$LIBOBJS getdelim.$ac_objext"
- ;;
-esac
-
-            case " $LIBOBJS " in
-  *" strndup.$ac_objext "* ) ;;
-  *) LIBOBJS="$LIBOBJS strndup.$ac_objext"
- ;;
-esac
-
-            case " $LIBOBJS " in
-  *" strnlen.$ac_objext "* ) ;;
-  *) LIBOBJS="$LIBOBJS strnlen.$ac_objext"
- ;;
-esac
 
 fi
 rm -f conftest*
@@ -53831,6 +53799,26 @@ _ACEOF
 
 
     LTLIBcvpx=libcvpx_plugin.la
+
+
+
+
+fi
+
+done
+
+
+for ac_header in AudioToolbox/AudioToolbox.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "AudioToolbox/AudioToolbox.h" "ac_cv_header_AudioToolbox_AudioToolbox_h" "$ac_includes_default"
+if test "x$ac_cv_header_AudioToolbox_AudioToolbox_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_AUDIOTOOLBOX_AUDIOTOOLBOX_H 1
+_ACEOF
+
+
+
+    LTLIBaudiotoolboxmidi=libaudiotoolboxmidi_plugin.la
 
 
 

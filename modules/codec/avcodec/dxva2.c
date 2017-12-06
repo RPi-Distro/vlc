@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 197116a1bda326a1a55c260a09a4666ecfa99b22 $
+ * $Id: 077c118b774f14e112c89b2029261664c8fe675a $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -87,9 +87,9 @@ typedef struct {
     const char   *name;
     D3DFORMAT    format;
     vlc_fourcc_t codec;
-} d3d_format_t;
+} d3d9_format_t;
 /* XXX Prefered format must come first */
-static const d3d_format_t d3d_formats[] = {
+static const d3d9_format_t d3d_formats[] = {
     { "YV12",   MAKEFOURCC('Y','V','1','2'),    VLC_CODEC_YV12 },
     { "NV12",   MAKEFOURCC('N','V','1','2'),    VLC_CODEC_NV12 },
     { "IMC3",   MAKEFOURCC('I','M','C','3'),    VLC_CODEC_YV12 },
@@ -98,7 +98,7 @@ static const d3d_format_t d3d_formats[] = {
     { NULL, 0, 0 }
 };
 
-static const d3d_format_t *D3dFindFormat(D3DFORMAT format)
+static const d3d9_format_t *D3dFindFormat(D3DFORMAT format)
 {
     for (unsigned i = 0; d3d_formats[i].name; i++) {
         if (d3d_formats[i].format == format)
@@ -368,36 +368,16 @@ static void D3dDestroyDevice(vlc_va_t *va)
  */
 static char *DxDescribe(vlc_va_sys_t *sys)
 {
-    static const struct {
-        unsigned id;
-        char     name[32];
-    } vendors [] = {
-        { 0x1002, "ATI" },
-        { 0x10DE, "NVIDIA" },
-        { 0x1106, "VIA" },
-        { 0x8086, "Intel" },
-        { 0x5333, "S3 Graphics" },
-        { 0, "" }
-    };
-
     D3DADAPTER_IDENTIFIER9 d3dai;
     if (FAILED(IDirect3D9_GetAdapterIdentifier(sys->hd3d.obj,
                                                sys->d3d_dev.adapterId, 0, &d3dai))) {
         return NULL;
     }
 
-    const char *vendor = "Unknown";
-    for (int i = 0; vendors[i].id != 0; i++) {
-        if (vendors[i].id == d3dai.VendorId) {
-            vendor = vendors[i].name;
-            break;
-        }
-    }
-
     char *description;
-    if (asprintf(&description, "DXVA2 (%.*s, vendor %lu(%s), device %lu, revision %lu)",
+    if (asprintf(&description, "DXVA2 (%.*s, vendor %s(%lu), device %lu, revision %lu)",
                  (int)sizeof(d3dai.Description), d3dai.Description,
-                 d3dai.VendorId, vendor, d3dai.DeviceId, d3dai.Revision) < 0)
+                 DxgiVendorStr(d3dai.VendorId), d3dai.VendorId, d3dai.DeviceId, d3dai.Revision) < 0)
         return NULL;
     return description;
 }
@@ -514,9 +494,31 @@ static int DxGetInputList(vlc_va_t *va, input_list_t *p_list)
     return VLC_SUCCESS;
 }
 
+extern const GUID DXVA_ModeHEVC_VLD_Main10;
+static bool CanUseIntelHEVC(vlc_va_t *va)
+{
+    vlc_va_sys_t *sys = va->sys;
+    /* it should be OK starting after driver 20.19.15.4835 */
+    struct wddm_version WDMM = {
+        .wddm         = 20,
+        .d3d_features = 19,
+        .revision     = 15,
+        .build        = 4836,
+    };
+    if (D3D9CheckDriverVersion(&sys->hd3d, &sys->d3d_dev, GPU_MANUFACTURER_INTEL, &WDMM) == VLC_SUCCESS)
+        return true;
+
+    msg_Dbg(va, "HEVC not supported with these drivers");
+    return false;
+}
+
 static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *fmt)
 {
     VLC_UNUSED(fmt);
+
+    if (IsEqualGUID(input,&DXVA_ModeHEVC_VLD_Main10) && !CanUseIntelHEVC(va))
+        return VLC_EGENERIC;
+
     int err = VLC_EGENERIC;
     UINT      output_count = 0;
     D3DFORMAT *output_list = NULL;
@@ -530,7 +532,7 @@ static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *
 
     for (unsigned j = 0; j < output_count; j++) {
         const D3DFORMAT f = output_list[j];
-        const d3d_format_t *format = D3dFindFormat(f);
+        const d3d9_format_t *format = D3dFindFormat(f);
         if (format) {
             msg_Dbg(va, "%s is supported for output", format->name);
         } else {
@@ -542,7 +544,7 @@ static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *
     for (unsigned pass = 0; pass < 2 && err != VLC_SUCCESS; ++pass)
     {
         for (unsigned j = 0; d3d_formats[j].name; j++) {
-            const d3d_format_t *format = &d3d_formats[j];
+            const d3d9_format_t *format = &d3d_formats[j];
 
             /* */
             bool is_supported = false;

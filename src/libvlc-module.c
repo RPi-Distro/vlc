@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: b41d58b3f00a13cf504a9a1bb4e2946253ba72ca $
+ * $Id: cc816873f77deb58b31cebe8de01f5b49edc1a35 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -93,7 +93,7 @@ static const char *const ppsz_snap_formats[] =
 
 #define COLOR_TEXT N_("Color messages")
 #define COLOR_LONGTEXT N_( \
-    "This enables colorization of the messages sent to the console " \
+    "This enables colorization of the messages sent to the console. " \
     "Your terminal needs Linux color support for this to work.")
 
 #define ADVANCED_TEXT N_("Show advanced options")

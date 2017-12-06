@@ -1033,6 +1033,14 @@ libaudioscrobbler_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 am_libaudioscrobbler_plugin_la_OBJECTS = misc/audioscrobbler.lo
 libaudioscrobbler_plugin_la_OBJECTS =  \
 	$(am_libaudioscrobbler_plugin_la_OBJECTS)
+libaudiotoolboxmidi_plugin_la_LIBADD =
+am_libaudiotoolboxmidi_plugin_la_OBJECTS = codec/audiotoolbox_midi.lo
+libaudiotoolboxmidi_plugin_la_OBJECTS =  \
+	$(am_libaudiotoolboxmidi_plugin_la_OBJECTS)
+libaudiotoolboxmidi_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(AM_CFLAGS) $(CFLAGS) \
+	$(libaudiotoolboxmidi_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 libaudiounit_ios_plugin_la_LIBADD =
 am_libaudiounit_ios_plugin_la_OBJECTS = audio_output/audiounit_ios.lo \
 	audio_output/coreaudio_common.lo \
@@ -1359,7 +1367,8 @@ libd3d11va_plugin_la_OBJECTS = $(am_libd3d11va_plugin_la_OBJECTS)
 @HAVE_AVCODEC_D3D11VA_TRUE@am_libd3d11va_plugin_la_rpath = -rpath \
 @HAVE_AVCODEC_D3D11VA_TRUE@	$(codecdir)
 libd3d9_common_la_LIBADD =
-am_libd3d9_common_la_OBJECTS = video_chroma/d3d9_fmt.lo
+am_libd3d9_common_la_OBJECTS = video_chroma/d3d9_fmt.lo \
+	video_chroma/dxgi_fmt.lo
 libd3d9_common_la_OBJECTS = $(am_libd3d9_common_la_OBJECTS)
 libd3d9_common_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -5247,6 +5256,7 @@ SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(libaudiobargraph_a_plugin_la_SOURCES) \
 	$(libaudiobargraph_v_plugin_la_SOURCES) \
 	$(libaudioscrobbler_plugin_la_SOURCES) \
+	$(libaudiotoolboxmidi_plugin_la_SOURCES) \
 	$(libaudiounit_ios_plugin_la_SOURCES) \
 	$(libauhal_plugin_la_SOURCES) $(libavahi_plugin_la_SOURCES) \
 	$(libavcapture_plugin_la_SOURCES) \
@@ -5639,6 +5649,7 @@ DIST_SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(libaudiobargraph_a_plugin_la_SOURCES) \
 	$(libaudiobargraph_v_plugin_la_SOURCES) \
 	$(libaudioscrobbler_plugin_la_SOURCES) \
+	$(libaudiotoolboxmidi_plugin_la_SOURCES) \
 	$(libaudiounit_ios_plugin_la_SOURCES) \
 	$(libauhal_plugin_la_SOURCES) $(libavahi_plugin_la_SOURCES) \
 	$(libavcapture_plugin_la_SOURCES) \
@@ -6701,6 +6712,7 @@ LTLIBaom = @LTLIBaom@
 LTLIBarchive = @LTLIBarchive@
 LTLIBaribcam = @LTLIBaribcam@
 LTLIBaribsub = @LTLIBaribsub@
+LTLIBaudiotoolboxmidi = @LTLIBaudiotoolboxmidi@
 LTLIBavahi = @LTLIBavahi@
 LTLIBavcapture = @LTLIBavcapture@
 LTLIBbpg = @LTLIBbpg@
@@ -7124,7 +7136,8 @@ EXTRA_LTLIBRARIES = libaccess_qtsound_plugin.la libdc1394_plugin.la \
 	libspatialaudio_plugin.la libbandlimited_resampler_plugin.la \
 	libsamplerate_plugin.la libsoxr_plugin.la \
 	libtizen_audio_plugin.la liba52_plugin.la libdca_plugin.la \
-	libfaad_plugin.la libfluidsynth_plugin.la libmpg123_plugin.la \
+	libfaad_plugin.la libfluidsynth_plugin.la \
+	libaudiotoolboxmidi_plugin.la libmpg123_plugin.la \
 	libwma_fixed_plugin.la liblibmpeg2_plugin.la \
 	libschroedinger_plugin.la libpng_plugin.la libjpeg_plugin.la \
 	libbpg_plugin.la libsvgdec_plugin.la libsdl_image_plugin.la \
@@ -7723,26 +7736,27 @@ codecdir = $(pluginsdir)/codec
 codec_LTLIBRARIES = libddummy_plugin.la $(am__append_67) \
 	libspdif_plugin.la $(LTLIBa52) $(LTLIBdca) libadpcm_plugin.la \
 	libaes3_plugin.la libaraw_plugin.la $(LTLIBfaad) \
-	libg711_plugin.la $(LTLIBfluidsynth) liblpcm_plugin.la \
-	$(LTLIBmpg123) libuleaddvaudio_plugin.la $(LTLIBwma_fixed) \
-	libcdg_plugin.la $(LTLIBlibmpeg2) librawvideo_plugin.la \
-	$(am__append_70) $(LTLIBschroedinger) $(LTLIBpng) $(LTLIBjpeg) \
-	$(LTLIBbpg) $(LTLIBsvgdec) $(LTLIBsdl_image) $(am__append_71) \
-	$(LTLIBlibass) libcc_plugin.la libcvdsub_plugin.la \
-	libdvbsub_plugin.la $(LTLIBaribsub) libscte18_plugin.la \
-	libscte27_plugin.la libspudec_plugin.la libstl_plugin.la \
-	libsubsdec_plugin.la libsubsusf_plugin.la libttml_plugin.la \
-	libwebvtt_plugin.la libsvcdsub_plugin.la $(am__append_75) \
-	$(LTLIBtelx) libtextst_plugin.la $(LTLIBzvbi) \
-	libsubstx3g_plugin.la $(LTLIBflac) $(LTLIBkate) $(LTLIBopus) \
-	$(LTLIBspeex) $(LTLIBtheora) $(LTLIBdaala) $(LTLIBtremor) \
-	$(LTLIBvorbis) $(LTLIBoggspots) $(LTLIBvideotoolbox) \
-	$(am__append_84) $(am__append_85) $(am__append_86) \
-	$(am__append_88) $(am__append_91) $(LTLIBomxil) \
-	$(LTLIBomxil_vout) $(am__append_93) $(LTLIBx265) $(LTLIBx262) \
-	$(LTLIBx264) $(LTLIBx26410b) $(LTLIBfdkaac) $(LTLIBshine) \
-	$(LTLIBvpx) $(LTLIBaom) $(LTLIBtwolame) $(LTLIBcrystalhd) \
-	$(LTLIBqsv) $(am__append_95) $(am__append_96)
+	libg711_plugin.la $(LTLIBfluidsynth) $(LTLIBaudiotoolboxmidi) \
+	liblpcm_plugin.la $(LTLIBmpg123) libuleaddvaudio_plugin.la \
+	$(LTLIBwma_fixed) libcdg_plugin.la $(LTLIBlibmpeg2) \
+	librawvideo_plugin.la $(am__append_70) $(LTLIBschroedinger) \
+	$(LTLIBpng) $(LTLIBjpeg) $(LTLIBbpg) $(LTLIBsvgdec) \
+	$(LTLIBsdl_image) $(am__append_71) $(LTLIBlibass) \
+	libcc_plugin.la libcvdsub_plugin.la libdvbsub_plugin.la \
+	$(LTLIBaribsub) libscte18_plugin.la libscte27_plugin.la \
+	libspudec_plugin.la libstl_plugin.la libsubsdec_plugin.la \
+	libsubsusf_plugin.la libttml_plugin.la libwebvtt_plugin.la \
+	libsvcdsub_plugin.la $(am__append_75) $(LTLIBtelx) \
+	libtextst_plugin.la $(LTLIBzvbi) libsubstx3g_plugin.la \
+	$(LTLIBflac) $(LTLIBkate) $(LTLIBopus) $(LTLIBspeex) \
+	$(LTLIBtheora) $(LTLIBdaala) $(LTLIBtremor) $(LTLIBvorbis) \
+	$(LTLIBoggspots) $(LTLIBvideotoolbox) $(am__append_84) \
+	$(am__append_85) $(am__append_86) $(am__append_88) \
+	$(am__append_91) $(LTLIBomxil) $(LTLIBomxil_vout) \
+	$(am__append_93) $(LTLIBx265) $(LTLIBx262) $(LTLIBx264) \
+	$(LTLIBx26410b) $(LTLIBfdkaac) $(LTLIBshine) $(LTLIBvpx) \
+	$(LTLIBaom) $(LTLIBtwolame) $(LTLIBcrystalhd) $(LTLIBqsv) \
+	$(am__append_95) $(am__append_96)
 libddummy_plugin_la_SOURCES = codec/ddummy.c
 libedummy_plugin_la_SOURCES = codec/edummy.c
 
@@ -7770,6 +7784,10 @@ libfluidsynth_plugin_la_CFLAGS = $(AM_CFLAGS) $(FLUIDSYNTH_CFLAGS)
 libfluidsynth_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)' \
 	$(am__append_68)
 libfluidsynth_plugin_la_LIBADD = $(FLUIDSYNTH_LIBS)
+libaudiotoolboxmidi_plugin_la_SOURCES = codec/audiotoolbox_midi.c
+libaudiotoolboxmidi_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath \
+	'$(codecdir)' \
+	-Wl,-framework,CoreFoundation,-framework,AudioUnit,-framework,AudioToolbox
 liblpcm_plugin_la_SOURCES = codec/lpcm.c
 libmad_plugin_la_SOURCES = codec/mad.c
 libmad_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(MAD_CFLAGS)
@@ -7961,7 +7979,9 @@ libvaapi_plugin_la_SOURCES = \
 libvaapi_plugin_la_CPPFLAGS = $(AM_CPPFLAGS)
 libvaapi_plugin_la_CFLAGS = $(AM_CFLAGS) $(AVCODEC_CFLAGS)
 libvaapi_plugin_la_LIBADD = $(LIBVA_LIBS)
-libd3d9_common_la_SOURCES = video_chroma/d3d9_fmt.c video_chroma/d3d9_fmt.h
+libd3d9_common_la_SOURCES = video_chroma/d3d9_fmt.c video_chroma/d3d9_fmt.h \
+	video_chroma/dxgi_fmt.c video_chroma/dxgi_fmt.h
+
 libd3d9_common_la_LDFLAGS = -static
 libdxva2_plugin_la_SOURCES = \
 	codec/avcodec/dxva2.c codec/avcodec/directx_va.c codec/avcodec/directx_va.h \
@@ -12719,6 +12739,11 @@ misc/audioscrobbler.lo: misc/$(am__dirstamp) \
 
 libaudioscrobbler_plugin.la: $(libaudioscrobbler_plugin_la_OBJECTS) $(libaudioscrobbler_plugin_la_DEPENDENCIES) $(EXTRA_libaudioscrobbler_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) -rpath $(miscdir) $(libaudioscrobbler_plugin_la_OBJECTS) $(libaudioscrobbler_plugin_la_LIBADD) $(LIBS)
+codec/audiotoolbox_midi.lo: codec/$(am__dirstamp) \
+	codec/$(DEPDIR)/$(am__dirstamp)
+
+libaudiotoolboxmidi_plugin.la: $(libaudiotoolboxmidi_plugin_la_OBJECTS) $(libaudiotoolboxmidi_plugin_la_DEPENDENCIES) $(EXTRA_libaudiotoolboxmidi_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libaudiotoolboxmidi_plugin_la_LINK)  $(libaudiotoolboxmidi_plugin_la_OBJECTS) $(libaudiotoolboxmidi_plugin_la_LIBADD) $(LIBS)
 audio_output/audiounit_ios.lo: audio_output/$(am__dirstamp) \
 	audio_output/$(DEPDIR)/$(am__dirstamp)
 audio_output/coreaudio_common.lo: audio_output/$(am__dirstamp) \
@@ -17921,6 +17946,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/aes3.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/araw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/atsc_a65.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/audiotoolbox_midi.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/bpg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/cc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/cdg.Plo@am__quote@

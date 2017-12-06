@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-30 03:16+0000\n"
+"POT-Creation-Date: 2017-12-06 02:15+0000\n"
 "PO-Revision-Date: 2014-06-27 23:01+0000\n"
 "Last-Translator: Sortale <sortale.zerok@gmail.com>\n"
 "Language-Team: Vietnamese (http://www.transifex.com/projects/p/vlc-trans/"
@@ -46,7 +46,7 @@ msgstr "Chọn\"Tùy chọn nâng cao\" để có thêm các lựa chọn khác.
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
 #: modules/gui/qt/components/simple_preferences.cpp:222
-#: modules/gui/qt/menus.cpp:1095
+#: modules/gui/qt/menus.cpp:1090
 msgid "Interface"
 msgstr "Giao diện"
 
@@ -374,7 +374,7 @@ msgstr "Bản hoàn thiện cho Video Theo Yêu Cầu"
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:166
 #: modules/gui/qt/components/playlist/selector.cpp:227
-#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1122
+#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1117
 msgid "Playlist"
 msgstr "Danh sách"
 
@@ -699,7 +699,7 @@ msgstr "Số lượng tối đa dành cho bộ lọc (%u) đã đạt giới h�
 
 #: src/audio_output/output.c:261 src/config/core.c:380 src/input/es_out.c:943
 #: src/libvlc-module.c:544 modules/gui/macosx/VLCMainMenu.m:234
-#: modules/gui/macosx/VLCMainWindow.m:1003 modules/video_filter/postproc.c:235
+#: modules/gui/macosx/VLCMainWindow.m:1006 modules/video_filter/postproc.c:235
 msgid "Disable"
 msgstr "Vô hiệu"
 
@@ -954,7 +954,7 @@ msgstr ""
 msgid "Unknown error"
 msgstr "Lỗi chưa biết"
 
-#: src/input/control.c:203
+#: src/input/control.c:204
 #, c-format
 msgid "Bookmark %i"
 msgstr "Phần đánh dấu %i"
@@ -1014,7 +1014,7 @@ msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
 #: src/input/es_out.c:1186 src/input/es_out.c:1191 src/input/es_out.c:1206
-#: src/input/var.c:167 src/libvlc-module.c:568
+#: src/input/var.c:160 src/libvlc-module.c:568
 #: modules/gui/macosx/VLCMainMenu.m:397 modules/gui/macosx/VLCMainMenu.m:398
 msgid "Program"
 msgstr "Chương trình"
@@ -1343,18 +1343,18 @@ msgstr "Trắng"
 msgid "Subtitle"
 msgstr "Phụ đề"
 
-#: src/input/input.c:2655
+#: src/input/input.c:2657
 msgid "Your input can't be opened"
 msgstr "Gặp lỗi khi tác động lên dữ liệu được nhập vào"
 
-#: src/input/input.c:2656
+#: src/input/input.c:2658
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
 "VLC không thể mở MRL '%s'. Kiểm tra log hay phật nhật ký chương trình để "
 "biết thêm."
 
-#: src/input/meta.c:55 src/input/var.c:177 modules/gui/macosx/VLCMainMenu.m:399
+#: src/input/meta.c:55 src/input/var.c:170 modules/gui/macosx/VLCMainMenu.m:399
 #: modules/gui/macosx/VLCMainMenu.m:400
 #: modules/gui/macosx/VLCOpenWindowController.m:178
 #: modules/gui/macosx/VLCOpenWindowController.m:180
@@ -1459,68 +1459,68 @@ msgstr "Nghệ sĩ"
 msgid "Disc number"
 msgstr "Số thứ tự track"
 
-#: src/input/var.c:159
+#: src/input/var.c:152
 msgid "Bookmark"
 msgstr "Đánh dấu"
 
-#: src/input/var.c:172 src/libvlc-module.c:574
+#: src/input/var.c:165 src/libvlc-module.c:574
 msgid "Programs"
 msgstr "Chương trình"
 
-#: src/input/var.c:182 modules/gui/macosx/VLCMainMenu.m:401
+#: src/input/var.c:175 modules/gui/macosx/VLCMainMenu.m:401
 #: modules/gui/macosx/VLCMainMenu.m:402
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
 msgid "Chapter"
 msgstr "Chương"
 
-#: src/input/var.c:195 modules/gui/macosx/VLCMainMenu.m:425
+#: src/input/var.c:188 modules/gui/macosx/VLCMainMenu.m:425
 #: modules/gui/macosx/VLCMainMenu.m:426
 msgid "Video Track"
 msgstr "Track video"
 
-#: src/input/var.c:201 modules/gui/macosx/VLCMainMenu.m:408
+#: src/input/var.c:194 modules/gui/macosx/VLCMainMenu.m:408
 #: modules/gui/macosx/VLCMainMenu.m:409
 msgid "Audio Track"
 msgstr "Track audio"
 
-#: src/input/var.c:207
+#: src/input/var.c:200
 msgid "Subtitle Track"
 msgstr "Track phụ đề"
 
-#: src/input/var.c:275
+#: src/input/var.c:264
 msgid "Next title"
 msgstr "Tựa đề tiếp theo"
 
-#: src/input/var.c:282
+#: src/input/var.c:271
 msgid "Previous title"
 msgstr "Tựa đề trước đó"
 
-#: src/input/var.c:289
+#: src/input/var.c:278
 #, fuzzy
 msgid "Menu title"
 msgstr "Thời gian chạy"
 
-#: src/input/var.c:296
+#: src/input/var.c:285
 #, fuzzy
 msgid "Menu popup"
 msgstr "Thời gian chạy"
 
-#: src/input/var.c:330
+#: src/input/var.c:319
 #, c-format
 msgid "Title %i%s"
 msgstr "Tiêu đề %i%s"
 
-#: src/input/var.c:355 src/input/var.c:412
+#: src/input/var.c:344 src/input/var.c:401
 #, c-format
 msgid "Chapter %i"
 msgstr "Chương %i"
 
-#: src/input/var.c:391 modules/gui/qt/dialogs/toolbar.cpp:505
+#: src/input/var.c:380 modules/gui/qt/dialogs/toolbar.cpp:505
 msgid "Next chapter"
 msgstr "Chương tiếp theo"
 
-#: src/input/var.c:396 modules/gui/qt/dialogs/toolbar.cpp:495
+#: src/input/var.c:385 modules/gui/qt/dialogs/toolbar.cpp:495
 msgid "Previous chapter"
 msgstr "Chương trước đó"
 
@@ -1657,8 +1657,9 @@ msgid "Color messages"
 msgstr "Màu sắc phần thông báo"
 
 #: src/libvlc-module.c:96
+#, fuzzy
 msgid ""
-"This enables colorization of the messages sent to the console Your terminal "
+"This enables colorization of the messages sent to the console. Your terminal "
 "needs Linux color support for this to work."
 msgstr ""
 "Tính năng này cho phép chính sửa màu sắc của thông báo được gửi đến màn hình "
@@ -2691,7 +2692,7 @@ msgstr "Mặc định"
 
 #: src/libvlc-module.c:544
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:223
-#: modules/gui/macosx/VLCMainWindow.m:1001
+#: modules/gui/macosx/VLCMainWindow.m:1004
 #: modules/gui/qt/components/extended_panels.cpp:928
 msgid "Enable"
 msgstr "Cho phép"
@@ -4236,11 +4237,11 @@ msgstr "Xếp hạng bình thường"
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "Chọn phím tắt để chỉnh tập tin này về dạng bình thường."
 
-#: src/libvlc-module.c:1236 modules/gui/qt/menus.cpp:885
+#: src/libvlc-module.c:1236 modules/gui/qt/menus.cpp:880
 msgid "Faster (fine)"
 msgstr "Nhanh hơn (tốt)"
 
-#: src/libvlc-module.c:1238 modules/gui/qt/menus.cpp:893
+#: src/libvlc-module.c:1238 modules/gui/qt/menus.cpp:888
 msgid "Slower (fine)"
 msgstr "Chậm hơn (tốt)"
 
@@ -4402,8 +4403,8 @@ msgstr "Chọn thời gian để phát dài, tính bằng giây."
 #: src/libvlc-module.c:1287 modules/control/hotkeys.c:361
 #: modules/gui/macosx/VLCStatusBarIcon.m:116
 #: modules/gui/qt/components/controller.hpp:111
-#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:956
-#: modules/gui/qt/menus.cpp:1142 modules/gui/skins2/commands/cmd_quit.cpp:45
+#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:951
+#: modules/gui/qt/menus.cpp:1137 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "Thoát"
 
@@ -4911,7 +4912,7 @@ msgstr "Chụp một hình trong phân cảnh đang chiếu của video và lưu
 
 #: src/libvlc-module.c:1417 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
-#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:859
+#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:854
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Thu âm"
@@ -5375,7 +5376,7 @@ msgstr "Page Up"
 #: modules/gui/macosx/VLCMainMenu.m:1331 modules/gui/macosx/VLCMainMenu.m:1332
 #: modules/gui/macosx/VLCMainMenu.m:1333
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
-#: modules/gui/qt/menus.cpp:833
+#: modules/gui/qt/menus.cpp:828
 msgid "Pause"
 msgstr "Tạm dừng"
 
@@ -7498,7 +7499,7 @@ msgid "Satellite scanning config"
 msgstr "Dải mã vùng vệ tinh"
 
 #: modules/access/dvb/access.c:71
-msgid "filename of config file in share/dvb/dvb-s"
+msgid "Filename of config file in share/dvb/dvb-s."
 msgstr ""
 
 #: modules/access/dvb/access.c:73
@@ -7507,7 +7508,7 @@ msgid "Scan tuning list"
 msgstr "danh sách chọn"
 
 #: modules/access/dvb/access.c:74
-msgid "filename containing initial scan tuning data"
+msgid "Filename containing initial scan tuning data."
 msgstr ""
 
 #: modules/access/dvb/access.c:76
@@ -8174,19 +8175,19 @@ msgstr "Cổng HTTP"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "Cổng để sử dụng cho việc sử dụng giao thức RTSP/RTP thông qua HTTP."
 
-#: modules/access/live555.cpp:645
+#: modules/access/live555.cpp:668
 msgid "RTSP authentication"
 msgstr "Xác nhận RTSP"
 
-#: modules/access/live555.cpp:646
+#: modules/access/live555.cpp:669
 msgid "Please enter a valid login name and a password."
 msgstr "Điền vào tên đăng nhập và mật khẩu hợp lệ."
 
-#: modules/access/live555.cpp:671
+#: modules/access/live555.cpp:694
 msgid "RTSP connection failed"
 msgstr "Kết nối RTSP thất bại"
 
-#: modules/access/live555.cpp:672
+#: modules/access/live555.cpp:695
 msgid "Access to the stream is denied by the server configuration."
 msgstr "Tác động đến luồng dữ liệu bị từ chối bởi thiết lập ở phía server."
 
@@ -8562,9 +8563,9 @@ msgstr "Hoành độ của vùng chụp ảnh màn hình tính bằng đơn vị
 msgid "Capture region width"
 msgstr "Chiều rộng vùng Chụp lại hình ảnh"
 
-#: modules/access/screen/screen.c:65
-#, fuzzy
-msgid "Capture region heigh"
+#: modules/access/screen/screen.c:65 modules/access/screen/wayland.c:468
+#: modules/access/screen/xcb.c:55
+msgid "Capture region height"
 msgstr "Chiều cao vùng Chụp lại hình ảnh"
 
 #: modules/access/screen/screen.c:67 modules/access/screen/xcb.c:59
@@ -8632,10 +8633,6 @@ msgid "Pixel width of the capture region, or 0 for full width"
 msgstr ""
 "Độ rộng của đơn vị điểm ảnh đối với vùng được chụp lại hình ảnh, giá trị "
 "được để là 0 hoặc toàn bộ chiều rộng"
-
-#: modules/access/screen/wayland.c:468 modules/access/screen/xcb.c:55
-msgid "Capture region height"
-msgstr "Chiều cao vùng Chụp lại hình ảnh"
 
 #: modules/access/screen/wayland.c:470 modules/access/screen/xcb.c:57
 msgid "Pixel height of the capture region, or 0 for full height"
@@ -8787,25 +8784,25 @@ msgid ""
 "username) and a password."
 msgstr ""
 
-#: modules/access/srt.c:296 modules/access_output/srt.c:316
+#: modules/access/srt.c:288 modules/access_output/srt.c:311
 #, fuzzy
 msgid "SRT"
 msgstr "RTP"
 
-#: modules/access/srt.c:297
+#: modules/access/srt.c:289
 #, fuzzy
 msgid "SRT input"
 msgstr "Đầu vào SFTP"
 
-#: modules/access/srt.c:302 modules/access_output/srt.c:322
+#: modules/access/srt.c:294 modules/access_output/srt.c:317
 msgid "SRT chunk size (bytes)"
 msgstr ""
 
-#: modules/access/srt.c:304 modules/access_output/srt.c:324
-msgid "Return poll wait after timeout miliseconds (-1 = infinite)"
+#: modules/access/srt.c:296 modules/access_output/srt.c:319
+msgid "Return poll wait after timeout milliseconds (-1 = infinite)"
 msgstr ""
 
-#: modules/access/srt.c:305 modules/access_output/srt.c:325
+#: modules/access/srt.c:297 modules/access_output/srt.c:320
 msgid "SRT latency (ms)"
 msgstr ""
 
@@ -9775,7 +9772,7 @@ msgstr ""
 msgid "IceCAST output"
 msgstr "Dữ liệu đầu ra IceCAST"
 
-#: modules/access_output/srt.c:317
+#: modules/access_output/srt.c:312
 #, fuzzy
 msgid "SRT stream output"
 msgstr "Luồng dữ liệu đầu vào"
@@ -10046,7 +10043,7 @@ msgid "HRTF file for the binauralization"
 msgstr ""
 
 #: modules/audio_filter/channel_mixer/spatialaudio.cpp:51
-msgid "Custom HRTF (Head-related transfer function) filein the SOFA format."
+msgid "Custom HRTF (Head-related transfer function) file in the SOFA format."
 msgstr ""
 
 #: modules/audio_filter/channel_mixer/spatialaudio.cpp:54
@@ -10926,7 +10923,7 @@ msgstr ""
 
 #: modules/audio_output/jack.c:94
 #, fuzzy
-msgid "Jack client name"
+msgid "JACK client name"
 msgstr "Truy cập client VNC"
 
 #: modules/audio_output/jack.c:101
@@ -11080,13 +11077,35 @@ msgstr "Giải mã audio dạng Raw/Log"
 msgid "Raw audio encoder"
 msgstr "Mã hóa audio dạng Raw"
 
+#: modules/codec/audiotoolbox_midi.c:47 modules/codec/fluidsynth.c:47
+#, fuzzy
+msgid "SoundFont file"
+msgstr "Kiểu chữ âm thanh"
+
+#: modules/codec/audiotoolbox_midi.c:49 modules/codec/fluidsynth.c:49
+#, fuzzy
+msgid "SoundFont file to use for software synthesis."
+msgstr ""
+"Một tập tin kiểu chữ âm thanh sẽ được cần xác định cho sự tổng hợp của phần "
+"mềm."
+
+#: modules/codec/audiotoolbox_midi.c:57
+#, fuzzy
+msgid "AudioToolbox MIDI synthesizer"
+msgstr "Bộ tổng hợp cho FluidSynth MIDI"
+
+#: modules/codec/audiotoolbox_midi.c:59
+msgid "AUMIDI"
+msgstr ""
+
 #: modules/codec/arib/aribsub.c:46
-msgid "Ignore ruby(furigana)"
+msgid "Ignore ruby (furigana)"
 msgstr ""
 
 #: modules/codec/arib/aribsub.c:47
-msgid "Ignore ruby(furigana) in the subtitle."
-msgstr ""
+#, fuzzy
+msgid "Ignore ruby (furigana) in the subtitle."
+msgstr "Tạo độ X của tiêu đề được render"
 
 #: modules/codec/arib/aribsub.c:48
 #, fuzzy
@@ -11632,11 +11651,11 @@ msgstr ""
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr ""
 
-#: modules/codec/avcodec/vaapi.c:385
+#: modules/codec/avcodec/vaapi.c:349
 msgid "VA-API video decoder via DRM"
 msgstr ""
 
-#: modules/codec/avcodec/vaapi.c:390
+#: modules/codec/avcodec/vaapi.c:354
 #, fuzzy
 msgid "VA-API video decoder"
 msgstr "Giải mã video PNG"
@@ -11916,16 +11935,6 @@ msgstr "Chuyển mã audio Flac"
 #: modules/codec/flac.c:171
 msgid "Flac audio encoder"
 msgstr "Mã hóa audio Flac"
-
-#: modules/codec/fluidsynth.c:47
-msgid "Sound fonts"
-msgstr "Kiểu chữ âm thanh"
-
-#: modules/codec/fluidsynth.c:49
-msgid "A sound fonts file is required for software synthesis."
-msgstr ""
-"Một tập tin kiểu chữ âm thanh sẽ được cần xác định cho sự tổng hợp của phần "
-"mềm."
 
 #: modules/codec/fluidsynth.c:51 modules/meta_engine/ID3Genres.h:130
 msgid "Chorus"
@@ -12466,7 +12475,7 @@ msgstr "Phương pháp điều khiển tốc độ"
 
 #: modules/codec/qsv.c:102
 msgid ""
-"The rate control method to use when encoding. Can be one of 'crb', 'vbr', "
+"The rate control method to use when encoding. Can be one of 'cbr', 'vbr', "
 "'qp', 'avbr'. 'qp' mode isn't supported for mpeg2"
 msgstr ""
 
@@ -14717,7 +14726,7 @@ msgstr ""
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:182
 #: modules/gui/macosx/VLCMainWindow.m:669
 #: modules/gui/macosx/VLCMainWindow.m:675
-#: modules/gui/macosx/VLCMainWindow.m:1273
+#: modules/gui/macosx/VLCMainWindow.m:1276
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1035
 #: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1234
 #: modules/gui/qt/main_interface.cpp:1238
@@ -15514,7 +15523,7 @@ msgid "Use regular HTTP modules"
 msgstr ""
 
 #: modules/demux/adaptive/adaptive.cpp:77
-msgid "Connect using http access instead of custom http code"
+msgid "Connect using HTTP access instead of custom HTTP code"
 msgstr ""
 
 #: modules/demux/adaptive/adaptive.cpp:98
@@ -16434,60 +16443,60 @@ msgstr "Nhập danh sách thư viện từ iTunes"
 msgid "WPL playlist import"
 msgstr "Nhập danh sách WPL"
 
-#: modules/demux/playlist/podcast.c:231 modules/demux/playlist/podcast.c:243
-#: modules/demux/playlist/podcast.c:305 modules/demux/playlist/podcast.c:328
+#: modules/demux/playlist/podcast.c:230 modules/demux/playlist/podcast.c:242
+#: modules/demux/playlist/podcast.c:304 modules/demux/playlist/podcast.c:327
 msgid "Podcast Info"
 msgstr "Thông tin Podcast"
 
-#: modules/demux/playlist/podcast.c:233
+#: modules/demux/playlist/podcast.c:232
 msgid "Podcast Link"
 msgstr "Đường dẫn Postcast"
 
-#: modules/demux/playlist/podcast.c:234
+#: modules/demux/playlist/podcast.c:233
 msgid "Podcast Copyright"
 msgstr "Bản quyền Postcast"
 
-#: modules/demux/playlist/podcast.c:235
+#: modules/demux/playlist/podcast.c:234
 msgid "Podcast Category"
 msgstr "Phân loại Podcast"
 
-#: modules/demux/playlist/podcast.c:236 modules/demux/playlist/podcast.c:312
+#: modules/demux/playlist/podcast.c:235 modules/demux/playlist/podcast.c:311
 msgid "Podcast Keywords"
 msgstr "Từ khóa liên quan đến Podcast"
 
-#: modules/demux/playlist/podcast.c:237 modules/demux/playlist/podcast.c:313
+#: modules/demux/playlist/podcast.c:236 modules/demux/playlist/podcast.c:312
 msgid "Podcast Subtitle"
 msgstr "Phụ đề Podcast"
 
-#: modules/demux/playlist/podcast.c:243 modules/demux/playlist/podcast.c:314
+#: modules/demux/playlist/podcast.c:242 modules/demux/playlist/podcast.c:313
 msgid "Podcast Summary"
 msgstr "Tóm tắt về Podcast"
 
-#: modules/demux/playlist/podcast.c:308
+#: modules/demux/playlist/podcast.c:307
 msgid "Podcast Publication Date"
 msgstr "Ngày phát hành Podcast"
 
-#: modules/demux/playlist/podcast.c:309
+#: modules/demux/playlist/podcast.c:308
 msgid "Podcast Author"
 msgstr "Tác giả Podcast"
 
-#: modules/demux/playlist/podcast.c:310
+#: modules/demux/playlist/podcast.c:309
 msgid "Podcast Subcategory"
 msgstr "Mục phân loại Podcast"
 
-#: modules/demux/playlist/podcast.c:311
+#: modules/demux/playlist/podcast.c:310
 msgid "Podcast Duration"
 msgstr "Độ dài Podcast"
 
-#: modules/demux/playlist/podcast.c:315
+#: modules/demux/playlist/podcast.c:314
 msgid "Podcast Type"
 msgstr "Loại Podcast"
 
-#: modules/demux/playlist/podcast.c:329
+#: modules/demux/playlist/podcast.c:328
 msgid "Podcast Size"
 msgstr "Kích thước Podcast"
 
-#: modules/demux/playlist/podcast.c:330
+#: modules/demux/playlist/podcast.c:329
 #, c-format
 msgid "%s bytes"
 msgstr "%s byte"
@@ -18075,7 +18084,7 @@ msgid "Bring All to Front"
 msgstr "Đưa tất cả về phía trước"
 
 #: modules/gui/macosx/VLCMainMenu.m:478 modules/gui/qt/dialogs/help.cpp:54
-#: modules/gui/qt/menus.cpp:952 modules/gui/qt/menus.cpp:1139
+#: modules/gui/qt/menus.cpp:947 modules/gui/qt/menus.cpp:1134
 msgid "Help"
 msgstr "Trợ giúp"
 
@@ -20468,9 +20477,10 @@ msgid "Select File"
 msgstr "Chọn Tập tin"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1134
+#, fuzzy
 msgid ""
 "Select or double click an action to change the associated hotkey. Use delete "
-"key to remove hotkeys"
+"key to remove hotkeys."
 msgstr ""
 "Chọn hoặc click đúp chuột để thay đổi việc gán các thao tác cho phím tắt. Sử "
 "dụng phím Delete trên bàn phím để loại bỏ phím nóng"
@@ -21032,8 +21042,8 @@ msgstr "Cập nhật cây"
 msgid "Clear the messages"
 msgstr "Loại bỏ thông báo"
 
-#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:936
-#: modules/gui/qt/menus.cpp:1133
+#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:931
+#: modules/gui/qt/menus.cpp:1128
 msgid "Open Media"
 msgstr "Mở Tập Tin"
 
@@ -21063,7 +21073,7 @@ msgid "&Enqueue"
 msgstr "&Đặt thứ tự"
 
 #: modules/gui/qt/dialogs/open.cpp:117 modules/gui/qt/dialogs/open.cpp:214
-#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:825
+#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:820
 msgid "&Play"
 msgstr "&Phát"
 
@@ -21564,28 +21574,28 @@ msgstr "&Tập tin"
 msgid "P&layback"
 msgstr "Chế Đ&ộ Phát"
 
-#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1051
+#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1046
 msgid "&Audio"
 msgstr "&Audio"
 
-#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1058
+#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1053
 msgid "&Video"
 msgstr "&Video"
 
-#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1065
+#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1060
 msgid "Subti&tle"
 msgstr "Phụ đ&ề"
 
-#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1081
+#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1076
 #, fuzzy
 msgid "Tool&s"
 msgstr "C&ông cụ"
 
-#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1088
+#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1083
 msgid "V&iew"
 msgstr "C&hế độ hiển thị"
 
-#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:789
+#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:784
 msgid "&Help"
 msgstr "&Trợ giúp"
 
@@ -21597,7 +21607,7 @@ msgstr "Mở &Tập Tin..."
 msgid "&Open Multiple Files..."
 msgstr "&Mở Nhiều Tập Tin..."
 
-#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:941
+#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:936
 msgid "Open &Disc..."
 msgstr "Mở &đĩa"
 
@@ -21605,7 +21615,7 @@ msgstr "Mở &đĩa"
 msgid "Open &Network Stream..."
 msgstr "Mở &Luồng Dữ Liệu từ Mạng..."
 
-#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:945
+#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:940
 msgid "Open &Capture Device..."
 msgstr "Mở &thiết bị ghi hình..."
 
@@ -21633,7 +21643,7 @@ msgstr "Đóng lại khi danh sách phát đã hoàn tất"
 msgid "Close to systray"
 msgstr "Đóng lại ở khay hệ thống"
 
-#: modules/gui/qt/menus.cpp:403 modules/gui/qt/menus.cpp:1195
+#: modules/gui/qt/menus.cpp:403 modules/gui/qt/menus.cpp:1190
 msgid "&Quit"
 msgstr "&Thoát"
 
@@ -21673,7 +21683,7 @@ msgstr "Ctrl+L"
 msgid "Docked Playlist"
 msgstr "Hiển thị danh sách"
 
-#: modules/gui/qt/menus.cpp:499 modules/gui/qt/menus.cpp:542
+#: modules/gui/qt/menus.cpp:499
 #, fuzzy
 msgid "Always on &top"
 msgstr "Luôn luôn đặt trên cùng"
@@ -21702,182 +21712,182 @@ msgstr "Thanh trạng thái"
 msgid "Visualizations selector"
 msgstr "Chọn lựa hiệu ứng"
 
-#: modules/gui/qt/menus.cpp:599
+#: modules/gui/qt/menus.cpp:594
 msgid "&Increase Volume"
 msgstr "&Tăng âm lượng"
 
-#: modules/gui/qt/menus.cpp:602
+#: modules/gui/qt/menus.cpp:597
 #, fuzzy
 msgid "D&ecrease Volume"
 msgstr "Giảm âm lượng"
 
-#: modules/gui/qt/menus.cpp:605
+#: modules/gui/qt/menus.cpp:600
 msgid "&Mute"
 msgstr "&Tắt âm thanh"
 
-#: modules/gui/qt/menus.cpp:621
+#: modules/gui/qt/menus.cpp:616
 msgid "Audio &Device"
 msgstr "Thiết &bị Audio"
 
-#: modules/gui/qt/menus.cpp:625
+#: modules/gui/qt/menus.cpp:620
 msgid "Audio &Track"
 msgstr "Audio &Track"
 
-#: modules/gui/qt/menus.cpp:627
+#: modules/gui/qt/menus.cpp:622
 msgid "&Stereo Mode"
 msgstr "&Chế độ Stereo"
 
-#: modules/gui/qt/menus.cpp:630
+#: modules/gui/qt/menus.cpp:625
 msgid "&Visualizations"
 msgstr "&Hiệu ứng"
 
-#: modules/gui/qt/menus.cpp:656
+#: modules/gui/qt/menus.cpp:651
 msgid "Add &Subtitle File..."
 msgstr "Thêm T&ập tin Phụ đề..."
 
-#: modules/gui/qt/menus.cpp:658
+#: modules/gui/qt/menus.cpp:653
 msgid "Sub &Track"
 msgstr "Track ph&ụ đề"
 
-#: modules/gui/qt/menus.cpp:683
+#: modules/gui/qt/menus.cpp:678
 msgid "Video &Track"
 msgstr "Video &Track"
 
-#: modules/gui/qt/menus.cpp:690
+#: modules/gui/qt/menus.cpp:685
 msgid "&Fullscreen"
 msgstr "&Toàn màn hình"
 
-#: modules/gui/qt/menus.cpp:691
+#: modules/gui/qt/menus.cpp:686
 msgid "Always Fit &Window"
 msgstr "Luôn vừa vặn &màn hình"
 
-#: modules/gui/qt/menus.cpp:692
+#: modules/gui/qt/menus.cpp:687
 msgid "Set as Wall&paper"
 msgstr "Đặt làm Hì&nh Nền"
 
-#: modules/gui/qt/menus.cpp:696
+#: modules/gui/qt/menus.cpp:691
 msgid "&Zoom"
 msgstr "&Phóng to"
 
-#: modules/gui/qt/menus.cpp:697
+#: modules/gui/qt/menus.cpp:692
 msgid "&Aspect Ratio"
 msgstr "&Tỉ lệ đồng dạng"
 
-#: modules/gui/qt/menus.cpp:698
+#: modules/gui/qt/menus.cpp:693
 msgid "&Crop"
 msgstr "&Cắt bỏ"
 
-#: modules/gui/qt/menus.cpp:702
+#: modules/gui/qt/menus.cpp:697
 msgid "&Deinterlace"
 msgstr "&Chống quét mành"
 
-#: modules/gui/qt/menus.cpp:703
+#: modules/gui/qt/menus.cpp:698
 msgid "&Deinterlace mode"
 msgstr "&Chế độ chống quét mành"
 
-#: modules/gui/qt/menus.cpp:707
+#: modules/gui/qt/menus.cpp:702
 msgid "Take &Snapshot"
 msgstr "Chụp &Ảnh màn hình"
 
-#: modules/gui/qt/menus.cpp:726
+#: modules/gui/qt/menus.cpp:721
 msgid "T&itle"
 msgstr "Tiê&u đề"
 
-#: modules/gui/qt/menus.cpp:727
+#: modules/gui/qt/menus.cpp:722
 msgid "&Chapter"
 msgstr "&Chương"
 
-#: modules/gui/qt/menus.cpp:729
+#: modules/gui/qt/menus.cpp:724
 msgid "&Program"
 msgstr "&Chương trình"
 
-#: modules/gui/qt/menus.cpp:733
+#: modules/gui/qt/menus.cpp:728
 msgid "&Manage"
 msgstr "&Quản lý"
 
-#: modules/gui/qt/menus.cpp:792
+#: modules/gui/qt/menus.cpp:787
 msgid "Check for &Updates..."
 msgstr "Kiểm tra cập nhật &phiên bản mới..."
 
-#: modules/gui/qt/menus.cpp:839
+#: modules/gui/qt/menus.cpp:834
 msgid "&Stop"
 msgstr "&Dừng lại"
 
-#: modules/gui/qt/menus.cpp:847
+#: modules/gui/qt/menus.cpp:842
 msgid "Pre&vious"
 msgstr "L&ùi lại"
 
-#: modules/gui/qt/menus.cpp:853
+#: modules/gui/qt/menus.cpp:848
 msgid "Ne&xt"
 msgstr "Tiếp t&heo"
 
-#: modules/gui/qt/menus.cpp:871
+#: modules/gui/qt/menus.cpp:866
 msgid "Sp&eed"
 msgstr "Tố&c độ"
 
-#: modules/gui/qt/menus.cpp:877
+#: modules/gui/qt/menus.cpp:872
 msgid "&Faster"
 msgstr "Nh&anh hơn"
 
-#: modules/gui/qt/menus.cpp:889
+#: modules/gui/qt/menus.cpp:884
 msgid "N&ormal Speed"
 msgstr "Tố&c độ bình thường"
 
-#: modules/gui/qt/menus.cpp:899
+#: modules/gui/qt/menus.cpp:894
 msgid "Slo&wer"
 msgstr "Ch&ậm hơn"
 
-#: modules/gui/qt/menus.cpp:914
+#: modules/gui/qt/menus.cpp:909
 msgid "&Jump Forward"
 msgstr "Nhảy t&ới phía trước"
 
-#: modules/gui/qt/menus.cpp:921
+#: modules/gui/qt/menus.cpp:916
 msgid "Jump Bac&kward"
 msgstr "Nhảy về phía s&au"
 
-#: modules/gui/qt/menus.cpp:928
+#: modules/gui/qt/menus.cpp:923
 msgid "Ctrl+T"
 msgstr "Ctrl+T"
 
-#: modules/gui/qt/menus.cpp:943
+#: modules/gui/qt/menus.cpp:938
 msgid "Open &Network..."
 msgstr "Mở Mạn&g..."
 
-#: modules/gui/qt/menus.cpp:1037
+#: modules/gui/qt/menus.cpp:1032
 msgid "Leave Fullscreen"
 msgstr "Thoát khỏi toàn màn hình"
 
-#: modules/gui/qt/menus.cpp:1071
+#: modules/gui/qt/menus.cpp:1066
 msgid "&Playback"
 msgstr "&Chế Độ Phát"
 
-#: modules/gui/qt/menus.cpp:1176
+#: modules/gui/qt/menus.cpp:1171
 msgid "&Hide VLC media player in taskbar"
 msgstr "Ẩ&n chương trình VLC vào thanh taskbar"
 
-#: modules/gui/qt/menus.cpp:1182
+#: modules/gui/qt/menus.cpp:1177
 msgid "Sho&w VLC media player"
 msgstr "Hiể&n thị chương trình VLC"
 
-#: modules/gui/qt/menus.cpp:1193
+#: modules/gui/qt/menus.cpp:1188
 msgid "&Open Media"
 msgstr "&Mở tập tin"
 
-#: modules/gui/qt/menus.cpp:1633
+#: modules/gui/qt/menus.cpp:1628
 msgid "&Clear"
 msgstr "Xóa"
 
-#: modules/gui/qt/menus.cpp:1641
+#: modules/gui/qt/menus.cpp:1636
 #, fuzzy
 msgid "&Renderer"
 msgstr "Trình render văn bản"
 
-#: modules/gui/qt/menus.cpp:1645
+#: modules/gui/qt/menus.cpp:1640
 #, fuzzy
 msgid "<Local>"
 msgstr "Vocal"
 
-#: modules/gui/qt/menus.cpp:1658
+#: modules/gui/qt/menus.cpp:1653
 msgid "Scan"
 msgstr ""
 
@@ -21910,7 +21920,8 @@ msgid "Start VLC with only a systray icon"
 msgstr "Bắt đầu chạy VLC chỉ với một biểu tượng nhỏ ở khay hệ thống"
 
 #: modules/gui/qt/qt.cpp:92
-msgid "VLC will start with just an icon in your taskbar"
+#, fuzzy
+msgid "VLC will start with just an icon in your taskbar."
 msgstr "VLC sẽ khởi động chỉ với một biểu tượng nhỏ ở thanh Taskbar"
 
 #: modules/gui/qt/qt.cpp:101
@@ -21995,7 +22006,9 @@ msgid "List of words separated by | to filter"
 msgstr "Sử dụng danh sách các từ tách biệt bởi | để lọc"
 
 #: modules/gui/qt/qt.cpp:135
-msgid "Regular expression used to filter the recent items played in the player"
+#, fuzzy
+msgid ""
+"Regular expression used to filter the recent items played in the player."
 msgstr ""
 "Các thông tin về các đối tượng được phát gần đây dùng bộ lọc để hiển thị các "
 "tập tin đã được mở trước đó"
@@ -22048,7 +22061,8 @@ msgid "Define which screen fullscreen goes"
 msgstr "Xác định màn hình trong chế độ hiển thị toàn màn hình"
 
 #: modules/gui/qt/qt.cpp:155
-msgid "Screennumber of fullscreen, instead of same screen where interface is"
+#, fuzzy
+msgid "Screennumber of fullscreen, instead of same screen where interface is."
 msgstr ""
 "Số lượng mà hình của chế độ toàn màn hình, thay vì chỉ hiển thị ở cùng màn "
 "hinh nơi chứa giao diện"
@@ -22058,7 +22072,8 @@ msgid "Load extensions on startup"
 msgstr "Tải tiện ích khi khởi động chương trình"
 
 #: modules/gui/qt/qt.cpp:159
-msgid "Automatically load the extensions module on startup"
+#, fuzzy
+msgid "Automatically load the extensions module on startup."
 msgstr ""
 "Tự động tải các module liên quan đến tiện ích khi khởi động chương trình"
 
@@ -22079,11 +22094,13 @@ msgstr ""
 "có tập tin nào được phát. Bạn có thể tắt tính năng này."
 
 #: modules/gui/qt/qt.cpp:168
-msgid "Expanding background cone or art."
+#, fuzzy
+msgid "Expanding background cone or art"
 msgstr "Mở rộng hình nền là logo VLC hoặc hình tự chọn."
 
 #: modules/gui/qt/qt.cpp:169
-msgid "Background art fits window's size"
+#, fuzzy
+msgid "Background art fits window's size."
 msgstr "Phần hình ảnh nền vừa vặn với kích thước cửa sổ"
 
 #: modules/gui/qt/qt.cpp:171
@@ -22112,7 +22129,7 @@ msgstr "Các thiết lập cho giao diện chính"
 #, fuzzy
 msgid ""
 "This option allows the interface to be raised automatically when a video/"
-"audio playback starts, or never"
+"audio playback starts, or never."
 msgstr ""
 "Tùy chọn này sẽ cho phép giao diện thay đổi các biểu tượng hiển thị theo "
 "những dịp lễ, tết, hay sự kiện nào đó."
@@ -22475,20 +22492,23 @@ msgstr ""
 
 #: modules/keystore/file.c:54
 #, fuzzy
-msgid "file keystore (plaintext)"
+msgid "File keystore (plaintext)"
 msgstr "Danh sách gói tin yêu thích"
 
 #: modules/keystore/file.c:55
-msgid "secrets are stored on a file without any encryption"
-msgstr ""
+#, fuzzy
+msgid "Secrets are stored on a file without any encryption"
+msgstr "Chia sẻ bộ nhớ"
 
 #: modules/keystore/file.c:65
-msgid "crypt keystore"
-msgstr ""
+#, fuzzy
+msgid "Crypt keystore"
+msgstr "Loại bỏ những đối tượng đã chọn"
 
 #: modules/keystore/file.c:66
-msgid "secrets are stored encrypted on a file"
-msgstr ""
+#, fuzzy
+msgid "Secrets are stored encrypted on a file"
+msgstr "Chia sẻ bộ nhớ"
 
 #: modules/keystore/keychain.m:40
 #, fuzzy
@@ -22570,12 +22590,12 @@ msgstr "Chia sẻ bộ nhớ"
 
 #: modules/keystore/memory.c:41
 #, fuzzy
-msgid "memory keystore"
+msgid "Memory keystore"
 msgstr "Loại bỏ những đối tượng đã chọn"
 
 #: modules/keystore/memory.c:42
 #, fuzzy
-msgid "secrets are stored in memory"
+msgid "Secrets are stored in memory"
 msgstr "Chia sẻ bộ nhớ"
 
 #: modules/keystore/secret.c:39
@@ -25449,8 +25469,9 @@ msgid "Chromecast stream output"
 msgstr "Xuất tập tin luồng dữ liệu"
 
 #: modules/stream_out/chromecast/chromecast_demux.cpp:328
-msgid "chromecast demux wrapper"
-msgstr ""
+#, fuzzy
+msgid "Chromecast demux wrapper"
+msgstr "Định dạng màu sắc"
 
 #: modules/stream_out/cycle.c:325
 msgid "cycle"
@@ -25972,23 +25993,29 @@ msgid ""
 msgstr ""
 
 #: modules/stream_out/standard.c:51
-msgid "address to bind to (helper setting for dst)"
-msgstr ""
+#, fuzzy
+msgid "Address to bind to (helper setting for dst)"
+msgstr "tên tập tin cho luồng dữ liệu (thiết lập dành cho dst)"
 
 #: modules/stream_out/standard.c:53
+#, fuzzy
 msgid ""
-"address:port to bind vlc to listening incoming streams helper setting for "
-"dst,dst=bind+'/'+path. dst-parameter overrides this"
+"address:port to bind vlc to listening incoming streams. Helper setting for "
+"dst, dst=bind+'/'+path. dst-parameter overrides this."
 msgstr ""
+"Tên tập tin dành cho luồng dữ liệu đối với dst, dst=bind+'/'+đường dẫn, dst-"
+"thông số sẽ ghi chồng dữ liệu lên phần này"
 
 #: modules/stream_out/standard.c:55
-msgid "filename for stream (helper setting for dst)"
+#, fuzzy
+msgid "Filename for stream (helper setting for dst)"
 msgstr "tên tập tin cho luồng dữ liệu (thiết lập dành cho dst)"
 
 #: modules/stream_out/standard.c:57
+#, fuzzy
 msgid ""
-"Filename for stream helper setting for dst, dst=bind+'/'+path, dst-parameter "
-"overrides this"
+"Filename for stream. Helper setting for dst, dst=bind+'/'+path. dst-"
+"parameter overrides this."
 msgstr ""
 "Tên tập tin dành cho luồng dữ liệu đối với dst, dst=bind+'/'+đường dẫn, dst-"
 "thông số sẽ ghi chồng dữ liệu lên phần này"
@@ -27304,7 +27331,7 @@ msgstr ""
 
 #: modules/video_filter/opencv_wrapper.c:82
 msgid ""
-"Ammount by which to scale the picture before sending it to the internal "
+"Amount by which to scale the picture before sending it to the internal "
 "OpenCV filter"
 msgstr ""
 
@@ -29096,9 +29123,6 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr "Bạn có chắc muốn tạo luồng dữ liệu?"
 
-#~ msgid "Always &on Top"
-#~ msgstr "Luôn ở &trên cùng"
-
 #~ msgid "Dialog"
 #~ msgstr "Hộp thông báo"
 
@@ -29568,6 +29592,10 @@ msgstr "Bạn có chắc muốn tạo luồng dữ liệu?"
 #~ msgid "Add a background"
 #~ msgstr "Thêm phần nền"
 
+#, fuzzy
+#~ msgid "O&utput"
+#~ msgstr "Xuất dữ liệu"
+
 #~ msgid "Accelerated video output (Overlay)"
 #~ msgstr "Tăng tốc việc xuất video (Overlay)"
 
@@ -29730,6 +29758,22 @@ msgstr "Bạn có chắc muốn tạo luồng dữ liệu?"
 
 #~ msgid "Media Manager List"
 #~ msgstr "Danh sách quản lý tập tin"
+
+#, fuzzy
+#~ msgid "The Sound Font file (SF2/DLS) to use for synthesis."
+#~ msgstr ""
+#~ "Một tập tin kiểu chữ âm thanh sẽ được cần xác định cho sự tổng hợp của "
+#~ "phần mềm."
+
+#~ msgid "Sound fonts"
+#~ msgstr "Kiểu chữ âm thanh"
+
+#, fuzzy
+#~ msgid "Capture region heigh"
+#~ msgstr "Chiều cao vùng Chụp lại hình ảnh"
+
+#~ msgid "Always &on Top"
+#~ msgstr "Luôn ở &trên cùng"
 
 #, fuzzy
 #~ msgid "Sox Resampling quality"
