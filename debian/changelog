@@ -1,3 +1,10 @@
+vlc (2.2.8-2) unstable; urgency=medium
+
+  * debian/patches: Apply upstream patch to fix build with libupnp-dev
+    1.6.24-1.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 06 Dec 2017 21:42:58 +0100
+
 vlc (2.2.8-1) unstable; urgency=medium
 
   * New upstream release.
