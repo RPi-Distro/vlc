@@ -18,9 +18,11 @@ vlc (3.0.0~rc1~20171206-1) UNRELEASED; urgency=medium
   * debian/:
     - Drop vlc-plugin-zvbi package and merge into vlc-plugin-base. ffmpeg
       already depends on libzvbi anyway.
+  * debian/copyright:
+    - Convert to CF 1.0.
+    - Update copyright information.
 
   * TODO:
-    - Update d/copyright.
     - Check vlc-plugin-* packages and new plugins.
     - Check currently disabled plugins.
     - Update Breaks+Replaces for moved plugins (zvbi, etc).
