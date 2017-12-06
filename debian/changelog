@@ -1,4 +1,4 @@
-vlc (3.0.0~rc1~20171206-1) UNRELEASED; urgency=medium
+vlc (3.0.0~rc1~20171206-1) experimental; urgency=medium
 
   * New upstream snapshot.
     - Install vlc_interface.h. (Closes: #768808)
@@ -18,16 +18,24 @@ vlc (3.0.0~rc1~20171206-1) UNRELEASED; urgency=medium
   * debian/:
     - Drop vlc-plugin-zvbi package and merge into vlc-plugin-base. ffmpeg
       already depends on libzvbi anyway.
+    - Update installed plugins.
+    - Track plugin ABI.
   * debian/copyright:
     - Convert to CF 1.0.
     - Update copyright information.
+  * debian/control:
+    - Bump Standards-Versios.
+    - Set Rules-Requires-Root: no.
+    - Remove vlc-plugin-sdl.
+    - Turn vlc-plugin-zvbi into a transitional package.
+    - New Build-Depends: bison, flex, libarchive-dev, libaribb24-dev,
+      libharfbuzz-dev, libmicrodns-dev, libmpg123-dev, libnfs-dev,
+      libprotobuf-dev, libqt5svg5-dev, libsecret-1-dev, libsoxr-dev,
+      libsystemd-dev, protobuf-compiler, qtbase5-prive-dev, wayland-protocols.
+    - Removed Build-Depends: libcdio-dev.
+  * debian/*.symbols: Add new symbols.
 
-  * TODO:
-    - Check vlc-plugin-* packages and new plugins.
-    - Check currently disabled plugins.
-    - Update Breaks+Replaces for moved plugins (zvbi, etc).
-
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 09 Oct 2017 21:01:57 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 07 Dec 2017 00:23:24 +0100
 
 vlc (2.2.6-6) unstable; urgency=medium
 
@@ -1110,14 +1118,14 @@ vlc (1.1.8-3) unstable; urgency=medium
     - VideoLAN-SA-1103
     - Thanks to Rémi Denis-Courmont
   * Set urgency to medium
-  * Set policy to 3.9.2 (no change needed) 
+  * Set policy to 3.9.2 (no change needed)
 
  -- Christophe Mutricy <xtophe@videolan.org>  Mon, 11 Apr 2011 22:12:15 +0100
 
 vlc (1.1.8-2) unstable; urgency=low
 
   * Require libschroedinger >= 1.0.10 (Closes: #619858)
-  * Relax libmatroska-dev versionned b-depedency 
+  * Relax libmatroska-dev versionned b-depedency
 
  -- Christophe Mutricy <xtophe@videolan.org>  Mon, 28 Mar 2011 23:18:04 +0100
 
@@ -1339,7 +1347,7 @@ vlc (1.1.0-1) unstable; urgency=low
   * control:
     * Prefer a recent libdvbpsi
     * add lua5.1 to have luac
-    * Add more build-dep: xcb*, dirac, dc1394 
+    * Add more build-dep: xcb*, dirac, dc1394
   * Patch to allow compilation with xul 1.9.1
   * Remove unneeded -V for dh_makeshlibs
   * Use configure option instead of patching
@@ -1487,7 +1495,7 @@ vlc (1.0.2-1) unstable; urgency=high
     + Fix some stack overflows in MP4, ASF and AVI demuxers
       (VideoLAN-SA-0902, CVE pending)(urgency=high)
     + Closes: #540145, #542108
-  * Fix kfreebsd FTBFS and simplify (Closes: #545863) 
+  * Fix kfreebsd FTBFS and simplify (Closes: #545863)
     Thanks to Petr Salinger
   * Fix Hurd install
   * Update libvlccore symbol file
@@ -1505,7 +1513,7 @@ vlc (1.0.1-2) unstable; urgency=low
   * No need of qt4-dev-tools
   * Add a README.source about quilt
   * Disable some modules (kate, mtp, fluidsynth)
-  * Don't distribute the *.install-kfreebsd* files as they are generated 
+  * Don't distribute the *.install-kfreebsd* files as they are generated
 
  -- Christophe Mutricy <xtophe@videolan.org>  Sun, 06 Sep 2009 19:07:24 +0200
 
@@ -1520,7 +1528,7 @@ vlc (1.0.1-1) unstable; urgency=low
 
   [ Christophe Mutricy ]
   * Really build altivec-free libvlccore (Closes: #523035)
-  * Depends on libdvbpsi5-dev and protect against future renaming of 
+  * Depends on libdvbpsi5-dev and protect against future renaming of
     libdvbpsi development package
   * Remove patches applied upstream
 
@@ -1631,7 +1639,7 @@ vlc (0.9.8a-3) unstable; urgency=low
       #518300)
     + Delete unused patches
     + Add comments to the patches
-  * Move to the video and debug sections  
+  * Move to the video and debug sections
 
  -- Christophe Mutricy <xtophe@videolan.org>  Sun, 15 Mar 2009 16:50:18 +0000
 
@@ -1657,7 +1665,7 @@ vlc (0.9.8a-1) experimental; urgency=low
   * New upstream release
     + Fix integer overflow in Real demux (VideoLAN SA-2008-11, CVE-2008-5276)
   * Enable RealRTSP access module
-  * Depends on libv4l-dev to add support of some webcam 
+  * Depends on libv4l-dev to add support of some webcam
   * Don't rebootstrap. The packages causing troubles previously have been fixed
 
  -- Christophe Mutricy <xtophe@videolan.org>  Wed, 03 Dec 2008 20:20:52 +0100
@@ -1674,7 +1682,7 @@ vlc (0.9.6-1) experimental; urgency=low
     + Remove 402_tivo_overflow.diff
     + Fix buffer overflow in CUE demuxer (Closes: #504639)
     + Fix buffer overflow in Realtext decoder
-  * Honor DEB_BUILD_OPTIONS 
+  * Honor DEB_BUILD_OPTIONS
   * Rebootstrap in order to avoid problem with .la
 
  -- Christophe Mutricy <xtophe@videolan.org>  Sat, 08 Nov 2008 03:14:29 +0100
@@ -1686,15 +1694,15 @@ vlc (0.9.4-2) experimental; urgency=low
     + 402_tivo_overflow.diff taken from upstream
   * Better xinerama fullscreen behaviour
     + 401_detect_xinerama_fullscreen.diff taken from upstream
-  * Builddepends on libcursesw5-dev rather than libcurses5-dev 
-    for proper wide char handling 
+  * Builddepends on libcursesw5-dev rather than libcurses5-dev
+    for proper wide char handling
 
  -- Christophe Mutricy <xtophe@videolan.org>  Mon, 20 Oct 2008 23:23:46 +0200
 
 vlc (0.9.4-1) experimental; urgency=low
 
   * New upstream bugfix version
-  * rules: Pass the debian version in configure.ac so that the cache 
+  * rules: Pass the debian version in configure.ac so that the cache
     is invalidated between binary version
   * control: Don't forget commas in builddep list
 
@@ -1707,8 +1715,8 @@ vlc (0.9.3-1) experimental; urgency=low
   * Build-depends on libdca-dev
   * vlc-nox.install
     + Be more general for the memcopy modules.
-      Fix a FTBFS on non-intel arch (Closes: #499860). 
-  * Sort builddep list 
+      Fix a FTBFS on non-intel arch (Closes: #499860).
+  * Sort builddep list
 
   [ Reinhard Tartler ]
   * remove spurious conflicts on libvlc2. LP: #274614
@@ -1720,7 +1728,7 @@ vlc (0.9.2-1) experimental; urgency=low
   [ Christophe Mutricy ]
   * New upstream release
     + Soname changed
-    + Bugs fixed upstream: Closes: #487646,  #298150, #325069, #392292, 
+    + Bugs fixed upstream: Closes: #487646,  #298150, #325069, #392292,
       #458004, #470903, #458004, #423121
     + new upstream fixes various crasher bugs reported in ubuntu:
       LP: #189575, #113927, #103741, #111615, #107899, #112076, #198916, 221428,
@@ -1733,24 +1741,24 @@ vlc (0.9.2-1) experimental; urgency=low
       libqt4-dev, libqt4-dev-tools and pkg-config. (Closes: #461324)
     + time display no longer incomplete, LP: #193445
     + fixed volume bar behavior, LP: #250041
-    + shout support closes LP: #127594, #84098, 
+    + shout support closes LP: #127594, #84098,
     + Install new modules:
       - vlc-nox: alphamask, blendbench, bluescreen, canvas, cc, cdg, chain,
         colorthres, croppadd, dynamicoverlay, erase, faad, gaussianblur, grain,
-        inhibit, lua, memcpy*, mmap, osd_parser, puzzle, remoteosd, rtmp, 
+        inhibit, lua, memcpy*, mmap, osd_parser, puzzle, remoteosd, rtmp,
         schroedinger, sharpen, stats, subusf, t140, telepathy, v4l2, vmem
       - vlc: qt4
       - vlc-plugin-jack: access_jack
     + Distribute the .pc for libvlc and vlc-plugin (Closes: #289507)
     + Remove wx interface and glide plugin as they've been dropped by upstream
       LP: #205325, #88487, #90603, #150380
-    + The Python and java bindings are no longer part of the upstream tarballs 
+    + The Python and java bindings are no longer part of the upstream tarballs
       (Closes: #469011)
-    + Temporarly disable libdca module until a pkg with the new 
+    + Temporarly disable libdca module until a pkg with the new
       API get in unstable
     + Delete or refresh patches
     + New patches:
-        - 052_as-needed taken from bug #347650 to teach libtool about 
+        - 052_as-needed taken from bug #347650 to teach libtool about
           -Wl,--as-needed
   * Install the skins DTD and the default skins it's only 113kB
   * Improve watch file
@@ -1795,7 +1803,7 @@ vlc (0.8.6.i-1) experimental; urgency=low
 vlc (0.8.6.h-5) unstable; urgency=high
 
   * Acknowledge NMU by Nico Golde. Thanks.
-  * Fix buffer overflow in CUE demuxer (Closes: #504639) 
+  * Fix buffer overflow in CUE demuxer (Closes: #504639)
 
  -- Christophe Mutricy <xtophe@videolan.org>  Wed, 05 Nov 2008 22:02:06 +0100
 
