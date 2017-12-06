@@ -2,7 +2,7 @@
  * vlc_stream.h: Stream (between access and demux) descriptor and methods
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: badee554dc2260e82b292e9d104e5ea0141de46b $
+ * $Id: 789545e16e59dd99f215d7b2bafb655f49dfbc88 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -238,6 +238,11 @@ VLC_API block_t *vlc_stream_ReadBlock(stream_t *) VLC_USED;
 /**
  * Tells the current stream position.
  *
+ * This function tells the current read offset (in bytes) from the start of
+ * the start of the stream.
+ * @note The read offset may be larger than the stream size, either because of
+ * a seek past the end, or because the stream shrank asynchronously.
+ *
  * @return the byte offset from the beginning of the stream (cannot fail)
  */
 VLC_API uint64_t vlc_stream_Tell(const stream_t *) VLC_USED;
@@ -266,6 +271,11 @@ VLC_API bool vlc_stream_Eof(const stream_t *) VLC_USED;
 
 /**
  * Sets the current stream position.
+ *
+ * This function changes the read offset within a stream, if the stream
+ * supports seeking. In case of error, the read offset is not changed.
+ *
+ * @note It is possible (but not useful) to seek past the end of a stream.
  *
  * @param offset byte offset from the beginning of the stream
  * @return zero on success, a negative value on error

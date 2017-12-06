@@ -2,7 +2,7 @@
  * screen.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004-2008 VLC authors and VideoLAN
- * $Id: 8f87d90171d57dac34bcd4274b9c455a38f65c25 $
+ * $Id: 59eaaa6ecab2c3d1d6672e6b1eca53ef9f8b19c8 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -62,7 +62,7 @@
 
 #define WIDTH_TEXT N_( "Capture region width" )
 
-#define HEIGHT_TEXT N_( "Capture region heigh" )
+#define HEIGHT_TEXT N_( "Capture region height" )
 
 #define FOLLOW_MOUSE_TEXT N_( "Follow the mouse" )
 #define FOLLOW_MOUSE_LONGTEXT N_( \

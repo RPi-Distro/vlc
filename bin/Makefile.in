@@ -699,6 +699,7 @@ LTLIBaom = @LTLIBaom@
 LTLIBarchive = @LTLIBarchive@
 LTLIBaribcam = @LTLIBaribcam@
 LTLIBaribsub = @LTLIBaribsub@
+LTLIBaudiotoolboxmidi = @LTLIBaudiotoolboxmidi@
 LTLIBavahi = @LTLIBavahi@
 LTLIBavcapture = @LTLIBavcapture@
 LTLIBbpg = @LTLIBbpg@

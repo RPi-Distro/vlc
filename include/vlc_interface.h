@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000 VLC authors and VideoLAN
- * $Id: fd73b9894b71838881515cd78a926587c2a69dd8 $
+ * $Id: e271314c3120c270a0bef5189cfee21dd9e7b26b $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -238,10 +238,11 @@ typedef enum vlc_intf_dialog {
                             "*.sub;*.utf;*.ass;" \
                             "*.ssa;*.aqt;" \
                             "*.jss;*.psb;" \
-                            "*.rt;*.smi;*.txt;" \
+                            "*.rt;*.sami;*.smi;*.txt;" \
                             "*.smil;*.stl;*.usf;" \
                             "*.dks;*.pjs;*.mpl2;*.mks;" \
-                            "*.vtt;*.ttml;*.dfxp;"
+                            "*.vtt;*.tt;*.ttml;*.dfxp;" \
+                            "*.scc"
 
 /** \defgroup interaction Interaction
  * \ingroup interface

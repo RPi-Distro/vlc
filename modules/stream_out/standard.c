@@ -2,7 +2,7 @@
  * standard.c: standard stream output module
  *****************************************************************************
  * Copyright (C) 2003-2011 VLC authors and VideoLAN
- * $Id: 8f78702835ab1835ffde2ef5e31edfabe82c2800 $
+ * $Id: 29f80b58651b63d7c563341bd7b8bf9330274fba $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -48,14 +48,14 @@
 #define DEST_TEXT N_("Output destination")
 #define DEST_LONGTEXT N_( \
     "Destination (URL) to use for the stream. Overrides path and bind parameters" )
-#define BIND_TEXT N_("address to bind to (helper setting for dst)")
+#define BIND_TEXT N_("Address to bind to (helper setting for dst)")
 #define BIND_LONGTEXT N_( \
-  "address:port to bind vlc to listening incoming streams "\
-  "helper setting for dst,dst=bind+'/'+path. dst-parameter overrides this" )
-#define PATH_TEXT N_("filename for stream (helper setting for dst)")
+  "address:port to bind vlc to listening incoming streams. "\
+  "Helper setting for dst, dst=bind+'/'+path. dst-parameter overrides this." )
+#define PATH_TEXT N_("Filename for stream (helper setting for dst)")
 #define PATH_LONGTEXT N_( \
-  "Filename for stream "\
-  "helper setting for dst, dst=bind+'/'+path, dst-parameter overrides this" )
+  "Filename for stream. "\
+  "Helper setting for dst, dst=bind+'/'+path. dst-parameter overrides this." )
 #define NAME_TEXT N_("Session name")
 #define NAME_LONGTEXT N_( \
     "This is the name of the session that will be announced in the SDP " \

@@ -3,7 +3,7 @@
  * Also contains some internal utility functions
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: a8475c673f63e1443a74c5a38228521cb1e9dc7a $
+ * $Id: a9acff1766f3c00d771fda54e82c535d633840ab $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -47,6 +47,7 @@ struct libvlc_media_player_t
     {
         input_thread_t   *p_thread;
         input_resource_t *p_resource;
+        vlc_renderer_item_t *p_renderer;
         vlc_mutex_t       lock;
     } input;
 

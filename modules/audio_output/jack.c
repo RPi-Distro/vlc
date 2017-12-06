@@ -2,7 +2,7 @@
  * jack.c : JACK audio output module
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: ed36cff9d43ec7c4b24d97b74689db03c108d8ae $
+ * $Id: 5710fed72d0c4872b106961190e4ee35dfe1f7d2 $
  *
  * Authors: Cyril Deguet <asmax _at_ videolan.org>
  *          Jon Griffiths <jon_p_griffiths _At_ yahoo _DOT_ com>
@@ -91,7 +91,7 @@ static int  GraphChange  ( void *p_arg );
     "If automatic connection is enabled, only JACK clients whose names " \
     "match this regular expression will be considered for connection." )
 
-#define JACK_NAME_TEXT N_( "Jack client name" )
+#define JACK_NAME_TEXT N_( "JACK client name" )
 
 /*****************************************************************************
  * Module descriptor

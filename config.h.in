@@ -125,6 +125,9 @@
 /* Support for __attribute__((packed)) for structs */
 #undef HAVE_ATTRIBUTE_PACKED
 
+/* Define to 1 if you have the <AudioToolbox/AudioToolbox.h> header file. */
+#undef HAVE_AUDIOTOOLBOX_AUDIOTOOLBOX_H
+
 /* Define to 1 if you have the <audio_io.h> header file. */
 #undef HAVE_AUDIO_IO_H
 

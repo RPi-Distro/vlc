@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: f73be7df07f06fd8a2c4d219e5512b61cbbe0e2e $
+ * $Id: ede795a55c810ca2a24bf5f7ccd7c6ff310f1f09 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -538,11 +538,6 @@ QMenu *VLCMenuBar::ViewMenu( intf_thread_t *p_intf, QMenu *current, MainInterfac
     adv->setCheckable( true );
     if( visual_selector_enabled ) adv->setChecked( true );
 #endif
-
-    action = menu->addAction( qtr( "Always on &top" ) );
-    action->setCheckable( true );
-    action->setChecked( mi->isInterfaceAlwaysOnTop() );
-    CONNECT( action, triggered( bool ), mi, setInterfaceAlwaysOnTop( bool ) );
 
     menu->addSeparator();
 

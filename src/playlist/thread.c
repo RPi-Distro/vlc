@@ -2,7 +2,7 @@
  * thread.c : Playlist management functions
  *****************************************************************************
  * Copyright © 1999-2008 VLC authors and VideoLAN
- * $Id: 9f51054089ac2ed4a103479a219d1fcecf2caf58 $
+ * $Id: ef96d92d3a0b61fea6f0f52c20ad02fc17137010 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -217,6 +217,8 @@ static bool PlayItem( playlist_t *p_playlist, playlist_item_t *p_item )
     input_thread_t *p_input_thread = input_Create( p_playlist, p_input, NULL,
                                                    p_sys->p_input_resource,
                                                    p_renderer );
+    if( p_renderer )
+        vlc_renderer_item_release( p_renderer );
     if( likely(p_input_thread != NULL) )
     {
         var_AddCallback( p_input_thread, "intf-event",

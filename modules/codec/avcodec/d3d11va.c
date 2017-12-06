@@ -441,23 +441,12 @@ static void D3dDestroyDevice(vlc_va_t *va)
         ID3D11VideoContext_Release(sys->d3dvidctx);
     D3D11_ReleaseDevice( &sys->d3d_dev );
 }
+
 /**
  * It describes our Direct3D object
  */
 static char *DxDescribe(vlc_va_sys_t *sys)
 {
-    static const struct {
-        unsigned id;
-        char     name[32];
-    } vendors [] = {
-        { 0x1002, "ATI" },
-        { 0x10DE, "NVIDIA" },
-        { 0x1106, "VIA" },
-        { 0x8086, "Intel" },
-        { 0x5333, "S3 Graphics" },
-        { 0x4D4F4351, "Qualcomm" },
-        { 0, "" }
-    };
 
     IDXGIAdapter *p_adapter = D3D11DeviceAdapter(sys->d3d_dev.d3ddevice);
     if (!p_adapter) {
@@ -467,20 +456,12 @@ static char *DxDescribe(vlc_va_sys_t *sys)
     char *description = NULL;
     DXGI_ADAPTER_DESC adapterDesc;
     if (SUCCEEDED(IDXGIAdapter_GetDesc(p_adapter, &adapterDesc))) {
-        const char *vendor = "Unknown";
-        for (int i = 0; vendors[i].id != 0; i++) {
-            if (vendors[i].id == adapterDesc.VendorId) {
-                vendor = vendors[i].name;
-                break;
-            }
-        }
-
         char *utfdesc = FromWide(adapterDesc.Description);
         if (likely(utfdesc!=NULL))
         {
             if (asprintf(&description, "D3D11VA (%s, vendor %u(%s), device %u, revision %u)",
                          utfdesc,
-                         adapterDesc.VendorId, vendor, adapterDesc.DeviceId, adapterDesc.Revision) < 0)
+                         adapterDesc.VendorId, DxgiVendorStr(adapterDesc.VendorId), adapterDesc.DeviceId, adapterDesc.Revision) < 0)
                 description = NULL;
             free(utfdesc);
         }
@@ -550,6 +531,24 @@ static int DxGetInputList(vlc_va_t *va, input_list_t *p_list)
     return VLC_SUCCESS;
 }
 
+extern const GUID DXVA_ModeHEVC_VLD_Main10;
+static bool CanUseIntelHEVC(vlc_va_t *va)
+{
+    vlc_va_sys_t *sys = va->sys;
+    /* it should be OK starting after driver 20.19.15.4835 */
+    struct wdmm_version WDMM = {
+        .wddm         = 20,
+        .d3d_features = 19,
+        .revision     = 15,
+        .build        = 4836,
+    };
+    if (D3D11CheckDriverVersion(sys->d3d_dev.d3ddevice, GPU_MANUFACTURER_INTEL, &WDMM) == VLC_SUCCESS)
+        return true;
+
+    msg_Dbg(va, "HEVC not supported with these drivers");
+    return false;
+}
+
 static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *fmt)
 {
     vlc_va_sys_t *sys = va->sys;
@@ -564,6 +563,9 @@ static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *
             msg_Dbg(va, "format %s is supported for output", DxgiFormatToStr(format));
     }
 #endif
+
+    if (IsEqualGUID(input,&DXVA_ModeHEVC_VLD_Main10) && !CanUseIntelHEVC(va))
+        return VLC_EGENERIC;
 
     DXGI_FORMAT processorInput[4];
     int idx = 0;
@@ -663,7 +665,7 @@ static bool CanUseDecoderPadding(vlc_va_sys_t *sys)
 
     /* Qualcomm hardware has issues with textures and pixels that should not be
     * part of the decoded area */
-    return adapterDesc.VendorId != 0x4D4F4351;
+    return adapterDesc.VendorId != GPU_MANUFACTURER_QUALCOMM;
 }
 
 /**
