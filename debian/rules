@@ -97,14 +97,16 @@ confflags += \
 	--with-kde-solid=/usr/share/solid/actions/ \
 	$(NULL)
 # Reasons for disabling features:
-# decklink: not in Debian
 # d3d11va: Windows only
+# decklink: not in Debian
 # directx: Windows only
+# dsm: not in Debian
 # dxva2: Windows only
 # fdkaac: in Debian contrib
 # fluidlite: fluidsynth is enabled
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
+# libplacebo: not in Debian
 # libtar: security issue (#737534)
 # macosx*: MacOX only
 # mfx: currently not supported on Linux
@@ -112,6 +114,7 @@ confflags += \
 # projectm: broken
 # schroedinger: removed from Debian (#845037)
 # sparkle: MacOS X only
+# srt: not in Debian
 # telx: incompatible with zvbi
 # vpx: not needed when having libavcodec
 # vsxu: not in Debian
@@ -120,11 +123,13 @@ confflags += \
 	--disable-d3d11va \
 	--disable-decklink \
 	--disable-directx \
+	--disable-dsm \
 	--disable-dxva2 \
 	--disable-fdkaac \
 	--disable-fluidlite \
 	--disable-goom \
 	--disable-gst-decode \
+	--disable-libplacebo \
 	--disable-libtar \
 	--disable-macosx \
 	--disable-macosx-avfoundation \
@@ -134,6 +139,7 @@ confflags += \
 	--disable-projectm \
 	--disable-schroedinger \
 	--disable-sparkle \
+	--disable-srt \
 	--disable-telx \
 	--disable-vpx \
 	--disable-vsxu \
