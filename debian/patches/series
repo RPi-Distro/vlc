@@ -8,3 +8,5 @@
 0008-desktop-file-We-understand-gvp-and-ram-format.patch
 0009-desktop-file-more-mimetypes-from-iana.org.patch
 0010-MKV-support-WebVTT-subtitles-embedded.patch
+0011-upnp-don-t-clash-with-libupnp-s-own-compat-code.patch
+0012-Fix-UpnpEventPtr-typedef-for-versions-before-1.8.0.patch

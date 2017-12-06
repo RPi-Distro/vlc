@@ -1,0 +1,21 @@
+From: Sebastian Ramacher <sramacher@debian.org>
+Date: Wed, 6 Dec 2017 21:56:59 +0100
+Subject: Fix UpnpEventPtr typedef for versions before 1.8.0
+
+---
+ modules/services_discovery/upnp.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/modules/services_discovery/upnp.cpp b/modules/services_discovery/upnp.cpp
+index 75e6fda..381e8e3 100644
+--- a/modules/services_discovery/upnp.cpp
++++ b/modules/services_discovery/upnp.cpp
+@@ -74,6 +74,8 @@ static const char* UpnpEventSubscribe_get_SID_cstr( const UpnpEventSubscribe* p_
+ {
+   return p_s->Sid;
+ }
++#elif UPNP_VERSION < 10800
++typedef void* UpnpEventPtr;
+ #else
+ typedef const void* UpnpEventPtr;
+ #endif
