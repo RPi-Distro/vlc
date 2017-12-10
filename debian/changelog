@@ -1,3 +1,10 @@
+vlc (3.0.0~rc1~20171210-2) experimental; urgency=medium
+
+  * debian/rules: Ensure tighter dependencies on libraries.
+  * debian/: Build wayland plugins only on linux-any.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 10 Dec 2017 19:17:48 +0100
+
 vlc (3.0.0~rc1~20171210-1) experimental; urgency=medium
 
   * New upstream snapshot.
