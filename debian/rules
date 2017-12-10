@@ -156,6 +156,7 @@ confflags += \
 	--enable-dc1394 \
 	--enable-dv1394 \
 	--enable-linsys \
+	--enable-nfs \
 	--enable-omxil \
 	--enable-udev \
 	--enable-v4l2 \
@@ -166,6 +167,7 @@ confflags += \
 	--disable-dc1394 \
 	--disable-dv1394 \
 	--disable-linsys \
+	--disable-nfs \
 	--disable-omxil \
 	--disable-udev \
 	--disable-v4l2 \
@@ -178,6 +180,7 @@ removeplugins += \
 	dvb \
 	fb \
 	linsys \
+	nfs \
 	omxil \
 	systemd \
 	udev \
