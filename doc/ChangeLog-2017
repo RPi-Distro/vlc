@@ -1,3 +1,788 @@
+commit 8b54e4af4cc1cfb7275b64f4564cb23fd6f14444
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Thu Dec 7 16:16:28 2017 +0100
+
+    qt: avoid location bar overlapping with search widgets
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 7ff9d56336c65cd7e808b5730e752bf82c6f50a2)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 2c0388471155aa3d9aa25c83c26a9a9417b92f42
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Thu Dec 7 16:16:27 2017 +0100
+
+    qt: avoid displaying mnemonic char and text elision
+    
+    '&' char might be added by accelerators like KAcceleratorManager
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 4273ef6f07a771782fcc4b296e5ffa4caf2e8cc4)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8075a39abf0ae296b30e32677b606090208d4c9a
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Dec 8 15:17:59 2017 +0100
+
+    direct3d11: the quad always have the decoder size, no matter what
+    
+    Fixes #19192
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 020349accafe61de5197a9166e689f246057e31e)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0af7adbca81a88218720851b803a5f9b1fcc8937
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Dec 9 17:09:34 2017 +0100
+
+    hw: vaapi: fix loop condition
+    
+    (cherry picked from commit 7bfd1d18c33a15ea9d5eec77ef7dd9f8e5d1cd17)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit dbaa579f207a80f59b705133dad6a5fbf0298943
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Sat Dec 9 17:06:29 2017 +0100
+
+    hw: vaapi: fix VANativeDisplay cast
+    
+    (cherry picked from commit 1dece20aa807391d902c36275c0bea8eff03b443)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 7b3bde1ea61b2976e178da24afce2e51b19d14e7
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Sat Dec 9 14:34:59 2017 +0300
+
+    contribs: bootstrap: make uname output silent if -o is not supported.
+    
+    (cherry picked from commit 3fb8103c33e1ae60dced8c4f475bfa21e1195ad9)
+    Signed-off-by: Konstantin Pavlov <thresh@videolan.org>
+
+commit 810fab000f46eb9c1192ed823742b20e1ab45531
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Fri Dec 8 19:53:35 2017 +0100
+
+    contrib: srt: Patch to add implicit link libraries to pkgconfig file
+    
+    This library needs to add implicit link libraries like -lstdc++
+    to the private pkgconfig linking flags inside the pc file, to allow
+    linking with a non-C++ module (like we have in VLC).
+    
+    (cherry picked from commit 0a57721d8811dd607b9f85556212b9702c979b6e)
+    Signed-off-by: Konstantin Pavlov <thresh@videolan.org>
+
+commit f2032bb5fc3ed6cabdffa6c522454a97925446e7
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Dec 9 09:57:30 2017 +0100
+
+    build.sh: Add VLC_PATH variable to add additional paths
+    
+    This shall be used only if you are sure what is inside those extra
+    paths. Please pay careful attention.
+    This variable shall not be set by the normal user, and the normal
+    $PATH variable shall not pollute this script, as everything needed
+    is contained in extras/tools and contribs.
+    
+    (cherry picked from commit f98e502fe6d15815aebec8433081425e2329baac)
+    Signed-off-by: Konstantin Pavlov <thresh@videolan.org>
+
+commit 96151a75eeb33fbea431aa774c9520ec03a389b7
+Author: Justin Kim <justin.kim@collabora.com>
+Date:   Fri Dec 8 20:51:52 2017 +0900
+
+    contrib: srt: Apply a patch to fix link flags
+    
+    SRT 1.2.2 has a bug in their `.pc` that `Libs.private`
+    field has package names.
+    
+    Signed-off-by: Justin Kim <justin.kim@collabora.com>
+    Signed-off-by: Konstantin Pavlov <thresh@videolan.org>
+    (cherry picked from commit 00cdf85e6a6129aa7057be9746b4e151671d2492)
+    Signed-off-by: Konstantin Pavlov <thresh@videolan.org>
+
+commit 23dc5ff50abcaedbc947a9a03302b16f61d2e56e
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Fri Dec 8 12:12:30 2017 +0000
+
+    contribs: chromaprint: more fixes for .pc file.
+    
+    - Moved AVFFT check: FFMPEG_LIBRARIES might be unset even if
+    all needed FFmpeg libraries were found.
+    - Added an ability to link with VDSP/Accelerate Framework on macOS.
+    
+    (cherry picked from commit f1c8cc80325c0a108e31d1aa7fec947ef880992d)
+    Signed-off-by: Konstantin Pavlov <thresh@videolan.org>
+
+commit c3736f0260e972096e9a7869b18f77495c948cd2
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 8 18:45:50 2017 +0100
+
+    codec: faad: fix !reordering case
+    
+    Regression from 790d6b1f5437b1307c831e6ac509baa40d69e3fd
+    
+    (cherry picked from commit 001b765d6699676077f147471f62ef701a5f478c)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 1d3db1a7108152d61885f8476064378b0b97e68f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 8 17:59:58 2017 +0100
+
+    libvlc.sym: add missing libvlc_media_list_player_set_pause
+    
+    (cherry picked from commit a6d3cf0ae10b4d7316c80bc59b2a48fb0344a7a9)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit c9b182d34005be4c002b25b61adcf3f489f0b76d
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 8 11:15:17 2017 +0100
+
+    demux: avi: replace off_t (fix #19249)
+    
+    AVI has 32bit limitation, but off_t file size was signed
+    
+    (cherry picked from commit adff84e6c468b8af7aed0a47876534b9357794ba)
+
+commit f20751f3a80634ebc4113599c49dbf3f5c0ea46b
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 8 16:47:56 2017 +0100
+
+    codec: faad: don't reorder with random table
+    
+    heap buffer ofw on no reorder
+    
+    (cherry picked from commit 790d6b1f5437b1307c831e6ac509baa40d69e3fd)
+
+commit 4dd10ad6c4f69fa93d29902d4a93cd0f84193c92
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 8 16:34:32 2017 +0100
+
+    demux: avi: fix reading WAVEFORMATEX extra
+    
+    (cherry picked from commit e7d72a7066e8ad45568efb7dc77a826dc6f76141)
+
+commit 43a34ee948a8c48350e9ea478ac081b53762f964
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 8 12:45:35 2017 +0100
+
+    lib: add libvlc_media_list_player_set_pause
+    
+    (cherry picked from commit 0e89b88b7b21cda1009512ce4f86964afafb0d5e)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 677da9d5bf5e5d6bda372a1701558c4518472441
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Dec 8 14:21:43 2017 +0100
+
+    mp4: Fix crash on empty ELST
+    
+    (cherry picked from commit e198d07cf316d4589e64822ab1477c7e31457b3e)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit b10a3596f3cb9ad826c33c661091b1175adf529f
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Dec 8 14:00:41 2017 +0100
+
+    libmp4: sidx: Return early if there are no items in the box
+    
+    This also fixes a buffer overrun when MP4_VERBOSE is defined and i_count
+    is 0
+    
+    (cherry picked from commit 45aee180d61c01050f0fb916085e49b3051d5ac1)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 1c7220608ca374abd50211ca0f355a572a711fba
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Dec 8 11:41:56 2017 +0100
+
+    copy: Don't modify fmt_out until success is ensured
+    
+    (cherry picked from commit 385765703e43f9c91ff8789ce303cc0822b7c165)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 6f877be17b43936e603d855e1afe71bdd79d8d4b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 8 12:49:56 2017 +0100
+
+    macos: remove /usr/local/bin from PATH
+    
+    In order to use our own extras tools and fix conflicts with Homebrew.
+    
+    (cherry picked from commit 51d7f31319868af059aa61b91b427016f384e34c)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit ebbfcbb5eab9ea7d15560a44061847f115d7b705
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 8 10:20:10 2017 +0100
+
+    Revert "macos: enable libplacebo"
+    
+    It's now automatic.
+    
+    This reverts commit 0885ed816120265a33eb6d3f229cec7a9d3524e1.
+    
+    (cherry picked from commit 3bb2cd933128225ffc58024cf796939faaedc422)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 464446e611ef96d461a032ae81df61ce1ccf72bb
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Fri Dec 8 11:12:03 2017 +0300
+
+    contribs: openjpeg: create pkg-config file when requested.
+    
+    UNIX is just a default, and when we force BUILD_PKGCONFIG_FILES we
+    expect the file to be created even on a non-UNIX systems (e.g. mingw).
+    
+    (cherry picked from commit 49cc9197f151859555964da2f3fe6aece8e5cdf3)
+    Signed-off-by: Konstantin Pavlov <thresh@videolan.org>
+
+commit adec1d1874b00898dc2f25b2301e52213d1622a9
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Dec 7 23:17:55 2017 +0100
+
+    Add sami extension for auto-loading of subs
+    
+    (cherry picked from commit bbb1bcebec705e73f1b0d60df71891959971ed4e)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit acab893ae6728ac36794a0bab5a80202b873007f
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Dec 7 23:17:14 2017 +0100
+
+    Update AUTHORS
+    
+    (cherry picked from commit ee3ca0e40d31d110d34f1f7892dc14ab4f4793d6)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3a72bf7141136267c89c0d8db9e0bd213ae2a031
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Dec 7 14:13:02 2017 +0100
+
+    demux: avi: fix slow seek access regression
+    
+    (cherry picked from commit 5cad69c88718a85437e2f78846caae6bede8215d)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f9a517302f4c70337406741e46c03cc816843923
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Thu Dec 7 21:37:11 2017 +0300
+
+    snap: drop unneeded makefile rules.
+    
+    (cherry picked from commit ceaf3044f7d7c429e424e50fe5b46ae29d416428)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 29d661c8ab2d8a241fe596344942d010690858c8
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Thu Dec 7 21:32:33 2017 +0300
+
+    snap: Use contribs.
+    
+    While at it, drop support for wayland-protocols and rely on configure to
+    find the needed libraries.
+    
+    (cherry picked from commit 617a88d14e0dda336690a8c498caa694b2ef6b6d)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fd1c81931283423c45f30c5f95eb0e96d3b11239
+Author: Alan Pope <alan.pope@canonical.com>
+Date:   Thu Dec 7 21:28:39 2017 +0300
+
+    snap: fixes to be able to build on Ubuntu 16.0.4
+    
+    - Fixed the desktop file and icon location
+    - Fixed the required gettext version (0.19.8 is not available on 16.04)
+    - Added ersion-script and 'echo' in the install stanza to easily
+      identify git id from which the build was made
+    - Fixed vlc-wrapper to set the right environment variables to expose
+      GPU drivers for VDPAU VA-API to work out of the box
+    - Bundle ffmpeg-3.4 and wayland-protocols
+    
+    (cherry picked from commit 0e932d9d816c5d78cfd5e37423f91e752a1ddf2b)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 94f0938e99f93bdf562b9fc83d8a1710816dffe9
+Author: Sean McGovern <gseanmcg@gmail.com>
+Date:   Thu Dec 7 06:31:02 2017 -0500
+
+    contrib: chromaprint: improve detection of av{codec, util}
+    
+    (cherry picked from commit a519fa6af971042c8736ea0ad41d1ed1a6c8683c)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 387002347f003cf821253eea4c1482ae0e57bf72
+Author: Sean McGovern <gseanmcg@gmail.com>
+Date:   Thu Dec 7 06:31:01 2017 -0500
+
+    contrib: openjpeg: import pthreads library where necessary
+    
+    (cherry picked from commit 81d9ee001960d515904072d3af7e2673da9417ae)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bd4de275328f6c61cce8c70b23edd99a33ff6940
+Author: Sean McGovern <gseanmcg@gmail.com>
+Date:   Thu Dec 7 06:31:00 2017 -0500
+
+    contrib: openjpeg: build PIC
+    
+    (cherry picked from commit a1dbb411ecd5717eff20f71335773b790231f046)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ff057ae17f15ecb5ee865d0846dece8f1d23a83e
+Author: Sean McGovern <gseanmcg@gmail.com>
+Date:   Thu Dec 7 06:30:59 2017 -0500
+
+    contrib: ffmpeg: do not enable openjpeg v2 on Libav
+    
+    (cherry picked from commit f9fda2268ffd927ffb3b41d459c9092ff99364fe)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5458ff10a1520450d39e5a7687aa6e6358260066
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Thu Dec 7 15:30:13 2017 +0300
+
+    Simplify and improve the detection of the number of CPU cores.
+    
+    (cherry picked from commit e3dc51fba81c1c34e6eaf4293335135060eccb21)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f5a9076160cebba33b1ab85d455d2709dce68676
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Thu Dec 7 09:27:48 2017 +0000
+
+    contribs: ffmpeg: work around the ffmpeg configure check for libmp3lame.
+    
+    On Linux, libmp3lame.a requires -lm to be linked as well.  Now this
+    library does not have a pkg-config file, so there are not many options
+    to fix it.  One option is to pass extra-libs in our contrib system, and
+    another one is fixing libav/ffmpeg configure to try and link libmath
+    during the check.  Both are not good.
+    
+    (cherry picked from commit d58a64505dd5488b328201ac6ea11919055279e9)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d2e49397ad8501bd102423429782cef233d2a364
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Thu Dec 7 09:05:39 2017 +0000
+
+    contribs: ffmpeg: fix libav configure check for gsm.h.
+    
+    For reasons unknown, the contrib system installs gsm.h under
+    include/gsm, which might or might not be the canonical path to put it
+    to.
+    
+    (cherry picked from commit 5a275c0e3be84af6668a00368a8fd9c6d6403fc2)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 21829bfd5dd07c29352bf4cc478310d358e182ad
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Dec 7 11:52:21 2017 +0100
+
+    Input-Slave: remove .txt and .utf8 as auto-loaded subtitles
+    
+    (cherry picked from commit 57d6ef030183610fb18b24a54784660620d654a8)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8710951fc638cc182ed0d4e4080f50bb6f449a6b
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Thu Dec 7 11:04:05 2017 +0300
+
+    contribs: ffmpeg: only apply arm fixups when using FFMpeg.
+    
+    (cherry picked from commit 22bf300392596146431a199858a50e1bf1542c6e)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 195bdd71509ec9f76d89135c6f2e99fe6fa5dbb4
+Author: Sean McGovern <gseanmcg@gmail.com>
+Date:   Tue Dec 5 22:56:20 2017 -0500
+
+    contrib: ffmpeg: fix minimum required libavcodec after 53d723d5130ab62cba7215cc54fc961bfee51060
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit a010468f69af8962c4f8b7f812e0f9456daac2a3)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 46ed10ce650e11ecbfaa2c17c479a0a99c39bae7
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Dec 7 18:04:13 2017 +0100
+
+    jss: Avoid potential FPE
+    
+    (cherry picked from commit 888a34cb8cffa3fffd5b746873356b6f0290f529)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 3f53b97a2f8dad485a1710546e4f6df3dcdd3a2b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Dec 7 14:02:17 2017 +0100
+
+    adjust: change hue text/description
+    
+    "add_float_with_range( "hue", 0, -180., +180. ..."
+    
+    Even if 360 is the same than -180 in the hue case, you can't pass value outside
+    the range anymore (since VLC 3.0).
+    
+    (cherry picked from commit 095d1373bd20d29f531aadf3c77b08ea021d4f8c)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 99cfe459ba1c2da3efca68c501a0014704cac41f
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Dec 7 13:33:41 2017 +0100
+
+    VLSub: Handle incomplete/invalid result sets without crashing
+    
+    (cherry picked from commit 554675f57019e2ba4863683223ccc7fc833153f1)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 2c91462d922576c3eb931ddc20c36f6a3a84aa38
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Dec 7 12:46:53 2017 +0100
+
+    VLSub: Automatically select downloaded subtitle tracks
+    
+    (cherry picked from commit fa66e73d448e5381cd5fb5b68b5f5e96dfadb908)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit ca482f4725f1fcedd9d057a9c53626afefe50452
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Dec 7 12:45:17 2017 +0100
+
+    qt: Don't check extension when manually loading subtitles
+    
+    refs #19229
+    
+    (cherry picked from commit cfcb0359525cf8e4b7cbeaf70f70aa35de665905)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 79c3822b6bc4f5f6b0162eb0b70386d0ae31bb3b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Dec 5 11:00:49 2017 +0100
+
+    avcodec: prioritise vaapi over vdpau
+    
+    Favor VAAPI over VDPAU: VDPAU is deprecated and present on less systems than
+    VAAPI. Furthermore, the try and fail of VDPAU vout/va take much longer than the
+    VAAPI one (around twice the time, that is 100-200ms). VAAPI will only be used
+    for direct rendering by default, so VDPAU will still be used instead of VAAPI
+    with CPU copy.
+    
+    (cherry picked from commit 1242c57afec896b193dd77462427f75e607ed0a6)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 61e08d3b31e0df7a4006cb315f8278ae1b995920
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Dec 5 11:00:18 2017 +0100
+
+    avcodec: refactor PixelFormat reordering
+    
+    TODO: The best way to specify ourself the best hw fmt would be to pass the
+    whole pi_fmt tab to va modules and order these modules by priority using module
+    capability.
+    
+    (cherry picked from commit b11a20dec7ef5a4f30802232c24c7d7b3f815497)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 1e811534c5e217d375e77a1131f171098a25a00b
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Dec 7 10:58:25 2017 +0100
+
+    libass: fix subtitles for iOS
+    
+    Close #19134
+    
+    (cherry picked from commit 7d0d4a9ec69613d3d2fd07ea0b76c46ea0765240)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d114c3a2fbe135fdb6d6a22722c1d3a5f3097c7e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 14:22:03 2017 +0100
+
+    opengl: add extra check
+    
+    (cherry picked from commit 47d454df266edce435f8ae6a908f7f389b77752c)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit cffa2168ffc813b9bbecd551b763601c82493049
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 15:27:20 2017 +0100
+
+    opengl: use GL core symbols from *GetProcAddress
+    
+    Use GetProcAddress to fetch GL core symbols instead of using symbols from the
+    libGL linked with the vlc gl plugin (but not for GLES2/Windows/macOS).
+    
+    This fixes a crash with nvidia drivers when using EGL but can also fix some
+    others issues if a vendor/distrib ship more than one openGL libs.
+    
+    cf. https://github.com/NVIDIA/libglvnd/issues/63
+    
+    Symbols from the old libGL.so.1 were used instead of symbols from the new
+    libOpenGL.so (that are fetched via eglGetProcAddress()).
+    
+    I guess that libGL.so.1 can't work with EGL with recent drivers.
+    
+    Fixes #19093
+    
+    (cherry picked from commit 744ac6ec380ef07db7cb6f6ed07d4c9ba9708798)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 0ef7946695a700eb50592feab3c9ab36bec44e82
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 16:15:23 2017 +0100
+
+    opengl: ios: add missing opengles2 flag
+    
+    (cherry picked from commit b48244da992b721fd79edeef6dc2f7b18a13c31e)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 5c595d9cb110dd79e16c99a091cbb7d6e4402863
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 14:24:08 2017 +0100
+
+    opengl: caopengllayer: use vout_display_opengl_Viewport
+    
+    Refs #19093
+    
+    (cherry picked from commit e22818c517c52c77d030b1829b2f1dfdcdb4192a)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit b963ac95c421d2c3890e50a8745d8dc2e0766f69
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 14:23:56 2017 +0100
+
+    opengl: ios: use vout_display_opengl_Viewport
+    
+    Refs #19093
+    
+    (cherry picked from commit 1eee78fa78086bdf40faa3bb516ce5c2dcabc5ac)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit fc4f93589a39b1667b4519085d21b769ce128dd4
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 14:23:31 2017 +0100
+
+    opengl: macosx: use vout_display_opengl_Viewport
+    
+    Refs #19093
+    
+    (cherry picked from commit 30a892d147a03871611097d662a2ec5ef94dd7e0)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 26cbd0dc846231ca8597e509c34f920c4eff09ee
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 14:23:23 2017 +0100
+
+    opengl: use vout_display_opengl_Viewport
+    
+    Refs #19093
+    
+    (cherry picked from commit efdccecd67ad0eee639721d619dbb84770a8b684)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 41e0d096d517ab468ed9fc2753d6ae8d55847cd0
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 14:23:12 2017 +0100
+
+    opengl: win32: use vout_display_opengl_Viewport
+    
+    Refs #19093
+    
+    (cherry picked from commit 55c377dd23728f18e9a1c8045bdcfa7f232177a5)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 4bbcb092193f7ae7d43bfba8d8c2f647d43eff75
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 14:22:59 2017 +0100
+
+    opengl: add vout_display_opengl_Viewport
+    
+    In order to use glViewport from the vgl vtable.
+    
+    Refs #19093
+    
+    (cherry picked from commit fad8b0b466f5915bd30eb8d2424720363034df13)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit e3156e1db2417b5297cb39590b6e14253bb72277
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Jul 19 17:18:29 2017 +0200
+
+    opengl: use all GL symbols from the vtable
+    
+    Refs #19093
+    
+    (cherry picked from commit a373a92bf6d4319ce79c87adc45df3c1ab5ab7ed)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit eab463797eb7218febbc6049e5fab6481b7d3754
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 13:33:45 2017 +0100
+
+    opengl: sort gl core functions alphabetically
+    
+    (cherry picked from commit a1b62e49fb828d470beb2472fcf43d9108db0eda)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit b45859c81fa9407b88b0693373ba7338e655e0a2
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 09:47:23 2017 +0100
+
+    ftp: check vlc_UrlParseFixup return
+    
+    (cherry picked from commit 2d45569c50404d45bd44482a00d982b87467c600)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 488e19f3746a9a9117f48cc8cf842203666cb010
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 09:43:09 2017 +0100
+
+    nfs: check vlc_UrlParseFixup return
+    
+    (cherry picked from commit 190b7f5e777e03d7bc8c368183dfd1c2c53b3883)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit f728b2566547ee43221a4d5be8fc878df6d54751
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 09:15:36 2017 +0100
+
+    smb: check vlc_UrlParseFixup return
+    
+    (cherry picked from commit 967b137ecd7f0d798c58d33f5cb6ee739860326b)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 7f63afb80ac0751ed65a9008a744db934837da4f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 09:15:28 2017 +0100
+
+    dsm: check vlc_UrlParseFixup return
+    
+    (cherry picked from commit b8475e9549ad0f8dbb55ae864d6b0df8c4e638a7)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit ae324f4ceb692f92200038e6570d371081e856cc
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 09:36:24 2017 +0100
+
+    sftp: check vlc_UrlParseFixup return
+    
+    (cherry picked from commit 571c0232f904a57211c470eb7ab5ebcfde9c0fd9)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 0a67efffb5aa6fde2e8e850bc5308c27d845e8e7
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 09:35:22 2017 +0100
+
+    sftp: use vlc_UrlParseFixup
+    
+    (cherry picked from commit a495e2b5d37d212dca69aef88329b6a82bb8359a)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 73844599b27906d169b0debe505d733bde9ef58b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 6 09:34:34 2017 +0100
+
+    sftp: parse the url only once
+    
+    And duplicate url.psz_path before decoding it.
+    
+    (cherry picked from commit 66c293af26343e42576068670229bcefca0a9c33)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 04a9ebf0ce4c00a1d26afdf0320a88274addd70f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Dec 5 09:51:00 2017 +0100
+
+    ftp: use vlc_UrlParseFixup
+    
+    Refs #18991
+    
+    (cherry picked from commit d4055e377b91a173c55b3f7406724e62bb49d146)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit c0b93739607207cf37c946d559dfea0072c1d6bc
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Dec 5 09:50:43 2017 +0100
+
+    nfs: use vlc_UrlParseFixup
+    
+    Refs #18991
+    
+    (cherry picked from commit dbcb44f4575702f2038c2b14a4448559f8670279)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 726c7c51ce36c01c29b76b6c513bdce73e1dee1d
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Dec 5 09:49:29 2017 +0100
+
+    dsm: use vlc_UrlParseFixup
+    
+    Refs #18991
+    
+    (cherry picked from commit 84c6754f910967885b39ec292ddfb35a563b006e)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 6b3b086eab3af2c8267d99ec564020b60a8148f4
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Dec 5 09:49:18 2017 +0100
+
+    smb: use vlc_UrlParseFixup
+    
+    Refs #18991
+    
+    (cherry picked from commit 762ca1e8a01278b34ddb34765f3339690aad5d2e)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit bc9e44583183f582d60469442ea3d0df8085724f
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Dec 4 13:56:41 2017 +0100
+
+    url: add vlc_UrlParseFixup
+    
+    Refs #18991
+    
+    (cherry picked from commit ba9809c8b83163098c097d4275ddc6e3b662c412)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit a55d886ddd77e29cd3d12178a8a3eaecf6643dcc
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 6 23:46:29 2017 +0100
+
+    contribs: ffmpeg, fix compilation for ARMv7 on Android
+    
+    (cherry picked from commit d14c813b19b9f40e3c1de93f2d750ced41f0e7f1)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5a681f698b04121e52be162c8df1a2e7bb9e3bc8
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Dec 6 13:35:33 2017 +0100
+
+    demux: subtitle: read dropframe timecode
+    
+    (cherry picked from commit 533431b6f6e83d3111092932b80e4088eb04a2e8)
+
+commit 12fa1382e89845869a4aa3558ab5d4128231e57a
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Dec 6 10:31:48 2017 +0100
+
+    demux:mkv: don't crash if a child element has an unknown size and the parent doesn't
+    
+    libebml should be fixed not to allow this.
+    
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+    (cherry picked from commit 729469b775a345997ad8c6b2a4d9b93affb72efa)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 5c5f72bb4cf4702561aa6b6fb2a870e33f5c581c
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Dec 6 09:36:23 2017 +0100
+
+    contrib:ebml: Do not use elements with an unknown size if it's not allowed
+    
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+    (cherry picked from commit 5094c8e334680a69b2832e3aa93c56fa23d133b4)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
 commit cf370719dedceb9173c83014a262ef7027b58e3e
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Wed Dec 6 02:56:18 2017 +0100

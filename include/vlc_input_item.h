@@ -2,7 +2,7 @@
  * vlc_input_item.h: Core input item
  *****************************************************************************
  * Copyright (C) 1999-2009 VLC authors and VideoLAN
- * $Id: 89b6324275b5236c4d87a92751d022525c1c7621 $
+ * $Id: f22c3d9330af98a15992ef08e362424313774d6f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -158,11 +158,10 @@ enum slave_priority
     "aqt", "ass",  "cdg", \
     "dks", "idx", "jss", \
     "mpl2", "mpsub", "pjs", \
-    "psb", "rt", "sbv", \
+    "psb", "rt", "sami", "sbv", \
     "scc", "smi", "srt", \
     "ssa",  "stl", "sub", \
-    "ttml", "txt", "usf", \
-    "utf", "utf-8", "utf8", \
+    "ttml", "tt", "usf", \
     "vtt", "webvtt"
 
 #define SLAVE_AUDIO_EXTENSIONS \

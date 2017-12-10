@@ -2,7 +2,7 @@
  * SSA/ASS subtitle decoder using libass.
  *****************************************************************************
  * Copyright (C) 2008-2009 VLC authors and VideoLAN
- * $Id: 8004feb138ecad850106f015cb12fe38c0611e94 $
+ * $Id: 4d17cf82487a3c53e8834a8586e1fccb118fb5c4 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -246,13 +246,13 @@ static int Create( vlc_object_t *p_this )
                                     _( "Please wait while your font cache is rebuilt.\n"
                                     "This should take less than a minute." ) );
 #endif
-    ass_set_fonts( p_renderer, psz_font, psz_family, 1, NULL, 1 );  // setup default font/family
+    ass_set_fonts( p_renderer, psz_font, psz_family, ASS_FONTPROVIDER_AUTODETECT, NULL, 1 );  // setup default font/family
 #if defined(_WIN32)
     if( p_dialog_id != 0 )
         vlc_dialog_release( p_dec, p_dialog_id );
 #endif
 #else
-    ass_set_fonts( p_renderer, psz_font, psz_family, 0, NULL, 0 );
+    ass_set_fonts( p_renderer, psz_font, psz_family, ASS_FONTPROVIDER_AUTODETECT, NULL, 0 );
 #endif
 
     /* Anything else than NONE will break smooth img updating.

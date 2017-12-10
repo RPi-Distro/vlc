@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: b6599c8269632a5346786aef09b81791d5cb9579 $
+ * $Id: cc03fc4086f92f45a9f4585a67a60153ccc360a0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -1908,6 +1908,8 @@ static int ParseJSS( vlc_object_t *p_obj, subs_properties_t *p_props,
                     break;
 
                 sscanf( &psz_text[shift], "%d", &p_props->jss.i_time_resolution );
+                if( !p_props->jss.i_time_resolution )
+                    p_props->jss.i_time_resolution = 30;
                 break;
             }
             free( psz_orig );
@@ -2387,7 +2389,7 @@ static int ParseSCC( vlc_object_t *p_obj, subs_properties_t *p_props,
             return VLC_EGENERIC;
 
         unsigned h, m, s, f;
-        if( sscanf( psz_line, "%u:%u:%u:%u ", &h, &m, &s, &f ) != 4 )
+        if( sscanf( psz_line, "%u:%u:%u%*[:;]%u ", &h, &m, &s, &f ) != 4 )
             continue;
 
         p_subtitle->i_start = CLOCK_FREQ * ( h * 3600 + m * 60 + s ) +

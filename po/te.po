@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-06 02:15+0000\n"
+"POT-Creation-Date: 2017-12-10 02:11+0000\n"
 "PO-Revision-Date: 2014-05-01 15:57+0000\n"
 "Last-Translator: rohitharikiran <rohithharikiran@gmail.com>\n"
 "Language-Team: Telugu (http://www.transifex.com/projects/p/vlc-trans/"
@@ -335,7 +335,7 @@ msgstr ""
 #: modules/gui/macosx/VLCMainWindow.m:296
 #: modules/gui/macosx/VLCMainWindow.m:863
 #: modules/gui/qt/components/controller.hpp:109
-#: modules/gui/qt/components/playlist/playlist.cpp:166
+#: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
 #: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1117
 msgid "Playlist"
@@ -4855,7 +4855,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr ""
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2680
+#: modules/demux/avi/avi.c:2702
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -6964,7 +6964,7 @@ msgstr "FTP ఇన్‌పుట్"
 msgid "FTP upload output"
 msgstr ""
 
-#: modules/access/ftp.c:369 modules/access/ftp.c:385 modules/access/ftp.c:537
+#: modules/access/ftp.c:369 modules/access/ftp.c:385 modules/access/ftp.c:541
 msgid "Network interaction failed"
 msgstr ""
 
@@ -6976,7 +6976,7 @@ msgstr ""
 msgid "VLC's connection to the given server was rejected."
 msgstr ""
 
-#: modules/access/ftp.c:538
+#: modules/access/ftp.c:542
 msgid "Your account was rejected."
 msgstr "మీ ఖాతా తిరస్కరించబడింది."
 
@@ -7848,11 +7848,11 @@ msgstr ""
 msgid "SFTP input"
 msgstr "SFTP ఇన్‌పుట్"
 
-#: modules/access/sftp.c:394
+#: modules/access/sftp.c:400
 msgid "SFTP authentication"
 msgstr "SFTP ధృవీకరణ"
 
-#: modules/access/sftp.c:395
+#: modules/access/sftp.c:401
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr ""
@@ -14286,7 +14286,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr ""
 
-#: modules/demux/avi/avi.c:798 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:820 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -14302,28 +14302,28 @@ msgstr ""
 "పెద్ద ఫైలు అయితే ఈ ప్రక్రియకు ఎక్కువ సమయం పట్టవచ్చు.\n"
 "మీరు ఏమి చేయదలచుకున్నారు ?"
 
-#: modules/demux/avi/avi.c:806
+#: modules/demux/avi/avi.c:828
 msgid "Do not play"
 msgstr "ఆడవద్దు"
 
-#: modules/demux/avi/avi.c:807
+#: modules/demux/avi/avi.c:829
 msgid "Build index then play"
 msgstr "సూచికను నిర్మించి తరువాత ఆడించు"
 
-#: modules/demux/avi/avi.c:808
+#: modules/demux/avi/avi.c:830
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:809 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:831 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "విరిగిన లేక తప్పిపోయిన AVI సూచిక"
 
-#: modules/demux/avi/avi.c:2681
+#: modules/demux/avi/avi.c:2703
 msgid "Broken or missing AVI Index"
 msgstr "విరిగిన లేక తప్పిపోయిన AVI సూచిక"
 
-#: modules/demux/avi/avi.c:2682
+#: modules/demux/avi/avi.c:2704
 msgid "Fixing AVI Index..."
 msgstr "AVI సూచికను పరిష్కరిస్తుంది..."
 
@@ -18818,11 +18818,11 @@ msgstr "అధునాతన ఐచ్ఛికాలు"
 msgid "Double click to get media information"
 msgstr "మాధ్యమ సమాచారాన్ని పొందుటకు రెండుసార్లు నొక్కండి"
 
-#: modules/gui/qt/components/playlist/playlist.cpp:114
+#: modules/gui/qt/components/playlist/playlist.cpp:113
 msgid "Change playlistview"
 msgstr "ప్రదర్శనజాబితా వీక్షణాన్ని మార్చు"
 
-#: modules/gui/qt/components/playlist/playlist.cpp:124
+#: modules/gui/qt/components/playlist/playlist.cpp:123
 msgid "Search the playlist"
 msgstr "ప్రదర్శనజాబితాలో శోధించు"
 
@@ -20682,12 +20682,10 @@ msgid "Set the image contrast, between 0 and 2. Defaults to 1."
 msgstr ""
 
 #: modules/hw/d3d11/d3d11_filters.c:93 modules/hw/d3d9/d3d9_filters.c:74
-#: modules/video_filter/adjust.c:67
 msgid "Image hue (0-360)"
 msgstr ""
 
 #: modules/hw/d3d11/d3d11_filters.c:94 modules/hw/d3d9/d3d9_filters.c:75
-#: modules/video_filter/adjust.c:68
 msgid "Set the image hue, between 0 and 360. Defaults to 0."
 msgstr ""
 
@@ -24766,6 +24764,14 @@ msgstr ""
 
 #: modules/video_chroma/yuvp.c:48
 msgid "YUVP converter"
+msgstr ""
+
+#: modules/video_filter/adjust.c:67
+msgid "Image hue (-180..180)"
+msgstr ""
+
+#: modules/video_filter/adjust.c:68
+msgid "Set the image hue, between -180 and 180. Defaults to 0."
 msgstr ""
 
 #: modules/video_filter/adjust.c:77

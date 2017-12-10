@@ -2,7 +2,7 @@
  * ios.m: iOS OpenGL ES provider
  *****************************************************************************
  * Copyright (C) 2001-2017 VLC authors and VideoLAN
- * $Id: 67898521ab67d4dcf4dceb1bf112715bf25bcbbf $
+ * $Id: c7606c2f1378265fedc6ace57bba38cef1770046 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -332,7 +332,9 @@ static int Control(vout_display_t *vd, int query, va_list ap)
 
                 // x / y are top left corner, but we need the lower left one
                 if (query != VOUT_DISPLAY_CHANGE_DISPLAY_SIZE)
-                    glViewport(place.x, cfg_tmp.display.height - (place.y + place.height), place.width, place.height);
+                    vout_display_opengl_Viewport(sys->vgl, place.x,
+                                                 cfg_tmp.display.height - (place.y + place.height),
+                                                 place.width, place.height);
                 vlc_gl_ReleaseCurrent(sys->gl);
             }
             return VLC_SUCCESS;

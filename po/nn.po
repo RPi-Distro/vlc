@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-06 02:15+0000\n"
+"POT-Creation-Date: 2017-12-10 02:11+0000\n"
 "PO-Revision-Date: 2017-11-05 20:02+0000\n"
 "Last-Translator: Bjørn I. <bjorn.svindseth@online.no>\n"
 "Language-Team: Norwegian Nynorsk (http://www.transifex.com/yaron/vlc-trans/"
@@ -364,7 +364,7 @@ msgstr "VLC sitt grensesnitt for videotorg (VOD)"
 #: modules/gui/macosx/VLCMainWindow.m:296
 #: modules/gui/macosx/VLCMainWindow.m:863
 #: modules/gui/qt/components/controller.hpp:109
-#: modules/gui/qt/components/playlist/playlist.cpp:166
+#: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
 #: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1117
 msgid "Playlist"
@@ -5116,7 +5116,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "Klarte ikkje opna «%s» for skriving"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2680
+#: modules/demux/avi/avi.c:2702
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -7239,7 +7239,7 @@ msgstr "FTP-inndata"
 msgid "FTP upload output"
 msgstr "FTP opplastingsutgang"
 
-#: modules/access/ftp.c:369 modules/access/ftp.c:385 modules/access/ftp.c:537
+#: modules/access/ftp.c:369 modules/access/ftp.c:385 modules/access/ftp.c:541
 msgid "Network interaction failed"
 msgstr "Nettverkssamhandlinga mislykkast"
 
@@ -7251,7 +7251,7 @@ msgstr "VLC klarte ikkje å kopla til den bestemte teneren."
 msgid "VLC's connection to the given server was rejected."
 msgstr ""
 
-#: modules/access/ftp.c:538
+#: modules/access/ftp.c:542
 msgid "Your account was rejected."
 msgstr "Kontoen din vart avvist."
 
@@ -8126,11 +8126,11 @@ msgstr ""
 msgid "SFTP input"
 msgstr "SFTP-inngang"
 
-#: modules/access/sftp.c:394
+#: modules/access/sftp.c:400
 msgid "SFTP authentication"
 msgstr "SFTP-autentisering"
 
-#: modules/access/sftp.c:395
+#: modules/access/sftp.c:401
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr ""
@@ -14586,7 +14586,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr "AVI-demultipleksar"
 
-#: modules/demux/avi/avi.c:798 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:820 modules/demux/mp4/mp4.c:1673
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14596,27 +14596,27 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:806
+#: modules/demux/avi/avi.c:828
 msgid "Do not play"
 msgstr "Ikkje spel"
 
-#: modules/demux/avi/avi.c:807
+#: modules/demux/avi/avi.c:829
 msgid "Build index then play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:808
+#: modules/demux/avi/avi.c:830
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:809 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:831 modules/demux/mp4/mp4.c:1684
 msgid "Broken or missing Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2681
+#: modules/demux/avi/avi.c:2703
 msgid "Broken or missing AVI Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2682
+#: modules/demux/avi/avi.c:2704
 msgid "Fixing AVI Index..."
 msgstr ""
 
@@ -19130,11 +19130,11 @@ msgstr "Avanserte innstillingar"
 msgid "Double click to get media information"
 msgstr "Dobbeltklikk for å få informasjon om mediet"
 
-#: modules/gui/qt/components/playlist/playlist.cpp:114
+#: modules/gui/qt/components/playlist/playlist.cpp:113
 msgid "Change playlistview"
 msgstr "Endra spelelistevising"
 
-#: modules/gui/qt/components/playlist/playlist.cpp:124
+#: modules/gui/qt/components/playlist/playlist.cpp:123
 msgid "Search the playlist"
 msgstr "søk i spelelista"
 
@@ -20997,12 +20997,10 @@ msgid "Set the image contrast, between 0 and 2. Defaults to 1."
 msgstr ""
 
 #: modules/hw/d3d11/d3d11_filters.c:93 modules/hw/d3d9/d3d9_filters.c:74
-#: modules/video_filter/adjust.c:67
 msgid "Image hue (0-360)"
 msgstr ""
 
 #: modules/hw/d3d11/d3d11_filters.c:94 modules/hw/d3d9/d3d9_filters.c:75
-#: modules/video_filter/adjust.c:68
 msgid "Set the image hue, between 0 and 360. Defaults to 0."
 msgstr ""
 
@@ -25088,6 +25086,14 @@ msgstr ""
 
 #: modules/video_chroma/yuvp.c:48
 msgid "YUVP converter"
+msgstr ""
+
+#: modules/video_filter/adjust.c:67
+msgid "Image hue (-180..180)"
+msgstr ""
+
+#: modules/video_filter/adjust.c:68
+msgid "Set the image hue, between -180 and 180. Defaults to 0."
 msgstr ""
 
 #: modules/video_filter/adjust.c:77

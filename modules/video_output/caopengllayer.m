@@ -2,7 +2,7 @@
  * caopengllayer.m: CAOpenGLLayer (Mac OS X) video output
  *****************************************************************************
  * Copyright (C) 2014-2017 VLC authors and VideoLAN
- * $Id: 829c8da2ad06804b2f010d7309c0a82cf1165cc8 $
+ * $Id: 982ed830a97bc3c83e108744e8b487cbc62f0352 $
  *
  * Authors: David Fuhrmann <david dot fuhrmann at googlemail dot com>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -489,7 +489,9 @@ static void *OurGetProcAddress (vlc_gl_t *gl, const char *name)
     CGRect bounds = [self visibleRect];
 
     // x / y are top left corner, but we need the lower left one
-    glViewport (sys->place.x, bounds.size.height - (sys->place.y + sys->place.height), sys->place.width, sys->place.height);
+    vout_display_opengl_Viewport(sys->vgl, sys->place.x,
+                                 bounds.size.height - (sys->place.y + sys->place.height),
+                                 sys->place.width, sys->place.height);
 
     // flush is also done by this method, no need to call super
     vout_display_opengl_Display (sys->vgl, &_voutDisplay->source);

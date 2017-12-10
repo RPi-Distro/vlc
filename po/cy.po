@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-06 02:15+0000\n"
+"POT-Creation-Date: 2017-12-10 02:11+0000\n"
 "PO-Revision-Date: 2017-02-06 13:43+0000\n"
 "Last-Translator: Christoph Miebach <christoph.miebach@web.de>\n"
 "Language-Team: Welsh (http://www.transifex.com/yaron/vlc-trans/language/"
@@ -358,7 +358,7 @@ msgstr "Gweithrediad VLC o Fideo ar Alw (VOD)"
 #: modules/gui/macosx/VLCMainWindow.m:296
 #: modules/gui/macosx/VLCMainWindow.m:863
 #: modules/gui/qt/components/controller.hpp:109
-#: modules/gui/qt/components/playlist/playlist.cpp:166
+#: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
 #: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1117
 msgid "Playlist"
@@ -5075,7 +5075,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "Methwyd agor \"%s\" i'w ysgrifennu"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2680
+#: modules/demux/avi/avi.c:2702
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -7212,7 +7212,7 @@ msgstr "Mewnbwn FTP"
 msgid "FTP upload output"
 msgstr "Allbwn uwchlwytho FTP"
 
-#: modules/access/ftp.c:369 modules/access/ftp.c:385 modules/access/ftp.c:537
+#: modules/access/ftp.c:369 modules/access/ftp.c:385 modules/access/ftp.c:541
 msgid "Network interaction failed"
 msgstr ""
 
@@ -7224,7 +7224,7 @@ msgstr "Methodd VLC cysylltu â'r gweinydd a phenodwyd."
 msgid "VLC's connection to the given server was rejected."
 msgstr "Cafodd cysylltiad VLC ei wrthod gan y gweinydd."
 
-#: modules/access/ftp.c:538
+#: modules/access/ftp.c:542
 msgid "Your account was rejected."
 msgstr "Cafodd eich cyfrif ei wrthod."
 
@@ -8102,11 +8102,11 @@ msgstr "Rhif porth SFTP i'w ddefnyddio ar y gweinydd"
 msgid "SFTP input"
 msgstr "Mewnbwn SFTP"
 
-#: modules/access/sftp.c:394
+#: modules/access/sftp.c:400
 msgid "SFTP authentication"
 msgstr "Dilysiad SFTP"
 
-#: modules/access/sftp.c:395
+#: modules/access/sftp.c:401
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr ""
@@ -14585,7 +14585,7 @@ msgstr "Cywiro pan bo angen"
 msgid "AVI demuxer"
 msgstr "Datblecsydd AVI"
 
-#: modules/demux/avi/avi.c:798 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:820 modules/demux/mp4/mp4.c:1673
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14595,28 +14595,28 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:806
+#: modules/demux/avi/avi.c:828
 msgid "Do not play"
 msgstr "Peidio ei chwarae"
 
-#: modules/demux/avi/avi.c:807
+#: modules/demux/avi/avi.c:829
 msgid "Build index then play"
 msgstr "Adeiladu mynegai yna chwarae"
 
-#: modules/demux/avi/avi.c:808
+#: modules/demux/avi/avi.c:830
 msgid "Play as is"
 msgstr "Chwarae fel y mae"
 
-#: modules/demux/avi/avi.c:809 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:831 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "Mynegai AVI anghywir neu goll"
 
-#: modules/demux/avi/avi.c:2681
+#: modules/demux/avi/avi.c:2703
 msgid "Broken or missing AVI Index"
 msgstr "Mynegai AVI anghywir neu goll"
 
-#: modules/demux/avi/avi.c:2682
+#: modules/demux/avi/avi.c:2704
 msgid "Fixing AVI Index..."
 msgstr "Yn trwsio Mynegai AVI..."
 
@@ -19161,11 +19161,11 @@ msgstr "Dewisiadau Uwch"
 msgid "Double click to get media information"
 msgstr "Clicia dwywaith i gael gwybodaeth yr eitem."
 
-#: modules/gui/qt/components/playlist/playlist.cpp:114
+#: modules/gui/qt/components/playlist/playlist.cpp:113
 msgid "Change playlistview"
 msgstr "Newid golwg y rhestr chwarae"
 
-#: modules/gui/qt/components/playlist/playlist.cpp:124
+#: modules/gui/qt/components/playlist/playlist.cpp:123
 msgid "Search the playlist"
 msgstr "Chwilio'r rhestr chwarae"
 
@@ -21064,12 +21064,10 @@ msgid "Set the image contrast, between 0 and 2. Defaults to 1."
 msgstr ""
 
 #: modules/hw/d3d11/d3d11_filters.c:93 modules/hw/d3d9/d3d9_filters.c:74
-#: modules/video_filter/adjust.c:67
 msgid "Image hue (0-360)"
 msgstr "Arlliw delwedd (0-360)"
 
 #: modules/hw/d3d11/d3d11_filters.c:94 modules/hw/d3d9/d3d9_filters.c:75
-#: modules/video_filter/adjust.c:68
 msgid "Set the image hue, between 0 and 360. Defaults to 0."
 msgstr "Gosod arlliw'r ddelwedd, rhwng 0 a 360. Yn rhagosod i 0."
 
@@ -25209,6 +25207,16 @@ msgstr ""
 #: modules/video_chroma/yuvp.c:48
 msgid "YUVP converter"
 msgstr "Trawsnewidydd YUVP"
+
+#: modules/video_filter/adjust.c:67
+#, fuzzy
+msgid "Image hue (-180..180)"
+msgstr "Arlliw delwedd (0-360)"
+
+#: modules/video_filter/adjust.c:68
+#, fuzzy
+msgid "Set the image hue, between -180 and 180. Defaults to 0."
+msgstr "Gosod arlliw'r ddelwedd, rhwng 0 a 360. Yn rhagosod i 0."
 
 #: modules/video_filter/adjust.c:77
 msgid "Image properties filter"

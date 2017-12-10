@@ -2,7 +2,7 @@
  * faad.c: AAC decoder using libfaad2
  *****************************************************************************
  * Copyright (C) 2001, 2003 VLC authors and VideoLAN
- * $Id: 30b5ac20fe6421c2ee4a774e0825a479c05518f0 $
+ * $Id: 01aaafcb07028894251bd43304fb60d3c9a35780 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -525,7 +525,7 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
             else pi_faad_channels_positions[i] = 0;
         }
 
-        aout_CheckChannelReorder( pi_faad_channels_positions, NULL,
+        bool b_reorder = aout_CheckChannelReorder( pi_faad_channels_positions, NULL,
                                   p_dec->fmt_out.audio.i_physical_channels, pi_neworder_table );
 
 
@@ -546,9 +546,12 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
                 memset( p_out->p_buffer, 0, p_out->i_buffer );
 
             /* FIXME: replace when aout_channel_reorder can take samples from a different buffer */
-            DoReordering( (uint32_t *)p_out->p_buffer, samples,
-                          frame.samples / frame.channels, frame.channels,
-                          pi_neworder_table );
+            if( b_reorder )
+                DoReordering( (uint32_t *)p_out->p_buffer, samples,
+                              frame.samples / frame.channels, frame.channels,
+                              pi_neworder_table );
+            else
+                 memcpy( p_out->p_buffer, samples, p_out->i_buffer );
 
             if( p_sys->b_discontinuity )
             {

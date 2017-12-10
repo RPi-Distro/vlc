@@ -2,7 +2,7 @@
  * vlc_url.h: URL related macros
  *****************************************************************************
  * Copyright (C) 2002-2006 VLC authors and VideoLAN
- * $Id: 5a20c27edc1de1c225754da2c5941d1535d7d209 $
+ * $Id: e13b7a5abb57e777e5252c5287bed9f52c7e2de0 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -153,6 +153,7 @@ struct vlc_url_t
     char *psz_option;
 
     char *psz_buffer; /* to be freed */
+    char *psz_pathbuffer; /* to be freed */
 };
 
 /**
@@ -190,6 +191,14 @@ struct vlc_url_t
  * \retval -1 failure
  */
 VLC_API int vlc_UrlParse(vlc_url_t *url, const char *str);
+
+/**
+ * Parses an URI or IRI and fix up the path part.
+ *
+ * \see vlc_UrlParse
+ * \see vlc_uri_fixup
+ */
+VLC_API int vlc_UrlParseFixup(vlc_url_t *url, const char *str);
 
 /**
  * Releases resources allocated by vlc_UrlParse().

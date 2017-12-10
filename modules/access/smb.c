@@ -2,7 +2,7 @@
  * smb.c: SMB input module
  *****************************************************************************
  * Copyright (C) 2001-2015 VLC authors and VideoLAN
- * $Id: 70c79c261d5102d9f67c51f9b001cd42340e9f32 $
+ * $Id: f5b77de3ab1a86fe2a05b0b30a83fdd31ca6e207 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -175,7 +175,11 @@ static int Open( vlc_object_t *p_this )
 # undef open
 #endif
 
-    vlc_UrlParse( &url, p_access->psz_url );
+    if( vlc_UrlParseFixup( &url, p_access->psz_url ) != 0 )
+    {
+        vlc_UrlClean( &url );
+        return VLC_EGENERIC;
+    }
     if( url.psz_path )
     {
         psz_decoded_path = vlc_uri_decode_duplicate( url.psz_path );

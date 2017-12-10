@@ -995,6 +995,8 @@ static int MP4_ReadBox_sidx(  stream_t *p_stream, MP4_Box_t *p_box )
     VLC_UNUSED(i_reserved);
     MP4_GET2BYTES( i_reserved );
     MP4_GET2BYTES( i_count );
+    if( i_count == 0 )
+        MP4_READBOX_EXIT( 1 );
 
     p_sidx_data->i_reference_count = i_count;
     p_sidx_data->p_items = vlc_alloc( i_count, sizeof( MP4_Box_sidx_item_t ) );
@@ -3211,6 +3213,9 @@ static int MP4_ReadBox_elst( stream_t *p_stream, MP4_Box_t *p_box )
 
     MP4_GETVERSIONFLAGS( p_box->data.p_elst );
     MP4_GET4BYTES( count );
+
+    if( count == 0 )
+        MP4_READBOX_EXIT( 1 );
 
     uint32_t i_entries_max = i_read / ((p_box->data.p_elst->i_version == 1) ? 20 : 12);
     if( count > i_entries_max )

@@ -2,7 +2,7 @@
  * glwin32.c: Windows OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 9879f4433685fa61776e0b104df73b51873ded75 $
+ * $Id: 47c4d6d0d31f781b46472d4bef4afb38a1bd7b3e $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -248,6 +248,6 @@ static void Manage (vout_display_t *vd)
     if (vlc_gl_MakeCurrent (sys->gl) != VLC_SUCCESS)
         return VLC_EGENERIC;
     vout_display_opengl_SetWindowAspectRatio(sys->vgl, (float)width / height);
-    glViewport(0, 0, width, height);
+    vout_display_opengl_Viewport(sys->vgl, 0, 0, width, height);
     vlc_gl_ReleaseCurrent (sys->gl);
 }

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: 79387772a381f3c901ca32af58285ac9d74c2b53 $
+ * $Id: 2839a45d22c0eb1936aca8201489a49cdc2c51c0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont <rem # videolan.org> - EPSV support
@@ -443,7 +443,11 @@ static int Login( vlc_object_t *p_access, access_sys_t *p_sys )
 
     vlc_url_t url;
     vlc_credential credential;
-    vlc_UrlParse( &url, ((stream_t *)p_access)->psz_url );
+    if( vlc_UrlParseFixup( &url, ((stream_t *)p_access)->psz_url ) != 0 )
+    {
+        vlc_UrlClean( &url );
+        goto error;
+    }
     vlc_credential_init( &credential, &url );
     bool b_logged = false;
 
@@ -645,7 +649,7 @@ static int parseURL( vlc_url_t *url, const char *path, enum tls_mode_e mode )
     while( *path == '/' )
         path++;
 
-    vlc_UrlParse( url, path );
+    vlc_UrlParseFixup( url, path );
 
     if( url->psz_host == NULL || *url->psz_host == '\0' )
         return VLC_EGENERIC;
