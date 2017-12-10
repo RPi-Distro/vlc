@@ -5,3 +5,4 @@ po/stamp-po
 debian/libvlc-bin.postinst
 debian/libvlc-bin.postrm
 debian/libvlc-bin.triggers
+debian/shlibs.local
