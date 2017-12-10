@@ -1,4 +1,7 @@
+#!/bin/bash
+exec python3 $(dirname $0)/filter-plugin.py <<EOF
 usr/lib/*/vlc/plugins/access/librdp_plugin.so
 usr/lib/*/vlc/plugins/access/libvnc_plugin.so
-usr/lib/*/vlc/plugins/access/libwl_screenshooter_plugin.so
+usr/lib/*/vlc/plugins/access/libwl_screenshooter_plugin.so [wayland]
 usr/lib/*/vlc/plugins/access/libxcb_screen_plugin.so
+EOF

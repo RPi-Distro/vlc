@@ -128,7 +128,7 @@ Build-Depends: autopoint,
                python3,
                qtbase5-dev (>= 5.6),
                qtbase5-private-dev (>= 5.6),
-               wayland-protocols,
+               wayland-protocols [linux-any],
                zlib1g-dev,
                zsh
 Standards-Version: 4.1.2

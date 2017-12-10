@@ -160,6 +160,7 @@ confflags += \
 	--enable-omxil \
 	--enable-udev \
 	--enable-v4l2 \
+	--enable-wayland \
 	$(NULL)
 else
 confflags += \
@@ -171,6 +172,7 @@ confflags += \
 	--disable-omxil \
 	--disable-udev \
 	--disable-v4l2 \
+	--disable-wayland \
 	$(NULL)
 removeplugins += \
 	alsa \
@@ -185,6 +187,7 @@ removeplugins += \
 	systemd \
 	udev \
 	v4l2 \
+	wayland \
 	$(NULL)
 endif
 
