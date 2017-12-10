@@ -130,6 +130,7 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_media_list_player_retain@Base 2.0.0
  libvlc_media_list_player_set_media_list@Base 1.1.0
  libvlc_media_list_player_set_media_player@Base 1.1.0
+ libvlc_media_list_player_set_pause@Base 3.0.0~rc1~20171210
  libvlc_media_list_player_set_playback_mode@Base 1.1.0
  libvlc_media_list_player_stop@Base 1.1.0
  libvlc_media_list_release@Base 1.1.0

@@ -422,6 +422,7 @@ libvlccore.so.9 libvlccore9 #MINVER#
  vlc_LogSet@Base 2.1.0
  vlc_UrlClean@Base 2.1.0
  vlc_UrlParse@Base 2.1.0
+ vlc_UrlParseFixup@Base 3.0.0~rc1~20171210
  vlc_accept@Base 2.0.0
  vlc_accept_i11e@Base 3.0.0~rc1~20171206
  vlc_access_NewMRL@Base 3.0.0~rc1~20171206
