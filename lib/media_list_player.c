@@ -2,7 +2,7 @@
  * media_list_player.c: libvlc new API media_list player functions
  *****************************************************************************
  * Copyright (C) 2007-2015 VLC authors and VideoLAN
- * $Id: 930b69061a62634c4f2878eeba7c76556b9ec5fb $
+ * $Id: d73415b1b3fed93820e24ada6d6a735e9505dbd2 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *          Niles Bindel <zaggal69 # gmail.com>
@@ -651,6 +651,14 @@ void libvlc_media_list_player_pause(libvlc_media_list_player_t * p_mlp)
 {
     lock(p_mlp);
     libvlc_media_player_pause(p_mlp->p_mi);
+    unlock(p_mlp);
+}
+
+void libvlc_media_list_player_set_pause(libvlc_media_list_player_t * p_mlp,
+                                        int do_pause)
+{
+    lock(p_mlp);
+    libvlc_media_player_set_pause(p_mlp->p_mi, do_pause);
     unlock(p_mlp);
 }
 

@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: b09b23a2c0990dec53988780f4138d59401c9cb0 $
+ * $Id: 4fae00d4de2a2b536e9ec987916a3f78ae1b4fce $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -410,7 +410,9 @@ static int Control (vout_display_t *vd, int query, va_list ap)
                  This has the positive side effect that we avoid erratic sizing as we animate every resize. */
                 if (query != VOUT_DISPLAY_CHANGE_DISPLAY_SIZE)
                     // x / y are top left corner, but we need the lower left one
-                    glViewport (place.x, cfg_tmp.display.height - (place.y + place.height), place.width, place.height);
+                    vout_display_opengl_Viewport(sys->vgl, place.x,
+                                                 cfg_tmp.display.height - (place.y + place.height),
+                                                 place.width, place.height);
                 vlc_gl_ReleaseCurrent (sys->gl);
 
                 return VLC_SUCCESS;

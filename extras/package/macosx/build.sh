@@ -16,7 +16,7 @@ OSX_KERNELVERSION=`uname -r | cut -d. -f1`
 SDKROOT=`xcode-select -print-path`/Platforms/MacOSX.platform/Developer/SDKs/MacOSX$OSX_VERSION.sdk
 VLCBUILDDIR=""
 
-CORE_COUNT=`sysctl -n machdep.cpu.core_count`
+CORE_COUNT=`getconf NPROCESSORS_ONLN 2>&1`
 let JOBS=$CORE_COUNT+1
 
 usage()
@@ -117,7 +117,7 @@ export CXX="`xcrun --find clang++`"
 export OBJC="`xcrun --find clang`"
 export OSX_VERSION
 export SDKROOT
-export PATH="${vlcroot}/extras/tools/build/bin:${vlcroot}/contrib/${TRIPLET}/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:${PATH}"
+export PATH="${vlcroot}/extras/tools/build/bin:${vlcroot}/contrib/${TRIPLET}/bin:${VLC_PATH}:/bin:/sbin:/usr/bin:/usr/sbin"
 
 # Select avcodec flavor to compile contribs with
 export USE_FFMPEG=1
@@ -183,7 +183,7 @@ export OBJCFLAGS="-Werror=partial-availability"
 info "Building contribs"
 spushd "${vlcroot}/contrib"
 mkdir -p contrib-$TRIPLET && cd contrib-$TRIPLET
-../bootstrap --build=$TRIPLET --host=$TRIPLET --enable-libplacebo > $out
+../bootstrap --build=$TRIPLET --host=$TRIPLET > $out
 if [ "$REBUILD" = "yes" ]; then
     make clean
 fi

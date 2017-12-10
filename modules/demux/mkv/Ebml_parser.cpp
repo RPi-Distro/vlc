@@ -3,7 +3,7 @@
  * EbmlParser for the matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 3f9a3ae66873507fe82c677728de10017baddbd0 $
+ * $Id: 139d93f312c2546b058254e3bd3713d9d5bc3f9e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -180,10 +180,10 @@ EbmlElement *EbmlParser::Get( int n_call )
     }
     else {
         size_t size_lvl = mi_level;
-        while ( size_lvl && m_el[size_lvl-1]->IsFiniteSize() &&
+        while ( size_lvl && m_el[size_lvl-1]->IsFiniteSize() && m_el[size_lvl]->IsFiniteSize() &&
                 m_el[size_lvl-1]->GetEndPosition() == m_el[size_lvl]->GetEndPosition() )
             size_lvl--;
-        if (size_lvl == 0 || !m_el[size_lvl-1]->IsFiniteSize() )
+        if (size_lvl == 0 || !m_el[size_lvl-1]->IsFiniteSize() || !m_el[size_lvl]->IsFiniteSize() )
             i_max_read = UINT64_MAX;
         else {
             uint64 top = m_el[size_lvl-1]->GetEndPosition();

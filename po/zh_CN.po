@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 2.2.7\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-06 02:15+0000\n"
+"POT-Creation-Date: 2017-12-10 02:11+0000\n"
 "PO-Revision-Date: 2017-11-16 03:18+0100\n"
 "Last-Translator: Dian Li <xslidian@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/yaron/vlc-trans/"
@@ -353,7 +353,7 @@ msgstr "VLC 的视频点播（VoD）实现"
 #: modules/gui/macosx/VLCMainWindow.m:296
 #: modules/gui/macosx/VLCMainWindow.m:863
 #: modules/gui/qt/components/controller.hpp:109
-#: modules/gui/qt/components/playlist/playlist.cpp:166
+#: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
 #: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1117
 msgid "Playlist"
@@ -5069,7 +5069,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "无法以写入模式打开“%s”"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2680
+#: modules/demux/avi/avi.c:2702
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -7217,7 +7217,7 @@ msgstr "FTP 输入"
 msgid "FTP upload output"
 msgstr "FTP 上传输出"
 
-#: modules/access/ftp.c:369 modules/access/ftp.c:385 modules/access/ftp.c:537
+#: modules/access/ftp.c:369 modules/access/ftp.c:385 modules/access/ftp.c:541
 msgid "Network interaction failed"
 msgstr "网络交互失败"
 
@@ -7229,7 +7229,7 @@ msgstr "VLC 无法连接给定的服务器。"
 msgid "VLC's connection to the given server was rejected."
 msgstr "VLC 到给定服务器的连接被拒绝。"
 
-#: modules/access/ftp.c:538
+#: modules/access/ftp.c:542
 msgid "Your account was rejected."
 msgstr "您的帐号已被拒绝。"
 
@@ -8124,11 +8124,11 @@ msgstr "服务器端所用的 SFTP 端口号"
 msgid "SFTP input"
 msgstr "SFTP 输入"
 
-#: modules/access/sftp.c:394
+#: modules/access/sftp.c:400
 msgid "SFTP authentication"
 msgstr "SFTP 身份验证"
 
-#: modules/access/sftp.c:395
+#: modules/access/sftp.c:401
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr "请为到 %s 的 sftp 连接输入有效的登录名和密码"
@@ -14849,7 +14849,7 @@ msgstr "需要时修复"
 msgid "AVI demuxer"
 msgstr "AVI 分流器"
 
-#: modules/demux/avi/avi.c:798 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:820 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -14864,28 +14864,28 @@ msgstr ""
 "这一步对于大文件可能要耗费较长时间。\n"
 "您打算如何操作?"
 
-#: modules/demux/avi/avi.c:806
+#: modules/demux/avi/avi.c:828
 msgid "Do not play"
 msgstr "不要播放"
 
-#: modules/demux/avi/avi.c:807
+#: modules/demux/avi/avi.c:829
 msgid "Build index then play"
 msgstr "建立索引再播放"
 
-#: modules/demux/avi/avi.c:808
+#: modules/demux/avi/avi.c:830
 msgid "Play as is"
 msgstr "原样播放"
 
-#: modules/demux/avi/avi.c:809 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:831 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "AVI 索引损坏或丢失"
 
-#: modules/demux/avi/avi.c:2681
+#: modules/demux/avi/avi.c:2703
 msgid "Broken or missing AVI Index"
 msgstr "AVI 索引损坏或丢失"
 
-#: modules/demux/avi/avi.c:2682
+#: modules/demux/avi/avi.c:2704
 msgid "Fixing AVI Index..."
 msgstr "正在修复 AVI 索引..."
 
@@ -19454,11 +19454,11 @@ msgstr "高级选项"
 msgid "Double click to get media information"
 msgstr "双击获取媒体信息"
 
-#: modules/gui/qt/components/playlist/playlist.cpp:114
+#: modules/gui/qt/components/playlist/playlist.cpp:113
 msgid "Change playlistview"
 msgstr "更改播放列表视图"
 
-#: modules/gui/qt/components/playlist/playlist.cpp:124
+#: modules/gui/qt/components/playlist/playlist.cpp:123
 msgid "Search the playlist"
 msgstr "搜索播放列表"
 
@@ -21352,12 +21352,10 @@ msgid "Set the image contrast, between 0 and 2. Defaults to 1."
 msgstr "设置图像对比度, 在 0 和 2 之间。默认为 1。"
 
 #: modules/hw/d3d11/d3d11_filters.c:93 modules/hw/d3d9/d3d9_filters.c:74
-#: modules/video_filter/adjust.c:67
 msgid "Image hue (0-360)"
 msgstr "图像色调 (0-360)"
 
 #: modules/hw/d3d11/d3d11_filters.c:94 modules/hw/d3d9/d3d9_filters.c:75
-#: modules/video_filter/adjust.c:68
 msgid "Set the image hue, between 0 and 360. Defaults to 0."
 msgstr "设置图像色调, 在 0 和 360 之间。默认为 0。"
 
@@ -25597,6 +25595,16 @@ msgstr "软件缩放"
 #: modules/video_chroma/yuvp.c:48
 msgid "YUVP converter"
 msgstr "YUVP 转换器"
+
+#: modules/video_filter/adjust.c:67
+#, fuzzy
+msgid "Image hue (-180..180)"
+msgstr "图像色调 (0-360)"
+
+#: modules/video_filter/adjust.c:68
+#, fuzzy
+msgid "Set the image hue, between -180 and 180. Defaults to 0."
+msgstr "设置图像色调, 在 0 和 360 之间。默认为 0。"
 
 #: modules/video_filter/adjust.c:77
 msgid "Image properties filter"

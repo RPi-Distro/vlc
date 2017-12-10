@@ -425,69 +425,71 @@ TESTS = hpack_test$(EXEEXT) hpackenc_test$(EXEEXT) \
 
 @HAVE_IOS_TRUE@am__append_210 = libvout_ios_plugin.la libglconv_cvpx_plugin.la
 @HAVE_TVOS_TRUE@am__append_211 = libvout_ios_plugin.la
-@HAVE_GL_TRUE@am__append_212 = libgl_plugin.la
-@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_TRUE@@HAVE_VAAPI_WL_TRUE@@HAVE_WAYLAND_EGL_TRUE@am__append_213 = libglconv_vaapi_wl_plugin.la
-@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_TRUE@@HAVE_VAAPI_X11_TRUE@@HAVE_XCB_TRUE@am__append_214 = libglconv_vaapi_x11_plugin.la
-@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_DRM_TRUE@@HAVE_VAAPI_TRUE@am__append_215 = libglconv_vaapi_drm_plugin.la
-@HAVE_GL_TRUE@@HAVE_VDPAU_TRUE@am__append_216 = libglconv_vdpau_plugin.la
-@HAVE_XCB_TRUE@am__append_217 = libvlc_xcb_events.la
-@HAVE_XCB_TRUE@am__append_218 = libxcb_x11_plugin.la libxcb_window_plugin.la
-@HAVE_XCB_KEYSYMS_TRUE@@HAVE_XCB_TRUE@am__append_219 = -DHAVE_XCB_KEYSYMS
-@HAVE_XCB_TRUE@@HAVE_XCB_XVIDEO_TRUE@am__append_220 = libxcb_xv_plugin.la
-@HAVE_EGL_TRUE@@HAVE_XCB_TRUE@am__append_221 = libegl_x11_plugin.la
-@HAVE_GL_TRUE@@HAVE_XCB_TRUE@am__append_222 = libglx_plugin.la
-@HAVE_WAYLAND_TRUE@am__append_223 =  \
+@HAVE_WIN32_TRUE@am__append_212 = -DHAVE_GL_CORE_SYMBOLS
+@HAVE_WIN32_TRUE@am__append_213 = $(GL_LIBS)
+@HAVE_GL_TRUE@am__append_214 = libgl_plugin.la
+@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_TRUE@@HAVE_VAAPI_WL_TRUE@@HAVE_WAYLAND_EGL_TRUE@am__append_215 = libglconv_vaapi_wl_plugin.la
+@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_TRUE@@HAVE_VAAPI_X11_TRUE@@HAVE_XCB_TRUE@am__append_216 = libglconv_vaapi_x11_plugin.la
+@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_DRM_TRUE@@HAVE_VAAPI_TRUE@am__append_217 = libglconv_vaapi_drm_plugin.la
+@HAVE_GL_TRUE@@HAVE_VDPAU_TRUE@am__append_218 = libglconv_vdpau_plugin.la
+@HAVE_XCB_TRUE@am__append_219 = libvlc_xcb_events.la
+@HAVE_XCB_TRUE@am__append_220 = libxcb_x11_plugin.la libxcb_window_plugin.la
+@HAVE_XCB_KEYSYMS_TRUE@@HAVE_XCB_TRUE@am__append_221 = -DHAVE_XCB_KEYSYMS
+@HAVE_XCB_TRUE@@HAVE_XCB_XVIDEO_TRUE@am__append_222 = libxcb_xv_plugin.la
+@HAVE_EGL_TRUE@@HAVE_XCB_TRUE@am__append_223 = libegl_x11_plugin.la
+@HAVE_GL_TRUE@@HAVE_XCB_TRUE@am__append_224 = libglx_plugin.la
+@HAVE_WAYLAND_TRUE@am__append_225 =  \
 @HAVE_WAYLAND_TRUE@	$(nodist_libwl_shm_plugin_la_SOURCES) \
 @HAVE_WAYLAND_TRUE@	$(nodist_libxdg_shell_plugin_la_SOURCES)
-@HAVE_WAYLAND_TRUE@am__append_224 = libwl_shm_plugin.la \
+@HAVE_WAYLAND_TRUE@am__append_226 = libwl_shm_plugin.la \
 @HAVE_WAYLAND_TRUE@	libwl_shell_plugin.la \
 @HAVE_WAYLAND_TRUE@	libxdg_shell_plugin.la
-@HAVE_EGL_TRUE@@HAVE_WAYLAND_EGL_TRUE@@HAVE_WAYLAND_TRUE@am__append_225 = libegl_wl_plugin.la
-@HAVE_WIN32_DESKTOP_TRUE@am__append_226 = $(LTLIBdirect3d9)
-@HAVE_WIN32_DESKTOP_TRUE@am__append_227 = libdirect3d9_plugin.la
-@HAVE_WINSTORE_FALSE@am__append_228 = video_output/win32/events.c \
+@HAVE_EGL_TRUE@@HAVE_WAYLAND_EGL_TRUE@@HAVE_WAYLAND_TRUE@am__append_227 = libegl_wl_plugin.la
+@HAVE_WIN32_DESKTOP_TRUE@am__append_228 = $(LTLIBdirect3d9)
+@HAVE_WIN32_DESKTOP_TRUE@am__append_229 = libdirect3d9_plugin.la
+@HAVE_WINSTORE_FALSE@am__append_230 = video_output/win32/events.c \
 @HAVE_WINSTORE_FALSE@ video_output/win32/events.h \
 @HAVE_WINSTORE_FALSE@ video_output/win32/sensors.cpp \
 @HAVE_WINSTORE_FALSE@ video_output/win32/win32touch.c video_output/win32/win32touch.h
 
-@HAVE_WINSTORE_FALSE@am__append_229 = -lgdi32
-@HAVE_WINSTORE_TRUE@am__append_230 = -ld3d11 -ld3dcompiler_47
-@HAVE_WIN32_DESKTOP_TRUE@am__append_231 = $(LTLIBdirectdraw) \
+@HAVE_WINSTORE_FALSE@am__append_231 = -lgdi32
+@HAVE_WINSTORE_TRUE@am__append_232 = -ld3d11 -ld3dcompiler_47
+@HAVE_WIN32_DESKTOP_TRUE@am__append_233 = $(LTLIBdirectdraw) \
 @HAVE_WIN32_DESKTOP_TRUE@	$(LTLIBglwin32) $(LTLIBwgl) \
 @HAVE_WIN32_DESKTOP_TRUE@	libwingdi_plugin.la
-@HAVE_WIN32_DESKTOP_TRUE@am__append_232 = libdirectdraw_plugin.la \
+@HAVE_WIN32_DESKTOP_TRUE@am__append_234 = libdirectdraw_plugin.la \
 @HAVE_WIN32_DESKTOP_TRUE@	libglwin32_plugin.la libwgl_plugin.la
-@HAVE_EGL_TRUE@@HAVE_WIN32_TRUE@am__append_233 = libegl_win32_plugin.la
-@HAVE_WIN32_TRUE@am__append_234 = libdrawable_plugin.la
+@HAVE_EGL_TRUE@@HAVE_WIN32_TRUE@am__append_235 = libegl_win32_plugin.la
+@HAVE_WIN32_TRUE@am__append_236 = libdrawable_plugin.la
 
 ### OS/2 ###
-@HAVE_OS2_TRUE@am__append_235 = libdrawable_plugin.la
-@HAVE_KVA_TRUE@am__append_236 = libkva_plugin.la
-@HAVE_ANDROID_TRUE@am__append_237 = libandroid_window_plugin.la libandroid_display_plugin.la
-@HAVE_ANDROID_TRUE@@HAVE_EGL_TRUE@am__append_238 = libegl_android_plugin.la libglconv_android_plugin.la
-@HAVE_WIN32_FALSE@am__append_239 = $(X_LIBS) $(X_PRE_LIBS) -lX11
-@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__append_240 = $(X_LIBS) $(X_PRE_LIBS) -lX11
-@HAVE_EVAS_TRUE@am__append_241 = libevas_plugin.la
-@HAVE_GL_TRUE@am__append_242 = libglspectrum_plugin.la
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_243 = libaccess_output_livehttp_plugin.la
-@ENABLE_SOUT_TRUE@am__append_244 = libaccess_output_shout_plugin.la \
+@HAVE_OS2_TRUE@am__append_237 = libdrawable_plugin.la
+@HAVE_KVA_TRUE@am__append_238 = libkva_plugin.la
+@HAVE_ANDROID_TRUE@am__append_239 = libandroid_window_plugin.la libandroid_display_plugin.la
+@HAVE_ANDROID_TRUE@@HAVE_EGL_TRUE@am__append_240 = libegl_android_plugin.la libglconv_android_plugin.la
+@HAVE_WIN32_FALSE@am__append_241 = $(X_LIBS) $(X_PRE_LIBS) -lX11
+@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__append_242 = $(X_LIBS) $(X_PRE_LIBS) -lX11
+@HAVE_EVAS_TRUE@am__append_243 = libevas_plugin.la
+@HAVE_GL_TRUE@am__append_244 = libglspectrum_plugin.la
+@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_245 = libaccess_output_livehttp_plugin.la
+@ENABLE_SOUT_TRUE@am__append_246 = libaccess_output_shout_plugin.la \
 @ENABLE_SOUT_TRUE@	libaccess_output_srt_plugin.la \
 @ENABLE_SOUT_TRUE@	libmux_ogg_plugin.la \
 @ENABLE_SOUT_TRUE@	libstream_out_chromaprint_plugin.la
-@ENABLE_SOUT_TRUE@@HAVE_DVBPSI_TRUE@am__append_245 = libmux_ts_plugin.la
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_246 = -DHAVE_SRTP $(SRTP_CFLAGS) \
+@ENABLE_SOUT_TRUE@@HAVE_DVBPSI_TRUE@am__append_247 = libmux_ts_plugin.la
+@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_248 = -DHAVE_SRTP $(SRTP_CFLAGS) \
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@	$(GCRYPT_CFLAGS)
 
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_247 = $(SRTP_LIBS) $(GCRYPT_LIBS)
+@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_249 = $(SRTP_LIBS) $(GCRYPT_LIBS)
 
 # Chromecast plugin
-@ENABLE_SOUT_TRUE@am__append_248 = .proto .pb.cc
-@ENABLE_SOUT_TRUE@am__append_249 = $(nodist_libstream_out_chromecast_plugin_la_SOURCES)
-@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_250 = stream_out/chromecast/cast_channel.pb.h
-@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_251 = libstream_out_chromecast_plugin.la
-@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_252 = libdemux_chromecast_plugin.la
-@HAVE_WIN32_TRUE@am__append_253 = module.rc.lo
-@HAVE_WIN32_TRUE@am__append_254 = module.rc
+@ENABLE_SOUT_TRUE@am__append_250 = .proto .pb.cc
+@ENABLE_SOUT_TRUE@am__append_251 = $(nodist_libstream_out_chromecast_plugin_la_SOURCES)
+@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_252 = stream_out/chromecast/cast_channel.pb.h
+@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_253 = libstream_out_chromecast_plugin.la
+@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_254 = libdemux_chromecast_plugin.la
+@HAVE_WIN32_TRUE@am__append_255 = module.rc.lo
+@HAVE_WIN32_TRUE@am__append_256 = module.rc
 subdir = modules
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_append_compile_flags.m4 \
@@ -1953,7 +1955,7 @@ libgestures_plugin_la_LIBADD =
 am_libgestures_plugin_la_OBJECTS = control/gestures.lo
 libgestures_plugin_la_OBJECTS = $(am_libgestures_plugin_la_OBJECTS)
 libgl_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_6)
+	$(am__DEPENDENCIES_6) $(am__DEPENDENCIES_8)
 am__objects_21 = video_output/opengl/libgl_plugin_la-vout_helper.lo \
 	video_output/opengl/libgl_plugin_la-fragment_shaders.lo \
 	video_output/opengl/libgl_plugin_la-converter_sw.lo
@@ -7087,7 +7089,7 @@ noinst_LTLIBRARIES = $(am__append_33) libvlc_http.la $(am__append_40) \
 	libchroma_copy.la libdeinterlace_common.la libevent_thread.la
 check_LTLIBRARIES = libaccesstweaks_plugin.la
 pkglib_LTLIBRARIES = $(am__append_54) $(am__append_142) \
-	$(am__append_217)
+	$(am__append_219)
 
 ### OpenMAX ###
 noinst_HEADERS = codec/omxil/OMX_Broadcom.h \
@@ -7162,20 +7164,20 @@ EXTRA_LTLIBRARIES = libaccess_qtsound_plugin.la libdc1394_plugin.la \
 	libswscale_plugin.la libchroma_omx_plugin.la libcvpx_plugin.la \
 	libopencv_wrapper_plugin.la libpostproc_plugin.la \
 	libopencv_example_plugin.la libgles2_plugin.la \
-	$(am__append_227) libdirect3d11_plugin.la $(am__append_232) \
+	$(am__append_229) libdirect3d11_plugin.la $(am__append_234) \
 	libfb_plugin.la libaa_plugin.la libcaca_plugin.la \
 	libgoom_plugin.la libprojectm_plugin.la libvsxu_plugin.la \
-	$(am__append_244)
+	$(am__append_246)
 AUTOMAKE_OPTIONS = subdir-objects
 NULL = 
 pluginsdir = $(vlclibdir)/plugins
 BUILT_SOURCES = $(am__append_18) $(am__append_73) $(am__append_120) \
-	$(am__append_135) $(am__append_223) $(am__append_250) \
-	dummy.cpp $(am__append_253)
+	$(am__append_135) $(am__append_225) $(am__append_252) \
+	dummy.cpp $(am__append_255)
 CLEANFILES = $(BUILT_SOURCES) \
 	$(nodist_libwl_screenshooter_plugin_la_SOURCES) \
-	$(nodist_libwl_shm_plugin_la_SOURCES) $(am__append_249) \
-	$(am__append_254)
+	$(nodist_libwl_shm_plugin_la_SOURCES) $(am__append_251) \
+	$(am__append_256)
 LTLIBVLCCORE = $(top_builddir)/src/libvlccore.la
 
 # Module name from object or executable file name.
@@ -7190,7 +7192,7 @@ AM_LDFLAGS = -avoid-version -module -export-symbols-regex ^vlc_entry \
 AM_YFLAGS = -d
 
 # Wayland
-SUFFIXES = .l .y .xib .ui .h .hpp .moc.cpp $(am__append_248) \
+SUFFIXES = .l .y .xib .ui .h .hpp .moc.cpp $(am__append_250) \
 	-client-protocol.h -protocol.c .xml
 accessdir = $(pluginsdir)/access
 
@@ -8158,7 +8160,7 @@ demux_LTLIBRARIES = libflacsys_plugin.la $(LTLIBogg) \
 	libdirectory_demux_plugin.la libes_plugin.la libh26x_plugin.la \
 	$(LTLIBmkv) libmp4_plugin.la libmpgv_plugin.la \
 	libplaylist_plugin.la $(am__append_113) libadaptive_plugin.la \
-	libnoseek_plugin.la $(am__append_252)
+	libnoseek_plugin.la $(am__append_254)
 libxiph_metadata_la_SOURCES = demux/xiph_metadata.h demux/xiph_metadata.c
 libxiph_metadata_la_LDFLAGS = -static
 libflacsys_plugin_la_SOURCES = demux/flac.c
@@ -10271,14 +10273,14 @@ libpanoramix_plugin_la_LIBADD = $(LIBM) $(am__append_204)
 voutdir = $(pluginsdir)/video_output
 vout_LTLIBRARIES = $(am__append_206) $(am__append_209) \
 	$(am__append_210) $(am__append_211) $(LTLIBgles2) \
-	$(am__append_212) $(am__append_213) $(am__append_214) \
-	$(am__append_215) $(am__append_216) $(am__append_218) \
-	$(am__append_220) $(am__append_221) $(am__append_222) \
-	$(am__append_224) $(am__append_225) $(am__append_226) \
-	$(LTLIBdirect3d11) $(am__append_231) $(am__append_233) \
-	$(am__append_234) $(am__append_235) $(am__append_236) \
-	$(am__append_237) $(am__append_238) $(LTLIBfb) $(LTLIBaa) \
-	$(LTLIBcaca) $(am__append_241) libflaschen_plugin.la \
+	$(am__append_214) $(am__append_215) $(am__append_216) \
+	$(am__append_217) $(am__append_218) $(am__append_220) \
+	$(am__append_222) $(am__append_223) $(am__append_224) \
+	$(am__append_226) $(am__append_227) $(am__append_228) \
+	$(LTLIBdirect3d11) $(am__append_233) $(am__append_235) \
+	$(am__append_236) $(am__append_237) $(am__append_238) \
+	$(am__append_239) $(am__append_240) $(LTLIBfb) $(LTLIBaa) \
+	$(LTLIBcaca) $(am__append_243) libflaschen_plugin.la \
 	libvdummy_plugin.la libvmem_plugin.la libyuv_plugin.la
 OPENGL_COMMONSOURCES = video_output/opengl/vout_helper.c \
 	video_output/opengl/vout_helper.h video_output/opengl/converter.h \
@@ -10296,20 +10298,20 @@ libglconv_cvpx_plugin_la_SOURCES =  \
 libglconv_cvpx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
 	$(am__append_208)
 @HAVE_OSX_TRUE@libvout_macosx_plugin_la_SOURCES = video_output/macosx.m $(OPENGL_COMMONSOURCES)
-@HAVE_OSX_TRUE@libvout_macosx_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS)
+@HAVE_OSX_TRUE@libvout_macosx_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS) -DHAVE_GL_CORE_SYMBOLS
 @HAVE_OSX_TRUE@libvout_macosx_plugin_la_LIBADD = $(OPENGL_COMMONLIBS)
 @HAVE_OSX_TRUE@libvout_macosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
 @HAVE_OSX_TRUE@	-Wl,-framework,OpenGL,-framework,Cocoa
 
 @HAVE_OSX_TRUE@libcaopengllayer_plugin_la_SOURCES = video_output/caopengllayer.m $(OPENGL_COMMONSOURCES)
-@HAVE_OSX_TRUE@libcaopengllayer_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS)
+@HAVE_OSX_TRUE@libcaopengllayer_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS) -DHAVE_GL_CORE_SYMBOLS
 @HAVE_OSX_TRUE@libcaopengllayer_plugin_la_LIBADD = $(OPENGL_COMMONLIBS)
 @HAVE_OSX_TRUE@libcaopengllayer_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
 @HAVE_OSX_TRUE@	-Wl,-framework,OpenGL,-framework,Cocoa,-framework,QuartzCore
 
 @HAVE_IOS_TRUE@libglconv_cvpx_plugin_la_CFLAGS = $(AM_CFLAGS) -DUSE_OPENGL_ES2
 libvout_ios_plugin_la_SOURCES = video_output/ios.m $(OPENGL_COMMONSOURCES)
-libvout_ios_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS)
+libvout_ios_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS) -DUSE_OPENGL_ES2
 libvout_ios_plugin_la_LIBADD = $(OPENGL_COMMONLIBS)
 libvout_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
 	-Wl,-framework,OpenGLES,-framework,QuartzCore,-framework,UIKit
@@ -10321,8 +10323,10 @@ libgles2_plugin_la_CFLAGS = $(AM_CFLAGS) $(GLES2_CFLAGS) -DUSE_OPENGL_ES2 $(OPEN
 libgles2_plugin_la_LIBADD = $(GLES2_LIBS) $(LIBM) $(OPENGL_COMMONLIBS)
 libgles2_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 libgl_plugin_la_SOURCES = $(OPENGL_COMMONSOURCES) video_output/opengl/display.c
-libgl_plugin_la_CFLAGS = $(AM_CFLAGS) $(GL_CFLAGS) $(OPENGL_COMMONCLFAGS)
-libgl_plugin_la_LIBADD = $(GL_LIBS) $(LIBM) $(OPENGL_COMMONLIBS)
+libgl_plugin_la_CFLAGS = $(AM_CFLAGS) $(GL_CFLAGS) \
+	$(OPENGL_COMMONCLFAGS) $(am__append_212)
+libgl_plugin_la_LIBADD = $(LIBM) $(OPENGL_COMMONLIBS) \
+	$(am__append_213)
 libglconv_vaapi_wl_plugin_la_SOURCES = video_output/opengl/converter_vaapi.c \
 	video_output/opengl/converter.h \
 	hw/vaapi/vlc_vaapi.c hw/vaapi/vlc_vaapi.h
@@ -10385,7 +10389,7 @@ libxcb_window_plugin_la_SOURCES = \
 
 libxcb_window_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_xcb_window) \
 	$(XPROTO_CFLAGS) $(XCB_CFLAGS) $(XCB_KEYSYMS_CFLAGS) \
-	$(am__append_219)
+	$(am__append_221)
 libxcb_window_plugin_la_LIBADD = $(XPROTO_LIBS) $(XCB_LIBS) $(XCB_KEYSYMS_LIBS)
 libegl_x11_plugin_la_SOURCES = video_output/opengl/egl.c
 libegl_x11_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) -DUSE_PLATFORM_X11=1
@@ -10441,12 +10445,12 @@ libdirect3d9_plugin_la_LIBADD = libchroma_copy.la libd3d9_common.la -lgdi32 $(LI
 libdirect3d9_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 libdirect3d11_plugin_la_SOURCES = video_output/win32/direct3d11.c \
 	video_output/win32/common.c video_output/win32/common.h \
-	$(am__append_228)
+	$(am__append_230)
 libdirect3d11_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
  -DMODULE_NAME_IS_direct3d11
 
 libdirect3d11_plugin_la_LIBADD = libchroma_copy.la libd3d11_common.la \
-	$(LIBCOM) -luuid $(am__append_229) $(am__append_230)
+	$(LIBCOM) -luuid $(am__append_231) $(am__append_232)
 libdirect3d11_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 libdirectdraw_plugin_la_SOURCES = video_output/win32/directdraw.c \
 	video_output/win32/common.c video_output/win32/common.h \
@@ -10472,7 +10476,7 @@ libglwin32_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
 
 libglwin32_plugin_la_LIBADD = libchroma_copy.la -lopengl32 -lgdi32 $(LIBCOM) -luuid $(OPENGL_COMMONLIBS)
 libwgl_plugin_la_LIBADD = -lopengl32 -lgdi32 $(OPENGL_COMMONLIBS)
-libglwin32_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS)
+libglwin32_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS) -DHAVE_GL_CORE_SYMBOLS
 libwgl_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS)
 libglwin32_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 libwgl_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
@@ -10517,14 +10521,14 @@ libfb_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 
 ### ASCII Art ###
 libaa_plugin_la_SOURCES = video_output/aa.c
-libaa_plugin_la_LIBADD = libevent_thread.la -laa $(am__append_239)
+libaa_plugin_la_LIBADD = libevent_thread.la -laa $(am__append_241)
 libaa_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 
 ### Coloured ASCII art ###
 libcaca_plugin_la_SOURCES = video_output/caca.c
 libcaca_plugin_la_CFLAGS = $(AM_CFLAGS) $(CACA_CFLAGS)
 libcaca_plugin_la_LIBADD = libevent_thread.la $(CACA_LIBS) \
-	$(am__append_240)
+	$(am__append_242)
 libcaca_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 
 ### EFL Evas video output ###
@@ -10544,7 +10548,7 @@ libevent_thread_la_SOURCES = \
 
 libevent_thread_la_LDFLAGS = -static
 visudir = $(pluginsdir)/visualization
-visu_LTLIBRARIES = $(am__append_242) $(LTLIBgoom) $(LTLIBprojectm) \
+visu_LTLIBRARIES = $(am__append_244) $(LTLIBgoom) $(LTLIBprojectm) \
 	libvisual_plugin.la $(LTLIBvsxu)
 libglspectrum_plugin_la_SOURCES = \
 	visualization/glspectrum.c \
@@ -10585,7 +10589,7 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@	libaccess_output_file_plugin.la \
 @ENABLE_SOUT_TRUE@	libaccess_output_http_plugin.la \
 @ENABLE_SOUT_TRUE@	libaccess_output_udp_plugin.la \
-@ENABLE_SOUT_TRUE@	$(am__append_243) \
+@ENABLE_SOUT_TRUE@	$(am__append_245) \
 @ENABLE_SOUT_TRUE@	$(LTLIBaccess_output_shout) \
 @ENABLE_SOUT_TRUE@	$(LTLIBaccess_output_srt)
 @ENABLE_SOUT_TRUE@libaccess_output_livehttp_plugin_la_SOURCES = access_output/livehttp.c
@@ -10622,7 +10626,7 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@	libmux_asf_plugin.la libmux_avi_plugin.la \
 @ENABLE_SOUT_TRUE@	libmux_mp4_plugin.la libmux_mpjpeg_plugin.la \
 @ENABLE_SOUT_TRUE@	libmux_ps_plugin.la libmux_wav_plugin.la \
-@ENABLE_SOUT_TRUE@	$(LTLIBmux_ogg) $(am__append_245)
+@ENABLE_SOUT_TRUE@	$(LTLIBmux_ogg) $(am__append_247)
 @ENABLE_SOUT_TRUE@libmux_ogg_plugin_la_SOURCES = mux/ogg.c
 @ENABLE_SOUT_TRUE@libmux_ogg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(OGG_CFLAGS)
 @ENABLE_SOUT_TRUE@libmux_ogg_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(muxdir)'
@@ -10685,15 +10689,15 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@	libstream_out_transcode_plugin.la \
 @ENABLE_SOUT_TRUE@	libstream_out_rtp_plugin.la \
 @ENABLE_SOUT_TRUE@	$(LTLIBstream_out_chromaprint) \
-@ENABLE_SOUT_TRUE@	$(am__append_251)
+@ENABLE_SOUT_TRUE@	$(am__append_253)
 @ENABLE_SOUT_TRUE@libstream_out_rtp_plugin_la_SOURCES = \
 @ENABLE_SOUT_TRUE@	stream_out/rtp.c stream_out/rtp.h stream_out/rtpfmt.c \
 @ENABLE_SOUT_TRUE@	stream_out/rtcp.c stream_out/rtsp.c stream_out/vod.c
 
 @ENABLE_SOUT_TRUE@libstream_out_rtp_plugin_la_CFLAGS = $(AM_CFLAGS) \
-@ENABLE_SOUT_TRUE@	$(am__append_246)
+@ENABLE_SOUT_TRUE@	$(am__append_248)
 @ENABLE_SOUT_TRUE@libstream_out_rtp_plugin_la_LIBADD = $(SOCKET_LIBS) \
-@ENABLE_SOUT_TRUE@	$(LIBPTHREAD) $(am__append_247)
+@ENABLE_SOUT_TRUE@	$(LIBPTHREAD) $(am__append_249)
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@SRTP_CFLAGS = -I$(srcdir)/access/rtp
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@SRTP_LIBS = libvlc_srtp.la
 

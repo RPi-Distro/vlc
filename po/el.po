@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-06 02:15+0000\n"
+"POT-Creation-Date: 2017-12-10 02:11+0000\n"
 "PO-Revision-Date: 2015-12-05 19:04+0000\n"
 "Last-Translator: Savvas Nesseris <nesseris@yahoo.com>\n"
 "Language-Team: Greek (http://www.transifex.com/yaron/vlc-trans/language/"
@@ -389,7 +389,7 @@ msgstr "Η εφαρμογή του VLC για το βίντεο κατ' απαί
 #: modules/gui/macosx/VLCMainWindow.m:296
 #: modules/gui/macosx/VLCMainWindow.m:863
 #: modules/gui/qt/components/controller.hpp:109
-#: modules/gui/qt/components/playlist/playlist.cpp:166
+#: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
 #: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1117
 msgid "Playlist"
@@ -5469,7 +5469,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "Αποτυχία ανοίγματος \"%s\" για εγγραφή"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2680
+#: modules/demux/avi/avi.c:2702
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
@@ -7722,7 +7722,7 @@ msgstr "Είσοδος FTP"
 msgid "FTP upload output"
 msgstr "Έξοδος ανεβάσματος FTP"
 
-#: modules/access/ftp.c:369 modules/access/ftp.c:385 modules/access/ftp.c:537
+#: modules/access/ftp.c:369 modules/access/ftp.c:385 modules/access/ftp.c:541
 msgid "Network interaction failed"
 msgstr "Η αλληλεπίδραση του δικτύου απέτυχε"
 
@@ -7734,7 +7734,7 @@ msgstr "Ο VLC δεν μπόρεσε να συνδεθεί με το δοθέν�
 msgid "VLC's connection to the given server was rejected."
 msgstr "Η σύνδεση του VLC στο δοθέντα εξυπηρετητή απορρίφθηκε."
 
-#: modules/access/ftp.c:538
+#: modules/access/ftp.c:542
 msgid "Your account was rejected."
 msgstr "Ο λογαριασμός σας απορρίφθηκε."
 
@@ -8681,11 +8681,11 @@ msgstr "Αριθμός θύρας SFTP που θα χρησιμοποιηθεί 
 msgid "SFTP input"
 msgstr "Είσοδος SFTP"
 
-#: modules/access/sftp.c:394
+#: modules/access/sftp.c:400
 msgid "SFTP authentication"
 msgstr "Πιστοποίηση SFTP"
 
-#: modules/access/sftp.c:395
+#: modules/access/sftp.c:401
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr ""
@@ -15820,7 +15820,7 @@ msgstr "Επιδιόρθωση όταν χρειαστεί"
 msgid "AVI demuxer"
 msgstr "Αποπολυπλέκτης AVI"
 
-#: modules/demux/avi/avi.c:798 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:820 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -15837,28 +15837,28 @@ msgstr ""
 "Αυτό το βήμα θα πάρει αρκετό χρόνο σε ένα μεγάλο αρχείο.\n"
 "Τι θέλετε να κάνετε;"
 
-#: modules/demux/avi/avi.c:806
+#: modules/demux/avi/avi.c:828
 msgid "Do not play"
 msgstr "Να μη γίνει αναπαραγωγή"
 
-#: modules/demux/avi/avi.c:807
+#: modules/demux/avi/avi.c:829
 msgid "Build index then play"
 msgstr "Δημιουργία ευρετηρίου και μετά αναπαραγωγή"
 
-#: modules/demux/avi/avi.c:808
+#: modules/demux/avi/avi.c:830
 msgid "Play as is"
 msgstr "Αναπαραγωγή όπως είναι"
 
-#: modules/demux/avi/avi.c:809 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:831 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "Το ευρετήριο AVI λείπει ή είναι κατακερματισμένο"
 
-#: modules/demux/avi/avi.c:2681
+#: modules/demux/avi/avi.c:2703
 msgid "Broken or missing AVI Index"
 msgstr "Το ευρετήριο AVI λείπει ή είναι κατακερματισμένο"
 
-#: modules/demux/avi/avi.c:2682
+#: modules/demux/avi/avi.c:2704
 msgid "Fixing AVI Index..."
 msgstr "Επιδιόρθωση ευρετηρίου AVI..."
 
@@ -20580,11 +20580,11 @@ msgstr "Επιλογές για προχωρημένους"
 msgid "Double click to get media information"
 msgstr "Κάντε διπλό κλικ για τη λήψη πληροφοριών πολυμέσου"
 
-#: modules/gui/qt/components/playlist/playlist.cpp:114
+#: modules/gui/qt/components/playlist/playlist.cpp:113
 msgid "Change playlistview"
 msgstr "Αλλαγή προβολής λίστας αναπαραγωγής"
 
-#: modules/gui/qt/components/playlist/playlist.cpp:124
+#: modules/gui/qt/components/playlist/playlist.cpp:123
 msgid "Search the playlist"
 msgstr "Αναζήτηση στη λίστα αναπαραγωγής"
 
@@ -22561,12 +22561,10 @@ msgstr ""
 "Ρύθμιση της αντίθεσης της εικόνας, μεταξύ 0 και 2. Η προεπιλογή είναι στο 1."
 
 #: modules/hw/d3d11/d3d11_filters.c:93 modules/hw/d3d9/d3d9_filters.c:74
-#: modules/video_filter/adjust.c:67
 msgid "Image hue (0-360)"
 msgstr "Χροιά εικόνας (0-360)"
 
 #: modules/hw/d3d11/d3d11_filters.c:94 modules/hw/d3d9/d3d9_filters.c:75
-#: modules/video_filter/adjust.c:68
 msgid "Set the image hue, between 0 and 360. Defaults to 0."
 msgstr ""
 "Ρύθμιση της χροιάς της εικόνας, μεταξύ 0 και 360. Η προεπιλογή είναι στο 0."
@@ -27065,6 +27063,17 @@ msgstr "Swscale"
 #: modules/video_chroma/yuvp.c:48
 msgid "YUVP converter"
 msgstr "Μετατροπέας YUVP"
+
+#: modules/video_filter/adjust.c:67
+#, fuzzy
+msgid "Image hue (-180..180)"
+msgstr "Χροιά εικόνας (0-360)"
+
+#: modules/video_filter/adjust.c:68
+#, fuzzy
+msgid "Set the image hue, between -180 and 180. Defaults to 0."
+msgstr ""
+"Ρύθμιση της χροιάς της εικόνας, μεταξύ 0 και 360. Η προεπιλογή είναι στο 0."
 
 #: modules/video_filter/adjust.c:77
 msgid "Image properties filter"
