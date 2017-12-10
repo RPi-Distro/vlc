@@ -1,8 +1,10 @@
-vlc (3.0.0~rc1~20171210-1) UNRELEASED; urgency=medium
+vlc (3.0.0~rc1~20171210-1) experimental; urgency=medium
 
   * New upstream snapshot.
+  * debian/: Install nfs plugin only on linux-any.
+  * debian/*.symbols: Add new symbols.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 10 Dec 2017 11:26:56 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 10 Dec 2017 13:11:23 +0100
 
 vlc (3.0.0~rc1~20171206-1) experimental; urgency=medium
 
