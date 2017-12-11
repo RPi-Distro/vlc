@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-10 02:11+0000\n"
+"POT-Creation-Date: 2017-12-11 02:11+0000\n"
 "PO-Revision-Date: 2014-09-03 10:44+0000\n"
 "Last-Translator: Sok Sophea <sksophea@gmail.com>\n"
 "Language-Team: Khmer (http://www.transifex.com/projects/p/vlc-trans/language/"
@@ -8432,7 +8432,7 @@ msgstr "ឧបករណ៍​ចាប់​យក VBI"
 
 #: modules/access/v4l2/v4l2.c:48
 #, fuzzy
-msgid "The device node where VBI data can be read  (for closed captions)."
+msgid "The device node where VBI data can be read (for closed captions)."
 msgstr "តំណ​ឧបករណ៍​ដែល​ទិន្នន័យ VBI អាច​​អាន​បាន (សម្រាប់​ចំណងជើង​បិទ) "
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -8444,11 +8444,12 @@ msgid "Video standard (Default, SECAM, PAL, or NTSC)."
 msgstr "ស្តង់ដារ​វីដេអូ (លំនាំដើម SECAM, PAL, ឬ NTSC) ។"
 
 #: modules/access/v4l2/v4l2.c:55
+#, fuzzy
 msgid ""
 "Force the Video4Linux2 video device to use a specific chroma format (eg. "
-"I420 or I422 for raw images, MJPG for M-JPEG compressed input) (Complete "
+"I420 or I422 for raw images, MJPG for M-JPEG compressed input). Complete "
 "list: GREY, I240, RV16, RV15, RV24, RV32, YUY2, YUYV, UYVY, I41N, I422, "
-"I420, I411, I410, MJPG)"
+"I420, I411, I410, MJPG"
 msgstr ""
 "បង្ខំ​ឧបករណ៍​វីដេអូ Video4Linux2 ឲ្យ​ប្រើ​ទ្រង់ទ្រាយ​ក្រូម៉ា​ជាក់លាក់ (ឧ. I420 ឬ I422 សម្រាប់​រូបភាព​"
 "ដើម MJPG សម្រាប់​ព័ត៌មាន​បញ្ចូល​ដែល​បាន​បង្ហាប់ M-JPEG) (បញ្ជី​ពេញលេញ៖ GREY, I240, RV16, "
@@ -8489,7 +8490,8 @@ msgid "Frequency"
 msgstr "ប្រេកង់"
 
 #: modules/access/v4l2/v4l2.c:77
-msgid "Tuner frequency in Hz or kHz (see debug output)"
+#, fuzzy
+msgid "Tuner frequency in Hz or kHz (see debug output)."
 msgstr "ប្រេកង់​​ប្រដាប់​​រាវ​ប៉ុស្តិ៍ គិត​ជា Hz ឬ kHz (សូម​មើល​លទ្ធផល​បំបាត់​កំហុស)"
 
 #: modules/access/v4l2/v4l2.c:78
@@ -10405,7 +10407,8 @@ msgid "Output file"
 msgstr "ឯកសារ​លទ្ធផល"
 
 #: modules/audio_output/file.c:109
-msgid "File to which the audio samples will be written to. (\"-\" for stdout"
+#, fuzzy
+msgid "File to which the audio samples will be written to (\"-\" for stdout)."
 msgstr "ឯកសារ​​ដែល​នឹង​ត្រូវ​សរសេរ​គំរូ​អូឌីយ៉ូ​ទៅ ។ (\"-\" សម្រាប់ stdout"
 
 #: modules/audio_output/file.c:112
@@ -11332,7 +11335,8 @@ msgid "Encoder Profile"
 msgstr "ទម្រង់​កម្មវិធី​ដាក់​លេខ​កូដ"
 
 #: modules/codec/fdkaac.c:68
-msgid "Encoder Algorithm to use"
+#, fuzzy
+msgid "Encoder Algorithm to use."
 msgstr "ក្បួន​ដោះស្រាយ​កម្មវិធី​ដាក់​លេខ​កូដ​ដែល​ត្រូវ​ប្រើ"
 
 #: modules/codec/fdkaac.c:70
@@ -11340,7 +11344,8 @@ msgid "Enable spectral band replication"
 msgstr "បើក​ការ​ឆ្លើយតប​បន្ទះ​វិសាលគម"
 
 #: modules/codec/fdkaac.c:71
-msgid "This is an optional feature only for the AAC-ELD profile"
+#, fuzzy
+msgid "This is an optional feature only for the AAC-ELD profile."
 msgstr "នេះ​ជា​លក្ខណ​ពិសេស​ជម្រើស​សម្រាប់​តែ​ទម្រង់ AAC-ELD ប៉ុណ្ណោះ"
 
 #: modules/codec/fdkaac.c:73
@@ -11348,7 +11353,9 @@ msgid "VBR Quality"
 msgstr "គុណភាព VBR"
 
 #: modules/codec/fdkaac.c:74
-msgid "Quality of the VBR Encoding (0=cbr, 1-5 constant quality vbr, 5 is best"
+#, fuzzy
+msgid ""
+"Quality of the VBR Encoding (0=cbr, 1-5 constant vbr quality, 5 is the best)."
 msgstr "គុណភាព​នៃ​ការ​ដាក់​លេខ​កូដ VBR (0=cbr, 1-5 vbr គុណភាព​ថេរ 5 គឺ​ល្អ​បំផុត"
 
 #: modules/codec/fdkaac.c:76
@@ -11356,9 +11363,10 @@ msgid "Enable afterburner library"
 msgstr "បើក​បណ្ណាល័យ afterburner"
 
 #: modules/codec/fdkaac.c:77
+#, fuzzy
 msgid ""
 "This library will produce higher quality audio at the expense of additional "
-"CPU usage (default is enabled)"
+"CPU usage (default is enabled)."
 msgstr "បណ្ណាល័យ​នេះ​នឹង​បង្កើត​អូឌីយ៉ូ​គុណភាព​ខ្ពស់​ដោយ​ចំណាយ​ការ​ប្រើប្រាស់​ស៊ីភីយូ​បន្ថែម (លំនាំដើម​គឺ​បើក)"
 
 #: modules/codec/fdkaac.c:79
@@ -11366,9 +11374,10 @@ msgid "Signaling mode of the extension AOT"
 msgstr "របៀប​ដាក់​សញ្ញា​ផ្នែក​បន្ថែម​របស់ AOT"
 
 #: modules/codec/fdkaac.c:80
+#, fuzzy
 msgid ""
 "1 is explicit for SBR and implicit for PS (default), 2 is explicit "
-"hierarchical"
+"hierarchical."
 msgstr "1 គឺ​ច្បាស់​សម្រាប់ SBR ប៉ុន្តែ​មិន​ច្បាស់​សម្រាប់ PS (លំនាំដើម), 2 គឺ​មិន​ច្បាស់​សម្រាប់​លំដាប់"
 
 #: modules/codec/fdkaac.c:97
@@ -11906,7 +11915,7 @@ msgstr "ក្រុម​រូបភាព​ចម្ងាយ​យោង"
 #, fuzzy
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
+"unspecified. Note: If GopRefDist = 1, there are no B-frames used."
 msgstr ""
 "ចម្ងាយ​រវាង I- ឬ P- key frames; ប្រសិនបើ​វា​សូន្យ រចនាសមព័ន្ធ GOP គឺ​មិន​បាន​បញ្ជាក់។ ចំណាំ៖ បើ "
 "GopRefDist = 1 នោះ​គឺ​មិន​មាន B- ណាមួយ​ត្រូវ​បាន​ប្រើ​ទេ។"
@@ -11916,9 +11925,10 @@ msgid "Target Usage"
 msgstr "ទិសដៅ​ប្រើប្រាស់"
 
 #: modules/codec/qsv.c:86
+#, fuzzy
 msgid ""
 "The target usage allow to choose between different trade-offs between "
-"quality and speed. Allowed values are : 'speed', 'balanced' and 'quality'."
+"quality and speed. Allowed values are: 'speed', 'balanced' and 'quality'."
 msgstr ""
 "ទិសដៅ​ប្រើប្រាស់​អនុញ្ញាត​ឲ្យ​​ជ្រើស​រវាង​តុល្យភាព រវាង​គុណភាព និង​ល្បឿន។ តម្លៃ​ដែល​អនុញ្ញាត​គឺ៖ 'speed', "
 "'balanced' និង 'quality' ។"
@@ -11930,8 +11940,8 @@ msgstr "ចន្លោះ​ពេល IDR"
 #: modules/codec/qsv.c:92
 #, fuzzy
 msgid ""
-"For H.264, IdrInterval specifies IDR-frame interval in terms of I- frames; "
-"if IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
+"For H.264, IdrInterval specifies IDR-frame interval in terms of I-frames; if "
+"IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
@@ -11952,7 +11962,7 @@ msgstr "វិធីសាស្ត្រ​គ្រប់គ្រង​អត
 #, fuzzy
 msgid ""
 "The rate control method to use when encoding. Can be one of 'cbr', 'vbr', "
-"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2"
+"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2."
 msgstr ""
 "វិធីសាស្ត្រ​គ្រប់គ្រង​អត្រា​ដែល​ត្រូវ​ប្រើ​ពេល​ដាក់​លេខ​កូដ។ អាច​មួយ​ក្នុង​ចំណោម 'crb', 'vbr', 'qp', "
 "'avbr' ។ របៀប 'qp' មិន​ត្រូវ​បាន​គាំទ្រ​សម្រាប់ mpeg2 ទេ"
@@ -11962,9 +11972,10 @@ msgid "Quantization parameter"
 msgstr "ប៉ារ៉ាម៉ែត្រ​ការ​កំណត់​បរិមាណ"
 
 #: modules/codec/qsv.c:106
+#, fuzzy
 msgid ""
 "Quantization parameter for all types of frames. This parameters sets qpi, "
-"qpp and qpp. It has less precedence than the forementionned parameters. Used "
+"qpp and qpb. It has less precedence than the forementionned parameters. Used "
 "only if rc_method is 'qp'."
 msgstr ""
 "ប៉ារ៉ាម៉ែត្រ​ការ​កំណត់​បរិមាណ​សម្រាប់​ប្រភេទ​ស៊ុម​ទាំងអស់។ ប៉ារ៉ាម៉ែត្រ​នេះ​កំណត់ qpi, qpp និង qpp ។ វា​មាន​"
@@ -12013,7 +12024,7 @@ msgstr "អត្រា​ប៊ីត​អតិបរមា"
 #: modules/codec/qsv.c:123
 #, fuzzy
 msgid ""
-"Defines the maximum bitrate in Kpbs (1000 bits/s) for VBR rate control "
+"Defines the maximum bitrate in kbps (1000 bits/s) for VBR rate control "
 "method. If not set, this parameter is computed from other sources such as "
 "bitrate, profile, level, etc."
 msgstr ""
@@ -12025,10 +12036,11 @@ msgid "Accuracy of RateControl"
 msgstr "សុក្រឹតភាព​នៃ​ការ​គ្រប់គ្រង​អត្រា"
 
 #: modules/codec/qsv.c:128
+#, fuzzy
 msgid ""
 "Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
-"g. 10 with a bitrate of 800  kpbs means the encoder tries not to  go above "
-"880 kpbs and under  730 kpbs. The targeted accuracy is only reached after a "
+"g. 10 with a bitrate of 800  kbps means the encoder tries not to  go above "
+"880 kbps and under  730 kbps. The targeted accuracy is only reached after a "
 "certained  convergence period. See the convergence parameter"
 msgstr ""
 "ប្រលោះ​គិតជា​ភាគរយ​នៃ​វិធី​សាស្ត្រ 'avbr'  (Average Variable BitRate) ។ (ឧ. 10 ជាមួយ​អត្រា​"
@@ -12070,10 +12082,11 @@ msgid "Number of parallel operations"
 msgstr "ចំនួន​ប្រតិបត្តិការ​ប៉ារ៉ាឡែល"
 
 #: modules/codec/qsv.c:149
+#, fuzzy
 msgid ""
 "Defines the number of parallel encoding operations before we synchronise the "
-"result. Higher  may result on better throughput depending on hardware. MPEG2 "
-"needs at least 1 here."
+"result. Higher numbers may result on better throughput depending on "
+"hardware. MPEG2 needs at least 1 here."
 msgstr ""
 "កំណត់​ចំនួន​ប្រតិបត្តិការ​ការ​ដាក់​លេខ​កូដ​ប៉ារ៉ាឡែល មុន​ពេល​ធ្វើ​សមកាលកម្ម​លទ្ធផល។ តម្លៃ​ខ្ពស់​អាច​មាន​លទ្ធផល​"
 "អត្រា​ល្អ​តែ​អាស្រ័យ​លើ​ផ្នែក​រឹង​ដែរ។ MPEG2 ទាមទារ​យ៉ាង​ហោច 1 ។"
@@ -26639,9 +26652,9 @@ msgid "Mirror orientation"
 msgstr "ទិស​កញ្ចក់"
 
 #: modules/video_filter/mirror.c:65
+#, fuzzy
 msgid ""
-"Defines orientation of the mirror splitting.     Can be vertical or "
-"horizontal"
+"Defines orientation of the mirror splitting. Can be vertical or horizontal."
 msgstr "កំណត់​ទិស​នៃ​កា​រពុះ​កញ្ចក់ ។     អាច​ជា​បញ្ឈរ ឬ​ផ្ដេក"
 
 #: modules/video_filter/mirror.c:69
@@ -26657,7 +26670,8 @@ msgid "Direction"
 msgstr "ទិស"
 
 #: modules/video_filter/mirror.c:72
-msgid "Direction of the mirroring"
+#, fuzzy
+msgid "Direction of the mirroring."
 msgstr "ទិស​នៃ​ការ​ឆ្លុះ"
 
 #: modules/video_filter/mirror.c:75
@@ -27179,11 +27193,11 @@ msgstr ""
 
 #: modules/video_output/decklink.cpp:76
 #, fuzzy
-msgid "Aspect Ratio of the source picture"
+msgid "Aspect Ratio of the source picture."
 msgstr "ភាព​ថ្លា​នៃ​រូបភាព​មូសាអ៊ីក ។"
 
 #: modules/video_output/decklink.cpp:78
-msgid "Active Format Descriptor line."
+msgid "Active Format Descriptor line"
 msgstr ""
 
 #: modules/video_output/decklink.cpp:79
@@ -27191,7 +27205,7 @@ msgid "VBI line on which to output Active Format Descriptor."
 msgstr ""
 
 #: modules/video_output/decklink.cpp:81
-msgid "Picture to display on input signal loss."
+msgid "Picture to display on input signal loss"
 msgstr ""
 
 #: modules/video_output/decklink.cpp:84
@@ -27242,7 +27256,8 @@ msgid "DecklinkOutput"
 msgstr "លទ្ធផល Decklink"
 
 #: modules/video_output/decklink.cpp:235
-msgid "output module to write to Blackmagic SDI card"
+#, fuzzy
+msgid "Output module to write to Blackmagic SDI card"
 msgstr "ម៉ូឌុល​លទ្ធផល​ដើម្បី​សរសេរ​ទៅកាន់​កាត Blackmagic SDI"
 
 #: modules/video_output/decklink.cpp:236
@@ -28232,7 +28247,8 @@ msgid "Show 80 bands instead of 20"
 msgstr "បង្ហាញ ៨០ ក្រុម​ជំនួស​ឲ្យ ២០"
 
 #: modules/visualization/visual/visual.c:72
-msgid "More bands for the spectrometer : 80 if enabled else 20."
+#, fuzzy
+msgid "More bands for the spectrometer: 80 if enabled, else 20."
 msgstr "ក្រុម​ច្រើន​សម្រាប់​ស្ប៉ិចត្រូម៉ែត្រ ៖ ៨០ ប្រសិនបើ​បាន​បើក បើមិនដូច្នោះទេ​ ២០ ។"
 
 #: modules/visualization/visual/visual.c:74

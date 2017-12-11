@@ -28,7 +28,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-10 02:11+0000\n"
+"POT-Creation-Date: 2017-12-11 02:11+0000\n"
 "PO-Revision-Date: 2017-09-23 19:54+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål (Norway) (http://www.transifex.com/yaron/vlc-"
@@ -8667,7 +8667,7 @@ msgstr "VBI-opptaksenhet"
 
 #: modules/access/v4l2/v4l2.c:48
 #, fuzzy
-msgid "The device node where VBI data can be read  (for closed captions)."
+msgid "The device node where VBI data can be read (for closed captions)."
 msgstr "Enhetsnoden som VBI-data kan leses fra (for undertekster)"
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -8679,11 +8679,12 @@ msgid "Video standard (Default, SECAM, PAL, or NTSC)."
 msgstr "Videostandard (standard, SECAM, PAL, eller NTSC)."
 
 #: modules/access/v4l2/v4l2.c:55
+#, fuzzy
 msgid ""
 "Force the Video4Linux2 video device to use a specific chroma format (eg. "
-"I420 or I422 for raw images, MJPG for M-JPEG compressed input) (Complete "
+"I420 or I422 for raw images, MJPG for M-JPEG compressed input). Complete "
 "list: GREY, I240, RV16, RV15, RV24, RV32, YUY2, YUYV, UYVY, I41N, I422, "
-"I420, I411, I410, MJPG)"
+"I420, I411, I410, MJPG"
 msgstr ""
 "Tving Video4Linux2-videoenheten til å bruke et bestemt krominansformat (f."
 "eks. İ420 or İ422 for rå bilder, eller MJPG for M-JPEG -komprimert inndata) "
@@ -8727,7 +8728,8 @@ msgid "Frequency"
 msgstr "Frekvens"
 
 #: modules/access/v4l2/v4l2.c:77
-msgid "Tuner frequency in Hz or kHz (see debug output)"
+#, fuzzy
+msgid "Tuner frequency in Hz or kHz (see debug output)."
 msgstr "Mottakerfrekvens i Hz eller kHz (se avlusingsutdata)"
 
 #: modules/access/v4l2/v4l2.c:78
@@ -10694,7 +10696,8 @@ msgid "Output file"
 msgstr "Utdatafil"
 
 #: modules/audio_output/file.c:109
-msgid "File to which the audio samples will be written to. (\"-\" for stdout"
+#, fuzzy
+msgid "File to which the audio samples will be written to (\"-\" for stdout)."
 msgstr "Filen som lydsamplingene skal skrives til. (\"-\" for stdout"
 
 #: modules/audio_output/file.c:112
@@ -11653,7 +11656,8 @@ msgid "Encoder Profile"
 msgstr "Omkodingsprofil"
 
 #: modules/codec/fdkaac.c:68
-msgid "Encoder Algorithm to use"
+#, fuzzy
+msgid "Encoder Algorithm to use."
 msgstr "Koderalgoritmen som skal brukes."
 
 #: modules/codec/fdkaac.c:70
@@ -11661,7 +11665,8 @@ msgid "Enable spectral band replication"
 msgstr "Aktiver spektralbånd-imitering."
 
 #: modules/codec/fdkaac.c:71
-msgid "This is an optional feature only for the AAC-ELD profile"
+#, fuzzy
+msgid "This is an optional feature only for the AAC-ELD profile."
 msgstr "Dette er kun et valgfritt alternativ for AAC-ELD-profilen."
 
 #: modules/codec/fdkaac.c:73
@@ -11669,7 +11674,9 @@ msgid "VBR Quality"
 msgstr "VBR-kvalitet"
 
 #: modules/codec/fdkaac.c:74
-msgid "Quality of the VBR Encoding (0=cbr, 1-5 constant quality vbr, 5 is best"
+#, fuzzy
+msgid ""
+"Quality of the VBR Encoding (0=cbr, 1-5 constant vbr quality, 5 is the best)."
 msgstr ""
 "Kvaliteten til VBR-kodingen (0 = CRB, 1-5 = VBR med konstant kvalitet; 5 er "
 "best)."
@@ -11679,9 +11686,10 @@ msgid "Enable afterburner library"
 msgstr "Aktiver afterburner-biblioteket"
 
 #: modules/codec/fdkaac.c:77
+#, fuzzy
 msgid ""
 "This library will produce higher quality audio at the expense of additional "
-"CPU usage (default is enabled)"
+"CPU usage (default is enabled)."
 msgstr ""
 "Dette biblioteket vil produsere lyd i høyere kvalitet, på bekostning av "
 "høyere prosessorbruk. Den er aktivert som standard."
@@ -11691,9 +11699,10 @@ msgid "Signaling mode of the extension AOT"
 msgstr "Signaliseringsmodusen til AOT-utvidelsen."
 
 #: modules/codec/fdkaac.c:80
+#, fuzzy
 msgid ""
 "1 is explicit for SBR and implicit for PS (default), 2 is explicit "
-"hierarchical"
+"hierarchical."
 msgstr ""
 "1 (standarden) er regelrett for SBR og indikert for PS, mens 2 er regelrett "
 "hierarkisk."
@@ -12256,7 +12265,7 @@ msgstr "Bildegruppe-referansedistansen"
 #, fuzzy
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
+"unspecified. Note: If GopRefDist = 1, there are no B-frames used."
 msgstr ""
 "Avstanden mellom İ- og P-nøkkelrammer. Dersom den er null, er "
 "bildegruppestrukturen ubestemt. Bemerk at hvis GopRefDist = 1, vil ingen B-"
@@ -12267,9 +12276,10 @@ msgid "Target Usage"
 msgstr "Tilsiktet bruk"
 
 #: modules/codec/qsv.c:86
+#, fuzzy
 msgid ""
 "The target usage allow to choose between different trade-offs between "
-"quality and speed. Allowed values are : 'speed', 'balanced' and 'quality'."
+"quality and speed. Allowed values are: 'speed', 'balanced' and 'quality'."
 msgstr ""
 "Målbruken tillater å velge mellom forskjellige vektlegginger mellom kvalitet "
 "og fart. Tillatte verdier er : 'speed', 'balanced' og 'quality'."
@@ -12281,8 +12291,8 @@ msgstr "IDR-intervall"
 #: modules/codec/qsv.c:92
 #, fuzzy
 msgid ""
-"For H.264, IdrInterval specifies IDR-frame interval in terms of I- frames; "
-"if IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
+"For H.264, IdrInterval specifies IDR-frame interval in terms of I-frames; if "
+"IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
@@ -12305,7 +12315,7 @@ msgstr "Frekvenskontrollmetode"
 #, fuzzy
 msgid ""
 "The rate control method to use when encoding. Can be one of 'cbr', 'vbr', "
-"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2"
+"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2."
 msgstr ""
 "Frekvenskontrollmetoden som skal brukes under koding. Det kan være én av et "
 "utvalg av 'crb', 'vbr', 'qp' og 'avbr'.\n"
@@ -12317,9 +12327,10 @@ msgid "Quantization parameter"
 msgstr "Kvantiseringsparameter"
 
 #: modules/codec/qsv.c:106
+#, fuzzy
 msgid ""
 "Quantization parameter for all types of frames. This parameters sets qpi, "
-"qpp and qpp. It has less precedence than the forementionned parameters. Used "
+"qpp and qpb. It has less precedence than the forementionned parameters. Used "
 "only if rc_method is 'qp'."
 msgstr ""
 "Kvantiseringsparameteret for alle typer rammer. Dette parametrer QPI-, QPP- "
@@ -12369,7 +12380,7 @@ msgstr "Maksimal bitfrekvens"
 #: modules/codec/qsv.c:123
 #, fuzzy
 msgid ""
-"Defines the maximum bitrate in Kpbs (1000 bits/s) for VBR rate control "
+"Defines the maximum bitrate in kbps (1000 bits/s) for VBR rate control "
 "method. If not set, this parameter is computed from other sources such as "
 "bitrate, profile, level, etc."
 msgstr ""
@@ -12383,10 +12394,11 @@ msgid "Accuracy of RateControl"
 msgstr "RateControls nøyaktighet"
 
 #: modules/codec/qsv.c:128
+#, fuzzy
 msgid ""
 "Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
-"g. 10 with a bitrate of 800  kpbs means the encoder tries not to  go above "
-"880 kpbs and under  730 kpbs. The targeted accuracy is only reached after a "
+"g. 10 with a bitrate of 800  kbps means the encoder tries not to  go above "
+"880 kbps and under  730 kbps. The targeted accuracy is only reached after a "
 "certained  convergence period. See the convergence parameter"
 msgstr ""
 "Den prosentvise toleransen til AVBR (Gjennomsnittlig variabel bitfrekvens)-"
@@ -12431,10 +12443,11 @@ msgid "Number of parallel operations"
 msgstr "Antall samtidige handlinger"
 
 #: modules/codec/qsv.c:149
+#, fuzzy
 msgid ""
 "Defines the number of parallel encoding operations before we synchronise the "
-"result. Higher  may result on better throughput depending on hardware. MPEG2 "
-"needs at least 1 here."
+"result. Higher numbers may result on better throughput depending on "
+"hardware. MPEG2 needs at least 1 here."
 msgstr ""
 "Definerer antall samtidige kodingshandlinger før resultatet blir "
 "synkronisert. Høyere verderi kan føre til bedre sluttresultat, avhengig av "
@@ -27341,9 +27354,9 @@ msgid "Mirror orientation"
 msgstr "Speilretning"
 
 #: modules/video_filter/mirror.c:65
+#, fuzzy
 msgid ""
-"Defines orientation of the mirror splitting.     Can be vertical or "
-"horizontal"
+"Defines orientation of the mirror splitting. Can be vertical or horizontal."
 msgstr ""
 "Bestemmer orienteringen til speiloppdelingen. Det kan være vannrett eller "
 "loddrett."
@@ -27361,7 +27374,8 @@ msgid "Direction"
 msgstr "Retning"
 
 #: modules/video_filter/mirror.c:72
-msgid "Direction of the mirroring"
+#, fuzzy
+msgid "Direction of the mirroring."
 msgstr "Retningen til speilingen"
 
 #: modules/video_filter/mirror.c:75
@@ -27898,11 +27912,11 @@ msgstr ""
 
 #: modules/video_output/decklink.cpp:76
 #, fuzzy
-msgid "Aspect Ratio of the source picture"
+msgid "Aspect Ratio of the source picture."
 msgstr "Gjennomsiktigheten til mosaikkbildet."
 
 #: modules/video_output/decklink.cpp:78
-msgid "Active Format Descriptor line."
+msgid "Active Format Descriptor line"
 msgstr ""
 
 #: modules/video_output/decklink.cpp:79
@@ -27910,7 +27924,8 @@ msgid "VBI line on which to output Active Format Descriptor."
 msgstr ""
 
 #: modules/video_output/decklink.cpp:81
-msgid "Picture to display on input signal loss."
+#, fuzzy
+msgid "Picture to display on input signal loss"
 msgstr "Bilde å vise hvis inndatasignalet faller ut."
 
 #: modules/video_output/decklink.cpp:84
@@ -27967,7 +27982,8 @@ msgid "DecklinkOutput"
 msgstr "Decklink-utdata"
 
 #: modules/video_output/decklink.cpp:235
-msgid "output module to write to Blackmagic SDI card"
+#, fuzzy
+msgid "Output module to write to Blackmagic SDI card"
 msgstr "Utdatamodulen som skal skrives til Blackmagic SDI-kortet."
 
 #: modules/video_output/decklink.cpp:236
@@ -28996,7 +29012,8 @@ msgid "Show 80 bands instead of 20"
 msgstr "Vis 80 bånd i stedet for 20"
 
 #: modules/visualization/visual/visual.c:72
-msgid "More bands for the spectrometer : 80 if enabled else 20."
+#, fuzzy
+msgid "More bands for the spectrometer: 80 if enabled, else 20."
 msgstr "Flere bånd i spektrometeret: 80 hvis påslått, ellers 20."
 
 #: modules/visualization/visual/visual.c:74

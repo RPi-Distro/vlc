@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 2.2.7\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-10 02:11+0000\n"
+"POT-Creation-Date: 2017-12-11 02:11+0000\n"
 "PO-Revision-Date: 2017-11-16 02:54+0100\n"
 "Last-Translator: Balázs Meskó <meskobalazs@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/yaron/vlc-trans/language/"
@@ -8720,7 +8720,7 @@ msgstr "VBI felvevőeszköz"
 
 #: modules/access/v4l2/v4l2.c:48
 #, fuzzy
-msgid "The device node where VBI data can be read  (for closed captions)."
+msgid "The device node where VBI data can be read (for closed captions)."
 msgstr ""
 "A VBI adatok olvasásához használandó eszközcsomópont (filmfeliratokhoz)"
 
@@ -8733,11 +8733,12 @@ msgid "Video standard (Default, SECAM, PAL, or NTSC)."
 msgstr "Videoszabvány (automatikus, SECAM, PAL vagy NTSC)."
 
 #: modules/access/v4l2/v4l2.c:55
+#, fuzzy
 msgid ""
 "Force the Video4Linux2 video device to use a specific chroma format (eg. "
-"I420 or I422 for raw images, MJPG for M-JPEG compressed input) (Complete "
+"I420 or I422 for raw images, MJPG for M-JPEG compressed input). Complete "
 "list: GREY, I240, RV16, RV15, RV24, RV32, YUY2, YUYV, UYVY, I41N, I422, "
-"I420, I411, I410, MJPG)"
+"I420, I411, I410, MJPG"
 msgstr ""
 "A Video4Linux2 videoeszköz kényszerítése adott színességformátum "
 "használatára (például I420 vagy I422 nyers képekhez, MJPEG az M-JPEG "
@@ -8781,7 +8782,8 @@ msgid "Frequency"
 msgstr "Frekvencia"
 
 #: modules/access/v4l2/v4l2.c:77
-msgid "Tuner frequency in Hz or kHz (see debug output)"
+#, fuzzy
+msgid "Tuner frequency in Hz or kHz (see debug output)."
 msgstr ""
 "Tuner frekvenciája Hz-ben vagy kHz-ben (lásd a hibakeresési kimenetet)."
 
@@ -10738,7 +10740,8 @@ msgid "Output file"
 msgstr "Kimeneti fájl"
 
 #: modules/audio_output/file.c:109
-msgid "File to which the audio samples will be written to. (\"-\" for stdout"
+#, fuzzy
+msgid "File to which the audio samples will be written to (\"-\" for stdout)."
 msgstr "A fájl, amelybe a hangminták kerülnek. („-” a szabványos kimenethez)"
 
 #: modules/audio_output/file.c:112
@@ -11701,7 +11704,8 @@ msgid "Encoder Profile"
 msgstr "Kódolóprofil"
 
 #: modules/codec/fdkaac.c:68
-msgid "Encoder Algorithm to use"
+#, fuzzy
+msgid "Encoder Algorithm to use."
 msgstr "Használandó kódolóalgoritmus"
 
 #: modules/codec/fdkaac.c:70
@@ -11709,7 +11713,8 @@ msgid "Enable spectral band replication"
 msgstr "Spektrumsáv replikációjának engedélyezése"
 
 #: modules/codec/fdkaac.c:71
-msgid "This is an optional feature only for the AAC-ELD profile"
+#, fuzzy
+msgid "This is an optional feature only for the AAC-ELD profile."
 msgstr "Ez egy elhagyható funkció kizárólag az AAC-ELD profilhoz"
 
 #: modules/codec/fdkaac.c:73
@@ -11717,7 +11722,9 @@ msgid "VBR Quality"
 msgstr "VBR minőség"
 
 #: modules/codec/fdkaac.c:74
-msgid "Quality of the VBR Encoding (0=cbr, 1-5 constant quality vbr, 5 is best"
+#, fuzzy
+msgid ""
+"Quality of the VBR Encoding (0=cbr, 1-5 constant vbr quality, 5 is the best)."
 msgstr "A VBR kódolás minősége (0=cbr, 1-5 konstans minőségű vbr, 5 a legjobb)"
 
 #: modules/codec/fdkaac.c:76
@@ -11725,9 +11732,10 @@ msgid "Enable afterburner library"
 msgstr "Az afterburner programkönyvtár engedélyezése"
 
 #: modules/codec/fdkaac.c:77
+#, fuzzy
 msgid ""
 "This library will produce higher quality audio at the expense of additional "
-"CPU usage (default is enabled)"
+"CPU usage (default is enabled)."
 msgstr ""
 "Ez a programkönyvtár jobb minőségű hangot eredményez megnövelt "
 "processzorhasználat árán (alapértelmezésben engedélyezve)"
@@ -11737,9 +11745,10 @@ msgid "Signaling mode of the extension AOT"
 msgstr "Az AOT kiterjesztés jelzési módja"
 
 #: modules/codec/fdkaac.c:80
+#, fuzzy
 msgid ""
 "1 is explicit for SBR and implicit for PS (default), 2 is explicit "
-"hierarchical"
+"hierarchical."
 msgstr ""
 "Az 1 jelentése: explicit az SBR-hez és implicit a PS-hez (alapértelmezés), a "
 "2 jelentése: explicit hierarchikus"
@@ -12301,7 +12310,7 @@ msgstr "Képcsoport referenciatávolsága"
 #, fuzzy
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
+"unspecified. Note: If GopRefDist = 1, there are no B-frames used."
 msgstr ""
 "Távolság az I- vagy P- kulcsképkockák között. Ha nulla, akkor a GOP "
 "szerkezete nincs megadva. Megjegyzés: Ha a GopRefDist = 1, akkor a B- "
@@ -12312,9 +12321,10 @@ msgid "Target Usage"
 msgstr "Célhasználat"
 
 #: modules/codec/qsv.c:86
+#, fuzzy
 msgid ""
 "The target usage allow to choose between different trade-offs between "
-"quality and speed. Allowed values are : 'speed', 'balanced' and 'quality'."
+"quality and speed. Allowed values are: 'speed', 'balanced' and 'quality'."
 msgstr ""
 "A célhasználat lehetővé teszi különböző kompromisszumok használatát a "
 "minőség és a sebesség között. A lehetséges értékek: „speed”, „balanced” és "
@@ -12327,8 +12337,8 @@ msgstr "IDR időköz"
 #: modules/codec/qsv.c:92
 #, fuzzy
 msgid ""
-"For H.264, IdrInterval specifies IDR-frame interval in terms of I- frames; "
-"if IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
+"For H.264, IdrInterval specifies IDR-frame interval in terms of I-frames; if "
+"IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
@@ -12350,7 +12360,7 @@ msgstr "Sebességvezérlési módszer"
 #, fuzzy
 msgid ""
 "The rate control method to use when encoding. Can be one of 'cbr', 'vbr', "
-"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2"
+"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2."
 msgstr ""
 "A kódoláskor használandó sebességvezérlési módszer. A „crb”, „vbr”, „qp”, "
 "„avbr” egyike lehet. A „qp” mód nem támogatott az mpeg2 esetén."
@@ -12360,9 +12370,10 @@ msgid "Quantization parameter"
 msgstr "Kvantálási paraméter"
 
 #: modules/codec/qsv.c:106
+#, fuzzy
 msgid ""
 "Quantization parameter for all types of frames. This parameters sets qpi, "
-"qpp and qpp. It has less precedence than the forementionned parameters. Used "
+"qpp and qpb. It has less precedence than the forementionned parameters. Used "
 "only if rc_method is 'qp'."
 msgstr ""
 "Kvantálási paraméter minden típusú képkockához. Ezek a paraméterek "
@@ -12412,7 +12423,7 @@ msgstr "Legnagyobb bitsebesség"
 #: modules/codec/qsv.c:123
 #, fuzzy
 msgid ""
-"Defines the maximum bitrate in Kpbs (1000 bits/s) for VBR rate control "
+"Defines the maximum bitrate in kbps (1000 bits/s) for VBR rate control "
 "method. If not set, this parameter is computed from other sources such as "
 "bitrate, profile, level, etc."
 msgstr ""
@@ -12426,10 +12437,11 @@ msgid "Accuracy of RateControl"
 msgstr "Sebességvezérlés pontossága"
 
 #: modules/codec/qsv.c:128
+#, fuzzy
 msgid ""
 "Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
-"g. 10 with a bitrate of 800  kpbs means the encoder tries not to  go above "
-"880 kpbs and under  730 kpbs. The targeted accuracy is only reached after a "
+"g. 10 with a bitrate of 800  kbps means the encoder tries not to  go above "
+"880 kbps and under  730 kbps. The targeted accuracy is only reached after a "
 "certained  convergence period. See the convergence parameter"
 msgstr ""
 "Tűrés az „avbr” (átlagos változó bitsebesség) módszer százalékában. Például "
@@ -12474,10 +12486,11 @@ msgid "Number of parallel operations"
 msgstr "Párhuzamos műveletek száma"
 
 #: modules/codec/qsv.c:149
+#, fuzzy
 msgid ""
 "Defines the number of parallel encoding operations before we synchronise the "
-"result. Higher  may result on better throughput depending on hardware. MPEG2 "
-"needs at least 1 here."
+"result. Higher numbers may result on better throughput depending on "
+"hardware. MPEG2 needs at least 1 here."
 msgstr ""
 "Megadja a párhuzamos kódolási műveletek számát az eredmények szinkronizálása "
 "előtt. A magasabb érték jobb teljesítményt eredményezhet a hardvertől "
@@ -27367,9 +27380,9 @@ msgid "Mirror orientation"
 msgstr "Tükrözés tájolása"
 
 #: modules/video_filter/mirror.c:65
+#, fuzzy
 msgid ""
-"Defines orientation of the mirror splitting.     Can be vertical or "
-"horizontal"
+"Defines orientation of the mirror splitting. Can be vertical or horizontal."
 msgstr ""
 "A tükrözési felosztás tájolásának megadása. Függőleges vagy vízszintes lehet."
 
@@ -27386,7 +27399,8 @@ msgid "Direction"
 msgstr "Irány"
 
 #: modules/video_filter/mirror.c:72
-msgid "Direction of the mirroring"
+#, fuzzy
+msgid "Direction of the mirroring."
 msgstr "A tükrözés iránya"
 
 #: modules/video_filter/mirror.c:75
@@ -27923,11 +27937,11 @@ msgstr ""
 
 #: modules/video_output/decklink.cpp:76
 #, fuzzy
-msgid "Aspect Ratio of the source picture"
+msgid "Aspect Ratio of the source picture."
 msgstr "A mozaikkép átlátszósága."
 
 #: modules/video_output/decklink.cpp:78
-msgid "Active Format Descriptor line."
+msgid "Active Format Descriptor line"
 msgstr ""
 
 #: modules/video_output/decklink.cpp:79
@@ -27935,7 +27949,8 @@ msgid "VBI line on which to output Active Format Descriptor."
 msgstr ""
 
 #: modules/video_output/decklink.cpp:81
-msgid "Picture to display on input signal loss."
+#, fuzzy
+msgid "Picture to display on input signal loss"
 msgstr "A bemeneti jel elvesztésekor megjelenítendő kép."
 
 #: modules/video_output/decklink.cpp:84
@@ -27991,7 +28006,8 @@ msgid "DecklinkOutput"
 msgstr "Decklink kimenet"
 
 #: modules/video_output/decklink.cpp:235
-msgid "output module to write to Blackmagic SDI card"
+#, fuzzy
+msgid "Output module to write to Blackmagic SDI card"
 msgstr "Kimeneti modul Blackmagic SDI kártyára íráshoz."
 
 #: modules/video_output/decklink.cpp:236
@@ -29021,7 +29037,8 @@ msgid "Show 80 bands instead of 20"
 msgstr "80 sáv megjelenítése 20 helyett"
 
 #: modules/visualization/visual/visual.c:72
-msgid "More bands for the spectrometer : 80 if enabled else 20."
+#, fuzzy
+msgid "More bands for the spectrometer: 80 if enabled, else 20."
 msgstr "Több sáv a spektrométerhez: 80, ha engedélyezett, 20 egyébként."
 
 #: modules/visualization/visual/visual.c:74

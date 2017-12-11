@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-10 02:11+0000\n"
+"POT-Creation-Date: 2017-12-11 02:11+0000\n"
 "PO-Revision-Date: 2015-12-04 10:01+0000\n"
 "Last-Translator: Christoph Miebach <christoph.miebach@web.de>\n"
 "Language-Team: Gujarati (India) (http://www.transifex.com/yaron/vlc-trans/"
@@ -8506,7 +8506,7 @@ msgstr "VBI બંધિત ઉપકરણ"
 
 #: modules/access/v4l2/v4l2.c:48
 #, fuzzy
-msgid "The device node where VBI data can be read  (for closed captions)."
+msgid "The device node where VBI data can be read (for closed captions)."
 msgstr "ઉપકરણ નોડ જ્યાં VBI માહિતીને વાંચી શકાય છે (બંધ થયેલ કૅપ્શન માટે) "
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -8518,11 +8518,12 @@ msgid "Video standard (Default, SECAM, PAL, or NTSC)."
 msgstr "વિડિઓ મૂળભૂત (મૂળભૂત, SECAM, PAL, અથવા NTSC)."
 
 #: modules/access/v4l2/v4l2.c:55
+#, fuzzy
 msgid ""
 "Force the Video4Linux2 video device to use a specific chroma format (eg. "
-"I420 or I422 for raw images, MJPG for M-JPEG compressed input) (Complete "
+"I420 or I422 for raw images, MJPG for M-JPEG compressed input). Complete "
 "list: GREY, I240, RV16, RV15, RV24, RV32, YUY2, YUYV, UYVY, I41N, I422, "
-"I420, I411, I410, MJPG)"
+"I420, I411, I410, MJPG"
 msgstr ""
 "Video4Linux2 વિડિઓ ઉપકરણને ચોક્કસ ક્રોમા બંધારણનો ઉપયોગ કરવાની ફરજ પાડો (દા.ત. "
 "અપૂર્ણ ચિત્ર માટે I420 અથવા I422, M-JPEG દ્વારા સંકુચિત કરાયેલ ઇનપુટ માટે MJPG) (સંપૂર્ણ "
@@ -8565,7 +8566,8 @@ msgid "Frequency"
 msgstr "આવૃત્તિ"
 
 #: modules/access/v4l2/v4l2.c:77
-msgid "Tuner frequency in Hz or kHz (see debug output)"
+#, fuzzy
+msgid "Tuner frequency in Hz or kHz (see debug output)."
 msgstr "Hz અથવા kHz માં ટુનર આવૃત્તિ (ડિબગ આઉટપુટને જુઓ)"
 
 #: modules/access/v4l2/v4l2.c:78
@@ -10484,7 +10486,8 @@ msgid "Output file"
 msgstr "આઉટપુટ ફાઇલ"
 
 #: modules/audio_output/file.c:109
-msgid "File to which the audio samples will be written to. (\"-\" for stdout"
+#, fuzzy
+msgid "File to which the audio samples will be written to (\"-\" for stdout)."
 msgstr "ફાઈલ કે જેમાં ઓડિયો નમૂનાઓને તેમાં લખાયેલ હશે. stdout માટે (\"-\""
 
 #: modules/audio_output/file.c:112
@@ -11413,7 +11416,8 @@ msgid "Encoder Profile"
 msgstr "એનકોડર રૂપરેખા"
 
 #: modules/codec/fdkaac.c:68
-msgid "Encoder Algorithm to use"
+#, fuzzy
+msgid "Encoder Algorithm to use."
 msgstr "વાપરવા માટે એનકોડર અલગોરિધમ"
 
 #: modules/codec/fdkaac.c:70
@@ -11421,7 +11425,8 @@ msgid "Enable spectral band replication"
 msgstr "સ્પેક્ટ્રલ બેન્ડ નકલ સક્ષમ"
 
 #: modules/codec/fdkaac.c:71
-msgid "This is an optional feature only for the AAC-ELD profile"
+#, fuzzy
+msgid "This is an optional feature only for the AAC-ELD profile."
 msgstr "આ AAC-ELD રૂપરેખા માટે ફક્ત વૈકલ્પિક લક્ષણ છે"
 
 #: modules/codec/fdkaac.c:73
@@ -11429,7 +11434,9 @@ msgid "VBR Quality"
 msgstr "VBR ગુણવત્તા"
 
 #: modules/codec/fdkaac.c:74
-msgid "Quality of the VBR Encoding (0=cbr, 1-5 constant quality vbr, 5 is best"
+#, fuzzy
+msgid ""
+"Quality of the VBR Encoding (0=cbr, 1-5 constant vbr quality, 5 is the best)."
 msgstr "VBR એનકોડીંગની ગુણવત્તા (0=cbr, 1-5 અચળ ગુણવત્તા vbr, 5 એ સારામાં સારું છે"
 
 #: modules/codec/fdkaac.c:76
@@ -11437,9 +11444,10 @@ msgid "Enable afterburner library"
 msgstr "આફટરબર્નર લાઈબ્રેરીને સક્રિય કરો"
 
 #: modules/codec/fdkaac.c:77
+#, fuzzy
 msgid ""
 "This library will produce higher quality audio at the expense of additional "
-"CPU usage (default is enabled)"
+"CPU usage (default is enabled)."
 msgstr ""
 "વધારાના CPU વપરાશના ખર્ચે આ લાઈબ્રેરી ઉચ્ચ ગુણવત્તા ઓડિયોને બનાવશે (મૂળભૂત સક્ષમ છે)"
 
@@ -11448,9 +11456,10 @@ msgid "Signaling mode of the extension AOT"
 msgstr "એક્સટેન્શન AOT ની સાંકેતિક સ્થિતિ"
 
 #: modules/codec/fdkaac.c:80
+#, fuzzy
 msgid ""
 "1 is explicit for SBR and implicit for PS (default), 2 is explicit "
-"hierarchical"
+"hierarchical."
 msgstr "SBR માટે 1 સુસ્પષ્ટ છે અને PS (મૂળભૂત) માટે ગર્ભિત, 2 સુસ્પષ્ટ રીતે અધિક્રમિક છે "
 
 #: modules/codec/fdkaac.c:97
@@ -11994,7 +12003,7 @@ msgstr "ચિત્ર સંદર્ભ અંતરનું જૂથ"
 #, fuzzy
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
+"unspecified. Note: If GopRefDist = 1, there are no B-frames used."
 msgstr ""
 "I- અથવા P-કી ફ્રેમ વચ્ચેનું અંતર, જો તે શૂન્ય હોય તો, GOP બંધારણ સ્પષ્ટ થયેલ છે. નોંધો કે: જો "
 "GopRefDist = 1, ત્યાં B- ફ્રેમ વાપરેલ નથી. "
@@ -12004,9 +12013,10 @@ msgid "Target Usage"
 msgstr "લક્ષ્ય વપરાશ"
 
 #: modules/codec/qsv.c:86
+#, fuzzy
 msgid ""
 "The target usage allow to choose between different trade-offs between "
-"quality and speed. Allowed values are : 'speed', 'balanced' and 'quality'."
+"quality and speed. Allowed values are: 'speed', 'balanced' and 'quality'."
 msgstr ""
 "ગુણવત્તા અને ઝડપ વચ્ચે વિવિધ ટ્રેડ-ઓફ વચ્ચે પસંદ કરવા માટે લક્ષ્ય વપરાશને પરવાનગી આપે છે. "
 "પરવાનગી મળેલ કિમંતો આ છે : 'ઝડપ', 'સંતુલન' અને 'ગુણવત્તા'."
@@ -12018,8 +12028,8 @@ msgstr "IDR અંતરાલ"
 #: modules/codec/qsv.c:92
 #, fuzzy
 msgid ""
-"For H.264, IdrInterval specifies IDR-frame interval in terms of I- frames; "
-"if IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
+"For H.264, IdrInterval specifies IDR-frame interval in terms of I-frames; if "
+"IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
@@ -12039,7 +12049,7 @@ msgstr "દર નિયંત્રણ પદ્દતિ"
 #, fuzzy
 msgid ""
 "The rate control method to use when encoding. Can be one of 'cbr', 'vbr', "
-"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2"
+"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2."
 msgstr ""
 "વાપરવા માટે દર નિયંત્રણ પદ્ધતિ જયારે એનકોડ કરી રહ્યા હોય. 'crb', 'vbr', 'qp', "
 "'avbr'. 'qp' સ્થિતિ માનું એક હોઈ શકે છે કે જે mpeg2 માટે આધારભૂત નથી"
@@ -12049,9 +12059,10 @@ msgid "Quantization parameter"
 msgstr "ક્વૉનટાઈઝેશન પરિમાણ"
 
 #: modules/codec/qsv.c:106
+#, fuzzy
 msgid ""
 "Quantization parameter for all types of frames. This parameters sets qpi, "
-"qpp and qpp. It has less precedence than the forementionned parameters. Used "
+"qpp and qpb. It has less precedence than the forementionned parameters. Used "
 "only if rc_method is 'qp'."
 msgstr ""
 "બધી જતની ફ્રેમો માટે ક્વૉનટાઈઝેશન પરિમાણ. આ પરિમાણ qpi, qpp અને qpp સુયોજિત કરે છે. "
@@ -12101,7 +12112,7 @@ msgstr "મહત્તમ બીટરેટ"
 #: modules/codec/qsv.c:123
 #, fuzzy
 msgid ""
-"Defines the maximum bitrate in Kpbs (1000 bits/s) for VBR rate control "
+"Defines the maximum bitrate in kbps (1000 bits/s) for VBR rate control "
 "method. If not set, this parameter is computed from other sources such as "
 "bitrate, profile, level, etc."
 msgstr ""
@@ -12113,10 +12124,11 @@ msgid "Accuracy of RateControl"
 msgstr "રેટકંન્ટ્રોલ ની ચોક્કસતા"
 
 #: modules/codec/qsv.c:128
+#, fuzzy
 msgid ""
 "Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
-"g. 10 with a bitrate of 800  kpbs means the encoder tries not to  go above "
-"880 kpbs and under  730 kpbs. The targeted accuracy is only reached after a "
+"g. 10 with a bitrate of 800  kbps means the encoder tries not to  go above "
+"880 kbps and under  730 kbps. The targeted accuracy is only reached after a "
 "certained  convergence period. See the convergence parameter"
 msgstr ""
 "'avbr'  (એવરેજ વેરીએબલ બીટરેટ) પદ્ધતિની ટકાવારીમાં છૂટ. (દા.ત. 800 kpbs બીટરેટ સાથે "
@@ -12159,10 +12171,11 @@ msgid "Number of parallel operations"
 msgstr "સમાંતર ક્રિયાઓની સંખ્યા"
 
 #: modules/codec/qsv.c:149
+#, fuzzy
 msgid ""
 "Defines the number of parallel encoding operations before we synchronise the "
-"result. Higher  may result on better throughput depending on hardware. MPEG2 "
-"needs at least 1 here."
+"result. Higher numbers may result on better throughput depending on "
+"hardware. MPEG2 needs at least 1 here."
 msgstr ""
 "પરિણામોમાં સુમેળતા લાવતા પેહલા એક સાથે કરી શકાતા એનકોડ કરવાના કાર્યની સંખ્યા "
 "વ્યાખ્યાયિત કરે છે. હાર્ડવેર પ્રમાણે ઉંચી સંખ્યા વધુ સારુ પરિણામ આપશે. MPEG2 ને ઓછામાં ઓછુ 1 "
@@ -26798,9 +26811,9 @@ msgid "Mirror orientation"
 msgstr "મિરર દિશા"
 
 #: modules/video_filter/mirror.c:65
+#, fuzzy
 msgid ""
-"Defines orientation of the mirror splitting.     Can be vertical or "
-"horizontal"
+"Defines orientation of the mirror splitting. Can be vertical or horizontal."
 msgstr "મિરરના વિભાજનની દિશાને વ્યાખ્યાયિત કરે છે.     આડું અથવા ઊભું હોઈ શકે છે"
 
 #: modules/video_filter/mirror.c:69
@@ -26816,7 +26829,8 @@ msgid "Direction"
 msgstr "દિશા"
 
 #: modules/video_filter/mirror.c:72
-msgid "Direction of the mirroring"
+#, fuzzy
+msgid "Direction of the mirroring."
 msgstr "મીરરીંગની દિશા"
 
 #: modules/video_filter/mirror.c:75
@@ -27344,11 +27358,11 @@ msgstr ""
 
 #: modules/video_output/decklink.cpp:76
 #, fuzzy
-msgid "Aspect Ratio of the source picture"
+msgid "Aspect Ratio of the source picture."
 msgstr "મોઝેક ચિત્રની પારદર્શકતા."
 
 #: modules/video_output/decklink.cpp:78
-msgid "Active Format Descriptor line."
+msgid "Active Format Descriptor line"
 msgstr ""
 
 #: modules/video_output/decklink.cpp:79
@@ -27356,7 +27370,8 @@ msgid "VBI line on which to output Active Format Descriptor."
 msgstr ""
 
 #: modules/video_output/decklink.cpp:81
-msgid "Picture to display on input signal loss."
+#, fuzzy
+msgid "Picture to display on input signal loss"
 msgstr "ચિત્ર ઇનપુટ સંકેત નુકશાન પર પ્રદર્શિત કરવા માટે."
 
 #: modules/video_output/decklink.cpp:84
@@ -27408,7 +27423,8 @@ msgid "DecklinkOutput"
 msgstr "ડેકલીંકઆઉટપુટ"
 
 #: modules/video_output/decklink.cpp:235
-msgid "output module to write to Blackmagic SDI card"
+#, fuzzy
+msgid "Output module to write to Blackmagic SDI card"
 msgstr "બ્લેકમેજીક SDI કાર્ડમાં લખવા માટે આઉટપુટ મોડ્યુલ"
 
 #: modules/video_output/decklink.cpp:236
@@ -28403,7 +28419,8 @@ msgid "Show 80 bands instead of 20"
 msgstr "20 ની જગ્યાએ 80 બેન્ડ બતાવો"
 
 #: modules/visualization/visual/visual.c:72
-msgid "More bands for the spectrometer : 80 if enabled else 20."
+#, fuzzy
+msgid "More bands for the spectrometer: 80 if enabled, else 20."
 msgstr "સ્પેક્ટ્રોમીટર માટે વધારે બેન્ડ : 80 જો સક્રિય હોય તો નહિ તો  20."
 
 #: modules/visualization/visual/visual.c:74

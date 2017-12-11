@@ -1,3 +1,147 @@
+commit 410c661386b3e8162833c3e9d6c0596e563c16d4
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Dec 11 00:17:07 2017 +0100
+
+    Update PO files
+
+commit 8ea707eeebf386575692b63053a25f399ea86808
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Sun Dec 10 21:06:29 2017 +0100
+
+    i18n: typo fixes for the option strings
+    
+    Signed-off-by: Michał Trzebiatowski <michtrz@gmail.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 1480fc481e5000ef66515cd88d8a58fcdb7f1c00)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fe8b55e6542ee89139cf6c253ca24a9c589a5d92
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Dec 10 16:43:09 2017 +0100
+
+    NSIS: Remove old files before new install
+    
+    Fix #19253
+    
+    (cherry picked from commit 2b6c36dde9b62111baa3cd695b85a609b4c9d841)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4e1f912507e6ffe4e4ec6a2b889b42f76ed8ea4f
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Dec 10 18:02:52 2017 +0100
+
+    Contribs: ffmpeg, fix hw decoding
+    
+    (cherry picked from commit 2007dae6e53bcd89cf2286e5f152aacc51cea6e6)
+    (cherry picked from commit cf729e450fa10d8652e12c70f49399700b21bcff)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fcb820b39ace34ac011892d162caa603c94bab02
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sun Dec 10 12:14:38 2017 +0100
+
+    access: http: set min icy meta interval
+    
+    worst case is 2, 50% bw waste with 0 bytes of meta and
+    >99.97% with max metadata.
+    1 is nonsense and would just mean no data stream.
+    
+    (cherry picked from commit d88d71098775870d8e90fde05990cb2828584d46)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 35a3bd5b5f406e0b325a07919466528b2615af0f
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Dec 7 15:42:48 2017 +0100
+
+    access: http: fix Icecast
+    
+    Fix #19251
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 97dc9033290742660be5a4e8cf4efc8f2f0427b0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 39c8a8187a8573ecfbc9419edada85cbd353a36a
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Dec 10 02:00:49 2017 +0100
+
+    QSV: fix typo in strings
+    
+    (cherry picked from commit c4993b6a3f552cf8533e30ef350de74f9575d545)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 46849d49d5bad782ce1849cde406302dd4e2f802
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Dec 6 16:06:55 2017 +0100
+
+    asx: convert document to XML
+    
+    ASX isn't xml compliant, esp.:
+       - it is case insensitive
+       - attributes don't require to be escaped
+    
+    Really close #14062 (and all the duplicates)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 570ccc373402645dfc82b43025c630704621dfb0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a31042093c767d5202845d7c25c863c24d051db3
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Dec 6 16:06:54 2017 +0100
+
+    asx: don't fail if stream size is unknown
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit ba71ea34edefa10019ec3d8b4dfc040bdad5b0f9)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3e6bc1bf00cf3c60fc72962fa6b49ee0c2b9b00f
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Dec 6 16:06:53 2017 +0100
+
+    asx: fix crashes on malformed document
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit ff3ffa91c8f84b7de515ab44ad9b1777183db9ae)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 927ca1c5c4d93c9831b7edb3e3f2365a793bd9f7
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Wed Dec 6 16:06:52 2017 +0100
+
+    asx: fix mimetype and stream Peek
+    
+    ASX is case insensitive
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 866888790951157d9321d3f215e40611a2d600f4)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 024ca0802d3e2611b5c26b39be461c638925d19e
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Dec 10 22:39:26 2017 +0200
+
+    art/lastfm: fix URI encoding (fixes #19272)
+    
+    (cherry picked from commit 526ae47cbc847a2412c408cbd4b3439e56ec9e47)
+
+commit 3e790f126b54ec3a41b12a1ecf0f591c7a4f14c9
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Dec 10 22:23:01 2017 +0200
+
+    mp4: fix off-by-one reading with nul-terminated string
+    
+    (cherry picked from commit e018cc44508a62b381a5cbf256693a970cdc20b0)
+
+commit dbb35a82fb4ac142e0968db36b7afab88b3521bf
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Dec 10 15:41:36 2017 +0200
+
+    sdp: fix multiple consecutive reads
+    
+    (cherry picked from commit 7f981398befbf10eae0a99a63031219ced8d6dcd)
+
 commit 8b54e4af4cc1cfb7275b64f4564cb23fd6f14444
 Author: Pierre Lamot <pierre@videolabs.io>
 Date:   Thu Dec 7 16:16:28 2017 +0100

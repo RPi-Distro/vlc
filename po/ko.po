@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-10 02:11+0000\n"
+"POT-Creation-Date: 2017-12-11 02:11+0000\n"
 "PO-Revision-Date: 2017-09-20 03:42+0000\n"
 "Last-Translator: Potato <sheppaul@naver.com>\n"
 "Language-Team: Korean (http://www.transifex.com/yaron/vlc-trans/language/"
@@ -8515,7 +8515,7 @@ msgstr "VBI 캡처 장치"
 
 #: modules/access/v4l2/v4l2.c:48
 #, fuzzy
-msgid "The device node where VBI data can be read  (for closed captions)."
+msgid "The device node where VBI data can be read (for closed captions)."
 msgstr "VBI 데이터를 읽어올 수 있는 장치 노드 (클로즈드 캡션용)"
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -8527,11 +8527,12 @@ msgid "Video standard (Default, SECAM, PAL, or NTSC)."
 msgstr "영상 표준 (기본, SECAM, PAL, NTSC)."
 
 #: modules/access/v4l2/v4l2.c:55
+#, fuzzy
 msgid ""
 "Force the Video4Linux2 video device to use a specific chroma format (eg. "
-"I420 or I422 for raw images, MJPG for M-JPEG compressed input) (Complete "
+"I420 or I422 for raw images, MJPG for M-JPEG compressed input). Complete "
 "list: GREY, I240, RV16, RV15, RV24, RV32, YUY2, YUYV, UYVY, I41N, I422, "
-"I420, I411, I410, MJPG)"
+"I420, I411, I410, MJPG"
 msgstr ""
 "Video4Linux2 비디오 장치가 특정 크로마 형식을 사용하도록 합니다 (예. I420 또"
 "는 raw 이미지는 I422, M-JPEG 압축 입력은 MJPG) (전체 목록: GREY, I240, RV16, "
@@ -8573,7 +8574,8 @@ msgid "Frequency"
 msgstr "주파수"
 
 #: modules/access/v4l2/v4l2.c:77
-msgid "Tuner frequency in Hz or kHz (see debug output)"
+#, fuzzy
+msgid "Tuner frequency in Hz or kHz (see debug output)."
 msgstr "튜너 주파수 Hz 또는 kHz (디버그 출력 보기)"
 
 #: modules/access/v4l2/v4l2.c:78
@@ -10525,7 +10527,8 @@ msgid "Output file"
 msgstr "출력 파일"
 
 #: modules/audio_output/file.c:109
-msgid "File to which the audio samples will be written to. (\"-\" for stdout"
+#, fuzzy
+msgid "File to which the audio samples will be written to (\"-\" for stdout)."
 msgstr "오디오 샘플을 저장할 파일. (\"-\" 표준출력용"
 
 #: modules/audio_output/file.c:112
@@ -11457,7 +11460,8 @@ msgid "Encoder Profile"
 msgstr "인코더 프로파일"
 
 #: modules/codec/fdkaac.c:68
-msgid "Encoder Algorithm to use"
+#, fuzzy
+msgid "Encoder Algorithm to use."
 msgstr "사용할 인코더 알고리즘"
 
 #: modules/codec/fdkaac.c:70
@@ -11465,7 +11469,8 @@ msgid "Enable spectral band replication"
 msgstr "Spectral Band Replication 활성화하기"
 
 #: modules/codec/fdkaac.c:71
-msgid "This is an optional feature only for the AAC-ELD profile"
+#, fuzzy
+msgid "This is an optional feature only for the AAC-ELD profile."
 msgstr "AAC-ELD 프로파일에서만 가능한 선택적인 기능입니다"
 
 #: modules/codec/fdkaac.c:73
@@ -11473,7 +11478,9 @@ msgid "VBR Quality"
 msgstr "VBR 품질"
 
 #: modules/codec/fdkaac.c:74
-msgid "Quality of the VBR Encoding (0=cbr, 1-5 constant quality vbr, 5 is best"
+#, fuzzy
+msgid ""
+"Quality of the VBR Encoding (0=cbr, 1-5 constant vbr quality, 5 is the best)."
 msgstr "VBR 인코딩의 품질 (0=CBR, 1~5 일정한 품질 VBR, 5는 최고 품질)"
 
 #: modules/codec/fdkaac.c:76
@@ -11481,9 +11488,10 @@ msgid "Enable afterburner library"
 msgstr "Afterburner 라이브러리 사용하기"
 
 #: modules/codec/fdkaac.c:77
+#, fuzzy
 msgid ""
 "This library will produce higher quality audio at the expense of additional "
-"CPU usage (default is enabled)"
+"CPU usage (default is enabled)."
 msgstr ""
 "이 라이브러리는 추가적인 CPU를 사용하여 고품질 오디오를 만들어 냅니다 (기본적"
 "으로 사용함)"
@@ -11493,9 +11501,10 @@ msgid "Signaling mode of the extension AOT"
 msgstr "확장 AOT의 시그널링 모드"
 
 #: modules/codec/fdkaac.c:80
+#, fuzzy
 msgid ""
 "1 is explicit for SBR and implicit for PS (default), 2 is explicit "
-"hierarchical"
+"hierarchical."
 msgstr ""
 "1 은 SBR에 대해 명백하고 PS에 대해 암시적이다 (기본값). 2는 명백하게 계층적이"
 "다."
@@ -12043,7 +12052,7 @@ msgstr "GOP 레퍼런스 거리"
 #, fuzzy
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
+"unspecified. Note: If GopRefDist = 1, there are no B-frames used."
 msgstr ""
 "I 나 P 프레임 사이의 거리; 만약 0이면, GOP 구조는 미지정입니다. 만약 "
 "GopRefDist = 1이면 사용되는 B 프레임이 없습니다."
@@ -12053,9 +12062,10 @@ msgid "Target Usage"
 msgstr "대상 사용"
 
 #: modules/codec/qsv.c:86
+#, fuzzy
 msgid ""
 "The target usage allow to choose between different trade-offs between "
-"quality and speed. Allowed values are : 'speed', 'balanced' and 'quality'."
+"quality and speed. Allowed values are: 'speed', 'balanced' and 'quality'."
 msgstr ""
 "대상 사용은 품질과 속도간의 다른 트레이드오프들 사이를 선택하도록 해 줍니다. "
 "허용된 값은: 속도, 균형, 품질 입니다."
@@ -12067,8 +12077,8 @@ msgstr "IDR 간격"
 #: modules/codec/qsv.c:92
 #, fuzzy
 msgid ""
-"For H.264, IdrInterval specifies IDR-frame interval in terms of I- frames; "
-"if IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
+"For H.264, IdrInterval specifies IDR-frame interval in terms of I-frames; if "
+"IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
@@ -12089,7 +12099,7 @@ msgstr "속도 제어 방법"
 #, fuzzy
 msgid ""
 "The rate control method to use when encoding. Can be one of 'cbr', 'vbr', "
-"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2"
+"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2."
 msgstr ""
 "인코딩할 때 사용할 속도 제어 방법. 'crb', 'vbr', 'qp', 'avbr' 중 한개를 사용"
 "할 수 있습니다. 'qp' 모드는 mpeg2에서는 지원되지 않습니다."
@@ -12099,9 +12109,10 @@ msgid "Quantization parameter"
 msgstr "양자화 변수"
 
 #: modules/codec/qsv.c:106
+#, fuzzy
 msgid ""
 "Quantization parameter for all types of frames. This parameters sets qpi, "
-"qpp and qpp. It has less precedence than the forementionned parameters. Used "
+"qpp and qpb. It has less precedence than the forementionned parameters. Used "
 "only if rc_method is 'qp'."
 msgstr ""
 "모든 형식의 프레임에 대한 양자화 변수. 이 변수는 qpi, qpp를 정합니다. 앞에서 "
@@ -12151,7 +12162,7 @@ msgstr "최대 비트레이트"
 #: modules/codec/qsv.c:123
 #, fuzzy
 msgid ""
-"Defines the maximum bitrate in Kpbs (1000 bits/s) for VBR rate control "
+"Defines the maximum bitrate in kbps (1000 bits/s) for VBR rate control "
 "method. If not set, this parameter is computed from other sources such as "
 "bitrate, profile, level, etc."
 msgstr ""
@@ -12164,10 +12175,11 @@ msgid "Accuracy of RateControl"
 msgstr "속도제어의 정밀도"
 
 #: modules/codec/qsv.c:128
+#, fuzzy
 msgid ""
 "Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
-"g. 10 with a bitrate of 800  kpbs means the encoder tries not to  go above "
-"880 kpbs and under  730 kpbs. The targeted accuracy is only reached after a "
+"g. 10 with a bitrate of 800  kbps means the encoder tries not to  go above "
+"880 kbps and under  730 kbps. The targeted accuracy is only reached after a "
 "certained  convergence period. See the convergence parameter"
 msgstr ""
 "오차, 'avbr' (평균 가변 비트레이트) 방법의 백분율 단위. (예를 들어 800 kpbs"
@@ -12211,10 +12223,11 @@ msgid "Number of parallel operations"
 msgstr "병렬 동작의 수"
 
 #: modules/codec/qsv.c:149
+#, fuzzy
 msgid ""
 "Defines the number of parallel encoding operations before we synchronise the "
-"result. Higher  may result on better throughput depending on hardware. MPEG2 "
-"needs at least 1 here."
+"result. Higher numbers may result on better throughput depending on "
+"hardware. MPEG2 needs at least 1 here."
 msgstr ""
 "우리가 결과를 동기화하기 전에 병렬 인코딩 작업의 개수를 정의합니다. 하드웨어"
 "에 따라 높을수록  더 좋은 처리속도를 얻을 수 있습니다. MPEG2는 적어도 1이 필"
@@ -26885,9 +26898,9 @@ msgid "Mirror orientation"
 msgstr "미러 방향"
 
 #: modules/video_filter/mirror.c:65
+#, fuzzy
 msgid ""
-"Defines orientation of the mirror splitting.     Can be vertical or "
-"horizontal"
+"Defines orientation of the mirror splitting. Can be vertical or horizontal."
 msgstr "미러 나누기의 방향을 정의합니다. 수직이나 수평이 될 수 있습니다."
 
 #: modules/video_filter/mirror.c:69
@@ -26903,7 +26916,8 @@ msgid "Direction"
 msgstr "방향"
 
 #: modules/video_filter/mirror.c:72
-msgid "Direction of the mirroring"
+#, fuzzy
+msgid "Direction of the mirroring."
 msgstr "미러링의 방향"
 
 #: modules/video_filter/mirror.c:75
@@ -27434,11 +27448,11 @@ msgstr ""
 
 #: modules/video_output/decklink.cpp:76
 #, fuzzy
-msgid "Aspect Ratio of the source picture"
+msgid "Aspect Ratio of the source picture."
 msgstr "모자이크 사진의 투명도."
 
 #: modules/video_output/decklink.cpp:78
-msgid "Active Format Descriptor line."
+msgid "Active Format Descriptor line"
 msgstr ""
 
 #: modules/video_output/decklink.cpp:79
@@ -27446,7 +27460,8 @@ msgid "VBI line on which to output Active Format Descriptor."
 msgstr ""
 
 #: modules/video_output/decklink.cpp:81
-msgid "Picture to display on input signal loss."
+#, fuzzy
+msgid "Picture to display on input signal loss"
 msgstr "입력 신호 손실시 출력할 그림"
 
 #: modules/video_output/decklink.cpp:84
@@ -27499,7 +27514,8 @@ msgid "DecklinkOutput"
 msgstr "덱링크출력"
 
 #: modules/video_output/decklink.cpp:235
-msgid "output module to write to Blackmagic SDI card"
+#, fuzzy
+msgid "Output module to write to Blackmagic SDI card"
 msgstr "블랙매직 SDI 카드에 기록할 출력 모듈"
 
 #: modules/video_output/decklink.cpp:236
@@ -28496,7 +28512,8 @@ msgid "Show 80 bands instead of 20"
 msgstr "20개 대신 80개 밴드 보이기"
 
 #: modules/visualization/visual/visual.c:72
-msgid "More bands for the spectrometer : 80 if enabled else 20."
+#, fuzzy
+msgid "More bands for the spectrometer: 80 if enabled, else 20."
 msgstr "분광계 추가 대역 : 사용하면 80, 아니면 20."
 
 #: modules/visualization/visual/visual.c:74

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-10 02:11+0000\n"
+"POT-Creation-Date: 2017-12-11 02:11+0000\n"
 "PO-Revision-Date: 2017-10-06 11:13+0000\n"
 "Last-Translator: Vikas Hegde <vikashegde82@gmail.com>\n"
 "Language-Team: Kannada (http://www.transifex.com/yaron/vlc-trans/language/"
@@ -8654,7 +8654,7 @@ msgstr "VBI ಸೆರೆಹಿಡಿಯುವ ಸಾಧನ"
 
 #: modules/access/v4l2/v4l2.c:48
 #, fuzzy
-msgid "The device node where VBI data can be read  (for closed captions)."
+msgid "The device node where VBI data can be read (for closed captions)."
 msgstr "The device node where VBI data can be read  (for closed captions) "
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -8666,11 +8666,12 @@ msgid "Video standard (Default, SECAM, PAL, or NTSC)."
 msgstr "Video standard (Default, SECAM, PAL, or NTSC)."
 
 #: modules/access/v4l2/v4l2.c:55
+#, fuzzy
 msgid ""
 "Force the Video4Linux2 video device to use a specific chroma format (eg. "
-"I420 or I422 for raw images, MJPG for M-JPEG compressed input) (Complete "
+"I420 or I422 for raw images, MJPG for M-JPEG compressed input). Complete "
 "list: GREY, I240, RV16, RV15, RV24, RV32, YUY2, YUYV, UYVY, I41N, I422, "
-"I420, I411, I410, MJPG)"
+"I420, I411, I410, MJPG"
 msgstr ""
 "Force the Video4Linux2 video device to use a specific chroma format (eg. "
 "I420 or I422 for raw images, MJPG for M-JPEG compressed input) (Complete "
@@ -8714,7 +8715,8 @@ msgid "Frequency"
 msgstr "ಆವರ್ತನ"
 
 #: modules/access/v4l2/v4l2.c:77
-msgid "Tuner frequency in Hz or kHz (see debug output)"
+#, fuzzy
+msgid "Tuner frequency in Hz or kHz (see debug output)."
 msgstr ""
 "ಸ್ವರಸಂಯೋಜಕದ ಆವರ್ತನ ಹರ್ಟ್ಝ್ ಅಥವ ಕಿಲೊಹರ್ಟ್ಝ್ಗ್ಗಳಲ್ಲಿ (ದೋಷನಿದಾನ ಉತ್ಪಾದನೆಯನ್ನು ನೋಡಿ)"
 
@@ -10651,7 +10653,8 @@ msgid "Output file"
 msgstr "ಉತ್ಪಾದನೆಯ ಕಡತ"
 
 #: modules/audio_output/file.c:109
-msgid "File to which the audio samples will be written to. (\"-\" for stdout"
+#, fuzzy
+msgid "File to which the audio samples will be written to (\"-\" for stdout)."
 msgstr "File to which the audio samples will be written to. (\"-\" for stdout"
 
 #: modules/audio_output/file.c:112
@@ -11598,7 +11601,8 @@ msgid "Encoder Profile"
 msgstr "ಸಂಕೇತಿಕರಿಸಿದ ವಿವರ"
 
 #: modules/codec/fdkaac.c:68
-msgid "Encoder Algorithm to use"
+#, fuzzy
+msgid "Encoder Algorithm to use."
 msgstr "ಬಳಸಬೇಕಾಗಿರುವ ಸಂಕೇತಕ ಕ್ರಮಾವಳಿ "
 
 #: modules/codec/fdkaac.c:70
@@ -11606,7 +11610,8 @@ msgid "Enable spectral band replication"
 msgstr "ರೋಹಿತ ಬ್ಯಾಂಡ್ ನಕಲುಮಾಡುವಿಕೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
 #: modules/codec/fdkaac.c:71
-msgid "This is an optional feature only for the AAC-ELD profile"
+#, fuzzy
+msgid "This is an optional feature only for the AAC-ELD profile."
 msgstr "ಇದು ಒಂದು AAC-ELD ವಿವರಕ್ಕೆ ಮಾತ್ರ ಬಳಸುವ ಐಚ್ಛಿಕ ಲಕ್ಷಣವಾಗಿದೆ"
 
 #: modules/codec/fdkaac.c:73
@@ -11614,7 +11619,9 @@ msgid "VBR Quality"
 msgstr "VBR ಗುಣಮಟ್ಟ"
 
 #: modules/codec/fdkaac.c:74
-msgid "Quality of the VBR Encoding (0=cbr, 1-5 constant quality vbr, 5 is best"
+#, fuzzy
+msgid ""
+"Quality of the VBR Encoding (0=cbr, 1-5 constant vbr quality, 5 is the best)."
 msgstr ""
 "Quality of the VBR Encoding (0=cbr, 1-5 constant quality vbr, 5 is best"
 
@@ -11623,9 +11630,10 @@ msgid "Enable afterburner library"
 msgstr "Afterburner ಗ್ರಂಥಾಲಯವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
 
 #: modules/codec/fdkaac.c:77
+#, fuzzy
 msgid ""
 "This library will produce higher quality audio at the expense of additional "
-"CPU usage (default is enabled)"
+"CPU usage (default is enabled)."
 msgstr ""
 "This library will produce higher quality audio at the expense of additional "
 "CPU usage (default is enabled)"
@@ -11635,9 +11643,10 @@ msgid "Signaling mode of the extension AOT"
 msgstr "Signaling mode of the extension AOT"
 
 #: modules/codec/fdkaac.c:80
+#, fuzzy
 msgid ""
 "1 is explicit for SBR and implicit for PS (default), 2 is explicit "
-"hierarchical"
+"hierarchical."
 msgstr ""
 "1 is explicit for SBR and implicit for PS (default), 2 is explicit "
 "hierarchical"
@@ -12190,7 +12199,7 @@ msgstr "ಪ್ರಸ್ತುತ ನಿದರ್ಶನದ ಹೆಸರು"
 #, fuzzy
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
+"unspecified. Note: If GopRefDist = 1, there are no B-frames used."
 msgstr ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
 "unspecified. Note: If GopRefDist = 1, there are no B- frames used. "
@@ -12200,9 +12209,10 @@ msgid "Target Usage"
 msgstr "ಗುರಿಪಡಿಸಿದ ಉಪಯೋಗ"
 
 #: modules/codec/qsv.c:86
+#, fuzzy
 msgid ""
 "The target usage allow to choose between different trade-offs between "
-"quality and speed. Allowed values are : 'speed', 'balanced' and 'quality'."
+"quality and speed. Allowed values are: 'speed', 'balanced' and 'quality'."
 msgstr ""
 "The target usage allow to choose between different trade-offs between "
 "quality and speed. Allowed values are : 'speed', 'balanced' and 'quality'."
@@ -12214,8 +12224,8 @@ msgstr "ರಕ್ಷಕ ಅಂತರ"
 #: modules/codec/qsv.c:92
 #, fuzzy
 msgid ""
-"For H.264, IdrInterval specifies IDR-frame interval in terms of I- frames; "
-"if IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
+"For H.264, IdrInterval specifies IDR-frame interval in terms of I-frames; if "
+"IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
@@ -12236,7 +12246,7 @@ msgstr "ದರ ನಿಯಂತ್ರಣ ವಿಧಾನ"
 #, fuzzy
 msgid ""
 "The rate control method to use when encoding. Can be one of 'cbr', 'vbr', "
-"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2"
+"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2."
 msgstr ""
 "The rate control method to use when encoding. Can be one of 'crb', 'vbr', "
 "'qp', 'avbr'. 'qp' mode isn't supported for mpeg2"
@@ -12246,9 +12256,10 @@ msgid "Quantization parameter"
 msgstr "I ಪರಿಮಾಣೀಕರಣದ ಅಂಶ "
 
 #: modules/codec/qsv.c:106
+#, fuzzy
 msgid ""
 "Quantization parameter for all types of frames. This parameters sets qpi, "
-"qpp and qpp. It has less precedence than the forementionned parameters. Used "
+"qpp and qpb. It has less precedence than the forementionned parameters. Used "
 "only if rc_method is 'qp'."
 msgstr ""
 "Quantization parameter for all types of frames. This parameters sets qpi, "
@@ -12298,7 +12309,7 @@ msgstr "ಗರಿಷ್ಠ bitrate"
 #: modules/codec/qsv.c:123
 #, fuzzy
 msgid ""
-"Defines the maximum bitrate in Kpbs (1000 bits/s) for VBR rate control "
+"Defines the maximum bitrate in kbps (1000 bits/s) for VBR rate control "
 "method. If not set, this parameter is computed from other sources such as "
 "bitrate, profile, level, etc."
 msgstr ""
@@ -12311,10 +12322,11 @@ msgid "Accuracy of RateControl"
 msgstr "ದರ ನಿಯಂತ್ರಣದ ನಿಖರತೆ"
 
 #: modules/codec/qsv.c:128
+#, fuzzy
 msgid ""
 "Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
-"g. 10 with a bitrate of 800  kpbs means the encoder tries not to  go above "
-"880 kpbs and under  730 kpbs. The targeted accuracy is only reached after a "
+"g. 10 with a bitrate of 800  kbps means the encoder tries not to  go above "
+"880 kbps and under  730 kbps. The targeted accuracy is only reached after a "
 "certained  convergence period. See the convergence parameter"
 msgstr ""
 "Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
@@ -12358,10 +12370,11 @@ msgid "Number of parallel operations"
 msgstr "DWT ಪುನರಾವರ್ತನೆಗಳ ಸಂಖ್ಯೆ"
 
 #: modules/codec/qsv.c:149
+#, fuzzy
 msgid ""
 "Defines the number of parallel encoding operations before we synchronise the "
-"result. Higher  may result on better throughput depending on hardware. MPEG2 "
-"needs at least 1 here."
+"result. Higher numbers may result on better throughput depending on "
+"hardware. MPEG2 needs at least 1 here."
 msgstr ""
 "Defines the number of parallel encoding operations before we synchronise the "
 "result. Higher  may result on better throughput depending on hardware. MPEG2 "
@@ -27128,9 +27141,9 @@ msgid "Mirror orientation"
 msgstr "ಕನ್ನಡಿಯ ನೆಲೆ"
 
 #: modules/video_filter/mirror.c:65
+#, fuzzy
 msgid ""
-"Defines orientation of the mirror splitting.     Can be vertical or "
-"horizontal"
+"Defines orientation of the mirror splitting. Can be vertical or horizontal."
 msgstr ""
 "ಕನ್ನಡಿ ವಿಭಜಿಸುವ ದೃಷ್ಟಿಕೋನವನ್ನು ಸ್ಪಷ್ಟಪಡಿಸುತ್ತದೆ.ಲಂಬವಾಗಿ ಅಥವಾ ಸಮಾನಾಂತರವಾಗಿ ಇರಬಹುದು"
 
@@ -27147,7 +27160,8 @@ msgid "Direction"
 msgstr "ದಿಕ್ಕು"
 
 #: modules/video_filter/mirror.c:72
-msgid "Direction of the mirroring"
+#, fuzzy
+msgid "Direction of the mirroring."
 msgstr "ಪ್ರತಿಬಿಂಬಿಸುವ ದಿಕ್ಕು"
 
 #: modules/video_filter/mirror.c:75
@@ -27678,11 +27692,11 @@ msgstr ""
 
 #: modules/video_output/decklink.cpp:76
 #, fuzzy
-msgid "Aspect Ratio of the source picture"
+msgid "Aspect Ratio of the source picture."
 msgstr "ಮೊಸಾಯಿಕ್ ಚಿತ್ರದ ಪಾರದರ್ಶಕತೆ."
 
 #: modules/video_output/decklink.cpp:78
-msgid "Active Format Descriptor line."
+msgid "Active Format Descriptor line"
 msgstr ""
 
 #: modules/video_output/decklink.cpp:79
@@ -27690,7 +27704,7 @@ msgid "VBI line on which to output Active Format Descriptor."
 msgstr ""
 
 #: modules/video_output/decklink.cpp:81
-msgid "Picture to display on input signal loss."
+msgid "Picture to display on input signal loss"
 msgstr ""
 
 #: modules/video_output/decklink.cpp:84
@@ -27745,7 +27759,8 @@ msgid "DecklinkOutput"
 msgstr "Decklink ಉತ್ಪಾದನೆ"
 
 #: modules/video_output/decklink.cpp:235
-msgid "output module to write to Blackmagic SDI card"
+#, fuzzy
+msgid "Output module to write to Blackmagic SDI card"
 msgstr "Blackmagic SDI ಕಾರ್ಡ್ ಬರೆಯಲು ಉತ್ಪಾದನೆಯ ಘಟಕ"
 
 #: modules/video_output/decklink.cpp:236
@@ -28754,7 +28769,8 @@ msgid "Show 80 bands instead of 20"
 msgstr "20 ಪಟ್ಟಿಗಳ ಬದಲಿಗೆ 80 ತೋರಿಸಿ"
 
 #: modules/visualization/visual/visual.c:72
-msgid "More bands for the spectrometer : 80 if enabled else 20."
+#, fuzzy
+msgid "More bands for the spectrometer: 80 if enabled, else 20."
 msgstr "ವರ್ಣಪಟಲಕ್ಕೆ ಹೆಚ್ಚು ಪಟ್ಟಿಗಳು:ಸಕ್ರಿಯಗೊಳಿಸಿದಲ್ಲಿ. 80 ಇಲ್ಲದ್ದಿದರೆ 20 "
 
 #: modules/visualization/visual/visual.c:74
