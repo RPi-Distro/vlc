@@ -1,9 +1,12 @@
-vlc (3.0.0~rc1-1) UNRELEASED; urgency=medium
+vlc (3.0.0~rc1-1) experimental; urgency=medium
 
   * New upstream release candidate.
   * debian/control: Move Breaks+Replaces to correct package. (Closes: #884063)
+  * debian/:
+    - Mark more plugins only built on linux-any.
+    - Switch libnotify plugin to GTK+ 3.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 11 Dec 2017 09:45:16 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 11 Dec 2017 21:46:02 +0100
 
 vlc (3.0.0~rc1~20171210-2) experimental; urgency=medium
 
