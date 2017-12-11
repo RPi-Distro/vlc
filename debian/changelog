@@ -1,3 +1,9 @@
+vlc (3.0.0~rc1~20171210-3) UNRELEASED; urgency=medium
+
+  * debian/control: Move Breaks+Replaces to correct package. (Closes: #884063)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 11 Dec 2017 09:45:16 +0100
+
 vlc (3.0.0~rc1~20171210-2) experimental; urgency=medium
 
   * debian/rules: Ensure tighter dependencies on libraries.
