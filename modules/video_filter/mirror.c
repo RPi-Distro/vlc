@@ -2,7 +2,7 @@
  * mirror.c : Mirror video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: 719428eabbd81f2297a1b4ba63ea3b37f821e827 $
+ * $Id: f6137c508a4e421fdfcc12eb4479b5d5a6c7dc9f $
  *
  * Authors: Branko Kokanovic <branko.kokanovic@gmail.com>
  *
@@ -62,14 +62,14 @@ static const char *const ppsz_filter_options[] = {
  * Module descriptor
  *****************************************************************************/
 #define ORIENTATION_TEXT N_("Mirror orientation")
-#define ORIENTATION_LONGTEXT N_("Defines orientation of the mirror splitting. \
-    Can be vertical or horizontal" )
+#define ORIENTATION_LONGTEXT N_("Defines orientation of the mirror splitting. " \
+    "Can be vertical or horizontal." )
 static const int pi_orientation_values[] = { 0, 1 };
 static const char *const ppsz_orientation_descriptions[] = {
   N_("Vertical"), N_("Horizontal") };
 
 #define DIRECTION_TEXT N_("Direction")
-#define DIRECTION_LONGTEXT N_("Direction of the mirroring" )
+#define DIRECTION_LONGTEXT N_("Direction of the mirroring." )
 static const int pi_direction_values[] = { 0, 1 };
 static const char *const ppsz_direction_descriptions[] = {
   N_("Left to right/Top to bottom"), N_("Right to left/Bottom to top") };

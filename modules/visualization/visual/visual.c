@@ -2,7 +2,7 @@
  * visual.c : Visualisation system
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: e830efba67ad4510c093be57adc96b14276edf33 $
+ * $Id: 09b2b41e9f52f6348dd8e98c6d99a2b723de7948 $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *
@@ -69,7 +69,7 @@
 
 #define NBBANDS_TEXT N_( "Show 80 bands instead of 20" )
 #define SPNBBANDS_LONGTEXT N_( \
-      "More bands for the spectrometer : 80 if enabled else 20." )
+      "More bands for the spectrometer: 80 if enabled, else 20." )
 
 #define SEPAR_TEXT N_( "Number of blank pixels between bands.")
 

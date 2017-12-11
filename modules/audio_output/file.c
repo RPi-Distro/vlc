@@ -2,7 +2,7 @@
  * file.c : audio output which writes the samples to a file
  *****************************************************************************
  * Copyright (C) 2002 VLC authors and VideoLAN
- * $Id: 915907ab6dc519495f36002940296fc1c2c0336e $
+ * $Id: 6c6c59cfb41f5c82f26fb19760079965a5070ba0 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -106,7 +106,7 @@ static const int format_int[] = {
 };
 
 #define FILE_TEXT N_("Output file")
-#define FILE_LONGTEXT N_("File to which the audio samples will be written to. (\"-\" for stdout")
+#define FILE_LONGTEXT N_("File to which the audio samples will be written to (\"-\" for stdout).")
 
 vlc_module_begin ()
     set_description( N_("File audio output") )

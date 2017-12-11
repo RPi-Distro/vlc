@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 2.2.7\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-10 02:11+0000\n"
+"POT-Creation-Date: 2017-12-11 02:11+0000\n"
 "PO-Revision-Date: 2017-11-16 03:02+0100\n"
 "Last-Translator: Fumio Nakayama <fumio.n6a@gmail.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/yaron/vlc-trans/language/"
@@ -8595,7 +8595,7 @@ msgstr "VBIキャプチャーデバイス"
 
 #: modules/access/v4l2/v4l2.c:48
 #, fuzzy
-msgid "The device node where VBI data can be read  (for closed captions)."
+msgid "The device node where VBI data can be read (for closed captions)."
 msgstr "VBIデータが読み込まれるデバイスノード (クローズドキャプション用)"
 
 #: modules/access/v4l2/v4l2.c:50 modules/stream_out/standard.c:92
@@ -8607,11 +8607,12 @@ msgid "Video standard (Default, SECAM, PAL, or NTSC)."
 msgstr "ビデオ規格を指定します(デフォルト, SECAM, PAL, NTSC)"
 
 #: modules/access/v4l2/v4l2.c:55
+#, fuzzy
 msgid ""
 "Force the Video4Linux2 video device to use a specific chroma format (eg. "
-"I420 or I422 for raw images, MJPG for M-JPEG compressed input) (Complete "
+"I420 or I422 for raw images, MJPG for M-JPEG compressed input). Complete "
 "list: GREY, I240, RV16, RV15, RV24, RV32, YUY2, YUYV, UYVY, I41N, I422, "
-"I420, I411, I410, MJPG)"
+"I420, I411, I410, MJPG"
 msgstr ""
 "特定のクロマフォーマットを使用するためのVideo4Linux2のビデオデバイスを強制指"
 "定します。(例: RAW画像のI420またはI422, MJPGはM-JPEGの圧縮入力) (すべてのリス"
@@ -8653,7 +8654,8 @@ msgid "Frequency"
 msgstr "周波数"
 
 #: modules/access/v4l2/v4l2.c:77
-msgid "Tuner frequency in Hz or kHz (see debug output)"
+#, fuzzy
+msgid "Tuner frequency in Hz or kHz (see debug output)."
 msgstr "チューナーの周波数をHzかkHzで指定します(デバッグ出力参照)"
 
 #: modules/access/v4l2/v4l2.c:78
@@ -10599,7 +10601,8 @@ msgid "Output file"
 msgstr "出力ファイル"
 
 #: modules/audio_output/file.c:109
-msgid "File to which the audio samples will be written to. (\"-\" for stdout"
+#, fuzzy
+msgid "File to which the audio samples will be written to (\"-\" for stdout)."
 msgstr ""
 "出力されるサンプリングされたオーディオファイル名を指定します。(\"-\"は標準出"
 "力を意味します)"
@@ -11553,7 +11556,8 @@ msgid "Encoder Profile"
 msgstr "エンコーダープロファイル"
 
 #: modules/codec/fdkaac.c:68
-msgid "Encoder Algorithm to use"
+#, fuzzy
+msgid "Encoder Algorithm to use."
 msgstr "使用するエンコーダーアルゴリズム"
 
 #: modules/codec/fdkaac.c:70
@@ -11561,7 +11565,8 @@ msgid "Enable spectral band replication"
 msgstr "スペクトルバンドレプリケーションを有効化"
 
 #: modules/codec/fdkaac.c:71
-msgid "This is an optional feature only for the AAC-ELD profile"
+#, fuzzy
+msgid "This is an optional feature only for the AAC-ELD profile."
 msgstr "AAC-ELDプロファイル専用のオプション機能です。"
 
 #: modules/codec/fdkaac.c:73
@@ -11569,7 +11574,9 @@ msgid "VBR Quality"
 msgstr "VBRの品質"
 
 #: modules/codec/fdkaac.c:74
-msgid "Quality of the VBR Encoding (0=cbr, 1-5 constant quality vbr, 5 is best"
+#, fuzzy
+msgid ""
+"Quality of the VBR Encoding (0=cbr, 1-5 constant vbr quality, 5 is the best)."
 msgstr "VBRエンコーディングの品質 (0=cbr, 1-5 確実な品質のvbr, 5は最高)"
 
 #: modules/codec/fdkaac.c:76
@@ -11577,9 +11584,10 @@ msgid "Enable afterburner library"
 msgstr "afterburnerライブラリの有効化"
 
 #: modules/codec/fdkaac.c:77
+#, fuzzy
 msgid ""
 "This library will produce higher quality audio at the expense of additional "
-"CPU usage (default is enabled)"
+"CPU usage (default is enabled)."
 msgstr ""
 "このライブラリはCPUを消費して高品質なオーディオを生成します。 (デフォルトで有"
 "効化)"
@@ -11589,9 +11597,10 @@ msgid "Signaling mode of the extension AOT"
 msgstr "AOTエクステンションのシグナルモード"
 
 #: modules/codec/fdkaac.c:80
+#, fuzzy
 msgid ""
 "1 is explicit for SBR and implicit for PS (default), 2 is explicit "
-"hierarchical"
+"hierarchical."
 msgstr "1は明示的なSBRおよび、暗黙のPS (デフォルト), 2は明示的な階層"
 
 #: modules/codec/fdkaac.c:97
@@ -12148,7 +12157,7 @@ msgstr "GOP (Group of Pictures) 基準距離"
 #, fuzzy
 msgid ""
 "Distance between I- or P- key frames; if it is zero, the GOP structure is "
-"unspecified. Note: If GopRefDist = 1, there are no B- frames used."
+"unspecified. Note: If GopRefDist = 1, there are no B-frames used."
 msgstr ""
 "Iまたは、Pキーフレーム間の距離; 0の場合、GOP構造は未設定となります。メモ: "
 "GopRefDist=1の場合、Bフレームは使用されません。"
@@ -12158,9 +12167,10 @@ msgid "Target Usage"
 msgstr "ターゲット利用量"
 
 #: modules/codec/qsv.c:86
+#, fuzzy
 msgid ""
 "The target usage allow to choose between different trade-offs between "
-"quality and speed. Allowed values are : 'speed', 'balanced' and 'quality'."
+"quality and speed. Allowed values are: 'speed', 'balanced' and 'quality'."
 msgstr ""
 "ターゲット利用量は異なるトレードオフ、品質および、速度を選択することが可能と"
 "なります。使用可能な値は: 'speed', 'balanced'および、'quality'のいずれかで"
@@ -12173,8 +12183,8 @@ msgstr "IDRインターバル"
 #: modules/codec/qsv.c:92
 #, fuzzy
 msgid ""
-"For H.264, IdrInterval specifies IDR-frame interval in terms of I- frames; "
-"if IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
+"For H.264, IdrInterval specifies IDR-frame interval in terms of I-frames; if "
+"IdrInterval=0, then every I-frame is an IDR-frame. If IdrInterval=1, then "
 "every other I-frame is an IDR-frame, etc. For MPEG2, IdrInterval defines "
 "sequence header interval in terms of I-frames. If IdrInterval=N, SDK inserts "
 "the sequence header before every Nth I-frame. If IdrInterval=0 (default), "
@@ -12197,7 +12207,7 @@ msgstr "レート制御方法"
 #, fuzzy
 msgid ""
 "The rate control method to use when encoding. Can be one of 'cbr', 'vbr', "
-"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2"
+"'qp', 'avbr'. 'qp' mode isn't supported for mpeg2."
 msgstr ""
 "レート制御方法はエンコーディング時に使用され、 'crb', 'vbr', 'qp', 'avbr' の"
 "いずれかが使用可能です。MPEG2では'qp'モードはサポートされていません。"
@@ -12207,9 +12217,10 @@ msgid "Quantization parameter"
 msgstr "量子化パラメーター"
 
 #: modules/codec/qsv.c:106
+#, fuzzy
 msgid ""
 "Quantization parameter for all types of frames. This parameters sets qpi, "
-"qpp and qpp. It has less precedence than the forementionned parameters. Used "
+"qpp and qpb. It has less precedence than the forementionned parameters. Used "
 "only if rc_method is 'qp'."
 msgstr ""
 "すべてのタイプのフレームの量子化パラメーター。このパラメータは、rc_method"
@@ -12259,7 +12270,7 @@ msgstr "最大ビットレート"
 #: modules/codec/qsv.c:123
 #, fuzzy
 msgid ""
-"Defines the maximum bitrate in Kpbs (1000 bits/s) for VBR rate control "
+"Defines the maximum bitrate in kbps (1000 bits/s) for VBR rate control "
 "method. If not set, this parameter is computed from other sources such as "
 "bitrate, profile, level, etc."
 msgstr ""
@@ -12272,10 +12283,11 @@ msgid "Accuracy of RateControl"
 msgstr "レート制御の正確性"
 
 #: modules/codec/qsv.c:128
+#, fuzzy
 msgid ""
 "Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
-"g. 10 with a bitrate of 800  kpbs means the encoder tries not to  go above "
-"880 kpbs and under  730 kpbs. The targeted accuracy is only reached after a "
+"g. 10 with a bitrate of 800  kbps means the encoder tries not to  go above "
+"880 kbps and under  730 kbps. The targeted accuracy is only reached after a "
 "certained  convergence period. See the convergence parameter"
 msgstr ""
 "'avbr' (平均可変ビットレート)方法の許容範囲をパーセンテージで指定します。(例"
@@ -12319,10 +12331,11 @@ msgid "Number of parallel operations"
 msgstr "並列処理数"
 
 #: modules/codec/qsv.c:149
+#, fuzzy
 msgid ""
 "Defines the number of parallel encoding operations before we synchronise the "
-"result. Higher  may result on better throughput depending on hardware. MPEG2 "
-"needs at least 1 here."
+"result. Higher numbers may result on better throughput depending on "
+"hardware. MPEG2 needs at least 1 here."
 msgstr ""
 "結果を同期する前の並列処理可能なエンコーディング操作数を定義します。ハード"
 "ウェアの性能に依存して結果は異なります。MPEG2は少なくとも1以上が必要です。"
@@ -27133,9 +27146,9 @@ msgid "Mirror orientation"
 msgstr "ミラーの方向"
 
 #: modules/video_filter/mirror.c:65
+#, fuzzy
 msgid ""
-"Defines orientation of the mirror splitting.     Can be vertical or "
-"horizontal"
+"Defines orientation of the mirror splitting. Can be vertical or horizontal."
 msgstr "ミラー分割の方向(水平、または垂直)を設定します。"
 
 #: modules/video_filter/mirror.c:69
@@ -27151,7 +27164,8 @@ msgid "Direction"
 msgstr "方向"
 
 #: modules/video_filter/mirror.c:72
-msgid "Direction of the mirroring"
+#, fuzzy
+msgid "Direction of the mirroring."
 msgstr "ミラーリングの方向を指定します。"
 
 #: modules/video_filter/mirror.c:75
@@ -27683,11 +27697,11 @@ msgstr ""
 
 #: modules/video_output/decklink.cpp:76
 #, fuzzy
-msgid "Aspect Ratio of the source picture"
+msgid "Aspect Ratio of the source picture."
 msgstr "モザイク画像の透過度"
 
 #: modules/video_output/decklink.cpp:78
-msgid "Active Format Descriptor line."
+msgid "Active Format Descriptor line"
 msgstr ""
 
 #: modules/video_output/decklink.cpp:79
@@ -27695,7 +27709,8 @@ msgid "VBI line on which to output Active Format Descriptor."
 msgstr ""
 
 #: modules/video_output/decklink.cpp:81
-msgid "Picture to display on input signal loss."
+#, fuzzy
+msgid "Picture to display on input signal loss"
 msgstr "入力信号がなくなった場合に表示される画像"
 
 #: modules/video_output/decklink.cpp:84
@@ -27752,7 +27767,8 @@ msgid "DecklinkOutput"
 msgstr "Decklink出力"
 
 #: modules/video_output/decklink.cpp:235
-msgid "output module to write to Blackmagic SDI card"
+#, fuzzy
+msgid "Output module to write to Blackmagic SDI card"
 msgstr "Blackmagic SDIカードへ書き込む出力モジュール"
 
 #: modules/video_output/decklink.cpp:236
@@ -28756,7 +28772,8 @@ msgid "Show 80 bands instead of 20"
 msgstr "20ではなく80バンドを表示"
 
 #: modules/visualization/visual/visual.c:72
-msgid "More bands for the spectrometer : 80 if enabled else 20."
+#, fuzzy
+msgid "More bands for the spectrometer: 80 if enabled, else 20."
 msgstr ""
 "有効化された場合、スペクトロメーターの表示バンド数を80にします。そうでない場"
 "合は20です。"
