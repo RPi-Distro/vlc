@@ -1,0 +1,29 @@
+From: Sebastian Ramacher <sramacher@debian.org>
+Date: Sun, 10 Dec 2017 18:20:06 +0100
+Subject: notify: use GTK+ 3
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+U2lnbmVkLW9mZi1ieTogU2ViYXN0aWFuIFJhbWFjaGVyIDxzcmFtYWNoZXJAZGViaWFuLm9yZz4K
+U2lnbmVkLW9mZi1ieTogUsOpbWkgRGVuaXMtQ291cm1vbnQgPHJlbWlAcmVtbGFiLm5ldD4KKGNo
+ZXJyeSBwaWNrZWQgZnJvbSBjb21taXQgODI5ZDYxNTRiOTRjZjI0ZWRlOWM1MmYwMjg2YTFiMzVh
+NzE3NjllOSkKU2lnbmVkLW9mZi1ieTogUsOpbWkgRGVuaXMtQ291cm1vbnQgPHJlbWlAcmVtbGFi
+Lm5ldD4K
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 0455bd1..5697b15 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -4114,7 +4114,7 @@ AS_IF([test "${enable_osx_notifications}" != "no"], [
+ dnl
+ dnl Libnotify notification plugin
+ dnl
+-PKG_ENABLE_MODULES_VLC([NOTIFY], [], [libnotify gtk+-2.0], [libnotify notification], [auto])
++PKG_ENABLE_MODULES_VLC([NOTIFY], [], [libnotify gtk+-3.0], [libnotify notification], [auto])
+ 
+ dnl
+ dnl  libplacebo support
