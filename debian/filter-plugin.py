@@ -14,7 +14,7 @@ if remove_plugins is not None:
 else:
     remove_plugins = set()
 
-plugin_re = re.compile(r"^(\S*) \[([a-zA-Z1-9._-,]*)\]$")
+plugin_re = re.compile(r"^(\S*) \[([a-zA-Z1-9.,_-]*)\]$")
 
 
 for line in sys.stdin.readlines():
@@ -27,5 +27,5 @@ for line in sys.stdin.readlines():
     path = match.group(1)
     plugins = match.group(2)
     plugins = set(plugins.split(','))
-    if not plugin & remove_plugins:
+    if not plugins & remove_plugins:
         print(path)
