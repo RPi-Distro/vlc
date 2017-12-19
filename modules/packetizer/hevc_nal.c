@@ -309,7 +309,7 @@ struct hevc_slice_segment_header_t
 {
     nal_u6_t nal_type;
     nal_u6_t nuh_layer_id;
-    nal_u3_t temporal_id;
+    nal_u3_t temporal_id_plus1;
     nal_u1_t first_slice_segment_in_pic_flag;
     nal_u1_t no_output_of_prior_pics_flag;
     nal_ue_t slice_pic_parameter_set_id;
@@ -1057,7 +1057,7 @@ bool hevc_get_picture_size( const hevc_sequence_parameter_set_t *p_sps,
 
 uint8_t hevc_get_max_num_reorder( const hevc_video_parameter_set_t *p_vps )
 {
-    return p_vps->vps_max[0/* base layer */].num_reorder_pics;
+    return p_vps->vps_max[p_vps->vps_max_sub_layers_minus1/* HighestTid */].num_reorder_pics;
 }
 
 static inline uint8_t vlc_ceil_log2( uint32_t val )
@@ -1259,8 +1259,8 @@ hevc_slice_segment_header_t * hevc_decode_slice_header( const uint8_t *p_buf, si
         bs_skip( &bs, 1 );
         p_sh->nal_type = bs_read( &bs, 6 );
         p_sh->nuh_layer_id = bs_read( &bs, 6 );
-        p_sh->temporal_id = bs_read( &bs, 3 );
-        if( p_sh->nuh_layer_id > 62 ||
+        p_sh->temporal_id_plus1 = bs_read( &bs, 3 );
+        if( p_sh->nuh_layer_id > 62 || p_sh->temporal_id_plus1 == 0 ||
            !hevc_parse_slice_segment_header_rbsp( &bs, get_matchedxps, priv, p_sh ) )
         {
             hevc_rbsp_release_slice_header( p_sh );
@@ -1454,6 +1454,11 @@ int hevc_compute_picture_order_count( const hevc_sequence_parameter_set_t *p_sps
                                        const hevc_slice_segment_header_t *p_slice,
                                        hevc_poc_ctx_t *p_ctx )
 {
+    struct
+    {
+        int lsb;
+        int msb;
+    } prevPicOrderCnt;
     int pocMSB;
     bool NoRaslOutputFlag;
     bool IsIRAP = ( p_slice->nal_type >= HEVC_NAL_BLA_W_LP &&
@@ -1467,7 +1472,8 @@ int hevc_compute_picture_order_count( const hevc_sequence_parameter_set_t *p_sps
                            p_slice->nal_type == HEVC_NAL_IDR_W_RADL ||
                            p_slice->nal_type == HEVC_NAL_BLA_W_LP ||
                            p_slice->nal_type == HEVC_NAL_BLA_W_RADL ||
-                           p_slice->nal_type == HEVC_NAL_BLA_N_LP);
+                           p_slice->nal_type == HEVC_NAL_BLA_N_LP ||
+                           p_ctx->HandleCraAsBlaFlag );
     }
     else
     {
@@ -1477,22 +1483,25 @@ int hevc_compute_picture_order_count( const hevc_sequence_parameter_set_t *p_sps
     if( p_slice->nal_type == HEVC_NAL_IDR_N_LP ||
         p_slice->nal_type == HEVC_NAL_IDR_W_RADL )
     {
-        p_ctx->prevPicOrderCnt.msb = 0;
-        p_ctx->prevPicOrderCnt.lsb = 0;
+        prevPicOrderCnt.msb = 0;
+        prevPicOrderCnt.lsb = 0;
+    }
+    /* Not an IRAP with NoRaslOutputFlag == 1 */
+    else if( !IsIRAP || !NoRaslOutputFlag )
+    {
+        prevPicOrderCnt.msb = p_ctx->prevTid0PicOrderCnt.msb;
+        prevPicOrderCnt.lsb = p_ctx->prevTid0PicOrderCnt.lsb;
     }
 
-    /* Not an IRAP with NoRaslOutputFlag == 1 */
-    if( !IsIRAP || !NoRaslOutputFlag )
+    if( IsIRAP && NoRaslOutputFlag )
     {
         pocMSB = 0;
-        p_ctx->prevPicOrderCnt.msb = p_ctx->prevTid0PicOrderCnt.msb;
-        p_ctx->prevPicOrderCnt.lsb = p_ctx->prevTid0PicOrderCnt.lsb;
     }
     else
     {
         const unsigned maxPocLSB = 1U << (p_sps->log2_max_pic_order_cnt_lsb_minus4 + 4);
-        pocMSB = p_ctx->prevPicOrderCnt.msb;
-        int64_t orderDiff = p_slice->pic_order_cnt_lsb - p_ctx->prevPicOrderCnt.lsb;
+        pocMSB = prevPicOrderCnt.msb;
+        int64_t orderDiff = (int64_t)p_slice->pic_order_cnt_lsb - prevPicOrderCnt.lsb;
         if( orderDiff < 0 && -orderDiff >= maxPocLSB / 2 )
             pocMSB += maxPocLSB;
         else if( orderDiff > maxPocLSB / 2 )
@@ -1500,7 +1509,7 @@ int hevc_compute_picture_order_count( const hevc_sequence_parameter_set_t *p_sps
     }
 
     /* Set prevTid0Pic for next pic */
-    if( p_slice->temporal_id == 0 &&
+    if( p_slice->temporal_id_plus1 == 1 &&
        !( ( p_slice->nal_type <= HEVC_NAL_RSV_VCL_N14 && p_slice->nal_type % 2 == 0 /* SLNR */ ) ||
           ( p_slice->nal_type >= HEVC_NAL_RADL_N && p_slice->nal_type <= HEVC_NAL_RASL_R ) /* RADL or RASL */ ) )
     {
@@ -1508,8 +1517,7 @@ int hevc_compute_picture_order_count( const hevc_sequence_parameter_set_t *p_sps
         p_ctx->prevTid0PicOrderCnt.lsb = p_slice->pic_order_cnt_lsb;
     }
 
-    p_ctx->prevPicOrderCnt.msb = pocMSB;
-    p_ctx->prevPicOrderCnt.lsb = p_slice->pic_order_cnt_lsb;
+    p_ctx->first_picture = false;
 
     return pocMSB + p_slice->pic_order_cnt_lsb;
 }

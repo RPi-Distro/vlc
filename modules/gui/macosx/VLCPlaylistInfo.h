@@ -2,7 +2,7 @@
  * VLCPlaylistInfo.h: Controller for the codec info panel
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 6a3f1051d4283831aa77c0e5738ddc094b7b0b95 $
+ * $Id: 63f7e7792c6fcd4712b0d0ac0a4345e4fcbdc5cb $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -83,13 +83,6 @@
 @property (readwrite, weak) IBOutlet NSTextField *playedAudioBuffersTextField;
 @property (readwrite, weak) IBOutlet NSTextField *readBytesLabel;
 @property (readwrite, weak) IBOutlet NSTextField *readBytesTextField;
-@property (readwrite, weak) IBOutlet NSTextField *sentBitrateLabel;
-@property (readwrite, weak) IBOutlet NSTextField *sentBitrateTextField;
-@property (readwrite, weak) IBOutlet NSTextField *sentBytesLabel;
-@property (readwrite, weak) IBOutlet NSTextField *sentBytesTextField;
-@property (readwrite, weak) IBOutlet NSTextField *sentPacketsLabel;
-@property (readwrite, weak) IBOutlet NSTextField *sentPacketsTextField;
-@property (readwrite, weak) IBOutlet NSTextField *soutLabel;
 @property (readwrite, weak) IBOutlet NSTextField *videoLabel;
 @property (readwrite, weak) IBOutlet NSTextField *videoDecodedLabel;
 @property (readwrite, weak) IBOutlet NSTextField *videoDecodedTextField;

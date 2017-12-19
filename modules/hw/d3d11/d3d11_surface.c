@@ -217,7 +217,7 @@ static int assert_staging(filter_t *p_filter, picture_sys_t *p_sys)
         /* failed with the this format, try a different one */
         UINT supportFlags = D3D11_FORMAT_SUPPORT_SHADER_LOAD | D3D11_FORMAT_SUPPORT_VIDEO_PROCESSOR_OUTPUT;
         const d3d_format_t *new_fmt =
-                FindD3D11Format( p_device, 0, 0, false, supportFlags );
+                FindD3D11Format( p_device, 0, false, 0, false, supportFlags );
         if (new_fmt && texDesc.Format != new_fmt->formatTexture)
         {
             DXGI_FORMAT srcFormat = texDesc.Format;
@@ -492,8 +492,7 @@ static void D3D11_NV12(filter_t *p_filter, picture_t *src, picture_t *dst)
             lock.RowPitch,
             lock.RowPitch,
         };
-        Copy420_SP_to_SP(dst, plane, pitch,
-                          src->format.i_visible_height + src->format.i_y_offset, &sys->cache);
+        Copy420_SP_to_SP(dst, plane, pitch, desc.Height, &sys->cache);
     } else {
         msg_Err(p_filter, "Unsupported D3D11VA conversion from 0x%08X to NV12", desc.Format);
     }
@@ -580,6 +579,12 @@ static void NV12_D3D11(filter_t *p_filter, picture_t *src, picture_t *dst)
 {
     filter_sys_t *sys = (filter_sys_t*) p_filter->p_sys;
     picture_sys_t *p_sys = dst->p_sys;
+    if (unlikely(p_sys==NULL))
+    {
+        /* the output filter configuration may have changed since the filter
+         * was opened */
+        return;
+    }
 
     D3D11_TEXTURE2D_DESC texDesc;
     ID3D11Texture2D_GetDesc( sys->staging_pic->p_sys->texture[KNOWN_DXGI_INDEX], &texDesc);

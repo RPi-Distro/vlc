@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
  * Copyright (C) 2008-2009 Rémi Denis-Courmont
- * $Id: eae4461006b66d7a9b64f5fac2ba57a37898b72f $
+ * $Id: 4b282bb397462537794a02a7692f40814e37b431 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Daniel Stranger <vlc at schmaller dot de>
@@ -589,12 +589,19 @@ char *vlc_strfinput(input_thread_t *input, const char *s)
                 write_meta(stream, item, vlc_meta_EncodedBy);
                 break;
             case 'f':
-                if (item != NULL && item->p_stats != NULL)
+                if (item != NULL)
                 {
-                    vlc_mutex_lock(&item->p_stats->lock);
-                    vlc_memstream_printf(stream, "%"PRIi64,
+                    vlc_mutex_lock(&item->lock);
+                    if (item->p_stats != NULL)
+                    {
+                        vlc_mutex_lock(&item->p_stats->lock);
+                        vlc_memstream_printf(stream, "%"PRIi64,
                             item->p_stats->i_displayed_pictures);
-                    vlc_mutex_unlock(&item->p_stats->lock);
+                        vlc_mutex_unlock(&item->p_stats->lock);
+                    }
+                    else if (!b_empty_if_na)
+                        vlc_memstream_putc(stream, '-');
+                    vlc_mutex_unlock(&item->lock);
                 }
                 else if (!b_empty_if_na)
                     vlc_memstream_putc(stream, '-');

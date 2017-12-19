@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 83a6455d653a006d91841253a095f8c25bfc7c7b $
+ * $Id: 8d050bdec6e222f95abbaf2d5418d45e9403caa3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -525,18 +525,19 @@ static int ReadICYMeta( stream_t *p_access )
                 psz = strchr( &p[1], ';' );
 
             if( psz ) *psz = '\0';
+            p++;
         }
         else
         {
-            char *psz = strchr( &p[1], ';' );
+            char *psz = strchr( p, ';' );
             if( psz ) *psz = '\0';
         }
 
         if( !p_sys->psz_icy_title ||
-            strcmp( p_sys->psz_icy_title, &p[1] ) )
+            strcmp( p_sys->psz_icy_title, p ) )
         {
             free( p_sys->psz_icy_title );
-            char *psz_tmp = strdup( &p[1] );
+            char *psz_tmp = strdup( p );
             p_sys->psz_icy_title = EnsureUTF8( psz_tmp );
             if( !p_sys->psz_icy_title )
                 free( psz_tmp );

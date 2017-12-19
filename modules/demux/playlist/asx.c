@@ -2,7 +2,7 @@
  * asx.c : ASX playlist format import
  *****************************************************************************
  * Copyright (C) 2005-2013 VLC authors and VideoLAN
- * $Id: 8472cb5d70afcee2ba677a84a6e40ce60e3e3c70 $
+ * $Id: ffb0d63babe2f677d9cc14fa0dd463fbfb7aa841 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -356,16 +356,17 @@ end:
 /// this looks for patterns like &name; &#DEC; or &#xHEX;
 static bool isXmlEncoded(const char* psz_str)
 {
+    assert( psz_str != NULL );
     //look for special characters
     if( strpbrk(psz_str, "<>'\"") != NULL )
         return false;
 
     bool is_escaped = false;
-    while (psz_str != NULL)
+    while( true )
     {
         const char* psz_amp = strchr(psz_str, '&');
         if( psz_amp == NULL )
-            return is_escaped;
+            break;
         const char* psz_end = strchr(psz_amp, ';');
         if(  psz_end == NULL )
             return false;
@@ -413,6 +414,9 @@ static void memstream_puts_xmlencoded(struct vlc_memstream* p_stream, const char
         psz_tmp = strdup( psz_begin );
     else
         psz_tmp = strndup( psz_begin, psz_end - psz_begin );
+
+    if ( psz_tmp == NULL )
+        return;
 
     if( isXmlEncoded( psz_tmp ) )
         vlc_memstream_puts( p_stream, psz_tmp );
@@ -510,10 +514,7 @@ static char* ASXToXML( char* psz_source )
         }
     }
     if( vlc_memstream_close( &stream_out ) != 0 )
-    {
-        free( stream_out.ptr );
         return NULL;
-    }
 
     return stream_out.ptr;
 }

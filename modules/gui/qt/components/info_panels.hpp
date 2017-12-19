@@ -2,7 +2,7 @@
  * info_panels.hpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: ae3eac0ec17350dd30466ee3d7ebf2ab6df1ffd3 $
+ * $Id: 1490425dd3b662bb9f303bd1ae760e8a4f54e5a4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -130,11 +130,6 @@ private:
     QTreeWidgetItem *vdisplayed_stat;
     QTreeWidgetItem *vlost_frames_stat;
     QTreeWidgetItem *vfps_stat;
-
-    QTreeWidgetItem *streaming;
-    QTreeWidgetItem *send_stat;
-    QTreeWidgetItem *send_bytes_stat;
-    QTreeWidgetItem *send_bitrate_stat;
 
     QTreeWidgetItem *audio;
     QTreeWidgetItem *adecoded_stat;

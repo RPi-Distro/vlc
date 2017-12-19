@@ -1,4 +1,4 @@
-Changes between 2.2.8 and 3.0.0-rc1:
+Changes between 2.2.8 and 3.0.0-rc2:
 --------------------------------
 
 Platform support changes:
@@ -56,7 +56,6 @@ Access:
  * Improvements of cookie handling (share cookies between playlist items,
    domain / path matching, Secure cookies)
  * Support DVB-T2 on Windows BDA
- * Screen capture plugin for Wayland display
  * Support depayloading Opus from RTP
  * New UPnP access module, to list directories without infinite recursions
  * SMB/FTP/SFTP accesses can list directories

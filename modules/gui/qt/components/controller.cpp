@@ -2,7 +2,7 @@
  * controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 2a732d1f12f6b30e89fdd1384b4d48d53ae4b7eb $
+ * $Id: 1b910197291ea53b8afcc792741abf3ac2d1abdb $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -800,6 +800,10 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
     b_fullscreen        = false;
     i_hide_timeout      = 1;
     i_screennumber      = -1;
+#ifdef QT5_HAS_WAYLAND
+    b_hasWayland = QGuiApplication::platformName()
+           .startsWith(QLatin1String("wayland"), Qt::CaseInsensitive);
+#endif
 
     vout.clear();
 
@@ -846,7 +850,7 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
     previousPosition = getSettings()->value( "FullScreen/pos" ).toPoint();
     screenRes = getSettings()->value( "FullScreen/screen" ).toRect();
     isWideFSC = getSettings()->value( "FullScreen/wide" ).toBool();
-    i_screennumber = var_InheritInteger( p_intf, "qt-fullscreen-screennumber" );
+    i_screennumber = -1;
 
     CONNECT( this, fullscreenChanged( bool ), THEMIM, changeFullscreen( bool ) );
 }
@@ -869,8 +873,16 @@ void FullscreenControllerWidget::restoreFSC()
         setMinimumWidth( FSC_WIDTH );
         adjustSize();
 
+        if ( targetScreen() < 0 )
+            return;
+
         QRect currentRes = QApplication::desktop()->screenGeometry( targetScreen() );
+#ifdef QT5_HAS_WAYLAND
+        if ( !b_hasWayland )
+            windowHandle()->setScreen(QGuiApplication::screens()[targetScreen()]);
+#else
         windowHandle()->setScreen(QGuiApplication::screens()[targetScreen()]);
+#endif
 
         if( currentRes == screenRes &&
             QApplication::desktop()->screen()->geometry().contains( previousPosition, true ) )
@@ -983,6 +995,13 @@ void FullscreenControllerWidget::toggleFullwidth()
 
     restoreFSC();
 }
+
+
+void FullscreenControllerWidget::setTargetScreen(int screennumber)
+{
+    i_screennumber = screennumber;
+}
+
 
 int FullscreenControllerWidget::targetScreen()
 {

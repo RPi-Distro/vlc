@@ -246,15 +246,16 @@ typedef struct
     {
         int lsb;
         int msb;
-    } prevPicOrderCnt, prevTid0PicOrderCnt;
+    } prevTid0PicOrderCnt;
 
+    bool HandleCraAsBlaFlag;
     bool first_picture; /* Must be set on start or on NAL_EOS */
 } hevc_poc_ctx_t;
 
 static inline void hevc_poc_cxt_init( hevc_poc_ctx_t *p_ctx )
 {
-    p_ctx->prevPicOrderCnt.lsb = 0;
-    p_ctx->prevPicOrderCnt.msb = 0;
+    p_ctx->prevTid0PicOrderCnt.lsb = 0;
+    p_ctx->prevTid0PicOrderCnt.msb = 0;
     p_ctx->first_picture = true;
 }
 

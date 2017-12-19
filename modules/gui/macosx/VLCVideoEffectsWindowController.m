@@ -2,7 +2,7 @@
  * VLCVideoEffectsWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2015 Felix Paul Kühne
- * $Id: d9d8b1a04f926d9150febba1ce072af653b767a1 $
+ * $Id: e5ef7e18326440df0ede8a8ba7a48640d7bb2bc2 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -34,11 +34,6 @@
 #define getWidgetFloatValue(w)  ((vlc_value_t){ .f_float = [w floatValue] })
 #define getWidgetStringValue(w) ((vlc_value_t){ .psz_string = (char *)[[w stringValue] UTF8String] })
 
-@interface VLCVideoEffectsWindowController()
-{
-    NSInteger i_old_profile_index;
-}
-@end
 
 #pragma mark -
 #pragma mark Initialization
@@ -47,42 +42,63 @@
 
 + (void)initialize
 {
-    NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:[NSArray arrayWithObject:@";;;0;1.000000;1.000000;1.000000;1.000000;0.050000;16;2.000000;OTA=;4;4;16711680;20;15;120;Z3JhZGllbnQ=;1;0;16711680;6;80;VkxD;-1;;-1;255;2;3;3"], @"VideoEffectProfiles",
-                                 [NSArray arrayWithObject:_NS("Default")], @"VideoEffectProfileNames", nil];
+    /*
+     * Video effects profiles starting with 3.0:
+     * - Index 0 is assumed to be the default profile from previous versions
+     * - Index 0 from settings is never read or written anymore starting with 3.0, as the Default profile
+     *   is not persisted anymore.
+     */
+
+    NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 [NSArray arrayWithObject:[VLCVideoEffectsWindowController defaultProfileString]], @"VideoEffectProfiles",
+                                 [NSArray arrayWithObject:_NS("Default")], @"VideoEffectProfileNames",
+                                 nil];
     [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
+}
+
++ (NSString *)defaultProfileString
+{
+    return @";;;0;1.000000;1.000000;1.000000;1.000000;0.050000;16;2.000000;OTA=;4;4;16711680;20;15;120;Z3JhZGllbnQ=;1;0;16711680;6;80;VkxD;-1;;-1;255;2;3;3;0;-180.000000";
 }
 
 - (id)init
 {
     self = [super initWithWindowNibName:@"VideoEffects"];
     if (self) {
-        i_old_profile_index = -1;
-
         self.popupPanel = [[VLCPopupPanelController alloc] init];
         self.textfieldPanel = [[VLCTextfieldPanelController alloc] init];
-    }
 
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([defaults boolForKey:@"VideoEffectApplyProfileOnStartup"]) {
-        [self resetValues];
-        [self loadProfile];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        if ([defaults boolForKey:@"VideoEffectApplyProfileOnStartup"]) {
+            // This does not reset the UI (which does not exist yet), but it initalizes needed playlist vars
+            [self resetValues];
+
+            [self loadProfile];
+        } else {
+            [self saveCurrentProfileIndex:0];
+        }
+
     }
-    else
-        [defaults setInteger:0 forKey:@"VideoEffectSelectedProfile"];
 
     return self;
 }
 
+/// Loads values from profile into variables
 - (void)loadProfile
 {
     intf_thread_t *p_intf = getIntf();
     playlist_t *p_playlist = pl_Get(p_intf);
     VLCCoreInteraction *vci_si = [VLCCoreInteraction sharedInstance];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSUInteger profile = [defaults integerForKey:@"VideoEffectSelectedProfile"];
+    NSInteger profileIndex = [self currentProfileIndex];
 
-    /* fetch preset */
-    NSArray *items = [[[defaults objectForKey:@"VideoEffectProfiles"] objectAtIndex:profile] componentsSeparatedByString:@";"];
+    NSString *profileString;
+    if (profileIndex == 0)
+        profileString = [VLCVideoEffectsWindowController defaultProfileString];
+    else
+        profileString = [[defaults objectForKey:@"VideoEffectProfiles"] objectAtIndex:profileIndex];
+
+    NSArray *items = [profileString componentsSeparatedByString:@";"];
 
     // version 1 of profile string has 32 entries
     if ([items count] < 32) {
@@ -165,9 +181,6 @@
         hueValue.f_float -= 180;
     }
     [vci_si setVideoFilterProperty: "hue" forFilter: "adjust" withValue: hueValue];
-
-    [defaults setInteger:profile forKey:@"VideoEffectSelectedProfile"];
-    [defaults synchronize];
 }
 
 - (void)windowDidLoad
@@ -338,6 +351,26 @@
 #pragma mark -
 #pragma mark internal functions
 
+- (void)saveCurrentProfileIndex:(NSInteger)index
+{
+    [[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"VideoEffectSelectedProfile"];
+}
+
+- (NSInteger)currentProfileIndex
+{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"VideoEffectSelectedProfile"];
+}
+
+/// Returns the list of profile names (omitting the Default entry)
+- (NSArray *)nonDefaultProfileNames
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+    NSMutableArray *names = [[defaults stringArrayForKey:@"VideoEffectProfileNames"] mutableCopy];
+    [names removeObjectAtIndex:0];
+    return [names copy];
+}
+
 -(void)inputChangedEvent:(NSNotification *)o_notification
 {
     // reset crop values when input changed
@@ -352,22 +385,25 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [_profilePopup removeAllItems];
 
-    NSArray *profileNames = [defaults objectForKey:@"VideoEffectProfileNames"];
-    [_profilePopup addItemsWithTitles:profileNames];
+    // Ignore "Default" index 0 from settings
+    [_profilePopup addItemWithTitle:_NS("Default")];
+
+    [_profilePopup addItemsWithTitles:[self nonDefaultProfileNames]];
 
     [[_profilePopup menu] addItem:[NSMenuItem separatorItem]];
     [_profilePopup addItemWithTitle:_NS("Duplicate current profile...")];
     [[_profilePopup lastItem] setTarget: self];
     [[_profilePopup lastItem] setAction: @selector(addProfile:)];
 
-    if ([profileNames count] > 1) {
+    if ([[self nonDefaultProfileNames] count] > 0) {
         [_profilePopup addItemWithTitle:_NS("Organize profiles...")];
         [[_profilePopup lastItem] setTarget: self];
         [[_profilePopup lastItem] setAction: @selector(removeProfile:)];
     }
 
-    [_profilePopup selectItemAtIndex:[defaults integerForKey:@"VideoEffectSelectedProfile"]];
-    if (i_old_profile_index || [defaults integerForKey:@"VideoEffectSelectedProfile"])
+    [_profilePopup selectItemAtIndex: [self currentProfileIndex]];
+    // Loading only non-default profiles ensures that vlcrc or command line settings are not overwritten
+    if ([self currentProfileIndex] > 0)
         [self profileSelectorAction:self];
 }
 
@@ -389,9 +425,11 @@
         msg_Err(p_intf, "%s variable is of an unsupported type (%d)", psz_option, i_type);
         return;
     }
+
     if (var_Create(p_playlist, psz_option, i_type | VLC_VAR_DOINHERIT) ||
-        var_GetChecked(p_playlist, psz_option, i_type, &val))
+        var_GetChecked(p_playlist, psz_option, i_type, &val)) {
         return;
+    }
 
     if (i_type == VLC_VAR_BOOL || i_type == VLC_VAR_INTEGER)
     {
@@ -437,6 +475,7 @@
     [widget setEnabled: b_state];
 }
 
+/// Sets widget values based on variables
 - (void)resetValues
 {
     intf_thread_t *p_intf = getIntf();
@@ -659,32 +698,43 @@
 
 - (void)saveCurrentProfile
 {
-    if (!i_old_profile_index || i_old_profile_index == -1)
-        return;
+    NSInteger currentProfileIndex = [self currentProfileIndex];
 
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    // Do not save default profile
+    if (currentProfileIndex == 0) {
+        return;
+    }
+
     /* fetch all the current settings in a uniform string */
     NSString *newProfile = [self generateProfileString];
 
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableArray *workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"VideoEffectProfiles"]];
-    if (i_old_profile_index >= [workArray count])
+    if (currentProfileIndex >= [workArray count])
         return;
 
-    [workArray replaceObjectAtIndex:i_old_profile_index withObject:newProfile];
+    [workArray replaceObjectAtIndex:currentProfileIndex withObject:newProfile];
     [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"VideoEffectProfiles"];
     [defaults synchronize];
 }
 
 - (void)saveCurrentProfileAtTerminate
 {
-    if (i_old_profile_index)
-        return [self saveCurrentProfile];
+    if ([self currentProfileIndex] > 0) {
+        [self saveCurrentProfile];
+        return;
+    }
 
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *newProfile = [self generateProfileString];
-    if ([newProfile compare:[[defaults objectForKey:@"VideoEffectProfiles"] firstObject]] == NSOrderedSame)
+    // A new "Custom profile" is only created if the user wants to load this as new profile at startup ...
+    if (_applyProfileCheckbox.state == NSOffState)
         return;
 
+    // ... and some settings are changed
+    NSString *newProfile = [self generateProfileString];
+    if ([newProfile compare:[VLCVideoEffectsWindowController defaultProfileString]] == NSOrderedSame)
+        return;
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableArray *workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"VideoEffectProfiles"]];
     [workArray addObject:newProfile];
     [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"VideoEffectProfiles"];
@@ -700,6 +750,8 @@
     workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"VideoEffectProfileNames"]];
     [workArray addObject:newProfileName];
     [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"VideoEffectProfileNames"];
+
+    [self saveCurrentProfileIndex:([workArray count] - 1)];
 
     [defaults synchronize];
 }
@@ -717,8 +769,9 @@
 - (IBAction)profileSelectorAction:(id)sender
 {
     [self saveCurrentProfile];
-    i_old_profile_index = [_profilePopup indexOfSelectedItem];
-    [[NSUserDefaults standardUserDefaults] setInteger:i_old_profile_index forKey:@"VideoEffectSelectedProfile"];
+
+    [self saveCurrentProfileIndex:[_profilePopup indexOfSelectedItem]];
+
     [self loadProfile];
     [self resetValues];
 }
@@ -743,18 +796,18 @@
     __unsafe_unretained typeof(self) _self = self;
     [_textfieldPanel runModalForWindow:self.window completionHandler:^(NSInteger returnCode, NSString *resultingText) {
 
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
+        NSInteger currentProfileIndex = [_self currentProfileIndex];
         if (returnCode != NSOKButton) {
-            [_profilePopup selectItemAtIndex:[defaults integerForKey:@"VideoEffectSelectedProfile"]];
+            [_profilePopup selectItemAtIndex:currentProfileIndex];
             return;
         }
 
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSArray *profileNames = [defaults objectForKey:@"VideoEffectProfileNames"];
 
         // duplicate names are not allowed in the popup control
         if ([resultingText length] == 0 || [profileNames containsObject:resultingText]) {
-            [_profilePopup selectItemAtIndex:[defaults integerForKey:@"VideoEffectSelectedProfile"]];
+            [_profilePopup selectItemAtIndex:currentProfileIndex];
 
             NSAlert *alert = [[NSAlert alloc] init];
             [alert setAlertStyle:NSCriticalAlertStyle];
@@ -776,7 +829,8 @@
         NSMutableArray *workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"VideoEffectProfiles"]];
         [workArray addObject:newProfile];
         [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"VideoEffectProfiles"];
-        [defaults setInteger:[workArray count] - 1 forKey:@"VideoEffectSelectedProfile"];
+
+        [self saveCurrentProfileIndex:([workArray count] - 1)];
 
         workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"VideoEffectProfileNames"]];
         [workArray addObject:resultingText];
@@ -805,24 +859,24 @@
     [_popupPanel setSubTitleString:_NS("Select the preset you would like to remove:")];
     [_popupPanel setOkButtonString:_NS("Remove")];
     [_popupPanel setCancelButtonString:_NS("Cancel")];
-    [_popupPanel setPopupButtonContent:[[NSUserDefaults standardUserDefaults] objectForKey:@"VideoEffectProfileNames"]];
+    [_popupPanel setPopupButtonContent:[self nonDefaultProfileNames]];
 
     // TODO: Change to weak, when dropping 10.7 support
     __unsafe_unretained typeof(self) _self = self;
     [_popupPanel runModalForWindow:self.window completionHandler:^(NSInteger returnCode, NSInteger selectedIndex) {
 
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+        NSInteger activeProfileIndex = [_self currentProfileIndex];
 
         if (returnCode != NSOKButton) {
-            [_profilePopup selectItemAtIndex:[defaults integerForKey:@"VideoEffectSelectedProfile"]];
+            [_profilePopup selectItemAtIndex:activeProfileIndex];
             return;
         }
 
-        if (!selectedIndex) { // TODO: add popup to notify user
-            [_profilePopup selectItemAtIndex:[defaults integerForKey:@"VideoEffectSelectedProfile"]];
-            return;
-        }
+        // Popup panel does not contain the "Default" entry
+        selectedIndex++;
 
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         /* remove selected profile from settings */
         NSMutableArray *workArray = [[NSMutableArray alloc] initWithArray: [defaults objectForKey:@"VideoEffectProfiles"]];
         [workArray removeObjectAtIndex:selectedIndex];
@@ -832,14 +886,12 @@
         [workArray removeObjectAtIndex:selectedIndex];
         [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"VideoEffectProfileNames"];
 
-        if (i_old_profile_index >= selectedIndex)
-            [defaults setInteger:i_old_profile_index - 1 forKey:@"VideoEffectSelectedProfile"];
+        if (activeProfileIndex >= selectedIndex)
+            [self saveCurrentProfileIndex:(activeProfileIndex - 1)];
 
         /* save defaults */
         [defaults synchronize];
 
-        /* do not save deleted profile */
-        i_old_profile_index = -1;
         /* refresh UI */
         [_self resetProfileSelector];
     }];
@@ -893,8 +945,7 @@
 
 - (IBAction)adjustSliderChanged:(id)sender
 {
-    char const *psz_property;
-
+    char const *psz_property = nil;
     if (sender == _adjustBrightnessSlider)
         psz_property = "brightness";
     else if (sender == _adjustContrastSlider)
@@ -905,6 +956,8 @@
         psz_property = "hue";
     else if (sender == _adjustSaturationSlider)
         psz_property = "saturation";
+    assert(psz_property);
+
     [[VLCCoreInteraction sharedInstance] setVideoFilterProperty: psz_property forFilter: "adjust" withValue: getWidgetFloatValue(sender)];
 
     if (sender == _adjustHueSlider)

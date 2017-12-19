@@ -355,6 +355,7 @@ int D3D11CheckDriverVersion(ID3D11Device *d3ddev, UINT vendorId, const struct wd
 
 const d3d_format_t *FindD3D11Format(ID3D11Device *d3ddevice,
                                     vlc_fourcc_t i_src_chroma,
+                                    bool rgb_only,
                                     uint8_t bits_per_channel,
                                     bool allow_opaque,
                                     UINT supportFlags)
@@ -368,6 +369,8 @@ const d3d_format_t *FindD3D11Format(ID3D11Device *d3ddevice,
         if (bits_per_channel && bits_per_channel > output_format->bitsPerChannel)
             continue;
         if (!allow_opaque && is_d3d11_opaque(output_format->fourcc))
+            continue;
+        if (rgb_only && vlc_fourcc_IsYUV(output_format->fourcc))
             continue;
 
         DXGI_FORMAT textureFormat;
@@ -486,7 +489,8 @@ int AllocateTextures( vlc_object_t *obj, d3d11_device_t *d3d_dev,
                      p_chroma_desc->pixel_size * texDesc.Width );
             goto error;
         }
-        if ( mappedResource.RowPitch >=
+        if ( fmt->i_width > 64 &&
+             mappedResource.RowPitch >=
              2* (fmt->i_width * p_chroma_desc->p[0].w.num / p_chroma_desc->p[0].w.den * p_chroma_desc->pixel_size) )
         {
             msg_Err(obj, "Bogus %4.4s pitch detected. %d vs %d", (const char*)&fmt->i_chroma,

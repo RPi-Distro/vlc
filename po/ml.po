@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-11 02:11+0000\n"
+"POT-Creation-Date: 2017-12-19 02:13+0000\n"
 "PO-Revision-Date: 2016-01-14 07:00+0000\n"
 "Last-Translator: Sajeer P <sajeerforyou@gmail.com>\n"
 "Language-Team: Malayalam (http://www.transifex.com/yaron/vlc-trans/language/"
@@ -81,7 +81,7 @@ msgstr "ഹോട്ട്കീസ് ക്രമീകരണങ്ങള്�
 #: modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:404 modules/gui/macosx/VLCOutput.m:92
-#: modules/gui/macosx/VLCPlaylistInfo.m:101
+#: modules/gui/macosx/VLCPlaylistInfo.m:96
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
 #: modules/gui/qt/components/info_panels.cpp:572
 #: modules/gui/qt/components/simple_preferences.cpp:224
@@ -130,7 +130,7 @@ msgid "General settings for audio output modules."
 msgstr "ഓഡിയോ ഔട്ട്പുട്ട് മോഡ്യൂളുകളുടെ പൊതു ക്രമീകരണങ്ങള്‍"
 
 #: include/vlc_config_cat.h:69 src/libvlc-module.c:2009
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:183
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:196
 #: modules/stream_out/transcode/transcode.c:211
 msgid "Miscellaneous"
 msgstr "പലതരത്തിലുള്ളവ"
@@ -149,7 +149,7 @@ msgstr "നിരവധി ഓഡിയോ ക്രമീകരണങ്ങള�
 #: modules/gui/qt/components/info_panels.cpp:573
 #: modules/gui/qt/components/simple_preferences.cpp:226
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
-#: modules/stream_out/chromecast/cast.cpp:106 modules/stream_out/es.c:102
+#: modules/stream_out/chromecast/cast.cpp:107 modules/stream_out/es.c:102
 #: modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
 msgid "Video"
@@ -559,7 +559,7 @@ msgid "Search"
 msgstr "തിരയുക"
 
 #: include/vlc_intf_strings.h:99
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:268
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
 msgid "Waves"
 msgstr "വേവുകള്‍"
 
@@ -684,9 +684,9 @@ msgstr "സ്റ്റീരിയോ"
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
 #: modules/control/gestures.c:85
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:204
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:277
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:299
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:217
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:290
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:312
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
 msgid "Left"
@@ -698,9 +698,9 @@ msgstr "ഇടത്"
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
 #: modules/control/gestures.c:85
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:205
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:279
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:301
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:218
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:292
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:314
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
 msgid "Right"
@@ -1032,10 +1032,9 @@ msgstr "സെക്കന്‍ഡിലുള്ള ബഫര്‍ വലി�
 
 #: src/input/es_out.c:3148 src/input/es_out.c:3151 modules/access/imem.c:93
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
-#: modules/access/screen/wayland.c:452 modules/access/screen/xcb.c:39
-#: modules/access/shm.c:42 modules/access/timecode.c:34
-#: modules/access/v4l2/v4l2.c:70 modules/access/vdr.c:78
-#: modules/access/vnc.c:59 modules/demux/image.c:66
+#: modules/access/screen/xcb.c:39 modules/access/shm.c:42
+#: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
+#: modules/access/vdr.c:78 modules/access/vnc.c:59 modules/demux/image.c:66
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:164
 #: modules/video_filter/fps.c:42
 msgid "Frame rate"
@@ -1144,8 +1143,8 @@ msgstr "ഫുള്‍ ബാസ്സ്"
 #: modules/audio_filter/channel_mixer/mono.c:91
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:275
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:297
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:288
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:310
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
 msgid "Center"
@@ -1969,9 +1968,9 @@ msgstr ""
 
 #: src/libvlc-module.c:295 src/libvlc-module.c:368 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:83
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:203
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:303
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:216
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:294
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:316
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
 msgid "Top"
@@ -1979,9 +1978,9 @@ msgstr "ടോപ്"
 
 #: src/libvlc-module.c:295 src/libvlc-module.c:368 modules/codec/dvbsub.c:102
 #: modules/codec/zvbi.c:83
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:283
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:305
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:219
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:296
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:318
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
 msgid "Bottom"
@@ -1989,8 +1988,8 @@ msgstr "താഴ്ഭാഗം"
 
 #: src/libvlc-module.c:296 src/libvlc-module.c:369 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:84
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:298
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:320
 #: modules/spu/audiobargraph_v.c:66 modules/spu/logo.c:81
 #: modules/spu/marq.c:130 modules/spu/mosaic.c:171 modules/spu/rss.c:172
 msgid "Top-Left"
@@ -1998,8 +1997,8 @@ msgstr "ഇടത് മുകളില്‍"
 
 #: src/libvlc-module.c:296 src/libvlc-module.c:369 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:84
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:300
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:322
 #: modules/spu/audiobargraph_v.c:66 modules/spu/logo.c:81
 #: modules/spu/marq.c:130 modules/spu/mosaic.c:171 modules/spu/rss.c:172
 msgid "Top-Right"
@@ -2007,8 +2006,8 @@ msgstr "വലത് മുകളില്‍"
 
 #: src/libvlc-module.c:296 src/libvlc-module.c:369 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:84
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:289
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:311
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:302
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:324
 #: modules/spu/audiobargraph_v.c:66 modules/spu/logo.c:81
 #: modules/spu/marq.c:130 modules/spu/mosaic.c:171 modules/spu/rss.c:172
 msgid "Bottom-Left"
@@ -2016,8 +2015,8 @@ msgstr "താഴെ ഇടത്"
 
 #: src/libvlc-module.c:296 src/libvlc-module.c:369 modules/codec/dvbsub.c:103
 #: modules/codec/zvbi.c:84
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:291
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:313
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:304
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:326
 #: modules/spu/audiobargraph_v.c:66 modules/spu/logo.c:81
 #: modules/spu/marq.c:130 modules/spu/mosaic.c:171 modules/spu/rss.c:172
 msgid "Bottom-Right"
@@ -2524,10 +2523,12 @@ msgstr ""
 #: modules/access/dshow/dshow.cpp:2081 modules/audio_output/alsa.c:767
 #: modules/audio_output/directsound.c:1031 modules/codec/avcodec/avcodec.c:50
 #: modules/demux/adaptive/adaptive.cpp:97
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:85
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:320
 #: modules/gui/macosx/VLCMainMenu.m:592
 #: modules/gui/macosx/VLCSimplePrefsController.m:649
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:51
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:389
 #: modules/gui/macosx/prefs_widgets.m:1217
 #: modules/gui/macosx/prefs_widgets.m:1274
 #: modules/gui/qt/components/preferences_widgets.cpp:546
@@ -2537,7 +2538,7 @@ msgid "Default"
 msgstr "സഹജമായ"
 
 #: src/libvlc-module.c:544
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:223
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:214
 #: modules/gui/macosx/VLCMainWindow.m:1004
 #: modules/gui/qt/components/extended_panels.cpp:928
 msgid "Enable"
@@ -3892,7 +3893,7 @@ msgstr ""
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr "സാര്‍വ വി‌എല്‍‌സി കീ ചേര്‍ക്കലുകളുടെ സജ്ജീകരണങ്ങളാണ് ഇവ, \"ഹോട്ട്കീസ്\" എന്നറിയപ്പെടുന്നു."
 
-#: src/libvlc-module.c:1208 modules/gui/macosx/VLCMain+OldPrefs.m:103
+#: src/libvlc-module.c:1208 modules/gui/macosx/VLCMain+OldPrefs.m:115
 msgid "Ignore"
 msgstr "അവഗണിക്കുക"
 
@@ -4060,8 +4061,8 @@ msgstr "പ്ലേബാക്ക് സ്റ്റോപ്പ് ചെയ�
 
 #: src/libvlc-module.c:1246 modules/gui/macosx/VLCControlsBarCommon.m:75
 #: modules/gui/macosx/VLCFSPanelController.m:130
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:273
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:295
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:286
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:308
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
 msgid "Position"
 msgstr "സ്ഥാനം"
@@ -5208,9 +5209,8 @@ msgstr "%.1f GiB"
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: src/misc/update.c:486 modules/gui/macosx/VLCPlaylistInfo.m:148
-#: modules/gui/macosx/VLCPlaylistInfo.m:150
-#: modules/gui/macosx/VLCPlaylistInfo.m:160
+#: src/misc/update.c:486 modules/gui/macosx/VLCPlaylistInfo.m:143
+#: modules/gui/macosx/VLCPlaylistInfo.m:145
 #, c-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
@@ -5231,10 +5231,10 @@ msgstr "റൈറ്റ് ചെയ്യാനായി  \"%s\" തുറക�
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
 #: modules/demux/avi/avi.c:2702
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:479
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:788
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:834
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:511
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:569
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:823
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:869
 #: modules/gui/macosx/VLCBookmarksWindowController.m:89
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:153
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:182
@@ -5252,8 +5252,8 @@ msgstr "റൈറ്റ് ചെയ്യാനായി  \"%s\" തുറക�
 #: modules/gui/macosx/VLCSimplePrefsController.m:371
 #: modules/gui/macosx/VLCSimplePrefsController.m:813
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:50
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:739
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:807
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:792
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:861
 #: modules/gui/macosx/prefs.m:189
 #: modules/gui/qt/components/open_panels.cpp:1360
 #: modules/gui/qt/components/preferences_widgets.cpp:1428
@@ -6009,7 +6009,7 @@ msgstr "ഓട്ടോസ്കെയില്‍ വീഡിയോ"
 
 #: src/video_output/vout_intf.c:203 modules/gui/macosx/VLCMainMenu.m:429
 #: modules/gui/macosx/VLCMainMenu.m:430
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:180
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:193
 #: modules/video_filter/croppadd.c:87
 msgid "Crop"
 msgstr "മുറിക്കുക"
@@ -7631,7 +7631,7 @@ msgstr "ഒരു ഓഡിയോ പ്രാഥമിക സ്ട്രീമ
 
 #: modules/access/imem.c:83 modules/access/v4l2/v4l2.c:65
 #: modules/demux/rawvid.c:47
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:247
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:238
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
 #: modules/gui/qt/components/extended_panels.cpp:1297 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
@@ -7699,7 +7699,7 @@ msgid "Address of the release callback function"
 msgstr "റിലീസ് കോള്‍ബാക്ക് ഫങ്ഷന്റെ അഡ്രസ്സ്"
 
 #: modules/access/imem.c:113
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:244
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:235
 #: modules/gui/qt/components/extended_panels.cpp:1296
 msgid "Size"
 msgstr "വലുപ്പം"
@@ -8269,33 +8269,27 @@ msgstr ""
 "മുന്‍നിര്‍വചിച്ച ഉയരം പ്രകാരമുള്ള സ്ക്രീനിനെ ഭാഗങ്ങള്‍ ആക്കാന്‍ തുണ്ടുകള്‍ ആക്കുന്നതുവഴി പിടിച്ചെടുക്കല്‍ "
 "ഉത്തമീകരിക്കുക (16 നല്ല ഒരു മൂല്യം ആകാം, കൂടാതെ 0 എന്നുവെച്ചാല്‍ പ്രവര്‍ത്തനരഹിതമാക്കുക)"
 
-#: modules/access/screen/screen.c:55 modules/access/screen/wayland.c:460
-#: modules/access/screen/xcb.c:47
+#: modules/access/screen/screen.c:55 modules/access/screen/xcb.c:47
 msgid "Region top row"
 msgstr "റീജിയണ്‍ മുകളിലത്തെ വരി"
 
-#: modules/access/screen/screen.c:57 modules/access/screen/wayland.c:462
-#: modules/access/screen/xcb.c:49
+#: modules/access/screen/screen.c:57 modules/access/screen/xcb.c:49
 msgid "Ordinate of the capture region in pixels."
 msgstr "പിടിച്ചെടുത്ത ഭാഗങ്ങളുടെ കൊടിരേഖ പിക്സലില്‍"
 
-#: modules/access/screen/screen.c:59 modules/access/screen/wayland.c:456
-#: modules/access/screen/xcb.c:43
+#: modules/access/screen/screen.c:59 modules/access/screen/xcb.c:43
 msgid "Region left column"
 msgstr "റീജ്യണ്‍ ഇടത് നിര"
 
-#: modules/access/screen/screen.c:61 modules/access/screen/wayland.c:458
-#: modules/access/screen/xcb.c:45
+#: modules/access/screen/screen.c:61 modules/access/screen/xcb.c:45
 msgid "Abscissa of the capture region in pixels."
 msgstr "പിടിച്ചെടുത്ത ഭാഗങ്ങളുടെ അബ്സ്കിസ്സ പിക്സലില്‍"
 
-#: modules/access/screen/screen.c:63 modules/access/screen/wayland.c:464
-#: modules/access/screen/xcb.c:51
+#: modules/access/screen/screen.c:63 modules/access/screen/xcb.c:51
 msgid "Capture region width"
 msgstr "ക്യാപ്ച്ചര്‍ റീജ്യണ്‍ വീതി"
 
-#: modules/access/screen/screen.c:65 modules/access/screen/wayland.c:468
-#: modules/access/screen/xcb.c:55
+#: modules/access/screen/screen.c:65 modules/access/screen/xcb.c:55
 msgid "Capture region height"
 msgstr "ക്യാപ്ച്ചര്‍ റീജ്യണ്‍ ഉയരം"
 
@@ -8338,8 +8332,8 @@ msgstr "സ്ക്രീനിന്റെ സൂചിക (1,2,3. ...) . ഡ�
 msgid "Screen Input"
 msgstr "സ്ക്രീന്‍ ഇന്‍പുട്ട്"
 
-#: modules/access/screen/screen.c:99 modules/access/screen/wayland.c:473
-#: modules/access/screen/xcb.c:70 modules/gui/macosx/VLCMainMenu.m:600
+#: modules/access/screen/screen.c:99 modules/access/screen/xcb.c:70
+#: modules/gui/macosx/VLCMainMenu.m:600
 #: modules/gui/macosx/VLCOpenWindowController.m:207
 #: modules/gui/macosx/VLCOpenWindowController.m:209
 #: modules/gui/macosx/VLCOpenWindowController.m:480
@@ -8348,23 +8342,18 @@ msgstr "സ്ക്രീന്‍ ഇന്‍പുട്ട്"
 msgid "Screen"
 msgstr "സ്ക്രീന്‍"
 
-#: modules/access/screen/wayland.c:454 modules/access/screen/xcb.c:41
-#: modules/access/shm.c:44 modules/access/vnc.c:60
+#: modules/access/screen/xcb.c:41 modules/access/shm.c:44
+#: modules/access/vnc.c:60
 msgid "How many times the screen content should be refreshed per second."
 msgstr "ഒരു സെക്കന്‍ഡില്‍ എത്ര തവണ സ്ക്രീനിന്റെ ഉള്ളടക്കം വീണ്ടും പുതുക്കണം."
 
-#: modules/access/screen/wayland.c:466 modules/access/screen/xcb.c:53
+#: modules/access/screen/xcb.c:53
 msgid "Pixel width of the capture region, or 0 for full width"
 msgstr "പിടിച്ചെടുത്ത ഭാഗങ്ങളുടെ പിക്സല്‍ വീതി, അല്ലെങ്കില്‍ മുഴുവന്‍ വീതിക്ക് 0"
 
-#: modules/access/screen/wayland.c:470 modules/access/screen/xcb.c:57
+#: modules/access/screen/xcb.c:57
 msgid "Pixel height of the capture region, or 0 for full height"
 msgstr "പിടിച്ചെടുത്ത ഭാഗങ്ങളുടെ പിക്സല്‍ ഉയരം, അല്ലെങ്കില്‍ മുഴുവന്‍ ഉയരത്തിന് 0"
-
-#: modules/access/screen/wayland.c:474
-#, fuzzy
-msgid "Screen capture (with Wayland)"
-msgstr "സ്ക്രീന്‍ ക്യാപ്ച്ചര്‍ ( X11/XCBയുമായി)"
 
 #: modules/access/screen/xcb.c:71
 msgid "Screen capture (with X11/XCB)"
@@ -8657,7 +8646,7 @@ msgid "Reset controls to defaults."
 msgstr "കണ്‍ട്രോളുകള്‍ സഹജമായവയിലേക്ക് റീസെറ്റ് ചെയ്യുക."
 
 #: modules/access/v4l2/v4l2.c:84
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:192
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:205
 msgid "Brightness"
 msgstr "തെളിച്ചം"
 
@@ -8674,7 +8663,7 @@ msgid "Automatically adjust the picture brightness."
 msgstr "ചിത്ര ബ്രൈറ്റ്നെസ്സ് സ്വമേധയാ അഡ്ജസ്റ്റ് ചെയ്യുക."
 
 #: modules/access/v4l2/v4l2.c:89
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:191
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:204
 msgid "Contrast"
 msgstr "കോണ്‍ട്രാസ്റ്റ്"
 
@@ -8683,8 +8672,8 @@ msgid "Picture contrast or luma gain."
 msgstr "ചിത്ര കോണ്ട്രാസ്റ്റ് അല്ലേല്‍ ലുമ നേട്ടം."
 
 #: modules/access/v4l2/v4l2.c:91
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:194
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:240
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:207
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:253
 msgid "Saturation"
 msgstr "സാച്യുറേഷന്‍"
 
@@ -8693,7 +8682,7 @@ msgid "Picture saturation or chroma gain."
 msgstr "പിക്ച്ചര്‍ സാച്യുറേഷന്‍ അല്ലേല്‍ ക്രോമ നേട്ടം."
 
 #: modules/access/v4l2/v4l2.c:93
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:190
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:203
 msgid "Hue"
 msgstr "ഹ്യൂ"
 
@@ -8746,7 +8735,7 @@ msgid "Blue chroma balance."
 msgstr "നീല ക്രോമ ബാലന്‍സ്"
 
 #: modules/access/v4l2/v4l2.c:111
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:195
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:208
 msgid "Gamma"
 msgstr "ഗാമ"
 
@@ -8874,7 +8863,7 @@ msgid "Black & white"
 msgstr "കറുപ്പും & വെളുപ്പും"
 
 #: modules/access/v4l2/v4l2.c:164
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:242
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:255
 #: modules/video_filter/sepia.c:66
 msgid "Sepia"
 msgstr "സെപിയ"
@@ -9621,7 +9610,7 @@ msgid "Dolby Surround decoder"
 msgstr "ഡോള്‍ബി സറൗണ്ട് ഡീക്കോഡര്‍"
 
 #: modules/audio_filter/channel_mixer/headphone.c:53
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:255
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:246
 msgid ""
 "This effect gives you the feeling that you are standing in a room with a "
 "complete 7.1 speaker set when using only a headphone, providing a more "
@@ -9839,7 +9828,7 @@ msgid "Level of input signal"
 msgstr "ഇന്‍പുട്ട് സിഗ്നല്‍ നില"
 
 #: modules/audio_filter/compressor.c:155
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:233
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:224
 #: modules/gui/qt/components/extended_panels.cpp:1274
 msgid "RMS/peak"
 msgstr "ആര്‍എംഎസ്/പീക്ക്"
@@ -9877,7 +9866,7 @@ msgid "Set the threshold level in dB."
 msgstr "അതിര് നില ഡി‌ബിയില്‍ സജീകരിക്കുക (-30 ... 0)."
 
 #: modules/audio_filter/compressor.c:167
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:237
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:228
 #: modules/gui/qt/components/extended_panels.cpp:1278
 msgid "Ratio"
 msgstr "റേഷ്യോ"
@@ -9888,7 +9877,7 @@ msgid "Set the ratio (n:1)."
 msgstr "അനുപാതം സജ്ജീകരിക്കുക (n:1) (1 ... 20)."
 
 #: modules/audio_filter/compressor.c:170
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:238
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:229
 msgid "Knee radius"
 msgstr "നീ റേഡിയസ്"
 
@@ -9898,7 +9887,7 @@ msgid "Set the knee radius in dB."
 msgstr "നീ ആരം ഡി‌ബിയില്‍ സജീകരിക്കുക  (1 ... 10)."
 
 #: modules/audio_filter/compressor.c:173
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:239
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:230
 msgid "Makeup gain"
 msgstr "മേക്കപ്പ് നേട്ടം"
 
@@ -9907,7 +9896,7 @@ msgid "Set the makeup gain in dB (0 ... 24)."
 msgstr "ഡി‌ബിയിലുള്ള മേക്അപ്പ് നേട്ടം സജ്ജീകരിക്കുക (0 . . . 24)."
 
 #: modules/audio_filter/compressor.c:177
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:280
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:271
 #: modules/gui/qt/dialogs/extended.cpp:71
 msgid "Compressor"
 msgstr "കംപ്രസ്സര്‍"
@@ -9963,7 +9952,7 @@ msgid "Two pass"
 msgstr "രണ്ട് പാസ്"
 
 #: modules/audio_filter/equalizer.c:73
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:225
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:216
 msgid "Filter the audio twice. This provides a more intense effect."
 msgstr "ഓഡിയോയേ രണ്ടു പ്രാവശ്യം ഫില്‍റ്റര്‍ ചെയ്യുക. ഇത് കൂടുതല്‍ ഗംഭീര പ്രതീതി നല്കും."
 
@@ -9972,7 +9961,7 @@ msgid "Global gain"
 msgstr "ആഗോള്‍ നേട്ടം"
 
 #: modules/audio_filter/equalizer.c:77
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:228
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:219
 msgid "Set the global gain in dB (-20 ... 20)."
 msgstr "സാര്‍വലൌകിക നേട്ടം ഡി‌ബിയില്‍ സജ്ജീകരിക്കുക (-20 ... 20)."
 
@@ -9981,7 +9970,7 @@ msgid "Equalizer with 10 bands"
 msgstr "10 ബാന്‍ഡുകളോടു കൂടിയ ഇക്വലൈസര്‍"
 
 #: modules/audio_filter/equalizer.c:81
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:279
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:270
 #: modules/gui/qt/dialogs/extended.cpp:67 share/lua/http/index.html:219
 msgid "Equalizer"
 msgstr "ഇക്വലൈസര്‍"
@@ -10075,12 +10064,12 @@ msgid "Gain control filter"
 msgstr "ഗെയിന്‍ കണ്‍ട്രോള്‍ ഫില്‍റ്റര്‍"
 
 #: modules/audio_filter/karaoke.c:33 modules/demux/xiph_metadata.h:51
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:268
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:259
 msgid "Karaoke"
 msgstr "കരോക്കേ"
 
 #: modules/audio_filter/karaoke.c:34
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:269
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:260
 msgid "Simple Karaoke filter"
 msgstr "സാധാരണ കരോക്കേ ഫില്‍റ്റര്‍"
 
@@ -10103,7 +10092,7 @@ msgid "Maximal volume level"
 msgstr "കൂടിയ വോള്യം നില"
 
 #: modules/audio_filter/normvol.c:72
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:263
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:254
 msgid ""
 "If the average power over the last N buffers is higher than this value, the "
 "volume will be normalized. This value is a positive floating point number. A "
@@ -10114,7 +10103,7 @@ msgstr ""
 "ഇടക്കുള്ള ഒരു മൂല്യം പര്യാപ്തമായി കാണപ്പെടും."
 
 #: modules/audio_filter/normvol.c:78 modules/audio_filter/normvol.c:79
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:262
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:253
 msgid "Volume normalizer"
 msgstr "വോള്യം നോര്‍മലൈസര്‍"
 
@@ -10253,12 +10242,12 @@ msgid "Audio pitch changer"
 msgstr "ഓഡിയോ ഔട്ട്പുട്ട് ചാനലുകള്‍"
 
 #: modules/audio_filter/scaletempo.c:55
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:271
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:262
 msgid "Audio tempo scaler synched with rate"
 msgstr "തോതിനോട് സമന്വയിച്ച ഓഡിയോ താള സ്കെയിലര്‍"
 
 #: modules/audio_filter/scaletempo.c:56
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:270
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:261
 msgid "Scaletempo"
 msgstr "സ്കെയില്‍ടെംപോ"
 
@@ -10300,7 +10289,7 @@ msgid "Room size"
 msgstr "റൂം വലുപ്പം"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:55
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:245
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:236
 msgid "Defines the virtual surface of the room emulated by the filter."
 msgstr "ഫില്‍ട്ടര്‍ അനുകരിക്കുന്ന റൂമിന്റെ ആവാസ്തിക പ്രതലത്തെ നിര്‍വചിക്കുന്നു"
 
@@ -10309,24 +10298,24 @@ msgid "Room width"
 msgstr "റൂം വീതി"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:59
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:248
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:239
 msgid "Width of the virtual room"
 msgstr "വിര്‍ച്വല്‍ റൂമിന്റെ വീതി"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:61
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:249
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:240
 #: modules/gui/qt/components/extended_panels.cpp:1298
 msgid "Wet"
 msgstr "നനഞ്ഞ"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:64
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:250
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:241
 #: modules/gui/qt/components/extended_panels.cpp:1299
 msgid "Dry"
 msgstr "ഡ്രൈ"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:67
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:251
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:242
 #: modules/gui/qt/components/extended_panels.cpp:1300
 msgid "Damp"
 msgstr "ഡാംപ്"
@@ -10336,13 +10325,13 @@ msgid "Audio Spatializer"
 msgstr "ഓഡിയോ സ്പാറ്റിയാലൈസര്‍"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:72
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:281
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:272
 #: modules/gui/qt/dialogs/extended.cpp:75
 msgid "Spatializer"
 msgstr "സ്പാറ്റിയാലൈസര്‍"
 
 #: modules/audio_filter/stereo_widen.c:53
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:273
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:264
 msgid ""
 "This filter enhances the stereo effect by suppressing mono (signal common to "
 "both channels) and by delaying the signal of left into right and vice versa, "
@@ -10390,7 +10379,7 @@ msgid "Level of input signal of original channel."
 msgstr "യഥാര്‍ത്ഥ ചാനലിലെ ഇന്‍പുട്ട് സിഗ്നലിന്റെ നില"
 
 #: modules/audio_filter/stereo_widen.c:77
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:272
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:263
 msgid "Stereo Enhancer"
 msgstr "സ്റ്റീരിയോ എന്‍ഹാന്‍സര്‍"
 
@@ -10502,11 +10491,11 @@ msgid ""
 "The selected audio output device is exclusively in use by another program."
 msgstr "തിരഞ്ഞെടുത്ത ഓഡിയോ ഡിവൈസ് മറ്റൊരു പ്രോഗ്രാം തനിയെ ഉപയോഗിച്ചുകൊണ്ടിരിക്കുന്നു"
 
-#: modules/audio_output/coreaudio_common.c:445
+#: modules/audio_output/coreaudio_common.c:484
 msgid "Audio device is not configured"
 msgstr "ഓഡിയോ ഡിവൈസ് കോണ്‍ഫിഗര്‍ ചെയ്തിട്ടില്ല"
 
-#: modules/audio_output/coreaudio_common.c:446
+#: modules/audio_output/coreaudio_common.c:485
 msgid ""
 "You should configure your speaker layout with \"Audio Midi Setup\" in /"
 "Applications/Utilities. VLC will output Stereo only."
@@ -10638,17 +10627,41 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "കെ ഓഡിയോ ഇന്റര്‍ഫേസ് ഓഡിയോ ഔട്ട്പുട്ട്"
 
-#: modules/audio_output/mmdevice.c:1274
+#: modules/audio_output/mmdevice.c:1290
+msgid "HDMI/SPDIF audio passthrough"
+msgstr ""
+
+#: modules/audio_output/mmdevice.c:1292
+msgid ""
+"Change this value if you have issue with HD codecs when using a HDMI "
+"receiver."
+msgstr ""
+
+#: modules/audio_output/mmdevice.c:1299
+#, fuzzy
+msgid "Disabled"
+msgstr "നിര്‍ജ്ജീവമാക്കുക"
+
+#: modules/audio_output/mmdevice.c:1300
+msgid "Enabled (without HD codecs)"
+msgstr ""
+
+#: modules/audio_output/mmdevice.c:1301
+#, fuzzy
+msgid "Enabled"
+msgstr "സാധ്യമാക്കുക"
+
+#: modules/audio_output/mmdevice.c:1306
 #, fuzzy
 msgid "Windows Multimedia Device output"
 msgstr "വിന്‍ഡോസ് ജിഡിഐ വീഡിയോ ഔട്ട്പുട്ട്"
 
-#: modules/audio_output/mmdevice.c:1280
+#: modules/audio_output/mmdevice.c:1312
 #, fuzzy
 msgid "Output back-end"
 msgstr "ഔട്ട്പുട്ട് കാര്‍ഡ്"
 
-#: modules/audio_output/mmdevice.c:1280
+#: modules/audio_output/mmdevice.c:1312
 #, fuzzy
 msgid "Audio output back-end interface."
 msgstr "ഓഡിയോ ഓട്ട്പുട്ട് ഡിവൈസ്"
@@ -11970,20 +11983,20 @@ msgstr "ടൈഗര്‍ റെണ്ടറിംഗ് ഡീഫോള്‍�
 msgid "Kate text subtitles packetizer"
 msgstr "കേറ്റ് ടെക്സ്റ്റ് ഉപശീര്‍ഷകങ്ങളുടെ പാക്കറ്റൈസര്‍"
 
-#: modules/codec/libass.c:56
+#: modules/codec/libass.c:60
 msgid "Subtitles (advanced)"
 msgstr "ഉപശീര്‍ഷകങ്ങള്‍ (നൂതനമായ)"
 
-#: modules/codec/libass.c:57
+#: modules/codec/libass.c:61
 msgid "Subtitle renderers using libass"
 msgstr "ലിബസ്സ് ഉപയോഗിച്ച് ഉപശീര്‍ഷകം തര്‍ജ്ജമപ്പെടുന്നു"
 
-#: modules/codec/libass.c:245
+#: modules/codec/libass.c:249
 #: modules/text_renderer/freetype/fonts/fontconfig.c:78
 msgid "Building font cache"
 msgstr "ബില്‍ഡിംഗ് ഫോണ്ട് കാഷ്"
 
-#: modules/codec/libass.c:246
+#: modules/codec/libass.c:250
 msgid ""
 "Please wait while your font cache is rebuilt.\n"
 "This should take less than a minute."
@@ -12756,7 +12769,7 @@ msgstr ""
 
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
 #: modules/gui/macosx/VLCOpenWindowController.m:195
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:258
 msgid "Mode"
 msgstr "മോഡ്"
 
@@ -14266,7 +14279,7 @@ msgstr "വേഗം"
 #: modules/codec/x264.c:435 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:384
 #: modules/gui/macosx/VLCSimplePrefsController.m:689
-#: modules/gui/qt/components/simple_preferences.cpp:645
+#: modules/gui/qt/components/simple_preferences.cpp:656
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
@@ -14405,15 +14418,15 @@ msgstr "ഡി-ബസ് നിയന്ത്രണ പൊതുപ്രതല
 #: modules/gui/macosx/VLCMainWindow.m:669
 #: modules/gui/macosx/VLCMainWindow.m:675
 #: modules/gui/macosx/VLCMainWindow.m:1276
-#: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1035
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1234
-#: modules/gui/qt/main_interface.cpp:1238
-#: modules/gui/qt/main_interface.cpp:1277
-#: modules/gui/qt/main_interface.cpp:1279
-#: modules/gui/qt/main_interface.cpp:1388
-#: modules/gui/qt/main_interface.cpp:1405
-#: modules/gui/qt/main_interface.cpp:1413
-#: modules/gui/qt/main_interface.cpp:1436 modules/lua/libs/httpd.c:80
+#: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1264
+#: modules/gui/qt/main_interface.cpp:1268
+#: modules/gui/qt/main_interface.cpp:1307
+#: modules/gui/qt/main_interface.cpp:1309
+#: modules/gui/qt/main_interface.cpp:1418
+#: modules/gui/qt/main_interface.cpp:1435
+#: modules/gui/qt/main_interface.cpp:1443
+#: modules/gui/qt/main_interface.cpp:1466 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -15149,25 +15162,6 @@ msgstr "| പ്ലേ ചെയ്ത ബഫറുകള്‍ :   %5<PRIi64>"
 msgid "| buffers lost     :    %5<PRIi64>"
 msgstr "| നഷ്ട്ടപ്പെട്ട ബഫറുകള്‍ :   %5<PRIi64>"
 
-#: modules/control/oldrc.c:1755 modules/gui/ncurses.c:845
-msgid "+-[Streaming]"
-msgstr "+-[സ്ട്രീമിംഗ്]"
-
-#: modules/control/oldrc.c:1756 modules/gui/ncurses.c:847
-#, c-format
-msgid "| packets sent     :    %5<PRIi64>"
-msgstr "| അയച്ച പാക്കറ്റുകള്‍ :   %5<PRIi64>"
-
-#: modules/control/oldrc.c:1758 modules/gui/ncurses.c:848
-#, c-format
-msgid "| bytes sent       : %8.0f KiB"
-msgstr "| അയച്ച ബൈറ്റുകള്‍ :   %8.0f KiB"
-
-#: modules/control/oldrc.c:1760 modules/gui/ncurses.c:850
-#, c-format
-msgid "| sending bitrate  :   %6.0f kb/s"
-msgstr "| അയക്കുന്ന ബിറ്റ്നിരക്ക് :    %6.0f kb/s"
-
 #: modules/control/win_msg.c:192
 msgid "WinMsg"
 msgstr ""
@@ -15282,7 +15276,7 @@ msgid "Avformat muxer"
 msgstr "എവിഫോര്‍മാറ്റ് മക്സര്‍"
 
 #: modules/demux/avformat/avformat.c:56
-#: modules/stream_out/chromecast/cast.cpp:108 modules/stream_out/rtp.c:87
+#: modules/stream_out/chromecast/cast.cpp:109 modules/stream_out/rtp.c:87
 msgid "Muxer"
 msgstr "മക്സര്‍"
 
@@ -15338,7 +15332,7 @@ msgstr "ആവശ്യമുള്ളപ്പോള്‍ ഫിക്സ് �
 msgid "AVI demuxer"
 msgstr "എവിഐ ഡീമക്സര്‍"
 
-#: modules/demux/avi/avi.c:820 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:820 modules/demux/mp4/mp4.c:1671
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -15367,7 +15361,7 @@ msgstr "സൂചിക നിര്‍മ്മിച്ചതിന്‍ശ�
 msgid "Play as is"
 msgstr "ഉള്ളതുപോലേ പ്ലേ ചെയ്യുക"
 
-#: modules/demux/avi/avi.c:831 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:831 modules/demux/mp4/mp4.c:1682
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "പൊട്ടിപ്പോയ അല്ലെങ്കില്‍ നഷ്ട്ടപ്പെട്ട എ‌വി‌ഐ സൂചിക"
@@ -15821,12 +15815,12 @@ msgstr "എം‌പി4 സ്ട്രീം ടിമക്സര്‍"
 msgid "MP4"
 msgstr "എം‌പി4"
 
-#: modules/demux/mp4/mp4.c:1681
+#: modules/demux/mp4/mp4.c:1679
 #, fuzzy
 msgid "Do not seek"
 msgstr "പ്ലേ ചെയ്യരുത്"
 
-#: modules/demux/mp4/mp4.c:1682
+#: modules/demux/mp4/mp4.c:1680
 #, fuzzy
 msgid "Build index"
 msgstr "സൂചിക നിര്‍മ്മിച്ചതിന്‍ശേഷം പ്ലേ ചെയ്യുക"
@@ -16573,146 +16567,146 @@ msgstr "അണ്‍ഇന്‍സ്റ്റാള്‍"
 msgid "Skins"
 msgstr "സ്കിന്നുകള്‍"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:224
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
 msgid "2 Pass"
 msgstr "2 പാസ്സ്"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:227
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:218
 #: modules/gui/qt/components/extended_panels.cpp:1111
 msgid "Preamp"
 msgstr "പ്രീആംപ്"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:231
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:222
 msgid "Enable dynamic range compressor"
 msgstr "ഡൈനാമിക് റേഞ്ച് കംപ്രസര്‍ പ്രാപ്തമാക്കുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:232
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:243
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:223
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:234
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:49
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:196
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:209
 #: modules/gui/qt/dialogs/gototime.cpp:66
 msgid "Reset"
 msgstr "റീസെറ്റ് ചെയ്യുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:234
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:225
 #: modules/gui/qt/components/extended_panels.cpp:1275
 msgid "Attack"
 msgstr "ആക്രമണൺ"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:235
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:226
 #: modules/gui/qt/components/extended_panels.cpp:1276
 msgid "Release"
 msgstr "റിലീസ്"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:236
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:227
 #: modules/gui/qt/components/extended_panels.cpp:1277
 msgid "Threshold"
 msgstr "ത്രെഷ്ഹോള്‍ഡ്"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:242
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:233
 msgid "Enable Spatializer"
 msgstr "സ്പാറ്റിയലൈസര്‍ സാധ്യമാക്കുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:254
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:245
 msgid "Headphone virtualization"
 msgstr "ഹെഡ്ഫോണ്‍ വീര്‍ച്ച്വലൈസേഷന്‍"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:261
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:252
 msgid "Volume normalization"
 msgstr "വോള്യം നോര്‍മലൈസേഷന്‍"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:267
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:258
 msgid "Maximum level"
 msgstr "കൂടിയ നില"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:282
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:273
 msgid "Filter"
 msgstr "ഫില്‍റ്റര്‍"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:283
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:274
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:84
 #: modules/gui/macosx/VLCSimplePrefsController.m:260
 #: modules/gui/qt/dialogs/extended.cpp:96
 msgid "Audio Effects"
 msgstr "ഓഡിയോ പ്രഭാവങ്ങള്‍"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:311
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:359
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:325
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:394
 msgid "Duplicate current profile..."
 msgstr "ഇപ്പോഴത്തെ പ്രൊഫൈലിന്‍റെ തനിപ്പകര്‍പ്പ്"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:316
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:330
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:1037
 msgid "Organize Profiles..."
 msgstr "പ്രൊഫൈലുകള്‍ ഓര്‍ഗനൈസ് ചെയ്യുക..."
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:477
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:737
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:509
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:790
 msgid "Duplicate current profile for a new profile"
 msgstr "ഒരു പുതിയ പ്രൊഫൈലിനായി ഇപ്പോഴത്തെ പ്രൊഫൈല്‍ തനിപ്പകര്‍പ്പ് എടുക്കുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:478
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:510
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:474
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:738
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:791
 msgid "Enter a name for the new profile:"
 msgstr "പുതിയ പ്രൊഫൈലിനായി ഒരു പേര് നിര്‍ദ്ദേശിക്കുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:480
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:789
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:512
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:824
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:377
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:476
 #: modules/gui/macosx/VLCMainMenu.m:1149 modules/gui/macosx/VLCOutput.m:411
 #: modules/gui/macosx/VLCSimplePrefsController.m:299
 #: modules/gui/macosx/VLCSimplePrefsController.m:373
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:740
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:793
 #: modules/gui/macosx/prefs.m:188
 #: modules/gui/qt/components/sout/profile_selector.cpp:443
 msgid "Save"
 msgstr "സംരക്ഷിക്കുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:499
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:761
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:532
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:814
 msgid "Please enter a unique name for the new profile."
 msgstr "പുതിയ പ്രൊഫൈലിന് ഒറ്റയായ ഒരു പേര് നിര്‍ദ്ദേശിക്കുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:500
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:762
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:533
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:815
 msgid "Multiple profiles with the same name are not allowed."
 msgstr "ഒരേ പേരില്‍ തന്നെ വിവിധ പ്രൊഫൈലുകള്‍ അനുവദിക്കപ്പെട്ടിട്ടില്ല"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:530
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:831
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:804
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:566
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:866
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:858
 msgid "Remove a preset"
 msgstr "പ്രിസെറ്റ് നീക്കം ചെയ്യുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:531
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:832
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:805
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:567
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:867
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:859
 msgid "Select the preset you would like to remove:"
 msgstr "നിങ്ങള്‍ക്ക് നീക്കം ചെയ്യേണ്ട മുന്‍സജ്ജീകരണങ്ങള്‍ തിരഞ്ഞെടുക്കുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:532
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:833
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:568
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:868
 #: modules/gui/macosx/VLCBookmarksWindowController.m:81
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:806
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
 msgid "Remove"
 msgstr "നീക്കം ചെയ്യുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:610
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:645
 msgid "Add new Preset..."
 msgstr "പുതിയ പ്രിസെറ്റ് ചേര്‍ക്കുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:615
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:650
 msgid "Organize Presets..."
 msgstr "പ്രീസെറ്റുകള്‍ ഓര്‍ഗനൈസ് ചെയ്യുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:786
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:821
 msgid "Save current selection as new preset"
 msgstr "ഇപ്പോഴത്തെ തിരഞ്ഞെടുക്കലുകള്‍ ഒരു പുതിയ മുന്‍സജ്ജീകരണമായി സംരക്ഷിക്കുക"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:787
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:822
 msgid "Enter a name for the new preset:"
 msgstr "പുതിയ മുന്‍സജ്ജീകരണത്തിന് ഒരു പേര് നിര്‍ദ്ദേശിക്കുക"
 
@@ -16752,7 +16746,7 @@ msgstr "സമയം"
 #: modules/gui/macosx/VLCCoreDialogProvider.m:194
 #: modules/gui/macosx/VLCCoreDialogProvider.m:236
 #: modules/gui/macosx/VLCOpenWindowController.m:363
-#: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:359
+#: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:342
 #: modules/gui/macosx/VLCSimplePrefsController.m:275
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1359
@@ -17080,7 +17074,7 @@ msgstr "ഒരു SDP എക്സ്പോര്‍ട്ട് അപേക്
 #: modules/gui/macosx/VLCSimplePrefsController.m:683
 #: modules/gui/macosx/VLCSimplePrefsController.m:711
 #: modules/gui/macosx/VLCSimplePrefsController.m:1244
-#: modules/gui/qt/components/simple_preferences.cpp:642
+#: modules/gui/qt/components/simple_preferences.cpp:653
 msgid "Custom"
 msgstr "പതിവ്"
 
@@ -17453,15 +17447,15 @@ msgstr "ആപ്പിള്‍ റിമോട്ട് ആന്‍ഡ് മ
 msgid "Video output"
 msgstr "വീഡിയോ ഔട്ട്പുട്ട്"
 
-#: modules/gui/macosx/VLCMain+OldPrefs.m:101
+#: modules/gui/macosx/VLCMain+OldPrefs.m:113
 msgid "Remove old preferences?"
 msgstr "പഴയ മുന്‍ഗണനകള്‍ നീക്കം ചെയ്യണോ?"
 
-#: modules/gui/macosx/VLCMain+OldPrefs.m:102
+#: modules/gui/macosx/VLCMain+OldPrefs.m:114
 msgid "We just found an older version of VLC's preferences files."
 msgstr "VLCയുടെ മുന്‍ഗണന ഫയലുകളുടെ ഒരു പഴയ പതിപ്പ് ഞങ്ങള്‍ ഇപ്പോള്‍ കണ്ടെത്തി"
 
-#: modules/gui/macosx/VLCMain+OldPrefs.m:103
+#: modules/gui/macosx/VLCMain+OldPrefs.m:115
 msgid "Move To Trash and Relaunch VLC"
 msgstr "ട്രാഷിലേയ്ക്ക് മാറ്റുകയും VLC വീണ്ടും അവതരിപ്പിക്കുകയും ചെയ്യുക"
 
@@ -18021,7 +18015,7 @@ msgid "Enable DVD menus"
 msgstr "ഡിവിഡി മെനുകള്‍ സാധ്യമാക്കുക"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:186
-#: modules/stream_out/chromecast/cast.cpp:113
+#: modules/stream_out/chromecast/cast.cpp:114
 msgid "IP Address"
 msgstr "IP വിലാസം"
 
@@ -18257,7 +18251,7 @@ msgid "Read at media"
 msgstr "മീഡിയയില്‍ വായിക്കുക"
 
 #: modules/gui/macosx/VLCPlaylistInfo.m:87
-#: modules/gui/qt/components/info_panels.cpp:579
+#: modules/gui/qt/components/info_panels.cpp:578
 msgid "Input bitrate"
 msgstr "ഇന്‍പുട്ട് ബിറ്റ്റേറ്റ്"
 
@@ -18270,7 +18264,7 @@ msgid "Stream bitrate"
 msgstr "സ്ട്രീം ബിറ്റ്റേറ്റ്"
 
 #: modules/gui/macosx/VLCPlaylistInfo.m:92
-#: modules/gui/macosx/VLCPlaylistInfo.m:102
+#: modules/gui/macosx/VLCPlaylistInfo.m:97
 msgid "Decoded blocks"
 msgstr "ഡീകോഡെഡ് ബ്ലോക്കുകള്‍"
 
@@ -18282,35 +18276,19 @@ msgstr "ദൃശ്യമാക്കിയ ഫ്രെയിമുകള്�
 msgid "Lost frames"
 msgstr "നഷ്ടപ്പെട്ട ഫ്രെയിമുകള്‍"
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:96
-msgid "Streaming"
-msgstr "സ്ട്രീമിംഗ്"
-
-#: modules/gui/macosx/VLCPlaylistInfo.m:97
-msgid "Sent packets"
-msgstr "പാക്കറ്റുകള്‍ അയയ്ക്കുക"
-
 #: modules/gui/macosx/VLCPlaylistInfo.m:98
-msgid "Sent bytes"
-msgstr "ബൈറ്റ്സ് അയയ്ക്കുക"
-
-#: modules/gui/macosx/VLCPlaylistInfo.m:99
-msgid "Send rate"
-msgstr "റേറ്റ് അയയ്ക്കുക"
-
-#: modules/gui/macosx/VLCPlaylistInfo.m:103
 msgid "Played buffers"
 msgstr "പ്രവര്‍ത്തിച്ച ബഫറുകള്‍"
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:104
+#: modules/gui/macosx/VLCPlaylistInfo.m:99
 msgid "Lost buffers"
 msgstr "നഷ്ടപ്പെട്ട ബഫറുകള്‍"
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:357
+#: modules/gui/macosx/VLCPlaylistInfo.m:340
 msgid "Error while saving meta"
 msgstr "മെറ്റാ സംരക്ഷിക്കപ്പെടുമ്പോള്‍ പിശക് സംഭവിച്ചിരിക്കുന്നു"
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:358
+#: modules/gui/macosx/VLCPlaylistInfo.m:341
 msgid "VLC was unable to save the meta data."
 msgstr "മെറ്റാ‍ഡാറ്റ സംരക്ഷിക്കുവാന്‍ VLCയ്ക്ക് കഴിയില്ല."
 
@@ -18367,7 +18345,7 @@ msgstr " \"%@\" ന്റെ പ്ലേബാക്ക് %@ ല്‍ തു�
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
 #: modules/gui/qt/components/simple_preferences.cpp:222
-#: modules/gui/qt/components/simple_preferences.cpp:669
+#: modules/gui/qt/components/simple_preferences.cpp:680
 #: modules/gui/qt/dialogs/plugins.cpp:375
 msgid "Interface Settings"
 msgstr "പൊതുപ്രതല ക്രമീകരണങ്ങള്‍"
@@ -18386,7 +18364,7 @@ msgstr "വീഡിയോ ക്രമീകരണങ്ങള്‍"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:226
 #: modules/gui/qt/components/simple_preferences.cpp:228
-#: modules/gui/qt/components/simple_preferences.cpp:810
+#: modules/gui/qt/components/simple_preferences.cpp:821
 msgid "Subtitle & On Screen Display Settings"
 msgstr "ഉപശീര്‍ഷകം & ഓണ്‍സ്ക്രീന്‍ പ്രദര്‍ശന ക്രമീകരണങ്ങള്‍"
 
@@ -18851,236 +18829,236 @@ msgstr ""
 "ഉള്ളടക്കവും കൂടാതെ ഈ മൂല്യത്തേടുമൊപ്പം പുനനിര്‍ണ്ണയം നടത്തുക.\n"
 "പ്രവര്‍ത്തനരഹിതമാക്കാന്‍ 0 ക്രമീകരിക്കുക."
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:175
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:188
 #: modules/gui/qt/dialogs/extended.cpp:108
 msgid "Video Effects"
 msgstr "വീഡിയോ പ്രഭാവങ്ങള്‍"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:179
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:192
 msgid "Basic"
 msgstr "അടിസ്ഥാന"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:181
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:194
 msgid "Geometry"
 msgstr "ജ്യാമിതി"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:182
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:238
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:256
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:195
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:251
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:269
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:272
 #: modules/spu/marq.c:115 modules/spu/rss.c:152
 #: modules/video_filter/colorthres.c:55
 msgid "Color"
 msgstr "നിറം"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:189
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:202
 msgid "Image Adjust"
 msgstr "ചിത്രം അഡ്ജസ്റ്റ് ചെയ്യുക"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:193
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
 msgid "Brightness Threshold"
 msgstr "ബ്രൈറ്റ്നെസ്സ് ത്രെഷ്ഹോള്‍ഡ്"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:197
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:210
 #: modules/video_filter/sharpen.c:69
 msgid "Sharpen"
 msgstr "ഷാര്‍പ്പെന്‍"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:198
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:211
 msgid "Sigma"
 msgstr "സിഗ്മ"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:199
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:212
 msgid "Banding removal"
 msgstr "ബാന്‍ഡിംഗ് നീക്കംചെയ്യല്‍"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:200
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:213
 #: modules/video_filter/gradfun.c:50
 msgid "Radius"
 msgstr "റേഡിയസ്"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:201
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:214
 msgid "Film Grain"
 msgstr "ഫിലിം ഗ്രെയിന്‍"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:202
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:215
 #: modules/video_filter/grain.c:53
 msgid "Variance"
 msgstr "വേരിയന്‍സ്"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:207
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:220
 msgid "Synchronize top and bottom"
 msgstr "മുകളിലും താഴെയും സമന്വയിപ്പിക്കുക"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:208
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:221
 msgid "Synchronize left and right"
 msgstr "ഇടതും വലതും ഏകകാലീകരണം നടത്തുക"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:210
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:223
 msgid "Transform"
 msgstr "ട്രാന്‍സ്ഫോം"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:212
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:225
 #: modules/video_filter/transform.c:52
 msgid "Rotate by 90 degrees"
 msgstr "90 ഡ്രിഗ്രിയില്‍ തിരിക്കുക"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:215
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:228
 #: modules/video_filter/transform.c:53
 msgid "Rotate by 180 degrees"
 msgstr "180 ഡ്രിഗ്രിയില്‍ തിരിക്കുക"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:218
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:231
 #: modules/video_filter/transform.c:53
 msgid "Rotate by 270 degrees"
 msgstr "270 ഡ്രിഗ്രിയില്‍ തിരിക്കുക"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:221
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:234
 #: modules/video_filter/transform.c:54
 msgid "Flip horizontally"
 msgstr "തിരശ്ചീനമായി ഫ്ലിപ് ചെയ്യുക"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:224
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:237
 #: modules/video_filter/transform.c:54
 msgid "Flip vertically"
 msgstr "ലംബമായി ഫ്ലിപ് ചെയ്യുക"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:227
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:240
 msgid "Magnification/Zoom"
 msgstr "മാഗ്നിഫിക്കേഷന്‍/സൂം"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:228
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:241
 msgid "Puzzle game"
 msgstr "പസിള്‍ ഗെയിം"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:229
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:234
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:242
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:247
 #: share/lua/http/dialogs/mosaic_window.html:96
 msgid "Rows"
 msgstr "വരികള്‍"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:230
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:235
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:243
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:248
 #: share/lua/http/dialogs/mosaic_window.html:114
 msgid "Columns"
 msgstr "നിരകള്‍"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:231
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:244
 #: modules/video_splitter/clone.c:57
 msgid "Clone"
 msgstr "ക്ലോണ്‍"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:232
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
 #: modules/video_splitter/clone.c:39
 msgid "Number of clones"
 msgstr "ക്ലോണുകളുടെ എണ്ണം"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:233
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:246
 msgid "Wall"
 msgstr "വാള്‍"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:237
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:250
 #: modules/video_filter/colorthres.c:71
 msgid "Color threshold"
 msgstr "നിറം ത്രെഷ്ഹോള്‍ഡ്"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:241
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:254
 msgid "Similarity"
 msgstr "സാദൃശ്യം"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:243
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:256
 msgid "Intensity"
 msgstr "തീവ്രത"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:244
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:247
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:257
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:260
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
 msgid "Gradient"
 msgstr "ഗ്രേഡിയന്റ്"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:250
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:263
 #: modules/video_filter/gradient.c:76
 msgid "Edge"
 msgstr "എഡ്ജ്"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:253
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:266
 #: modules/video_filter/gradient.c:76
 msgid "Hough"
 msgstr "ഹൗ"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:257
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:270
 msgid "Cartoon"
 msgstr "കാര്‍ട്ടൂണ്‍"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:258
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:271
 msgid "Color extraction"
 msgstr "നിറം എക്സ്ട്രാക്ഷന്‍"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:261
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:274
 msgid "Invert colors"
 msgstr "നിറങ്ങളെ വിപരീതമാക്കുക"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:262
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:275
 #: modules/video_filter/posterize.c:69
 msgid "Posterize"
 msgstr "പോസ്റ്ററൈസ്"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:263
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:276
 #: modules/video_filter/posterize.c:61
 msgid "Posterize level"
 msgstr "പോസ്റ്ററൈസ് പരിധി"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:264
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:277
 #: modules/video_filter/motionblur.c:60
 msgid "Motion blur"
 msgstr "മോഷന്‍ ബ്ലര്‍"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:265
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:278
 msgid "Factor"
 msgstr "ഫാക്ടര്‍"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:266
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:279
 #: modules/video_filter/motiondetect.c:49
 msgid "Motion Detect"
 msgstr "മോഷന്‍ ഡിറ്റെക്ട്"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:267
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:280
 msgid "Water effect"
 msgstr "വാട്ടര്‍ എഫക്ട്"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:269
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:282
 #: modules/meta_engine/ID3Genres.h:100 modules/video_filter/psychedelic.c:55
 msgid "Psychedelic"
 msgstr "സൈക്കെഡെലിക്ക്"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:270
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:283
 #: modules/video_filter/anaglyph.c:72
 msgid "Anaglyph"
 msgstr "ആനഗ്ലിഫ്"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:271
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:284
 msgid "Add text"
 msgstr "ടെക്സ്റ്റ് ചേര്‍ക്കുക"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:272
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
 #: modules/logger/file.c:193 modules/spu/marq.c:88
 msgid "Text"
 msgstr "ടെക്സ്റ്റ്"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:293
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:306
 msgid "Add logo"
 msgstr "ലോഗോ ചേര്‍ക്കുക"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:294
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
 msgid "Logo"
 msgstr "ലോഗോ"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:315
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:328
 #: modules/spu/mosaic.c:87 modules/stream_out/mosaic_bridge.c:124
 msgid "Transparency"
 msgstr "ട്രാന്‍സ്പരന്‍സി"
 
-#: modules/gui/macosx/VLCVideoEffectsWindowController.m:364
+#: modules/gui/macosx/VLCVideoEffectsWindowController.m:399
 msgid "Organize profiles..."
 msgstr "പ്രൊഫൈലുകള്‍ ഓര്‍ഗനൈസ് ചെയ്യുക..."
 
@@ -19150,260 +19128,260 @@ msgstr "  [%s]"
 msgid "      %s: %s"
 msgstr "      %s: %s"
 
-#: modules/gui/ncurses.c:868
+#: modules/gui/ncurses.c:859
 msgid "[Display]"
 msgstr "[പ്രദര്‍ശിപ്പിക്കുക]"
 
-#: modules/gui/ncurses.c:870
+#: modules/gui/ncurses.c:861
 msgid " h,H                    Show/Hide help box"
 msgstr "h,H                  സഹായപ്പെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:871
+#: modules/gui/ncurses.c:862
 msgid " i                      Show/Hide info box"
 msgstr "i                     വിവരപെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:872
+#: modules/gui/ncurses.c:863
 msgid " M                      Show/Hide metadata box"
 msgstr " M                     മെറ്റാഡേറ്റാ പെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:873
+#: modules/gui/ncurses.c:864
 msgid " L                      Show/Hide messages box"
 msgstr " L                     സന്ദേശപ്പെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:874
+#: modules/gui/ncurses.c:865
 msgid " P                      Show/Hide playlist box"
 msgstr " P                      പ്ലേലിസ്റ്റ് പെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:875
+#: modules/gui/ncurses.c:866
 msgid " B                      Show/Hide filebrowser"
 msgstr " B                      ഫയല്‍ ബ്രൌസര്‍ കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:876
+#: modules/gui/ncurses.c:867
 msgid " x                      Show/Hide objects box"
 msgstr " x                     വസ്തുപ്പെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:877
+#: modules/gui/ncurses.c:868
 msgid " S                      Show/Hide statistics box"
 msgstr " S                      സ്ഥിതിവിവരണ പെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:878
+#: modules/gui/ncurses.c:869
 msgid " Esc                    Close Add/Search entry"
 msgstr " Esc                    ചേര്‍ക്കല്‍/തിരയല്‍ രേഖപ്പെടുത്തല്‍ അടയ്ക്കുക"
 
-#: modules/gui/ncurses.c:879
+#: modules/gui/ncurses.c:870
 msgid " Ctrl-l                 Refresh the screen"
 msgstr " Ctrl-l                 തിരശ്ശീല പുതുക്കിയെടുക്കുക"
 
-#: modules/gui/ncurses.c:883
+#: modules/gui/ncurses.c:874
 msgid "[Global]"
 msgstr "[ആഗോളം]"
 
-#: modules/gui/ncurses.c:885
+#: modules/gui/ncurses.c:876
 msgid " q, Q, Esc              Quit"
 msgstr " q, Q, Esc              നിര്‍ത്തിപ്പോകുക"
 
-#: modules/gui/ncurses.c:886
+#: modules/gui/ncurses.c:877
 msgid " s                      Stop"
 msgstr "എസ്                     അവസാനിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:887
+#: modules/gui/ncurses.c:878
 msgid " <space>                Pause/Play"
 msgstr " <space>                അല്‍പംനിര്‍ത്തുക/പ്ലേചെയ്യുക"
 
-#: modules/gui/ncurses.c:888
+#: modules/gui/ncurses.c:879
 msgid " f                      Toggle Fullscreen"
 msgstr " f                      മുഴുവന്‍ സ്ക്രീനും ടോഗ്ഗിള്‍ ചെയ്യുക"
 
-#: modules/gui/ncurses.c:889
+#: modules/gui/ncurses.c:880
 msgid " c                      Cycle through audio tracks"
 msgstr " c                      ഓഡിയോ ട്രാക്കുകളിലൂടെ ആവര്‍ത്തനം ചെയ്യുക"
 
-#: modules/gui/ncurses.c:890
+#: modules/gui/ncurses.c:881
 msgid " v                      Cycle through subtitles tracks"
 msgstr " v                      ഉപശീര്‍ഷകങ്ങളായ ട്രാക്കുകളിലൂടെ ആവര്‍ത്തനം ചെയ്യുക"
 
-#: modules/gui/ncurses.c:891
+#: modules/gui/ncurses.c:882
 msgid " b                      Cycle through video tracks"
 msgstr " b                      വീഡിയോ ട്രാക്കുകളിലൂടെ ആവര്‍ത്തനം ചെയ്യുക"
 
-#: modules/gui/ncurses.c:892
+#: modules/gui/ncurses.c:883
 msgid " n, p                   Next/Previous playlist item"
 msgstr " n, p                  അടുത്തത്/മുമ്പത്തെ പ്ലേലിസ്റ്റ് ഇനം"
 
-#: modules/gui/ncurses.c:893
+#: modules/gui/ncurses.c:884
 msgid " [, ]                   Next/Previous title"
 msgstr " [, ]                    അടുത്തത്/മുമ്പത്തെ ശീര്‍ഷകം"
 
-#: modules/gui/ncurses.c:894
+#: modules/gui/ncurses.c:885
 msgid " <, >                   Next/Previous chapter"
 msgstr " <, >                   അടുത്തത്/മുമ്പത്തെ അധ്യായം"
 
 #. xgettext: You can use ← and → characters
-#: modules/gui/ncurses.c:896
+#: modules/gui/ncurses.c:887
 #, c-format
 msgid " <left>,<right>         Seek -/+ 1%%"
 msgstr " <left>,<right>         Seek -/+ 1%%"
 
-#: modules/gui/ncurses.c:897
+#: modules/gui/ncurses.c:888
 msgid " a, z                   Volume Up/Down"
 msgstr " a, z                   ശബ്ദം ഉയര്‍ത്തുക/താഴ്ത്തുക"
 
-#: modules/gui/ncurses.c:898
+#: modules/gui/ncurses.c:889
 msgid " m                      Mute"
 msgstr "എം                      നിശബ്ദമാക്കുക"
 
 #. xgettext: You can use ↑ and ↓ characters
-#: modules/gui/ncurses.c:900
+#: modules/gui/ncurses.c:891
 msgid " <up>,<down>            Navigate through the box line by line"
 msgstr " <up>,<down>           പെട്ടിയിലൂടെ വരി വരിയായി നാവിഗേറ്റ് ചെയ്യപ്പെടുന്നു"
 
 #. xgettext: You can use ⇞ and ⇟ characters
-#: modules/gui/ncurses.c:902
+#: modules/gui/ncurses.c:893
 msgid " <pageup>,<pagedown>    Navigate through the box page by page"
 msgstr "<pageup>,<pagedown>    പെട്ടിയിലൂടെ താളുകളോരോന്നായി നാവിഗേറ്റ് ചെയ്യപ്പെടുന്നു"
 
 #. xgettext: You can use ↖ and ↘ characters
-#: modules/gui/ncurses.c:904
+#: modules/gui/ncurses.c:895
 msgid " <start>,<end>          Navigate to start/end of box"
 msgstr "<start>,<end>          പെട്ടിയുടെ ആരംഭം/അവസാനം എന്നതിലേയ്ക്ക് നാവിഗേറ്റ് ചെയ്യുക"
 
-#: modules/gui/ncurses.c:908
+#: modules/gui/ncurses.c:899
 msgid "[Playlist]"
 msgstr "[പ്ലേലിസ്റ്റ്]"
 
-#: modules/gui/ncurses.c:910
+#: modules/gui/ncurses.c:901
 msgid " r                      Toggle Random playing"
 msgstr " r                      ക്രമമല്ലാത്ത പ്ലേയിങ്ങ് മാറ്റുക"
 
-#: modules/gui/ncurses.c:911
+#: modules/gui/ncurses.c:902
 msgid " l                      Toggle Loop Playlist"
 msgstr " l                      ലൂപ്പ് പ്ലേലിസ്റ്റ് മാറ്റുക"
 
-#: modules/gui/ncurses.c:912
+#: modules/gui/ncurses.c:903
 msgid " R                      Toggle Repeat item"
 msgstr " R                      ആവര്‍ത്തിക്കുന്ന ഇനം മാറ്റുക"
 
-#: modules/gui/ncurses.c:913
+#: modules/gui/ncurses.c:904
 msgid " o                      Order Playlist by title"
 msgstr " o                      ശീര്‍ഷകത്തിന് അനുസരിച്ച്  പ്ലേലിസ്റ്റ് ക്രമപ്പെടുത്തുക"
 
-#: modules/gui/ncurses.c:914
+#: modules/gui/ncurses.c:905
 msgid " O                      Reverse order Playlist by title"
 msgstr "O                      ശീര്‍ഷകത്തിന് അനുസരിച്ചുള്ള പ്ലേലിസ്റ്റിന്റെ പ്രതിലോമ ക്രമം"
 
-#: modules/gui/ncurses.c:915
+#: modules/gui/ncurses.c:906
 msgid " g                      Go to the current playing item"
 msgstr " g                      നിലവിലുള്ള പ്ലേയിങ്ങ് ഇനത്തിലേയ്ക്ക് പോകുക"
 
-#: modules/gui/ncurses.c:916
+#: modules/gui/ncurses.c:907
 msgid " /                      Look for an item"
 msgstr " /                      ഒരു ഇനത്തിനായ് നോക്കുക"
 
-#: modules/gui/ncurses.c:917
+#: modules/gui/ncurses.c:908
 msgid " ;                      Look for the next item"
 msgstr " ;                      അടുത്ത ഇനത്തിനായി നോക്കുക"
 
-#: modules/gui/ncurses.c:918
+#: modules/gui/ncurses.c:909
 msgid " A                      Add an entry"
 msgstr "എ                      എന്‍ട്രി കൂട്ടിച്ചേര്‍ക്കുക"
 
 #. xgettext: You can use ⌫ character to translate <backspace>
-#: modules/gui/ncurses.c:920
+#: modules/gui/ncurses.c:911
 msgid " D, <backspace>, <del>  Delete an entry"
 msgstr " D, <backspace>, <del>  ഒരു രേഖപ്പെടുത്തല്‍ നീക്കം ചെയ്യുക"
 
-#: modules/gui/ncurses.c:921
+#: modules/gui/ncurses.c:912
 msgid " e                      Eject (if stopped)"
 msgstr " e                      പുറന്തള്ളുക(ഒരുപക്ഷെ നിന്നാല്‍)"
 
-#: modules/gui/ncurses.c:925
+#: modules/gui/ncurses.c:916
 msgid "[Filebrowser]"
 msgstr "[ഫയല്‍ബ്രൌസര്‍]"
 
-#: modules/gui/ncurses.c:927
+#: modules/gui/ncurses.c:918
 msgid " <enter>                Add the selected file to the playlist"
 msgstr " <enter>                പ്ലേലിസ്റ്റിലേയ്ക്ക് തിരഞ്ഞെടുത്ത ഫയല്‍ ചേര്‍ക്കുക"
 
-#: modules/gui/ncurses.c:928
+#: modules/gui/ncurses.c:919
 msgid " <space>                Add the selected directory to the playlist"
 msgstr "<space>                പ്ലേലിസ്റ്റിലേയ്ക്ക് തിരഞ്ഞെടുത്ത ഡയറക്ടറി ചേര്‍ക്കുക"
 
-#: modules/gui/ncurses.c:929
+#: modules/gui/ncurses.c:920
 msgid " .                      Show/Hide hidden files"
 msgstr " .                      ഗുപ്ത ഫയലുകള്‍ കാണിക്കുക/ഒളിപ്പിക്കുക "
 
-#: modules/gui/ncurses.c:933
+#: modules/gui/ncurses.c:924
 msgid "[Player]"
 msgstr "[പ്ലേയര്‍]"
 
 #. xgettext: You can use ↑ and ↓ characters
-#: modules/gui/ncurses.c:936
+#: modules/gui/ncurses.c:927
 #, c-format
 msgid " <up>,<down>            Seek +/-5%%"
 msgstr " <up>,<down>            Seek +/-5%%"
 
-#: modules/gui/ncurses.c:1055
+#: modules/gui/ncurses.c:1046
 #, fuzzy
 msgid "[Repeat]"
 msgstr "[ആവര്‍ത്തനം]"
 
-#: modules/gui/ncurses.c:1056
+#: modules/gui/ncurses.c:1047
 #, fuzzy
 msgid "[Random]"
 msgstr "[റാന്‍ഡം]"
 
-#: modules/gui/ncurses.c:1057
+#: modules/gui/ncurses.c:1048
 msgid "[Loop]"
 msgstr "[ലൂപ്പ്]"
 
-#: modules/gui/ncurses.c:1066
+#: modules/gui/ncurses.c:1057
 #, c-format
 msgid " Source   : %s"
 msgstr "സ്രോതസ്സ്   : %s"
 
-#: modules/gui/ncurses.c:1099
+#: modules/gui/ncurses.c:1090
 #, c-format
 msgid " Position : %s/%s"
 msgstr "സ്ഥാനം : %s/%s"
 
-#: modules/gui/ncurses.c:1104
+#: modules/gui/ncurses.c:1095
 msgid " Volume   : Mute"
 msgstr "ശബ്ദം   : മ്യൂട്ട്"
 
-#: modules/gui/ncurses.c:1105
+#: modules/gui/ncurses.c:1096
 #, c-format
 msgid " Volume   : %3ld%%"
 msgstr "വോളിയം  : %3ld%%"
 
-#: modules/gui/ncurses.c:1105
+#: modules/gui/ncurses.c:1096
 msgid " Volume   : ----"
 msgstr "ഒച്ച  : ----"
 
-#: modules/gui/ncurses.c:1111
+#: modules/gui/ncurses.c:1102
 #, c-format
 msgid " Title    : %<PRId64>/%d"
 msgstr "ശീര്‍ഷകം    : %<PRId64>/%d"
 
-#: modules/gui/ncurses.c:1117
+#: modules/gui/ncurses.c:1108
 #, c-format
 msgid " Chapter  : %<PRId64>/%d"
 msgstr "അധ്യായം  : %<PRId64>/%d"
 
-#: modules/gui/ncurses.c:1122
+#: modules/gui/ncurses.c:1113
 #, fuzzy
 msgid " Source: <no current item>"
 msgstr "ഉറവിടം: <നിലവില്‍ ഇനങ്ങള്‍ ഇല്ല>"
 
-#: modules/gui/ncurses.c:1124
+#: modules/gui/ncurses.c:1115
 msgid " [ h for help ]"
 msgstr " [ h സഹായത്തിനായി ]"
 
-#: modules/gui/ncurses.c:1145
+#: modules/gui/ncurses.c:1136
 #, c-format
 msgid "Open: %s"
 msgstr "തുറക്കുക: %s"
 
-#: modules/gui/ncurses.c:1147
+#: modules/gui/ncurses.c:1138
 #, c-format
 msgid "Find: %s"
 msgstr "കണ്ടെത്തുക: %s"
@@ -19792,85 +19770,68 @@ msgstr "നിലവിലെ മീഡിയ / സ്ട്രീം സ്ഥ�
 msgid "Input/Read"
 msgstr "ഇന്‍പുട്ട്/വായിക്കുക"
 
-#: modules/gui/qt/components/info_panels.cpp:575
-msgid "Output/Written/Sent"
-msgstr "ഔട്ട്പ്പുട്ട്/എഴുതിയ/അയച്ചു"
-
-#: modules/gui/qt/components/info_panels.cpp:577
+#: modules/gui/qt/components/info_panels.cpp:576
 msgid "Media data size"
 msgstr "മീഡിയ ഡേറ്റ വലുപ്പം"
 
-#: modules/gui/qt/components/info_panels.cpp:583
+#: modules/gui/qt/components/info_panels.cpp:582
 msgid "Demuxed data size"
 msgstr "ഡീമക്സ്ഡ് ഡാറ്റ വലിപ്പം"
 
-#: modules/gui/qt/components/info_panels.cpp:584
+#: modules/gui/qt/components/info_panels.cpp:583
 msgid "Content bitrate"
 msgstr "ഉള്ളടക്ക ബീറ്റ്റേറ്റ്"
 
-#: modules/gui/qt/components/info_panels.cpp:586
+#: modules/gui/qt/components/info_panels.cpp:585
 msgid "Discarded (corrupted)"
 msgstr "ഉപേക്ഷിക്കപ്പെട്ട (കേടായ)"
 
-#: modules/gui/qt/components/info_panels.cpp:588
+#: modules/gui/qt/components/info_panels.cpp:587
 msgid "Dropped (discontinued)"
 msgstr "വിട്ടുകളഞ്ഞത് (നിര്‍‌ത്തി)"
 
-#: modules/gui/qt/components/info_panels.cpp:591
-#: modules/gui/qt/components/info_panels.cpp:604
+#: modules/gui/qt/components/info_panels.cpp:590
+#: modules/gui/qt/components/info_panels.cpp:597
 msgid "Decoded"
 msgstr "ഡീകോഡഡ്"
 
-#: modules/gui/qt/components/info_panels.cpp:592
-#: modules/gui/qt/components/info_panels.cpp:605
+#: modules/gui/qt/components/info_panels.cpp:591
+#: modules/gui/qt/components/info_panels.cpp:598
 msgid "blocks"
 msgstr "ബ്ലോക്കുകള്‍"
 
-#: modules/gui/qt/components/info_panels.cpp:593
+#: modules/gui/qt/components/info_panels.cpp:592
 msgid "Displayed"
 msgstr "പ്രദര്‍ശിപ്പിച്ചു"
 
-#: modules/gui/qt/components/info_panels.cpp:594
-#: modules/gui/qt/components/info_panels.cpp:596
+#: modules/gui/qt/components/info_panels.cpp:593
+#: modules/gui/qt/components/info_panels.cpp:595
 msgid "frames"
 msgstr "ഫ്രെയിമുകള്‍"
 
-#: modules/gui/qt/components/info_panels.cpp:595
-#: modules/gui/qt/components/info_panels.cpp:608
+#: modules/gui/qt/components/info_panels.cpp:594
+#: modules/gui/qt/components/info_panels.cpp:601
 msgid "Lost"
 msgstr "നഷ്ടപ്പെട്ട"
 
-#: modules/gui/qt/components/info_panels.cpp:598
 #: modules/gui/qt/components/info_panels.cpp:599
-msgid "Sent"
-msgstr "അയയ്ച്ചു"
-
-#: modules/gui/qt/components/info_panels.cpp:598
-msgid "packets"
-msgstr "പാക്കറ്റുകള്‍"
-
-#: modules/gui/qt/components/info_panels.cpp:601
-msgid "Upstream rate"
-msgstr "അപ്സ്ട്രീം നിരക്ക്"
-
-#: modules/gui/qt/components/info_panels.cpp:606
 msgid "Played"
 msgstr "പ്ലേ ചെയ്തത്"
 
-#: modules/gui/qt/components/info_panels.cpp:607
-#: modules/gui/qt/components/info_panels.cpp:608
+#: modules/gui/qt/components/info_panels.cpp:600
+#: modules/gui/qt/components/info_panels.cpp:601
 msgid "buffers"
 msgstr "ബഫറുകള്‍"
 
-#: modules/gui/qt/components/info_panels.cpp:630
+#: modules/gui/qt/components/info_panels.cpp:622
 msgid "Last 60 seconds"
 msgstr "അവസാന 60 സെക്കന്റുകള്‍"
 
-#: modules/gui/qt/components/info_panels.cpp:631
+#: modules/gui/qt/components/info_panels.cpp:623
 msgid "Overall"
 msgstr "ആകെ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:605
+#: modules/gui/qt/components/interface_widgets.cpp:608
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
@@ -19878,45 +19839,45 @@ msgstr ""
 "നിലവിലെ പ്ലേബാക്ക് വേഗം:%1\n"
 "ക്രമപ്പെടുത്തുന്നതിന് അമര്‍ത്തുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:678
+#: modules/gui/qt/components/interface_widgets.cpp:681
 msgid "Revert to normal play speed"
 msgstr "സാധാരണ പ്ലേ വേഗതയിലേയ്ക്ക് തിരിച്ചാക്കുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:784
+#: modules/gui/qt/components/interface_widgets.cpp:787
 msgid "Download cover art"
 msgstr "കവര്‍ ആര്‍ട്ട് ഡൌണ്‍ലോഡ് ചെയ്യുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:788
+#: modules/gui/qt/components/interface_widgets.cpp:791
 msgid "Add cover art from file"
 msgstr "ഫയലില്‍ നിന്നും കവര്‍ ആര്‍ട്ട് ചേര്‍ക്കുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:854
+#: modules/gui/qt/components/interface_widgets.cpp:857
 msgid "Choose Cover Art"
 msgstr "കവര്‍ ആര്‍ട്ട് തിരഞ്ഞെടുക്കുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:855
+#: modules/gui/qt/components/interface_widgets.cpp:858
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "ചിത്ര ഫയലുകള്‍  (*.gif *.jpg *.jpeg *.png)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:879
+#: modules/gui/qt/components/interface_widgets.cpp:882
 #: modules/gui/qt/dialogs/toolbar.cpp:564
 msgid "Elapsed time"
 msgstr "കഴിഞ്ഞ സമയം"
 
-#: modules/gui/qt/components/interface_widgets.cpp:883
+#: modules/gui/qt/components/interface_widgets.cpp:886
 #: modules/gui/qt/dialogs/toolbar.cpp:568
 msgid "Total/Remaining time"
 msgstr "മൊത്തം/അവശേഷിക്കുന്ന സമയം"
 
-#: modules/gui/qt/components/interface_widgets.cpp:885
+#: modules/gui/qt/components/interface_widgets.cpp:888
 msgid "Click to toggle between total and remaining time"
 msgstr "ആകെയുള്ളതും കൂടാതെ ബാക്കിയുള്ളതുമായ സമയത്തിനിടയ്ക്ക് ടോഗ്ഗിള്‍ അമര്‍ത്തുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:891
+#: modules/gui/qt/components/interface_widgets.cpp:894
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "കഴിഞ്ഞതും കൂടാതെ ബാക്കിയുള്ളതുമായ സമയത്തിനിടയ്ക്ക് ടോഗ്ഗിള് അമര്‍ത്തുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:893
+#: modules/gui/qt/components/interface_widgets.cpp:896
 msgid "Double click to jump to a chosen time position"
 msgstr "തിരഞ്ഞെടുത്ത സമയ സ്ഥാനത്തേയ്ക്ക് കുതിക്കുന്നതിന് രണ്ട്പ്രാവശ്യം അമര്‍ത്തുക"
 
@@ -20216,12 +20177,12 @@ msgid "Key: "
 msgstr "കീ:"
 
 #: modules/gui/qt/components/simple_preferences.cpp:230
-#: modules/gui/qt/components/simple_preferences.cpp:571
+#: modules/gui/qt/components/simple_preferences.cpp:582
 msgid "Input & Codecs Settings"
 msgstr "ഇന്‍പുട്ട് & കോഡെക് ക്രമീകരണങ്ങള്‍"
 
 #: modules/gui/qt/components/simple_preferences.cpp:232
-#: modules/gui/qt/components/simple_preferences.cpp:854
+#: modules/gui/qt/components/simple_preferences.cpp:865
 msgid "Configure Hotkeys"
 msgstr "ഹോട്ട്കീകള്‍ കോണ്‍ഫിഗര്‍ ചെയ്യുക"
 
@@ -20229,7 +20190,7 @@ msgstr "ഹോട്ട്കീകള്‍ കോണ്‍ഫിഗര്‍ �
 msgid "Device:"
 msgstr "ഡിവൈസ്:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:576
+#: modules/gui/qt/components/simple_preferences.cpp:587
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -20241,60 +20202,60 @@ msgstr ""
 "നിങ്ങള്‍ക്ക് നൂതന മുന്‍ഗണനകളില്‍ ഒരു വിശിഷ്ടമായതിനെ നിര്‍വ്വചിക്കുകയോ\n"
 "അല്ലെങ്കില്‍ അവയെ വെവ്വേറെ രൂപരേഖയിലാക്കുകയോ ചെയ്യാവുന്നതാണ്."
 
-#: modules/gui/qt/components/simple_preferences.cpp:643
+#: modules/gui/qt/components/simple_preferences.cpp:654
 msgid "Lowest latency"
 msgstr "കുറഞ്ഞ ലാറ്റന്‍സി"
 
-#: modules/gui/qt/components/simple_preferences.cpp:644
+#: modules/gui/qt/components/simple_preferences.cpp:655
 msgid "Low latency"
 msgstr "കുറഞ്ഞ ലാറ്റന്‍സി"
 
-#: modules/gui/qt/components/simple_preferences.cpp:646
+#: modules/gui/qt/components/simple_preferences.cpp:657
 msgid "High latency"
 msgstr "ഉയര്‍ന്ന ലാറ്റന്‍സി"
 
-#: modules/gui/qt/components/simple_preferences.cpp:647
+#: modules/gui/qt/components/simple_preferences.cpp:658
 msgid "Higher latency"
 msgstr "ഉയര്‍ന്ന ലാറ്റന്‍സി"
 
-#: modules/gui/qt/components/simple_preferences.cpp:695
+#: modules/gui/qt/components/simple_preferences.cpp:706
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr ""
 "ഇത് VLCയുടെ സ്കിന്ന് ചെയ്യാവുന്ന പൊതുപ്രതലമാണ്. നിങ്ങള്‍ക്ക് മറ്റ് സ്കിന്നുകള്‍ ഡൌണ്‍ലോഡ് ചെയ്യാവുന്നതാണ് "
 "ഇതില്‍"
 
-#: modules/gui/qt/components/simple_preferences.cpp:697
+#: modules/gui/qt/components/simple_preferences.cpp:708
 msgid "VLC skins website"
 msgstr "വിഎല്‍സി സ്കിന്നുകളുടെ വെബ്ബ്സൈറ്റ്"
 
-#: modules/gui/qt/components/simple_preferences.cpp:721
+#: modules/gui/qt/components/simple_preferences.cpp:732
 msgid "System's default"
 msgstr "സിസ്റ്റ്ത്തിന്റെ സ്ഥിരസ്ഥിതി"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1239
+#: modules/gui/qt/components/simple_preferences.cpp:1256
 msgid "File associations"
 msgstr "ഫയല്‍ അസോസിയേഷനുകള്‍"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1248
+#: modules/gui/qt/components/simple_preferences.cpp:1265
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "ഓഡിയോ ഫയലുകള്‍"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1249
+#: modules/gui/qt/components/simple_preferences.cpp:1266
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "വീഡിയോ ഫയലുകള്‍"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1250
+#: modules/gui/qt/components/simple_preferences.cpp:1267
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "പ്ലേലിസ്റ്റ് ഫയലുകള്‍"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1315
+#: modules/gui/qt/components/simple_preferences.cpp:1332
 msgid "&Apply"
 msgstr "പ്രയോഗിക്കുക(_A)"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1316
+#: modules/gui/qt/components/simple_preferences.cpp:1333
 #: modules/gui/qt/dialogs/convert.cpp:133
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
@@ -21230,19 +21191,19 @@ msgstr ""
 msgid "Deactivate"
 msgstr "സജീവമാക്കുക"
 
-#: modules/gui/qt/main_interface.cpp:371
+#: modules/gui/qt/main_interface.cpp:376
 msgid "Do you want to restart the playback where left off?"
 msgstr "പ്ലേബാക്ക് നിര്‍ത്തിയ ഇടത്ത് നിന്ന് പുനരാരംഭിക്കാന്‍ നിങ്ങള്‍ ആഗ്രഹിക്കുന്നുവോ?"
 
-#: modules/gui/qt/main_interface.cpp:377
+#: modules/gui/qt/main_interface.cpp:382
 msgid "&Continue"
 msgstr "തുടരുക(_C)"
 
-#: modules/gui/qt/main_interface.cpp:1389
+#: modules/gui/qt/main_interface.cpp:1419
 msgid "Control menu for the player"
 msgstr "പ്ലെയറിന് വേണ്ടിയുള്ള നിയന്ത്രണ മെനു"
 
-#: modules/gui/qt/main_interface.cpp:1433
+#: modules/gui/qt/main_interface.cpp:1463
 msgid "Paused"
 msgstr "(പോസ്ഡ്)"
 
@@ -22003,7 +21964,7 @@ msgstr "ഇമേജ് ഗാമ (0-10)"
 msgid "Set the image gamma, between 0.01 and 10. Defaults to 1."
 msgstr "ചിത്ര ഗാമ 0.01 നും 10 നും ഇടയ്ക്ക് ക്രമീകരിക്കുക. സ്വമേധയാലുള്ളത് 1."
 
-#: modules/hw/d3d11/d3d11_filters.c:613
+#: modules/hw/d3d11/d3d11_filters.c:620
 #, fuzzy
 msgid "Direct3D11 filter"
 msgstr "ഡിറക്റ്റ്എക്സ്വീഡിയോ ത്വരിതപ്പെടുത്തല്‍ (ഡി‌എക്സ്‌വി‌എ) 2.0 "
@@ -25203,54 +25164,54 @@ msgstr "സഹജമായ സ്ട്രീം"
 msgid "Chromaprint stream output"
 msgstr "ശേഖരണ സ്ട്രീം ഔട്ട്പുട്ട്"
 
-#: modules/stream_out/chromecast/cast.cpp:103
+#: modules/stream_out/chromecast/cast.cpp:104
 #, fuzzy
 msgid "HTTP port"
 msgstr "എസ്എഫ്ടിപി പോര്‍ട്ട്"
 
-#: modules/stream_out/chromecast/cast.cpp:104
+#: modules/stream_out/chromecast/cast.cpp:105
 msgid ""
 "This sets the HTTP port of the local server used to stream the media to the "
 "Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:107
+#: modules/stream_out/chromecast/cast.cpp:108
 msgid "The Chromecast receiver can receive video."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:109
+#: modules/stream_out/chromecast/cast.cpp:110
 #, fuzzy
 msgid "This sets the muxer used to stream to the Chromecast."
 msgstr "ട്രാന്‍സ്കോഡ് ചെയ്ത സ്ട്രീമിനെ ഒരു ഐസ്കാസ്റ്റ് സെര്‍വറിലേയ്ക്ക് ഈ മോഡ്യൂള്‍ ഔട്ട്പുട്ട് ചെയ്യുന്നു."
 
-#: modules/stream_out/chromecast/cast.cpp:110
+#: modules/stream_out/chromecast/cast.cpp:111
 msgid "MIME content type"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:111
+#: modules/stream_out/chromecast/cast.cpp:112
 msgid "This sets the media MIME content type sent to the Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:114
+#: modules/stream_out/chromecast/cast.cpp:115
 #, fuzzy
 msgid "IP Address of the Chromecast."
 msgstr "സ്ട്രീം ചെയ്യുന്നതിന് കമ്പ്യൂട്ടറിന്റെ വിലാസം."
 
-#: modules/stream_out/chromecast/cast.cpp:115
+#: modules/stream_out/chromecast/cast.cpp:116
 #, fuzzy
 msgid "Chromecast port"
 msgstr "ക്രോമ ഫോര്‍മാറ്റ്"
 
-#: modules/stream_out/chromecast/cast.cpp:116
+#: modules/stream_out/chromecast/cast.cpp:117
 msgid "The port used to talk to the Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:120
+#: modules/stream_out/chromecast/cast.cpp:121
 #, fuzzy
 msgid "Chromecast"
 msgstr "ക്രോമ"
 
-#: modules/stream_out/chromecast/cast.cpp:121
+#: modules/stream_out/chromecast/cast.cpp:122
 #, fuzzy
 msgid "Chromecast stream output"
 msgstr "ശേഖരണ സ്ട്രീം ഔട്ട്പുട്ട്"
@@ -29052,6 +29013,46 @@ msgstr ""
 #: share/lua/http/index.html:278
 msgid "Are you sure you wish to create the stream?"
 msgstr "നിങ്ങള്‍ സ്ട്രീം സൃഷ്ടിക്കുന്നതിന് ആഗ്രഹിക്കുന്നു എന്നുള്ളത് തീര്‍ച്ചയാണോ?"
+
+#, fuzzy
+#~ msgid "Screen capture (with Wayland)"
+#~ msgstr "സ്ക്രീന്‍ ക്യാപ്ച്ചര്‍ ( X11/XCBയുമായി)"
+
+#~ msgid "+-[Streaming]"
+#~ msgstr "+-[സ്ട്രീമിംഗ്]"
+
+#~ msgid "| packets sent     :    %5<PRIi64>"
+#~ msgstr "| അയച്ച പാക്കറ്റുകള്‍ :   %5<PRIi64>"
+
+#~ msgid "| bytes sent       : %8.0f KiB"
+#~ msgstr "| അയച്ച ബൈറ്റുകള്‍ :   %8.0f KiB"
+
+#~ msgid "| sending bitrate  :   %6.0f kb/s"
+#~ msgstr "| അയക്കുന്ന ബിറ്റ്നിരക്ക് :    %6.0f kb/s"
+
+#~ msgid "Streaming"
+#~ msgstr "സ്ട്രീമിംഗ്"
+
+#~ msgid "Sent packets"
+#~ msgstr "പാക്കറ്റുകള്‍ അയയ്ക്കുക"
+
+#~ msgid "Sent bytes"
+#~ msgstr "ബൈറ്റ്സ് അയയ്ക്കുക"
+
+#~ msgid "Send rate"
+#~ msgstr "റേറ്റ് അയയ്ക്കുക"
+
+#~ msgid "Output/Written/Sent"
+#~ msgstr "ഔട്ട്പ്പുട്ട്/എഴുതിയ/അയച്ചു"
+
+#~ msgid "Sent"
+#~ msgstr "അയയ്ച്ചു"
+
+#~ msgid "packets"
+#~ msgstr "പാക്കറ്റുകള്‍"
+
+#~ msgid "Upstream rate"
+#~ msgstr "അപ്സ്ട്രീം നിരക്ക്"
 
 #~ msgid "Dialog"
 #~ msgstr "ഡയലോഗ്"

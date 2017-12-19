@@ -2,7 +2,7 @@
  * qt.cpp : Qt interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: c4c32f3f31209b6ac345d149c4379f3c766864cc $
+ * $Id: cbd197750ae0a2a4dc484ead9256535f0d58b2fe $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -408,14 +408,14 @@ static int Open( vlc_object_t *p_this, bool isDialogProvider )
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
     void *(*thread)(void *) = Thread;
 
-#ifdef QT5_HAS_WAYLAND
-    if( HasWayland() )
-        thread = ThreadWayland;
-    else
-#endif
 #ifdef QT5_HAS_X11
     if( HasX11( p_this ) )
         thread = ThreadXCB;
+    else
+#endif
+#ifdef QT5_HAS_WAYLAND
+    if( HasWayland() )
+        thread = ThreadWayland;
     else
 #endif
 #if defined (QT5_HAS_X11) || defined (QT5_HAS_WAYLAND)

@@ -2,7 +2,7 @@
  * VLCMain.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2016 VLC authors and VideoLAN
- * $Id: 6a77dab9f3effc14e442564da7162cc0fbd7ec78 $
+ * $Id: 16e8656b050424bac7f8fb95d1307b23d2b1aa35 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -237,6 +237,10 @@ static VLCMain *sharedInstance = nil;
 
         var_AddCallback(p_intf->obj.libvlc, "intf-toggle-fscontrol", ShowController, (__bridge void *)self);
         var_AddCallback(p_intf->obj.libvlc, "intf-show", ShowController, (__bridge void *)self);
+
+        // Load them here already to apply stored profiles
+        _videoEffectsPanel = [[VLCVideoEffectsWindowController alloc] init];
+        _audioEffectsPanel = [[VLCAudioEffectsWindowController alloc] init];
 
         playlist_t *p_playlist = pl_Get(p_intf);
         if ([NSApp currentSystemPresentationOptions] & NSApplicationPresentationFullScreen)
@@ -509,17 +513,11 @@ static VLCMain *sharedInstance = nil;
 
 - (VLCAudioEffectsWindowController *)audioEffectsPanel
 {
-    if (!_audioEffectsPanel)
-        _audioEffectsPanel = [[VLCAudioEffectsWindowController alloc] init];
-
     return _audioEffectsPanel;
 }
 
 - (VLCVideoEffectsWindowController *)videoEffectsPanel
 {
-    if (!_videoEffectsPanel)
-        _videoEffectsPanel = [[VLCVideoEffectsWindowController alloc] init];
-
     return _videoEffectsPanel;
 }
 

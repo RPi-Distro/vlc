@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: d95440a9486d39cd49b75cf3b003512efe0252fd $
+ * $Id: d872a91112d5238a2dec9053bff34b5067ed80b6 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -62,6 +62,7 @@ static bool IsHLS(const unsigned char *buf, size_t length)
         "#EXT-X-VERSION:",
         "#EXT-X-TARGETDURATION:",
         "#EXT-X-MEDIA-SEQUENCE:",
+        "#EXT-X-STREAM-INF:",
     };
 
     for (size_t i = 0; i < ARRAY_SIZE(hlsexts); i++)

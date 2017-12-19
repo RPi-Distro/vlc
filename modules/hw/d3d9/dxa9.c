@@ -2,7 +2,7 @@
  * dxa9.c : DXVA2 GPU surface conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2015 VLC authors, VideoLAN and VideoLabs
- * $Id: 887b3bf8ee9c5d950f8eb98ffc33212ac05900eb $
+ * $Id: 3f564e871a7e305de089a42bbb1dfc83d9a72b88 $
  *
  * Authors: Steve Lhomme <robux4@gmail.com>
  *
@@ -154,8 +154,7 @@ static void DXA9_NV12(filter_t *p_filter, picture_t *src, picture_t *dst)
             lock.Pitch,
             lock.Pitch,
         };
-        Copy420_SP_to_SP(dst, plane, pitch,
-                         src->format.i_visible_height + src->format.i_y_offset, p_copy_cache);
+        Copy420_SP_to_SP(dst, plane, pitch, desc.Height, p_copy_cache);
     } else {
         msg_Err(p_filter, "Unsupported DXA9 conversion from 0x%08X to NV12", desc.Format);
     }

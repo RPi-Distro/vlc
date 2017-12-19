@@ -2,7 +2,7 @@
  * info_panels.cpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 265fbbdd6f413c9a6b0125fea0a19139e238c94f $
+ * $Id: f4b1fba65b0afaecf669d539c013484d45b835fe $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -539,7 +539,7 @@ void InfoPanel::saveCodecsInfo()
 
 /**
  * Fourth Panel - Stats
- * Displays the Statistics for reading/streaming/encoding/displaying in a tree
+ * Displays the Statistics for reading/displaying in a tree
  */
 InputStatsPanel::InputStatsPanel( QWidget *parent ): QWidget( parent )
 {
@@ -572,7 +572,6 @@ InputStatsPanel::InputStatsPanel( QWidget *parent ): QWidget( parent )
     CREATE_CATEGORY( audio, qtr("Audio") );
     CREATE_CATEGORY( video, qtr("Video") );
     CREATE_CATEGORY( input, qtr("Input/Read") );
-    CREATE_CATEGORY( streaming, qtr("Output/Written/Sent") );
 
     CREATE_AND_ADD_TO_CAT( read_media_stat, qtr("Media data size"),
                            "0", input , "KiB" );
@@ -595,12 +594,6 @@ InputStatsPanel::InputStatsPanel( QWidget *parent ): QWidget( parent )
     CREATE_AND_ADD_TO_CAT( vlost_frames_stat, qtr("Lost"),
                            "0", video, qtr("frames") );
 
-    CREATE_AND_ADD_TO_CAT( send_stat, qtr("Sent"), "0", streaming, qtr("packets") );
-    CREATE_AND_ADD_TO_CAT( send_bytes_stat, qtr("Sent"),
-                           "0", streaming, "KiB" );
-    CREATE_AND_ADD_TO_CAT( send_bitrate_stat, qtr("Upstream rate"),
-                           "0", streaming, "kb/s" );
-
     CREATE_AND_ADD_TO_CAT( adecoded_stat, qtr("Decoded"),
                            "0", audio, qtr("blocks") );
     CREATE_AND_ADD_TO_CAT( aplayed_stat, qtr("Played"),
@@ -613,7 +606,6 @@ InputStatsPanel::InputStatsPanel( QWidget *parent ): QWidget( parent )
 
     input->setExpanded( true );
     video->setExpanded( true );
-    streaming->setExpanded( true );
     audio->setExpanded( true );
 
     StatsTree->resizeColumnToContents( 0 );
@@ -646,6 +638,11 @@ void InputStatsPanel::update( input_item_t *p_item )
 {
     if ( !isVisible() ) return;
     assert( p_item );
+
+    vlc_mutex_locker(&p_item->lock);
+    if( p_item->p_stats == NULL )
+        return;
+
     vlc_mutex_lock( &p_item->p_stats->lock );
 
 #define UPDATE_INT( widget, calc... ) \
@@ -667,11 +664,6 @@ void InputStatsPanel::update( input_item_t *p_item )
     UPDATE_INT( vdecoded_stat,     p_item->p_stats->i_decoded_video );
     UPDATE_INT( vdisplayed_stat,   p_item->p_stats->i_displayed_pictures );
     UPDATE_INT( vlost_frames_stat, p_item->p_stats->i_lost_pictures );
-
-    /* Sout */
-    UPDATE_INT( send_stat,        p_item->p_stats->i_sent_packets );
-    UPDATE_INT( send_bytes_stat,  (p_item->p_stats->i_sent_bytes)/ 1024 );
-    UPDATE_FLOAT( send_bitrate_stat, "%6.0f", (float)(p_item->p_stats->f_send_bitrate * 8000 ) );
 
     /* Audio*/
     UPDATE_INT( adecoded_stat, p_item->p_stats->i_decoded_audio );

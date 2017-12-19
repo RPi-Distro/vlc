@@ -2,7 +2,7 @@
  * VLCAudioEffectsWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2017 VLC authors and VideoLAN
- * $Id: 89f774445337a3ddffbcbf9ac4f10ea12e5e9f37 $
+ * $Id: 1f630cc661aa1eccd2df5da2f27a331065f70f16 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jérôme Decoodt <djc@videolan.org>
@@ -37,15 +37,6 @@
 
 #import <math.h>
 
-@interface VLCAudioEffectsWindowController ()
-{
-    NSInteger i_old_profile_index;
-}
-- (void)resetProfileSelector;
-- (void)updatePresetSelector;
-- (void)setBandSliderValuesForPreset:(NSInteger)presetID;
-@end
-
 #pragma mark -
 #pragma mark Initialization
 
@@ -79,33 +70,43 @@
         [workNames addObject:toNSStr(preset_list[i])];
     }
 
-    NSString *defaultProfile = [NSString stringWithFormat:@"ZmxhdA==;;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%i",
-                                .0,25.,100.,-11.,8.,2.5,7.,.85,1.,.4,.5,.5,2.,0];
-
-    NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:[NSArray arrayWithArray:workValues], @"EQValues", [NSArray arrayWithArray:workPreamp], @"EQPreampValues", [NSArray arrayWithArray:workTitles], @"EQTitles", [NSArray arrayWithArray:workNames], @"EQNames", [NSArray arrayWithObject:defaultProfile], @"AudioEffectProfiles", [NSArray arrayWithObject:_NS("Default")], @"AudioEffectProfileNames", nil];
+    NSDictionary *appDefaults = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 [NSArray arrayWithArray:workValues], @"EQValues",
+                                 [NSArray arrayWithArray:workPreamp], @"EQPreampValues",
+                                 [NSArray arrayWithArray:workTitles], @"EQTitles",
+                                 [NSArray arrayWithArray:workNames], @"EQNames",
+                                 [NSArray arrayWithObject:[VLCAudioEffectsWindowController defaultProfileString]], @"AudioEffectProfiles",
+                                 [NSArray arrayWithObject:_NS("Default")], @"AudioEffectProfileNames",
+                                  nil];
     [defaults registerDefaults:appDefaults];
+}
+
++ (NSString *)defaultProfileString
+{
+    return [NSString stringWithFormat:@"ZmxhdA==;;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%i",
+            .0,25.,100.,-11.,8.,2.5,7.,.85,1.,.4,.5,.5,2.,0];
 }
 
 - (id)init
 {
     self = [super initWithWindowNibName:@"AudioEffects"];
     if (self) {
-        i_old_profile_index = -1;
-
         self.popupPanel = [[VLCPopupPanelController alloc] init];
         self.textfieldPanel = [[VLCTextfieldPanelController alloc] init];
 
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         if ([defaults boolForKey:@"AudioEffectApplyProfileOnStartup"])
         {
+            // This does not reset the UI (which does not exist yet), but it initalizes needed playlist vars
             [self equalizerUpdated];
             [self resetCompressor];
             [self resetSpatializer];
             [self resetAudioFilters];
+
             [self loadProfile];
+        } else {
+            [self saveCurrentProfileIndex:0];
         }
-        else
-            [defaults setInteger:0 forKey:@"AudioEffectSelectedProfile"];
     }
 
     return self;
@@ -119,11 +120,12 @@
     return [[defaults objectForKey:@"EQNames"] indexOfObject:presetName];
 }
 
+/// Loads values from profile into variables
 - (void)loadProfile
 {
     intf_thread_t *p_intf = getIntf();
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSInteger selectedProfile = [defaults integerForKey:@"AudioEffectSelectedProfile"];
+    NSInteger profileIndex = [self currentProfileIndex];
     playlist_t *p_playlist = pl_Get(p_intf);
 
     /* disable existing filters */
@@ -136,7 +138,13 @@
     playlist_EnableAudioFilter(p_playlist, "karaoke", false);
 
     /* fetch preset */
-    NSArray *items = [[[defaults objectForKey:@"AudioEffectProfiles"] objectAtIndex:(NSUInteger) selectedProfile] componentsSeparatedByString:@";"];
+    NSString *profileString;
+    if (profileIndex == 0)
+        profileString = [VLCAudioEffectsWindowController defaultProfileString];
+    else
+        profileString = [[defaults objectForKey:@"AudioEffectProfiles"] objectAtIndex:profileIndex];
+
+    NSArray *items = [profileString componentsSeparatedByString:@";"];
 
     /* eq preset */
     char const *psz_eq_preset = [B64DecNSStr([items firstObject]) UTF8String];
@@ -146,18 +154,12 @@
     var_SetString(p_playlist, "equalizer-preset", psz_eq_preset);
 
     /* filter handling */
-    NSString *tempString = B64DecNSStr([items objectAtIndex:1]);
-    NSArray *tempArray;
-    NSUInteger count;
-    /* enable the new filters */
-    if ([tempString length] > 0) {
-        tempArray = [tempString componentsSeparatedByString:@":"];
-        count = [tempArray count];
-        for (NSUInteger x = 0; x < count; x++)
-            playlist_EnableAudioFilter(p_playlist, [[tempArray objectAtIndex:x] UTF8String], true);
-    }
+    NSString *audioFilters = B64DecNSStr([items objectAtIndex:1]);
+    if (p_aout)
+        var_SetString(p_aout, "audio-filter", audioFilters.UTF8String);
+    var_SetString(p_playlist, "audio-filter", audioFilters.UTF8String);
 
-    NSInteger presetIndex = [self getPresetIndexForProfile:selectedProfile];
+    NSInteger presetIndex = [self getPresetIndexForProfile:profileIndex];
 
     /* values */
     var_SetFloat(p_playlist, "compressor-rms-peak",[[items objectAtIndex:2] floatValue]);
@@ -198,17 +200,6 @@
         var_SetFloat(p_aout, "equalizer-preamp", [[[defaults objectForKey:@"EQPreampValues"] objectAtIndex:presetIndex] floatValue]);
         var_SetString(p_aout, "equalizer-preset", [[[defaults objectForKey:@"EQNames"] objectAtIndex:presetIndex] UTF8String]);
     }
-
-    /* update UI */
-    BOOL b_equalizerEnabled = [tempString rangeOfString:@"equalizer"].location != NSNotFound;
-    [_equalizerView enableSubviews:b_equalizerEnabled];
-    [_equalizerEnableCheckbox setState:(b_equalizerEnabled ? NSOnState : NSOffState)];
-
-    [_equalizerTwoPassCheckbox setState:[[items objectAtIndex:15] intValue]];
-
-    /* store current profile selection */
-    [defaults setInteger:selectedProfile forKey:@"AudioEffectSelectedProfile"];
-    [defaults synchronize];
 
     if (p_aout)
         vlc_object_release(p_aout);
@@ -294,6 +285,27 @@
 #pragma mark -
 #pragma mark internal functions
 
+
+- (void)saveCurrentProfileIndex:(NSInteger)index
+{
+    [[NSUserDefaults standardUserDefaults] setInteger:index forKey:@"AudioEffectSelectedProfile"];
+}
+
+- (NSInteger)currentProfileIndex
+{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"AudioEffectSelectedProfile"];
+}
+
+/// Returns the list of profile names (omitting the Default entry)
+- (NSArray *)nonDefaultProfileNames
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+    NSMutableArray *names = [[defaults stringArrayForKey:@"AudioEffectProfileNames"] mutableCopy];
+    [names removeObjectAtIndex:0];
+    return [names copy];
+}
+
 - (void)setAudioFilter: (char *)psz_name on:(BOOL)b_on
 {
     playlist_EnableAudioFilter(pl_Get(getIntf()), psz_name, b_on);
@@ -304,22 +316,25 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [_profilePopup removeAllItems];
 
-    NSArray *profileNames = [defaults objectForKey:@"AudioEffectProfileNames"];
-    [_profilePopup addItemsWithTitles:profileNames];
+    // Ignore "Default" index 0 from settings
+    [_profilePopup addItemWithTitle:_NS("Default")];
+
+    [_profilePopup addItemsWithTitles:[self nonDefaultProfileNames]];
 
     [[_profilePopup menu] addItem:[NSMenuItem separatorItem]];
     [_profilePopup addItemWithTitle:_NS("Duplicate current profile...")];
     [[_profilePopup lastItem] setTarget: self];
     [[_profilePopup lastItem] setAction: @selector(addAudioEffectsProfile:)];
 
-    if ([profileNames count] > 1) {
+    if ([[self nonDefaultProfileNames] count] > 0) {
         [_profilePopup addItemWithTitle:_NS("Organize Profiles...")];
         [[_profilePopup lastItem] setTarget: self];
         [[_profilePopup lastItem] setAction: @selector(removeAudioEffectsProfile:)];
     }
 
-    [_profilePopup selectItemAtIndex:[defaults integerForKey:@"AudioEffectSelectedProfile"]];
-    if (i_old_profile_index || [[NSUserDefaults standardUserDefaults] integerForKey:@"AudioEffectSelectedProfile"])
+    [_profilePopup selectItemAtIndex:[self currentProfileIndex]];
+    // Loading only non-default profiles ensures that vlcrc or command line settings are not overwritten
+    if ([self currentProfileIndex] > 0)
         [self profileSelectorAction:self];
 }
 
@@ -344,6 +359,7 @@
 - (NSString *)generateProfileString
 {
     playlist_t *p_playlist = pl_Get(getIntf());
+
     return [NSString stringWithFormat:@"%@;%@;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%i",
                      B64EncAndFree(var_GetNonEmptyString(p_playlist, "equalizer-preset")),
                      B64EncAndFree(var_InheritString(p_playlist, "audio-filter")),
@@ -365,7 +381,8 @@
 
 - (void)saveCurrentProfile
 {
-    if (!i_old_profile_index || i_old_profile_index == -1)
+    NSInteger currentProfileIndex = [self currentProfileIndex];
+    if (currentProfileIndex == 0)
         return;
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -373,31 +390,41 @@
     NSString *newProfile = [self generateProfileString];
 
     NSMutableArray *workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"AudioEffectProfiles"]];
-    if (i_old_profile_index >= [workArray count])
+    if (currentProfileIndex >= [workArray count])
         return;
 
-    [workArray replaceObjectAtIndex:i_old_profile_index withObject:newProfile];
+    [workArray replaceObjectAtIndex:currentProfileIndex withObject:newProfile];
     [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"AudioEffectProfiles"];
     [defaults synchronize];
 }
 
 - (void)saveCurrentProfileAtTerminate
 {
-    if (i_old_profile_index)
-        return [self saveCurrentProfile];
+    if ([self currentProfileIndex] > 0) {
+        [self saveCurrentProfile];
+        return;
+    }
+
+    if (_applyProfileCheckbox.state == NSOffState)
+        return;
 
     playlist_t *p_playlist = pl_Get(getIntf());
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([[self generateProfileString] compare:[VLCAudioEffectsWindowController defaultProfileString]] == NSOrderedSame)
+        return;
+
+    // FIXME: Current code does not allow auto save of equalizer profiles, those profiles currently need to be saved
+    // individually with the popup menu, before saving the overall profile.
+    // Below code for auto duplication is not enough to fix current behaviour and results in too many duplicated profiles
+    // For auto-saving of eq profiles, a different stragety needs to be found, involving save also once overall profile changes.
+/*
     NSString *newPresetString = [NSString stringWithCString:var_InheritString(p_playlist, "equalizer-bands") encoding:NSASCIIStringEncoding];
     float newPresetPreamp = var_InheritFloat(p_playlist, "equalizer-preamp");
 
+    // TODO: Comparing against profile 0 is mostly useless and looks wrong (profile 0 is flat usually)
     NSInteger defaultPresetIndex = [self getPresetIndexForProfile:0];
     NSString *defaultPresetString = [[defaults objectForKey:@"EQValues"] objectAtIndex:defaultPresetIndex];
     float defaultPresetPreamp = [[[defaults objectForKey:@"EQPreampValues"] objectAtIndex:defaultPresetIndex] floatValue];
-    if ([[self generateProfileString] compare:[[defaults objectForKey:@"AudioEffectProfiles"] firstObject]] == NSOrderedSame &&
-        [newPresetString compare:defaultPresetString] == NSOrderedSame &&
-        newPresetPreamp == defaultPresetPreamp)
-        return;
 
     NSMutableArray *workArray;
     int num_custom;
@@ -405,7 +432,7 @@
     if ([newPresetString compare:defaultPresetString] != NSOrderedSame ||
         newPresetPreamp != defaultPresetPreamp)
     {
-        /* preset title */
+        // preset title
         NSArray<NSString *> *presetTitles = [defaults objectForKey:@"EQTitles"];
         NSString *newPresetTitle;
 
@@ -418,24 +445,26 @@
         [workArray addObject:newPresetTitle];
         [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"EQTitles"];
 
-        /* preset name */
+        // preset name
         NSString *decomposedStringWithCanonicalMapping = [newPresetTitle decomposedStringWithCanonicalMapping];
         workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"EQNames"]];
         [workArray addObject:decomposedStringWithCanonicalMapping];
         [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"EQNames"];
         var_SetString(p_playlist, "equalizer-preset", [decomposedStringWithCanonicalMapping UTF8String]);
 
-        /* preset bands */
+        // preset bands
         workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"EQValues"]];
         [workArray addObject:newPresetString];
         [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"EQValues"];
 
-        /* preset preamp */
+        // preset preamp
         workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"EQPreampValues"]];
         [workArray addObject:[NSString stringWithFormat:@"%.1f", [_equalizerPreampSlider floatValue]]];
         [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"EQPreampValues"];
     }
+*/
 
+    NSMutableArray *workArray;
     /* profile string */
     workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"AudioEffectProfiles"]];
     [workArray addObject:[self generateProfileString]];
@@ -445,7 +474,7 @@
     NSArray<NSString *> *profileNames = [defaults objectForKey:@"AudioEffectProfileNames"];
     NSString *newProfileName;
 
-    num_custom = 0;
+    int num_custom = 0;
     do
         newProfileName = [@"Custom" stringByAppendingString:[NSString stringWithFormat:@"%03i",num_custom++]];
     while ([profileNames containsObject:newProfileName]);
@@ -454,17 +483,20 @@
     [workArray addObject:newProfileName];
     [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"AudioEffectProfileNames"];
 
+    [self saveCurrentProfileIndex:([workArray count] - 1)];
+
     [defaults synchronize];
 }
 
 - (IBAction)profileSelectorAction:(id)sender
 {
     [self saveCurrentProfile];
-    i_old_profile_index = [_profilePopup indexOfSelectedItem];
-    [[NSUserDefaults standardUserDefaults] setInteger:i_old_profile_index forKey:@"AudioEffectSelectedProfile"];
+
+    [self saveCurrentProfileIndex:[_profilePopup indexOfSelectedItem]];
     [self loadProfile];
 
     /* update UI */
+    [self equalizerUpdated];
     [self resetCompressor];
     [self resetSpatializer];
     [self resetAudioFilters];
@@ -482,17 +514,18 @@
     __unsafe_unretained typeof(self) _self = self;
     [_textfieldPanel runModalForWindow:self.window completionHandler:^(NSInteger returnCode, NSString *resultingText) {
 
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSInteger currentProfileIndex = [_self currentProfileIndex];
         if (returnCode != NSOKButton) {
-            [_profilePopup selectItemAtIndex:[defaults integerForKey:@"AudioEffectSelectedProfile"]];
+            [_profilePopup selectItemAtIndex:currentProfileIndex];
             return;
         }
 
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSArray *profileNames = [defaults objectForKey:@"AudioEffectProfileNames"];
 
         // duplicate names are not allowed in the popup control
         if ([resultingText length] == 0 || [profileNames containsObject:resultingText]) {
-            [_profilePopup selectItemAtIndex:[defaults integerForKey:@"AudioEffectSelectedProfile"]];
+            [_profilePopup selectItemAtIndex:currentProfileIndex];
 
             NSAlert *alert = [[NSAlert alloc] init];
             [alert setAlertStyle:NSCriticalAlertStyle];
@@ -512,10 +545,13 @@
         NSMutableArray *workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"AudioEffectProfiles"]];
         [workArray addObject:newProfile];
         [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"AudioEffectProfiles"];
-        [defaults setInteger:[workArray count] - 1 forKey:@"AudioEffectSelectedProfile"];
+
         workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"AudioEffectProfileNames"]];
         [workArray addObject:resultingText];
         [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"AudioEffectProfileNames"];
+
+        [_self saveCurrentProfileIndex:([workArray count] - 1)];
+
 
         /* save defaults */
         [defaults synchronize];
@@ -531,22 +567,21 @@
     [_popupPanel setSubTitleString:_NS("Select the preset you would like to remove:")];
     [_popupPanel setOkButtonString:_NS("Remove")];
     [_popupPanel setCancelButtonString:_NS("Cancel")];
-    [_popupPanel setPopupButtonContent:[[NSUserDefaults standardUserDefaults] objectForKey:@"AudioEffectProfileNames"]];
+    [_popupPanel setPopupButtonContent:[self nonDefaultProfileNames]];
 
     __unsafe_unretained typeof(self) _self = self;
     [_popupPanel runModalForWindow:self.window completionHandler:^(NSInteger returnCode, NSInteger selectedIndex) {
 
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSInteger currentProfileIndex = [_self currentProfileIndex];
         if (returnCode != NSOKButton) {
-            [_profilePopup selectItemAtIndex:[defaults integerForKey:@"AudioEffectSelectedProfile"]];
+            [_profilePopup selectItemAtIndex:currentProfileIndex];
             return;
         }
 
-        if (!selectedIndex) { // TODO: add popup to notify user
-            [_profilePopup selectItemAtIndex:[defaults integerForKey:@"AudioEffectSelectedProfile"]];
-            return;
-        }
+        // Popup panel does not contain the "Default" entry
+        selectedIndex++;
 
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         /* remove selected profile from settings */
         NSMutableArray *workArray = [[NSMutableArray alloc] initWithArray:[defaults objectForKey:@"AudioEffectProfiles"]];
         [workArray removeObjectAtIndex:selectedIndex];
@@ -555,8 +590,8 @@
         [workArray removeObjectAtIndex:selectedIndex];
         [defaults setObject:[NSArray arrayWithArray:workArray] forKey:@"AudioEffectProfileNames"];
 
-        if (i_old_profile_index >= selectedIndex)
-            [defaults setInteger:i_old_profile_index - 1 forKey:@"AudioEffectSelectedProfile"];
+        if (currentProfileIndex >= selectedIndex)
+            [_self saveCurrentProfileIndex:(currentProfileIndex - 1)];
 
         /* save defaults */
         [defaults synchronize];
@@ -928,8 +963,7 @@ static bool GetEqualizerStatus(intf_thread_t *p_custom_intf,
 
 - (IBAction)compressorSliderUpdated:(id)sender
 {
-    audio_output_t *p_aout = getAout();
-    char *psz_property;
+    char *psz_property = nil;
     float f_value = [sender floatValue];
 
     if (sender == _compressorBand1Slider)
@@ -947,6 +981,9 @@ static bool GetEqualizerStatus(intf_thread_t *p_custom_intf,
     else if (sender == _compressorBand7Slider)
         psz_property = "compressor-makeup-gain";
 
+    assert(psz_property);
+
+    audio_output_t *p_aout = getAout();
     if (p_aout) {
         var_SetFloat(p_aout, psz_property, f_value);
         vlc_object_release(p_aout);
@@ -1028,8 +1065,7 @@ static bool GetEqualizerStatus(intf_thread_t *p_custom_intf,
 
 - (IBAction)spatializerSliderUpdated:(id)sender
 {
-    audio_output_t *p_aout = getAout();
-    char *psz_property = NULL;
+    char *psz_property = nil;
     float f_value = [sender floatValue];
 
     if (sender == _spatializerBand1Slider)
@@ -1043,6 +1079,9 @@ static bool GetEqualizerStatus(intf_thread_t *p_custom_intf,
     else if (sender == _spatializerBand5Slider)
         psz_property = "spatializer-damp";
 
+    assert(psz_property);
+
+    audio_output_t *p_aout = getAout();
     if (p_aout) {
         var_SetFloat(p_aout, psz_property, f_value / 10.f);
         vlc_object_release(p_aout);

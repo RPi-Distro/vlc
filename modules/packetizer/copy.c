@@ -2,7 +2,7 @@
  * copy.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: 2ffa58c18529b3fd07bca346911a9db90969f590 $
+ * $Id: 073a663ed87af48f616e628fc5474dcfefc55603 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -105,7 +105,7 @@ static int Open( vlc_object_t *p_this )
         break;
     }
 
-    vlc_fourcc_t fcc = p_dec->fmt_out.i_codec;
+    vlc_fourcc_t fcc = p_dec->fmt_in.i_codec;
     /* Fix the value of the fourcc for audio */
     if( p_dec->fmt_in.i_cat == AUDIO_ES )
     {

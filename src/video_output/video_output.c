@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 0088ee9ccac7c40963a9bcacee7da0a553821f0d $
+ * $Id: 640d999e803cbd53f353632b95e57da15f009d96 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1545,8 +1545,12 @@ static int ThreadReinit(vout_thread_t *vout,
         ThreadClean(vout);
         return VLC_EGENERIC;
     }
-    /* We ignore crop/ar changes at this point, they are dynamically supported */
-    VideoFormatCopyCropAr(&vout->p->original, &original);
+
+    /* We ignore ar changes at this point, they are dynamically supported.
+     * #19268: don't ignore crop changes (fix vouts using the crop size of the
+     * previous format). */
+    vout->p->original.i_sar_num = original.i_sar_num;
+    vout->p->original.i_sar_den = original.i_sar_den;
     if (video_format_IsSimilar(&original, &vout->p->original)) {
         if (cfg->dpb_size <= vout->p->dpb_size) {
             video_format_Clean(&original);

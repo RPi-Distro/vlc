@@ -2,7 +2,7 @@
  * CoreInteraction.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2015 Felix Paul Kühne
- * $Id: 2aff35a737162e10f126b0655ee471b3d0b6eee6 $
+ * $Id: 636095a6a5b5677d0da6ccb60561ffb905e3ee25 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -806,7 +806,7 @@ static int BossCallback(vlc_object_t *p_this, const char *psz_var,
     playlist_t *p_playlist = pl_Get(p_intf);
     if (!p_intf)
         return;
-    int i_type;
+    int i_type = 0;
     bool b_is_command = false;
     char const *psz_filter_type = [self getFilterType: psz_filter];
     if (!psz_filter_type) {

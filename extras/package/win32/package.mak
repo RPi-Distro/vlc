@@ -26,9 +26,19 @@ package-win-install:
 	$(MAKE) install
 	touch $@
 
-package-win-common: package-win-install
-	mkdir -p "$(win32_destdir)"/
+package-win-sdk:
+	mkdir -p "$(win32_destdir)/sdk/lib/"
+	cp -r $(prefix)/include "$(win32_destdir)/sdk"
+	cp -r $(prefix)/lib/pkgconfig "$(win32_destdir)/sdk/lib"
+	cd $(prefix)/lib && cp -rv libvlc.la libvlccore.la "$(win32_destdir)/sdk/lib/"
+	cd $(prefix)/lib && cp -rv libvlc.dll.a "$(win32_destdir)/sdk/lib/libvlc.lib"
+	cd $(prefix)/lib && cp -rv libvlccore.dll.a "$(win32_destdir)/sdk/lib/libvlccore.lib"
+	$(DLLTOOL) -D libvlc.dll -l "$(win32_destdir)/sdk/lib/libvlc.lib" -d "$(top_builddir)/lib/.libs/libvlc.dll.def" "$(prefix)/bin/libvlc.dll"
+	echo "INPUT(libvlc.lib)" > "$(win32_destdir)/sdk/lib/vlc.lib"
+	$(DLLTOOL) -D libvlccore.dll -l "$(win32_destdir)/sdk/lib/libvlccore.lib" -d "$(top_builddir)/src/.libs/libvlccore.dll.def" "$(prefix)/bin/libvlccore.dll"
+	echo "INPUT(libvlccore.lib)" > "$(win32_destdir)/sdk/lib/vlccore.lib"
 
+package-win-common: package-win-install package-win-sdk
 # Executables, major libs
 	find $(prefix) -maxdepth 4 \( -name "*$(LIBEXT)" -o -name "*$(EXEEXT)" \) -exec cp {} "$(win32_destdir)/" \;
 
@@ -61,18 +71,6 @@ endif
 # HRTF
 	cp -r $(srcdir)/share/hrtfs $(win32_destdir)/
 
-# SDK
-	mkdir -p "$(win32_destdir)/sdk/lib/"
-	cp -r $(prefix)/include "$(win32_destdir)/sdk"
-	cp -r $(prefix)/lib/pkgconfig "$(win32_destdir)/sdk/lib"
-	cd $(prefix)/lib && cp -rv libvlc.la libvlccore.la "$(win32_destdir)/sdk/lib/"
-	cd $(prefix)/lib && cp -rv libvlc.dll.a "$(win32_destdir)/sdk/lib/libvlc.lib"
-	cd $(prefix)/lib && cp -rv libvlccore.dll.a "$(win32_destdir)/sdk/lib/libvlccore.lib"
-	$(DLLTOOL) -D libvlc.dll -l "$(win32_destdir)/sdk/lib/libvlc.lib" -d "$(top_builddir)/lib/.libs/libvlc.dll.def" "$(prefix)/bin/libvlc.dll"
-	echo "INPUT(libvlc.lib)" > "$(win32_destdir)/sdk/lib/vlc.lib"
-	$(DLLTOOL) -D libvlccore.dll -l "$(win32_destdir)/sdk/lib/libvlccore.lib" -d "$(top_builddir)/src/.libs/libvlccore.dll.def" "$(prefix)/bin/libvlccore.dll"
-	echo "INPUT(libvlccore.lib)" > "$(win32_destdir)/sdk/lib/vlccore.lib"
-
 # Convert to DOS line endings
 	find $(win32_destdir) -type f \( -name "*xml" -or -name "*html" -or -name '*js' -or -name '*css' -or -name '*hosts' -or -iname '*txt' -or -name '*.cfg' -or -name '*.lua' \) -exec $(U2D) -q {} \;
 
@@ -91,17 +89,6 @@ package-win-strip: package-win-common package-win-npapi
 	    $(OBJCOPY) --add-gnu-debuglink="$(win32_debugdir)/`basename $$i.dbg`" "$$i" ; \
 	  fi ; \
 	done
-	if test -n "$(SIGNATURE)"; then \
-	  cd $(win32_destdir); find . -type f \( -name '*$(LIBEXT)' -or -name '*$(EXEEXT)' \) | while read i; \
-	  do if test -n "$$i" ; then \
-	    osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -t http://timestamp.verisign.com/scripts/timstamp.dll -h sha1 -in "$$i" -out "$$i.sign"; \
-	    mv "$$i.sign" "$$i" ; \
-	    osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -t http://timestamp.verisign.com/scripts/timstamp.dll -nest -h sha2 -in "$$i" -out "$$i.sign"; \
-	    mv "$$i.sign" "$$i" ; \
-	  fi ; \
-	  done \
-	fi
-
 
 package-win32-webplugin-common: package-win-strip
 	mkdir -p "$(win32_xpi_destdir)/plugins/"
@@ -138,7 +125,6 @@ package-win32-exe: package-win-strip $(win32_destdir)/NSIS/nsProcess.dll extras/
 	cp    $(top_builddir)/extras/package/win32/NSIS/spad.nsi      "$(win32_destdir)/"
 	cp -r $(srcdir)/extras/package/win32/NSIS/languages    "$(win32_destdir)/"
 	cp -r $(srcdir)/extras/package/win32/NSIS/helpers      "$(win32_destdir)/"
-	mkdir -p "$(win32_destdir)/NSIS/"
 	cp "$(top_srcdir)/extras/package/win32/NSIS/nsProcess.nsh" "$(win32_destdir)/NSIS/"
 
 # Create package
@@ -156,12 +142,6 @@ package-win32-exe: package-win-strip $(win32_destdir)/NSIS/nsProcess.dll extras/
 	fi; \
 	eval "$$MAKENSIS $(win32_destdir)/spad.nsi"; \
 	eval "$$MAKENSIS $(win32_destdir)/vlc.win32.nsi"
-	if test -n "$(SIGNATURE)"; then \
-		osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -t http://timestamp.verisign.com/scripts/timstamp.dll -h sha1 -in "$(WINVERSION).exe" -out "$(WINVERSION).exe.sign"; \
-	    mv "$(WINVERSION).exe.sign" "$(WINVERSION).exe" ; \
-		osslsigncode sign -certs $(SIGNATURE)/cert.cer -key $(SIGNATURE)/videolan.key -n "VLC media player" -i http://www.videolan.org/ -t http://timestamp.verisign.com/scripts/timstamp.dll -nest -h sha2 -in "$(WINVERSION).exe" -out "$(WINVERSION).exe.sign"; \
-	    mv "$(WINVERSION).exe.sign" "$(WINVERSION).exe" ; \
-	fi
 
 package-win32-zip: package-win-strip
 	rm -f -- $(WINVERSION).zip
@@ -184,6 +164,14 @@ package-win32: package-win32-zip package-win32-7zip package-win32-exe package-wi
 
 package-win32-debug: package-win32-debug-zip package-win32-debug-7zip
 
+package-win32-release: package-win-strip $(win32_destdir)/NSIS/nsProcess.dll package-win-sdk
+	cp    $(top_builddir)/extras/package/win32/NSIS/vlc.win32.nsi "$(win32_destdir)/"
+	cp    $(top_builddir)/extras/package/win32/NSIS/spad.nsi      "$(win32_destdir)/"
+	cp -r $(srcdir)/extras/package/win32/NSIS/languages    		  "$(win32_destdir)/"
+	cp -r $(srcdir)/extras/package/win32/NSIS/helpers      		  "$(win32_destdir)/"
+	cp "$(top_srcdir)/extras/package/win32/NSIS/nsProcess.nsh" "$(win32_destdir)/NSIS/"
+
+	7z a $(7Z_OPTS) $(WINVERSION)-release.7z $(win32_debugdir) "$(win32_destdir)/"
 
 #######
 # WinCE
