@@ -219,7 +219,7 @@ static int  Direct3D11Open (vout_display_t *);
 static void Direct3D11Close(vout_display_t *);
 
 static int SetupOutputFormat(vout_display_t *, video_format_t *);
-static int  Direct3D11CreateFormatResources (vout_display_t *, video_format_t *);
+static int  Direct3D11CreateFormatResources (vout_display_t *, const video_format_t *);
 static int  Direct3D11CreateGenericResources(vout_display_t *);
 static void Direct3D11DestroyResources(vout_display_t *);
 
@@ -403,9 +403,33 @@ static int Direct3D11MapPoolTexture(picture_t *picture)
     return CommonUpdatePicture(picture, NULL, mappedResource.pData, mappedResource.RowPitch);
 }
 
+/* add black pixels in the padding to ease the interpolation artefacts */
+static void EraseYUVBorders(int i_planes, plane_t planes[PICTURE_PLANE_MAX])
+{
+    for (int i = 0; i < i_planes; i++)
+    {
+        uint8_t val = (i == 0) ? 0x00 : 0x80;
+        if (planes[i].i_visible_lines < planes[i].i_lines)
+        {
+            memset(planes[i].p_pixels + (planes[i].i_visible_lines * planes[i].i_pitch), val, planes[i].i_visible_pitch);
+        }
+
+        if (planes[i].i_visible_pitch < planes[i].i_pitch)
+        {
+            for (int j=0; j<planes[i].i_visible_lines; j++)
+            {
+                planes[i].p_pixels[j * planes[i].i_pitch + (planes[i].i_visible_pitch + 0) ] = val;
+                if (i_planes == 2)
+                    planes[i].p_pixels[j * planes[i].i_pitch + (planes[i].i_visible_pitch + 1) ] = val;
+            }
+        }
+    }
+}
+
 static void Direct3D11UnmapPoolTexture(picture_t *picture)
 {
     picture_sys_t *p_sys = picture->p_sys;
+    EraseYUVBorders(picture->i_planes, picture->p);
     ID3D11DeviceContext_Unmap(p_sys->context, p_sys->resource[KNOWN_DXGI_INDEX], 0);
 }
 
@@ -701,6 +725,20 @@ static HRESULT UpdateBackBuffer(vout_display_t *vd)
         rect = sys->sys.rect_dest_clipped;
     uint32_t i_width = RECTWidth(rect);
     uint32_t i_height = RECTHeight(rect);
+    D3D11_TEXTURE2D_DESC dsc = { 0 };
+
+    if (sys->d3drenderTargetView) {
+        ID3D11Resource *res = NULL;
+        ID3D11RenderTargetView_GetResource(sys->d3drenderTargetView, &res);
+        if (res)
+        {
+            ID3D11Texture2D_GetDesc((ID3D11Texture2D*) res, &dsc);
+            ID3D11Resource_Release(res);
+        }
+    }
+
+    if (dsc.Width == i_width && dsc.Height == i_height)
+        return S_OK; /* nothing changed */
 
     if (sys->d3drenderTargetView) {
         ID3D11RenderTargetView_Release(sys->d3drenderTargetView);
@@ -1047,21 +1085,37 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
         D3D11_TEXTURE2D_DESC texDesc;
         int i;
         HRESULT hr;
+        plane_t planes[PICTURE_PLANE_MAX];
 
+        bool b_mapped = true;
         for (i = 0; i < picture->i_planes; i++) {
             hr = ID3D11DeviceContext_Map(sys->d3d_dev.d3dcontext, sys->stagingSys.resource[i],
                                          0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-            if( FAILED(hr) )
+            if( unlikely(FAILED(hr)) )
+            {
+                while (i-- > 0)
+                    ID3D11DeviceContext_Unmap(sys->d3d_dev.d3dcontext, sys->stagingSys.resource[i], 0);
+                b_mapped = false;
                 break;
+            }
             ID3D11Texture2D_GetDesc(sys->stagingSys.texture[i], &texDesc);
-            plane_t texture_plane;
-            texture_plane.i_lines = texDesc.Height;
-            texture_plane.i_pitch = mappedResource.RowPitch;
-            texture_plane.p_pixels = mappedResource.pData;
-            texture_plane.i_visible_lines = picture->p[i].i_visible_lines;
-            texture_plane.i_visible_pitch = picture->p[i].i_visible_pitch;
-            plane_CopyPixels(&texture_plane, &picture->p[i]);
-            ID3D11DeviceContext_Unmap(sys->d3d_dev.d3dcontext, sys->stagingSys.resource[i], 0);
+            planes[i].i_lines = texDesc.Height;
+            planes[i].i_pitch = mappedResource.RowPitch;
+            planes[i].p_pixels = mappedResource.pData;
+
+            planes[i].i_visible_lines = picture->p[i].i_visible_lines;
+            planes[i].i_visible_pitch = picture->p[i].i_visible_pitch;
+        }
+
+        if (b_mapped)
+        {
+            for (i = 0; i < picture->i_planes; i++)
+                plane_CopyPixels(&planes[i], &picture->p[i]);
+
+            EraseYUVBorders(picture->i_planes, planes);
+
+            for (i = 0; i < picture->i_planes; i++)
+                ID3D11DeviceContext_Unmap(sys->d3d_dev.d3dcontext, sys->stagingSys.resource[i], 0);
         }
     }
     else
@@ -1077,26 +1131,11 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
             if (!is_d3d11_opaque(picture->format.i_chroma))
                 Direct3D11UnmapPoolTexture(picture);
             ID3D11Texture2D_GetDesc(sys->stagingSys.texture[0], &texDesc);
-            D3D11_BOX box = {
-                .top = 0,
-                .bottom = picture->format.i_y_offset + picture->format.i_visible_height,
-                .left = 0,
-                .right = picture->format.i_x_offset + picture->format.i_visible_width,
-                .back = 1,
-            };
-            if ( sys->picQuadConfig->formatTexture != DXGI_FORMAT_R8G8B8A8_UNORM &&
-                 sys->picQuadConfig->formatTexture != DXGI_FORMAT_B5G6R5_UNORM )
-            {
-                box.bottom = (box.bottom + 0x01) & ~0x01;
-                box.right  = (box.right  + 0x01) & ~0x01;
-            }
-            assert(box.right <= texDesc.Width);
-            assert(box.bottom <= texDesc.Height);
             ID3D11DeviceContext_CopySubresourceRegion(sys->d3d_dev.d3dcontext,
                                                       sys->stagingSys.resource[KNOWN_DXGI_INDEX],
                                                       0, 0, 0, 0,
                                                       p_sys->resource[KNOWN_DXGI_INDEX],
-                                                      p_sys->slice_index, &box);
+                                                      p_sys->slice_index, NULL);
         }
         else
         {
@@ -1391,27 +1430,27 @@ static const d3d_format_t *GetDirectRenderingFormat(vout_display_t *vd, vlc_four
     UINT supportFlags = D3D11_FORMAT_SUPPORT_SHADER_LOAD;
     if (is_d3d11_opaque(i_src_chroma))
         supportFlags |= D3D11_FORMAT_SUPPORT_DECODER_OUTPUT;
-    return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, i_src_chroma, 0, is_d3d11_opaque(i_src_chroma), supportFlags );
+    return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, i_src_chroma, false, 0, is_d3d11_opaque(i_src_chroma), supportFlags );
 }
 
 static const d3d_format_t *GetDirectDecoderFormat(vout_display_t *vd, vlc_fourcc_t i_src_chroma)
 {
     UINT supportFlags = D3D11_FORMAT_SUPPORT_DECODER_OUTPUT;
-    return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, i_src_chroma, 0, is_d3d11_opaque(i_src_chroma), supportFlags );
+    return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, i_src_chroma, false, 0, is_d3d11_opaque(i_src_chroma), supportFlags );
 }
 
-static const d3d_format_t *GetDisplayFormatByDepth(vout_display_t *vd, uint8_t bit_depth, bool from_processor)
+static const d3d_format_t *GetDisplayFormatByDepth(vout_display_t *vd, uint8_t bit_depth, bool from_processor, bool rgb_only)
 {
     UINT supportFlags = D3D11_FORMAT_SUPPORT_SHADER_LOAD;
     if (from_processor)
         supportFlags |= D3D11_FORMAT_SUPPORT_VIDEO_PROCESSOR_OUTPUT;
-    return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, 0, bit_depth, false, supportFlags );
+    return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, 0, rgb_only, bit_depth, false, supportFlags );
 }
 
 static const d3d_format_t *GetBlendableFormat(vout_display_t *vd, vlc_fourcc_t i_src_chroma)
 {
     UINT supportFlags = D3D11_FORMAT_SUPPORT_SHADER_LOAD | D3D11_FORMAT_SUPPORT_BLENDABLE;
-    return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, i_src_chroma, 0, false, supportFlags );
+    return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, i_src_chroma, false, 0, false, supportFlags );
 }
 
 static int Direct3D11Open(vout_display_t *vd)
@@ -1544,17 +1583,20 @@ static int SetupOutputFormat(vout_display_t *vd, video_format_t *fmt)
         default:
             {
                 const vlc_chroma_description_t *p_format = vlc_fourcc_GetChromaDescription(fmt->i_chroma);
-                bits_per_channel = p_format == NULL || p_format->pixel_bits == 0 ? 8 : p_format->pixel_bits;
+                bits_per_channel = p_format == NULL || p_format->pixel_bits == 0 ? 8 : p_format->pixel_bits / p_format->pixel_size;
             }
             break;
         }
 
-        sys->picQuadConfig = GetDisplayFormatByDepth(vd, bits_per_channel, decoder_format!=NULL);
+        bool is_rgb = !vlc_fourcc_IsYUV(fmt->i_chroma);
+        sys->picQuadConfig = GetDisplayFormatByDepth(vd, bits_per_channel, decoder_format!=NULL, is_rgb);
+        if (!sys->picQuadConfig && is_rgb)
+            sys->picQuadConfig = GetDisplayFormatByDepth(vd, bits_per_channel, decoder_format!=NULL, false);
     }
 
     // look for any pixel format that we can handle
     if ( !sys->picQuadConfig )
-        sys->picQuadConfig = GetDisplayFormatByDepth(vd, 0, false);
+        sys->picQuadConfig = GetDisplayFormatByDepth(vd, 0, false, false);
 
     if ( !sys->picQuadConfig )
     {
@@ -1952,7 +1994,7 @@ static bool CanUseTextureArray(vout_display_t *vd)
 
 /* TODO : handle errors better
    TODO : seperate out into smaller functions like createshaders */
-static int Direct3D11CreateFormatResources(vout_display_t *vd, video_format_t *fmt)
+static int Direct3D11CreateFormatResources(vout_display_t *vd, const video_format_t *fmt)
 {
     vout_display_sys_t *sys = vd->sys;
     HRESULT hr;
@@ -1979,12 +2021,22 @@ static int Direct3D11CreateFormatResources(vout_display_t *vd, video_format_t *f
 
     sys->picQuad.i_width  = fmt->i_width;
     sys->picQuad.i_height = fmt->i_height;
+    if (is_d3d11_opaque(fmt->i_chroma))
+    {
+        sys->picQuad.i_width  = (sys->picQuad.i_width  + 0x7F) & ~0x7F;
+        sys->picQuad.i_height = (sys->picQuad.i_height + 0x7F) & ~0x7F;
+    }
+    else
     if ( sys->picQuadConfig->formatTexture != DXGI_FORMAT_R8G8B8A8_UNORM &&
          sys->picQuadConfig->formatTexture != DXGI_FORMAT_B5G6R5_UNORM )
     {
         sys->picQuad.i_width  = (sys->picQuad.i_width  + 0x01) & ~0x01;
         sys->picQuad.i_height = (sys->picQuad.i_height + 0x01) & ~0x01;
     }
+
+    BEFORE_UPDATE_RECTS;
+    UpdateRects(vd, NULL, true);
+    AFTER_UPDATE_RECTS;
 
 #ifdef HAVE_ID3D11VIDEODECODER
     if (!is_d3d11_opaque(fmt->i_chroma) || sys->legacy_shader)
@@ -2071,10 +2123,6 @@ static int Direct3D11CreateGenericResources(vout_display_t *vd)
         ID3D11DeviceContext_OMSetDepthStencilState(sys->d3d_dev.d3dcontext, pDepthStencilState, 0);
         ID3D11DepthStencilState_Release(pDepthStencilState);
     }
-
-    BEFORE_UPDATE_RECTS;
-    UpdateRects(vd, NULL, true);
-    AFTER_UPDATE_RECTS;
 
     hr = UpdateBackBuffer(vd);
     if (FAILED(hr)) {
@@ -2252,20 +2300,10 @@ static void SetupQuadFlat(d3d_vertex_t *dst_data, const RECT *output,
 {
     unsigned int dst_x = output->left;
     unsigned int dst_y = output->top;
-    unsigned int dst_width = RECTWidth(*output);
-    unsigned int dst_height = RECTHeight(*output);
     unsigned int src_width = quad->i_width;
     unsigned int src_height = quad->i_height;
     LONG MidY = output->top + output->bottom; // /2
     LONG MidX = output->left + output->right; // /2
-
-    /* the clamping will not work properly on the side of the texture as it
-     * will have decoder pixels not mean to be displayed but used for interpolation
-     * So we lose the last line that will be partially green */
-    if (src_width != dst_width)
-        src_width += 1;
-    if (src_height != dst_height)
-        src_height += 1;
 
     float top, bottom, left, right;
     top    =  (float)MidY / (float)(MidY - 2*dst_y);
@@ -2445,7 +2483,7 @@ static bool UpdateQuadPosition( vout_display_t *vd, d3d_quad_t *quad,
     D3D11_MAPPED_SUBRESOURCE mappedResource;
 
     /* create the vertices */
-      hr = ID3D11DeviceContext_Map(sys->d3d_dev.d3dcontext, (ID3D11Resource *)quad->pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    hr = ID3D11DeviceContext_Map(sys->d3d_dev.d3dcontext, (ID3D11Resource *)quad->pVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
     if (FAILED(hr)) {
         msg_Err(vd, "Failed to lock the vertex buffer (hr=0x%lX)", hr);
         return false;

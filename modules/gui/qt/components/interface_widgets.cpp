@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: a5fef977d32c11f88c23965562e694e5f5019e21 $
+ * $Id: 98dfdebfbe1311ed52b8f4d6548e480bb05c6da0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -164,6 +164,9 @@ bool VideoWidget::request( struct vout_window_t *p_wnd )
 #ifdef QT5_HAS_WAYLAND
         case VOUT_WINDOW_TYPE_WAYLAND:
         {
+            /* Ensure only the video widget is native (needed for Wayland) */
+            stable->setAttribute( Qt::WA_DontCreateNativeAncestors, true);
+
             QWindow *window = stable->windowHandle();
             assert(window != NULL);
             window->create();

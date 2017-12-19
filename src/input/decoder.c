@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: a79891da555d30b372f2ac66c0e7a20a9d049904 $
+ * $Id: 64ccb9781b9d2788d99953c2125047c34360062f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -851,7 +851,6 @@ static void DecoderProcessSout( decoder_t *p_dec, block_t *p_block )
         {
             vlc_mutex_lock( &p_owner->lock );
             DecoderUpdateFormatLocked( p_dec );
-            vlc_mutex_unlock( &p_owner->lock );
 
             p_owner->fmt.i_group = p_dec->fmt_in.i_group;
             p_owner->fmt.i_id = p_dec->fmt_in.i_id;
@@ -861,6 +860,7 @@ static void DecoderProcessSout( decoder_t *p_dec, block_t *p_block )
                 p_owner->fmt.psz_language =
                     strdup( p_dec->fmt_in.psz_language );
             }
+            vlc_mutex_unlock( &p_owner->lock );
 
             p_owner->p_sout_input =
                 sout_InputNew( p_owner->p_sout, &p_owner->fmt );

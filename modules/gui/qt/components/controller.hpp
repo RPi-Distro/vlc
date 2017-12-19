@@ -2,7 +2,7 @@
  * controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: b34147d5abdaf60d4871e058a399e3763f486e86 $
+ * $Id: 25d4f4b00cf5ab1dfb7a29dff41875cc1e5f34af $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -257,6 +257,7 @@ public:
     void toggleFullwidth();
     void updateFullwidthGeometry( int number );
     int targetScreen();
+    void setTargetScreen( int );
 
 private:
     static int FullscreenChanged( vlc_object_t *obj,
@@ -317,6 +318,10 @@ private:
 
     bool isWideFSC;
     int i_sensitivity;
+
+#ifdef QT5_HAS_WAYLAND
+    bool b_hasWayland;
+#endif
 };
 
 #endif

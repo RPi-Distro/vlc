@@ -33,6 +33,7 @@
 #include "chromecast.h"
 
 #include <vlc_sout.h>
+#include <vlc_block.h>
 
 #include <cassert>
 
@@ -242,6 +243,8 @@ bool sout_stream_sys_t::startSoutChain( sout_stream_t *p_stream )
         if ( p_sys_id->p_sub_id == NULL )
         {
             msg_Err( p_stream, "can't handle %4.4s stream", (char *)&p_sys_id->fmt.i_codec );
+            es_format_Clean( &p_sys_id->fmt );
+            free( p_sys_id );
             it = streams.erase( it );
         }
         else
@@ -371,7 +374,10 @@ static int Send(sout_stream_t *p_stream, sout_stream_id_sys_t *id,
 
     id = p_sys->GetSubId( p_stream, id );
     if ( id == NULL )
+    {
+        block_Release( p_buffer );
         return VLC_EGENERIC;
+    }
 
     return sout_StreamIdSend(p_sys->p_out, id, p_buffer);
 }

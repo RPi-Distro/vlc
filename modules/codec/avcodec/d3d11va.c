@@ -368,11 +368,6 @@ static int Open(vlc_va_t *va, AVCodecContext *ctx, enum PixelFormat pix_fmt,
             va->sys->totalTextureSlices = dstDesc.ArraySize;
         }
     }
-    if (!va->sys->textureWidth || !va->sys->textureHeight)
-    {
-        va->sys->textureWidth  = fmt->video.i_width;
-        va->sys->textureHeight = fmt->video.i_height;
-    }
 
     err = D3D11_Create( va, &sys->hd3d );
     if (err != VLC_SUCCESS)
@@ -685,24 +680,32 @@ static int DxCreateDecoderSurfaces(vlc_va_t *va, int codec_id,
         ID3D10Multithread_Release(pMultithread);
     }
 
-#if VLC_WINSTORE_APP
-    /* On the Xbox 1/S, any decoding of H264 with one dimension over 2304
-     * crashes totally the device */
-    if (codec_id == AV_CODEC_ID_H264 &&
-        (fmt->i_width > 2304 || fmt->i_height > 2304) &&
-        isXboxHardware(sys->d3d_dev.d3ddevice))
+    if (!sys->textureWidth || !sys->textureHeight)
     {
-        msg_Warn(va, "%dx%d resolution not supported by your hardware", fmt->i_width, fmt->i_height);
-        return VLC_EGENERIC;
+        sys->textureWidth  = fmt->i_width;
+        sys->textureHeight = fmt->i_height;
     }
-#endif
+
     if ((sys->textureWidth != fmt->i_width || sys->textureHeight != fmt->i_height) &&
         !CanUseDecoderPadding(sys))
     {
         msg_Dbg(va, "mismatching external pool sizes use the internal one %dx%d vs %dx%d",
                 sys->textureWidth, sys->textureHeight, fmt->i_width, fmt->i_height);
         dx_sys->can_extern_pool = false;
+        sys->textureWidth  = fmt->i_width;
+        sys->textureHeight = fmt->i_height;
     }
+#if VLC_WINSTORE_APP
+    /* On the Xbox 1/S, any decoding of H264 with one dimension over 2304
+     * crashes totally the device */
+    if (codec_id == AV_CODEC_ID_H264 &&
+        (sys->textureWidth > 2304 || sys->textureHeight > 2304) &&
+        isXboxHardware(sys->d3d_dev.d3ddevice))
+    {
+        msg_Warn(va, "%dx%d resolution not supported by your hardware", fmt->i_width, fmt->i_height);
+        return VLC_EGENERIC;
+    }
+#endif
 
     D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC viewDesc;
     ZeroMemory(&viewDesc, sizeof(viewDesc));

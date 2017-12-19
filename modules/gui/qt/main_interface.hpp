@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 79abd5289455af40a15d8771e842b5da74a1fb38 $
+ * $Id: d6ba7463e7bbcc43b515b9b1249e3860207d6e1b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -184,7 +184,9 @@ protected:
     bool                 b_pauseOnMinimize;
     bool                 b_maximizedView;
     bool                 b_isWindowTiled;
-
+#ifdef QT5_HAS_WAYLAND
+    bool                 b_hasWayland;
+#endif
     /* States */
     bool                 playlistVisible;       ///< Is the playlist visible ?
 //    bool                 videoIsActive;       ///< Having a video now / THEMIM->hasV

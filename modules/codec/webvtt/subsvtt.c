@@ -480,14 +480,13 @@ static bool webvtt_domnode_Match_Class( const webvtt_dom_node_t *p_node, const c
     if( p_node->type == NODE_TAG )
     {
         const webvtt_dom_tag_t *p_tagnode = (webvtt_dom_tag_t *) p_node;
-        while( p_tagnode->psz_attrs && psz )
+        for( const char *p = p_tagnode->psz_attrs; p && psz; p++ )
         {
-            const char *p = strstr( p_tagnode->psz_attrs, psz );
+            p = strstr( p, psz );
             if( !p )
                 return false;
-            if( p > psz && p[-1] == '.' && !isalnum(p[i_len]) )
+            if( p > p_tagnode->psz_attrs && p[-1] == '.' && !isalnum(p[i_len]) )
                 return true;
-            psz = p + 1;
         }
     }
     return false;
@@ -1325,8 +1324,7 @@ struct render_variables_s
 static text_segment_t *ConvertNodesToSegments( decoder_t *p_dec,
                                                struct render_variables_s *p_vars,
                                                const webvtt_dom_cue_t *p_cue,
-                                               const webvtt_dom_node_t *p_node,
-                                               mtime_t i_start )
+                                               const webvtt_dom_node_t *p_node )
 {
     text_segment_t *p_head = NULL;
     text_segment_t **pp_append = &p_head;
@@ -1352,9 +1350,8 @@ static text_segment_t *ConvertNodesToSegments( decoder_t *p_dec,
         else if( p_node->type == NODE_TAG )
         {
             const webvtt_dom_tag_t *p_tag = (const webvtt_dom_tag_t *)p_node;
-            if( p_tag->i_start <= i_start )
-                *pp_append = ConvertNodesToSegments( p_dec, p_vars, p_cue,
-                                                     p_tag->p_child, i_start );
+            *pp_append = ConvertNodesToSegments( p_dec, p_vars, p_cue,
+                                                 p_tag->p_child );
         }
     }
     return p_head;
@@ -1362,10 +1359,9 @@ static text_segment_t *ConvertNodesToSegments( decoder_t *p_dec,
 
 static text_segment_t *ConvertCueToSegments( decoder_t *p_dec,
                                              struct render_variables_s *p_vars,
-                                             const webvtt_dom_cue_t *p_cue,
-                                             mtime_t i_start )
+                                             const webvtt_dom_cue_t *p_cue )
 {
-    return ConvertNodesToSegments( p_dec, p_vars, p_cue, p_cue->p_child, i_start );
+    return ConvertNodesToSegments( p_dec, p_vars, p_cue, p_cue->p_child );
 }
 
 static text_segment_t * ConvertCuesToSegments( decoder_t *p_dec, mtime_t i_start, mtime_t i_stop,
@@ -1378,14 +1374,13 @@ static text_segment_t * ConvertCuesToSegments( decoder_t *p_dec, mtime_t i_start
 
     for( ; p_cue; p_cue = (const webvtt_dom_cue_t *) p_cue->p_next )
     {
-        assert( p_cue->type == NODE_CUE );
         if( p_cue->type != NODE_CUE )
             continue;
 
         if( p_cue->i_start > i_start || p_cue->i_stop <= i_start )
             continue;
 
-        text_segment_t *p_new = ConvertCueToSegments( p_dec, p_vars, p_cue, i_start );
+        text_segment_t *p_new = ConvertCueToSegments( p_dec, p_vars, p_cue );
         if( p_new )
         {
             while( *pp_append )
@@ -1521,6 +1516,7 @@ static void RenderRegions( decoder_t *p_dec, mtime_t i_start, mtime_t i_stop )
     ApplyCSSRules( p_dec, p_dec->p_sys->p_css_rules, i_start );
 #endif
 
+    const webvtt_dom_cue_t *p_rlcue = NULL;
     for( const webvtt_dom_node_t *p_node = p_dec->p_sys->p_root->p_child;
                                   p_node; p_node = p_node->p_next )
     {
@@ -1560,33 +1556,40 @@ static void RenderRegions( decoder_t *p_dec, mtime_t i_start, mtime_t i_stop )
                                 | UPDT_REGION_EXTENT_X_IS_RATIO;
             p_updtregion->p_segments = p_segments;
         }
-        else if( p_node->type == NODE_CUE ) /* regionless cues */
+        else if ( p_node->type == NODE_CUE )
         {
-            const webvtt_dom_cue_t *p_cue = (const webvtt_dom_cue_t *) p_node;
-            /* Variables */
-            struct render_variables_s v;
-            v.p_region = NULL;
-            v.i_left_offset = 0.0;
-            v.i_left = 0.0;
-            v.i_top_offset = 0.0;
-            v.i_top = 0.0;
-            /* !Variables */
+            if( p_rlcue == NULL )
+                p_rlcue = ( const webvtt_dom_cue_t * ) p_node;
+        }
+    }
 
-            text_segment_t *p_segments = ConvertCuesToSegments( p_dec, i_start, i_stop, &v, p_cue );
-            if( !p_segments )
-                continue;
+    /* regionless cues */
+    if ( p_rlcue )
+    {
+        /* Variables */
+        struct render_variables_s v;
+        v.p_region = NULL;
+        v.i_left_offset = 0.0;
+        v.i_left = 0.0;
+        v.i_top_offset = 0.0;
+        v.i_top = 0.0;
+        /* !Variables */
 
+        text_segment_t *p_segments = ConvertCuesToSegments( p_dec, i_start, i_stop, &v, p_rlcue );
+        if( p_segments )
+        {
             CreateSpuOrNewUpdaterRegion( p_dec, &p_spu, &p_updtregion );
             if( !p_spu || !p_updtregion )
             {
                 text_segment_ChainDelete( p_segments );
-                continue;
             }
+            else
+            {
+                p_updtregion->align = SUBPICTURE_ALIGN_BOTTOM;
+                p_updtregion->inner_align = GetCueTextAlignment( p_rlcue );
 
-            p_updtregion->align = SUBPICTURE_ALIGN_BOTTOM;
-            p_updtregion->inner_align = GetCueTextAlignment( p_cue );
-
-            p_updtregion->p_segments = p_segments;
+                p_updtregion->p_segments = p_segments;
+            }
         }
     }
 

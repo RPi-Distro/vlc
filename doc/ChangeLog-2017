@@ -1,3 +1,1221 @@
+commit 34986c22070c9716073abe7d9954877620e22264
+Author: Zhao Zhili <quinkblack@foxmail.com>
+Date:   Sat Dec 16 23:12:41 2017 +0800
+
+    demux: adaptive: fix segment compare
+    
+    Signed-off-by: Francois Cartegnie <fcvlcdev@free.fr>
+    (cherry picked from commit ed414dc3b31cfa3c843cacbc496ee5fef9f94713)
+
+commit 764bf9e5201258ddbb9bada9c639e39e5fb767cc
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Dec 18 21:52:17 2017 +0100
+
+    demux: webvtt: fix invalid deref
+    
+    (cherry picked from commit 1d1d843669d9873c8b165901ecf15cc5500de980)
+
+commit 22e1372a655c44c6fb7ccf9dc3bc670457f8b7ba
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sun Dec 17 16:27:21 2017 +0100
+
+    codec: webvtt: don't filter out future timestamp objects
+    
+    (cherry picked from commit 7c2e937b757e78276d295d2ef25c35f2d89d5391)
+
+commit fde5147fc0d8c7858bbb94fbbed991c551af13a8
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sun Dec 17 23:05:53 2017 +0100
+
+    demux: ogg: fix non xiph frame interpolation
+    
+    (cherry picked from commit ccd12d977191d57fd965500eaea95411f3a45943)
+
+commit 753c9eccbe69eb87781217d5a8c74ccc4ec3c798
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Dec 18 18:20:42 2017 +0200
+
+    wl_screenshooter: remove experimental plugin
+    
+    There are currently no known window manager with protocol support.
+
+commit a484e57ea90a07116628621aa070df0cc686ac2f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Dec 18 18:19:08 2017 +0200
+
+    Qt: favor X11 over Wayland
+
+commit 44b083a0bfe82f01c52c5aba7a9c088eac14be3c
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Tue Dec 12 14:13:18 2017 +0100
+
+    video_output: reinit the vout if the crop changes
+    
+    If you play a file that has the same decoder size but different display size
+    consecutively, the decoder picture pool needs to be updated so that the
+    i_visible_lines of each picture plane matches the new picture format.
+    
+    The easiest way is to reinit the vout. Another way would be to update the
+    pictures in each picture pool dynamically. It cannot just be handled on the
+    vout side as some decoders and filters rely on i_visible/offset to copy
+    only the required data (for example lavc_CopyPicture).
+    
+    Fixes #19268
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+    (cherry picked from commit 17efaa77b82e61f224b0723b6309c01b6dc687c1)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit a7018fc36800b0a3560a4c072c8ec2c3b15776c2
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Mon Dec 18 10:22:10 2017 +0100
+
+    qt: fix setScreen might crash on wayland when entering fullscreen
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 24b436c88a986fcf2cddb3c52e5a067565fc537e)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d19cf4d55213fb5a7622ed1c21add486a192cdd9
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Dec 18 09:57:02 2017 +0100
+
+    direct3d11: copy the whole source to the staging texture
+    
+    Otherwise some areas with no copy may contain some green.
+    
+    Fixes #19298 for older GPUs
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 9243000e2e19843c12245b80eac0ec0b46df31c3)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit eeb59f7485d9170a4b07d7eb78c0215dd144d8ae
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Dec 18 09:57:01 2017 +0100
+
+    d3d11_deinterlace: copy the whole texture
+    
+    Not just the visible area or the output may contain green rather than the black
+    coming out of the decoder.
+    
+    Fixes #19298
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit ae588e5908c8f95af0fb17aa4dee16b199bd447c)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit dbded10b41460b09fad134e8d37e7a07425110c9
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Tue Dec 12 14:06:10 2017 +0100
+
+    qt: fix crash when undocking playlist on Wayland + optimization elsewhere
+    
+    Since the video widget is always kept in the main interface, just making
+    sure it is relocated __before__ moving the playlistwidget to the playlist
+    dialog saves the two calls to the display server needed to reparent the
+    native window back and forth at the qt level.
+    
+    For Wayland, this fixes a crash, since qt is unable to reparent due to
+    Wayland limitations, anyway.
+    
+    For other platforms, this is an optimization, since we avoid two useless
+    often inter-process communications (reparenting back and forth)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit a420de32234b1517069c717d9cc7885854f7d289)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 945c3653df418825201439de845ca37b15bd6685
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Fri Dec 15 13:09:20 2017 +0100
+
+    direct3d11: compute the quad position as soon as we know its dimensions
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 7cbdd3b36fba148d2cfb6a9beb0341de43ea1804)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit aa85b0527978e74a2d35c4982ac959e081ddcf7d
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Thu Dec 14 14:40:56 2017 +0100
+
+    direct3d11: bring back the 128 pixels padding required by the DXVA HEVC decoder
+    
+    Since the vout doesn't know in advance what alignment the decoder will need we use
+    the maximum.
+    
+    This is needed in light of the previous bug fixed where the decoder accepts
+    texture with the wrong alignment but uses them as if the alignment was correct.
+    So we always need to make sure the alignment is correct.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit e669140daaec8b4bc262013afd111864fbbf9a18)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit fbf1f129ce7ec1387c9ead843c01c243337be460
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Thu Dec 14 13:39:55 2017 +0100
+
+    qt: check if QDesktopWidget::screenNumber() returns a valid screen
+    
+    screenNumber might fail on wayland.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 117658e75806a47ed7e333818c259a6c0f71bb9f)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a0325a6bc449c1d8ca7ce656cab3ffb6bfe52e0d
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Thu Dec 14 13:39:54 2017 +0100
+
+    qt: set FSControler screen when entering in fullscreen mode
+    
+    qt-fullscreen-screennumber was read at startup for FSControler
+      but dynamically for the main interface
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 562a10a1570887291fde39a973c6a25cd96a453f)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a8a2a349d73076ce5593f4987cb75f0059c293b0
+Author: Steve Lhomme <robux4@videolabs.io>
+Date:   Fri Dec 15 15:28:05 2017 +0100
+
+    d3d11_fmt: allow creating small textures
+    
+    For anything smaller than 64 pixels it may give an error due to the width padding.
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+    (cherry picked from commit 5c81725ea4d513d6f47fcf7dd6e5bea54433489e)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 844119079d1e2266f8a041d7b0caf1ac1f248f89
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Sun Dec 10 19:00:15 2017 +0100
+
+    qt(wayland): fix video widget failing to display video.
+    
+    Setting Qt:WA_DontCreateNativeAncestors in addition to Qt::WA_NativeWindow
+    tells qt to create a native window for the widget and only for the widget.
+    
+    For Wayland, this resulted in one single wayland subsurface instead of a
+    tree of nested subsurfaces. Wayland is a bit convoluted when it comes to
+    mapping/unmapping nested subsurfaces, which accounted for the video failing
+    to be displayed.
+    
+    For X11, on the contrary, setting Qt:WA_DontCreateNativeAncestors proved
+    wrong with some misplacement in the video. So, this parameter is set
+    *** ONLY *** in a Wayland context.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit eb375bf9583eed0a1a588ee9d436a2219e2809f8)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 52d4f9bcb4a4e302e603dd318f20ddca427c05a2
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Dec 13 16:33:39 2017 +0100
+
+    d3d11va: do the Xbox size check after the texture dimensions are definitive
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 067e582bd813e7d2038610df561c83afa0e6b9a0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b2f2f4938bec6124125562d95d7eff969a69d378
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Dec 13 16:33:38 2017 +0100
+
+    d3d11va: when forcing the internal pool size, use the internal dimensions
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 966b7ab3788e5b39c9333e65a95476969b80e81d)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 069d0590465976c81b1fda5ca359c79347061b0e
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Dec 13 16:33:37 2017 +0100
+
+    d3d11va: use the internal surface size after the alignment has been applied
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit b697e5618bf341b27a065f9bdefeab78db7ae7dd)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5aa3dc38e42e184359c4a4b9eaf3f06b0ed47e93
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Dec 13 16:33:36 2017 +0100
+
+    hw:d3d: use the texture height as the plane height, not the visible height
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 9d9dd6924ccde2bc9df183b5bad070c1e21b4947)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 65ed023b90333c3726d317190ed8f7dd0bc8da40
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Dec 13 10:49:42 2017 +0100
+
+    direct3d11: fix the bits per channel
+    
+    We don't want the bits per plane for packed formats.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 59d1a442c73d23bd07176b8f963f25b84aad556b)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 055c5506dc78ad239441fb5e3016b2cd40403cf8
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Dec 13 10:49:41 2017 +0100
+
+    d3d11_fmt: add the possibility to select an RGB format
+    
+    By default YUV formats are favored.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit d388de7f3b82945bdedcded3298692c89b3a39ea)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0cc56ea9e8c2f66d241d80745cf24baaaf1fe716
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Wed Dec 13 10:49:40 2017 +0100
+
+    direct3d11: code cleaning
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 415cfca29471470e83d1329a6a7b694f102cd297)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit cba4b5b716f019f80089ca35b9468a5d5d54eb59
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 15 17:36:50 2017 +0100
+
+    chromecast: fix leak when the stream is not supported
+    
+    (cherry picked from commit c682ebc079dd0e6c8c2347b8e7212497d39f9b66)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 4c5e466a7a79b6e71aef4370419678f390398dd3
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 15 17:04:44 2017 +0100
+
+    chromecast: fix block leak in case of error
+    
+    (cherry picked from commit a8a2a66eaec47e1a21d013481a86754b82832b1f)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 9b5d7acddb843fdd4be6226c84612866a446b71d
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 15 16:40:16 2017 +0100
+
+    decoder: lock when writing p_owner->fmt from Sout
+    
+    This fixes an UB (that can lead to a heap-use-after-free) when
+    input_DecoderHasFormatChanged() is called while modifying the fmt from
+    DecoderProcessSout().
+    
+    (cherry picked from commit 000910a091023b29e68065b36769842db36d93c5)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit c17fa7816fab5adcda2ab731b09d320b1f66688b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 15 17:28:40 2017 +0100
+
+    qt: hide mmdevice passthrough option on other OSes
+    
+    (cherry picked from commit f998427259e560ba7d3a7e278ef3b69fdaab139f)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 9768166a7cb890978ce72581211a677a83032a86
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 15 11:09:06 2017 +0100
+
+    qt: show mmdevice passthrough option
+    
+    (cherry picked from commit dfb34fb62879a1bd3243266f2ceb9f06509ca407)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 45dbfe4e78015d9e84c68fc793ccc0fcf6eef23b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Dec 14 16:42:04 2017 +0100
+
+    mmdevice: add a way to disable passthrough
+    
+    cf. http://nucblog.net/2017/03/intel-releases-the-final-hdmi-firmware-for-apollo-and-kaby-lake/
+    
+    There will be always bugs in  OSes, drivers, HDMI firmwares, or HDMI receivers.
+    The users will always need a way to disable passthrough if it doesn't work.
+    Contrary to other OSes like Linux or macOS, I didn't find any way to disable
+    passthrough for a codec.
+    
+    Refs #18112
+    Fixes #19279
+    
+    (cherry picked from commit d913ae19b425c3d001f1fefd241802f9f5e47aee)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit b7a96c3d1b7db221a7f52c0e7a29c3da02fec8db
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 15 17:31:44 2017 +0100
+
+    packetizer: hevc: fix max_num_reorder
+    
+    (cherry picked from commit fdd089dda6613c624bd86bdcf6ec92b6ddd8af2f)
+
+commit ce84a3b384b50b790fb9592b044f47117a89e204
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Dec 15 16:57:54 2017 +0100
+
+    chromecast: Fix commands potentially not being sent
+    
+    (cherry picked from commit bd41cc301055802e3d6c041b6cf239ad3a448e69)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 448c895a9c3758d332e07560456742cd01e6c683
+Author: Zhao Zhili <quinkblack@foxmail.com>
+Date:   Thu Dec 14 18:06:38 2017 +0800
+
+    playlist: m3u: unbreak HLS
+    
+    Fix #19269
+    
+    Signed-off-by: Francois Cartegnie <fcvlcdev@free.fr>
+    (cherry picked from commit 40e3642d3e56a2e98741d7c2a81343859aa2af13)
+
+commit f1ba71c2825397ad68bf1eebcef80087e9715b74
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 15 14:44:22 2017 +0100
+
+    demux: ogg: no pts for non xiph video codecs (fix #19271)
+    
+    (cherry picked from commit 684c0f8ec1fc223d3f04aeed246b9e8d8782e644)
+
+commit d63e71092d8d6890b5f2f1656657486f2cf2862a
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 15 10:36:41 2017 +0100
+
+    demux: avi: fix leak
+    
+    (cherry picked from commit 8e1f3061937c06e11c6130a1dce8be425c945fd7)
+
+commit 1e877a89255548bfea25c78007e916ce8de0364e
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Dec 14 19:05:20 2017 +0100
+
+    demux: ogg: move tarkin hack
+    
+    (cherry picked from commit 62f87239559b1641f3deb0da3682ac0cc1d59aca)
+
+commit f7df27f5174c4e58551436a5e0bd3c1800234d73
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Dec 14 18:53:35 2017 +0100
+
+    demux: ogg: fix dirac handling
+    
+    (cherry picked from commit 824556bd31ca5f501e7362908eed2815b5526800)
+
+commit f62610c0f172e4c12c32dbf136554d8ef92f13f8
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 15 16:41:05 2017 +0100
+
+    demux: adaptive: restart on packed audio switch
+    
+    (cherry picked from commit 062ce759ce939ab70ed7575ee77946dfd4eea705)
+
+commit c8e6769ab981a6c295751fa8774fbb384c075f45
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Dec 15 14:22:28 2017 +0100
+
+    copy: fix invalid i_codec if not AUDIO_ES
+    
+    Regression from 385765703e43f9c91ff8789ce303cc0822b7c165
+    
+    Fixes #19280
+    
+    (cherry picked from commit 5d53aa182293fced035b360d73864c89ed90b96e)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 115c4a55a728ac504f8285f70d19c56ed9d873bb
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Dec 14 13:49:39 2017 +0100
+
+    packetizer: hevc: don't double store poc prev msb/lsb
+    
+    (cherry picked from commit d6c05044b85cd398ab89b61f5e89d866a574ad2e)
+
+commit ad7db4bc887c743613ea687a45d6ca2a6a2e2c7e
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Dec 14 13:48:17 2017 +0100
+
+    packetizer: hevc: fix storage and check of temporal id
+    
+    (cherry picked from commit db383e8bcc94f4497e43554813797edc1192eeaf)
+
+commit 8908dd2a1fb75b1c238aa5d2b27a4f95032bb37a
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Dec 14 12:50:59 2017 +0100
+
+    packetizer: hevc: add poc HandleCraAsBlaFlag param
+    
+    (cherry picked from commit 5999e68dcdc1d44c404ea424e4b3f35d8df323aa)
+
+commit d58bee43b2cce952cacbaea02a344225a7c8902d
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Dec 14 12:48:41 2017 +0100
+
+    packetizer: hevc: fix poc lsb diff
+    
+    (cherry picked from commit 3a4ad1465ada81e26c88425cc4d828941afc14ad)
+
+commit 08db1966be32f278e50df69d490fda4680d79164
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Dec 14 11:39:30 2017 +0100
+
+    packetizer: hevc: clear first pic flag in poc
+    
+    (cherry picked from commit 71318cd9f06699b32284851508ef41e3bfb69285)
+
+commit a1681fa8311c18b462da0ac8276d9385f448bce8
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Dec 14 10:37:50 2017 +0100
+
+    packetizer: hevc: fix poc msb on IRAP
+    
+    (cherry picked from commit c2c45fcd482612d27af8e84738990c31aa4e5e39)
+
+commit ae8c1733db24ca5de52b4ea3ecef6e794157d3d5
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 13 09:50:35 2017 +0100
+
+    Contribs: update libass to 0.14.0
+    
+    (cherry picked from commit 5e982951ab56d40c197c11a17fe402ed9f1efbd6)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 33a367b62427f8cf95afb5811b0db54ffdb6a2a6
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 13 09:44:56 2017 +0100
+
+    libass: fix compilation with older versions of libass
+    
+    (cherry picked from commit 168f6f4fde2edeb21ecfc9e4faa0345b42d2b028)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 5d77b8648273617de2c516a229c5e3eeca91d96a
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Wed Dec 13 23:36:08 2017 +0100
+
+    macosx: cleanup filters config during upgrade from 2.2.x to 3.0
+    
+    VLC 2.2.x fully controlled VLCs audio or videofilter-related config
+    variables with the filter dialogs and the video or audio effects
+    panel overwrote any changes from config with the values from the
+    panel.
+    
+    In VLC 3.0, the config is left alone and filter parameters
+    are only read from the preset strings. Additionally, by default
+    the Default profile (with default off settings) will be loaded at
+    startup, to ensure that no filters accidentially stay enabled.
+    
+    Therefore, for migration, from 2.2.x to 3.0 versions, lets clear
+    the audio-filter and video-filter variables. Users with custom
+    profiles still keep their settings.
+    
+    close #19260
+    
+    (cherry picked from commit 31140f02864e879211c3d3c8aac35ce1136046bb)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit 055f0acce05b0525222f02d7954a768250af7fb8
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Wed Dec 13 03:45:14 2017 +0100
+
+    macosx: Do not show nonexistent sout stats
+    
+    (cherry picked from commit f0534b7a30ffc872e3175ef10a4e7c53ce91c6ab)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit d93f6bfaaef8b8b8e9fe5bf5bdb42385ebd56cf7
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Wed Dec 13 22:44:11 2017 +0100
+
+    macosx: audio effects: Do not duplicate EQ settings when saving profile
+    
+    For now, disable the code which duplicated EQ settings. This code
+    currently always duplicates settings if something was touched, as the
+    comparison with index 0 (flat profile) will very likey fail.
+    
+    This needs more improvements beyond the current code, before we can
+    activate auto-saving of EQ changes, mainly:
+    - Figure out a way how to deal with (likely unchangable) default profiles
+    - Correctly mark own created profiles
+    - Correctly save own created profiles once overall preset is changed, but
+      not override standard profiles
+    - Save own EQ profiles at exit automatically if desired.
+    - If above problems are solved, AND the user selected a default EQ profile
+      and changed it inbetween, the commented code can be reconsidered.
+    
+    This commit basically changes behaviour back to vlc 2.2.x, where a new
+    EQ Profile needs to be explicitly saved if desired (using the dropdown
+    menu).
+    
+    refs #19260
+    
+    (cherry picked from commit d0fe23e61ac1f6a7ecf2886e396fc1dcf1408a9d)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit 8a87b3a33cb75e589e3c57ee51650c627d6839b6
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Wed Dec 13 21:46:31 2017 +0100
+
+    macosx: audio filters: load audio-filters variable from preset correctly
+    
+    Load audio filters correctly. Previously, only new filters were
+    added, but removed filters not disabled.
+    playlist_EnableAudioFilter ensures correct filter order in addition
+    to modifying the audio-filters variable. As the profile string is
+    created and changed with playlist_EnableAudioFilter, the saved
+    string conforms to the rules, so here it can be directly loaded.
+    
+    Also removes redundant UI updates, which are done in a different
+    method already.
+    
+    refs #19260
+    
+    (cherry picked from commit 9708d49b00e20126b84895a0bffdb57ab5d26e11)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit 74937772bda4637bb3aa739daafd01485213860e
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Wed Dec 13 21:32:52 2017 +0100
+
+    macosx: audio effects: Do same profile handling for audio effects
+    
+    This ports over video effects profile handling to audio effects.
+    Behaviour is the same for the main audio profile.
+    This also fixes an occasion where equalizer was not updated correctly.
+    
+    refs #19260
+    
+    (cherry picked from commit b77321140b053d3883c165e538d8bd41d47cffa2)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit a9929ad3fdc6d982417455b4668d3d51837a1fea
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Wed Dec 13 21:14:23 2017 +0100
+
+    macosx: video effects: Remove Default entry in deletion dialog
+    
+    The default entry cannot be deleted anymore, so lets not show it
+    in the deletion dialog at all.
+    Also remove usage of self inside the block to avoid strong
+    reference cycles.
+    
+    refs #19260
+    
+    (cherry picked from commit f9244804d4fe8a925160786a3d3fd16ab0af5054)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit 3e35df936c1bb8f181c2d249d4826ee136911cf9
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sun Dec 10 22:50:46 2017 +0100
+
+    macosx: video effects: improve compatibility with old settings
+    
+    This implements the following migration behaviour with older
+    VLC version:
+    - Index 0 in settings used to be the Default profile, and is now
+      ignored (not read from and not written to anymore)
+    - The default settings still include the default profile in index
+      0, to maintain backwards compatibility if older VLC are started.
+    - In profile selector, index 0 is still the Default profile,
+      if the "apply at next startup" is selected, a new Custom profile
+      is created at exit.
+    - By default after updating, no profile will be deployed at launch,
+      so the "Default profile is selected.
+    
+    refs #19260
+    
+    (cherry picked from commit 42115489853231f77f1221791294616c716e80fb)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit 7a2ebf25c90fab4e86d8df52a0a87af0ed204285
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sun Dec 10 19:30:32 2017 +0100
+
+    macosx: video effects: Protect for potentially uninitialized variable
+    
+    (cherry picked from commit 14d1b6be4dce81ede52d56fd021f438ab3c24aba)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit fcb980a213316ce17f07e4c6b31185359fcf3033
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sun Dec 10 18:05:25 2017 +0100
+
+    macosx: Video filter: Correctly determine type of variable
+    
+    Due to uninitialized variable, type was not detected correctly.
+    Consequently, the playlist variables for video effects were not
+    set correctly.
+    
+    (cherry picked from commit 54152cecfa047e18f4b7cc70569ed3b0ee689de5)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit 4a26032563523669bf8c5293bae99d31e7fc34e8
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sun Dec 10 17:22:00 2017 +0100
+
+    macosx: audio effects: Explain reasoning for UI manipulation in init
+    
+    In init, the window is not loaded yet, so changing UI elements
+    does not work yet (pointers are null). It does not harm either, due to
+    objc behaviour on null object. But it also initializes the needed playlist
+    variables.
+    In the longer term, this should probably be splitted, as touching
+    lots of non-existing UI elements in init is not ideal.
+    
+    (cherry picked from commit 4873ca47648fb7cbe80a00681b9ea65767e5f70a)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit 4749cd00a222d81fe11282fa11a332c0e7634f56
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Dec 9 21:09:44 2017 +0100
+
+    macosx: Do not lazy-load audio and video effect controllers anymore
+    
+    Those need to be loaded at startup now, to make sure stored
+    profiles are correctly applied, even before the panels are opened.
+    
+    Previously (VLC 2.2.x), a saved profile was mirrored into the
+    respective VLC config options, thus it was not needed before.
+    this is not done anymore.
+    
+    refs #19260
+    
+    (cherry picked from commit 7798c907f373d1b543ace74f58bf9966a50ed592)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit 139ae598f7ffc36659d9f5a2c999704c00b7858f
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Sat Dec 9 20:39:28 2017 +0100
+
+    macosx: profiles: Fix rules when new "CustomXXX" profiles are created
+    
+    * Fix bug where default video profile was at an older version, resulting
+      in a new profile always created after opening the vout effects
+    * On termination, only create a new profile if the apply button is
+      on, the user is at default profile and actually changed something.
+      This profile will be also marked as to be selected at next startup
+      (which is the meaning of that check box)
+    
+    refs #19260
+    
+    (cherry picked from commit 7bf09f9bcfcc850735ca59289d88497c5a2de624)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit fe1716333c4ae850fc9f171646e444e2e22f84da
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Dec 13 22:32:06 2017 +0200
+
+    mp4: fix infinite loop on malformed file
+    
+    Unknown or partially read box can be loaded succesfully even if it
+    overflows the parent. This lead to an integer underflow and infinite
+    loop until memory exhaustion.
+    
+    (cherry picked from commit f8c44ffcf7b4ca0cd4f58d7c44b2e1faa3f90ce6)
+
+commit 858900671c46058f1a3e15b256e2f0e626dc5bab
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Dec 13 19:15:58 2017 +0100
+
+    demux: libmp4: remove padb wich isn't fixed
+    
+    (cherry picked from commit 98f4d470875860572a9080c848462171b5338e01)
+
+commit f2fb2241d03aab2b4beaba570ad0ce6f997e5093
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Dec 13 13:44:03 2017 +0100
+
+    demux: webvtt: rewrite to handle overlaps
+    
+    (cherry picked from commit 23d1f0087acab965f9d7fdac9ad1c5df20131ed7)
+
+commit d78c8d492c5832766a2c8db9ff1e5929afa0bcac
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Dec 13 18:33:23 2017 +0100
+
+    codec: webvtt: check timestamp validity
+    
+    (cherry picked from commit 283178771b7dd7c7aed2884fd9ae514ea0175759)
+
+commit c929f6155cbaaec462d98cff678ef89b89319ade
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Dec 13 15:52:13 2017 +0100
+
+    codec: webvtt: fix regionless cues duplication
+    
+    (cherry picked from commit 86a0b361d91c20d88ed7ce5979ed24d1411e5c73)
+
+commit 3d594095b6852a97e8b8858157c849787bc4c56e
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Dec 13 15:51:38 2017 +0100
+
+    codec: webvtt: remove invalid assertion
+    
+    (cherry picked from commit 69c297c57a0efe92ac4ebc5aa27759d0019614e7)
+
+commit 81316cc3a9bdfa42e860d7d0ffad1adc00a88b15
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Dec 13 20:22:34 2017 +0100
+
+    demux: mp4: check handler before dereferencing sample entry
+    
+    (cherry picked from commit 59535a015e94d3b70b30dce1c2aff8c23930b656)
+
+commit 3d0ffa7c72bfe874fd9ffb425d8e13357ad264aa
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 13 16:08:44 2017 +0100
+
+    videotoolbox: don't Restart in case of corrupted blocks
+    
+    This commit follow f75db2e7ef22b2bb9bc6e2ade65793163ebea4e5.
+    
+    (cherry picked from commit 80f2b8cf5a196d621659558f25e930c9d218d1f1)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 99b7d9072b2371e4b5dc09e1f5f81ba294d799b9
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Dec 13 15:51:36 2017 +0100
+
+    videotoolbox: don't ignore StartVideoToolbox() return
+    
+    And abort if the vtsession can't handle a profile/level.
+    
+    (cherry picked from commit 376de21e0f84fdb52f1401277befd9e36f1d1c8a)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 8cd49aa074937496e49ffe4e095a3973065e59db
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 13 13:04:17 2017 +0100
+
+    lib: export libvlc_media_player_set_renderer
+    
+    (cherry picked from commit 179a6ed9f632f8d8ee8d8e6420a6cfb873cfb8fd)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit df045e5b7b7e3174363be19597a067b95f6d6b90
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Mon Dec 11 09:37:56 2017 +0100
+
+    hw:d3d11: Fix crashes when mixing D3D11 filters with CPU filters
+    
+    The filter chain is not recomputed and we may use pictures not coming from the
+    right pool.
+    
+    Fix crash in #19266
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit c6ca37272832afedc761a7dc28d5a821e6689df3)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 1bb4368a97357f1d1dfd74834a85f1212c52eeeb
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Dec 12 18:22:58 2017 +0100
+
+    direct3d11: display all the visible pixels
+    
+    Now that we fixed the interpolation issues with CPU decoders.
+    
+    Fixes #19199
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 076c773eee4296008c2962c19687ad71e03a40b3)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 578a1a16cbf0fbda8e598d0bff99ce267ac177c3
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Dec 12 18:22:57 2017 +0100
+
+    direct3d11: fill the padding area with black on CPU mapped textures
+    
+    This will ease the artefacts on the bottom/right sides of the texture when
+    linear interpolation is used.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 3e869dd4e5beb6a8d4e4f24cd8148e28c695406b)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 0c22bc60a75d193f163d219077d3c30a0f73949c
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Dec 12 18:22:56 2017 +0100
+
+    direct3d11: map all planes at once
+    
+    Rather than failing in the middle and copying only part of the planes.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit cbb51a5f4425f904d188b41a04de930b5a9276db)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit a11622dfcb8add3592fd9d2fc6d68a84927a7564
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Dec 12 14:13:43 2017 +0100
+
+    direct3d11: code cleaning
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 8c4ca0d5b59f247ae3838dec9cc01322cd2fa263)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 4b0f4e484bbfa608c08af8fd0e2cfb51ac8765da
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Dec 12 14:13:42 2017 +0100
+
+    direct3d11: only resize the swapchain and create new targets if the dimensions changed
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit f178aa56f07776271bd9da9807ab402173a974f1)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit fa1d70023e8b817805549891e3a1c032e2ceb6d4
+Author: Steve Lhomme <robUx4@videolabs.io>
+Date:   Tue Dec 12 14:13:41 2017 +0100
+
+    direct3d11: pass some variables as const
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 7be22caa53fe01857a863581a9ee0079ee57d653)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit bb6e2fceb4211274a8fc1cff67bb0829f1b717bb
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Mon Dec 11 12:52:20 2017 +0100
+
+    access/http: Fix off-by-one in ICY parser
+    
+    This fixes a off-by-one issue in the ICY parser that would happen in the
+    case the ICY metadata is unquoted. (StreamTitle=test;).
+    With empty metadata without ; (StreamTitle=) this would lead to a buffer
+    over-read.
+    
+    Credit to Filip Roséen who discovered this issue.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit b180121763aeb686fc331d6665c622ce02738bc4)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 4390f08b992dea89010f93aeaa5d268d0e7b134e
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Mon Dec 11 10:22:45 2017 +0100
+
+    asx: remove useless test
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit cb7514099f2f45f45c409674a6a00df9833d8523)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 4d3165e759f16502bb451abc46468802175856b9
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Mon Dec 11 10:22:44 2017 +0100
+
+    asx: fix double free
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 85136949fbeeb8eb9e6625003d192924a2f317a3)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit ee2bc6132e7c1016b29c262d7a9662e97728c183
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 13 10:27:08 2017 +0100
+
+    win32 installer: Install hrtfs
+    
+    (cherry picked from commit e890ffb14db21ad52a5c1274c11b839b2547f8e6)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 5f2dfb1bbeca4f662f00638f0d6bde81e9e3c486
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 13 10:19:44 2017 +0100
+
+    win32 installer: Use https
+    
+    (cherry picked from commit 076e62fe158a82f8e828ec0e3499b215817f28ed)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 0d0ab76d897a59f2425f9e613fe350f8c02b45d9
+Author: Michał Trzebiatowski <michtrz@gmail.com>
+Date:   Mon Dec 11 21:59:38 2017 +0100
+
+    l10n: Polish update
+    
+    Signed-off-by: Michał Trzebiatowski <michtrz@gmail.com>
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 48cd41225c3b8388873e1f319eefd6313e4d3783
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 12 20:53:01 2017 +0200
+
+    Old RC: fix assertion on "stats"
+    
+    (cherry picked from commit 0a74b077bc0edd3c5d613a65742e2cd57bb9175f)
+
+commit 3c82fa9ddb9dc3aa9319ea115d1f7be10e4f2575
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 12 20:20:07 2017 +0200
+
+    Old RC: do not show nonexistent sout stats
+    
+    (cherry picked from commit 3fccdd190b3dd5a1b8f6fc1295ce51d4c80584c8)
+
+commit 39679f4d2de05fca85be2fdff4bd22a2b644ae59
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 12 20:20:07 2017 +0200
+
+    ncurses: do not show nonexistent sout stats
+    
+    (cherry picked from commit d122a3e643f208860a058a87934eae272fb7c9cb)
+
+commit 9bda46d77ef4366f278506d5e32ee38385873782
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 12 20:20:07 2017 +0200
+
+    Qt: do not show nonexistent sout stats
+    
+    (cherry picked from commit bd19838c7a0d7e563d5623005e6059a5790e21d7)
+
+commit 13e53757070dde9727cb39c5820c514dc4312ba0
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 12 20:20:07 2017 +0200
+
+    Lua RC: do not show nonexistent sout stats
+    
+    (cherry picked from commit 60006dcb7e98870d04ce61d69d189431295c8203)
+
+commit 4f467fa3695a8518fca267bb236a9c759f35f350
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Dec 12 16:48:39 2017 +0100
+
+    package/win32: Remove already implied folder creation
+    
+    nsProcess.dll rule already creates this folder
+    
+    (cherry picked from commit ddeaa313ceeab09fdb0d30bfdf27915244408882)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit ce2ae8c0efc1f8ddcd8ce3c68fcc543095501e84
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Dec 12 14:54:26 2017 +0100
+
+    package/win32: build.sh: Add an option to generate a release archive
+    
+    (cherry picked from commit 60903ec5b4b7419b6fdb6ca953aabb6da5b664f3)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit e81566f28b7aa37e79c7628a530978f073f30695
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Dec 12 14:54:07 2017 +0100
+
+    package/win32: Add a target to build a release archive
+    
+    (cherry picked from commit eb10be30728b8628ea151c695be3706accbc9c60)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 87e2b50e4a28e2ecb816ba4c3af349bd085e6fd6
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Dec 12 18:00:16 2017 +0100
+
+    package/win32: Split SDK packetization in a separate rule
+    
+    (cherry picked from commit 95dd6c8c179c935aca87d9be209937bcda00ca4d)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 0c0fc13f003b36073c7ab7c5554e2dbee75db740
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Mon Dec 11 14:33:34 2017 +0100
+
+    package/win32: Remove old binaries signature code
+    
+    (cherry picked from commit d37b4f9a06859cc688da07910e7b10976dd518fc)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 0e6832629724e6c10e3d9da1824ed4ca80b3330b
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Dec 11 18:16:30 2017 +0100
+
+    audiounit_ios: move notification up
+    
+    (cherry picked from commit 48f65f1df0f85104ddae365c2ef13bddb9edd356)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit c814ad098eae8afb68eedb93c10f99c6c6f270f9
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Dec 12 13:01:35 2017 +0100
+
+    audiounit_ios: remove ca_Flush hack
+    
+    Since ca_Flush() can now works when paused.
+    
+    NB: Normally, ca_Flush() can't be called when paused by VLC but this module do
+    a pause in order to mute, and the paused state can now be set from the
+    interrupt notification.
+    
+    (cherry picked from commit c7e8e84b6475081aa07a79ae5bcaa0806a3f7031)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 4793c4ff4c449e6dccd0b52d351f8402c70368a9
+Author: Carola Nitz <nitz.carola@googlemail.com>
+Date:   Mon Dec 11 10:52:37 2017 +0100
+
+    audiounit_ios: fix deadlock on interruption
+    
+    Add ca_setAliveState() that sets the b_paused to true and unblock ca_Play() or
+    ca_Flush() that could wait for ca_Render().
+    
+    (cherry picked from commit 7e4c7f35ec3f713832ae51fde62f52990938842f)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 06fb276afa8958a35b44b7802fb6c930e49d9476
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Dec 12 11:38:51 2017 +0100
+
+    codec: webvtt: fix infinite loop
+    
+    (cherry picked from commit 12a5311d7c8ed2f68b47b18dbb52907317ca2ea8)
+
+commit 9625967df519f6096d89acb9f6df830fd9936431
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Dec 11 15:56:19 2017 +0100
+
+    codec: ttml: fix inverted cell linegap ratio
+    
+    (cherry picked from commit 2a1542ea5ac930eff7a372f29944fcb951e1b629)
+
+commit 41c7abb6d3c09d4e8ec527b58abda7aeb2ae5dbe
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Dec 11 15:33:43 2017 +0100
+
+    codec: ttml: fix double rebase (cell to percent)
+    
+    (cherry picked from commit e2ba02c8d1e7974fb65fddffb7372b5081b3f558)
+
+commit 3f21af3627e78cf1fd1393e90890fc0c897b31c0
+Author: Konstantin Pavlov <thresh@videolan.org>
+Date:   Tue Dec 12 12:55:30 2017 +0300
+
+    snap: enabled libplacebo.
+    
+    (cherry picked from commit 41d096176d1f27d821fef77a77bfd3c7f524a417)
+    Signed-off-by: Konstantin Pavlov <thresh@videolan.org>
+
+commit 96f41ae62199582cc203100d5e62b390d9e7b7a3
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Dec 11 16:39:31 2017 +0100
+
+    direct3d9: remove useless texture generation
+    
+    It's already done by the vout_helper.
+    
+    (cherry picked from commit 0dedb9e260c3bc3612ff6c04226348c339201bdb)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit fcd9a89c173594e8fe465c032f05598e4b8d0c68
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Dec 11 22:22:54 2017 +0100
+
+    On the road to rc2
+
+commit b01989a62168f348969608c496a7ac4a01e454d5
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Dec 11 16:57:40 2017 +0100
+
+    opengl: fix deleting order
+    
+    Textures should be deleted after the glconv modules are closed since they can
+    be still in use.
+    
+    Fixes #19274
+    
+    (cherry picked from commit 28f5370624a552cf765ca79df402125bd1fda10a)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 08594b011da6a1b769f38dd1312f2233852cd297
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Dec 11 21:09:25 2017 +0200
+
+    qt: fix race on input_item_t.p_stats
+    
+    p_stats is written with the input item lock (by the input thread).
+    Thus the input item lock is necessary to read and dereference p_stats.
+    
+    (cherry picked from commit 996f66c65c7840e298efe38adac39e9315e262d1)
+
+commit 5e5379efc90044c3199b668482f95a91975dd201
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Dec 11 21:09:25 2017 +0200
+
+    libvlc: fix race on input_item_t.p_stats
+    
+    p_stats is written with the input item lock (by the input thread).
+    Thus the input item lock is necessary to read and dereference p_stats.
+    
+    (cherry picked from commit 1fffacd6ea5df99f8d22111b13dfcfd3bcd49bca)
+
+commit 52b8f84515a2ff003a78799c6b5bc0b9273f95c7
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Dec 11 21:10:38 2017 +0200
+
+    vlc_strfinput: fix race on input_item_t.p_stats
+    
+    p_stats is written with the input item lock (by the input thread).
+    Thus the input item lock is necessary to read and dereference p_stats.
+    
+    (cherry picked from commit 895d480b516f01482df7176ccee811c38d665230)
+
+commit 40ac6bfeb5eadbc1ac94376ba629c8c843949704
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Dec 11 21:09:25 2017 +0200
+
+    lua: fix race on input_item_t.p_stats
+    
+    p_stats is written with the input item lock (by the input thread).
+    Thus the input item lock is necessary to read and dereference p_stats.
+    
+    (cherry picked from commit 7bac48bd52847fe1dc5cf25ee8068888cd38fc82)
+
+commit 5e9828f89e023c42c5ba102146421a72f2d41c05
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Sun Dec 10 18:20:06 2017 +0100
+
+    notify: use GTK+ 3
+    
+    Signed-off-by: Sebastian Ramacher <sramacher@debian.org>
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 829d6154b94cf24ede9c52f0286a1b35a71769e9)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 8b1fbfaa30b07cfaa5440d45efc6690f4c52389a
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Dec 11 14:57:25 2017 +0100
+
+    direct3d9: gl: don't unlock if a previous lock failed
+    
+    Didn't see this case happening but nothing prevents it.
+    
+    (cherry picked from commit c16eef67791923bad3a430349c1dbe1e2246c3b3)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 169983c03abbeb0f5666978ebe3ec58b66f70795
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Dec 11 10:35:14 2017 +0100
+
+    demux: mp4: work with CLOCK_FREQ timescale (fix #19256)
+    
+    As some ppl can't produce files where the track time
+    can be mapped to movie time..
+    
+    (cherry picked from commit 5a1d4e068965ba1b4f1ee820305ce7be80ed1c4d)
+
 commit 410c661386b3e8162833c3e9d6c0596e563c16d4
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Mon Dec 11 00:17:07 2017 +0100

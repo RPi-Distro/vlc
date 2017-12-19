@@ -2,7 +2,7 @@
  * ncurses.c : NCurses interface for vlc
  *****************************************************************************
  * Copyright © 2001-2011 the VideoLAN team
- * $Id: 6ed98558ece88f50e6be4f54766c6e374497a9e1 $
+ * $Id: a78cf2b197cd880dc1a0fa4a1d5bc2a6c561d5ad $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -840,15 +840,6 @@ static int DrawStats(intf_thread_t *intf, input_thread_t *p_input)
         MainBoxWrite(sys, l++, _("| buffers lost     :    %5"PRIi64),
                 p_stats->i_lost_abuffers);
     }
-    /* Sout */
-    if (sys->color) color_set(C_CATEGORY, NULL);
-    MainBoxWrite(sys, l++, _("+-[Streaming]"));
-    if (sys->color) color_set(C_DEFAULT, NULL);
-    MainBoxWrite(sys, l++, _("| packets sent     :    %5"PRIi64), p_stats->i_sent_packets);
-    MainBoxWrite(sys, l++, _("| bytes sent       : %8.0f KiB"),
-            (float)(p_stats->i_sent_bytes)/1025);
-    MainBoxWrite(sys, l++, _("| sending bitrate  :   %6.0f kb/s"),
-            p_stats->f_send_bitrate*8000);
     if (sys->color) color_set(C_DEFAULT, NULL);
 
     vlc_mutex_unlock(&p_stats->lock);

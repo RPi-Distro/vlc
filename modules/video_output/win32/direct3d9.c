@@ -2,7 +2,7 @@
  * direct3d9.c: Windows Direct3D9 video output module
  *****************************************************************************
  * Copyright (C) 2006-2014 VLC authors and VideoLAN
- *$Id: 7eaf2327f568c6d3c8df6ed3f875f3da037fbcf9 $
+ *$Id: 4dbcbaadbd8fc1e00c9a0f7b0da0c02029a0c32e $
  *
  * Authors: Martell Malone <martellmalone@gmail.com>,
  *          Damien Fouilleul <damienf@videolan.org>,
@@ -1812,7 +1812,7 @@ GLConvUpdate(const opengl_tex_converter_t *tc, GLuint *textures,
     HRESULT hr;
 
     picture_sys_t *picsys = ActivePictureSys(pic);
-    if (!picsys)
+    if (unlikely(!picsys || !priv->gl_render))
         return VLC_EGENERIC;
 
     if (!priv->vt.DXUnlockObjectsNV(priv->gl_handle_d3d, 1, &priv->gl_render))
@@ -1838,6 +1838,8 @@ GLConvUpdate(const opengl_tex_converter_t *tc, GLuint *textures,
     if (!priv->vt.DXLockObjectsNV(priv->gl_handle_d3d, 1, &priv->gl_render))
     {
         msg_Warn(tc->gl, "DXLockObjectsNV failed");
+        priv->vt.DXUnregisterObjectNV(priv->gl_handle_d3d, priv->gl_render);
+        priv->gl_render = NULL;
         return VLC_EGENERIC;
     }
 
@@ -1858,14 +1860,6 @@ GLConvAllocateTextures(const opengl_tex_converter_t *tc, GLuint *textures,
 {
     VLC_UNUSED(tex_width); VLC_UNUSED(tex_height);
     struct glpriv *priv = tc->priv;
-    tc->vt->GenTextures(1, textures);
-
-    tc->vt->ActiveTexture(GL_TEXTURE0);
-    tc->vt->BindTexture(tc->tex_target, textures[0]);
-    tc->vt->TexParameteri(tc->tex_target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    tc->vt->TexParameteri(tc->tex_target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    tc->vt->TexParameterf(tc->tex_target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    tc->vt->TexParameterf(tc->tex_target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     priv->gl_render =
         priv->vt.DXRegisterObjectNV(priv->gl_handle_d3d, priv->dx_render,

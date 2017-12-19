@@ -2,7 +2,7 @@
  * libavi.c : LibAVI
  *****************************************************************************
  * Copyright (C) 2001 VLC authors and VideoLAN
- * $Id: 057fb84fa281c73e4ba454bff94a90378bc02d05 $
+ * $Id: fca5b32a6e2d14918d39518ea79dc21cb1a00c64 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1131,16 +1131,17 @@ int AVI_ChunkReadRoot( stream_t *s, avi_chunk_t *p_root )
             free( p_chk );
             break;
         }
-        else if( vlc_stream_Tell( s ) >=
+
+        *pp_append = p_chk;
+        while( *pp_append )
+            pp_append = &((*pp_append)->common.p_next);
+
+        if( vlc_stream_Tell( s ) >=
                  p_chk->common.p_father->common.i_chunk_pos +
                  __EVEN( p_chk->common.p_father->common.i_chunk_size ) )
         {
             break;
         }
-
-        *pp_append = p_chk;
-        while( *pp_append )
-            pp_append = &((*pp_append)->common.p_next);
 
         /* If we can't seek then stop when we 've found first RIFF-AVI */
         if( p_chk->common.i_chunk_fourcc == AVIFOURCC_RIFF &&

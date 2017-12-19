@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: d848ca9e0b5ce550db1c9242540240693310e9ea $
+ * $Id: 026ee364791201cf3d9422a5e40f1f751a74dd5b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -467,6 +467,17 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             }
 #endif
 
+#ifdef _WIN32
+            CONFIG_GENERIC( "mmdevice-passthrough", IntegerList,
+                            ui.mmdevicePassthroughLabel, mmdevicePassthroughBox );
+            optionWidgets["mmdevicePassthroughL"] = ui.mmdevicePassthroughLabel;
+            optionWidgets["mmdevicePassthroughB"] = ui.mmdevicePassthroughBox;
+#else
+            ui.mmdevicePassthroughLabel->setVisible( false );
+            ui.mmdevicePassthroughBox->setVisible( false );
+#endif
+
+
 #undef audioControl2
 #undef audioControl
 #undef audioCommon
@@ -917,6 +928,12 @@ void SPrefsPanel::updateAudioOptions( int number)
     QString value = qobject_cast<QComboBox *>(optionWidgets["audioOutCoB"])
                                             ->itemData( number ).toString();
 #ifdef _WIN32
+    /* Since MMDevice is most likely to be used by default, we show MMDevice
+     * options by default */
+    const bool mmDeviceEnabled = value == "mmdevice" || value == "any";
+    optionWidgets["mmdevicePassthroughL"]->setVisible( mmDeviceEnabled );
+    optionWidgets["mmdevicePassthroughB"]->setVisible( mmDeviceEnabled );
+
     optionWidgets["directxW"]->setVisible( ( value == "directsound" ) );
     optionWidgets["directxL"]->setVisible( ( value == "directsound" ) );
     optionWidgets["waveoutW"]->setVisible( ( value == "waveout" ) );
