@@ -1,5 +1,6 @@
-vlc (3.0.0~rc2-1) UNRELEASED; urgency=medium
+vlc (3.0.0~rc2-1) unstable; urgency=medium
 
+  * Upload to unstable.
   * New upstream release candidate.
   * debian/tests/control: Update list of plugin packages.
   * debian/patches: Removed, no longer needed.
@@ -7,7 +8,7 @@ vlc (3.0.0~rc2-1) UNRELEASED; urgency=medium
   * debian/*.symbols: Add new symbols and bump versions of new symbols to
     3.0.0~rc2.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Tue, 19 Dec 2017 19:06:01 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 19 Dec 2017 23:34:22 +0100
 
 vlc (3.0.0~rc1-1) experimental; urgency=medium
 
