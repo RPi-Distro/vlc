@@ -11,7 +11,7 @@ libvlccore.so.9 libvlccore9 #MINVER#
  VLC_CompileBy@Base 2.0.0
  VLC_CompileHost@Base 2.0.0
  VLC_Compiler@Base 2.0.0
- access_vaDirectoryControlHelper@Base 3.0.0~rc1~20171206
+ access_vaDirectoryControlHelper@Base 3.0.0~rc2
  addon_entry_Hold@Base 2.2.0~pre1
  addon_entry_New@Base 2.2.0~pre1
  addon_entry_Release@Base 2.2.0~pre1
@@ -31,10 +31,10 @@ libvlccore.so.9 libvlccore9 #MINVER#
  aout_DeviceSet@Base 2.1.0
  aout_DevicesList@Base 2.1.0
  aout_FiltersAdjustResampling@Base 2.1.0
- aout_FiltersChangeViewpoint@Base 3.0.0~rc1~20171206
+ aout_FiltersChangeViewpoint@Base 3.0.0~rc2
  aout_FiltersDelete@Base 2.1.0
- aout_FiltersDrain@Base 3.0.0~rc1~20171206
- aout_FiltersFlush@Base 3.0.0~rc1~20171206
+ aout_FiltersDrain@Base 3.0.0~rc2
+ aout_FiltersFlush@Base 3.0.0~rc2
  aout_FiltersNew@Base 2.1.0
  aout_FiltersPlay@Base 2.1.0
  aout_FormatPrepare@Base 2.0.0
@@ -45,7 +45,7 @@ libvlccore.so.9 libvlccore9 #MINVER#
  aout_MuteSet@Base 2.1.0
  aout_VolumeGet@Base 2.0.0
  aout_VolumeSet@Base 2.0.0
- aout_VolumeUpdate@Base 3.0.0~rc1~20171206
+ aout_VolumeUpdate@Base 3.0.0~rc2
  aout_filter_RequestVout@Base 2.0.0
  block_Alloc@Base 2.0.0
  block_FifoCount@Base 2.0.0
@@ -59,7 +59,7 @@ libvlccore.so.9 libvlccore9 #MINVER#
  block_FilePath@Base 2.1.0
  block_Init@Base 2.0.0
  block_Realloc@Base 2.0.0
- block_TryRealloc@Base 3.0.0~rc1~20171206
+ block_TryRealloc@Base 3.0.0~rc2
  block_heap_Alloc@Base 2.0.0
  block_mmap_Alloc@Base 2.0.0
  block_shm_Alloc@Base 2.1.0
@@ -95,39 +95,39 @@ libvlccore.so.9 libvlccore9 #MINVER#
  date_Init@Base 2.0.0
  date_Move@Base 2.0.0
  date_Set@Base 2.0.0
- decoder_AbortPictures@Base 3.0.0~rc1~20171206
+ decoder_AbortPictures@Base 3.0.0~rc2
  decoder_GetDisplayDate@Base 2.0.0
  decoder_GetDisplayRate@Base 2.0.0
  decoder_GetInputAttachments@Base 2.0.0
  decoder_NewAudioBuffer@Base 2.0.0
  decoder_NewSubpicture@Base 2.0.0
- demux_Delete@Base 3.0.0~rc1~20171206
- demux_New@Base 3.0.0~rc1~20171206
+ demux_Delete@Base 3.0.0~rc2
+ demux_New@Base 3.0.0~rc2
  demux_PacketizerDestroy@Base 2.0.0
  demux_PacketizerNew@Base 2.0.0
- demux_vaControl@Base 3.0.0~rc1~20171206
+ demux_vaControl@Base 3.0.0~rc2
  demux_vaControlHelper@Base 2.0.0
  es_format_Clean@Base 2.0.0
  es_format_Copy@Base 2.0.0
  es_format_Init@Base 2.0.0
  es_format_InitFromVideo@Base 2.0.0
  es_format_IsSimilar@Base 2.0.0
- filter_AddProxyCallbacks@Base 3.0.0~rc1~20171206
+ filter_AddProxyCallbacks@Base 3.0.0~rc2
  filter_Blend@Base 2.0.0
  filter_ConfigureBlend@Base 2.0.0
- filter_DelProxyCallbacks@Base 3.0.0~rc1~20171206
+ filter_DelProxyCallbacks@Base 3.0.0~rc2
  filter_DeleteBlend@Base 2.0.0
  filter_NewBlend@Base 2.0.0
- filter_chain_AppendConverter@Base 3.0.0~rc1~20171206
+ filter_chain_AppendConverter@Base 3.0.0~rc2
  filter_chain_AppendFilter@Base 2.0.0
  filter_chain_AppendFromString@Base 2.0.0
  filter_chain_Delete@Base 2.0.0
  filter_chain_DeleteFilter@Base 2.0.0
  filter_chain_GetFmtOut@Base 2.0.0
- filter_chain_IsEmpty@Base 3.0.0~rc1~20171206
+ filter_chain_IsEmpty@Base 3.0.0~rc2
  filter_chain_MouseEvent@Base 2.0.0
  filter_chain_MouseFilter@Base 2.0.0
- filter_chain_NewVideo@Base 3.0.0~rc1~20171206
+ filter_chain_NewVideo@Base 3.0.0~rc2
  filter_chain_Reset@Base 2.0.0
  filter_chain_SubFilter@Base 2.0.0
  filter_chain_VideoFilter@Base 2.0.0
@@ -165,17 +165,17 @@ libvlccore.so.9 libvlccore9 #MINVER#
  input_DecoderCreate@Base 2.0.0
  input_DecoderDecode@Base 2.0.0
  input_DecoderDelete@Base 2.0.0
- input_DecoderDrain@Base 3.0.0~rc1~20171206
- input_DecoderFlush@Base 3.0.0~rc1~20171206
+ input_DecoderDrain@Base 3.0.0~rc2
+ input_DecoderFlush@Base 3.0.0~rc2
  input_GetItem@Base 2.0.0
  input_Read@Base 2.0.0
  input_Start@Base 2.0.0
  input_Stop@Base 2.0.0
  input_item_AddInfo@Base 2.0.0
- input_item_AddOpaque@Base 3.0.0~rc1~20171206
+ input_item_AddOpaque@Base 3.0.0~rc2
  input_item_AddOption@Base 2.0.0
- input_item_AddOptions@Base 3.0.0~rc1~20171206
- input_item_AddSlave@Base 3.0.0~rc1~20171206
+ input_item_AddOptions@Base 3.0.0~rc2
+ input_item_AddSlave@Base 3.0.0~rc2
  input_item_Copy@Base 2.0.0
  input_item_CopyOptions@Base 2.0.0
  input_item_DelInfo@Base 2.0.0
@@ -183,7 +183,7 @@ libvlccore.so.9 libvlccore9 #MINVER#
  input_item_GetInfo@Base 2.0.0
  input_item_GetMeta@Base 2.2.0
  input_item_GetName@Base 2.0.0
- input_item_GetNowPlayingFb@Base 3.0.0~rc1~20171206
+ input_item_GetNowPlayingFb@Base 3.0.0~rc2
  input_item_GetTitleFbName@Base 2.0.0
  input_item_GetURI@Base 2.0.0
  input_item_HasErrorWhenReading@Base 2.0.0
@@ -204,8 +204,8 @@ libvlccore.so.9 libvlccore9 #MINVER#
  input_item_node_AppendNode@Base 2.0.0
  input_item_node_Create@Base 2.0.0
  input_item_node_Delete@Base 2.0.0
- input_item_slave_GetType@Base 3.0.0~rc1~20171206
- input_item_slave_New@Base 3.0.0~rc1~20171206
+ input_item_slave_GetType@Base 3.0.0~rc2
+ input_item_slave_New@Base 3.0.0~rc2
  input_resource_GetAout@Base 2.2.0~pre1
  input_resource_HoldAout@Base 2.1.0
  input_resource_New@Base 2.0.0
@@ -223,8 +223,8 @@ libvlccore.so.9 libvlccore9 #MINVER#
  libvlc_InternalDestroy@Base 2.0.0
  libvlc_InternalInit@Base 2.0.0
  libvlc_InternalPlay@Base 2.2.0~pre1
- libvlc_MetadataCancel@Base 3.0.0~rc1~20171206
- libvlc_MetadataRequest@Base 3.0.0~rc1~20171206
+ libvlc_MetadataCancel@Base 3.0.0~rc2
+ libvlc_MetadataRequest@Base 3.0.0~rc2
  libvlc_Quit@Base 2.0.0
  libvlc_SetExitHandler@Base 2.0.0
  mdate@Base 2.0.0
@@ -259,7 +259,7 @@ libvlccore.so.9 libvlccore9 #MINVER#
  net_Write@Base 2.0.0
  net_vaPrintf@Base 2.0.0
  picture_BlendSubpicture@Base 2.0.0
- picture_Clone@Base 3.0.0~rc1~20171206
+ picture_Clone@Base 3.0.0~rc2
  picture_Copy@Base 2.1.0
  picture_CopyPixels@Base 2.0.0
  picture_CopyProperties@Base 2.1.0
@@ -278,15 +278,15 @@ libvlccore.so.9 libvlccore9 #MINVER#
  picture_fifo_Peek@Base 2.0.0
  picture_fifo_Pop@Base 2.0.0
  picture_fifo_Push@Base 2.0.0
- picture_pool_Enum@Base 3.0.0~rc1~20171206
+ picture_pool_Enum@Base 3.0.0~rc2
  picture_pool_Get@Base 2.0.0
  picture_pool_GetSize@Base 2.0.0
  picture_pool_New@Base 2.0.0
  picture_pool_NewExtended@Base 2.0.0
  picture_pool_NewFromFormat@Base 2.0.0
- picture_pool_Release@Base 3.0.0~rc1~20171206
+ picture_pool_Release@Base 3.0.0~rc2
  picture_pool_Reserve@Base 2.0.0
- picture_pool_Wait@Base 3.0.0~rc1~20171206
+ picture_pool_Wait@Base 3.0.0~rc2
  plane_CopyPixels@Base 2.0.0
  playlist_Add@Base 2.0.0
  playlist_AddExt@Base 2.0.0
@@ -296,7 +296,7 @@ libvlccore.so.9 libvlccore9 #MINVER#
  playlist_Clear@Base 2.0.0
  playlist_Control@Base 2.0.0
  playlist_CurrentInput@Base 2.0.0
- playlist_CurrentInputLocked@Base 3.0.0~rc1~20171206
+ playlist_CurrentInputLocked@Base 3.0.0~rc2
  playlist_CurrentPlayingItem@Base 2.0.0
  playlist_Deactivate@Base 2.1.0
  playlist_EnableAudioFilter@Base 2.1.0
@@ -319,7 +319,7 @@ libvlccore.so.9 libvlccore9 #MINVER#
  playlist_ServicesDiscoveryAdd@Base 2.0.0
  playlist_ServicesDiscoveryControl@Base 2.0.0
  playlist_ServicesDiscoveryRemove@Base 2.0.0
- playlist_SetRenderer@Base 3.0.0~rc1~20171206
+ playlist_SetRenderer@Base 3.0.0~rc2
  playlist_Status@Base 2.0.0
  playlist_TreeMove@Base 2.0.0
  playlist_TreeMoveMany@Base 2.0.0
@@ -342,7 +342,7 @@ libvlccore.so.9 libvlccore9 #MINVER#
  sout_MuxAddStream@Base 2.0.0
  sout_MuxDelete@Base 2.0.0
  sout_MuxDeleteStream@Base 2.0.0
- sout_MuxFlush@Base 3.0.0~rc1~20171206
+ sout_MuxFlush@Base 3.0.0~rc2
  sout_MuxGetStream@Base 2.0.0
  sout_MuxNew@Base 2.0.0
  sout_MuxSendBuffer@Base 2.0.0
@@ -361,19 +361,19 @@ libvlccore.so.9 libvlccore9 #MINVER#
  subpicture_NewFromPicture@Base 2.0.0
  subpicture_Update@Base 2.0.0
  subpicture_region_ChainDelete@Base 2.0.0
- subpicture_region_Copy@Base 3.0.0~rc1~20171206
+ subpicture_region_Copy@Base 3.0.0~rc2
  subpicture_region_Delete@Base 2.0.0
  subpicture_region_New@Base 2.0.0
- text_segment_ChainDelete@Base 3.0.0~rc1~20171206
- text_segment_Copy@Base 3.0.0~rc1~20171206
- text_segment_Delete@Base 3.0.0~rc1~20171206
- text_segment_New@Base 3.0.0~rc1~20171206
- text_segment_NewInheritStyle@Base 3.0.0~rc1~20171206
+ text_segment_ChainDelete@Base 3.0.0~rc2
+ text_segment_Copy@Base 3.0.0~rc2
+ text_segment_Delete@Base 3.0.0~rc2
+ text_segment_New@Base 3.0.0~rc2
+ text_segment_NewInheritStyle@Base 3.0.0~rc2
  text_style_Copy@Base 2.0.0
- text_style_Create@Base 3.0.0~rc1~20171206
+ text_style_Create@Base 3.0.0~rc2
  text_style_Delete@Base 2.0.0
  text_style_Duplicate@Base 2.0.0
- text_style_Merge@Base 3.0.0~rc1~20171206
+ text_style_Merge@Base 3.0.0~rc2
  text_style_New@Base 2.0.0
  update_Check@Base 2.0.0
  update_Delete@Base 2.0.0
@@ -389,11 +389,11 @@ libvlccore.so.9 libvlccore9 #MINVER#
  utf8_fprintf@Base 2.0.0
  utf8_vfprintf@Base 2.0.0
  var_AddCallback@Base 2.0.0
- var_AddListCallback@Base 3.0.0~rc1~20171206
+ var_AddListCallback@Base 3.0.0~rc2
  var_Change@Base 2.0.0
  var_Create@Base 2.0.0
  var_DelCallback@Base 2.0.0
- var_DelListCallback@Base 3.0.0~rc1~20171206
+ var_DelListCallback@Base 3.0.0~rc2
  var_Destroy@Base 2.0.0
  var_FreeList@Base 2.0.0
  var_Get@Base 2.0.0
@@ -422,13 +422,13 @@ libvlccore.so.9 libvlccore9 #MINVER#
  vlc_LogSet@Base 2.1.0
  vlc_UrlClean@Base 2.1.0
  vlc_UrlParse@Base 2.1.0
- vlc_UrlParseFixup@Base 3.0.0~rc1~20171210
+ vlc_UrlParseFixup@Base 3.0.0~rc2
  vlc_accept@Base 2.0.0
- vlc_accept_i11e@Base 3.0.0~rc1~20171206
- vlc_access_NewMRL@Base 3.0.0~rc1~20171206
- vlc_actions_get_id@Base 3.0.0~rc1~20171206
- vlc_actions_get_key_names@Base 3.0.0~rc1~20171206
- vlc_actions_get_keycodes@Base 3.0.0~rc1~20171206
+ vlc_accept_i11e@Base 3.0.0~rc2
+ vlc_access_NewMRL@Base 3.0.0~rc2
+ vlc_actions_get_id@Base 3.0.0~rc2
+ vlc_actions_get_key_names@Base 3.0.0~rc2
+ vlc_actions_get_keycodes@Base 3.0.0~rc2
  vlc_b64_decode@Base 2.0.0
  vlc_b64_decode_binary@Base 2.0.0
  vlc_b64_decode_binary_to_buffer@Base 2.0.0
@@ -436,7 +436,7 @@ libvlccore.so.9 libvlccore9 #MINVER#
  vlc_b64_encode_binary@Base 2.0.0
  vlc_cancel@Base 2.0.0
  vlc_clone@Base 2.0.0
- vlc_close@Base 3.0.0~rc1~20171206
+ vlc_close@Base 3.0.0~rc2
  vlc_cond_broadcast@Base 2.0.0
  vlc_cond_destroy@Base 2.0.0
  vlc_cond_init@Base 2.0.0
@@ -444,59 +444,59 @@ libvlccore.so.9 libvlccore9 #MINVER#
  vlc_cond_timedwait@Base 2.0.0
  vlc_cond_wait@Base 2.0.0
  vlc_control_cancel@Base 2.0.0
- vlc_credential_clean@Base 3.0.0~rc1~20171206
- vlc_credential_get@Base 3.0.0~rc1~20171206
- vlc_credential_init@Base 3.0.0~rc1~20171206
- vlc_credential_store@Base 3.0.0~rc1~20171206
- vlc_demux_chained_ControlVa@Base 3.0.0~rc1~20171206
- vlc_demux_chained_Delete@Base 3.0.0~rc1~20171206
- vlc_demux_chained_New@Base 3.0.0~rc1~20171206
- vlc_demux_chained_Send@Base 3.0.0~rc1~20171206
- vlc_dialog_display_error@Base 3.0.0~rc1~20171206
- vlc_dialog_display_error_va@Base 3.0.0~rc1~20171206
- vlc_dialog_display_progress@Base 3.0.0~rc1~20171206
- vlc_dialog_display_progress_va@Base 3.0.0~rc1~20171206
- vlc_dialog_id_dismiss@Base 3.0.0~rc1~20171206
- vlc_dialog_id_get_context@Base 3.0.0~rc1~20171206
- vlc_dialog_id_post_action@Base 3.0.0~rc1~20171206
- vlc_dialog_id_post_login@Base 3.0.0~rc1~20171206
- vlc_dialog_id_set_context@Base 3.0.0~rc1~20171206
- vlc_dialog_is_cancelled@Base 3.0.0~rc1~20171206
- vlc_dialog_provider_set_callbacks@Base 3.0.0~rc1~20171206
- vlc_dialog_provider_set_ext_callback@Base 3.0.0~rc1~20171206
- vlc_dialog_release@Base 3.0.0~rc1~20171206
- vlc_dialog_update_progress@Base 3.0.0~rc1~20171206
- vlc_dialog_update_progress_text@Base 3.0.0~rc1~20171206
- vlc_dialog_update_progress_text_va@Base 3.0.0~rc1~20171206
- vlc_dialog_wait_login@Base 3.0.0~rc1~20171206
- vlc_dialog_wait_login_va@Base 3.0.0~rc1~20171206
- vlc_dialog_wait_question@Base 3.0.0~rc1~20171206
- vlc_dialog_wait_question_va@Base 3.0.0~rc1~20171206
+ vlc_credential_clean@Base 3.0.0~rc2
+ vlc_credential_get@Base 3.0.0~rc2
+ vlc_credential_init@Base 3.0.0~rc2
+ vlc_credential_store@Base 3.0.0~rc2
+ vlc_demux_chained_ControlVa@Base 3.0.0~rc2
+ vlc_demux_chained_Delete@Base 3.0.0~rc2
+ vlc_demux_chained_New@Base 3.0.0~rc2
+ vlc_demux_chained_Send@Base 3.0.0~rc2
+ vlc_dialog_display_error@Base 3.0.0~rc2
+ vlc_dialog_display_error_va@Base 3.0.0~rc2
+ vlc_dialog_display_progress@Base 3.0.0~rc2
+ vlc_dialog_display_progress_va@Base 3.0.0~rc2
+ vlc_dialog_id_dismiss@Base 3.0.0~rc2
+ vlc_dialog_id_get_context@Base 3.0.0~rc2
+ vlc_dialog_id_post_action@Base 3.0.0~rc2
+ vlc_dialog_id_post_login@Base 3.0.0~rc2
+ vlc_dialog_id_set_context@Base 3.0.0~rc2
+ vlc_dialog_is_cancelled@Base 3.0.0~rc2
+ vlc_dialog_provider_set_callbacks@Base 3.0.0~rc2
+ vlc_dialog_provider_set_ext_callback@Base 3.0.0~rc2
+ vlc_dialog_release@Base 3.0.0~rc2
+ vlc_dialog_update_progress@Base 3.0.0~rc2
+ vlc_dialog_update_progress_text@Base 3.0.0~rc2
+ vlc_dialog_update_progress_text_va@Base 3.0.0~rc2
+ vlc_dialog_wait_login@Base 3.0.0~rc2
+ vlc_dialog_wait_login_va@Base 3.0.0~rc2
+ vlc_dialog_wait_question@Base 3.0.0~rc2
+ vlc_dialog_wait_question_va@Base 3.0.0~rc2
  vlc_drand48@Base 2.0.0
  vlc_dup@Base 2.0.0
  vlc_epg_AddEvent@Base 2.0.0
  vlc_epg_Delete@Base 2.0.0
- vlc_epg_Duplicate@Base 3.0.0~rc1~20171206
+ vlc_epg_Duplicate@Base 3.0.0~rc2
  vlc_epg_New@Base 2.0.0
  vlc_epg_SetCurrent@Base 2.0.0
- vlc_epg_event_Delete@Base 3.0.0~rc1~20171206
- vlc_epg_event_Duplicate@Base 3.0.0~rc1~20171206
- vlc_epg_event_New@Base 3.0.0~rc1~20171206
+ vlc_epg_event_Delete@Base 3.0.0~rc2
+ vlc_epg_event_Duplicate@Base 3.0.0~rc2
+ vlc_epg_event_New@Base 3.0.0~rc2
  vlc_error@Base 2.0.0
  vlc_event_attach@Base 2.0.0
  vlc_event_detach@Base 2.0.0
- vlc_ext_dialog_update@Base 3.0.0~rc1~20171206
- vlc_fifo_DequeueAllUnlocked@Base 3.0.0~rc1~20171206
- vlc_fifo_DequeueUnlocked@Base 3.0.0~rc1~20171206
- vlc_fifo_GetBytes@Base 3.0.0~rc1~20171206
- vlc_fifo_GetCount@Base 3.0.0~rc1~20171206
- vlc_fifo_Lock@Base 3.0.0~rc1~20171206
- vlc_fifo_QueueUnlocked@Base 3.0.0~rc1~20171206
- vlc_fifo_Signal@Base 3.0.0~rc1~20171206
- vlc_fifo_Unlock@Base 3.0.0~rc1~20171206
- vlc_fifo_Wait@Base 3.0.0~rc1~20171206
- vlc_fifo_WaitCond@Base 3.0.0~rc1~20171206
- vlc_filenamecmp@Base 3.0.0~rc1~20171206
+ vlc_ext_dialog_update@Base 3.0.0~rc2
+ vlc_fifo_DequeueAllUnlocked@Base 3.0.0~rc2
+ vlc_fifo_DequeueUnlocked@Base 3.0.0~rc2
+ vlc_fifo_GetBytes@Base 3.0.0~rc2
+ vlc_fifo_GetCount@Base 3.0.0~rc2
+ vlc_fifo_Lock@Base 3.0.0~rc2
+ vlc_fifo_QueueUnlocked@Base 3.0.0~rc2
+ vlc_fifo_Signal@Base 3.0.0~rc2
+ vlc_fifo_Unlock@Base 3.0.0~rc2
+ vlc_fifo_Wait@Base 3.0.0~rc2
+ vlc_fifo_WaitCond@Base 3.0.0~rc2
+ vlc_filenamecmp@Base 3.0.0~rc2
  vlc_fopen@Base 2.0.0
  vlc_fourcc_AreUVPlanesSwapped@Base 2.0.0
  vlc_fourcc_GetChromaDescription@Base 2.0.0
@@ -509,64 +509,64 @@ libvlccore.so.9 libvlccore9 #MINVER#
  vlc_fourcc_IsYUV@Base 2.0.0
  vlc_getProxyUrl@Base 2.1.0
  vlc_getaddrinfo@Base 2.0.0
- vlc_getaddrinfo_i11e@Base 3.0.0~rc1~20171206
+ vlc_getaddrinfo_i11e@Base 3.0.0~rc2
  vlc_getcwd@Base 2.0.0
  vlc_getnameinfo@Base 2.0.0
  vlc_gettext@Base 2.0.0
  vlc_gl_Create@Base 2.0.0
- vlc_gl_Hold@Base 3.0.0~rc1~20171206
- vlc_gl_Release@Base 3.0.0~rc1~20171206
- vlc_gl_surface_CheckSize@Base 3.0.0~rc1~20171206
- vlc_gl_surface_Create@Base 3.0.0~rc1~20171206
- vlc_gl_surface_Destroy@Base 3.0.0~rc1~20171206
+ vlc_gl_Hold@Base 3.0.0~rc2
+ vlc_gl_Release@Base 3.0.0~rc2
+ vlc_gl_surface_CheckSize@Base 3.0.0~rc2
+ vlc_gl_surface_Create@Base 3.0.0~rc2
+ vlc_gl_surface_Destroy@Base 3.0.0~rc2
  vlc_global_mutex@Base 2.0.0
- vlc_html_color@Base 3.0.0~rc1~20171206
+ vlc_html_color@Base 3.0.0~rc2
  vlc_http_HostNew@Base 2.0.0
- vlc_http_auth_Deinit@Base 3.0.0~rc1~20171206
- vlc_http_auth_FormatAuthorizationHeader@Base 3.0.0~rc1~20171206
- vlc_http_auth_Init@Base 3.0.0~rc1~20171206
- vlc_http_auth_ParseAuthenticationInfoHeader@Base 3.0.0~rc1~20171206
- vlc_http_auth_ParseWwwAuthenticateHeader@Base 3.0.0~rc1~20171206
- vlc_http_cookies_destroy@Base 3.0.0~rc1~20171206
- vlc_http_cookies_fetch@Base 3.0.0~rc1~20171206
- vlc_http_cookies_new@Base 3.0.0~rc1~20171206
- vlc_http_cookies_store@Base 3.0.0~rc1~20171206
+ vlc_http_auth_Deinit@Base 3.0.0~rc2
+ vlc_http_auth_FormatAuthorizationHeader@Base 3.0.0~rc2
+ vlc_http_auth_Init@Base 3.0.0~rc2
+ vlc_http_auth_ParseAuthenticationInfoHeader@Base 3.0.0~rc2
+ vlc_http_auth_ParseWwwAuthenticateHeader@Base 3.0.0~rc2
+ vlc_http_cookies_destroy@Base 3.0.0~rc2
+ vlc_http_cookies_fetch@Base 3.0.0~rc2
+ vlc_http_cookies_new@Base 3.0.0~rc2
+ vlc_http_cookies_store@Base 3.0.0~rc2
  vlc_https_HostNew@Base 2.0.0
  vlc_iconv@Base 2.0.0
  vlc_iconv_close@Base 2.0.0
  vlc_iconv_open@Base 2.0.0
- vlc_interrupt_create@Base 3.0.0~rc1~20171206
- vlc_interrupt_destroy@Base 3.0.0~rc1~20171206
- vlc_interrupt_forward_start@Base 3.0.0~rc1~20171206
- vlc_interrupt_forward_stop@Base 3.0.0~rc1~20171206
- vlc_interrupt_kill@Base 3.0.0~rc1~20171206
- vlc_interrupt_raise@Base 3.0.0~rc1~20171206
- vlc_interrupt_register@Base 3.0.0~rc1~20171206
- vlc_interrupt_set@Base 3.0.0~rc1~20171206
- vlc_interrupt_unregister@Base 3.0.0~rc1~20171206
+ vlc_interrupt_create@Base 3.0.0~rc2
+ vlc_interrupt_destroy@Base 3.0.0~rc2
+ vlc_interrupt_forward_start@Base 3.0.0~rc2
+ vlc_interrupt_forward_stop@Base 3.0.0~rc2
+ vlc_interrupt_kill@Base 3.0.0~rc2
+ vlc_interrupt_raise@Base 3.0.0~rc2
+ vlc_interrupt_register@Base 3.0.0~rc2
+ vlc_interrupt_set@Base 3.0.0~rc2
+ vlc_interrupt_unregister@Base 3.0.0~rc2
  vlc_join@Base 2.0.0
  vlc_keycode2str@Base 2.0.0
- vlc_keystore_create@Base 3.0.0~rc1~20171206
- vlc_keystore_find@Base 3.0.0~rc1~20171206
- vlc_keystore_release@Base 3.0.0~rc1~20171206
- vlc_keystore_release_entries@Base 3.0.0~rc1~20171206
- vlc_keystore_remove@Base 3.0.0~rc1~20171206
- vlc_keystore_store@Base 3.0.0~rc1~20171206
- vlc_killed@Base 3.0.0~rc1~20171206
+ vlc_keystore_create@Base 3.0.0~rc2
+ vlc_keystore_find@Base 3.0.0~rc2
+ vlc_keystore_release@Base 3.0.0~rc2
+ vlc_keystore_release_entries@Base 3.0.0~rc2
+ vlc_keystore_remove@Base 3.0.0~rc2
+ vlc_keystore_store@Base 3.0.0~rc2
+ vlc_killed@Base 3.0.0~rc2
  vlc_list_children@Base 2.0.0
  vlc_list_release@Base 2.0.0
  vlc_loaddir@Base 2.0.0
  vlc_lrand48@Base 2.0.0
  vlc_lstat@Base 2.0.0
- vlc_memfd@Base 3.0.0~rc1~20171206
- vlc_memstream_close@Base 3.0.0~rc1~20171206
- vlc_memstream_flush@Base 3.0.0~rc1~20171206
- vlc_memstream_open@Base 3.0.0~rc1~20171206
- vlc_memstream_printf@Base 3.0.0~rc1~20171206
- vlc_memstream_putc@Base 3.0.0~rc1~20171206
- vlc_memstream_puts@Base 3.0.0~rc1~20171206
- vlc_memstream_vprintf@Base 3.0.0~rc1~20171206
- vlc_memstream_write@Base 3.0.0~rc1~20171206
+ vlc_memfd@Base 3.0.0~rc2
+ vlc_memstream_close@Base 3.0.0~rc2
+ vlc_memstream_flush@Base 3.0.0~rc2
+ vlc_memstream_open@Base 3.0.0~rc2
+ vlc_memstream_printf@Base 3.0.0~rc2
+ vlc_memstream_putc@Base 3.0.0~rc2
+ vlc_memstream_puts@Base 3.0.0~rc2
+ vlc_memstream_vprintf@Base 3.0.0~rc2
+ vlc_memstream_write@Base 3.0.0~rc2
  vlc_meta_AddExtra@Base 2.0.0
  vlc_meta_CopyExtraNames@Base 2.0.0
  vlc_meta_Delete@Base 2.0.0
@@ -591,11 +591,11 @@ libvlccore.so.9 libvlccore9 #MINVER#
  vlc_mutex_lock@Base 2.0.0
  vlc_mutex_trylock@Base 2.0.0
  vlc_mutex_unlock@Base 2.0.0
- vlc_mwait_i11e@Base 3.0.0~rc1~20171206
+ vlc_mwait_i11e@Base 3.0.0~rc2
  vlc_ngettext@Base 2.1.0
- vlc_obj_malloc@Base 3.0.0~rc1~20171206
- vlc_obj_calloc@Base 3.0.0~rc1~20171206
- vlc_obj_free@Base 3.0.0~rc1~20171206
+ vlc_obj_malloc@Base 3.0.0~rc2
+ vlc_obj_calloc@Base 3.0.0~rc2
+ vlc_obj_free@Base 3.0.0~rc2
  vlc_object_create@Base 2.0.0
  vlc_object_find_name@Base 2.0.0
  vlc_object_get_name@Base 2.0.0
@@ -606,30 +606,30 @@ libvlccore.so.9 libvlccore9 #MINVER#
  vlc_opendir@Base 2.0.0
  vlc_path2uri@Base 2.1.0
  vlc_pipe@Base 2.0.0
- vlc_poll_i11e@Base 3.0.0~rc1~20171206
+ vlc_poll_i11e@Base 3.0.0~rc2
  vlc_rand_bytes@Base 2.0.0
- vlc_rd_get_names@Base 3.0.0~rc1~20171206
- vlc_rd_new@Base 3.0.0~rc1~20171206
- vlc_rd_probe_add@Base 3.0.0~rc1~20171206
- vlc_rd_release@Base 3.0.0~rc1~20171206
- vlc_read_i11e@Base 3.0.0~rc1~20171206
+ vlc_rd_get_names@Base 3.0.0~rc2
+ vlc_rd_new@Base 3.0.0~rc2
+ vlc_rd_probe_add@Base 3.0.0~rc2
+ vlc_rd_release@Base 3.0.0~rc2
+ vlc_read_i11e@Base 3.0.0~rc2
  vlc_readdir@Base 2.0.0
- vlc_readdir_helper_additem@Base 3.0.0~rc1~20171206
- vlc_readdir_helper_finish@Base 3.0.0~rc1~20171206
- vlc_readdir_helper_init@Base 3.0.0~rc1~20171206
- vlc_readv_i11e@Base 3.0.0~rc1~20171206
- vlc_recvfrom_i11e@Base 3.0.0~rc1~20171206
- vlc_recvmsg_i11e@Base 3.0.0~rc1~20171206
+ vlc_readdir_helper_additem@Base 3.0.0~rc2
+ vlc_readdir_helper_finish@Base 3.0.0~rc2
+ vlc_readdir_helper_init@Base 3.0.0~rc2
+ vlc_readv_i11e@Base 3.0.0~rc2
+ vlc_recvfrom_i11e@Base 3.0.0~rc2
+ vlc_recvmsg_i11e@Base 3.0.0~rc2
  vlc_rename@Base 2.0.0
- vlc_renderer_item_demux_filter@Base 3.0.0~rc1~20171206
- vlc_renderer_item_flags@Base 3.0.0~rc1~20171206
- vlc_renderer_item_hold@Base 3.0.0~rc1~20171206
- vlc_renderer_item_icon_uri@Base 3.0.0~rc1~20171206
- vlc_renderer_item_name@Base 3.0.0~rc1~20171206
- vlc_renderer_item_new@Base 3.0.0~rc1~20171206
- vlc_renderer_item_release@Base 3.0.0~rc1~20171206
- vlc_renderer_item_sout@Base 3.0.0~rc1~20171206
- vlc_renderer_item_type@Base 3.0.0~rc1~20171206
+ vlc_renderer_item_demux_filter@Base 3.0.0~rc2
+ vlc_renderer_item_flags@Base 3.0.0~rc2
+ vlc_renderer_item_hold@Base 3.0.0~rc2
+ vlc_renderer_item_icon_uri@Base 3.0.0~rc2
+ vlc_renderer_item_name@Base 3.0.0~rc2
+ vlc_renderer_item_new@Base 3.0.0~rc2
+ vlc_renderer_item_release@Base 3.0.0~rc2
+ vlc_renderer_item_sout@Base 3.0.0~rc2
+ vlc_renderer_item_type@Base 3.0.0~rc2
  vlc_restorecancel@Base 2.0.0
  vlc_rtsp_HostNew@Base 2.0.0
  vlc_rwlock_destroy@Base 2.0.0
@@ -648,46 +648,46 @@ libvlccore.so.9 libvlccore9 #MINVER#
  vlc_sem_init@Base 2.0.0
  vlc_sem_post@Base 2.0.0
  vlc_sem_wait@Base 2.0.0
- vlc_sem_wait_i11e@Base 3.0.0~rc1~20171206
- vlc_sendmsg_i11e@Base 3.0.0~rc1~20171206
- vlc_sendto_i11e@Base 3.0.0~rc1~20171206
+ vlc_sem_wait_i11e@Base 3.0.0~rc2
+ vlc_sendmsg_i11e@Base 3.0.0~rc2
+ vlc_sendto_i11e@Base 3.0.0~rc2
  vlc_socket@Base 2.0.2
- vlc_socketpair@Base 3.0.0~rc1~20171206
+ vlc_socketpair@Base 3.0.0~rc2
  vlc_stat@Base 2.0.0
  vlc_str2keycode@Base 2.0.0
  vlc_strcasestr@Base 2.0.0
- vlc_stream_Block@Base 3.0.0~rc1~20171206
- vlc_stream_CommonNew@Base 3.0.0~rc1~20171206
- vlc_stream_Delete@Base 3.0.0~rc1~20171206
- vlc_stream_Eof@Base 3.0.0~rc1~20171206
- vlc_stream_FilterDefaultReadDir@Base 3.0.0~rc1~20171206
- vlc_stream_FilterNew@Base 3.0.0~rc1~20171206
- vlc_stream_MemoryNew@Base 3.0.0~rc1~20171206
- vlc_stream_NewMRL@Base 3.0.0~rc1~20171206
- vlc_stream_NewURL@Base 3.0.0~rc1~20171206
- vlc_stream_Peek@Base 3.0.0~rc1~20171206
- vlc_stream_Read@Base 3.0.0~rc1~20171206
- vlc_stream_ReadBlock@Base 3.0.0~rc1~20171206
- vlc_stream_ReadDir@Base 3.0.0~rc1~20171206
- vlc_stream_ReadLine@Base 3.0.0~rc1~20171206
- vlc_stream_ReadPartial@Base 3.0.0~rc1~20171206
- vlc_stream_Seek@Base 3.0.0~rc1~20171206
- vlc_stream_Tell@Base 3.0.0~rc1~20171206
- vlc_stream_directory_Attach@Base 3.0.0~rc1~20171206
- vlc_stream_extractor_Attach@Base 3.0.0~rc1~20171206
- vlc_stream_extractor_CreateMRL@Base 3.0.0~rc1~20171206
- vlc_stream_fifo_Close@Base 3.0.0~rc1~20171206
- vlc_stream_fifo_New@Base 3.0.0~rc1~20171206
- vlc_stream_fifo_Queue@Base 3.0.0~rc1~20171206
- vlc_stream_fifo_Write@Base 3.0.0~rc1~20171206
- vlc_stream_vaControl@Base 3.0.0~rc1~20171206
+ vlc_stream_Block@Base 3.0.0~rc2
+ vlc_stream_CommonNew@Base 3.0.0~rc2
+ vlc_stream_Delete@Base 3.0.0~rc2
+ vlc_stream_Eof@Base 3.0.0~rc2
+ vlc_stream_FilterDefaultReadDir@Base 3.0.0~rc2
+ vlc_stream_FilterNew@Base 3.0.0~rc2
+ vlc_stream_MemoryNew@Base 3.0.0~rc2
+ vlc_stream_NewMRL@Base 3.0.0~rc2
+ vlc_stream_NewURL@Base 3.0.0~rc2
+ vlc_stream_Peek@Base 3.0.0~rc2
+ vlc_stream_Read@Base 3.0.0~rc2
+ vlc_stream_ReadBlock@Base 3.0.0~rc2
+ vlc_stream_ReadDir@Base 3.0.0~rc2
+ vlc_stream_ReadLine@Base 3.0.0~rc2
+ vlc_stream_ReadPartial@Base 3.0.0~rc2
+ vlc_stream_Seek@Base 3.0.0~rc2
+ vlc_stream_Tell@Base 3.0.0~rc2
+ vlc_stream_directory_Attach@Base 3.0.0~rc2
+ vlc_stream_extractor_Attach@Base 3.0.0~rc2
+ vlc_stream_extractor_CreateMRL@Base 3.0.0~rc2
+ vlc_stream_fifo_Close@Base 3.0.0~rc2
+ vlc_stream_fifo_New@Base 3.0.0~rc2
+ vlc_stream_fifo_Queue@Base 3.0.0~rc2
+ vlc_stream_fifo_Write@Base 3.0.0~rc2
+ vlc_stream_vaControl@Base 3.0.0~rc2
  vlc_strerror@Base 2.2.0~pre1
  vlc_strerror_c@Base 2.2.0~pre1
- vlc_strfinput@Base 3.0.0~rc1~20171206
- vlc_strftime@Base 3.0.0~rc1~20171206
+ vlc_strfinput@Base 3.0.0~rc2
+ vlc_strftime@Base 3.0.0~rc2
  vlc_testcancel@Base 2.0.0
- vlc_thread_id@Base 3.0.0~rc1~20171206
- vlc_thread_self@Base 3.0.0~rc1~20171206
+ vlc_thread_id@Base 3.0.0~rc2
+ vlc_thread_self@Base 3.0.0~rc2
  vlc_threadvar_create@Base 2.0.0
  vlc_threadvar_delete@Base 2.0.0
  vlc_threadvar_get@Base 2.0.0
@@ -699,34 +699,34 @@ libvlccore.so.9 libvlccore9 #MINVER#
  vlc_tls_ClientCreate@Base 2.0.0
  vlc_tls_ClientSessionCreate@Base 2.1.0
  vlc_tls_Delete@Base 2.1.0
- vlc_tls_GetLine@Base 3.0.0~rc1~20171206
- vlc_tls_Read@Base 3.0.0~rc1~20171206
- vlc_tls_ServerCreate@Base 3.0.0~rc1~20171206
- vlc_tls_ServerSessionCreate@Base 3.0.0~rc1~20171206
+ vlc_tls_GetLine@Base 3.0.0~rc2
+ vlc_tls_Read@Base 3.0.0~rc2
+ vlc_tls_ServerCreate@Base 3.0.0~rc2
+ vlc_tls_ServerSessionCreate@Base 3.0.0~rc2
  vlc_tls_SessionDelete@Base 2.1.0
- vlc_tls_SocketOpen@Base 3.0.0~rc1~20171206
- vlc_tls_SocketOpenAddrInfo@Base 3.0.0~rc1~20171206
- vlc_tls_SocketOpenTCP@Base 3.0.0~rc1~20171206
- vlc_tls_SocketOpenTLS@Base 3.0.0~rc1~20171206
- vlc_tls_SocketPair@Base 3.0.0~rc1~20171206
- vlc_tls_Write@Base 3.0.0~rc1~20171206
- vlc_towc@Base 3.0.0~rc1~20171206
+ vlc_tls_SocketOpen@Base 3.0.0~rc2
+ vlc_tls_SocketOpenAddrInfo@Base 3.0.0~rc2
+ vlc_tls_SocketOpenTCP@Base 3.0.0~rc2
+ vlc_tls_SocketOpenTLS@Base 3.0.0~rc2
+ vlc_tls_SocketPair@Base 3.0.0~rc2
+ vlc_tls_Write@Base 3.0.0~rc2
+ vlc_towc@Base 3.0.0~rc2
  vlc_unlink@Base 2.0.0
  vlc_ureduce@Base 2.0.0
- vlc_uri2path@Base 3.0.0~rc1~20171206
- vlc_uri_compose@Base 3.0.0~rc1~20171206
- vlc_uri_decode@Base 3.0.0~rc1~20171206
- vlc_uri_decode_duplicate@Base 3.0.0~rc1~20171206
- vlc_uri_encode@Base 3.0.0~rc1~20171206
- vlc_uri_fixup@Base 3.0.0~rc1~20171206
- vlc_uri_resolve@Base 3.0.0~rc1~20171206
+ vlc_uri2path@Base 3.0.0~rc2
+ vlc_uri_compose@Base 3.0.0~rc2
+ vlc_uri_decode@Base 3.0.0~rc2
+ vlc_uri_decode_duplicate@Base 3.0.0~rc2
+ vlc_uri_encode@Base 3.0.0~rc2
+ vlc_uri_fixup@Base 3.0.0~rc2
+ vlc_uri_resolve@Base 3.0.0~rc2
  vlc_vaLog@Base 2.0.0
- vlc_write@Base 3.0.0~rc1~20171206
- vlc_write_i11e@Base 3.0.0~rc1~20171206
- vlc_writev@Base 3.0.0~rc1~20171206
- vlc_writev_i11e@Base 3.0.0~rc1~20171206
- vlc_xml_decode@Base 3.0.0~rc1~20171206
- vlc_xml_encode@Base 3.0.0~rc1~20171206
+ vlc_write@Base 3.0.0~rc2
+ vlc_write_i11e@Base 3.0.0~rc2
+ vlc_writev@Base 3.0.0~rc2
+ vlc_writev_i11e@Base 3.0.0~rc2
+ vlc_xml_decode@Base 3.0.0~rc2
+ vlc_xml_encode@Base 3.0.0~rc2
  vlm_Control@Base 2.0.0
  vlm_Delete@Base 2.0.0
  vlm_ExecuteCommand@Base 2.0.0
