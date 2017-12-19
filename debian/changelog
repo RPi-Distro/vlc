@@ -1,6 +1,11 @@
 vlc (3.0.0~rc2-1) UNRELEASED; urgency=medium
 
   * New upstream release candidate.
+  * debian/tests/control: Update list of plugin packages.
+  * debian/patches: Removed, no longer needed.
+  * debian/vlc-plugin-access-extra.install: Drop no longer built plugin.
+  * debian/*.symbols: Add new symbols and bump versions of new symbols to
+    3.0.0~rc2.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Tue, 19 Dec 2017 19:06:01 +0100
 
