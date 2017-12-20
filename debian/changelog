@@ -1,3 +1,9 @@
+vlc (3.0.0~rc2-2) unstable; urgency=medium
+
+  * debian/*.maintscript: Fix symlink to directory conversions.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 20 Dec 2017 21:48:00 +0100
+
 vlc (3.0.0~rc2-1) unstable; urgency=medium
 
   * Upload to unstable.
