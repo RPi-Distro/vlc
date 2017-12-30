@@ -2,7 +2,7 @@
  * dts_header.c: parse DTS audio headers info
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: 9be4924a3799c31e018bda1f1f662509a56558b3 $
+ * $Id: 6787161cd90c398da0486907412bb574c1d390cc $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar
@@ -23,6 +23,10 @@
  *****************************************************************************/
 
 #define VLC_DTS_HEADER_SIZE 14
+
+#define PROFILE_DTS_INVALID -1
+#define PROFILE_DTS 0
+#define PROFILE_DTS_HD 1
 
 typedef struct
 {

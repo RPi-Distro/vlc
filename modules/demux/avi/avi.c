@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 8cd11dacd8989443b159c34aca8f8af714f15ed1 $
+ * $Id: d61776de25e6286f94e658c0b0f055ad93b63997 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -203,8 +203,8 @@ static inline off_t __EVEN( off_t i )
     return (i & 1) ? i + 1 : i;
 }
 
-static mtime_t AVI_PTSToChunk( avi_track_t *, mtime_t i_pts );
-static mtime_t AVI_PTSToByte ( avi_track_t *, mtime_t i_pts );
+static int64_t AVI_PTSToChunk( avi_track_t *, mtime_t i_pts );
+static int64_t AVI_PTSToByte ( avi_track_t *, mtime_t i_pts );
 static mtime_t AVI_GetDPTS   ( avi_track_t *, int64_t i_count );
 static mtime_t AVI_GetPTS    ( avi_track_t * );
 
@@ -463,6 +463,11 @@ static int Open( vlc_object_t * p_this )
         tk->i_samplesize = p_strh->i_samplesize;
         msg_Dbg( p_demux, "stream[%u] rate:%u scale:%u samplesize:%u",
                 i, tk->i_rate, tk->i_scale, tk->i_samplesize );
+        if( tk->i_scale > tk->i_rate )
+        {
+            free( tk );
+            continue;
+        }
 
         switch( p_strh->i_type )
         {
@@ -1001,7 +1006,7 @@ typedef struct
 {
     bool b_ok;
 
-    int i_toread;
+    int64_t i_toread;
 
     int64_t i_posf; /* where we will read :
                    if i_idxposb == 0 : begining of chunk (+8 to acces data)
@@ -1241,7 +1246,7 @@ static int Demux_Seekable( demux_t *p_demux )
         /* read thoses data */
         if( tk->i_samplesize )
         {
-            unsigned int i_toread;
+            int64_t i_toread;
 
             if( ( i_toread = toread[i_track].i_toread ) <= 0 )
             {
@@ -1257,7 +1262,7 @@ static int Demux_Seekable( demux_t *p_demux )
             }
             i_size = __MIN( tk->idx.p_entry[tk->i_idxposc].i_length -
                                 tk->i_idxposb,
-                            i_toread );
+                            (size_t) i_toread );
         }
         else
         {
@@ -1796,26 +1801,38 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
  * Function to convert pts to chunk or byte
  *****************************************************************************/
 
-static mtime_t AVI_PTSToChunk( avi_track_t *tk, mtime_t i_pts )
+static int64_t AVI_Rescale( int64_t i_value, uint32_t i_timescale, uint32_t i_newscale )
+{
+    /* TODO: replace (and mp4) with better global helper (recursive checks) */
+    if( i_timescale == i_newscale )
+        return i_value;
+
+    if( (i_value >= 0 && i_value <= INT64_MAX / i_newscale) ||
+        (i_value < 0  && i_value >= INT64_MIN / i_newscale) )
+        return i_value * i_newscale / i_timescale;
+
+    /* overflow */
+    int64_t q = i_value / i_timescale;
+    int64_t r = i_value % i_timescale;
+    return q * i_newscale + r * i_newscale / i_timescale;
+}
+
+static int64_t AVI_PTSToChunk( avi_track_t *tk, mtime_t i_pts )
 {
     if( !tk->i_scale )
-        return (mtime_t)0;
+        return 0;
 
-    return (mtime_t)((int64_t)i_pts *
-                     (int64_t)tk->i_rate /
-                     (int64_t)tk->i_scale /
-                     (int64_t)CLOCK_FREQ );
+    i_pts = AVI_Rescale( i_pts, tk->i_scale, tk->i_rate );
+    return i_pts / CLOCK_FREQ;
 }
-static mtime_t AVI_PTSToByte( avi_track_t *tk, mtime_t i_pts )
+
+static int64_t AVI_PTSToByte( avi_track_t *tk, mtime_t i_pts )
 {
     if( !tk->i_scale || !tk->i_samplesize )
-        return (mtime_t)0;
+        return 0;
 
-    return (mtime_t)((int64_t)i_pts *
-                     (int64_t)tk->i_rate /
-                     (int64_t)tk->i_scale /
-                     (int64_t)1000000 *
-                     (int64_t)tk->i_samplesize );
+    i_pts = AVI_Rescale( i_pts, tk->i_scale, tk->i_rate );
+    return i_pts / CLOCK_FREQ * tk->i_samplesize;
 }
 
 static mtime_t AVI_GetDPTS( avi_track_t *tk, int64_t i_count )
@@ -1825,10 +1842,7 @@ static mtime_t AVI_GetDPTS( avi_track_t *tk, int64_t i_count )
     if( !tk->i_rate )
         return i_dpts;
 
-    i_dpts = (mtime_t)( (int64_t)1000000 *
-                        (int64_t)i_count *
-                        (int64_t)tk->i_scale /
-                        (int64_t)tk->i_rate );
+    i_dpts = AVI_Rescale( CLOCK_FREQ * i_count, tk->i_rate, tk->i_scale );
 
     if( tk->i_samplesize )
     {

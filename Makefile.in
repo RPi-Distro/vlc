@@ -414,7 +414,8 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	COPYING.LIB ChangeLog INSTALL NEWS README THANKS \
 	autotools/compile autotools/config.guess \
 	autotools/config.rpath autotools/config.sub \
-	autotools/install-sh autotools/ltmain.sh autotools/missing
+	autotools/install-sh autotools/ltmain.sh autotools/missing \
+	autotools/ylwrap
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -491,6 +492,8 @@ AVFORMAT_LIBS = @AVFORMAT_LIBS@
 AWK = @AWK@
 BLURAY_CFLAGS = @BLURAY_CFLAGS@
 BLURAY_LIBS = @BLURAY_LIBS@
+BREAKPAD_CFLAGS = @BREAKPAD_CFLAGS@
+BREAKPAD_LIBS = @BREAKPAD_LIBS@
 BREAKPAD_URL = @BREAKPAD_URL@
 BUILDCC = @BUILDCC@
 BUILDEXEEXT = @BUILDEXEEXT@
@@ -1284,7 +1287,11 @@ DIST_SUBDIRS = m4 $(SUBDIRS)
 EXTRA_DIST = extras/package/macosx/package.mak \
 	extras/package/win32/package.mak extras/package/npapi.am \
 	extras/tools/bootstrap extras/tools/packages.mak \
-	extras/tools/tools.mak \
+	extras/tools/tools.mak extras/tools/SHA512SUMS \
+	extras/tools/bison-macOS-7df04f9.patch \
+	extras/tools/bison-macOS-c41f233c.patch \
+	extras/tools/libtool-2.4.2-bitcode.patch \
+	extras/tools/libtool-2.4.2-san.patch \
 	extras/tools/ragel-6.8-javacodegen.patch \
 	extras/analyser/zsh_completion.sh extras/analyser/zsh.cpp \
 	extras/analyser/emacs.init extras/analyser/vlc.vim \

@@ -2,7 +2,7 @@
  * es_format.c : es_format_t helpers.
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: 9ed981581477c70cae31cc1c2831078c8f212ad6 $
+ * $Id: 1c9a78e1a4f254eaf1f078d0d8feec7025ae4433 $
  *
  * Author: Laurent Aimar <fenrir@videolan.org>
  *
@@ -588,6 +588,8 @@ bool es_format_IsSimilar( const es_format_t *p_fmt1, const es_format_t *p_fmt2 )
             a1.i_channels != a2.i_channels ||
             a1.i_physical_channels != a2.i_physical_channels ||
             a1.i_chan_mode != a2.i_chan_mode )
+            return false;
+        if( p_fmt1->i_profile != p_fmt2->i_profile )
             return false;
         return true;
     }

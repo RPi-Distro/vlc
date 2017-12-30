@@ -2,7 +2,7 @@
  * output.c : internal management of output streams for the audio output
  *****************************************************************************
  * Copyright (C) 2002-2004 VLC authors and VideoLAN
- * $Id: 4fb7ab8d7fc20ec75d1a405bedd56afbf5fb2251 $
+ * $Id: ff4eda24c484293e7379eb47a848eb549e282e3f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -224,6 +224,8 @@ audio_output_t *aout_New (vlc_object_t *parent)
     var_AddCallback (aout, "mute", var_Copy, parent);
     var_Create (aout, "device", VLC_VAR_STRING);
     var_AddCallback (aout, "device", var_CopyDevice, parent);
+    /* TODO: 3.0 HACK: only way to signal DTS_HD to aout modules. */
+    var_Create (aout, "dtshd", VLC_VAR_BOOL);
 
     aout->event.volume_report = aout_VolumeNotify;
     aout->event.mute_report = aout_MuteNotify;

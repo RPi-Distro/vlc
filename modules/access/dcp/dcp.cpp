@@ -174,7 +174,9 @@ class demux_sys_t
         frame_no( 0 ),
         frames_total( 0 ),
         i_video_reel( 0 ),
-        i_audio_reel( 0 ) {};
+        i_audio_reel( 0 ),
+        i_pts( 0 )
+    {}
 
     ~demux_sys_t()
     {
@@ -636,10 +638,8 @@ static int Demux( demux_t *p_demux )
     /* video frame */
 
     /* initialize AES context, if reel is encrypted */
-    if( p_sys &&
-            p_sys->p_dcp &&
-            p_sys->p_dcp->video_reels.size() > p_sys->i_video_reel &&
-            p_sys->p_dcp->video_reels[p_sys->i_video_reel].p_key )
+    if( p_sys->p_dcp->video_reels.size() > p_sys->i_video_reel &&
+        p_sys->p_dcp->video_reels[p_sys->i_video_reel].p_key )
     {
         if( ! ASDCP_SUCCESS( video_aes_ctx.InitKey( p_sys->p_dcp->video_reels[p_sys->i_video_reel].p_key->getKey() ) ) )
         {
@@ -710,10 +710,8 @@ static int Demux( demux_t *p_demux )
         }
 
         /* initialize AES context, if reel is encrypted */
-        if( p_sys &&
-                p_sys->p_dcp &&
-                p_sys->p_dcp->audio_reels.size() > p_sys->i_audio_reel &&
-                p_sys->p_dcp->audio_reels[p_sys->i_audio_reel].p_key )
+        if( p_sys->p_dcp->audio_reels.size() > p_sys->i_audio_reel &&
+            p_sys->p_dcp->audio_reels[p_sys->i_audio_reel].p_key )
         {
             if( ! ASDCP_SUCCESS( audio_aes_ctx.InitKey( p_sys->p_dcp->audio_reels[p_sys->i_audio_reel].p_key->getKey() ) ) )
             {
@@ -912,7 +910,7 @@ void CloseDcpAndMxf( demux_t *p_demux )
             p_sys->v_audioReader[i].p_AudioMXFReader->Close();
     }
 
-    delete( p_demux->p_sys );
+    delete( p_sys );
 }
 
 

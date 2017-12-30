@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-19 02:13+0000\n"
+"POT-Creation-Date: 2017-12-27 13:57+0100\n"
 "PO-Revision-Date: 2015-04-10 17:25+0000\n"
 "Last-Translator: Michael Bauer\n"
 "Language-Team: Gaelic, Scottish (http://www.transifex.com/projects/p/vlc-"
@@ -44,7 +44,7 @@ msgstr "Tagh \"Roghainnean adhartach\" gus a h-uile roghainn fhaicinn."
 
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:222
+#: modules/gui/qt/components/simple_preferences.cpp:223
 #: modules/gui/qt/menus.cpp:1090
 msgid "Interface"
 msgstr "Eadar-aghaidh"
@@ -85,10 +85,11 @@ msgstr "Roghainnean nan hotkeys"
 #: modules/gui/macosx/VLCPlaylistInfo.m:96
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
 #: modules/gui/qt/components/info_panels.cpp:572
-#: modules/gui/qt/components/simple_preferences.cpp:224
+#: modules/gui/qt/components/simple_preferences.cpp:225
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
+#: modules/gui/qt/ui/profiles.h:721 modules/gui/qt/ui/profiles.h:752
 msgid "Audio"
 msgstr "Fuaim"
 
@@ -101,6 +102,7 @@ msgid "General audio settings"
 msgstr "Roghainnean coitcheann na fuaime"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:81
+#: modules/gui/qt/ui/profiles.h:750 modules/gui/qt/ui/profiles.h:760
 msgid "Filters"
 msgstr "Criathragan"
 
@@ -113,12 +115,12 @@ msgstr ""
 msgid "Audio resampler"
 msgstr ""
 
-#: include/vlc_config_cat.h:63 src/audio_output/output.c:258
+#: include/vlc_config_cat.h:63 src/audio_output/output.c:260
 #: modules/gui/macosx/VLCMainMenu.m:414 modules/gui/macosx/VLCMainMenu.m:415
 msgid "Visualizations"
 msgstr "Na fir chlis"
 
-#: include/vlc_config_cat.h:64 src/audio_output/output.c:319
+#: include/vlc_config_cat.h:64 src/audio_output/output.c:321
 #: src/libvlc-module.c:206
 msgid "Audio visualizations"
 msgstr "Fir chlis fuaime"
@@ -149,11 +151,13 @@ msgstr "Measgachadh de roghainnean is mòidealan fuaime."
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
 #: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/qt/components/info_panels.cpp:573
-#: modules/gui/qt/components/simple_preferences.cpp:226
+#: modules/gui/qt/components/simple_preferences.cpp:227
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/chromecast/cast.cpp:107 modules/stream_out/es.c:102
 #: modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
+#: modules/gui/qt/ui/profiles.h:722 modules/gui/qt/ui/profiles.h:726
+#: modules/gui/qt/ui/sprefs_video.h:326
 msgid "Video"
 msgstr "Video"
 
@@ -412,6 +416,7 @@ msgstr ""
 
 #: include/vlc_config_cat.h:184 src/libvlc-module.c:1844
 #: modules/gui/qt/dialogs/extended.cpp:93
+#: modules/gui/qt/ui/video_effects.h:1308
 msgid "Advanced"
 msgstr "Adhartach"
 
@@ -487,7 +492,7 @@ msgstr "&Mu dheidhinn"
 #: modules/gui/macosx/VLCMainMenu.m:1325 modules/gui/macosx/VLCMainMenu.m:1326
 #: modules/gui/macosx/VLCPlaylist.m:230
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:539
+#: modules/gui/qt/dialogs/vlm.cpp:539 modules/gui/qt/ui/open.h:261
 msgid "Play"
 msgstr "Cluich"
 
@@ -579,6 +584,7 @@ msgstr "Lorg"
 
 #: include/vlc_intf_strings.h:99
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
+#: modules/gui/qt/ui/video_effects.h:1292
 msgid "Waves"
 msgstr "Tuinn"
 
@@ -649,59 +655,59 @@ msgstr "Dh'fhàillig criathradh na fuaime"
 msgid "The maximum number of filters (%u) was reached."
 msgstr "Tha na tha ceadaichte de chriathragan (%u) agad."
 
-#: src/audio_output/output.c:261 src/config/core.c:380 src/input/es_out.c:943
+#: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:943
 #: src/libvlc-module.c:544 modules/gui/macosx/VLCMainMenu.m:234
 #: modules/gui/macosx/VLCMainWindow.m:1006 modules/video_filter/postproc.c:235
 msgid "Disable"
 msgstr "Cuir à comas"
 
-#: src/audio_output/output.c:264 modules/visualization/visual/visual.c:142
+#: src/audio_output/output.c:266 modules/visualization/visual/visual.c:142
 msgid "Spectrometer"
 msgstr "Meidheadair-speactraim"
 
-#: src/audio_output/output.c:267
+#: src/audio_output/output.c:269
 msgid "Scope"
 msgstr "Sgòp"
 
-#: src/audio_output/output.c:270
+#: src/audio_output/output.c:272
 msgid "Spectrum"
 msgstr "Speactram"
 
-#: src/audio_output/output.c:273
+#: src/audio_output/output.c:275
 #, fuzzy
 msgid "VU meter"
 msgstr "Meidheadair Vu"
 
-#: src/audio_output/output.c:312 src/libvlc-module.c:201
+#: src/audio_output/output.c:314 src/libvlc-module.c:201
 msgid "Audio filters"
 msgstr "Criathragan fuaime"
 
-#: src/audio_output/output.c:325
+#: src/audio_output/output.c:327
 msgid "Replay gain"
 msgstr "Tarbhachd na cluich"
 
-#: src/audio_output/output.c:343 modules/gui/macosx/VLCMainMenu.m:410
+#: src/audio_output/output.c:345 modules/gui/macosx/VLCMainMenu.m:410
 #: modules/gui/macosx/VLCMainMenu.m:411
 msgid "Stereo audio mode"
 msgstr "Modh fuaime stereo"
 
-#: src/audio_output/output.c:419
+#: src/audio_output/output.c:421
 #, fuzzy
 msgid "Original"
 msgstr "An ID tùsail"
 
-#: src/audio_output/output.c:425 src/libvlc-module.c:197
+#: src/audio_output/output.c:427 src/libvlc-module.c:197
 msgid "Dolby Surround"
 msgstr "Dolby Surround"
 
-#: src/audio_output/output.c:430 src/libvlc-module.c:196
+#: src/audio_output/output.c:432 src/libvlc-module.c:196
 #: modules/access/alsa.c:38 modules/access/oss.c:64
 #: modules/access/v4l2/v4l2.c:268 modules/audio_output/alsa.c:76
 #: modules/codec/twolame.c:70
 msgid "Stereo"
 msgstr "Stereo"
 
-#: src/audio_output/output.c:439 src/input/es_out.c:3226
+#: src/audio_output/output.c:441 src/input/es_out.c:3226
 #: src/libvlc-module.c:197 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: src/misc/actions.c:81 modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -712,10 +718,13 @@ msgstr "Stereo"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:312
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1231
+#: modules/gui/qt/ui/video_effects.h:1273
+#: modules/gui/qt/ui/video_effects.h:1283
 msgid "Left"
 msgstr "Clì"
 
-#: src/audio_output/output.c:442 src/libvlc-module.c:197
+#: src/audio_output/output.c:444 src/libvlc-module.c:197
 #: src/libvlc-module.c:295 src/libvlc-module.c:368 src/misc/actions.c:109
 #: modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -726,14 +735,15 @@ msgstr "Clì"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:314
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1232
 msgid "Right"
 msgstr "Deas"
 
-#: src/audio_output/output.c:446 src/libvlc-module.c:196
+#: src/audio_output/output.c:448 src/libvlc-module.c:196
 msgid "Reverse stereo"
 msgstr "Stereo contrarra"
 
-#: src/audio_output/output.c:454 src/libvlc-module.c:198
+#: src/audio_output/output.c:456 src/libvlc-module.c:198
 #: modules/audio_filter/equalizer_presets.h:55
 msgid "Headphones"
 msgstr "Headphones"
@@ -743,6 +753,7 @@ msgstr "Headphones"
 #: modules/access/dtv/access.c:123 modules/access/dtv/access.c:132
 #: modules/access/dtv/access.c:140 modules/access/dtv/access.c:162
 #: modules/access/v4l2/v4l2.c:137 modules/gui/qt/components/open_panels.cpp:970
+#: modules/gui/qt/components/simple_preferences.cpp:366
 msgid "Automatic"
 msgstr "Fèin-obrachail"
 
@@ -890,47 +901,47 @@ msgstr "Mearachd neo-aithnichte"
 msgid "Bookmark %i"
 msgstr "Comharran-lìn %i"
 
-#: src/input/decoder.c:1875
+#: src/input/decoder.c:1881
 msgid "No description for this codec"
 msgstr "Chan eil tuairisgeul air a' chodec seo"
 
-#: src/input/decoder.c:1877
+#: src/input/decoder.c:1883
 msgid "Codec not supported"
 msgstr "Chan eil taic ris a' chodec seo"
 
-#: src/input/decoder.c:1878
+#: src/input/decoder.c:1884
 #, c-format
 msgid "VLC could not decode the format \"%4.4s\" (%s)"
 msgstr "Cha b' urrainn dha VLC am fòrmat \"%4.4s\" (%s) a dhì-chòdachadh"
 
-#: src/input/decoder.c:1882
+#: src/input/decoder.c:1888
 msgid "Unidentified codec"
 msgstr "Codec nach deach aithneachadh"
 
-#: src/input/decoder.c:1883
+#: src/input/decoder.c:1889
 msgid "VLC could not identify the audio or video codec"
 msgstr "Cha b' urrainn dha VLC codec na fuaime no a' video aithneachadh"
 
-#: src/input/decoder.c:1894
+#: src/input/decoder.c:1900
 msgid "packetizer"
 msgstr "pacaidichean"
 
-#: src/input/decoder.c:1894
+#: src/input/decoder.c:1900
 msgid "decoder"
 msgstr "dì-chòdaichear"
 
-#: src/input/decoder.c:1902 src/input/decoder.c:2183
+#: src/input/decoder.c:1908 src/input/decoder.c:2189
 #: modules/codec/avcodec/encoder.c:368 modules/codec/avcodec/encoder.c:885
 #: modules/stream_out/es.c:349 modules/stream_out/es.c:362
 msgid "Streaming / Transcoding failed"
 msgstr "Dh'fhàillig an sruthadh/tar-chòdachadh"
 
-#: src/input/decoder.c:1903
+#: src/input/decoder.c:1909
 #, c-format
 msgid "VLC could not open the %s module."
 msgstr "Cha b' urrainn dha VLC am mòideal %s fhosgladh."
 
-#: src/input/decoder.c:2184
+#: src/input/decoder.c:2190
 msgid "VLC could not open the decoder module."
 msgstr "Cha b' urrainn dha VLC am mòideal dì-chòdachaidh fhosgladh."
 
@@ -981,13 +992,15 @@ msgstr "An ID tùsail"
 #: src/input/es_out.c:3069 src/input/es_out.c:3072 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
+#: modules/gui/qt/ui/profiles.h:728 modules/gui/qt/ui/profiles.h:754
+#: modules/gui/qt/ui/profiles.h:763
 msgid "Codec"
 msgstr "Codec"
 
 #: src/input/es_out.c:3076 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:114
 #: modules/gui/macosx/VLCSimplePrefsController.m:304
-#: modules/stream_out/setid.c:49
+#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:530
 msgid "Language"
 msgstr "Cànan"
 
@@ -1007,7 +1020,7 @@ msgstr "Seòrsa"
 
 #: src/input/es_out.c:3088
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
-#: modules/gui/macosx/VLCOutput.m:98
+#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:756
 msgid "Channels"
 msgstr "Seanailean"
 
@@ -1029,6 +1042,7 @@ msgstr "Bits gach sampall"
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
+#: modules/gui/qt/ui/profiles.h:729 modules/gui/qt/ui/profiles.h:755
 msgid "Bitrate"
 msgstr "Bitrate"
 
@@ -1281,6 +1295,7 @@ msgstr ""
 #: modules/gui/qt/components/open_panels.cpp:503
 #: modules/gui/qt/components/open_panels.cpp:517
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
+#: modules/gui/qt/ui/open_disk.h:309
 msgid "Title"
 msgstr "Tiotal"
 
@@ -1321,6 +1336,7 @@ msgid "Setting"
 msgstr "Roghainn"
 
 #: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
+#: modules/gui/qt/ui/podcast_configuration.h:102
 msgid "URL"
 msgstr "URL"
 
@@ -1390,6 +1406,7 @@ msgstr "Prògraman"
 #: modules/gui/macosx/VLCMainMenu.m:402
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
+#: modules/gui/qt/ui/open_disk.h:310
 msgid "Chapter"
 msgstr "Caibideal"
 
@@ -1625,7 +1642,7 @@ msgid "Media (player) role for operating system policy."
 msgstr ""
 
 #: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:261
-#: modules/stream_out/display.c:40
+#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:410
 msgid "Enable audio"
 msgstr "Cuir an fhuaim an comas"
 
@@ -1744,10 +1761,11 @@ msgstr ""
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:942
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:440
 #: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
-#: modules/gui/qt/components/simple_preferences.cpp:65
+#: modules/gui/qt/components/simple_preferences.cpp:66
 #: modules/gui/qt/components/sout/profile_selector.cpp:582
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
-#: modules/video_output/xcb/xvideo.c:821
+#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:744
+#: modules/gui/qt/ui/profiles.h:747
 msgid "Auto"
 msgstr "Fèin-obrachail"
 
@@ -1863,7 +1881,7 @@ msgstr ""
 "a thaghadh a ghnàth."
 
 #: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:346
-#: modules/stream_out/display.c:42
+#: modules/stream_out/display.c:42 modules/gui/qt/ui/sprefs_video.h:314
 msgid "Enable video"
 msgstr "Cuir video an comas"
 
@@ -1949,6 +1967,9 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:316
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1229
+#: modules/gui/qt/ui/video_effects.h:1271
+#: modules/gui/qt/ui/video_effects.h:1282
 msgid "Top"
 msgstr "Barr"
 
@@ -1959,6 +1980,7 @@ msgstr "Barr"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:318
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1233
 msgid "Bottom"
 msgstr "Bun"
 
@@ -2157,6 +2179,7 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:378 modules/gui/macosx/VLCSimplePrefsController.m:351
+#: modules/gui/qt/ui/sprefs_video.h:317
 msgid "Window decorations"
 msgstr "Sgeadachaidhean na h-uinneige"
 
@@ -2475,6 +2498,7 @@ msgstr "Bun-roghainn"
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:214
 #: modules/gui/macosx/VLCMainWindow.m:1004
 #: modules/gui/qt/components/extended_panels.cpp:928
+#: modules/gui/qt/ui/equalizer.h:133 modules/gui/qt/ui/vlm.h:289
 msgid "Enable"
 msgstr "Cuir an comas"
 
@@ -2530,7 +2554,7 @@ msgid ""
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:582
+#: src/libvlc-module.c:582 modules/gui/qt/ui/open_disk.h:312
 msgid "Audio track"
 msgstr "Traca fuaime"
 
@@ -2538,7 +2562,7 @@ msgstr "Traca fuaime"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr ""
 
-#: src/libvlc-module.c:587
+#: src/libvlc-module.c:587 modules/gui/qt/ui/open_disk.h:313
 msgid "Subtitle track"
 msgstr "Traca nam fo-thiotalan"
 
@@ -2673,7 +2697,7 @@ msgstr "Àm ruith"
 msgid "The stream will run this duration (in seconds)."
 msgstr "Faid an t-srutha (ann an diogan)."
 
-#: src/libvlc-module.c:650
+#: src/libvlc-module.c:650 modules/gui/qt/ui/sprefs_input.h:363
 msgid "Fast seek"
 msgstr "Sireadh luath"
 
@@ -2783,7 +2807,7 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:709
+#: src/libvlc-module.c:709 modules/gui/qt/ui/sprefs_subtitles.h:305
 msgid "Force subtitle position"
 msgstr "Èignich ionad nam fo-thiotalan"
 
@@ -2812,6 +2836,7 @@ msgstr ""
 
 #: src/libvlc-module.c:721 src/libvlc-module.c:1668 src/text/iso-639_def.h:145
 #: modules/gui/macosx/VLCSimplePrefsController.m:338
+#: modules/gui/qt/ui/sprefs_subtitles.h:290
 msgid "On Screen Display"
 msgstr "Taisbeanadh air an sgrìn"
 
@@ -3438,7 +3463,7 @@ msgstr ""
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 
-#: src/libvlc-module.c:1081
+#: src/libvlc-module.c:1081 modules/gui/qt/ui/sprefs_interface.h:550
 msgid "Use only one instance when started from file manager"
 msgstr ""
 "Na cleachd ach aon ionstans nuair a chaidh a thòiseachadh o mhanaidsear nam "
@@ -3458,7 +3483,7 @@ msgid ""
 "machine."
 msgstr ""
 
-#: src/libvlc-module.c:1093
+#: src/libvlc-module.c:1093 modules/gui/qt/ui/sprefs_interface.h:553
 msgid "Enqueue items into playlist in one instance mode"
 msgstr "Cuir nithean air an liosta-chluich ma bhios e sa mhodh aon-ionstans"
 
@@ -3506,6 +3531,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1120 modules/gui/macosx/VLCSimplePrefsController.m:321
 #: modules/gui/qt/dialogs/firstrun.cpp:95
+#: modules/gui/qt/ui/sprefs_interface.h:565
 msgid "Allow metadata network access"
 msgstr "Ceadaich inntrigeadh lìonraidh dha metadata"
 
@@ -3652,7 +3678,7 @@ msgstr ""
 "Thèid leabhar-lann nam meadhanan a shàbhaladh 's a luchdadh gu fèin-"
 "obrachail gach turas a thòisicheas tu VLC."
 
-#: src/libvlc-module.c:1192
+#: src/libvlc-module.c:1192 modules/gui/qt/ui/sprefs_interface.h:551
 msgid "Display playlist tree"
 msgstr "Seall craoch na liosta-chluich"
 
@@ -3711,6 +3737,7 @@ msgstr ""
 #: modules/gui/macosx/VLCControlsBarCommon.m:81
 #: modules/gui/macosx/VLCMainMenu.m:422 modules/gui/macosx/VLCMainMenu.m:501
 #: modules/gui/qt/components/controller.hpp:108
+#: modules/gui/qt/ui/sprefs_video.h:318
 msgid "Fullscreen"
 msgstr "Làn-sgrìn"
 
@@ -3794,6 +3821,7 @@ msgstr "Nas slaodaiche (mean air mhean)"
 #: modules/gui/macosx/VLCMainMenu.m:497
 #: modules/gui/qt/components/controller.hpp:112
 #: modules/gui/qt/dialogs/sout.cpp:93 modules/notify/notify.c:335
+#: modules/gui/qt/ui/streampanel.h:181
 msgid "Next"
 msgstr "Air adhart"
 
@@ -3820,7 +3848,7 @@ msgstr ""
 #: modules/gui/macosx/VLCMainMenu.m:488 modules/gui/macosx/VLCMainMenu.m:495
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:61
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:545
+#: modules/gui/qt/dialogs/vlm.cpp:545 modules/gui/qt/ui/streampanel.h:180
 msgid "Stop"
 msgstr "Sguir dheth"
 
@@ -3833,6 +3861,8 @@ msgstr "Tagh an hotkey airson sgur de chluich."
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:286
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:308
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
+#: modules/gui/qt/ui/sprefs_subtitles.h:293
+#: modules/gui/qt/ui/video_effects.h:1279
 msgid "Position"
 msgstr "Ionad"
 
@@ -4564,6 +4594,8 @@ msgstr "Fo-dhealbhan"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
 #: modules/gui/macosx/VLCMainMenu.m:440
 #: share/lua/http/dialogs/create_stream.html:153
+#: modules/gui/qt/ui/profiles.h:718 modules/gui/qt/ui/profiles.h:762
+#: modules/gui/qt/ui/profiles.h:765
 msgid "Subtitles"
 msgstr "Fo-thiotalan"
 
@@ -4730,6 +4762,8 @@ msgstr "Brabhsair ─ Stad"
 
 #: src/misc/actions.c:62 modules/gui/macosx/VLCMainMenu.m:361
 #: modules/gui/macosx/VLCPlaylist.m:231 modules/gui/qt/dialogs/bookmarks.cpp:50
+#: modules/gui/qt/ui/podcast_configuration.h:104
+#: modules/gui/qt/ui/streampanel.h:172
 msgid "Delete"
 msgstr "Sguab às"
 
@@ -5001,7 +5035,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "Cha b' urrainn dhuinn \"%s\" fhosgladh airson sgrìobhadh ann"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2702
+#: modules/demux/avi/avi.c:2716
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:511
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:569
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:823
@@ -5777,7 +5811,7 @@ msgstr "Fèin-sgèilich a' video"
 #: src/video_output/vout_intf.c:203 modules/gui/macosx/VLCMainMenu.m:429
 #: modules/gui/macosx/VLCMainMenu.m:430
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:193
-#: modules/video_filter/croppadd.c:87
+#: modules/video_filter/croppadd.c:87 modules/gui/qt/ui/video_effects.h:1239
 msgid "Crop"
 msgstr "Bearr"
 
@@ -5922,6 +5956,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/bluray.c:92 modules/services_discovery/udev.c:601
+#: modules/gui/qt/ui/open_disk.h:299
 msgid "Blu-ray"
 msgstr "Blu-ray"
 
@@ -5929,11 +5964,11 @@ msgstr "Blu-ray"
 msgid "Blu-ray Disc support (libbluray)"
 msgstr "Taic le diosga Blu-ray (libbluray)"
 
-#: modules/access/bluray.c:715
+#: modules/access/bluray.c:717
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr ""
 
-#: modules/access/bluray.c:730
+#: modules/access/bluray.c:732
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
@@ -5941,34 +5976,34 @@ msgstr ""
 "Feumaidh an diosga Blu-ray seo leabharlann airson dì-chòdachadh AACS ach "
 "chan eil sin aig an t-siostam agad."
 
-#: modules/access/bluray.c:736
+#: modules/access/bluray.c:738
 msgid "Blu-ray Disc is corrupted."
 msgstr "Tha an diosga Blu-ray coirbte."
 
-#: modules/access/bluray.c:738
+#: modules/access/bluray.c:740
 msgid "Missing AACS configuration file!"
 msgstr "Tha faidhle rèiteachadh AACS a dhìth!"
 
-#: modules/access/bluray.c:740
+#: modules/access/bluray.c:742
 msgid "No valid processing key found in AACS config file."
 msgstr ""
 "Cha deach iuchair pròiseasaidh dhligheach a lorg san fhaidhle rèiteachadh "
 "AACS."
 
-#: modules/access/bluray.c:742
+#: modules/access/bluray.c:744
 msgid "No valid host certificate found in AACS config file."
 msgstr ""
 "Cha deach teisteanas òstair dligheach a lorg san fhaidhle rèiteachadh AACS."
 
-#: modules/access/bluray.c:744
+#: modules/access/bluray.c:746
 msgid "AACS Host certificate revoked."
 msgstr "Chaidh teisteanas an òstair AACS ais-ghairm."
 
-#: modules/access/bluray.c:746
+#: modules/access/bluray.c:748
 msgid "AACS MMC failed."
 msgstr "Dh'fhàillig MMC AACS."
 
-#: modules/access/bluray.c:756
+#: modules/access/bluray.c:758
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
@@ -5976,41 +6011,41 @@ msgstr ""
 "Feumaidh an diosga Blu-ray seo leabharlann airson dì-chòdachadh BD+ ach chan "
 "eil sin aig an t-siostam agad."
 
-#: modules/access/bluray.c:759
+#: modules/access/bluray.c:761
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr ""
 "Chan eil leabharlann dì-chòdachadh BD+ an t-siostaim agad ag obair. Saoil a "
 "bheil rèiteachadh a dhìth?"
 
-#: modules/access/bluray.c:792
+#: modules/access/bluray.c:794
 msgid "Java required"
 msgstr ""
 
-#: modules/access/bluray.c:793
+#: modules/access/bluray.c:795
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
 "The disc will be played without menus."
 msgstr ""
 
-#: modules/access/bluray.c:794
+#: modules/access/bluray.c:796
 msgid "Java was not found on your system."
 msgstr ""
 
-#: modules/access/bluray.c:817
+#: modules/access/bluray.c:819
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 
-#: modules/access/bluray.c:845 modules/access/bluray.c:2279
-#: modules/access/bluray.c:2284
+#: modules/access/bluray.c:847 modules/access/bluray.c:2281
+#: modules/access/bluray.c:2286
 msgid "Blu-ray error"
 msgstr "Mearachd Blu-ray"
 
-#: modules/access/bluray.c:1667
+#: modules/access/bluray.c:1669
 msgid "Top Menu"
 msgstr ""
 
-#: modules/access/bluray.c:1670
+#: modules/access/bluray.c:1672
 msgid "First Play"
 msgstr ""
 
@@ -6020,6 +6055,7 @@ msgid "Audio CD - Track %02i"
 msgstr "CD fuaime - Traca %02i"
 
 #: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/gui/qt/ui/open_disk.h:300
 msgid "Audio CD"
 msgstr "CD fuaime"
 
@@ -7043,6 +7079,7 @@ msgid "File"
 msgstr "Faidhle"
 
 #: modules/access/fs.c:44 modules/demux/directory.c:93
+#: modules/gui/qt/ui/sprefs_video.h:331
 msgid "Directory"
 msgstr "Eòlaire"
 
@@ -7308,6 +7345,7 @@ msgstr ""
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
 #: modules/gui/qt/components/extended_panels.cpp:1297 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
+#: modules/gui/qt/ui/profiles.h:743
 msgid "Width"
 msgstr "Leud"
 
@@ -7320,6 +7358,7 @@ msgstr ""
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:168
 #: modules/spu/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
+#: modules/gui/qt/ui/profiles.h:746
 msgid "Height"
 msgstr "Àirde"
 
@@ -8263,6 +8302,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:205
+#: modules/gui/qt/ui/video_effects.h:1217
 msgid "Brightness"
 msgstr "Soilleireachd"
 
@@ -8280,6 +8320,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:89
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:204
+#: modules/gui/qt/ui/video_effects.h:1219
 msgid "Contrast"
 msgstr "Iomsgaradh"
 
@@ -8290,6 +8331,8 @@ msgstr ""
 #: modules/access/v4l2/v4l2.c:91
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:207
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:253
+#: modules/gui/qt/ui/video_effects.h:1220
+#: modules/gui/qt/ui/video_effects.h:1252
 msgid "Saturation"
 msgstr "Sàthachd"
 
@@ -8299,6 +8342,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:93
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:203
+#: modules/gui/qt/ui/video_effects.h:1216
 msgid "Hue"
 msgstr "Tuar"
 
@@ -8350,6 +8394,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:111
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:208
+#: modules/gui/qt/ui/video_effects.h:1221
 msgid "Gamma"
 msgstr "Gamma"
 
@@ -8474,7 +8519,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:164
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:255
-#: modules/video_filter/sepia.c:66
+#: modules/video_filter/sepia.c:66 modules/gui/qt/ui/video_effects.h:1254
 msgid "Sepia"
 msgstr ""
 
@@ -10155,39 +10200,39 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1290
+#: modules/audio_output/mmdevice.c:1293 modules/gui/qt/ui/sprefs_audio.h:419
 msgid "HDMI/SPDIF audio passthrough"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1292
+#: modules/audio_output/mmdevice.c:1295
 msgid ""
 "Change this value if you have issue with HD codecs when using a HDMI "
 "receiver."
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1299
+#: modules/audio_output/mmdevice.c:1302
 #, fuzzy
 msgid "Disabled"
 msgstr "Cuir à comas"
 
-#: modules/audio_output/mmdevice.c:1300
+#: modules/audio_output/mmdevice.c:1303
 msgid "Enabled (without HD codecs)"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1301
+#: modules/audio_output/mmdevice.c:1304
 #, fuzzy
 msgid "Enabled"
 msgstr "Cuir an comas"
 
-#: modules/audio_output/mmdevice.c:1306
+#: modules/audio_output/mmdevice.c:1309
 msgid "Windows Multimedia Device output"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1312
+#: modules/audio_output/mmdevice.c:1315
 msgid "Output back-end"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1312
+#: modules/audio_output/mmdevice.c:1315
 #, fuzzy
 msgid "Audio output back-end interface."
 msgstr "Leabaich às-chur a' video sa phrìomh eadar-aghaidh."
@@ -10216,7 +10261,7 @@ msgstr ""
 msgid "This linear gain will be applied in software."
 msgstr ""
 
-#: modules/audio_output/wasapi.c:645
+#: modules/audio_output/wasapi.c:640
 msgid "Windows Audio Session API output"
 msgstr ""
 
@@ -10327,8 +10372,8 @@ msgstr ""
 msgid "ARIB subtitles decoder"
 msgstr "Codecs nam fo-thiotalan"
 
-#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1084
-#: modules/demux/mpeg/ts_psi.c:1091
+#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1085
+#: modules/demux/mpeg/ts_psi.c:1092
 #, fuzzy
 msgid "ARIB subtitles"
 msgstr "Fo-thiotalan DVD"
@@ -10792,7 +10837,7 @@ msgstr "Demuxer nan dealbh"
 
 #: modules/codec/cc.c:51 modules/codec/zvbi.c:65
 #: modules/gui/macosx/VLCSimplePrefsController.m:340 modules/spu/marq.c:108
-#: modules/spu/rss.c:144
+#: modules/spu/rss.c:144 modules/gui/qt/ui/video_effects.h:1276
 msgid "Opacity"
 msgstr "Dubharachd"
 
@@ -10948,8 +10993,8 @@ msgstr ""
 msgid "DVB subtitles decoder"
 msgstr ""
 
-#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:771
-#: modules/demux/mpeg/ts_psi.c:820
+#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:772
+#: modules/demux/mpeg/ts_psi.c:821
 msgid "DVB subtitles"
 msgstr ""
 
@@ -12076,6 +12121,7 @@ msgstr ""
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:258
+#: modules/gui/qt/ui/sprefs_video.h:328 modules/gui/qt/ui/video_effects.h:1246
 msgid "Mode"
 msgstr "Modh"
 
@@ -12597,7 +12643,7 @@ msgstr ""
 msgid "Use Hardware decoders only"
 msgstr "Cleachd iompachaidhean bathar-cruaidh YUV->RGB"
 
-#: modules/codec/videotoolbox.m:81
+#: modules/codec/videotoolbox.m:81 modules/gui/qt/ui/sprefs_video.h:327
 msgid "Deinterlacing"
 msgstr "Deinterlacing"
 
@@ -13345,6 +13391,7 @@ msgid "Quiet mode"
 msgstr ""
 
 #: modules/codec/x264.c:403 modules/gui/macosx/VLCPlaylistInfo.m:69
+#: modules/gui/qt/ui/streampanel.h:170
 msgid "Statistics"
 msgstr "Stadastaireachd"
 
@@ -13428,7 +13475,7 @@ msgstr "Luath"
 #: modules/codec/x264.c:435 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:384
 #: modules/gui/macosx/VLCSimplePrefsController.m:689
-#: modules/gui/qt/components/simple_preferences.cpp:656
+#: modules/gui/qt/components/simple_preferences.cpp:666
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
@@ -13525,7 +13572,7 @@ msgstr ""
 msgid "Presentation Level"
 msgstr ""
 
-#: modules/codec/zvbi.c:88
+#: modules/codec/zvbi.c:88 modules/gui/qt/ui/streampanel.h:169
 msgid "1"
 msgstr "1"
 
@@ -13634,7 +13681,7 @@ msgstr ""
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:230
 #: modules/gui/qt/components/preferences_widgets.cpp:1145
-#: modules/gui/qt/components/simple_preferences.cpp:232
+#: modules/gui/qt/components/simple_preferences.cpp:233
 msgid "Hotkeys"
 msgstr "Hotkeys"
 
@@ -14452,7 +14499,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr "AVI demuxer"
 
-#: modules/demux/avi/avi.c:820 modules/demux/mp4/mp4.c:1671
+#: modules/demux/avi/avi.c:825 modules/demux/mp4/mp4.c:1671
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -14469,28 +14516,28 @@ msgstr ""
 "Dh'fhaoidte gun doir seo ùine fhada mas e faidhle mòr a tha ann.\n"
 "Dè bu mhath leat dèanamh?"
 
-#: modules/demux/avi/avi.c:828
+#: modules/demux/avi/avi.c:833
 msgid "Do not play"
 msgstr "Na cluich e"
 
-#: modules/demux/avi/avi.c:829
+#: modules/demux/avi/avi.c:834
 msgid "Build index then play"
 msgstr "Tog inneacs is cluich e an uairsin"
 
-#: modules/demux/avi/avi.c:830
+#: modules/demux/avi/avi.c:835
 msgid "Play as is"
 msgstr "Cluich e mar a tha e"
 
-#: modules/demux/avi/avi.c:831 modules/demux/mp4/mp4.c:1682
+#: modules/demux/avi/avi.c:836 modules/demux/mp4/mp4.c:1682
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "Inneacs AVI briste no a dhìth"
 
-#: modules/demux/avi/avi.c:2703
+#: modules/demux/avi/avi.c:2717
 msgid "Broken or missing AVI Index"
 msgstr "Inneacs AVI briste no a dhìth"
 
-#: modules/demux/avi/avi.c:2704
+#: modules/demux/avi/avi.c:2718
 msgid "Fixing AVI Index..."
 msgstr "A' càradh an inneics AVI..."
 
@@ -14639,7 +14686,7 @@ msgstr ""
 msgid "Use chapter codecs found in the segment."
 msgstr ""
 
-#: modules/demux/mkv/mkv.cpp:64
+#: modules/demux/mkv/mkv.cpp:64 modules/gui/qt/ui/sprefs_input.h:370
 msgid "Preload MKV files in the same directory"
 msgstr "Ro-luchdaich faidhlichean MKV san dearbh-eòlaire"
 
@@ -15081,58 +15128,58 @@ msgstr ""
 msgid "MPEG Transport Stream demuxer"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:421
+#: modules/demux/mpeg/ts_psi.c:422
 #, fuzzy
 msgid "Main audio"
 msgstr "Fuaim thùsail"
 
-#: modules/demux/mpeg/ts_psi.c:422
+#: modules/demux/mpeg/ts_psi.c:423
 #, fuzzy
 msgid "Audio description for the visually impaired"
 msgstr "Chan eil tuairisgeul air a' chodec seo"
 
-#: modules/demux/mpeg/ts_psi.c:423
+#: modules/demux/mpeg/ts_psi.c:424
 msgid "Clean audio for the hearing impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:424
+#: modules/demux/mpeg/ts_psi.c:425
 msgid "Spoken subtitles for the visually impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:606 modules/gui/macosx/VLCMainMenu.m:455
+#: modules/demux/mpeg/ts_psi.c:607 modules/gui/macosx/VLCMainMenu.m:455
 #: modules/gui/qt/dialogs/toolbar.cpp:532
 msgid "Teletext"
 msgstr "Teletext"
 
-#: modules/demux/mpeg/ts_psi.c:607
+#: modules/demux/mpeg/ts_psi.c:608
 msgid "Teletext subtitles"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:608
+#: modules/demux/mpeg/ts_psi.c:609
 msgid "Teletext: additional information"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:609
+#: modules/demux/mpeg/ts_psi.c:610
 msgid "Teletext: program schedule"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:610
+#: modules/demux/mpeg/ts_psi.c:611
 msgid "Teletext subtitles: hearing impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:827
+#: modules/demux/mpeg/ts_psi.c:828
 msgid "DVB subtitles: hearing impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:1328
+#: modules/demux/mpeg/ts_psi.c:1332
 msgid "clean effects"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:1329
+#: modules/demux/mpeg/ts_psi.c:1333
 msgid "hearing impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:1330
+#: modules/demux/mpeg/ts_psi.c:1334
 msgid "visual impaired commentary"
 msgstr ""
 
@@ -15639,11 +15686,13 @@ msgid "Skins"
 msgstr "Craicnean"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
+#: modules/gui/qt/ui/equalizer.h:134
 msgid "2 Pass"
 msgstr "2 phas"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:218
 #: modules/gui/qt/components/extended_panels.cpp:1111
+#: modules/gui/qt/ui/equalizer.h:136
 msgid "Preamp"
 msgstr "Preamp"
 
@@ -15732,6 +15781,7 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:793
 #: modules/gui/macosx/prefs.m:188
 #: modules/gui/qt/components/sout/profile_selector.cpp:443
+#: modules/gui/qt/ui/vlm.h:301
 msgid "Save"
 msgstr "Sàbhail"
 
@@ -15762,6 +15812,7 @@ msgstr ""
 #: modules/gui/macosx/VLCBookmarksWindowController.m:81
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
+#: modules/gui/qt/ui/open_file.h:154
 msgid "Remove"
 msgstr "Thoir air falbh"
 
@@ -15786,12 +15837,14 @@ msgid "Bookmarks"
 msgstr "Comharran-leabhair"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:78
+#: modules/gui/qt/ui/podcast_configuration.h:103 modules/gui/qt/ui/sout.h:209
+#: modules/gui/qt/ui/vlm.h:299
 msgid "Add"
 msgstr "Cuir ris"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:79
 #: modules/gui/macosx/VLCSimplePrefsController.m:276
-#: modules/gui/qt/dialogs/bookmarks.cpp:53
+#: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:300
 msgid "Clear"
 msgstr "Falamhaich"
 
@@ -15940,8 +15993,11 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
 #: modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/qt/components/preferences_widgets.cpp:264
-#: modules/gui/qt/components/simple_preferences.cpp:425
+#: modules/gui/qt/components/simple_preferences.cpp:440
 #: modules/gui/qt/components/sout/sout_widgets.cpp:132
+#: modules/gui/qt/ui/open.h:282 modules/gui/qt/ui/open_disk.h:307
+#: modules/gui/qt/ui/open_file.h:147 modules/gui/qt/ui/sprefs_audio.h:417
+#: modules/gui/qt/ui/sprefs_input.h:368 modules/gui/qt/ui/sprefs_video.h:332
 msgid "Browse..."
 msgstr "Brabhsaich..."
 
@@ -15974,43 +16030,51 @@ msgid "Save as new Profile..."
 msgstr "Sàbhail mar phròifil ùr..."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:155
+#: modules/gui/qt/ui/profiles.h:725
 msgid "Encapsulation"
 msgstr "Capsaileadh"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:156
 #: share/lua/http/dialogs/create_stream.html:160
+#: modules/gui/qt/ui/profiles.h:751
 msgid "Video codec"
 msgstr "Video codec"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:157
 #: share/lua/http/dialogs/create_stream.html:178
+#: modules/gui/qt/ui/profiles.h:761
 msgid "Audio codec"
 msgstr "Codec fuaime"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:161
+#: modules/gui/qt/ui/profiles.h:727
 msgid "Keep original video track"
 msgstr "Glèidh an traca video tùsail"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:165
+#: modules/gui/qt/ui/profiles.h:749
 msgid "Resolution"
 msgstr "Dùmhlachd-bhreacaidh"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:166
+#: modules/gui/qt/ui/profiles.h:740
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:169
-#: modules/gui/macosx/VLCOutput.m:88
+#: modules/gui/macosx/VLCOutput.m:88 modules/gui/qt/ui/profiles.h:741
 msgid "Scale"
 msgstr "Sgèile"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:172
+#: modules/gui/qt/ui/profiles.h:753
 msgid "Keep original audio track"
 msgstr "Glèidh traca tùsail na fuaime"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:179
+#: modules/gui/qt/ui/profiles.h:764
 msgid "Overlay subtitles on the video"
 msgstr "Cuir na fo-thiotalan air uachdar a' video"
 
@@ -16136,7 +16200,7 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:683
 #: modules/gui/macosx/VLCSimplePrefsController.m:711
 #: modules/gui/macosx/VLCSimplePrefsController.m:1244
-#: modules/gui/qt/components/simple_preferences.cpp:653
+#: modules/gui/qt/components/simple_preferences.cpp:663
 msgid "Custom"
 msgstr "Gnàthaichte"
 
@@ -16179,7 +16243,7 @@ msgstr "Fàg an làn-sgrìn"
 
 #: modules/gui/macosx/VLCFSPanelController.m:127
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:76
-#: modules/gui/qt/dialogs/toolbar.cpp:468
+#: modules/gui/qt/dialogs/toolbar.cpp:468 modules/gui/qt/ui/sprefs_audio.h:411
 msgid "Volume"
 msgstr "Àirde na fuaime"
 
@@ -16682,6 +16746,7 @@ msgstr "Air fleòd air uachdar"
 
 #: modules/gui/macosx/VLCMainMenu.m:431 modules/gui/macosx/VLCMainMenu.m:432
 #: modules/gui/macosx/VLCSimplePrefsController.m:357
+#: modules/gui/qt/ui/sprefs_video.h:319
 msgid "Fullscreen Video Device"
 msgstr "Inneal video làn-sgrìn"
 
@@ -16973,6 +17038,7 @@ msgstr "Diosg"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:142
 #: modules/gui/macosx/VLCSimplePrefsController.m:290
+#: modules/gui/qt/ui/sprefs_input.h:371
 msgid "Network"
 msgstr "Lìonra"
 
@@ -17002,6 +17068,7 @@ msgstr "Cluich meadhan eile aig an aon àm"
 #: modules/gui/macosx/VLCOpenWindowController.m:152
 #: modules/gui/macosx/VLCOpenWindowController.m:347
 #: modules/gui/macosx/VLCSimplePrefsController.m:332
+#: modules/gui/qt/ui/sprefs_interface.h:548
 msgid "Choose..."
 msgstr "Tagh..."
 
@@ -17143,6 +17210,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCOpenWindowController.m:359
 #: modules/gui/macosx/VLCSimplePrefsController.m:334
+#: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Font size"
 msgstr "Meud a' chruth-chlò"
 
@@ -17165,6 +17233,7 @@ msgstr "Faidhle nam fo-thiotalan"
 #: modules/gui/macosx/VLCOpenWindowController.m:572
 #: modules/gui/macosx/VLCOpenWindowController.m:658
 #: modules/gui/macosx/VLCOpenWindowController.m:1258
+#: modules/gui/qt/ui/open_file.h:142
 msgid "Open File"
 msgstr "Fosgail am faidhle"
 
@@ -17328,6 +17397,7 @@ msgid "Disable renderer discovery"
 msgstr "Cuir à comas an sàbhalaiche-sgrìn"
 
 #: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:194
+#: modules/gui/qt/ui/sprefs_interface.h:554
 msgid "Continue playback?"
 msgstr ""
 
@@ -17351,27 +17421,27 @@ msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:220
-#: modules/gui/qt/components/simple_preferences.cpp:222
-#: modules/gui/qt/components/simple_preferences.cpp:680
+#: modules/gui/qt/components/simple_preferences.cpp:223
+#: modules/gui/qt/components/simple_preferences.cpp:690
 #: modules/gui/qt/dialogs/plugins.cpp:375
 msgid "Interface Settings"
 msgstr "Roghainnean na h-eadar-aghaidh"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:222
-#: modules/gui/qt/components/simple_preferences.cpp:224
-#: modules/gui/qt/components/simple_preferences.cpp:400
+#: modules/gui/qt/components/simple_preferences.cpp:225
+#: modules/gui/qt/components/simple_preferences.cpp:415
 msgid "Audio Settings"
 msgstr "Roghainnean fuaime"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:224
-#: modules/gui/qt/components/simple_preferences.cpp:226
-#: modules/gui/qt/components/simple_preferences.cpp:354
+#: modules/gui/qt/components/simple_preferences.cpp:227
+#: modules/gui/qt/components/simple_preferences.cpp:355
 msgid "Video Settings"
 msgstr "Roghainnean video"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:226
-#: modules/gui/qt/components/simple_preferences.cpp:228
-#: modules/gui/qt/components/simple_preferences.cpp:821
+#: modules/gui/qt/components/simple_preferences.cpp:229
+#: modules/gui/qt/components/simple_preferences.cpp:831
 msgid "Subtitle & On Screen Display Settings"
 msgstr ""
 
@@ -17400,6 +17470,7 @@ msgid "Keep audio level between sessions"
 msgstr "Glèidh àirde na fuaime eadar seiseanan"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:269
+#: modules/gui/qt/ui/sprefs_audio.h:413
 msgid "Always reset audio start level to:"
 msgstr "Till àirde na fuaime dhan ìre seo an-còmhnaidh:"
 
@@ -17426,6 +17497,7 @@ msgid "Shortcut"
 msgstr "Ath-ghoirid"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:282
+#: modules/gui/qt/ui/sprefs_input.h:367
 msgid "Record directory or filename"
 msgstr "Clàraich eòlaire no ainm faidhle"
 
@@ -17442,6 +17514,7 @@ msgid "Default Caching Level"
 msgstr "Ìre bhunaiteach de thasglannadh"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:287
+#: modules/gui/qt/ui/open.h:266
 msgid "Caching"
 msgstr "Tasglannadh"
 
@@ -17507,6 +17580,7 @@ msgstr ""
 "chluich)"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:320
+#: modules/gui/qt/ui/sprefs_interface.h:556
 msgid "Privacy / Network Interaction"
 msgstr "Prìobhaideachd / Eadar-gnìomhachd lìonraidh"
 
@@ -17533,11 +17607,13 @@ msgid "Display Settings"
 msgstr "Na roghainnean seallaidh"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:333
+#: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Font color"
 msgstr "Dath a' chruth-chlò"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:335 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
+#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Font"
 msgstr "Cruth-clò"
 
@@ -17546,6 +17622,7 @@ msgid "Subtitle languages"
 msgstr "Cànain nam fo-thiotalan"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:337
+#: modules/gui/qt/ui/sprefs_subtitles.h:296
 msgid "Preferred subtitle language"
 msgstr "An cànan as fhearr leat airson fo-thiotalan"
 
@@ -17560,16 +17637,18 @@ msgstr "Èignich clò trom"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:342
 #: modules/text_renderer/freetype/freetype.c:110
+#: modules/gui/qt/ui/sprefs_subtitles.h:303
 msgid "Outline color"
 msgstr "Dath na h-oir-loidhne"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:343
 #: modules/text_renderer/freetype/freetype.c:111
+#: modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Outline thickness"
 msgstr "Tighead na h-oir-loidhne"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:347
-#: modules/stream_out/display.c:53
+#: modules/stream_out/display.c:53 modules/gui/qt/ui/sprefs_video.h:315
 msgid "Display"
 msgstr "Taisbeanadh"
 
@@ -17592,6 +17671,7 @@ msgid "Black screens in Fullscreen mode"
 msgstr "Sgrìnichean dubha sa mhodh làn-sgrìn"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:359
+#: modules/gui/qt/ui/sprefs_video.h:330
 msgid "Video snapshots"
 msgstr "Video snapshots"
 
@@ -17601,14 +17681,17 @@ msgid "Folder"
 msgstr "Pasgan"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:362
+#: modules/gui/qt/ui/sprefs_video.h:336
 msgid "Format"
 msgstr "Fòrmat"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:363
+#: modules/gui/qt/ui/sprefs_video.h:333
 msgid "Prefix"
 msgstr "Ro-leasachan"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:364
+#: modules/gui/qt/ui/sprefs_video.h:335
 msgid "Sequential numbering"
 msgstr "Àireamhachadh sreath-leanmhainneach"
 
@@ -17833,6 +17916,7 @@ msgid "Basic"
 msgstr "Bunasach"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:194
+#: modules/gui/qt/ui/video_effects.h:1267
 msgid "Geometry"
 msgstr "Geomatras"
 
@@ -17841,7 +17925,9 @@ msgstr "Geomatras"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:269
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:272
 #: modules/spu/marq.c:115 modules/spu/rss.c:152
-#: modules/video_filter/colorthres.c:55
+#: modules/video_filter/colorthres.c:55 modules/gui/qt/ui/video_effects.h:1241
+#: modules/gui/qt/ui/video_effects.h:1247
+#: modules/gui/qt/ui/video_effects.h:1250
 msgid "Color"
 msgstr "Dath"
 
@@ -17850,45 +17936,53 @@ msgid "Image Adjust"
 msgstr "Gleusadh an deilbh"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
+#: modules/gui/qt/ui/video_effects.h:1218
 msgid "Brightness Threshold"
 msgstr "Stairsneach na soilleireachd"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:210
-#: modules/video_filter/sharpen.c:69
+#: modules/video_filter/sharpen.c:69 modules/gui/qt/ui/video_effects.h:1222
 msgid "Sharpen"
 msgstr "Geuraich"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:211
+#: modules/gui/qt/ui/video_effects.h:1223
+#: modules/gui/qt/ui/video_effects.h:1296
 msgid "Sigma"
 msgstr "Sigma"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:212
+#: modules/gui/qt/ui/video_effects.h:1224
 msgid "Banding removal"
 msgstr "Toirt air falbh bannachadh"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:213
-#: modules/video_filter/gradfun.c:50
+#: modules/video_filter/gradfun.c:50 modules/gui/qt/ui/video_effects.h:1225
 msgid "Radius"
 msgstr "Rèideas"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:214
+#: modules/gui/qt/ui/video_effects.h:1226
 msgid "Film Grain"
 msgstr "Gràinneachadh film"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:215
-#: modules/video_filter/grain.c:53
+#: modules/video_filter/grain.c:53 modules/gui/qt/ui/video_effects.h:1227
 msgid "Variance"
 msgstr "Seachranachd"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:220
+#: modules/gui/qt/ui/video_effects.h:1235
 msgid "Synchronize top and bottom"
 msgstr "Sioncronaich bun is barr"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:221
+#: modules/gui/qt/ui/video_effects.h:1236
 msgid "Synchronize left and right"
 msgstr "Sioncronaich ab taobh clì is deas"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:223
+#: modules/gui/qt/ui/video_effects.h:1261
 msgid "Transform"
 msgstr "Cruth-atharraich"
 
@@ -17922,51 +18016,60 @@ msgid "Magnification/Zoom"
 msgstr "Meudachadh/Sùm"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:241
+#: modules/gui/qt/ui/video_effects.h:1264
 msgid "Puzzle game"
 msgstr "Geama tòimhseachain"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:242
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:247
 #: share/lua/http/dialogs/mosaic_window.html:96
+#: modules/gui/qt/ui/video_effects.h:1259
+#: modules/gui/qt/ui/video_effects.h:1265
 msgid "Rows"
 msgstr "Ràghan"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:243
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:248
 #: share/lua/http/dialogs/mosaic_window.html:114
+#: modules/gui/qt/ui/video_effects.h:1260
+#: modules/gui/qt/ui/video_effects.h:1266
 msgid "Columns"
 msgstr "Colbhan"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:244
-#: modules/video_splitter/clone.c:57
+#: modules/video_splitter/clone.c:57 modules/gui/qt/ui/video_effects.h:1306
 msgid "Clone"
 msgstr "Clòn"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
-#: modules/video_splitter/clone.c:39
+#: modules/video_splitter/clone.c:39 modules/gui/qt/ui/video_effects.h:1307
 msgid "Number of clones"
 msgstr "Àireamh de chlònaichean"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:246
+#: modules/gui/qt/ui/video_effects.h:1258
 msgid "Wall"
 msgstr "Balla"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:250
-#: modules/video_filter/colorthres.c:71
+#: modules/video_filter/colorthres.c:71 modules/gui/qt/ui/video_effects.h:1249
 msgid "Color threshold"
 msgstr "Stairsneach an datha"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:254
+#: modules/gui/qt/ui/video_effects.h:1253
 msgid "Similarity"
 msgstr "Ionnannachd"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:256
+#: modules/gui/qt/ui/video_effects.h:1255
 msgid "Intensity"
 msgstr "Dèine"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:257
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:260
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
+#: modules/gui/qt/ui/video_effects.h:1245
 msgid "Gradient"
 msgstr "Caisead"
 
@@ -17981,10 +18084,12 @@ msgid "Hough"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:270
+#: modules/gui/qt/ui/video_effects.h:1248
 msgid "Cartoon"
 msgstr "Cartùn"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:271
+#: modules/gui/qt/ui/video_effects.h:1240
 msgid "Color extraction"
 msgstr "Às-tharraing datha"
 
@@ -17993,7 +18098,7 @@ msgid "Invert colors"
 msgstr "Ais-tionndaidh nan dathan"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:275
-#: modules/video_filter/posterize.c:69
+#: modules/video_filter/posterize.c:69 modules/gui/qt/ui/video_effects.h:1244
 msgid "Posterize"
 msgstr "Postairich"
 
@@ -18003,11 +18108,12 @@ msgid "Posterize level"
 msgstr "Ìre a' phostaireachaidh"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:277
-#: modules/video_filter/motionblur.c:60
+#: modules/video_filter/motionblur.c:60 modules/gui/qt/ui/video_effects.h:1297
 msgid "Motion blur"
 msgstr "Sgleòthadh gluasaid"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:278
+#: modules/gui/qt/ui/video_effects.h:1298
 msgid "Factor"
 msgstr "Factar"
 
@@ -18017,11 +18123,13 @@ msgid "Motion Detect"
 msgstr "Mothachadh do ghluasad"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:280
+#: modules/gui/qt/ui/video_effects.h:1293
 msgid "Water effect"
 msgstr "Buaidh uisge"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:282
 #: modules/meta_engine/ID3Genres.h:100 modules/video_filter/psychedelic.c:55
+#: modules/gui/qt/ui/video_effects.h:1291
 msgid "Psychedelic"
 msgstr "Psychedelic"
 
@@ -18031,19 +18139,23 @@ msgid "Anaglyph"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:284
+#: modules/gui/qt/ui/video_effects.h:1278
 msgid "Add text"
 msgstr "Cuir teacsa ris"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
 #: modules/logger/file.c:193 modules/spu/marq.c:88
+#: modules/gui/qt/ui/video_effects.h:1280
 msgid "Text"
 msgstr "Teacsa"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:306
+#: modules/gui/qt/ui/video_effects.h:1268
 msgid "Add logo"
 msgstr "Cuir suaicheantas ris"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
+#: modules/gui/qt/ui/video_effects.h:1269
 msgid "Logo"
 msgstr "Suaicheantas"
 
@@ -18898,6 +19010,7 @@ msgid "File names:"
 msgstr "Ainmean faidhle:"
 
 #: modules/gui/qt/components/open_panels.cpp:162
+#: modules/gui/qt/ui/sprefs_interface.h:561
 msgid "Filter:"
 msgstr "Criathrag:"
 
@@ -19172,21 +19285,21 @@ msgstr ""
 msgid "Key: "
 msgstr "Iuchair: "
 
-#: modules/gui/qt/components/simple_preferences.cpp:230
-#: modules/gui/qt/components/simple_preferences.cpp:582
+#: modules/gui/qt/components/simple_preferences.cpp:231
+#: modules/gui/qt/components/simple_preferences.cpp:591
 msgid "Input & Codecs Settings"
 msgstr "Roghainnean ion-chuir ⁊ codec"
 
-#: modules/gui/qt/components/simple_preferences.cpp:232
-#: modules/gui/qt/components/simple_preferences.cpp:865
+#: modules/gui/qt/components/simple_preferences.cpp:233
+#: modules/gui/qt/components/simple_preferences.cpp:875
 msgid "Configure Hotkeys"
 msgstr "Rèitich na hotkeys"
 
-#: modules/gui/qt/components/simple_preferences.cpp:408
+#: modules/gui/qt/components/simple_preferences.cpp:423
 msgid "Device:"
 msgstr "Inneal:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:587
+#: modules/gui/qt/components/simple_preferences.cpp:596
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -19194,60 +19307,60 @@ msgid ""
 "individually in the advanced preferences."
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:654
+#: modules/gui/qt/components/simple_preferences.cpp:664
 msgid "Lowest latency"
 msgstr "Foillidheachd as ìsle"
 
-#: modules/gui/qt/components/simple_preferences.cpp:655
+#: modules/gui/qt/components/simple_preferences.cpp:665
 msgid "Low latency"
 msgstr "Foillidheachd ìseal"
 
-#: modules/gui/qt/components/simple_preferences.cpp:657
+#: modules/gui/qt/components/simple_preferences.cpp:667
 msgid "High latency"
 msgstr "Foillidheachd àrd"
 
-#: modules/gui/qt/components/simple_preferences.cpp:658
+#: modules/gui/qt/components/simple_preferences.cpp:668
 msgid "Higher latency"
 msgstr "Foillidheachd nas àirde"
 
-#: modules/gui/qt/components/simple_preferences.cpp:706
+#: modules/gui/qt/components/simple_preferences.cpp:716
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr ""
 "'S urrainn dhut craiceannan eile a chur air an tionndadh seo de VLC. Gheibh "
 "thu feadhainn eile o"
 
-#: modules/gui/qt/components/simple_preferences.cpp:708
+#: modules/gui/qt/components/simple_preferences.cpp:718
 msgid "VLC skins website"
 msgstr "Làrach-lìn craicnean VLC"
 
-#: modules/gui/qt/components/simple_preferences.cpp:732
+#: modules/gui/qt/components/simple_preferences.cpp:742
 msgid "System's default"
 msgstr "Roghainn bhunaiteach an t-siostaim"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1256
+#: modules/gui/qt/components/simple_preferences.cpp:1265
 msgid "File associations"
 msgstr "Dàimhean nam faidhle"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1265
+#: modules/gui/qt/components/simple_preferences.cpp:1274
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "Faidhlichean fuaime"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1266
+#: modules/gui/qt/components/simple_preferences.cpp:1275
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "Faidhlichean video"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1267
+#: modules/gui/qt/components/simple_preferences.cpp:1276
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "Faidhlichean na liosta-chluich"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1332
+#: modules/gui/qt/components/simple_preferences.cpp:1341
 msgid "&Apply"
 msgstr "&Cuir an sàs"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1333
+#: modules/gui/qt/components/simple_preferences.cpp:1342
 #: modules/gui/qt/dialogs/convert.cpp:133
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
@@ -19303,6 +19416,7 @@ msgid "File/Folder"
 msgstr "Faidhle/Pasgan"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:47
+#: modules/gui/qt/ui/sout.h:202
 msgid "Source"
 msgstr "Tùs"
 
@@ -19428,7 +19542,7 @@ msgstr "Cha deach faidhle a thaghadh"
 msgid "Destination"
 msgstr "Ceann-uidhe"
 
-#: modules/gui/qt/dialogs/convert.cpp:68
+#: modules/gui/qt/dialogs/convert.cpp:68 modules/gui/qt/ui/sprefs_audio.h:416
 msgid "Destination file:"
 msgstr "Faidhle cinn-uidhe:"
 
@@ -19476,7 +19590,8 @@ msgstr ""
 msgid "Program Guide"
 msgstr "Treòir prògraim"
 
-#: modules/gui/qt/dialogs/epg.cpp:87
+#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:289
+#: modules/gui/qt/ui/about.h:290
 msgid "Update"
 msgstr "Ùraich"
 
@@ -19579,7 +19694,7 @@ msgstr "&Tha"
 msgid "&No"
 msgstr "Cha&n eil"
 
-#: modules/gui/qt/dialogs/help.cpp:222
+#: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:147
 msgid "VLC media player updates"
 msgstr "Ùrachaidhean a' chluicheadair VLC"
 
@@ -19624,6 +19739,8 @@ msgid "Location:"
 msgstr "Àite:"
 
 #: modules/gui/qt/dialogs/messages.cpp:80
+#: modules/gui/qt/ui/messages_panel.h:138
+#: modules/gui/qt/ui/messages_panel.h:142
 msgid "Messages"
 msgstr "Teachdaireachdan"
 
@@ -19827,7 +19944,7 @@ msgstr "Tionndadh"
 msgid "Website"
 msgstr "Làrach-lìn"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1533
+#: modules/gui/qt/dialogs/plugins.cpp:1533 modules/gui/qt/ui/sprefs_input.h:366
 msgid "Files"
 msgstr "Faidhlichean"
 
@@ -19889,7 +20006,7 @@ msgstr ""
 "A bheil thu cinnteach gu bheil thu airson gach roghainn aig cluicheadair "
 "mheadhanan VLC ath-shuidheachadh?"
 
-#: modules/gui/qt/dialogs/sout.cpp:45
+#: modules/gui/qt/dialogs/sout.cpp:45 modules/gui/qt/ui/sout.h:201
 msgid "Stream Output"
 msgstr "Às-chur an t-srutha"
 
@@ -20073,7 +20190,7 @@ msgstr "Ath-dhèan:"
 msgid "Repeat delay:"
 msgstr "Dàil air an ath-dhèanamh:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:112
+#: modules/gui/qt/dialogs/vlm.cpp:112 modules/gui/qt/ui/sprefs_interface.h:558
 msgid " days"
 msgstr " làithean"
 
@@ -22822,6 +22939,7 @@ msgid "Podcasts"
 msgstr "Pod-chraolaidhean"
 
 #: modules/services_discovery/podcast.c:56
+#: modules/gui/qt/ui/podcast_configuration.h:101
 msgid "Podcast URLs list"
 msgstr "Liosta URLaichean nam pod-chraoladh"
 
@@ -22924,7 +23042,7 @@ msgstr "Glacadh fuaime (ALSA)"
 msgid "CD"
 msgstr "CD"
 
-#: modules/services_discovery/udev.c:599
+#: modules/services_discovery/udev.c:599 modules/gui/qt/ui/open_disk.h:298
 msgid "DVD"
 msgstr "DVD"
 
@@ -23072,6 +23190,7 @@ msgstr ""
 
 #: modules/spu/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
+#: modules/gui/qt/ui/video_effects.h:1288
 msgid "Overlay"
 msgstr ""
 
@@ -24940,7 +25059,7 @@ msgstr ""
 msgid "Image properties filter"
 msgstr ""
 
-#: modules/video_filter/adjust.c:78
+#: modules/video_filter/adjust.c:78 modules/gui/qt/ui/video_effects.h:1215
 msgid "Image adjust"
 msgstr "Gleusadh an deilbh"
 
@@ -25975,7 +26094,7 @@ msgstr ""
 msgid "Rotate video filter"
 msgstr ""
 
-#: modules/video_filter/rotate.c:69
+#: modules/video_filter/rotate.c:69 modules/gui/qt/ui/video_effects.h:1262
 msgid "Rotate"
 msgstr "Cuairtich"
 
@@ -26326,7 +26445,7 @@ msgstr ""
 msgid "GLX extension for OpenGL"
 msgstr ""
 
-#: modules/video_output/kva.c:50
+#: modules/video_output/kva.c:50 modules/gui/qt/ui/sprefs_video.h:324
 msgid "Enable a workaround for T23"
 msgstr ""
 
@@ -26336,7 +26455,7 @@ msgid ""
 "size is equal to or smaller than the movie size."
 msgstr ""
 
-#: modules/video_output/kva.c:55
+#: modules/video_output/kva.c:55 modules/gui/qt/ui/sprefs_video.h:325
 msgid "Video mode"
 msgstr ""
 
@@ -26465,6 +26584,7 @@ msgid "Direct3D11 video output"
 msgstr "Às-chur a' video air sgèile liath"
 
 #: modules/video_output/win32/directdraw.c:65
+#: modules/gui/qt/ui/sprefs_video.h:321
 msgid "Use hardware YUV->RGB conversions"
 msgstr "Cleachd iompachaidhean bathar-cruaidh YUV->RGB"
 
@@ -27296,6 +27416,7 @@ msgid "Play List"
 msgstr ""
 
 #: share/lua/http/dialogs/create_stream.html:156
+#: modules/gui/qt/ui/sprefs_audio.h:414
 msgid "Output"
 msgstr "Às-chur"
 
@@ -27410,7 +27531,7 @@ msgstr ""
 msgid "VLM Batch Commands"
 msgstr ""
 
-#: share/lua/http/index.html:240
+#: share/lua/http/index.html:240 modules/gui/qt/ui/vlm.h:298
 msgid "Loop"
 msgstr "Lùb"
 
@@ -27479,6 +27600,861 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr ""
 
+#: modules/gui/qt/ui/about.h:288 modules/gui/qt/ui/open.h:260
+#: modules/gui/qt/ui/podcast_configuration.h:100
+msgid "Dialog"
+msgstr "Còmhradh"
+
+#: modules/gui/qt/ui/equalizer.h:132 modules/gui/qt/ui/open_disk.h:296
+#: modules/gui/qt/ui/open_net.h:96 modules/gui/qt/ui/sprefs_audio.h:409
+#: modules/gui/qt/ui/sprefs_input.h:356
+#: modules/gui/qt/ui/sprefs_interface.h:529
+#: modules/gui/qt/ui/sprefs_subtitles.h:289
+#: modules/gui/qt/ui/sprefs_video.h:313 modules/gui/qt/ui/streampanel.h:167
+msgid "Form"
+msgstr "Foirm"
+
+#: modules/gui/qt/ui/equalizer.h:135
+msgid "Preset"
+msgstr "Ro-sheata"
+
+#: modules/gui/qt/ui/equalizer.h:137
+msgid "0.00 dB"
+msgstr ""
+
+#: modules/gui/qt/ui/messages_panel.h:139
+msgid "&Verbosity:"
+msgstr ""
+
+#: modules/gui/qt/ui/messages_panel.h:140
+msgid "&Filter:"
+msgstr ""
+
+#: modules/gui/qt/ui/messages_panel.h:141
+msgid "&Save as..."
+msgstr "&Sàbhail mar..."
+
+#: modules/gui/qt/ui/messages_panel.h:143
+msgid "Modules Tree"
+msgstr "Craobh nam mòidealan"
+
+#: modules/gui/qt/ui/open.h:263
+msgid "Show extended options"
+msgstr "Seall na roghainnean leudaichte"
+
+#: modules/gui/qt/ui/open.h:265
+msgid "Show &more options"
+msgstr "Seall &barrachd roghainnean"
+
+#: modules/gui/qt/ui/open.h:268
+msgid "Change the caching for the media"
+msgstr "Atharraich an dòigh air a thèid meadhanan an cur san tasgadan"
+
+#: modules/gui/qt/ui/open.h:270
+msgid " ms"
+msgstr " ms"
+
+#: modules/gui/qt/ui/open.h:271
+msgid "MRL"
+msgstr "MRL"
+
+#: modules/gui/qt/ui/open.h:272
+msgid "Start Time"
+msgstr "Àm tòiseachaidh"
+
+#: modules/gui/qt/ui/open.h:273
+#, fuzzy
+msgid "Stop Time"
+msgstr "Àm crìochnachaidh"
+
+#: modules/gui/qt/ui/open.h:274
+msgid "Edit Options"
+msgstr "Roghainnean deasachaidh"
+
+#: modules/gui/qt/ui/open.h:275
+msgid "Extra media"
+msgstr "Meadhan a bharrachd"
+
+#: modules/gui/qt/ui/open.h:277
+msgid "Complete MRL for VLC internal"
+msgstr "Coilean MRL airson VLC inntearnail"
+
+#: modules/gui/qt/ui/open.h:280
+msgid "Select the file"
+msgstr "Tagh am faidhle"
+
+#: modules/gui/qt/ui/open.h:284
+msgid "Change the start time for the media"
+msgstr "Atharraich àm tòiseachadh a' mheadhain"
+
+#: modules/gui/qt/ui/open.h:286 modules/gui/qt/ui/open.h:290
+msgid "HH'H':mm'm':ss's'.zzz"
+msgstr "HH'H':mm'm':ss's'.zzz"
+
+#: modules/gui/qt/ui/open.h:288
+#, fuzzy
+msgid "Change the stop time for the media"
+msgstr "Atharraich àm tòiseachadh a' mheadhain"
+
+#: modules/gui/qt/ui/open.h:291
+msgid "Play another media synchronously (extra audio file, ...)"
+msgstr "Cluich meadhan eile aig an aon àm (faidhle fuaim eile, ...)"
+
+#: modules/gui/qt/ui/open_capture.h:97
+msgid "Capture mode"
+msgstr "Modh glacaidh"
+
+#: modules/gui/qt/ui/open_capture.h:99
+msgid "Select the capture device type"
+msgstr "Tagh seòrsa an uidheim ghlacaidh"
+
+#: modules/gui/qt/ui/open_capture.h:101
+msgid "Device Selection"
+msgstr "Taghadh an uidheim"
+
+#: modules/gui/qt/ui/open_capture.h:102
+msgid "Options"
+msgstr "Roghainnean"
+
+#: modules/gui/qt/ui/open_capture.h:104
+msgid "Access advanced options to tweak the device"
+msgstr "Seall na roghainnean adhartach gus an t-uidheam a chur air gleus"
+
+#: modules/gui/qt/ui/open_capture.h:106
+msgid "Advanced options..."
+msgstr "Roghainnean adhartach..."
+
+#: modules/gui/qt/ui/open_disk.h:297
+msgid "Disc Selection"
+msgstr "Taghadh diosg"
+
+#: modules/gui/qt/ui/open_disk.h:301
+msgid "SVCD/VCD"
+msgstr "SVCD/VCD"
+
+#: modules/gui/qt/ui/open_disk.h:303
+msgid "Disable Disc Menus"
+msgstr "Cuir clàir-thaice nan diosg à comas"
+
+#: modules/gui/qt/ui/open_disk.h:305
+msgid "No disc menus"
+msgstr "Gun chlàir-thaice dhiosgan"
+
+#: modules/gui/qt/ui/open_disk.h:306
+msgid "Disc device"
+msgstr "Uidheam diosga"
+
+#: modules/gui/qt/ui/open_disk.h:308
+msgid "Starting Position"
+msgstr "Ionad tòiseachaidh"
+
+#: modules/gui/qt/ui/open_disk.h:311
+msgid "Audio and Subtitles"
+msgstr "Fuaim is fo-thiotalan"
+
+#: modules/gui/qt/ui/open_file.h:143
+msgid "Use a sub&title file"
+msgstr ""
+
+#: modules/gui/qt/ui/open_file.h:145
+msgid "Select the subtitle file"
+msgstr ""
+
+#: modules/gui/qt/ui/open_file.h:149
+msgid "Choose one or more media file to open"
+msgstr "Tagh faidhle meadhain no barrachd dhiubh gus am fosgladh"
+
+#: modules/gui/qt/ui/open_file.h:151
+msgid "File Selection"
+msgstr "Taghadh faidhle"
+
+#: modules/gui/qt/ui/open_file.h:152
+msgid "You can select local files with the following list and buttons."
+msgstr ""
+"'S urrainn dhut faidhlichean ionadail a thaghadh leis na liostaichean is "
+"putain a leanas."
+
+#: modules/gui/qt/ui/open_file.h:153
+msgid "Add..."
+msgstr "Cuir ris..."
+
+#: modules/gui/qt/ui/open_net.h:97
+msgid "Network Protocol"
+msgstr "Pròtacal an lìonraidh"
+
+#: modules/gui/qt/ui/open_net.h:98
+msgid "Please enter a network URL:"
+msgstr "Cuir a-steach URL lìonraidh:"
+
+#: modules/gui/qt/ui/profiles.h:701
+msgid "Profile edition"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:702
+msgid "FLAC"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:703
+#, fuzzy
+msgid "MP&4/MOV"
+msgstr "MP4/MOV"
+
+#: modules/gui/qt/ui/profiles.h:704
+msgid "Ogg/Ogm"
+msgstr "Ogg/Ogm"
+
+#: modules/gui/qt/ui/profiles.h:705
+msgid "M&KV"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:706
+#, fuzzy
+msgid "M&JPEG"
+msgstr "MJPEG"
+
+#: modules/gui/qt/ui/profiles.h:707
+msgid "MPEG-PS"
+msgstr "MPEG-PS"
+
+#: modules/gui/qt/ui/profiles.h:708
+msgid "F&LV"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:709
+#, fuzzy
+msgid "&MPEG-TS"
+msgstr "MPEG-TS"
+
+#: modules/gui/qt/ui/profiles.h:710
+msgid "RAW"
+msgstr "RAW"
+
+#: modules/gui/qt/ui/profiles.h:711
+msgid "WAV"
+msgstr "WAV"
+
+#: modules/gui/qt/ui/profiles.h:712
+msgid "Webm"
+msgstr "Webm"
+
+#: modules/gui/qt/ui/profiles.h:713
+#, fuzzy
+msgid "MPEG &1"
+msgstr "MPEG 1"
+
+#: modules/gui/qt/ui/profiles.h:714
+msgid "AVI"
+msgstr "AVI"
+
+#: modules/gui/qt/ui/profiles.h:715
+msgid "ASF/WMV"
+msgstr "ASF/WMV"
+
+#: modules/gui/qt/ui/profiles.h:716
+msgid "MP&3"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:717
+msgid "Features"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:719
+msgid "Streamable"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:720
+msgid "Chapters"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:723
+msgid "Menus"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:730
+#, fuzzy
+msgid "Fra&me Rate"
+msgstr "Reat nam frèam"
+
+#: modules/gui/qt/ui/profiles.h:731
+msgid "Same as source"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:733
+msgid " fps"
+msgstr " fps"
+
+#: modules/gui/qt/ui/profiles.h:734
+msgid "Custom options"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:735
+msgid "&Quality"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
+msgid "Not Used"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:738 modules/gui/qt/ui/profiles.h:757
+msgid " kb/s"
+msgstr " kb/s"
+
+#: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
+msgid "Encoding parameters"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:742
+msgid "Frame size"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
+msgid "px"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:758
+#, fuzzy
+msgid "Sa&mple Rate"
+msgstr "Reat samplachaidh"
+
+#: modules/gui/qt/ui/profiles.h:766
+#, fuzzy
+msgid "Profile &Name"
+msgstr "Ainm na pròifile"
+
+#: modules/gui/qt/ui/sout.h:203
+msgid "Set up media sources to stream"
+msgstr "Suidhich tùsan nam meadhanan a thèid a shruthadh"
+
+#: modules/gui/qt/ui/sout.h:205
+msgid "Destination Setup"
+msgstr "Suidheachadh a' chinn-uidhe"
+
+#: modules/gui/qt/ui/sout.h:206
+msgid "Select destinations to stream to"
+msgstr "Tagh ceann-uidhe an t-srutha"
+
+#: modules/gui/qt/ui/sout.h:207
+msgid ""
+"Add destinations following the streaming methods you need. Be sure to check "
+"with transcoding that the format is compatible with the method used."
+msgstr ""
+"Cuir cinn-uidhe ris a-rèir nan dòighean sruthaidh a tha agad. Dèan cinnteach "
+"gu bheil am fòrmat co-chòrdail leis an dòigh a tha thu a' cleachdadh."
+
+#: modules/gui/qt/ui/sout.h:208
+msgid "New destination"
+msgstr "Ceann-uidhe ùr"
+
+#: modules/gui/qt/ui/sout.h:210
+msgid "Display locally"
+msgstr "Seall gu h-ionadail"
+
+#: modules/gui/qt/ui/sout.h:212
+msgid "Transcoding Options"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:213
+msgid "Select and choose transcoding options"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:214
+msgid "Activate Transcoding"
+msgstr "Cuir gu dol an tar-chòdachadh"
+
+#: modules/gui/qt/ui/sout.h:215
+msgid "Option Setup"
+msgstr "Suidheachadh nan roghainnean"
+
+#: modules/gui/qt/ui/sout.h:216
+msgid "Set up any additional options for streaming"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:217
+msgid "Miscellaneous Options"
+msgstr "Roghainnean eile"
+
+#: modules/gui/qt/ui/sout.h:218
+msgid "Stream all elementary streams"
+msgstr "Sruthaich a h-uile sruth bunasach"
+
+#: modules/gui/qt/ui/sout.h:219
+msgid "Generated stream output string"
+msgstr "Sreath às-chur an t-srutha air a ghintinn"
+
+#: modules/gui/qt/ui/sprefs_audio.h:412
+msgid " %"
+msgstr " %"
+
+#: modules/gui/qt/ui/sprefs_audio.h:415
+msgid "Output module:"
+msgstr "Mòideal an às-chuir:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:418
+msgid "Use S/PDIF when available"
+msgstr "Cleachd S/PDIF ma bhios e ri làimh"
+
+#: modules/gui/qt/ui/sprefs_audio.h:420
+msgid "Effects"
+msgstr "Èifeachdan"
+
+#: modules/gui/qt/ui/sprefs_audio.h:421
+msgid "Visualization:"
+msgstr "Fir chlis:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:422
+msgid "Enable Time-Stretching audio"
+msgstr "Cuir an comas sìneadh-ama dhen fhuaim"
+
+#: modules/gui/qt/ui/sprefs_audio.h:423
+msgid "Replay gain mode:"
+msgstr "Modh tarbhachd na h-ath-chluich:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:424
+msgid "Normalize volume to:"
+msgstr "Àbhaistich àirde na fuaime gu:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:425
+msgid "Tracks"
+msgstr "Tracaichean"
+
+#: modules/gui/qt/ui/sprefs_audio.h:426
+msgid "Preferred audio language:"
+msgstr "An cànan as fhearr leat airson fuaim:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:427
+msgid "Password:"
+msgstr "Facal-faire:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:428
+msgid "Username:"
+msgstr "Ainm-cleachdaiche:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:429
+msgid "Submit played tracks stats to Last.fm"
+msgstr "Cuir a-null stats na chluich mi gu Last.fm"
+
+#: modules/gui/qt/ui/sprefs_input.h:357
+msgid "Codecs"
+msgstr "Codecs"
+
+#: modules/gui/qt/ui/sprefs_input.h:358
+msgid "x264 profile and level selection"
+msgstr "Taghadh pròifil is leibheal x264"
+
+#: modules/gui/qt/ui/sprefs_input.h:359
+msgid "Hardware-accelerated decoding"
+msgstr "Dì-chòdachadh \"hardware accelerated\""
+
+#: modules/gui/qt/ui/sprefs_input.h:360 modules/gui/qt/ui/sprefs_input.h:362
+msgid "Video quality post-processing level"
+msgstr "Ìre càileachd de video airson pròiseasadh an dèidh làimh"
+
+#: modules/gui/qt/ui/sprefs_input.h:361
+msgid "Skip H.264 in-loop deblocking filter"
+msgstr "Gearr leum thairis air criathrag dì-bhlocaidh H.264 in-loop"
+
+#: modules/gui/qt/ui/sprefs_input.h:364
+msgid "Optical drive"
+msgstr "Draibh lèirsinneach"
+
+#: modules/gui/qt/ui/sprefs_input.h:365
+msgid "Default optical device"
+msgstr "An t-uidheam lèirsinneach bunasach"
+
+#: modules/gui/qt/ui/sprefs_input.h:369
+msgid "Damaged or incomplete AVI file"
+msgstr "Faidhle AVI air a mhilleadh no neo-iomlan"
+
+#: modules/gui/qt/ui/sprefs_input.h:372
+msgid "HTTP proxy URL"
+msgstr "URL a' phrogsaidh HTTP"
+
+#: modules/gui/qt/ui/sprefs_input.h:373
+msgid "HTTP (default)"
+msgstr "HTTP (bun-roghainn)"
+
+#: modules/gui/qt/ui/sprefs_input.h:374
+msgid "RTP over RTSP (TCP)"
+msgstr "RTP seach RTSP (TCP)"
+
+#: modules/gui/qt/ui/sprefs_input.h:375
+msgid "Live555 stream transport"
+msgstr "Còmhdail sruth Live555"
+
+#: modules/gui/qt/ui/sprefs_input.h:376
+msgid "Default caching policy"
+msgstr "Poileasaidh bunaiteach an tasgadain"
+
+#: modules/gui/qt/ui/sprefs_interface.h:531
+msgid "Menus language:"
+msgstr "Cànan nan clàr-taice:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:532
+msgid "Look and feel"
+msgstr "Coltas"
+
+#: modules/gui/qt/ui/sprefs_interface.h:533
+msgid "Use custom skin"
+msgstr "Cleachd craiceann gnàthaichte"
+
+#: modules/gui/qt/ui/sprefs_interface.h:535
+msgid "This is VLC's default interface, with a native look and feel."
+msgstr "Seo an eadar-aghaidh bhunaiteach aig VLC, leis a choltas tùsail air."
+
+#: modules/gui/qt/ui/sprefs_interface.h:537
+msgid "Use native style"
+msgstr "Cleachd an stoidhle thùsail"
+
+#: modules/gui/qt/ui/sprefs_interface.h:538
+msgid "Resize interface to video size"
+msgstr "Meud na h-eadar-aghaidh a-rèir meud a' video"
+
+#: modules/gui/qt/ui/sprefs_interface.h:539
+msgid "Show controls in full screen mode"
+msgstr "Seall na h-uidheaman-smachd sa mhodh làn-sgrìn"
+
+#: modules/gui/qt/ui/sprefs_interface.h:540
+msgid "Pause playback when minimized"
+msgstr "Cuir a' chluich 'na stad nuair a bhios e lùghdaichte"
+
+#: modules/gui/qt/ui/sprefs_interface.h:541
+msgid "Show media change popup:"
+msgstr "Seall priob-uinneag atharrachadh a' mheadhain:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:542
+msgid "Start in minimal view mode"
+msgstr "Tòisich sa mhodh lùghdaichte"
+
+#: modules/gui/qt/ui/sprefs_interface.h:543
+msgid "Force window style:"
+msgstr "Èignich stoidhle na h-uinneige:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:544
+msgid "Integrate video in interface"
+msgstr "Amalaich a' video san eadar-aghaidh"
+
+#: modules/gui/qt/ui/sprefs_interface.h:545
+msgid "Show systray icon"
+msgstr "Seall ìomhaigheag ann an treighe an t-siostaim"
+
+#: modules/gui/qt/ui/sprefs_interface.h:546
+#, fuzzy
+msgid "Auto raising the interface:"
+msgstr ""
+"Tha thu a' cleachdadh eadar-aghaidh Qt4.\n"
+"\n"
+
+#: modules/gui/qt/ui/sprefs_interface.h:547
+msgid "Skin resource file:"
+msgstr "Faidhle goireas a' chraicinn:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:549
+msgid "Playlist and Instances"
+msgstr "An liosta-chluich agus ionstansan"
+
+#: modules/gui/qt/ui/sprefs_interface.h:552
+msgid "Pause on the last frame of a video"
+msgstr "Cuir 'na stad san fhrèam mu dheireadh de video"
+
+#: modules/gui/qt/ui/sprefs_interface.h:555
+msgid "Allow only one instance"
+msgstr "Ceadaich aon ionstans a-mhàin"
+
+#: modules/gui/qt/ui/sprefs_interface.h:557
+msgid "Activate updates notifier"
+msgstr "Cuir an gnìomh caismeachdan mu ùrachaidhean"
+
+#: modules/gui/qt/ui/sprefs_interface.h:559
+msgid "Every "
+msgstr "Gach "
+
+#: modules/gui/qt/ui/sprefs_interface.h:560
+msgid "Save recently played items"
+msgstr "Sàbhail na chluicheadh o chionn goirid"
+
+#: modules/gui/qt/ui/sprefs_interface.h:563
+msgid "Separate words by | (without space)"
+msgstr "Sgar faclan le | (as aonais beàrn)"
+
+#: modules/gui/qt/ui/sprefs_interface.h:566
+msgid "Operating System Integration"
+msgstr "Filleadh a-steach san t-siostam-obrachaidh"
+
+#: modules/gui/qt/ui/sprefs_interface.h:567
+msgid "File extensions association"
+msgstr "Na dàimhean aig leudachain nam faidhle"
+
+#: modules/gui/qt/ui/sprefs_interface.h:568
+msgid "Set up associations..."
+msgstr "Suidhich dàimhean..."
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:291
+msgid "Enable On Screen Display (OSD)"
+msgstr "Cuir an comas On Screen Display (OSD)"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:292
+msgid "Show media title on video start"
+msgstr "Seall tiotal a' mheadhain nuair a thòisicheas video"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:294
+msgid "Enable subtitles"
+msgstr "Cuir na fo-thiotalan an comas"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:295
+msgid "Subtitle Language"
+msgstr "Cànan nam fo-thiotalan"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:297
+msgid "Default encoding"
+msgstr "An còdachadh bunaiteach"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:298
+msgid "Subtitle effects"
+msgstr "Èifeachdan nam fo-thiotalan"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:304
+msgid "Add a shadow"
+msgstr "Cuir sgàil ris"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:306
+#: modules/gui/qt/ui/video_effects.h:1230
+#: modules/gui/qt/ui/video_effects.h:1234
+#: modules/gui/qt/ui/video_effects.h:1237
+#: modules/gui/qt/ui/video_effects.h:1238
+#: modules/gui/qt/ui/video_effects.h:1272
+#: modules/gui/qt/ui/video_effects.h:1274
+#: modules/gui/qt/ui/video_effects.h:1284
+#: modules/gui/qt/ui/video_effects.h:1285
+msgid " px"
+msgstr " px"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:307
+msgid "Add a background"
+msgstr "Cuir cùlaibh ris"
+
+#: modules/gui/qt/ui/sprefs_video.h:316
+#, fuzzy
+msgid "O&utput"
+msgstr "Às-chur"
+
+#: modules/gui/qt/ui/sprefs_video.h:320
+msgid "DirectX"
+msgstr "DirectX"
+
+#: modules/gui/qt/ui/sprefs_video.h:322
+msgid "Accelerated video output (Overlay)"
+msgstr "Às-chur video luathaichte (tar-chòmhdachadh)"
+
+#: modules/gui/qt/ui/sprefs_video.h:323
+msgid "KVA"
+msgstr "KVA"
+
+#: modules/gui/qt/ui/sprefs_video.h:329
+msgid "Force Aspect Ratio"
+msgstr "Èignich co-mheas an deilbh"
+
+#: modules/gui/qt/ui/sprefs_video.h:334
+msgid "vlc-snap"
+msgstr "vlc-snap"
+
+#: modules/gui/qt/ui/streampanel.h:171
+msgid "Stuff"
+msgstr "Stuth"
+
+#: modules/gui/qt/ui/streampanel.h:173
+msgid "Edit settings"
+msgstr "Roghainnean deasachaidh"
+
+#: modules/gui/qt/ui/streampanel.h:174
+msgid "Control"
+msgstr "Uidheam-smachd"
+
+#: modules/gui/qt/ui/streampanel.h:175
+msgid "Run manually"
+msgstr "Ruith a làimh"
+
+#: modules/gui/qt/ui/streampanel.h:176
+msgid "Setup schedule"
+msgstr "Suidhich sgeideal"
+
+#: modules/gui/qt/ui/streampanel.h:177
+msgid "Run on schedule"
+msgstr "Ruith a-rèir an sgeideil"
+
+#: modules/gui/qt/ui/streampanel.h:178
+msgid "Status"
+msgstr "Staid"
+
+#: modules/gui/qt/ui/streampanel.h:179
+msgid "P/P"
+msgstr "P/P"
+
+#: modules/gui/qt/ui/streampanel.h:182
+msgid "Prev"
+msgstr "Air ais"
+
+#: modules/gui/qt/ui/streampanel.h:183
+msgid "Add Input"
+msgstr "Cuir ion-chur ris"
+
+#: modules/gui/qt/ui/streampanel.h:184
+msgid "Edit Input"
+msgstr "Deasaich an t-ion-chur"
+
+#: modules/gui/qt/ui/streampanel.h:185
+msgid "Clear List"
+msgstr "Falamhaich an liosta"
+
+#: modules/gui/qt/ui/update.h:148
+msgid "Check for VLC updates"
+msgstr "Thoir sùil airson ùrachaidhean VLC"
+
+#: modules/gui/qt/ui/update.h:149
+msgid "Launching an update request..."
+msgstr "A' cur air bhog iarrtas airson ùrachadh..."
+
+#: modules/gui/qt/ui/update.h:150
+msgid "Do you want to download it?"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1228
+msgid "Essential"
+msgstr "Riatanach"
+
+#: modules/gui/qt/ui/video_effects.h:1242
+#: modules/gui/qt/ui/video_effects.h:1251
+msgid ">HHHHHH;#"
+msgstr ">HHHHHH;#"
+
+#: modules/gui/qt/ui/video_effects.h:1243
+msgid "Negate colors"
+msgstr "Rach as àicheadh nan dath"
+
+#: modules/gui/qt/ui/video_effects.h:1256
+msgid "Colors"
+msgstr "Dathan"
+
+#: modules/gui/qt/ui/video_effects.h:1257
+msgid "Interactive Zoom"
+msgstr "Sùm eadar-ghnìomhach"
+
+#: modules/gui/qt/ui/video_effects.h:1263
+msgid "Angle"
+msgstr "Ceàrn"
+
+#: modules/gui/qt/ui/video_effects.h:1270
+#: modules/gui/qt/ui/video_effects.h:1287
+msgid "..."
+msgstr "..."
+
+#: modules/gui/qt/ui/video_effects.h:1275
+msgid "full"
+msgstr "slàn"
+
+#: modules/gui/qt/ui/video_effects.h:1277
+msgid "none"
+msgstr "chan eil gin"
+
+#: modules/gui/qt/ui/video_effects.h:1281
+msgid "Logo erase"
+msgstr "Dubh às an suaicheantas"
+
+#: modules/gui/qt/ui/video_effects.h:1286
+msgid "Mask"
+msgstr "Masg"
+
+#: modules/gui/qt/ui/video_effects.h:1289
+msgid "Anaglyph 3D"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1290
+msgid "Mirror"
+msgstr "Sgàthanaich"
+
+#: modules/gui/qt/ui/video_effects.h:1294
+msgid "Motion detect"
+msgstr "Mothachadh do ghluasad"
+
+#: modules/gui/qt/ui/video_effects.h:1295
+msgid "Spatial blur"
+msgstr "Sgleò spatial"
+
+#: modules/gui/qt/ui/video_effects.h:1299
+msgid "Anti-Flickering"
+msgstr "Anti-Flickering"
+
+#: modules/gui/qt/ui/video_effects.h:1300
+msgid "Soften"
+msgstr "Sèimhich"
+
+#: modules/gui/qt/ui/video_effects.h:1301
+msgid "Denoiser"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1302
+msgid "Spatial luma strength"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1303
+msgid "Temporal luma strength"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1304
+msgid "Spatial chroma strength"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1305
+msgid "Temporal chroma strength"
+msgstr ""
+
+#: modules/gui/qt/ui/vlm.h:286
+msgid "VLM configurator"
+msgstr "Rèitichear VLM"
+
+#: modules/gui/qt/ui/vlm.h:287
+msgid "Media Manager Edition"
+msgstr "Tionndadh Media Manager"
+
+#: modules/gui/qt/ui/vlm.h:288
+msgid "Name:"
+msgstr "Ainm:"
+
+#: modules/gui/qt/ui/vlm.h:290
+msgid "Input:"
+msgstr "Ion-chur:"
+
+#: modules/gui/qt/ui/vlm.h:291
+msgid "Select Input"
+msgstr "Tagh ion-chur"
+
+#: modules/gui/qt/ui/vlm.h:292
+msgid "Output:"
+msgstr "Às-chur:"
+
+#: modules/gui/qt/ui/vlm.h:293
+msgid "Select Output"
+msgstr "Tagh às-chur"
+
+#: modules/gui/qt/ui/vlm.h:294
+msgid "Time Control"
+msgstr "Uidheam-smachd an ama"
+
+#: modules/gui/qt/ui/vlm.h:295
+msgid "Mux Control"
+msgstr "Uidheam-smachd Mux"
+
+#: modules/gui/qt/ui/vlm.h:296
+msgid "Muxer:"
+msgstr "Muxer:"
+
+#: modules/gui/qt/ui/vlm.h:297
+msgid "AAAA; "
+msgstr "AAAA; "
+
+#: modules/gui/qt/ui/vlm.h:302
+msgid "Media Manager List"
+msgstr "Liosta Media Manager"
+
 #, fuzzy
 #~ msgid "Screen capture (with Wayland)"
 #~ msgstr "Glacadh-sgrìn"
@@ -27507,560 +28483,17 @@ msgstr ""
 #~ msgid "Upstream rate"
 #~ msgstr "Reat an t-sruthaidh suas"
 
-#~ msgid "Dialog"
-#~ msgstr "Còmhradh"
-
-#~ msgid "Form"
-#~ msgstr "Foirm"
-
-#~ msgid "Preset"
-#~ msgstr "Ro-sheata"
-
-#~ msgid "&Save as..."
-#~ msgstr "&Sàbhail mar..."
-
-#~ msgid "Modules Tree"
-#~ msgstr "Craobh nam mòidealan"
-
-#~ msgid "Show extended options"
-#~ msgstr "Seall na roghainnean leudaichte"
-
-#~ msgid "Show &more options"
-#~ msgstr "Seall &barrachd roghainnean"
-
-#~ msgid "Change the caching for the media"
-#~ msgstr "Atharraich an dòigh air a thèid meadhanan an cur san tasgadan"
-
-#~ msgid " ms"
-#~ msgstr " ms"
-
-#~ msgid "MRL"
-#~ msgstr "MRL"
-
-#~ msgid "Start Time"
-#~ msgstr "Àm tòiseachaidh"
-
-#, fuzzy
-#~ msgid "Stop Time"
-#~ msgstr "Àm crìochnachaidh"
-
-#~ msgid "Edit Options"
-#~ msgstr "Roghainnean deasachaidh"
-
-#~ msgid "Extra media"
-#~ msgstr "Meadhan a bharrachd"
-
-#~ msgid "Complete MRL for VLC internal"
-#~ msgstr "Coilean MRL airson VLC inntearnail"
-
-#~ msgid "Select the file"
-#~ msgstr "Tagh am faidhle"
-
-#~ msgid "Change the start time for the media"
-#~ msgstr "Atharraich àm tòiseachadh a' mheadhain"
-
-#~ msgid "HH'H':mm'm':ss's'.zzz"
-#~ msgstr "HH'H':mm'm':ss's'.zzz"
-
-#, fuzzy
-#~ msgid "Change the stop time for the media"
-#~ msgstr "Atharraich àm tòiseachadh a' mheadhain"
-
-#~ msgid "Play another media synchronously (extra audio file, ...)"
-#~ msgstr "Cluich meadhan eile aig an aon àm (faidhle fuaim eile, ...)"
-
-#~ msgid "Capture mode"
-#~ msgstr "Modh glacaidh"
-
-#~ msgid "Select the capture device type"
-#~ msgstr "Tagh seòrsa an uidheim ghlacaidh"
-
-#~ msgid "Device Selection"
-#~ msgstr "Taghadh an uidheim"
-
-#~ msgid "Options"
-#~ msgstr "Roghainnean"
-
-#~ msgid "Access advanced options to tweak the device"
-#~ msgstr "Seall na roghainnean adhartach gus an t-uidheam a chur air gleus"
-
-#~ msgid "Advanced options..."
-#~ msgstr "Roghainnean adhartach..."
-
-#~ msgid "Disc Selection"
-#~ msgstr "Taghadh diosg"
-
-#~ msgid "SVCD/VCD"
-#~ msgstr "SVCD/VCD"
-
-#~ msgid "Disable Disc Menus"
-#~ msgstr "Cuir clàir-thaice nan diosg à comas"
-
-#~ msgid "No disc menus"
-#~ msgstr "Gun chlàir-thaice dhiosgan"
-
-#~ msgid "Disc device"
-#~ msgstr "Uidheam diosga"
-
-#~ msgid "Starting Position"
-#~ msgstr "Ionad tòiseachaidh"
-
-#~ msgid "Audio and Subtitles"
-#~ msgstr "Fuaim is fo-thiotalan"
-
-#~ msgid "Choose one or more media file to open"
-#~ msgstr "Tagh faidhle meadhain no barrachd dhiubh gus am fosgladh"
-
-#~ msgid "File Selection"
-#~ msgstr "Taghadh faidhle"
-
-#~ msgid "You can select local files with the following list and buttons."
-#~ msgstr ""
-#~ "'S urrainn dhut faidhlichean ionadail a thaghadh leis na liostaichean is "
-#~ "putain a leanas."
-
-#~ msgid "Add..."
-#~ msgstr "Cuir ris..."
-
-#~ msgid "Network Protocol"
-#~ msgstr "Pròtacal an lìonraidh"
-
-#~ msgid "Please enter a network URL:"
-#~ msgstr "Cuir a-steach URL lìonraidh:"
-
-#, fuzzy
-#~ msgid "MP&4/MOV"
-#~ msgstr "MP4/MOV"
-
-#~ msgid "Ogg/Ogm"
-#~ msgstr "Ogg/Ogm"
-
-#, fuzzy
-#~ msgid "M&JPEG"
-#~ msgstr "MJPEG"
-
-#~ msgid "MPEG-PS"
-#~ msgstr "MPEG-PS"
-
-#, fuzzy
-#~ msgid "&MPEG-TS"
-#~ msgstr "MPEG-TS"
-
-#~ msgid "RAW"
-#~ msgstr "RAW"
-
-#~ msgid "WAV"
-#~ msgstr "WAV"
-
-#~ msgid "Webm"
-#~ msgstr "Webm"
-
-#, fuzzy
-#~ msgid "MPEG &1"
-#~ msgstr "MPEG 1"
-
-#~ msgid "AVI"
-#~ msgstr "AVI"
-
-#~ msgid "ASF/WMV"
-#~ msgstr "ASF/WMV"
-
-#, fuzzy
-#~ msgid "Fra&me Rate"
-#~ msgstr "Reat nam frèam"
-
-#~ msgid " fps"
-#~ msgstr " fps"
-
-#~ msgid " kb/s"
-#~ msgstr " kb/s"
-
-#, fuzzy
-#~ msgid "Sa&mple Rate"
-#~ msgstr "Reat samplachaidh"
-
-#, fuzzy
-#~ msgid "Profile &Name"
-#~ msgstr "Ainm na pròifile"
-
-#~ msgid "Set up media sources to stream"
-#~ msgstr "Suidhich tùsan nam meadhanan a thèid a shruthadh"
-
-#~ msgid "Destination Setup"
-#~ msgstr "Suidheachadh a' chinn-uidhe"
-
-#~ msgid "Select destinations to stream to"
-#~ msgstr "Tagh ceann-uidhe an t-srutha"
-
-#~ msgid ""
-#~ "Add destinations following the streaming methods you need. Be sure to "
-#~ "check with transcoding that the format is compatible with the method used."
-#~ msgstr ""
-#~ "Cuir cinn-uidhe ris a-rèir nan dòighean sruthaidh a tha agad. Dèan "
-#~ "cinnteach gu bheil am fòrmat co-chòrdail leis an dòigh a tha thu a' "
-#~ "cleachdadh."
-
-#~ msgid "New destination"
-#~ msgstr "Ceann-uidhe ùr"
-
-#~ msgid "Display locally"
-#~ msgstr "Seall gu h-ionadail"
-
-#~ msgid "Activate Transcoding"
-#~ msgstr "Cuir gu dol an tar-chòdachadh"
-
-#~ msgid "Option Setup"
-#~ msgstr "Suidheachadh nan roghainnean"
-
-#~ msgid "Miscellaneous Options"
-#~ msgstr "Roghainnean eile"
-
-#~ msgid "Stream all elementary streams"
-#~ msgstr "Sruthaich a h-uile sruth bunasach"
-
-#~ msgid "Generated stream output string"
-#~ msgstr "Sreath às-chur an t-srutha air a ghintinn"
-
-#~ msgid " %"
-#~ msgstr " %"
-
-#~ msgid "Output module:"
-#~ msgstr "Mòideal an às-chuir:"
-
-#~ msgid "Use S/PDIF when available"
-#~ msgstr "Cleachd S/PDIF ma bhios e ri làimh"
-
-#~ msgid "Effects"
-#~ msgstr "Èifeachdan"
-
-#~ msgid "Visualization:"
-#~ msgstr "Fir chlis:"
-
-#~ msgid "Enable Time-Stretching audio"
-#~ msgstr "Cuir an comas sìneadh-ama dhen fhuaim"
-
 #~ msgid "Dolby Surround:"
 #~ msgstr "Dolby Surround:"
-
-#~ msgid "Replay gain mode:"
-#~ msgstr "Modh tarbhachd na h-ath-chluich:"
 
 #~ msgid "Headphone surround effect"
 #~ msgstr "Buaidh headphone surround"
 
-#~ msgid "Normalize volume to:"
-#~ msgstr "Àbhaistich àirde na fuaime gu:"
-
-#~ msgid "Tracks"
-#~ msgstr "Tracaichean"
-
-#~ msgid "Preferred audio language:"
-#~ msgstr "An cànan as fhearr leat airson fuaim:"
-
-#~ msgid "Password:"
-#~ msgstr "Facal-faire:"
-
-#~ msgid "Username:"
-#~ msgstr "Ainm-cleachdaiche:"
-
-#~ msgid "Submit played tracks stats to Last.fm"
-#~ msgstr "Cuir a-null stats na chluich mi gu Last.fm"
-
-#~ msgid "Codecs"
-#~ msgstr "Codecs"
-
-#~ msgid "x264 profile and level selection"
-#~ msgstr "Taghadh pròifil is leibheal x264"
-
 #~ msgid "x264 preset and tuning selection"
 #~ msgstr "Taghadh ro-sheata is gleusadh x264"
 
-#~ msgid "Hardware-accelerated decoding"
-#~ msgstr "Dì-chòdachadh \"hardware accelerated\""
-
-#~ msgid "Skip H.264 in-loop deblocking filter"
-#~ msgstr "Gearr leum thairis air criathrag dì-bhlocaidh H.264 in-loop"
-
-#~ msgid "Video quality post-processing level"
-#~ msgstr "Ìre càileachd de video airson pròiseasadh an dèidh làimh"
-
-#~ msgid "Optical drive"
-#~ msgstr "Draibh lèirsinneach"
-
-#~ msgid "Default optical device"
-#~ msgstr "An t-uidheam lèirsinneach bunasach"
-
-#~ msgid "Damaged or incomplete AVI file"
-#~ msgstr "Faidhle AVI air a mhilleadh no neo-iomlan"
-
-#~ msgid "HTTP proxy URL"
-#~ msgstr "URL a' phrogsaidh HTTP"
-
-#~ msgid "HTTP (default)"
-#~ msgstr "HTTP (bun-roghainn)"
-
-#~ msgid "RTP over RTSP (TCP)"
-#~ msgstr "RTP seach RTSP (TCP)"
-
-#~ msgid "Live555 stream transport"
-#~ msgstr "Còmhdail sruth Live555"
-
-#~ msgid "Default caching policy"
-#~ msgstr "Poileasaidh bunaiteach an tasgadain"
-
-#~ msgid "Menus language:"
-#~ msgstr "Cànan nan clàr-taice:"
-
-#~ msgid "Look and feel"
-#~ msgstr "Coltas"
-
-#~ msgid "Use custom skin"
-#~ msgstr "Cleachd craiceann gnàthaichte"
-
-#~ msgid "This is VLC's default interface, with a native look and feel."
-#~ msgstr ""
-#~ "Seo an eadar-aghaidh bhunaiteach aig VLC, leis a choltas tùsail air."
-
-#~ msgid "Use native style"
-#~ msgstr "Cleachd an stoidhle thùsail"
-
-#~ msgid "Resize interface to video size"
-#~ msgstr "Meud na h-eadar-aghaidh a-rèir meud a' video"
-
-#~ msgid "Show controls in full screen mode"
-#~ msgstr "Seall na h-uidheaman-smachd sa mhodh làn-sgrìn"
-
-#~ msgid "Pause playback when minimized"
-#~ msgstr "Cuir a' chluich 'na stad nuair a bhios e lùghdaichte"
-
-#~ msgid "Show media change popup:"
-#~ msgstr "Seall priob-uinneag atharrachadh a' mheadhain:"
-
-#~ msgid "Start in minimal view mode"
-#~ msgstr "Tòisich sa mhodh lùghdaichte"
-
-#~ msgid "Force window style:"
-#~ msgstr "Èignich stoidhle na h-uinneige:"
-
-#~ msgid "Integrate video in interface"
-#~ msgstr "Amalaich a' video san eadar-aghaidh"
-
-#~ msgid "Show systray icon"
-#~ msgstr "Seall ìomhaigheag ann an treighe an t-siostaim"
-
-#, fuzzy
-#~ msgid "Auto raising the interface:"
-#~ msgstr ""
-#~ "Tha thu a' cleachdadh eadar-aghaidh Qt4.\n"
-#~ "\n"
-
-#~ msgid "Skin resource file:"
-#~ msgstr "Faidhle goireas a' chraicinn:"
-
-#~ msgid "Playlist and Instances"
-#~ msgstr "An liosta-chluich agus ionstansan"
-
-#~ msgid "Allow only one instance"
-#~ msgstr "Ceadaich aon ionstans a-mhàin"
-
-#~ msgid "Pause on the last frame of a video"
-#~ msgstr "Cuir 'na stad san fhrèam mu dheireadh de video"
-
-#~ msgid "Every "
-#~ msgstr "Gach "
-
-#~ msgid "Separate words by | (without space)"
-#~ msgstr "Sgar faclan le | (as aonais beàrn)"
-
-#~ msgid "Save recently played items"
-#~ msgstr "Sàbhail na chluicheadh o chionn goirid"
-
-#~ msgid "Activate updates notifier"
-#~ msgstr "Cuir an gnìomh caismeachdan mu ùrachaidhean"
-
-#~ msgid "Operating System Integration"
-#~ msgstr "Filleadh a-steach san t-siostam-obrachaidh"
-
-#~ msgid "File extensions association"
-#~ msgstr "Na dàimhean aig leudachain nam faidhle"
-
-#~ msgid "Set up associations..."
-#~ msgstr "Suidhich dàimhean..."
-
-#~ msgid "Enable On Screen Display (OSD)"
-#~ msgstr "Cuir an comas On Screen Display (OSD)"
-
-#~ msgid "Show media title on video start"
-#~ msgstr "Seall tiotal a' mheadhain nuair a thòisicheas video"
-
-#~ msgid "Enable subtitles"
-#~ msgstr "Cuir na fo-thiotalan an comas"
-
-#~ msgid "Subtitle Language"
-#~ msgstr "Cànan nam fo-thiotalan"
-
-#~ msgid "Default encoding"
-#~ msgstr "An còdachadh bunaiteach"
-
-#~ msgid "Subtitle effects"
-#~ msgstr "Èifeachdan nam fo-thiotalan"
-
-#~ msgid "Add a shadow"
-#~ msgstr "Cuir sgàil ris"
-
-#~ msgid " px"
-#~ msgstr " px"
-
-#~ msgid "Add a background"
-#~ msgstr "Cuir cùlaibh ris"
-
-#, fuzzy
-#~ msgid "O&utput"
-#~ msgstr "Às-chur"
-
-#~ msgid "Accelerated video output (Overlay)"
-#~ msgstr "Às-chur video luathaichte (tar-chòmhdachadh)"
-
-#~ msgid "DirectX"
-#~ msgstr "DirectX"
-
 #~ msgid "Display device"
 #~ msgstr "Uidheam taisbeanaidh"
-
-#~ msgid "KVA"
-#~ msgstr "KVA"
-
-#~ msgid "Force Aspect Ratio"
-#~ msgstr "Èignich co-mheas an deilbh"
-
-#~ msgid "vlc-snap"
-#~ msgstr "vlc-snap"
-
-#~ msgid "Stuff"
-#~ msgstr "Stuth"
-
-#~ msgid "Edit settings"
-#~ msgstr "Roghainnean deasachaidh"
-
-#~ msgid "Control"
-#~ msgstr "Uidheam-smachd"
-
-#~ msgid "Run manually"
-#~ msgstr "Ruith a làimh"
-
-#~ msgid "Setup schedule"
-#~ msgstr "Suidhich sgeideal"
-
-#~ msgid "Run on schedule"
-#~ msgstr "Ruith a-rèir an sgeideil"
-
-#~ msgid "Status"
-#~ msgstr "Staid"
-
-#~ msgid "P/P"
-#~ msgstr "P/P"
-
-#~ msgid "Prev"
-#~ msgstr "Air ais"
-
-#~ msgid "Add Input"
-#~ msgstr "Cuir ion-chur ris"
-
-#~ msgid "Edit Input"
-#~ msgstr "Deasaich an t-ion-chur"
-
-#~ msgid "Clear List"
-#~ msgstr "Falamhaich an liosta"
-
-#~ msgid "Check for VLC updates"
-#~ msgstr "Thoir sùil airson ùrachaidhean VLC"
-
-#~ msgid "Launching an update request..."
-#~ msgstr "A' cur air bhog iarrtas airson ùrachadh..."
-
-#~ msgid "Essential"
-#~ msgstr "Riatanach"
-
-#~ msgid ">HHHHHH;#"
-#~ msgstr ">HHHHHH;#"
-
-#~ msgid "Negate colors"
-#~ msgstr "Rach as àicheadh nan dath"
-
-#~ msgid "Colors"
-#~ msgstr "Dathan"
-
-#~ msgid "Interactive Zoom"
-#~ msgstr "Sùm eadar-ghnìomhach"
-
-#~ msgid "Angle"
-#~ msgstr "Ceàrn"
-
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "full"
-#~ msgstr "slàn"
-
-#~ msgid "none"
-#~ msgstr "chan eil gin"
-
-#~ msgid "Logo erase"
-#~ msgstr "Dubh às an suaicheantas"
-
-#~ msgid "Mask"
-#~ msgstr "Masg"
-
-#~ msgid "Mirror"
-#~ msgstr "Sgàthanaich"
-
-#~ msgid "Motion detect"
-#~ msgstr "Mothachadh do ghluasad"
-
-#~ msgid "Spatial blur"
-#~ msgstr "Sgleò spatial"
-
-#~ msgid "Anti-Flickering"
-#~ msgstr "Anti-Flickering"
-
-#~ msgid "Soften"
-#~ msgstr "Sèimhich"
-
-#~ msgid "VLM configurator"
-#~ msgstr "Rèitichear VLM"
-
-#~ msgid "Media Manager Edition"
-#~ msgstr "Tionndadh Media Manager"
-
-#~ msgid "Name:"
-#~ msgstr "Ainm:"
-
-#~ msgid "Input:"
-#~ msgstr "Ion-chur:"
-
-#~ msgid "Select Input"
-#~ msgstr "Tagh ion-chur"
-
-#~ msgid "Output:"
-#~ msgstr "Às-chur:"
-
-#~ msgid "Select Output"
-#~ msgstr "Tagh às-chur"
-
-#~ msgid "Time Control"
-#~ msgstr "Uidheam-smachd an ama"
-
-#~ msgid "Mux Control"
-#~ msgstr "Uidheam-smachd Mux"
-
-#~ msgid "Muxer:"
-#~ msgstr "Muxer:"
-
-#~ msgid "AAAA; "
-#~ msgstr "AAAA; "
-
-#~ msgid "Media Manager List"
-#~ msgstr "Liosta Media Manager"
 
 #, fuzzy
 #~ msgid "Capture region heigh"

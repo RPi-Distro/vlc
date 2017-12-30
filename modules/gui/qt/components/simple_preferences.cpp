@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 026ee364791201cf3d9422a5e40f1f751a74dd5b $
+ * $Id: 7121998135ded9f7144b7d1b2f72e6e608f3de6e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -42,6 +42,7 @@
 
 #include <QStyleFactory>
 #include <QSettings>
+#include <QScreen>
 #include <QtAlgorithms>
 #include <QDir>
 #include <assert.h>
@@ -361,16 +362,30 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             CONFIG_BOOL( "video-deco", windowDecorations );
             CONFIG_GENERIC( "vout", StringList, ui.voutLabel, outputModule );
 
+            optionWidgets["fullscreenScreenB"] = ui.fullscreenScreenBox;
+            ui.fullscreenScreenBox->addItem( qtr("Automatic"), -1 );
+            int i_screenCount = 0;
+            foreach( QScreen* screen, QGuiApplication::screens() )
+            {
+                ui.fullscreenScreenBox->addItem( screen->name(), i_screenCount );
+                i_screenCount++;
+            }
+            p_config =  config_FindConfig( "qt-fullscreen-screennumber" );
+            if( p_config )
+            {
+                int i_defaultScreen = p_config->value.i + 1;
+                if ( i_defaultScreen < 0 || i_defaultScreen > ( ui.fullscreenScreenBox->count() - 1 ) )
+                    ui.fullscreenScreenBox->setCurrentIndex( 0 );
+                else
+                    ui.fullscreenScreenBox->setCurrentIndex(p_config->value.i + 1);
+            }
+
 #ifdef _WIN32
-            CONFIG_GENERIC( "directx-device", StringList, ui.dxDeviceLabel,
-                            dXdisplayDevice );
             CONFIG_BOOL( "directx-overlay", overlay );
             CONFIG_BOOL( "directx-hw-yuv", hwYUVBox );
             CONNECT( ui.overlay, toggled( bool ), ui.hwYUVBox, setEnabled( bool ) );
 #else
             ui.directXBox->setVisible( false );
-            ui.overlay->setVisible( false );
-            ui.hwYUVBox->setVisible( false );
 #endif
 
 #ifdef __OS2__
@@ -499,8 +514,6 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                             preferredAudioLanguage );
 
             CONFIG_BOOL( "spdif", spdifBox );
-            CONFIG_GENERIC( "force-dolby-surround", IntegerList, ui.dolbyLabel,
-                            detectionDolby );
 
             CONFIG_GENERIC_NO_BOOL( "norm-max-level" , Float, NULL,
                                     volNormSpin );
@@ -526,7 +539,6 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             /*Little mofification of ui.volumeValue to compile with Qt < 4.3 */
             ui.volumeValue->setButtonSymbols(QAbstractSpinBox::NoButtons);
             optionWidgets["volLW"] = ui.volumeValue;
-            optionWidgets["headphoneB"] = ui.headphoneEffect;
             optionWidgets["spdifChB"] = ui.spdifBox;
             optionWidgets["defaultVolume"] = ui.defaultVolume;
             optionWidgets["resetVolumeCheckbox"] = ui.resetVolumeCheckbox;
@@ -569,9 +581,6 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             bool b_enabled = ( qs_filter.contains( "normvol" ) );
             ui.volNormBox->setChecked( b_enabled );
             ui.volNormSpin->setEnabled( b_enabled );
-
-            b_enabled = ( qs_filter.contains( "headphone" ) );
-            ui.headphoneEffect->setChecked( b_enabled );
 
             /* Volume Label */
             updateAudioVolume( ui.defaultVolume->value() ); // First time init
@@ -637,6 +646,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             else
                 FreeLibrary( hdxva2_dll );
 #endif
+            CONFIG_BOOL( "input-fast-seek", fastSeekBox );
             optionWidgets["inputLE"] = ui.DVDDeviceComboBox;
             optionWidgets["cachingCoB"] = ui.cachingCombo;
             CONFIG_GENERIC( "avcodec-skiploopfilter", IntegerList, ui.filterLabel, loopFilterBox );
@@ -1046,6 +1056,13 @@ void SPrefsPanel::apply()
         break;
     }
 
+    case SPrefsVideo:
+    {
+        int i_fullscreenScreen =  qobject_cast<QComboBox *>(optionWidgets["fullscreenScreenB"])->currentData().toInt();
+        config_PutInt( p_intf, "qt-fullscreen-screennumber", i_fullscreenScreen );
+        break;
+    }
+
     case SPrefsAudio:
     {
         bool b_checked =
@@ -1054,14 +1071,6 @@ void SPrefsPanel::apply()
             qs_filter.append( "normvol" );
         if( !b_checked && qs_filter.contains( "normvol" ) )
             qs_filter.removeAll( "normvol" );
-
-        b_checked =
-            qobject_cast<QCheckBox *>(optionWidgets["headphoneB"])->isChecked();
-
-        if( b_checked && !qs_filter.contains( "headphone" ) )
-            qs_filter.append( "headphone" );
-        if( !b_checked && qs_filter.contains( "headphone" ) )
-            qs_filter.removeAll( "headphone" );
 
         config_PutPsz( p_intf, "audio-filter", qtu( qs_filter.join( ":" ) ) );
 

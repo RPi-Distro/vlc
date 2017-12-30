@@ -2,7 +2,7 @@
  * vlc_fourcc.h: Definition of various FOURCC and helpers
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: ecbd37cd45f3b54e344c454c6849aeda33e06e07 $
+ * $Id: 02e65f37b4be8b7150fa7ea5e74bb587754f3352 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ com>
  *
@@ -121,7 +121,7 @@
 #define VLC_CODEC_VP8             VLC_FOURCC('V','P','8','0')
 #define VLC_CODEC_VP9             VLC_FOURCC('V','P','9','0')
 #define VLC_CODEC_VP10            VLC_FOURCC('V','P',':','0')
-#define VLC_CODEC_AV1             VLC_FOURCC('a','v','1','0')
+#define VLC_CODEC_AV1             VLC_FOURCC('a','v','0','1')
 #define VLC_CODEC_JPEG2000        VLC_FOURCC('J','P','2','K')
 #define VLC_CODEC_LAGARITH        VLC_FOURCC('L','A','G','S')
 #define VLC_CODEC_FLASHSV2        VLC_FOURCC('F','S','V','2')

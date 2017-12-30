@@ -1,7 +1,7 @@
 # x264
 
 X264_GITURL := git://git.videolan.org/x264.git
-X264_SNAPURL := http://download.videolan.org/pub/videolan/x264/snapshots/last_stable_x264.tar.bz2
+X264_SNAPURL := http://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-20171224-2245-stable.tar.bz2
 X262_GITURL := git://git.videolan.org/x262.git
 
 ifdef BUILD_ENCODERS
@@ -38,6 +38,15 @@ X264CONF += --enable-win32thread
 endif
 ifdef HAVE_CROSS_COMPILE
 X264CONF += --cross-prefix="$(HOST)-"
+ifdef HAVE_ANDROID
+# broken text relocations
+ifeq ($(ANDROID_ABI), x86)
+FFMPEGCONF +=  --disable-asm
+endif
+ifeq ($(ANDROID_ABI), x86_64)
+FFMPEGCONF +=  --disable-asm
+endif
+endif
 endif
 
 $(TARBALLS)/x262-git.tar.xz:

@@ -27,11 +27,22 @@ vlc_LDADD = ../lib/libvlc.la $(LIBPTHREAD)
 if !HAVE_WIN32
 vlc_SOURCES = vlc.c override.c
 vlc_LDADD += $(LIBDL)
+vlc_CPPFLAGS = $(AM_CPPFLAGS)
 else
 vlc_SOURCES = winvlc.c
 vlc_DEPENDENCIES = vlc_win32_rc.$(OBJEXT)
 vlc_LDFLAGS = -mwindows
-vlc_LDADD += -lpsapi vlc_win32_rc.$(OBJEXT)
+vlc_LDADD += vlc_win32_rc.$(OBJEXT)
+vlc_CPPFLAGS = $(AM_CPPFLAGS)
+libbreakpad_wrapper_la_SOURCES = breakpad.cpp
+libbreakpad_wrapper_la_LIBADD = $(BREAKPAD_LIBS)
+libbreakpad_wrapper_la_LDFLAGS = -static
+libbreakpad_wrapper_la_CXXFLAGS = $(AM_CXXFLAGS) $(BREAKPAD_CFLAGS) -DBREAKPAD_URL=\"@BREAKPAD_URL@\"
+if HAVE_BREAKPAD
+noinst_LTLIBRARIES = libbreakpad_wrapper.la
+vlc_LDADD += libbreakpad_wrapper.la -lstdc++ -lwininet
+vlc_CPPFLAGS += -DHAVE_BREAKPAD
+endif
 endif
 
 vlc_osx_SOURCES = darwinvlc.m
@@ -41,6 +52,7 @@ vlc_osx_LDFLAGS += -Xlinker -rpath -Xlinker "@executable_path/plugins/"
 if HAVE_BREAKPAD
 vlc_osx_LDFLAGS += -Wl,-framework,Breakpad
 vlc_osx_OBJCFLAGS = -F$(CONTRIB_DIR)/Frameworks
+vlc_osx_CPPFLAGS = -DHAVE_BREAKPAD
 endif
 vlc_osx_LDADD = ../lib/libvlc.la
 
@@ -56,6 +68,7 @@ vlc_osx_static_LDADD = $(vlc_osx_LDADD)
 if HAVE_BREAKPAD
 vlc_osx_static_LDFLAGS += -Wl,-framework,Breakpad
 vlc_osx_static_OBJCFLAGS += -F$(CONTRIB_DIR)/Frameworks
+vlc_osx_static_CPPFLAGS = -DHAVE_BREAKPAD
 endif
 
 
@@ -67,6 +80,7 @@ vlc_static_CFLAGS = $(AM_CFLAGS) \
 	-DTOP_BUILDDIR=\"$$(cd "$(top_builddir)"; pwd)\" \
 	-DTOP_SRCDIR=\"$$(cd "$(top_srcdir)"; pwd)\" \
 	$(NULL)
+vlc_static_CPPFLAGS = $(vlc_CPPFLAGS)
 vlc_static_DEPENDENCIES = $(vlc_DEPENDENCIES)
 vlc_static_LDADD = $(vlc_LDADD)
 vlc_static_LDFLAGS = $(vlc_LDFLAGS) -no-install -static

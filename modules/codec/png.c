@@ -2,7 +2,7 @@
  * png.c: png decoder module making use of libpng.
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 9bcbdf47964f475f13be0ea455aa06531050ff1c $
+ * $Id: e9bc71c6a76ea77dfe25ee91ac5c56b16eca6c03 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -346,6 +346,9 @@ static int OpenEncoder(vlc_object_t *p_this)
         p_enc->fmt_in.video.i_visible_height;
 
     p_enc->fmt_in.i_codec = VLC_CODEC_RGB24;
+    p_enc->fmt_in.video.i_bmask = 0;
+    video_format_FixRgb( &p_enc->fmt_in.video );
+
     p_enc->pf_encode_video = EncodeBlock;
 
     return VLC_SUCCESS;
