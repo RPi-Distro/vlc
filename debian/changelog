@@ -1,8 +1,9 @@
-vlc (3.0.0~rc4-1) UNRELEASED; urgency=medium
+vlc (3.0.0~rc4-1) unstable; urgency=medium
 
-  * NEw upstream release candidate.
+  * New upstream release candidate.
+  * debian/control: Bump Standards-Version.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sat, 30 Dec 2017 17:36:19 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 30 Dec 2017 18:56:14 +0100
 
 vlc (3.0.0~rc2-2) unstable; urgency=medium
 
@@ -621,7 +622,7 @@ vlc (2.2.0~pre3-1) unstable; urgency=medium
     - debian/vlc.install: Do not install the FreeRDP plugin.
   * debian/control:
     - Remove libdirac-dev from Build-Depends. It is no longer needed.
-    - Bump Standars-Version. No changes required.
+    - Bump Standards-Version. No changes required.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Sat, 27 Sep 2014 18:13:50 +0200
 
