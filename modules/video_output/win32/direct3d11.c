@@ -186,7 +186,9 @@ typedef struct d3d_vertex_t {
 
 typedef struct {
     FLOAT Opacity;
-    FLOAT opacityPadding[3];
+    FLOAT BoundaryX;
+    FLOAT BoundaryY;
+    FLOAT padding;
 } PS_CONSTANT_BUFFER;
 
 typedef struct {
@@ -305,7 +307,9 @@ static const char* globPixelShaderDefault = "\
   cbuffer PS_CONSTANT_BUFFER : register(b0)\
   {\
     float Opacity;\
-    float opacityPadding[3];\
+    float BoundaryX;\
+    float BoundaryY;\
+    float padding;\
   };\
   cbuffer PS_COLOR_TRANSFORM : register(b1)\
   {\
@@ -313,7 +317,7 @@ static const char* globPixelShaderDefault = "\
     float4x4 Colorspace;\
   };\
   Texture2D%s shaderTexture[" STRINGIZE(D3D11_MAX_SHADER_VIEW) "];\
-  SamplerState SampleType;\
+  SamplerState SamplerStates[2];\
   \
   struct PS_INPUT\
   {\
@@ -367,11 +371,20 @@ static const char* globPixelShaderDefault = "\
       %s;\
   }\
   \
+  inline float4 sampleTexture(SamplerState samplerState, float4 coords) {\
+      float4 sample;\
+      %s /* sampling routine in sample */\
+      return sample;\
+  }\
+  \
   float4 main( PS_INPUT In ) : SV_TARGET\
   {\
     float4 sample;\
     \
-    %s /* sampling routine in sample */\
+    if (In.Texture.x > BoundaryX || In.Texture.y > BoundaryY) \
+        sample = sampleTexture( SamplerStates[1], In.Texture );\
+    else\
+        sample = sampleTexture( SamplerStates[0], In.Texture );\
     float4 rgba = mul(mul(sample, WhitePoint), Colorspace);\
     float opacity = rgba.a * Opacity;\
     float3 rgb = (float3)rgba;\
@@ -403,33 +416,9 @@ static int Direct3D11MapPoolTexture(picture_t *picture)
     return CommonUpdatePicture(picture, NULL, mappedResource.pData, mappedResource.RowPitch);
 }
 
-/* add black pixels in the padding to ease the interpolation artefacts */
-static void EraseYUVBorders(int i_planes, plane_t planes[PICTURE_PLANE_MAX])
-{
-    for (int i = 0; i < i_planes; i++)
-    {
-        uint8_t val = (i == 0) ? 0x00 : 0x80;
-        if (planes[i].i_visible_lines < planes[i].i_lines)
-        {
-            memset(planes[i].p_pixels + (planes[i].i_visible_lines * planes[i].i_pitch), val, planes[i].i_visible_pitch);
-        }
-
-        if (planes[i].i_visible_pitch < planes[i].i_pitch)
-        {
-            for (int j=0; j<planes[i].i_visible_lines; j++)
-            {
-                planes[i].p_pixels[j * planes[i].i_pitch + (planes[i].i_visible_pitch + 0) ] = val;
-                if (i_planes == 2)
-                    planes[i].p_pixels[j * planes[i].i_pitch + (planes[i].i_visible_pitch + 1) ] = val;
-            }
-        }
-    }
-}
-
 static void Direct3D11UnmapPoolTexture(picture_t *picture)
 {
     picture_sys_t *p_sys = picture->p_sys;
-    EraseYUVBorders(picture->i_planes, picture->p);
     ID3D11DeviceContext_Unmap(p_sys->context, p_sys->resource[KNOWN_DXGI_INDEX], 0);
 }
 
@@ -1112,8 +1101,6 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
             for (i = 0; i < picture->i_planes; i++)
                 plane_CopyPixels(&planes[i], &picture->p[i]);
 
-            EraseYUVBorders(picture->i_planes, planes);
-
             for (i = 0; i < picture->i_planes; i++)
                 ID3D11DeviceContext_Unmap(sys->d3d_dev.d3dcontext, sys->stagingSys.resource[i], 0);
         }
@@ -1127,15 +1114,23 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
             WaitForSingleObjectEx( sys->context_lock, INFINITE, FALSE );
 #endif
         if (!is_d3d11_opaque(picture->format.i_chroma) || sys->legacy_shader) {
-            D3D11_TEXTURE2D_DESC texDesc;
+            D3D11_TEXTURE2D_DESC srcDesc,texDesc;
             if (!is_d3d11_opaque(picture->format.i_chroma))
                 Direct3D11UnmapPoolTexture(picture);
+            ID3D11Texture2D_GetDesc(p_sys->texture[KNOWN_DXGI_INDEX], &srcDesc);
             ID3D11Texture2D_GetDesc(sys->stagingSys.texture[0], &texDesc);
+            D3D11_BOX box = {
+                .top = 0,
+                .bottom = __MIN(srcDesc.Height, texDesc.Height),
+                .left = 0,
+                .right = __MIN(srcDesc.Width, texDesc.Width),
+                .back = 1,
+            };
             ID3D11DeviceContext_CopySubresourceRegion(sys->d3d_dev.d3dcontext,
                                                       sys->stagingSys.resource[KNOWN_DXGI_INDEX],
                                                       0, 0, 0, 0,
                                                       p_sys->resource[KNOWN_DXGI_INDEX],
-                                                      p_sys->slice_index, NULL);
+                                                      p_sys->slice_index, &box);
         }
         else
         {
@@ -1715,15 +1710,15 @@ static HRESULT CompilePixelShader(vout_display_t *vd, const d3d_format_t *format
     case DXGI_FORMAT_NV12:
     case DXGI_FORMAT_P010:
         psz_sampler =
-                "sample.x  = shaderTexture[0].Sample(SampleType, In.Texture).x;\
-                sample.yz = shaderTexture[1].Sample(SampleType, In.Texture).xy;\
+                "sample.x  = shaderTexture[0].Sample(samplerState, coords).x;\
+                sample.yz = shaderTexture[1].Sample(samplerState, coords).xy;\
                 sample.a  = 1;";
         break;
     case DXGI_FORMAT_YUY2:
         psz_sampler =
-                "sample.x  = shaderTexture[0].Sample(SampleType, In.Texture).x;\
-                sample.y  = shaderTexture[0].Sample(SampleType, In.Texture).y;\
-                sample.z  = shaderTexture[0].Sample(SampleType, In.Texture).a;\
+                "sample.x  = shaderTexture[0].Sample(samplerState, coords).x;\
+                sample.y  = shaderTexture[0].Sample(samplerState, coords).y;\
+                sample.z  = shaderTexture[0].Sample(samplerState, coords).a;\
                 sample.a  = 1;";
         break;
     case DXGI_FORMAT_R8G8B8A8_UNORM:
@@ -1731,13 +1726,13 @@ static HRESULT CompilePixelShader(vout_display_t *vd, const d3d_format_t *format
     case DXGI_FORMAT_B8G8R8X8_UNORM:
     case DXGI_FORMAT_B5G6R5_UNORM:
         psz_sampler =
-                "sample = shaderTexture[0].Sample(SampleType, In.Texture);";
+                "sample = shaderTexture[0].Sample(samplerState, coords);";
         break;
     case DXGI_FORMAT_UNKNOWN:
         psz_sampler =
-               "sample.x  = shaderTexture[0].Sample(SampleType, In.Texture).x;\
-                sample.y  = shaderTexture[1].Sample(SampleType, In.Texture).x;\
-                sample.z  = shaderTexture[2].Sample(SampleType, In.Texture).x;\
+               "sample.x  = shaderTexture[0].Sample(samplerState, coords).x;\
+                sample.y  = shaderTexture[1].Sample(samplerState, coords).x;\
+                sample.z  = shaderTexture[2].Sample(samplerState, coords).x;\
                 sample.a  = 1;";
         break;
     default:
@@ -2021,7 +2016,7 @@ static int Direct3D11CreateFormatResources(vout_display_t *vd, const video_forma
 
     sys->picQuad.i_width  = fmt->i_width;
     sys->picQuad.i_height = fmt->i_height;
-    if (is_d3d11_opaque(fmt->i_chroma))
+    if (!sys->legacy_shader && is_d3d11_opaque(fmt->i_chroma))
     {
         sys->picQuad.i_width  = (sys->picQuad.i_width  + 0x7F) & ~0x7F;
         sys->picQuad.i_height = (sys->picQuad.i_height + 0x7F) & ~0x7F;
@@ -2201,15 +2196,24 @@ static int Direct3D11CreateGenericResources(vout_display_t *vd)
     sampDesc.MinLOD = 0;
     sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-    ID3D11SamplerState *d3dsampState;
-    hr = ID3D11Device_CreateSamplerState(sys->d3d_dev.d3ddevice, &sampDesc, &d3dsampState);
-
+    ID3D11SamplerState *d3dsampState[2];
+    hr = ID3D11Device_CreateSamplerState(sys->d3d_dev.d3ddevice, &sampDesc, &d3dsampState[0]);
     if (FAILED(hr)) {
       msg_Err(vd, "Could not Create the D3d11 Sampler State. (hr=0x%lX)", hr);
       return VLC_EGENERIC;
     }
-    ID3D11DeviceContext_PSSetSamplers(sys->d3d_dev.d3dcontext, 0, 1, &d3dsampState);
-    ID3D11SamplerState_Release(d3dsampState);
+
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+    hr = ID3D11Device_CreateSamplerState(sys->d3d_dev.d3ddevice, &sampDesc, &d3dsampState[1]);
+    if (FAILED(hr)) {
+      msg_Err(vd, "Could not Create the D3d11 Sampler State. (hr=0x%lX)", hr);
+      ID3D11SamplerState_Release(d3dsampState[0]);
+      return VLC_EGENERIC;
+    }
+
+    ID3D11DeviceContext_PSSetSamplers(sys->d3d_dev.d3dcontext, 0, 2, d3dsampState);
+    ID3D11SamplerState_Release(d3dsampState[0]);
+    ID3D11SamplerState_Release(d3dsampState[1]);
 
     msg_Dbg(vd, "Direct3D11 resources created");
     return VLC_SUCCESS;
@@ -2520,9 +2524,16 @@ static int SetupQuad(vout_display_t *vd, const video_format_t *fmt, d3d_quad_t *
     const bool RGB_shader = IsRGBShader(cfg);
 
     /* pixel shader constant buffer */
-    PS_CONSTANT_BUFFER defaultConstants = {
-      .Opacity = 1,
-    };
+    PS_CONSTANT_BUFFER defaultConstants;
+    defaultConstants.Opacity = 1.0;
+    if (fmt->i_visible_width == fmt->i_width)
+        defaultConstants.BoundaryX = 1.0; /* let texture clamping happen */
+    else
+        defaultConstants.BoundaryX = (FLOAT) (fmt->i_visible_width - 1) / fmt->i_width;
+    if (fmt->i_visible_height == fmt->i_height)
+        defaultConstants.BoundaryY = 1.0; /* let texture clamping happen */
+    else
+        defaultConstants.BoundaryY = (FLOAT) (fmt->i_visible_height - 1) / fmt->i_height;
     static_assert((sizeof(PS_CONSTANT_BUFFER)%16)==0,"Constant buffers require 16-byte alignment");
     D3D11_BUFFER_DESC constantDesc = {
         .Usage = D3D11_USAGE_DYNAMIC,

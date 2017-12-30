@@ -2,7 +2,7 @@
  * text_layout.c : Text shaping and layout
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: d6844b23d0acb19122df948497f90bb812d5c562 $
+ * $Id: 0761ef3cbe31c334770859c3c83bc2ec7db41129 $
  *
  * Authors: Salah-Eddin Shaban <salshaaban@gmail.com>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -1553,7 +1553,8 @@ int LayoutText( filter_t *p_filter,
 
             for( ; *pp_line; pp_line = &(*pp_line)->p_next )
             {
-                i_total_height += (*pp_line)->i_height;
+                /* only cut at max i_max_height + 1 line due to
+                 * approximate font sizing vs region size */
                 if( i_max_height > 0 && i_total_height > i_max_height )
                 {
                     i_total_height = i_max_height + 1;
@@ -1572,6 +1573,7 @@ int LayoutText( filter_t *p_filter,
                 {
                     i_max_face_height = (*pp_line)->i_height;
                 }
+                i_total_height += (*pp_line)->i_height;
             }
             i_paragraph_start = i + 1;
         }

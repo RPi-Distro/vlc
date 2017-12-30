@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 64ccb9781b9d2788d99953c2125047c34360062f $
+ * $Id: 98e80dd4f39c2239397441e2c1bccac3ab619f28 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -313,7 +313,8 @@ static int aout_update_format( decoder_t *p_dec )
 
     if( p_owner->p_aout &&
        ( !AOUT_FMTS_IDENTICAL(&p_dec->fmt_out.audio, &p_owner->fmt.audio) ||
-         p_dec->fmt_out.i_codec != p_dec->fmt_out.audio.i_format ) )
+         p_dec->fmt_out.i_codec != p_dec->fmt_out.audio.i_format ||
+         p_dec->fmt_out.i_profile != p_owner->fmt.i_profile ) )
     {
         audio_output_t *p_aout = p_owner->p_aout;
 
@@ -364,6 +365,11 @@ static int aout_update_format( decoder_t *p_dec )
         p_aout = input_resource_GetAout( p_owner->p_resource );
         if( p_aout )
         {
+            /* TODO: 3.0 HACK: we need to put i_profile inside audio_format_t
+             * for 4.0 */
+            if( p_dec->fmt_out.i_codec == VLC_CODEC_DTS )
+                var_SetBool( p_aout, "dtshd", p_dec->fmt_out.i_profile > 0 );
+
             if( aout_DecNew( p_aout, &format,
                              &p_dec->fmt_out.audio_replay_gain,
                              &request_vout ) )

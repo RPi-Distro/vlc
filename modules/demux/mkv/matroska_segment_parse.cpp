@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 2e5ae019d1335616aef140384225cdde41b873fa $
+ * $Id: aba61b06d5a41877fd7161c0a45540ff56e50b20 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1740,6 +1740,7 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
         }
         S_CASE("A_OPUS") {
             vars.p_fmt->i_codec = VLC_CODEC_OPUS;
+            vars.p_tk->b_no_duration = true;
             if( !vars.p_tk->fmt.audio.i_rate )
             {
                 msg_Err( vars.p_demuxer,"No sampling rate, defaulting to 48kHz");

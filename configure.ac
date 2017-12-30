@@ -2,12 +2,12 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 1999-2017 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.0-rc2)
+AC_INIT(vlc, 3.0.0-rc4)
 VERSION_MAJOR=3
 VERSION_MINOR=0
 VERSION_REVISION=0
 VERSION_EXTRA=0
-VERSION_DEV=rc2
+VERSION_DEV=rc4
 
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -330,6 +330,7 @@ AM_CONDITIONAL(HAVE_OSX,     test "${HAVE_OSX}" = "1")
 AM_CONDITIONAL(HAVE_TVOS,    test "${HAVE_TVOS}" = "1")
 
 AM_CONDITIONAL(HAVE_NACL,    test "${SYS}" = "nacl")
+AM_CONDITIONAL(HAVE_LIBANL,  test "${HAVE_LIBANL}" = "1")
 
 AM_CONDITIONAL(HAVE_WIN32,   test "${SYS}" = "mingw32")
 AM_CONDITIONAL(HAVE_WIN64,   test "${HAVE_WIN64}" = "1") dnl Only used for the packaging
@@ -758,6 +759,10 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([_Thread_local int foo = 0;
 dnl __STDC_NO_THREADS__ can't be trusted on some platforms.
 dnl check for its availability explicitely
 AC_CHECK_HEADERS([threads.h])
+
+AC_CHECK_LIB([anl],[getaddrinfo_a],[
+  AC_DEFINE(HAVE_LIBANL, 1, [Define to 1 if you have the anl library])
+])
 
 dnl Check for dynamic plugins
 LIBDL=""
@@ -3834,24 +3839,29 @@ AS_IF([test "$with_breakpad" != "no"], [
     AC_MSG_ERROR([You need to supply the CrashDragon Server URL as value for --with-breakpad])
   ])
 
-  AS_IF([test "$HAVE_OSX" != "1"], [
-    AC_MSG_ERROR([Breakpad currently only works on macOS])
+  AS_IF([test "$HAVE_OSX" = "1"], [
+    AC_MSG_CHECKING([for Breakpad framework])
+    AS_IF([test ! -d ${CONTRIB_DIR}/Breakpad.framework -a \
+                ! -d ${CONTRIB_DIR}/Frameworks/Breakpad.framework], [
+      AC_MSG_RESULT([no])
+      with_breakpad="no"
+      AC_MSG_ERROR([Breakpad framework is required and was not found in ${CONTRIB_DIR}])
+    ], [
+      AC_MSG_RESULT([yes])
+    ])
+  ],[
+    PKG_CHECK_MODULES([BREAKPAD], [breakpad-client], [
+      LDFLAGS="${LDFLAGS} -Wl,--build-id"
+    ], [
+      AC_MSG_ERROR(["breakpad not found"])
+    ])
   ])
-
-  AC_MSG_CHECKING([for Breakpad framework])
-  AS_IF([test ! -d ${CONTRIB_DIR}/Breakpad.framework -a \
-              ! -d ${CONTRIB_DIR}/Frameworks/Breakpad.framework], [
-    AC_MSG_RESULT([no])
-    AC_MSG_ERROR([Breakpad framework is required and was not found in ${CONTRIB_DIR}])
-  ], [
-    AC_MSG_RESULT([yes])
-    AC_DEFINE([HAVE_BREAKPAD], [1], [Define to 1 if breakpad is enabled.])
-    AC_SUBST(BREAKPAD_URL, ["${with_breakpad}"])
-  ])
-
 ])
 
 AM_CONDITIONAL(HAVE_BREAKPAD, [test "$with_breakpad" != "no"])
+AS_IF([test "$with_breakpad" != "no"], [
+  AC_SUBST(BREAKPAD_URL, ["${with_breakpad}"])
+])
 
 dnl
 dnl  Minimal Mac OS X module
