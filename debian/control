@@ -131,7 +131,7 @@ Build-Depends: autopoint,
                wayland-protocols [linux-any],
                zlib1g-dev,
                zsh
-Standards-Version: 4.1.2
+Standards-Version: 4.1.3
 Homepage: https://www.videolan.org/vlc/
 Vcs-Git: https://anonscm.debian.org/git/pkg-multimedia/vlc.git
 Vcs-Browser: https://anonscm.debian.org/cgit/pkg-multimedia/vlc.git
