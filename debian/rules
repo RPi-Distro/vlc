@@ -211,7 +211,8 @@ endif
 
 # Ubuntu specific flags
 ifeq (Ubuntu,$(DEB_VENDOR))
-# protobuf related issues
+# protobuf related issues only observable on Ubuntu since Mir uses it
+# https://github.com/google/protobuf/issues/206
 confflags += --disable-chromecast
 removeplugins += chromecast
 else
