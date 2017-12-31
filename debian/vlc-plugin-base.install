@@ -162,7 +162,26 @@ usr/lib/*/vlc/plugins/spu/librss_plugin.so
 usr/lib/*/vlc/plugins/spu/libsubsdelay_plugin.so
 usr/lib/*/vlc/plugins/stream_extractor/libarchive_plugin.so
 usr/lib/*/vlc/plugins/stream_filter
-usr/lib/*/vlc/plugins/stream_out
+usr/lib/*/vlc/plugins/stream_out/libstream_out_autodel_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_bridge_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_chromaprint_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_chromecast_plugin.so [chromecast]
+usr/lib/*/vlc/plugins/stream_out/libstream_out_cycle_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_delay_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_description_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_display_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_dummy_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_duplicate_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_es_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_gather_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_mosaic_bridge_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_record_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_rtp_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_setid_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_smem_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_standard_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_stats_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_transcode_plugin.so
 usr/lib/*/vlc/plugins/text_renderer/libfreetype_plugin.so
 usr/lib/*/vlc/plugins/text_renderer/libtdummy_plugin.so
 usr/lib/*/vlc/plugins/video_chroma

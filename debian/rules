@@ -3,8 +3,9 @@
 DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed
 DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
-include /usr/share/dpkg/pkg-info.mk
 include /usr/share/dpkg/architecture.mk
+include /usr/share/dpkg/pkg-info.mk
+include /usr/share/dpkg/vendor.mk
 
 pluginpackages += access-extra
 pluginpackages += base
@@ -39,7 +40,6 @@ confflags += \
 	--enable-avahi \
 	--enable-caca \
 	--enable-chromaprint \
-	--enable-chromecast \
 	--enable-dbus \
 	--enable-dca \
 	--enable-dvbpsi \
@@ -207,6 +207,15 @@ else
 # Note: Use PulseAudio/ALSA on Linux instead of OSS.
 confflags += --disable-oss
 removeplugins += oss
+endif
+
+# Ubuntu specific flags
+ifeq (Ubuntu,$(DEB_VENDOR))
+# protobuf related issues
+confflags += --disable-chromecast
+removeplugins += chromecast
+else
+confflags += --enable-chromecast
 endif
 
 # Linux amd64 and i386 specific flags
