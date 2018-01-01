@@ -7,18 +7,6 @@ include /usr/share/dpkg/architecture.mk
 include /usr/share/dpkg/pkg-info.mk
 include /usr/share/dpkg/vendor.mk
 
-pluginpackages += access-extra
-pluginpackages += base
-pluginpackages += fluidsynth
-pluginpackages += jack
-pluginpackages += notify
-pluginpackages += qt
-pluginpackages += skins2
-pluginpackages += svg
-pluginpackages += video-output
-pluginpackages += video-splitter
-pluginpackages += visualization
-
 ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
 confflags += --enable-debug
 endif
@@ -193,11 +181,23 @@ endif
 
 # Linux and kFreeBSD specific flags (disabled on Hurd)
 ifeq (,$(filter-out linux kfreebsd,$(DEB_HOST_ARCH_OS)))
-confflags += --enable-libva --enable-vcd --enable-smbclient
-pluginpackages += samba
+confflags += \
+	--enable-libva \
+	--enable-vcd \
+	--enable-smbclient \
+	$(NULL)
 else
-confflags += --disable-libva --disable-vcd --disable-smbclient
-removeplugins += cdda libva smbclient vcd
+confflags += \
+	--disable-libva \
+	--disable-vcd \
+	--disable-smbclient \
+	$(NULL)
+removeplugins += \
+	cdda \
+	libva \
+	smbclient \
+	vcd \
+	$(NULL)
 endif
 
 # kFreeBSD specific flags
