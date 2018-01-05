@@ -1,0 +1,55 @@
+From: Niklas Haas <vlc@haasn.xyz>
+Date: Thu, 28 Dec 2017 04:47:53 +0100
+Subject: opengl: update libplacebo to v0.2.0
+
+Some calls got an extra parameter which we don't care about.
+
+Also bump up the minimum libplacebo version to v0.2.0. Note: This
+commit doesn't update the contrib/ entry for libplacebo.
+
+Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+---
+ configure.ac                                   | 2 +-
+ modules/video_output/opengl/fragment_shaders.c | 2 +-
+ modules/video_output/opengl/vout_helper.c      | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index ecfac46..1d9a45b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -4134,7 +4134,7 @@ AC_ARG_ENABLE(libplacebo,
+       [disable libplacebo support (default auto)])])
+ 
+ AS_IF([test "$enable_libplacebo" != "no"], [
+-  PKG_CHECK_MODULES([LIBPLACEBO], [libplacebo >= 0.1], [
++  PKG_CHECK_MODULES([LIBPLACEBO], [libplacebo >= 0.2], [
+     AC_DEFINE([HAVE_LIBPLACEBO], [1], [Define to 1 if libplacebo is enabled.])
+   ], [
+     AS_IF([test -n "${enable_libplacebo}"], [
+diff --git a/modules/video_output/opengl/fragment_shaders.c b/modules/video_output/opengl/fragment_shaders.c
+index 3cc9222..cbd0a52 100644
+--- a/modules/video_output/opengl/fragment_shaders.c
++++ b/modules/video_output/opengl/fragment_shaders.c
+@@ -607,7 +607,7 @@ opengl_fragment_shader_init_impl(opengl_tex_converter_t *tc, GLenum tex_target,
+         struct pl_shader *sh = tc->pl_sh;
+         pl_shader_color_map(sh, &pl_color_map_default_params,
+                 pl_color_space_from_video_format(&tc->fmt),
+-                pl_color_space_unknown, false);
++                pl_color_space_unknown, NULL, false);
+ 
+         const struct pl_shader_res *res = tc->pl_sh_res = pl_shader_finalize(sh);
+ 
+diff --git a/modules/video_output/opengl/vout_helper.c b/modules/video_output/opengl/vout_helper.c
+index 87e53a3..ed99996 100644
+--- a/modules/video_output/opengl/vout_helper.c
++++ b/modules/video_output/opengl/vout_helper.c
+@@ -627,7 +627,7 @@ opengl_init_program(vout_display_opengl_t *vgl, struct prgm *prgm,
+             .log_level = PL_LOG_INFO,
+         });
+         if (tc->pl_ctx)
+-            tc->pl_sh = pl_shader_alloc(tc->pl_ctx, NULL, 0);
++            tc->pl_sh = pl_shader_alloc(tc->pl_ctx, NULL, 0, 0);
+     }
+ #endif
+ 

@@ -94,7 +94,6 @@ confflags += \
 # fluidlite: fluidsynth is enabled
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
-# libplacebo: not in Debian
 # libtar: security issue (#737534)
 # macosx*: MacOX only
 # mfx: currently not supported on Linux
@@ -117,7 +116,6 @@ confflags += \
 	--disable-fluidlite \
 	--disable-goom \
 	--disable-gst-decode \
-	--disable-libplacebo \
 	--disable-libtar \
 	--disable-macosx \
 	--disable-macosx-avfoundation \
@@ -143,6 +141,7 @@ confflags += \
 	--enable-alsa \
 	--enable-dc1394 \
 	--enable-dv1394 \
+	--enable-libplacebo \
 	--enable-linsys \
 	--enable-nfs \
 	--enable-omxil \
@@ -155,6 +154,7 @@ confflags += \
 	--disable-alsa \
 	--disable-dc1394 \
 	--disable-dv1394 \
+	--disable-libplacebo \
 	--disable-linsys \
 	--disable-nfs \
 	--disable-omxil \
