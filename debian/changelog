@@ -1,3 +1,13 @@
+vlc (3.0.0~rc4-2) unstable; urgency=medium
+
+  * debian/control: Add Breaks on phonon-backend-vlc to ensure proper
+    upgrades.
+  * debian/rules: Do not build chromecast plugin on Ubuntu. It fails due to
+    issues involving Mir and protobuf.
+  * debian/: Enable libplacebo.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 05 Jan 2018 09:51:06 +0100
+
 vlc (3.0.0~rc4-1) unstable; urgency=medium
 
   * New upstream release candidate.
