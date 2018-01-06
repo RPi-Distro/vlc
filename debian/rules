@@ -330,8 +330,8 @@ override_dh_makeshlibs:
 	dh_makeshlibs -Xlibvlc_vdpau -Xlibvlc_pulse -Xlibvlc_xcb_events
 
 debian/shlibs.local:
-	echo "libvlc 5 libvlc5 (>= $(DEB_VERSION_UPSTREAM)~)" > debian/shlibs.local
-	echo "libvlccore 9 libvlccore9 (>= $(DEB_VERSION_UPSTREAM)~)" >> debian/shlibs.local
+	echo "libvlc 5 libvlc5 (>= $(DEB_VERSION_UPSTREAM))" > debian/shlibs.local
+	echo "libvlccore 9 libvlccore9 (>= $(DEB_VERSION_UPSTREAM))" >> debian/shlibs.local
 
 override_dh_shlibdeps: debian/shlibs.local
 	dh_shlibdeps
