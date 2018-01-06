@@ -310,7 +310,7 @@ override_dh_install:
 	# Remove additional license files
 	find debian/tmp -name LICENSE -delete
 	# Remove examples installed in -dev packages
-	rm -rf debian/tmp/usr/share/doc/vlc-data/libvlc
+	rm -rf debian/tmp/usr/share/doc/vlc/libvlc
 	# Remove MacOS X resources
 	rm -rf debian/tmp/usr/share/macosx
 	# Install
