@@ -16,7 +16,7 @@ confflags += \
 	--config-cache \
 	--disable-update-check \
 	--enable-fast-install \
-	--docdir=/usr/share/doc/vlc-data \
+	--docdir=/usr/share/doc/vlc \
 	--with-binary-version=$(DEB_VERSION) \
 	$(NULL)
 # configure features
