@@ -920,7 +920,7 @@ Copyright: 2010-2015, Benjamin Drung
            2009-2011, Christophe Mutricy
            2006-2014, Reinhard Tartler
            2006-2007, Sam Hocevar
-           2013-2017, Sebastian Ramacher
+           2013-2018, Sebastian Ramacher
 License: GPL-2+
 
 Files: modules/audio_output/TPCircularBuffer.*
