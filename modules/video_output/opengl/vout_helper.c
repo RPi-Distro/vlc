@@ -627,7 +627,7 @@ opengl_init_program(vout_display_opengl_t *vgl, struct prgm *prgm,
             .log_level = PL_LOG_INFO,
         });
         if (tc->pl_ctx)
-            tc->pl_sh = pl_shader_alloc(tc->pl_ctx, NULL, 0);
+            tc->pl_sh = pl_shader_alloc(tc->pl_ctx, NULL, 0, 0);
     }
 #endif
 
@@ -822,6 +822,8 @@ vout_display_opengl_t *vout_display_opengl_New(video_format_t *fmt,
     GET_PROC_ADDR(BindBuffer);
     GET_PROC_ADDR(BufferData);
     GET_PROC_ADDR(DeleteBuffers);
+
+    GET_PROC_ADDR_OPTIONAL(GetFramebufferAttachmentParameteriv);
 
     GET_PROC_ADDR_OPTIONAL(BufferSubData);
     GET_PROC_ADDR_OPTIONAL(BufferStorage);

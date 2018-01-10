@@ -2,7 +2,7 @@
  * VLCRendererMenuController.m: Controller class for the renderer menu
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: d27328af72c27412c694aaa4649170966a82ee6f $
+ * $Id: bedfb38fa936c6028e452ddeafb8be0184b4f21c $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -169,22 +169,15 @@
         return;
 
     if (item) {
-        [item setSoutForPlaylist:playlist];
-        [item setDemuxFilterForPlaylist:playlist];
+        [item setRendererForPlaylist:playlist];
     } else {
-        [self unsetSoutForPlaylist:playlist];
-        [self unsetDemuxFilterForPlaylist:playlist];
+        [self unsetRendererForPlaylist:playlist];
     }
 }
 
-- (void)unsetSoutForPlaylist:(playlist_t*)playlist
+- (void)unsetRendererForPlaylist:(playlist_t*)playlist
 {
-    var_SetString(playlist, "sout", "");
-}
-
-- (void)unsetDemuxFilterForPlaylist:(playlist_t*)playlist
-{
-    var_SetString(playlist, "demux-filter", "");
+    playlist_SetRenderer(playlist, NULL);
 }
 
 #pragma mark VLCRendererDiscovery delegate methods

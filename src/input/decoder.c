@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 98e80dd4f39c2239397441e2c1bccac3ab619f28 $
+ * $Id: 58bbe8e8519b750b70dc8e976064972b6e12895e $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -893,7 +893,8 @@ static void DecoderProcessSout( decoder_t *p_dec, block_t *p_block )
 
             if( DecoderPlaySout( p_dec, p_sout_block ) == VLC_EGENERIC )
             {
-                msg_Err( p_dec, "cannot continue streaming due to errors" );
+                msg_Err( p_dec, "cannot continue streaming due to errors with codec %4.4s",
+                                (char *)&p_owner->fmt.i_codec );
 
                 p_owner->error = true;
 

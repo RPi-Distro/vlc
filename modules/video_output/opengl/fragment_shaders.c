@@ -96,13 +96,10 @@ static int GetTexFormatSize(opengl_tex_converter_t *tc, int target,
 
 static int
 tc_yuv_base_init(opengl_tex_converter_t *tc, GLenum tex_target,
-                 vlc_fourcc_t chroma, video_color_space_t yuv_space,
+                 vlc_fourcc_t chroma, const vlc_chroma_description_t *desc,
+                 video_color_space_t yuv_space,
                  bool *swap_uv, const char *swizzle_per_tex[])
 {
-    const vlc_chroma_description_t *desc = vlc_fourcc_GetChromaDescription(chroma);
-    if (desc == NULL)
-        return VLC_EGENERIC;
-
     GLint oneplane_texfmt, oneplane16_texfmt,
           twoplanes_texfmt, twoplanes16_texfmt;
 
@@ -560,11 +557,15 @@ opengl_fragment_shader_init_impl(opengl_tex_converter_t *tc, GLenum tex_target,
     bool yuv_swap_uv = false;
     int ret;
 
+    const vlc_chroma_description_t *desc = vlc_fourcc_GetChromaDescription(chroma);
+    if (desc == NULL)
+        return VLC_EGENERIC;
+
     if (chroma == VLC_CODEC_XYZ12)
         return xyz12_shader_init(tc);
 
     if (is_yuv)
-        ret = tc_yuv_base_init(tc, tex_target, chroma, yuv_space,
+        ret = tc_yuv_base_init(tc, tex_target, chroma, desc, yuv_space,
                                &yuv_swap_uv, swizzle_per_tex);
     else
         ret = tc_rgb_base_init(tc, tex_target, chroma);
@@ -605,11 +606,52 @@ opengl_fragment_shader_init_impl(opengl_tex_converter_t *tc, GLenum tex_target,
 #ifdef HAVE_LIBPLACEBO
     if (tc->pl_sh) {
         struct pl_shader *sh = tc->pl_sh;
-        pl_shader_color_map(sh, &pl_color_map_default_params,
+        struct pl_color_map_params color_params = pl_color_map_default_params;
+        color_params.intent = var_InheritInteger(tc->gl, "rendering-intent");
+        color_params.tone_mapping_algo = var_InheritInteger(tc->gl, "tone-mapping");
+        color_params.tone_mapping_param = var_InheritFloat(tc->gl, "tone-mapping-param");
+        color_params.tone_mapping_desaturate = var_InheritFloat(tc->gl, "tone-mapping-desat");
+        color_params.gamut_warning = var_InheritBool(tc->gl, "tone-mapping-warn");
+
+        struct pl_color_space dst_space = pl_color_space_unknown;
+        dst_space.primaries = var_InheritInteger(tc->gl, "target-prim");
+        dst_space.transfer = var_InheritInteger(tc->gl, "target-trc");
+
+        pl_shader_color_map(sh, &color_params,
                 pl_color_space_from_video_format(&tc->fmt),
-                pl_color_space_unknown, false);
+                dst_space, NULL, false);
+
+        struct pl_shader_obj *dither_state = NULL;
+        int method = var_InheritInteger(tc->gl, "dither-algo");
+        if (method >= 0) {
+
+            unsigned out_bits = 0;
+            int override = var_InheritInteger(tc->gl, "dither-depth");
+            if (override > 0)
+                out_bits = override;
+            else
+            {
+                GLint fb_depth = 0;
+#if !defined(USE_OPENGL_ES2)
+                /* fetch framebuffer depth (we are already bound to the default one). */
+                if (tc->vt->GetFramebufferAttachmentParameteriv != NULL)
+                    tc->vt->GetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_BACK_LEFT,
+                                                                GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE,
+                                                                &fb_depth);
+#endif
+                if (fb_depth <= 0)
+                    fb_depth = 8;
+                out_bits = fb_depth;
+            }
+
+            pl_shader_dither(sh, out_bits, &dither_state, &(struct pl_dither_params) {
+                .method   = method,
+                .lut_size = 4, // avoid too large values, since this gets embedded
+            });
+        }
 
         const struct pl_shader_res *res = tc->pl_sh_res = pl_shader_finalize(sh);
+        pl_shader_obj_destroy(&dither_state);
 
         FREENULL(tc->uloc.pl_vars);
         tc->uloc.pl_vars = calloc(res->num_variables, sizeof(GLint));

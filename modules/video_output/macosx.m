@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: 4fae00d4de2a2b536e9ec987916a3f78ae1b4fce $
+ * $Id: 4a73950ff678043fb503a56be1e7ddabd2ae531a $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -78,7 +78,7 @@ vlc_module_begin ()
     set_capability ("vout display", 300)
     set_callbacks (Open, Close)
     add_shortcut ("macosx", "vout_macosx")
-    add_glconv ()
+    add_glopts ()
 vlc_module_end ()
 
 /**

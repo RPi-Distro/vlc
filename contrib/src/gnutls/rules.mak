@@ -19,6 +19,7 @@ $(TARBALLS)/gnutls-$(GNUTLS_VERSION).tar.xz:
 
 gnutls: gnutls-$(GNUTLS_VERSION).tar.xz .sum-gnutls
 	$(UNPACK)
+	$(APPLY) $(SRC)/gnutls/32b5628-upstream.patch
 	$(APPLY) $(SRC)/gnutls/gnutls-pkgconfig-static.patch
 ifdef HAVE_WIN32
 	$(APPLY) $(SRC)/gnutls/gnutls-win32.patch
@@ -33,8 +34,6 @@ ifdef HAVE_ANDROID
 endif
 	$(APPLY) $(SRC)/gnutls/read-file-limits.h.patch
 ifdef HAVE_MACOSX
-	$(APPLY) $(SRC)/gnutls/mac-keychain-lookup.patch
-	$(APPLY) $(SRC)/gnutls/gnutls-pkgconfig-osx.patch
 	$(APPLY) $(SRC)/gnutls/gnutls-disable-getentropy-osx.patch
 	$(APPLY) $(SRC)/gnutls/gnutls-disable-connectx-macos.patch
 endif
@@ -72,7 +71,7 @@ ifdef HAVE_TIZEN
 	GNUTLS_CONF += --with-default-trust-store-dir=/etc/ssl/certs/
 endif
 ifdef HAVE_WINSTORE
-ifdef HAVE_WIN64
+ifeq ($(ARCH),x86_64)
 	GNUTLS_CONF += --disable-hardware-acceleration
 endif
 endif

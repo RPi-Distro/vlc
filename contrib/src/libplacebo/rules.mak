@@ -1,11 +1,12 @@
 # libplacebo
 
-PLACEBO_VERSION := 0.1.2
+PLACEBO_VERSION := 0.2.0
 PLACEBO_URL := https://github.com/haasn/libplacebo/archive/v$(PLACEBO_VERSION).tar.gz
 PLACEBO_ARCHIVE = libplacebo-$(PLACEBO_VERSION).tar.gz
 
 ifdef HAVE_WIN32
 LIBPLACEBO_WIN32 = HAVE_WIN32=1
+DEPS_libplacebo += pthreads $(DEPS_pthreads)
 endif
 
 PKGS += libplacebo
@@ -28,7 +29,7 @@ libplacebo: $(PLACEBO_ARCHIVE) .sum-libplacebo
 ifdef HAVE_WIN32
 	$(APPLY) $(SRC)/libplacebo/0002-build-fix-win32-build.patch
 endif
-	$(APPLY) $(SRC)/libplacebo/0003-osdep-explicitly-set-a-category-mask-for-newlocale.patch
+	$(APPLY) $(SRC)/libplacebo/0003-2.0-fixup.patch
 	$(MOVE)
 
 .libplacebo: libplacebo

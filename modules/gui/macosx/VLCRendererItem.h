@@ -2,7 +2,7 @@
  * VLCRendererItem.h: Wrapper class for vlc_renderer_item_t
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: c034d9abc7a818b9424b34e186eaa4634514e561 $
+ * $Id: 421c88a42ca5fbd7ce353a6fc2d40edb4e7a4fd2 $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -64,29 +64,11 @@
 - (int)capabilityFlags;
 
 /**
- Checks if the Item’s sout string is equivalent to the given
- sout string. If output is YES, it's checked if it's an
- output sout as well.
+ Sets the renderer represented by this \c VLCRendererItem as active
+ for the given playlist.
 
- \param sout    The sout c string to compare with
- \param output  Indicates wether to check if sout is an output
-
- \return YES if souts match the given sout and output, NO otherwise
+ \param playlist The playlist for which to set the renderer
  */
-- (bool)isSoutEqualTo:(const char*)sout asOutput:(bool)output;
-
-/**
- Sets the passed playlist’s sout to the sout of the \c VLCRendererItem.
-
- \param playlist The playlist for which to set the sout
- */
-- (void)setSoutForPlaylist:(playlist_t*)playlist;
-
-/**
- Sets the passed playlist’s demux filter to the demux filter of the \c VLCRendererItem.
-
- \param playlist The playlist for which to set the demux filter
- */
-- (void)setDemuxFilterForPlaylist:(playlist_t*)playlist;
+- (void)setRendererForPlaylist:(playlist_t*)playlist;
 
 @end

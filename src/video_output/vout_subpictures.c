@@ -2,7 +2,7 @@
  * vout_subpictures.c : subpicture management functions
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 50c358be0466586121d9ae25baeac93e22eccafe $
+ * $Id: 5524347887c2b29e9d449b53c0cf42318a9b01aa $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -905,10 +905,10 @@ static void SpuRenderRegion(spu_t *spu,
     if (crop_requested) {
         int crop_x, crop_y, crop_width, crop_height;
         if(sys->force_crop){
-            crop_x     = sys->crop.x;
-            crop_y     = sys->crop.y;
-            crop_width = sys->crop.width;
-            crop_height= sys->crop.height;
+            crop_x     = spu_scale_w(sys->crop.x, scale_size);
+            crop_y     = spu_scale_h(sys->crop.y, scale_size);
+            crop_width = spu_scale_w(sys->crop.width,  scale_size);
+            crop_height= spu_scale_h(sys->crop.height, scale_size);
         }
         else
         {
@@ -918,16 +918,11 @@ static void SpuRenderRegion(spu_t *spu,
             crop_height = region_fmt.i_visible_height;
         }
 
-        if(region->i_max_width && region->i_max_width < crop_width)
-            crop_width = region->i_max_width;
+        if(region->i_max_width && spu_scale_w(region->i_max_width, scale_size) < crop_width)
+            crop_width = spu_scale_w(region->i_max_width, scale_size);
 
-        if(region->i_max_height && region->i_max_height < crop_height)
-            crop_height = region->i_max_height;
-
-        crop_x     = spu_scale_w(crop_x,     scale_size);
-        crop_y     = spu_scale_h(crop_y,     scale_size);
-        crop_width = spu_scale_w(crop_width, scale_size);
-        crop_height= spu_scale_h(crop_height,scale_size);
+        if(region->i_max_height && spu_scale_h(region->i_max_height, scale_size) < crop_height)
+            crop_height = spu_scale_h(region->i_max_height, scale_size);
 
         /* Find the intersection */
         if (crop_x + crop_width <= x_offset ||

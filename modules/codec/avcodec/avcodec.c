@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 14c5258f79135954eae799401091bb267f706adf $
+ * $Id: ddc5ab562a0fe2366cc298fe1c703a07d0ee1e49 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -97,7 +97,7 @@ vlc_module_begin ()
 
     add_obsolete_bool( "ffmpeg-dr" ) /* removed since 2.1.0 */
     add_bool( "avcodec-dr", true, DR_TEXT, DR_TEXT, true )
-    add_bool( "avcodec-corrupted", false, CORRUPTED_TEXT, CORRUPTED_LONGTEXT, false )
+    add_bool( "avcodec-corrupted", true, CORRUPTED_TEXT, CORRUPTED_LONGTEXT, false )
     add_obsolete_integer ( "ffmpeg-error-resilience" ) /* removed since 2.1.0 */
     add_integer ( "avcodec-error-resilience", 1, ERROR_TEXT,
         ERROR_LONGTEXT, true )

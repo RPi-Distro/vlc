@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 6a4cc4f215bea6b06af2e5d68a1f34af5daa0e9f $
+ * $Id: 95b877a9e09874be71c38c5da19b96e4e0d21220 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1209,7 +1209,12 @@ static void DemuxTitles( demux_t *p_demux )
         {
             s = vlc_seekpoint_New();
             if( p_chapters_time )
-                s->i_time_offset = p_chapters_time[j] * 1000 / 90;
+            {
+                if ( j > 0 )
+                    s->i_time_offset = p_chapters_time[j - 1] * 1000 / 90;
+                else
+                    s->i_time_offset = 0;
+            }
             TAB_APPEND( t->i_seekpoint, t->seekpoint, s );
         }
         free( p_chapters_time );

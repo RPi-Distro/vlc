@@ -2,7 +2,7 @@
  * audio.c: transcoding stream output module (audio)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 4829ea9c11055f19c2f0643617f9d65b70d13a24 $
+ * $Id: aafead3b57ca00bef641803a3f1257e20f619ea9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -164,13 +164,6 @@ static int transcode_audio_new( sout_stream_t *p_stream,
      */
 
     /* Initialization of decoder structures */
-
-    /* No need to clean the fmt_out, it was freshly initialized by
-     * es_format_Init in Add() */
-    es_format_Copy( &id->p_decoder->fmt_out, &id->p_decoder->fmt_in );
-    free( id->p_decoder->fmt_out.p_extra );
-    id->p_decoder->fmt_out.i_extra = 0;
-    id->p_decoder->fmt_out.p_extra = NULL;
     id->p_decoder->pf_decode = NULL;
     id->p_decoder->pf_queue_audio = decoder_queue_audio;
     id->p_decoder->p_queue_ctx = id;
@@ -354,11 +347,14 @@ end:
     /* Drain encoder */
     if( unlikely( !b_error && in == NULL ) )
     {
-        block_t *p_block;
-        do {
-           p_block = id->p_encoder->pf_encode_audio(id->p_encoder, NULL );
-           block_ChainAppend( out, p_block );
-        } while( p_block );
+        if( id->p_encoder->p_module )
+        {
+            block_t *p_block;
+            do {
+               p_block = id->p_encoder->pf_encode_audio(id->p_encoder, NULL );
+               block_ChainAppend( out, p_block );
+            } while( p_block );
+        }
     }
 
     return b_error ? VLC_EGENERIC : VLC_SUCCESS;

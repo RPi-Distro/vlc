@@ -2,7 +2,7 @@
  * demux.c: demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 5aca8a9b8b315676473b35784bcf6a02cfb8dde1 $
+ * $Id: a1aea549cd84fbd956d9d1cd7a51a77e1714e2f7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -919,7 +919,7 @@ static void ResetTime( demux_t *p_demux, int64_t i_time )
 
     p_sys->i_pcr = i_time;
     for( unsigned i = 0; i < p_sys->ic->nb_streams; i++ )
-        p_sys->tracks[i].i_pcr = i_time;
+        p_sys->tracks[i].i_pcr = VLC_TS_INVALID;
 
     if( i_time > VLC_TS_INVALID )
     {

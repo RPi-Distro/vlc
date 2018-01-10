@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: af624580e2c75f4be0845b876679fcccc35ed733 $
+ * $Id: 7ad3ffa015eba036c83c29de0db0537acbee8f4f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -870,7 +870,8 @@ void MainInterface::setVideoFullScreen( bool fs )
         if( numscreen < 0 || numscreen >= QApplication::desktop()->screenCount() )
             numscreen = QApplication::desktop()->screenNumber( p_intf->p_sys->p_mi );
 
-        fullscreenControls->setTargetScreen( numscreen );
+        if( fullscreenControls )
+            fullscreenControls->setTargetScreen( numscreen );
 
         if ( numscreen >= 0 )
         {
