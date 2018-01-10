@@ -141,12 +141,12 @@ Rules-Requires-Root: no
 Package: vlc
 Architecture: any
 Depends: vlc-bin (= ${binary:Version}),
-         vlc-l10n (= ${source:Version}),
          vlc-plugin-base (= ${binary:Version}),
          vlc-plugin-qt (= ${binary:Version}),
          vlc-plugin-video-output (= ${binary:Version}),
          ${misc:Depends}
-Recommends: vlc-plugin-notify (= ${binary:Version}),
+Recommends: vlc-l10n (= ${source:Version}),
+            vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-samba (= ${binary:Version}) [linux-any kfreebsd-any],
             vlc-plugin-skins2 (= ${binary:Version}),
             vlc-plugin-video-splitter (= ${binary:Version}),
