@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: d61776de25e6286f94e658c0b0f055ad93b63997 $
+ * $Id: 4cc3882dcc9ce5f931896ca51b76067bb7f6e14c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -409,15 +409,18 @@ static int Open( vlc_object_t * p_this )
         p_demux->pf_demux = Demux_Seekable;
         p_sys->i_read_increment = READ_LENGTH;
     }
-    else if( p_sys->b_seekable && !p_sys->b_interleaved )
+    else if( p_sys->b_seekable )
     {
         p_demux->pf_demux = Demux_Seekable;
         p_sys->i_read_increment = READ_LENGTH_NONINTERLEAVED;
-        msg_Warn( p_demux, "Non seekable non interleaved content over slow seekable, "
-                           "expect bad performance" );
+        if( !p_sys->b_interleaved )
+            msg_Warn( p_demux, "Non interleaved content over slow seekable, "
+                               "expect bad performance" );
     }
     else
     {
+        msg_Warn( p_demux, "Non seekable content " );
+
         p_demux->pf_demux = Demux_UnSeekable;
         p_sys->i_read_increment = READ_LENGTH_NONINTERLEAVED;
          /* non seekable and non interleaved case ? well... */

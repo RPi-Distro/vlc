@@ -1,5 +1,5 @@
 # Dutch translation
-# Copyright (C) 2017 VideoLAN
+# Copyright (C) 2018 VideoLAN
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
@@ -9,13 +9,12 @@
 # Thomas De Rocker, 2008-2017
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 2.2.7\n"
+"Project-Id-Version: vlc 3.0.0-rc3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-27 13:57+0100\n"
+"POT-Creation-Date: 2018-01-09 02:11+0000\n"
 "PO-Revision-Date: 2017-12-26 23:46+0100\n"
 "Last-Translator: Thomas De Rocker <thomasderocker@outlook.com>, 2017\n"
-"Language-Team: Dutch (https://www.transifex.com/yaron/vlc-trans/language/"
-"nl/)\n"
+"Language-Team: Dutch (https://www.transifex.com/yaron/teams/16553/nl/)\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -45,7 +44,7 @@ msgid "Select \"Advanced Options\" to see all options."
 msgstr "Selecteer \"Geavanceerde opties\" om alle opties weer te geven."
 
 #: include/vlc_config_cat.h:38
-#: modules/gui/macosx/VLCSimplePrefsController.m:220
+#: modules/gui/macosx/VLCSimplePrefsController.m:227
 #: modules/gui/qt/components/simple_preferences.cpp:223
 #: modules/gui/qt/menus.cpp:1090
 msgid "Interface"
@@ -76,7 +75,7 @@ msgid "Settings for VLC's control interfaces"
 msgstr "Instellingen voor VLC's bedieningsinterfaces"
 
 #: include/vlc_config_cat.h:49 include/vlc_config_cat.h:50
-#: modules/gui/macosx/VLCSimplePrefsController.m:230
+#: modules/gui/macosx/VLCSimplePrefsController.m:237
 msgid "Hotkeys settings"
 msgstr "Sneltoetsen"
 
@@ -85,13 +84,12 @@ msgstr "Sneltoetsen"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:404 modules/gui/macosx/VLCOutput.m:92
 #: modules/gui/macosx/VLCPlaylistInfo.m:96
-#: modules/gui/macosx/VLCSimplePrefsController.m:222
+#: modules/gui/macosx/VLCSimplePrefsController.m:229
 #: modules/gui/qt/components/info_panels.cpp:572
 #: modules/gui/qt/components/simple_preferences.cpp:225
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
-#: modules/gui/qt/ui/profiles.h:721 modules/gui/qt/ui/profiles.h:752
 msgid "Audio"
 msgstr "Audio"
 
@@ -104,7 +102,6 @@ msgid "General audio settings"
 msgstr "Algemene audio-instellingen"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:81
-#: modules/gui/qt/ui/profiles.h:750 modules/gui/qt/ui/profiles.h:760
 msgid "Filters"
 msgstr "Filters"
 
@@ -149,16 +146,14 @@ msgstr "Overige audio-instellingen en modules."
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:417 modules/gui/macosx/VLCOutput.m:82
 #: modules/gui/macosx/VLCPlaylistInfo.m:91
-#: modules/gui/macosx/VLCSimplePrefsController.m:224
-#: modules/gui/macosx/VLCSimplePrefsController.m:367
+#: modules/gui/macosx/VLCSimplePrefsController.m:231
+#: modules/gui/macosx/VLCSimplePrefsController.m:374
 #: modules/gui/qt/components/info_panels.cpp:573
 #: modules/gui/qt/components/simple_preferences.cpp:227
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
-#: modules/stream_out/chromecast/cast.cpp:107 modules/stream_out/es.c:102
+#: modules/stream_out/chromecast/cast.cpp:108 modules/stream_out/es.c:102
 #: modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
-#: modules/gui/qt/ui/profiles.h:722 modules/gui/qt/ui/profiles.h:726
-#: modules/gui/qt/ui/sprefs_video.h:326
 msgid "Video"
 msgstr "Video"
 
@@ -405,7 +400,6 @@ msgstr ""
 
 #: include/vlc_config_cat.h:184 src/libvlc-module.c:1844
 #: modules/gui/qt/dialogs/extended.cpp:93
-#: modules/gui/qt/ui/video_effects.h:1308
 msgid "Advanced"
 msgstr "Geavanceerd"
 
@@ -481,7 +475,7 @@ msgstr "&Over"
 #: modules/gui/macosx/VLCMainMenu.m:1325 modules/gui/macosx/VLCMainMenu.m:1326
 #: modules/gui/macosx/VLCPlaylist.m:230
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:539 modules/gui/qt/ui/open.h:261
+#: modules/gui/qt/dialogs/vlm.cpp:539
 msgid "Play"
 msgstr "Afspelen"
 
@@ -573,7 +567,6 @@ msgstr "Zoeken"
 
 #: include/vlc_intf_strings.h:99
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
-#: modules/gui/qt/ui/video_effects.h:1292
 msgid "Waves"
 msgstr "Golven"
 
@@ -702,9 +695,6 @@ msgstr "Stereo"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:312
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1231
-#: modules/gui/qt/ui/video_effects.h:1273
-#: modules/gui/qt/ui/video_effects.h:1283
 msgid "Left"
 msgstr "Links"
 
@@ -719,7 +709,6 @@ msgstr "Links"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:314
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1232
 msgid "Right"
 msgstr "Rechts"
 
@@ -909,47 +898,47 @@ msgstr "Onbekende fout"
 msgid "Bookmark %i"
 msgstr "Bladwijzer %i"
 
-#: src/input/decoder.c:1881
+#: src/input/decoder.c:1882
 msgid "No description for this codec"
 msgstr "Geen beschrijving voor deze codec"
 
-#: src/input/decoder.c:1883
+#: src/input/decoder.c:1884
 msgid "Codec not supported"
 msgstr "Codec niet ondersteund"
 
-#: src/input/decoder.c:1884
+#: src/input/decoder.c:1885
 #, c-format
 msgid "VLC could not decode the format \"%4.4s\" (%s)"
 msgstr "VLC kon het formaat \"%4.4s\" niet decoderen (%s)"
 
-#: src/input/decoder.c:1888
+#: src/input/decoder.c:1889
 msgid "Unidentified codec"
 msgstr "Onbekende codec"
 
-#: src/input/decoder.c:1889
+#: src/input/decoder.c:1890
 msgid "VLC could not identify the audio or video codec"
 msgstr "VLC kon de audio- of videocodec niet identificeren"
 
-#: src/input/decoder.c:1900
+#: src/input/decoder.c:1901
 msgid "packetizer"
 msgstr "packetizer"
 
-#: src/input/decoder.c:1900
+#: src/input/decoder.c:1901
 msgid "decoder"
 msgstr "decoder"
 
-#: src/input/decoder.c:1908 src/input/decoder.c:2189
-#: modules/codec/avcodec/encoder.c:368 modules/codec/avcodec/encoder.c:885
+#: src/input/decoder.c:1909 src/input/decoder.c:2190
+#: modules/codec/avcodec/encoder.c:368 modules/codec/avcodec/encoder.c:882
 #: modules/stream_out/es.c:349 modules/stream_out/es.c:362
 msgid "Streaming / Transcoding failed"
 msgstr "Streamen/transcoderen mislukt"
 
-#: src/input/decoder.c:1909
+#: src/input/decoder.c:1910
 #, c-format
 msgid "VLC could not open the %s module."
 msgstr "VLC kon de module %s niet openen."
 
-#: src/input/decoder.c:2190
+#: src/input/decoder.c:2191
 msgid "VLC could not open the decoder module."
 msgstr "VLC kon decodermodule niet openen."
 
@@ -1000,15 +989,13 @@ msgstr "Originele ID"
 #: src/input/es_out.c:3069 src/input/es_out.c:3072 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
-#: modules/gui/qt/ui/profiles.h:728 modules/gui/qt/ui/profiles.h:754
-#: modules/gui/qt/ui/profiles.h:763
 msgid "Codec"
 msgstr "Codec"
 
 #: src/input/es_out.c:3076 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:114
-#: modules/gui/macosx/VLCSimplePrefsController.m:304
-#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:530
+#: modules/gui/macosx/VLCSimplePrefsController.m:311
+#: modules/stream_out/setid.c:49
 msgid "Language"
 msgstr "Taal"
 
@@ -1019,7 +1006,7 @@ msgstr "Taal"
 msgid "Description"
 msgstr "Beschrijving"
 
-#: src/input/es_out.c:3085 src/input/es_out.c:3129 src/input/es_out.c:3318
+#: src/input/es_out.c:3085 src/input/es_out.c:3129 src/input/es_out.c:3319
 #: modules/gui/macosx/VLCAddonsWindowController.m:132
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
 #: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1487
@@ -1028,7 +1015,7 @@ msgstr "Type"
 
 #: src/input/es_out.c:3088
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
-#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:756
+#: modules/gui/macosx/VLCOutput.m:98
 msgid "Channels"
 msgstr "Kanalen"
 
@@ -1050,7 +1037,6 @@ msgstr "Bits per sample"
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
-#: modules/gui/qt/ui/profiles.h:729 modules/gui/qt/ui/profiles.h:755
 msgid "Bitrate"
 msgstr "Bitrate"
 
@@ -1222,46 +1208,54 @@ msgid "Projection"
 msgstr "Projectie"
 
 #: src/input/es_out.c:3258
+#, fuzzy
+msgctxt "ViewPoint"
 msgid "Yaw"
 msgstr "Yaw"
 
-#: src/input/es_out.c:3260 modules/video_output/vmem.c:48
+#: src/input/es_out.c:3260
+#, fuzzy
+msgctxt "ViewPoint"
 msgid "Pitch"
 msgstr "Pitch"
 
 #: src/input/es_out.c:3262
+#, fuzzy
+msgctxt "ViewPoint"
 msgid "Roll"
 msgstr "Roll"
 
-#: src/input/es_out.c:3264
+#: src/input/es_out.c:3265
+#, fuzzy
+msgctxt "ViewPoint"
 msgid "Field of view"
 msgstr "Gezichtsveld"
 
-#: src/input/es_out.c:3269
+#: src/input/es_out.c:3270
 msgid "Max. luminance"
 msgstr "Max. luminantie"
 
-#: src/input/es_out.c:3274
+#: src/input/es_out.c:3275
 msgid "Min. luminance"
 msgstr "Min. luminantie"
 
-#: src/input/es_out.c:3282
+#: src/input/es_out.c:3283
 msgid "Primary R"
 msgstr "Primaire R"
 
-#: src/input/es_out.c:3289
+#: src/input/es_out.c:3290
 msgid "Primary G"
 msgstr "Primaire G"
 
-#: src/input/es_out.c:3296
+#: src/input/es_out.c:3297
 msgid "Primary B"
 msgstr "Primaire B"
 
-#: src/input/es_out.c:3303
+#: src/input/es_out.c:3304
 msgid "White point"
 msgstr "Wit punt"
 
-#: src/input/es_out.c:3318 modules/access/imem.c:64
+#: src/input/es_out.c:3319 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "Ondertitel"
 
@@ -1282,7 +1276,6 @@ msgstr "VLC kon de MRL '%s' niet openen. Controleer het logboek voor details."
 #: modules/gui/qt/components/open_panels.cpp:503
 #: modules/gui/qt/components/open_panels.cpp:517
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
-#: modules/gui/qt/ui/open_disk.h:309
 msgid "Title"
 msgstr "Titel"
 
@@ -1323,7 +1316,6 @@ msgid "Setting"
 msgstr "Instelling"
 
 #: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
-#: modules/gui/qt/ui/podcast_configuration.h:102
 msgid "URL"
 msgstr "URL"
 
@@ -1391,7 +1383,6 @@ msgstr "Programma's"
 #: modules/gui/macosx/VLCMainMenu.m:402
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
-#: modules/gui/qt/ui/open_disk.h:310
 msgid "Chapter"
 msgstr "Hoofdstuk"
 
@@ -1638,8 +1629,8 @@ msgstr "Media-rol"
 msgid "Media (player) role for operating system policy."
 msgstr "Media(speler) rol voor besturingssysteem-beleid."
 
-#: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:261
-#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:410
+#: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:268
+#: modules/stream_out/display.c:40
 msgid "Enable audio"
 msgstr "Audio inschakelen"
 
@@ -1748,7 +1739,7 @@ msgstr ""
 "Deze optie wordt best gebruikt wanneer de audio-uitvoer geen S/PDIF-"
 "ondersteuning kan onderhandelen."
 
-#: src/libvlc-module.c:178 modules/gui/macosx/VLCSimplePrefsController.m:259
+#: src/libvlc-module.c:178 modules/gui/macosx/VLCSimplePrefsController.m:266
 msgid "Force detection of Dolby Surround"
 msgstr "Detectie van Dolby Surround forceren"
 
@@ -1771,8 +1762,7 @@ msgstr ""
 #: modules/gui/qt/components/simple_preferences.cpp:66
 #: modules/gui/qt/components/sout/profile_selector.cpp:582
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
-#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:744
-#: modules/gui/qt/ui/profiles.h:747
+#: modules/video_output/xcb/xvideo.c:821
 msgid "Auto"
 msgstr "Auto"
 
@@ -1900,8 +1890,8 @@ msgstr ""
 "Dit is de video-uitvoermethode die door VLC gebruikt wordt. Het "
 "standaardgedrag is om automatisch de best beschikbare methode te selecteren."
 
-#: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:346
-#: modules/stream_out/display.c:42 modules/gui/qt/ui/sprefs_video.h:314
+#: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:353
+#: modules/stream_out/display.c:42
 msgid "Enable video"
 msgstr "Video inschakelen"
 
@@ -2001,9 +1991,6 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:316
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1229
-#: modules/gui/qt/ui/video_effects.h:1271
-#: modules/gui/qt/ui/video_effects.h:1282
 msgid "Top"
 msgstr "Boven"
 
@@ -2014,7 +2001,6 @@ msgstr "Boven"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:318
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1233
 msgid "Bottom"
 msgstr "Onder"
 
@@ -2149,7 +2135,7 @@ msgstr ""
 #: src/libvlc-module.c:342 src/libvlc-module.c:344
 #: src/video_output/interlacing.c:112 modules/gui/macosx/VLCMainMenu.m:433
 #: modules/gui/macosx/VLCMainMenu.m:434
-#: modules/gui/macosx/VLCSimplePrefsController.m:365
+#: modules/gui/macosx/VLCSimplePrefsController.m:372
 #: modules/gui/qt/dialogs/convert.cpp:119 modules/hw/vdpau/chroma.c:884
 #: modules/video_filter/deinterlace/deinterlace.c:300
 #: share/lua/http/dialogs/create_stream.html:346
@@ -2158,7 +2144,7 @@ msgstr "Deïnterlace"
 
 #: src/libvlc-module.c:352 src/video_output/interlacing.c:128
 #: modules/gui/macosx/VLCMainMenu.m:435 modules/gui/macosx/VLCMainMenu.m:436
-#: modules/gui/macosx/VLCSimplePrefsController.m:366
+#: modules/gui/macosx/VLCSimplePrefsController.m:373
 #: modules/video_filter/deinterlace/deinterlace.c:256
 msgid "Deinterlace mode"
 msgstr "Deïnterlace-modus"
@@ -2213,8 +2199,7 @@ msgstr ""
 "Schakel de energiebeheerdaemon uit tijdens het afspelen om te voorkomen dat "
 "de computer in slaapstand gezet wordt doordat er geen activiteit plaatsvindt."
 
-#: src/libvlc-module.c:378 modules/gui/macosx/VLCSimplePrefsController.m:351
-#: modules/gui/qt/ui/sprefs_video.h:317
+#: src/libvlc-module.c:378 modules/gui/macosx/VLCSimplePrefsController.m:358
 msgid "Window decorations"
 msgstr "Vensterranden"
 
@@ -2420,7 +2405,7 @@ msgstr ""
 "pixels (1:1). Als u een 16:9 scherm heeft, moet u wellicht dit naar 4:3 "
 "veranderen om de juiste verhouding te behouden."
 
-#: src/libvlc-module.c:472 modules/gui/macosx/VLCSimplePrefsController.m:294
+#: src/libvlc-module.c:472 modules/gui/macosx/VLCSimplePrefsController.m:301
 msgid "Skip frames"
 msgstr "Beelden overslaan"
 
@@ -2571,7 +2556,7 @@ msgstr ""
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:320
 #: modules/gui/macosx/VLCMainMenu.m:592
-#: modules/gui/macosx/VLCSimplePrefsController.m:649
+#: modules/gui/macosx/VLCSimplePrefsController.m:656
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:389
 #: modules/gui/macosx/prefs_widgets.m:1217
@@ -2586,7 +2571,6 @@ msgstr "Standaard"
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:214
 #: modules/gui/macosx/VLCMainWindow.m:1004
 #: modules/gui/qt/components/extended_panels.cpp:928
-#: modules/gui/qt/ui/equalizer.h:133 modules/gui/qt/ui/vlm.h:289
 msgid "Enable"
 msgstr "Inschakelen"
 
@@ -2656,7 +2640,7 @@ msgstr ""
 "gescheiden door een komma, op te geven. Gebruik deze optie alleen als u "
 "multi-programmastreams wilt lezen (zoals bijvoorbeeld DVB-streams)."
 
-#: src/libvlc-module.c:582 modules/gui/qt/ui/open_disk.h:312
+#: src/libvlc-module.c:582
 msgid "Audio track"
 msgstr "Audiospoor"
 
@@ -2664,7 +2648,7 @@ msgstr "Audiospoor"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Streamnummer van het te gebruiken audiospoor (van 0 tot n)."
 
-#: src/libvlc-module.c:587 modules/gui/qt/ui/open_disk.h:313
+#: src/libvlc-module.c:587
 msgid "Subtitle track"
 msgstr "Ondertitelspoor"
 
@@ -2803,7 +2787,7 @@ msgstr "Looptijd"
 msgid "The stream will run this duration (in seconds)."
 msgstr "De stream zal deze tijd lopen (in seconden)."
 
-#: src/libvlc-module.c:650 modules/gui/qt/ui/sprefs_input.h:363
+#: src/libvlc-module.c:650
 msgid "Fast seek"
 msgstr "Snelzoeken"
 
@@ -2931,7 +2915,7 @@ msgstr ""
 "filters hier in en configureer ze in de \"subpictures filters\" "
 "modulesectie. U kunt ook vele verschillende opties instellen."
 
-#: src/libvlc-module.c:709 modules/gui/qt/ui/sprefs_subtitles.h:305
+#: src/libvlc-module.c:709
 msgid "Force subtitle position"
 msgstr "Ondertitelpositie forceren"
 
@@ -2960,8 +2944,7 @@ msgid "You can completely disable the sub-picture processing."
 msgstr "U kunt het verwerken van subafbeeldingen volledig uitschakelen."
 
 #: src/libvlc-module.c:721 src/libvlc-module.c:1668 src/text/iso-639_def.h:145
-#: modules/gui/macosx/VLCSimplePrefsController.m:338
-#: modules/gui/qt/ui/sprefs_subtitles.h:290
+#: modules/gui/macosx/VLCSimplePrefsController.m:345
 msgid "On Screen Display"
 msgstr "On Screen Display"
 
@@ -3689,7 +3672,7 @@ msgstr ""
 "VLC vertellen dat het opgestart wordt via bestandsassociatie in het "
 "besturingssysteem"
 
-#: src/libvlc-module.c:1081 modules/gui/qt/ui/sprefs_interface.h:550
+#: src/libvlc-module.c:1081
 msgid "Use only one instance when started from file manager"
 msgstr ""
 "Slechts een instantie gebruiken indien gestart vanuit bestandsbeheerder"
@@ -3714,7 +3697,7 @@ msgstr ""
 "beslag nemen en de computer erg traag maken. Herstarten van de computer kan "
 "noodzakelijk zijn."
 
-#: src/libvlc-module.c:1093 modules/gui/qt/ui/sprefs_interface.h:553
+#: src/libvlc-module.c:1093
 msgid "Enqueue items into playlist in one instance mode"
 msgstr ""
 "Items aan afspeellijst toevoegen als slechts een instantie toegelaten is"
@@ -3767,9 +3750,8 @@ msgid "Maximum time allowed to preparse an item, in milliseconds"
 msgstr ""
 "Maximaal toegestane tijd om een item voor te verwerken, in milliseconden"
 
-#: src/libvlc-module.c:1120 modules/gui/macosx/VLCSimplePrefsController.m:321
+#: src/libvlc-module.c:1120 modules/gui/macosx/VLCSimplePrefsController.m:328
 #: modules/gui/qt/dialogs/firstrun.cpp:95
-#: modules/gui/qt/ui/sprefs_interface.h:565
 msgid "Allow metadata network access"
 msgstr "Metadata-netwerktoegang toestaan"
 
@@ -3925,7 +3907,7 @@ msgstr ""
 "De mediabibliotheek wordt automatisch opgeslagen en iedere keer opnieuw "
 "laden als u VLC start."
 
-#: src/libvlc-module.c:1192 modules/gui/qt/ui/sprefs_interface.h:551
+#: src/libvlc-module.c:1192
 msgid "Display playlist tree"
 msgstr "Afspeellijstboom weergeven"
 
@@ -3987,7 +3969,6 @@ msgstr ""
 #: modules/gui/macosx/VLCControlsBarCommon.m:81
 #: modules/gui/macosx/VLCMainMenu.m:422 modules/gui/macosx/VLCMainMenu.m:501
 #: modules/gui/qt/components/controller.hpp:108
-#: modules/gui/qt/ui/sprefs_video.h:318
 msgid "Fullscreen"
 msgstr "Schermvullend"
 
@@ -4071,7 +4052,6 @@ msgstr "Langzamer (fijn)"
 #: modules/gui/macosx/VLCMainMenu.m:497
 #: modules/gui/qt/components/controller.hpp:112
 #: modules/gui/qt/dialogs/sout.cpp:93 modules/notify/notify.c:335
-#: modules/gui/qt/ui/streampanel.h:181
 msgid "Next"
 msgstr "Volgende"
 
@@ -4100,7 +4080,7 @@ msgstr ""
 #: modules/gui/macosx/VLCMainMenu.m:488 modules/gui/macosx/VLCMainMenu.m:495
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:61
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:545 modules/gui/qt/ui/streampanel.h:180
+#: modules/gui/qt/dialogs/vlm.cpp:545
 msgid "Stop"
 msgstr "Stoppen"
 
@@ -4113,8 +4093,6 @@ msgstr "Selecteer de sneltoets om afspelen te stoppen."
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:286
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:308
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
-#: modules/gui/qt/ui/sprefs_subtitles.h:293
-#: modules/gui/qt/ui/video_effects.h:1279
 msgid "Position"
 msgstr "Positie"
 
@@ -4847,8 +4825,6 @@ msgstr "Subafbeeldingen"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
 #: modules/gui/macosx/VLCMainMenu.m:440
 #: share/lua/http/dialogs/create_stream.html:153
-#: modules/gui/qt/ui/profiles.h:718 modules/gui/qt/ui/profiles.h:762
-#: modules/gui/qt/ui/profiles.h:765
 msgid "Subtitles"
 msgstr "Ondertitels"
 
@@ -4860,7 +4836,7 @@ msgstr "Overlays"
 msgid "Track settings"
 msgstr "Track-instellingen"
 
-#: src/libvlc-module.c:1747 modules/gui/macosx/VLCSimplePrefsController.m:309
+#: src/libvlc-module.c:1747 modules/gui/macosx/VLCSimplePrefsController.m:316
 msgid "Playback control"
 msgstr "Afspeelbediening"
 
@@ -5024,8 +5000,6 @@ msgstr "Browser stoppen"
 
 #: src/misc/actions.c:62 modules/gui/macosx/VLCMainMenu.m:361
 #: modules/gui/macosx/VLCPlaylist.m:231 modules/gui/qt/dialogs/bookmarks.cpp:50
-#: modules/gui/qt/ui/podcast_configuration.h:104
-#: modules/gui/qt/ui/streampanel.h:172
 msgid "Delete"
 msgstr "Delete"
 
@@ -5297,7 +5271,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "Het openen van \"%s\" om te schrijven is mislukt"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2716
+#: modules/demux/avi/avi.c:2719
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:511
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:569
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:823
@@ -5314,10 +5288,10 @@ msgstr "Het openen van \"%s\" om te schrijven is mislukt"
 #: modules/gui/macosx/VLCMainWindow.m:211
 #: modules/gui/macosx/VLCOpenWindowController.m:134
 #: modules/gui/macosx/VLCOpenWindowController.m:192
-#: modules/gui/macosx/VLCSimplePrefsController.m:274
-#: modules/gui/macosx/VLCSimplePrefsController.m:300
-#: modules/gui/macosx/VLCSimplePrefsController.m:371
-#: modules/gui/macosx/VLCSimplePrefsController.m:813
+#: modules/gui/macosx/VLCSimplePrefsController.m:281
+#: modules/gui/macosx/VLCSimplePrefsController.m:307
+#: modules/gui/macosx/VLCSimplePrefsController.m:378
+#: modules/gui/macosx/VLCSimplePrefsController.m:820
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:50
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:792
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:861
@@ -5326,6 +5300,7 @@ msgstr "Het openen van \"%s\" om te schrijven is mislukt"
 #: modules/gui/qt/components/preferences_widgets.cpp:1428
 #: modules/gui/qt/components/sout/profile_selector.cpp:446
 #: modules/gui/qt/dialogs/sout.cpp:92
+#: modules/stream_out/chromecast/cast.cpp:305
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -6078,7 +6053,7 @@ msgstr "Autoschalen video"
 #: src/video_output/vout_intf.c:203 modules/gui/macosx/VLCMainMenu.m:429
 #: modules/gui/macosx/VLCMainMenu.m:430
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:193
-#: modules/video_filter/croppadd.c:87 modules/gui/qt/ui/video_effects.h:1239
+#: modules/video_filter/croppadd.c:87
 msgid "Crop"
 msgstr "Bijsnijden"
 
@@ -6228,7 +6203,6 @@ msgstr ""
 "een correcte regiocode."
 
 #: modules/access/bluray.c:92 modules/services_discovery/udev.c:601
-#: modules/gui/qt/ui/open_disk.h:299
 msgid "Blu-ray"
 msgstr "Blu-ray"
 
@@ -6325,7 +6299,6 @@ msgid "Audio CD - Track %02i"
 msgstr "Audio-cd - Nummer %02i"
 
 #: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
-#: modules/gui/qt/ui/open_disk.h:300
 msgid "Audio CD"
 msgstr "Audio-cd"
 
@@ -7437,7 +7410,6 @@ msgid "File"
 msgstr "Bestand"
 
 #: modules/access/fs.c:44 modules/demux/directory.c:93
-#: modules/gui/qt/ui/sprefs_video.h:331
 msgid "Directory"
 msgstr "Map"
 
@@ -7454,7 +7426,7 @@ msgstr "Apparaten en pipes bijvoegen bij opsommen van mappen"
 #: modules/access/smb_common.h:21 modules/access/vnc.c:46
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
-#: modules/gui/macosx/VLCSimplePrefsController.m:266
+#: modules/gui/macosx/VLCSimplePrefsController.m:273
 #: modules/gui/qt/dialogs/external.cpp:206 modules/misc/audioscrobbler.c:114
 #: modules/stream_out/rtp.c:173
 msgid "Username"
@@ -7474,8 +7446,8 @@ msgstr ""
 #: modules/access/smb_common.h:24 modules/access/vnc.c:47
 #: modules/access_output/http.c:55
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
-#: modules/gui/macosx/VLCSimplePrefsController.m:265
-#: modules/gui/macosx/VLCSimplePrefsController.m:327
+#: modules/gui/macosx/VLCSimplePrefsController.m:272
+#: modules/gui/macosx/VLCSimplePrefsController.m:334
 #: modules/gui/qt/dialogs/external.cpp:211 modules/lua/vlc.c:54
 #: modules/lua/vlc.c:70 modules/misc/audioscrobbler.c:116
 #: modules/stream_out/rtp.c:176
@@ -7700,7 +7672,6 @@ msgstr "Aantal kanalen van een elementaire audiostream"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
 #: modules/gui/qt/components/extended_panels.cpp:1297 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
-#: modules/gui/qt/ui/profiles.h:743
 msgid "Width"
 msgstr "Breedte"
 
@@ -7713,7 +7684,6 @@ msgstr "Breedte van elementaire video- of ondertitelstreams"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:168
 #: modules/spu/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
-#: modules/gui/qt/ui/profiles.h:746
 msgid "Height"
 msgstr "Hoogte"
 
@@ -8403,7 +8373,7 @@ msgstr "Beeldscherminvoer"
 #: modules/gui/macosx/VLCOpenWindowController.m:209
 #: modules/gui/macosx/VLCOpenWindowController.m:480
 #: modules/gui/macosx/VLCOpenWindowController.m:1096
-#: modules/gui/macosx/VLCSimplePrefsController.m:654
+#: modules/gui/macosx/VLCSimplePrefsController.m:661
 msgid "Screen"
 msgstr "Scherm"
 
@@ -8709,7 +8679,6 @@ msgstr "Bediening terug naar standaardwaarden zetten."
 
 #: modules/access/v4l2/v4l2.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:205
-#: modules/gui/qt/ui/video_effects.h:1217
 msgid "Brightness"
 msgstr "Helderheid"
 
@@ -8727,7 +8696,6 @@ msgstr "Automatisch de helderheid van het beeld aanpassen."
 
 #: modules/access/v4l2/v4l2.c:89
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:204
-#: modules/gui/qt/ui/video_effects.h:1219
 msgid "Contrast"
 msgstr "Contrast"
 
@@ -8738,8 +8706,6 @@ msgstr "Beeldcontrast of luma-versterking."
 #: modules/access/v4l2/v4l2.c:91
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:207
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:253
-#: modules/gui/qt/ui/video_effects.h:1220
-#: modules/gui/qt/ui/video_effects.h:1252
 msgid "Saturation"
 msgstr "Verzadiging"
 
@@ -8749,7 +8715,6 @@ msgstr "Beeldverzadiging of chroma-versterking."
 
 #: modules/access/v4l2/v4l2.c:93
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:203
-#: modules/gui/qt/ui/video_effects.h:1216
 msgid "Hue"
 msgstr "Tint"
 
@@ -8803,7 +8768,6 @@ msgstr "Blauwbalans."
 
 #: modules/access/v4l2/v4l2.c:111
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:208
-#: modules/gui/qt/ui/video_effects.h:1221
 msgid "Gamma"
 msgstr "Gamma"
 
@@ -8932,7 +8896,7 @@ msgstr "Zwart-wit"
 
 #: modules/access/v4l2/v4l2.c:164
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:255
-#: modules/video_filter/sepia.c:66 modules/gui/qt/ui/video_effects.h:1254
+#: modules/video_filter/sepia.c:66
 msgid "Sepia"
 msgstr "Sepia"
 
@@ -10698,30 +10662,29 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "K Audio interface audio-uitvoer"
 
-#: modules/audio_output/mmdevice.c:1293 modules/gui/qt/ui/sprefs_audio.h:419
-#, fuzzy
+#: modules/audio_output/mmdevice.c:1293
 msgid "HDMI/SPDIF audio passthrough"
-msgstr "S/PDIF pass-through-decoder"
+msgstr "HDMI/SPDIF-audiodoorvoer"
 
 #: modules/audio_output/mmdevice.c:1295
 msgid ""
 "Change this value if you have issue with HD codecs when using a HDMI "
 "receiver."
 msgstr ""
+"Wijzig deze waarde als u problemen heeft met hd-codecs bij gebruik van een "
+"hdmi-ontvanger"
 
 #: modules/audio_output/mmdevice.c:1302
-#, fuzzy
 msgid "Disabled"
-msgstr "Uitschakelen"
+msgstr "Uitgeschakeld"
 
 #: modules/audio_output/mmdevice.c:1303
 msgid "Enabled (without HD codecs)"
-msgstr ""
+msgstr "Ingeschakeld (zonder hd-codecs)"
 
 #: modules/audio_output/mmdevice.c:1304
-#, fuzzy
 msgid "Enabled"
-msgstr "Inschakelen"
+msgstr "Ingeschakeld"
 
 #: modules/audio_output/mmdevice.c:1309
 msgid "Windows Multimedia Device output"
@@ -11057,7 +11020,7 @@ msgid "Internal libavcodec codec name"
 msgstr "Interne libavcodec-codecnaam"
 
 #: modules/codec/avcodec/avcodec.h:108
-#: modules/gui/macosx/VLCSimplePrefsController.m:292
+#: modules/gui/macosx/VLCSimplePrefsController.m:299
 msgid "Skip the loop filter for H.264 decoding"
 msgstr "Loop-filter voor H.264 decodering overslaan"
 
@@ -11379,32 +11342,32 @@ msgstr ""
 "Dit is geen fout in VLC Media Player.\n"
 "Neem hierover geen contact met het VideoLAN project op.\n"
 
-#: modules/codec/avcodec/encoder.c:872
+#: modules/codec/avcodec/encoder.c:869
 msgid "unknown"
 msgstr "onbekend"
 
-#: modules/codec/avcodec/encoder.c:872
+#: modules/codec/avcodec/encoder.c:869
 msgid "video"
 msgstr "video"
 
-#: modules/codec/avcodec/encoder.c:873
+#: modules/codec/avcodec/encoder.c:870
 msgid "audio"
 msgstr "audio"
 
-#: modules/codec/avcodec/encoder.c:873
+#: modules/codec/avcodec/encoder.c:870
 msgid "subpicture"
 msgstr "subafbeelding"
 
-#: modules/codec/avcodec/encoder.c:886
+#: modules/codec/avcodec/encoder.c:883
 #, c-format
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr "VLC kon de %4.4s %s-encoder niet openen."
 
-#: modules/codec/avcodec/vaapi.c:349
+#: modules/codec/avcodec/vaapi.c:352
 msgid "VA-API video decoder via DRM"
 msgstr "VA-API videodecoder via DRM"
 
-#: modules/codec/avcodec/vaapi.c:354
+#: modules/codec/avcodec/vaapi.c:357
 msgid "VA-API video decoder"
 msgstr "VA-API videodecoder"
 
@@ -11413,8 +11376,8 @@ msgid "BPG image decoder"
 msgstr "BPG-afbeeldingsdecoder"
 
 #: modules/codec/cc.c:51 modules/codec/zvbi.c:65
-#: modules/gui/macosx/VLCSimplePrefsController.m:340 modules/spu/marq.c:108
-#: modules/spu/rss.c:144 modules/gui/qt/ui/video_effects.h:1276
+#: modules/gui/macosx/VLCSimplePrefsController.m:347 modules/spu/marq.c:108
+#: modules/spu/rss.c:144
 msgid "Opacity"
 msgstr "Dekking"
 
@@ -12816,7 +12779,6 @@ msgstr "S/PDIF pass-through-decoder"
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:258
-#: modules/gui/qt/ui/sprefs_video.h:328 modules/gui/qt/ui/video_effects.h:1246
 msgid "Mode"
 msgstr "Modus"
 
@@ -13353,7 +13315,7 @@ msgstr "Ulead DV audiodecoder"
 msgid "Use Hardware decoders only"
 msgstr "Alleen hardwaredecoders gebruiken"
 
-#: modules/codec/videotoolbox.m:81 modules/gui/qt/ui/sprefs_video.h:327
+#: modules/codec/videotoolbox.m:81
 msgid "Deinterlacing"
 msgstr "Deïnterlacing"
 
@@ -14252,7 +14214,6 @@ msgid "Quiet mode"
 msgstr "Stille modus"
 
 #: modules/codec/x264.c:403 modules/gui/macosx/VLCPlaylistInfo.m:69
-#: modules/gui/qt/ui/streampanel.h:170
 msgid "Statistics"
 msgstr "Statistieken"
 
@@ -14339,7 +14300,7 @@ msgstr "Snel"
 
 #: modules/codec/x264.c:435 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:384
-#: modules/gui/macosx/VLCSimplePrefsController.m:689
+#: modules/gui/macosx/VLCSimplePrefsController.m:696
 #: modules/gui/qt/components/simple_preferences.cpp:666
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
@@ -14440,7 +14401,7 @@ msgstr "Teletekst-ondertitels uitvoeren als tekst i.p.v. RGBA."
 msgid "Presentation Level"
 msgstr "Presentatieniveau"
 
-#: modules/codec/zvbi.c:88 modules/gui/qt/ui/streampanel.h:169
+#: modules/codec/zvbi.c:88
 msgid "1"
 msgstr "1"
 
@@ -14477,14 +14438,14 @@ msgstr "D-Bus controle-interface"
 #: modules/gui/macosx/VLCMainWindow.m:675
 #: modules/gui/macosx/VLCMainWindow.m:1276
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1264
-#: modules/gui/qt/main_interface.cpp:1268
-#: modules/gui/qt/main_interface.cpp:1307
-#: modules/gui/qt/main_interface.cpp:1309
-#: modules/gui/qt/main_interface.cpp:1418
-#: modules/gui/qt/main_interface.cpp:1435
-#: modules/gui/qt/main_interface.cpp:1443
-#: modules/gui/qt/main_interface.cpp:1466 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1265
+#: modules/gui/qt/main_interface.cpp:1269
+#: modules/gui/qt/main_interface.cpp:1308
+#: modules/gui/qt/main_interface.cpp:1310
+#: modules/gui/qt/main_interface.cpp:1419
+#: modules/gui/qt/main_interface.cpp:1436
+#: modules/gui/qt/main_interface.cpp:1444
+#: modules/gui/qt/main_interface.cpp:1467 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -14551,7 +14512,7 @@ msgid "Global Hotkeys interface"
 msgstr "Globale sneltoetseninterface"
 
 #: modules/control/hotkeys.c:100
-#: modules/gui/macosx/VLCSimplePrefsController.m:230
+#: modules/gui/macosx/VLCSimplePrefsController.m:237
 #: modules/gui/qt/components/preferences_widgets.cpp:1145
 #: modules/gui/qt/components/simple_preferences.cpp:233
 msgid "Hotkeys"
@@ -15332,7 +15293,7 @@ msgid "Avformat muxer"
 msgstr "Avformat-muxer"
 
 #: modules/demux/avformat/avformat.c:56
-#: modules/stream_out/chromecast/cast.cpp:109 modules/stream_out/rtp.c:87
+#: modules/stream_out/chromecast/cast.cpp:110 modules/stream_out/rtp.c:87
 msgid "Muxer"
 msgstr "Muxer"
 
@@ -15388,7 +15349,7 @@ msgstr "Repareren indien nodig"
 msgid "AVI demuxer"
 msgstr "Avi-demuxer"
 
-#: modules/demux/avi/avi.c:825 modules/demux/mp4/mp4.c:1671
+#: modules/demux/avi/avi.c:828 modules/demux/mp4/mp4.c:1673
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15404,27 +15365,27 @@ msgstr ""
 "Deze stap kan lang duren bij een groot bestand.\n"
 "Wat wilt u doen?"
 
-#: modules/demux/avi/avi.c:833
+#: modules/demux/avi/avi.c:836
 msgid "Do not play"
 msgstr "Niet afspelen"
 
-#: modules/demux/avi/avi.c:834
+#: modules/demux/avi/avi.c:837
 msgid "Build index then play"
 msgstr "Index bouwen en afspelen"
 
-#: modules/demux/avi/avi.c:835
+#: modules/demux/avi/avi.c:838
 msgid "Play as is"
 msgstr "Afspelen in huidige staat"
 
-#: modules/demux/avi/avi.c:836 modules/demux/mp4/mp4.c:1682
+#: modules/demux/avi/avi.c:839 modules/demux/mp4/mp4.c:1684
 msgid "Broken or missing Index"
 msgstr "Kapotte of ontbrekende index"
 
-#: modules/demux/avi/avi.c:2717
+#: modules/demux/avi/avi.c:2720
 msgid "Broken or missing AVI Index"
 msgstr "Kapotte of ontbrekende avi-index"
 
-#: modules/demux/avi/avi.c:2718
+#: modules/demux/avi/avi.c:2721
 msgid "Fixing AVI Index..."
 msgstr "Avi-index repareren..."
 
@@ -15581,7 +15542,7 @@ msgstr "Hoofdstuk codecs"
 msgid "Use chapter codecs found in the segment."
 msgstr "Gebruik hoofdstukcodecs gevonden in het segment."
 
-#: modules/demux/mkv/mkv.cpp:64 modules/gui/qt/ui/sprefs_input.h:370
+#: modules/demux/mkv/mkv.cpp:64
 msgid "Preload MKV files in the same directory"
 msgstr "Mkv-bestanden in dezelfde map voorverwerken"
 
@@ -15866,11 +15827,11 @@ msgstr "MP4-stream demuxer"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:1679
+#: modules/demux/mp4/mp4.c:1681
 msgid "Do not seek"
 msgstr "Niet zoeken"
 
-#: modules/demux/mp4/mp4.c:1680
+#: modules/demux/mp4/mp4.c:1682
 msgid "Build index"
 msgstr "Index bouwen"
 
@@ -16622,13 +16583,11 @@ msgid "Skins"
 msgstr "Thema"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
-#: modules/gui/qt/ui/equalizer.h:134
 msgid "2 Pass"
 msgstr "Dubbel toepassen"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:218
 #: modules/gui/qt/components/extended_panels.cpp:1111
-#: modules/gui/qt/ui/equalizer.h:136
 msgid "Preamp"
 msgstr "Voorversterking"
 
@@ -16681,7 +16640,7 @@ msgstr "Filter"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:274
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:84
-#: modules/gui/macosx/VLCSimplePrefsController.m:260
+#: modules/gui/macosx/VLCSimplePrefsController.m:267
 #: modules/gui/qt/dialogs/extended.cpp:96
 msgid "Audio Effects"
 msgstr "Audio-effecten"
@@ -16712,12 +16671,11 @@ msgstr "Voer een naam in voor het nieuwe profiel:"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:377
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:476
 #: modules/gui/macosx/VLCMainMenu.m:1149 modules/gui/macosx/VLCOutput.m:411
-#: modules/gui/macosx/VLCSimplePrefsController.m:299
-#: modules/gui/macosx/VLCSimplePrefsController.m:373
+#: modules/gui/macosx/VLCSimplePrefsController.m:306
+#: modules/gui/macosx/VLCSimplePrefsController.m:380
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:793
 #: modules/gui/macosx/prefs.m:188
 #: modules/gui/qt/components/sout/profile_selector.cpp:443
-#: modules/gui/qt/ui/vlm.h:301
 msgid "Save"
 msgstr "Opslaan"
 
@@ -16748,7 +16706,6 @@ msgstr "Selecteer de preset die u wilt verwijderen:"
 #: modules/gui/macosx/VLCBookmarksWindowController.m:81
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
-#: modules/gui/qt/ui/open_file.h:154
 msgid "Remove"
 msgstr "Verwijderen"
 
@@ -16773,14 +16730,12 @@ msgid "Bookmarks"
 msgstr "Bladwijzers"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:78
-#: modules/gui/qt/ui/podcast_configuration.h:103 modules/gui/qt/ui/sout.h:209
-#: modules/gui/qt/ui/vlm.h:299
 msgid "Add"
 msgstr "Toevoegen"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:79
-#: modules/gui/macosx/VLCSimplePrefsController.m:276
-#: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:300
+#: modules/gui/macosx/VLCSimplePrefsController.m:283
+#: modules/gui/qt/dialogs/bookmarks.cpp:53
 msgid "Clear"
 msgstr "Wissen"
 
@@ -16807,9 +16762,10 @@ msgstr "Tijd"
 #: modules/gui/macosx/VLCCoreDialogProvider.m:236
 #: modules/gui/macosx/VLCOpenWindowController.m:363
 #: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:342
-#: modules/gui/macosx/VLCSimplePrefsController.m:275
+#: modules/gui/macosx/VLCSimplePrefsController.m:282
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1359
+#: modules/stream_out/chromecast/cast.cpp:305
 msgid "OK"
 msgstr "OK"
 
@@ -16924,15 +16880,12 @@ msgstr "Kies een uitvoerlocatie"
 #: modules/gui/macosx/VLCOpenWindowController.m:147
 #: modules/gui/macosx/VLCOpenWindowController.m:350
 #: modules/gui/macosx/VLCOutput.m:67
-#: modules/gui/macosx/VLCSimplePrefsController.m:283
-#: modules/gui/macosx/VLCSimplePrefsController.m:360
+#: modules/gui/macosx/VLCSimplePrefsController.m:290
+#: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:440
 #: modules/gui/qt/components/sout/sout_widgets.cpp:132
-#: modules/gui/qt/ui/open.h:282 modules/gui/qt/ui/open_disk.h:307
-#: modules/gui/qt/ui/open_file.h:147 modules/gui/qt/ui/sprefs_audio.h:417
-#: modules/gui/qt/ui/sprefs_input.h:368 modules/gui/qt/ui/sprefs_video.h:332
 msgid "Browse..."
 msgstr "Bladeren..."
 
@@ -16965,34 +16918,28 @@ msgid "Save as new Profile..."
 msgstr "Opslaan als nieuw profiel..."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:155
-#: modules/gui/qt/ui/profiles.h:725
 msgid "Encapsulation"
 msgstr "Inkapselen"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:156
 #: share/lua/http/dialogs/create_stream.html:160
-#: modules/gui/qt/ui/profiles.h:751
 msgid "Video codec"
 msgstr "Videocodec"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:157
 #: share/lua/http/dialogs/create_stream.html:178
-#: modules/gui/qt/ui/profiles.h:761
 msgid "Audio codec"
 msgstr "Audiocodec"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:161
-#: modules/gui/qt/ui/profiles.h:727
 msgid "Keep original video track"
 msgstr "Origineel videospoor behouden"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:165
-#: modules/gui/qt/ui/profiles.h:749
 msgid "Resolution"
 msgstr "Resolutie"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:166
-#: modules/gui/qt/ui/profiles.h:740
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
@@ -17002,17 +16949,15 @@ msgstr ""
 "gebruiken"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:169
-#: modules/gui/macosx/VLCOutput.m:88 modules/gui/qt/ui/profiles.h:741
+#: modules/gui/macosx/VLCOutput.m:88
 msgid "Scale"
 msgstr "Schaal"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:172
-#: modules/gui/qt/ui/profiles.h:753
 msgid "Keep original audio track"
 msgstr "Origineel audiospoor behouden"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:179
-#: modules/gui/qt/ui/profiles.h:764
 msgid "Overlay subtitles on the video"
 msgstr "Ondertitels over de video leggen"
 
@@ -17139,9 +17084,9 @@ msgid "A SDP export is requested, but no URL is provided."
 msgstr "Er is een SDP-export aangevraagd, maar er werd geen url opgegeven."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:1035
-#: modules/gui/macosx/VLCSimplePrefsController.m:683
-#: modules/gui/macosx/VLCSimplePrefsController.m:711
-#: modules/gui/macosx/VLCSimplePrefsController.m:1244
+#: modules/gui/macosx/VLCSimplePrefsController.m:690
+#: modules/gui/macosx/VLCSimplePrefsController.m:718
+#: modules/gui/macosx/VLCSimplePrefsController.m:1251
 #: modules/gui/qt/components/simple_preferences.cpp:663
 msgid "Custom"
 msgstr "Aangepast"
@@ -17184,7 +17129,7 @@ msgstr "Schermvullende modus verlaten"
 
 #: modules/gui/macosx/VLCFSPanelController.m:127
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:76
-#: modules/gui/qt/dialogs/toolbar.cpp:468 modules/gui/qt/ui/sprefs_audio.h:411
+#: modules/gui/qt/dialogs/toolbar.cpp:468
 msgid "Volume"
 msgstr "Volume"
 
@@ -17263,7 +17208,7 @@ msgstr ""
 "functie kan hier uitgeschakeld worden."
 
 #: modules/gui/macosx/macosx.m:76
-#: modules/gui/macosx/VLCSimplePrefsController.m:311
+#: modules/gui/macosx/VLCSimplePrefsController.m:318
 msgid "Control playback with the Apple Remote"
 msgstr "Afspelen bedienen met de Apple Remote"
 
@@ -17273,7 +17218,7 @@ msgstr ""
 "Standaard kan VLC vanaf een afstand bestuurd worden door de Apple Remote."
 
 #: modules/gui/macosx/macosx.m:79
-#: modules/gui/macosx/VLCSimplePrefsController.m:313
+#: modules/gui/macosx/VLCSimplePrefsController.m:320
 msgid "Control system volume with the Apple Remote"
 msgstr "Systeemvolume bedienen met de Apple Remote"
 
@@ -17286,7 +17231,7 @@ msgstr ""
 "echter ook kiezen om het globale systeemvolume te bedienen."
 
 #: modules/gui/macosx/macosx.m:82
-#: modules/gui/macosx/VLCSimplePrefsController.m:314
+#: modules/gui/macosx/VLCSimplePrefsController.m:321
 msgid "Display VLC status menu icon"
 msgstr "VLC-status menu-pictogram weergeven"
 
@@ -17311,7 +17256,7 @@ msgstr ""
 "met de Apple Remote. U kunt dit gedrag uitschakelen met deze optie."
 
 #: modules/gui/macosx/macosx.m:88
-#: modules/gui/macosx/VLCSimplePrefsController.m:312
+#: modules/gui/macosx/VLCSimplePrefsController.m:319
 msgid "Control playback with media keys"
 msgstr "Afspelen bedienen met de mediatoetsen"
 
@@ -17336,7 +17281,7 @@ msgstr ""
 "gebruiken. Anders wordt de grijze interface-stijl gebruikt."
 
 #: modules/gui/macosx/macosx.m:95
-#: modules/gui/macosx/VLCSimplePrefsController.m:356
+#: modules/gui/macosx/VLCSimplePrefsController.m:363
 msgid "Use the native fullscreen mode"
 msgstr "Standaard schermvullende modus gebruiken"
 
@@ -17367,7 +17312,7 @@ msgstr ""
 "Standaard zal de interface zich aanpassen aan de videogrootte."
 
 #: modules/gui/macosx/macosx.m:104
-#: modules/gui/macosx/VLCSimplePrefsController.m:349 modules/gui/qt/qt.cpp:178
+#: modules/gui/macosx/VLCSimplePrefsController.m:356 modules/gui/qt/qt.cpp:178
 msgid "Pause the video playback when minimized"
 msgstr "Afspelen pauzeren wanneer geminimaliseerd"
 
@@ -17442,7 +17387,7 @@ msgid "Shows a sidebar in the main window listing media sources."
 msgstr "Geeft een zijbalk weer in het hoofdvenster dat mediabronnen bevat."
 
 #: modules/gui/macosx/macosx.m:128
-#: modules/gui/macosx/VLCSimplePrefsController.m:318
+#: modules/gui/macosx/VLCSimplePrefsController.m:325
 msgid "Control external music players"
 msgstr "Externe muziekspelers bedienen"
 
@@ -17574,7 +17519,7 @@ msgid "Hide Others"
 msgstr "Andere verbergen"
 
 #: modules/gui/macosx/VLCMainMenu.m:342
-#: modules/gui/macosx/VLCSimplePrefsController.m:370
+#: modules/gui/macosx/VLCSimplePrefsController.m:377
 msgid "Show All"
 msgstr "Alles weergeven"
 
@@ -17718,13 +17663,12 @@ msgid "Fit to Screen"
 msgstr "Passend op scherm"
 
 #: modules/gui/macosx/VLCMainMenu.m:423
-#: modules/gui/macosx/VLCSimplePrefsController.m:350
+#: modules/gui/macosx/VLCSimplePrefsController.m:357
 msgid "Float on Top"
 msgstr "Altijd boven"
 
 #: modules/gui/macosx/VLCMainMenu.m:431 modules/gui/macosx/VLCMainMenu.m:432
-#: modules/gui/macosx/VLCSimplePrefsController.m:357
-#: modules/gui/qt/ui/sprefs_video.h:319
+#: modules/gui/macosx/VLCSimplePrefsController.m:364
 msgid "Fullscreen Video Device"
 msgstr "Schermvullend video-apparaat"
 
@@ -18021,8 +17965,7 @@ msgid "Disc"
 msgstr "Schijf"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:142
-#: modules/gui/macosx/VLCSimplePrefsController.m:290
-#: modules/gui/qt/ui/sprefs_input.h:371
+#: modules/gui/macosx/VLCSimplePrefsController.m:297
 msgid "Network"
 msgstr "Netwerk"
 
@@ -18050,8 +17993,7 @@ msgstr "Een ander medium synchroon afspelen"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:152
 #: modules/gui/macosx/VLCOpenWindowController.m:347
-#: modules/gui/macosx/VLCSimplePrefsController.m:332
-#: modules/gui/qt/ui/sprefs_interface.h:548
+#: modules/gui/macosx/VLCSimplePrefsController.m:339
 msgid "Choose..."
 msgstr "Kiezen..."
 
@@ -18082,7 +18024,7 @@ msgid "Enable DVD menus"
 msgstr "Dvd-menu's inschakelen"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:186
-#: modules/stream_out/chromecast/cast.cpp:114
+#: modules/stream_out/chromecast/cast.cpp:117
 msgid "IP Address"
 msgstr "IP-adres"
 
@@ -18193,8 +18135,7 @@ msgid "Subtitle encoding"
 msgstr "Ondertitelcodering"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:359
-#: modules/gui/macosx/VLCSimplePrefsController.m:334
-#: modules/gui/qt/ui/sprefs_subtitles.h:300
+#: modules/gui/macosx/VLCSimplePrefsController.m:341
 msgid "Font size"
 msgstr "Tekstgrootte"
 
@@ -18217,7 +18158,6 @@ msgstr "Ondertitelbestand"
 #: modules/gui/macosx/VLCOpenWindowController.m:572
 #: modules/gui/macosx/VLCOpenWindowController.m:658
 #: modules/gui/macosx/VLCOpenWindowController.m:1258
-#: modules/gui/qt/ui/open_file.h:142
 msgid "Open File"
 msgstr "Bestand openen"
 
@@ -18376,12 +18316,11 @@ msgid "Disable renderer discovery"
 msgstr "Renderer-ontdekking uitschakelen"
 
 #: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:194
-#: modules/gui/qt/ui/sprefs_interface.h:554
 msgid "Continue playback?"
 msgstr "Afspelen hervatten?"
 
 #: modules/gui/macosx/VLCResumeDialogController.m:49
-#: modules/gui/macosx/VLCSimplePrefsController.m:814
+#: modules/gui/macosx/VLCSimplePrefsController.m:821
 #: modules/gui/qt/dialogs/firstrun.cpp:106
 msgid "Continue"
 msgstr "Doorgaan"
@@ -18399,105 +18338,102 @@ msgstr "Afspelen opnieuw starten"
 msgid "Playback of \"%@\" will continue at %@"
 msgstr "Afspelen van \"%@\" zal hervat worden op %@"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:220
+#: modules/gui/macosx/VLCSimplePrefsController.m:227
 #: modules/gui/qt/components/simple_preferences.cpp:223
 #: modules/gui/qt/components/simple_preferences.cpp:690
 #: modules/gui/qt/dialogs/plugins.cpp:375
 msgid "Interface Settings"
 msgstr "Instellingen gebruikersinterface"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:222
+#: modules/gui/macosx/VLCSimplePrefsController.m:229
 #: modules/gui/qt/components/simple_preferences.cpp:225
 #: modules/gui/qt/components/simple_preferences.cpp:415
 msgid "Audio Settings"
 msgstr "Audio-instellingen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:224
+#: modules/gui/macosx/VLCSimplePrefsController.m:231
 #: modules/gui/qt/components/simple_preferences.cpp:227
 #: modules/gui/qt/components/simple_preferences.cpp:355
 msgid "Video Settings"
 msgstr "Video-instellingen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:226
+#: modules/gui/macosx/VLCSimplePrefsController.m:233
 #: modules/gui/qt/components/simple_preferences.cpp:229
 #: modules/gui/qt/components/simple_preferences.cpp:831
 msgid "Subtitle & On Screen Display Settings"
 msgstr "Instellingen voor ondertitels en On Screen Display"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:228
+#: modules/gui/macosx/VLCSimplePrefsController.m:235
 msgid "Input & Codec Settings"
 msgstr "Instellingen voor invoer en codecs"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:262
+#: modules/gui/macosx/VLCSimplePrefsController.m:269
 msgid "General Audio"
 msgstr "Algemene audio"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:263
+#: modules/gui/macosx/VLCSimplePrefsController.m:270
 msgid "Preferred Audio language"
 msgstr "Audiotaal-voorkeur"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:264
+#: modules/gui/macosx/VLCSimplePrefsController.m:271
 msgid "Enable Last.fm submissions"
 msgstr "Last.fm-inzendingen inschakelen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:267
+#: modules/gui/macosx/VLCSimplePrefsController.m:274
 msgid "Visualization"
 msgstr "Visuele effecten"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:268
+#: modules/gui/macosx/VLCSimplePrefsController.m:275
 msgid "Keep audio level between sessions"
 msgstr "Audioniveau tussen sessies behouden"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:269
-#: modules/gui/qt/ui/sprefs_audio.h:413
+#: modules/gui/macosx/VLCSimplePrefsController.m:276
 msgid "Always reset audio start level to:"
 msgstr "Audioniveau altijd starten op:"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:272
+#: modules/gui/macosx/VLCSimplePrefsController.m:279
 #: modules/gui/qt/dialogs/vlm.cpp:493
 msgid "Change"
 msgstr "Wijzigen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:273
+#: modules/gui/macosx/VLCSimplePrefsController.m:280
 msgid "Change Hotkey"
 msgstr "Sneltoets wijzigen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:277
+#: modules/gui/macosx/VLCSimplePrefsController.m:284
 msgid "Select an action to change the associated hotkey:"
 msgstr "Selecteer een actie om de bijbehorende sneltoets aan te passen:"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:278
+#: modules/gui/macosx/VLCSimplePrefsController.m:285
 #: modules/gui/qt/components/preferences_widgets.cpp:1150
 msgid "Action"
 msgstr "Actie"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:279
+#: modules/gui/macosx/VLCSimplePrefsController.m:286
 msgid "Shortcut"
 msgstr "Sneltoets"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:282
-#: modules/gui/qt/ui/sprefs_input.h:367
+#: modules/gui/macosx/VLCSimplePrefsController.m:289
 msgid "Record directory or filename"
 msgstr "Opnamemap of bestandsnaam"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:284
+#: modules/gui/macosx/VLCSimplePrefsController.m:291
 msgid "Directory or filename where the records will be stored"
 msgstr "Map of bestandsnaam waar de opnames in opgeslagen worden"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:285
+#: modules/gui/macosx/VLCSimplePrefsController.m:292
 msgid "Repair AVI Files"
 msgstr "Avi-bestanden repareren"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:286
+#: modules/gui/macosx/VLCSimplePrefsController.m:293
 msgid "Default Caching Level"
 msgstr "Standaard bufferniveau"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:287
-#: modules/gui/qt/ui/open.h:266
+#: modules/gui/macosx/VLCSimplePrefsController.m:294
 msgid "Caching"
 msgstr "Bufferen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:288
+#: modules/gui/macosx/VLCSimplePrefsController.m:295
 msgid ""
 "Use the complete preferences to configure custom caching values for each "
 "access module."
@@ -18505,213 +18441,203 @@ msgstr ""
 "Gebruik de volledige voorkeuren om aangepaste bufferingswaarden voor elke "
 "toegangsmodule te configureren."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:289
+#: modules/gui/macosx/VLCSimplePrefsController.m:296
 msgid "Codecs / Muxers"
 msgstr "Codecs / muxers"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:291
+#: modules/gui/macosx/VLCSimplePrefsController.m:298
 msgid "Post-Processing Quality"
 msgstr "Kwaliteit van nabewerking"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:293
+#: modules/gui/macosx/VLCSimplePrefsController.m:300
 msgid "Edit default application settings for network protocols"
 msgstr "Standaard toepassingsinstellingen voor netwerk-protocols bewerken"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:297
+#: modules/gui/macosx/VLCSimplePrefsController.m:304
 msgid "Open network streams using the following protocols"
 msgstr "Netwerkstreams openen door gebruik te maken van de volgende protocols"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:298
+#: modules/gui/macosx/VLCSimplePrefsController.m:305
 msgid "Note that these are system-wide settings."
 msgstr "Merk op dat deze instellingen invloed hebben op het hele systeem."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:303
+#: modules/gui/macosx/VLCSimplePrefsController.m:310
 msgid "General settings"
 msgstr "Algemene instellingen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:305
+#: modules/gui/macosx/VLCSimplePrefsController.m:312
 msgid "Interface style"
 msgstr "Interface-stijl"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:306
+#: modules/gui/macosx/VLCSimplePrefsController.m:313
 msgid "Dark"
 msgstr "Donker"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:307
+#: modules/gui/macosx/VLCSimplePrefsController.m:314
 msgid "Bright"
 msgstr "Helder"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:310
+#: modules/gui/macosx/VLCSimplePrefsController.m:317
 msgid "Continue playback"
 msgstr "Afspelen hervatten"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:316
+#: modules/gui/macosx/VLCSimplePrefsController.m:323
 msgid "Playback behaviour"
 msgstr "Afspeelgedrag"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:317
+#: modules/gui/macosx/VLCSimplePrefsController.m:324
 msgid "Enable notifications on playlist item change"
 msgstr "Meldingen inschakelen bij wijzigen van afspeellijst-item"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:320
-#: modules/gui/qt/ui/sprefs_interface.h:556
+#: modules/gui/macosx/VLCSimplePrefsController.m:327
 msgid "Privacy / Network Interaction"
 msgstr "Privacy / netwerkinteractie"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:322
+#: modules/gui/macosx/VLCSimplePrefsController.m:329
 msgid "Automatically check for updates"
 msgstr "Automatisch op updates controleren"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:325
+#: modules/gui/macosx/VLCSimplePrefsController.m:332
 msgid "HTTP web interface"
 msgstr "Http-web-interface"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:326
+#: modules/gui/macosx/VLCSimplePrefsController.m:333
 msgid "Enable HTTP web interface"
 msgstr "Http-web-interface inschakelen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:330
+#: modules/gui/macosx/VLCSimplePrefsController.m:337
 msgid "Default Encoding"
 msgstr "Standaardcodering"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:331
+#: modules/gui/macosx/VLCSimplePrefsController.m:338
 msgid "Display Settings"
 msgstr "Weergave-instellingen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:333
-#: modules/gui/qt/ui/sprefs_subtitles.h:301
+#: modules/gui/macosx/VLCSimplePrefsController.m:340
 msgid "Font color"
 msgstr "Tekstkleur"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:335 modules/spu/marq.c:157
+#: modules/gui/macosx/VLCSimplePrefsController.m:342 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
-#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Font"
 msgstr "Lettertype"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:336
+#: modules/gui/macosx/VLCSimplePrefsController.m:343
 msgid "Subtitle languages"
 msgstr "Ondertitel-talen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:337
-#: modules/gui/qt/ui/sprefs_subtitles.h:296
+#: modules/gui/macosx/VLCSimplePrefsController.m:344
 msgid "Preferred subtitle language"
 msgstr "Voorkeurstaal ondertitels"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:339
+#: modules/gui/macosx/VLCSimplePrefsController.m:346
 msgid "Enable OSD"
 msgstr "OSD inschakelen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:341
+#: modules/gui/macosx/VLCSimplePrefsController.m:348
 #: modules/text_renderer/freetype/freetype.c:104
 msgid "Force bold"
 msgstr "Vet forceren"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:342
+#: modules/gui/macosx/VLCSimplePrefsController.m:349
 #: modules/text_renderer/freetype/freetype.c:110
-#: modules/gui/qt/ui/sprefs_subtitles.h:303
 msgid "Outline color"
 msgstr "Kleur omtrek"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:343
+#: modules/gui/macosx/VLCSimplePrefsController.m:350
 #: modules/text_renderer/freetype/freetype.c:111
-#: modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Outline thickness"
 msgstr "Dikte omtrek"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:347
-#: modules/stream_out/display.c:53 modules/gui/qt/ui/sprefs_video.h:315
+#: modules/gui/macosx/VLCSimplePrefsController.m:354
+#: modules/stream_out/display.c:53
 msgid "Display"
 msgstr "Weergave"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:348
+#: modules/gui/macosx/VLCSimplePrefsController.m:355
 msgid "Show video within the main window"
 msgstr "Video in het hoofdvenster weergeven"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:353
+#: modules/gui/macosx/VLCSimplePrefsController.m:360
 msgid "Fullscreen settings"
 msgstr "Instellingen voor schermvullende modus"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:354
+#: modules/gui/macosx/VLCSimplePrefsController.m:361
 msgid "Start in fullscreen"
 msgstr "Starten in schermvullende modus"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:355
+#: modules/gui/macosx/VLCSimplePrefsController.m:362
 msgid "Black screens in Fullscreen mode"
 msgstr "Zwarte schermen in schermvullende modus"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:359
-#: modules/gui/qt/ui/sprefs_video.h:330
+#: modules/gui/macosx/VLCSimplePrefsController.m:366
 msgid "Video snapshots"
 msgstr "Video-snapshots"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:361
+#: modules/gui/macosx/VLCSimplePrefsController.m:368
 #: modules/meta_engine/folder.c:69
 msgid "Folder"
 msgstr "Map"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:362
-#: modules/gui/qt/ui/sprefs_video.h:336
+#: modules/gui/macosx/VLCSimplePrefsController.m:369
 msgid "Format"
 msgstr "Formaat"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:363
-#: modules/gui/qt/ui/sprefs_video.h:333
+#: modules/gui/macosx/VLCSimplePrefsController.m:370
 msgid "Prefix"
 msgstr "Prefix"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:364
-#: modules/gui/qt/ui/sprefs_video.h:335
+#: modules/gui/macosx/VLCSimplePrefsController.m:371
 msgid "Sequential numbering"
 msgstr "Sequentiële nummering"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:372
+#: modules/gui/macosx/VLCSimplePrefsController.m:379
 #: modules/gui/macosx/prefs.m:190
 msgid "Reset All"
 msgstr "Alles herstellen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:374
+#: modules/gui/macosx/VLCSimplePrefsController.m:381
 #: modules/gui/macosx/prefs.m:187 modules/gui/qt/dialogs/preferences.cpp:56
 msgid "Preferences"
 msgstr "Voorkeuren"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:547
+#: modules/gui/macosx/VLCSimplePrefsController.m:554
 msgid ""
 "Media files cannot be resumed because keeping recent media items is disabled."
 msgstr ""
 "Mediabestanden kunnen niet hervat worden omdat het bijhouden van recente "
 "media-items uitgeschakeld is."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:567
+#: modules/gui/macosx/VLCSimplePrefsController.m:574
 msgid "Last check on: %@"
 msgstr "Laatste controle op: %@"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:569
+#: modules/gui/macosx/VLCSimplePrefsController.m:576
 msgid "No check was performed yet."
 msgstr "Er is nog geen controle uitgevoerd."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:685
+#: modules/gui/macosx/VLCSimplePrefsController.m:692
 msgid "Lowest Latency"
 msgstr "Laagste latentietijd"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:687
+#: modules/gui/macosx/VLCSimplePrefsController.m:694
 msgid "Low Latency"
 msgstr "Lage latentietijd"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:691
+#: modules/gui/macosx/VLCSimplePrefsController.m:698
 msgid "Higher Latency"
 msgstr "Hogere latentietijd"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:693
+#: modules/gui/macosx/VLCSimplePrefsController.m:700
 msgid "Highest Latency"
 msgstr "Hoogste latentietijd"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:813
+#: modules/gui/macosx/VLCSimplePrefsController.m:820
 #: modules/gui/qt/dialogs/preferences.cpp:336
 msgid "Reset Preferences"
 msgstr "Voorkeuren herstellen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:816
+#: modules/gui/macosx/VLCSimplePrefsController.m:823
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -18733,27 +18659,27 @@ msgstr ""
 "\n"
 "Bent u zeker dat u wilt verdergaan?"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1086
+#: modules/gui/macosx/VLCSimplePrefsController.m:1093
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr ""
 "Deze instelling kan niet gewijzigd worden omdat de \"native\" schermvullende "
 "modus ingeschakeld is."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1155
+#: modules/gui/macosx/VLCSimplePrefsController.m:1162
 msgid "Choose the folder to save your video snapshots to."
 msgstr "Kies de map om uw video snapshots in op te slaan."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1157
-#: modules/gui/macosx/VLCSimplePrefsController.m:1256
+#: modules/gui/macosx/VLCSimplePrefsController.m:1164
+#: modules/gui/macosx/VLCSimplePrefsController.m:1263
 msgid "Choose"
 msgstr "Kiezen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1254
+#: modules/gui/macosx/VLCSimplePrefsController.m:1261
 msgid "Choose the directory or filename where the records will be stored."
 msgstr "Map of bestandsnaam waar de opnames in opgeslagen moeten worden."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1371
+#: modules/gui/macosx/VLCSimplePrefsController.m:1378
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -18761,17 +18687,17 @@ msgstr ""
 "Druk op een nieuwe toets voor\n"
 "\"%@\""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1444
+#: modules/gui/macosx/VLCSimplePrefsController.m:1451
 msgid "Invalid combination"
 msgstr "Ongeldige combinatie"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1445
+#: modules/gui/macosx/VLCSimplePrefsController.m:1452
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 "Helaas, deze toetsen kunnen niet als sneltoetskoppelingen toegewezen worden."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1455
-#: modules/gui/macosx/VLCSimplePrefsController.m:1459
+#: modules/gui/macosx/VLCSimplePrefsController.m:1462
+#: modules/gui/macosx/VLCSimplePrefsController.m:1466
 msgid "This combination is already taken by \"%@\"."
 msgstr "Deze combinatie wordt al gebruikt door \"%@\"."
 
@@ -18898,7 +18824,6 @@ msgid "Basic"
 msgstr "Basis"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:194
-#: modules/gui/qt/ui/video_effects.h:1267
 msgid "Geometry"
 msgstr "Geometrie"
 
@@ -18907,9 +18832,7 @@ msgstr "Geometrie"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:269
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:272
 #: modules/spu/marq.c:115 modules/spu/rss.c:152
-#: modules/video_filter/colorthres.c:55 modules/gui/qt/ui/video_effects.h:1241
-#: modules/gui/qt/ui/video_effects.h:1247
-#: modules/gui/qt/ui/video_effects.h:1250
+#: modules/video_filter/colorthres.c:55
 msgid "Color"
 msgstr "Kleur"
 
@@ -18918,53 +18841,45 @@ msgid "Image Adjust"
 msgstr "Beeldeigenschappen"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
-#: modules/gui/qt/ui/video_effects.h:1218
 msgid "Brightness Threshold"
 msgstr "Helderheidsdrempel"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:210
-#: modules/video_filter/sharpen.c:69 modules/gui/qt/ui/video_effects.h:1222
+#: modules/video_filter/sharpen.c:69
 msgid "Sharpen"
 msgstr "Verscherpen"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:211
-#: modules/gui/qt/ui/video_effects.h:1223
-#: modules/gui/qt/ui/video_effects.h:1296
 msgid "Sigma"
 msgstr "Sigma"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:212
-#: modules/gui/qt/ui/video_effects.h:1224
 msgid "Banding removal"
 msgstr "Banding verwijderen"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:213
-#: modules/video_filter/gradfun.c:50 modules/gui/qt/ui/video_effects.h:1225
+#: modules/video_filter/gradfun.c:50
 msgid "Radius"
 msgstr "Radius"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:214
-#: modules/gui/qt/ui/video_effects.h:1226
 msgid "Film Grain"
 msgstr "Filmkorrel"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:215
-#: modules/video_filter/grain.c:53 modules/gui/qt/ui/video_effects.h:1227
+#: modules/video_filter/grain.c:53
 msgid "Variance"
 msgstr "Variantie"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:220
-#: modules/gui/qt/ui/video_effects.h:1235
 msgid "Synchronize top and bottom"
 msgstr "Synchroniseer boven en beneden"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:221
-#: modules/gui/qt/ui/video_effects.h:1236
 msgid "Synchronize left and right"
 msgstr "Synchroniseer links en rechts"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:223
-#: modules/gui/qt/ui/video_effects.h:1261
 msgid "Transform"
 msgstr "Transformeren"
 
@@ -18998,60 +18913,51 @@ msgid "Magnification/Zoom"
 msgstr "Vergroting"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:241
-#: modules/gui/qt/ui/video_effects.h:1264
 msgid "Puzzle game"
 msgstr "Puzzel spel"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:242
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:247
 #: share/lua/http/dialogs/mosaic_window.html:96
-#: modules/gui/qt/ui/video_effects.h:1259
-#: modules/gui/qt/ui/video_effects.h:1265
 msgid "Rows"
 msgstr "Rijen"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:243
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:248
 #: share/lua/http/dialogs/mosaic_window.html:114
-#: modules/gui/qt/ui/video_effects.h:1260
-#: modules/gui/qt/ui/video_effects.h:1266
 msgid "Columns"
 msgstr "Kolommen"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:244
-#: modules/video_splitter/clone.c:57 modules/gui/qt/ui/video_effects.h:1306
+#: modules/video_splitter/clone.c:57
 msgid "Clone"
 msgstr "Kloon"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
-#: modules/video_splitter/clone.c:39 modules/gui/qt/ui/video_effects.h:1307
+#: modules/video_splitter/clone.c:39
 msgid "Number of clones"
 msgstr "Aantal klonen"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:246
-#: modules/gui/qt/ui/video_effects.h:1258
 msgid "Wall"
 msgstr "Videowand"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:250
-#: modules/video_filter/colorthres.c:71 modules/gui/qt/ui/video_effects.h:1249
+#: modules/video_filter/colorthres.c:71
 msgid "Color threshold"
 msgstr "Kleurdrempel"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:254
-#: modules/gui/qt/ui/video_effects.h:1253
 msgid "Similarity"
 msgstr "Gelijkenis"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:256
-#: modules/gui/qt/ui/video_effects.h:1255
 msgid "Intensity"
 msgstr "Intensiteit"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:257
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:260
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
-#: modules/gui/qt/ui/video_effects.h:1245
 msgid "Gradient"
 msgstr "Gradiënt"
 
@@ -19066,12 +18972,10 @@ msgid "Hough"
 msgstr "Hough-transformatie"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:270
-#: modules/gui/qt/ui/video_effects.h:1248
 msgid "Cartoon"
 msgstr "Striptekening"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:271
-#: modules/gui/qt/ui/video_effects.h:1240
 msgid "Color extraction"
 msgstr "Kleurextractie"
 
@@ -19080,7 +18984,7 @@ msgid "Invert colors"
 msgstr "Kleuren omkeren"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:275
-#: modules/video_filter/posterize.c:69 modules/gui/qt/ui/video_effects.h:1244
+#: modules/video_filter/posterize.c:69
 msgid "Posterize"
 msgstr "Schakeringen reduceren"
 
@@ -19090,12 +18994,11 @@ msgid "Posterize level"
 msgstr "Niveau schakeringsreductie"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:277
-#: modules/video_filter/motionblur.c:60 modules/gui/qt/ui/video_effects.h:1297
+#: modules/video_filter/motionblur.c:60
 msgid "Motion blur"
 msgstr "Bewegingsvervaging"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:278
-#: modules/gui/qt/ui/video_effects.h:1298
 msgid "Factor"
 msgstr "Factor"
 
@@ -19105,13 +19008,11 @@ msgid "Motion Detect"
 msgstr "Bewegingsdetectie"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:280
-#: modules/gui/qt/ui/video_effects.h:1293
 msgid "Water effect"
 msgstr "Water effect"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:282
 #: modules/meta_engine/ID3Genres.h:100 modules/video_filter/psychedelic.c:55
-#: modules/gui/qt/ui/video_effects.h:1291
 msgid "Psychedelic"
 msgstr "Psychedelisch"
 
@@ -19121,23 +19022,19 @@ msgid "Anaglyph"
 msgstr "Anaglyph"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:284
-#: modules/gui/qt/ui/video_effects.h:1278
 msgid "Add text"
 msgstr "Tekst toevoegen"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
 #: modules/logger/file.c:193 modules/spu/marq.c:88
-#: modules/gui/qt/ui/video_effects.h:1280
 msgid "Text"
 msgstr "Tekst"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:306
-#: modules/gui/qt/ui/video_effects.h:1268
 msgid "Add logo"
 msgstr "Logo toevoegen"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
-#: modules/gui/qt/ui/video_effects.h:1269
 msgid "Logo"
 msgstr "Logo"
 
@@ -19980,7 +19877,6 @@ msgid "File names:"
 msgstr "Bestandsnamen:"
 
 #: modules/gui/qt/components/open_panels.cpp:162
-#: modules/gui/qt/ui/sprefs_interface.h:561
 msgid "Filter:"
 msgstr "Filter:"
 
@@ -20391,7 +20287,6 @@ msgid "File/Folder"
 msgstr "Bestand/Map"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:47
-#: modules/gui/qt/ui/sout.h:202
 msgid "Source"
 msgstr "Bron"
 
@@ -20520,7 +20415,7 @@ msgstr "Meerdere bestanden geselecteerd."
 msgid "Destination"
 msgstr "Doel"
 
-#: modules/gui/qt/dialogs/convert.cpp:68 modules/gui/qt/ui/sprefs_audio.h:416
+#: modules/gui/qt/dialogs/convert.cpp:68
 msgid "Destination file:"
 msgstr "Doelbestand:"
 
@@ -20564,8 +20459,7 @@ msgstr "Containers"
 msgid "Program Guide"
 msgstr "Programmagids"
 
-#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:289
-#: modules/gui/qt/ui/about.h:290
+#: modules/gui/qt/dialogs/epg.cpp:87
 msgid "Update"
 msgstr "Bijwerken"
 
@@ -20675,7 +20569,7 @@ msgstr "&Ja"
 msgid "&No"
 msgstr "&Nee"
 
-#: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:147
+#: modules/gui/qt/dialogs/help.cpp:222
 msgid "VLC media player updates"
 msgstr "Updates voor VLC Media Player"
 
@@ -20720,8 +20614,6 @@ msgid "Location:"
 msgstr "Locatie:"
 
 #: modules/gui/qt/dialogs/messages.cpp:80
-#: modules/gui/qt/ui/messages_panel.h:138
-#: modules/gui/qt/ui/messages_panel.h:142
 msgid "Messages"
 msgstr "Berichten"
 
@@ -20932,7 +20824,7 @@ msgstr "Versie"
 msgid "Website"
 msgstr "Website"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1533 modules/gui/qt/ui/sprefs_input.h:366
+#: modules/gui/qt/dialogs/plugins.cpp:1533
 msgid "Files"
 msgstr "Bestanden"
 
@@ -20993,7 +20885,7 @@ msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr ""
 "Weet u zeker dat u de instellingen van VLC Media Player wilt herstellen?"
 
-#: modules/gui/qt/dialogs/sout.cpp:45 modules/gui/qt/ui/sout.h:201
+#: modules/gui/qt/dialogs/sout.cpp:45
 msgid "Stream Output"
 msgstr "Streamuitvoer"
 
@@ -21180,7 +21072,7 @@ msgstr "Herhalen:"
 msgid "Repeat delay:"
 msgstr "Herhalingsvertraging :"
 
-#: modules/gui/qt/dialogs/vlm.cpp:112 modules/gui/qt/ui/sprefs_interface.h:558
+#: modules/gui/qt/dialogs/vlm.cpp:112
 msgid " days"
 msgstr " dagen"
 
@@ -21278,11 +21170,11 @@ msgstr "Wilt u het afspelen opnieuw starten vanaf het laatste punt?"
 msgid "&Continue"
 msgstr "Doorgaan"
 
-#: modules/gui/qt/main_interface.cpp:1419
+#: modules/gui/qt/main_interface.cpp:1420
 msgid "Control menu for the player"
 msgstr "Bedieningsmenu voor de speler"
 
-#: modules/gui/qt/main_interface.cpp:1463
+#: modules/gui/qt/main_interface.cpp:1464
 msgid "Paused"
 msgstr "Gepauzeerd"
 
@@ -24043,7 +23935,6 @@ msgid "Podcasts"
 msgstr "Podcasts"
 
 #: modules/services_discovery/podcast.c:56
-#: modules/gui/qt/ui/podcast_configuration.h:101
 msgid "Podcast URLs list"
 msgstr "Podcast webadressenlijst"
 
@@ -24157,7 +24048,7 @@ msgstr "Audio opnemen (ALSA)"
 msgid "CD"
 msgstr "Cd"
 
-#: modules/services_discovery/udev.c:599 modules/gui/qt/ui/open_disk.h:298
+#: modules/services_discovery/udev.c:599
 msgid "DVD"
 msgstr "Dvd"
 
@@ -24306,7 +24197,6 @@ msgstr "Dynamische video-overlay"
 
 #: modules/spu/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
-#: modules/gui/qt/ui/video_effects.h:1288
 msgid "Overlay"
 msgstr "Overlay"
 
@@ -25055,7 +24945,7 @@ msgstr "Prefetch voorwaarts-zoeken-drempel (bytes)"
 msgid "Internal stream record"
 msgstr "Intern stream record"
 
-#: modules/stream_filter/skiptags.c:235
+#: modules/stream_filter/skiptags.c:243
 msgid "APE/ID3 tags-skipping filter"
 msgstr "APE/ID3 tags-overslaan-filter"
 
@@ -25189,11 +25079,11 @@ msgstr "Standaard: 90 sec"
 msgid "Chromaprint stream output"
 msgstr "Chromaprint-streamuitvoer"
 
-#: modules/stream_out/chromecast/cast.cpp:104
+#: modules/stream_out/chromecast/cast.cpp:105
 msgid "HTTP port"
 msgstr "HTTP-poort"
 
-#: modules/stream_out/chromecast/cast.cpp:105
+#: modules/stream_out/chromecast/cast.cpp:106
 msgid ""
 "This sets the HTTP port of the local server used to stream the media to the "
 "Chromecast."
@@ -25201,46 +25091,67 @@ msgstr ""
 "Dit stelt de http-poort in van de lokale server die gebruikt wordt om de "
 "media naar de Chromecast te streamen."
 
-#: modules/stream_out/chromecast/cast.cpp:108
+#: modules/stream_out/chromecast/cast.cpp:109
 msgid "The Chromecast receiver can receive video."
 msgstr "De Chromecast-ontvanger kan video ontvangen."
 
-#: modules/stream_out/chromecast/cast.cpp:110
+#: modules/stream_out/chromecast/cast.cpp:111
 msgid "This sets the muxer used to stream to the Chromecast."
 msgstr ""
 "Dit stelt de muxer in die gebruikt wordt om naar de Chromecast te streamen."
 
-#: modules/stream_out/chromecast/cast.cpp:111
+#: modules/stream_out/chromecast/cast.cpp:112
 msgid "MIME content type"
 msgstr "MIME-inhoudtype"
 
-#: modules/stream_out/chromecast/cast.cpp:112
+#: modules/stream_out/chromecast/cast.cpp:113
 msgid "This sets the media MIME content type sent to the Chromecast."
 msgstr ""
 "Dit stelt het inhoudstype van de media-MIME in die naar de Chromecast "
 "verzonden wordt."
 
+#: modules/stream_out/chromecast/cast.cpp:114
+#: modules/stream_out/chromecast/cast.cpp:306
+#, fuzzy
+msgid "Performance warning"
+msgstr "Prestatie-opties"
+
 #: modules/stream_out/chromecast/cast.cpp:115
+msgid "Display a performance warning when transcoding"
+msgstr ""
+
+#: modules/stream_out/chromecast/cast.cpp:118
 msgid "IP Address of the Chromecast."
 msgstr "IP-adres van de Chromecast."
 
-#: modules/stream_out/chromecast/cast.cpp:116
+#: modules/stream_out/chromecast/cast.cpp:119
 msgid "Chromecast port"
 msgstr "Chromecast-poort"
 
-#: modules/stream_out/chromecast/cast.cpp:117
+#: modules/stream_out/chromecast/cast.cpp:120
 msgid "The port used to talk to the Chromecast."
 msgstr "De poort die gebruikt wordt om te praten met de Chromecast."
 
-#: modules/stream_out/chromecast/cast.cpp:121
+#: modules/stream_out/chromecast/cast.cpp:124
 msgid "Chromecast"
 msgstr "Chromecast"
 
-#: modules/stream_out/chromecast/cast.cpp:122
+#: modules/stream_out/chromecast/cast.cpp:125
 msgid "Chromecast stream output"
 msgstr "Chromecast-stream-uitvoer"
 
-#: modules/stream_out/chromecast/chromecast_demux.cpp:328
+#: modules/stream_out/chromecast/cast.cpp:305
+#, fuzzy
+msgid "Ok, Don't warn me again"
+msgstr "Software-versterking"
+
+#: modules/stream_out/chromecast/cast.cpp:307
+msgid ""
+"Casting this video requires conversion. This conversion can use all the "
+"available power and could quickly drain your battery."
+msgstr ""
+
+#: modules/stream_out/chromecast/chromecast_demux.cpp:366
 msgid "Chromecast demux wrapper"
 msgstr "Chromecast demux-inpakker"
 
@@ -26343,7 +26254,7 @@ msgstr "Beeldtint instellen, tussen -180 en 180. Standaard is 0."
 msgid "Image properties filter"
 msgstr "Beeldeigenschappen"
 
-#: modules/video_filter/adjust.c:78 modules/gui/qt/ui/video_effects.h:1215
+#: modules/video_filter/adjust.c:78
 msgid "Image adjust"
 msgstr "Beeldeigenschappen"
 
@@ -27443,7 +27354,7 @@ msgstr "Bewegingssensoren gebruiken"
 msgid "Rotate video filter"
 msgstr "Roteren"
 
-#: modules/video_filter/rotate.c:69 modules/gui/qt/ui/video_effects.h:1262
+#: modules/video_filter/rotate.c:69
 msgid "Rotate"
 msgstr "Roteren"
 
@@ -27821,7 +27732,7 @@ msgstr "GLX"
 msgid "GLX extension for OpenGL"
 msgstr "GLX-extensie voor OpenGL"
 
-#: modules/video_output/kva.c:50 modules/gui/qt/ui/sprefs_video.h:324
+#: modules/video_output/kva.c:50
 msgid "Enable a workaround for T23"
 msgstr "Workaround activeren voor T23"
 
@@ -27833,7 +27744,7 @@ msgstr ""
 "Schakel deze optie in als de diagonale strepen weergegeven worden wanneer de "
 "venstergrootte gelijk is aan of kleiner is dan de filmgrootte."
 
-#: modules/video_output/kva.c:55 modules/gui/qt/ui/sprefs_video.h:325
+#: modules/video_output/kva.c:55
 msgid "Video mode"
 msgstr "Videomodus"
 
@@ -27901,14 +27812,6 @@ msgstr "EGL"
 msgid "EGL extension for OpenGL"
 msgstr "EGL extensie voor OpenGL"
 
-#: modules/video_output/opengl/vout_helper.h:61
-msgid "Open GL/GLES hardware converter"
-msgstr "Open GL/GLES hardware-converter"
-
-#: modules/video_output/opengl/vout_helper.h:63
-msgid "Force a \"glconv\" module."
-msgstr "Een \"glconv\"-module forceren."
-
 #: modules/video_output/win32/direct3d9.c:70
 msgid "The desktop mode allows you to display the video on the desktop."
 msgstr "De dekstopmodus stelt u in staat de video op uw desktop af te spelen."
@@ -27961,7 +27864,6 @@ msgid "Direct3D11 video output"
 msgstr "Direct3D11 video-uitvoer"
 
 #: modules/video_output/win32/directdraw.c:65
-#: modules/gui/qt/ui/sprefs_video.h:321
 msgid "Use hardware YUV->RGB conversions"
 msgstr "Hardwarematige YUV->RGB-conversie gebruiken"
 
@@ -28088,6 +27990,10 @@ msgstr "Videogeheugenbuffer breedte."
 #: modules/video_output/vmem.c:46
 msgid "Video memory buffer height."
 msgstr "Videogeheugenbuffer hoogte."
+
+#: modules/video_output/vmem.c:48
+msgid "Pitch"
+msgstr "Pitch"
 
 #: modules/video_output/vmem.c:49
 msgid "Video memory buffer pitch in bytes."
@@ -28852,7 +28758,6 @@ msgid "Play List"
 msgstr "Afspeellijst"
 
 #: share/lua/http/dialogs/create_stream.html:156
-#: modules/gui/qt/ui/sprefs_audio.h:414
 msgid "Output"
 msgstr "Uitvoer"
 
@@ -28967,7 +28872,7 @@ msgstr "Spoorsynchronisatie"
 msgid "VLM Batch Commands"
 msgstr "VLM-batchcommando's"
 
-#: share/lua/http/index.html:240 modules/gui/qt/ui/vlm.h:298
+#: share/lua/http/index.html:240
 msgid "Loop"
 msgstr "Alles blijven herhalen"
 
@@ -29050,874 +28955,633 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr "Weet u zeker dat u de stream wilt aanmaken?"
 
-#: modules/gui/qt/ui/about.h:288 modules/gui/qt/ui/open.h:260
-#: modules/gui/qt/ui/podcast_configuration.h:100
-msgid "Dialog"
-msgstr "Dialoogvenster"
-
-#: modules/gui/qt/ui/equalizer.h:132 modules/gui/qt/ui/open_disk.h:296
-#: modules/gui/qt/ui/open_net.h:96 modules/gui/qt/ui/sprefs_audio.h:409
-#: modules/gui/qt/ui/sprefs_input.h:356
-#: modules/gui/qt/ui/sprefs_interface.h:529
-#: modules/gui/qt/ui/sprefs_subtitles.h:289
-#: modules/gui/qt/ui/sprefs_video.h:313 modules/gui/qt/ui/streampanel.h:167
-msgid "Form"
-msgstr "Formaat"
-
-#: modules/gui/qt/ui/equalizer.h:135
-msgid "Preset"
-msgstr "Preset"
-
-#: modules/gui/qt/ui/equalizer.h:137
-msgid "0.00 dB"
-msgstr "0.00 dB"
-
-#: modules/gui/qt/ui/messages_panel.h:139
-msgid "&Verbosity:"
-msgstr "&Breedsprakigheid:"
-
-#: modules/gui/qt/ui/messages_panel.h:140
-msgid "&Filter:"
-msgstr "&Filter:"
-
-#: modules/gui/qt/ui/messages_panel.h:141
-msgid "&Save as..."
-msgstr "&Opslaan als..."
-
-#: modules/gui/qt/ui/messages_panel.h:143
-msgid "Modules Tree"
-msgstr "Module-tree"
-
-#: modules/gui/qt/ui/open.h:263
-msgid "Show extended options"
-msgstr "Uitgebreide opties weergeven"
-
-#: modules/gui/qt/ui/open.h:265
-msgid "Show &more options"
-msgstr "&Meer opties weergeven"
-
-#: modules/gui/qt/ui/open.h:268
-msgid "Change the caching for the media"
-msgstr "Verander de buffer voor de media"
-
-#: modules/gui/qt/ui/open.h:270
-msgid " ms"
-msgstr " ms"
-
-#: modules/gui/qt/ui/open.h:271
-msgid "MRL"
-msgstr "MRL"
-
-#: modules/gui/qt/ui/open.h:272
-msgid "Start Time"
-msgstr "Start tijd"
-
-#: modules/gui/qt/ui/open.h:273
-msgid "Stop Time"
-msgstr "Stoptijd"
-
-#: modules/gui/qt/ui/open.h:274
-msgid "Edit Options"
-msgstr "Opties bewerken"
-
-#: modules/gui/qt/ui/open.h:275
-msgid "Extra media"
-msgstr "Extra media"
-
-#: modules/gui/qt/ui/open.h:277
-msgid "Complete MRL for VLC internal"
-msgstr "Complete MRL voor VLC intern"
-
-#: modules/gui/qt/ui/open.h:280
-msgid "Select the file"
-msgstr "Selecteer het bestand"
-
-#: modules/gui/qt/ui/open.h:284
-msgid "Change the start time for the media"
-msgstr "Verander de starttijd voor het medium"
-
-#: modules/gui/qt/ui/open.h:286 modules/gui/qt/ui/open.h:290
-msgid "HH'H':mm'm':ss's'.zzz"
-msgstr "HH'h':mm'm':ss's'.zzz"
-
-#: modules/gui/qt/ui/open.h:288
-msgid "Change the stop time for the media"
-msgstr "Verander de stoptijd voor het medium"
-
-#: modules/gui/qt/ui/open.h:291
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr "Speel nog een media tegelijkertijd (extra audiobestand, ...)"
-
-#: modules/gui/qt/ui/open_capture.h:97
-msgid "Capture mode"
-msgstr "Opnamemodus"
-
-#: modules/gui/qt/ui/open_capture.h:99
-msgid "Select the capture device type"
-msgstr "Selecteer het type opnameapparaat"
-
-#: modules/gui/qt/ui/open_capture.h:101
-msgid "Device Selection"
-msgstr "Apparaatselectie"
-
-#: modules/gui/qt/ui/open_capture.h:102
-msgid "Options"
-msgstr "Opties"
-
-#: modules/gui/qt/ui/open_capture.h:104
-msgid "Access advanced options to tweak the device"
-msgstr "Gebruik geavanceerde instellingen om het apparaat te fijnstellen"
-
-#: modules/gui/qt/ui/open_capture.h:106
-msgid "Advanced options..."
-msgstr "Geavanceerde opties..."
-
-#: modules/gui/qt/ui/open_disk.h:297
-msgid "Disc Selection"
-msgstr "Schijfselectie"
-
-#: modules/gui/qt/ui/open_disk.h:301
-msgid "SVCD/VCD"
-msgstr "SVCD/VCD"
-
-#: modules/gui/qt/ui/open_disk.h:303
-msgid "Disable Disc Menus"
-msgstr "Schijfmenu's uitschakelen"
-
-#: modules/gui/qt/ui/open_disk.h:305
-msgid "No disc menus"
-msgstr "Geen schijfmenu's"
-
-#: modules/gui/qt/ui/open_disk.h:306
-msgid "Disc device"
-msgstr "Schijfapparaat"
-
-#: modules/gui/qt/ui/open_disk.h:308
-msgid "Starting Position"
-msgstr "Beginpositie"
-
-#: modules/gui/qt/ui/open_disk.h:311
-msgid "Audio and Subtitles"
-msgstr "Audio en ondertitels"
-
-#: modules/gui/qt/ui/open_file.h:143
-msgid "Use a sub&title file"
-msgstr "Onder&titelbestand gebruiken"
-
-#: modules/gui/qt/ui/open_file.h:145
-msgid "Select the subtitle file"
-msgstr "Ondertitelbestand selecteren"
-
-#: modules/gui/qt/ui/open_file.h:149
-msgid "Choose one or more media file to open"
-msgstr "Selecteer een of meerdere mediabestanden om te openen"
-
-#: modules/gui/qt/ui/open_file.h:151
-msgid "File Selection"
-msgstr "Bestandselectie"
-
-#: modules/gui/qt/ui/open_file.h:152
-msgid "You can select local files with the following list and buttons."
-msgstr "U kunt lokale bestanden met de volgende lijst en knoppen selecteren."
-
-#: modules/gui/qt/ui/open_file.h:153
-msgid "Add..."
-msgstr "Toevoegen..."
-
-#: modules/gui/qt/ui/open_net.h:97
-msgid "Network Protocol"
-msgstr "Netwerkprotocol"
-
-#: modules/gui/qt/ui/open_net.h:98
-msgid "Please enter a network URL:"
-msgstr "Geef een netwerk-url op:"
-
-#: modules/gui/qt/ui/profiles.h:701
-msgid "Profile edition"
-msgstr "Profielwijziging"
-
-#: modules/gui/qt/ui/profiles.h:702
-msgid "FLAC"
-msgstr "FLAC"
-
-#: modules/gui/qt/ui/profiles.h:703
-msgid "MP&4/MOV"
-msgstr "MP&4/MOV"
-
-#: modules/gui/qt/ui/profiles.h:704
-msgid "Ogg/Ogm"
-msgstr "Ogg/Ogm"
-
-#: modules/gui/qt/ui/profiles.h:705
-msgid "M&KV"
-msgstr "M&KV"
-
-#: modules/gui/qt/ui/profiles.h:706
-msgid "M&JPEG"
-msgstr "M&JPEG"
-
-#: modules/gui/qt/ui/profiles.h:707
-msgid "MPEG-PS"
-msgstr "MPEG-PS"
-
-#: modules/gui/qt/ui/profiles.h:708
-msgid "F&LV"
-msgstr "F&LV"
-
-#: modules/gui/qt/ui/profiles.h:709
-msgid "&MPEG-TS"
-msgstr "&MPEG-TS"
-
-#: modules/gui/qt/ui/profiles.h:710
-msgid "RAW"
-msgstr "RAW"
-
-#: modules/gui/qt/ui/profiles.h:711
-msgid "WAV"
-msgstr "WAV"
-
-#: modules/gui/qt/ui/profiles.h:712
-msgid "Webm"
-msgstr "Webm"
-
-#: modules/gui/qt/ui/profiles.h:713
-msgid "MPEG &1"
-msgstr "MPEG &1"
-
-#: modules/gui/qt/ui/profiles.h:714
-msgid "AVI"
-msgstr "AVI"
-
-#: modules/gui/qt/ui/profiles.h:715
-msgid "ASF/WMV"
-msgstr "ASF/WMV"
-
-#: modules/gui/qt/ui/profiles.h:716
-msgid "MP&3"
-msgstr "MP&3"
-
-#: modules/gui/qt/ui/profiles.h:717
-msgid "Features"
-msgstr "Functies"
-
-#: modules/gui/qt/ui/profiles.h:719
-msgid "Streamable"
-msgstr "Streambaar"
-
-#: modules/gui/qt/ui/profiles.h:720
-msgid "Chapters"
-msgstr "Hoofdstukken"
-
-#: modules/gui/qt/ui/profiles.h:723
-msgid "Menus"
-msgstr "Menu's"
-
-#: modules/gui/qt/ui/profiles.h:730
-msgid "Fra&me Rate"
-msgstr "Beeldsnelheid"
-
-#: modules/gui/qt/ui/profiles.h:731
-msgid "Same as source"
-msgstr "Zelfde als bron"
-
-#: modules/gui/qt/ui/profiles.h:733
-msgid " fps"
-msgstr " fps"
-
-#: modules/gui/qt/ui/profiles.h:734
-msgid "Custom options"
-msgstr "Aangepaste opties"
-
-#: modules/gui/qt/ui/profiles.h:735
-msgid "&Quality"
-msgstr "Kwaliteit"
-
-#: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
-msgid "Not Used"
-msgstr "Niet gebruikt"
-
-#: modules/gui/qt/ui/profiles.h:738 modules/gui/qt/ui/profiles.h:757
-msgid " kb/s"
-msgstr " kb/s"
-
-#: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
-msgid "Encoding parameters"
-msgstr "Coderingsparameters"
-
-#: modules/gui/qt/ui/profiles.h:742
-msgid "Frame size"
-msgstr "Beeldgrootte"
-
-#: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
-msgid "px"
-msgstr "px"
-
-#: modules/gui/qt/ui/profiles.h:758
-msgid "Sa&mple Rate"
-msgstr "Samplerate"
-
-#: modules/gui/qt/ui/profiles.h:766
-msgid "Profile &Name"
-msgstr "Profielnaam"
-
-#: modules/gui/qt/ui/sout.h:203
-msgid "Set up media sources to stream"
-msgstr "Te streamen mediabronnen instellen"
-
-#: modules/gui/qt/ui/sout.h:205
-msgid "Destination Setup"
-msgstr "Setup-bestemming"
-
-#: modules/gui/qt/ui/sout.h:206
-msgid "Select destinations to stream to"
-msgstr "Selecteer bestemmingen om naar te streamen"
-
-#: modules/gui/qt/ui/sout.h:207
-msgid ""
-"Add destinations following the streaming methods you need. Be sure to check "
-"with transcoding that the format is compatible with the method used."
-msgstr ""
-"Voeg doelen na de streamingmethoden die u nodig heeft toe. Controleer bij "
-"transcoderen dat het formaat en de gebruikte methoden compatibel zijn."
-
-#: modules/gui/qt/ui/sout.h:208
-msgid "New destination"
-msgstr "Nieuw doel"
-
-#: modules/gui/qt/ui/sout.h:210
-msgid "Display locally"
-msgstr "Lokaal weergeven"
-
-#: modules/gui/qt/ui/sout.h:212
-msgid "Transcoding Options"
-msgstr "Opties voor transcoderen"
-
-#: modules/gui/qt/ui/sout.h:213
-msgid "Select and choose transcoding options"
-msgstr "Instellingen voor transcoderen selecteren en kiezen"
-
-#: modules/gui/qt/ui/sout.h:214
-msgid "Activate Transcoding"
-msgstr "Transcoderen inschakelen"
-
-#: modules/gui/qt/ui/sout.h:215
-msgid "Option Setup"
-msgstr "Setup-optie"
-
-#: modules/gui/qt/ui/sout.h:216
-msgid "Set up any additional options for streaming"
-msgstr "Aanvullende opties voor streamen instellen"
-
-#: modules/gui/qt/ui/sout.h:217
-msgid "Miscellaneous Options"
-msgstr "Overige opties"
-
-#: modules/gui/qt/ui/sout.h:218
-msgid "Stream all elementary streams"
-msgstr "Alle elementaire streams streamen"
-
-#: modules/gui/qt/ui/sout.h:219
-msgid "Generated stream output string"
-msgstr "Gegenereerde stream-uitvoerregel"
-
-#: modules/gui/qt/ui/sprefs_audio.h:412
-msgid " %"
-msgstr " %"
-
-#: modules/gui/qt/ui/sprefs_audio.h:415
-msgid "Output module:"
-msgstr "Uitvoermodule:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:418
-msgid "Use S/PDIF when available"
-msgstr "S/PDIF gebruiken indien mogelijk"
-
-#: modules/gui/qt/ui/sprefs_audio.h:420
-msgid "Effects"
-msgstr "Effecten"
-
-#: modules/gui/qt/ui/sprefs_audio.h:421
-msgid "Visualization:"
-msgstr "Visuele effecten:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:422
-msgid "Enable Time-Stretching audio"
-msgstr "Tijdrekken van audio inschakelen"
-
-#: modules/gui/qt/ui/sprefs_audio.h:423
-msgid "Replay gain mode:"
-msgstr "Replay gain modus:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:424
-msgid "Normalize volume to:"
-msgstr "Volume normaliseren naar:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:425
-msgid "Tracks"
-msgstr "Nummers"
-
-#: modules/gui/qt/ui/sprefs_audio.h:426
-msgid "Preferred audio language:"
-msgstr "Audiotaal-voorkeur:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:427
-msgid "Password:"
-msgstr "Wachtwoord:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:428
-msgid "Username:"
-msgstr "Gebruikersnaam:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:429
-msgid "Submit played tracks stats to Last.fm"
-msgstr "Statistieken over afgespeelde tracks melden bij Last.fm"
-
-#: modules/gui/qt/ui/sprefs_input.h:357
-msgid "Codecs"
-msgstr "Codecs"
-
-#: modules/gui/qt/ui/sprefs_input.h:358
-msgid "x264 profile and level selection"
-msgstr "x264 profiel- en niveauselectie"
-
-#: modules/gui/qt/ui/sprefs_input.h:359
-msgid "Hardware-accelerated decoding"
-msgstr "Hardware-versnelde decodering"
-
-#: modules/gui/qt/ui/sprefs_input.h:360 modules/gui/qt/ui/sprefs_input.h:362
-msgid "Video quality post-processing level"
-msgstr "Nabewerkingsniveau voor videokwaliteit"
-
-#: modules/gui/qt/ui/sprefs_input.h:361
-msgid "Skip H.264 in-loop deblocking filter"
-msgstr "H.264 in-loop deblocking filter overslaan"
-
-#: modules/gui/qt/ui/sprefs_input.h:364
-msgid "Optical drive"
-msgstr "Optisch station"
-
-#: modules/gui/qt/ui/sprefs_input.h:365
-msgid "Default optical device"
-msgstr "Standaard optisch apparaat"
-
-#: modules/gui/qt/ui/sprefs_input.h:369
-msgid "Damaged or incomplete AVI file"
-msgstr "Beschadigd of incompleet avi-bestand"
-
-#: modules/gui/qt/ui/sprefs_input.h:372
-msgid "HTTP proxy URL"
-msgstr "HTTP proxy URL"
-
-#: modules/gui/qt/ui/sprefs_input.h:373
-msgid "HTTP (default)"
-msgstr "HTTP (standaard)"
-
-#: modules/gui/qt/ui/sprefs_input.h:374
-msgid "RTP over RTSP (TCP)"
-msgstr "RTP over RTSP (TCP)"
-
-#: modules/gui/qt/ui/sprefs_input.h:375
-msgid "Live555 stream transport"
-msgstr "Live555 streamtransport"
-
-#: modules/gui/qt/ui/sprefs_input.h:376
-msgid "Default caching policy"
-msgstr "Standaard bufferbeleid"
-
-#: modules/gui/qt/ui/sprefs_interface.h:531
-msgid "Menus language:"
-msgstr "Menutaal:"
-
-#: modules/gui/qt/ui/sprefs_interface.h:532
-msgid "Look and feel"
-msgstr "Uiterlijk en gebruik"
-
-#: modules/gui/qt/ui/sprefs_interface.h:533
-msgid "Use custom skin"
-msgstr "Aangepast thema gebruiken"
-
-#: modules/gui/qt/ui/sprefs_interface.h:535
-msgid "This is VLC's default interface, with a native look and feel."
-msgstr ""
-"Dit is de standaardinterface van VLC, met de oorspronkelijke weergave en "
-"gebruik."
-
-#: modules/gui/qt/ui/sprefs_interface.h:537
-msgid "Use native style"
-msgstr "Standaardthema gebruiken"
-
-#: modules/gui/qt/ui/sprefs_interface.h:538
-msgid "Resize interface to video size"
-msgstr "Interface schalen naar videogrootte"
-
-#: modules/gui/qt/ui/sprefs_interface.h:539
-msgid "Show controls in full screen mode"
-msgstr "Bediening in schermvullende modus weergeven"
-
-#: modules/gui/qt/ui/sprefs_interface.h:540
-msgid "Pause playback when minimized"
-msgstr "Afspelen pauzeren wanneer geminimaliseerd"
-
-#: modules/gui/qt/ui/sprefs_interface.h:541
-msgid "Show media change popup:"
-msgstr "Popup weergeven bij mediawijziging:"
-
-#: modules/gui/qt/ui/sprefs_interface.h:542
-msgid "Start in minimal view mode"
-msgstr "Opstarten in minimale weergave"
-
-#: modules/gui/qt/ui/sprefs_interface.h:543
-msgid "Force window style:"
-msgstr "Vensterstijl forceren:"
-
-#: modules/gui/qt/ui/sprefs_interface.h:544
-msgid "Integrate video in interface"
-msgstr "Video integreren in de interface"
-
-#: modules/gui/qt/ui/sprefs_interface.h:545
-msgid "Show systray icon"
-msgstr "Pictogram in systeemvak weergeven"
-
-#: modules/gui/qt/ui/sprefs_interface.h:546
-msgid "Auto raising the interface:"
-msgstr "De interface automatisch verhogen:"
-
-#: modules/gui/qt/ui/sprefs_interface.h:547
-msgid "Skin resource file:"
-msgstr "Themabestand:"
-
-#: modules/gui/qt/ui/sprefs_interface.h:549
-msgid "Playlist and Instances"
-msgstr "Afspeellijst en instanties"
-
-#: modules/gui/qt/ui/sprefs_interface.h:552
-msgid "Pause on the last frame of a video"
-msgstr "Pauzeren bij het laatste frame van een video"
-
-#: modules/gui/qt/ui/sprefs_interface.h:555
-msgid "Allow only one instance"
-msgstr "Slechts een instantie van VLC toelaten"
-
-#: modules/gui/qt/ui/sprefs_interface.h:557
-msgid "Activate updates notifier"
-msgstr "Melding van nieuwere versie inschakelen"
-
-#: modules/gui/qt/ui/sprefs_interface.h:559
-msgid "Every "
-msgstr "Om de "
-
-#: modules/gui/qt/ui/sprefs_interface.h:560
-msgid "Save recently played items"
-msgstr "Recent afgespeelde items opslaan"
-
-#: modules/gui/qt/ui/sprefs_interface.h:563
-msgid "Separate words by | (without space)"
-msgstr "Woorden scheiden met | (zonder spatie)"
-
-#: modules/gui/qt/ui/sprefs_interface.h:566
-msgid "Operating System Integration"
-msgstr "Besturingssysteem-integratie"
-
-#: modules/gui/qt/ui/sprefs_interface.h:567
-msgid "File extensions association"
-msgstr "Bestandstoewijzingen"
-
-#: modules/gui/qt/ui/sprefs_interface.h:568
-msgid "Set up associations..."
-msgstr "Bestandstoewijzingen instellen..."
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:291
-msgid "Enable On Screen Display (OSD)"
-msgstr "On Screen Display (OSD) inschakelen"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:292
-msgid "Show media title on video start"
-msgstr "Mediatitel weergeven bij starten van de video"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:294
-msgid "Enable subtitles"
-msgstr "Ondertitels inschakelen"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:295
-msgid "Subtitle Language"
-msgstr "Taal ondertitel"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:297
-msgid "Default encoding"
-msgstr "Standaardcodering"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:298
-msgid "Subtitle effects"
-msgstr "Ondertiteleffecten"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:304
-msgid "Add a shadow"
-msgstr "Schaduw toevoegen"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:306
-#: modules/gui/qt/ui/video_effects.h:1230
-#: modules/gui/qt/ui/video_effects.h:1234
-#: modules/gui/qt/ui/video_effects.h:1237
-#: modules/gui/qt/ui/video_effects.h:1238
-#: modules/gui/qt/ui/video_effects.h:1272
-#: modules/gui/qt/ui/video_effects.h:1274
-#: modules/gui/qt/ui/video_effects.h:1284
-#: modules/gui/qt/ui/video_effects.h:1285
-msgid " px"
-msgstr " pixels"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:307
-msgid "Add a background"
-msgstr "Achtergrond toevoegen"
-
-#: modules/gui/qt/ui/sprefs_video.h:316
-msgid "O&utput"
-msgstr "&Uitvoer"
-
-#: modules/gui/qt/ui/sprefs_video.h:320
-msgid "DirectX"
-msgstr "DirectX"
-
-#: modules/gui/qt/ui/sprefs_video.h:322
-msgid "Accelerated video output (Overlay)"
-msgstr "Versnelde video-uitvoer (Overlay)"
-
-#: modules/gui/qt/ui/sprefs_video.h:323
-msgid "KVA"
-msgstr "KVA"
-
-#: modules/gui/qt/ui/sprefs_video.h:329
-msgid "Force Aspect Ratio"
-msgstr "Beeldverhouding forceren"
-
-#: modules/gui/qt/ui/sprefs_video.h:334
-msgid "vlc-snap"
-msgstr "vlc-snap"
-
-#: modules/gui/qt/ui/streampanel.h:171
-msgid "Stuff"
-msgstr "Dingen"
-
-#: modules/gui/qt/ui/streampanel.h:173
-msgid "Edit settings"
-msgstr "Instellingen bewerken"
-
-#: modules/gui/qt/ui/streampanel.h:174
-msgid "Control"
-msgstr "Bediening"
-
-#: modules/gui/qt/ui/streampanel.h:175
-msgid "Run manually"
-msgstr "Draai handmatig"
-
-#: modules/gui/qt/ui/streampanel.h:176
-msgid "Setup schedule"
-msgstr "Programma opstellen"
-
-#: modules/gui/qt/ui/streampanel.h:177
-msgid "Run on schedule"
-msgstr "Draai op programma"
-
-#: modules/gui/qt/ui/streampanel.h:178
-msgid "Status"
-msgstr "Status"
-
-#: modules/gui/qt/ui/streampanel.h:179
-msgid "P/P"
-msgstr "P/P"
-
-#: modules/gui/qt/ui/streampanel.h:182
-msgid "Prev"
-msgstr "Vorige"
-
-#: modules/gui/qt/ui/streampanel.h:183
-msgid "Add Input"
-msgstr "Invoer toevoegen"
-
-#: modules/gui/qt/ui/streampanel.h:184
-msgid "Edit Input"
-msgstr "Invoer bewerken"
-
-#: modules/gui/qt/ui/streampanel.h:185
-msgid "Clear List"
-msgstr "Lijst wissen"
-
-#: modules/gui/qt/ui/update.h:148
-msgid "Check for VLC updates"
-msgstr "Controleren op VLC-updates"
-
-#: modules/gui/qt/ui/update.h:149
-msgid "Launching an update request..."
-msgstr "Update-aanvraag starten..."
-
-#: modules/gui/qt/ui/update.h:150
-msgid "Do you want to download it?"
-msgstr "Wilt u deze downloaden?"
-
-#: modules/gui/qt/ui/video_effects.h:1228
-msgid "Essential"
-msgstr "Essentieel"
-
-#: modules/gui/qt/ui/video_effects.h:1242
-#: modules/gui/qt/ui/video_effects.h:1251
-msgid ">HHHHHH;#"
-msgstr ">HHHHHH;#"
-
-#: modules/gui/qt/ui/video_effects.h:1243
-msgid "Negate colors"
-msgstr "Kleuren omkeren"
-
-#: modules/gui/qt/ui/video_effects.h:1256
-msgid "Colors"
-msgstr "Kleuren"
-
-#: modules/gui/qt/ui/video_effects.h:1257
-msgid "Interactive Zoom"
-msgstr "Interactieve zoom"
-
-#: modules/gui/qt/ui/video_effects.h:1263
-msgid "Angle"
-msgstr "Hoek"
-
-#: modules/gui/qt/ui/video_effects.h:1270
-#: modules/gui/qt/ui/video_effects.h:1287
-msgid "..."
-msgstr "..."
-
-#: modules/gui/qt/ui/video_effects.h:1275
-msgid "full"
-msgstr "volledig"
-
-#: modules/gui/qt/ui/video_effects.h:1277
-msgid "none"
-msgstr "geen"
-
-#: modules/gui/qt/ui/video_effects.h:1281
-msgid "Logo erase"
-msgstr "Logo wissen"
-
-#: modules/gui/qt/ui/video_effects.h:1286
-msgid "Mask"
-msgstr "Masker"
-
-#: modules/gui/qt/ui/video_effects.h:1289
-msgid "Anaglyph 3D"
-msgstr "Anaglyph 3D"
-
-#: modules/gui/qt/ui/video_effects.h:1290
-msgid "Mirror"
-msgstr "Spiegelen"
-
-#: modules/gui/qt/ui/video_effects.h:1294
-msgid "Motion detect"
-msgstr "Bewegingsdetectie"
-
-#: modules/gui/qt/ui/video_effects.h:1295
-msgid "Spatial blur"
-msgstr "Ruimtelijk wazig"
-
-#: modules/gui/qt/ui/video_effects.h:1299
-msgid "Anti-Flickering"
-msgstr "Anti-flikkering"
-
-#: modules/gui/qt/ui/video_effects.h:1300
-msgid "Soften"
-msgstr "Verzachten"
-
-#: modules/gui/qt/ui/video_effects.h:1301
-msgid "Denoiser"
-msgstr "Ruisverwijdering"
-
-#: modules/gui/qt/ui/video_effects.h:1302
-msgid "Spatial luma strength"
-msgstr "Ruimtelijke luma-sterkte"
-
-#: modules/gui/qt/ui/video_effects.h:1303
-msgid "Temporal luma strength"
-msgstr "Tijdelijke luma-sterkte"
-
-#: modules/gui/qt/ui/video_effects.h:1304
-msgid "Spatial chroma strength"
-msgstr "Ruimtelijke chroma-sterkte"
-
-#: modules/gui/qt/ui/video_effects.h:1305
-msgid "Temporal chroma strength"
-msgstr "Tijdelijke chroma-sterkte"
-
-#: modules/gui/qt/ui/vlm.h:286
-msgid "VLM configurator"
-msgstr "VLM-configuratie"
-
-#: modules/gui/qt/ui/vlm.h:287
-msgid "Media Manager Edition"
-msgstr "Mediabeheer-editie"
-
-#: modules/gui/qt/ui/vlm.h:288
-msgid "Name:"
-msgstr "Naam:"
-
-#: modules/gui/qt/ui/vlm.h:290
-msgid "Input:"
-msgstr "Invoer:"
-
-#: modules/gui/qt/ui/vlm.h:291
-msgid "Select Input"
-msgstr "Invoer selecteren"
-
-#: modules/gui/qt/ui/vlm.h:292
-msgid "Output:"
-msgstr "Uitvoer:"
-
-#: modules/gui/qt/ui/vlm.h:293
-msgid "Select Output"
-msgstr "Uitvoer selecteren"
-
-#: modules/gui/qt/ui/vlm.h:294
-msgid "Time Control"
-msgstr "Tijdsbediening"
-
-#: modules/gui/qt/ui/vlm.h:295
-msgid "Mux Control"
-msgstr "Mux-bediening"
-
-#: modules/gui/qt/ui/vlm.h:296
-msgid "Muxer:"
-msgstr "Muxer:"
-
-#: modules/gui/qt/ui/vlm.h:297
-msgid "AAAA; "
-msgstr "AAAA; "
-
-#: modules/gui/qt/ui/vlm.h:302
-msgid "Media Manager List"
-msgstr "Mediabeheerlijst"
-
-#~ msgid "Screen capture (with Wayland)"
-#~ msgstr "Schermopname (met Wayland)"
-
-#~ msgid "+-[Streaming]"
-#~ msgstr "+-[Streamen]"
-
-#~ msgid "| packets sent     :    %5<PRIi64>"
-#~ msgstr "| pakketten verzonden     :    %5<PRIi64>"
-
-#~ msgid "| bytes sent       : %8.0f KiB"
-#~ msgstr "| bytes verzonden       : %8.0f KiB"
-
-#~ msgid "| sending bitrate  :   %6.0f kb/s"
-#~ msgstr "| verzend-bitrate  :   %6.0f kb/s"
-
-#~ msgid "Streaming"
-#~ msgstr "Streamen"
-
-#~ msgid "Sent packets"
-#~ msgstr "Verstuurde paketten"
-
-#~ msgid "Sent bytes"
-#~ msgstr "Verstuurde bytes"
-
-#~ msgid "Send rate"
-#~ msgstr "Verzendsnelheid"
+#~ msgid "Dialog"
+#~ msgstr "Dialoogvenster"
+
+#~ msgid "Form"
+#~ msgstr "Formaat"
+
+#~ msgid "Preset"
+#~ msgstr "Preset"
+
+#~ msgid "0.00 dB"
+#~ msgstr "0.00 dB"
+
+#~ msgid "&Verbosity:"
+#~ msgstr "&Breedsprakigheid:"
+
+#~ msgid "&Filter:"
+#~ msgstr "&Filter:"
+
+#~ msgid "&Save as..."
+#~ msgstr "&Opslaan als..."
+
+#~ msgid "Modules Tree"
+#~ msgstr "Module-tree"
+
+#~ msgid "Show extended options"
+#~ msgstr "Uitgebreide opties weergeven"
+
+#~ msgid "Show &more options"
+#~ msgstr "&Meer opties weergeven"
+
+#~ msgid "Change the caching for the media"
+#~ msgstr "Verander de buffer voor de media"
+
+#~ msgid " ms"
+#~ msgstr " ms"
+
+#~ msgid "MRL"
+#~ msgstr "MRL"
+
+#~ msgid "Start Time"
+#~ msgstr "Start tijd"
+
+#~ msgid "Stop Time"
+#~ msgstr "Stoptijd"
+
+#~ msgid "Edit Options"
+#~ msgstr "Opties bewerken"
+
+#~ msgid "Extra media"
+#~ msgstr "Extra media"
+
+#~ msgid "Complete MRL for VLC internal"
+#~ msgstr "Complete MRL voor VLC intern"
+
+#~ msgid "Select the file"
+#~ msgstr "Selecteer het bestand"
+
+#~ msgid "Change the start time for the media"
+#~ msgstr "Verander de starttijd voor het medium"
+
+#~ msgid "HH'H':mm'm':ss's'.zzz"
+#~ msgstr "HH'h':mm'm':ss's'.zzz"
+
+#~ msgid "Change the stop time for the media"
+#~ msgstr "Verander de stoptijd voor het medium"
+
+#~ msgid "Play another media synchronously (extra audio file, ...)"
+#~ msgstr "Speel nog een media tegelijkertijd (extra audiobestand, ...)"
+
+#~ msgid "Capture mode"
+#~ msgstr "Opnamemodus"
+
+#~ msgid "Select the capture device type"
+#~ msgstr "Selecteer het type opnameapparaat"
+
+#~ msgid "Device Selection"
+#~ msgstr "Apparaatselectie"
+
+#~ msgid "Options"
+#~ msgstr "Opties"
+
+#~ msgid "Access advanced options to tweak the device"
+#~ msgstr "Gebruik geavanceerde instellingen om het apparaat te fijnstellen"
+
+#~ msgid "Advanced options..."
+#~ msgstr "Geavanceerde opties..."
+
+#~ msgid "Disc Selection"
+#~ msgstr "Schijfselectie"
+
+#~ msgid "SVCD/VCD"
+#~ msgstr "SVCD/VCD"
+
+#~ msgid "Disable Disc Menus"
+#~ msgstr "Schijfmenu's uitschakelen"
+
+#~ msgid "No disc menus"
+#~ msgstr "Geen schijfmenu's"
+
+#~ msgid "Disc device"
+#~ msgstr "Schijfapparaat"
+
+#~ msgid "Starting Position"
+#~ msgstr "Beginpositie"
+
+#~ msgid "Audio and Subtitles"
+#~ msgstr "Audio en ondertitels"
+
+#~ msgid "Use a sub&title file"
+#~ msgstr "Onder&titelbestand gebruiken"
+
+#~ msgid "Select the subtitle file"
+#~ msgstr "Ondertitelbestand selecteren"
+
+#~ msgid "Choose one or more media file to open"
+#~ msgstr "Selecteer een of meerdere mediabestanden om te openen"
+
+#~ msgid "File Selection"
+#~ msgstr "Bestandselectie"
+
+#~ msgid "You can select local files with the following list and buttons."
+#~ msgstr ""
+#~ "U kunt lokale bestanden met de volgende lijst en knoppen selecteren."
+
+#~ msgid "Add..."
+#~ msgstr "Toevoegen..."
+
+#~ msgid "Network Protocol"
+#~ msgstr "Netwerkprotocol"
+
+#~ msgid "Please enter a network URL:"
+#~ msgstr "Geef een netwerk-url op:"
+
+#~ msgid "Profile edition"
+#~ msgstr "Profielwijziging"
+
+#~ msgid "FLAC"
+#~ msgstr "FLAC"
+
+#~ msgid "MP&4/MOV"
+#~ msgstr "MP&4/MOV"
+
+#~ msgid "Ogg/Ogm"
+#~ msgstr "Ogg/Ogm"
+
+#~ msgid "M&KV"
+#~ msgstr "M&KV"
+
+#~ msgid "M&JPEG"
+#~ msgstr "M&JPEG"
+
+#~ msgid "MPEG-PS"
+#~ msgstr "MPEG-PS"
+
+#~ msgid "F&LV"
+#~ msgstr "F&LV"
+
+#~ msgid "&MPEG-TS"
+#~ msgstr "&MPEG-TS"
+
+#~ msgid "RAW"
+#~ msgstr "RAW"
+
+#~ msgid "WAV"
+#~ msgstr "WAV"
+
+#~ msgid "Webm"
+#~ msgstr "Webm"
+
+#~ msgid "MPEG &1"
+#~ msgstr "MPEG &1"
+
+#~ msgid "AVI"
+#~ msgstr "AVI"
+
+#~ msgid "ASF/WMV"
+#~ msgstr "ASF/WMV"
+
+#~ msgid "MP&3"
+#~ msgstr "MP&3"
+
+#~ msgid "Features"
+#~ msgstr "Functies"
+
+#~ msgid "Streamable"
+#~ msgstr "Streambaar"
+
+#~ msgid "Chapters"
+#~ msgstr "Hoofdstukken"
+
+#~ msgid "Menus"
+#~ msgstr "Menu's"
+
+#~ msgid "Fra&me Rate"
+#~ msgstr "Beeldsnelheid"
+
+#~ msgid "Same as source"
+#~ msgstr "Zelfde als bron"
+
+#~ msgid " fps"
+#~ msgstr " fps"
+
+#~ msgid "Custom options"
+#~ msgstr "Aangepaste opties"
+
+#~ msgid "&Quality"
+#~ msgstr "Kwaliteit"
+
+#~ msgid "Not Used"
+#~ msgstr "Niet gebruikt"
+
+#~ msgid " kb/s"
+#~ msgstr " kb/s"
+
+#~ msgid "Encoding parameters"
+#~ msgstr "Coderingsparameters"
+
+#~ msgid "Frame size"
+#~ msgstr "Beeldgrootte"
+
+#~ msgid "px"
+#~ msgstr "px"
+
+#~ msgid "Sa&mple Rate"
+#~ msgstr "Samplerate"
+
+#~ msgid "Profile &Name"
+#~ msgstr "Profielnaam"
+
+#~ msgid "Set up media sources to stream"
+#~ msgstr "Te streamen mediabronnen instellen"
+
+#~ msgid "Destination Setup"
+#~ msgstr "Setup-bestemming"
+
+#~ msgid "Select destinations to stream to"
+#~ msgstr "Selecteer bestemmingen om naar te streamen"
+
+#~ msgid ""
+#~ "Add destinations following the streaming methods you need. Be sure to "
+#~ "check with transcoding that the format is compatible with the method used."
+#~ msgstr ""
+#~ "Voeg doelen na de streamingmethoden die u nodig heeft toe. Controleer bij "
+#~ "transcoderen dat het formaat en de gebruikte methoden compatibel zijn."
+
+#~ msgid "New destination"
+#~ msgstr "Nieuw doel"
+
+#~ msgid "Display locally"
+#~ msgstr "Lokaal weergeven"
+
+#~ msgid "Transcoding Options"
+#~ msgstr "Opties voor transcoderen"
+
+#~ msgid "Select and choose transcoding options"
+#~ msgstr "Instellingen voor transcoderen selecteren en kiezen"
+
+#~ msgid "Activate Transcoding"
+#~ msgstr "Transcoderen inschakelen"
+
+#~ msgid "Option Setup"
+#~ msgstr "Setup-optie"
+
+#~ msgid "Set up any additional options for streaming"
+#~ msgstr "Aanvullende opties voor streamen instellen"
+
+#~ msgid "Miscellaneous Options"
+#~ msgstr "Overige opties"
+
+#~ msgid "Stream all elementary streams"
+#~ msgstr "Alle elementaire streams streamen"
+
+#~ msgid "Generated stream output string"
+#~ msgstr "Gegenereerde stream-uitvoerregel"
+
+#~ msgid " %"
+#~ msgstr " %"
+
+#~ msgid "Output module:"
+#~ msgstr "Uitvoermodule:"
+
+#~ msgid "Use S/PDIF when available"
+#~ msgstr "S/PDIF gebruiken indien mogelijk"
+
+#~ msgid "Effects"
+#~ msgstr "Effecten"
+
+#~ msgid "Visualization:"
+#~ msgstr "Visuele effecten:"
+
+#~ msgid "Enable Time-Stretching audio"
+#~ msgstr "Tijdrekken van audio inschakelen"
+
+#~ msgid "Replay gain mode:"
+#~ msgstr "Replay gain modus:"
+
+#~ msgid "Normalize volume to:"
+#~ msgstr "Volume normaliseren naar:"
+
+#~ msgid "Tracks"
+#~ msgstr "Nummers"
+
+#~ msgid "Preferred audio language:"
+#~ msgstr "Audiotaal-voorkeur:"
+
+#~ msgid "Password:"
+#~ msgstr "Wachtwoord:"
+
+#~ msgid "Username:"
+#~ msgstr "Gebruikersnaam:"
+
+#~ msgid "Submit played tracks stats to Last.fm"
+#~ msgstr "Statistieken over afgespeelde tracks melden bij Last.fm"
+
+#~ msgid "Codecs"
+#~ msgstr "Codecs"
+
+#~ msgid "x264 profile and level selection"
+#~ msgstr "x264 profiel- en niveauselectie"
+
+#~ msgid "Hardware-accelerated decoding"
+#~ msgstr "Hardware-versnelde decodering"
+
+#~ msgid "Video quality post-processing level"
+#~ msgstr "Nabewerkingsniveau voor videokwaliteit"
+
+#~ msgid "Skip H.264 in-loop deblocking filter"
+#~ msgstr "H.264 in-loop deblocking filter overslaan"
+
+#~ msgid "Optical drive"
+#~ msgstr "Optisch station"
+
+#~ msgid "Default optical device"
+#~ msgstr "Standaard optisch apparaat"
+
+#~ msgid "Damaged or incomplete AVI file"
+#~ msgstr "Beschadigd of incompleet avi-bestand"
+
+#~ msgid "HTTP proxy URL"
+#~ msgstr "HTTP proxy URL"
+
+#~ msgid "HTTP (default)"
+#~ msgstr "HTTP (standaard)"
+
+#~ msgid "RTP over RTSP (TCP)"
+#~ msgstr "RTP over RTSP (TCP)"
+
+#~ msgid "Live555 stream transport"
+#~ msgstr "Live555 streamtransport"
+
+#~ msgid "Default caching policy"
+#~ msgstr "Standaard bufferbeleid"
+
+#~ msgid "Menus language:"
+#~ msgstr "Menutaal:"
+
+#~ msgid "Look and feel"
+#~ msgstr "Uiterlijk en gebruik"
+
+#~ msgid "Use custom skin"
+#~ msgstr "Aangepast thema gebruiken"
+
+#~ msgid "This is VLC's default interface, with a native look and feel."
+#~ msgstr ""
+#~ "Dit is de standaardinterface van VLC, met de oorspronkelijke weergave en "
+#~ "gebruik."
+
+#~ msgid "Use native style"
+#~ msgstr "Standaardthema gebruiken"
+
+#~ msgid "Resize interface to video size"
+#~ msgstr "Interface schalen naar videogrootte"
+
+#~ msgid "Show controls in full screen mode"
+#~ msgstr "Bediening in schermvullende modus weergeven"
+
+#~ msgid "Pause playback when minimized"
+#~ msgstr "Afspelen pauzeren wanneer geminimaliseerd"
+
+#~ msgid "Show media change popup:"
+#~ msgstr "Popup weergeven bij mediawijziging:"
+
+#~ msgid "Start in minimal view mode"
+#~ msgstr "Opstarten in minimale weergave"
+
+#~ msgid "Force window style:"
+#~ msgstr "Vensterstijl forceren:"
+
+#~ msgid "Integrate video in interface"
+#~ msgstr "Video integreren in de interface"
+
+#~ msgid "Show systray icon"
+#~ msgstr "Pictogram in systeemvak weergeven"
+
+#~ msgid "Auto raising the interface:"
+#~ msgstr "De interface automatisch verhogen:"
+
+#~ msgid "Skin resource file:"
+#~ msgstr "Themabestand:"
+
+#~ msgid "Playlist and Instances"
+#~ msgstr "Afspeellijst en instanties"
+
+#~ msgid "Pause on the last frame of a video"
+#~ msgstr "Pauzeren bij het laatste frame van een video"
+
+#~ msgid "Allow only one instance"
+#~ msgstr "Slechts een instantie van VLC toelaten"
+
+#~ msgid "Activate updates notifier"
+#~ msgstr "Melding van nieuwere versie inschakelen"
+
+#~ msgid "Every "
+#~ msgstr "Om de "
+
+#~ msgid "Save recently played items"
+#~ msgstr "Recent afgespeelde items opslaan"
+
+#~ msgid "Separate words by | (without space)"
+#~ msgstr "Woorden scheiden met | (zonder spatie)"
+
+#~ msgid "Operating System Integration"
+#~ msgstr "Besturingssysteem-integratie"
+
+#~ msgid "File extensions association"
+#~ msgstr "Bestandstoewijzingen"
+
+#~ msgid "Set up associations..."
+#~ msgstr "Bestandstoewijzingen instellen..."
+
+#~ msgid "Enable On Screen Display (OSD)"
+#~ msgstr "On Screen Display (OSD) inschakelen"
+
+#~ msgid "Show media title on video start"
+#~ msgstr "Mediatitel weergeven bij starten van de video"
+
+#~ msgid "Enable subtitles"
+#~ msgstr "Ondertitels inschakelen"
+
+#~ msgid "Subtitle Language"
+#~ msgstr "Taal ondertitel"
+
+#~ msgid "Default encoding"
+#~ msgstr "Standaardcodering"
+
+#~ msgid "Subtitle effects"
+#~ msgstr "Ondertiteleffecten"
+
+#~ msgid "Add a shadow"
+#~ msgstr "Schaduw toevoegen"
+
+#~ msgid " px"
+#~ msgstr " pixels"
+
+#~ msgid "Add a background"
+#~ msgstr "Achtergrond toevoegen"
+
+#~ msgid "O&utput"
+#~ msgstr "&Uitvoer"
+
+#~ msgid "DirectX"
+#~ msgstr "DirectX"
+
+#~ msgid "Accelerated video output (Overlay)"
+#~ msgstr "Versnelde video-uitvoer (Overlay)"
+
+#~ msgid "KVA"
+#~ msgstr "KVA"
+
+#~ msgid "Force Aspect Ratio"
+#~ msgstr "Beeldverhouding forceren"
+
+#~ msgid "vlc-snap"
+#~ msgstr "vlc-snap"
+
+#~ msgid "Stuff"
+#~ msgstr "Dingen"
+
+#~ msgid "Edit settings"
+#~ msgstr "Instellingen bewerken"
+
+#~ msgid "Control"
+#~ msgstr "Bediening"
+
+#~ msgid "Run manually"
+#~ msgstr "Draai handmatig"
+
+#~ msgid "Setup schedule"
+#~ msgstr "Programma opstellen"
+
+#~ msgid "Run on schedule"
+#~ msgstr "Draai op programma"
+
+#~ msgid "Status"
+#~ msgstr "Status"
+
+#~ msgid "P/P"
+#~ msgstr "P/P"
+
+#~ msgid "Prev"
+#~ msgstr "Vorige"
+
+#~ msgid "Add Input"
+#~ msgstr "Invoer toevoegen"
+
+#~ msgid "Edit Input"
+#~ msgstr "Invoer bewerken"
+
+#~ msgid "Clear List"
+#~ msgstr "Lijst wissen"
+
+#~ msgid "Check for VLC updates"
+#~ msgstr "Controleren op VLC-updates"
+
+#~ msgid "Launching an update request..."
+#~ msgstr "Update-aanvraag starten..."
+
+#~ msgid "Do you want to download it?"
+#~ msgstr "Wilt u deze downloaden?"
+
+#~ msgid "Essential"
+#~ msgstr "Essentieel"
+
+#~ msgid ">HHHHHH;#"
+#~ msgstr ">HHHHHH;#"
+
+#~ msgid "Negate colors"
+#~ msgstr "Kleuren omkeren"
+
+#~ msgid "Colors"
+#~ msgstr "Kleuren"
+
+#~ msgid "Interactive Zoom"
+#~ msgstr "Interactieve zoom"
+
+#~ msgid "Angle"
+#~ msgstr "Hoek"
+
+#~ msgid "..."
+#~ msgstr "..."
+
+#~ msgid "full"
+#~ msgstr "volledig"
+
+#~ msgid "none"
+#~ msgstr "geen"
+
+#~ msgid "Logo erase"
+#~ msgstr "Logo wissen"
+
+#~ msgid "Mask"
+#~ msgstr "Masker"
+
+#~ msgid "Anaglyph 3D"
+#~ msgstr "Anaglyph 3D"
+
+#~ msgid "Mirror"
+#~ msgstr "Spiegelen"
+
+#~ msgid "Motion detect"
+#~ msgstr "Bewegingsdetectie"
+
+#~ msgid "Spatial blur"
+#~ msgstr "Ruimtelijk wazig"
+
+#~ msgid "Anti-Flickering"
+#~ msgstr "Anti-flikkering"
+
+#~ msgid "Soften"
+#~ msgstr "Verzachten"
+
+#~ msgid "Denoiser"
+#~ msgstr "Ruisverwijdering"
+
+#~ msgid "Spatial luma strength"
+#~ msgstr "Ruimtelijke luma-sterkte"
+
+#~ msgid "Temporal luma strength"
+#~ msgstr "Tijdelijke luma-sterkte"
+
+#~ msgid "Spatial chroma strength"
+#~ msgstr "Ruimtelijke chroma-sterkte"
+
+#~ msgid "Temporal chroma strength"
+#~ msgstr "Tijdelijke chroma-sterkte"
+
+#~ msgid "VLM configurator"
+#~ msgstr "VLM-configuratie"
+
+#~ msgid "Media Manager Edition"
+#~ msgstr "Mediabeheer-editie"
+
+#~ msgid "Name:"
+#~ msgstr "Naam:"
+
+#~ msgid "Input:"
+#~ msgstr "Invoer:"
+
+#~ msgid "Select Input"
+#~ msgstr "Invoer selecteren"
+
+#~ msgid "Output:"
+#~ msgstr "Uitvoer:"
+
+#~ msgid "Select Output"
+#~ msgstr "Uitvoer selecteren"
+
+#~ msgid "Time Control"
+#~ msgstr "Tijdsbediening"
+
+#~ msgid "Mux Control"
+#~ msgstr "Mux-bediening"
+
+#~ msgid "Muxer:"
+#~ msgstr "Muxer:"
+
+#~ msgid "AAAA; "
+#~ msgstr "AAAA; "
+
+#~ msgid "Media Manager List"
+#~ msgstr "Mediabeheerlijst"
+
+#~ msgid "Open GL/GLES hardware converter"
+#~ msgstr "Open GL/GLES hardware-converter"
+
+#~ msgid "Force a \"glconv\" module."
+#~ msgstr "Een \"glconv\"-module forceren."
 
 #~ msgid "Output/Written/Sent"
 #~ msgstr "Uitvoer/geschreven/verzonden"
@@ -29925,20 +29589,62 @@ msgstr "Mediabeheerlijst"
 #~ msgid "Sent"
 #~ msgstr "Verzonden"
 
+#, fuzzy
+#~ msgid "Screen capture (with Wayland)"
+#~ msgstr "Schermopname (met X11/XCB)"
+
+#, fuzzy
+#~ msgid "+-[Streaming]"
+#~ msgstr "+-[Binnenkomend]"
+
+#, fuzzy
+#~ msgid "| packets sent     :    %5<PRIi64>"
+#~ msgstr "| beelden verloren           :    %5<PRIi64>"
+
+#, fuzzy
+#~ msgid "| bytes sent       : %8.0f KiB"
+#~ msgstr "| invoer bytes gelezen : %8.0f KiB"
+
+#, fuzzy
+#~ msgid "| sending bitrate  :   %6.0f kb/s"
+#~ msgstr "| invoerbitrate    :   %6.0f kb/s"
+
+#, fuzzy
+#~ msgid "Streaming"
+#~ msgstr "Stream"
+
+#, fuzzy
+#~ msgid "Sent packets"
+#~ msgstr "Groepeer pakketten"
+
+#, fuzzy
+#~ msgid "Sent bytes"
+#~ msgstr "%s bytes"
+
+#, fuzzy
+#~ msgid "Send rate"
+#~ msgstr "Samplerate"
+
+#, fuzzy
 #~ msgid "packets"
-#~ msgstr "paketten"
+#~ msgstr "packetizer"
 
+#, fuzzy
 #~ msgid "Upstream rate"
-#~ msgstr "Uitgaande bitrate"
+#~ msgstr "Stream-bitrate"
 
+#, fuzzy
 #~ msgid "Dolby Surround:"
-#~ msgstr "Dolby Surround:"
+#~ msgstr "Dolby Surround"
 
+#, fuzzy
 #~ msgid "Headphone surround effect"
-#~ msgstr "Koptelefoon surround-effect"
+#~ msgstr "Koptelefoon-effect"
 
+#, fuzzy
 #~ msgid "x264 preset and tuning selection"
-#~ msgstr "x264 preset- en afstemmingselectie"
+#~ msgstr "x264 profiel- en niveauselectie"
 
+#, fuzzy
 #~ msgid "Display device"
-#~ msgstr "Weergaveapparaat"
+#~ msgstr "Schijfapparaat"

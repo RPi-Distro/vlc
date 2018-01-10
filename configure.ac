@@ -1,20 +1,20 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 1999-2017 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 1999-2018 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.0-rc4)
+AC_INIT(vlc, 3.0.0-rc5)
 VERSION_MAJOR=3
 VERSION_MINOR=0
 VERSION_REVISION=0
 VERSION_EXTRA=0
-VERSION_DEV=rc4
+VERSION_DEV=rc5
 
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Vetinari"
-COPYRIGHT_YEARS="1996-2017"
+COPYRIGHT_YEARS="1996-2018"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -290,6 +290,7 @@ case "${host_os}" in
     LDFLAGS="${LDFLAGS} -Zomf -Zbin-files -Zargs-wild -Zhigh-mem"
     AC_LIBOBJ([freeaddrinfo])
     AC_LIBOBJ([gai_strerror])
+    AC_CHECK_FUNCS([if_nametoindex])
     ;;
   *nacl*)
     SYS=nacl
@@ -4134,7 +4135,7 @@ AC_ARG_ENABLE(libplacebo,
       [disable libplacebo support (default auto)])])
 
 AS_IF([test "$enable_libplacebo" != "no"], [
-  PKG_CHECK_MODULES([LIBPLACEBO], [libplacebo >= 0.1], [
+  PKG_CHECK_MODULES([LIBPLACEBO], [libplacebo >= 0.2], [
     AC_DEFINE([HAVE_LIBPLACEBO], [1], [Define to 1 if libplacebo is enabled.])
   ], [
     AS_IF([test -n "${enable_libplacebo}"], [

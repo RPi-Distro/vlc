@@ -2,7 +2,7 @@
 * VLCSimplePrefsController.h: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2014 VLC authors and VideoLAN
-* $Id: 328077bf3fb7105bf9b98c609014609d6de43f6f $
+* $Id: 1147fdd2f45af41cb14696e68986d3e7fac39de8 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -30,12 +30,14 @@
 // Overall window
 @property (readwrite, weak) IBOutlet NSButton *showAllButton;
 @property (readwrite, weak) IBOutlet NSButton *cancelButton;
-@property (readwrite, weak) IBOutlet NSView *contentView;
 @property (readwrite, weak) IBOutlet NSScrollView *scrollView;
+@property (readwrite, weak) IBOutlet NSView *contentView;
 @property (readwrite, weak) IBOutlet NSButton *resetButton;
 @property (readwrite, weak) IBOutlet NSButton *saveButton;
 
 // Audio pane
+@property (readwrite, strong) IBOutlet NSView *audioView;
+
 @property (readwrite, weak) IBOutlet NSPopUpButton *audio_dolbyPopup;
 @property (readwrite, weak) IBOutlet NSTextField *audio_dolbyLabel;
 @property (readwrite, weak) IBOutlet NSBox *audio_effectsBox;
@@ -49,7 +51,6 @@
 @property (readwrite, weak) IBOutlet NSTextField *audio_lastpwdLabel;
 @property (readwrite, weak) IBOutlet NSTextField *audio_lastuserTextField;
 @property (readwrite, weak) IBOutlet NSTextField *audio_lastuserLabel;
-@property (readwrite, weak) IBOutlet NSView *audioView;
 @property (readwrite, weak) IBOutlet NSPopUpButton *audio_visualPopup;
 @property (readwrite, weak) IBOutlet NSTextField *audio_visualLabel;
 @property (readwrite, weak) IBOutlet NSTextField *audio_volTextField;
@@ -59,7 +60,9 @@
 @property (readwrite, weak) IBOutlet NSButtonCell *audio_autosavevol_noButtonCell;
 
 // hotkeys pane
-@property (readwrite)       IBOutlet NSWindow *hotkeys_change_win;
+@property (readwrite, strong) IBOutlet NSView *hotkeysView;
+
+@property (readwrite, strong) IBOutlet NSWindow *hotkeys_change_win;
 @property (readwrite, weak) IBOutlet NSButton *hotkeys_changeButton;
 @property (readwrite, weak) IBOutlet NSTextField *hotkeys_changeLabel;
 @property (readwrite, weak) IBOutlet NSTextField *hotkeys_change_keysLabel;
@@ -69,9 +72,10 @@
 @property (readwrite, weak) IBOutlet NSButton *hotkeys_clearButton;
 @property (readwrite, weak) IBOutlet NSTextField *hotkeysLabel;
 @property (readwrite, weak) IBOutlet NSTableView *hotkeys_listbox;
-@property (readwrite, weak) IBOutlet NSView *hotkeysView;
 
 // input pane
+@property (readwrite, strong) IBOutlet NSView *inputView;
+
 @property (readwrite, weak) IBOutlet NSBox *input_recordBox;
 @property (readwrite, weak) IBOutlet NSTextField *input_recordTextField;
 @property (readwrite, weak) IBOutlet NSButton *input_recordButton;
@@ -89,9 +93,10 @@
 @property (readwrite, weak) IBOutlet NSPopUpButton *input_skipLoopPopup;
 @property (readwrite, weak) IBOutlet NSButton *input_urlhandlerButton;
 @property (readwrite, weak) IBOutlet NSButton *input_skipFramesCheckbox;
-@property (readwrite, weak) IBOutlet NSView *inputView;
 
 // intf pane - general box
+@property (readwrite, strong) IBOutlet NSView *intfView;
+
 @property (readwrite, weak) IBOutlet NSBox *intf_generalSettingsBox;
 @property (readwrite, weak) IBOutlet NSPopUpButton *intf_languagePopup;
 @property (readwrite, weak) IBOutlet NSTextField *intf_languageLabel;
@@ -125,9 +130,10 @@
 @property (readwrite, weak) IBOutlet NSButton *intf_enableluahttpCheckbox;
 @property (readwrite, weak) IBOutlet NSTextField *intf_luahttppwdLabel;
 @property (readwrite, weak) IBOutlet NSTextField *intf_luahttppwdTextField;
-@property (readwrite, weak) IBOutlet NSView *intfView;
 
 // osd pane
+@property (readwrite, strong) IBOutlet NSView *osdView;
+
 @property (readwrite, weak) IBOutlet NSPopUpButton *osd_encodingPopup;
 @property (readwrite, weak) IBOutlet NSTextField *osd_encodingLabel;
 @property (readwrite, weak) IBOutlet NSBox *osd_fontBox;
@@ -151,9 +157,10 @@
 @property (readwrite, weak) IBOutlet NSButton *osd_forceboldCheckbox;
 @property (readwrite, weak) IBOutlet NSBox *osd_osdBox;
 @property (readwrite, weak) IBOutlet NSButton *osd_osdCheckbox;
-@property (readwrite, weak) IBOutlet NSView *osdView;
 
 // video pane
+@property (readwrite, strong) IBOutlet NSView *videoView;
+
 @property (readwrite, weak) IBOutlet NSButton *video_enableCheckbox;
 // video pane - display box
 @property (readwrite, weak) IBOutlet NSBox *video_displayBox;
@@ -188,7 +195,8 @@
 @property (readwrite, weak) IBOutlet NSTextField *video_snap_prefixLabel;
 @property (readwrite, weak) IBOutlet NSButton *video_snap_seqnumCheckbox;
 
-@property (readwrite, weak) IBOutlet NSView *videoView;
+// URL handler popup window
+@property (readwrite, strong) IBOutlet NSWindow *urlhandler_win;
 
 @property (readwrite, weak) IBOutlet NSTextField *urlhandler_titleLabel;
 @property (readwrite, weak) IBOutlet NSTextField *urlhandler_subtitleLabel;
@@ -202,7 +210,6 @@
 @property (readwrite, weak) IBOutlet NSPopUpButton *urlhandler_sftpPopup;
 @property (readwrite, weak) IBOutlet NSPopUpButton *urlhandler_smbPopup;
 @property (readwrite, weak) IBOutlet NSPopUpButton *urlhandler_udpPopup;
-@property (readwrite)       IBOutlet NSWindow *urlhandler_win;
 
 /* toolbar */
 - (NSToolbarItem *)toolbar:(NSToolbar *)o_toolbar

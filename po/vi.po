@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-27 13:57+0100\n"
+"POT-Creation-Date: 2018-01-09 02:11+0000\n"
 "PO-Revision-Date: 2014-06-27 23:01+0000\n"
 "Last-Translator: Sortale <sortale.zerok@gmail.com>\n"
 "Language-Team: Vietnamese (http://www.transifex.com/projects/p/vlc-trans/"
@@ -44,7 +44,7 @@ msgid "Select \"Advanced Options\" to see all options."
 msgstr "Chọn\"Tùy chọn nâng cao\" để có thêm các lựa chọn khác."
 
 #: include/vlc_config_cat.h:38
-#: modules/gui/macosx/VLCSimplePrefsController.m:220
+#: modules/gui/macosx/VLCSimplePrefsController.m:227
 #: modules/gui/qt/components/simple_preferences.cpp:223
 #: modules/gui/qt/menus.cpp:1090
 msgid "Interface"
@@ -75,7 +75,7 @@ msgid "Settings for VLC's control interfaces"
 msgstr "Thiết lập giao diện điều khiển"
 
 #: include/vlc_config_cat.h:49 include/vlc_config_cat.h:50
-#: modules/gui/macosx/VLCSimplePrefsController.m:230
+#: modules/gui/macosx/VLCSimplePrefsController.m:237
 msgid "Hotkeys settings"
 msgstr "Thiết lập phím tắt"
 
@@ -84,13 +84,12 @@ msgstr "Thiết lập phím tắt"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:404 modules/gui/macosx/VLCOutput.m:92
 #: modules/gui/macosx/VLCPlaylistInfo.m:96
-#: modules/gui/macosx/VLCSimplePrefsController.m:222
+#: modules/gui/macosx/VLCSimplePrefsController.m:229
 #: modules/gui/qt/components/info_panels.cpp:572
 #: modules/gui/qt/components/simple_preferences.cpp:225
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
-#: modules/gui/qt/ui/profiles.h:721 modules/gui/qt/ui/profiles.h:752
 msgid "Audio"
 msgstr "Audio"
 
@@ -103,7 +102,6 @@ msgid "General audio settings"
 msgstr "Thiết lập chung cho Audio"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:81
-#: modules/gui/qt/ui/profiles.h:750 modules/gui/qt/ui/profiles.h:760
 msgid "Filters"
 msgstr "Bộ lọc"
 
@@ -148,16 +146,14 @@ msgstr "Tổng hợp thiết lập audio và module."
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:417 modules/gui/macosx/VLCOutput.m:82
 #: modules/gui/macosx/VLCPlaylistInfo.m:91
-#: modules/gui/macosx/VLCSimplePrefsController.m:224
-#: modules/gui/macosx/VLCSimplePrefsController.m:367
+#: modules/gui/macosx/VLCSimplePrefsController.m:231
+#: modules/gui/macosx/VLCSimplePrefsController.m:374
 #: modules/gui/qt/components/info_panels.cpp:573
 #: modules/gui/qt/components/simple_preferences.cpp:227
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
-#: modules/stream_out/chromecast/cast.cpp:107 modules/stream_out/es.c:102
+#: modules/stream_out/chromecast/cast.cpp:108 modules/stream_out/es.c:102
 #: modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
-#: modules/gui/qt/ui/profiles.h:722 modules/gui/qt/ui/profiles.h:726
-#: modules/gui/qt/ui/sprefs_video.h:326
 msgid "Video"
 msgstr "Video"
 
@@ -409,7 +405,6 @@ msgstr ""
 
 #: include/vlc_config_cat.h:184 src/libvlc-module.c:1844
 #: modules/gui/qt/dialogs/extended.cpp:93
-#: modules/gui/qt/ui/video_effects.h:1308
 msgid "Advanced"
 msgstr "Nâng cao"
 
@@ -485,7 +480,7 @@ msgstr "&Thông tin về VLC"
 #: modules/gui/macosx/VLCMainMenu.m:1325 modules/gui/macosx/VLCMainMenu.m:1326
 #: modules/gui/macosx/VLCPlaylist.m:230
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:539 modules/gui/qt/ui/open.h:261
+#: modules/gui/qt/dialogs/vlm.cpp:539
 msgid "Play"
 msgstr "Bật"
 
@@ -577,7 +572,6 @@ msgstr "Tìm kiếm"
 
 #: include/vlc_intf_strings.h:99
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
-#: modules/gui/qt/ui/video_effects.h:1292
 msgid "Waves"
 msgstr "Sóng"
 
@@ -766,9 +760,6 @@ msgstr "Stereo"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:312
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1231
-#: modules/gui/qt/ui/video_effects.h:1273
-#: modules/gui/qt/ui/video_effects.h:1283
 msgid "Left"
 msgstr "Bên Trái"
 
@@ -783,7 +774,6 @@ msgstr "Bên Trái"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:314
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1232
 msgid "Right"
 msgstr "Bên Phải"
 
@@ -970,47 +960,47 @@ msgstr "Lỗi chưa biết"
 msgid "Bookmark %i"
 msgstr "Phần đánh dấu %i"
 
-#: src/input/decoder.c:1881
+#: src/input/decoder.c:1882
 msgid "No description for this codec"
 msgstr "Không có mô tả cho codec này"
 
-#: src/input/decoder.c:1883
+#: src/input/decoder.c:1884
 msgid "Codec not supported"
 msgstr "Codec này không được hỗ trợ"
 
-#: src/input/decoder.c:1884
+#: src/input/decoder.c:1885
 #, c-format
 msgid "VLC could not decode the format \"%4.4s\" (%s)"
 msgstr "VLC không thể giải mã định dạng \"%4.4s\" (%s)"
 
-#: src/input/decoder.c:1888
+#: src/input/decoder.c:1889
 msgid "Unidentified codec"
 msgstr "Codec chưa được nhận dạng"
 
-#: src/input/decoder.c:1889
+#: src/input/decoder.c:1890
 msgid "VLC could not identify the audio or video codec"
 msgstr "VLC không thể xác định được dạng audio hoặc codec của video"
 
-#: src/input/decoder.c:1900
+#: src/input/decoder.c:1901
 msgid "packetizer"
 msgstr "đóng gói"
 
-#: src/input/decoder.c:1900
+#: src/input/decoder.c:1901
 msgid "decoder"
 msgstr "giải mã"
 
-#: src/input/decoder.c:1908 src/input/decoder.c:2189
-#: modules/codec/avcodec/encoder.c:368 modules/codec/avcodec/encoder.c:885
+#: src/input/decoder.c:1909 src/input/decoder.c:2190
+#: modules/codec/avcodec/encoder.c:368 modules/codec/avcodec/encoder.c:882
 #: modules/stream_out/es.c:349 modules/stream_out/es.c:362
 msgid "Streaming / Transcoding failed"
 msgstr "Phân luồng / Chuyển mã xảy ra lỗi"
 
-#: src/input/decoder.c:1909
+#: src/input/decoder.c:1910
 #, c-format
 msgid "VLC could not open the %s module."
 msgstr "VLC không thở mở module %s."
 
-#: src/input/decoder.c:2190
+#: src/input/decoder.c:2191
 msgid "VLC could not open the decoder module."
 msgstr "VLC không thể mở module giải mã dữ liệu này."
 
@@ -1061,15 +1051,13 @@ msgstr "Số ID gốc"
 #: src/input/es_out.c:3069 src/input/es_out.c:3072 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
-#: modules/gui/qt/ui/profiles.h:728 modules/gui/qt/ui/profiles.h:754
-#: modules/gui/qt/ui/profiles.h:763
 msgid "Codec"
 msgstr "Codec"
 
 #: src/input/es_out.c:3076 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:114
-#: modules/gui/macosx/VLCSimplePrefsController.m:304
-#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:530
+#: modules/gui/macosx/VLCSimplePrefsController.m:311
+#: modules/stream_out/setid.c:49
 msgid "Language"
 msgstr "Ngôn ngữ"
 
@@ -1080,7 +1068,7 @@ msgstr "Ngôn ngữ"
 msgid "Description"
 msgstr "Mô tả"
 
-#: src/input/es_out.c:3085 src/input/es_out.c:3129 src/input/es_out.c:3318
+#: src/input/es_out.c:3085 src/input/es_out.c:3129 src/input/es_out.c:3319
 #: modules/gui/macosx/VLCAddonsWindowController.m:132
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
 #: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1487
@@ -1089,7 +1077,7 @@ msgstr "Loại"
 
 #: src/input/es_out.c:3088
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
-#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:756
+#: modules/gui/macosx/VLCOutput.m:98
 msgid "Channels"
 msgstr "Kênh"
 
@@ -1111,7 +1099,6 @@ msgstr "Số lượng bit cho mỗi sample"
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
-#: modules/gui/qt/ui/profiles.h:729 modules/gui/qt/ui/profiles.h:755
 msgid "Bitrate"
 msgstr "Bitrate"
 
@@ -1307,52 +1294,57 @@ msgid "Projection"
 msgstr "Peak protection"
 
 #: src/input/es_out.c:3258
+msgctxt "ViewPoint"
 msgid "Yaw"
 msgstr ""
 
-#: src/input/es_out.c:3260 modules/video_output/vmem.c:48
+#: src/input/es_out.c:3260
+#, fuzzy
+msgctxt "ViewPoint"
 msgid "Pitch"
 msgstr "Mức độ"
 
 #: src/input/es_out.c:3262
+msgctxt "ViewPoint"
 msgid "Roll"
 msgstr ""
 
-#: src/input/es_out.c:3264
+#: src/input/es_out.c:3265
+msgctxt "ViewPoint"
 msgid "Field of view"
 msgstr ""
 
-#: src/input/es_out.c:3269
+#: src/input/es_out.c:3270
 #, fuzzy
 msgid "Max. luminance"
 msgstr "Cân bằng xanh"
 
-#: src/input/es_out.c:3274
+#: src/input/es_out.c:3275
 #, fuzzy
 msgid "Min. luminance"
 msgstr "Cân bằng xanh"
 
-#: src/input/es_out.c:3282
+#: src/input/es_out.c:3283
 #, fuzzy
 msgid "Primary R"
 msgstr "Ngôn ngữ chính"
 
-#: src/input/es_out.c:3289
+#: src/input/es_out.c:3290
 #, fuzzy
 msgid "Primary G"
 msgstr "Ngôn ngữ chính"
 
-#: src/input/es_out.c:3296
+#: src/input/es_out.c:3297
 #, fuzzy
 msgid "Primary B"
 msgstr "Ngôn ngữ chính"
 
-#: src/input/es_out.c:3303
+#: src/input/es_out.c:3304
 #, fuzzy
 msgid "White point"
 msgstr "Trắng"
 
-#: src/input/es_out.c:3318 modules/access/imem.c:64
+#: src/input/es_out.c:3319 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "Phụ đề"
 
@@ -1375,7 +1367,6 @@ msgstr ""
 #: modules/gui/qt/components/open_panels.cpp:503
 #: modules/gui/qt/components/open_panels.cpp:517
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
-#: modules/gui/qt/ui/open_disk.h:309
 msgid "Title"
 msgstr "Tiêu đề"
 
@@ -1416,7 +1407,6 @@ msgid "Setting"
 msgstr "Thiết lập"
 
 #: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
-#: modules/gui/qt/ui/podcast_configuration.h:102
 msgid "URL"
 msgstr "URL"
 
@@ -1486,7 +1476,6 @@ msgstr "Chương trình"
 #: modules/gui/macosx/VLCMainMenu.m:402
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
-#: modules/gui/qt/ui/open_disk.h:310
 msgid "Chapter"
 msgstr "Chương"
 
@@ -1741,8 +1730,8 @@ msgstr "Góc độ Media"
 msgid "Media (player) role for operating system policy."
 msgstr ""
 
-#: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:261
-#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:410
+#: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:268
+#: modules/stream_out/display.c:40
 msgid "Enable audio"
 msgstr "Cho phép bật Audio"
 
@@ -1859,7 +1848,7 @@ msgid ""
 "support."
 msgstr ""
 
-#: src/libvlc-module.c:178 modules/gui/macosx/VLCSimplePrefsController.m:259
+#: src/libvlc-module.c:178 modules/gui/macosx/VLCSimplePrefsController.m:266
 msgid "Force detection of Dolby Surround"
 msgstr "Bắt buộc xác định Dolby Surround - âm thanh nổi"
 
@@ -1882,8 +1871,7 @@ msgstr ""
 #: modules/gui/qt/components/simple_preferences.cpp:66
 #: modules/gui/qt/components/sout/profile_selector.cpp:582
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
-#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:744
-#: modules/gui/qt/ui/profiles.h:747
+#: modules/video_output/xcb/xvideo.c:821
 msgid "Auto"
 msgstr "Tự động"
 
@@ -2010,8 +1998,8 @@ msgstr ""
 "Phương thức xuất dữ liệu đầu ra này đối với video được sử dụng bởi VLC. "
 "Phương thức này được lựa chọn theo chế độ tự động nhằm đạt hiệu quả cao nhất."
 
-#: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:346
-#: modules/stream_out/display.c:42 modules/gui/qt/ui/sprefs_video.h:314
+#: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:353
+#: modules/stream_out/display.c:42
 msgid "Enable video"
 msgstr "Bật tính năng Video"
 
@@ -2113,9 +2101,6 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:316
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1229
-#: modules/gui/qt/ui/video_effects.h:1271
-#: modules/gui/qt/ui/video_effects.h:1282
 msgid "Top"
 msgstr "Trên cùng"
 
@@ -2126,7 +2111,6 @@ msgstr "Trên cùng"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:318
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1233
 msgid "Bottom"
 msgstr "Tận cùng"
 
@@ -2264,7 +2248,7 @@ msgstr ""
 #: src/libvlc-module.c:342 src/libvlc-module.c:344
 #: src/video_output/interlacing.c:112 modules/gui/macosx/VLCMainMenu.m:433
 #: modules/gui/macosx/VLCMainMenu.m:434
-#: modules/gui/macosx/VLCSimplePrefsController.m:365
+#: modules/gui/macosx/VLCSimplePrefsController.m:372
 #: modules/gui/qt/dialogs/convert.cpp:119 modules/hw/vdpau/chroma.c:884
 #: modules/video_filter/deinterlace/deinterlace.c:300
 #: share/lua/http/dialogs/create_stream.html:346
@@ -2273,7 +2257,7 @@ msgstr "Chống quét mành"
 
 #: src/libvlc-module.c:352 src/video_output/interlacing.c:128
 #: modules/gui/macosx/VLCMainMenu.m:435 modules/gui/macosx/VLCMainMenu.m:436
-#: modules/gui/macosx/VLCSimplePrefsController.m:366
+#: modules/gui/macosx/VLCSimplePrefsController.m:373
 #: modules/video_filter/deinterlace/deinterlace.c:256
 msgid "Deinterlace mode"
 msgstr "Chế độ chống quét mành/deinterlace"
@@ -2328,8 +2312,7 @@ msgstr ""
 "Tắt phần thông báo quản lý điện năng khi đang hiển thị audio/video, điều này "
 "nhằm tránh cho việc trình chiếu bị tạm dừng đột ngột vì một lý do nào đó."
 
-#: src/libvlc-module.c:378 modules/gui/macosx/VLCSimplePrefsController.m:351
-#: modules/gui/qt/ui/sprefs_video.h:317
+#: src/libvlc-module.c:378 modules/gui/macosx/VLCSimplePrefsController.m:358
 msgid "Window decorations"
 msgstr "Họa tiết cửa sổ"
 
@@ -2543,7 +2526,7 @@ msgstr ""
 "có các điểm ảnh vuông (1:1). Nhưng nếu bạn sở hữu thiết bị có màn hình 16:9, "
 "bạn cần thay đổi tỉ lệ này thành 4:3 nhằm có được phần hiển thị tốt nhất."
 
-#: src/libvlc-module.c:472 modules/gui/macosx/VLCSimplePrefsController.m:294
+#: src/libvlc-module.c:472 modules/gui/macosx/VLCSimplePrefsController.m:301
 msgid "Skip frames"
 msgstr "Bỏ qua khung hình"
 
@@ -2703,7 +2686,7 @@ msgstr ""
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:320
 #: modules/gui/macosx/VLCMainMenu.m:592
-#: modules/gui/macosx/VLCSimplePrefsController.m:649
+#: modules/gui/macosx/VLCSimplePrefsController.m:656
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:389
 #: modules/gui/macosx/prefs_widgets.m:1217
@@ -2718,7 +2701,6 @@ msgstr "Mặc định"
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:214
 #: modules/gui/macosx/VLCMainWindow.m:1004
 #: modules/gui/qt/components/extended_panels.cpp:928
-#: modules/gui/qt/ui/equalizer.h:133 modules/gui/qt/ui/vlm.h:289
 msgid "Enable"
 msgstr "Cho phép"
 
@@ -2793,7 +2775,7 @@ msgstr ""
 "lược qua một luồng dữ liệu đang được tương tác với nhiều chương trình (chẳng "
 "hạn như DVB)."
 
-#: src/libvlc-module.c:582 modules/gui/qt/ui/open_disk.h:312
+#: src/libvlc-module.c:582
 msgid "Audio track"
 msgstr "Track Audio"
 
@@ -2801,7 +2783,7 @@ msgstr "Track Audio"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Số lượng luồng được sử dụng của track audio (từ 0 đến n)."
 
-#: src/libvlc-module.c:587 modules/gui/qt/ui/open_disk.h:313
+#: src/libvlc-module.c:587
 msgid "Subtitle track"
 msgstr "Track phụ đề"
 
@@ -2942,7 +2924,7 @@ msgid "The stream will run this duration (in seconds)."
 msgstr ""
 "Luồng dữ liệu sẽ được phát trong khoảng thời gian này (tính bằng giây)."
 
-#: src/libvlc-module.c:650 modules/gui/qt/ui/sprefs_input.h:363
+#: src/libvlc-module.c:650
 msgid "Fast seek"
 msgstr "Lướt nhanh"
 
@@ -3075,7 +3057,7 @@ msgstr ""
 "đây và chỉnh sửa chúng trong \"bộ lọc nguồn dành cho phụ đề\" nằm trong phần "
 "module. Bạn có thể tăng hoặc giảm một hoặc nhiều các hình ảnh phụ đề."
 
-#: src/libvlc-module.c:709 modules/gui/qt/ui/sprefs_subtitles.h:305
+#: src/libvlc-module.c:709
 msgid "Force subtitle position"
 msgstr "Cố định vị trí phụ đề"
 
@@ -3107,8 +3089,7 @@ msgstr ""
 "Bạn có thể hoàn toàn vô hiệu hóa tiến trình xử lý hình ảnh đi kèm với phụ đề."
 
 #: src/libvlc-module.c:721 src/libvlc-module.c:1668 src/text/iso-639_def.h:145
-#: modules/gui/macosx/VLCSimplePrefsController.m:338
-#: modules/gui/qt/ui/sprefs_subtitles.h:290
+#: modules/gui/macosx/VLCSimplePrefsController.m:345
 msgid "On Screen Display"
 msgstr "Hiển thị trên màn hình"
 
@@ -3884,7 +3865,7 @@ msgstr ""
 "Thông báo cho VLC biết khi nào sẽ được mở khi gắn kết một tập tin nào đó với "
 "VLC trong hệ điều hành bạn đang dùng"
 
-#: src/libvlc-module.c:1081 modules/gui/qt/ui/sprefs_interface.h:550
+#: src/libvlc-module.c:1081
 msgid "Use only one instance when started from file manager"
 msgstr ""
 "Chỉ sử dụng duy nhất một tiến trình khi mở tập tin từ trình quản lý tập tin"
@@ -3909,7 +3890,7 @@ msgstr ""
 "của vi xử lý cũng như sử dụng thời gian này để render hình ảnh (đôi khi ở "
 "một số hệ thống có thể phát sinh lỗi)."
 
-#: src/libvlc-module.c:1093 modules/gui/qt/ui/sprefs_interface.h:553
+#: src/libvlc-module.c:1093
 msgid "Enqueue items into playlist in one instance mode"
 msgstr ""
 "Đưa các đối tượng vào hàng đợi trong danh sách ở chế độ chạy một tiến trình"
@@ -3965,9 +3946,8 @@ msgid "Maximum time allowed to preparse an item, in milliseconds"
 msgstr ""
 "Giá trị tạm lưu dữ liệu với camera và microphone, tính bằng phần nghìn giây."
 
-#: src/libvlc-module.c:1120 modules/gui/macosx/VLCSimplePrefsController.m:321
+#: src/libvlc-module.c:1120 modules/gui/macosx/VLCSimplePrefsController.m:328
 #: modules/gui/qt/dialogs/firstrun.cpp:95
-#: modules/gui/qt/ui/sprefs_interface.h:565
 msgid "Allow metadata network access"
 msgstr ""
 
@@ -4128,7 +4108,7 @@ msgstr ""
 "Thư viện media sẽ được tự động lưu và nạp lại thông tin mỗi khi bạn khởi "
 "động VLC."
 
-#: src/libvlc-module.c:1192 modules/gui/qt/ui/sprefs_interface.h:551
+#: src/libvlc-module.c:1192
 msgid "Display playlist tree"
 msgstr "Hiển thị danh sách dạng cây"
 
@@ -4197,7 +4177,6 @@ msgstr ""
 #: modules/gui/macosx/VLCControlsBarCommon.m:81
 #: modules/gui/macosx/VLCMainMenu.m:422 modules/gui/macosx/VLCMainMenu.m:501
 #: modules/gui/qt/components/controller.hpp:108
-#: modules/gui/qt/ui/sprefs_video.h:318
 msgid "Fullscreen"
 msgstr "Toàn màn hình"
 
@@ -4280,7 +4259,6 @@ msgstr "Chậm hơn (tốt)"
 #: modules/gui/macosx/VLCMainMenu.m:497
 #: modules/gui/qt/components/controller.hpp:112
 #: modules/gui/qt/dialogs/sout.cpp:93 modules/notify/notify.c:335
-#: modules/gui/qt/ui/streampanel.h:181
 msgid "Next"
 msgstr "Tiếp theo"
 
@@ -4305,7 +4283,7 @@ msgstr "Sử dụng phím tắt để lùi về tập tin kế tiếp trong danh
 #: modules/gui/macosx/VLCMainMenu.m:488 modules/gui/macosx/VLCMainMenu.m:495
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:61
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:545 modules/gui/qt/ui/streampanel.h:180
+#: modules/gui/qt/dialogs/vlm.cpp:545
 msgid "Stop"
 msgstr "Dừng lại"
 
@@ -4318,8 +4296,6 @@ msgstr "Sử dụng phím tắt để dừng phát lại."
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:286
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:308
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
-#: modules/gui/qt/ui/sprefs_subtitles.h:293
-#: modules/gui/qt/ui/video_effects.h:1279
 msgid "Position"
 msgstr "Vị trí"
 
@@ -5053,8 +5029,6 @@ msgstr "Hình ảnh phụ đề"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
 #: modules/gui/macosx/VLCMainMenu.m:440
 #: share/lua/http/dialogs/create_stream.html:153
-#: modules/gui/qt/ui/profiles.h:718 modules/gui/qt/ui/profiles.h:762
-#: modules/gui/qt/ui/profiles.h:765
 msgid "Subtitles"
 msgstr "Phụ đề"
 
@@ -5066,7 +5040,7 @@ msgstr "Hiển thị chồng lên màn hình"
 msgid "Track settings"
 msgstr "Thiết lập track"
 
-#: src/libvlc-module.c:1747 modules/gui/macosx/VLCSimplePrefsController.m:309
+#: src/libvlc-module.c:1747 modules/gui/macosx/VLCSimplePrefsController.m:316
 msgid "Playback control"
 msgstr "Điều khiển phát lại"
 
@@ -5229,8 +5203,6 @@ msgstr "Dừng lại Trình Quản Lý"
 
 #: src/misc/actions.c:62 modules/gui/macosx/VLCMainMenu.m:361
 #: modules/gui/macosx/VLCPlaylist.m:231 modules/gui/qt/dialogs/bookmarks.cpp:50
-#: modules/gui/qt/ui/podcast_configuration.h:104
-#: modules/gui/qt/ui/streampanel.h:172
 msgid "Delete"
 msgstr "Xóa"
 
@@ -5502,7 +5474,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "Thất bại khi mở \"%s\" để ghi dữ liệu"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2716
+#: modules/demux/avi/avi.c:2719
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:511
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:569
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:823
@@ -5519,10 +5491,10 @@ msgstr "Thất bại khi mở \"%s\" để ghi dữ liệu"
 #: modules/gui/macosx/VLCMainWindow.m:211
 #: modules/gui/macosx/VLCOpenWindowController.m:134
 #: modules/gui/macosx/VLCOpenWindowController.m:192
-#: modules/gui/macosx/VLCSimplePrefsController.m:274
-#: modules/gui/macosx/VLCSimplePrefsController.m:300
-#: modules/gui/macosx/VLCSimplePrefsController.m:371
-#: modules/gui/macosx/VLCSimplePrefsController.m:813
+#: modules/gui/macosx/VLCSimplePrefsController.m:281
+#: modules/gui/macosx/VLCSimplePrefsController.m:307
+#: modules/gui/macosx/VLCSimplePrefsController.m:378
+#: modules/gui/macosx/VLCSimplePrefsController.m:820
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:50
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:792
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:861
@@ -5531,6 +5503,7 @@ msgstr "Thất bại khi mở \"%s\" để ghi dữ liệu"
 #: modules/gui/qt/components/preferences_widgets.cpp:1428
 #: modules/gui/qt/components/sout/profile_selector.cpp:446
 #: modules/gui/qt/dialogs/sout.cpp:92
+#: modules/stream_out/chromecast/cast.cpp:305
 msgid "Cancel"
 msgstr "Hủy bỏ"
 
@@ -6280,7 +6253,7 @@ msgstr "Tự chỉnh tỉ lệ video"
 #: src/video_output/vout_intf.c:203 modules/gui/macosx/VLCMainMenu.m:429
 #: modules/gui/macosx/VLCMainMenu.m:430
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:193
-#: modules/video_filter/croppadd.c:87 modules/gui/qt/ui/video_effects.h:1239
+#: modules/video_filter/croppadd.c:87
 msgid "Crop"
 msgstr "Bỏ"
 
@@ -6433,7 +6406,6 @@ msgstr ""
 "Mã vùng để chạy Blu-Ray. Một số dĩa chỉ có thể chạy với mã vùng phù hợp."
 
 #: modules/access/bluray.c:92 modules/services_discovery/udev.c:601
-#: modules/gui/qt/ui/open_disk.h:299
 msgid "Blu-ray"
 msgstr "Blu-ray"
 
@@ -6531,7 +6503,6 @@ msgid "Audio CD - Track %02i"
 msgstr "Audio CD - TRack %02i"
 
 #: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
-#: modules/gui/qt/ui/open_disk.h:300
 msgid "Audio CD"
 msgstr "Audio CD"
 
@@ -7662,7 +7633,6 @@ msgid "File"
 msgstr "Tập tin"
 
 #: modules/access/fs.c:44 modules/demux/directory.c:93
-#: modules/gui/qt/ui/sprefs_video.h:331
 msgid "Directory"
 msgstr "Thư mục"
 
@@ -7680,7 +7650,7 @@ msgstr ""
 #: modules/access/smb_common.h:21 modules/access/vnc.c:46
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
-#: modules/gui/macosx/VLCSimplePrefsController.m:266
+#: modules/gui/macosx/VLCSimplePrefsController.m:273
 #: modules/gui/qt/dialogs/external.cpp:206 modules/misc/audioscrobbler.c:114
 #: modules/stream_out/rtp.c:173
 msgid "Username"
@@ -7699,8 +7669,8 @@ msgstr "Tên người dùng được dùng cho phần kết nối."
 #: modules/access/smb_common.h:24 modules/access/vnc.c:47
 #: modules/access_output/http.c:55
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
-#: modules/gui/macosx/VLCSimplePrefsController.m:265
-#: modules/gui/macosx/VLCSimplePrefsController.m:327
+#: modules/gui/macosx/VLCSimplePrefsController.m:272
+#: modules/gui/macosx/VLCSimplePrefsController.m:334
 #: modules/gui/qt/dialogs/external.cpp:211 modules/lua/vlc.c:54
 #: modules/lua/vlc.c:70 modules/misc/audioscrobbler.c:116
 #: modules/stream_out/rtp.c:176
@@ -7932,7 +7902,6 @@ msgstr "Số lượng kênh dành cho luồng dữ liệu cơ bản dạng audio
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
 #: modules/gui/qt/components/extended_panels.cpp:1297 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
-#: modules/gui/qt/ui/profiles.h:743
 msgid "Width"
 msgstr "Chiều rộng"
 
@@ -7945,7 +7914,6 @@ msgstr "Chiều rộng của video hoặc phụ đề đối với các luồng 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:168
 #: modules/spu/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
-#: modules/gui/qt/ui/profiles.h:746
 msgid "Height"
 msgstr "Chiều cao"
 
@@ -8651,7 +8619,7 @@ msgstr "Dữ liệu màn hình đầu vào"
 #: modules/gui/macosx/VLCOpenWindowController.m:209
 #: modules/gui/macosx/VLCOpenWindowController.m:480
 #: modules/gui/macosx/VLCOpenWindowController.m:1096
-#: modules/gui/macosx/VLCSimplePrefsController.m:654
+#: modules/gui/macosx/VLCSimplePrefsController.m:661
 msgid "Screen"
 msgstr "Màn hình"
 
@@ -8965,7 +8933,6 @@ msgstr "Thiết đặt lại các điều khiển trở về dạng mặc địn
 
 #: modules/access/v4l2/v4l2.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:205
-#: modules/gui/qt/ui/video_effects.h:1217
 msgid "Brightness"
 msgstr "Độ sáng"
 
@@ -8983,7 +8950,6 @@ msgstr "Tự động canh chỉnh độ sáng của hình ảnh."
 
 #: modules/access/v4l2/v4l2.c:89
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:204
-#: modules/gui/qt/ui/video_effects.h:1219
 msgid "Contrast"
 msgstr "Tương phản"
 
@@ -8994,8 +8960,6 @@ msgstr "Độ lương phản của hình ảnh hoặc độ tăng luma."
 #: modules/access/v4l2/v4l2.c:91
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:207
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:253
-#: modules/gui/qt/ui/video_effects.h:1220
-#: modules/gui/qt/ui/video_effects.h:1252
 msgid "Saturation"
 msgstr "Độ tương phản"
 
@@ -9005,7 +8969,6 @@ msgstr "Trạng thái bão hòa hình ảnh hoặc tăng đơn sắc."
 
 #: modules/access/v4l2/v4l2.c:93
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:203
-#: modules/gui/qt/ui/video_effects.h:1216
 msgid "Hue"
 msgstr "Tông màu"
 
@@ -9060,7 +9023,6 @@ msgstr "Cân bằng đơn sắc xanh."
 
 #: modules/access/v4l2/v4l2.c:111
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:208
-#: modules/gui/qt/ui/video_effects.h:1221
 msgid "Gamma"
 msgstr "Gamma"
 
@@ -9189,7 +9151,7 @@ msgstr "Black & white"
 
 #: modules/access/v4l2/v4l2.c:164
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:255
-#: modules/video_filter/sepia.c:66 modules/gui/qt/ui/video_effects.h:1254
+#: modules/video_filter/sepia.c:66
 msgid "Sepia"
 msgstr "Mực nâu đen"
 
@@ -10991,7 +10953,7 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "Giao diệu K Audio với audio đầu ra"
 
-#: modules/audio_output/mmdevice.c:1293 modules/gui/qt/ui/sprefs_audio.h:419
+#: modules/audio_output/mmdevice.c:1293
 msgid "HDMI/SPDIF audio passthrough"
 msgstr ""
 
@@ -11366,7 +11328,7 @@ msgid "Internal libavcodec codec name"
 msgstr "Tên codec của libavcode"
 
 #: modules/codec/avcodec/avcodec.h:108
-#: modules/gui/macosx/VLCSimplePrefsController.m:292
+#: modules/gui/macosx/VLCSimplePrefsController.m:299
 msgid "Skip the loop filter for H.264 decoding"
 msgstr "Bỏ qua thao tác lặp lại bộ lọc đối với việc giải mã H.264"
 
@@ -11691,32 +11653,32 @@ msgstr ""
 "Bạn có thể đặt câu hỏi hoặc gửi email đến nhóm phát triển để sửa lỗi này, và "
 "xin lưu ý, lỗi này không phải đến từ phía VLC.\n"
 
-#: modules/codec/avcodec/encoder.c:872
+#: modules/codec/avcodec/encoder.c:869
 msgid "unknown"
 msgstr "chưa rõ"
 
-#: modules/codec/avcodec/encoder.c:872
+#: modules/codec/avcodec/encoder.c:869
 msgid "video"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:873
+#: modules/codec/avcodec/encoder.c:870
 msgid "audio"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:873
+#: modules/codec/avcodec/encoder.c:870
 msgid "subpicture"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:886
+#: modules/codec/avcodec/encoder.c:883
 #, c-format
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr ""
 
-#: modules/codec/avcodec/vaapi.c:349
+#: modules/codec/avcodec/vaapi.c:352
 msgid "VA-API video decoder via DRM"
 msgstr ""
 
-#: modules/codec/avcodec/vaapi.c:354
+#: modules/codec/avcodec/vaapi.c:357
 #, fuzzy
 msgid "VA-API video decoder"
 msgstr "Giải mã video PNG"
@@ -11727,8 +11689,8 @@ msgid "BPG image decoder"
 msgstr "Trình giải mã hình ảnh XWD"
 
 #: modules/codec/cc.c:51 modules/codec/zvbi.c:65
-#: modules/gui/macosx/VLCSimplePrefsController.m:340 modules/spu/marq.c:108
-#: modules/spu/rss.c:144 modules/gui/qt/ui/video_effects.h:1276
+#: modules/gui/macosx/VLCSimplePrefsController.m:347 modules/spu/marq.c:108
+#: modules/spu/rss.c:144
 msgid "Opacity"
 msgstr "Độ mờ"
 
@@ -13096,7 +13058,6 @@ msgstr ""
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:258
-#: modules/gui/qt/ui/sprefs_video.h:328 modules/gui/qt/ui/video_effects.h:1246
 msgid "Mode"
 msgstr "Chế độ"
 
@@ -13645,7 +13606,7 @@ msgstr "Trình giải mã audio dạng Ulead DV"
 msgid "Use Hardware decoders only"
 msgstr "Giải mã phần cứng"
 
-#: modules/codec/videotoolbox.m:81 modules/gui/qt/ui/sprefs_video.h:327
+#: modules/codec/videotoolbox.m:81
 msgid "Deinterlacing"
 msgstr "Chống quét mành"
 
@@ -14567,7 +14528,6 @@ msgid "Quiet mode"
 msgstr "Chế độ im lặng"
 
 #: modules/codec/x264.c:403 modules/gui/macosx/VLCPlaylistInfo.m:69
-#: modules/gui/qt/ui/streampanel.h:170
 msgid "Statistics"
 msgstr "Thống kê"
 
@@ -14657,7 +14617,7 @@ msgstr "Nhan"
 
 #: modules/codec/x264.c:435 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:384
-#: modules/gui/macosx/VLCSimplePrefsController.m:689
+#: modules/gui/macosx/VLCSimplePrefsController.m:696
 #: modules/gui/qt/components/simple_preferences.cpp:666
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
@@ -14760,7 +14720,7 @@ msgstr ""
 msgid "Presentation Level"
 msgstr "Mức độ nén"
 
-#: modules/codec/zvbi.c:88 modules/gui/qt/ui/streampanel.h:169
+#: modules/codec/zvbi.c:88
 msgid "1"
 msgstr "1"
 
@@ -14797,14 +14757,14 @@ msgstr ""
 #: modules/gui/macosx/VLCMainWindow.m:675
 #: modules/gui/macosx/VLCMainWindow.m:1276
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1264
-#: modules/gui/qt/main_interface.cpp:1268
-#: modules/gui/qt/main_interface.cpp:1307
-#: modules/gui/qt/main_interface.cpp:1309
-#: modules/gui/qt/main_interface.cpp:1418
-#: modules/gui/qt/main_interface.cpp:1435
-#: modules/gui/qt/main_interface.cpp:1443
-#: modules/gui/qt/main_interface.cpp:1466 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1265
+#: modules/gui/qt/main_interface.cpp:1269
+#: modules/gui/qt/main_interface.cpp:1308
+#: modules/gui/qt/main_interface.cpp:1310
+#: modules/gui/qt/main_interface.cpp:1419
+#: modules/gui/qt/main_interface.cpp:1436
+#: modules/gui/qt/main_interface.cpp:1444
+#: modules/gui/qt/main_interface.cpp:1467 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -14867,7 +14827,7 @@ msgid "Global Hotkeys interface"
 msgstr "Phím tắt giao diện chung"
 
 #: modules/control/hotkeys.c:100
-#: modules/gui/macosx/VLCSimplePrefsController.m:230
+#: modules/gui/macosx/VLCSimplePrefsController.m:237
 #: modules/gui/qt/components/preferences_widgets.cpp:1145
 #: modules/gui/qt/components/simple_preferences.cpp:233
 msgid "Hotkeys"
@@ -15649,7 +15609,7 @@ msgid "Avformat muxer"
 msgstr ""
 
 #: modules/demux/avformat/avformat.c:56
-#: modules/stream_out/chromecast/cast.cpp:109 modules/stream_out/rtp.c:87
+#: modules/stream_out/chromecast/cast.cpp:110 modules/stream_out/rtp.c:87
 msgid "Muxer"
 msgstr ""
 
@@ -15705,7 +15665,7 @@ msgstr "Sửa chữa khi cần thiết"
 msgid "AVI demuxer"
 msgstr ""
 
-#: modules/demux/avi/avi.c:825 modules/demux/mp4/mp4.c:1671
+#: modules/demux/avi/avi.c:828 modules/demux/mp4/mp4.c:1673
 #, fuzzy
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
@@ -15722,28 +15682,28 @@ msgstr ""
 "Thao tác này sẽ tốn nhiều thời gian nếu tập tin có kích thước lớn.\n"
 "Bạn có muốn thực hiện thao tác đánh số lại chỉ mục hay không?"
 
-#: modules/demux/avi/avi.c:833
+#: modules/demux/avi/avi.c:836
 msgid "Do not play"
 msgstr "Không phát"
 
-#: modules/demux/avi/avi.c:834
+#: modules/demux/avi/avi.c:837
 msgid "Build index then play"
 msgstr "Lập danh mục thứ tự sau đó phát"
 
-#: modules/demux/avi/avi.c:835
+#: modules/demux/avi/avi.c:838
 msgid "Play as is"
 msgstr "Phát dưới dạng"
 
-#: modules/demux/avi/avi.c:836 modules/demux/mp4/mp4.c:1682
+#: modules/demux/avi/avi.c:839 modules/demux/mp4/mp4.c:1684
 #, fuzzy
 msgid "Broken or missing Index"
 msgstr "Chỉ số thứ tự AVI bị thiếu hoặc bị lỗi"
 
-#: modules/demux/avi/avi.c:2717
+#: modules/demux/avi/avi.c:2720
 msgid "Broken or missing AVI Index"
 msgstr "Chỉ số thứ tự AVI bị thiếu hoặc bị lỗi"
 
-#: modules/demux/avi/avi.c:2718
+#: modules/demux/avi/avi.c:2721
 msgid "Fixing AVI Index..."
 msgstr "Đang sửa lại chỉ mục AVI..."
 
@@ -15894,7 +15854,7 @@ msgstr "Chương của codec"
 msgid "Use chapter codecs found in the segment."
 msgstr ""
 
-#: modules/demux/mkv/mkv.cpp:64 modules/gui/qt/ui/sprefs_input.h:370
+#: modules/demux/mkv/mkv.cpp:64
 msgid "Preload MKV files in the same directory"
 msgstr "Tải lại tập tin MKV trong cùng thư mục"
 
@@ -16180,12 +16140,12 @@ msgstr "Bộ tách kênh luồng dữ liệu dạng MP4"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:1679
+#: modules/demux/mp4/mp4.c:1681
 #, fuzzy
 msgid "Do not seek"
 msgstr "Không phát"
 
-#: modules/demux/mp4/mp4.c:1680
+#: modules/demux/mp4/mp4.c:1682
 #, fuzzy
 msgid "Build index"
 msgstr "Lập danh mục thứ tự sau đó phát"
@@ -16938,13 +16898,11 @@ msgid "Skins"
 msgstr "Giao diện"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
-#: modules/gui/qt/ui/equalizer.h:134
 msgid "2 Pass"
 msgstr "2 Pass"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:218
 #: modules/gui/qt/components/extended_panels.cpp:1111
-#: modules/gui/qt/ui/equalizer.h:136
 msgid "Preamp"
 msgstr "Tái khuếch đại"
 
@@ -16997,7 +16955,7 @@ msgstr "Bộ lọc"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:274
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:84
-#: modules/gui/macosx/VLCSimplePrefsController.m:260
+#: modules/gui/macosx/VLCSimplePrefsController.m:267
 #: modules/gui/qt/dialogs/extended.cpp:96
 msgid "Audio Effects"
 msgstr "Hiệu ứng Audio"
@@ -17028,12 +16986,11 @@ msgstr "Điền vào tên cho hồ sơ mới:"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:377
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:476
 #: modules/gui/macosx/VLCMainMenu.m:1149 modules/gui/macosx/VLCOutput.m:411
-#: modules/gui/macosx/VLCSimplePrefsController.m:299
-#: modules/gui/macosx/VLCSimplePrefsController.m:373
+#: modules/gui/macosx/VLCSimplePrefsController.m:306
+#: modules/gui/macosx/VLCSimplePrefsController.m:380
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:793
 #: modules/gui/macosx/prefs.m:188
 #: modules/gui/qt/components/sout/profile_selector.cpp:443
-#: modules/gui/qt/ui/vlm.h:301
 msgid "Save"
 msgstr "Lưu"
 
@@ -17064,7 +17021,6 @@ msgstr "Chọn thiết lập mà bạn muốn loại bỏ:"
 #: modules/gui/macosx/VLCBookmarksWindowController.m:81
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
-#: modules/gui/qt/ui/open_file.h:154
 msgid "Remove"
 msgstr "Loại bỏ"
 
@@ -17089,14 +17045,12 @@ msgid "Bookmarks"
 msgstr "Đánh dấu"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:78
-#: modules/gui/qt/ui/podcast_configuration.h:103 modules/gui/qt/ui/sout.h:209
-#: modules/gui/qt/ui/vlm.h:299
 msgid "Add"
 msgstr "Thêm"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:79
-#: modules/gui/macosx/VLCSimplePrefsController.m:276
-#: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:300
+#: modules/gui/macosx/VLCSimplePrefsController.m:283
+#: modules/gui/qt/dialogs/bookmarks.cpp:53
 msgid "Clear"
 msgstr "Dọn dẹp"
 
@@ -17123,9 +17077,10 @@ msgstr "Thời gian"
 #: modules/gui/macosx/VLCCoreDialogProvider.m:236
 #: modules/gui/macosx/VLCOpenWindowController.m:363
 #: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:342
-#: modules/gui/macosx/VLCSimplePrefsController.m:275
+#: modules/gui/macosx/VLCSimplePrefsController.m:282
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1359
+#: modules/stream_out/chromecast/cast.cpp:305
 msgid "OK"
 msgstr "Đồng ý"
 
@@ -17246,15 +17201,12 @@ msgstr "Chọn một vị trí để xuất dữ liệu ra"
 #: modules/gui/macosx/VLCOpenWindowController.m:147
 #: modules/gui/macosx/VLCOpenWindowController.m:350
 #: modules/gui/macosx/VLCOutput.m:67
-#: modules/gui/macosx/VLCSimplePrefsController.m:283
-#: modules/gui/macosx/VLCSimplePrefsController.m:360
+#: modules/gui/macosx/VLCSimplePrefsController.m:290
+#: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:440
 #: modules/gui/qt/components/sout/sout_widgets.cpp:132
-#: modules/gui/qt/ui/open.h:282 modules/gui/qt/ui/open_disk.h:307
-#: modules/gui/qt/ui/open_file.h:147 modules/gui/qt/ui/sprefs_audio.h:417
-#: modules/gui/qt/ui/sprefs_input.h:368 modules/gui/qt/ui/sprefs_video.h:332
 msgid "Browse..."
 msgstr "Duyệt tìm..."
 
@@ -17288,34 +17240,28 @@ msgid "Save as new Profile..."
 msgstr "Lưu dưới dạng một hồ sơ mới..."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:155
-#: modules/gui/qt/ui/profiles.h:725
 msgid "Encapsulation"
 msgstr "Phương pháp rút gọn"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:156
 #: share/lua/http/dialogs/create_stream.html:160
-#: modules/gui/qt/ui/profiles.h:751
 msgid "Video codec"
 msgstr "Codec của video"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:157
 #: share/lua/http/dialogs/create_stream.html:178
-#: modules/gui/qt/ui/profiles.h:761
 msgid "Audio codec"
 msgstr "Codec của audio"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:161
-#: modules/gui/qt/ui/profiles.h:727
 msgid "Keep original video track"
 msgstr "Giữ track video gốc"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:165
-#: modules/gui/qt/ui/profiles.h:749
 msgid "Resolution"
 msgstr "Độ phân giải"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:166
-#: modules/gui/qt/ui/profiles.h:740
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
@@ -17324,17 +17270,15 @@ msgstr ""
 "phần khác sử dụng tỉ lệ góc nguyên bản"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:169
-#: modules/gui/macosx/VLCOutput.m:88 modules/gui/qt/ui/profiles.h:741
+#: modules/gui/macosx/VLCOutput.m:88
 msgid "Scale"
 msgstr "Tỉ lệ"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:172
-#: modules/gui/qt/ui/profiles.h:753
 msgid "Keep original audio track"
 msgstr "Giữ lại track audio gốc"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:179
-#: modules/gui/qt/ui/profiles.h:764
 msgid "Overlay subtitles on the video"
 msgstr "Độ che phủ của phụ đề hiển thị lên video"
 
@@ -17465,9 +17409,9 @@ msgstr ""
 "chưa được cung cấp."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:1035
-#: modules/gui/macosx/VLCSimplePrefsController.m:683
-#: modules/gui/macosx/VLCSimplePrefsController.m:711
-#: modules/gui/macosx/VLCSimplePrefsController.m:1244
+#: modules/gui/macosx/VLCSimplePrefsController.m:690
+#: modules/gui/macosx/VLCSimplePrefsController.m:718
+#: modules/gui/macosx/VLCSimplePrefsController.m:1251
 #: modules/gui/qt/components/simple_preferences.cpp:663
 msgid "Custom"
 msgstr "Tự chọn"
@@ -17513,7 +17457,7 @@ msgstr "Thoát khỏi toàn màn hình"
 
 #: modules/gui/macosx/VLCFSPanelController.m:127
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:76
-#: modules/gui/qt/dialogs/toolbar.cpp:468 modules/gui/qt/ui/sprefs_audio.h:411
+#: modules/gui/qt/dialogs/toolbar.cpp:468
 msgid "Volume"
 msgstr "Âm lượng"
 
@@ -17593,7 +17537,7 @@ msgstr ""
 "Tính năng này có thể được vô hiệu hóa tại đây."
 
 #: modules/gui/macosx/macosx.m:76
-#: modules/gui/macosx/VLCSimplePrefsController.m:311
+#: modules/gui/macosx/VLCSimplePrefsController.m:318
 msgid "Control playback with the Apple Remote"
 msgstr "Điều khiển chế độ phát lại với Apple Remote"
 
@@ -17603,7 +17547,7 @@ msgstr ""
 "Theo mặc định, VLC có thể được điều khiển từ xa bởi thiết bị Apple Remote."
 
 #: modules/gui/macosx/macosx.m:79
-#: modules/gui/macosx/VLCSimplePrefsController.m:313
+#: modules/gui/macosx/VLCSimplePrefsController.m:320
 msgid "Control system volume with the Apple Remote"
 msgstr "Điều khiển hệ thống âm thanh với Điều Khiển Apple"
 
@@ -17617,7 +17561,7 @@ msgstr ""
 "toàn bộ hệ thống."
 
 #: modules/gui/macosx/macosx.m:82
-#: modules/gui/macosx/VLCSimplePrefsController.m:314
+#: modules/gui/macosx/VLCSimplePrefsController.m:321
 msgid "Display VLC status menu icon"
 msgstr ""
 
@@ -17645,7 +17589,7 @@ msgstr ""
 "tác này với tùy chọn này."
 
 #: modules/gui/macosx/macosx.m:88
-#: modules/gui/macosx/VLCSimplePrefsController.m:312
+#: modules/gui/macosx/VLCSimplePrefsController.m:319
 msgid "Control playback with media keys"
 msgstr "Điều khiển chế độ phát lại với phím tắt"
 
@@ -17670,7 +17614,7 @@ msgstr ""
 "giao diện mang phong cách màu xám sẽ được sử dụng."
 
 #: modules/gui/macosx/macosx.m:95
-#: modules/gui/macosx/VLCSimplePrefsController.m:356
+#: modules/gui/macosx/VLCSimplePrefsController.m:363
 msgid "Use the native fullscreen mode"
 msgstr "Sử dụng chế độ toàn màn hình theo mặc định"
 
@@ -17702,7 +17646,7 @@ msgstr ""
 " Theo mặc định, giao diện sẽ tự động canh chỉnh theo kích thước của video."
 
 #: modules/gui/macosx/macosx.m:104
-#: modules/gui/macosx/VLCSimplePrefsController.m:349 modules/gui/qt/qt.cpp:178
+#: modules/gui/macosx/VLCSimplePrefsController.m:356 modules/gui/qt/qt.cpp:178
 msgid "Pause the video playback when minimized"
 msgstr "Tạm dừng phát lại video khi được thu nhỏ"
 
@@ -17776,7 +17720,7 @@ msgstr ""
 "hệ thống."
 
 #: modules/gui/macosx/macosx.m:128
-#: modules/gui/macosx/VLCSimplePrefsController.m:318
+#: modules/gui/macosx/VLCSimplePrefsController.m:325
 msgid "Control external music players"
 msgstr ""
 
@@ -17907,7 +17851,7 @@ msgid "Hide Others"
 msgstr "Ẩn các thành phần khác"
 
 #: modules/gui/macosx/VLCMainMenu.m:342
-#: modules/gui/macosx/VLCSimplePrefsController.m:370
+#: modules/gui/macosx/VLCSimplePrefsController.m:377
 msgid "Show All"
 msgstr "Hiển thị tất cả"
 
@@ -18052,13 +17996,12 @@ msgid "Fit to Screen"
 msgstr "Vừa vặn với màn hình"
 
 #: modules/gui/macosx/VLCMainMenu.m:423
-#: modules/gui/macosx/VLCSimplePrefsController.m:350
+#: modules/gui/macosx/VLCSimplePrefsController.m:357
 msgid "Float on Top"
 msgstr "Nổi lên trên cùng"
 
 #: modules/gui/macosx/VLCMainMenu.m:431 modules/gui/macosx/VLCMainMenu.m:432
-#: modules/gui/macosx/VLCSimplePrefsController.m:357
-#: modules/gui/qt/ui/sprefs_video.h:319
+#: modules/gui/macosx/VLCSimplePrefsController.m:364
 msgid "Fullscreen Video Device"
 msgstr "Thiết bị hiển thị video toàn màn hình"
 
@@ -18355,8 +18298,7 @@ msgid "Disc"
 msgstr "Đĩa"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:142
-#: modules/gui/macosx/VLCSimplePrefsController.m:290
-#: modules/gui/qt/ui/sprefs_input.h:371
+#: modules/gui/macosx/VLCSimplePrefsController.m:297
 msgid "Network"
 msgstr "Mạng lưới"
 
@@ -18385,8 +18327,7 @@ msgstr "Phát tập tin khác theo chế độ đồng bộ hóa"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:152
 #: modules/gui/macosx/VLCOpenWindowController.m:347
-#: modules/gui/macosx/VLCSimplePrefsController.m:332
-#: modules/gui/qt/ui/sprefs_interface.h:548
+#: modules/gui/macosx/VLCSimplePrefsController.m:339
 msgid "Choose..."
 msgstr "Chọn..."
 
@@ -18418,7 +18359,7 @@ msgid "Enable DVD menus"
 msgstr "Bật tính năng hiển thị menu từ DVD"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:186
-#: modules/stream_out/chromecast/cast.cpp:114
+#: modules/stream_out/chromecast/cast.cpp:117
 msgid "IP Address"
 msgstr "Địa chỉ IP"
 
@@ -18534,8 +18475,7 @@ msgid "Subtitle encoding"
 msgstr "Mã hóa phụ đề"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:359
-#: modules/gui/macosx/VLCSimplePrefsController.m:334
-#: modules/gui/qt/ui/sprefs_subtitles.h:300
+#: modules/gui/macosx/VLCSimplePrefsController.m:341
 msgid "Font size"
 msgstr "Kích thước kiểu chữ"
 
@@ -18559,7 +18499,6 @@ msgstr "Tập tin phụ đề"
 #: modules/gui/macosx/VLCOpenWindowController.m:572
 #: modules/gui/macosx/VLCOpenWindowController.m:658
 #: modules/gui/macosx/VLCOpenWindowController.m:1258
-#: modules/gui/qt/ui/open_file.h:142
 msgid "Open File"
 msgstr "Mở Tập Tin"
 
@@ -18725,12 +18664,11 @@ msgid "Disable renderer discovery"
 msgstr "Tắt chế độ màn hình chờ"
 
 #: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:194
-#: modules/gui/qt/ui/sprefs_interface.h:554
 msgid "Continue playback?"
 msgstr ""
 
 #: modules/gui/macosx/VLCResumeDialogController.m:49
-#: modules/gui/macosx/VLCSimplePrefsController.m:814
+#: modules/gui/macosx/VLCSimplePrefsController.m:821
 #: modules/gui/qt/dialogs/firstrun.cpp:106
 msgid "Continue"
 msgstr "Tiếp tục"
@@ -18749,105 +18687,102 @@ msgstr ""
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:220
+#: modules/gui/macosx/VLCSimplePrefsController.m:227
 #: modules/gui/qt/components/simple_preferences.cpp:223
 #: modules/gui/qt/components/simple_preferences.cpp:690
 #: modules/gui/qt/dialogs/plugins.cpp:375
 msgid "Interface Settings"
 msgstr "Thiết lập giao diện"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:222
+#: modules/gui/macosx/VLCSimplePrefsController.m:229
 #: modules/gui/qt/components/simple_preferences.cpp:225
 #: modules/gui/qt/components/simple_preferences.cpp:415
 msgid "Audio Settings"
 msgstr "Thiết lập Audio"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:224
+#: modules/gui/macosx/VLCSimplePrefsController.m:231
 #: modules/gui/qt/components/simple_preferences.cpp:227
 #: modules/gui/qt/components/simple_preferences.cpp:355
 msgid "Video Settings"
 msgstr "Thiết lập Video"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:226
+#: modules/gui/macosx/VLCSimplePrefsController.m:233
 #: modules/gui/qt/components/simple_preferences.cpp:229
 #: modules/gui/qt/components/simple_preferences.cpp:831
 msgid "Subtitle & On Screen Display Settings"
 msgstr "Thiết lập cho phụ đề & phần hiển thị trên màn hình"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:228
+#: modules/gui/macosx/VLCSimplePrefsController.m:235
 msgid "Input & Codec Settings"
 msgstr "Thiết l&ập codec và dữ liệu đầu vào"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:262
+#: modules/gui/macosx/VLCSimplePrefsController.m:269
 msgid "General Audio"
 msgstr "Tổng quan về Audio"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:263
+#: modules/gui/macosx/VLCSimplePrefsController.m:270
 msgid "Preferred Audio language"
 msgstr "Ngôn ngữ Audio ưa thích"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:264
+#: modules/gui/macosx/VLCSimplePrefsController.m:271
 msgid "Enable Last.fm submissions"
 msgstr "Cho phép đăng ký theo dõi Last.fm"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:267
+#: modules/gui/macosx/VLCSimplePrefsController.m:274
 msgid "Visualization"
 msgstr "Hiệu ứng"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:268
+#: modules/gui/macosx/VLCSimplePrefsController.m:275
 msgid "Keep audio level between sessions"
 msgstr "Giữ mức độ đối với audio giữa các phiên khởi động"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:269
-#: modules/gui/qt/ui/sprefs_audio.h:413
+#: modules/gui/macosx/VLCSimplePrefsController.m:276
 msgid "Always reset audio start level to:"
 msgstr "Luôn thiết đặt lại cấp độ audio ở mức:"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:272
+#: modules/gui/macosx/VLCSimplePrefsController.m:279
 #: modules/gui/qt/dialogs/vlm.cpp:493
 msgid "Change"
 msgstr "Thay đổi"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:273
+#: modules/gui/macosx/VLCSimplePrefsController.m:280
 msgid "Change Hotkey"
 msgstr "Thay đổi phím tắt"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:277
+#: modules/gui/macosx/VLCSimplePrefsController.m:284
 msgid "Select an action to change the associated hotkey:"
 msgstr "Chọn một thao tác để thay đổi các phím tắt tương ứng:"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:278
+#: modules/gui/macosx/VLCSimplePrefsController.m:285
 #: modules/gui/qt/components/preferences_widgets.cpp:1150
 msgid "Action"
 msgstr "Thao tác"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:279
+#: modules/gui/macosx/VLCSimplePrefsController.m:286
 msgid "Shortcut"
 msgstr "Liên kết"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:282
-#: modules/gui/qt/ui/sprefs_input.h:367
+#: modules/gui/macosx/VLCSimplePrefsController.m:289
 msgid "Record directory or filename"
 msgstr "Thư mục lưu phần ghi âm hoặc tên tập tin"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:284
+#: modules/gui/macosx/VLCSimplePrefsController.m:291
 msgid "Directory or filename where the records will be stored"
 msgstr "Thư mục hoặc tên tập tin để lưu phần ghi âm"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:285
+#: modules/gui/macosx/VLCSimplePrefsController.m:292
 msgid "Repair AVI Files"
 msgstr "Sử lỗi tập tin dạng AVI"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:286
+#: modules/gui/macosx/VLCSimplePrefsController.m:293
 msgid "Default Caching Level"
 msgstr "Cấp độ tạm lưu của bộ nhớ đệm mặc định"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:287
-#: modules/gui/qt/ui/open.h:266
+#: modules/gui/macosx/VLCSimplePrefsController.m:294
 msgid "Caching"
 msgstr "Bộ nhớ đệm"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:288
+#: modules/gui/macosx/VLCSimplePrefsController.m:295
 msgid ""
 "Use the complete preferences to configure custom caching values for each "
 "access module."
@@ -18855,225 +18790,215 @@ msgstr ""
 "Sử dụng các thiết lập sau đây để lực chọn các giá trị lưu trữ của bộ nhớ đệm "
 "cho từng phương thứ truy cập."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:289
+#: modules/gui/macosx/VLCSimplePrefsController.m:296
 msgid "Codecs / Muxers"
 msgstr "Codec/Dồn kênh"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:291
+#: modules/gui/macosx/VLCSimplePrefsController.m:298
 msgid "Post-Processing Quality"
 msgstr "Chất lượng tiền xử lý"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:293
+#: modules/gui/macosx/VLCSimplePrefsController.m:300
 msgid "Edit default application settings for network protocols"
 msgstr ""
 "Chỉnh sửa các thiết lập mặc định của chương trình đối với các giao thức mạng"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:297
+#: modules/gui/macosx/VLCSimplePrefsController.m:304
 msgid "Open network streams using the following protocols"
 msgstr "Mở các luồng dữ liệu mạng bằng các giao thức sau đây"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:298
+#: modules/gui/macosx/VLCSimplePrefsController.m:305
 msgid "Note that these are system-wide settings."
 msgstr "chú ý rằng các thiết lập này thuộc về hệ thống-có màn hình lớn."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:303
+#: modules/gui/macosx/VLCSimplePrefsController.m:310
 #, fuzzy
 msgid "General settings"
 msgstr "Thiết lập chung cho Audio"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:305
+#: modules/gui/macosx/VLCSimplePrefsController.m:312
 msgid "Interface style"
 msgstr "Kiểu giao diện"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:306
+#: modules/gui/macosx/VLCSimplePrefsController.m:313
 msgid "Dark"
 msgstr "Tối"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:307
+#: modules/gui/macosx/VLCSimplePrefsController.m:314
 msgid "Bright"
 msgstr "Sáng"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:310
+#: modules/gui/macosx/VLCSimplePrefsController.m:317
 msgid "Continue playback"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:316
+#: modules/gui/macosx/VLCSimplePrefsController.m:323
 #, fuzzy
 msgid "Playback behaviour"
 msgstr "Phát lại thất bại"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:317
+#: modules/gui/macosx/VLCSimplePrefsController.m:324
 #, fuzzy
 msgid "Enable notifications on playlist item change"
 msgstr ""
 "Bật tính năng thông báo Growl (khi các đối tượng trong dánh sách phát thay "
 "đổi)"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:320
-#: modules/gui/qt/ui/sprefs_interface.h:556
+#: modules/gui/macosx/VLCSimplePrefsController.m:327
 msgid "Privacy / Network Interaction"
 msgstr "Tương tác về mạng / quyền riêng tư thông tin"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:322
+#: modules/gui/macosx/VLCSimplePrefsController.m:329
 msgid "Automatically check for updates"
 msgstr "Tự động kiểm tra cập nhật"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:325
+#: modules/gui/macosx/VLCSimplePrefsController.m:332
 #, fuzzy
 msgid "HTTP web interface"
 msgstr "Giao diện QT"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:326
+#: modules/gui/macosx/VLCSimplePrefsController.m:333
 #, fuzzy
 msgid "Enable HTTP web interface"
 msgstr "Giao diện có thể thay đổi"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:330
+#: modules/gui/macosx/VLCSimplePrefsController.m:337
 msgid "Default Encoding"
 msgstr "Mã hóa mặc định"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:331
+#: modules/gui/macosx/VLCSimplePrefsController.m:338
 msgid "Display Settings"
 msgstr "Thiết lập hiển thị"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:333
-#: modules/gui/qt/ui/sprefs_subtitles.h:301
+#: modules/gui/macosx/VLCSimplePrefsController.m:340
 msgid "Font color"
 msgstr "Màu Chữ"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:335 modules/spu/marq.c:157
+#: modules/gui/macosx/VLCSimplePrefsController.m:342 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
-#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Font"
 msgstr "Kiểu chữ"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:336
+#: modules/gui/macosx/VLCSimplePrefsController.m:343
 msgid "Subtitle languages"
 msgstr "Ngôn ngữ của phụ đề"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:337
-#: modules/gui/qt/ui/sprefs_subtitles.h:296
+#: modules/gui/macosx/VLCSimplePrefsController.m:344
 msgid "Preferred subtitle language"
 msgstr "Ngôn ngữ phụ đề ưa thích"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:339
+#: modules/gui/macosx/VLCSimplePrefsController.m:346
 msgid "Enable OSD"
 msgstr "Cho phép hiển thị trên màn hình"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:341
+#: modules/gui/macosx/VLCSimplePrefsController.m:348
 #: modules/text_renderer/freetype/freetype.c:104
 msgid "Force bold"
 msgstr "Bắt buộc in đậm"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:342
+#: modules/gui/macosx/VLCSimplePrefsController.m:349
 #: modules/text_renderer/freetype/freetype.c:110
-#: modules/gui/qt/ui/sprefs_subtitles.h:303
 msgid "Outline color"
 msgstr "Màu của đường nét biên"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:343
+#: modules/gui/macosx/VLCSimplePrefsController.m:350
 #: modules/text_renderer/freetype/freetype.c:111
-#: modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Outline thickness"
 msgstr "Độ dày nét chữ"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:347
-#: modules/stream_out/display.c:53 modules/gui/qt/ui/sprefs_video.h:315
+#: modules/gui/macosx/VLCSimplePrefsController.m:354
+#: modules/stream_out/display.c:53
 msgid "Display"
 msgstr "Hiển thị"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:348
+#: modules/gui/macosx/VLCSimplePrefsController.m:355
 msgid "Show video within the main window"
 msgstr "Hiển thị video trong màn hình chính"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:353
+#: modules/gui/macosx/VLCSimplePrefsController.m:360
 #, fuzzy
 msgid "Fullscreen settings"
 msgstr "Toàn màn hình"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:354
+#: modules/gui/macosx/VLCSimplePrefsController.m:361
 #, fuzzy
 msgid "Start in fullscreen"
 msgstr "Xem video ở chế độ toàn màn hình"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:355
+#: modules/gui/macosx/VLCSimplePrefsController.m:362
 msgid "Black screens in Fullscreen mode"
 msgstr "Hiển thị màn hình màu đen trong chế độ toàn màn hình"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:359
-#: modules/gui/qt/ui/sprefs_video.h:330
+#: modules/gui/macosx/VLCSimplePrefsController.m:366
 msgid "Video snapshots"
 msgstr "Chụp hình Video"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:361
+#: modules/gui/macosx/VLCSimplePrefsController.m:368
 #: modules/meta_engine/folder.c:69
 msgid "Folder"
 msgstr "Thư mục"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:362
-#: modules/gui/qt/ui/sprefs_video.h:336
+#: modules/gui/macosx/VLCSimplePrefsController.m:369
 msgid "Format"
 msgstr "Định dạng"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:363
-#: modules/gui/qt/ui/sprefs_video.h:333
+#: modules/gui/macosx/VLCSimplePrefsController.m:370
 msgid "Prefix"
 msgstr "Tiền tố"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:364
-#: modules/gui/qt/ui/sprefs_video.h:335
+#: modules/gui/macosx/VLCSimplePrefsController.m:371
 msgid "Sequential numbering"
 msgstr "Đánh số theo thứ tự liên tiếp"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:372
+#: modules/gui/macosx/VLCSimplePrefsController.m:379
 #: modules/gui/macosx/prefs.m:190
 msgid "Reset All"
 msgstr "Thiết lập lại toàn bộ"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:374
+#: modules/gui/macosx/VLCSimplePrefsController.m:381
 #: modules/gui/macosx/prefs.m:187 modules/gui/qt/dialogs/preferences.cpp:56
 msgid "Preferences"
 msgstr "Tùy Biến"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:547
+#: modules/gui/macosx/VLCSimplePrefsController.m:554
 msgid ""
 "Media files cannot be resumed because keeping recent media items is disabled."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:567
+#: modules/gui/macosx/VLCSimplePrefsController.m:574
 msgid "Last check on: %@"
 msgstr "Lần cuối cùng kiểm tra vào: %@"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:569
+#: modules/gui/macosx/VLCSimplePrefsController.m:576
 msgid "No check was performed yet."
 msgstr "Vẫn chưa thực hiện việc kiểm tra."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:685
+#: modules/gui/macosx/VLCSimplePrefsController.m:692
 #, fuzzy
 msgid "Lowest Latency"
 msgstr "Độ trễ thấp nhất"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:687
+#: modules/gui/macosx/VLCSimplePrefsController.m:694
 #, fuzzy
 msgid "Low Latency"
 msgstr "Độ trễ thấp"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:691
+#: modules/gui/macosx/VLCSimplePrefsController.m:698
 #, fuzzy
 msgid "Higher Latency"
 msgstr "Độ trễ cao hơn"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:693
+#: modules/gui/macosx/VLCSimplePrefsController.m:700
 #, fuzzy
 msgid "Highest Latency"
 msgstr "Độ trễ cao hơn"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:813
+#: modules/gui/macosx/VLCSimplePrefsController.m:820
 #: modules/gui/qt/dialogs/preferences.cpp:336
 msgid "Reset Preferences"
 msgstr "Thiết lập lại toàn bộ Tùy Biến"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:816
+#: modules/gui/macosx/VLCSimplePrefsController.m:823
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -19095,25 +19020,25 @@ msgstr ""
 "\n"
 "Bạn có chắc muốn thực hiện thao tác này không?"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1086
+#: modules/gui/macosx/VLCSimplePrefsController.m:1093
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1155
+#: modules/gui/macosx/VLCSimplePrefsController.m:1162
 msgid "Choose the folder to save your video snapshots to."
 msgstr "Chọn thư mục mà bạn sẽ lưu phần ảnh chụp các cảnh của video."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1157
-#: modules/gui/macosx/VLCSimplePrefsController.m:1256
+#: modules/gui/macosx/VLCSimplePrefsController.m:1164
+#: modules/gui/macosx/VLCSimplePrefsController.m:1263
 msgid "Choose"
 msgstr "Chọn"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1254
+#: modules/gui/macosx/VLCSimplePrefsController.m:1261
 msgid "Choose the directory or filename where the records will be stored."
 msgstr "Chọn thư mục hoặc điền vào tên tập tin nhằm lưu lại phần ghi âm."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1371
+#: modules/gui/macosx/VLCSimplePrefsController.m:1378
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -19121,16 +19046,16 @@ msgstr ""
 "Ấn phím mới cho\n"
 "\"%@\""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1444
+#: modules/gui/macosx/VLCSimplePrefsController.m:1451
 msgid "Invalid combination"
 msgstr "Kết hợp không hợp lệ."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1445
+#: modules/gui/macosx/VLCSimplePrefsController.m:1452
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "Rất đáng tiếc, những phím này không thể gán thành phím tắt được."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1455
-#: modules/gui/macosx/VLCSimplePrefsController.m:1459
+#: modules/gui/macosx/VLCSimplePrefsController.m:1462
+#: modules/gui/macosx/VLCSimplePrefsController.m:1466
 msgid "This combination is already taken by \"%@\"."
 msgstr "Việc kết hợp đã được thực hiện bởi \"%@\"."
 
@@ -19264,7 +19189,6 @@ msgid "Basic"
 msgstr "Cơ bản"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:194
-#: modules/gui/qt/ui/video_effects.h:1267
 msgid "Geometry"
 msgstr "Hình họa"
 
@@ -19273,9 +19197,7 @@ msgstr "Hình họa"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:269
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:272
 #: modules/spu/marq.c:115 modules/spu/rss.c:152
-#: modules/video_filter/colorthres.c:55 modules/gui/qt/ui/video_effects.h:1241
-#: modules/gui/qt/ui/video_effects.h:1247
-#: modules/gui/qt/ui/video_effects.h:1250
+#: modules/video_filter/colorthres.c:55
 msgid "Color"
 msgstr "Màu sắc"
 
@@ -19284,53 +19206,45 @@ msgid "Image Adjust"
 msgstr "Hiệu chỉnh hình ảnh"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
-#: modules/gui/qt/ui/video_effects.h:1218
 msgid "Brightness Threshold"
 msgstr "Ngưỡng độ sáng"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:210
-#: modules/video_filter/sharpen.c:69 modules/gui/qt/ui/video_effects.h:1222
+#: modules/video_filter/sharpen.c:69
 msgid "Sharpen"
 msgstr "Làm sắc hơn"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:211
-#: modules/gui/qt/ui/video_effects.h:1223
-#: modules/gui/qt/ui/video_effects.h:1296
 msgid "Sigma"
 msgstr "Sigma"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:212
-#: modules/gui/qt/ui/video_effects.h:1224
 msgid "Banding removal"
 msgstr "Loại bỏ băng tần"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:213
-#: modules/video_filter/gradfun.c:50 modules/gui/qt/ui/video_effects.h:1225
+#: modules/video_filter/gradfun.c:50
 msgid "Radius"
 msgstr "Bán kính"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:214
-#: modules/gui/qt/ui/video_effects.h:1226
 msgid "Film Grain"
 msgstr "Hiển thị các hạt trên phim dạng cũ"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:215
-#: modules/video_filter/grain.c:53 modules/gui/qt/ui/video_effects.h:1227
+#: modules/video_filter/grain.c:53
 msgid "Variance"
 msgstr "Phương sai"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:220
-#: modules/gui/qt/ui/video_effects.h:1235
 msgid "Synchronize top and bottom"
 msgstr "Đồng bộ hóa phần trên và dưới cùng"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:221
-#: modules/gui/qt/ui/video_effects.h:1236
 msgid "Synchronize left and right"
 msgstr "Đồng bộ hóa trái và phải"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:223
-#: modules/gui/qt/ui/video_effects.h:1261
 msgid "Transform"
 msgstr "Chuyển đổi"
 
@@ -19364,60 +19278,51 @@ msgid "Magnification/Zoom"
 msgstr "Phóng to/Thu nhỏ"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:241
-#: modules/gui/qt/ui/video_effects.h:1264
 msgid "Puzzle game"
 msgstr "Trò chơi giải đố"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:242
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:247
 #: share/lua/http/dialogs/mosaic_window.html:96
-#: modules/gui/qt/ui/video_effects.h:1259
-#: modules/gui/qt/ui/video_effects.h:1265
 msgid "Rows"
 msgstr "Dòng"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:243
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:248
 #: share/lua/http/dialogs/mosaic_window.html:114
-#: modules/gui/qt/ui/video_effects.h:1260
-#: modules/gui/qt/ui/video_effects.h:1266
 msgid "Columns"
 msgstr "Cột"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:244
-#: modules/video_splitter/clone.c:57 modules/gui/qt/ui/video_effects.h:1306
+#: modules/video_splitter/clone.c:57
 msgid "Clone"
 msgstr "Nhân bản"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
-#: modules/video_splitter/clone.c:39 modules/gui/qt/ui/video_effects.h:1307
+#: modules/video_splitter/clone.c:39
 msgid "Number of clones"
 msgstr "Số lượng nhân bản"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:246
-#: modules/gui/qt/ui/video_effects.h:1258
 msgid "Wall"
 msgstr "Tường"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:250
-#: modules/video_filter/colorthres.c:71 modules/gui/qt/ui/video_effects.h:1249
+#: modules/video_filter/colorthres.c:71
 msgid "Color threshold"
 msgstr "Ngưỡng màu"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:254
-#: modules/gui/qt/ui/video_effects.h:1253
 msgid "Similarity"
 msgstr "Điểm tương tự"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:256
-#: modules/gui/qt/ui/video_effects.h:1255
 msgid "Intensity"
 msgstr "Cường độ"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:257
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:260
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
-#: modules/gui/qt/ui/video_effects.h:1245
 msgid "Gradient"
 msgstr "Độ dốc"
 
@@ -19432,12 +19337,10 @@ msgid "Hough"
 msgstr "Khớp"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:270
-#: modules/gui/qt/ui/video_effects.h:1248
 msgid "Cartoon"
 msgstr "Hoạt hình"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:271
-#: modules/gui/qt/ui/video_effects.h:1240
 msgid "Color extraction"
 msgstr "Giải phóng màu"
 
@@ -19446,7 +19349,7 @@ msgid "Invert colors"
 msgstr "Chuyển màu"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:275
-#: modules/video_filter/posterize.c:69 modules/gui/qt/ui/video_effects.h:1244
+#: modules/video_filter/posterize.c:69
 msgid "Posterize"
 msgstr "Làm áp phích"
 
@@ -19456,12 +19359,11 @@ msgid "Posterize level"
 msgstr "Cấp độ làm áp phích"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:277
-#: modules/video_filter/motionblur.c:60 modules/gui/qt/ui/video_effects.h:1297
+#: modules/video_filter/motionblur.c:60
 msgid "Motion blur"
 msgstr "Làm mờ chuyển động"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:278
-#: modules/gui/qt/ui/video_effects.h:1298
 msgid "Factor"
 msgstr "Hệ số"
 
@@ -19471,13 +19373,11 @@ msgid "Motion Detect"
 msgstr "Nhận dạng chuyển động"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:280
-#: modules/gui/qt/ui/video_effects.h:1293
 msgid "Water effect"
 msgstr "Hiệu ứng giọt nước"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:282
 #: modules/meta_engine/ID3Genres.h:100 modules/video_filter/psychedelic.c:55
-#: modules/gui/qt/ui/video_effects.h:1291
 msgid "Psychedelic"
 msgstr "Psychedelic"
 
@@ -19487,23 +19387,19 @@ msgid "Anaglyph"
 msgstr "Hình ảnh dạng nổi"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:284
-#: modules/gui/qt/ui/video_effects.h:1278
 msgid "Add text"
 msgstr "Thêm văn bản"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
 #: modules/logger/file.c:193 modules/spu/marq.c:88
-#: modules/gui/qt/ui/video_effects.h:1280
 msgid "Text"
 msgstr "Văn bản"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:306
-#: modules/gui/qt/ui/video_effects.h:1268
 msgid "Add logo"
 msgstr "Thêm logo"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
-#: modules/gui/qt/ui/video_effects.h:1269
 msgid "Logo"
 msgstr "Logo"
 
@@ -20356,7 +20252,6 @@ msgid "File names:"
 msgstr "Tên tập tin:"
 
 #: modules/gui/qt/components/open_panels.cpp:162
-#: modules/gui/qt/ui/sprefs_interface.h:561
 msgid "Filter:"
 msgstr "Bộ lọc:"
 
@@ -20769,7 +20664,6 @@ msgid "File/Folder"
 msgstr "Tập tin/thư mục"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:47
-#: modules/gui/qt/ui/sout.h:202
 msgid "Source"
 msgstr "Nguồn"
 
@@ -20892,7 +20786,7 @@ msgstr "Không tập tin nào được chọn"
 msgid "Destination"
 msgstr "Đích đến"
 
-#: modules/gui/qt/dialogs/convert.cpp:68 modules/gui/qt/ui/sprefs_audio.h:416
+#: modules/gui/qt/dialogs/convert.cpp:68
 msgid "Destination file:"
 msgstr "Đích đến của tập tin:"
 
@@ -20940,8 +20834,7 @@ msgstr ""
 msgid "Program Guide"
 msgstr "Hướng dẫn chương trình"
 
-#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:289
-#: modules/gui/qt/ui/about.h:290
+#: modules/gui/qt/dialogs/epg.cpp:87
 msgid "Update"
 msgstr "Cập nhật"
 
@@ -21044,7 +20937,7 @@ msgstr "&Đồng ý"
 msgid "&No"
 msgstr "&Không đồng ý"
 
-#: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:147
+#: modules/gui/qt/dialogs/help.cpp:222
 msgid "VLC media player updates"
 msgstr "Cập nhật phiên bản mới"
 
@@ -21091,8 +20984,6 @@ msgid "Location:"
 msgstr "Địa điểm:"
 
 #: modules/gui/qt/dialogs/messages.cpp:80
-#: modules/gui/qt/ui/messages_panel.h:138
-#: modules/gui/qt/ui/messages_panel.h:142
 msgid "Messages"
 msgstr "Thông báo"
 
@@ -21296,7 +21187,7 @@ msgstr "Phiên bản"
 msgid "Website"
 msgstr "Website"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1533 modules/gui/qt/ui/sprefs_input.h:366
+#: modules/gui/qt/dialogs/plugins.cpp:1533
 msgid "Files"
 msgstr "Tập tin"
 
@@ -21358,7 +21249,7 @@ msgstr ""
 "Ban có chắc là muốn thiết đặt lại tất cả tùy chỉnh của chương trình về trạng "
 "thái ban đầu?"
 
-#: modules/gui/qt/dialogs/sout.cpp:45 modules/gui/qt/ui/sout.h:201
+#: modules/gui/qt/dialogs/sout.cpp:45
 msgid "Stream Output"
 msgstr "Xuất dữ liệu luồng"
 
@@ -21545,7 +21436,7 @@ msgstr "Lặp lại:"
 msgid "Repeat delay:"
 msgstr "Độ trễ khi lặp lại:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:112 modules/gui/qt/ui/sprefs_interface.h:558
+#: modules/gui/qt/dialogs/vlm.cpp:112
 msgid " days"
 msgstr "ngày"
 
@@ -21645,11 +21536,11 @@ msgstr ""
 msgid "&Continue"
 msgstr "Tiếp tục"
 
-#: modules/gui/qt/main_interface.cpp:1419
+#: modules/gui/qt/main_interface.cpp:1420
 msgid "Control menu for the player"
 msgstr "Menu điều khiển của VLC"
 
-#: modules/gui/qt/main_interface.cpp:1463
+#: modules/gui/qt/main_interface.cpp:1464
 msgid "Paused"
 msgstr "Tạm dừng"
 
@@ -24419,7 +24310,6 @@ msgid "Podcasts"
 msgstr "Podcasts"
 
 #: modules/services_discovery/podcast.c:56
-#: modules/gui/qt/ui/podcast_configuration.h:101
 msgid "Podcast URLs list"
 msgstr "Danh sách đường dẫn Podcast dạng URL"
 
@@ -24524,7 +24414,7 @@ msgstr "Ghi hình Audio (ALSA)"
 msgid "CD"
 msgstr "CD"
 
-#: modules/services_discovery/udev.c:599 modules/gui/qt/ui/open_disk.h:298
+#: modules/services_discovery/udev.c:599
 msgid "DVD"
 msgstr "DVD"
 
@@ -24680,7 +24570,6 @@ msgstr ""
 
 #: modules/spu/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
-#: modules/gui/qt/ui/video_effects.h:1288
 msgid "Overlay"
 msgstr ""
 
@@ -25387,7 +25276,7 @@ msgstr ""
 msgid "Internal stream record"
 msgstr ""
 
-#: modules/stream_filter/skiptags.c:235
+#: modules/stream_filter/skiptags.c:243
 msgid "APE/ID3 tags-skipping filter"
 msgstr ""
 
@@ -25504,58 +25393,79 @@ msgstr "Luồng dữ liệu mặc định"
 msgid "Chromaprint stream output"
 msgstr "Xuất tập tin luồng dữ liệu"
 
-#: modules/stream_out/chromecast/cast.cpp:104
+#: modules/stream_out/chromecast/cast.cpp:105
 #, fuzzy
 msgid "HTTP port"
 msgstr "Cổng SFTP"
 
-#: modules/stream_out/chromecast/cast.cpp:105
+#: modules/stream_out/chromecast/cast.cpp:106
 msgid ""
 "This sets the HTTP port of the local server used to stream the media to the "
 "Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:108
+#: modules/stream_out/chromecast/cast.cpp:109
 msgid "The Chromecast receiver can receive video."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:110
+#: modules/stream_out/chromecast/cast.cpp:111
 msgid "This sets the muxer used to stream to the Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:111
+#: modules/stream_out/chromecast/cast.cpp:112
 msgid "MIME content type"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:112
+#: modules/stream_out/chromecast/cast.cpp:113
 msgid "This sets the media MIME content type sent to the Chromecast."
 msgstr ""
 
+#: modules/stream_out/chromecast/cast.cpp:114
+#: modules/stream_out/chromecast/cast.cpp:306
+#, fuzzy
+msgid "Performance warning"
+msgstr "Tùy chọn hiển thị"
+
 #: modules/stream_out/chromecast/cast.cpp:115
+msgid "Display a performance warning when transcoding"
+msgstr ""
+
+#: modules/stream_out/chromecast/cast.cpp:118
 #, fuzzy
 msgid "IP Address of the Chromecast."
 msgstr "Địa chỉ của máy tính để phân luồng."
 
-#: modules/stream_out/chromecast/cast.cpp:116
+#: modules/stream_out/chromecast/cast.cpp:119
 #, fuzzy
 msgid "Chromecast port"
 msgstr "Định dạng màu sắc"
 
-#: modules/stream_out/chromecast/cast.cpp:117
+#: modules/stream_out/chromecast/cast.cpp:120
 msgid "The port used to talk to the Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:121
+#: modules/stream_out/chromecast/cast.cpp:124
 #, fuzzy
 msgid "Chromecast"
 msgstr "Màu sắc"
 
-#: modules/stream_out/chromecast/cast.cpp:122
+#: modules/stream_out/chromecast/cast.cpp:125
 #, fuzzy
 msgid "Chromecast stream output"
 msgstr "Xuất tập tin luồng dữ liệu"
 
-#: modules/stream_out/chromecast/chromecast_demux.cpp:328
+#: modules/stream_out/chromecast/cast.cpp:305
+#, fuzzy
+msgid "Ok, Don't warn me again"
+msgstr "Không hỏi lại lần nữa"
+
+#: modules/stream_out/chromecast/cast.cpp:307
+msgid ""
+"Casting this video requires conversion. This conversion can use all the "
+"available power and could quickly drain your battery."
+msgstr ""
+
+#: modules/stream_out/chromecast/chromecast_demux.cpp:366
 #, fuzzy
 msgid "Chromecast demux wrapper"
 msgstr "Định dạng màu sắc"
@@ -26598,7 +26508,7 @@ msgstr ""
 msgid "Image properties filter"
 msgstr "Thuộc tính bộ lọc hình ảnh"
 
-#: modules/video_filter/adjust.c:78 modules/gui/qt/ui/video_effects.h:1215
+#: modules/video_filter/adjust.c:78
 msgid "Image adjust"
 msgstr "Tăng cường hình ảnh"
 
@@ -27642,7 +27552,7 @@ msgstr ""
 msgid "Rotate video filter"
 msgstr "xoay bộ lọc video"
 
-#: modules/video_filter/rotate.c:69 modules/gui/qt/ui/video_effects.h:1262
+#: modules/video_filter/rotate.c:69
 msgid "Rotate"
 msgstr "Xoay"
 
@@ -28008,7 +27918,7 @@ msgstr ""
 msgid "GLX extension for OpenGL"
 msgstr ""
 
-#: modules/video_output/kva.c:50 modules/gui/qt/ui/sprefs_video.h:324
+#: modules/video_output/kva.c:50
 msgid "Enable a workaround for T23"
 msgstr ""
 
@@ -28021,7 +27931,7 @@ msgstr ""
 "khi tự động chỉnh kích thước cửa sổ hiển thị theo kích thước của tập tin mà "
 "bạn chọn."
 
-#: modules/video_output/kva.c:55 modules/gui/qt/ui/sprefs_video.h:325
+#: modules/video_output/kva.c:55
 msgid "Video mode"
 msgstr ""
 
@@ -28089,14 +27999,6 @@ msgstr ""
 msgid "EGL extension for OpenGL"
 msgstr ""
 
-#: modules/video_output/opengl/vout_helper.h:61
-msgid "Open GL/GLES hardware converter"
-msgstr ""
-
-#: modules/video_output/opengl/vout_helper.h:63
-msgid "Force a \"glconv\" module."
-msgstr ""
-
 #: modules/video_output/win32/direct3d9.c:70
 msgid "The desktop mode allows you to display the video on the desktop."
 msgstr ""
@@ -28152,7 +28054,6 @@ msgid "Direct3D11 video output"
 msgstr "Audio đầu ra dạng DirectX"
 
 #: modules/video_output/win32/directdraw.c:65
-#: modules/gui/qt/ui/sprefs_video.h:321
 msgid "Use hardware YUV->RGB conversions"
 msgstr "Sử dụng chuyển đổi phần cứng YUV->RGB"
 
@@ -28273,6 +28174,10 @@ msgstr "Chiều rộng video trong bộ nhớ đệm."
 #: modules/video_output/vmem.c:46
 msgid "Video memory buffer height."
 msgstr "Chiều cao video trong bộ nhớ đệm."
+
+#: modules/video_output/vmem.c:48
+msgid "Pitch"
+msgstr "Mức độ"
 
 #: modules/video_output/vmem.c:49
 msgid "Video memory buffer pitch in bytes."
@@ -29026,7 +28931,6 @@ msgid "Play List"
 msgstr "Danh sách phát"
 
 #: share/lua/http/dialogs/create_stream.html:156
-#: modules/gui/qt/ui/sprefs_audio.h:414
 msgid "Output"
 msgstr "Xuất dữ liệu"
 
@@ -29141,7 +29045,7 @@ msgstr "Đồng bộ hóa Track"
 msgid "VLM Batch Commands"
 msgstr "Nhóm các lệnh VLM"
 
-#: share/lua/http/index.html:240 modules/gui/qt/ui/vlm.h:298
+#: share/lua/http/index.html:240
 msgid "Loop"
 msgstr "Lặp lại"
 
@@ -29224,871 +29128,629 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr "Bạn có chắc muốn tạo luồng dữ liệu?"
 
-#: modules/gui/qt/ui/about.h:288 modules/gui/qt/ui/open.h:260
-#: modules/gui/qt/ui/podcast_configuration.h:100
-msgid "Dialog"
-msgstr "Hộp thông báo"
+#~ msgid "Dialog"
+#~ msgstr "Hộp thông báo"
 
-#: modules/gui/qt/ui/equalizer.h:132 modules/gui/qt/ui/open_disk.h:296
-#: modules/gui/qt/ui/open_net.h:96 modules/gui/qt/ui/sprefs_audio.h:409
-#: modules/gui/qt/ui/sprefs_input.h:356
-#: modules/gui/qt/ui/sprefs_interface.h:529
-#: modules/gui/qt/ui/sprefs_subtitles.h:289
-#: modules/gui/qt/ui/sprefs_video.h:313 modules/gui/qt/ui/streampanel.h:167
-msgid "Form"
-msgstr "Mẫu"
+#~ msgid "Form"
+#~ msgstr "Mẫu"
 
-#: modules/gui/qt/ui/equalizer.h:135
-msgid "Preset"
-msgstr "Phần thiết lập sẵn"
+#~ msgid "Preset"
+#~ msgstr "Phần thiết lập sẵn"
 
-#: modules/gui/qt/ui/equalizer.h:137
-msgid "0.00 dB"
-msgstr "0.00 dB"
+#~ msgid "0.00 dB"
+#~ msgstr "0.00 dB"
 
-#: modules/gui/qt/ui/messages_panel.h:139
-msgid "&Verbosity:"
-msgstr "&Verbosity:"
+#~ msgid "&Verbosity:"
+#~ msgstr "&Verbosity:"
 
-#: modules/gui/qt/ui/messages_panel.h:140
-msgid "&Filter:"
-msgstr "&Bộ lọc:"
+#~ msgid "&Filter:"
+#~ msgstr "&Bộ lọc:"
 
-#: modules/gui/qt/ui/messages_panel.h:141
-msgid "&Save as..."
-msgstr "Lưu d&ưới dạng"
+#~ msgid "&Save as..."
+#~ msgstr "Lưu d&ưới dạng"
 
-#: modules/gui/qt/ui/messages_panel.h:143
-msgid "Modules Tree"
-msgstr "Liệt kê module dạng cây"
+#~ msgid "Modules Tree"
+#~ msgstr "Liệt kê module dạng cây"
 
-#: modules/gui/qt/ui/open.h:263
-msgid "Show extended options"
-msgstr "Hiển thị các tùy chọn khác"
+#~ msgid "Show extended options"
+#~ msgstr "Hiển thị các tùy chọn khác"
 
-#: modules/gui/qt/ui/open.h:265
-msgid "Show &more options"
-msgstr "Hiển thị thêm cá&c tùy chọn khác"
+#~ msgid "Show &more options"
+#~ msgstr "Hiển thị thêm cá&c tùy chọn khác"
 
-#: modules/gui/qt/ui/open.h:268
-msgid "Change the caching for the media"
-msgstr "Thay đổi phần bộ nhớ đệm cho các tập tin nhạc/phim"
+#~ msgid "Change the caching for the media"
+#~ msgstr "Thay đổi phần bộ nhớ đệm cho các tập tin nhạc/phim"
 
-#: modules/gui/qt/ui/open.h:270
-msgid " ms"
-msgstr "mili giây"
+#~ msgid " ms"
+#~ msgstr "mili giây"
 
-#: modules/gui/qt/ui/open.h:271
-msgid "MRL"
-msgstr "MRL"
+#~ msgid "MRL"
+#~ msgstr "MRL"
 
-#: modules/gui/qt/ui/open.h:272
-msgid "Start Time"
-msgstr "Thời gian bắt đầu"
+#~ msgid "Start Time"
+#~ msgstr "Thời gian bắt đầu"
 
-#: modules/gui/qt/ui/open.h:273
 #, fuzzy
-msgid "Stop Time"
-msgstr "Thời gian kết thúc"
+#~ msgid "Stop Time"
+#~ msgstr "Thời gian kết thúc"
 
-#: modules/gui/qt/ui/open.h:274
-msgid "Edit Options"
-msgstr "Chỉnh sửa tùy chọn"
+#~ msgid "Edit Options"
+#~ msgstr "Chỉnh sửa tùy chọn"
 
-#: modules/gui/qt/ui/open.h:275
-msgid "Extra media"
-msgstr "Các tập tin khác"
+#~ msgid "Extra media"
+#~ msgstr "Các tập tin khác"
 
-#: modules/gui/qt/ui/open.h:277
-msgid "Complete MRL for VLC internal"
-msgstr "Khoảng thời gian chờ của MRL cho VLC"
+#~ msgid "Complete MRL for VLC internal"
+#~ msgstr "Khoảng thời gian chờ của MRL cho VLC"
 
-#: modules/gui/qt/ui/open.h:280
-msgid "Select the file"
-msgstr "Chọn tập tin"
+#~ msgid "Select the file"
+#~ msgstr "Chọn tập tin"
 
-#: modules/gui/qt/ui/open.h:284
-msgid "Change the start time for the media"
-msgstr "Thay đổi thời gian bắt đầu của tập tin"
+#~ msgid "Change the start time for the media"
+#~ msgstr "Thay đổi thời gian bắt đầu của tập tin"
 
-#: modules/gui/qt/ui/open.h:286 modules/gui/qt/ui/open.h:290
-msgid "HH'H':mm'm':ss's'.zzz"
-msgstr "HH'H':mm'm':ss's'.zzz"
+#~ msgid "HH'H':mm'm':ss's'.zzz"
+#~ msgstr "HH'H':mm'm':ss's'.zzz"
 
-#: modules/gui/qt/ui/open.h:288
 #, fuzzy
-msgid "Change the stop time for the media"
-msgstr "Thay đổi thời gian bắt đầu của tập tin"
+#~ msgid "Change the stop time for the media"
+#~ msgstr "Thay đổi thời gian bắt đầu của tập tin"
 
-#: modules/gui/qt/ui/open.h:291
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr "Phát một tập tin đồng bộ khác (bổ sung thêm tập tin audio,...)"
+#~ msgid "Play another media synchronously (extra audio file, ...)"
+#~ msgstr "Phát một tập tin đồng bộ khác (bổ sung thêm tập tin audio,...)"
 
-#: modules/gui/qt/ui/open_capture.h:97
-msgid "Capture mode"
-msgstr "Chế độ ghi hình"
+#~ msgid "Capture mode"
+#~ msgstr "Chế độ ghi hình"
 
-#: modules/gui/qt/ui/open_capture.h:99
-msgid "Select the capture device type"
-msgstr "Chọn loại thiết bị ghi hình"
+#~ msgid "Select the capture device type"
+#~ msgstr "Chọn loại thiết bị ghi hình"
 
-#: modules/gui/qt/ui/open_capture.h:101
-msgid "Device Selection"
-msgstr "Lựa chọn thiết bị"
+#~ msgid "Device Selection"
+#~ msgstr "Lựa chọn thiết bị"
 
-#: modules/gui/qt/ui/open_capture.h:102
-msgid "Options"
-msgstr "Tùy chọn"
+#~ msgid "Options"
+#~ msgstr "Tùy chọn"
 
-#: modules/gui/qt/ui/open_capture.h:104
-msgid "Access advanced options to tweak the device"
-msgstr "Truy cập phần Tùy Chọn Nâng Cao để tùy biến thiết bị"
+#~ msgid "Access advanced options to tweak the device"
+#~ msgstr "Truy cập phần Tùy Chọn Nâng Cao để tùy biến thiết bị"
 
-#: modules/gui/qt/ui/open_capture.h:106
-msgid "Advanced options..."
-msgstr "Tùy chọn nâng cao...."
+#~ msgid "Advanced options..."
+#~ msgstr "Tùy chọn nâng cao...."
 
-#: modules/gui/qt/ui/open_disk.h:297
-msgid "Disc Selection"
-msgstr "Chọn đĩa"
+#~ msgid "Disc Selection"
+#~ msgstr "Chọn đĩa"
 
-#: modules/gui/qt/ui/open_disk.h:301
-msgid "SVCD/VCD"
-msgstr "SVCD/VCD"
+#~ msgid "SVCD/VCD"
+#~ msgstr "SVCD/VCD"
 
-#: modules/gui/qt/ui/open_disk.h:303
-msgid "Disable Disc Menus"
-msgstr "Vô hiệu hóa menu của Đĩa"
+#~ msgid "Disable Disc Menus"
+#~ msgstr "Vô hiệu hóa menu của Đĩa"
 
-#: modules/gui/qt/ui/open_disk.h:305
-msgid "No disc menus"
-msgstr "Không có menu của đĩa"
+#~ msgid "No disc menus"
+#~ msgstr "Không có menu của đĩa"
 
-#: modules/gui/qt/ui/open_disk.h:306
-msgid "Disc device"
-msgstr "Thiết bị đĩa"
+#~ msgid "Disc device"
+#~ msgstr "Thiết bị đĩa"
 
-#: modules/gui/qt/ui/open_disk.h:308
-msgid "Starting Position"
-msgstr "Địa điểm bắt đầu"
+#~ msgid "Starting Position"
+#~ msgstr "Địa điểm bắt đầu"
 
-#: modules/gui/qt/ui/open_disk.h:311
-msgid "Audio and Subtitles"
-msgstr "Audio và phụ đề"
+#~ msgid "Audio and Subtitles"
+#~ msgstr "Audio và phụ đề"
 
-#: modules/gui/qt/ui/open_file.h:143
-msgid "Use a sub&title file"
-msgstr "Sử dụng tập t&in phụ đề"
+#~ msgid "Use a sub&title file"
+#~ msgstr "Sử dụng tập t&in phụ đề"
 
-#: modules/gui/qt/ui/open_file.h:145
-msgid "Select the subtitle file"
-msgstr "Chọn tập tin phụ đề"
+#~ msgid "Select the subtitle file"
+#~ msgstr "Chọn tập tin phụ đề"
 
-#: modules/gui/qt/ui/open_file.h:149
-msgid "Choose one or more media file to open"
-msgstr "Chọn một hay nhiều tập tin để mở"
+#~ msgid "Choose one or more media file to open"
+#~ msgstr "Chọn một hay nhiều tập tin để mở"
 
-#: modules/gui/qt/ui/open_file.h:151
-msgid "File Selection"
-msgstr "Chọn tập tin"
+#~ msgid "File Selection"
+#~ msgstr "Chọn tập tin"
 
-#: modules/gui/qt/ui/open_file.h:152
-msgid "You can select local files with the following list and buttons."
-msgstr ""
-"Bạn có thể chọn các tập tin tại hệ thống hiện tại bằng danh sách và các nút "
-"sau."
+#~ msgid "You can select local files with the following list and buttons."
+#~ msgstr ""
+#~ "Bạn có thể chọn các tập tin tại hệ thống hiện tại bằng danh sách và các "
+#~ "nút sau."
 
-#: modules/gui/qt/ui/open_file.h:153
-msgid "Add..."
-msgstr "Thêm..."
+#~ msgid "Add..."
+#~ msgstr "Thêm..."
 
-#: modules/gui/qt/ui/open_net.h:97
-msgid "Network Protocol"
-msgstr "Giao thức mạng"
+#~ msgid "Network Protocol"
+#~ msgstr "Giao thức mạng"
 
-#: modules/gui/qt/ui/open_net.h:98
-msgid "Please enter a network URL:"
-msgstr "Điền vào đường dẫn URL:"
+#~ msgid "Please enter a network URL:"
+#~ msgstr "Điền vào đường dẫn URL:"
 
-#: modules/gui/qt/ui/profiles.h:701
-msgid "Profile edition"
-msgstr "Phiên bản hồ sơ"
+#~ msgid "Profile edition"
+#~ msgstr "Phiên bản hồ sơ"
 
-#: modules/gui/qt/ui/profiles.h:702
-msgid "FLAC"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:703
 #, fuzzy
-msgid "MP&4/MOV"
-msgstr "MP4/MOV"
+#~ msgid "MP&4/MOV"
+#~ msgstr "MP4/MOV"
 
-#: modules/gui/qt/ui/profiles.h:704
-msgid "Ogg/Ogm"
-msgstr "Ogg/Ogm"
+#~ msgid "Ogg/Ogm"
+#~ msgstr "Ogg/Ogm"
 
-#: modules/gui/qt/ui/profiles.h:705
-msgid "M&KV"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:706
 #, fuzzy
-msgid "M&JPEG"
-msgstr "MJPEG"
+#~ msgid "M&JPEG"
+#~ msgstr "MJPEG"
 
-#: modules/gui/qt/ui/profiles.h:707
-msgid "MPEG-PS"
-msgstr "MPEG-PS"
+#~ msgid "MPEG-PS"
+#~ msgstr "MPEG-PS"
 
-#: modules/gui/qt/ui/profiles.h:708
-msgid "F&LV"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:709
 #, fuzzy
-msgid "&MPEG-TS"
-msgstr "MPEG-TS"
+#~ msgid "&MPEG-TS"
+#~ msgstr "MPEG-TS"
 
-#: modules/gui/qt/ui/profiles.h:710
-msgid "RAW"
-msgstr "RAW"
+#~ msgid "RAW"
+#~ msgstr "RAW"
 
-#: modules/gui/qt/ui/profiles.h:711
-msgid "WAV"
-msgstr "WAV"
+#~ msgid "WAV"
+#~ msgstr "WAV"
 
-#: modules/gui/qt/ui/profiles.h:712
-msgid "Webm"
-msgstr "Webm"
+#~ msgid "Webm"
+#~ msgstr "Webm"
 
-#: modules/gui/qt/ui/profiles.h:713
 #, fuzzy
-msgid "MPEG &1"
-msgstr "MPEG 1"
+#~ msgid "MPEG &1"
+#~ msgstr "MPEG 1"
 
-#: modules/gui/qt/ui/profiles.h:714
-msgid "AVI"
-msgstr "AVI"
+#~ msgid "AVI"
+#~ msgstr "AVI"
 
-#: modules/gui/qt/ui/profiles.h:715
-msgid "ASF/WMV"
-msgstr "ASF/WMV"
+#~ msgid "ASF/WMV"
+#~ msgstr "ASF/WMV"
 
-#: modules/gui/qt/ui/profiles.h:716
-msgid "MP&3"
-msgstr ""
+#~ msgid "Features"
+#~ msgstr "Tính năng"
 
-#: modules/gui/qt/ui/profiles.h:717
-msgid "Features"
-msgstr "Tính năng"
+#~ msgid "Streamable"
+#~ msgstr "Có thể phân luồng dữ liệu"
 
-#: modules/gui/qt/ui/profiles.h:719
-msgid "Streamable"
-msgstr "Có thể phân luồng dữ liệu"
+#~ msgid "Chapters"
+#~ msgstr "Chương"
 
-#: modules/gui/qt/ui/profiles.h:720
-msgid "Chapters"
-msgstr "Chương"
+#~ msgid "Menus"
+#~ msgstr "Menu"
 
-#: modules/gui/qt/ui/profiles.h:723
-msgid "Menus"
-msgstr "Menu"
-
-#: modules/gui/qt/ui/profiles.h:730
 #, fuzzy
-msgid "Fra&me Rate"
-msgstr "Tốc độ khung hình"
+#~ msgid "Fra&me Rate"
+#~ msgstr "Tốc độ khung hình"
 
-#: modules/gui/qt/ui/profiles.h:731
-msgid "Same as source"
-msgstr "Giống như nguồn"
+#~ msgid "Same as source"
+#~ msgstr "Giống như nguồn"
 
-#: modules/gui/qt/ui/profiles.h:733
-msgid " fps"
-msgstr "khung hình mỗi giây"
+#~ msgid " fps"
+#~ msgstr "khung hình mỗi giây"
 
-#: modules/gui/qt/ui/profiles.h:734
-msgid "Custom options"
-msgstr "Chỉnh sửa Tùy Chọn"
+#~ msgid "Custom options"
+#~ msgstr "Chỉnh sửa Tùy Chọn"
 
-#: modules/gui/qt/ui/profiles.h:735
 #, fuzzy
-msgid "&Quality"
-msgstr "Chất lượng"
+#~ msgid "&Quality"
+#~ msgstr "Chất lượng"
 
-#: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
-msgid "Not Used"
-msgstr "Không được sử dụng"
+#~ msgid "Not Used"
+#~ msgstr "Không được sử dụng"
 
-#: modules/gui/qt/ui/profiles.h:738 modules/gui/qt/ui/profiles.h:757
-msgid " kb/s"
-msgstr " kb/giây"
+#~ msgid " kb/s"
+#~ msgstr " kb/giây"
 
-#: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
-msgid "Encoding parameters"
-msgstr "Thông số mã hóa"
+#~ msgid "Encoding parameters"
+#~ msgstr "Thông số mã hóa"
 
-#: modules/gui/qt/ui/profiles.h:742
-msgid "Frame size"
-msgstr "Kích thước khung hình"
+#~ msgid "Frame size"
+#~ msgstr "Kích thước khung hình"
 
-#: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
-msgid "px"
-msgstr "điểm ảnh"
+#~ msgid "px"
+#~ msgstr "điểm ảnh"
 
-#: modules/gui/qt/ui/profiles.h:758
 #, fuzzy
-msgid "Sa&mple Rate"
-msgstr "Tốc độ mẫu"
+#~ msgid "Sa&mple Rate"
+#~ msgstr "Tốc độ mẫu"
 
-#: modules/gui/qt/ui/profiles.h:766
 #, fuzzy
-msgid "Profile &Name"
-msgstr "Tên hồ sơ"
+#~ msgid "Profile &Name"
+#~ msgstr "Tên hồ sơ"
 
-#: modules/gui/qt/ui/sout.h:203
-msgid "Set up media sources to stream"
-msgstr "Thiết lập nguồn dữ liệu được phân luồng"
+#~ msgid "Set up media sources to stream"
+#~ msgstr "Thiết lập nguồn dữ liệu được phân luồng"
 
-#: modules/gui/qt/ui/sout.h:205
-msgid "Destination Setup"
-msgstr "Cài đặt đích đến của dữ liệu"
+#~ msgid "Destination Setup"
+#~ msgstr "Cài đặt đích đến của dữ liệu"
 
-#: modules/gui/qt/ui/sout.h:206
-msgid "Select destinations to stream to"
-msgstr "Chọn lựa điểm để phân luồng dữ liệu đến"
+#~ msgid "Select destinations to stream to"
+#~ msgstr "Chọn lựa điểm để phân luồng dữ liệu đến"
 
-#: modules/gui/qt/ui/sout.h:207
-msgid ""
-"Add destinations following the streaming methods you need. Be sure to check "
-"with transcoding that the format is compatible with the method used."
-msgstr ""
-"Thêm vào đích đến các phương pháp phân luồng nếu bạn thấy cần thiết. Hãy lưu "
-"ý rằng việc kiểm tra chuyển đổi mã tương thich với loại định dạng mà phương "
-"thức đó sử dụng."
+#~ msgid ""
+#~ "Add destinations following the streaming methods you need. Be sure to "
+#~ "check with transcoding that the format is compatible with the method used."
+#~ msgstr ""
+#~ "Thêm vào đích đến các phương pháp phân luồng nếu bạn thấy cần thiết. Hãy "
+#~ "lưu ý rằng việc kiểm tra chuyển đổi mã tương thich với loại định dạng mà "
+#~ "phương thức đó sử dụng."
 
-#: modules/gui/qt/ui/sout.h:208
-msgid "New destination"
-msgstr "Đích đến mớii"
+#~ msgid "New destination"
+#~ msgstr "Đích đến mớii"
 
-#: modules/gui/qt/ui/sout.h:210
-msgid "Display locally"
-msgstr "Hiển thị hệ thống hiện tại"
+#~ msgid "Display locally"
+#~ msgstr "Hiển thị hệ thống hiện tại"
 
-#: modules/gui/qt/ui/sout.h:212
-msgid "Transcoding Options"
-msgstr "Tùy chọn Chuyển Mã"
+#~ msgid "Transcoding Options"
+#~ msgstr "Tùy chọn Chuyển Mã"
 
-#: modules/gui/qt/ui/sout.h:213
-msgid "Select and choose transcoding options"
-msgstr "Lựa chọn các tùy chọn về chuyển mã tín hiệu và dữ liệu"
+#~ msgid "Select and choose transcoding options"
+#~ msgstr "Lựa chọn các tùy chọn về chuyển mã tín hiệu và dữ liệu"
 
-#: modules/gui/qt/ui/sout.h:214
-msgid "Activate Transcoding"
-msgstr "Kích hoạt việc chuyển mã"
+#~ msgid "Activate Transcoding"
+#~ msgstr "Kích hoạt việc chuyển mã"
 
-#: modules/gui/qt/ui/sout.h:215
-msgid "Option Setup"
-msgstr "Thiết Chỉnh Tùy Chọn"
+#~ msgid "Option Setup"
+#~ msgstr "Thiết Chỉnh Tùy Chọn"
 
-#: modules/gui/qt/ui/sout.h:216
-msgid "Set up any additional options for streaming"
-msgstr "Thiết chỉnh các tùy chọn bổ sung đối với các luồng dữ liệu"
+#~ msgid "Set up any additional options for streaming"
+#~ msgstr "Thiết chỉnh các tùy chọn bổ sung đối với các luồng dữ liệu"
 
-#: modules/gui/qt/ui/sout.h:217
-msgid "Miscellaneous Options"
-msgstr "Tổng hợp tùy chọn"
+#~ msgid "Miscellaneous Options"
+#~ msgstr "Tổng hợp tùy chọn"
 
-#: modules/gui/qt/ui/sout.h:218
-msgid "Stream all elementary streams"
-msgstr "Phân luồng tất cả các luồng sơ cấp"
+#~ msgid "Stream all elementary streams"
+#~ msgstr "Phân luồng tất cả các luồng sơ cấp"
 
-#: modules/gui/qt/ui/sout.h:219
-msgid "Generated stream output string"
-msgstr "Tạo các chuỗi của luồng xuất ra"
+#~ msgid "Generated stream output string"
+#~ msgstr "Tạo các chuỗi của luồng xuất ra"
 
-#: modules/gui/qt/ui/sprefs_audio.h:412
-msgid " %"
-msgstr " %"
+#~ msgid " %"
+#~ msgstr " %"
 
-#: modules/gui/qt/ui/sprefs_audio.h:415
-msgid "Output module:"
-msgstr "Module xuất dữ liệu:"
+#~ msgid "Output module:"
+#~ msgstr "Module xuất dữ liệu:"
 
-#: modules/gui/qt/ui/sprefs_audio.h:418
-msgid "Use S/PDIF when available"
-msgstr "Sử dụng S/PDIF khi có thể"
+#~ msgid "Use S/PDIF when available"
+#~ msgstr "Sử dụng S/PDIF khi có thể"
 
-#: modules/gui/qt/ui/sprefs_audio.h:420
-msgid "Effects"
-msgstr "Hiệu ứng"
+#~ msgid "Effects"
+#~ msgstr "Hiệu ứng"
 
-#: modules/gui/qt/ui/sprefs_audio.h:421
-msgid "Visualization:"
-msgstr "Hiêu ứng:"
+#~ msgid "Visualization:"
+#~ msgstr "Hiêu ứng:"
 
-#: modules/gui/qt/ui/sprefs_audio.h:422
-msgid "Enable Time-Stretching audio"
-msgstr "Bật chế độ giãn thời gian với audio"
+#~ msgid "Enable Time-Stretching audio"
+#~ msgstr "Bật chế độ giãn thời gian với audio"
 
-#: modules/gui/qt/ui/sprefs_audio.h:423
-msgid "Replay gain mode:"
-msgstr "Chế độ phát lại:"
+#~ msgid "Replay gain mode:"
+#~ msgstr "Chế độ phát lại:"
 
-#: modules/gui/qt/ui/sprefs_audio.h:424
-msgid "Normalize volume to:"
-msgstr "Bình thường hóa âm lượng đến khoảng:"
+#~ msgid "Normalize volume to:"
+#~ msgstr "Bình thường hóa âm lượng đến khoảng:"
 
-#: modules/gui/qt/ui/sprefs_audio.h:425
-msgid "Tracks"
-msgstr "Track"
+#~ msgid "Tracks"
+#~ msgstr "Track"
 
-#: modules/gui/qt/ui/sprefs_audio.h:426
-msgid "Preferred audio language:"
-msgstr "Ngôn ngữ Audio ưa thích:"
+#~ msgid "Preferred audio language:"
+#~ msgstr "Ngôn ngữ Audio ưa thích:"
 
-#: modules/gui/qt/ui/sprefs_audio.h:427
-msgid "Password:"
-msgstr "Mật khẩu:"
+#~ msgid "Password:"
+#~ msgstr "Mật khẩu:"
 
-#: modules/gui/qt/ui/sprefs_audio.h:428
-msgid "Username:"
-msgstr "Tên người dùng:"
+#~ msgid "Username:"
+#~ msgstr "Tên người dùng:"
 
-#: modules/gui/qt/ui/sprefs_audio.h:429
-msgid "Submit played tracks stats to Last.fm"
-msgstr "Đăng tải các track được phát gần đây lên Last.fm"
+#~ msgid "Submit played tracks stats to Last.fm"
+#~ msgstr "Đăng tải các track được phát gần đây lên Last.fm"
 
-#: modules/gui/qt/ui/sprefs_input.h:357
-msgid "Codecs"
-msgstr "Codec"
+#~ msgid "Codecs"
+#~ msgstr "Codec"
 
-#: modules/gui/qt/ui/sprefs_input.h:358
-msgid "x264 profile and level selection"
-msgstr "Hồ sơ dạng x264 và mức độ lựa chọn"
+#~ msgid "x264 profile and level selection"
+#~ msgstr "Hồ sơ dạng x264 và mức độ lựa chọn"
 
-#: modules/gui/qt/ui/sprefs_input.h:359
-msgid "Hardware-accelerated decoding"
-msgstr "Bộ giải mã cho phần tăng tốc phần cứng"
+#~ msgid "Hardware-accelerated decoding"
+#~ msgstr "Bộ giải mã cho phần tăng tốc phần cứng"
 
-#: modules/gui/qt/ui/sprefs_input.h:360 modules/gui/qt/ui/sprefs_input.h:362
-msgid "Video quality post-processing level"
-msgstr "Cấp độ video tiền xử lý"
+#~ msgid "Video quality post-processing level"
+#~ msgstr "Cấp độ video tiền xử lý"
 
-#: modules/gui/qt/ui/sprefs_input.h:361
-msgid "Skip H.264 in-loop deblocking filter"
-msgstr "Bỏ qua bộ lọc trong chế độ lọc H.264"
+#~ msgid "Skip H.264 in-loop deblocking filter"
+#~ msgstr "Bỏ qua bộ lọc trong chế độ lọc H.264"
 
-#: modules/gui/qt/ui/sprefs_input.h:364
-msgid "Optical drive"
-msgstr "Ổ đĩa quang"
+#~ msgid "Optical drive"
+#~ msgstr "Ổ đĩa quang"
 
-#: modules/gui/qt/ui/sprefs_input.h:365
-msgid "Default optical device"
-msgstr "Thiết bị ổ đĩa quang mặc định"
+#~ msgid "Default optical device"
+#~ msgstr "Thiết bị ổ đĩa quang mặc định"
 
-#: modules/gui/qt/ui/sprefs_input.h:369
-msgid "Damaged or incomplete AVI file"
-msgstr "Tập tin AVI bị lỗi hoặc chưa hoàn thiện"
+#~ msgid "Damaged or incomplete AVI file"
+#~ msgstr "Tập tin AVI bị lỗi hoặc chưa hoàn thiện"
 
-#: modules/gui/qt/ui/sprefs_input.h:372
-msgid "HTTP proxy URL"
-msgstr "HTTP proxy URL"
+#~ msgid "HTTP proxy URL"
+#~ msgstr "HTTP proxy URL"
 
-#: modules/gui/qt/ui/sprefs_input.h:373
-msgid "HTTP (default)"
-msgstr "HTTP (mặc định)"
+#~ msgid "HTTP (default)"
+#~ msgstr "HTTP (mặc định)"
 
-#: modules/gui/qt/ui/sprefs_input.h:374
-msgid "RTP over RTSP (TCP)"
-msgstr "Sử dụng RTP thay cho RTSP (TCP)"
+#~ msgid "RTP over RTSP (TCP)"
+#~ msgstr "Sử dụng RTP thay cho RTSP (TCP)"
 
-#: modules/gui/qt/ui/sprefs_input.h:375
-msgid "Live555 stream transport"
-msgstr "Truyền tải luồng dữ liệu dạng Live555"
+#~ msgid "Live555 stream transport"
+#~ msgstr "Truyền tải luồng dữ liệu dạng Live555"
 
-#: modules/gui/qt/ui/sprefs_input.h:376
-msgid "Default caching policy"
-msgstr "Chính sách đối với bộ nhớ đệm theo mặc định"
+#~ msgid "Default caching policy"
+#~ msgstr "Chính sách đối với bộ nhớ đệm theo mặc định"
 
-#: modules/gui/qt/ui/sprefs_interface.h:531
 #, fuzzy
-msgid "Menus language:"
-msgstr "Ngôn ngữ hiển thị"
+#~ msgid "Menus language:"
+#~ msgstr "Ngôn ngữ hiển thị"
 
-#: modules/gui/qt/ui/sprefs_interface.h:532
-msgid "Look and feel"
-msgstr "Giao diện trực quan"
+#~ msgid "Look and feel"
+#~ msgstr "Giao diện trực quan"
 
-#: modules/gui/qt/ui/sprefs_interface.h:533
-msgid "Use custom skin"
-msgstr "Sử dụng giao diện tự chọn"
+#~ msgid "Use custom skin"
+#~ msgstr "Sử dụng giao diện tự chọn"
 
-#: modules/gui/qt/ui/sprefs_interface.h:535
-msgid "This is VLC's default interface, with a native look and feel."
-msgstr ""
-"Đây là giao diện mặc định của VLC, hoàn toàn đơn giản và dễ dàng thao tác."
+#~ msgid "This is VLC's default interface, with a native look and feel."
+#~ msgstr ""
+#~ "Đây là giao diện mặc định của VLC, hoàn toàn đơn giản và dễ dàng thao tác."
 
-#: modules/gui/qt/ui/sprefs_interface.h:537
-msgid "Use native style"
-msgstr "Sử dụng giao diện mặc định"
+#~ msgid "Use native style"
+#~ msgstr "Sử dụng giao diện mặc định"
 
-#: modules/gui/qt/ui/sprefs_interface.h:538
-msgid "Resize interface to video size"
-msgstr "Chỉnh kích thước của giao diện theo kích thước video"
+#~ msgid "Resize interface to video size"
+#~ msgstr "Chỉnh kích thước của giao diện theo kích thước video"
 
-#: modules/gui/qt/ui/sprefs_interface.h:539
-msgid "Show controls in full screen mode"
-msgstr "Hiển thị thanh điều khiển trong chế độ toàn màn hình"
+#~ msgid "Show controls in full screen mode"
+#~ msgstr "Hiển thị thanh điều khiển trong chế độ toàn màn hình"
 
-#: modules/gui/qt/ui/sprefs_interface.h:540
-msgid "Pause playback when minimized"
-msgstr "Dừng việc phát lại khi thu nhỏ VLC"
+#~ msgid "Pause playback when minimized"
+#~ msgstr "Dừng việc phát lại khi thu nhỏ VLC"
 
-#: modules/gui/qt/ui/sprefs_interface.h:541
-msgid "Show media change popup:"
-msgstr "Hiển thị cửa sổ thông báo về việc thay đổi tập tin phát:"
+#~ msgid "Show media change popup:"
+#~ msgstr "Hiển thị cửa sổ thông báo về việc thay đổi tập tin phát:"
 
-#: modules/gui/qt/ui/sprefs_interface.h:542
-msgid "Start in minimal view mode"
-msgstr "Khởi động VLC trong chế độ hiển thị thu nhỏ"
+#~ msgid "Start in minimal view mode"
+#~ msgstr "Khởi động VLC trong chế độ hiển thị thu nhỏ"
 
-#: modules/gui/qt/ui/sprefs_interface.h:543
-msgid "Force window style:"
-msgstr "Buộc kiểu màn hình:"
+#~ msgid "Force window style:"
+#~ msgstr "Buộc kiểu màn hình:"
 
-#: modules/gui/qt/ui/sprefs_interface.h:544
-msgid "Integrate video in interface"
-msgstr "Hợp nhất video trong giao diện"
+#~ msgid "Integrate video in interface"
+#~ msgstr "Hợp nhất video trong giao diện"
 
-#: modules/gui/qt/ui/sprefs_interface.h:545
-msgid "Show systray icon"
-msgstr "Hiển thị biểu tượng ở thanh hệ thống"
+#~ msgid "Show systray icon"
+#~ msgstr "Hiển thị biểu tượng ở thanh hệ thống"
 
-#: modules/gui/qt/ui/sprefs_interface.h:546
 #, fuzzy
-msgid "Auto raising the interface:"
-msgstr ""
-"Bạn đang sử dụng giao diện Qt4.\n"
-"\n"
+#~ msgid "Auto raising the interface:"
+#~ msgstr ""
+#~ "Bạn đang sử dụng giao diện Qt4.\n"
+#~ "\n"
 
-#: modules/gui/qt/ui/sprefs_interface.h:547
-msgid "Skin resource file:"
-msgstr "Tập tin tài nguyên giao diện"
+#~ msgid "Skin resource file:"
+#~ msgstr "Tập tin tài nguyên giao diện"
 
-#: modules/gui/qt/ui/sprefs_interface.h:549
-msgid "Playlist and Instances"
-msgstr "Danh sách và các tiến trình"
+#~ msgid "Playlist and Instances"
+#~ msgstr "Danh sách và các tiến trình"
 
-#: modules/gui/qt/ui/sprefs_interface.h:552
-msgid "Pause on the last frame of a video"
-msgstr "Tạm dừng khung hình cuối cùng của video"
+#~ msgid "Pause on the last frame of a video"
+#~ msgstr "Tạm dừng khung hình cuối cùng của video"
 
-#: modules/gui/qt/ui/sprefs_interface.h:555
-msgid "Allow only one instance"
-msgstr "Chỉ cho phép một tiến trình"
+#~ msgid "Allow only one instance"
+#~ msgstr "Chỉ cho phép một tiến trình"
 
-#: modules/gui/qt/ui/sprefs_interface.h:557
-msgid "Activate updates notifier"
-msgstr "Kích hoạt thông báo về cập nhật chương trình"
+#~ msgid "Activate updates notifier"
+#~ msgstr "Kích hoạt thông báo về cập nhật chương trình"
 
-#: modules/gui/qt/ui/sprefs_interface.h:559
-msgid "Every "
-msgstr "Mỗi"
+#~ msgid "Every "
+#~ msgstr "Mỗi"
 
-#: modules/gui/qt/ui/sprefs_interface.h:560
-msgid "Save recently played items"
-msgstr "Lưu các tập tin được mở gần đây"
+#~ msgid "Save recently played items"
+#~ msgstr "Lưu các tập tin được mở gần đây"
 
-#: modules/gui/qt/ui/sprefs_interface.h:563
-msgid "Separate words by | (without space)"
-msgstr "Các từ cách biệt bởi | (không có khoảng trắng)"
+#~ msgid "Separate words by | (without space)"
+#~ msgstr "Các từ cách biệt bởi | (không có khoảng trắng)"
 
-#: modules/gui/qt/ui/sprefs_interface.h:566
-msgid "Operating System Integration"
-msgstr "Quản lý các loại tập tin được mở bởi VLC"
+#~ msgid "Operating System Integration"
+#~ msgstr "Quản lý các loại tập tin được mở bởi VLC"
 
-#: modules/gui/qt/ui/sprefs_interface.h:567
-msgid "File extensions association"
-msgstr "Các loại tập tin được mở bởi VLC"
+#~ msgid "File extensions association"
+#~ msgstr "Các loại tập tin được mở bởi VLC"
 
-#: modules/gui/qt/ui/sprefs_interface.h:568
-msgid "Set up associations..."
-msgstr "Chỉnh sửa các loại tập tin được mở bởi VLC..."
+#~ msgid "Set up associations..."
+#~ msgstr "Chỉnh sửa các loại tập tin được mở bởi VLC..."
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:291
-msgid "Enable On Screen Display (OSD)"
-msgstr "Bật tính năng Hiển Thị Trên Màn Hình (OSD)"
+#~ msgid "Enable On Screen Display (OSD)"
+#~ msgstr "Bật tính năng Hiển Thị Trên Màn Hình (OSD)"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:292
-msgid "Show media title on video start"
-msgstr "Hiển thị tiêu đề của tập tin khi video được mở"
+#~ msgid "Show media title on video start"
+#~ msgstr "Hiển thị tiêu đề của tập tin khi video được mở"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:294
-msgid "Enable subtitles"
-msgstr "Hiển thị tiêu đề"
+#~ msgid "Enable subtitles"
+#~ msgstr "Hiển thị tiêu đề"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:295
-msgid "Subtitle Language"
-msgstr "Ngôn ngữ phụ đề"
+#~ msgid "Subtitle Language"
+#~ msgstr "Ngôn ngữ phụ đề"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:297
-msgid "Default encoding"
-msgstr "Mã hóa mặc định"
+#~ msgid "Default encoding"
+#~ msgstr "Mã hóa mặc định"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:298
-msgid "Subtitle effects"
-msgstr "Hiệu ứng phụ đề"
+#~ msgid "Subtitle effects"
+#~ msgstr "Hiệu ứng phụ đề"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:304
-msgid "Add a shadow"
-msgstr "Thêm phần đổ bóng"
+#~ msgid "Add a shadow"
+#~ msgstr "Thêm phần đổ bóng"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:306
-#: modules/gui/qt/ui/video_effects.h:1230
-#: modules/gui/qt/ui/video_effects.h:1234
-#: modules/gui/qt/ui/video_effects.h:1237
-#: modules/gui/qt/ui/video_effects.h:1238
-#: modules/gui/qt/ui/video_effects.h:1272
-#: modules/gui/qt/ui/video_effects.h:1274
-#: modules/gui/qt/ui/video_effects.h:1284
-#: modules/gui/qt/ui/video_effects.h:1285
-msgid " px"
-msgstr "pixel"
+#~ msgid " px"
+#~ msgstr "pixel"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:307
-msgid "Add a background"
-msgstr "Thêm phần nền"
+#~ msgid "Add a background"
+#~ msgstr "Thêm phần nền"
 
-#: modules/gui/qt/ui/sprefs_video.h:316
 #, fuzzy
-msgid "O&utput"
-msgstr "Xuất dữ liệu"
+#~ msgid "O&utput"
+#~ msgstr "Xuất dữ liệu"
 
-#: modules/gui/qt/ui/sprefs_video.h:320
-msgid "DirectX"
-msgstr "DirectX"
+#~ msgid "DirectX"
+#~ msgstr "DirectX"
 
-#: modules/gui/qt/ui/sprefs_video.h:322
-msgid "Accelerated video output (Overlay)"
-msgstr "Tăng tốc việc xuất video (Overlay)"
+#~ msgid "Accelerated video output (Overlay)"
+#~ msgstr "Tăng tốc việc xuất video (Overlay)"
 
-#: modules/gui/qt/ui/sprefs_video.h:323
-msgid "KVA"
-msgstr "KVA"
+#~ msgid "KVA"
+#~ msgstr "KVA"
 
-#: modules/gui/qt/ui/sprefs_video.h:329
-msgid "Force Aspect Ratio"
-msgstr "Bắt buộc tỉ lệ bề mặt"
+#~ msgid "Force Aspect Ratio"
+#~ msgstr "Bắt buộc tỉ lệ bề mặt"
 
-#: modules/gui/qt/ui/sprefs_video.h:334
-msgid "vlc-snap"
-msgstr "chụp hình vlc"
+#~ msgid "vlc-snap"
+#~ msgstr "chụp hình vlc"
 
-#: modules/gui/qt/ui/streampanel.h:171
-msgid "Stuff"
-msgstr "Việc"
+#~ msgid "Stuff"
+#~ msgstr "Việc"
 
-#: modules/gui/qt/ui/streampanel.h:173
-msgid "Edit settings"
-msgstr "Thiết lập chỉnh sửa"
+#~ msgid "Edit settings"
+#~ msgstr "Thiết lập chỉnh sửa"
 
-#: modules/gui/qt/ui/streampanel.h:174
-msgid "Control"
-msgstr "Điều khiển"
+#~ msgid "Control"
+#~ msgstr "Điều khiển"
 
-#: modules/gui/qt/ui/streampanel.h:175
-msgid "Run manually"
-msgstr "Chạy do người điều khiển"
+#~ msgid "Run manually"
+#~ msgstr "Chạy do người điều khiển"
 
-#: modules/gui/qt/ui/streampanel.h:176
-msgid "Setup schedule"
-msgstr "Thiết lập thời khóa biểu"
+#~ msgid "Setup schedule"
+#~ msgstr "Thiết lập thời khóa biểu"
 
-#: modules/gui/qt/ui/streampanel.h:177
-msgid "Run on schedule"
-msgstr "Chạy theo Thời Khóa Biểu"
+#~ msgid "Run on schedule"
+#~ msgstr "Chạy theo Thời Khóa Biểu"
 
-#: modules/gui/qt/ui/streampanel.h:178
-msgid "Status"
-msgstr "Trạng thái"
+#~ msgid "Status"
+#~ msgstr "Trạng thái"
 
-#: modules/gui/qt/ui/streampanel.h:179
-msgid "P/P"
-msgstr "P/P"
+#~ msgid "P/P"
+#~ msgstr "P/P"
 
-#: modules/gui/qt/ui/streampanel.h:182
-msgid "Prev"
-msgstr "Lùi"
+#~ msgid "Prev"
+#~ msgstr "Lùi"
 
-#: modules/gui/qt/ui/streampanel.h:183
-msgid "Add Input"
-msgstr "Thêm dữ liệu nhập"
+#~ msgid "Add Input"
+#~ msgstr "Thêm dữ liệu nhập"
 
-#: modules/gui/qt/ui/streampanel.h:184
-msgid "Edit Input"
-msgstr "Sửa nhập dữ liệu"
+#~ msgid "Edit Input"
+#~ msgstr "Sửa nhập dữ liệu"
 
-#: modules/gui/qt/ui/streampanel.h:185
-msgid "Clear List"
-msgstr "Xóa danh sách"
+#~ msgid "Clear List"
+#~ msgstr "Xóa danh sách"
 
-#: modules/gui/qt/ui/update.h:148
-msgid "Check for VLC updates"
-msgstr "Kiểm tra việc cập nhật phiên bản mới của VLC"
+#~ msgid "Check for VLC updates"
+#~ msgstr "Kiểm tra việc cập nhật phiên bản mới của VLC"
 
-#: modules/gui/qt/ui/update.h:149
-msgid "Launching an update request..."
-msgstr "Đang kết nối với yêu cầu cập nhật..."
+#~ msgid "Launching an update request..."
+#~ msgstr "Đang kết nối với yêu cầu cập nhật..."
 
-#: modules/gui/qt/ui/update.h:150
-msgid "Do you want to download it?"
-msgstr "Bạn có muốn tải về phiên bản cập nhật mới này không?"
+#~ msgid "Do you want to download it?"
+#~ msgstr "Bạn có muốn tải về phiên bản cập nhật mới này không?"
 
-#: modules/gui/qt/ui/video_effects.h:1228
-msgid "Essential"
-msgstr "Cần thiết"
+#~ msgid "Essential"
+#~ msgstr "Cần thiết"
 
-#: modules/gui/qt/ui/video_effects.h:1242
-#: modules/gui/qt/ui/video_effects.h:1251
-msgid ">HHHHHH;#"
-msgstr ">HHHHHH;#"
+#~ msgid ">HHHHHH;#"
+#~ msgstr ">HHHHHH;#"
 
-#: modules/gui/qt/ui/video_effects.h:1243
 #, fuzzy
-msgid "Negate colors"
-msgstr "Chuyển màu"
+#~ msgid "Negate colors"
+#~ msgstr "Chuyển màu"
 
-#: modules/gui/qt/ui/video_effects.h:1256
-msgid "Colors"
-msgstr "Màu sắc"
+#~ msgid "Colors"
+#~ msgstr "Màu sắc"
 
-#: modules/gui/qt/ui/video_effects.h:1257
-msgid "Interactive Zoom"
-msgstr "Phóng lớn"
+#~ msgid "Interactive Zoom"
+#~ msgstr "Phóng lớn"
 
-#: modules/gui/qt/ui/video_effects.h:1263
-msgid "Angle"
-msgstr "Góc"
+#~ msgid "Angle"
+#~ msgstr "Góc"
 
-#: modules/gui/qt/ui/video_effects.h:1270
-#: modules/gui/qt/ui/video_effects.h:1287
-msgid "..."
-msgstr "..."
+#~ msgid "..."
+#~ msgstr "..."
 
-#: modules/gui/qt/ui/video_effects.h:1275
-msgid "full"
-msgstr "đầy đủ"
+#~ msgid "full"
+#~ msgstr "đầy đủ"
 
-#: modules/gui/qt/ui/video_effects.h:1277
-msgid "none"
-msgstr "không"
+#~ msgid "none"
+#~ msgstr "không"
 
-#: modules/gui/qt/ui/video_effects.h:1281
-msgid "Logo erase"
-msgstr "Xóa logo"
+#~ msgid "Logo erase"
+#~ msgstr "Xóa logo"
 
-#: modules/gui/qt/ui/video_effects.h:1286
-msgid "Mask"
-msgstr "Mặt nạ"
+#~ msgid "Mask"
+#~ msgstr "Mặt nạ"
 
-#: modules/gui/qt/ui/video_effects.h:1289
-msgid "Anaglyph 3D"
-msgstr "Anaglyph 3D"
+#~ msgid "Anaglyph 3D"
+#~ msgstr "Anaglyph 3D"
 
-#: modules/gui/qt/ui/video_effects.h:1290
 #, fuzzy
-msgid "Mirror"
-msgstr "Lỗi"
+#~ msgid "Mirror"
+#~ msgstr "Lỗi"
 
-#: modules/gui/qt/ui/video_effects.h:1294
-msgid "Motion detect"
-msgstr "Xác định chuyển động"
+#~ msgid "Motion detect"
+#~ msgstr "Xác định chuyển động"
 
-#: modules/gui/qt/ui/video_effects.h:1295
 #, fuzzy
-msgid "Spatial blur"
-msgstr "Spatializer"
+#~ msgid "Spatial blur"
+#~ msgstr "Spatializer"
 
-#: modules/gui/qt/ui/video_effects.h:1299
 #, fuzzy
-msgid "Anti-Flickering"
-msgstr "antiflicker"
+#~ msgid "Anti-Flickering"
+#~ msgstr "antiflicker"
 
-#: modules/gui/qt/ui/video_effects.h:1300
 #, fuzzy
-msgid "Soften"
-msgstr "Mềm"
+#~ msgid "Soften"
+#~ msgstr "Mềm"
 
-#: modules/gui/qt/ui/video_effects.h:1301
 #, fuzzy
-msgid "Denoiser"
-msgstr "Noise"
+#~ msgid "Denoiser"
+#~ msgstr "Noise"
 
-#: modules/gui/qt/ui/video_effects.h:1302
 #, fuzzy
-msgid "Spatial luma strength"
-msgstr "Spatializer"
+#~ msgid "Spatial luma strength"
+#~ msgstr "Spatializer"
 
-#: modules/gui/qt/ui/video_effects.h:1303
-msgid "Temporal luma strength"
-msgstr ""
+#~ msgid "VLM configurator"
+#~ msgstr "Hiệu chỉnh VLC"
 
-#: modules/gui/qt/ui/video_effects.h:1304
-msgid "Spatial chroma strength"
-msgstr ""
+#~ msgid "Media Manager Edition"
+#~ msgstr "Phiên bản quản lý đa phương tiện"
 
-#: modules/gui/qt/ui/video_effects.h:1305
-msgid "Temporal chroma strength"
-msgstr ""
+#~ msgid "Name:"
+#~ msgstr "Tên:"
 
-#: modules/gui/qt/ui/vlm.h:286
-msgid "VLM configurator"
-msgstr "Hiệu chỉnh VLC"
+#~ msgid "Input:"
+#~ msgstr "Nhập vào:"
 
-#: modules/gui/qt/ui/vlm.h:287
-msgid "Media Manager Edition"
-msgstr "Phiên bản quản lý đa phương tiện"
+#~ msgid "Select Input"
+#~ msgstr "Chọn nhập dữ liệu"
 
-#: modules/gui/qt/ui/vlm.h:288
-msgid "Name:"
-msgstr "Tên:"
+#~ msgid "Output:"
+#~ msgstr "Xuất ra:"
 
-#: modules/gui/qt/ui/vlm.h:290
-msgid "Input:"
-msgstr "Nhập vào:"
+#~ msgid "Select Output"
+#~ msgstr "Chọn xuất dữ liệu"
 
-#: modules/gui/qt/ui/vlm.h:291
-msgid "Select Input"
-msgstr "Chọn nhập dữ liệu"
+#~ msgid "Time Control"
+#~ msgstr "Điều khiển thời gian"
 
-#: modules/gui/qt/ui/vlm.h:292
-msgid "Output:"
-msgstr "Xuất ra:"
+#~ msgid "Mux Control"
+#~ msgstr "Điều khiển dồn kênh"
 
-#: modules/gui/qt/ui/vlm.h:293
-msgid "Select Output"
-msgstr "Chọn xuất dữ liệu"
+#~ msgid "Muxer:"
+#~ msgstr "Dồn kênh:"
 
-#: modules/gui/qt/ui/vlm.h:294
-msgid "Time Control"
-msgstr "Điều khiển thời gian"
+#~ msgid "AAAA; "
+#~ msgstr "AAAA; "
 
-#: modules/gui/qt/ui/vlm.h:295
-msgid "Mux Control"
-msgstr "Điều khiển dồn kênh"
-
-#: modules/gui/qt/ui/vlm.h:296
-msgid "Muxer:"
-msgstr "Dồn kênh:"
-
-#: modules/gui/qt/ui/vlm.h:297
-msgid "AAAA; "
-msgstr "AAAA; "
-
-#: modules/gui/qt/ui/vlm.h:302
-msgid "Media Manager List"
-msgstr "Danh sách quản lý tập tin"
+#~ msgid "Media Manager List"
+#~ msgstr "Danh sách quản lý tập tin"
 
 #, fuzzy
 #~ msgid "Screen capture (with Wayland)"
@@ -32444,9 +32106,6 @@ msgstr "Danh sách quản lý tập tin"
 #~ msgstr ""
 #~ "Chỉ hiển thị địa chỉ email mặc định của bạn khi gửi đi, không bao gồm các "
 #~ "thông tin nào khác."
-
-#~ msgid "Don't ask again"
-#~ msgstr "Không hỏi lại lần nữa"
 
 #~ msgid "No CrashLog found"
 #~ msgstr "Không tìm thấy báo cáo lỗi hệ thống"

@@ -24,16 +24,15 @@ endif
 # Main VLC executable
 #
 vlc_LDADD = ../lib/libvlc.la $(LIBPTHREAD)
+vlc_CPPFLAGS = $(AM_CPPFLAGS)
 if !HAVE_WIN32
 vlc_SOURCES = vlc.c override.c
 vlc_LDADD += $(LIBDL)
-vlc_CPPFLAGS = $(AM_CPPFLAGS)
 else
 vlc_SOURCES = winvlc.c
 vlc_DEPENDENCIES = vlc_win32_rc.$(OBJEXT)
 vlc_LDFLAGS = -mwindows
 vlc_LDADD += vlc_win32_rc.$(OBJEXT)
-vlc_CPPFLAGS = $(AM_CPPFLAGS)
 libbreakpad_wrapper_la_SOURCES = breakpad.cpp
 libbreakpad_wrapper_la_LIBADD = $(BREAKPAD_LIBS)
 libbreakpad_wrapper_la_LDFLAGS = -static
@@ -41,6 +40,7 @@ libbreakpad_wrapper_la_CXXFLAGS = $(AM_CXXFLAGS) $(BREAKPAD_CFLAGS) -DBREAKPAD_U
 if HAVE_BREAKPAD
 noinst_LTLIBRARIES = libbreakpad_wrapper.la
 vlc_LDADD += libbreakpad_wrapper.la -lstdc++ -lwininet
+vlc_DEPENDENCIES += libbreakpad_wrapper.la
 vlc_CPPFLAGS += -DHAVE_BREAKPAD
 endif
 endif

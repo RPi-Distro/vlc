@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: c4a848d5e904a15703b6bb2cd4ac3506e0dfdf34 $
+ * $Id: e95dd49f7674a7cdf8afc7102600d013e07a820d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -3255,14 +3255,15 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
            }
            info_category_AddInfo( p_cat, _("Projection"), "%s", _(psz_loc_name) );
 
-           info_category_AddInfo( p_cat, _("Yaw"), "%.2f",
-                                  fmt->video.pose.yaw );
-           info_category_AddInfo( p_cat, _("Pitch"), "%.2f",
-                                  fmt->video.pose.pitch );
-           info_category_AddInfo( p_cat, _("Roll"), "%.2f",
-                                  fmt->video.pose.roll );
-           info_category_AddInfo( p_cat, _("Field of view"), "%.2f",
-                                  fmt->video.pose.fov );
+           info_category_AddInfo( p_cat, vlc_pgettext("ViewPoint", "Yaw"),
+                                  "%.2f", fmt->video.pose.yaw );
+           info_category_AddInfo( p_cat, vlc_pgettext("ViewPoint", "Pitch"),
+                                  "%.2f", fmt->video.pose.pitch );
+           info_category_AddInfo( p_cat, vlc_pgettext("ViewPoint", "Roll"),
+                                  "%.2f", fmt->video.pose.roll );
+           info_category_AddInfo( p_cat,
+                                  vlc_pgettext("ViewPoint", "Field of view"),
+                                  "%.2f", fmt->video.pose.fov );
        }
        if ( fmt->video.mastering.max_luminance )
        {

@@ -1,3 +1,185 @@
+commit 2ac40a35fc38d6446eacf4b5faa78c4652f725d2
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Sun Dec 31 15:03:25 2017 +0100
+
+    share/Info.plist: Fix CrashDragon endpoint for macOS
+    
+    (cherry picked from commit e46c00e7d07482b70590241acd631065dd7bd685)
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+
+commit 661df8399cdbe182da1cd4b24e8eda7d01528b92
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Sat Dec 30 17:25:17 2017 +0100
+
+    codec: ttml: fix font size computation
+    
+    split steps, there's too much confusion
+    
+    (cherry picked from commit f46e3cdeed92ca032327169925aad2cfac86cf79)
+
+commit 191e3c494b10d7b17a0ddaee2d1794a5a5c9e321
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 29 17:55:47 2017 +0100
+
+    codec: cea708: fix CLW handling
+    
+    (cherry picked from commit e5c07c5d5961291edc16382cdcf8b439e3888ec8)
+
+commit a2348f7b59ea7d7ae60707f99822fe57ee0b3bbb
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 29 17:21:07 2017 +0100
+
+    codec: cea608/708: fix bitrate
+    
+    (cherry picked from commit 1a1d75cc9668a08e6f14d8726db7e51a9b72ec51)
+
+commit bcbb9b7c6f001f5878368f226c600e639ec18509
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Dec 29 14:55:13 2017 +0100
+
+    codec: cea708: fix rel font size
+    
+    (cherry picked from commit c6af41d7915d8346baf34e16fec31489efd750ab)
+
+commit 5eac9d91a1f23761ca9044d5c2b4e2d8348a816d
+Author: Theppitak Karoonboonyanan <theppitak@gmail.com>
+Date:   Sat Dec 30 00:22:00 2017 +0700
+
+    Add context to view point messages for translation (fixes #19374)
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 751f09f71c188e3121e1bf6d18371a8668aed19f)
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit c5b41a60992555e2f054721580c257dfa301b010
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Wed Dec 27 19:45:32 2017 +0100
+
+    macOS build.sh: Add options for release build
+    
+    Adds parameter option -i to specify the type of package to be build.
+    Adds -b parameter to pass breakpad URL.
+    Also adds a way to overwrite the macOS kernel version via environment
+    variable, which can be useful if someone wants to use an older contribs
+    package.
+    
+    (cherry picked from commit 85975db4a8e3bcdad840277cd82d72c3e85f778e)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit 4aa3833bd519c79fc46be1451e091536fe3b30b3
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Wed Dec 27 19:44:32 2017 +0100
+
+    macOS package.mak: Add release archive target
+    
+    This adds a rule to build a release archive, containing all tools
+    needed for codesigning and building the final dmg.
+    
+    (cherry picked from commit d3871a0461dbec669a9f837a40a3e79c2f7f0ca5)
+    Signed-off-by: David Fuhrmann <dfuhrmann@videolan.org>
+
+commit 8d988d18a788310fe7275b61f0def3d16aadb90c
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Dec 28 15:25:46 2017 +0100
+
+    contribs: gnutls: Fix linking on winrt
+    
+    (cherry picked from commit 981c03764201f3d41d0de0e5adf5513c8e43398e)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 6f39a32a635da8a918555f67253a5b788d42a050
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Thu Dec 28 11:14:26 2017 +0100
+
+    contribs: gnutls: Fix winrt build
+    
+    (cherry picked from commit 9d8eb3b639cbbaf4491e4646267d78f02c5d890f)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 668cedaa08355a2cf8c166640b165edb8fbe36fd
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Dec 28 00:10:14 2017 +0100
+
+    MODULES_LIST: fix audiotoolboxmidi name
+    
+    (cherry picked from commit 01bdfb076ffd73002ea83b38bddd1222637408ad)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 8e604df62995030d0fb435af763a52fd471e9757
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Wed Dec 27 08:06:09 2017 -0500
+
+    avcodec: fourcc: add av1 mapping
+    
+    Needed to mux AV1 using libavformat's IVF muxer.
+    IVF muxing for AV1 was added to ffmpeg in
+    commit e8f0a463b0d27a4d74c0d9f1857e72a8033d1069.
+    
+    (cherry picked from commit eec91d68538decedcc82c4bd4630939dbab59953)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit aa124682833436f9240959467a6679a665c7b2b3
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Wed Dec 27 18:41:46 2017 +0100
+
+    contrib: gnutls: Drop pkgconfig patch for macOS
+    
+    Checking for that specific symbol is not needed anymore since
+    the keychain lookup patch is not needed anymore. Additionally,
+    this patched a pkgconfig file which is not needed by vlc and is not
+    even installed / compiled.
+    
+    (cherry picked from commit a1cb2bdf07e125cadab9cf0fd9197fd2d5241715)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit adaab724928913aef3784c982b8f550ac9d04f2d
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Wed Dec 27 18:27:12 2017 +0100
+
+    contrib: gnutls: Drop mac keychain lookup patch
+    
+    Similar code is now part of the release itself, therefore this
+    patch is not needed anymore.
+    
+    (cherry picked from commit 1a0717116afa72a2c1dae47e31c56c2926b584d6)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6e9ff4e9e813f7a1555ad77a014485a056da8d8f
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 27 15:57:50 2017 +0100
+
+    bin/Makefile.am: Explicitely depend on libbreakpad_wrapper.la
+    
+    (cherry picked from commit 38c1add4d1604274a55a77efb9063da89a1ff861)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 561198da542e046b07901a2f913451f44e9dadd3
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Dec 27 15:26:22 2017 +0100
+
+    bin/Makefile.am: Simplify
+    
+    (cherry picked from commit 87d76d7689f8a20e05984a8746695c7973625349)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit a5688a51a9eee3202468b1c85f4fd3ad82dc9b04
+Author: Hannes Domani <ssbssa@yahoo.de>
+Date:   Wed Dec 27 14:08:39 2017 +0100
+
+    qt: fix crash if no fullscreen controls are available
+    
+    Close #19349
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit e472717ea5ba8b210d968ccebcdb2b9d670c8410)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 4fae1856db0eb2804c3eaf881341f0f58f3c7b8f
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 27 14:15:51 2017 +0100
+
+    On the road to RC5
+
 commit 775d32ff49314f49bc1edcc318b78ac506ea02cb
 Author: Tristan Matthews <tmatth@videolan.org>
 Date:   Mon Dec 18 10:10:53 2017 -0500

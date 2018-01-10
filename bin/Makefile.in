@@ -104,20 +104,21 @@ host_triplet = @host@
 @HAVE_WIN32_FALSE@	$(am__append_3) $(am__DEPENDENCIES_3)
 @HAVE_WIN32_TRUE@am__append_3 = vlc_win32_rc.$(OBJEXT)
 @HAVE_BREAKPAD_TRUE@@HAVE_WIN32_TRUE@am__append_4 = libbreakpad_wrapper.la -lstdc++ -lwininet
-@HAVE_BREAKPAD_TRUE@@HAVE_WIN32_TRUE@am__append_5 = -DHAVE_BREAKPAD
-@HAVE_BREAKPAD_TRUE@am__append_6 = -Wl,-framework,Breakpad
+@HAVE_BREAKPAD_TRUE@@HAVE_WIN32_TRUE@am__append_5 = libbreakpad_wrapper.la
+@HAVE_BREAKPAD_TRUE@@HAVE_WIN32_TRUE@am__append_6 = -DHAVE_BREAKPAD
 @HAVE_BREAKPAD_TRUE@am__append_7 = -Wl,-framework,Breakpad
-@HAVE_BREAKPAD_TRUE@am__append_8 = -F$(CONTRIB_DIR)/Frameworks
+@HAVE_BREAKPAD_TRUE@am__append_8 = -Wl,-framework,Breakpad
+@HAVE_BREAKPAD_TRUE@am__append_9 = -F$(CONTRIB_DIR)/Frameworks
 
 #
 # Root wrapper
 #
-@BUILD_VLC_TRUE@@HAVE_OS2_FALSE@@HAVE_WIN32_FALSE@am__append_9 = vlc-wrapper
+@BUILD_VLC_TRUE@@HAVE_OS2_FALSE@@HAVE_WIN32_FALSE@am__append_10 = vlc-wrapper
 @HAVE_DYNAMIC_PLUGINS_TRUE@vlclib_PROGRAMS = vlc-cache-gen$(EXEEXT)
-@HAVE_WIN32_TRUE@am__append_10 = vlc_win32_rc.$(OBJEXT)
+@HAVE_WIN32_TRUE@am__append_11 = vlc_win32_rc.$(OBJEXT)
 @HAVE_WIN32_FALSE@vlc_cache_gen_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 @HAVE_WIN32_FALSE@	../compat/libcompat.la ../lib/libvlc.la \
-@HAVE_WIN32_FALSE@	$(am__append_10)
+@HAVE_WIN32_FALSE@	$(am__append_11)
 subdir = bin
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_append_compile_flags.m4 \
@@ -1113,11 +1114,11 @@ AM_CFLAGS = $(CFLAGS_vlc)
 #
 vlc_LDADD = ../lib/libvlc.la $(LIBPTHREAD) $(am__append_2) \
 	$(am__append_3) $(am__append_4)
+vlc_CPPFLAGS = $(AM_CPPFLAGS) $(am__append_6)
 @HAVE_WIN32_FALSE@vlc_SOURCES = vlc.c override.c
 @HAVE_WIN32_TRUE@vlc_SOURCES = winvlc.c
-@HAVE_WIN32_FALSE@vlc_CPPFLAGS = $(AM_CPPFLAGS) $(am__append_5)
-@HAVE_WIN32_TRUE@vlc_CPPFLAGS = $(AM_CPPFLAGS) $(am__append_5)
-@HAVE_WIN32_TRUE@vlc_DEPENDENCIES = vlc_win32_rc.$(OBJEXT)
+@HAVE_WIN32_TRUE@vlc_DEPENDENCIES = vlc_win32_rc.$(OBJEXT) \
+@HAVE_WIN32_TRUE@	$(am__append_5)
 @HAVE_WIN32_TRUE@vlc_LDFLAGS = -mwindows
 @HAVE_WIN32_TRUE@libbreakpad_wrapper_la_SOURCES = breakpad.cpp
 @HAVE_WIN32_TRUE@libbreakpad_wrapper_la_LIBADD = $(BREAKPAD_LIBS)
@@ -1128,17 +1129,17 @@ vlc_osx_SOURCES = darwinvlc.m
 vlc_osx_LDFLAGS = $(LDFLAGS_vlc) \
 	-Wl,-framework,CoreFoundation,-framework,Cocoa -Xlinker -rpath \
 	-Xlinker "@executable_path/lib/" -Xlinker -rpath -Xlinker \
-	"@executable_path/plugins/" $(am__append_6)
+	"@executable_path/plugins/" $(am__append_7)
 @HAVE_BREAKPAD_TRUE@vlc_osx_OBJCFLAGS = -F$(CONTRIB_DIR)/Frameworks
 @HAVE_BREAKPAD_TRUE@vlc_osx_CPPFLAGS = -DHAVE_BREAKPAD
 vlc_osx_LDADD = ../lib/libvlc.la
 vlc_osx_static_SOURCES = $(vlc_osx_SOURCES)
 vlc_osx_static_OBJCFLAGS = $(AM_OBJCFLAGS) -DTOP_BUILDDIR=\"$$(cd \
 	"$(top_builddir)"; pwd)\" -DTOP_SRCDIR=\"$$(cd \
-	"$(top_srcdir)"; pwd)\" $(NULL) $(am__append_8)
+	"$(top_srcdir)"; pwd)\" $(NULL) $(am__append_9)
 vlc_osx_static_LDFLAGS = $(vlc_osx_LDFLAGS) -static -Xlinker -rpath \
 	-Xlinker "@executable_path/../lib/.libs/" -Xlinker -rpath \
-	-Xlinker "@executable_path/../src/.libs/" $(am__append_7)
+	-Xlinker "@executable_path/../src/.libs/" $(am__append_8)
 vlc_osx_static_LDADD = $(vlc_osx_LDADD)
 @HAVE_BREAKPAD_TRUE@vlc_osx_static_CPPFLAGS = -DHAVE_BREAKPAD
 
@@ -1159,7 +1160,7 @@ vlc_wrapper_SOURCES = rootwrap.c
 vlc_wrapper_LDADD = $(SOCKET_LIBS)
 vlc_cache_gen_SOURCES = cachegen.c
 vlc_cache_gen_LDADD = $(GNUGETOPT_LIBS) ../compat/libcompat.la \
-	../lib/libvlc.la $(am__append_10)
+	../lib/libvlc.la $(am__append_11)
 @HAVE_WIN32_TRUE@vlc_cache_gen_DEPENDENCIES = vlc_win32_rc.$(OBJEXT)
 
 #

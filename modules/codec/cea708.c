@@ -163,10 +163,10 @@ void CEA708_DTVCC_Demuxer_Push( cea708_demux_t *h, mtime_t i_start, const uint8_
 #define CEA708_WINDOW_MAX_ROWS          15
 
 #define CEA708_ROW_HEIGHT_STANDARD     (CEA708_SAFE_AREA_REL / \
-                                        CEA708_SCREEN_ROWS)
+                                        CEA708_WINDOW_MAX_ROWS)
 #define CEA708_FONT_TO_LINE_HEIGHT_RATIO 1.06
 
-#define CEA708_FONTRELSIZE_STANDARD    (CEA708_ROW_HEIGHT_STANDARD / \
+#define CEA708_FONTRELSIZE_STANDARD    (100.0 * CEA708_ROW_HEIGHT_STANDARD / \
                                         CEA708_FONT_TO_LINE_HEIGHT_RATIO)
 #define CEA708_FONTRELSIZE_SMALL       (CEA708_FONTRELSIZE_STANDARD * 0.7)
 #define CEA708_FONTRELSIZE_LARGE       (CEA708_FONTRELSIZE_STANDARD * 1.3)
@@ -1299,13 +1299,17 @@ static int CEA708_Decode_C1( uint8_t code, cea708_t *p_cea708 )
     {
         case CEA708_C1_CLW:
             REQUIRE_ARGS_AND_POP_COMMAND(1);
-            Debug(printf("[CLW]"));
-            if( p_cea708->p_cw->b_defined )
-            {
-                CEA708_Window_ClearText( p_cea708->p_cw );
-                if( p_cea708->p_cw->b_visible )
-                    i_ret |= CEA708_STATUS_OUTPUT;
-            }
+            Debug(printf("[CLW"));
+            for( i = 0, v = cea708_input_buffer_get( ib ); v; v = v >> 1, i++ )
+                if( v & 1 )
+                {
+                    if( p_cea708->window[i].b_defined &&
+                        p_cea708->window[i].b_visible )
+                        i_ret |= CEA708_STATUS_OUTPUT;
+                    CEA708_Window_ClearText( &p_cea708->window[i] );
+                    Debug(printf("%d", i));
+                }
+            Debug(printf("]"));
             break;
         case CEA708_C1_DSW:
             REQUIRE_ARGS_AND_POP_COMMAND(1);
@@ -1656,7 +1660,7 @@ static void CEA708_Decode_ServiceBuffer( cea708_t *h )
         /* Update internal clock */
         const uint8_t i_consumed = i_in - cea708_input_buffer_size( &h->input_buffer );
         if( i_consumed )
-            h->i_clock += CLOCK_FREQ / 1200 * i_consumed;
+            h->i_clock += CLOCK_FREQ / 9600 * i_consumed;
     }
 }
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC - Trans\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-12-27 13:57+0100\n"
+"POT-Creation-Date: 2018-01-09 02:11+0000\n"
 "PO-Revision-Date: 2013-12-08 08:16+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Acoli (http://www.transifex.com/projects/p/vlc-trans/language/"
@@ -36,7 +36,7 @@ msgid "Select \"Advanced Options\" to see all options."
 msgstr ""
 
 #: include/vlc_config_cat.h:38
-#: modules/gui/macosx/VLCSimplePrefsController.m:220
+#: modules/gui/macosx/VLCSimplePrefsController.m:227
 #: modules/gui/qt/components/simple_preferences.cpp:223
 #: modules/gui/qt/menus.cpp:1090
 msgid "Interface"
@@ -67,7 +67,7 @@ msgid "Settings for VLC's control interfaces"
 msgstr ""
 
 #: include/vlc_config_cat.h:49 include/vlc_config_cat.h:50
-#: modules/gui/macosx/VLCSimplePrefsController.m:230
+#: modules/gui/macosx/VLCSimplePrefsController.m:237
 msgid "Hotkeys settings"
 msgstr "Tera me kipungua ma pirgi tegu"
 
@@ -76,13 +76,12 @@ msgstr "Tera me kipungua ma pirgi tegu"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:404 modules/gui/macosx/VLCOutput.m:92
 #: modules/gui/macosx/VLCPlaylistInfo.m:96
-#: modules/gui/macosx/VLCSimplePrefsController.m:222
+#: modules/gui/macosx/VLCSimplePrefsController.m:229
 #: modules/gui/qt/components/info_panels.cpp:572
 #: modules/gui/qt/components/simple_preferences.cpp:225
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
-#: modules/gui/qt/ui/profiles.h:721 modules/gui/qt/ui/profiles.h:752
 msgid "Audio"
 msgstr "Ma giwinyo"
 
@@ -95,7 +94,6 @@ msgid "General audio settings"
 msgstr ""
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:81
-#: modules/gui/qt/ui/profiles.h:750 modules/gui/qt/ui/profiles.h:760
 msgid "Filters"
 msgstr ""
 
@@ -140,16 +138,14 @@ msgstr ""
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:417 modules/gui/macosx/VLCOutput.m:82
 #: modules/gui/macosx/VLCPlaylistInfo.m:91
-#: modules/gui/macosx/VLCSimplePrefsController.m:224
-#: modules/gui/macosx/VLCSimplePrefsController.m:367
+#: modules/gui/macosx/VLCSimplePrefsController.m:231
+#: modules/gui/macosx/VLCSimplePrefsController.m:374
 #: modules/gui/qt/components/info_panels.cpp:573
 #: modules/gui/qt/components/simple_preferences.cpp:227
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
-#: modules/stream_out/chromecast/cast.cpp:107 modules/stream_out/es.c:102
+#: modules/stream_out/chromecast/cast.cpp:108 modules/stream_out/es.c:102
 #: modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
-#: modules/gui/qt/ui/profiles.h:722 modules/gui/qt/ui/profiles.h:726
-#: modules/gui/qt/ui/sprefs_video.h:326
 msgid "Video"
 msgstr "Video"
 
@@ -360,7 +356,6 @@ msgstr ""
 
 #: include/vlc_config_cat.h:184 src/libvlc-module.c:1844
 #: modules/gui/qt/dialogs/extended.cpp:93
-#: modules/gui/qt/ui/video_effects.h:1308
 msgid "Advanced"
 msgstr ""
 
@@ -436,7 +431,7 @@ msgstr "&Maromo"
 #: modules/gui/macosx/VLCMainMenu.m:1325 modules/gui/macosx/VLCMainMenu.m:1326
 #: modules/gui/macosx/VLCPlaylist.m:230
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:539 modules/gui/qt/ui/open.h:261
+#: modules/gui/qt/dialogs/vlm.cpp:539
 msgid "Play"
 msgstr "Tuki"
 
@@ -530,7 +525,6 @@ msgstr "Yeny"
 
 #: include/vlc_intf_strings.h:99
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
-#: modules/gui/qt/ui/video_effects.h:1292
 msgid "Waves"
 msgstr "Yamu ma kuto"
 
@@ -633,9 +627,6 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:312
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1231
-#: modules/gui/qt/ui/video_effects.h:1273
-#: modules/gui/qt/ui/video_effects.h:1283
 msgid "Left"
 msgstr "Tung acam"
 
@@ -650,7 +641,6 @@ msgstr "Tung acam"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:314
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1232
 msgid "Right"
 msgstr "Tung acuc"
 
@@ -797,49 +787,49 @@ msgstr ""
 msgid "Bookmark %i"
 msgstr ""
 
-#: src/input/decoder.c:1881
+#: src/input/decoder.c:1882
 msgid "No description for this codec"
 msgstr ""
 
-#: src/input/decoder.c:1883
+#: src/input/decoder.c:1884
 #, fuzzy
 msgid "Codec not supported"
 msgstr "Yik pi ginanena pe gigwoko"
 
-#: src/input/decoder.c:1884
+#: src/input/decoder.c:1885
 #, c-format
 msgid "VLC could not decode the format \"%4.4s\" (%s)"
 msgstr ""
 
-#: src/input/decoder.c:1888
+#: src/input/decoder.c:1889
 #, fuzzy
 msgid "Unidentified codec"
 msgstr "Nyonyo me yungo Cal anena"
 
-#: src/input/decoder.c:1889
+#: src/input/decoder.c:1890
 msgid "VLC could not identify the audio or video codec"
 msgstr ""
 
-#: src/input/decoder.c:1900
+#: src/input/decoder.c:1901
 msgid "packetizer"
 msgstr ""
 
-#: src/input/decoder.c:1900
+#: src/input/decoder.c:1901
 msgid "decoder"
 msgstr ""
 
-#: src/input/decoder.c:1908 src/input/decoder.c:2189
-#: modules/codec/avcodec/encoder.c:368 modules/codec/avcodec/encoder.c:885
+#: src/input/decoder.c:1909 src/input/decoder.c:2190
+#: modules/codec/avcodec/encoder.c:368 modules/codec/avcodec/encoder.c:882
 #: modules/stream_out/es.c:349 modules/stream_out/es.c:362
 msgid "Streaming / Transcoding failed"
 msgstr ""
 
-#: src/input/decoder.c:1909
+#: src/input/decoder.c:1910
 #, c-format
 msgid "VLC could not open the %s module."
 msgstr ""
 
-#: src/input/decoder.c:2190
+#: src/input/decoder.c:2191
 msgid "VLC could not open the decoder module."
 msgstr ""
 
@@ -890,15 +880,13 @@ msgstr ""
 #: src/input/es_out.c:3069 src/input/es_out.c:3072 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
-#: modules/gui/qt/ui/profiles.h:728 modules/gui/qt/ui/profiles.h:754
-#: modules/gui/qt/ui/profiles.h:763
 msgid "Codec"
 msgstr "Codec"
 
 #: src/input/es_out.c:3076 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:114
-#: modules/gui/macosx/VLCSimplePrefsController.m:304
-#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:530
+#: modules/gui/macosx/VLCSimplePrefsController.m:311
+#: modules/stream_out/setid.c:49
 msgid "Language"
 msgstr "Leb"
 
@@ -909,7 +897,7 @@ msgstr "Leb"
 msgid "Description"
 msgstr "Te lok"
 
-#: src/input/es_out.c:3085 src/input/es_out.c:3129 src/input/es_out.c:3318
+#: src/input/es_out.c:3085 src/input/es_out.c:3129 src/input/es_out.c:3319
 #: modules/gui/macosx/VLCAddonsWindowController.m:132
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
 #: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1487
@@ -918,7 +906,7 @@ msgstr "Kite"
 
 #: src/input/es_out.c:3088
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
-#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:756
+#: modules/gui/macosx/VLCOutput.m:98
 msgid "Channels"
 msgstr "Kabeo"
 
@@ -940,7 +928,6 @@ msgstr ""
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
-#: modules/gui/qt/ui/profiles.h:729 modules/gui/qt/ui/profiles.h:755
 msgid "Bitrate"
 msgstr "Koboro"
 
@@ -1129,49 +1116,53 @@ msgid "Projection"
 msgstr "Kabedo"
 
 #: src/input/es_out.c:3258
+msgctxt "ViewPoint"
 msgid "Yaw"
 msgstr ""
 
-#: src/input/es_out.c:3260 modules/video_output/vmem.c:48
+#: src/input/es_out.c:3260
+msgctxt "ViewPoint"
 msgid "Pitch"
 msgstr ""
 
 #: src/input/es_out.c:3262
+msgctxt "ViewPoint"
 msgid "Roll"
 msgstr ""
 
-#: src/input/es_out.c:3264
+#: src/input/es_out.c:3265
+msgctxt "ViewPoint"
 msgid "Field of view"
 msgstr ""
 
-#: src/input/es_out.c:3269
+#: src/input/es_out.c:3270
 #, fuzzy
 msgid "Max. luminance"
 msgstr "Jwik woko"
 
-#: src/input/es_out.c:3274
+#: src/input/es_out.c:3275
 #, fuzzy
 msgid "Min. luminance"
 msgstr "Jwik woko"
 
-#: src/input/es_out.c:3282
+#: src/input/es_out.c:3283
 msgid "Primary R"
 msgstr ""
 
-#: src/input/es_out.c:3289
+#: src/input/es_out.c:3290
 msgid "Primary G"
 msgstr ""
 
-#: src/input/es_out.c:3296
+#: src/input/es_out.c:3297
 msgid "Primary B"
 msgstr ""
 
-#: src/input/es_out.c:3303
+#: src/input/es_out.c:3304
 #, fuzzy
 msgid "White point"
 msgstr "Tar"
 
-#: src/input/es_out.c:3318 modules/access/imem.c:64
+#: src/input/es_out.c:3319 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr ""
 
@@ -1192,7 +1183,6 @@ msgstr ""
 #: modules/gui/qt/components/open_panels.cpp:503
 #: modules/gui/qt/components/open_panels.cpp:517
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
-#: modules/gui/qt/ui/open_disk.h:309
 msgid "Title"
 msgstr "Wie maditu"
 
@@ -1233,7 +1223,6 @@ msgid "Setting"
 msgstr ""
 
 #: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
-#: modules/gui/qt/ui/podcast_configuration.h:102
 msgid "URL"
 msgstr "URL"
 
@@ -1305,7 +1294,6 @@ msgstr ""
 #: modules/gui/macosx/VLCMainMenu.m:402
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
-#: modules/gui/qt/ui/open_disk.h:310
 msgid "Chapter"
 msgstr "Dul"
 
@@ -1530,8 +1518,8 @@ msgstr "Fail me tuko wer"
 msgid "Media (player) role for operating system policy."
 msgstr ""
 
-#: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:261
-#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:410
+#: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:268
+#: modules/stream_out/display.c:40
 msgid "Enable audio"
 msgstr "Ket me awinya"
 
@@ -1632,7 +1620,7 @@ msgid ""
 "support."
 msgstr ""
 
-#: src/libvlc-module.c:178 modules/gui/macosx/VLCSimplePrefsController.m:259
+#: src/libvlc-module.c:178 modules/gui/macosx/VLCSimplePrefsController.m:266
 msgid "Force detection of Dolby Surround"
 msgstr "Cukuru kwenyoro pi Dolby Iyi akina ne"
 
@@ -1650,8 +1638,7 @@ msgstr ""
 #: modules/gui/qt/components/simple_preferences.cpp:66
 #: modules/gui/qt/components/sout/profile_selector.cpp:582
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
-#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:744
-#: modules/gui/qt/ui/profiles.h:747
+#: modules/video_output/xcb/xvideo.c:821
 msgid "Auto"
 msgstr "Matime kene"
 
@@ -1764,8 +1751,8 @@ msgid ""
 "automatically select the best method available."
 msgstr ""
 
-#: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:346
-#: modules/stream_out/display.c:42 modules/gui/qt/ui/sprefs_video.h:314
+#: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:353
+#: modules/stream_out/display.c:42
 msgid "Enable video"
 msgstr "Mi video"
 
@@ -1849,9 +1836,6 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:316
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1229
-#: modules/gui/qt/ui/video_effects.h:1271
-#: modules/gui/qt/ui/video_effects.h:1282
 msgid "Top"
 msgstr "Wie malo"
 
@@ -1862,7 +1846,6 @@ msgstr "Wie malo"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:318
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1233
 msgid "Bottom"
 msgstr "Tere piny"
 
@@ -1988,7 +1971,7 @@ msgstr ""
 #: src/libvlc-module.c:342 src/libvlc-module.c:344
 #: src/video_output/interlacing.c:112 modules/gui/macosx/VLCMainMenu.m:433
 #: modules/gui/macosx/VLCMainMenu.m:434
-#: modules/gui/macosx/VLCSimplePrefsController.m:365
+#: modules/gui/macosx/VLCSimplePrefsController.m:372
 #: modules/gui/qt/dialogs/convert.cpp:119 modules/hw/vdpau/chroma.c:884
 #: modules/video_filter/deinterlace/deinterlace.c:300
 #: share/lua/http/dialogs/create_stream.html:346
@@ -1997,7 +1980,7 @@ msgstr "Kwanyo woko ki i wang kaneno"
 
 #: src/libvlc-module.c:352 src/video_output/interlacing.c:128
 #: modules/gui/macosx/VLCMainMenu.m:435 modules/gui/macosx/VLCMainMenu.m:436
-#: modules/gui/macosx/VLCSimplePrefsController.m:366
+#: modules/gui/macosx/VLCSimplePrefsController.m:373
 #: modules/video_filter/deinterlace/deinterlace.c:256
 msgid "Deinterlace mode"
 msgstr "Yore me kwanyo i wang kaneno"
@@ -2050,8 +2033,7 @@ msgid ""
 "computer being suspended because of inactivity."
 msgstr ""
 
-#: src/libvlc-module.c:378 modules/gui/macosx/VLCSimplePrefsController.m:351
-#: modules/gui/qt/ui/sprefs_video.h:317
+#: src/libvlc-module.c:378 modules/gui/macosx/VLCSimplePrefsController.m:358
 msgid "Window decorations"
 msgstr "Dirija ma kideyo"
 
@@ -2219,7 +2201,7 @@ msgid ""
 "order to keep proportions."
 msgstr ""
 
-#: src/libvlc-module.c:472 modules/gui/macosx/VLCSimplePrefsController.m:294
+#: src/libvlc-module.c:472 modules/gui/macosx/VLCSimplePrefsController.m:301
 msgid "Skip frames"
 msgstr "Kal purem "
 
@@ -2353,7 +2335,7 @@ msgstr ""
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:320
 #: modules/gui/macosx/VLCMainMenu.m:592
-#: modules/gui/macosx/VLCSimplePrefsController.m:649
+#: modules/gui/macosx/VLCSimplePrefsController.m:656
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:389
 #: modules/gui/macosx/prefs_widgets.m:1217
@@ -2368,7 +2350,6 @@ msgstr "Manen jwi"
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:214
 #: modules/gui/macosx/VLCMainWindow.m:1004
 #: modules/gui/qt/components/extended_panels.cpp:928
-#: modules/gui/qt/ui/equalizer.h:133 modules/gui/qt/ui/vlm.h:289
 msgid "Enable"
 msgstr "Ket itic"
 
@@ -2424,7 +2405,7 @@ msgid ""
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:582 modules/gui/qt/ui/open_disk.h:312
+#: src/libvlc-module.c:582
 msgid "Audio track"
 msgstr "Wer awinya"
 
@@ -2432,7 +2413,7 @@ msgstr "Wer awinya"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr ""
 
-#: src/libvlc-module.c:587 modules/gui/qt/ui/open_disk.h:313
+#: src/libvlc-module.c:587
 msgid "Subtitle track"
 msgstr ""
 
@@ -2560,7 +2541,7 @@ msgstr ""
 msgid "The stream will run this duration (in seconds)."
 msgstr ""
 
-#: src/libvlc-module.c:650 modules/gui/qt/ui/sprefs_input.h:363
+#: src/libvlc-module.c:650
 msgid "Fast seek"
 msgstr ""
 
@@ -2670,7 +2651,7 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:709 modules/gui/qt/ui/sprefs_subtitles.h:305
+#: src/libvlc-module.c:709
 msgid "Force subtitle position"
 msgstr "Cukuru kabedo me wie maditu"
 
@@ -2697,8 +2678,7 @@ msgid "You can completely disable the sub-picture processing."
 msgstr ""
 
 #: src/libvlc-module.c:721 src/libvlc-module.c:1668 src/text/iso-639_def.h:145
-#: modules/gui/macosx/VLCSimplePrefsController.m:338
-#: modules/gui/qt/ui/sprefs_subtitles.h:290
+#: modules/gui/macosx/VLCSimplePrefsController.m:345
 msgid "On Screen Display"
 msgstr "Ki Ikom yaro lanyut me neno kamaler"
 
@@ -3313,7 +3293,7 @@ msgstr ""
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 
-#: src/libvlc-module.c:1081 modules/gui/qt/ui/sprefs_interface.h:550
+#: src/libvlc-module.c:1081
 msgid "Use only one instance when started from file manager"
 msgstr ""
 
@@ -3331,7 +3311,7 @@ msgid ""
 "machine."
 msgstr ""
 
-#: src/libvlc-module.c:1093 modules/gui/qt/ui/sprefs_interface.h:553
+#: src/libvlc-module.c:1093
 msgid "Enqueue items into playlist in one instance mode"
 msgstr ""
 
@@ -3375,9 +3355,8 @@ msgstr ""
 msgid "Maximum time allowed to preparse an item, in milliseconds"
 msgstr ""
 
-#: src/libvlc-module.c:1120 modules/gui/macosx/VLCSimplePrefsController.m:321
+#: src/libvlc-module.c:1120 modules/gui/macosx/VLCSimplePrefsController.m:328
 #: modules/gui/qt/dialogs/firstrun.cpp:95
-#: modules/gui/qt/ui/sprefs_interface.h:565
 msgid "Allow metadata network access"
 msgstr ""
 
@@ -3517,7 +3496,7 @@ msgid ""
 "VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1192 modules/gui/qt/ui/sprefs_interface.h:551
+#: src/libvlc-module.c:1192
 msgid "Display playlist tree"
 msgstr ""
 
@@ -3573,7 +3552,6 @@ msgstr ""
 #: modules/gui/macosx/VLCControlsBarCommon.m:81
 #: modules/gui/macosx/VLCMainMenu.m:422 modules/gui/macosx/VLCMainMenu.m:501
 #: modules/gui/qt/components/controller.hpp:108
-#: modules/gui/qt/ui/sprefs_video.h:318
 msgid "Fullscreen"
 msgstr "Ka neno lung"
 
@@ -3656,7 +3634,6 @@ msgstr "Motmot (fine)"
 #: modules/gui/macosx/VLCMainMenu.m:497
 #: modules/gui/qt/components/controller.hpp:112
 #: modules/gui/qt/dialogs/sout.cpp:93 modules/notify/notify.c:335
-#: modules/gui/qt/ui/streampanel.h:181
 msgid "Next"
 msgstr "Malubo kore"
 
@@ -3681,7 +3658,7 @@ msgstr ""
 #: modules/gui/macosx/VLCMainMenu.m:488 modules/gui/macosx/VLCMainMenu.m:495
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:61
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:545 modules/gui/qt/ui/streampanel.h:180
+#: modules/gui/qt/dialogs/vlm.cpp:545
 msgid "Stop"
 msgstr "Cung"
 
@@ -3694,8 +3671,6 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:286
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:308
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
-#: modules/gui/qt/ui/sprefs_subtitles.h:293
-#: modules/gui/qt/ui/video_effects.h:1279
 msgid "Position"
 msgstr "Kabedo"
 
@@ -4411,8 +4386,6 @@ msgstr ""
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
 #: modules/gui/macosx/VLCMainMenu.m:440
 #: share/lua/http/dialogs/create_stream.html:153
-#: modules/gui/qt/ui/profiles.h:718 modules/gui/qt/ui/profiles.h:762
-#: modules/gui/qt/ui/profiles.h:765
 msgid "Subtitles"
 msgstr "Wie maditu"
 
@@ -4424,7 +4397,7 @@ msgstr ""
 msgid "Track settings"
 msgstr ""
 
-#: src/libvlc-module.c:1747 modules/gui/macosx/VLCSimplePrefsController.m:309
+#: src/libvlc-module.c:1747 modules/gui/macosx/VLCSimplePrefsController.m:316
 msgid "Playback control"
 msgstr ""
 
@@ -4580,8 +4553,6 @@ msgstr ""
 
 #: src/misc/actions.c:62 modules/gui/macosx/VLCMainMenu.m:361
 #: modules/gui/macosx/VLCPlaylist.m:231 modules/gui/qt/dialogs/bookmarks.cpp:50
-#: modules/gui/qt/ui/podcast_configuration.h:104
-#: modules/gui/qt/ui/streampanel.h:172
 msgid "Delete"
 msgstr "Kwany oko"
 
@@ -4853,7 +4824,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr ""
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2716
+#: modules/demux/avi/avi.c:2719
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:511
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:569
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:823
@@ -4870,10 +4841,10 @@ msgstr ""
 #: modules/gui/macosx/VLCMainWindow.m:211
 #: modules/gui/macosx/VLCOpenWindowController.m:134
 #: modules/gui/macosx/VLCOpenWindowController.m:192
-#: modules/gui/macosx/VLCSimplePrefsController.m:274
-#: modules/gui/macosx/VLCSimplePrefsController.m:300
-#: modules/gui/macosx/VLCSimplePrefsController.m:371
-#: modules/gui/macosx/VLCSimplePrefsController.m:813
+#: modules/gui/macosx/VLCSimplePrefsController.m:281
+#: modules/gui/macosx/VLCSimplePrefsController.m:307
+#: modules/gui/macosx/VLCSimplePrefsController.m:378
+#: modules/gui/macosx/VLCSimplePrefsController.m:820
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:50
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:792
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:861
@@ -4882,6 +4853,7 @@ msgstr ""
 #: modules/gui/qt/components/preferences_widgets.cpp:1428
 #: modules/gui/qt/components/sout/profile_selector.cpp:446
 #: modules/gui/qt/dialogs/sout.cpp:92
+#: modules/stream_out/chromecast/cast.cpp:305
 msgid "Cancel"
 msgstr "Jwik woko"
 
@@ -5622,7 +5594,7 @@ msgstr ""
 #: src/video_output/vout_intf.c:203 modules/gui/macosx/VLCMainMenu.m:429
 #: modules/gui/macosx/VLCMainMenu.m:430
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:193
-#: modules/video_filter/croppadd.c:87 modules/gui/qt/ui/video_effects.h:1239
+#: modules/video_filter/croppadd.c:87
 msgid "Crop"
 msgstr "Ngol woko"
 
@@ -5765,7 +5737,6 @@ msgid ""
 msgstr ""
 
 #: modules/access/bluray.c:92 modules/services_discovery/udev.c:601
-#: modules/gui/qt/ui/open_disk.h:299
 msgid "Blu-ray"
 msgstr ""
 
@@ -5856,7 +5827,6 @@ msgid "Audio CD - Track %02i"
 msgstr ""
 
 #: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
-#: modules/gui/qt/ui/open_disk.h:300
 msgid "Audio CD"
 msgstr "CD me awinya"
 
@@ -6877,7 +6847,6 @@ msgid "File"
 msgstr "Fail"
 
 #: modules/access/fs.c:44 modules/demux/directory.c:93
-#: modules/gui/qt/ui/sprefs_video.h:331
 msgid "Directory"
 msgstr "Lanyut"
 
@@ -6894,7 +6863,7 @@ msgstr ""
 #: modules/access/smb_common.h:21 modules/access/vnc.c:46
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
-#: modules/gui/macosx/VLCSimplePrefsController.m:266
+#: modules/gui/macosx/VLCSimplePrefsController.m:273
 #: modules/gui/qt/dialogs/external.cpp:206 modules/misc/audioscrobbler.c:114
 #: modules/stream_out/rtp.c:173
 msgid "Username"
@@ -6912,8 +6881,8 @@ msgstr ""
 #: modules/access/smb_common.h:24 modules/access/vnc.c:47
 #: modules/access_output/http.c:55
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
-#: modules/gui/macosx/VLCSimplePrefsController.m:265
-#: modules/gui/macosx/VLCSimplePrefsController.m:327
+#: modules/gui/macosx/VLCSimplePrefsController.m:272
+#: modules/gui/macosx/VLCSimplePrefsController.m:334
 #: modules/gui/qt/dialogs/external.cpp:211 modules/lua/vlc.c:54
 #: modules/lua/vlc.c:70 modules/misc/audioscrobbler.c:116
 #: modules/stream_out/rtp.c:176
@@ -7129,7 +7098,6 @@ msgstr ""
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
 #: modules/gui/qt/components/extended_panels.cpp:1297 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
-#: modules/gui/qt/ui/profiles.h:743
 msgid "Width"
 msgstr "Lac pa yie"
 
@@ -7142,7 +7110,6 @@ msgstr ""
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:168
 #: modules/spu/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
-#: modules/gui/qt/ui/profiles.h:746
 msgid "Height"
 msgstr "Bor ne malo"
 
@@ -7783,7 +7750,7 @@ msgstr ""
 #: modules/gui/macosx/VLCOpenWindowController.m:209
 #: modules/gui/macosx/VLCOpenWindowController.m:480
 #: modules/gui/macosx/VLCOpenWindowController.m:1096
-#: modules/gui/macosx/VLCSimplePrefsController.m:654
+#: modules/gui/macosx/VLCSimplePrefsController.m:661
 msgid "Screen"
 msgstr "Ka neno"
 
@@ -8076,7 +8043,6 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:205
-#: modules/gui/qt/ui/video_effects.h:1217
 msgid "Brightness"
 msgstr "Maleng atika"
 
@@ -8094,7 +8060,6 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:89
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:204
-#: modules/gui/qt/ui/video_effects.h:1219
 msgid "Contrast"
 msgstr "Lapor ne"
 
@@ -8105,8 +8070,6 @@ msgstr ""
 #: modules/access/v4l2/v4l2.c:91
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:207
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:253
-#: modules/gui/qt/ui/video_effects.h:1220
-#: modules/gui/qt/ui/video_effects.h:1252
 msgid "Saturation"
 msgstr "Madong tye iyie"
 
@@ -8116,7 +8079,6 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:93
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:203
-#: modules/gui/qt/ui/video_effects.h:1216
 msgid "Hue"
 msgstr "Hue"
 
@@ -8168,7 +8130,6 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:111
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:208
-#: modules/gui/qt/ui/video_effects.h:1221
 msgid "Gamma"
 msgstr "Gamma"
 
@@ -8293,7 +8254,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:164
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:255
-#: modules/video_filter/sepia.c:66 modules/gui/qt/ui/video_effects.h:1254
+#: modules/video_filter/sepia.c:66
 msgid "Sepia"
 msgstr ""
 
@@ -9972,7 +9933,7 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1293 modules/gui/qt/ui/sprefs_audio.h:419
+#: modules/audio_output/mmdevice.c:1293
 msgid "HDMI/SPDIF audio passthrough"
 msgstr ""
 
@@ -10300,7 +10261,7 @@ msgid "Internal libavcodec codec name"
 msgstr ""
 
 #: modules/codec/avcodec/avcodec.h:108
-#: modules/gui/macosx/VLCSimplePrefsController.m:292
+#: modules/gui/macosx/VLCSimplePrefsController.m:299
 msgid "Skip the loop filter for H.264 decoding"
 msgstr "Kal ka kiyo pi niango H.264"
 
@@ -10573,36 +10534,36 @@ msgid ""
 "Do not contact the VideoLAN project about this issue.\n"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:872
+#: modules/codec/avcodec/encoder.c:869
 msgid "unknown"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:872
+#: modules/codec/avcodec/encoder.c:869
 #, fuzzy
 msgid "video"
 msgstr "Video"
 
-#: modules/codec/avcodec/encoder.c:873
+#: modules/codec/avcodec/encoder.c:870
 #, fuzzy
 msgid "audio"
 msgstr "Ma giwinyo"
 
-#: modules/codec/avcodec/encoder.c:873
+#: modules/codec/avcodec/encoder.c:870
 #, fuzzy
 msgid "subpicture"
 msgstr "Yero cal matino"
 
-#: modules/codec/avcodec/encoder.c:886
+#: modules/codec/avcodec/encoder.c:883
 #, c-format
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr ""
 
-#: modules/codec/avcodec/vaapi.c:349
+#: modules/codec/avcodec/vaapi.c:352
 #, fuzzy
 msgid "VA-API video decoder via DRM"
 msgstr "Nyonyo me yungo Cal anena"
 
-#: modules/codec/avcodec/vaapi.c:354
+#: modules/codec/avcodec/vaapi.c:357
 #, fuzzy
 msgid "VA-API video decoder"
 msgstr "Nyonyo me yungo Cal anena"
@@ -10613,8 +10574,8 @@ msgid "BPG image decoder"
 msgstr "Nyonyo me yungo Cal anena"
 
 #: modules/codec/cc.c:51 modules/codec/zvbi.c:65
-#: modules/gui/macosx/VLCSimplePrefsController.m:340 modules/spu/marq.c:108
-#: modules/spu/rss.c:144 modules/gui/qt/ui/video_effects.h:1276
+#: modules/gui/macosx/VLCSimplePrefsController.m:347 modules/spu/marq.c:108
+#: modules/spu/rss.c:144
 msgid "Opacity"
 msgstr "Ma pe nen"
 
@@ -11900,7 +11861,6 @@ msgstr ""
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:258
-#: modules/gui/qt/ui/sprefs_video.h:328 modules/gui/qt/ui/video_effects.h:1246
 msgid "Mode"
 msgstr "Ma dyeredyere"
 
@@ -12425,7 +12385,7 @@ msgstr ""
 msgid "Use Hardware decoders only"
 msgstr "Ti ki nyonyo me loko YUV->RGB"
 
-#: modules/codec/videotoolbox.m:81 modules/gui/qt/ui/sprefs_video.h:327
+#: modules/codec/videotoolbox.m:81
 msgid "Deinterlacing"
 msgstr "Kwanyo kubere"
 
@@ -13176,7 +13136,6 @@ msgid "Quiet mode"
 msgstr ""
 
 #: modules/codec/x264.c:403 modules/gui/macosx/VLCPlaylistInfo.m:69
-#: modules/gui/qt/ui/streampanel.h:170
 msgid "Statistics"
 msgstr "Wel lung"
 
@@ -13259,7 +13218,7 @@ msgstr ""
 
 #: modules/codec/x264.c:435 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:384
-#: modules/gui/macosx/VLCSimplePrefsController.m:689
+#: modules/gui/macosx/VLCSimplePrefsController.m:696
 #: modules/gui/qt/components/simple_preferences.cpp:666
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
@@ -13357,7 +13316,7 @@ msgstr ""
 msgid "Presentation Level"
 msgstr ""
 
-#: modules/codec/zvbi.c:88 modules/gui/qt/ui/streampanel.h:169
+#: modules/codec/zvbi.c:88
 msgid "1"
 msgstr "1"
 
@@ -13394,14 +13353,14 @@ msgstr ""
 #: modules/gui/macosx/VLCMainWindow.m:675
 #: modules/gui/macosx/VLCMainWindow.m:1276
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1264
-#: modules/gui/qt/main_interface.cpp:1268
-#: modules/gui/qt/main_interface.cpp:1307
-#: modules/gui/qt/main_interface.cpp:1309
-#: modules/gui/qt/main_interface.cpp:1418
-#: modules/gui/qt/main_interface.cpp:1435
-#: modules/gui/qt/main_interface.cpp:1443
-#: modules/gui/qt/main_interface.cpp:1466 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1265
+#: modules/gui/qt/main_interface.cpp:1269
+#: modules/gui/qt/main_interface.cpp:1308
+#: modules/gui/qt/main_interface.cpp:1310
+#: modules/gui/qt/main_interface.cpp:1419
+#: modules/gui/qt/main_interface.cpp:1436
+#: modules/gui/qt/main_interface.cpp:1444
+#: modules/gui/qt/main_interface.cpp:1467 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -13464,7 +13423,7 @@ msgid "Global Hotkeys interface"
 msgstr ""
 
 #: modules/control/hotkeys.c:100
-#: modules/gui/macosx/VLCSimplePrefsController.m:230
+#: modules/gui/macosx/VLCSimplePrefsController.m:237
 #: modules/gui/qt/components/preferences_widgets.cpp:1145
 #: modules/gui/qt/components/simple_preferences.cpp:233
 msgid "Hotkeys"
@@ -14221,7 +14180,7 @@ msgid "Avformat muxer"
 msgstr ""
 
 #: modules/demux/avformat/avformat.c:56
-#: modules/stream_out/chromecast/cast.cpp:109 modules/stream_out/rtp.c:87
+#: modules/stream_out/chromecast/cast.cpp:110 modules/stream_out/rtp.c:87
 msgid "Muxer"
 msgstr ""
 
@@ -14275,7 +14234,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr ""
 
-#: modules/demux/avi/avi.c:825 modules/demux/mp4/mp4.c:1671
+#: modules/demux/avi/avi.c:828 modules/demux/mp4/mp4.c:1673
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14285,27 +14244,27 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:833
+#: modules/demux/avi/avi.c:836
 msgid "Do not play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:834
+#: modules/demux/avi/avi.c:837
 msgid "Build index then play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:835
+#: modules/demux/avi/avi.c:838
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:836 modules/demux/mp4/mp4.c:1682
+#: modules/demux/avi/avi.c:839 modules/demux/mp4/mp4.c:1684
 msgid "Broken or missing Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2717
+#: modules/demux/avi/avi.c:2720
 msgid "Broken or missing AVI Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2718
+#: modules/demux/avi/avi.c:2721
 msgid "Fixing AVI Index..."
 msgstr ""
 
@@ -14453,7 +14412,7 @@ msgstr ""
 msgid "Use chapter codecs found in the segment."
 msgstr ""
 
-#: modules/demux/mkv/mkv.cpp:64 modules/gui/qt/ui/sprefs_input.h:370
+#: modules/demux/mkv/mkv.cpp:64
 msgid "Preload MKV files in the same directory"
 msgstr ""
 
@@ -14744,11 +14703,11 @@ msgstr ""
 msgid "MP4"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:1679
+#: modules/demux/mp4/mp4.c:1681
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:1680
+#: modules/demux/mp4/mp4.c:1682
 msgid "Build index"
 msgstr ""
 
@@ -15457,13 +15416,11 @@ msgid "Skins"
 msgstr "Del Kome"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
-#: modules/gui/qt/ui/equalizer.h:134
 msgid "2 Pass"
 msgstr "Okato 2"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:218
 #: modules/gui/qt/components/extended_panels.cpp:1111
-#: modules/gui/qt/ui/equalizer.h:136
 msgid "Preamp"
 msgstr "Ma pe giketo dwon malo"
 
@@ -15516,7 +15473,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:274
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:84
-#: modules/gui/macosx/VLCSimplePrefsController.m:260
+#: modules/gui/macosx/VLCSimplePrefsController.m:267
 #: modules/gui/qt/dialogs/extended.cpp:96
 msgid "Audio Effects"
 msgstr "Kite me wer"
@@ -15547,12 +15504,11 @@ msgstr ""
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:377
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:476
 #: modules/gui/macosx/VLCMainMenu.m:1149 modules/gui/macosx/VLCOutput.m:411
-#: modules/gui/macosx/VLCSimplePrefsController.m:299
-#: modules/gui/macosx/VLCSimplePrefsController.m:373
+#: modules/gui/macosx/VLCSimplePrefsController.m:306
+#: modules/gui/macosx/VLCSimplePrefsController.m:380
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:793
 #: modules/gui/macosx/prefs.m:188
 #: modules/gui/qt/components/sout/profile_selector.cpp:443
-#: modules/gui/qt/ui/vlm.h:301
 msgid "Save"
 msgstr "Gwok"
 
@@ -15583,7 +15539,6 @@ msgstr ""
 #: modules/gui/macosx/VLCBookmarksWindowController.m:81
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
-#: modules/gui/qt/ui/open_file.h:154
 msgid "Remove"
 msgstr "Kwany oko"
 
@@ -15608,14 +15563,12 @@ msgid "Bookmarks"
 msgstr "Gi gwoko"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:78
-#: modules/gui/qt/ui/podcast_configuration.h:103 modules/gui/qt/ui/sout.h:209
-#: modules/gui/qt/ui/vlm.h:299
 msgid "Add"
 msgstr "Med"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:79
-#: modules/gui/macosx/VLCSimplePrefsController.m:276
-#: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:300
+#: modules/gui/macosx/VLCSimplePrefsController.m:283
+#: modules/gui/qt/dialogs/bookmarks.cpp:53
 msgid "Clear"
 msgstr "Ruc oko"
 
@@ -15642,9 +15595,10 @@ msgstr "Cawa"
 #: modules/gui/macosx/VLCCoreDialogProvider.m:236
 #: modules/gui/macosx/VLCOpenWindowController.m:363
 #: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:342
-#: modules/gui/macosx/VLCSimplePrefsController.m:275
+#: modules/gui/macosx/VLCSimplePrefsController.m:282
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1359
+#: modules/stream_out/chromecast/cast.cpp:305
 msgid "OK"
 msgstr "Eyo"
 
@@ -15759,15 +15713,12 @@ msgstr ""
 #: modules/gui/macosx/VLCOpenWindowController.m:147
 #: modules/gui/macosx/VLCOpenWindowController.m:350
 #: modules/gui/macosx/VLCOutput.m:67
-#: modules/gui/macosx/VLCSimplePrefsController.m:283
-#: modules/gui/macosx/VLCSimplePrefsController.m:360
+#: modules/gui/macosx/VLCSimplePrefsController.m:290
+#: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:440
 #: modules/gui/qt/components/sout/sout_widgets.cpp:132
-#: modules/gui/qt/ui/open.h:282 modules/gui/qt/ui/open_disk.h:307
-#: modules/gui/qt/ui/open_file.h:147 modules/gui/qt/ui/sprefs_audio.h:417
-#: modules/gui/qt/ui/sprefs_input.h:368 modules/gui/qt/ui/sprefs_video.h:332
 msgid "Browse..."
 msgstr "Yeny..."
 
@@ -15801,51 +15752,43 @@ msgid "Save as new Profile..."
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:155
-#: modules/gui/qt/ui/profiles.h:725
 msgid "Encapsulation"
 msgstr "Boyo ne"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:156
 #: share/lua/http/dialogs/create_stream.html:160
-#: modules/gui/qt/ui/profiles.h:751
 msgid "Video codec"
 msgstr "Nyonyo me yungo Cal anena"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:157
 #: share/lua/http/dialogs/create_stream.html:178
-#: modules/gui/qt/ui/profiles.h:761
 msgid "Audio codec"
 msgstr "nyonyo me yungo wer awinya"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:161
-#: modules/gui/qt/ui/profiles.h:727
 msgid "Keep original video track"
 msgstr "Gwok ka ma wer me cal anena oaa iye"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:165
-#: modules/gui/qt/ui/profiles.h:749
 msgid "Resolution"
 msgstr "Yuba manyen"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:166
-#: modules/gui/qt/ui/profiles.h:740
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:169
-#: modules/gui/macosx/VLCOutput.m:88 modules/gui/qt/ui/profiles.h:741
+#: modules/gui/macosx/VLCOutput.m:88
 msgid "Scale"
 msgstr "Kite mere"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:172
-#: modules/gui/qt/ui/profiles.h:753
 msgid "Keep original audio track"
 msgstr "Gwok ka ma wer awinya oaa iye"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:179
-#: modules/gui/qt/ui/profiles.h:764
 msgid "Overlay subtitles on the video"
 msgstr "Ket iwi wie madit ikom cal anena"
 
@@ -15968,9 +15911,9 @@ msgid "A SDP export is requested, but no URL is provided."
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:1035
-#: modules/gui/macosx/VLCSimplePrefsController.m:683
-#: modules/gui/macosx/VLCSimplePrefsController.m:711
-#: modules/gui/macosx/VLCSimplePrefsController.m:1244
+#: modules/gui/macosx/VLCSimplePrefsController.m:690
+#: modules/gui/macosx/VLCSimplePrefsController.m:718
+#: modules/gui/macosx/VLCSimplePrefsController.m:1251
 #: modules/gui/qt/components/simple_preferences.cpp:663
 msgid "Custom"
 msgstr "Lakite meri"
@@ -16014,7 +15957,7 @@ msgstr "Wek Neno lung"
 
 #: modules/gui/macosx/VLCFSPanelController.m:127
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:76
-#: modules/gui/qt/dialogs/toolbar.cpp:468 modules/gui/qt/ui/sprefs_audio.h:411
+#: modules/gui/qt/dialogs/toolbar.cpp:468
 msgid "Volume"
 msgstr "Dwon"
 
@@ -16083,7 +16026,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:76
-#: modules/gui/macosx/VLCSimplePrefsController.m:311
+#: modules/gui/macosx/VLCSimplePrefsController.m:318
 msgid "Control playback with the Apple Remote"
 msgstr "Geng Tuku cen kwede Rimot Apple"
 
@@ -16092,7 +16035,7 @@ msgid "By default, VLC can be remotely controlled with the Apple Remote."
 msgstr "Kikwero twero, VLC romo genge pire kene kwede Rimot Ananaci."
 
 #: modules/gui/macosx/macosx.m:79
-#: modules/gui/macosx/VLCSimplePrefsController.m:313
+#: modules/gui/macosx/VLCSimplePrefsController.m:320
 msgid "Control system volume with the Apple Remote"
 msgstr ""
 
@@ -16103,7 +16046,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:82
-#: modules/gui/macosx/VLCSimplePrefsController.m:314
+#: modules/gui/macosx/VLCSimplePrefsController.m:321
 msgid "Display VLC status menu icon"
 msgstr ""
 
@@ -16124,7 +16067,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:88
-#: modules/gui/macosx/VLCSimplePrefsController.m:312
+#: modules/gui/macosx/VLCSimplePrefsController.m:319
 msgid "Control playback with media keys"
 msgstr "Geng Tuku cen kwede kwede pungua me tuku"
 
@@ -16145,7 +16088,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:95
-#: modules/gui/macosx/VLCSimplePrefsController.m:356
+#: modules/gui/macosx/VLCSimplePrefsController.m:363
 msgid "Use the native fullscreen mode"
 msgstr ""
 
@@ -16169,7 +16112,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:104
-#: modules/gui/macosx/VLCSimplePrefsController.m:349 modules/gui/qt/qt.cpp:178
+#: modules/gui/macosx/VLCSimplePrefsController.m:356 modules/gui/qt/qt.cpp:178
 msgid "Pause the video playback when minimized"
 msgstr ""
 
@@ -16236,7 +16179,7 @@ msgid "Shows a sidebar in the main window listing media sources."
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:128
-#: modules/gui/macosx/VLCSimplePrefsController.m:318
+#: modules/gui/macosx/VLCSimplePrefsController.m:325
 #, fuzzy
 msgid "Control external music players"
 msgstr "Yik lakubpa gituku wer"
@@ -16367,7 +16310,7 @@ msgid "Hide Others"
 msgstr "Kan mukene"
 
 #: modules/gui/macosx/VLCMainMenu.m:342
-#: modules/gui/macosx/VLCSimplePrefsController.m:370
+#: modules/gui/macosx/VLCSimplePrefsController.m:377
 msgid "Show All"
 msgstr "Nyut gin weng"
 
@@ -16512,13 +16455,12 @@ msgid "Fit to Screen"
 msgstr "Maromo wang kaneno weng"
 
 #: modules/gui/macosx/VLCMainMenu.m:423
-#: modules/gui/macosx/VLCSimplePrefsController.m:350
+#: modules/gui/macosx/VLCSimplePrefsController.m:357
 msgid "Float on Top"
 msgstr "Lyer Iwie"
 
 #: modules/gui/macosx/VLCMainMenu.m:431 modules/gui/macosx/VLCMainMenu.m:432
-#: modules/gui/macosx/VLCSimplePrefsController.m:357
-#: modules/gui/qt/ui/sprefs_video.h:319
+#: modules/gui/macosx/VLCSimplePrefsController.m:364
 msgid "Fullscreen Video Device"
 msgstr "Gin me Video ma i kaneno lung"
 
@@ -16811,8 +16753,7 @@ msgid "Disc"
 msgstr "Disc"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:142
-#: modules/gui/macosx/VLCSimplePrefsController.m:290
-#: modules/gui/qt/ui/sprefs_input.h:371
+#: modules/gui/macosx/VLCSimplePrefsController.m:297
 msgid "Network"
 msgstr "Ka kube"
 
@@ -16841,8 +16782,7 @@ msgstr "Tuk ki gituku mukene benebene"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:152
 #: modules/gui/macosx/VLCOpenWindowController.m:347
-#: modules/gui/macosx/VLCSimplePrefsController.m:332
-#: modules/gui/qt/ui/sprefs_interface.h:548
+#: modules/gui/macosx/VLCSimplePrefsController.m:339
 msgid "Choose..."
 msgstr "Yer..."
 
@@ -16872,7 +16812,7 @@ msgid "Enable DVD menus"
 msgstr ""
 
 #: modules/gui/macosx/VLCOpenWindowController.m:186
-#: modules/stream_out/chromecast/cast.cpp:114
+#: modules/stream_out/chromecast/cast.cpp:117
 msgid "IP Address"
 msgstr "Address me IP"
 
@@ -16975,8 +16915,7 @@ msgid "Subtitle encoding"
 msgstr ""
 
 #: modules/gui/macosx/VLCOpenWindowController.m:359
-#: modules/gui/macosx/VLCSimplePrefsController.m:334
-#: modules/gui/qt/ui/sprefs_subtitles.h:300
+#: modules/gui/macosx/VLCSimplePrefsController.m:341
 msgid "Font size"
 msgstr "Kit coc"
 
@@ -16999,7 +16938,6 @@ msgstr "Fail me Wie matino"
 #: modules/gui/macosx/VLCOpenWindowController.m:572
 #: modules/gui/macosx/VLCOpenWindowController.m:658
 #: modules/gui/macosx/VLCOpenWindowController.m:1258
-#: modules/gui/qt/ui/open_file.h:142
 msgid "Open File"
 msgstr "Yab Fail"
 
@@ -17163,13 +17101,12 @@ msgid "Disable renderer discovery"
 msgstr ""
 
 #: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:194
-#: modules/gui/qt/ui/sprefs_interface.h:554
 #, fuzzy
 msgid "Continue playback?"
 msgstr "Gik dwoko wer cen"
 
 #: modules/gui/macosx/VLCResumeDialogController.m:49
-#: modules/gui/macosx/VLCSimplePrefsController.m:814
+#: modules/gui/macosx/VLCSimplePrefsController.m:821
 #: modules/gui/qt/dialogs/firstrun.cpp:106
 msgid "Continue"
 msgstr "Mede kwede"
@@ -17189,327 +17126,314 @@ msgstr "Gik dwoko wer cen"
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:220
+#: modules/gui/macosx/VLCSimplePrefsController.m:227
 #: modules/gui/qt/components/simple_preferences.cpp:223
 #: modules/gui/qt/components/simple_preferences.cpp:690
 #: modules/gui/qt/dialogs/plugins.cpp:375
 msgid "Interface Settings"
 msgstr "Kite pa Kaneno"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:222
+#: modules/gui/macosx/VLCSimplePrefsController.m:229
 #: modules/gui/qt/components/simple_preferences.cpp:225
 #: modules/gui/qt/components/simple_preferences.cpp:415
 msgid "Audio Settings"
 msgstr "Kite me yiko Wer"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:224
+#: modules/gui/macosx/VLCSimplePrefsController.m:231
 #: modules/gui/qt/components/simple_preferences.cpp:227
 #: modules/gui/qt/components/simple_preferences.cpp:355
 msgid "Video Settings"
 msgstr "Kite me yiko Video"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:226
+#: modules/gui/macosx/VLCSimplePrefsController.m:233
 #: modules/gui/qt/components/simple_preferences.cpp:229
 #: modules/gui/qt/components/simple_preferences.cpp:831
 msgid "Subtitle & On Screen Display Settings"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:228
+#: modules/gui/macosx/VLCSimplePrefsController.m:235
 msgid "Input & Codec Settings"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:262
+#: modules/gui/macosx/VLCSimplePrefsController.m:269
 msgid "General Audio"
 msgstr "Wer Majwi"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:263
+#: modules/gui/macosx/VLCSimplePrefsController.m:270
 msgid "Preferred Audio language"
 msgstr "Yore pa leb me Wer"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:264
+#: modules/gui/macosx/VLCSimplePrefsController.m:271
 msgid "Enable Last.fm submissions"
 msgstr "Mi Last.fm cwal"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:267
+#: modules/gui/macosx/VLCSimplePrefsController.m:274
 msgid "Visualization"
 msgstr "Kite me neno"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:268
+#: modules/gui/macosx/VLCSimplePrefsController.m:275
 msgid "Keep audio level between sessions"
 msgstr "Gwok wer iyi akina jami"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:269
-#: modules/gui/qt/ui/sprefs_audio.h:413
+#: modules/gui/macosx/VLCSimplePrefsController.m:276
 msgid "Always reset audio start level to:"
 msgstr "Jwii dwok rwom me wer meri naka:"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:272
+#: modules/gui/macosx/VLCSimplePrefsController.m:279
 #: modules/gui/qt/dialogs/vlm.cpp:493
 msgid "Change"
 msgstr "Lok woko"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:273
+#: modules/gui/macosx/VLCSimplePrefsController.m:280
 msgid "Change Hotkey"
 msgstr "Lok Kadiyo"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:277
+#: modules/gui/macosx/VLCSimplePrefsController.m:284
 msgid "Select an action to change the associated hotkey:"
 msgstr "Yer kite me loko kadiyo ne:"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:278
+#: modules/gui/macosx/VLCSimplePrefsController.m:285
 #: modules/gui/qt/components/preferences_widgets.cpp:1150
 msgid "Action"
 msgstr "Keto I tic"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:279
+#: modules/gui/macosx/VLCSimplePrefsController.m:286
 msgid "Shortcut"
 msgstr "Kite macek"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:282
-#: modules/gui/qt/ui/sprefs_input.h:367
+#: modules/gui/macosx/VLCSimplePrefsController.m:289
 msgid "Record directory or filename"
 msgstr "Lanyut me Rekod onyo nying fail"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:284
+#: modules/gui/macosx/VLCSimplePrefsController.m:291
 msgid "Directory or filename where the records will be stored"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:285
+#: modules/gui/macosx/VLCSimplePrefsController.m:292
 msgid "Repair AVI Files"
 msgstr "Yub fail me AVI"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:286
+#: modules/gui/macosx/VLCSimplePrefsController.m:293
 msgid "Default Caching Level"
 msgstr "Kite me Gwoko Majwi"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:287
-#: modules/gui/qt/ui/open.h:266
+#: modules/gui/macosx/VLCSimplePrefsController.m:294
 msgid "Caching"
 msgstr "Mako"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:288
+#: modules/gui/macosx/VLCSimplePrefsController.m:295
 msgid ""
 "Use the complete preferences to configure custom caching values for each "
 "access module."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:289
+#: modules/gui/macosx/VLCSimplePrefsController.m:296
 msgid "Codecs / Muxers"
 msgstr "Codecs/Muxers"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:291
+#: modules/gui/macosx/VLCSimplePrefsController.m:298
 msgid "Post-Processing Quality"
 msgstr "Rwom pa Kite me Yiko"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:293
+#: modules/gui/macosx/VLCSimplePrefsController.m:300
 msgid "Edit default application settings for network protocols"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:297
+#: modules/gui/macosx/VLCSimplePrefsController.m:304
 msgid "Open network streams using the following protocols"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:298
-msgid "Note that these are system-wide settings."
-msgstr ""
-
-#: modules/gui/macosx/VLCSimplePrefsController.m:303
-#, fuzzy
-msgid "General settings"
-msgstr "Kite me yiko Wer"
-
 #: modules/gui/macosx/VLCSimplePrefsController.m:305
-msgid "Interface style"
-msgstr ""
-
-#: modules/gui/macosx/VLCSimplePrefsController.m:306
-msgid "Dark"
-msgstr ""
-
-#: modules/gui/macosx/VLCSimplePrefsController.m:307
-msgid "Bright"
+msgid "Note that these are system-wide settings."
 msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:310
 #, fuzzy
+msgid "General settings"
+msgstr "Kite me yiko Wer"
+
+#: modules/gui/macosx/VLCSimplePrefsController.m:312
+msgid "Interface style"
+msgstr ""
+
+#: modules/gui/macosx/VLCSimplePrefsController.m:313
+msgid "Dark"
+msgstr ""
+
+#: modules/gui/macosx/VLCSimplePrefsController.m:314
+msgid "Bright"
+msgstr ""
+
+#: modules/gui/macosx/VLCSimplePrefsController.m:317
+#, fuzzy
 msgid "Continue playback"
 msgstr "Gik dwoko wer cen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:316
+#: modules/gui/macosx/VLCSimplePrefsController.m:323
 #, fuzzy
 msgid "Playback behaviour"
 msgstr "Tuk idok cen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:317
+#: modules/gui/macosx/VLCSimplePrefsController.m:324
 #, fuzzy
 msgid "Enable notifications on playlist item change"
 msgstr "Nyut kwenyoro madonyo iyi alokaloka me wer"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:320
-#: modules/gui/qt/ui/sprefs_interface.h:556
+#: modules/gui/macosx/VLCSimplePrefsController.m:327
 msgid "Privacy / Network Interaction"
 msgstr "Imung me Kube ki Lakub"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:322
+#: modules/gui/macosx/VLCSimplePrefsController.m:329
 msgid "Automatically check for updates"
 msgstr "Yeny lamed kene"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:325
+#: modules/gui/macosx/VLCSimplePrefsController.m:332
 #, fuzzy
 msgid "HTTP web interface"
 msgstr "Ka anena"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:326
+#: modules/gui/macosx/VLCSimplePrefsController.m:333
 #, fuzzy
 msgid "Enable HTTP web interface"
 msgstr "kaneno maromo ayeka"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:330
+#: modules/gui/macosx/VLCSimplePrefsController.m:337
 msgid "Default Encoding"
 msgstr "Gonyo lok kit Majwi"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:331
+#: modules/gui/macosx/VLCSimplePrefsController.m:338
 msgid "Display Settings"
 msgstr "Yiko kite me Nyute"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:333
-#: modules/gui/qt/ui/sprefs_subtitles.h:301
+#: modules/gui/macosx/VLCSimplePrefsController.m:340
 msgid "Font color"
 msgstr "Rangi me coc"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:335 modules/spu/marq.c:157
+#: modules/gui/macosx/VLCSimplePrefsController.m:342 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
-#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Font"
 msgstr "Kite"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:336
+#: modules/gui/macosx/VLCSimplePrefsController.m:343
 msgid "Subtitle languages"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:337
-#: modules/gui/qt/ui/sprefs_subtitles.h:296
+#: modules/gui/macosx/VLCSimplePrefsController.m:344
 msgid "Preferred subtitle language"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:339
+#: modules/gui/macosx/VLCSimplePrefsController.m:346
 msgid "Enable OSD"
 msgstr "Mi OSD ti"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:341
+#: modules/gui/macosx/VLCSimplePrefsController.m:348
 #: modules/text_renderer/freetype/freetype.c:104
 msgid "Force bold"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:342
+#: modules/gui/macosx/VLCSimplePrefsController.m:349
 #: modules/text_renderer/freetype/freetype.c:110
-#: modules/gui/qt/ui/sprefs_subtitles.h:303
 msgid "Outline color"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:343
+#: modules/gui/macosx/VLCSimplePrefsController.m:350
 #: modules/text_renderer/freetype/freetype.c:111
-#: modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Outline thickness"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:347
-#: modules/stream_out/display.c:53 modules/gui/qt/ui/sprefs_video.h:315
+#: modules/gui/macosx/VLCSimplePrefsController.m:354
+#: modules/stream_out/display.c:53
 msgid "Display"
 msgstr "Yaro kamaler"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:348
+#: modules/gui/macosx/VLCSimplePrefsController.m:355
 msgid "Show video within the main window"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:353
+#: modules/gui/macosx/VLCSimplePrefsController.m:360
 #, fuzzy
 msgid "Fullscreen settings"
 msgstr "Ka neno lung"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:354
+#: modules/gui/macosx/VLCSimplePrefsController.m:361
 #, fuzzy
 msgid "Start in fullscreen"
 msgstr "Lanyut cal Macol iyi lanyut cal lung"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:355
+#: modules/gui/macosx/VLCSimplePrefsController.m:362
 msgid "Black screens in Fullscreen mode"
 msgstr "Wang kaneno matye Madit"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:359
-#: modules/gui/qt/ui/sprefs_video.h:330
+#: modules/gui/macosx/VLCSimplePrefsController.m:366
 msgid "Video snapshots"
 msgstr "Cal matino ma ikom Video"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:361
+#: modules/gui/macosx/VLCSimplePrefsController.m:368
 #: modules/meta_engine/folder.c:69
 msgid "Folder"
 msgstr "Boc"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:362
-#: modules/gui/qt/ui/sprefs_video.h:336
+#: modules/gui/macosx/VLCSimplePrefsController.m:369
 msgid "Format"
 msgstr "Kite ne"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:363
-#: modules/gui/qt/ui/sprefs_video.h:333
+#: modules/gui/macosx/VLCSimplePrefsController.m:370
 msgid "Prefix"
 msgstr "Ki ilangete macen"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:364
-#: modules/gui/qt/ui/sprefs_video.h:335
+#: modules/gui/macosx/VLCSimplePrefsController.m:371
 msgid "Sequential numbering"
 msgstr "Keto namba malube"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:372
+#: modules/gui/macosx/VLCSimplePrefsController.m:379
 #: modules/gui/macosx/prefs.m:190
 msgid "Reset All"
 msgstr "Nwo tera weng"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:374
+#: modules/gui/macosx/VLCSimplePrefsController.m:381
 #: modules/gui/macosx/prefs.m:187 modules/gui/qt/dialogs/preferences.cpp:56
 msgid "Preferences"
 msgstr "Yore ma imito"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:547
+#: modules/gui/macosx/VLCSimplePrefsController.m:554
 msgid ""
 "Media files cannot be resumed because keeping recent media items is disabled."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:567
+#: modules/gui/macosx/VLCSimplePrefsController.m:574
 msgid "Last check on: %@"
 msgstr "Kineno me agiki iyi: %@"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:569
+#: modules/gui/macosx/VLCSimplePrefsController.m:576
 msgid "No check was performed yet."
 msgstr "Fud pe kineno"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:685
+#: modules/gui/macosx/VLCSimplePrefsController.m:692
 #, fuzzy
 msgid "Lowest Latency"
 msgstr "Lyeto matidi maloyo"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:687
+#: modules/gui/macosx/VLCSimplePrefsController.m:694
 #, fuzzy
 msgid "Low Latency"
 msgstr "Lyeto matidi"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:691
+#: modules/gui/macosx/VLCSimplePrefsController.m:698
 #, fuzzy
 msgid "Higher Latency"
 msgstr "Lyeto madit maloyo"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:693
+#: modules/gui/macosx/VLCSimplePrefsController.m:700
 #, fuzzy
 msgid "Highest Latency"
 msgstr "Lyeto madit maloyo"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:813
+#: modules/gui/macosx/VLCSimplePrefsController.m:820
 #: modules/gui/qt/dialogs/preferences.cpp:336
 msgid "Reset Preferences"
 msgstr "Dwok yore mere bed kite macon"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:816
+#: modules/gui/macosx/VLCSimplePrefsController.m:823
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -17522,25 +17446,25 @@ msgid ""
 "Are you sure you want to continue?"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1086
+#: modules/gui/macosx/VLCSimplePrefsController.m:1093
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1155
+#: modules/gui/macosx/VLCSimplePrefsController.m:1162
 msgid "Choose the folder to save your video snapshots to."
 msgstr "Yer folda weki igwoki ginanena ma imako oyoto iye."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1157
-#: modules/gui/macosx/VLCSimplePrefsController.m:1256
+#: modules/gui/macosx/VLCSimplePrefsController.m:1164
+#: modules/gui/macosx/VLCSimplePrefsController.m:1263
 msgid "Choose"
 msgstr "Yer"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1254
+#: modules/gui/macosx/VLCSimplePrefsController.m:1261
 msgid "Choose the directory or filename where the records will be stored."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1371
+#: modules/gui/macosx/VLCSimplePrefsController.m:1378
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -17548,17 +17472,17 @@ msgstr ""
 "Di luyab manyen pi\n"
 "\"%@\""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1444
+#: modules/gui/macosx/VLCSimplePrefsController.m:1451
 msgid "Invalid combination"
 msgstr "Coko ma pe konyo"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1445
+#: modules/gui/macosx/VLCSimplePrefsController.m:1452
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 "Icwer cwiny, luyab magi pe watwero miyo bedo bala yo macek pi layab matek"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1455
-#: modules/gui/macosx/VLCSimplePrefsController.m:1459
+#: modules/gui/macosx/VLCSimplePrefsController.m:1462
+#: modules/gui/macosx/VLCSimplePrefsController.m:1466
 msgid "This combination is already taken by \"%@\"."
 msgstr "Man ma gicoko \"%@\" otyeko kwanyo oko. "
 
@@ -17682,7 +17606,6 @@ msgid "Basic"
 msgstr "Mayot mamite"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:194
-#: modules/gui/qt/ui/video_effects.h:1267
 msgid "Geometry"
 msgstr "Cura"
 
@@ -17691,9 +17614,7 @@ msgstr "Cura"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:269
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:272
 #: modules/spu/marq.c:115 modules/spu/rss.c:152
-#: modules/video_filter/colorthres.c:55 modules/gui/qt/ui/video_effects.h:1241
-#: modules/gui/qt/ui/video_effects.h:1247
-#: modules/gui/qt/ui/video_effects.h:1250
+#: modules/video_filter/colorthres.c:55
 msgid "Color"
 msgstr "Rangi"
 
@@ -17702,53 +17623,45 @@ msgid "Image Adjust"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
-#: modules/gui/qt/ui/video_effects.h:1218
 msgid "Brightness Threshold"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:210
-#: modules/video_filter/sharpen.c:69 modules/gui/qt/ui/video_effects.h:1222
+#: modules/video_filter/sharpen.c:69
 msgid "Sharpen"
 msgstr "Paki"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:211
-#: modules/gui/qt/ui/video_effects.h:1223
-#: modules/gui/qt/ui/video_effects.h:1296
 msgid "Sigma"
 msgstr "Sigma"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:212
-#: modules/gui/qt/ui/video_effects.h:1224
 msgid "Banding removal"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:213
-#: modules/video_filter/gradfun.c:50 modules/gui/qt/ui/video_effects.h:1225
+#: modules/video_filter/gradfun.c:50
 msgid "Radius"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:214
-#: modules/gui/qt/ui/video_effects.h:1226
 msgid "Film Grain"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:215
-#: modules/video_filter/grain.c:53 modules/gui/qt/ui/video_effects.h:1227
+#: modules/video_filter/grain.c:53
 msgid "Variance"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:220
-#: modules/gui/qt/ui/video_effects.h:1235
 msgid "Synchronize top and bottom"
 msgstr "Yik malu kede piny"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:221
-#: modules/gui/qt/ui/video_effects.h:1236
 msgid "Synchronize left and right"
 msgstr "Yik tung lacam kede tung lacuc"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:223
-#: modules/gui/qt/ui/video_effects.h:1261
 msgid "Transform"
 msgstr "Lok"
 
@@ -17782,60 +17695,51 @@ msgid "Magnification/Zoom"
 msgstr "Loko caji madit/Loko caji"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:241
-#: modules/gui/qt/ui/video_effects.h:1264
 msgid "Puzzle game"
 msgstr "Tuku me wic"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:242
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:247
 #: share/lua/http/dialogs/mosaic_window.html:96
-#: modules/gui/qt/ui/video_effects.h:1259
-#: modules/gui/qt/ui/video_effects.h:1265
 msgid "Rows"
 msgstr "Bor arii"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:243
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:248
 #: share/lua/http/dialogs/mosaic_window.html:114
-#: modules/gui/qt/ui/video_effects.h:1260
-#: modules/gui/qt/ui/video_effects.h:1266
 msgid "Columns"
 msgstr "Bor atir"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:244
-#: modules/video_splitter/clone.c:57 modules/gui/qt/ui/video_effects.h:1306
+#: modules/video_splitter/clone.c:57
 msgid "Clone"
 msgstr "Ma ki yiko"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
-#: modules/video_splitter/clone.c:39 modules/gui/qt/ui/video_effects.h:1307
+#: modules/video_splitter/clone.c:39
 msgid "Number of clones"
 msgstr "Namba me yiko"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:246
-#: modules/gui/qt/ui/video_effects.h:1258
 msgid "Wall"
 msgstr "Lapama"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:250
-#: modules/video_filter/colorthres.c:71 modules/gui/qt/ui/video_effects.h:1249
+#: modules/video_filter/colorthres.c:71
 msgid "Color threshold"
 msgstr "rangi me tic"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:254
-#: modules/gui/qt/ui/video_effects.h:1253
 msgid "Similarity"
 msgstr "Rom ne"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:256
-#: modules/gui/qt/ui/video_effects.h:1255
 msgid "Intensity"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:257
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:260
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
-#: modules/gui/qt/ui/video_effects.h:1245
 msgid "Gradient"
 msgstr "Jami ma poke kikom rek"
 
@@ -17850,12 +17754,10 @@ msgid "Hough"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:270
-#: modules/gui/qt/ui/video_effects.h:1248
 msgid "Cartoon"
 msgstr "Katun"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:271
-#: modules/gui/qt/ui/video_effects.h:1240
 msgid "Color extraction"
 msgstr "Waru kala"
 
@@ -17864,7 +17766,7 @@ msgid "Invert colors"
 msgstr "Lok rangi"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:275
-#: modules/video_filter/posterize.c:69 modules/gui/qt/ui/video_effects.h:1244
+#: modules/video_filter/posterize.c:69
 msgid "Posterize"
 msgstr ""
 
@@ -17874,12 +17776,11 @@ msgid "Posterize level"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:277
-#: modules/video_filter/motionblur.c:60 modules/gui/qt/ui/video_effects.h:1297
+#: modules/video_filter/motionblur.c:60
 msgid "Motion blur"
 msgstr "ceto manen marac"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:278
-#: modules/gui/qt/ui/video_effects.h:1298
 msgid "Factor"
 msgstr "Gin mamiyo"
 
@@ -17889,13 +17790,11 @@ msgid "Motion Detect"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:280
-#: modules/gui/qt/ui/video_effects.h:1293
 msgid "Water effect"
 msgstr "Jami maa ki i pii"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:282
 #: modules/meta_engine/ID3Genres.h:100 modules/video_filter/psychedelic.c:55
-#: modules/gui/qt/ui/video_effects.h:1291
 msgid "Psychedelic"
 msgstr "Ma cito me oyoto atura"
 
@@ -17905,23 +17804,19 @@ msgid "Anaglyph"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:284
-#: modules/gui/qt/ui/video_effects.h:1278
 msgid "Add text"
 msgstr "Med ginacoya"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
 #: modules/logger/file.c:193 modules/spu/marq.c:88
-#: modules/gui/qt/ui/video_effects.h:1280
 msgid "Text"
 msgstr "Coc"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:306
-#: modules/gui/qt/ui/video_effects.h:1268
 msgid "Add logo"
 msgstr "Med alama"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
-#: modules/gui/qt/ui/video_effects.h:1269
 msgid "Logo"
 msgstr "Alama"
 
@@ -18754,7 +18649,6 @@ msgid "File names:"
 msgstr "Nying fail:"
 
 #: modules/gui/qt/components/open_panels.cpp:162
-#: modules/gui/qt/ui/sprefs_interface.h:561
 msgid "Filter:"
 msgstr "Kii:"
 
@@ -19157,7 +19051,6 @@ msgid "File/Folder"
 msgstr "Fail/Kagwoko"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:47
-#: modules/gui/qt/ui/sout.h:202
 msgid "Source"
 msgstr "Ka ma oa iye"
 
@@ -19278,7 +19171,7 @@ msgstr "Pe giyero fail"
 msgid "Destination"
 msgstr "Ka ceto"
 
-#: modules/gui/qt/dialogs/convert.cpp:68 modules/gui/qt/ui/sprefs_audio.h:416
+#: modules/gui/qt/dialogs/convert.cpp:68
 msgid "Destination file:"
 msgstr "Ka gik pa fail:"
 
@@ -19324,8 +19217,7 @@ msgstr "Mede kwede"
 msgid "Program Guide"
 msgstr "Lakub wi Puruguram"
 
-#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:289
-#: modules/gui/qt/ui/about.h:290
+#: modules/gui/qt/dialogs/epg.cpp:87
 msgid "Update"
 msgstr "Mi ngec manyen"
 
@@ -19428,7 +19320,7 @@ msgstr "&Eyo"
 msgid "&No"
 msgstr ""
 
-#: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:147
+#: modules/gui/qt/dialogs/help.cpp:222
 msgid "VLC media player updates"
 msgstr "Lamed me giwer me VLC"
 
@@ -19473,8 +19365,6 @@ msgid "Location:"
 msgstr "Kabedo:"
 
 #: modules/gui/qt/dialogs/messages.cpp:80
-#: modules/gui/qt/ui/messages_panel.h:138
-#: modules/gui/qt/ui/messages_panel.h:142
 msgid "Messages"
 msgstr "Kwena"
 
@@ -19678,7 +19568,7 @@ msgstr "Cik "
 msgid "Website"
 msgstr "Kakube me Wilobo"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1533 modules/gui/qt/ui/sprefs_input.h:366
+#: modules/gui/qt/dialogs/plugins.cpp:1533
 msgid "Files"
 msgstr "Fail"
 
@@ -19738,7 +19628,7 @@ msgstr "fail ma I maro onongo pe romo kube"
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr ""
 
-#: modules/gui/qt/dialogs/sout.cpp:45 modules/gui/qt/ui/sout.h:201
+#: modules/gui/qt/dialogs/sout.cpp:45
 msgid "Stream Output"
 msgstr "Ket jami ma imaro"
 
@@ -19920,7 +19810,7 @@ msgstr "Nwo:"
 msgid "Repeat delay:"
 msgstr "Nwo gale:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:112 modules/gui/qt/ui/sprefs_interface.h:558
+#: modules/gui/qt/dialogs/vlm.cpp:112
 msgid " days"
 msgstr ""
 
@@ -20019,11 +19909,11 @@ msgstr ""
 msgid "&Continue"
 msgstr "Mede kwede"
 
-#: modules/gui/qt/main_interface.cpp:1419
+#: modules/gui/qt/main_interface.cpp:1420
 msgid "Control menu for the player"
 msgstr "Yik lakubpa gituku wer"
 
-#: modules/gui/qt/main_interface.cpp:1463
+#: modules/gui/qt/main_interface.cpp:1464
 msgid "Paused"
 msgstr "Ki juko"
 
@@ -22680,7 +22570,6 @@ msgid "Podcasts"
 msgstr ""
 
 #: modules/services_discovery/podcast.c:56
-#: modules/gui/qt/ui/podcast_configuration.h:101
 msgid "Podcast URLs list"
 msgstr "Pok URLs nying"
 
@@ -22783,7 +22672,7 @@ msgstr ""
 msgid "CD"
 msgstr ""
 
-#: modules/services_discovery/udev.c:599 modules/gui/qt/ui/open_disk.h:298
+#: modules/services_discovery/udev.c:599
 msgid "DVD"
 msgstr "DVD"
 
@@ -22930,7 +22819,6 @@ msgstr ""
 
 #: modules/spu/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
-#: modules/gui/qt/ui/video_effects.h:1288
 msgid "Overlay"
 msgstr ""
 
@@ -23604,7 +23492,7 @@ msgstr ""
 msgid "Internal stream record"
 msgstr ""
 
-#: modules/stream_filter/skiptags.c:235
+#: modules/stream_filter/skiptags.c:243
 msgid "APE/ID3 tags-skipping filter"
 msgstr ""
 
@@ -23722,59 +23610,79 @@ msgstr "Manen jwi"
 msgid "Chromaprint stream output"
 msgstr "Coc maceto woko ma ginongo"
 
-#: modules/stream_out/chromecast/cast.cpp:104
+#: modules/stream_out/chromecast/cast.cpp:105
 #, fuzzy
 msgid "HTTP port"
 msgstr "Icwil me donyo"
 
-#: modules/stream_out/chromecast/cast.cpp:105
+#: modules/stream_out/chromecast/cast.cpp:106
 msgid ""
 "This sets the HTTP port of the local server used to stream the media to the "
 "Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:108
+#: modules/stream_out/chromecast/cast.cpp:109
 msgid "The Chromecast receiver can receive video."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:110
+#: modules/stream_out/chromecast/cast.cpp:111
 #, fuzzy
 msgid "This sets the muxer used to stream to the Chromecast."
 msgstr "Rwom man keto jami ma gigonyo iyi lagab me Icecast."
 
-#: modules/stream_out/chromecast/cast.cpp:111
+#: modules/stream_out/chromecast/cast.cpp:112
 msgid "MIME content type"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:112
+#: modules/stream_out/chromecast/cast.cpp:113
 msgid "This sets the media MIME content type sent to the Chromecast."
 msgstr ""
 
+#: modules/stream_out/chromecast/cast.cpp:114
+#: modules/stream_out/chromecast/cast.cpp:306
+#, fuzzy
+msgid "Performance warning"
+msgstr "Bal ki Kwenyoro"
+
 #: modules/stream_out/chromecast/cast.cpp:115
+msgid "Display a performance warning when transcoding"
+msgstr ""
+
+#: modules/stream_out/chromecast/cast.cpp:118
 #, fuzzy
 msgid "IP Address of the Chromecast."
 msgstr "Address pa kompiuta me cwalo iyi."
 
-#: modules/stream_out/chromecast/cast.cpp:116
+#: modules/stream_out/chromecast/cast.cpp:119
 #, fuzzy
 msgid "Chromecast port"
 msgstr "Nyut yore &mukene"
 
-#: modules/stream_out/chromecast/cast.cpp:117
+#: modules/stream_out/chromecast/cast.cpp:120
 msgid "The port used to talk to the Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:121
+#: modules/stream_out/chromecast/cast.cpp:124
 #, fuzzy
 msgid "Chromecast"
 msgstr "Nyut yore &mukene"
 
-#: modules/stream_out/chromecast/cast.cpp:122
+#: modules/stream_out/chromecast/cast.cpp:125
 #, fuzzy
 msgid "Chromecast stream output"
 msgstr "Coc maceto woko ma ginongo"
 
-#: modules/stream_out/chromecast/chromecast_demux.cpp:328
+#: modules/stream_out/chromecast/cast.cpp:305
+msgid "Ok, Don't warn me again"
+msgstr ""
+
+#: modules/stream_out/chromecast/cast.cpp:307
+msgid ""
+"Casting this video requires conversion. This conversion can use all the "
+"available power and could quickly drain your battery."
+msgstr ""
+
+#: modules/stream_out/chromecast/chromecast_demux.cpp:366
 #, fuzzy
 msgid "Chromecast demux wrapper"
 msgstr "Nyut yore &mukene"
@@ -24794,7 +24702,7 @@ msgstr ""
 msgid "Image properties filter"
 msgstr ""
 
-#: modules/video_filter/adjust.c:78 modules/gui/qt/ui/video_effects.h:1215
+#: modules/video_filter/adjust.c:78
 msgid "Image adjust"
 msgstr "Rib Cal manok"
 
@@ -25834,7 +25742,7 @@ msgstr ""
 msgid "Rotate video filter"
 msgstr ""
 
-#: modules/video_filter/rotate.c:69 modules/gui/qt/ui/video_effects.h:1262
+#: modules/video_filter/rotate.c:69
 msgid "Rotate"
 msgstr "Lok"
 
@@ -26184,7 +26092,7 @@ msgstr ""
 msgid "GLX extension for OpenGL"
 msgstr ""
 
-#: modules/video_output/kva.c:50 modules/gui/qt/ui/sprefs_video.h:324
+#: modules/video_output/kva.c:50
 msgid "Enable a workaround for T23"
 msgstr ""
 
@@ -26194,7 +26102,7 @@ msgid ""
 "size is equal to or smaller than the movie size."
 msgstr ""
 
-#: modules/video_output/kva.c:55 modules/gui/qt/ui/sprefs_video.h:325
+#: modules/video_output/kva.c:55
 msgid "Video mode"
 msgstr ""
 
@@ -26263,14 +26171,6 @@ msgstr ""
 msgid "EGL extension for OpenGL"
 msgstr ""
 
-#: modules/video_output/opengl/vout_helper.h:61
-msgid "Open GL/GLES hardware converter"
-msgstr ""
-
-#: modules/video_output/opengl/vout_helper.h:63
-msgid "Force a \"glconv\" module."
-msgstr ""
-
 #: modules/video_output/win32/direct3d9.c:70
 msgid "The desktop mode allows you to display the video on the desktop."
 msgstr ""
@@ -26325,7 +26225,6 @@ msgid "Direct3D11 video output"
 msgstr ""
 
 #: modules/video_output/win32/directdraw.c:65
-#: modules/gui/qt/ui/sprefs_video.h:321
 msgid "Use hardware YUV->RGB conversions"
 msgstr "Ti ki nyonyo me loko YUV->RGB"
 
@@ -26434,6 +26333,10 @@ msgstr ""
 
 #: modules/video_output/vmem.c:46
 msgid "Video memory buffer height."
+msgstr ""
+
+#: modules/video_output/vmem.c:48
+msgid "Pitch"
 msgstr ""
 
 #: modules/video_output/vmem.c:49
@@ -27151,7 +27054,6 @@ msgid "Play List"
 msgstr ""
 
 #: share/lua/http/dialogs/create_stream.html:156
-#: modules/gui/qt/ui/sprefs_audio.h:414
 msgid "Output"
 msgstr "Me woko"
 
@@ -27266,7 +27168,7 @@ msgstr ""
 msgid "VLM Batch Commands"
 msgstr ""
 
-#: share/lua/http/index.html:240 modules/gui/qt/ui/vlm.h:298
+#: share/lua/http/index.html:240
 msgid "Loop"
 msgstr "Kal"
 
@@ -27335,895 +27237,559 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr ""
 
-#: modules/gui/qt/ui/about.h:288 modules/gui/qt/ui/open.h:260
-#: modules/gui/qt/ui/podcast_configuration.h:100
-msgid "Dialog"
-msgstr "Lok"
+#~ msgid "Dialog"
+#~ msgstr "Lok"
 
-#: modules/gui/qt/ui/equalizer.h:132 modules/gui/qt/ui/open_disk.h:296
-#: modules/gui/qt/ui/open_net.h:96 modules/gui/qt/ui/sprefs_audio.h:409
-#: modules/gui/qt/ui/sprefs_input.h:356
-#: modules/gui/qt/ui/sprefs_interface.h:529
-#: modules/gui/qt/ui/sprefs_subtitles.h:289
-#: modules/gui/qt/ui/sprefs_video.h:313 modules/gui/qt/ui/streampanel.h:167
-msgid "Form"
-msgstr "Fom"
+#~ msgid "Form"
+#~ msgstr "Fom"
 
-#: modules/gui/qt/ui/equalizer.h:135
-msgid "Preset"
-msgstr "Yik con"
+#~ msgid "Preset"
+#~ msgstr "Yik con"
 
-#: modules/gui/qt/ui/equalizer.h:137
-msgid "0.00 dB"
-msgstr ""
-
-#: modules/gui/qt/ui/messages_panel.h:139
 #, fuzzy
-msgid "&Verbosity:"
-msgstr "Rwom me Kit nyukta"
+#~ msgid "&Verbosity:"
+#~ msgstr "Rwom me Kit nyukta"
 
-#: modules/gui/qt/ui/messages_panel.h:140
 #, fuzzy
-msgid "&Filter:"
-msgstr "Kii:"
+#~ msgid "&Filter:"
+#~ msgstr "Kii:"
 
-#: modules/gui/qt/ui/messages_panel.h:141
-msgid "&Save as..."
-msgstr "&Gwok macalo..."
+#~ msgid "&Save as..."
+#~ msgstr "&Gwok macalo..."
 
-#: modules/gui/qt/ui/messages_panel.h:143
-msgid "Modules Tree"
-msgstr ""
+#~ msgid "Show extended options"
+#~ msgstr "Nyut yore mukene"
 
-#: modules/gui/qt/ui/open.h:263
-msgid "Show extended options"
-msgstr "Nyut yore mukene"
+#~ msgid "Show &more options"
+#~ msgstr "Nyut yore &mukene"
 
-#: modules/gui/qt/ui/open.h:265
-msgid "Show &more options"
-msgstr "Nyut yore &mukene"
+#~ msgid "Change the caching for the media"
+#~ msgstr "Lok kite me gwoko pa gitic"
 
-#: modules/gui/qt/ui/open.h:268
-msgid "Change the caching for the media"
-msgstr "Lok kite me gwoko pa gitic"
+#~ msgid "MRL"
+#~ msgstr "MRL"
 
-#: modules/gui/qt/ui/open.h:270
-msgid " ms"
-msgstr ""
+#~ msgid "Start Time"
+#~ msgstr "Caa me cako"
 
-#: modules/gui/qt/ui/open.h:271
-msgid "MRL"
-msgstr "MRL"
-
-#: modules/gui/qt/ui/open.h:272
-msgid "Start Time"
-msgstr "Caa me cako"
-
-#: modules/gui/qt/ui/open.h:273
 #, fuzzy
-msgid "Stop Time"
-msgstr "Cet wa i Cawa"
+#~ msgid "Stop Time"
+#~ msgstr "Cet wa i Cawa"
 
-#: modules/gui/qt/ui/open.h:274
-msgid "Edit Options"
-msgstr "Yik kite mere"
+#~ msgid "Edit Options"
+#~ msgstr "Yik kite mere"
 
-#: modules/gui/qt/ui/open.h:275
-msgid "Extra media"
-msgstr "Wer mukene"
+#~ msgid "Extra media"
+#~ msgstr "Wer mukene"
 
-#: modules/gui/qt/ui/open.h:277
-msgid "Complete MRL for VLC internal"
-msgstr "Tyek MRL pi VLC internal"
+#~ msgid "Complete MRL for VLC internal"
+#~ msgstr "Tyek MRL pi VLC internal"
 
-#: modules/gui/qt/ui/open.h:280
-msgid "Select the file"
-msgstr "Yer fail"
+#~ msgid "Select the file"
+#~ msgstr "Yer fail"
 
-#: modules/gui/qt/ui/open.h:284
-msgid "Change the start time for the media"
-msgstr "Lok caa me cako pi gitic man"
+#~ msgid "Change the start time for the media"
+#~ msgstr "Lok caa me cako pi gitic man"
 
-#: modules/gui/qt/ui/open.h:286 modules/gui/qt/ui/open.h:290
-msgid "HH'H':mm'm':ss's'.zzz"
-msgstr ""
-
-#: modules/gui/qt/ui/open.h:288
 #, fuzzy
-msgid "Change the stop time for the media"
-msgstr "Lok caa me cako pi gitic man"
+#~ msgid "Change the stop time for the media"
+#~ msgstr "Lok caa me cako pi gitic man"
 
-#: modules/gui/qt/ui/open.h:291
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr "Tuk wer ma igwoko mukene (fail me wer mukene, ...)"
+#~ msgid "Play another media synchronously (extra audio file, ...)"
+#~ msgstr "Tuk wer ma igwoko mukene (fail me wer mukene, ...)"
 
-#: modules/gui/qt/ui/open_capture.h:97
-msgid "Capture mode"
-msgstr "Kite me gwoko"
+#~ msgid "Capture mode"
+#~ msgstr "Kite me gwoko"
 
-#: modules/gui/qt/ui/open_capture.h:99
-msgid "Select the capture device type"
-msgstr "Yer kite gitic me gwoko"
+#~ msgid "Select the capture device type"
+#~ msgstr "Yer kite gitic me gwoko"
 
-#: modules/gui/qt/ui/open_capture.h:101
-msgid "Device Selection"
-msgstr "Yero gitic"
+#~ msgid "Device Selection"
+#~ msgstr "Yero gitic"
 
-#: modules/gui/qt/ui/open_capture.h:102
-msgid "Options"
-msgstr "Kite me yero"
+#~ msgid "Options"
+#~ msgstr "Kite me yero"
 
-#: modules/gui/qt/ui/open_capture.h:104
-msgid "Access advanced options to tweak the device"
-msgstr "Nwong yore me neno gitic man"
+#~ msgid "Access advanced options to tweak the device"
+#~ msgstr "Nwong yore me neno gitic man"
 
-#: modules/gui/qt/ui/open_capture.h:106
-msgid "Advanced options..."
-msgstr "Yore madito..."
+#~ msgid "Advanced options..."
+#~ msgstr "Yore madito..."
 
-#: modules/gui/qt/ui/open_disk.h:297
-msgid "Disc Selection"
-msgstr "Kite me yero dic"
+#~ msgid "Disc Selection"
+#~ msgstr "Kite me yero dic"
 
-#: modules/gui/qt/ui/open_disk.h:301
-msgid "SVCD/VCD"
-msgstr "SVCD/VCD"
+#~ msgid "SVCD/VCD"
+#~ msgstr "SVCD/VCD"
 
-#: modules/gui/qt/ui/open_disk.h:303
-msgid "Disable Disc Menus"
-msgstr ""
+#~ msgid "Disc device"
+#~ msgstr "Gitic me Dic"
 
-#: modules/gui/qt/ui/open_disk.h:305
-msgid "No disc menus"
-msgstr ""
+#~ msgid "Starting Position"
+#~ msgstr "Kacako"
 
-#: modules/gui/qt/ui/open_disk.h:306
-msgid "Disc device"
-msgstr "Gitic me Dic"
+#~ msgid "Audio and Subtitles"
+#~ msgstr "Wer kede Wie matino"
 
-#: modules/gui/qt/ui/open_disk.h:308
-msgid "Starting Position"
-msgstr "Kacako"
-
-#: modules/gui/qt/ui/open_disk.h:311
-msgid "Audio and Subtitles"
-msgstr "Wer kede Wie matino"
-
-#: modules/gui/qt/ui/open_file.h:143
 #, fuzzy
-msgid "Use a sub&title file"
-msgstr "Fail me Wie matino"
+#~ msgid "Use a sub&title file"
+#~ msgstr "Fail me Wie matino"
 
-#: modules/gui/qt/ui/open_file.h:145
 #, fuzzy
-msgid "Select the subtitle file"
-msgstr "Yer fail"
+#~ msgid "Select the subtitle file"
+#~ msgstr "Yer fail"
 
-#: modules/gui/qt/ui/open_file.h:149
-msgid "Choose one or more media file to open"
-msgstr "Yer acel nyo aryo ikom fail wek iyab"
+#~ msgid "Choose one or more media file to open"
+#~ msgstr "Yer acel nyo aryo ikom fail wek iyab"
 
-#: modules/gui/qt/ui/open_file.h:151
-msgid "File Selection"
-msgstr "Yero fail"
+#~ msgid "File Selection"
+#~ msgstr "Yero fail"
 
-#: modules/gui/qt/ui/open_file.h:152
-msgid "You can select local files with the following list and buttons."
-msgstr "Itwero yero fail ma kany ki nying gi kede ka diyo"
+#~ msgid "You can select local files with the following list and buttons."
+#~ msgstr "Itwero yero fail ma kany ki nying gi kede ka diyo"
 
-#: modules/gui/qt/ui/open_file.h:153
-msgid "Add..."
-msgstr "Med..."
+#~ msgid "Add..."
+#~ msgstr "Med..."
 
-#: modules/gui/qt/ui/open_net.h:97
-msgid "Network Protocol"
-msgstr "Cik ikom kube"
+#~ msgid "Network Protocol"
+#~ msgstr "Cik ikom kube"
 
-#: modules/gui/qt/ui/open_net.h:98
-msgid "Please enter a network URL:"
-msgstr "Ket URL me kakube"
+#~ msgid "Please enter a network URL:"
+#~ msgstr "Ket URL me kakube"
 
-#: modules/gui/qt/ui/profiles.h:701
 #, fuzzy
-msgid "Profile edition"
-msgstr "Nying ngec makiryeyo"
+#~ msgid "Profile edition"
+#~ msgstr "Nying ngec makiryeyo"
 
-#: modules/gui/qt/ui/profiles.h:702
-msgid "FLAC"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:703
 #, fuzzy
-msgid "MP&4/MOV"
-msgstr "MP4/MOV"
+#~ msgid "MP&4/MOV"
+#~ msgstr "MP4/MOV"
 
-#: modules/gui/qt/ui/profiles.h:704
-msgid "Ogg/Ogm"
-msgstr "Ogg/Ogm"
+#~ msgid "Ogg/Ogm"
+#~ msgstr "Ogg/Ogm"
 
-#: modules/gui/qt/ui/profiles.h:705
-msgid "M&KV"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:706
 #, fuzzy
-msgid "M&JPEG"
-msgstr "MJPEG"
+#~ msgid "M&JPEG"
+#~ msgstr "MJPEG"
 
-#: modules/gui/qt/ui/profiles.h:707
-msgid "MPEG-PS"
-msgstr "MPEG-PS"
+#~ msgid "MPEG-PS"
+#~ msgstr "MPEG-PS"
 
-#: modules/gui/qt/ui/profiles.h:708
-msgid "F&LV"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:709
 #, fuzzy
-msgid "&MPEG-TS"
-msgstr "MPEG-TS"
+#~ msgid "&MPEG-TS"
+#~ msgstr "MPEG-TS"
 
-#: modules/gui/qt/ui/profiles.h:710
-msgid "RAW"
-msgstr "REK ME ARI"
+#~ msgid "RAW"
+#~ msgstr "REK ME ARI"
 
-#: modules/gui/qt/ui/profiles.h:711
-msgid "WAV"
-msgstr "WAV"
+#~ msgid "WAV"
+#~ msgstr "WAV"
 
-#: modules/gui/qt/ui/profiles.h:712
-msgid "Webm"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:713
 #, fuzzy
-msgid "MPEG &1"
-msgstr "MPEG 1"
+#~ msgid "MPEG &1"
+#~ msgstr "MPEG 1"
 
-#: modules/gui/qt/ui/profiles.h:714
-msgid "AVI"
-msgstr "AVI"
+#~ msgid "AVI"
+#~ msgstr "AVI"
 
-#: modules/gui/qt/ui/profiles.h:715
-msgid "ASF/WMV"
-msgstr "ASF/WMV"
+#~ msgid "ASF/WMV"
+#~ msgstr "ASF/WMV"
 
-#: modules/gui/qt/ui/profiles.h:716
-msgid "MP&3"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:717
 #, fuzzy
-msgid "Features"
-msgstr "Mak"
+#~ msgid "Features"
+#~ msgstr "Mak"
 
-#: modules/gui/qt/ui/profiles.h:719
 #, fuzzy
-msgid "Streamable"
-msgstr "Dwiro pa Jami maceto kacel"
+#~ msgid "Streamable"
+#~ msgstr "Dwiro pa Jami maceto kacel"
 
-#: modules/gui/qt/ui/profiles.h:720
 #, fuzzy
-msgid "Chapters"
-msgstr "Dul"
+#~ msgid "Chapters"
+#~ msgstr "Dul"
 
-#: modules/gui/qt/ui/profiles.h:723
 #, fuzzy
-msgid "Menus"
-msgstr "Lacim"
+#~ msgid "Menus"
+#~ msgstr "Lacim"
 
-#: modules/gui/qt/ui/profiles.h:730
 #, fuzzy
-msgid "Fra&me Rate"
-msgstr "Rwom me Purem"
+#~ msgid "Fra&me Rate"
+#~ msgstr "Rwom me Purem"
 
-#: modules/gui/qt/ui/profiles.h:731
 #, fuzzy
-msgid "Same as source"
-msgstr "Ka ma oa iye"
+#~ msgid "Same as source"
+#~ msgstr "Ka ma oa iye"
 
-#: modules/gui/qt/ui/profiles.h:733
-msgid " fps"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:734
 #, fuzzy
-msgid "Custom options"
-msgstr "Nyut yore &mukene"
+#~ msgid "Custom options"
+#~ msgstr "Nyut yore &mukene"
 
-#: modules/gui/qt/ui/profiles.h:735
 #, fuzzy
-msgid "&Quality"
-msgstr "Kite me gwoko"
+#~ msgid "Not Used"
+#~ msgstr "Pe Gitero"
 
-#: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
 #, fuzzy
-msgid "Not Used"
-msgstr "Pe Gitero"
+#~ msgid "Encoding parameters"
+#~ msgstr "Nyayo Lapok akina ne"
 
-#: modules/gui/qt/ui/profiles.h:738 modules/gui/qt/ui/profiles.h:757
-msgid " kb/s"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
 #, fuzzy
-msgid "Encoding parameters"
-msgstr "Nyayo Lapok akina ne"
+#~ msgid "Frame size"
+#~ msgstr "Rwom me Purem"
 
-#: modules/gui/qt/ui/profiles.h:742
 #, fuzzy
-msgid "Frame size"
-msgstr "Rwom me Purem"
+#~ msgid "Sa&mple Rate"
+#~ msgstr "Rwom me nyutu"
 
-#: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
-msgid "px"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:758
 #, fuzzy
-msgid "Sa&mple Rate"
-msgstr "Rwom me nyutu"
+#~ msgid "Profile &Name"
+#~ msgstr "Nying ngec makiryeyo"
 
-#: modules/gui/qt/ui/profiles.h:766
 #, fuzzy
-msgid "Profile &Name"
-msgstr "Nying ngec makiryeyo"
+#~ msgid "Set up media sources to stream"
+#~ msgstr "Yer mapol"
 
-#: modules/gui/qt/ui/sout.h:203
 #, fuzzy
-msgid "Set up media sources to stream"
-msgstr "Yer mapol"
+#~ msgid "Destination Setup"
+#~ msgstr "Ka ceto"
 
-#: modules/gui/qt/ui/sout.h:205
 #, fuzzy
-msgid "Destination Setup"
-msgstr "Ka ceto"
+#~ msgid "Select destinations to stream to"
+#~ msgstr "Yer mapol"
 
-#: modules/gui/qt/ui/sout.h:206
+#~ msgid "New destination"
+#~ msgstr "Agiki manyen"
+
+#~ msgid "Display locally"
+#~ msgstr "Ten ki cing"
+
 #, fuzzy
-msgid "Select destinations to stream to"
-msgstr "Yer mapol"
+#~ msgid "Transcoding Options"
+#~ msgstr "Yore me kano"
 
-#: modules/gui/qt/ui/sout.h:207
-msgid ""
-"Add destinations following the streaming methods you need. Be sure to check "
-"with transcoding that the format is compatible with the method used."
-msgstr ""
-
-#: modules/gui/qt/ui/sout.h:208
-msgid "New destination"
-msgstr "Agiki manyen"
-
-#: modules/gui/qt/ui/sout.h:210
-msgid "Display locally"
-msgstr "Ten ki cing"
-
-#: modules/gui/qt/ui/sout.h:212
 #, fuzzy
-msgid "Transcoding Options"
-msgstr "Yore me kano"
+#~ msgid "Select and choose transcoding options"
+#~ msgstr "Kit me gwoko ki niango"
 
-#: modules/gui/qt/ui/sout.h:213
+#~ msgid "Activate Transcoding"
+#~ msgstr "Mi cwalo obed makiti"
+
 #, fuzzy
-msgid "Select and choose transcoding options"
-msgstr "Kit me gwoko ki niango"
+#~ msgid "Option Setup"
+#~ msgstr "Kite me yero"
 
-#: modules/gui/qt/ui/sout.h:214
-msgid "Activate Transcoding"
-msgstr "Mi cwalo obed makiti"
-
-#: modules/gui/qt/ui/sout.h:215
 #, fuzzy
-msgid "Option Setup"
-msgstr "Kite me yero"
+#~ msgid "Set up any additional options for streaming"
+#~ msgstr "Yer mapol"
 
-#: modules/gui/qt/ui/sout.h:216
+#~ msgid "Miscellaneous Options"
+#~ msgstr "Kite me yero kwone mapol"
+
+#~ msgid "Stream all elementary streams"
+#~ msgstr "Cwal jami weng"
+
+#~ msgid "Generated stream output string"
+#~ msgstr "Coc maceto woko ma ginongo"
+
+#~ msgid "Output module:"
+#~ msgstr "Jami ceto woko:"
+
+#~ msgid "Use S/PDIF when available"
+#~ msgstr "Ti ki S/PDIF ka nonge"
+
+#~ msgid "Effects"
+#~ msgstr "Adwogi"
+
+#~ msgid "Visualization:"
+#~ msgstr "Neno:"
+
+#~ msgid "Enable Time-Stretching audio"
+#~ msgstr "Mi wer me caa mabor tii"
+
+#~ msgid "Replay gain mode:"
+#~ msgstr "Nwoo tuku:"
+
+#~ msgid "Normalize volume to:"
+#~ msgstr "Dwok dwone naka:"
+
+#~ msgid "Tracks"
+#~ msgstr "Wer"
+
+#~ msgid "Preferred audio language:"
+#~ msgstr "Leb me wer ma gimaro:"
+
+#~ msgid "Password:"
+#~ msgstr "Icwil me donyo:"
+
+#~ msgid "Username:"
+#~ msgstr "Nying pa latickede:"
+
+#~ msgid "Submit played tracks stats to Last.fm"
+#~ msgstr "Mii bot Last.fm wer magityeko tuku"
+
+#~ msgid "Codecs"
+#~ msgstr "Codecs"
+
+#~ msgid "Video quality post-processing level"
+#~ msgstr "Kan madong ber pa jami anena dong otunu iye"
+
+#~ msgid "Skip H.264 in-loop deblocking filter"
+#~ msgstr "Wek woko H.264 i-pye me yabo gikiyo"
+
+#~ msgid "Optical drive"
+#~ msgstr "Kawiro jami me anena"
+
+#~ msgid "Default optical device"
+#~ msgstr "Nyonyo ma yiko gineno"
+
+#~ msgid "Damaged or incomplete AVI file"
+#~ msgstr "AVI fail ma otyeko bale onyo pe otum "
+
+#~ msgid "HTTP proxy URL"
+#~ msgstr "URL matiyo ki HTTP"
+
+#~ msgid "HTTP (default)"
+#~ msgstr "HTTP (maka-ka gin mo mamite)"
+
+#~ msgid "RTP over RTSP (TCP)"
+#~ msgstr "RTP iwi RTSP (TCP)"
+
+#~ msgid "Live555 stream transport"
+#~ msgstr "Live555 giwot makubere akuba"
+
+#~ msgid "Default caching policy"
+#~ msgstr "Polici ma kwako mako maka-ka ginmo mamite"
+
+#~ msgid "Menus language:"
+#~ msgstr "Lacim me leb:"
+
+#~ msgid "Look and feel"
+#~ msgstr "Nen ite maro"
+
+#~ msgid "Use custom skin"
+#~ msgstr "Tii ki del kom mamegi"
+
+#~ msgid "This is VLC's default interface, with a native look and feel."
+#~ msgstr "Man kite me neno i VLC, ki kite kede maro meri"
+
+#~ msgid "Use native style"
+#~ msgstr "Tii ki cital ma gang"
+
+#~ msgid "Resize interface to video size"
+#~ msgstr "Lok caji me neno video"
+
+#~ msgid "Show controls in full screen mode"
+#~ msgstr "Nyut yiko iyi kaneno madit"
+
 #, fuzzy
-msgid "Set up any additional options for streaming"
-msgstr "Yer mapol"
+#~ msgid "Start in minimal view mode"
+#~ msgstr "Cak i neno maromrom(Labongo acaki)"
 
-#: modules/gui/qt/ui/sout.h:217
-msgid "Miscellaneous Options"
-msgstr "Kite me yero kwone mapol"
+#~ msgid "Force window style:"
+#~ msgstr "Dii kit me dirija:"
 
-#: modules/gui/qt/ui/sout.h:218
-msgid "Stream all elementary streams"
-msgstr "Cwal jami weng"
-
-#: modules/gui/qt/ui/sout.h:219
-msgid "Generated stream output string"
-msgstr "Coc maceto woko ma ginongo"
-
-#: modules/gui/qt/ui/sprefs_audio.h:412
-msgid " %"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_audio.h:415
-msgid "Output module:"
-msgstr "Jami ceto woko:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:418
-msgid "Use S/PDIF when available"
-msgstr "Ti ki S/PDIF ka nonge"
-
-#: modules/gui/qt/ui/sprefs_audio.h:420
-msgid "Effects"
-msgstr "Adwogi"
-
-#: modules/gui/qt/ui/sprefs_audio.h:421
-msgid "Visualization:"
-msgstr "Neno:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:422
-msgid "Enable Time-Stretching audio"
-msgstr "Mi wer me caa mabor tii"
-
-#: modules/gui/qt/ui/sprefs_audio.h:423
-msgid "Replay gain mode:"
-msgstr "Nwoo tuku:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:424
-msgid "Normalize volume to:"
-msgstr "Dwok dwone naka:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:425
-msgid "Tracks"
-msgstr "Wer"
-
-#: modules/gui/qt/ui/sprefs_audio.h:426
-msgid "Preferred audio language:"
-msgstr "Leb me wer ma gimaro:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:427
-msgid "Password:"
-msgstr "Icwil me donyo:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:428
-msgid "Username:"
-msgstr "Nying pa latickede:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:429
-msgid "Submit played tracks stats to Last.fm"
-msgstr "Mii bot Last.fm wer magityeko tuku"
-
-#: modules/gui/qt/ui/sprefs_input.h:357
-msgid "Codecs"
-msgstr "Codecs"
-
-#: modules/gui/qt/ui/sprefs_input.h:358
-msgid "x264 profile and level selection"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_input.h:359
-msgid "Hardware-accelerated decoding"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_input.h:360 modules/gui/qt/ui/sprefs_input.h:362
-msgid "Video quality post-processing level"
-msgstr "Kan madong ber pa jami anena dong otunu iye"
-
-#: modules/gui/qt/ui/sprefs_input.h:361
-msgid "Skip H.264 in-loop deblocking filter"
-msgstr "Wek woko H.264 i-pye me yabo gikiyo"
-
-#: modules/gui/qt/ui/sprefs_input.h:364
-msgid "Optical drive"
-msgstr "Kawiro jami me anena"
-
-#: modules/gui/qt/ui/sprefs_input.h:365
-msgid "Default optical device"
-msgstr "Nyonyo ma yiko gineno"
-
-#: modules/gui/qt/ui/sprefs_input.h:369
-msgid "Damaged or incomplete AVI file"
-msgstr "AVI fail ma otyeko bale onyo pe otum "
-
-#: modules/gui/qt/ui/sprefs_input.h:372
-msgid "HTTP proxy URL"
-msgstr "URL matiyo ki HTTP"
-
-#: modules/gui/qt/ui/sprefs_input.h:373
-msgid "HTTP (default)"
-msgstr "HTTP (maka-ka gin mo mamite)"
-
-#: modules/gui/qt/ui/sprefs_input.h:374
-msgid "RTP over RTSP (TCP)"
-msgstr "RTP iwi RTSP (TCP)"
-
-#: modules/gui/qt/ui/sprefs_input.h:375
-msgid "Live555 stream transport"
-msgstr "Live555 giwot makubere akuba"
-
-#: modules/gui/qt/ui/sprefs_input.h:376
-msgid "Default caching policy"
-msgstr "Polici ma kwako mako maka-ka ginmo mamite"
-
-#: modules/gui/qt/ui/sprefs_interface.h:531
-msgid "Menus language:"
-msgstr "Lacim me leb:"
-
-#: modules/gui/qt/ui/sprefs_interface.h:532
-msgid "Look and feel"
-msgstr "Nen ite maro"
-
-#: modules/gui/qt/ui/sprefs_interface.h:533
-msgid "Use custom skin"
-msgstr "Tii ki del kom mamegi"
-
-#: modules/gui/qt/ui/sprefs_interface.h:535
-msgid "This is VLC's default interface, with a native look and feel."
-msgstr "Man kite me neno i VLC, ki kite kede maro meri"
-
-#: modules/gui/qt/ui/sprefs_interface.h:537
-msgid "Use native style"
-msgstr "Tii ki cital ma gang"
-
-#: modules/gui/qt/ui/sprefs_interface.h:538
-msgid "Resize interface to video size"
-msgstr "Lok caji me neno video"
-
-#: modules/gui/qt/ui/sprefs_interface.h:539
-msgid "Show controls in full screen mode"
-msgstr "Nyut yiko iyi kaneno madit"
-
-#: modules/gui/qt/ui/sprefs_interface.h:540
-msgid "Pause playback when minimized"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_interface.h:541
-msgid "Show media change popup:"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_interface.h:542
 #, fuzzy
-msgid "Start in minimal view mode"
-msgstr "Cak i neno maromrom(Labongo acaki)"
+#~ msgid "Integrate video in interface"
+#~ msgstr "Kaneno me Mac OS X"
 
-#: modules/gui/qt/ui/sprefs_interface.h:543
-msgid "Force window style:"
-msgstr "Dii kit me dirija:"
+#~ msgid "Show systray icon"
+#~ msgstr "Nyut cal marac"
 
-#: modules/gui/qt/ui/sprefs_interface.h:544
+#~ msgid "Skin resource file:"
+#~ msgstr "Fail pi lok ikom neno:"
+
 #, fuzzy
-msgid "Integrate video in interface"
-msgstr "Kaneno me Mac OS X"
+#~ msgid "Playlist and Instances"
+#~ msgstr "Buk me wer"
 
-#: modules/gui/qt/ui/sprefs_interface.h:545
-msgid "Show systray icon"
-msgstr "Nyut cal marac"
+#~ msgid "Allow only one instance"
+#~ msgstr "Wek tyen acel keken"
 
-#: modules/gui/qt/ui/sprefs_interface.h:546
 #, fuzzy
-msgid "Auto raising the interface:"
-msgstr "Kaneno me Mac OS X"
+#~ msgid "Activate updates notifier"
+#~ msgstr "Ket kwenyoro pi tye a ngec manyen"
 
-#: modules/gui/qt/ui/sprefs_interface.h:547
-msgid "Skin resource file:"
-msgstr "Fail pi lok ikom neno:"
+#~ msgid "Save recently played items"
+#~ msgstr "Gwok wer ma ituko mukato"
 
-#: modules/gui/qt/ui/sprefs_interface.h:549
+#~ msgid "Separate words by | (without space)"
+#~ msgstr "Pok dul lok ki I (labongo kabedo)"
+
+#~ msgid "Set up associations..."
+#~ msgstr "Ter kube..."
+
+#~ msgid "Enable On Screen Display (OSD)"
+#~ msgstr "Mi (On Screen Display)OSD tii"
+
+#~ msgid "Show media title on video start"
+#~ msgstr "Nyut wi video"
+
 #, fuzzy
-msgid "Playlist and Instances"
-msgstr "Buk me wer"
+#~ msgid "Enable subtitles"
+#~ msgstr "Ket wie matino"
 
-#: modules/gui/qt/ui/sprefs_interface.h:552
-msgid "Pause on the last frame of a video"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_interface.h:555
-msgid "Allow only one instance"
-msgstr "Wek tyen acel keken"
-
-#: modules/gui/qt/ui/sprefs_interface.h:557
 #, fuzzy
-msgid "Activate updates notifier"
-msgstr "Ket kwenyoro pi tye a ngec manyen"
+#~ msgid "Subtitle Language"
+#~ msgstr "Wi wer Maditu"
 
-#: modules/gui/qt/ui/sprefs_interface.h:559
-msgid "Every "
-msgstr ""
+#~ msgid "Default encoding"
+#~ msgstr "Gonyo iyi kite majwi"
 
-#: modules/gui/qt/ui/sprefs_interface.h:560
-msgid "Save recently played items"
-msgstr "Gwok wer ma ituko mukato"
-
-#: modules/gui/qt/ui/sprefs_interface.h:563
-msgid "Separate words by | (without space)"
-msgstr "Pok dul lok ki I (labongo kabedo)"
-
-#: modules/gui/qt/ui/sprefs_interface.h:566
-msgid "Operating System Integration"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_interface.h:567
-msgid "File extensions association"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_interface.h:568
-msgid "Set up associations..."
-msgstr "Ter kube..."
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:291
-msgid "Enable On Screen Display (OSD)"
-msgstr "Mi (On Screen Display)OSD tii"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:292
-msgid "Show media title on video start"
-msgstr "Nyut wi video"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:294
 #, fuzzy
-msgid "Enable subtitles"
-msgstr "Ket wie matino"
+#~ msgid "Subtitle effects"
+#~ msgstr "Wie maditu"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:295
 #, fuzzy
-msgid "Subtitle Language"
-msgstr "Wi wer Maditu"
+#~ msgid "O&utput"
+#~ msgstr "Me woko"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:297
-msgid "Default encoding"
-msgstr "Gonyo iyi kite majwi"
+#~ msgid "DirectX"
+#~ msgstr "DirectX"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:298
+#~ msgid "Accelerated video output (Overlay)"
+#~ msgstr "Accelerated video output (Overlay)"
+
 #, fuzzy
-msgid "Subtitle effects"
-msgstr "Wie maditu"
+#~ msgid "KVA"
+#~ msgstr "MKV"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:304
-msgid "Add a shadow"
-msgstr ""
+#~ msgid "Force Aspect Ratio"
+#~ msgstr "Pimo Teko"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:306
-#: modules/gui/qt/ui/video_effects.h:1230
-#: modules/gui/qt/ui/video_effects.h:1234
-#: modules/gui/qt/ui/video_effects.h:1237
-#: modules/gui/qt/ui/video_effects.h:1238
-#: modules/gui/qt/ui/video_effects.h:1272
-#: modules/gui/qt/ui/video_effects.h:1274
-#: modules/gui/qt/ui/video_effects.h:1284
-#: modules/gui/qt/ui/video_effects.h:1285
-msgid " px"
-msgstr ""
+#~ msgid "vlc-snap"
+#~ msgstr "vlc-snap"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:307
-msgid "Add a background"
-msgstr ""
+#~ msgid "Stuff"
+#~ msgstr "Jami tic"
 
-#: modules/gui/qt/ui/sprefs_video.h:316
+#~ msgid "Edit settings"
+#~ msgstr "Yub tera"
+
+#~ msgid "Control"
+#~ msgstr "Yiko"
+
+#~ msgid "Run manually"
+#~ msgstr "Tii kede ki cingi"
+
+#~ msgid "Setup schedule"
+#~ msgstr "Caa me yiko"
+
+#~ msgid "Run on schedule"
+#~ msgstr "Tye kaceto malubu yik macon"
+
+#~ msgid "Status"
+#~ msgstr "Kan ma tye iye kombedi"
+
+#~ msgid "P/P"
+#~ msgstr "P/P"
+
+#~ msgid "Prev"
+#~ msgstr "Imalomalo"
+
+#~ msgid "Add Input"
+#~ msgstr "Med Jami magiketo"
+
+#~ msgid "Edit Input"
+#~ msgstr "Yiyiko Jami magiketo"
+
+#~ msgid "Clear List"
+#~ msgstr "Ruc nying jami "
+
 #, fuzzy
-msgid "O&utput"
-msgstr "Me woko"
+#~ msgid "Check for VLC updates"
+#~ msgstr "Rot pi &Ngec manyen..."
 
-#: modules/gui/qt/ui/sprefs_video.h:320
-msgid "DirectX"
-msgstr "DirectX"
+#~ msgid "Launching an update request..."
+#~ msgstr "Kelo kwac me ngec..."
 
-#: modules/gui/qt/ui/sprefs_video.h:322
-msgid "Accelerated video output (Overlay)"
-msgstr "Accelerated video output (Overlay)"
+#~ msgid ">HHHHHH;#"
+#~ msgstr ">HHHHHH;#"
 
-#: modules/gui/qt/ui/sprefs_video.h:323
 #, fuzzy
-msgid "KVA"
-msgstr "MKV"
+#~ msgid "Negate colors"
+#~ msgstr "Lok rangi"
 
-#: modules/gui/qt/ui/sprefs_video.h:329
-msgid "Force Aspect Ratio"
-msgstr "Pimo Teko"
-
-#: modules/gui/qt/ui/sprefs_video.h:334
-msgid "vlc-snap"
-msgstr "vlc-snap"
-
-#: modules/gui/qt/ui/streampanel.h:171
-msgid "Stuff"
-msgstr "Jami tic"
-
-#: modules/gui/qt/ui/streampanel.h:173
-msgid "Edit settings"
-msgstr "Yub tera"
-
-#: modules/gui/qt/ui/streampanel.h:174
-msgid "Control"
-msgstr "Yiko"
-
-#: modules/gui/qt/ui/streampanel.h:175
-msgid "Run manually"
-msgstr "Tii kede ki cingi"
-
-#: modules/gui/qt/ui/streampanel.h:176
-msgid "Setup schedule"
-msgstr "Caa me yiko"
-
-#: modules/gui/qt/ui/streampanel.h:177
-msgid "Run on schedule"
-msgstr "Tye kaceto malubu yik macon"
-
-#: modules/gui/qt/ui/streampanel.h:178
-msgid "Status"
-msgstr "Kan ma tye iye kombedi"
-
-#: modules/gui/qt/ui/streampanel.h:179
-msgid "P/P"
-msgstr "P/P"
-
-#: modules/gui/qt/ui/streampanel.h:182
-msgid "Prev"
-msgstr "Imalomalo"
-
-#: modules/gui/qt/ui/streampanel.h:183
-msgid "Add Input"
-msgstr "Med Jami magiketo"
-
-#: modules/gui/qt/ui/streampanel.h:184
-msgid "Edit Input"
-msgstr "Yiyiko Jami magiketo"
-
-#: modules/gui/qt/ui/streampanel.h:185
-msgid "Clear List"
-msgstr "Ruc nying jami "
-
-#: modules/gui/qt/ui/update.h:148
 #, fuzzy
-msgid "Check for VLC updates"
-msgstr "Rot pi &Ngec manyen..."
+#~ msgid "Colors"
+#~ msgstr "Rangi"
 
-#: modules/gui/qt/ui/update.h:149
-msgid "Launching an update request..."
-msgstr "Kelo kwac me ngec..."
+#~ msgid "Interactive Zoom"
+#~ msgstr "Dwoko ne kacel"
 
-#: modules/gui/qt/ui/update.h:150
-msgid "Do you want to download it?"
-msgstr ""
+#~ msgid "Angle"
+#~ msgstr "Lakinane "
 
-#: modules/gui/qt/ui/video_effects.h:1228
-msgid "Essential"
-msgstr ""
-
-#: modules/gui/qt/ui/video_effects.h:1242
-#: modules/gui/qt/ui/video_effects.h:1251
-msgid ">HHHHHH;#"
-msgstr ">HHHHHH;#"
-
-#: modules/gui/qt/ui/video_effects.h:1243
 #, fuzzy
-msgid "Negate colors"
-msgstr "Lok rangi"
+#~ msgid "..."
+#~ msgstr "Med..."
 
-#: modules/gui/qt/ui/video_effects.h:1256
+#~ msgid "Logo erase"
+#~ msgstr "Dunyo alama"
+
+#~ msgid "Mask"
+#~ msgstr "Lawum"
+
 #, fuzzy
-msgid "Colors"
-msgstr "Rangi"
+#~ msgid "Mirror"
+#~ msgstr "Bal"
 
-#: modules/gui/qt/ui/video_effects.h:1257
-msgid "Interactive Zoom"
-msgstr "Dwoko ne kacel"
+#~ msgid "Motion detect"
+#~ msgstr "Ngeyo mol ne"
 
-#: modules/gui/qt/ui/video_effects.h:1263
-msgid "Angle"
-msgstr "Lakinane "
-
-#: modules/gui/qt/ui/video_effects.h:1270
-#: modules/gui/qt/ui/video_effects.h:1287
 #, fuzzy
-msgid "..."
-msgstr "Med..."
+#~ msgid "Spatial blur"
+#~ msgstr "Gipoko"
 
-#: modules/gui/qt/ui/video_effects.h:1275
-msgid "full"
-msgstr ""
-
-#: modules/gui/qt/ui/video_effects.h:1277
-msgid "none"
-msgstr ""
-
-#: modules/gui/qt/ui/video_effects.h:1281
-msgid "Logo erase"
-msgstr "Dunyo alama"
-
-#: modules/gui/qt/ui/video_effects.h:1286
-msgid "Mask"
-msgstr "Lawum"
-
-#: modules/gui/qt/ui/video_effects.h:1289
-msgid "Anaglyph 3D"
-msgstr ""
-
-#: modules/gui/qt/ui/video_effects.h:1290
 #, fuzzy
-msgid "Mirror"
-msgstr "Bal"
+#~ msgid "Denoiser"
+#~ msgstr "Woo"
 
-#: modules/gui/qt/ui/video_effects.h:1294
-msgid "Motion detect"
-msgstr "Ngeyo mol ne"
-
-#: modules/gui/qt/ui/video_effects.h:1295
 #, fuzzy
-msgid "Spatial blur"
-msgstr "Gipoko"
+#~ msgid "Spatial luma strength"
+#~ msgstr "Gipoko"
 
-#: modules/gui/qt/ui/video_effects.h:1299
-msgid "Anti-Flickering"
-msgstr ""
-
-#: modules/gui/qt/ui/video_effects.h:1300
-msgid "Soften"
-msgstr ""
-
-#: modules/gui/qt/ui/video_effects.h:1301
 #, fuzzy
-msgid "Denoiser"
-msgstr "Woo"
+#~ msgid "Temporal luma strength"
+#~ msgstr "Gipoko"
 
-#: modules/gui/qt/ui/video_effects.h:1302
 #, fuzzy
-msgid "Spatial luma strength"
-msgstr "Gipoko"
+#~ msgid "Spatial chroma strength"
+#~ msgstr "Gipoko"
 
-#: modules/gui/qt/ui/video_effects.h:1303
 #, fuzzy
-msgid "Temporal luma strength"
-msgstr "Gipoko"
+#~ msgid "Temporal chroma strength"
+#~ msgstr "Gipoko"
 
-#: modules/gui/qt/ui/video_effects.h:1304
-#, fuzzy
-msgid "Spatial chroma strength"
-msgstr "Gipoko"
+#~ msgid "VLM configurator"
+#~ msgstr "Layik pa VLM "
 
-#: modules/gui/qt/ui/video_effects.h:1305
-#, fuzzy
-msgid "Temporal chroma strength"
-msgstr "Gipoko"
+#~ msgid "Media Manager Edition"
+#~ msgstr "Ma okato ibot adwong maloyo kakube"
 
-#: modules/gui/qt/ui/vlm.h:286
-msgid "VLM configurator"
-msgstr "Layik pa VLM "
+#~ msgid "Name:"
+#~ msgstr "Nying:"
 
-#: modules/gui/qt/ui/vlm.h:287
-msgid "Media Manager Edition"
-msgstr "Ma okato ibot adwong maloyo kakube"
+#~ msgid "Input:"
+#~ msgstr "Magitiyo kwede:"
 
-#: modules/gui/qt/ui/vlm.h:288
-msgid "Name:"
-msgstr "Nying:"
+#~ msgid "Select Input"
+#~ msgstr "Yer magibitic kwede"
 
-#: modules/gui/qt/ui/vlm.h:290
-msgid "Input:"
-msgstr "Magitiyo kwede:"
+#~ msgid "Output:"
+#~ msgstr "Maya ikom tic:"
 
-#: modules/gui/qt/ui/vlm.h:291
-msgid "Select Input"
-msgstr "Yer magibitic kwede"
+#~ msgid "Select Output"
+#~ msgstr "Yer maya ikom tic"
 
-#: modules/gui/qt/ui/vlm.h:292
-msgid "Output:"
-msgstr "Maya ikom tic:"
+#~ msgid "Time Control"
+#~ msgstr "Gwoko cawa"
 
-#: modules/gui/qt/ui/vlm.h:293
-msgid "Select Output"
-msgstr "Yer maya ikom tic"
+#~ msgid "Mux Control"
+#~ msgstr "Gwoko Ruruba"
 
-#: modules/gui/qt/ui/vlm.h:294
-msgid "Time Control"
-msgstr "Gwoko cawa"
+#~ msgid "Muxer:"
+#~ msgstr "Magwoko rurubane:"
 
-#: modules/gui/qt/ui/vlm.h:295
-msgid "Mux Control"
-msgstr "Gwoko Ruruba"
-
-#: modules/gui/qt/ui/vlm.h:296
-msgid "Muxer:"
-msgstr "Magwoko rurubane:"
-
-#: modules/gui/qt/ui/vlm.h:297
-msgid "AAAA; "
-msgstr ""
-
-#: modules/gui/qt/ui/vlm.h:302
-msgid "Media Manager List"
-msgstr "Nying Ludito lakub"
+#~ msgid "Media Manager List"
+#~ msgstr "Nying Ludito lakub"
 
 #, fuzzy
 #~ msgid "Screen capture (with Wayland)"

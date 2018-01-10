@@ -2,7 +2,7 @@
  * glwin32.c: Windows OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 07195e55c1783ad30035f16d6a94e3d93dac012f $
+ * $Id: 521270bad1d24beeace326844b156effc815aa69 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -52,7 +52,7 @@ vlc_module_begin()
     set_capability("vout display", 275)
     add_shortcut("glwin32", "opengl")
     set_callbacks(Open, Close)
-    add_glconv()
+    add_glopts()
 vlc_module_end()
 
 /*****************************************************************************

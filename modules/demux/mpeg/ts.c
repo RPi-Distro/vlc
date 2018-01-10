@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: bb355b8a06307e686931c04ab8c6d5d85d863e13 $
+ * $Id: e427059c923b6a95dd3958f762f9d325addad6ce $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -1079,7 +1079,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
             p_sys->b_default_selection = false;
         }
-        else
+        else if( !p_sys->b_default_selection )
         {
             ARRAY_RESET( p_sys->programs );
             p_sys->seltype = PROGRAM_AUTO_DEFAULT;

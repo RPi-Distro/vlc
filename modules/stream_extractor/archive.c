@@ -2,7 +2,7 @@
  * archive.c: libarchive based stream filter
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 4fdb3b13786192f4a4bcc87c5bd0ee9ea869f429 $
+ * $Id: 9396c34c3e645d3cd56e6a75d1ee932bc148435b $
  *
  * Authors: Filip Roséen <filip@atch.se>
  *
@@ -516,6 +516,10 @@ static int ReadDir( stream_directory_t* p_directory, input_item_node_t* p_node )
             continue;
 
         char const* path = archive_entry_pathname( entry );
+
+        if( unlikely( !path ) )
+            break;
+
         char*       mrl  = vlc_stream_extractor_CreateMRL( p_directory, path );
 
         if( unlikely( !mrl ) )
