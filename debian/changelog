@@ -1,7 +1,7 @@
 vlc (3.0.0~rc5-1) unstable; urgency=medium
 
   * New upstream release candidate.
-    - Fix crash in full-screen mode. (LP: #1738462)
+    - Fix crash in full-screen mode. (LP: #1740078)
   * debian/copyright: Update copyright years.
   * debian/patches: Removed, included upstream.
   - debian/control: Demote vlc-l10n from Depends to Recommends.
