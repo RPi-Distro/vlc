@@ -319,7 +319,9 @@ ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	# Install zsh completion
 	dh_install -pvlc-bin extras/analyser/_vlc usr/share/zsh/vendor-completions
 endif
-	$(if $(shell dpkg-vendor --is Ubuntu && echo true),dh_install -pvlc-bin debian/source_vlc.py usr/share/apport/package-hooks/)
+ifeq (Ubuntu,$(DEB_VENDOR))
+	dh_install -pvlc-bin debian/source_vlc.py usr/share/apport/package-hooks/
+endif
 	# Create empty directory for plugins.dat
 	mkdir -p debian/libvlc-bin/usr/lib/${DEB_HOST_MULTIARCH}/vlc/plugins
 
