@@ -4,7 +4,7 @@
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
  * Copyright (C) 2015 Steve Lhomme
- * $Id: 9b4f20cf7232a175972aa651de4bc7f4d7d588bf $
+ * $Id: f7ee9f75c8106ecc0fc87ac27b0065657add869d $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -311,6 +311,9 @@ int directx_va_Setup(vlc_va_t *va, directx_sys_t *dx_sys, const AVCodecContext *
         break;
     case AV_CODEC_ID_H264:
         surface_count += 16;
+        break;
+    case AV_CODEC_ID_VP9:
+        surface_count += 4;
         break;
     default:
         surface_count += 2;

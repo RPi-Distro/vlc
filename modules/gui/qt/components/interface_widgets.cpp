@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 98dfdebfbe1311ed52b8f4d6548e480bb05c6da0 $
+ * $Id: d035734f2ed7cc9dfa951c619e4480b17518af59 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -342,7 +342,14 @@ void VideoWidget::mouseMoveEvent( QMouseEvent *event )
 {
     if( p_window != NULL )
     {
-        vout_window_ReportMouseMoved( p_window, event->x(), event->y() );
+        QPointF current_pos = event->localPos();
+
+#if HAS_QT56
+        current_pos *= devicePixelRatioF();
+#else
+        current_pos *= devicePixelRatio();
+#endif
+        vout_window_ReportMouseMoved( p_window, current_pos.x(), current_pos.y() );
         event->accept();
     }
     else

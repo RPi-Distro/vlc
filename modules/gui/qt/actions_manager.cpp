@@ -2,7 +2,7 @@
  * actions_manager.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright © 2009-2014 VideoLAN and VLC authors
- * $Id: d6cbf11792fff44b748edafbb800ba697a0f601e $
+ * $Id: 98f42023ee32d585528c047c5e047fe7eb1d3900 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -255,7 +255,7 @@ void ActionsManager::renderer_event_item_added( vlc_renderer_discovery_t*,
 }
 
 void ActionsManager::renderer_event_item_removed(
-    vlc_renderer_discovery_t *p_rd, vlc_renderer_item_t *p_item )
+    vlc_renderer_discovery_t *, vlc_renderer_item_t *p_item )
 {
     foreach (QAction* action, VLCMenuBar::rendererMenu->actions())
     {
@@ -263,11 +263,6 @@ void ActionsManager::renderer_event_item_removed(
             continue;
         if (compareRenderers( action->data(), p_item ))
         {
-            if( action->isChecked() )
-            {
-                intf_thread_t* p_intf = reinterpret_cast<intf_thread_t*>( p_rd->owner.sys );
-                playlist_SetRenderer( THEPL, NULL );
-            }
             VLCMenuBar::rendererMenu->removeAction( action );
             VLCMenuBar::rendererGroup->removeAction( action );
             vlc_renderer_item_release( p_item );

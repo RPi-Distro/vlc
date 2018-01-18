@@ -2,7 +2,7 @@
  * dialogs.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f59ea71065e516bcc6886318cc332d217839d0d7 $
+ * $Id: 465e3102dc7af989d82ac296cb78c19c51c0502f $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -31,6 +31,7 @@
 #include "../commands/cmd_playtree.hpp"
 #include <vlc_playlist.h>
 #include <vlc_modules.h>
+#include <vlc_url.h>
 
 /// Callback called when a new skin is chosen
 void Dialogs::showChangeSkinCB( intf_dialog_args_t *pArg )
@@ -41,13 +42,18 @@ void Dialogs::showChangeSkinCB( intf_dialog_args_t *pArg )
     {
         if( pArg->psz_results[0] )
         {
-            // Create a change skin command
-            CmdChangeSkin *pCmd =
-                new CmdChangeSkin( pIntf, pArg->psz_results[0] );
+            char* psz_path = vlc_uri2path( pArg->psz_results[0] );
+            if( psz_path )
+            {
+                // Create a change skin command
+                CmdChangeSkin *pCmd =
+                    new CmdChangeSkin( pIntf, psz_path );
+                free( psz_path );
 
-            // Push the command in the asynchronous command queue
-            AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
-            pQueue->push( CmdGenericPtr( pCmd ) );
+                // Push the command in the asynchronous command queue
+                AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
+                pQueue->push( CmdGenericPtr( pCmd ) );
+	    }
         }
     }
     else if( !pIntf->p_sys->p_theme )

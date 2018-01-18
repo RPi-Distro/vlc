@@ -2,7 +2,7 @@
  * vout_manager.cpp
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 5b3c6af780baa45964dca3389b95b893e23c0b5e $
+ * $Id: 442c9b265e34b6db428f330cfd16f5c0a0c67d89 $
  *
  * Authors: Erwan Tulou <brezhoneg1 at yahoo.fr>
  *
@@ -294,6 +294,17 @@ void VoutManager::setFullscreenWnd( vout_window_t *pWnd, bool b_fullscreen )
 
     // set fullscreen
     VlcProc::instance( getIntf() )->setFullscreenVar( b_fullscreen );
+}
+
+
+void VoutManager::hideMouseWnd( vout_window_t *pWnd, bool hide )
+{
+    msg_Dbg( pWnd, "hide mouse (%i) received from vout thread", hide );
+    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
+    if( hide )
+        pOsFactory->changeCursor( OSFactory::kNoCursor );
+    else
+        pOsFactory->changeCursor( OSFactory::kDefaultArrow );
 }
 
 

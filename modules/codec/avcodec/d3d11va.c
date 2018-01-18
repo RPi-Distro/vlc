@@ -531,13 +531,13 @@ static bool CanUseIntelHEVC(vlc_va_t *va)
 {
     vlc_va_sys_t *sys = va->sys;
     /* it should be OK starting after driver 20.19.15.4835 */
-    struct wdmm_version WDMM = {
+    struct wddm_version WDMM = {
         .wddm         = 20,
         .d3d_features = 19,
         .revision     = 15,
         .build        = 4836,
     };
-    if (D3D11CheckDriverVersion(sys->d3d_dev.d3ddevice, GPU_MANUFACTURER_INTEL, &WDMM) == VLC_SUCCESS)
+    if (D3D11CheckDriverVersion(&sys->d3d_dev, GPU_MANUFACTURER_INTEL, &WDMM) == VLC_SUCCESS)
         return true;
 
     msg_Dbg(va, "HEVC not supported with these drivers");

@@ -2,7 +2,7 @@
  * mp4.c: mp4/mov muxer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003, 2006 VLC authors and VideoLAN
- * $Id: b3393c7afd50b40dfe242c1d0cc9b48da596a537 $
+ * $Id: 2daeceeba5cea5de6d51955a5bb22273125f6262 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin at videolan dot org>
@@ -356,8 +356,7 @@ cleanup:
         mp4mux_trackinfo_Clear(&p_stream->mux);
         free(p_stream);
     }
-    if (p_sys->i_nb_streams)
-        free(p_sys->pp_streams);
+    TAB_CLEAN(p_sys->i_nb_streams, p_sys->pp_streams);
     free(p_sys);
 }
 
@@ -1336,7 +1335,11 @@ static void CleanupFrag(sout_mux_sys_t *p_sys)
             p_stream->towrite.p_first = p_next;
         }
         free(p_stream->p_indexentries);
+
+        mp4mux_trackinfo_Clear(&p_stream->mux);
+        free(p_stream);
     }
+    TAB_CLEAN(p_sys->i_nb_streams, p_sys->pp_streams);
     free(p_sys);
 }
 

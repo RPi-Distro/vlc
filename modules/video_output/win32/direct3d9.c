@@ -2,7 +2,7 @@
  * direct3d9.c: Windows Direct3D9 video output module
  *****************************************************************************
  * Copyright (C) 2006-2014 VLC authors and VideoLAN
- *$Id: 4dbcbaadbd8fc1e00c9a0f7b0da0c02029a0c32e $
+ *$Id: 71b517a59d1a70acc5863276aefe15ffdd7b00e1 $
  *
  * Authors: Martell Malone <martellmalone@gmail.com>,
  *          Damien Fouilleul <damienf@videolan.org>,
@@ -429,6 +429,7 @@ static picture_pool_t *Direct3D9CreatePicturePool(vlc_object_t *o,
         picture_sys_t *picsys = malloc(sizeof(*picsys));
         if (unlikely(picsys == NULL))
             goto error;
+        memset(picsys, 0, sizeof(*picsys));
 
         HRESULT hr = IDirect3DDevice9_CreateOffscreenPlainSurface(p_d3d9_dev->dev,
                                                           fmt->i_width,
@@ -503,17 +504,26 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
     else if (picture->context)
     {
         const struct va_pic_context *pic_ctx = (struct va_pic_context*)picture->context;
-        if (pic_ctx->picsys.surface != picture->p_sys->surface)
+        if (pic_ctx->picsys.surface != surface)
         {
-            HRESULT hr;
-            RECT visibleSource;
-            visibleSource.left = 0;
-            visibleSource.top = 0;
-            visibleSource.right = picture->format.i_visible_width;
-            visibleSource.bottom = picture->format.i_visible_height;
-            hr = IDirect3DDevice9_StretchRect( p_d3d9_dev->dev, pic_ctx->picsys.surface, &visibleSource, surface, &visibleSource, D3DTEXF_NONE);
-            if (FAILED(hr)) {
-                msg_Err(vd, "Failed to copy the hw surface to the decoder surface (hr=0x%0lx)", hr );
+            D3DSURFACE_DESC srcDesc, dstDesc;
+            IDirect3DSurface9_GetDesc(pic_ctx->picsys.surface, &srcDesc);
+            IDirect3DSurface9_GetDesc(surface, &dstDesc);
+            if ( srcDesc.Width == dstDesc.Width && srcDesc.Height == dstDesc.Height )
+                surface = pic_ctx->picsys.surface;
+            else
+            {
+                HRESULT hr;
+                RECT visibleSource;
+                visibleSource.left = 0;
+                visibleSource.top = 0;
+                visibleSource.right = picture->format.i_visible_width;
+                visibleSource.bottom = picture->format.i_visible_height;
+
+                hr = IDirect3DDevice9_StretchRect( p_d3d9_dev->dev, pic_ctx->picsys.surface, &visibleSource, surface, &visibleSource, D3DTEXF_NONE);
+                if (FAILED(hr)) {
+                    msg_Err(vd, "Failed to copy the hw surface to the decoder surface (hr=0x%0lx)", hr );
+                }
             }
         }
     }

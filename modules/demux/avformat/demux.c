@@ -2,7 +2,7 @@
  * demux.c: demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: a1aea549cd84fbd956d9d1cd7a51a77e1714e2f7 $
+ * $Id: 30d97434f08fc87ab3106a9f3ceb50f32d20844f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -501,8 +501,7 @@ int avformat_OpenDemux( vlc_object_t *p_this )
                     free( psz_buf );
                 }
             }
-            else if( !strcmp( p_sys->ic->iformat->name, "wtv" ) &&
-                     cp->codec_id == AV_CODEC_ID_DVB_SUBTITLE &&
+            else if( cp->codec_id == AV_CODEC_ID_DVB_SUBTITLE &&
                      cp->extradata_size > 3 )
             {
                 es_fmt.subs.dvb.i_id = GetWBE( cp->extradata ) |
@@ -766,8 +765,7 @@ static int Demux( demux_t *p_demux )
             return 1;
         }
     }
-    else if( !strcmp( p_sys->fmt->name, "wtv" ) &&
-             p_stream->codecpar->codec_id == AV_CODEC_ID_DVB_SUBTITLE )
+    else if( p_stream->codecpar->codec_id == AV_CODEC_ID_DVB_SUBTITLE )
     {
         if( ( p_frame = block_Alloc( pkt.size + 3 ) ) == NULL )
         {

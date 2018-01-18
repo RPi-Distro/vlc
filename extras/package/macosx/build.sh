@@ -94,6 +94,10 @@ do
          b)
              BREAKPAD=$OPTARG
          ;;
+         *)
+             usage
+             exit 1
+         ;;
      esac
 done
 shift $(($OPTIND - 1))
@@ -173,6 +177,7 @@ spushd "${vlcroot}/extras/tools"
 ./bootstrap > $out
 if [ "$REBUILD" = "yes" ]; then
     make clean
+    ./bootstrap > $out
 fi
 make > $out
 spopd
@@ -280,13 +285,15 @@ make VLC.app
 if [ "$PACKAGETYPE" = "u" ]; then
     info "Copying app with debug symbols into VLC-debug.app and stripping"
     rm -rf VLC-debug.app
-    cp -R VLC.app VLC-debug.app
+    cp -Rp VLC.app VLC-debug.app
 
-    find VLC.app/ -name "*.dylib" -exec strip -u -r {} \;
-    find VLC.app/ -type f -name "VLC" -exec strip -u -r {} \;
-    find VLC.app/ -type f -name "Sparkle" -exec strip -u -r {} \;
-    find VLC.app/ -type f -name "Growl" -exec strip -u -r {} \;
-    find VLC.app/ -type f -name "Breakpad" -exec strip -u -r {} \;
+    find VLC.app/ -name "*.dylib" -exec strip -x {} \;
+    find VLC.app/ -type f -name "VLC" -exec strip -x {} \;
+    find VLC.app/ -type f -name "Sparkle" -exec strip -x {} \;
+    find VLC.app/ -type f -name "Growl" -exec strip -x {} \;
+    find VLC.app/ -type f -name "Breakpad" -exec strip -x {} \;
+
+    bin/vlc-cache-gen VLC.app/Contents/MacOS/plugins
 
     info "Building VLC release archive"
     make package-macosx-release

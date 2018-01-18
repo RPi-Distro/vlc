@@ -2,7 +2,7 @@
  * skin_main.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cc93d603ce26df41a34a5aa63ef6923ac7ea1973 $
+ * $Id: 69bbf0fd441646f98358134a78ce2c52033b7dab $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -468,6 +468,16 @@ static int WindowControl( vout_window_t *pWnd, int query, va_list args )
             // Post a SetOnTop command
             CmdSetOnTop* pCmd =
                 new CmdSetOnTop( pIntf, on_top );
+            pQueue->push( CmdGenericPtr( pCmd ) );
+            return VLC_SUCCESS;
+        }
+
+        case VOUT_WINDOW_HIDE_MOUSE:
+        {
+            bool hide = va_arg( args, int );
+            // Post a HideMouse command
+            CmdHideMouse* pCmd =
+                new CmdHideMouse( pIntf, pWnd, hide );
             pQueue->push( CmdGenericPtr( pCmd ) );
             return VLC_SUCCESS;
         }

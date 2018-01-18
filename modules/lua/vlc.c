@@ -2,7 +2,7 @@
  * vlc.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 73c92d26b67b64f22920da167dd0447e7ccd52fb $
+ * $Id: 103d8eb621214b18fb9a02d99ea9ce2485e90482 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -197,36 +197,44 @@ static int file_compare( const char **a, const char **b )
     return strcmp( *a, *b );
 }
 
-int vlclua_dir_list( const char *luadirname, char ***pppsz_dir_list )
+static char **vlclua_dir_list_append( char **restrict list, char *basedir,
+                                      const char *luadirname )
 {
-#define MAX_DIR_LIST_SIZE 5
-    *pppsz_dir_list = malloc(MAX_DIR_LIST_SIZE*sizeof(char *));
-    if (!*pppsz_dir_list)
+    if (unlikely(basedir == NULL))
+        return list;
+
+    if (likely(asprintf(list, "%s"DIR_SEP"lua"DIR_SEP"%s",
+                        basedir, luadirname) != -1))
+        list++;
+
+    free(basedir);
+    return list;
+}
+
+int vlclua_dir_list(const char *luadirname, char ***restrict listp)
+{
+    char **list = malloc(4 * sizeof(char *));
+    if (unlikely(list == NULL))
         return VLC_EGENERIC;
-    char **ppsz_dir_list = *pppsz_dir_list;
 
-    int i = 0;
-    char *datadir = config_GetUserDir( VLC_DATA_DIR );
+    *listp = list;
 
-    if( likely(datadir != NULL)
-     && likely(asprintf( &ppsz_dir_list[i], "%s"DIR_SEP"lua"DIR_SEP"%s",
-                         datadir, luadirname ) != -1) )
-        i++;
-    free( datadir );
+    /* Lua scripts in user-specific data directory */
+    list = vlclua_dir_list_append(list, config_GetUserDir(VLC_DATA_DIR),
+                                  luadirname);
 
-    char *psz_datapath = config_GetDataDir();
-    if( likely(psz_datapath != NULL) )
-    {
-        if( likely(asprintf( &ppsz_dir_list[i], "%s"DIR_SEP"lua"DIR_SEP"%s",
-                              psz_datapath, luadirname ) != -1) )
-            i++;
-        free( psz_datapath );
-    }
+    char *libdir = config_GetLibDir();
+    char *datadir = config_GetDataDir();
+    bool both = libdir != NULL && datadir != NULL && strcmp(libdir, datadir);
 
-    ppsz_dir_list[i] = NULL;
+    /* Tokenized Lua scripts in architecture-specific data directory */
+    list = vlclua_dir_list_append(list, libdir, luadirname);
 
-    assert( i < MAX_DIR_LIST_SIZE);
+    /* Source Lua Scripts in architecture-independent data directory */
+    if (both || libdir == NULL)
+        list = vlclua_dir_list_append(list, datadir, luadirname);
 
+    *list = NULL;
     return VLC_SUCCESS;
 }
 

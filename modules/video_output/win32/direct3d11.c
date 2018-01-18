@@ -1973,13 +1973,13 @@ static bool CanUseTextureArray(vout_display_t *vd)
     (void) vd;
     return false;
 #else
-    struct wdmm_version WDDM = {
+    struct wddm_version WDDM = {
         .wddm         = 22,
         .d3d_features = 19,
         .revision     = 162,
         .build        = 0,
     };
-    if (D3D11CheckDriverVersion(vd->sys->d3d_dev.d3ddevice, GPU_MANUFACTURER_AMD, &WDDM) == VLC_SUCCESS)
+    if (D3D11CheckDriverVersion(&vd->sys->d3d_dev, GPU_MANUFACTURER_AMD, &WDDM) == VLC_SUCCESS)
         return true;
 
     msg_Dbg(vd, "fallback to legacy shader mode for old AMD drivers");

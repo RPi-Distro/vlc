@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: b80f8867d7dd9be6730c8e9ca926dd5a0b349382 $
+ * $Id: c9219b74c54e5dcfe9013fa01f6ec35734b584d7 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -326,7 +326,8 @@ static input_thread_t *Create( vlc_object_t *p_parent, input_item_t *p_item,
     priv->attachment_demux = NULL;
     priv->p_sout   = NULL;
     priv->b_out_pace_control = false;
-    priv->p_renderer = p_renderer ? vlc_renderer_item_hold( p_renderer ) : NULL;
+    priv->p_renderer = p_renderer && b_preparsing == false ?
+                vlc_renderer_item_hold( p_renderer ) : NULL;
 
     priv->viewpoint_changed = false;
     /* Fetch the viewpoint from the mediaplayer or the playlist if any */
