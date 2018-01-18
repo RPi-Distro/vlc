@@ -2,6 +2,10 @@
 set -e
 
 run_vlc_cache_gen() {
+    if ! test -d /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins
+    then
+        return
+    fi
     files=`find /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins -name '*.so' -type f -print -quit`
     if test -n "$files"
     then
