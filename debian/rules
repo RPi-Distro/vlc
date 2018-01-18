@@ -311,8 +311,6 @@ override_dh_install:
 	find debian/tmp -name LICENSE -delete
 	# Remove examples installed in -dev packages
 	rm -rf debian/tmp/usr/share/doc/vlc/libvlc
-	# Remove MacOS X resources
-	rm -rf debian/tmp/usr/share/macosx
 	# Install
 	dh_install
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
