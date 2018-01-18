@@ -1,4 +1,4 @@
-vlc (3.0.0~rc6-1) UNRELEASED; urgency=medium
+vlc (3.0.0~rc6-1) unstable; urgency=medium
 
   [ Helmut Grohne ]
   * debian/control: Annotate Build-Depends: python3 with :native. (Closes:
@@ -6,9 +6,14 @@ vlc (3.0.0~rc6-1) UNRELEASED; urgency=medium
 
   [ Sebastian Ramacher ]
   * New upstream release candidate.
-  * debian/rules: Handle vendor consistently.
+  * debian/rules:
+    - Handle vendor consistently.
+    - Remove workaround for some resources.
+  * debian/vlc-plugin-base.install: Install lua byte code.
+  * debian/libvlc-bin.postinst.in: Exit early if plugins directory does not
+    exist. (Closes: #887621)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Tue, 16 Jan 2018 15:35:52 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 18 Jan 2018 22:31:56 +0100
 
 vlc (3.0.0~rc5-1) unstable; urgency=medium
 
