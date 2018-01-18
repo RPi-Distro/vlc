@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2015 VLC authors and VideoLAN
- * $Id: 943d4c6112fe510feb94f7efa56b549a00df46de $
+ * $Id: 53c94d1dcc216b868b1be573438a314ab7555f7d $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -464,7 +464,7 @@ int ConvertToLiveSize( filter_t *p_filter, const text_style_t *p_style )
     }
     else if ( p_style->f_font_relsize )
     {
-        i_font_size = (int) p_filter->fmt_out.video.i_height * p_style->f_font_relsize;
+        i_font_size = (int) p_filter->fmt_out.video.i_height * p_style->f_font_relsize / 100;
     }
 
     if( p_sys->i_scale != 100 )

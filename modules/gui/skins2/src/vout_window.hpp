@@ -2,7 +2,7 @@
  * vout_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ada04473384d0f7deaf50c9765a88992631e9ca6 $
+ * $Id: ef971ae7d502fb7f406e38868f6c51b68fbf9548 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -56,6 +56,8 @@ public:
 
     /// hotkeys processing
     virtual void processEvent( EvtKey &rEvtKey );
+    virtual void processEvent( EvtMotion &rEvtMotion );
+    virtual void processEvent( EvtMouse &rEvtMouse );
 
     /// set and get Video Control for VoutWindow
     virtual void setCtrlVideo( CtrlVideo* pCtrlVideo );

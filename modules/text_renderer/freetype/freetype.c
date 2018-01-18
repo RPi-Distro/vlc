@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2015 VLC authors and VideoLAN
- * $Id: b7e4823e38f8a236f9cf3a06934c930f019cd7a0 $
+ * $Id: 2595ef3872ae89c8894c632f33f7aeec031dd331 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -996,7 +996,7 @@ static void FillDefaultStyles( filter_t *p_filter )
     p_sys->p_forced_style->i_font_size = var_InheritInteger( p_filter, "freetype-fontsize" );
     p_sys->p_forced_style->f_font_relsize = var_InheritInteger( p_filter, "freetype-rel-fontsize" );
     if( p_sys->p_forced_style->f_font_relsize )
-        p_sys->p_forced_style->f_font_relsize = 1.0 / p_sys->p_forced_style->f_font_relsize;
+        p_sys->p_forced_style->f_font_relsize = 100.0 / p_sys->p_forced_style->f_font_relsize;
 
     if( var_InheritBool( p_filter, "freetype-bold" ) )
     {

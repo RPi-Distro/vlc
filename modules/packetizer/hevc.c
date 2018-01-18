@@ -2,7 +2,7 @@
  * hevc.c: h.265/hevc video packetizer
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: 83c782a856dc975e41ee688e7d39e6cc816d61ed $
+ * $Id: 7f8c9303171d7d68fa79b7fe5adffeec04f3ac39 $
  *
  * Authors: Denis Charmet <typx@videolan.org>
  *
@@ -85,9 +85,15 @@ struct decoder_sys_t
     } frame, pre, post;
 
     uint8_t  i_nal_length_size;
-    hevc_video_parameter_set_t    *rgi_p_decvps[HEVC_VPS_ID_MAX + 1];
-    hevc_sequence_parameter_set_t *rgi_p_decsps[HEVC_SPS_ID_MAX + 1];
-    hevc_picture_parameter_set_t  *rgi_p_decpps[HEVC_PPS_ID_MAX + 1];
+
+    struct
+    {
+        block_t *p_nal;
+        void *p_decoded;
+    } rg_vps[HEVC_VPS_ID_MAX + 1],
+      rg_sps[HEVC_SPS_ID_MAX + 1],
+      rg_pps[HEVC_PPS_ID_MAX + 1];
+
     const hevc_video_parameter_set_t    *p_active_vps;
     const hevc_sequence_parameter_set_t *p_active_sps;
     const hevc_picture_parameter_set_t  *p_active_pps;
@@ -253,20 +259,26 @@ static void Close(vlc_object_t *p_this)
 
     for(unsigned i=0;i<=HEVC_PPS_ID_MAX; i++)
     {
-        if(p_sys->rgi_p_decpps[i])
-            hevc_rbsp_release_pps(p_sys->rgi_p_decpps[i]);
+        if(p_sys->rg_pps[i].p_decoded)
+            hevc_rbsp_release_pps(p_sys->rg_pps[i].p_decoded);
+        if(p_sys->rg_pps[i].p_nal)
+            block_Release(p_sys->rg_pps[i].p_nal);
     }
 
     for(unsigned i=0;i<=HEVC_SPS_ID_MAX; i++)
     {
-        if(p_sys->rgi_p_decsps[i])
-            hevc_rbsp_release_sps(p_sys->rgi_p_decsps[i]);
+        if(p_sys->rg_sps[i].p_decoded)
+            hevc_rbsp_release_sps(p_sys->rg_sps[i].p_decoded);
+        if(p_sys->rg_sps[i].p_nal)
+            block_Release(p_sys->rg_sps[i].p_nal);
     }
 
     for(unsigned i=0;i<=HEVC_VPS_ID_MAX; i++)
     {
-        if(p_sys->rgi_p_decvps[i])
-            hevc_rbsp_release_vps(p_sys->rgi_p_decvps[i]);
+        if(p_sys->rg_vps[i].p_decoded)
+            hevc_rbsp_release_vps(p_sys->rg_vps[i].p_decoded);
+        if(p_sys->rg_vps[i].p_nal)
+            block_Release(p_sys->rg_vps[i].p_nal);
     }
 
     hevc_release_sei_pic_timing( p_sys->p_timing );
@@ -332,56 +344,56 @@ static bool InsertXPS(decoder_t *p_dec, uint8_t i_nal_type, uint8_t i_id,
                       const block_t *p_nalb)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    bool b_active = false;
+    void **pp_decoded;
+    block_t **pp_nal;
 
     switch(i_nal_type)
     {
         case HEVC_NAL_VPS:
             if(i_id > HEVC_VPS_ID_MAX)
                 return false;
+            pp_decoded = &p_sys->rg_vps[i_id].p_decoded;
+            pp_nal = &p_sys->rg_vps[i_id].p_nal;
             break;
         case HEVC_NAL_SPS:
             if(i_id > HEVC_SPS_ID_MAX)
                 return false;
+            pp_decoded = &p_sys->rg_sps[i_id].p_decoded;
+            pp_nal = &p_sys->rg_sps[i_id].p_nal;
             break;
         case HEVC_NAL_PPS:
             if(i_id > HEVC_PPS_ID_MAX)
                 return false;
+            pp_decoded = &p_sys->rg_pps[i_id].p_decoded;
+            pp_nal = &p_sys->rg_pps[i_id].p_nal;
             break;
         default:
             return false;
     }
 
     /* Free associated decoded version */
-    if(i_nal_type == HEVC_NAL_SPS && p_sys->rgi_p_decsps[i_id])
+    if(*pp_decoded)
     {
-        hevc_rbsp_release_sps(p_sys->rgi_p_decsps[i_id]);
-        if(p_sys->p_active_sps == p_sys->rgi_p_decsps[i_id])
+        switch(i_nal_type)
         {
-           p_sys->p_active_sps = NULL;
-           b_active = true;
+            case HEVC_NAL_VPS:
+                hevc_rbsp_release_vps(*pp_decoded);
+                break;
+            case HEVC_NAL_SPS:
+                hevc_rbsp_release_sps(*pp_decoded);
+                break;
+            case HEVC_NAL_PPS:
+                hevc_rbsp_release_pps(*pp_decoded);
+                break;
         }
-        p_sys->rgi_p_decsps[i_id] = NULL;
+        *pp_decoded = NULL;
     }
-    else if(i_nal_type == HEVC_NAL_PPS && p_sys->rgi_p_decpps[i_id])
+
+    /* Free raw stored version */
+    if(*pp_nal)
     {
-        hevc_rbsp_release_pps(p_sys->rgi_p_decpps[i_id]);
-        if(p_sys->p_active_pps == p_sys->rgi_p_decpps[i_id])
-        {
-            p_sys->p_active_pps = NULL;
-            b_active = true;
-        }
-        p_sys->rgi_p_decpps[i_id] = NULL;
-    }
-    else if(i_nal_type == HEVC_NAL_VPS && p_sys->rgi_p_decvps[i_id])
-    {
-        hevc_rbsp_release_vps(p_sys->rgi_p_decvps[i_id]);
-        if(p_sys->p_active_vps == p_sys->rgi_p_decvps[i_id])
-        {
-           p_sys->p_active_vps = NULL;
-           b_active = true;
-        }
-        p_sys->rgi_p_decvps[i_id] = NULL;
+        block_Release(*pp_nal);
+        *pp_nal = NULL;
     }
 
     const uint8_t *p_buffer = p_nalb->p_buffer;
@@ -389,41 +401,37 @@ static bool InsertXPS(decoder_t *p_dec, uint8_t i_nal_type, uint8_t i_id,
     if( hxxx_strip_AnnexB_startcode( &p_buffer, &i_buffer ) )
     {
         /* Create decoded entries */
-        if(i_nal_type == HEVC_NAL_SPS)
+        switch(i_nal_type)
         {
-            p_sys->rgi_p_decsps[i_id] = hevc_decode_sps(p_buffer, i_buffer, true);
-            if(!p_sys->rgi_p_decsps[i_id])
-            {
-                msg_Err(p_dec, "Failed decoding SPS id %d", i_id);
-                return false;
-            }
-            if(b_active)
-                p_sys->p_active_sps = p_sys->rgi_p_decsps[i_id];
+            case HEVC_NAL_SPS:
+                *pp_decoded = hevc_decode_sps(p_buffer, i_buffer, true);
+                if(!*pp_decoded)
+                {
+                    msg_Err(p_dec, "Failed decoding SPS id %d", i_id);
+                    return false;
+                }
+                break;
+            case HEVC_NAL_PPS:
+                *pp_decoded = hevc_decode_pps(p_buffer, i_buffer, true);
+                if(!*pp_decoded)
+                {
+                    msg_Err(p_dec, "Failed decoding PPS id %d", i_id);
+                    return false;
+                }
+                break;
+            case HEVC_NAL_VPS:
+                *pp_decoded = hevc_decode_vps(p_buffer, i_buffer, true);
+                if(!*pp_decoded)
+                {
+                    msg_Err(p_dec, "Failed decoding VPS id %d", i_id);
+                    return false;
+                }
+                break;
         }
-        else if(i_nal_type == HEVC_NAL_PPS)
-        {
-            p_sys->rgi_p_decpps[i_id] = hevc_decode_pps(p_buffer, i_buffer, true);
-            if(!p_sys->rgi_p_decpps[i_id])
-            {
-                msg_Err(p_dec, "Failed decoding PPS id %d", i_id);
-                return false;
-            }
-            if(b_active)
-                p_sys->p_active_pps = p_sys->rgi_p_decpps[i_id];
-        }
-        else if(i_nal_type == HEVC_NAL_VPS)
-        {
-            p_sys->rgi_p_decvps[i_id] = hevc_decode_vps(p_buffer, i_buffer, true);
-            if(!p_sys->rgi_p_decvps[i_id])
-            {
-                msg_Err(p_dec, "Failed decoding VPS id %d", i_id);
-                return false;
-            }
-            if(b_active)
-                p_sys->p_active_vps = p_sys->rgi_p_decvps[i_id];
-        }
-        return true;
 
+        *pp_nal = block_Duplicate((block_t *)p_nalb);
+
+        return true;
     }
 
     return false;
@@ -433,20 +441,71 @@ static bool XPSReady(decoder_sys_t *p_sys)
 {
     for(unsigned i=0;i<=HEVC_PPS_ID_MAX; i++)
     {
-        const hevc_picture_parameter_set_t *p_pps = p_sys->rgi_p_decpps[i];
+        const hevc_picture_parameter_set_t *p_pps = p_sys->rg_pps[i].p_decoded;
         if (p_pps)
         {
             uint8_t id_sps = hevc_get_pps_sps_id(p_pps);
-            const hevc_sequence_parameter_set_t *p_sps = p_sys->rgi_p_decsps[id_sps];
+            const hevc_sequence_parameter_set_t *p_sps = p_sys->rg_sps[id_sps].p_decoded;
             if(p_sps)
             {
                 uint8_t id_vps = hevc_get_sps_vps_id(p_sps);
-                if(p_sys->rgi_p_decvps[id_vps])
+                if(p_sys->rg_vps[id_vps].p_decoded)
                     return true;
             }
         }
     }
     return false;
+}
+
+static void AppendAsAnnexB(const block_t *p_block,
+                           uint8_t **pp_dst, size_t *pi_dst)
+{
+    if(SIZE_MAX - p_block->i_buffer < *pi_dst )
+        return;
+
+    size_t i_realloc = p_block->i_buffer + *pi_dst;
+    uint8_t *p_realloc = realloc(*pp_dst, i_realloc);
+    if(p_realloc)
+    {
+        memcpy(&p_realloc[*pi_dst], p_block->p_buffer, p_block->i_buffer);
+        *pi_dst = i_realloc;
+        *pp_dst = p_realloc;
+    }
+}
+
+#define APPENDIF(idmax, set, rg, b) \
+    for(size_t i=0; i<=idmax; i++)\
+    {\
+        if(((set != rg[i].p_decoded) == !b) && rg[i].p_nal)\
+        {\
+            AppendAsAnnexB(rg[i].p_nal, &p_data, &i_data);\
+            break;\
+        }\
+    }
+
+static void SetsToAnnexB(decoder_sys_t *p_sys,
+                         const hevc_picture_parameter_set_t *p_pps,
+                         const hevc_sequence_parameter_set_t *p_sps,
+                         const hevc_video_parameter_set_t *p_vps,
+                         uint8_t **pp_out, int *pi_out)
+{
+    uint8_t *p_data = NULL;
+    size_t i_data = 0;
+
+    APPENDIF(HEVC_VPS_ID_MAX, p_vps, p_sys->rg_vps, true);
+    APPENDIF(HEVC_VPS_ID_MAX, p_vps, p_sys->rg_vps, false);
+    APPENDIF(HEVC_SPS_ID_MAX, p_sps, p_sys->rg_sps, true);
+    APPENDIF(HEVC_SPS_ID_MAX, p_sps, p_sys->rg_sps, false);
+    APPENDIF(HEVC_PPS_ID_MAX, p_pps, p_sys->rg_pps, true);
+    APPENDIF(HEVC_PPS_ID_MAX, p_pps, p_sys->rg_pps, false);
+
+    /* because we copy to i_extra :/ */
+    if(i_data <= INT_MAX)
+    {
+        *pp_out = p_data;
+        *pi_out = i_data;
+    }
+    else free(p_data);
 }
 
 static void ActivateSets(decoder_t *p_dec,
@@ -505,6 +564,10 @@ static void ActivateSets(decoder_t *p_dec,
                 p_dec->fmt_out.i_level = i_level;
             }
         }
+
+        if(p_dec->fmt_out.i_extra == 0 && p_vps && p_pps)
+            SetsToAnnexB(p_sys, p_pps, p_sps, p_vps,
+                         (uint8_t **)&p_dec->fmt_out.p_extra, &p_dec->fmt_out.i_extra);
     }
 }
 
@@ -516,9 +579,9 @@ static void GetXPSSet(uint8_t i_pps_id, void *priv,
     decoder_sys_t *p_sys = priv;
     *pp_sps = NULL;
     *pp_vps = NULL;
-    if((*pp_pps = p_sys->rgi_p_decpps[i_pps_id]))
-        if((*pp_sps = p_sys->rgi_p_decsps[hevc_get_pps_sps_id(*pp_pps)]))
-            *pp_vps = p_sys->rgi_p_decvps[hevc_get_sps_vps_id(*pp_sps)];
+    if((*pp_pps = p_sys->rg_pps[i_pps_id].p_decoded))
+        if((*pp_sps = p_sys->rg_sps[hevc_get_pps_sps_id(*pp_pps)].p_decoded))
+            *pp_vps = p_sys->rg_vps[hevc_get_sps_vps_id(*pp_sps)].p_decoded;
 }
 
 static void ParseStoredSEI( decoder_t *p_dec )
@@ -629,13 +692,13 @@ static block_t * ParseAUHead(decoder_t *p_dec, uint8_t i_nal_type, block_t *p_na
     block_t *p_ret = NULL;
 
     if(p_sys->post.p_chain || p_sys->frame.p_chain)
-        p_ret = OutputQueues(p_sys, true);
+        p_ret = OutputQueues(p_sys, p_sys->b_init_sequence_complete);
 
     switch(i_nal_type)
     {
         case HEVC_NAL_AUD:
             if(!p_ret && p_sys->pre.p_chain)
-                p_ret = OutputQueues(p_sys, true);
+                p_ret = OutputQueues(p_sys, p_sys->b_init_sequence_complete);
             break;
 
         case HEVC_NAL_VPS:
@@ -673,7 +736,7 @@ static block_t * ParseAUTail(decoder_t *p_dec, uint8_t i_nal_type, block_t *p_na
     {
         case HEVC_NAL_EOS:
         case HEVC_NAL_EOB:
-            p_ret = OutputQueues(p_sys, true);
+            p_ret = OutputQueues(p_sys, p_sys->b_init_sequence_complete);
             if( p_ret )
                 p_ret->i_flags |= BLOCK_FLAG_END_OF_SEQUENCE;
             break;

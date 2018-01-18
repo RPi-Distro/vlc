@@ -11,9 +11,9 @@
 # Theppitak Karoonboonyanan <thep@linux.thai.net>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.0-rc3\n"
+"Project-Id-Version: vlc 3.0.0-rc5\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-01-09 02:11+0000\n"
+"POT-Creation-Date: 2018-01-18 00:35+0100\n"
 "PO-Revision-Date: 2017-09-20 03:42+0000\n"
 "Last-Translator: bact' <arthit@gmail.com>, 2017\n"
 "Language-Team: Thai (https://www.transifex.com/yaron/teams/16553/th/)\n"
@@ -46,7 +46,7 @@ msgstr "เลือก \"ตัวเลือกขั้นสูง\" เพ
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:227
 #: modules/gui/qt/components/simple_preferences.cpp:223
-#: modules/gui/qt/menus.cpp:1090
+#: modules/gui/qt/menus.cpp:1091
 msgid "Interface"
 msgstr "ส่วนติดต่อ"
 
@@ -90,6 +90,7 @@ msgstr "ค่าตั้งปุ่มลัด"
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
+#: modules/gui/qt/ui/profiles.h:721 modules/gui/qt/ui/profiles.h:752
 msgid "Audio"
 msgstr "เสียง"
 
@@ -102,6 +103,7 @@ msgid "General audio settings"
 msgstr "ค่าตั้งเสียงทั่วไป"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:81
+#: modules/gui/qt/ui/profiles.h:750 modules/gui/qt/ui/profiles.h:760
 msgid "Filters"
 msgstr "ตัวผันค่า"
 
@@ -151,9 +153,11 @@ msgstr "ค่าตั้งและมอดูลเสียงเบ็ด
 #: modules/gui/qt/components/info_panels.cpp:573
 #: modules/gui/qt/components/simple_preferences.cpp:227
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
-#: modules/stream_out/chromecast/cast.cpp:108 modules/stream_out/es.c:102
+#: modules/stream_out/chromecast/cast.cpp:116 modules/stream_out/es.c:102
 #: modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
+#: modules/gui/qt/ui/profiles.h:722 modules/gui/qt/ui/profiles.h:726
+#: modules/gui/qt/ui/sprefs_video.h:326
 msgid "Video"
 msgstr "วีดิทัศน์"
 
@@ -357,7 +361,7 @@ msgstr "การจัดสร้าง \"วีดิทัศน์ตาม
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
-#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1117
+#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1118
 msgid "Playlist"
 msgstr "ผังเล่น"
 
@@ -385,6 +389,7 @@ msgstr "มอดูลค้นหาบริการคือสิ่งอ
 
 #: include/vlc_config_cat.h:184 src/libvlc-module.c:1844
 #: modules/gui/qt/dialogs/extended.cpp:93
+#: modules/gui/qt/ui/video_effects.h:1308
 msgid "Advanced"
 msgstr "ขั้นสูง"
 
@@ -460,7 +465,7 @@ msgstr "เ&กี่ยวกับ"
 #: modules/gui/macosx/VLCMainMenu.m:1325 modules/gui/macosx/VLCMainMenu.m:1326
 #: modules/gui/macosx/VLCPlaylist.m:230
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:539
+#: modules/gui/qt/dialogs/vlm.cpp:539 modules/gui/qt/ui/open.h:261
 msgid "Play"
 msgstr "เล่น"
 
@@ -552,6 +557,7 @@ msgstr "ค้นหา"
 
 #: include/vlc_intf_strings.h:99
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
+#: modules/gui/qt/ui/video_effects.h:1292
 msgid "Waves"
 msgstr "คลื่น"
 
@@ -677,6 +683,9 @@ msgstr "สเตริโอ"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:312
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1231
+#: modules/gui/qt/ui/video_effects.h:1273
+#: modules/gui/qt/ui/video_effects.h:1283
 msgid "Left"
 msgstr "ซ้าย"
 
@@ -691,6 +700,7 @@ msgstr "ซ้าย"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:314
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1232
 msgid "Right"
 msgstr "ขวา"
 
@@ -964,13 +974,15 @@ msgstr "ID ต้นฉบับ"
 #: src/input/es_out.c:3069 src/input/es_out.c:3072 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
+#: modules/gui/qt/ui/profiles.h:728 modules/gui/qt/ui/profiles.h:754
+#: modules/gui/qt/ui/profiles.h:763
 msgid "Codec"
 msgstr "ตัวอ่าน-ลงรหัส"
 
 #: src/input/es_out.c:3076 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:114
 #: modules/gui/macosx/VLCSimplePrefsController.m:311
-#: modules/stream_out/setid.c:49
+#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:530
 msgid "Language"
 msgstr "ภาษา"
 
@@ -990,7 +1002,7 @@ msgstr "ประเภท"
 
 #: src/input/es_out.c:3088
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
-#: modules/gui/macosx/VLCOutput.m:98
+#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:756
 msgid "Channels"
 msgstr "ช่อง"
 
@@ -1012,6 +1024,7 @@ msgstr "จำนวนบิตต่อตัวอย่าง"
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
+#: modules/gui/qt/ui/profiles.h:729 modules/gui/qt/ui/profiles.h:755
 msgid "Bitrate"
 msgstr "อัตราส่งบิต"
 
@@ -1183,25 +1196,21 @@ msgid "Projection"
 msgstr "การฉายภาพ"
 
 #: src/input/es_out.c:3258
-#, fuzzy
 msgctxt "ViewPoint"
 msgid "Yaw"
-msgstr "มุมส่าย (Yaw)"
+msgstr "มุมส่ายหน้า (Yaw)"
 
 #: src/input/es_out.c:3260
-#, fuzzy
 msgctxt "ViewPoint"
 msgid "Pitch"
-msgstr "Pitch"
+msgstr "มุมก้ม/เงย (Pitch)"
 
 #: src/input/es_out.c:3262
-#, fuzzy
 msgctxt "ViewPoint"
 msgid "Roll"
 msgstr "มุมเอียงหน้า (Roll)"
 
 #: src/input/es_out.c:3265
-#, fuzzy
 msgctxt "ViewPoint"
 msgid "Field of view"
 msgstr "ขอบเขตภาพ (FOV)"
@@ -1234,11 +1243,11 @@ msgstr "จุดขาว"
 msgid "Subtitle"
 msgstr "บทบรรยาย"
 
-#: src/input/input.c:2657
+#: src/input/input.c:2658
 msgid "Your input can't be opened"
 msgstr "ไม่สามารถเปิดข้อมูลเข้าของคุณได้"
 
-#: src/input/input.c:2658
+#: src/input/input.c:2659
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr "VLC ไม่สามารถเปิด MRL '%s' โปรดตรวจสอบรายละเอียดที่ปูม"
@@ -1251,6 +1260,7 @@ msgstr "VLC ไม่สามารถเปิด MRL '%s' โปรดตร�
 #: modules/gui/qt/components/open_panels.cpp:503
 #: modules/gui/qt/components/open_panels.cpp:517
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
+#: modules/gui/qt/ui/open_disk.h:309
 msgid "Title"
 msgstr "ชื่อเรื่อง"
 
@@ -1291,6 +1301,7 @@ msgid "Setting"
 msgstr "ค่าตั้ง"
 
 #: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
+#: modules/gui/qt/ui/podcast_configuration.h:102
 msgid "URL"
 msgstr "URL"
 
@@ -1358,6 +1369,7 @@ msgstr "รายการต่างๆ"
 #: modules/gui/macosx/VLCMainMenu.m:402
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
+#: modules/gui/qt/ui/open_disk.h:310
 msgid "Chapter"
 msgstr "ตอนที่"
 
@@ -1599,7 +1611,7 @@ msgid "Media (player) role for operating system policy."
 msgstr "บทบาทของ (โปรแกรมเล่น) สื่อ ตามนโยบายของระบบปฏิบัติการ"
 
 #: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:268
-#: modules/stream_out/display.c:40
+#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:410
 msgid "Enable audio"
 msgstr "เปิดใช้เสียง"
 
@@ -1722,7 +1734,8 @@ msgstr ""
 #: modules/gui/qt/components/simple_preferences.cpp:66
 #: modules/gui/qt/components/sout/profile_selector.cpp:582
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
-#: modules/video_output/xcb/xvideo.c:821
+#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:744
+#: modules/gui/qt/ui/profiles.h:747
 msgid "Auto"
 msgstr "อัตโนมัติ"
 
@@ -1844,7 +1857,7 @@ msgstr ""
 "โดยปกติแล้วก็จะเลือกวิธีการที่ดีที่สุดเท่าที่มีอยู่ให้โดยอัตโนมัติ"
 
 #: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:353
-#: modules/stream_out/display.c:42
+#: modules/stream_out/display.c:42 modules/gui/qt/ui/sprefs_video.h:314
 msgid "Enable video"
 msgstr "เปิดใช้วีดิทัศน์"
 
@@ -1934,6 +1947,9 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:316
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1229
+#: modules/gui/qt/ui/video_effects.h:1271
+#: modules/gui/qt/ui/video_effects.h:1282
 msgid "Top"
 msgstr "บน"
 
@@ -1944,6 +1960,7 @@ msgstr "บน"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:318
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1233
 msgid "Bottom"
 msgstr "ล่าง"
 
@@ -2072,7 +2089,7 @@ msgstr "ซ่อนเคอร์เซอร์ของเมาส์แล
 #: src/video_output/interlacing.c:112 modules/gui/macosx/VLCMainMenu.m:433
 #: modules/gui/macosx/VLCMainMenu.m:434
 #: modules/gui/macosx/VLCSimplePrefsController.m:372
-#: modules/gui/qt/dialogs/convert.cpp:119 modules/hw/vdpau/chroma.c:884
+#: modules/gui/qt/dialogs/convert.cpp:120 modules/hw/vdpau/chroma.c:884
 #: modules/video_filter/deinterlace/deinterlace.c:300
 #: share/lua/http/dialogs/create_stream.html:346
 msgid "Deinterlace"
@@ -2136,6 +2153,7 @@ msgstr ""
 "เพื่อเลี่ยงไม่ให้คอมพิวเตอร์พักเครื่องเพราะผู้ใช้ไม่มีความเคลื่อนไหว"
 
 #: src/libvlc-module.c:378 modules/gui/macosx/VLCSimplePrefsController.m:358
+#: modules/gui/qt/ui/sprefs_video.h:317
 msgid "Window decorations"
 msgstr "ตกแต่งหน้าต่าง"
 
@@ -2383,7 +2401,7 @@ msgid ""
 "channel."
 msgstr ""
 "ตัวเลือกเหล่านี้จะช่วยให้คุณสามารถปรับเปลี่ยนพฤติกรรมของส่วนอ่านข้อมูลเข้า เช่น อุปกรณ์ดีวีดีหรือซีดี "
-"ค่าตั้งอินเทอร์เฟซเครือข่าย หรือช่องบทบรรยาย"
+"ค่าตั้งช่องเชื่อมต่อเครือข่าย หรือช่องบทบรรยาย"
 
 #: src/libvlc-module.c:505
 msgid "File caching (ms)"
@@ -2419,43 +2437,51 @@ msgstr "ค่าการทำแคชสำหรับทรัพยาก
 
 #: src/libvlc-module.c:521
 msgid "Clock reference average counter"
-msgstr ""
+msgstr "ค่าเฉลี่ยตัวนับสัญญาณนาฬิกาอ้างอิง"
 
 #: src/libvlc-module.c:523
 msgid ""
 "When using the PVR input (or a very irregular source), you should set this "
 "to 10000."
 msgstr ""
+"เมื่อใช้เครื่องอัดวีดิทัศน์ดิจิทัล (หรือแหล่งที่มีความไม่สม่ำเสมอสูง) เป็นข้อมูลขาเข้า คุณควรตั้งค่านี้เป็น "
+"10000"
 
 #: src/libvlc-module.c:526
 msgid "Clock synchronisation"
-msgstr "การปรับเทียบเวลาของนาฬิกาให้ตรงกัน"
+msgstr "ปรับพ้องสัญญาณนาฬิกา"
 
 #: src/libvlc-module.c:528
 msgid ""
 "It is possible to disable the input clock synchronisation for real-time "
 "sources. Use this if you experience jerky playback of network streams."
 msgstr ""
+"คุณสามารถปิดใช้การปรับพ้องสัญญาณนาฬิกาของวีดิทัศน์ขาเข้าสำหรับแหล่งสดได้ "
+"คุณควรเลือกตัวเลือกนี้ถ้าพบการกระตุกของภาพขณะเล่นกระแสผ่านเครือข่าย"
 
 #: src/libvlc-module.c:532
 msgid "Clock jitter"
-msgstr ""
+msgstr "บีบเวลาสัญญาณภาพไหว"
 
 #: src/libvlc-module.c:534
 msgid ""
 "This defines the maximum input delay jitter that the synchronization "
 "algorithms should try to compensate (in milliseconds)."
 msgstr ""
+"ค่านี้กำหนดความหน่วงสูงสุดของสัญญาณเข้าที่ทำให้ภาพไหวที่อัลกอริทึมพ้องจังหวะจะพยายามชดเชยให้ "
+"(เป็นมิลลิวินาที)"
 
 #: src/libvlc-module.c:537
 msgid "Network synchronisation"
-msgstr "การรับประสานข้อมูลจากเครือข่าย"
+msgstr "พ้องจังหวะข้อมูลเครือข่าย"
 
 #: src/libvlc-module.c:538
 msgid ""
 "This allows you to remotely synchronise clocks for server and client. The "
 "detailed settings are available in Advanced / Network Sync."
 msgstr ""
+"ตัวเลือกนี้ช่วยให้คุณสามารถปรับความพ้องจังหวะสัญญาณนาฬิกาของแม่ข่ายกับลูกข่ายจากระยะไกลได้ "
+"ค่าตั้งโดยละเอียดมีอยู่ในหัวข้อ ขั้นสูง / การพ้องจังหวะเครือข่าย"
 
 #: src/libvlc-module.c:544 src/video_output/vout_intf.c:98
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
@@ -2481,18 +2507,19 @@ msgstr "ปริยาย"
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:214
 #: modules/gui/macosx/VLCMainWindow.m:1004
 #: modules/gui/qt/components/extended_panels.cpp:928
+#: modules/gui/qt/ui/equalizer.h:133 modules/gui/qt/ui/vlm.h:289
 msgid "Enable"
 msgstr "เปิดใช้"
 
 #: src/libvlc-module.c:546
 msgid "MTU of the network interface"
-msgstr ""
+msgstr "MTU ของช่องเชื่อมต่อเครือข่าย"
 
 #: src/libvlc-module.c:548
 msgid ""
 "This is the maximum application-layer packet size that can be transmitted "
 "over the network (in bytes)."
-msgstr ""
+msgstr "นี่คือขนาดสูงสุดของแพ็กเก็ตในชั้นแอปพลิเคชันที่สามารถส่งผ่านเครือข่ายได้ (เป็นไบต์)"
 
 #: src/libvlc-module.c:553 modules/stream_out/rtp.c:124
 msgid "Hop limit (TTL)"
@@ -2504,30 +2531,38 @@ msgid ""
 "multicast packets sent by the stream output (-1 = use operating system built-"
 "in default)."
 msgstr ""
+"นี่คือขีดจำกัดจำนวน hop (เรียกอีกอย่างว่า \"Time-To-Live\" หรือ TTL) "
+"ของแพ็กเก็ตสัญญาณหมู่ที่ส่งโดยกระแสขาออก (-1 = ใช้ค่าที่กำหนดโดยระบบปฏิบัติการเป็นค่าปริยาย)"
 
 #: src/libvlc-module.c:559
 msgid "Multicast output interface"
-msgstr "ส่วนติดต่อส่งสัญญาณหมู่"
+msgstr "ช่องเชื่อมต่อส่งสัญญาณหมู่"
 
 #: src/libvlc-module.c:561
 msgid "Default multicast interface. This overrides the routing table."
-msgstr ""
+msgstr "ช่องเชื่อมต่อที่ใช้ส่งสัญญาณหมู่โดยปริยาย ค่านี้จะกำหนดทับค่าตารางเส้นทางเครือข่าย"
 
 #: src/libvlc-module.c:563
 msgid "DiffServ Code Point"
-msgstr ""
+msgstr "DiffServ Code Point"
 
 #: src/libvlc-module.c:564
 msgid ""
 "Differentiated Services Code Point for outgoing UDP streams (or IPv4 Type Of "
 "Service, or IPv6 Traffic Class). This is used for network Quality of Service."
 msgstr ""
+"Differentiated Services Code Point สำหรับกระแส UDP ขาออก (หรือ Type Of Service "
+"สำหรับ IPv4, หรือ Traffic Class สำหรับ IPv6) ค่านี้ใช้สำหรับจัดการ Quality of Service "
+"ของเครือข่าย"
 
 #: src/libvlc-module.c:570
 msgid ""
 "Choose the program to select by giving its Service ID. Only use this option "
 "if you want to read a multi-program stream (like DVB streams for example)."
 msgstr ""
+"เลือกรายการที่จะรับชมโดยระบุ Service ID ของรายการ "
+"คุณควรใช้ตัวเลือกนี้ก็ต่อเมื่อคุณต้องการอ่านข้อมูลกระแสที่ส่งรายการหลายรายการเท่านั้น (เช่น กระแส "
+"DVB)"
 
 #: src/libvlc-module.c:576
 msgid ""
@@ -2535,22 +2570,25 @@ msgid ""
 "IDs (SIDs). Only use this option if you want to read a multi-program stream "
 "(like DVB streams for example)."
 msgstr ""
+"เลือกรายการต่างๆ ที่จะรับชมโดยระบุรายชื่อ Service ID (SID) ของรายการ คั่นด้วยจุลภาค "
+"คุณควรใช้ตัวเลือกนี้ก็ต่อเมื่อคุณต้องการอ่านข้อมูลกระแสที่ส่งรายการหลายรายการเท่านั้น (เช่น กระแส "
+"DVB)"
 
-#: src/libvlc-module.c:582
+#: src/libvlc-module.c:582 modules/gui/qt/ui/open_disk.h:312
 msgid "Audio track"
 msgstr "ร่องเสียงที่"
 
 #: src/libvlc-module.c:584
 msgid "Stream number of the audio track to use (from 0 to n)."
-msgstr "หมายเลขกระแสของร่องเสียง ที่จะใช้ (จาก 0 ถึง n)"
+msgstr "หมายเลขกระแสของร่องเสียงที่จะใช้ (จาก 0 ถึง n)"
 
-#: src/libvlc-module.c:587
+#: src/libvlc-module.c:587 modules/gui/qt/ui/open_disk.h:313
 msgid "Subtitle track"
 msgstr "ร่องบทบรรยาย"
 
 #: src/libvlc-module.c:589
 msgid "Stream number of the subtitle track to use (from 0 to n)."
-msgstr "หมายเลขกระแสของร่องบทบรรยาย ที่จะใช้ (จาก 0 ถึง n)"
+msgstr "หมายเลขกระแสของร่องบทบรรยายที่จะใช้ (จาก 0 ถึง n)"
 
 #: src/libvlc-module.c:592 modules/stream_out/transcode/transcode.c:97
 msgid "Audio language"
@@ -2562,8 +2600,8 @@ msgid ""
 "letter country code, you may use 'none' to avoid a fallback to another "
 "language)."
 msgstr ""
-"ภาษาของร่องเสียงที่คุณต้องการใช้ (ใส่รหัสภาษาโดยใช้เครื่องหมายจุลภาคแบ่ง \" , \" "
-"เพื่อใช้แยกแยะกับตัวหลัง ซึ่งท่านอาจจะเพิ่มขึ้นมาเผื่อไว้เพื่อกันพลาด)"
+"ภาษาของร่องเสียงที่คุณต้องการใช้ (ใช้รหัสภาษาแบบสองหรือสามตัวอักษร คั่นด้วยจุลภาค คุณอาจใช้ค่า "
+"'none' เพื่อป้องกันการถอยไปใช้ภาษาอื่นได้)"
 
 #: src/libvlc-module.c:597
 msgid "Subtitle language"
@@ -2574,8 +2612,8 @@ msgid ""
 "Language of the subtitle track you want to use (comma separated, two or "
 "three letters country code, you may use 'any' as a fallback)."
 msgstr ""
-"ภาษาของร่องบทบรรยายที่คุณต้องการใช้ (ใส่รหัสภาษาโดยใช้เครื่องหมายจุลภาคแบ่ง \" , \" "
-"เพื่อใช้แยกแยะกับตัวหลัง ซึ่งท่านอาจจะเพิ่มขึ้นมาเผื่อไว้เพื่อกันพลาด)"
+"ภาษาของร่องบทบรรยายที่คุณต้องการใช้ (ใช้รหัสภาษาแบบสองหรือสามตัวอักษร คั่นด้วยจุลภาค "
+"คุณอาจใช้ค่า 'any' เพื่อใช้เป็นตัวเลือกสำรองได้)"
 
 #: src/libvlc-module.c:602
 msgid "Menu language"
@@ -2586,6 +2624,8 @@ msgid ""
 "Language of the menus you want to use with DVD/BluRay (comma separated, two "
 "or three letters country code, you may use 'any' as a fallback)."
 msgstr ""
+"ภาษาของเมนูที่คุณต้องการใช้กับดีวีดี/บลูเรย์ (ใช้รหัสภาษาแบบสองหรือสามตัวอักษร คั่นด้วยจุลภาค "
+"คุณอาจใช้ค่า 'any' เพื่อใช้เป็นตัวเลือกสำรองได้)"
 
 #: src/libvlc-module.c:608
 msgid "Audio track ID"
@@ -2593,7 +2633,7 @@ msgstr "ID ร่องเสียง"
 
 #: src/libvlc-module.c:610
 msgid "Stream ID of the audio track to use."
-msgstr "ID กระแสของร่องเสียง ที่จะใช้"
+msgstr "ID กระแสของร่องเสียงที่จะใช้"
 
 #: src/libvlc-module.c:612
 msgid "Subtitle track ID"
@@ -2601,11 +2641,11 @@ msgstr "ID ร่องบทบรรยาย"
 
 #: src/libvlc-module.c:614
 msgid "Stream ID of the subtitle track to use."
-msgstr "ID กระของร่องบทบรรยายที่จะใช้"
+msgstr "ID กระแสของร่องบทบรรยายที่จะใช้"
 
 #: src/libvlc-module.c:616
 msgid "Preferred Closed Captions decoder"
-msgstr ""
+msgstr "ตัวอ่านบทบรรยายปกติปิดที่เลือกใช้"
 
 #: src/libvlc-module.c:620
 msgid "Preferred video resolution"
@@ -2618,6 +2658,9 @@ msgid ""
 "option if you don't have enough CPU power or network bandwidth to play "
 "higher resolutions."
 msgstr ""
+"เมื่อวีดิทัศน์มีหลายฟอร์แมตให้ใช้ ให้ VLC เลือกฟอร์แมตที่ให้ความละเอียดใกล้เคียง (แต่ไม่เกิน) "
+"ค่านี้มากที่สุด ในหน่วยจำนวนเส้น คุณควรใช้ตัวเลือกนี้ถ้าพลังประมวลผลของ CPU "
+"ของคุณหรือแบนด์วิดท์ของเครือข่ายมีไม่มากพอที่จะเล่นความละเอียดสูงกว่านี้ได้"
 
 #: src/libvlc-module.c:628
 msgid "Best available"
@@ -2633,7 +2676,7 @@ msgstr "HD (720p)"
 
 #: src/libvlc-module.c:629
 msgid "Standard Definition (576 or 480 lines)"
-msgstr "ความละเอียกมาตรฐาน (576 หรือ 480 เส้น)"
+msgstr "ความละเอียดมาตรฐาน (576 หรือ 480 เส้น)"
 
 #: src/libvlc-module.c:630
 msgid "Low Definition (360 lines)"
@@ -2645,11 +2688,11 @@ msgstr "ความละเอียดต่ำมาก (240 เส้น)"
 
 #: src/libvlc-module.c:634
 msgid "Input repetitions"
-msgstr ""
+msgstr "จำนวนรอบการเล่นซ้ำ"
 
 #: src/libvlc-module.c:636
 msgid "Number of time the same input will be repeated"
-msgstr ""
+msgstr "จำนวนรอบที่จะเล่นข้อมูลขาเข้าเดิมซ้ำๆ"
 
 #: src/libvlc-module.c:638 modules/gui/macosx/VLCOpenWindowController.m:159
 msgid "Start time"
@@ -2657,7 +2700,7 @@ msgstr "เวลาเริ่ม"
 
 #: src/libvlc-module.c:640
 msgid "The stream will start at this position (in seconds)."
-msgstr "กระแสจะเริ่มที่เวลานี้ (วินาที)"
+msgstr "กระแสจะเริ่มเล่นที่เวลานี้ (เป็นวินาที)"
 
 #: src/libvlc-module.c:642 modules/gui/macosx/VLCOpenWindowController.m:161
 msgid "Stop time"
@@ -2665,23 +2708,23 @@ msgstr "เวลาหยุด"
 
 #: src/libvlc-module.c:644
 msgid "The stream will stop at this position (in seconds)."
-msgstr "กระแสจะหยุดลงที่เวลานี้ (วินาที)"
+msgstr "กระแสจะหยุดลงที่เวลานี้ (เป็นวินาที)"
 
 #: src/libvlc-module.c:646
 msgid "Run time"
-msgstr "เวลาที่ใช้"
+msgstr "เวลาที่เล่น"
 
 #: src/libvlc-module.c:648
 msgid "The stream will run this duration (in seconds)."
-msgstr "กระแสะจะเดินในช่วงเวลานี้ (วินาที)"
+msgstr "กระแสจะเล่นเป็นเวลาเท่านี้ (เป็นวินาที)"
 
-#: src/libvlc-module.c:650
+#: src/libvlc-module.c:650 modules/gui/qt/ui/sprefs_input.h:363
 msgid "Fast seek"
-msgstr "การไล่ดูแบบเร็ว"
+msgstr "เลื่อนดูแบบเร็ว"
 
 #: src/libvlc-module.c:652
 msgid "Favor speed over precision while seeking"
-msgstr "ให้ความสำคัญกับความเร็วมากกว่าความแม่นยำระหว่างการไล่ดู"
+msgstr "ในการเลื่อนดู ให้ความสำคัญกับความเร็วมากกว่าความแม่นยำ"
 
 #: src/libvlc-module.c:654
 msgid "Playback speed"
@@ -2693,17 +2736,17 @@ msgstr "ค่านี้กำหนดความเร็วในการ
 
 #: src/libvlc-module.c:658
 msgid "Input list"
-msgstr "รายการส่วนนำเข้า"
+msgstr "รายชื่อสื่อขาเข้า"
 
 #: src/libvlc-module.c:660
 msgid ""
 "You can give a comma-separated list of inputs that will be concatenated "
 "together after the normal one."
-msgstr ""
+msgstr "คุณสามารถกำหนดรายชื่อที่คั่นด้วยจุลภาคของสื่อขาเข้าที่จะเพิ่มเป้นเนื้อหาท้ายสื่อปกติ"
 
 #: src/libvlc-module.c:663
 msgid "Input slave (experimental)"
-msgstr ""
+msgstr "ลูกข่ายขาเข้า (ขั้นทดลอง)"
 
 #: src/libvlc-module.c:665
 msgid ""
@@ -2711,10 +2754,12 @@ msgid ""
 "is experimental, not all formats are supported. Use a '#' separated list of "
 "inputs."
 msgstr ""
+"ค่านี้จะช่วยให้คุณสามารถเล่นสื่อจากหลายแหล่งพร้อมๆ กันได้ ความสามารถนี้ยังอยู่ในขั้นทดลองเท่านั้น "
+"ยังไม่รองรับทุกฟอร์แมต คุณสามารถกำหนดรายชื่อแหล่งขาเข้าโดยใช้ '#' คั่นระหว่างรายการ"
 
 #: src/libvlc-module.c:669
 msgid "Bookmarks list for a stream"
-msgstr ""
+msgstr "รายชื่อที่คั่นสำหรับกระแส"
 
 #: src/libvlc-module.c:671
 msgid ""
@@ -2722,46 +2767,48 @@ msgid ""
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
 "{...}\""
 msgstr ""
+"คุณสามารถกำหนดรายชื่อของที่คั่นสำหรับกระแสหนึ่งๆ ได้ในรูป \"{name=ชื่อที่คั่น,"
+"time=เวลาเริ่มเล่น(ถ้ามี),bytes=ไบต์เริ่มเล่น(ถ้ามี)},{...}\""
 
 #: src/libvlc-module.c:675
 msgid "Record directory"
-msgstr ""
+msgstr "ไดเรกทอรีเก็บสื่อที่อัด"
 
 #: src/libvlc-module.c:677
 msgid "Directory where the records will be stored"
-msgstr ""
+msgstr "ไดเรกทอรีที่จะเก็บสื่อที่อัด"
 
 #: src/libvlc-module.c:679
 msgid "Prefer native stream recording"
-msgstr ""
+msgstr "เลือกใช้การอัดด้วยกระแสเนื้อในของอุปกรณ์"
 
 #: src/libvlc-module.c:681
 msgid ""
 "When possible, the input stream will be recorded instead of using the stream "
 "output module"
-msgstr ""
+msgstr "จะอัดกระแสขาเข้าโดยตรงแทนที่จะใช้มอดูลกระแสขาออกถ้าเป็นไปได้"
 
 #: src/libvlc-module.c:684
 msgid "Timeshift directory"
-msgstr ""
+msgstr "ไดเรกทอรีเก็บแฟ้มกระโดดข้ามเวลา"
 
 #: src/libvlc-module.c:686
 msgid "Directory used to store the timeshift temporary files."
-msgstr ""
+msgstr "ไดเรกทอรีที่จะใช้เก็บแฟ้มชั่วคราวต่างๆ ที่เกี่ยวกับการกระโดดข้ามเวลา"
 
 #: src/libvlc-module.c:688
 msgid "Timeshift granularity"
-msgstr ""
+msgstr "ความละเอียดของการกระโดดข้ามเวลา"
 
 #: src/libvlc-module.c:690
 msgid ""
 "This is the maximum size in bytes of the temporary files that will be used "
 "to store the timeshifted streams."
-msgstr ""
+msgstr "ค่านี้คือขนาดสูงสุดเป็นไบต์ของแฟ้มชั่วคราวต่างๆ ที่จะใช้เก็บกระแสที่มีการกระโดดข้ามเวลา"
 
 #: src/libvlc-module.c:693
 msgid "Change title according to current media"
-msgstr ""
+msgstr "เปลี่ยนหัวเรื่องตามสื่อที่เล่น"
 
 #: src/libvlc-module.c:694
 msgid ""
@@ -2770,10 +2817,13 @@ msgid ""
 "Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: \"Now playing"
 "\" (Fall back on Title - Artist)"
 msgstr ""
+"ตัวเลือกนี้ช่วยให้คุณสามารถกำหนดหัวเรื่องตามสื่อที่กำลังเล่นได้<br>$a: ศิลปิน<br>$b: อัลบัม<br>"
+"$c: ลิขสิทธิ์<br>$t: ชื่อเรื่อง<br>$g: ประเภท<br>$n: เลขร่อง<br>$p: \"กำลังเล่น\"<br>"
+"$A: วันที่<br>$D: ความยาว<br>$Z: \"กำลังเล่น\" (ชื่อเรื่อง - ศิลปิน)"
 
 #: src/libvlc-module.c:699
 msgid "Disable all lua plugins"
-msgstr ""
+msgstr "ปิดใช้ปลั๊กอิน lua ทั้งหมด"
 
 #: src/libvlc-module.c:703
 msgid ""
@@ -2783,7 +2833,7 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:709
+#: src/libvlc-module.c:709 modules/gui/qt/ui/sprefs_subtitles.h:305
 msgid "Force subtitle position"
 msgstr "บังคับตำแหน่งบทบรรยาย"
 
@@ -2811,6 +2861,7 @@ msgstr ""
 
 #: src/libvlc-module.c:721 src/libvlc-module.c:1668 src/text/iso-639_def.h:145
 #: modules/gui/macosx/VLCSimplePrefsController.m:345
+#: modules/gui/qt/ui/sprefs_subtitles.h:290
 msgid "On Screen Display"
 msgstr "การแสดงผ่านทางจอภาพ"
 
@@ -3426,7 +3477,7 @@ msgstr ""
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 
-#: src/libvlc-module.c:1081
+#: src/libvlc-module.c:1081 modules/gui/qt/ui/sprefs_interface.h:550
 msgid "Use only one instance when started from file manager"
 msgstr "เล่นในตัวเล่นเดียวเท่านั้น เมื่อเปิดแฟ้มจากตัวเรียกดูแฟ้ม"
 
@@ -3444,7 +3495,7 @@ msgid ""
 "machine."
 msgstr ""
 
-#: src/libvlc-module.c:1093
+#: src/libvlc-module.c:1093 modules/gui/qt/ui/sprefs_interface.h:553
 msgid "Enqueue items into playlist in one instance mode"
 msgstr "เข้าคิวรายการไปในผังเล่น เมื่ออยู่ในรูปแบบตัวเล่นเดียว"
 
@@ -3488,6 +3539,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1120 modules/gui/macosx/VLCSimplePrefsController.m:328
 #: modules/gui/qt/dialogs/firstrun.cpp:95
+#: modules/gui/qt/ui/sprefs_interface.h:565
 msgid "Allow metadata network access"
 msgstr ""
 
@@ -3625,7 +3677,7 @@ msgid ""
 "VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1192
+#: src/libvlc-module.c:1192 modules/gui/qt/ui/sprefs_interface.h:551
 msgid "Display playlist tree"
 msgstr "แสดงผังเล่นแบบแผนผังต้นไม้"
 
@@ -3679,6 +3731,7 @@ msgstr ""
 #: modules/gui/macosx/VLCControlsBarCommon.m:81
 #: modules/gui/macosx/VLCMainMenu.m:422 modules/gui/macosx/VLCMainMenu.m:501
 #: modules/gui/qt/components/controller.hpp:108
+#: modules/gui/qt/ui/sprefs_video.h:318
 msgid "Fullscreen"
 msgstr "เต็มจอ"
 
@@ -3746,11 +3799,11 @@ msgstr "ความเร็วปกติ"
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr ""
 
-#: src/libvlc-module.c:1236 modules/gui/qt/menus.cpp:880
+#: src/libvlc-module.c:1236 modules/gui/qt/menus.cpp:881
 msgid "Faster (fine)"
 msgstr "เร็วขึ้น (ละเอียด)"
 
-#: src/libvlc-module.c:1238 modules/gui/qt/menus.cpp:888
+#: src/libvlc-module.c:1238 modules/gui/qt/menus.cpp:889
 msgid "Slower (fine)"
 msgstr "ช้าลง (ละเอียด)"
 
@@ -3761,6 +3814,7 @@ msgstr "ช้าลง (ละเอียด)"
 #: modules/gui/macosx/VLCMainMenu.m:497
 #: modules/gui/qt/components/controller.hpp:112
 #: modules/gui/qt/dialogs/sout.cpp:93 modules/notify/notify.c:335
+#: modules/gui/qt/ui/streampanel.h:181
 msgid "Next"
 msgstr "ถัดไป"
 
@@ -3785,7 +3839,7 @@ msgstr "เลือกปุ่มลัดที่จะใช้เพื่
 #: modules/gui/macosx/VLCMainMenu.m:488 modules/gui/macosx/VLCMainMenu.m:495
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:61
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:545
+#: modules/gui/qt/dialogs/vlm.cpp:545 modules/gui/qt/ui/streampanel.h:180
 msgid "Stop"
 msgstr "หยุด"
 
@@ -3798,6 +3852,8 @@ msgstr "เลือกปุ่มที่จะใช้หยุดการ
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:286
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:308
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
+#: modules/gui/qt/ui/sprefs_subtitles.h:293
+#: modules/gui/qt/ui/video_effects.h:1279
 msgid "Position"
 msgstr "ตำแหน่งการแสดง"
 
@@ -3912,8 +3968,8 @@ msgstr "การข้ามช่วงอย่างยาว เป็น�
 #: src/libvlc-module.c:1287 modules/control/hotkeys.c:361
 #: modules/gui/macosx/VLCStatusBarIcon.m:116
 #: modules/gui/qt/components/controller.hpp:111
-#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:951
-#: modules/gui/qt/menus.cpp:1137 modules/gui/skins2/commands/cmd_quit.cpp:45
+#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:952
+#: modules/gui/qt/menus.cpp:1138 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "ออก"
 
@@ -4399,7 +4455,7 @@ msgstr "จับภาพถ่ายวีดิทัศน์แล้วเ
 
 #: src/libvlc-module.c:1417 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
-#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:854
+#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:855
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "บันทึก"
@@ -4509,6 +4565,8 @@ msgstr "ภาพบทบรรยาย"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
 #: modules/gui/macosx/VLCMainMenu.m:440
 #: share/lua/http/dialogs/create_stream.html:153
+#: modules/gui/qt/ui/profiles.h:718 modules/gui/qt/ui/profiles.h:762
+#: modules/gui/qt/ui/profiles.h:765
 msgid "Subtitles"
 msgstr "บทบรรยาย"
 
@@ -4675,6 +4733,8 @@ msgstr "ปุ่มหยุดการเรียก (Browser Stop)"
 
 #: src/misc/actions.c:62 modules/gui/macosx/VLCMainMenu.m:361
 #: modules/gui/macosx/VLCPlaylist.m:231 modules/gui/qt/dialogs/bookmarks.cpp:50
+#: modules/gui/qt/ui/podcast_configuration.h:104
+#: modules/gui/qt/ui/streampanel.h:172
 msgid "Delete"
 msgstr "ปุ่ม Delete"
 
@@ -4855,7 +4915,7 @@ msgstr "ปุ่ม Page Up"
 #: modules/gui/macosx/VLCMainMenu.m:1331 modules/gui/macosx/VLCMainMenu.m:1332
 #: modules/gui/macosx/VLCMainMenu.m:1333
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
-#: modules/gui/qt/menus.cpp:828
+#: modules/gui/qt/menus.cpp:829
 msgid "Pause"
 msgstr "พักก&ารเล่น"
 
@@ -4975,7 +5035,7 @@ msgstr "ล้มเหลวในการเปิด \"%s\" สำหรั�
 #: modules/gui/qt/components/preferences_widgets.cpp:1428
 #: modules/gui/qt/components/sout/profile_selector.cpp:446
 #: modules/gui/qt/dialogs/sout.cpp:92
-#: modules/stream_out/chromecast/cast.cpp:305
+#: modules/stream_out/chromecast/cast.cpp:373
 msgid "Cancel"
 msgstr "ยกเลิก"
 
@@ -5718,7 +5778,7 @@ msgstr "ปรับสัดส่วนภาพวีดิทัศน์โ
 #: src/video_output/vout_intf.c:203 modules/gui/macosx/VLCMainMenu.m:429
 #: modules/gui/macosx/VLCMainMenu.m:430
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:193
-#: modules/video_filter/croppadd.c:87
+#: modules/video_filter/croppadd.c:87 modules/gui/qt/ui/video_effects.h:1239
 msgid "Crop"
 msgstr "ตัดขอบ"
 
@@ -5859,6 +5919,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/bluray.c:92 modules/services_discovery/udev.c:601
+#: modules/gui/qt/ui/open_disk.h:299
 msgid "Blu-ray"
 msgstr "บลูเรย์"
 
@@ -5929,8 +5990,8 @@ msgstr ""
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 
-#: modules/access/bluray.c:847 modules/access/bluray.c:2281
-#: modules/access/bluray.c:2286
+#: modules/access/bluray.c:847 modules/access/bluray.c:2284
+#: modules/access/bluray.c:2289
 msgid "Blu-ray error"
 msgstr "บลูเรย์ผิดพลาด"
 
@@ -5948,6 +6009,7 @@ msgid "Audio CD - Track %02i"
 msgstr "CD เสียง - ร่องที่ %02i"
 
 #: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/gui/qt/ui/open_disk.h:300
 msgid "Audio CD"
 msgstr "CD เสียง"
 
@@ -6906,13 +6968,13 @@ msgstr "ส่วนนำเข้า DVDnav"
 msgid "DVDnav demuxer"
 msgstr ""
 
-#: modules/access/dvdnav.c:294 modules/access/dvdread.c:201
+#: modules/access/dvdnav.c:296 modules/access/dvdread.c:201
 #: modules/access/dvdread.c:216 modules/access/dvdread.c:471
 #: modules/access/dvdread.c:539
 msgid "Playback failure"
 msgstr "การเล่นล้มเหลว"
 
-#: modules/access/dvdnav.c:295
+#: modules/access/dvdnav.c:297
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -6961,6 +7023,7 @@ msgid "File"
 msgstr "แฟ้ม"
 
 #: modules/access/fs.c:44 modules/demux/directory.c:93
+#: modules/gui/qt/ui/sprefs_video.h:331
 msgid "Directory"
 msgstr "ที่เก็บแฟ้ม"
 
@@ -7211,6 +7274,7 @@ msgstr "จำนวนช่องของกระแสมูลฐานเ
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
 #: modules/gui/qt/components/extended_panels.cpp:1297 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
+#: modules/gui/qt/ui/profiles.h:743
 msgid "Width"
 msgstr "ความกว้าง"
 
@@ -7223,6 +7287,7 @@ msgstr "ความกว้างของกระแสมูลฐานว
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:168
 #: modules/spu/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
+#: modules/gui/qt/ui/profiles.h:746
 msgid "Height"
 msgstr "ความสูง"
 
@@ -8148,6 +8213,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:205
+#: modules/gui/qt/ui/video_effects.h:1217
 msgid "Brightness"
 msgstr "ความสว่าง"
 
@@ -8165,6 +8231,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:89
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:204
+#: modules/gui/qt/ui/video_effects.h:1219
 msgid "Contrast"
 msgstr "ความต่างระดับสี"
 
@@ -8175,6 +8242,8 @@ msgstr ""
 #: modules/access/v4l2/v4l2.c:91
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:207
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:253
+#: modules/gui/qt/ui/video_effects.h:1220
+#: modules/gui/qt/ui/video_effects.h:1252
 msgid "Saturation"
 msgstr "ความอิ่มสี"
 
@@ -8184,6 +8253,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:93
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:203
+#: modules/gui/qt/ui/video_effects.h:1216
 msgid "Hue"
 msgstr "องศาเฉดสี"
 
@@ -8235,6 +8305,7 @@ msgstr "สมดุลความสดของสีน้ำเงิน"
 
 #: modules/access/v4l2/v4l2.c:111
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:208
+#: modules/gui/qt/ui/video_effects.h:1221
 msgid "Gamma"
 msgstr "แกมมา"
 
@@ -8359,7 +8430,7 @@ msgstr "ดำ & ขาว"
 
 #: modules/access/v4l2/v4l2.c:164
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:255
-#: modules/video_filter/sepia.c:66
+#: modules/video_filter/sepia.c:66 modules/gui/qt/ui/video_effects.h:1254
 msgid "Sepia"
 msgstr "สีน้ำตาลซีเปีย"
 
@@ -8452,7 +8523,7 @@ msgstr ""
 #: modules/codec/avcodec/avcodec.c:54 modules/codec/x264.c:435
 #: modules/control/hotkeys.c:395
 #: modules/gui/macosx/VLCAddonsWindowController.m:99
-#: modules/gui/qt/dialogs/convert.cpp:160
+#: modules/gui/qt/dialogs/convert.cpp:161
 #: modules/gui/qt/dialogs/plugins.cpp:375
 #: modules/gui/qt/dialogs/preferences.cpp:79
 msgid "All"
@@ -10012,7 +10083,7 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1293
+#: modules/audio_output/mmdevice.c:1293 modules/gui/qt/ui/sprefs_audio.h:419
 msgid "HDMI/SPDIF audio passthrough"
 msgstr ""
 
@@ -10219,7 +10290,7 @@ msgid "FFmpeg audio/video decoder"
 msgstr "ตัวอ่านรหัสเสียง/วีดิทัศน์ FFmpeg"
 
 #: modules/codec/avcodec/avcodec.c:82 modules/codec/gstreamer/gstdecode.c:96
-#: modules/codec/omxil/mediacodec.c:182 modules/codec/omxil/omxil.c:148
+#: modules/codec/omxil/mediacodec.c:183 modules/codec/omxil/omxil.c:148
 msgid "Decoding"
 msgstr "การอ่านรหัส"
 
@@ -10640,7 +10711,7 @@ msgstr ""
 
 #: modules/codec/cc.c:51 modules/codec/zvbi.c:65
 #: modules/gui/macosx/VLCSimplePrefsController.m:347 modules/spu/marq.c:108
-#: modules/spu/rss.c:144
+#: modules/spu/rss.c:144 modules/gui/qt/ui/video_effects.h:1276
 msgid "Opacity"
 msgstr "ความทึบแสง"
 
@@ -11916,6 +11987,7 @@ msgstr ""
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:258
+#: modules/gui/qt/ui/sprefs_video.h:328 modules/gui/qt/ui/video_effects.h:1246
 msgid "Mode"
 msgstr "รูปแบบ"
 
@@ -12431,17 +12503,7 @@ msgstr ""
 msgid "Use Hardware decoders only"
 msgstr ""
 
-#: modules/codec/videotoolbox.m:81
-msgid "Deinterlacing"
-msgstr ""
-
-#: modules/codec/videotoolbox.m:82
-msgid ""
-"If interlaced content is detected, temporal deinterlacing is enabled at the "
-"expense of a pipeline delay."
-msgstr ""
-
-#: modules/codec/videotoolbox.m:90
+#: modules/codec/videotoolbox.m:88
 msgid "VideoToolbox video decoder"
 msgstr ""
 
@@ -13175,6 +13237,7 @@ msgid "Quiet mode"
 msgstr "รูปแบบเงียบ"
 
 #: modules/codec/x264.c:403 modules/gui/macosx/VLCPlaylistInfo.m:69
+#: modules/gui/qt/ui/streampanel.h:170
 msgid "Statistics"
 msgstr "สถิติ"
 
@@ -13354,7 +13417,7 @@ msgstr ""
 msgid "Presentation Level"
 msgstr ""
 
-#: modules/codec/zvbi.c:88
+#: modules/codec/zvbi.c:88 modules/gui/qt/ui/streampanel.h:169
 msgid "1"
 msgstr "1"
 
@@ -13685,11 +13748,11 @@ msgstr "ระยะเวลา (วินาที) จนกระทั่�
 
 #: modules/control/netsync.c:70
 msgid "Network Sync"
-msgstr "รับประสานเครือข่าย"
+msgstr "การพ้องจังหวะเครือข่าย"
 
 #: modules/control/netsync.c:71
 msgid "Network synchronization"
-msgstr "การรับประสานข้อมูลจากเครือข่าย"
+msgstr "การพ้องจังหวะข้อมูลจากเครือข่าย"
 
 #: modules/control/ntservice.c:45
 msgid "Install Windows Service"
@@ -14216,7 +14279,7 @@ msgid "Avformat muxer"
 msgstr "ตัวรวมกระแส Avformat"
 
 #: modules/demux/avformat/avformat.c:56
-#: modules/stream_out/chromecast/cast.cpp:110 modules/stream_out/rtp.c:87
+#: modules/stream_out/chromecast/cast.cpp:118 modules/stream_out/rtp.c:87
 msgid "Muxer"
 msgstr "ตัวรวมกระแส"
 
@@ -14270,7 +14333,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr "ตัวแยกกระแส AVI"
 
-#: modules/demux/avi/avi.c:828 modules/demux/mp4/mp4.c:1673
+#: modules/demux/avi/avi.c:828 modules/demux/mp4/mp4.c:1674
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14292,7 +14355,7 @@ msgstr ""
 msgid "Play as is"
 msgstr "เล่นในแบบ"
 
-#: modules/demux/avi/avi.c:839 modules/demux/mp4/mp4.c:1684
+#: modules/demux/avi/avi.c:839 modules/demux/mp4/mp4.c:1685
 msgid "Broken or missing Index"
 msgstr ""
 
@@ -14447,7 +14510,7 @@ msgstr ""
 msgid "Use chapter codecs found in the segment."
 msgstr ""
 
-#: modules/demux/mkv/mkv.cpp:64
+#: modules/demux/mkv/mkv.cpp:64 modules/gui/qt/ui/sprefs_input.h:370
 msgid "Preload MKV files in the same directory"
 msgstr "โหลดแฟ้ม MKV จากที่เก็บแฟ้มเดียวกัน ไว้ล่วงหน้า"
 
@@ -14725,11 +14788,11 @@ msgstr "ตัวแยกกระแส MP4"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:1681
+#: modules/demux/mp4/mp4.c:1682
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:1682
+#: modules/demux/mp4/mp4.c:1683
 msgid "Build index"
 msgstr ""
 
@@ -15428,16 +15491,18 @@ msgstr "ถอดถอน"
 #: modules/gui/macosx/VLCAddonsWindowController.m:353
 #: modules/gui/qt/dialogs/plugins.cpp:377
 #: modules/gui/qt/managers/addons_manager.cpp:86
-#: modules/gui/skins2/src/skin_main.cpp:525
+#: modules/gui/skins2/src/skin_main.cpp:535
 msgid "Skins"
 msgstr "หน้ากาก"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
+#: modules/gui/qt/ui/equalizer.h:134
 msgid "2 Pass"
 msgstr ""
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:218
 #: modules/gui/qt/components/extended_panels.cpp:1111
+#: modules/gui/qt/ui/equalizer.h:136
 msgid "Preamp"
 msgstr ""
 
@@ -15526,6 +15591,7 @@ msgstr "ใส่ชื่อให้โพรไฟล์สำเนา:"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:793
 #: modules/gui/macosx/prefs.m:188
 #: modules/gui/qt/components/sout/profile_selector.cpp:443
+#: modules/gui/qt/ui/vlm.h:301
 msgid "Save"
 msgstr "บันทึก"
 
@@ -15556,6 +15622,7 @@ msgstr "เลือกชุดค่าตั้งที่คุณต้อ
 #: modules/gui/macosx/VLCBookmarksWindowController.m:81
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
+#: modules/gui/qt/ui/open_file.h:154
 msgid "Remove"
 msgstr "เอาออก"
 
@@ -15580,12 +15647,14 @@ msgid "Bookmarks"
 msgstr "ที่คั่น"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:78
+#: modules/gui/qt/ui/podcast_configuration.h:103 modules/gui/qt/ui/sout.h:209
+#: modules/gui/qt/ui/vlm.h:299
 msgid "Add"
 msgstr "เพิ่ม"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:79
 #: modules/gui/macosx/VLCSimplePrefsController.m:283
-#: modules/gui/qt/dialogs/bookmarks.cpp:53
+#: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:300
 msgid "Clear"
 msgstr "ล้าง"
 
@@ -15615,7 +15684,7 @@ msgstr "เวลา"
 #: modules/gui/macosx/VLCSimplePrefsController.m:282
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1359
-#: modules/stream_out/chromecast/cast.cpp:305
+#: modules/stream_out/chromecast/cast.cpp:373
 msgid "OK"
 msgstr "ตกลง"
 
@@ -15731,6 +15800,9 @@ msgstr "เลือกตำแหน่งที่จะส่งไป"
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:440
 #: modules/gui/qt/components/sout/sout_widgets.cpp:132
+#: modules/gui/qt/ui/open.h:282 modules/gui/qt/ui/open_disk.h:307
+#: modules/gui/qt/ui/open_file.h:147 modules/gui/qt/ui/sprefs_audio.h:417
+#: modules/gui/qt/ui/sprefs_input.h:368 modules/gui/qt/ui/sprefs_video.h:332
 msgid "Browse..."
 msgstr "เรียกดู..."
 
@@ -15763,43 +15835,51 @@ msgid "Save as new Profile..."
 msgstr "บันทึกเป็นโพรไฟล์ใหม่..."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:155
+#: modules/gui/qt/ui/profiles.h:725
 msgid "Encapsulation"
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:156
 #: share/lua/http/dialogs/create_stream.html:160
+#: modules/gui/qt/ui/profiles.h:751
 msgid "Video codec"
 msgstr "ตัวอ่าน-ลงรหัสวีดิทัศน์"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:157
 #: share/lua/http/dialogs/create_stream.html:178
+#: modules/gui/qt/ui/profiles.h:761
 msgid "Audio codec"
 msgstr "ตัวอ่าน-ลงรหัสเสียง"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:161
+#: modules/gui/qt/ui/profiles.h:727
 msgid "Keep original video track"
 msgstr "คงร่องวีดิทัศน์เดิมไว้"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:165
+#: modules/gui/qt/ui/profiles.h:749
 msgid "Resolution"
 msgstr "ความละเอียด"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:166
+#: modules/gui/qt/ui/profiles.h:740
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:169
-#: modules/gui/macosx/VLCOutput.m:88
+#: modules/gui/macosx/VLCOutput.m:88 modules/gui/qt/ui/profiles.h:741
 msgid "Scale"
 msgstr "สัดส่วน"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:172
+#: modules/gui/qt/ui/profiles.h:753
 msgid "Keep original audio track"
 msgstr "คงร่องเสียงเดิมไว้"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:179
+#: modules/gui/qt/ui/profiles.h:764
 msgid "Overlay subtitles on the video"
 msgstr "บทบรรยายซ้อนบนภาพวีดิทัศน์"
 
@@ -15967,7 +16047,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCFSPanelController.m:127
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:76
-#: modules/gui/qt/dialogs/toolbar.cpp:468
+#: modules/gui/qt/dialogs/toolbar.cpp:468 modules/gui/qt/ui/sprefs_audio.h:411
 msgid "Volume"
 msgstr "ระดับเสียง"
 
@@ -16477,6 +16557,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCMainMenu.m:431 modules/gui/macosx/VLCMainMenu.m:432
 #: modules/gui/macosx/VLCSimplePrefsController.m:364
+#: modules/gui/qt/ui/sprefs_video.h:319
 msgid "Fullscreen Video Device"
 msgstr ""
 
@@ -16570,7 +16651,7 @@ msgid "Bring All to Front"
 msgstr "นำไปไว้ข้างหน้าทั้งหมด"
 
 #: modules/gui/macosx/VLCMainMenu.m:478 modules/gui/qt/dialogs/help.cpp:54
-#: modules/gui/qt/menus.cpp:947 modules/gui/qt/menus.cpp:1134
+#: modules/gui/qt/menus.cpp:948 modules/gui/qt/menus.cpp:1135
 msgid "Help"
 msgstr "วิธีใช้"
 
@@ -16765,6 +16846,7 @@ msgstr "แผ่น"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:142
 #: modules/gui/macosx/VLCSimplePrefsController.m:297
+#: modules/gui/qt/ui/sprefs_input.h:371
 msgid "Network"
 msgstr "เครือข่าย"
 
@@ -16793,6 +16875,7 @@ msgstr "เล่นสื่ออื่นผสม"
 #: modules/gui/macosx/VLCOpenWindowController.m:152
 #: modules/gui/macosx/VLCOpenWindowController.m:347
 #: modules/gui/macosx/VLCSimplePrefsController.m:339
+#: modules/gui/qt/ui/sprefs_interface.h:548
 msgid "Choose..."
 msgstr "เลือก..."
 
@@ -16821,7 +16904,7 @@ msgid "Enable DVD menus"
 msgstr "เปิดใช้เมนู DVD"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:186
-#: modules/stream_out/chromecast/cast.cpp:117
+#: modules/stream_out/chromecast/cast.cpp:129
 msgid "IP Address"
 msgstr "ที่อยู่ IP"
 
@@ -16922,6 +17005,7 @@ msgstr "การลงรหัสบทบรรยาย"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:359
 #: modules/gui/macosx/VLCSimplePrefsController.m:341
+#: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Font size"
 msgstr "ขนาดแบบอักษร"
 
@@ -16944,6 +17028,7 @@ msgstr "แฟ้มบทบรรยาย"
 #: modules/gui/macosx/VLCOpenWindowController.m:572
 #: modules/gui/macosx/VLCOpenWindowController.m:658
 #: modules/gui/macosx/VLCOpenWindowController.m:1258
+#: modules/gui/qt/ui/open_file.h:142
 msgid "Open File"
 msgstr "เปิดแฟ้ม"
 
@@ -16960,7 +17045,7 @@ msgstr ""
 msgid "Display the stream locally"
 msgstr ""
 
-#: modules/gui/macosx/VLCOutput.m:66 modules/gui/qt/dialogs/convert.cpp:103
+#: modules/gui/macosx/VLCOutput.m:66 modules/gui/qt/dialogs/convert.cpp:104
 msgid "Dump raw input"
 msgstr ""
 
@@ -17102,6 +17187,7 @@ msgid "Disable renderer discovery"
 msgstr ""
 
 #: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:194
+#: modules/gui/qt/ui/sprefs_interface.h:554
 msgid "Continue playback?"
 msgstr ""
 
@@ -17174,6 +17260,7 @@ msgid "Keep audio level between sessions"
 msgstr "จำระดับเสียงที่ใช้ระหว่างวาระงาน"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:276
+#: modules/gui/qt/ui/sprefs_audio.h:413
 msgid "Always reset audio start level to:"
 msgstr "กำหนดให้ระดับเสียงตอนเปิดโปรแกรมเป็น:"
 
@@ -17200,6 +17287,7 @@ msgid "Shortcut"
 msgstr "ปุ่มลัด"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:289
+#: modules/gui/qt/ui/sprefs_input.h:367
 msgid "Record directory or filename"
 msgstr "ที่เก็บแฟ้มหรือชื่อแฟ้ม ของการอัดบันทึก"
 
@@ -17216,6 +17304,7 @@ msgid "Default Caching Level"
 msgstr "ใช้ระดับการทำแคชปริยาย"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:294
+#: modules/gui/qt/ui/open.h:266
 msgid "Caching"
 msgstr "การทำแคช"
 
@@ -17274,6 +17363,7 @@ msgid "Enable notifications on playlist item change"
 msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:327
+#: modules/gui/qt/ui/sprefs_interface.h:556
 msgid "Privacy / Network Interaction"
 msgstr "ความเป็นส่วนตัว / เครือข่าย"
 
@@ -17298,11 +17388,13 @@ msgid "Display Settings"
 msgstr "ค่าตั้งส่วนแสดงผล"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:340
+#: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Font color"
 msgstr "สีแบบอักษร"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:342 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
+#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Font"
 msgstr "แบบอักษร"
 
@@ -17311,6 +17403,7 @@ msgid "Subtitle languages"
 msgstr "ภาษาบทบรรยาย"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:344
+#: modules/gui/qt/ui/sprefs_subtitles.h:296
 msgid "Preferred subtitle language"
 msgstr "ภาษาบทบรรยายที่ควรเลือกใช้"
 
@@ -17325,16 +17418,18 @@ msgstr "บังคับใช้ตัวหนา"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:349
 #: modules/text_renderer/freetype/freetype.c:110
+#: modules/gui/qt/ui/sprefs_subtitles.h:303
 msgid "Outline color"
 msgstr "สีเส้นขอบ"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:350
 #: modules/text_renderer/freetype/freetype.c:111
+#: modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Outline thickness"
 msgstr "ความหนาเส้นขอบ"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:354
-#: modules/stream_out/display.c:53
+#: modules/stream_out/display.c:53 modules/gui/qt/ui/sprefs_video.h:315
 msgid "Display"
 msgstr "แสดง"
 
@@ -17355,6 +17450,7 @@ msgid "Black screens in Fullscreen mode"
 msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:366
+#: modules/gui/qt/ui/sprefs_video.h:330
 msgid "Video snapshots"
 msgstr "ภาพถ่ายวิดีทัศน์"
 
@@ -17364,14 +17460,17 @@ msgid "Folder"
 msgstr "โฟลเดอร์"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:369
+#: modules/gui/qt/ui/sprefs_video.h:336
 msgid "Format"
 msgstr "รูปแบบ"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:370
+#: modules/gui/qt/ui/sprefs_video.h:333
 msgid "Prefix"
 msgstr "คำนำหน้า"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:371
+#: modules/gui/qt/ui/sprefs_video.h:335
 msgid "Sequential numbering"
 msgstr ""
 
@@ -17585,6 +17684,7 @@ msgid "Basic"
 msgstr "พื้นฐาน"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:194
+#: modules/gui/qt/ui/video_effects.h:1267
 msgid "Geometry"
 msgstr "ลักษณะตำแหน่ง"
 
@@ -17593,7 +17693,9 @@ msgstr "ลักษณะตำแหน่ง"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:269
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:272
 #: modules/spu/marq.c:115 modules/spu/rss.c:152
-#: modules/video_filter/colorthres.c:55
+#: modules/video_filter/colorthres.c:55 modules/gui/qt/ui/video_effects.h:1241
+#: modules/gui/qt/ui/video_effects.h:1247
+#: modules/gui/qt/ui/video_effects.h:1250
 msgid "Color"
 msgstr "สี"
 
@@ -17602,45 +17704,53 @@ msgid "Image Adjust"
 msgstr "ปรับภาพ"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
+#: modules/gui/qt/ui/video_effects.h:1218
 msgid "Brightness Threshold"
 msgstr "ขีดเริ่มของความสว่าง"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:210
-#: modules/video_filter/sharpen.c:69
+#: modules/video_filter/sharpen.c:69 modules/gui/qt/ui/video_effects.h:1222
 msgid "Sharpen"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:211
+#: modules/gui/qt/ui/video_effects.h:1223
+#: modules/gui/qt/ui/video_effects.h:1296
 msgid "Sigma"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:212
+#: modules/gui/qt/ui/video_effects.h:1224
 msgid "Banding removal"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:213
-#: modules/video_filter/gradfun.c:50
+#: modules/video_filter/gradfun.c:50 modules/gui/qt/ui/video_effects.h:1225
 msgid "Radius"
 msgstr "รัศมี"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:214
+#: modules/gui/qt/ui/video_effects.h:1226
 msgid "Film Grain"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:215
-#: modules/video_filter/grain.c:53
+#: modules/video_filter/grain.c:53 modules/gui/qt/ui/video_effects.h:1227
 msgid "Variance"
 msgstr "ความแปรปรวน"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:220
+#: modules/gui/qt/ui/video_effects.h:1235
 msgid "Synchronize top and bottom"
 msgstr "ใช้ค่าเดียวกันทั้งบนและล่าง"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:221
+#: modules/gui/qt/ui/video_effects.h:1236
 msgid "Synchronize left and right"
 msgstr "ใช้ค่าเดียวกันทั้งซ้ายและขวา"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:223
+#: modules/gui/qt/ui/video_effects.h:1261
 msgid "Transform"
 msgstr "หมุนภาพ"
 
@@ -17674,51 +17784,60 @@ msgid "Magnification/Zoom"
 msgstr "ขยาย/แสดงย่อ-ขยาย"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:241
+#: modules/gui/qt/ui/video_effects.h:1264
 msgid "Puzzle game"
 msgstr "เกมเลื่อนต่อภาพ"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:242
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:247
 #: share/lua/http/dialogs/mosaic_window.html:96
+#: modules/gui/qt/ui/video_effects.h:1259
+#: modules/gui/qt/ui/video_effects.h:1265
 msgid "Rows"
 msgstr "แถว"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:243
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:248
 #: share/lua/http/dialogs/mosaic_window.html:114
+#: modules/gui/qt/ui/video_effects.h:1260
+#: modules/gui/qt/ui/video_effects.h:1266
 msgid "Columns"
 msgstr "คอลัมน์"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:244
-#: modules/video_splitter/clone.c:57
+#: modules/video_splitter/clone.c:57 modules/gui/qt/ui/video_effects.h:1306
 msgid "Clone"
 msgstr "โคลน"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
-#: modules/video_splitter/clone.c:39
+#: modules/video_splitter/clone.c:39 modules/gui/qt/ui/video_effects.h:1307
 msgid "Number of clones"
 msgstr "จำนวนของโคลน"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:246
+#: modules/gui/qt/ui/video_effects.h:1258
 msgid "Wall"
 msgstr "ผนัง"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:250
-#: modules/video_filter/colorthres.c:71
+#: modules/video_filter/colorthres.c:71 modules/gui/qt/ui/video_effects.h:1249
 msgid "Color threshold"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:254
+#: modules/gui/qt/ui/video_effects.h:1253
 msgid "Similarity"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:256
+#: modules/gui/qt/ui/video_effects.h:1255
 msgid "Intensity"
 msgstr "ความหนาแน่น"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:257
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:260
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
+#: modules/gui/qt/ui/video_effects.h:1245
 msgid "Gradient"
 msgstr "การไล่ระดับสี"
 
@@ -17733,10 +17852,12 @@ msgid "Hough"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:270
+#: modules/gui/qt/ui/video_effects.h:1248
 msgid "Cartoon"
 msgstr "การ์ตูน"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:271
+#: modules/gui/qt/ui/video_effects.h:1240
 msgid "Color extraction"
 msgstr "การกระจายของสี"
 
@@ -17745,7 +17866,7 @@ msgid "Invert colors"
 msgstr "สีตรงกันข้าม"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:275
-#: modules/video_filter/posterize.c:69
+#: modules/video_filter/posterize.c:69 modules/gui/qt/ui/video_effects.h:1244
 msgid "Posterize"
 msgstr "แปลงเป็นสีโปสเตอร์"
 
@@ -17755,11 +17876,12 @@ msgid "Posterize level"
 msgstr "ระดับการแปลงเป็นสีโปสเตอร์"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:277
-#: modules/video_filter/motionblur.c:60
+#: modules/video_filter/motionblur.c:60 modules/gui/qt/ui/video_effects.h:1297
 msgid "Motion blur"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:278
+#: modules/gui/qt/ui/video_effects.h:1298
 msgid "Factor"
 msgstr ""
 
@@ -17769,11 +17891,13 @@ msgid "Motion Detect"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:280
+#: modules/gui/qt/ui/video_effects.h:1293
 msgid "Water effect"
 msgstr "ลูกเล่นน้ำ"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:282
 #: modules/meta_engine/ID3Genres.h:100 modules/video_filter/psychedelic.c:55
+#: modules/gui/qt/ui/video_effects.h:1291
 msgid "Psychedelic"
 msgstr "Psychedelic"
 
@@ -17783,19 +17907,23 @@ msgid "Anaglyph"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:284
+#: modules/gui/qt/ui/video_effects.h:1278
 msgid "Add text"
 msgstr "ใส่ข้อความ"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
 #: modules/logger/file.c:193 modules/spu/marq.c:88
+#: modules/gui/qt/ui/video_effects.h:1280
 msgid "Text"
 msgstr "ข้อความ"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:306
+#: modules/gui/qt/ui/video_effects.h:1268
 msgid "Add logo"
 msgstr "ใส่โลโก้"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
+#: modules/gui/qt/ui/video_effects.h:1269
 msgid "Logo"
 msgstr "โลโก้"
 
@@ -18556,51 +18684,51 @@ msgstr ""
 msgid "Overall"
 msgstr ""
 
-#: modules/gui/qt/components/interface_widgets.cpp:608
+#: modules/gui/qt/components/interface_widgets.cpp:615
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
 msgstr ""
 
-#: modules/gui/qt/components/interface_widgets.cpp:681
+#: modules/gui/qt/components/interface_widgets.cpp:688
 msgid "Revert to normal play speed"
 msgstr "กลับไปใช้ความเร็วการเล่นแบบปกติ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:787
+#: modules/gui/qt/components/interface_widgets.cpp:794
 msgid "Download cover art"
 msgstr "ดาวน์โหลดภาพปก"
 
-#: modules/gui/qt/components/interface_widgets.cpp:791
+#: modules/gui/qt/components/interface_widgets.cpp:798
 msgid "Add cover art from file"
 msgstr "เพิ่มหน้าปกจากแฟ้ม"
 
-#: modules/gui/qt/components/interface_widgets.cpp:857
+#: modules/gui/qt/components/interface_widgets.cpp:864
 msgid "Choose Cover Art"
 msgstr "เลือกหน้าปก"
 
-#: modules/gui/qt/components/interface_widgets.cpp:858
+#: modules/gui/qt/components/interface_widgets.cpp:865
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "แฟ้มภาพ (*.gif *.jpg *.jpeg *.png)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:882
+#: modules/gui/qt/components/interface_widgets.cpp:889
 #: modules/gui/qt/dialogs/toolbar.cpp:564
 msgid "Elapsed time"
 msgstr "เวลาที่เล่นไปแล้ว"
 
-#: modules/gui/qt/components/interface_widgets.cpp:886
+#: modules/gui/qt/components/interface_widgets.cpp:893
 #: modules/gui/qt/dialogs/toolbar.cpp:568
 msgid "Total/Remaining time"
 msgstr "เวลาทั้งหมด/ที่เหลือ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:888
+#: modules/gui/qt/components/interface_widgets.cpp:895
 msgid "Click to toggle between total and remaining time"
 msgstr "คลิกเพื่อเพื่อสลับใช้การแสดงเวลาแบบทั้งหมด หรือเวลาที่เหลือ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:894
+#: modules/gui/qt/components/interface_widgets.cpp:901
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "กดเพื่อสลับให้แสดงเวลาที่เหลือ หรือเวลารวมที่ต้องในการเล่น"
 
-#: modules/gui/qt/components/interface_widgets.cpp:896
+#: modules/gui/qt/components/interface_widgets.cpp:903
 msgid "Double click to jump to a chosen time position"
 msgstr ""
 
@@ -18622,6 +18750,7 @@ msgid "File names:"
 msgstr "ชื่อแฟ้ม:"
 
 #: modules/gui/qt/components/open_panels.cpp:162
+#: modules/gui/qt/ui/sprefs_interface.h:561
 msgid "Filter:"
 msgstr "ตัวกรอง:"
 
@@ -18968,7 +19097,7 @@ msgid "&Apply"
 msgstr "&ใช้"
 
 #: modules/gui/qt/components/simple_preferences.cpp:1342
-#: modules/gui/qt/dialogs/convert.cpp:133
+#: modules/gui/qt/dialogs/convert.cpp:134
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
 #: modules/gui/qt/dialogs/podcast_configuration.cpp:37
@@ -19023,6 +19152,7 @@ msgid "File/Folder"
 msgstr "แฟ้ม/โฟลเดอร์"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:47
+#: modules/gui/qt/ui/sout.h:202
 msgid "Source"
 msgstr "แหล่ง"
 
@@ -19043,7 +19173,7 @@ msgid "Filename"
 msgstr "ชื่อแฟ้ม"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:169
-#: modules/gui/qt/dialogs/convert.cpp:157
+#: modules/gui/qt/dialogs/convert.cpp:158
 msgid "Save file..."
 msgstr "บันทึกแฟ้ม"
 
@@ -19131,7 +19261,7 @@ msgstr "&ป&ิด"
 msgid "Bytes"
 msgstr "ไบต์"
 
-#: modules/gui/qt/dialogs/convert.cpp:45 modules/gui/qt/dialogs/convert.cpp:102
+#: modules/gui/qt/dialogs/convert.cpp:45 modules/gui/qt/dialogs/convert.cpp:103
 msgid "Convert"
 msgstr "แปลง"
 
@@ -19143,43 +19273,43 @@ msgstr ""
 msgid "Destination"
 msgstr "ปลายทาง"
 
-#: modules/gui/qt/dialogs/convert.cpp:68
+#: modules/gui/qt/dialogs/convert.cpp:68 modules/gui/qt/ui/sprefs_audio.h:416
 msgid "Destination file:"
 msgstr "แฟ้มปลายทาง:"
 
-#: modules/gui/qt/dialogs/convert.cpp:78
+#: modules/gui/qt/dialogs/convert.cpp:79
 msgid "Browse"
 msgstr "เรียกดู"
 
-#: modules/gui/qt/dialogs/convert.cpp:86
+#: modules/gui/qt/dialogs/convert.cpp:87
 msgid "Multiple Files Selected."
 msgstr ""
 
-#: modules/gui/qt/dialogs/convert.cpp:88
+#: modules/gui/qt/dialogs/convert.cpp:89
 msgid "Files will be placed in the same directory with the same name."
 msgstr ""
 
-#: modules/gui/qt/dialogs/convert.cpp:91
+#: modules/gui/qt/dialogs/convert.cpp:92
 msgid "Append '-converted' to filename"
 msgstr ""
 
-#: modules/gui/qt/dialogs/convert.cpp:99
+#: modules/gui/qt/dialogs/convert.cpp:100
 msgid "Settings"
 msgstr "ค่าตั้ง"
 
-#: modules/gui/qt/dialogs/convert.cpp:114
+#: modules/gui/qt/dialogs/convert.cpp:115
 msgid "Display the output"
 msgstr "ดูส่วนแสดงผล"
 
-#: modules/gui/qt/dialogs/convert.cpp:115
+#: modules/gui/qt/dialogs/convert.cpp:116
 msgid "This display the resulting media, but can slow things down."
 msgstr ""
 
-#: modules/gui/qt/dialogs/convert.cpp:132
+#: modules/gui/qt/dialogs/convert.cpp:133
 msgid "&Start"
 msgstr "เริ่&ม"
 
-#: modules/gui/qt/dialogs/convert.cpp:159
+#: modules/gui/qt/dialogs/convert.cpp:160
 msgid "Containers"
 msgstr ""
 
@@ -19187,7 +19317,8 @@ msgstr ""
 msgid "Program Guide"
 msgstr "แนะนำรายการ"
 
-#: modules/gui/qt/dialogs/epg.cpp:87
+#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:289
+#: modules/gui/qt/ui/about.h:290
 msgid "Update"
 msgstr "ปรับปรุง"
 
@@ -19288,7 +19419,7 @@ msgstr "&ใช่"
 msgid "&No"
 msgstr "&ไม่"
 
-#: modules/gui/qt/dialogs/help.cpp:222
+#: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:147
 msgid "VLC media player updates"
 msgstr "การปรับรุ่นของโปรแกรมเล่นสื่อ VLC"
 
@@ -19333,6 +19464,8 @@ msgid "Location:"
 msgstr "ที่ตั้ง:"
 
 #: modules/gui/qt/dialogs/messages.cpp:80
+#: modules/gui/qt/ui/messages_panel.h:138
+#: modules/gui/qt/ui/messages_panel.h:142
 msgid "Messages"
 msgstr "ข้อความ"
 
@@ -19368,8 +19501,8 @@ msgstr "ปรับปรุงผังรายการ"
 msgid "Clear the messages"
 msgstr "ล้างข้อความ"
 
-#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:931
-#: modules/gui/qt/menus.cpp:1128
+#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:932
+#: modules/gui/qt/menus.cpp:1129
 msgid "Open Media"
 msgstr "เปิดสื่อ"
 
@@ -19399,7 +19532,7 @@ msgid "&Enqueue"
 msgstr "เ&ข&้าคิว"
 
 #: modules/gui/qt/dialogs/open.cpp:117 modules/gui/qt/dialogs/open.cpp:214
-#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:820
+#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:821
 msgid "&Play"
 msgstr "เ&ล&่น"
 
@@ -19532,7 +19665,7 @@ msgstr "รุ่น"
 msgid "Website"
 msgstr "เว็บไซต์"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1533
+#: modules/gui/qt/dialogs/plugins.cpp:1533 modules/gui/qt/ui/sprefs_input.h:366
 msgid "Files"
 msgstr "แฟ้ม"
 
@@ -19592,7 +19725,7 @@ msgstr "ไม่สามารถบันทึกแฟ้มค่าปร
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr "คุณแน่ใจนะว่าต้องการ เรียกคืนค่าปรับแต่งโปรแกรมเล่นสื่อ VLC"
 
-#: modules/gui/qt/dialogs/sout.cpp:45
+#: modules/gui/qt/dialogs/sout.cpp:45 modules/gui/qt/ui/sout.h:201
 msgid "Stream Output"
 msgstr "ส่วนส่งกระแส"
 
@@ -19771,7 +19904,7 @@ msgstr "เล่นซ้ำ:"
 msgid "Repeat delay:"
 msgstr "เว้นช่วงการเล่นซ้ำ:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:112
+#: modules/gui/qt/dialogs/vlm.cpp:112 modules/gui/qt/ui/sprefs_interface.h:558
 msgid " days"
 msgstr " วัน"
 
@@ -19885,27 +20018,27 @@ msgstr "&สื่อ"
 msgid "P&layback"
 msgstr "การเ&ล่น"
 
-#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1046
+#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1047
 msgid "&Audio"
 msgstr "เสีย&ง"
 
-#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1053
+#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1054
 msgid "&Video"
 msgstr "&วีดิทัศน์"
 
-#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1060
+#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1061
 msgid "Subti&tle"
 msgstr "บท&บรรยาย"
 
-#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1076
+#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1077
 msgid "Tool&s"
 msgstr "เ&ครื่องมือ"
 
-#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1083
+#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1084
 msgid "V&iew"
 msgstr "มุ&มมอง"
 
-#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:784
+#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:785
 msgid "&Help"
 msgstr "วิธี&ใช้"
 
@@ -19917,7 +20050,7 @@ msgstr "เปิดแ&ฟ้ม..."
 msgid "&Open Multiple Files..."
 msgstr "เปิด&หลายแฟ้ม..."
 
-#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:936
+#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:937
 msgid "Open &Disc..."
 msgstr "เปิดแ&ผ่น..."
 
@@ -19925,7 +20058,7 @@ msgstr "เปิดแ&ผ่น..."
 msgid "Open &Network Stream..."
 msgstr "เปิดกระแ&สเครือข่าย..."
 
-#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:940
+#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:941
 msgid "Open &Capture Device..."
 msgstr "เปิดอุปกรณ์เล่&น..."
 
@@ -19953,7 +20086,7 @@ msgstr "ออกเมื่อหมดรายการในผังเล
 msgid "Close to systray"
 msgstr "ปิดเก็บไว้ที่ถาดระบบ"
 
-#: modules/gui/qt/menus.cpp:403 modules/gui/qt/menus.cpp:1190
+#: modules/gui/qt/menus.cpp:403 modules/gui/qt/menus.cpp:1191
 msgid "&Quit"
 msgstr "&ออก"
 
@@ -20057,143 +20190,143 @@ msgstr "&เพิ่มแฟ้มบทบรรยาย"
 msgid "Sub &Track"
 msgstr "&ร&่องบทบรรยาย"
 
-#: modules/gui/qt/menus.cpp:678
+#: modules/gui/qt/menus.cpp:675
 msgid "Video &Track"
 msgstr "ร่อง&ว&ีดิทัศน์"
 
-#: modules/gui/qt/menus.cpp:685
+#: modules/gui/qt/menus.cpp:679
 msgid "&Fullscreen"
 msgstr "เ&ต&็มจอ"
 
-#: modules/gui/qt/menus.cpp:686
+#: modules/gui/qt/menus.cpp:680
 msgid "Always Fit &Window"
 msgstr "ปรับให้&พอดีกับหน้าต่าง"
 
-#: modules/gui/qt/menus.cpp:687
+#: modules/gui/qt/menus.cpp:681
 msgid "Set as Wall&paper"
 msgstr "ตั้งเป็น&ภาพพื้นหลัง"
 
-#: modules/gui/qt/menus.cpp:691
+#: modules/gui/qt/menus.cpp:685
 msgid "&Zoom"
 msgstr "แสดงย่อ-&ขยาย"
 
-#: modules/gui/qt/menus.cpp:692
+#: modules/gui/qt/menus.cpp:686
 msgid "&Aspect Ratio"
 msgstr "อัตรา&ส&่วนภาพ"
 
-#: modules/gui/qt/menus.cpp:693
+#: modules/gui/qt/menus.cpp:687
 msgid "&Crop"
 msgstr "&ต&ัดส่วนภาพ"
 
-#: modules/gui/qt/menus.cpp:697
+#: modules/gui/qt/menus.cpp:691
 msgid "&Deinterlace"
 msgstr "แ&ยกภาพประสาน"
 
-#: modules/gui/qt/menus.cpp:698
+#: modules/gui/qt/menus.cpp:692
 msgid "&Deinterlace mode"
 msgstr "แย&กภาพประสานแบบ"
 
-#: modules/gui/qt/menus.cpp:702
+#: modules/gui/qt/menus.cpp:696
 msgid "Take &Snapshot"
 msgstr "&จ&ับภาพ"
 
-#: modules/gui/qt/menus.cpp:721
+#: modules/gui/qt/menus.cpp:715
 msgid "T&itle"
 msgstr "เ&ร&ื&่องที่"
 
-#: modules/gui/qt/menus.cpp:722
+#: modules/gui/qt/menus.cpp:716
 msgid "&Chapter"
 msgstr "&ตอนที่"
 
-#: modules/gui/qt/menus.cpp:724
+#: modules/gui/qt/menus.cpp:718
 msgid "&Program"
 msgstr "ร&ายการ"
 
-#: modules/gui/qt/menus.cpp:728
+#: modules/gui/qt/menus.cpp:722
 msgid "&Manage"
 msgstr "&จ&ัดการ"
 
-#: modules/gui/qt/menus.cpp:787
+#: modules/gui/qt/menus.cpp:788
 msgid "Check for &Updates..."
 msgstr "ตร&วจหาการปรับปรุง..."
 
-#: modules/gui/qt/menus.cpp:834
+#: modules/gui/qt/menus.cpp:835
 msgid "&Stop"
 msgstr "&หยุด"
 
-#: modules/gui/qt/menus.cpp:842
+#: modules/gui/qt/menus.cpp:843
 msgid "Pre&vious"
 msgstr "&ก&่อนหน้า"
 
-#: modules/gui/qt/menus.cpp:848
+#: modules/gui/qt/menus.cpp:849
 msgid "Ne&xt"
 msgstr "&ถ&ัดไป"
 
-#: modules/gui/qt/menus.cpp:866
+#: modules/gui/qt/menus.cpp:867
 msgid "Sp&eed"
 msgstr "ความเ&ร&็ว"
 
-#: modules/gui/qt/menus.cpp:872
+#: modules/gui/qt/menus.cpp:873
 msgid "&Faster"
 msgstr "เร็ว&ข&ึ&้น"
 
-#: modules/gui/qt/menus.cpp:884
+#: modules/gui/qt/menus.cpp:885
 msgid "N&ormal Speed"
 msgstr "เร็ว&ปกติ"
 
-#: modules/gui/qt/menus.cpp:894
+#: modules/gui/qt/menus.cpp:895
 msgid "Slo&wer"
 msgstr "ช้า&ลง"
 
-#: modules/gui/qt/menus.cpp:909
+#: modules/gui/qt/menus.cpp:910
 msgid "&Jump Forward"
 msgstr "ช่วงถั&ดไป"
 
-#: modules/gui/qt/menus.cpp:916
+#: modules/gui/qt/menus.cpp:917
 msgid "Jump Bac&kward"
 msgstr "ช่วงก่อ&นหน้า"
 
-#: modules/gui/qt/menus.cpp:923
+#: modules/gui/qt/menus.cpp:924
 msgid "Ctrl+T"
 msgstr "Ctrl+T"
 
-#: modules/gui/qt/menus.cpp:938
+#: modules/gui/qt/menus.cpp:939
 msgid "Open &Network..."
 msgstr "เปิดเ&ครือข่าย..."
 
-#: modules/gui/qt/menus.cpp:1032
+#: modules/gui/qt/menus.cpp:1033
 msgid "Leave Fullscreen"
 msgstr "เลิกแสดงเต็มจอ"
 
-#: modules/gui/qt/menus.cpp:1066
+#: modules/gui/qt/menus.cpp:1067
 msgid "&Playback"
 msgstr "&การเล่น"
 
-#: modules/gui/qt/menus.cpp:1171
+#: modules/gui/qt/menus.cpp:1172
 msgid "&Hide VLC media player in taskbar"
 msgstr "ซ่อนโปรแกรม VLC จากแถบ&งาน"
 
-#: modules/gui/qt/menus.cpp:1177
+#: modules/gui/qt/menus.cpp:1178
 msgid "Sho&w VLC media player"
 msgstr "&แสดงโปรแกรม VLC"
 
-#: modules/gui/qt/menus.cpp:1188
+#: modules/gui/qt/menus.cpp:1189
 msgid "&Open Media"
 msgstr "เปิด&ส&ื&่อ"
 
-#: modules/gui/qt/menus.cpp:1628
+#: modules/gui/qt/menus.cpp:1629
 msgid "&Clear"
 msgstr "ล้&าง"
 
-#: modules/gui/qt/menus.cpp:1636
+#: modules/gui/qt/menus.cpp:1637
 msgid "&Renderer"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1640
+#: modules/gui/qt/menus.cpp:1641
 msgid "<Local>"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1653
+#: modules/gui/qt/menus.cpp:1654
 msgid "Scan"
 msgstr ""
 
@@ -20207,7 +20340,7 @@ msgid ""
 "preferences dialog."
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:86 modules/gui/skins2/src/skin_main.cpp:489
+#: modules/gui/qt/qt.cpp:86 modules/gui/skins2/src/skin_main.cpp:499
 msgid "Systray icon"
 msgstr "ไอคอนถาดระบบ"
 
@@ -20432,88 +20565,88 @@ msgctxt "Tooltip|Clear"
 msgid "Clear"
 msgstr ""
 
-#: modules/gui/skins2/src/dialogs.cpp:206
+#: modules/gui/skins2/src/dialogs.cpp:212
 msgid "Open a skin file"
 msgstr "เปิดแฟ้มหน้ากาก"
 
-#: modules/gui/skins2/src/dialogs.cpp:207
+#: modules/gui/skins2/src/dialogs.cpp:213
 msgid "Skin files |*.vlt;*.wsz;*.xml"
 msgstr "แฟ้มหน้ากาก |*.vlt;*.wsz;*.xml"
 
-#: modules/gui/skins2/src/dialogs.cpp:215
+#: modules/gui/skins2/src/dialogs.cpp:221
 msgid "Playlist Files |"
 msgstr ""
 
-#: modules/gui/skins2/src/dialogs.cpp:215
+#: modules/gui/skins2/src/dialogs.cpp:221
 msgid "|All Files |*"
 msgstr ""
 
-#: modules/gui/skins2/src/dialogs.cpp:216
+#: modules/gui/skins2/src/dialogs.cpp:222
 msgid "Open playlist"
 msgstr "เปิดผังเล่น"
 
-#: modules/gui/skins2/src/dialogs.cpp:224
+#: modules/gui/skins2/src/dialogs.cpp:230
 msgid "Save playlist"
 msgstr "บันทึกผังเล่น"
 
-#: modules/gui/skins2/src/dialogs.cpp:224
+#: modules/gui/skins2/src/dialogs.cpp:230
 msgid "XSPF playlist |*.xspf|M3U file |*.m3u|HTML playlist |*.html"
 msgstr ""
 
-#: modules/gui/skins2/src/skin_main.cpp:484
+#: modules/gui/skins2/src/skin_main.cpp:494
 msgid "Skin to use"
 msgstr "หน้ากากที่จะใช้"
 
-#: modules/gui/skins2/src/skin_main.cpp:485
+#: modules/gui/skins2/src/skin_main.cpp:495
 msgid "Path to the skin to use."
 msgstr "พาธไปยังหน้ากากที่จะใช้"
 
-#: modules/gui/skins2/src/skin_main.cpp:486
+#: modules/gui/skins2/src/skin_main.cpp:496
 msgid "Config of last used skin"
 msgstr "การตั้งค่าของหน้ากากที่ใช้ล่าสุด"
 
-#: modules/gui/skins2/src/skin_main.cpp:487
+#: modules/gui/skins2/src/skin_main.cpp:497
 msgid ""
 "Windows configuration of the last skin used. This option is updated "
 "automatically, do not touch it."
 msgstr ""
 "การตั้งค่าหน้าต่างของหน้ากากที่ใช้ล่าสุด ตัวเลือกนี้มีการปรับเปลี่ยนโดยอัตโนมัติ อย่าแตะต้องจะดีกว่า"
 
-#: modules/gui/skins2/src/skin_main.cpp:490
+#: modules/gui/skins2/src/skin_main.cpp:500
 msgid "Show a systray icon for VLC"
 msgstr "ให้ VLC แสดงไอคอนในถาดระบบ"
 
-#: modules/gui/skins2/src/skin_main.cpp:491
-#: modules/gui/skins2/src/skin_main.cpp:492
+#: modules/gui/skins2/src/skin_main.cpp:501
+#: modules/gui/skins2/src/skin_main.cpp:502
 msgid "Show VLC on the taskbar"
 msgstr "แสดง VLC ในแถบงาน"
 
-#: modules/gui/skins2/src/skin_main.cpp:493
+#: modules/gui/skins2/src/skin_main.cpp:503
 msgid "Enable transparency effects"
 msgstr "เปิดใช้ลูกเล่นความโปร่งแสง"
 
-#: modules/gui/skins2/src/skin_main.cpp:494
+#: modules/gui/skins2/src/skin_main.cpp:504
 msgid ""
 "You can disable all transparency effects if you want. This is mainly useful "
 "when moving windows does not behave correctly."
 msgstr ""
 
-#: modules/gui/skins2/src/skin_main.cpp:497
-#: modules/gui/skins2/src/skin_main.cpp:498
+#: modules/gui/skins2/src/skin_main.cpp:507
+#: modules/gui/skins2/src/skin_main.cpp:508
 msgid "Use a skinned playlist"
 msgstr "ใช้รูปแบบผังเล่นของหน้ากาก"
 
-#: modules/gui/skins2/src/skin_main.cpp:499
+#: modules/gui/skins2/src/skin_main.cpp:509
 msgid "Display video in a skinned window if any"
 msgstr "แสดงวีดิทัศน์ในหน้าต่างของหน้ากาก (ถ้ามี)"
 
-#: modules/gui/skins2/src/skin_main.cpp:501
+#: modules/gui/skins2/src/skin_main.cpp:511
 msgid ""
 "When set to 'no', this parameter is intended to give old skins a chance to "
 "play back video even though no video tag is implemented"
 msgstr ""
 
-#: modules/gui/skins2/src/skin_main.cpp:526
+#: modules/gui/skins2/src/skin_main.cpp:536
 msgid "Skinnable Interface"
 msgstr "ส่วนติดต่อที่เปลี่ยนหน้ากากได้"
 
@@ -20668,11 +20801,11 @@ msgstr ""
 msgid "MMAL-based vout plugin for Raspberry Pi"
 msgstr ""
 
-#: modules/hw/vaapi/filters.c:1187
+#: modules/hw/vaapi/filters.c:1184
 msgid "VAAPI filters"
 msgstr ""
 
-#: modules/hw/vaapi/filters.c:1188
+#: modules/hw/vaapi/filters.c:1185
 msgid "Video Accelerated API filters"
 msgstr ""
 
@@ -22456,7 +22589,7 @@ msgstr "โฟล์เดอร์รูปภาพ"
 
 #: modules/services_discovery/microdns.c:44
 #: modules/services_discovery/microdns.c:57
-#: modules/services_discovery/microdns.c:620
+#: modules/services_discovery/microdns.c:644
 msgid "mDNS Network Discovery"
 msgstr ""
 
@@ -22493,6 +22626,7 @@ msgid "Podcasts"
 msgstr ""
 
 #: modules/services_discovery/podcast.c:56
+#: modules/gui/qt/ui/podcast_configuration.h:101
 msgid "Podcast URLs list"
 msgstr ""
 
@@ -22595,7 +22729,7 @@ msgstr "ส่วนรับเสียง (ALSA)"
 msgid "CD"
 msgstr "CD"
 
-#: modules/services_discovery/udev.c:599
+#: modules/services_discovery/udev.c:599 modules/gui/qt/ui/open_disk.h:298
 msgid "DVD"
 msgstr "DVD"
 
@@ -22739,6 +22873,7 @@ msgstr ""
 
 #: modules/spu/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
+#: modules/gui/qt/ui/video_effects.h:1288
 msgid "Overlay"
 msgstr "ภาพซ้อน"
 
@@ -23518,74 +23653,90 @@ msgstr ""
 msgid "Chromaprint stream output"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:105
+#: modules/stream_out/chromecast/cast.cpp:113
 msgid "HTTP port"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:106
+#: modules/stream_out/chromecast/cast.cpp:114
 msgid ""
 "This sets the HTTP port of the local server used to stream the media to the "
 "Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:109
+#: modules/stream_out/chromecast/cast.cpp:117
 msgid "The Chromecast receiver can receive video."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:111
+#: modules/stream_out/chromecast/cast.cpp:119
 msgid "This sets the muxer used to stream to the Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:112
+#: modules/stream_out/chromecast/cast.cpp:120
 msgid "MIME content type"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:113
+#: modules/stream_out/chromecast/cast.cpp:121
 msgid "This sets the media MIME content type sent to the Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:114
-#: modules/stream_out/chromecast/cast.cpp:306
-#, fuzzy
+#: modules/stream_out/chromecast/cast.cpp:122
+#: modules/stream_out/chromecast/cast.cpp:374
 msgid "Performance warning"
-msgstr "แสดงข้อผิดพลาดและคำเตือน"
+msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:115
+#: modules/stream_out/chromecast/cast.cpp:123
 msgid "Display a performance warning when transcoding"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:118
+#: modules/stream_out/chromecast/cast.cpp:124
+#, fuzzy
+msgid "Enable Audio passthrough"
+msgstr "เปิดใช้ส่วนส่งกระแสเสียง"
+
+#: modules/stream_out/chromecast/cast.cpp:125
+msgid "Disable if your receiver does not support Dolby®"
+msgstr ""
+
+#: modules/stream_out/chromecast/cast.cpp:126
+#, fuzzy
+msgid "Multichannel PCM"
+msgstr "ช่องเสียง"
+
+#: modules/stream_out/chromecast/cast.cpp:127
+msgid "Use PCM for multichannel audio."
+msgstr ""
+
+#: modules/stream_out/chromecast/cast.cpp:130
 msgid "IP Address of the Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:119
+#: modules/stream_out/chromecast/cast.cpp:131
 msgid "Chromecast port"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:120
+#: modules/stream_out/chromecast/cast.cpp:132
 msgid "The port used to talk to the Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:124
+#: modules/stream_out/chromecast/cast.cpp:136
 msgid "Chromecast"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:125
+#: modules/stream_out/chromecast/cast.cpp:137
 msgid "Chromecast stream output"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:305
-#, fuzzy
+#: modules/stream_out/chromecast/cast.cpp:373
 msgid "Ok, Don't warn me again"
-msgstr "ไม่ต้องถามอีก"
+msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:307
+#: modules/stream_out/chromecast/cast.cpp:375
 msgid ""
 "Casting this video requires conversion. This conversion can use all the "
 "available power and could quickly drain your battery."
 msgstr ""
 
-#: modules/stream_out/chromecast/chromecast_demux.cpp:366
+#: modules/stream_out/chromecast/chromecast_demux.cpp:391
 msgid "Chromecast demux wrapper"
 msgstr ""
 
@@ -24601,7 +24752,7 @@ msgstr ""
 msgid "Image properties filter"
 msgstr "ตัวผันค่าคุณสมบัติภาพ"
 
-#: modules/video_filter/adjust.c:78
+#: modules/video_filter/adjust.c:78 modules/gui/qt/ui/video_effects.h:1215
 msgid "Image adjust"
 msgstr "ปรับภาพ"
 
@@ -25631,7 +25782,7 @@ msgstr ""
 msgid "Rotate video filter"
 msgstr "ตัวผันค่าหมุนวีดิทัศน์"
 
-#: modules/video_filter/rotate.c:69
+#: modules/video_filter/rotate.c:69 modules/gui/qt/ui/video_effects.h:1262
 msgid "Rotate"
 msgstr "หมุน"
 
@@ -25977,7 +26128,7 @@ msgstr "GLX"
 msgid "GLX extension for OpenGL"
 msgstr ""
 
-#: modules/video_output/kva.c:50
+#: modules/video_output/kva.c:50 modules/gui/qt/ui/sprefs_video.h:324
 msgid "Enable a workaround for T23"
 msgstr ""
 
@@ -25987,7 +26138,7 @@ msgid ""
 "size is equal to or smaller than the movie size."
 msgstr ""
 
-#: modules/video_output/kva.c:55
+#: modules/video_output/kva.c:55 modules/gui/qt/ui/sprefs_video.h:325
 msgid "Video mode"
 msgstr "รูปแบบวีดิทัศน์"
 
@@ -26106,6 +26257,7 @@ msgid "Direct3D11 video output"
 msgstr ""
 
 #: modules/video_output/win32/directdraw.c:65
+#: modules/gui/qt/ui/sprefs_video.h:321
 msgid "Use hardware YUV->RGB conversions"
 msgstr ""
 
@@ -26208,19 +26360,19 @@ msgstr "ส่วนแสดงวีดิทัศน์เชิงสถิ
 
 #: modules/video_output/vmem.c:43
 msgid "Video memory buffer width."
-msgstr "ความกว้างบัฟเฟอร์ความจำวีดิทัศน์"
+msgstr "ความกว้างภาพของบัฟเฟอร์หน่วยความจำวีดิทัศน์"
 
 #: modules/video_output/vmem.c:46
 msgid "Video memory buffer height."
-msgstr "ความสูงบัฟเฟอร์ความจำวีดิทัศน์"
+msgstr "ความสูงภาพของบัฟเฟอร์หน่วยความจำวีดิทัศน์"
 
 #: modules/video_output/vmem.c:48
 msgid "Pitch"
-msgstr "Pitch"
+msgstr "ความยาวเส้นภาพ"
 
 #: modules/video_output/vmem.c:49
 msgid "Video memory buffer pitch in bytes."
-msgstr "ระดับเสียงบัฟเฟอร์ความจำวีดิทัศน์เป็นไบต์"
+msgstr "ความยาวเส้นภาพของบัฟเฟอร์หน่วยความจำวีดิทัศน์เป็นไบต์"
 
 #: modules/video_output/vmem.c:51
 msgid "Chroma"
@@ -26932,6 +27084,7 @@ msgid "Play List"
 msgstr "ผังเล่น"
 
 #: share/lua/http/dialogs/create_stream.html:156
+#: modules/gui/qt/ui/sprefs_audio.h:414
 msgid "Output"
 msgstr "ส่วนแสดงผล"
 
@@ -27046,7 +27199,7 @@ msgstr "การประสานร่องข้อมูล"
 msgid "VLM Batch Commands"
 msgstr ""
 
-#: share/lua/http/index.html:240
+#: share/lua/http/index.html:240 modules/gui/qt/ui/vlm.h:298
 msgid "Loop"
 msgstr "เล่นซ้ำ"
 
@@ -27115,479 +27268,847 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr ""
 
-#~ msgid "Dialog"
-#~ msgstr "กล่องโต้ตอบ"
-
-#~ msgid "Preset"
-#~ msgstr "ชุดค่าตั้ง"
-
-#~ msgid "0.00 dB"
-#~ msgstr "0.00 dB"
-
-#~ msgid "&Filter:"
-#~ msgstr "ตัว&กรอง"
-
-#~ msgid "&Save as..."
-#~ msgstr "&บ&ันทึกเป็น"
-
-#~ msgid "Modules Tree"
-#~ msgstr "แผนโครงมอดูล"
-
-#~ msgid "Show extended options"
-#~ msgstr "แสดงตัวเลือกเพิ่มเติม"
-
-#~ msgid "Show &more options"
-#~ msgstr "&ต&ัวเลือกเพิ่มเติม"
-
-#~ msgid "Change the caching for the media"
-#~ msgstr "เปลี่ยนการทำแคชสำหรับสื่อ"
-
-#~ msgid " ms"
-#~ msgstr " ms"
-
-#~ msgid "MRL"
-#~ msgstr "MRL"
-
-#~ msgid "Start Time"
-#~ msgstr "เวลาเริ่ม"
-
-#~ msgid "Edit Options"
-#~ msgstr "แก้ไขตัวเลือก"
-
-#~ msgid "Extra media"
-#~ msgstr "สื่อเพิ่มเติม"
-
-#~ msgid "Select the file"
-#~ msgstr "เลือกแฟ้ม"
-
-#~ msgid "Change the start time for the media"
-#~ msgstr "เปลี่ยนเวลาในการเริ่มเล่นของสื่อ"
-
-#~ msgid "HH'H':mm'm':ss's'.zzz"
-#~ msgstr "HH'H':mm'm':ss's'.zzz"
-
-#~ msgid "Play another media synchronously (extra audio file, ...)"
-#~ msgstr "เล่นสื่ออื่นผสม (อาทิ แฟ้มเสียงเพิ่มเติม ...)"
-
-#~ msgid "Capture mode"
-#~ msgstr "รูปแบบการรับชม"
-
-#~ msgid "Select the capture device type"
-#~ msgstr "เลือกประเภทอุปกรณ์เล่น"
-
-#~ msgid "Device Selection"
-#~ msgstr "เลือกอุปกรณ์เล่น"
-
-#~ msgid "Options"
-#~ msgstr "ตัวเลือก"
-
-#~ msgid "Access advanced options to tweak the device"
-#~ msgstr "ตัวเลือกขั้นสูงในการเข้าใช้งานอุปกรณ์"
-
-#~ msgid "Advanced options..."
-#~ msgstr "ตัวเลือกขั้นสูง"
-
-#~ msgid "Disc Selection"
-#~ msgstr "เลือกแผ่น"
-
-#~ msgid "SVCD/VCD"
-#~ msgstr "SVCD/VCD"
-
-#~ msgid "Disable Disc Menus"
-#~ msgstr "ปิดใช้เมนู"
-
-#~ msgid "No disc menus"
-#~ msgstr "ไม่ต้องมีเมนู"
-
-#~ msgid "Disc device"
-#~ msgstr "อุปกรณ์เล่นแผ่น"
-
-#~ msgid "Starting Position"
-#~ msgstr "ตำแหน่งเริ่ม"
-
-#~ msgid "Audio and Subtitles"
-#~ msgstr "เสียงและบทบรรยาย"
-
-#~ msgid "Select the subtitle file"
-#~ msgstr "เลือกแฟ้มบทบรรยาย"
-
-#~ msgid "Choose one or more media file to open"
-#~ msgstr "เลือกแฟ้มสื่อที่จะเปิดมาสักอัน หรือมากกว่านั้นก็ได้"
-
-#~ msgid "File Selection"
-#~ msgstr "เลือกแฟ้ม"
-
-#~ msgid "You can select local files with the following list and buttons."
-#~ msgstr "คุณสามารถเลือกและกดปุ่มเพื่อเพิ่มแฟ้มในเครื่องเข้าไปในรายการได้"
-
-#~ msgid "Add..."
-#~ msgstr "เพิ่ม..."
-
-#~ msgid "Network Protocol"
-#~ msgstr "โพรโทคอลเครือข่าย"
-
-#~ msgid "Please enter a network URL:"
-#~ msgstr "โปรดใส่ URL เครือข่าย:"
-
-#~ msgid "Profile edition"
-#~ msgstr "แก้ไขโพรไฟล์"
-
-#~ msgid "Ogg/Ogm"
-#~ msgstr "Ogg/Ogm"
-
-#~ msgid "MPEG-PS"
-#~ msgstr "MPEG-PS"
-
-#~ msgid "RAW"
-#~ msgstr "RAW"
-
-#~ msgid "WAV"
-#~ msgstr "WAV"
-
-#~ msgid "Webm"
-#~ msgstr "Webm"
-
-#~ msgid "AVI"
-#~ msgstr "AVI"
-
-#~ msgid "ASF/WMV"
-#~ msgstr "ASF/WMV"
-
-#~ msgid "Features"
-#~ msgstr "คุณสมบัติ"
-
-#~ msgid "Streamable"
-#~ msgstr "ทำกระแสได้"
-
-#~ msgid "Chapters"
-#~ msgstr "ตอน"
-
-#~ msgid "Menus"
-#~ msgstr "เมนู"
-
-#~ msgid "Same as source"
-#~ msgstr "เหมือนกับแหล่ง"
-
-#~ msgid " fps"
-#~ msgstr " fps"
-
-#~ msgid "Custom options"
-#~ msgstr "ตัวเลือกตั้งเอง"
-
-#~ msgid "Not Used"
-#~ msgstr "ไม่ใช้"
-
-#~ msgid " kb/s"
-#~ msgstr " kb/s"
-
-#~ msgid "Encoding parameters"
-#~ msgstr "พารามิเตอร์การลงรหัส"
-
-#~ msgid "Frame size"
-#~ msgstr "ขนาดเฟรม"
-
-#~ msgid "px"
-#~ msgstr "px"
-
-#~ msgid "Set up media sources to stream"
-#~ msgstr "จัดเตรียมแหล่งของสื่อที่จะทำกระแส"
-
-#~ msgid "Destination Setup"
-#~ msgstr "ตั้งค่าการส่ง"
-
-#~ msgid "Select destinations to stream to"
-#~ msgstr "เลือกปลายทางที่จะทำกระแสส่งไป"
-
-#~ msgid "New destination"
-#~ msgstr "เพิ่มการส่ง"
-
-#~ msgid "Transcoding Options"
-#~ msgstr "ตัวเลือกการแปลงรหัส"
-
-#~ msgid "Select and choose transcoding options"
-#~ msgstr "เลือกตัวเลือกการแปลงรหัส"
-
-#~ msgid "Activate Transcoding"
-#~ msgstr "ใช้การแปลงรหัส"
-
-#~ msgid "Option Setup"
-#~ msgstr "ตั้งค่าตัวเลือก"
-
-#~ msgid "Miscellaneous Options"
-#~ msgstr "ตัวเลือกเบ็ดเตล็ด"
-
-#~ msgid "Stream all elementary streams"
-#~ msgstr "ทำกระแสพวกกระแสมูลฐานทั้งหมด"
-
-#~ msgid " %"
-#~ msgstr " %"
-
-#~ msgid "Output module:"
-#~ msgstr "มอดูลเสียงออก:"
-
-#~ msgid "Use S/PDIF when available"
-#~ msgstr "ใช้ S/PDIF เมื่อสามารถทำได้"
-
-#~ msgid "Effects"
-#~ msgstr "ลูกเล่น"
-
-#~ msgid "Visualization:"
-#~ msgstr "มโนภาพ:"
-
-#~ msgid "Replay gain mode:"
-#~ msgstr "รูปแบบอัตราขยายเสียง:"
-
-#~ msgid "Normalize volume to:"
-#~ msgstr "เกลี่ยความดังเสียงให้เป็น:"
-
-#~ msgid "Tracks"
-#~ msgstr "ร่องข้อมูล"
-
-#~ msgid "Preferred audio language:"
-#~ msgstr "ภาษาของเสียงที่จะใช้:"
-
-#~ msgid "Password:"
-#~ msgstr "รหัสผ่าน:"
-
-#~ msgid "Username:"
-#~ msgstr "ชื่อผู้ใช้:"
-
-#~ msgid "Submit played tracks stats to Last.fm"
-#~ msgstr "ส่งสถิติร่องสื่อที่เล่นไปยัง Last.fm"
-
-#~ msgid "Codecs"
-#~ msgstr "ตัวอ่าน-ลงรหัสต่างๆ"
-
-#~ msgid "x264 profile and level selection"
-#~ msgstr "การเลือกระดับและโพรไฟล์ x264"
-
-#~ msgid "Hardware-accelerated decoding"
-#~ msgstr "การใช้ฮาร์ดแวร์เพื่อเร่งความเร็วในการอ่านรหัส"
-
-#~ msgid "Optical drive"
-#~ msgstr "อุปกรณ์อ่านแผ่นข้อมูล"
-
-#~ msgid "Default optical device"
-#~ msgstr "อุปกรณ์อ่านแผ่นข้อมูลปริยาย"
-
-#~ msgid "Damaged or incomplete AVI file"
-#~ msgstr "แฟ้ม AVI เสียหายหรือไม่สมบูรณ์"
-
-#~ msgid "HTTP proxy URL"
-#~ msgstr "URL พร็อกซี HTTP"
-
-#~ msgid "HTTP (default)"
-#~ msgstr "HTTP (ปริยาย)"
-
-#~ msgid "Live555 stream transport"
-#~ msgstr "การขนส่งกระแส Live555"
-
-#~ msgid "Default caching policy"
-#~ msgstr "ข้อกำหนดการทำแคชปริยาย"
-
-#~ msgid "Menus language:"
-#~ msgstr "ภาษาเมนู:"
-
-#~ msgid "Look and feel"
-#~ msgstr "รูปลักษณ์และมุมมอง"
-
-#~ msgid "Use custom skin"
-#~ msgstr "เลือกหน้ากากเอง"
-
-#~ msgid "This is VLC's default interface, with a native look and feel."
-#~ msgstr "นี่คือรูปลักษณ์ปริยายส่วนติดต่อของ VLC ด้วยมุมมองและลักษณะแบบปกติ"
-
-#~ msgid "Use native style"
-#~ msgstr "ใช้แบบปกติ"
-
-#~ msgid "Resize interface to video size"
-#~ msgstr "ปรับขนาดส่วนติดต่อตามวีดิทัศน์"
-
-#~ msgid "Show controls in full screen mode"
-#~ msgstr "แสดงส่วนควบคุมเมื่ออยู่ในรูปแบบเต็มจอ"
-
-#~ msgid "Pause playback when minimized"
-#~ msgstr "พักการเล่นเมื่อย่อเก็บหน้าต่าง"
-
-#~ msgid "Show media change popup:"
-#~ msgstr "ผุดแจ้งเหตุเมื่อสื่อเปลี่ยน:"
-
-#~ msgid "Start in minimal view mode"
-#~ msgstr "เริ่มโปรแกรมโดยแสดงแต่จอ"
-
-#~ msgid "Force window style:"
-#~ msgstr "บังคับใช้หน้าต่างโปรแกรมแบบ:"
-
-#~ msgid "Integrate video in interface"
-#~ msgstr "จอวีดิทัศน์อยู่รวมกับส่วนติดต่อ"
-
-#~ msgid "Show systray icon"
-#~ msgstr "แสดงไอคอนในถาดระบบ"
-
-#~ msgid "Skin resource file:"
-#~ msgstr "แฟ้มหน้ากาก:"
-
-#~ msgid "Playlist and Instances"
-#~ msgstr "ผังเล่นและการเปิดโปรแกรมซ้ำ"
-
-#~ msgid "Pause on the last frame of a video"
-#~ msgstr "พักเมื่อเล่นเฟรมสุดท้ายของวีดิทัศน์แล้ว"
-
-#~ msgid "Allow only one instance"
-#~ msgstr "เปิดโปรแกรมแค่ตัวเล่นเดียวเท่านั้น"
-
-#~ msgid "Every "
-#~ msgstr "ทุกๆ "
-
-#~ msgid "Save recently played items"
-#~ msgstr "บันทึกรายการที่พึ่งเล่นไป"
-
-#~ msgid "Separate words by | (without space)"
-#~ msgstr "แยกคำด้วย | (โดยไม่ใช้การเว้นวรรค)"
-
-#~ msgid "Enable On Screen Display (OSD)"
-#~ msgstr "เปิดใช้ การแสดงผ่านทางจอภาพ (OSD)"
-
-#~ msgid "Show media title on video start"
-#~ msgstr "แสดงชื่อเรื่องเมื่อเริ่มวีดิทัศน์"
-
-#~ msgid "Enable subtitles"
-#~ msgstr "เปิดใช้บทบรรยาย"
-
-#~ msgid "Subtitle Language"
-#~ msgstr "ภาษาบทบรรยาย"
-
-#~ msgid "Default encoding"
-#~ msgstr "รหัสอักขระปริยาย"
-
-#~ msgid "Subtitle effects"
-#~ msgstr "ลูกเล่นบทบรรยาย"
-
-#~ msgid "Add a shadow"
-#~ msgstr "เพิ่มเงา"
-
-#~ msgid " px"
-#~ msgstr " px"
-
-#~ msgid "Add a background"
-#~ msgstr "ตั้งเป็นพื้นหลัง"
-
-#~ msgid "DirectX"
-#~ msgstr "DirectX"
-
-#~ msgid "KVA"
-#~ msgstr "KVA"
-
-#~ msgid "Force Aspect Ratio"
-#~ msgstr "บังคับค่าอัตราส่วนภาพ"
-
-#~ msgid "vlc-snap"
-#~ msgstr "จับภาพ-vlc"
-
-#~ msgid "Edit settings"
-#~ msgstr "แก้ไขค่าตั้ง"
-
-#~ msgid "Control"
-#~ msgstr "ควบคุม"
-
-#~ msgid "Status"
-#~ msgstr "สถานะ"
-
-#~ msgid "P/P"
-#~ msgstr "P/P"
-
-#~ msgid "Prev"
-#~ msgstr "ก่อนหน้า"
-
-#~ msgid "Add Input"
-#~ msgstr "เพิ่มส่วนนำเข้า"
-
-#~ msgid "Edit Input"
-#~ msgstr "แก้ไขส่วนนำเข้า"
-
-#~ msgid "Clear List"
-#~ msgstr "ล้างรายการ"
-
-#~ msgid "Check for VLC updates"
-#~ msgstr "ตรวจหาการปรับปรุงของ VLC"
-
-#~ msgid "Do you want to download it?"
-#~ msgstr "คุณต้องการดาวน์โหลดมันแน่นะ?"
-
-#~ msgid "Essential"
-#~ msgstr "หลักๆ"
-
-#~ msgid ">HHHHHH;#"
-#~ msgstr ">HHHHHH;#"
-
-#~ msgid "Negate colors"
-#~ msgstr "สีตรงกันข้าม"
-
-#~ msgid "Colors"
-#~ msgstr "สี"
-
-#~ msgid "Interactive Zoom"
-#~ msgstr "การแสดงย่อ-ขยายเชิงโต้ตอบ"
-
-#~ msgid "Angle"
-#~ msgstr "มุม"
-
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "full"
-#~ msgstr "เต็ม"
-
-#~ msgid "none"
-#~ msgstr "ไม่มี"
-
-#~ msgid "Logo erase"
-#~ msgstr "โลโก้ลบ"
-
-#~ msgid "Mask"
-#~ msgstr "ตัวพราง"
-
-#~ msgid "Mirror"
-#~ msgstr "กระจกเงา"
-
-#~ msgid "Motion detect"
-#~ msgstr "ตรวจจับการเคลื่อนไหว"
-
-#~ msgid "VLM configurator"
-#~ msgstr "ตัวตั้งค่า VLM"
-
-#~ msgid "Media Manager Edition"
-#~ msgstr "รูปแบบตัวจัดการสื่อ"
-
-#~ msgid "Name:"
-#~ msgstr "ชื่อ:"
-
-#~ msgid "Input:"
-#~ msgstr "ส่วนนำเข้า:"
-
-#~ msgid "Select Input"
-#~ msgstr "เลือกส่วนนำเข้า"
-
-#~ msgid "Output:"
-#~ msgstr "ส่วนแสดงผล:"
-
-#~ msgid "Select Output"
-#~ msgstr "เลือกส่วนแสดงผล"
-
-#~ msgid "Time Control"
-#~ msgstr "ควบคุมเวลา"
-
-#~ msgid "Mux Control"
-#~ msgstr "ส่วนควบคุมการรวมกระแส"
-
-#~ msgid "Muxer:"
-#~ msgstr "ตัวรวมกระแส:"
-
-#~ msgid "AAAA; "
-#~ msgstr "AAAA; "
-
-#~ msgid "Media Manager List"
-#~ msgstr "รายการตัวจัดการสื่อ"
+#: modules/gui/qt/ui/about.h:288 modules/gui/qt/ui/open.h:260
+#: modules/gui/qt/ui/podcast_configuration.h:100
+msgid "Dialog"
+msgstr "กล่องโต้ตอบ"
+
+#: modules/gui/qt/ui/equalizer.h:132 modules/gui/qt/ui/open_disk.h:296
+#: modules/gui/qt/ui/open_net.h:96 modules/gui/qt/ui/sprefs_audio.h:409
+#: modules/gui/qt/ui/sprefs_input.h:356
+#: modules/gui/qt/ui/sprefs_interface.h:529
+#: modules/gui/qt/ui/sprefs_subtitles.h:289
+#: modules/gui/qt/ui/sprefs_video.h:313 modules/gui/qt/ui/streampanel.h:167
+msgid "Form"
+msgstr ""
+
+#: modules/gui/qt/ui/equalizer.h:135
+msgid "Preset"
+msgstr "ชุดค่าตั้ง"
+
+#: modules/gui/qt/ui/equalizer.h:137
+msgid "0.00 dB"
+msgstr "0.00 dB"
+
+#: modules/gui/qt/ui/messages_panel.h:139
+msgid "&Verbosity:"
+msgstr ""
+
+#: modules/gui/qt/ui/messages_panel.h:140
+msgid "&Filter:"
+msgstr "ตัว&กรอง"
+
+#: modules/gui/qt/ui/messages_panel.h:141
+msgid "&Save as..."
+msgstr "&บ&ันทึกเป็น"
+
+#: modules/gui/qt/ui/messages_panel.h:143
+msgid "Modules Tree"
+msgstr "แผนโครงมอดูล"
+
+#: modules/gui/qt/ui/open.h:263
+msgid "Show extended options"
+msgstr "แสดงตัวเลือกเพิ่มเติม"
+
+#: modules/gui/qt/ui/open.h:265
+msgid "Show &more options"
+msgstr "&ต&ัวเลือกเพิ่มเติม"
+
+#: modules/gui/qt/ui/open.h:268
+msgid "Change the caching for the media"
+msgstr "เปลี่ยนการทำแคชสำหรับสื่อ"
+
+#: modules/gui/qt/ui/open.h:270
+msgid " ms"
+msgstr " ms"
+
+#: modules/gui/qt/ui/open.h:271
+msgid "MRL"
+msgstr "MRL"
+
+#: modules/gui/qt/ui/open.h:272
+msgid "Start Time"
+msgstr "เวลาเริ่ม"
+
+#: modules/gui/qt/ui/open.h:273
+msgid "Stop Time"
+msgstr ""
+
+#: modules/gui/qt/ui/open.h:274
+msgid "Edit Options"
+msgstr "แก้ไขตัวเลือก"
+
+#: modules/gui/qt/ui/open.h:275
+msgid "Extra media"
+msgstr "สื่อเพิ่มเติม"
+
+#: modules/gui/qt/ui/open.h:277
+msgid "Complete MRL for VLC internal"
+msgstr ""
+
+#: modules/gui/qt/ui/open.h:280
+msgid "Select the file"
+msgstr "เลือกแฟ้ม"
+
+#: modules/gui/qt/ui/open.h:284
+msgid "Change the start time for the media"
+msgstr "เปลี่ยนเวลาในการเริ่มเล่นของสื่อ"
+
+#: modules/gui/qt/ui/open.h:286 modules/gui/qt/ui/open.h:290
+msgid "HH'H':mm'm':ss's'.zzz"
+msgstr "HH'H':mm'm':ss's'.zzz"
+
+#: modules/gui/qt/ui/open.h:288
+msgid "Change the stop time for the media"
+msgstr ""
+
+#: modules/gui/qt/ui/open.h:291
+msgid "Play another media synchronously (extra audio file, ...)"
+msgstr "เล่นสื่ออื่นผสม (อาทิ แฟ้มเสียงเพิ่มเติม ...)"
+
+#: modules/gui/qt/ui/open_capture.h:97
+msgid "Capture mode"
+msgstr "รูปแบบการรับชม"
+
+#: modules/gui/qt/ui/open_capture.h:99
+msgid "Select the capture device type"
+msgstr "เลือกประเภทอุปกรณ์เล่น"
+
+#: modules/gui/qt/ui/open_capture.h:101
+msgid "Device Selection"
+msgstr "เลือกอุปกรณ์เล่น"
+
+#: modules/gui/qt/ui/open_capture.h:102
+msgid "Options"
+msgstr "ตัวเลือก"
+
+#: modules/gui/qt/ui/open_capture.h:104
+msgid "Access advanced options to tweak the device"
+msgstr "ตัวเลือกขั้นสูงในการเข้าใช้งานอุปกรณ์"
+
+#: modules/gui/qt/ui/open_capture.h:106
+msgid "Advanced options..."
+msgstr "ตัวเลือกขั้นสูง"
+
+#: modules/gui/qt/ui/open_disk.h:297
+msgid "Disc Selection"
+msgstr "เลือกแผ่น"
+
+#: modules/gui/qt/ui/open_disk.h:301
+msgid "SVCD/VCD"
+msgstr "SVCD/VCD"
+
+#: modules/gui/qt/ui/open_disk.h:303
+msgid "Disable Disc Menus"
+msgstr "ปิดใช้เมนู"
+
+#: modules/gui/qt/ui/open_disk.h:305
+msgid "No disc menus"
+msgstr "ไม่ต้องมีเมนู"
+
+#: modules/gui/qt/ui/open_disk.h:306
+msgid "Disc device"
+msgstr "อุปกรณ์เล่นแผ่น"
+
+#: modules/gui/qt/ui/open_disk.h:308
+msgid "Starting Position"
+msgstr "ตำแหน่งเริ่ม"
+
+#: modules/gui/qt/ui/open_disk.h:311
+msgid "Audio and Subtitles"
+msgstr "เสียงและบทบรรยาย"
+
+#: modules/gui/qt/ui/open_file.h:143
+msgid "Use a sub&title file"
+msgstr ""
+
+#: modules/gui/qt/ui/open_file.h:145
+msgid "Select the subtitle file"
+msgstr "เลือกแฟ้มบทบรรยาย"
+
+#: modules/gui/qt/ui/open_file.h:149
+msgid "Choose one or more media file to open"
+msgstr "เลือกแฟ้มสื่อที่จะเปิดมาสักอัน หรือมากกว่านั้นก็ได้"
+
+#: modules/gui/qt/ui/open_file.h:151
+msgid "File Selection"
+msgstr "เลือกแฟ้ม"
+
+#: modules/gui/qt/ui/open_file.h:152
+msgid "You can select local files with the following list and buttons."
+msgstr "คุณสามารถเลือกและกดปุ่มเพื่อเพิ่มแฟ้มในเครื่องเข้าไปในรายการได้"
+
+#: modules/gui/qt/ui/open_file.h:153
+msgid "Add..."
+msgstr "เพิ่ม..."
+
+#: modules/gui/qt/ui/open_net.h:97
+msgid "Network Protocol"
+msgstr "โพรโทคอลเครือข่าย"
+
+#: modules/gui/qt/ui/open_net.h:98
+msgid "Please enter a network URL:"
+msgstr "โปรดใส่ URL เครือข่าย:"
+
+#: modules/gui/qt/ui/profiles.h:701
+msgid "Profile edition"
+msgstr "แก้ไขโพรไฟล์"
+
+#: modules/gui/qt/ui/profiles.h:702
+msgid "FLAC"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:703
+msgid "MP&4/MOV"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:704
+msgid "Ogg/Ogm"
+msgstr "Ogg/Ogm"
+
+#: modules/gui/qt/ui/profiles.h:705
+msgid "M&KV"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:706
+msgid "M&JPEG"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:707
+msgid "MPEG-PS"
+msgstr "MPEG-PS"
+
+#: modules/gui/qt/ui/profiles.h:708
+msgid "F&LV"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:709
+msgid "&MPEG-TS"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:710
+msgid "RAW"
+msgstr "RAW"
+
+#: modules/gui/qt/ui/profiles.h:711
+msgid "WAV"
+msgstr "WAV"
+
+#: modules/gui/qt/ui/profiles.h:712
+msgid "Webm"
+msgstr "Webm"
+
+#: modules/gui/qt/ui/profiles.h:713
+msgid "MPEG &1"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:714
+msgid "AVI"
+msgstr "AVI"
+
+#: modules/gui/qt/ui/profiles.h:715
+msgid "ASF/WMV"
+msgstr "ASF/WMV"
+
+#: modules/gui/qt/ui/profiles.h:716
+msgid "MP&3"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:717
+msgid "Features"
+msgstr "คุณสมบัติ"
+
+#: modules/gui/qt/ui/profiles.h:719
+msgid "Streamable"
+msgstr "ทำกระแสได้"
+
+#: modules/gui/qt/ui/profiles.h:720
+msgid "Chapters"
+msgstr "ตอน"
+
+#: modules/gui/qt/ui/profiles.h:723
+msgid "Menus"
+msgstr "เมนู"
+
+#: modules/gui/qt/ui/profiles.h:730
+msgid "Fra&me Rate"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:731
+msgid "Same as source"
+msgstr "เหมือนกับแหล่ง"
+
+#: modules/gui/qt/ui/profiles.h:733
+msgid " fps"
+msgstr " fps"
+
+#: modules/gui/qt/ui/profiles.h:734
+msgid "Custom options"
+msgstr "ตัวเลือกตั้งเอง"
+
+#: modules/gui/qt/ui/profiles.h:735
+msgid "&Quality"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
+msgid "Not Used"
+msgstr "ไม่ใช้"
+
+#: modules/gui/qt/ui/profiles.h:738 modules/gui/qt/ui/profiles.h:757
+msgid " kb/s"
+msgstr " kb/s"
+
+#: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
+msgid "Encoding parameters"
+msgstr "พารามิเตอร์การลงรหัส"
+
+#: modules/gui/qt/ui/profiles.h:742
+msgid "Frame size"
+msgstr "ขนาดเฟรม"
+
+#: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
+msgid "px"
+msgstr "px"
+
+#: modules/gui/qt/ui/profiles.h:758
+msgid "Sa&mple Rate"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:766
+msgid "Profile &Name"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:203
+msgid "Set up media sources to stream"
+msgstr "จัดเตรียมแหล่งของสื่อที่จะทำกระแส"
+
+#: modules/gui/qt/ui/sout.h:205
+msgid "Destination Setup"
+msgstr "ตั้งค่าการส่ง"
+
+#: modules/gui/qt/ui/sout.h:206
+msgid "Select destinations to stream to"
+msgstr "เลือกปลายทางที่จะทำกระแสส่งไป"
+
+#: modules/gui/qt/ui/sout.h:207
+msgid ""
+"Add destinations following the streaming methods you need. Be sure to check "
+"with transcoding that the format is compatible with the method used."
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:208
+msgid "New destination"
+msgstr "เพิ่มการส่ง"
+
+#: modules/gui/qt/ui/sout.h:210
+msgid "Display locally"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:212
+msgid "Transcoding Options"
+msgstr "ตัวเลือกการแปลงรหัส"
+
+#: modules/gui/qt/ui/sout.h:213
+msgid "Select and choose transcoding options"
+msgstr "เลือกตัวเลือกการแปลงรหัส"
+
+#: modules/gui/qt/ui/sout.h:214
+msgid "Activate Transcoding"
+msgstr "ใช้การแปลงรหัส"
+
+#: modules/gui/qt/ui/sout.h:215
+msgid "Option Setup"
+msgstr "ตั้งค่าตัวเลือก"
+
+#: modules/gui/qt/ui/sout.h:216
+msgid "Set up any additional options for streaming"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:217
+msgid "Miscellaneous Options"
+msgstr "ตัวเลือกเบ็ดเตล็ด"
+
+#: modules/gui/qt/ui/sout.h:218
+msgid "Stream all elementary streams"
+msgstr "ทำกระแสพวกกระแสมูลฐานทั้งหมด"
+
+#: modules/gui/qt/ui/sout.h:219
+msgid "Generated stream output string"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_audio.h:412
+msgid " %"
+msgstr " %"
+
+#: modules/gui/qt/ui/sprefs_audio.h:415
+msgid "Output module:"
+msgstr "มอดูลเสียงออก:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:418
+msgid "Use S/PDIF when available"
+msgstr "ใช้ S/PDIF เมื่อสามารถทำได้"
+
+#: modules/gui/qt/ui/sprefs_audio.h:420
+msgid "Effects"
+msgstr "ลูกเล่น"
+
+#: modules/gui/qt/ui/sprefs_audio.h:421
+msgid "Visualization:"
+msgstr "มโนภาพ:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:422
+msgid "Enable Time-Stretching audio"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_audio.h:423
+msgid "Replay gain mode:"
+msgstr "รูปแบบอัตราขยายเสียง:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:424
+msgid "Normalize volume to:"
+msgstr "เกลี่ยความดังเสียงให้เป็น:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:425
+msgid "Tracks"
+msgstr "ร่องข้อมูล"
+
+#: modules/gui/qt/ui/sprefs_audio.h:426
+msgid "Preferred audio language:"
+msgstr "ภาษาของเสียงที่จะใช้:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:427
+msgid "Password:"
+msgstr "รหัสผ่าน:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:428
+msgid "Username:"
+msgstr "ชื่อผู้ใช้:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:429
+msgid "Submit played tracks stats to Last.fm"
+msgstr "ส่งสถิติร่องสื่อที่เล่นไปยัง Last.fm"
+
+#: modules/gui/qt/ui/sprefs_input.h:357
+msgid "Codecs"
+msgstr "ตัวอ่าน-ลงรหัสต่างๆ"
+
+#: modules/gui/qt/ui/sprefs_input.h:358
+msgid "x264 profile and level selection"
+msgstr "การเลือกระดับและโพรไฟล์ x264"
+
+#: modules/gui/qt/ui/sprefs_input.h:359
+msgid "Hardware-accelerated decoding"
+msgstr "การใช้ฮาร์ดแวร์เพื่อเร่งความเร็วในการอ่านรหัส"
+
+#: modules/gui/qt/ui/sprefs_input.h:360 modules/gui/qt/ui/sprefs_input.h:362
+msgid "Video quality post-processing level"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_input.h:361
+msgid "Skip H.264 in-loop deblocking filter"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_input.h:364
+msgid "Optical drive"
+msgstr "อุปกรณ์อ่านแผ่นข้อมูล"
+
+#: modules/gui/qt/ui/sprefs_input.h:365
+msgid "Default optical device"
+msgstr "อุปกรณ์อ่านแผ่นข้อมูลปริยาย"
+
+#: modules/gui/qt/ui/sprefs_input.h:369
+msgid "Damaged or incomplete AVI file"
+msgstr "แฟ้ม AVI เสียหายหรือไม่สมบูรณ์"
+
+#: modules/gui/qt/ui/sprefs_input.h:372
+msgid "HTTP proxy URL"
+msgstr "URL พร็อกซี HTTP"
+
+#: modules/gui/qt/ui/sprefs_input.h:373
+msgid "HTTP (default)"
+msgstr "HTTP (ปริยาย)"
+
+#: modules/gui/qt/ui/sprefs_input.h:374
+msgid "RTP over RTSP (TCP)"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_input.h:375
+msgid "Live555 stream transport"
+msgstr "การขนส่งกระแส Live555"
+
+#: modules/gui/qt/ui/sprefs_input.h:376
+msgid "Default caching policy"
+msgstr "ข้อกำหนดการทำแคชปริยาย"
+
+#: modules/gui/qt/ui/sprefs_interface.h:531
+msgid "Menus language:"
+msgstr "ภาษาเมนู:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:532
+msgid "Look and feel"
+msgstr "รูปลักษณ์และมุมมอง"
+
+#: modules/gui/qt/ui/sprefs_interface.h:533
+msgid "Use custom skin"
+msgstr "เลือกหน้ากากเอง"
+
+#: modules/gui/qt/ui/sprefs_interface.h:535
+msgid "This is VLC's default interface, with a native look and feel."
+msgstr "นี่คือรูปลักษณ์ปริยายส่วนติดต่อของ VLC ด้วยมุมมองและลักษณะแบบปกติ"
+
+#: modules/gui/qt/ui/sprefs_interface.h:537
+msgid "Use native style"
+msgstr "ใช้แบบปกติ"
+
+#: modules/gui/qt/ui/sprefs_interface.h:538
+msgid "Resize interface to video size"
+msgstr "ปรับขนาดส่วนติดต่อตามวีดิทัศน์"
+
+#: modules/gui/qt/ui/sprefs_interface.h:539
+msgid "Show controls in full screen mode"
+msgstr "แสดงส่วนควบคุมเมื่ออยู่ในรูปแบบเต็มจอ"
+
+#: modules/gui/qt/ui/sprefs_interface.h:540
+msgid "Pause playback when minimized"
+msgstr "พักการเล่นเมื่อย่อเก็บหน้าต่าง"
+
+#: modules/gui/qt/ui/sprefs_interface.h:541
+msgid "Show media change popup:"
+msgstr "ผุดแจ้งเหตุเมื่อสื่อเปลี่ยน:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:542
+msgid "Start in minimal view mode"
+msgstr "เริ่มโปรแกรมโดยแสดงแต่จอ"
+
+#: modules/gui/qt/ui/sprefs_interface.h:543
+msgid "Force window style:"
+msgstr "บังคับใช้หน้าต่างโปรแกรมแบบ:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:544
+msgid "Integrate video in interface"
+msgstr "จอวีดิทัศน์อยู่รวมกับส่วนติดต่อ"
+
+#: modules/gui/qt/ui/sprefs_interface.h:545
+msgid "Show systray icon"
+msgstr "แสดงไอคอนในถาดระบบ"
+
+#: modules/gui/qt/ui/sprefs_interface.h:546
+msgid "Auto raising the interface:"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_interface.h:547
+msgid "Skin resource file:"
+msgstr "แฟ้มหน้ากาก:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:549
+msgid "Playlist and Instances"
+msgstr "ผังเล่นและการเปิดโปรแกรมซ้ำ"
+
+#: modules/gui/qt/ui/sprefs_interface.h:552
+msgid "Pause on the last frame of a video"
+msgstr "พักเมื่อเล่นเฟรมสุดท้ายของวีดิทัศน์แล้ว"
+
+#: modules/gui/qt/ui/sprefs_interface.h:555
+msgid "Allow only one instance"
+msgstr "เปิดโปรแกรมแค่ตัวเล่นเดียวเท่านั้น"
+
+#: modules/gui/qt/ui/sprefs_interface.h:557
+msgid "Activate updates notifier"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_interface.h:559
+msgid "Every "
+msgstr "ทุกๆ "
+
+#: modules/gui/qt/ui/sprefs_interface.h:560
+msgid "Save recently played items"
+msgstr "บันทึกรายการที่พึ่งเล่นไป"
+
+#: modules/gui/qt/ui/sprefs_interface.h:563
+msgid "Separate words by | (without space)"
+msgstr "แยกคำด้วย | (โดยไม่ใช้การเว้นวรรค)"
+
+#: modules/gui/qt/ui/sprefs_interface.h:566
+msgid "Operating System Integration"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_interface.h:567
+msgid "File extensions association"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_interface.h:568
+msgid "Set up associations..."
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:291
+msgid "Enable On Screen Display (OSD)"
+msgstr "เปิดใช้ การแสดงผ่านทางจอภาพ (OSD)"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:292
+msgid "Show media title on video start"
+msgstr "แสดงชื่อเรื่องเมื่อเริ่มวีดิทัศน์"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:294
+msgid "Enable subtitles"
+msgstr "เปิดใช้บทบรรยาย"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:295
+msgid "Subtitle Language"
+msgstr "ภาษาบทบรรยาย"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:297
+msgid "Default encoding"
+msgstr "รหัสอักขระปริยาย"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:298
+msgid "Subtitle effects"
+msgstr "ลูกเล่นบทบรรยาย"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:304
+msgid "Add a shadow"
+msgstr "เพิ่มเงา"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:306
+#: modules/gui/qt/ui/video_effects.h:1230
+#: modules/gui/qt/ui/video_effects.h:1234
+#: modules/gui/qt/ui/video_effects.h:1237
+#: modules/gui/qt/ui/video_effects.h:1238
+#: modules/gui/qt/ui/video_effects.h:1272
+#: modules/gui/qt/ui/video_effects.h:1274
+#: modules/gui/qt/ui/video_effects.h:1284
+#: modules/gui/qt/ui/video_effects.h:1285
+msgid " px"
+msgstr " px"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:307
+msgid "Add a background"
+msgstr "ตั้งเป็นพื้นหลัง"
+
+#: modules/gui/qt/ui/sprefs_video.h:316
+msgid "O&utput"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_video.h:320
+msgid "DirectX"
+msgstr "DirectX"
+
+#: modules/gui/qt/ui/sprefs_video.h:322
+msgid "Accelerated video output (Overlay)"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_video.h:323
+msgid "KVA"
+msgstr "KVA"
+
+#: modules/gui/qt/ui/sprefs_video.h:327
+msgid "Deinterlacing"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_video.h:329
+msgid "Force Aspect Ratio"
+msgstr "บังคับค่าอัตราส่วนภาพ"
+
+#: modules/gui/qt/ui/sprefs_video.h:334
+msgid "vlc-snap"
+msgstr "จับภาพ-vlc"
+
+#: modules/gui/qt/ui/streampanel.h:171
+msgid "Stuff"
+msgstr ""
+
+#: modules/gui/qt/ui/streampanel.h:173
+msgid "Edit settings"
+msgstr "แก้ไขค่าตั้ง"
+
+#: modules/gui/qt/ui/streampanel.h:174
+msgid "Control"
+msgstr "ควบคุม"
+
+#: modules/gui/qt/ui/streampanel.h:175
+msgid "Run manually"
+msgstr ""
+
+#: modules/gui/qt/ui/streampanel.h:176
+msgid "Setup schedule"
+msgstr ""
+
+#: modules/gui/qt/ui/streampanel.h:177
+msgid "Run on schedule"
+msgstr ""
+
+#: modules/gui/qt/ui/streampanel.h:178
+msgid "Status"
+msgstr "สถานะ"
+
+#: modules/gui/qt/ui/streampanel.h:179
+msgid "P/P"
+msgstr "P/P"
+
+#: modules/gui/qt/ui/streampanel.h:182
+msgid "Prev"
+msgstr "ก่อนหน้า"
+
+#: modules/gui/qt/ui/streampanel.h:183
+msgid "Add Input"
+msgstr "เพิ่มส่วนนำเข้า"
+
+#: modules/gui/qt/ui/streampanel.h:184
+msgid "Edit Input"
+msgstr "แก้ไขส่วนนำเข้า"
+
+#: modules/gui/qt/ui/streampanel.h:185
+msgid "Clear List"
+msgstr "ล้างรายการ"
+
+#: modules/gui/qt/ui/update.h:148
+msgid "Check for VLC updates"
+msgstr "ตรวจหาการปรับปรุงของ VLC"
+
+#: modules/gui/qt/ui/update.h:149
+msgid "Launching an update request..."
+msgstr ""
+
+#: modules/gui/qt/ui/update.h:150
+msgid "Do you want to download it?"
+msgstr "คุณต้องการดาวน์โหลดมันแน่นะ?"
+
+#: modules/gui/qt/ui/video_effects.h:1228
+msgid "Essential"
+msgstr "หลักๆ"
+
+#: modules/gui/qt/ui/video_effects.h:1242
+#: modules/gui/qt/ui/video_effects.h:1251
+msgid ">HHHHHH;#"
+msgstr ">HHHHHH;#"
+
+#: modules/gui/qt/ui/video_effects.h:1243
+msgid "Negate colors"
+msgstr "สีตรงกันข้าม"
+
+#: modules/gui/qt/ui/video_effects.h:1256
+msgid "Colors"
+msgstr "สี"
+
+#: modules/gui/qt/ui/video_effects.h:1257
+msgid "Interactive Zoom"
+msgstr "การแสดงย่อ-ขยายเชิงโต้ตอบ"
+
+#: modules/gui/qt/ui/video_effects.h:1263
+msgid "Angle"
+msgstr "มุม"
+
+#: modules/gui/qt/ui/video_effects.h:1270
+#: modules/gui/qt/ui/video_effects.h:1287
+msgid "..."
+msgstr "..."
+
+#: modules/gui/qt/ui/video_effects.h:1275
+msgid "full"
+msgstr "เต็ม"
+
+#: modules/gui/qt/ui/video_effects.h:1277
+msgid "none"
+msgstr "ไม่มี"
+
+#: modules/gui/qt/ui/video_effects.h:1281
+msgid "Logo erase"
+msgstr "โลโก้ลบ"
+
+#: modules/gui/qt/ui/video_effects.h:1286
+msgid "Mask"
+msgstr "ตัวพราง"
+
+#: modules/gui/qt/ui/video_effects.h:1289
+msgid "Anaglyph 3D"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1290
+msgid "Mirror"
+msgstr "กระจกเงา"
+
+#: modules/gui/qt/ui/video_effects.h:1294
+msgid "Motion detect"
+msgstr "ตรวจจับการเคลื่อนไหว"
+
+#: modules/gui/qt/ui/video_effects.h:1295
+msgid "Spatial blur"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1299
+msgid "Anti-Flickering"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1300
+msgid "Soften"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1301
+msgid "Denoiser"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1302
+msgid "Spatial luma strength"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1303
+msgid "Temporal luma strength"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1304
+msgid "Spatial chroma strength"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1305
+msgid "Temporal chroma strength"
+msgstr ""
+
+#: modules/gui/qt/ui/vlm.h:286
+msgid "VLM configurator"
+msgstr "ตัวตั้งค่า VLM"
+
+#: modules/gui/qt/ui/vlm.h:287
+msgid "Media Manager Edition"
+msgstr "รูปแบบตัวจัดการสื่อ"
+
+#: modules/gui/qt/ui/vlm.h:288
+msgid "Name:"
+msgstr "ชื่อ:"
+
+#: modules/gui/qt/ui/vlm.h:290
+msgid "Input:"
+msgstr "ส่วนนำเข้า:"
+
+#: modules/gui/qt/ui/vlm.h:291
+msgid "Select Input"
+msgstr "เลือกส่วนนำเข้า"
+
+#: modules/gui/qt/ui/vlm.h:292
+msgid "Output:"
+msgstr "ส่วนแสดงผล:"
+
+#: modules/gui/qt/ui/vlm.h:293
+msgid "Select Output"
+msgstr "เลือกส่วนแสดงผล"
+
+#: modules/gui/qt/ui/vlm.h:294
+msgid "Time Control"
+msgstr "ควบคุมเวลา"
+
+#: modules/gui/qt/ui/vlm.h:295
+msgid "Mux Control"
+msgstr "ส่วนควบคุมการรวมกระแส"
+
+#: modules/gui/qt/ui/vlm.h:296
+msgid "Muxer:"
+msgstr "ตัวรวมกระแส:"
+
+#: modules/gui/qt/ui/vlm.h:297
+msgid "AAAA; "
+msgstr "AAAA; "
+
+#: modules/gui/qt/ui/vlm.h:302
+msgid "Media Manager List"
+msgstr "รายการตัวจัดการสื่อ"
 
 #, fuzzy
 #~ msgid "Dither depth override (0 = framebuffer depth)"

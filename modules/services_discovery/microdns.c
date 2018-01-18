@@ -46,8 +46,8 @@ VLC_RD_PROBE_HELPER( "microdns_renderer", "mDNS renderer Discovery" )
 
 #define CFG_PREFIX "sd-microdns-"
 
-#define LISTEN_INTERVAL INT64_C(20000000) /* 20 seconds */
-#define TIMEOUT (LISTEN_INTERVAL + INT64_C(5000000)) /* interval + 5 seconds */
+#define LISTEN_INTERVAL INT64_C(15000000) /* 15 seconds */
+#define TIMEOUT (3 * LISTEN_INTERVAL + INT64_C(5000000)) /* 3 * interval + 5 seconds */
 
 /*
  * Module descriptor
@@ -301,6 +301,7 @@ parse_entries( const struct rr_entry *p_entries, bool b_renderer,
 
     /* There is one ip for several srvs, fetch them */
     const char *psz_ip = NULL;
+    struct srv *p_srv = NULL;
     i_nb_srv = 0;
     for( const struct rr_entry *p_entry = p_entries;
          p_entry != NULL; p_entry = p_entry->next )
@@ -312,7 +313,7 @@ parse_entries( const struct rr_entry *p_entries, bool b_renderer,
                 if( !strrcmp( p_entry->name, protocols[i].psz_service_name ) &&
                     protocols[i].b_renderer == b_renderer )
                 {
-                    struct srv *p_srv = &p_srvs[i_nb_srv];
+                    p_srv = &p_srvs[i_nb_srv];
 
                     p_srv->psz_device_name =
                         strndup( p_entry->name, strlen( p_entry->name )
@@ -333,6 +334,34 @@ parse_entries( const struct rr_entry *p_entries, bool b_renderer,
         {
             psz_ip = p_entry->data.AAAA.addr_str;
             *p_ipv6 = true;
+        }
+        else if( p_entry->type == RR_TXT && p_srv != NULL )
+        {
+            for ( struct rr_data_txt *p_txt = p_entry->data.TXT;
+                  p_txt != NULL ; p_txt = p_txt->next )
+            {
+                if( !strcmp( p_srv->psz_protocol, "chromecast" ) )
+                {
+                    if ( !strncmp( "fn=", p_txt->txt, 3 ) )
+                    {
+                        free( p_srv->psz_device_name );
+                        p_srv->psz_device_name = strdup( p_txt->txt + 3 );
+                    }
+                    else if( !strncmp( "ca=", p_txt->txt, 3 ) )
+                    {
+                        int ca = atoi( p_txt->txt + 3);
+                        /*
+                         * For chromecast, the `ca=` is composed from (at least)
+                         * 0x01 to indicate video support
+                         * 0x04 to indivate audio support
+                         */
+                        if ( ( ca & 0x01 ) != 0 )
+                            p_srv->i_renderer_flags |= VLC_RENDERER_CAN_VIDEO;
+                        if ( ( ca & 0x04 ) != 0 )
+                            p_srv->i_renderer_flags |= VLC_RENDERER_CAN_AUDIO;
+                    }
+                }
+            }
         }
     }
     if( psz_ip == NULL || i_nb_srv == 0 )
@@ -500,12 +529,7 @@ new_entries_rd_cb( void *p_this, int i_status, const struct rr_entry *p_entries 
         }
 
         if( strcmp( p_srv->psz_protocol, "chromecast" ) == 0)
-        {
-            if ( psz_model == NULL
-                || strcasecmp( psz_model, "Chromecast Audio" ) != 0 )
-                p_srv->i_renderer_flags |= VLC_RENDERER_CAN_VIDEO;
             psz_demux_filter = "cc_demux";
-        }
 
         items_add_renderer( p_sys, p_rd, p_srv->psz_device_name, psz_uri,
                             psz_demux_filter, psz_icon_uri,

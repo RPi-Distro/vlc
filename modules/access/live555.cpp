@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: 741fda6e35bc3ebdde58480163c35ec30ae2982d $
+ * $Id: e7e42bc6f47e9732c224b2507ae07f083fe250a5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -781,6 +781,12 @@ static int SessionsSetup( demux_t *p_demux )
             continue;
         }
 
+        if( p_sys->rtsp && i_client_port != -1 )
+        {
+            sub->setClientPortNum( i_client_port );
+            i_client_port += 2;
+        }
+
         if( !strcmp( sub->codecName(), "X-ASF-PF" ) )
             bInit = sub->initiate( 0 );
         else
@@ -811,13 +817,6 @@ static int SessionsSetup( demux_t *p_demux )
             /* Issue the SETUP */
             if( p_sys->rtsp )
             {
-
-                if( i_client_port != -1 )
-                {
-                    sub->setClientPortNum( i_client_port );
-                    i_client_port += 2;
-                }
-
                 p_sys->rtsp->sendSetupCommand( *sub, default_live555_callback, False,
                                                toBool( b_rtsp_tcp ),
                                                toBool( p_sys->b_force_mcast && !b_rtsp_tcp ) );

@@ -34,6 +34,7 @@ endif
 if BUILD_LUA
 	## Copy lua scripts
 	cp -r "$(prefix)/share/vlc/lua" $@/Contents/MacOS/share/
+	cp -r "$(prefix)/lib/vlc/lua" $@/Contents/MacOS/share/
 endif
 	## HRTFs
 	cp -r $(srcdir)/share/hrtfs $@/Contents/MacOS/share/
@@ -74,7 +75,7 @@ else !HAVE_DMGBUILD
 	## Create directory for DMG contents
 	mkdir -p "$(top_builddir)/vlc-$(VERSION)"
 	## Copy contents
-	cp -R "$(top_builddir)/VLC.app" "$(top_builddir)/vlc-$(VERSION)/VLC.app"
+	cp -Rp "$(top_builddir)/VLC.app" "$(top_builddir)/vlc-$(VERSION)/VLC.app"
 	## Symlink to Applications so users can easily drag-and-drop the App to it
 	$(LN_S) -f /Applications "$(top_builddir)/vlc-$(VERSION)/"
 	## Create DMG
@@ -87,7 +88,7 @@ endif
 package-macosx-zip: VLC.app
 	rm -f "$(top_builddir)/vlc-$(VERSION).zip"
 	mkdir -p $(top_builddir)/vlc-$(VERSION)/Goodies/
-	cp -R $(top_builddir)/VLC.app $(top_builddir)/vlc-$(VERSION)/VLC.app
+	cp -Rp $(top_builddir)/VLC.app $(top_builddir)/vlc-$(VERSION)/VLC.app
 	cd $(srcdir); cp -R AUTHORS COPYING README THANKS NEWS $(abs_top_builddir)/vlc-$(VERSION)/Goodies/
 	zip -r -y -9 $(top_builddir)/vlc-$(VERSION).zip $(top_builddir)/vlc-$(VERSION)
 	rm -rf "$(top_builddir)/vlc-$(VERSION)"
@@ -95,9 +96,11 @@ package-macosx-zip: VLC.app
 package-macosx-release:
 	rm -f "$(top_builddir)/vlc-$(VERSION)-release.zip"
 	mkdir -p $(top_builddir)/vlc-$(VERSION)-release
-	cp -R $(top_builddir)/VLC.app $(top_builddir)/vlc-$(VERSION)-release/
+	cp -Rp $(top_builddir)/VLC.app $(top_builddir)/vlc-$(VERSION)-release/
 	cp $(srcdir)/extras/package/macosx/dmg/* $(top_builddir)/vlc-$(VERSION)-release/
 	cp "$(srcdir)/extras/package/macosx/codesign.sh" $(top_builddir)/vlc-$(VERSION)-release/
+	cp "$(prefix)/lib/vlc/vlc-cache-gen" $(top_builddir)/vlc-$(VERSION)-release/
+	install_name_tool -add_rpath "@executable_path/VLC.app/Contents/MacOS/lib" $(top_builddir)/vlc-$(VERSION)-release/vlc-cache-gen
 	zip -r -y -9 $(top_builddir)/vlc-$(VERSION)-release.zip $(top_builddir)/vlc-$(VERSION)-release
 	rm -rf "$(top_builddir)/vlc-$(VERSION)-release"
 

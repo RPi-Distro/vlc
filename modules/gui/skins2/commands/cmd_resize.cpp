@@ -2,7 +2,7 @@
  * cmd_resize.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 5903b4624194dca20bd5f205899cb288496e1d16 $
+ * $Id: 6b8b378f062c2612bd0834405befc527048285eb $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -66,3 +66,12 @@ void CmdSetFullscreen::execute()
 }
 
 
+CmdHideMouse::CmdHideMouse( intf_thread_t *pIntf,
+			    vout_window_t * pWnd, bool hide )
+    : CmdGeneric( pIntf ), m_pWnd( pWnd ), m_bHide( hide ) { }
+
+
+void CmdHideMouse::execute()
+{
+    getIntf()->p_sys->p_voutManager->hideMouseWnd( m_pWnd, m_bHide );
+}

@@ -2,7 +2,7 @@
  * cmd_resize.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c0b988b8ccdc7061d5ebb1acfba67d0cee3b9ce7 $
+ * $Id: 9a9d76b7316b49dd5c93fada5621c7f92bf221a4 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -84,4 +84,19 @@ private:
     bool m_bFullscreen;
 };
 
+
+/// Command to hide mouse
+class CmdHideMouse: public CmdGeneric
+{
+public:
+    /// hide the mouse
+    CmdHideMouse( intf_thread_t *pIntf, vout_window_t* pWnd, bool hide );
+    virtual ~CmdHideMouse() { }
+    virtual void execute();
+    virtual std::string getType() const { return "hide mouse"; }
+
+private:
+    vout_window_t* m_pWnd;
+    bool m_bHide;
+};
 #endif

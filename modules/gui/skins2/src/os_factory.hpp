@@ -2,7 +2,7 @@
  * os_factory.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 5095a4e51513da226c5b624589aef0a2fbf7a5a2 $
+ * $Id: 3aff7ba2c362c65dbb2e04a938b43c26755ff6f2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -51,7 +51,8 @@ public:
         kResizeNS,
         kResizeWE,
         kResizeNWSE,
-        kResizeNESW
+        kResizeNESW,
+        kNoCursor,
     };
 
     /**

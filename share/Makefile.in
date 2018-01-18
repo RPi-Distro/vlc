@@ -256,7 +256,7 @@ am__installdirs = "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(appdatadir)" \
 	"$(DESTDIR)$(icons32dir)" "$(DESTDIR)$(icons48dir)" \
 	"$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(vlcdatadir)" \
 	"$(DESTDIR)$(docdir)" "$(DESTDIR)$(vlcdatadir)" \
-	"$(DESTDIR)$(soliddatadir)"
+	"$(DESTDIR)$(vlclibdir)" "$(DESTDIR)$(soliddatadir)"
 SCRIPTS = $(nobase_dist_vlcdata_SCRIPTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -334,7 +334,7 @@ DATA = $(appdata_DATA) $(desktop_DATA) $(dist_icons128_DATA) \
 	$(dist_icons16_DATA) $(dist_icons256_DATA) \
 	$(dist_icons32_DATA) $(dist_icons48_DATA) $(dist_vlcdata_DATA) \
 	$(nobase_dist_vlcdata_DATA) $(nobase_doc_DATA) \
-	$(nobase_vlcdata_DATA) $(soliddata_DATA)
+	$(nobase_vlcdata_DATA) $(nobase_vlclib_DATA) $(soliddata_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 am__DIST_COMMON = $(srcdir)/Makefile.in \
 	$(srcdir)/vlc.appdata.xml.in.in
@@ -1199,7 +1199,8 @@ icons256dir = $(iconsdatadir)/256x256/apps
 @HAVE_WIN32_FALSE@	utils/video-vlc-default.sh \
 @HAVE_WIN32_FALSE@	$(NULL)
 
-nobase_vlcdata_DATA = $(am__append_1) $(am__append_3)
+nobase_vlcdata_DATA = $(am__append_1)
+nobase_vlclib_DATA = $(am__append_3)
 nobase_dist_vlcdata_DATA = $(am__append_2) $(am__append_4)
 @KDE_SOLID_TRUE@soliddata_DATA = $(DIST_solid)
 DIST_icons = \
@@ -1580,6 +1581,30 @@ uninstall-nobase_vlcdataDATA:
 	@list='$(nobase_vlcdata_DATA)'; test -n "$(vlcdatadir)" || list=; \
 	$(am__nobase_strip_setup); files=`$(am__nobase_strip)`; \
 	dir='$(DESTDIR)$(vlcdatadir)'; $(am__uninstall_files_from_dir)
+install-nobase_vlclibDATA: $(nobase_vlclib_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(nobase_vlclib_DATA)'; test -n "$(vlclibdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(vlclibdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(vlclibdir)" || exit 1; \
+	fi; \
+	$(am__nobase_list) | while read dir files; do \
+	  xfiles=; for file in $$files; do \
+	    if test -f "$$file"; then xfiles="$$xfiles $$file"; \
+	    else xfiles="$$xfiles $(srcdir)/$$file"; fi; done; \
+	  test -z "$$xfiles" || { \
+	    test "x$$dir" = x. || { \
+	      echo " $(MKDIR_P) '$(DESTDIR)$(vlclibdir)/$$dir'"; \
+	      $(MKDIR_P) "$(DESTDIR)$(vlclibdir)/$$dir"; }; \
+	    echo " $(INSTALL_DATA) $$xfiles '$(DESTDIR)$(vlclibdir)/$$dir'"; \
+	    $(INSTALL_DATA) $$xfiles "$(DESTDIR)$(vlclibdir)/$$dir" || exit $$?; }; \
+	done
+
+uninstall-nobase_vlclibDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nobase_vlclib_DATA)'; test -n "$(vlclibdir)" || list=; \
+	$(am__nobase_strip_setup); files=`$(am__nobase_strip)`; \
+	dir='$(DESTDIR)$(vlclibdir)'; $(am__uninstall_files_from_dir)
 install-soliddataDATA: $(soliddata_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(soliddata_DATA)'; test -n "$(soliddatadir)" || list=; \
@@ -1642,7 +1667,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(SCRIPTS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(appdatadir)" "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icons128dir)" "$(DESTDIR)$(icons16dir)" "$(DESTDIR)$(icons256dir)" "$(DESTDIR)$(icons32dir)" "$(DESTDIR)$(icons48dir)" "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(soliddatadir)"; do \
+	for dir in "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(appdatadir)" "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(icons128dir)" "$(DESTDIR)$(icons16dir)" "$(DESTDIR)$(icons256dir)" "$(DESTDIR)$(icons32dir)" "$(DESTDIR)$(icons48dir)" "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(vlclibdir)" "$(DESTDIR)$(soliddatadir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -1703,7 +1728,8 @@ install-data-am: install-appdataDATA install-desktopDATA \
 	install-dist_icons48DATA install-dist_vlcdataDATA \
 	install-nobase_dist_vlcdataDATA \
 	install-nobase_dist_vlcdataSCRIPTS install-nobase_docDATA \
-	install-nobase_vlcdataDATA install-soliddataDATA
+	install-nobase_vlcdataDATA install-nobase_vlclibDATA \
+	install-soliddataDATA
 
 install-dvi: install-dvi-am
 
@@ -1753,7 +1779,8 @@ uninstall-am: uninstall-appdataDATA uninstall-desktopDATA \
 	uninstall-dist_icons48DATA uninstall-dist_vlcdataDATA \
 	uninstall-nobase_dist_vlcdataDATA \
 	uninstall-nobase_dist_vlcdataSCRIPTS uninstall-nobase_docDATA \
-	uninstall-nobase_vlcdataDATA uninstall-soliddataDATA
+	uninstall-nobase_vlcdataDATA uninstall-nobase_vlclibDATA \
+	uninstall-soliddataDATA
 
 .MAKE: install-am install-strip
 
@@ -1769,9 +1796,10 @@ uninstall-am: uninstall-appdataDATA uninstall-desktopDATA \
 	install-info install-info-am install-man \
 	install-nobase_dist_vlcdataDATA \
 	install-nobase_dist_vlcdataSCRIPTS install-nobase_docDATA \
-	install-nobase_vlcdataDATA install-pdf install-pdf-am \
-	install-ps install-ps-am install-soliddataDATA install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
+	install-nobase_vlcdataDATA install-nobase_vlclibDATA \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-soliddataDATA install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags-am uninstall \
 	uninstall-am uninstall-appdataDATA uninstall-desktopDATA \
@@ -1780,7 +1808,8 @@ uninstall-am: uninstall-appdataDATA uninstall-desktopDATA \
 	uninstall-dist_icons48DATA uninstall-dist_vlcdataDATA \
 	uninstall-nobase_dist_vlcdataDATA \
 	uninstall-nobase_dist_vlcdataSCRIPTS uninstall-nobase_docDATA \
-	uninstall-nobase_vlcdataDATA uninstall-soliddataDATA
+	uninstall-nobase_vlcdataDATA uninstall-nobase_vlclibDATA \
+	uninstall-soliddataDATA
 
 .PRECIOUS: Makefile
 

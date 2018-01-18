@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: df137115503065cc7c11ee9638387b2a7038277b $
+ * $Id: 7386b07c36fc23f3f41930ce9c11a5d9935413ae $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -230,6 +230,33 @@ static void ActivateSets( decoder_t *p_dec, const h264_sequence_parameter_set_t 
                                       &p_dec->fmt_out.video.transfer,
                                       &p_dec->fmt_out.video.space,
                                       &p_dec->fmt_out.video.b_color_range_full );
+        }
+
+        if( p_dec->fmt_out.i_extra == 0 && p_pps )
+        {
+            const block_t *p_spsblock = NULL;
+            const block_t *p_ppsblock = NULL;
+            for( size_t i=0; i<=H264_SPS_ID_MAX && !p_spsblock; i++ )
+                if( p_sps == p_sys->sps[i].p_sps )
+                    p_spsblock = p_sys->sps[i].p_block;
+
+            for( size_t i=0; i<=H264_PPS_ID_MAX && !p_ppsblock; i++ )
+                if( p_pps == p_sys->pps[i].p_pps )
+                    p_ppsblock = p_sys->pps[i].p_block;
+
+            if( p_spsblock && p_ppsblock )
+            {
+                size_t i_alloc = p_ppsblock->i_buffer + p_spsblock->i_buffer;
+                p_dec->fmt_out.p_extra = malloc( i_alloc );
+                if( p_dec->fmt_out.p_extra )
+                {
+                    uint8_t*p_buf = p_dec->fmt_out.p_extra;
+                    p_dec->fmt_out.i_extra = i_alloc;
+                    memcpy( &p_buf[0], p_spsblock->p_buffer, p_spsblock->i_buffer );
+                    memcpy( &p_buf[p_spsblock->i_buffer], p_ppsblock->p_buffer,
+                            p_ppsblock->i_buffer );
+                }
+            }
         }
     }
 }

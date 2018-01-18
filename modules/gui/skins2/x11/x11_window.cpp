@@ -2,7 +2,7 @@
  * x11_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c38202fde1ca141b0b335a50872abecf2f0d1d7b $
+ * $Id: e469ed64cbc0cfe15a653a96951f859c378b7d43 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -115,18 +115,9 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     }
 
     // Select events received by the window
-    long event_mask;
-    if( type == GenericWindow::VoutWindow )
-    {
-        event_mask =  ExposureMask|KeyPressMask|
-                      LeaveWindowMask|FocusChangeMask;
-    }
-    else
-    {
-        event_mask =  ExposureMask|KeyPressMask|
+    long event_mask = ExposureMask|KeyPressMask|
                       PointerMotionMask|ButtonPressMask|ButtonReleaseMask|
                       LeaveWindowMask|FocusChangeMask;
-    }
     XSelectInput( XDISPLAY, m_wnd, event_mask );
 
     // Store a pointer on the generic window in a map
@@ -157,7 +148,7 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
 
         // Register the window as a drop target
         Atom xdndAtom = XInternAtom( XDISPLAY, "XdndAware", False );
-        char xdndVersion = 4;
+        char xdndVersion = 5;
         XChangeProperty( XDISPLAY, m_wnd, xdndAtom, XA_ATOM, 32,
                          PropModeReplace, (unsigned char *)&xdndVersion, 1 );
 

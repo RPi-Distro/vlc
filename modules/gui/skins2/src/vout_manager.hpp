@@ -2,7 +2,7 @@
  * vout_manager.hpp
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 60c2713aef8b40fb7223eb74b5197afb2ef5ae19 $
+ * $Id: 4cf3522b40d5af6a8fa5b6ded943ddc277ed649f $
  *
  * Authors: Erwan Tulou < brezhoneg1 at yahoo.fr r>
  *
@@ -117,6 +117,9 @@ public:
 
     /// set fullscreen mode (vout window provider)
     void setFullscreenWnd( vout_window_t* pWnd, bool b_fullscreen );
+
+    /// hide mouse (vout window provider)
+    void hideMouseWnd( vout_window_t* pWnd, bool hide );
 
     // Register Video Controls (when building theme)
     void registerCtrlVideo( CtrlVideo* p_CtrlVideo );
