@@ -1,5 +1,6 @@
 #!/bin/bash
 exec python3 $(dirname $0)/filter-plugin.py <<EOF
+usr/lib/*/vlc/lua
 usr/lib/*/vlc/libvlc_pulse.so*
 usr/lib/*/vlc/plugins/access/libaccess_alsa_plugin.so [alsa]
 usr/lib/*/vlc/plugins/access/libaccess_concat_plugin.so
