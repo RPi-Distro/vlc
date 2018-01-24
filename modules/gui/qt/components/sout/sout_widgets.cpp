@@ -4,7 +4,7 @@
  * Copyright (C) 2007-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: 45243b9db1069edec235234633b48408f030422b $
+ * $Id: dba513a944f313e25a8589e93c9638f2d996fc5a $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Pierre-Luc Beaudoin <pierre-luc.beaudoin@savoirfairelinux.com>
@@ -69,7 +69,7 @@ SoutInputBox::SoutInputBox( QWidget *_parent, const QString& mrl ) : QGroupBox( 
 
 void SoutInputBox::setMRL( const QString& mrl )
 {
-    QUrl uri = QUrl::fromEncoded( mrl.toLatin1() );
+    QUrl uri( mrl );
     QString type = uri.scheme();
 
     if( !uri.isValid() &&
@@ -91,7 +91,10 @@ void SoutInputBox::setMRL( const QString& mrl )
     }
     else
     {
-        sourceLine->setText( uri.toString() );
+        sourceLine->setText(
+            toNativeSeparators(uri.toDisplayString(
+                QUrl::RemovePassword | QUrl::PreferLocalFile | QUrl::NormalizePathSegments
+            )));
         if ( type.isEmpty() ) type = qtr( I_FILE_SLASH_DIR );
         sourceValueLabel->setText( type );
     }

@@ -2,7 +2,7 @@
  * events.c: Windows video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: c13c9dbd80da0bbdde8ef3f3f26c3181e01dccc5 $
+ * $Id: cea69d95e8dfece2651ac1dfb31bec48e8f5f537 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Martell Malone <martellmalone@gmail.com>
@@ -187,10 +187,6 @@ static void *EventThread( void *p_this )
         vlc_restorecancel( canc );
         return NULL;
     }
-
-    /* Prevent monitor from powering off */
-    if (var_GetBool(vd, "disable-screensaver"))
-        SetThreadExecutionState( ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED | ES_CONTINUOUS );
 
     /* Main loop */
     /* GetMessage will sleep if there's no message in the queue */

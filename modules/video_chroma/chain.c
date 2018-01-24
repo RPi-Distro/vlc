@@ -2,7 +2,7 @@
  * chain.c : chain multiple video filter modules as a last resort solution
  *****************************************************************************
  * Copyright (C) 2007-2017 VLC authors and VideoLAN
- * $Id: f13d3d635c1fdaef25d2171d04e6058013d9038f $
+ * $Id: b78883e49be3c5f77bb91d44d3d2fe3984ca6ba4 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -488,5 +488,7 @@ static void EsFormatMergeSize( es_format_t *p_dst,
     p_dst->video.i_y_offset = p_size->video.i_y_offset;
 
     p_dst->video.orientation = p_size->video.orientation;
+    p_dst->video.i_sar_num = p_size->video.i_sar_num;
+    p_dst->video.i_sar_den = p_size->video.i_sar_den;
 }
 

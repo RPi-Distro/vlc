@@ -2,7 +2,7 @@
  * transcode.c: transcoding stream output module
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 99784a3f99f9dec29543983a487fb7af80832353 $
+ * $Id: c92dd4a9743620e91ca364afaf99b4c39d944b1d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -583,13 +583,15 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
 {
     block_t *p_out = NULL;
 
+    if( id->b_error )
+        goto error;
+
     if( !id->b_transcode )
     {
         if( id->id )
             return sout_StreamIdSend( p_stream->p_next, id->id, p_buffer );
-
-        block_Release( p_buffer );
-        return VLC_EGENERIC;
+        else
+            goto error;
     }
 
     switch( id->p_decoder->fmt_in.i_cat )
@@ -619,12 +621,14 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
         break;
 
     default:
-        p_out = NULL;
-        block_Release( p_buffer );
-        break;
+        goto error;
     }
 
     if( p_out )
         return sout_StreamIdSend( p_stream->p_next, id->id, p_out );
     return VLC_SUCCESS;
+error:
+    if( p_buffer )
+        block_Release( p_buffer );
+    return VLC_EGENERIC;
 }

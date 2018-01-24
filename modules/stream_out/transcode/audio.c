@@ -2,7 +2,7 @@
  * audio.c: transcoding stream output module (audio)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 577378eceaa1cb2f91410761ca0127af5ec9c7b1 $
+ * $Id: c7ce8482393525f306fbdf7d2b6abfbad05db647 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -285,7 +285,7 @@ int transcode_audio_process( sout_stream_t *p_stream,
         p_audio_bufs = p_audio_bufs->p_next;
         p_audio_buf->p_next = NULL;
 
-        if( b_error )
+        if( id->b_error )
         {
             block_Release( p_audio_buf );
             continue;
@@ -307,6 +307,16 @@ int transcode_audio_process( sout_stream_t *p_stream,
             }
             date_Init( &id->next_input_pts, id->audio_dec_out.i_rate, 1 );
             date_Set( &id->next_input_pts, p_audio_buf->i_pts );
+
+            if (!id->id)
+            {
+                id->id = sout_StreamIdAdd( p_stream->p_next, &id->p_encoder->fmt_out );
+                if (!id->id)
+                {
+                    vlc_mutex_unlock(&id->fifo.lock);
+                    goto error;
+                }
+            }
         }
 
         /* Check if audio format has changed, and filters need reinit */
@@ -358,10 +368,7 @@ int transcode_audio_process( sout_stream_t *p_stream,
         p_audio_buf = aout_FiltersPlay( id->p_af_chain, p_audio_buf,
                                         INPUT_RATE_DEFAULT );
         if( !p_audio_buf )
-        {
-            b_error = true;
-            continue;
-        }
+            goto error;
 
         p_audio_buf->i_dts = p_audio_buf->i_pts;
 
@@ -371,8 +378,9 @@ int transcode_audio_process( sout_stream_t *p_stream,
         block_Release( p_audio_buf );
         continue;
 error:
-        block_Release( p_audio_buf );
-        b_error = true;
+        if( p_audio_buf )
+            block_Release( p_audio_buf );
+        id->b_error = true;
     } while( p_audio_bufs );
 
 end:
@@ -426,14 +434,7 @@ bool transcode_audio_add( sout_stream_t *p_stream, const es_format_t *p_fmt,
     }
 
     /* Open output stream */
-    id->id = sout_StreamIdAdd( p_stream->p_next, &id->p_encoder->fmt_out );
     id->b_transcode = true;
-
-    if( !id->id )
-    {
-        transcode_audio_close( id );
-        return false;
-    }
 
     /* Reinit encoder again later on, when all information from decoders
      * is available. */

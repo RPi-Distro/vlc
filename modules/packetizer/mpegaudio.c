@@ -2,7 +2,7 @@
  * mpegaudio.c: parse MPEG audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2016 VLC authors and VideoLAN
- * $Id: 00c50a5c3d505deeb81d22622b4c9c6a513d8993 $
+ * $Id: 9e6d357b3c0972137601b3498f66e546c360e015 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -123,6 +123,7 @@ static uint8_t *GetOutBuffer( decoder_t *p_dec, block_t **pp_out_buffer )
         date_Set( &p_sys->end_date, p_sys->i_pts );
     }
 
+    p_dec->fmt_out.i_profile        = p_sys->i_layer;
     p_dec->fmt_out.audio.i_rate     = p_sys->i_rate;
     p_dec->fmt_out.audio.i_channels = p_sys->i_channels;
     p_dec->fmt_out.audio.i_frame_length = p_sys->i_frame_length;
@@ -386,8 +387,6 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                                             &p_sys->i_frame_length,
                                             &p_sys->i_max_frame_size,
                                             &p_sys->i_layer );
-
-            p_dec->fmt_in.i_profile = p_sys->i_layer;
 
             if( p_sys->i_frame_size == -1 )
             {

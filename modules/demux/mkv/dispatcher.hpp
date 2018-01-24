@@ -2,7 +2,7 @@
  * dispatcher.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2016 VLC authors, VideoLAN, Videolabs SAS
- * $Id: 37a94479aec1fc8efe271acb9eec1e263c3d595b $
+ * $Id: 9b4e3e696bb1ef69b5ca764853b5228ed40ff44c $
  *
  * Authors: Filip Roseen <filip@videolabs.io>
  *
@@ -57,17 +57,17 @@ namespace {
   template<int>
   struct DispatcherTag;
 
-  template<class T, T*, class DispatcherType>
+  template<class T, class DispatcherType>
   class DispatchContainer {
     public:    static DispatcherType dispatcher;
     protected: static vlc_mutex_t   _dispatcher_lock;
   };
 
-  template<class T, T* P, class DT>
-  DT DispatchContainer<T, P, DT>::dispatcher;
+  template<class T, class DT>
+  DT DispatchContainer<T, DT>::dispatcher;
 
-  template<class T, T* P, class DT>
-  vlc_mutex_t DispatchContainer<T, P, DT>::_dispatcher_lock = VLC_STATIC_MUTEX;
+  template<class T, class DT>
+  vlc_mutex_t DispatchContainer<T, DT>::_dispatcher_lock = VLC_STATIC_MUTEX;
 }
 
 // ----------------------------------------------------------------------------
@@ -89,9 +89,8 @@ namespace {
 
 #define MKV_SWITCH_CREATE(DispatchType_, GroupName_, PayloadType_) \
   typedef DispatcherTag<__LINE__> GroupName_ ## _tag_t; \
-  extern GroupName_##_tag_t GroupName_ ## _tag; \
   struct GroupName_; \
-  struct GroupName_##_base : DispatchContainer<GroupName_##_tag_t, &GroupName_##_tag, DispatchType_> { \
+  struct GroupName_##_base : DispatchContainer<GroupName_##_tag_t, DispatchType_> { \
       typedef      PayloadType_ payload_t;                         \
       typedef     DispatchType_ dispatch_t;                        \
       typedef struct GroupName_ handler_t;                         \

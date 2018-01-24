@@ -2,7 +2,7 @@
  * mux.c: muxer using libavformat
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 494cadc18215718da8585612f111d38bca915f79 $
+ * $Id: 9500c915b4e4a457826fc0477153ced5d3d72ec0 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -212,6 +212,10 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             msg_Err(p_mux, "Invalid Opus header");
             return VLC_EGENERIC;
         }
+    }
+    else if( fmt->i_codec == VLC_CODEC_MPGA && fmt->i_profile == 3 )
+    {
+        i_codec_id = AV_CODEC_ID_MP3;
     }
 
     if( fmt->i_cat != VIDEO_ES && fmt->i_cat != AUDIO_ES)
