@@ -35,7 +35,6 @@ confflags += \
 	--enable-faad \
 	--enable-flac \
 	--enable-fluidsynth \
-	--enable-freerdp \
 	--enable-freetype \
 	--enable-fribidi \
 	--enable-gles2 \
@@ -92,6 +91,7 @@ confflags += \
 # dxva2: Windows only
 # fdkaac: in Debian contrib
 # fluidlite: fluidsynth is enabled
+# freerdp: scheduled for removal (#888323)
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
 # libtar: security issue (#737534)
@@ -114,6 +114,7 @@ confflags += \
 	--disable-dxva2 \
 	--disable-fdkaac \
 	--disable-fluidlite \
+	--disable-freerdp \
 	--disable-goom \
 	--disable-gst-decode \
 	--disable-libtar \
