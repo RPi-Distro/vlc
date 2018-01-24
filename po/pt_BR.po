@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.0-rc5\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-01-18 00:35+0100\n"
+"POT-Creation-Date: 2018-01-19 19:33+0100\n"
 "PO-Revision-Date: 2016-01-22 02:26+0000\n"
 "Last-Translator: ssdoria <ssdoria@gmail.com>, 2017\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/yaron/"
@@ -76,7 +76,7 @@ msgstr "Configurações para as interfaces de controle do VLC"
 msgid "Hotkeys settings"
 msgstr "Configurações de atalhos"
 
-#: include/vlc_config_cat.h:53 src/input/es_out.c:3085 src/libvlc-module.c:1486
+#: include/vlc_config_cat.h:53 src/input/es_out.c:3088 src/libvlc-module.c:1486
 #: modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:404 modules/gui/macosx/VLCOutput.m:92
@@ -140,7 +140,7 @@ msgstr "Outros"
 msgid "Miscellaneous audio settings and modules."
 msgstr "Outras configurações e módulos de áudio."
 
-#: include/vlc_config_cat.h:73 src/input/es_out.c:3129 src/libvlc-module.c:142
+#: include/vlc_config_cat.h:73 src/input/es_out.c:3132 src/libvlc-module.c:142
 #: src/libvlc-module.c:1545 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:417 modules/gui/macosx/VLCOutput.m:82
@@ -150,7 +150,7 @@ msgstr "Outras configurações e módulos de áudio."
 #: modules/gui/qt/components/info_panels.cpp:573
 #: modules/gui/qt/components/simple_preferences.cpp:227
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
-#: modules/stream_out/chromecast/cast.cpp:116 modules/stream_out/es.c:102
+#: modules/stream_out/chromecast/cast.cpp:115 modules/stream_out/es.c:102
 #: modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
 #: modules/gui/qt/ui/profiles.h:722 modules/gui/qt/ui/profiles.h:726
@@ -687,7 +687,7 @@ msgstr "Dolby Surround"
 msgid "Stereo"
 msgstr "Estéreo"
 
-#: src/audio_output/output.c:441 src/input/es_out.c:3226
+#: src/audio_output/output.c:441 src/input/es_out.c:3229
 #: src/libvlc-module.c:197 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: src/misc/actions.c:81 modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -732,7 +732,7 @@ msgstr "Fones de ouvido"
 #: modules/access/dtv/access.c:106 modules/access/dtv/access.c:115
 #: modules/access/dtv/access.c:123 modules/access/dtv/access.c:132
 #: modules/access/dtv/access.c:140 modules/access/dtv/access.c:162
-#: modules/access/v4l2/v4l2.c:137 modules/gui/qt/components/open_panels.cpp:970
+#: modules/access/v4l2/v4l2.c:137 modules/gui/qt/components/open_panels.cpp:974
 #: modules/gui/qt/components/simple_preferences.cpp:366
 msgid "Automatic"
 msgstr "Automático"
@@ -948,7 +948,7 @@ msgid "VLC could not open the decoder module."
 msgstr "O VLC não pode abrir o módulo decodificador."
 
 #: src/input/es_out.c:963 src/input/es_out.c:968 src/libvlc-module.c:239
-#: modules/gui/qt/components/open_panels.cpp:543
+#: modules/gui/qt/components/open_panels.cpp:547
 msgid "Track"
 msgstr "Trilha"
 
@@ -987,11 +987,11 @@ msgstr "Legendas ocultas DTVCC %u"
 msgid "Closed captions %u"
 msgstr "Legenda oculta %u"
 
-#: src/input/es_out.c:3061
+#: src/input/es_out.c:3064
 msgid "Original ID"
 msgstr "ID Original"
 
-#: src/input/es_out.c:3069 src/input/es_out.c:3072 modules/access/imem.c:67
+#: src/input/es_out.c:3072 src/input/es_out.c:3075 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
 #: modules/gui/qt/ui/profiles.h:728 modules/gui/qt/ui/profiles.h:754
@@ -999,48 +999,48 @@ msgstr "ID Original"
 msgid "Codec"
 msgstr "Codificador"
 
-#: src/input/es_out.c:3076 src/input/meta.c:66 modules/access/imem.c:71
+#: src/input/es_out.c:3079 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:114
 #: modules/gui/macosx/VLCSimplePrefsController.m:311
 #: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:530
 msgid "Language"
 msgstr "Idioma"
 
-#: src/input/es_out.c:3079 src/input/meta.c:61
+#: src/input/es_out.c:3082 src/input/meta.c:61
 #: modules/gui/macosx/VLCBookmarksWindowController.m:83
 #: modules/gui/macosx/VLCPlaylist.m:112 modules/gui/qt/dialogs/bookmarks.cpp:75
 #: modules/gui/qt/dialogs/epg.cpp:55
 msgid "Description"
 msgstr "Descrição"
 
-#: src/input/es_out.c:3085 src/input/es_out.c:3129 src/input/es_out.c:3319
+#: src/input/es_out.c:3088 src/input/es_out.c:3132 src/input/es_out.c:3322
 #: modules/gui/macosx/VLCAddonsWindowController.m:132
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
 #: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1487
 msgid "Type"
 msgstr "Tipo"
 
-#: src/input/es_out.c:3088
+#: src/input/es_out.c:3091
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
 #: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:756
 msgid "Channels"
 msgstr "Canais"
 
-#: src/input/es_out.c:3093 modules/access/alsa.c:39 modules/access/imem.c:75
+#: src/input/es_out.c:3096 modules/access/alsa.c:39 modules/access/imem.c:75
 #: modules/audio_output/amem.c:45 modules/codec/fluidsynth.c:64
 msgid "Sample rate"
 msgstr "Taxa de amostragem"
 
-#: src/input/es_out.c:3093
+#: src/input/es_out.c:3096
 #, c-format
 msgid "%u Hz"
 msgstr "%u Hz"
 
-#: src/input/es_out.c:3103
+#: src/input/es_out.c:3106
 msgid "Bits per sample"
 msgstr "Bits por amostra"
 
-#: src/input/es_out.c:3108 modules/access_output/shout.c:92
+#: src/input/es_out.c:3111 modules/access_output/shout.c:92
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
@@ -1048,33 +1048,33 @@ msgstr "Bits por amostra"
 msgid "Bitrate"
 msgstr "Taxa de bits"
 
-#: src/input/es_out.c:3108
+#: src/input/es_out.c:3111
 #, c-format
 msgid "%u kb/s"
 msgstr "%u kb/s"
 
-#: src/input/es_out.c:3120
+#: src/input/es_out.c:3123
 msgid "Track replay gain"
 msgstr "Ganho na reprodução da trilha"
 
-#: src/input/es_out.c:3122
+#: src/input/es_out.c:3125
 msgid "Album replay gain"
 msgstr "Ganho na reprodução do álbum"
 
-#: src/input/es_out.c:3123
+#: src/input/es_out.c:3126
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:3133
+#: src/input/es_out.c:3136
 msgid "Video resolution"
 msgstr "Resolução de vídeo"
 
-#: src/input/es_out.c:3138
+#: src/input/es_out.c:3141
 msgid "Buffer dimensions"
 msgstr "Tamanho da memória"
 
-#: src/input/es_out.c:3148 src/input/es_out.c:3151 modules/access/imem.c:93
+#: src/input/es_out.c:3151 src/input/es_out.c:3154 modules/access/imem.c:93
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
@@ -1084,91 +1084,91 @@ msgstr "Tamanho da memória"
 msgid "Frame rate"
 msgstr "Taxa de quadros"
 
-#: src/input/es_out.c:3159
+#: src/input/es_out.c:3162
 msgid "Decoded format"
 msgstr "Formato decodificado"
 
-#: src/input/es_out.c:3164
+#: src/input/es_out.c:3167
 msgid "Top left"
 msgstr "Superior esquerdo"
 
-#: src/input/es_out.c:3164
+#: src/input/es_out.c:3167
 msgid "Left top"
 msgstr "Esquerdo superior"
 
-#: src/input/es_out.c:3165
+#: src/input/es_out.c:3168
 msgid "Right bottom"
 msgstr "Direito inferior"
 
-#: src/input/es_out.c:3165
+#: src/input/es_out.c:3168
 msgid "Top right"
 msgstr "Superior direito"
 
-#: src/input/es_out.c:3166
+#: src/input/es_out.c:3169
 msgid "Bottom left"
 msgstr "Inferior esquerdo"
 
-#: src/input/es_out.c:3166
+#: src/input/es_out.c:3169
 msgid "Bottom right"
 msgstr "Inferior direito"
 
-#: src/input/es_out.c:3167
+#: src/input/es_out.c:3170
 msgid "Left bottom"
 msgstr "Esquerdo inferior"
 
-#: src/input/es_out.c:3167
+#: src/input/es_out.c:3170
 msgid "Right top"
 msgstr "Direito superior"
 
-#: src/input/es_out.c:3169
+#: src/input/es_out.c:3172
 msgid "Orientation"
 msgstr "Orientação"
 
-#: src/input/es_out.c:3175 src/input/es_out.c:3193 src/input/es_out.c:3211
-#: src/input/es_out.c:3225 src/playlist/tree.c:67
+#: src/input/es_out.c:3178 src/input/es_out.c:3196 src/input/es_out.c:3214
+#: src/input/es_out.c:3228 src/playlist/tree.c:67
 #: modules/access/dtv/access.c:75 modules/access/v4l2/v4l2.c:242
 msgid "Undefined"
 msgstr "Não Definido"
 
-#: src/input/es_out.c:3177
+#: src/input/es_out.c:3180
 msgid "ITU-R BT.601 (525 lines, 60 Hz)"
 msgstr "ITU-R BT.601 (525 linhas, 60 Hz)"
 
-#: src/input/es_out.c:3179
+#: src/input/es_out.c:3182
 msgid "ITU-R BT.601 (625 lines, 50 Hz)"
 msgstr "ITU-R BT.601 (625 linhas, 50 Hz)"
 
-#: src/input/es_out.c:3187
+#: src/input/es_out.c:3190
 msgid "Color primaries"
 msgstr "Cores primárias"
 
-#: src/input/es_out.c:3194 src/libvlc-module.c:362
+#: src/input/es_out.c:3197 src/libvlc-module.c:362
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Linear"
 msgstr "Linear"
 
-#: src/input/es_out.c:3201
+#: src/input/es_out.c:3204
 msgid "Hybrid Log-Gamma"
 msgstr "Gama logarítmica híbrida"
 
-#: src/input/es_out.c:3205
+#: src/input/es_out.c:3208
 msgid "Color transfer function"
 msgstr "Função de transferência de cor"
 
-#: src/input/es_out.c:3218
+#: src/input/es_out.c:3221
 msgid "Color space"
 msgstr "Espaço de cores"
 
-#: src/input/es_out.c:3218
+#: src/input/es_out.c:3221
 #, c-format
 msgid "%s Range"
 msgstr "Faixa %s"
 
-#: src/input/es_out.c:3220
+#: src/input/es_out.c:3223
 msgid "Full"
 msgstr "Inteira"
 
-#: src/input/es_out.c:3227 src/libvlc-module.c:295 src/libvlc-module.c:368
+#: src/input/es_out.c:3230 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: modules/audio_filter/channel_mixer/mono.c:91
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -1179,87 +1179,87 @@ msgstr "Inteira"
 msgid "Center"
 msgstr "Centro"
 
-#: src/input/es_out.c:3228
+#: src/input/es_out.c:3231
 msgid "Top Left"
 msgstr "Superior Esquerdo"
 
-#: src/input/es_out.c:3229
+#: src/input/es_out.c:3232
 msgid "Top Center"
 msgstr "Superior Central"
 
-#: src/input/es_out.c:3230
+#: src/input/es_out.c:3233
 msgid "Bottom Left"
 msgstr "Inferior Esquerdo"
 
-#: src/input/es_out.c:3231
+#: src/input/es_out.c:3234
 msgid "Bottom Center"
 msgstr "Inferior Central"
 
-#: src/input/es_out.c:3235
+#: src/input/es_out.c:3238
 msgid "Chroma location"
 msgstr "Localização do formato cromático"
 
-#: src/input/es_out.c:3244
+#: src/input/es_out.c:3247
 msgid "Rectangular"
 msgstr "Retangular"
 
-#: src/input/es_out.c:3247
+#: src/input/es_out.c:3250
 msgid "Equirectangular"
 msgstr "Equidistante"
 
-#: src/input/es_out.c:3250
+#: src/input/es_out.c:3253
 msgid "Cubemap"
 msgstr "Mapa em cubo"
 
-#: src/input/es_out.c:3256
+#: src/input/es_out.c:3259
 msgid "Projection"
 msgstr "Projeção"
 
-#: src/input/es_out.c:3258
+#: src/input/es_out.c:3261
 msgctxt "ViewPoint"
 msgid "Yaw"
 msgstr "Guinada"
 
-#: src/input/es_out.c:3260
+#: src/input/es_out.c:3263
 msgctxt "ViewPoint"
 msgid "Pitch"
 msgstr "Inclinação"
 
-#: src/input/es_out.c:3262
+#: src/input/es_out.c:3265
 msgctxt "ViewPoint"
 msgid "Roll"
 msgstr "Rolagem"
 
-#: src/input/es_out.c:3265
+#: src/input/es_out.c:3268
 msgctxt "ViewPoint"
 msgid "Field of view"
 msgstr "Campo de visão"
 
-#: src/input/es_out.c:3270
+#: src/input/es_out.c:3273
 msgid "Max. luminance"
 msgstr "Luminância máx."
 
-#: src/input/es_out.c:3275
+#: src/input/es_out.c:3278
 msgid "Min. luminance"
 msgstr "Luminância mín."
 
-#: src/input/es_out.c:3283
+#: src/input/es_out.c:3286
 msgid "Primary R"
 msgstr "R Primário"
 
-#: src/input/es_out.c:3290
+#: src/input/es_out.c:3293
 msgid "Primary G"
 msgstr "G Primário"
 
-#: src/input/es_out.c:3297
+#: src/input/es_out.c:3300
 msgid "Primary B"
 msgstr "B Primário"
 
-#: src/input/es_out.c:3304
+#: src/input/es_out.c:3307
 msgid "White point"
 msgstr "Ponto branco"
 
-#: src/input/es_out.c:3319 modules/access/imem.c:64
+#: src/input/es_out.c:3322 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "Legenda"
 
@@ -1279,8 +1279,8 @@ msgstr ""
 #: modules/gui/macosx/VLCOpenWindowController.m:178
 #: modules/gui/macosx/VLCOpenWindowController.m:180
 #: modules/gui/macosx/VLCPlaylist.m:107 modules/gui/macosx/VLCPlaylistInfo.m:63
-#: modules/gui/qt/components/open_panels.cpp:503
-#: modules/gui/qt/components/open_panels.cpp:517
+#: modules/gui/qt/components/open_panels.cpp:507
+#: modules/gui/qt/components/open_panels.cpp:521
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
 #: modules/gui/qt/ui/open_disk.h:309
 msgid "Title"
@@ -2142,7 +2142,7 @@ msgstr "Oculta o cursor e o controle de Tela Inteira após x milissegundos"
 #: src/video_output/interlacing.c:112 modules/gui/macosx/VLCMainMenu.m:433
 #: modules/gui/macosx/VLCMainMenu.m:434
 #: modules/gui/macosx/VLCSimplePrefsController.m:372
-#: modules/gui/qt/dialogs/convert.cpp:120 modules/hw/vdpau/chroma.c:884
+#: modules/gui/qt/dialogs/convert.cpp:123 modules/hw/vdpau/chroma.c:896
 #: modules/video_filter/deinterlace/deinterlace.c:300
 #: share/lua/http/dialogs/create_stream.html:346
 msgid "Deinterlace"
@@ -2172,7 +2172,7 @@ msgstr "Mesclar"
 msgid "Mean"
 msgstr "Média"
 
-#: src/libvlc-module.c:361 modules/hw/vdpau/chroma.c:871
+#: src/libvlc-module.c:361 modules/hw/vdpau/chroma.c:883
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Bob"
 msgstr "Bob"
@@ -5305,11 +5305,11 @@ msgstr "Erro ao abrir \"%s\" para gravação"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:792
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:861
 #: modules/gui/macosx/prefs.m:189
-#: modules/gui/qt/components/open_panels.cpp:1360
+#: modules/gui/qt/components/open_panels.cpp:1364
 #: modules/gui/qt/components/preferences_widgets.cpp:1428
 #: modules/gui/qt/components/sout/profile_selector.cpp:446
 #: modules/gui/qt/dialogs/sout.cpp:92
-#: modules/stream_out/chromecast/cast.cpp:373
+#: modules/stream_out/chromecast/cast.cpp:408
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -6538,7 +6538,7 @@ msgid "DSS"
 msgstr "DSS"
 
 #: modules/access/dshow/dshow.cpp:130
-#: modules/gui/qt/components/open_panels.cpp:817
+#: modules/gui/qt/components/open_panels.cpp:821
 msgid "Video device name"
 msgstr "Nome do dispositivo de vídeo"
 
@@ -6551,8 +6551,8 @@ msgstr ""
 "Se não for especificado um, o dispositivo padrão será usado."
 
 #: modules/access/dshow/dshow.cpp:135
-#: modules/gui/qt/components/open_panels.cpp:825
-#: modules/gui/qt/components/open_panels.cpp:1046
+#: modules/gui/qt/components/open_panels.cpp:829
+#: modules/gui/qt/components/open_panels.cpp:1050
 msgid "Audio device name"
 msgstr "Nome do dispositivo de áudio"
 
@@ -6565,7 +6565,7 @@ msgstr ""
 "Se não for especificado um, o dispositivo padrão será usado."
 
 #: modules/access/dshow/dshow.cpp:140
-#: modules/gui/qt/components/open_panels.cpp:792
+#: modules/gui/qt/components/open_panels.cpp:796
 msgid "Video size"
 msgstr "Tamanho do vídeo"
 
@@ -6647,8 +6647,8 @@ msgid "This overrides the channel. Measured in Hz."
 msgstr "Inativa o canal. Medido em Hz."
 
 #: modules/access/dshow/dshow.cpp:168
-#: modules/gui/qt/components/open_panels.cpp:845
-#: modules/gui/qt/components/open_panels.cpp:1066
+#: modules/gui/qt/components/open_panels.cpp:849
+#: modules/gui/qt/components/open_panels.cpp:1070
 msgid "Video standard"
 msgstr "Padrão de vídeo"
 
@@ -6872,7 +6872,7 @@ msgstr ""
 "Os canais de TV são agrupados pelo transponder (i.e., combinador) em uma "
 "dada frequência. Necessário para sintonizar o receptor."
 
-#: modules/access/dtv/access.c:61 modules/gui/qt/components/open_panels.cpp:966
+#: modules/access/dtv/access.c:61 modules/gui/qt/components/open_panels.cpp:970
 msgid "Modulation / Constellation"
 msgstr "Modulação / Constelação"
 
@@ -7785,7 +7785,7 @@ msgstr "Pace"
 msgid "Read the audio stream at VLC pace rather than Jack pace."
 msgstr "Lê o fluxo de áudio no pace do VLC em vez de no pace Jack."
 
-#: modules/access/jack.c:62 modules/gui/qt/components/open_panels.cpp:897
+#: modules/access/jack.c:62 modules/gui/qt/components/open_panels.cpp:901
 msgid "Auto connection"
 msgstr "Conexão automática"
 
@@ -8302,7 +8302,7 @@ msgid "SAT>IP Receiver Plugin"
 msgstr "Complemento de recepção SAT>IP"
 
 #: modules/access/screen/screen.c:45
-#: modules/gui/qt/components/open_panels.cpp:1103
+#: modules/gui/qt/components/open_panels.cpp:1107
 msgid "Desired frame rate for the capture."
 msgstr "Taxa de quadros desejada para a captura."
 
@@ -8669,7 +8669,7 @@ msgstr "Dispositivo de rádio"
 msgid "Radio tuner device node."
 msgstr "Dispositivo de sintonia de rádio."
 
-#: modules/access/v4l2/v4l2.c:75 modules/gui/qt/components/open_panels.cpp:1073
+#: modules/access/v4l2/v4l2.c:75 modules/gui/qt/components/open_panels.cpp:1077
 msgid "Frequency"
 msgstr "Freqüência"
 
@@ -9016,7 +9016,7 @@ msgstr ""
 #: modules/codec/avcodec/avcodec.c:54 modules/codec/x264.c:435
 #: modules/control/hotkeys.c:395
 #: modules/gui/macosx/VLCAddonsWindowController.m:99
-#: modules/gui/qt/dialogs/convert.cpp:161
+#: modules/gui/qt/dialogs/convert.cpp:164
 #: modules/gui/qt/dialogs/plugins.cpp:375
 #: modules/gui/qt/dialogs/preferences.cpp:79
 msgid "All"
@@ -9434,7 +9434,7 @@ msgid "LiveHTTP"
 msgstr "LiveHTTP"
 
 #: modules/access_output/shout.c:64
-#: modules/gui/qt/components/sout/sout_widgets.cpp:380
+#: modules/gui/qt/components/sout/sout_widgets.cpp:383
 #: share/lua/http/dialogs/create_stream.html:139
 msgid "Stream name"
 msgstr "Nome do fluxo"
@@ -14330,7 +14330,7 @@ msgstr "Lento"
 msgid "Spatial"
 msgstr "Espacial"
 
-#: modules/codec/x264.c:440 modules/hw/vdpau/chroma.c:871
+#: modules/codec/x264.c:440 modules/hw/vdpau/chroma.c:883
 msgid "Temporal"
 msgstr "Temporal"
 
@@ -15316,7 +15316,7 @@ msgid "Avformat muxer"
 msgstr "Combinador Avformat"
 
 #: modules/demux/avformat/avformat.c:56
-#: modules/stream_out/chromecast/cast.cpp:118 modules/stream_out/rtp.c:87
+#: modules/stream_out/chromecast/cast.cpp:117 modules/stream_out/rtp.c:87
 msgid "Muxer"
 msgstr "Misturador"
 
@@ -16727,7 +16727,7 @@ msgstr "Selecione a predefinição que deseja excluir:"
 #: modules/gui/macosx/VLCBookmarksWindowController.m:81
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
-#: modules/gui/qt/ui/open_file.h:154
+#: modules/gui/qt/ui/open_file.h:155
 msgid "Remove"
 msgstr "Remover"
 
@@ -16788,8 +16788,8 @@ msgstr "Hora"
 #: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:342
 #: modules/gui/macosx/VLCSimplePrefsController.m:282
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
-#: modules/gui/qt/components/open_panels.cpp:1359
-#: modules/stream_out/chromecast/cast.cpp:373
+#: modules/gui/qt/components/open_panels.cpp:1363
+#: modules/stream_out/chromecast/cast.cpp:408
 msgid "OK"
 msgstr "OK"
 
@@ -16909,9 +16909,9 @@ msgstr "Escolher um local para a saída"
 #: modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:440
-#: modules/gui/qt/components/sout/sout_widgets.cpp:132
+#: modules/gui/qt/components/sout/sout_widgets.cpp:135
 #: modules/gui/qt/ui/open.h:282 modules/gui/qt/ui/open_disk.h:307
-#: modules/gui/qt/ui/open_file.h:147 modules/gui/qt/ui/sprefs_audio.h:417
+#: modules/gui/qt/ui/open_file.h:148 modules/gui/qt/ui/sprefs_audio.h:417
 #: modules/gui/qt/ui/sprefs_input.h:368 modules/gui/qt/ui/sprefs_video.h:332
 msgid "Browse..."
 msgstr "Procurar..."
@@ -17006,10 +17006,10 @@ msgstr "Anúncio de Fluxo"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:186
 #: modules/gui/macosx/VLCOpenWindowController.m:197
 #: modules/gui/macosx/VLCOutput.m:68
-#: modules/gui/qt/components/sout/sout_widgets.cpp:236
-#: modules/gui/qt/components/sout/sout_widgets.cpp:323
-#: modules/gui/qt/components/sout/sout_widgets.cpp:365
-#: modules/gui/qt/components/sout/sout_widgets.cpp:420
+#: modules/gui/qt/components/sout/sout_widgets.cpp:239
+#: modules/gui/qt/components/sout/sout_widgets.cpp:326
+#: modules/gui/qt/components/sout/sout_widgets.cpp:368
+#: modules/gui/qt/components/sout/sout_widgets.cpp:423
 msgid "Address"
 msgstr "Endereço"
 
@@ -17021,11 +17021,11 @@ msgstr "TTL"
 #: modules/gui/macosx/VLCOpenWindowController.m:185
 #: modules/gui/macosx/VLCOpenWindowController.m:187
 #: modules/gui/macosx/VLCOutput.m:69
-#: modules/gui/qt/components/sout/sout_widgets.cpp:182
-#: modules/gui/qt/components/sout/sout_widgets.cpp:237
-#: modules/gui/qt/components/sout/sout_widgets.cpp:278
-#: modules/gui/qt/components/sout/sout_widgets.cpp:324
-#: modules/gui/qt/components/sout/sout_widgets.cpp:421 modules/lua/vlc.c:67
+#: modules/gui/qt/components/sout/sout_widgets.cpp:185
+#: modules/gui/qt/components/sout/sout_widgets.cpp:240
+#: modules/gui/qt/components/sout/sout_widgets.cpp:281
+#: modules/gui/qt/components/sout/sout_widgets.cpp:327
+#: modules/gui/qt/components/sout/sout_widgets.cpp:424 modules/lua/vlc.c:67
 #: modules/stream_out/rtp.c:114
 #: share/lua/http/dialogs/stream_config_window.html:32
 #: share/lua/http/dialogs/stream_window.html:91
@@ -18060,7 +18060,7 @@ msgid "Enable DVD menus"
 msgstr "Habilitar menus de DVD"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:186
-#: modules/stream_out/chromecast/cast.cpp:129
+#: modules/stream_out/chromecast/cast.cpp:155
 msgid "IP Address"
 msgstr "Endereço IP"
 
@@ -18195,7 +18195,7 @@ msgstr "Arquivo de legenda"
 #: modules/gui/macosx/VLCOpenWindowController.m:572
 #: modules/gui/macosx/VLCOpenWindowController.m:658
 #: modules/gui/macosx/VLCOpenWindowController.m:1258
-#: modules/gui/qt/ui/open_file.h:142
+#: modules/gui/qt/ui/open_file.h:143
 msgid "Open File"
 msgstr "Abrir Arquivo"
 
@@ -18212,7 +18212,7 @@ msgstr "Opções de Fluxo e Transcodificação"
 msgid "Display the stream locally"
 msgstr "Exibir o fluxo localmente"
 
-#: modules/gui/macosx/VLCOutput.m:66 modules/gui/qt/dialogs/convert.cpp:104
+#: modules/gui/macosx/VLCOutput.m:66 modules/gui/qt/dialogs/convert.cpp:107
 msgid "Dump raw input"
 msgstr "Descarregar entrada bruta"
 
@@ -19591,7 +19591,7 @@ msgid "Next media in the playlist"
 msgstr "Próximo item na lista de reprodução"
 
 #: modules/gui/qt/components/controller.hpp:126
-#: modules/gui/qt/components/open_panels.cpp:252
+#: modules/gui/qt/components/open_panels.cpp:259
 msgid "Open subtitle file"
 msgstr "Abrir arquivo de legenda"
 
@@ -19952,7 +19952,7 @@ msgid "Select a device or a VIDEO_TS folder"
 msgstr "Selecionar um dispositivo ou uma pasta VIDEO_TS"
 
 #: modules/gui/qt/components/open_panels.cpp:145
-#: modules/gui/qt/components/open_panels.cpp:223
+#: modules/gui/qt/components/open_panels.cpp:224
 msgid "Select one or multiple files"
 msgstr "Selecione um ou vários arquivos"
 
@@ -19965,73 +19965,73 @@ msgstr "Nomes dos Arquivos:"
 msgid "Filter:"
 msgstr "Filtro:"
 
-#: modules/gui/qt/components/open_panels.cpp:363
+#: modules/gui/qt/components/open_panels.cpp:367
 msgid "Eject the disc"
 msgstr "Ejetar o disco"
 
-#: modules/gui/qt/components/open_panels.cpp:530
+#: modules/gui/qt/components/open_panels.cpp:534
 msgid "Entry"
 msgstr "Entrada"
 
-#: modules/gui/qt/components/open_panels.cpp:872
+#: modules/gui/qt/components/open_panels.cpp:876
 msgid "Channels:"
 msgstr "Canais:"
 
-#: modules/gui/qt/components/open_panels.cpp:883
+#: modules/gui/qt/components/open_panels.cpp:887
 msgid "Selected ports:"
 msgstr "Portas selecionadas:"
 
-#: modules/gui/qt/components/open_panels.cpp:886
+#: modules/gui/qt/components/open_panels.cpp:890
 msgid ".*"
 msgstr ".*"
 
-#: modules/gui/qt/components/open_panels.cpp:893
+#: modules/gui/qt/components/open_panels.cpp:897
 msgid "Use VLC pace"
 msgstr "Usar o pace do VLC"
 
-#: modules/gui/qt/components/open_panels.cpp:913
+#: modules/gui/qt/components/open_panels.cpp:917
 msgid "TV - digital"
 msgstr "TV - digital"
 
-#: modules/gui/qt/components/open_panels.cpp:916
+#: modules/gui/qt/components/open_panels.cpp:920
 msgid "Tuner card"
 msgstr "Placa sintonizadora"
 
-#: modules/gui/qt/components/open_panels.cpp:917
+#: modules/gui/qt/components/open_panels.cpp:921
 msgid "Delivery system"
 msgstr "Sistema de entrega"
 
-#: modules/gui/qt/components/open_panels.cpp:947
+#: modules/gui/qt/components/open_panels.cpp:951
 msgid "Transponder/multiplex frequency"
 msgstr "Freqüência do Transponder/combinador"
 
-#: modules/gui/qt/components/open_panels.cpp:957
+#: modules/gui/qt/components/open_panels.cpp:961
 msgid "Transponder symbol rate"
 msgstr "Taxa de símbolos do transponder"
 
-#: modules/gui/qt/components/open_panels.cpp:990
+#: modules/gui/qt/components/open_panels.cpp:994
 msgid "Bandwidth"
 msgstr "Largura de banda"
 
-#: modules/gui/qt/components/open_panels.cpp:1034
+#: modules/gui/qt/components/open_panels.cpp:1038
 msgid "TV - analog"
 msgstr "TV - analógica"
 
-#: modules/gui/qt/components/open_panels.cpp:1037
+#: modules/gui/qt/components/open_panels.cpp:1041
 msgid "Device name"
 msgstr "Nome do dispositivo"
 
-#: modules/gui/qt/components/open_panels.cpp:1097
+#: modules/gui/qt/components/open_panels.cpp:1101
 msgid "Your display will be opened and played in order to stream or save it."
 msgstr ""
 "A tela será aberta e reproduzida em ordem para o fluxo ou para a gravação."
 
 #. xgettext: frames per second
-#: modules/gui/qt/components/open_panels.cpp:1111
+#: modules/gui/qt/components/open_panels.cpp:1115
 msgid " f/s"
 msgstr "qps"
 
-#: modules/gui/qt/components/open_panels.cpp:1326
+#: modules/gui/qt/components/open_panels.cpp:1330
 msgid "Advanced Options"
 msgstr "Opções Avançadas"
 
@@ -20317,7 +20317,7 @@ msgid "&Apply"
 msgstr "&Aplicar"
 
 #: modules/gui/qt/components/simple_preferences.cpp:1342
-#: modules/gui/qt/dialogs/convert.cpp:134
+#: modules/gui/qt/dialogs/convert.cpp:137
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
 #: modules/gui/qt/dialogs/podcast_configuration.cpp:37
@@ -20385,67 +20385,67 @@ msgstr "Fonte:"
 msgid "Type:"
 msgstr "Tipo:"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:124
+#: modules/gui/qt/components/sout/sout_widgets.cpp:127
 msgid "This module writes the transcoded stream to a file."
 msgstr "Este módulo grava o fluxo transcodificado para um arquivo."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:126
+#: modules/gui/qt/components/sout/sout_widgets.cpp:129
 msgid "Filename"
 msgstr "Nome do Arquivo"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:169
-#: modules/gui/qt/dialogs/convert.cpp:158
+#: modules/gui/qt/components/sout/sout_widgets.cpp:172
+#: modules/gui/qt/dialogs/convert.cpp:161
 msgid "Save file..."
 msgstr "Salvar arquivo..."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:170
+#: modules/gui/qt/components/sout/sout_widgets.cpp:173
 msgid ""
 "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)"
 msgstr ""
 "Contêineres (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *."
 "webm)"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:179
+#: modules/gui/qt/components/sout/sout_widgets.cpp:182
 msgid "This module outputs the transcoded stream to a network via HTTP."
 msgstr "Este módulo reproduz o fluxo transcodificado para uma rede via HTTP."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:181
-#: modules/gui/qt/components/sout/sout_widgets.cpp:277
+#: modules/gui/qt/components/sout/sout_widgets.cpp:184
+#: modules/gui/qt/components/sout/sout_widgets.cpp:280
 msgid "Path"
 msgstr "Caminho"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:233
+#: modules/gui/qt/components/sout/sout_widgets.cpp:236
 msgid ""
 "This module outputs the transcoded stream to a network via the mms protocol."
 msgstr ""
 "Este módulo encaminha o fluxo transcodificado para uma rede, através do "
 "protocolo mms."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:275
+#: modules/gui/qt/components/sout/sout_widgets.cpp:278
 msgid "This module outputs the transcoded stream to a network via RTSP."
 msgstr "Este módulo reproduz o fluxo transcodificado para uma rede via RTSP."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:321
+#: modules/gui/qt/components/sout/sout_widgets.cpp:324
 msgid "This module outputs the transcoded stream to a network via UDP."
 msgstr "Este módulo reproduz o fluxo transcodificado para uma rede via UDP."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:363
+#: modules/gui/qt/components/sout/sout_widgets.cpp:366
 msgid "This module outputs the transcoded stream to a network via RTP."
 msgstr "Este módulo reproduz o fluxo transcodificado para uma rede via RTP."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:370
+#: modules/gui/qt/components/sout/sout_widgets.cpp:373
 msgid "Base port"
 msgstr "Porta base"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:418
+#: modules/gui/qt/components/sout/sout_widgets.cpp:421
 msgid "This module outputs the transcoded stream to an Icecast server."
 msgstr "Este módulo reproduz o fluxo transcodificado para um servidor Icecast."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:437
+#: modules/gui/qt/components/sout/sout_widgets.cpp:440
 msgid "Mount Point"
 msgstr "Ponto de Montagem"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:438
+#: modules/gui/qt/components/sout/sout_widgets.cpp:441
 msgid "Login:pass"
 msgstr "Usuário:senha"
 
@@ -20485,55 +20485,55 @@ msgstr "Fe&char"
 msgid "Bytes"
 msgstr "Bytes"
 
-#: modules/gui/qt/dialogs/convert.cpp:45 modules/gui/qt/dialogs/convert.cpp:103
+#: modules/gui/qt/dialogs/convert.cpp:48 modules/gui/qt/dialogs/convert.cpp:106
 msgid "Convert"
 msgstr "Converter"
 
-#: modules/gui/qt/dialogs/convert.cpp:58
+#: modules/gui/qt/dialogs/convert.cpp:61
 msgid "Multiple files selected."
 msgstr "Multiplos arquivos selecionados."
 
-#: modules/gui/qt/dialogs/convert.cpp:65 modules/stream_out/rtp.c:76
+#: modules/gui/qt/dialogs/convert.cpp:68 modules/stream_out/rtp.c:76
 msgid "Destination"
 msgstr "Destino"
 
-#: modules/gui/qt/dialogs/convert.cpp:68 modules/gui/qt/ui/sprefs_audio.h:416
+#: modules/gui/qt/dialogs/convert.cpp:71 modules/gui/qt/ui/sprefs_audio.h:416
 msgid "Destination file:"
 msgstr "Arquivo destino:"
 
-#: modules/gui/qt/dialogs/convert.cpp:79
+#: modules/gui/qt/dialogs/convert.cpp:82
 msgid "Browse"
 msgstr "Procurar"
 
-#: modules/gui/qt/dialogs/convert.cpp:87
+#: modules/gui/qt/dialogs/convert.cpp:90
 msgid "Multiple Files Selected."
 msgstr "Multiplos Arquivos Selecionados."
 
-#: modules/gui/qt/dialogs/convert.cpp:89
+#: modules/gui/qt/dialogs/convert.cpp:92
 msgid "Files will be placed in the same directory with the same name."
 msgstr "Os arquivos serão colocados na mesma pasta com o mesmo nome."
 
-#: modules/gui/qt/dialogs/convert.cpp:92
+#: modules/gui/qt/dialogs/convert.cpp:95
 msgid "Append '-converted' to filename"
 msgstr "Anexar 'convertido' ao nome do arquivo"
 
-#: modules/gui/qt/dialogs/convert.cpp:100
+#: modules/gui/qt/dialogs/convert.cpp:103
 msgid "Settings"
 msgstr "Configurações"
 
-#: modules/gui/qt/dialogs/convert.cpp:115
+#: modules/gui/qt/dialogs/convert.cpp:118
 msgid "Display the output"
 msgstr "Exibir a saída"
 
-#: modules/gui/qt/dialogs/convert.cpp:116
+#: modules/gui/qt/dialogs/convert.cpp:119
 msgid "This display the resulting media, but can slow things down."
 msgstr "Exibe a mídia resultante, mas pode reduzir o desempenho."
 
-#: modules/gui/qt/dialogs/convert.cpp:133
+#: modules/gui/qt/dialogs/convert.cpp:136
 msgid "&Start"
 msgstr "&Iniciar"
 
-#: modules/gui/qt/dialogs/convert.cpp:160
+#: modules/gui/qt/dialogs/convert.cpp:163
 msgid "Containers"
 msgstr "Contêineres"
 
@@ -21584,8 +21584,9 @@ msgid "<Local>"
 msgstr "<Local>"
 
 #: modules/gui/qt/menus.cpp:1654
-msgid "Scan"
-msgstr "Procurar"
+#, fuzzy
+msgid "Scanning..."
+msgstr "Procurando o DVB"
 
 #: modules/gui/qt/qt.cpp:81
 msgid "Show advanced preferences over simple ones"
@@ -22118,43 +22119,43 @@ msgstr "Filtro de vídeo de ajuste VDPAU"
 msgid "VDPAU video decoder"
 msgstr "Decodificador de vídeo VDPAU"
 
-#: modules/hw/vdpau/chroma.c:871
+#: modules/hw/vdpau/chroma.c:883
 msgid "Temporal-spatial"
 msgstr "Temporal-espacial"
 
-#: modules/hw/vdpau/chroma.c:875 modules/hw/vdpau/display.c:45
+#: modules/hw/vdpau/chroma.c:887 modules/hw/vdpau/display.c:45
 msgid "VDPAU"
 msgstr "VDPAU"
 
-#: modules/hw/vdpau/chroma.c:876
+#: modules/hw/vdpau/chroma.c:888
 msgid "VDPAU surface conversions"
 msgstr "Conversões de superfície VDPAU"
 
-#: modules/hw/vdpau/chroma.c:884
+#: modules/hw/vdpau/chroma.c:896
 msgid "Deinterlacing algorithm"
 msgstr "Algoritmo de desentrelaçamento"
 
-#: modules/hw/vdpau/chroma.c:887
+#: modules/hw/vdpau/chroma.c:899
 msgid "Inverse telecine"
 msgstr "Telecine Invertido"
 
-#: modules/hw/vdpau/chroma.c:889
+#: modules/hw/vdpau/chroma.c:901
 msgid "Deinterlace chroma skip"
 msgstr "Ignorar o desentrelaçamento cromático"
 
-#: modules/hw/vdpau/chroma.c:890
+#: modules/hw/vdpau/chroma.c:902
 msgid "Whether temporal deinterlacing applies to luma only"
 msgstr "Define se o desentrelaçamento temporal só se aplica à luminância"
 
-#: modules/hw/vdpau/chroma.c:892
+#: modules/hw/vdpau/chroma.c:904
 msgid "Noise reduction level"
 msgstr "Nível de redução de ruído"
 
-#: modules/hw/vdpau/chroma.c:894
+#: modules/hw/vdpau/chroma.c:906
 msgid "Scaling quality"
 msgstr "Qualidade da escala"
 
-#: modules/hw/vdpau/chroma.c:894
+#: modules/hw/vdpau/chroma.c:906
 msgid "High quality scaling level"
 msgstr "Nível de escala de alta qualidade"
 
@@ -25181,11 +25182,11 @@ msgstr "Padrão: 90 s"
 msgid "Chromaprint stream output"
 msgstr "Saída de fluxo Chromaprint"
 
-#: modules/stream_out/chromecast/cast.cpp:113
+#: modules/stream_out/chromecast/cast.cpp:112
 msgid "HTTP port"
 msgstr "Porta HTTP"
 
-#: modules/stream_out/chromecast/cast.cpp:114
+#: modules/stream_out/chromecast/cast.cpp:113
 msgid ""
 "This sets the HTTP port of the local server used to stream the media to the "
 "Chromecast."
@@ -25193,75 +25194,91 @@ msgstr ""
 "Define a porta HTTP do servidor local a ser usado para criar fluxo da mídia "
 "para o Chromecast."
 
-#: modules/stream_out/chromecast/cast.cpp:117
+#: modules/stream_out/chromecast/cast.cpp:116
 msgid "The Chromecast receiver can receive video."
 msgstr "O receptor Chromecast pode receber vídeo."
 
-#: modules/stream_out/chromecast/cast.cpp:119
+#: modules/stream_out/chromecast/cast.cpp:118
 msgid "This sets the muxer used to stream to the Chromecast."
 msgstr ""
 "Define o tipo de combinador a ser usado para enviar fluxo ao Chromecast."
 
-#: modules/stream_out/chromecast/cast.cpp:120
+#: modules/stream_out/chromecast/cast.cpp:119
 msgid "MIME content type"
 msgstr "Tipo de conteúdo MIME"
 
-#: modules/stream_out/chromecast/cast.cpp:121
+#: modules/stream_out/chromecast/cast.cpp:120
 msgid "This sets the media MIME content type sent to the Chromecast."
 msgstr "Define o tipo de conteúdo MIME da mídia enviado ao Chromecast."
 
-#: modules/stream_out/chromecast/cast.cpp:122
-#: modules/stream_out/chromecast/cast.cpp:374
+#: modules/stream_out/chromecast/cast.cpp:121
+#: modules/stream_out/chromecast/cast.cpp:409
 msgid "Performance warning"
 msgstr "Aviso de desempenho"
 
-#: modules/stream_out/chromecast/cast.cpp:123
+#: modules/stream_out/chromecast/cast.cpp:122
 msgid "Display a performance warning when transcoding"
 msgstr "Exibe um aviso de desempenho quando transcodificando"
 
-#: modules/stream_out/chromecast/cast.cpp:124
+#: modules/stream_out/chromecast/cast.cpp:123
 #, fuzzy
 msgid "Enable Audio passthrough"
 msgstr "Habilitar fluxo de saída de áudio"
 
-#: modules/stream_out/chromecast/cast.cpp:125
+#: modules/stream_out/chromecast/cast.cpp:124
 msgid "Disable if your receiver does not support Dolby®"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:126
-#, fuzzy
-msgid "Multichannel PCM"
-msgstr "Canais de áudio"
-
-#: modules/stream_out/chromecast/cast.cpp:127
-msgid "Use PCM for multichannel audio."
+#: modules/stream_out/chromecast/cast.cpp:146
+msgid "High (high quality and high bandwith)"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:130
+#: modules/stream_out/chromecast/cast.cpp:147
+msgid "Medium (medium quality and medium bandwidth)"
+msgstr ""
+
+#: modules/stream_out/chromecast/cast.cpp:148
+msgid "Low (low quality and low bandwith)"
+msgstr ""
+
+#: modules/stream_out/chromecast/cast.cpp:149
+msgid "Low CPU (low quality but high bandwith)"
+msgstr ""
+
+#: modules/stream_out/chromecast/cast.cpp:152
+#, fuzzy
+msgid "Conversion quality"
+msgstr "Qualidade de exibição"
+
+#: modules/stream_out/chromecast/cast.cpp:153
+msgid "Change this option to increase conversion speed or quality."
+msgstr ""
+
+#: modules/stream_out/chromecast/cast.cpp:156
 msgid "IP Address of the Chromecast."
 msgstr "Endereço IP do Chromecast."
 
-#: modules/stream_out/chromecast/cast.cpp:131
+#: modules/stream_out/chromecast/cast.cpp:157
 msgid "Chromecast port"
 msgstr "Porta do Chromecast"
 
-#: modules/stream_out/chromecast/cast.cpp:132
+#: modules/stream_out/chromecast/cast.cpp:158
 msgid "The port used to talk to the Chromecast."
 msgstr "A porta usada para se comunicar com o Chromecast."
 
-#: modules/stream_out/chromecast/cast.cpp:136
+#: modules/stream_out/chromecast/cast.cpp:162
 msgid "Chromecast"
 msgstr "Chromecast"
 
-#: modules/stream_out/chromecast/cast.cpp:137
+#: modules/stream_out/chromecast/cast.cpp:163
 msgid "Chromecast stream output"
 msgstr "Saída de fluxo do Chromecast"
 
-#: modules/stream_out/chromecast/cast.cpp:373
+#: modules/stream_out/chromecast/cast.cpp:408
 msgid "Ok, Don't warn me again"
 msgstr "Sim. Não me avisar novamente"
 
-#: modules/stream_out/chromecast/cast.cpp:375
+#: modules/stream_out/chromecast/cast.cpp:410
 msgid ""
 "Casting this video requires conversion. This conversion can use all the "
 "available power and could quickly drain your battery."
@@ -29209,27 +29226,27 @@ msgstr "Posição Inicial"
 msgid "Audio and Subtitles"
 msgstr "Áudio e Legendas"
 
-#: modules/gui/qt/ui/open_file.h:143
+#: modules/gui/qt/ui/open_file.h:144
 msgid "Use a sub&title file"
 msgstr "Usar um arquivo de &legenda"
 
-#: modules/gui/qt/ui/open_file.h:145
+#: modules/gui/qt/ui/open_file.h:146
 msgid "Select the subtitle file"
 msgstr "Selecione o arquivo de legendas"
 
-#: modules/gui/qt/ui/open_file.h:149
+#: modules/gui/qt/ui/open_file.h:150
 msgid "Choose one or more media file to open"
 msgstr "Escolher um ou mais arquivos de mídia para abrir"
 
-#: modules/gui/qt/ui/open_file.h:151
+#: modules/gui/qt/ui/open_file.h:152
 msgid "File Selection"
 msgstr "Seleção de Arquivo"
 
-#: modules/gui/qt/ui/open_file.h:152
+#: modules/gui/qt/ui/open_file.h:153
 msgid "You can select local files with the following list and buttons."
 msgstr "É possível localizar arquivos com a seguinte lista e botões."
 
-#: modules/gui/qt/ui/open_file.h:153
+#: modules/gui/qt/ui/open_file.h:154
 msgid "Add..."
 msgstr "Adicionar..."
 
@@ -29909,6 +29926,9 @@ msgstr "Lista do Gerenciador de Mídias"
 #~ msgstr ""
 #~ "Se um conteúdo entrelaçado for detectado, o desentrelaçamento é "
 #~ "habilitado temporariamente, ao custo de atrasos na canalização de dados."
+
+#~ msgid "Scan"
+#~ msgstr "Procurar"
 
 #~ msgid "Output/Written/Sent"
 #~ msgstr "Saído/Escrito/Enviado"

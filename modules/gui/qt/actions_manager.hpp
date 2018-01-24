@@ -2,7 +2,7 @@
  * actions_manager.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 1346462ea1fa5f5e1dc2c0a7149aecd2535e1324 $
+ * $Id: 5592429aaf470fafcd961618375baebff7db872a $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -33,6 +33,7 @@
 #include <QVector>
 
 #include <QObject>
+#include <QTimer>
 class QAction;
 
 typedef enum actionType_e
@@ -76,12 +77,15 @@ private:
 
     intf_thread_t* const p_intf;
     QVector<vlc_renderer_discovery_t*> m_rds;
+    QTimer m_stop_scan_timer;
+    bool m_scanning;
 
     static void renderer_event_item_added( vlc_renderer_discovery_t *,
                                            vlc_renderer_item_t * );
     static void renderer_event_item_removed( vlc_renderer_discovery_t *,
                                              vlc_renderer_item_t * );
-    static bool compareRenderers( const QVariant &m_obj, vlc_renderer_item_t* p_item );
+    static vlc_renderer_item_t* compareRenderers( const QVariant &m_obj,
+                                                  vlc_renderer_item_t* p_item );
 
 public slots:
     void toggleMuteAudio();
@@ -91,16 +95,24 @@ public slots:
     void record();
     void skipForward();
     void skipBackward();
-    void ScanRendererAction( bool );
+    void StartRendererScan();
+    void RendererMenuCountdown();
+    void StopRendererScan();
     void RendererSelected( QAction * );
 
 protected slots:
+    void onRendererItemAdded( vlc_renderer_item_t* );
+    void onRendererItemRemoved( vlc_renderer_item_t* );
     void fullscreen();
     void snapshot();
     void playlist();
     void frame();
 
     virtual void doAction( int );
+
+signals:
+    void rendererItemAdded( vlc_renderer_item_t* );
+    void rendererItemRemoved( vlc_renderer_item_t* );
 };
 
 #endif

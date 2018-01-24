@@ -454,7 +454,8 @@ TESTS = hpack_test$(EXEEXT) hpackenc_test$(EXEEXT) \
 @HAVE_WINSTORE_TRUE@am__append_230 = -ld3d11 -ld3dcompiler_47
 @HAVE_WIN32_DESKTOP_TRUE@am__append_231 = $(LTLIBdirectdraw) \
 @HAVE_WIN32_DESKTOP_TRUE@	$(LTLIBglwin32) $(LTLIBwgl) \
-@HAVE_WIN32_DESKTOP_TRUE@	libwingdi_plugin.la
+@HAVE_WIN32_DESKTOP_TRUE@	libwingdi_plugin.la \
+@HAVE_WIN32_DESKTOP_TRUE@	libwinhibit_plugin.la
 @HAVE_WIN32_DESKTOP_TRUE@am__append_232 = libdirectdraw_plugin.la \
 @HAVE_WIN32_DESKTOP_TRUE@	libglwin32_plugin.la libwgl_plugin.la
 @HAVE_EGL_TRUE@@HAVE_WIN32_TRUE@am__append_233 = libegl_win32_plugin.la
@@ -4825,6 +4826,11 @@ am_libwingdi_plugin_la_OBJECTS = video_output/win32/wingdi.lo \
 libwingdi_plugin_la_OBJECTS = $(am_libwingdi_plugin_la_OBJECTS)
 @HAVE_WIN32_DESKTOP_TRUE@am_libwingdi_plugin_la_rpath = -rpath \
 @HAVE_WIN32_DESKTOP_TRUE@	$(voutdir)
+libwinhibit_plugin_la_LIBADD =
+am_libwinhibit_plugin_la_OBJECTS = video_output/win32/inhibit.lo
+libwinhibit_plugin_la_OBJECTS = $(am_libwinhibit_plugin_la_OBJECTS)
+@HAVE_WIN32_DESKTOP_TRUE@am_libwinhibit_plugin_la_rpath = -rpath \
+@HAVE_WIN32_DESKTOP_TRUE@	$(voutdir)
 libwinstore_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_libwinstore_plugin_la_OBJECTS = audio_output/winstore.lo
 libwinstore_plugin_la_OBJECTS = $(am_libwinstore_plugin_la_OBJECTS)
@@ -5563,6 +5569,7 @@ SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(libwin_msg_plugin_la_SOURCES) \
 	$(libwindrive_plugin_la_SOURCES) \
 	$(libwingdi_plugin_la_SOURCES) \
+	$(libwinhibit_plugin_la_SOURCES) \
 	$(libwinstore_plugin_la_SOURCES) \
 	$(libwl_shell_plugin_la_SOURCES) \
 	$(libwl_shm_plugin_la_SOURCES) \
@@ -5960,6 +5967,7 @@ DIST_SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(libwin_msg_plugin_la_SOURCES) \
 	$(libwindrive_plugin_la_SOURCES) \
 	$(libwingdi_plugin_la_SOURCES) \
+	$(libwinhibit_plugin_la_SOURCES) \
 	$(libwinstore_plugin_la_SOURCES) \
 	$(libwl_shell_plugin_la_SOURCES) \
 	$(libwl_shm_plugin_la_SOURCES) \
@@ -10973,6 +10981,7 @@ libwingdi_plugin_la_SOURCES = video_output/win32/wingdi.c \
 	video_output/win32/win32touch.c video_output/win32/win32touch.h
 
 libwingdi_plugin_la_LIBADD = libchroma_copy.la -lgdi32 $(LIBCOM) -luuid
+libwinhibit_plugin_la_SOURCES = video_output/win32/inhibit.c
 libegl_win32_plugin_la_SOURCES = video_output/opengl/egl.c
 libegl_win32_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) -DUSE_PLATFORM_WIN32=1
 libegl_win32_plugin_la_CFLAGS = $(AM_CFLAGS) $(EGL_CFLAGS)
@@ -17648,6 +17657,11 @@ video_output/win32/win32touch.lo: video_output/win32/$(am__dirstamp) \
 
 libwingdi_plugin.la: $(libwingdi_plugin_la_OBJECTS) $(libwingdi_plugin_la_DEPENDENCIES) $(EXTRA_libwingdi_plugin_la_DEPENDENCIES) 
 	$(AM_V_CXXLD)$(CXXLINK) $(am_libwingdi_plugin_la_rpath) $(libwingdi_plugin_la_OBJECTS) $(libwingdi_plugin_la_LIBADD) $(LIBS)
+video_output/win32/inhibit.lo: video_output/win32/$(am__dirstamp) \
+	video_output/win32/$(DEPDIR)/$(am__dirstamp)
+
+libwinhibit_plugin.la: $(libwinhibit_plugin_la_OBJECTS) $(libwinhibit_plugin_la_DEPENDENCIES) $(EXTRA_libwinhibit_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK) $(am_libwinhibit_plugin_la_rpath) $(libwinhibit_plugin_la_OBJECTS) $(libwinhibit_plugin_la_LIBADD) $(LIBS)
 audio_output/winstore.lo: audio_output/$(am__dirstamp) \
 	audio_output/$(DEPDIR)/$(am__dirstamp)
 
@@ -19468,6 +19482,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/wayland/$(DEPDIR)/libxdg_shell_plugin_la-xdg-shell.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/common.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/events.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/inhibit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-common.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-direct3d11.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-events.Plo@am__quote@

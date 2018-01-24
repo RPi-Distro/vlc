@@ -2,7 +2,7 @@
  * dxa9.c : DXVA2 GPU surface conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2015 VLC authors, VideoLAN and VideoLabs
- * $Id: 3f564e871a7e305de089a42bbb1dfc83d9a72b88 $
+ * $Id: bbff337dbf2a5b3c4b402f8bbe97c73bb89e781b $
  *
  * Authors: Steve Lhomme <robux4@gmail.com>
  *
@@ -66,6 +66,13 @@ static bool GetLock(filter_t *p_filter, LPDIRECT3DSURFACE9 d3d,
     }
 
     return true;
+}
+
+static inline void plane_SwapUV(plane_t p[PICTURE_PLANE_MAX])
+{
+    uint8_t *buf = p[V_PLANE].p_pixels;
+    p[V_PLANE].p_pixels = p[U_PLANE].p_pixels;
+    p[U_PLANE].p_pixels = buf;
 }
 
 static void DXA9_YV12(filter_t *p_filter, picture_t *src, picture_t *dst)
@@ -257,7 +264,12 @@ static void YV12_D3D9(filter_t *p_filter, picture_t *src, picture_t *dst)
     picture_UpdatePlanes(sys->staging, d3drect.pBits, d3drect.Pitch);
 
     picture_Hold( src );
+
+    if (src->format.i_chroma == VLC_CODEC_I420)
+        plane_SwapUV( src->p );
     sys->filter->pf_video_filter(sys->filter, src);
+    if (src->format.i_chroma == VLC_CODEC_I420)
+        plane_SwapUV( src->p );
 
     IDirect3DSurface9_UnlockRect(sys->staging->p_sys->surface);
 

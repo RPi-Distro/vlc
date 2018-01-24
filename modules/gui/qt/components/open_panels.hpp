@@ -4,7 +4,7 @@
  * Copyright (C) 2006-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: d124a25ff68959afc5d35a6a83f7cc2897775fd0 $
+ * $Id: 71a983141de88d2ac087dbe1d9b33adc93fb3496 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -129,6 +129,8 @@ protected:
     void dragLeaveEvent( QDragLeaveEvent * ) Q_DECL_OVERRIDE;
 private:
     Ui::OpenFile ui;
+    QList<QUrl> urlList;
+    QUrl subUrl; //url for subtitle
     FileOpenBox *dialogBox;
     void BuildOldPanel();
 public slots:

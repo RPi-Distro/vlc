@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 9b154322e53f23e19eb73de716f9b71280e49c34 $
+ * $Id: ef52b8e52e57655d76de02b6cb688b6e11f55f03 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -211,6 +211,7 @@ void FileOpenPanel::dropEvent( QDropEvent *event )
                                          ui.fileListWidg );
             item->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled );
             ui.fileListWidg->addItem( item );
+            urlList << url;
         }
     }
     updateMRL();
@@ -223,9 +224,14 @@ void FileOpenPanel::browseFile()
     QStringList files = THEDP->showSimpleOpen( qtr( "Select one or multiple files" ) );
     foreach( const QString &file, files )
     {
-        QListWidgetItem *item =
-            new QListWidgetItem( toNativeSeparators( file ), ui.fileListWidg );
-        item->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled );
+        QUrl url(file);
+        urlList << url;
+        QListWidgetItem *item = nullptr;
+        item = new QListWidgetItem(
+            toNativeSeparators( url.toDisplayString(QUrl::RemovePassword | QUrl::PreferLocalFile | QUrl::NormalizePathSegments) ),
+            ui.fileListWidg
+            );
+        item->setFlags( Qt::ItemIsEnabled );
         ui.fileListWidg->addItem( item );
         savedirpathFromFile( file );
     }
@@ -240,6 +246,7 @@ void FileOpenPanel::removeFile()
     {
         QListWidgetItem *temp = ui.fileListWidg->takeItem( i );
         delete temp;
+        urlList.removeAt( i );
     }
 
     updateMRL();
@@ -252,15 +259,12 @@ void FileOpenPanel::browseFileSub()
     QStringList urls = THEDP->showSimpleOpen( qtr("Open subtitle file"),
                            EXT_FILTER_SUBTITLE, p_intf->p_sys->filepath );
 
-    if( urls.isEmpty() ) return;
-
-    // TODO Handle selection of more than one subtitles file
-    char *path = vlc_uri2path( qtu(urls[0]) );
-    if( path == NULL )
+    if( urls.isEmpty() ) {
         return;
+    }
 
-    ui.subInput->setText( qfu(path) );
-    free( path );
+    subUrl = QUrl(urls[0]);
+    ui.subInput->setText( subUrl.toDisplayString(QUrl::RemovePassword | QUrl::PreferLocalFile | QUrl::NormalizePathSegments) );
     updateMRL();
 }
 
@@ -272,11 +276,8 @@ void FileOpenPanel::updateMRL()
 
     /* File Listing */
     if( dialogBox == NULL )
-        for( int i = 0; i < ui.fileListWidg->count(); i++ )
-        {
-            if( !ui.fileListWidg->item( i )->text().isEmpty() )
-                fileList << toURI(ui.fileListWidg->item( i )->text());
-        }
+        foreach( const QUrl& url, urlList )
+            fileList << url.toEncoded();
     else
     {
         QList<QUrl> urls = dialogBox->selectedUrls();
@@ -285,8 +286,8 @@ void FileOpenPanel::updateMRL()
     }
 
     /* Options */
-    if( ui.subGroupBox->isChecked() &&  !ui.subInput->text().isEmpty() ) {
-        mrl.append( " :sub-file=" + colon_escape( ui.subInput->text() ) );
+    if( ui.subGroupBox->isChecked() &&  !subUrl.isEmpty() ) {
+        mrl.append( " :sub-file=" + colon_escape( subUrl.toEncoded() ) );
     }
 
     emit methodChanged( "file-caching" );
@@ -299,6 +300,7 @@ void FileOpenPanel::accept()
     if( dialogBox )
         p_intf->p_sys->filepath = dialogBox->directory().absolutePath();
     ui.fileListWidg->clear();
+    urlList.clear();
 }
 
 /* Function called by Open Dialog when clicked on cancel */
@@ -306,12 +308,14 @@ void FileOpenPanel::clear()
 {
     ui.fileListWidg->clear();
     ui.subInput->clear();
+    urlList.clear();
+    subUrl = QUrl();
 }
 
 /* Update buttons depending on current selection */
 void FileOpenPanel::updateButtons()
 {
-    bool b_has_files = ( ui.fileListWidg->count() > 0 );
+    bool b_has_files = !urlList.empty();
     ui.removeFileButton->setEnabled( b_has_files );
     ui.subGroupBox->setEnabled( b_has_files );
 }

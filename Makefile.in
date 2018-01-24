@@ -413,7 +413,7 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/share/Info.plist.in ABOUT-NLS AUTHORS COPYING \
 	COPYING.LIB ChangeLog INSTALL NEWS README THANKS \
 	autotools/compile autotools/config.guess \
-	autotools/config.rpath autotools/config.sub \
+	autotools/config.rpath autotools/config.sub autotools/depcomp \
 	autotools/install-sh autotools/ltmain.sh autotools/missing \
 	autotools/ylwrap
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -2396,7 +2396,7 @@ package-win-common: package-win-install package-win-sdk
 	-cp $(CONTRIB_DIR)/share/java/*.jar $(win32_destdir)/plugins/access/
 
 @BUILD_LUA_TRUE@	mkdir -p $(win32_destdir)/lua/
-@BUILD_LUA_TRUE@	cp -r $(prefix)/share/vlc/lua/* $(win32_destdir)/lua/
+@BUILD_LUA_TRUE@	cp -r $(prefix)/lib/vlc/lua/* $(win32_destdir)/lua/
 
 @BUILD_SKINS_TRUE@	rm -fr $(win32_destdir)/skins
 @BUILD_SKINS_TRUE@	cp -r $(prefix)/share/vlc/skins2 $(win32_destdir)/skins

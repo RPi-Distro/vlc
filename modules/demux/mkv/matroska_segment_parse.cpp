@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: aba61b06d5a41877fd7161c0a45540ff56e50b20 $
+ * $Id: c7e4193060ba9d12fed590d8a529f287b2021202 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -601,8 +601,16 @@ void matroska_segment_c::ParseTrackEntry( const KaxTrackEntry *m )
         E_CASE( KaxVideoDisplayUnit, vdmode )
         {
             vars.track_video_info.i_display_unit = static_cast<uint8>( vdmode );
-            debug( vars, "Track Video Display Unit=%s",
-                vars.track_video_info.i_display_unit == 0 ? "pixels" : ( vars.track_video_info.i_display_unit == 1 ? "centimeters": "inches" ) );
+            const char *psz_unit;
+            switch (vars.track_video_info.i_display_unit)
+            {
+            case 0:  psz_unit = "pixels"; break;
+            case 1:  psz_unit = "centimeters"; break;
+            case 2:  psz_unit = "inches"; break;
+            case 3:  psz_unit = "dar"; break;
+            default: psz_unit = "unknown"; break;
+            }
+            debug( vars, "Track Video Display Unit=%s", psz_unit );
         }
         E_CASE( KaxVideoAspectRatio, ratio ) // UNUSED
         {

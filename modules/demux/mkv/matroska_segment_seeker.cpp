@@ -2,7 +2,7 @@
  * matroska_segment.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 2887e454549f71a2e307a0814af081143c81b7cb $
+ * $Id: 027a973279709e74a513f383529df97d6610d75b $
  *
  * Authors: Filip Roséen <filip@videolabs.io>
  *
@@ -151,6 +151,23 @@ SegmentSeeker::find_greatest_seekpoints_in_range( fptr_t start_fpos, mtime_t end
         tpoints.insert( tracks_seekpoint_t::value_type( it->first, sp ) );
     }
 
+    if (tpoints.empty())
+    {
+        // try a further pts
+        for( tracks_seekpoints_t::const_iterator it = _tracks_seekpoints.begin(); it != _tracks_seekpoints.end(); ++it )
+        {
+            if ( std::find( filter_tracks.begin(), filter_tracks.end(), it->first ) == filter_tracks.end() )
+                continue;
+
+            Seekpoint sp = get_first_seekpoint_around( end_pts, it->second );
+
+            if( sp.fpos < start_fpos )
+                continue;
+
+            tpoints.insert( tracks_seekpoint_t::value_type( it->first, sp ) );
+        }
+    }
+
     return tpoints;
 }
 
@@ -197,6 +214,10 @@ SegmentSeeker::get_seekpoints_around( mtime_t pts, seekpoints_t const& seekpoint
     iterator const it_begin  = seekpoints.begin();
     iterator const it_end    = seekpoints.end();
     iterator const it_middle = greatest_lower_bound( it_begin, it_end, needle );
+
+    if ( it_middle != it_end && (*it_middle).pts > pts)
+        // found nothing low enough, use the first one
+        return seekpoint_pair_t( *it_begin, Seekpoint() );
 
     iterator it_before = it_middle;
     iterator it_after = it_middle == it_end ? it_middle : next_( it_middle ) ;
@@ -290,14 +311,17 @@ SegmentSeeker::get_seekpoints( matroska_segment_c& ms, mtime_t target_pts,
         Seekpoint const& start = seekpoints.first;
         Seekpoint const& end   = seekpoints.second;
 
-        index_range( ms, Range( start.fpos, end.fpos ), needle_pts );
+        if ( start.fpos == std::numeric_limits<fptr_t>::max() )
+            return tracks_seekpoint_t();
 
-        {
-            tracks_seekpoint_t tpoints = find_greatest_seekpoints_in_range( start.fpos, target_pts, filter_tracks );
+        if ( end.fpos != std::numeric_limits<fptr_t>::max() )
+            // do not read the whole (infinite?) file to get seek indexes
+            index_range( ms, Range( start.fpos, end.fpos ), needle_pts );
 
-            if( contains_all_of_t() ( tpoints, priority_tracks ) )
-                return tpoints;
-        }
+        tracks_seekpoint_t tpoints = find_greatest_seekpoints_in_range( start.fpos, target_pts, filter_tracks );
+
+        if( contains_all_of_t() ( tpoints, priority_tracks ) )
+            return tpoints;
 
         needle_pts = start.pts - 1;
     }

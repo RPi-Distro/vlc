@@ -2,7 +2,7 @@
  * convert.hpp : GotoTime dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 56ad4696217b905bf5ef44bdc02976407c20c29b $
+ * $Id: bfa9c9cadd3b6a3b099d03b5f1e050aa4747a8da $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -51,6 +51,7 @@ private:
 
     const QStringList *incomingMRLs;
     const bool singleFileSelected;
+    QUrl outgoingMRL;
     QStringList mrls;
 
 private slots:

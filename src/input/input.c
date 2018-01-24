@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: c9219b74c54e5dcfe9013fa01f6ec35734b584d7 $
+ * $Id: 6dded7d0f8afa549aeab78bb5720a96f309108d1 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -1255,7 +1255,7 @@ static void InitPrograms( input_thread_t * p_input )
 
     /* Set up es_out */
     i_es_out_mode = ES_OUT_MODE_AUTO;
-    if( input_priv(p_input)->p_sout )
+    if( input_priv(p_input)->p_sout && !input_priv(p_input)->p_renderer )
     {
         char *prgms;
 

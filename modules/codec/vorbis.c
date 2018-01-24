@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 6c30af825c85a73b1c0f5fbd7283234ac3f45d10 $
+ * $Id: b4a8bda30fa8761536512b50c0ab7bf301e523c7 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -159,7 +159,7 @@ static block_t *SendPacket( decoder_t *, ogg_packet *, block_t * );
 
 static void ParseVorbisComments( decoder_t * );
 
-static void ConfigureChannelOrder(uint8_t *, int, uint32_t, bool );
+static void ConfigureChannelOrder(uint8_t *, int, uint32_t );
 
 #ifdef HAVE_VORBIS_ENCODER
 static int OpenEncoder   ( vlc_object_t * );
@@ -442,7 +442,7 @@ static int ProcessHeaders( decoder_t *p_dec )
     }
 
     ConfigureChannelOrder(p_sys->pi_chan_table, p_sys->vi.channels,
-            p_dec->fmt_out.audio.i_physical_channels, true);
+            p_dec->fmt_out.audio.i_physical_channels);
 
     return VLC_SUCCESS;
 }
@@ -672,7 +672,7 @@ static void ParseVorbisComments( decoder_t *p_dec )
  *
  *****************************************************************************/
 static void ConfigureChannelOrder(uint8_t *pi_chan_table, int i_channels,
-                                  uint32_t i_channel_mask, bool b_decode)
+                                  uint32_t i_channel_mask)
 {
     const uint32_t *pi_channels_in;
     switch( i_channels )
@@ -700,12 +700,8 @@ static void ConfigureChannelOrder(uint8_t *pi_chan_table, int i_channels,
             return;
     }
 
-    if( b_decode )
-        aout_CheckChannelReorder( pi_channels_in, NULL,
-                                  i_channel_mask, pi_chan_table );
-    else
-        aout_CheckChannelReorder( NULL, pi_channels_in,
-                                  i_channel_mask, pi_chan_table );
+    aout_CheckChannelReorder( pi_channels_in, NULL,
+                              i_channel_mask, pi_chan_table );
 }
 
 /*****************************************************************************
@@ -747,7 +743,6 @@ struct encoder_sys_t
 
     int i_last_block_size;
     int i_samples_delay;
-    unsigned int i_channels;
 
     /*
     ** Channel reordering
@@ -781,6 +776,11 @@ static int OpenEncoder( vlc_object_t *p_this )
     p_enc->fmt_in.i_codec  = VLC_CODEC_FL32;
     p_enc->fmt_out.i_codec = VLC_CODEC_VORBIS;
 
+    if( p_enc->fmt_in.audio.i_channels >= ARRAY_SIZE(pi_channels_maps) )
+    {
+        p_enc->fmt_in.audio.i_channels = ARRAY_SIZE(pi_channels_maps) - 1;
+        msg_Warn( p_enc, "lowering channel count to %u", p_enc->fmt_in.audio.i_channels );
+    }
     config_ChainParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
 
     i_quality = var_GetInteger( p_enc, ENC_CFG_PREFIX "quality" );
@@ -864,12 +864,20 @@ static int OpenEncoder( vlc_object_t *p_this )
         }
     }
 
-    p_sys->i_channels = p_enc->fmt_in.audio.i_channels;
+    assert(p_sys->vi.channels > 0 && (size_t) p_sys->vi.channels < ARRAY_SIZE(pi_channels_maps) );
+
+    p_enc->fmt_out.audio.i_channels = p_enc->fmt_in.audio.i_channels =
+        p_sys->vi.channels;
+
+    p_enc->fmt_out.audio.i_physical_channels =
+    p_enc->fmt_in.audio.i_physical_channels =
+        pi_channels_maps[p_sys->vi.channels];
+
     p_sys->i_last_block_size = 0;
     p_sys->i_samples_delay = 0;
 
     ConfigureChannelOrder(p_sys->pi_chan_table, p_sys->vi.channels,
-            p_enc->fmt_in.audio.i_physical_channels, true);
+            p_enc->fmt_in.audio.i_physical_channels);
 
     return VLC_SUCCESS;
 }
@@ -886,7 +894,7 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
     block_t *p_block, *p_chain = NULL;
     float **buffer;
 
-    /* FIXME: flush buffers in here */
+    /* Packets are already flushed, see bellow. */
     if( unlikely( !p_aout_buf ) ) return NULL;
 
     mtime_t i_pts = p_aout_buf->i_pts -
@@ -898,12 +906,13 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
     buffer = vorbis_analysis_buffer( &p_sys->vd, p_aout_buf->i_nb_samples );
 
     /* convert samples to float and uninterleave */
-    for( unsigned int i = 0; i < p_sys->i_channels; i++ )
+    const unsigned i_channels = p_enc->fmt_in.audio.i_channels;
+    for( unsigned int i = 0; i < i_channels; i++ )
     {
         for( unsigned int j = 0 ; j < p_aout_buf->i_nb_samples ; j++ )
         {
             buffer[i][j]= ((float *)p_aout_buf->p_buffer)
-                                    [j * p_sys->i_channels + p_sys->pi_chan_table[i]];
+                                    [j * i_channels + p_sys->pi_chan_table[i]];
         }
     }
 

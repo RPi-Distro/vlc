@@ -2,7 +2,7 @@
  * controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 1b910197291ea53b8afcc792741abf3ac2d1abdb $
+ * $Id: e679206df8aa58eccd5c588f00c4965b9e91a1d1 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -877,12 +877,16 @@ void FullscreenControllerWidget::restoreFSC()
             return;
 
         QRect currentRes = QApplication::desktop()->screenGeometry( targetScreen() );
+        QWindow *wh = windowHandle();
+        if ( wh != Q_NULLPTR )
+        {
 #ifdef QT5_HAS_WAYLAND
-        if ( !b_hasWayland )
-            windowHandle()->setScreen(QGuiApplication::screens()[targetScreen()]);
+            if ( !b_hasWayland )
+                wh->setScreen(QGuiApplication::screens()[targetScreen()]);
 #else
-        windowHandle()->setScreen(QGuiApplication::screens()[targetScreen()]);
+            wh->setScreen(QGuiApplication::screens()[targetScreen()]);
 #endif
+        }
 
         if( currentRes == screenRes &&
             QApplication::desktop()->screen()->geometry().contains( previousPosition, true ) )
