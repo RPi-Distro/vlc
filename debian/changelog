@@ -1,3 +1,10 @@
+vlc (3.0.0~rc7-2) unstable; urgency=medium
+
+  * debian/: Disable freerdp plugin. freerdp2 is currently not supported.
+    (Closes: #888323)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 25 Jan 2018 00:15:17 +0100
+
 vlc (3.0.0~rc7-1) unstable; urgency=medium
 
   * New upstream release candidate.
