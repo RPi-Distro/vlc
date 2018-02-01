@@ -2,7 +2,7 @@
  * deinterlace.c : deinterlacer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2011 VLC authors and VideoLAN
- * $Id: ccabe5bb8cfae671692098bbc4baf4694addd7e8 $
+ * $Id: 9f9d5291ff82e14cbc36dfaad031560c3592eba6 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Christophe Massiot <massiot@via.ecp.fr>
@@ -410,8 +410,8 @@ static void SetFilterMethod( filter_t *p_filter, const char *mode, bool pack )
             }
 
             msg_Dbg( p_filter, "using %s deinterlace method", mode );
-            p_filter->p_sys->context.settings = filter_mode[i].settings;
-            p_filter->p_sys->context.pf_render_ordered = filter_mode[i].pf_render_ordered;
+            p_sys->context.settings = filter_mode[i].settings;
+            p_sys->context.pf_render_ordered = filter_mode[i].pf_render_ordered;
             return;
         }
     }

@@ -2,7 +2,7 @@
  * Ebml_dispatcher.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2016 VLC authors, VideoLAN, Videolabs SAS
- * $Id: a3d39fd862960146af39eb183b5f3860d61f96cb $
+ * $Id: b50c655c3a4ef30edc7af40e64901c75243fd8b5 $
  *
  * Authors: Filip Roseen <filip@videolabs.io>
  *
@@ -81,6 +81,9 @@ namespace {
 
       bool send (EbmlElement * const& element, void* payload) const
       {
+        if ( element == nullptr )
+            return false;
+
         EbmlProcessorEntry eb = EbmlProcessorEntry (
           static_cast<EbmlId const&> (*element), NULL, NULL
         );
@@ -94,7 +97,7 @@ namespace {
             _processors.begin(), cit_end, eb
         );
 
-        if (element && cit != cit_end)
+        if (cit != cit_end)
         {
           // --------------------------------------------------------------
           // normally we only need to compare the addresses of the EbmlId

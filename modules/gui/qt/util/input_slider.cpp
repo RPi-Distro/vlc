@@ -2,7 +2,7 @@
  * input_slider.cpp : VolumeSlider and SeekSlider
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 741eb26c1a6671fafa4516a19c266504d21ec401 $
+ * $Id: f76a784617743df4d80896501d9d9f7f0bbe8120 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -201,14 +201,16 @@ void SeekSlider::setChapters( SeekPoints *chapters_ )
 void SeekSlider::setPosition( float pos, int64_t time, int length )
 {
     VLC_UNUSED(time);
-    if( pos == -1.0 )
+    if( pos == -1.0  || ! b_seekable )
     {
         setEnabled( false );
         mTimeTooltip->hide();
         isSliding = false;
+        setValue( 0 );
+        return;
     }
     else
-        setEnabled( b_seekable );
+        setEnabled( true );
 
     if( !isSliding )
     {

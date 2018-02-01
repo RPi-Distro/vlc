@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: 77392d611f62fe435cc92ac2ccfb7609d67fc48b $
+ * $Id: 0ccf1412ebe19e2bac9a858d14211e770a90f029 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -370,9 +370,11 @@ QMenu *VLCMenuBar::FileMenu( intf_thread_t *p_intf, QWidget *parent, MainInterfa
     addDPStaticEntry( menu, qtr( "Open &Location from clipboard" ),
                       NULL, SLOT( openUrlDialog() ), "Ctrl+V" );
 
-    if( var_InheritBool( p_intf, "qt-recentplay" ) )
+    if( !recentsMenu && var_InheritBool( p_intf, "qt-recentplay" ) )
+        recentsMenu = new QMenu( qtr( "Open &Recent Media" ) );
+
+    if( recentsMenu )
     {
-        recentsMenu = new QMenu( qtr( "Open &Recent Media" ), menu );
         updateRecents( p_intf );
         menu->addMenu( recentsMenu );
     }

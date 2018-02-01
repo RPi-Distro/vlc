@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: 7ad3ffa015eba036c83c29de0db0537acbee8f4f $
+ * $Id: 35e46ece208bd7892848f81d82b064508ba86099 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -127,9 +127,6 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     setWindowRole( "vlc-main" );
     setWindowIcon( QApplication::windowIcon() );
     setWindowOpacity( var_InheritFloat( p_intf, "qt-opacity" ) );
-
-    /* Is video in embedded in the UI or not */
-    b_videoEmbedded = var_InheritBool( p_intf, "embedded-video" );
 
     /* Does the interface resize to video size or the opposite */
     b_autoresize = var_InheritBool( p_intf, "qt-video-autoresize" );
@@ -485,7 +482,7 @@ void MainInterface::createMainWidget( QSettings *creationSettings )
             bgWidget->setExpandstoHeight( true );
 
     /* And video Outputs */
-    if( b_videoEmbedded )
+    if( var_InheritBool( p_intf, "embedded-video" ) )
     {
         videoWidget = new VideoWidget( p_intf, stackCentralW );
         stackCentralW->addWidget( videoWidget );
@@ -746,6 +743,11 @@ void MainInterface::getVideoSlot( struct vout_window_t *p_wnd,
         toggleUpdateSystrayMenu();
 
     /* Request the videoWidget */
+    if ( !videoWidget )
+    {
+        videoWidget = new VideoWidget( p_intf, stackCentralW );
+        stackCentralW->addWidget( videoWidget );
+    }
     *res = videoWidget->request( p_wnd );
     if( *res ) /* The videoWidget is available */
     {

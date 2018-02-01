@@ -2,7 +2,7 @@
  * video.c: transcoding stream output module (video)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: c9d3ed187eb2e02c52937256a28ddea3bfe1045e $
+ * $Id: 779ff7c6eb7a3a9cc9ea996d1d91e21883c20af9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -761,7 +761,6 @@ int transcode_video_process( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     *out = NULL;
-    bool b_error = false;
 
     int ret = id->p_decoder->pf_decode( id->p_decoder, in );
     if( ret != VLCDEC_SUCCESS )
@@ -878,7 +877,8 @@ error:
     }
 
 end:
-    if( unlikely( in == NULL ) )
+    /* Drain encoder */
+    if( unlikely( !id->b_error && in == NULL ) )
     {
         if( p_sys->i_threads == 0 )
         {
@@ -909,7 +909,7 @@ end:
         }
     }
 
-    return b_error ? VLC_EGENERIC : VLC_SUCCESS;
+    return id->b_error ? VLC_EGENERIC : VLC_SUCCESS;
 }
 
 bool transcode_video_add( sout_stream_t *p_stream, const es_format_t *p_fmt,

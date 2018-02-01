@@ -2,7 +2,7 @@
  * matroska_segment.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: f2c9d3966c9138b06cbfc6b1ca9bfb838035e840 $
+ * $Id: 637ef4eddfc51c22673378d0cee4c83e1c7823bf $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -33,6 +33,8 @@
 #include <map>
 #include <set>
 #include <memory>
+
+#include "Ebml_parser.hpp"
 
 class EbmlParser;
 
@@ -78,7 +80,7 @@ public:
     typedef std::map<mkv_track_t::track_id_t, std::unique_ptr<mkv_track_t>> tracks_map_t;
     typedef std::vector<Tag>            tags_t;
 
-    matroska_segment_c( demux_sys_t & demuxer, EbmlStream & estream );
+    matroska_segment_c( demux_sys_t &, EbmlStream &, KaxSegment * );
     virtual ~matroska_segment_c();
 
     KaxSegment              *segment;
@@ -130,7 +132,7 @@ public:
     tags_t                          tags;
 
     demux_sys_t                    & sys;
-    EbmlParser                     *ep;
+    EbmlParser                     ep;
     bool                           b_preloaded;
     bool                           b_ref_external_segments;
 

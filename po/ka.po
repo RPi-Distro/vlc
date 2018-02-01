@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-01-19 19:33+0100\n"
+"POT-Creation-Date: 2018-01-26 17:34+0100\n"
 "PO-Revision-Date: 2008-08-23 18:31+0200\n"
 "Last-Translator: Alexander Didebulidze <didebuli@in.tum.de>\n"
 "Language-Team: Georgian <geognome@googlegroups.com>\n"
@@ -39,7 +39,7 @@ msgstr "ამოირჩიე \"დამატებითი პარა�
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:227
 #: modules/gui/qt/components/simple_preferences.cpp:223
-#: modules/gui/qt/menus.cpp:1091
+#: modules/gui/qt/menus.cpp:1093
 msgid "Interface"
 msgstr "ინტერფეისი"
 
@@ -73,7 +73,7 @@ msgstr "VLC-ს მართვის ინტერფეისის პა�
 msgid "Hotkeys settings"
 msgstr "ცხელი ღილაკების პარამეტრები"
 
-#: include/vlc_config_cat.h:53 src/input/es_out.c:3088 src/libvlc-module.c:1486
+#: include/vlc_config_cat.h:53 src/input/es_out.c:3091 src/libvlc-module.c:1486
 #: modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:404 modules/gui/macosx/VLCOutput.m:92
@@ -140,7 +140,7 @@ msgstr "სხვადასხვა"
 msgid "Miscellaneous audio settings and modules."
 msgstr "სხვადასხვა აუდიო პარამეტრები და მოდულები."
 
-#: include/vlc_config_cat.h:73 src/input/es_out.c:3132 src/libvlc-module.c:142
+#: include/vlc_config_cat.h:73 src/input/es_out.c:3135 src/libvlc-module.c:142
 #: src/libvlc-module.c:1545 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:417 modules/gui/macosx/VLCOutput.m:82
@@ -150,7 +150,7 @@ msgstr "სხვადასხვა აუდიო პარამეტრ�
 #: modules/gui/qt/components/info_panels.cpp:573
 #: modules/gui/qt/components/simple_preferences.cpp:227
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
-#: modules/stream_out/chromecast/cast.cpp:115 modules/stream_out/es.c:102
+#: modules/stream_out/chromecast/cast.cpp:123 modules/stream_out/es.c:102
 #: modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
 #: modules/gui/qt/ui/profiles.h:722 modules/gui/qt/ui/profiles.h:726
@@ -341,11 +341,11 @@ msgstr ""
 #: src/playlist/engine.c:233 modules/demux/playlist/playlist.c:64
 #: modules/demux/playlist/playlist.c:65 modules/demux/playlist/wpl.c:99
 #: modules/gui/macosx/VLCMainWindow.m:296
-#: modules/gui/macosx/VLCMainWindow.m:863
+#: modules/gui/macosx/VLCMainWindow.m:859
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
-#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1118
+#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1120
 msgid "Playlist"
 msgstr "დაკვრის სია"
 
@@ -615,7 +615,7 @@ msgstr ""
 
 #: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:943
 #: src/libvlc-module.c:544 modules/gui/macosx/VLCMainMenu.m:234
-#: modules/gui/macosx/VLCMainWindow.m:1006 modules/video_filter/postproc.c:235
+#: modules/gui/macosx/VLCMainWindow.m:1002 modules/video_filter/postproc.c:235
 msgid "Disable"
 msgstr "გამორთე"
 
@@ -651,23 +651,28 @@ msgstr "ტიპი"
 msgid "Stereo audio mode"
 msgstr "სტერეო მოდუსი"
 
-#: src/audio_output/output.c:421
+#: src/audio_output/output.c:421 modules/access/v4l2/v4l2.c:267
+#: modules/audio_output/alsa.c:76
+msgid "Mono"
+msgstr "მონო"
+
+#: src/audio_output/output.c:428
 #, fuzzy
 msgid "Original"
 msgstr "ჩართე აუდიო"
 
-#: src/audio_output/output.c:427 src/libvlc-module.c:197
+#: src/audio_output/output.c:434 src/libvlc-module.c:197
 msgid "Dolby Surround"
 msgstr "Dolby Surround"
 
-#: src/audio_output/output.c:432 src/libvlc-module.c:196
+#: src/audio_output/output.c:439 src/libvlc-module.c:196
 #: modules/access/alsa.c:38 modules/access/oss.c:64
 #: modules/access/v4l2/v4l2.c:268 modules/audio_output/alsa.c:76
 #: modules/codec/twolame.c:70
 msgid "Stereo"
 msgstr "სტერეო"
 
-#: src/audio_output/output.c:441 src/input/es_out.c:3229
+#: src/audio_output/output.c:448 src/input/es_out.c:3232
 #: src/libvlc-module.c:197 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: src/misc/actions.c:81 modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -684,7 +689,7 @@ msgstr "სტერეო"
 msgid "Left"
 msgstr "მარცხენა"
 
-#: src/audio_output/output.c:444 src/libvlc-module.c:197
+#: src/audio_output/output.c:451 src/libvlc-module.c:197
 #: src/libvlc-module.c:295 src/libvlc-module.c:368 src/misc/actions.c:109
 #: modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -699,11 +704,11 @@ msgstr "მარცხენა"
 msgid "Right"
 msgstr "მარჯვენა"
 
-#: src/audio_output/output.c:448 src/libvlc-module.c:196
+#: src/audio_output/output.c:455 src/libvlc-module.c:196
 msgid "Reverse stereo"
 msgstr "შებრუნებული სტერეო"
 
-#: src/audio_output/output.c:456 src/libvlc-module.c:198
+#: src/audio_output/output.c:463 src/libvlc-module.c:198
 #: modules/audio_filter/equalizer_presets.h:55
 msgid "Headphones"
 msgstr "ნაუშნიკები"
@@ -713,7 +718,7 @@ msgstr "ნაუშნიკები"
 #: modules/access/dtv/access.c:123 modules/access/dtv/access.c:132
 #: modules/access/dtv/access.c:140 modules/access/dtv/access.c:162
 #: modules/access/v4l2/v4l2.c:137 modules/gui/qt/components/open_panels.cpp:974
-#: modules/gui/qt/components/simple_preferences.cpp:366
+#: modules/gui/qt/components/simple_preferences.cpp:370
 msgid "Automatic"
 msgstr "ავტომატური"
 
@@ -921,26 +926,26 @@ msgid "Scrambled"
 msgstr "სკალირება"
 
 #: src/input/es_out.c:1468 modules/keystore/keychain.m:40
-#: modules/lua/extension.c:1184
+#: modules/lua/extension.c:1191
 msgid "Yes"
 msgstr "დიახ"
 
-#: src/input/es_out.c:2132
+#: src/input/es_out.c:2135
 #, fuzzy, c-format
 msgid "DTVCC Closed captions %u"
 msgstr "Vorbis აუდიო დეკოდერი"
 
-#: src/input/es_out.c:2134
+#: src/input/es_out.c:2137
 #, fuzzy, c-format
 msgid "Closed captions %u"
 msgstr "Vorbis აუდიო დეკოდერი"
 
-#: src/input/es_out.c:3064
+#: src/input/es_out.c:3067
 #, fuzzy
 msgid "Original ID"
 msgstr "ჩართე აუდიო"
 
-#: src/input/es_out.c:3072 src/input/es_out.c:3075 modules/access/imem.c:67
+#: src/input/es_out.c:3075 src/input/es_out.c:3078 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
 #: modules/gui/qt/ui/profiles.h:728 modules/gui/qt/ui/profiles.h:754
@@ -948,48 +953,48 @@ msgstr "ჩართე აუდიო"
 msgid "Codec"
 msgstr "კოდეკი"
 
-#: src/input/es_out.c:3079 src/input/meta.c:66 modules/access/imem.c:71
+#: src/input/es_out.c:3082 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:114
 #: modules/gui/macosx/VLCSimplePrefsController.m:311
 #: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:530
 msgid "Language"
 msgstr "ენა"
 
-#: src/input/es_out.c:3082 src/input/meta.c:61
+#: src/input/es_out.c:3085 src/input/meta.c:61
 #: modules/gui/macosx/VLCBookmarksWindowController.m:83
 #: modules/gui/macosx/VLCPlaylist.m:112 modules/gui/qt/dialogs/bookmarks.cpp:75
 #: modules/gui/qt/dialogs/epg.cpp:55
 msgid "Description"
 msgstr "აღწერილობა"
 
-#: src/input/es_out.c:3088 src/input/es_out.c:3132 src/input/es_out.c:3322
+#: src/input/es_out.c:3091 src/input/es_out.c:3135 src/input/es_out.c:3325
 #: modules/gui/macosx/VLCAddonsWindowController.m:132
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
 #: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1487
 msgid "Type"
 msgstr "ტიპი"
 
-#: src/input/es_out.c:3091
+#: src/input/es_out.c:3094
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
 #: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:756
 msgid "Channels"
 msgstr "არხი"
 
-#: src/input/es_out.c:3096 modules/access/alsa.c:39 modules/access/imem.c:75
+#: src/input/es_out.c:3099 modules/access/alsa.c:39 modules/access/imem.c:75
 #: modules/audio_output/amem.c:45 modules/codec/fluidsynth.c:64
 msgid "Sample rate"
 msgstr ""
 
-#: src/input/es_out.c:3096
+#: src/input/es_out.c:3099
 #, fuzzy, c-format
 msgid "%u Hz"
 msgstr "%d Hz"
 
-#: src/input/es_out.c:3106
+#: src/input/es_out.c:3109
 msgid "Bits per sample"
 msgstr ""
 
-#: src/input/es_out.c:3111 modules/access_output/shout.c:92
+#: src/input/es_out.c:3114 modules/access_output/shout.c:92
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
@@ -997,37 +1002,37 @@ msgstr ""
 msgid "Bitrate"
 msgstr ""
 
-#: src/input/es_out.c:3111
+#: src/input/es_out.c:3114
 #, fuzzy, c-format
 msgid "%u kb/s"
 msgstr "%d kb/s"
 
-#: src/input/es_out.c:3123
+#: src/input/es_out.c:3126
 #, fuzzy
 msgid "Track replay gain"
 msgstr "ტიპი"
 
-#: src/input/es_out.c:3125
+#: src/input/es_out.c:3128
 #, fuzzy
 msgid "Album replay gain"
 msgstr "ტიპი"
 
-#: src/input/es_out.c:3126
+#: src/input/es_out.c:3129
 #, c-format
 msgid "%.2f dB"
 msgstr ""
 
-#: src/input/es_out.c:3136
+#: src/input/es_out.c:3139
 #, fuzzy
 msgid "Video resolution"
 msgstr "აუდიოს ენა"
 
-#: src/input/es_out.c:3141
+#: src/input/es_out.c:3144
 #, fuzzy
 msgid "Buffer dimensions"
 msgstr "ხანგრძლივობა მწ-ებში"
 
-#: src/input/es_out.c:3151 src/input/es_out.c:3154 modules/access/imem.c:93
+#: src/input/es_out.c:3154 src/input/es_out.c:3157 modules/access/imem.c:93
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
@@ -1037,105 +1042,105 @@ msgstr "ხანგრძლივობა მწ-ებში"
 msgid "Frame rate"
 msgstr "კადრი წამში"
 
-#: src/input/es_out.c:3162
+#: src/input/es_out.c:3165
 #, fuzzy
 msgid "Decoded format"
 msgstr "დეკოდერები"
 
-#: src/input/es_out.c:3167
+#: src/input/es_out.c:3170
 #, fuzzy
 msgid "Top left"
 msgstr "მარცხენა"
 
-#: src/input/es_out.c:3167
+#: src/input/es_out.c:3170
 #, fuzzy
 msgid "Left top"
 msgstr "მარცხენა წინ"
 
-#: src/input/es_out.c:3168
+#: src/input/es_out.c:3171
 #, fuzzy
 msgid "Right bottom"
 msgstr "ქვემოთ"
 
-#: src/input/es_out.c:3168
+#: src/input/es_out.c:3171
 #, fuzzy
 msgid "Top right"
 msgstr "საავტორო უფლებები"
 
-#: src/input/es_out.c:3169
+#: src/input/es_out.c:3172
 #, fuzzy
 msgid "Bottom left"
 msgstr "ქვემოთ მარცხნივ"
 
-#: src/input/es_out.c:3169
+#: src/input/es_out.c:3172
 #, fuzzy
 msgid "Bottom right"
 msgstr "ქვემოთ მარჯვნივ"
 
-#: src/input/es_out.c:3170
+#: src/input/es_out.c:3173
 #, fuzzy
 msgid "Left bottom"
 msgstr "ქვემოთ"
 
-#: src/input/es_out.c:3170
+#: src/input/es_out.c:3173
 #, fuzzy
 msgid "Right top"
 msgstr "მარჯვენა"
 
-#: src/input/es_out.c:3172
+#: src/input/es_out.c:3175
 #, fuzzy
 msgid "Orientation"
 msgstr "სამიზნე"
 
-#: src/input/es_out.c:3178 src/input/es_out.c:3196 src/input/es_out.c:3214
-#: src/input/es_out.c:3228 src/playlist/tree.c:67
+#: src/input/es_out.c:3181 src/input/es_out.c:3199 src/input/es_out.c:3217
+#: src/input/es_out.c:3231 src/playlist/tree.c:67
 #: modules/access/dtv/access.c:75 modules/access/v4l2/v4l2.c:242
 msgid "Undefined"
 msgstr "დაუდგენელი"
 
-#: src/input/es_out.c:3180
+#: src/input/es_out.c:3183
 msgid "ITU-R BT.601 (525 lines, 60 Hz)"
 msgstr ""
 
-#: src/input/es_out.c:3182
+#: src/input/es_out.c:3185
 msgid "ITU-R BT.601 (625 lines, 50 Hz)"
 msgstr ""
 
-#: src/input/es_out.c:3190
+#: src/input/es_out.c:3193
 #, fuzzy
 msgid "Color primaries"
 msgstr "ფერადი შეტყობინებები"
 
-#: src/input/es_out.c:3197 src/libvlc-module.c:362
+#: src/input/es_out.c:3200 src/libvlc-module.c:362
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Linear"
 msgstr "ლინეარული(Linear)"
 
-#: src/input/es_out.c:3204
+#: src/input/es_out.c:3207
 msgid "Hybrid Log-Gamma"
 msgstr ""
 
-#: src/input/es_out.c:3208
+#: src/input/es_out.c:3211
 #, fuzzy
 msgid "Color transfer function"
 msgstr "ფერი"
 
-#: src/input/es_out.c:3221
+#: src/input/es_out.c:3224
 #, fuzzy
 msgid "Color space"
 msgstr "Goom ეფექტი"
 
-#: src/input/es_out.c:3221
+#: src/input/es_out.c:3224
 #, c-format
 msgid "%s Range"
 msgstr ""
 
-#: src/input/es_out.c:3223
+#: src/input/es_out.c:3226
 #, fuzzy
 msgid "Full"
 msgstr "სრული ბასი"
 
-#: src/input/es_out.c:3230 src/libvlc-module.c:295 src/libvlc-module.c:368
+#: src/input/es_out.c:3233 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: modules/audio_filter/channel_mixer/mono.c:91
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -1146,101 +1151,101 @@ msgstr "სრული ბასი"
 msgid "Center"
 msgstr "ცენტრში"
 
-#: src/input/es_out.c:3231
+#: src/input/es_out.c:3234
 #, fuzzy
 msgid "Top Left"
 msgstr "ზემოთ მარცხნივ"
 
-#: src/input/es_out.c:3232
+#: src/input/es_out.c:3235
 #, fuzzy
 msgid "Top Center"
 msgstr "ცენტრში"
 
-#: src/input/es_out.c:3233
+#: src/input/es_out.c:3236
 #, fuzzy
 msgid "Bottom Left"
 msgstr "ქვემოთ მარცხნივ"
 
-#: src/input/es_out.c:3234
+#: src/input/es_out.c:3237
 #, fuzzy
 msgid "Bottom Center"
 msgstr "ქვემოთ მარცხნივ"
 
-#: src/input/es_out.c:3238
+#: src/input/es_out.c:3241
 #, fuzzy
 msgid "Chroma location"
 msgstr "ბრძანება"
 
-#: src/input/es_out.c:3247
+#: src/input/es_out.c:3250
 msgid "Rectangular"
 msgstr ""
 
-#: src/input/es_out.c:3250
+#: src/input/es_out.c:3253
 msgid "Equirectangular"
 msgstr ""
 
-#: src/input/es_out.c:3253
+#: src/input/es_out.c:3256
 #, fuzzy
 msgid "Cubemap"
 msgstr "კაბელი"
 
-#: src/input/es_out.c:3259
+#: src/input/es_out.c:3262
 #, fuzzy
 msgid "Projection"
 msgstr "დირექტორია"
 
-#: src/input/es_out.c:3261
+#: src/input/es_out.c:3264
 msgctxt "ViewPoint"
 msgid "Yaw"
 msgstr ""
 
-#: src/input/es_out.c:3263
+#: src/input/es_out.c:3266
 #, fuzzy
 msgctxt "ViewPoint"
 msgid "Pitch"
 msgstr "გეზი"
 
-#: src/input/es_out.c:3265
+#: src/input/es_out.c:3268
 msgctxt "ViewPoint"
 msgid "Roll"
 msgstr ""
 
-#: src/input/es_out.c:3268
+#: src/input/es_out.c:3271
 msgctxt "ViewPoint"
 msgid "Field of view"
 msgstr ""
 
-#: src/input/es_out.c:3273
+#: src/input/es_out.c:3276
 #, fuzzy
 msgid "Max. luminance"
 msgstr "გაუქმება"
 
-#: src/input/es_out.c:3278
+#: src/input/es_out.c:3281
 #, fuzzy
 msgid "Min. luminance"
 msgstr "გაუქმება"
 
-#: src/input/es_out.c:3286
+#: src/input/es_out.c:3289
 #, fuzzy
 msgid "Primary R"
 msgstr "აუდიოს ენა"
 
-#: src/input/es_out.c:3293
+#: src/input/es_out.c:3296
 #, fuzzy
 msgid "Primary G"
 msgstr "აუდიოს ენა"
 
-#: src/input/es_out.c:3300
+#: src/input/es_out.c:3303
 #, fuzzy
 msgid "Primary B"
 msgstr "აუდიოს ენა"
 
-#: src/input/es_out.c:3307
+#: src/input/es_out.c:3310
 #, fuzzy
 msgid "White point"
 msgstr "თეთრი"
 
-#: src/input/es_out.c:3322 modules/access/imem.c:64
+#: src/input/es_out.c:3325 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "ტიტრები"
 
@@ -1730,7 +1735,7 @@ msgstr ""
 
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:942
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:440
-#: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
+#: modules/demux/mpeg/ts.c:124 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:66
 #: modules/gui/qt/components/sout/profile_selector.cpp:582
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
@@ -2482,7 +2487,7 @@ msgstr "ნაგულისხმევი"
 
 #: src/libvlc-module.c:544
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:214
-#: modules/gui/macosx/VLCMainWindow.m:1004
+#: modules/gui/macosx/VLCMainWindow.m:1000
 #: modules/gui/qt/components/extended_panels.cpp:928
 #: modules/gui/qt/ui/equalizer.h:133 modules/gui/qt/ui/vlm.h:289
 msgid "Enable"
@@ -3802,11 +3807,11 @@ msgstr "ნორმალური ზომა"
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "ამოირჩიეთ ამ სანიშნის დასასმელი ღილაკი."
 
-#: src/libvlc-module.c:1236 modules/gui/qt/menus.cpp:881
+#: src/libvlc-module.c:1236 modules/gui/qt/menus.cpp:883
 msgid "Faster (fine)"
 msgstr ""
 
-#: src/libvlc-module.c:1238 modules/gui/qt/menus.cpp:889
+#: src/libvlc-module.c:1238 modules/gui/qt/menus.cpp:891
 msgid "Slower (fine)"
 msgstr ""
 
@@ -3973,8 +3978,8 @@ msgstr ""
 #: src/libvlc-module.c:1287 modules/control/hotkeys.c:361
 #: modules/gui/macosx/VLCStatusBarIcon.m:116
 #: modules/gui/qt/components/controller.hpp:111
-#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:952
-#: modules/gui/qt/menus.cpp:1138 modules/gui/skins2/commands/cmd_quit.cpp:45
+#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:954
+#: modules/gui/qt/menus.cpp:1140 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "გამოსვლა"
 
@@ -4493,7 +4498,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1417 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
-#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:855
+#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:857
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr ""
@@ -4995,7 +5000,7 @@ msgstr "პაუზა"
 #: modules/gui/macosx/VLCMainMenu.m:1331 modules/gui/macosx/VLCMainMenu.m:1332
 #: modules/gui/macosx/VLCMainMenu.m:1333
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
-#: modules/gui/qt/menus.cpp:829
+#: modules/gui/qt/menus.cpp:831
 msgid "Pause"
 msgstr "პაუზა"
 
@@ -5123,7 +5128,7 @@ msgstr ""
 #: modules/gui/qt/components/preferences_widgets.cpp:1428
 #: modules/gui/qt/components/sout/profile_selector.cpp:446
 #: modules/gui/qt/dialogs/sout.cpp:92
-#: modules/stream_out/chromecast/cast.cpp:408
+#: modules/stream_out/chromecast/cast.cpp:521
 msgid "Cancel"
 msgstr "გაუქმება"
 
@@ -5198,7 +5203,7 @@ msgstr "VLC მედია დამკვრელი"
 
 #: src/playlist/engine.c:237 src/playlist/loadsave.c:159 lib/media_list.c:237
 #: modules/gui/macosx/VLCMainWindow.m:298
-#: modules/gui/macosx/VLCMainWindow.m:865
+#: modules/gui/macosx/VLCMainWindow.m:861
 #: modules/gui/qt/components/playlist/selector.cpp:236
 msgid "Media Library"
 msgstr ""
@@ -6069,82 +6074,82 @@ msgstr ""
 msgid "Blu-ray Disc support (libbluray)"
 msgstr ""
 
-#: modules/access/bluray.c:717
+#: modules/access/bluray.c:722
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr ""
 
-#: modules/access/bluray.c:732
+#: modules/access/bluray.c:737
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
 msgstr ""
 
-#: modules/access/bluray.c:738
+#: modules/access/bluray.c:743
 #, fuzzy
 msgid "Blu-ray Disc is corrupted."
 msgstr "ფაილი"
 
-#: modules/access/bluray.c:740
+#: modules/access/bluray.c:745
 #, fuzzy
 msgid "Missing AACS configuration file!"
 msgstr "VLM კონფიგურაციის ფაილი"
 
-#: modules/access/bluray.c:742
+#: modules/access/bluray.c:747
 msgid "No valid processing key found in AACS config file."
 msgstr ""
 
-#: modules/access/bluray.c:744
+#: modules/access/bluray.c:749
 msgid "No valid host certificate found in AACS config file."
 msgstr ""
 
-#: modules/access/bluray.c:746
+#: modules/access/bluray.c:751
 msgid "AACS Host certificate revoked."
 msgstr ""
 
-#: modules/access/bluray.c:748
+#: modules/access/bluray.c:753
 msgid "AACS MMC failed."
 msgstr ""
 
-#: modules/access/bluray.c:758
+#: modules/access/bluray.c:763
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
 msgstr ""
 
-#: modules/access/bluray.c:761
+#: modules/access/bluray.c:766
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr ""
 
-#: modules/access/bluray.c:794
+#: modules/access/bluray.c:799
 msgid "Java required"
 msgstr ""
 
-#: modules/access/bluray.c:795
+#: modules/access/bluray.c:800
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
 "The disc will be played without menus."
 msgstr ""
 
-#: modules/access/bluray.c:796
+#: modules/access/bluray.c:801
 msgid "Java was not found on your system."
 msgstr ""
 
-#: modules/access/bluray.c:819
+#: modules/access/bluray.c:824
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 
-#: modules/access/bluray.c:847 modules/access/bluray.c:2284
-#: modules/access/bluray.c:2289
+#: modules/access/bluray.c:852 modules/access/bluray.c:2289
+#: modules/access/bluray.c:2294
 msgid "Blu-ray error"
 msgstr ""
 
-#: modules/access/bluray.c:1669
+#: modules/access/bluray.c:1674
 #, fuzzy
 msgid "Top Menu"
 msgstr "მენიუ"
 
-#: modules/access/bluray.c:1672
+#: modules/access/bluray.c:1677
 #, fuzzy
 msgid "First Play"
 msgstr "პირველი"
@@ -8969,10 +8974,6 @@ msgstr ""
 #: modules/access/v4l2/v4l2.c:256
 msgid "NTSC M South Korea"
 msgstr ""
-
-#: modules/access/v4l2/v4l2.c:267 modules/audio_output/alsa.c:76
-msgid "Mono"
-msgstr "მონო"
 
 #: modules/access/v4l2/v4l2.c:269
 #, fuzzy
@@ -14180,7 +14181,7 @@ msgstr "ჩასმა"
 #: modules/codec/x264.c:435 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:384
 #: modules/gui/macosx/VLCSimplePrefsController.m:696
-#: modules/gui/qt/components/simple_preferences.cpp:666
+#: modules/gui/qt/components/simple_preferences.cpp:673
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
@@ -14329,18 +14330,18 @@ msgid "D-Bus control interface"
 msgstr "მართვის ინტერფეისები"
 
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:182
-#: modules/gui/macosx/VLCMainWindow.m:669
-#: modules/gui/macosx/VLCMainWindow.m:675
-#: modules/gui/macosx/VLCMainWindow.m:1276
+#: modules/gui/macosx/VLCMainWindow.m:665
+#: modules/gui/macosx/VLCMainWindow.m:671
+#: modules/gui/macosx/VLCMainWindow.m:1275
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1265
-#: modules/gui/qt/main_interface.cpp:1269
-#: modules/gui/qt/main_interface.cpp:1308
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1267
+#: modules/gui/qt/main_interface.cpp:1271
 #: modules/gui/qt/main_interface.cpp:1310
-#: modules/gui/qt/main_interface.cpp:1419
-#: modules/gui/qt/main_interface.cpp:1436
-#: modules/gui/qt/main_interface.cpp:1444
-#: modules/gui/qt/main_interface.cpp:1467 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/main_interface.cpp:1312
+#: modules/gui/qt/main_interface.cpp:1421
+#: modules/gui/qt/main_interface.cpp:1438
+#: modules/gui/qt/main_interface.cpp:1446
+#: modules/gui/qt/main_interface.cpp:1469 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -15255,7 +15256,7 @@ msgid "Avformat muxer"
 msgstr "ფორმატი"
 
 #: modules/demux/avformat/avformat.c:56
-#: modules/stream_out/chromecast/cast.cpp:117 modules/stream_out/rtp.c:87
+#: modules/stream_out/chromecast/cast.cpp:125 modules/stream_out/rtp.c:87
 #, fuzzy
 msgid "Muxer"
 msgstr "მუქსერი:"
@@ -15978,26 +15979,26 @@ msgid ""
 "position. If seeking doesn't work property, turn on this option."
 msgstr ""
 
-#: modules/demux/mpeg/ts.c:114
+#: modules/demux/mpeg/ts.c:118
 #, fuzzy
 msgid "Trust in-stream PCR"
 msgstr "MPEG ტრანსპორტული ნაკადი(TS)"
 
-#: modules/demux/mpeg/ts.c:115
+#: modules/demux/mpeg/ts.c:119
 msgid "Use the stream PCR as a reference."
 msgstr ""
 
-#: modules/demux/mpeg/ts.c:122 modules/mux/mpeg/ts.c:100
+#: modules/demux/mpeg/ts.c:126 modules/mux/mpeg/ts.c:100
 msgid "Digital TV Standard"
 msgstr ""
 
-#: modules/demux/mpeg/ts.c:123
+#: modules/demux/mpeg/ts.c:127
 msgid ""
 "Selects mode for digital TV standard. This feature affects EPG information "
 "and subtitles."
 msgstr ""
 
-#: modules/demux/mpeg/ts.c:127
+#: modules/demux/mpeg/ts.c:131
 #, fuzzy
 msgid "MPEG Transport Stream demuxer"
 msgstr "ტრანსპორტი ნაკადი"
@@ -16827,7 +16828,7 @@ msgstr "დრო"
 #: modules/gui/macosx/VLCSimplePrefsController.m:282
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1363
-#: modules/stream_out/chromecast/cast.cpp:408
+#: modules/stream_out/chromecast/cast.cpp:521
 msgid "OK"
 msgstr "OK"
 
@@ -16955,7 +16956,7 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/qt/components/preferences_widgets.cpp:264
-#: modules/gui/qt/components/simple_preferences.cpp:440
+#: modules/gui/qt/components/simple_preferences.cpp:447
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
 #: modules/gui/qt/ui/open.h:282 modules/gui/qt/ui/open_disk.h:307
 #: modules/gui/qt/ui/open_file.h:148 modules/gui/qt/ui/sprefs_audio.h:417
@@ -17182,7 +17183,7 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:690
 #: modules/gui/macosx/VLCSimplePrefsController.m:718
 #: modules/gui/macosx/VLCSimplePrefsController.m:1251
-#: modules/gui/qt/components/simple_preferences.cpp:663
+#: modules/gui/qt/components/simple_preferences.cpp:670
 #, fuzzy
 msgid "Custom"
 msgstr "გამართვა:"
@@ -17892,7 +17893,7 @@ msgid "Bring All to Front"
 msgstr ""
 
 #: modules/gui/macosx/VLCMainMenu.m:478 modules/gui/qt/dialogs/help.cpp:54
-#: modules/gui/qt/menus.cpp:948 modules/gui/qt/menus.cpp:1135
+#: modules/gui/qt/menus.cpp:950 modules/gui/qt/menus.cpp:1137
 msgid "Help"
 msgstr "დახმარება"
 
@@ -18172,7 +18173,7 @@ msgid "Enable DVD menus"
 msgstr "გამოიყენე DVD მენიუ"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:186
-#: modules/stream_out/chromecast/cast.cpp:155
+#: modules/stream_out/chromecast/cast.cpp:163
 #, fuzzy
 msgid "IP Address"
 msgstr "მისამართი"
@@ -18524,7 +18525,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:227
 #: modules/gui/qt/components/simple_preferences.cpp:223
-#: modules/gui/qt/components/simple_preferences.cpp:690
+#: modules/gui/qt/components/simple_preferences.cpp:697
 #: modules/gui/qt/dialogs/plugins.cpp:375
 #, fuzzy
 msgid "Interface Settings"
@@ -18532,7 +18533,7 @@ msgstr "ზოგადი პარამეტრები"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:229
 #: modules/gui/qt/components/simple_preferences.cpp:225
-#: modules/gui/qt/components/simple_preferences.cpp:415
+#: modules/gui/qt/components/simple_preferences.cpp:422
 #, fuzzy
 msgid "Audio Settings"
 msgstr "აუდიო პარამეტრები"
@@ -18546,7 +18547,7 @@ msgstr "ვიდეო პარამეტრები"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:233
 #: modules/gui/qt/components/simple_preferences.cpp:229
-#: modules/gui/qt/components/simple_preferences.cpp:831
+#: modules/gui/qt/components/simple_preferences.cpp:838
 #, fuzzy
 msgid "Subtitle & On Screen Display Settings"
 msgstr "ტიტრების ოფციები"
@@ -20159,54 +20160,54 @@ msgstr "ხანგრძლივობა მწ-ებში"
 msgid "Overall"
 msgstr "დაყოვნება"
 
-#: modules/gui/qt/components/interface_widgets.cpp:615
+#: modules/gui/qt/components/interface_widgets.cpp:639
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
 msgstr ""
 
-#: modules/gui/qt/components/interface_widgets.cpp:688
+#: modules/gui/qt/components/interface_widgets.cpp:712
 msgid "Revert to normal play speed"
 msgstr ""
 
-#: modules/gui/qt/components/interface_widgets.cpp:794
+#: modules/gui/qt/components/interface_widgets.cpp:818
 #, fuzzy
 msgid "Download cover art"
 msgstr "ახლავე გადმოწერა"
 
-#: modules/gui/qt/components/interface_widgets.cpp:798
+#: modules/gui/qt/components/interface_widgets.cpp:822
 msgid "Add cover art from file"
 msgstr ""
 
-#: modules/gui/qt/components/interface_widgets.cpp:864
+#: modules/gui/qt/components/interface_widgets.cpp:888
 #, fuzzy
 msgid "Choose Cover Art"
 msgstr "ახლავე გადმოწერა"
 
-#: modules/gui/qt/components/interface_widgets.cpp:865
+#: modules/gui/qt/components/interface_widgets.cpp:889
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr ""
 
-#: modules/gui/qt/components/interface_widgets.cpp:889
+#: modules/gui/qt/components/interface_widgets.cpp:913
 #: modules/gui/qt/dialogs/toolbar.cpp:564
 #, fuzzy
 msgid "Elapsed time"
 msgstr "განაახლების დრო"
 
-#: modules/gui/qt/components/interface_widgets.cpp:893
+#: modules/gui/qt/components/interface_widgets.cpp:917
 #: modules/gui/qt/dialogs/toolbar.cpp:568
 msgid "Total/Remaining time"
 msgstr ""
 
-#: modules/gui/qt/components/interface_widgets.cpp:895
+#: modules/gui/qt/components/interface_widgets.cpp:919
 msgid "Click to toggle between total and remaining time"
 msgstr ""
 
-#: modules/gui/qt/components/interface_widgets.cpp:901
+#: modules/gui/qt/components/interface_widgets.cpp:925
 msgid "Click to toggle between elapsed and remaining time"
 msgstr ""
 
-#: modules/gui/qt/components/interface_widgets.cpp:903
+#: modules/gui/qt/components/interface_widgets.cpp:927
 msgid "Double click to jump to a chosen time position"
 msgstr ""
 
@@ -20536,22 +20537,22 @@ msgid "Key: "
 msgstr "გასაღები"
 
 #: modules/gui/qt/components/simple_preferences.cpp:231
-#: modules/gui/qt/components/simple_preferences.cpp:591
+#: modules/gui/qt/components/simple_preferences.cpp:598
 #, fuzzy
 msgid "Input & Codecs Settings"
 msgstr "შესავალი / კოდეკები"
 
 #: modules/gui/qt/components/simple_preferences.cpp:233
-#: modules/gui/qt/components/simple_preferences.cpp:875
+#: modules/gui/qt/components/simple_preferences.cpp:882
 #, fuzzy
 msgid "Configure Hotkeys"
 msgstr "კონფიგურირება"
 
-#: modules/gui/qt/components/simple_preferences.cpp:423
+#: modules/gui/qt/components/simple_preferences.cpp:430
 msgid "Device:"
 msgstr "მოწყობილობა:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:596
+#: modules/gui/qt/components/simple_preferences.cpp:603
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -20559,62 +20560,62 @@ msgid ""
 "individually in the advanced preferences."
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:664
+#: modules/gui/qt/components/simple_preferences.cpp:671
 msgid "Lowest latency"
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:665
+#: modules/gui/qt/components/simple_preferences.cpp:672
 msgid "Low latency"
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:667
+#: modules/gui/qt/components/simple_preferences.cpp:674
 msgid "High latency"
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:668
+#: modules/gui/qt/components/simple_preferences.cpp:675
 msgid "Higher latency"
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:716
+#: modules/gui/qt/components/simple_preferences.cpp:723
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:718
+#: modules/gui/qt/components/simple_preferences.cpp:725
 msgid "VLC skins website"
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:742
+#: modules/gui/qt/components/simple_preferences.cpp:749
 #, fuzzy
 msgid "System's default"
 msgstr "სისტემის ID"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1265
+#: modules/gui/qt/components/simple_preferences.cpp:1283
 #, fuzzy
 msgid "File associations"
 msgstr "აღწერილობა"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1274
+#: modules/gui/qt/components/simple_preferences.cpp:1292
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "აუდიო ფაილები"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1275
+#: modules/gui/qt/components/simple_preferences.cpp:1293
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "ვიდეო ფაილები"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1276
+#: modules/gui/qt/components/simple_preferences.cpp:1294
 #: modules/gui/qt/dialogs_provider.hpp:43
 #, fuzzy
 msgid "Playlist Files"
 msgstr "დაკვრის სია"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1341
+#: modules/gui/qt/components/simple_preferences.cpp:1359
 #, fuzzy
 msgid "&Apply"
 msgstr "გამოყენება"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1342
+#: modules/gui/qt/components/simple_preferences.cpp:1360
 #: modules/gui/qt/dialogs/convert.cpp:137
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
@@ -20860,7 +20861,7 @@ msgstr "სტატისტიკა"
 msgid "Containers"
 msgstr "გაგრძელება"
 
-#: modules/gui/qt/dialogs/epg.cpp:49 modules/gui/qt/menus.cpp:429
+#: modules/gui/qt/dialogs/epg.cpp:49 modules/gui/qt/menus.cpp:431
 #, fuzzy
 msgid "Program Guide"
 msgstr "პროგრამა"
@@ -21068,8 +21069,8 @@ msgstr "ვიდეო"
 msgid "Clear the messages"
 msgstr "ფერადი შეტყობინებები"
 
-#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:932
-#: modules/gui/qt/menus.cpp:1129
+#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:934
+#: modules/gui/qt/menus.cpp:1131
 #, fuzzy
 msgid "Open Media"
 msgstr "ფაილის გახსნა"
@@ -21104,7 +21105,7 @@ msgid "&Enqueue"
 msgstr ""
 
 #: modules/gui/qt/dialogs/open.cpp:117 modules/gui/qt/dialogs/open.cpp:214
-#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:821
+#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:823
 #, fuzzy
 msgid "&Play"
 msgstr "დაკვრა"
@@ -21642,20 +21643,20 @@ msgstr ""
 msgid "Deactivate"
 msgstr "გააქტიურება"
 
-#: modules/gui/qt/main_interface.cpp:376
+#: modules/gui/qt/main_interface.cpp:373
 msgid "Do you want to restart the playback where left off?"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:382
+#: modules/gui/qt/main_interface.cpp:379
 #, fuzzy
 msgid "&Continue"
 msgstr "გაგრძელება"
 
-#: modules/gui/qt/main_interface.cpp:1420
+#: modules/gui/qt/main_interface.cpp:1422
 msgid "Control menu for the player"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:1464
+#: modules/gui/qt/main_interface.cpp:1466
 msgid "Paused"
 msgstr "დაპაუზებულია"
 
@@ -21669,30 +21670,30 @@ msgstr "მაკედონიური"
 msgid "P&layback"
 msgstr "გაშვება"
 
-#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1047
+#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1049
 msgid "&Audio"
 msgstr "&აუდიო"
 
-#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1054
+#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1056
 msgid "&Video"
 msgstr "&ვიდეო"
 
-#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1061
+#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1063
 #, fuzzy
 msgid "Subti&tle"
 msgstr "ტიტრები"
 
-#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1077
+#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1079
 #, fuzzy
 msgid "Tool&s"
 msgstr "ხელსაწყო"
 
-#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1084
+#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1086
 #, fuzzy
 msgid "V&iew"
 msgstr "ხედი"
 
-#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:785
+#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:787
 msgid "&Help"
 msgstr "&დახმარება"
 
@@ -21706,7 +21707,7 @@ msgstr "ფაილის გახსნა..."
 msgid "&Open Multiple Files..."
 msgstr "ფაილის გახსნა..."
 
-#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:937
+#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:939
 msgid "Open &Disc..."
 msgstr "&დისკის გახსნა..."
 
@@ -21715,7 +21716,7 @@ msgstr "&დისკის გახსნა..."
 msgid "Open &Network Stream..."
 msgstr "ქსელიდან გახსნა..."
 
-#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:941
+#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:943
 #, fuzzy
 msgid "Open &Capture Device..."
 msgstr "გახსენი ჩაწერე მოწყობილობა."
@@ -21724,326 +21725,326 @@ msgstr "გახსენი ჩაწერე მოწყობილობ�
 msgid "Open &Location from clipboard"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:375
+#: modules/gui/qt/menus.cpp:374
 #, fuzzy
 msgid "Open &Recent Media"
 msgstr "ფაილის გახსნა"
 
-#: modules/gui/qt/menus.cpp:385
+#: modules/gui/qt/menus.cpp:387
 msgid "Conve&rt / Save..."
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:387
+#: modules/gui/qt/menus.cpp:389
 #, fuzzy
 msgid "&Stream..."
 msgstr "ნაკადი"
 
-#: modules/gui/qt/menus.cpp:392
+#: modules/gui/qt/menus.cpp:394
 #, fuzzy
 msgid "Quit at the end of playlist"
 msgstr "არა დუიმი სია"
 
-#: modules/gui/qt/menus.cpp:399
+#: modules/gui/qt/menus.cpp:401
 msgid "Close to systray"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:403 modules/gui/qt/menus.cpp:1191
+#: modules/gui/qt/menus.cpp:405 modules/gui/qt/menus.cpp:1193
 #, fuzzy
 msgid "&Quit"
 msgstr "გამოსვლა"
 
-#: modules/gui/qt/menus.cpp:413
+#: modules/gui/qt/menus.cpp:415
 #, fuzzy
 msgid "&Effects and Filters"
 msgstr "ეფექტების სია"
 
-#: modules/gui/qt/menus.cpp:416
+#: modules/gui/qt/menus.cpp:418
 #, fuzzy
 msgid "&Track Synchronization"
 msgstr "სინქრონიზაცია"
 
-#: modules/gui/qt/menus.cpp:435
+#: modules/gui/qt/menus.cpp:437
 msgid "Plu&gins and extensions"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:440
+#: modules/gui/qt/menus.cpp:442
 #, fuzzy
 msgid "Customi&ze Interface..."
 msgstr "ფიქტიური ინტერფეისი"
 
-#: modules/gui/qt/menus.cpp:443
+#: modules/gui/qt/menus.cpp:445
 #, fuzzy
 msgid "&Preferences"
 msgstr "პარამეტრები"
 
-#: modules/gui/qt/menus.cpp:464
+#: modules/gui/qt/menus.cpp:466
 #, fuzzy
 msgid "&View"
 msgstr "ხედი"
 
-#: modules/gui/qt/menus.cpp:485
+#: modules/gui/qt/menus.cpp:487
 #, fuzzy
 msgid "Play&list"
 msgstr "დაკვრის სია"
 
-#: modules/gui/qt/menus.cpp:486
+#: modules/gui/qt/menus.cpp:488
 #, fuzzy
 msgid "Ctrl+L"
 msgstr "Ctrl"
 
-#: modules/gui/qt/menus.cpp:489
+#: modules/gui/qt/menus.cpp:491
 #, fuzzy
 msgid "Docked Playlist"
 msgstr "დასაკრავი სიის შენახვა"
 
-#: modules/gui/qt/menus.cpp:499
+#: modules/gui/qt/menus.cpp:501
 #, fuzzy
 msgid "Always on &top"
 msgstr "მუდმივად წინა პლანზე"
 
-#: modules/gui/qt/menus.cpp:507
+#: modules/gui/qt/menus.cpp:509
 #, fuzzy
 msgid "Mi&nimal Interface"
 msgstr "მინიმალური ინტერფეისი"
 
-#: modules/gui/qt/menus.cpp:508
+#: modules/gui/qt/menus.cpp:510
 #, fuzzy
 msgid "Ctrl+H"
 msgstr "Ctrl"
 
-#: modules/gui/qt/menus.cpp:517
+#: modules/gui/qt/menus.cpp:519
 #, fuzzy
 msgid "&Fullscreen Interface"
 msgstr "Telnet ინტერფეისი"
 
-#: modules/gui/qt/menus.cpp:525
+#: modules/gui/qt/menus.cpp:527
 #, fuzzy
 msgid "&Advanced Controls"
 msgstr "დამატებითი ოფციები"
 
-#: modules/gui/qt/menus.cpp:531
+#: modules/gui/qt/menus.cpp:533
 #, fuzzy
 msgid "Status Bar"
 msgstr "&პარამეტრები"
 
-#: modules/gui/qt/menus.cpp:536
+#: modules/gui/qt/menus.cpp:538
 #, fuzzy
 msgid "Visualizations selector"
 msgstr "ვიზუალიზაცია"
 
-#: modules/gui/qt/menus.cpp:594
+#: modules/gui/qt/menus.cpp:596
 #, fuzzy
 msgid "&Increase Volume"
 msgstr "ნაგულისხმევი აუდიო ხმის სიმაღლე"
 
-#: modules/gui/qt/menus.cpp:597
+#: modules/gui/qt/menus.cpp:599
 #, fuzzy
 msgid "D&ecrease Volume"
 msgstr "ნაგულისხმევი აუდიო ხმის სიმაღლე"
 
-#: modules/gui/qt/menus.cpp:600
+#: modules/gui/qt/menus.cpp:602
 #, fuzzy
 msgid "&Mute"
 msgstr "გააჩუმე"
 
-#: modules/gui/qt/menus.cpp:616
+#: modules/gui/qt/menus.cpp:618
 #, fuzzy
 msgid "Audio &Device"
 msgstr "აუდიო მოწყობილობა"
 
-#: modules/gui/qt/menus.cpp:620
+#: modules/gui/qt/menus.cpp:622
 #, fuzzy
 msgid "Audio &Track"
 msgstr "აუდიოკვალი"
 
-#: modules/gui/qt/menus.cpp:622
+#: modules/gui/qt/menus.cpp:624
 #, fuzzy
 msgid "&Stereo Mode"
 msgstr "სტერეო მოდუსი"
 
-#: modules/gui/qt/menus.cpp:625
+#: modules/gui/qt/menus.cpp:627
 #, fuzzy
 msgid "&Visualizations"
 msgstr "ვიზუალიზაცია"
 
-#: modules/gui/qt/menus.cpp:651
+#: modules/gui/qt/menus.cpp:653
 #, fuzzy
 msgid "Add &Subtitle File..."
 msgstr "ტიტრების ფაილი"
 
-#: modules/gui/qt/menus.cpp:653
+#: modules/gui/qt/menus.cpp:655
 #, fuzzy
 msgid "Sub &Track"
 msgstr "აუდიოკვალი"
 
-#: modules/gui/qt/menus.cpp:675
+#: modules/gui/qt/menus.cpp:677
 #, fuzzy
 msgid "Video &Track"
 msgstr "ვიდეოკვალი"
 
-#: modules/gui/qt/menus.cpp:679
+#: modules/gui/qt/menus.cpp:681
 #, fuzzy
 msgid "&Fullscreen"
 msgstr "მთლიან ეკრანზე"
 
-#: modules/gui/qt/menus.cpp:680
+#: modules/gui/qt/menus.cpp:682
 #, fuzzy
 msgid "Always Fit &Window"
 msgstr "მუდმივად წინა პლანზე"
 
-#: modules/gui/qt/menus.cpp:681
+#: modules/gui/qt/menus.cpp:683
 #, fuzzy
 msgid "Set as Wall&paper"
 msgstr "დაპატარავება"
 
-#: modules/gui/qt/menus.cpp:685
+#: modules/gui/qt/menus.cpp:687
 #, fuzzy
 msgid "&Zoom"
 msgstr "გადიდება"
 
-#: modules/gui/qt/menus.cpp:686
+#: modules/gui/qt/menus.cpp:688
 #, fuzzy
 msgid "&Aspect Ratio"
 msgstr "გვერდების შეფარდება"
 
-#: modules/gui/qt/menus.cpp:687
+#: modules/gui/qt/menus.cpp:689
 #, fuzzy
 msgid "&Crop"
 msgstr "ჩამოჭრა"
 
-#: modules/gui/qt/menus.cpp:691
+#: modules/gui/qt/menus.cpp:693
 #, fuzzy
 msgid "&Deinterlace"
 msgstr "დეინტერლაცია"
 
-#: modules/gui/qt/menus.cpp:692
+#: modules/gui/qt/menus.cpp:694
 #, fuzzy
 msgid "&Deinterlace mode"
 msgstr "დეინტერლაცია რეჟიმი"
 
-#: modules/gui/qt/menus.cpp:696
+#: modules/gui/qt/menus.cpp:698
 #, fuzzy
 msgid "Take &Snapshot"
 msgstr "ვიდეოს სურათის გადაღება"
 
-#: modules/gui/qt/menus.cpp:715
+#: modules/gui/qt/menus.cpp:717
 #, fuzzy
 msgid "T&itle"
 msgstr "სათაური"
 
-#: modules/gui/qt/menus.cpp:716
+#: modules/gui/qt/menus.cpp:718
 #, fuzzy
 msgid "&Chapter"
 msgstr "თავი"
 
-#: modules/gui/qt/menus.cpp:718
+#: modules/gui/qt/menus.cpp:720
 #, fuzzy
 msgid "&Program"
 msgstr "პროგრამა"
 
-#: modules/gui/qt/menus.cpp:722
+#: modules/gui/qt/menus.cpp:724
 #, fuzzy
 msgid "&Manage"
 msgstr "ვიდეო მმართველი"
 
-#: modules/gui/qt/menus.cpp:788
+#: modules/gui/qt/menus.cpp:790
 #, fuzzy
 msgid "Check for &Updates..."
 msgstr "შემოწმება."
 
-#: modules/gui/qt/menus.cpp:835
+#: modules/gui/qt/menus.cpp:837
 #, fuzzy
 msgid "&Stop"
 msgstr "შეჩერება"
 
-#: modules/gui/qt/menus.cpp:843
+#: modules/gui/qt/menus.cpp:845
 #, fuzzy
 msgid "Pre&vious"
 msgstr "წინა"
 
-#: modules/gui/qt/menus.cpp:849
+#: modules/gui/qt/menus.cpp:851
 #, fuzzy
 msgid "Ne&xt"
 msgstr "შემდეგი"
 
-#: modules/gui/qt/menus.cpp:867
+#: modules/gui/qt/menus.cpp:869
 msgid "Sp&eed"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:873
+#: modules/gui/qt/menus.cpp:875
 #, fuzzy
 msgid "&Faster"
 msgstr "ჩასმა"
 
-#: modules/gui/qt/menus.cpp:885
+#: modules/gui/qt/menus.cpp:887
 #, fuzzy
 msgid "N&ormal Speed"
 msgstr "ნორმალური ზომა"
 
-#: modules/gui/qt/menus.cpp:895
+#: modules/gui/qt/menus.cpp:897
 #, fuzzy
 msgid "Slo&wer"
 msgstr "ვერცხლისფერი"
 
-#: modules/gui/qt/menus.cpp:910
+#: modules/gui/qt/menus.cpp:912
 #, fuzzy
 msgid "&Jump Forward"
 msgstr "გადაგზავნა"
 
-#: modules/gui/qt/menus.cpp:917
+#: modules/gui/qt/menus.cpp:919
 #, fuzzy
 msgid "Jump Bac&kward"
 msgstr "გადაგზავნა"
 
-#: modules/gui/qt/menus.cpp:924
+#: modules/gui/qt/menus.cpp:926
 #, fuzzy
 msgid "Ctrl+T"
 msgstr "Ctrl"
 
-#: modules/gui/qt/menus.cpp:939
+#: modules/gui/qt/menus.cpp:941
 #, fuzzy
 msgid "Open &Network..."
 msgstr "ქსელიდან გახსნა..."
 
-#: modules/gui/qt/menus.cpp:1033
+#: modules/gui/qt/menus.cpp:1035
 #, fuzzy
 msgid "Leave Fullscreen"
 msgstr "მთლიან ეკრანზე"
 
-#: modules/gui/qt/menus.cpp:1067
+#: modules/gui/qt/menus.cpp:1069
 #, fuzzy
 msgid "&Playback"
 msgstr "გაშვება"
 
-#: modules/gui/qt/menus.cpp:1172
+#: modules/gui/qt/menus.cpp:1174
 #, fuzzy
 msgid "&Hide VLC media player in taskbar"
 msgstr "VLC მედია დამკვრელი"
 
-#: modules/gui/qt/menus.cpp:1178
+#: modules/gui/qt/menus.cpp:1180
 #, fuzzy
 msgid "Sho&w VLC media player"
 msgstr "VLC მედია დამკვრელი"
 
-#: modules/gui/qt/menus.cpp:1189
+#: modules/gui/qt/menus.cpp:1191
 #, fuzzy
 msgid "&Open Media"
 msgstr "ფაილის გახსნა"
 
-#: modules/gui/qt/menus.cpp:1629
+#: modules/gui/qt/menus.cpp:1631
 msgid "&Clear"
 msgstr "გაწმენდა"
 
-#: modules/gui/qt/menus.cpp:1637
+#: modules/gui/qt/menus.cpp:1639
 msgid "&Renderer"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1641
+#: modules/gui/qt/menus.cpp:1643
 #, fuzzy
 msgid "<Local>"
 msgstr "ვერტიკალური"
 
-#: modules/gui/qt/menus.cpp:1654
+#: modules/gui/qt/menus.cpp:1656
 #, fuzzy
 msgid "Scanning..."
 msgstr "კოდირების ხარისხი"
@@ -22886,11 +22887,11 @@ msgstr "პროტოკოლირება syslog-ში"
 msgid "System logger (syslog)"
 msgstr ""
 
-#: modules/lua/extension.c:1185
+#: modules/lua/extension.c:1192
 msgid "Extension not responding!"
 msgstr ""
 
-#: modules/lua/extension.c:1186
+#: modules/lua/extension.c:1193
 #, c-format
 msgid ""
 "Extension '%s' does not respond.\n"
@@ -25760,107 +25761,107 @@ msgstr "ნაგულისხმევი"
 msgid "Chromaprint stream output"
 msgstr "დუბლირება"
 
-#: modules/stream_out/chromecast/cast.cpp:112
+#: modules/stream_out/chromecast/cast.cpp:120
 #, fuzzy
 msgid "HTTP port"
 msgstr "UDP პორტი"
 
-#: modules/stream_out/chromecast/cast.cpp:113
+#: modules/stream_out/chromecast/cast.cpp:121
 msgid ""
 "This sets the HTTP port of the local server used to stream the media to the "
 "Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:116
+#: modules/stream_out/chromecast/cast.cpp:124
 msgid "The Chromecast receiver can receive video."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:118
+#: modules/stream_out/chromecast/cast.cpp:126
 msgid "This sets the muxer used to stream to the Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:119
+#: modules/stream_out/chromecast/cast.cpp:127
 msgid "MIME content type"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:120
+#: modules/stream_out/chromecast/cast.cpp:128
 msgid "This sets the media MIME content type sent to the Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:121
-#: modules/stream_out/chromecast/cast.cpp:409
+#: modules/stream_out/chromecast/cast.cpp:129
+#: modules/stream_out/chromecast/cast.cpp:522
 #, fuzzy
 msgid "Performance warning"
 msgstr "შეცდომები და გაფრთხილებები..."
 
-#: modules/stream_out/chromecast/cast.cpp:122
+#: modules/stream_out/chromecast/cast.cpp:130
 msgid "Display a performance warning when transcoding"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:123
+#: modules/stream_out/chromecast/cast.cpp:131
 #, fuzzy
 msgid "Enable Audio passthrough"
 msgstr "ჩართე აუდიო"
 
-#: modules/stream_out/chromecast/cast.cpp:124
-msgid "Disable if your receiver does not support Dolby®"
+#: modules/stream_out/chromecast/cast.cpp:132
+msgid "Disable if your receiver does not support Dolby®."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:146
-msgid "High (high quality and high bandwith)"
+#: modules/stream_out/chromecast/cast.cpp:154
+msgid "High (high quality and high bandwidth)"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:147
+#: modules/stream_out/chromecast/cast.cpp:155
 msgid "Medium (medium quality and medium bandwidth)"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:148
-msgid "Low (low quality and low bandwith)"
+#: modules/stream_out/chromecast/cast.cpp:156
+msgid "Low (low quality and low bandwidth)"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:149
-msgid "Low CPU (low quality but high bandwith)"
+#: modules/stream_out/chromecast/cast.cpp:157
+msgid "Low CPU (low quality but high bandwidth)"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:152
+#: modules/stream_out/chromecast/cast.cpp:160
 #, fuzzy
 msgid "Conversion quality"
 msgstr "კოდირების ხარისხი"
 
-#: modules/stream_out/chromecast/cast.cpp:153
+#: modules/stream_out/chromecast/cast.cpp:161
 msgid "Change this option to increase conversion speed or quality."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:156
+#: modules/stream_out/chromecast/cast.cpp:164
 #, fuzzy
 msgid "IP Address of the Chromecast."
 msgstr "CDDB სერვერის მისამართი."
 
-#: modules/stream_out/chromecast/cast.cpp:157
+#: modules/stream_out/chromecast/cast.cpp:165
 #, fuzzy
 msgid "Chromecast port"
 msgstr "ფიქტიური ნახატი"
 
-#: modules/stream_out/chromecast/cast.cpp:158
+#: modules/stream_out/chromecast/cast.cpp:166
 msgid "The port used to talk to the Chromecast."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:162
+#: modules/stream_out/chromecast/cast.cpp:170
 #, fuzzy
 msgid "Chromecast"
 msgstr "ბრძანება"
 
-#: modules/stream_out/chromecast/cast.cpp:163
+#: modules/stream_out/chromecast/cast.cpp:171
 #, fuzzy
 msgid "Chromecast stream output"
 msgstr "დუბლირება"
 
-#: modules/stream_out/chromecast/cast.cpp:408
+#: modules/stream_out/chromecast/cast.cpp:521
 #, fuzzy
 msgid "Ok, Don't warn me again"
 msgstr "წინა"
 
-#: modules/stream_out/chromecast/cast.cpp:410
+#: modules/stream_out/chromecast/cast.cpp:523
 msgid ""
 "Casting this video requires conversion. This conversion can use all the "
 "available power and could quickly drain your battery."
@@ -30360,7 +30361,7 @@ msgstr ""
 msgid "Hardware-accelerated decoding"
 msgstr "ჩართვა"
 
-#: modules/gui/qt/ui/sprefs_input.h:360 modules/gui/qt/ui/sprefs_input.h:362
+#: modules/gui/qt/ui/sprefs_input.h:360
 #, fuzzy
 msgid "Video quality post-processing level"
 msgstr "ვიდეოს სკალირება"
@@ -30369,6 +30370,10 @@ msgstr "ვიდეოს სკალირება"
 #, fuzzy
 msgid "Skip H.264 in-loop deblocking filter"
 msgstr "ლოგო"
+
+#: modules/gui/qt/ui/sprefs_input.h:362
+msgid "x264 preset and tuning selection"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:364
 msgid "Optical drive"

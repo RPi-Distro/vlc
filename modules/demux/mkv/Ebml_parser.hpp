@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 320b1f5d0873b309c57b85fddef9c723852f1e29 $
+ * $Id: 1d5dd8c072307610dcbac83dd2693ff58cf59e73 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -33,17 +33,15 @@
 class EbmlParser
 {
   public:
-    EbmlParser( EbmlStream *es, EbmlElement *el_start, demux_t *p_demux,
-                bool b_with_dummy );
+    EbmlParser( EbmlStream *es, EbmlElement *el_start, demux_t *p_demux );
     ~EbmlParser( void );
 
     void reconstruct( EbmlStream*, EbmlElement*, demux_t*);
-    void reconstruct( EbmlStream*, EbmlElement*, demux_t*, bool b_with_dummy );
 
     void Up( void );
     void Down( void );
     void Reset( demux_t *p_demux );
-    EbmlElement *Get( int n_call = 0 );
+    EbmlElement *Get( void );
     void        Keep( void );
     void        Unkeep( void );
 

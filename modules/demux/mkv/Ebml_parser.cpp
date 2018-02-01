@@ -3,7 +3,7 @@
  * EbmlParser for the matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 139d93f312c2546b058254e3bd3713d9d5bc3f9e $
+ * $Id: 4ab667c04f8601b8fe52df56ef44dbccdc9107de $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -29,15 +29,14 @@
 /*****************************************************************************
  * Ebml Stream parser
  *****************************************************************************/
-EbmlParser::EbmlParser( EbmlStream *es, EbmlElement *el_start, demux_t *p_demux,
-                        bool b_with_dummy ) :
+EbmlParser::EbmlParser( EbmlStream *es, EbmlElement *el_start, demux_t *p_demux ) :
     p_demux( p_demux ),
     m_es( es ),
     mi_level( 1 ),
     m_got( NULL ),
     mi_user_level( 1 ),
     mb_keep( false ),
-    mb_dummy( b_with_dummy )
+    mb_dummy( var_InheritBool( p_demux, "mkv-use-dummy" ) )
 {
     memset( m_el, 0, sizeof( *m_el ) * M_EL_MAXSIZE);
     m_el[0] = el_start;
@@ -64,17 +63,9 @@ EbmlParser::~EbmlParser( void )
 
 void EbmlParser::reconstruct( EbmlStream* es, EbmlElement* el_start, demux_t* p_demux )
 {
-    this->reconstruct( es, el_start, p_demux, var_InheritBool( p_demux, "mkv-use-dummy" ) );
-}
-
-void EbmlParser::reconstruct( EbmlStream* es, EbmlElement* el_start, demux_t* p_demux,
-  bool b_with_dummy)
-{
     this->~EbmlParser();
 
-    new( static_cast<void*>( this ) ) EbmlParser(
-      es, el_start, p_demux, b_with_dummy
-    );
+    new( static_cast<void*>( this ) ) EbmlParser( es, el_start, p_demux );
 }
 
 void EbmlParser::Up( void )
@@ -137,9 +128,10 @@ const EbmlSemanticContext Context_KaxSegmentVLC = EbmlSemanticContext(KaxSegment
                                                                       GetEbmlNoGlobal_Context,
                                                                       KaxSegment_Context.GetMaster());
 
-EbmlElement *EbmlParser::Get( int n_call )
+EbmlElement *EbmlParser::Get()
 {
     int i_ulev = 0;
+    int n_call = 0;
     EbmlElement *p_prev = NULL;
 
     if( mi_user_level != mi_level )
@@ -154,6 +146,7 @@ EbmlElement *EbmlParser::Get( int n_call )
         return ret;
     }
 
+next:
     p_prev = m_el[mi_level];
     if( p_prev )
         p_prev->SkipData( *m_es, EBML_CONTEXT(p_prev) );
@@ -204,6 +197,16 @@ EbmlElement *EbmlParser::Get( int n_call )
                      m_es->FindNextElement( e_context,
                                             i_ulev, i_max_read,
                                             (  mb_dummy | (mi_level > 1) ), 1 );
+
+    if( m_el[mi_level] == NULL )
+    {
+        if ( i_max_read != UINT64_MAX && !static_cast<vlc_stream_io_callback *>(&m_es->I_O())->IsEOF() )
+        {
+            msg_Dbg(p_demux, "found nothing, go up");
+            i_ulev = 1;
+        }
+    }
+
     if( i_ulev > 0 )
     {
         if( p_prev )
@@ -267,7 +270,19 @@ EbmlElement *EbmlParser::Get( int n_call )
             /* The element fits inside its upper element */
             msg_Warn( p_demux, "Dummy element found %" PRIu64 "... skipping it",
                       m_el[mi_level]->GetElementPosition() );
-            return Get( ++n_call );
+            if( p_prev )
+            {
+                if( !mb_keep )
+                {
+                    if( MKV_IS_ID( p_prev, KaxBlockVirtual ) )
+                        static_cast<KaxBlockVirtualWorkaround*>(p_prev)->Fix(); // !! WARNING : TODO !! this is undefined-behavior
+                    delete p_prev;
+                    p_prev = NULL;
+                }
+                mb_keep = false;
+            }
+            n_call++;
+            goto next;
         }
         else
         {
@@ -288,10 +303,18 @@ EbmlElement *EbmlParser::Get( int n_call )
                 return NULL;
             }
 
-            EbmlElement *unwanted_dummy = m_el[mi_level];
-            EbmlElement *upper_dummy = Get();
-            delete unwanted_dummy;
-            return upper_dummy;
+            if( p_prev )
+            {
+                if( !mb_keep )
+                {
+                    if( MKV_IS_ID( p_prev, KaxBlockVirtual ) )
+                        static_cast<KaxBlockVirtualWorkaround*>(p_prev)->Fix(); // !! WARNING : TODO !! this is undefined-behavior
+                    delete p_prev;
+                    p_prev = NULL;
+                }
+                mb_keep = false;
+            }
+            goto next;
         }
     }
 

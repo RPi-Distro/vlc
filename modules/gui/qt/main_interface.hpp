@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: d6ba7463e7bbcc43b515b9b1249e3860207d6e1b $
+ * $Id: 7cad9d71cde97263c31ec2eee1d59fa43619791e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -175,7 +175,6 @@ protected:
     /* Flags */
     unsigned             i_notificationSetting; /// Systray Notifications
     bool                 b_autoresize;          ///< persistent resizable window
-    bool                 b_videoEmbedded;       ///< Want an external Video Window
     bool                 b_videoFullScreen;     ///< --fullscreen
     bool                 b_hideAfterCreation;
     bool                 b_minimalView;         ///< Minimal video

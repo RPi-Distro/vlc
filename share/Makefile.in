@@ -278,7 +278,7 @@ am__can_run_installinfo = \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
 am__dist_icons128_DATA_DIST = icons/128x128/vlc.png \
-	icons/128x128/vlc-xmas.png
+	icons/128x128/vlc-xmas.png icons/128x128/vlc-kb.png
 am__dist_icons16_DATA_DIST = icons/16x16/vlc.png icons/16x16/vlc.xpm
 am__dist_icons256_DATA_DIST = icons/256x256/vlc.png
 am__dist_icons32_DATA_DIST = icons/32x32/vlc.png icons/32x32/vlc.xpm \
@@ -1191,7 +1191,9 @@ icons256dir = $(iconsdatadir)/256x256/apps
 @HAVE_WIN32_FALSE@			icons/32x32/vlc-xmas.xpm
 
 @HAVE_WIN32_FALSE@dist_icons48_DATA = icons/48x48/vlc.png icons/48x48/vlc-xmas.png
-@HAVE_WIN32_FALSE@dist_icons128_DATA = icons/128x128/vlc.png icons/128x128/vlc-xmas.png
+@HAVE_WIN32_FALSE@dist_icons128_DATA = icons/128x128/vlc.png icons/128x128/vlc-xmas.png \
+@HAVE_WIN32_FALSE@                     icons/128x128/vlc-kb.png
+
 @HAVE_WIN32_FALSE@dist_icons256_DATA = icons/256x256/vlc.png
 @HAVE_WIN32_FALSE@nobase_dist_vlcdata_SCRIPTS = \
 @HAVE_WIN32_FALSE@	utils/gnome-vlc-default.sh \

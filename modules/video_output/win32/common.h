@@ -2,7 +2,7 @@
  * common.h: Windows video output header file
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: c1c6e6f3683966ec081aa9c28768438434b455ca $
+ * $Id: 0fb4e93c0206c8b0eb0a7225d206e65840e57406 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -61,9 +61,6 @@ typedef struct vout_display_sys_win32_t
     /* Misc */
     bool is_first_display;
     bool is_on_top;
-
-    /* screensaver system settings to be restored when vout is closed */
-    UINT i_spi_screensaveactive;
 
     /* Coordinates of src and dest images (used when blitting to display) */
     RECT         rect_src;

@@ -50,6 +50,9 @@ struct sout_stream_sys_t
         , b_supports_video(has_video)
         , i_port(port)
         , es_changed( true )
+        , cc_has_input( false )
+        , out_force_reload( false )
+        , out_streams_added( 0 )
         , transcode_attempt_idx( 0 )
         , previous_state( Authenticating )
     {
@@ -71,6 +74,7 @@ struct sout_stream_sys_t
     std::string        sout;
     const std::string  default_muxer;
     const std::string  default_mime;
+    std::string        mime;
 
     intf_sys_t * const p_intf;
     const bool b_supports_video;
@@ -79,8 +83,11 @@ struct sout_stream_sys_t
     sout_stream_id_sys_t *GetSubId( sout_stream_t*, sout_stream_id_sys_t* );
 
     bool                               es_changed;
+    bool                               cc_has_input;
+    bool                               out_force_reload;
     std::vector<sout_stream_id_sys_t*> streams;
     std::vector<sout_stream_id_sys_t*> out_streams;
+    unsigned int                       out_streams_added;
     unsigned int                       transcode_attempt_idx;
     States                             previous_state;
 
@@ -92,7 +99,7 @@ private:
 
 static const vlc_fourcc_t DEFAULT_TRANSCODE_VIDEO = VLC_CODEC_H264;
 static const unsigned int MAX_TRANSCODE_PASS = 3;
-static const char DEFAULT_MUXER[] = "avformat{mux=matroska,options={live=1}}}";
+static const char DEFAULT_MUXER[] = "avformat{mux=matroska,options={live=1}}";
 
 
 /*****************************************************************************
@@ -100,6 +107,7 @@ static const char DEFAULT_MUXER[] = "avformat{mux=matroska,options={live=1}}}";
  *****************************************************************************/
 static int Open(vlc_object_t *);
 static void Close(vlc_object_t *);
+static int ProxyOpen(vlc_object_t *);
 
 static const char *const ppsz_sout_options[] = {
     "ip", "port",  "http-port", "mux", "mime", "video", NULL
@@ -121,7 +129,7 @@ static const char *const ppsz_sout_options[] = {
 #define PERF_TEXT N_( "Performance warning" )
 #define PERF_LONGTEXT N_( "Display a performance warning when transcoding" )
 #define AUDIO_PASSTHROUGH_TEXT N_( "Enable Audio passthrough" )
-#define AUDIO_PASSTHROUGH_LONGTEXT N_( "Disable if your receiver does not support Dolby®" )
+#define AUDIO_PASSTHROUGH_LONGTEXT N_( "Disable if your receiver does not support Dolby®." )
 
 enum {
     CONVERSION_QUALITY_HIGH = 0,
@@ -143,10 +151,10 @@ static const int conversion_quality_list[] = {
     CONVERSION_QUALITY_LOWCPU,
 };
 static const char *const conversion_quality_list_text[] = {
-    N_( "High (high quality and high bandwith)" ),
+    N_( "High (high quality and high bandwidth)" ),
     N_( "Medium (medium quality and medium bandwidth)" ),
-    N_( "Low (low quality and low bandwith)" ),
-    N_( "Low CPU (low quality but high bandwith)" ),
+    N_( "Low (low quality and low bandwidth)" ),
+    N_( "Low CPU (low quality but high bandwidth)" ),
 };
 
 #define CONVERSION_QUALITY_TEXT N_( "Conversion quality" )
@@ -182,6 +190,11 @@ vlc_module_begin ()
                 CONVERSION_QUALITY_TEXT, CONVERSION_QUALITY_LONGTEXT, false );
         change_integer_list(conversion_quality_list, conversion_quality_list_text)
 
+    add_submodule()
+        /* sout proxy that start the cc input when all streams are loaded */
+        add_shortcut("chromecast-proxy")
+        set_capability("sout stream", 0)
+        set_callbacks(ProxyOpen, NULL)
 vlc_module_end ()
 
 
@@ -190,6 +203,72 @@ struct sout_stream_id_sys_t
     es_format_t           fmt;
     sout_stream_id_sys_t  *p_sub_id;
 };
+
+static sout_stream_id_sys_t *ProxyAdd(sout_stream_t *p_stream, const es_format_t *p_fmt)
+{
+    sout_stream_sys_t *p_sys = p_stream->p_sys;
+    sout_stream_id_sys_t *id = sout_StreamIdAdd(p_stream->p_next, p_fmt);
+    if (id)
+        p_sys->out_streams_added++;
+    return id;
+}
+
+static void ProxyDel(sout_stream_t *p_stream, sout_stream_id_sys_t *id)
+{
+    sout_stream_sys_t *p_sys = p_stream->p_sys;
+    p_sys->out_streams_added--;
+    return sout_StreamIdDel(p_stream->p_next, id);
+}
+
+static int ProxySend(sout_stream_t *p_stream, sout_stream_id_sys_t *id,
+                     block_t *p_buffer)
+{
+    sout_stream_sys_t *p_sys = p_stream->p_sys;
+    if (p_sys->cc_has_input || p_sys->out_streams_added >= p_sys->out_streams.size())
+    {
+        int ret = sout_StreamIdSend(p_stream->p_next, id, p_buffer);
+        if (ret == VLC_SUCCESS && !p_sys->cc_has_input)
+        {
+            /* Start the chromecast only when all streams are added into the
+             * last sout (the http one) */
+            p_sys->p_intf->setHasInput(p_sys->mime);
+            p_sys->cc_has_input = true;
+        }
+        return ret;
+    }
+    else
+    {
+        block_Release(p_buffer);
+        return VLC_SUCCESS;
+    }
+}
+
+static void ProxyFlush(sout_stream_t *p_stream, sout_stream_id_sys_t *id)
+{
+    return sout_StreamFlush(p_stream->p_next, id);
+}
+
+static int ProxyControl(sout_stream_t *p_stream, int i_query, va_list args)
+{
+    if (!p_stream->p_next->pf_control)
+        return VLC_EGENERIC;
+    return p_stream->p_next->pf_control(p_stream->p_next, i_query, args);
+}
+
+static int ProxyOpen(vlc_object_t *p_this)
+{
+    sout_stream_t *p_stream = reinterpret_cast<sout_stream_t*>(p_this);
+    p_stream->p_sys = (sout_stream_sys_t *) var_InheritAddress(p_this, SOUT_CFG_PREFIX "sys");
+    if (p_stream->p_sys == NULL || p_stream->p_next == NULL)
+        return VLC_EGENERIC;
+
+    p_stream->pf_add     = ProxyAdd;
+    p_stream->pf_del     = ProxyDel;
+    p_stream->pf_send    = ProxySend;
+    p_stream->pf_flush   = ProxyFlush;
+    p_stream->pf_control = ProxyControl;
+    return VLC_SUCCESS;
+}
 
 /*****************************************************************************
  * Sout callbacks
@@ -217,7 +296,8 @@ static sout_stream_id_sys_t *Add(sout_stream_t *p_stream, const es_format_t *p_f
 }
 
 
-static void Del(sout_stream_t *p_stream, sout_stream_id_sys_t *id)
+static void DelInternal(sout_stream_t *p_stream, sout_stream_id_sys_t *id,
+                        bool reset_config)
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 
@@ -236,7 +316,8 @@ static void Del(sout_stream_t *p_stream, sout_stream_id_sys_t *id)
                     if (*out_it == id)
                     {
                         p_sys->out_streams.erase(out_it);
-                        p_sys->es_changed = true;
+                        p_sys->es_changed = reset_config;
+                        p_sys->out_force_reload = reset_config;
                         break;
                     }
                     out_it++;
@@ -254,12 +335,16 @@ static void Del(sout_stream_t *p_stream, sout_stream_id_sys_t *id)
     if ( p_sys->out_streams.empty() )
     {
         p_sys->p_intf->requestPlayerStop();
-
         sout_StreamChainDelete( p_sys->p_out, NULL );
         p_sys->p_out = NULL;
         p_sys->sout = "";
         p_sys->transcode_attempt_idx = 0;
     }
+}
+
+static void Del(sout_stream_t *p_stream, sout_stream_id_sys_t *id)
+{
+    DelInternal(p_stream, id, true);
 }
 
 /**
@@ -313,15 +398,18 @@ bool sout_stream_sys_t::startSoutChain( sout_stream_t *p_stream )
 {
     if ( unlikely( p_out != NULL ) )
     {
-        for ( size_t i = 0; i < streams.size(); i++ )
+        for ( size_t i = 0; i < out_streams.size(); i++ )
         {
-            if ( streams[i]->p_sub_id != NULL )
-                sout_StreamIdDel( p_out, streams[i]->p_sub_id );
+            if ( out_streams[i]->p_sub_id != NULL )
+                sout_StreamIdDel( p_out, out_streams[i]->p_sub_id );
         }
         sout_StreamChainDelete( p_out, NULL );
     }
 
     msg_Dbg( p_stream, "Creating chain %s", sout.c_str() );
+    cc_has_input = false;
+    out_streams_added = 0;
+
     p_out = sout_StreamChainNew( p_stream->p_sout, sout.c_str(), NULL, NULL);
     if (p_out == NULL) {
         msg_Dbg(p_stream, "could not create sout chain:%s", sout.c_str());
@@ -359,7 +447,8 @@ bool sout_stream_sys_t::UpdateOutput( sout_stream_t *p_stream )
     vlc_fourcc_t i_codec_video = 0, i_codec_audio = 0;
     const es_format_t *p_original_audio = NULL;
     const es_format_t *p_original_video = NULL;
-    out_streams.clear();
+    bool b_out_streams_changed = false;
+    std::vector<sout_stream_id_sys_t*> new_streams;
 
     for (std::vector<sout_stream_id_sys_t*>::iterator it = streams.begin(); it != streams.end(); ++it)
     {
@@ -374,7 +463,7 @@ bool sout_stream_sys_t::UpdateOutput( sout_stream_t *p_stream )
             else if (i_codec_audio == 0)
                 i_codec_audio = p_es->i_codec;
             p_original_audio = p_es;
-            out_streams.push_back(*it);
+            new_streams.push_back(*it);
         }
         else if (b_supports_video)
         {
@@ -389,14 +478,38 @@ bool sout_stream_sys_t::UpdateOutput( sout_stream_t *p_stream )
                 else if (i_codec_video == 0)
                     i_codec_video = p_es->i_codec;
                 p_original_video = p_es;
-                out_streams.push_back(*it);
+                new_streams.push_back(*it);
             }
+            else
+                continue;
             /* TODO: else handle ttml/webvtt */
         }
+        else
+            continue;
+
+        bool b_found = out_force_reload;
+        for (std::vector<sout_stream_id_sys_t*>::iterator out_it = out_streams.begin();
+             out_it != out_streams.end() && !b_found; ++out_it)
+        {
+            if (*out_it == *it)
+                b_found = true;
+        }
+        if (!b_found)
+            b_out_streams_changed = true;
     }
 
-    if (out_streams.empty())
+    if (new_streams.empty())
+    {
+        p_intf->requestPlayerStop();
         return true;
+    }
+
+    /* Don't restart sout and CC session if streams didn't change */
+    if (!out_force_reload && new_streams.size() == out_streams.size() && !b_out_streams_changed)
+        return true;
+
+    out_force_reload = false;
+    out_streams = new_streams;
 
     std::stringstream ssout;
     if ( !canRemux )
@@ -476,7 +589,7 @@ bool sout_stream_sys_t::UpdateOutput( sout_stream_t *p_stream )
             if( i_codec_audio == VLC_CODEC_VORBIS )
                 ssout << "aenc=vorbis{quality=6},";
         }
-        if ( b_supports_video && i_codec_video == 0 )
+        if ( i_codec_video == 0 && p_original_video )
         {
             i_codec_video = DEFAULT_TRANSCODE_VIDEO;
             msg_Dbg( p_stream, "Converting video to %.4s", (const char*)&i_codec_video );
@@ -485,8 +598,7 @@ bool sout_stream_sys_t::UpdateOutput( sout_stream_t *p_stream )
             s_fourcc[4] = '\0';
             ssout << s_fourcc << ',' << psz_video_maxres << ',';
 
-            const video_format_t *p_vid =
-                p_original_video ? &p_original_video->video : NULL;
+            const video_format_t *p_vid = &p_original_video->video;
             const bool b_hdres = p_vid == NULL || p_vid->i_height == 0 || p_vid->i_height >= 800;
             unsigned i_video_x264_crf = b_hdres ? i_video_x264_crf_hd : i_video_x264_crf_720p;
 
@@ -508,8 +620,7 @@ bool sout_stream_sys_t::UpdateOutput( sout_stream_t *p_stream )
         }
         ssout << "}:";
     }
-    std::string mime;
-    if ( !b_supports_video && default_muxer == DEFAULT_MUXER )
+    if ( !p_original_video && default_muxer == DEFAULT_MUXER )
         mime = "audio/x-matroska";
     else if ( i_codec_audio == VLC_CODEC_VORBIS &&
               i_codec_video == VLC_CODEC_VP8 &&
@@ -518,18 +629,14 @@ bool sout_stream_sys_t::UpdateOutput( sout_stream_t *p_stream )
     else
         mime = default_mime;
 
-    ssout << "http{dst=:" << i_port << "/stream"
+    ssout << "chromecast-proxy:"
+          << "http{dst=:" << i_port << "/stream"
           << ",mux=" << default_muxer
           << ",access=http{mime=" << mime << "}}";
 
     sout = ssout.str();
 
-    if ( startSoutChain( p_stream ) )
-    {
-        /* tell the chromecast to load the content */
-        p_intf->setHasInput( mime );
-    }
-    else
+    if ( !startSoutChain( p_stream ) )
     {
         p_intf->requestPlayerStop();
 
@@ -550,10 +657,10 @@ sout_stream_id_sys_t *sout_stream_sys_t::GetSubId( sout_stream_t *p_stream,
     if ( UpdateOutput( p_stream ) == false )
         return NULL;
 
-    for (i = 0; i < streams.size(); ++i)
+    for (i = 0; i < out_streams.size(); ++i)
     {
-        if ( id == (sout_stream_id_sys_t*) streams[i] )
-            return streams[i]->p_sub_id;
+        if ( id == (sout_stream_id_sys_t*) out_streams[i] )
+            return out_streams[i]->p_sub_id;
     }
 
     msg_Err( p_stream, "unknown stream ID" );
@@ -565,8 +672,8 @@ static int Send(sout_stream_t *p_stream, sout_stream_id_sys_t *id,
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 
-    id = p_sys->GetSubId( p_stream, id );
-    if ( id == NULL )
+    sout_stream_id_sys_t *next_id = p_sys->GetSubId( p_stream, id );
+    if ( next_id == NULL )
     {
         block_Release( p_buffer );
         return VLC_EGENERIC;
@@ -584,6 +691,7 @@ static int Send(sout_stream_t *p_stream, sout_stream_id_sys_t *id,
             }
             p_sys->transcode_attempt_idx++;
             p_sys->es_changed = true;
+            p_sys->out_streams.clear();
             msg_Warn( p_stream, "Load failed detected. Switching to next "
                      "configuration index: %u", p_sys->transcode_attempt_idx );
         }
@@ -595,7 +703,10 @@ static int Send(sout_stream_t *p_stream, sout_stream_id_sys_t *id,
         p_sys->previous_state = s;
     }
 
-    return sout_StreamIdSend(p_sys->p_out, id, p_buffer);
+    int ret = sout_StreamIdSend(p_sys->p_out, next_id, p_buffer);
+    if (ret != VLC_SUCCESS)
+        DelInternal(p_stream, id, false);
+    return ret;
 }
 
 static void Flush( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
@@ -708,6 +819,13 @@ static int Open(vlc_object_t *p_this)
     if (unlikely(p_sys == NULL))
         goto error;
 
+    /* prevent sout-mux-caching since chromecast-proxy is already doing it */
+    var_Create( p_stream->p_sout, "sout-mux-caching", VLC_VAR_INTEGER );
+    var_SetInteger( p_stream->p_sout, "sout-mux-caching", 0 );
+
+    var_Create( p_stream->p_sout, SOUT_CFG_PREFIX "sys", VLC_VAR_ADDRESS );
+    var_SetAddress( p_stream->p_sout, SOUT_CFG_PREFIX "sys", p_sys );
+
     // Set the sout callbacks.
     p_stream->pf_add     = Add;
     p_stream->pf_del     = Del;
@@ -738,7 +856,11 @@ error:
 static void Close(vlc_object_t *p_this)
 {
     sout_stream_t *p_stream = reinterpret_cast<sout_stream_t*>(p_this);
+    sout_stream_sys_t *p_sys = p_stream->p_sys;
 
-    delete p_stream->p_sys;
+    assert(p_sys->out_streams.empty() && p_sys->streams.empty());
+    var_Destroy( p_stream->p_sout, SOUT_CFG_PREFIX "sys" );
+
+    delete p_sys;
 }
 
