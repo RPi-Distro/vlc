@@ -2,7 +2,7 @@
  * win32_timer.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: afe15509553092840b144c58b402f8d3351e5d1d $
+ * $Id: c49934871625724ced09c45cf8fd1d8f835e9723 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -33,10 +33,7 @@ void CALLBACK CallbackTimer( HWND hwnd, UINT uMsg,
 {
     (void)hwnd; (void)uMsg; (void)dwTime;
     Win32Timer *pTimer = (Win32Timer*)idEvent;
-    if( pTimer != NULL )
-    {
-        pTimer->execute();
-    }
+    pTimer->execute();
 }
 
 
@@ -49,6 +46,15 @@ Win32Timer::Win32Timer( intf_thread_t *pIntf, CmdGeneric &rCmd, HWND hWnd ):
 Win32Timer::~Win32Timer()
 {
     stop();
+
+    // discard possible WM_TIMER messages for this timer
+    // already in the message queue and not yet dispatched
+    MSG msg;
+    while( !PeekMessage( &msg, m_hWnd, WM_TIMER, WM_TIMER, PM_REMOVE ) )
+    {
+        if( (Win32Timer*)msg.wParam != this )
+            PostMessage( m_hWnd, WM_TIMER, msg.wParam, msg.lParam );
+    }
 }
 
 

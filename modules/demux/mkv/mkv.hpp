@@ -2,7 +2,7 @@
  * mkv.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008 VLC authors and VideoLAN
- * $Id: b3b175d9b4dd15f21fda338f7d45d7b2746f4c72 $
+ * $Id: 59adc48eb9701741a16f02968a77b5858df2e099 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -156,15 +156,16 @@ private:
 class matroska_segment_c;
 struct matroska_stream_c
 {
-    matroska_stream_c() :p_io_callback(NULL) ,p_estream(NULL) {}
+    matroska_stream_c(stream_t *s, bool owner);
     ~matroska_stream_c()
     {
-        delete p_io_callback;
-        delete p_estream;
+        delete io_callback;
     }
 
-    IOCallback         *p_io_callback;
-    EbmlStream         *p_estream;
+    bool isUsed() const;
+
+    IOCallback         * io_callback;
+    EbmlStream         estream;
 
     std::vector<matroska_segment_c*> segments;
 };

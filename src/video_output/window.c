@@ -2,7 +2,7 @@
  * window.c: "vout window" management
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 0eb055a47f46a24ff3a704b6186d5bb4fc052f63 $
+ * $Id: 36aaa9d04602c311cd2ba678f675ca612c13678b $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -78,7 +78,8 @@ vout_window_t *vout_window_New(vlc_object_t *obj, const char *module,
 
     /* Hook for screensaver inhibition */
     if (var_InheritBool(obj, "disable-screensaver") &&
-        (window->type == VOUT_WINDOW_TYPE_XID || window->type == VOUT_WINDOW_TYPE_HWND))
+        (window->type == VOUT_WINDOW_TYPE_XID || window->type == VOUT_WINDOW_TYPE_HWND
+      || window->type == VOUT_WINDOW_TYPE_WAYLAND))
     {
         w->inhibit = vlc_inhibit_Create(VLC_OBJECT (window));
         if (w->inhibit != NULL)

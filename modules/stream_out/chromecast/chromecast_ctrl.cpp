@@ -70,6 +70,8 @@ static const char* StateToStr( States s )
         return "Paused";
     case Seeking:
         return "Seeking";
+    case Stopping:
+        return "Stopping";
     case Dead:
         return "Dead";
     }
@@ -84,6 +86,7 @@ intf_sys_t::intf_sys_t(vlc_object_t * const p_this, int port, std::string device
  , m_streaming_port(port)
  , m_communication( p_this, device_addr.c_str(), device_port )
  , m_state( Authenticating )
+ , m_eof( false )
  , m_ctl_thread_interrupt(p_interrupt)
  , m_time_playback_started( VLC_TS_INVALID )
  , m_ts_local_start( VLC_TS_INVALID )
@@ -129,6 +132,7 @@ intf_sys_t::~intf_sys_t()
     case Playing:
     case Paused:
     case Seeking:
+    case Stopping:
         // Generate the close messages.
         m_communication.msgReceiverClose( m_appTransportId );
         /* fallthrough */
@@ -158,6 +162,10 @@ void intf_sys_t::setHasInput( const std::string mime_type )
 
     this->m_mime = mime_type;
 
+    /* new input: clear message queue */
+    std::queue<QueueableMessages> empty;
+    std::swap(m_msgQueue, empty);
+
     waitAppStarted();
     if ( m_state == Dead )
     {
@@ -169,6 +177,7 @@ void intf_sys_t::setHasInput( const std::string mime_type )
     // we cannot start a new load when the last one is still processing
     m_communication.msgPlayerLoad( m_appTransportId, m_streaming_port, m_title, m_artwork, mime_type );
     setState( Loading );
+    m_eof = false;
 }
 
 /**
@@ -242,6 +251,7 @@ void intf_sys_t::mainLoop()
             {
                 case Stop:
                     m_communication.msgPlayerStop( m_appTransportId, m_mediaSessionId );
+                    setState( Stopping );
                     break;
                 case Seek:
                 {
@@ -470,6 +480,7 @@ void intf_sys_t::processMediaMessage( const castchannel::CastMessage& msg )
                 {
                     /* TODO reset demux PCR ? */
                     m_time_playback_started = mdate();
+                    m_eof = false;
                     setState( Playing );
                 }
             }
@@ -477,6 +488,13 @@ void intf_sys_t::processMediaMessage( const castchannel::CastMessage& msg )
             {
                 if ( m_state != Buffering )
                 {
+                    /* EOF when state goes from Playing to Buffering. There can
+                     * be a lot of false positives (when seeking or when the cc
+                     * request more input) but this state is fetched only when
+                     * the input has reached EOF. */
+
+                    if( m_state == Playing )
+                        m_eof = true;
                     m_time_playback_started = VLC_TS_INVALID;
                     setState( Buffering );
                 }
@@ -675,7 +693,8 @@ void intf_sys_t::setPauseState(bool paused)
 void intf_sys_t::waitAppStarted()
 {
     while ( m_state == Connected || m_state == Launching ||
-            m_state == Authenticating || m_state == Connecting )
+            m_state == Authenticating || m_state == Connecting ||
+            m_state == Stopping )
     {
         if ( m_state == Connected )
         {
@@ -708,7 +727,7 @@ void intf_sys_t::waitSeekDone()
 bool intf_sys_t::isFinishedPlaying()
 {
     vlc_mutex_locker locker(&m_lock);
-    return m_state == Ready;
+    return m_state == Ready || m_state == LoadFailed || m_state == Dead || m_eof;
 }
 
 void intf_sys_t::setTitle(const char* psz_title)

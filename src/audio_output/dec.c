@@ -2,7 +2,7 @@
  * dec.c : audio output API towards decoders
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: f37a6e396b6fb228a5126a2ab82d68f9c8b86d2a $
+ * $Id: cf7642ca0897ffc7b5133bfb4db8ed6728ab58eb $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -45,15 +45,17 @@ int aout_DecNew( audio_output_t *p_aout,
                  const audio_replay_gain_t *p_replay_gain,
                  const aout_request_vout_t *p_request_vout )
 {
-
-    /* Sanitize audio format, input need to have a valid physical channels
-     * layout or a valid number of channels. */
-    int i_map_channels = aout_FormatNbChannels( p_format );
-    if( ( i_map_channels == 0 && p_format->i_channels == 0 )
-       || i_map_channels > AOUT_CHAN_MAX || p_format->i_channels > INPUT_CHAN_MAX )
+    if( p_format->i_bitspersample > 0 )
     {
-        msg_Err( p_aout, "invalid audio channels count" );
-        return -1;
+        /* Sanitize audio format, input need to have a valid physical channels
+         * layout or a valid number of channels. */
+        int i_map_channels = aout_FormatNbChannels( p_format );
+        if( ( i_map_channels == 0 && p_format->i_channels == 0 )
+           || i_map_channels > AOUT_CHAN_MAX || p_format->i_channels > INPUT_CHAN_MAX )
+        {
+            msg_Err( p_aout, "invalid audio channels count" );
+            return -1;
+        }
     }
 
     if( p_format->i_rate > 352800 )

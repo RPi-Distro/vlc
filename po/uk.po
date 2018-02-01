@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.0-rc5\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-01-19 19:33+0100\n"
+"POT-Creation-Date: 2018-01-26 17:34+0100\n"
 "PO-Revision-Date: 2017-11-16 03:16+0100\n"
 "Last-Translator: Андрій Бандура <andriykopanytsia@gmail.com>, 2017\n"
 "Language-Team: Ukrainian (https://www.transifex.com/yaron/teams/16553/uk/)\n"
@@ -45,7 +45,7 @@ msgstr "Натисніть кнопку „Додаткові параметри
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:227
 #: modules/gui/qt/components/simple_preferences.cpp:223
-#: modules/gui/qt/menus.cpp:1091
+#: modules/gui/qt/menus.cpp:1093
 msgid "Interface"
 msgstr "Інтерфейс"
 
@@ -78,7 +78,7 @@ msgstr "Установки інтерфейсів елементів керув�
 msgid "Hotkeys settings"
 msgstr "Установки гарячих клавіш"
 
-#: include/vlc_config_cat.h:53 src/input/es_out.c:3088 src/libvlc-module.c:1486
+#: include/vlc_config_cat.h:53 src/input/es_out.c:3091 src/libvlc-module.c:1486
 #: modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:404 modules/gui/macosx/VLCOutput.m:92
@@ -142,7 +142,7 @@ msgstr "Інше"
 msgid "Miscellaneous audio settings and modules."
 msgstr "Інші модулі та установки звуку."
 
-#: include/vlc_config_cat.h:73 src/input/es_out.c:3132 src/libvlc-module.c:142
+#: include/vlc_config_cat.h:73 src/input/es_out.c:3135 src/libvlc-module.c:142
 #: src/libvlc-module.c:1545 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:417 modules/gui/macosx/VLCOutput.m:82
@@ -152,7 +152,7 @@ msgstr "Інші модулі та установки звуку."
 #: modules/gui/qt/components/info_panels.cpp:573
 #: modules/gui/qt/components/simple_preferences.cpp:227
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
-#: modules/stream_out/chromecast/cast.cpp:115 modules/stream_out/es.c:102
+#: modules/stream_out/chromecast/cast.cpp:123 modules/stream_out/es.c:102
 #: modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
 #: modules/gui/qt/ui/profiles.h:722 modules/gui/qt/ui/profiles.h:726
@@ -366,11 +366,11 @@ msgstr "Реалізація VLC послуги „відео за вимого�
 #: src/playlist/engine.c:233 modules/demux/playlist/playlist.c:64
 #: modules/demux/playlist/playlist.c:65 modules/demux/playlist/wpl.c:99
 #: modules/gui/macosx/VLCMainWindow.m:296
-#: modules/gui/macosx/VLCMainWindow.m:863
+#: modules/gui/macosx/VLCMainWindow.m:859
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
-#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1118
+#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1120
 msgid "Playlist"
 msgstr "Список відтворення"
 
@@ -638,7 +638,7 @@ msgstr "Досягнуто максимальне число фільтрів (%
 
 #: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:943
 #: src/libvlc-module.c:544 modules/gui/macosx/VLCMainMenu.m:234
-#: modules/gui/macosx/VLCMainWindow.m:1006 modules/video_filter/postproc.c:235
+#: modules/gui/macosx/VLCMainWindow.m:1002 modules/video_filter/postproc.c:235
 msgid "Disable"
 msgstr "Вимкнути"
 
@@ -671,22 +671,27 @@ msgstr "Автонормалізація гучності звуку"
 msgid "Stereo audio mode"
 msgstr "Стереорежим"
 
-#: src/audio_output/output.c:421
+#: src/audio_output/output.c:421 modules/access/v4l2/v4l2.c:267
+#: modules/audio_output/alsa.c:76
+msgid "Mono"
+msgstr "Моно"
+
+#: src/audio_output/output.c:428
 msgid "Original"
 msgstr "Оригінальний"
 
-#: src/audio_output/output.c:427 src/libvlc-module.c:197
+#: src/audio_output/output.c:434 src/libvlc-module.c:197
 msgid "Dolby Surround"
 msgstr "Dolby Surround"
 
-#: src/audio_output/output.c:432 src/libvlc-module.c:196
+#: src/audio_output/output.c:439 src/libvlc-module.c:196
 #: modules/access/alsa.c:38 modules/access/oss.c:64
 #: modules/access/v4l2/v4l2.c:268 modules/audio_output/alsa.c:76
 #: modules/codec/twolame.c:70
 msgid "Stereo"
 msgstr "Стерео"
 
-#: src/audio_output/output.c:441 src/input/es_out.c:3229
+#: src/audio_output/output.c:448 src/input/es_out.c:3232
 #: src/libvlc-module.c:197 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: src/misc/actions.c:81 modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -703,7 +708,7 @@ msgstr "Стерео"
 msgid "Left"
 msgstr "Лівий"
 
-#: src/audio_output/output.c:444 src/libvlc-module.c:197
+#: src/audio_output/output.c:451 src/libvlc-module.c:197
 #: src/libvlc-module.c:295 src/libvlc-module.c:368 src/misc/actions.c:109
 #: modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -718,11 +723,11 @@ msgstr "Лівий"
 msgid "Right"
 msgstr "Правий"
 
-#: src/audio_output/output.c:448 src/libvlc-module.c:196
+#: src/audio_output/output.c:455 src/libvlc-module.c:196
 msgid "Reverse stereo"
 msgstr "Реверсивне стерео"
 
-#: src/audio_output/output.c:456 src/libvlc-module.c:198
+#: src/audio_output/output.c:463 src/libvlc-module.c:198
 #: modules/audio_filter/equalizer_presets.h:55
 msgid "Headphones"
 msgstr "Навушники"
@@ -732,7 +737,7 @@ msgstr "Навушники"
 #: modules/access/dtv/access.c:123 modules/access/dtv/access.c:132
 #: modules/access/dtv/access.c:140 modules/access/dtv/access.c:162
 #: modules/access/v4l2/v4l2.c:137 modules/gui/qt/components/open_panels.cpp:974
-#: modules/gui/qt/components/simple_preferences.cpp:366
+#: modules/gui/qt/components/simple_preferences.cpp:370
 msgid "Automatic"
 msgstr "Автоматично"
 
@@ -970,25 +975,25 @@ msgid "Scrambled"
 msgstr "Скрембльований"
 
 #: src/input/es_out.c:1468 modules/keystore/keychain.m:40
-#: modules/lua/extension.c:1184
+#: modules/lua/extension.c:1191
 msgid "Yes"
 msgstr "Так"
 
-#: src/input/es_out.c:2132
+#: src/input/es_out.c:2135
 #, c-format
 msgid "DTVCC Closed captions %u"
 msgstr "DTVCC Приховані субтитри %u"
 
-#: src/input/es_out.c:2134
+#: src/input/es_out.c:2137
 #, c-format
 msgid "Closed captions %u"
 msgstr "Приховані субтитри %u"
 
-#: src/input/es_out.c:3064
+#: src/input/es_out.c:3067
 msgid "Original ID"
 msgstr "Оригінальний ID"
 
-#: src/input/es_out.c:3072 src/input/es_out.c:3075 modules/access/imem.c:67
+#: src/input/es_out.c:3075 src/input/es_out.c:3078 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
 #: modules/gui/qt/ui/profiles.h:728 modules/gui/qt/ui/profiles.h:754
@@ -996,48 +1001,48 @@ msgstr "Оригінальний ID"
 msgid "Codec"
 msgstr "Кодек"
 
-#: src/input/es_out.c:3079 src/input/meta.c:66 modules/access/imem.c:71
+#: src/input/es_out.c:3082 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:114
 #: modules/gui/macosx/VLCSimplePrefsController.m:311
 #: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:530
 msgid "Language"
 msgstr "Мова"
 
-#: src/input/es_out.c:3082 src/input/meta.c:61
+#: src/input/es_out.c:3085 src/input/meta.c:61
 #: modules/gui/macosx/VLCBookmarksWindowController.m:83
 #: modules/gui/macosx/VLCPlaylist.m:112 modules/gui/qt/dialogs/bookmarks.cpp:75
 #: modules/gui/qt/dialogs/epg.cpp:55
 msgid "Description"
 msgstr "Опис"
 
-#: src/input/es_out.c:3088 src/input/es_out.c:3132 src/input/es_out.c:3322
+#: src/input/es_out.c:3091 src/input/es_out.c:3135 src/input/es_out.c:3325
 #: modules/gui/macosx/VLCAddonsWindowController.m:132
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
 #: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1487
 msgid "Type"
 msgstr "Тип"
 
-#: src/input/es_out.c:3091
+#: src/input/es_out.c:3094
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
 #: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:756
 msgid "Channels"
 msgstr "Канали"
 
-#: src/input/es_out.c:3096 modules/access/alsa.c:39 modules/access/imem.c:75
+#: src/input/es_out.c:3099 modules/access/alsa.c:39 modules/access/imem.c:75
 #: modules/audio_output/amem.c:45 modules/codec/fluidsynth.c:64
 msgid "Sample rate"
 msgstr "Частота дискретизації"
 
-#: src/input/es_out.c:3096
+#: src/input/es_out.c:3099
 #, c-format
 msgid "%u Hz"
 msgstr "%u Гц"
 
-#: src/input/es_out.c:3106
+#: src/input/es_out.c:3109
 msgid "Bits per sample"
 msgstr "Біт на фрагмент"
 
-#: src/input/es_out.c:3111 modules/access_output/shout.c:92
+#: src/input/es_out.c:3114 modules/access_output/shout.c:92
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
@@ -1045,33 +1050,33 @@ msgstr "Біт на фрагмент"
 msgid "Bitrate"
 msgstr "Бітрейт"
 
-#: src/input/es_out.c:3111
+#: src/input/es_out.c:3114
 #, c-format
 msgid "%u kb/s"
 msgstr "%u кб/с"
 
-#: src/input/es_out.c:3123
+#: src/input/es_out.c:3126
 msgid "Track replay gain"
 msgstr "Автонормалізація гучності доріжки"
 
-#: src/input/es_out.c:3125
+#: src/input/es_out.c:3128
 msgid "Album replay gain"
 msgstr "Автонормалізація гучності альбому"
 
-#: src/input/es_out.c:3126
+#: src/input/es_out.c:3129
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f дБ"
 
-#: src/input/es_out.c:3136
+#: src/input/es_out.c:3139
 msgid "Video resolution"
 msgstr "Роздільність відео"
 
-#: src/input/es_out.c:3141
+#: src/input/es_out.c:3144
 msgid "Buffer dimensions"
 msgstr "Розміри буферу"
 
-#: src/input/es_out.c:3151 src/input/es_out.c:3154 modules/access/imem.c:93
+#: src/input/es_out.c:3154 src/input/es_out.c:3157 modules/access/imem.c:93
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
@@ -1081,91 +1086,91 @@ msgstr "Розміри буферу"
 msgid "Frame rate"
 msgstr "Частота кадрів"
 
-#: src/input/es_out.c:3162
+#: src/input/es_out.c:3165
 msgid "Decoded format"
 msgstr "Декодований формат"
 
-#: src/input/es_out.c:3167
+#: src/input/es_out.c:3170
 msgid "Top left"
 msgstr "Зверху зліва"
 
-#: src/input/es_out.c:3167
+#: src/input/es_out.c:3170
 msgid "Left top"
 msgstr "Зліва зверху"
 
-#: src/input/es_out.c:3168
+#: src/input/es_out.c:3171
 msgid "Right bottom"
 msgstr "Справа знизу"
 
-#: src/input/es_out.c:3168
+#: src/input/es_out.c:3171
 msgid "Top right"
 msgstr "Зверху справа"
 
-#: src/input/es_out.c:3169
+#: src/input/es_out.c:3172
 msgid "Bottom left"
 msgstr "Знизу зліва"
 
-#: src/input/es_out.c:3169
+#: src/input/es_out.c:3172
 msgid "Bottom right"
 msgstr "Знизу справа"
 
-#: src/input/es_out.c:3170
+#: src/input/es_out.c:3173
 msgid "Left bottom"
 msgstr "Зліва знизу"
 
-#: src/input/es_out.c:3170
+#: src/input/es_out.c:3173
 msgid "Right top"
 msgstr "Справа зверху"
 
-#: src/input/es_out.c:3172
+#: src/input/es_out.c:3175
 msgid "Orientation"
 msgstr "Орієнтація"
 
-#: src/input/es_out.c:3178 src/input/es_out.c:3196 src/input/es_out.c:3214
-#: src/input/es_out.c:3228 src/playlist/tree.c:67
+#: src/input/es_out.c:3181 src/input/es_out.c:3199 src/input/es_out.c:3217
+#: src/input/es_out.c:3231 src/playlist/tree.c:67
 #: modules/access/dtv/access.c:75 modules/access/v4l2/v4l2.c:242
 msgid "Undefined"
 msgstr "Невизначено"
 
-#: src/input/es_out.c:3180
+#: src/input/es_out.c:3183
 msgid "ITU-R BT.601 (525 lines, 60 Hz)"
 msgstr "ITU-R BT.601 (525 рядків, 60 Гц)"
 
-#: src/input/es_out.c:3182
+#: src/input/es_out.c:3185
 msgid "ITU-R BT.601 (625 lines, 50 Hz)"
 msgstr "ITU-R BT.601 (625 рядків, 50 Гц)"
 
-#: src/input/es_out.c:3190
+#: src/input/es_out.c:3193
 msgid "Color primaries"
 msgstr "Основні кольори"
 
-#: src/input/es_out.c:3197 src/libvlc-module.c:362
+#: src/input/es_out.c:3200 src/libvlc-module.c:362
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Linear"
 msgstr "Лінійний"
 
-#: src/input/es_out.c:3204
+#: src/input/es_out.c:3207
 msgid "Hybrid Log-Gamma"
 msgstr "Гібридна лог-гамма"
 
-#: src/input/es_out.c:3208
+#: src/input/es_out.c:3211
 msgid "Color transfer function"
 msgstr "Функція передачі кольору"
 
-#: src/input/es_out.c:3221
+#: src/input/es_out.c:3224
 msgid "Color space"
 msgstr "Колірний простір"
 
-#: src/input/es_out.c:3221
+#: src/input/es_out.c:3224
 #, c-format
 msgid "%s Range"
 msgstr "%s діапазон"
 
-#: src/input/es_out.c:3223
+#: src/input/es_out.c:3226
 msgid "Full"
 msgstr "Повний"
 
-#: src/input/es_out.c:3230 src/libvlc-module.c:295 src/libvlc-module.c:368
+#: src/input/es_out.c:3233 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: modules/audio_filter/channel_mixer/mono.c:91
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -1176,87 +1181,87 @@ msgstr "Повний"
 msgid "Center"
 msgstr "По центру"
 
-#: src/input/es_out.c:3231
+#: src/input/es_out.c:3234
 msgid "Top Left"
 msgstr "Зверху зліва"
 
-#: src/input/es_out.c:3232
+#: src/input/es_out.c:3235
 msgid "Top Center"
 msgstr "Зверху по центру"
 
-#: src/input/es_out.c:3233
+#: src/input/es_out.c:3236
 msgid "Bottom Left"
 msgstr "Знизу зліва"
 
-#: src/input/es_out.c:3234
+#: src/input/es_out.c:3237
 msgid "Bottom Center"
 msgstr "Знизу по центру"
 
-#: src/input/es_out.c:3238
+#: src/input/es_out.c:3241
 msgid "Chroma location"
 msgstr "Розташування кольоровості"
 
-#: src/input/es_out.c:3247
+#: src/input/es_out.c:3250
 msgid "Rectangular"
 msgstr "Прямокутна"
 
-#: src/input/es_out.c:3250
+#: src/input/es_out.c:3253
 msgid "Equirectangular"
 msgstr "Еквідистантна"
 
-#: src/input/es_out.c:3253
+#: src/input/es_out.c:3256
 msgid "Cubemap"
 msgstr "Кубічна"
 
-#: src/input/es_out.c:3259
+#: src/input/es_out.c:3262
 msgid "Projection"
 msgstr "Проекція"
 
-#: src/input/es_out.c:3261
+#: src/input/es_out.c:3264
 msgctxt "ViewPoint"
 msgid "Yaw"
 msgstr "Никання"
 
-#: src/input/es_out.c:3263
+#: src/input/es_out.c:3266
 msgctxt "ViewPoint"
 msgid "Pitch"
 msgstr "Рівень"
 
-#: src/input/es_out.c:3265
+#: src/input/es_out.c:3268
 msgctxt "ViewPoint"
 msgid "Roll"
 msgstr "Ролик"
 
-#: src/input/es_out.c:3268
+#: src/input/es_out.c:3271
 msgctxt "ViewPoint"
 msgid "Field of view"
 msgstr "Поле огляду"
 
-#: src/input/es_out.c:3273
+#: src/input/es_out.c:3276
 msgid "Max. luminance"
 msgstr "Найб. яскравість"
 
-#: src/input/es_out.c:3278
+#: src/input/es_out.c:3281
 msgid "Min. luminance"
 msgstr "Найм. яскравість"
 
-#: src/input/es_out.c:3286
+#: src/input/es_out.c:3289
 msgid "Primary R"
 msgstr "Основний Ч"
 
-#: src/input/es_out.c:3293
+#: src/input/es_out.c:3296
 msgid "Primary G"
 msgstr "Основний З"
 
-#: src/input/es_out.c:3300
+#: src/input/es_out.c:3303
 msgid "Primary B"
 msgstr "Основний С"
 
-#: src/input/es_out.c:3307
+#: src/input/es_out.c:3310
 msgid "White point"
 msgstr "Біла точка"
 
-#: src/input/es_out.c:3322 modules/access/imem.c:64
+#: src/input/es_out.c:3325 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "Субтитр"
 
@@ -1762,7 +1767,7 @@ msgstr ""
 
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:942
 #: modules/audio_output/kai.c:106 modules/codec/x264.c:440
-#: modules/demux/mpeg/ts.c:120 modules/gui/macosx/VLCSimplePrefsController.m:54
+#: modules/demux/mpeg/ts.c:124 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:66
 #: modules/gui/qt/components/sout/profile_selector.cpp:582
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
@@ -2570,7 +2575,7 @@ msgstr "Стандартно"
 
 #: src/libvlc-module.c:544
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:214
-#: modules/gui/macosx/VLCMainWindow.m:1004
+#: modules/gui/macosx/VLCMainWindow.m:1000
 #: modules/gui/qt/components/extended_panels.cpp:928
 #: modules/gui/qt/ui/equalizer.h:133 modules/gui/qt/ui/vlm.h:289
 msgid "Enable"
@@ -4032,11 +4037,11 @@ msgid "Select the hotkey to set the playback rate back to normal."
 msgstr ""
 "Виберіть гарячу клавішу для відновлення нормальної швидкості відтворення."
 
-#: src/libvlc-module.c:1236 modules/gui/qt/menus.cpp:881
+#: src/libvlc-module.c:1236 modules/gui/qt/menus.cpp:883
 msgid "Faster (fine)"
 msgstr "Швидше (точно)"
 
-#: src/libvlc-module.c:1238 modules/gui/qt/menus.cpp:889
+#: src/libvlc-module.c:1238 modules/gui/qt/menus.cpp:891
 msgid "Slower (fine)"
 msgstr "Повільніше (точно)"
 
@@ -4205,8 +4210,8 @@ msgstr "Тривалість довгого стрибка в секундах."
 #: src/libvlc-module.c:1287 modules/control/hotkeys.c:361
 #: modules/gui/macosx/VLCStatusBarIcon.m:116
 #: modules/gui/qt/components/controller.hpp:111
-#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:952
-#: modules/gui/qt/menus.cpp:1138 modules/gui/skins2/commands/cmd_quit.cpp:45
+#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:954
+#: modules/gui/qt/menus.cpp:1140 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "Вийти"
 
@@ -4707,7 +4712,7 @@ msgstr "Робить стоп-кадр і зберігає його на дис�
 
 #: src/libvlc-module.c:1417 modules/gui/macosx/VLCMainMenu.m:379
 #: modules/gui/qt/components/controller.hpp:110
-#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:855
+#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:857
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Записування"
@@ -5175,7 +5180,7 @@ msgstr "Наступна сторінка"
 #: modules/gui/macosx/VLCMainMenu.m:1331 modules/gui/macosx/VLCMainMenu.m:1332
 #: modules/gui/macosx/VLCMainMenu.m:1333
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
-#: modules/gui/qt/menus.cpp:829
+#: modules/gui/qt/menus.cpp:831
 msgid "Pause"
 msgstr "Призупинити"
 
@@ -5295,7 +5300,7 @@ msgstr "Не вдалося відкрити „%s“ для записуван�
 #: modules/gui/qt/components/preferences_widgets.cpp:1428
 #: modules/gui/qt/components/sout/profile_selector.cpp:446
 #: modules/gui/qt/dialogs/sout.cpp:92
-#: modules/stream_out/chromecast/cast.cpp:408
+#: modules/stream_out/chromecast/cast.cpp:521
 msgid "Cancel"
 msgstr "Скасувати"
 
@@ -5372,7 +5377,7 @@ msgstr "Оновити медіапрогравач VLC"
 
 #: src/playlist/engine.c:237 src/playlist/loadsave.c:159 lib/media_list.c:237
 #: modules/gui/macosx/VLCMainWindow.m:298
-#: modules/gui/macosx/VLCMainWindow.m:865
+#: modules/gui/macosx/VLCMainWindow.m:861
 #: modules/gui/qt/components/playlist/selector.cpp:236
 msgid "Media Library"
 msgstr "Медіатека"
@@ -6203,11 +6208,11 @@ msgstr "Blu-ray"
 msgid "Blu-ray Disc support (libbluray)"
 msgstr "Підтримка дисків Blu-ray (libbluray)"
 
-#: modules/access/bluray.c:717
+#: modules/access/bluray.c:722
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr "Шлях вірогідно не веде до Blu-Ray"
 
-#: modules/access/bluray.c:732
+#: modules/access/bluray.c:737
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
@@ -6215,31 +6220,31 @@ msgstr ""
 "Для декодування AACS із цього диска Blu-ray потрібна бібліотека, якої немає "
 "у вашій системі."
 
-#: modules/access/bluray.c:738
+#: modules/access/bluray.c:743
 msgid "Blu-ray Disc is corrupted."
 msgstr "Диск Blu-ray пошкоджено."
 
-#: modules/access/bluray.c:740
+#: modules/access/bluray.c:745
 msgid "Missing AACS configuration file!"
 msgstr "Немає файлу конфігурації AACS."
 
-#: modules/access/bluray.c:742
+#: modules/access/bluray.c:747
 msgid "No valid processing key found in AACS config file."
 msgstr "У конфігураційному файлі AACS не знайдено дійсного ключа для обробки."
 
-#: modules/access/bluray.c:744
+#: modules/access/bluray.c:749
 msgid "No valid host certificate found in AACS config file."
 msgstr "У конфігураційному файлі AACS не знайдено дійсного сертифіката вузла."
 
-#: modules/access/bluray.c:746
+#: modules/access/bluray.c:751
 msgid "AACS Host certificate revoked."
 msgstr "Сертифікат вузла AACS відкликано."
 
-#: modules/access/bluray.c:748
+#: modules/access/bluray.c:753
 msgid "AACS MMC failed."
 msgstr "Сталася помилка AACS MMC."
 
-#: modules/access/bluray.c:758
+#: modules/access/bluray.c:763
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
@@ -6247,16 +6252,16 @@ msgstr ""
 "Для декодування BD+ із цього диска Blu-ray потрібна бібліотека, якої немає у "
 "вашій системі."
 
-#: modules/access/bluray.c:761
+#: modules/access/bluray.c:766
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr ""
 "Системна бібліотека декодування BD+ не працює. Імовірно, немає конфігурації."
 
-#: modules/access/bluray.c:794
+#: modules/access/bluray.c:799
 msgid "Java required"
 msgstr "Потрібна Java"
 
-#: modules/access/bluray.c:795
+#: modules/access/bluray.c:800
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
@@ -6265,25 +6270,25 @@ msgstr ""
 "Цей диск Blu-ray вимагає Java для підтримки меню.%s\n"
 "Диск буде відтворюватися без меню."
 
-#: modules/access/bluray.c:796
+#: modules/access/bluray.c:801
 msgid "Java was not found on your system."
 msgstr "Java не знайдена на вашій системі."
 
-#: modules/access/bluray.c:819
+#: modules/access/bluray.c:824
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 "Не вдалося запустити відтворення Blu-ray. Спробуйте без підтримки меню."
 
-#: modules/access/bluray.c:847 modules/access/bluray.c:2284
-#: modules/access/bluray.c:2289
+#: modules/access/bluray.c:852 modules/access/bluray.c:2289
+#: modules/access/bluray.c:2294
 msgid "Blu-ray error"
 msgstr "Помилка Blu-ray"
 
-#: modules/access/bluray.c:1669
+#: modules/access/bluray.c:1674
 msgid "Top Menu"
 msgstr "Верхнє меню"
 
-#: modules/access/bluray.c:1672
+#: modules/access/bluray.c:1677
 msgid "First Play"
 msgstr "Перша гра"
 
@@ -9016,10 +9021,6 @@ msgstr "NTSC M Японія"
 #: modules/access/v4l2/v4l2.c:256
 msgid "NTSC M South Korea"
 msgstr "NTSC M Південна Корея"
-
-#: modules/access/v4l2/v4l2.c:267 modules/audio_output/alsa.c:76
-msgid "Mono"
-msgstr "Моно"
 
 #: modules/access/v4l2/v4l2.c:269
 msgid "Primary language"
@@ -14245,7 +14246,7 @@ msgstr "Швидкий"
 #: modules/codec/x264.c:435 modules/gui/macosx/VLCMainMenu.m:281
 #: modules/gui/macosx/VLCMainMenu.m:384
 #: modules/gui/macosx/VLCSimplePrefsController.m:696
-#: modules/gui/qt/components/simple_preferences.cpp:666
+#: modules/gui/qt/components/simple_preferences.cpp:673
 #: modules/misc/gnutls.c:771 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
@@ -14378,18 +14379,18 @@ msgid "D-Bus control interface"
 msgstr "Інтерфейс керування D-Bus"
 
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:182
-#: modules/gui/macosx/VLCMainWindow.m:669
-#: modules/gui/macosx/VLCMainWindow.m:675
-#: modules/gui/macosx/VLCMainWindow.m:1276
+#: modules/gui/macosx/VLCMainWindow.m:665
+#: modules/gui/macosx/VLCMainWindow.m:671
+#: modules/gui/macosx/VLCMainWindow.m:1275
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1265
-#: modules/gui/qt/main_interface.cpp:1269
-#: modules/gui/qt/main_interface.cpp:1308
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1267
+#: modules/gui/qt/main_interface.cpp:1271
 #: modules/gui/qt/main_interface.cpp:1310
-#: modules/gui/qt/main_interface.cpp:1419
-#: modules/gui/qt/main_interface.cpp:1436
-#: modules/gui/qt/main_interface.cpp:1444
-#: modules/gui/qt/main_interface.cpp:1467 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/main_interface.cpp:1312
+#: modules/gui/qt/main_interface.cpp:1421
+#: modules/gui/qt/main_interface.cpp:1438
+#: modules/gui/qt/main_interface.cpp:1446
+#: modules/gui/qt/main_interface.cpp:1469 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -15277,7 +15278,7 @@ msgid "Avformat muxer"
 msgstr "Мультиплексор Avformat"
 
 #: modules/demux/avformat/avformat.c:56
-#: modules/stream_out/chromecast/cast.cpp:117 modules/stream_out/rtp.c:87
+#: modules/stream_out/chromecast/cast.cpp:125 modules/stream_out/rtp.c:87
 msgid "Muxer"
 msgstr "Мультиплексор"
 
@@ -15955,19 +15956,19 @@ msgstr ""
 "Пошук і позиціювання на основі відсотків байт, а не згенерованої часової "
 "позиції PCR. Якщо позиціювання не працює правильно, вимкніть цю опцію."
 
-#: modules/demux/mpeg/ts.c:114
+#: modules/demux/mpeg/ts.c:118
 msgid "Trust in-stream PCR"
 msgstr "Довіряти PCR у потоці"
 
-#: modules/demux/mpeg/ts.c:115
+#: modules/demux/mpeg/ts.c:119
 msgid "Use the stream PCR as a reference."
 msgstr "Вживати потік PCR як посилання."
 
-#: modules/demux/mpeg/ts.c:122 modules/mux/mpeg/ts.c:100
+#: modules/demux/mpeg/ts.c:126 modules/mux/mpeg/ts.c:100
 msgid "Digital TV Standard"
 msgstr "Стандарт цифрового ТБ"
 
-#: modules/demux/mpeg/ts.c:123
+#: modules/demux/mpeg/ts.c:127
 msgid ""
 "Selects mode for digital TV standard. This feature affects EPG information "
 "and subtitles."
@@ -15975,7 +15976,7 @@ msgstr ""
 "Вибір режиму для стандарту цифрового телебачення. Ця функція впливає на "
 "інформацію про EPG та субтитри."
 
-#: modules/demux/mpeg/ts.c:127
+#: modules/demux/mpeg/ts.c:131
 msgid "MPEG Transport Stream demuxer"
 msgstr "Демультиплексор MPEG TS"
 
@@ -16747,7 +16748,7 @@ msgstr "Час"
 #: modules/gui/macosx/VLCSimplePrefsController.m:282
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1363
-#: modules/stream_out/chromecast/cast.cpp:408
+#: modules/stream_out/chromecast/cast.cpp:521
 msgid "OK"
 msgstr "Гаразд"
 
@@ -16865,7 +16866,7 @@ msgstr "Виберіть розташування виводу"
 #: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/qt/components/preferences_widgets.cpp:264
-#: modules/gui/qt/components/simple_preferences.cpp:440
+#: modules/gui/qt/components/simple_preferences.cpp:447
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
 #: modules/gui/qt/ui/open.h:282 modules/gui/qt/ui/open_disk.h:307
 #: modules/gui/qt/ui/open_file.h:148 modules/gui/qt/ui/sprefs_audio.h:417
@@ -17076,7 +17077,7 @@ msgstr "Вибрано експорт SDP, але відповідну адре�
 #: modules/gui/macosx/VLCSimplePrefsController.m:690
 #: modules/gui/macosx/VLCSimplePrefsController.m:718
 #: modules/gui/macosx/VLCSimplePrefsController.m:1251
-#: modules/gui/qt/components/simple_preferences.cpp:663
+#: modules/gui/qt/components/simple_preferences.cpp:670
 msgid "Custom"
 msgstr "Довільно"
 
@@ -17749,7 +17750,7 @@ msgid "Bring All to Front"
 msgstr "Винести все наперед"
 
 #: modules/gui/macosx/VLCMainMenu.m:478 modules/gui/qt/dialogs/help.cpp:54
-#: modules/gui/qt/menus.cpp:948 modules/gui/qt/menus.cpp:1135
+#: modules/gui/qt/menus.cpp:950 modules/gui/qt/menus.cpp:1137
 msgid "Help"
 msgstr "Довідка"
 
@@ -18010,7 +18011,7 @@ msgid "Enable DVD menus"
 msgstr "Увімкнути меню DVD"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:186
-#: modules/stream_out/chromecast/cast.cpp:155
+#: modules/stream_out/chromecast/cast.cpp:163
 msgid "IP Address"
 msgstr "IP-адреса"
 
@@ -18329,14 +18330,14 @@ msgstr "Відтворення \"%@\" буде продовжене о %@"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:227
 #: modules/gui/qt/components/simple_preferences.cpp:223
-#: modules/gui/qt/components/simple_preferences.cpp:690
+#: modules/gui/qt/components/simple_preferences.cpp:697
 #: modules/gui/qt/dialogs/plugins.cpp:375
 msgid "Interface Settings"
 msgstr "Параметри інтерфейсу"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:229
 #: modules/gui/qt/components/simple_preferences.cpp:225
-#: modules/gui/qt/components/simple_preferences.cpp:415
+#: modules/gui/qt/components/simple_preferences.cpp:422
 msgid "Audio Settings"
 msgstr "Параметри звуку"
 
@@ -18348,7 +18349,7 @@ msgstr "Параметри відео"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:233
 #: modules/gui/qt/components/simple_preferences.cpp:229
-#: modules/gui/qt/components/simple_preferences.cpp:831
+#: modules/gui/qt/components/simple_preferences.cpp:838
 msgid "Subtitle & On Screen Display Settings"
 msgstr "Параметри субтитрів і екранного відображення"
 
@@ -19846,7 +19847,7 @@ msgstr "Останні 60 секунд"
 msgid "Overall"
 msgstr "Повний"
 
-#: modules/gui/qt/components/interface_widgets.cpp:615
+#: modules/gui/qt/components/interface_widgets.cpp:639
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
@@ -19854,45 +19855,45 @@ msgstr ""
 "Швидкість поточного відтворення: %1\n"
 "Клацніть для налаштування"
 
-#: modules/gui/qt/components/interface_widgets.cpp:688
+#: modules/gui/qt/components/interface_widgets.cpp:712
 msgid "Revert to normal play speed"
 msgstr "Повернути нормальну швидкість відтворення"
 
-#: modules/gui/qt/components/interface_widgets.cpp:794
+#: modules/gui/qt/components/interface_widgets.cpp:818
 msgid "Download cover art"
 msgstr "Завантажити обкладинку альбому"
 
-#: modules/gui/qt/components/interface_widgets.cpp:798
+#: modules/gui/qt/components/interface_widgets.cpp:822
 msgid "Add cover art from file"
 msgstr "Додати обкладинку альбому з файлу"
 
-#: modules/gui/qt/components/interface_widgets.cpp:864
+#: modules/gui/qt/components/interface_widgets.cpp:888
 msgid "Choose Cover Art"
 msgstr "Вибрати обкладинку альбому"
 
-#: modules/gui/qt/components/interface_widgets.cpp:865
+#: modules/gui/qt/components/interface_widgets.cpp:889
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "Файли зображень (*.gif *.jpg *.jpeg *.png)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:889
+#: modules/gui/qt/components/interface_widgets.cpp:913
 #: modules/gui/qt/dialogs/toolbar.cpp:564
 msgid "Elapsed time"
 msgstr "Час, що минув"
 
-#: modules/gui/qt/components/interface_widgets.cpp:893
+#: modules/gui/qt/components/interface_widgets.cpp:917
 #: modules/gui/qt/dialogs/toolbar.cpp:568
 msgid "Total/Remaining time"
 msgstr "Загальний час/час, що залишився"
 
-#: modules/gui/qt/components/interface_widgets.cpp:895
+#: modules/gui/qt/components/interface_widgets.cpp:919
 msgid "Click to toggle between total and remaining time"
 msgstr "Натисніть для перемикання між загальним часом і часом, що лишився"
 
-#: modules/gui/qt/components/interface_widgets.cpp:901
+#: modules/gui/qt/components/interface_widgets.cpp:925
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "Натисніть для перемикання між часом відтворення та часом, що лишився"
 
-#: modules/gui/qt/components/interface_widgets.cpp:903
+#: modules/gui/qt/components/interface_widgets.cpp:927
 msgid "Double click to jump to a chosen time position"
 msgstr "Двічі клацніть для переходу на обрану часову позицію"
 
@@ -20191,20 +20192,20 @@ msgid "Key: "
 msgstr "Клавіша: "
 
 #: modules/gui/qt/components/simple_preferences.cpp:231
-#: modules/gui/qt/components/simple_preferences.cpp:591
+#: modules/gui/qt/components/simple_preferences.cpp:598
 msgid "Input & Codecs Settings"
 msgstr "Параметри введення й кодеків"
 
 #: modules/gui/qt/components/simple_preferences.cpp:233
-#: modules/gui/qt/components/simple_preferences.cpp:875
+#: modules/gui/qt/components/simple_preferences.cpp:882
 msgid "Configure Hotkeys"
 msgstr "Конфігурувати гарячі клавіші"
 
-#: modules/gui/qt/components/simple_preferences.cpp:423
+#: modules/gui/qt/components/simple_preferences.cpp:430
 msgid "Device:"
 msgstr "Пристрій:"
 
-#: modules/gui/qt/components/simple_preferences.cpp:596
+#: modules/gui/qt/components/simple_preferences.cpp:603
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -20216,58 +20217,58 @@ msgstr ""
 "Ви можете вказати унікальне або сконфігурувати їх \n"
 "індивідуально у розширених параметрах."
 
-#: modules/gui/qt/components/simple_preferences.cpp:664
+#: modules/gui/qt/components/simple_preferences.cpp:671
 msgid "Lowest latency"
 msgstr "Найнижча затримка"
 
-#: modules/gui/qt/components/simple_preferences.cpp:665
+#: modules/gui/qt/components/simple_preferences.cpp:672
 msgid "Low latency"
 msgstr "Низька затримка"
 
-#: modules/gui/qt/components/simple_preferences.cpp:667
+#: modules/gui/qt/components/simple_preferences.cpp:674
 msgid "High latency"
 msgstr "Висока затримка"
 
-#: modules/gui/qt/components/simple_preferences.cpp:668
+#: modules/gui/qt/components/simple_preferences.cpp:675
 msgid "Higher latency"
 msgstr "Вища затримка"
 
-#: modules/gui/qt/components/simple_preferences.cpp:716
+#: modules/gui/qt/components/simple_preferences.cpp:723
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr "Це змінний інтерфейс VLC. Ви можете завантажити інші обкладинки на"
 
-#: modules/gui/qt/components/simple_preferences.cpp:718
+#: modules/gui/qt/components/simple_preferences.cpp:725
 msgid "VLC skins website"
 msgstr "Веб-сайт обкладинок VLC"
 
-#: modules/gui/qt/components/simple_preferences.cpp:742
+#: modules/gui/qt/components/simple_preferences.cpp:749
 msgid "System's default"
 msgstr "Стандартне системи"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1265
+#: modules/gui/qt/components/simple_preferences.cpp:1283
 msgid "File associations"
 msgstr "Файлові асоціації"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1274
+#: modules/gui/qt/components/simple_preferences.cpp:1292
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "Звукові файли"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1275
+#: modules/gui/qt/components/simple_preferences.cpp:1293
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "Відеофайли"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1276
+#: modules/gui/qt/components/simple_preferences.cpp:1294
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "Файли списків відтворення"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1341
+#: modules/gui/qt/components/simple_preferences.cpp:1359
 msgid "&Apply"
 msgstr "Застосувати"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1342
+#: modules/gui/qt/components/simple_preferences.cpp:1360
 #: modules/gui/qt/dialogs/convert.cpp:137
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
@@ -20489,7 +20490,7 @@ msgstr "Старт"
 msgid "Containers"
 msgstr "Контейнери"
 
-#: modules/gui/qt/dialogs/epg.cpp:49 modules/gui/qt/menus.cpp:429
+#: modules/gui/qt/dialogs/epg.cpp:49 modules/gui/qt/menus.cpp:431
 msgid "Program Guide"
 msgstr "Довідник програми"
 
@@ -20686,8 +20687,8 @@ msgstr "Оновити дерево"
 msgid "Clear the messages"
 msgstr "Очистити повідомлення"
 
-#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:932
-#: modules/gui/qt/menus.cpp:1129
+#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:934
+#: modules/gui/qt/menus.cpp:1131
 msgid "Open Media"
 msgstr "Відкрити медіа"
 
@@ -20717,7 +20718,7 @@ msgid "&Enqueue"
 msgstr "Помістити у чергу"
 
 #: modules/gui/qt/dialogs/open.cpp:117 modules/gui/qt/dialogs/open.cpp:214
-#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:821
+#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:823
 msgid "&Play"
 msgstr "Відтворити"
 
@@ -21197,19 +21198,19 @@ msgstr "Порожньо"
 msgid "Deactivate"
 msgstr "Деактивувати"
 
-#: modules/gui/qt/main_interface.cpp:376
+#: modules/gui/qt/main_interface.cpp:373
 msgid "Do you want to restart the playback where left off?"
 msgstr "Ви хочете відновити відтворення, де зупинилися?"
 
-#: modules/gui/qt/main_interface.cpp:382
+#: modules/gui/qt/main_interface.cpp:379
 msgid "&Continue"
 msgstr "&Продовжити"
 
-#: modules/gui/qt/main_interface.cpp:1420
+#: modules/gui/qt/main_interface.cpp:1422
 msgid "Control menu for the player"
 msgstr "Меню керування програвача"
 
-#: modules/gui/qt/main_interface.cpp:1464
+#: modules/gui/qt/main_interface.cpp:1466
 msgid "Paused"
 msgstr "Призупинено"
 
@@ -21221,27 +21222,27 @@ msgstr "&Медіа"
 msgid "P&layback"
 msgstr "Відтворення"
 
-#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1047
+#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1049
 msgid "&Audio"
 msgstr "&Звук"
 
-#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1054
+#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1056
 msgid "&Video"
 msgstr "&Відео"
 
-#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1061
+#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1063
 msgid "Subti&tle"
 msgstr "Субт&итри"
 
-#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1077
+#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1079
 msgid "Tool&s"
 msgstr "&Засоби"
 
-#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1084
+#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1086
 msgid "V&iew"
 msgstr "В&игляд"
 
-#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:785
+#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:787
 msgid "&Help"
 msgstr "Д&овідка"
 
@@ -21253,7 +21254,7 @@ msgstr "Відкрити &файл…"
 msgid "&Open Multiple Files..."
 msgstr "&Відкрити декілька файлів..."
 
-#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:937
+#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:939
 msgid "Open &Disc..."
 msgstr "Від&крити диск…"
 
@@ -21261,7 +21262,7 @@ msgstr "Від&крити диск…"
 msgid "Open &Network Stream..."
 msgstr "Відкрити &мережевий потік…"
 
-#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:941
+#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:943
 msgid "Open &Capture Device..."
 msgstr "Відкрити &пристрій захоплення…"
 
@@ -21269,267 +21270,267 @@ msgstr "Відкрити &пристрій захоплення…"
 msgid "Open &Location from clipboard"
 msgstr "Відкрити &розташування з буферу обміну"
 
-#: modules/gui/qt/menus.cpp:375
+#: modules/gui/qt/menus.cpp:374
 msgid "Open &Recent Media"
 msgstr "Відкрити &останні медіа"
 
-#: modules/gui/qt/menus.cpp:385
+#: modules/gui/qt/menus.cpp:387
 msgid "Conve&rt / Save..."
 msgstr "&Конвертувати/зберегти…"
 
-#: modules/gui/qt/menus.cpp:387
+#: modules/gui/qt/menus.cpp:389
 msgid "&Stream..."
 msgstr "&Мовлення…"
 
-#: modules/gui/qt/menus.cpp:392
+#: modules/gui/qt/menus.cpp:394
 msgid "Quit at the end of playlist"
 msgstr "Виходити після закінчення списку відтворення"
 
-#: modules/gui/qt/menus.cpp:399
+#: modules/gui/qt/menus.cpp:401
 msgid "Close to systray"
 msgstr "Згортати в область сповіщень замість закривання"
 
-#: modules/gui/qt/menus.cpp:403 modules/gui/qt/menus.cpp:1191
+#: modules/gui/qt/menus.cpp:405 modules/gui/qt/menus.cpp:1193
 msgid "&Quit"
 msgstr "Вихід"
 
-#: modules/gui/qt/menus.cpp:413
+#: modules/gui/qt/menus.cpp:415
 msgid "&Effects and Filters"
 msgstr "Ефекти та фільтри"
 
-#: modules/gui/qt/menus.cpp:416
+#: modules/gui/qt/menus.cpp:418
 msgid "&Track Synchronization"
 msgstr "Синхронізація доріжки"
 
-#: modules/gui/qt/menus.cpp:435
+#: modules/gui/qt/menus.cpp:437
 msgid "Plu&gins and extensions"
 msgstr "&Модулі та розширення"
 
-#: modules/gui/qt/menus.cpp:440
+#: modules/gui/qt/menus.cpp:442
 msgid "Customi&ze Interface..."
 msgstr "Змінити інтерфейс…"
 
-#: modules/gui/qt/menus.cpp:443
+#: modules/gui/qt/menus.cpp:445
 msgid "&Preferences"
 msgstr "Параметри"
 
-#: modules/gui/qt/menus.cpp:464
+#: modules/gui/qt/menus.cpp:466
 msgid "&View"
 msgstr "Перегляд"
 
-#: modules/gui/qt/menus.cpp:485
+#: modules/gui/qt/menus.cpp:487
 msgid "Play&list"
 msgstr "Список відтворення"
 
-#: modules/gui/qt/menus.cpp:486
+#: modules/gui/qt/menus.cpp:488
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
-#: modules/gui/qt/menus.cpp:489
+#: modules/gui/qt/menus.cpp:491
 msgid "Docked Playlist"
 msgstr "Зменшений список відтворення"
 
-#: modules/gui/qt/menus.cpp:499
+#: modules/gui/qt/menus.cpp:501
 msgid "Always on &top"
 msgstr "Завжди над &іншими вікнами"
 
-#: modules/gui/qt/menus.cpp:507
+#: modules/gui/qt/menus.cpp:509
 msgid "Mi&nimal Interface"
 msgstr "Мі&німальний інтерфейс"
 
-#: modules/gui/qt/menus.cpp:508
+#: modules/gui/qt/menus.cpp:510
 msgid "Ctrl+H"
 msgstr "Ctrl+H"
 
-#: modules/gui/qt/menus.cpp:517
+#: modules/gui/qt/menus.cpp:519
 msgid "&Fullscreen Interface"
 msgstr "Повноекранний інтерфейс"
 
-#: modules/gui/qt/menus.cpp:525
+#: modules/gui/qt/menus.cpp:527
 msgid "&Advanced Controls"
 msgstr "Додаткові керуючі елементи"
 
-#: modules/gui/qt/menus.cpp:531
+#: modules/gui/qt/menus.cpp:533
 msgid "Status Bar"
 msgstr "Панель стану"
 
-#: modules/gui/qt/menus.cpp:536
+#: modules/gui/qt/menus.cpp:538
 msgid "Visualizations selector"
 msgstr "Вибір візуалізаторів"
 
-#: modules/gui/qt/menus.cpp:594
+#: modules/gui/qt/menus.cpp:596
 msgid "&Increase Volume"
 msgstr "&Збільшити гучність"
 
-#: modules/gui/qt/menus.cpp:597
+#: modules/gui/qt/menus.cpp:599
 msgid "D&ecrease Volume"
 msgstr "З&меншити гучність"
 
-#: modules/gui/qt/menus.cpp:600
+#: modules/gui/qt/menus.cpp:602
 msgid "&Mute"
 msgstr "&Без звуку"
 
-#: modules/gui/qt/menus.cpp:616
+#: modules/gui/qt/menus.cpp:618
 msgid "Audio &Device"
 msgstr "Звуковий пристрій"
 
-#: modules/gui/qt/menus.cpp:620
+#: modules/gui/qt/menus.cpp:622
 msgid "Audio &Track"
 msgstr "Звукова доріжка"
 
-#: modules/gui/qt/menus.cpp:622
+#: modules/gui/qt/menus.cpp:624
 msgid "&Stereo Mode"
 msgstr "&Стереорежим"
 
-#: modules/gui/qt/menus.cpp:625
+#: modules/gui/qt/menus.cpp:627
 msgid "&Visualizations"
 msgstr "Візуалізації"
 
-#: modules/gui/qt/menus.cpp:651
+#: modules/gui/qt/menus.cpp:653
 msgid "Add &Subtitle File..."
 msgstr "Додати файл суб&титрів…"
 
-#: modules/gui/qt/menus.cpp:653
+#: modules/gui/qt/menus.cpp:655
 msgid "Sub &Track"
 msgstr "&Доріжка субтитрів"
 
-#: modules/gui/qt/menus.cpp:675
+#: modules/gui/qt/menus.cpp:677
 msgid "Video &Track"
 msgstr "Відеодоріжка"
 
-#: modules/gui/qt/menus.cpp:679
+#: modules/gui/qt/menus.cpp:681
 msgid "&Fullscreen"
 msgstr "Повноекранний режим"
 
-#: modules/gui/qt/menus.cpp:680
+#: modules/gui/qt/menus.cpp:682
 msgid "Always Fit &Window"
 msgstr "Завжди допасо&вувати вікно"
 
-#: modules/gui/qt/menus.cpp:681
+#: modules/gui/qt/menus.cpp:683
 msgid "Set as Wall&paper"
 msgstr "У&становити як шпалери"
 
-#: modules/gui/qt/menus.cpp:685
+#: modules/gui/qt/menus.cpp:687
 msgid "&Zoom"
 msgstr "Масштаб"
 
-#: modules/gui/qt/menus.cpp:686
+#: modules/gui/qt/menus.cpp:688
 msgid "&Aspect Ratio"
 msgstr "Співвідношення сторін"
 
-#: modules/gui/qt/menus.cpp:687
+#: modules/gui/qt/menus.cpp:689
 msgid "&Crop"
 msgstr "Обрізати"
 
-#: modules/gui/qt/menus.cpp:691
+#: modules/gui/qt/menus.cpp:693
 msgid "&Deinterlace"
 msgstr "Деінтерлейс"
 
-#: modules/gui/qt/menus.cpp:692
+#: modules/gui/qt/menus.cpp:694
 msgid "&Deinterlace mode"
 msgstr "Режим деінтерлейсу"
 
-#: modules/gui/qt/menus.cpp:696
+#: modules/gui/qt/menus.cpp:698
 msgid "Take &Snapshot"
 msgstr "Зроби&ти стоп-кадр"
 
-#: modules/gui/qt/menus.cpp:715
+#: modules/gui/qt/menus.cpp:717
 msgid "T&itle"
 msgstr "Заголовок"
 
-#: modules/gui/qt/menus.cpp:716
+#: modules/gui/qt/menus.cpp:718
 msgid "&Chapter"
 msgstr "Розділ"
 
-#: modules/gui/qt/menus.cpp:718
+#: modules/gui/qt/menus.cpp:720
 msgid "&Program"
 msgstr "Програма"
 
-#: modules/gui/qt/menus.cpp:722
+#: modules/gui/qt/menus.cpp:724
 msgid "&Manage"
 msgstr "&Керувати"
 
-#: modules/gui/qt/menus.cpp:788
+#: modules/gui/qt/menus.cpp:790
 msgid "Check for &Updates..."
 msgstr "Перевірити оновлення…"
 
-#: modules/gui/qt/menus.cpp:835
+#: modules/gui/qt/menus.cpp:837
 msgid "&Stop"
 msgstr "Зупинити"
 
-#: modules/gui/qt/menus.cpp:843
+#: modules/gui/qt/menus.cpp:845
 msgid "Pre&vious"
 msgstr "Попередній"
 
-#: modules/gui/qt/menus.cpp:849
+#: modules/gui/qt/menus.cpp:851
 msgid "Ne&xt"
 msgstr "Наступний"
 
-#: modules/gui/qt/menus.cpp:867
+#: modules/gui/qt/menus.cpp:869
 msgid "Sp&eed"
 msgstr "Шв&идкість"
 
-#: modules/gui/qt/menus.cpp:873
+#: modules/gui/qt/menus.cpp:875
 msgid "&Faster"
 msgstr "Швидше"
 
-#: modules/gui/qt/menus.cpp:885
+#: modules/gui/qt/menus.cpp:887
 msgid "N&ormal Speed"
 msgstr "Нормальна швидкість"
 
-#: modules/gui/qt/menus.cpp:895
+#: modules/gui/qt/menus.cpp:897
 msgid "Slo&wer"
 msgstr "Повільніше"
 
-#: modules/gui/qt/menus.cpp:910
+#: modules/gui/qt/menus.cpp:912
 msgid "&Jump Forward"
 msgstr "Стрибнути вперед"
 
-#: modules/gui/qt/menus.cpp:917
+#: modules/gui/qt/menus.cpp:919
 msgid "Jump Bac&kward"
 msgstr "Стрибнути назад"
 
-#: modules/gui/qt/menus.cpp:924
+#: modules/gui/qt/menus.cpp:926
 msgid "Ctrl+T"
 msgstr "Ctrl+T"
 
-#: modules/gui/qt/menus.cpp:939
+#: modules/gui/qt/menus.cpp:941
 msgid "Open &Network..."
 msgstr "Відкрити мережу…"
 
-#: modules/gui/qt/menus.cpp:1033
+#: modules/gui/qt/menus.cpp:1035
 msgid "Leave Fullscreen"
 msgstr "Залишити повноекранний режим"
 
-#: modules/gui/qt/menus.cpp:1067
+#: modules/gui/qt/menus.cpp:1069
 msgid "&Playback"
 msgstr "Відтворення"
 
-#: modules/gui/qt/menus.cpp:1172
+#: modules/gui/qt/menus.cpp:1174
 msgid "&Hide VLC media player in taskbar"
 msgstr "С&ховати медіаплеєр VLC панелі завдань"
 
-#: modules/gui/qt/menus.cpp:1178
+#: modules/gui/qt/menus.cpp:1180
 msgid "Sho&w VLC media player"
 msgstr "&Показати медіапрогравач VLC"
 
-#: modules/gui/qt/menus.cpp:1189
+#: modules/gui/qt/menus.cpp:1191
 msgid "&Open Media"
 msgstr "&Відкрити медіа"
 
-#: modules/gui/qt/menus.cpp:1629
+#: modules/gui/qt/menus.cpp:1631
 msgid "&Clear"
 msgstr "Очистити"
 
-#: modules/gui/qt/menus.cpp:1637
+#: modules/gui/qt/menus.cpp:1639
 msgid "&Renderer"
 msgstr "&Відтворювач"
 
-#: modules/gui/qt/menus.cpp:1641
+#: modules/gui/qt/menus.cpp:1643
 msgid "<Local>"
 msgstr "<Local>"
 
-#: modules/gui/qt/menus.cpp:1654
+#: modules/gui/qt/menus.cpp:1656
 #, fuzzy
 msgid "Scanning..."
 msgstr "Сканування DVB"
@@ -22350,11 +22351,11 @@ msgstr "syslog"
 msgid "System logger (syslog)"
 msgstr "Системний реєстратор (syslog)"
 
-#: modules/lua/extension.c:1185
+#: modules/lua/extension.c:1192
 msgid "Extension not responding!"
 msgstr "Розширення не відповідає!"
 
-#: modules/lua/extension.c:1186
+#: modules/lua/extension.c:1193
 #, c-format
 msgid ""
 "Extension '%s' does not respond.\n"
@@ -25097,11 +25098,11 @@ msgstr "Типово: 90 с"
 msgid "Chromaprint stream output"
 msgstr " Насиченість кольору вихідного потоку"
 
-#: modules/stream_out/chromecast/cast.cpp:112
+#: modules/stream_out/chromecast/cast.cpp:120
 msgid "HTTP port"
 msgstr "Порт HTTP"
 
-#: modules/stream_out/chromecast/cast.cpp:113
+#: modules/stream_out/chromecast/cast.cpp:121
 msgid ""
 "This sets the HTTP port of the local server used to stream the media to the "
 "Chromecast."
@@ -25109,91 +25110,91 @@ msgstr ""
 "Це задає порт HTTP локального сервера, який використовується для потокового "
 "медіа на Chromecast."
 
-#: modules/stream_out/chromecast/cast.cpp:116
+#: modules/stream_out/chromecast/cast.cpp:124
 msgid "The Chromecast receiver can receive video."
 msgstr "Приймач Chromecast може отримувати відео."
 
-#: modules/stream_out/chromecast/cast.cpp:118
+#: modules/stream_out/chromecast/cast.cpp:126
 msgid "This sets the muxer used to stream to the Chromecast."
 msgstr ""
 "Це задає мультиплексор, використаний для потокового мовлення на Chromecast."
 
-#: modules/stream_out/chromecast/cast.cpp:119
+#: modules/stream_out/chromecast/cast.cpp:127
 msgid "MIME content type"
 msgstr "Тип вмісту MIME"
 
-#: modules/stream_out/chromecast/cast.cpp:120
+#: modules/stream_out/chromecast/cast.cpp:128
 msgid "This sets the media MIME content type sent to the Chromecast."
 msgstr "Це задає тип вмісту медіа-файлу MIME, який надсилається на Chromecast."
 
-#: modules/stream_out/chromecast/cast.cpp:121
-#: modules/stream_out/chromecast/cast.cpp:409
+#: modules/stream_out/chromecast/cast.cpp:129
+#: modules/stream_out/chromecast/cast.cpp:522
 msgid "Performance warning"
 msgstr "Застереження про швидкодію"
 
-#: modules/stream_out/chromecast/cast.cpp:122
+#: modules/stream_out/chromecast/cast.cpp:130
 msgid "Display a performance warning when transcoding"
 msgstr "Показувати застереження про швидкодію при перекодуванні"
 
-#: modules/stream_out/chromecast/cast.cpp:123
+#: modules/stream_out/chromecast/cast.cpp:131
 #, fuzzy
 msgid "Enable Audio passthrough"
 msgstr "Увімкнути виведення звукового потоку"
 
-#: modules/stream_out/chromecast/cast.cpp:124
-msgid "Disable if your receiver does not support Dolby®"
+#: modules/stream_out/chromecast/cast.cpp:132
+msgid "Disable if your receiver does not support Dolby®."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:146
-msgid "High (high quality and high bandwith)"
+#: modules/stream_out/chromecast/cast.cpp:154
+msgid "High (high quality and high bandwidth)"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:147
+#: modules/stream_out/chromecast/cast.cpp:155
 msgid "Medium (medium quality and medium bandwidth)"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:148
-msgid "Low (low quality and low bandwith)"
+#: modules/stream_out/chromecast/cast.cpp:156
+msgid "Low (low quality and low bandwidth)"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:149
-msgid "Low CPU (low quality but high bandwith)"
+#: modules/stream_out/chromecast/cast.cpp:157
+msgid "Low CPU (low quality but high bandwidth)"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:152
+#: modules/stream_out/chromecast/cast.cpp:160
 #, fuzzy
 msgid "Conversion quality"
 msgstr "Якість рендерингу"
 
-#: modules/stream_out/chromecast/cast.cpp:153
+#: modules/stream_out/chromecast/cast.cpp:161
 msgid "Change this option to increase conversion speed or quality."
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:156
+#: modules/stream_out/chromecast/cast.cpp:164
 msgid "IP Address of the Chromecast."
 msgstr "IP адреса Chromecast."
 
-#: modules/stream_out/chromecast/cast.cpp:157
+#: modules/stream_out/chromecast/cast.cpp:165
 msgid "Chromecast port"
 msgstr "Порт Chromecast"
 
-#: modules/stream_out/chromecast/cast.cpp:158
+#: modules/stream_out/chromecast/cast.cpp:166
 msgid "The port used to talk to the Chromecast."
 msgstr "Порт використаний для зв'язку із Chromecast."
 
-#: modules/stream_out/chromecast/cast.cpp:162
+#: modules/stream_out/chromecast/cast.cpp:170
 msgid "Chromecast"
 msgstr "Chromecast"
 
-#: modules/stream_out/chromecast/cast.cpp:163
+#: modules/stream_out/chromecast/cast.cpp:171
 msgid "Chromecast stream output"
 msgstr "Виведення потоку Chromecast"
 
-#: modules/stream_out/chromecast/cast.cpp:408
+#: modules/stream_out/chromecast/cast.cpp:521
 msgid "Ok, Don't warn me again"
 msgstr "Гаразд, більше не попереджайте мене"
 
-#: modules/stream_out/chromecast/cast.cpp:410
+#: modules/stream_out/chromecast/cast.cpp:523
 msgid ""
 "Casting this video requires conversion. This conversion can use all the "
 "available power and could quickly drain your battery."
@@ -29390,13 +29391,18 @@ msgstr "вибір профілю й рівня x264"
 msgid "Hardware-accelerated decoding"
 msgstr "Апаратне прискорення декодування"
 
-#: modules/gui/qt/ui/sprefs_input.h:360 modules/gui/qt/ui/sprefs_input.h:362
+#: modules/gui/qt/ui/sprefs_input.h:360
 msgid "Video quality post-processing level"
 msgstr "Рівень якості постобробки відео"
 
 #: modules/gui/qt/ui/sprefs_input.h:361
 msgid "Skip H.264 in-loop deblocking filter"
 msgstr "Пропускати неблокуючий фільтр H.264 у циклі"
+
+#: modules/gui/qt/ui/sprefs_input.h:362
+#, fuzzy
+msgid "x264 preset and tuning selection"
+msgstr "вибір профілю й рівня x264"
 
 #: modules/gui/qt/ui/sprefs_input.h:364
 msgid "Optical drive"
@@ -31036,10 +31042,6 @@ msgstr "Список медіаменеджеру"
 #, fuzzy
 #~ msgid "Headphone surround effect"
 #~ msgstr "Ефект навушників"
-
-#, fuzzy
-#~ msgid "x264 preset and tuning selection"
-#~ msgstr "вибір профілю й рівня x264"
 
 #, fuzzy
 #~ msgid "Display device"

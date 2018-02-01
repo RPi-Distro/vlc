@@ -2,7 +2,7 @@
  * demux.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: f5b0b0d9dbf5b2dbdee421ba21e5622c4f15aff4 $
+ * $Id: 69f3882a365ca3f2a191001ccfa256701ac06766 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -384,7 +384,7 @@ public:
     bool PreloadLinked();
     void FreeUnused();
     bool PreparePlayback( virtual_segment_c & new_vsegment, mtime_t i_mk_date );
-    matroska_stream_c *AnalyseAllSegmentsFound( demux_t *p_demux, EbmlStream *p_estream, bool b_initial = false );
+    bool AnalyseAllSegmentsFound( demux_t *p_demux, matroska_stream_c *, bool b_initial = false );
     void JumpTo( virtual_segment_c & vsegment, virtual_chapter_c & vchapter );
 
     void InitUi();

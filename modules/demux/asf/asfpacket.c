@@ -72,24 +72,8 @@ static inline int GetValue2b(uint32_t *var, const uint8_t *p, unsigned int *skip
 
 static uint32_t SkipBytes( stream_t *s, uint32_t i_bytes )
 {
-    int i_read;
-    int i_to_read = __MIN(i_bytes, INT_MAX);
-    uint32_t i_bytes_read = 0;
-
-    while( i_bytes )
-    {
-        i_read = vlc_stream_Read( s, NULL, i_to_read );
-        i_bytes -= i_read;
-        i_bytes_read += i_read;
-        if ( i_read < i_to_read || i_bytes == 0 )
-        {
-            /* end of stream */
-            return i_bytes_read;
-        }
-        i_to_read = __MIN(i_bytes, INT_MAX);
-    }
-
-    return i_bytes_read;
+    ssize_t i_read = vlc_stream_Read( s, NULL, i_bytes );
+    return i_read > 0 ? (uint32_t) i_read : 0;
 }
 
 static int DemuxSubPayload( asf_packet_sys_t *p_packetsys,
@@ -121,15 +105,15 @@ static int DemuxSubPayload( asf_packet_sys_t *p_packetsys,
 
 static void ParsePayloadExtensions( asf_packet_sys_t *p_packetsys,
                                     const asf_track_info_t *p_tkinfo,
-                                    const asf_packet_t *pkt,
-                                    uint32_t i_length, bool *b_keyframe,
+                                    const uint8_t *p_data, size_t i_data,
+                                    bool *b_keyframe,
                                     int64_t *pi_extension_pts )
 {
     demux_t *p_demux = p_packetsys->p_demux;
 
-    if ( !p_tkinfo || !p_tkinfo->p_esp || !p_tkinfo->p_esp->p_ext ) return;
-    const uint8_t *p_data = pkt->p_peek + pkt->i_skip + 8;
-    i_length -= 8;
+    if ( !p_tkinfo || !p_tkinfo->p_esp || !p_tkinfo->p_esp->p_ext )
+        return;
+
     uint16_t i_payload_extensions_size;
     asf_payload_extension_system_t *p_ext = NULL;
 
@@ -139,10 +123,10 @@ static void ParsePayloadExtensions( asf_packet_sys_t *p_packetsys,
         p_ext = &p_tkinfo->p_esp->p_ext[i];
         if ( p_ext->i_data_size == 0xFFFF ) /* Variable length extension data */
         {
-            if ( i_length < 2 ) return;
+            if ( i_data < 2 ) return;
             i_payload_extensions_size = GetWLE( p_data );
             p_data += 2;
-            i_length -= 2;
+            i_data -= 2;
             i_payload_extensions_size = 0;
         }
         else
@@ -150,7 +134,7 @@ static void ParsePayloadExtensions( asf_packet_sys_t *p_packetsys,
             i_payload_extensions_size = p_ext->i_data_size;
         }
 
-        if ( i_length < i_payload_extensions_size ) return;
+        if ( i_data < i_payload_extensions_size ) return;
 
         if ( guidcmp( &p_ext->i_extension_id, &mfasf_sampleextension_outputcleanpoint_guid ) )
         {
@@ -192,7 +176,7 @@ static void ParsePayloadExtensions( asf_packet_sys_t *p_packetsys,
             msg_Dbg( p_demux, "Unknown extension " GUID_FMT, GUID_PRINT( p_ext->i_extension_id ) );
         }
 #endif
-        i_length -= i_payload_extensions_size;
+        i_data -= i_payload_extensions_size;
         p_data += i_payload_extensions_size;
     }
 
@@ -243,6 +227,9 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
 
     bool b_ignore_pts = (p_tkinfo->i_cat == VIDEO_ES); /* ignore PTS delta with video when not set by mux */
 
+    if( pkt->left - pkt->i_skip < i_replicated_data_length )
+        return -1;
+
     /* Non compressed */
     if( i_replicated_data_length > 7 ) // should be at least 8 bytes
     {
@@ -250,16 +237,15 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
         i_pkt_time = (mtime_t)GetDWLE( pkt->p_peek + pkt->i_skip + 4 );
 
         /* Parsing extensions, See 7.3.1 */
-        ParsePayloadExtensions( p_packetsys, p_tkinfo, pkt,
-                                i_replicated_data_length, &b_packet_keyframe,
+        ParsePayloadExtensions( p_packetsys, p_tkinfo,
+                                &pkt->p_peek[pkt->i_skip + 8],
+                                i_replicated_data_length - 8,
+                                &b_packet_keyframe,
                                 &i_extension_pts );
         i_pkt_time -= *p_packetsys->pi_preroll;
         if(i_extension_pts != -1)
             i_extension_pts -= *p_packetsys->pi_preroll;
         pkt->i_skip += i_replicated_data_length;
-
-        if( ! pkt->left || pkt->i_skip >= pkt->left )
-            return -1;
     }
     else if ( i_replicated_data_length == 0 )
     {
@@ -282,9 +268,15 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
     {
         /* >1 && <8 Invalid replicated length ! */
         msg_Warn( p_demux, "Invalid replicated data length detected." );
+        if( pkt->length - pkt->i_skip < pkt->padding_length )
+            return -1;
+
         i_payload_data_length = pkt->length - pkt->padding_length - pkt->i_skip;
         goto skip;
     }
+
+    if( ! pkt->left || pkt->i_skip >= pkt->left )
+        return -1;
 
     bool b_preroll_done = ( pkt->send_time > (*p_packetsys->pi_preroll_start/1000 + *p_packetsys->pi_preroll) );
 
@@ -294,8 +286,13 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
     if( pkt->multiple ) {
         if (GetValue2b(&i_temp_payload_length, pkt->p_peek, &pkt->i_skip, pkt->left - pkt->i_skip, pkt->length_type) < 0)
             return -1;
-    } else
+    }
+    else
+    {
+        if( pkt->length - pkt->i_skip < pkt->padding_length )
+            return -1;
         i_temp_payload_length = pkt->length - pkt->padding_length - pkt->i_skip;
+    }
 
     i_payload_data_length = i_temp_payload_length;
 
@@ -331,13 +328,15 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
         p_packetsys->pf_updatesendtime( p_packetsys, INT64_C(1000) * pkt->send_time );
 
     uint32_t i_subpayload_count = 0;
-    while (i_payload_data_length)
+    while (i_payload_data_length && pkt->i_skip < pkt->left )
     {
         uint32_t i_sub_payload_data_length = i_payload_data_length;
         if( i_replicated_data_length == 1 )
         {
             i_sub_payload_data_length = pkt->p_peek[pkt->i_skip++];
             i_payload_data_length--;
+            if( i_sub_payload_data_length > i_payload_data_length )
+                goto skip;
         }
 
         SkipBytes( p_demux->s, pkt->i_skip );
@@ -375,8 +374,8 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
         pkt->i_skip = 0;
         if( pkt->left > 0 )
         {
-            int i_return = vlc_stream_Peek( p_demux->s, &pkt->p_peek, __MIN(pkt->left, INT_MAX) );
-            if ( i_return <= 0 || (unsigned int) i_return < __MIN(pkt->left, INT_MAX) )
+            ssize_t i_return = vlc_stream_Peek( p_demux->s, &pkt->p_peek, pkt->left );
+            if ( i_return <= 0 || (size_t) i_return < pkt->left )
             {
             msg_Warn( p_demux, "cannot peek, EOF ?" );
             return -1;
@@ -404,8 +403,8 @@ int DemuxASFPacket( asf_packet_sys_t *p_packetsys,
     demux_t *p_demux = p_packetsys->p_demux;
 
     const uint8_t *p_peek;
-    int i_return = vlc_stream_Peek( p_demux->s, &p_peek,i_data_packet_min );
-    if( i_return <= 0 || ((unsigned int) i_return) < i_data_packet_min )
+    ssize_t i_return = vlc_stream_Peek( p_demux->s, &p_peek,i_data_packet_min );
+    if( i_return <= 0 || (size_t) i_return < i_data_packet_min )
     {
         msg_Warn( p_demux, "cannot peek while getting new packet, EOF ?" );
         return 0;
@@ -465,11 +464,14 @@ int DemuxASFPacket( asf_packet_sys_t *p_packetsys,
         pkt.length = i_data_packet_min;
     }
 
+    if( i_skip + 4 > i_data_packet_min )
+        goto loop_error_recovery;
+
     pkt.send_time = GetDWLE( p_peek + i_skip ); i_skip += 4;
     /* uint16_t i_packet_duration = GetWLE( p_peek + i_skip ); */ i_skip += 2;
 
     i_return = vlc_stream_Peek( p_demux->s, &p_peek, pkt.length );
-    if( i_return <= 0 || pkt.length == 0 || (unsigned int)i_return < pkt.length )
+    if( i_return <= 0 || pkt.length == 0 || (size_t)i_return < pkt.length )
     {
         msg_Warn( p_demux, "cannot peek, EOF ?" );
         return 0;
@@ -479,6 +481,8 @@ int DemuxASFPacket( asf_packet_sys_t *p_packetsys,
     pkt.length_type = 0x02; //unused
     if( pkt.multiple )
     {
+        if( i_skip + 1 >= i_data_packet_min )
+            goto loop_error_recovery;
         i_payload_count = p_peek[i_skip] & 0x3f;
         pkt.length_type = ( p_peek[i_skip] >> 6 )&0x03;
         i_skip++;
@@ -509,8 +513,8 @@ int DemuxASFPacket( asf_packet_sys_t *p_packetsys,
             msg_Warn( p_demux, "Read %"PRIu32" too much bytes in the packet",
                             pkt.padding_length - pkt.left );
 #endif
-        int i_return = vlc_stream_Read( p_demux->s, NULL, pkt.left );
-        if( i_return < 0 || (unsigned int) i_return < pkt.left )
+        i_return = vlc_stream_Read( p_demux->s, NULL, pkt.left );
+        if( i_return < 0 || (size_t) i_return < pkt.left )
         {
             msg_Err( p_demux, "cannot skip data, EOF ?" );
             return 0;
@@ -527,7 +531,7 @@ loop_error_recovery:
         return -1;
     }
     i_return = vlc_stream_Read( p_demux->s, NULL, i_data_packet_min );
-    if( i_return <= 0 || (unsigned int) i_return != i_data_packet_min )
+    if( i_return <= 0 || (size_t) i_return != i_data_packet_min )
     {
         msg_Warn( p_demux, "cannot skip data, EOF ?" );
         return 0;

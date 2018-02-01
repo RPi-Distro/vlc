@@ -2,7 +2,7 @@
  * dispatcher.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2016 VLC authors, VideoLAN, Videolabs SAS
- * $Id: 9b4e3e696bb1ef69b5ca764853b5228ed40ff44c $
+ * $Id: 561c62160f4291d8424b58ce2d311cf303759e3d $
  *
  * Authors: Filip Roseen <filip@videolabs.io>
  *
@@ -94,9 +94,6 @@ namespace {
       typedef      PayloadType_ payload_t;                         \
       typedef     DispatchType_ dispatch_t;                        \
       typedef struct GroupName_ handler_t;                         \
-      static void* Payload (payload_t& data) {                     \
-          return static_cast<void*> (&data);                       \
-      }                                                            \
   };                                                               \
   struct GroupName_ : GroupName_ ## _base
 

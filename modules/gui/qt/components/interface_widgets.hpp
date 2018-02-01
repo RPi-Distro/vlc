@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: e56b8280214168b8a0783bcdd6e00b304272a71e $
+ * $Id: a4353a0d1d5fe524405d7f524242db3218cc4b77 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -112,11 +112,13 @@ private:
 protected:
     void paintEvent( QPaintEvent *e ) Q_DECL_OVERRIDE;
     void showEvent( QShowEvent * e ) Q_DECL_OVERRIDE;
+    void updateDefaultArt( const QString& );
     static const int MARGIN = 5;
     QString defaultArt;
 public slots:
     void toggle(){ isVisible() ? hide() : show(); }
     void updateArt( const QString& );
+    void titleUpdated( const QString& );
 };
 
 class EasterEggBackgroundWidget : public BackgroundWidget

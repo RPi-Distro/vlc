@@ -2,7 +2,7 @@
  * common.c : Common helper function for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2000-2017 VLC authors and VideoLAN
- * $Id: 1791190ff8bd28fb8439848c5ef2118c0aa86590 $
+ * $Id: b6e580d91114efca758ec71b214d22b51ca704e7 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Christophe Massiot <massiot@via.ecp.fr>
@@ -279,7 +279,7 @@ picture_t *DoDeinterlacing( filter_t *p_filter,
             p_context->pf_render_ordered( p_filter, p_dst[1], p_pic,
                                           1, b_top_field_first );
         if ( p_dst[2] )
-            p_context->pf_render_ordered( p_filter, p_dst[1], p_pic,
+            p_context->pf_render_ordered( p_filter, p_dst[2], p_pic,
                                           2, !b_top_field_first );
     }
 

@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 9bcf6544e3a7d97a9b60c536fcecc914f8d70d54 $
+ * $Id: ac91fa8005434aae1dcf1c14aa89262fb7f81aaa $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -1864,10 +1864,19 @@ static void EsOutSelect( es_out_t *out, es_out_id_t *es, bool b_force )
         return;
     }
 
+    bool b_auto_unselect = p_esprops && p_sys->i_mode == ES_OUT_MODE_AUTO &&
+                           p_esprops->e_policy == ES_OUT_ES_POLICY_EXCLUSIVE &&
+                           p_esprops->p_main_es && p_esprops->p_main_es != es;
+
     if( p_sys->i_mode == ES_OUT_MODE_ALL || b_force )
     {
         if( !EsIsSelected( es ) )
+        {
+            if( b_auto_unselect )
+                EsUnselect( out, p_esprops->p_main_es, false );
+
             EsSelect( out, es );
+        }
     }
     else if( p_sys->i_mode == ES_OUT_MODE_PARTIAL )
     {
@@ -1968,23 +1977,17 @@ static void EsOutSelect( es_out_t *out, es_out_id_t *es, bool b_force )
         }
 
         if( wanted_es == es && !EsIsSelected( es ) )
+        {
+            if( b_auto_unselect )
+                EsUnselect( out, p_esprops->p_main_es, false );
+
             EsSelect( out, es );
+        }
     }
 
     /* FIXME TODO handle priority here */
-    if( p_esprops && EsIsSelected( es ) )
-    {
-        if( p_sys->i_mode == ES_OUT_MODE_AUTO )
-        {
-            if( p_esprops->e_policy == ES_OUT_ES_POLICY_EXCLUSIVE &&
-                p_esprops->p_main_es &&
-                p_esprops->p_main_es != es )
-            {
-                EsUnselect( out, p_esprops->p_main_es, false );
-            }
-            p_esprops->p_main_es = es;
-        }
-    }
+    if( p_esprops && p_sys->i_mode == ES_OUT_MODE_AUTO && EsIsSelected( es ) )
+        p_esprops->p_main_es = es;
 }
 
 static void EsOutCreateCCChannels( es_out_t *out, vlc_fourcc_t codec, uint64_t i_bitmap,

@@ -2,7 +2,7 @@
  * services_discovery.c : Manage playlist services_discovery modules
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 39a43badd65764fee1673183272186237d4a842d $
+ * $Id: 6c2d9072c051072f45be8358a8ae34523a16a026 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -147,22 +147,23 @@ int playlist_ServicesDiscoveryAdd(playlist_t *playlist, const char *chain)
     return VLC_SUCCESS;
 }
 
-static void playlist_ServicesDiscoveryInternalRemove(playlist_t *playlist,
-                                                     vlc_sd_internal_t *sds)
+static void playlist_ServicesDiscoveryInternalRemoveLocked(playlist_t *playlist,
+                                                           vlc_sd_internal_t *sds)
 {
     assert(sds->sd != NULL);
-    vlc_sd_Destroy(sds->sd);
 
+    playlist_Unlock(playlist);
+
+    vlc_sd_Destroy(sds->sd);
     /* Remove the sd playlist node if it exists */
     playlist_Lock(playlist);
+
     if (sds->node != NULL)
         playlist_NodeDeleteExplicit(playlist, sds->node,
             PLAYLIST_DELETE_FORCE | PLAYLIST_DELETE_STOP_IF_CURRENT );
-    playlist_Unlock(playlist);
 
     free(sds);
 }
-
 
 int playlist_ServicesDiscoveryRemove(playlist_t *playlist, const char *name)
 {
@@ -181,15 +182,18 @@ int playlist_ServicesDiscoveryRemove(playlist_t *playlist, const char *name)
             break;
         }
     }
-    playlist_Unlock(playlist);
 
     if (sds == NULL)
     {
         msg_Warn(playlist, "discovery %s is not loaded", name);
+        playlist_Unlock(playlist);
         return VLC_EGENERIC;
     }
 
-    playlist_ServicesDiscoveryInternalRemove(playlist, sds);
+    playlist_ServicesDiscoveryInternalRemoveLocked(playlist, sds);
+
+    playlist_Unlock(playlist);
+
     return VLC_SUCCESS;
 }
 
@@ -244,8 +248,14 @@ void playlist_ServicesDiscoveryKillAll(playlist_t *playlist)
 {
     playlist_private_t *priv = pl_priv(playlist);
 
-    for (int i = 0; i < priv->i_sds; i++)
-        playlist_ServicesDiscoveryInternalRemove(playlist, priv->pp_sds[i]);
+    playlist_Lock(playlist);
+    while (priv->i_sds > 0)
+    {
+        vlc_sd_internal_t *sds = priv->pp_sds[priv->i_sds - 1];
+        TAB_ERASE(priv->i_sds, priv->pp_sds, priv->i_sds - 1);
 
-    TAB_CLEAN(priv->i_sds, priv->pp_sds);
+        playlist_ServicesDiscoveryInternalRemoveLocked(playlist, sds);
+    }
+
+    playlist_Unlock(playlist);
 }

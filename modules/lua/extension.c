@@ -2,7 +2,7 @@
  * extension.c: Lua Extensions (meta data, web information, ...)
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 342ce2182723d0ef79bafedb7f16c3bb5d935f13 $
+ * $Id: 10ec8c82cc8137c51e3bb79cf106666de08ac351 $
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *
@@ -678,7 +678,14 @@ int lua_ExtensionDeactivate( extensions_manager_t *p_mgr, extension_t *p_ext )
         p_ext->p_sys->p_input = NULL;
     }
 
-    return lua_ExecuteFunction( p_mgr, p_ext, "deactivate", LUA_END );
+    int i_ret = lua_ExecuteFunction( p_mgr, p_ext, "deactivate", LUA_END );
+
+    if ( p_ext->p_sys->L == NULL )
+        return VLC_EGENERIC;
+    lua_close( p_ext->p_sys->L );
+    p_ext->p_sys->L = NULL;
+
+    return i_ret;
 }
 
 int lua_ExtensionWidgetClick( extensions_manager_t *p_mgr,

@@ -2,7 +2,7 @@
  * VLCMainWindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 996aa3a6e8ed2510181958a496241f20ab4c14ce $
+ * $Id: 93f230394d7eaf40b3f5802d0dbc95a31dbda2d2 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -322,19 +322,16 @@ static const float f_min_window_height = 307.;
                 [internetItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
                 [[internetItems lastObject] setIcon: imageFromRes(@"sidebar-podcast")];
                 [[internetItems lastObject] setSdtype: SD_CAT_INTERNET];
-                [[internetItems lastObject] setUntranslatedTitle: toNSStr(*ppsz_longname)];
                 break;
             case SD_CAT_DEVICES:
                 [devicesItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
                 [[devicesItems lastObject] setIcon: imageFromRes(@"sidebar-local")];
                 [[devicesItems lastObject] setSdtype: SD_CAT_DEVICES];
-                [[devicesItems lastObject] setUntranslatedTitle: toNSStr(*ppsz_longname)];
                 break;
             case SD_CAT_LAN:
                 [lanItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
                 [[lanItems lastObject] setIcon: imageFromRes(@"sidebar-local")];
                 [[lanItems lastObject] setSdtype: SD_CAT_LAN];
-                [[lanItems lastObject] setUntranslatedTitle: toNSStr(*ppsz_longname)];
                 break;
             case SD_CAT_MYCOMPUTER:
                 [mycompItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
@@ -346,7 +343,6 @@ static const float f_min_window_height = 307.;
                     [[mycompItems lastObject] setIcon: imageFromRes(@"sidebar-pictures")];
                 else
                     [[mycompItems lastObject] setIcon: [NSImage imageNamed:@"NSApplicationIcon"]];
-                [[mycompItems lastObject] setUntranslatedTitle: toNSStr(*ppsz_longname)];
                 [[mycompItems lastObject] setSdtype: SD_CAT_MYCOMPUTER];
                 break;
             default:
@@ -1073,9 +1069,12 @@ static const float f_min_window_height = 307.;
         }
     } else {
         PL_LOCK;
-        playlist_item_t *pl_item = playlist_ChildSearchName(&p_playlist->root, [[item untranslatedTitle] UTF8String]);
-        if (pl_item != NULL)
+        const char *title = [[item title] UTF8String];
+        playlist_item_t *pl_item = playlist_ChildSearchName(&p_playlist->root, title);
+        if (pl_item)
             [[[[VLCMain sharedInstance] playlist] model] changeRootItem:pl_item];
+        else
+            msg_Err(getIntf(), "Could not find playlist entry with name %s", title);
 
         PL_UNLOCK;
     }

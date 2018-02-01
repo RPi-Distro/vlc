@@ -2,7 +2,7 @@
  * simple_preferences.hpp : Simple prefs
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 6390b21efd29e1e8c90cb9839cfb57d94ffb8095 $
+ * $Id: 856b88ba9714b565427b4849ea2670d2ce56e51b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -117,6 +117,7 @@ private:
 /* Display only the options for the selected audio output */
 private slots:
     void lastfm_Changed( int );
+    void updateVideoOptions( int );
     void updateAudioOptions( int );
     void updateAudioVolume( int );
     void langChanged( int );

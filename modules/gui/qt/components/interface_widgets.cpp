@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: d035734f2ed7cc9dfa951c619e4480b17518af59 $
+ * $Id: a640424ee9b1815426bf16e899cd463e55184222 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -400,7 +400,7 @@ BackgroundWidget::BackgroundWidget( intf_thread_t *_p_i )
     setPalette( plt );
 
     /* Init the cone art */
-    defaultArt = QString( ":/logo/vlc128.png" );
+    updateDefaultArt( ":/logo/vlc128.png" );
     updateArt( "" );
 
     /* fade in animator */
@@ -415,6 +415,8 @@ BackgroundWidget::BackgroundWidget( intf_thread_t *_p_i )
 
     CONNECT( THEMIM->getIM(), artChanged( QString ),
              this, updateArt( const QString& ) );
+    CONNECT( THEMIM->getIM(), nameChanged( const QString& ),
+             this, titleUpdated( const QString & ) );
 }
 
 void BackgroundWidget::updateArt( const QString& url )
@@ -424,6 +426,28 @@ void BackgroundWidget::updateArt( const QString& url )
     else
         pixmapUrl = defaultArt;
     update();
+}
+
+void BackgroundWidget::updateDefaultArt( const QString& url )
+{
+    if ( !url.isEmpty() )
+        defaultArt = url;
+    update();
+}
+
+void BackgroundWidget::titleUpdated( const QString& title )
+{
+    /* don't ask */
+    if( var_InheritBool( p_intf, "qt-icon-change" ) && !title.isEmpty() )
+    {
+        int i_pos = title.indexOf( "Ki" /* Bps */ "ll", 0, Qt::CaseInsensitive );
+        if( i_pos != -1 &&
+            i_pos + 5 == title.indexOf( "Bi" /* directional */ "ll",
+                                       i_pos, Qt::CaseInsensitive ) )
+                updateDefaultArt( ":/logo/vlc128-kb.png" );
+        else
+                updateDefaultArt( ":/logo/vlc128.png" );
+    }
 }
 
 void BackgroundWidget::showEvent( QShowEvent * e )
