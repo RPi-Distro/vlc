@@ -1,3 +1,9 @@
+vlc (3.0.0~rc8-1) UNRELEASED; urgency=medium
+
+  * New upstream release candidate.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 01 Feb 2018 18:42:32 +0100
+
 vlc (3.0.0~rc7-2) unstable; urgency=medium
 
   * debian/: Disable freerdp plugin. freerdp2 is currently not supported.
