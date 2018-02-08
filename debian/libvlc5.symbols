@@ -187,7 +187,6 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_media_player_set_android_context@Base 3.0.0~rc2
  libvlc_media_player_set_chapter@Base 1.1.0
  libvlc_media_player_set_equalizer@Base 2.2.0~pre1
- libvlc_media_player_set_evas_object@Base 3.0.0~rc2
  libvlc_media_player_set_hwnd@Base 1.1.0
  libvlc_media_player_set_media@Base 1.1.0
  libvlc_media_player_set_nsobject@Base 1.1.0
