@@ -1,4 +1,5 @@
 libvlc.so.5 libvlc5 #MINVER#
+* Build-Depends-Package: libvlc-dev
  libvlc_add_intf@Base 1.1.0
  libvlc_audio_equalizer_get_amp_at_index@Base 2.2.0~pre1
  libvlc_audio_equalizer_get_band_count@Base 2.2.0~pre1

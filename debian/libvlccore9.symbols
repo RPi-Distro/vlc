@@ -1,4 +1,5 @@
 libvlccore.so.9 libvlccore9 #MINVER#
+* Build-Depends-Package: libvlccore-dev
  AddMD5@Base 2.0.0
  EndMD5@Base 2.0.0
  FromCharset@Base 2.0.0
