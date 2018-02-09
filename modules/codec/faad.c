@@ -2,7 +2,7 @@
  * faad.c: AAC decoder using libfaad2
  *****************************************************************************
  * Copyright (C) 2001, 2003 VLC authors and VideoLAN
- * $Id: 15243e1d8a99d55ea062088485c4b6aa619d4c2c $
+ * $Id: cd415b6c5c329303fc05557b462acc25973b8625 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -514,12 +514,12 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
         p_dec->fmt_out.audio.i_physical_channels = 0;
 
         uint8_t  pi_neworder_table[AOUT_CHAN_MAX];
-        uint32_t pi_faad_channels_positions[FAAD_CHANNEL_ID_COUNT] = {0};
+        uint32_t pi_faad_channels_positions[FAAD_CHANNEL_ID_COUNT + 1] = {0};
 
         bool b_reorder = false;
         if (p_dec->fmt_out.audio.channel_type == AUDIO_CHANNEL_TYPE_BITMAP)
         {
-            for( size_t i = 0; i < frame.channels; i++ )
+            for( size_t i = 0; i < frame.channels && i < FAAD_CHANNEL_ID_COUNT; i++ )
             {
                 unsigned pos = frame.channel_position[i];
                 if( likely(pos < FAAD_CHANNEL_ID_COUNT) )

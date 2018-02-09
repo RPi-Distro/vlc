@@ -2,7 +2,7 @@
  * audio.c: transcoding stream output module (audio)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: f6d436bff36cbf566250e9b51c8100ef726001e1 $
+ * $Id: d2c9f5f40a5c46273fe6033d0437bc30a336e1c9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -109,6 +109,8 @@ static int transcode_audio_initialize_encoder( sout_stream_id_sys_t *id, sout_st
     id->p_encoder->fmt_out.audio.i_channels = p_sys->i_channels > 0 ?
         p_sys->i_channels : id->audio_dec_out.i_channels;
     assert(id->p_encoder->fmt_out.audio.i_channels > 0);
+    if( id->p_encoder->fmt_out.audio.i_channels >= ARRAY_SIZE(pi_channels_maps) )
+        id->p_encoder->fmt_out.audio.i_channels = ARRAY_SIZE(pi_channels_maps) - 1;
 
     id->p_encoder->fmt_in.audio.i_physical_channels =
     id->p_encoder->fmt_out.audio.i_physical_channels =
@@ -420,6 +422,9 @@ bool transcode_audio_add( sout_stream_t *p_stream, const es_format_t *p_fmt,
         p_fmt->audio.i_bitspersample;
     id->p_encoder->fmt_out.audio.i_channels = p_sys->i_channels > 0 ?
         p_sys->i_channels : p_fmt->audio.i_channels;
+
+    if( id->p_encoder->fmt_out.audio.i_channels >= ARRAY_SIZE(pi_channels_maps) )
+        id->p_encoder->fmt_out.audio.i_channels = ARRAY_SIZE(pi_channels_maps) - 1;
 
     id->p_encoder->fmt_in.audio.i_physical_channels =
     id->p_encoder->fmt_out.audio.i_physical_channels =

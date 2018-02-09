@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: 0ccf1412ebe19e2bac9a858d14211e770a90f029 $
+ * $Id: 549e30913b2f285ce7f7b9351ae41b9cb3626e67 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -1345,6 +1345,8 @@ void VLCMenuBar::UpdateItem( intf_thread_t *p_intf, QMenu *menu,
         FREENULL( text.psz_string );
         return;
     }
+    else
+        action->setEnabled( false );
 
     switch( i_type & VLC_VAR_TYPE )
     {

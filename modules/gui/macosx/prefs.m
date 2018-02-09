@@ -2,7 +2,7 @@
  * prefs.m: MacOS X module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: c8d20b7ecf728b2e07a0743012f9e527288095ff $
+ * $Id: 1560fc46d9d8fab74f2de66413a83f6f3f051fc8 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -194,6 +194,7 @@
     [_prefsView setHasVerticalScroller: YES];
     [_prefsView setDrawsBackground: NO];
     [_prefsView setDocumentView: o_emptyView];
+    [self.window layoutIfNeeded];
     [_tree selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
 }
 
@@ -275,6 +276,28 @@
     objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
     return (item == nil) ? @"" : [item name];
+}
+
+#pragma mark -
+#pragma mark split view delegate
+- (CGFloat)splitView:(NSSplitView *)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)dividerIndex
+{
+    return 300.;
+}
+
+- (CGFloat)splitView:(NSSplitView *)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)dividerIndex
+{
+    return 100.;
+}
+
+- (BOOL)splitView:(NSSplitView *)splitView canCollapseSubview:(NSView *)subview
+{
+    return NO;
+}
+
+- (BOOL)splitView:(NSSplitView *)splitView shouldAdjustSizeOfSubview:(NSView *)subview
+{
+    return [splitView.subviews objectAtIndex:0] != subview;
 }
 
 @end

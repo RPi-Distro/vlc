@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2013 the VideoLAN team
- * $Id: fd82a43fe1b55b082d217d7ef925ee9a1822e85a $
+ * $Id: 2433833a0b0c1f9fad1691e559c6a7ecb85f064a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -1313,10 +1313,10 @@ StereoWidener::StereoWidener( intf_thread_t *p_intf, QWidget *parent )
     i_smallfont = -1;
     const FilterSliderData::slider_data_t a[4] =
     {
-        { "stereowiden-delay",     N_("Delay time"),    "ms", 1.0, 100,  20, 1.0, 1.0 },
-        { "stereowiden-feedback",  N_("Feedback gain"), "%",  0.0, 0.9, 0.3, 0.1, 1.0 },
-        { "stereowiden-crossfeed", N_("Crossfeed"),     "%",  0.0, 0.8, 0.3, 0.1, 1.0 },
-        { "stereowiden-dry-mix",   N_("Dry mix"),       "%",  0.0, 1.0, 0.8, 0.1, 1.0 },
+        { "stereowiden-delay",     qtr("Delay time"),    "ms", 1.0, 100,  20, 1.0, 1.0 },
+        { "stereowiden-feedback",  qtr("Feedback gain"), "%",  0.0, 0.9, 0.3, 0.1, 1.0 },
+        { "stereowiden-crossfeed", qtr("Crossfeed"),     "%",  0.0, 0.8, 0.3, 0.1, 1.0 },
+        { "stereowiden-dry-mix",   qtr("Dry mix"),       "%",  0.0, 1.0, 0.8, 0.1, 1.0 },
     };
     for( int i=0; i<4 ;i++ ) controls.append( a[i] );
     build();
@@ -1330,7 +1330,7 @@ PitchShifter::PitchShifter( intf_thread_t *p_intf, QWidget *parent )
     : AudioFilterControlWidget( p_intf, parent, "scaletempo_pitch" )
 {
     i_smallfont = -1;
-    controls.append( { "pitch-shift", N_("Adjust pitch"), "semitones",
+    controls.append( { "pitch-shift", qtr("Adjust pitch"), "semitones",
                         -12.0, 12.0, 0.0, 0.25, 1.0 } );
     build();
 }

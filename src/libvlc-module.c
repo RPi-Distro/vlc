@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: cc816873f77deb58b31cebe8de01f5b49edc1a35 $
+ * $Id: 77ab8283ab3630a839c162c5d71d20b15c5c3d7d $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -370,10 +370,6 @@ static const char *const ppsz_pos_descriptions[] =
 
 #define SS_TEXT N_("Disable screensaver")
 #define SS_LONGTEXT N_("Disable the screensaver during video playback." )
-
-#define INHIBIT_TEXT N_("Inhibit the power management daemon during playback")
-#define INHIBIT_LONGTEXT N_("Inhibits the power management daemon during any " \
-    "playback, to avoid the computer being suspended because of inactivity.")
 
 #define VIDEO_DECO_TEXT N_("Window decorations")
 #define VIDEO_DECO_LONGTEXT N_( \
@@ -847,6 +843,16 @@ static const char *const ppsz_prefres[] = {
 #define HTTP_KEY_TEXT N_("HTTP/TLS server private key")
 #define KEY_LONGTEXT N_( \
    "This private key file (PEM format) is used for server-side TLS.")
+
+#define PROXY_TEXT N_("HTTP proxy")
+#define PROXY_LONGTEXT N_( \
+    "HTTP proxy to be used It must be of the form " \
+    "http://[user@]myproxy.mydomain:myport/ ; " \
+    "if empty, the http_proxy environment variable will be tried." )
+
+#define PROXY_PASS_TEXT N_("HTTP proxy password")
+#define PROXY_PASS_LONGTEXT N_( \
+    "If your HTTP proxy requires a password, set it here." )
 
 #define SOCKS_SERVER_TEXT N_("SOCKS server")
 #define SOCKS_SERVER_LONGTEXT N_( \
@@ -1806,6 +1812,18 @@ vlc_module_begin ()
     add_obsolete_string( "http-crl" ) /* since 3.0.0 */
     add_obsolete_string( "sout-http-crl" ) /* since 2.0.0 */
 
+#ifdef _WIN32
+    add_string( "http-proxy", NULL, PROXY_TEXT, PROXY_LONGTEXT,
+                false )
+    add_password( "http-proxy-pwd", NULL,
+                  PROXY_PASS_TEXT, PROXY_PASS_LONGTEXT, false )
+#else
+    add_obsolete_string( "http-proxy" )
+    add_obsolete_string( "http-proxy-pwd" )
+
+#endif
+    add_obsolete_bool( "http-use-IE-proxy" )
+
     set_section( N_( "Socks proxy") , NULL )
     add_string( "socks", NULL,
                  SOCKS_SERVER_TEXT, SOCKS_SERVER_LONGTEXT, true )
@@ -2032,8 +2050,7 @@ vlc_module_begin ()
 #endif
 
 #if defined(HAVE_DBUS)
-    add_bool( "inhibit", 1, INHIBIT_TEXT,
-              INHIBIT_LONGTEXT, true )
+    add_obsolete_bool( "inhibit" ) /* since 3.0.0 */
 #endif
 
 #if defined(_WIN32) || defined(__OS2__)

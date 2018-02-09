@@ -2,7 +2,7 @@
  * avcodec.h: decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: f64fc55cc58f885331dc3b99f2e60497413fca44 $
+ * $Id: 52e522dc32198754dd45d21e2f0a5479b4ae1df0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -31,8 +31,8 @@ vlc_fourcc_t GetVlcFourcc( unsigned i_ffmpeg_codec );
 vlc_fourcc_t GetVlcAudioFormat( int i_sample_fmt );
 
 /* Video encoder module */
-int  OpenEncoder ( vlc_object_t * );
-void CloseEncoder( vlc_object_t * );
+int  InitVideoEnc ( vlc_object_t * );
+void EndVideoEnc( vlc_object_t * );
 
 /* Video Decoder */
 int InitVideoDec( vlc_object_t * );

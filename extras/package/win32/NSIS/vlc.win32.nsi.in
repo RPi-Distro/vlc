@@ -21,6 +21,8 @@
 !define MEMENTO_REGISTRY_ROOT ${PRODUCT_UNINST_ROOT_KEY}
 !define MEMENTO_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
 
+@HAVE_WIN64_TRUE@ !define VLC_64BIT_INSTALLER
+
 ManifestDPIAware true
 Unicode true
 
@@ -34,6 +36,9 @@ Var PreviousVersion
 Var PreviousVersionState
 Var PreviousInstallDir
 Var UninstallLog
+
+Var 32bitUninstaller
+Var 32bitPath
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ; General configuration ;
@@ -78,6 +83,11 @@ RequestExecutionLevel admin
   !define MUI_ICON "vlc.ico"
   !define MUI_UNICON "vlc.ico"
   !define MUI_COMPONENTSPAGE_SMALLDESC
+
+  ; Banner (welcome and finish page) for installer
+  !define MUI_WELCOMEFINISHPAGE_BITMAP "NSIS/vlc_branding.bmp"
+  ; Banner for uninstaller
+  !define MUI_UNWELCOMEFINISHPAGE_BITMAP "NSIS/vlc_branding.bmp"
 
 ; Installer pages
   ; Welcome page
@@ -199,6 +209,18 @@ RequestExecutionLevel admin
   !insertmacro LANGFILE_INCLUDE_WITHDEFAULT "HebrewExtra.nsh" ${VLC_LANGFILE_FALLBACK}
   !insertmacro MUI_LANGUAGE "Slovenian"
   !insertmacro LANGFILE_INCLUDE_WITHDEFAULT "SlovenianExtra.nsh" ${VLC_LANGFILE_FALLBACK}
+  !insertmacro MUI_LANGUAGE "Afrikaans"
+  !insertmacro LANGFILE_INCLUDE_WITHDEFAULT "AfrikaansExtra.nsh" ${VLC_LANGFILE_FALLBACK}
+  !insertmacro MUI_LANGUAGE "Albanian"
+  !insertmacro LANGFILE_INCLUDE_WITHDEFAULT "AlbanianExtra.nsh" ${VLC_LANGFILE_FALLBACK}
+  !insertmacro MUI_LANGUAGE "Croatian"
+  !insertmacro LANGFILE_INCLUDE_WITHDEFAULT "CroatianExtra.nsh" ${VLC_LANGFILE_FALLBACK}
+  !insertmacro MUI_LANGUAGE "Icelandic"
+  !insertmacro LANGFILE_INCLUDE_WITHDEFAULT "IcelandicExtra.nsh" ${VLC_LANGFILE_FALLBACK}
+  !insertmacro MUI_LANGUAGE "Latvian"
+  !insertmacro LANGFILE_INCLUDE_WITHDEFAULT "LatvianExtra.nsh" ${VLC_LANGFILE_FALLBACK}
+  !insertmacro MUI_LANGUAGE "Indonesian"
+  !insertmacro LANGFILE_INCLUDE_WITHDEFAULT "IndonesianExtra.nsh" ${VLC_LANGFILE_FALLBACK}
 
 ; Missing upstream translations:
 ;
@@ -238,6 +260,28 @@ ${MementoSection} "$(Name_Section01)" SEC01
   DetailPrint "$(Detail_CheckProcesses)"
   Call CheckRunningProcesses
 
+  ; Remove 32 bit version first
+  !ifdef VLC_64BIT_INSTALLER
+  ${If} $32bitPath != ""
+    ; Run uninstaller
+    ClearErrors
+    ExecWait '"$32bitUninstaller" /S _?=$32bitPath'
+
+    ; If uninstall was not successfull, do not continue.
+    ; This happens for example if the user cancels the uninstaller.
+    ${If} ${Errors}
+      Goto skip_uninstall32_cleanup
+    ${EndIf}
+
+    ${If} ${FileExists} "$32bitUninstaller"
+      Delete "$32bitUninstaller"
+      RMDir "$32bitPath"
+    ${EndIf}
+  ${EndIf}
+  !endif
+
+skip_uninstall32_cleanup:
+
   ; Remove previous version first, if this is update
   ${If} $ReinstallType == "1"
     FileOpen $UninstallLog "$INSTDIR\uninstall.log" r
@@ -272,7 +316,7 @@ ${MementoSection} "$(Name_Section01)" SEC01
 
   ; Subfolders
   !insertmacro InstallFolder plugins
-  !insertmacro InstallFolder locale
+  !insertmacro InstallFolderOptional locale
   !insertmacro InstallFolder hrtfs
 @BUILD_SKINS_TRUE@   !insertmacro InstallFolder skins
 @BUILD_LUA_TRUE@     !insertmacro InstallFolder lua
@@ -557,6 +601,21 @@ WinTooOld:
 WinOk:
   ; /update argument
   Call ParseCommandline
+
+  ; See if a other bitness VLC version exists
+  !ifdef VLC_64BIT_INSTALLER
+    SetRegView 32
+
+    Call ReadPreviousVersion
+
+    ${If} $PreviousVersion != ""
+      ReadRegStr $32bitUninstaller ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString"
+      ReadRegStr $32bitPath ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "InstallLocation"
+      StrCpy $PreviousVersion ""
+    ${EndIf}
+
+    SetRegView lastused
+  !endif
 
   ; See if previous version exists
   Call ReadPreviousVersion

@@ -2,7 +2,7 @@
  * VLCRendererMenuController.h: Controller class for the renderer menu
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: ae3d6df7f81ee058107cca68b181fe67968d7729 $
+ * $Id: 081264022a0ceed967465f205ad7af7845d5a627 $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -28,9 +28,11 @@
 
 @interface VLCRendererMenuController : NSObject <VLCRendererDiscoveryDelegate>
 
-@property (readwrite, weak) IBOutlet NSMenu     *rendererMenu;
-@property (readwrite, weak) IBOutlet NSMenuItem *rendererDiscoveryState;
-@property (readwrite, weak) IBOutlet NSMenuItem *rendererDiscoveryToggle;
-@property (readwrite, weak) IBOutlet NSMenuItem *rendererNoneItem;
+@property (readwrite, weak) NSMenu *rendererMenu;
+@property (readwrite, weak) NSMenuItem *rendererNoneItem;
+
+- (void)startRendererDiscoveries;
+- (void)stopRendererDiscoveries;
+- (void)selectRenderer:(NSMenuItem *)sender;
 
 @end

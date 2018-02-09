@@ -2,7 +2,7 @@
  * visual.c : Visualisation system
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 09b2b41e9f52f6348dd8e98c6d99a2b723de7948 $
+ * $Id: e0c47d83df78643215b8bda5f92a19c3c99eafc2 $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *
@@ -340,6 +340,7 @@ static block_t *DoRealWork( filter_t *p_filter, block_t *p_in_buf )
 
     /* First, get a new picture */
     picture_t *p_outpic = vout_GetPicture( p_sys->p_vout );
+    p_outpic->b_progressive = true;
     if( unlikely(p_outpic == NULL) )
         return p_in_buf;
 

@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 58bbe8e8519b750b70dc8e976064972b6e12895e $
+ * $Id: c5ec930b2aa30e93136d325be5d24fe00c99ec82 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -2034,6 +2034,7 @@ void input_DecoderDecode( decoder_t *p_dec, block_t *p_block, bool b_do_pace )
             msg_Warn( p_dec, "decoder/packetizer fifo full (data not "
                       "consumed quickly enough), resetting fifo!" );
             block_ChainRelease( vlc_fifo_DequeueAllUnlocked( p_owner->p_fifo ) );
+            p_block->i_flags |= BLOCK_FLAG_DISCONTINUITY;
         }
     }
     else

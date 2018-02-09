@@ -1674,6 +1674,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@BUILD_VLC_FALSE@install-data-local:
 @HAVE_OSX_FALSE@install-data-local:
 clean: clean-am
 
@@ -1776,8 +1777,8 @@ vlc_win32_rc.rc: $(top_builddir)/config.status vlc_win32_rc.rc.in
 vlc_win32_rc.$(OBJEXT): vlc_win32_rc.rc $(top_srcdir)/extras/package/win32/vlc.exe.manifest
 	$(WINDRES) --include-dir $(top_srcdir)/share/icons --include-dir $(top_srcdir)/extras/package/win32 -i $< -o $@
 
-@HAVE_OSX_TRUE@install-data-local:
-@HAVE_OSX_TRUE@	cd $(bindir); mv vlc-osx vlc
+@BUILD_VLC_TRUE@@HAVE_OSX_TRUE@install-data-local:
+@BUILD_VLC_TRUE@@HAVE_OSX_TRUE@	cd $(bindir); mv vlc-osx vlc
 
 .PHONY: ../modules/plugins.dat
 

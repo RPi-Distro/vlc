@@ -2,7 +2,7 @@
  * matroska_segment.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 637ef4eddfc51c22673378d0cee4c83e1c7823bf $
+ * $Id: c753644cc8794c7e5a6c418cb797e1e069bebfdf $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -172,6 +172,7 @@ private:
     bool TrackInit( mkv_track_t * p_tk );
     void ComputeTrackPriority();
     void EnsureDuration();
+    bool InternalSeek( demux_t &, mtime_t i_mk_date, mtime_t i_mk_time_offset, bool b_accurate );
 
     SegmentSeeker _seeker;
 

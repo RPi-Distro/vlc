@@ -2,7 +2,7 @@
  * vlc_objects.h: vlc_object_t definition and manipulation methods
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: a5b5dc21dcbf30692203bb46bcc755e454abe468 $
+ * $Id: 4a2814187a5cc68b0e65d6dce3dd4a0d9e8fbe59 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -31,6 +31,7 @@
 /* Object flags */
 #define OBJECT_FLAGS_QUIET       0x0002
 #define OBJECT_FLAGS_NOINTERACT  0x0004
+#define OBJECT_FLAGS_INSECURE    0x1000 /* VLC 3.0 only, will be removed */
 
 /*****************************************************************************
  * The vlc_object_t type. Yes, it's that simple :-)

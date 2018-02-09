@@ -2,7 +2,7 @@
  * caf.c: Core Audio File Format demuxer
  *****************************************************************************
  * Copyright (C) 2013 VLC authors and VideoLAN
- * $Id: cce8e93afb3db7875da0c3d38ae5e22bdf855aaa $
+ * $Id: b1a621f59410d3d035501b7b5ab51e1c518226ed $
  *
  * Authors: Matthias Keiser <matthias@tristan-inc.com>
  *
@@ -83,6 +83,7 @@ struct demux_sys_t
 {
     es_format_t  fmt;
     es_out_id_t *es;
+    unsigned i_max_frames;
 
     uint64_t i_data_offset;
     uint64_t i_data_size;
@@ -332,9 +333,9 @@ static int FrameSpanAddDescription( demux_t *p_demux, uint64_t i_desc_offset, fr
 static inline mtime_t FrameSpanGetTime( frame_span_t *span, uint32_t i_sample_rate )
 {
     if( !i_sample_rate )
-        return 0;
+        return VLC_TS_INVALID;
 
-    return ( span->i_samples * CLOCK_FREQ ) / i_sample_rate + 1;
+    return ( span->i_samples * CLOCK_FREQ ) / i_sample_rate + VLC_TS_0;
 }
 
 /* SetSpanWithSample returns the span from the beginning of the file up to and
@@ -511,6 +512,12 @@ static int ReadDescChunk( demux_t *p_demux )
     p_sys->fmt.audio.i_bitspersample = i_bits_per_channel; /* mBitsPerChannel */
     p_sys->fmt.audio.i_blockalign = i_bytes_per_packet;
     p_sys->fmt.i_bitrate = i_bits_per_channel * p_sys->fmt.audio.i_rate * i_channels_per_frame;
+
+    if( p_sys->fmt.i_codec == VLC_CODEC_OPUS )
+    {
+        p_sys->i_max_frames = 1;
+    }
+    else p_sys->i_max_frames = UINT_MAX;
 
     return VLC_SUCCESS;
 }
@@ -951,12 +958,21 @@ static int Demux( demux_t *p_demux )
     }
     else /* use packet table */
     {
+        uint64_t i_max_frames;
+        if( p_sys->packet_table.i_num_packets > p_sys->position.i_frames )
+            i_max_frames = p_sys->packet_table.i_num_packets - p_sys->position.i_frames;
+        else
+            i_max_frames = 1; /* will be rejected on FrameSpanAddDescription below */
+
+        if( i_max_frames > p_sys->i_max_frames )
+            i_max_frames = p_sys->i_max_frames;
+
         do
         {
             if( FrameSpanAddDescription( p_demux, p_sys->position.i_desc_bytes + advance.i_desc_bytes, &advance ))
                 break;
         }
-        while (( i_req_samples > advance.i_samples ) && ( p_sys->position.i_frames + advance.i_frames ) < p_sys->packet_table.i_num_packets );
+        while ( i_req_samples > advance.i_samples && advance.i_frames < i_max_frames );
     }
 
     if( !advance.i_frames )
@@ -982,7 +998,7 @@ static int Demux( demux_t *p_demux )
     }
 
     p_block->i_dts =
-    p_block->i_pts = VLC_TS_0 + FrameSpanGetTime( &p_sys->position, p_sys->fmt.audio.i_rate );
+    p_block->i_pts = FrameSpanGetTime( &p_sys->position, p_sys->fmt.audio.i_rate );
 
     FrameSpanAddSpan( &p_sys->position, &advance );
 

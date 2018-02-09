@@ -2,7 +2,7 @@
  * prefs.h: MacOS X module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 2dcca555f0f1eed82275c74af3bb7bd5f903ba7d $
+ * $Id: 7d7e68f911e07a123cbd7873e89cbd77b8f1e8e5 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -22,12 +22,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#import <Cocoa/Cocoa.h>
+
 @class VLCTreeMainItem;
 
 /*****************************************************************************
  * VLCPrefs interface
  *****************************************************************************/
-@interface VLCPrefs : NSWindowController
+@interface VLCPrefs : NSWindowController<NSSplitViewDelegate>
 
 @property (readwrite, weak) IBOutlet NSTextField *titleLabel;
 @property (readwrite, weak) IBOutlet NSOutlineView *tree;

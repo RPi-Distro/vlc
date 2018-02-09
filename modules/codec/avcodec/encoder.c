@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 4d513bf02bd64617d08067c28f7ea41a9edaf6d1 $
+ * $Id: df8f663b861dcd72b1456e3974dbdc799b8de34b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -63,9 +63,6 @@
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-int  OpenEncoder ( vlc_object_t * );
-void CloseEncoder( vlc_object_t * );
-
 static block_t *EncodeVideo( encoder_t *, picture_t * );
 static block_t *EncodeAudio( encoder_t *, block_t * );
 
@@ -235,7 +232,7 @@ static const int DEFAULT_ALIGN = 0;
 
 
 /*****************************************************************************
- * OpenEncoder: probe the encoder
+ * InitVideoEnc: probe the encoder
  *****************************************************************************/
 static void probe_video_frame_rate( encoder_t *p_enc, AVCodecContext *p_context, AVCodec *p_codec )
 {
@@ -294,7 +291,7 @@ static void add_av_option_float( encoder_t *p_enc, AVDictionary** pp_dict, const
         msg_Warn( p_enc, "Failed to set encoder option %s", psz_name );
 }
 
-int OpenEncoder( vlc_object_t *p_this )
+int InitVideoEnc( vlc_object_t *p_this )
 {
     encoder_t *p_enc = (encoder_t *)p_this;
     encoder_sys_t *p_sys;
@@ -911,10 +908,11 @@ errmsg:
 
             if ( i_frequency == 6 )
             {
-                msg_Err( p_enc, "MPEG audio doesn't support frequency=%d",
+                msg_Warn( p_enc, "MPEG audio doesn't support frequency=%d",
                         fmt->audio.i_rate );
-                av_dict_free(&options);
-                goto error;
+                /* Fallback to 44100 hz */
+                p_context->sample_rate = p_enc->fmt_in.audio.i_rate =
+                p_enc->fmt_out.audio.i_rate = 44100;
             }
 
             for ( i = 1; i < 14; i++ )
@@ -1420,9 +1418,9 @@ static block_t *EncodeAudio( encoder_t *p_enc, block_t *p_aout_buf )
 }
 
 /*****************************************************************************
- * CloseEncoder: libavcodec encoder destruction
+ * EndVideoEnc: libavcodec encoder destruction
  *****************************************************************************/
-void CloseEncoder( vlc_object_t *p_this )
+void EndVideoEnc( vlc_object_t *p_this )
 {
     encoder_t *p_enc = (encoder_t *)p_this;
     encoder_sys_t *p_sys = p_enc->p_sys;

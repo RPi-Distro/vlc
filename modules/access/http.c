@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 8d050bdec6e222f95abbaf2d5418d45e9403caa3 $
+ * $Id: f5b4eacbd15e5313a5d56bde1c06d5f816d819d1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -56,16 +56,6 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-#define PROXY_TEXT N_("HTTP proxy")
-#define PROXY_LONGTEXT N_( \
-    "HTTP proxy to be used It must be of the form " \
-    "http://[user@]myproxy.mydomain:myport/ ; " \
-    "if empty, the http_proxy environment variable will be tried." )
-
-#define PROXY_PASS_TEXT N_("HTTP proxy password")
-#define PROXY_PASS_LONGTEXT N_( \
-    "If your HTTP proxy requires a password, set it here." )
-
 #define RECONNECT_TEXT N_("Auto re-connect")
 #define RECONNECT_LONGTEXT N_( \
     "Automatically try to reconnect to the stream in case of a sudden " \
@@ -78,11 +68,6 @@ vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
 
-    add_string( "http-proxy", NULL, PROXY_TEXT, PROXY_LONGTEXT,
-                false )
-    add_password( "http-proxy-pwd", NULL,
-                  PROXY_PASS_TEXT, PROXY_PASS_LONGTEXT, false )
-    add_obsolete_bool( "http-use-IE-proxy" )
     add_bool( "http-reconnect", false, RECONNECT_TEXT,
               RECONNECT_LONGTEXT, true )
     /* 'itpc' = iTunes Podcast */

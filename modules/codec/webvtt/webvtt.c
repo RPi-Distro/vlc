@@ -39,7 +39,7 @@ vlc_module_begin ()
     set_capability( "spu decoder", 10 )
     set_shortname( N_("WEBVTT decoder"))
     set_description( N_("WEBVTT subtitles decoder") )
-    set_callbacks( OpenDecoder, CloseDecoder )
+    set_callbacks( webvtt_OpenDecoder, webvtt_CloseDecoder )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_SCODEC )
     add_submodule()
@@ -48,7 +48,7 @@ vlc_module_begin ()
         set_capability( "demux", 3 )
         set_category( CAT_INPUT )
         set_subcategory( SUBCAT_INPUT_DEMUX )
-        set_callbacks( OpenDemux, CloseDemux )
+        set_callbacks( webvtt_OpenDemux, webvtt_CloseDemux )
         add_shortcut( "webvtt" )
     add_submodule()
         set_shortname( "WEBVTT" )
@@ -56,7 +56,7 @@ vlc_module_begin ()
         set_capability( "demux", 0 )
         set_category( CAT_INPUT )
         set_subcategory( SUBCAT_INPUT_DEMUX )
-        set_callbacks( OpenDemuxStream, CloseDemux )
+        set_callbacks( webvtt_OpenDemuxStream, webvtt_CloseDemux )
         add_shortcut( "webvttstream" )
 vlc_module_end ()
 
@@ -98,7 +98,7 @@ bool webvtt_scan_time( const char *psz, mtime_t *p_time )
         *p_time = MakeTime( t );
         return true;
     }
-    else if( sscanf( psz, "%2u:%2u:%2u.%3u",
+    else if( sscanf( psz, "%u:%2u:%2u.%3u",
                           &t[0], &t[1], &t[2], &t[3] ) == 4 )
     {
         *p_time = MakeTime( t );

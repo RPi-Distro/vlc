@@ -1312,6 +1312,7 @@ EXTRA_DIST = extras/package/macosx/package.mak \
 	extras/package/win32/configure.sh \
 	extras/package/win32/NSIS/vlc.win32.nsi.in \
 	extras/package/win32/NSIS/spad.nsi.in \
+	extras/package/win32/NSIS/vlc_branding.bmp \
 	extras/package/win32/NSIS/languages/BengaliExtra.nsh \
 	extras/package/win32/NSIS/languages/BasqueExtra.nsh \
 	extras/package/win32/NSIS/languages/PortugueseBRExtra.nsh \
@@ -1340,7 +1341,13 @@ EXTRA_DIST = extras/package/macosx/package.mak \
 	extras/package/win32/NSIS/languages/SlovenianExtra.nsh \
 	extras/package/win32/NSIS/languages/SoraniExtra.nsh \
 	extras/package/win32/NSIS/languages/SpanishExtra.nsh \
-	extras/package/win32/NSIS/languages/SwedishExtra.nsh
+	extras/package/win32/NSIS/languages/SwedishExtra.nsh \
+	extras/package/win32/NSIS/languages/AfrikaansExtra.nsh \
+	extras/package/win32/NSIS/languages/AlbanianExtra.nsh \
+	extras/package/win32/NSIS/languages/CroatianExtra.nsh \
+	extras/package/win32/NSIS/languages/IcelandicExtra.nsh \
+	extras/package/win32/NSIS/languages/LatvianExtra.nsh \
+	extras/package/win32/NSIS/languages/IndonesianExtra.nsh
 dist_noinst_SCRIPTS = bootstrap make-alias test/run_vlc.sh
 nodist_noinst_SCRIPTS = compile
 BUILT_SOURCES_distclean = $(am__append_1)
@@ -2249,6 +2256,7 @@ VLC.app: install
 	find $(prefix)/lib -name 'libvlc*.dylib' -maxdepth 1 -exec cp -a {} $@/Contents/MacOS/lib \;
 	mkdir -p $@/Contents/MacOS/plugins
 	find $(prefix)/lib/vlc/plugins -name 'lib*_plugin.dylib' -maxdepth 2 -exec cp -a {} $@/Contents/MacOS/plugins \;
+	find "$(CONTRIB_DIR)/share/java/" -name 'libbluray-j2se-*.jar' -maxdepth 1 -exec cp -a {} $@/Contents/MacOS/plugins \;
 	cp $(prefix)/bin/vlc $@/Contents/MacOS/VLC
 	bin/vlc-cache-gen $@/Contents/MacOS/plugins
 	find $@ -type d -exec chmod ugo+rx '{}' \;
@@ -2397,6 +2405,7 @@ package-win-common: package-win-install package-win-sdk
 
 @BUILD_LUA_TRUE@	mkdir -p $(win32_destdir)/lua/
 @BUILD_LUA_TRUE@	cp -r $(prefix)/lib/vlc/lua/* $(win32_destdir)/lua/
+@BUILD_LUA_TRUE@	cp -r $(prefix)/share/vlc/lua/* $(win32_destdir)/lua/
 
 @BUILD_SKINS_TRUE@	rm -fr $(win32_destdir)/skins
 @BUILD_SKINS_TRUE@	cp -r $(prefix)/share/vlc/skins2 $(win32_destdir)/skins
@@ -2452,6 +2461,7 @@ package-win32-exe: package-win-strip $(win32_destdir)/NSIS/nsProcess.dll extras/
 	cp -r $(srcdir)/extras/package/win32/NSIS/languages    "$(win32_destdir)/"
 	cp -r $(srcdir)/extras/package/win32/NSIS/helpers      "$(win32_destdir)/"
 	cp "$(top_srcdir)/extras/package/win32/NSIS/nsProcess.nsh" "$(win32_destdir)/NSIS/"
+	cp "$(top_srcdir)/extras/package/win32/NSIS/vlc_branding.bmp" "$(win32_destdir)/NSIS/"
 
 # Create package
 	if makensis -VERSION >/dev/null 2>&1; then \

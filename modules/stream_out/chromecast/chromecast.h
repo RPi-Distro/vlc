@@ -33,6 +33,7 @@
 #include <vlc_plugin.h>
 #include <vlc_tls.h>
 #include <vlc_interrupt.h>
+#include <vlc_httpd.h>
 
 #include <atomic>
 #include <sstream>
@@ -89,6 +90,8 @@ enum States
     Stopping,
     // Something went wrong and the connection is dead.
     Dead,
+    // Another playback started on the same cast device
+    TakenOver,
 };
 
 class ChromecastCommunication
@@ -101,35 +104,40 @@ public:
      */
     void disconnect();
 
-    void msgPing();
-    void msgPong();
-    void msgConnect( const std::string& destinationId );
+    int msgPing();
+    int msgPong();
+    int msgConnect( const std::string& destinationId );
 
-    void msgReceiverLaunchApp();
-    void msgReceiverGetStatus();
-    void msgReceiverClose(const std::string& destinationId);
-    void msgAuth();
-    void msgPlayerLoad( const std::string& destinationId, unsigned int i_port, const std::string& title,
-                        const std::string& artwork, const std::string& mime );
-    void msgPlayerPlay( const std::string& destinationId, const std::string& mediaSessionId );
-    void msgPlayerStop( const std::string& destinationId, const std::string& mediaSessionId );
-    void msgPlayerPause( const std::string& destinationId, const std::string& mediaSessionId );
-    void msgPlayerGetStatus( const std::string& destinationId );
-    void msgPlayerSeek( const std::string& destinationId, const std::string& mediaSessionId,
+    int msgReceiverLaunchApp();
+    int msgReceiverGetStatus();
+    int msgReceiverClose(const std::string& destinationId);
+    int msgAuth();
+    int msgPlayerLoad( const std::string& destinationId, unsigned int i_port,
+                        const std::string& mime, const vlc_meta_t *p_meta );
+    int msgPlayerPlay( const std::string& destinationId, int64_t mediaSessionId );
+    int msgPlayerStop( const std::string& destinationId, int64_t mediaSessionId );
+    int msgPlayerPause( const std::string& destinationId, int64_t mediaSessionId );
+    int msgPlayerGetStatus( const std::string& destinationId );
+    int msgPlayerSeek( const std::string& destinationId, int64_t mediaSessionId,
                         const std::string & currentTime );
-    void msgPlayerSetVolume( const std::string& destinationId, const std::string& mediaSessionId,
-                             float volume, bool mute);
+    int msgPlayerSetVolume( const std::string& destinationId, int64_t mediaSessionId,
+                            float volume, bool mute);
     ssize_t receive( uint8_t *p_data, size_t i_size, int i_timeout, bool *pb_timeout );
+
+    const std::string getServerIp()
+    {
+        return m_serverIp;
+    }
 private:
     int sendMessage(const castchannel::CastMessage &msg);
 
-    void buildMessage(const std::string & namespace_,
-                      const std::string & payload,
-                      const std::string & destinationId = DEFAULT_CHOMECAST_RECEIVER,
-                      castchannel::CastMessage_PayloadType payloadType = castchannel::CastMessage_PayloadType_STRING);
-    void pushMediaPlayerMessage( const std::string& destinationId, const std::stringstream & payload );
-    std::string GetMedia( unsigned int i_port, const std::string& title,
-                          const std::string& artwork, const std::string& mime );
+    int buildMessage(const std::string & namespace_,
+                     const std::string & payload,
+                     const std::string & destinationId = DEFAULT_CHOMECAST_RECEIVER,
+                     castchannel::CastMessage_PayloadType payloadType = castchannel::CastMessage_PayloadType_STRING);
+    int pushMediaPlayerMessage( const std::string& destinationId, const std::stringstream & payload );
+    std::string GetMedia( unsigned int i_port, const std::string& mime,
+                          const vlc_meta_t *p_meta );
 
 private:
     vlc_object_t* m_module;
@@ -140,6 +148,8 @@ private:
     std::string m_serverIp;
 };
 
+typedef void (*on_seek_done_itf)( void *data );
+
 /*****************************************************************************
  * intf_sys_t: description and status of interface
  *****************************************************************************/
@@ -148,19 +158,27 @@ struct intf_sys_t
     enum QueueableMessages
     {
         Stop,
-        Seek
     };
-    intf_sys_t(vlc_object_t * const p_this, int local_port, std::string device_addr, int device_port, vlc_interrupt_t *);
+    intf_sys_t(vlc_object_t * const p_this, int local_port, std::string device_addr,
+               int device_port, vlc_interrupt_t *, httpd_host_t *);
     ~intf_sys_t();
 
     bool isFinishedPlaying();
 
     void setHasInput(const std::string mime_type = "");
 
-    void requestPlayerSeek(mtime_t pos);
+    bool requestPlayerSeek(mtime_t pos);
+    void setOnSeekDoneCb(on_seek_done_itf on_seek_done, void *on_seek_done_data);
+    void setOnPausedChangedCb(on_paused_changed_itf on_paused_changed,
+                              void *on_paused_changed_data);
     void requestPlayerStop();
     States state() const;
 
+    void setPacing(bool do_pace);
+    bool pace();
+
+    int httpd_file_fill( uint8_t *psz_request, uint8_t **pp_data, int *pi_data );
+    void interrupt_wake_up();
 private:
     bool handleMessages();
 
@@ -171,10 +189,11 @@ private:
     void queueMessage( QueueableMessages msg );
 
     void setPauseState(bool paused);
+    bool isStatePlaying() const;
+    bool isStateReady() const;
+    void tryLoad();
 
-    void setTitle( const char *psz_title );
-
-    void setArtwork( const char *psz_artwork );
+    void setMeta( vlc_meta_t *p_meta );
 
     mtime_t getPlaybackTimestamp() const;
 
@@ -200,16 +219,14 @@ private:
     static double get_position(void*);
     static void set_initial_time( void*, mtime_t time );
 
-    static void wait_app_started(void*);
-
-    static void request_seek(void*, mtime_t pos);
-    static void wait_seek_done(void*);
+    static bool pace(void*);
+    static void set_on_paused_changed_cb(void *, on_paused_changed_itf, void *);
 
     static void set_pause_state(void*, bool paused);
 
-    static void set_title(void*, const char *psz_title);
-    static void set_artwork(void*, const char *psz_artwork);
+    static void set_meta(void*, vlc_meta_t *p_meta);
 
+    void prepareHttpArtwork();
 
 private:
     vlc_object_t  * const m_module;
@@ -217,21 +234,38 @@ private:
     std::string    m_mime;
 
     std::string m_appTransportId;
-    std::string m_mediaSessionId;
+    int64_t m_mediaSessionId;
 
     mutable vlc_mutex_t  m_lock;
     vlc_cond_t   m_stateChangedCond;
+    vlc_cond_t   m_pace_cond;
     vlc_thread_t m_chromecastThread;
+
+    on_seek_done_itf m_on_seek_done;
+    void            *m_on_seek_done_data;
+
+    on_paused_changed_itf m_on_paused_changed;
+    void                 *m_on_paused_changed_data;
 
     ChromecastCommunication m_communication;
     std::queue<QueueableMessages> m_msgQueue;
     States m_state;
+    bool m_played_once;
+    bool m_request_stop;
+    bool m_request_load;
     bool m_eof;
+    bool m_pace;
+    bool m_interrupted;
 
-    std::string m_artwork;
-    std::string m_title;
+    vlc_meta_t *m_meta;
 
     vlc_interrupt_t *m_ctl_thread_interrupt;
+
+    httpd_host_t     *m_httpd_host;
+    httpd_file_t     *m_httpd_file;
+    std::string       m_art_http_ip;
+    char             *m_art_url;
+    unsigned          m_art_idx;
 
     /* local date when playback started/resumed, used by monotone clock */
     mtime_t           m_time_playback_started;
