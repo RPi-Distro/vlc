@@ -1,3 +1,12 @@
+vlc (3.0.0-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+  * debian/*.symbols:
+    - Bump all newly introduced symbols to version 3.0.0.
+    - Add new symbols.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 09 Feb 2018 16:26:18 +0100
+
 vlc (3.0.0~rc8-1) unstable; urgency=medium
 
   * New upstream release candidate.
