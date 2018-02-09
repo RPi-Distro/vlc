@@ -230,6 +230,8 @@ libvlc.so.5 libvlc5 #MINVER#
  libvlc_renderer_item_icon_uri@Base 3.0.0
  libvlc_renderer_item_name@Base 3.0.0
  libvlc_renderer_item_type@Base 3.0.0
+ libvlc_renderer_item_hold@Base 3.0.0
+ libvlc_renderer_item_release@Base 3.0.0
  libvlc_retain@Base 1.1.0
  libvlc_set_app_id@Base 2.1.0
  libvlc_set_exit_handler@Base 2.0.0
