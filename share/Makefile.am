@@ -153,9 +153,7 @@ nobase_vlclib_DATA += \
 	lua/playlist/vocaroo.luac \
 	lua/playlist/youtube.luac \
 	lua/playlist/twitch.luac \
-	lua/sd/fmc.luac \
 	lua/sd/icecast.luac \
-	lua/sd/icast.luac \
 	lua/sd/jamendo.luac \
 	$(NULL)
 
@@ -274,7 +272,6 @@ EXTRA_DIST += \
 	lua/playlist/appletrailers.lua \
 	lua/playlist/bbc_co_uk.lua \
 	lua/playlist/break.lua \
-	lua/playlist/canalplus.lua \
 	lua/playlist/cue.lua \
 	lua/playlist/dailymotion.lua \
 	lua/playlist/extreme.lua \
@@ -288,7 +285,6 @@ EXTRA_DIST += \
 	lua/playlist/mpora.lua \
 	lua/playlist/newgrounds.lua \
 	lua/playlist/pinkbike.lua \
-	lua/playlist/pluzz.lua \
 	lua/playlist/rockbox_fm_presets.lua \
 	lua/playlist/soundcloud.lua \
 	lua/playlist/vimeo.lua \

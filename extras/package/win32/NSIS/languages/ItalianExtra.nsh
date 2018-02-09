@@ -1,7 +1,7 @@
 !insertmacro LANGFILE_EXT Italian
 ${LangFileString} Name_Section01 "Lettore multimediale (richiesto)"
 ${LangFileString} Name_Section02a "Collegamento nel menu Start"
-${LangFileString} Name_Section02b "Collegati sul desktop"
+${LangFileString} Name_Section02b "Collegamento del desktop"
 ${LangFileString} Name_Section34 "Estensioni web"
 ${LangFileString} Name_Section03 "Estensione Mozilla"
 ${LangFileString} Name_Section04 "Estensione ActiveX"
@@ -53,5 +53,5 @@ ${LangFileString} Reinstall_MessageSame "VLC ${VERSION} è già installato. Sele
 ${LangFileString} Reinstall_OptionUpgrade "Aggiorna VLC utilizzando le impostazioni precedenti (consigliata)"
 ${LangFileString} Reinstall_OptionDowngrade "Torna alla versione più datata di VLC utilizzando le impostazioni precedenti (consigliato)"
 ${LangFileString} Reinstall_OptionComponents "Aggiungi/Rimuovi/Reinstalla componenti"
-${LangFileString} Reinstall_OptionAdvanced "Modifica le impostazione (avanzato)"
+${LangFileString} Reinstall_OptionAdvanced "Modifica le impostazioni (avanzato)"
 ${LangFileString} Reinstall_OptionUninstall "Disinstalla VLC"

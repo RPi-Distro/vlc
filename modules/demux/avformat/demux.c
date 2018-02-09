@@ -2,7 +2,7 @@
  * demux.c: demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 30d97434f08fc87ab3106a9f3ceb50f32d20844f $
+ * $Id: 14033c71f1f9f8f2df7e5d52542c2be81ac0213e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -403,7 +403,7 @@ int avformat_OpenDemux( vlc_object_t *p_this )
                 es_fmt.i_original_fourcc = VLC_FOURCC('L','A','T','M');
                 es_fmt.b_packetized = false;
             }
-            else if(cp->codec_id == AV_CODEC_ID_AAC &&
+            else if(cp->codec_id == AV_CODEC_ID_AAC && p_sys->fmt->long_name &&
                     strstr(p_sys->fmt->long_name, "raw ADTS AAC"))
             {
                 es_fmt.i_original_fourcc = VLC_FOURCC('A','D','T','S');

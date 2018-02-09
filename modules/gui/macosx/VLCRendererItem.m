@@ -2,7 +2,7 @@
  * VLCRendererItem.m: Wrapper class for vlc_renderer_item_t
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 428929afb640a7cfd6b1c4bc0b17187a0fe5923b $
+ * $Id: fedce3593383b9e88d2391b52b2dd76f6ebe1522 $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -53,6 +53,14 @@
     if (!name)
         return nil;
     return [NSString stringWithUTF8String:name];
+}
+
+- (NSString*)identifier
+{
+    const char *sout = vlc_renderer_item_sout(_rendererItem);
+    if (!sout)
+        return nil;
+    return [NSString stringWithUTF8String:sout];
 }
 
 - (NSString*)iconURI

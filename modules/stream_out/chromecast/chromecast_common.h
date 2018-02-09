@@ -33,24 +33,24 @@ extern "C" {
 
 #define CC_SHARED_VAR_NAME "cc_sout"
 
+typedef void (*on_paused_changed_itf)( void *data, bool );
+
 typedef struct
 {
     void *p_opaque;
+
+    void (*pf_set_on_paused_changed_cb)(void *, on_paused_changed_itf, void *);
 
     void (*pf_set_length)(void*, mtime_t length);
     mtime_t (*pf_get_time)(void*);
     double (*pf_get_position)(void*);
     void (*pf_set_initial_time)( void*, mtime_t time );
 
-    void (*pf_wait_app_started)(void*);
-
-    void (*pf_request_seek)(void*, mtime_t pos);
-    void (*pf_wait_seek_done)(void*);
+    bool (*pf_pace)(void*);
 
     void (*pf_set_pause_state)(void*, bool paused);
 
-    void (*pf_set_title)(void*, const char *psz_title);
-    void (*pf_set_artwork)(void*, const char *psz_artwork);
+    void (*pf_set_meta)(void*, vlc_meta_t *p_meta);
 
 } chromecast_common;
 

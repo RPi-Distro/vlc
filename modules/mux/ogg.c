@@ -2,7 +2,7 @@
  * ogg.c: ogg muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: 26e71ef1cc650cafa27c5d6ee550c54fa5c85a6c $
+ * $Id: 1d57c3f46a47cd5c5b67817c841a0516c77c580c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -286,13 +286,6 @@ static void Close( vlc_object_t * p_this )
     {
         /* Close the current ogg stream */
         msg_Dbg( p_mux, "writing footers" );
-
-        for(int i = 0; i < p_mux->i_nb_inputs; i++ )
-        {
-            p_stream = (ogg_stream_t *) p_mux->pp_inputs[i]->p_sys;
-            OggCreateStreamFooter( p_mux, p_stream );
-            free( p_stream->skeleton.p_index );
-        }
 
         /* Remove deleted logical streams */
         for(int i = 0; i < p_sys->i_del_streams; i++ )

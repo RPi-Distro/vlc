@@ -92,6 +92,13 @@ vlc_module_begin ()
     set_callbacks(Open, Close)
 vlc_module_end ()
 
+typedef struct {
+    FLOAT Opacity;
+    FLOAT BoundaryX;
+    FLOAT BoundaryY;
+    FLOAT LuminanceScale;
+} PS_CONSTANT_BUFFER;
+
 /* A Quad is texture that can be displayed in a rectangle */
 typedef struct
 {
@@ -108,7 +115,8 @@ typedef struct
     D3D11_VIEWPORT            cropViewport;
     unsigned int              i_width;
     unsigned int              i_height;
-    float                     f_luminance_scale;
+
+    PS_CONSTANT_BUFFER        shaderConstants;
 } d3d_quad_t;
 
 typedef enum video_color_axis {
@@ -184,13 +192,6 @@ typedef struct d3d_vertex_t {
         FLOAT y;
     } texture;
 } d3d_vertex_t;
-
-typedef struct {
-    FLOAT Opacity;
-    FLOAT BoundaryX;
-    FLOAT BoundaryY;
-    FLOAT LuminanceScale;
-} PS_CONSTANT_BUFFER;
 
 typedef struct {
     FLOAT WhitePoint[4*4];
@@ -689,7 +690,7 @@ error:
         sys->sys.pool = picture_pool_NewExtended( &pool_cfg );
     } else {
         msg_Dbg(vd, "D3D11 pool succeed with %d surfaces (%dx%d) context 0x%p",
-                picture_count, surface_fmt.i_width, surface_fmt.i_height, sys->d3d_dev.d3dcontext);
+                pool_size, surface_fmt.i_width, surface_fmt.i_height, sys->d3d_dev.d3dcontext);
     }
     return sys->sys.pool;
 }
@@ -1040,24 +1041,32 @@ static void Manage(vout_display_t *vd)
     }
 }
 
+static bool D3D11_ShaderUpdateConstants(vlc_object_t *o, d3d11_device_t *d3d_dev, d3d_quad_t *quad)
+{
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    HRESULT hr = ID3D11DeviceContext_Map(d3d_dev->d3dcontext, (ID3D11Resource *)quad->pPixelShaderConstants[0], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+    if (FAILED(hr))
+    {
+        msg_Err(o, "Failed to lock the picture shader constants (hr=0x%lX)", hr);
+        return false;
+    }
+
+    PS_CONSTANT_BUFFER *dst_data = mappedResource.pData;
+    *dst_data = quad->shaderConstants;
+    ID3D11DeviceContext_Unmap(d3d_dev->d3dcontext, (ID3D11Resource *)quad->pPixelShaderConstants[0], 0);
+    return true;
+}
+
 static void UpdateQuadLuminanceScale(vout_display_t *vd, d3d_quad_t *quad, float luminanceScale)
 {
     vout_display_sys_t *sys = vd->sys;
-    D3D11_MAPPED_SUBRESOURCE mappedResource;
-
-    if (quad->f_luminance_scale == luminanceScale)
+    if (quad->shaderConstants.LuminanceScale == luminanceScale)
         return;
 
-    HRESULT hr = ID3D11DeviceContext_Map(sys->d3d_dev.d3dcontext, (ID3D11Resource *)quad->pPixelShaderConstants[0], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    if (SUCCEEDED(hr)) {
-        PS_CONSTANT_BUFFER *dst_data = mappedResource.pData;
-        quad->f_luminance_scale = luminanceScale;
-        dst_data->LuminanceScale = quad->f_luminance_scale;
-        ID3D11DeviceContext_Unmap(sys->d3d_dev.d3dcontext, (ID3D11Resource *)quad->pPixelShaderConstants[0], 0);
-    }
-    else {
-        msg_Err(vd, "Failed to lock the picture shader constants (hr=0x%lX)", hr);
-    }
+    float old = quad->shaderConstants.LuminanceScale;
+    quad->shaderConstants.LuminanceScale = luminanceScale;
+    if (!D3D11_ShaderUpdateConstants(VLC_OBJECT(vd), &sys->d3d_dev, quad))
+        quad->shaderConstants.LuminanceScale = old;
 }
 
 static void DisplayD3DPicture(vout_display_sys_t *sys, d3d_quad_t *quad, ID3D11ShaderResourceView *resourceView[D3D11_MAX_SHADER_VIEW])
@@ -1188,24 +1197,30 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
         sys->d3dregions      = subpicture_regions;
     }
 
-    if (sys->dxgiswapChain4 && picture->format.mastering.max_luminance)
+    if (picture->format.mastering.max_luminance)
     {
-        UpdateQuadLuminanceScale(vd, &sys->picQuad, (float) picture->format.mastering.max_luminance / sys->display.luminance_peak);
+        if ( picture->format.mastering.max_luminance < 10000)
+            UpdateQuadLuminanceScale(vd, &sys->picQuad, (float) picture->format.mastering.max_luminance / sys->display.luminance_peak);
+        else
+            UpdateQuadLuminanceScale(vd, &sys->picQuad, (float) picture->format.mastering.max_luminance / (1000 * sys->display.luminance_peak));
 
-        DXGI_HDR_METADATA_HDR10 hdr10 = {0};
-        hdr10.GreenPrimary[0] = picture->format.mastering.primaries[0];
-        hdr10.GreenPrimary[1] = picture->format.mastering.primaries[1];
-        hdr10.BluePrimary[0]  = picture->format.mastering.primaries[2];
-        hdr10.BluePrimary[1]  = picture->format.mastering.primaries[3];
-        hdr10.RedPrimary[0]   = picture->format.mastering.primaries[4];
-        hdr10.RedPrimary[1]   = picture->format.mastering.primaries[5];
-        hdr10.WhitePoint[0] = picture->format.mastering.white_point[0];
-        hdr10.WhitePoint[1] = picture->format.mastering.white_point[1];
-        hdr10.MinMasteringLuminance = picture->format.mastering.min_luminance;
-        hdr10.MaxMasteringLuminance = picture->format.mastering.max_luminance;
-        hdr10.MaxContentLightLevel = picture->format.lighting.MaxCLL;
-        hdr10.MaxFrameAverageLightLevel = picture->format.lighting.MaxFALL;
-        IDXGISwapChain4_SetHDRMetaData(sys->dxgiswapChain4, DXGI_HDR_METADATA_TYPE_HDR10, sizeof(hdr10), &hdr10);
+        if (sys->dxgiswapChain4)
+        {
+            DXGI_HDR_METADATA_HDR10 hdr10 = {0};
+            hdr10.GreenPrimary[0] = picture->format.mastering.primaries[0];
+            hdr10.GreenPrimary[1] = picture->format.mastering.primaries[1];
+            hdr10.BluePrimary[0]  = picture->format.mastering.primaries[2];
+            hdr10.BluePrimary[1]  = picture->format.mastering.primaries[3];
+            hdr10.RedPrimary[0]   = picture->format.mastering.primaries[4];
+            hdr10.RedPrimary[1]   = picture->format.mastering.primaries[5];
+            hdr10.WhitePoint[0] = picture->format.mastering.white_point[0];
+            hdr10.WhitePoint[1] = picture->format.mastering.white_point[1];
+            hdr10.MinMasteringLuminance = picture->format.mastering.min_luminance;
+            hdr10.MaxMasteringLuminance = picture->format.mastering.max_luminance;
+            hdr10.MaxContentLightLevel = picture->format.lighting.MaxCLL;
+            hdr10.MaxFrameAverageLightLevel = picture->format.lighting.MaxFALL;
+            IDXGISwapChain4_SetHDRMetaData(sys->dxgiswapChain4, DXGI_HDR_METADATA_TYPE_HDR10, sizeof(hdr10), &hdr10);
+        }
     }
 
     FLOAT blackRGBA[4] = {0.0f, 0.0f, 0.0f, 1.0f};
@@ -1945,6 +1960,7 @@ static HRESULT CompilePixelShader(vout_display_t *vd, const d3d_format_t *format
         msg_Dbg(vd,"psz_peak_luminance %s", psz_peak_luminance);
         msg_Dbg(vd,"psz_display_transform %s", psz_display_transform);
         msg_Dbg(vd,"psz_adjust_range %s", psz_adjust_range);
+        msg_Dbg(vd,"psz_sampler %s", psz_sampler);
     }
 #endif
     free(psz_range);
@@ -2297,18 +2313,83 @@ static void SetupQuadFlat(d3d_vertex_t *dst_data, const RECT *output,
                           const d3d_quad_t *quad,
                           WORD *triangle_pos, video_orientation_t orientation)
 {
-    unsigned int dst_x = output->left;
-    unsigned int dst_y = output->top;
     unsigned int src_width = quad->i_width;
     unsigned int src_height = quad->i_height;
-    LONG MidY = output->top + output->bottom; // /2
-    LONG MidX = output->left + output->right; // /2
+    float MidX,MidY;
 
     float top, bottom, left, right;
-    top    =  (float)MidY / (float)(MidY - 2*dst_y);
-    bottom = -(2.f*src_height - MidY) / (float)(MidY - 2*dst_y);
-    right  =  (2.f*src_width  - MidX) / (float)(MidX - 2*dst_x);
-    left   = -(float)MidX / (float)(MidX - 2*dst_x);
+    switch (orientation)
+    {
+    case ORIENT_ROTATED_90: /* 90° anti clockwise */
+        /* right/top aligned */
+        MidY = (output->left + output->right) / 2.f;
+        MidX = (output->top + output->bottom) / 2.f;
+        top    =  (src_width  - MidX) / (output->right - MidX);
+        bottom = -MidY / (MidY - output->top);
+        left   = -(src_height - MidY) / (output->bottom - MidY);
+        right  =   MidX / (MidX - output->left);
+        break;
+    case ORIENT_ROTATED_180: /* 180° */
+        /* right/top aligned */
+        MidY = (output->top + output->bottom) / 2.f;
+        MidX = (output->left + output->right) / 2.f;
+        top    =  (src_height - MidY) / (output->bottom - MidY);
+        bottom = -MidY / (MidY - output->top);
+        left   = -MidX / (MidX - output->left);
+        right  =  (src_width  - MidX) / (output->right - MidX);
+        break;
+    case ORIENT_ROTATED_270: /* 90° clockwise */
+        /* right/top aligned */
+        MidY = (output->left + output->right) / 2.f;
+        MidX = (output->top + output->bottom) / 2.f;
+        top    =  (src_width  - MidX) / (output->right - MidX);
+        bottom = -MidY / (MidY - output->top);
+        left   = -MidX / (MidX - output->left);
+        right  =  (src_height - MidY) / (output->bottom - MidY);
+        break;
+    case ORIENT_ANTI_TRANSPOSED:
+        MidY = (output->left + output->right) / 2.f;
+        MidX = (output->top + output->bottom) / 2.f;
+        top    =  (src_width  - MidX) / (output->right - MidX);
+        bottom = -MidY / (MidY - output->top);
+        left   = -(src_height - MidY) / (output->bottom - MidY);
+        right  =  MidX / (MidX - output->left);
+        break;
+    case ORIENT_TRANSPOSED:
+        MidY = (output->left + output->right) / 2.f;
+        MidX = (output->top + output->bottom) / 2.f;
+        top    =  (src_width  - MidX) / (output->right - MidX);
+        bottom = -MidY / (MidY - output->top);
+        left   = -MidX / (MidX - output->left);
+        right  =  (src_height - MidY) / (output->bottom - MidY);
+        break;
+    case ORIENT_VFLIPPED:
+        MidY = (output->top + output->bottom) / 2.f;
+        MidX = (output->left + output->right) / 2.f;
+        top    =  (src_height - MidY) / (output->bottom - MidY);
+        bottom = -MidY / (MidY - output->top);
+        left   = -MidX / (MidX - output->left);
+        right  =  (src_width  - MidX) / (output->right - MidX);
+        break;
+    case ORIENT_HFLIPPED:
+        MidY = (output->top + output->bottom) / 2.f;
+        MidX = (output->left + output->right) / 2.f;
+        top    =  MidY / (MidY - output->top);
+        bottom = -(src_height - MidY) / (output->bottom - MidY);
+        left   = -(src_width  - MidX) / (output->right - MidX);
+        right  =  MidX / (MidX - output->left);
+        break;
+    case ORIENT_NORMAL:
+    default:
+        /* left/top aligned */
+        MidY = (output->top + output->bottom) / 2.f;
+        MidX = (output->left + output->right) / 2.f;
+        top    =  MidY / (MidY - output->top);
+        bottom = -(src_height - MidY) / (output->bottom - MidY);
+        left   = -MidX / (MidX - output->left);
+        right  =  (src_width  - MidX) / (output->right - MidX);
+        break;
+    }
 
     const float vertices_coords[4][2] = {
         { left,  bottom },
@@ -2374,8 +2455,11 @@ static void SetupQuadFlat(d3d_vertex_t *dst_data, const RECT *output,
 #define nbLatBands SPHERE_SLICES
 #define nbLonBands SPHERE_SLICES
 
-static void SetupQuadSphere(d3d_vertex_t *dst_data, WORD *triangle_pos)
+static void SetupQuadSphere(d3d_vertex_t *dst_data, const RECT *output,
+                            const d3d_quad_t *quad, WORD *triangle_pos)
 {
+    const float scaleX = (float)(output->right  - output->left) / quad->i_width;
+    const float scaleY = (float)(output->bottom - output->top)   / quad->i_height;
     for (unsigned lat = 0; lat <= nbLatBands; lat++) {
         float theta = lat * (float) M_PI / nbLatBands;
         float sinTheta, cosTheta;
@@ -2397,8 +2481,8 @@ static void SetupQuadSphere(d3d_vertex_t *dst_data, WORD *triangle_pos)
             dst_data[off1].position.y = SPHERE_RADIUS * y;
             dst_data[off1].position.z = SPHERE_RADIUS * z;
 
-            dst_data[off1].texture.x = lon / (float) nbLonBands; // 0(left) to 1(right)
-            dst_data[off1].texture.y = lat / (float) nbLatBands; // 0(top) to 1 (bottom)
+            dst_data[off1].texture.x = scaleX * lon / (float) nbLonBands; // 0(left) to 1(right)
+            dst_data[off1].texture.y = scaleY * lat / (float) nbLatBands; // 0(top) to 1 (bottom)
         }
     }
 
@@ -2501,7 +2585,7 @@ static bool UpdateQuadPosition( vout_display_t *vd, d3d_quad_t *quad,
     if ( projection == PROJECTION_MODE_RECTANGULAR )
         SetupQuadFlat(dst_data, output, quad, triangle_pos, orientation);
     else
-        SetupQuadSphere(dst_data, triangle_pos);
+        SetupQuadSphere(dst_data, output, quad, triangle_pos);
 
     ID3D11DeviceContext_Unmap(sys->d3d_dev.d3dcontext, (ID3D11Resource *)quad->pIndexBuffer, 0);
     ID3D11DeviceContext_Unmap(sys->d3d_dev.d3dcontext, (ID3D11Resource *)quad->pVertexBuffer, 0);
@@ -2539,20 +2623,18 @@ static int SetupQuad(vout_display_t *vd, const video_format_t *fmt, d3d_quad_t *
             src_luminance_peak = DEFAULT_BRIGHTNESS;
             break;
     }
-    quad->f_luminance_scale = (float)src_luminance_peak / (float)sys->display.luminance_peak;
+    quad->shaderConstants.LuminanceScale = (float)src_luminance_peak / (float)sys->display.luminance_peak;
 
     /* pixel shader constant buffer */
-    PS_CONSTANT_BUFFER defaultConstants;
-    defaultConstants.Opacity = 1.0;
+    quad->shaderConstants.Opacity = 1.0;
     if (fmt->i_visible_width == fmt->i_width)
-        defaultConstants.BoundaryX = 1.0; /* let texture clamping happen */
+        quad->shaderConstants.BoundaryX = 1.0; /* let texture clamping happen */
     else
-        defaultConstants.BoundaryX = (FLOAT) (fmt->i_visible_width - 1) / fmt->i_width;
+        quad->shaderConstants.BoundaryX = (FLOAT) (fmt->i_visible_width - 1) / fmt->i_width;
     if (fmt->i_visible_height == fmt->i_height)
-        defaultConstants.BoundaryY = 1.0; /* let texture clamping happen */
+        quad->shaderConstants.BoundaryY = 1.0; /* let texture clamping happen */
     else
-        defaultConstants.BoundaryY = (FLOAT) (fmt->i_visible_height - 1) / fmt->i_height;
-    defaultConstants.LuminanceScale = quad->f_luminance_scale;
+        quad->shaderConstants.BoundaryY = (FLOAT) (fmt->i_visible_height - 1) / fmt->i_height;
 
     static_assert((sizeof(PS_CONSTANT_BUFFER)%16)==0,"Constant buffers require 16-byte alignment");
     D3D11_BUFFER_DESC constantDesc = {
@@ -2561,7 +2643,7 @@ static int SetupQuad(vout_display_t *vd, const video_format_t *fmt, d3d_quad_t *
         .BindFlags = D3D11_BIND_CONSTANT_BUFFER,
         .CPUAccessFlags = D3D11_CPU_ACCESS_WRITE,
     };
-    D3D11_SUBRESOURCE_DATA constantInit = { .pSysMem = &defaultConstants };
+    D3D11_SUBRESOURCE_DATA constantInit = { .pSysMem = &quad->shaderConstants };
     hr = ID3D11Device_CreateBuffer(sys->d3d_dev.d3ddevice, &constantDesc, &constantInit, &quad->pPixelShaderConstants[0]);
     if(FAILED(hr)) {
         msg_Err(vd, "Could not create the pixel shader constant buffer. (hr=0x%lX)", hr);
@@ -2808,20 +2890,16 @@ static void DestroyPictureQuad(picture_t *p_picture)
     free( p_picture );
 }
 
-static void UpdateQuadOpacity(vout_display_t *vd, const d3d_quad_t *quad, float opacity)
+static void UpdateQuadOpacity(vout_display_t *vd, d3d_quad_t *quad, float opacity)
 {
     vout_display_sys_t *sys = vd->sys;
-    D3D11_MAPPED_SUBRESOURCE mappedResource;
+    if (quad->shaderConstants.Opacity == opacity)
+        return;
 
-    HRESULT hr = ID3D11DeviceContext_Map(sys->d3d_dev.d3dcontext, (ID3D11Resource *)quad->pPixelShaderConstants[0], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-    if (SUCCEEDED(hr)) {
-        PS_CONSTANT_BUFFER *dst_data = mappedResource.pData;
-        dst_data->Opacity = opacity;
-        ID3D11DeviceContext_Unmap(sys->d3d_dev.d3dcontext, (ID3D11Resource *)quad->pPixelShaderConstants[0], 0);
-    }
-    else {
-        msg_Err(vd, "Failed to lock the subpicture vertex buffer (hr=0x%lX)", hr);
-    }
+    float old = quad->shaderConstants.Opacity;
+    quad->shaderConstants.Opacity = opacity;
+    if (!D3D11_ShaderUpdateConstants(VLC_OBJECT(vd), &sys->d3d_dev, quad))
+        quad->shaderConstants.Opacity = old;
 }
 
 static int Direct3D11MapSubpicture(vout_display_t *vd, int *subpicture_region_count,

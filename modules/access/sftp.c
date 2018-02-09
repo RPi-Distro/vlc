@@ -2,7 +2,7 @@
  * sftp.c: SFTP input module
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: f35d9e1b505aca9392f790976ae46a472bfc3537 $
+ * $Id: 1219f573a1f3fbcedecab3598a10194e27da347c $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *          Petri Hintukainen <phintuka@gmail.com>
@@ -253,7 +253,6 @@ static int Open( vlc_object_t* p_this )
     if( vlc_UrlParseFixup( &url, p_access->psz_url ) != 0 )
     {
         vlc_UrlClean( &url );
-        free( p_sys );
         return VLC_EGENERIC;
     }
     vlc_credential_init( &credential, &url );

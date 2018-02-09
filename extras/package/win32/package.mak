@@ -61,6 +61,7 @@ package-win-common: package-win-install package-win-sdk
 if BUILD_LUA
 	mkdir -p $(win32_destdir)/lua/
 	cp -r $(prefix)/lib/vlc/lua/* $(win32_destdir)/lua/
+	cp -r $(prefix)/share/vlc/lua/* $(win32_destdir)/lua/
 endif
 
 if BUILD_SKINS
@@ -126,6 +127,7 @@ package-win32-exe: package-win-strip $(win32_destdir)/NSIS/nsProcess.dll extras/
 	cp -r $(srcdir)/extras/package/win32/NSIS/languages    "$(win32_destdir)/"
 	cp -r $(srcdir)/extras/package/win32/NSIS/helpers      "$(win32_destdir)/"
 	cp "$(top_srcdir)/extras/package/win32/NSIS/nsProcess.nsh" "$(win32_destdir)/NSIS/"
+	cp "$(top_srcdir)/extras/package/win32/NSIS/vlc_branding.bmp" "$(win32_destdir)/NSIS/"
 
 # Create package
 	if makensis -VERSION >/dev/null 2>&1; then \
@@ -188,6 +190,7 @@ EXTRA_DIST += \
 	extras/package/win32/configure.sh \
 	extras/package/win32/NSIS/vlc.win32.nsi.in \
 	extras/package/win32/NSIS/spad.nsi.in \
+	extras/package/win32/NSIS/vlc_branding.bmp \
 	extras/package/win32/NSIS/languages/BengaliExtra.nsh \
 	extras/package/win32/NSIS/languages/BasqueExtra.nsh \
 	extras/package/win32/NSIS/languages/PortugueseBRExtra.nsh \
@@ -216,6 +219,12 @@ EXTRA_DIST += \
 	extras/package/win32/NSIS/languages/SlovenianExtra.nsh \
 	extras/package/win32/NSIS/languages/SoraniExtra.nsh \
 	extras/package/win32/NSIS/languages/SpanishExtra.nsh \
-	extras/package/win32/NSIS/languages/SwedishExtra.nsh
+	extras/package/win32/NSIS/languages/SwedishExtra.nsh \
+	extras/package/win32/NSIS/languages/AfrikaansExtra.nsh \
+	extras/package/win32/NSIS/languages/AlbanianExtra.nsh \
+	extras/package/win32/NSIS/languages/CroatianExtra.nsh \
+	extras/package/win32/NSIS/languages/IcelandicExtra.nsh \
+	extras/package/win32/NSIS/languages/LatvianExtra.nsh \
+	extras/package/win32/NSIS/languages/IndonesianExtra.nsh
 
 

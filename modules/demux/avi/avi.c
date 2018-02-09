@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 4cc3882dcc9ce5f931896ca51b76067bb7f6e14c $
+ * $Id: 1b037b0d96f0bd790f686377c2bd713072e9a4ed $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1128,7 +1128,7 @@ static int Demux_Seekable( demux_t *p_demux )
                 continue;
             }
 
-            if( toread[i].i_toread >= 0 )
+            if( toread[i].i_toread > 0 )
             {
                 b_done = false; /* not yet finished */
 
@@ -1856,37 +1856,31 @@ static mtime_t AVI_GetDPTS( avi_track_t *tk, int64_t i_count )
 
 static mtime_t AVI_GetPTS( avi_track_t *tk )
 {
-    if( tk->i_samplesize )
+    /* Lookup samples index */
+    if( tk->i_samplesize && tk->idx.i_size )
     {
         int64_t i_count = 0;
+        unsigned int idx = tk->i_idxposc;
 
         /* we need a valid entry we will emulate one */
-        if( tk->i_idxposc == tk->idx.i_size )
+        if( idx >= tk->idx.i_size )
         {
-            if( tk->i_idxposc )
-            {
-                /* use the last entry */
-                i_count = tk->idx.p_entry[tk->idx.i_size - 1].i_lengthtotal
-                            + tk->idx.p_entry[tk->idx.i_size - 1].i_length;
-            }
+            /* use the last entry */
+            idx = tk->idx.i_size - 1;
+            i_count = tk->idx.p_entry[idx].i_lengthtotal
+                    + tk->idx.p_entry[idx].i_length;
         }
         else
         {
-            i_count = tk->idx.p_entry[tk->i_idxposc].i_lengthtotal;
+            i_count = tk->idx.p_entry[idx].i_lengthtotal;
         }
         return AVI_GetDPTS( tk, i_count + tk->i_idxposb );
     }
+
+    if( tk->fmt.i_cat == AUDIO_ES )
+        return AVI_GetDPTS( tk, tk->i_blockno );
     else
-    {
-        if( tk->fmt.i_cat == AUDIO_ES )
-        {
-            return AVI_GetDPTS( tk, tk->i_blockno );
-        }
-        else
-        {
-            return AVI_GetDPTS( tk, tk->i_idxposc );
-        }
-    }
+        return AVI_GetDPTS( tk, tk->i_idxposc );
 }
 
 static int AVI_StreamChunkFind( demux_t *p_demux, unsigned int i_stream )

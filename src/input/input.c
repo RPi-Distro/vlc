@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 6dded7d0f8afa549aeab78bb5720a96f309108d1 $
+ * $Id: 7eafa55ce731e5323391b747d464ef9ffbb3956c $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -845,15 +845,20 @@ static int InitSout( input_thread_t * p_input )
         return VLC_SUCCESS;
 
     /* Find a usable sout and attach it to p_input */
-    char *psz = NULL;
+    char *psz = var_GetNonEmptyString( p_input, "sout" );
     if( priv->p_renderer )
     {
+        /* Keep sout if it comes from a renderer and if the user didn't touch
+         * the sout config */
+        bool keep_sout = psz == NULL;
+        free(psz);
+
         const char *psz_renderer_sout = vlc_renderer_item_sout( priv->p_renderer );
         if( asprintf( &psz, "#%s", psz_renderer_sout ) < 0 )
             return VLC_ENOMEM;
+        if( keep_sout )
+            var_SetBool( p_input, "sout-keep", true );
     }
-    if( !psz )
-        psz = var_GetNonEmptyString( p_input, "sout" );
     if( psz && strncasecmp( priv->p_item->psz_uri, "vlc:", 4 ) )
     {
         priv->p_sout  = input_resource_RequestSout( priv->p_resource, NULL, psz );
@@ -1881,10 +1886,9 @@ static void ControlNav( input_thread_t *p_input, int i_type )
 }
 
 #ifdef ENABLE_SOUT
-static void ControlUpdateSout( input_thread_t *p_input, const char* psz_chain )
+static void ControlUpdateRenderer( input_thread_t *p_input, bool b_enable )
 {
-    var_SetString( p_input, "sout", psz_chain );
-    if( psz_chain && *psz_chain )
+    if( b_enable )
     {
         if( InitSout( p_input ) != VLC_SUCCESS )
         {
@@ -2329,7 +2333,7 @@ static bool Control( input_thread_t *p_input,
 
             if ( p_priv->p_renderer )
             {
-                ControlUpdateSout( p_input, NULL );
+                ControlUpdateRenderer( p_input, false );
                 demux_FilterDisable( p_priv->master->p_demux,
                         vlc_renderer_item_demux_filter( p_priv->p_renderer ) );
                 vlc_renderer_item_release( p_priv->p_renderer );
@@ -2338,7 +2342,7 @@ static bool Control( input_thread_t *p_input,
             if( p_item != NULL )
             {
                 p_priv->p_renderer = vlc_renderer_item_hold( p_item );
-                ControlUpdateSout( p_input, vlc_renderer_item_sout( p_item ) );
+                ControlUpdateRenderer( p_input, true );
                 if( !demux_FilterEnable( p_priv->master->p_demux,
                                 vlc_renderer_item_demux_filter( p_priv->p_renderer ) ) )
                 {

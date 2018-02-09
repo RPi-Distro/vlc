@@ -2,7 +2,7 @@
  * copy.c: Fast YV12/NV12 copy
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: cb45e23c7b378093c766235d69f1182abe6a4713 $
+ * $Id: 50885aee7466e675d4d5d0af11cd0694b9fcb2ab $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *          Victorien Le Couviour--Tuffet <victorien.lecouviour.tuffet@gmail.com>
@@ -832,9 +832,9 @@ void picture_SwapUV(picture_t *picture)
 {
     assert(picture->i_planes == 3);
 
-    plane_t tmp_plane = picture->p[1];
-    picture->p[1] = picture->p[2];
-    picture->p[2] = tmp_plane;
+    plane_t tmp_plane   = picture->p[U_PLANE];
+    picture->p[U_PLANE] = picture->p[V_PLANE];
+    picture->p[V_PLANE] = tmp_plane;
 }
 
 int picture_UpdatePlanes(picture_t *picture, uint8_t *data, unsigned pitch)

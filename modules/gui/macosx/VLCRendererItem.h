@@ -2,7 +2,7 @@
  * VLCRendererItem.h: Wrapper class for vlc_renderer_item_t
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 421c88a42ca5fbd7ce353a6fc2d40edb4e7a4fd2 $
+ * $Id: 3660b90eb0ed54ab2acb0f4f692827f0297530bf $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -48,6 +48,8 @@
  The name of the renderer item
  */
 - (NSString*)name;
+
+- (NSString*)identifier;
 
 /**
  The iconURI of the renderer item

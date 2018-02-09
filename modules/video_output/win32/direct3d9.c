@@ -2,7 +2,7 @@
  * direct3d9.c: Windows Direct3D9 video output module
  *****************************************************************************
  * Copyright (C) 2006-2014 VLC authors and VideoLAN
- *$Id: 71b517a59d1a70acc5863276aefe15ffdd7b00e1 $
+ *$Id: d60e92e7ed59f17aa3593289a7c197c1b355b29f $
  *
  * Authors: Martell Malone <martellmalone@gmail.com>,
  *          Damien Fouilleul <damienf@videolan.org>,
@@ -246,6 +246,9 @@ static int Open(vlc_object_t *object)
     vout_display_sys_t *sys;
 
     if ( !vd->obj.force && vd->source.projection_mode != PROJECTION_MODE_RECTANGULAR)
+        return VLC_EGENERIC; /* let a module who can handle it do it */
+
+    if ( !vd->obj.force && vd->source.mastering.max_luminance != 0)
         return VLC_EGENERIC; /* let a module who can handle it do it */
 
     OSVERSIONINFO winVer;
