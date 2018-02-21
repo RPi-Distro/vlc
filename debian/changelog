@@ -1,3 +1,10 @@
+vlc (2.2.8-0+deb9u1) UNRELEASED; urgency=medium
+
+  * New usptream release.
+  * Update ffmpeg to 2.8.14.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 21 Feb 2018 21:21:33 +0100
+
 vlc (2.2.7-1~deb9u1) stretch-security; urgency=high
 
   * New upstream release.
