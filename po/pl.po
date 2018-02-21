@@ -3,20 +3,18 @@
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
-# Daniel Krawczyk <daniekonepl@gmail.com>, 2014
-# Grzegorz Pruchniakowski <gootector@o2.pl>, 2013,2014
-# Marcin Szymański <cysioland@gmail.com>, 2013
+# Michał Trzebiatowski <michtrz@gmail.com>, 2007-2017
 # Michał Ryszard Balicki <balicki93@gmail.com>, 2015
-# Michał Trzebiatowski <hippie_1968@hotmail.com>, 2007-2017
-# robaks, 2013
-# filux <smartadminpl@gmail.com>, 2014
+# Grzegorz Pruchniakowski <gootector@o2.pl>, 2013,2014
+# Daniel Krawczyk <daniekonepl@gmail.com>, 2014
+# Marcin Szymański <cysioland@gmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: VLC - Trans\n"
+"Project-Id-Version: vlc 2.2.7\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-19 02:13+0000\n"
-"PO-Revision-Date: 2017-11-06 22:08+0000\n"
-"Last-Translator: M T <hippie_1968@hotmail.com>\n"
+"POT-Creation-Date: 2017-11-21 20:45+0100\n"
+"PO-Revision-Date: 2017-11-15 17:38+0100\n"
+"Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/yaron/vlc-trans/language/"
 "pl/)\n"
 "Language: pl\n"
@@ -4527,14 +4525,12 @@ msgid "Cycle through the available subtitle tracks."
 msgstr "Przeszukiwanie dostępnych ścieżek napisów."
 
 #: src/libvlc-module.c:1352
-#, fuzzy
 msgid "Toggle subtitles"
-msgstr "Napisy Telegazety"
+msgstr "Przełączanie napisów"
 
 #: src/libvlc-module.c:1353
-#, fuzzy
 msgid "Toggle subtitle track visibility."
-msgstr "Wybieranie kolejnych ścieżek napisów"
+msgstr "Przełączanie widoczności napisów ścieżki."
 
 #: src/libvlc-module.c:1354
 msgid "Cycle next program Service ID"
@@ -6548,9 +6544,8 @@ msgid "Layer C time interleaving"
 msgstr "Przeplatanie czasu warstwy C"
 
 #: modules/access/dtv/access.c:154
-#, fuzzy
 msgid "Stream identifier"
-msgstr "Identyfikator sieci"
+msgstr "Identyfikator strumienia"
 
 #: modules/access/dtv/access.c:156
 msgid "Pilot"
@@ -6844,9 +6839,8 @@ msgid "DVDnav Input"
 msgstr "Wejście DVDnav"
 
 #: modules/access/dvdnav.c:104
-#, fuzzy
 msgid "DVDnav demuxer"
-msgstr "Demuxer Nuv"
+msgstr "Demuxer DVDnav"
 
 #: modules/access/dvdnav.c:299 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
@@ -16364,15 +16358,13 @@ msgstr "Wykrywanie usługi"
 
 #: modules/gui/macosx/AddonManager.m:102
 #: modules/gui/qt4/dialogs/plugins.cpp:386
-#, fuzzy
 msgid "Interfaces"
-msgstr "Interfejs"
+msgstr "Interfejsy"
 
 #: modules/gui/macosx/AddonManager.m:104
 #: modules/gui/qt4/dialogs/plugins.cpp:389
-#, fuzzy
 msgid "Art and meta fetchers"
-msgstr "Moduł pobierania metadanych Lua"
+msgstr "Moduły pobierania okładki i metadanych"
 
 #: modules/gui/macosx/AddonManager.m:106 modules/gui/macosx/AddonManager.m:355
 #: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
@@ -16869,9 +16861,8 @@ msgid "Setup Streaming..."
 msgstr "Ustaw Strumieniowanie..."
 
 #: modules/gui/macosx/ConvertAndSave.m:163
-#, fuzzy
 msgid "Select Streaming Method"
-msgstr "Metoda strumieniowania"
+msgstr "Wybierz metodę przesyłania strumieniowego"
 
 #: modules/gui/macosx/ConvertAndSave.m:164
 msgid "Save as File"
@@ -18565,22 +18556,18 @@ msgid "No check was performed yet."
 msgstr "Nie przeprowadzono jeszcze sprawdzeń."
 
 #: modules/gui/macosx/simple_prefs.m:739
-#, fuzzy
 msgid "Lowest Latency"
 msgstr "Najniższa częstotliwość"
 
 #: modules/gui/macosx/simple_prefs.m:742
-#, fuzzy
 msgid "Low Latency"
 msgstr "Niska częstotliwość"
 
 #: modules/gui/macosx/simple_prefs.m:748
-#, fuzzy
 msgid "Higher Latency"
-msgstr "Najwyższa częstotliwość"
+msgstr "Wysoka częstotliwość"
 
 #: modules/gui/macosx/simple_prefs.m:751
-#, fuzzy
 msgid "Highest Latency"
 msgstr "Najwyższa częstotliwość"
 
@@ -21588,9 +21575,8 @@ msgid "Do you want to restart the playback where left off?"
 msgstr "Czy chcesz ponownie uruchomić odtwarzanie, gdzie zostało przerwane?"
 
 #: modules/gui/qt4/main_interface.cpp:390
-#, fuzzy
 msgid "&Continue"
-msgstr "Kontynuuj"
+msgstr "&Kontynuuj"
 
 #: modules/gui/qt4/main_interface.cpp:1312
 msgid "Control menu for the player"
@@ -23214,9 +23200,8 @@ msgid "LibNotify Notification Plugin"
 msgstr "Wtyczka powiadomienia LibNotify"
 
 #: modules/packetizer/avparser.h:49
-#, fuzzy
 msgid "avparser packetizer"
-msgstr "Pakietowiec kopiowania"
+msgstr "Pakietowiec avparser"
 
 #: modules/packetizer/copy.c:48
 msgid "Copy packetizer"
@@ -28938,23 +28923,29 @@ msgstr "Czy na pewno chcesz utworzyć ten strumień?"
 #~ msgid "Profile edition"
 #~ msgstr "Edycja profilu"
 
-#, fuzzy
+#~ msgid "FLAC"
+#~ msgstr "FLAC"
+
 #~ msgid "MP&4/MOV"
-#~ msgstr "MP4/MOV"
+#~ msgstr "MP&4/MOV"
 
 #~ msgid "Ogg/Ogm"
 #~ msgstr "Ogg/Ogm"
 
-#, fuzzy
+#~ msgid "M&KV"
+#~ msgstr "M&KV"
+
 #~ msgid "M&JPEG"
-#~ msgstr "MJPEG"
+#~ msgstr "M&JPEG"
 
 #~ msgid "MPEG-PS"
 #~ msgstr "MPEG-PS"
 
-#, fuzzy
+#~ msgid "F&LV"
+#~ msgstr "F&LV"
+
 #~ msgid "&MPEG-TS"
-#~ msgstr "MPEG-TS"
+#~ msgstr "&MPEG-TS"
 
 #~ msgid "RAW"
 #~ msgstr "RAW"
@@ -28965,15 +28956,17 @@ msgstr "Czy na pewno chcesz utworzyć ten strumień?"
 #~ msgid "Webm"
 #~ msgstr "Webm"
 
-#, fuzzy
 #~ msgid "MPEG &1"
-#~ msgstr "MPEG 1"
+#~ msgstr "MPEG &1"
 
 #~ msgid "AVI"
 #~ msgstr "AVI"
 
 #~ msgid "ASF/WMV"
 #~ msgstr "ASF/WMV"
+
+#~ msgid "MP&3"
+#~ msgstr "MP&3"
 
 #~ msgid "Features"
 #~ msgstr "Funkcje"
@@ -28987,9 +28980,8 @@ msgstr "Czy na pewno chcesz utworzyć ten strumień?"
 #~ msgid "Menus"
 #~ msgstr "Menu"
 
-#, fuzzy
 #~ msgid "Fra&me Rate"
-#~ msgstr "Liczba klatek"
+#~ msgstr "Liczba &klatek"
 
 #~ msgid "Same as source"
 #~ msgstr "Tak samo jak źródło"
@@ -29000,9 +28992,8 @@ msgstr "Czy na pewno chcesz utworzyć ten strumień?"
 #~ msgid "Custom options"
 #~ msgstr "Własne opcje"
 
-#, fuzzy
 #~ msgid "&Quality"
-#~ msgstr "Jakość"
+#~ msgstr "&Jakość"
 
 #~ msgid "Not Used"
 #~ msgstr "Nieużywany"
@@ -29019,13 +29010,11 @@ msgstr "Czy na pewno chcesz utworzyć ten strumień?"
 #~ msgid "px"
 #~ msgstr "px"
 
-#, fuzzy
 #~ msgid "Sa&mple Rate"
-#~ msgstr "Częstotliwość próbkowania"
+#~ msgstr "Częstotliwość &próbkowania"
 
-#, fuzzy
 #~ msgid "Profile &Name"
-#~ msgstr "Nazwa profilu"
+#~ msgstr "&Nazwa profilu"
 
 #~ msgid "Set up media sources to stream"
 #~ msgstr "Konfigurowanie źródeł multimedialnych dla strumieniowania"

@@ -3,10 +3,9 @@
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
-# Christoph Miebach <christoph.miebach@web.de>, 2013,2015-2016
+# Christoph Miebach <christoph.miebach@web.de>, 2013-2016
 # Daniel Winzen <d@winzen4.de>, 2013
-# Felix Kühne <fkuehne at users.sf.net>, 2003-2012, 2012
-# Felix Paul Kühne <fkuehne@gmail.com>, 2015
+# Felix Paul Kühne <fkuehne@gmail.com>, 2003-2015
 # Jens Seidel <jensseidel _at_ users.sf.net>, 2005
 # Kai Hermann <kai.uwe.hermann@gmail.com>, 2009
 # Lars Gaudian <lgaudian@me.com>, 2013
@@ -14,19 +13,18 @@
 # Martin Böh <martin-boeh@outlook.com>, 2013
 # Mathias C. Berens | welcome-soft <berens at welcome-soft.de>, 2006
 # Michael <inactive+banescar@transifex.com>, 2013
-# Michał Trzebiatowski <hippie_1968@hotmail.com>, 2010,2012-2014,2017
+# Michał Trzebiatowski <michtrz@gmail.com>, 2010-2017
 # Philipp Weissenbacher <philippweissenbacher _at_ aon.at>, 2004
 # thillux, 2013
 # Thomas Graf <tgr at reeler.org>, 2002
-# to_ba, 2014
 # Tobias Bannert <tobannert@gmail.com>, 2014-2016
 msgid ""
 msgstr ""
-"Project-Id-Version: VLC - Trans\n"
+"Project-Id-Version: vlc 2.2.7\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2017-11-19 02:13+0000\n"
-"PO-Revision-Date: 2017-10-11 23:37+0000\n"
-"Last-Translator: Michał Trzebiatowski <hippie_1968@hotmail.com>\n"
+"POT-Creation-Date: 2017-11-21 20:45+0100\n"
+"PO-Revision-Date: 2017-11-15 18:51+0100\n"
+"Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/yaron/vlc-trans/language/"
 "de/)\n"
 "Language: de\n"
@@ -4604,14 +4602,12 @@ msgid "Cycle through the available subtitle tracks."
 msgstr "Durch die verfügbaren Untertitelspuren wechseln."
 
 #: src/libvlc-module.c:1352
-#, fuzzy
 msgid "Toggle subtitles"
-msgstr "Teletextuntertitel"
+msgstr "Untertitel umschalten"
 
 #: src/libvlc-module.c:1353
-#, fuzzy
 msgid "Toggle subtitle track visibility."
-msgstr "Untertitelspur wechseln"
+msgstr "Anzeige der Untertitelspur umschalten"
 
 #: src/libvlc-module.c:1354
 msgid "Cycle next program Service ID"
@@ -6638,9 +6634,8 @@ msgid "Layer C time interleaving"
 msgstr "Layer C Zeit-Interleaving"
 
 #: modules/access/dtv/access.c:154
-#, fuzzy
 msgid "Stream identifier"
-msgstr "Netzwerkkennung"
+msgstr "Stream-Identifizierer"
 
 #: modules/access/dtv/access.c:156
 msgid "Pilot"
@@ -6933,9 +6928,8 @@ msgid "DVDnav Input"
 msgstr "DVDnav-Input"
 
 #: modules/access/dvdnav.c:104
-#, fuzzy
 msgid "DVDnav demuxer"
-msgstr "Nuv-Demuxer"
+msgstr "DVDnav-Demuxer"
 
 #: modules/access/dvdnav.c:299 modules/access/dvdread.c:200
 #: modules/access/dvdread.c:462 modules/access/dvdread.c:530
@@ -16529,15 +16523,13 @@ msgstr "Diensterkennung"
 
 #: modules/gui/macosx/AddonManager.m:102
 #: modules/gui/qt4/dialogs/plugins.cpp:386
-#, fuzzy
 msgid "Interfaces"
-msgstr "Oberfläche"
+msgstr "Interfaces"
 
 #: modules/gui/macosx/AddonManager.m:104
 #: modules/gui/qt4/dialogs/plugins.cpp:389
-#, fuzzy
 msgid "Art and meta fetchers"
-msgstr "Lua-Meta Zuordner"
+msgstr "Cover und Meta Zuordner"
 
 #: modules/gui/macosx/AddonManager.m:106 modules/gui/macosx/AddonManager.m:355
 #: modules/gui/macosx/MainMenu.m:352 modules/gui/macosx/MainMenu.m:353
@@ -17037,9 +17029,8 @@ msgid "Setup Streaming..."
 msgstr "Streaming-Einstellungen …"
 
 #: modules/gui/macosx/ConvertAndSave.m:163
-#, fuzzy
 msgid "Select Streaming Method"
-msgstr "Streaming-Methode"
+msgstr "Streaming-Methode auswählen"
 
 #: modules/gui/macosx/ConvertAndSave.m:164
 msgid "Save as File"
@@ -18745,22 +18736,18 @@ msgid "No check was performed yet."
 msgstr "Es wurde noch keine Prüfung durchgeführt."
 
 #: modules/gui/macosx/simple_prefs.m:739
-#, fuzzy
 msgid "Lowest Latency"
 msgstr "Niedrigste Latenz"
 
 #: modules/gui/macosx/simple_prefs.m:742
-#, fuzzy
 msgid "Low Latency"
 msgstr "Niedrige Latenz"
 
 #: modules/gui/macosx/simple_prefs.m:748
-#, fuzzy
 msgid "Higher Latency"
-msgstr "Höchste Latenz"
+msgstr "Hohe Latenz"
 
 #: modules/gui/macosx/simple_prefs.m:751
-#, fuzzy
 msgid "Highest Latency"
 msgstr "Höchste Latenz"
 
@@ -21797,9 +21784,8 @@ msgstr ""
 "Wollen Sie neustarten und die Wiedergabe mit dem restlichen Teil fortsetzen?"
 
 #: modules/gui/qt4/main_interface.cpp:390
-#, fuzzy
 msgid "&Continue"
-msgstr "Fortfahren"
+msgstr "&Fortfahren"
 
 #: modules/gui/qt4/main_interface.cpp:1312
 msgid "Control menu for the player"
@@ -23427,9 +23413,8 @@ msgid "LibNotify Notification Plugin"
 msgstr "LibNotify-Benachrichtigungsplugin"
 
 #: modules/packetizer/avparser.h:49
-#, fuzzy
 msgid "avparser packetizer"
-msgstr "Copy-Paketisierer"
+msgstr "AVParser-Paketisierer"
 
 #: modules/packetizer/copy.c:48
 msgid "Copy packetizer"
@@ -29236,23 +29221,29 @@ msgstr "Sind Sie sicher, dass Sie den Stream erstellen möchten?"
 #~ msgid "Profile edition"
 #~ msgstr "Profil ändern"
 
-#, fuzzy
+#~ msgid "FLAC"
+#~ msgstr "FLAC"
+
 #~ msgid "MP&4/MOV"
-#~ msgstr "MP4/MOV"
+#~ msgstr "MP&4/MOV"
 
 #~ msgid "Ogg/Ogm"
 #~ msgstr "Ogg/Ogm"
 
-#, fuzzy
+#~ msgid "M&KV"
+#~ msgstr "M&KV"
+
 #~ msgid "M&JPEG"
-#~ msgstr "MJPEG"
+#~ msgstr "M&JPEG"
 
 #~ msgid "MPEG-PS"
 #~ msgstr "MPEG-PS"
 
-#, fuzzy
+#~ msgid "F&LV"
+#~ msgstr "F&LV"
+
 #~ msgid "&MPEG-TS"
-#~ msgstr "MPEG-TS"
+#~ msgstr "&MPEG-TS"
 
 #~ msgid "RAW"
 #~ msgstr "RAW"
@@ -29263,15 +29254,17 @@ msgstr "Sind Sie sicher, dass Sie den Stream erstellen möchten?"
 #~ msgid "Webm"
 #~ msgstr "Webm"
 
-#, fuzzy
 #~ msgid "MPEG &1"
-#~ msgstr "MPEG 1"
+#~ msgstr "MPEG &1"
 
 #~ msgid "AVI"
 #~ msgstr "AVI"
 
 #~ msgid "ASF/WMV"
 #~ msgstr "ASF/WMV"
+
+#~ msgid "MP&3"
+#~ msgstr "MP&3"
 
 #~ msgid "Features"
 #~ msgstr "Funktionen"
@@ -29285,9 +29278,8 @@ msgstr "Sind Sie sicher, dass Sie den Stream erstellen möchten?"
 #~ msgid "Menus"
 #~ msgstr "Menüs"
 
-#, fuzzy
 #~ msgid "Fra&me Rate"
-#~ msgstr "Bildwiederholrate"
+#~ msgstr "Bildwiederhol&rate"
 
 #~ msgid "Same as source"
 #~ msgstr "Gleich, wie die Quelle"
@@ -29298,9 +29290,8 @@ msgstr "Sind Sie sicher, dass Sie den Stream erstellen möchten?"
 #~ msgid "Custom options"
 #~ msgstr "Benutzerdefinierte Optionen"
 
-#, fuzzy
 #~ msgid "&Quality"
-#~ msgstr "Qualität"
+#~ msgstr "&Qualität"
 
 #~ msgid "Not Used"
 #~ msgstr "Nicht benutzt"
@@ -29317,13 +29308,11 @@ msgstr "Sind Sie sicher, dass Sie den Stream erstellen möchten?"
 #~ msgid "px"
 #~ msgstr "px"
 
-#, fuzzy
 #~ msgid "Sa&mple Rate"
-#~ msgstr "Abtastrate"
+#~ msgstr "Abtast&rate"
 
-#, fuzzy
 #~ msgid "Profile &Name"
-#~ msgstr "Profilname"
+#~ msgstr "Profil&name"
 
 #~ msgid "Set up media sources to stream"
 #~ msgstr "Richten Sie Medienquellen zum Streamen ein"

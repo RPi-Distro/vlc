@@ -1,13 +1,24 @@
+Changes between 2.2.7 and 2.2.8:
+--------------------------------
+
+Demuxers:
+ * Fix AVI invalid pointer dereferences
+
+Translations updates
+
+
 Changes between 2.2.6 and 2.2.7:
 --------------------------------
 
 Decoders:
  * Fix flac heap write overflow on format change
  * Fix crash in libavcodec module (heap write out-of band) (CVE-2017-10699)
- * Fix AVI read/write overflow
  * Fix infinite loop in sami subtitle
  * Fix AAC 7.1 channels detection
+
+Demuxers:
  * Fix potential crash in ASX parser
+ * Fix AVI read/write overflow
 
 Mac OS X:
  * Fix compatibility with macOS High Sierra
@@ -44,8 +55,8 @@ Translations updates
 
 Misc:
  * Update for Soundcloud, liveleak and Youtube scripts
- * Fix potential out-of-band dereference in flac decoder
- * Fix potential out-of-band reads in mpeg packetizers
+ * Fix potential out-of-band dereference in flac decoder (CVE-2017-9300)
+ * Fix potential out-of-band reads in mpeg packetizers (CVE-2017-9301)
  * Fix infinite loop in subtitles demuxer
  * Fix incorrect memory free in ogg demuxer
  * Fix potential out-of-band reads in subtitle decoders and demuxers
