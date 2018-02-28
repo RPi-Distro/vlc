@@ -167,14 +167,11 @@ void DialogHandler::cancel(vlc_dialog_id *p_id)
 void DialogHandler::updateProgress(vlc_dialog_id *p_id, float f_value,
                                    const QString &text)
 {
-    DialogWrapper *p_wrapper =
-        static_cast<DialogWrapper *>(vlc_dialog_id_get_context(p_id));
+    ProgressDialogWrapper *p_wrapper =
+        static_cast<ProgressDialogWrapper *>(vlc_dialog_id_get_context(p_id));
 
-    ProgressDialogWrapper *p_progress_wrapper
-        = dynamic_cast<ProgressDialogWrapper *>(p_wrapper);
-
-    if (p_progress_wrapper != NULL)
-        p_progress_wrapper->updateProgress(f_value, text);
+    if (p_wrapper != NULL)
+        p_wrapper->updateProgress(f_value, text);
 }
 
 void DialogHandler::displayError(const QString &title, const QString &text)
@@ -290,9 +287,7 @@ void DialogHandler::displayProgress(vlc_dialog_id *p_id, const QString &title,
         new QProgressDialog(text, cancel.isEmpty() ? QString() : "&" + cancel,
                             0, b_indeterminate ? 0 : 1000);
     progress->setWindowTitle(title);
-    if (!cancel.isEmpty())
-        progress->setModal(true);
-    else
+    if (cancel.isEmpty())
     {
         /* not cancellable: remove close button */
         progress->setWindowFlags(Qt::Window | Qt::WindowTitleHint |

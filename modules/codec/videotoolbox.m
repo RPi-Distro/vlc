@@ -301,7 +301,7 @@ static bool FillReorderInfoH264(decoder_t *p_dec, const block_t *p_block,
                 sei.i_pic_struct = UINT8_MAX;
 
                 for(size_t i=0; i<i_sei_count; i++)
-                    HxxxParseSEI(sei_array[i].p_nal, sei_array[i].i_nal, 1,
+                    HxxxParseSEI(sei_array[i].p_nal, sei_array[i].i_nal, 2,
                                  ParseH264SEI, &sei);
 
                 p_info->i_num_ts = h264_get_num_ts(p_sps, &slice, sei.i_pic_struct,
@@ -643,7 +643,7 @@ static bool FillReorderInfoHEVC(decoder_t *p_dec, const block_t *p_block,
 
                 for(size_t i=0; i<i_sei_count; i++)
                     HxxxParseSEI(sei_array[i].p_nal, sei_array[i].i_nal,
-                                 1, ParseHEVCSEI, &sei);
+                                 2, ParseHEVCSEI, &sei);
 
                 p_info->i_poc = POC;
                 p_info->i_foc = POC; /* clearly looks wrong :/ */
@@ -721,6 +721,20 @@ static bool LateStartHEVC(decoder_t *p_dec)
 
 static bool CodecSupportedHEVC(decoder_t *p_dec)
 {
+#if !TARGET_OS_IPHONE
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    if (p_sys->i_forced_cvpx_format == 0)
+    {
+        /* Force P010 chroma instead of RGBA in order to improve performances. */
+        uint8_t i_profile, i_level;
+        if (hxxx_helper_get_current_profile_level(&p_sys->hh, &i_profile,
+                                                  &i_level))
+            return true;
+        if (i_profile == HEVC_PROFILE_MAIN_10)
+            p_sys->i_forced_cvpx_format = 'x420'; /* kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange */
+    }
+#endif
     return true;
 }
 
@@ -1973,6 +1987,11 @@ static int UpdateVideoFormat(decoder_t *p_dec, CVPixelBufferRef imageBuffer)
             p_dec->fmt_out.i_codec = VLC_CODEC_CVPX_NV12;
             assert(CVPixelBufferIsPlanar(imageBuffer) == true);
             break;
+        case 'xf20': /* kCVPixelFormatType_420YpCbCr10BiPlanarFullRange */
+        case 'x420': /* kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange */
+            p_dec->fmt_out.i_codec = VLC_CODEC_CVPX_P010;
+            assert(CVPixelBufferIsPlanar(imageBuffer) == true);
+            break;
         case kCVPixelFormatType_420YpCbCr8Planar:
             p_dec->fmt_out.i_codec = VLC_CODEC_CVPX_I420;
             assert(CVPixelBufferIsPlanar(imageBuffer) == true);
@@ -1985,6 +2004,7 @@ static int UpdateVideoFormat(decoder_t *p_dec, CVPixelBufferRef imageBuffer)
             p_dec->p_sys->vtsession_status = VTSESSION_STATUS_ABORT;
             return -1;
     }
+    p_dec->fmt_out.video.i_chroma = p_dec->fmt_out.i_codec;
     if (decoder_UpdateVideoFormat(p_dec) != 0)
     {
         p_dec->p_sys->vtsession_status = VTSESSION_STATUS_ABORT;

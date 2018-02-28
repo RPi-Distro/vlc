@@ -1,6 +1,6 @@
 # Qt
 
-QT_VERSION := 5.6.2
+QT_VERSION := 5.6.3
 QT_URL := https://download.qt.io/official_releases/qt/5.6/$(QT_VERSION)/submodules/qtbase-opensource-src-$(QT_VERSION).tar.xz
 
 ifdef HAVE_MACOSX
@@ -22,8 +22,9 @@ $(TARBALLS)/qt-$(QT_VERSION).tar.xz:
 qt: qt-$(QT_VERSION).tar.xz .sum-qt
 	$(UNPACK)
 	mv qtbase-opensource-src-$(QT_VERSION) qt-$(QT_VERSION)
-	$(APPLY) $(SRC)/qt/0001-Windows-QPA-Reimplement-calculation-of-window-frames_56.patch  
+	$(APPLY) $(SRC)/qt/0001-Windows-QPA-Reimplement-calculation-of-window-frames_56.patch
 	$(APPLY) $(SRC)/qt/0002-Windows-QPA-Use-new-EnableNonClientDpiScaling-for-Wi_56.patch
+	$(APPLY) $(SRC)/qt/0003-QPA-prefer-lower-value-when-rounding-fractional-scaling.patch
 	$(APPLY) $(SRC)/qt/systray-no-sound.patch
 	$(MOVE)
 

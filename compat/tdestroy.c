@@ -3,7 +3,7 @@
  * @brief replacement for GNU tdestroy()
  */
 /*****************************************************************************
- * Copyright (C) 2009 Rémi Denis-Courmont
+ * Copyright (C) 2009, 2018 Rémi Denis-Courmont
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -24,88 +24,77 @@
 # include "config.h"
 #endif
 
-#if defined(HAVE_SEARCH_H) && !defined(HAVE_TDESTROY) && defined(HAVE_TFIND)
-
-#include <stdlib.h>
 #include <assert.h>
+#include <stdlib.h>
+#ifdef HAVE_SEARCH_H
+# include <search.h>
+#endif
 
-#include <vlc_common.h>
-#include <search.h>
-
-static struct
+#ifdef HAVE_TFIND
+static __thread struct
 {
     const void **tab;
     size_t count;
-    vlc_mutex_t lock;
-} list = { NULL, 0, VLC_STATIC_MUTEX };
+} list = { NULL, 0 };
 
-static void list_nodes (const void *node, const VISIT which, const int depth)
+static void list_nodes(const void *node, const VISIT which, const int depth)
 {
     (void) depth;
 
     if (which != postorder && which != leaf)
         return;
 
-    const void **tab = realloc (list.tab, sizeof (*tab) * (list.count + 1));
-    if (unlikely(tab == NULL))
-        abort ();
+    const void **tab = realloc(list.tab, sizeof (*tab) * (list.count + 1));
+    if (tab == NULL)
+        abort();
 
     tab[list.count] = *(const void **)node;
     list.tab = tab;
     list.count++;
 }
 
-static struct
-{
-    const void *node;
-    vlc_mutex_t lock;
-} smallest = { NULL, VLC_STATIC_MUTEX };
+static __thread const void *smallest;
 
-static int cmp_smallest (const void *a, const void *b)
+static int cmp_smallest(const void *a, const void *b)
 {
     if (a == b)
         return 0;
-    if (a == smallest.node)
+    if (a == smallest)
         return -1;
-    if (likely(b == smallest.node))
+    if (b == smallest)
         return +1;
-    abort ();
+    abort();
 }
 
-void vlc_tdestroy (void *root, void (*freenode) (void *))
+void tdestroy(void *root, void (*freenode)(void *))
 {
     const void **tab;
     size_t count;
 
-    assert (freenode != NULL);
+    assert(freenode != NULL);
 
     /* Enumerate nodes in order */
-    vlc_mutex_lock (&list.lock);
-    assert (list.count == 0);
-    twalk (root, list_nodes);
+    assert(list.count == 0);
+    twalk(root, list_nodes);
     tab = list.tab;
     count = list.count;
     list.tab = NULL;
     list.count = 0;
-    vlc_mutex_unlock (&list.lock);
 
     /* Destroy the tree */
-    vlc_mutex_lock (&smallest.lock);
     for (size_t i = 0; i < count; i++)
     {
-         void *node  = tab[i];
+         void *node = (void *)(tab[i]);
 
-         smallest.node = node;
-         node = tdelete (node, &root, cmp_smallest);
-         assert (node != NULL);
+         smallest = node;
+         node = tdelete(node, &root, cmp_smallest);
+         assert(node != NULL);
     }
-    vlc_mutex_unlock (&smallest.lock);
     assert (root == NULL);
 
     /* Destroy the nodes */
     for (size_t i = 0; i < count; i++)
-         freenode ((void *)(tab[i]));
-    free (tab);
+         freenode((void *)(tab[i]));
+    free(tab);
 }
-
-#endif
+#endif /* HAVE_TFIND */

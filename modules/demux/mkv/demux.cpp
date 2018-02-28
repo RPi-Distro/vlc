@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 98092eed44c84c8a8a163f8cdd6d085663f24cab $
+ * $Id: d42115b7f51e468b884c0ad5b3aad3a456b490ab $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -452,7 +452,7 @@ demux_sys_t::~demux_sys_t()
 bool demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, matroska_stream_c *p_stream1, bool b_initial )
 {
     int i_upper_lvl = 0;
-    EbmlElement *p_l0, *p_l1, *p_l2;
+    EbmlElement *p_l0;
     bool b_keep_stream = false, b_keep_segment = false;
 
     /* verify the EBML Header... it shouldn't be bigger than 1kB */
@@ -528,7 +528,10 @@ bool demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, matroska_stream_c *
 
         EbmlElement* p_l0_prev = p_l0;
 
-        if (p_l0->IsFiniteSize() )
+        bool b_seekable;
+        vlc_stream_Control( demuxer.s, STREAM_CAN_SEEK, &b_seekable );
+
+        if (p_l0->IsFiniteSize() && b_seekable )
         {
             p_l0->SkipData(p_stream1->estream, KaxMatroska_Context);
             p_l0 = p_stream1->estream.FindNextID(EBML_INFO(KaxSegment), UINT64_MAX);
@@ -610,8 +613,11 @@ bool demux_sys_t::PreloadLinked()
     if ( !p_current_vsegment )
         return false;
 
+    if ( unlikely(p_current_vsegment->CurrentEdition() == NULL) )
+        return false;
+
     /* Set current chapter */
-    p_current_vsegment->p_current_vchapter = p_current_vsegment->veditions[p_current_vsegment->i_current_edition]->getChapterbyTimecode(0);
+    p_current_vsegment->p_current_vchapter = p_current_vsegment->CurrentEdition()->getChapterbyTimecode(0);
     msg_Dbg( &demuxer, "NEW START CHAPTER uid=%" PRId64, p_current_vsegment->p_current_vchapter && p_current_vsegment->p_current_vchapter->p_chapter ?
                  p_current_vsegment->p_current_vchapter->p_chapter->i_uid : 0 );
 

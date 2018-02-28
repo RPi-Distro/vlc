@@ -2,7 +2,7 @@
  * VLCPlaylist.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 0045d6b43bca356dcb719509c4080518b8979644 $
+ * $Id: 024af45d087e64a2e67374c80cd0e57d9f9d5dad $
  *
  * Authors: Benjamin Pracht <bigben at videolab dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -96,9 +96,5 @@
  * @param b_start starts playback of first item if true
  */
 - (void)addPlaylistItems:(NSArray*)o_array withParentItemId:(int)i_plItemId atPos:(int)i_position startPlayback:(BOOL)b_start;
-
-
-- (void)continuePlaybackWhereYouLeftOff:(input_thread_t *)p_input_thread;
-- (void)storePlaybackPositionForItem:(input_thread_t *)p_input_thread;
 
 @end

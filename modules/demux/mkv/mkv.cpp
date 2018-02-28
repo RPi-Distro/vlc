@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008, 2010 VLC authors and VideoLAN
- * $Id: bbeba71471ad37302a4f27706271aa0329b16a1a $
+ * $Id: d9c5f912b8a1b60fb7f462716ea8722b4b173d61 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -332,7 +332,9 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         case DEMUX_GET_POSITION:
             pf = va_arg( args, double * );
             if ( p_sys->f_duration > 0.0 )
-                *pf = static_cast<double> (p_sys->i_pcr >= p_sys->i_start_pts ? p_sys->i_pcr : p_sys->i_start_pts ) / (1000.0 * p_sys->f_duration);
+                *pf = static_cast<double> (p_sys->i_pcr >= (p_sys->i_start_pts + p_sys->i_mk_chapter_time) ?
+                                               p_sys->i_pcr :
+                                               (p_sys->i_start_pts + p_sys->i_mk_chapter_time) ) / (1000.0 * p_sys->f_duration);
             return VLC_SUCCESS;
 
         case DEMUX_SET_POSITION:
@@ -738,8 +740,6 @@ static int Demux( demux_t *p_demux)
                 delete block;
                 return 1; // this block shall be ignored
             }
-
-            track.i_skip_until_fpos = -1;
         }
     }
 
@@ -813,8 +813,8 @@ mkv_track_t::mkv_track_t(enum es_format_category_e es_cat) :
   ,b_no_duration(false)
   ,i_default_duration(0)
   ,f_timecodescale(1.0)
-  ,i_last_dts(0)
-  ,i_skip_until_fpos(-1)
+  ,i_last_dts(VLC_TS_INVALID)
+  ,i_skip_until_fpos(std::numeric_limits<uint64_t>::max())
   ,f_fps(0)
   ,p_es(NULL)
   ,i_original_rate(0)

@@ -27,7 +27,7 @@ namespace adaptive
 {
     namespace http
     {
-        class Socket;
+        class Transport;
 
         class ConnectionParams
         {

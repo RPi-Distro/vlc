@@ -196,7 +196,7 @@ struct PrioritizedAbstractStream
     AbstractStream *st;
 };
 
-static bool streamCompare(PrioritizedAbstractStream a,  PrioritizedAbstractStream b)
+static bool streamCompare(const PrioritizedAbstractStream &a,  const PrioritizedAbstractStream &b)
 {
     if( a.status >= b.status ) /* Highest prio is higer value in enum */
     {
@@ -669,7 +669,7 @@ void PlaylistManager::Run()
         {
             mtime_t i_deadline = mdate();
             if(i_return == AbstractStream::buffering_ongoing)
-                i_deadline += (CLOCK_FREQ / 20);
+                i_deadline += (CLOCK_FREQ / 100);
             else if(i_return == AbstractStream::buffering_full)
                 i_deadline += (CLOCK_FREQ / 10);
             else if(i_return == AbstractStream::buffering_end)

@@ -2,7 +2,7 @@
  * VLCFSPanelController.m: macOS fullscreen controls window controller
  *****************************************************************************
  * Copyright (C) 2006-2016 VLC authors and VideoLAN
- * $Id: d5594304285cfaa7d9025d621965edd19727e4a2 $
+ * $Id: dd3e9ce578f9e7dd39834de9ee5a073a1f5939d9 $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -134,6 +134,12 @@ static NSString *kAssociatedFullscreenRect = @"VLCFullscreenAssociatedWindowRect
     [_volumeSlider setMaxValue:[[VLCCoreInteraction sharedInstance] maxVolume]];
     [_volumeSlider setIntValue:AOUT_VOLUME_DEFAULT];
     [_volumeSlider setDefaultValue:AOUT_VOLUME_DEFAULT];
+
+    /* Identifier to store the state of the remaining or total time label,
+     * this is the same identifier as used for the window playback cotrols
+     * so the state is shared between those.
+     */
+    [_remainingOrTotalTime setRemainingIdentifier:@"DisplayTimeAsTimeRemaining"];
 }
 
 #undef setupButton
@@ -301,6 +307,9 @@ static NSString *kAssociatedFullscreenRect = @"VLCFullscreenAssociatedWindowRect
 
 - (void)fadeIn
 {
+    if (!var_InheritBool(getIntf(), "macosx-fspanel"))
+        return;
+
     [NSAnimationContext beginGrouping];
     [[NSAnimationContext currentContext] setDuration:0.4f];
     [[self.window animator] setAlphaValue:1.0f];

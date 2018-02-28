@@ -4,7 +4,7 @@
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
  * Copyright (C) 2015 Steve Lhomme
- * $Id: f7ee9f75c8106ecc0fc87ac27b0065657add869d $
+ * $Id: 3efed0f1f0d7ef51e85983655ac7db3687742045 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -283,7 +283,7 @@ char *directx_va_GetDecoderName(const GUID *guid)
 
 /* */
 int directx_va_Setup(vlc_va_t *va, directx_sys_t *dx_sys, const AVCodecContext *avctx,
-                     const es_format_t *fmt)
+                     const es_format_t *fmt, int flag_xbox)
 {
     /* */
     if (FindVideoServiceConversion(va, dx_sys, fmt, avctx)) {
@@ -306,7 +306,11 @@ int directx_va_Setup(vlc_va_t *va, directx_sys_t *dx_sys, const AVCodecContext *
     case AV_CODEC_ID_HEVC:
         /* the HEVC DXVA2 spec asks for 128 pixel aligned surfaces to ensure
            all coding features have enough room to work with */
-        surface_alignment = 128;
+           /* On the Xbox 1/S, the decoder cannot do 4K aligned to 128 but is OK with 64 */
+        if (flag_xbox)
+            surface_alignment = 16;
+        else
+            surface_alignment = 128;
         surface_count += 16;
         break;
     case AV_CODEC_ID_H264:

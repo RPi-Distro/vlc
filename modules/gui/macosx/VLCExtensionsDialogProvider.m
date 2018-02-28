@@ -2,7 +2,7 @@
  * VLCExtensionsDialogProvider.m: Mac OS X Extensions Dialogs
  *****************************************************************************
  * Copyright (C) 2010-2015 VLC authors and VideoLAN
- * $Id: a96b439007d1e69a1a6105c31b0ac4a8e51f9954 $
+ * $Id: f85cf139f007c8d24fcc20a35e96d8b4452a9c36 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan org>
  *          Brendon Justin <brendonjustin@gmail.com>,
@@ -468,13 +468,17 @@ static void extensionDialogCallback(extension_dialog_t *p_ext_dialog,
 {
     assert(p_dialog);
 
-    VLCDialogWindow *dialogWindow = CFBridgingRelease(p_dialog->p_sys_intf);
+    /* FIXME: Creating the dialog, we CFBridgingRetain p_sys_intf but we can't
+     *        just CFBridgingRelease it here, as that causes a crash.
+     */
+    VLCDialogWindow *dialogWindow = (__bridge VLCDialogWindow*)p_dialog->p_sys_intf;
     if (!dialogWindow) {
         msg_Warn(getIntf(), "dialog window not found");
         return VLC_EGENERIC;
     }
 
     [dialogWindow setDelegate:nil];
+    [dialogWindow close];
     dialogWindow = nil;
 
     p_dialog->p_sys_intf = NULL;

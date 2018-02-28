@@ -2,7 +2,7 @@
  * podcast.c:  Podcast services discovery module
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: d5b390823321dd01375e8331331ee7a5eb25386b $
+ * $Id: a872cd63d00813f1d036cf4c15fd78946295e0ce $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -323,7 +323,7 @@ static void ParseUrls( services_discovery_t *p_sd, char *psz_urls )
 
             input_item_t *p_input;
             p_input = input_item_New( psz_urls, psz_urls );
-            input_item_AddOption( p_input, "demux=podcast", VLC_INPUT_OPTION_TRUSTED );
+            input_item_AddOption( p_input, "demux=directory", VLC_INPUT_OPTION_TRUSTED );
 
             TAB_APPEND( i_new_items, pp_new_items, p_input );
             services_discovery_AddItem( p_sd, p_input );
@@ -398,7 +398,7 @@ static void ParseRequest( services_discovery_t *p_sd )
 
             input_item_t *p_input;
             p_input = input_item_New( psz_request, psz_request );
-            input_item_AddOption( p_input, "demux=podcast", VLC_INPUT_OPTION_TRUSTED );
+            input_item_AddOption( p_input, "demux=directory", VLC_INPUT_OPTION_TRUSTED );
 
             TAB_APPEND( p_sys->i_items, p_sys->pp_items, p_input );
             services_discovery_AddItem( p_sd, p_input );

@@ -255,29 +255,28 @@ am__libvlccore_la_SOURCES_DIST = libvlc.c libvlc.h libvlc-module.c \
 	missing.c revision.c version.c config/configuration.h \
 	config/core.c config/chain.c config/file.c config/help.c \
 	config/intf.c config/cmdline.c config/getopt.c \
-	config/vlc_getopt.h extras/libc.c extras/tdestroy.c \
-	modules/modules.h modules/modules.c modules/bank.c \
-	modules/cache.c modules/entry.c modules/textdomain.c \
-	interface/dialog.c interface/interface.c \
-	playlist/playlist_internal.h playlist/art.c playlist/art.h \
-	playlist/aout.c playlist/thread.c playlist/control.c \
-	playlist/engine.c playlist/fetcher.c playlist/fetcher.h \
-	playlist/sort.c playlist/loadsave.c playlist/preparser.c \
-	playlist/preparser.h playlist/tree.c playlist/item.c \
-	playlist/search.c playlist/services_discovery.c \
-	playlist/renderer.c input/item.c input/access.c input/clock.c \
-	input/control.c input/decoder.c input/demux.c \
-	input/demux_chained.c input/es_out.c input/es_out_timeshift.c \
-	input/event.c input/input.c input/info.h input/meta.c \
-	input/clock.h input/decoder.h input/demux.h input/es_out.h \
-	input/es_out_timeshift.h input/event.h input/item.h \
-	input/mrl_helpers.h input/stream.h input/input_internal.h \
-	input/input_interface.h input/vlm_internal.h input/vlm_event.h \
-	input/resource.h input/resource.c input/services_discovery.c \
-	input/stats.c input/stream.c input/stream_fifo.c \
-	input/stream_extractor.c input/stream_filter.c \
-	input/stream_memory.c input/subtitles.c input/var.c \
-	audio_output/aout_internal.h audio_output/common.c \
+	config/vlc_getopt.h extras/libc.c modules/modules.h \
+	modules/modules.c modules/bank.c modules/cache.c \
+	modules/entry.c modules/textdomain.c interface/dialog.c \
+	interface/interface.c playlist/playlist_internal.h \
+	playlist/art.c playlist/art.h playlist/aout.c \
+	playlist/thread.c playlist/control.c playlist/engine.c \
+	playlist/fetcher.c playlist/fetcher.h playlist/sort.c \
+	playlist/loadsave.c playlist/preparser.c playlist/preparser.h \
+	playlist/tree.c playlist/item.c playlist/search.c \
+	playlist/services_discovery.c playlist/renderer.c input/item.c \
+	input/access.c input/clock.c input/control.c input/decoder.c \
+	input/demux.c input/demux_chained.c input/es_out.c \
+	input/es_out_timeshift.c input/event.c input/input.c \
+	input/info.h input/meta.c input/clock.h input/decoder.h \
+	input/demux.h input/es_out.h input/es_out_timeshift.h \
+	input/event.h input/item.h input/mrl_helpers.h input/stream.h \
+	input/input_internal.h input/input_interface.h \
+	input/vlm_internal.h input/vlm_event.h input/resource.h \
+	input/resource.c input/services_discovery.c input/stats.c \
+	input/stream.c input/stream_fifo.c input/stream_extractor.c \
+	input/stream_filter.c input/stream_memory.c input/subtitles.c \
+	input/var.c audio_output/aout_internal.h audio_output/common.c \
 	audio_output/dec.c audio_output/filters.c \
 	audio_output/output.c audio_output/volume.c \
 	video_output/chrono.h video_output/control.c \
@@ -383,9 +382,9 @@ am__dirstamp = $(am__leading_dot)dirstamp
 am_libvlccore_la_OBJECTS = libvlc.lo libvlc-module.lo missing.lo \
 	revision.lo version.lo config/core.lo config/chain.lo \
 	config/file.lo config/help.lo config/intf.lo config/cmdline.lo \
-	config/getopt.lo extras/libc.lo extras/tdestroy.lo \
-	modules/modules.lo modules/bank.lo modules/cache.lo \
-	modules/entry.lo modules/textdomain.lo interface/dialog.lo \
+	config/getopt.lo extras/libc.lo modules/modules.lo \
+	modules/bank.lo modules/cache.lo modules/entry.lo \
+	modules/textdomain.lo interface/dialog.lo \
 	interface/interface.lo playlist/art.lo playlist/aout.lo \
 	playlist/thread.lo playlist/control.lo playlist/engine.lo \
 	playlist/fetcher.lo playlist/sort.lo playlist/loadsave.lo \
@@ -1685,28 +1684,28 @@ libvlccore_la_SOURCES = libvlc.c libvlc.h libvlc-module.c missing.c \
 	revision.c version.c config/configuration.h config/core.c \
 	config/chain.c config/file.c config/help.c config/intf.c \
 	config/cmdline.c config/getopt.c config/vlc_getopt.h \
-	extras/libc.c extras/tdestroy.c modules/modules.h \
-	modules/modules.c modules/bank.c modules/cache.c \
-	modules/entry.c modules/textdomain.c interface/dialog.c \
-	interface/interface.c playlist/playlist_internal.h \
-	playlist/art.c playlist/art.h playlist/aout.c \
-	playlist/thread.c playlist/control.c playlist/engine.c \
-	playlist/fetcher.c playlist/fetcher.h playlist/sort.c \
-	playlist/loadsave.c playlist/preparser.c playlist/preparser.h \
-	playlist/tree.c playlist/item.c playlist/search.c \
-	playlist/services_discovery.c playlist/renderer.c input/item.c \
-	input/access.c input/clock.c input/control.c input/decoder.c \
-	input/demux.c input/demux_chained.c input/es_out.c \
-	input/es_out_timeshift.c input/event.c input/input.c \
-	input/info.h input/meta.c input/clock.h input/decoder.h \
-	input/demux.h input/es_out.h input/es_out_timeshift.h \
-	input/event.h input/item.h input/mrl_helpers.h input/stream.h \
-	input/input_internal.h input/input_interface.h \
-	input/vlm_internal.h input/vlm_event.h input/resource.h \
-	input/resource.c input/services_discovery.c input/stats.c \
-	input/stream.c input/stream_fifo.c input/stream_extractor.c \
-	input/stream_filter.c input/stream_memory.c input/subtitles.c \
-	input/var.c audio_output/aout_internal.h audio_output/common.c \
+	extras/libc.c modules/modules.h modules/modules.c \
+	modules/bank.c modules/cache.c modules/entry.c \
+	modules/textdomain.c interface/dialog.c interface/interface.c \
+	playlist/playlist_internal.h playlist/art.c playlist/art.h \
+	playlist/aout.c playlist/thread.c playlist/control.c \
+	playlist/engine.c playlist/fetcher.c playlist/fetcher.h \
+	playlist/sort.c playlist/loadsave.c playlist/preparser.c \
+	playlist/preparser.h playlist/tree.c playlist/item.c \
+	playlist/search.c playlist/services_discovery.c \
+	playlist/renderer.c input/item.c input/access.c input/clock.c \
+	input/control.c input/decoder.c input/demux.c \
+	input/demux_chained.c input/es_out.c input/es_out_timeshift.c \
+	input/event.c input/input.c input/info.h input/meta.c \
+	input/clock.h input/decoder.h input/demux.h input/es_out.h \
+	input/es_out_timeshift.h input/event.h input/item.h \
+	input/mrl_helpers.h input/stream.h input/input_internal.h \
+	input/input_interface.h input/vlm_internal.h input/vlm_event.h \
+	input/resource.h input/resource.c input/services_discovery.c \
+	input/stats.c input/stream.c input/stream_fifo.c \
+	input/stream_extractor.c input/stream_filter.c \
+	input/stream_memory.c input/subtitles.c input/var.c \
+	audio_output/aout_internal.h audio_output/common.c \
 	audio_output/dec.c audio_output/filters.c \
 	audio_output/output.c audio_output/volume.c \
 	video_output/chrono.h video_output/control.c \
@@ -1877,8 +1876,6 @@ extras/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) extras/$(DEPDIR)
 	@: > extras/$(DEPDIR)/$(am__dirstamp)
 extras/libc.lo: extras/$(am__dirstamp) \
-	extras/$(DEPDIR)/$(am__dirstamp)
-extras/tdestroy.lo: extras/$(am__dirstamp) \
 	extras/$(DEPDIR)/$(am__dirstamp)
 modules/$(am__dirstamp):
 	@$(MKDIR_P) modules
@@ -2395,7 +2392,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@darwin/$(DEPDIR)/specific.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@darwin/$(DEPDIR)/thread.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@extras/$(DEPDIR)/libc.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@extras/$(DEPDIR)/tdestroy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@input/$(DEPDIR)/access.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@input/$(DEPDIR)/clock.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@input/$(DEPDIR)/control.Plo@am__quote@

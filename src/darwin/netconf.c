@@ -2,7 +2,7 @@
  * netconf.c : Network configuration
  *****************************************************************************
  * Copyright (C) 2013 VLC authors and VideoLAN
- * $Id: d5f66664a49eda91640cdf2c829739bd493e8d83 $
+ * $Id: 6ab9044319325b7463e5a94f395b57f69c7541ad $
  *
  * Authors: Felix Paul Kühne <fkuehne # videolan org>
  *
@@ -62,11 +62,8 @@ char *vlc_getProxyUrl(const char *url)
             char host_buffer[4096];
             memset(host_buffer, 0, sizeof(host_buffer));
             if (CFStringGetCString(proxyCFstr, host_buffer, sizeof(host_buffer)
-                                   - 1, kCFStringEncodingUTF8)) {
-                char buffer[4096];
-                sprintf(buffer, "%s:%d", host_buffer, port);
-                proxy_url = strdup(buffer);
-            }
+                                   - 1, kCFStringEncodingUTF8))
+                asprintf(&proxy_url, "http://%s:%d", host_buffer, port);
         }
 
         CFRelease(dicRef);

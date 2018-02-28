@@ -2,7 +2,7 @@
  * caopengllayer.m: CAOpenGLLayer (Mac OS X) video output
  *****************************************************************************
  * Copyright (C) 2014-2017 VLC authors and VideoLAN
- * $Id: 982ed830a97bc3c83e108744e8b487cbc62f0352 $
+ * $Id: a8cffadb617c8d2845c66ce6c3db7434ff14fd46 $
  *
  * Authors: David Fuhrmann <david dot fuhrmann at googlemail dot com>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -238,6 +238,10 @@ static void Close (vlc_object_t *p_this)
             [sys->container removeVoutLayer:sys->cgLayer];
         else
             [sys->cgLayer removeFromSuperlayer];
+
+        if ([sys->cgLayer glContext])
+            CGLReleaseContext([sys->cgLayer glContext]);
+
         [sys->cgLayer release];
     }
 
@@ -261,9 +265,6 @@ static void Close (vlc_object_t *p_this)
         }
         vlc_object_release(sys->gl);
     }
-
-    if ([sys->cgLayer glContext])
-        CGLReleaseContext([sys->cgLayer glContext]);
 
     free(sys);
 }

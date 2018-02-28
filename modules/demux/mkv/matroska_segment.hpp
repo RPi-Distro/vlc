@@ -2,7 +2,7 @@
  * matroska_segment.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: c753644cc8794c7e5a6c418cb797e1e069bebfdf $
+ * $Id: 7c564d054f8dcf4c2289dea0779c9a618935ac4a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -141,8 +141,7 @@ public:
     bool PreloadClusters( uint64 i_cluster_position );
     void InformationCreate();
 
-    bool FastSeek( demux_t &, mtime_t i_mk_date, mtime_t i_mk_time_offset );
-    bool Seek( demux_t &, mtime_t i_mk_date, mtime_t i_mk_time_offset );
+    bool Seek( demux_t &, mtime_t i_mk_date, mtime_t i_mk_time_offset, bool b_accurate );
 
     int BlockGet( KaxBlock * &, KaxSimpleBlock * &, bool *, bool *, int64_t *);
 
@@ -172,7 +171,6 @@ private:
     bool TrackInit( mkv_track_t * p_tk );
     void ComputeTrackPriority();
     void EnsureDuration();
-    bool InternalSeek( demux_t &, mtime_t i_mk_date, mtime_t i_mk_time_offset, bool b_accurate );
 
     SegmentSeeker _seeker;
 

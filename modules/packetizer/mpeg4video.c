@@ -2,7 +2,7 @@
  * mpeg4video.c: mpeg 4 video packetizer
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: 1c33a3d02f44e11d50bc9ef46c27ed5df5c4ea1f $
+ * $Id: 8b26ed557d9785bee35360563588a0fd8bcc10cc $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -362,11 +362,13 @@ static int ParseVOL( decoder_t *p_dec, es_format_t *fmt,
 
     for( ;; )
     {
+        if( i_vol <= 5 )
+            return VLC_EGENERIC;
+
         if( p_vol[0] == 0x00 && p_vol[1] == 0x00 && p_vol[2] == 0x01 &&
             p_vol[3] >= 0x20 && p_vol[3] <= 0x2f ) break;
 
         p_vol++; i_vol--;
-        if( i_vol <= 4 ) return VLC_EGENERIC;
     }
 
     bs_init( &s, &p_vol[4], i_vol - 4 );

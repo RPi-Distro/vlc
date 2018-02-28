@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 46ba14cd68ea52e83cecd323def5a7a4ea267841 $
+ * $Id: 5589825f951db9345316720a5c839bb7ff277b03 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1171,12 +1171,12 @@ void matroska_segment_c::ParseChapterAtom( int i_level, KaxChapterAtom *ca, chap
         }
         E_CASE( KaxChapterTimeStart, start )
         {
-            vars.chapters.i_start_time = static_cast<uint64>( start ) / INT64_C(1000);
+            vars.chapters.i_start_time = static_cast<uint64>( start ) / (INT64_C(1000000000) / CLOCK_FREQ);
             debug( vars, "ChapterTimeStart=%" PRId64, vars.chapters.i_start_time );
         }
         E_CASE( KaxChapterTimeEnd, end )
         {
-            vars.chapters.i_end_time = static_cast<uint64>( end ) / INT64_C(1000);
+            vars.chapters.i_end_time = static_cast<uint64>( end ) / (INT64_C(1000000000) / CLOCK_FREQ);
             debug( vars, "ChapterTimeEnd=%" PRId64, vars.chapters.i_end_time );
         }
         E_CASE( KaxChapterDisplay, chapter_display )
@@ -1417,6 +1417,11 @@ bool matroska_segment_c::ParseCluster( KaxCluster *cluster, bool b_update_start_
         return false;
     }
 
+    bool b_seekable;
+    vlc_stream_Control( sys.demuxer.s, STREAM_CAN_SEEK, &b_seekable );
+    if (!b_seekable)
+        return false;
+
     try
     {
         EbmlElement *el;
@@ -1518,7 +1523,8 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
         }
         S_CASE("V_MPEG2") {
             vars.p_fmt->i_codec = VLC_CODEC_MPGV;
-            if (strstr(vars.obj->psz_muxing_application,"libmakemkv"))
+            if (vars.obj->psz_muxing_application != NULL &&
+                    strstr(vars.obj->psz_muxing_application,"libmakemkv"))
                 vars.p_fmt->b_packetized = false;
             fill_extra_data( vars.p_tk, 0 );
         }
@@ -1582,6 +1588,25 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
         }
         S_CASE("V_MPEGH/ISO/HEVC") {
             vars.p_tk->fmt.i_codec = VLC_CODEC_HEVC;
+
+            uint8_t* p_extra = (uint8_t*) vars.p_tk->p_extra_data;
+
+            /* HACK: if we found invalid format, made by mkvmerge < 16.0.0,
+             *       we try to fix it. They fixed it in 16.0.0. */
+            const char* app = vars.obj->psz_writing_application;
+            if( p_extra && p_extra[0] == 0 && app != NULL &&
+                    strncmp(app, "mkvmerge", strlen("mkvmerge")) == 0 )
+            {
+                int major_version;
+                if( sscanf(app, "mkvmerge v%d.", &major_version) && major_version < 16 )
+                {
+                    msg_Dbg(vars.p_demuxer,
+                            "Invalid HEVC reserved bits in mkv file"
+                            "made by mkvmerge < v16.0.0 detected, fixing it");
+                    p_extra[0] = 0x01;
+                }
+            }
+
             fill_extra_data( vars.p_tk, 0 );
         }
         S_CASE("V_QUICKTIME") {
@@ -1750,7 +1775,7 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
             vars.p_fmt->i_codec = VLC_CODEC_VORBIS;
             fill_extra_data( vars.p_tk, 0 );
         }
-        S_CASE("A_OPUS") {
+        static void A_OPUS__helper(HandlerPayload& vars) {
             vars.p_fmt->i_codec = VLC_CODEC_OPUS;
             vars.p_tk->b_no_duration = true;
             if( !vars.p_tk->fmt.audio.i_rate )
@@ -1769,6 +1794,8 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
                 ps, pkt, 2 ) )
                 msg_Err( vars.p_demuxer, "Couldn't pack OPUS headers");
         }
+        S_CASE("A_OPUS")                { A_OPUS__helper( vars ); }
+        S_CASE("A_OPUS/EXPERIMENTAL")   { A_OPUS__helper( vars ); }
         static void A_AAC_MPEG__helper(HandlerPayload& vars, int i_profile, bool sbr = false) {
             int i_srate;
 

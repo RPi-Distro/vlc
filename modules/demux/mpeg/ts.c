@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: 58311c02afbf395f4c5d860b8cae659bccaa217f $
+ * $Id: 8b8d28ed2cd034fad984419c599d76f633b0e84b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -196,6 +196,9 @@ static void PCRFixHandle( demux_t *, ts_pmt_t *, block_t * );
 #define TS_PACKET_SIZE_204 204
 #define TS_PACKET_SIZE_MAX 204
 #define TS_HEADER_SIZE 4
+
+#define PROBE_CHUNK_COUNT 500
+#define PROBE_MAX         (PROBE_CHUNK_COUNT * 10)
 
 static int DetectPacketSize( demux_t *p_demux, unsigned *pi_header_size, int i_offset )
 {
@@ -1978,8 +1981,6 @@ static int SeekToTime( demux_t *p_demux, const ts_pmt_t *p_pmt, int64_t i_scaled
     return VLC_SUCCESS;
 }
 
-#define PROBE_CHUNK_COUNT 250
-
 static int ProbeChunk( demux_t *p_demux, int i_program, bool b_end, int64_t *pi_pcr, bool *pb_found )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
@@ -2103,7 +2104,8 @@ int ProbeStart( demux_t *p_demux, int i_program )
 
         /* Go ahead one more chunk if end of file contained only stuffing packets */
         i_probe_count += PROBE_CHUNK_COUNT;
-    } while( i_pos > 0 && (i_pcr == -1 || !b_found) && i_probe_count < (2 * PROBE_CHUNK_COUNT) );
+    } while( i_pos > 0 && (i_pcr == -1 || !b_found) &&
+             i_probe_count < PROBE_MAX );
 
     if( vlc_stream_Seek( p_sys->stream, i_initial_pos ) )
         return VLC_EGENERIC;
@@ -2134,7 +2136,8 @@ int ProbeEnd( demux_t *p_demux, int i_program )
 
         /* Go ahead one more chunk if end of file contained only stuffing packets */
         i_probe_count += PROBE_CHUNK_COUNT;
-    } while( i_pos > 0 && (i_pcr == -1 || !b_found) && i_probe_count < (6 * PROBE_CHUNK_COUNT) );
+    } while( i_pos > 0 && (i_pcr == -1 || !b_found) &&
+             i_probe_count < PROBE_MAX );
 
     if( vlc_stream_Seek( p_sys->stream, i_initial_pos ) )
         return VLC_EGENERIC;
@@ -2189,8 +2192,13 @@ static void ProgramSetPCR( demux_t *p_demux, ts_pmt_t *p_pmt, mtime_t i_pcr )
         if( p_sys->b_access_control == false &&
             vlc_stream_Tell( p_sys->stream ) > p_pmt->i_last_dts_byte )
         {
-            p_pmt->i_last_dts = i_pcr;
-            p_pmt->i_last_dts_byte = vlc_stream_Tell( p_sys->stream );
+            if( p_pmt->i_last_dts_byte == 0 ) /* first run */
+                p_pmt->i_last_dts_byte = stream_Size( p_sys->stream );
+            else
+            {
+                p_pmt->i_last_dts = i_pcr;
+                p_pmt->i_last_dts_byte = vlc_stream_Tell( p_sys->stream );
+            }
         }
     }
 }

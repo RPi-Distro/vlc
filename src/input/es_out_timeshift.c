@@ -2,7 +2,7 @@
  * es_out_timeshift.c: Es Out timeshift.
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: c6dd83ebb825d3d0172cc25dd35591c2006c1e3b $
+ * $Id: e30f9239587ff44a51907c43367372c1e8eb434b $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org>
  *
@@ -743,6 +743,8 @@ static int ControlLocked( es_out_t *p_out, int i_query, va_list args )
     case ES_OUT_RESTART_ES_BY_ID:
     case ES_OUT_SET_ES_DEFAULT_BY_ID:
     case ES_OUT_GET_ES_OBJECTS_BY_ID:
+    case ES_OUT_STOP_ALL_ES:
+    case ES_OUT_START_ALL_ES:
     case ES_OUT_SET_DELAY:
     case ES_OUT_SET_RECORD_STATE:
     default:

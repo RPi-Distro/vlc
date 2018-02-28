@@ -449,6 +449,16 @@ AbstractStream::status AbstractStream::dequeue(mtime_t nz_deadline, mtime_t *pi_
     return AbstractStream::status_buffering;
 }
 
+std::string AbstractStream::getContentType()
+{
+    if (currentChunk == NULL && !eof)
+        currentChunk = segmentTracker->getNextChunk(!fakeesout->restarting(), connManager);
+    if(currentChunk)
+        return currentChunk->getContentType();
+    else
+        return std::string();
+}
+
 block_t * AbstractStream::readNextBlock()
 {
     if (currentChunk == NULL && !eof)
@@ -559,6 +569,41 @@ void AbstractStream::setTimeOffset(mtime_t i_offset)
     {
         fakeesout->setExpectedTimestampOffset(i_offset);
     }
+}
+
+AbstractDemuxer * AbstractStream::createDemux(const StreamFormat &format)
+{
+    AbstractDemuxer *ret = newDemux( p_realdemux, format,
+                                     fakeesout->getEsOut(), demuxersource );
+    if(ret && !ret->create())
+    {
+        delete ret;
+        ret = NULL;
+    }
+    else commandsqueue->Commit();
+
+    return ret;
+}
+
+AbstractDemuxer *AbstractStream::newDemux(demux_t *p_realdemux, const StreamFormat &format,
+                                          es_out_t *out, AbstractSourceStream *source) const
+{
+    AbstractDemuxer *ret = NULL;
+    switch((unsigned)format)
+    {
+        case StreamFormat::MP4:
+            ret = new Demuxer(p_realdemux, "mp4", out, source);
+            break;
+
+        case StreamFormat::MPEG2TS:
+            ret = new Demuxer(p_realdemux, "ts", out, source);
+            break;
+
+        default:
+        case StreamFormat::UNSUPPORTED:
+            break;
+    }
+    return ret;
 }
 
 void AbstractStream::trackerEvent(const SegmentTrackerEvent &event)

@@ -2,7 +2,7 @@
  * item.c : Playlist item creation/deletion/add/removal functions
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: 3f4e7821772e3bb9770213f893ab2c19645f41c9 $
+ * $Id: d2e98ff19547d79781466684a3a3669b6d757c60 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -37,7 +37,6 @@
 #include "playlist_internal.h"
 
 static void playlist_Preparse( playlist_t *, playlist_item_t * );
-static void ChangeToNode( playlist_t *p_playlist, playlist_item_t *p_item );
 
 static int RecursiveAddIntoParent (
                 playlist_t *p_playlist, playlist_item_t *p_parent,
@@ -280,12 +279,12 @@ playlist_item_t *playlist_ItemNewFromInput( playlist_t *p_playlist,
     {
         if( unlikely(p_item->i_id == INT_MAX) )
             p_item->i_id = 0;
-       
+
         p_item->i_id++;
 
         if( unlikely(p_item->i_id == p->i_last_playlist_id) )
             goto error; /* All IDs taken */
- 
+
         pp = tsearch( p_item, &p->id_tree, playlist_ItemCmpId );
         if( unlikely(pp == NULL) )
             goto error;
@@ -533,7 +532,8 @@ playlist_item_t * playlist_NodeAddInput( playlist_t *p_playlist,
     if( unlikely(p_item == NULL) )
         return NULL;
 
-    ARRAY_APPEND(p_playlist->items, p_item);
+    if( p_input->i_type != ITEM_TYPE_NODE )
+        ARRAY_APPEND(p_playlist->items, p_item);
 
     playlist_NodeInsert( p_parent, p_item, i_pos );
     playlist_SendAddNotify( p_playlist, p_item );

@@ -2,7 +2,7 @@
  * VLCMainWindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 93f230394d7eaf40b3f5802d0dbc95a31dbda2d2 $
+ * $Id: 57dc4d4d5f4e3add4e8595584ab338156611a65a $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -277,9 +277,7 @@ static const float f_min_window_height = 307.;
 
     /* restore split view */
     f_lastLeftSplitViewWidth = 200;
-    /* trick NSSplitView implementation, which pretends to know better than us */
-    if (!var_InheritBool(getIntf(), "macosx-show-sidebar"))
-        [self performSelector:@selector(toggleLeftSubSplitView) withObject:nil afterDelay:0.05];
+    [[[VLCMain sharedInstance] mainMenu] updateSidebarMenuItem: ![_splitView isSubviewCollapsed:_splitViewLeft]];
 }
 
 #pragma mark -
@@ -516,7 +514,6 @@ static const float f_min_window_height = 307.;
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
-    config_PutInt(getIntf(), "macosx-show-sidebar", ![_splitView isSubviewCollapsed:_splitViewLeft]);
     [self saveFrameUsingName:[self frameAutosaveName]];
 }
 
@@ -833,8 +830,7 @@ static const float f_min_window_height = 307.;
 - (void)mainSplitViewDidResizeSubviews:(id)object
 {
     f_lastLeftSplitViewWidth = [_splitViewLeft frame].size.width;
-    config_PutInt(getIntf(), "macosx-show-sidebar", ![_splitView isSubviewCollapsed:_splitViewLeft]);
-    [[[VLCMain sharedInstance] mainMenu] updateSidebarMenuItem];
+    [[[VLCMain sharedInstance] mainMenu] updateSidebarMenuItem: ![_splitView isSubviewCollapsed:_splitViewLeft]];
 }
 
 - (void)toggleLeftSubSplitView
@@ -844,7 +840,8 @@ static const float f_min_window_height = 307.;
         [_splitView setPosition:f_lastLeftSplitViewWidth ofDividerAtIndex:0];
     else
         [_splitView setPosition:[_splitView minPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
-    [[[VLCMain sharedInstance] mainMenu] updateSidebarMenuItem];
+
+    [[[VLCMain sharedInstance] mainMenu] updateSidebarMenuItem: ![_splitView isSubviewCollapsed:_splitViewLeft]];
 }
 
 #pragma mark -

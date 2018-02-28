@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 1b037b0d96f0bd790f686377c2bd713072e9a4ed $
+ * $Id: 374b930269b32c9f75d914f411e3ae551f994323 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1845,7 +1845,8 @@ static mtime_t AVI_GetDPTS( avi_track_t *tk, int64_t i_count )
     if( !tk->i_rate )
         return i_dpts;
 
-    i_dpts = AVI_Rescale( CLOCK_FREQ * i_count, tk->i_rate, tk->i_scale );
+    if( tk->i_scale )
+        i_dpts = AVI_Rescale( CLOCK_FREQ * i_count, tk->i_rate, tk->i_scale );
 
     if( tk->i_samplesize )
     {

@@ -2,7 +2,7 @@
  * toolbar.cpp : ToolbarEdit dialog
  ****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: 07196cc113f75b9082f8a15ab864d06085bc1a98 $
+ * $Id: b71dfe5d9700a62bb4d2039ab97a43008f8ae034 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -315,9 +315,18 @@ void PreviewWidget::paintEvent( QPaintEvent * )
     int i_total = 0, i_offset = 0, i;
     QPainter painter( this );
     QPixmap pixmaps[3];
+
     for( int i=0; i<3; i++ )
     {
         pixmaps[i] = bars[i]->grab( bars[i]->contentsRect() );
+        /* Because non shown widgets do not have their bitmap updated, we need
+           to force redraw to grab a pixmap matching layout size */
+        if( pixmaps[i].size() != bars[i]->contentsRect().size() )
+        {
+            bars[i]->layout()->invalidate();
+            pixmaps[i] = bars[i]->grab( bars[i]->contentsRect() );
+        }
+
         for( int j=0; j < bars[i]->layout()->count(); j++ )
         {
             QLayoutItem *item = bars[i]->layout()->itemAt( j );

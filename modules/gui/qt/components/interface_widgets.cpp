@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: a640424ee9b1815426bf16e899cd463e55184222 $
+ * $Id: 9f67e30ebe9447c46ad14fdf41389c902d6e1397 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -943,7 +943,8 @@ TimeLabel::TimeLabel( intf_thread_t *_p_intf, TimeLabel::Display _displayType  )
 
 void TimeLabel::setRemainingTime( bool remainingTime )
 {
-    b_remainingTime = remainingTime;
+    if (displayType != TimeLabel::Elapsed)
+        b_remainingTime = remainingTime;
 }
 
 void TimeLabel::setDisplayPosition( float pos, int64_t t, int length )

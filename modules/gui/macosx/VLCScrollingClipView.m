@@ -2,7 +2,7 @@
  * VLCScrollingClipView.m: NSClipView subclass that automatically scrolls
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: e058809f1d9260523b521692ba008ff385b305e9 $
+ * $Id: c55141aa6fd16a60a2672f24bc8fe0a50cb5328d $
  *
  * Author: Marvin Scholz <epirat07@gmail.com>
  *
@@ -31,7 +31,7 @@
 - (void)startScrolling {
     // Start our timer unless running
     if (!scrollTimer) {
-        scrollTimer = [NSTimer scheduledTimerWithTimeInterval: 1/6
+        scrollTimer = [NSTimer scheduledTimerWithTimeInterval:0.025
                                                        target:self
                                                      selector:@selector(scrollTick:)
                                                      userInfo:nil

@@ -2,7 +2,7 @@
  * subsdelay.c : Subsdelay plugin for vlc
  *****************************************************************************
  * Copyright © 2011 VideoLAN
- * $Id: c0b07da8af26e54bb2203f51bdfa11e29c546764 $
+ * $Id: 5f05cf0fc28164afebbfc9b294da4196f5410dea $
  *
  * Authors: Yuval Tze <yuvaltze@gmail.com>
  *
@@ -271,8 +271,8 @@ static void SubsdelayEntryNewStopValueUpdated( subsdelay_heap_entry_t *p_entry )
  *****************************************************************************/
 
 vlc_module_begin()
-        set_shortname( _("Subsdelay") )
-        set_description( _("Subtitle delay") )
+        set_shortname( N_("Subsdelay") )
+        set_description( N_("Subtitle delay") )
         set_help( SUBSDELAY_HELP )
         set_capability( "sub filter", 0 )
         set_callbacks( SubsdelayCreate, SubsdelayDestroy )
