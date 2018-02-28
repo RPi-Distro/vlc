@@ -4,7 +4,7 @@
  * Copyright (C) 2007-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: dba513a944f313e25a8589e93c9638f2d996fc5a $
+ * $Id: 19b54f55a7fe323a832efe28182c29d36fdf649c $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Pierre-Luc Beaudoin <pierre-luc.beaudoin@savoirfairelinux.com>
@@ -464,7 +464,7 @@ QString ICEDestBox::getMRL( const QString& )
     m.option( "access", "shout" );
     m.option( "mux", "ogg" );
 
-    QString url = ICEPassEdit->text() + "@"
+    QString url = "//" + ICEPassEdit->text() + "@"
         + ICEEdit->text()
         + ":" + QString::number( ICEPort->value(), 10 )
         + "/" + ICEMountEdit->text();

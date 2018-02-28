@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 4b7db14ac498abab7f5952b942abe0e7c6685a42 $
+ * $Id: b86e684f8dc81fef1ef3d6c5c244b5b480091846 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -175,9 +175,6 @@ struct es_out_sys_t
 
     /* Used only to limit debugging output */
     int         i_prev_stream_level;
-
-    /* For positions updates */
-    double      f_prev_position;
 };
 
 static es_out_id_t *EsOutAdd    ( es_out_t *, const es_format_t * );
@@ -335,7 +332,6 @@ es_out_t *input_EsOutNew( input_thread_t *p_input, int i_rate )
     p_sys->b_buffering = true;
     p_sys->i_preroll_end = -1;
     p_sys->i_prev_stream_level = -1;
-    p_sys->f_prev_position = -1;
 
     return out;
 }
@@ -1259,8 +1255,9 @@ static void EsOutProgramMeta( es_out_t *out, int i_group, const vlc_meta_t *p_me
     {
         const char *psz_current_title = vlc_meta_Get( p_pgrm->p_meta, vlc_meta_Title );
         const char *psz_new_title = vlc_meta_Get( p_meta, vlc_meta_Title );
-        if( !psz_current_title != !psz_new_title ||
-            ( psz_new_title && psz_new_title && strcmp(psz_new_title, psz_current_title)) )
+        if( (psz_current_title != NULL && psz_new_title != NULL)
+            ? strcmp(psz_new_title, psz_current_title)
+            : (psz_current_title != psz_new_title) )
         {
             /* Remove old entries */
             char *psz_oldinfokey = EsOutProgramGetMetaName( p_pgrm );
@@ -2389,16 +2386,39 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
         }
         return VLC_SUCCESS;
     }
-    case ES_OUT_RESTART_ALL_ES:
+    case ES_OUT_STOP_ALL_ES:
     {
+        int *selected_es = vlc_alloc(p_sys->i_es + 1, sizeof(int));
+        if (!selected_es)
+            return VLC_ENOMEM;
+        selected_es[0] = p_sys->i_es;
         for( int i = 0; i < p_sys->i_es; i++ )
         {
             if( EsIsSelected( p_sys->es[i] ) )
             {
                 EsDestroyDecoder( out, p_sys->es[i] );
-                EsCreateDecoder( out, p_sys->es[i] );
+                selected_es[i + 1] = p_sys->es[i]->i_id;
+            }
+            else
+                selected_es[i + 1] = -1;
+        }
+        *va_arg( args, void **) = selected_es;
+        return VLC_SUCCESS;
+    }
+    case ES_OUT_START_ALL_ES:
+    {
+        int *selected_es = va_arg( args, void * );
+        int count = selected_es[0];
+        for( int i = 0; i < count; ++i )
+        {
+            int i_id = selected_es[i + 1];
+            if( i_id != -1 )
+            {
+                es_out_id_t *p_es = EsOutGetFromID( out, i_id );
+                EsCreateDecoder( out, p_es );
             }
         }
+        free(selected_es);
         return VLC_SUCCESS;
     }
 
@@ -2769,10 +2789,10 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
 
         input_SendEventLength( p_sys->p_input, i_length );
 
-        if( !p_sys->b_buffering && f_position != p_sys->f_prev_position )
+        if( !p_sys->b_buffering )
         {
             mtime_t i_delay;
-            p_sys->f_prev_position = f_position;
+
             /* Fix for buffering delay */
             if( !input_priv(p_sys->p_input)->p_sout ||
                 !input_priv(p_sys->p_input)->b_out_pace_control )

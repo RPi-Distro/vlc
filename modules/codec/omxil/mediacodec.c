@@ -121,6 +121,7 @@ struct decoder_sys_t
             picture_sys_t** pp_inflight_pictures;
             unsigned int i_inflight_pictures;
             timestamp_fifo_t *timestamp_fifo;
+            int i_mpeg_dar_num, i_mpeg_dar_den;
         } video;
         struct {
             date_t i_end_date;
@@ -143,6 +144,7 @@ static void CloseDecoder(vlc_object_t *);
 
 static int Video_OnNewBlock(decoder_t *, block_t **);
 static int VideoHXXX_OnNewBlock(decoder_t *, block_t **);
+static int VideoMPEG2_OnNewBlock(decoder_t *, block_t **);
 static int VideoVC1_OnNewBlock(decoder_t *, block_t **);
 static void Video_OnFlush(decoder_t *);
 static int Video_ProcessOutput(decoder_t *, mc_api_out *, picture_t **,
@@ -422,19 +424,32 @@ static int ParseExtra(decoder_t *p_dec)
     case VLC_CODEC_MP4V:
         if (!i_extra && p_sys->api.i_quirks & MC_API_VIDEO_QUIRKS_ADAPTIVE)
             p_sys->b_adaptive = true;
-        /* fall through */
-    default:
-        /* Set default CSD */
-        if (p_dec->fmt_in.i_extra)
-            return CSDDup(p_dec, p_dec->fmt_in.p_extra, p_dec->fmt_in.i_extra);
-        else
-            return VLC_SUCCESS;
+        break;
+    case VLC_CODEC_MPGV:
+    case VLC_CODEC_MP2V:
+        p_dec->p_sys->pf_on_new_block = VideoMPEG2_OnNewBlock;
+        break;
     }
+    /* Set default CSD */
+    if (p_dec->fmt_in.i_extra)
+        return CSDDup(p_dec, p_dec->fmt_in.p_extra, p_dec->fmt_in.i_extra);
+    else
+        return VLC_SUCCESS;
 }
 
 static int UpdateVout(decoder_t *p_dec)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
+
+    if ((p_dec->fmt_in.i_codec == VLC_CODEC_MPGV ||
+         p_dec->fmt_in.i_codec == VLC_CODEC_MP2V) &&
+        (p_sys->video.i_mpeg_dar_num * p_sys->video.i_mpeg_dar_den != 0))
+    {
+        p_dec->fmt_out.video.i_sar_num =
+            p_sys->video.i_mpeg_dar_num * p_dec->fmt_out.video.i_height;
+        p_dec->fmt_out.video.i_sar_den =
+            p_sys->video.i_mpeg_dar_den * p_dec->fmt_out.video.i_width;
+    }
 
     /* If MediaCodec can handle the rotation, reset the orientation to
      * Normal in order to ask the vout not to rotate. */
@@ -563,16 +578,14 @@ static int OpenDecoder(vlc_object_t *p_this, pf_MediaCodecApi_init pf_init)
             break;
         case VLC_CODEC_H263: mime = "video/3gpp"; break;
         case VLC_CODEC_MP4V: mime = "video/mp4v-es"; break;
+        case VLC_CODEC_MPGV:
+        case VLC_CODEC_MP2V:
+            mime = "video/mpeg2";
+            break;
         case VLC_CODEC_WMV3: mime = "video/x-ms-wmv"; break;
         case VLC_CODEC_VC1:  mime = "video/wvc1"; break;
         case VLC_CODEC_VP8:  mime = "video/x-vnd.on2.vp8"; break;
         case VLC_CODEC_VP9:  mime = "video/x-vnd.on2.vp9"; break;
-        /* FIXME: mpeg2 is disabled: sar num/den can't be updated from
-         * MediaCodec. Use avcodec instead that will update it. The proper
-         * solution is to update sar from a mpeg2 packetizer.
-         *
-         * case VLC_CODEC_MPGV: mime = "video/mpeg2"; break;
-         */
         }
     }
     else
@@ -614,6 +627,8 @@ static int OpenDecoder(vlc_object_t *p_this, pf_MediaCodecApi_init pf_init)
     p_sys->api.i_codec = p_dec->fmt_in.i_codec;
     p_sys->api.i_cat = p_dec->fmt_in.i_cat;
     p_sys->api.psz_mime = mime;
+    p_sys->video.i_mpeg_dar_num = 0;
+    p_sys->video.i_mpeg_dar_den = 0;
 
     if (pf_init(&p_sys->api) != 0)
     {
@@ -697,6 +712,12 @@ static int OpenDecoder(vlc_object_t *p_this, pf_MediaCodecApi_init pf_init)
                 p_sys->video.i_angle = 0;
 
             p_dec->fmt_out.video = p_dec->fmt_in.video;
+            if (p_dec->fmt_out.video.i_sar_num * p_dec->fmt_out.video.i_sar_den == 0)
+            {
+                p_dec->fmt_out.video.i_sar_num = 1;
+                p_dec->fmt_out.video.i_sar_den = 1;
+            }
+
             p_sys->video.i_input_width =
             p_dec->fmt_out.video.i_visible_width = p_dec->fmt_out.video.i_width;
             p_sys->video.i_input_height =
@@ -1580,6 +1601,39 @@ static int VideoHXXX_OnNewBlock(decoder_t *p_dec, block_t **pp_block)
     }
 
     return Video_OnNewBlock(p_dec, pp_block);
+}
+
+static int VideoMPEG2_OnNewBlock(decoder_t *p_dec, block_t **pp_block)
+{
+    if (pp_block == NULL || (*pp_block)->i_buffer <= 7)
+        return 1;
+
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    const int startcode = (*pp_block)->p_buffer[3];
+
+    /* DAR aspect ratio from the DVD MPEG2 standard */
+    static const int mpeg2_aspect[16][2] =
+    {
+        {0,0}, /* reserved */
+        {0,0}, /* DAR = 0:0 will result in SAR = 1:1 */
+        {4,3}, {16,9}, {221,100},
+        /* reserved */
+        {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0},
+        {0,0}, {0,0}
+    };
+
+    if (startcode == 0xB3 /* SEQUENCE_HEADER_STARTCODE */)
+    {
+        int mpeg_dar_code = (*pp_block)->p_buffer[7] >> 4;
+
+        if (mpeg_dar_code >= 16)
+            return 0;
+
+        p_sys->video.i_mpeg_dar_num = mpeg2_aspect[mpeg_dar_code][0];
+        p_sys->video.i_mpeg_dar_den = mpeg2_aspect[mpeg_dar_code][1];
+    }
+
+    return 1;
 }
 
 static int VideoVC1_OnNewBlock(decoder_t *p_dec, block_t **pp_block)

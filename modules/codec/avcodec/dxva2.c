@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 25de31de83748e72be1ee5883b8634773939e523 $
+ * $Id: 42f517212d3d45aa9f975eb2a1d73f4e8b2225e0 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -315,7 +315,7 @@ static int Open(vlc_va_t *va, AVCodecContext *ctx, enum PixelFormat pix_fmt,
     if (err!=VLC_SUCCESS)
         goto error;
 
-    err = directx_va_Setup(va, &sys->dx_sys, ctx, fmt);
+    err = directx_va_Setup(va, &sys->dx_sys, ctx, fmt, 0);
     if (err != VLC_SUCCESS)
         goto error;
 

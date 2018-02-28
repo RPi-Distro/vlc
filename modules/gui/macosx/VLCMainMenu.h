@@ -2,7 +2,7 @@
  *MainMenu.h: MacOS X interface module
  *****************************************************************************
  *Copyright (C) 2011-2018 Felix Paul Kühne
- *$Id: 777f681448ecfdc63e60bdadacdafeb9b81f4370 $
+ *$Id: 926604d4743238c2abc6cd4718bf6ddf95d15efa $
  *
  *Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -214,7 +214,7 @@
 - (void)setupMenus;
 - (void)setSubmenusEnabled:(BOOL)b_enabled;
 - (void)setRateControlsEnabled:(BOOL)b_enabled;
-- (void)updateSidebarMenuItem;
+- (void)updateSidebarMenuItem:(BOOL)show;
 
 - (IBAction)openAddonManager:(id)sender;
 

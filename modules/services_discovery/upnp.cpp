@@ -2,7 +2,7 @@
  * upnp.cpp :  UPnP discovery module (libupnp)
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: 82d43632f473d482fc6c1ba5f8eb036ec9b1b490 $
+ * $Id: ca2124ed156aaf0eaee1e3e1f4c464d8c83e506f $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -124,7 +124,6 @@ vlc_module_begin()
     set_capability( "services_discovery", 0 );
     set_callbacks( SD::Open, SD::Close );
 
-    set_description( "SAT>IP" )
     add_string( "satip-channelist", "ASTRA_19_2E", SATIP_CHANNEL_LIST,
                 SATIP_CHANNEL_LIST, false )
     change_string_list( ppsz_satip_channel_lists, ppsz_readible_satip_channel_lists )

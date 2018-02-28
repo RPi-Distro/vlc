@@ -399,7 +399,7 @@ am__DIST_COMMON = $(srcdir)/Makefile.in \
 	rewind.c sendmsg.c setenv.c sigwait.c sincos.c strcasecmp.c \
 	strcasestr.c strdup.c strlcpy.c strndup.c strnlen.c strnstr.c \
 	strsep.c strtof.c strtok_r.c strtoll.c strverscmp.c swab.c \
-	tfind.c timegm.c timespec_get.c vasprintf.c
+	tdestroy.c tfind.c timegm.c timespec_get.c vasprintf.c
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
@@ -1357,6 +1357,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/strtoll.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/strverscmp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/swab.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/tdestroy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/tfind.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/timegm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/timespec_get.Plo@am__quote@

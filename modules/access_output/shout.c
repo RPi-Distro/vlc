@@ -2,7 +2,7 @@
  * shout.c: This module forwards vorbis streams to an icecast server
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: 59a5fe3bd11329a2c153fa7f2343e05a410a05c1 $
+ * $Id: fbc81a0ddd91281584373aaa062001a12b4d35b1 $
  *
  * Authors: Daniel Fischer <dan at subsignal dot org>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -186,6 +186,15 @@ static int Open( vlc_object_t *p_this )
     vlc_UrlParse( &url , p_access->psz_path );
     if( url.i_port <= 0 )
         url.i_port = 8000;
+
+    if( url.psz_host == NULL )
+    {   /* Backward compatibility with bind@path syntax */
+        vlc_UrlClean( &url );
+        if( unlikely(asprintf( &psz_url, "//%s", p_access->psz_path ) == -1) )
+            return VLC_ENOMEM;
+        vlc_UrlParse( &url, psz_url );
+        free( psz_url );
+    }
 
     p_sys = p_access->p_sys = malloc( sizeof( sout_access_out_sys_t ) );
     if( !p_sys )

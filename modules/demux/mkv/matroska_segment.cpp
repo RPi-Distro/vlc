@@ -2,7 +2,7 @@
  * matroska_segment.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 75dfb3abd1ba013adb844e1ba07348ef42d97014 $
+ * $Id: 4ff15c75038ae49549d490ef8185e74633f2202d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -96,7 +96,7 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
 
     if( b_cues )
     {
-        msg_Err( &sys.demuxer, "There can be only 1 Cues per section." );
+        msg_Warn( &sys.demuxer, "There can be only 1 Cues per section." );
         return;
     }
 
@@ -166,21 +166,25 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
                                 VLC_UNUSED( kcbn_ptr );
                             }
 #if LIBMATROSKA_VERSION >= 0x010401
-                            else if( MKV_IS_ID( el, KaxCueRelativePosition ) )
+                            else if( MKV_CHECKED_PTR_DECL( ignored, KaxCueRelativePosition, el ) )
                             {
                                 // IGNORE
+                                ignored->ReadData( es.I_O() );
                             }
-                            else if( MKV_IS_ID( el, KaxCueBlockNumber ) )
+                            else if( MKV_CHECKED_PTR_DECL( ignored, KaxCueBlockNumber, el ) )
                             {
                                 // IGNORE
+                                ignored->ReadData( es.I_O() );
                             }
-                            else if( MKV_IS_ID( el, KaxCueReference ) )
+                            else if( MKV_CHECKED_PTR_DECL( ignored, KaxCueReference, el ) )
                             {
                                 // IGNORE
+                                ignored->ReadData( es.I_O(), SCOPE_ALL_DATA );
                             }
-                            else if( MKV_IS_ID( el, KaxCueDuration ) )
+                            else if( MKV_CHECKED_PTR_DECL( ignored, KaxCueDuration, el ) )
                             {
                                 /* For future use */
+                                ignored->ReadData( es.I_O() );
                             }
 #endif
                             else
@@ -409,6 +413,12 @@ void matroska_segment_c::LoadTags( KaxTags *tags )
                                 ktau_ptr->ReadData( es.I_O() );
                                 tag.i_uid = static_cast<uint64>( *ktau_ptr );
                                 msg_Dbg( &sys.demuxer, "|   |   + AttachmentUID: %" PRIu64, tag.i_uid);
+                            }
+                            if( MKV_CHECKED_PTR_DECL ( ktttv_ptr, KaxTagTargetType, el ) )
+                            {
+                                ktttv_ptr->ReadData( es.I_O() );
+
+                                msg_Dbg( &sys.demuxer, "|   |   + TargetType: %u", ktttv_ptr->GetValue().c_str());
                             }
                             else
                             {
@@ -791,28 +801,7 @@ bool matroska_segment_c::LoadSeekHeadItem( const EbmlCallbacks & ClassInfos, int
     return true;
 }
 
-bool matroska_segment_c::FastSeek( demux_t &demuxer, mtime_t i_mk_date, mtime_t i_mk_time_offset )
-{
-    if( InternalSeek( demuxer, i_mk_date, i_mk_time_offset, false ) )
-    {
-        sys.i_start_pts = sys.i_pts;
-        es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME, sys.i_start_pts );
-        return true;
-    }
-    return false;
-}
-
-bool matroska_segment_c::Seek( demux_t &demuxer, mtime_t i_mk_date, mtime_t i_mk_time_offset )
-{
-    if( InternalSeek( demuxer, i_mk_date, i_mk_time_offset, true ) )
-    {
-        es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME, sys.i_start_pts );
-        return true;
-    }
-    return false;
-}
-
-bool matroska_segment_c::InternalSeek( demux_t &demuxer, mtime_t i_absolute_mk_date, mtime_t i_mk_time_offset, bool b_accurate )
+bool matroska_segment_c::Seek( demux_t &demuxer, mtime_t i_absolute_mk_date, mtime_t i_mk_time_offset, bool b_accurate )
 {
     SegmentSeeker::tracks_seekpoint_t seekpoints;
 
@@ -828,7 +817,7 @@ bool matroska_segment_c::InternalSeek( demux_t &demuxer, mtime_t i_absolute_mk_d
     {
         mkv_track_t &track = *it->second;
 
-        track.i_skip_until_fpos = -1;
+        track.i_skip_until_fpos = std::numeric_limits<uint64_t>::max();
         if( track.i_last_dts > VLC_TS_INVALID )
             track.b_discontinuity = true;
         track.i_last_dts        = VLC_TS_INVALID;
@@ -878,21 +867,28 @@ bool matroska_segment_c::InternalSeek( demux_t &demuxer, mtime_t i_absolute_mk_d
             i_mk_seek_time  = it->second.pts;
         }
 
+        // blocks that will be not be read until this fpos
         if ( b_accurate )
             trackit->second->i_skip_until_fpos = it->second.fpos;
         else
-            trackit->second->i_skip_until_fpos = -1;
-        trackit->second->i_last_dts        = it->second.pts;
+            trackit->second->i_skip_until_fpos = std::numeric_limits<uint64_t>::max();
+        trackit->second->i_last_dts        = it->second.pts + i_mk_time_offset;
 
-        msg_Dbg( &sys.demuxer, "seek: preroll{ track: %u, pts: %" PRId64 ", fpos: %" PRIu64 " } ",
-          it->first, it->second.pts, it->second.fpos );
+        msg_Dbg( &sys.demuxer, "seek: preroll{ track: %u, pts: %" PRId64 ", fpos: %" PRIu64 " skip: %" PRIu64 "} ",
+          it->first, it->second.pts, it->second.fpos, trackit->second->i_skip_until_fpos );
     }
+
+    if ( i_seek_position == std::numeric_limits<SegmentSeeker::fptr_t>::max() )
+        return false;
 
     // propogate seek information //
 
-    sys.i_pcr       = VLC_TS_INVALID;
-    sys.i_pts       = VLC_TS_0 + i_mk_seek_time + i_mk_time_offset;
-    sys.i_start_pts = VLC_TS_0 + i_absolute_mk_date;
+    sys.i_pcr           = VLC_TS_INVALID;
+    sys.i_pts           = VLC_TS_0 + i_mk_seek_time + i_mk_time_offset;
+    if (b_accurate)
+        sys.i_start_pts = VLC_TS_0 + i_absolute_mk_date;
+    else
+        sys.i_start_pts = sys.i_pts;
 
     // make the jump //
 
@@ -903,6 +899,8 @@ bool matroska_segment_c::InternalSeek( demux_t &demuxer, mtime_t i_absolute_mk_d
     msg_Dbg( &sys.demuxer, "seek: preroll{ req: %" PRId64 ", start-pts: %" PRId64 ", start-fpos: %" PRIu64 "} ",
       sys.i_start_pts, sys.i_pts, i_seek_position );
 
+    // blocks that will be read and decoded but discarded until this pts
+    es_out_Control( sys.demuxer.out, ES_OUT_SET_NEXT_DISPLAY_TIME, sys.i_start_pts );
     return true;
 }
 
@@ -1052,7 +1050,12 @@ void matroska_segment_c::EnsureDuration()
         }
 
         if( MKV_IS_ID( el, KaxCluster ) )
+        {
             i_last_cluster_pos = el->GetElementPosition();
+            if ( i_last_cluster_pos == cluster->GetElementPosition() )
+                // make sure our first Cluster has a timestamp
+                ParseCluster( cluster, false, SCOPE_PARTIAL_DATA );
+        }
     }
 
     // find the last timecode in the Cluster

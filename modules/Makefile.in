@@ -839,7 +839,7 @@ am_libadaptive_plugin_la_OBJECTS = demux/adaptive/playlist/libadaptive_plugin_la
 	demux/adaptive/http/libadaptive_plugin_la-Downloader.lo \
 	demux/adaptive/http/libadaptive_plugin_la-HTTPConnection.lo \
 	demux/adaptive/http/libadaptive_plugin_la-HTTPConnectionManager.lo \
-	demux/adaptive/http/libadaptive_plugin_la-Sockets.lo \
+	demux/adaptive/http/libadaptive_plugin_la-Transport.lo \
 	demux/adaptive/plumbing/libadaptive_plugin_la-CommandsQueue.lo \
 	demux/adaptive/plumbing/libadaptive_plugin_la-Demuxer.lo \
 	demux/adaptive/plumbing/libadaptive_plugin_la-FakeESOut.lo \
@@ -8883,8 +8883,8 @@ libadaptive_plugin_la_SOURCES =  \
 	demux/adaptive/http/HTTPConnection.hpp \
 	demux/adaptive/http/HTTPConnectionManager.cpp \
 	demux/adaptive/http/HTTPConnectionManager.h \
-	demux/adaptive/http/Sockets.hpp \
-	demux/adaptive/http/Sockets.cpp \
+	demux/adaptive/http/Transport.hpp \
+	demux/adaptive/http/Transport.cpp \
 	demux/adaptive/plumbing/CommandsQueue.cpp \
 	demux/adaptive/plumbing/CommandsQueue.hpp \
 	demux/adaptive/plumbing/Demuxer.cpp \
@@ -12750,7 +12750,7 @@ demux/adaptive/http/libadaptive_plugin_la-HTTPConnection.lo:  \
 demux/adaptive/http/libadaptive_plugin_la-HTTPConnectionManager.lo:  \
 	demux/adaptive/http/$(am__dirstamp) \
 	demux/adaptive/http/$(DEPDIR)/$(am__dirstamp)
-demux/adaptive/http/libadaptive_plugin_la-Sockets.lo:  \
+demux/adaptive/http/libadaptive_plugin_la-Transport.lo:  \
 	demux/adaptive/http/$(am__dirstamp) \
 	demux/adaptive/http/$(DEPDIR)/$(am__dirstamp)
 demux/adaptive/plumbing/$(am__dirstamp):
@@ -18631,7 +18631,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-Downloader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-HTTPConnection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-HTTPConnectionManager.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-Sockets.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-Transport.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/logic/$(DEPDIR)/libadaptive_plugin_la-AbstractAdaptationLogic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/logic/$(DEPDIR)/libadaptive_plugin_la-AlwaysBestAdaptationLogic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/logic/$(DEPDIR)/libadaptive_plugin_la-AlwaysLowestAdaptationLogic.Plo@am__quote@
@@ -22867,12 +22867,12 @@ demux/adaptive/http/libadaptive_plugin_la-HTTPConnectionManager.lo: demux/adapti
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libadaptive_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o demux/adaptive/http/libadaptive_plugin_la-HTTPConnectionManager.lo `test -f 'demux/adaptive/http/HTTPConnectionManager.cpp' || echo '$(srcdir)/'`demux/adaptive/http/HTTPConnectionManager.cpp
 
-demux/adaptive/http/libadaptive_plugin_la-Sockets.lo: demux/adaptive/http/Sockets.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libadaptive_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT demux/adaptive/http/libadaptive_plugin_la-Sockets.lo -MD -MP -MF demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-Sockets.Tpo -c -o demux/adaptive/http/libadaptive_plugin_la-Sockets.lo `test -f 'demux/adaptive/http/Sockets.cpp' || echo '$(srcdir)/'`demux/adaptive/http/Sockets.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-Sockets.Tpo demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-Sockets.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='demux/adaptive/http/Sockets.cpp' object='demux/adaptive/http/libadaptive_plugin_la-Sockets.lo' libtool=yes @AMDEPBACKSLASH@
+demux/adaptive/http/libadaptive_plugin_la-Transport.lo: demux/adaptive/http/Transport.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libadaptive_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT demux/adaptive/http/libadaptive_plugin_la-Transport.lo -MD -MP -MF demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-Transport.Tpo -c -o demux/adaptive/http/libadaptive_plugin_la-Transport.lo `test -f 'demux/adaptive/http/Transport.cpp' || echo '$(srcdir)/'`demux/adaptive/http/Transport.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-Transport.Tpo demux/adaptive/http/$(DEPDIR)/libadaptive_plugin_la-Transport.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='demux/adaptive/http/Transport.cpp' object='demux/adaptive/http/libadaptive_plugin_la-Transport.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libadaptive_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o demux/adaptive/http/libadaptive_plugin_la-Sockets.lo `test -f 'demux/adaptive/http/Sockets.cpp' || echo '$(srcdir)/'`demux/adaptive/http/Sockets.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libadaptive_plugin_la_CXXFLAGS) $(CXXFLAGS) -c -o demux/adaptive/http/libadaptive_plugin_la-Transport.lo `test -f 'demux/adaptive/http/Transport.cpp' || echo '$(srcdir)/'`demux/adaptive/http/Transport.cpp
 
 demux/adaptive/plumbing/libadaptive_plugin_la-CommandsQueue.lo: demux/adaptive/plumbing/CommandsQueue.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libadaptive_plugin_la_CXXFLAGS) $(CXXFLAGS) -MT demux/adaptive/plumbing/libadaptive_plugin_la-CommandsQueue.lo -MD -MP -MF demux/adaptive/plumbing/$(DEPDIR)/libadaptive_plugin_la-CommandsQueue.Tpo -c -o demux/adaptive/plumbing/libadaptive_plugin_la-CommandsQueue.lo `test -f 'demux/adaptive/plumbing/CommandsQueue.cpp' || echo '$(srcdir)/'`demux/adaptive/plumbing/CommandsQueue.cpp

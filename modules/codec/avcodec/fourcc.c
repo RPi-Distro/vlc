@@ -2,7 +2,7 @@
  * fourcc.c: libavcodec <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2009 VLC authors and VideoLAN
- * $Id: 22761cffa63315bbc0e8ad6f651a5dc9fd49b30d $
+ * $Id: 6113c022fbe5a4ae8f9d706003563c230165a8f7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -278,6 +278,10 @@ static const struct vlc_avcodec_fourcc video_codecs[] =
     /* ffmpeg only: AV_CODEC_ID_MVC2 */
     /* ffmpeg only: AV_CODEC_ID_SNOW */
     /* ffmpeg only: AV_CODEC_ID_SMVJPEG */
+
+#if LIBAVCODEC_VERSION_CHECK( 57, 999, 999, 24, 102 )
+    { VLC_CODEC_CINEFORM, AV_CODEC_ID_CFHD },
+#endif
 
 #if LIBAVCODEC_VERSION_CHECK( 57, 999, 999, 70, 100 )
     { VLC_CODEC_PIXLET, AV_CODEC_ID_PIXLET },

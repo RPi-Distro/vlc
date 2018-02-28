@@ -2,7 +2,7 @@
  * virtual_segment.cpp : virtual segment implementation in the MKV demuxer
  *****************************************************************************
  * Copyright © 2003-2011 VideoLAN and VLC authors
- * $Id: a3b2e34127a7386a80a21245e7f0c3b62fac37c4 $
+ * $Id: e5673d896ac553220533520411f9cbe6ba5f0da9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -114,7 +114,7 @@ virtual_edition_c::virtual_edition_c( chapter_edition_c * p_edit, matroska_segme
     p_edition = p_edit;
     b_ordered = false;
 
-    int64_t usertime_offset = 0;
+    int64_t usertime_offset = 0; // microseconds
 
     /* ordered chapters */
     if( p_edition && p_edition->b_ordered )
@@ -426,7 +426,7 @@ bool virtual_segment_c::UpdateCurrentToChapter( demux_t & demux )
 {
     demux_sys_t & sys = *demux.p_sys;
     virtual_chapter_c *p_cur_vchapter = NULL;
-    virtual_edition_c *p_cur_vedition = veditions[ i_current_edition ];
+    virtual_edition_c *p_cur_vedition = CurrentEdition();
 
     bool b_has_seeked = false;
 
@@ -441,7 +441,7 @@ bool virtual_segment_c::UpdateCurrentToChapter( demux_t & demux )
     {
         if ( p_current_vchapter != NULL && p_current_vchapter->ContainsTimestamp( sys.i_pts - VLC_TS_0 ))
             p_cur_vchapter = p_current_vchapter;
-        else
+        else if (p_cur_vedition != NULL)
             p_cur_vchapter = p_cur_vedition->getChapterbyTimecode( sys.i_pts - VLC_TS_0 );
     }
 
@@ -468,6 +468,7 @@ bool virtual_segment_c::UpdateCurrentToChapter( demux_t & demux )
                     }
                     sys.i_start_pts = p_cur_vchapter->i_mk_virtual_start_time + VLC_TS_0;
                 }
+                sys.i_mk_chapter_time = p_cur_vchapter->i_mk_virtual_start_time - p_cur_vchapter->segment.i_mk_start_time - ( ( p_cur_vchapter->p_chapter )? p_cur_vchapter->p_chapter->i_start_time : 0 ) /* + VLC_TS_0 */;
             }
 
             p_current_vchapter = p_cur_vchapter;
@@ -520,14 +521,15 @@ bool virtual_segment_c::Seek( demux_t & demuxer, mtime_t i_mk_date,
 
 
     /* find the actual time for an ordered edition */
-    if ( p_vchapter == NULL )
+    if ( p_vchapter == NULL && CurrentEdition() )
         /* 1st, we need to know in which chapter we are */
-        p_vchapter = veditions[ i_current_edition ]->getChapterbyTimecode( i_mk_date );
+        p_vchapter = CurrentEdition()->getChapterbyTimecode( i_mk_date );
 
     if ( p_vchapter != NULL )
     {
         mtime_t i_mk_time_offset = p_vchapter->i_mk_virtual_start_time - ( ( p_vchapter->p_chapter )? p_vchapter->p_chapter->i_start_time : 0 );
-        p_sys->i_mk_chapter_time = i_mk_time_offset - p_vchapter->segment.i_mk_start_time /* + VLC_TS_0 */;
+        if (CurrentEdition()->b_ordered)
+            p_sys->i_mk_chapter_time = p_vchapter->i_mk_virtual_start_time - p_vchapter->segment.i_mk_start_time - ( ( p_vchapter->p_chapter )? p_vchapter->p_chapter->i_start_time : 0 ) /* + VLC_TS_0 */;
         if ( p_vchapter->p_chapter && p_vchapter->i_seekpoint_num > 0 )
         {
             demuxer.info.i_update |= INPUT_UPDATE_TITLE | INPUT_UPDATE_SEEKPOINT;
@@ -549,16 +551,9 @@ bool virtual_segment_c::Seek( demux_t & demuxer, mtime_t i_mk_date,
         }
         else
         {
-            typedef bool( matroska_segment_c::* seek_callback_t )( demux_t &, mtime_t, mtime_t );
-
-            seek_callback_t pf_seek = &matroska_segment_c::Seek;
-
-            if( ! b_precise )
-                pf_seek = &matroska_segment_c::FastSeek;
-
             p_current_vchapter = p_vchapter;
 
-            return ( p_current_vchapter->segment.*pf_seek )( demuxer, i_mk_date, i_mk_time_offset );
+            return p_current_vchapter->segment.Seek( demuxer, i_mk_date, i_mk_time_offset, b_precise );
         }
     }
     return false;
@@ -581,7 +576,9 @@ virtual_chapter_c * virtual_chapter_c::FindChapter( int64_t i_find_uid )
 
 virtual_chapter_c * virtual_segment_c::FindChapter( int64_t i_find_uid )
 {
-    virtual_edition_c * p_edition = veditions[i_current_edition];
+    virtual_edition_c * p_edition = CurrentEdition();
+    if (unlikely(p_edition == NULL))
+        return NULL;
 
     for( size_t i = 0; i < p_edition->vchapters.size(); i++ )
     {

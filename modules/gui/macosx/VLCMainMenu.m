@@ -2,7 +2,7 @@
  *MainMenu.m: MacOS X interface module
  *****************************************************************************
  *Copyright (C) 2011-2018 Felix Paul Kühne
- *$Id: ea6ebe5813d6a7f39f302f4d8908e648d9757e59 $
+ *$Id: bf2509f01a9e65c3e022606969560a8149819357 $
  *
  *Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -379,7 +379,6 @@
     [_toggleEffectsButton setTitle: _NS("Show Audio Effects Button")];
     [_toggleEffectsButton setState: var_InheritBool(getIntf(), "macosx-show-effects-button")];
     [_toggleSidebar setTitle: _NS("Show Sidebar")];
-    [_toggleSidebar setState: var_InheritBool(getIntf(), "macosx-show-sidebar")];
     [_playlistTableColumns setTitle: _NS("Playlist Table Columns")];
 
     [_controlsMenu setTitle: _NS("Playback")];
@@ -704,9 +703,9 @@
     [[[VLCMain sharedInstance] mainWindow] toggleLeftSubSplitView];
 }
 
-- (void)updateSidebarMenuItem
+- (void)updateSidebarMenuItem:(BOOL)show;
 {
-    [_toggleSidebar setState: var_InheritBool(getIntf(), "macosx-show-sidebar")];
+    [_toggleSidebar setState:show];
 }
 
 #pragma mark - Playback

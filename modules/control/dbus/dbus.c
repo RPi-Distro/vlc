@@ -5,7 +5,7 @@
  * Copyright © 2007-2012 Mirsal Ennaime
  * Copyright © 2009-2012 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: 484195a7c68b2fd5c9779f0fe832e1c3b0d40ae7 $
+ * $Id: 77923daa02753ab6427c96d744e17d3f96003c32 $
  *
  * Authors:    Rafaël Carré <funman at videolanorg>
  *             Mirsal Ennaime <mirsal at mirsal fr>
@@ -75,6 +75,7 @@
 #define DBUS_INSTANCE_ID_PREFIX "instance"
 
 #define SEEK_THRESHOLD 1000 /* µsec */
+#define EVENTS_DELAY INT64_C(100000) /* 100 ms */
 
 /*****************************************************************************
  * Local prototypes.
@@ -768,6 +769,8 @@ static void *Run( void *data )
 
     int canc = vlc_savecancel();
 
+    mtime_t events_last_date = VLC_TS_INVALID;
+    int events_poll_timeout = -1;
     for( ;; )
     {
         vlc_mutex_lock( &p_sys->lock );
@@ -783,6 +786,8 @@ static void *Run( void *data )
 
         /* thread cancellation is allowed while the main loop sleeps */
         vlc_restorecancel( canc );
+        if( timeout == -1 )
+            timeout = events_poll_timeout;
 
         while (poll(fds, i_fds, timeout) == -1)
         {
@@ -822,18 +827,43 @@ static void *Run( void *data )
 
         /* Get the list of events to process */
         size_t i_events = vlc_array_count( &p_sys->events );
-        callback_info_t* p_info[i_events ? i_events : 1];
-        for( size_t i = 0; i < i_events; i++ )
-        {
-            p_info[i] = vlc_array_item_at_index( &p_sys->events, i );
-        }
+        callback_info_t** pp_info = NULL;
 
-        vlc_array_clear( &p_sys->events );
+        if( i_events > 0 )
+        {
+            mtime_t now = mdate();
+            if( now - events_last_date > EVENTS_DELAY )
+            {
+                /* Send events every EVENTS_DELAY */
+                events_last_date = now;
+                events_poll_timeout = -1;
+
+                pp_info = vlc_alloc( i_events, sizeof(*pp_info) );
+                if( pp_info )
+                {
+                    for( size_t i = 0; i < i_events; i++ )
+                        pp_info[i] = vlc_array_item_at_index( &p_sys->events, i );
+                    vlc_array_clear( &p_sys->events );
+                }
+            }
+            else if( events_poll_timeout == -1 )
+            {
+                /* Request poll to wake up in order to send these events after
+                 * some delay */
+                events_poll_timeout = ( EVENTS_DELAY - ( now - events_last_date ) ) / 1000;
+            }
+        }
+        else /* No events: clear timeout */
+            events_poll_timeout = -1;
 
         /* now we can release the lock and process what's pending */
         vlc_mutex_unlock( &p_intf->p_sys->lock );
 
-        ProcessEvents( p_intf, p_info, i_events );
+        if( pp_info )
+        {
+            ProcessEvents( p_intf, pp_info, i_events );
+            free( pp_info );
+        }
         ProcessWatches( p_intf, p_watches, i_watches, fds, i_fds );
 
         DispatchDBusMessages( p_intf );
@@ -850,6 +880,29 @@ static void   wakeup_main_loop( void *p_data )
     if( !write( p_intf->p_sys->p_pipe_fds[PIPE_IN], "\0", 1 ) )
         msg_Err( p_intf, "Could not wake up the main loop: %s",
                  vlc_strerror_c(errno) );
+}
+
+static bool add_event_locked( intf_thread_t *p_intf, callback_info_t *p_info )
+{
+    if( !p_info->signal )
+    {
+        free( p_info );
+        return false;
+    }
+
+    for( size_t i = 0; i < vlc_array_count( &p_intf->p_sys->events ); ++ i )
+    {
+        callback_info_t *oldinfo =
+            vlc_array_item_at_index( &p_intf->p_sys->events, i );
+        if( p_info->signal == oldinfo->signal )
+        {
+            free( p_info );
+            return false;
+        }
+    }
+
+    vlc_array_append( &p_intf->p_sys->events, p_info );
+    return true;
 }
 
 /* Flls a callback_info_t data structure in response
@@ -941,13 +994,11 @@ static int InputCallback( vlc_object_t *p_this, const char *psz_var,
         p_sys->i_playing_state = i_state;
         p_info->signal = SIGNAL_STATE;
     }
-    if( p_info->signal )
-        vlc_array_append_or_abort( &p_sys->events, p_info );
-    else
-        free( p_info );
+    bool added = add_event_locked( p_intf, p_info );
     vlc_mutex_unlock( &p_intf->p_sys->lock );
 
-    wakeup_main_loop( p_intf );
+    if( added )
+        wakeup_main_loop( p_intf );
 
     (void)psz_var;
     (void)oldval;
@@ -1003,10 +1054,12 @@ static int AllCallback( vlc_object_t *p_this, const char *psz_var,
     // Append the event
     *p_info = info;
     vlc_mutex_lock( &p_intf->p_sys->lock );
-    vlc_array_append_or_abort( &p_intf->p_sys->events, p_info );
+    bool added = add_event_locked( p_intf, p_info );
     vlc_mutex_unlock( &p_intf->p_sys->lock );
 
-    wakeup_main_loop( p_intf );
+    if( added )
+        wakeup_main_loop( p_intf );
+
     (void) p_this;
     return VLC_SUCCESS;
 }

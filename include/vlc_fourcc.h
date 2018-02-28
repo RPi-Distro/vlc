@@ -2,7 +2,7 @@
  * vlc_fourcc.h: Definition of various FOURCC and helpers
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 02e65f37b4be8b7150fa7ea5e74bb587754f3352 $
+ * $Id: 486fae1849a9dc9c9ec0d191e33280728987ddb3 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ com>
  *
@@ -373,6 +373,7 @@
 #define VLC_CODEC_CVPX_UYVY       VLC_FOURCC('C','V','P','Y')
 #define VLC_CODEC_CVPX_I420       VLC_FOURCC('C','V','P','I')
 #define VLC_CODEC_CVPX_BGRA       VLC_FOURCC('C','V','P','B')
+#define VLC_CODEC_CVPX_P010       VLC_FOURCC('C','V','P','P')
 
 /* Image codec (video) */
 #define VLC_CODEC_PNG             VLC_FOURCC('p','n','g',' ')

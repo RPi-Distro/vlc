@@ -3,7 +3,7 @@
  * VLCPLItem.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: 379dbafd09c9d9dcad2d8e0da32cc36562668bc4 $
+ * $Id: d1897f0dbdc279c45aca171b61e3d79a12372aa1 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -576,11 +576,6 @@ static int VolumeUpdated(vlc_object_t *p_this, const char *psz_var,
 
         o_value = [VLCByteCountFormatter stringFromByteCount:[attributes fileSize] countStyle:NSByteCountFormatterCountStyleDecimal];
 
-    } else if ([o_identifier isEqualToString:STATUS_COLUMN]) {
-        if (input_item_HasErrorWhenReading(p_input)) {
-            o_value = [[NSWorkspace sharedWorkspace] iconForFileType:NSFileTypeForHFSTypeCode(kAlertCautionIcon)];
-            [o_value setSize: NSMakeSize(16,16)];
-        }
     }
 
     return o_value;

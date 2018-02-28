@@ -2,7 +2,7 @@
  * VLCRendererMenuController.m: Controller class for the renderer menu
  *****************************************************************************
  * Copyright (C) 2016-2018 VLC authors and VideoLAN
- * $Id: 2650651017f900b43140059043f06f7b0d54d0be $
+ * $Id: 725275bf8183a311086886f8404c1dea0da4d340 $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *          Felix Paul Kühne <fkuehne -at- videolan -dot- org>
@@ -111,6 +111,10 @@
     NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:item.name
                                                       action:@selector(selectRenderer:)
                                                keyEquivalent:@""];
+    if (item.capabilityFlags & VLC_RENDERER_CAN_VIDEO)
+        [menuItem setImage:[NSImage imageNamed:@"sidebar-movie"]];
+    else
+        [menuItem setImage:[NSImage imageNamed:@"sidebar-music"]];
     [menuItem setTarget:self];
     [menuItem setRepresentedObject:item];
     [_rendererMenu insertItem:menuItem atIndex:[_rendererMenu indexOfItem:_rendererNoneItem] + 1];

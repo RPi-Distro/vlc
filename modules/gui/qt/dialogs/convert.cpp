@@ -2,7 +2,7 @@
  * convert.cpp : Convertion dialogs
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 8a87518fa9429a57bc6d07ff1986cda14ab20f96 $
+ * $Id: 7ae9be5d92f0d922dbd9bb5a30807afc747faa43 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -178,10 +178,13 @@ void ConvertDialog::close()
     for(int i = 0; i < incomingMRLs->length(); i++)
     {
         QString mrl;
+        QString newFileName;
 
         if( dumpRadio->isChecked() )
         {
-            mrl = "demux=dump :demuxdump-file=" + fileLine->text();
+            newFileName = fileLine->text();
+            newFileName.replace( QChar('\''), "\\\'" );
+            mrl = QString( "demux=dump :demuxdump-file='%1'" ).arg( newFileName );
         }
         else
         {
@@ -196,8 +199,6 @@ void ConvertDialog::close()
             {
                 mrl += "duplicate{dst=display,dst=";
             }
-
-            QString newFileName;
 
             // Only one file, use the destination provided
             if(singleFileSelected)

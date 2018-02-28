@@ -105,6 +105,7 @@ int AllocateShaderView(vlc_object_t *obj, ID3D11Device *d3ddevice,
         resviewDesc.Texture2DArray.MipLevels = -1;
         resviewDesc.Texture2DArray.ArraySize = 1;
         resviewDesc.Texture2DArray.FirstArraySlice = slice_index;
+        assert(slice_index < texDesc.ArraySize);
     }
     for (i=0; i<D3D11_MAX_SHADER_VIEW; i++)
     {
@@ -333,19 +334,31 @@ bool isXboxHardware(ID3D11Device *d3ddev)
     return result;
 }
 
-bool isNvidiaHardware(ID3D11Device *d3ddev)
+static bool isNvidiaHardware(ID3D11Device *d3ddev)
 {
     IDXGIAdapter *p_adapter = D3D11DeviceAdapter(d3ddev);
     if (!p_adapter)
-        return NULL;
+        return false;
 
-    bool result = false;
     DXGI_ADAPTER_DESC adapterDesc;
-    if (SUCCEEDED(IDXGIAdapter_GetDesc(p_adapter, &adapterDesc)))
-        result = adapterDesc.VendorId == GPU_MANUFACTURER_NVIDIA;
-
+    if (FAILED(IDXGIAdapter_GetDesc(p_adapter, &adapterDesc)))
+        adapterDesc.VendorId = 0;
     IDXGIAdapter_Release(p_adapter);
-    return result;
+
+    return adapterDesc.VendorId == GPU_MANUFACTURER_NVIDIA;
+}
+
+bool CanUseVoutPool(d3d11_device_t *d3d_dev, UINT slices)
+{
+#if VLC_WINSTORE_APP
+    /* Phones and the Xbox are memory constrained, rely on the d3d11va pool
+     * which is always smaller, we still get direct rendering from the decoder */
+    return false;
+#else
+    /* NVIDIA cards crash when calling CreateVideoDecoderOutputView
+     * on more than 30 slices */
+    return slices <= 30 || !isNvidiaHardware(d3d_dev->d3ddevice);
+#endif
 }
 
 int D3D11CheckDriverVersion(d3d11_device_t *d3d_dev, UINT vendorId, const struct wddm_version *min_ver)
@@ -360,12 +373,12 @@ int D3D11CheckDriverVersion(d3d11_device_t *d3d_dev, UINT vendorId, const struct
     if (FAILED(hr))
         return VLC_EGENERIC;
 
-#if VLC_WINSTORE_APP
-    return VLC_SUCCESS;
-#else
     if (vendorId && adapterDesc.VendorId != vendorId)
         return VLC_SUCCESS;
 
+#if VLC_WINSTORE_APP
+    return VLC_EGENERIC;
+#else
     bool newer =
            d3d_dev->WDDM.wddm > min_ver->wddm ||
           (d3d_dev->WDDM.wddm == min_ver->wddm && (d3d_dev->WDDM.d3d_features > min_ver->d3d_features ||
@@ -481,8 +494,8 @@ int AllocateTextures( vlc_object_t *obj, d3d11_device_t *d3d_dev,
                 textures[picture_count * D3D11_MAX_SHADER_VIEW + plane] = slicedTexture;
                 ID3D11Texture2D_AddRef(slicedTexture);
             } else {
-                texDesc.Height = planes[plane].i_lines;
-                texDesc.Width = planes[plane].i_pitch;
+                texDesc.Height = fmt->i_height * p_chroma_desc->p[plane].h.num / p_chroma_desc->p[plane].h.den;
+                texDesc.Width = fmt->i_width * p_chroma_desc->p[plane].w.num / p_chroma_desc->p[plane].w.den;
                 hr = ID3D11Device_CreateTexture2D( d3d_dev->d3ddevice, &texDesc, NULL, &textures[picture_count * D3D11_MAX_SHADER_VIEW + plane] );
                 if (FAILED(hr)) {
                     msg_Err(obj, "CreateTexture2D failed for the %d pool. (hr=0x%0lx)", pool_size, hr);

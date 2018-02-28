@@ -2,7 +2,7 @@
  * compressor.c: dynamic range compressor, ported from plugins from LADSPA SWH
  *****************************************************************************
  * Copyright (C) 2010 Ronald Wright
- * $Id: fad82370157e8ef135517eaca0018e4666c9d804 $
+ * $Id: 6a7f726f793c40511f1d1574334e56b47baa559a $
  *
  * Author: Ronald Wright <logiconcepts819@gmail.com>
  * Original author: Steve Harris <steve@plugin.org.uk>
@@ -174,8 +174,8 @@ static int MakeupGainCallback   ( vlc_object_t *, char const *, vlc_value_t,
 #define MAKEUP_GAIN_LONGTEXT N_( "Set the makeup gain in dB (0 ... 24)." )
 
 vlc_module_begin()
-    set_shortname( _("Compressor") )
-    set_description( _("Dynamic range compressor") )
+    set_shortname( N_("Compressor") )
+    set_description( N_("Dynamic range compressor") )
     set_capability( "audio filter", 0 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AFILTER )

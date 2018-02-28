@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 56cefed7c99acf5898d9a7064b1ee3dac50f5449 $
+ * $Id: 8f202266e8317f80e1e230678f785f9e606c347f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -49,6 +49,12 @@ enum es_out_query_private_e
     ES_OUT_RESTART_ES_BY_ID,
     ES_OUT_SET_ES_DEFAULT_BY_ID,
     ES_OUT_GET_ES_OBJECTS_BY_ID,                    /* arg1=int id, vlc_object_t **dec, vout_thread_t **, audio_output_t ** res=can fail*/
+
+    /* Stop all selected ES and save the stopped state in a context. free the
+     * context or call ES_OUT_STOP_ALL_ES */
+    ES_OUT_STOP_ALL_ES,                             /* arg1=void ** */
+    /* Start all ES from the context returned by ES_OUT_STOP_ALL_ES */
+    ES_OUT_START_ALL_ES,                            /* arg1=void * */
 
     /* Get buffering state */
     ES_OUT_GET_BUFFERING,                           /* arg1=bool*               res=cannot fail */

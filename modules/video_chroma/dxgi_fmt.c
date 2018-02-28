@@ -79,6 +79,7 @@ static const d3d_format_t d3d_formats[] = {
     { "NV11",     DXGI_FORMAT_NV11,           VLC_CODEC_I411,          8, 4, 1, { DXGI_FORMAT_R8_UNORM,           DXGI_FORMAT_R8G8_UNORM} },
 #endif
     { "I420",     DXGI_FORMAT_UNKNOWN,        VLC_CODEC_I420,          8, 2, 2, { DXGI_FORMAT_R8_UNORM,      DXGI_FORMAT_R8_UNORM, DXGI_FORMAT_R8_UNORM } },
+    { "I420_10",  DXGI_FORMAT_UNKNOWN,        VLC_CODEC_I420_10L,     10, 2, 2, { DXGI_FORMAT_R16_UNORM,     DXGI_FORMAT_R16_UNORM, DXGI_FORMAT_R16_UNORM } },
     { "B8G8R8A8", DXGI_FORMAT_B8G8R8A8_UNORM, VLC_CODEC_BGRA,          8, 1, 1, { DXGI_FORMAT_B8G8R8A8_UNORM } },
     { "VA_BGRA",  DXGI_FORMAT_B8G8R8A8_UNORM, VLC_CODEC_D3D11_OPAQUE,  8, 1, 1, { DXGI_FORMAT_B8G8R8A8_UNORM } },
     { "R8G8B8A8", DXGI_FORMAT_R8G8B8A8_UNORM, VLC_CODEC_RGBA,          8, 1, 1, { DXGI_FORMAT_R8G8B8A8_UNORM } },
@@ -146,4 +147,14 @@ const char *DxgiVendorStr(int gpu_vendor)
             break;
     }
     return vendors[i].name;
+}
+
+UINT DxgiResourceCount(const d3d_format_t *d3d_fmt)
+{
+    for (UINT count=0; count<D3D11_MAX_SHADER_VIEW; count++)
+    {
+        if (d3d_fmt->resourceFormat[count] == DXGI_FORMAT_UNKNOWN)
+            return count;
+    }
+    return D3D11_MAX_SHADER_VIEW;
 }

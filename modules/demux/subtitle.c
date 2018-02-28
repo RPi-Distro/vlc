@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: 1fb6530c8c47f7b2207840125bb362b5d89db563 $
+ * $Id: 18508e3aeafb1cb63c54b0a3a7dd3f43399e76d2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -785,17 +785,15 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         case DEMUX_SET_TIME:
             i64 = va_arg( args, int64_t );
-            for( size_t i = 0; i + 1< p_sys->subtitles.i_count; i++ )
+            p_sys->b_first_time = true;
+            p_sys->i_next_demux_date = i64;
+            for( size_t i = 0; i < p_sys->subtitles.i_count; i++ )
             {
-                if( p_sys->subtitles.p_array[i + 1].i_start >= i64 )
-                {
-                    p_sys->subtitles.i_current = i;
-                    p_sys->i_next_demux_date = i64;
-                    p_sys->b_first_time = true;
-                    return VLC_SUCCESS;
-                }
+                if( p_sys->subtitles.p_array[i].i_start > i64 && i > 0 )
+                    break;
+                p_sys->subtitles.i_current = i;
             }
-            break;
+            return VLC_SUCCESS;
 
         case DEMUX_GET_POSITION:
             pf = va_arg( args, double * );

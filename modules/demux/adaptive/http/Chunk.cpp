@@ -59,6 +59,11 @@ const BytesRange & AbstractChunkSource::getBytesRange() const
     return bytesRange;
 }
 
+std::string AbstractChunkSource::getContentType() const
+{
+    return std::string();
+}
+
 AbstractChunk::AbstractChunk(AbstractChunkSource *source_)
 {
     bytesRead = 0;
@@ -68,6 +73,11 @@ AbstractChunk::AbstractChunk(AbstractChunkSource *source_)
 AbstractChunk::~AbstractChunk()
 {
     delete source;
+}
+
+std::string AbstractChunk::getContentType()
+{
+    return source->getContentType();
 }
 
 size_t AbstractChunk::getBytesRead() const
@@ -204,7 +214,12 @@ block_t * HTTPChunkSource::read(size_t readsize)
     return p_block;
 }
 
-bool HTTPChunkSource::prepare(int i_redir)
+std::string HTTPChunkSource::getContentType() const
+{
+    return connection->getContentType();
+}
+
+bool HTTPChunkSource::prepare()
 {
     if(prepared)
         return true;
@@ -212,30 +227,47 @@ bool HTTPChunkSource::prepare(int i_redir)
     if(!connManager)
         return false;
 
-    if(!connection)
+    ConnectionParams connparams = params; /* can be changed on 301 */
+
+    unsigned int i_redirects = 0;
+    while(i_redirects++ < HTTPConnection::MAX_REDIRECTS)
     {
-        connection = connManager->getConnection(params);
         if(!connection)
-            return false;
+        {
+            connection = connManager->getConnection(connparams);
+            if(!connection)
+                break;
+        }
+
+        int i_ret = connection->request(connparams.getPath(), bytesRange);
+        if(i_ret != VLC_SUCCESS)
+        {
+            if(i_ret == VLC_ETIMEOUT) /* redirection */
+            {
+                HTTPConnection *httpconn = dynamic_cast<HTTPConnection *>(connection);
+                if(httpconn)
+                    connparams = httpconn->getRedirection();
+                connection->setUsed(false);
+                connection = NULL;
+                if(httpconn)
+                    continue;
+            }
+            break;
+        }
+
+        /* Because we don't know Chunk size at start, we need to get size
+               from content length */
+        contentLength = connection->getContentLength();
+        prepared = true;
+        return true;
     }
 
-    int i_ret = connection->request(params.getPath(), bytesRange);
-    if(i_ret != VLC_SUCCESS)
-    {
-        if(i_ret == VLC_ETIMEOUT && i_redir < 3)
-            return HTTPChunkSource::prepare(i_redir + 1);
-        return false;
-    }
-    /* Because we don't know Chunk size at start, we need to get size
-           from content length */
-    contentLength = connection->getContentLength();
-    prepared = true;
-
-    return true;
+    return false;
 }
 
 block_t * HTTPChunkSource::readBlock()
 {
+    printf("READ\n");
     return read(HTTPChunkSource::CHUNK_SIZE);
 }
 

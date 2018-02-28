@@ -2,7 +2,7 @@
  * matroska_segment.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: d231d035904f99ea39d02692f82f990da6170ca7 $
+ * $Id: 7304e79e8230ced1a84baa7b8ed18a54092a1e21 $
  *
  * Authors: Filip Roséen <filip@videolabs.io>
  *
@@ -314,7 +314,7 @@ SegmentSeeker::get_seekpoints( matroska_segment_c& ms, mtime_t target_pts,
         if ( start.fpos == std::numeric_limits<fptr_t>::max() )
             return tracks_seekpoint_t();
 
-        if ( end.fpos != std::numeric_limits<fptr_t>::max() )
+        if ( end.fpos != std::numeric_limits<fptr_t>::max() || !ms.b_cues )
             // do not read the whole (infinite?) file to get seek indexes
             index_range( ms, Range( start.fpos, end.fpos ), needle_pts );
 

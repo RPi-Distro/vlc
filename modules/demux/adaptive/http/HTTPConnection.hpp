@@ -34,7 +34,7 @@ namespace adaptive
 {
     namespace http
     {
-        class Socket;
+        class Transport;
         class AuthStorage;
 
         class AbstractConnection
@@ -50,6 +50,7 @@ namespace adaptive
                 virtual ssize_t read        (void *p_buffer, size_t len) = 0;
 
                 virtual size_t  getContentLength() const;
+                virtual const std::string & getContentType() const;
                 virtual void    setUsed( bool ) = 0;
 
             protected:
@@ -57,6 +58,7 @@ namespace adaptive
                 ConnectionParams   params;
                 bool               available;
                 size_t             contentLength;
+                std::string        contentType;
                 BytesRange         bytesRange;
                 size_t             bytesRead;
         };
@@ -64,7 +66,7 @@ namespace adaptive
         class HTTPConnection : public AbstractConnection
         {
             public:
-                HTTPConnection(vlc_object_t *, AuthStorage *,  Socket *,
+                HTTPConnection(vlc_object_t *, AuthStorage *,  Transport *,
                                const ConnectionParams &, bool = false);
                 virtual ~HTTPConnection();
 
@@ -73,6 +75,8 @@ namespace adaptive
                 virtual ssize_t read        (void *p_buffer, size_t len);
 
                 void setUsed( bool );
+                const ConnectionParams &getRedirection() const;
+                static const unsigned MAX_REDIRECTS = 3;
 
             protected:
                 virtual bool    connected   () const;
@@ -103,7 +107,7 @@ namespace adaptive
                 static const int    retryCount = 5;
 
             private:
-                Socket *socket;
+                Transport *transport;
        };
 
        class StreamUrlConnection : public AbstractConnection
