@@ -1,8 +1,9 @@
-vlc (3.0.1-1) UNRELEASED; urgency=medium
+vlc (3.0.1-1) unstable; urgency=medium
 
   * New upstream release.
+  * debian/control: Bump libplacebo-dev B-D to 0.2.1 (required by upstream).
 
- -- Sebastian Ramacher <sramacher@debian.org>  Wed, 28 Feb 2018 16:19:36 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 01 Mar 2018 11:32:12 +0100
 
 vlc (3.0.0-1) unstable; urgency=medium
 
