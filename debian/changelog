@@ -1,3 +1,9 @@
+vlc (3.0.1-2) unstable; urgency=medium
+
+  * debian/patch: Add missing files for arm64.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 02 Mar 2018 16:28:28 +0100
+
 vlc (3.0.1-1) unstable; urgency=medium
 
   * New upstream release.
