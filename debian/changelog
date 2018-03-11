@@ -1,10 +1,13 @@
-vlc (3.0.1-3) UNRELEASED; urgency=medium
+vlc (3.0.1-3) unstable; urgency=medium
 
   * debian/control: Re-add some Breaks+Replaces to help Ubuntu reduce the diff
     and be able to handle upgrades from 16.04 to 18.04. (LP: #1753111,
     #1749916)
+  * debian/rules:
+    - Re-enable Chromecast plugin on Ubuntu. Apparently it works now.
+    - Fix typo to really build with all hardening options enabled.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 11 Mar 2018 10:11:54 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 11 Mar 2018 21:52:05 +0100
 
 vlc (3.0.1-2) unstable; urgency=medium
 
