@@ -5,6 +5,7 @@ DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
 include /usr/share/dpkg/architecture.mk
 include /usr/share/dpkg/pkg-info.mk
+include /usr/share/dpkg/vendor.mk
 
 ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
 confflags += --enable-debug
