@@ -5,7 +5,6 @@ DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
 include /usr/share/dpkg/architecture.mk
 include /usr/share/dpkg/pkg-info.mk
-include /usr/share/dpkg/vendor.mk
 
 ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
 confflags += --enable-debug
@@ -28,6 +27,7 @@ confflags += \
 	--enable-avahi \
 	--enable-caca \
 	--enable-chromaprint \
+	--enable-chromecast \
 	--enable-dbus \
 	--enable-dca \
 	--enable-dvbpsi \
@@ -208,16 +208,6 @@ else
 # Note: Use PulseAudio/ALSA on Linux instead of OSS.
 confflags += --disable-oss
 removeplugins += oss
-endif
-
-# Ubuntu specific flags
-ifeq (Ubuntu,$(DEB_VENDOR))
-# protobuf related issues only observable on Ubuntu since Mir uses it
-# https://github.com/google/protobuf/issues/206
-confflags += --disable-chromecast
-removeplugins += chromecast
-else
-confflags += --enable-chromecast
 endif
 
 # Linux amd64 and i386 specific flags
