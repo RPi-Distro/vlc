@@ -176,7 +176,7 @@ static int Open( vlc_object_t *p_this )
     p_demux->info.i_title = 0;
     p_demux->info.i_seekpoint = 0;
 
-    p_demux->p_sys = p_sys = calloc( 1, sizeof( demux_sys_t ) );
+    p_demux->p_sys = p_sys = vlc_obj_calloc( p_this, 1, sizeof( demux_sys_t ) );
     if( !p_sys )
         return VLC_ENOMEM;
 
@@ -201,7 +201,6 @@ static int Open( vlc_object_t *p_this )
         msg_Err( p_demux, "Bad MRL, please check the option line "
                           "(MRL was: %s)",
                           p_demux->psz_location );
-        free( p_sys );
         return VLC_EGENERIC;
     }
 
@@ -209,14 +208,12 @@ static int Open( vlc_object_t *p_this )
     if( !p_sys->p_dccontext )
     {
         msg_Err( p_demux, "Failed to initialise libdc1394");
-        free( p_sys );
         return VLC_EGENERIC;
     }
 
     if( FindCamera( p_sys, p_demux ) != VLC_SUCCESS )
     {
         dc1394_free( p_sys->p_dccontext );
-        free( p_sys );
         return VLC_EGENERIC;
     }
 
@@ -224,7 +221,6 @@ static int Open( vlc_object_t *p_this )
     {
         msg_Err( p_demux, "No camera found !!" );
         dc1394_free( p_sys->p_dccontext );
-        free( p_sys );
         return VLC_EGENERIC;
     }
 
@@ -390,7 +386,6 @@ static void Close( vlc_object_t *p_this )
     dc1394_free(p_sys->p_dccontext);
 
     free( p_sys->video_device );
-    free( p_sys );
 }
 
 #if 0
@@ -484,7 +479,7 @@ static int Demux( demux_t *p_demux )
 
     if( p_blockv )
     {
-        es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_blockv->i_pts );
+        es_out_SetPCR( p_demux->out, p_blockv->i_pts );
         es_out_Send( p_demux->out, p_sys->p_es_video, p_blockv );
     }
     return 1;
@@ -501,7 +496,6 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         /* Special for access_demux */
         case DEMUX_CAN_PAUSE:
         case DEMUX_CAN_SEEK:
-        case DEMUX_SET_PAUSE_STATE:
         case DEMUX_CAN_CONTROL_PACE:
             *va_arg( args, bool * ) = false;
             return VLC_SUCCESS;
@@ -547,7 +541,7 @@ static int process_options( demux_t *p_demux )
                     */
                 msg_Err( p_demux,
                     "video size of 160x120 is actually disabled for lack of"
-                    "chroma support. It will relased ASAP, until then try "
+                    "chroma support. It will be released ASAP, until then try "
                     "an higher size (320x240 and 640x480 are fully supported)" );
                 free(psz_dup);
                 return VLC_EGENERIC;

@@ -29,6 +29,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include "vlc_vdpau.h"
 
 /* Picture history as recommended by VDPAU documentation */
@@ -66,9 +67,22 @@ static VdpStatus MixerSetupColors(filter_t *filter, const VdpProcamp *procamp,
     filter_sys_t *sys = filter->p_sys;
     VdpStatus err;
     /* XXX: add some margin for padding... */
-    VdpColorStandard std = (filter->fmt_in.video.i_height > 576 + 16)
-                         ? VDP_COLOR_STANDARD_ITUR_BT_709
-                         : VDP_COLOR_STANDARD_ITUR_BT_601;
+    VdpColorStandard std;
+
+    switch (filter->fmt_in.video.space)
+    {
+        case COLOR_SPACE_BT601:
+            std = VDP_COLOR_STANDARD_ITUR_BT_601;
+            break;
+        case COLOR_SPACE_BT709:
+            std = VDP_COLOR_STANDARD_ITUR_BT_709;
+            break;
+        default:
+            if (filter->fmt_in.video.i_height >= 720)
+                std = VDP_COLOR_STANDARD_ITUR_BT_709;
+            else
+                std = VDP_COLOR_STANDARD_ITUR_BT_601;
+    }
 
     err = vdp_generate_csc_matrix(sys->vdp, procamp, std, csc);
     if (err != VDP_STATUS_OK)
@@ -276,49 +290,16 @@ static void Flush(filter_t *filter)
     for (unsigned i = 0; i < MAX_PAST + MAX_FUTURE; i++)
         if (sys->history[i].field != NULL)
         {
-            sys->history[i].field->destroy(sys->history[i].field);
+            vlc_vdp_video_destroy(sys->history[i].field);
             sys->history[i].field = NULL;
         }
-}
-
-static picture_t *YCbCrRender(filter_t *filter, picture_t *src);
-
-/** Get a VLC picture for a VDPAU output surface */
-static picture_t *OutputAllocate(filter_t *filter)
-{
-    filter_sys_t *sys = filter->p_sys;
-
-    picture_t *pic = filter_NewPicture(filter);
-    if (pic == NULL)
-        return NULL;
-
-    picture_sys_t *psys = pic->p_sys;
-    assert(psys->vdp != NULL);
-
-    if (likely(sys->mixer != VDP_INVALID_HANDLE))
-    {   /* Not the first output picture */
-        assert(psys->vdp == sys->vdp);
-        return pic;
-    }
-
-    /* First picture: get the context and allocate the mixer */
-    sys->vdp = vdp_hold_x11(psys->vdp, NULL);
-    sys->device = psys->device;
-    sys->mixer = MixerCreate(filter, filter->pf_video_filter == YCbCrRender);
-    if (sys->mixer != VDP_INVALID_HANDLE)
-        return pic;
-
-    vdp_release_x11(psys->vdp);
-    psys->vdp = NULL;
-    picture_Release(pic);
-    return NULL;
 }
 
 /** Export a VDPAU video surface picture to a normal VLC picture */
 static picture_t *VideoExport(filter_t *filter, picture_t *src, picture_t *dst)
 {
     filter_sys_t *sys = filter->p_sys;
-    vlc_vdp_video_field_t *field = src->context;
+    vlc_vdp_video_field_t *field = (vlc_vdp_video_field_t *)src->context;
     vlc_vdp_video_frame_t *psys = field->frame;
     VdpStatus err;
     VdpVideoSurface surface = psys->surface;
@@ -333,7 +314,8 @@ static picture_t *VideoExport(filter_t *filter, picture_t *src, picture_t *dst)
         pitches[i] = dst->p[i].i_pitch;
     }
     if (dst->format.i_chroma == VLC_CODEC_I420
-     || dst->format.i_chroma == VLC_CODEC_I422)
+     || dst->format.i_chroma == VLC_CODEC_I422
+     || dst->format.i_chroma == VLC_CODEC_I444)
     {
         planes[1] = dst->p[2].p_pixels;
         planes[2] = dst->p[1].p_pixels;
@@ -384,7 +366,9 @@ static picture_t *VideoImport(filter_t *filter, picture_t *src)
                   + filter->fmt_in.video.i_y_offset * src->p[i].i_pitch;
         pitches[i] = src->p[i].i_pitch;
     }
-    if (src->format.i_chroma == VLC_CODEC_I420)
+    if (src->format.i_chroma == VLC_CODEC_I420
+     || src->format.i_chroma == VLC_CODEC_I422
+     || src->format.i_chroma == VLC_CODEC_I444)
     {
         planes[1] = src->p[2].p_pixels;
         planes[2] = src->p[1].p_pixels;
@@ -411,8 +395,21 @@ static picture_t *VideoImport(filter_t *filter, picture_t *src)
 
     /* Wrap surface into a picture */
     video_format_t fmt = src->format;
-    fmt.i_chroma = (sys->chroma == VDP_CHROMA_TYPE_420)
-        ? VLC_CODEC_VDPAU_VIDEO_420 : VLC_CODEC_VDPAU_VIDEO_422;
+
+    switch (sys->chroma)
+    {
+        case VDP_CHROMA_TYPE_420:
+            fmt.i_chroma = VLC_CODEC_VDPAU_VIDEO_420;
+            break;
+        case VDP_CHROMA_TYPE_422:
+            fmt.i_chroma = VLC_CODEC_VDPAU_VIDEO_422;
+            break;
+        case VDP_CHROMA_TYPE_444:
+            fmt.i_chroma = VLC_CODEC_VDPAU_VIDEO_444;
+            break;
+        default:
+            vlc_assert_unreachable();
+    }
 
 
     picture_t *dst = picture_NewFromFormat(&fmt);
@@ -435,28 +432,21 @@ drop:
     return NULL;
 }
 
-static inline VdpVideoSurface picture_GetVideoSurface(const picture_t *pic)
-{
-    vlc_vdp_video_field_t *field = pic->context;
-    return field->frame->surface;
-}
-
 static picture_t *Render(filter_t *filter, picture_t *src, bool import)
 {
     filter_sys_t *sys = filter->p_sys;
+    picture_t *dst = NULL;
     VdpStatus err;
 
     if (unlikely(src->context == NULL))
     {
-        msg_Err(filter, "corrupt VDPAU video surface");
+        msg_Err(filter, "corrupt VDPAU video surface %p", (void *)src);
         picture_Release(src);
         return NULL;
     }
 
-    picture_t *dst = OutputAllocate(filter);
-
     /* Corner case: different VDPAU instances decoding and rendering */
-    vlc_vdp_video_field_t *field = src->context;
+    vlc_vdp_video_field_t *field = (vlc_vdp_video_field_t *)src->context;
     if (field->frame->vdp != sys->vdp)
     {
         video_format_t fmt = src->format;
@@ -465,7 +455,7 @@ static picture_t *Render(filter_t *filter, picture_t *src, bool import)
              case VDP_CHROMA_TYPE_420: fmt.i_chroma = VLC_CODEC_NV12; break;
              case VDP_CHROMA_TYPE_422: fmt.i_chroma = VLC_CODEC_UYVY; break;
              case VDP_CHROMA_TYPE_444: fmt.i_chroma = VLC_CODEC_NV24; break;
-             default: assert(0);
+             default: vlc_assert_unreachable();
         }
 
         picture_t *pic = picture_NewFromFormat(&fmt);
@@ -488,7 +478,7 @@ static picture_t *Render(filter_t *filter, picture_t *src, bool import)
     if (likely(src != NULL))
     {
         sys->history[MAX_PAST + MAX_FUTURE].field =
-                                              vlc_vdp_video_copy(src->context);
+            vlc_vdp_video_copy((vlc_vdp_video_field_t *)src->context);
         sys->history[MAX_PAST + MAX_FUTURE].date = src->date;
         sys->history[MAX_PAST + MAX_FUTURE].force = src->b_force;
         picture_Release(src);
@@ -499,14 +489,11 @@ static picture_t *Render(filter_t *filter, picture_t *src, bool import)
         sys->history[MAX_PAST + MAX_FUTURE].force = false;
     }
 
-    if (dst == NULL)
-        goto skip;
-
     vlc_vdp_video_field_t *f = sys->history[MAX_PAST].field;
     if (f == NULL)
     {   /* There is no present field, probably just starting playback. */
         if (!sys->history[MAX_PAST + MAX_FUTURE].force)
-            goto error;
+            goto skip;
 
         /* If the picture is forced, ignore deinterlacing and fast forward. */
         /* FIXME: Remove the forced hack pictures in video output core and
@@ -515,7 +502,7 @@ static picture_t *Render(filter_t *filter, picture_t *src, bool import)
         {
             f = sys->history[0].field;
             if (f != NULL)
-                f->destroy(f);
+                vlc_vdp_video_destroy(f);
 
             memmove(sys->history, sys->history + 1,
                     sizeof (sys->history[0]) * (MAX_PAST + MAX_FUTURE));
@@ -524,6 +511,12 @@ static picture_t *Render(filter_t *filter, picture_t *src, bool import)
         f = sys->history[MAX_PAST].field;
     }
 
+    /* Get a VLC picture for a VDPAU output surface */
+    dst = filter_NewPicture(filter);
+    if (dst == NULL)
+        goto skip;
+
+    assert(dst->p_sys != NULL && dst->p_sys->vdp ==sys->vdp);
     dst->date = sys->history[MAX_PAST].date;
     dst->b_force = sys->history[MAX_PAST].force;
 
@@ -569,26 +562,31 @@ static picture_t *Render(filter_t *filter, picture_t *src, bool import)
                 vdp_get_error_string(sys->vdp, err));
 
     /* Check video orientation, allocate intermediate surface if needed */
-    bool swap = ORIENT_IS_SWAP(filter->fmt_in.video.orientation);
+    bool swap = false;
     bool hflip = false, vflip = false;
 
-    switch (filter->fmt_in.video.orientation)
+    if (filter->fmt_in.video.orientation != filter->fmt_out.video.orientation)
     {
-        case ORIENT_TOP_LEFT:
-        case ORIENT_RIGHT_TOP:
-            break;
-        case ORIENT_TOP_RIGHT:
-        case ORIENT_RIGHT_BOTTOM:
-            hflip = true;
-            break;
-        case ORIENT_BOTTOM_LEFT:
-        case ORIENT_LEFT_TOP:
-            vflip = true;
-            break;
-        case ORIENT_BOTTOM_RIGHT:
-        case ORIENT_LEFT_BOTTOM:
-            vflip = hflip = true;
-            break;
+        assert(filter->fmt_out.video.orientation == ORIENT_TOP_LEFT);
+        swap = ORIENT_IS_SWAP(filter->fmt_in.video.orientation);
+        switch (filter->fmt_in.video.orientation)
+        {
+            case ORIENT_TOP_LEFT:
+            case ORIENT_RIGHT_TOP:
+                break;
+            case ORIENT_TOP_RIGHT:
+            case ORIENT_RIGHT_BOTTOM:
+                hflip = true;
+                break;
+            case ORIENT_BOTTOM_LEFT:
+            case ORIENT_LEFT_TOP:
+                vflip = true;
+                break;
+            case ORIENT_BOTTOM_RIGHT:
+            case ORIENT_LEFT_BOTTOM:
+                vflip = hflip = true;
+                break;
+        }
     }
 
     VdpOutputSurface output = dst->p_sys->surface;
@@ -686,7 +684,7 @@ static picture_t *Render(filter_t *filter, picture_t *src, bool import)
 skip:
     f = sys->history[0].field;
     if (f != NULL)
-        f->destroy(f); /* Release oldest field */
+        vlc_vdp_video_destroy(f); /* Release oldest field */
     memmove(sys->history, sys->history + 1, /* Advance history */
             sizeof (sys->history[0]) * (MAX_PAST + MAX_FUTURE));
 
@@ -705,14 +703,6 @@ static picture_t *VideoRender(filter_t *filter, picture_t *src)
 
 static picture_t *YCbCrRender(filter_t *filter, picture_t *src)
 {
-    /* FIXME: Define a way to initialize the mixer in Open() instead. */
-    if (unlikely(filter->p_sys->vdp == NULL))
-    {
-        picture_t *dummy = OutputAllocate(filter);
-        if (dummy != NULL)
-            picture_Release(dummy);
-    }
-
     src = VideoImport(filter, src);
     return (src != NULL) ? Render(filter, src, true) : NULL;
 }
@@ -720,23 +710,25 @@ static picture_t *YCbCrRender(filter_t *filter, picture_t *src)
 static int OutputOpen(vlc_object_t *obj)
 {
     filter_t *filter = (filter_t *)obj;
+
     if (filter->fmt_out.video.i_chroma != VLC_CODEC_VDPAU_OUTPUT)
         return VLC_EGENERIC;
 
-    assert(filter->fmt_out.video.orientation == ORIENT_TOP_LEFT);
+    assert(filter->fmt_out.video.orientation == ORIENT_TOP_LEFT
+        || filter->fmt_in.video.orientation == filter->fmt_out.video.orientation);
 
     filter_sys_t *sys = malloc(sizeof (*sys));
     if (unlikely(sys == NULL))
         return VLC_ENOMEM;
 
-    sys->vdp = NULL;
-    sys->mixer = VDP_INVALID_HANDLE;
+    filter->p_sys = sys;
+
+    picture_t *(*video_filter)(filter_t *, picture_t *) = VideoRender;
 
     if (filter->fmt_in.video.i_chroma == VLC_CODEC_VDPAU_VIDEO_444)
     {
         sys->chroma = VDP_CHROMA_TYPE_444;
         sys->format = VDP_YCBCR_FORMAT_NV12;
-        filter->pf_video_filter = VideoRender;
     }
     else
     if (filter->fmt_in.video.i_chroma == VLC_CODEC_VDPAU_VIDEO_422)
@@ -744,23 +736,37 @@ static int OutputOpen(vlc_object_t *obj)
         sys->chroma = VDP_CHROMA_TYPE_422;
         /* TODO: check if the drivery supports NV12 or UYVY */
         sys->format = VDP_YCBCR_FORMAT_UYVY;
-        filter->pf_video_filter = VideoRender;
     }
     else
     if (filter->fmt_in.video.i_chroma == VLC_CODEC_VDPAU_VIDEO_420)
     {
         sys->chroma = VDP_CHROMA_TYPE_420;
         sys->format = VDP_YCBCR_FORMAT_NV12;
-        filter->pf_video_filter = VideoRender;
     }
     else
     if (vlc_fourcc_to_vdp_ycc(filter->fmt_in.video.i_chroma,
                               &sys->chroma, &sys->format))
-        filter->pf_video_filter = YCbCrRender;
+        video_filter = YCbCrRender;
     else
+        goto error;
+
+    /* Get the context and allocate the mixer (through *ahem* picture) */
+    picture_t *pic = filter_NewPicture(filter);
+    if (pic == NULL)
+        goto error;
+
+    picture_sys_t *picsys = pic->p_sys;
+    assert(picsys != NULL && picsys->vdp != NULL);
+
+    sys->vdp = vdp_hold_x11(picsys->vdp, NULL);
+    sys->device = picsys->device;
+    picture_Release(pic);
+
+    sys->mixer = MixerCreate(filter, video_filter == YCbCrRender);
+    if (sys->mixer == VDP_INVALID_HANDLE)
     {
-        free(sys);
-        return VLC_EGENERIC;
+        vdp_release_x11(sys->vdp);
+        goto error;
     }
 
     /* NOTE: The video mixer capabilities should be checked here, and the
@@ -778,9 +784,12 @@ static int OutputOpen(vlc_object_t *obj)
     sys->procamp.saturation = 1.f;
     sys->procamp.hue = 0.f;
 
-    filter->pf_video_flush = Flush;
-    filter->p_sys = sys;
+    filter->pf_video_filter = video_filter;
+    filter->pf_flush = Flush;
     return VLC_SUCCESS;
+error:
+    free(sys);
+    return VLC_EGENERIC;
 }
 
 static void OutputClose(vlc_object_t *obj)
@@ -789,11 +798,8 @@ static void OutputClose(vlc_object_t *obj)
     filter_sys_t *sys = filter->p_sys;
 
     Flush(filter);
-    if (sys->mixer != VDP_INVALID_HANDLE)
-    {
-        vdp_video_mixer_destroy(sys->vdp, sys->mixer);
-        vdp_release_x11(sys->vdp);
-    }
+    vdp_video_mixer_destroy(sys->vdp, sys->mixer);
+    vdp_release_x11(sys->vdp);
     free(sys);
 }
 
@@ -813,12 +819,29 @@ static picture_t *VideoExport_Filter(filter_t *filter, picture_t *src)
     return VideoExport(filter, src, dst);
 }
 
+static bool ChromaMatches(VdpChromaType vdp_type, vlc_fourcc_t vlc_chroma)
+{
+    switch (vlc_chroma)
+    {
+        case VLC_CODEC_VDPAU_VIDEO_420:
+            return vdp_type == VDP_CHROMA_TYPE_420;
+        case VLC_CODEC_VDPAU_VIDEO_422:
+            return vdp_type == VDP_CHROMA_TYPE_422;
+        case VLC_CODEC_VDPAU_VIDEO_444:
+            return vdp_type == VDP_CHROMA_TYPE_444;
+        default:
+            return false;
+    }
+}
+
 static int YCbCrOpen(vlc_object_t *obj)
 {
     filter_t *filter = (filter_t *)obj;
-    if (filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_420
-     && filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_422
-     && filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_444)
+    VdpChromaType type;
+    VdpYCbCrFormat format;
+
+    if (!vlc_fourcc_to_vdp_ycc(filter->fmt_out.video.i_chroma, &type, &format)
+      || !ChromaMatches(type, filter->fmt_in.video.i_chroma))
         return VLC_EGENERIC;
 
     if (filter->fmt_in.video.i_visible_width
@@ -834,13 +857,8 @@ static int YCbCrOpen(vlc_object_t *obj)
     filter_sys_t *sys = malloc(sizeof (*sys));
     if (unlikely(sys == NULL))
         return VLC_ENOMEM;
-
-    if (!vlc_fourcc_to_vdp_ycc(filter->fmt_out.video.i_chroma,
-                               &sys->chroma, &sys->format))
-    {
-        free(sys);
-        return VLC_EGENERIC;
-    }
+    sys->chroma = type;
+    sys->format = format;
 
     filter->pf_video_filter = VideoExport_Filter;
     filter->p_sys = sys;
@@ -868,7 +886,7 @@ static const char *const algo_names[] = {
 vlc_module_begin()
     set_shortname(N_("VDPAU"))
     set_description(N_("VDPAU surface conversions"))
-    set_capability("video filter2", 10)
+    set_capability("video converter", 10)
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VFILTER)
     set_callbacks(OutputOpen, OutputClose)

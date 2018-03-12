@@ -183,7 +183,7 @@ static const char *const polarization_user[] = { N_("Unspecified (0V)"),
 #define LNB_LOW_TEXT N_("Local oscillator low frequency (kHz)")
 #define LNB_HIGH_TEXT N_("Local oscillator high frequency (kHz)")
 #define LNB_LONGTEXT N_( \
-    "The downconverter (LNB) will substract the local oscillator frequency " \
+    "The downconverter (LNB) will subtract the local oscillator frequency " \
     "from the satellite transmission frequency. " \
     "The intermediate frequency (IF) on the RF cable is the result.")
 #define LNB_SWITCH_TEXT N_("Universal LNB switch frequency (kHz)")
@@ -428,27 +428,21 @@ struct access_sys_t
 {
     dvb_device_t *dev;
     uint8_t signal_poll;
+    tuner_setup_t pf_setup;
 };
 
-typedef struct delsys
-{
-    int (*setup) (vlc_object_t *, dvb_device_t *, uint64_t freq);
-    /* TODO: scan stuff */
-} delsys_t;
-
-static const delsys_t dvbc, dvbs, dvbs2, dvbt, dvbt2;
-static const delsys_t isdbc, isdbs, isdbt;
-static const delsys_t atsc, cqam;
-
-static block_t *Read (access_t *);
-static int Control (access_t *, int, va_list);
-static const delsys_t *GuessSystem (const char *, dvb_device_t *);
-static int Tune (vlc_object_t *, dvb_device_t *, const delsys_t *, uint64_t);
+static block_t *Read (stream_t *, bool *);
+static int Control (stream_t *, int, va_list);
+static dtv_delivery_t GuessSystem (const char *, dvb_device_t *);
+static dtv_delivery_t GetDeliveryByScheme(const char *psz_scheme);
+static int Tune (vlc_object_t *, dvb_device_t *, tuner_setup_t, uint64_t);
 static uint64_t var_InheritFrequency (vlc_object_t *);
+
+tuner_setup_t dtv_get_delivery_tuner_setup( dtv_delivery_t d );
 
 static int Open (vlc_object_t *obj)
 {
-    access_t *access = (access_t *)obj;
+    stream_t *access = (stream_t *)obj;
     access_sys_t *sys = malloc (sizeof (*sys));
     if (unlikely(sys == NULL))
         return VLC_ENOMEM;
@@ -464,19 +458,23 @@ static int Open (vlc_object_t *obj)
 
     sys->dev = dev;
     sys->signal_poll = 0;
+    sys->pf_setup = NULL;
     access->p_sys = sys;
 
     uint64_t freq = var_InheritFrequency (obj);
     if (freq != 0)
     {
-        const delsys_t *delsys = GuessSystem (access->psz_access, dev);
-        if (delsys == NULL || Tune (obj, dev, delsys, freq))
+        dtv_delivery_t d = GuessSystem (access->psz_name, dev);
+        if(d != DTV_DELIVERY_NONE)
+            sys->pf_setup = dtv_get_delivery_tuner_setup(d);
+
+        if (sys->pf_setup == NULL || Tune (obj, dev, sys->pf_setup, freq))
         {
             msg_Err (obj, "tuning to %"PRIu64" Hz failed", freq);
-            dialog_Fatal (obj, N_("Digital broadcasting"),
-                          N_("The selected digital tuner does not support "
-                             "the specified parameters.\n"
-                             "Please check the preferences."));
+            vlc_dialog_display_error (obj, N_("Digital broadcasting"),
+                N_("The selected digital tuner does not support "
+                   "the specified parameters.\n"
+                   "Please check the preferences."));
             goto error;
         }
     }
@@ -484,8 +482,6 @@ static int Open (vlc_object_t *obj)
 
     access->pf_block = Read;
     access->pf_control = Control;
-    free (access->psz_demux);
-    access->psz_demux = strdup ("ts");
     return VLC_SUCCESS;
 
 error:
@@ -496,14 +492,14 @@ error:
 
 static void Close (vlc_object_t *obj)
 {
-    access_t *access = (access_t *)obj;
+    stream_t *access = (stream_t *)obj;
     access_sys_t *sys = access->p_sys;
 
     dvb_close (sys->dev);
     free (sys);
 }
 
-static block_t *Read (access_t *access)
+static block_t *Read (stream_t *access, bool *restrict eof)
 {
 #define BUFSIZE (20*188)
     block_t *block = block_Alloc (BUFSIZE);
@@ -511,12 +507,12 @@ static block_t *Read (access_t *access)
         return NULL;
 
     access_sys_t *sys = access->p_sys;
-    ssize_t val = dvb_read (sys->dev, block->p_buffer, BUFSIZE);
+    ssize_t val = dvb_read (sys->dev, block->p_buffer, BUFSIZE, -1);
 
     if (val <= 0)
     {
         if (val == 0)
-            access->info.b_eof = true;
+            *eof = true;
         block_Release (block);
         return NULL;
     }
@@ -526,32 +522,32 @@ static block_t *Read (access_t *access)
     return block;
 }
 
-static int Control (access_t *access, int query, va_list args)
+static int Control (stream_t *access, int query, va_list args)
 {
     access_sys_t *sys = access->p_sys;
     dvb_device_t *dev = sys->dev;
 
     switch (query)
     {
-        case ACCESS_CAN_SEEK:
-        case ACCESS_CAN_FASTSEEK:
-        case ACCESS_CAN_PAUSE:
-        case ACCESS_CAN_CONTROL_PACE:
+        case STREAM_CAN_SEEK:
+        case STREAM_CAN_FASTSEEK:
+        case STREAM_CAN_PAUSE:
+        case STREAM_CAN_CONTROL_PACE:
             *va_arg (args, bool *) = false;
             break;
 
-        case ACCESS_GET_PTS_DELAY:
+        case STREAM_GET_PTS_DELAY:
         {
             int64_t *v = va_arg (args, int64_t *);
             *v = var_InheritInteger (access, "live-caching") * INT64_C(1000);
             break;
         }
 
-        case ACCESS_GET_CONTENT_TYPE:
+        case STREAM_GET_CONTENT_TYPE:
             *va_arg (args, char **) = strdup ("video/MP2T");
             break;
 
-        case ACCESS_GET_SIGNAL:
+        case STREAM_GET_SIGNAL:
             /* Fetch the signal levels only every so often to avoid stressing
              * the device bus. */
             if ((sys->signal_poll++))
@@ -561,10 +557,10 @@ static int Control (access_t *access, int query, va_list args)
             *va_arg (args, double *) = dvb_get_signal_strength (dev);
             return VLC_SUCCESS;
 
-        case ACCESS_SET_PRIVATE_ID_STATE:
+        case STREAM_SET_PRIVATE_ID_STATE:
         {
-            unsigned pid = va_arg (args, unsigned);
-            bool add = va_arg (args, unsigned);
+            unsigned pid = va_arg (args, int);
+            bool add = va_arg (args, int);
 
             if (unlikely(pid > 0x1FFF))
                 return VLC_EGENERIC;
@@ -578,16 +574,23 @@ static int Control (access_t *access, int query, va_list args)
             break;
         }
 
-#ifdef HAVE_DVBPSI
-        case ACCESS_SET_PRIVATE_ID_CA:
+        case STREAM_SET_PRIVATE_ID_CA:
         {
-            struct dvbpsi_pmt_s *pmt = va_arg (args, struct dvbpsi_pmt_s *);
+            en50221_capmt_info_t *pmt = va_arg (args, en50221_capmt_info_t *);
 
-            dvb_set_ca_pmt (dev, pmt);
+            if( !dvb_set_ca_pmt (dev, pmt) )
+                return VLC_EGENERIC;
             break;
         }
-#endif
-        /*case ACCESS_GET_PRIVATE_ID_STATE: TODO? */
+
+        case STREAM_GET_PRIVATE_ID_STATE:
+        {
+            unsigned pid = va_arg (args, int);
+            bool *on = va_arg (args, bool *);
+
+            *on = likely(pid <= 0x1FFF) ? dvb_get_pid_state(dev, pid) : false;
+            return VLC_SUCCESS;
+        }
 
         default:
             return VLC_EGENERIC;
@@ -598,82 +601,11 @@ static int Control (access_t *access, int query, va_list args)
 
 
 /*** Generic tuning ***/
-
-/** Determines which delivery system to use. */
-static const delsys_t *GuessSystem (const char *scheme, dvb_device_t *dev)
-{
-    /* Specific delivery system is specified */
-    if (!strcasecmp (scheme, "atsc"))
-        return &atsc;
-    if (!strcasecmp (scheme, "cqam"))
-        return &cqam;
-    if (!strcasecmp (scheme, "dvb-c"))
-        return &dvbc;
-    if (!strcasecmp (scheme, "dvb-s"))
-        return &dvbs;
-    if (!strcasecmp (scheme, "dvb-s2"))
-        return &dvbs2;
-    if (!strcasecmp (scheme, "dvb-t"))
-        return &dvbt;
-    if (!strcasecmp (scheme, "dvb-t2"))
-        return &dvbt2;
-    if (!strcasecmp (scheme, "isdb-c"))
-        return &isdbc;
-    if (!strcasecmp (scheme, "isdb-s"))
-        return &isdbs;
-    if (!strcasecmp (scheme, "isdb-t"))
-        return &isdbt;
-
-    /* If the demodulator supports 2G, we cannot guess whether
-     * 1G or 2G is intended. For backward compatibility, 1G is assumed
-     * (this is not a limitation of Linux DVB). We will probably need something
-     * smarter when 2G (semi automatic) scanning is implemented. */
-    unsigned systems = dvb_enum_systems (dev);
-
-    /* Only wave carrier is specified */
-    if (!strcasecmp (scheme, "cable"))
-    {
-        if (systems & DVB_C)
-            return &dvbc;
-        if (systems & CQAM)
-            return &cqam;
-        if (systems & ISDB_C)
-            return &isdbc;
-    }
-    if (!strcasecmp (scheme, "satellite"))
-    {
-        if (systems & DVB_S)
-            return &dvbs;
-        if (systems & ISDB_S)
-            return &isdbs;
-    }
-    if (!strcasecmp (scheme, "terrestrial"))
-    {
-        if (systems & DVB_T)
-            return &dvbc;
-        if (systems & ATSC)
-            return &cqam;
-        if (systems & ISDB_T)
-            return &isdbt;
-    }
-
-    /* Only standards family or nothing is specified */
-    if (systems & DVB_C)
-        return &dvbc;
-    if (systems & DVB_S)
-        return &dvbs;
-    if (systems & DVB_T)
-        return &dvbt;
-    if (systems & ATSC)
-        return &atsc;
-    return NULL;
-}
-
 /** Set parameters and tune the device */
-static int Tune (vlc_object_t *obj, dvb_device_t *dev, const delsys_t *delsys,
+static int Tune (vlc_object_t *obj, dvb_device_t *dev, tuner_setup_t pf_setup,
                  uint64_t freq)
 {
-    if (delsys->setup (obj, dev, freq)
+    if (pf_setup(obj, dev, freq)
      || dvb_set_inversion (dev, var_InheritInteger (obj, "dvb-inversion"))
      || dvb_tune (dev))
         return VLC_EGENERIC;
@@ -781,6 +713,7 @@ static unsigned var_InheritGuardInterval (vlc_object_t *obj)
                            "Use \"guard=1/%"PRIu16" instead.", a, a);
             b = a;
             a = 1;
+            /* fall through */
         case 2:
             return VLC_GUARD(a, b);
     }
@@ -796,17 +729,12 @@ static int atsc_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
     return dvb_set_atsc (dev, freq, mod);
 }
 
-static const delsys_t atsc = { .setup = atsc_setup };
-
 static int cqam_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
 {
     const char *mod = var_InheritModulation (obj, "dvb-modulation");
 
     return dvb_set_cqam (dev, freq, mod);
 }
-
-static const delsys_t cqam = { .setup = cqam_setup };
-
 
 /*** DVB-C ***/
 static int dvbc_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
@@ -817,9 +745,6 @@ static int dvbc_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
 
     return dvb_set_dvbc (dev, freq, mod, srate, fec);
 }
-
-static const delsys_t dvbc = { .setup = dvbc_setup };
-
 
 /*** DVB-S ***/
 static char var_InheritPolarization (vlc_object_t *obj)
@@ -885,10 +810,6 @@ static int dvbs2_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
     return ret;
 }
 
-static const delsys_t dvbs = { .setup = dvbs_setup };
-static const delsys_t dvbs2 = { .setup = dvbs2_setup };
-
-
 /*** DVB-T ***/
 static int dvbt_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
 {
@@ -915,10 +836,6 @@ static int dvbt2_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
     return dvb_set_dvbt2 (dev, freq, mod, fec, bw, tx, guard, plp);
 }
 
-static const delsys_t dvbt = { .setup = dvbt_setup };
-static const delsys_t dvbt2 = { .setup = dvbt2_setup };
-
-
 /*** ISDB-C ***/
 static int isdbc_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
 {
@@ -928,9 +845,6 @@ static int isdbc_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
 
     return dvb_set_isdbc (dev, freq, mod, srate, fec);
 }
-
-static const delsys_t isdbc = { .setup = isdbc_setup };
-
 
 /*** ISDB-S ***/
 static int isdbs_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
@@ -942,9 +856,6 @@ static int isdbs_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
         sec_setup (obj, dev, freq);
     return ret;
 }
-
-static const delsys_t isdbs = { .setup = isdbs_setup };
-
 
 /*** ISDB-T ***/
 static int isdbt_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
@@ -973,4 +884,90 @@ static int isdbt_setup (vlc_object_t *obj, dvb_device_t *dev, uint64_t freq)
     return dvb_set_isdbt (dev, freq, bw, tx, guard, layers);
 }
 
-static const delsys_t isdbt = { .setup = isdbt_setup };
+static const struct
+{
+    const dtv_delivery_t delivery;
+    tuner_setup_t const pf_setup;
+    const char *psz_scheme;
+} delsys_mappings[] = {
+    { DTV_DELIVERY_ATSC,    atsc_setup,    "atsc"      },
+    { DTV_DELIVERY_CQAM,    cqam_setup,    "cqam"      },
+    { DTV_DELIVERY_DVB_C,   dvbc_setup,    "dvb-c"     },
+    { DTV_DELIVERY_DVB_C2,  dvbc_setup,    "dvb-c2"    },
+    { DTV_DELIVERY_DVB_S,   dvbs_setup,    "dvb-s"     },
+    { DTV_DELIVERY_DVB_S2,  dvbs2_setup,   "dvb-s2"    },
+    { DTV_DELIVERY_DVB_T,   dvbt_setup,    "dvb-t"     },
+    { DTV_DELIVERY_DVB_T2,  dvbt2_setup,   "dvb-t2"    },
+    { DTV_DELIVERY_ISDB_C,  isdbc_setup,   "isdb-c"    },
+    { DTV_DELIVERY_ISDB_S,  isdbs_setup,   "isdb-s"    },
+    { DTV_DELIVERY_ISDB_T,  isdbt_setup,   "isdb-t"    },
+};
+
+tuner_setup_t dtv_get_delivery_tuner_setup( dtv_delivery_t d )
+{
+    for (size_t i=0; i<ARRAY_SIZE(delsys_mappings); i++)
+    {
+        if ( delsys_mappings[i].delivery == d )
+            return delsys_mappings[i].pf_setup;
+    }
+    return NULL;
+}
+
+static dtv_delivery_t GetDeliveryByScheme(const char *psz_scheme)
+{
+    for (size_t i=0; i<ARRAY_SIZE(delsys_mappings); i++)
+    {
+        if(!strcasecmp(psz_scheme, delsys_mappings[i].psz_scheme))
+            return delsys_mappings[i].delivery;
+    }
+    return DTV_DELIVERY_NONE;
+}
+
+static inline dtv_delivery_t GetSingleDelivery( dtv_delivery_t d )
+{
+    if( d == 0 )
+        return DTV_DELIVERY_NONE;
+    else
+        return 1 << ctz( d );
+}
+
+/** Determines which delivery system to use. */
+static dtv_delivery_t GuessSystem (const char *scheme, dvb_device_t *dev)
+{
+    /* Specific delivery system is specified */
+    dtv_delivery_t d = GetDeliveryByScheme(scheme);
+    if(d != DTV_DELIVERY_NONE)
+        return d;
+
+    /* If the demodulator supports 2G, we cannot guess whether
+     * 1G or 2G is intended. For backward compatibility, 1G is assumed
+     * (this is not a limitation of Linux DVB). We will probably need something
+     * smarter when 2G (semi automatic) scanning is implemented. */
+    unsigned systems = dvb_enum_systems (dev);
+
+    systems &= ~DTV_DELGROUP_G2;
+
+    if( systems )
+    {
+        /* Only wave carrier is specified */
+        if (!strcasecmp (scheme, "cable"))
+        {
+            return GetSingleDelivery(systems & DTV_DELGROUP_CABLE);
+        }
+        else if (!strcasecmp (scheme, "satellite"))
+        {
+            return GetSingleDelivery(systems & DTV_DELGROUP_SAT);
+        }
+        else if (!strcasecmp (scheme, "terrestrial"))
+        {
+            return GetSingleDelivery(systems & DTV_DELGROUP_TERRES);
+        }
+        else
+        {
+            /* Only standards family or nothing is specified */
+            return GetSingleDelivery(systems);
+        }
+    }
+
+    return DTV_DELIVERY_NONE;
+}

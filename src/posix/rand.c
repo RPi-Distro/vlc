@@ -2,7 +2,7 @@
  * rand.c : non-predictible random bytes generator
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: af448fb82d67dbe21ad2406d410e9c5296bd16f3 $
+ * $Id: 338f4675daf824313abcb32de5e9015466b0d81f $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -70,7 +70,7 @@ static void vlc_rand_init (void)
         ikey[i] = key[i] ^ 0x36;
     }
 
-    close (fd);
+    vlc_close (fd);
 }
 
 

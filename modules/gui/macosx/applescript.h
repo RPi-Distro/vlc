@@ -2,7 +2,7 @@
  * applescript.h: MacOS X AppleScript support
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 1021687bf93e8b29a1df15cac62cfcd930d817a7 $
+ * $Id: aee356bfaeedd9b03f1ab1a0b2544577cc5fc7f3 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *
@@ -42,9 +42,11 @@
 
 @property (readwrite) BOOL scriptFullscreenMode;
 @property (readwrite) int audioVolume;
+@property (readwrite) int audioDesync;
 @property (readwrite) int currentTime;
 @property (readonly) int durationOfCurrentItem;
 @property (readonly) NSString *pathOfCurrentItem;
 @property (readonly) NSString *nameOfCurrentItem;
+@property (readonly) BOOL playbackShowsMenu;
 
 @end

@@ -2,7 +2,7 @@
  * es.c : Generic audio ES input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 819b89be9b54feb03ccee5c70dc72aa9f286699b $
+ * $Id: 5d646ac2c4d1c41d3c98a18d795220e7293b80f4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -37,8 +37,11 @@
 #include <vlc_codecs.h>
 #include <vlc_input.h>
 
-#include "../../codec/a52.h"
-#include "../../codec/dts_header.h"
+#include "../../packetizer/a52.h"
+#include "../../packetizer/dts_header.h"
+#include "../meta_engine/ID3Tag.h"
+#include "../meta_engine/ID3Text.h"
+#include "../meta_engine/ID3Meta.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -91,9 +94,35 @@ typedef struct
     int  (*pf_init)( demux_t *p_demux );
 } codec_t;
 
+typedef struct
+{
+    char  psz_version[10];
+    int   i_lowpass;
+} lame_extra_t;
+
+typedef struct
+{
+    mtime_t i_time;
+    uint64_t i_pos;
+    bs_t br;
+} sync_table_ctx_t;
+
+typedef struct
+{
+    uint16_t i_frames_btw_refs;
+    uint32_t i_bytes_btw_refs;
+    uint32_t i_ms_btw_refs;
+    uint8_t i_bits_per_bytes_dev;
+    uint8_t i_bits_per_ms_dev;
+    uint8_t *p_bits;
+    size_t i_bits;
+    sync_table_ctx_t current;
+} sync_table_t;
+
 struct demux_sys_t
 {
     codec_t codec;
+    vlc_fourcc_t i_original;
 
     es_out_id_t *p_es;
 
@@ -124,7 +153,14 @@ struct demux_sys_t
         int i_bytes;
         int i_bitrate_avg;
         int i_frame_samples;
+        lame_extra_t lame;
+        bool b_lame;
     } xing;
+
+    float rgf_replay_gain[AUDIO_REPLAY_GAIN_MAX];
+    float rgf_replay_peak[AUDIO_REPLAY_GAIN_MAX];
+
+    sync_table_t mllt;
 };
 
 static int MpgaProbe( demux_t *p_demux, int64_t *pi_offset );
@@ -145,6 +181,7 @@ static int ThdProbe( demux_t *p_demux, int64_t *pi_offset );
 static int MlpInit( demux_t *p_demux );
 
 static bool Parse( demux_t *p_demux, block_t **pp_output );
+static uint64_t SeekByMlltTable( demux_t *p_demux, mtime_t *pi_time );
 
 static const codec_t p_codecs[] = {
     { VLC_CODEC_MP4A, false, "mp4 audio",  AacProbe,  AacInit },
@@ -186,7 +223,7 @@ static int OpenCommon( demux_t *p_demux,
     p_sys->f_fps = var_InheritFloat( p_demux, "es-fps" );
     p_sys->p_packetized_data = NULL;
 
-    if( stream_Seek( p_demux->s, p_sys->i_stream_offset ) )
+    if( vlc_stream_Seek( p_demux->s, p_sys->i_stream_offset ) )
     {
         free( p_sys );
         return VLC_EGENERIC;
@@ -202,6 +239,7 @@ static int OpenCommon( demux_t *p_demux,
 
     /* Load the audio packetizer */
     es_format_Init( &fmt, i_cat, p_sys->codec.i_codec );
+    fmt.i_original_fourcc = p_sys->i_original;
     p_sys->p_packetizer = demux_PacketizerNew( p_demux, &fmt, p_sys->codec.psz_name );
     if( !p_sys->p_packetizer )
     {
@@ -209,13 +247,29 @@ static int OpenCommon( demux_t *p_demux,
         return VLC_EGENERIC;
     }
 
-    while( vlc_object_alive( p_demux ) )
+    es_format_t *p_fmt = &p_sys->p_packetizer->fmt_out;
+    for( int i = 0; i < AUDIO_REPLAY_GAIN_MAX; i++ )
+    {
+        if ( p_sys->rgf_replay_gain[i] != 0.0 )
+        {
+            p_fmt->audio_replay_gain.pb_gain[i] = true;
+            p_fmt->audio_replay_gain.pf_gain[i] = p_sys->rgf_replay_gain[i];
+        }
+        if ( p_sys->rgf_replay_peak[i] != 0.0 )
+        {
+            p_fmt->audio_replay_gain.pb_peak[i] = true;
+            p_fmt->audio_replay_gain.pf_peak[i] = p_sys->rgf_replay_peak[i];
+        }
+    }
+
+    for( ;; )
     {
         if( Parse( p_demux, &p_sys->p_packetized_data ) )
             break;
         if( p_sys->p_packetized_data )
             break;
     }
+
     return VLC_SUCCESS;
 }
 static int OpenAudio( vlc_object_t *p_this )
@@ -241,7 +295,7 @@ static int OpenVideo( vlc_object_t *p_this )
         return VLC_EGENERIC;
 
     const uint8_t *p_peek;
-    if( stream_Peek( p_demux->s, &p_peek, 4 ) < 4 )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, 4 ) < 4 )
         return VLC_EGENERIC;
     if( p_peek[0] != 0x00 || p_peek[1] != 0x00 || p_peek[2] != 0x01 )
     {
@@ -293,7 +347,7 @@ static int Demux( demux_t *p_demux )
         if( p_block_out->i_dts > VLC_TS_INVALID )
         {
             p_block_out->i_dts += p_sys->i_time_offset;
-            es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block_out->i_dts );
+            es_out_SetPCR( p_demux->out, p_block_out->i_dts );
         }
         /* Re-estimate bitrate */
         if( p_sys->b_estimate_bitrate && p_sys->i_pts > INT64_C(500000) )
@@ -319,6 +373,8 @@ static void Close( vlc_object_t * p_this )
 
     if( p_sys->p_packetized_data )
         block_ChainRelease( p_sys->p_packetized_data );
+    if( p_sys->mllt.p_bits )
+        free( p_sys->mllt.p_bits );
     demux_PacketizerDestroy( p_sys->p_packetizer );
     free( p_sys );
 }
@@ -336,12 +392,12 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     switch( i_query )
     {
         case DEMUX_HAS_UNSUPPORTED_META:
-            pb_bool = (bool*)va_arg( args, bool* );
+            pb_bool = va_arg( args, bool * );
             *pb_bool = true;
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
             *pi64 = p_sys->i_pts + p_sys->i_time_offset;
             return VLC_SUCCESS;
 
@@ -358,17 +414,17 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
              * a raw approximation with time/position */
             if( i_ret && !p_sys->i_bitrate_avg )
             {
-                float f_pos = (double)(uint64_t)( stream_Tell( p_demux->s ) ) /
+                float f_pos = (double)(uint64_t)( vlc_stream_Tell( p_demux->s ) ) /
                               (double)(uint64_t)( stream_Size( p_demux->s ) );
                 /* The first few seconds are guaranteed to be very whacky,
                  * don't bother trying ... Too bad */
-                if( f_pos < 0.01 ||
+                if( f_pos < 0.01f ||
                     (p_sys->i_pts + p_sys->i_time_offset) < 8000000 )
                 {
                     return VLC_EGENERIC;
                 }
 
-                pi64 = (int64_t *)va_arg( args, int64_t * );
+                pi64 = va_arg( args, int64_t * );
                 *pi64 = (p_sys->i_pts + p_sys->i_time_offset) / f_pos;
                 return VLC_SUCCESS;
             }
@@ -376,8 +432,24 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         }
 
         case DEMUX_SET_TIME:
+        {
+            if( p_sys->mllt.p_bits )
+            {
+                int64_t i_time = va_arg(args, int64_t);
+                uint64_t i_pos = SeekByMlltTable( p_demux, &i_time );
+                int i_ret = vlc_stream_Seek( p_demux->s, p_sys->i_stream_offset + i_pos );
+                if( i_ret != VLC_SUCCESS )
+                    return i_ret;
+                p_sys->i_time_offset = i_time - p_sys->i_pts;
+                /* And reset buffered data */
+                if( p_sys->p_packetized_data )
+                    block_ChainRelease( p_sys->p_packetized_data );
+                p_sys->p_packetized_data = NULL;
+                return VLC_SUCCESS;
+            }
             /* FIXME TODO: implement a high precision seek (with mp3 parsing)
              * needed for multi-input */
+        }
         default:
             i_ret = demux_vaControlHelper( p_demux->s, p_sys->i_stream_offset, -1,
                                             p_sys->i_bitrate_avg, 1, i_query,
@@ -385,7 +457,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             if( !i_ret && p_sys->i_bitrate_avg > 0 &&
                 (i_query == DEMUX_SET_POSITION || i_query == DEMUX_SET_TIME) )
             {
-                int64_t i_time = INT64_C(8000000) * ( stream_Tell(p_demux->s) - p_sys->i_stream_offset ) /
+                int64_t i_time = INT64_C(8000000) * ( vlc_stream_Tell(p_demux->s) - p_sys->i_stream_offset ) /
                     p_sys->i_bitrate_avg;
 
                 /* Fix time_offset */
@@ -414,12 +486,12 @@ static bool Parse( demux_t *p_demux, block_t **pp_output )
     if( p_sys->codec.b_use_word )
     {
         /* Make sure we are word aligned */
-        int64_t i_pos = stream_Tell( p_demux->s );
-        if( i_pos % 2 )
-            stream_Read( p_demux->s, NULL, 1 );
+        int64_t i_pos = vlc_stream_Tell( p_demux->s );
+        if( (i_pos & 1) && vlc_stream_Read( p_demux->s, NULL, 1 ) != 1 )
+            return true;
     }
 
-    p_block_in = stream_Block( p_demux->s, p_sys->i_packet_size );
+    p_block_in = vlc_stream_Block( p_demux->s, p_sys->i_packet_size );
     bool b_eof = p_block_in == NULL;
 
     if( p_block_in )
@@ -478,11 +550,25 @@ static bool Parse( demux_t *p_demux, block_t **pp_output )
     return b_eof;
 }
 
+/* Check to apply to WAVE fmt header */
+static int GenericFormatCheck( int i_format, const uint8_t *p_head )
+{
+    if ( i_format == WAVE_FORMAT_PCM )
+    {
+        if( GetWLE( p_head /* nChannels */ ) != 2 )
+            return VLC_EGENERIC;
+        if( GetDWLE( p_head + 2 /* nSamplesPerSec */ ) != 44100 )
+            return VLC_EGENERIC;
+    }
+    return VLC_SUCCESS;
+}
+
 /*****************************************************************************
  * Wav header skipper
  *****************************************************************************/
 #define WAV_PROBE_SIZE (512*1024)
-static int WavSkipHeader( demux_t *p_demux, int *pi_skip, const int pi_format[] )
+static int WavSkipHeader( demux_t *p_demux, int *pi_skip, const int pi_format[],
+                          int (*pf_format_check)( int, const uint8_t * ) )
 {
     const uint8_t *p_peek;
     int         i_peek = 0;
@@ -491,7 +577,7 @@ static int WavSkipHeader( demux_t *p_demux, int *pi_skip, const int pi_format[] 
     *pi_skip = 0;
 
     /* Check if we are dealing with a WAV file */
-    if( stream_Peek( p_demux->s, &p_peek, 12+8 ) != 12 + 8 )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, 12+8 ) != 12 + 8 )
         return VLC_SUCCESS;
 
     if( memcmp( p_peek, "RIFF", 4 ) || memcmp( &p_peek[8], "WAVE", 4 ) )
@@ -506,7 +592,7 @@ static int WavSkipHeader( demux_t *p_demux, int *pi_skip, const int pi_format[] 
             return VLC_EGENERIC;
 
         i_peek += i_len + 8;
-        if( stream_Peek( p_demux->s, &p_peek, i_peek ) != i_peek )
+        if( vlc_stream_Peek( p_demux->s, &p_peek, i_peek ) != i_peek )
             return VLC_EGENERIC;
     }
 
@@ -516,7 +602,7 @@ static int WavSkipHeader( demux_t *p_demux, int *pi_skip, const int pi_format[] 
         return VLC_EGENERIC;
 
     i_peek += i_len + 8;
-    if( stream_Peek( p_demux->s, &p_peek, i_peek ) != i_peek )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, i_peek ) != i_peek )
         return VLC_EGENERIC;
     const int i_format = GetWLE( p_peek + i_peek - i_len - 8 /* wFormatTag */ );
     int i_format_idx;
@@ -528,14 +614,9 @@ static int WavSkipHeader( demux_t *p_demux, int *pi_skip, const int pi_format[] 
     if( pi_format[i_format_idx] == WAVE_FORMAT_UNKNOWN )
         return VLC_EGENERIC;
 
-    if( i_format == WAVE_FORMAT_PCM )
-    {
-        if( GetWLE( p_peek + i_peek - i_len - 6 /* nChannels */ ) != 2 )
+    if( pf_format_check &&
+        pf_format_check( i_format, p_peek + i_peek - i_len - 6 ) != VLC_SUCCESS )
             return VLC_EGENERIC;
-        if( GetDWLE( p_peek + i_peek - i_len - 4 /* nSamplesPerSec */ ) !=
-            44100 )
-            return VLC_EGENERIC;
-    }
 
     /* Skip the wave header */
     while( memcmp( p_peek + i_peek - 8, "data", 4 ) )
@@ -545,7 +626,7 @@ static int WavSkipHeader( demux_t *p_demux, int *pi_skip, const int pi_format[] 
             return VLC_EGENERIC;
 
         i_peek += i_len + 8;
-        if( stream_Peek( p_demux->s, &p_peek, i_peek ) != i_peek )
+        if( vlc_stream_Peek( p_demux->s, &p_peek, i_peek ) != i_peek )
             return VLC_EGENERIC;
     }
     *pi_skip = i_peek;
@@ -555,7 +636,8 @@ static int WavSkipHeader( demux_t *p_demux, int *pi_skip, const int pi_format[] 
 static int GenericProbe( demux_t *p_demux, int64_t *pi_offset,
                          const char * ppsz_name[],
                          int (*pf_check)( const uint8_t *, int * ), int i_check_size,
-                         const int pi_wav_format[] )
+                         const int pi_wav_format[],
+                         int (*pf_format_check)( int, const uint8_t * ) )
 {
     bool   b_forced_demux;
 
@@ -569,9 +651,9 @@ static int GenericProbe( demux_t *p_demux, int64_t *pi_offset,
         b_forced_demux |= demux_IsForced( p_demux, ppsz_name[i] );
     }
 
-    i_offset = stream_Tell( p_demux->s );
+    i_offset = vlc_stream_Tell( p_demux->s );
 
-    if( WavSkipHeader( p_demux, &i_skip, pi_wav_format ) )
+    if( WavSkipHeader( p_demux, &i_skip, pi_wav_format, pf_format_check ) )
     {
         if( !b_forced_demux )
             return VLC_EGENERIC;
@@ -583,10 +665,10 @@ static int GenericProbe( demux_t *p_demux, int64_t *pi_offset,
      * We will accept probing 0.5s of data in this case.
      */
     const int i_probe = i_skip + i_check_size + 8000 + ( b_wav ? (44000/2*2*2) : 0);
-    const int i_peek = stream_Peek( p_demux->s, &p_peek, i_probe );
+    const int i_peek = vlc_stream_Peek( p_demux->s, &p_peek, i_probe );
     if( i_peek < i_skip + i_check_size )
     {
-        msg_Err( p_demux, "cannot peek" );
+        msg_Dbg( p_demux, "cannot peek" );
         return VLC_EGENERIC;
     }
     for( ;; )
@@ -601,7 +683,8 @@ static int GenericProbe( demux_t *p_demux, int64_t *pi_offset,
         int i_size = pf_check( &p_peek[i_skip], &i_samples );
         if( i_size >= 0 )
         {
-            if( i_size == 0 )
+            if( i_size == 0 || /* 0 sized frame ?? */
+                i_skip == 0 /* exact match from start, we're not WAVE either, so skip multiple checks (would break if padding) */ )
                 break;
 
             /* If we have the frame size, check the next frame for
@@ -689,9 +772,9 @@ static int MpgaProbe( demux_t *p_demux, int64_t *pi_offset )
     b_forced_demux = demux_IsForced( p_demux, "mp3" ) ||
                      demux_IsForced( p_demux, "mpga" );
 
-    i_offset = stream_Tell( p_demux->s );
+    i_offset = vlc_stream_Tell( p_demux->s );
 
-    if( WavSkipHeader( p_demux, &i_skip, pi_wav ) )
+    if( WavSkipHeader( p_demux, &i_skip, pi_wav, NULL ) )
     {
         if( !b_forced_demux )
             return VLC_EGENERIC;
@@ -699,7 +782,7 @@ static int MpgaProbe( demux_t *p_demux, int64_t *pi_offset )
         return VLC_EGENERIC;
     }
 
-    if( stream_Peek( p_demux->s, &p_peek, i_skip + 4 ) < i_skip + 4 )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, i_skip + 4 ) < i_skip + 4 )
         return VLC_EGENERIC;
 
     if( !MpgaCheckSync( &p_peek[i_skip] ) )
@@ -710,7 +793,7 @@ static int MpgaProbe( demux_t *p_demux, int64_t *pi_offset )
         if( !b_forced_demux && !b_forced )
             return VLC_EGENERIC;
 
-        i_peek = stream_Peek( p_demux->s, &p_peek, i_skip + 8096 );
+        i_peek = vlc_stream_Peek( p_demux->s, &p_peek, i_skip + 8096 );
         while( i_skip + 4 < i_peek )
         {
             if( MpgaCheckSync( &p_peek[i_skip] ) )
@@ -748,6 +831,141 @@ static uint32_t MpgaXingGetDWBE( const uint8_t **pp_xing, int *pi_xing, uint32_t
     return v;
 }
 
+static uint16_t MpgaXingGetWBE( const uint8_t **pp_xing, int *pi_xing, uint16_t i_default )
+{
+    if( *pi_xing < 2 )
+        return i_default;
+
+    uint16_t v = GetWBE( *pp_xing );
+
+    MpgaXingSkip( pp_xing, pi_xing, 2 );
+
+    return v;
+}
+
+static double MpgaXingLameConvertGain( uint16_t x )
+{
+    double gain = (x & 0x1FF) / 10.0;
+
+    return x & 0x200 ? -gain : gain;
+}
+
+static double MpgaXingLameConvertPeak( uint32_t x )
+{
+    return x / 8388608.0; /* pow(2, 23) */
+}
+
+static uint64_t SeekByMlltTable( demux_t *p_demux, mtime_t *pi_time )
+{
+    demux_sys_t *p_sys = p_demux->p_sys;
+    sync_table_ctx_t *p_cur = &p_sys->mllt.current;
+
+    /* reset or init context */
+    if( *pi_time < p_cur->i_time || !p_cur->br.p )
+    {
+        p_cur->i_time = 0;
+        p_cur->i_pos = 0;
+        bs_init(&p_cur->br, p_sys->mllt.p_bits, p_sys->mllt.i_bits);
+    }
+
+    while(bs_remain(&p_cur->br) >= p_sys->mllt.i_bits_per_bytes_dev + p_sys->mllt.i_bits_per_ms_dev)
+    {
+        const uint32_t i_bytesdev = bs_read(&p_cur->br, p_sys->mllt.i_bits_per_bytes_dev);
+        const uint32_t i_msdev = bs_read(&p_cur->br, p_sys->mllt.i_bits_per_ms_dev);
+        const mtime_t i_deltatime = (p_sys->mllt.i_ms_btw_refs + i_msdev) * INT64_C(1000);
+        if( p_cur->i_time + i_deltatime > *pi_time )
+            break;
+        p_cur->i_time += i_deltatime;
+        p_cur->i_pos += p_sys->mllt.i_bytes_btw_refs + i_bytesdev;
+    }
+    *pi_time = p_cur->i_time;
+    return p_cur->i_pos;
+}
+
+static int ID3TAG_Parse_Handler( uint32_t i_tag, const uint8_t *p_payload, size_t i_payload, void *p_priv )
+{
+    demux_t *p_demux = (demux_t *) p_priv;
+    demux_sys_t *p_sys = p_demux->p_sys;
+
+    if( i_tag == VLC_FOURCC('M', 'L', 'L', 'T') )
+    {
+        if( i_payload > 20 )
+        {
+            p_sys->mllt.i_frames_btw_refs = GetWBE(p_payload);
+            p_sys->mllt.i_bytes_btw_refs = GetDWBE(&p_payload[1]) & 0x00FFFFFF;
+            p_sys->mllt.i_ms_btw_refs = GetDWBE(&p_payload[4]) & 0x00FFFFFF;
+            if( !p_sys->mllt.i_frames_btw_refs || !p_sys->mllt.i_bytes_btw_refs ||
+                    !p_sys->mllt.i_ms_btw_refs ||
+                    p_payload[8] > 31 || p_payload[9] > 31 || /* bits length sanity check */
+                    ((p_payload[8] + p_payload[9]) % 4) || p_payload[8] + p_payload[9] < 4 )
+                return VLC_EGENERIC;
+            p_sys->mllt.i_bits_per_bytes_dev = p_payload[8];
+            p_sys->mllt.i_bits_per_ms_dev = p_payload[9];
+            p_sys->mllt.p_bits = malloc(i_payload - 10);
+            if( likely(p_sys->mllt.p_bits) )
+            {
+                p_sys->mllt.i_bits = i_payload - 10;
+                memcpy(p_sys->mllt.p_bits, &p_payload[10], p_sys->mllt.i_bits);
+                msg_Dbg(p_demux, "read MLLT sync table with %zu entries",
+                        (p_sys->mllt.i_bits * 8) / (p_sys->mllt.i_bits_per_bytes_dev + p_sys->mllt.i_bits_per_ms_dev) );
+            }
+        }
+        return VLC_EGENERIC;
+    }
+    else if( i_tag == VLC_FOURCC('T', 'X', 'X', 'X') )
+    {
+        vlc_meta_t *p_meta = vlc_meta_New();
+        if( p_meta )
+        {
+            bool b_updated;
+            if( ID3HandleTag( p_payload, i_payload, i_tag, p_meta, &b_updated ) )
+            {
+                char ** ppsz_keys = vlc_meta_CopyExtraNames( p_meta );
+                if( ppsz_keys )
+                {
+                    for( size_t i = 0; ppsz_keys[i]; ++i )
+                    {
+                        float *pf = NULL;
+                        if(     !strcasecmp( ppsz_keys[i], "REPLAYGAIN_TRACK_GAIN" ) )
+                            pf = &p_sys->rgf_replay_gain[AUDIO_REPLAY_GAIN_TRACK];
+                        else if( !strcasecmp( ppsz_keys[i], "REPLAYGAIN_TRACK_PEAK" ) )
+                            pf = &p_sys->rgf_replay_peak[AUDIO_REPLAY_GAIN_TRACK];
+                        else if( !strcasecmp( ppsz_keys[i], "REPLAYGAIN_ALBUM_GAIN" ) )
+                            pf = &p_sys->rgf_replay_gain[AUDIO_REPLAY_GAIN_ALBUM];
+                        else if( !strcasecmp( ppsz_keys[i], "REPLAYGAIN_ALBUM_PEAK" ) )
+                            pf = &p_sys->rgf_replay_peak[AUDIO_REPLAY_GAIN_ALBUM];
+                        if( pf )
+                        {
+                            const char *psz_val = vlc_meta_GetExtra( p_meta, ppsz_keys[i] );
+                            if( psz_val )
+                                *pf = us_atof( psz_val );
+                        }
+                        free( ppsz_keys[i] );
+                    }
+                    free( ppsz_keys );
+                }
+            }
+            vlc_meta_Delete( p_meta );
+        }
+    }
+
+    return VLC_SUCCESS;
+}
+
+static int ID3Parse( demux_t *p_demux,
+                     int (*pf_callback)(uint32_t, const uint8_t *, size_t, void *) )
+{
+    const block_t *p_tags = NULL;
+
+    if( vlc_stream_Control( p_demux->s, STREAM_GET_TAGS, &p_tags ) != VLC_SUCCESS )
+        return VLC_EGENERIC;
+
+    for( ; p_tags; p_tags = p_tags->p_next )
+        ID3TAG_Parse( p_tags->p_buffer, p_tags->i_buffer, pf_callback, (void *) p_demux );
+
+    return VLC_SUCCESS;
+}
+
 static int MpgaInit( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
@@ -758,8 +976,10 @@ static int MpgaInit( demux_t *p_demux )
     /* */
     p_sys->i_packet_size = 1024;
 
+    ID3Parse( p_demux, ID3TAG_Parse_Handler );
+
     /* Load a potential xing header */
-    i_peek = stream_Peek( p_demux->s, &p_peek, 4 + 1024 );
+    i_peek = vlc_stream_Peek( p_demux->s, &p_peek, 4 + 1024 );
     if( i_peek < 4 + 21 )
         return VLC_SUCCESS;
 
@@ -807,6 +1027,32 @@ static int MpgaInit( demux_t *p_demux )
                  p_sys->xing.i_bytes, p_sys->xing.i_frames,
                  p_sys->xing.i_frame_samples );
     }
+
+    if( i_xing >= 20 && memcmp( p_xing, "LAME", 4 ) == 0)
+    {
+        p_sys->xing.b_lame = true;
+        lame_extra_t *p_lame = &p_sys->xing.lame;
+
+        memcpy( p_lame->psz_version, p_xing, 9 );
+        p_lame->psz_version[9] = '\0';
+
+        MpgaXingSkip( &p_xing, &i_xing, 9 );
+        MpgaXingSkip( &p_xing, &i_xing, 1 ); /* rev_method */
+
+        p_lame->i_lowpass = (*p_xing) * 100;
+        MpgaXingSkip( &p_xing, &i_xing, 1 );
+
+        uint32_t peak  = MpgaXingGetDWBE( &p_xing, &i_xing, 0 );
+        uint16_t track = MpgaXingGetWBE( &p_xing, &i_xing, 0 );
+        uint16_t album = MpgaXingGetWBE( &p_xing, &i_xing, 0 );
+
+        p_sys->rgf_replay_peak[AUDIO_REPLAY_GAIN_TRACK] = (float) MpgaXingLameConvertPeak( peak );
+        p_sys->rgf_replay_gain[AUDIO_REPLAY_GAIN_TRACK] = (float) MpgaXingLameConvertGain( track );
+        p_sys->rgf_replay_gain[AUDIO_REPLAY_GAIN_ALBUM] = (float) MpgaXingLameConvertGain( album );
+
+        MpgaXingSkip( &p_xing, &i_xing, 1 ); /* flags */
+    }
+
     return VLC_SUCCESS;
 }
 
@@ -830,12 +1076,12 @@ static int AacProbe( demux_t *p_demux, int64_t *pi_offset )
     if( !b_forced_demux && !b_forced )
         return VLC_EGENERIC;
 
-    i_offset = stream_Tell( p_demux->s );
+    i_offset = vlc_stream_Tell( p_demux->s );
 
     /* peek the begining (10 is for adts header) */
-    if( stream_Peek( p_demux->s, &p_peek, 10 ) < 10 )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, 10 ) < 10 )
     {
-        msg_Err( p_demux, "cannot peek" );
+        msg_Dbg( p_demux, "cannot peek" );
         return VLC_EGENERIC;
     }
     if( !strncmp( (char *)p_peek, "ADIF", 4 ) )
@@ -852,6 +1098,7 @@ static int AacInit( demux_t *p_demux )
     demux_sys_t *p_sys = p_demux->p_sys;
 
     p_sys->i_packet_size = 4096;
+    p_sys->i_original = VLC_FOURCC('H','E','A','D');
 
     return VLC_SUCCESS;
 }
@@ -892,7 +1139,8 @@ static int EA52Probe( demux_t *p_demux, int64_t *pi_offset )
     const char *ppsz_name[] = { "eac3", NULL };
     const int pi_wav[] = { WAVE_FORMAT_PCM, WAVE_FORMAT_A52, WAVE_FORMAT_UNKNOWN };
 
-    return GenericProbe( p_demux, pi_offset, ppsz_name, EA52CheckSyncProbe, VLC_A52_HEADER_SIZE, pi_wav );
+    return GenericProbe( p_demux, pi_offset, ppsz_name, EA52CheckSyncProbe,
+                         VLC_A52_HEADER_SIZE, pi_wav, GenericFormatCheck );
 }
 
 static int A52CheckSyncProbe( const uint8_t *p_peek, int *pi_samples )
@@ -906,7 +1154,8 @@ static int A52Probe( demux_t *p_demux, int64_t *pi_offset )
     const char *ppsz_name[] = { "a52", "ac3", NULL };
     const int pi_wav[] = { WAVE_FORMAT_PCM, WAVE_FORMAT_A52, WAVE_FORMAT_UNKNOWN };
 
-    return GenericProbe( p_demux, pi_offset, ppsz_name, A52CheckSyncProbe, VLC_A52_HEADER_SIZE, pi_wav );
+    return GenericProbe( p_demux, pi_offset, ppsz_name, A52CheckSyncProbe,
+                         VLC_A52_HEADER_SIZE, pi_wav, GenericFormatCheck );
 }
 
 static int A52Init( demux_t *p_demux )
@@ -919,7 +1168,7 @@ static int A52Init( demux_t *p_demux )
     const uint8_t *p_peek;
 
     /* peek the begining */
-    if( stream_Peek( p_demux->s, &p_peek, VLC_A52_HEADER_SIZE ) >= VLC_A52_HEADER_SIZE )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, VLC_A52_HEADER_SIZE ) >= VLC_A52_HEADER_SIZE )
     {
         A52CheckSync( p_peek, &p_sys->b_big_endian, NULL, true );
     }
@@ -931,20 +1180,16 @@ static int A52Init( demux_t *p_demux )
  *****************************************************************************/
 static int DtsCheckSync( const uint8_t *p_peek, int *pi_samples )
 {
-    unsigned int i_sample_rate, i_bit_rate, i_frame_length, i_audio_mode;
-    bool b_dts_hd;
-
     VLC_UNUSED(pi_samples);
 
-    int i_frame_size = GetSyncInfo( p_peek,
-                                    &b_dts_hd,
-                                    &i_sample_rate,
-                                    &i_bit_rate,
-                                    &i_frame_length,
-                                    &i_audio_mode );
-
-    if( i_frame_size != VLC_EGENERIC && i_frame_size <= 8192 )
-        return VLC_SUCCESS;
+    vlc_dts_header_t dts;
+    if( vlc_dts_header_Parse( &dts, p_peek, VLC_DTS_HEADER_SIZE ) == VLC_SUCCESS
+     && dts.i_frame_size > 0 && dts.i_frame_size <= 8192 )
+    {
+        if( pi_samples )
+            *pi_samples = dts.i_frame_length;
+        return dts.i_frame_size;
+    }
     else
         return VLC_EGENERIC;
 }
@@ -954,7 +1199,8 @@ static int DtsProbe( demux_t *p_demux, int64_t *pi_offset )
     const char *ppsz_name[] = { "dts", NULL };
     const int pi_wav[] = { WAVE_FORMAT_PCM, WAVE_FORMAT_DTS, WAVE_FORMAT_UNKNOWN };
 
-    return GenericProbe( p_demux, pi_offset, ppsz_name, DtsCheckSync, 11, pi_wav );
+    return GenericProbe( p_demux, pi_offset, ppsz_name, DtsCheckSync,
+                         VLC_DTS_HEADER_SIZE, pi_wav, NULL );
 }
 static int DtsInit( demux_t *p_demux )
 {
@@ -997,14 +1243,16 @@ static int MlpProbe( demux_t *p_demux, int64_t *pi_offset )
     const char *ppsz_name[] = { "mlp", NULL };
     const int pi_wav[] = { WAVE_FORMAT_PCM, WAVE_FORMAT_UNKNOWN };
 
-    return GenericProbe( p_demux, pi_offset, ppsz_name, MlpCheckSync, 4+28+16*4, pi_wav );
+    return GenericProbe( p_demux, pi_offset, ppsz_name, MlpCheckSync,
+                         4+28+16*4, pi_wav, GenericFormatCheck );
 }
 static int ThdProbe( demux_t *p_demux, int64_t *pi_offset )
 {
     const char *ppsz_name[] = { "thd", NULL };
     const int pi_wav[] = { WAVE_FORMAT_PCM, WAVE_FORMAT_UNKNOWN };
 
-    return GenericProbe( p_demux, pi_offset, ppsz_name, ThdCheckSync, 4+28+16*4, pi_wav );
+    return GenericProbe( p_demux, pi_offset, ppsz_name, ThdCheckSync,
+                         4+28+16*4, pi_wav, GenericFormatCheck );
 }
 static int MlpInit( demux_t *p_demux )
 

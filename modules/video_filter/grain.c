@@ -2,7 +2,7 @@
  * grain.c: add film grain
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: f3102bdf957d753735f6eb233f642701558e7b16 $
+ * $Id: fc8c7fbdcb3baccc43a8c51f1380b41eb124f2f8 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -35,7 +35,7 @@
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
 #include <vlc_cpu.h>
-
+#include <vlc_picture.h>
 #include <vlc_rand.h>
 
 /*****************************************************************************
@@ -64,7 +64,7 @@ vlc_module_begin()
     set_description(N_("Grain video filter"))
     set_shortname( N_("Grain"))
     set_help(N_("Adds filtered gaussian noise"))
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VFILTER)
     add_float_with_range(CFG_PREFIX "variance", 2.0, VARIANCE_MIN, VARIANCE_MAX,
@@ -154,8 +154,8 @@ static void BlockBlendC(uint8_t *dst, size_t dst_pitch,
 }
 
 #ifdef CAN_COMPILE_SSE2
-#define _STRING(x) #x
-#define STRING(x) _STRING(x)
+#define STRING_EXPAND(x) #x
+#define STRING(x) STRING_EXPAND(x)
 VLC_SSE
 static void BlockBlendSse2(uint8_t *dst, size_t dst_pitch,
                            const uint8_t *src, size_t src_pitch,

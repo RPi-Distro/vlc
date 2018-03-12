@@ -35,6 +35,45 @@
 
 extern DWORD LoadLibraryFlags;
 
+#if (_WIN32_WINNT < _WIN32_WINNT_WIN7)
+static BOOL WINAPI SetThreadErrorModeFallback(DWORD mode, DWORD *oldmode)
+{
+    /* TODO: cache the pointer */
+    HANDLE h = GetModuleHandle(_T("kernel32.dll"));
+    if (unlikely(h == NULL))
+        return FALSE;
+
+    BOOL (WINAPI *SetThreadErrorModeReal)(DWORD, DWORD *);
+
+    SetThreadErrorModeReal = GetProcAddress(h, "SetThreadErrorMode");
+    if (SetThreadErrorModeReal != NULL)
+        return SetThreadErrorModeReal(mode, oldmode);
+
+# if (_WIN32_WINNT < _WIN32_WINNT_VISTA)
+    /* As per libvlc_new() documentation, the calling process is responsible
+     * for setting a proper error mode on Windows 2008 and earlier versions.
+     * This is only a sanity check. */
+    UINT (WINAPI *GetErrorModeReal)(void);
+    DWORD curmode = 0;
+
+    GetErrorModeReal = (void *)GetProcAddress(h, "GetErrorMode");
+    if (GetErrorModeReal != NULL)
+        curmode = GetErrorModeReal();
+    else
+        curmode = SEM_FAILCRITICALERRORS;
+# else
+    DWORD curmode = GetErrorMode();
+# endif
+    /* Extra flags should be OK. Missing flags are NOT OK. */
+    if ((mode & curmode) != mode)
+        return FALSE;
+    if (oldmode != NULL)
+        *oldmode = curmode;
+    return TRUE;
+}
+# define SetThreadErrorMode SetThreadErrorModeFallback
+#endif
+
 static char *GetWindowsError( void )
 {
     wchar_t wmsg[256];
@@ -60,16 +99,16 @@ int module_Load( vlc_object_t *p_this, const char *psz_file,
         return -1;
 
     module_handle_t handle = NULL;
-#if (_WIN32_WINNT >= 0x601)
+#if !VLC_WINSTORE_APP
     DWORD mode;
     if (SetThreadErrorMode (SEM_FAILCRITICALERRORS, &mode) != 0)
-#endif
     {
         handle = LoadLibraryExW (wfile, NULL, LoadLibraryFlags );
-#if (_WIN32_WINNT >= 0x601)
         SetThreadErrorMode (mode, NULL);
-#endif
     }
+#else
+    handle = LoadPackagedLibrary( wfile, 0 );
+#endif
     free (wfile);
 
     if( handle == NULL )

@@ -149,6 +149,10 @@ typedef struct logical_stream_s
             int32_t i_framesize;
             int32_t i_framesperpacket;
         } speex;
+        struct
+        {
+            bool b_old;
+        } flac;
     } special;
 
 } logical_stream_t;
@@ -179,7 +183,6 @@ struct demux_sys_t
      * the sub-streams */
     mtime_t i_pcr;
     mtime_t i_nzpcr_offset;
-    mtime_t i_nzlast_pts;
     /* informative only */
     mtime_t i_pcr_jitter;
     int64_t i_access_delay;
@@ -228,6 +231,8 @@ struct demux_sys_t
 
     /* Length, if available. */
     int64_t i_length;
+
+    bool b_slave;
 
 };
 

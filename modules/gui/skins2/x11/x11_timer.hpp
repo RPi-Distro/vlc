@@ -2,7 +2,7 @@
  * x11_timer.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 8e3164e0abedfd1f3f5e10020233380e69e8d428 $
+ * $Id: 40d4e8bfc156d014a1b7da70b8617a05fa4bd616 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -90,7 +90,7 @@ private:
     /// Connection number of the X11 display
     int m_connectionNumber;
     /// List of timers
-    list<X11Timer*> m_timers;
+    std::list<X11Timer*> m_timers;
 
     /// Sleep for delay milliseconds, unless an X11 event is received.
     /// Returns true if the sleep has been interupted.

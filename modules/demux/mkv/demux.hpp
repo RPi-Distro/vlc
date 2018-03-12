@@ -2,7 +2,7 @@
  * demux.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: f6b910bfffbd6b58ac0d2d8ea6e3e2cdb3e1044f $
+ * $Id: 69f3882a365ca3f2a191001ccfa256701ac06766 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -22,8 +22,8 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _DEMUX_SYS_H
-#define _DEMUX_SYS_H
+#ifndef VLC_MKV_DEMUX_HPP_
+#define VLC_MKV_DEMUX_HPP_
 
 #include "mkv.hpp"
 
@@ -331,13 +331,13 @@ struct demux_sys_t
 public:
     demux_sys_t( demux_t & demux )
         :demuxer(demux)
-        ,i_pts(0)
-        ,i_pcr(0)
-        ,i_start_pts(0)
-        ,i_chapter_time(0)
+        ,i_pts(VLC_TS_INVALID)
+        ,i_pcr(VLC_TS_INVALID)
+        ,i_start_pts(VLC_TS_0)
+        ,i_mk_chapter_time(0)
         ,meta(NULL)
         ,i_current_title(0)
-        ,p_current_segment(NULL)
+        ,p_current_vsegment(NULL)
         ,dvd_interpretor( *this )
         ,f_duration(-1.0)
         ,p_input(NULL)
@@ -354,7 +354,7 @@ public:
     mtime_t                 i_pts;
     mtime_t                 i_pcr;
     mtime_t                 i_start_pts;
-    mtime_t                 i_chapter_time;
+    mtime_t                 i_mk_chapter_time;
 
     vlc_meta_t              *meta;
 
@@ -364,8 +364,8 @@ public:
     std::vector<matroska_stream_c*>  streams;
     std::vector<attachment_c*>       stored_attachments;
     std::vector<matroska_segment_c*> opened_segments;
-    std::vector<virtual_segment_c*>  used_segments;
-    virtual_segment_c                *p_current_segment;
+    std::vector<virtual_segment_c*>  used_vsegments;
+    virtual_segment_c                *p_current_vsegment;
 
     dvd_command_interpretor_c        dvd_interpretor;
 
@@ -377,15 +377,15 @@ public:
                                         bool (*match)(const chapter_codec_cmds_c &data, const void *p_cookie, size_t i_cookie_size ),
                                         const void *p_cookie,
                                         size_t i_cookie_size,
-                                        virtual_segment_c * & p_segment_found );
-    virtual_chapter_c *FindChapter( int64_t i_find_uid, virtual_segment_c * & p_segment_found );
+                                        virtual_segment_c * & p_vsegment_found );
+    virtual_chapter_c *FindChapter( int64_t i_find_uid, virtual_segment_c * & p_vsegment_found );
 
     void PreloadFamily( const matroska_segment_c & of_segment );
     bool PreloadLinked();
     void FreeUnused();
-    bool PreparePlayback( virtual_segment_c *p_new_segment );
-    matroska_stream_c *AnalyseAllSegmentsFound( demux_t *p_demux, EbmlStream *p_estream, bool b_initial = false );
-    void JumpTo( virtual_segment_c & p_segment, virtual_chapter_c * p_chapter );
+    bool PreparePlayback( virtual_segment_c & new_vsegment, mtime_t i_mk_date );
+    bool AnalyseAllSegmentsFound( demux_t *p_demux, matroska_stream_c *, bool b_initial = false );
+    void JumpTo( virtual_segment_c & vsegment, virtual_chapter_c & vchapter );
 
     void InitUi();
     void CleanUi();
@@ -397,9 +397,6 @@ public:
 
     /* event */
     event_thread_t *p_ev;
-
-protected:
-    virtual_segment_c *VirtualFromSegments( std::vector<matroska_segment_c*> *p_segments ) const;
 };
 
 

@@ -26,42 +26,76 @@
 extern "C" {
 # endif
 
-enum {
-    ATSC   = 0x00000001,
-    CQAM   = 0x00000002,
+typedef enum {
+    DTV_DELIVERY_NONE   = 0x00000000,
+    DTV_DELIVERY_ATSC   = 0x00000001,
+    DTV_DELIVERY_CQAM   = 0x00000002,
 
-    DVB_C  = 0x00000010,
-    DVB_C2 = 0x00000020,
-    DVB_S  = 0x00000040,
-    DVB_S2 = 0x00000080,
-    DVB_T  = 0x00000100,
-    DVB_T2 = 0x00000200,
+    DTV_DELIVERY_DVB_C  = 0x00000010,
+    DTV_DELIVERY_DVB_C2 = 0x00000020,
+    DTV_DELIVERY_DVB_S  = 0x00000040,
+    DTV_DELIVERY_DVB_S2 = 0x00000080,
+    DTV_DELIVERY_DVB_T  = 0x00000100,
+    DTV_DELIVERY_DVB_T2 = 0x00000200,
 
-    ISDB_C = 0x00001000,
-    ISDB_S = 0x00002000,
-    ISDB_T = 0x00004000,
-};
+    DTV_DELIVERY_ISDB_C = 0x00001000,
+    DTV_DELIVERY_ISDB_S = 0x00002000,
+    DTV_DELIVERY_ISDB_T = 0x00004000,
+} dtv_delivery_t;
+
+#define DTV_DELGROUP_G2         ( DTV_DELIVERY_DVB_C2 | DTV_DELIVERY_DVB_T2 | \
+                                  DTV_DELIVERY_DVB_S2 )
+
+#define DTV_DELGROUP_SAT        ( DTV_DELIVERY_DVB_S | DTV_DELIVERY_DVB_S2 | \
+                                  DTV_DELIVERY_ISDB_S )
+
+#define DTV_DELGROUP_CABLE      ( DTV_DELIVERY_DVB_C | DTV_DELIVERY_DVB_C2 | \
+                                  DTV_DELIVERY_CQAM  | DTV_DELIVERY_ISDB_C )
+
+#define DTV_DELGROUP_TERRES     ( DTV_DELIVERY_DVB_T | DTV_DELIVERY_DVB_T2 | \
+                                  DTV_DELIVERY_ATSC  | DTV_DELIVERY_ISDB_T )
 
 typedef struct dvb_device dvb_device_t;
 
+typedef int (* tuner_setup_t) (vlc_object_t *, dvb_device_t *, uint64_t freq);
+tuner_setup_t dtv_get_delivery_tuner_setup( dtv_delivery_t );
+
 dvb_device_t *dvb_open (vlc_object_t *obj);
 void dvb_close (dvb_device_t *);
-ssize_t dvb_read (dvb_device_t *, void *, size_t);
+ssize_t dvb_read (dvb_device_t *, void *, size_t, int);
 
 int dvb_add_pid (dvb_device_t *, uint16_t);
 void dvb_remove_pid (dvb_device_t *, uint16_t);
+bool dvb_get_pid_state (const dvb_device_t *, uint16_t);
 
 unsigned dvb_enum_systems (dvb_device_t *);
 float dvb_get_signal_strength (dvb_device_t *);
 float dvb_get_snr (dvb_device_t *);
 
-#ifdef HAVE_DVBPSI
-struct dvbpsi_pmt_s;
-void dvb_set_ca_pmt (dvb_device_t *, struct dvbpsi_pmt_s *);
-#endif
+typedef struct en50221_capmt_info_s en50221_capmt_info_t;
+bool dvb_set_ca_pmt (dvb_device_t *, en50221_capmt_info_t *);
 
 int dvb_set_inversion (dvb_device_t *, int);
 int dvb_tune (dvb_device_t *);
+
+typedef struct
+{
+    struct
+    {
+        unsigned min;
+        unsigned max;
+        unsigned step;
+    } frequency;
+    struct
+    {
+        unsigned min;
+        unsigned max;
+        unsigned step;
+    } symbolrate;
+    bool b_can_cam_auto;
+} dvb_device_caps_t;
+
+int dvb_fill_device_caps( dvb_device_t *, dvb_device_caps_t * );
 
 #define VLC_FEC(a,b)   (((a) << 16u) | (b))
 #define VLC_FEC_AUTO   0xFFFFFFFF

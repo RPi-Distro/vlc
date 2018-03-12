@@ -2,7 +2,7 @@
  * qsv.c: mpeg4-part10/mpeg2 video encoder using Intel Media SDK
  *****************************************************************************
  * Copyright (C) 2013 VideoLabs
- * $Id: 9ac1bb7fa59bf6d0b7edc4b8321d9b0154338641 $
+ * $Id: 93752e792eec5d776082577e8c9694ceeea76b9b $
  *
  * Authors: Julien 'Lta' BALLET <contact@lta.io>
  *
@@ -44,7 +44,7 @@
 /* The SDK doesn't have a default bitrate, so here's one. */
 #define QSV_BITRATE_DEFAULT (842)
 
-/* Makes x a multiple of 'align'. 'align' must me a power of 2 */
+/* Makes x a multiple of 'align'. 'align' must be a power of 2 */
 #define QSV_ALIGN(align, x)     (((x)+(align)-1)&~((align)-1))
 
 /*****************************************************************************
@@ -79,32 +79,32 @@ static void     Close(vlc_object_t *);
 #define GOP_REF_DIST_TEXT N_("Group of Picture Reference Distance")
 #define GOP_REF_DIST_LONGTEXT N_( \
     "Distance between I- or P- key frames; if it is zero, the GOP " \
-    "structure is unspecified. Note: If GopRefDist = 1, there are no B- " \
-    "frames used. ")
+    "structure is unspecified. Note: If GopRefDist = 1, there are no B-" \
+    "frames used.")
 
 #define TARGET_USAGE_TEXT N_("Target Usage")
 #define TARGET_USAGE_LONGTEXT N_("The target usage allow to choose between " \
-    "different trade-offs between quality and speed. Allowed values are : " \
+    "different trade-offs between quality and speed. Allowed values are: " \
     "'speed', 'balanced' and 'quality'.")
 
 #define IDR_INTERVAL_TEXT N_("IDR interval")
 #define IDR_INTERVAL_LONGTEXT N_( \
-    "For H.264, IdrInterval specifies IDR-frame interval in terms of I- " \
+    "For H.264, IdrInterval specifies IDR-frame interval in terms of I-" \
     "frames; if IdrInterval=0, then every I-frame is an IDR-frame. If " \
     "IdrInterval=1, then every other I-frame is an IDR-frame, etc. " \
     "For MPEG2, IdrInterval defines sequence header interval in terms " \
     "of I-frames. If IdrInterval=N, SDK inserts the sequence header " \
     "before every Nth I-frame. If IdrInterval=0 (default), SDK inserts " \
-    "the sequence header once at the beginning of the stream. ")
+    "the sequence header once at the beginning of the stream.")
 
 #define RATE_CONTROL_TEXT N_("Rate Control Method")
 #define RATE_CONTROL_LONGTEXT N_( \
     "The rate control method to use when encoding. Can be one of " \
-    "'crb', 'vbr', 'qp', 'avbr'. 'qp' mode isn't supported for mpeg2")
+    "'cbr', 'vbr', 'qp', 'avbr'. 'qp' mode isn't supported for mpeg2.")
 
 #define QP_TEXT N_("Quantization parameter")
 #define QP_LONGTEXT N_("Quantization parameter for all types of frames. " \
-    "This parameters sets qpi, qpp and qpp. It has less precedence than " \
+    "This parameters sets qpi, qpp and qpb. It has less precedence than " \
     "the forementionned parameters. Used only if rc_method is 'qp'.")
 
 #define QPI_TEXT N_("Quantization parameter for I-frames")
@@ -120,21 +120,21 @@ static void     Close(vlc_object_t *);
     "overrides any qp set globally. Used only if rc_method is 'qp'.")
 
 #define MAX_BITRATE_TEXT N_("Maximum Bitrate")
-#define MAX_BITRATE_LONGTEXT N_("Defines the maximum bitrate in Kpbs " \
+#define MAX_BITRATE_LONGTEXT N_("Defines the maximum bitrate in kbps " \
     "(1000 bits/s) for VBR rate control method. If not set, this parameter" \
-    ". is computed from other sources such as bitrate, profile, level, etc.")
+    " is computed from other sources such as bitrate, profile, level, etc.")
 
 #define ACCURACY_TEXT N_("Accuracy of RateControl")
 #define ACCURACY_LONGTEXT N_("Tolerance in percentage of the 'avbr' " \
     " (Average Variable BitRate) method. (e.g. 10 with a bitrate of 800 " \
-    " kpbs means the encoder tries not to  go above 880 kpbs and under " \
-    " 730 kpbs. The targeted accuracy is only reached after a certained " \
+    " kbps means the encoder tries not to  go above 880 kbps and under " \
+    " 730 kbps. The targeted accuracy is only reached after a certained " \
     " convergence period. See the convergence parameter")
 
 #define CONVERGENCE_TEXT N_("Convergence time of 'avbr' RateControl")
 #define CONVERGENCE_LONGTEXT N_("Number of 100 frames before the " \
     "'avbr' rate control method reaches the requested bitrate with " \
-    "the requested accuracy. See the accuracy parameter. ")
+    "the requested accuracy. See the accuracy parameter.")
 
 #define NUM_SLICE_TEXT N_("Number of slices per frame")
 #define NUM_SLICE_LONGTEXT N_("Number of slices in each video frame; "\
@@ -148,7 +148,7 @@ static void     Close(vlc_object_t *);
 #define ASYNC_DEPTH_TEXT N_("Number of parallel operations")
 #define ASYNC_DEPTH_LONGTEXT N_("Defines the number of parallel " \
      "encoding operations before we synchronise the result. Higher " \
-     " may result on better throughput depending on hardware. " \
+     "numbers may result on better throughput depending on hardware. " \
      "MPEG2 needs at least 1 here.")
 
 static const int const profile_h264_list[] =
@@ -341,9 +341,9 @@ static void qsv_frame_pool_Destroy(qsv_frame_pool_t *pool)
  * necessary associates the new picture with it and return the frame.
  * Returns 0 if there's an error.
  */
-static mfxFrameSurface1 *qsv_frame_pool_Get(qsv_frame_pool_t *pool,
-                                            picture_t *pic)
+static mfxFrameSurface1 *qsv_frame_pool_Get(encoder_sys_t *sys, picture_t *pic)
 {
+    qsv_frame_pool_t *pool = &sys->frames;
     for (size_t i = 0; i < pool->size; i++) {
         mfxFrameSurface1 *frame = &pool->frames[i];
         if (frame->Data.Locked)
@@ -355,7 +355,7 @@ static mfxFrameSurface1 *qsv_frame_pool_Get(qsv_frame_pool_t *pool,
         frame->Data.Y         = pic->p[0].p_pixels;
         frame->Data.U         = pic->p[1].p_pixels;
         frame->Data.V         = pic->p[1].p_pixels + 1;
-        frame->Data.TimeStamp = qsv_mtime_to_timestamp(pic->date);
+        frame->Data.TimeStamp = qsv_mtime_to_timestamp(pic->date - sys->offset_pts);
 
         // Specify picture structure at runtime.
         if (pic->b_progressive)
@@ -410,7 +410,7 @@ static int Open(vlc_object_t *this)
     uint8_t nals[128];
 
     if (enc->fmt_out.i_codec != VLC_CODEC_H264 &&
-        enc->fmt_out.i_codec != VLC_CODEC_MPGV && !enc->b_force)
+        enc->fmt_out.i_codec != VLC_CODEC_MPGV && !enc->obj.force)
         return VLC_EGENERIC;
 
     if (!enc->fmt_in.video.i_visible_height || !enc->fmt_in.video.i_visible_width ||
@@ -449,6 +449,7 @@ static int Open(vlc_object_t *this)
     /* Vlc module configuration */
     enc->p_sys                         = sys;
     enc->fmt_in.i_codec                = VLC_CODEC_NV12; // Intel Media SDK requirement
+    enc->fmt_in.video.i_chroma         = VLC_CODEC_NV12;
     enc->fmt_in.video.i_bits_per_pixel = 12;
 
     /* Input picture format description */
@@ -497,11 +498,10 @@ static int Open(vlc_object_t *this)
             sys->params.mfx.CodecProfile, sys->params.mfx.CodecLevel);
     }
 
+    char *psz_rc = var_InheritString(enc, SOUT_CFG_PREFIX "rc-method");
+    msg_Dbg(enc, "Encoder using '%s' Rate Control method", psz_rc );
     sys->params.mfx.RateControlMethod = qsv_params_get_value(rc_method_text,
-        rc_method_list, sizeof(rc_method_list),
-        var_InheritString(enc, SOUT_CFG_PREFIX "rc-method"));
-    msg_Dbg(enc, "Encoder using '%s' Rate Control method",
-        var_InheritString(enc, SOUT_CFG_PREFIX "rc-method"));
+        rc_method_list, sizeof(rc_method_list), psz_rc );
 
     if (sys->params.mfx.RateControlMethod == MFX_RATECONTROL_CQP) {
         sys->params.mfx.QPI = sys->params.mfx.QPB = sys->params.mfx.QPP =
@@ -621,9 +621,6 @@ static void qsv_set_block_flags(block_t *block, uint16_t frame_type)
  */
 static void qsv_set_block_ts(encoder_t *enc, encoder_sys_t *sys, block_t *block, mfxBitstream *bs)
 {
-    if (!bs->TimeStamp)
-        return;
-
     block->i_pts = qsv_timestamp_to_mtime(bs->TimeStamp) + sys->offset_pts;
     block->i_dts = qsv_timestamp_to_mtime(bs->DecodeTimeStamp) + sys->offset_pts;
 
@@ -637,23 +634,45 @@ static void qsv_set_block_ts(encoder_t *enc, encoder_sys_t *sys, block_t *block,
                      " and that you have the last version of Intel's drivers installed.");
 }
 
-
-/*
- * The Encode function has 3 encoding phases :
- *   - Feed : We feed the encoder until it stops to return MFX_MORE_DATA_NEEDED
- *     and the async_tasks are all in use (honouring the AsyncDepth)
- *   - Main encoding phase : synchronizing the oldest task each call.
- *   - Empty : pic = 0, we empty the decoder. Synchronizing the remaining tasks.
- */
-static block_t *Encode(encoder_t *this, picture_t *pic)
+static block_t *qsv_synchronize_block(encoder_t *enc, async_task_t *task)
 {
-    encoder_t     *enc = (encoder_t *)this;
     encoder_sys_t *sys = enc->p_sys;
-    async_task_t  *task = NULL;
-    block_t       *block = NULL;
 
+    /* Synchronize and fill block_t. If the SyncOperation fails we leak :-/ (or we can segfault, ur choice) */
+    if (MFXVideoCORE_SyncOperation(sys->session, task->syncp, QSV_SYNCPOINT_WAIT) != MFX_ERR_NONE) {
+        msg_Err(enc, "SyncOperation failed, outputting garbage data. "
+                "Updating your drivers and/or changing the encoding settings might resolve this");
+        return NULL;
+    }
+    block_t *block = task->block;
+    block->i_buffer = task->bs.DataLength;
+    block->p_buffer += task->bs.DataOffset;
+
+    qsv_set_block_ts(enc, sys, block, &task->bs);
+    qsv_set_block_flags(block, task->bs.FrameType);
+
+    /* msg_Dbg(enc, "block->i_pts = %lld, block->i_dts = %lld", block->i_pts, block->i_dts); */
+    /* msg_Dbg(enc, "FrameType = %#.4x, TimeStamp (pts) = %lld, DecodeTimeStamp = %lld", */
+    /*         task->bs.FrameType, task->bs.TimeStamp, task->bs.DecodeTimeStamp); */
+
+    /* Copied from x264.c: This isn't really valid for streams with B-frames */
+    block->i_length = CLOCK_FREQ *
+        enc->fmt_in.video.i_frame_rate_base /
+        enc->fmt_in.video.i_frame_rate;
+
+    // Buggy DTS (value comes from experiments)
+    if (task->bs.DecodeTimeStamp < -10000)
+        block->i_dts = sys->last_dts + block->i_length;
+    sys->last_dts = block->i_dts;
+    return block;
+}
+
+static void qsv_queue_encode_picture(encoder_t *enc, async_task_t *task,
+                                     picture_t *pic)
+{
+    encoder_sys_t *sys = enc->p_sys;
+    mfxStatus sts;
     mfxFrameSurface1 *frame = NULL;
-    mfxStatus        sts;
 
     if (pic) {
         /* To avoid qsv -> vlc timestamp conversion overflow, we use timestamp relative
@@ -661,63 +680,18 @@ static block_t *Encode(encoder_t *this, picture_t *pic)
            (Thanks to funman for the idea) */
         if (!sys->offset_pts) // First frame
             sys->offset_pts = pic->date;
-        pic->date -= sys->offset_pts;
 
-        frame = qsv_frame_pool_Get(&sys->frames, pic);
+        frame = qsv_frame_pool_Get(sys, pic);
         if (!frame) {
             msg_Warn(enc, "Unable to find an unlocked surface in the pool");
-            return NULL;
+            return;
         }
-
-        /* Finds an available SyncPoint */
-        for (size_t i = 0; i < sys->async_depth; i++)
-            if ((sys->tasks + (i + sys->first_task) % sys->async_depth)->syncp == 0) {
-                task = sys->tasks + (i + sys->first_task) % sys->async_depth;
-                break;
-            }
-    } else
-        /* If !pic, we are emptying encoder and tasks, so we force the SyncOperation */
-        msg_Dbg(enc, "Emptying encoder");
-
-    /* There is no available task, we need to synchronize */
-    if (!task) {
-        task = sys->tasks + sys->first_task;
-
-        /* Synchronize and fill block_t. If the SyncOperation fails we leak :-/ (or we can segfault, ur choice) */
-        if (MFXVideoCORE_SyncOperation(sys->session, task->syncp, QSV_SYNCPOINT_WAIT) == MFX_ERR_NONE) {
-            block = task->block;
-            block->i_buffer = task->bs.DataLength;
-            block->p_buffer += task->bs.DataOffset;
-
-            qsv_set_block_ts(enc, sys, block, &task->bs);
-            qsv_set_block_flags(block, task->bs.FrameType);
-
-            /* msg_Dbg(enc, "block->i_pts = %lld, block->i_dts = %lld", block->i_pts, block->i_dts); */
-            /* msg_Dbg(enc, "FrameType = %#.4x, TimeStamp (pts) = %lld, DecodeTimeStamp = %lld", */
-            /*         task->bs.FrameType, task->bs.TimeStamp, task->bs.DecodeTimeStamp); */
-
-            /* Copied from x264.c: This isn't really valid for streams with B-frames */
-            block->i_length = CLOCK_FREQ *
-                enc->fmt_in.video.i_frame_rate_base /
-                enc->fmt_in.video.i_frame_rate;
-
-            // Buggy DTS (value comes from experiments)
-            if (task->bs.DecodeTimeStamp < -10000)
-                block->i_dts = sys->last_dts + block->i_length;
-            sys->last_dts = block->i_dts;
-        } else // Only happens on buggy drivers
-            msg_Err(enc, "SyncOperation failed, outputting garbage data. "
-                    "Updating your drivers and/or changing the encoding settings might resolve this");
-
-        /* Reset the task now it has been synchronized and advances first_task pointer */
-        task->syncp = 0;
-        sys->first_task = (sys->first_task + 1) % sys->async_depth;
     }
 
     /* Allocate block_t and prepare mfxBitstream for encoder */
     if (!(task->block = block_Alloc(sys->params.mfx.BufferSizeInKB * 1000))) {
         msg_Err(enc, "Unable to allocate block for encoder output");
-        return NULL;
+        return;
     }
     memset(&task->bs, 0, sizeof(task->bs));
     task->bs.MaxLength = sys->params.mfx.BufferSizeInKB * 1000;
@@ -743,6 +717,45 @@ static block_t *Encode(encoder_t *this, picture_t *pic)
         msg_Err(enc, "Encoder not ready or error (%d), trying a reset...", sts);
         MFXVideoENCODE_Reset(sys->session, &sys->params);
     }
+}
+
+/*
+ * The Encode function has 3 encoding phases :
+ *   - Feed : We feed the encoder until it stops to return MFX_MORE_DATA_NEEDED
+ *     and the async_tasks are all in use (honouring the AsyncDepth)
+ *   - Main encoding phase : synchronizing the oldest task each call.
+ *   - Empty : pic = 0, we empty the decoder. Synchronizing the remaining tasks.
+ */
+static block_t *Encode(encoder_t *this, picture_t *pic)
+{
+    encoder_t     *enc = (encoder_t *)this;
+    encoder_sys_t *sys = enc->p_sys;
+    async_task_t  *task = NULL;
+    block_t       *block = NULL;
+
+    if (pic) {
+        /* Finds an available SyncPoint */
+        for (size_t i = 0; i < sys->async_depth; i++)
+            if ((sys->tasks + (i + sys->first_task) % sys->async_depth)->syncp == 0) {
+                task = sys->tasks + (i + sys->first_task) % sys->async_depth;
+                break;
+            }
+    } else
+        /* If !pic, we are emptying encoder and tasks, so we force the SyncOperation */
+        msg_Dbg(enc, "Emptying encoder");
+
+    /* There is no available task, we need to synchronize */
+    if (!task) {
+        task = sys->tasks + sys->first_task;
+
+        block = qsv_synchronize_block( enc, task );
+
+        /* Reset the task now it has been synchronized and advances first_task pointer */
+        task->syncp = 0;
+        sys->first_task = (sys->first_task + 1) % sys->async_depth;
+    }
+
+    qsv_queue_encode_picture( enc, task, pic );
 
     return block;
 }

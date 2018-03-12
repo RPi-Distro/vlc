@@ -12,7 +12,7 @@ AUTOCONF=$(PREFIX)/bin/autoconf
 export AUTOCONF
 
 ifeq ($(shell curl --version >/dev/null 2>&1 || echo FAIL),)
-download = curl -f -L -- "$(1)" > "$@"
+download = curl -f -L -- "$(1)" > "$@.tmp" && touch $@.tmp && mv $@.tmp $@
 else ifeq ($(shell wget --version >/dev/null 2>&1 || echo FAIL),)
 download = rm -f $@.tmp && \
 	wget --passive -c -p -O $@.tmp "$(1)" && \
@@ -28,7 +28,8 @@ download = $(error Neither curl nor wget found!)
 endif
 
 download_pkg = $(call download,$(VIDEOLAN)/$(2)/$(lastword $(subst /, ,$(@)))) || \
-	( $(call download,$(1)) && echo "Please upload package $(lastword $(subst /, ,$(@))) to our FTP" )
+	( $(call download,$(1)) && echo "Please upload package $(lastword $(subst /, ,$(@))) to our FTP" )  \
+	&& grep $(@) SHA512SUMS| shasum -a 512 -c
 
 UNPACK = $(RM) -R $@ \
     $(foreach f,$(filter %.tar.gz %.tgz,$^), && tar xvzf $(f)) \
@@ -36,7 +37,7 @@ UNPACK = $(RM) -R $@ \
     $(foreach f,$(filter %.tar.xz,$^), && tar xvJf $(f)) \
     $(foreach f,$(filter %.zip,$^), && unzip $(f))
 
-UNPACK_DIR = $(basename $(basename $(notdir $<)))
+UNPACK_DIR = $(patsubst %.tar,%,$(basename $(notdir $<)))
 APPLY = (cd $(UNPACK_DIR) && patch -p1) <
 MOVE = mv $(UNPACK_DIR) $@ && touch $@
 
@@ -71,7 +72,7 @@ cmake: cmake-$(CMAKE_VERSION).tar.gz
 	$(MOVE)
 
 .cmake: cmake
-	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
+	(cd $<; ./configure --prefix=$(PREFIX) $(CMAKEFLAGS) && $(MAKE) && $(MAKE) install)
 	touch $@
 
 CLEAN_FILE += .cmake
@@ -85,6 +86,8 @@ libtool-$(LIBTOOL_VERSION).tar.gz:
 
 libtool: libtool-$(LIBTOOL_VERSION).tar.gz
 	$(UNPACK)
+	$(APPLY) libtool-2.4.2-bitcode.patch
+	$(APPLY) libtool-2.4.2-san.patch
 	$(MOVE)
 
 .libtool: libtool .automake
@@ -172,6 +175,8 @@ m4-$(M4_VERSION).tar.gz:
 
 m4: m4-$(M4_VERSION).tar.gz
 	$(UNPACK)
+	$(APPLY) bison-macOS-c41f233c.patch
+	$(APPLY) bison-macOS-7df04f9.patch
 	$(MOVE)
 
 .m4: m4
@@ -209,12 +214,13 @@ gas: gas-preprocessor-$(GAS_VERSION).tar.gz
 	$(MOVE)
 
 .gas: gas
-	cp gas/gas-preprocessor.pl build/bin/
+	mkdir -p $(PREFIX)/bin
+	cp gas/gas-preprocessor.pl $(PREFIX)/bin/
 	touch $@
 
 CLEAN_FILE += .gas
 CLEAN_PKG += gas
-DISTCLEAN_PKG += yuvi-gas-preprocessor-$(GAS_VERSION).tar.gz
+DISTCLEAN_PKG += gas-preprocessor-$(GAS_VERSION).tar.gz
 
 # Ragel State Machine Compiler
 ragel-$(RAGEL_VERSION).tar.gz:
@@ -261,16 +267,79 @@ ant: apache-ant-$(ANT_VERSION).tar.bz2
 	$(MOVE)
 
 .ant: ant
-	(cp $</bin/* build/bin/; cp $</lib/* build/lib/)
+	(mkdir -p $(PREFIX)/bin && cp $</bin/* $(PREFIX)/bin/)
+	(mkdir -p $(PREFIX)/lib && cp $</lib/* $(PREFIX)/lib/)
 	touch $@
 
 CLEAN_PKG += ant
 DISTCLEAN_PKG += apache-ant-$(ANT_VERSION).tar.bz2
 CLEAN_FILE += .ant
 
+
+# Protobuf Protoc
+
+protobuf-$(PROTOBUF_VERSION).tar.gz:
+	$(call download_pkg,$(PROTOBUF_URL),protobuf)
+
+protobuf: protobuf-$(PROTOBUF_VERSION).tar.gz
+	$(UNPACK)
+	$(MOVE)
+
+.protoc: protobuf
+	(cd $< && ./configure --prefix="$(PREFIX)" --disable-shared --enable-static && $(MAKE) && $(MAKE) install)
+	(find $(PREFIX) -name 'protobuf*.pc' -exec rm -f {} \;)
+	touch $@
+
+CLEAN_PKG += protobuf
+DISTCLEAN_PKG += protobuf-$(PROTOBUF_VERSION).tar.gz
+CLEAN_FILE += .protoc
+
+#
+# GNU bison
+#
+
+bison-$(BISON_VERSION).tar.xz:
+	$(call download_pkg,$(BISON_URL),bison)
+
+bison: bison-$(BISON_VERSION).tar.xz
+	$(UNPACK)
+	$(APPLY) bison-macOS-c41f233c.patch
+	$(APPLY) bison-macOS-7df04f9.patch
+	$(MOVE)
+
+.bison: bison
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
+	touch $@
+
+CLEAN_PKG += bison
+DISTCLEAN_PKG += bison-$(BISON_VERSION).tar.xz
+CLEAN_FILE += .bison
+
+#
+# GNU flex
+#
+
+flex-$(FLEX_VERSION).tar.gz:
+	$(call download_pkg,$(FLEX_URL),flex)
+
+flex: flex-$(FLEX_VERSION).tar.gz
+	$(UNPACK)
+	$(MOVE)
+
+.flex: flex
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
+	touch $@
+
+CLEAN_PKG += flex
+DISTCLEAN_PKG += flex-$(FLEX_VERSION).tar.gz
+CLEAN_FILE += .flex
+
+
 #
 #
 #
+
+fetch-all: $(DISTCLEAN_PKG)
 
 clean:
 	rm -fr $(CLEAN_FILE) $(CLEAN_PKG) build/
@@ -279,3 +348,5 @@ distclean: clean
 	rm -fr $(DISTCLEAN_PKG)
 
 .PHONY: all clean distclean
+
+.DELETE_ON_ERROR:

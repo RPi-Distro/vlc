@@ -61,7 +61,7 @@ static block_t *EncodeFrame  ( encoder_t *, block_t * );
 vlc_module_begin();
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACODEC );
-    set_description( _("MP3 fixed point audio encoder") );
+    set_description( N_("MP3 fixed point audio encoder") );
     set_capability( "encoder", 50 );
     set_callbacks( OpenEncoder, CloseEncoder );
 vlc_module_end();
@@ -129,7 +129,7 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     shine_set_config_mpeg_defaults(&cfg.mpeg);
     cfg.mpeg.bitr = p_enc->fmt_out.i_bitrate / 1000;
- 
+
     if (shine_check_config(cfg.wave.samplerate, cfg.mpeg.bitr) == -1) {
         msg_Err(p_enc, "Invalid bitrate %d\n", cfg.mpeg.bitr);
         free(p_sys);
@@ -176,6 +176,7 @@ static block_t *GetPCM( encoder_t *p_enc, block_t *p_block )
             i_buffer = p_sys->i_buffer;
             p_sys->i_buffer = 0;
             free( p_sys->p_buffer );
+            p_sys->p_buffer = NULL;
         }
 
         memcpy( p_pcm_block->p_buffer + i_buffer,
@@ -245,7 +246,7 @@ static block_t *EncodeFrame( encoder_t *p_enc, block_t *p_block )
         aout_Deinterleave( pcm_planar_buf, p_pcm_block->p_buffer,
                 p_sys->samples_per_frame, p_enc->fmt_in.audio.i_channels, p_enc->fmt_in.i_codec);
 
-        long written;
+        int written;
         unsigned char *buf = shine_encode_buffer(p_sys->s, pcm_planar_buf_chans, &written);
         block_Release( p_pcm_block );
 

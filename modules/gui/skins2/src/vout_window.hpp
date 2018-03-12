@@ -2,7 +2,7 @@
  * vout_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: bdd2fe62ed2b568d9f4e5267e98f1ca7b9288272 $
+ * $Id: ef971ae7d502fb7f406e38868f6c51b68fbf9548 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -25,6 +25,7 @@
 #define VOUT_WINDOW_HPP
 
 #include "generic_window.hpp"
+#include "dialogs.hpp"
 #include <vlc_vout_window.h>
 
 class OSGraphics;
@@ -55,6 +56,8 @@ public:
 
     /// hotkeys processing
     virtual void processEvent( EvtKey &rEvtKey );
+    virtual void processEvent( EvtMotion &rEvtMotion );
+    virtual void processEvent( EvtMouse &rEvtMouse );
 
     /// set and get Video Control for VoutWindow
     virtual void setCtrlVideo( CtrlVideo* pCtrlVideo );
@@ -68,7 +71,10 @@ public:
     virtual void setOriginalWidth( int width ) { original_width = width; }
     virtual void setOriginalHeight( int height ) { original_height = height; }
 
-    virtual string getType() const { return "Vout"; }
+    /// Resize the window
+    virtual void resize( int width, int height );
+
+    virtual std::string getType() const { return "Vout"; }
 
 private:
 

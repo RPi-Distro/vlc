@@ -2,7 +2,7 @@
  * ctrl_button.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b6a8652da797d1738eba9a3a8089d5d39afc1af1 $
+ * $Id: 2d7b64d7929c00a662244c447bd1aeaab8fcad99 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -63,7 +63,7 @@ public:
     virtual UString getTooltipText() const { return m_tooltip; }
 
     /// Get the type of control (custom RTTI)
-    virtual string getType() const { return "button"; }
+    virtual std::string getType() const { return "button"; }
 
 private:
     /// Finite state machine of the control

@@ -2,7 +2,7 @@
  * ft2_font.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6b7cafce046560de201d420f8bba6150969c5872 $
+ * $Id: 4b0b2867172d30a935c99c394574a7cc1c0af2ce $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -40,7 +40,7 @@ class UString;
 class FT2Font: public GenericFont
 {
 public:
-    FT2Font( intf_thread_t *pIntf, const string &rName, int size );
+    FT2Font( intf_thread_t *pIntf, const std::string &rName, int size );
     virtual ~FT2Font();
 
     /// Initialize the object. Returns false if it failed
@@ -62,10 +62,10 @@ private:
         int m_index;
         int m_advance;
     } Glyph_t;
-    typedef map<uint32_t,Glyph_t> GlyphMap_t;
+    typedef std::map<uint32_t,Glyph_t> GlyphMap_t;
 
     /// File name
-    const string m_name;
+    const std::string m_name;
     /// Buffer to store the font
     char *m_buffer;
     /// Pixel size of the font

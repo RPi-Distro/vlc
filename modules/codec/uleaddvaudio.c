@@ -2,7 +2,7 @@
  * uleaddvaudio.c
  *****************************************************************************
  * Copyright (C) 2012 Laurent Aimar
- * $Id: dbbd0b476af6da74c2c267c6ed2fabd0f02f2f3e $
+ * $Id: b90f0125e4b48b3fa055a7a6b49a248479369cf1 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -39,7 +39,7 @@ static void Close(vlc_object_t *);
 
 vlc_module_begin()
     set_description(N_("Ulead DV audio decoder"))
-    set_capability("decoder", 50)
+    set_capability("audio decoder", 50)
     set_category(CAT_INPUT)
     set_subcategory(SUBCAT_INPUT_ACODEC)
     set_callbacks(Open, Close)
@@ -54,20 +54,28 @@ struct decoder_sys_t
     uint16_t shuffle[2000];
 };
 
-static block_t *Decode(decoder_t *dec, block_t **block_ptr)
+static void Flush(decoder_t *dec)
+{
+    decoder_sys_t *sys = dec->p_sys;
+
+    date_Set(&sys->end_date, 0);
+}
+
+static block_t *DecodeBlock(decoder_t *dec, block_t **block_ptr)
 {
     decoder_sys_t *sys  = dec->p_sys;
 
-    if (!block_ptr || !*block_ptr)
+    if (!*block_ptr)
         return NULL;
 
     block_t *block = *block_ptr;
-    if (block->i_flags & (BLOCK_FLAG_DISCONTINUITY | BLOCK_FLAG_CORRUPTED)) {
+    if (block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED)) {
+        Flush(dec);
         if (block->i_flags & BLOCK_FLAG_CORRUPTED) {
+            block_Release(block);
+            *block_ptr = NULL;
+            return NULL;
         }
-        date_Set(&sys->end_date, 0);
-        block_Release(block);
-        return NULL;
     }
 
     if (block->i_pts > VLC_TS_INVALID &&
@@ -89,6 +97,8 @@ static block_t *Decode(decoder_t *dec, block_t **block_ptr)
 
         int sample_count = dv_get_audio_sample_count(&src[244], sys->is_pal);
 
+        if( decoder_UpdateAudioFormat(dec))
+            return NULL;
         block_t *output = decoder_NewAudioBuffer(dec, sample_count);
         if (!output)
             return NULL;
@@ -110,6 +120,17 @@ static block_t *Decode(decoder_t *dec, block_t **block_ptr)
     }
     block_Release(block);
     return NULL;
+}
+
+static int DecodeAudio(decoder_t *dec, block_t *block)
+{
+    if (block == NULL) /* No Drain */
+        return VLCDEC_SUCCESS;
+
+    block_t **block_ptr = &block, *out;
+    while ((out = DecodeBlock(dec, block_ptr)) != NULL)
+        decoder_QueueAudio(dec,out);
+    return VLCDEC_SUCCESS;
 }
 
 static int Open(vlc_object_t *object)
@@ -143,13 +164,13 @@ static int Open(vlc_object_t *object)
                           (2 + sys->is_12bit) * (i / b) + 8;
     }
 
-    es_format_Init(&dec->fmt_out, AUDIO_ES, VLC_CODEC_S16N);
+    dec->fmt_out.i_codec = VLC_CODEC_S16N;
     dec->fmt_out.audio.i_rate = dec->fmt_in.audio.i_rate;
     dec->fmt_out.audio.i_channels = 2;
-    dec->fmt_out.audio.i_physical_channels =
-    dec->fmt_out.audio.i_original_channels = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
+    dec->fmt_out.audio.i_physical_channels = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
 
-    dec->pf_decode_audio = Decode;
+    dec->pf_decode = DecodeAudio;
+    dec->pf_flush  = Flush;
 
     return VLC_SUCCESS;
 }

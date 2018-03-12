@@ -2,9 +2,10 @@
  * sftp.c: SFTP input module
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: d8d132d0b6c868b13e072df8fb9eb5bd1f74a650 $
+ * $Id: 1219f573a1f3fbcedecab3598a10194e27da347c $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
+ *          Petri Hintukainen <phintuka@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -34,9 +35,10 @@
 #include <assert.h>
 
 #include <vlc_access.h>
-#include <vlc_dialog.h>
+#include <vlc_input_item.h>
 #include <vlc_network.h>
 #include <vlc_url.h>
+#include <vlc_keystore.h>
 
 #include <libssh2.h>
 #include <libssh2_sftp.h>
@@ -50,8 +52,12 @@ static void Close( vlc_object_t* );
 
 #define PORT_TEXT N_("SFTP port")
 #define PORT_LONGTEXT N_("SFTP port number to use on the server")
-#define MTU_TEXT N_("Read size")
-#define MTU_LONGTEXT N_("Size of the request for reading access")
+#define USER_TEXT N_("Username")
+#define USER_LONGTEXT N_("Username that will be used for the connection, " \
+        "if no username is set in the URL.")
+#define PASS_TEXT N_("Password")
+#define PASS_LONGTEXT N_("Password that will be used for the connection, " \
+        "if no username or password are set in URL.")
 
 vlc_module_begin ()
     set_shortname( "SFTP" )
@@ -59,8 +65,9 @@ vlc_module_begin ()
     set_capability( "access", 0 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
-    add_integer( "sftp-readsize", 8192, MTU_TEXT, MTU_LONGTEXT, true )
     add_integer( "sftp-port", 22, PORT_TEXT, PORT_LONGTEXT, true )
+    add_string( "sftp-user", NULL, USER_TEXT, USER_LONGTEXT, false )
+    add_password( "sftp-pwd", NULL, PASS_TEXT, PASS_LONGTEXT, false )
     add_shortcut( "sftp" )
     set_callbacks( Open, Close )
 vlc_module_end ()
@@ -69,10 +76,11 @@ vlc_module_end ()
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static block_t* Block( access_t * );
-static int      Seek( access_t *, uint64_t );
-static int      Control( access_t *, int, va_list );
+static ssize_t  Read( stream_t *, void *, size_t );
+static int      Seek( stream_t *, uint64_t );
+static int      Control( stream_t *, int, va_list );
 
+static int DirRead( stream_t *, input_item_node_t * );
 
 struct access_sys_t
 {
@@ -81,10 +89,138 @@ struct access_sys_t
     LIBSSH2_SFTP* sftp_session;
     LIBSSH2_SFTP_HANDLE* file;
     uint64_t filesize;
-    size_t i_read_size;
+    char *psz_base_url;
 };
 
+static int AuthKeyAgent( stream_t *p_access, const char *psz_username )
+{
+    access_sys_t* p_sys = p_access->p_sys;
+    int i_result = VLC_EGENERIC;
+    LIBSSH2_AGENT *p_sshagent = NULL;
+    struct libssh2_agent_publickey *p_identity = NULL,
+                                   *p_prev_identity = NULL;
 
+    if( !psz_username || !psz_username[0] )
+        return i_result;
+
+    p_sshagent = libssh2_agent_init( p_sys->ssh_session );
+
+    if( !p_sshagent )
+    {
+        msg_Dbg( p_access, "Failed to initialize key agent" );
+        goto bailout;
+    }
+    if( libssh2_agent_connect( p_sshagent ) )
+    {
+        msg_Dbg( p_access, "Failed to connect key agent" );
+        goto bailout;
+    }
+    if( libssh2_agent_list_identities( p_sshagent ) )
+    {
+        msg_Dbg( p_access, "Failed to request identities" );
+        goto bailout;
+    }
+
+    while( libssh2_agent_get_identity( p_sshagent, &p_identity, p_prev_identity ) == 0 )
+    {
+        msg_Dbg( p_access, "Using key %s", p_identity->comment );
+        if( libssh2_agent_userauth( p_sshagent, psz_username, p_identity ) == 0 )
+        {
+            msg_Info( p_access, "Public key agent authentication succeeded" );
+            i_result = VLC_SUCCESS;
+            goto bailout;
+        }
+        msg_Dbg( p_access, "Public key agent authentication failed" );
+        p_prev_identity = p_identity;
+    }
+
+bailout:
+    if( p_sshagent )
+    {
+        libssh2_agent_disconnect( p_sshagent );
+        libssh2_agent_free( p_sshagent );
+    }
+    return i_result;
+}
+
+
+static int AuthPublicKey( stream_t *p_access, const char *psz_home, const char *psz_username )
+{
+    access_sys_t* p_sys = p_access->p_sys;
+    int i_result = VLC_EGENERIC;
+    char *psz_keyfile1 = NULL;
+    char *psz_keyfile2 = NULL;
+
+    if( !psz_username || !psz_username[0] )
+        return i_result;
+
+    if( asprintf( &psz_keyfile1, "%s/.ssh/id_rsa.pub", psz_home ) == -1 ||
+        asprintf( &psz_keyfile2, "%s/.ssh/id_rsa",     psz_home ) == -1 )
+        goto bailout;
+
+    if( libssh2_userauth_publickey_fromfile( p_sys->ssh_session, psz_username, psz_keyfile1, psz_keyfile2, NULL ) )
+    {
+        msg_Dbg( p_access, "Public key authentication failed" );
+        goto bailout;
+    }
+
+    msg_Info( p_access, "Public key authentication succeeded" );
+    i_result = VLC_SUCCESS;
+
+ bailout:
+    free( psz_keyfile1 );
+    free( psz_keyfile2 );
+    return i_result;
+}
+
+static void SSHSessionDestroy( stream_t *p_access )
+{
+    access_sys_t* p_sys = p_access->p_sys;
+
+    if( p_sys->ssh_session )
+    {
+        libssh2_session_free( p_sys->ssh_session );
+        p_sys->ssh_session = NULL;
+    }
+    if( p_sys->i_socket >= 0 )
+    {
+        net_Close( p_sys->i_socket );
+        p_sys->i_socket = -1;
+    }
+}
+
+static int SSHSessionInit( stream_t *p_access, const char *psz_host, int i_port )
+{
+    access_sys_t* p_sys = p_access->p_sys;
+
+    /* Connect to the server using a regular socket */
+    assert( p_sys->i_socket == -1 );
+    p_sys->i_socket = net_ConnectTCP( p_access, psz_host, i_port );
+    if( p_sys->i_socket < 0 )
+        goto error;
+
+    /* Create the ssh connexion and wait until the server answer */
+    p_sys->ssh_session = libssh2_session_init();
+    if( p_sys->ssh_session == NULL )
+        goto error;
+
+    int i_ret;
+    while( ( i_ret = libssh2_session_startup( p_sys->ssh_session, p_sys->i_socket ) )
+           == LIBSSH2_ERROR_EAGAIN );
+
+    if( i_ret != 0 )
+        goto error;
+
+    /* Set the socket in non-blocking mode */
+    libssh2_session_set_blocking( p_sys->ssh_session, 1 );
+    return VLC_SUCCESS;
+
+error:
+    msg_Err( p_access, "Impossible to open the connection to %s:%i",
+             psz_host, i_port );
+    SSHSessionDestroy( p_access );
+    return VLC_EGENERIC;
+}
 
 /**
  * Connect to the sftp server and ask for a file
@@ -93,47 +229,45 @@ struct access_sys_t
  */
 static int Open( vlc_object_t* p_this )
 {
-    access_t*   p_access = (access_t*)p_this;
+    stream_t*   p_access = (stream_t*)p_this;
     access_sys_t* p_sys;
-    char* psz_username = NULL;
-    char* psz_password = NULL;
+    vlc_credential credential;
+    char* psz_path = NULL;
+    char *psz_session_username = NULL;
+    char* psz_home = NULL;
     int i_port;
-    int i_ret;
     vlc_url_t url;
     size_t i_len;
     int i_type;
+    int i_result = VLC_EGENERIC;
 
     if( !p_access->psz_location )
         return VLC_EGENERIC;
 
-    STANDARD_BLOCK_ACCESS_INIT;
+    p_sys = p_access->p_sys = vlc_obj_calloc( p_this, 1, sizeof( access_sys_t ) );
+    if( !p_sys ) return VLC_ENOMEM;
+
     p_sys->i_socket = -1;
 
     /* Parse the URL */
-    const char* path = p_access->psz_location;
-    vlc_UrlParse( &url, path, 0 );
+    if( vlc_UrlParseFixup( &url, p_access->psz_url ) != 0 )
+    {
+        vlc_UrlClean( &url );
+        return VLC_EGENERIC;
+    }
+    vlc_credential_init( &credential, &url );
+    if( url.psz_path != NULL )
+    {
+        psz_path = vlc_uri_decode_duplicate( url.psz_path );
+        if( psz_path == NULL )
+            goto error;
+    }
 
     /* Check for some parameters */
     if( EMPTY_STR( url.psz_host ) )
     {
-        msg_Err( p_access, "You might give a non empty host" );
+        msg_Err( p_access, "Unable to extract host from %s", p_access->psz_url );
         goto error;
-    }
-
-    /* If the user name is empty, ask the user */
-    if( !EMPTY_STR( url.psz_username ) && url.psz_password )
-    {
-        psz_username = strdup( url.psz_username );
-        psz_password = strdup( url.psz_password );
-    }
-    else
-    {
-        dialog_Login( p_access, &psz_username, &psz_password,
-                      _("SFTP authentication"),
-                      _("Please enter a valid login and password for the sftp "
-                        "connexion to %s"), url.psz_host );
-        if( EMPTY_STR(psz_username) || !psz_password )
-            goto error;
     }
 
     if( url.i_port <= 0 )
@@ -141,38 +275,16 @@ static int Open( vlc_object_t* p_this )
     else
         i_port = url.i_port;
 
-
-    /* Connect to the server using a regular socket */
-    p_sys->i_socket = net_Connect( p_access, url.psz_host, i_port, SOCK_STREAM, 0 );
-    if( p_sys->i_socket < 0 )
-    {
-        msg_Err( p_access, "Impossible to open the connection to %s:%i", url.psz_host, i_port );
-        goto error;
-    }
-
     /* Create the ssh connexion and wait until the server answer */
-    if( ( p_sys->ssh_session = libssh2_session_init() ) == NULL )
+    if( SSHSessionInit( p_access, url.psz_host, i_port ) != VLC_SUCCESS )
         goto error;
-
-    while( ( i_ret = libssh2_session_startup( p_sys->ssh_session,
-                                              p_sys->i_socket ) )
-           == LIBSSH2_ERROR_EAGAIN );
-
-    if( i_ret != 0 )
-    {
-        msg_Err( p_access, "Impossible to open the connection to %s:%i", url.psz_host, i_port );
-        goto error;
-    }
-
-    /* Set the socket in non-blocking mode */
-    libssh2_session_set_blocking( p_sys->ssh_session, 1 );
 
     /* List the know hosts */
     LIBSSH2_KNOWNHOSTS *ssh_knownhosts = libssh2_knownhost_init( p_sys->ssh_session );
     if( !ssh_knownhosts )
         goto error;
 
-    char *psz_home = config_GetUserDir( VLC_HOME_DIR );
+    psz_home = config_GetUserDir( VLC_HOME_DIR );
     char *psz_knownhosts_file;
     if( asprintf( &psz_knownhosts_file, "%s/.ssh/known_hosts", psz_home ) != -1 )
     {
@@ -180,14 +292,33 @@ static int Open( vlc_object_t* p_this )
                 LIBSSH2_KNOWNHOST_FILE_OPENSSH );
         free( psz_knownhosts_file );
     }
-    free( psz_home );
 
     const char *fingerprint = libssh2_session_hostkey( p_sys->ssh_session, &i_len, &i_type );
     struct libssh2_knownhost *host;
+    int knownhost_fingerprint_algo;
+
+    switch( i_type )
+    {
+        case LIBSSH2_HOSTKEY_TYPE_RSA:
+            knownhost_fingerprint_algo = LIBSSH2_KNOWNHOST_KEY_SSHRSA;
+            break;
+
+        case LIBSSH2_HOSTKEY_TYPE_DSS:
+            knownhost_fingerprint_algo = LIBSSH2_KNOWNHOST_KEY_SSHDSS;
+            break;
+
+        default:
+            msg_Err( p_access, "Host uses unrecognized session-key algorithm" );
+            libssh2_knownhost_free( ssh_knownhosts );
+            goto error;
+
+    }
+
     int check = libssh2_knownhost_check( ssh_knownhosts, url.psz_host,
                                          fingerprint, i_len,
                                          LIBSSH2_KNOWNHOST_TYPE_PLAIN |
-                                         LIBSSH2_KNOWNHOST_KEYENC_RAW,
+                                         LIBSSH2_KNOWNHOST_KEYENC_RAW |
+                                         knownhost_fingerprint_algo,
                                          &host );
 
     libssh2_knownhost_free( ssh_knownhosts );
@@ -207,14 +338,67 @@ static int Open( vlc_object_t* p_this )
         goto error;
     }
 
-    //TODO: ask for the available auth methods
-
-    /* send the login/password */
-    if( libssh2_userauth_password( p_sys->ssh_session, psz_username, psz_password ) )
+    vlc_credential_get( &credential, p_access, "sftp-user", "sftp-pwd",
+                        NULL, NULL );
+    char* psz_userauthlist = NULL;
+    bool b_publickey_tried = false;
+    do
     {
-        msg_Err( p_access, "Authentication by password failed" );
-        goto error;
-    }
+        if (!credential.psz_username || !credential.psz_username[0])
+            continue;
+
+        if( !psz_session_username )
+        {
+            psz_session_username = strdup( credential.psz_username );
+            psz_userauthlist =
+                libssh2_userauth_list( p_sys->ssh_session, credential.psz_username,
+                                       strlen( credential.psz_username ) );
+        }
+        else if( strcmp( psz_session_username, credential.psz_username ) != 0 )
+        {
+            msg_Warn( p_access, "The username changed, starting a new ssh session" );
+
+            SSHSessionDestroy( p_access );
+            if( SSHSessionInit( p_access, url.psz_host, i_port ) != VLC_SUCCESS )
+                goto error;
+
+            b_publickey_tried = false;
+            free( psz_session_username );
+            psz_session_username = strdup( credential.psz_username );
+            psz_userauthlist =
+                libssh2_userauth_list( p_sys->ssh_session, credential.psz_username,
+                                       strlen( credential.psz_username ) );
+        }
+        if( !psz_session_username || !psz_userauthlist )
+            goto error;
+
+        /* TODO: Follow PreferredAuthentications in ssh_config */
+
+        if( strstr( psz_userauthlist, "publickey" ) != NULL && !b_publickey_tried )
+        {
+            /* Don't try public key multiple times to avoid getting black
+             * listed */
+            b_publickey_tried = true;
+            if( AuthKeyAgent( p_access, credential.psz_username ) == VLC_SUCCESS
+             || AuthPublicKey( p_access, psz_home, credential.psz_username ) == VLC_SUCCESS )
+                break;
+        }
+
+        if( strstr( psz_userauthlist, "password" ) != NULL
+         && credential.psz_password != NULL
+         && libssh2_userauth_password( p_sys->ssh_session,
+                                       credential.psz_username,
+                                       credential.psz_password ) == 0 )
+        {
+            vlc_credential_store( &credential, p_access );
+            break;
+        }
+
+        msg_Warn( p_access, "sftp auth failed for %s", credential.psz_username );
+    } while( vlc_credential_get( &credential, p_access, "sftp-user", "sftp-pwd",
+                                _("SFTP authentication"),
+                                _("Please enter a valid login and password for "
+                                "the sftp connexion to %s"), url.psz_host ) );
 
     /* Create the sftp session */
     p_sys->sftp_session = libssh2_sftp_init( p_sys->ssh_session );
@@ -225,142 +409,174 @@ static int Open( vlc_object_t* p_this )
         goto error;
     }
 
-    /* Open the given file */
-    p_sys->file = libssh2_sftp_open( p_sys->sftp_session, url.psz_path, LIBSSH2_FXF_READ, 0 );
-    if( !p_sys->file )
+    /* No path, default to user Home */
+    if( !psz_path )
     {
-        msg_Err( p_access, "Unable to open the remote file %s", url.psz_path );
-        goto error;
+        const size_t i_size = 1024;
+        int i_read;
+
+        char* psz_remote_home = malloc( i_size );
+        if( !psz_remote_home )
+            goto error;
+
+        i_read = libssh2_sftp_symlink_ex( p_sys->sftp_session, ".", 1,
+                                          psz_remote_home, i_size - 1,
+                                          LIBSSH2_SFTP_REALPATH );
+        if( i_read <= 0 )
+        {
+            msg_Err( p_access, "Impossible to get the Home directory" );
+            free( psz_remote_home );
+            goto error;
+        }
+        psz_remote_home[i_read] = '\0';
+        psz_path = psz_remote_home;
+
+        /* store base url for directory read */
+        char *base = vlc_path2uri( psz_path, "sftp" );
+        if( !base )
+            goto error;
+        if( -1 == asprintf( &p_sys->psz_base_url, "sftp://%s%s", p_access->psz_location, base + 7 ) )
+        {
+            free( base );
+            goto error;
+        }
+        free( base );
     }
 
     /* Get some information */
     LIBSSH2_SFTP_ATTRIBUTES attributes;
-    if( libssh2_sftp_stat( p_sys->sftp_session, url.psz_path, &attributes ) )
+    if( libssh2_sftp_stat( p_sys->sftp_session, psz_path, &attributes ) )
     {
-        msg_Err( p_access, "Impossible to get information about the remote file %s", url.psz_path );
+        msg_Err( p_access, "Impossible to get information about the remote path %s", psz_path );
         goto error;
     }
-    p_sys->filesize = attributes.filesize;
 
-    p_sys->i_read_size = var_InheritInteger( p_access, "sftp-readsize" );
+    if( !LIBSSH2_SFTP_S_ISDIR( attributes.permissions ))
+    {
+        /* Open the given file */
+        p_sys->file = libssh2_sftp_open( p_sys->sftp_session, psz_path, LIBSSH2_FXF_READ, 0 );
+        p_sys->filesize = attributes.filesize;
 
-    free( psz_password );
-    free( psz_username );
-    vlc_UrlClean( &url );
-    return VLC_SUCCESS;
+        ACCESS_SET_CALLBACKS( Read, NULL, Control, Seek );
+    }
+    else
+    {
+        /* Open the given directory */
+        p_sys->file = libssh2_sftp_opendir( p_sys->sftp_session, psz_path );
+
+        p_access->pf_readdir = DirRead;
+        p_access->pf_control = access_vaDirectoryControlHelper;
+
+        if( !p_sys->psz_base_url )
+        {
+            if( asprintf( &p_sys->psz_base_url, "sftp://%s", p_access->psz_location ) == -1 )
+                goto error;
+
+            /* trim trailing '/' */
+            size_t len = strlen( p_sys->psz_base_url );
+            if( len > 0 && p_sys->psz_base_url[ len - 1 ] == '/' )
+                p_sys->psz_base_url[ len - 1 ] = 0;
+        }
+    }
+
+    if( !p_sys->file )
+    {
+        msg_Err( p_access, "Unable to open the remote path %s", psz_path );
+        goto error;
+    }
+
+    i_result = VLC_SUCCESS;
 
 error:
-    if( p_sys->file )
-        libssh2_sftp_close_handle( p_sys->file );
-    if( p_sys->ssh_session )
-        libssh2_session_free( p_sys->ssh_session );
-    free( psz_password );
-    free( psz_username );
+    free( psz_home );
+    free( psz_session_username );
+    free( psz_path );
+    vlc_credential_clean( &credential );
     vlc_UrlClean( &url );
-    if( p_sys->i_socket >= 0 )
-        net_Close( p_sys->i_socket );
-    free( p_sys );
-    return VLC_EGENERIC;
+    if( i_result != VLC_SUCCESS ) {
+        Close( p_this );
+    }
+    return i_result;
 }
 
 
 /* Close: quit the module */
 static void Close( vlc_object_t* p_this )
 {
-    access_t*   p_access = (access_t*)p_this;
+    stream_t*   p_access = (stream_t*)p_this;
     access_sys_t* p_sys = p_access->p_sys;
 
-    libssh2_sftp_close_handle( p_sys->file );
-    libssh2_sftp_shutdown( p_sys->sftp_session );
+    if( p_sys->file )
+        libssh2_sftp_close_handle( p_sys->file );
+    if( p_sys->sftp_session )
+        libssh2_sftp_shutdown( p_sys->sftp_session );
+    SSHSessionDestroy( p_access );
 
-    libssh2_session_free( p_sys->ssh_session );
-    net_Close( p_sys->i_socket );
-    free( p_sys );
+    free( p_sys->psz_base_url );
 }
 
 
-static block_t* Block( access_t* p_access )
+static ssize_t Read( stream_t *p_access, void *buf, size_t len )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
-    if( p_access->info.b_eof )
-        return NULL;
-
-    /* Allocate the buffer we need */
-    size_t i_len = __MIN( p_sys->i_read_size,
-                          p_sys->filesize - p_access->info.i_pos );
-    block_t* p_block = block_Alloc( i_len );
-    if( !p_block )
-        return NULL;
-
-    /* Read the specified size */
-    ssize_t i_ret = libssh2_sftp_read( p_access->p_sys->file, (char*)p_block->p_buffer, i_len );
-
-    if( i_ret < 0 )
+    ssize_t val = libssh2_sftp_read(  p_sys->file, buf, len );
+    if( val < 0 )
     {
-        block_Release( p_block );
         msg_Err( p_access, "read failed" );
-        return NULL;
+        return 0;
     }
-    else if( i_ret == 0 )
-    {
-        p_access->info.b_eof = true;
-        block_Release( p_block );
-        return NULL;
-    }
-    else
-    {
-        p_block->i_buffer = i_ret;
-        p_access->info.i_pos += i_ret;
-        return p_block;
-    }
+
+    return val;
 }
 
 
-static int Seek( access_t* p_access, uint64_t i_pos )
+static int Seek( stream_t* p_access, uint64_t i_pos )
 {
-    p_access->info.i_pos = i_pos;
-    p_access->info.b_eof = false;
+    access_sys_t *sys = p_access->p_sys;
 
-    libssh2_sftp_seek( p_access->p_sys->file, i_pos );
+    libssh2_sftp_seek( sys->file, i_pos );
     return VLC_SUCCESS;
 }
 
 
-static int Control( access_t* p_access, int i_query, va_list args )
+static int Control( stream_t* p_access, int i_query, va_list args )
 {
+    access_sys_t *sys = p_access->p_sys;
     bool*       pb_bool;
     int64_t*    pi_64;
 
     switch( i_query )
     {
-    case ACCESS_CAN_SEEK:
-        pb_bool = (bool*)va_arg( args, bool* );
+    case STREAM_CAN_SEEK:
+        pb_bool = va_arg( args, bool * );
         *pb_bool = true;
         break;
 
-    case ACCESS_CAN_FASTSEEK:
-        pb_bool = (bool*)va_arg( args, bool* );
+    case STREAM_CAN_FASTSEEK:
+        pb_bool = va_arg( args, bool * );
         *pb_bool = false;
         break;
 
-    case ACCESS_CAN_PAUSE:
-    case ACCESS_CAN_CONTROL_PACE:
-        pb_bool = (bool*)va_arg( args, bool* );
+    case STREAM_CAN_PAUSE:
+    case STREAM_CAN_CONTROL_PACE:
+        pb_bool = va_arg( args, bool * );
         *pb_bool = true;
         break;
 
-    case ACCESS_GET_SIZE:
-        *va_arg( args, uint64_t * ) = p_access->p_sys->filesize;
+    case STREAM_GET_SIZE:
+        if( p_access->pf_readdir != NULL )
+            return VLC_EGENERIC;
+        *va_arg( args, uint64_t * ) = sys->filesize;
         break;
 
-    case ACCESS_GET_PTS_DELAY:
-        pi_64 = (int64_t*)va_arg( args, int64_t* );
+    case STREAM_GET_PTS_DELAY:
+        pi_64 = va_arg( args, int64_t * );
         *pi_64 = INT64_C(1000)
                * var_InheritInteger( p_access, "network-caching" );
         break;
 
-    case ACCESS_SET_PAUSE_STATE:
+    case STREAM_SET_PAUSE_STATE:
         break;
 
     default:
@@ -370,3 +586,76 @@ static int Control( access_t* p_access, int i_query, va_list args )
     return VLC_SUCCESS;
 }
 
+
+/*****************************************************************************
+ * Directory access
+ *****************************************************************************/
+
+static int DirRead (stream_t *p_access, input_item_node_t *p_current_node)
+{
+    access_sys_t *p_sys = p_access->p_sys;
+    LIBSSH2_SFTP_ATTRIBUTES attrs;
+    int i_ret = VLC_SUCCESS;
+    int err;
+    /* Allocate 1024 bytes for file name. Longer names are skipped.
+     * libssh2 does not support seeking in directory streams.
+     * Retrying with larger buffer is possible, but would require
+     * re-opening the directory stream.
+     */
+    size_t i_size = 1024;
+    char *psz_file = malloc( i_size );
+
+    if( !psz_file )
+        return VLC_ENOMEM;
+
+    struct vlc_readdir_helper rdh;
+    vlc_readdir_helper_init( &rdh, p_access, p_current_node );
+
+    while( i_ret == VLC_SUCCESS
+        && 0 != ( err = libssh2_sftp_readdir( p_sys->file, psz_file, i_size, &attrs ) ) )
+    {
+        if( err < 0 )
+        {
+            if( err == LIBSSH2_ERROR_BUFFER_TOO_SMALL )
+            {
+                /* seeking back is not possible ... */
+                msg_Dbg( p_access, "skipped too long file name" );
+                continue;
+            }
+            if( err == LIBSSH2_ERROR_EAGAIN )
+            {
+                continue;
+            }
+            msg_Err( p_access, "directory read failed" );
+            break;
+        }
+
+        /* Create an input item for the current entry */
+
+        char *psz_full_uri, *psz_uri;
+
+        psz_uri = vlc_uri_encode( psz_file );
+        if( psz_uri == NULL )
+        {
+            i_ret = VLC_ENOMEM;
+            break;
+        }
+
+        if( asprintf( &psz_full_uri, "%s/%s", p_sys->psz_base_url, psz_uri ) == -1 )
+        {
+            free( psz_uri );
+            i_ret = VLC_ENOMEM;
+            break;
+        }
+        free( psz_uri );
+
+        int i_type = LIBSSH2_SFTP_S_ISDIR( attrs.permissions ) ? ITEM_TYPE_DIRECTORY : ITEM_TYPE_FILE;
+        i_ret = vlc_readdir_helper_additem( &rdh, psz_full_uri, NULL, psz_file,
+                                            i_type, ITEM_NET );
+        free( psz_full_uri );
+    }
+
+    vlc_readdir_helper_finish( &rdh, i_ret == VLC_SUCCESS );
+    free( psz_file );
+    return i_ret;
+}

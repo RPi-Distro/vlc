@@ -2,7 +2,7 @@
  * filter.c : filter_t helpers.
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 36f1ba444c60808ace989215e50e38be3e400c4e $
+ * $Id: 505b0eddc7905cf713bc52ba86a412d8c1bae482 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -25,10 +25,82 @@
 # include "config.h"
 #endif
 
+#include <assert.h>
+
 #include <vlc_common.h>
 #include <libvlc.h>
 #include <vlc_filter.h>
 #include <vlc_modules.h>
+#include "../misc/variables.h"
+
+/* */
+
+static int TriggerFilterCallback(vlc_object_t *p_this, char const *psz_var,
+                                 vlc_value_t oldval, vlc_value_t newval,
+                                 void *p_data)
+{
+    (void) p_this; (void) oldval;
+    var_Set((filter_t *)p_data, psz_var, newval);
+    return 0;
+}
+
+#undef filter_AddProxyCallbacks
+void filter_AddProxyCallbacks( vlc_object_t *obj, filter_t *filter,
+                               vlc_callback_t restart_cb )
+{
+    char **names = var_GetAllNames(VLC_OBJECT(filter));
+    if (names == NULL)
+        return;
+
+    for (char **pname = names; *pname != NULL; pname++)
+    {
+        char *name = *pname;
+        int var_type = var_Type(filter, name);
+        if (var_Type(obj, name))
+        {
+            free(name);
+            continue;
+        }
+        var_Create(obj, name,
+                   var_type | VLC_VAR_DOINHERIT | VLC_VAR_ISCOMMAND);
+        if ((var_type & VLC_VAR_ISCOMMAND))
+            var_AddCallback(obj, name, TriggerFilterCallback, filter);
+        else
+            var_AddCallback(obj, name, restart_cb, obj);
+        free(name);
+    }
+    free(names);
+}
+
+#undef filter_DelProxyCallbacks
+void filter_DelProxyCallbacks( vlc_object_t *obj, filter_t *filter,
+                               vlc_callback_t restart_cb )
+{
+    char **names = var_GetAllNames(VLC_OBJECT(filter));
+    if (names == NULL)
+        return;
+
+    for (char **pname = names; *pname != NULL; pname++)
+    {
+        char *name = *pname;
+        if (!(var_Type(obj, name) & VLC_VAR_ISCOMMAND))
+        {
+            free(name);
+            continue;
+        }
+        int filter_var_type = var_Type(filter, name);
+
+        if (filter_var_type & VLC_VAR_ISCOMMAND)
+            var_DelCallback(obj, name, TriggerFilterCallback, filter);
+        else if (filter_var_type)
+            var_DelCallback(obj, name, restart_cb, obj);
+        var_Destroy(obj, name);
+        free(name);
+    }
+    free(names);
+}
+
+/* */
 
 filter_t *filter_NewBlend( vlc_object_t *p_this,
                            const video_format_t *p_dst_chroma )
@@ -41,7 +113,7 @@ filter_t *filter_NewBlend( vlc_object_t *p_this,
 
     es_format_Init( &p_blend->fmt_out, VIDEO_ES, 0 );
 
-    p_blend->fmt_out.i_codec        = 
+    p_blend->fmt_out.i_codec        =
     p_blend->fmt_out.video.i_chroma = p_dst_chroma->i_chroma;
     p_blend->fmt_out.video.i_rmask  = p_dst_chroma->i_rmask;
     p_blend->fmt_out.video.i_gmask  = p_dst_chroma->i_gmask;

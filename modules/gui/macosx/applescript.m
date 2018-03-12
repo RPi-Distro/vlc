@@ -2,7 +2,7 @@
  * applescript.m: MacOS X AppleScript support
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: c97951ab70937edd28c338aaa3a4c278ead3ab68 $
+ * $Id: 8a5a124082cbd4d7a9ee779ef1645f1e37608ca0 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -25,10 +25,10 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#import "intf.h"
+#import "VLCMain.h"
 #import "applescript.h"
-#import "CoreInteraction.h"
-#import "playlist.h"
+#import "VLCCoreInteraction.h"
+#import "VLCPlaylist.h"
 #import <vlc_url.h>
 
 /*****************************************************************************
@@ -42,30 +42,11 @@
 
     if ([o_command isEqualToString:@"GetURL"] || [o_command isEqualToString:@"OpenURL"]) {
         if (o_urlString) {
-            BOOL b_autoplay = config_GetInt(VLCIntf, "macosx-autoplay");
-            NSURL * o_url = [NSURL fileURLWithPath: o_urlString];
-            if (o_url != nil)
-                [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL: o_url];
 
-            input_thread_t * p_input = pl_CurrentInput(VLCIntf);
-            BOOL b_returned = NO;
+            NSDictionary *o_dic = [NSDictionary dictionaryWithObject:o_urlString forKey:@"ITEM_URL"];
+            NSArray* item = [NSArray arrayWithObject:o_dic];
 
-            if (p_input) {
-                b_returned = input_AddSubtitle(p_input, [o_urlString UTF8String], true);
-                vlc_object_release(p_input);
-                if (!b_returned)
-                    return nil;
-            }
-
-            NSDictionary *o_dic;
-            NSArray *o_array;
-            o_dic = [NSDictionary dictionaryWithObject:o_urlString forKey:@"ITEM_URL"];
-            o_array = [NSArray arrayWithObject: o_dic];
-
-            if (b_autoplay)
-                [[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue: NO];
-            else
-                [[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue: YES];
+            [[[VLCMain sharedInstance] playlist] addPlaylistItems:item tryAsSubtitle:YES];
         }
     }
     return nil;
@@ -87,7 +68,7 @@
     NSString *o_command = [[self commandDescription] commandName];
     NSString *o_parameter = [self directParameter];
 
-    intf_thread_t * p_intf = VLCIntf;
+    intf_thread_t * p_intf = getIntf();
     playlist_t * p_playlist = pl_Get(p_intf);
 
     if ([o_command isEqualToString:@"play"])
@@ -106,6 +87,16 @@
         [[VLCCoreInteraction sharedInstance] volumeUp];
     else if ([o_command isEqualToString:@"volumeDown"])
         [[VLCCoreInteraction sharedInstance] volumeDown];
+    else if ([o_command isEqualToString:@"moveMenuFocusUp"])
+        [[VLCCoreInteraction sharedInstance] moveMenuFocusUp];
+    else if ([o_command isEqualToString:@"moveMenuFocusDown"])
+        [[VLCCoreInteraction sharedInstance] moveMenuFocusDown];
+    else if ([o_command isEqualToString:@"moveMenuFocusLeft"])
+        [[VLCCoreInteraction sharedInstance] moveMenuFocusLeft];
+    else if ([o_command isEqualToString:@"moveMenuFocusRight"])
+        [[VLCCoreInteraction sharedInstance] moveMenuFocusRight];
+    else if ([o_command isEqualToString:@"menuFocusActivate"])
+        [[VLCCoreInteraction sharedInstance] menuFocusActivate];
     else if ([o_command isEqualToString:@"stepForward"]) {
         //default: forwardShort
         if (o_parameter) {
@@ -189,7 +180,7 @@
 }
 
 - (BOOL) playing {
-    intf_thread_t *p_intf = VLCIntf;
+    intf_thread_t *p_intf = getIntf();
     if (!p_intf)
         return NO;
 
@@ -212,8 +203,30 @@
     [[VLCCoreInteraction sharedInstance] setVolume:(int)i_audioVolume];
 }
 
+- (int) audioDesync {
+    input_thread_t * p_input = pl_CurrentInput(getIntf());
+    int i_delay = -1;
+
+    if(!p_input)
+        return i_delay;
+
+    i_delay = var_GetInteger(p_input, "audio-delay");
+    vlc_object_release(p_input);
+
+    return (i_delay / 1000);
+}
+
+- (void) setAudioDesync:(int)i_audioDesync {
+    input_thread_t * p_input = pl_CurrentInput(getIntf());
+    if(!p_input)
+        return;
+
+    var_SetInteger(p_input, "audio-delay", i_audioDesync * 1000);
+    vlc_object_release(p_input);
+}
+
 - (int) currentTime {
-    input_thread_t * p_input = pl_CurrentInput(VLCIntf);
+    input_thread_t * p_input = pl_CurrentInput(getIntf());
     int64_t i_currentTime = -1;
 
     if (!p_input)
@@ -228,7 +241,7 @@
 - (void) setCurrentTime:(int)i_currentTime {
     if (i_currentTime) {
         int64_t i64_value = (int64_t)i_currentTime;
-        input_thread_t * p_input = pl_CurrentInput(VLCIntf);
+        input_thread_t * p_input = pl_CurrentInput(getIntf());
 
         if (!p_input)
             return;
@@ -248,6 +261,40 @@
 
 - (NSString*) nameOfCurrentItem {
     return [[VLCCoreInteraction sharedInstance] nameOfCurrentPlaylistItem];
+}
+
+- (BOOL)playbackShowsMenu {
+    input_thread_t *p_input_thread = pl_CurrentInput(getIntf());
+
+    if (!p_input_thread)
+        return NO;
+
+    int i_current_title = var_GetInteger(p_input_thread, "title");
+
+    input_title_t **p_input_title;
+    int count;
+
+    /* fetch data */
+    int coreret = input_Control(p_input_thread, INPUT_GET_FULL_TITLE_INFO,
+                                &p_input_title, &count);
+    vlc_object_release(p_input_thread);
+
+    if (coreret != VLC_SUCCESS)
+        return NO;
+
+    BOOL ret = NO;
+
+    if (count > 0 && i_current_title < count) {
+        ret = p_input_title[i_current_title]->i_flags & INPUT_TITLE_MENU;
+    }
+
+    /* free array */
+    for (int i = 0; i < count; i++) {
+        vlc_input_title_Delete(p_input_title[i]);
+    }
+    free(p_input_title);
+
+    return ret;
 }
 
 @end

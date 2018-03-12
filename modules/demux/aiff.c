@@ -2,7 +2,7 @@
  * aiff.c: Audio Interchange File Format demuxer
  *****************************************************************************
  * Copyright (C) 2004-2007 VLC authors and VideoLAN
- * $Id: 5d8e18fd802554179802eb22a813678f5cfd85c6 $
+ * $Id: e87d2160982e46a316e554092a2b97d432ef3831 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -108,23 +108,24 @@ static int Open( vlc_object_t *p_this )
 
     const uint8_t *p_peek;
 
-    if( stream_Peek( p_demux->s, &p_peek, 12 ) < 12 )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, 12 ) < 12 )
         return VLC_EGENERIC;
     if( memcmp( p_peek, "FORM", 4 ) || memcmp( &p_peek[8], "AIFF", 4 ) )
         return VLC_EGENERIC;
 
     /* skip aiff header */
-    stream_Read( p_demux->s, NULL, 12 );
+    if( vlc_stream_Read( p_demux->s, NULL, 12 ) < 12 )
+        return VLC_EGENERIC;
 
     /* Fill p_demux field */
     DEMUX_INIT_COMMON(); p_sys = p_demux->p_sys;
-    es_format_Init( &p_sys->fmt, UNKNOWN_ES, 0 );
+    es_format_Init( &p_sys->fmt, AUDIO_ES, VLC_FOURCC( 't', 'w', 'o', 's' ) );
     p_sys->i_time = 0;
     p_sys->i_ssnd_pos = -1;
 
     for( ;; )
     {
-        if( stream_Peek( p_demux->s, &p_peek, 8 ) < 8 )
+        if( vlc_stream_Peek( p_demux->s, &p_peek, 8 ) < 8 )
             goto error;
 
         uint32_t i_data_size = GetDWBE( &p_peek[4] );
@@ -135,10 +136,9 @@ static int Open( vlc_object_t *p_this )
 
         if( !memcmp( p_peek, "COMM", 4 ) )
         {
-            if( stream_Peek( p_demux->s, &p_peek, 18+8 ) < 18+8 )
+            if( vlc_stream_Peek( p_demux->s, &p_peek, 18+8 ) < 18+8 )
                 goto error;
 
-            es_format_Init( &p_sys->fmt, AUDIO_ES, VLC_FOURCC( 't', 'w', 'o', 's' ) );
             p_sys->fmt.audio.i_channels = GetWBE( &p_peek[8] );
             p_sys->fmt.audio.i_bitspersample = GetWBE( &p_peek[14] );
             p_sys->fmt.audio.i_rate     = GetF80BE( &p_peek[16] );
@@ -149,10 +149,10 @@ static int Open( vlc_object_t *p_this )
         }
         else if( !memcmp( p_peek, "SSND", 4 ) )
         {
-            if( stream_Peek( p_demux->s, &p_peek, 8+8 ) < 8+8 )
+            if( vlc_stream_Peek( p_demux->s, &p_peek, 8+8 ) < 8+8 )
                 goto error;
 
-            p_sys->i_ssnd_pos = stream_Tell( p_demux->s );
+            p_sys->i_ssnd_pos = vlc_stream_Tell( p_demux->s );
             p_sys->i_ssnd_size = i_data_size;
             p_sys->i_ssnd_offset = GetDWBE( &p_peek[8] );
             p_sys->i_ssnd_blocksize = GetDWBE( &p_peek[12] );
@@ -160,7 +160,7 @@ static int Open( vlc_object_t *p_this )
             msg_Dbg( p_demux, "SSND: (offset=%d blocksize=%d)",
                      p_sys->i_ssnd_offset, p_sys->i_ssnd_blocksize );
         }
-        if( p_sys->i_ssnd_pos >= 12 && p_sys->fmt.i_cat == AUDIO_ES )
+        if( p_sys->i_ssnd_pos >= 12 && p_sys->fmt.audio.i_channels != 0 )
         {
             /* We have found the 2 needed chunks */
             break;
@@ -174,7 +174,7 @@ static int Open( vlc_object_t *p_this )
 #else
             i_req = i_chunk_size;
 #endif
-            if( stream_Read( p_demux->s, NULL, i_req ) != i_req )
+            if( vlc_stream_Read( p_demux->s, NULL, i_req ) != i_req )
             {
                 msg_Warn( p_demux, "incomplete file" );
                 goto error;
@@ -201,7 +201,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     /* seek into SSND chunk */
-    if( stream_Seek( p_demux->s, p_sys->i_ssnd_start ) )
+    if( vlc_stream_Seek( p_demux->s, p_sys->i_ssnd_start ) )
     {
         msg_Err( p_demux, "cannot seek to data chunk" );
         goto error;
@@ -235,7 +235,7 @@ static void Close( vlc_object_t *p_this )
 static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    int64_t     i_tell = stream_Tell( p_demux->s );
+    int64_t     i_tell = vlc_stream_Tell( p_demux->s );
 
     block_t     *p_block;
     int         i_read;
@@ -247,7 +247,7 @@ static int Demux( demux_t *p_demux )
     }
 
     /* Set PCR */
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, VLC_TS_0 + p_sys->i_time);
+    es_out_SetPCR( p_demux->out, VLC_TS_0 + p_sys->i_time);
 
     /* we will read 100ms at once */
     i_read = p_sys->i_ssnd_fsize * ( p_sys->fmt.audio.i_rate / 10 );
@@ -255,7 +255,7 @@ static int Demux( demux_t *p_demux )
     {
         i_read = p_sys->i_ssnd_end - i_tell;
     }
-    if( ( p_block = stream_Block( p_demux->s, i_read ) ) == NULL )
+    if( ( p_block = vlc_stream_Block( p_demux->s, i_read ) ) == NULL )
     {
         return 0;
     }
@@ -284,13 +284,16 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
     switch( i_query )
     {
+        case DEMUX_CAN_SEEK:
+            return vlc_stream_vaControl( p_demux->s, i_query, args );
+
         case DEMUX_GET_POSITION:
         {
             int64_t i_start = p_sys->i_ssnd_start;
             int64_t i_end   = p_sys->i_ssnd_end > 0 ? p_sys->i_ssnd_end : stream_Size( p_demux->s );
-            int64_t i_tell  = stream_Tell( p_demux->s );
+            int64_t i_tell  = vlc_stream_Tell( p_demux->s );
 
-            pf = (double*) va_arg( args, double* );
+            pf = va_arg( args, double * );
 
             if( i_start < i_end )
             {
@@ -305,14 +308,14 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             int64_t i_start = p_sys->i_ssnd_start;
             int64_t i_end  = p_sys->i_ssnd_end > 0 ? p_sys->i_ssnd_end : stream_Size( p_demux->s );
 
-            f = (double) va_arg( args, double );
+            f = va_arg( args, double );
 
             if( i_start < i_end )
             {
                 int     i_frame = (f * ( i_end - i_start )) / p_sys->i_ssnd_fsize;
                 int64_t i_new   = i_start + i_frame * p_sys->i_ssnd_fsize;
 
-                if( stream_Seek( p_demux->s, i_new ) )
+                if( vlc_stream_Seek( p_demux->s, i_new ) )
                 {
                     return VLC_EGENERIC;
                 }
@@ -323,7 +326,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         }
 
         case DEMUX_GET_TIME:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
             *pi64 = p_sys->i_time;
             return VLC_SUCCESS;
 
@@ -331,7 +334,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         {
             int64_t i_end  = p_sys->i_ssnd_end > 0 ? p_sys->i_ssnd_end : stream_Size( p_demux->s );
 
-            pi64 = (int64_t*)va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
             if( p_sys->i_ssnd_start < i_end )
             {
                 *pi64 = (int64_t)1000000 * ( i_end - p_sys->i_ssnd_start ) / p_sys->i_ssnd_fsize / p_sys->fmt.audio.i_rate;

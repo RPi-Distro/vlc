@@ -2,7 +2,7 @@
  * evt_refresh.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 83de0ab606e00d5d5c8e7dcbd070da055253def9 $
+ * $Id: 4580f227defa122724af8360481a2ffa32b4e140 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -39,7 +39,7 @@ public:
                                      m_width( width ), m_height( height ) { }
 
     virtual ~EvtRefresh() { }
-    virtual const string getAsString() const { return "refresh"; }
+    virtual const std::string getAsString() const { return "refresh"; }
 
     /// Getters
     int getXStart() const { return m_xStart; }

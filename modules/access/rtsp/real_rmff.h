@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: fd29a46f712739b636f84cd50287b8a0d27f36de $
+ * $Id: 7859154f351df85525b7b284d0463a4eb2153a97 $
  *
  * some functions for real media file headers
  * adopted from joschkas real tools
@@ -224,14 +224,14 @@ void rmff_scan_pheader(rmff_pheader_t *h, char *data);
 rmff_header_t *rmff_scan_header_stream(int fd);
 
 /*
- * prints header information in human readible form to stdout
+ * prints header information in human-readable form to stdout
  */
 void rmff_print_header(rmff_header_t *h);
 
 /*
  * does some checks and fixes header if possible
  */
-void rmff_fix_header(access_t *p_access, rmff_header_t *h);
+void rmff_fix_header(stream_t *p_access, rmff_header_t *h);
 
 /*
  * returns the size of the header (incl. first data-header)

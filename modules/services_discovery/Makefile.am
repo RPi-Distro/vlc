@@ -13,12 +13,12 @@ libsap_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_sap)
 libsap_plugin_la_LIBADD = $(LIBS_sap) $(SOCKET_LIBS)
 sd_LTLIBRARIES += libsap_plugin.la
 
-libbonjour_plugin_la_SOURCES = services_discovery/bonjour.c
-libbonjour_plugin_la_CFLAGS = $(AM_CFLAGS) $(BONJOUR_CFLAGS)
-libbonjour_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(sddir)'
-libbonjour_plugin_la_LIBADD = $(BONJOUR_LIBS)
-EXTRA_LTLIBRARIES += libbonjour_plugin.la
-sd_LTLIBRARIES += $(LTLIBbonjour)
+libavahi_plugin_la_SOURCES = services_discovery/avahi.c
+libavahi_plugin_la_CFLAGS = $(AM_CFLAGS) $(AVAHI_CFLAGS)
+libavahi_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(sddir)'
+libavahi_plugin_la_LIBADD = $(AVAHI_LIBS)
+EXTRA_LTLIBRARIES += libavahi_plugin.la
+sd_LTLIBRARIES += $(LTLIBavahi)
 
 libmtp_plugin_la_SOURCES = services_discovery/mtp.c
 libmtp_plugin_la_CFLAGS = $(AM_CFLAGS) $(MTP_CFLAGS)
@@ -60,11 +60,28 @@ sd_LTLIBRARIES += libxcb_apps_plugin.la
 endif
 
 libwindrive_plugin_la_SOURCES = services_discovery/windrive.c
-if HAVE_WIN32
+if HAVE_WIN32_DESKTOP
 sd_LTLIBRARIES += libwindrive_plugin.la
 endif
 
 libos2drive_plugin_la_SOURCES = services_discovery/os2drive.c
 if HAVE_OS2
 sd_LTLIBRARIES += libos2drive_plugin.la
+endif
+
+libmicrodns_plugin_la_SOURCES = services_discovery/microdns.c
+libmicrodns_plugin_la_CFLAGS = $(AM_CFLAGS) $(MICRODNS_CFLAGS)
+libmicrodns_plugin_la_LIBADD = $(SOCKET_LIBS) $(MICRODNS_LIBS)
+if HAVE_WIN32
+libmicrodns_plugin_la_LIBADD += -liphlpapi
+endif
+libmicrodns_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(sddir)'
+sd_LTLIBRARIES += $(LTLIBmicrodns)
+EXTRA_LTLIBRARIES += libmicrodns_plugin.la
+
+libbonjour_plugin_la_SOURCES = services_discovery/bonjour.m
+libbonjour_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -fobjc-arc
+libbonjour_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(sddir)' -Wl,-framework,Foundation
+if HAVE_DARWIN
+sd_LTLIBRARIES += libbonjour_plugin.la
 endif

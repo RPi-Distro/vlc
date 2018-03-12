@@ -2,7 +2,7 @@
  * dummy.c: dummy muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 1f896c24f60dbb9b1bcd7cfe4c5b21e7c05ee7a3 $
+ * $Id: 72c320c4bb5aae7728255430611d74f1533b2251 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -55,7 +55,7 @@ vlc_module_end ()
  *****************************************************************************/
 static int Control( sout_mux_t *, int, va_list );
 static int AddStream( sout_mux_t *, sout_input_t * );
-static int DelStream( sout_mux_t *, sout_input_t * );
+static void DelStream( sout_mux_t *, sout_input_t * );
 static int Mux      ( sout_mux_t * );
 
 struct sout_mux_sys_t
@@ -110,12 +110,12 @@ static int Control( sout_mux_t *p_mux, int i_query, va_list args )
     switch( i_query )
     {
         case MUX_CAN_ADD_STREAM_WHILE_MUXING:
-            pb_bool = (bool*)va_arg( args, bool * );
+            pb_bool = va_arg( args, bool * );
             *pb_bool = true;
             return VLC_SUCCESS;
 
         case MUX_GET_ADD_STREAM_WAIT:
-            pb_bool = (bool*)va_arg( args, bool * );
+            pb_bool = va_arg( args, bool * );
             *pb_bool = false;
             return VLC_SUCCESS;
 
@@ -132,11 +132,10 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     return VLC_SUCCESS;
 }
 
-static int DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
+static void DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
 {
     VLC_UNUSED(p_input);
     msg_Dbg( p_mux, "removing input" );
-    return VLC_SUCCESS;
 }
 
 static int Mux( sout_mux_t *p_mux )

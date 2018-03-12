@@ -2,7 +2,7 @@
  * flac.c: flac decoder/encoder module making use of libflac
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: fb12e6cab890777592154b43d8a2bc286a8f3913 $
+ * $Id: b6fcac1481a29d04c5b24c9f0b4d27a973887409 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -36,6 +36,12 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
+#include <vlc_codecs.h>
+#include <vlc_aout.h>
+
+#ifdef _WIN32
+# define FLAC__NO_DLL
+#endif
 
 #include <FLAC/stream_decoder.h>
 #include <FLAC/stream_encoder.h>
@@ -69,7 +75,7 @@ struct decoder_sys_t
     bool b_stream_info;
 };
 
-static const int pi_channels_maps[9] =
+static const int pi_channels_maps[FLAC__MAX_CHANNELS + 1] =
 {
     0,
     AOUT_CHAN_CENTER,
@@ -90,7 +96,8 @@ static const int pi_channels_maps[9] =
 };
 
 /* XXX it supposes our internal format is WG4 */
-static const uint8_t ppi_reorder[1+8][8] = {
+static const uint8_t ppi_reorder[1+FLAC__MAX_CHANNELS][FLAC__MAX_CHANNELS] =
+{
     { },
     { 0, },
     { 0, 1 },
@@ -100,6 +107,35 @@ static const uint8_t ppi_reorder[1+8][8] = {
     { 0, 1, 4, 5, 2, 3 },
     { 0, 1, 5, 6, 4, 2, 3 },
     { 0, 1, 6, 7, 4, 5, 2, 3 },
+};
+
+/* Flac uses same order as waveformatex */
+#define MAPPED_WFX_CHANNELS 9
+static const uint32_t wfx_remapping[MAPPED_WFX_CHANNELS][2] =
+{
+    { WAVE_SPEAKER_FRONT_LEFT,              AOUT_CHAN_LEFT },
+    { WAVE_SPEAKER_FRONT_RIGHT,             AOUT_CHAN_RIGHT },
+    { WAVE_SPEAKER_FRONT_CENTER,            AOUT_CHAN_CENTER },
+    { WAVE_SPEAKER_LOW_FREQUENCY,           AOUT_CHAN_LFE },
+    { WAVE_SPEAKER_BACK_LEFT,               AOUT_CHAN_REARLEFT },
+    { WAVE_SPEAKER_BACK_RIGHT,              AOUT_CHAN_REARRIGHT },
+    { WAVE_SPEAKER_BACK_CENTER,             AOUT_CHAN_REARCENTER },
+    { WAVE_SPEAKER_SIDE_LEFT,               AOUT_CHAN_MIDDLELEFT },
+    { WAVE_SPEAKER_SIDE_RIGHT,              AOUT_CHAN_MIDDLERIGHT },
+};
+
+static const uint32_t wfx_chans_order[MAPPED_WFX_CHANNELS + 1] =
+{
+    AOUT_CHAN_LEFT,
+    AOUT_CHAN_RIGHT,
+    AOUT_CHAN_CENTER,
+    AOUT_CHAN_LFE,
+    AOUT_CHAN_REARLEFT,
+    AOUT_CHAN_REARRIGHT,
+    AOUT_CHAN_REARCENTER,
+    AOUT_CHAN_MIDDLELEFT,
+    AOUT_CHAN_MIDDLERIGHT,
+    0
 };
 
 /*****************************************************************************
@@ -113,7 +149,8 @@ static int OpenEncoder   ( vlc_object_t * );
 static void CloseEncoder ( vlc_object_t * );
 #endif
 
-static block_t *DecodeBlock( decoder_t *, block_t ** );
+static int DecodeBlock( decoder_t *, block_t * );
+static void Flush( decoder_t * );
 
 /*****************************************************************************
  * Module descriptor
@@ -125,7 +162,7 @@ vlc_module_begin ()
     add_shortcut( "flac" )
 
     set_description( N_("Flac audio decoder") )
-    set_capability( "decoder", 100 )
+    set_capability( "audio decoder", 100 )
     set_callbacks( OpenDecoder, CloseDecoder )
 
 #ifdef ENABLE_SOUT
@@ -142,7 +179,7 @@ vlc_module_end ()
  * Interleave: helper function to interleave channels
  *****************************************************************************/
 static void Interleave( int32_t *p_out, const int32_t * const *pp_in,
-                        const unsigned char *restrict pi_index, unsigned i_nb_channels,
+                        const uint8_t *restrict pi_index, unsigned i_nb_channels,
                         unsigned i_samples, unsigned bits )
 {
     unsigned shift = 32 - bits;
@@ -172,8 +209,7 @@ static int DecoderSetOutputFormat( unsigned i_channels, unsigned i_rate,
 
     fmt->i_channels = i_channels;
     fmt->i_rate = (i_rate > 0 ) ? i_rate : i_streaminfo_rate;
-    fmt->i_physical_channels =
-    fmt->i_original_channels = pi_channels_maps[i_channels];
+    fmt->i_physical_channels = pi_channels_maps[i_channels];
     memcpy( pi_channels_reorder, ppi_reorder[i_channels], i_channels );
     fmt->i_bitspersample = i_bitspersample;
 
@@ -221,7 +257,7 @@ DecoderWriteCallback( const FLAC__StreamDecoder *decoder,
         return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
 
     Interleave( (int32_t *)p_sys->p_aout_buffer->p_buffer, buffer,
-                 p_sys->rgi_channels_reorder ,
+                 p_sys->rgi_channels_reorder,
                  frame->header.channels, frame->header.blocksize,
                  frame->header.bits_per_sample );
 
@@ -272,22 +308,81 @@ static void DecoderMetadataCallback( const FLAC__StreamDecoder *decoder,
     decoder_t *p_dec = (decoder_t *)client_data;
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    /* Setup the format */
-    DecoderSetOutputFormat( metadata->data.stream_info.channels,
-                            metadata->data.stream_info.sample_rate,
-                            metadata->data.stream_info.sample_rate,
-                            metadata->data.stream_info.bits_per_sample,
-                            &p_dec->fmt_out.audio, p_sys->rgi_channels_reorder );
+    switch(metadata->type)
+    {
+        case FLAC__METADATA_TYPE_STREAMINFO:
+            /* Setup the format */
+            DecoderSetOutputFormat( metadata->data.stream_info.channels,
+                                    metadata->data.stream_info.sample_rate,
+                                    metadata->data.stream_info.sample_rate,
+                                    metadata->data.stream_info.bits_per_sample,
+                                    &p_dec->fmt_out.audio, p_sys->rgi_channels_reorder );
 
-    msg_Dbg( p_dec, "channels:%d samplerate:%d bitspersamples:%d",
-             p_dec->fmt_out.audio.i_channels, p_dec->fmt_out.audio.i_rate,
-             p_dec->fmt_out.audio.i_bitspersample );
+            msg_Dbg( p_dec, "channels:%d samplerate:%d bitspersamples:%d",
+                     p_dec->fmt_out.audio.i_channels, p_dec->fmt_out.audio.i_rate,
+                     p_dec->fmt_out.audio.i_bitspersample );
 
-    p_sys->b_stream_info = true;
-    p_sys->stream_info = metadata->data.stream_info;
+            p_sys->b_stream_info = true;
+            p_sys->stream_info = metadata->data.stream_info;
 
-    date_Init( &p_sys->end_date, p_dec->fmt_out.audio.i_rate, 1 );
-    date_Set( &p_sys->end_date, VLC_TS_INVALID );
+            date_Init( &p_sys->end_date, p_dec->fmt_out.audio.i_rate, 1 );
+            date_Set( &p_sys->end_date, VLC_TS_INVALID );
+            break;
+
+        case FLAC__METADATA_TYPE_VORBIS_COMMENT:
+            for( FLAC__uint32 i=0; i<metadata->data.vorbis_comment.num_comments; i++ )
+            {
+                const FLAC__StreamMetadata_VorbisComment_Entry *comment =
+                        &metadata->data.vorbis_comment.comments[i];
+                /* Check for custom WAVEFORMATEX channel ordering */
+                if( comment->length > 34 &&
+                    !strncmp( "WAVEFORMATEXTENSIBLE_CHANNEL_MASK=", (char *) comment->entry, 34 ) )
+                {
+                    char *endptr = (char *) &comment->entry[34] + comment->length;
+                    const uint32_t i_wfxmask = strtoul( (char *) &comment->entry[34], &endptr, 16 );
+                    const unsigned i_wfxchannels = popcount( i_wfxmask );
+                    if( i_wfxchannels > 0 && i_wfxchannels <= AOUT_CHAN_MAX )
+                    {
+                        /* Create the vlc bitmap from wfx channels */
+                        uint32_t i_vlcmask = 0;
+                        for( uint32_t i_chan = 1; i_chan && i_chan <= i_wfxmask; i_chan <<= 1 )
+                        {
+                            if( (i_chan & i_wfxmask) == 0 )
+                                continue;
+                            for( size_t i=0; i<MAPPED_WFX_CHANNELS; i++ )
+                            {
+                                if( wfx_remapping[i][0] == i_chan )
+                                    i_vlcmask |= wfx_remapping[i][1];
+                            }
+                        }
+                        /* Check if we have the 1 to 1 mapping */
+                        if( popcount(i_vlcmask) != i_wfxchannels )
+                        {
+                            msg_Warn( p_dec, "Unsupported channel mask %x", i_wfxmask );
+                            return;
+                        }
+
+                        /* Compute the remapping */
+                        uint8_t neworder[AOUT_CHAN_MAX] = {0};
+                        aout_CheckChannelReorder( wfx_chans_order, NULL,
+                                                  i_vlcmask, neworder );
+
+                        /* /!\ Invert our source/dest reordering,
+                         * as Interleave() here works source indexes */
+                        for( unsigned i=0; i<i_wfxchannels; i++ )
+                            p_sys->rgi_channels_reorder[neworder[i]] = i;
+
+                        p_dec->fmt_out.audio.i_physical_channels = i_vlcmask;
+                        p_dec->fmt_out.audio.i_channels = i_wfxchannels;
+                    }
+
+                    break;
+                }
+            }
+
+        default:
+            break;
+    }
 }
 
 /*****************************************************************************
@@ -343,6 +438,7 @@ static int OpenDecoder( vlc_object_t *p_this )
 
     /* Misc init */
     p_sys->b_stream_info = false;
+    memset(p_sys->rgi_channels_reorder, 0, AOUT_CHAN_MAX);
     p_sys->p_block = NULL;
 
     /* Take care of flac init */
@@ -352,6 +448,10 @@ static int OpenDecoder( vlc_object_t *p_this )
         free( p_sys );
         return VLC_EGENERIC;
     }
+
+    /* Enable STREAMINFO + COMMENTS */
+    FLAC__stream_decoder_set_metadata_respond( p_sys->p_flac,
+                                               FLAC__METADATA_TYPE_VORBIS_COMMENT );
 
 #ifdef USE_NEW_FLAC_API
     if( FLAC__stream_decoder_init_stream( p_sys->p_flac,
@@ -386,14 +486,11 @@ static int OpenDecoder( vlc_object_t *p_this )
 #endif
 
     /* Set output properties */
-    p_dec->fmt_out.i_cat = AUDIO_ES;
     p_dec->fmt_out.i_codec = VLC_CODEC_S32N;
 
     /* Set callbacks */
-    p_dec->pf_decode_audio = DecodeBlock;
-
-    /* */
-    p_dec->b_need_packetized = true;
+    p_dec->pf_decode = DecodeBlock;
+    p_dec->pf_flush  = Flush;
 
     return VLC_SUCCESS;
 }
@@ -426,35 +523,29 @@ static void ProcessHeader( decoder_t *p_dec )
 
     /* Decode STREAMINFO */
     msg_Dbg( p_dec, "decode STREAMINFO" );
-    size_t i_extra = p_dec->fmt_in.i_extra;
+    int i_extra = p_dec->fmt_in.i_extra;
+
     static const char header[4] = { 'f', 'L', 'a', 'C' };
 
-    if (i_extra > 42 && !memcmp(p_dec->fmt_in.p_extra, header, 4))
-        i_extra = 42;
-    else if (i_extra > 34 && memcmp(p_dec->fmt_in.p_extra, header, 4))
-        i_extra = 34;
+    if( memcmp( p_dec->fmt_in.p_extra, header, 4 ) )
+        i_extra += 8;
 
-    switch (i_extra) {
-    case 34:
-        p_sys->p_block = block_Alloc( 8 + i_extra );
-        if( p_sys->p_block == NULL ) return;
-        memcpy( p_sys->p_block->p_buffer + 8, p_dec->fmt_in.p_extra, i_extra );
-        memcpy( p_sys->p_block->p_buffer, header, 4);
-        uint8_t *p = p_sys->p_block->p_buffer;
-        p[4] = 0x80 | 0; /* STREAMINFO faked as last block */
-        p[5] = 0;
-        p[6] = 0;
-        p[7] = 34; /* block size */
-        break;
-    case 42:
-        p_sys->p_block = block_Alloc( i_extra );
-        if( p_sys->p_block == NULL ) return;
-        memcpy( p_sys->p_block->p_buffer, p_dec->fmt_in.p_extra, i_extra );
-        break;
-    default:
-        msg_Err(p_dec, "Invalid flac header size %zu", i_extra);
+    p_sys->p_block = block_Alloc( i_extra );
+    if( p_sys->p_block == NULL )
         return;
+
+    uint8_t *p_data = p_sys->p_block->p_buffer;
+    if( i_extra != p_dec->fmt_in.i_extra )
+    {
+        memcpy( p_data, header, 4);
+        p_data[4] = 0x80 | 0; /* STREAMINFO faked as last block */
+        p_data[5] = 0;
+        p_data[6] = 0;
+        p_data[7] = 34; /* block size */
+        p_data += 8;
     }
+    memcpy( p_data, p_dec->fmt_in.p_extra, p_dec->fmt_in.i_extra );
+
     FLAC__stream_decoder_process_until_end_of_metadata( p_sys->p_flac );
     msg_Dbg( p_dec, "STREAMINFO decoded" );
 
@@ -527,26 +618,48 @@ static void decoder_state_error( decoder_t *p_dec,
     }
 }
 
-/****************************************************************************
- * DecodeBlock: the whole thing
- ****************************************************************************/
-static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+/*****************************************************************************
+ * Flush:
+ *****************************************************************************/
+static void Flush( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    if( !pp_block || !*pp_block )
-        return NULL;
-    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    if( p_sys->b_stream_info )
+        FLAC__stream_decoder_flush( p_dec->p_sys->p_flac );
+    date_Set( &p_sys->end_date, 0 );
+}
+
+/****************************************************************************
+ * DecodeBlock: the whole thing
+ ****************************************************************************/
+static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    if( p_block == NULL ) /* No Drain */
+        return VLCDEC_SUCCESS;
+    if( p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY | BLOCK_FLAG_CORRUPTED) )
     {
-        block_Release( *pp_block );
-        return NULL;
+        Flush( p_dec );
+        if( p_block->i_flags & BLOCK_FLAG_CORRUPTED )
+        {
+            block_Release( p_block );
+            return VLCDEC_SUCCESS;
+        }
     }
 
     if( !p_sys->b_stream_info )
+    {
         ProcessHeader( p_dec );
+        if( !p_sys->b_stream_info )
+        {
+            block_Release( p_block );
+            return VLCDEC_ECRITICAL;
+        }
+    }
 
-    p_sys->p_block = *pp_block;
-    *pp_block = NULL;
+    p_sys->p_block = p_block;
 
     if( p_sys->p_block->i_pts > VLC_TS_INVALID &&
         p_sys->p_block->i_pts != date_Get( &p_sys->end_date ) )
@@ -578,7 +691,9 @@ static block_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     block_Release( p_sys->p_block );
     p_sys->p_block = NULL;
 
-    return p_sys->p_aout_buffer;
+    if( p_sys->p_aout_buffer != NULL )
+        decoder_QueueAudio( p_dec, p_sys->p_aout_buffer );
+    return VLCDEC_SUCCESS;
 }
 
 #ifdef ENABLE_SOUT
@@ -688,7 +803,7 @@ static int OpenEncoder( vlc_object_t *p_this )
     encoder_sys_t *p_sys;
 
     if( p_enc->fmt_out.i_codec != VLC_CODEC_FLAC &&
-        !p_enc->b_force )
+        !p_enc->obj.force )
     {
         return VLC_EGENERIC;
     }
@@ -760,7 +875,6 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
 {
     encoder_sys_t *p_sys = p_enc->p_sys;
     block_t *p_chain;
-    unsigned int i;
 
     /* FIXME: p_aout_buf is NULL when it's time to flush*/
     if( unlikely( !p_aout_buf ) ) return NULL;
@@ -779,7 +893,7 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
         p_sys->i_buffer = p_aout_buf->i_buffer * 2;
     }
 
-    for( i = 0 ; i < p_aout_buf->i_buffer / 2 ; i++ )
+    for( unsigned i = 0 ; i < p_aout_buf->i_buffer / 2 ; i++ )
     {
         p_sys->p_buffer[i]= ((int16_t *)p_aout_buf->p_buffer)[i];
     }

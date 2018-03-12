@@ -2,7 +2,7 @@
  * xmlparser.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 19c30b70496393b17db8bb7347fbdd5b08908c04 $
+ * $Id: 8bfef6f4778cfe9905733fe7bd849e9495260dbb $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -37,7 +37,7 @@
 class XMLParser: public SkinObject
 {
 public:
-    XMLParser( intf_thread_t *pIntf, const string &rFileName );
+    XMLParser( intf_thread_t *pIntf, const std::string &rFileName );
     virtual ~XMLParser();
 
     /// Parse the file. Returns true on success
@@ -53,15 +53,15 @@ protected:
         }
     };
     /// Type for attribute lists
-    typedef map<const char*, const char*, ltstr> AttrList_t;
+    typedef std::map<const char*, const char*, ltstr> AttrList_t;
 
     /// Flag for validation errors
     bool m_errors;
 
     /// Callbacks
-    virtual void handleBeginElement( const string &rName, AttrList_t &attr )
+    virtual void handleBeginElement( const std::string &rName, AttrList_t &attr )
         { (void)rName; (void)attr; }
-    virtual void handleEndElement( const string &rName ) { (void)rName; }
+    virtual void handleEndElement( const std::string &rName ) { (void)rName; }
 
 private:
     void LoadCatalog();

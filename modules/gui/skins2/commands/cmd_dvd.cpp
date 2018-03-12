@@ -2,7 +2,7 @@
  * cmd_dvd.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6d6311aa44e36f877f72fb31cbec11969e5e9f33 $
+ * $Id: 9e9c5f80c506a48b380ac41a66e323e5ca0303a0 $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -27,8 +27,7 @@
 
 void CmdDvdNextTitle::execute()
 {
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    input_thread_t *p_input = playlist_CurrentInput( pPlaylist );
+    input_thread_t *p_input = playlist_CurrentInput( getPL() );
 
     if( p_input )
     {
@@ -40,8 +39,7 @@ void CmdDvdNextTitle::execute()
 
 void CmdDvdPreviousTitle::execute()
 {
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    input_thread_t *p_input = playlist_CurrentInput( pPlaylist );
+    input_thread_t *p_input = playlist_CurrentInput( getPL() );
 
     if( p_input )
     {
@@ -53,8 +51,7 @@ void CmdDvdPreviousTitle::execute()
 
 void CmdDvdNextChapter::execute()
 {
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    input_thread_t *p_input = playlist_CurrentInput( pPlaylist );
+    input_thread_t *p_input = playlist_CurrentInput( getPL() );
 
     if( p_input )
     {
@@ -66,8 +63,7 @@ void CmdDvdNextChapter::execute()
 
 void CmdDvdPreviousChapter::execute()
 {
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    input_thread_t *p_input = playlist_CurrentInput( pPlaylist );
+    input_thread_t *p_input = playlist_CurrentInput( getPL() );
 
     if( p_input )
     {
@@ -79,8 +75,7 @@ void CmdDvdPreviousChapter::execute()
 
 void CmdDvdRootMenu::execute()
 {
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    input_thread_t *p_input = playlist_CurrentInput( pPlaylist );
+    input_thread_t *p_input = playlist_CurrentInput( getPL() );
 
     if( p_input )
     {

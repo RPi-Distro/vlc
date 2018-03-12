@@ -1,6 +1,6 @@
 # Tiger
 
-TIGER_VERSION := 0.3.1
+TIGER_VERSION := 0.3.4
 TIGER_URL := http://libtiger.googlecode.com/files/libtiger-$(TIGER_VERSION).tar.gz
 
 ifeq ($(call need_pkg,"pangocairo >= 0.16"),)
@@ -19,6 +19,7 @@ $(TARBALLS)/libtiger-$(TIGER_VERSION).tar.gz:
 libtiger: libtiger-$(TIGER_VERSION).tar.gz .sum-tiger
 	$(UNPACK)
 	$(APPLY) $(SRC)/tiger/autotools.patch
+	$(call pkg_static,"misc/pkgconfig/tiger.pc.in")
 	$(MOVE)
 
 DEPS_tiger = kate $(DEPS_kate)

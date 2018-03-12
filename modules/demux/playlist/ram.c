@@ -2,7 +2,7 @@
  * ram.c : RAM playlist format import
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: 8c8de7184586077338f5a8b8fcae77426944b432 $
+ * $Id: 322ba2a7441ca1165d32698ecd3138060c42ed2c $
  *
  * Authors: Srikanth Raju <srikiraju@gmail.com>
  *
@@ -50,21 +50,16 @@ http://service.real.com/help/library/guides/realone/IntroGuide/HTML/htmfiles/ram
 #include <ctype.h>
 
 #include <vlc_common.h>
-#include <vlc_demux.h>
+#include <vlc_access.h>
 #include <vlc_url.h>
 #include <vlc_charset.h>
 
 #include "playlist.h"
 
-struct demux_sys_t
-{
-    char *psz_prefix;
-};
-
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int Demux( demux_t *p_demux);
+static int ReadDir( stream_t *, input_item_node_t * );
 static void ParseClipInfo( const char * psz_clipinfo, char **ppsz_artist, char **ppsz_title,
                            char **ppsz_album, char **ppsz_genre, char **ppsz_year,
                            char **ppsz_cdnum, char **ppsz_comments );
@@ -76,36 +71,27 @@ static void ParseClipInfo( const char * psz_clipinfo, char **ppsz_artist, char *
  */
 int Import_RAM( vlc_object_t *p_this )
 {
-    demux_t *p_demux = (demux_t *)p_this;
+    stream_t *p_demux = (stream_t *)p_this;
     const uint8_t *p_peek;
 
-    if(! demux_IsPathExtension( p_demux, ".ram" ) ||
-         demux_IsPathExtension( p_demux, ".rm" ) )
+    CHECK_FILE(p_demux);
+    if( !stream_HasExtension( p_demux, ".ram" )
+     && !stream_HasExtension( p_demux, ".rm" ) )
         return VLC_EGENERIC;
 
     /* Many Real Media Files are misdetected */
-    if( stream_Peek( p_demux->s, &p_peek, 4 ) < 4 )
+    if( vlc_stream_Peek( p_demux->p_source, &p_peek, 4 ) < 4 )
         return VLC_EGENERIC;
     if( !memcmp( p_peek, ".ra", 3 ) || !memcmp( p_peek, ".RMF", 4 ) )
     {
         return VLC_EGENERIC;
     }
 
-    STANDARD_DEMUX_INIT_MSG( "found valid RAM playlist" );
-    p_demux->p_sys->psz_prefix = FindPrefix( p_demux );
+    msg_Dbg( p_demux, "found valid RAM playlist" );
+    p_demux->pf_readdir = ReadDir;
+    p_demux->pf_control = access_vaDirectoryControlHelper;
 
     return VLC_SUCCESS;
-}
-
-/**
- * Frees up memory on module close
- * @param p_this: this demux object
- */
-void Close_RAM( vlc_object_t *p_this )
-{
-    demux_t *p_demux = (demux_t *)p_this;
-    free( p_demux->p_sys->psz_prefix );
-    free( p_demux->p_sys );
 }
 
 /**
@@ -207,12 +193,12 @@ static int ParseTime( const char *s, size_t i_strlen)
     return result;
 }
 
-/**
- * Main demux callback function
- * @param p_demux: this demux object
- */
-static int Demux( demux_t *p_demux )
+static int ReadDir( stream_t *p_demux, input_item_node_t *p_subitems )
 {
+    const char *psz_prefix = p_demux->psz_url;
+    if( unlikely(psz_prefix == NULL) )
+        return VLC_SUCCESS;
+
     char       *psz_line;
     char       *psz_artist = NULL, *psz_album = NULL, *psz_genre = NULL, *psz_year = NULL;
     char       *psz_author = NULL, *psz_title = NULL, *psz_copyright = NULL, *psz_cdnum = NULL, *psz_comments = NULL;
@@ -222,11 +208,7 @@ static int Demux( demux_t *p_demux )
     bool b_cleanup = false;
     input_item_t *p_input;
 
-    input_item_t *p_current_input = GetCurrentItem(p_demux);
-
-    input_item_node_t *p_subitems = input_item_node_Create( p_current_input );
-
-    psz_line = stream_ReadLine( p_demux->s );
+    psz_line = vlc_stream_ReadLine( p_demux->p_source );
     while( psz_line )
     {
         char *psz_parse = psz_line;
@@ -245,7 +227,7 @@ static int Demux( demux_t *p_demux )
             char *psz_param, *psz_value;
 
             /* Get the MRL from the file. Note that this might contain parameters of form ?param1=value1&param2=value2 in a RAM file */
-            psz_mrl = ProcessMRL( psz_parse, p_demux->p_sys->psz_prefix );
+            psz_mrl = ProcessMRL( psz_parse, psz_prefix );
 
             b_cleanup = true;
             if ( !psz_mrl ) goto error;
@@ -293,7 +275,7 @@ static int Demux( demux_t *p_demux )
                     }
                     else if( !strcmp( psz_param, "author" ) )
                     {
-                        psz_author = decode_URI_duplicate(psz_value);
+                        psz_author = vlc_uri_decode_duplicate(psz_value);
                         EnsureUTF8( psz_author );
                     }
                     else if( !strcmp( psz_param, "start" )
@@ -304,7 +286,7 @@ static int Demux( demux_t *p_demux )
                         if( i_start )
                         {
                             if( asprintf( &temp, ":start-time=%d", i_start ) != -1 )
-                                INSERT_ELEM( ppsz_options, i_options, i_options, temp );
+                                TAB_APPEND( i_options, ppsz_options, temp );
                         }
                     }
                     else if( !strcmp( psz_param, "end" ) )
@@ -314,28 +296,37 @@ static int Demux( demux_t *p_demux )
                         if( i_stop )
                         {
                             if( asprintf( &temp, ":stop-time=%d", i_stop ) != -1 )
-                                INSERT_ELEM( ppsz_options, i_options, i_options, temp );
+                                TAB_APPEND( i_options, ppsz_options, temp );
                         }
                     }
                     else if( !strcmp( psz_param, "title" ) )
                     {
-                        psz_title = decode_URI_duplicate(psz_value);
+                        free( psz_title );
+                        psz_title = vlc_uri_decode_duplicate(psz_value);
                         EnsureUTF8( psz_title );
                     }
                     else if( !strcmp( psz_param, "copyright" ) )
                     {
-                        psz_copyright = decode_URI_duplicate(psz_value);
+                        psz_copyright = vlc_uri_decode_duplicate(psz_value);
                         EnsureUTF8( psz_copyright );
                     }
                     else
                     {   /* TODO: insert option anyway? Currently ignores*/
-                        /* INSERT_ELEM( ppsz_options, i_options, i_options, psz_option ); */
+                        //TAB_APPEND( i_options, ppsz_options, psz_option );
                     }
                 }
             }
 
             /* Create the input item and pump in all the options into playlist item */
-            p_input = input_item_NewExt( psz_mrl, psz_title, i_options, ppsz_options, 0, i_duration );
+            p_input = input_item_NewExt( psz_mrl, psz_title, i_duration,
+                                         ITEM_TYPE_UNKNOWN, ITEM_NET_UNKNOWN );
+            if( !p_input )
+            {
+                free( psz_mrl );
+                goto error;
+            }
+            if( ppsz_options )
+                input_item_AddOptions( p_input, i_options, ppsz_options, 0 );
 
             if( !EMPTY_STR( psz_artist ) ) input_item_SetArtist( p_input, psz_artist );
             if( !EMPTY_STR( psz_author ) ) input_item_SetPublisher( p_input, psz_author );
@@ -348,14 +339,14 @@ static int Demux( demux_t *p_demux )
             if( !EMPTY_STR( psz_comments ) ) input_item_SetDescription( p_input, psz_comments );
 
             input_item_node_AppendItem( p_subitems, p_input );
-            vlc_gc_decref( p_input );
+            input_item_Release( p_input );
             free( psz_mrl );
         }
 
  error:
         /* Fetch another line */
         free( psz_line );
-        psz_line = stream_ReadLine( p_demux->s );
+        psz_line = vlc_stream_ReadLine( p_demux->p_source );
         if( !psz_line ) b_cleanup = true;
 
         if( b_cleanup )
@@ -379,10 +370,7 @@ static int Demux( demux_t *p_demux )
             b_cleanup = false;
         }
     }
-    input_item_node_PostAndDelete( p_subitems );
-    vlc_gc_decref(p_current_input);
-    var_Destroy( p_demux, "m3u-extvlcopt" );
-    return 0; /* Needed for correct operation of go back */
+    return VLC_SUCCESS;
 }
 
 /**
@@ -439,22 +427,25 @@ static void ParseClipInfo( const char *psz_clipinfo, char **ppsz_artist, char **
             *( strchr( psz_suboption, '=' ) ) = '\0';
         }
         else
+        {
+            free( psz_suboption );
             break;
+        }
         /* Put into args */
         if( !strcmp( psz_param, "artist name" ) )
-            *ppsz_artist = decode_URI_duplicate( psz_value );
+            *ppsz_artist = vlc_uri_decode_duplicate( psz_value );
         else if( !strcmp( psz_param, "title" ) )
-            *ppsz_title = decode_URI_duplicate( psz_value );
+            *ppsz_title = vlc_uri_decode_duplicate( psz_value );
         else if( !strcmp( psz_param, "album name" ) )
-            *ppsz_album = decode_URI_duplicate( psz_value );
+            *ppsz_album = vlc_uri_decode_duplicate( psz_value );
         else if( !strcmp( psz_param, "genre" ) )
-            *ppsz_genre = decode_URI_duplicate( psz_value );
+            *ppsz_genre = vlc_uri_decode_duplicate( psz_value );
         else if( !strcmp( psz_param, "year" ) )
-            *ppsz_year = decode_URI_duplicate( psz_value );
+            *ppsz_year = vlc_uri_decode_duplicate( psz_value );
         else if( !strcmp( psz_param, "cdnum" ) )
-            *ppsz_cdnum = decode_URI_duplicate( psz_value );
+            *ppsz_cdnum = vlc_uri_decode_duplicate( psz_value );
         else if( !strcmp( psz_param, "comments" ) )
-            *ppsz_comments = decode_URI_duplicate( psz_value );
+            *ppsz_comments = vlc_uri_decode_duplicate( psz_value );
 
         free( psz_suboption );
         psz_option_next++;

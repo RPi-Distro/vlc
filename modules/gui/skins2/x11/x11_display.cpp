@@ -2,7 +2,7 @@
  * x11_display.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: eac50c9c2f0e7336fa33f2062b1b0e47104a2eb8 $
+ * $Id: 4dc86cb861c331621d90c58982a162803a7b6566 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -32,7 +32,7 @@
 #include "x11_display.hpp"
 #include "../src/logger.hpp"
 
-#include "../../../share/icons/32x32/vlc.xpm"
+#include "../share/icons/32x32/vlc.xpm"
 
 template<class type> type X11Display::putPixel(type r, type g, type b) const
 {

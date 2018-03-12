@@ -1,8 +1,8 @@
 /*****************************************************************************
  * dvb.c: LinuxTV channels list
  *****************************************************************************
- * Copyright (C) 2005-20009 VLC authors and VideoLAN
- * $Id: 0b5e796479b8dad33bb1324c4a051343456c3ac7 $
+ * Copyright (C) 2005-2012 VLC authors and VideoLAN
+ * $Id: 12d987300955dc6eb2831f621aeb9d57817b6d3c $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -33,25 +33,26 @@
 #include <assert.h>
 
 #include <vlc_common.h>
-#include <vlc_demux.h>
+#include <vlc_access.h>
 #include <vlc_charset.h>
 
 #include "playlist.h"
 
-static int Demux(demux_t *);
+static int ReadDir(stream_t *, input_item_node_t *);
 static input_item_t *ParseLine(char *line);
 
 /** Detect dvb-utils zap channels.conf format */
-int Import_DVB(vlc_object_t *obj)
+int Import_DVB(vlc_object_t *p_this)
 {
-    demux_t *demux = (demux_t *)obj;
+    stream_t *demux = (stream_t *)p_this;
 
-    if (!demux_IsPathExtension(demux, ".conf" ) && !demux->b_force )
+    CHECK_FILE(demux);
+    if (!stream_HasExtension(demux, ".conf" ) && !demux->obj.force )
         return VLC_EGENERIC;
 
     /* Check if this really is a channels file */
     const uint8_t *peek;
-    int len = stream_Peek(demux->s, &peek, 1023);
+    int len = vlc_stream_Peek(demux->p_source, &peek, 1023);
     if (len <= 0)
         return VLC_EGENERIC;
 
@@ -67,36 +68,32 @@ int Import_DVB(vlc_object_t *obj)
     input_item_t *item = ParseLine(line);
     if (item == NULL)
         return VLC_EGENERIC;
-    vlc_gc_decref(item);
+    input_item_Release(item);
 
     msg_Dbg(demux, "found valid channels.conf file");
-    demux->pf_control = Control;
-    demux->pf_demux = Demux;
+    demux->pf_control = access_vaDirectoryControlHelper;
+    demux->pf_readdir = ReadDir;
 
     return VLC_SUCCESS;
 }
 
 /** Parses the whole channels.conf file */
-static int Demux(demux_t *demux)
+static int ReadDir(stream_t *s, input_item_node_t *subitems)
 {
-    input_item_t *input = GetCurrentItem(demux);
-    input_item_node_t *subitems = input_item_node_Create(input);
     char *line;
 
-    while ((line = stream_ReadLine(demux->s)) != NULL)
+    while ((line = vlc_stream_ReadLine(s->p_source)) != NULL)
     {
         input_item_t *item = ParseLine(line);
+        free(line);
         if (item == NULL)
             continue;
 
         input_item_node_AppendItem(subitems, item);
-        vlc_gc_decref(item);
+        input_item_Release(item);
     }
 
-    input_item_node_PostAndDelete(subitems);
-    vlc_gc_decref(input);
-
-    return 0; /* Needed for correct operation of go back */
+    return VLC_SUCCESS;
 }
 
 static int cmp(const void *k, const void *e)
@@ -117,7 +114,7 @@ static const char *ParseFEC(const char *str)
          { "AUTO", "" },   { "NONE", "0" }
      };
 
-     if (strncmp(str, "FEC_", 4))
+     if (str == NULL || strncmp(str, "FEC_", 4))
          return NULL;
      str += 4;
 
@@ -133,13 +130,16 @@ static const char *ParseModulation(const char *str)
          char dvb[9];
          char vlc[7];
      } tab[] = {
-         { "APSK_16", "16APSK" }, { "APSK_32", "32APSK" },
+         { "8VSB", "8VSB" }, { "APSK_16", "16APSK" }, { "APSK_32", "32APSK" },
          { "DQPSK", "DQPSK" }, { "PSK_8", "8PSK" }, { "QPSK", "QPSK" },
          { "QAM_128", "128QAM" }, { "QAM_16", "16QAM" },
          { "QAM_256", "256QAM" }, { "QAM_32", "32QAM" },
          { "QAM_64", "64QAM" }, { "QAM_AUTO", "QAM" },
          { "VSB_16", "16VSB" }, { "VSB_8", "8VSB" }
      };
+
+     if( str == NULL )
+         return NULL;
 
      const struct mod *m = bsearch(str, tab, sizeof (tab) / sizeof(tab[0]),
                                    sizeof (tab[0]), cmp);
@@ -158,7 +158,7 @@ static const char *ParseGuard(const char *str)
          { "1_8", "1/8" }, { "AUTO", "" },
      };
 
-     if (strncmp(str, "GUARD_INTERVAL_", 15))
+     if (str == NULL || strncmp(str, "GUARD_INTERVAL_", 15))
          return NULL;
      str += 15;
 
@@ -246,10 +246,8 @@ static input_item_t *ParseLine(char *line)
             if (*end)
                 return NULL;
 
-            str = strsep(&line, ":");
-            const char *fec = ParseFEC(str);
-            str = strsep(&line, ":");
-            const char *mod = ParseModulation(str);
+            const char *fec = ParseFEC(strsep(&line, ":"));
+            const char *mod = ParseModulation(strsep(&line,":"));
             if (fec == NULL || mod == NULL)
                 return NULL;
 
@@ -262,12 +260,10 @@ static input_item_t *ParseLine(char *line)
         {   /* DVB-T */
             unsigned bandwidth = atoi(str + 10);
 
-            str = strsep(&line, ":");
-            const char *hp = ParseFEC(str);
-            str = strsep(&line, ":");
-            const char *lp = ParseFEC(str);
-            str = strsep(&line, ":");
-            const char *mod = ParseModulation(str);
+            const char *hp = ParseFEC(strsep(&line, ":"));
+            const char *lp = ParseFEC(strsep(&line, ":"));
+            const char *mod = ParseModulation(strsep(&line, ":"));
+
             if (hp == NULL || lp == NULL || mod == NULL)
                 return NULL;
 
@@ -278,8 +274,7 @@ static input_item_t *ParseLine(char *line)
             if (xmit == 0)
                 xmit = -1; /* AUTO */
 
-            str = strsep(&line, ":");
-            const char *guard = ParseGuard(str);
+            const char *guard = ParseGuard(strsep(&line,":"));
             if (guard == NULL)
                 return NULL;
 
@@ -334,10 +329,9 @@ static input_item_t *ParseLine(char *line)
     char sid_opt[sizeof("program=65535")];
     snprintf(sid_opt, sizeof(sid_opt), "program=%lu", sid);
 
-    const char *opts[] = { sid_opt };
-
-    input_item_t *item = input_item_NewWithType(mrl, name, 1, opts, 0, -1,
-                                                ITEM_TYPE_CARD);
+    input_item_t *item = input_item_NewCard(mrl, name);
     free(mrl);
+    if (item != NULL)
+        input_item_AddOption(item, sid_opt, 0);
     return item;
 }

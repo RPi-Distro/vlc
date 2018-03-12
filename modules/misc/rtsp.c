@@ -2,7 +2,7 @@
  * rtsp.c: rtsp VoD server module
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: 434c76e2f992dd07be5189dbafd4082214a3a33e $
+ * $Id: 74091f07180ec9542953149e2ee55622066d5099 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -30,6 +30,7 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_input.h>
@@ -43,6 +44,7 @@
 #include <vlc_charset.h>
 #include <vlc_strings.h>
 #include <vlc_rand.h>
+#include <vlc_memstream.h>
 
 #ifndef _WIN32
 # include <locale.h>
@@ -255,7 +257,7 @@ static int Open( vlc_object_t *p_this )
     vlc_url_t url;
 
     psz_url = var_InheritString( p_vod, "rtsp-host" );
-    vlc_UrlParse( &url, psz_url, 0 );
+    vlc_UrlParse( &url, psz_url );
     free( psz_url );
 
     p_vod->p_sys = p_sys = malloc( sizeof( vod_sys_t ) );
@@ -1061,7 +1063,7 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
             /* Intentional fall-through on x-playNow option in RTSP request */
             if( !psz_playnow )
                 break;
-        }
+        }   /* fall through */
 
         case HTTPD_MSG_PLAY:
         {
@@ -1399,6 +1401,7 @@ static int RtspCallbackES( httpd_callback_sys_t *p_args, httpd_client_t *cl,
             /* Intentional fall-through on x-playNow option in RTSP request */
             if( !psz_playnow )
                 break;
+            /* fall through */
 
         case HTTPD_MSG_PLAY:
             /* This is kind of a kludge. Should we only support Aggregate
@@ -1474,7 +1477,6 @@ static int RtspCallbackES( httpd_callback_sys_t *p_args, httpd_client_t *cl,
 
         default:
             return VLC_EGENERIC;
-            break;
     }
 
     httpd_MsgAdd( answer, "Server", "VLC/%s", VERSION );
@@ -1499,7 +1501,8 @@ static int RtspCallbackES( httpd_callback_sys_t *p_args, httpd_client_t *cl,
  *****************************************************************************/
 static char *SDPGenerate( const vod_media_t *p_media, httpd_client_t *cl )
 {
-    char *psz_sdp, ip[NI_MAXNUMERICHOST];
+    struct vlc_memstream sdp;
+    char ip[NI_MAXNUMERICHOST];
     const char *psz_control;
     int port;
 
@@ -1521,15 +1524,14 @@ static char *SDPGenerate( const vod_media_t *p_media, httpd_client_t *cl )
     dst.ss_len = dstlen;
 #endif
 
-    psz_sdp = vlc_sdp_Start( VLC_OBJECT( p_media->p_vod ), "sout-rtp-",
-                             NULL, 0, (struct sockaddr *)&dst, dstlen );
-    if( psz_sdp == NULL )
+    if( vlc_sdp_Start( &sdp, VLC_OBJECT( p_media->p_vod ), "sout-rtp-",
+                       NULL, 0, (struct sockaddr *)&dst, dstlen ) )
         return NULL;
 
     if( p_media->i_length > 0 )
     {
         lldiv_t d = lldiv( p_media->i_length / 1000, 1000 );
-        sdp_AddAttribute( &psz_sdp, "range","npt=0-%lld.%03u", d.quot,
+        sdp_AddAttribute( &sdp, "range","npt=0-%lld.%03u", d.quot,
                           (unsigned)d.rem );
     }
 
@@ -1553,13 +1555,13 @@ static char *SDPGenerate( const vod_media_t *p_media, httpd_client_t *cl )
                 continue;
         }
 
-        sdp_AddMedia( &psz_sdp, mime_major, "RTP/AVP", 0 /* p_es->i_port */,
+        sdp_AddMedia( &sdp, mime_major, "RTP/AVP", 0 /* p_es->i_port */,
                       p_es->i_payload_type, false, 0,
                       p_es->psz_ptname, p_es->i_clock_rate, p_es->i_channels,
                       p_es->psz_fmtp );
 
-        sdp_AddAttribute( &psz_sdp, "control", psz_control, ip, port, i );
+        sdp_AddAttribute( &sdp, "control", psz_control, ip, port, i );
     }
 
-    return psz_sdp;
+    return vlc_memstream_close( &sdp ) ? NULL : sdp.ptr;
 }

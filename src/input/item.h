@@ -2,7 +2,7 @@
  * item.h
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: aa31d05e355779c691e8c8f0cec9c35d42f43e97 $
+ * $Id: f4b89a411fd07b6b3082161a749d44094e73dc29 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -29,6 +29,7 @@
 
 void input_item_SetErrorWhenReading( input_item_t *p_i, bool b_error );
 void input_item_UpdateTracksInfo( input_item_t *item, const es_format_t *fmt );
+bool input_item_ShouldPreparseSubItems( input_item_t *p_i );
 
 typedef struct input_item_owner
 {

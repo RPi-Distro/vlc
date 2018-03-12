@@ -2,7 +2,7 @@
  * x11_loop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 0283042bdd9cbfe3a4e45b96fe0749b7a968e5da $
+ * $Id: 0aa682e0a32a57fce5429a0ebd5ea01fb5f9ba36 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -42,7 +42,7 @@
 #include "../events/evt_scroll.hpp"
 #include "../commands/async_queue.hpp"
 #include "../utils/var_bool.hpp"
-#include <vlc_keys.h>
+#include <vlc_actions.h>
 
 
 // Maximum interval between clicks for a double-click (in microsec)
@@ -179,7 +179,7 @@ void X11Loop::handleX11Event()
                 (Atom)event.xclient.data.l[0] == wm_delete )
             {
                 msg_Dbg( getIntf(), "Received WM_DELETE_WINDOW message" );
-                libvlc_Quit( getIntf()->p_libvlc );
+                libvlc_Quit( getIntf()->obj.libvlc );
             }
         }
         return;
@@ -340,7 +340,7 @@ void X11Loop::handleX11Event()
         case ClientMessage:
         {
             // Get the message type
-            string type = XGetAtomName( XDISPLAY, event.xclient.message_type );
+            std::string type = XGetAtomName( XDISPLAY, event.xclient.message_type );
 
             // Find the DnD object for this window
             X11DragDrop *pDnd =

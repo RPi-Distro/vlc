@@ -2,7 +2,7 @@
  * wav.c: wav muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2004, 2006 VLC authors and VideoLAN
- * $Id: 981ac0544b8a65b16c9445c9f6508a852626d772 $
+ * $Id: 2791777b21aeb8cdb6d00afeef6568ab79414f76 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -56,7 +56,7 @@ vlc_module_end ()
  *****************************************************************************/
 static int Control  ( sout_mux_t *, int, va_list );
 static int AddStream( sout_mux_t *, sout_input_t * );
-static int DelStream( sout_mux_t *, sout_input_t * );
+static void DelStream( sout_mux_t *, sout_input_t * );
 static int Mux      ( sout_mux_t * );
 
 #define MAX_CHANNELS 6
@@ -135,17 +135,17 @@ static int Control( sout_mux_t *p_mux, int i_query, va_list args )
     switch( i_query )
     {
         case MUX_CAN_ADD_STREAM_WHILE_MUXING:
-            pb_bool = (bool*)va_arg( args, bool * );
+            pb_bool = va_arg( args, bool * );
             *pb_bool = false;
             return VLC_SUCCESS;
 
         case MUX_GET_ADD_STREAM_WAIT:
-            pb_bool = (bool*)va_arg( args, bool * );
+            pb_bool = va_arg( args, bool * );
             *pb_bool = true;
             return VLC_SUCCESS;
 
         case MUX_GET_MIME:
-            ppsz = (char**)va_arg( args, char ** );
+            ppsz = va_arg( args, char ** );
             *ppsz = strdup( "audio/wav" );
             return VLC_SUCCESS;
 
@@ -255,7 +255,7 @@ static block_t *GetHeader( sout_mux_t *p_mux )
     return p_block;
 }
 
-static int DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
+static void DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
 {
     VLC_UNUSED(p_input);
     msg_Dbg( p_mux, "removing input" );
@@ -265,8 +265,6 @@ static int DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
     {
         sout_AccessOutWrite( p_mux->p_access, GetHeader( p_mux ) );
     }
-
-    return VLC_SUCCESS;
 }
 
 static int Mux( sout_mux_t *p_mux )

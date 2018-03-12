@@ -33,13 +33,23 @@ void XCB_keyHandler_Destroy (key_handler_t *);
 int XCB_keyHandler_Process (key_handler_t *, xcb_generic_event_t *);
 
 /* events.c */
-int XCB_error_Check (vout_display_t *, xcb_connection_t *conn,
-                     const char *str, xcb_void_cookie_t);
 
-struct vout_window_t *XCB_parent_Create (vout_display_t *obj,
-                                         xcb_connection_t **,
-                                         const xcb_screen_t **,
-                                         uint16_t *width, uint16_t *height);
-xcb_cursor_t XCB_cursor_Create (xcb_connection_t *, const xcb_screen_t *);
+/**
+ * Checks for an XCB error.
+ */
+int vlc_xcb_error_Check(vout_display_t *, xcb_connection_t *conn,
+                        const char *str, xcb_void_cookie_t);
 
-int XCB_Manage (vout_display_t *vd, xcb_connection_t *conn, bool *);
+/**
+ * Allocates a window for XCB-based output.
+ *
+ * Creates a VLC video X window object, connects to the corresponding X server,
+ * finds the corresponding X server screen.
+ */
+struct vout_window_t *vlc_xcb_parent_Create(vout_display_t *obj,
+                                            xcb_connection_t **connp,
+                                            const xcb_screen_t **screenp);
+/**
+ * Processes XCB events.
+ */
+int vlc_xcb_Manage(vout_display_t *vd, xcb_connection_t *conn, bool *visible);

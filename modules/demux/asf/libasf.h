@@ -19,9 +19,11 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-
+#ifndef VLC_ASF_LIBASF_H_
+#define VLC_ASF_LIBASF_H_
 
 #define ASF_MAX_STREAMNUMBER 127
+#define ASF_OBJECT_COMMON_SIZE 24
 
 /*****************************************************************************
  * Structure needed for decoder
@@ -187,7 +189,7 @@ typedef struct
 #define ASF_CODEC_TYPE_AUDIO    0x0002
 #define ASF_CODEC_TYPE_UNKNOWN  0xffff
 
-typedef struct
+typedef struct asf_codec_entry
 {
     uint16_t    i_type;
     char        *psz_name;
@@ -195,14 +197,15 @@ typedef struct
 
     uint16_t    i_information_length;
     uint8_t     *p_information;
+
+    struct asf_codec_entry *p_next;
 } asf_codec_entry_t;
 
 typedef struct
 {
     ASF_OBJECT_COMMON
     guid_t      i_reserved;
-    uint32_t    i_codec_entries_count;
-    asf_codec_entry_t *codec;
+    asf_codec_entry_t *codecs;
 
 } asf_object_codec_list_t;
 
@@ -389,3 +392,4 @@ void               ASF_FreeObjectRoot( stream_t *, asf_object_root_t *p_root );
 int ASF_CountObject ( void *p_obj, const guid_t *p_guid );
 
 void *ASF_FindObject( void *p_obj, const guid_t *p_guid, int i_number );
+#endif

@@ -2,7 +2,7 @@
  * evt_focus.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 4e2d50db2289fe4331107e1c63b6f188c8c9586d $
+ * $Id: 6c789a18523fbb50da8a5b135a4a4ee2571dc3b1 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -36,7 +36,7 @@ public:
             : EvtGeneric( pIntf ), m_focus( focus ) { }
     virtual ~EvtFocus() { }
 
-    virtual const string getAsString() const
+    virtual const std::string getAsString() const
     {
         return ( m_focus ? "focus:in" : "focus:out" );
     }

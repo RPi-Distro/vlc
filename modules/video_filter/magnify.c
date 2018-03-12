@@ -2,7 +2,7 @@
  * magnify.c : Magnify/Zoom interactive effect
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: 9df90a9cbb94232b771d0732f5398ffc3252c584 $
+ * $Id: 9edd627983dec533d0359ecaf01b8b3c65b45881 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -35,6 +35,8 @@
 #include <vlc_plugin.h>
 #include <vlc_image.h>
 #include <vlc_filter.h>
+#include <vlc_mouse.h>
+#include <vlc_picture.h>
 #include "filter_picture.h"
 
 /*****************************************************************************
@@ -46,7 +48,7 @@ static void Destroy   ( vlc_object_t * );
 vlc_module_begin ()
     set_description( N_("Magnify/Zoom interactive video filter") )
     set_shortname( N_( "Magnify" ))
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
@@ -99,7 +101,7 @@ static int Create( vlc_object_t *p_this )
     case VLC_CODEC_GREY:
         break;
     default:
-        msg_Err( p_filter, "Unsupported chroma" );
+        msg_Err( p_filter, "Unsupported chroma %4.4s", (char *)&p_filter->fmt_in.i_codec );
         return VLC_EGENERIC;
     }
     if( !es_format_IsSimilar( &p_filter->fmt_in, &p_filter->fmt_out ) )
@@ -125,7 +127,7 @@ static int Create( vlc_object_t *p_this )
     p_sys->i_zoom = 2*ZOOM_FACTOR;
     p_sys->b_visible = true;
     p_sys->i_last_activity = mdate();
-    p_sys->i_hide_timeout = 1000 * var_CreateGetInteger( p_filter, "mouse-hide-timeout" ); /* FIXME */
+    p_sys->i_hide_timeout = 1000 * var_InheritInteger( p_filter, "mouse-hide-timeout" );
 
     /* */
     p_filter->pf_video_filter = Filter;
@@ -157,7 +159,6 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     int v_w, v_h;
     picture_t *p_converted;
     plane_t *p_oyp;
-    int i_plane;
 
     p_outpic = filter_NewPicture( p_filter );
     if( !p_outpic )
@@ -177,26 +178,26 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     {
         video_format_t fmt_in;
         video_format_t fmt_out;
-        picture_t crop;
+        plane_t orig_planes[PICTURE_PLANE_MAX];
+        memcpy(orig_planes, p_pic->p, sizeof orig_planes);
 
-        crop = *p_pic;
-        for( i_plane = 0; i_plane < p_pic->i_planes; i_plane++ )
+        for( int i_plane = 0; i_plane < p_pic->i_planes; i_plane++ )
         {
-            const int o_yp = o_y * p_outpic->p[i_plane].i_lines / p_outpic->p[Y_PLANE].i_lines;
-            const int o_xp = o_x * p_outpic->p[i_plane].i_pitch / p_outpic->p[Y_PLANE].i_pitch;
+            const int o_yp = o_y * p_outpic->p[i_plane].i_visible_lines / p_outpic->p[Y_PLANE].i_visible_lines;
+            const int o_xp = o_x * p_outpic->p[i_plane].i_visible_pitch / p_outpic->p[Y_PLANE].i_visible_pitch;
 
-            crop.p[i_plane].p_pixels += o_yp * p_pic->p[i_plane].i_pitch + o_xp;
+            p_pic->p[i_plane].p_pixels += o_yp * p_pic->p[i_plane].i_visible_pitch + o_xp;
         }
 
         /* */
         fmt_in = p_filter->fmt_in.video;
-        fmt_in.i_width  = fmt_in.i_visible_width  = (fmt_in.i_width  * ZOOM_FACTOR / o_zoom) & ~1;
-        fmt_in.i_height = fmt_in.i_visible_height = (fmt_in.i_height * ZOOM_FACTOR / o_zoom) & ~1;
+        fmt_in.i_width  = fmt_in.i_visible_width  = (fmt_in.i_visible_width  * ZOOM_FACTOR / o_zoom) & ~1;
+        fmt_in.i_height = fmt_in.i_visible_height = (fmt_in.i_visible_height * ZOOM_FACTOR / o_zoom) & ~1;
 
         /* */
         fmt_out = p_filter->fmt_out.video;
-
-        p_converted = image_Convert( p_sys->p_image, &crop, &fmt_in, &fmt_out );
+        p_converted = image_Convert( p_sys->p_image, p_pic, &fmt_in, &fmt_out );
+        memcpy(p_pic->p, orig_planes, sizeof orig_planes);
 
         picture_CopyPixels( p_outpic, p_converted );
 
@@ -215,8 +216,8 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 
         /* image visualization */
         fmt_out = p_filter->fmt_out.video;
-        fmt_out.i_width  = fmt_out.i_visible_width  = (fmt_out.i_width /VIS_ZOOM) & ~1;
-        fmt_out.i_height = fmt_out.i_visible_height = (fmt_out.i_height/VIS_ZOOM) & ~1;
+        fmt_out.i_width  = fmt_out.i_visible_width  = (fmt_out.i_visible_width /VIS_ZOOM) & ~1;
+        fmt_out.i_height = fmt_out.i_visible_height = (fmt_out.i_visible_height/VIS_ZOOM) & ~1;
         p_converted = image_Convert( p_sys->p_image, p_pic,
                                      &p_pic->format, &fmt_out );
 
@@ -226,16 +227,16 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         picture_Release( p_converted );
 
         /* white rectangle on visualization */
-        v_w = __MIN( fmt_out.i_width  * ZOOM_FACTOR / o_zoom, fmt_out.i_width - 1 );
-        v_h = __MIN( fmt_out.i_height * ZOOM_FACTOR / o_zoom, fmt_out.i_height - 1 );
+        v_w = __MIN( fmt_out.i_visible_width  * ZOOM_FACTOR / o_zoom, fmt_out.i_visible_width - 1 );
+        v_h = __MIN( fmt_out.i_visible_height * ZOOM_FACTOR / o_zoom, fmt_out.i_visible_height - 1 );
 
-        DrawRectangle( p_oyp->p_pixels, p_oyp->i_pitch,
-                       p_oyp->i_pitch, p_oyp->i_lines,
+        DrawRectangle( p_oyp->p_pixels, p_oyp->i_visible_pitch,
+                       p_oyp->i_visible_pitch, p_oyp->i_visible_lines,
                        o_x/VIS_ZOOM, o_y/VIS_ZOOM,
                        v_w, v_h );
 
         /* */
-        v_h = fmt_out.i_height + 1;
+        v_h = fmt_out.i_visible_height + 1;
     }
     else
     {
@@ -245,7 +246,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     /* print a small "VLC ZOOM" */
 
     if( b_visible || p_sys->i_last_activity + p_sys->i_hide_timeout > mdate() )
-        DrawZoomStatus( p_oyp->p_pixels, p_oyp->i_pitch, p_oyp->i_pitch, p_oyp->i_lines,
+        DrawZoomStatus( p_oyp->p_pixels, p_oyp->i_visible_pitch, p_oyp->i_pitch, p_oyp->i_lines,
                         1, v_h, b_visible );
 
     if( b_visible )
@@ -280,16 +281,15 @@ static void DrawZoomStatus( uint8_t *pb_dst, int i_pitch, int i_width, int i_hei
         " X X  X     X         X   X   X X   X X   X   XXXXX   X   X   X XXXX L"
         " X X  X     X        X    X   X X   X X   X   X   X   X   X   X X    L"
         "  X   XXXXX  XXXX   XXXXX  XXX   XXX  X   X   X   X XXXXX XXXX  XXXXXL";
-    static const char *p_show = 
+    static const char *p_show =
         "X   X X      XXXX   XXXXX  XXX   XXX  XX XX    XXXX X   X  XXX  X   XL"
         "X   X X     X          X  X   X X   X X X X   X     X   X X   X X   XL"
         " X X  X     X         X   X   X X   X X   X    XXX  XXXXX X   X X X XL"
         " X X  X     X        X    X   X X   X X   X       X X   X X   X X X XL"
         "  X   XXXXX  XXXX   XXXXX  XXX   XXX  X   X   XXXX  X   X  XXX   X X L";
     const char *p_draw = b_visible ? p_hide : p_show;
-    int i, y, x;
 
-    for( i = 0, x = i_offset_x, y = i_offset_y; p_draw[i] != '\0'; i++ )
+    for( int i = 0, x = i_offset_x, y = i_offset_y; p_draw[i] != '\0'; i++ )
     {
         if( p_draw[i] == 'X' )
         {
@@ -311,8 +311,6 @@ static void DrawZoomStatus( uint8_t *pb_dst, int i_pitch, int i_width, int i_hei
 static void DrawRectangle( uint8_t *pb_dst, int i_pitch, int i_width, int i_height,
                            int x, int y, int i_w, int i_h )
 {
-    int dy;
-
     if( x + i_w > i_width || y + i_h > i_height )
         return;
 
@@ -320,7 +318,7 @@ static void DrawRectangle( uint8_t *pb_dst, int i_pitch, int i_width, int i_heig
     memset( &pb_dst[y * i_pitch + x], 0xff, i_w );
 
     /* left and right */
-    for( dy = 1; dy < i_h-1; dy++ )
+    for( int dy = 1; dy < i_h-1; dy++ )
     {
         pb_dst[(y+dy) * i_pitch + x +     0] = 0xff;
         pb_dst[(y+dy) * i_pitch + x + i_w-1] = 0xff;
@@ -344,8 +342,8 @@ static int Mouse( filter_t *p_filter, vlc_mouse_t *p_mouse, const vlc_mouse_t *p
     /* Find the mouse position */
     if( p_sys->b_visible )
     {
-        const int i_visu_width  = p_fmt->i_width  / VIS_ZOOM;
-        const int i_visu_height = p_fmt->i_height / VIS_ZOOM;
+        const int i_visu_width  = p_fmt->i_visible_width  / VIS_ZOOM;
+        const int i_visu_height = p_fmt->i_visible_height / VIS_ZOOM;
 
         if( p_new->i_x >= 0 && p_new->i_x < i_visu_width &&
             p_new->i_y >= 0 && p_new->i_y < i_visu_height )
@@ -353,13 +351,13 @@ static int Mouse( filter_t *p_filter, vlc_mouse_t *p_mouse, const vlc_mouse_t *p
             /* Visualization */
             if( b_pressed )
             {
-                const int v_w = p_fmt->i_width  * ZOOM_FACTOR / p_sys->i_zoom;
-                const int v_h = p_fmt->i_height * ZOOM_FACTOR / p_sys->i_zoom;
+                const int v_w = p_fmt->i_visible_width  * ZOOM_FACTOR / p_sys->i_zoom;
+                const int v_h = p_fmt->i_visible_height * ZOOM_FACTOR / p_sys->i_zoom;
 
                 p_sys->i_x = VLC_CLIP( p_new->i_x * VIS_ZOOM - v_w/2, 0,
-                                           (int)p_fmt->i_width  - v_w - 1);
+                                           (int)p_fmt->i_visible_width  - v_w - 1);
                 p_sys->i_y = VLC_CLIP( p_new->i_y * VIS_ZOOM - v_h/2, 0,
-                                           (int)p_fmt->i_height - v_h - 1);
+                                           (int)p_fmt->i_visible_height - v_h - 1);
 
                 b_grab = true;
             }
@@ -388,10 +386,10 @@ static int Mouse( filter_t *p_filter, vlc_mouse_t *p_mouse, const vlc_mouse_t *p
                                        (80 + i_visu_height - p_new->i_y + 2) *
                                            ZOOM_FACTOR / 10 );
 
-                const int v_w = p_fmt->i_width  * ZOOM_FACTOR / p_sys->i_zoom;
-                const int v_h = p_fmt->i_height * ZOOM_FACTOR / p_sys->i_zoom;
-                p_sys->i_x = VLC_CLIP( p_sys->i_x, 0, (int)p_fmt->i_width  - v_w - 1 );
-                p_sys->i_y = VLC_CLIP( p_sys->i_y, 0, (int)p_fmt->i_height - v_h - 1 );
+                const int v_w = p_fmt->i_visible_width  * ZOOM_FACTOR / p_sys->i_zoom;
+                const int v_h = p_fmt->i_visible_height * ZOOM_FACTOR / p_sys->i_zoom;
+                p_sys->i_x = VLC_CLIP( p_sys->i_x, 0, (int)p_fmt->i_visible_width  - v_w - 1 );
+                p_sys->i_y = VLC_CLIP( p_sys->i_y, 0, (int)p_fmt->i_visible_height - v_h - 1 );
 
                 b_grab = true;
             }

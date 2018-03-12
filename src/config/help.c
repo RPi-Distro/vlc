@@ -27,10 +27,13 @@
 #include <stdlib.h>
 #include <wchar.h>
 #include <wctype.h>
+#include <limits.h>
+#include <float.h>
 
 #include <vlc_common.h>
 #include <vlc_modules.h>
 #include <vlc_plugin.h>
+#include <vlc_charset.h>
 #include "modules/modules.h"
 #include "config/configuration.h"
 #include "libvlc.h"
@@ -342,7 +345,7 @@ static int vlc_swidth(const char *str)
     }
 }
 
-static void print_item(const module_t *m, const module_config_t *item,
+static void print_item(const vlc_object_t *p_this, const module_t *m, const module_config_t *item,
                        const module_config_t **section, bool color, bool desc)
 {
 #ifndef _WIN32
@@ -351,8 +354,8 @@ static void print_item(const module_t *m, const module_config_t *item,
 # define OPTION_VALUE_SEP "="
 #endif
     const char *bra = OPTION_VALUE_SEP "<", *type, *ket = ">";
-    const char *prefix = NULL, *suffix = "";
-    char psz_buffer[10000]; // XXX
+    const char *prefix = NULL, *suffix = NULL;
+    char *typebuf = NULL;
 
     switch (CONFIG_CLASS(item->i_type))
     {
@@ -376,64 +379,116 @@ static void print_item(const module_t *m, const module_config_t *item,
             return;
 
         case CONFIG_ITEM_STRING:
+        {
             type = _("string");
-            if (item->list_count > 0)
-            {
-                bra = OPTION_VALUE_SEP "{";
-                type = psz_buffer;
-                psz_buffer[0] = '\0';
 
-                for (unsigned i = 0; i < item->list_count; i++)
+            char **ppsz_values, **ppsz_texts;
+
+            ssize_t i_count = config_GetPszChoices(VLC_OBJECT(p_this), item->psz_name, &ppsz_values, &ppsz_texts);
+
+            if (i_count > 0)
+            {
+                size_t len = 0;
+
+                for (unsigned i = 0; i < i_count; i++)
+                    len += strlen(ppsz_values[i]) + 1;
+
+                typebuf = malloc(len);
+                if (typebuf == NULL)
+                    goto end_string;
+
+                bra = OPTION_VALUE_SEP "{";
+                type = typebuf;
+                ket = "}";
+
+                *typebuf = 0;
+                for (unsigned i = 0; i < i_count; i++)
                 {
                     if (i > 0)
-                        strcat(psz_buffer, ",");
-                    strcat(psz_buffer, item->list.psz[i]);
+                        strcat(typebuf, ",");
+                    strcat(typebuf, ppsz_values[i]);
                 }
-                ket = "}";
+
+            end_string:
+                for (unsigned i = 0; i < i_count; i++)
+                {
+                    free(ppsz_values[i]);
+                    free(ppsz_texts[i]);
+                }
+                free(ppsz_values);
+                free(ppsz_texts);
             }
+
             break;
-
+        }
         case CONFIG_ITEM_INTEGER:
+        {
             type = _("integer");
-            if (item->min.i != 0 || item->max.i != 0)
-            {
-                sprintf (psz_buffer, "%s [%"PRId64" .. %"PRId64"]",
-                         type, item->min.i, item->max.i);
-                type = psz_buffer;
-            }
-            if (item->list_count > 0)
-            {
-                bra = OPTION_VALUE_SEP "{";
-                type = psz_buffer;
-                psz_buffer[0] = '\0';
 
+            int64_t *pi_values;
+            char **ppsz_texts;
+
+            ssize_t i_count = config_GetIntChoices(VLC_OBJECT(p_this), item->psz_name, &pi_values, &ppsz_texts);
+
+            if (i_count > 0)
+            {
+                size_t len = 0;
+
+                for (unsigned i = 0; i < i_count; i++)
+                    len += strlen(ppsz_texts[i])
+                           + 4 * sizeof (int64_t) + 5;
+
+                typebuf = malloc(len);
+                if (typebuf == NULL)
+                    goto end_integer;
+
+                bra = OPTION_VALUE_SEP "{";
+                type = typebuf;
+                ket = "}";
+
+                *typebuf = 0;
                 for (unsigned i = 0; i < item->list_count; i++)
                 {
                     if (i != 0)
-                        strcat(psz_buffer, ", ");
-                    sprintf(psz_buffer + strlen(psz_buffer), "%i (%s)",
-                            item->list.i[i],
-                            module_gettext(m, item->list_text[i]));
+                        strcat(typebuf, ", ");
+                    sprintf(typebuf + strlen(typebuf), "%"PRIi64" (%s)",
+                            pi_values[i],
+                            ppsz_texts[i]);
                 }
-                ket = "}";
+
+            end_integer:
+                for (unsigned i = 0; i < i_count; i++)
+                    free(ppsz_texts[i]);
+                free(pi_values);
+                free(ppsz_texts);
+            }
+            else if (item->min.i != INT64_MIN || item->max.i != INT64_MAX )
+            {
+                if (asprintf(&typebuf, "%s [%"PRId64" .. %"PRId64"]",
+                             type, item->min.i, item->max.i) >= 0)
+                    type = typebuf;
+                else
+                    typebuf = NULL;
             }
             break;
-
+        }
         case CONFIG_ITEM_FLOAT:
             type = _("float");
-            if (item->min.f != 0.f || item->max.f != 0.f)
+            if (item->min.f != FLT_MIN || item->max.f != FLT_MAX)
             {
-                sprintf(psz_buffer, "%s [%f .. %f]", type,
-                        item->min.f, item->max.f);
-                type = psz_buffer;
+                if (asprintf(&typebuf, "%s [%f .. %f]", type,
+                             item->min.f, item->max.f) >= 0)
+                    type = typebuf;
+                else
+                    typebuf = NULL;
             }
             break;
 
         case CONFIG_ITEM_BOOL:
             bra = type = ket = "";
             prefix = ", --no-";
-            suffix = item->value.i ? _(" (default enabled)")
-                                   : _(" (default disabled)");
+            suffix = item->value.i ? _("(default enabled)")
+                                   : _("(default disabled)");
             break;
        default:
             return;
@@ -467,18 +522,25 @@ static void print_item(const module_t *m, const module_config_t *item,
         putchar('\n');
         offset = PADDING_SPACES + LINE_START;
     }
-    printf("%*s", offset, "");
 
-    sprintf(psz_buffer, "%s%s", module_gettext(m, item->psz_text), suffix);
-    print_desc(psz_buffer, PADDING_SPACES + LINE_START, color);
+    printf("%*s", offset, "");
+    print_desc(module_gettext(m, item->psz_text),
+               PADDING_SPACES + LINE_START, color);
+
+    if (suffix != NULL)
+    {
+        printf("%*s", PADDING_SPACES + LINE_START, "");
+        print_desc(suffix, PADDING_SPACES + LINE_START, color);
+    }
 
     if (desc && (item->psz_longtext != NULL && item->psz_longtext[0]))
     {   /* Wrap long description */
         printf("%*s", LINE_START + 2, "");
-        sprintf(psz_buffer, "%s%s", module_gettext(m, item->psz_longtext),
-                suffix);
-        print_desc(psz_buffer, LINE_START + 2, false);
+        print_desc(module_gettext(m, item->psz_longtext),
+                   LINE_START + 2, false);
     }
+
+    free(typebuf);
 }
 
 static bool module_match(const module_t *m, const char *pattern, bool strict)
@@ -503,11 +565,11 @@ static bool module_match(const module_t *m, const char *pattern, bool strict)
     return false;
 }
 
-static bool module_show(const module_t *m, bool advanced)
+static bool plugin_show(const vlc_plugin_t *plugin, bool advanced)
 {
-    for (size_t i = 0; i < m->confsize; i++)
+    for (size_t i = 0; i < plugin->conf.size; i++)
     {
-        const module_config_t *item = m->p_config + i;
+        const module_config_t *item = plugin->conf.items + i;
 
         if (!CONFIG_ITEM(item->i_type))
             continue;
@@ -542,25 +604,21 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
     const bool desc = var_InheritBool(p_this, "help-verbose");
     const bool advanced = var_InheritBool(p_this, "advanced");
 
-    /* List all modules */
-    size_t count;
-    module_t **list = module_list_get (&count);
-
     /* Enumerate the config for each module */
-    for (size_t i = 0; i < count; i++)
+    for (const vlc_plugin_t *p = vlc_plugins; p != NULL; p = p->next)
     {
-        const module_t *m = list[i];
+        const module_t *m = p->module;
         const module_config_t *section = NULL;
         const char *objname = module_get_object(m);
 
-        if (m->i_config_items == 0)
+        if (p->conf.count == 0)
             continue; /* Ignore modules without config options */
         if (!module_match(m, psz_search, strict))
             continue;
         found = true;
 
-        if (!module_show(m, advanced))
-        {   /* Ignore modules with only advanced config options if requested */
+        if (!plugin_show(p, advanced))
+        {   /* Ignore plugins with only advanced config options if requested */
             i_only_advanced++;
             continue;
         }
@@ -573,9 +631,9 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
                    module_gettext(m, m->psz_help));
 
         /* Print module options */
-        for (size_t i = 0; i < m->confsize; i++)
+        for (size_t j = 0; j < p->conf.size; j++)
         {
-            const module_config_t *item = m->p_config + i;
+            const module_config_t *item = p->conf.items + j;
 
             if (item->b_removed)
                 continue; /* Skip removed options */
@@ -584,7 +642,7 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
                 b_has_advanced = true;
                 continue;
             }
-            print_item(m, item, &section, color, desc);
+            print_item(p_this, m, item, &section, color, desc);
         }
     }
 
@@ -604,9 +662,6 @@ static void Usage (vlc_object_t *p_this, char const *psz_search)
         printf(color ? "\n" WHITE "%s" GRAY "\n" : "\n%s\n",
                _("No matching module found. Use --list or "
                  "--list-verbose to list available modules."));
-
-    /* Release the module list */
-    module_list_free (list);
 }
 
 /*****************************************************************************
@@ -641,7 +696,7 @@ static void ListModules (vlc_object_t *p_this, bool b_verbose)
 
         if( b_verbose )
         {
-            char *const *pp_shortcuts = p_parser->pp_shortcuts;
+            const char *const *pp_shortcuts = p_parser->pp_shortcuts;
             for( unsigned i = 0; i < p_parser->i_shortcuts; i++ )
                 if( strcmp( pp_shortcuts[i], objname ) )
                     printf(color ? CYAN"   s %s\n"GRAY : "   s %s\n",

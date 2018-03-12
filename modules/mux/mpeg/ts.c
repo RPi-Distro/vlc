@@ -2,7 +2,7 @@
  * ts.c: MPEG-II TS Muxer
  *****************************************************************************
  * Copyright (C) 2001-2005 VLC authors and VideoLAN
- * $Id: 21111a77d4aa32e2caaa0063282ee1a902360d4f $
+ * $Id: c3b0d6d33a78a23b458a38a32a9760ede71f4448 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -39,12 +39,15 @@
 #include <vlc_sout.h>
 #include <vlc_block.h>
 #include <vlc_rand.h>
+#include <vlc_charset.h>
 
 #include <vlc_iso_lang.h>
 
 #include "bits.h"
 #include "pes.h"
 #include "csa.h"
+#include "tsutil.h"
+#include "streams.h"
 
 # include <dvbpsi/dvbpsi.h>
 # include <dvbpsi/demux.h>
@@ -56,6 +59,10 @@
 # include <dvbpsi/psi.h>
 
 #include "dvbpsi_compat.h"
+
+#include "tables.h"
+
+#include "../../codec/jpeg2000.h"
 
 /*
  * TODO:
@@ -85,6 +92,13 @@ static int ActiveKeyCallback    ( vlc_object_t *, char const *, vlc_value_t, vlc
 static int     Open   ( vlc_object_t * );
 static void    Close  ( vlc_object_t * );
 
+static const char *const ts_standards_list[] =
+    { "dvb", "atsc", };
+static const char *const ts_standards_list_text[] =
+    { "DVB", "ATSC", };
+
+#define STANDARD_TEXT N_("Digital TV Standard")
+
 #define VPID_TEXT N_("Video PID")
 #define VPID_LONGTEXT N_("Assign a fixed PID to the video stream. The PCR " \
   "PID will automatically be the video.")
@@ -108,7 +122,7 @@ static void    Close  ( vlc_object_t * );
                            "requires \"Set PID to ID of ES\" to be enabled." )
 
 #define SDTDESC_TEXT N_("SDT Descriptors (requires --sout-ts-es-id-pid)")
-#define SDTDESC_LONGTEXT N_("Defines the descriptors of each SDT. This" \
+#define SDTDESC_LONGTEXT N_("Defines the descriptors of each SDT. This " \
                         "requires \"Set PID to ID of ES\" to be enabled." )
 
 #define PID_TEXT N_("Set PID to ID of ES")
@@ -176,6 +190,11 @@ static void    Close  ( vlc_object_t * );
 #define SOUT_CFG_PREFIX "sout-ts-"
 #define MAX_PMT 64       /* Maximum number of programs. FIXME: I just chose an arbitrary number. Where is the maximum in the spec? */
 #define MAX_PMT_PID 64       /* Maximum pids in each pmt.  FIXME: I just chose an arbitrary number. Where is the maximum in the spec? */
+#if MAX_SDT_DESC < MAX_PMT
+  #error "MAX_SDT_DESC < MAX_PMT"
+#endif
+
+#define BLOCK_FLAG_NO_KEYFRAME (1 << BLOCK_FLAG_PRIVATE_SHIFT) /* This is not a key frame for bitrate shaping */
 
 vlc_module_begin ()
     set_description( N_("TS muxer (libdvbpsi)") )
@@ -185,10 +204,16 @@ vlc_module_begin ()
     set_capability( "sout mux", 120 )
     add_shortcut( "ts" )
 
-    add_integer(SOUT_CFG_PREFIX "pid-video", 0, VPID_TEXT, VPID_LONGTEXT, true)
-    add_integer(SOUT_CFG_PREFIX "pid-audio", 0, APID_TEXT, APID_LONGTEXT, true)
-    add_integer(SOUT_CFG_PREFIX "pid-spu",   0, SPUPID_TEXT, SPUPID_LONGTEXT, true)
-    add_integer(SOUT_CFG_PREFIX "pid-pmt", 0, PMTPID_TEXT, PMTPID_LONGTEXT, true)
+    add_string( SOUT_CFG_PREFIX "standard", "dvb", STANDARD_TEXT, NULL, true )
+        change_string_list( ts_standards_list, ts_standards_list_text )
+    add_integer(SOUT_CFG_PREFIX "pid-video", 100, VPID_TEXT, VPID_LONGTEXT, true)
+        change_integer_range( 32, 8190 )
+    add_integer(SOUT_CFG_PREFIX "pid-audio", 200, APID_TEXT, APID_LONGTEXT, true)
+        change_integer_range( 32, 8190 )
+    add_integer(SOUT_CFG_PREFIX "pid-spu",   300, SPUPID_TEXT, SPUPID_LONGTEXT, true)
+        change_integer_range( 32, 8190 )
+    add_integer(SOUT_CFG_PREFIX "pid-pmt", 32, PMTPID_TEXT, PMTPID_LONGTEXT, true)
+        change_integer_range( 32, 8190 )
     add_integer(SOUT_CFG_PREFIX "tsid",  0, TSID_TEXT, TSID_LONGTEXT, true)
     add_integer(SOUT_CFG_PREFIX "netid", 0, NETID_TEXT, NETID_LONGTEXT, true)
     add_string(SOUT_CFG_PREFIX "program-pmt", NULL, PMTPROG_TEXT, PMTPROG_LONGTEXT, true)
@@ -219,6 +244,7 @@ vlc_module_end ()
  * Local data structures
  *****************************************************************************/
 static const char *const ppsz_sout_options[] = {
+    "standard",
     "pid-video", "pid-audio", "pid-spu", "pid-pmt", "tsid",
     "netid", "sdtdesc",
     "es-id-pid", "shaping", "pcr", "bmin", "bmax", "use-key-frames",
@@ -232,12 +258,6 @@ typedef struct pmt_map_t   /* Holds the mapping between the pmt-pid/pmt table */
     int i_pid;
     unsigned i_prog;
 } pmt_map_t;
-
-typedef struct sdt_desc_t
-{
-    char *psz_provider;
-    char *psz_service_name;  /* name of program */
-} sdt_desc_t;
 
 typedef struct
 {
@@ -303,73 +323,49 @@ static inline void BufferChainClean( sout_buffer_chain_t *c )
     BufferChainInit( c );
 }
 
-typedef struct ts_stream_t
+typedef struct
 {
-    int             i_pid;
-    vlc_fourcc_t    i_codec;
-
-    int             i_stream_type;
-    int             i_stream_id;
-    int             i_continuity_counter;
-    bool            b_discontinuity;
-
-    /* to be used for carriege of DIV3 */
-    vlc_fourcc_t    i_bih_codec;
-    int             i_bih_width, i_bih_height;
-
-    /* Specific to mpeg4 in mpeg2ts */
-    int             i_es_id;
-
-    int             i_extra;
-    uint8_t         *p_extra;
-
-    /* language is iso639-2T */
-    int             i_langs;
-    uint8_t         *lang;
-
     sout_buffer_chain_t chain_pes;
     mtime_t             i_pes_dts;
     mtime_t             i_pes_length;
     int                 i_pes_used;
     bool                b_key_frame;
 
-} ts_stream_t;
+} pes_state_t;
+
+typedef struct
+{
+    tsmux_stream_t  ts;
+    pesmux_stream_t pes;
+    pes_state_t  state;
+} sout_input_sys_t;
 
 struct sout_mux_sys_t
 {
-    int             i_pcr_pid;
     sout_input_t    *p_pcr_input;
 
     vlc_mutex_t     csa_lock;
 
-#if (DVBPSI_VERSION_INT >= DVBPSI_VERSION_WANTED(1,0,0))
     dvbpsi_t        *p_dvbpsi;
-#endif
     bool            b_es_id_pid;
-    bool            b_sdt;
     int             i_pid_video;
     int             i_pid_audio;
     int             i_pid_spu;
-    int             i_pid_free; /* first usable pid */
 
     int             i_tsid;
-    int             i_netid;
     unsigned        i_num_pmt;
     int             i_pmtslots;
     int             i_pat_version_number;
-    ts_stream_t     pat;
+    tsmux_stream_t  pat;
 
     int             i_pmt_version_number;
-    ts_stream_t     pmt[MAX_PMT];
+    tsmux_stream_t  pmt[MAX_PMT];
     pmt_map_t       pmtmap[MAX_PMT_PID];
     int             i_pmt_program_number[MAX_PMT];
-    sdt_desc_t      sdt_descriptors[MAX_PMT];
     bool            b_data_alignment;
 
-    int             i_mpeg4_streams;
-
-    ts_stream_t     sdt;
-    dvbpsi_pmt_t    *dvbpmt;
+    sdt_psi_t       sdt;
+    ts_mux_standard standard;
 
     /* for TS building */
     int64_t         i_bitrate_min;
@@ -391,29 +387,66 @@ struct sout_mux_sys_t
     bool            b_crypt_video;
 };
 
-/* Reserve a pid and return it */
-static int  AllocatePID( sout_mux_sys_t *p_sys, int i_cat )
+
+static int GetNextFreePID( sout_mux_t *p_mux, int i_pid_start )
 {
+    sout_mux_sys_t *p_sys = p_mux->p_sys;
+
+    restart:
+    for(unsigned i=i_pid_start; i<p_sys->i_num_pmt; i++)
+    {
+        if(p_sys->pmt[i].i_pid == i_pid_start)
+        {
+            i_pid_start++;
+            goto restart;
+        }
+    }
+
+    for(int i=0; i<p_mux->i_nb_inputs; i++)
+    {
+        sout_input_sys_t *p_stream = (sout_input_sys_t*)p_mux->pp_inputs[i]->p_sys;
+        if(p_stream->ts.i_pid == i_pid_start)
+        {
+            i_pid_start++;
+            goto restart;
+        }
+    }
+
+    if( i_pid_start > 8190 )
+    {
+        i_pid_start = 32;
+        goto restart;
+    }
+
+    return i_pid_start;
+}
+
+/* Reserve a pid and return it */
+static int  AllocatePID( sout_mux_t *p_mux, int i_cat )
+{
+    sout_mux_sys_t *p_sys = p_mux->p_sys;
     int i_pid;
-    if ( i_cat == VIDEO_ES && p_sys->i_pid_video )
+    int *pi_candidate_pid = NULL;
+
+    switch( i_cat )
     {
-        i_pid = p_sys->i_pid_video;
-        p_sys->i_pid_video = 0;
+    case VIDEO_ES:
+        pi_candidate_pid = &p_sys->i_pid_video;
+        break;
+
+    case AUDIO_ES:
+        pi_candidate_pid = &p_sys->i_pid_audio;
+        break;
+
+    case SPU_ES:
+    default:
+        pi_candidate_pid = &p_sys->i_pid_spu;
+        break;
     }
-    else if ( i_cat == AUDIO_ES && p_sys->i_pid_audio )
-    {
-        i_pid = p_sys->i_pid_audio;
-        p_sys->i_pid_audio = 0;
-    }
-    else if ( i_cat == SPU_ES && p_sys->i_pid_spu )
-    {
-        i_pid = p_sys->i_pid_spu;
-        p_sys->i_pid_spu = 0;
-    }
-    else
-    {
-        i_pid = ++p_sys->i_pid_free;
-    }
+
+    *pi_candidate_pid = GetNextFreePID( p_mux, *pi_candidate_pid );
+    i_pid = (*pi_candidate_pid)++;
+
     return i_pid;
 }
 
@@ -435,11 +468,11 @@ static int intcompare( const void *pa, const void *pb )
  *****************************************************************************/
 static int Control  ( sout_mux_t *, int, va_list );
 static int AddStream( sout_mux_t *, sout_input_t * );
-static int DelStream( sout_mux_t *, sout_input_t * );
+static void DelStream( sout_mux_t *, sout_input_t * );
 static int Mux      ( sout_mux_t * );
 
 static block_t *FixPES( sout_mux_t *p_mux, block_fifo_t *p_fifo );
-static block_t *Add_ADTS( block_t *, es_format_t * );
+static block_t *Add_ADTS( block_t *, const es_format_t * );
 static void TSSchedule  ( sout_mux_t *p_mux, sout_buffer_chain_t *p_chain_ts,
                           mtime_t i_pcr_length, mtime_t i_pcr_dts );
 static void TSDate      ( sout_mux_t *p_mux, sout_buffer_chain_t *p_chain_ts,
@@ -447,7 +480,7 @@ static void TSDate      ( sout_mux_t *p_mux, sout_buffer_chain_t *p_chain_ts,
 static void GetPAT( sout_mux_t *p_mux, sout_buffer_chain_t *c );
 static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c );
 
-static block_t *TSNew( sout_mux_t *p_mux, ts_stream_t *p_stream, bool b_pcr );
+static block_t *TSNew( sout_mux_t *p_mux, sout_input_sys_t *p_stream, bool b_pcr );
 static void TSSetPCR( block_t *p_ts, mtime_t i_dts );
 
 static csa_t *csaSetup( vlc_object_t *p_this )
@@ -517,8 +550,6 @@ static int Open( vlc_object_t *p_this )
         return VLC_ENOMEM;
     p_sys->i_num_pmt = 1;
 
-
-#if (DVBPSI_VERSION_INT >= DVBPSI_VERSION_WANTED(1,0,0))
     p_sys->p_dvbpsi = dvbpsi_new( &dvbpsi_messages, DVBPSI_MSG_DEBUG );
     if( !p_sys->p_dvbpsi )
     {
@@ -526,7 +557,11 @@ static int Open( vlc_object_t *p_this )
         return VLC_ENOMEM;
     }
     p_sys->p_dvbpsi->p_sys = (void *) p_mux;
-#endif
+
+    char *psz_standard = var_GetString( p_mux, SOUT_CFG_PREFIX "standard" );
+    if( psz_standard && !strcmp("atsc", psz_standard) )
+        p_sys->standard = TS_MUX_STANDARD_ATSC;
+    free( psz_standard );
 
     p_sys->b_es_id_pid = var_GetBool( p_mux, SOUT_CFG_PREFIX "es-id-pid" );
 
@@ -576,35 +611,32 @@ static int Open( vlc_object_t *p_this )
     else
         p_sys->i_tsid = nrand48(subi) & 0xffff;
 
-    p_sys->i_netid = nrand48(subi) & 0xffff;
-
     var_Get( p_mux, SOUT_CFG_PREFIX "netid", &val );
     if ( val.i_int )
-        p_sys->i_netid = val.i_int;
+        p_sys->sdt.i_netid = val.i_int;
+    else
+        p_sys->sdt.i_netid = 0xff00 | ( nrand48(subi) & 0xfa );
 
     p_sys->i_pmt_version_number = nrand48(subi) & 0x1f;
-    p_sys->sdt.i_pid = 0x11;
+    p_sys->sdt.ts.i_pid = 0x11;
 
     char *sdtdesc = var_GetNonEmptyString( p_mux, SOUT_CFG_PREFIX "sdtdesc" );
 
     /* Syntax is provider_sdt1,service_name_sdt1,provider_sdt2,service_name_sdt2... */
     if( sdtdesc )
     {
-        p_sys->b_sdt = true;
-
         char *psz_sdttoken = sdtdesc;
 
-        for (int i = 0; i < MAX_PMT * 2 && psz_sdttoken; i++)
+        for (int i = 0; i < MAX_SDT_DESC * 2 && psz_sdttoken; i++)
         {
-            sdt_desc_t *sdt = &p_sys->sdt_descriptors[i/2];
             char *psz_end = strchr( psz_sdttoken, ',' );
             if ( psz_end )
                 *psz_end++ = '\0';
 
             if (i % 2)
-                sdt->psz_service_name = strdup(psz_sdttoken);
+                p_sys->sdt.desc[i/2].psz_service_name = FromLocaleDup( psz_sdttoken );
             else
-                sdt->psz_provider = strdup(psz_sdttoken);
+                p_sys->sdt.desc[i/2].psz_provider = FromLocaleDup( psz_sdttoken );
 
             psz_sdttoken = psz_end;
         }
@@ -648,32 +680,12 @@ static int Open( vlc_object_t *p_this )
     }
 
     var_Get( p_mux, SOUT_CFG_PREFIX "pid-pmt", &val );
-    if( !val.i_int ) /* Does this make any sense? */
-        val.i_int = 0x42;
     for (unsigned i = 0; i < p_sys->i_num_pmt; i++ )
         p_sys->pmt[i].i_pid = val.i_int + i;
 
-    p_sys->i_pid_free = p_sys->pmt[p_sys->i_num_pmt - 1].i_pid + 1;
-
     p_sys->i_pid_video = var_GetInteger( p_mux, SOUT_CFG_PREFIX "pid-video" );
-    if ( p_sys->i_pid_video > p_sys->i_pid_free )
-    {
-        p_sys->i_pid_free = p_sys->i_pid_video + 1;
-    }
-
     p_sys->i_pid_audio = var_GetInteger( p_mux, SOUT_CFG_PREFIX "pid-audio" );
-    if ( p_sys->i_pid_audio > p_sys->i_pid_free )
-    {
-        p_sys->i_pid_free = p_sys->i_pid_audio + 1;
-    }
-
     p_sys->i_pid_spu = var_GetInteger( p_mux, SOUT_CFG_PREFIX "pid-spu" );
-    if ( p_sys->i_pid_spu > p_sys->i_pid_free )
-    {
-        p_sys->i_pid_free = p_sys->i_pid_spu + 1;
-    }
-
-    p_sys->i_pcr_pid = 0x1fff;
 
     /* Allow to create constrained stream */
     p_sys->i_bitrate_min = var_GetInteger( p_mux, SOUT_CFG_PREFIX "bmin" );
@@ -743,10 +755,8 @@ static void Close( vlc_object_t * p_this )
     sout_mux_t          *p_mux = (sout_mux_t*)p_this;
     sout_mux_sys_t      *p_sys = p_mux->p_sys;
 
-#if (DVBPSI_VERSION_INT >= DVBPSI_VERSION_WANTED(1,0,0))
     if( p_sys->p_dvbpsi )
         dvbpsi_delete( p_sys->p_dvbpsi );
-#endif
 
     if( p_sys->csa )
     {
@@ -757,13 +767,12 @@ static void Close( vlc_object_t * p_this )
         vlc_mutex_destroy( &p_sys->csa_lock );
     }
 
-    for (int i = 0; i < MAX_PMT; i++ )
+    for (int i = 0; i < MAX_SDT_DESC; i++ )
     {
-        free( p_sys->sdt_descriptors[i].psz_service_name );
-        free( p_sys->sdt_descriptors[i].psz_provider );
+        free( p_sys->sdt.desc[i].psz_service_name );
+        free( p_sys->sdt.desc[i].psz_provider );
     }
 
-    free( p_sys->dvbpmt );
     free( p_sys );
 }
 
@@ -833,17 +842,17 @@ static int Control( sout_mux_t *p_mux, int i_query, va_list args )
     switch( i_query )
     {
     case MUX_CAN_ADD_STREAM_WHILE_MUXING:
-        pb_bool = (bool*)va_arg( args, bool * );
+        pb_bool = va_arg( args, bool * );
         *pb_bool = true;
         return VLC_SUCCESS;
 
     case MUX_GET_ADD_STREAM_WAIT:
-        pb_bool = (bool*)va_arg( args, bool * );
+        pb_bool = va_arg( args, bool * );
         *pb_bool = false;
         return VLC_SUCCESS;
 
     case MUX_GET_MIME:
-        ppsz = (char**)va_arg( args, char ** );
+        ppsz = va_arg( args, char ** );
         *ppsz = strdup( "video/mp2t" );
         return VLC_SUCCESS;
 
@@ -872,145 +881,79 @@ static const char *GetIso639_2LangCode(const char *lang)
     return pl->psz_iso639_2T;   /* returns the english code */
 }
 
+static void SelectPCRStream( sout_mux_t *p_mux, sout_input_t *p_removed_pcr_input )
+{
+    sout_mux_sys_t *p_sys = p_mux->p_sys;
+
+    /* Find a new pcr stream (Prefer Video Stream) */
+    if( p_removed_pcr_input != NULL )
+        p_sys->p_pcr_input = NULL;
+
+    for ( int i = 0; i < p_mux->i_nb_inputs; i++ )
+    {
+        sout_input_t *p_input = p_mux->pp_inputs[i];
+        if( p_input == p_removed_pcr_input )
+            continue;
+
+        if( p_input->p_fmt->i_cat == VIDEO_ES &&
+           (p_sys->p_pcr_input == NULL ||
+            p_sys->p_pcr_input->p_fmt->i_cat != VIDEO_ES) )
+        {
+            p_sys->p_pcr_input = p_input;
+            break;
+        }
+        else if( p_input->p_fmt->i_cat != SPU_ES &&
+                 p_sys->p_pcr_input == NULL )
+        {
+            p_sys->p_pcr_input = p_input;
+        }
+    }
+
+    if( p_sys->p_pcr_input )
+    {
+        /* Empty TS buffer */
+        /* FIXME */
+        msg_Dbg( p_mux, "new PCR PID is %d",
+                 ((sout_input_sys_t *)p_sys->p_pcr_input->p_sys)->ts.i_pid );
+    }
+
+}
+
 /*****************************************************************************
  * AddStream: called for each stream addition
  *****************************************************************************/
 static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
 {
     sout_mux_sys_t      *p_sys = p_mux->p_sys;
-    ts_stream_t         *p_stream;
+    sout_input_sys_t    *p_stream;
 
-    p_input->p_sys = p_stream = calloc( 1, sizeof( ts_stream_t ) );
+    p_input->p_sys = p_stream = calloc( 1, sizeof( sout_input_sys_t ) );
     if( !p_stream )
         goto oom;
 
     if ( p_sys->b_es_id_pid )
-        p_stream->i_pid = p_input->p_fmt->i_id & 0x1fff;
+        p_stream->ts.i_pid = p_input->fmt.i_id & 0x1fff;
     else
-        p_stream->i_pid = AllocatePID( p_sys, p_input->p_fmt->i_cat );
+        p_stream->ts.i_pid = AllocatePID( p_mux, p_input->p_fmt->i_cat );
 
-    p_stream->i_codec = p_input->p_fmt->i_codec;
-
-    p_stream->i_stream_type = -1;
-    switch( p_input->p_fmt->i_codec )
-    {
-    /* VIDEO */
-
-    case VLC_CODEC_MPGV:
-    case VLC_CODEC_MP2V:
-    case VLC_CODEC_MP1V:
-        /* TODO: do we need to check MPEG-I/II ? */
-        p_stream->i_stream_type = 0x02;
-        p_stream->i_stream_id = 0xe0;
-        break;
-    case VLC_CODEC_MP4V:
-        p_stream->i_stream_type = 0x10;
-        p_stream->i_stream_id = 0xe0;
-        p_stream->i_es_id = p_stream->i_pid;
-        break;
-    case VLC_CODEC_HEVC:
-        p_stream->i_stream_type = 0x24;
-        p_stream->i_stream_id = 0xe0;
-        break;
-    case VLC_CODEC_H264:
-        p_stream->i_stream_type = 0x1b;
-        p_stream->i_stream_id = 0xe0;
-        break;
-    /* XXX dirty dirty but somebody want crapy MS-codec XXX */
-    case VLC_CODEC_H263I:
-    case VLC_CODEC_H263:
-    case VLC_CODEC_WMV3:
-    case VLC_CODEC_WMV2:
-    case VLC_CODEC_WMV1:
-    case VLC_CODEC_DIV3:
-    case VLC_CODEC_DIV2:
-    case VLC_CODEC_DIV1:
-    case VLC_CODEC_MJPG:
-        p_stream->i_stream_type = 0xa0; /* private */
-        p_stream->i_stream_id = 0xa0;   /* beurk */
-        p_stream->i_bih_codec  = p_input->p_fmt->i_codec;
-        p_stream->i_bih_width  = p_input->p_fmt->video.i_width;
-        p_stream->i_bih_height = p_input->p_fmt->video.i_height;
-        break;
-    case VLC_CODEC_DIRAC:
-        /* stream_id makes use of stream_id_extension */
-        p_stream->i_stream_id = (PES_EXTENDED_STREAM_ID << 8) | 0x60;
-        p_stream->i_stream_type = 0xd1;
-        break;
-
-    /* AUDIO */
-
-    case VLC_CODEC_MPGA:
-    case VLC_CODEC_MP3:
-        p_stream->i_stream_type =
-            p_input->p_fmt->audio.i_rate >= 32000 ? 0x03 : 0x04;
-        p_stream->i_stream_id = 0xc0;
-        break;
-    case VLC_CODEC_A52:
-        p_stream->i_stream_type = 0x81;
-        p_stream->i_stream_id = 0xbd;
-        break;
-    case VLC_CODEC_EAC3:
-        p_stream->i_stream_type = 0x06;
-        p_stream->i_stream_id = 0xbd;
-        break;
-    case VLC_CODEC_DVD_LPCM:
-        p_stream->i_stream_type = 0x83;
-        p_stream->i_stream_id = 0xbd;
-        break;
-    case VLC_CODEC_DTS:
-        p_stream->i_stream_type = 0x06;
-        p_stream->i_stream_id = 0xbd;
-        break;
-    case VLC_CODEC_MP4A:
-        /* XXX: make that configurable in some way when LOAS
-         * is implemented for AAC in TS */
-        //p_stream->i_stream_type = 0x11; /* LOAS/LATM */
-        p_stream->i_stream_type = 0x0f; /* ADTS */
-        p_stream->i_stream_id = 0xc0;
-        p_stream->i_es_id = p_stream->i_pid;
-        break;
-
-    /* TEXT */
-
-    case VLC_CODEC_SPU:
-        p_stream->i_stream_type = 0x82;
-        p_stream->i_stream_id = 0xbd;
-        break;
-    case VLC_CODEC_SUBT:
-        p_stream->i_stream_type = 0x12;
-        p_stream->i_stream_id = 0xfa;
-        p_sys->i_mpeg4_streams++;
-        p_stream->i_es_id = p_stream->i_pid;
-        break;
-    case VLC_CODEC_DVBS:
-        p_stream->i_stream_type = 0x06;
-        p_stream->i_es_id = p_input->p_fmt->subs.dvb.i_id;
-        p_stream->i_stream_id = 0xbd;
-        break;
-    case VLC_CODEC_TELETEXT:
-        p_stream->i_stream_type = 0x06;
-        p_stream->i_stream_id = 0xbd; /* FIXME */
-        break;
-    }
-
-    if (p_stream->i_stream_type == -1)
+    if( FillPMTESParams( p_sys->standard, p_input->p_fmt,
+                        &p_stream->ts, &p_stream->pes ) != VLC_SUCCESS )
     {
         msg_Warn( p_mux, "rejecting stream with unsupported codec %4.4s",
-                  (char*)&p_stream->i_codec );
+                  (char*)&p_input->p_fmt->i_codec );
         free( p_stream );
         return VLC_EGENERIC;
     }
 
-    p_stream->i_langs = 1 + p_input->p_fmt->i_extra_languages;
-    p_stream->lang = calloc(1, p_stream->i_langs * 4);
-    if( !p_stream->lang )
+    p_stream->pes.i_langs = 1 + p_input->p_fmt->i_extra_languages;
+    p_stream->pes.lang = calloc(1, p_stream->pes.i_langs * 4);
+    if( !p_stream->pes.lang )
         goto oom;
 
     msg_Dbg( p_mux, "adding input codec=%4.4s pid=%d",
-             (char*)&p_stream->i_codec, p_stream->i_pid );
+             (char*)&p_input->fmt.i_codec, p_stream->ts.i_pid );
 
-    for (int i = 0; i < p_stream->i_langs; i++) {
+    for (size_t i = 0; i < p_stream->pes.i_langs; i++) {
         char *lang = (i == 0)
             ? p_input->p_fmt->psz_language
             : p_input->p_fmt->p_extra_languages[i-1].psz_language;
@@ -1021,101 +964,27 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         const char *code = GetIso639_2LangCode(lang);
         if (*code)
         {
-            memcpy(&p_stream->lang[i*4], code, 3);
-            p_stream->lang[i*4+3] = 0x00; /* audio type: 0x00 undefined */
-            msg_Dbg( p_mux, "    - lang=%3.3s", &p_stream->lang[i*4] );
-        }
-    }
-
-    /* Create decoder specific info for subt */
-    if( p_stream->i_codec == VLC_CODEC_SUBT )
-    {
-        p_stream->i_extra = 55;
-        p_stream->p_extra = malloc( p_stream->i_extra );
-        if (!p_stream->p_extra)
-            goto oom;
-
-        uint8_t *p = p_stream->p_extra;
-        p[0] = 0x10;    /* textFormat, 0x10 for 3GPP TS 26.245 */
-        p[1] = 0x00;    /* flags: 1b: associated video info flag
-                                3b: reserved
-                                1b: duration flag
-                                3b: reserved */
-        p[2] = 52;      /* remaining size */
-
-        p += 3;
-
-        p[0] = p[1] = p[2] = p[3] = 0; p+=4;    /* display flags */
-        *p++ = 0;  /* horizontal justification (-1: left, 0 center, 1 right) */
-        *p++ = 1;  /* vertical   justification (-1: top, 0 center, 1 bottom) */
-
-        p[0] = p[1] = p[2] = 0x00; p+=3;/* background rgb */
-        *p++ = 0xff;                    /* background a */
-
-        p[0] = p[1] = 0; p += 2;        /* text box top */
-        p[0] = p[1] = 0; p += 2;        /* text box left */
-        p[0] = p[1] = 0; p += 2;        /* text box bottom */
-        p[0] = p[1] = 0; p += 2;        /* text box right */
-
-        p[0] = p[1] = 0; p += 2;        /* start char */
-        p[0] = p[1] = 0; p += 2;        /* end char */
-        p[0] = p[1] = 0; p += 2;        /* default font id */
-
-        *p++ = 0;                       /* font style flags */
-        *p++ = 12;                      /* font size */
-
-        p[0] = p[1] = p[2] = 0x00; p+=3;/* foreground rgb */
-        *p++ = 0x00;                    /* foreground a */
-
-        p[0] = p[1] = p[2] = 0; p[3] = 22; p += 4;
-        memcpy( p, "ftab", 4 ); p += 4;
-        *p++ = 0; *p++ = 1;             /* entry count */
-        p[0] = p[1] = 0; p += 2;        /* font id */
-        *p++ = 9;                       /* font name length */
-        memcpy( p, "Helvetica", 9 );    /* font name */
-    }
-    else
-    {
-        /* Copy extra data (VOL for MPEG-4 and extra BitMapInfoHeader for VFW */
-        es_format_t *fmt = p_input->p_fmt;
-        if( fmt->i_extra > 0 )
-        {
-            p_stream->i_extra = fmt->i_extra;
-            p_stream->p_extra = malloc( fmt->i_extra );
-            if( !p_stream->p_extra )
-                goto oom;
-
-            memcpy( p_stream->p_extra, fmt->p_extra, fmt->i_extra );
+            memcpy(&p_stream->pes.lang[i*4], code, 3);
+            p_stream->pes.lang[i*4+3] = 0x00; /* audio type: 0x00 undefined */
+            msg_Dbg( p_mux, "    - lang=%3.3s", &p_stream->pes.lang[i*4] );
         }
     }
 
     /* Init pes chain */
-    BufferChainInit( &p_stream->chain_pes );
+    BufferChainInit( &p_stream->state.chain_pes );
 
     /* We only change PMT version (PAT isn't changed) */
     p_sys->i_pmt_version_number = ( p_sys->i_pmt_version_number + 1 )%32;
 
     /* Update pcr_pid */
-    if( p_input->p_fmt->i_cat != SPU_ES &&
-        ( p_sys->i_pcr_pid == 0x1fff || p_input->p_fmt->i_cat == VIDEO_ES ) )
-    {
-        if( p_sys->p_pcr_input )
-        {
-            /* There was already a PCR stream, so clean context */
-            /* FIXME */
-        }
-        p_sys->i_pcr_pid   = p_stream->i_pid;
-        p_sys->p_pcr_input = p_input;
-
-        msg_Dbg( p_mux, "new PCR PID is %d", p_sys->i_pcr_pid );
-    }
+    SelectPCRStream( p_mux, NULL );
 
     return VLC_SUCCESS;
 
 oom:
     if(p_stream)
     {
-        free(p_stream->lang);
+        free(p_stream->pes.lang);
         free(p_stream);
     }
     return VLC_ENOMEM;
@@ -1124,87 +993,48 @@ oom:
 /*****************************************************************************
  * DelStream: called before a stream deletion
  *****************************************************************************/
-static int DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
+static void DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
 {
-    sout_mux_sys_t  *p_sys = p_mux->p_sys;
-    ts_stream_t     *p_stream = (ts_stream_t*)p_input->p_sys;
-    int              pid;
+    sout_mux_sys_t   *p_sys = p_mux->p_sys;
+    sout_input_sys_t *p_stream = (sout_input_sys_t*)p_input->p_sys;
+    int               pid;
 
-    msg_Dbg( p_mux, "removing input pid=%d", p_stream->i_pid );
+    msg_Dbg( p_mux, "removing input pid=%d", p_stream->ts.i_pid );
 
-    if( p_sys->i_pcr_pid == p_stream->i_pid )
+    if( p_sys->p_pcr_input == p_input )
     {
-        /* Find a new pcr stream (Prefer Video Stream) */
-        p_sys->i_pcr_pid = 0x1fff;
-        p_sys->p_pcr_input = NULL;
-        for (int i = 0; i < p_mux->i_nb_inputs; i++ )
-        {
-            if( p_mux->pp_inputs[i] == p_input )
-            {
-                continue;
-            }
-
-            if( p_mux->pp_inputs[i]->p_fmt->i_cat == VIDEO_ES )
-            {
-                p_sys->i_pcr_pid  =
-                    ((ts_stream_t*)p_mux->pp_inputs[i]->p_sys)->i_pid;
-                p_sys->p_pcr_input= p_mux->pp_inputs[i];
-                break;
-            }
-            else if( p_mux->pp_inputs[i]->p_fmt->i_cat != SPU_ES &&
-                     p_sys->i_pcr_pid == 0x1fff )
-            {
-                p_sys->i_pcr_pid  =
-                    ((ts_stream_t*)p_mux->pp_inputs[i]->p_sys)->i_pid;
-                p_sys->p_pcr_input= p_mux->pp_inputs[i];
-            }
-        }
-        if( p_sys->p_pcr_input )
-        {
-            /* Empty TS buffer */
-            /* FIXME */
-        }
-        msg_Dbg( p_mux, "new PCR PID is %d", p_sys->i_pcr_pid );
+        /* Repick new PCR */
+        SelectPCRStream( p_mux, p_input );
     }
 
     /* Empty all data in chain_pes */
-    BufferChainClean( &p_stream->chain_pes );
-
-    free(p_stream->lang);
-    free( p_stream->p_extra );
-    if( p_stream->i_stream_id == 0xfa ||
-        p_stream->i_stream_id == 0xfb ||
-        p_stream->i_stream_id == 0xfe )
-    {
-        p_sys->i_mpeg4_streams--;
-    }
+    BufferChainClean( &p_stream->state.chain_pes );
 
     pid = var_GetInteger( p_mux, SOUT_CFG_PREFIX "pid-video" );
-    if ( pid > 0 && pid == p_stream->i_pid )
+    if ( pid > 0 && pid == p_stream->ts.i_pid )
     {
         p_sys->i_pid_video = pid;
         msg_Dbg( p_mux, "freeing video PID %d", pid);
     }
     pid = var_GetInteger( p_mux, SOUT_CFG_PREFIX "pid-audio" );
-    if ( pid > 0 && pid == p_stream->i_pid )
+    if ( pid > 0 && pid == p_stream->ts.i_pid )
     {
         p_sys->i_pid_audio = pid;
         msg_Dbg( p_mux, "freeing audio PID %d", pid);
     }
     pid = var_GetInteger( p_mux, SOUT_CFG_PREFIX "pid-spu" );
-    if ( pid > 0 && pid == p_stream->i_pid )
+    if ( pid > 0 && pid == p_stream->ts.i_pid )
     {
         p_sys->i_pid_spu = pid;
         msg_Dbg( p_mux, "freeing spu PID %d", pid);
     }
 
+    free(p_stream->pes.lang);
     free( p_stream );
 
     /* We only change PMT version (PAT isn't changed) */
     p_sys->i_pmt_version_number++;
     p_sys->i_pmt_version_number %= 32;
-
-    return VLC_SUCCESS;
 }
 
 static void SetHeader( sout_buffer_chain_t *c,
@@ -1219,15 +1049,157 @@ static void SetHeader( sout_buffer_chain_t *c,
     p_ts->i_flags |= BLOCK_FLAG_HEADER;
 }
 
+static block_t *Pack_Opus(block_t *p_data)
+{
+    lldiv_t d = lldiv(p_data->i_buffer, 255);
+    p_data = block_Realloc(p_data, 2 + d.quot + 1, p_data->i_buffer);
+    if (p_data) { /* no flags */
+        p_data->p_buffer[0] = 0x7f;
+        p_data->p_buffer[1] = 0xe0;
+        memset(&p_data->p_buffer[2], 0xff, d.quot);
+        p_data->p_buffer[2+d.quot] = d.rem;
+    }
+
+    return p_data;
+}
+
+static void SetBlockDuration( sout_input_t *p_input, block_t *p_data )
+{
+    sout_input_sys_t *p_stream = (sout_input_sys_t*) p_input->p_sys;
+
+    if( p_input->p_fmt->i_cat != SPU_ES &&
+        block_FifoCount( p_input->p_fifo ) > 0 )
+    {
+        block_t *p_next = block_FifoShow( p_input->p_fifo );
+        mtime_t i_diff = p_next->i_dts - p_data->i_dts;
+        if( i_diff > 0 &&
+                (p_next->i_flags & BLOCK_FLAG_DISCONTINUITY) == 0 )
+        {
+            p_data->i_length = i_diff;
+        }
+        else if ( p_data->i_length == 0 )
+        {
+            /* Try rates */
+            if( p_input->p_fmt->i_cat == VIDEO_ES &&
+                p_input->p_fmt->video.i_frame_rate &&
+                p_input->p_fmt->video.i_frame_rate_base )
+            {
+                p_data->i_length = CLOCK_FREQ *
+                                   p_input->p_fmt->video.i_frame_rate /
+                                   p_input->p_fmt->video.i_frame_rate_base;
+            }
+            else if( p_input->p_fmt->i_cat == AUDIO_ES &&
+                     p_input->p_fmt->audio.i_bytes_per_frame &&
+                     p_input->p_fmt->audio.i_frame_length )
+            {
+                p_data->i_length = p_data->i_buffer *
+                                   p_input->p_fmt->audio.i_frame_length /
+                                   p_input->p_fmt->audio.i_bytes_per_frame;
+            }
+            /* Try a previous duration */
+            else if( p_stream->state.chain_pes.p_first )
+                p_data->i_length = p_stream->state.chain_pes.p_first->i_length;
+            /* Or next */
+            else if( p_next->i_length > 0 )
+                p_data->i_length = p_next->i_length;
+            /* or worse */
+            else
+                p_data->i_length = 1000;
+        }
+    }
+    else if( p_input->p_fmt->i_codec != VLC_CODEC_SUBT )
+    {
+        p_data->i_length = 1000;
+    }
+}
+
+static block_t *Encap_J2K( block_t *p_data, const es_format_t *p_fmt )
+{
+    size_t i_offset = 0;
+    uint32_t i_box = 0;
+    while( p_data->i_buffer > 8 && p_data->i_buffer - i_offset > 8 )
+    {
+        const uint32_t i_size = GetDWBE( &p_data->p_buffer[i_offset] );
+        i_box = VLC_FOURCC( p_data->p_buffer[i_offset + 4],
+                            p_data->p_buffer[i_offset + 5],
+                            p_data->p_buffer[i_offset + 6],
+                            p_data->p_buffer[i_offset + 7] );
+        if( p_data->i_buffer - i_offset < i_size || i_size < 8 )
+        {
+            i_box = 0;
+            break;
+        }
+        else if( i_box == J2K_BOX_JP2C )
+        {
+            break;
+        }
+
+        i_offset += i_size;
+    }
+
+    if( i_box != J2K_BOX_JP2C )
+    {
+        block_Release( p_data );
+        return NULL;
+    }
+
+    if( i_offset < 38 )
+    {
+        block_t *p_realloc = block_Realloc( p_data, 38 - i_offset, p_data->i_buffer );
+        if( unlikely(!p_realloc) )
+        {
+            block_Release( p_data );
+            return NULL;
+        }
+        p_data = p_realloc;
+    }
+    else
+    {
+        p_data->p_buffer += (i_offset - 38);
+        p_data->i_buffer -= (i_offset - 38);
+    }
+
+    const int profile = j2k_get_profile( p_fmt->video.i_visible_width,
+                                         p_fmt->video.i_visible_height,
+                                         p_fmt->video.i_frame_rate,
+                                         p_fmt->video.i_frame_rate_base, true );
+    memcpy(  p_data->p_buffer,     "elsmfrat", 8 );
+    SetWBE( &p_data->p_buffer[8],  p_fmt->video.i_frame_rate_base );
+    SetWBE( &p_data->p_buffer[10], p_fmt->video.i_frame_rate );
+    memcpy( &p_data->p_buffer[12], "brat", 4 );
+    unsigned min = j2k_profiles_rates[profile].min * 1000000;
+    unsigned max = j2k_profiles_rates[profile].max * 1000000;
+    SetDWBE(&p_data->p_buffer[16], max );
+    SetDWBE(&p_data->p_buffer[20], min );
+    memcpy( &p_data->p_buffer[24], "tcod", 4 );
+    const unsigned s = p_data->i_pts / CLOCK_FREQ;
+    const unsigned m = s / 60;
+    const unsigned h = m / 60;
+    const uint64_t l = p_fmt->video.i_frame_rate_base * CLOCK_FREQ /
+                       p_fmt->video.i_frame_rate;
+    const unsigned f = (p_data->i_pts % CLOCK_FREQ) / l;
+    p_data->p_buffer[28] = h;
+    p_data->p_buffer[29] = m % 60;
+    p_data->p_buffer[30] = s % 60;
+    p_data->p_buffer[31] = f;
+    memcpy( &p_data->p_buffer[32], "bcol", 4 );
+    p_data->p_buffer[36] = j2k_get_color_spec( p_fmt->video.primaries,
+                                               p_fmt->video.transfer,
+                                               p_fmt->video.space );
+    p_data->p_buffer[37] = 0;
+
+    return p_data;
+}
+
 /* returns true if needs more data */
 static bool MuxStreams(sout_mux_t *p_mux )
 {
     sout_mux_sys_t  *p_sys = p_mux->p_sys;
-    ts_stream_t *p_pcr_stream = (ts_stream_t*)p_sys->p_pcr_input->p_sys;
+    sout_input_sys_t *p_pcr_stream = (sout_input_sys_t*)p_sys->p_pcr_input->p_sys;
 
     sout_buffer_chain_t chain_ts;
-    mtime_t i_shaping_delay = p_pcr_stream->b_key_frame
-        ? p_pcr_stream->i_pes_length
+    mtime_t i_shaping_delay = p_pcr_stream->state.b_key_frame
+        ? p_pcr_stream->state.i_pes_length
         : p_sys->i_shaping_delay;
 
     bool b_ok = true;
@@ -1246,16 +1218,17 @@ static bool MuxStreams(sout_mux_t *p_mux )
 
         if( i == -1 )
             p_input = p_sys->p_pcr_input;
-        else if( p_mux->pp_inputs[i]->p_sys == p_pcr_stream )
-            continue;
-        else
+        else if( p_mux->pp_inputs[i] != p_sys->p_pcr_input )
             p_input = p_mux->pp_inputs[i];
-        ts_stream_t *p_stream = (ts_stream_t*)p_input->p_sys;
+        else
+            continue;
+
+        sout_input_sys_t *p_stream = (sout_input_sys_t*)p_input->p_sys;
 
         if( ( p_stream != p_pcr_stream ||
-              p_stream->i_pes_length >= i_shaping_delay ) &&
-            p_stream->i_pes_dts + p_stream->i_pes_length >=
-            p_pcr_stream->i_pes_dts + p_pcr_stream->i_pes_length )
+              p_stream->state.i_pes_length >= i_shaping_delay ) &&
+            p_stream->state.i_pes_dts + p_stream->state.i_pes_length >=
+            p_pcr_stream->state.i_pes_dts + p_pcr_stream->state.i_pes_length )
             continue;
 
         /* Need more data */
@@ -1277,18 +1250,18 @@ static bool MuxStreams(sout_mux_t *p_mux )
                 /* Don't mux the SPU yet if it is too early */
                 block_t *p_spu = block_FifoShow( p_input->p_fifo );
 
-                int64_t i_spu_delay = p_spu->i_dts - p_sys->first_dts - p_pcr_stream->i_pes_dts;
+                int64_t i_spu_delay = p_spu->i_dts - p_pcr_stream->state.i_pes_dts;
                 if( ( i_spu_delay > i_shaping_delay ) &&
-                    ( i_spu_delay < INT64_C(100000000) ) )
+                    ( i_spu_delay < 100 * CLOCK_FREQ ) )
                     continue;
 
-                if ( ( i_spu_delay >= INT64_C(100000000) ) ||
-                     ( i_spu_delay < INT64_C(10000) ) )
+                if ( ( i_spu_delay >= 100 * CLOCK_FREQ ) ||
+                     ( i_spu_delay < CLOCK_FREQ / 100 ) )
                 {
-                    BufferChainClean( &p_stream->chain_pes );
-                    p_stream->i_pes_dts = 0;
-                    p_stream->i_pes_used = 0;
-                    p_stream->i_pes_length = 0;
+                    BufferChainClean( &p_stream->state.chain_pes );
+                    p_stream->state.i_pes_dts = 0;
+                    p_stream->state.i_pes_used = 0;
+                    p_stream->state.i_pes_length = 0;
                     continue;
                 }
             }
@@ -1306,52 +1279,58 @@ static bool MuxStreams(sout_mux_t *p_mux )
 
             if( p_input->p_fmt->i_codec == VLC_CODEC_MP4A )
                 p_data = Add_ADTS( p_data, p_input->p_fmt );
+            else if( p_input->p_fmt->i_codec == VLC_CODEC_OPUS )
+                p_data = Pack_Opus( p_data );
         }
         else
             p_data = FixPES( p_mux, p_input->p_fifo );
 
-        if( block_FifoCount( p_input->p_fifo ) > 0 &&
-            p_input->p_fmt->i_cat != SPU_ES )
-        {
-            block_t *p_next = block_FifoShow( p_input->p_fifo );
-            p_data->i_length = p_next->i_dts - p_data->i_dts;
-        }
-        else if( p_input->p_fmt->i_codec !=
-                   VLC_CODEC_SUBT )
-            p_data->i_length = 1000;
+        SetBlockDuration( p_input, p_data );
 
-        if (p_sys->first_dts == 0)
+        if ( p_sys->first_dts == 0 )
+        {
+            /* Pick the really first DTS */
             p_sys->first_dts = p_data->i_dts;
+            for (int j = 0; j < p_mux->i_nb_inputs; j++ )
+            {
+                if( p_mux->pp_inputs[j] != p_input &&
+                    block_FifoCount( p_mux->pp_inputs[j]->p_fifo) > 0 )
+                {
+                    block_t *p_block = block_FifoShow( p_mux->pp_inputs[j]->p_fifo );
+                    if( p_block->i_dts > VLC_TS_INVALID &&
+                        p_block->i_dts < p_sys->first_dts )
+                        p_sys->first_dts = p_block->i_dts;
+                }
+            }
+        }
 
-        p_data->i_dts -= p_sys->first_dts;
-        p_data->i_pts -= p_sys->first_dts;
-
-        if( ( p_pcr_stream->i_pes_dts > 0 &&
-              p_data->i_dts - 10000000 > p_pcr_stream->i_pes_dts +
-              p_pcr_stream->i_pes_length ) ||
-            p_data->i_dts < p_stream->i_pes_dts ||
-            ( p_stream->i_pes_dts > 0 &&
+        if( ( p_pcr_stream->state.i_pes_dts > 0 &&
+              p_data->i_dts - 10 * CLOCK_FREQ > p_pcr_stream->state.i_pes_dts +
+              p_pcr_stream->state.i_pes_length ) ||
+            p_data->i_dts + i_shaping_delay < p_stream->state.i_pes_dts ||
+            ( p_stream->state.i_pes_dts > 0 &&
               p_input->p_fmt->i_cat != SPU_ES &&
-              p_data->i_dts - 10000000 > p_stream->i_pes_dts +
-              p_stream->i_pes_length ) )
+              p_data->i_dts - 10 * CLOCK_FREQ > p_stream->state.i_pes_dts +
+              p_stream->state.i_pes_length ) )
         {
-            msg_Warn( p_mux, "packet with too strange dts "
+            msg_Warn( p_mux, "packet with too strange dts on pid %d (%4.4s)"
                       "(dts=%"PRId64",old=%"PRId64",pcr=%"PRId64")",
-                      p_data->i_dts, p_stream->i_pes_dts,
-                      p_pcr_stream->i_pes_dts );
+                      p_stream->ts.i_pid, (char *) &p_input->fmt.i_codec,
+                      p_data->i_dts, p_stream->state.i_pes_dts,
+                      p_pcr_stream->state.i_pes_dts );
             block_Release( p_data );
 
-            BufferChainClean( &p_stream->chain_pes );
-            p_stream->i_pes_dts = 0;
-            p_stream->i_pes_used = 0;
-            p_stream->i_pes_length = 0;
+            BufferChainClean( &p_stream->state.chain_pes );
+            p_stream->state.i_pes_dts = 0;
+            p_stream->state.i_pes_used = 0;
+            p_stream->state.i_pes_length = 0;
 
             if( p_input->p_fmt->i_cat != SPU_ES )
             {
-                BufferChainClean( &p_pcr_stream->chain_pes );
-                p_pcr_stream->i_pes_dts = 0;
-                p_pcr_stream->i_pes_used = 0;
-                p_pcr_stream->i_pes_length = 0;
+                BufferChainClean( &p_pcr_stream->state.chain_pes );
+                p_pcr_stream->state.i_pes_dts = 0;
+                p_pcr_stream->state.i_pes_used = 0;
+                p_pcr_stream->state.i_pes_length = 0;
             }
 
             continue;
@@ -1386,8 +1365,9 @@ static bool MuxStreams(sout_mux_t *p_mux )
                 p_spu->p_buffer[1] = 1;
                 p_spu->p_buffer[2] = ' ';
 
-                EStoPES( &p_spu, p_spu, p_input->p_fmt,
-                             p_stream->i_stream_id, 1, 0, 0, 0 );
+                EStoPES( &p_spu, p_input->p_fmt,
+                         p_stream->pes.i_stream_id, 1, 0, 0, 0,
+                         p_sys->first_dts - p_sys->i_dts_delay );
                 p_data->p_next = p_spu;
             }
             break;
@@ -1403,6 +1383,17 @@ static bool MuxStreams(sout_mux_t *p_mux )
             b_data_alignment = 1;
             break;
         }
+        else if( p_input->fmt.i_cat == VIDEO_ES )
+        {
+            if( p_input->fmt.i_codec == VLC_CODEC_JPEG2000 )
+            {
+                if( p_data->i_flags & BLOCK_FLAG_INTERLACED_MASK )
+                    msg_Warn( p_mux, "Unsupported interlaced J2K content. Expect broken result");
+                p_data = Encap_J2K( p_data, &p_input->fmt );
+                if( !p_data )
+                    return false;
+            }
+        }
         else if( p_data->i_length < 0 || p_data->i_length > 2000000 )
         {
             /* FIXME choose a better value, but anyway we
@@ -1410,65 +1401,69 @@ static bool MuxStreams(sout_mux_t *p_mux )
             p_data->i_length = 1000;
         }
 
-        p_stream->i_pes_length += p_data->i_length;
-        if( p_stream->i_pes_dts == 0 )
+        p_stream->state.i_pes_length += p_data->i_length;
+        if( p_stream->state.i_pes_dts == 0 )
         {
-            p_stream->i_pes_dts = p_data->i_dts;
+            p_stream->state.i_pes_dts = p_data->i_dts;
         }
 
         /* Convert to pes */
-        if( p_stream->i_stream_id == 0xa0 && p_data->i_pts <= 0 )
+        if( p_stream->pes.i_stream_id == 0xa0 && p_data->i_pts <= 0 )
         {
             /* XXX yes I know, it's awful, but it's needed,
              * so don't remove it ... */
             p_data->i_pts = p_data->i_dts;
         }
 
-        if( p_input->p_fmt->i_codec == VLC_CODEC_DIRAC )
+        if( (p_input->p_fmt->i_codec == VLC_CODEC_DIRAC) ||
+            (p_input->p_fmt->i_codec == VLC_CODEC_H264) ||
+            (p_input->p_fmt->i_codec == VLC_CODEC_HEVC) ||
+            (p_input->p_fmt->i_codec == VLC_CODEC_MP2V)
+          )
         {
             b_data_alignment = 1;
-            /* dirac pes packets should be unbounded in
+            /* dirac and mpeg video pes packets should be unbounded in
              * length, specify a suitibly large max size */
             i_max_pes_size = INT_MAX;
         }
 
-         EStoPES ( &p_data, p_data, p_input->p_fmt, p_stream->i_stream_id,
+        EStoPES ( &p_data, p_input->p_fmt, p_stream->pes.i_stream_id,
                        1, b_data_alignment, i_header_size,
-                       i_max_pes_size );
+                       i_max_pes_size, p_sys->first_dts - p_sys->i_dts_delay );
 
-        BufferChainAppend( &p_stream->chain_pes, p_data );
+        BufferChainAppend( &p_stream->state.chain_pes, p_data );
 
         if( p_sys->b_use_key_frames && p_stream == p_pcr_stream
             && (p_data->i_flags & BLOCK_FLAG_TYPE_I)
             && !(p_data->i_flags & BLOCK_FLAG_NO_KEYFRAME)
-            && (p_stream->i_pes_length > 400000) )
+            && (p_stream->state.i_pes_length > 400000) )
         {
-            i_shaping_delay = p_stream->i_pes_length;
-            p_stream->b_key_frame = 1;
+            i_shaping_delay = p_stream->state.i_pes_length;
+            p_stream->state.b_key_frame = 1;
         }
     }
 
     /* save */
-    const mtime_t i_pcr_length = p_pcr_stream->i_pes_length;
-    p_pcr_stream->b_key_frame = 0;
+    const mtime_t i_pcr_length = p_pcr_stream->state.i_pes_length;
+    p_pcr_stream->state.b_key_frame = 0;
 
     /* msg_Dbg( p_mux, "starting muxing %lldms", i_pcr_length / 1000 ); */
     /* 2: calculate non accurate total size of muxed ts */
     int i_packet_count = 0;
     for (int i = 0; i < p_mux->i_nb_inputs; i++ )
     {
-        ts_stream_t *p_stream = (ts_stream_t*)p_mux->pp_inputs[i]->p_sys;
+        sout_input_sys_t *p_stream = (sout_input_sys_t*)p_mux->pp_inputs[i]->p_sys;
 
         /* False for pcr stream but it will be enough to do PCR algo */
-        for (block_t *p_pes = p_stream->chain_pes.p_first; p_pes != NULL;
+        for (block_t *p_pes = p_stream->state.chain_pes.p_first; p_pes != NULL;
              p_pes = p_pes->p_next )
         {
             int i_size = p_pes->i_buffer;
             if( p_pes->i_dts + p_pes->i_length >
-                p_pcr_stream->i_pes_dts + p_pcr_stream->i_pes_length )
+                p_pcr_stream->state.i_pes_dts + p_pcr_stream->state.i_pes_length )
             {
-                mtime_t i_frag = p_pcr_stream->i_pes_dts +
-                    p_pcr_stream->i_pes_length - p_pes->i_dts;
+                mtime_t i_frag = p_pcr_stream->state.i_pes_dts +
+                    p_pcr_stream->state.i_pes_length - p_pes->i_dts;
                 if( i_frag < 0 )
                 {
                     /* Next stream */
@@ -1492,34 +1487,34 @@ static bool MuxStreams(sout_mux_t *p_mux )
     i_packet_count += chain_ts.i_depth;
     /* msg_Dbg( p_mux, "estimated pck=%d", i_packet_count ); */
 
-    const mtime_t i_pcr_dts = p_pcr_stream->i_pes_dts;
+    const mtime_t i_pcr_dts = p_pcr_stream->state.i_pes_dts;
     for (;;)
     {
         int          i_stream = -1;
         mtime_t      i_dts = 0;
-        ts_stream_t  *p_stream;
+        sout_input_sys_t *p_stream;
 
         /* Select stream (lowest dts) */
         for (int i = 0; i < p_mux->i_nb_inputs; i++ )
         {
-            p_stream = (ts_stream_t*)p_mux->pp_inputs[i]->p_sys;
+            p_stream = (sout_input_sys_t*)p_mux->pp_inputs[i]->p_sys;
 
-            if( p_stream->i_pes_dts == 0 )
+            if( p_stream->state.i_pes_dts == 0 )
             {
                 continue;
             }
 
-            if( i_stream == -1 || p_stream->i_pes_dts < i_dts )
+            if( i_stream == -1 || p_stream->state.i_pes_dts < i_dts )
             {
                 i_stream = i;
-                i_dts = p_stream->i_pes_dts;
+                i_dts = p_stream->state.i_pes_dts;
             }
         }
         if( i_stream == -1 || i_dts > i_pcr_dts + i_pcr_length )
         {
             break;
         }
-        p_stream = (ts_stream_t*)p_mux->pp_inputs[i_stream]->p_sys;
+        p_stream = (sout_input_sys_t*)p_mux->pp_inputs[i_stream]->p_sys;
         sout_input_t *p_input = p_mux->pp_inputs[i_stream];
 
         /* do we need to issue pcr */
@@ -1546,7 +1541,9 @@ static bool MuxStreams(sout_mux_t *p_mux )
         /* Write PAT/PMT before every keyframe if use-key-frames is enabled,
          * this helps to do segmenting with livehttp-output so it can cut segment
          * and start new one with pat,pmt,keyframe*/
-        if( ( p_sys->b_use_key_frames ) && ( p_ts->i_flags & BLOCK_FLAG_TYPE_I ) )
+        if( ( p_sys->b_use_key_frames ) &&
+            ( p_input->p_fmt->i_cat == VIDEO_ES ) &&
+            ( p_ts->i_flags & BLOCK_FLAG_TYPE_I ) )
         {
             if( likely( !pat_was_previous ) )
             {
@@ -1579,7 +1576,7 @@ static int Mux( sout_mux_t *p_mux )
 {
     sout_mux_sys_t  *p_sys = p_mux->p_sys;
 
-    if( p_sys->i_pcr_pid == 0x1fff )
+    if( p_sys->p_pcr_input == NULL )
     {
         for (int i = 0; i < p_mux->i_nb_inputs; i++ )
         {
@@ -1657,11 +1654,11 @@ static block_t *FixPES( sout_mux_t *p_mux, block_fifo_t *p_fifo )
     }
 }
 
-static block_t *Add_ADTS( block_t *p_data, es_format_t *p_fmt )
+static block_t *Add_ADTS( block_t *p_data, const es_format_t *p_fmt )
 {
 #define ADTS_HEADER_SIZE 7 /* CRC needs 2 more bytes */
 
-    uint8_t *p_extra = p_fmt->p_extra;
+    const uint8_t *p_extra = p_fmt->p_extra;
 
     if( !p_data || p_fmt->i_extra < 2 || !p_extra )
         return p_data; /* no data to construct the headers */
@@ -1675,19 +1672,8 @@ static block_t *Add_ADTS( block_t *p_data, es_format_t *p_fmt )
 
     int i_channels = (p_extra[i_index == 0x0f ? 4 : 1] >> 3) & 0x0f;
 
-    /* keep a copy in case block_Realloc() fails */
-    block_t *p_bak_block = block_Duplicate( p_data );
-    if( !p_bak_block ) /* OOM, block_Realloc() is likely to lose our block */
-        return p_data; /* the frame isn't correct but that's the best we have */
-
     block_t *p_new_block = block_Realloc( p_data, ADTS_HEADER_SIZE,
                                             p_data->i_buffer );
-    if( !p_new_block )
-        return p_bak_block; /* OOM, send the (incorrect) original frame */
-
-    block_Release( p_bak_block ); /* we don't need the copy anymore */
-
-
     uint8_t *p_buffer = p_new_block->p_buffer;
 
     /* fixed header */
@@ -1802,7 +1788,7 @@ static void TSDate( sout_mux_t *p_mux, sout_buffer_chain_t *p_chain_ts,
         if( p_ts->i_flags & BLOCK_FLAG_CLOCK )
         {
             /* msg_Dbg( p_mux, "pcr=%lld ms", p_ts->i_dts / 1000 ); */
-            TSSetPCR( p_ts, p_ts->i_dts - p_sys->i_dts_delay );
+            TSSetPCR( p_ts, p_ts->i_dts - p_sys->first_dts );
         }
         if( p_ts->i_flags & BLOCK_FLAG_SCRAMBLED )
         {
@@ -1818,22 +1804,22 @@ static void TSDate( sout_mux_t *p_mux, sout_buffer_chain_t *p_chain_ts,
     }
 }
 
-static block_t *TSNew( sout_mux_t *p_mux, ts_stream_t *p_stream,
+static block_t *TSNew( sout_mux_t *p_mux, sout_input_sys_t *p_stream,
                        bool b_pcr )
 {
     VLC_UNUSED(p_mux);
-    block_t *p_pes = p_stream->chain_pes.p_first;
+    block_t *p_pes = p_stream->state.chain_pes.p_first;
 
     bool b_new_pes = false;
     bool b_adaptation_field = false;
 
     int i_payload_max = 184 - ( b_pcr ? 8 : 0 );
 
-    if( p_stream->i_pes_used <= 0 )
+    if( p_stream->state.i_pes_used <= 0 )
     {
         b_new_pes = true;
     }
-    int i_payload = __MIN( (int)p_pes->i_buffer - p_stream->i_pes_used,
+    int i_payload = __MIN( (int)p_pes->i_buffer - p_stream->state.i_pes_used,
                        i_payload_max );
 
     if( b_pcr || i_payload < i_payload_max )
@@ -1852,13 +1838,13 @@ static block_t *TSNew( sout_mux_t *p_mux, ts_stream_t *p_stream,
 
     p_ts->p_buffer[0] = 0x47;
     p_ts->p_buffer[1] = ( b_new_pes ? 0x40 : 0x00 ) |
-        ( ( p_stream->i_pid >> 8 )&0x1f );
-    p_ts->p_buffer[2] = p_stream->i_pid & 0xff;
+        ( ( p_stream->ts.i_pid >> 8 )&0x1f );
+    p_ts->p_buffer[2] = p_stream->ts.i_pid & 0xff;
     p_ts->p_buffer[3] = ( b_adaptation_field ? 0x30 : 0x10 ) |
-        p_stream->i_continuity_counter;
+        p_stream->ts.i_continuity_counter;
 
-    p_stream->i_continuity_counter = (p_stream->i_continuity_counter+1)%16;
-    p_stream->b_discontinuity = p_pes->i_flags & BLOCK_FLAG_DISCONTINUITY;
+    p_stream->ts.i_continuity_counter = (p_stream->ts.i_continuity_counter+1)%16;
+    p_stream->ts.b_discontinuity = p_pes->i_flags & BLOCK_FLAG_DISCONTINUITY;
 
     if( b_adaptation_field )
     {
@@ -1868,67 +1854,54 @@ static block_t *TSNew( sout_mux_t *p_mux, ts_stream_t *p_stream,
             p_ts->i_flags |= BLOCK_FLAG_CLOCK;
 
             p_ts->p_buffer[4] = 7 + i_stuffing;
-            p_ts->p_buffer[5] = 0x10;   /* flags */
-            if( p_stream->b_discontinuity )
+            p_ts->p_buffer[5] = 1 << 4; /* PCR_flag */
+            if( p_stream->ts.b_discontinuity )
             {
                 p_ts->p_buffer[5] |= 0x80; /* flag TS dicontinuity */
-                p_stream->b_discontinuity = false;
+                p_stream->ts.b_discontinuity = false;
             }
-            p_ts->p_buffer[6] = 0 &0xff;
-            p_ts->p_buffer[7] = 0 &0xff;
-            p_ts->p_buffer[8] = 0 &0xff;
-            p_ts->p_buffer[9] = 0 &0xff;
-            p_ts->p_buffer[10]= ( 0 &0x80 ) | 0x7e;
-            p_ts->p_buffer[11]= 0;
-
-            for (int i = 12; i < 12 + i_stuffing; i++ )
-            {
-                p_ts->p_buffer[i] = 0xff;
-            }
+            memset(&p_ts->p_buffer[12], 0xff, i_stuffing);
         }
         else
         {
-            p_ts->p_buffer[4] = i_stuffing - 1;
-            if( i_stuffing > 1 )
+            p_ts->p_buffer[4] = --i_stuffing;
+            if( i_stuffing-- )
             {
-                p_ts->p_buffer[5] = 0x00;
-                for (int i = 6; i < 6 + i_stuffing - 2; i++ )
-                {
-                    p_ts->p_buffer[i] = 0xff;
-                }
+                p_ts->p_buffer[5] = 0;
+                memset(&p_ts->p_buffer[6], 0xff, i_stuffing);
             }
         }
     }
 
     /* copy payload */
     memcpy( &p_ts->p_buffer[188 - i_payload],
-            &p_pes->p_buffer[p_stream->i_pes_used], i_payload );
+            &p_pes->p_buffer[p_stream->state.i_pes_used], i_payload );
 
-    p_stream->i_pes_used += i_payload;
-    p_stream->i_pes_dts = p_pes->i_dts + p_pes->i_length *
-        p_stream->i_pes_used / p_pes->i_buffer;
-    p_stream->i_pes_length -= p_pes->i_length * i_payload / p_pes->i_buffer;
+    p_stream->state.i_pes_used += i_payload;
+    p_stream->state.i_pes_dts = p_pes->i_dts + p_pes->i_length *
+        p_stream->state.i_pes_used / p_pes->i_buffer;
+    p_stream->state.i_pes_length -= p_pes->i_length * i_payload / p_pes->i_buffer;
 
-    if( p_stream->i_pes_used >= (int)p_pes->i_buffer )
+    if( p_stream->state.i_pes_used >= (int)p_pes->i_buffer )
     {
-        block_Release(BufferChainGet( &p_stream->chain_pes ));
+        block_Release(BufferChainGet( &p_stream->state.chain_pes ));
 
-        p_pes = p_stream->chain_pes.p_first;
-        p_stream->i_pes_length = 0;
+        p_pes = p_stream->state.chain_pes.p_first;
+        p_stream->state.i_pes_length = 0;
         if( p_pes )
         {
-            p_stream->i_pes_dts = p_pes->i_dts;
+            p_stream->state.i_pes_dts = p_pes->i_dts;
             while( p_pes )
             {
-                p_stream->i_pes_length += p_pes->i_length;
+                p_stream->state.i_pes_length += p_pes->i_length;
                 p_pes = p_pes->p_next;
             }
         }
         else
         {
-            p_stream->i_pes_dts = 0;
+            p_stream->state.i_pes_dts = 0;
         }
-        p_stream->i_pes_used = 0;
+        p_stream->state.i_pes_used = 0;
     }
 
     return p_ts;
@@ -1942,508 +1915,48 @@ static void TSSetPCR( block_t *p_ts, mtime_t i_dts )
     p_ts->p_buffer[7]  = ( i_pcr >> 17 )&0xff;
     p_ts->p_buffer[8]  = ( i_pcr >> 9  )&0xff;
     p_ts->p_buffer[9]  = ( i_pcr >> 1  )&0xff;
-    p_ts->p_buffer[10]|= ( i_pcr << 7  )&0x80;
+    p_ts->p_buffer[10] = ( i_pcr << 7  )&0x80;
+    p_ts->p_buffer[10] |= 0x7e;
+    p_ts->p_buffer[11] = 0; /* we don't set PCR extension */
 }
 
-static void PEStoTS( sout_buffer_chain_t *c, block_t *p_pes,
-                     ts_stream_t *p_stream )
-{
-    /* get PES total size */
-    uint8_t *p_data = p_pes->p_buffer;
-    int      i_size = p_pes->i_buffer;
-
-    bool    b_new_pes = true;
-
-    for (;;)
-    {
-        /* write header
-         * 8b   0x47    sync byte
-         * 1b           transport_error_indicator
-         * 1b           payload_unit_start
-         * 1b           transport_priority
-         * 13b          pid
-         * 2b           transport_scrambling_control
-         * 2b           if adaptation_field 0x03 else 0x01
-         * 4b           continuity_counter
-         */
-
-        int i_copy = __MIN( i_size, 184 );
-        bool b_adaptation_field = i_size < 184;
-        block_t *p_ts = block_Alloc( 188 );
-
-        p_ts->p_buffer[0] = 0x47;
-        p_ts->p_buffer[1] = ( b_new_pes ? 0x40 : 0x00 )|
-                            ( ( p_stream->i_pid >> 8 )&0x1f );
-        p_ts->p_buffer[2] = p_stream->i_pid & 0xff;
-        p_ts->p_buffer[3] = ( b_adaptation_field ? 0x30 : 0x10 )|
-                            p_stream->i_continuity_counter;
-
-        b_new_pes = false;
-        p_stream->i_continuity_counter = (p_stream->i_continuity_counter+1)%16;
-
-        if( b_adaptation_field )
-        {
-            int i_stuffing = 184 - i_copy;
-
-            p_ts->p_buffer[4] = i_stuffing - 1;
-            if( i_stuffing > 1 )
-            {
-                p_ts->p_buffer[5] = 0x00;
-                if( p_stream->b_discontinuity )
-                {
-                    p_ts->p_buffer[5] |= 0x80;
-                    p_stream->b_discontinuity = false;
-                }
-                for (int i = 6; i < 6 + i_stuffing - 2; i++ )
-                {
-                    p_ts->p_buffer[i] = 0xff;
-                }
-            }
-        }
-        /* copy payload */
-        memcpy( &p_ts->p_buffer[188 - i_copy], p_data, i_copy );
-        p_data += i_copy;
-        i_size -= i_copy;
-
-        BufferChainAppend( c, p_ts );
-
-        if( i_size <= 0 )
-        {
-            block_t *p_next = p_pes->p_next;
-
-            p_pes->p_next = NULL;
-            block_Release( p_pes );
-            if( p_next == NULL )
-                return;
-
-            b_new_pes = true;
-            p_pes = p_next;
-            i_size = p_pes->i_buffer;
-            p_data = p_pes->p_buffer;
-        }
-    }
-}
-
-static block_t *WritePSISection( dvbpsi_psi_section_t* p_section )
-{
-    block_t   *p_psi, *p_first = NULL;
-
-    while( p_section )
-    {
-        int i_size = (uint32_t)(p_section->p_payload_end - p_section->p_data) +
-                  (p_section->b_syntax_indicator ? 4 : 0);
-
-        p_psi = block_Alloc( i_size + 1 );
-        if( !p_psi )
-            goto error;
-        p_psi->i_pts = 0;
-        p_psi->i_dts = 0;
-        p_psi->i_length = 0;
-        p_psi->i_buffer = i_size + 1;
-
-        p_psi->p_buffer[0] = 0; /* pointer */
-        memcpy( p_psi->p_buffer + 1,
-                p_section->p_data,
-                i_size );
-
-        block_ChainAppend( &p_first, p_psi );
-
-        p_section = p_section->p_next;
-    }
-
-    return( p_first );
-
-error:
-    if( p_first )
-        block_ChainRelease( p_first );
-    return NULL;
-}
-
-static void GetPAT( sout_mux_t *p_mux,
-                    sout_buffer_chain_t *c )
+void GetPAT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
 {
     sout_mux_sys_t       *p_sys = p_mux->p_sys;
-    block_t              *p_pat;
-    dvbpsi_pat_t         pat;
-    dvbpsi_psi_section_t *p_section;
 
-    dvbpsi_InitPAT( &pat, p_sys->i_tsid, p_sys->i_pat_version_number,
-                    1 );      /* b_current_next */
-    /* add all programs */
-    for (unsigned i = 0; i < p_sys->i_num_pmt; i++ )
-        dvbpsi_PATAddProgram( &pat, p_sys->i_pmt_program_number[i],
-                              p_sys->pmt[i].i_pid );
-
-#if (DVBPSI_VERSION_INT >= DVBPSI_VERSION_WANTED(1,0,0))
-    p_section = dvbpsi_pat_sections_generate( p_sys->p_dvbpsi, &pat, 0 );
-#else
-    p_section = dvbpsi_GenPATSections( &pat, 0 /* max program per section */ );
-#endif
-    p_pat = WritePSISection( p_section );
-
-    PEStoTS( c, p_pat, &p_sys->pat );
-
-    dvbpsi_DeletePSISections( p_section );
-    dvbpsi_EmptyPAT( &pat );
-}
-
-static uint32_t GetDescriptorLength24b( int i_length )
-{
-    uint32_t i_l1, i_l2, i_l3;
-
-    i_l1 = i_length&0x7f;
-    i_l2 = ( i_length >> 7 )&0x7f;
-    i_l3 = ( i_length >> 14 )&0x7f;
-
-    return( 0x808000 | ( i_l3 << 16 ) | ( i_l2 << 8 ) | i_l1 );
-}
-
-static void GetPMTmpeg4(sout_mux_t *p_mux)
-{
-    sout_mux_sys_t *p_sys = p_mux->p_sys;
-    uint8_t iod[4096];
-    bits_buffer_t bits, bits_fix_IOD;
-
-    /* Make valgrind happy : it works at byte level not bit one so
-     * bit_write confuse it (but DON'T CHANGE the way that bit_write is
-     * working (needed when fixing some bits) */
-    memset( iod, 0, 4096 );
-
-    bits_initwrite( &bits, 4096, iod );
-    /* IOD_label_scope */
-    bits_write( &bits, 8,   0x11 );
-    /* IOD_label */
-    bits_write( &bits, 8,   0x01 );
-    /* InitialObjectDescriptor */
-    bits_align( &bits );
-    bits_write( &bits, 8,   0x02 );     /* tag */
-    bits_fix_IOD = bits;    /* save states to fix length later */
-    bits_write( &bits, 24,
-        GetDescriptorLength24b( 0 ) );  /* variable length (fixed later) */
-    bits_write( &bits, 10,  0x01 );     /* ObjectDescriptorID */
-    bits_write( &bits, 1,   0x00 );     /* URL Flag */
-    bits_write( &bits, 1,   0x00 );     /* includeInlineProfileLevelFlag */
-    bits_write( &bits, 4,   0x0f );     /* reserved */
-    bits_write( &bits, 8,   0xff );     /* ODProfile (no ODcapability ) */
-    bits_write( &bits, 8,   0xff );     /* sceneProfile */
-    bits_write( &bits, 8,   0xfe );     /* audioProfile (unspecified) */
-    bits_write( &bits, 8,   0xfe );     /* visualProfile( // ) */
-    bits_write( &bits, 8,   0xff );     /* graphicProfile (no ) */
-    for (int i_stream = 0; i_stream < p_mux->i_nb_inputs; i_stream++ )
-    {
-        ts_stream_t *p_stream = (ts_stream_t*)p_mux->pp_inputs[i_stream]->p_sys;
-
-        if( p_stream->i_stream_id != 0xfa && p_stream->i_stream_id != 0xfb &&
-            p_stream->i_stream_id != 0xfe )
-            continue;
-
-        bits_buffer_t bits_fix_ESDescr, bits_fix_Decoder;
-        /* ES descriptor */
-        bits_align( &bits );
-        bits_write( &bits, 8,   0x03 );     /* ES_DescrTag */
-        bits_fix_ESDescr = bits;
-        bits_write( &bits, 24,
-                    GetDescriptorLength24b( 0 ) ); /* variable size */
-        bits_write( &bits, 16,  p_stream->i_es_id );
-        bits_write( &bits, 1,   0x00 );     /* streamDependency */
-        bits_write( &bits, 1,   0x00 );     /* URL Flag */
-        bits_write( &bits, 1,   0x00 );     /* OCRStreamFlag */
-        bits_write( &bits, 5,   0x1f );     /* streamPriority */
-
-        /* DecoderConfigDesciptor */
-        bits_align( &bits );
-        bits_write( &bits, 8,   0x04 ); /* DecoderConfigDescrTag */
-        bits_fix_Decoder = bits;
-        bits_write( &bits, 24,  GetDescriptorLength24b( 0 ) );
-        if( p_stream->i_stream_type == 0x10 )
-        {
-            bits_write( &bits, 8, 0x20 );   /* Visual 14496-2 */
-            bits_write( &bits, 6, 0x04 );   /* VisualStream */
-        }
-        else if( p_stream->i_stream_type == 0x1b )
-        {
-            bits_write( &bits, 8, 0x21 );   /* Visual 14496-2 */
-            bits_write( &bits, 6, 0x04 );   /* VisualStream */
-        }
-        else if( p_stream->i_stream_type == 0x11 ||
-                 p_stream->i_stream_type == 0x0f )
-        {
-            bits_write( &bits, 8, 0x40 );   /* Audio 14496-3 */
-            bits_write( &bits, 6, 0x05 );   /* AudioStream */
-        }
-        else if( p_stream->i_stream_type == 0x12 &&
-                 p_stream->i_codec == VLC_CODEC_SUBT )
-        {
-            bits_write( &bits, 8, 0x0B );   /* Text Stream */
-            bits_write( &bits, 6, 0x04 );   /* VisualStream */
-        }
-        else
-        {
-            bits_write( &bits, 8, 0x00 );
-            bits_write( &bits, 6, 0x00 );
-
-            msg_Err( p_mux, "Unsupported stream_type => broken IOD" );
-        }
-        bits_write( &bits, 1,   0x00 );         /* UpStream */
-        bits_write( &bits, 1,   0x01 );         /* reserved */
-        bits_write( &bits, 24,  1024 * 1024 );  /* bufferSizeDB */
-        bits_write( &bits, 32,  0x7fffffff );   /* maxBitrate */
-        bits_write( &bits, 32,  0 );            /* avgBitrate */
-
-        if( p_stream->i_extra > 0 )
-        {
-            /* DecoderSpecificInfo */
-            bits_align( &bits );
-            bits_write( &bits, 8,   0x05 ); /* tag */
-            bits_write( &bits, 24, GetDescriptorLength24b(
-                        p_stream->i_extra ) );
-            for (int i = 0; i < p_stream->i_extra; i++ )
-            {
-                bits_write( &bits, 8,
-                    ((uint8_t*)p_stream->p_extra)[i] );
-            }
-        }
-        /* fix Decoder length */
-        bits_write( &bits_fix_Decoder, 24,
-                    GetDescriptorLength24b( bits.i_data -
-                    bits_fix_Decoder.i_data - 3 ) );
-
-        /* SLConfigDescriptor : predefined (0x01) */
-        bits_align( &bits );
-        bits_write( &bits, 8,   0x06 ); /* tag */
-        bits_write( &bits, 24,  GetDescriptorLength24b( 8 ) );
-        bits_write( &bits, 8,   0x01 );/* predefined */
-        bits_write( &bits, 1,   0 );   /* durationFlag */
-        bits_write( &bits, 32,  0 );   /* OCRResolution */
-        bits_write( &bits, 8,   0 );   /* OCRLength */
-        bits_write( &bits, 8,   0 );   /* InstantBitrateLength */
-        bits_align( &bits );
-
-        /* fix ESDescr length */
-        bits_write( &bits_fix_ESDescr, 24,
-                    GetDescriptorLength24b( bits.i_data -
-                    bits_fix_ESDescr.i_data - 3 ) );
-    }
-    bits_align( &bits );
-    /* fix IOD length */
-    bits_write( &bits_fix_IOD, 24,
-                GetDescriptorLength24b(bits.i_data - bits_fix_IOD.i_data - 3 ));
-
-    dvbpsi_PMTAddDescriptor(&p_sys->dvbpmt[0], 0x1d, bits.i_data, bits.p_data);
+    BuildPAT( p_sys->p_dvbpsi,
+              c, (PEStoTSCallback)BufferChainAppend,
+              p_sys->i_tsid, p_sys->i_pat_version_number,
+              &p_sys->pat,
+              p_sys->i_num_pmt, p_sys->pmt, p_sys->i_pmt_program_number );
 }
 
 static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
 {
     sout_mux_sys_t *p_sys = p_mux->p_sys;
-
-    if( p_sys->dvbpmt == NULL )
-    {
-        p_sys->dvbpmt = malloc( p_sys->i_num_pmt * sizeof(dvbpsi_pmt_t) );
-        if( p_sys->dvbpmt == NULL )
-            return;
-    }
-
-    dvbpsi_sdt_t sdt;
-    if( p_sys->b_sdt )
-        dvbpsi_InitSDT( &sdt, p_sys->i_tsid, 1, 1, p_sys->i_netid );
-
-    for (unsigned i = 0; i < p_sys->i_num_pmt; i++ )
-    {
-        dvbpsi_InitPMT( &p_sys->dvbpmt[i],
-                        p_sys->i_pmt_program_number[i],   /* program number */
-                        p_sys->i_pmt_version_number,
-                        1,      /* b_current_next */
-                        p_sys->i_pcr_pid );
-
-        if( !p_sys->b_sdt )
-            continue;
-
-        dvbpsi_sdt_service_t *p_service = dvbpsi_SDTAddService( &sdt,
-            p_sys->i_pmt_program_number[i],  /* service id */
-            0,         /* eit schedule */
-            0,         /* eit present */
-            4,         /* running status ("4=RUNNING") */
-            0 );       /* free ca */
-
-        const char *psz_sdtprov = p_sys->sdt_descriptors[i].psz_provider;
-        const char *psz_sdtserv = p_sys->sdt_descriptors[i].psz_service_name;
-
-        if( !psz_sdtprov || !psz_sdtserv )
-            continue;
-        size_t provlen = VLC_CLIP(strlen(psz_sdtprov), 0, 255);
-        size_t servlen = VLC_CLIP(strlen(psz_sdtserv), 0, 255);
-
-        uint8_t psz_sdt_desc[3 + provlen + servlen];
-
-        psz_sdt_desc[0] = 0x01; /* digital television service */
-
-        /* service provider name length */
-        psz_sdt_desc[1] = (char)provlen;
-        memcpy( &psz_sdt_desc[2], psz_sdtprov, provlen );
-
-        /* service name length */
-        psz_sdt_desc[ 2 + provlen ] = (char)servlen;
-        memcpy( &psz_sdt_desc[3+provlen], psz_sdtserv, servlen );
-
-#if (DVBPSI_VERSION_INT >= DVBPSI_VERSION_WANTED(1,0,0))
-        dvbpsi_sdt_service_descriptor_add( p_service, 0x48,
-                                           (3 + provlen + servlen),
-                                           psz_sdt_desc );
-#else
-        dvbpsi_SDTServiceAddDescriptor( p_service, 0x48,
-                3 + provlen + servlen, psz_sdt_desc );
-#endif
-    }
-
-    if( p_sys->i_mpeg4_streams > 0 )
-        GetPMTmpeg4(p_mux);
+    pes_mapped_stream_t mappeds[p_mux->i_nb_inputs];
 
     for (int i_stream = 0; i_stream < p_mux->i_nb_inputs; i_stream++ )
     {
-        ts_stream_t *p_stream = (ts_stream_t*)p_mux->pp_inputs[i_stream]->p_sys;
+        sout_input_t *p_input = p_mux->pp_inputs[i_stream];
+        sout_input_sys_t *p_stream = (sout_input_sys_t*)p_input->p_sys;
 
-        int i_pidinput = p_mux->pp_inputs[i_stream]->p_fmt->i_id;
+        int i_pidinput = p_input->p_fmt->i_id;
         pmt_map_t *p_usepid = bsearch( &i_pidinput, p_sys->pmtmap,
-                    p_sys->i_pmtslots, sizeof(pmt_map_t), intcompare );
+                                       p_sys->i_pmtslots, sizeof(pmt_map_t), intcompare );
 
         /* If there's an error somewhere, dump it to the first pmt */
-        unsigned prog = p_usepid ? p_usepid->i_prog : 0;
-
-        dvbpsi_pmt_es_t *p_es = dvbpsi_PMTAddES( &p_sys->dvbpmt[prog],
-                    p_stream->i_stream_type, p_stream->i_pid );
-
-        if( p_stream->i_stream_id == 0xfa || p_stream->i_stream_id == 0xfb )
-        {
-            uint8_t     es_id[2];
-
-            /* SL descriptor */
-            es_id[0] = (p_stream->i_es_id >> 8)&0xff;
-            es_id[1] = (p_stream->i_es_id)&0xff;
-            dvbpsi_PMTESAddDescriptor( p_es, 0x1f, 2, es_id );
-        }
-        else if( p_stream->i_stream_type == 0xa0 )
-        {
-            uint8_t data[512];
-            int i_extra = __MIN( p_stream->i_extra, 502 );
-
-            /* private DIV3 descripor */
-            memcpy( &data[0], &p_stream->i_bih_codec, 4 );
-            data[4] = ( p_stream->i_bih_width >> 8 )&0xff;
-            data[5] = ( p_stream->i_bih_width      )&0xff;
-            data[6] = ( p_stream->i_bih_height>> 8 )&0xff;
-            data[7] = ( p_stream->i_bih_height     )&0xff;
-            data[8] = ( i_extra >> 8 )&0xff;
-            data[9] = ( i_extra      )&0xff;
-            if( i_extra > 0 )
-            {
-                memcpy( &data[10], p_stream->p_extra, i_extra );
-            }
-
-            /* 0xa0 is private */
-            dvbpsi_PMTESAddDescriptor( p_es, 0xa0, i_extra + 10, data );
-        }
-        else if( p_stream->i_stream_type == 0x81 )
-        {
-            uint8_t format[4] = { 'A', 'C', '-', '3'};
-
-            /* "registration" descriptor : "AC-3" */
-            dvbpsi_PMTESAddDescriptor( p_es, 0x05, 4, format );
-        }
-        else if( p_stream->i_codec == VLC_CODEC_DIRAC )
-        {
-            /* Dirac registration descriptor */
-
-            uint8_t data[4] = { 'd', 'r', 'a', 'c' };
-            dvbpsi_PMTESAddDescriptor( p_es, 0x05, 4, data );
-        }
-        else if( p_stream->i_codec == VLC_CODEC_DTS )
-        {
-            /* DTS registration descriptor (ETSI TS 101 154 Annex F) */
-
-            /* DTS format identifier, frame size 1024 - FIXME */
-            uint8_t data[4] = { 'D', 'T', 'S', '2' };
-            dvbpsi_PMTESAddDescriptor( p_es, 0x05, 4, data );
-        }
-        else if( p_stream->i_codec == VLC_CODEC_EAC3 )
-        {
-            uint8_t data[1] = { 0x00 };
-            dvbpsi_PMTESAddDescriptor( p_es, 0x7a, 1, data );
-        }
-        else if( p_stream->i_codec == VLC_CODEC_TELETEXT )
-        {
-            if( p_stream->i_extra )
-            {
-                dvbpsi_PMTESAddDescriptor( p_es, 0x56,
-                                           p_stream->i_extra,
-                                           p_stream->p_extra );
-            }
-            continue;
-        }
-        else if( p_stream->i_codec == VLC_CODEC_DVBS )
-        {
-            /* DVB subtitles */
-            if( p_stream->i_extra )
-            {
-                /* pass-through from the TS demux */
-                dvbpsi_PMTESAddDescriptor( p_es, 0x59,
-                                           p_stream->i_extra,
-                                           p_stream->p_extra );
-            }
-            else
-            {
-                /* from the dvbsub transcoder */
-                dvbpsi_subtitling_dr_t descr;
-                dvbpsi_subtitle_t sub;
-                dvbpsi_descriptor_t *p_descr;
-
-                memcpy( sub.i_iso6392_language_code, p_stream->lang, 3 );
-                sub.i_subtitling_type = 0x10; /* no aspect-ratio criticality */
-                sub.i_composition_page_id = p_stream->i_es_id & 0xFF;
-                sub.i_ancillary_page_id = p_stream->i_es_id >> 16;
-
-                descr.i_subtitles_number = 1;
-                descr.p_subtitle[0] = sub;
-
-                p_descr = dvbpsi_GenSubtitlingDr( &descr, 0 );
-                /* Work around bug in old libdvbpsi */ p_descr->i_length = 8;
-                dvbpsi_PMTESAddDescriptor( p_es, p_descr->i_tag,
-                                           p_descr->i_length, p_descr->p_data );
-            }
-            continue;
-        }
-
-        if( p_stream->i_langs )
-        {
-            dvbpsi_PMTESAddDescriptor( p_es, 0x0a, 4*p_stream->i_langs,
-                p_stream->lang);
-        }
+        mappeds[i_stream].i_mapped_prog = p_usepid ? p_usepid->i_prog : 0;
+        mappeds[i_stream].fmt = p_input->p_fmt;
+        mappeds[i_stream].pes = &p_stream->pes;
+        mappeds[i_stream].ts = &p_stream->ts;
     }
 
-    for (unsigned i = 0; i < p_sys->i_num_pmt; i++ )
-    {
-        dvbpsi_psi_section_t *sect;
-#if (DVBPSI_VERSION_INT >= DVBPSI_VERSION_WANTED(1,0,0))
-        sect = dvbpsi_pmt_sections_generate( p_sys->p_dvbpsi, &p_sys->dvbpmt[i] );
-#else
-        sect = dvbpsi_GenPMTSections( &p_sys->dvbpmt[i] );
-#endif
-        block_t *pmt = WritePSISection( sect );
-        PEStoTS( c, pmt, &p_sys->pmt[i] );
-        dvbpsi_DeletePSISections(sect);
-        dvbpsi_EmptyPMT( &p_sys->dvbpmt[i] );
-    }
-
-    if( p_sys->b_sdt )
-    {
-        dvbpsi_psi_section_t *sect;
-#if (DVBPSI_VERSION_INT >= DVBPSI_VERSION_WANTED(1,0,0))
-        sect = dvbpsi_sdt_sections_generate( p_sys->p_dvbpsi, &sdt );
-#else
-        sect = dvbpsi_GenSDTSections( &sdt );
-#endif
-        block_t *p_sdt = WritePSISection( sect );
-        PEStoTS( c, p_sdt, &p_sys->sdt );
-        dvbpsi_DeletePSISections( sect );
-        dvbpsi_EmptySDT( &sdt );
-    }
+    BuildPMT( p_sys->p_dvbpsi, VLC_OBJECT(p_mux), p_sys->standard,
+              c, (PEStoTSCallback)BufferChainAppend,
+              p_sys->i_tsid, p_sys->i_pmt_version_number,
+              ((sout_input_sys_t *)p_sys->p_pcr_input->p_sys)->ts.i_pid,
+              &p_sys->sdt,
+              p_sys->i_num_pmt, p_sys->pmt, p_sys->i_pmt_program_number,
+              p_mux->i_nb_inputs, mappeds );
 }

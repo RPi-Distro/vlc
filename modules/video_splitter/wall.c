@@ -2,7 +2,7 @@
  * wall.c : Wall video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2009 VLC authors and VideoLAN
- * $Id: 5be60dcf313233e8b61a0b6ea5541cf953cecf4c $
+ * $Id: 6ec29a0778302d6851d769153dc0230cfeab4c94 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -69,7 +69,7 @@ vlc_module_begin()
     set_shortname( N_("Image wall" ))
     set_capability( "video splitter", 0 )
     set_category( CAT_VIDEO )
-    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_subcategory( SUBCAT_VIDEO_SPLITTER )
 
     add_integer( CFG_PREFIX "cols", 3, COLS_TEXT, COLS_LONGTEXT, false )
     change_integer_range( 1, COL_MAX )
@@ -191,10 +191,10 @@ static int Open( vlc_object_t *p_this )
         i_aspect = 4 * VOUT_ASPECT_FACTOR / 3;
 
     /* Compute placements/size of the windows */
-    const unsigned w1 = ( p_splitter->fmt.i_width / p_sys->i_col ) & ~1;
+    const unsigned w1 = ( p_splitter->fmt.i_visible_width / p_sys->i_col ) & ~1;
     const unsigned h1 = ( w1 * VOUT_ASPECT_FACTOR / i_aspect ) & ~1;
 
-    const unsigned h2 = ( p_splitter->fmt.i_height / p_sys->i_row ) & ~1;
+    const unsigned h2 = ( p_splitter->fmt.i_visible_height / p_sys->i_row ) & ~1;
     const unsigned w2 = ( h2 * i_aspect / VOUT_ASPECT_FACTOR ) & ~1;
 
     unsigned i_target_width;
@@ -204,23 +204,23 @@ static int Open( vlc_object_t *p_this )
     bool b_vstart_rounded;
     bool b_hstart_rounded;
 
-    if( h1 * p_sys->i_row < p_splitter->fmt.i_height )
+    if( h1 * p_sys->i_row < p_splitter->fmt.i_visible_height )
     {
         i_target_width = w2;
         i_target_height = h2;
 
         i_vstart = 0;
         b_vstart_rounded = false;
-        i_vend = p_splitter->fmt.i_height;
+        i_vend = p_splitter->fmt.i_visible_height;
 
         unsigned i_tmp = i_target_width * p_sys->i_col;
         while( i_tmp < p_splitter->fmt.i_width )
             i_tmp += p_sys->i_col;
 
-        i_hstart = (( i_tmp - p_splitter->fmt.i_width ) / 2)&~1;
-        b_hstart_rounded  = ( ( i_tmp - p_splitter->fmt.i_width ) % 2 ) ||
-            ( ( ( i_tmp - p_splitter->fmt.i_width ) / 2 ) & 1 );
-        i_hend = i_hstart + p_splitter->fmt.i_width;
+        i_hstart = (( i_tmp - p_splitter->fmt.i_visible_width ) / 2)&~1;
+        b_hstart_rounded  = ( ( i_tmp - p_splitter->fmt.i_visible_width ) % 2 ) ||
+            ( ( ( i_tmp - p_splitter->fmt.i_visible_width ) / 2 ) & 1 );
+        i_hend = i_hstart + p_splitter->fmt.i_visible_width;
     }
     else
     {
@@ -229,16 +229,16 @@ static int Open( vlc_object_t *p_this )
 
         i_hstart = 0;
         b_hstart_rounded = false;
-        i_hend = p_splitter->fmt.i_width;
+        i_hend = p_splitter->fmt.i_visible_width;
 
         unsigned i_tmp = i_target_height * p_sys->i_row;
-        while( i_tmp < p_splitter->fmt.i_height )
+        while( i_tmp < p_splitter->fmt.i_visible_height )
             i_tmp += p_sys->i_row;
 
-        i_vstart = ( ( i_tmp - p_splitter->fmt.i_height ) / 2 ) & ~1;
-        b_vstart_rounded  = ( ( i_tmp - p_splitter->fmt.i_height ) % 2 ) ||
-            ( ( ( i_tmp - p_splitter->fmt.i_height ) / 2 ) & 1 );
-        i_vend = i_vstart + p_splitter->fmt.i_height;
+        i_vstart = ( ( i_tmp - p_splitter->fmt.i_visible_height ) / 2 ) & ~1;
+        b_vstart_rounded  = ( ( i_tmp - p_splitter->fmt.i_visible_height ) % 2 ) ||
+            ( ( ( i_tmp - p_splitter->fmt.i_visible_height ) / 2 ) & 1 );
+        i_vend = i_vstart + p_splitter->fmt.i_visible_height;
     }
     msg_Dbg( p_splitter, "target resolution %dx%d", i_target_width, i_target_height );
     msg_Dbg( p_splitter, "target window (%d,%d)-(%d,%d)", i_hstart,i_vstart,i_hend,i_vend );
@@ -254,8 +254,8 @@ static int Open( vlc_object_t *p_this )
         {
             i_height = i_target_height;
         }
-        else if( ( y + 1 ) * i_target_height < i_vstart ||
-                 ( y * i_target_height ) > i_vend )
+        else if( ( y + 1 ) * i_target_height <= i_vstart ||
+                 ( y * i_target_height ) >= i_vend )
         {
             i_height = 0;
         }
@@ -287,8 +287,8 @@ static int Open( vlc_object_t *p_this )
             {
                 i_width = i_target_width;
             }
-            else if( ( x + 1 ) * i_target_width < i_hstart ||
-                     ( x * i_target_width ) > i_hend )
+            else if( ( x + 1 ) * i_target_width <= i_hstart ||
+                     ( x * i_target_width ) >= i_hend )
             {
                 i_width = 0;
             }
@@ -359,9 +359,9 @@ static int Open( vlc_object_t *p_this )
             p_cfg->fmt.i_width          = p_output->i_width;
             p_cfg->fmt.i_visible_height =
             p_cfg->fmt.i_height         = p_output->i_height;
-            p_cfg->fmt.i_sar_num        = (int64_t)i_aspect * i_target_height;
-            p_cfg->fmt.i_sar_den        = VOUT_ASPECT_FACTOR * i_target_width;
-            p_cfg->window.i_x     = p_output->i_left; /* FIXME relative to video-x/y (TODO in wrapper.c) ? */
+            p_cfg->fmt.i_sar_num        = p_splitter->fmt.i_sar_num;
+            p_cfg->fmt.i_sar_den        = p_splitter->fmt.i_sar_den;
+            p_cfg->window.i_x     = p_output->i_left;
             p_cfg->window.i_y     = p_output->i_top;
             p_cfg->window.i_align = p_output->i_align;
             p_cfg->psz_module = NULL;
@@ -446,7 +446,7 @@ static int Mouse( video_splitter_t *p_splitter, vlc_mouse_t *p_mouse,
             }
         }
     }
-    assert(0);
+    vlc_assert_unreachable();
     return VLC_EGENERIC;
 }
 

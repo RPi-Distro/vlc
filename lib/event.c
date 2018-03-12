@@ -26,118 +26,77 @@
 # include "config.h"
 #endif
 
-#define  LIBVLC_EVENT_TYPES_KEEP_DEFINE
-#include <vlc/libvlc.h>
-
-#include "libvlc_internal.h"
-#include "event_internal.h"
 #include <assert.h>
 #include <errno.h>
 
-typedef struct libvlc_event_listeners_group_t
-{
-    libvlc_event_type_t event_type;
-    vlc_array_t listeners;
-    bool b_sublistener_removed;
-} libvlc_event_listeners_group_t;
+#include <vlc/libvlc.h>
+#include "libvlc_internal.h"
+
+#include <vlc_common.h>
 
 /*
- * Private functions
+ * Event Handling
  */
 
-static bool
-group_contains_listener( libvlc_event_listeners_group_t * group,
-                         libvlc_event_listener_t * searched_listener )
+/* Example usage
+ *
+ * struct libvlc_cool_object_t
+ * {
+ *        ...
+ *        libvlc_event_manager_t event_manager;
+ *        ...
+ * }
+ *
+ * libvlc_my_cool_object_new()
+ * {
+ *        ...
+ *        libvlc_event_manager_init(&p_self->event_manager, p_self)
+ *        ...
+ * }
+ *
+ * libvlc_my_cool_object_release()
+ * {
+ *         ...
+ *         libvlc_event_manager_release(&p_self->event_manager);
+ *         ...
+ * }
+ *
+ * libvlc_my_cool_object_do_something()
+ * {
+ *        ...
+ *        libvlc_event_t event;
+ *        event.type = libvlc_MyCoolObjectDidSomething;
+ *        event.u.my_cool_object_did_something.what_it_did = kSomething;
+ *        libvlc_event_send(&p_self->event_manager, &event);
+ * }
+ * */
+
+typedef struct libvlc_event_listener_t
 {
-    int i;
-    for( i = 0; i < vlc_array_count(&group->listeners); i++ )
-    {
-        if( listeners_are_equal(searched_listener, vlc_array_item_at_index(&group->listeners, i)) )
-            return true;
-    }
-    return false;
-}
+    libvlc_event_type_t event_type;
+    void *              p_user_data;
+    libvlc_callback_t   pf_callback;
+} libvlc_event_listener_t;
 
 /*
  * Internal libvlc functions
  */
 
-/**************************************************************************
- *       libvlc_event_manager_new (internal) :
- *
- * Init an object's event manager.
- **************************************************************************/
-libvlc_event_manager_t *
-libvlc_event_manager_new( void * p_obj, libvlc_instance_t * p_libvlc_inst )
+void libvlc_event_manager_init(libvlc_event_manager_t *em, void *obj)
 {
-    libvlc_event_manager_t * p_em;
-
-    p_em = malloc(sizeof( libvlc_event_manager_t ));
-    if( !p_em )
-    {
-        libvlc_printerr( "Not enough memory" );
-        return NULL;
-    }
-
-    p_em->p_obj = p_obj;
-    p_em->p_obj = p_obj;
-    p_em->async_event_queue = NULL;
-    p_em->p_libvlc_instance = p_libvlc_inst;
-
-    libvlc_retain( p_libvlc_inst );
-    vlc_array_init( &p_em->listeners_groups );
-    vlc_mutex_init( &p_em->object_lock );
-    vlc_mutex_init_recursive( &p_em->event_sending_lock );
-    return p_em;
+    em->p_obj = obj;
+    vlc_array_init(&em->listeners);
+    vlc_mutex_init_recursive(&em->lock);
 }
 
-/**************************************************************************
- *       libvlc_event_manager_release (internal) :
- *
- * Release an object's event manager.
- **************************************************************************/
-void libvlc_event_manager_release( libvlc_event_manager_t * p_em )
+void libvlc_event_manager_destroy(libvlc_event_manager_t *em)
 {
-    libvlc_event_listeners_group_t * p_lg;
-    int i,j ;
+    vlc_mutex_destroy(&em->lock);
 
-    libvlc_event_async_fini(p_em);
+    for (size_t i = 0; i < vlc_array_count(&em->listeners); i++)
+        free(vlc_array_item_at_index(&em->listeners, i));
 
-    vlc_mutex_destroy( &p_em->event_sending_lock );
-    vlc_mutex_destroy( &p_em->object_lock );
-
-    for( i = 0; i < vlc_array_count(&p_em->listeners_groups); i++)
-    {
-        p_lg = vlc_array_item_at_index( &p_em->listeners_groups, i );
-
-        for( j = 0; j < vlc_array_count(&p_lg->listeners); j++)
-            free( vlc_array_item_at_index( &p_lg->listeners, j ) );
-
-        vlc_array_clear( &p_lg->listeners );
-        free( p_lg );
-    }
-    vlc_array_clear( &p_em->listeners_groups );
-    libvlc_release( p_em->p_libvlc_instance );
-    free( p_em );
-}
-
-/**************************************************************************
- *       libvlc_event_manager_register_event_type (internal) :
- *
- * Init an object's event manager.
- **************************************************************************/
-void libvlc_event_manager_register_event_type(
-        libvlc_event_manager_t * p_em,
-        libvlc_event_type_t event_type )
-{
-    libvlc_event_listeners_group_t * listeners_group;
-    listeners_group = xmalloc(sizeof(libvlc_event_listeners_group_t));
-    listeners_group->event_type = event_type;
-    vlc_array_init( &listeners_group->listeners );
-
-    vlc_mutex_lock( &p_em->object_lock );
-    vlc_array_append( &p_em->listeners_groups, listeners_group );
-    vlc_mutex_unlock( &p_em->object_lock );
+    vlc_array_clear(&em->listeners);
 }
 
 /**************************************************************************
@@ -148,96 +107,19 @@ void libvlc_event_manager_register_event_type(
 void libvlc_event_send( libvlc_event_manager_t * p_em,
                         libvlc_event_t * p_event )
 {
-    libvlc_event_listeners_group_t * listeners_group = NULL;
-    libvlc_event_listener_t * listener_cached;
-    libvlc_event_listener_t * listener;
-    libvlc_event_listener_t * array_listeners_cached = NULL;
-    int i, i_cached_listeners = 0;
-
     /* Fill event with the sending object now */
     p_event->p_obj = p_em->p_obj;
 
-    vlc_mutex_lock( &p_em->event_sending_lock );
-    vlc_mutex_lock( &p_em->object_lock );
-    for( i = 0; i < vlc_array_count(&p_em->listeners_groups); i++)
+    vlc_mutex_lock(&p_em->lock);
+    for (size_t i = 0; i < vlc_array_count(&p_em->listeners); i++)
     {
-        listeners_group = vlc_array_item_at_index(&p_em->listeners_groups, i);
-        if( listeners_group->event_type == p_event->type )
-        {
-            if( vlc_array_count( &listeners_group->listeners ) <= 0 )
-                break;
+        libvlc_event_listener_t *listener;
 
-            /* Cache a copy of the listener to avoid locking issues,
-             * and allow that edition of listeners during callbacks will garantee immediate effect. */
-            i_cached_listeners = vlc_array_count(&listeners_group->listeners);
-            array_listeners_cached = malloc(sizeof(libvlc_event_listener_t)*(i_cached_listeners));
-            if( !array_listeners_cached )
-            {
-                vlc_mutex_unlock( &p_em->object_lock );
-                vlc_mutex_unlock( &p_em->event_sending_lock );
-                fprintf(stderr, "Can't alloc memory in libvlc_event_send" );
-                return;
-            }
-
-            listener_cached = array_listeners_cached;
-            for( i = 0; i < vlc_array_count(&listeners_group->listeners); i++)
-            {
-                listener = vlc_array_item_at_index(&listeners_group->listeners, i);
-                memcpy( listener_cached, listener, sizeof(libvlc_event_listener_t) );
-                listener_cached++;
-            }
-            break;
-        }
+        listener = vlc_array_item_at_index(&p_em->listeners, i);
+        if (listener->event_type == p_event->type)
+            listener->pf_callback(p_event, listener->p_user_data);
     }
-
-    if( !listeners_group )
-    {
-        free( array_listeners_cached );
-        vlc_mutex_unlock( &p_em->object_lock );
-        vlc_mutex_unlock( &p_em->event_sending_lock );
-        return;
-    }
-
-    /* Track item removed from *this* thread, with a simple flag. Indeed
-     * event_sending_lock is a recursive lock. This has the advantage of
-     * allowing to remove an event listener from within a callback */
-    listeners_group->b_sublistener_removed = false;
-
-    vlc_mutex_unlock( &p_em->object_lock );
-
-    listener_cached = array_listeners_cached;
-    for( i = 0; i < i_cached_listeners; i++ )
-    {
-        if(listener_cached->is_asynchronous)
-        {
-            /* The listener wants not to block the emitter during event callback */
-            libvlc_event_async_dispatch(p_em, listener_cached, p_event);
-        }
-        else
-        {
-            /* The listener wants to block the emitter during event callback */
-
-            listener_cached->pf_callback( p_event, listener_cached->p_user_data );
-            listener_cached++;
-
-            if( listeners_group->b_sublistener_removed )
-            {
-                /* If a callback was removed, this gets called */
-                bool valid_listener;
-                vlc_mutex_lock( &p_em->object_lock );
-                valid_listener = group_contains_listener( listeners_group, listener_cached );
-                vlc_mutex_unlock( &p_em->object_lock );
-                if( !valid_listener )
-                {
-                    listener_cached++;
-                    continue;
-                }
-            }
-        }
-    }
-    vlc_mutex_unlock( &p_em->event_sending_lock );
-
-    free( array_listeners_cached );
+    vlc_mutex_unlock(&p_em->lock);
 }
 
 /*
@@ -281,16 +163,22 @@ static const event_name_t event_list[] = {
     DEF(MediaPlayerLengthChanged)
     DEF(MediaPlayerVout)
     DEF(MediaPlayerScrambledChanged)
+    DEF(MediaPlayerESAdded)
+    DEF(MediaPlayerESDeleted)
+    DEF(MediaPlayerESSelected)
     DEF(MediaPlayerCorked)
     DEF(MediaPlayerUncorked)
     DEF(MediaPlayerMuted)
     DEF(MediaPlayerUnmuted)
     DEF(MediaPlayerAudioVolume)
+    DEF(MediaPlayerAudioDevice)
+    DEF(MediaPlayerChapterChanged)
 
     DEF(MediaListItemAdded)
     DEF(MediaListWillAddItem)
     DEF(MediaListItemDeleted)
     DEF(MediaListWillDeleteItem)
+    DEF(MediaListEndReached)
 
     DEF(MediaListViewItemAdded)
     DEF(MediaListViewWillAddItem)
@@ -336,75 +224,32 @@ const char * libvlc_event_type_name( int event_type )
 }
 
 /**************************************************************************
- *       event_attach (internal) :
+ *       libvlc_event_attach (public) :
  *
  * Add a callback for an event.
  **************************************************************************/
-static
-int event_attach( libvlc_event_manager_t * p_event_manager,
-                  libvlc_event_type_t event_type,
-                  libvlc_callback_t pf_callback, void *p_user_data,
-                  bool is_asynchronous )
+int libvlc_event_attach(libvlc_event_manager_t *em, libvlc_event_type_t type,
+                        libvlc_callback_t callback, void *opaque)
 {
-    libvlc_event_listeners_group_t * listeners_group;
-    libvlc_event_listener_t * listener;
-    int i;
-
-    listener = malloc(sizeof(libvlc_event_listener_t));
-    if( unlikely(listener == NULL) )
+    libvlc_event_listener_t *listener = malloc(sizeof (*listener));
+    if (unlikely(listener == NULL))
         return ENOMEM;
 
-    listener->event_type = event_type;
-    listener->p_user_data = p_user_data;
-    listener->pf_callback = pf_callback;
-    listener->is_asynchronous = is_asynchronous;
+    listener->event_type = type;
+    listener->p_user_data = opaque;
+    listener->pf_callback = callback;
 
-    vlc_mutex_lock( &p_event_manager->object_lock );
-    for( i = 0; i < vlc_array_count(&p_event_manager->listeners_groups); i++ )
+    int i_ret;
+    vlc_mutex_lock(&em->lock);
+    if(vlc_array_append(&em->listeners, listener) != 0)
     {
-        listeners_group = vlc_array_item_at_index(&p_event_manager->listeners_groups, i);
-        if( listeners_group->event_type == listener->event_type )
-        {
-            vlc_array_append( &listeners_group->listeners, listener );
-            vlc_mutex_unlock( &p_event_manager->object_lock );
-            return 0;
-        }
+        i_ret = VLC_EGENERIC;
+        free(listener);
     }
-    vlc_mutex_unlock( &p_event_manager->object_lock );
-
-    free(listener);
-    fprintf( stderr, "This object event manager doesn't know about '%s' events",
-             libvlc_event_type_name(event_type) );
-    assert(0);
-    return -1;
-}
-
-/**************************************************************************
- *       libvlc_event_attach (public) :
- *
- * Add a callback for an event.
- **************************************************************************/
-int libvlc_event_attach( libvlc_event_manager_t * p_event_manager,
-                         libvlc_event_type_t event_type,
-                         libvlc_callback_t pf_callback,
-                         void *p_user_data )
-{
-    return event_attach(p_event_manager, event_type, pf_callback, p_user_data,
-                        false /* synchronous */);
-}
-
-/**************************************************************************
- *       libvlc_event_attach (public) :
- *
- * Add a callback for an event.
- **************************************************************************/
-void libvlc_event_attach_async( libvlc_event_manager_t * p_event_manager,
-                         libvlc_event_type_t event_type,
-                         libvlc_callback_t pf_callback,
-                         void *p_user_data )
-{
-    event_attach(p_event_manager, event_type, pf_callback, p_user_data,
-                 true /* asynchronous */);
+    else
+        i_ret = VLC_SUCCESS;
+    vlc_mutex_unlock(&em->lock);
+    return i_ret;
 }
 
 /**************************************************************************
@@ -412,55 +257,25 @@ void libvlc_event_attach_async( libvlc_event_manager_t * p_event_manager,
  *
  * Remove a callback for an event.
  **************************************************************************/
-void libvlc_event_detach( libvlc_event_manager_t *p_event_manager,
-                                     libvlc_event_type_t event_type,
-                                     libvlc_callback_t pf_callback,
-                                     void *p_user_data )
+void libvlc_event_detach(libvlc_event_manager_t *em, libvlc_event_type_t type,
+                         libvlc_callback_t callback, void *opaque)
 {
-    libvlc_event_listeners_group_t * listeners_group;
-    libvlc_event_listener_t * listener;
-    int i, j;
-    bool found = false;
-
-    vlc_mutex_lock( &p_event_manager->event_sending_lock );
-    vlc_mutex_lock( &p_event_manager->object_lock );
-    for( i = 0; i < vlc_array_count(&p_event_manager->listeners_groups); i++)
+    vlc_mutex_lock(&em->lock);
+    for (size_t i = 0; i < vlc_array_count(&em->listeners); i++)
     {
-        listeners_group = vlc_array_item_at_index(&p_event_manager->listeners_groups, i);
-        if( listeners_group->event_type == event_type )
-        {
-            for( j = 0; j < vlc_array_count(&listeners_group->listeners); j++)
-            {
-                listener = vlc_array_item_at_index(&listeners_group->listeners, j);
-                if( listener->event_type == event_type &&
-                    listener->pf_callback == pf_callback &&
-                    listener->p_user_data == p_user_data )
-                {
-                    /* that's our listener */
+         libvlc_event_listener_t *listener;
 
-                    /* Mark this group as edited so that libvlc_event_send
-                     * will recheck what listener to call */
-                    listeners_group->b_sublistener_removed = true;
+         listener = vlc_array_item_at_index(&em->listeners, i);
 
-                    free( listener );
-                    vlc_array_remove( &listeners_group->listeners, j );
-                    found = true;
-                    break;
-                }
-            }
-        }
+         if (listener->event_type == type
+          && listener->pf_callback == callback
+          && listener->p_user_data == opaque)
+         {   /* that's our listener */
+             vlc_array_remove(&em->listeners, i);
+             vlc_mutex_unlock(&em->lock);
+             free(listener);
+             return;
+         }
     }
-    vlc_mutex_unlock( &p_event_manager->object_lock );
-    vlc_mutex_unlock( &p_event_manager->event_sending_lock );
-
-    /* Now make sure any pending async event won't get fired after that point */
-    libvlc_event_listener_t listener_to_remove;
-    listener_to_remove.event_type  = event_type;
-    listener_to_remove.pf_callback = pf_callback;
-    listener_to_remove.p_user_data = p_user_data;
-    listener_to_remove.is_asynchronous = true;
-
-    libvlc_event_async_ensure_listener_removal(p_event_manager, &listener_to_remove);
-
-    assert(found);
+    abort();
 }

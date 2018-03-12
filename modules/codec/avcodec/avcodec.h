@@ -2,7 +2,7 @@
  * avcodec.h: decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 7551ab55b6396d95c1e6f24d3016126188321278 $
+ * $Id: 52e522dc32198754dd45d21e2f0a5479b4ae1df0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -25,49 +25,39 @@
 #include "avcommon.h"
 
 /* VLC <-> avcodec tables */
-int GetFfmpegCodec( vlc_fourcc_t i_fourcc, int *pi_cat,
-                    unsigned *pi_ffmpeg_codec, const char **ppsz_name );
-int GetVlcFourcc( unsigned i_ffmpeg_codec, int *pi_cat,
-                  vlc_fourcc_t *pi_fourcc, const char **ppsz_name );
+bool GetFfmpegCodec( enum es_format_category_e cat, vlc_fourcc_t i_fourcc,
+                     unsigned *pi_ffmpeg_codec, const char **ppsz_name );
+vlc_fourcc_t GetVlcFourcc( unsigned i_ffmpeg_codec );
 vlc_fourcc_t GetVlcAudioFormat( int i_sample_fmt );
 
-picture_t * DecodeVideo( decoder_t *, block_t ** );
-block_t * DecodeAudio( decoder_t *, block_t ** );
-subpicture_t *DecodeSubtitle( decoder_t *p_dec, block_t ** );
-
 /* Video encoder module */
-int  OpenEncoder ( vlc_object_t * );
-void CloseEncoder( vlc_object_t * );
-
-/* Audio encoder module */
-int  OpenAudioEncoder ( vlc_object_t * );
-void CloseAudioEncoder( vlc_object_t * );
-
-/* Deinterlace video filter module */
-int  OpenDeinterlace( vlc_object_t * );
-void CloseDeinterlace( vlc_object_t * );
+int  InitVideoEnc ( vlc_object_t * );
+void EndVideoEnc( vlc_object_t * );
 
 /* Video Decoder */
-int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
-                  AVCodec *p_codec, int i_codec_id, const char *psz_namecodec );
-void EndVideoDec( decoder_t *p_dec );
+int InitVideoDec( vlc_object_t * );
+void EndVideoDec( vlc_object_t * );
 
 /* Audio Decoder */
-int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
-                  AVCodec *p_codec, int i_codec_id, const char *psz_namecodec );
+int InitAudioDec( vlc_object_t * );
+void EndAudioDec( vlc_object_t * );
 
 /* Subtitle Decoder */
-int InitSubtitleDec( decoder_t *p_dec, AVCodecContext *p_context,
-                     AVCodec *p_codec, int i_codec_id, const char *psz_namecodec );
+int InitSubtitleDec( vlc_object_t * );
+void EndSubtitleDec( vlc_object_t * );
 
 /* Initialize decoder */
-int ffmpeg_OpenCodec( decoder_t *p_dec );
+AVCodecContext *ffmpeg_AllocContext( decoder_t *, const AVCodec ** );
+int ffmpeg_OpenCodec( decoder_t *p_dec, AVCodecContext *, const AVCodec * );
 
 /*****************************************************************************
  * Module descriptor help strings
  *****************************************************************************/
 #define DR_TEXT N_("Direct rendering")
 /* FIXME Does somebody who knows what it does, explain */
+
+#define CORRUPTED_TEXT N_("Show corrupted frames")
+#define CORRUPTED_LONGTEXT N_("Prefer visual artifacts instead of missing frames")
 
 #define ERROR_TEXT N_("Error resilience")
 #define ERROR_LONGTEXT N_( \
@@ -115,16 +105,6 @@ int ffmpeg_OpenCodec( decoder_t *p_dec );
 #define CODEC_TEXT N_( "Codec name" )
 #define CODEC_LONGTEXT N_( "Internal libavcodec codec name" )
 
-/* TODO: Use a predefined list, with 0,1,2,4,7 */
-#define VISMV_TEXT N_( "Visualize motion vectors" )
-#define VISMV_LONGTEXT N_( \
-    "You can overlay the motion vectors (arrows showing how the images move) "\
-    "on the image. This value is a mask, based on these values:\n"\
-    "1 - visualize forward predicted MVs of P frames\n" \
-    "2 - visualize forward predicted MVs of B frames\n" \
-    "4 - visualize backward predicted MVs of B frames\n" \
-    "To visualize all vectors, the value should be 7." )
-
 #define SKIPLOOPF_TEXT N_( "Skip the loop filter for H.264 decoding" )
 #define SKIPLOOPF_LONGTEXT N_( "Skipping the loop filter (aka deblocking) " \
     "usually has a detrimental effect on quality. However it provides a big " \
@@ -132,9 +112,6 @@ int ffmpeg_OpenCodec( decoder_t *p_dec );
 
 #define HW_TEXT N_("Hardware decoding")
 #define HW_LONGTEXT N_("This allows hardware decoding when available.")
-
-#define VDA_PIX_FMT_TEXT N_("VDA output pixel format")
-#define VDA_PIX_FMT_LONGTEXT N_("The pixel format for output image buffers.")
 
 #define THREADS_TEXT N_( "Threads" )
 #define THREADS_LONGTEXT N_( "Number of threads used for decoding, 0 meaning auto" )
@@ -256,19 +233,7 @@ int ffmpeg_OpenCodec( decoder_t *p_dec );
    "main, low, ssr (not supported),ltp, hev1, hev2 (default: low). " \
    "hev1 and hev2 are currently supported only with libfdk-aac enabled libavcodec" )
 
-#define AVCODEC_COMMON_MEMBERS   \
-    int i_cat;                  \
-    int i_codec_id;             \
-    const char *psz_namecodec;  \
-    AVCodecContext *p_context;  \
-    AVCodec        *p_codec;    \
-    bool b_delayed_open;
-
 #ifndef AV_VERSION_INT
 #   define AV_VERSION_INT(a, b, c) ((a)<<16 | (b)<<8 | (c))
-#endif
-
-#if defined(FF_THREAD_FRAME)
-#   define HAVE_AVCODEC_MT
 #endif
 

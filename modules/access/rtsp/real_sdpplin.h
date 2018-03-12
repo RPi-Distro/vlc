@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: 994bb20a0e4bea32ccc8aebbb7eb92b116aa7d90 $
+ * $Id: 3818fcca70b3e85446e809af4c735f723ecb47bd $
  *
  * sdp/sdpplin parser.
  *
@@ -95,7 +95,7 @@ typedef struct {
 
 } sdpplin_t;
 
-sdpplin_t *sdpplin_parse(access_t *p_access, char *data);
+sdpplin_t *sdpplin_parse(stream_t *p_access, char *data);
 
 void sdpplin_free(sdpplin_t *description);
 

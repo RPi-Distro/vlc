@@ -2,7 +2,7 @@
  * evt_scroll.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ccb44dda1565b134b40a6a0adef0156a2b212311 $
+ * $Id: 361084318ce8601a7a1668afa2a594acf5a58631 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -43,7 +43,7 @@ public:
              : EvtInput( pIntf, mod ), m_xPos( xPos ), m_yPos( yPos ),
                m_direction( direction ) { }
     virtual ~EvtScroll() { }
-    virtual const string getAsString() const;
+    virtual const std::string getAsString() const;
 
     // Return the event coordinates
     int getXPos() const { return m_xPos; }

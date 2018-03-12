@@ -2,7 +2,7 @@
  * playlist_internal.h : Playlist internals
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 51a37487aa1e2b8ea95c3750cea6d0d7270f3a9d $
+ * $Id: ae48c75e87eb3d9e1e83dba183f2a6196dc730a2 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -26,12 +26,12 @@
 # define __LIBVLC_PLAYLIST_INTERNAL_H 1
 
 /**
- *  \file
- *  This file contain internal structures and function prototypes related
- *  to the playlist in vlc
+ * \defgroup playlist_internals VLC playlist internals
+ * \ingroup playlist
  *
- * \defgroup vlc_playlist Playlist
  * @{
+ * \file
+ * VLC playlist internal interface
  */
 
 #include "input/input_interface.h"
@@ -47,28 +47,27 @@ void playlist_ServicesDiscoveryKillAll( playlist_t *p_playlist );
 typedef struct playlist_private_t
 {
     playlist_t           public_data;
-    playlist_preparser_t *p_preparser;  /**< Preparser data */
     struct intf_thread_t *interface; /**< Linked-list of interfaces */
 
-    playlist_item_array_t items_to_delete; /**< Array of items and nodes to
-            delete... At the very end. This sucks. */
+    void *input_tree; /**< Search tree for input item
+                           to playlist item mapping */
+    void *id_tree; /**< Search tree for item ID to item mapping */
 
     vlc_sd_internal_t   **pp_sds;
     int                   i_sds;   /**< Number of service discovery modules */
     input_thread_t *      p_input;  /**< the input thread associated
                                      * with the current item */
     input_resource_t *   p_input_resource; /**< input resources */
+    vlc_renderer_item_t *p_renderer;
     struct {
         /* Current status. These fields are readonly, only the playlist
          * main loop can touch it*/
-        playlist_status_t   i_status;  /**< Current status of playlist */
         playlist_item_t *   p_item; /**< Currently playing/active item */
         playlist_item_t *   p_node; /**< Current node to play from */
     } status;
 
     struct {
         /* Request. Use this to give orders to the playlist main loop  */
-        playlist_status_t   i_status; /**< requested playlist status */
         playlist_item_t *   p_node;   /**< requested node to play from */
         playlist_item_t *   p_item;   /**< requested item to play in the node */
 
@@ -77,7 +76,7 @@ typedef struct playlist_private_t
         bool          b_request;/**< Set to true by the requester
                                            The playlist sets it back to false
                                            when processing the request */
-        vlc_mutex_t         lock;     /**< Lock to protect request */
+        bool input_dead; /**< Set when input has finished. */
     } request;
 
     vlc_thread_t thread; /**< engine thread */
@@ -89,10 +88,10 @@ typedef struct playlist_private_t
     bool     b_reset_currently_playing; /** Reset current item array */
 
     bool     b_tree; /**< Display as a tree */
-    bool     b_doing_ml; /**< Doing media library stuff  get quicker */
+    bool     b_preparse; /**< Preparse items */
 } playlist_private_t;
 
-#define pl_priv( pl ) ((playlist_private_t *)(pl))
+#define pl_priv( pl ) container_of(pl, playlist_private_t, public_data)
 
 /*****************************************************************************
  * Prototypes
@@ -121,34 +120,45 @@ int playlist_MLDump( playlist_t *p_playlist );
  * Item management
  **********************************************************************/
 
-void playlist_SendAddNotify( playlist_t *p_playlist, int i_item_id,
-                             int i_node_id, bool b_signal );
-
-playlist_item_t * playlist_NodeAddInput( playlist_t *, input_item_t *,
-        playlist_item_t *,int , int, bool );
+void playlist_SendAddNotify( playlist_t *p_playlist, playlist_item_t *item );
 
 int playlist_InsertInputItemTree ( playlist_t *,
         playlist_item_t *, input_item_node_t *, int, bool );
 
 /* Tree walking */
-playlist_item_t *playlist_ItemFindFromInputAndRoot( playlist_t *p_playlist,
-                                input_item_t *p_input, playlist_item_t *p_root,
-                                bool );
+int playlist_NodeInsert(playlist_item_t*, playlist_item_t *, int);
 
-int playlist_DeleteFromInputInParent( playlist_t *, input_item_t *,
-                                      playlist_item_t *, bool );
-int playlist_DeleteFromItemId( playlist_t*, int );
-int playlist_ItemRelease( playlist_item_t * );
+/**
+ * Flags for playlist_NodeDeleteExplicit
+ * \defgroup playlist_NodeDeleteExplicit_flags
+ * @{
+ **/
+#define PLAYLIST_DELETE_FORCE 0x01 /**< delete node even if read-only */
+#define PLAYLIST_DELETE_STOP_IF_CURRENT 0x02 /**< stop playlist playback if
+                                                  node is currently the one
+                                                  played */
+/** @} */
 
-int playlist_NodeEmpty( playlist_t *, playlist_item_t *, bool );
-int playlist_DeleteItem( playlist_t * p_playlist, playlist_item_t *, bool);
+/**
+ * Delete a node with explicit semantics
+ *
+ * This function acts like \ref playlist_NodeDelete with the advantage of the
+ * caller being able control some of the semantics of the function.
+ *
+ * \ref p_playlist the playlist where the node is to be deleted
+ * \ref p_node the node to delete
+ * \ref flags a bitfield consisting of \ref playlist_NodeDeleteExplicit_flags
+ **/
+void playlist_NodeDeleteExplicit(playlist_t*, playlist_item_t*,
+    int flags);
+
+void playlist_ItemRelease( playlist_t *, playlist_item_t * );
 
 void ResetCurrentlyPlaying( playlist_t *p_playlist, playlist_item_t *p_cur );
 void ResyncCurrentIndex( playlist_t *p_playlist, playlist_item_t *p_cur );
 
-/**
- * @}
- */
+playlist_item_t * playlist_GetNextLeaf( playlist_t *, playlist_item_t *p_root,
+    playlist_item_t *p_item, bool b_ena, bool b_unplayed ) VLC_USED;
 
 #define PLAYLIST_DEBUG 1
 //#undef PLAYLIST_DEBUG2
@@ -179,4 +189,5 @@ static inline void pl_unlock_if( playlist_t * p_playlist, bool cond )
     if( cond ) PL_UNLOCK;
 }
 
+/** @} */
 #endif /* !__LIBVLC_PLAYLIST_INTERNAL_H */

@@ -2,7 +2,7 @@
  * scte27.c : SCTE-27 subtitles decoder
  *****************************************************************************
  * Copyright (C) Laurent Aimar
- * $Id: edf5d500d7146da872b9f611416786831bc785a9 $
+ * $Id: 797af40715742b3dc2c4cf402949928897ffff70 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -41,7 +41,7 @@ static void Close(vlc_object_t *);
 vlc_module_begin ()
     set_description(N_("SCTE-27 decoder"))
     set_shortname(N_("SCTE-27"))
-    set_capability( "decoder", 51)
+    set_capability( "spu decoder", 51)
     set_category(CAT_INPUT)
     set_subcategory(SUBCAT_INPUT_SCODEC)
     set_callbacks(Open, Close)
@@ -142,7 +142,7 @@ static subpicture_region_t *DecodeSimpleBitmap(decoder_t *dec,
     int bitmap_h = bottom_h - top_h;
     int bitmap_v = bottom_v - top_v;
     int bitmap_size = bitmap_h * bitmap_v;
-    bool *bitmap = malloc(bitmap_size * sizeof(*bitmap));
+    bool *bitmap = vlc_alloc(bitmap_size, sizeof(*bitmap));
     if (!bitmap)
         return NULL;
     for (int position = 0; position < bitmap_size;) {
@@ -405,18 +405,14 @@ error:
     return NULL;
 }
 
-static subpicture_t *Decode(decoder_t *dec, block_t **block)
+static int Decode(decoder_t *dec, block_t *b)
 {
     decoder_sys_t *sys = dec->p_sys;
 
-    if (block == NULL || *block == NULL)
-        return NULL;
-    block_t *b = *block; *block = NULL;
+    if (b == NULL ) /* No Drain */
+        return VLCDEC_SUCCESS;
 
-    subpicture_t *sub_first = NULL;
-    subpicture_t **sub_last = &sub_first;
-
-    if (b->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED))
+    if (b->i_flags & (BLOCK_FLAG_CORRUPTED))
         goto exit;
 
     while (b->i_buffer > 3) {
@@ -479,9 +475,8 @@ static subpicture_t *Decode(decoder_t *dec, block_t **block)
                                         section_length - 1 - 4,
                                         b->i_pts > VLC_TS_INVALID ? b->i_pts : b->i_dts);
         }
-        *sub_last = sub;
-        if (*sub_last)
-            sub_last = &(*sub_last)->p_next;
+        if (sub != NULL)
+            decoder_QueueSub(dec, sub);
 
         b->i_buffer -= 3 + section_length;
         b->p_buffer += 3 + section_length;
@@ -490,7 +485,7 @@ static subpicture_t *Decode(decoder_t *dec, block_t **block)
 
 exit:
     block_Release(b);
-    return sub_first;
+    return VLCDEC_SUCCESS;
 }
 
 static int Open(vlc_object_t *object)
@@ -507,9 +502,8 @@ static int Open(vlc_object_t *object)
     sys->segment_size = 0;
     sys->segment_buffer = NULL;
 
-    dec->pf_decode_sub = Decode;
-    es_format_Init(&dec->fmt_out, SPU_ES, VLC_CODEC_SPU);
-    dec->fmt_out.video.i_chroma = VLC_CODEC_YUVP;
+    dec->pf_decode = Decode;
+    dec->fmt_out.i_codec = VLC_CODEC_YUVP;
 
     return VLC_SUCCESS;
 }

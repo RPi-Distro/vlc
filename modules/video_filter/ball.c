@@ -38,10 +38,10 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-
-#include "vlc_filter.h"
+#include <vlc_picture.h>
+#include <vlc_filter.h>
 #include "filter_picture.h"
-#include "vlc_image.h"
+#include <vlc_image.h>
 
 enum { RED, GREEN, BLUE, WHITE };
 
@@ -123,7 +123,7 @@ vlc_module_begin ()
     set_description( N_("Ball video filter") )
     set_shortname( N_( "Ball" ))
     set_help(BALL_HELP)
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
@@ -484,10 +484,9 @@ static void GaussianConvolution( picture_t *p_inpic, uint32_t *p_smooth )
     const int i_src_visible = p_inpic->p[Y_PLANE].i_visible_pitch;
     const int i_numLines = p_inpic->p[Y_PLANE].i_visible_lines;
 
-    int x,y;
-    for( y = 2; y < i_numLines - 2; y++ )
+    for( int y = 2; y < i_numLines - 2; y++ )
     {
-        for( x = 2; x < i_src_visible - 2; x++ )
+        for( int x = 2; x < i_src_visible - 2; x++ )
         {
             p_smooth[y*i_src_visible+x] = (uint32_t)(
                     /* 2 rows up */
@@ -577,20 +576,20 @@ static void FilterBall( filter_t *p_filter, picture_t *p_inpic,
 
     if( !p_filter->p_sys->p_smooth )
         p_filter->p_sys->p_smooth =
-                (uint32_t *)malloc( i_numLines * i_numCols
-                                    * sizeof(uint32_t));
+                (uint32_t *)vlc_alloc( i_numLines * i_numCols,
+                                       sizeof(uint32_t));
     p_smooth = p_filter->p_sys->p_smooth;
 
     if( !p_filter->p_sys->p_grad_x )
         p_filter->p_sys->p_grad_x =
-                (int32_t *)malloc( i_numLines * i_numCols
-                                   * sizeof(int32_t));
+                (int32_t *)vlc_alloc( i_numLines * i_numCols,
+                                      sizeof(int32_t));
     p_grad_x = p_filter->p_sys->p_grad_x;
 
     if( !p_filter->p_sys->p_grad_y )
         p_filter->p_sys->p_grad_y =
-                (int32_t *)malloc( i_numLines * i_numCols
-                                   * sizeof(int32_t));
+                (int32_t *)vlc_alloc( i_numLines * i_numCols,
+                                      sizeof(int32_t));
     p_grad_y = p_filter->p_sys->p_grad_y;
 
     if( !p_smooth || !p_grad_x || !p_grad_y ) return;
@@ -609,9 +608,9 @@ static void FilterBall( filter_t *p_filter, picture_t *p_inpic,
        | -2 0 2 | and |  0  0  0 |
        | -1 0 1 |     | -1 -2 -1 | */
 
-    for( y = 1; y < i_numLines - 1; y++ )
+    for( int y = 1; y < i_numLines - 1; y++ )
     {
-        for( x = 1; x < i_numCols - 1; x++ )
+        for( int x = 1; x < i_numCols - 1; x++ )
         {
 
             p_grad_x[ y * i_numCols + x ] =
@@ -634,9 +633,9 @@ static void FilterBall( filter_t *p_filter, picture_t *p_inpic,
     if( p_sys->b_edgeVisible )
     {
         /* Display the edges. */
-        for( y = 1; y < i_numLines - 1; y++ )
+        for( int y = 1; y < i_numLines - 1; y++ )
         {
-            for( x = 1; x < i_numCols - 1; x++ )
+            for( int x = 1; x < i_numCols - 1; x++ )
             {
                 if( abs( p_grad_x[ y * i_numCols + x ] )
                     + abs( p_grad_y[ y * i_numCols + x ] )

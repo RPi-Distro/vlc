@@ -2,7 +2,7 @@
  * snapshot.c : vout internal snapshot
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 7b89803740174cb81ad09718d4a7f997d37a6f18 $
+ * $Id: f9bc106d73645774a1d5e2b0e5a59a344277b922 $
  *
  * Authors: Gildas Bazin <gbazin _AT_ videolan _DOT_ org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -29,7 +29,6 @@
 #include <assert.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/time.h>
 #include <dirent.h>
 #include <time.h>
 
@@ -78,15 +77,16 @@ void vout_snapshot_End(vout_snapshot_t *snap)
 /* */
 picture_t *vout_snapshot_Get(vout_snapshot_t *snap, mtime_t timeout)
 {
+    const mtime_t deadline = mdate() + timeout;
+
     vlc_mutex_lock(&snap->lock);
 
     /* */
     snap->request_count++;
 
     /* */
-    const mtime_t deadline = mdate() + timeout;
-    while (snap->is_available && !snap->picture && mdate() < deadline)
-        vlc_cond_timedwait(&snap->wait, &snap->lock, deadline);
+    while (snap->is_available && !snap->picture &&
+        vlc_cond_timedwait(&snap->wait, &snap->lock, deadline) == 0);
 
     /* */
     picture_t *picture = snap->picture;
@@ -112,18 +112,18 @@ bool vout_snapshot_IsRequested(vout_snapshot_t *snap)
 }
 void vout_snapshot_Set(vout_snapshot_t *snap,
                        const video_format_t *fmt,
-                       const picture_t *picture)
+                       picture_t *picture)
 {
     if (!fmt)
         fmt = &picture->format;
 
     vlc_mutex_lock(&snap->lock);
     while (snap->request_count > 0) {
-        picture_t *dup = picture_NewFromFormat(fmt);
+        picture_t *dup = picture_Clone(picture);
         if (!dup)
             break;
 
-        picture_Copy(dup, picture);
+        video_format_CopyCrop( &dup->format, fmt );
 
         dup->p_next = snap->picture;
         snap->picture = dup;
@@ -145,28 +145,28 @@ int vout_snapshot_SaveImage(char **name, int *sequential,
 {
     /* */
     char *filename;
-    DIR *pathdir = vlc_opendir(cfg->path);
     input_thread_t *input = (input_thread_t*)p_vout->p->input;
-    if (pathdir != NULL) {
-        /* The use specified a directory path */
-        closedir(pathdir);
 
-        /* */
-        char *prefix = NULL;
-        if (cfg->prefix_fmt)
-            prefix = str_format(input, cfg->prefix_fmt);
-        if (prefix)
-            filename_sanitize(prefix);
-        else {
-            prefix = strdup("vlcsnap-");
-            if (!prefix)
-                goto error;
-        }
+    /* */
+    char *prefix = NULL;
+    if (cfg->prefix_fmt)
+        prefix = str_format(input, cfg->prefix_fmt);
+    if (prefix)
+        filename_sanitize(prefix);
+    else {
+        prefix = strdup("vlcsnap-");
+        if (prefix == NULL)
+            goto error;
+    }
 
+    struct stat st;
+    bool b_is_folder = false;
+
+    if ( vlc_stat( cfg->path, &st ) == 0 )
+        b_is_folder = S_ISDIR( st.st_mode );
+    if ( b_is_folder ) {
         if (cfg->is_sequential) {
             for (int num = cfg->sequence; ; num++) {
-                struct stat st;
-
                 if (asprintf(&filename, "%s" DIR_SEP "%s%05d.%s",
                              cfg->path, prefix, num, cfg->format) < 0) {
                     free(prefix);
@@ -179,28 +179,26 @@ int vout_snapshot_SaveImage(char **name, int *sequential,
                 free(filename);
             }
         } else {
-            struct timeval tv;
+            struct timespec ts;
             struct tm curtime;
             char buffer[128];
 
-            gettimeofday(&tv, NULL);
-            if (localtime_r(&tv.tv_sec, &curtime) == NULL)
-                gmtime_r(&tv.tv_sec, &curtime);
+            timespec_get(&ts, TIME_UTC);
+            if (localtime_r(&ts.tv_sec, &curtime) == NULL)
+                gmtime_r(&ts.tv_sec, &curtime);
             if (strftime(buffer, sizeof(buffer), "%Y-%m-%d-%Hh%Mm%Ss",
                          &curtime) == 0)
                 strcpy(buffer, "error");
 
-            if (asprintf(&filename, "%s" DIR_SEP "%s%s%03u.%s",
-                         cfg->path, prefix, buffer,
-                         (unsigned)tv.tv_usec / 1000, cfg->format) < 0)
+            if (asprintf(&filename, "%s" DIR_SEP "%s%s%03lu.%s",
+                         cfg->path, prefix, buffer, ts.tv_nsec / 1000000,
+                         cfg->format) < 0)
                 filename = NULL;
         }
-        free(prefix);
     } else {
-        /* The user specified a full path name (including file name) */
-        filename = str_format(input, cfg->path);
-        path_sanitize(filename);
+        filename = strdup( cfg->path );
     }
+    free(prefix);
 
     if (!filename)
         goto error;

@@ -53715,3 +53715,15 @@ Author: Pierre d'Herbemont <pdherbemont@videolan.org>
 Date:   Tue Jan 1 15:29:05 2008 +0000
 
     MacOSX/Framework: Support event collapsing, and save the media list thats own the media list aspect.
+
+commit 18e91eef2c923effb5d0365cc3f28d80962c91ad
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 15:26:55 2008 +0000
+
+    VLCMedia.m: Don't flood the event manager with unused meta change notification. Remove uneeded willChangeValueForKey: notification, as per Julien Robert suggestion.
+
+commit dba0ce597e5300a8cd977aef0e43faa7eccf6d97
+Author: Pierre d'Herbemont <pdherbemont@videolan.org>
+Date:   Tue Jan 1 15:21:45 2008 +0000
+
+    VLCEventManager.m: Support event collapsing.

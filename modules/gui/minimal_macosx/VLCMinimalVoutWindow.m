@@ -1,8 +1,8 @@
 /*****************************************************************************
- * VLCMinimalVoutWindow.m: MacOS X Minimal interface window
+ * VLCMinimalVoutWindow.m: macOS minimal vout window
  *****************************************************************************
- * Copyright (C) 2007-2012 VLC authors and VideoLAN
- * $Id: 143291e5d1fe314e558c34d1120fd07680e57a11 $
+ * Copyright (C) 2007-2017 VLC authors and VideoLAN
+ * $Id: bd58f7d6e1c9eb019c0fe2a16d01dc23fc61ff50 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -25,7 +25,7 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#import "intf.h"
+
 #import "VLCMinimalVoutWindow.h"
 #import "misc.h"
 
@@ -34,12 +34,15 @@
 @implementation VLCMinimalVoutWindow
 - (id)initWithContentRect:(NSRect)contentRect
 {
-    if( self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO])
+    if( self = [super initWithContentRect:contentRect
+                                styleMask:NSBorderlessWindowMask
+                                  backing:NSBackingStoreBuffered
+                                    defer:NO])
     {
         initialFrame = contentRect;
         [self setBackgroundColor:[NSColor blackColor]];
         [self setHasShadow:YES];
-        [self setMovableByWindowBackground: YES];
+        [self setMovableByWindowBackground:YES];
         [self center];
     }
     return self;

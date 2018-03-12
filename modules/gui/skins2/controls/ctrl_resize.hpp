@@ -2,7 +2,7 @@
  * ctrl_resize.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 8f2912cfb96bd631f9ba5af9ac448d7967412c43 $
+ * $Id: 9a4b224d3fe9f8ed13a0a240ac65b7981760fb6d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -64,7 +64,7 @@ public:
     virtual void onResize();
 
     /// Get the type of control (custom RTTI)
-    virtual string getType() const { return m_rCtrl.getType(); }
+    virtual std::string getType() const { return m_rCtrl.getType(); }
 
 private:
     FSM m_fsm;

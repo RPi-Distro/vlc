@@ -26,7 +26,7 @@ description=
 [============================================================================[
  Command Line Interface for VLC
 
- This is a modules/control/rc.c look alike (with a bunch of new features).
+ This is a modules/control/oldrc.c look alike (with a bunch of new features).
  It also provides a VLM interface copied from the telnet interface.
 
  Use on local term:
@@ -212,10 +212,12 @@ function playlist_is_tree( client )
 end
 
 function playlist(name,client,arg)
+    local current = vlc.playlist.current()
     function playlist0(item,prefix)
         local prefix = prefix or ""
         if not item.flags.disabled then
-            local str = "| "..prefix..tostring(item.id).." - "..
+            local marker = ( item.id == current ) and "*" or " "
+            local str = "|"..prefix..marker..tostring(item.id).." - "..
                             ( item.name or item.path )
             if item.duration > 0 then
                 str = str.." ("..common.durationtostring(item.duration)..")"
@@ -251,7 +253,7 @@ function playlist(name,client,arg)
     if name == "search" then
         client:append("+----[ Search - "..(arg or "`reset'").." ]")
     else
-        client:append("+----[ Playlist - "..playlist.name.." ]")
+        client:append("+----[ Playlist - "..name.." ]")
     end
     if playlist.children then
         for _, item in ipairs(playlist.children) do
@@ -289,15 +291,10 @@ function services_discovery(name,client,arg)
         local sd = vlc.sd.get_services_names()
         client:append("+----[ Services discovery ]")
         for n,ln in pairs(sd) do
-            local status
-            if vlc.sd.is_loaded(n) then
-                status = "enabled"
-            else
-                status = "disabled"
-            end
-            client:append("| "..n..": " .. ln .. " (" .. status .. ")")
+            client:append("| "..n..": " .. ln)
         end
         client:append("+----[ End of services discovery ]")
+        client:append("Enabled services discovery sources appear in the playlist.")
     end
 end
 
@@ -353,14 +350,27 @@ function help(name,client,arg)
     client:append("+----[ end of help ]")
 end
 
-function input_info(name,client)
-    local item = vlc.input.item()
+function input_info(name,client,id)
+    local item = nil;
+
+    if id then item = (vlc.playlist.get(id) or {})["item"]
+    else       item = vlc.input.item() end
+
     if(item == nil) then return end
-    local categories = item:info()
-    for cat, infos in pairs(categories) do
+    local infos = item:info()
+    infos["Meta data"] = item:metas()
+
+    -- Sort categories so the output is consistent
+    local categories = {}
+    for cat in pairs(infos) do
+        table.insert(categories, cat)
+    end
+    table.sort(categories)
+
+    for _, cat in ipairs(categories) do
         client:append("+----[ "..cat.." ]")
         client:append("|")
-        for name, value in pairs(infos) do
+        for name, value in pairs(infos[cat]) do
             client:append("| "..name..": "..value)
         end
         client:append("|")
@@ -391,11 +401,6 @@ function stats(name,client)
     client:append("| audio decoded    :    "..string.format("%5i",stats_tab["decoded_audio"]))
     client:append("| buffers played   :    "..string.format("%5i",stats_tab["played_abuffers"]))
     client:append("| buffers lost     :    "..string.format("%5i",stats_tab["lost_abuffers"]))
-    client:append("|")
-    client:append("+-[Streaming]")
-    client:append("| packets sent     :    "..string.format("%5i",stats_tab["sent_packets"]))
-    client:append("| bytes sent       : "..string.format("%8.0f KiB",stats_tab["sent_bytes"]/1024))
-    client:append("| sending bitrate  :   "..string.format("%6.0f kb/s",stats_tab["send_bitrate"]*8000))
     client:append("+----[ end of statistical info ]")
 end
 
@@ -421,6 +426,15 @@ function get_title(name,client)
     end
 end
 
+function get_length(name,client)
+    local item = vlc.input.item()
+    if item then
+        client:append(math.floor(item:duration()))
+    else
+        client:append("")
+    end
+end
+
 function ret_print(foo,start,stop)
     local start = start or ""
     local stop = stop or ""
@@ -431,7 +445,7 @@ function get_time(var)
     return function(name,client)
         local input = vlc.object.input()
 	if input then
-	    client:append(math.floor(vlc.var.get( input, var )))
+	    client:append(math.floor(vlc.var.get( input, var ) / 1000000))
 	else
 	    client:append("")
 	end
@@ -489,9 +503,12 @@ function rate(name,client,value)
         vlc.var.set(input, "rate", common.us_tonumber(value))
     elseif name == "normal" then
         vlc.var.set(input,"rate",1)
-    else
-        vlc.var.set(input,"rate-"..name,nil)
     end
+end
+
+function rate_var(name,client,value)
+    local playlist = vlc.object.playlist()
+    vlc.var.trigger_callback(playlist,"rate-"..name)
 end
 
 function frame(name,client)
@@ -567,18 +584,18 @@ commands_ordered = {
     { "pause"; { func = skip2(vlc.playlist.pause); help = "toggle pause" } };
     { "fastforward"; { func = setarg(common.hotkey,"key-jump+extrashort"); help = "set to maximum rate" } };
     { "rewind"; { func = setarg(common.hotkey,"key-jump-extrashort"); help = "set to minimum rate" } };
-    { "faster"; { func = rate; help = "faster playing of stream" } };
-    { "slower"; { func = rate; help = "slower playing of stream" } };
+    { "faster"; { func = rate_var; help = "faster playing of stream" } };
+    { "slower"; { func = rate_var; help = "slower playing of stream" } };
     { "normal"; { func = rate; help = "normal playing of stream" } };
     { "rate"; { func = rate; args = "[playback rate]"; help = "set playback rate to value" } };
     { "frame"; { func = frame; help = "play frame by frame" } };
     { "fullscreen"; { func = skip2(vlc.video.fullscreen); args = "[on|off]"; help = "toggle fullscreen"; aliases = { "f", "F" } } };
-    { "info"; { func = input_info; help = "information about the current stream" } };
+    { "info"; { func = input_info; args= "[X]"; help = "information about the current stream (or specified id)" } };
     { "stats"; { func = stats; help = "show statistical information" } };
     { "get_time"; { func = get_time("time"); help = "seconds elapsed since stream's beginning" } };
     { "is_playing"; { func = is_playing; help = "1 if a stream plays, 0 otherwise" } };
     { "get_title"; { func = get_title; help = "the title of the current stream" } };
-    { "get_length"; { func = get_time("length"); help = "the length of the current stream" } };
+    { "get_length"; { func = get_length; help = "the length of the current stream" } };
     { "" };
     { "volume"; { func = volume; args = "[X]"; help = "set/get audio volume" } };
     { "volup"; { func = ret_print(vlc.volume.up,"( audio volume: "," )"); args = "[X]"; help = "raise audio volume X steps" } };

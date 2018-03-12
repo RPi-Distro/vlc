@@ -2,7 +2,7 @@
  * expr_evaluator.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: f5c4ac525b1eb60a954a2784fe185495e978d3db $
+ * $Id: 7bf2a0d313b7e645e475cb3338c2b4489af9a262 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -36,18 +36,18 @@ public:
     ~ExprEvaluator() { }
 
     /// Clear the RPN stack and parse an expression
-    void parse( const string &rExpr );
+    void parse( const std::string &rExpr );
 
     /// Pop the first token from the RPN stack.
     /// Return NULL when the stack is empty.
-    string getToken();
+    std::string getToken();
 
 private:
     /// RPN stack
-    list<string> m_stack;
+    std::list<std::string> m_stack;
 
     /// Returns true if op1 has precedency over op2
-    bool hasPrecedency( const string &op1, const string &op2 ) const;
+    bool hasPrecedency( const std::string &op1, const std::string &op2 ) const;
 };
 
 #endif

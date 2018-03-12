@@ -2,7 +2,7 @@
  * rand.c : non-predictible random bytes generator
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 948daea5d1da65ffebcc797dd43ac76062af6943 $
+ * $Id: 1aeb656a8ab76592ce90238e2ab79870d081317d $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -100,8 +100,8 @@ void vlc_rand_bytes (void *buf, size_t len)
         PROV_RSA_FULL,          // Type of provider to acquire.
         CRYPT_VERIFYCONTEXT) )  // Flag values
     {
-        /* fill buffer with pseudo-random data, intial buffer content
-           is used as auxillary random seed */
+        /* fill buffer with pseudo-random data, initial buffer content
+           is used as auxiliary random seed */
         CryptGenRandom(hProv, len, buf);
         CryptReleaseContext(hProv, 0);
     }

@@ -2,7 +2,7 @@
  * tree.c : Playlist tree walking functions
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: eca12b1e6625f01edaac114e7da1c1ba129c90bb $
+ * $Id: 32d67acebb052da47425cd139f48407a73310499 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -58,33 +58,25 @@ playlist_item_t *GetPrevItem( playlist_t *p_playlist,
 playlist_item_t * playlist_NodeCreate( playlist_t *p_playlist,
                                        const char *psz_name,
                                        playlist_item_t *p_parent, int i_pos,
-                                       int i_flags, input_item_t *p_input )
+                                       int i_flags )
 {
-    input_item_t *p_new_input = NULL;
+    input_item_t *p_new_input;
     playlist_item_t *p_item;
 
     PL_ASSERT_LOCKED;
     if( !psz_name ) psz_name = _("Undefined");
 
-    if( !p_input )
-        p_new_input = input_item_NewWithType( NULL, psz_name, 0, NULL, 0, -1,
-                                              ITEM_TYPE_NODE );
-    p_item = playlist_ItemNewFromInput( p_playlist,
-                                        p_input ? p_input : p_new_input );
-    if( p_new_input )
-        vlc_gc_decref( p_new_input );
+    p_new_input = input_item_NewExt( NULL, psz_name, -1, ITEM_TYPE_NODE,
+                                     ITEM_NET_UNKNOWN );
+    if( !p_new_input )
+        return NULL;
+    p_item = playlist_ItemNewFromInput( p_playlist, p_new_input );
+    input_item_Release( p_new_input );
 
     if( p_item == NULL )  return NULL;
-    p_item->i_children = 0;
 
-    ARRAY_APPEND(p_playlist->all_items, p_item);
-
-    if( p_parent != NULL )
-        playlist_NodeInsert( p_playlist, p_item, p_parent,
-                             i_pos == PLAYLIST_END ? -1 : i_pos );
-    playlist_SendAddNotify( p_playlist, p_item->i_id,
-                            p_parent ? p_parent->i_id : -1,
-                            !( i_flags & PLAYLIST_NO_REBUILD ));
+    playlist_NodeInsert( p_parent, p_item, i_pos );
+    playlist_SendAddNotify( p_playlist, p_item );
 
     p_item->i_flags |= i_flags;
 
@@ -92,73 +84,36 @@ playlist_item_t * playlist_NodeCreate( playlist_t *p_playlist,
 }
 
 /**
- * Remove all the children of a node
- *
- * This function must be entered with the playlist lock
- *
- * \param p_playlist the playlist
- * \param p_root the node
- * \param b_delete_items do we have to delete the children items ?
- * \return VLC_SUCCESS or an error
- */
-int playlist_NodeEmpty( playlist_t *p_playlist, playlist_item_t *p_root,
-                        bool b_delete_items )
-{
-    PL_ASSERT_LOCKED;
-    int i;
-    if( p_root->i_children == -1 )
-    {
-        return VLC_EGENERIC;
-    }
-
-    /* Delete the children */
-    for( i =  p_root->i_children-1 ; i >= 0 ;i-- )
-    {
-        if( p_root->pp_children[i]->i_children > -1 )
-        {
-            playlist_NodeDelete( p_playlist, p_root->pp_children[i],
-                                 b_delete_items , false );
-        }
-        else if( b_delete_items )
-        {
-            /* Delete the item here */
-            playlist_DeleteFromItemId( p_playlist,
-                                       p_root->pp_children[i]->i_id );
-        }
-    }
-    return VLC_SUCCESS;
-}
-
-/**
  * Remove all the children of a node and removes the node
  *
  * \param p_playlist the playlist
  * \param p_root the node
- * \param b_delete_items do we have to delete the children items ?
- * \return VLC_SUCCESS or an error
  */
-int playlist_NodeDelete( playlist_t *p_playlist, playlist_item_t *p_root,
-                         bool b_delete_items, bool b_force )
+void playlist_NodeDelete( playlist_t *p_playlist, playlist_item_t *p_root )
+{
+    playlist_NodeDeleteExplicit( p_playlist, p_root,
+        PLAYLIST_DELETE_STOP_IF_CURRENT );
+}
+
+void playlist_NodeDeleteExplicit( playlist_t *p_playlist,
+    playlist_item_t *p_root, int flags )
 {
     PL_ASSERT_LOCKED;
 
+    /* Delete the node */
+    if( p_root->i_flags & PLAYLIST_RO_FLAG &&
+        !( flags & PLAYLIST_DELETE_FORCE ) )
+        return;
+
     /* Delete the children */
     for( int i = p_root->i_children - 1 ; i >= 0; i-- )
-        if( b_delete_items || p_root->pp_children[i]->i_children >= 0 )
-            playlist_NodeDelete( p_playlist, p_root->pp_children[i],
-                                 b_delete_items, b_force );
-
-    /* Delete the node */
-    if( p_root->i_flags & PLAYLIST_RO_FLAG && !b_force )
-        return VLC_SUCCESS;
+        playlist_NodeDeleteExplicit( p_playlist,
+            p_root->pp_children[i], flags | PLAYLIST_DELETE_FORCE );
 
     pl_priv(p_playlist)->b_reset_currently_playing = true;
 
     int i;
-    var_SetInteger( p_playlist, "playlist-item-deleted", p_root->i_id );
-    ARRAY_BSEARCH( p_playlist->all_items, ->i_id, int, p_root->i_id, i );
-    if( i != -1 )
-        ARRAY_REMOVE( p_playlist->all_items, i );
+    var_SetAddress( p_playlist, "playlist-item-deleted", p_root );
 
     if( p_root->i_children == -1 ) {
         ARRAY_BSEARCH( p_playlist->items,->i_id, int, p_root->i_id, i );
@@ -166,101 +121,54 @@ int playlist_NodeDelete( playlist_t *p_playlist, playlist_item_t *p_root,
             ARRAY_REMOVE( p_playlist->items, i );
     }
 
-    /* Check if it is the current item */
     if( get_current_status_item( p_playlist ) == p_root )
     {
-        /* Stop */
-        playlist_Control( p_playlist, PLAYLIST_STOP, pl_Locked );
-        msg_Info( p_playlist, "stopping playback" );
-        /* This item can't be the next one to be played ! */
+        /* a deleted item cannot be currently playing */
         set_current_status_item( p_playlist, NULL );
+
+        if( flags & PLAYLIST_DELETE_STOP_IF_CURRENT )
+            playlist_Control( p_playlist, PLAYLIST_STOP, pl_Locked );
     }
 
-    ARRAY_BSEARCH( p_playlist->current,->i_id, int, p_root->i_id, i );
-    if( i != -1 )
-        ARRAY_REMOVE( p_playlist->current, i );
+    for( i = 0; i < p_playlist->current.i_size; i++ )
+        if( p_playlist->current.p_elems[i] == p_root )
+            ARRAY_REMOVE( p_playlist->current, i );
+    for( i = 0; i < p_playlist->current.i_size; i++ )
+        assert( p_playlist->current.p_elems[i] != p_root );
 
     PL_DEBUG( "deleting item `%s'", p_root->p_input->psz_name );
 
     /* Remove the item from its parent */
-    if( p_root->p_parent )
-        playlist_NodeRemoveItem( p_playlist, p_root, p_root->p_parent );
+    playlist_item_t *p_parent = p_root->p_parent;
+    if( p_parent != NULL )
+        TAB_REMOVE(p_parent->i_children, p_parent->pp_children, p_root);
 
-    playlist_ItemRelease( p_root );
-    return VLC_SUCCESS;
+    playlist_ItemRelease( p_playlist, p_root );
 }
 
-
-/**
- * Adds an item to the children of a node
- *
- * \param p_playlist the playlist
- * \param p_item the item to append
- * \param p_parent the parent node
- * \return VLC_SUCCESS or an error
- */
-int playlist_NodeAppend( playlist_t *p_playlist,
-                         playlist_item_t *p_item,
-                         playlist_item_t *p_parent )
-{
-    return playlist_NodeInsert( p_playlist, p_item, p_parent, -1 );
-}
-
-int playlist_NodeInsert( playlist_t *p_playlist,
-                         playlist_item_t *p_item,
-                         playlist_item_t *p_parent,
+int playlist_NodeInsert( playlist_item_t *p_parent, playlist_item_t *p_item,
                          int i_position )
 {
-    PL_ASSERT_LOCKED;
-    (void)p_playlist;
     assert( p_parent && p_parent->i_children != -1 );
     if( i_position == -1 ) i_position = p_parent->i_children ;
     assert( i_position <= p_parent->i_children);
 
-    INSERT_ELEM( p_parent->pp_children,
-                 p_parent->i_children,
-                 i_position,
-                 p_item );
+    TAB_INSERT(p_parent->i_children, p_parent->pp_children,
+               p_item, i_position);
     p_item->p_parent = p_parent;
+
+    /* Inherit special flags from parent (sd cases) */
+    if( ( p_parent->i_flags & PLAYLIST_NO_INHERIT_FLAG ) == 0 )
+        p_item->i_flags |= (p_parent->i_flags & PLAYLIST_RO_FLAG);
+
     return VLC_SUCCESS;
 }
 
 /**
- * Deletes an item from the children of a node
- *
- * \param p_playlist the playlist
- * \param p_item the item to remove
- * \param p_parent the parent node
- * \return VLC_SUCCESS or an error
- */
-int playlist_NodeRemoveItem( playlist_t *p_playlist,
-                        playlist_item_t *p_item,
-                        playlist_item_t *p_parent )
-{
-    PL_ASSERT_LOCKED;
-    (void)p_playlist;
-
-    int ret = VLC_EGENERIC;
-
-    for(int i= 0; i< p_parent->i_children ; i++ )
-    {
-        if( p_parent->pp_children[i] == p_item )
-        {
-            REMOVE_ELEM( p_parent->pp_children, p_parent->i_children, i );
-            ret = VLC_SUCCESS;
-        }
-    }
-
-    if( ret == VLC_SUCCESS ) {
-        assert( p_item->p_parent == p_parent );
-        p_item->p_parent = NULL;
-    }
-
-    return ret;
-}
-
-/**
  * Search a child of a node by its name
+ *
+ * \note The playlist must be locked, and the result is only valid until the
+ * playlist is unlocked.
  *
  * \param p_node the node
  * \param psz_search the name of the child to search
@@ -269,8 +177,6 @@ int playlist_NodeRemoveItem( playlist_t *p_playlist,
 playlist_item_t *playlist_ChildSearchName( playlist_item_t *p_node,
                                            const char *psz_search )
 {
-    playlist_t * p_playlist = p_node->p_playlist; /* For assert_locked */
-    PL_ASSERT_LOCKED;
     int i;
 
     if( p_node->i_children < 0 )
@@ -323,54 +229,13 @@ playlist_item_t *playlist_GetNextLeaf( playlist_t *p_playlist,
         {
             if( b_ena && p_next->i_flags & PLAYLIST_DBL_FLAG )
                 b_ena_ok = false;
-            if( b_unplayed && p_next->p_input->i_nb_played != 0 )
+            if( b_unplayed && p_next->i_nb_played != 0 )
                 b_unplayed_ok = false;
             if( b_ena_ok && b_unplayed_ok ) break;
         }
     }
     if( p_next == NULL ) PL_DEBUG2( "at end of node" );
     return p_next;
-}
-
-/**
- * Finds the previous item to play
- *
- * \param p_playlist the playlist
- * \param p_root the root node
- * \param p_item the previous item  (NULL if none )
- * \return the next item to play, or NULL if none found
- */
-playlist_item_t *playlist_GetPrevLeaf( playlist_t *p_playlist,
-                                       playlist_item_t *p_root,
-                                       playlist_item_t *p_item,
-                                       bool b_ena, bool b_unplayed )
-{
-    PL_ASSERT_LOCKED;
-    playlist_item_t *p_prev;
-
-    PL_DEBUG2( "finding previous of %s within %s", PLI_NAME( p_item ),
-                                                   PLI_NAME( p_root ) );
-    assert( p_root && p_root->i_children != -1 );
-
-    /* Now, walk the tree until we find a suitable previous item */
-    p_prev = p_item;
-    while( 1 )
-    {
-        bool b_ena_ok = true, b_unplayed_ok = true;
-        p_prev = GetPrevItem( p_playlist, p_root, p_prev );
-        if( !p_prev || p_prev == p_root )
-            break;
-        if( p_prev->i_children == -1 )
-        {
-            if( b_ena && p_prev->i_flags & PLAYLIST_DBL_FLAG )
-                b_ena_ok = false;
-            if( b_unplayed && p_prev->p_input->i_nb_played != 0 )
-                b_unplayed_ok = false;
-            if( b_ena_ok && b_unplayed_ok ) break;
-        }
-    }
-    if( p_prev == NULL ) PL_DEBUG2( "at beginning of node" );
-    return p_prev;
 }
 
 /************************************************************************

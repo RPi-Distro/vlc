@@ -2,7 +2,7 @@
  * file_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: daab9225959240821b4f0289a2a344eb181b6fad $
+ * $Id: 5eddb67394f509843a22f8ce84cee7c31e03aeee $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -32,7 +32,7 @@
 #include "file_bitmap.hpp"
 
 FileBitmap::FileBitmap( intf_thread_t *pIntf, image_handler_t *pImageHandler,
-                        string fileName, uint32_t aColor, int nbFrames,
+                        std::string fileName, uint32_t aColor, int nbFrames,
                         int fps, int nbLoops ):
     GenericBitmap( pIntf, nbFrames, fps, nbLoops ), m_width( 0 ), m_height( 0 ),
     m_pData( NULL )

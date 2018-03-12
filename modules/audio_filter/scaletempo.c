@@ -2,7 +2,7 @@
  * scaletempo.c: Scale audio tempo while maintaining pitch
  *****************************************************************************
  * Copyright © 2008 VLC authors and VideoLAN
- * $Id: 4600ec33b5ffcb1b0836c4e4d3623b4af6268ab8 $
+ * $Id: 5b2c408b9783467b0e538e82447719c51469b634 $
  *
  * Authors: Rov Juvano <rovjuvano@users.sourceforge.net>
  *
@@ -32,6 +32,8 @@
 #include <vlc_plugin.h>
 #include <vlc_aout.h>
 #include <vlc_filter.h>
+#include <vlc_modules.h>
+#include <vlc_atomic.h>
 
 #include <string.h> /* for memset */
 #include <limits.h> /* form INT_MIN */
@@ -43,9 +45,20 @@ static int  Open( vlc_object_t * );
 static void Close( vlc_object_t * );
 static block_t *DoWork( filter_t *, block_t * );
 
+#ifdef PITCH_SHIFTER
+static int  OpenPitch( vlc_object_t * );
+static void ClosePitch( vlc_object_t * );
+static block_t *DoPitchWork( filter_t *, block_t * );
+# define MODULE_DESC N_("Pitch Shifter")
+# define MODULES_SHORTNAME N_("Audio pitch changer")
+#else
+# define MODULE_DESC N_("Audio tempo scaler synched with rate")
+# define MODULES_SHORTNAME N_("Scaletempo")
+#endif
+
 vlc_module_begin ()
-    set_description( N_("Audio tempo scaler synched with rate") )
-    set_shortname( N_("Scaletempo") )
+    set_description( MODULE_DESC )
+    set_shortname( MODULES_SHORTNAME )
     set_capability( "audio filter", 0 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AFILTER )
@@ -56,8 +69,14 @@ vlc_module_begin ()
         N_("Overlap Length"), N_("Percentage of stride to overlap"), true )
     add_integer_with_range( "scaletempo-search", 14, 0, 200,
         N_("Search Length"), N_("Length in milliseconds to search for best overlap position"), true )
-
+#ifdef PITCH_SHIFTER
+    add_float_with_range( "pitch-shift", 0, -12, 12,
+        N_("Pitch Shift"), N_("Pitch shift in semitones."), false )
+    set_callbacks( OpenPitch, ClosePitch )
+#else
     set_callbacks( Open, Close )
+#endif
+
 vlc_module_end ()
 
 /*
@@ -111,6 +130,11 @@ struct filter_sys_t
     void     *buf_pre_corr;
     void     *table_window;
     unsigned(*best_overlap_offset)( filter_t *p_filter );
+#ifdef PITCH_SHIFTER
+    /* pitch */
+    filter_t * resampler;
+    vlc_atomic_float rate_shift;
+#endif
 };
 
 /*****************************************************************************
@@ -299,8 +323,8 @@ static int reinit_buffers( filter_t *p_filter )
         p->samples_overlap  = frames_overlap * p->samples_per_frame;
         p->bytes_standing   = p->bytes_stride - p->bytes_overlap;
         p->samples_standing = p->bytes_standing / p->bytes_per_sample;
-        p->buf_overlap      = malloc( p->bytes_overlap );
-        p->table_blend      = malloc( p->samples_overlap * 4 ); /* sizeof (int32|float) */
+        p->buf_overlap      = vlc_alloc( 1, p->bytes_overlap );
+        p->table_blend      = vlc_alloc( 4, p->samples_overlap ); /* sizeof (int32|float) */
         if( !p->buf_overlap || !p->table_blend )
             return VLC_ENOMEM;
         if( p->bytes_overlap > prev_overlap )
@@ -428,10 +452,80 @@ static int Open( vlc_object_t *p_this )
     }
 
     p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    aout_FormatPrepare(&p_filter->fmt_in.audio);
     p_filter->fmt_out.audio = p_filter->fmt_in.audio;
     p_filter->pf_audio_filter = DoWork;
+
     return VLC_SUCCESS;
 }
+
+#ifdef PITCH_SHIFTER
+static inline void PitchSetRateShift( filter_sys_t *p_sys, float pitch_shift )
+{
+    vlc_atomic_store_float( &p_sys->rate_shift,
+                            p_sys->sample_rate / powf(2, pitch_shift / 12) );
+}
+
+static int PitchCallback( vlc_object_t *p_this, char const *psz_var,
+                          vlc_value_t oldval, vlc_value_t newval, void *p_data )
+{
+    VLC_UNUSED( p_this );
+    VLC_UNUSED( oldval );
+    VLC_UNUSED( psz_var );
+
+    PitchSetRateShift( p_data, newval.f_float );
+
+    return VLC_SUCCESS;
+}
+
+static filter_t *ResamplerCreate(filter_t *p_filter)
+{
+    filter_t *p_resampler = vlc_object_create( p_filter, sizeof (filter_t) );
+    if( unlikely( p_resampler == NULL ) )
+        return NULL;
+
+    p_resampler->owner.sys = NULL;
+    p_resampler->p_cfg = NULL;
+    p_resampler->fmt_in = p_filter->fmt_in;
+    p_resampler->fmt_out = p_filter->fmt_in;
+    p_resampler->fmt_out.audio.i_rate =
+        vlc_atomic_load_float( &p_filter->p_sys->rate_shift );
+    aout_FormatPrepare( &p_resampler->fmt_out.audio );
+    p_resampler->p_module = module_need( p_resampler, "audio resampler", NULL,
+                                         false );
+
+    if( p_resampler->p_module == NULL )
+    {
+        msg_Err( p_filter, "Could not load resampler" );
+        vlc_object_release( p_resampler );
+        return NULL;
+    }
+    return p_resampler;
+}
+
+static int OpenPitch( vlc_object_t *p_this )
+{
+    int err = Open( p_this );
+    if( err )
+        return err;
+
+    filter_t     *p_filter = (filter_t *)p_this;
+    vlc_object_t *p_aout = p_filter->obj.parent;
+    filter_sys_t *p_sys = p_filter->p_sys;
+
+    float pitch_shift  = var_CreateGetFloat( p_aout, "pitch-shift" );
+    var_AddCallback( p_aout, "pitch-shift", PitchCallback, p_sys );
+    PitchSetRateShift( p_sys, pitch_shift );
+
+    p_sys->resampler = ResamplerCreate(p_filter);
+    if( !p_sys->resampler )
+        return VLC_EGENERIC;
+
+    p_filter->pf_audio_filter = DoPitchWork;
+
+    return VLC_SUCCESS;
+}
+#endif
 
 static void Close( vlc_object_t *p_this )
 {
@@ -444,6 +538,20 @@ static void Close( vlc_object_t *p_this )
     free( p_sys->table_window );
     free( p_sys );
 }
+
+#ifdef PITCH_SHIFTER
+static void ClosePitch( vlc_object_t *p_this )
+{
+    filter_t *p_filter = (filter_t *)p_this;
+    filter_sys_t *p_sys = p_filter->p_sys;
+    vlc_object_t *p_aout = p_filter->obj.parent;
+    var_DelCallback( p_aout, "pitch-shift", PitchCallback, p_sys );
+    var_Destroy( p_aout, "pitch-shift" );
+    module_unneed( p_sys->resampler, p_sys->resampler->p_module );
+    vlc_object_release( p_sys->resampler );
+    Close( p_this );
+}
+#endif
 
 /*****************************************************************************
  * DoWork: filter wrapper for transform_buffer
@@ -485,3 +593,22 @@ static block_t *DoWork( filter_t * p_filter, block_t * p_in_buf )
     block_Release( p_in_buf );
     return p_out_buf;
 }
+
+#ifdef PITCH_SHIFTER
+static block_t *DoPitchWork( filter_t * p_filter, block_t * p_in_buf )
+{
+    filter_sys_t *p = p_filter->p_sys;
+
+    float rate_shift = vlc_atomic_load_float( &p->rate_shift );
+
+    /* Set matching rates for resampler's output and scaletempo's input */
+    p->resampler->fmt_out.audio.i_rate = rate_shift;
+    p_filter->fmt_in.audio.i_rate = rate_shift;
+
+    /* Change rate, thus changing pitch */
+    p_in_buf = p->resampler->pf_audio_filter( p->resampler, p_in_buf );
+
+    /* Change tempo while preserving shifted pitch */
+    return DoWork( p_filter, p_in_buf );
+}
+#endif

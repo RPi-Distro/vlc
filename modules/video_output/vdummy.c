@@ -2,7 +2,7 @@
  * vdummy.c: Dummy video output display method for testing purposes
  *****************************************************************************
  * Copyright (C) 2000-2009 VLC authors and VideoLAN
- * $Id: 94d1255fef952d3cf6cfdfd337c94b2f5e5c096a $
+ * $Id: f8535ca5360d01a9df95ded454e46384b07f35f7 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -102,7 +102,8 @@ static int Open(vlc_object_t *object,
     vd->prepare = NULL;
     vd->display = display;
     vd->control = Control;
-    vd->manage  = NULL;
+
+    vout_display_DeleteWindow(vd, NULL);
 
     return VLC_SUCCESS;
 }
@@ -123,7 +124,7 @@ static void Close(vlc_object_t *object)
     vout_display_sys_t *sys = vd->sys;
 
     if (sys->pool)
-        picture_pool_Delete(sys->pool);
+        picture_pool_Release(sys->pool);
     free(sys);
 }
 
@@ -146,7 +147,8 @@ static void DisplayStat(vout_display_t *vd, picture_t *picture, subpicture_t *su
 {
     VLC_UNUSED(vd);
     VLC_UNUSED(subpicture);
-    if (vd->fmt.i_width*vd->fmt.i_height >= sizeof(mtime_t)) {
+    if ( vd->fmt.i_width*vd->fmt.i_height >= sizeof(mtime_t) &&
+         (picture->p->i_pitch * picture->p->i_lines) >= sizeof(mtime_t) ) {
         mtime_t date;
         memcpy(&date, picture->p->p_pixels, sizeof(date));
         msg_Dbg(vd, "VOUT got %"PRIu64" ms offset",

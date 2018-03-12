@@ -2,7 +2,7 @@
  * i420_rgb.c : YUV to bitmap RGB conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2004, 2008 VLC authors and VideoLAN
- * $Id: 194403b605311b2154a1171887d41b11fca44cae $
+ * $Id: c476cbdf6457a1b9ec995394d50ec82127f71034 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -35,6 +35,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include <vlc_cpu.h>
 
 #include "i420_rgb.h"
@@ -77,17 +78,17 @@ vlc_module_begin ()
 #if defined (SSE2)
     set_description( N_( "SSE2 I420,IYUV,YV12 to "
                         "RV15,RV16,RV24,RV32 conversions") )
-    set_capability( "video filter2", 120 )
+    set_capability( "video converter", 120 )
 # define vlc_CPU_capable() vlc_CPU_SSE2()
 #elif defined (MMX)
     set_description( N_( "MMX I420,IYUV,YV12 to "
                         "RV15,RV16,RV24,RV32 conversions") )
-    set_capability( "video filter2", 100 )
+    set_capability( "video converter", 100 )
 # define vlc_CPU_capable() vlc_CPU_MMX()
 #else
     set_description( N_("I420,IYUV,YV12 to "
                        "RGB2,RV15,RV16,RV24,RV32 conversions") )
-    set_capability( "video filter2", 80 )
+    set_capability( "video converter", 80 )
 # define vlc_CPU_capable() (true)
 #endif
     set_callbacks( Activate, Deactivate )

@@ -24,6 +24,7 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_services_discovery.h>
@@ -36,7 +37,7 @@
 static int Open( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-VLC_SD_PROBE_HELPER("mtp", "MTP devices", SD_CAT_DEVICES)
+VLC_SD_PROBE_HELPER("mtp", N_("MTP devices"), SD_CAT_DEVICES)
 
 vlc_module_begin()
     set_shortname( "MTP" )
@@ -92,6 +93,7 @@ static int Open( vlc_object_t *p_this )
     if( !( p_sys = malloc( sizeof( services_discovery_sys_t ) ) ) )
         return VLC_ENOMEM;
     p_sd->p_sys = p_sys;
+    p_sd->description = _("MTP devices");
     p_sys->psz_name = NULL;
 
     vlc_mutex_lock( &mtp_lock );
@@ -265,8 +267,8 @@ static void AddTrack( services_discovery_t *p_sd, LIBMTP_track_t *p_track )
         free( psz_string );
     }
     input_item_SetDate( p_input, p_track->date );
-    input_item_SetDuration( p_input, p_track->duration * 1000 );
-    services_discovery_AddItem( p_sd, p_input, NULL );
+    p_input->i_duration = p_track->duration * INT64_C(1000);
+    services_discovery_AddItem( p_sd, p_input );
     p_sd->p_sys->pp_items[p_sd->p_sys->i_count++] = p_input;
 }
 
@@ -281,7 +283,7 @@ static void CloseDevice( services_discovery_t *p_sd )
             if( pp_items[i_i] != NULL )
             {
                 services_discovery_RemoveItem( p_sd, pp_items[i_i] );
-                vlc_gc_decref( pp_items[i_i] );
+                input_item_Release( pp_items[i_i] );
             }
         }
         free( pp_items );

@@ -34,7 +34,7 @@
 #include <vlc_plugin.h>
 #include <vlc_vout.h>
 #include <vlc_modules.h>
-
+#include <vlc_picture.h>
 #include <vlc_filter.h>
 #include <vlc_image.h>
 #include "filter_picture.h"
@@ -59,7 +59,7 @@ static void VlcPictureToIplImage( filter_t* p_filter, picture_t* p_in );
 
 static const char *const chroma_list[] = { "input", "I420", "RGB32"};
 static const char *const chroma_list_text[] = { N_("Use input chroma unaltered"),
-  N_("I420 - first plane is greyscale"), N_("RGB32")};
+  N_("I420 - first plane is grayscale"), N_("RGB32")};
 
 static const char *const output_list[] = { "none", "input", "processed"};
 static const char *const output_list_text[] = { N_("Don't display any video"),
@@ -74,12 +74,12 @@ vlc_module_begin ()
     set_shortname( N_("OpenCV" ))
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     add_shortcut( "opencv_wrapper" )
     set_callbacks( Create, Destroy )
     add_float_with_range( "opencv-scale", 1.0, 0.1, 2.0,
                           N_("Scale factor (0.1-2.0)"),
-                          N_("Ammount by which to scale the picture before sending it to the internal OpenCV filter"),
+                          N_("Amount by which to scale the picture before sending it to the internal OpenCV filter"),
                           false )
     add_string( "opencv-chroma", "input",
                           N_("OpenCV filter chroma"),

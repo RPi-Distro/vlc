@@ -2,7 +2,7 @@
  * attachment.c: Input reading an attachment.
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 941751189bbe50f51eb65c838aa514c163b8912f $
+ * $Id: 9623f823693dca6d5ef894b5b1a0a6ec42173843 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -54,112 +54,112 @@ vlc_module_end()
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-struct access_sys_t {
-    input_attachment_t *a;
-};
+static ssize_t Read(stream_t *, void *, size_t);
+static int     Seek(stream_t *, uint64_t);
+static int     Control(stream_t *, int, va_list);
 
-static ssize_t Read(access_t *, uint8_t *, size_t);
-static int     Seek(access_t *, uint64_t);
-static int     Control(access_t *, int, va_list);
+struct access_sys_t
+{
+    input_attachment_t *attachment;
+    size_t offset;
+};
 
 /* */
 static int Open(vlc_object_t *object)
 {
-    access_t     *access = (access_t *)object;
-    access_sys_t *sys;
+    stream_t     *access = (stream_t *)object;
 
-    input_thread_t *input = access_GetParentInput(access);
+    input_thread_t *input = access->p_input;
     if (!input)
         return VLC_EGENERIC;
 
-    input_attachment_t *a;
-    if (input_Control(input, INPUT_GET_ATTACHMENT, &a, access->psz_location))
-        a = NULL;
+    access_sys_t *sys = vlc_obj_malloc(object, sizeof (*sys));
+    if (unlikely(sys == NULL))
+        return VLC_ENOMEM;
 
-    vlc_object_release(input);
+    if (input_Control(input, INPUT_GET_ATTACHMENT, &sys->attachment,
+                      access->psz_location))
+        sys->attachment = NULL;
 
-    if (!a) {
+    if (sys->attachment == NULL) {
         msg_Err(access, "Failed to find the attachment '%s'",
                 access->psz_location);
         return VLC_EGENERIC;
     }
 
-    /* */
-    access->p_sys = sys = malloc(sizeof(*sys));
-    if (!sys) {
-        vlc_input_attachment_Delete(a);
-        return VLC_ENOMEM;
-    }
-    sys->a = a;
+    sys->offset = 0;
 
     /* */
-    access_InitFields(access);
     access->pf_read    = Read;
     access->pf_block   = NULL;
     access->pf_control = Control;
     access->pf_seek    = Seek;
-
+    access->p_sys      = sys;
     return VLC_SUCCESS;
 }
 
 /* */
 static void Close(vlc_object_t *object)
 {
-    access_t     *access = (access_t *)object;
+    stream_t     *access = (stream_t *)object;
     access_sys_t *sys = access->p_sys;
 
-    vlc_input_attachment_Delete(sys->a);
-    free(sys);
+    vlc_input_attachment_Delete(sys->attachment);
 }
 
 /* */
-static ssize_t Read(access_t *access, uint8_t *buffer, size_t size)
+static ssize_t Read(stream_t *access, void *buffer, size_t size)
 {
     access_sys_t *sys = access->p_sys;
+    input_attachment_t *a = sys->attachment;
 
-    access->info.b_eof = access->info.i_pos >= (uint64_t)sys->a->i_data;
-    if (access->info.b_eof)
+    if (sys->offset >= (uint64_t)a->i_data)
         return 0;
 
-    const size_t copy = __MIN(size, sys->a->i_data - access->info.i_pos);
-    memcpy(buffer, (uint8_t*)sys->a->p_data + access->info.i_pos, copy);
-    access->info.i_pos += copy;
+    const size_t copy = __MIN(size, a->i_data - sys->offset);
+    memcpy(buffer, (uint8_t *)a->p_data + sys->offset, copy);
+    sys->offset += copy;
     return copy;
 }
 
 /* */
-static int Seek(access_t *access, uint64_t position)
+static int Seek(stream_t *access, uint64_t position)
 {
-    access->info.i_pos = position;
-    access->info.b_eof = false;
+    access_sys_t *sys = access->p_sys;
+    input_attachment_t *a = sys->attachment;
+
+    if (position > a->i_data)
+        position = a->i_data;
+
+    sys->offset = position;
     return VLC_SUCCESS;
 }
 
 /* */
-static int Control(access_t *access, int query, va_list args)
+static int Control(stream_t *access, int query, va_list args)
 {
-    VLC_UNUSED(access);
+    access_sys_t *sys = access->p_sys;
+
     switch (query)
     {
-    /* */
-    case ACCESS_CAN_SEEK:
-    case ACCESS_CAN_FASTSEEK:
-    case ACCESS_CAN_PAUSE:
-    case ACCESS_CAN_CONTROL_PACE: {
-        bool *b = va_arg(args, bool*);
-        *b = true;
-        return VLC_SUCCESS;
-    }
-    case ACCESS_GET_PTS_DELAY: {
-        int64_t *d = va_arg(args, int64_t *);
-        *d = DEFAULT_PTS_DELAY;
-        return VLC_SUCCESS;
-    }
-    case ACCESS_SET_PAUSE_STATE:
+    case STREAM_CAN_SEEK:
+    case STREAM_CAN_FASTSEEK:
+    case STREAM_CAN_PAUSE:
+    case STREAM_CAN_CONTROL_PACE:
+        *va_arg(args, bool *) = true;
+        break;
+    case STREAM_GET_SIZE:
+        *va_arg(args, uint64_t *) = sys->attachment->i_data;
+        break;
+    case STREAM_GET_PTS_DELAY:
+        *va_arg(args, int64_t *) = DEFAULT_PTS_DELAY;
+        break;
+    case STREAM_SET_PAUSE_STATE:
         return VLC_SUCCESS;
 
     default:
         return VLC_EGENERIC;
     }
+    return VLC_SUCCESS;
 }
 

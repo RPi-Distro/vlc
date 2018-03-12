@@ -2,7 +2,7 @@
  * var_percent.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b09a0517c1fd57d71d26e795e5f9d1d2d223cc76 $
+ * $Id: 009087b88482b27fcaf79880cb2906eff9b6fb4d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -25,7 +25,7 @@
 #include "var_percent.hpp"
 
 
-const string VarPercent::m_type = "percent";
+const std::string VarPercent::m_type = "percent";
 
 
 void VarPercent::set( float percentage )

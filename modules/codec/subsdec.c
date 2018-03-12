@@ -2,7 +2,7 @@
  * subsdec.c : text subtitle decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: addd8c71f30d53558fffd19059b374be45cf0f8e $
+ * $Id: 868174ba963fbf0cb5b2a50d6123426b7476e1bc $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -33,11 +33,13 @@
 
 #include <limits.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
 #include <vlc_charset.h>
+#include <vlc_xml.h>
 
 #include "substext.h"
 
@@ -171,9 +173,6 @@ static const char *const ppsz_justification_text[] = {
 #define AUTODETECT_UTF8_TEXT N_("UTF-8 subtitle autodetection")
 #define AUTODETECT_UTF8_LONGTEXT N_("This enables automatic detection of " \
             "UTF-8 encoding within subtitle files.")
-#define FORMAT_TEXT N_("Formatted Subtitles")
-#define FORMAT_LONGTEXT N_("Some subtitle formats allow for text formatting. " \
- "VLC partly implements this, but you can choose to disable all formatting.")
 
 static int  OpenDecoder   ( vlc_object_t * );
 static void CloseDecoder  ( vlc_object_t * );
@@ -181,7 +180,7 @@ static void CloseDecoder  ( vlc_object_t * );
 vlc_module_begin ()
     set_shortname( N_("Subtitles"))
     set_description( N_("Text subtitle decoder") )
-    set_capability( "decoder", 50 )
+    set_capability( "spu decoder", 50 )
     set_callbacks( OpenDecoder, CloseDecoder )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_SCODEC )
@@ -194,8 +193,6 @@ vlc_module_begin ()
         change_string_list( ppsz_encodings, ppsz_encoding_names )
     add_bool( "subsdec-autodetect-utf8", true,
               AUTODETECT_UTF8_TEXT, AUTODETECT_UTF8_LONGTEXT, false )
-    add_bool( "subsdec-formatted", true, FORMAT_TEXT, FORMAT_LONGTEXT,
-                 false )
 vlc_module_end ()
 
 /*****************************************************************************
@@ -212,10 +209,9 @@ struct decoder_sys_t
 };
 
 
-static subpicture_t   *DecodeBlock   ( decoder_t *, block_t ** );
+static int             DecodeBlock   ( decoder_t *, block_t * );
 static subpicture_t   *ParseText     ( decoder_t *, block_t * );
-static char           *StripTags      ( char * );
-static char           *CreateHtmlSubtitle( int *pi_align, char * );
+static text_segment_t *ParseSubtitles(int *pi_align, const char * );
 
 /*****************************************************************************
  * OpenDecoder: probe the decoder and return score
@@ -237,14 +233,13 @@ static int OpenDecoder( vlc_object_t *p_this )
             return VLC_EGENERIC;
     }
 
-    p_dec->pf_decode_sub = DecodeBlock;
-    p_dec->fmt_out.i_cat = SPU_ES;
-    p_dec->fmt_out.i_codec = 0;
-
     /* Allocate the memory needed to store the decoder's structure */
     p_dec->p_sys = p_sys = calloc( 1, sizeof( *p_sys ) );
     if( p_sys == NULL )
         return VLC_ENOMEM;
+
+    p_dec->pf_decode = DecodeBlock;
+    p_dec->fmt_out.i_codec = 0;
 
     /* init of p_sys */
     p_sys->i_align = 0;
@@ -324,27 +319,25 @@ static int OpenDecoder( vlc_object_t *p_this )
  ****************************************************************************
  * This function must be fed with complete subtitles units.
  ****************************************************************************/
-static subpicture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
 {
     subpicture_t *p_spu;
-    block_t *p_block;
 
-    if( !pp_block || *pp_block == NULL )
-        return NULL;
+    if( p_block == NULL ) /* No Drain */
+        return VLCDEC_SUCCESS;
 
-    p_block = *pp_block;
-    if( p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    if( p_block->i_flags & BLOCK_FLAG_CORRUPTED )
     {
         block_Release( p_block );
-        return NULL;
+        return VLCDEC_SUCCESS;
     }
 
     p_spu = ParseText( p_dec, p_block );
 
     block_Release( p_block );
-    *pp_block = NULL;
-
-    return p_spu;
+    if( p_spu != NULL )
+        decoder_QueueSub( p_dec, p_spu );
+    return VLCDEC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -369,6 +362,9 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
     decoder_sys_t *p_sys = p_dec->p_sys;
     subpicture_t *p_spu = NULL;
     char *psz_subtitle = NULL;
+
+    if( p_block->i_flags & BLOCK_FLAG_CORRUPTED )
+        return NULL;
 
     /* We cannot display a subpicture with no date */
     if( p_block->i_pts <= VLC_TS_INVALID )
@@ -460,418 +456,479 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
 
     subpicture_updater_sys_t *p_spu_sys = p_spu->updater.p_sys;
 
-    p_spu_sys->align = SUBPICTURE_ALIGN_BOTTOM | p_sys->i_align;
-    p_spu_sys->text  = StripTags( psz_subtitle );
-    if( var_InheritBool( p_dec, "subsdec-formatted" ) )
-        p_spu_sys->html = CreateHtmlSubtitle( &p_spu_sys->align, psz_subtitle );
+    p_spu_sys->region.align = SUBPICTURE_ALIGN_BOTTOM | p_sys->i_align;
+    p_spu_sys->region.inner_align = p_sys->i_align;
+    p_spu_sys->region.p_segments = ParseSubtitles( &p_spu_sys->region.inner_align, psz_subtitle );
 
     free( psz_subtitle );
 
     return p_spu;
 }
 
-/* Function now handles tags with attribute values, and tries
- * to deal with &' commands too. It no longer modifies the string
- * in place, so that the original text can be reused
- */
-static char *StripTags( char *psz_subtitle )
+static bool AppendCharacter( text_segment_t* p_segment, char c )
 {
-    char *psz_text_start;
-    char *psz_text;
+    char* tmp;
+    if ( asprintf( &tmp, "%s%c", p_segment->psz_text ? p_segment->psz_text : "", c ) < 0 )
+        return false;
+    free( p_segment->psz_text );
+    p_segment->psz_text = tmp;
+    return true;
+}
 
-    psz_text = psz_text_start = malloc( strlen( psz_subtitle ) + 1 );
-    if( !psz_text_start )
-        return NULL;
+static bool AppendString( text_segment_t* p_segment, const char* psz_str )
+{
+    char* tmp;
+    if ( asprintf( &tmp, "%s%s", p_segment->psz_text ? p_segment->psz_text : "", psz_str ) < 0 )
+        return false;
+    free( p_segment->psz_text );
+    p_segment->psz_text = tmp;
+    return true;
+}
 
-    while( *psz_subtitle )
+static char* ConsumeAttribute( const char** ppsz_subtitle, char** ppsz_attribute_value )
+{
+    const char* psz_subtitle = *ppsz_subtitle;
+    char* psz_attribute_name;
+    *ppsz_attribute_value = NULL;
+
+    while (*psz_subtitle == ' ')
+        psz_subtitle++;
+
+    size_t attr_len = 0;
+    char delimiter;
+
+    while ( *psz_subtitle && isalpha( *psz_subtitle ) )
     {
-        if( *psz_subtitle == '<' )
-        {
-            if( strncasecmp( psz_subtitle, "<br/>", 5 ) == 0 )
-                *psz_text++ = '\n';
+        psz_subtitle++;
+        attr_len++;
+    }
+    if ( !*psz_subtitle || attr_len == 0 )
+        return NULL;
+    psz_attribute_name = malloc( attr_len + 1 );
+    if ( unlikely( !psz_attribute_name ) )
+        return NULL;
+    strncpy( psz_attribute_name, psz_subtitle - attr_len, attr_len );
+    psz_attribute_name[attr_len] = 0;
 
-            psz_subtitle += strcspn( psz_subtitle, ">" );
-        }
-        else if( *psz_subtitle == '&' )
+    // Skip over to the attribute value
+    while ( *psz_subtitle && *psz_subtitle != '=' )
+        psz_subtitle++;
+    if ( !*psz_subtitle )
+    {
+        *ppsz_subtitle = psz_subtitle;
+        return psz_attribute_name;
+    }
+    // Skip the '=' sign
+    psz_subtitle++;
+
+    // Aknoledge the delimiter if any
+    while ( *psz_subtitle && isspace( *psz_subtitle) )
+        psz_subtitle++;
+
+    if ( *psz_subtitle == '\'' || *psz_subtitle == '"' )
+    {
+        // Save the delimiter and skip it
+        delimiter = *psz_subtitle;
+        psz_subtitle++;
+    }
+    else
+        delimiter = 0;
+
+    // Skip spaces, just in case
+    while ( *psz_subtitle && isspace( *psz_subtitle ) )
+        psz_subtitle++;
+
+    attr_len = 0;
+    while ( *psz_subtitle && ( ( delimiter != 0 && *psz_subtitle != delimiter ) ||
+                               ( delimiter == 0 && ( !isspace(*psz_subtitle) && *psz_subtitle != '>' ) ) ) )
+    {
+        psz_subtitle++;
+        attr_len++;
+    }
+    if ( attr_len == 0 )
+    {
+        *ppsz_subtitle = psz_subtitle;
+        return psz_attribute_name;
+    }
+    if ( unlikely( !( *ppsz_attribute_value = malloc( attr_len + 1 ) ) ) )
+    {
+        free( psz_attribute_name );
+        return NULL;
+    }
+    strncpy( *ppsz_attribute_value, psz_subtitle - attr_len, attr_len );
+    (*ppsz_attribute_value)[attr_len] = 0;
+    // Finally, skip over the final delimiter
+    if (delimiter != 0 && *psz_subtitle)
+        psz_subtitle++;
+    *ppsz_subtitle = psz_subtitle;
+    return psz_attribute_name;
+}
+
+// Returns the next tag and consume the string up to after the tag name, or
+// returns NULL and doesn't advance if the angle bracket was not a tag opening
+// For instance, if psz_subtitle == "<some_tag attribute=value>"
+// GetTag will return "some_tag", and will advance up to the first 'a' in "attribute"
+// The returned value must be freed.
+static char* GetTag( const char** ppsz_subtitle, bool b_closing )
+{
+    const char* psz_subtitle = *ppsz_subtitle;
+    if ( *psz_subtitle != '<' )
+        return NULL;
+    // Skip the '<'
+    psz_subtitle++;
+    if ( b_closing && *psz_subtitle == '/' )
+        psz_subtitle++;
+    // Skip potential spaces
+    while ( *psz_subtitle == ' ' )
+        psz_subtitle++;
+    // Now we need to verify if what comes next is a valid tag:
+    if ( !isalpha( *psz_subtitle ) )
+        return NULL;
+    size_t tag_size = 1;
+    while ( isalnum( psz_subtitle[tag_size] ) || psz_subtitle[tag_size] == '_' )
+        tag_size++;
+    char* psz_tagname = vlc_alloc( tag_size + 1, sizeof( *psz_tagname ) );
+    if ( unlikely( !psz_tagname ) )
+        return NULL;
+    strncpy( psz_tagname, psz_subtitle, tag_size );
+    psz_tagname[tag_size] = 0;
+    psz_subtitle += tag_size;
+    *ppsz_subtitle = psz_subtitle;
+    return psz_tagname;
+}
+
+static bool IsClosed( const char* psz_subtitle, const char* psz_tagname )
+{
+    const char* psz_tagpos = strcasestr( psz_subtitle, psz_tagname );
+    if ( !psz_tagpos )
+        return false;
+    // Search for '</' and '>' immediatly before & after (minding the potential spaces)
+    const char* psz_endtag = psz_tagpos + strlen( psz_tagname );
+    while ( *psz_endtag == ' ' )
+        psz_endtag++;
+    if ( *psz_endtag != '>' )
+        return false;
+    // Skip back before the tag itself
+    psz_tagpos--;
+    while ( *psz_tagpos == ' ' && psz_tagpos > psz_subtitle )
+        psz_tagpos--;
+    if ( *psz_tagpos-- != '/' )
+        return false;
+    if ( *psz_tagpos != '<' )
+        return false;
+    return true;
+}
+
+typedef struct tag_stack tag_stack_t;
+struct tag_stack
+{
+    char* psz_tagname;
+    tag_stack_t *p_next;
+};
+
+static void AppendTag( tag_stack_t **pp_stack, char* psz_tagname )
+{
+    tag_stack_t* p_elem = malloc( sizeof( *p_elem ) );
+    if ( unlikely( !p_elem ) )
+        return;
+    p_elem->p_next = *pp_stack;
+    p_elem->psz_tagname = psz_tagname;
+    *pp_stack = p_elem;
+}
+
+static bool HasTag( tag_stack_t **pp_stack, const char* psz_tagname )
+{
+    tag_stack_t *p_prev = NULL;
+    for ( tag_stack_t* p_current = *pp_stack; p_current; p_current = p_current->p_next )
+    {
+        if ( !strcasecmp( psz_tagname, p_current->psz_tagname ) )
         {
-            if( !strncasecmp( psz_subtitle, "&lt;", 4 ))
+            if ( p_current == *pp_stack )
             {
-                *psz_text++ = '<';
-                psz_subtitle += strcspn( psz_subtitle, ";" );
-            }
-            else if( !strncasecmp( psz_subtitle, "&gt;", 4 ))
-            {
-                *psz_text++ = '>';
-                psz_subtitle += strcspn( psz_subtitle, ";" );
-            }
-            else if( !strncasecmp( psz_subtitle, "&amp;", 5 ))
-            {
-                *psz_text++ = '&';
-                psz_subtitle += strcspn( psz_subtitle, ";" );
-            }
-            else if( !strncasecmp( psz_subtitle, "&quot;", 6 ))
-            {
-                *psz_text++ = '\"';
-                psz_subtitle += strcspn( psz_subtitle, ";" );
+                *pp_stack = p_current->p_next;
             }
             else
             {
-                /* Assume it is just a normal ampersand */
-                *psz_text++ = '&';
+                p_prev->p_next = p_current->p_next;
             }
+            free( p_current->psz_tagname );
+            free( p_current );
+            return true;
         }
-        else
-        {
-            *psz_text++ = *psz_subtitle;
-        }
-
-        /* Security fix: Account for the case where input ends early */
-        if( *psz_subtitle == '\0' ) break;
-
-        psz_subtitle++;
+        p_prev = p_current;
     }
-    *psz_text = '\0';
-    char *psz = realloc( psz_text_start, strlen( psz_text_start ) + 1 );
-    if( psz ) psz_text_start = psz;
-
-    return psz_text_start;
+    return false;
 }
 
-/* Try to respect any style tags present in the subtitle string. The main
- * problem here is a lack of adequate specs for the subtitle formats.
- * SSA/ASS and USF are both detail spec'ed -- but they are handled elsewhere.
- * SAMI has a detailed spec, but extensive rework is needed in the demux
- * code to prevent all this style information being excised, as it presently
- * does.
- * That leaves the others - none of which were (I guess) originally intended
- * to be carrying style information. Over time people have used them that way.
- * In the absence of specifications from which to work, the tags supported
- * have been restricted to the simple set permitted by the USF DTD, ie. :
- *  Basic: <br>, <i>, <b>, <u>, <s>
- *  Extended: <font>
- *    Attributes: face
- *                family
- *                size
- *                color
- *                outline-color
- *                shadow-color
- *                outline-level
- *                shadow-level
- *                back-color
- *                alpha
- * There is also the further restriction that the subtitle be well-formed
- * as an XML entity, ie. the HTML sentence:
- *        <b><i>Bold and Italics</b></i>
- * doesn't qualify because the tags aren't nested one inside the other.
- * <text> tags are automatically added to the output to ensure
- * well-formedness.
- * If the text doesn't qualify for any reason, a NULL string is
- * returned, and the rendering engine will fall back to the
- * plain text version of the subtitle.
+/*
+ * mini style stack implementation
  */
-/* TODO: highly suboptimal, offset should be cached */
-static void HtmlNPut( char **ppsz_html, const char *psz_text, int i_max )
+typedef struct style_stack style_stack_t;
+struct  style_stack
 {
-    char *psz_html = *ppsz_html;
-    if( psz_html == NULL )
+    text_style_t* p_style;
+    style_stack_t* p_next;
+};
+
+static text_style_t* DuplicateAndPushStyle(style_stack_t** pp_stack)
+{
+    text_style_t* p_dup = ( *pp_stack ) ? text_style_Duplicate( (*pp_stack)->p_style ) : text_style_Create( STYLE_NO_DEFAULTS );
+    if ( unlikely( !p_dup ) )
+        return NULL;
+    style_stack_t* p_entry = malloc( sizeof( *p_entry ) );
+    if ( unlikely( !p_entry ) )
+    {
+        text_style_Delete( p_dup );
+        return NULL;
+    }
+    // Give the style ownership to the segment.
+    p_entry->p_style = p_dup;
+    p_entry->p_next = *pp_stack;
+    *pp_stack = p_entry;
+    return p_dup;
+}
+
+static void PopStyle(style_stack_t** pp_stack)
+{
+    style_stack_t* p_old = *pp_stack;
+    if ( !p_old )
         return;
-
-    const size_t i_offset = strlen(psz_html);
-    const size_t i_len = strnlen(psz_text, i_max);
-
-    psz_html = realloc( psz_html, i_offset + i_len + 1 );
-    if( psz_html != NULL )
-    {
-        memcpy( psz_html + i_offset, psz_text, i_len );
-        psz_html[i_offset + i_len] = '\0';
-    }
-    else
-        free( *ppsz_html );
-    *ppsz_html = psz_html;
+    *pp_stack = p_old->p_next;
+    // Don't free the style, it is now owned by the text_segment_t
+    free( p_old );
 }
 
-static void HtmlPut( char **ppsz_html, const char *psz_text )
+static text_segment_t* NewTextSegmentPushStyle( text_segment_t* p_segment, style_stack_t** pp_stack )
 {
-    HtmlNPut( ppsz_html, psz_text, INT_MAX );
-}
-
-static void HtmlCopy( char **ppsz_html, char **ppsz_subtitle, const char *psz_text )
-{
-    HtmlPut( ppsz_html, psz_text );
-    *ppsz_subtitle += strlen(psz_text);
-}
-
-static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
-{
-    char *psz_tag = malloc( 1 );
-    if( psz_tag == NULL )
+    text_segment_t* p_new = text_segment_New( NULL );
+    if ( unlikely( p_new == NULL ) )
         return NULL;
+    text_style_t* p_style = DuplicateAndPushStyle( pp_stack );
+    p_new->style = p_style;
+    p_segment->p_next = p_new;
+    return p_new;
+}
 
-    char *psz_html = malloc( 1 );
-    if( psz_html == NULL )
-    {
-        free( psz_tag );
+static text_segment_t* NewTextSegmentPopStyle( text_segment_t* p_segment, style_stack_t** pp_stack )
+{
+    text_segment_t* p_new = text_segment_New( NULL );
+    if ( unlikely( p_new == NULL ) )
         return NULL;
-    }
-    psz_tag[0] = '\0';
-    psz_html[0] = '\0';
+    // We shouldn't have an empty stack since this happens when closing a tag,
+    // but better be safe than sorry if (/when) we encounter a broken subtitle file.
+    PopStyle( pp_stack );
+    text_style_t* p_dup = ( *pp_stack ) ? text_style_Duplicate( (*pp_stack)->p_style ) : text_style_Create( STYLE_NO_DEFAULTS );
+    p_new->style = p_dup;
+    p_segment->p_next = p_new;
+    return p_new;
+}
+
+static text_segment_t* ParseSubtitles( int *pi_align, const char *psz_subtitle )
+{
+    text_segment_t* p_segment;
+    text_segment_t* p_first_segment;
+    style_stack_t* p_stack = NULL;
+    tag_stack_t* p_tag_stack = NULL;
+
+    //FIXME: Remove initial allocation? Might make the below code more complicated
+    p_first_segment = p_segment = text_segment_New( "" );
 
     bool b_has_align = false;
-
-    HtmlPut( &psz_html, "<text>" );
 
     /* */
     while( *psz_subtitle )
     {
-        if( *psz_subtitle == '\n' )
+        /* HTML extensions */
+        if( *psz_subtitle == '<' )
         {
-            HtmlPut( &psz_html, "<br/>" );
-            psz_subtitle++;
-        }
-        else if( *psz_subtitle == '<' )
-        {
-            if( !strncasecmp( psz_subtitle, "<br/>", 5 ))
+            char *psz_tagname = GetTag( &psz_subtitle, false );
+            if ( psz_tagname != NULL )
             {
-                HtmlCopy( &psz_html, &psz_subtitle, "<br/>" );
-            }
-            else if( !strncasecmp( psz_subtitle, "<b>", 3 ) )
-            {
-                HtmlCopy( &psz_html, &psz_subtitle, "<b>" );
-                HtmlPut( &psz_tag, "b" );
-            }
-            else if( !strncasecmp( psz_subtitle, "<i>", 3 ) )
-            {
-                HtmlCopy( &psz_html, &psz_subtitle, "<i>" );
-                HtmlPut( &psz_tag, "i" );
-            }
-            else if( !strncasecmp( psz_subtitle, "<u>", 3 ) )
-            {
-                HtmlCopy( &psz_html, &psz_subtitle, "<u>" );
-                HtmlPut( &psz_tag, "u" );
-            }
-            else if( !strncasecmp( psz_subtitle, "<s>", 3 ) )
-            {
-                HtmlCopy( &psz_html, &psz_subtitle, "<s>" );
-                HtmlPut( &psz_tag, "s" );
-            }
-            else if( !strncasecmp( psz_subtitle, "<font ", 6 ))
-            {
-                const char *psz_attribs[] = { "face=", "family=", "size=",
-                        "color=", "outline-color=", "shadow-color=",
-                        "outline-level=", "shadow-level=", "back-color=",
-                        "alpha=", NULL };
-
-                HtmlCopy( &psz_html, &psz_subtitle, "<font " );
-                HtmlPut( &psz_tag, "f" );
-
-                while( *psz_subtitle != '>' && *psz_subtitle)
+                if( !strcasecmp( psz_tagname, "br" ) )
                 {
-                    int  k;
-
-                    /* <font       color= */
-                    while (*psz_subtitle == ' ')
-                        psz_subtitle++;
-
-                    for( k=0; psz_attribs[ k ]; k++ )
+                    if ( !AppendCharacter( p_segment, '\n' ) )
                     {
-                        int i_len = strlen( psz_attribs[ k ] );
+                        free( psz_tagname );
+                        goto fail;
+                    }
+                }
+                else if( !strcasecmp( psz_tagname, "b" ) )
+                {
+                    p_segment = NewTextSegmentPushStyle( p_segment, &p_stack );
+                    p_segment->style->i_style_flags |= STYLE_BOLD;
+                    p_segment->style->i_features |= STYLE_HAS_FLAGS;
+                }
+                else if( !strcasecmp( psz_tagname, "i" ) )
+                {
+                    p_segment = NewTextSegmentPushStyle( p_segment, &p_stack );
+                    p_segment->style->i_style_flags |= STYLE_ITALIC;
+                    p_segment->style->i_features |= STYLE_HAS_FLAGS;
+                }
+                else if( !strcasecmp( psz_tagname, "u" ) )
+                {
+                    p_segment = NewTextSegmentPushStyle( p_segment, &p_stack );
+                    p_segment->style->i_style_flags |= STYLE_UNDERLINE;
+                    p_segment->style->i_features |= STYLE_HAS_FLAGS;
+                }
+                else if( !strcasecmp( psz_tagname, "s" ) )
+                {
+                    p_segment = NewTextSegmentPushStyle( p_segment, &p_stack );
+                    p_segment->style->i_style_flags |= STYLE_STRIKEOUT;
+                    p_segment->style->i_features |= STYLE_HAS_FLAGS;
+                }
+                else if( !strcasecmp( psz_tagname, "font" ) )
+                {
+                    p_segment = NewTextSegmentPushStyle( p_segment, &p_stack );
 
-                        if( !strncasecmp( psz_subtitle, psz_attribs[k], i_len ) )
+                    char* psz_attribute_name;
+                    char* psz_attribute_value;
+
+                    while( ( psz_attribute_name = ConsumeAttribute( &psz_subtitle, &psz_attribute_value ) ) )
+                    {
+                        if ( !psz_attribute_value )
                         {
-                            /* */
-                            HtmlPut( &psz_html, psz_attribs[k] );
-                            psz_subtitle += i_len;
-
-                            /* <font       color=   red */
-                            while (*psz_subtitle == ' ')
-                                psz_subtitle++;
-
-                            /* */
-                            if( *psz_subtitle == '"' )
-                            {
-                                psz_subtitle++;
-                                i_len = strcspn( psz_subtitle, "\"" );
-                            }
-                            else if( *psz_subtitle == '\'' )
-                            {
-                                psz_subtitle++;
-                                i_len = strcspn( psz_subtitle, "'" );
-                            }
-                            else
-                            {
-                                i_len = strcspn( psz_subtitle, " \t>" );
-                            }
-                            HtmlPut( &psz_html, "\"" );
-                            HtmlNPut( &psz_html, psz_subtitle, i_len );
-                            HtmlPut( &psz_html, "\"" );
-
-                            psz_subtitle += i_len;
-                            if( *psz_subtitle == '\"' || *psz_subtitle == '\'' )
-                                psz_subtitle++;
-                            break;
+                            free( psz_attribute_name );
+                            continue;
                         }
-                    }
-                    if( psz_attribs[ k ] == NULL )
-                    {
-                        /* Jump over unrecognised tag */
-                        int i_len = strcspn( psz_subtitle, "\"" );
-                        if( psz_subtitle[i_len] == '\"' )
+                        if ( !strcasecmp( psz_attribute_name, "face" ) )
                         {
-                            i_len += 1 + strcspn( &psz_subtitle[i_len + 1], "\"" );
-                            if( psz_subtitle[i_len] == '\"' )
-                                i_len++;
+                            free(p_segment->style->psz_fontname);
+                            p_segment->style->psz_fontname = psz_attribute_value;
+                            // We don't want to free the attribute value since it has become our fontname
+                            psz_attribute_value = NULL;
                         }
-                        /* Not a tag, something else we do not understand */
-                        if( i_len == 0 && *psz_subtitle != '\0' )
-                            psz_subtitle++;
-
-                        psz_subtitle += i_len;
-                    }
-
-                    HtmlNPut( &psz_html, psz_subtitle, strspn(psz_subtitle, " ") );
-                }
-                HtmlPut( &psz_html, ">" );
-                if (*psz_subtitle == '\0') break;
-                psz_subtitle++;
-            }
-            else if( !strncmp( psz_subtitle, "</", 2 ))
-            {
-                bool   b_match     = false;
-                bool   b_ignore    = false;
-                int    i_len       = (psz_tag ? strlen(psz_tag) : 0) - 1;
-                char  *psz_lastTag = NULL;
-
-                if( i_len >= 0 )
-                {
-                    psz_lastTag = psz_tag + i_len;
-                    i_len = 0;
-
-                    switch( *psz_lastTag )
-                    {
-                    case 'b':
-                        b_match = !strncasecmp( psz_subtitle, "</b>", 4 );
-                        i_len   = 4;
-                        break;
-                    case 'i':
-                        b_match = !strncasecmp( psz_subtitle, "</i>", 4 );
-                        i_len   = 4;
-                        break;
-                    case 'u':
-                        b_match = !strncasecmp( psz_subtitle, "</u>", 4 );
-                        i_len   = 4;
-                        break;
-                    case 's':
-                        b_match = !strncasecmp( psz_subtitle, "</s>", 4 );
-                        i_len   = 4;
-                        break;
-                    case 'f':
-                        b_match = !strncasecmp( psz_subtitle, "</font>", 7 );
-                        i_len   = 7;
-                        break;
-                    case 'I':
-                        i_len = strcspn( psz_subtitle, ">" );
-                        b_match = psz_subtitle[i_len] == '>';
-                        b_ignore = true;
-                        if( b_match )
-                            i_len++;
-                        break;
-                    }
-                }
-                if( !b_match )
-                {
-                    /* Not well formed -- kill everything */
-                    free( psz_html );
-                    psz_html = NULL;
-                    break;
-                }
-                *psz_lastTag = '\0';
-                if( !b_ignore )
-                    HtmlNPut( &psz_html, psz_subtitle, i_len );
-
-                psz_subtitle += i_len;
-            }
-            else if( ( psz_subtitle[1] < 'a' || psz_subtitle[1] > 'z' ) &&
-                     ( psz_subtitle[1] < 'A' || psz_subtitle[1] > 'Z' ) )
-            {
-                /* We have a single < */
-                HtmlPut( &psz_html, "&lt;" );
-                psz_subtitle++;
-            }
-            else
-            {
-                /* We have an unknown tag or a single < */
-
-                /* Search for the next tag or end of tag or end of string */
-                char *psz_stop = psz_subtitle + 1 + strcspn( &psz_subtitle[1], "<>" );
-                char *psz_closing = strstr( psz_subtitle, "/>" );
-
-                if( psz_closing && psz_closing < psz_stop )
-                {
-                    /* We have a self closed tag, remove it */
-                    psz_subtitle = &psz_closing[2];
-                }
-                else if( *psz_stop == '>' )
-                {
-                    char psz_match[256];
-
-                    snprintf( psz_match, sizeof(psz_match), "</%s", &psz_subtitle[1] );
-                    psz_match[strcspn( psz_match, " \t>" )] = '\0';
-
-                    if( strstr( psz_subtitle, psz_match ) )
-                    {
-                        /* We have the closing tag, ignore it TODO */
-                        psz_subtitle = &psz_stop[1];
-                        HtmlPut( &psz_tag, "I" );
-                    }
-                    else
-                    {
-                        int i_len = psz_stop + 1 - psz_subtitle;
-
-                        /* Copy the whole data */
-                        for( ; i_len > 0; i_len--, psz_subtitle++ )
+                        else if ( !strcasecmp( psz_attribute_name, "family" ) )
                         {
-                            if( *psz_subtitle == '<' )
-                                HtmlPut( &psz_html, "&lt;" );
-                            else if( *psz_subtitle == '>' )
-                                HtmlPut( &psz_html, "&gt;" );
-                            else
-                                HtmlNPut( &psz_html, psz_subtitle, 1 );
+                            free(p_segment->style->psz_monofontname);
+                            p_segment->style->psz_monofontname = psz_attribute_value;
+                            psz_attribute_value = NULL;
                         }
+                        else if ( !strcasecmp( psz_attribute_name, "size" ) )
+                        {
+                            int size = atoi( psz_attribute_value );
+                            if( size )
+                            {
+                                p_segment->style->i_font_size = size;
+                                p_segment->style->f_font_relsize = STYLE_DEFAULT_REL_FONT_SIZE *
+                                        STYLE_DEFAULT_FONT_SIZE / p_segment->style->i_font_size;
+                            }
+                        }
+                        else if ( !strcasecmp( psz_attribute_name, "color" ) )
+                        {
+                            p_segment->style->i_font_color = vlc_html_color( psz_attribute_value, NULL );
+                            p_segment->style->i_features |= STYLE_HAS_FONT_COLOR;
+                        }
+                        else if ( !strcasecmp( psz_attribute_name, "outline-color" ) )
+                        {
+                            p_segment->style->i_outline_color = vlc_html_color( psz_attribute_value, NULL );
+                            p_segment->style->i_features |= STYLE_HAS_OUTLINE_COLOR;
+                        }
+                        else if ( !strcasecmp( psz_attribute_name, "shadow-color" ) )
+                        {
+                            p_segment->style->i_shadow_color = vlc_html_color( psz_attribute_value, NULL );
+                            p_segment->style->i_features |= STYLE_HAS_SHADOW_COLOR;
+                        }
+                        else if ( !strcasecmp( psz_attribute_name, "outline-level" ) )
+                        {
+                            p_segment->style->i_outline_width = atoi( psz_attribute_value );
+                        }
+                        else if ( !strcasecmp( psz_attribute_name, "shadow-level" ) )
+                        {
+                            p_segment->style->i_shadow_width = atoi( psz_attribute_value );
+                        }
+                        else if ( !strcasecmp( psz_attribute_name, "back-color" ) )
+                        {
+                            p_segment->style->i_background_color = vlc_html_color( psz_attribute_value, NULL );
+                            p_segment->style->i_features |= STYLE_HAS_BACKGROUND_COLOR;
+                        }
+                        else if ( !strcasecmp( psz_attribute_name, "alpha" ) )
+                        {
+                            p_segment->style->i_font_alpha = atoi( psz_attribute_value );
+                            p_segment->style->i_features |= STYLE_HAS_FONT_ALPHA;
+                        }
+
+                        free( psz_attribute_name );
+                        free( psz_attribute_value );
                     }
                 }
                 else
                 {
-                    /* We have a single < */
-                    HtmlPut( &psz_html, "&lt;" );
-                    psz_subtitle++;
+                    // This is an unknown tag. We need to hide it if it's properly closed, and display it otherwise
+                    if ( !IsClosed( psz_subtitle, psz_tagname ) )
+                    {
+                        AppendCharacter( p_segment, '<' );
+                        AppendString( p_segment, psz_tagname );
+                        AppendCharacter( p_segment, '>' );
+                    }
+                    else
+                    {
+                        AppendTag( &p_tag_stack, psz_tagname );
+                        // We don't want to free the tagname now, it will be freed when the tag
+                        // gets poped from the stack.
+                        psz_tagname = NULL;
+                    }
+                    // In any case, fall through and skip to the closing tag.
                 }
+                // Skip potential spaces & end tag
+                while ( *psz_subtitle && *psz_subtitle != '>' )
+                    psz_subtitle++;
+                if ( *psz_subtitle == '>' )
+                    psz_subtitle++;
+
+                free( psz_tagname );
             }
-        }
-        else if( *psz_subtitle == '&' )
-        {
-            if( !strncasecmp( psz_subtitle, "&lt;", 4 ))
+            else if( !strncmp( psz_subtitle, "</", 2 ))
             {
-                HtmlCopy( &psz_html, &psz_subtitle, "&lt;" );
-            }
-            else if( !strncasecmp( psz_subtitle, "&gt;", 4 ))
-            {
-                HtmlCopy( &psz_html, &psz_subtitle, "&gt;" );
-            }
-            else if( !strncasecmp( psz_subtitle, "&amp;", 5 ))
-            {
-                HtmlCopy( &psz_html, &psz_subtitle, "&amp;" );
+                char* psz_tagname = GetTag( &psz_subtitle, true );
+                if ( psz_tagname != NULL )
+                {
+                    if ( !strcasecmp( psz_tagname, "b" ) ||
+                         !strcasecmp( psz_tagname, "i" ) ||
+                         !strcasecmp( psz_tagname, "u" ) ||
+                         !strcasecmp( psz_tagname, "s" ) ||
+                         !strcasecmp( psz_tagname, "font" ) )
+                    {
+                        // A closing tag for one of the tags we handle, meaning
+                        // we pushed a style onto the stack earlier
+                        p_segment = NewTextSegmentPopStyle( p_segment, &p_stack );
+                    }
+                    else
+                    {
+                        // Unknown closing tag. If it is closing an unknown tag, ignore it. Otherwise, display it
+                        if ( !HasTag( &p_tag_stack, psz_tagname ) )
+                        {
+                            AppendString( p_segment, "</" );
+                            AppendString( p_segment, psz_tagname );
+                            AppendCharacter( p_segment, '>' );
+                        }
+                    }
+                    while ( *psz_subtitle == ' ' )
+                        psz_subtitle++;
+                    if ( *psz_subtitle == '>' )
+                        psz_subtitle++;
+                    free( psz_tagname );
+                }
+                else
+                {
+                    /**
+                      * This doesn't appear to be a valid tag closing syntax.
+                      * Simply append the text
+                      */
+                    AppendString( p_segment, "</" );
+                    psz_subtitle += 2;
+                }
             }
             else
             {
-                HtmlPut( &psz_html, "&amp;" );
+                /* We have an unknown tag, just append it, and move on.
+                 * The rest of the string won't be recognized as a tag, and
+                 * we will ignore unknown closing tag
+                 */
+                AppendCharacter( p_segment, '<' );
                 psz_subtitle++;
             }
         }
-        else if( *psz_subtitle == '>' )
-        {
-            HtmlPut( &psz_html, "&gt;" );
-            psz_subtitle++;
-        }
+        /* SSA extensions */
         else if( psz_subtitle[0] == '{' && psz_subtitle[1] == '\\' &&
                  strchr( psz_subtitle, '}' ) )
         {
@@ -891,102 +948,124 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
             /* Hide {\stupidity} */
             psz_subtitle = strchr( psz_subtitle, '}' ) + 1;
         }
-        else if( psz_subtitle[0] == '{' &&
-                ( psz_subtitle[1] == 'Y' || psz_subtitle[1] == 'y' )
-                && psz_subtitle[2] == ':' && strchr( psz_subtitle, '}' ) )
+        /* MicroDVD extensions */
+        /* FIXME:
+         *  - Currently, we don't do difference between X and x, and we should:
+         *    Capital Letters applies to the whole text and not one line
+         *  - We don't support Position and Coordinates
+         *  - We don't support the DEFAULT flag (HEADER)
+         */
+
+        else if( psz_subtitle[0] == '{' && psz_subtitle[1] != 0 &&
+                 psz_subtitle[2] == ':' && strchr( &psz_subtitle[2], '}' ) )
         {
-            // FIXME: We don't do difference between Y and y, and we should.
-            if( psz_subtitle[3] == 'i' )
+            const char *psz_tag_end = strchr( &psz_subtitle[2], '}' );
+            size_t i_len = psz_tag_end - &psz_subtitle[3];
+
+            if( psz_subtitle[1] == 'Y' || psz_subtitle[1] == 'y' )
             {
-                HtmlPut( &psz_html, "<i>" );
-                HtmlPut( &psz_tag, "i" );
+                if( psz_subtitle[3] == 'i' )
+                {
+                    p_segment = NewTextSegmentPushStyle( p_segment, &p_stack );
+                    p_segment->style->i_style_flags |= STYLE_ITALIC;
+                    p_segment->style->i_features |= STYLE_HAS_FLAGS;
+                    psz_subtitle++;
+                }
+                if( psz_subtitle[3] == 'b' )
+                {
+                    p_segment = NewTextSegmentPushStyle( p_segment, &p_stack );
+                    p_segment->style->i_style_flags |= STYLE_BOLD;
+                    p_segment->style->i_features |= STYLE_HAS_FLAGS;
+                    psz_subtitle++;
+                }
+                if( psz_subtitle[3] == 'u' )
+                {
+                    p_segment = NewTextSegmentPushStyle( p_segment, &p_stack );
+                    p_segment->style->i_style_flags |= STYLE_UNDERLINE;
+                    p_segment->style->i_features |= STYLE_HAS_FLAGS;
+                    psz_subtitle++;
+                }
             }
-            if( psz_subtitle[3] == 'b' )
+            else if( (psz_subtitle[1] == 'C' || psz_subtitle[1] == 'c' )
+                    && psz_subtitle[3] == '$' && i_len >= 7 )
             {
-                HtmlPut( &psz_html, "<b>" );
-                HtmlPut( &psz_tag, "b" );
+                /* Yes, they use BBGGRR, instead of RRGGBB */
+                char psz_color[7];
+                psz_color[0] = psz_subtitle[8]; psz_color[1] = psz_subtitle[9];
+                psz_color[2] = psz_subtitle[6]; psz_color[3] = psz_subtitle[7];
+                psz_color[4] = psz_subtitle[4]; psz_color[5] = psz_subtitle[5];
+                psz_color[6] = '\0';
+                p_segment = NewTextSegmentPushStyle( p_segment, &p_stack );
+                p_segment->style->i_font_color = vlc_html_color( psz_color, NULL );
+                p_segment->style->i_features |= STYLE_HAS_FONT_COLOR;
             }
-            if( psz_subtitle[3] == 'u' )
+            else if( psz_subtitle[1] == 'F' || psz_subtitle[1] == 'f' )
             {
-                HtmlPut( &psz_html, "<u>" );
-                HtmlPut( &psz_tag, "u" );
+                p_segment = NewTextSegmentPushStyle( p_segment, &p_stack );
+                free(p_segment->style->psz_fontname);
+                p_segment->style->psz_fontname = strndup( &psz_subtitle[3], i_len );
             }
-            psz_subtitle = strchr( psz_subtitle, '}' ) + 1;
+            else if( psz_subtitle[1] == 'S' || psz_subtitle[1] == 's' )
+            {
+                int size = atoi( &psz_subtitle[3] );
+                if( size )
+                {
+                    p_segment = NewTextSegmentPushStyle( p_segment, &p_stack );
+                    p_segment->style->i_font_size = size;
+                    p_segment->style->f_font_relsize = STYLE_DEFAULT_REL_FONT_SIZE *
+                                STYLE_DEFAULT_FONT_SIZE / p_segment->style->i_font_size;
+
+                }
+            }
+            /* Currently unsupported since we don't have access to the i_align flag here
+            else if( psz_subtitle[1] == 'P' )
+            {
+                if( psz_subtitle[3] == "1" )
+                    i_align = SUBPICTURE_ALIGN_TOP;
+                else if( psz_subtitle[3] == "0" )
+                    i_align = SUBPICTURE_ALIGN_BOTTOM;
+            } */
+            // Hide other {x:y} atrocities, notably {o:x}
+            psz_subtitle = psz_tag_end + 1;
         }
-        else if( psz_subtitle[0] == '{' &&  psz_subtitle[1] != '\0' && psz_subtitle[2] == ':' && strchr( psz_subtitle, '}' ) )
+        else
         {
-            // Hide other {x:y} atrocities, like {c:$bbggrr} or {P:x}
-            psz_subtitle = strchr( psz_subtitle, '}' ) + 1;
-        }
-        else if( psz_subtitle[0] == '\\' && psz_subtitle[1] )
-        {
-            if( psz_subtitle[1] == 'N' || psz_subtitle[1] == 'n' )
+            if( *psz_subtitle == '\n' || !strncasecmp( psz_subtitle, "\\n", 2 ) )
             {
-                HtmlPut( &psz_html, "<br/>" );
-                psz_subtitle += 2;
+                if ( !AppendCharacter( p_segment, '\n' ) )
+                    goto fail;
+                if ( *psz_subtitle == '\n' )
+                    psz_subtitle++;
+                else
+                    psz_subtitle += 2;
             }
-            else if( psz_subtitle[1] == 'h' )
+            else if( !strncasecmp( psz_subtitle, "\\h", 2 ) )
             {
-                /* Non breakable space */
-                HtmlPut( &psz_html, NO_BREAKING_SPACE );
+                if ( !AppendString( p_segment, "\xC2\xA0" ) )
+                    goto fail;
                 psz_subtitle += 2;
             }
             else
             {
-                HtmlPut( &psz_html, "\\" );
+                //FIXME: Highly inneficient
+                AppendCharacter( p_segment, *psz_subtitle );
                 psz_subtitle++;
             }
         }
-        else
-        {
-            HtmlNPut( &psz_html, psz_subtitle, 1 );
-#if 0
-            if( *psz_html )
-            {
-                /* Check for double whitespace */
-# error This test does not make sense.
-                if( ( *psz_html == ' '  || *psz_html == '\t' ) &&
-                    ( *(psz_html-1) == ' ' || *(psz_html-1) == '\t' ) )
-                {
-                    HtmlPut( &psz_html, NO_BREAKING_SPACE );
-                    psz_html--;
-                }
-            }
-#endif
-            psz_subtitle++;
-        }
     }
-
-    while( psz_tag && *psz_tag )
+    while ( p_stack )
+        PopStyle( &p_stack );
+    while ( p_tag_stack )
     {
-        /* */
-        char *psz_last = &psz_tag[strlen(psz_tag)-1];
-        switch( *psz_last )
-        {
-            case 'b':
-                HtmlPut( &psz_html, "</b>" );
-                break;
-            case 'i':
-                HtmlPut( &psz_html, "</i>" );
-                break;
-            case 'u':
-                HtmlPut( &psz_html, "</u>" );
-                break;
-            case 's':
-                HtmlPut( &psz_html, "</s>" );
-                break;
-            case 'f':
-                HtmlPut( &psz_html, "</font>" );
-                break;
-            case 'I':
-                break;
-        }
-        *psz_last = '\0';
+        tag_stack_t *p_tag = p_tag_stack;
+        p_tag_stack = p_tag_stack->p_next;
+        free( p_tag->psz_tagname );
+        free( p_tag );
     }
-    /* Close not well formed subtitle */
-    HtmlPut( &psz_html, "</text>" );
 
-    free( psz_tag );
+    return p_first_segment;
 
-    return psz_html;
+fail:
+    text_segment_ChainDelete( p_first_segment );
+    return NULL;
 }

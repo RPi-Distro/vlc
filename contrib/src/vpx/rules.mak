@@ -1,19 +1,25 @@
 # libvpx
 
-VPX_VERSION := 1.4.0
+VPX_VERSION := 1.6.1
 VPX_URL := http://storage.googleapis.com/downloads.webmproject.org/releases/webm/libvpx-$(VPX_VERSION).tar.bz2
 
+PKGS += vpx
+ifeq ($(call need_pkg,"vpx >= 1.5.0"),)
+PKGS_FOUND += vpx
+endif
+
 $(TARBALLS)/libvpx-$(VPX_VERSION).tar.bz2:
-	$(call download,$(VPX_URL))
+	$(call download_pkg,$(VPX_URL),vpx)
 
 .sum-vpx: libvpx-$(VPX_VERSION).tar.bz2
 
 libvpx: libvpx-$(VPX_VERSION).tar.bz2 .sum-vpx
 	$(UNPACK)
-	$(APPLY) $(SRC)/vpx/libvpx-sysroot.patch
-	$(APPLY) $(SRC)/vpx/libvpx-no-cross.patch
 	$(APPLY) $(SRC)/vpx/libvpx-mac.patch
 	$(APPLY) $(SRC)/vpx/libvpx-ios.patch
+ifdef HAVE_ANDROID
+	$(APPLY) $(SRC)/vpx/libvpx-android.patch
+endif
 	$(MOVE)
 
 DEPS_vpx =
@@ -27,7 +33,15 @@ endif
 VPX_LDFLAGS := $(LDFLAGS)
 
 ifeq ($(ARCH),arm)
+ifdef HAVE_IOS
+ifneq ($(filter armv7s%,$(subst -, ,$(HOST))),)
+VPX_ARCH := armv7s
+else
 VPX_ARCH := armv7
+endif
+else
+VPX_ARCH := armv7
+endif
 else ifeq ($(ARCH),i386)
 VPX_ARCH := x86
 else ifeq ($(ARCH),mips)
@@ -52,8 +66,13 @@ VPX_OS := darwin9
 else
 VPX_OS := darwin10
 endif
+VPX_CROSS :=
 else ifdef HAVE_IOS
+ifeq ($(ARCH),arm)
+VPX_OS := darwin
+else
 VPX_OS := darwin11
+endif
 else ifdef HAVE_SOLARIS
 VPX_OS := solaris
 else ifdef HAVE_WIN64 # must be before WIN32
@@ -72,33 +91,57 @@ endif
 endif
 
 VPX_CONF := \
-	--enable-runtime-cpu-detect \
 	--disable-docs \
 	--disable-examples \
 	--disable-unit-tests \
 	--disable-install-bins \
-	--disable-install-docs
+	--disable-install-docs \
+	--disable-dependency-tracking \
+	--enable-vp9-highbitdepth
+
+ifndef HAVE_IOS
+VPX_CONF += --enable-runtime-cpu-detect
+endif
 
 ifndef BUILD_ENCODERS
-	VPX_CONF += --disable-vp8-encoder --disable-vp9-encoder
+VPX_CONF += --disable-vp8-encoder --disable-vp9-encoder
 endif
 
 ifndef HAVE_WIN32
 VPX_CONF += --enable-pic
+else
+VPX_CONF += --extra-cflags="-mstackrealign"
 endif
 ifdef HAVE_MACOSX
-VPX_CONF += --sdk-path=$(MACOSX_SDK)
+VPX_CONF += --sdk-path=$(MACOSX_SDK) --extra-cflags="$(EXTRA_CFLAGS)"
 endif
 ifdef HAVE_IOS
-VPX_CONF += --sdk-path=$(IOS_SDK) --enable-vp8-decoder --disable-vp8-encoder --disable-vp9-encoder
-VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -arch $(ARCH) -syslibroot $(IOS_SDK) -ios_version_min 6.1
+VPX_CONF += --sdk-path=$(IOS_SDK) --enable-vp8-decoder
+ifdef HAVE_TVOS
+VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -mtvos-version-min=9.0
+else
+VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -miphoneos-version-min=6.1
+endif
+ifeq ($(ARCH),aarch64)
+VPX_LDFLAGS += -arch arm64
+else
+ifndef HAVE_IOS
+VPX_LDFLAGS += -arch $(ARCH)
+endif
+endif
 endif
 ifdef HAVE_ANDROID
 # vpx configure.sh overrides our sysroot and it looks for it itself, and
 # uses that path to look for the compiler (which we already know)
-VPX_CONF += --sdk-path=$(shell dirname $(shell which $(HOST)-gcc))
-# needed for cpu-features.h
-VPX_CONF += --extra-cflags="-I $(ANDROID_NDK)/sources/cpufeatures/"
+VPX_CONF += --sdk-path=$(shell dirname $(shell which $(HOST)-clang))
+# broken text relocations
+ifeq ($(ARCH),x86_64)
+VPX_CONF += --disable-mmx
+endif
+endif
+
+ifndef WITH_OPTIMIZATION
+VPX_CONF += --enable-debug --disable-optimizations
 endif
 
 .vpx: libvpx

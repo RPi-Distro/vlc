@@ -1,10 +1,10 @@
 # fontconfig
 
-FONTCONFIG_VERSION := 2.11.1
+FONTCONFIG_VERSION := 2.12.3
 FONTCONFIG_URL := https://www.freedesktop.org/software/fontconfig/release/fontconfig-$(FONTCONFIG_VERSION).tar.gz
 
 PKGS += fontconfig
-ifeq ($(call need_pkg,"fontconfig >= 2.10.92"),)
+ifeq ($(call need_pkg,"fontconfig >= 2.11"),)
 PKGS_FOUND += fontconfig
 endif
 
@@ -19,6 +19,8 @@ ifdef HAVE_WIN32
 	$(APPLY) $(SRC)/fontconfig/fontconfig-win32.patch
 	$(APPLY) $(SRC)/fontconfig/fontconfig-noxml2.patch
 endif
+	$(RM) $(UNPACK_DIR)/src/fcobjshash.gperf
+	$(call pkg_static, "fontconfig.pc.in")
 	$(MOVE)
 
 FONTCONFIG_CONF := $(HOSTCONF) \

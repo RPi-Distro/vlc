@@ -2,7 +2,7 @@
  * async_queue.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 759ff6a6e5d37fa65d3ee7b67145aa3b6eb8f616 $
+ * $Id: fcdbecbd16603c466decbb51da18da4e42838cbc $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -26,6 +26,7 @@
 #include "../src/os_factory.hpp"
 #include "../src/os_timer.hpp"
 
+#include <new>
 
 AsyncQueue::AsyncQueue( intf_thread_t *pIntf ): SkinObject( pIntf ),
     m_cmdFlush( this )
@@ -54,7 +55,7 @@ AsyncQueue *AsyncQueue::instance( intf_thread_t *pIntf )
     if( ! pIntf->p_sys->p_queue )
     {
         AsyncQueue *pQueue;
-        pQueue = new AsyncQueue( pIntf );
+        pQueue = new (std::nothrow) AsyncQueue( pIntf );
         if( pQueue )
         {
              // Initialization succeeded
@@ -87,7 +88,7 @@ void AsyncQueue::push( const CmdGenericPtr &rcCommand, bool removePrev )
 }
 
 
-void AsyncQueue::remove( const string &rType, const CmdGenericPtr &rcCommand )
+void AsyncQueue::remove( const std::string &rType, const CmdGenericPtr &rcCommand )
 {
     cmdList_t::iterator it;
     for( it = m_cmdList.begin(); it != m_cmdList.end(); /* nothing */ )

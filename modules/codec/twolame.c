@@ -3,7 +3,7 @@
  *            (using libtwolame from http://www.twolame.org/)
  *****************************************************************************
  * Copyright (C) 2004-2005 VLC authors and VideoLAN
- * $Id: b41276edf5fce280bf63da48abe36284ecb26307 $
+ * $Id: 6fdad1164c69ebe4f3572871ab423c0298949f6b $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin
@@ -133,7 +133,7 @@ static int OpenEncoder( vlc_object_t *p_this )
     if( p_enc->fmt_out.i_codec != VLC_CODEC_MP2 &&
         p_enc->fmt_out.i_codec != VLC_CODEC_MPGA &&
         p_enc->fmt_out.i_codec != VLC_FOURCC( 'm', 'p', '2', 'a' ) &&
-        !p_enc->b_force )
+        !p_enc->obj.force )
     {
         return VLC_EGENERIC;
     }
@@ -177,8 +177,8 @@ static int OpenEncoder( vlc_object_t *p_this )
     if( var_GetBool( p_enc, ENC_CFG_PREFIX "vbr" ) )
     {
         float f_quality = var_GetFloat( p_enc, ENC_CFG_PREFIX "quality" );
-        if ( f_quality > 50.0 ) f_quality = 50.0;
-        if ( f_quality < 0.0 ) f_quality = 0.0;
+        if ( f_quality > 50.f ) f_quality = 50.f;
+        if ( f_quality < 0.f ) f_quality = 0.f;
         twolame_set_VBR( p_sys->p_twolame, 1 );
         twolame_set_VBR_q( p_sys->p_twolame, f_quality );
     }
@@ -289,7 +289,7 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
         if( !p_block )
             return NULL;
         memcpy( p_block->p_buffer, p_sys->p_out_buffer, i_used );
-        p_block->i_length = (mtime_t)1000000 *
+        p_block->i_length = CLOCK_FREQ *
                 (mtime_t)MPEG_FRAME_SIZE / (mtime_t)p_enc->fmt_out.audio.i_rate;
         p_block->i_dts = p_block->i_pts = p_sys->i_pts;
         p_sys->i_pts += p_block->i_length;
@@ -332,7 +332,7 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
             return NULL;
         }
         memcpy( p_block->p_buffer, p_sys->p_out_buffer, i_used );
-        p_block->i_length = (mtime_t)1000000 *
+        p_block->i_length = CLOCK_FREQ *
                 (mtime_t)MPEG_FRAME_SIZE / (mtime_t)p_enc->fmt_out.audio.i_rate;
         p_block->i_dts = p_block->i_pts = p_sys->i_pts;
         p_sys->i_pts += p_block->i_length;

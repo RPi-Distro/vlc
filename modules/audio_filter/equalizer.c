@@ -2,7 +2,7 @@
  * equalizer.c:
  *****************************************************************************
  * Copyright (C) 2004-2012 VLC authors and VideoLAN
- * $Id: 98a4a7ee46bfb692639d28d2b25e0805a6b4fd13 $
+ * $Id: f83d4599caba5d237aac0627c89afc9f6f4c7649 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -164,6 +164,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    aout_FormatPrepare(&p_filter->fmt_in.audio);
     p_filter->fmt_out.audio = p_filter->fmt_in.audio;
     p_filter->pf_audio_filter = DoWork;
 
@@ -282,7 +283,7 @@ static int EqzInit( filter_t *p_filter, int i_rate )
     eqz_config_t cfg;
     int i, ch;
     vlc_value_t val1, val2, val3;
-    vlc_object_t *p_aout = p_filter->p_parent;
+    vlc_object_t *p_aout = p_filter->obj.parent;
     int i_ret = VLC_ENOMEM;
 
     bool b_vlcFreqs = var_InheritBool( p_aout, "equalizer-vlcfreqs" );
@@ -290,9 +291,9 @@ static int EqzInit( filter_t *p_filter, int i_rate )
 
     /* Create the static filter config */
     p_sys->i_band = cfg.i_band;
-    p_sys->f_alpha = malloc( p_sys->i_band * sizeof(float) );
-    p_sys->f_beta  = malloc( p_sys->i_band * sizeof(float) );
-    p_sys->f_gamma = malloc( p_sys->i_band * sizeof(float) );
+    p_sys->f_alpha = vlc_alloc( p_sys->i_band, sizeof(float) );
+    p_sys->f_beta  = vlc_alloc( p_sys->i_band, sizeof(float) );
+    p_sys->f_gamma = vlc_alloc( p_sys->i_band, sizeof(float) );
     if( !p_sys->f_alpha || !p_sys->f_beta || !p_sys->f_gamma )
         goto error;
 
@@ -306,7 +307,7 @@ static int EqzInit( filter_t *p_filter, int i_rate )
     /* Filter dyn config */
     p_sys->b_2eqz = false;
     p_sys->f_gamp = 1.0f;
-    p_sys->f_amp  = malloc( p_sys->i_band * sizeof(float) );
+    p_sys->f_amp  = vlc_alloc( p_sys->i_band, sizeof(float) );
     if( !p_sys->f_amp )
         goto error;
 
@@ -451,7 +452,7 @@ static void EqzFilter( filter_t *p_filter, float *out, float *in,
 static void EqzClean( filter_t *p_filter )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
-    vlc_object_t *p_aout = p_filter->p_parent;
+    vlc_object_t *p_aout = p_filter->obj.parent;
 
     var_DelCallback( p_aout, "equalizer-bands", BandsCallback, p_sys );
     var_DelCallback( p_aout, "equalizer-preset", PresetCallback, p_sys );

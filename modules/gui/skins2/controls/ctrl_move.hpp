@@ -2,7 +2,7 @@
  * ctrl_move.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 13fbcfaf7c4a3cf412d0690bc5d31eeebab4eca5 $
+ * $Id: d564c00019d99d85b00e4067e4355f11ae003844 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -63,7 +63,7 @@ public:
     virtual void onResize();
 
     /// Get the type of control (custom RTTI)
-    virtual string getType() const { return m_rCtrl.getType(); }
+    virtual std::string getType() const { return m_rCtrl.getType(); }
 
 private:
     FSM m_fsm;

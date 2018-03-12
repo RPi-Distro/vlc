@@ -23,10 +23,12 @@ endif
 	$(APPLY) $(SRC)/faad2/faad2-disable-drc.patch
 	$(APPLY) $(SRC)/faad2/faad2-fix-71wPCEmapping.patch
 	$(APPLY) $(SRC)/faad2/faad2-fix-cpe-reconstruction.patch
+	$(APPLY) $(SRC)/faad2/faad2-add-define.patch
 	cd $(UNPACK_DIR) && $(CC) -iquote . -E - </dev/null || sed -i 's/-iquote /-I/' libfaad/Makefile.am
 	$(MOVE)
 
 .faad2: faad2
+	$(REQUIRE_GPL)
 	$(RECONF)
 	cd $< && $(HOSTVARS) ./configure --without-drm $(HOSTCONF)
 	cd $< && sed -i.orig "s/shrext_cmds/shrext/g" libtool

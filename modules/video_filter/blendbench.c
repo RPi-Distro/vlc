@@ -2,7 +2,7 @@
  * blendbench.c : blending benchmark plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: af813ea9acbcd2f0dbb654a20d60d08050c58d88 $
+ * $Id: d33fc3cb871631e3ac951eb8cd06c394bdf9faa6 $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *
@@ -35,6 +35,7 @@
 #include <vlc_modules.h>
 
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include <vlc_image.h>
 
 /*****************************************************************************
@@ -75,7 +76,7 @@ vlc_module_begin ()
     set_shortname( N_("Blendbench" ))
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
 
     set_section( N_("Benchmarking"), NULL )
     add_integer( CFG_PREFIX "loops", 1000, LOOPS_TEXT,
@@ -176,8 +177,8 @@ static int Create( vlc_object_t *p_this )
                                                   CFG_PREFIX "alpha" );
 
     psz_temp = var_CreateGetStringCommand( p_filter, CFG_PREFIX "base-chroma" );
-    p_sys->i_base_chroma = VLC_FOURCC( psz_temp[0], psz_temp[1],
-                                       psz_temp[2], psz_temp[3] );
+    p_sys->i_base_chroma = !psz_temp || strlen( psz_temp ) != 4 ? 0 :
+        VLC_FOURCC( psz_temp[0], psz_temp[1], psz_temp[2], psz_temp[3] );
     psz_cmd = var_CreateGetStringCommand( p_filter, CFG_PREFIX "base-image" );
     i_ret = blendbench_LoadImage( p_this, &p_sys->p_base_image,
                                   p_sys->i_base_chroma, psz_cmd, "Base" );
@@ -191,13 +192,22 @@ static int Create( vlc_object_t *p_this )
 
     psz_temp = var_CreateGetStringCommand( p_filter,
                                            CFG_PREFIX "blend-chroma" );
-    p_sys->i_blend_chroma = VLC_FOURCC( psz_temp[0], psz_temp[1],
-                                        psz_temp[2], psz_temp[3] );
+    p_sys->i_blend_chroma = !psz_temp || strlen( psz_temp ) != 4
+        ? 0 : VLC_FOURCC( psz_temp[0], psz_temp[1], psz_temp[2], psz_temp[3] );
     psz_cmd = var_CreateGetStringCommand( p_filter, CFG_PREFIX "blend-image" );
-    blendbench_LoadImage( p_this, &p_sys->p_blend_image, p_sys->i_blend_chroma,
-                          psz_cmd, "Blend" );
+    i_ret = blendbench_LoadImage( p_this, &p_sys->p_blend_image, p_sys->i_blend_chroma,
+                                  psz_cmd, "Blend" );
+
     free( psz_temp );
     free( psz_cmd );
+
+    if( i_ret != VLC_SUCCESS )
+    {
+        picture_Release( p_sys->p_base_image );
+        free( p_sys );
+
+        return VLC_EGENERIC;
+    }
 
     return VLC_SUCCESS;
 }

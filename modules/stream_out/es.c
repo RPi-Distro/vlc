@@ -2,7 +2,7 @@
  * es.c: Elementary stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: c4b6274a29b3ffb17cf254d2013c18246e073c1b $
+ * $Id: a03c40276d39776e92e5525be9f4ac9509aa35ce $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -34,6 +34,7 @@
 #include <vlc_input.h>
 #include <vlc_sout.h>
 #include <vlc_dialog.h>
+#include <vlc_memstream.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -119,8 +120,8 @@ static const char *const ppsz_sout_options[] = {
     NULL
 };
 
-static sout_stream_id_sys_t *Add ( sout_stream_t *, es_format_t * );
-static int               Del ( sout_stream_t *, sout_stream_id_sys_t * );
+static sout_stream_id_sys_t *Add( sout_stream_t *, const es_format_t * );
+static void              Del ( sout_stream_t *, sout_stream_id_sys_t * );
 static int               Send( sout_stream_t *, sout_stream_id_sys_t *, block_t* );
 
 struct sout_stream_sys_t
@@ -211,65 +212,52 @@ struct sout_stream_id_sys_t
 static char * es_print_url( const char *psz_fmt, vlc_fourcc_t i_fourcc, int i_count,
                             const char *psz_access, const char *psz_mux )
 {
-    char *psz_dst, *p;
+    struct vlc_memstream stream;
+    unsigned char c;
+
+    if (vlc_memstream_open(&stream))
+        return NULL;
 
     if( psz_fmt == NULL || !*psz_fmt )
-    {
-        psz_fmt = (char*)"stream-%n-%c.%m";
-    }
+        psz_fmt = "stream-%n-%c.%m";
 
-    p = psz_dst = malloc( 4096 );
-    if( !psz_dst )
-        return NULL;
-    memset( p, 0, 4096 );
-    for( ;; )
+    while ((c = *(psz_fmt++)) != '\0')
     {
-        if( *psz_fmt == '\0' )
+        if (c != '%')
         {
-            *p = '\0';
-            break;
+            vlc_memstream_putc(&stream, c);
+            continue;
         }
 
-        if( *psz_fmt != '%' )
+        switch (c = *(psz_fmt++))
         {
-            *p++ = *psz_fmt++;
-        }
-        else
-        {
-            if( psz_fmt[1] == 'n' )
-            {
-                p += sprintf( p, "%d", i_count );
-            }
-            else if( psz_fmt[1] == 'c' )
-            {
-                p += sprintf( p, "%4.4s", (char*)&i_fourcc );
-            }
-            else if( psz_fmt[1] == 'm' )
-            {
-                p += sprintf( p, "%s", psz_mux );
-            }
-            else if( psz_fmt[1] == 'a' )
-            {
-                p += sprintf( p, "%s", psz_access );
-            }
-            else if( psz_fmt[1] != '\0' )
-            {
-                p += sprintf( p, "%c%c", psz_fmt[0], psz_fmt[1] );
-            }
-            else
-            {
-                p += sprintf( p, "%c", psz_fmt[0] );
-                *p++ = '\0';
+            case 'n':
+                vlc_memstream_printf(&stream, "%d", i_count);
                 break;
-            }
-            psz_fmt += 2;
+            case 'c':
+                vlc_memstream_printf(&stream, "%4.4s", (char *)&i_fourcc);
+                break;
+            case 'm':
+                vlc_memstream_puts(&stream, psz_mux);
+                break;
+            case 'a':
+                vlc_memstream_puts(&stream, psz_access);
+                break;
+            case '\0':
+                vlc_memstream_putc(&stream, '%');
+                goto out;
+            default:
+                vlc_memstream_printf(&stream, "%%%c", (int) c);
+                break;
         }
     }
-
-    return( psz_dst );
+out:
+    if (vlc_memstream_close(&stream))
+        return NULL;
+    return stream.ptr;
 }
 
-static sout_stream_id_sys_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
+static sout_stream_id_sys_t *Add( sout_stream_t *p_stream, const es_format_t *p_fmt )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     sout_stream_id_sys_t  *id;
@@ -358,11 +346,9 @@ static sout_stream_id_sys_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     {
         msg_Err( p_stream, "no suitable sout access module for `%s/%s://%s'",
                  psz_access, psz_mux, psz_dst );
-        dialog_Fatal( p_stream,
-                    _("Streaming / Transcoding failed"),
-                    _("There is no suitable stream-output access module for \"%s/%s://%s\"."),
-                          psz_access,
-                          psz_mux, psz_dst );
+        vlc_dialog_display_error( p_stream, _("Streaming / Transcoding failed"),
+            _("There is no suitable stream-output access module for \"%s/%s://%s\"."),
+            psz_access, psz_mux, psz_dst );
         free( psz_dst );
         return( NULL );
     }
@@ -373,11 +359,9 @@ static sout_stream_id_sys_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     {
         msg_Err( p_stream, "no suitable sout mux module for `%s/%s://%s'",
                  psz_access, psz_mux, psz_dst );
-        dialog_Fatal( p_stream,
-                        _("Streaming / Transcoding failed"),
-                        _("There is no suitable stream-output access module "\
-                          "for \"%s/%s://%s\"."),
-                          psz_access, psz_mux, psz_dst );
+        vlc_dialog_display_error( p_stream, _("Streaming / Transcoding failed"),
+            _("There is no suitable stream-output access module "\
+            "for \"%s/%s://%s\"."), psz_access, psz_mux, psz_dst );
         sout_AccessOutDelete( p_access );
         free( psz_dst );
         return( NULL );
@@ -408,7 +392,7 @@ static sout_stream_id_sys_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     return id;
 }
 
-static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
+static void Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     VLC_UNUSED(p_stream);
     sout_access_out_t *p_access = id->p_mux->p_access;
@@ -420,7 +404,6 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
     sout_AccessOutDelete( p_access );
 
     free( id );
-    return VLC_SUCCESS;
 }
 
 static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,

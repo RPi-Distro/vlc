@@ -2,7 +2,7 @@
  * croppadd.c: Crop/Padd image filter
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: 2ed34cd03130a09876ead1f0c5693937e96c9240 $
+ * $Id: f0145bb07598c43d8c829a59ab4c1bb63197c231 $
  *
  * Authors: Antoine Cellerier <dionoea @t videolan dot org>
  *
@@ -33,6 +33,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include "filter_picture.h"
 
 /****************************************************************************
@@ -77,7 +78,7 @@ static picture_t *Filter( filter_t *, picture_t * );
 vlc_module_begin ()
     set_shortname( N_("Croppadd") )
     set_description( N_("Video cropping filter") )
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     set_callbacks( OpenFilter, CloseFilter )
 
     set_category( CAT_VIDEO )
@@ -147,7 +148,11 @@ static int OpenFilter( vlc_object_t *p_this )
     const vlc_chroma_description_t *p_chroma =
         vlc_fourcc_GetChromaDescription( p_filter->fmt_in.video.i_chroma );
     if( p_chroma == NULL || p_chroma->plane_count == 0 )
+    {
+        msg_Err( p_filter, "Unknown input chroma %4.4s", p_filter->fmt_in.video.i_chroma?
+                     (const char*)&p_filter->fmt_in.video.i_chroma : "xxxx" );
         return VLC_EGENERIC;
+    }
 
     p_filter->p_sys = (filter_sys_t *)malloc( sizeof( filter_sys_t ) );
     if( !p_filter->p_sys ) return VLC_ENOMEM;
@@ -214,7 +219,6 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
     picture_t *p_outpic;
-    int i_plane;
     int i_width, i_height, i_xcrop, i_ycrop,
         i_outwidth, i_outheight, i_xpadd, i_ypadd;
 
@@ -230,7 +234,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         return NULL;
     }
 
-    for( i_plane = 0; i_plane < p_pic->i_planes; i_plane++ )
+    for( int i_plane = 0; i_plane < p_pic->i_planes; i_plane++ )
     /* p_pic and p_outpic have the same chroma/number of planes but that's
      * about it. */
     {
@@ -274,8 +278,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         memset( p_out, i_padd_color, i_ypadd * p_outplane->i_pitch );
         p_out += i_ypadd * p_outplane->i_pitch;
 
-        int i_line;
-        for( i_line = 0; i_line < i_height; i_line++ )
+        for( int i_line = 0; i_line < i_height; i_line++ )
         {
             uint8_t *p_in_next = p_in + p_plane->i_pitch;
             uint8_t *p_out_next = p_out + p_outplane->i_pitch;

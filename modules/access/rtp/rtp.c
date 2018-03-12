@@ -136,7 +136,7 @@ vlc_module_end ()
  * - send RTCP-RR and RTCP-BYE
  * - dynamic payload types (need SDP parser)
  * - multiple medias (need SDP parser, and RTCP-SR parser for lip-sync)
- * - support for stream_filter in case of stream_Demux (MPEG-TS)
+ * - support for stream_filter in case of chained demux (MPEG-TS)
  */
 
 #ifndef IPPROTO_DCCP
@@ -389,14 +389,14 @@ static int Control (demux_t *demux, int query, va_list args)
         case DEMUX_CAN_SEEK:
         case DEMUX_CAN_CONTROL_PACE:
         {
-            bool *v = (bool*)va_arg( args, bool * );
+            bool *v = va_arg( args, bool * );
             *v = false;
             return VLC_SUCCESS;
         }
     }
 
     if (sys->chained_demux != NULL)
-        return stream_DemuxControlVa (sys->chained_demux, query, args);
+        return vlc_demux_chained_ControlVa (sys->chained_demux, query, args);
 
     switch (query)
     {
@@ -443,7 +443,7 @@ void codec_decode (demux_t *demux, void *data, block_t *block)
     if (data)
     {
         block->i_dts = VLC_TS_INVALID; /* RTP does not specify this */
-        es_out_Control (demux->out, ES_OUT_SET_PCR, block->i_pts );
+        es_out_SetPCR(demux->out, block->i_pts);
         es_out_Send (demux->out, (es_out_id_t *)data, block);
     }
     else
@@ -456,7 +456,8 @@ static void *stream_init (demux_t *demux, const char *name)
 
     if (p_sys->chained_demux != NULL)
         return NULL;
-    p_sys->chained_demux = stream_DemuxNew (demux, name, demux->out);
+    p_sys->chained_demux = vlc_demux_chained_New(VLC_OBJECT(demux), name,
+                                                 demux->out);
     return p_sys->chained_demux;
 }
 
@@ -466,8 +467,18 @@ static void stream_destroy (demux_t *demux, void *data)
 
     if (data)
     {
-        stream_Delete ((stream_t *)data);
+        vlc_demux_chained_Delete(data);
         p_sys->chained_demux = NULL;
+    }
+}
+
+static void stream_header (demux_t *demux, void *data, block_t *block)
+{
+    VLC_UNUSED(demux);
+    VLC_UNUSED(data);
+    if(block->p_buffer[1] & 0x80) /* TS M-bit == discontinuity (RFC 2250, 2.1) */
+    {
+        block->i_flags |= BLOCK_FLAG_DISCONTINUITY;
     }
 }
 
@@ -475,7 +486,7 @@ static void stream_destroy (demux_t *demux, void *data)
 static void stream_decode (demux_t *demux, void *data, block_t *block)
 {
     if (data)
-        stream_DemuxSend ((stream_t *)data, block);
+        vlc_demux_chained_Send(data, block);
     else
         block_Release (block);
     (void)demux;
@@ -499,7 +510,6 @@ static void *pcmu_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_MULAW);
     fmt.audio.i_rate = 8000;
-    fmt.audio.i_original_channels =
     fmt.audio.i_physical_channels = AOUT_CHAN_CENTER;
     return codec_init (demux, &fmt);
 }
@@ -513,7 +523,6 @@ static void *gsm_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_GSM);
     fmt.audio.i_rate = 8000;
-    fmt.audio.i_original_channels =
     fmt.audio.i_physical_channels = AOUT_CHAN_CENTER;
     return codec_init (demux, &fmt);
 }
@@ -527,7 +536,6 @@ static void *pcma_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_ALAW);
     fmt.audio.i_rate = 8000;
-    fmt.audio.i_original_channels =
     fmt.audio.i_physical_channels = AOUT_CHAN_CENTER;
     return codec_init (demux, &fmt);
 }
@@ -541,7 +549,6 @@ static void *l16s_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_S16B);
     fmt.audio.i_rate = 44100;
-    fmt.audio.i_original_channels =
     fmt.audio.i_physical_channels = AOUT_CHANS_STEREO;
     return codec_init (demux, &fmt);
 }
@@ -552,7 +559,6 @@ static void *l16m_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_S16B);
     fmt.audio.i_rate = 44100;
-    fmt.audio.i_original_channels =
     fmt.audio.i_physical_channels = AOUT_CHAN_CENTER;
     return codec_init (demux, &fmt);
 }
@@ -566,7 +572,6 @@ static void *qcelp_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_QCELP);
     fmt.audio.i_rate = 8000;
-    fmt.audio.i_original_channels =
     fmt.audio.i_physical_channels = AOUT_CHAN_CENTER;
     return codec_init (demux, &fmt);
 }
@@ -579,7 +584,6 @@ static void *mpa_init (demux_t *demux)
     es_format_t fmt;
 
     es_format_Init (&fmt, AUDIO_ES, VLC_CODEC_MPGA);
-    fmt.audio.i_original_channels =
     fmt.audio.i_physical_channels = AOUT_CHANS_STEREO;
     fmt.b_packetized = false;
     return codec_init (demux, &fmt);
@@ -638,7 +642,12 @@ static void mpv_decode (demux_t *demux, void *data, block_t *block)
  */
 static void *ts_init (demux_t *demux)
 {
-    return stream_init (demux, *demux->psz_demux ? demux->psz_demux : "ts");
+    char const* name = demux->psz_demux;
+
+    if (*name == '\0' || !strcasecmp(name, "any"))
+        name = NULL;
+
+    return stream_init (demux, name ? name : "ts");
 }
 
 
@@ -651,6 +660,7 @@ void rtp_autodetect (demux_t *demux, rtp_session_t *session,
     rtp_pt_t pt = {
         .init = NULL,
         .destroy = codec_destroy,
+        .header = NULL,
         .decode = codec_decode,
         .frequency = 0,
         .number = ptype,
@@ -713,6 +723,7 @@ void rtp_autodetect (demux_t *demux, rtp_session_t *session,
         msg_Dbg (demux, "detected MPEG2 TS");
         pt.init = ts_init;
         pt.destroy = stream_destroy;
+        pt.header = stream_header;
         pt.decode = stream_decode;
         pt.frequency = 90000;
         break;
@@ -756,7 +767,7 @@ void rtp_autodetect (demux_t *demux, rtp_session_t *session,
 
         msg_Err (demux, "unspecified payload format (type %"PRIu8")", ptype);
         msg_Info (demux, "A valid SDP is needed to parse this RTP stream.");
-        dialog_Fatal (demux, N_("SDP required"),
+        vlc_dialog_display_error (demux, N_("SDP required"),
              N_("A description in SDP format is required to receive the RTP "
                 "stream. Note that rtp:// URIs cannot work with dynamic "
                 "RTP payload format (%"PRIu8")."), ptype);

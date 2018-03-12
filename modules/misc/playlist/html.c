@@ -2,7 +2,7 @@
  * html.c : HTML playlist export module
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: 8c9d00cb35edd0b29567da2580b55e6516569e63 $
+ * $Id: 1aa6dce457b6a631ecf73c6ea2c14ab71aeed820 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *
@@ -50,9 +50,6 @@ static void DoChildren( playlist_export_t *p_export, playlist_item_t *p_root )
         playlist_item_t *p_current = p_root->pp_children[i];
         assert( p_current );
 
-        if( p_current->i_flags & PLAYLIST_SAVE_FLAG )
-            continue;
-
         if( p_current->i_children >= 0 )
         {
             DoChildren( p_export, p_current );
@@ -62,7 +59,7 @@ static void DoChildren( playlist_export_t *p_export, playlist_item_t *p_root )
         char* psz_name = NULL;
         char *psz_tmp = input_item_GetName( p_current->p_input );
         if( psz_tmp )
-            psz_name = convert_xml_special_chars( psz_tmp );
+            psz_name = vlc_xml_encode( psz_tmp );
         free( psz_tmp );
 
         if( psz_name )
@@ -70,7 +67,7 @@ static void DoChildren( playlist_export_t *p_export, playlist_item_t *p_root )
             char* psz_artist = NULL;
             psz_tmp = input_item_GetArtist( p_current->p_input );
             if( psz_tmp )
-                psz_artist = convert_xml_special_chars( psz_tmp );
+                psz_artist = vlc_xml_encode( psz_tmp );
             free( psz_tmp );
 
             mtime_t i_duration = input_item_GetDuration( p_current->p_input );

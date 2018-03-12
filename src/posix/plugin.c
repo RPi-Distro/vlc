@@ -2,7 +2,7 @@
  * plugin.c : Low-level dynamic library handling
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: db2b0ba7f97c2f1a04ea5b5bf9dcf1259a299583 $
+ * $Id: 4f30da184e335b0f7a96d078191097aa0b3a762c $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -78,11 +78,15 @@ int module_Load (vlc_object_t *p_this, const char *path,
  */
 void module_Unload( module_handle_t handle )
 {
+#if !defined(__SANITIZE_ADDRESS__)
 #ifdef HAVE_VALGRIND_VALGRIND_H
     if( RUNNING_ON_VALGRIND > 0 )
         return; /* do not dlclose() so that we get proper stack traces */
 #endif
     dlclose( handle );
+#else
+    (void) handle;
+#endif
 }
 
 /**

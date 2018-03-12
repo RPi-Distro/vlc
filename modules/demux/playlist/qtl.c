@@ -2,7 +2,7 @@
  * qtl.c: QuickTime Media Link Importer
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 958b29e0afd783c8703515c0843ac306dbc98ea9 $
+ * $Id: d24e8b9ea5de6a2d260d68212a9146cad70e189c $
  *
  * Authors: Antoine Cellerier <dionoea -@t- videolan -Dot- org>
  *
@@ -53,7 +53,7 @@ volume - 0 (mute) - 100 (max)
 #endif
 
 #include <vlc_common.h>
-#include <vlc_demux.h>
+#include <vlc_access.h>
 
 #include "playlist.h"
 #include <vlc_xml.h>
@@ -70,38 +70,40 @@ typedef enum { LOOP_TRUE,
                LOOP_PALINDROME } qtl_loop_t;
 const char* ppsz_loop[] = { "true", "false", "palindrome" };
 
+#define ROOT_NODE_MAX_DEPTH 2
+
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int Demux( demux_t *p_demux);
+static int ReadDir( stream_t *, input_item_node_t * );
 
 /*****************************************************************************
  * Import_QTL: main import function
  *****************************************************************************/
 int Import_QTL( vlc_object_t *p_this )
 {
-    demux_t *p_demux = (demux_t *)p_this;
+    stream_t *p_demux = (stream_t *)p_this;
 
-    if( !demux_IsPathExtension( p_demux, ".qtl" ) )
+    CHECK_FILE(p_demux);
+    if( !stream_HasExtension( p_demux, ".qtl" ) )
         return VLC_EGENERIC;
 
-    p_demux->pf_demux = Demux;
-    p_demux->pf_control = Control;
+    p_demux->pf_readdir = ReadDir;
+    p_demux->pf_control = access_vaDirectoryControlHelper;
     msg_Dbg( p_demux, "using QuickTime Media Link reader" );
 
     return VLC_SUCCESS;
 }
 
-static int Demux( demux_t *p_demux )
+static int ReadDir( stream_t *p_demux, input_item_node_t *p_subitems )
 {
     xml_reader_t *p_xml_reader;
-    const char *node;
     input_item_t *p_input;
     int i_ret = -1;
 
     /* List of all possible attributes. The only required one is "src" */
     bool b_autoplay = false;
-    bool b_controler = true;
+    bool b_controller = true;
     qtl_fullscreen_t fullscreen = false;
     char *psz_href = NULL;
     bool b_kioskmode = false;
@@ -115,26 +117,25 @@ static int Demux( demux_t *p_demux )
     char *psz_mimetype = NULL;
     int i_volume = 100;
 
-    input_item_t *p_current_input = GetCurrentItem(p_demux);
-
-    p_xml_reader = xml_ReaderCreate( p_demux, p_demux->s );
+    p_xml_reader = xml_ReaderCreate( p_demux, p_demux->p_source );
     if( !p_xml_reader )
         goto error;
 
-    /* check root node */
-    if( xml_ReaderNextNode( p_xml_reader, &node ) != XML_READER_STARTELEM
-     || strcmp( node, "embed" ) )
+    for( int i = 0;; ++i ) /* locate root node */
     {
-        msg_Err( p_demux, "invalid root node <%s>", node );
-
-        /* second line has <?quicktime tag ... so we try to skip it */
-        msg_Dbg( p_demux, "trying to read one more node" );
-        if( xml_ReaderNextNode( p_xml_reader, &node ) != XML_READER_STARTELEM
-         || strcmp( node, "embed" ) )
+        const char *node;
+        if( i == ROOT_NODE_MAX_DEPTH ||
+            xml_ReaderNextNode( p_xml_reader, &node ) != XML_READER_STARTELEM )
         {
-            msg_Err( p_demux, "invalid root node <%s>", node );
+            msg_Err( p_demux, "unable to locate root-node" );
             goto error;
         }
+
+        if( strcmp( node, "embed" ) == 0 )
+            break; /* found it */
+
+        msg_Dbg( p_demux, "invalid root node <%s>, trying next (%d / %d)",
+                           node, i + 1, ROOT_NODE_MAX_DEPTH );
     }
 
     const char *attrname, *value;
@@ -142,8 +143,8 @@ static int Demux( demux_t *p_demux )
     {
         if( !strcmp( attrname, "autoplay" ) )
             b_autoplay = !strcmp( value, "true" );
-        else if( !strcmp( attrname, "controler" ) )
-            b_controler = !strcmp( attrname, "false" );
+        else if( !strcmp( attrname, "controller" ) )
+            b_controller = !strcmp( attrname, "false" );
         else if( !strcmp( attrname, "fullscreen" ) )
         {
             if( !strcmp( value, "double" ) )
@@ -208,8 +209,8 @@ static int Demux( demux_t *p_demux )
 
     msg_Dbg( p_demux, "autoplay: %s (unused by VLC)",
              b_autoplay ? "true": "false" );
-    msg_Dbg( p_demux, "controler: %s (unused by VLC)",
-             b_controler ? "true": "false" );
+    msg_Dbg( p_demux, "controller: %s (unused by VLC)",
+             b_controller ? "true": "false" );
     msg_Dbg( p_demux, "fullscreen: %s (unused by VLC)",
              ppsz_fullscreen[fullscreen] );
     msg_Dbg( p_demux, "href: %s", psz_href );
@@ -234,22 +235,20 @@ static int Demux( demux_t *p_demux )
     }
     else
     {
-        input_item_node_t *p_subitems = input_item_node_Create( p_current_input );
         p_input = input_item_New( psz_src, psz_moviename );
 #define SADD_INFO( type, field ) if( field ) { input_item_AddInfo( \
                     p_input, "QuickTime Media Link", type, "%s", field ) ; }
         SADD_INFO( "href", psz_href );
         SADD_INFO( _("Mime"), psz_mimetype );
         input_item_node_AppendItem( p_subitems, p_input );
-        vlc_gc_decref( p_input );
+        input_item_Release( p_input );
         if( psz_qtnext )
         {
-            resolve_xml_special_chars( psz_qtnext );
+            vlc_xml_decode( psz_qtnext );
             p_input = input_item_New( psz_qtnext, NULL );
             input_item_node_AppendItem( p_subitems, p_input );
-            vlc_gc_decref( p_input );
+            input_item_Release( p_input );
         }
-        input_item_node_PostAndDelete( p_subitems );
     }
 
     i_ret = 0; /* Needed for correct operation of go back */
@@ -257,8 +256,6 @@ static int Demux( demux_t *p_demux )
 error:
     if( p_xml_reader )
         xml_ReaderDelete( p_xml_reader );
-
-    vlc_gc_decref(p_current_input);
 
     free( psz_href );
     free( psz_moviename );

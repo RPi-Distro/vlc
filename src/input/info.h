@@ -2,7 +2,7 @@
  * info.h
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 9dcc4ca8f94f4b6a4761c128df2f40d7d7a3c4ef $
+ * $Id: 2752c5bad43f10dbb2aed7c248c86a10aa71358a $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -77,9 +77,8 @@ static inline void info_category_ReplaceInfo(info_category_t *cat,
     if (old) {
         info_Delete(cat->pp_infos[index]);
         cat->pp_infos[index] = info;
-    } else {
-        INSERT_ELEM(cat->pp_infos, cat->i_infos, cat->i_infos, info);
-    }
+    } else
+        TAB_APPEND(cat->i_infos, cat->pp_infos, info);
 }
 
 static inline info_t *info_category_VaAddInfo(info_category_t *cat,
@@ -91,7 +90,7 @@ static inline info_t *info_category_VaAddInfo(info_category_t *cat,
         info = info_New(name, NULL);
         if (!info)
             return NULL;
-        INSERT_ELEM(cat->pp_infos, cat->i_infos, cat->i_infos, info);
+        TAB_APPEND(cat->i_infos, cat->pp_infos, info);
     } else
         free(info->psz_value);
     if (vasprintf(&info->psz_value, format, args) == -1)
@@ -117,7 +116,7 @@ static inline int info_category_DeleteInfo(info_category_t *cat, const char *nam
     int index;
     if (info_category_FindInfo(cat, &index, name)) {
         info_Delete(cat->pp_infos[index]);
-        REMOVE_ELEM(cat->pp_infos, cat->i_infos, index);
+        TAB_ERASE(cat->i_infos, cat->pp_infos, index);
         return VLC_SUCCESS;
     }
     return VLC_EGENERIC;

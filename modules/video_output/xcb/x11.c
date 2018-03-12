@@ -51,7 +51,7 @@ vlc_module_begin ()
     set_subcategory (SUBCAT_VIDEO_VOUT)
     set_capability ("vout display", 100)
     set_callbacks (Open, Close)
-    add_shortcut ("xcb-x11", "x11", "xid")
+    add_shortcut ("xcb-x11", "x11")
 
     add_obsolete_bool ("x11-shm") /* obsoleted since 2.0.0 */
 vlc_module_end ()
@@ -66,7 +66,6 @@ struct vout_display_sys_t
     xcb_connection_t *conn;
     vout_window_t *embed; /* VLC window */
 
-    xcb_cursor_t cursor; /* blank cursor */
     xcb_window_t window; /* drawable X window */
     xcb_gcontext_t gc; /* context to put images */
     xcb_shm_seg_t seg_base; /**< shared memory segment XID base */
@@ -79,7 +78,6 @@ struct vout_display_sys_t
 static picture_pool_t *Pool (vout_display_t *, unsigned);
 static void Display (vout_display_t *, picture_t *, subpicture_t *subpicture);
 static int Control (vout_display_t *, int, va_list);
-static void Manage (vout_display_t *);
 
 static void ResetPictures (vout_display_t *);
 
@@ -115,8 +113,7 @@ static int Open (vlc_object_t *obj)
     /* Get window, connect to X server */
     xcb_connection_t *conn;
     const xcb_screen_t *scr;
-    uint16_t width, height;
-    sys->embed = XCB_parent_Create (vd, &conn, &scr, &width, &height);
+    sys->embed = vlc_xcb_parent_Create(vd, &conn, &scr);
     if (sys->embed == NULL)
     {
         free (sys);
@@ -275,20 +272,20 @@ found_format:;
         xcb_create_pixmap (conn, sys->depth, pixmap, scr->root, 1, 1);
         c = xcb_create_window_checked (conn, sys->depth, sys->window,
                                        sys->embed->handle.xid, 0, 0,
-                                       width, height, 0,
+                                       vd->cfg->display.width,
+                                       vd->cfg->display.height, 0,
                                        XCB_WINDOW_CLASS_INPUT_OUTPUT,
                                        vid, mask, values);
         xcb_map_window (conn, sys->window);
         /* Create graphic context (I wonder why the heck do we need this) */
         xcb_create_gc (conn, sys->gc, sys->window, 0, NULL);
 
-        if (XCB_error_Check (vd, conn, "cannot create X11 window", c))
+        if (vlc_xcb_error_Check(vd, conn, "cannot create X11 window", c))
             goto error;
     }
     msg_Dbg (vd, "using X11 window %08"PRIx32, sys->window);
     msg_Dbg (vd, "using X11 graphic context %08"PRIx32, sys->gc);
 
-    sys->cursor = XCB_cursor_Create (conn, scr);
     sys->visible = false;
     if (XCB_shm_Check (obj, conn))
     {
@@ -301,21 +298,12 @@ found_format:;
 
     /* Setup vout_display_t once everything is fine */
     vd->info.has_pictures_invalid = true;
-    vd->info.has_event_thread = true;
 
     vd->fmt = fmt_pic;
     vd->pool = Pool;
     vd->prepare = NULL;
     vd->display = Display;
     vd->control = Control;
-    vd->manage = Manage;
-
-    /* */
-    bool is_fullscreen = vd->cfg->is_fullscreen;
-    if (is_fullscreen && vout_window_SetFullScreen (sys->embed, true))
-        is_fullscreen = false;
-    vout_display_SendEventFullscreen (vd, is_fullscreen);
-    vout_display_SendEventDisplaySize (vd, width, height, is_fullscreen);
 
     return VLC_SUCCESS;
 
@@ -334,11 +322,6 @@ static void Close (vlc_object_t *obj)
     vout_display_sys_t *sys = vd->sys;
 
     ResetPictures (vd);
-
-    /* show the default cursor */
-    xcb_change_window_attributes (sys->conn, sys->embed->handle.xid, XCB_CW_CURSOR,
-                                  &(uint32_t) { XCB_CURSOR_NONE });
-    xcb_flush (sys->conn);
 
     /* colormap, window and context are garbage-collected by X */
     xcb_disconnect (sys->conn);
@@ -375,12 +358,12 @@ static picture_pool_t *Pool (vout_display_t *vd, unsigned requested_count)
     assert (pic->i_planes == 1);
 
     picture_resource_t res = {
-       .p = {
-           [0] = {
-               .i_lines = pic->p->i_lines,
-               .i_pitch = pic->p->i_pitch,
-           },
-       },
+        .p = {
+            [0] = {
+                .i_lines = pic->p->i_lines,
+                .i_pitch = pic->p->i_pitch,
+            },
+        },
     };
     picture_Release (pic);
 
@@ -393,13 +376,10 @@ static picture_pool_t *Pool (vout_display_t *vd, unsigned requested_count)
 
         if (XCB_picture_Alloc (vd, &res, size, sys->conn, seg))
             break;
-        pic_array[count] = XCB_picture_NewFromResource (&vd->fmt, &res);
+        pic_array[count] = XCB_picture_NewFromResource (&vd->fmt, &res,
+                                                        sys->conn);
         if (unlikely(pic_array[count] == NULL))
-        {
-            if (seg != 0)
-                xcb_shm_detach (sys->conn, seg);
             break;
-        }
     }
     xcb_flush (sys->conn);
 
@@ -421,6 +401,8 @@ static void Display (vout_display_t *vd, picture_t *pic, subpicture_t *subpictur
     vout_display_sys_t *sys = vd->sys;
     xcb_shm_seg_t segment = XCB_picture_GetSegment(pic);
     xcb_void_cookie_t ck;
+
+    vlc_xcb_Manage(vd, sys->conn, &sys->visible);
 
     if (!sys->visible)
         goto out;
@@ -471,31 +453,12 @@ static int Control (vout_display_t *vd, int query, va_list ap)
 
     switch (query)
     {
-    case VOUT_DISPLAY_CHANGE_FULLSCREEN:
-    {
-        const vout_display_cfg_t *c = va_arg (ap, const vout_display_cfg_t *);
-        return vout_window_SetFullScreen (sys->embed, c->is_fullscreen);
-    }
-
     case VOUT_DISPLAY_CHANGE_DISPLAY_SIZE:
     {
         const vout_display_cfg_t *p_cfg =
-            (const vout_display_cfg_t*)va_arg (ap, const vout_display_cfg_t *);
-        const bool is_forced = (bool)va_arg (ap, int);
-
-        if (is_forced)
-        {   /* Changing the dimensions of the parent window takes place
-             * asynchronously (in the X server). Also it might fail or result
-             * in different dimensions than requested. Request the size change
-             * and return a failure since the size is not (yet) changed.
-             * If the change eventually succeeds, HandleParentStructure()
-             * will trigger a non-forced display size change later. */
-            vout_window_SetSize (sys->embed, p_cfg->display.width,
-                                 p_cfg->display.height);
-            return VLC_EGENERIC;
-        }
-
+            va_arg (ap, const vout_display_cfg_t *);
         vout_display_place_t place;
+
         vout_display_PlacePicture (&place, &vd->source, p_cfg, false);
 
         if (place.width  != vd->fmt.i_visible_width ||
@@ -511,11 +474,6 @@ static int Control (vout_display_t *vd, int query, va_list ap)
                               XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y,
                               values);
         return VLC_SUCCESS;
-    }
-    case VOUT_DISPLAY_CHANGE_WINDOW_STATE:
-    {
-        unsigned state = va_arg (ap, unsigned);
-        return vout_window_SetState (sys->embed, state);
     }
 
     case VOUT_DISPLAY_CHANGE_ZOOM:
@@ -546,25 +504,10 @@ static int Control (vout_display_t *vd, int query, va_list ap)
         return VLC_SUCCESS;
     }
 
-    /* Hide the mouse. It will be send when
-     * vout_display_t::info.b_hide_mouse is false */
-    case VOUT_DISPLAY_HIDE_MOUSE:
-        xcb_change_window_attributes (sys->conn, sys->embed->handle.xid,
-                                  XCB_CW_CURSOR, &(uint32_t){ sys->cursor });
-        xcb_flush (sys->conn);
-        return VLC_SUCCESS;
-
     default:
         msg_Err (vd, "Unknown request in XCB vout display");
         return VLC_EGENERIC;
     }
-}
-
-static void Manage (vout_display_t *vd)
-{
-    vout_display_sys_t *sys = vd->sys;
-
-    XCB_Manage (vd, sys->conn, &sys->visible);
 }
 
 static void ResetPictures (vout_display_t *vd)
@@ -578,6 +521,6 @@ static void ResetPictures (vout_display_t *vd)
         for (unsigned i = 0; i < MAX_PICTURES; i++)
             xcb_shm_detach (sys->conn, sys->seg_base + i);
 
-    picture_pool_Delete (sys->pool);
+    picture_pool_Release (sys->pool);
     sys->pool = NULL;
 }

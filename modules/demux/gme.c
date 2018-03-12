@@ -70,14 +70,16 @@ static gme_err_t ReaderBlock (void *, void *, int);
 static int Open (vlc_object_t *obj)
 {
     demux_t *demux = (demux_t *)obj;
+    uint64_t size;
 
-    int64_t size = stream_Size (demux->s);
+    if (vlc_stream_GetSize(demux->s, &size))
+        return VLC_EGENERIC;
     if (size > LONG_MAX /* too big for GME */)
         return VLC_EGENERIC;
 
     /* Auto detection */
     const uint8_t *peek;
-    if (stream_Peek (demux->s, &peek, 4) < 4)
+    if (vlc_stream_Peek (demux->s, &peek, 4) < 4)
         return VLC_EGENERIC;
 
     const char *type = gme_identify_header (peek);
@@ -88,7 +90,7 @@ static int Open (vlc_object_t *obj)
     block_t *data = NULL;
     if (size <= 0)
     {
-        data = stream_Block (demux->s, 1 << 24);
+        data = vlc_stream_Block (demux->s, 1 << 24);
         if (data == NULL)
             return VLC_EGENERIC;
     }
@@ -131,7 +133,7 @@ static int Open (vlc_object_t *obj)
 
     /* Titles */
     unsigned n = gme_track_count (sys->emu);
-    sys->titlev = malloc (n * sizeof (*sys->titlev));
+    sys->titlev = vlc_alloc (n, sizeof (*sys->titlev));
     if (unlikely(sys->titlev == NULL))
         n = 0;
     sys->titlec = n;
@@ -178,7 +180,7 @@ static gme_err_t ReaderStream (void *data, void *buf, int length)
 {
     stream_t *s = data;
 
-    if (stream_Read (s, buf, length) < length)
+    if (vlc_stream_Read (s, buf, length) < length)
         return "short read";
     return NULL;
 }
@@ -227,7 +229,7 @@ static int Demux (demux_t *demux)
     }
 
     block->i_pts = block->i_dts = VLC_TS_0 + date_Get (&sys->pts);
-    es_out_Control (demux->out, ES_OUT_SET_PCR, block->i_pts);
+    es_out_SetPCR (demux->out, block->i_pts);
     es_out_Send (demux->out, sys->es, block);
     date_Increment (&sys->pts, SAMPLES);
     return 1;
@@ -240,6 +242,10 @@ static int Control (demux_t *demux, int query, va_list args)
 
     switch (query)
     {
+        case DEMUX_CAN_SEEK:
+            *va_arg (args, bool *) = true;
+            return VLC_SUCCESS;
+
         case DEMUX_GET_POSITION:
         {
             double *pos = va_arg (args, double *);
@@ -305,7 +311,7 @@ static int Control (demux_t *demux, int query, va_list args)
             *(va_arg (args, int *)) = 0; /* Chapter offset */
 
             unsigned n = sys->titlec;
-            *titlev = malloc (sizeof (**titlev) * n);
+            *titlev = vlc_alloc (n, sizeof (**titlev));
             if (unlikely(*titlev == NULL))
                 n = 0;
             *titlec = n;

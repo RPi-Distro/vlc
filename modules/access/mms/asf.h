@@ -2,7 +2,7 @@
  * asf.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001-2004 VLC authors and VideoLAN
- * $Id: f15b90d3d9a5dac0567d388e3b3512d454226579 $
+ * $Id: 66401eb1772a2511d52ecada140c643578af5b5e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -28,10 +28,10 @@
  *
  ****************************************************************************/
 
-#ifndef _ASF_H_
-#define _ASF_H_ 1
+#ifndef VLC_MMS_ASF_H_
+#define VLC_MMS_ASF_H_
 
-#include "../../demux/asf/libasf_guid.h"
+#include <vlc_codecs.h>
 
 #define ASF_CODEC_TYPE_VIDEO   0x0001
 #define ASF_CODEC_TYPE_AUDIO   0x0002

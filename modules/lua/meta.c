@@ -2,7 +2,7 @@
  * meta.c: Get meta/artwork using lua scripts
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: b78fa935a7aa03ce0adfbe1c3900ae4736847e8a $
+ * $Id: be672f2a2331e3d981c1b157447581b375836466 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -55,7 +55,7 @@ static lua_State * init( vlc_object_t *p_this, input_item_t * p_item, const char
     /* Load Lua libraries */
     luaL_openlibs( L ); /* XXX: Don't open all the libs? */
 
-    luaL_register( L, "vlc", p_reg );
+    luaL_register_namespace( L, "vlc", p_reg );
 
     luaopen_msg( L );
     luaopen_stream( L );
@@ -241,6 +241,9 @@ static int fetch_meta( vlc_object_t *p_this, const char * psz_filename,
 
 int ReadMeta( demux_meta_t *p_this )
 {
+    if( lua_Disabled( p_this ) )
+        return VLC_EGENERIC;
+
     return vlclua_scripts_batch_execute( VLC_OBJECT(p_this), "meta"DIR_SEP"reader",
                                          (void*) &read_meta, NULL );
 }
@@ -252,6 +255,9 @@ int ReadMeta( demux_meta_t *p_this )
 
 int FetchMeta( meta_fetcher_t *p_finder )
 {
+    if( lua_Disabled( p_finder ) )
+        return VLC_EGENERIC;
+
     luabatch_context_t context = { p_finder->p_item, p_finder->e_scope, validate_scope };
 
     return vlclua_scripts_batch_execute( VLC_OBJECT(p_finder), "meta"DIR_SEP"fetcher",
@@ -264,6 +270,9 @@ int FetchMeta( meta_fetcher_t *p_finder )
  *****************************************************************************/
 int FindArt( meta_fetcher_t *p_finder )
 {
+    if( lua_Disabled( p_finder ) )
+        return VLC_EGENERIC;
+
     luabatch_context_t context = { p_finder->p_item, p_finder->e_scope, validate_scope };
 
     return vlclua_scripts_batch_execute( VLC_OBJECT(p_finder), "meta"DIR_SEP"art",

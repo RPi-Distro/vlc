@@ -2,7 +2,7 @@
  * dv.c: Digital video/Firewire input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id: f7792b880561b80bc26d30a00983df1f92733b38 $
+ * $Id: b15b22f49080fecd841e153b6cf13cb8080170dc $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -28,6 +28,8 @@
 # include "config.h"
 #endif
 
+#include <assert.h>
+
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_access.h>
@@ -48,8 +50,8 @@
  *****************************************************************************/
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
-static block_t *Block( access_t * );
-static int Control( access_t *, int, va_list );
+static block_t *Block( stream_t *, bool * );
+static int Control( stream_t *, int, va_list );
 
 vlc_module_begin ()
     set_description( N_("Digital Video (Firewire/ieee1394) input") )
@@ -64,7 +66,7 @@ vlc_module_end ()
 typedef struct
 {
     vlc_thread_t    thread;
-    access_t        *p_access;
+    stream_t        *p_access;
     vlc_mutex_t     lock;
     block_t         *p_frame;
     block_t         **pp_last;
@@ -78,17 +80,17 @@ Raw1394Handler(raw1394handle_t, unsigned char *,
         unsigned char, unsigned char, unsigned int,
         unsigned int);
 
-static int Raw1394GetNumPorts( access_t *p_access );
-static raw1394handle_t Raw1394Open( access_t *, int );
+static int Raw1394GetNumPorts( stream_t *p_access );
+static raw1394handle_t Raw1394Open( stream_t *, int );
 static void Raw1394Close( raw1394handle_t );
 
-static int DiscoverAVC( access_t *, int *, uint64_t );
-static raw1394handle_t AVCOpen( access_t *, int );
-static void AVCClose( access_t * );
+static int DiscoverAVC( stream_t *, int *, uint64_t );
+static raw1394handle_t AVCOpen( stream_t *, int );
+static void AVCClose( stream_t * );
 static int AVCResetHandler( raw1394handle_t, unsigned int );
-static int AVCPlay( access_t *, int );
-static int AVCPause( access_t *, int );
-static int AVCStop( access_t *, int );
+static int AVCPlay( stream_t *, int );
+static int AVCPause( stream_t *, int );
+static int AVCStop( stream_t *, int );
 
 struct access_sys_t
 {
@@ -116,7 +118,7 @@ struct access_sys_t
  *****************************************************************************/
 static int Open( vlc_object_t *p_this )
 {
-    access_t     *p_access = (access_t*)p_this;
+    stream_t     *p_access = (stream_t*)p_this;
     access_sys_t *p_sys;
 
     struct raw1394_portinfo port_inf[ 16 ];
@@ -124,10 +126,9 @@ static int Open( vlc_object_t *p_this )
     msg_Dbg( p_access, "opening device" );
 
     /* Set up p_access */
-    access_InitFields( p_access );
     ACCESS_SET_CALLBACKS( NULL, Block, Control, NULL );
 
-    p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
+    p_access->p_sys = p_sys = vlc_obj_malloc( p_this, sizeof( *p_sys ) );
     if( !p_sys )
         return VLC_EGENERIC;
 
@@ -226,7 +227,7 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static void Close( vlc_object_t *p_this )
 {
-    access_t     *p_access = (access_t*)p_this;
+    stream_t     *p_access = (stream_t*)p_this;
     access_sys_t *p_sys = p_access->p_sys;
 
     if( p_sys->p_ev )
@@ -258,35 +259,36 @@ static void Close( vlc_object_t *p_this )
     AVCClose( p_access );
 
     vlc_mutex_destroy( &p_sys->lock );
-    free( p_sys );
 }
 
 /*****************************************************************************
  * Control:
  *****************************************************************************/
-static int Control( access_t *p_access, int i_query, va_list args )
+static int Control( stream_t *p_access, int i_query, va_list args )
 {
+    access_sys_t *sys = p_access->p_sys;
+
     switch( i_query )
     {
         /* */
-        case ACCESS_CAN_PAUSE:
+        case STREAM_CAN_PAUSE:
             *va_arg( args, bool* ) = true;
             break;
 
-       case ACCESS_CAN_SEEK:
-       case ACCESS_CAN_FASTSEEK:
-       case ACCESS_CAN_CONTROL_PACE:
+       case STREAM_CAN_SEEK:
+       case STREAM_CAN_FASTSEEK:
+       case STREAM_CAN_CONTROL_PACE:
             *va_arg( args, bool* ) = false;
             break;
 
-        case ACCESS_GET_PTS_DELAY:
+        case STREAM_GET_PTS_DELAY:
             *va_arg( args, int64_t * ) =
                 INT64_C(1000) * var_InheritInteger( p_access, "live-caching" );
             break;
 
         /* */
-        case ACCESS_SET_PAUSE_STATE:
-            AVCPause( p_access, p_access->p_sys->i_node );
+        case STREAM_SET_PAUSE_STATE:
+            AVCPause( p_access, sys->i_node );
             break;
 
         default:
@@ -296,31 +298,33 @@ static int Control( access_t *p_access, int i_query, va_list args )
     return VLC_SUCCESS;
 }
 
-static block_t *Block( access_t *p_access )
+static block_t *Block( stream_t *p_access, bool *restrict eof )
 {
     access_sys_t *p_sys = p_access->p_sys;
     block_t *p_block = NULL;
 
     vlc_mutex_lock( &p_sys->lock );
     p_block = p_sys->p_frame;
-    //msg_Dbg( p_access, "sending frame %p",p_block );
+    //msg_Dbg( p_access, "sending frame %p", (void *)p_block );
     p_sys->p_frame = NULL;
     vlc_mutex_unlock( &p_sys->lock );
 
+    (void) eof;
     return p_block;
 }
 
 static void Raw1394EventThreadCleanup( void *obj )
 {
     event_thread_t *p_ev = (event_thread_t *)obj;
+    access_sys_t *sys = p_ev->p_access->p_sys;
 
-    AVCStop( p_ev->p_access, p_ev->p_access->p_sys->i_node );
+    AVCStop( p_ev->p_access, sys->i_node );
 }
 
 static void* Raw1394EventThread( void *obj )
 {
     event_thread_t *p_ev = (event_thread_t *)obj;
-    access_t *p_access = (access_t *) p_ev->p_access;
+    stream_t *p_access = (stream_t *) p_ev->p_access;
     access_sys_t *p_sys = (access_sys_t *) p_access->p_sys;
     int result = 0;
     int canc = vlc_savecancel();
@@ -346,8 +350,8 @@ static void* Raw1394EventThread( void *obj )
         }
     }
 
-    vlc_cleanup_run();
-    return NULL;
+    vlc_cleanup_pop();
+    vlc_assert_unreachable();
 }
 
 static enum raw1394_iso_disposition
@@ -356,13 +360,13 @@ Raw1394Handler(raw1394handle_t handle, unsigned char *data,
         unsigned char tag, unsigned char sy, unsigned int cycle,
         unsigned int dropped)
 {
-    access_t *p_access = NULL;
+    stream_t *p_access = NULL;
     access_sys_t *p_sys = NULL;
     block_t *p_block = NULL;
     VLC_UNUSED(channel); VLC_UNUSED(tag);
     VLC_UNUSED(sy); VLC_UNUSED(cycle); VLC_UNUSED(dropped);
 
-    p_access = (access_t *) raw1394_get_userdata( handle );
+    p_access = (stream_t *) raw1394_get_userdata( handle );
     if( !p_access ) return 0;
 
     p_sys = p_access->p_sys;
@@ -437,7 +441,7 @@ Raw1394Handler(raw1394handle_t handle, unsigned char *data,
  * Copyright by Arne Schirmacher <dvgrab@schirmacher.de>
  * Dan Dennedy <dan@dennedy.org> and others
  */
-static int Raw1394GetNumPorts( access_t *p_access )
+static int Raw1394GetNumPorts( stream_t *p_access )
 {
     int n_ports;
     struct raw1394_portinfo pinf[ 16 ];
@@ -463,7 +467,7 @@ static int Raw1394GetNumPorts( access_t *p_access )
     return n_ports;
 }
 
-static raw1394handle_t Raw1394Open( access_t *p_access, int port )
+static raw1394handle_t Raw1394Open( stream_t *p_access, int port )
 {
     int n_ports;
     struct raw1394_portinfo pinf[ 16 ];
@@ -502,7 +506,7 @@ static void Raw1394Close( raw1394handle_t handle )
     raw1394_destroy_handle( handle );
 }
 
-static int DiscoverAVC( access_t *p_access, int* port, uint64_t guid )
+static int DiscoverAVC( stream_t *p_access, int* port, uint64_t guid )
 {
     rom1394_directory rom_dir;
     raw1394handle_t handle = NULL;
@@ -561,7 +565,7 @@ static int DiscoverAVC( access_t *p_access, int* port, uint64_t guid )
 /*
  * Handle AVC commands
  */
-static raw1394handle_t AVCOpen( access_t *p_access, int port )
+static raw1394handle_t AVCOpen( stream_t *p_access, int port )
 {
     access_sys_t *p_sys = p_access->p_sys;
     struct raw1394_portinfo pinf[ 16 ];
@@ -582,7 +586,7 @@ static raw1394handle_t AVCOpen( access_t *p_access, int port )
     return  p_sys->p_avc1394;
 }
 
-static void AVCClose( access_t *p_access )
+static void AVCClose( stream_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
@@ -599,7 +603,7 @@ static int AVCResetHandler( raw1394handle_t handle, unsigned int generation )
     return 0;
 }
 
-static int AVCPlay( access_t *p_access, int phyID )
+static int AVCPlay( stream_t *p_access, int phyID )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
@@ -614,7 +618,7 @@ static int AVCPlay( access_t *p_access, int phyID )
     return 0;
 }
 
-static int AVCPause( access_t *p_access, int phyID )
+static int AVCPause( stream_t *p_access, int phyID )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
@@ -628,7 +632,7 @@ static int AVCPause( access_t *p_access, int phyID )
 }
 
 
-static int AVCStop( access_t *p_access, int phyID )
+static int AVCStop( stream_t *p_access, int phyID )
 {
     access_sys_t *p_sys = p_access->p_sys;
 

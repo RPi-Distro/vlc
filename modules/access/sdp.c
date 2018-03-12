@@ -27,7 +27,6 @@
 #include <vlc_access.h>
 
 static int Open (vlc_object_t *);
-static void Close (vlc_object_t *);
 
 vlc_module_begin ()
     set_shortname (N_("SDP"))
@@ -36,13 +35,13 @@ vlc_module_begin ()
     set_subcategory (SUBCAT_INPUT_ACCESS)
 
     set_capability ("access", 0)
-    set_callbacks (Open, Close)
+    set_callbacks (Open, NULL)
     add_shortcut ("sdp")
 vlc_module_end()
 
-static ssize_t Read (access_t *, uint8_t *, size_t);
-static int Seek (access_t *, uint64_t);
-static int Control (access_t *, int, va_list);
+static ssize_t Read (stream_t *, void *, size_t);
+static int Seek (stream_t *, uint64_t);
+static int Control (stream_t *, int, va_list);
 
 struct access_sys_t
 {
@@ -53,10 +52,10 @@ struct access_sys_t
 
 static int Open (vlc_object_t *obj)
 {
-    access_t *access = (access_t *)obj;
+    stream_t *access = (stream_t *)obj;
     size_t len = strlen (access->psz_location);
 
-    access_sys_t *sys = malloc (sizeof(*sys) + len);
+    access_sys_t *sys = vlc_obj_malloc(obj, sizeof(*sys) + len);
     if (unlikely(sys == NULL))
         return VLC_ENOMEM;
 
@@ -65,7 +64,6 @@ static int Open (vlc_object_t *obj)
     sys->length = len;
     memcpy (sys->data, access->psz_location, len);
 
-    access_InitFields (access);
     access->pf_read = Read;
     access->pf_block = NULL;
     access->pf_seek = Seek;
@@ -75,31 +73,21 @@ static int Open (vlc_object_t *obj)
     return VLC_SUCCESS;
 }
 
-static void Close (vlc_object_t *obj)
-{
-    access_t *access = (access_t *)obj;
-    access_sys_t *sys = access->p_sys;
-
-    free (sys);
-}
-
-static ssize_t Read (access_t *access, uint8_t *buf, size_t len)
+static ssize_t Read (stream_t *access, void *buf, size_t len)
 {
     access_sys_t *sys = access->p_sys;
 
     if (sys->offset >= sys->length)
-    {
-        access->info.b_eof = true;
         return 0;
-    }
 
     if (len > sys->length - sys->offset)
         len = sys->length - sys->offset;
     memcpy (buf, sys->data + sys->offset, len);
+    sys->offset += len;
     return len;
 }
 
-static int Seek (access_t *access, uint64_t position)
+static int Seek (stream_t *access, uint64_t position)
 {
     access_sys_t *sys = access->p_sys;
 
@@ -107,32 +95,37 @@ static int Seek (access_t *access, uint64_t position)
         position = sys->length;
 
     sys->offset = position;
-    access->info.b_eof = false;
     return VLC_SUCCESS;
 }
 
-static int Control (access_t *access, int query, va_list args)
+static int Control (stream_t *access, int query, va_list args)
 {
+    access_sys_t *sys = access->p_sys;
+
     switch (query)
     {
-        case ACCESS_CAN_SEEK:
-        case ACCESS_CAN_FASTSEEK:
-        case ACCESS_CAN_PAUSE:
-        case ACCESS_CAN_CONTROL_PACE:
+        case STREAM_CAN_SEEK:
+        case STREAM_CAN_FASTSEEK:
+        case STREAM_CAN_PAUSE:
+        case STREAM_CAN_CONTROL_PACE:
         {
             bool *b = va_arg(args, bool*);
             *b = true;
             return VLC_SUCCESS;
         }
 
-        case ACCESS_GET_PTS_DELAY:
+        case STREAM_GET_SIZE:
+            *va_arg(args, uint64_t *) = sys->length;
+            return VLC_SUCCESS;
+
+        case STREAM_GET_PTS_DELAY:
         {
             int64_t *dp = va_arg(args, int64_t *);
             *dp = DEFAULT_PTS_DELAY;
             return VLC_SUCCESS;
         }
     
-        case ACCESS_SET_PAUSE_STATE:
+        case STREAM_SET_PAUSE_STATE:
             return VLC_SUCCESS;
     }
     return VLC_EGENERIC;

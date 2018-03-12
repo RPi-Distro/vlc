@@ -3,7 +3,7 @@
  * access_sys_t definition
  *****************************************************************************
  * Copyright (C) 2002, 2004, 2010-2011 VLC authors and VideoLAN
- * $Id: 56557c68bbee3599e443eb2ef887e2801024cd5f $
+ * $Id: 0527423c6b9de54b5edf0b5e3750b96ac509c535 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -25,26 +25,27 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-using namespace std;
 
 #include <dshow.h>
 
-typedef struct dshow_stream_t dshow_stream_t;
+#include <vector>
+
+#include <wrl/client.h>
+using Microsoft::WRL::ComPtr;
 
 /****************************************************************************
  * Crossbar stuff
  ****************************************************************************/
 #define MAX_CROSSBAR_DEPTH 10
 
-typedef struct CrossbarRouteRec
+struct CrossbarRoute
 {
-    IAMCrossbar *pXbar;
+    ComPtr<IAMCrossbar> pXbar;
     LONG        VideoInputIndex;
     LONG        VideoOutputIndex;
     LONG        AudioInputIndex;
     LONG        AudioOutputIndex;
-
-} CrossbarRoute;
+};
 
 void DeleteCrossbarRoutes( access_sys_t * );
 HRESULT FindCrossbarRoutes( vlc_object_t *, access_sys_t *,
@@ -59,22 +60,21 @@ struct access_sys_t
     vlc_mutex_t lock;
     vlc_cond_t  wait;
 
-    IFilterGraph           *p_graph;
-    ICaptureGraphBuilder2  *p_capture_graph_builder2;
-    IMediaControl          *p_control;
+    ComPtr<IFilterGraph>            p_graph;
+    ComPtr<ICaptureGraphBuilder2>   p_capture_graph_builder2;
+    ComPtr<IMediaControl>           p_control;
 
     int                     i_crossbar_route_depth;
     CrossbarRoute           crossbar_routes[MAX_CROSSBAR_DEPTH];
 
     /* list of elementary streams */
-    dshow_stream_t **pp_streams;
-    int            i_streams;
+    std::vector<struct dshow_stream_t*> pp_streams;
     int            i_current_stream;
 
     /* misc properties */
     int            i_width;
     int            i_height;
     int            i_chroma;
-    bool           b_chroma; /* Force a specific chroma on the dshow input */
+    mtime_t        i_start;
 };
 

@@ -1,6 +1,6 @@
 # jpeg
 
-JPEG_VERSION := 9a
+JPEG_VERSION := 9b
 JPEG_URL := http://www.ijg.org/files/jpegsrc.v$(JPEG_VERSION).tar.gz
 
 $(TARBALLS)/jpegsrc.v$(JPEG_VERSION).tar.gz:
@@ -15,6 +15,7 @@ jpeg: jpegsrc.v$(JPEG_VERSION).tar.gz .sum-jpeg
 	$(MOVE)
 
 .jpeg: jpeg
+	$(RECONF)
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF)
 	cd $< && $(MAKE) install
 	cd $< && if test -e $(PREFIX)/lib/libjpeg.a; then $(RANLIB) $(PREFIX)/lib/libjpeg.a; fi

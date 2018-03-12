@@ -2,7 +2,7 @@
  * vlc_update.h: VLC update download
  *****************************************************************************
  * Copyright © 2005-2007 VLC authors and VideoLAN
- * $Id: f7592212e7c5cc768e13ab835ad8132f92559fa4 $
+ * $Id: 8482b4f23de81f9b7937edde8795ceb8105a0a3d $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rafaël Carré <funman@videolanorg>
@@ -26,17 +26,13 @@
 #define VLC_UPDATE_H
 
 /**
- * \file
- * This file defines update API in vlc
- */
-
-/**
- * \defgroup update Update
- *
+ * \defgroup update Software updates
+ * \ingroup interface
+ * Over-the-air VLC software updates
  * @{
+ * \file
+ *VLC software update interface
  */
-
-#ifdef UPDATE_CHECK
 
 /**
  * Describes an update VLC release number
@@ -50,8 +46,6 @@ struct update_release_t
     char* psz_url;      ///< Download URL
     char* psz_desc;     ///< Release description
 };
-
-#endif /* UPDATE_CHECK */
 
 typedef struct update_release_t update_release_t;
 

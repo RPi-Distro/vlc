@@ -2,7 +2,7 @@
  * vlc.h: VLC specific lua library functions.
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: efd94f164bd6340166d822d6724040d5244cbdad $
+ * $Id: 71f381d334a07f5f9461a301b84c292a90ef844d $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -42,11 +42,30 @@
 #include <lua.h>        /* Low level lua C API */
 #include <lauxlib.h>    /* Higher level C API */
 #include <lualib.h>     /* Lua libs */
+
 #if LUA_VERSION_NUM >= 502
-#define lua_equal(L,idx1,idx2)		lua_compare(L,(idx1),(idx2),LUA_OPEQ)
-#define lua_objlen(L,idx)			lua_rawlen(L,idx)
-#define lua_strlen(L,idx)			lua_rawlen(L,idx)
+# define lua_equal(L,idx1,idx2)    lua_compare(L,(idx1),(idx2),LUA_OPEQ)
+# define lua_objlen(L,idx)         lua_rawlen(L,idx)
+# define lua_strlen(L,idx)         lua_rawlen(L,idx)
 #endif
+
+#if LUA_VERSION_NUM >= 503
+# undef luaL_register
+# define luaL_register(L, n, l) luaL_setfuncs(L, (l), 0)
+# define luaL_register_namespace(L, n, l) \
+    lua_getglobal( L, n );      \
+    if( lua_isnil( L, -1 ) )    \
+    {                           \
+        lua_pop( L, 1 );        \
+        lua_newtable( L );      \
+    }                           \
+    luaL_setfuncs( L, (l), 0 ); \
+    lua_pushvalue( L, -1 );     \
+    lua_setglobal( L, n );
+#else
+# define luaL_register_namespace(L, n, l) luaL_register( L, n, (l) );
+#endif
+
 
 /*****************************************************************************
  * Module entry points
@@ -72,6 +91,9 @@ void Close_Extension( vlc_object_t * );
 int Open_LuaSD( vlc_object_t * );
 void Close_LuaSD( vlc_object_t * );
 
+// Script probe
+int vlclua_probe_sd( vlc_object_t *, const char *name );
+
 /*****************************************************************************
  * Lua debug
  *****************************************************************************/
@@ -79,9 +101,15 @@ static inline void lua_Dbg( vlc_object_t * p_this, const char * ppz_fmt, ... )
 {
     va_list ap;
     va_start( ap, ppz_fmt );
-    msg_GenericVa( p_this, VLC_MSG_DBG, MODULE_STRING, ppz_fmt, ap );
+    msg_GenericVa( p_this, VLC_MSG_DBG, ppz_fmt, ap );
     va_end( ap );
 }
+
+static inline bool lua_Disabled( vlc_object_t *p_this )
+{
+    return !var_InheritBool( p_this, "lua" );
+}
+#define lua_Disabled( x ) lua_Disabled( VLC_OBJECT( x ) )
 
 /*****************************************************************************
  * Functions that should be in lua ... but aren't for some obscure reason
@@ -158,36 +186,27 @@ void vlclua_read_meta_data( vlc_object_t *, lua_State *, input_item_t * );
 void vlclua_read_custom_meta_data( vlc_object_t *, lua_State *,
                                    input_item_t *);
 #define vlclua_read_custom_meta_data( a, b, c ) vlclua_read_custom_meta_data( VLC_OBJECT( a ), b, c )
-int vlclua_playlist_add_internal( vlc_object_t *, lua_State *, playlist_t *,
-                                  input_item_t *, bool );
-#define vlclua_playlist_add_internal( a, b, c, d, e ) vlclua_playlist_add_internal( VLC_OBJECT( a ), b, c, d, e )
+
+input_item_t *vlclua_read_input_item(vlc_object_t *, lua_State *);
 
 int vlclua_add_modules_path( lua_State *, const char *psz_filename );
+
+struct vlc_interrupt;
 
 /**
  * File descriptors table
  */
 typedef struct
 {
+    struct vlc_interrupt *interrupt;
     int *fdv;
     unsigned fdc;
-    int fd[2];
 } vlclua_dtable_t;
 
 int vlclua_fd_init( lua_State *, vlclua_dtable_t * );
 void vlclua_fd_interrupt( vlclua_dtable_t * );
 void vlclua_fd_cleanup( vlclua_dtable_t * );
-
-/**
- * Per-interface private state
- */
-struct intf_sys_t
-{
-    char *psz_filename;
-    lua_State *L;
-    vlc_thread_t thread;
-    vlclua_dtable_t dtable;
-};
+struct vlc_interrupt *vlclua_set_interrupt( lua_State *L );
 
 #endif /* VLC_LUA_H */
 

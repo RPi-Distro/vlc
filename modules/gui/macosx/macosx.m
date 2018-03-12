@@ -2,7 +2,7 @@
  * macosx.m: Mac OS X module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2014 VLC authors and VideoLAN
- * $Id: 73f308fc7e9153dc9da85426c4c7c754335f643f $
+ * $Id: 3c93acfcfb5595ad7ca85b56a908444811a19927 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -31,6 +31,7 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_vout_window.h>
@@ -78,6 +79,9 @@ void WindowClose  (vout_window_t *);
 #define USE_APPLE_REMOTE_VOLUME_TEXT N_("Control system volume with the Apple Remote")
 #define USE_APPLE_REMOTE_VOLUME_LONGTEXT N_("By default, VLC will control its own volume with the Apple Remote. However, you can choose to control the global system volume instead.")
 
+#define DISPLAY_STATUS_ICONMENU_TEXT N_("Display VLC status menu icon")
+#define DISPLAY_STATUS_ICONMENU_LONGTEXT N_("By default, VLC will show the statusbar icon menu. However, you can choose to disable it (restart required).")
+
 #define USE_APPLE_REMOTE_PREVNEXT_TEXT N_("Control playlist items with the Apple Remote")
 #define USE_APPLE_REMOTE_PREVNEXT_LONGTEXT N_("By default, VLC will allow you to switch to the next or previous item with the Apple Remote. You can disable this behavior with this option.")
 
@@ -106,6 +110,9 @@ void WindowClose  (vout_window_t *);
 
 #define LOCK_ASPECT_RATIO_TEXT N_("Lock Aspect Ratio")
 
+#define DIM_KEYBOARD_PLAYBACK_TEXT N_("Dim keyboard backlight during fullscreen playback")
+#define DIM_KEYBOARD_PLAYBACK_LONGTEXT N_("Turn off the MacBook keyboard backlight while a video is playing in fullscreen. Automatic brightness adjustment should be disabled in System Preferences.")
+
 #define JUMPBUTTONS_TEXT N_("Show Previous & Next Buttons")
 #define JUMPBUTTONS_LONGTEXT N_("Shows the previous and next buttons in the main window.")
 
@@ -114,9 +121,6 @@ void WindowClose  (vout_window_t *);
 
 #define EFFECTSBUTTON_TEXT N_("Show Audio Effects Button")
 #define EFFECTSBUTTON_LONGTEXT N_("Shows the audio effects button in the main window.")
-
-#define SIDEBAR_TEXT N_("Show Sidebar")
-#define SIDEBAR_LONGTEXT N_("Shows a sidebar in the main window listing media sources.")
 
 #define ITUNES_TEXT N_("Control external music players")
 #define ITUNES_LONGTEXT N_("VLC will pause and resume supported music players on playback.")
@@ -144,7 +148,7 @@ static const char *const continue_playback_list_text[] = {
 vlc_module_begin()
     set_description(N_("Mac OS X interface"))
     set_capability("interface", 200)
-    set_callbacks(OpenIntf, NULL)
+    set_callbacks(OpenIntf, CloseIntf)
     set_category(CAT_INTERFACE)
     set_subcategory(SUBCAT_INTERFACE_MAIN)
     cannot_unload_broken_library()
@@ -152,11 +156,11 @@ vlc_module_begin()
     set_section(N_("Appearance"), 0)
         add_bool("macosx-interfacestyle", false, INTERFACE_STYLE_TEXT, INTERFACE_STYLE_LONGTEXT, false)
         add_bool("macosx-nativefullscreenmode", false, NATIVE_FULLSCREEN_MODE_ON_LION_TEXT, NATIVE_FULLSCREEN_MODE_ON_LION_LONGTEXT, false)
+        add_bool("macosx-statusicon", true, DISPLAY_STATUS_ICONMENU_TEXT, DISPLAY_STATUS_ICONMENU_LONGTEXT, false)
         add_bool("macosx-icon-change", true, ICONCHANGE_TEXT, ICONCHANGE_LONGTEXT, true)
         add_bool("macosx-show-playback-buttons", false, JUMPBUTTONS_TEXT, JUMPBUTTONS_LONGTEXT, false)
         add_bool("macosx-show-playmode-buttons", false, PLAYMODEBUTTONS_TEXT, PLAYMODEBUTTONS_LONGTEXT, false)
         add_bool("macosx-show-effects-button", false, EFFECTSBUTTON_TEXT, EFFECTSBUTTON_LONGTEXT, false)
-        add_bool("macosx-show-sidebar", true, SIDEBAR_TEXT, SIDEBAR_LONGTEXT, false)
         add_integer_with_range("macosx-max-volume", 125, 60, 200, VOLUME_MAX_TEXT, VOLUME_MAX_TEXT, true)
         add_bool("macosx-large-text", false, LARGE_LISTFONT_TEXT, LARGE_LISTFONT_TEXT, false)
 
@@ -167,6 +171,7 @@ vlc_module_begin()
         add_bool("macosx-video-autoresize", true, KEEPSIZE_TEXT, KEEPSIZE_LONGTEXT, false)
         add_bool("macosx-pause-minimized", false, PAUSE_MINIMIZED_TEXT, PAUSE_MINIMIZED_LONGTEXT, false)
         add_bool("macosx-lock-aspect-ratio", true, LOCK_ASPECT_RATIO_TEXT, LOCK_ASPECT_RATIO_TEXT, true)
+        add_bool("macosx-dim-keyboard", false, DIM_KEYBOARD_PLAYBACK_TEXT, DIM_KEYBOARD_PLAYBACK_LONGTEXT, false)
         add_integer("macosx-control-itunes", 1, ITUNES_TEXT, ITUNES_LONGTEXT, false)
         change_integer_list(itunes_list, itunes_list_text)
         add_integer("macosx-continue-playback", 0, CONTINUE_PLAYBACK_TEXT, CONTINUE_PLAYBACK_LONGTEXT, false)
@@ -181,10 +186,11 @@ vlc_module_begin()
     add_obsolete_bool("macosx-stretch") /* since 2.0.0 */
     add_obsolete_bool("macosx-eq-keep") /* since 2.0.0 */
     add_obsolete_bool("macosx-autosave-volume") /* since 2.1.0 */
+    add_obsolete_bool("macosx-show-sidebar") /* since 3.0.1 */
 
     add_submodule()
         set_description("Mac OS X Video Output Provider")
-        set_capability("vout window nsobject", 100)
+        set_capability("vout window", 100)
         set_callbacks(WindowOpen, WindowClose)
 
         set_section(N_("Video output"), 0)

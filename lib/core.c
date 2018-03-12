@@ -2,7 +2,7 @@
  * core.c: Core libvlc new API functions : initialization
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: fa5c4de6d0c0a623c9b271f8fd748da0e199c93c $
+ * $Id: 5e8c614c837e49dbfa60f5b2cff74d61bbecc903 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -27,7 +27,7 @@
 
 #include "libvlc_internal.h"
 #include <vlc_modules.h>
-#include <vlc/libvlc.h>
+#include <vlc/vlc.h>
 
 #include <vlc_interface.h>
 #include <vlc_vlm.h>
@@ -63,9 +63,7 @@ libvlc_instance_t * libvlc_new( int argc, const char *const *argv )
     }
 
     p_new->p_libvlc_int = p_libvlc_int;
-    p_new->libvlc_vlm.p_vlm = NULL;
-    p_new->libvlc_vlm.p_event_manager = NULL;
-    p_new->libvlc_vlm.pf_release = NULL;
+    p_new->vlm = NULL;
     p_new->ref_count = 1;
     p_new->p_callback_list = NULL;
     vlc_mutex_init(&p_new->instance_lock);
@@ -100,8 +98,9 @@ void libvlc_release( libvlc_instance_t *p_instance )
     if( refs == 0 )
     {
         vlc_mutex_destroy( lock );
-        if( p_instance->libvlc_vlm.pf_release )
-            p_instance->libvlc_vlm.pf_release( p_instance );
+        if( p_instance->vlm != NULL )
+            libvlc_vlm_release( p_instance );
+        libvlc_Quit( p_instance->p_libvlc_int );
         libvlc_InternalCleanup( p_instance->p_libvlc_int );
         libvlc_InternalDestroy( p_instance->p_libvlc_int );
         free( p_instance );
@@ -250,10 +249,12 @@ libvlc_module_description_t *libvlc_audio_filter_list_get( libvlc_instance_t *p_
 
 libvlc_module_description_t *libvlc_video_filter_list_get( libvlc_instance_t *p_instance )
 {
-    return module_description_list_get( p_instance, "video filter2" );
+    return module_description_list_get( p_instance, "video filter" );
 }
 
 int64_t libvlc_clock(void)
 {
     return mdate();
 }
+
+const char vlc_module_name[] = "libvlc";

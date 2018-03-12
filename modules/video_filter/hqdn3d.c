@@ -2,7 +2,7 @@
  * hqdn3d.c : high-quality denoise 3D ported from MPlayer
  *****************************************************************************
  * Copyright (C) 2011 VLC authors and VideoLAN
- * $Id: 44f93408371fefa42fb3d7583b4aa3740c3dadcd $
+ * $Id: c9b9bafab5a2023234bd23b3a1388632b21369ba $
  *
  * Authors: Cheng Sun <chengsun9@gmail.com>
  *
@@ -32,6 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include "filter_picture.h"
 
 
@@ -61,7 +62,7 @@ static int DenoiseCallback( vlc_object_t *p_this, char const *psz_var,
 vlc_module_begin()
     set_shortname(N_("HQ Denoiser 3D"))
     set_description(N_("High Quality 3D Denoiser filter"))
-    set_capability("video filter2", 0)
+    set_capability("video filter", 0)
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VFILTER)
 
@@ -201,7 +202,7 @@ static picture_t *Filter(filter_t *filter, picture_t *src)
     if (!src) return NULL;
 
     dst = filter_NewPicture(filter);
-    if (!dst) {
+    if ( unlikely(!dst) ) {
         picture_Release(src);
         return NULL;
     }
@@ -238,6 +239,13 @@ static picture_t *Filter(filter_t *filter, picture_t *src)
             cfg->Coefs[2],
             cfg->Coefs[2],
             cfg->Coefs[3]);
+
+    if(unlikely(!cfg->Frame[0] || !cfg->Frame[1] || !cfg->Frame[2]))
+    {
+        picture_Release( src );
+        picture_Release( dst );
+        return NULL;
+    }
 
     return CopyInfoAndRelease(dst, src);
 }

@@ -99,7 +99,6 @@ struct vout_display_sys_t
     RECTL              client_rect;
     vout_window_t     *parent_window;
     HWND               parent;
-    RECTL              parent_rect;
     picture_pool_t    *pool;
     unsigned           button_pressed;
     bool               is_mouse_hidden;
@@ -158,7 +157,7 @@ static void PMThread( void *arg )
     vout_display_info_t info = vd->info;
     info.is_slow = false;
     info.has_double_click = true;
-    info.has_hide_mouse = false;
+    info.needs_hide_mouse = true;
     info.has_pictures_invalid = false;
 
     MorphToPM();
@@ -175,20 +174,9 @@ static void PMThread( void *arg )
     sys->b_fixt23 = var_CreateGetBool( vd, "kva-fixt23");
 
     if( !sys->b_fixt23 )
-    {
-        vout_window_cfg_t wnd_cfg;
-
-        wnd_cfg.is_standalone = false;
-        wnd_cfg.type          = VOUT_WINDOW_TYPE_HWND;
-        wnd_cfg.x             = var_InheritInteger(vd, "video-x");
-        wnd_cfg.y             = var_InheritInteger(vd, "video-y");
-        wnd_cfg.width         = vd->cfg->display.width;
-        wnd_cfg.height        = vd->cfg->display.height;
-
         /* If an external window was specified, we'll draw in it. */
         sys->parent_window =
-            vout_display_NewWindow( vd, &wnd_cfg );
-    }
+            vout_display_NewWindow( vd, VOUT_WINDOW_TYPE_HWND );
 
     if( sys->parent_window )
     {
@@ -267,14 +255,9 @@ static void PMThread( void *arg )
         goto exit_open_display;
     }
 
-    if( vd->cfg->is_fullscreen )
-    {
-        if( sys->parent_window )
-            vout_window_SetFullScreen(sys->parent_window, true);
-        else
-            WinPostMsg( sys->client, WM_VLC_FULLSCREEN_CHANGE,
-                        MPFROMLONG( true ), 0 );
-    }
+    if( vd->cfg->is_fullscreen && !sys->parent_window )
+        WinPostMsg( sys->client, WM_VLC_FULLSCREEN_CHANGE,
+                    MPFROMLONG( true ), 0 );
 
     kvaDisableScreenSaver();
 
@@ -375,7 +358,7 @@ static void Close ( vlc_object_t *object )
     DosWaitThread( &sys->tid, DCWW_WAIT );
 
     if( sys->pool )
-        picture_pool_Delete( sys->pool );
+        picture_pool_Release( sys->pool );
 
     DosCloseEventSem( sys->ack_event );
 
@@ -449,14 +432,9 @@ static int Control( vout_display_t *vd, int query, va_list args )
 
     case VOUT_DISPLAY_CHANGE_FULLSCREEN:
     {
-        vout_display_cfg_t cfg = *va_arg(args, const vout_display_cfg_t *);
+        bool fs = va_arg(args, int);
 
-        if( sys->parent_window )
-            vout_window_SetFullScreen(sys->parent_window, cfg.is_fullscreen);
-        else
-            WinPostMsg( sys->client, WM_VLC_FULLSCREEN_CHANGE,
-                        MPFROMLONG( cfg.is_fullscreen ), 0 );
-
+        WinPostMsg( sys->client, WM_VLC_FULLSCREEN_CHANGE, MPFROMLONG(fs), 0 );
         return VLC_SUCCESS;
     }
 
@@ -465,12 +443,7 @@ static int Control( vout_display_t *vd, int query, va_list args )
         const unsigned state = va_arg( args, unsigned );
         const bool is_on_top = (state & VOUT_WINDOW_STATE_ABOVE) != 0;
 
-        if( sys->parent_window )
-        {
-            if( vout_window_SetState( sys->parent_window, state ))
-                return VLC_EGENERIC;
-        }
-        else if( is_on_top )
+        if( is_on_top )
             WinSetWindowPos( sys->frame, HWND_TOP, 0, 0, 0, 0, SWP_ZORDER );
 
         sys->is_on_top = is_on_top;
@@ -482,34 +455,20 @@ static int Control( vout_display_t *vd, int query, va_list args )
     case VOUT_DISPLAY_CHANGE_ZOOM:
     {
         const vout_display_cfg_t *cfg = va_arg(args, const vout_display_cfg_t *);
-        bool  is_forced = query == VOUT_DISPLAY_CHANGE_ZOOM ||
-                          va_arg(args, int);
 
-        if( is_forced )
-        {
-            if( sys->parent_window )
-            {
-                vout_window_SetSize(sys->parent_window,
-                                    cfg->display.width, cfg->display.height);
-            }
-            else
-                WinPostMsg( sys->client, WM_VLC_SIZE_CHANGE,
-                            MPFROMLONG( cfg->display.width ),
-                            MPFROMLONG( cfg->display.height ));
-        }
-
+        WinPostMsg( sys->client, WM_VLC_SIZE_CHANGE,
+                    MPFROMLONG( cfg->display.width ),
+                    MPFROMLONG( cfg->display.height ));
         return VLC_SUCCESS;
     }
 
     case VOUT_DISPLAY_CHANGE_SOURCE_ASPECT:
     case VOUT_DISPLAY_CHANGE_SOURCE_CROP:
     {
-        const video_format_t *src = va_arg(args, const video_format_t *);
-
         if( query == VOUT_DISPLAY_CHANGE_SOURCE_ASPECT )
         {
             vout_display_place_t place;
-            vout_display_PlacePicture(&place, src, vd->cfg, false);
+            vout_display_PlacePicture(&place, &vd->source, vd->cfg, false);
 
             sys->kvas.ulAspectWidth  = place.width;
             sys->kvas.ulAspectHeight = place.height;
@@ -517,7 +476,7 @@ static int Control( vout_display_t *vd, int query, va_list args )
         else
         {
             video_format_t src_rot;
-            video_format_ApplyRotation(&src_rot, src);
+            video_format_ApplyRotation(&src_rot, &vd->source);
 
             sys->kvas.rclSrcRect.xLeft   = src_rot.i_x_offset;
             sys->kvas.rclSrcRect.yTop    = src_rot.i_y_offset;
@@ -534,7 +493,6 @@ static int Control( vout_display_t *vd, int query, va_list args )
 
     case VOUT_DISPLAY_RESET_PICTURES:
     case VOUT_DISPLAY_CHANGE_DISPLAY_FILLED:
-    case VOUT_DISPLAY_GET_OPENGL:
         /* TODO */
         break;
     }
@@ -1187,15 +1145,16 @@ static MRESULT EXPENTRY WndProc( HWND hwnd, ULONG msg, MPARAM mp1, MPARAM mp2 )
      * parent window size */
     if( sys->parent_window )
     {
+        RECTL rect;
+
         WinQueryWindowRect( sys->parent, &rcl );
+        WinQueryWindowRect( sys->client, &rect);
 
-        if( rcl.xLeft   != sys->parent_rect.xLeft   ||
-            rcl.yBottom != sys->parent_rect.yBottom ||
-            rcl.xRight  != sys->parent_rect.xRight  ||
-            rcl.yTop    != sys->parent_rect.yTop)
+        if( rcl.xLeft   != rect.xLeft   ||
+            rcl.yBottom != rect.yBottom ||
+            rcl.xRight  != rect.xRight  ||
+            rcl.yTop    != rect.yTop)
         {
-            sys->parent_rect = rcl;
-
             WinCalcFrameRect( sys->frame, &rcl, FALSE );
 
             WinSetWindowPos( sys->frame, NULLHANDLE,

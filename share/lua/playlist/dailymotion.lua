@@ -23,11 +23,8 @@
 
 -- Probe function.
 function probe()
-	if vlc.access ~= "http" and vlc.access ~= "https" then
-        return false
-    end
-
-    return ( string.match( vlc.path, "www.dailymotion.com/video" ) )
+    return ( vlc.access == "http" or vlc.access == "https" )
+        and string.match( vlc.path, "^www%.dailymotion%.com/video/" )
 end
 
 -- Parse function.
@@ -50,7 +47,7 @@ function parse()
 			_,_,arturl = string.find( line, "href=\"(.-)\"" )
 		end
 
-        if string.match( line, "var config = {" ) then
+        if string.match( line, "var __PLAYER_CONFIG__ = {" ) then
             artist = string.match( line, '"username":"([^"]+)"' )
 
             local streams = string.match( line, "\"qualities\":{(.-%])}" )
@@ -87,5 +84,5 @@ function parse()
         return { }
     end
 
-    return { { path = path; name = name; description = description; url = vlc.path; arturl = arturl; artist = artist } }
+    return { { path = path; name = name; description = description; arturl = arturl; artist = artist } }
 end

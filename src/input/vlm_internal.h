@@ -2,7 +2,7 @@
  * vlm_internal.h: Internal vlm structures
  *****************************************************************************
  * Copyright (C) 1998-2006 VLC authors and VideoLAN
- * $Id: 286912d083e69ccdf8ec1ba378fabca716d05988 $
+ * $Id: d5a6905291e44421b8dc3eda9d55cc3396f5b4b7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -71,10 +71,10 @@ typedef struct
     char **command;
 
     /* the date of 1st execution */
-    mtime_t i_date;
+    time_t date;
 
-    /* if != 0 repeat schedule every (period) */
-    mtime_t i_period;
+    /* if != 0, repeat period in seconds */
+    unsigned period;
     /* number of times you have to repeat
        i_repeat < 0 : endless repeat     */
     int i_repeat;
@@ -108,7 +108,6 @@ struct vlm_t
     vlm_schedule_sys_t **schedule;
 };
 
-int64_t vlm_Date(void);
 int vlm_ControlInternal( vlm_t *p_vlm, int i_query, ... );
 int ExecuteCommand( vlm_t *, const char *, vlm_message_t ** );
 void vlm_ScheduleDelete( vlm_t *vlm, vlm_schedule_sys_t *sched );

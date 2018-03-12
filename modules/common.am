@@ -15,7 +15,7 @@ CLEANFILES = $(BUILT_SOURCES)
 LTLIBVLCCORE = $(top_builddir)/src/libvlccore.la
 
 # Module name from object or executable file name.
-MODULE_NAME = $$(p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; p="$${p%_plugin*}"; p="$${p%.lo}"; echo "$$p")
+MODULE_NAME = $$(p="$@"; p="$${p\#\#*/}"; p="$${p\#lib}"; p="$${p%_plugin*}"; p=$$(echo "$$p"|sed 's/-/_/g'); p="$${p%.lo}"; echo "$$p")
 
 AM_CPPFLAGS = -DMODULE_STRING=\"$(MODULE_NAME)\"
 if HAVE_DYNAMIC_PLUGINS
@@ -35,8 +35,6 @@ AM_LDFLAGS = \
 if HAVE_WIN32
 AM_LDFLAGS += $(top_builddir)/modules/module.rc.lo -Wc,-static
 endif
+AM_YFLAGS = -d
 
-SUFFIXES = .asm
-
-.asm.lo:
-	$(LIBTOOL) --mode=compile --tag=ASM $(YASM) $(YASMFLAGS) $< -o $@
+SUFFIXES = .l .y

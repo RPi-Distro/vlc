@@ -2,7 +2,7 @@
  * ddummy.c: dummy decoder plugin for vlc.
  *****************************************************************************
  * Copyright (C) 2002 VLC authors and VideoLAN
- * $Id: 91289d1160916e3b59d06fa528a918d87465a879 $
+ * $Id: 266e636b491563b647621c81c789325771221af1 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -45,26 +45,42 @@ static void CloseDecoder( vlc_object_t * );
 vlc_module_begin ()
     set_shortname( N_("Dummy") )
     set_description( N_("Dummy decoder") )
-    set_capability( "decoder", 0 )
+    set_capability( "spu decoder", 0 )
     set_callbacks( OpenDecoder, CloseDecoder )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_SCODEC )
     add_bool( "dummy-save-es", false, SAVE_TEXT, SAVE_LONGTEXT, true )
     add_shortcut( "dummy" )
+    add_submodule()
+    add_shortcut( "dummy" )
+    set_capability( "video decoder", 0 )
+    set_callbacks( OpenDecoder, CloseDecoder )
+    add_submodule()
+    add_shortcut( "dummy" )
+    set_capability( "audio decoder", 0 )
+    set_callbacks( OpenDecoder, CloseDecoder )
 
     add_submodule ()
     set_section( N_( "Dump decoder" ), NULL )
     set_description( N_("Dump decoder") )
-    set_capability( "decoder", -1 )
+    set_capability( "spu decoder", -1 )
     set_callbacks( OpenDecoderDump, CloseDecoder )
     add_shortcut( "dump" )
+    add_submodule()
+    add_shortcut( "dump")
+    set_capability( "video decoder", 0 )
+    set_callbacks( OpenDecoderDump, CloseDecoder )
+    add_submodule()
+    add_shortcut( "dump")
+    set_capability( "audio decoder", 0 )
+    set_callbacks( OpenDecoderDump, CloseDecoder )
 vlc_module_end ()
 
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block );
+static int DecodeBlock( decoder_t *p_dec, block_t *p_block );
 
 /*****************************************************************************
  * OpenDecoder: Open the decoder
@@ -74,7 +90,7 @@ static int OpenDecoderCommon( vlc_object_t *p_this, bool b_force_dump )
     decoder_t *p_dec = (decoder_t*)p_this;
     char psz_file[10 + 3 * sizeof (p_dec)];
 
-    snprintf( psz_file, sizeof( psz_file), "stream.%p", p_dec );
+    snprintf( psz_file, sizeof( psz_file), "stream.%p", (void *)p_dec );
 
     if( !b_force_dump )
         b_force_dump = var_InheritBool( p_dec, "dummy-save-es" );
@@ -93,12 +109,7 @@ static int OpenDecoderCommon( vlc_object_t *p_this, bool b_force_dump )
         p_dec->p_sys = NULL;
 
     /* Set callbacks */
-    p_dec->pf_decode_video = (picture_t *(*)(decoder_t *, block_t **))
-        DecodeBlock;
-    p_dec->pf_decode_audio = (block_t *(*)(decoder_t *, block_t **))
-        DecodeBlock;
-    p_dec->pf_decode_sub = (subpicture_t *(*)(decoder_t *, block_t **))
-        DecodeBlock;
+    p_dec->pf_decode = DecodeBlock;
 
     es_format_Copy( &p_dec->fmt_out, &p_dec->fmt_in );
 
@@ -120,24 +131,22 @@ static int  OpenDecoderDump( vlc_object_t *p_this )
  ****************************************************************************
  * This function must be fed with ogg packets.
  ****************************************************************************/
-static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
 {
     FILE *stream = (void *)p_dec->p_sys;
-    block_t *p_block;
 
-    if( !pp_block || !*pp_block ) return NULL;
-    p_block = *pp_block;
+    if( !p_block ) return VLCDEC_SUCCESS;
 
     if( stream != NULL
      && p_block->i_buffer > 0
-     && !(p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED)) )
+     && !(p_block->i_flags & (BLOCK_FLAG_CORRUPTED)) )
     {
         fwrite( p_block->p_buffer, 1, p_block->i_buffer, stream );
         msg_Dbg( p_dec, "dumped %zu bytes", p_block->i_buffer );
     }
     block_Release( p_block );
 
-    return NULL;
+    return VLCDEC_SUCCESS;
 }
 
 /*****************************************************************************

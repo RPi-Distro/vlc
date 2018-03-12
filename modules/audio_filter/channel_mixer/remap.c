@@ -108,7 +108,7 @@ struct filter_sys_t
 {
     remap_fun_t pf_remap;
     int nb_in_ch[AOUT_CHAN_MAX];
-    uint8_t map_ch[AOUT_CHAN_MAX];
+    int8_t map_ch[AOUT_CHAN_MAX];
     bool b_normalize;
 };
 
@@ -159,8 +159,7 @@ static inline uint32_t CanonicaliseChannels( uint32_t i_physical_channels )
         if( (i_physical_channels & ~valid_channels[i]) == 0 )
             return valid_channels[i];
 
-    assert( false );
-    return 0;
+    vlc_assert_unreachable();
 }
 
 /*****************************************************************************
@@ -180,7 +179,8 @@ static void RemapCopy##name( filter_t *p_filter, \
     { \
         for( uint8_t in_ch = 0; in_ch < i_nb_in_channels; in_ch++ ) \
         { \
-            uint8_t out_ch = p_sys->map_ch[ in_ch ]; \
+            int8_t out_ch = p_sys->map_ch[ in_ch ]; \
+            if (out_ch < 0) continue; \
             memcpy( p_dest + out_ch, \
                     p_src  + in_ch, \
                     sizeof( type ) ); \
@@ -203,7 +203,8 @@ static void RemapAdd##name( filter_t *p_filter, \
     { \
         for( uint8_t in_ch = 0; in_ch < i_nb_in_channels; in_ch++ ) \
         { \
-            uint8_t out_ch = p_sys->map_ch[ in_ch ]; \
+            int8_t out_ch = p_sys->map_ch[ in_ch ]; \
+            if (out_ch < 0) continue; \
             if( p_sys->b_normalize ) \
                 p_dest[ out_ch ] += p_src[ in_ch ] / p_sys->nb_in_ch[ out_ch ]; \
             else \
@@ -272,18 +273,21 @@ static int OpenFilter( vlc_object_t *p_this )
     audio_format_t *audio_in  = &p_filter->fmt_in.audio;
     audio_format_t *audio_out = &p_filter->fmt_out.audio;
 
-    if( ( audio_in->i_format != audio_out->i_format ) ||
-        ( audio_in->i_rate != audio_out->i_rate ) )
-        return VLC_EGENERIC;
-
     /* Allocate the memory needed to store the module's structure */
     p_sys = p_filter->p_sys = malloc( sizeof(filter_sys_t) );
     if( unlikely( p_sys == NULL ) )
         return VLC_ENOMEM;
 
+    static const char *const options[] = {
+        "channel-left", "channel-center", "channel-right", "channel-rearleft",
+        "channel-rearcenter", "channel-rearright", "channel-middleleft",
+        "channel-middleright", "channel-lfe", "normalize", NULL
+    };
+    config_ChainParse(p_filter, REMAP_CFG, options, p_filter->p_cfg);
+
     /* get number of and layout of input channels */
     uint32_t i_output_physical = 0;
-    uint8_t pi_map_ch[ AOUT_CHAN_MAX ] = { 0 }; /* which out channel each in channel is mapped to */
+    int8_t pi_map_ch[ AOUT_CHAN_MAX ] = { 0 }; /* which out channel each in channel is mapped to */
     p_sys->b_normalize = var_InheritBool( p_this, REMAP_CFG "normalize" );
 
     for( uint8_t in_ch = 0, wg4_i = 0; in_ch < audio_in->i_channels; in_ch++, wg4_i++ )
@@ -298,21 +302,32 @@ static int OpenFilter( vlc_object_t *p_this )
         uint8_t *pi_chnidx = memchr( channel_wg4idx, wg4_i, channel_wg4idx_len );
         assert( pi_chnidx != NULL );
         uint8_t chnidx = pi_chnidx - channel_wg4idx;
-        uint8_t out_idx = var_InheritInteger( p_this, channel_name[chnidx] );
+        int64_t val = var_InheritInteger( p_this, channel_name[chnidx] );
+        if (val >= AOUT_CHAN_MAX)
+        {
+            msg_Err( p_filter, "invalid channel index" );
+            free( p_sys );
+            return VLC_EGENERIC;
+        }
+        if (val < 0)
+        {
+            pi_map_ch[in_ch] = -1;
+            continue;
+        }
+        uint8_t out_idx = val;
         pi_map_ch[in_ch] = channel_wg4idx[ out_idx ];
 
         i_output_physical |= channel_flag[ out_idx ];
     }
     i_output_physical = CanonicaliseChannels( i_output_physical );
 
-    audio_out->i_physical_channels = i_output_physical;
-    aout_FormatPrepare( audio_out );
+    unsigned i_channels = popcount(i_output_physical);
 
     /* condense out_channels */
     uint8_t out_ch_sorted[ AOUT_CHAN_MAX ];
-    for( uint8_t i = 0, wg4_i = 0; i < audio_out->i_channels; i++, wg4_i++ )
+    for( uint8_t i = 0, wg4_i = 0; i < i_channels; i++, wg4_i++ )
     {
-        while( ( audio_out->i_physical_channels & pi_vlc_chan_order_wg4[ wg4_i ] ) == 0 )
+        while( ( i_output_physical & pi_vlc_chan_order_wg4[ wg4_i ] ) == 0 )
         {
             wg4_i++;
             assert( wg4_i < sizeof( pi_vlc_chan_order_wg4 )/sizeof( pi_vlc_chan_order_wg4[0] ) );
@@ -323,20 +338,18 @@ static int OpenFilter( vlc_object_t *p_this )
     memset( p_sys->nb_in_ch, 0, sizeof( p_sys->nb_in_ch ) );
     for( uint8_t i = 0; i < audio_in->i_channels; i++ )
     {
-        uint8_t wg4_out_ch = pi_map_ch[i];
-        uint8_t *pi_out_ch = memchr( out_ch_sorted, wg4_out_ch, audio_out->i_channels );
+        int8_t wg4_out_ch = pi_map_ch[i];
+        if (wg4_out_ch < 0)
+        {
+            p_sys->map_ch[i] = -1;
+            continue;
+        }
+        uint8_t *pi_out_ch = memchr( out_ch_sorted, wg4_out_ch, i_channels );
         assert( pi_out_ch != NULL );
         p_sys->map_ch[i] = pi_out_ch - out_ch_sorted;
         if( ++p_sys->nb_in_ch[ p_sys->map_ch[i] ] > 1 )
             b_multiple = true;
     }
-
-    msg_Dbg( p_filter, "%s '%4.4s'->'%4.4s' %d Hz->%d Hz %s->%s",
-             "Remap filter",
-             (char *)&audio_in->i_format, (char *)&audio_out->i_format,
-             audio_in->i_rate, audio_out->i_rate,
-             aout_FormatPrintChannels( audio_in ),
-             aout_FormatPrintChannels( audio_out ) );
 
     p_sys->pf_remap = GetRemapFun( audio_in, b_multiple );
     if( !p_sys->pf_remap )
@@ -345,6 +358,18 @@ static int OpenFilter( vlc_object_t *p_this )
         free( p_sys );
         return VLC_EGENERIC;
     }
+
+    audio_out->i_rate = audio_in->i_rate;
+    audio_out->i_format = audio_in->i_format;
+    audio_out->i_physical_channels = i_output_physical;
+    aout_FormatPrepare( audio_out );
+
+    msg_Dbg( p_filter, "%s '%4.4s'->'%4.4s' %d Hz->%d Hz %s->%s",
+             "Remap filter",
+             (char *)&audio_in->i_format, (char *)&audio_out->i_format,
+             audio_in->i_rate, audio_out->i_rate,
+             aout_FormatPrintChannels( audio_in ),
+             aout_FormatPrintChannels( audio_out ) );
 
     p_filter->pf_audio_filter = Remap;
     return VLC_SUCCESS;

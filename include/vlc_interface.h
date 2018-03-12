@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000 VLC authors and VideoLAN
- * $Id: e98be12aab142e9901562ea952ee11f54e207f46 $
+ * $Id: e271314c3120c270a0bef5189cfee21dd9e7b26b $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -33,15 +33,11 @@ extern "C" {
 typedef struct intf_dialog_args_t intf_dialog_args_t;
 
 /**
- * \file
- * This file contains structures and function prototypes for
- * interface management in vlc
- */
-
-/**
- * \defgroup vlc_interface Interface
- * These functions and structures are for interface management
+ * \defgroup interface Interface
+ * VLC user interfaces
  * @{
+ * \file
+ * VLC user interface modules
  */
 
 typedef struct intf_sys_t intf_sys_t;
@@ -96,7 +92,7 @@ VLC_API void libvlc_Quit( libvlc_int_t * );
 
 static inline playlist_t *pl_Get( struct intf_thread_t *intf )
 {
-    return (playlist_t *)(intf->p_parent);
+    return (playlist_t *)(intf->obj.parent);
 }
 
 /**
@@ -106,47 +102,16 @@ static inline playlist_t *pl_Get( struct intf_thread_t *intf )
 #define pl_CurrentInput(intf) (playlist_CurrentInput(pl_Get(intf)))
 
 /**
- * \defgroup vlc_subscription Log messages subscription
- * These functions deal with log messages.
+ * @ingroup messages
  * @{
  */
-
-/**
- * Message logging callback signature.
- * \param data data pointer as provided to vlc_msg_SetCallback().
- * \param type message type (VLC_MSG_* values from enum vlc_log_type)
- * \param item meta information
- * \param fmt format string
- * \param args format string arguments
- */
-typedef void (*vlc_log_cb) (void *data, int type, const vlc_log_t *item,
-                            const char *fmt, va_list args);
 
 VLC_API void vlc_LogSet(libvlc_int_t *, vlc_log_cb cb, void *data);
 
 /*@}*/
 
-#if defined( _WIN32 ) && !VLC_WINSTORE_APP
-#    define CONSOLE_INTRO_MSG \
-         if( !getenv( "PWD" ) ) /* detect Cygwin shell or Wine */ \
-         { \
-         AllocConsole(); \
-         freopen( "CONOUT$", "w", stdout ); \
-         freopen( "CONOUT$", "w", stderr ); \
-         freopen( "CONIN$", "r", stdin ); \
-         } \
-         msg_Info( p_intf, "VLC media player - %s", VERSION_MESSAGE ); \
-         msg_Info( p_intf, "%s", COPYRIGHT_MESSAGE ); \
-         msg_Info( p_intf, _("\nWarning: if you cannot access the GUI " \
-                             "anymore, open a command-line window, go to the " \
-                             "directory where you installed VLC and run " \
-                             "\"vlc -I qt\"\n") )
-#else
-#    define CONSOLE_INTRO_MSG (void)0
-#endif
-
 /* Interface dialog ids for dialog providers */
-typedef enum vlc_dialog {
+typedef enum vlc_intf_dialog {
     INTF_DIALOG_FILE_SIMPLE = 1,
     INTF_DIALOG_FILE,
     INTF_DIALOG_DISC,
@@ -164,6 +129,7 @@ typedef enum vlc_dialog {
     INTF_DIALOG_PREFS,
     INTF_DIALOG_BOOKMARKS,
     INTF_DIALOG_EXTENDED,
+    INTF_DIALOG_RENDERER,
 
     INTF_DIALOG_POPUPMENU = 20,
     INTF_DIALOG_AUDIOPOPUPMENU,
@@ -172,24 +138,25 @@ typedef enum vlc_dialog {
 
     INTF_DIALOG_FILE_GENERIC = 30,
     INTF_DIALOG_INTERACTION = 50,
+    INTF_DIALOG_SENDKEY = 51,
 
     INTF_DIALOG_UPDATEVLC = 90,
     INTF_DIALOG_VLM,
 
     INTF_DIALOG_EXIT = 99
-} vlc_dialog_t;
+} vlc_intf_dialog;
 
 /* Useful text messages shared by interfaces */
 #define INTF_ABOUT_MSG LICENSE_MSG
 
 #define EXTENSIONS_AUDIO_CSV "3ga", "669", "a52", "aac", "ac3", "adt", "adts", "aif", "aifc", "aiff", \
-                         "amr", "aob", "ape", "awb", "caf", "dts", "flac", "it", "kar", \
+                         "amb", "amr", "aob", "ape", "au", "awb", "caf", "dts", "flac", "it", "kar", \
                          "m4a", "m4b", "m4p", "m5p", "mka", "mlp", "mod", "mpa", "mp1", "mp2", "mp3", "mpc", "mpga", "mus", \
-                         "oga", "ogg", "oma", "opus", "qcp", "ra", "rmi", "s3m", "sid", "spx", "thd", "tta", \
+                         "oga", "ogg", "oma", "opus", "qcp", "ra", "rmi", "s3m", "sid", "spx", "tak", "thd", "tta", \
                          "voc", "vqf", "w64", "wav", "wma", "wv", "xa", "xm"
 
-#define EXTENSIONS_VIDEO_CSV "3g2", "3gp", "3gp2", "3gpp", "amv", "asf", "avi", "bik", "divx", "drc", "dv", \
-                             "f4v", "flv", "gvi", "gxf", "iso", \
+#define EXTENSIONS_VIDEO_CSV "3g2", "3gp", "3gp2", "3gpp", "amv", "asf", "avi", "bik", "crf", "divx", "drc", "dv", "dvr-ms" \
+                             "evo", "f4v", "flv", "gvi", "gxf", "iso", \
                              "m1v", "m2v", "m2t", "m2ts", "m4v", "mkv", "mov",\
                              "mp2", "mp2v", "mp4", "mp4v", "mpe", "mpeg", "mpeg1", \
                              "mpeg2", "mpeg4", "mpg", "mpv2", "mts", "mtv", "mxf", "mxg", "nsv", "nuv", \
@@ -208,9 +175,11 @@ typedef enum vlc_dialog {
     "*.aif;"\
     "*.aifc;"\
     "*.aiff;"\
+    "*.amb;" \
     "*.amr;" \
     "*.aob;" \
     "*.ape;" \
+    "*.au;" \
     "*.awb;" \
     "*.caf;" \
     "*.dts;" \
@@ -242,6 +211,7 @@ typedef enum vlc_dialog {
     "*.s3m;" \
     "*.sid;" \
     "*.spx;" \
+    "*.tak;" \
     "*.thd;" \
     "*.tta;" \
     "*.voc;" \
@@ -253,11 +223,11 @@ typedef enum vlc_dialog {
     "*.xa;"  \
     "*.xm"
 
-#define EXTENSIONS_VIDEO "*.3g2;*.3gp;*.3gp2;*.3gpp;*.amv;*.asf;*.avi;*.bik;*.bin;*.divx;*.drc;*.dv;*f4v;*.flv;*.gvi;*.gxf;*.iso;*.m1v;*.m2v;" \
+#define EXTENSIONS_VIDEO "*.3g2;*.3gp;*.3gp2;*.3gpp;*.amv;*.asf;*.avi;*.bik;*.bin;*.crf;*.divx;*.drc;*.dv;*.dvr-ms;*.evo;*.f4v;*.flv;*.gvi;*.gxf;*.iso;*.m1v;*.m2v;" \
                          "*.m2t;*.m2ts;*.m4v;*.mkv;*.mov;*.mp2;*.mp2v;*.mp4;*.mp4v;*.mpe;*.mpeg;*.mpeg1;" \
                          "*.mpeg2;*.mpeg4;*.mpg;*.mpv2;*.mts;*.mtv;*.mxf;*.mxg;*.nsv;*.nuv;" \
                          "*.ogg;*.ogm;*.ogv;*.ogx;*.ps;" \
-                         "*.rec;*.rm;*.rmvb;*.rpl;*.thp;*.tod;*.ts;*.tts;*.txd;*.vob;*.vro;*.webm;*.wm;*.wmv;*.wtv;*.xesc"
+                         "*.rec;*.rm;*.rmvb;*.rpl;*.thp;*.tod;*.tp;*.ts;*.tts;*.txd;*.vob;*.vro;*.webm;*.wm;*.wmv;*.wtv;*.xesc"
 
 #define EXTENSIONS_PLAYLIST "*.asx;*.b4s;*.cue;*.ifo;*.m3u;*.m3u8;*.pls;*.ram;*.rar;*.sdp;*.vlc;*.xspf;*.wax;*.wvx;*.zip;*.conf"
 
@@ -268,13 +238,14 @@ typedef enum vlc_dialog {
                             "*.sub;*.utf;*.ass;" \
                             "*.ssa;*.aqt;" \
                             "*.jss;*.psb;" \
-                            "*.rt;*.smi;*.txt;" \
+                            "*.rt;*.sami;*.smi;*.txt;" \
                             "*.smil;*.stl;*.usf;" \
                             "*.dks;*.pjs;*.mpl2;*.mks;" \
-                            "*.vtt"
+                            "*.vtt;*.tt;*.ttml;*.dfxp;" \
+                            "*.scc"
 
-/** \defgroup vlc_interaction Interaction
- * \ingroup vlc_interface
+/** \defgroup interaction Interaction
+ * \ingroup interface
  * Interaction between user and modules
  * @{
  */

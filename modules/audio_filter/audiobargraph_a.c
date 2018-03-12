@@ -2,7 +2,7 @@
  * audiobargraph_a.c : audiobargraph audio plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 215c5864ec72a2624ab06ebcb84c0c701000b9ee $
+ * $Id: bdccf32f38b5a67c5fb88eb671ed4e0783633dfc $
  *
  * Authors: Clement CHESNIN <clement.chesnin@gmail.com>
  *          Philippe COENT <philippe.coent@tdf.fr>
@@ -136,11 +136,12 @@ static int Open( vlc_object_t *p_this )
     p_sys->lastAlarm = 0;
 
     p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    aout_FormatPrepare(&p_filter->fmt_in.audio);
     p_filter->fmt_out.audio = p_filter->fmt_in.audio;
     p_filter->pf_audio_filter = DoWork;
 
-    var_Create(p_filter->p_libvlc, "audiobargraph_v-alarm", VLC_VAR_BOOL);
-    var_Create(p_filter->p_libvlc, "audiobargraph_v-i_values", VLC_VAR_STRING);
+    var_Create(p_filter->obj.libvlc, "audiobargraph_v-alarm", VLC_VAR_BOOL);
+    var_Create(p_filter->obj.libvlc, "audiobargraph_v-i_values", VLC_VAR_STRING);
 
     return VLC_SUCCESS;
 }
@@ -156,8 +157,8 @@ static void SendValues(filter_t *p_filter, float *value, int nbChannels)
         len += snprintf(msg + len, sizeof (msg) - len, "%f:", value[i]);
     }
 
-    //msg_Dbg(p_filter, "values: %s", message);
-    var_SetString(p_filter->p_libvlc, "audiobargraph_v-i_values", msg);
+    //msg_Dbg(p_filter, "values: %s", msg);
+    var_SetString(p_filter->obj.libvlc, "audiobargraph_v-i_values", msg);
 }
 
 /*****************************************************************************
@@ -175,22 +176,23 @@ static block_t *DoWork( filter_t *p_filter, block_t *p_in_buf )
         i_value[i] = 0.;
 
     /* 1 - Compute the peak values */
-    float max = 0.0;
-    for (size_t i = 0; i < p_in_buf->i_nb_samples; i++) {
+    for (size_t i = 0; i < p_in_buf->i_nb_samples; i++)
         for (int j = 0; j<nbChannels; j++) {
-            float ch = (*p_sample++);
+            float ch = *p_sample++;
             if (ch > i_value[j])
                 i_value[j] = ch;
-            if (ch > max)
-                max = ch;
         }
-    }
-    max *= max;
 
     if (p_sys->silence) {
         /* 2 - store the new value */
         ValueDate_t *new = xmalloc(sizeof(*new));
-        new->value = max;
+        new->value = 0.0;
+        for (int j = 0; j<nbChannels; j++) {
+            float ch = i_value[j];
+            if (ch > new->value)
+                new->value = ch;
+        }
+        new->value *= new->value;
         new->date = p_in_buf->i_pts;
         new->next = NULL;
         if (p_sys->last != NULL)
@@ -223,7 +225,7 @@ static block_t *DoWork( filter_t *p_filter, block_t *p_in_buf )
             sum = sqrtf(sum);
 
             /* 5 - compare it to the threshold */
-            var_SetBool(p_filter->p_libvlc, "audiobargraph_v-alarm",
+            var_SetBool(p_filter->obj.libvlc, "audiobargraph_v-alarm",
                         sum < p_sys->alarm_threshold);
 
             p_sys->lastAlarm = p_in_buf->i_pts;
@@ -246,8 +248,8 @@ static void Close( vlc_object_t *p_this )
     filter_t * p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    var_Destroy(p_filter->p_libvlc, "audiobargraph_v-i_values");
-    var_Destroy(p_filter->p_libvlc, "audiobargraph_v-alarm");
+    var_Destroy(p_filter->obj.libvlc, "audiobargraph_v-i_values");
+    var_Destroy(p_filter->obj.libvlc, "audiobargraph_v-alarm");
 
     while (p_sys->first != NULL) {
         ValueDate_t *current = p_sys->first;

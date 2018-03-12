@@ -2,7 +2,7 @@
  * intf_dummy.c: dummy interface plugin
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 4300555b07b3cf4e867a09edbddf0a694e57b27c $
+ * $Id: d2a40da1108e6afc8456eb1c69b9e0b7d378bf8e $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -29,6 +29,7 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
@@ -40,6 +41,9 @@
     "Enabling the quiet mode will not bring this command box but can also " \
     "be pretty annoying when you want to stop VLC and no video window is " \
     "open." )
+#if !VLC_WINSTORE_APP
+#include "intromsg.h"
+#endif
 #endif
 
 static int Open( vlc_object_t * );
@@ -49,7 +53,7 @@ vlc_module_begin ()
     set_description( N_("Dummy interface") )
     set_capability( "interface", 0 )
     set_callbacks( Open, NULL )
-#ifdef _WIN32
+#if defined(_WIN32) && !VLC_WINSTORE_APP
     add_bool( "dummy-quiet", false, QUIET_TEXT, QUIET_LONGTEXT, false )
 #endif
 vlc_module_end ()
@@ -61,11 +65,11 @@ static int Open( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t*) p_this;
 
-#ifdef _WIN32
+#if defined(_WIN32) && !VLC_WINSTORE_APP
     bool b_quiet;
     b_quiet = var_InheritBool( p_intf, "dummy-quiet" );
     if( !b_quiet )
-        CONSOLE_INTRO_MSG;
+        intf_consoleIntroMsg(p_intf);
 #endif
 
     msg_Info( p_intf, "using the dummy interface module..." );

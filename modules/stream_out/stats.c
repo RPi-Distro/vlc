@@ -67,8 +67,8 @@ static const char *ppsz_sout_options[] = {
     "output", "prefix", NULL
 };
 
-static sout_stream_id_sys_t *Add   ( sout_stream_t *, es_format_t * );
-static int               Del   ( sout_stream_t *, sout_stream_id_sys_t * );
+static sout_stream_id_sys_t *Add( sout_stream_t *, const es_format_t * );
+static void               Del   ( sout_stream_t *, sout_stream_id_sys_t * );
 static int               Send  ( sout_stream_t *, sout_stream_id_sys_t *, block_t * );
 
 struct sout_stream_sys_t
@@ -148,7 +148,7 @@ static void Close( vlc_object_t * p_this )
     free( p_sys );
 }
 
-static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
+static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, const es_format_t *p_fmt )
 {
     sout_stream_sys_t *p_sys = (sout_stream_sys_t *)p_stream->p_sys;
     sout_stream_id_sys_t *id;
@@ -187,7 +187,7 @@ static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     return id;
 }
 
-static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
+static void Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     sout_stream_sys_t *p_sys = (sout_stream_sys_t *)p_stream->p_sys;
 
@@ -207,8 +207,6 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
     free( outputhash );
     if( id->next_id ) sout_StreamIdDel( p_stream->p_next, id->next_id );
     free( id );
-
-    return VLC_SUCCESS;
 }
 
 static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
@@ -227,7 +225,7 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
         char *outputhash = psz_md5_hash( &hash );
 
         /* We could just set p_sys->output to stdout and remove user of msg_Dbg
-         * if we don't need ability to output info to gui modules (like qt4 messages window
+         * if we don't need ability to output info to gui modules (like qt messages window
          */
         mtime_t dts_difference = VLC_TS_INVALID;
         if( likely( id->previous_dts != VLC_TS_INVALID ) )

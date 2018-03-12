@@ -2,7 +2,7 @@
  * ft2_font.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 855640bfe1076041298523f9e6a338cda9e0ba50 $
+ * $Id: a2b148e402c45a91a02acdab4a1d38c81ad3bd59 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -29,11 +29,11 @@
 #include "../utils/ustring.hpp"
 
 #ifdef HAVE_FRIBIDI
-#include <fribidi/fribidi.h>
+# include <fribidi.h>
 #endif
 
 
-FT2Font::FT2Font( intf_thread_t *pIntf, const string &rName, int size ):
+FT2Font::FT2Font( intf_thread_t *pIntf, const std::string &rName, int size ):
     GenericFont( pIntf ), m_name( rName ), m_buffer( NULL ), m_size( size ),
     m_lib( NULL ), m_face( NULL )
 {

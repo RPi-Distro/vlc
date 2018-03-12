@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: cfc138341252069444269368deb48deb739481a2 $
+ * $Id: f6671edd510d014df9bbe54bdd32a0fca1b73b6d $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -34,17 +34,11 @@
 #include <assert.h>
 
 #include <vlc_common.h>
-#include <vlc_picture.h>
+#include "picture.h"
 #include <vlc_image.h>
 #include <vlc_block.h>
 
-#if (__STDC_VERSION__ >= 201112L)
-# include <stdalign.h>
-static_assert(sizeof (uintptr_t) == sizeof (atomic_uintptr_t),
-              "Please compile in C99 mode (or update to LibVLC 3.0).");
-static_assert(alignof (uintptr_t) == alignof (atomic_uintptr_t),
-              "Please compile in C99 mode (or update to LibVLC 3.0).");
-#endif
+#define PICTURE_SW_SIZE_MAX (1<<28) /* 256MB: 8K * 8K * 4*/
 
 /**
  * Allocate a new picture in the heap.
@@ -70,13 +64,18 @@ static int AllocatePicture( picture_t *p_pic )
         i_bytes += p->i_pitch * p->i_lines;
     }
 
-    uint8_t *p_data = vlc_memalign( 16, i_bytes );
+    if( i_bytes >= PICTURE_SW_SIZE_MAX )
+    {
+        p_pic->i_planes = 0;
+        return VLC_ENOMEM;
+    }
+
+    uint8_t *p_data = aligned_alloc( 16, i_bytes );
     if( i_bytes > 0 && p_data == NULL )
     {
         p_pic->i_planes = 0;
         return VLC_EGENERIC;
     }
-    p_pic->gc.p_sys = (void *)p_data;
 
     /* Fill the p_pixels field for each plane */
     p_pic->p[0].p_pixels = p_data;
@@ -95,22 +94,31 @@ static int AllocatePicture( picture_t *p_pic )
 
 static void PictureDestroyContext( picture_t *p_picture )
 {
-    void (**context)( void * ) = p_picture->context;
-    if( context != NULL )
+    picture_context_t *ctx = p_picture->context;
+    if (ctx != NULL)
     {
-        void (*context_destroy)( void * ) = *context;
-        context_destroy( context );
+        ctx->destroy(ctx);
         p_picture->context = NULL;
     }
 }
 
-static void PictureDestroy( picture_t *p_picture )
+/**
+ * Destroys a picture allocated by picture_NewFromResource() but without
+ * a custom destruction callback.
+ */
+static void picture_DestroyFromResource( picture_t *p_picture )
 {
-    assert( p_picture &&
-            atomic_load( &p_picture->gc.refcount ) == 0 );
-
-    vlc_free( p_picture->gc.p_sys );
     free( p_picture->p_sys );
+    free( p_picture );
+}
+
+/**
+ * Destroys a picture allocated with picture_NewFromFormat()
+ * (and thus AllocatePicture()).
+ */
+static void picture_Destroy( picture_t *p_picture )
+{
+    aligned_free( p_picture->p[0].p_pixels );
     free( p_picture );
 }
 
@@ -146,10 +154,6 @@ int picture_Setup( picture_t *p_picture, const video_format_t *restrict fmt )
         p->p_pixels = NULL;
         p->i_pixel_pitch = 0;
     }
-
-    atomic_init( &p_picture->gc.refcount, 0 );
-    p_picture->gc.pf_destroy = NULL;
-    p_picture->gc.p_sys = NULL;
 
     p_picture->i_nb_fields = 2;
 
@@ -219,9 +223,14 @@ picture_t *picture_NewFromResource( const video_format_t *p_fmt, const picture_r
         video_format_CopyCrop( &fmt, p_fmt );
 
     /* */
-    picture_t *p_picture = calloc( 1, sizeof(*p_picture) );
-    if( !p_picture )
+    picture_priv_t *priv = malloc( sizeof (*priv) );
+    if( unlikely(priv == NULL) )
         return NULL;
+
+    picture_t *p_picture = &priv->picture;
+
+    memset( p_picture, 0, sizeof( *p_picture ) );
+    p_picture->format = fmt;
 
     /* Make sure the real dimensions are a multiple of 16 */
     if( picture_Setup( p_picture, &fmt ) )
@@ -230,11 +239,17 @@ picture_t *picture_NewFromResource( const video_format_t *p_fmt, const picture_r
         return NULL;
     }
 
+    atomic_init( &priv->gc.refs, 1 );
+    priv->gc.opaque = NULL;
+
     if( p_resource )
     {
         p_picture->p_sys = p_resource->p_sys;
-        p_picture->gc.pf_destroy = p_resource->pf_destroy;
-        assert( p_picture->gc.p_sys == NULL );
+
+        if( p_resource->pf_destroy != NULL )
+            priv->gc.destroy = p_resource->pf_destroy;
+        else
+            priv->gc.destroy = picture_DestroyFromResource;
 
         for( int i = 0; i < p_picture->i_planes; i++ )
         {
@@ -250,14 +265,8 @@ picture_t *picture_NewFromResource( const video_format_t *p_fmt, const picture_r
             free( p_picture );
             return NULL;
         }
+        priv->gc.destroy = picture_Destroy;
     }
-
-    /* */
-    p_picture->format = fmt;
-
-    atomic_init( &p_picture->gc.refcount, 1 );
-    if( p_picture->gc.pf_destroy == NULL )
-        p_picture->gc.pf_destroy = PictureDestroy;
 
     return p_picture;
 }
@@ -271,7 +280,7 @@ picture_t *picture_New( vlc_fourcc_t i_chroma, int i_width, int i_height, int i_
 {
     video_format_t fmt;
 
-    memset( &fmt, 0, sizeof(fmt) );
+    video_format_Init( &fmt, 0 );
     video_format_Setup( &fmt, i_chroma, i_width, i_height,
                         i_width, i_height, i_sar_num, i_sar_den );
 
@@ -284,25 +293,27 @@ picture_t *picture_New( vlc_fourcc_t i_chroma, int i_width, int i_height, int i_
 
 picture_t *picture_Hold( picture_t *p_picture )
 {
-    atomic_fetch_add( &p_picture->gc.refcount, 1 );
+    assert( p_picture != NULL );
+
+    picture_priv_t *priv = (picture_priv_t *)p_picture;
+    uintptr_t refs = atomic_fetch_add( &priv->gc.refs, 1 );
+    assert( refs > 0 );
     return p_picture;
 }
 
 void picture_Release( picture_t *p_picture )
 {
-    uintptr_t refs = atomic_fetch_sub( &p_picture->gc.refcount, 1 );
+    assert( p_picture != NULL );
+
+    picture_priv_t *priv = (picture_priv_t *)p_picture;
+    uintptr_t refs = atomic_fetch_sub( &priv->gc.refs, 1 );
     assert( refs != 0 );
     if( refs > 1 )
         return;
 
     PictureDestroyContext( p_picture );
-    assert( p_picture->gc.pf_destroy != NULL );
-    p_picture->gc.pf_destroy( p_picture );
-}
-
-bool picture_IsReferenced( picture_t *p_picture )
-{
-    return atomic_load( &p_picture->gc.refcount ) > 1;
+    assert( priv->gc.destroy != NULL );
+    priv->gc.destroy( p_picture );
 }
 
 /*****************************************************************************
@@ -331,12 +342,11 @@ void plane_CopyPixels( plane_t *p_dst, const plane_t *p_src )
         /* We need to proceed line by line */
         uint8_t *p_in = p_src->p_pixels;
         uint8_t *p_out = p_dst->p_pixels;
-        int i_line;
 
         assert( p_in );
         assert( p_out );
 
-        for( i_line = i_height; i_line--; )
+        for( int i_line = i_height; i_line--; )
         {
             memcpy( p_out, p_in, i_width );
             p_in += p_src->i_pitch;
@@ -357,10 +367,13 @@ void picture_CopyProperties( picture_t *p_dst, const picture_t *p_src )
 
 void picture_CopyPixels( picture_t *p_dst, const picture_t *p_src )
 {
-    int i;
-
-    for( i = 0; i < p_src->i_planes ; i++ )
+    for( int i = 0; i < p_src->i_planes ; i++ )
         plane_CopyPixels( p_dst->p+i, p_src->p+i );
+
+    assert( p_dst->context == NULL );
+
+    if( p_src->context != NULL )
+        p_dst->context = p_src->context->copy( p_src->context );
 }
 
 void picture_Copy( picture_t *p_dst, const picture_t *p_src )
@@ -369,6 +382,38 @@ void picture_Copy( picture_t *p_dst, const picture_t *p_src )
     picture_CopyProperties( p_dst, p_src );
 }
 
+static void picture_DestroyClone(picture_t *clone)
+{
+    picture_t *picture = ((picture_priv_t *)clone)->gc.opaque;
+
+    free(clone);
+    picture_Release(picture);
+}
+
+picture_t *picture_Clone(picture_t *picture)
+{
+    /* TODO: merge common code with picture_pool_ClonePicture(). */
+    picture_resource_t res = {
+        .p_sys = picture->p_sys,
+        .pf_destroy = picture_DestroyClone,
+    };
+
+    for (int i = 0; i < picture->i_planes; i++) {
+        res.p[i].p_pixels = picture->p[i].p_pixels;
+        res.p[i].i_lines = picture->p[i].i_lines;
+        res.p[i].i_pitch = picture->p[i].i_pitch;
+    }
+
+    picture_t *clone = picture_NewFromResource(&picture->format, &res);
+    if (likely(clone != NULL)) {
+        ((picture_priv_t *)clone)->gc.opaque = picture;
+        picture_Hold(picture);
+
+        if (picture->context != NULL)
+            clone->context = picture->context->copy(picture->context);
+    }
+    return clone;
+}
 
 /*****************************************************************************
  *
@@ -455,26 +500,4 @@ int picture_Export( vlc_object_t *p_obj,
     *pp_image = p_block;
 
     return VLC_SUCCESS;
-}
-
-unsigned picture_BlendSubpicture(picture_t *dst,
-                                 filter_t *blend, subpicture_t *src)
-{
-    unsigned done = 0;
-
-    assert(src && !src->b_fade && src->b_absolute);
-
-    for (subpicture_region_t *r = src->p_region; r != NULL; r = r->p_next) {
-        assert(r->p_picture && r->i_align == 0);
-        if (filter_ConfigureBlend(blend, dst->format.i_width,
-                                  dst->format.i_height,  &r->fmt)
-         || filter_Blend(blend, dst, r->i_x, r->i_y, r->p_picture,
-                         src->i_alpha * r->i_alpha / 255))
-            msg_Err(blend, "blending %4.4s to %4.4s failed",
-                    (char *)&blend->fmt_in.video.i_chroma,
-                    (char *)&blend->fmt_out.video.i_chroma );
-        else
-            done++;
-    }
-    return done;
 }

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: bc658f90871afc44d1737d456464e3dfc36275e0 $
+ * $Id: 0f28dbf1b5ec4c025f79fcdae77b1ff942f774b4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont
@@ -30,6 +30,7 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <assert.h>
@@ -102,7 +103,7 @@
     static int  OpenDemux ( vlc_object_t * );
     static void CloseDemux ( vlc_object_t * );
 
-VLC_SD_PROBE_HELPER("sap", "Network streams (SAP)", SD_CAT_LAN)
+VLC_SD_PROBE_HELPER("sap", N_("Network streams (SAP)"), SD_CAT_LAN)
 
 vlc_module_begin ()
     set_shortname( N_("SAP"))
@@ -300,6 +301,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_timeout = var_CreateGetInteger( p_sd, "sap-timeout" );
 
     p_sd->p_sys  = p_sys;
+    p_sd->description = _("Network streams (SAP)");
 
     p_sys->pi_fd = NULL;
     p_sys->i_fd = 0;
@@ -340,7 +342,7 @@ static int OpenDemux( vlc_object_t *p_this )
     assert( p_demux->s ); /* this is NOT an access_demux */
 
     /* Probe for SDP */
-    if( stream_Peek( p_demux->s, &p_peek, 7 ) < 7 )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, 7 ) < 7 )
         return VLC_EGENERIC;
 
     if( memcmp( p_peek, "v=0\r\no=", 7 ) && memcmp( p_peek, "v=0\no=", 6 ) )
@@ -359,7 +361,7 @@ static int OpenDemux( vlc_object_t *p_this )
         }
         psz_sdp = psz_sdp_new;
 
-        i_read = stream_Read( p_demux->s, &psz_sdp[i_len], i_read_max );
+        i_read = vlc_stream_Read( p_demux->s, &psz_sdp[i_len], i_read_max );
         if( (int)i_read < 0 )
         {
             msg_Err( p_demux, "cannot read SDP" );
@@ -401,8 +403,7 @@ static int OpenDemux( vlc_object_t *p_this )
 
 error:
     FREENULL( psz_sdp );
-    if( p_sdp ) FreeSDP( p_sdp ); p_sdp = NULL;
-    stream_Seek( p_demux->s, 0 );
+    if( p_sdp ) FreeSDP( p_sdp );
     return errval;
 }
 
@@ -456,7 +457,6 @@ static void *Run( void *data )
 {
     services_discovery_t *p_sd = data;
     char *psz_addr;
-    int i;
     int timeout = -1;
     int canc = vlc_savecancel ();
 
@@ -574,7 +574,7 @@ static void *Run( void *data )
         timeout = 1000 * 60 * 60;
 
         /* Check for items that need deletion */
-        for( i = 0; i < p_sd->p_sys->i_announces; i++ )
+        for( int i = 0; i < p_sd->p_sys->i_announces; i++ )
         {
             mtime_t i_timeout = ( mtime_t ) 1000000 * p_sd->p_sys->i_timeout;
             sap_announce_t * p_announce = p_sd->p_sys->pp_announces[i];
@@ -602,7 +602,7 @@ static void *Run( void *data )
         else if( timeout < 200 )
             timeout = 200; /* Don't wakeup too fast. */
     }
-    assert (0);
+    vlc_assert_unreachable ();
 }
 
 /**********************************************************************
@@ -612,11 +612,9 @@ static void *Run( void *data )
 static int Demux( demux_t *p_demux )
 {
     sdp_t *p_sdp = p_demux->p_sys->p_sdp;
-    input_thread_t *p_input;
+    input_thread_t *p_input = p_demux->p_input;
     input_item_t *p_parent_input;
 
-    p_input = demux_GetParentInput( p_demux );
-    assert( p_input );
     if( !p_input )
     {
         msg_Err( p_demux, "parent input could not be found" );
@@ -641,10 +639,10 @@ static int Demux( demux_t *p_demux )
 
     vlc_mutex_lock( &p_parent_input->lock );
 
-    p_parent_input->i_type = ITEM_TYPE_NET;
+    p_parent_input->i_type = ITEM_TYPE_STREAM;
+    p_parent_input->b_net = true;
 
     vlc_mutex_unlock( &p_parent_input->lock );
-    vlc_object_release( p_input );
     return VLC_SUCCESS;
 }
 
@@ -662,7 +660,6 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 static int ParseSAP( services_discovery_t *p_sd, const uint8_t *buf,
                      size_t len )
 {
-    int i;
     const char          *psz_sdp;
     const uint8_t *end = buf + len;
     sdp_t               *p_sdp;
@@ -726,7 +723,7 @@ static int ParseSAP( services_discovery_t *p_sd, const uint8_t *buf,
             return VLC_EGENERIC;
         }
 
-        decomp = realloc (decomp, newsize + 1);
+        decomp = xrealloc (decomp, newsize + 1);
         decomp[newsize] = '\0';
         psz_sdp = (const char *)decomp;
         len = newsize;
@@ -787,7 +784,7 @@ static int ParseSAP( services_discovery_t *p_sd, const uint8_t *buf,
         goto error;
     }
 
-    for( i = 0 ; i< p_sd->p_sys->i_announces ; i++ )
+    for( int i = 0 ; i< p_sd->p_sys->i_announces ; i++ )
     {
         sap_announce_t * p_announce = p_sd->p_sys->pp_announces[i];
         /* FIXME: slow */
@@ -852,9 +849,8 @@ sap_announce_t *CreateAnnounce( services_discovery_t *p_sd, uint32_t *i_source, 
     p_sap->p_sdp = p_sdp;
 
     /* Released in RemoveAnnounce */
-    p_input = input_item_NewWithType( p_sap->p_sdp->psz_uri,
-                                      p_sdp->psz_sessionname,
-                                      0, NULL, 0, -1, ITEM_TYPE_NET );
+    p_input = input_item_NewStream( p_sap->p_sdp->psz_uri, p_sdp->psz_sessionname,
+                                    -1 );
     if( unlikely(p_input == NULL) )
     {
         free( p_sap );
@@ -901,7 +897,7 @@ sap_announce_t *CreateAnnounce( services_discovery_t *p_sd, uint32_t *i_source, 
         if (likely(str != NULL))
             for (char *p = strchr(str, '.'); p != NULL; p = strchr(p, '.'))
                 *(p++) = '|';
-        services_discovery_AddItem(p_sd, p_input, str ? str : psz_value);
+        services_discovery_AddItemCat(p_sd, p_input, str ? str : psz_value);
         free(str);
     }
     else
@@ -909,7 +905,7 @@ sap_announce_t *CreateAnnounce( services_discovery_t *p_sd, uint32_t *i_source, 
         /* backward compatibility with VLC 0.7.3-2.0.0 senders */
         psz_value = GetAttribute(p_sap->p_sdp->pp_attributes,
                                  p_sap->p_sdp->i_attributes, "x-plgroup");
-        services_discovery_AddItem(p_sd, p_input, psz_value);
+        services_discovery_AddItemCat(p_sd, p_input, psz_value);
     }
 
     TAB_APPEND( p_sys->i_announces, p_sys->pp_announces, p_sap );
@@ -1188,8 +1184,10 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
     while (*psz_sdp)
     {
         /* Extract one line */
-        char *eol = strchr (psz_sdp, '\n');
-        size_t linelen = eol ? (size_t)(eol - psz_sdp) : strlen (psz_sdp);
+        size_t linelen = strcspn(psz_sdp, "\n");
+        if (psz_sdp[linelen] == '\0')
+            goto error;
+
         char line[linelen + 1];
         memcpy (line, psz_sdp, linelen);
         line[linelen] = '\0';
@@ -1197,7 +1195,7 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
         psz_sdp += linelen + 1;
 
         /* Remove carriage return if present */
-        eol = strchr (line, '\r');
+        char *eol = strchr (line, '\r');
         if (eol != NULL)
         {
             linelen = eol - line;
@@ -1241,7 +1239,6 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
                 break;
 
             case 'O':
-            {
                 expect = 'S';
                 if (cat != 'o')
                 {
@@ -1262,10 +1259,8 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
                 }
                 EnsureUTF8 (p_sdp->orig_host);
                 break;
-            }
 
             case 'S':
-            {
                 expect = 'I';
                 if ((cat != 's') || !*data)
                 {
@@ -1279,10 +1274,8 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
                     goto error;
                 EnsureUTF8 (p_sdp->psz_sessionname);
                 break;
-            }
 
             case 'I':
-            {
                 expect = 'U';
                 /* optional (and may be empty) */
                 if (cat == 'i')
@@ -1294,20 +1287,23 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
                     EnsureUTF8 (p_sdp->psz_sessioninfo);
                     break;
                 }
-            }
+                /* fall through */
 
             case 'U':
                 expect = 'E';
                 if (cat == 'u')
                     break;
+                /* fall through */
             case 'E':
                 expect = 'E';
                 if (cat == 'e')
                     break;
+                /* fall through */
             case 'P':
                 expect = 'P';
                 if (cat == 'p')
                     break;
+                /* fall through */
             case 'C':
                 expect = 'B';
                 if (cat == 'c')
@@ -1321,10 +1317,12 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
                     }
                     break;
                 }
+                /* fall through */
             case 'B':
                 assert (expect == 'B');
                 if (cat == 'b')
                     break;
+                /* fall through */
             case 'T':
                 expect = 'R';
                 if (cat != 't')
@@ -1337,15 +1335,17 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
             case 'R':
                 if ((cat == 't') || (cat == 'r'))
                     break;
-
+                /* fall through */
             case 'Z':
                 expect = 'K';
                 if (cat == 'z')
                     break;
+                /* fall through */
             case 'K':
                 expect = 'A';
                 if (cat == 'k')
                     break;
+                /* fall through */
             case 'A':
                 //expect = 'A';
                 if (cat == 'a')
@@ -1354,6 +1354,7 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
                     TAB_APPEND( p_sdp->i_attributes, p_sdp->pp_attributes, p_attr );
                     break;
                 }
+                /* fall through */
 
             /* Media description */
             case 'm':
@@ -1405,10 +1406,12 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
 
                 break;
             }
+
             case 'i':
                 expect = 'c';
                 if (cat == 'i')
                     break;
+                /* fall through */
             case 'c':
                 expect = 'b';
                 if (cat == 'c')
@@ -1424,14 +1427,17 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
                     net_SetPort ((struct sockaddr *)&m->addr, htons (port));
                     break;
                 }
+                /* fall through */
             case 'b':
                 expect = 'b';
                 if (cat == 'b')
                     break;
+                /* fall through */
             case 'k':
                 expect = 'a';
                 if (cat == 'k')
                     break;
+                /* fall through */
             case 'a':
                 assert (expect == 'a');
                 if (cat == 'a')
@@ -1448,12 +1454,8 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
                 if (cat == 'm')
                     goto media;
 
-                if (cat != 'm')
-                {
-                    msg_Dbg (p_obj, "unexpected SDP line: 0x%02x", (int)cat);
-                    goto error;
-                }
-                break;
+                msg_Dbg (p_obj, "unexpected SDP line: 0x%02x", (int)cat);
+                goto error;
 
             default:
                 msg_Err (p_obj, "*** BUG in SDP parser! ***");
@@ -1476,8 +1478,7 @@ static int InitSocket( services_discovery_t *p_sd, const char *psz_address,
         return VLC_EGENERIC;
 
     shutdown( i_fd, SHUT_WR );
-    INSERT_ELEM (p_sd->p_sys->pi_fd, p_sd->p_sys->i_fd,
-                 p_sd->p_sys->i_fd, i_fd);
+    TAB_APPEND(p_sd->p_sys->i_fd, p_sd->p_sys->pi_fd, i_fd);
     return VLC_SUCCESS;
 }
 
@@ -1500,7 +1501,7 @@ static int Decompress( const unsigned char *psz_src, unsigned char **_dst, int i
     do
     {
         n++;
-        psz_dst = (unsigned char *)realloc( psz_dst, n * 1000 );
+        psz_dst = xrealloc( psz_dst, n * 1000 );
         d_stream.next_out = (Bytef *)&psz_dst[(n - 1) * 1000];
         d_stream.avail_out = 1000;
 
@@ -1518,7 +1519,7 @@ static int Decompress( const unsigned char *psz_src, unsigned char **_dst, int i
     i_dstsize = d_stream.total_out;
     inflateEnd( &d_stream );
 
-    *_dst = (unsigned char *)realloc( psz_dst, i_dstsize );
+    *_dst = xrealloc( psz_dst, i_dstsize );
 
     return i_dstsize;
 #else
@@ -1555,8 +1556,6 @@ static void FreeSDP( sdp_t *p_sdp )
 static int RemoveAnnounce( services_discovery_t *p_sd,
                            sap_announce_t *p_announce )
 {
-    int i;
-
     if( p_announce->p_sdp )
     {
         FreeSDP( p_announce->p_sdp );
@@ -1566,20 +1565,12 @@ static int RemoveAnnounce( services_discovery_t *p_sd,
     if( p_announce->p_item )
     {
         services_discovery_RemoveItem( p_sd, p_announce->p_item );
-        vlc_gc_decref( p_announce->p_item );
+        input_item_Release( p_announce->p_item );
         p_announce->p_item = NULL;
     }
 
-    for( i = 0; i< p_sd->p_sys->i_announces; i++)
-    {
-        if( p_sd->p_sys->pp_announces[i] == p_announce )
-        {
-            REMOVE_ELEM( p_sd->p_sys->pp_announces, p_sd->p_sys->i_announces,
-                         i);
-            break;
-        }
-    }
-
+    TAB_REMOVE(p_sd->p_sys->i_announces, p_sd->p_sys->pp_announces,
+               p_announce);
     free( p_announce );
 
     return VLC_SUCCESS;

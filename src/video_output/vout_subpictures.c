@@ -2,7 +2,7 @@
  * vout_subpictures.c : subpicture management functions
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 646dc84b06a40a50621eb26c32e4b545f989c7e4 $
+ * $Id: 0a1b9e680839dc3e8573ab7ca4893caa70c6d4b1 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -84,19 +84,22 @@ struct spu_private_t {
     uint8_t palette[4][4];                             /**< forced palette */
 
     /* Subpiture filters */
+    char           *source_chain_current;
     char           *source_chain_update;
     vlc_mutex_t    source_chain_lock;
     filter_chain_t *source_chain;
+    char           *filter_chain_current;
     char           *filter_chain_update;
     vlc_mutex_t    filter_chain_lock;
     filter_chain_t *filter_chain;
 
     /* */
-    mtime_t last_sort_date;
+    mtime_t             last_sort_date;
+    vout_thread_t       *vout;
 };
 
 /*****************************************************************************
- * heap managment
+ * heap management
  *****************************************************************************/
 static void SpuHeapInit(spu_heap_t *heap)
 {
@@ -156,18 +159,10 @@ static void SpuHeapClean(spu_heap_t *heap)
     }
 }
 
-struct filter_owner_sys_t {
-    spu_t *spu;
-    int   channel;
-};
-
 static void FilterRelease(filter_t *filter)
 {
     if (filter->p_module)
         module_unneed(filter, filter->p_module);
-    if (filter->p_owner)
-        free(filter->p_owner);
-
     vlc_object_release(filter);
 }
 
@@ -175,20 +170,14 @@ static picture_t *spu_new_video_buffer(filter_t *filter)
 {
     const video_format_t *fmt = &filter->fmt_out.video;
 
-    VLC_UNUSED(filter);
     return picture_NewFromFormat(fmt);
-}
-static void spu_del_video_buffer(filter_t *filter, picture_t *picture)
-{
-    VLC_UNUSED(filter);
-    picture_Release(picture);
 }
 
 static int spu_get_attachments(filter_t *filter,
                                input_attachment_t ***attachment_ptr,
                                int *attachment_count)
 {
-    spu_t *spu = filter->p_owner->spu;
+    spu_t *spu = filter->owner.sys;
 
     int ret = VLC_EGENERIC;
     if (spu->p->input)
@@ -204,8 +193,7 @@ static filter_t *SpuRenderCreateAndLoadText(spu_t *spu)
     if (!text)
         return NULL;
 
-    text->p_owner = xmalloc(sizeof(*text->p_owner));
-    text->p_owner->spu = spu;
+    text->owner.sys = spu;
 
     es_format_Init(&text->fmt_in, VIDEO_ES, 0);
 
@@ -220,7 +208,7 @@ static filter_t *SpuRenderCreateAndLoadText(spu_t *spu)
     text->p_module = module_need(text, "text renderer", "$text-renderer", false);
 
     /* Create a few variables used for enhanced text rendering */
-    var_Create(text, "spu-elapsed",   VLC_VAR_TIME);
+    var_Create(text, "spu-elapsed",   VLC_VAR_INTEGER);
     var_Create(text, "text-rerender", VLC_VAR_BOOL);
 
     return text;
@@ -249,10 +237,9 @@ static filter_t *SpuRenderCreateAndLoadScale(vlc_object_t *object,
     scale->fmt_out.video.i_height =
     scale->fmt_out.video.i_visible_height = require_resize ? 16 : 32;
 
-    scale->pf_video_buffer_new = spu_new_video_buffer;
-    scale->pf_video_buffer_del = spu_del_video_buffer;
+    scale->owner.video.buffer_new = spu_new_video_buffer;
 
-    scale->p_module = module_need(scale, "video filter2", NULL, false);
+    scale->p_module = module_need(scale, "video converter", NULL, false);
 
     return scale;
 }
@@ -273,7 +260,7 @@ static void SpuRenderText(spu_t *spu, bool *rerender_text,
      * time-dependent text (and effects). The first indicates
      * the total amount of time the text will be on screen,
      * the second the amount of time it has already been on
-     * screen (can be a negative value as text is layed out
+     * screen (can be a negative value as text is laid out
      * before it is rendered) and the third is a feedback
      * variable from the renderer - if the renderer sets it
      * then this particular text is time-dependent, eg. the
@@ -288,13 +275,11 @@ static void SpuRenderText(spu_t *spu, bool *rerender_text,
      * least show up on screen, but the effect won't change
      * the text over time.
      */
-    var_SetTime(text, "spu-elapsed", elapsed_time);
+    var_SetInteger(text, "spu-elapsed", elapsed_time);
     var_SetBool(text, "text-rerender", false);
 
-    if (text->pf_render_html && region->psz_html)
-        text->pf_render_html(text, region, region, chroma_list);
-    else if (text->pf_render_text)
-        text->pf_render_text(text, region, region, chroma_list);
+    if ( region->p_text )
+        text->pf_render(text, region, region, chroma_list);
     *rerender_text = var_GetBool(text, "text-rerender");
 }
 
@@ -302,13 +287,13 @@ static void SpuRenderText(spu_t *spu, bool *rerender_text,
  * A few scale functions helpers.
  */
 
-#define SCALE_UNIT (1000)
+#define SCALE_UNIT (10000)
 typedef struct {
-    int w;
-    int h;
+    unsigned w;
+    unsigned h;
 } spu_scale_t;
 
-static spu_scale_t spu_scale_create(int w, int h)
+static spu_scale_t spu_scale_create(unsigned w, unsigned h)
 {
     spu_scale_t s = { .w = w, .h = h };
     if (s.w <= 0)
@@ -321,24 +306,24 @@ static spu_scale_t spu_scale_unit(void)
 {
     return spu_scale_create(SCALE_UNIT, SCALE_UNIT);
 }
-static spu_scale_t spu_scale_createq(int64_t wn, int64_t wd, int64_t hn, int64_t hd)
+static spu_scale_t spu_scale_createq(uint64_t wn, uint64_t wd, uint64_t hn, uint64_t hd)
 {
     return spu_scale_create(wn * SCALE_UNIT / wd,
                             hn * SCALE_UNIT / hd);
 }
-static int spu_scale_w(int v, const spu_scale_t s)
+static int spu_scale_w(unsigned v, const spu_scale_t s)
 {
     return v * s.w / SCALE_UNIT;
 }
-static int spu_scale_h(int v, const spu_scale_t s)
+static int spu_scale_h(unsigned v, const spu_scale_t s)
 {
     return v * s.h / SCALE_UNIT;
 }
-static int spu_invscale_w(int v, const spu_scale_t s)
+static int spu_invscale_w(unsigned v, const spu_scale_t s)
 {
     return v * SCALE_UNIT / s.w;
 }
-static int spu_invscale_h(int v, const spu_scale_t s)
+static int spu_invscale_h(unsigned v, const spu_scale_t s)
 {
     return v * SCALE_UNIT / s.h;
 }
@@ -390,14 +375,11 @@ static spu_area_t spu_area_unscaled(spu_area_t a, spu_scale_t s)
 }
 static bool spu_area_overlap(spu_area_t a, spu_area_t b)
 {
-    const int dx = 0;
-    const int dy = 0;
-
     a = spu_area_scaled(a);
     b = spu_area_scaled(b);
 
-    return __MAX(a.x - dx, b.x) < __MIN(a.x + a.width  + dx, b.x + b.width ) &&
-           __MAX(a.y - dy, b.y) < __MIN(a.y + a.height + dy, b.y + b.height);
+    return __MAX(a.x, b.x) < __MIN(a.x + a.width , b.x + b.width ) &&
+           __MAX(a.y, b.y) < __MIN(a.y + a.height, b.y + b.height);
 }
 
 /**
@@ -568,7 +550,7 @@ static void SpuSelectSubpictures(spu_t *spu,
             channel[channel_count++] = i_channel;
     }
 
-    /* Fill up the subpicture_array arrays with relevent pictures */
+    /* Fill up the subpicture_array arrays with relevant pictures */
     for (int i = 0; i < channel_count; i++) {
         subpicture_t *available_subpic[VOUT_MAX_SUBPICTURES];
         bool         is_available_late[VOUT_MAX_SUBPICTURES];
@@ -708,14 +690,15 @@ static void SpuRenderRegion(spu_t *spu,
      */
     const bool using_palette = region->fmt.i_chroma == VLC_CODEC_YUVP;
     const bool force_palette = using_palette && sys->force_palette;
-    const bool force_crop    = force_palette && sys->force_crop;
+    const bool crop_requested = (force_palette && sys->force_crop) ||
+                                region->i_max_width || region->i_max_height;
     bool changed_palette     = false;
 
     /* Compute the margin which is expressed in destination pixel unit
      * The margin is applied only to subtitle and when no forced crop is
      * requested (dvd menu) */
     int y_margin = 0;
-    if (!force_crop && subpic->b_subtitle)
+    if (!crop_requested && subpic->b_subtitle)
         y_margin = spu_invscale_h(sys->margin, scale_size);
 
     /* Place the picture
@@ -757,21 +740,46 @@ static void SpuRenderRegion(spu_t *spu,
     if (force_palette) {
         video_palette_t *old_palette = region->fmt.p_palette;
         video_palette_t new_palette;
+        bool b_opaque = false;
+        bool b_old_opaque = false;
 
         /* We suppose DVD palette here */
         new_palette.i_entries = 4;
         for (int i = 0; i < 4; i++)
+        {
             for (int j = 0; j < 4; j++)
                 new_palette.palette[i][j] = sys->palette[i][j];
+            b_opaque |= (new_palette.palette[i][3] > 0x00);
+        }
 
         if (old_palette->i_entries == new_palette.i_entries) {
             for (int i = 0; i < old_palette->i_entries; i++)
+            {
                 for (int j = 0; j < 4; j++)
                     changed_palette |= old_palette->palette[i][j] != new_palette.palette[i][j];
+                b_old_opaque |= (old_palette->palette[i][3] > 0x00);
+            }
         } else {
             changed_palette = true;
+            b_old_opaque = true;
         }
-        *old_palette = new_palette;
+
+        /* Reject or patch fully transparent broken palette used for dvd menus */
+        if( !b_opaque )
+        {
+            if( !b_old_opaque )
+            {
+                /* replace with new one and fixed alpha */
+                old_palette->palette[1][3] = 0x80;
+                old_palette->palette[2][3] = 0x80;
+                old_palette->palette[3][3] = 0x80;
+            }
+            /* keep old visible palette */
+            else changed_palette = false;
+        }
+
+        if( changed_palette )
+            *old_palette = new_palette;
     }
 
     /* */
@@ -890,11 +898,27 @@ static void SpuRenderRegion(spu_t *spu,
     }
 
     /* Force cropping if requested */
-    if (force_crop) {
-        int crop_x     = spu_scale_w(sys->crop.x,     scale_size);
-        int crop_y     = spu_scale_h(sys->crop.y,     scale_size);
-        int crop_width = spu_scale_w(sys->crop.width, scale_size);
-        int crop_height= spu_scale_h(sys->crop.height,scale_size);
+    if (crop_requested) {
+        int crop_x, crop_y, crop_width, crop_height;
+        if(sys->force_crop){
+            crop_x     = spu_scale_w(sys->crop.x, scale_size);
+            crop_y     = spu_scale_h(sys->crop.y, scale_size);
+            crop_width = spu_scale_w(sys->crop.width,  scale_size);
+            crop_height= spu_scale_h(sys->crop.height, scale_size);
+        }
+        else
+        {
+            crop_x = x_offset;
+            crop_y = y_offset;
+            crop_width = region_fmt.i_visible_width;
+            crop_height = region_fmt.i_visible_height;
+        }
+
+        if(region->i_max_width && spu_scale_w(region->i_max_width, scale_size) < crop_width)
+            crop_width = spu_scale_w(region->i_max_width, scale_size);
+
+        if(region->i_max_height && spu_scale_h(region->i_max_height, scale_size) < crop_height)
+            crop_height = spu_scale_h(region->i_max_height, scale_size);
 
         /* Find the intersection */
         if (crop_x + crop_width <= x_offset ||
@@ -996,6 +1020,7 @@ static subpicture_t *SpuRenderSubpictures(spu_t *spu,
     subpicture_t *output = subpicture_New(NULL);
     if (!output)
         return NULL;
+    output->i_order = pp_subpicture[i_subpicture - 1]->i_order;
     output->i_original_picture_width  = fmt_dst->i_visible_width;
     output->i_original_picture_height = fmt_dst->i_visible_height;
     subpicture_region_t **output_last_ptr = &output->p_region;
@@ -1065,8 +1090,8 @@ static subpicture_t *SpuRenderSubpictures(spu_t *spu,
              * FIXME The current scaling ensure that the heights match, the width being
              * cropped.
              */
-            spu_scale_t scale = spu_scale_createq((int64_t)fmt_dst->i_visible_height                 * fmt_dst->i_sar_den * region_fmt.i_sar_num,
-                                                  (int64_t)subpic->i_original_picture_height * fmt_dst->i_sar_num * region_fmt.i_sar_den,
+            spu_scale_t scale = spu_scale_createq((uint64_t)fmt_dst->i_visible_height * fmt_dst->i_sar_den * region_fmt.i_sar_num,
+                                                  (uint64_t)subpic->i_original_picture_height * fmt_dst->i_sar_num * region_fmt.i_sar_den,
                                                   fmt_dst->i_visible_height,
                                                   subpic->i_original_picture_height);
 
@@ -1167,43 +1192,79 @@ static int CropCallback(vlc_object_t *object, char const *var,
 
 static subpicture_t *sub_new_buffer(filter_t *filter)
 {
-    filter_owner_sys_t *sys = filter->p_owner;
+    int channel = (intptr_t)filter->owner.sys;
 
     subpicture_t *subpicture = subpicture_New(NULL);
     if (subpicture)
-        subpicture->i_channel = sys->channel;
+        subpicture->i_channel = channel;
     return subpicture;
 }
-static void sub_del_buffer(filter_t *filter, subpicture_t *subpic)
-{
-    VLC_UNUSED(filter);
-    subpicture_Delete(subpic);
-}
 
-static int SubSourceAllocationInit(filter_t *filter, void *data)
+static int SubSourceInit(filter_t *filter, void *data)
 {
     spu_t *spu = data;
+    int channel = spu_RegisterChannel(spu);
 
-    filter_owner_sys_t *sys = malloc(sizeof(*sys));
-    if (!sys)
-        return VLC_EGENERIC;
-
-    filter->pf_sub_buffer_new = sub_new_buffer;
-    filter->pf_sub_buffer_del = sub_del_buffer;
-
-    filter->p_owner = sys;
-    sys->channel = spu_RegisterChannel(spu);
-    sys->spu     = spu;
-
+    filter->owner.sys = (void *)(intptr_t)channel;
+    filter->owner.sub.buffer_new = sub_new_buffer;
     return VLC_SUCCESS;
 }
 
-static void SubSourceAllocationClean(filter_t *filter)
+static int SubSourceClean(filter_t *filter, void *data)
 {
-    filter_owner_sys_t *sys = filter->p_owner;
+    spu_t *spu = data;
+    int channel = (intptr_t)filter->owner.sys;
 
-    spu_ClearChannel(sys->spu, sys->channel);
-    free(filter->p_owner);
+    spu_ClearChannel(spu, channel);
+    return VLC_SUCCESS;
+}
+
+/*****************************************************************************
+ * Proxy callbacks
+ *****************************************************************************/
+
+static int RestartSubFilterCallback(vlc_object_t *obj, char const *psz_var,
+                                    vlc_value_t oldval, vlc_value_t newval,
+                                    void *p_data)
+{ VLC_UNUSED(obj); VLC_UNUSED(psz_var); VLC_UNUSED(oldval); VLC_UNUSED(newval);
+    vout_ControlChangeSubFilters((vout_thread_t *)p_data, NULL);
+    return VLC_SUCCESS;
+}
+
+static int SubFilterAddProxyCallbacks(filter_t *filter, void *opaque)
+{
+    filter_AddProxyCallbacks((vlc_object_t *)opaque, filter,
+                             RestartSubFilterCallback);
+    return VLC_SUCCESS;
+}
+
+static int SubFilterDelProxyCallbacks(filter_t *filter, void *opaque)
+{
+    filter_DelProxyCallbacks((vlc_object_t *)opaque, filter,
+                             RestartSubFilterCallback);
+    return VLC_SUCCESS;
+}
+
+static int RestartSubSourceCallback(vlc_object_t *obj, char const *psz_var,
+                                    vlc_value_t oldval, vlc_value_t newval,
+                                    void *p_data)
+{ VLC_UNUSED(obj); VLC_UNUSED(psz_var); VLC_UNUSED(oldval); VLC_UNUSED(newval);
+    vout_ControlChangeSubSources((vout_thread_t *)p_data, NULL);
+    return VLC_SUCCESS;
+}
+
+static int SubSourceAddProxyCallbacks(filter_t *filter, void *opaque)
+{
+    filter_AddProxyCallbacks((vlc_object_t *)opaque, filter,
+                             RestartSubSourceCallback);
+    return VLC_SUCCESS;
+}
+
+static int SubSourceDelProxyCallbacks(filter_t *filter, void *opaque)
+{
+    filter_DelProxyCallbacks((vlc_object_t *)opaque, filter,
+                             RestartSubSourceCallback);
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -1216,7 +1277,7 @@ static void SubSourceAllocationClean(filter_t *filter)
  *
  * \param p_this the parent object which creates the subpicture unit
  */
-spu_t *spu_Create(vlc_object_t *object)
+spu_t *spu_Create(vlc_object_t *object, vout_thread_t *vout)
 {
     spu_t *spu = vlc_custom_create(object,
                                    sizeof(spu_t) + sizeof(spu_private_t),
@@ -1239,20 +1300,14 @@ spu_t *spu_Create(vlc_object_t *object)
     sys->margin = var_InheritInteger(spu, "sub-margin");
 
     /* Register the default subpicture channel */
-    sys->channel = SPU_DEFAULT_CHANNEL + 1;
+    sys->channel = VOUT_SPU_CHANNEL_AVAIL_FIRST;
 
     sys->source_chain_update = NULL;
     sys->filter_chain_update = NULL;
     vlc_mutex_init(&sys->source_chain_lock);
     vlc_mutex_init(&sys->filter_chain_lock);
-    sys->source_chain = filter_chain_New(spu, "sub source", false,
-                                         SubSourceAllocationInit,
-                                         SubSourceAllocationClean,
-                                         spu);
-    sys->filter_chain = filter_chain_New(spu, "sub filter", false,
-                                         NULL,
-                                         NULL,
-                                         spu);
+    sys->source_chain = filter_chain_New(spu, "sub source", SPU_ES);
+    sys->filter_chain = filter_chain_New(spu, "sub filter", SPU_ES);
 
     /* Load text and scale module */
     sys->text = SpuRenderCreateAndLoadText(spu);
@@ -1269,6 +1324,7 @@ spu_t *spu_Create(vlc_object_t *object)
 
     /* */
     sys->last_sort_date = -1;
+    sys->vout = vout;
 
     return spu;
 }
@@ -1291,8 +1347,17 @@ void spu_Destroy(spu_t *spu)
     if (sys->scale)
         FilterRelease(sys->scale);
 
+    filter_chain_ForEach(sys->source_chain, SubSourceClean, spu);
+    if (sys->vout)
+        filter_chain_ForEach(sys->source_chain,
+                             SubSourceDelProxyCallbacks, sys->vout);
     filter_chain_Delete(sys->source_chain);
+    free(sys->source_chain_current);
+    if (sys->vout)
+        filter_chain_ForEach(sys->filter_chain,
+                             SubFilterDelProxyCallbacks, sys->vout);
     filter_chain_Delete(sys->filter_chain);
+    free(sys->filter_chain_current);
     vlc_mutex_destroy(&sys->source_chain_lock);
     vlc_mutex_destroy(&sys->filter_chain_lock);
     free(sys->source_chain_update);
@@ -1377,17 +1442,25 @@ void spu_PutSubpicture(spu_t *spu, subpicture_t *subpic)
     vlc_mutex_lock(&sys->filter_chain_lock);
     if (chain_update) {
         if (*chain_update) {
+            if (sys->vout)
+                filter_chain_ForEach(sys->filter_chain,
+                                     SubFilterDelProxyCallbacks,
+                                     sys->vout);
             filter_chain_Reset(sys->filter_chain, NULL, NULL);
 
             filter_chain_AppendFromString(spu->p->filter_chain, chain_update);
+            if (sys->vout)
+                filter_chain_ForEach(sys->filter_chain,
+                                     SubFilterAddProxyCallbacks,
+                                     sys->vout);
         }
-        else if (filter_chain_GetLength(spu->p->filter_chain) > 0)
+        else
             filter_chain_Reset(sys->filter_chain, NULL, NULL);
 
         /* "sub-source"  was formerly "sub-filter", so now the "sub-filter"
         configuration may contain sub-filters or sub-sources configurations.
         if the filters chain was left empty it may indicate that it's a sub-source configuration */
-        is_left_empty = (filter_chain_GetLength(spu->p->filter_chain) == 0);
+        is_left_empty = filter_chain_IsEmpty(spu->p->filter_chain);
     }
     vlc_mutex_unlock(&sys->filter_chain_lock);
 
@@ -1401,6 +1474,7 @@ void spu_PutSubpicture(spu_t *spu, subpicture_t *subpic)
                 if (sys->source_chain_update)
                     free(sys->source_chain_update);
                 sys->source_chain_update = chain_update;
+                sys->source_chain_current = strdup(chain_update);
                 chain_update = NULL;
             }
             vlc_mutex_unlock(&sys->lock);
@@ -1417,8 +1491,8 @@ void spu_PutSubpicture(spu_t *spu, subpicture_t *subpic)
         return;
 
     /* SPU_DEFAULT_CHANNEL always reset itself */
-    if (subpic->i_channel == SPU_DEFAULT_CHANNEL)
-        spu_ClearChannel(spu, SPU_DEFAULT_CHANNEL);
+    if (subpic->i_channel == VOUT_SPU_CHANNEL_OSD)
+        spu_ClearChannel(spu, VOUT_SPU_CHANNEL_OSD);
 
     /* p_private is for spu only and cannot be non NULL here */
     for (subpicture_region_t *r = subpic->p_region; r != NULL; r = r->p_next)
@@ -1453,30 +1527,37 @@ subpicture_t *spu_Render(spu_t *spu,
 
     vlc_mutex_lock(&sys->source_chain_lock);
     if (chain_update) {
-        if (*chain_update) {
-            filter_chain_Reset(sys->source_chain, NULL, NULL);
+        filter_chain_ForEach(sys->source_chain, SubSourceClean, spu);
+            if (sys->vout)
+                filter_chain_ForEach(sys->source_chain,
+                                     SubSourceDelProxyCallbacks,
+                                     sys->vout);
+        filter_chain_Reset(sys->source_chain, NULL, NULL);
 
-            filter_chain_AppendFromString(spu->p->source_chain, chain_update);
-        }
-        else if (filter_chain_GetLength(spu->p->source_chain) > 0)
-            filter_chain_Reset(sys->source_chain, NULL, NULL);
+        filter_chain_AppendFromString(spu->p->source_chain, chain_update);
+        if (sys->vout)
+            filter_chain_ForEach(sys->source_chain,
+                                 SubSourceAddProxyCallbacks, sys->vout);
+        filter_chain_ForEach(sys->source_chain, SubSourceInit, spu);
 
         free(chain_update);
     }
     /* Run subpicture sources */
-    filter_chain_SubSource(sys->source_chain, render_osd_date);
+    filter_chain_SubSource(sys->source_chain, spu, render_osd_date);
     vlc_mutex_unlock(&sys->source_chain_lock);
 
     static const vlc_fourcc_t chroma_list_default_yuv[] = {
         VLC_CODEC_YUVA,
         VLC_CODEC_RGBA,
         VLC_CODEC_ARGB,
+        VLC_CODEC_BGRA,
         VLC_CODEC_YUVP,
         0,
     };
     static const vlc_fourcc_t chroma_list_default_rgb[] = {
         VLC_CODEC_RGBA,
         VLC_CODEC_ARGB,
+        VLC_CODEC_BGRA,
         VLC_CODEC_YUVA,
         VLC_CODEC_YUVP,
         0,
@@ -1566,7 +1647,7 @@ void spu_ClearChannel(spu_t *spu, int channel)
 
         if (!subpic)
             continue;
-        if (subpic->i_channel != channel && (channel != -1 || subpic->i_channel == SPU_DEFAULT_CHANNEL))
+        if (subpic->i_channel != channel && (channel != -1 || subpic->i_channel == VOUT_SPU_CHANNEL_OSD))
             continue;
 
         /* You cannot delete subpicture outside of spu_SortSubpictures */
@@ -1583,7 +1664,14 @@ void spu_ChangeSources(spu_t *spu, const char *filters)
     vlc_mutex_lock(&sys->lock);
 
     free(sys->source_chain_update);
-    sys->source_chain_update = strdup(filters);
+    if (filters)
+    {
+        sys->source_chain_update = strdup(filters);
+        free(sys->source_chain_current);
+        sys->source_chain_current = strdup(filters);
+    }
+    else if (sys->source_chain_current)
+        sys->source_chain_update = strdup(sys->source_chain_current);
 
     vlc_mutex_unlock(&sys->lock);
 }
@@ -1595,7 +1683,14 @@ void spu_ChangeFilters(spu_t *spu, const char *filters)
     vlc_mutex_lock(&sys->lock);
 
     free(sys->filter_chain_update);
-    sys->filter_chain_update = strdup(filters);
+    if (filters)
+    {
+        sys->filter_chain_update = strdup(filters);
+        free(sys->filter_chain_current);
+        sys->filter_chain_current = strdup(filters);
+    }
+    else if (sys->filter_chain_current)
+        sys->filter_chain_update = strdup(sys->filter_chain_current);
 
     vlc_mutex_unlock(&sys->lock);
 }

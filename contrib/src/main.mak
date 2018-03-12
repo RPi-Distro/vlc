@@ -21,10 +21,11 @@ DATE := $(shell date +%Y%m%d)
 VPATH := $(TARBALLS)
 
 # Common download locations
-GNU := http://ftp.gnu.org/gnu
-SF := http://heanet.dl.sourceforge.net/sourceforge
+GNU ?= http://ftp.gnu.org/gnu
+SF := https://netcologne.dl.sourceforge.net/
 VIDEOLAN := http://downloads.videolan.org/pub/videolan
 CONTRIB_VIDEOLAN := http://downloads.videolan.org/pub/contrib
+GITHUB := https://github.com/
 
 #
 # Machine-dependent variables
@@ -32,12 +33,18 @@ CONTRIB_VIDEOLAN := http://downloads.videolan.org/pub/contrib
 
 PREFIX ?= $(TOPDST)/$(HOST)
 PREFIX := $(abspath $(PREFIX))
+BUILDPREFIX ?= $(TOPDST)
+BUILDPREFIX := $(abspath $(BUILDPREFIX))
+BUILDBINDIR ?= $(BUILDPREFIX)/bin
 ifneq ($(HOST),$(BUILD))
 HAVE_CROSS_COMPILE = 1
 endif
 ARCH := $(shell $(SRC)/get-arch.sh $(HOST))
 
 ifeq ($(ARCH)-$(HAVE_WIN32),x86_64-1)
+HAVE_WIN64 := 1
+endif
+ifeq ($(ARCH)-$(HAVE_WIN32),aarch64-1)
 HAVE_WIN64 := 1
 endif
 
@@ -97,19 +104,18 @@ endif
 endif
 
 ifdef HAVE_ANDROID
-CC :=  $(HOST)-gcc --sysroot=$(ANDROID_NDK)/platforms/android-9/arch-$(PLATFORM_SHORT_ARCH)
-CXX := $(HOST)-g++ --sysroot=$(ANDROID_NDK)/platforms/android-9/arch-$(PLATFORM_SHORT_ARCH)
+ifneq ($(findstring $(origin CC),undefined default),)
+CC :=  clang
+endif
+ifneq ($(findstring $(origin CXX),undefined default),)
+CXX := clang++
+endif
 endif
 
 ifdef HAVE_MACOSX
-MIN_OSX_VERSION=10.6
-CC=xcrun cc
-CXX=xcrun c++
-AR=xcrun ar
-LD=xcrun ld
-STRIP=xcrun strip
-RANLIB=xcrun ranlib
+MIN_OSX_VERSION=10.7
 EXTRA_CFLAGS += -isysroot $(MACOSX_SDK) -mmacosx-version-min=$(MIN_OSX_VERSION) -DMACOSX_DEPLOYMENT_TARGET=$(MIN_OSX_VERSION)
+EXTRA_CXXFLAGS += -stdlib=libc++
 EXTRA_LDFLAGS += -Wl,-syslibroot,$(MACOSX_SDK) -mmacosx-version-min=$(MIN_OSX_VERSION) -isysroot $(MACOSX_SDK) -DMACOSX_DEPLOYMENT_TARGET=$(MIN_OSX_VERSION)
 ifeq ($(ARCH),x86_64)
 EXTRA_CFLAGS += -m64
@@ -119,13 +125,7 @@ EXTRA_CFLAGS += -m32
 EXTRA_LDFLAGS += -m32
 endif
 
-XCODE_FLAGS = -sdk macosx$(OSX_VERSION)
-ifeq ($(shell xcodebuild -version 2>/dev/null | tee /dev/null|head -1|cut -d\  -f2|cut -d. -f1),3)
-XCODE_FLAGS += ARCHS=$(ARCH)
-# XCode 3 doesn't support -arch
-else
-XCODE_FLAGS += -arch $(ARCH)
-endif
+XCODE_FLAGS = MACOSX_DEPLOYMENT_TARGET=$(MIN_OSX_VERSION) -sdk macosx$(OSX_VERSION) -arch $(ARCH)
 
 endif
 
@@ -145,7 +145,6 @@ LD=xcrun ld
 STRIP=xcrun strip
 RANLIB=xcrun ranlib
 EXTRA_CFLAGS += $(CFLAGS)
-EXTRA_LDFLAGS += $(LDFLAGS)
 endif
 
 ifdef HAVE_WIN32
@@ -169,9 +168,17 @@ cppcheck = $(shell $(CC) $(CFLAGS) -E -dM - < /dev/null | grep -E $(1))
 EXTRA_CFLAGS += -I$(PREFIX)/include
 CPPFLAGS := $(CPPFLAGS) $(EXTRA_CFLAGS)
 CFLAGS := $(CFLAGS) $(EXTRA_CFLAGS) -g
-CXXFLAGS := $(CXXFLAGS) $(EXTRA_CFLAGS) -g
-EXTRA_LDFLAGS += -L$(PREFIX)/lib
-LDFLAGS := $(LDFLAGS) $(EXTRA_LDFLAGS)
+CXXFLAGS := $(CXXFLAGS) $(EXTRA_CFLAGS) $(EXTRA_CXXFLAGS) -g
+LDFLAGS := $(LDFLAGS) -L$(PREFIX)/lib $(EXTRA_LDFLAGS)
+
+ifndef WITH_OPTIMIZATION
+CFLAGS := $(CFLAGS) -O0
+CXXFLAGS := $(CXXFLAGS) -O0
+else
+CFLAGS := $(CFLAGS) -O2
+CXXFLAGS := $(CXXFLAGS) -O2
+endif
+
 # Do not export those! Use HOSTVARS.
 
 # Do the FPU detection, after we have figured out our compilers and flags.
@@ -203,7 +210,7 @@ PKG_CONFIG_PATH := /usr/share/pkgconfig
 PKG_CONFIG_LIBDIR := /usr/$(HOST)/lib/pkgconfig
 export PKG_CONFIG_LIBDIR
 endif
-PKG_CONFIG_PATH := $(PKG_CONFIG_PATH):$(PREFIX)/lib/pkgconfig
+PKG_CONFIG_PATH := $(PREFIX)/lib/pkgconfig:$(PKG_CONFIG_PATH)
 export PKG_CONFIG_PATH
 
 ifndef GIT
@@ -239,24 +246,10 @@ endif
 download_pkg = $(call download,$(CONTRIB_VIDEOLAN)/$(2)/$(lastword $(subst /, ,$(@)))) || \
 	( $(call download,$(1)) && echo "Please upload this package $(lastword $(subst /, ,$(@))) to our FTP" )
 
-ifeq ($(shell which xzcat >/dev/null 2>&1 || echo FAIL),)
-XZCAT = xzcat
+ifeq ($(shell which xz >/dev/null 2>&1 || echo FAIL),)
+XZ = xz
 else
-XZCAT ?= $(error xz and lzma client not found!)
-endif
-
-ifeq ($(shell which bzcat >/dev/null 2>&1 || echo FAIL),)
-BZCAT = bzcat
-else
-BZCAT ?= $(error Bunzip2 client (bzcat) not found!)
-endif
-
-ifeq ($(shell gzcat --version >/dev/null 2>&1 || echo FAIL),)
-ZCAT = gzcat
-else ifeq ($(shell zcat --version >/dev/null 2>&1 || echo FAIL),)
-ZCAT = zcat
-else
-ZCAT ?= $(error Gunzip client (zcat) not found!)
+XZ ?= $(error XZ (LZMA) compressor not found!)
 endif
 
 ifeq ($(shell sha512sum --version >/dev/null 2>&1 || echo FAIL),)
@@ -267,6 +260,12 @@ else ifeq ($(shell openssl version >/dev/null 2>&1 || echo FAIL),)
 SHA512SUM = openssl dgst -sha512
 else
 SHA512SUM = $(error SHA-512 checksumming not found!)
+endif
+
+ifeq ($(shell protoc --version >/dev/null 2>&1 || echo FAIL),)
+PROTOC = protoc
+else
+PROTOC ?= $(error Protobuf compiler (protoc) not found!)
 endif
 
 #
@@ -304,13 +303,24 @@ HOSTVARS_PIC := $(HOSTTOOLS) \
 	LDFLAGS="$(LDFLAGS)"
 
 download_git = \
-	rm -Rf $(@:.tar.xz=) && \
-	$(GIT) clone $(2:%=--branch %) $(1) $(@:.tar.xz=) && \
-	(cd $(@:.tar.xz=) && $(GIT) checkout $(3:%= %)) && \
-	rm -Rf $(@:%.tar.xz=%)/.git && \
-	(cd $(dir $@) && \
-	tar cvJ $(notdir $(@:.tar.xz=))) > $@ && \
-	rm -Rf $(@:.tar.xz=)
+	rm -Rf -- "$(@:.tar.xz=)" && \
+	$(GIT) init --bare "$(@:.tar.xz=)" && \
+	(cd "$(@:.tar.xz=)" && \
+	$(GIT) remote add origin "$(1)" && \
+	$(GIT) fetch origin "$(2)") && \
+	(cd "$(@:.tar.xz=)" && \
+	$(GIT) archive --prefix="$(notdir $(@:.tar.xz=))/" \
+		--format=tar "$(3)") > "$(@:.xz=)" && \
+	echo "$(3) $(@)" > "$(@:.tar.xz=.githash)" && \
+	rm -Rf -- "$(@:.tar.xz=)" && \
+	$(XZ) --stdout "$(@:.xz=)" > "$@.tmp" && \
+	rm -f "$(@:.xz=)" && \
+	mv -f -- "$@.tmp" "$@"
+check_githash = \
+	h=`sed -n -e "s,^\([0-9a-fA-F]\{40\}\) $<,\1,p" \
+		< "$(<:.tar.xz=.githash)"` && \
+	test "$$h" = "$1"
+
 checksum = \
 	$(foreach f,$(filter $(TARBALLS)/%,$^), \
 		grep -- " $(f:$(TARBALLS)/%=%)$$" \
@@ -344,7 +354,20 @@ endif
 RECONF = mkdir -p -- $(PREFIX)/share/aclocal && \
 	cd $< && $(AUTORECONF) -fiv $(ACLOCAL_AMFLAGS)
 CMAKE = cmake . -DCMAKE_TOOLCHAIN_FILE=$(abspath toolchain.cmake) \
-		-DCMAKE_INSTALL_PREFIX=$(PREFIX)
+		-DCMAKE_INSTALL_PREFIX=$(PREFIX) $(CMAKE_GENERATOR)
+
+ifdef GPL
+REQUIRE_GPL =
+else
+REQUIRE_GPL = @echo "Package \"$<\" requires the GPL license." >&2; exit 1
+endif
+ifdef GNUV3
+REQUIRE_GNUV3 =
+else
+REQUIRE_GNUV3 = \
+	@echo "Package \"$<\" requires the version 3 of GNU licenses." >&2; \
+	exit 1
+endif
 
 #
 # Per-package build rules
@@ -377,6 +400,7 @@ mostlyclean:
 	-$(RM) $(foreach p,$(PKGS_ALL),.$(p) .sum-$(p) .dep-$(p))
 	-$(RM) toolchain.cmake
 	-$(RM) -R "$(PREFIX)"
+	-$(RM) -R "$(BUILDBINDIR)"
 	-$(RM) -R */
 
 clean: mostlyclean
@@ -386,21 +410,21 @@ distclean: clean
 	$(RM) config.mak
 	unlink Makefile
 
-PREBUILT_URL=ftp://ftp.videolan.org/pub/videolan/contrib/$(HOST)/vlc-contrib-$(HOST)-latest.tar.bz2
+PREBUILT_URL=http://download.videolan.org/pub/videolan/contrib/$(HOST)/vlc-contrib-$(HOST)-latest.tar.bz2
 
 vlc-contrib-$(HOST)-latest.tar.bz2:
 	$(call download,$(PREBUILT_URL))
 
 prebuilt: vlc-contrib-$(HOST)-latest.tar.bz2
 	-$(UNPACK)
-ifdef HAVE_WIN32
-ifndef HAVE_CROSS_COMPILE
-	$(RM) `find $(HOST) | file -f- | grep ELF | awk -F: '{print $1}' | xargs`
-endif
-endif
 	$(RM) -r $(TOPDST)/$(HOST)
 	mv $(HOST) $(TOPDST)
 	cd $(TOPDST)/$(HOST) && $(SRC)/change_prefix.sh
+ifdef HAVE_WIN32
+ifndef HAVE_CROSS_COMPILE
+	$(RM) `find $(TOPDST)/$(HOST)/bin | file -f- | grep ELF | awk -F: '{print $$1}' | xargs`
+endif
+endif
 
 package: install
 	rm -Rf tmp/
@@ -408,40 +432,59 @@ package: install
 	cp -R $(PREFIX) tmp/
 	# remove useless files
 	cd tmp/$(notdir $(PREFIX)); \
-		cd share; rm -Rf man doc gtk-doc info lua projectM gettext; cd ..; \
+		cd share; rm -Rf man doc gtk-doc info lua projectM; cd ..; \
 		rm -Rf man sbin etc lib/lua lib/sidplay
 	cd tmp/$(notdir $(PREFIX)) && $(abspath $(SRC))/change_prefix.sh $(PREFIX) @@CONTRIB_PREFIX@@
 	(cd tmp && tar c $(notdir $(PREFIX))/) | bzip2 -c > ../vlc-contrib-$(HOST)-$(DATE).tar.bz2
 
 list:
 	@echo All packages:
-	@echo '  $(PKGS_ALL)' | fmt
+	@echo '  $(PKGS_ALL)' | tr " " "\n" | sort | tr "\n" " " |fmt
 	@echo Distribution-provided packages:
-	@echo '  $(PKGS_FOUND)' | fmt
+	@echo '  $(PKGS_FOUND)' | tr " " "\n" | sort | tr "\n" " " |fmt
 	@echo Automatically selected packages:
-	@echo '  $(PKGS_AUTOMATIC)' | fmt
+	@echo '  $(PKGS_AUTOMATIC)' | tr " " "\n" | sort | tr "\n" " " |fmt
 	@echo Manually deselected packages:
-	@echo '  $(PKGS_DISABLE)' | fmt
+	@echo '  $(PKGS_DISABLE)' | tr " " "\n" | sort | tr "\n" " " |fmt
 	@echo Manually selected packages:
-	@echo '  $(PKGS_ENABLE)' | fmt
+	@echo '  $(PKGS_ENABLE)' | tr " " "\n" | sort | tr "\n" " " |fmt
 	@echo Depended-on packages:
-	@echo '  $(PKGS_DEPS)' | fmt
+	@echo '  $(PKGS_DEPS)' | tr " " "\n" | sort | tr "\n" " " |fmt
 	@echo To-be-built packages:
-	@echo '  $(PKGS)' | fmt
+	@echo '  $(PKGS)' | tr " " "\n" | sort | tr "\n" " " |fmt
 
-.PHONY: all fetch fetch-all install mostlyclean clean distclean package list prebuilt
+help:
+	@cat $(SRC)/help.txt
+
+.PHONY: all fetch fetch-all install mostlyclean clean distclean package list help prebuilt
 
 # CMake toolchain
 toolchain.cmake:
 	$(RM) $@
+ifndef WITH_OPTIMIZATION
+	echo "set(CMAKE_BUILD_TYPE Debug)" >> $@
+else
+	echo "set(CMAKE_BUILD_TYPE Release)" >> $@
+endif
+	echo "set(CMAKE_SYSTEM_PROCESSOR $(ARCH))" >> $@
 ifdef HAVE_WIN32
+ifdef HAVE_WINDOWSPHONE
+	echo "set(CMAKE_SYSTEM_NAME WindowsPhone)" >> $@
+else
+ifdef HAVE_WINSTORE
+	echo "set(CMAKE_SYSTEM_NAME WindowsStore)" >> $@
+else
 	echo "set(CMAKE_SYSTEM_NAME Windows)" >> $@
+endif
+endif
+ifdef HAVE_CROSS_COMPILE
 	echo "set(CMAKE_RC_COMPILER $(HOST)-windres)" >> $@
+endif
 endif
 ifdef HAVE_DARWIN_OS
 	echo "set(CMAKE_SYSTEM_NAME Darwin)" >> $@
-	echo "set(CMAKE_C_FLAGS $(CFLAGS))" >> $@
-	echo "set(CMAKE_CXX_FLAGS $(CFLAGS))" >> $@
+	echo "set(CMAKE_C_FLAGS $(CFLAGS) $(EXTRA_CFLAGS))" >> $@
+	echo "set(CMAKE_CXX_FLAGS $(CFLAGS) $(EXTRA_CXXFLAGS))" >> $@
 	echo "set(CMAKE_LD_FLAGS $(LDFLAGS))" >> $@
 	echo "set(CMAKE_AR ar CACHE FILEPATH "Archiver")" >> $@
 ifdef HAVE_IOS
@@ -463,8 +506,10 @@ endif
 	echo "set(CMAKE_CXX_COMPILER $(CXX))" >> $@
 	echo "set(CMAKE_FIND_ROOT_PATH $(PREFIX))" >> $@
 	echo "set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)" >> $@
+ifdef HAVE_CROSS_COMPILE
 	echo "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)" >> $@
 	echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> $@
+endif
 
 # Default pattern rules
 .sum-%: $(SRC)/%/SHA512SUMS

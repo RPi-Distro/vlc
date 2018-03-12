@@ -28,6 +28,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include "vlc_vdpau.h"
 
 struct filter_sys_t
@@ -42,7 +43,7 @@ static picture_t *Deinterlace(filter_t *filter, picture_t *src)
 
     sys->last_pts = src->date;
 
-    vlc_vdp_video_field_t *f1 = src->context;
+    vlc_vdp_video_field_t *f1 = (vlc_vdp_video_field_t *)src->context;
     if (unlikely(f1 == NULL))
         return src;
     if (f1->structure != VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME)
@@ -64,7 +65,7 @@ static picture_t *Deinterlace(filter_t *filter, picture_t *src)
     }
 
     picture_CopyProperties(dst, src);
-    dst->context = f2;
+    dst->context = &f2->context;
 
     if (last_pts != VLC_TS_INVALID)
         dst->date = (3 * src->date - last_pts) / 2;
@@ -99,8 +100,9 @@ static int Open(vlc_object_t *obj)
 {
     filter_t *filter = (filter_t *)obj;
 
-    if (filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_422
-     && filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_420)
+    if (filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_420
+     && filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_422
+     && filter->fmt_in.video.i_chroma != VLC_CODEC_VDPAU_VIDEO_444)
         return VLC_EGENERIC;
     if (!video_format_IsSimilar(&filter->fmt_in.video, &filter->fmt_out.video))
         return VLC_EGENERIC;
@@ -130,7 +132,7 @@ static void Close(vlc_object_t *obj)
 
 vlc_module_begin()
     set_description(N_("VDPAU deinterlacing filter"))
-    set_capability("video filter2", 0)
+    set_capability("video filter", 0)
     set_category(CAT_VIDEO)
     set_subcategory(SUBCAT_VIDEO_VFILTER)
     set_callbacks(Open, Close)

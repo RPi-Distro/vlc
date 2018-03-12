@@ -2,7 +2,9 @@
 CACA_VERSION := 0.99.beta17
 CACA_URL := http://caca.zoy.org/files/libcaca/libcaca-$(CACA_VERSION).tar.gz
 
+ifndef HAVE_LINUX # see VLC Trac 17251
 PKGS += caca
+endif
 ifeq ($(call need_pkg,"caca >= 0.99.beta14"),)
 PKGS_FOUND += caca
 endif
@@ -18,7 +20,9 @@ caca: libcaca-$(CACA_VERSION).tar.gz .sum-caca
 	$(APPLY) $(SRC)/caca/caca-llvm-weak-alias.patch
 	$(APPLY) $(SRC)/caca/caca-osx-sdkofourchoice.patch
 	$(APPLY) $(SRC)/caca/caca-win32-static.patch
+	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
+	mv caca/config.sub caca/config.guess caca/.auto
 
 CACA_CONF := \
 	--disable-imlib2 \

@@ -2,7 +2,7 @@
  * ogg.c: ogg muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: c71662a162e2ee4ed2bca182233204c93382dc69 $
+ * $Id: 1d57c3f46a47cd5c5b67817c841a0516c77c580c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -75,7 +75,7 @@ vlc_module_end ()
  *****************************************************************************/
 static int Control  ( sout_mux_t *, int, va_list );
 static int AddStream( sout_mux_t *, sout_input_t * );
-static int DelStream( sout_mux_t *, sout_input_t * );
+static void DelStream( sout_mux_t *, sout_input_t * );
 static int Mux      ( sout_mux_t * );
 static int MuxBlock ( sout_mux_t *, sout_input_t * );
 
@@ -143,7 +143,7 @@ typedef struct
  *****************************************************************************/
 typedef struct
 {
-    int i_cat;
+    enum es_format_category_e i_cat;
     vlc_fourcc_t i_fourcc;
 
     int b_new;
@@ -152,7 +152,7 @@ typedef struct
     mtime_t i_length;
     int     i_packet_no;
     int     i_serial_no;
-    int     i_keyframe_granule_shift; /* Theora only */
+    int     i_keyframe_granule_shift; /* Theora and Daala only */
     int     i_last_keyframe; /* dirac and theora */
     int     i_num_frames; /* Theora only */
     uint64_t u_last_granulepos; /* Used for correct EOS page */
@@ -287,13 +287,6 @@ static void Close( vlc_object_t * p_this )
         /* Close the current ogg stream */
         msg_Dbg( p_mux, "writing footers" );
 
-        for(int i = 0; i < p_mux->i_nb_inputs; i++ )
-        {
-            p_stream = (ogg_stream_t *) p_mux->pp_inputs[i]->p_sys;
-            OggCreateStreamFooter( p_mux, p_stream );
-            free( p_stream->skeleton.p_index );
-        }
-
         /* Remove deleted logical streams */
         for(int i = 0; i < p_sys->i_del_streams; i++ )
         {
@@ -327,17 +320,17 @@ static int Control( sout_mux_t *p_mux, int i_query, va_list args )
    switch( i_query )
    {
        case MUX_CAN_ADD_STREAM_WHILE_MUXING:
-           pb_bool = (bool*)va_arg( args, bool * );
+           pb_bool = va_arg( args, bool * );
            *pb_bool = true;
            return VLC_SUCCESS;
 
        case MUX_GET_ADD_STREAM_WAIT:
-           pb_bool = (bool*)va_arg( args, bool * );
+           pb_bool = va_arg( args, bool * );
            *pb_bool = true;
            return VLC_SUCCESS;
 
        case MUX_GET_MIME:
-           ppsz = (char**)va_arg( args, char ** );
+           ppsz = va_arg( args, char ** );
            *ppsz = strdup( "application/ogg" );
            return VLC_SUCCESS;
 
@@ -377,12 +370,15 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     switch( p_input->p_fmt->i_cat )
     {
     case VIDEO_ES:
+    {
+        unsigned int i_frame_rate = p_input->p_fmt->video.i_frame_rate;
+        unsigned int i_frame_rate_base = p_input->p_fmt->video.i_frame_rate_base;
         if( !p_input->p_fmt->video.i_frame_rate ||
             !p_input->p_fmt->video.i_frame_rate_base )
         {
             msg_Warn( p_mux, "Missing frame rate, assuming 25fps" );
-            p_input->p_fmt->video.i_frame_rate = 25;
-            p_input->p_fmt->video.i_frame_rate_base = 1;
+            i_frame_rate = 25;
+            i_frame_rate_base = 1;
         }
 
         switch( p_stream->i_fourcc )
@@ -420,8 +416,8 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             }
             p_stream->p_oggds_header->i_size = 0 ;
             p_stream->p_oggds_header->i_time_unit =
-                     INT64_C(10000000) * p_input->p_fmt->video.i_frame_rate_base /
-                     (int64_t)p_input->p_fmt->video.i_frame_rate;
+                     INT64_C(10000000) * i_frame_rate_base /
+                     (int64_t)i_frame_rate;
             p_stream->p_oggds_header->i_samples_per_unit = 1;
             p_stream->p_oggds_header->i_default_len = 1 ; /* ??? */
             p_stream->p_oggds_header->i_buffer_size = 1024*1024;
@@ -439,6 +435,10 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             msg_Dbg( p_mux, "theora stream" );
             break;
 
+        case VLC_CODEC_DAALA:
+            msg_Dbg( p_mux, "daala stream" );
+            break;
+
         case VLC_CODEC_VP8:
             msg_Dbg( p_mux, "VP8 stream" );
             break;
@@ -447,6 +447,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             FREENULL( p_input->p_sys );
             return VLC_EGENERIC;
         }
+    }
         break;
 
     case AUDIO_ES:
@@ -550,7 +551,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
 /*****************************************************************************
  * DelStream: Delete an elementary stream from the muxed stream
  *****************************************************************************/
-static int DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
+static void DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
 {
     sout_mux_sys_t *p_sys  = p_mux->p_sys;
     ogg_stream_t   *p_stream = (ogg_stream_t*)p_input->p_sys;
@@ -591,8 +592,6 @@ static int DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
     }
 
     p_input->p_sys = NULL;
-
-    return 0;
 }
 
 /*****************************************************************************
@@ -745,6 +744,9 @@ static void OggGetSkeletonFisbone( uint8_t **pp_buffer, long *pi_size,
             break;
         case VLC_CODEC_THEORA:
             psz_value = "video/theora";
+            break;
+        case VLC_CODEC_DAALA:
+            psz_value = "video/daala";
             break;
         case VLC_CODEC_SPEEX:
             psz_value = "audio/speex";
@@ -979,6 +981,7 @@ static bool OggCreateHeaders( sout_mux_t *p_mux )
         op.packetno = 0;
         OggFillSkeletonFishead( op.packet, p_mux );
         ogg_stream_packetin( &p_sys->skeleton.os, &op );
+        ogg_packet_clear( &op );
         p_og = OggStreamFlush( p_mux, &p_sys->skeleton.os, 0 );
         block_ChainAppend( &p_hdr, p_og );
         p_sys->skeleton.b_head_done = true;
@@ -994,7 +997,9 @@ static bool OggCreateHeaders( sout_mux_t *p_mux )
             sout_input_t *p_input = p_mux->pp_inputs[i];
             p_stream = (ogg_stream_t*)p_input->p_sys;
 
-            bool video = ( p_stream->i_fourcc == VLC_CODEC_THEORA || p_stream->i_fourcc == VLC_CODEC_DIRAC );
+            bool video = ( p_stream->i_fourcc == VLC_CODEC_THEORA ||
+                           p_stream->i_fourcc == VLC_CODEC_DIRAC ||
+                           p_stream->i_fourcc == VLC_CODEC_DAALA );
             if( ( ( pass == 0 && !video ) || ( pass == 1 && video ) ) )
                 continue;
 
@@ -1009,9 +1014,10 @@ static bool OggCreateHeaders( sout_mux_t *p_mux )
             if( p_stream->i_fourcc == VLC_CODEC_VORBIS ||
                 p_stream->i_fourcc == VLC_CODEC_SPEEX ||
                 p_stream->i_fourcc == VLC_CODEC_OPUS ||
-                p_stream->i_fourcc == VLC_CODEC_THEORA )
+                p_stream->i_fourcc == VLC_CODEC_THEORA ||
+                p_stream->i_fourcc == VLC_CODEC_DAALA )
             {
-                /* First packet in order: vorbis/speex/theora info */
+                /* First packet in order: vorbis/speex/opus/theora/daala info */
                 unsigned pi_size[XIPH_MAX_HEADER_COUNT];
                 void     *pp_data[XIPH_MAX_HEADER_COUNT];
                 unsigned i_count;
@@ -1035,8 +1041,9 @@ static bool OggCreateHeaders( sout_mux_t *p_mux )
                 ogg_stream_packetin( &p_stream->os, &op );
                 p_og = OggStreamFlush( p_mux, &p_stream->os, 0 );
 
-                /* Get keyframe_granule_shift for theora granulepos calculation */
-                if( p_stream->i_fourcc == VLC_CODEC_THEORA )
+                /* Get keyframe_granule_shift for theora or daala granulepos calculation */
+                if( p_stream->i_fourcc == VLC_CODEC_THEORA ||
+                    p_stream->i_fourcc == VLC_CODEC_DAALA )
                 {
                     p_stream->i_keyframe_granule_shift =
                         ( (op.packet[40] & 0x03) << 3 ) | ( (op.packet[41] & 0xe0) >> 5 );
@@ -1116,6 +1123,7 @@ static bool OggCreateHeaders( sout_mux_t *p_mux )
             op.granulepos = 0;
             op.packetno = p_sys->skeleton.i_packet_no++;
             ogg_stream_packetin( &p_sys->skeleton.os, &op );
+            ogg_packet_clear( &op );
             p_og = OggStreamFlush( p_mux, &p_sys->skeleton.os, 0 );
             block_ChainAppend( &p_hdr, p_og );
             p_stream->skeleton.b_fisbone_done = true;
@@ -1156,6 +1164,7 @@ static bool OggCreateHeaders( sout_mux_t *p_mux )
                 p_stream->skeleton.i_index_pageno = p_sys->skeleton.os.pageno;
 
                 ogg_stream_packetin( &p_sys->skeleton.os, &op );
+                ogg_packet_clear( &op );
                 p_og = OggStreamFlush( p_mux, &p_sys->skeleton.os, 0 );
                 p_mux->p_sys->i_pos += sout_AccessOutWrite( p_mux->p_access, p_og );
             }
@@ -1172,7 +1181,8 @@ static bool OggCreateHeaders( sout_mux_t *p_mux )
         if( p_stream->i_fourcc == VLC_CODEC_VORBIS ||
             p_stream->i_fourcc == VLC_CODEC_SPEEX ||
             p_stream->i_fourcc == VLC_CODEC_OPUS ||
-            p_stream->i_fourcc == VLC_CODEC_THEORA )
+            p_stream->i_fourcc == VLC_CODEC_THEORA ||
+            p_stream->i_fourcc == VLC_CODEC_DAALA )
         {
             unsigned pi_size[XIPH_MAX_HEADER_COUNT];
             void     *pp_data[XIPH_MAX_HEADER_COUNT];
@@ -1320,6 +1330,7 @@ static void OggCreateStreamFooter( sout_mux_t *p_mux, ogg_stream_t *p_stream )
             p_sys->skeleton.os.b_o_s = 1;
             p_sys->skeleton.os.e_o_s = 0;
             ogg_stream_packetin( &p_sys->skeleton.os, &op );
+            ogg_packet_clear( &op );
             p_og = OggStreamFlush( p_mux, &p_sys->skeleton.os, 0 );
             sout_AccessOutWrite( p_mux->p_access, p_og );
         }
@@ -1396,6 +1407,7 @@ static void OggRewriteFisheadPage( sout_mux_t *p_mux )
         ogg_stream_reset_serialno( &p_sys->skeleton.os, p_sys->skeleton.i_serial_no );
         OggFillSkeletonFishead( op.packet, p_mux );
         ogg_stream_packetin( &p_sys->skeleton.os, &op );
+        ogg_packet_clear( &op );
         msg_Dbg( p_mux, "rewriting fishead at %"PRId64, p_mux->p_sys->skeleton.i_fishead_offset );
         sout_AccessOutSeek( p_mux->p_access, p_mux->p_sys->skeleton.i_fishead_offset );
         sout_AccessOutWrite( p_mux->p_access,
@@ -1573,6 +1585,7 @@ static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
         p_stream->i_fourcc != VLC_CODEC_SPEEX &&
         p_stream->i_fourcc != VLC_CODEC_OPUS &&
         p_stream->i_fourcc != VLC_CODEC_THEORA &&
+        p_stream->i_fourcc != VLC_CODEC_DAALA &&
         p_stream->i_fourcc != VLC_CODEC_VP8 &&
         p_stream->i_fourcc != VLC_CODEC_DIRAC )
     {
@@ -1614,7 +1627,8 @@ static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
     }
     else if( p_stream->i_cat == VIDEO_ES )
     {
-        if( p_stream->i_fourcc == VLC_CODEC_THEORA )
+        if( p_stream->i_fourcc == VLC_CODEC_THEORA ||
+            p_stream->i_fourcc == VLC_CODEC_DAALA )
         {
             p_stream->i_num_frames++;
             if( p_data->i_flags & BLOCK_FLAG_TYPE_I )

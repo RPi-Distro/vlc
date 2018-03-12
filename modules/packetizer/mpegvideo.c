@@ -2,7 +2,7 @@
  * mpegvideo.c: parse and packetize an MPEG1/2 video stream
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: 9cba57445cee3f62b4dce49ca3a8195299942b8d $
+ * $Id: 703b1d78e1cd036c3e2d28213036bfa93fe82398 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -53,6 +53,9 @@
 #include <vlc_block_helper.h>
 #include "../codec/cc.h"
 #include "packetizer_helper.h"
+#include "startcode_helper.h"
+
+#include <limits.h>
 
 #define SYNC_INTRAFRAME_TEXT N_("Sync on Intra Frame")
 #define SYNC_INTRAFRAME_LONGTEXT N_("Normally the packetizer would " \
@@ -77,6 +80,36 @@ vlc_module_begin ()
               SYNC_INTRAFRAME_LONGTEXT, true )
 vlc_module_end ()
 
+enum mpeg_startcode_e
+{
+    PICTURE_STARTCODE          = 0x00,
+    SLICE_STARTCODE_FIRST      = 0x01,
+    SLICE_STARTCODE_LAST       = 0xAF,
+    USER_DATA_STARTCODE        = 0xB2,
+    SEQUENCE_HEADER_STARTCODE  = 0xB3,
+    SEQUENCE_ERROR_STARTCODE   = 0xB4,
+    EXTENSION_STARTCODE        = 0xB5,
+    SEQUENCE_END_STARTCODE     = 0xB7,
+    GROUP_STARTCODE            = 0xB8,
+    SYSTEM_STARTCODE_FIRST     = 0xB9,
+    SYSTEM_STARTCODE_LAST      = 0xFF,
+};
+
+enum extension_start_code_identifier_e
+{
+    SEQUENCE_EXTENSION_ID                   = 0x01,
+    SEQUENCE_DISPLAY_EXTENSION_ID           = 0x02,
+    QUANT_MATRIX_EXTENSION_ID               = 0x03,
+    COPYRIGHT_EXTENSION_ID                  = 0x04,
+    SEQUENCE_SCALABLE_EXTENSION_ID          = 0x05,
+    PICTURE_DISPLAY_EXTENSION_ID            = 0x07,
+    PICTURE_CODING_EXTENSION_ID             = 0x08,
+    PICTURE_SPATIAL_SCALABLE_EXTENSION_ID   = 0x09,
+    PICTURE_TEMPORAL_SCALABLE_EXTENSION_ID  = 0x0A,
+    CAMERA_PARAMETERS_EXTENSION_ID          = 0x0B,
+    ITU_T_EXTENSION_ID                      = 0x0C,
+};
+
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
@@ -99,9 +132,12 @@ struct decoder_sys_t
     mtime_t i_pts;
     mtime_t i_dts;
 
+    date_t  dts;
+    date_t  prev_iframe_dts;
+
     /* Sequence properties */
-    int         i_frame_rate;
-    int         i_frame_rate_base;
+    unsigned    i_frame_rate;
+    unsigned    i_frame_rate_base;
     bool  b_seq_progressive;
     bool  b_low_delay;
     int         i_aspect_ratio_info;
@@ -109,22 +145,27 @@ struct decoder_sys_t
 
     /* Picture properties */
     int i_temporal_ref;
+    int i_prev_temporal_ref;
     int i_picture_type;
     int i_picture_structure;
     int i_top_field_first;
     int i_repeat_first_field;
     int i_progressive_frame;
 
-    mtime_t i_interpolated_dts;
     mtime_t i_last_ref_pts;
+
+    mtime_t i_last_frame_pts;
+    uint16_t i_last_frame_refid;
+
     bool b_second_field;
 
     /* Number of pictures since last sequence header */
-    int i_seq_old;
+    unsigned i_seq_old;
 
     /* Sync behaviour */
     bool  b_sync_on_intra_frame;
-    bool  b_discontinuity;
+    bool  b_waiting_iframe;
+    int   i_next_block_flags;
 
     /* */
     bool b_cc_reset;
@@ -135,7 +176,8 @@ struct decoder_sys_t
 };
 
 static block_t *Packetize( decoder_t *, block_t ** );
-static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] );
+static void PacketizeFlush( decoder_t * );
+static block_t *GetCc( decoder_t *p_dec, decoder_cc_desc_t * );
 
 static void PacketizeReset( void *p_private, bool b_broken );
 static block_t *PacketizeParse( void *p_private, bool *pb_ts_used, block_t * );
@@ -156,20 +198,17 @@ static int Open( vlc_object_t *p_this )
     if( p_dec->fmt_in.i_codec != VLC_CODEC_MPGV )
         return VLC_EGENERIC;
 
-    es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_CODEC_MPGV );
-    p_dec->fmt_out.i_original_fourcc = p_dec->fmt_in.i_original_fourcc;
-
-    p_dec->pf_packetize = Packetize;
-    p_dec->pf_get_cc = GetCc;
-
     p_dec->p_sys = p_sys = malloc( sizeof( decoder_sys_t ) );
     if( !p_dec->p_sys )
         return VLC_ENOMEM;
     memset( p_dec->p_sys, 0, sizeof( decoder_sys_t ) );
 
+    p_dec->fmt_out.i_codec = VLC_CODEC_MPGV;
+    p_dec->fmt_out.i_original_fourcc = p_dec->fmt_in.i_original_fourcc;
+
     /* Misc init */
     packetizer_Init( &p_sys->packetizer,
-                     p_mp2v_startcode, sizeof(p_mp2v_startcode),
+                     p_mp2v_startcode, sizeof(p_mp2v_startcode), startcode_FindAnnexB,
                      NULL, 0, 4,
                      PacketizeReset, PacketizeParse, PacketizeValidate, p_dec );
 
@@ -179,15 +218,21 @@ static int Open( vlc_object_t *p_this )
     p_sys->pp_last = &p_sys->p_frame;
     p_sys->b_frame_slice = false;
 
-    p_sys->i_dts = p_sys->i_pts = VLC_TS_INVALID;
+    p_sys->i_dts =
+    p_sys->i_pts = VLC_TS_INVALID;
+    date_Init( &p_sys->dts, 30000, 1001 );
+    date_Set( &p_sys->dts, VLC_TS_INVALID );
+    date_Init( &p_sys->prev_iframe_dts, 30000, 1001 );
+    date_Set( &p_sys->prev_iframe_dts, VLC_TS_INVALID );
 
-    p_sys->i_frame_rate = 1;
-    p_sys->i_frame_rate_base = 1;
+    p_sys->i_frame_rate = 2 * 30000;
+    p_sys->i_frame_rate_base = 1001;
     p_sys->b_seq_progressive = true;
     p_sys->b_low_delay = true;
     p_sys->i_seq_old = 0;
 
     p_sys->i_temporal_ref = 0;
+    p_sys->i_prev_temporal_ref = 2048;
     p_sys->i_picture_type = 0;
     p_sys->i_picture_structure = 0x03; /* frame */
     p_sys->i_top_field_first = 0;
@@ -195,11 +240,14 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_progressive_frame = 0;
     p_sys->b_inited = 0;
 
-    p_sys->i_interpolated_dts = VLC_TS_INVALID;
     p_sys->i_last_ref_pts = VLC_TS_INVALID;
     p_sys->b_second_field = 0;
 
-    p_sys->b_discontinuity = false;
+    p_sys->i_next_block_flags = 0;
+
+    p_sys->i_last_frame_refid = 0;
+
+    p_sys->b_waiting_iframe =
     p_sys->b_sync_on_intra_frame = var_CreateGetBool( p_dec, "packetizer-mpegvideo-sync-iframe" );
     if( p_sys->b_sync_on_intra_frame )
         msg_Dbg( p_dec, "syncing on intra frame now" );
@@ -209,6 +257,10 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_cc_dts = 0;
     p_sys->i_cc_flags = 0;
     cc_Init( &p_sys->cc );
+
+    p_dec->pf_packetize = Packetize;
+    p_dec->pf_flush = PacketizeFlush;
+    p_dec->pf_get_cc = GetCc;
 
     return VLC_SUCCESS;
 }
@@ -250,19 +302,22 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
     return packetizer_Packetize( &p_sys->packetizer, pp_block );
 }
 
+static void PacketizeFlush( decoder_t *p_dec )
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    packetizer_Flush( &p_sys->packetizer );
+}
+
 /*****************************************************************************
  * GetCc:
  *****************************************************************************/
-static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] )
+static block_t *GetCc( decoder_t *p_dec, decoder_cc_desc_t *p_desc )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t *p_cc;
-    int i;
 
-    for( i = 0; i < 4; i++ )
-        pb_present[i] = p_sys->cc.pb_present[i];
-
-    if( p_sys->cc.i_data <= 0 )
+    if( !p_sys->cc.b_reorder && p_sys->cc.i_data <= 0 )
         return NULL;
 
     p_cc = block_Alloc( p_sys->cc.i_data );
@@ -271,7 +326,11 @@ static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] )
         memcpy( p_cc->p_buffer, p_sys->cc.p_data, p_sys->cc.i_data );
         p_cc->i_dts = 
         p_cc->i_pts = p_sys->cc.b_reorder ? p_sys->i_cc_pts : p_sys->i_cc_dts;
-        p_cc->i_flags = ( p_sys->cc.b_reorder  ? p_sys->i_cc_flags : BLOCK_FLAG_TYPE_P ) & ( BLOCK_FLAG_TYPE_I|BLOCK_FLAG_TYPE_P|BLOCK_FLAG_TYPE_B);
+        p_cc->i_flags = p_sys->i_cc_flags & BLOCK_FLAG_TYPE_MASK;
+
+        p_desc->i_608_channels = p_sys->cc.i_608channels;
+        p_desc->i_708_channels = p_sys->cc.i_708channels;
+        p_desc->i_reorder_depth = p_sys->cc.b_reorder ? 0 : -1;
     }
     cc_Flush( &p_sys->cc );
     return p_cc;
@@ -282,32 +341,42 @@ static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] )
  *****************************************************************************/
 static void PacketizeReset( void *p_private, bool b_broken )
 {
+    VLC_UNUSED(b_broken);
     decoder_t *p_dec = p_private;
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    if( b_broken )
+    p_sys->i_next_block_flags = BLOCK_FLAG_DISCONTINUITY;
+    if( p_sys->p_frame )
     {
-        p_sys->b_discontinuity = true;
-        if( p_sys->p_frame )
-            block_ChainRelease( p_sys->p_frame );
+        block_ChainRelease( p_sys->p_frame );
         p_sys->p_frame = NULL;
         p_sys->pp_last = &p_sys->p_frame;
         p_sys->b_frame_slice = false;
     }
+    date_Set( &p_sys->dts, VLC_TS_INVALID );
+    date_Set( &p_sys->prev_iframe_dts, VLC_TS_INVALID );
     p_sys->i_dts =
     p_sys->i_pts =
-    p_sys->i_interpolated_dts =
     p_sys->i_last_ref_pts = VLC_TS_INVALID;
+    p_sys->b_waiting_iframe = p_sys->b_sync_on_intra_frame;
+    p_sys->i_prev_temporal_ref = 2048;
 }
 
 static block_t *PacketizeParse( void *p_private, bool *pb_ts_used, block_t *p_block )
 {
     decoder_t *p_dec = p_private;
+    decoder_sys_t *p_sys = p_dec->p_sys;
 
     /* Check if we have a picture start code */
-    *pb_ts_used = p_block->p_buffer[3] == 0x00;
+    *pb_ts_used = p_block->p_buffer[3] == PICTURE_STARTCODE;
 
-    return ParseMPEGBlock( p_dec, p_block );
+    p_block = ParseMPEGBlock( p_dec, p_block );
+    if( p_block )
+    {
+        p_block->i_flags |= p_sys->i_next_block_flags;
+        p_sys->i_next_block_flags = 0;
+    }
+    return p_block;
 }
 
 
@@ -316,10 +385,7 @@ static int PacketizeValidate( void *p_private, block_t *p_au )
     decoder_t *p_dec = p_private;
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    /* If a discontinuity has been encountered, then wait till
-     * the next Intra frame before continuing with packetizing */
-    if( p_sys->b_discontinuity &&
-        p_sys->b_sync_on_intra_frame )
+    if( unlikely( p_sys->b_waiting_iframe ) )
     {
         if( (p_au->i_flags & BLOCK_FLAG_TYPE_I) == 0 )
         {
@@ -327,14 +393,13 @@ static int PacketizeValidate( void *p_private, block_t *p_au )
             return VLC_EGENERIC;
         }
         msg_Dbg( p_dec, "synced on intra frame" );
-        p_sys->b_discontinuity = false;
-        p_au->i_flags |= BLOCK_FLAG_DISCONTINUITY;
+        p_sys->b_waiting_iframe = false;
     }
 
     /* We've just started the stream, wait for the first PTS.
      * We discard here so we can still get the sequence header. */
-    if( p_sys->i_dts <= VLC_TS_INVALID && p_sys->i_pts <= VLC_TS_INVALID &&
-        p_sys->i_interpolated_dts <= VLC_TS_INVALID )
+    if( unlikely( p_sys->i_dts <= VLC_TS_INVALID && p_sys->i_pts <= VLC_TS_INVALID &&
+        date_Get( &p_sys->dts ) <= VLC_TS_INVALID ))
     {
         msg_Dbg( p_dec, "need a starting pts/dts" );
         return VLC_EGENERIC;
@@ -342,7 +407,7 @@ static int PacketizeValidate( void *p_private, block_t *p_au )
 
     /* When starting the stream we can have the first frame with
      * an invalid DTS (i_interpolated_pts is initialized to VLC_TS_INVALID) */
-    if( p_au->i_dts <= VLC_TS_INVALID )
+    if( unlikely( p_au->i_dts <= VLC_TS_INVALID ) )
         p_au->i_dts = p_au->i_pts;
 
     return VLC_SUCCESS;
@@ -355,11 +420,12 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t *p_pic = NULL;
 
+    const enum mpeg_startcode_e startcode = p_frag->p_buffer[3];
     /*
      * Check if previous picture is finished
      */
     if( ( p_sys->b_frame_slice &&
-          (p_frag->p_buffer[3] == 0x00 || p_frag->p_buffer[3] > 0xaf) ) &&
+          (startcode == PICTURE_STARTCODE || startcode >  SLICE_STARTCODE_LAST ) ) &&
           p_sys->p_seq == NULL )
     {
         /* We have a picture but without a sequence header we can't
@@ -372,11 +438,10 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
 
     }
     else if( p_sys->b_frame_slice &&
-             (p_frag->p_buffer[3] == 0x00 || p_frag->p_buffer[3] > 0xaf) )
+             (startcode == PICTURE_STARTCODE ||
+             (startcode >  SLICE_STARTCODE_LAST && startcode != EXTENSION_STARTCODE )) )
     {
-        const bool b_eos = p_frag->p_buffer[3] == 0xb7;
-
-        mtime_t i_duration;
+        const bool b_eos = startcode == SEQUENCE_END_STARTCODE;
 
         if( b_eos )
         {
@@ -385,78 +450,41 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         }
 
         p_pic = block_ChainGather( p_sys->p_frame );
+        if( p_pic == NULL )
+            return p_pic;
 
         if( b_eos )
             p_pic->i_flags |= BLOCK_FLAG_END_OF_SEQUENCE;
 
-        i_duration = (mtime_t)( CLOCK_FREQ * p_sys->i_frame_rate_base /
-                                p_sys->i_frame_rate );
+        unsigned i_num_fields;
 
-        if( !p_sys->b_seq_progressive && p_sys->i_picture_structure != 0x03 )
-        {
-            i_duration /= 2;
-        }
+        if( !p_sys->b_seq_progressive && p_sys->i_picture_structure != 0x03 /* Field Picture */ )
+            i_num_fields = 1;
+        else
+            i_num_fields = 2;
 
         if( p_sys->b_seq_progressive )
         {
             if( p_sys->i_top_field_first == 0 &&
                 p_sys->i_repeat_first_field == 1 )
             {
-                i_duration *= 2;
+                i_num_fields *= 2;
             }
             else if( p_sys->i_top_field_first == 1 &&
                      p_sys->i_repeat_first_field == 1 )
             {
-                i_duration *= 3;
+                i_num_fields *= 3;
             }
         }
         else
         {
-            if( p_sys->i_picture_structure == 0x03 )
+            if( p_sys->i_picture_structure == 0x03 /* Frame Picture */ )
             {
                 if( p_sys->i_progressive_frame && p_sys->i_repeat_first_field )
                 {
-                    i_duration += i_duration / 2;
+                    i_num_fields += 1;
                 }
             }
-        }
-
-        if( p_sys->b_low_delay || p_sys->i_picture_type == 0x03 )
-        {
-            /* Trivial case (DTS == PTS) */
-            /* Correct interpolated dts when we receive a new pts/dts */
-            if( p_sys->i_pts > VLC_TS_INVALID )
-                p_sys->i_interpolated_dts = p_sys->i_pts;
-            if( p_sys->i_dts > VLC_TS_INVALID )
-                p_sys->i_interpolated_dts = p_sys->i_dts;
-        }
-        else
-        {
-            /* Correct interpolated dts when we receive a new pts/dts */
-            if(p_sys->i_last_ref_pts > VLC_TS_INVALID && !p_sys->b_second_field)
-                p_sys->i_interpolated_dts = p_sys->i_last_ref_pts;
-            if( p_sys->i_dts > VLC_TS_INVALID )
-                p_sys->i_interpolated_dts = p_sys->i_dts;
-
-            if( !p_sys->b_second_field )
-                p_sys->i_last_ref_pts = p_sys->i_pts;
-        }
-
-        p_pic->i_dts = p_sys->i_interpolated_dts;
-        p_sys->i_interpolated_dts += i_duration;
-
-        /* Set PTS only if we have a B frame or if it comes from the stream */
-        if( p_sys->i_pts > VLC_TS_INVALID )
-        {
-            p_pic->i_pts = p_sys->i_pts;
-        }
-        else if( p_sys->i_picture_type == 0x03 )
-        {
-            p_pic->i_pts = p_pic->i_dts;
-        }
-        else
-        {
-            p_pic->i_pts = VLC_TS_INVALID;
         }
 
         switch ( p_sys->i_picture_type )
@@ -472,12 +500,129 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
             break;
         }
 
-        p_pic->i_length = p_sys->i_interpolated_dts - p_pic->i_dts;
+        if( !p_sys->b_seq_progressive )
+        {
+            if( p_sys->i_picture_structure < 0x03 )
+            {
+                p_pic->i_flags |= BLOCK_FLAG_SINGLE_FIELD;
+                p_pic->i_flags |= (p_sys->i_picture_structure == 0x01) ? BLOCK_FLAG_TOP_FIELD_FIRST
+                                                                       : BLOCK_FLAG_BOTTOM_FIELD_FIRST;
+            }
+            else /* if( p_sys->i_picture_structure == 0x03 ) */
+            {
+                p_pic->i_flags |= (p_sys->i_top_field_first) ? BLOCK_FLAG_TOP_FIELD_FIRST
+                                                             : BLOCK_FLAG_BOTTOM_FIELD_FIRST;
+            }
+        }
+
+        /* Special case for DVR-MS where we need to fully build pts from scratch
+         * and only use first dts as it does not monotonically increase
+         * This will NOT work with frame repeats and such, as we would need to fully
+         * fill the DPB to get accurate pts timings. */
+        if( unlikely( p_dec->fmt_in.i_original_fourcc == VLC_FOURCC( 'D','V','R',' ') ) )
+        {
+            const bool b_first_xmited = (p_sys->i_prev_temporal_ref != p_sys->i_temporal_ref );
+
+            if( ( p_pic->i_flags & BLOCK_FLAG_TYPE_I ) && b_first_xmited )
+            {
+                if( date_Get( &p_sys->prev_iframe_dts ) == VLC_TS_INVALID )
+                {
+                    if( p_sys->i_dts != VLC_TS_INVALID )
+                    {
+                        date_Set( &p_sys->dts, p_sys->i_dts );
+                    }
+                    else
+                    {
+                        if( date_Get( &p_sys->dts ) == VLC_TS_INVALID )
+                        {
+                            date_Set( &p_sys->dts, VLC_TS_0 );
+                        }
+                    }
+                }
+                p_sys->prev_iframe_dts = p_sys->dts;
+            }
+
+            p_pic->i_dts = date_Get( &p_sys->dts );
+
+            /* Compute pts from poc */
+            date_t datepts = p_sys->prev_iframe_dts;
+            date_Increment( &datepts, (1 + p_sys->i_temporal_ref) * 2 );
+
+            /* Field picture second field case */
+            if( p_sys->i_picture_structure != 0x03 )
+            {
+                /* first sent is not the first in display order */
+                if( (p_sys->i_picture_structure >> 1) != !p_sys->i_top_field_first &&
+                        b_first_xmited )
+                {
+                    date_Increment( &datepts, 2 );
+                }
+            }
+
+            p_pic->i_pts = date_Get( &datepts );
+
+            if( date_Get( &p_sys->dts ) != VLC_TS_INVALID )
+            {
+                date_Increment( &p_sys->dts,  i_num_fields );
+
+                p_pic->i_length = date_Get( &p_sys->dts ) - p_pic->i_dts;
+            }
+            p_sys->i_prev_temporal_ref = p_sys->i_temporal_ref;
+        }
+        else /* General case, use demuxer's dts/pts when set or interpolate */
+        {
+            if( p_sys->b_low_delay || p_sys->i_picture_type == 0x03 )
+            {
+                /* Trivial case (DTS == PTS) */
+                /* Correct interpolated dts when we receive a new pts/dts */
+                if( p_sys->i_pts > VLC_TS_INVALID )
+                    date_Set( &p_sys->dts, p_sys->i_pts );
+                if( p_sys->i_dts > VLC_TS_INVALID )
+                    date_Set( &p_sys->dts, p_sys->i_dts );
+            }
+            else
+            {
+                /* Correct interpolated dts when we receive a new pts/dts */
+                if(p_sys->i_last_ref_pts > VLC_TS_INVALID && !p_sys->b_second_field)
+                    date_Set( &p_sys->dts, p_sys->i_last_ref_pts );
+                if( p_sys->i_dts > VLC_TS_INVALID )
+                    date_Set( &p_sys->dts, p_sys->i_dts );
+
+                if( !p_sys->b_second_field )
+                    p_sys->i_last_ref_pts = p_sys->i_pts;
+            }
+
+            p_pic->i_dts = date_Get( &p_sys->dts );
+
+            /* Set PTS only if we have a B frame or if it comes from the stream */
+            if( p_sys->i_pts > VLC_TS_INVALID )
+            {
+                p_pic->i_pts = p_sys->i_pts;
+            }
+            else if( p_sys->i_picture_type == 0x03 )
+            {
+                p_pic->i_pts = p_pic->i_dts;
+            }
+            else
+            {
+                p_pic->i_pts = VLC_TS_INVALID;
+            }
+
+            if( date_Get( &p_sys->dts ) != VLC_TS_INVALID )
+            {
+                date_Increment( &p_sys->dts,  i_num_fields );
+
+                p_pic->i_length = date_Get( &p_sys->dts ) - p_pic->i_dts;
+            }
+        }
 
 #if 0
-        msg_Dbg( p_dec, "pic: type=%d dts=%"PRId64" pts-dts=%"PRId64,
-        p_sys->i_picture_type, p_pic->i_dts, p_pic->i_pts - p_pic->i_dts);
+        msg_Dbg( p_dec, "pic: type=%d ref=%d nf=%d tff=%d dts=%"PRId64" ptsdiff=%"PRId64" len=%"PRId64,
+                 p_sys->i_picture_structure, p_sys->i_temporal_ref, i_num_fields,
+                 p_sys->i_top_field_first,
+                 p_pic->i_dts , (p_pic->i_pts > VLC_TS_INVALID) ? p_pic->i_pts - p_pic->i_dts : 0, p_pic->i_length );
 #endif
+
 
         /* Reset context */
         p_sys->p_frame = NULL;
@@ -497,7 +642,7 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         p_sys->b_cc_reset = true;
         p_sys->i_cc_pts = p_pic->i_pts;
         p_sys->i_cc_dts = p_pic->i_dts;
-        p_sys->i_cc_flags = p_pic->i_flags;
+        p_sys->i_cc_flags = p_pic->i_flags & BLOCK_FLAG_TYPE_MASK;
     }
 
     if( !p_pic && p_sys->b_cc_reset )
@@ -511,7 +656,7 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
     /*
      * Check info of current fragment
      */
-    if( p_frag->p_buffer[3] == 0xb8 )
+    if( startcode == GROUP_STARTCODE )
     {
         /* Group start code */
         if( p_sys->p_seq &&
@@ -527,7 +672,7 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
             p_sys->i_seq_old = 0;
         }
     }
-    else if( p_frag->p_buffer[3] == 0xb3 && p_frag->i_buffer >= 8 )
+    else if( startcode == SEQUENCE_HEADER_STARTCODE && p_frag->i_buffer >= 8 )
     {
         /* Sequence header code */
         static const int code_to_frame_rate[16][2] =
@@ -549,10 +694,15 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         p_sys->i_seq_old = 0;
         p_sys->p_ext = NULL;
 
-        p_dec->fmt_out.video.i_width =
+        p_dec->fmt_out.video.i_visible_width =
             ( p_frag->p_buffer[4] << 4)|(p_frag->p_buffer[5] >> 4 );
-        p_dec->fmt_out.video.i_height =
+        p_dec->fmt_out.video.i_width = (p_dec->fmt_out.video.i_visible_width + 0x0F) & ~0x0F;
+        p_dec->fmt_out.video.i_visible_height =
             ( (p_frag->p_buffer[5]&0x0f) << 8 )|p_frag->p_buffer[6];
+        if( p_sys->b_seq_progressive )
+            p_dec->fmt_out.video.i_height = (p_dec->fmt_out.video.i_visible_height + 0x0F) & ~0x0F;
+        else
+            p_dec->fmt_out.video.i_height = (p_dec->fmt_out.video.i_visible_height + 0x1F) & ~0x1F;
         p_sys->i_aspect_ratio_info = p_frag->p_buffer[7] >> 4;
 
         /* TODO: MPEG1 aspect ratio */
@@ -561,26 +711,36 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         p_sys->i_frame_rate_base =
             code_to_frame_rate[p_frag->p_buffer[7]&0x0f][1];
 
+        if( ( p_sys->i_frame_rate != p_dec->fmt_out.video.i_frame_rate ||
+              p_dec->fmt_out.video.i_frame_rate_base != p_sys->i_frame_rate_base ) &&
+            p_sys->i_frame_rate && p_sys->i_frame_rate_base && p_sys->i_frame_rate <= UINT_MAX/2 )
+        {
+            date_Change( &p_sys->dts, 2 * p_sys->i_frame_rate, p_sys->i_frame_rate_base );
+            date_Change( &p_sys->prev_iframe_dts, 2 * p_sys->i_frame_rate, p_sys->i_frame_rate_base );
+        }
         p_dec->fmt_out.video.i_frame_rate = p_sys->i_frame_rate;
         p_dec->fmt_out.video.i_frame_rate_base = p_sys->i_frame_rate_base;
 
         p_sys->b_seq_progressive = true;
         p_sys->b_low_delay = true;
 
+
         if ( !p_sys->b_inited )
         {
-            msg_Dbg( p_dec, "size %dx%d fps=%.3f",
+            msg_Dbg( p_dec, "size %dx%d/%dx%d fps=%.3f",
+                 p_dec->fmt_out.video.i_visible_width, p_dec->fmt_out.video.i_visible_height,
                  p_dec->fmt_out.video.i_width, p_dec->fmt_out.video.i_height,
-                 p_sys->i_frame_rate / (float)p_sys->i_frame_rate_base );
+                 p_sys->i_frame_rate / (float)(p_sys->i_frame_rate_base ? p_sys->i_frame_rate_base : 1) );
             p_sys->b_inited = 1;
         }
     }
-    else if( p_frag->p_buffer[3] == 0xb5 )
+    else if( startcode == EXTENSION_STARTCODE && p_frag->i_buffer > 4 )
     {
-        int i_type = p_frag->p_buffer[4] >> 4;
+        /* extension_start_code_identifier */
+        const enum extension_start_code_identifier_e extid = p_frag->p_buffer[4] >> 4;
 
         /* Extension start code */
-        if( i_type == 0x01 )
+        if( extid == SEQUENCE_EXTENSION_ID )
         {
 #if 0
             static const int mpeg2_aspect[16][2] =
@@ -619,7 +779,7 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
 #endif
 
         }
-        else if( i_type == 0x08 && p_frag->i_buffer > 8 )
+        else if( extid == PICTURE_CODING_EXTENSION_ID && p_frag->i_buffer > 8 )
         {
             /* picture extension */
             p_sys->i_picture_structure = p_frag->p_buffer[6]&0x03;
@@ -627,13 +787,93 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
             p_sys->i_repeat_first_field= (p_frag->p_buffer[7]>>1)&0x01;
             p_sys->i_progressive_frame = p_frag->p_buffer[8] >> 7;
         }
+        else if( extid == SEQUENCE_DISPLAY_EXTENSION_ID && p_frag->i_buffer > 8 )
+        {
+            /* Sequence display extension */
+            bool contains_color_description = (p_frag->p_buffer[4] & 0x01);
+            //uint8_t video_format = (p_frag->p_buffer[4] & 0x0f) >> 1;
+
+            if( contains_color_description && p_frag->i_buffer > 11 )
+            {
+                uint8_t color_primaries = p_frag->p_buffer[5];
+                uint8_t color_transfer  = p_frag->p_buffer[6];
+                uint8_t color_matrix    = p_frag->p_buffer[7];
+                switch( color_primaries )
+                {
+                    case 1:
+                        p_dec->fmt_out.video.primaries = COLOR_PRIMARIES_BT709;
+                        break;
+                    case 4: /* BT.470M    */
+                    case 5: /* BT.470BG   */
+                        p_dec->fmt_out.video.primaries = COLOR_PRIMARIES_BT601_625;
+                        break;
+                    case 6: /* SMPTE 170M */
+                    case 7: /* SMPTE 240M */
+                        p_dec->fmt_out.video.primaries = COLOR_PRIMARIES_BT601_525;
+                        break;
+                    default:
+                        break;
+                }
+                switch( color_transfer )
+                {
+                    case 1:
+                        p_dec->fmt_out.video.transfer = TRANSFER_FUNC_BT709;
+                        break;
+                    case 4: /* BT.470M assumed gamma 2.2  */
+                        p_dec->fmt_out.video.transfer = TRANSFER_FUNC_SRGB;
+                        break;
+                    case 5: /* BT.470BG */
+                    case 6: /* SMPTE 170M */
+                        p_dec->fmt_out.video.transfer = TRANSFER_FUNC_BT2020;
+                        break;
+                    case 8: /* Linear */
+                        p_dec->fmt_out.video.transfer = TRANSFER_FUNC_LINEAR;
+                        break;
+                    default:
+                        break;
+                }
+                switch( color_matrix )
+                {
+                    case 1:
+                        p_dec->fmt_out.video.space = COLOR_SPACE_BT709;
+                        break;
+                    case 5: /* BT.470BG */
+                    case 6: /* SMPTE 170 M */
+                    case 7: /* SMPTE 240 M */
+                        p_dec->fmt_out.video.space = COLOR_SPACE_BT601;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+        }
     }
-    else if( p_frag->p_buffer[3] == 0xb2 && p_frag->i_buffer > 4 )
+    else if( startcode == USER_DATA_STARTCODE && p_frag->i_buffer > 8 )
     {
-        cc_Extract( &p_sys->cc, p_sys->i_top_field_first,
+        /* Frame Packing extension identifier as H262 2012 Amd4 Annex L */
+        if( !memcmp( &p_frag->p_buffer[4], "JP3D", 4 ) &&
+            p_frag->i_buffer > 11 && p_frag->p_buffer[8] == 0x03 &&
+            p_dec->fmt_in.video.multiview_mode == MULTIVIEW_2D )
+        {
+            video_multiview_mode_t mode;
+            switch( p_frag->p_buffer[9] & 0x7F )
+            {
+                case 0x03:
+                    mode = MULTIVIEW_STEREO_SBS; break;
+                case 0x04:
+                    mode = MULTIVIEW_STEREO_TB; break;
+                case 0x08:
+                default:
+                    mode = MULTIVIEW_2D; break;
+            }
+            p_dec->fmt_out.video.multiview_mode = mode;
+        }
+        else
+        cc_ProbeAndExtract( &p_sys->cc, p_sys->i_top_field_first,
                     &p_frag->p_buffer[4], p_frag->i_buffer - 4 );
     }
-    else if( p_frag->p_buffer[3] == 0x00 )
+    else if( startcode == PICTURE_STARTCODE )
     {
         /* Picture start code */
         p_sys->i_seq_old++;
@@ -648,7 +888,8 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         p_sys->i_dts = p_frag->i_dts;
         p_sys->i_pts = p_frag->i_pts;
     }
-    else if( p_frag->p_buffer[3] >= 0x01 && p_frag->p_buffer[3] <= 0xaf )
+    else if( startcode >= SLICE_STARTCODE_FIRST &&
+             startcode <= SLICE_STARTCODE_LAST )
     {
         /* Slice start code */
         p_sys->b_frame_slice = true;

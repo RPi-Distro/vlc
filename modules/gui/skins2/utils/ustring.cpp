@@ -2,7 +2,7 @@
  * ustring.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 3f1f869210948d34ce865210959487b7f8d1da7c $
+ * $Id: 56ed4659c0bc9e8bda3ada5fc0d675790fca7548 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -326,7 +326,7 @@ UString UString::substr( uint32_t position, uint32_t n) const
 
 UString UString::fromInt( intf_thread_t *pIntf, int number)
 {
-    stringstream ss;
+    std::stringstream ss;
     ss << number;
     return UString( pIntf, ss.str().c_str() );
 }

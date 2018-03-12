@@ -38,9 +38,9 @@ struct vf_priv_s {
                       uint8_t *src, int sstride, int width);
 };
 
-static const uint16_t __attribute__((aligned(16))) pw_7f[8] = {127,127,127,127,127,127,127,127};
-static const uint16_t __attribute__((aligned(16))) pw_ff[8] = {255,255,255,255,255,255,255,255};
-static const uint16_t __attribute__((aligned(16))) dither[8][8] = {
+static alignas (16) const uint16_t pw_7f[8] = {127,127,127,127,127,127,127,127};
+static alignas (16) const uint16_t pw_ff[8] = {255,255,255,255,255,255,255,255};
+static alignas (16) const uint16_t dither[8][8] = {
     {  0, 96, 24,120,  6,102, 30,126 },
     { 64, 32, 88, 56, 70, 38, 94, 62 },
     { 16,112,  8,104, 22,118, 14,110 },
@@ -54,8 +54,7 @@ static const uint16_t __attribute__((aligned(16))) dither[8][8] = {
 static void filter_line_c(uint8_t *dst, uint8_t *src, uint16_t *dc,
                           int width, int thresh, const uint16_t *dithers)
 {
-    int x;
-    for (x=0; x<width; x++, dc+=x&1) {
+    for( int x = 0; x < width; x++, dc += x&1 ) {
         int pix = src[x]<<7;
         int delta = dc[0] - pix;
         int m = abs(delta) * thresh >> 16;
@@ -69,10 +68,10 @@ static void filter_line_c(uint8_t *dst, uint8_t *src, uint16_t *dc,
 static void blur_line_c(uint16_t *dc, uint16_t *buf, uint16_t *buf1,
                         uint8_t *src, int sstride, int width)
 {
-    int x, v, old;
-    for (x=0; x<width; x++) {
-        v = buf1[x] + src[2*x] + src[2*x+1] + src[2*x+sstride] + src[2*x+1+sstride];
-        old = buf[x];
+    for( int x = 0; x < width; x++ ) {
+        int v = buf1[x] + src[2*x] + src[2*x+1] + src[2*x+sstride] +
+                src[2*x+1+sstride];
+        int old = buf[x];
         buf[x] = v;
         dc[x] = v - old;
     }

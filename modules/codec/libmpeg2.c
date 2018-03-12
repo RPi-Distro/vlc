@@ -2,7 +2,7 @@
  * libmpeg2.c: mpeg2 video decoder module making use of libmpeg2.
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 928c8aa02c325acc43f344566b38ccb71e2d0bc7 $
+ * $Id: f58972ad18816deac48bf194858daa8a3d760c8e $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -43,11 +43,10 @@
 #include <vlc_codec.h>
 #include <vlc_block_helper.h>
 #include <vlc_cpu.h>
-#include "../codec/cc.h"
+#include "cc.h"
+#include "synchro.h"
 
 #include <mpeg2.h>
-
-#include <vlc_codec_synchro.h>
 
 /*****************************************************************************
  * decoder_sys_t : libmpeg2 decoder descriptor
@@ -99,7 +98,9 @@ struct decoder_sys_t
     uint32_t        i_cc_flags;
     mtime_t         i_cc_pts;
     mtime_t         i_cc_dts;
+#if MPEG2_RELEASE >= MPEG2_VERSION (0, 5, 0)
     cc_data_t       cc;
+#endif
     uint8_t        *p_gop_user_data;
     uint32_t        i_gop_user_data;
 };
@@ -110,9 +111,9 @@ struct decoder_sys_t
 static int  OpenDecoder( vlc_object_t * );
 static void CloseDecoder( vlc_object_t * );
 
-static picture_t *DecodeBlock( decoder_t *, block_t ** );
+static int DecodeVideo( decoder_t *, block_t *);
 #if MPEG2_RELEASE >= MPEG2_VERSION (0, 5, 0)
-static block_t   *GetCc( decoder_t *p_dec, bool pb_present[4] );
+static void SendCc( decoder_t *p_dec );
 #endif
 
 static picture_t *GetNewPicture( decoder_t * );
@@ -134,7 +135,7 @@ static int DpbDisplayPicture( decoder_t *, picture_t * );
  *****************************************************************************/
 vlc_module_begin ()
     set_description( N_("MPEG I/II video decoder (using libmpeg2)") )
-    set_capability( "decoder", 50 )
+    set_capability( "video decoder", 50 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_VCODEC )
     set_callbacks( OpenDecoder, CloseDecoder )
@@ -193,7 +194,6 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_sys->i_cc_dts = 0;
     p_sys->i_cc_flags = 0;
 #if MPEG2_RELEASE >= MPEG2_VERSION (0, 5, 0)
-    p_dec->pf_get_cc = GetCc;
     cc_Init( &p_sys->cc );
 #endif
     p_sys->p_gop_user_data = NULL;
@@ -240,8 +240,8 @@ static int OpenDecoder( vlc_object_t *p_this )
 
     p_sys->p_info = mpeg2_info( p_sys->p_mpeg2dec );
 
-    p_dec->pf_decode_video = DecodeBlock;
-    p_dec->fmt_out.i_cat = VIDEO_ES;
+    p_dec->pf_decode = DecodeVideo;
+    p_dec->pf_flush  = Reset;
     p_dec->fmt_out.i_codec = 0;
 
     return VLC_SUCCESS;
@@ -254,7 +254,6 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t   *p_sys = p_dec->p_sys;
     mpeg2_state_t   state;
-    picture_t       *p_pic;
 
     block_t *p_block;
 
@@ -262,7 +261,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         return NULL;
 
     p_block = *pp_block;
-    if( p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY | BLOCK_FLAG_CORRUPTED) )
+    if( p_block->i_flags & (BLOCK_FLAG_CORRUPTED) )
         Reset( p_dec );
 
     while( 1 )
@@ -279,9 +278,18 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             /* */
             mpeg2_custom_fbuf( p_sys->p_mpeg2dec, 1 );
 
+            if( p_sys->p_synchro )
+                decoder_SynchroRelease( p_sys->p_synchro );
+
+            if( p_sys->p_info->sequence->frame_period <= 0 )
+                p_sys->p_synchro = NULL;
+            else
+                p_sys->p_synchro =
+                decoder_SynchroInit( p_dec, (uint32_t)(UINT64_C(1001000000) *
+                                27 / p_sys->p_info->sequence->frame_period) );
+            p_sys->b_after_sequence_header = true;
+
             /* Set the first 2 reference frames */
-            p_sys->i_sar_num = 0;
-            p_sys->i_sar_den = 0;
             GetAR( p_dec );
             for( int i = 0; i < 2; i++ )
             {
@@ -294,17 +302,6 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 }
                 PutPicture( p_dec, p_picture );
             }
-
-            if( p_sys->p_synchro )
-                decoder_SynchroRelease( p_sys->p_synchro );
-
-            if( p_sys->p_info->sequence->frame_period <= 0 )
-                p_sys->p_synchro = NULL;
-            else
-                p_sys->p_synchro =
-                decoder_SynchroInit( p_dec, (uint32_t)(UINT64_C(1001000000) *
-                                27 / p_sys->p_info->sequence->frame_period) );
-            p_sys->b_after_sequence_header = true;
             break;
         }
 
@@ -387,8 +384,9 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                                        p_info->sequence->flags & SEQ_FLAG_LOW_DELAY );
 
 
-            bool b_skip = false;
-            if( !p_dec->b_pace_control && !p_sys->b_preroll &&
+            picture_t *p_pic;
+
+            if( p_dec->b_frame_drop_allowed && !p_sys->b_preroll &&
                 !(p_sys->b_slice_i
                    && ((p_current->flags
                          & PIC_MASK_CODING_TYPE) == PIC_FLAG_CODING_TYPE_P))
@@ -397,12 +395,8 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                                 & PIC_MASK_CODING_TYPE,
                               /*p_sys->p_vout->render_time*/ 0 /*FIXME*/,
                               p_info->sequence->flags & SEQ_FLAG_LOW_DELAY ) )
-            {
-                b_skip = true;
-            }
-
-            p_pic = NULL;
-            if( !b_skip )
+                p_pic = NULL;
+            else
             {
                 p_pic = DpbNewPicture( p_dec );
                 if( !p_pic )
@@ -419,28 +413,15 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 }
             }
 
-            if( b_skip || !p_pic )
-            {
-                mpeg2_skip( p_sys->p_mpeg2dec, 1 );
-                p_sys->b_skip = true;
+            mpeg2_skip( p_sys->p_mpeg2dec, p_pic == NULL );
+            p_sys->b_skip = p_pic == NULL;
+            if( p_pic != NULL )
+                decoder_SynchroDecode( p_sys->p_synchro );
+            else
                 decoder_SynchroTrash( p_sys->p_synchro );
 
-                PutPicture( p_dec, NULL );
+            PutPicture( p_dec, p_pic );
 
-                if( !b_skip )
-                {
-                    block_Release( p_block );
-                    return NULL;
-                }
-            }
-            else
-            {
-                mpeg2_skip( p_sys->p_mpeg2dec, 0 );
-                p_sys->b_skip = false;
-                decoder_SynchroDecode( p_sys->p_synchro );
-
-                PutPicture( p_dec, p_pic );
-            }
             if( p_info->user_data_len > 2 || p_sys->i_gop_user_data > 2 )
             {
                 p_sys->i_cc_pts = i_pts;
@@ -452,21 +433,29 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                              & PIC_MASK_CODING_TYPE) == PIC_FLAG_CODING_TYPE_B )
                     p_sys->i_cc_flags = BLOCK_FLAG_TYPE_B;
                 else p_sys->i_cc_flags = BLOCK_FLAG_TYPE_I;
+#if MPEG2_RELEASE >= MPEG2_VERSION (0, 5, 0)
                 bool b_top_field_first = p_sys->p_info->current_picture->flags
                                            & PIC_FLAG_TOP_FIELD_FIRST;
-
+#endif
                 if( p_sys->i_gop_user_data > 2 )
                 {
                     /* We now have picture info for any cached user_data out of the gop */
-                    cc_Extract( &p_sys->cc, b_top_field_first,
+#if MPEG2_RELEASE >= MPEG2_VERSION (0, 5, 0)
+                    cc_ProbeAndExtract( &p_sys->cc, b_top_field_first,
                                 &p_sys->p_gop_user_data[0], p_sys->i_gop_user_data );
+#endif
                     p_sys->i_gop_user_data = 0;
                 }
 
                 /* Extract the CC from the user_data of the picture */
+#if MPEG2_RELEASE >= MPEG2_VERSION (0, 5, 0)
                 if( p_info->user_data_len > 2 )
-                    cc_Extract( &p_sys->cc, b_top_field_first,
+                    cc_ProbeAndExtract( &p_sys->cc, b_top_field_first,
                                 &p_info->user_data[0], p_info->user_data_len );
+
+                if( p_sys->cc.i_data )
+                    SendCc( p_dec );
+#endif
             }
         }
         break;
@@ -551,7 +540,9 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         case STATE_INVALID_END:
         case STATE_END:
         case STATE_SLICE:
-            p_pic = NULL;
+        {
+            picture_t *p_pic = NULL;
+
             if( p_sys->p_info->display_fbuf &&
                 p_sys->p_info->display_fbuf->id )
             {
@@ -578,12 +569,11 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 DpbUnlinkPicture( p_dec, p_sys->p_info->discard_fbuf->id );
             }
 
-            /* For still frames */
-            if( state == STATE_END && p_pic )
-                p_pic->b_force = true;
-
             if( p_pic )
             {
+                if( state == STATE_END )
+                    p_pic->b_force = true; /* For still frames */
+
                 /* Avoid frames with identical timestamps.
                  * Especially needed for still frames in DVD menus. */
                 if( p_sys->i_last_frame_pts == p_pic->date )
@@ -592,6 +582,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 return p_pic;
             }
             break;
+        }
 
         case STATE_INVALID:
         {
@@ -610,6 +601,18 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     return NULL;
 }
 
+static int DecodeVideo( decoder_t *p_dec, block_t *p_block)
+{
+    if( p_block == NULL ) /* No Drain */
+        return VLCDEC_SUCCESS;
+
+    block_t **pp_block = &p_block;
+    picture_t *p_pic;
+    while( ( p_pic = DecodeBlock( p_dec, pp_block ) ) != NULL )
+        decoder_QueueVideo( p_dec, p_pic );
+    return VLCDEC_SUCCESS;
+}
+
 /*****************************************************************************
  * CloseDecoder: libmpeg2 decoder destruction
  *****************************************************************************/
@@ -617,6 +620,10 @@ static void CloseDecoder( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t *)p_this;
     decoder_sys_t *p_sys = p_dec->p_sys;
+
+#if MPEG2_RELEASE >= MPEG2_VERSION (0, 5, 0)
+    cc_Flush( &p_sys->cc );
+#endif
 
     DpbClean( p_dec );
 
@@ -636,7 +643,9 @@ static void Reset( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
+#if MPEG2_RELEASE >= MPEG2_VERSION (0, 5, 0)
     cc_Flush( &p_sys->cc );
+#endif
     mpeg2_reset( p_sys->p_mpeg2dec, 0 );
     DpbClean( p_dec );
 }
@@ -672,6 +681,8 @@ static picture_t *GetNewPicture( decoder_t *p_dec )
         VLC_CODEC_I420 : VLC_CODEC_I422;
 
     /* Get a new picture */
+    if( decoder_UpdateVideoFormat( p_dec ) )
+        return NULL;
     p_pic = decoder_NewPicture( p_dec );
 
     if( p_pic == NULL )
@@ -689,19 +700,15 @@ static picture_t *GetNewPicture( decoder_t *p_dec )
 
 #if MPEG2_RELEASE >= MPEG2_VERSION (0, 5, 0)
 /*****************************************************************************
- * GetCc: Retrieves the Closed Captions for the CC decoder.
+ * SendCc: Sends the Closed Captions for the CC decoder.
  *****************************************************************************/
-static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] )
+static void SendCc( decoder_t *p_dec )
 {
     decoder_sys_t   *p_sys = p_dec->p_sys;
     block_t         *p_cc = NULL;
-    int i;
 
-    for( i = 0; i < 4; i++ )
-        pb_present[i] = p_sys->cc.pb_present[i];
-
-    if( p_sys->cc.i_data <= 0 )
-        return NULL;
+    if( !p_sys->cc.b_reorder && p_sys->cc.i_data <= 0 )
+        return;
 
     p_cc = block_Alloc( p_sys->cc.i_data);
     if( p_cc )
@@ -709,10 +716,15 @@ static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] )
         memcpy( p_cc->p_buffer, p_sys->cc.p_data, p_sys->cc.i_data );
         p_cc->i_dts =
         p_cc->i_pts = p_sys->cc.b_reorder ? p_sys->i_cc_pts : p_sys->i_cc_dts;
-        p_cc->i_flags = ( p_sys->cc.b_reorder  ? p_sys->i_cc_flags : BLOCK_FLAG_TYPE_P ) & ( BLOCK_FLAG_TYPE_I|BLOCK_FLAG_TYPE_P|BLOCK_FLAG_TYPE_B);
+        p_cc->i_flags = p_sys->i_cc_flags & BLOCK_FLAG_TYPE_MASK;
+        decoder_cc_desc_t desc;
+        desc.i_608_channels = p_sys->cc.i_608channels;
+        desc.i_708_channels = p_sys->cc.i_708channels;
+        desc.i_reorder_depth = p_sys->cc.b_reorder ? 0 : -1;
+        decoder_QueueCc( p_dec, p_cc, &desc );
     }
     cc_Flush( &p_sys->cc );
-    return p_cc;
+    return;
 }
 #endif
 
@@ -732,22 +744,19 @@ static void GetAR( decoder_t *p_dec )
         p_sys->i_sar_num = p_dec->fmt_in.video.i_sar_num;
         p_sys->i_sar_den = p_dec->fmt_in.video.i_sar_den;
     }
+    /* Use the value provided in the MPEG sequence header */
+    else if( p_sys->p_info->sequence->pixel_height > 0 )
+    {
+        p_sys->i_sar_num = p_sys->p_info->sequence->pixel_width;
+        p_sys->i_sar_den = p_sys->p_info->sequence->pixel_height;
+    }
     else
     {
-        /* Use the value provided in the MPEG sequence header */
-        if( p_sys->p_info->sequence->pixel_height > 0 )
-        {
-            p_sys->i_sar_num = p_sys->p_info->sequence->pixel_width;
-            p_sys->i_sar_den = p_sys->p_info->sequence->pixel_height;
-        }
-        else
-        {
-            /* Invalid aspect, assume 4:3.
-             * This shouldn't happen and if it does it is a bug
-             * in libmpeg2 (likely triggered by an invalid stream) */
-            p_sys->i_sar_num = p_sys->p_info->sequence->picture_height * 4;
-            p_sys->i_sar_den = p_sys->p_info->sequence->picture_width * 3;
-        }
+        /* Invalid aspect, assume 4:3.
+         * This shouldn't happen and if it does it is a bug
+         * in libmpeg2 (likely triggered by an invalid stream) */
+        p_sys->i_sar_num = p_sys->p_info->sequence->picture_height * 4;
+        p_sys->i_sar_den = p_sys->p_info->sequence->picture_width * 3;
     }
 
     if( p_sys->i_sar_num == i_old_sar_num &&
@@ -814,9 +823,9 @@ static void DpbClean( decoder_t *p_dec )
         if( !p->p_picture )
             continue;
         if( p->b_linked )
-            decoder_UnlinkPicture( p_dec, p->p_picture );
+            picture_Release( p->p_picture );
         if( !p->b_displayed )
-            decoder_DeletePicture( p_dec, p->p_picture );
+            picture_Release( p->p_picture );
 
         p->p_picture = NULL;
     }
@@ -846,7 +855,7 @@ static picture_t *DpbNewPicture( decoder_t *p_dec )
     p->p_picture = GetNewPicture( p_dec );
     if( p->p_picture )
     {
-        decoder_LinkPicture( p_dec, p->p_picture );
+        picture_Hold( p->p_picture );
         p->b_linked = true;
         p->b_displayed = false;
 
@@ -883,11 +892,11 @@ static void DpbUnlinkPicture( decoder_t *p_dec, picture_t *p_picture )
 
     assert( p && p->b_linked );
 
-    decoder_UnlinkPicture( p_dec, p->p_picture );
+    picture_Release( p->p_picture );
     p->b_linked = false;
 
     if( !p->b_displayed )
-        decoder_DeletePicture( p_dec, p->p_picture );
+        picture_Release( p->p_picture );
     p->p_picture = NULL;
 }
 /**

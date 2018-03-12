@@ -2,7 +2,7 @@
  * vlc_vod.h: interface for VoD server modules
  *****************************************************************************
  * Copyright (C) 2000, 2001 VLC authors and VideoLAN
- * $Id: 2f094338a9ca3ea9e8236863bda9f549abe53687 $
+ * $Id: 382108acf1a751e28436ee6b9f84c4763a4b5f5c $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -25,15 +25,12 @@
 #define VLC_VOD_H 1
 
 /**
- * \file
- * This file defines an interface for VOD server modules in vlc
- */
-
-/**
- * \defgroup vod Video On Demand (VOD)
+ * \defgroup vod Video on Demand (VoD)
  * \ingroup server
- * Video On Demand (VOD) functionality is provided from VLM.
+ * Video on Demand (VOD) functionality provided by VLM
  * @{
+ * \file
+ * VLC VoD module interface
  */
 
 struct vod_t

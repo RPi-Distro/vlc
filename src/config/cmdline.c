@@ -2,7 +2,7 @@
  * cmdline.c: command line parsing
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 12e92ba49711f109cebd0b6d8e25d44938b576e6 $
+ * $Id: 535306cc1c6a683f2d6f4fb062ceff9734cabab7 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -27,7 +27,7 @@
 
 #include <vlc_common.h>
 #include "../libvlc.h"
-#include <vlc_keys.h>
+#include <vlc_actions.h>
 #include <vlc_charset.h>
 #include <vlc_modules.h>
 #include <vlc_plugin.h>
@@ -64,40 +64,28 @@ int config_LoadCmdLine( vlc_object_t *p_this, int i_argc,
 #define b_ignore_errors (pindex == NULL)
 
     /* Short options */
-    module_config_t *pp_shortopts[256];
+    const module_config_t *pp_shortopts[256];
     char *psz_shortopts;
-
-    /* List all modules */
-    size_t count;
-    module_t **list = module_list_get (&count);
 
     /*
      * Generate the longopts and shortopts structures used by getopt_long
      */
 
     i_opts = 0;
-    for (size_t i = 0; i < count; i++)
-    {
+    for (const vlc_plugin_t *p = vlc_plugins; p != NULL; p = p->next)
         /* count the number of exported configuration options (to allocate
          * longopts). We also need to allocate space for two options when
          * dealing with boolean to allow for --foo and --no-foo */
-        module_t *p_parser = list[i];
+        i_opts += p->conf.count + 2 * p->conf.booleans;
 
-        i_opts += p_parser->i_config_items + 2 * p_parser->i_bool_items;
-    }
-
-    p_longopts = malloc( sizeof(*p_longopts) * (i_opts + 1) );
+    p_longopts = vlc_alloc( i_opts + 1, sizeof(*p_longopts)  );
     if( p_longopts == NULL )
-    {
-        module_list_free (list);
         return -1;
-    }
 
     psz_shortopts = malloc( 2 * i_opts + 1 );
     if( psz_shortopts == NULL )
     {
         free( p_longopts );
-        module_list_free (list);
         return -1;
     }
 
@@ -106,12 +94,11 @@ int config_LoadCmdLine( vlc_object_t *p_this, int i_argc,
      * us, ignoring the arity of the options */
     if( b_ignore_errors )
     {
-        argv_copy = (const char**)malloc( i_argc * sizeof(char *) );
+        argv_copy = vlc_alloc( i_argc, sizeof(char *) );
         if( argv_copy == NULL )
         {
             free( psz_shortopts );
             free( p_longopts );
-            module_list_free (list);
             return -1;
         }
         memcpy( argv_copy, ppsz_argv, i_argc * sizeof(char *) );
@@ -126,17 +113,12 @@ int config_LoadCmdLine( vlc_object_t *p_this, int i_argc,
 
     /* Fill the p_longopts and psz_shortopts structures */
     i_index = 0;
-    for (size_t i = 0; i < count; i++)
+    for (const vlc_plugin_t *p = vlc_plugins; p != NULL; p = p->next)
     {
-        module_t *p_parser = list[i];
-        module_config_t *p_item, *p_end;
-
-        if( !p_parser->i_config_items )
-            continue;
-
-        for( p_item = p_parser->p_config, p_end = p_item + p_parser->confsize;
+        for (const module_config_t *p_item = p->conf.items,
+                                   *p_end = p_item + p->conf.size;
              p_item < p_end;
-             p_item++ )
+             p_item++)
         {
             /* Ignore hints */
             if( !CONFIG_ITEM(p_item->i_type) )
@@ -191,9 +173,6 @@ int config_LoadCmdLine( vlc_object_t *p_this, int i_argc,
         }
     }
 
-    /* We don't need the module list anymore */
-    module_list_free( list );
-
     /* Close the longopts and shortopts structures */
     memset( &p_longopts[i_index], 0, sizeof(*p_longopts) );
     psz_shortopts[i_shortopts] = '\0';
@@ -219,7 +198,7 @@ int config_LoadCmdLine( vlc_object_t *p_this, int i_argc,
             if( flag ) psz_name += psz_name[2] == '-' ? 3 : 2;
 
             /* Store the configuration option */
-            p_conf = config_FindConfig( p_this, psz_name );
+            p_conf = config_FindConfig( psz_name );
             if( p_conf )
             {
                 /* Check if the option is deprecated */
@@ -239,11 +218,17 @@ int config_LoadCmdLine( vlc_object_t *p_this, int i_argc,
                         break;
                     case CONFIG_ITEM_INTEGER:
                         var_Create( p_this, psz_name, VLC_VAR_INTEGER );
+                        var_Change( p_this, psz_name, VLC_VAR_SETMINMAX,
+                            &(vlc_value_t){ .i_int = p_conf->min.i },
+                            &(vlc_value_t){ .i_int = p_conf->max.i } );
                         var_SetInteger( p_this, psz_name,
                                         strtoll(state.arg, NULL, 0));
                         break;
                     case CONFIG_ITEM_FLOAT:
                         var_Create( p_this, psz_name, VLC_VAR_FLOAT );
+                        var_Change( p_this, psz_name, VLC_VAR_SETMINMAX,
+                            &(vlc_value_t){ .f_float = p_conf->min.f },
+                            &(vlc_value_t){ .f_float = p_conf->max.f } );
                         var_SetFloat( p_this, psz_name, us_atof(state.arg) );
                         break;
                     case CONFIG_ITEM_BOOL:

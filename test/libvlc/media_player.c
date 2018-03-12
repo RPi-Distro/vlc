@@ -1,7 +1,7 @@
 /*
  * media_player.c - libvlc smoke test
  *
- * $Id: 43dd44cb4abbca098e41e03c519b124b1cd15147 $
+ * $Id: f3198b5bcf3ac76a60b115446cbb6dcf77c4ef2e $
  */
 
 /**********************************************************************
@@ -78,6 +78,19 @@ static void test_audio_video(libvlc_media_player_t *mp)
         libvlc_audio_output_device_set( mp, NULL, e->psz_device );
     }
     libvlc_audio_output_device_list_release( aouts );
+}
+
+static void test_role(libvlc_media_player_t *mp)
+{
+    int role;
+
+    /* Test default value */
+    assert(libvlc_media_player_get_role(mp) == libvlc_role_Video);
+
+    for (role = 0; libvlc_media_player_set_role(mp, role) == 0; role++)
+        assert(libvlc_media_player_get_role(mp) == role);
+
+    assert(role > libvlc_role_Last);
 }
 
 static void test_media_player_set_media(const char** argv, int argc)
@@ -158,6 +171,7 @@ static void test_media_player_pause_stop(const char** argv, int argc)
     libvlc_media_release (md);
 
     test_audio_video(mi);
+    test_role(mi);
 
     libvlc_media_player_play (mi);
     log ("Waiting for playing\n");

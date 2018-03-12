@@ -2,7 +2,7 @@
  * compressor.c: dynamic range compressor, ported from plugins from LADSPA SWH
  *****************************************************************************
  * Copyright (C) 2010 Ronald Wright
- * $Id: 29f819cb63f926e41563750560d7a9a583c49c13 $
+ * $Id: 6a7f726f793c40511f1d1574334e56b47baa559a $
  *
  * Author: Ronald Wright <logiconcepts819@gmail.com>
  * Original author: Steve Harris <steve@plugin.org.uk>
@@ -153,49 +153,47 @@ static int MakeupGainCallback   ( vlc_object_t *, char const *, vlc_value_t,
  *****************************************************************************/
 
 #define RMS_PEAK_TEXT N_( "RMS/peak" )
-#define RMS_PEAK_LONGTEXT N_( "Set the RMS/peak (0 ... 1)." )
+#define RMS_PEAK_LONGTEXT N_( "Set the RMS/peak." )
 
 #define ATTACK_TEXT N_( "Attack time" )
-#define ATTACK_LONGTEXT N_( \
-        "Set the attack time in milliseconds (1.5 ... 400)." )
+#define ATTACK_LONGTEXT N_( "Set the attack time in milliseconds." )
 
 #define RELEASE_TEXT N_( "Release time" )
-#define RELEASE_LONGTEXT N_( \
-        "Set the release time in milliseconds (2 ... 800)." )
+#define RELEASE_LONGTEXT N_( "Set the release time in milliseconds." )
 
 #define THRESHOLD_TEXT N_( "Threshold level" )
-#define THRESHOLD_LONGTEXT N_( "Set the threshold level in dB (-30 ... 0)." )
+#define THRESHOLD_LONGTEXT N_( "Set the threshold level in dB." )
 
 #define RATIO_TEXT N_( "Ratio" )
-#define RATIO_LONGTEXT N_( "Set the ratio (n:1) (1 ... 20)." )
+#define RATIO_LONGTEXT N_( "Set the ratio (n:1)." )
 
 #define KNEE_TEXT N_( "Knee radius" )
-#define KNEE_LONGTEXT N_( "Set the knee radius in dB (1 ... 10)." )
+#define KNEE_LONGTEXT N_( "Set the knee radius in dB." )
 
 #define MAKEUP_GAIN_TEXT N_( "Makeup gain" )
 #define MAKEUP_GAIN_LONGTEXT N_( "Set the makeup gain in dB (0 ... 24)." )
 
 vlc_module_begin()
-    set_shortname( _("Compressor") )
-    set_description( _("Dynamic range compressor") )
+    set_shortname( N_("Compressor") )
+    set_description( N_("Dynamic range compressor") )
     set_capability( "audio filter", 0 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AFILTER )
 
-    add_float( "compressor-rms-peak", 0.0, RMS_PEAK_TEXT,
-               RMS_PEAK_LONGTEXT, false )
-    add_float( "compressor-attack", 25.0, ATTACK_TEXT,
-               ATTACK_LONGTEXT, false )
-    add_float( "compressor-release", 100.0, RELEASE_TEXT,
-               RELEASE_LONGTEXT, false )
-    add_float( "compressor-threshold", -11.0, THRESHOLD_TEXT,
-               THRESHOLD_LONGTEXT, false )
-    add_float( "compressor-ratio", 8.0, RATIO_TEXT,
-               RATIO_LONGTEXT, false )
-    add_float( "compressor-knee", 2.5, KNEE_TEXT,
-               KNEE_LONGTEXT, false )
-    add_float( "compressor-makeup-gain", 7.0, MAKEUP_GAIN_TEXT,
-               MAKEUP_GAIN_LONGTEXT, false )
+    add_float_with_range( "compressor-rms-peak", 0.2, 0.0, 1.0,
+               RMS_PEAK_TEXT, RMS_PEAK_LONGTEXT, false )
+    add_float_with_range( "compressor-attack", 25.0, 1.5, 400.0,
+               ATTACK_TEXT, ATTACK_LONGTEXT, false )
+    add_float_with_range( "compressor-release", 100.0, 2.0, 800.0,
+               RELEASE_TEXT, RELEASE_LONGTEXT, false )
+    add_float_with_range( "compressor-threshold", -11.0, -30.0, 0.0,
+               THRESHOLD_TEXT, THRESHOLD_LONGTEXT, false )
+    add_float_with_range( "compressor-ratio", 4.0, 1.0, 20.0,
+               RATIO_TEXT, RATIO_LONGTEXT, false )
+    add_float_with_range( "compressor-knee", 5.0, 1.0, 10.0,
+               KNEE_TEXT, KNEE_LONGTEXT, false )
+    add_float_with_range( "compressor-makeup-gain", 7.0, 0.0, 24.0,
+               MAKEUP_GAIN_TEXT, MAKEUP_GAIN_LONGTEXT, false )
     set_callbacks( Open, Close )
     add_shortcut( "compressor" )
 vlc_module_end ()
@@ -207,7 +205,7 @@ vlc_module_end ()
 static int Open( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t*)p_this;
-    vlc_object_t *p_aout = p_filter->p_parent;
+    vlc_object_t *p_aout = p_filter->obj.parent;
     float f_sample_rate = p_filter->fmt_in.audio.i_rate;
     float f_num;
 
@@ -257,6 +255,7 @@ static int Open( vlc_object_t *p_this )
 
     /* Set the filter function */
     p_filter->fmt_in.audio.i_format = VLC_CODEC_FL32;
+    aout_FormatPrepare(&p_filter->fmt_in.audio);
     p_filter->fmt_out.audio = p_filter->fmt_in.audio;
     p_filter->pf_audio_filter = DoWork;
 
@@ -272,7 +271,7 @@ static int Open( vlc_object_t *p_this )
 static void Close( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t*)p_this;
-    vlc_object_t *p_aout = p_filter->p_parent;
+    vlc_object_t *p_aout = p_filter->obj.parent;
     filter_sys_t *p_sys = p_filter->p_sys;
 
     /* Remove our callbacks */
@@ -549,8 +548,8 @@ static void RoundToZero( float *pf_x )
 static float Max( float f_x, float f_a )
 {
     f_x -= f_a;
-    f_x += fabs( f_x );
-    f_x *= 0.5;
+    f_x += fabsf( f_x );
+    f_x *= 0.5f;
     f_x += f_a;
 
     return f_x;
@@ -558,12 +557,12 @@ static float Max( float f_x, float f_a )
 
 static float Clamp( float f_x, float f_a, float f_b )
 {
-    const float f_x1 = fabs( f_x - f_a );
-    const float f_x2 = fabs( f_x - f_b );
+    const float f_x1 = fabsf( f_x - f_a );
+    const float f_x2 = fabsf( f_x - f_b );
 
     f_x = f_x1 + f_a + f_b;
     f_x -= f_x2;
-    f_x *= 0.5;
+    f_x *= 0.5f;
 
     return f_x;
 }
@@ -589,7 +588,7 @@ static float RmsEnvProcess( rms_env * p_r, const float f_x )
     p_r->f_sum += f_x;
 
     /* If the sum is small enough, make it zero */
-    if( p_r->f_sum < 1.0e-6 )
+    if( p_r->f_sum < 1.0e-6f )
     {
         p_r->f_sum = 0.0f;
     }

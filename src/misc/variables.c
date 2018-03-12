@@ -2,7 +2,7 @@
  * variables.c: routines for object variables handling
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: a631863460d2cc2687bc2b1059954a949debd1c8 $
+ * $Id: 810c8ffc819365cce4c6889885055315d9fcb337 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -32,30 +32,77 @@
 # include <search.h>
 #endif
 #include <assert.h>
+#include <float.h>
 #include <math.h>
 #include <limits.h>
-#ifdef __GLIBC__
-# include <dlfcn.h>
-#endif
 
 #include <vlc_common.h>
+#include <vlc_arrays.h>
 #include <vlc_charset.h>
 #include "libvlc.h"
 #include "variables.h"
 #include "config/configuration.h"
 
-/*****************************************************************************
- * Private types
- *****************************************************************************/
-struct callback_entry_t
+typedef struct callback_entry_t
 {
-    vlc_callback_t pf_callback;
+    union
+    {
+        vlc_callback_t       pf_value_callback;
+        vlc_list_callback_t  pf_list_callback;
+        void *               p_callback;
+    };
     void *         p_data;
+} callback_entry_t;
+
+typedef struct variable_ops_t
+{
+    int  (*pf_cmp) ( vlc_value_t, vlc_value_t );
+    void (*pf_dup) ( vlc_value_t * );
+    void (*pf_free) ( vlc_value_t * );
+} variable_ops_t;
+
+typedef struct callback_table_t
+{
+    int                i_entries;
+    callback_entry_t * p_entries;
+} callback_table_t;
+
+/**
+ * The structure describing a variable.
+ * \note vlc_value_t is the common union for variable values
+ */
+struct variable_t
+{
+    char *       psz_name; /**< The variable unique name (must be first) */
+
+    /** The variable's exported value */
+    vlc_value_t  val;
+
+    /** The variable display name, mainly for use by the interfaces */
+    char *       psz_text;
+
+    const variable_ops_t *ops;
+
+    int          i_type;   /**< The type of the variable */
+    unsigned     i_usage;  /**< Reference count */
+
+    /** If the variable has min/max/step values */
+    vlc_value_t  min, max, step;
+
+    /** List of choices */
+    vlc_list_t   choices;
+    /** List of friendly names for the choices */
+    vlc_list_t   choices_text;
+
+    /** Set to TRUE if the variable is in a callback */
+    bool   b_incallback;
+
+    /** Registered value callbacks */
+    callback_table_t    value_callbacks;
+    /** Registered list callbacks */
+    callback_table_t    list_callbacks;
 };
 
-/*****************************************************************************
- * Local comparison functions, returns 0 if v == w, < 0 if v < w, > 0 if v > w
- *****************************************************************************/
 static int CmpBool( vlc_value_t v, vlc_value_t w )
 {
     return v.b_bool ? w.b_bool ? 0 : 1 : w.b_bool ? -1 : 0;
@@ -64,11 +111,6 @@ static int CmpBool( vlc_value_t v, vlc_value_t w )
 static int CmpInt( vlc_value_t v, vlc_value_t w )
 {
     return v.i_int == w.i_int ? 0 : v.i_int > w.i_int ? 1 : -1;
-}
-
-static int CmpTime( vlc_value_t v, vlc_value_t w )
-{
-    return v.i_time == w.i_time ? 0 : v.i_time > w.i_time ? 1 : -1;
 }
 
 static int CmpString( vlc_value_t v, vlc_value_t w )
@@ -81,9 +123,6 @@ static int CmpString( vlc_value_t v, vlc_value_t w )
 static int CmpFloat( vlc_value_t v, vlc_value_t w ) { return v.f_float == w.f_float ? 0 : v.f_float > w.f_float ? 1 : -1; }
 static int CmpAddress( vlc_value_t v, vlc_value_t w ) { return v.p_address == w.p_address ? 0 : v.p_address > w.p_address ? 1 : -1; }
 
-/*****************************************************************************
- * Local duplication functions, and local deallocation functions
- *****************************************************************************/
 static void DupDummy( vlc_value_t *p_val ) { (void)p_val; /* unused */ }
 static void DupString( vlc_value_t *p_val )
 {
@@ -93,29 +132,6 @@ static void DupString( vlc_value_t *p_val )
 static void FreeDummy( vlc_value_t *p_val ) { (void)p_val; /* unused */ }
 static void FreeString( vlc_value_t *p_val ) { free( p_val->psz_string ); }
 
-static void FreeList( vlc_value_t *p_val )
-{
-    int i;
-    for( i = 0; i < p_val->p_list->i_count; i++ )
-    {
-        switch( p_val->p_list->pi_types[i] & VLC_VAR_CLASS )
-        {
-        case VLC_VAR_STRING:
-            FreeString( &p_val->p_list->p_values[i] );
-            break;
-        default:
-            break;
-        }
-    }
-
-    if( p_val->p_list->i_count )
-    {
-        free( p_val->p_list->p_values );
-        free( p_val->p_list->pi_types );
-    }
-    free( p_val->p_list );
-}
-
 static const struct variable_ops_t
 void_ops   = { NULL,       DupDummy,  FreeDummy,  },
 addr_ops   = { CmpAddress, DupDummy,  FreeDummy,  },
@@ -123,18 +139,7 @@ bool_ops   = { CmpBool,    DupDummy,  FreeDummy,  },
 float_ops  = { CmpFloat,   DupDummy,  FreeDummy,  },
 int_ops    = { CmpInt,     DupDummy,  FreeDummy,  },
 string_ops = { CmpString,  DupString, FreeString, },
-time_ops   = { CmpTime,    DupDummy,  FreeDummy,  },
 coords_ops = { NULL,       DupDummy,  FreeDummy,  };
-
-/*****************************************************************************
- * Local prototypes
- *****************************************************************************/
-static void     WaitUnused  ( vlc_object_t *, variable_t * );
-
-static void     CheckValue  ( variable_t *, vlc_value_t * );
-
-static int      TriggerCallback( vlc_object_t *, variable_t *, const char *,
-                                 vlc_value_t );
 
 static int varcmp( const void *a, const void *b )
 {
@@ -150,7 +155,7 @@ static variable_t *Lookup( vlc_object_t *obj, const char *psz_name )
     vlc_object_internals_t *priv = vlc_internals( obj );
     variable_t **pp_var;
 
-    vlc_assert_locked( &priv->var_lock );
+    vlc_mutex_lock(&priv->var_lock);
     pp_var = tfind( &psz_name, &priv->var_root, varcmp );
     return (pp_var != NULL) ? *pp_var : NULL;
 }
@@ -168,29 +173,113 @@ static void Destroy( variable_t *p_var )
         free( p_var->choices.p_values );
         free( p_var->choices_text.p_values );
     }
-#if 0 // ndef NDEBUG
-    for (int i = 0; i < p_var->i_entries; i++)
-    {
-        const char *file = "?", *symbol = "?";
-        const void *addr = p_var->p_entries[i].pf_callback;
-# ifdef __GLIBC__
-        Dl_info info;
-
-        if (dladdr (addr, &info))
-        {
-            if (info.dli_fname) file = info.dli_fname;
-            if (info.dli_sname) symbol = info.dli_sname;
-        }
-# endif
-        fprintf (stderr, "Error: callback on \"%s\" dangling %s(%s)[%p]\n",
-                 p_var->psz_name, file, symbol, addr);
-    }
-#endif
 
     free( p_var->psz_name );
     free( p_var->psz_text );
-    free( p_var->p_entries );
+    free( p_var->value_callbacks.p_entries );
     free( p_var );
+}
+
+/**
+ * Adjusts a value to fit the constraints for a certain variable:
+ * - If the value is lower than the minimum, use the minimum.
+ * - If the value is higher than the maximum, use the maximum.
+ * - If the variable has steps, round the value to the nearest step.
+ */
+static void CheckValue(variable_t *var, vlc_value_t *val)
+{
+    /* Check that our variable is within the bounds */
+    switch (var->i_type & VLC_VAR_TYPE)
+    {
+        case VLC_VAR_INTEGER:
+            if (val->i_int < var->min.i_int)
+               val->i_int = var->min.i_int;
+            if (val->i_int > var->max.i_int)
+                val->i_int = var->max.i_int;
+            if (var->step.i_int != 0 && (val->i_int % var->step.i_int))
+            {
+                if (val->i_int > 0)
+                    val->i_int = (val->i_int + (var->step.i_int / 2))
+                                 / var->step.i_int * var->step.i_int;
+                else
+                    val->i_int = (val->i_int - (var->step.i_int / 2))
+                                 / var->step.i_int * var->step.i_int;
+            }
+            break;
+
+        case VLC_VAR_FLOAT:
+            if (isless(val->f_float, var->min.f_float))
+                val->f_float = var->min.f_float;
+            if (isgreater(val->f_float, var->max.f_float))
+                val->f_float = var->max.f_float;
+            if (var->step.f_float != 0.f)
+                val->f_float = var->step.f_float
+                              * roundf(val->f_float / var->step.f_float);
+            break;
+    }
+}
+
+/**
+ * Waits until the variable is inactive (i.e. not executing a callback)
+ */
+static void WaitUnused(vlc_object_t *obj, variable_t *var)
+{
+    vlc_object_internals_t *priv = vlc_internals(obj);
+
+    mutex_cleanup_push(&priv->var_lock);
+    while (var->b_incallback)
+        vlc_cond_wait(&priv->var_wait, &priv->var_lock);
+    vlc_cleanup_pop();
+}
+
+static void TriggerCallback(vlc_object_t *obj, variable_t *var,
+                            const char *name, vlc_value_t prev)
+{
+    assert(obj != NULL);
+
+    size_t count = var->value_callbacks.i_entries;
+    if (count == 0)
+        return;
+
+    callback_entry_t *entries = var->value_callbacks.p_entries;
+    vlc_object_internals_t *priv = vlc_internals(obj);
+
+    assert(!var->b_incallback);
+    var->b_incallback = true;
+    vlc_mutex_unlock(&priv->var_lock);
+
+    for (size_t i = 0; i < count; i++)
+        entries[i].pf_value_callback(obj, name, prev, var->val,
+                                     entries[i].p_data);
+
+    vlc_mutex_lock(&priv->var_lock);
+    var->b_incallback = false;
+    vlc_cond_broadcast(&priv->var_wait);
+}
+
+static void TriggerListCallback(vlc_object_t *obj, variable_t *var,
+                                const char *name, int action, vlc_value_t *val)
+{
+    assert(obj != NULL);
+
+    size_t count = var->list_callbacks.i_entries;
+    if (count == 0)
+        return;
+
+    callback_entry_t *entries = var->list_callbacks.p_entries;
+    vlc_object_internals_t *priv = vlc_internals(obj);
+
+    assert(!var->b_incallback);
+    var->b_incallback = true;
+    vlc_mutex_unlock(&priv->var_lock);
+
+    for (size_t i = 0; i < count; i++)
+        entries[i].pf_list_callback(obj, name, action, val,
+                                      entries[i].p_data);
+
+    vlc_mutex_lock(&priv->var_lock);
+    var->b_incallback = false;
+    vlc_cond_broadcast(&priv->var_wait);
 }
 
 #undef var_Create
@@ -221,15 +310,13 @@ int var_Create( vlc_object_t *p_this, const char *psz_name, int i_type )
 
     p_var->i_usage = 1;
 
-    p_var->i_default = -1;
     p_var->choices.i_count = 0;
     p_var->choices.p_values = NULL;
     p_var->choices_text.i_count = 0;
     p_var->choices_text.p_values = NULL;
 
     p_var->b_incallback = false;
-    p_var->i_entries = 0;
-    p_var->p_entries = NULL;
+    p_var->value_callbacks = (callback_table_t){ 0, NULL };
 
     /* Always initialize the variable, even if it is a list variable; this
      * will lead to errors if the variable is not initialized, but it will
@@ -243,6 +330,8 @@ int var_Create( vlc_object_t *p_this, const char *psz_name, int i_type )
         case VLC_VAR_INTEGER:
             p_var->ops = &int_ops;
             p_var->val.i_int = 0;
+            p_var->min.i_int = INT64_MIN;
+            p_var->max.i_int = INT64_MAX;
             break;
         case VLC_VAR_STRING:
             p_var->ops = &string_ops;
@@ -250,11 +339,9 @@ int var_Create( vlc_object_t *p_this, const char *psz_name, int i_type )
             break;
         case VLC_VAR_FLOAT:
             p_var->ops = &float_ops;
-            p_var->val.f_float = 0.0;
-            break;
-        case VLC_VAR_TIME:
-            p_var->ops = &time_ops;
-            p_var->val.i_time = 0;
+            p_var->val.f_float = 0.f;
+            p_var->min.f_float = -FLT_MAX;
+            p_var->max.f_float = FLT_MAX;
             break;
         case VLC_VAR_COORDS:
             p_var->ops = &coords_ops;
@@ -268,25 +355,11 @@ int var_Create( vlc_object_t *p_this, const char *psz_name, int i_type )
             p_var->ops = &void_ops;
             break;
         default:
-            assert (0);
+            vlc_assert_unreachable ();
     }
 
-    if( (i_type & VLC_VAR_DOINHERIT)
-     && var_Inherit( p_this, psz_name, i_type, &p_var->val ) == 0 )
-    {
-        if( i_type & VLC_VAR_HASCHOICE )
-        {
-            /* We must add the inherited value to our choice list */
-            p_var->i_default = 0;
-
-            INSERT_ELEM( p_var->choices.p_values, p_var->choices.i_count,
-                         0, p_var->val );
-            INSERT_ELEM( p_var->choices_text.p_values,
-                         p_var->choices_text.i_count, 0, p_var->val );
-            p_var->ops->pf_dup( &p_var->choices.p_values[0] );
-            p_var->choices_text.p_values[0].psz_string = NULL;
-        }
-    }
+    if (i_type & VLC_VAR_DOINHERIT)
+        var_Inherit(p_this, psz_name, i_type, &p_var->val);
 
     vlc_object_internals_t *p_priv = vlc_internals( p_this );
     variable_t **pp_var, *p_oldvar;
@@ -303,7 +376,7 @@ int var_Create( vlc_object_t *p_this, const char *psz_name, int i_type )
     {
         assert (((i_type ^ p_oldvar->i_type) & VLC_VAR_CLASS) == 0);
         p_oldvar->i_usage++;
-        p_oldvar->i_type |= i_type & (VLC_VAR_ISCOMMAND|VLC_VAR_HASCHOICE);
+        p_oldvar->i_type |= i_type & VLC_VAR_ISCOMMAND;
     }
     vlc_mutex_unlock( &p_priv->var_lock );
 
@@ -313,7 +386,6 @@ int var_Create( vlc_object_t *p_this, const char *psz_name, int i_type )
     return ret;
 }
 
-#undef var_Destroy
 /**
  * Destroy a vlc variable
  *
@@ -323,7 +395,7 @@ int var_Create( vlc_object_t *p_this, const char *psz_name, int i_type )
  * \param p_this The object that holds the variable
  * \param psz_name The name of the variable
  */
-int var_Destroy( vlc_object_t *p_this, const char *psz_name )
+void (var_Destroy)(vlc_object_t *p_this, const char *psz_name)
 {
     variable_t *p_var;
 
@@ -331,26 +403,24 @@ int var_Destroy( vlc_object_t *p_this, const char *psz_name )
 
     vlc_object_internals_t *p_priv = vlc_internals( p_this );
 
-    vlc_mutex_lock( &p_priv->var_lock );
-
     p_var = Lookup( p_this, psz_name );
     if( p_var == NULL )
+        msg_Dbg( p_this, "attempt to destroy nonexistent variable \"%s\"",
+                 psz_name );
+    else if( --p_var->i_usage == 0 )
     {
-        vlc_mutex_unlock( &p_priv->var_lock );
-        return VLC_ENOVAR;
-    }
-
-    WaitUnused( p_this, p_var );
-
-    if( --p_var->i_usage == 0 )
+        assert(!p_var->b_incallback);
         tdelete( p_var, &p_priv->var_root, varcmp );
+    }
     else
+    {
+        assert(p_var->i_usage != -1u);
         p_var = NULL;
+    }
     vlc_mutex_unlock( &p_priv->var_lock );
 
     if( p_var != NULL )
         Destroy( p_var );
-    return VLC_SUCCESS;
 }
 
 static void CleanupVar( void *var )
@@ -388,8 +458,6 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
 
     vlc_object_internals_t *p_priv = vlc_internals( p_this );
 
-    vlc_mutex_lock( &p_priv->var_lock );
-
     p_var = Lookup( p_this, psz_name );
     if( p_var == NULL )
     {
@@ -399,68 +467,54 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
 
     switch( i_action )
     {
-        case VLC_VAR_SETMIN:
-            if( p_var->i_type & VLC_VAR_HASMIN )
-            {
-                p_var->ops->pf_free( &p_var->min );
-            }
-            p_var->i_type |= VLC_VAR_HASMIN;
-            p_var->min = *p_val;
-            p_var->ops->pf_dup( &p_var->min );
-            CheckValue( p_var, &p_var->val );
-            break;
         case VLC_VAR_GETMIN:
-            if( p_var->i_type & VLC_VAR_HASMIN )
-                *p_val = p_var->min;
-            else
-                ret = VLC_EGENERIC;
-            break;
-        case VLC_VAR_SETMAX:
-            if( p_var->i_type & VLC_VAR_HASMAX )
-            {
-                p_var->ops->pf_free( &p_var->max );
-            }
-            p_var->i_type |= VLC_VAR_HASMAX;
-            p_var->max = *p_val;
-            p_var->ops->pf_dup( &p_var->max );
-            CheckValue( p_var, &p_var->val );
+            *p_val = p_var->min;
             break;
         case VLC_VAR_GETMAX:
-            if( p_var->i_type & VLC_VAR_HASMAX )
-                *p_val = p_var->max;
-            else
-                ret = VLC_EGENERIC;
+            *p_val = p_var->max;
+            break;
+        case VLC_VAR_SETMINMAX:
+            assert(p_var->ops->pf_free == FreeDummy);
+            p_var->min = *p_val;
+            p_var->max = *p_val2;
             break;
         case VLC_VAR_SETSTEP:
-            if( p_var->i_type & VLC_VAR_HASSTEP )
-            {
-                p_var->ops->pf_free( &p_var->step );
-            }
-            p_var->i_type |= VLC_VAR_HASSTEP;
+            assert(p_var->ops->pf_free == FreeDummy);
             p_var->step = *p_val;
-            p_var->ops->pf_dup( &p_var->step );
             CheckValue( p_var, &p_var->val );
             break;
         case VLC_VAR_GETSTEP:
-            if( p_var->i_type & VLC_VAR_HASSTEP )
+            switch (p_var->i_type & VLC_VAR_TYPE)
+            {
+                case VLC_VAR_INTEGER:
+                    if (p_var->step.i_int == 0)
+                        ret = VLC_EGENERIC;
+                    break;
+                case VLC_VAR_FLOAT:
+                    if (p_var->step.f_float == 0.f)
+                        ret = VLC_EGENERIC;
+                    break;
+                default:
+                    ret = VLC_EGENERIC;
+            }
+            if (ret == VLC_SUCCESS)
                 *p_val = p_var->step;
-            else
-                ret = VLC_EGENERIC;
             break;
         case VLC_VAR_ADDCHOICE:
         {
             int i = p_var->choices.i_count;
 
-            INSERT_ELEM( p_var->choices.p_values, p_var->choices.i_count,
-                         i, *p_val );
-            INSERT_ELEM( p_var->choices_text.p_values,
-                         p_var->choices_text.i_count, i, *p_val );
+            TAB_APPEND(p_var->choices.i_count,
+                       p_var->choices.p_values, *p_val);
+            assert(i == p_var->choices_text.i_count);
+            TAB_APPEND(p_var->choices_text.i_count,
+                       p_var->choices_text.p_values, *p_val);
             p_var->ops->pf_dup( &p_var->choices.p_values[i] );
             p_var->choices_text.p_values[i].psz_string =
                 ( p_val2 && p_val2->psz_string ) ?
                 strdup( p_val2->psz_string ) : NULL;
 
-            CheckValue( p_var, &p_var->val );
+            TriggerListCallback(p_this, p_var, psz_name, VLC_VAR_ADDCHOICE, p_val);
             break;
         }
         case VLC_VAR_DELCHOICE:
@@ -478,18 +532,13 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
                 return VLC_EGENERIC;
             }
 
-            if( p_var->i_default > i )
-                p_var->i_default--;
-            else if( p_var->i_default == i )
-                p_var->i_default = -1;
-
             p_var->ops->pf_free( &p_var->choices.p_values[i] );
             free( p_var->choices_text.p_values[i].psz_string );
-            REMOVE_ELEM( p_var->choices.p_values, p_var->choices.i_count, i );
-            REMOVE_ELEM( p_var->choices_text.p_values,
-                         p_var->choices_text.i_count, i );
+            TAB_ERASE(p_var->choices.i_count, p_var->choices.p_values, i);
+            TAB_ERASE(p_var->choices_text.i_count,
+                      p_var->choices_text.p_values, i);
 
-            CheckValue( p_var, &p_var->val );
+            TriggerListCallback(p_this, p_var, psz_name, VLC_VAR_DELCHOICE, p_val);
             break;
         }
         case VLC_VAR_CHOICESCOUNT:
@@ -508,24 +557,8 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
             p_var->choices.p_values = NULL;
             p_var->choices_text.i_count = 0;
             p_var->choices_text.p_values = NULL;
-            p_var->i_default = -1;
+            TriggerListCallback(p_this, p_var, psz_name, VLC_VAR_CLEARCHOICES, NULL);
             break;
-        case VLC_VAR_SETDEFAULT:
-        {
-            int i;
-            /* FIXME: the list is sorted, dude. Use something cleverer. */
-            for( i = 0 ; i < p_var->choices.i_count ; i++ )
-                if( p_var->ops->pf_cmp( p_var->choices.p_values[i], *p_val ) == 0 )
-                    break;
-
-            if( i == p_var->choices.i_count )
-                /* Not found */
-                break;
-
-            p_var->i_default = i;
-            CheckValue( p_var, &p_var->val );
-            break;
-        }
         case VLC_VAR_SETVALUE:
             /* Duplicate data if needed */
             newval = *p_val;
@@ -540,36 +573,28 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
             p_var->ops->pf_free( &oldval );
             break;
         case VLC_VAR_GETCHOICES:
-        case VLC_VAR_GETLIST:
-            p_val->p_list = malloc( sizeof(vlc_list_t) );
-            if( p_val2 ) p_val2->p_list = malloc( sizeof(vlc_list_t) );
-            if( p_var->choices.i_count )
-            {
-                p_val->p_list->p_values = malloc( p_var->choices.i_count
-                                                  * sizeof(vlc_value_t) );
-                p_val->p_list->pi_types = malloc( p_var->choices.i_count
-                                                  * sizeof(int) );
-                if( p_val2 )
-                {
-                    p_val2->p_list->p_values =
-                        malloc( p_var->choices.i_count * sizeof(vlc_value_t) );
-                    p_val2->p_list->pi_types =
-                        malloc( p_var->choices.i_count * sizeof(int) );
-                }
-            }
+            p_val->p_list = xmalloc( sizeof(vlc_list_t) );
+            p_val->p_list->p_values =
+                xmalloc( p_var->choices.i_count * sizeof(vlc_value_t) );
+            p_val->p_list->i_type = p_var->i_type;
             p_val->p_list->i_count = p_var->choices.i_count;
-            if( p_val2 ) p_val2->p_list->i_count = p_var->choices.i_count;
+            if( p_val2 )
+            {
+                p_val2->p_list = xmalloc( sizeof(vlc_list_t) );
+                p_val2->p_list->p_values =
+                    xmalloc( p_var->choices.i_count * sizeof(vlc_value_t) );
+                p_val2->p_list->i_type = VLC_VAR_STRING;
+                p_val2->p_list->i_count = p_var->choices.i_count;
+            }
             for( int i = 0 ; i < p_var->choices.i_count ; i++ )
             {
                 p_val->p_list->p_values[i] = p_var->choices.p_values[i];
-                p_val->p_list->pi_types[i] = p_var->i_type;
                 p_var->ops->pf_dup( &p_val->p_list->p_values[i] );
                 if( p_val2 )
                 {
                     p_val2->p_list->p_values[i].psz_string =
                         p_var->choices_text.p_values[i].psz_string ?
                     strdup(p_var->choices_text.p_values[i].psz_string) : NULL;
-                    p_val2->p_list->pi_types[i] = VLC_VAR_STRING;
                 }
             }
             break;
@@ -606,7 +631,6 @@ int var_Change( vlc_object_t *p_this, const char *psz_name,
 int var_GetAndSet( vlc_object_t *p_this, const char *psz_name, int i_action,
                    vlc_value_t *p_val )
 {
-    int i_ret;
     variable_t *p_var;
     vlc_value_t oldval;
 
@@ -615,7 +639,6 @@ int var_GetAndSet( vlc_object_t *p_this, const char *psz_name, int i_action,
 
     vlc_object_internals_t *p_priv = vlc_internals( p_this );
 
-    vlc_mutex_lock( &p_priv->var_lock );
     p_var = Lookup( p_this, psz_name );
     if( p_var == NULL )
     {
@@ -660,11 +683,10 @@ int var_GetAndSet( vlc_object_t *p_this, const char *psz_name, int i_action,
     *p_val = p_var->val;
 
     /* Deal with callbacks.*/
-    i_ret = TriggerCallback( p_this, p_var, psz_name, oldval );
+    TriggerCallback( p_this, p_var, psz_name, oldval );
 
     vlc_mutex_unlock( &p_priv->var_lock );
-
-    return i_ret;
+    return VLC_SUCCESS;
 }
 
 #undef var_Type
@@ -684,12 +706,13 @@ int var_Type( vlc_object_t *p_this, const char *psz_name )
 
     vlc_object_internals_t *p_priv = vlc_internals( p_this );
 
-    vlc_mutex_lock( &p_priv->var_lock );
-
     p_var = Lookup( p_this, psz_name );
     if( p_var != NULL )
+    {
         i_type = p_var->i_type;
-
+        if( p_var->choices.i_count > 0 )
+            i_type |= VLC_VAR_HASCHOICE;
+    }
     vlc_mutex_unlock( &p_priv->var_lock );
 
     return i_type;
@@ -699,15 +722,12 @@ int var_Type( vlc_object_t *p_this, const char *psz_name )
 int var_SetChecked( vlc_object_t *p_this, const char *psz_name,
                     int expected_type, vlc_value_t val )
 {
-    int i_ret = VLC_SUCCESS;
     variable_t *p_var;
     vlc_value_t oldval;
 
     assert( p_this );
 
     vlc_object_internals_t *p_priv = vlc_internals( p_this );
-
-    vlc_mutex_lock( &p_priv->var_lock );
 
     p_var = Lookup( p_this, psz_name );
     if( p_var == NULL )
@@ -735,14 +755,13 @@ int var_SetChecked( vlc_object_t *p_this, const char *psz_name,
     p_var->val = val;
 
     /* Deal with callbacks */
-    i_ret = TriggerCallback( p_this, p_var, psz_name, oldval );
+    TriggerCallback( p_this, p_var, psz_name, oldval );
 
     /* Free data if needed */
     p_var->ops->pf_free( &oldval );
 
     vlc_mutex_unlock( &p_priv->var_lock );
-
-    return i_ret;
+    return VLC_SUCCESS;
 }
 
 #undef var_Set
@@ -767,8 +786,6 @@ int var_GetChecked( vlc_object_t *p_this, const char *psz_name,
     vlc_object_internals_t *p_priv = vlc_internals( p_this );
     variable_t *p_var;
     int err = VLC_SUCCESS;
-
-    vlc_mutex_lock( &p_priv->var_lock );
 
     p_var = Lookup( p_this, psz_name );
     if( p_var != NULL )
@@ -804,6 +821,42 @@ int var_Get( vlc_object_t *p_this, const char *psz_name, vlc_value_t *p_val )
     return var_GetChecked( p_this, psz_name, 0, p_val );
 }
 
+typedef enum
+{
+    vlc_value_callback,
+    vlc_list_callback
+} vlc_callback_type_t;
+
+static void AddCallback( vlc_object_t *p_this, const char *psz_name,
+                        callback_entry_t entry, vlc_callback_type_t i_type )
+{
+    variable_t *p_var;
+
+    assert( p_this );
+
+    vlc_object_internals_t *p_priv = vlc_internals( p_this );
+
+    p_var = Lookup( p_this, psz_name );
+    if( p_var == NULL )
+    {
+        vlc_mutex_unlock( &p_priv->var_lock );
+        msg_Err( p_this, "cannot add callback %p to nonexistent variable '%s'",
+                 entry.p_callback, psz_name );
+        return;
+    }
+
+    WaitUnused( p_this, p_var );
+
+    callback_table_t *p_table;
+    if (i_type == vlc_value_callback)
+        p_table = &p_var->value_callbacks;
+    else
+        p_table = &p_var->list_callbacks;
+    TAB_APPEND(p_table->i_entries, p_table->p_entries, entry);
+
+    vlc_mutex_unlock( &p_priv->var_lock );
+}
+
 #undef var_AddCallback
 /**
  * Register a callback in a variable
@@ -821,50 +874,18 @@ int var_Get( vlc_object_t *p_this, const char *psz_name, vlc_value_t *p_val )
  *          the variable. Use proper locking. This thread may not have much
  *          time to spare, so keep callback functions short.
  */
-int var_AddCallback( vlc_object_t *p_this, const char *psz_name,
-                     vlc_callback_t pf_callback, void *p_data )
+void var_AddCallback( vlc_object_t *p_this, const char *psz_name,
+                      vlc_callback_t pf_callback, void *p_data )
 {
-    variable_t *p_var;
     callback_entry_t entry;
-
-    assert( p_this );
-
-    vlc_object_internals_t *p_priv = vlc_internals( p_this );
-
-    entry.pf_callback = pf_callback;
+    entry.pf_value_callback = pf_callback;
     entry.p_data = p_data;
 
-    vlc_mutex_lock( &p_priv->var_lock );
-
-    p_var = Lookup( p_this, psz_name );
-    if( p_var == NULL )
-    {
-        vlc_mutex_unlock( &p_priv->var_lock );
-        msg_Err( p_this, "cannot add callback %p to nonexistent "
-                         "variable '%s'", pf_callback, psz_name );
-        return VLC_ENOVAR;
-    }
-
-    WaitUnused( p_this, p_var );
-    INSERT_ELEM( p_var->p_entries,
-                 p_var->i_entries,
-                 p_var->i_entries,
-                 entry );
-
-    vlc_mutex_unlock( &p_priv->var_lock );
-
-    return VLC_SUCCESS;
+    AddCallback(p_this, psz_name, entry, vlc_value_callback);
 }
 
-#undef var_DelCallback
-/**
- * Remove a callback from a variable
- *
- * pf_callback and p_data have to be given again, because different objects
- * might have registered the same callback function.
- */
-int var_DelCallback( vlc_object_t *p_this, const char *psz_name,
-                     vlc_callback_t pf_callback, void *p_data )
+static void DelCallback( vlc_object_t *p_this, const char *psz_name,
+                         callback_entry_t entry, vlc_callback_type_t i_type )
 {
     int i_entry;
     variable_t *p_var;
@@ -876,26 +897,32 @@ int var_DelCallback( vlc_object_t *p_this, const char *psz_name,
 
     vlc_object_internals_t *p_priv = vlc_internals( p_this );
 
-    vlc_mutex_lock( &p_priv->var_lock );
-
     p_var = Lookup( p_this, psz_name );
     if( p_var == NULL )
     {
         vlc_mutex_unlock( &p_priv->var_lock );
-        return VLC_ENOVAR;
+        msg_Err( p_this, "cannot delete callback %p from nonexistent "
+                 "variable '%s'", entry.p_callback, psz_name );
+        return;
     }
 
     WaitUnused( p_this, p_var );
 
-    for( i_entry = p_var->i_entries ; i_entry-- ; )
+    callback_table_t *p_table;
+    if (i_type == vlc_value_callback)
+        p_table = &p_var->value_callbacks;
+    else
+        p_table = &p_var->list_callbacks;
+
+    for( i_entry = p_table->i_entries ; i_entry-- ; )
     {
-        if( p_var->p_entries[i_entry].pf_callback == pf_callback
-            && p_var->p_entries[i_entry].p_data == p_data )
+        if( p_table->p_entries[i_entry].p_callback == entry.p_callback
+            && p_table->p_entries[i_entry].p_data == entry.p_data )
         {
             break;
         }
 #ifndef NDEBUG
-        else if( p_var->p_entries[i_entry].pf_callback == pf_callback )
+        else if( p_table->p_entries[i_entry].p_callback == entry.p_callback )
             b_found_similar = true;
 #endif
     }
@@ -906,17 +933,32 @@ int var_DelCallback( vlc_object_t *p_this, const char *psz_name,
         if( b_found_similar )
             fprintf( stderr, "Calling var_DelCallback for '%s' with the same "
                              "function but not the same data.", psz_name );
-        assert( 0 );
+        vlc_assert_unreachable();
 #endif
         vlc_mutex_unlock( &p_priv->var_lock );
-        return VLC_EGENERIC;
+        return;
     }
 
-    REMOVE_ELEM( p_var->p_entries, p_var->i_entries, i_entry );
+    TAB_ERASE(p_table->i_entries, p_table->p_entries, i_entry);
 
     vlc_mutex_unlock( &p_priv->var_lock );
+}
 
-    return VLC_SUCCESS;
+#undef var_DelCallback
+/**
+ * Remove a callback from a variable
+ *
+ * pf_callback and p_data have to be given again, because different objects
+ * might have registered the same callback function.
+ */
+void var_DelCallback( vlc_object_t *p_this, const char *psz_name,
+                      vlc_callback_t pf_callback, void *p_data )
+{
+    callback_entry_t entry;
+    entry.pf_value_callback = pf_callback;
+    entry.p_data = p_data;
+
+    DelCallback(p_this, psz_name, entry, vlc_value_callback);
 }
 
 #undef var_TriggerCallback
@@ -926,32 +968,54 @@ int var_DelCallback( vlc_object_t *p_this, const char *psz_name,
  * \param p_this The object that hold the variable
  * \param psz_name The name of the variable
  */
-int var_TriggerCallback( vlc_object_t *p_this, const char *psz_name )
+void var_TriggerCallback( vlc_object_t *p_this, const char *psz_name )
 {
-    int i_ret;
-    variable_t *p_var;
-
-    assert( p_this );
-
     vlc_object_internals_t *p_priv = vlc_internals( p_this );
-
-    vlc_mutex_lock( &p_priv->var_lock );
-
-    p_var = Lookup( p_this, psz_name );
-    if( p_var == NULL )
+    variable_t *p_var = Lookup( p_this, psz_name );
+    if( p_var != NULL )
     {
-        vlc_mutex_unlock( &p_priv->var_lock );
-        return VLC_ENOVAR;
+        WaitUnused( p_this, p_var );
+
+        /* Deal with callbacks. Tell we're in a callback, release the lock,
+         * call stored functions, retake the lock. */
+        TriggerCallback( p_this, p_var, psz_name, p_var->val );
     }
-
-    WaitUnused( p_this, p_var );
-
-    /* Deal with callbacks. Tell we're in a callback, release the lock,
-     * call stored functions, retake the lock. */
-    i_ret = TriggerCallback( p_this, p_var, psz_name, p_var->val );
-
     vlc_mutex_unlock( &p_priv->var_lock );
-    return i_ret;
+}
+
+#undef var_AddListCallback
+/**
+ * Register a callback for a list variable
+ *
+ * The callback is triggered when an element is added/removed from the
+ * list or when the list is cleared.
+ *
+ * See var_AddCallback().
+ */
+void var_AddListCallback( vlc_object_t *p_this, const char *psz_name,
+                          vlc_list_callback_t pf_callback, void *p_data )
+{
+    callback_entry_t entry;
+    entry.pf_list_callback = pf_callback;
+    entry.p_data = p_data;
+
+    AddCallback(p_this, psz_name, entry, vlc_list_callback);
+}
+
+#undef var_DelListCallback
+/**
+ * Remove a callback from a list variable
+ *
+ * See var_DelCallback().
+ */
+void var_DelListCallback( vlc_object_t *p_this, const char *psz_name,
+                          vlc_list_callback_t pf_callback, void *p_data )
+{
+    callback_entry_t entry;
+    entry.pf_list_callback = pf_callback;
+    entry.p_data = p_data;
+
+    DelCallback(p_this, psz_name, entry, vlc_list_callback);
 }
 
 /** Parse a stringified option
@@ -990,7 +1054,7 @@ void var_OptionParse( vlc_object_t *p_obj, const char *psz_option,
     if( psz_value != NULL )
         *psz_value++ = '\0';
 
-    i_type = config_GetType( p_obj, psz_name );
+    i_type = config_GetType( psz_name );
     if( !i_type && !psz_value )
     {
         /* check for "no-foo" or "nofoo" */
@@ -1005,7 +1069,7 @@ void var_OptionParse( vlc_object_t *p_obj, const char *psz_option,
         else goto cleanup;           /* Option doesn't exist */
 
         b_isno = true;
-        i_type = config_GetType( p_obj, psz_name );
+        i_type = config_GetType( psz_name );
     }
     if( !i_type ) goto cleanup; /* Option doesn't exist */
 
@@ -1022,7 +1086,7 @@ void var_OptionParse( vlc_object_t *p_obj, const char *psz_option,
     }
 
     /* Create the variable in the input object.
-     * Children of the input object will be able to retreive this value
+     * Children of the input object will be able to retrieve this value
      * thanks to the inheritance property of the object variables. */
     var_Create( p_obj, psz_name, i_type );
 
@@ -1057,7 +1121,7 @@ cleanup:
 #undef var_LocationParse
 /**
  * Parses a set of colon-separated or semicolon-separated
- * <variable name>=<value> pairs.
+ * <code>name=value</code> pairs.
  * Some access (or access_demux) plugins uses this scheme
  * in media resource location.
  * @note Only trusted/safe variables are allowed. This is intended.
@@ -1101,101 +1165,6 @@ int var_LocationParse (vlc_object_t *obj, const char *mrl, const char *pref)
 }
 
 /**
- * Waits until the variable is inactive (i.e. not executing a callback)
- */
-static void WaitUnused( vlc_object_t *p_this, variable_t *p_var )
-{
-    vlc_object_internals_t *p_priv = vlc_internals( p_this );
-
-    mutex_cleanup_push( &p_priv->var_lock );
-    while( p_var->b_incallback )
-        vlc_cond_wait( &p_priv->var_wait, &p_priv->var_lock );
-    vlc_cleanup_pop( );
-}
-
-/*****************************************************************************
- * CheckValue: check that a value is valid wrt. a variable
- *****************************************************************************
- * This function checks p_val's value against p_var's limitations such as
- * minimal and maximal value, step, in-list position, and modifies p_val if
- * necessary.
- ****************************************************************************/
-static void CheckValue ( variable_t *p_var, vlc_value_t *p_val )
-{
-    /* Check that our variable is in the list */
-    if( p_var->i_type & VLC_VAR_HASCHOICE && p_var->choices.i_count )
-    {
-        int i;
-
-        /* This list is not sorted so go throug it (this is a small list) */
-        for( i = p_var->choices.i_count ; i-- ; )
-        {
-            if( p_var->ops->pf_cmp( *p_val, p_var->choices.p_values[i] ) == 0 )
-            {
-                break;
-            }
-        }
-
-        /* If not found, change it to anything vaguely valid */
-        if( i < 0 )
-        {
-            /* Free the old variable, get the new one, dup it */
-            p_var->ops->pf_free( p_val );
-            *p_val = p_var->choices.p_values[p_var->i_default >= 0
-                                          ? p_var->i_default : 0 ];
-            p_var->ops->pf_dup( p_val );
-        }
-    }
-
-    /* Check that our variable is within the bounds */
-    switch( p_var->i_type & VLC_VAR_TYPE )
-    {
-        case VLC_VAR_INTEGER:
-            if( p_var->i_type & VLC_VAR_HASSTEP && p_var->step.i_int
-                 && (p_val->i_int % p_var->step.i_int) )
-            {
-                p_val->i_int = (p_val->i_int + (p_var->step.i_int / 2))
-                               / p_var->step.i_int * p_var->step.i_int;
-            }
-            if( p_var->i_type & VLC_VAR_HASMIN
-                 && p_val->i_int < p_var->min.i_int )
-            {
-                p_val->i_int = p_var->min.i_int;
-            }
-            if( p_var->i_type & VLC_VAR_HASMAX
-                 && p_val->i_int > p_var->max.i_int )
-            {
-                p_val->i_int = p_var->max.i_int;
-            }
-            break;
-        case VLC_VAR_FLOAT:
-            if( p_var->i_type & VLC_VAR_HASSTEP && p_var->step.f_float )
-            {
-                float f_round = p_var->step.f_float * (float)(int)( 0.5 +
-                                        p_val->f_float / p_var->step.f_float );
-                if( p_val->f_float != f_round )
-                {
-                    p_val->f_float = f_round;
-                }
-            }
-            if( p_var->i_type & VLC_VAR_HASMIN
-                 && p_val->f_float < p_var->min.f_float )
-            {
-                p_val->f_float = p_var->min.f_float;
-            }
-            if( p_var->i_type & VLC_VAR_HASMAX
-                 && p_val->f_float > p_var->max.f_float )
-            {
-                p_val->f_float = p_var->max.f_float;
-            }
-            break;
-        case VLC_VAR_TIME:
-            /* FIXME: TODO */
-            break;
-    }
-}
-
-/**
  * Finds the value of a variable. If the specified object does not hold a
  * variable with the specified name, try the parent object, and iterate until
  * the top of the tree. If no match is found, the value is read from the
@@ -1205,7 +1174,7 @@ int var_Inherit( vlc_object_t *p_this, const char *psz_name, int i_type,
                  vlc_value_t *p_val )
 {
     i_type &= VLC_VAR_CLASS;
-    for( vlc_object_t *obj = p_this; obj != NULL; obj = obj->p_parent )
+    for( vlc_object_t *obj = p_this; obj != NULL; obj = obj->obj.parent )
     {
         if( var_GetChecked( obj, psz_name, i_type, p_val ) == VLC_SUCCESS )
             return VLC_SUCCESS;
@@ -1225,10 +1194,10 @@ int var_Inherit( vlc_object_t *p_this, const char *psz_name, int i_type,
             p_val->i_int = config_GetInt( p_this, psz_name );
             break;
         case VLC_VAR_BOOL:
-            p_val->b_bool = config_GetInt( p_this, psz_name );
+            p_val->b_bool = config_GetInt( p_this, psz_name ) > 0;
             break;
         default:
-            assert(0);
+            vlc_assert_unreachable();
         case VLC_VAR_ADDRESS:
             return VLC_ENOOBJ;
     }
@@ -1247,83 +1216,67 @@ int (var_InheritURational)(vlc_object_t *object,
                            unsigned *num, unsigned *den,
                            const char *var)
 {
-    /* */
-    *num = 0;
-    *den = 0;
-
-    /* */
-    char *tmp = var_InheritString(object, var);
-    if (!tmp)
+    char *str = var_InheritString(object, var);
+    if (str == NULL)
         goto error;
 
-    char *next;
-    unsigned n = strtol(tmp,  &next, 0);
-    unsigned d = strtol(*next ? &next[1] : "0", NULL, 0);
+    char *sep;
+    unsigned n = strtoul(str, &sep, 10);
+    unsigned d;
 
-    if (*next == '.') {
-        /* Interpret as a float number */
-        double r = us_atof(tmp);
-        double c = ceil(r);
-        if (c >= UINT_MAX)
-            goto error;
-        unsigned m = c;
-        if (m > 0) {
-            d = UINT_MAX / m;
-            n = r * d;
-        } else {
-            n = 0;
-            d = 0;
+    switch (*sep) {
+        case '\0':
+            /* Decimal integer */
+            d = 1;
+            break;
+
+        case ':':
+        case '/':
+            /* Decimal fraction */
+            d = strtoul(sep + 1, &sep, 10);
+            if (*sep != '\0')
+                goto error;
+            break;
+
+        case '.': {
+            /* Decimal number */
+            unsigned char c;
+
+            d = 1;
+            while ((c = *(++sep)) != '\0') {
+                c -= '0';
+
+                if (c >= 10)
+                    goto error;
+
+                n = n * 10 + c;
+                d *= 10;
+            }
+            break;
         }
-    } else if ( *next == '\0' ) {
-        /* plain integer given */
-        *num = n;
-        *den = 1;
+
+        default:
+            goto error;
     }
 
-    if (n > 0 && d > 0)
+    free(str);
+
+    if (n == 0) {
+        *num = 0;
+        *den = d ? 1 : 0;
+    } else if (d == 0) {
+        *num = 1;
+        *den = 0;
+    } else
         vlc_ureduce(num, den, n, d, 0);
 
-    free(tmp);
     return VLC_SUCCESS;
 
 error:
-    free(tmp);
+    free(str);
+    *num = 0;
+    *den = 0;
     return VLC_EGENERIC;
-}
-
-/**********************************************************************
- * Trigger the callbacks.
- * Tell we're in a callback, release the lock, call stored functions,
- * retake the lock.
- **********************************************************************/
-static int TriggerCallback( vlc_object_t *p_this, variable_t *p_var,
-                            const char *psz_name, vlc_value_t oldval )
-{
-    assert( p_this );
-
-    int i_entries = p_var->i_entries;
-    if( i_entries == 0 )
-        return VLC_SUCCESS;
-
-    callback_entry_t *p_entries = p_var->p_entries;
-    vlc_object_internals_t *p_priv = vlc_internals( p_this );
-
-    assert( !p_var->b_incallback );
-    p_var->b_incallback = true;
-    vlc_mutex_unlock( &p_priv->var_lock );
-
-    /* The real calls */
-    for( ; i_entries-- ; )
-    {
-        p_entries[i_entries].pf_callback( p_this, psz_name, oldval, p_var->val,
-                                          p_entries[i_entries].p_data );
-    }
-
-    vlc_mutex_lock( &p_priv->var_lock );
-    p_var->b_incallback = false;
-    vlc_cond_broadcast( &p_priv->var_wait );
-
-    return VLC_SUCCESS;
 }
 
 /**
@@ -1333,16 +1286,127 @@ static int TriggerCallback( vlc_object_t *p_this, variable_t *p_var,
  */
 void var_FreeList( vlc_value_t *p_val, vlc_value_t *p_val2 )
 {
-    FreeList( p_val );
-    if( p_val2 && p_val2->p_list )
+    switch( p_val->p_list->i_type & VLC_VAR_CLASS )
     {
+        case VLC_VAR_STRING:
+            for( int i = 0; i < p_val->p_list->i_count; i++ )
+                free( p_val->p_list->p_values[i].psz_string );
+            break;
+    }
+
+    free( p_val->p_list->p_values );
+    free( p_val->p_list );
+
+    if( p_val2 != NULL )
+    {
+        assert( p_val2->p_list != NULL );
+        assert( p_val2->p_list->i_type == VLC_VAR_STRING );
+
         for( int i = 0; i < p_val2->p_list->i_count; i++ )
             free( p_val2->p_list->p_values[i].psz_string );
-        if( p_val2->p_list->i_count )
-        {
-            free( p_val2->p_list->p_values );
-            free( p_val2->p_list->pi_types );
-        }
+        free( p_val2->p_list->p_values );
         free( p_val2->p_list );
     }
+}
+
+static void DumpVariable(const void *data, const VISIT which, const int depth)
+{
+    if (which != postorder && which != leaf)
+        return;
+    (void) depth;
+
+    const variable_t *var = *(const variable_t **)data;
+    const char *typename = "unknown";
+
+    switch (var->i_type & VLC_VAR_TYPE)
+    {
+        case VLC_VAR_VOID:     typename = "void";        break;
+        case VLC_VAR_BOOL:     typename = "bool";        break;
+        case VLC_VAR_INTEGER:  typename = "integer";     break;
+        case VLC_VAR_STRING:   typename = "string";      break;
+        case VLC_VAR_FLOAT:    typename = "float";       break;
+        case VLC_VAR_COORDS:   typename = "coordinates"; break;
+        case VLC_VAR_ADDRESS:  typename = "address";     break;
+        default:               typename = "unknown";     break;
+    }
+
+    printf(" *-o \"%s\" (%s", var->psz_name, typename);
+    if (var->psz_text != NULL)
+        printf(", %s", var->psz_text);
+    putchar(')');
+    if (var->i_type & VLC_VAR_HASCHOICE)
+        fputs(", has choices", stdout);
+    if (var->i_type & VLC_VAR_ISCOMMAND)
+        fputs(", command", stdout);
+    if (var->value_callbacks.i_entries)
+        printf(", %d callbacks", var->value_callbacks.i_entries);
+
+    switch (var->i_type & VLC_VAR_CLASS)
+    {
+        case VLC_VAR_VOID:
+            break;
+        case VLC_VAR_BOOL:
+            printf(": %s", var->val.b_bool ? "true" : "false");
+            break;
+        case VLC_VAR_INTEGER:
+            printf(": %"PRId64, var->val.i_int );
+            break;
+        case VLC_VAR_STRING:
+            printf(": \"%s\"", var->val.psz_string );
+            break;
+        case VLC_VAR_FLOAT:
+            printf(": %f", var->val.f_float );
+            break;
+        case VLC_VAR_COORDS:
+            printf(": %"PRId32"x%"PRId32,
+                   var->val.coords.x, var->val.coords.y);
+            break;
+        case VLC_VAR_ADDRESS:
+            printf(": %p", var->val.p_address);
+            break;
+    }
+    putchar('\n');
+}
+
+void DumpVariables(vlc_object_t *obj)
+{
+    vlc_mutex_lock(&vlc_internals(obj)->var_lock);
+    if (vlc_internals(obj)->var_root == NULL)
+        puts(" `-o No variables");
+    else
+        twalk(vlc_internals(obj)->var_root, DumpVariable);
+    vlc_mutex_unlock(&vlc_internals(obj)->var_lock);
+}
+
+static thread_local void *twalk_ctx;
+
+static void TwalkGetNames(const void *data, const VISIT which, const int depth)
+{
+    if (which != postorder && which != leaf)
+        return;
+    (void) depth;
+
+    const variable_t *var = *(const variable_t **)data;
+    DECL_ARRAY(char *) *names = twalk_ctx;
+    char *dup = strdup(var->psz_name);
+    if (dup != NULL)
+        ARRAY_APPEND(*names, dup);
+}
+
+char **var_GetAllNames(vlc_object_t *obj)
+{
+    vlc_object_internals_t *priv = vlc_internals(obj);
+
+    DECL_ARRAY(char *) names;
+    ARRAY_INIT(names);
+
+    twalk_ctx = &names;
+    vlc_mutex_lock(&priv->var_lock);
+    twalk(priv->var_root, TwalkGetNames);
+    vlc_mutex_unlock(&priv->var_lock);
+
+    if (names.i_size == 0)
+        return NULL;
+    ARRAY_APPEND(names, NULL);
+    return names.p_elems;
 }

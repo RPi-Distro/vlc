@@ -2,7 +2,7 @@
  * effects.c : Effects for the visualization system
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 7b09890f32f5d08c5487bafc85bc760dbcf0ebf2 $
+ * $Id: 10e0130bb6e89b9fe4d9db8d3e0d0ff32a32ec46 $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *          Adrien Maglo <magsoft@videolan.org>
@@ -30,8 +30,8 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_vout.h>
-#include <vlc_aout.h>
+#include <vlc_picture.h>
+#include <vlc_block.h>
 
 #include "visual.h"
 #include <math.h>
@@ -146,9 +146,9 @@ static int spectrum_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
     if( p_buffer->i_nb_samples != p_data->i_prev_nb_samples )
     {
         free( p_data->p_prev_s16_buff );
-        p_data->p_prev_s16_buff = malloc( p_buffer->i_nb_samples *
-                                          p_effect->i_nb_chans *
-                                          sizeof(int16_t));
+        p_data->p_prev_s16_buff = vlc_alloc( p_buffer->i_nb_samples *
+                                             p_effect->i_nb_chans,
+                                             sizeof(int16_t));
         p_data->i_prev_nb_samples = p_buffer->i_nb_samples;
         if( !p_data->p_prev_s16_buff )
             return -1;
@@ -169,7 +169,7 @@ static int spectrum_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
         i_nb_bands = 20;
     }
 
-    height = malloc( i_nb_bands * sizeof(int) );
+    height = vlc_alloc( i_nb_bands, sizeof(int) );
     if( !height )
     {
         return -1;
@@ -485,9 +485,9 @@ static int spectrometer_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
     if( p_buffer->i_nb_samples != p_data->i_prev_nb_samples )
     {
         free( p_data->p_prev_s16_buff );
-        p_data->p_prev_s16_buff = malloc( p_buffer->i_nb_samples *
-                                          p_effect->i_nb_chans *
-                                          sizeof(int16_t));
+        p_data->p_prev_s16_buff = vlc_alloc( p_buffer->i_nb_samples *
+                                             p_effect->i_nb_chans,
+                                             sizeof(int16_t));
         p_data->i_prev_nb_samples = p_buffer->i_nb_samples;
         if( !p_data->p_prev_s16_buff )
             return -1;
@@ -518,7 +518,7 @@ static int spectrometer_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
         i_nb_bands = 20;
     }
 
-    height = malloc( i_nb_bands * sizeof(int) );
+    height = vlc_alloc( i_nb_bands, sizeof(int) );
     if( !height)
         return -1;
 
@@ -976,7 +976,7 @@ static int vuMeter_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
     if( !p_effect->p_data )
     {
         /* Allocate memory to save hand positions */
-        p_effect->p_data = malloc( 2 * sizeof(float) );
+        p_effect->p_data = vlc_alloc( 2, sizeof(float) );
         i_value = p_effect->p_data;
         i_value[0] = i_value_l;
         i_value[1] = i_value_r;

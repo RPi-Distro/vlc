@@ -2,7 +2,7 @@
  * cdg.c: CDG decoder module
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: 5a28a33799d1d96114577664f90372eb5baf98c0 $
+ * $Id: 084fc3b61b22e7f76a85c5837da5d965efe6faf3 $
  *
  * Authors: Laurent Aimar <fenrir # via.ecp.fr>
  *
@@ -73,9 +73,10 @@ struct decoder_sys_t
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-static picture_t *Decode( decoder_t *, block_t ** );
+static int Decode( decoder_t *, block_t * );
 
 static int DecodePacket( decoder_sys_t *p_cdg, uint8_t *p_buffer, int i_buffer );
+static void Flush( decoder_t * );
 static int Render( decoder_sys_t *p_cdg, picture_t *p_picture );
 
 /*****************************************************************************
@@ -85,7 +86,7 @@ vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_VCODEC )
     set_description( N_("CDG video decoder") )
-    set_capability( "decoder", 1000 )
+    set_capability( "video decoder", 1000 )
     set_callbacks( Open, Close )
     add_shortcut( "cdg" )
 vlc_module_end ()
@@ -112,7 +113,6 @@ static int Open( vlc_object_t *p_this )
 
     /* Set output properties
      * TODO maybe it would be better to use RV16 or RV24 ? */
-    p_dec->fmt_out.i_cat = VIDEO_ES;
     p_dec->fmt_out.i_codec = VLC_CODEC_RGB32;
     p_dec->fmt_out.video.i_width = CDG_DISPLAY_WIDTH;
     p_dec->fmt_out.video.i_height = CDG_DISPLAY_HEIGHT;
@@ -123,9 +123,20 @@ static int Open( vlc_object_t *p_this )
     p_dec->fmt_out.video.i_bmask = 0xff << CDG_COLOR_B_SHIFT;
 
     /* Set callbacks */
-    p_dec->pf_decode_video = Decode;
+    p_dec->pf_decode = Decode;
+    p_dec->pf_flush  = Flush;
 
     return VLC_SUCCESS;
+}
+
+/*****************************************************************************
+ * Flush:
+ *****************************************************************************/
+static void Flush( decoder_t *p_dec )
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    p_sys->i_packet = 0;
 }
 
 /****************************************************************************
@@ -133,19 +144,17 @@ static int Open( vlc_object_t *p_this )
  ****************************************************************************
  * This function must be fed with a complete compressed frame.
  ****************************************************************************/
-static picture_t *Decode( decoder_t *p_dec, block_t **pp_block )
+static int Decode( decoder_t *p_dec, block_t *p_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    block_t *p_block;
     picture_t *p_pic = NULL;
 
-    if( !pp_block || !*pp_block )
-        return NULL;
-    p_block = *pp_block;
+    if( !p_block ) /* No Drain */
+        return VLCDEC_SUCCESS;
 
-    if( p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    if( p_block->i_flags & BLOCK_FLAG_CORRUPTED )
     {
-        p_sys->i_packet = 0;
+        Flush( p_dec );
         goto exit;
     }
 
@@ -158,9 +167,11 @@ static picture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     }
 
     /* Only display 25 frame per second (there is 75 packets per second) */
-    if( (p_sys->i_packet%3) == 1 )
+    if( (p_sys->i_packet%3) == 1 && p_block->i_pts == p_block->i_dts )
     {
         /* Get a new picture */
+        if( decoder_UpdateVideoFormat( p_dec ) )
+            goto exit;
         p_pic = decoder_NewPicture( p_dec );
         if( !p_pic )
             goto exit;
@@ -170,8 +181,10 @@ static picture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     }
 
 exit:
-    block_Release( p_block ); *pp_block = NULL;
-    return p_pic;
+    block_Release( p_block );
+    if( p_pic != NULL )
+        decoder_QueueVideo( p_dec, p_pic );
+    return VLCDEC_SUCCESS;
 }
 
 /*****************************************************************************

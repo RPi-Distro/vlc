@@ -40,9 +40,8 @@
 # include "config.h"
 #endif
 
-#define __STDC_CONSTANT_MACROS 1
-#define KDM_HELP_TEXT          "KDM file"
-#define KDM_HELP_LONG_TEXT     "Path to Key Delivery Message XML file"
+#define KDM_HELP_TEXT          N_("KDM file")
+#define KDM_HELP_LONG_TEXT     N_("Path to Key Delivery Message XML file")
 
 /* VLC core API headers */
 #include <vlc_common.h>
@@ -52,6 +51,10 @@
 #include <vlc_url.h>
 #include <vlc_aout.h>
 
+#ifdef _WIN32
+# define KM_WIN32
+#endif
+
 /* ASDCP headers */
 #include <AS_DCP.h>
 
@@ -60,7 +63,6 @@
 #include "dcpparser.h"
 
 using namespace ASDCP;
-using namespace std;
 
 #define FRAME_BUFFER_SIZE 1302083 /* maximum frame length, in bytes, after
                                      "Digital Cinema System Specification Version 1.2
@@ -125,10 +127,10 @@ class demux_sys_t
     EssenceType_t PictureEssType;
 
     /* ASDCP Video MXF Reader */
-    vector<videoReader_t> v_videoReader;
+    std::vector<videoReader_t> v_videoReader;
 
     /* ASDCP Audio MXF Reader */
-    vector<audioReader_t> v_audioReader;
+    std::vector<audioReader_t> v_audioReader;
 
     /* audio buffer size */
     uint32_t i_audio_buffer;
@@ -172,7 +174,9 @@ class demux_sys_t
         frame_no( 0 ),
         frames_total( 0 ),
         i_video_reel( 0 ),
-        i_audio_reel( 0 ) {};
+        i_audio_reel( 0 ),
+        i_pts( 0 )
+    {}
 
     ~demux_sys_t()
     {
@@ -483,98 +487,94 @@ static int Open( vlc_object_t *obj )
     EssenceType_t AudioEssType;
     EssenceType_t AudioEssTypeCompare;
 
-    if( p_sys->p_dcp->audio_reels.size() == 0 )
+    if( !p_sys->p_dcp->audio_reels.empty() )
     {
-        msg_Err( p_demux, "No audio reel found" );
-        retval = VLC_EGENERIC;
-        goto error;
-    }
+        EssenceType( p_sys->p_dcp->audio_reels[0].filename.c_str(), AudioEssType );
 
-    EssenceType( p_sys->p_dcp->audio_reels[0].filename.c_str(), AudioEssType );
+        if ( (AudioEssType == ESS_PCM_24b_48k) || (AudioEssType == ESS_PCM_24b_96k) ) {
+            PCM::AudioDescriptor AudioDesc;
 
-    if ( (AudioEssType == ESS_PCM_24b_48k) || (AudioEssType == ESS_PCM_24b_96k) ) {
-        PCM::AudioDescriptor AudioDesc;
-
-        for ( size_t i = 0; i < ( p_sys->p_dcp->audio_reels.size() ); i++)
-        {
-            if ( i != 0 )
+            for ( size_t i = 0; i < ( p_sys->p_dcp->audio_reels.size() ); i++)
             {
-                EssenceType( p_sys->p_dcp->audio_reels[i].filename.c_str(), AudioEssTypeCompare );
-                if ( AudioEssTypeCompare != AudioEssType )
+                if ( i != 0 )
                 {
-                    msg_Err( p_demux, "Integrity check failed : different audio essence types in %s",
-                    p_sys->p_dcp->audio_reels[i].filename.c_str() );
-                    retval = VLC_EGENERIC;
+                    EssenceType( p_sys->p_dcp->audio_reels[i].filename.c_str(), AudioEssTypeCompare );
+                    if ( AudioEssTypeCompare != AudioEssType )
+                    {
+                        msg_Err( p_demux, "Integrity check failed : different audio essence types in %s",
+                        p_sys->p_dcp->audio_reels[i].filename.c_str() );
+                        retval = VLC_EGENERIC;
+                        goto error;
+                    }
+                }
+                PCM::MXFReader *p_AudioMXFReader = new ( nothrow ) PCM::MXFReader();
+
+                if( !p_AudioMXFReader ) {
+                    retval = VLC_ENOMEM;
                     goto error;
                 }
-            }
-            PCM::MXFReader *p_AudioMXFReader = new ( nothrow ) PCM::MXFReader();
 
-            if( !p_AudioMXFReader ) {
-                retval = VLC_ENOMEM;
-                goto error;
-            }
+                if( !ASDCP_SUCCESS( p_AudioMXFReader->OpenRead( p_sys->p_dcp->audio_reels[i].filename.c_str() ) ) ) {
+                    msg_Err( p_demux, "File %s could not be opened with ASDCP",
+                                    p_sys->p_dcp->audio_reels[i].filename.c_str() );
+                    retval = VLC_EGENERIC;
+                    delete p_AudioMXFReader;
+                    goto error;
+                }
 
-            if( !ASDCP_SUCCESS( p_AudioMXFReader->OpenRead( p_sys->p_dcp->audio_reels[i].filename.c_str() ) ) ) {
-                msg_Err( p_demux, "File %s could not be opened with ASDCP",
-                                p_sys->p_dcp->audio_reels[i].filename.c_str() );
+                p_AudioMXFReader->FillAudioDescriptor( AudioDesc );
+
+                if (  (AudioDesc.ChannelCount >= sizeof(pi_channels_aout)/sizeof(uint32_t *))
+                        || (pi_channels_aout[AudioDesc.ChannelCount] == NULL) )
+                {
+                    msg_Err(p_demux, " DCP module does not support %i channels", AudioDesc.ChannelCount);
+                    retval = VLC_EGENERIC;
+                    delete p_AudioMXFReader;
+                    goto error;
+                }
+                audioReader_t audioReader;
+                audioReader.p_AudioMXFReader = p_AudioMXFReader;
+                p_sys->v_audioReader.push_back( audioReader );
+
+            }
+            es_format_Init( &audio_format, AUDIO_ES, VLC_CODEC_S24L );
+            if( AudioDesc.AudioSamplingRate.Denominator != 0 )
+                audio_format.audio.i_rate =
+                    AudioDesc.AudioSamplingRate.Numerator
+                    / AudioDesc.AudioSamplingRate.Denominator;
+            else if ( AudioEssType == ESS_PCM_24b_96k )
+                audio_format.audio.i_rate = 96000;
+            else
+                audio_format.audio.i_rate = 48000;
+
+            p_sys->i_audio_buffer = PCM::CalcFrameBufferSize( AudioDesc );
+            if (p_sys->i_audio_buffer == 0) {
+                msg_Err( p_demux, "Failed to get audio buffer size" );
                 retval = VLC_EGENERIC;
-                delete p_AudioMXFReader;
                 goto error;
             }
 
-            p_AudioMXFReader->FillAudioDescriptor( AudioDesc );
+            audio_format.audio.i_bitspersample = AudioDesc.QuantizationBits;
+            audio_format.audio.i_blockalign    = AudioDesc.BlockAlign;
+            audio_format.audio.i_channels      =
+            p_sys->i_channels                  = AudioDesc.ChannelCount;
 
-            if (  (AudioDesc.ChannelCount >= sizeof(pi_channels_aout)/sizeof(uint32_t *))
-                    || (pi_channels_aout[AudioDesc.ChannelCount] == NULL) )
-            {
-                msg_Err(p_demux, " DCP module does not support %i channels", AudioDesc.ChannelCount);
+            /* Manage channel orders */
+            p_sys->i_chans_to_reorder =  aout_CheckChannelReorder(
+                    pi_channels_aout[AudioDesc.ChannelCount], NULL,
+                    i_channel_mask[AudioDesc.ChannelCount],   p_sys->pi_chan_table );
+
+            if( ( p_sys->p_audio_es = es_out_Add( p_demux->out, &audio_format ) ) == NULL ) {
+                msg_Err( p_demux, "Failed to add audio es" );
                 retval = VLC_EGENERIC;
-                delete p_AudioMXFReader;
                 goto error;
             }
-            audioReader_t audioReader;
-            audioReader.p_AudioMXFReader = p_AudioMXFReader;
-            p_sys->v_audioReader.push_back( audioReader );
-
-        }
-        es_format_Init( &audio_format, AUDIO_ES, VLC_CODEC_S24L );
-        if( AudioDesc.AudioSamplingRate.Denominator != 0 )
-            audio_format.audio.i_rate =
-                AudioDesc.AudioSamplingRate.Numerator
-                / AudioDesc.AudioSamplingRate.Denominator;
-        else if ( AudioEssType == ESS_PCM_24b_96k )
-            audio_format.audio.i_rate = 96000;
-        else
-            audio_format.audio.i_rate = 48000;
-
-        p_sys->i_audio_buffer = PCM::CalcFrameBufferSize( AudioDesc );
-        if (p_sys->i_audio_buffer == 0) {
-            msg_Err( p_demux, "Failed to get audio buffer size" );
+        } else {
+            msg_Err( p_demux, "The file %s is not a supported AS_DCP essence container",
+                    p_sys->p_dcp->audio_reels[0].filename.c_str() );
             retval = VLC_EGENERIC;
             goto error;
         }
-
-        audio_format.audio.i_bitspersample = AudioDesc.QuantizationBits;
-        audio_format.audio.i_blockalign    = AudioDesc.BlockAlign;
-        audio_format.audio.i_channels      =
-        p_sys->i_channels                  = AudioDesc.ChannelCount;
-
-        /* Manage channel orders */
-        p_sys->i_chans_to_reorder =  aout_CheckChannelReorder(
-                pi_channels_aout[AudioDesc.ChannelCount], NULL,
-                i_channel_mask[AudioDesc.ChannelCount],   p_sys->pi_chan_table );
-
-        if( ( p_sys->p_audio_es = es_out_Add( p_demux->out, &audio_format ) ) == NULL ) {
-            msg_Err( p_demux, "Failed to add audio es" );
-            retval = VLC_EGENERIC;
-            goto error;
-        }
-    } else {
-        msg_Err( p_demux, "The file %s is not a supported AS_DCP essence container",
-                p_sys->p_dcp->audio_reels[0].filename.c_str() );
-        retval = VLC_EGENERIC;
-        goto error;
     }
     p_demux->pf_demux = Demux;
     p_demux->pf_control = Control;
@@ -623,7 +623,7 @@ static int Demux( demux_t *p_demux )
     }
 
     /* swaping audio reels */
-    if  ( p_sys->frame_no == p_sys->p_dcp->audio_reels[p_sys->i_audio_reel].i_absolute_end )
+    if  ( !p_sys->p_dcp->audio_reels.empty() && p_sys->frame_no == p_sys->p_dcp->audio_reels[p_sys->i_audio_reel].i_absolute_end )
      {
          if ( p_sys->i_audio_reel + 1 == p_sys->v_audioReader.size() )
          {
@@ -638,10 +638,8 @@ static int Demux( demux_t *p_demux )
     /* video frame */
 
     /* initialize AES context, if reel is encrypted */
-    if( p_sys &&
-            p_sys->p_dcp &&
-            p_sys->p_dcp->video_reels.size() > p_sys->i_video_reel &&
-            p_sys->p_dcp->video_reels[p_sys->i_video_reel].p_key )
+    if( p_sys->p_dcp->video_reels.size() > p_sys->i_video_reel &&
+        p_sys->p_dcp->video_reels[p_sys->i_video_reel].p_key )
     {
         if( ! ASDCP_SUCCESS( video_aes_ctx.InitKey( p_sys->p_dcp->video_reels[p_sys->i_video_reel].p_key->getKey() ) ) )
         {
@@ -704,52 +702,55 @@ static int Demux( demux_t *p_demux )
     p_video_frame->i_length = CLOCK_FREQ * p_sys->frame_rate_denom / p_sys->frame_rate_num;
     p_video_frame->i_pts = CLOCK_FREQ * p_sys->frame_no * p_sys->frame_rate_denom / p_sys->frame_rate_num;
 
-    /* audio frame */
-    if ( ( p_audio_frame = block_Alloc( p_sys->i_audio_buffer )) == NULL ) {
-        goto error;
-    }
-
-    /* initialize AES context, if reel is encrypted */
-    if( p_sys &&
-            p_sys->p_dcp &&
-            p_sys->p_dcp->audio_reels.size() > p_sys->i_audio_reel &&
-            p_sys->p_dcp->audio_reels[p_sys->i_audio_reel].p_key )
+    if( !p_sys->p_dcp->audio_reels.empty() )
     {
-        if( ! ASDCP_SUCCESS( audio_aes_ctx.InitKey( p_sys->p_dcp->audio_reels[p_sys->i_audio_reel].p_key->getKey() ) ) )
-        {
-            msg_Err( p_demux, "ASDCP failed to initialize AES key" );
+        /* audio frame */
+        if ( ( p_audio_frame = block_Alloc( p_sys->i_audio_buffer )) == NULL ) {
             goto error;
+        }
+
+        /* initialize AES context, if reel is encrypted */
+        if( p_sys->p_dcp->audio_reels.size() > p_sys->i_audio_reel &&
+            p_sys->p_dcp->audio_reels[p_sys->i_audio_reel].p_key )
+        {
+            if( ! ASDCP_SUCCESS( audio_aes_ctx.InitKey( p_sys->p_dcp->audio_reels[p_sys->i_audio_reel].p_key->getKey() ) ) )
+            {
+                msg_Err( p_demux, "ASDCP failed to initialize AES key" );
+                goto error;
+            }
+        }
+
+        if ( ! ASDCP_SUCCESS(
+                AudioFrameBuff.SetData(p_audio_frame->p_buffer, p_sys->i_audio_buffer)) ) {
+            goto error_asdcp;
+        }
+
+        if ( ! ASDCP_SUCCESS(
+                p_sys->v_audioReader[p_sys->i_audio_reel].p_AudioMXFReader->ReadFrame(p_sys->frame_no + p_sys->p_dcp->audio_reels[p_sys->i_audio_reel].i_correction, AudioFrameBuff, &audio_aes_ctx, 0)) ) {
+            AudioFrameBuff.SetData(0,0);
+            goto error_asdcp;
+        }
+
+        if( p_sys->i_chans_to_reorder )
+            aout_ChannelReorder( p_audio_frame->p_buffer, p_audio_frame->i_buffer,
+                    p_sys->i_channels,
+                    p_sys->pi_chan_table, VLC_CODEC_S24L );
+
+        p_audio_frame->i_buffer = AudioFrameBuff.Size();
+        p_audio_frame->i_length = CLOCK_FREQ * p_sys->frame_rate_denom / p_sys->frame_rate_num;
+        p_audio_frame->i_pts = CLOCK_FREQ * p_sys->frame_no * p_sys->frame_rate_denom / p_sys->frame_rate_num;
+        /* Video is the main pts */
+        if ( p_audio_frame->i_pts != p_video_frame->i_pts ) {
+            msg_Err( p_demux, "Audio and video frame pts are not in sync" );
         }
     }
 
-    if ( ! ASDCP_SUCCESS(
-            AudioFrameBuff.SetData(p_audio_frame->p_buffer, p_sys->i_audio_buffer)) ) {
-        goto error_asdcp;
-    }
-
-    if ( ! ASDCP_SUCCESS(
-            p_sys->v_audioReader[p_sys->i_audio_reel].p_AudioMXFReader->ReadFrame(p_sys->frame_no + p_sys->p_dcp->audio_reels[p_sys->i_audio_reel].i_correction, AudioFrameBuff, &audio_aes_ctx, 0)) ) {
-        AudioFrameBuff.SetData(0,0);
-        goto error_asdcp;
-    }
-
-    if( p_sys->i_chans_to_reorder )
-        aout_ChannelReorder( p_audio_frame->p_buffer, p_audio_frame->i_buffer,
-                p_sys->i_channels,
-                p_sys->pi_chan_table, VLC_CODEC_S24L );
-
-    p_audio_frame->i_buffer = AudioFrameBuff.Size();
-    p_audio_frame->i_length = CLOCK_FREQ * p_sys->frame_rate_denom / p_sys->frame_rate_num;
-    p_audio_frame->i_pts = CLOCK_FREQ * p_sys->frame_no * p_sys->frame_rate_denom / p_sys->frame_rate_num;
-    /* Video is the main pts */
-    if ( p_audio_frame->i_pts != p_video_frame->i_pts ) {
-        msg_Err( p_demux, "Audio and video frame pts are not in sync" );
-    }
-
     p_sys->i_pts = p_video_frame->i_pts;
-    es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_pts );
-    es_out_Send( p_demux->out, p_sys->p_video_es, p_video_frame );
-    es_out_Send( p_demux->out, p_sys->p_audio_es, p_audio_frame );
+    es_out_SetPCR( p_demux->out, p_sys->i_pts );
+    if(p_video_frame)
+        es_out_Send( p_demux->out, p_sys->p_video_es, p_video_frame );
+    if(p_audio_frame)
+        es_out_Send( p_demux->out, p_sys->p_audio_es, p_audio_frame );
 
     p_sys->frame_no++;
 
@@ -779,12 +780,12 @@ static int Control( demux_t *p_demux, int query, va_list args )
     {
         case DEMUX_CAN_PAUSE:
         case DEMUX_CAN_CONTROL_PACE:
-            pb = ( bool* ) va_arg ( args, bool* );
+            pb = va_arg ( args, bool* );
             *pb = true;
             break;
 
         case DEMUX_CAN_SEEK:
-            pb = (bool *)va_arg( args, bool * );
+            pb = va_arg( args, bool * );
             if( p_sys->PictureEssType != ESS_MPEG2_VES )
                 *pb = true;
             else
@@ -795,7 +796,7 @@ static int Control( demux_t *p_demux, int query, va_list args )
             return VLC_SUCCESS;
 
         case DEMUX_GET_POSITION:
-            pf = ( double* ) va_arg ( args, double* );
+            pf = va_arg( args, double * );
             if( p_sys->frames_total != 0 )
                 *pf = (double) p_sys->frame_no / (double) p_sys->frames_total;
             else {
@@ -805,30 +806,30 @@ static int Control( demux_t *p_demux, int query, va_list args )
             break;
 
         case DEMUX_SET_POSITION:
-            f = ( double ) va_arg ( args, double );
+            f = va_arg( args, double );
             p_sys->frame_no = (int) ( f * p_sys->frames_total );
             break;
 
         case DEMUX_GET_LENGTH:
-            pi64 = ( int64_t* ) va_arg ( args, int64_t* );
+            pi64 = va_arg ( args, int64_t * );
             *pi64 =  ( p_sys->frames_total * p_sys->frame_rate_denom / p_sys->frame_rate_num ) * CLOCK_FREQ;
             break;
 
         case DEMUX_GET_TIME:
-            pi64 = ( int64_t* ) va_arg ( args, int64_t* );
+            pi64 = va_arg( args, int64_t * );
             *pi64 = p_sys->i_pts >= 0 ? p_sys->i_pts : 0;
             break;
 
         case DEMUX_SET_TIME:
-            i64 = ( int64_t ) va_arg ( args, int64_t );
+            i64 = va_arg( args, int64_t );
             msg_Warn( p_demux, "DEMUX_SET_TIME"  );
             p_sys->frame_no = i64 * p_sys->frame_rate_num / ( CLOCK_FREQ * p_sys->frame_rate_denom );
             p_sys->i_pts= i64;
-            es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_pts);
+            es_out_SetPCR(p_demux->out, p_sys->i_pts);
             es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME, ( mtime_t ) i64 );
             break;
         case DEMUX_GET_PTS_DELAY:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
             *pi64 =
                 INT64_C(1000) * var_InheritInteger( p_demux, "file-caching" );
             return VLC_SUCCESS;
@@ -909,7 +910,7 @@ void CloseDcpAndMxf( demux_t *p_demux )
             p_sys->v_audioReader[i].p_AudioMXFReader->Close();
     }
 
-    delete( p_demux->p_sys );
+    delete( p_sys );
 }
 
 
@@ -953,12 +954,12 @@ int dcpInit ( demux_t *p_demux )
  * Function to retrieve the path to the ASSETMAP file.
  * @param p_demux DCP access_demux.
  */
-static string assetmapPath( demux_t * p_demux )
+static std::string assetmapPath( demux_t * p_demux )
 {
     DIR *dir = NULL;
     struct dirent *ent = NULL;
     dcp_t *p_dcp = p_demux->p_sys->p_dcp;
-    string result;
+    std::string result;
 
     if( ( dir = opendir (p_dcp->path.c_str() ) ) != NULL )
     {
@@ -995,7 +996,7 @@ int parseXML ( demux_t * p_demux )
 {
     int retval;
 
-    string assetmap_path = assetmapPath( p_demux );
+    std::string assetmap_path = assetmapPath( p_demux );
     /* We get the ASSETMAP file path */
     if( assetmap_path.empty() )
         return VLC_EGENERIC;

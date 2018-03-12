@@ -90,6 +90,9 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
 {
     aout_sys_t* sys = aout->sys;
 
+    if (aout_FormatNbChannels(fmt) == 0)
+        return VLC_EGENERIC;
+
     /* Open the device */
     const char *device = sys->device;
     if (device == NULL)
@@ -210,9 +213,9 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
     else
     {
         fmt->i_rate = rate;
-        fmt->i_original_channels =
         fmt->i_physical_channels = channels;
     }
+    fmt->channel_type = AUDIO_CHANNEL_TYPE_BITMAP;
     aout_FormatPrepare (fmt);
 
     /* Select timing */
@@ -237,7 +240,7 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
     sys->format = *fmt;
     return VLC_SUCCESS;
 error:
-    close (fd);
+    vlc_close (fd);
     return VLC_EGENERIC;
 }
 
@@ -313,7 +316,7 @@ static void Stop (audio_output_t *aout)
     int fd = sys->fd;
 
     ioctl (fd, SNDCTL_DSP_HALT, NULL);
-    close (fd);
+    vlc_close (fd);
     sys->fd = -1;
 }
 
@@ -356,7 +359,7 @@ static int DevicesEnum (audio_output_t *aout)
         n++;
     }
 out:
-    close (fd);
+    vlc_close (fd);
     return n;
 }
 

@@ -2,7 +2,7 @@
  * vc1.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: f93f5046c96cb631c05d9be054b25fcfa69b5d85 $
+ * $Id: 901e2c03d89aaeac1a990d66b0f8b7a3012931e1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -37,7 +37,10 @@
 
 #include <vlc_bits.h>
 #include <vlc_block_helper.h>
+#include "../codec/cc.h"
 #include "packetizer_helper.h"
+#include "hxxx_nal.h"
+#include "startcode_helper.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -92,6 +95,14 @@ struct decoder_sys_t
 
     mtime_t i_interpolated_dts;
     bool    b_check_startcode;
+
+    /* */
+    uint32_t i_cc_flags;
+    mtime_t i_cc_pts;
+    mtime_t i_cc_dts;
+    cc_data_t cc;
+
+    cc_data_t cc_next;
 };
 
 typedef enum
@@ -111,12 +122,14 @@ typedef enum
 } idu_type_t;
 
 static block_t *Packetize( decoder_t *p_dec, block_t **pp_block );
+static void Flush( decoder_t * );
 
 static void PacketizeReset( void *p_private, bool b_broken );
 static block_t *PacketizeParse( void *p_private, bool *pb_ts_used, block_t * );
 static int PacketizeValidate( void *p_private, block_t * );
 
 static block_t *ParseIDU( decoder_t *p_dec, bool *pb_ts_used, block_t *p_frag );
+static block_t *GetCc( decoder_t *p_dec, decoder_cc_desc_t * );
 
 static const uint8_t p_vc1_startcode[3] = { 0x00, 0x00, 0x01 };
 /*****************************************************************************
@@ -134,6 +147,8 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
 
     p_dec->pf_packetize = Packetize;
+    p_dec->pf_flush = Flush;
+    p_dec->pf_get_cc = GetCc;
 
     /* Create the output format */
     es_format_Copy( &p_dec->fmt_out, &p_dec->fmt_in );
@@ -142,7 +157,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     packetizer_Init( &p_sys->packetizer,
-                     p_vc1_startcode, sizeof(p_vc1_startcode),
+                     p_vc1_startcode, sizeof(p_vc1_startcode), startcode_FindAnnexB,
                      NULL, 0, 4,
                      PacketizeReset, PacketizeParse, PacketizeValidate, p_dec );
 
@@ -178,6 +193,13 @@ static int Open( vlc_object_t *p_this )
                                p_dec->fmt_out.p_extra, p_dec->fmt_out.i_extra );
     }
 
+    /* */
+    p_sys->i_cc_pts = VLC_TS_INVALID;
+    p_sys->i_cc_dts = VLC_TS_INVALID;
+    p_sys->i_cc_flags = 0;
+    cc_Init( &p_sys->cc );
+    cc_Init( &p_sys->cc_next );
+
     return VLC_SUCCESS;
 }
 
@@ -192,6 +214,10 @@ static void Close( vlc_object_t *p_this )
     packetizer_Clean( &p_sys->packetizer );
     if( p_sys->p_frame )
         block_Release( p_sys->p_frame );
+
+    cc_Exit( &p_sys->cc_next );
+    cc_Exit( &p_sys->cc );
+
     free( p_sys );
 }
 
@@ -235,6 +261,13 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
     return p_au;
 }
 
+static void Flush( decoder_t *p_dec )
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    packetizer_Flush( &p_sys->packetizer );
+}
+
 static void PacketizeReset( void *p_private, bool b_broken )
 {
     decoder_t *p_dec = p_private;
@@ -274,30 +307,6 @@ static int PacketizeValidate( void *p_private, block_t *p_au )
     return VLC_SUCCESS;
 }
 
-
-/* DecodeRIDU: decode the startcode emulation prevention (same than h264) */
-static void DecodeRIDU( uint8_t *p_ret, int *pi_ret, uint8_t *src, int i_src )
-{
-    uint8_t *end = &src[i_src];
-    uint8_t *dst_end = &p_ret[*pi_ret];
-    uint8_t *dst = p_ret;
-
-    while( src < end && dst < dst_end )
-    {
-        if( src < end - 3 && src[0] == 0x00 && src[1] == 0x00 &&
-            src[2] == 0x03 && dst < dst_end - 1 )
-        {
-            *dst++ = 0x00;
-            *dst++ = 0x00;
-
-            src += 3;
-            continue;
-        }
-        *dst++ = *src++;
-    }
-
-    *pi_ret = dst - p_ret;
-}
 /* BuildExtraData: gather sequence header and entry point */
 static void BuildExtraData( decoder_t *p_dec )
 {
@@ -393,6 +402,14 @@ static block_t *ParseIDU( decoder_t *p_dec, bool *pb_ts_used, block_t *p_frag )
 
         //msg_Dbg( p_dec, "-------------- dts=%"PRId64" pts=%"PRId64, p_pic->i_dts, p_pic->i_pts );
 
+        /* CC */
+        p_sys->i_cc_pts = p_pic->i_pts;
+        p_sys->i_cc_dts = p_pic->i_dts;
+        p_sys->i_cc_flags = p_pic->i_flags;
+
+        p_sys->cc = p_sys->cc_next;
+        cc_Flush( &p_sys->cc_next );
+
         /* Reset context */
         p_sys->b_frame = false;
         p_sys->i_frame_dts = VLC_TS_INVALID;
@@ -421,25 +438,21 @@ static block_t *ParseIDU( decoder_t *p_dec, bool *pb_ts_used, block_t *p_frag )
     {
         es_format_t *p_es = &p_dec->fmt_out;
         bs_t s;
+        unsigned i_bitflow = 0;
         int i_profile;
-        uint8_t ridu[32];
-        int     i_ridu = sizeof(ridu);
 
         /* */
         if( p_sys->sh.p_sh )
             block_Release( p_sys->sh.p_sh );
         p_sys->sh.p_sh = block_Duplicate( p_frag );
 
-        /* Extract the raw IDU */
-        DecodeRIDU( ridu, &i_ridu, &p_frag->p_buffer[4], p_frag->i_buffer - 4 );
-
         /* Auto detect VC-1_SPMP_PESpacket_PayloadFormatHeader (SMPTE RP 227) for simple/main profile
          * TODO find a test case and valid it */
-        if( i_ridu > 4 && (ridu[0]&0x80) == 0 ) /* for advanced profile, the first bit is 1 */
+        if( p_frag->i_buffer > 8 && (p_frag->p_buffer[4]&0x80) == 0 ) /* for advanced profile, the first bit is 1 */
         {
             video_format_t *p_v = &p_dec->fmt_in.video;
-            const size_t i_potential_width  = GetWBE( &ridu[0] );
-            const size_t i_potential_height = GetWBE( &ridu[2] );
+            const size_t i_potential_width  = GetWBE( &p_frag->p_buffer[4] );
+            const size_t i_potential_height = GetWBE( &p_frag->p_buffer[6] );
 
             if( i_potential_width >= 2  && i_potential_width <= 8192 &&
                 i_potential_height >= 2 && i_potential_height <= 8192 )
@@ -460,7 +473,10 @@ static block_t *ParseIDU( decoder_t *p_dec, bool *pb_ts_used, block_t *p_frag )
         }
 
         /* Parse it */
-        bs_init( &s, ridu, i_ridu );
+        bs_init( &s, &p_frag->p_buffer[4], p_frag->i_buffer - 4 );
+        s.p_fwpriv = &i_bitflow;
+        s.pf_forward = hxxx_bsfw_ep3b_to_rbsp;  /* Does the emulated 3bytes conversion to rbsp */
+
         i_profile = bs_read( &s, 2 );
         if( i_profile == 3 )
         {
@@ -500,7 +516,7 @@ static block_t *ParseIDU( decoder_t *p_dec, bool *pb_ts_used, block_t *p_frag )
 
                 if( bs_read( &s, 1 ) )  /* Pixel aspect ratio (PAR/SAR) */
                 {
-                    static const int p_ar[16][2] = {
+                    static const unsigned p_ar[16][2] = {
                         { 0, 0}, { 1, 1}, {12,11}, {10,11}, {16,11}, {40,33},
                         {24,11}, {20,11}, {32,11}, {80,33}, {18,11}, {15,11},
                         {64,33}, {160,99},{ 0, 0}, { 0, 0}
@@ -525,8 +541,8 @@ static block_t *ParseIDU( decoder_t *p_dec, bool *pb_ts_used, block_t *p_frag )
             }
             if( bs_read( &s, 1 ) )  /* Frame rate */
             {
-                int i_fps_num = 0;
-                int i_fps_den = 0;
+                unsigned i_fps_num = 0;
+                unsigned i_fps_den = 0;
                 if( bs_read( &s, 1 ) )
                 {
                     i_fps_num = bs_read( &s, 16 )+1;
@@ -558,6 +574,36 @@ static block_t *ParseIDU( decoder_t *p_dec, bool *pb_ts_used, block_t *p_frag )
 
                 if( !p_sys->b_sequence_header )
                     msg_Dbg( p_dec, "frame rate %d/%d", p_es->video.i_frame_rate, p_es->video.i_frame_rate_base );
+            }
+            if( bs_read1( &s ) ) /* Color Format */
+            {
+                switch( bs_read( &s, 8 ) ) /* Color Primaries */
+                {
+                    case 1:  p_es->video.primaries = COLOR_PRIMARIES_BT709; break;
+                    case 4:  p_es->video.primaries = COLOR_PRIMARIES_BT470_M; break;
+                    case 5:  p_es->video.primaries = COLOR_PRIMARIES_BT470_BG; break;
+                    case 6:  p_es->video.primaries = COLOR_PRIMARIES_SMTPE_RP145; break;
+                    default: p_es->video.primaries = COLOR_PRIMARIES_UNDEF; break;
+                }
+
+                switch( bs_read( &s, 8 ) ) /* Transfert Chars */
+                {
+                    case 1:  p_es->video.transfer = TRANSFER_FUNC_BT709; break;
+                    case 4:  p_es->video.transfer = TRANSFER_FUNC_BT470_M; break;
+                    case 5:  p_es->video.transfer = TRANSFER_FUNC_BT470_BG; break;
+                    case 6:  p_es->video.transfer = TRANSFER_FUNC_SMPTE_170; break;
+                    case 7:  p_es->video.transfer = TRANSFER_FUNC_SMPTE_240; break;
+                    case 8:  p_es->video.transfer = TRANSFER_FUNC_LINEAR; break;
+                    default: p_es->video.transfer = TRANSFER_FUNC_UNDEF; break;
+                }
+
+                switch( bs_read( &s, 8 ) ) /* Matrix Coef */
+                {
+                    case 1:  p_es->video.space = COLOR_SPACE_BT709; break;
+                    case 6:  p_es->video.space = COLOR_SPACE_BT601; break;
+                    case 7:  p_es->video.space = COLOR_SPACE_SMPTE_240; break;
+                    default: p_es->video.space = COLOR_SPACE_UNDEF; break;
+                }
             }
         }
         else
@@ -599,14 +645,12 @@ static block_t *ParseIDU( decoder_t *p_dec, bool *pb_ts_used, block_t *p_frag )
     else if( idu == IDU_TYPE_FRAME )
     {
         bs_t s;
-        uint8_t ridu[8];
-        int     i_ridu = sizeof(ridu);
-
-        /* Extract the raw IDU */
-        DecodeRIDU( ridu, &i_ridu, &p_frag->p_buffer[4], p_frag->i_buffer - 4 );
+        unsigned i_bitflow = 0;
 
         /* Parse it + interpolate pts/dts if possible */
-        bs_init( &s, ridu, i_ridu );
+        bs_init( &s, &p_frag->p_buffer[4], p_frag->i_buffer - 4 );
+        s.p_fwpriv = &i_bitflow;
+        s.pf_forward = hxxx_bsfw_ep3b_to_rbsp;  /* Does the emulated 3bytes conversion to rbsp */
 
         if( p_sys->sh.b_advanced_profile )
         {
@@ -677,9 +721,64 @@ static block_t *ParseIDU( decoder_t *p_dec, bool *pb_ts_used, block_t *p_frag )
         }
         p_sys->b_frame = true;
     }
+    else if( idu == IDU_TYPE_FRAME_USER_DATA )
+    {
+        bs_t s;
+        unsigned i_bitflow = 0;
+        const size_t i_size = p_frag->i_buffer - 4;
+        bs_init( &s, &p_frag->p_buffer[4], i_size );
+        s.p_fwpriv = &i_bitflow;
+        s.pf_forward = hxxx_bsfw_ep3b_to_rbsp;  /* Does the emulated 3bytes conversion to rbsp */
+
+        unsigned i_data;
+        uint8_t *p_data = malloc( i_size );
+        if( p_data )
+        {
+            /* store converted data */
+            for( i_data = 0; i_data<i_size && bs_remain( &s ) >= 16 /* trailing 0x80 flush byte */; i_data++ )
+                p_data[i_data] = bs_read( &s, 8 );
+
+            /* TS 101 154 Auxiliary Data and VC-1 video */
+            static const uint8_t p_DVB1_user_identifier[] = {
+                0x47, 0x41, 0x39, 0x34 /* user identifier */
+            };
+
+            /* Check if we have DVB1_data() */
+            if( i_data >= sizeof(p_DVB1_user_identifier) &&
+                !memcmp( p_data, p_DVB1_user_identifier, sizeof(p_DVB1_user_identifier) ) )
+            {
+                cc_ProbeAndExtract( &p_sys->cc_next, true, p_data, i_data );
+            }
+
+            free( p_data );
+        }
+    }
 
     if( p_release )
         block_Release( p_release );
     return p_pic;
 }
 
+/*****************************************************************************
+ * GetCc:
+ *****************************************************************************/
+static block_t *GetCc( decoder_t *p_dec, decoder_cc_desc_t *p_desc )
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    block_t *p_cc;
+
+    p_cc = block_Alloc( p_sys->cc.i_data);
+    if( p_cc )
+    {
+        memcpy( p_cc->p_buffer, p_sys->cc.p_data, p_sys->cc.i_data );
+        p_cc->i_dts =
+        p_cc->i_pts = p_sys->cc.b_reorder ? p_sys->i_cc_pts : p_sys->i_cc_dts;
+        p_cc->i_flags = p_sys->i_cc_flags & BLOCK_FLAG_TYPE_MASK;
+
+        p_desc->i_608_channels = p_sys->cc.i_608channels;
+        p_desc->i_708_channels = p_sys->cc.i_708channels;
+        p_desc->i_reorder_depth = p_sys->cc.b_reorder ? 4 : -1;
+    }
+    cc_Flush( &p_sys->cc );
+    return p_cc;
+}

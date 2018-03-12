@@ -2,7 +2,7 @@
  * vout_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e2093633994f7ed1a6694914bfc31c467e300482 $
+ * $Id: d683e6a974b03e4b5244d7efc2ccaf1881d24f46 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -29,8 +29,10 @@
 #include "os_graphics.hpp"
 #include "os_window.hpp"
 #include "../events/evt_key.hpp"
+#include "../events/evt_motion.hpp"
+#include "../events/evt_mouse.hpp"
 
-#include <vlc_keys.h>
+#include <vlc_actions.h>
 
 
 VoutWindow::VoutWindow( intf_thread_t *pIntf, vout_window_t* pWnd,
@@ -77,6 +79,7 @@ void VoutWindow::setCtrlVideo( CtrlVideo* pCtrlVideo )
         setParent( pCtrlVideo->getWindow(), x, y, w, h );
         m_pParentWindow = pCtrlVideo->getWindow();
 
+        resize( w, h );
         show();
     }
     else
@@ -89,6 +92,8 @@ void VoutWindow::setCtrlVideo( CtrlVideo* pCtrlVideo )
                    0, 0, w, h );
         m_pParentWindow =
                   VoutManager::instance( getIntf() )->getVoutMainWindow();
+
+        resize( w, h );
         show();
     }
 
@@ -96,11 +101,45 @@ void VoutWindow::setCtrlVideo( CtrlVideo* pCtrlVideo )
 }
 
 
+void VoutWindow::resize( int width, int height )
+{
+    GenericWindow::resize( width, height );
+
+    if( m_pWnd )
+        vout_window_ReportSize( m_pWnd, width, height );
+}
+
+
 void VoutWindow::processEvent( EvtKey &rEvtKey )
 {
     // Only do the action when the key is down
     if( rEvtKey.getKeyState() == EvtKey::kDown )
-        var_SetInteger( getIntf()->p_libvlc, "key-pressed",
-                         rEvtKey.getModKey() );
+        getIntf()->p_sys->p_dialogs->sendKey( rEvtKey.getModKey() );
 }
 
+
+void VoutWindow::processEvent( EvtMotion &rEvtMotion )
+{
+    int x = rEvtMotion.getXPos() - m_pParentWindow->getLeft() - getLeft();
+    int y = rEvtMotion.getYPos() - m_pParentWindow->getTop() - getTop();
+    vout_window_ReportMouseMoved( m_pWnd, x, y );
+}
+
+
+void VoutWindow::processEvent( EvtMouse &rEvtMouse )
+{
+    int button = -1;
+    if( rEvtMouse.getButton() == EvtMouse::kLeft )
+        button = 0;
+    else if( rEvtMouse.getButton() == EvtMouse::kMiddle )
+        button = 1;
+    else if( rEvtMouse.getButton() == EvtMouse::kRight )
+        button = 2;
+
+    if( rEvtMouse.getAction() == EvtMouse::kDown )
+        vout_window_ReportMousePressed( m_pWnd, button );
+    else if( rEvtMouse.getAction() == EvtMouse::kUp )
+        vout_window_ReportMouseReleased( m_pWnd, button );
+    else if( rEvtMouse.getAction() == EvtMouse::kDblClick )
+        vout_window_ReportMouseDoubleClick( m_pWnd, button );
+}

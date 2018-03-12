@@ -2,7 +2,7 @@
  * x11_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ca4e6b036a160c139279fb0faf6e3aaf13ea92d0 $
+ * $Id: e469ed64cbc0cfe15a653a96951f859c378b7d43 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -38,6 +38,8 @@
 #include <assert.h>
 #include <limits.h>
 
+#include <new>
+
 X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
                       X11Display &rDisplay, bool dragDrop, bool playOnDrop,
                       X11Window *pParentWindow, GenericWindow::WindowType_t type ):
@@ -46,7 +48,7 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
 {
     XSetWindowAttributes attr;
     unsigned long valuemask;
-    string name_type;
+    std::string name_type;
 
     if( type == GenericWindow::FullscreenWindow )
     {
@@ -113,18 +115,9 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     }
 
     // Select events received by the window
-    long event_mask;
-    if( type == GenericWindow::VoutWindow )
-    {
-        event_mask =  ExposureMask|KeyPressMask|
-                      LeaveWindowMask|FocusChangeMask;
-    }
-    else
-    {
-        event_mask =  ExposureMask|KeyPressMask|
+    long event_mask = ExposureMask|KeyPressMask|
                       PointerMotionMask|ButtonPressMask|ButtonReleaseMask|
                       LeaveWindowMask|FocusChangeMask;
-    }
     XSelectInput( XDISPLAY, m_wnd, event_mask );
 
     // Store a pointer on the generic window in a map
@@ -155,7 +148,7 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
 
         // Register the window as a drop target
         Atom xdndAtom = XInternAtom( XDISPLAY, "XdndAware", False );
-        char xdndVersion = 4;
+        char xdndVersion = 5;
         XChangeProperty( XDISPLAY, m_wnd, xdndAtom, XA_ATOM, 32,
                          PropModeReplace, (unsigned char *)&xdndVersion, 1 );
 
@@ -164,7 +157,7 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     }
 
     // Change the window title
-    string name_window = "VLC (" + name_type + ")";
+    std::string name_window = "VLC (" + name_type + ")";
     XStoreName( XDISPLAY, m_wnd, name_window.c_str() );
 
     // Set the WM_TRANSIENT_FOR property
@@ -201,7 +194,7 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     long host_name_max = sysconf( _SC_HOST_NAME_MAX );
     if( host_name_max <= 0 )
         host_name_max = _POSIX_HOST_NAME_MAX;
-    hostname = new char[host_name_max];
+    hostname = new (std::nothrow) char[host_name_max];
     if( hostname && gethostname( hostname, host_name_max ) == 0 )
     {
         hostname[host_name_max - 1] = '\0';

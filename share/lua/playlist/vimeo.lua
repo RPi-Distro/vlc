@@ -24,9 +24,12 @@
 
 -- Probe function.
 function probe()
+    local path = vlc.path
+    path = path:gsub("^www%.", "")
     return ( vlc.access == "http" or vlc.access == "https" )
-        and ( string.match( vlc.path, "vimeo%.com/%d+$" )
-              or string.match( vlc.path, "player%.vimeo%.com" ) )
+        and ( string.match( path, "^vimeo%.com/%d+$" )
+              or string.match( path, "^vimeo%.com/channels/(.-)/%d+$" )
+              or string.match( path, "^player%.vimeo%.com/" ) )
         -- do not match other addresses,
         -- else we'll also try to decode the actual video url
 end
@@ -56,6 +59,7 @@ function parse()
     else -- API URL
 
         local prefres = vlc.var.inherit(nil, "preferred-resolution")
+        local bestres = nil
         local line = vlc.readline() -- data is on one line only
 
         for stream in string.gmatch( line, "{([^}]*\"profile\":[^}]*)}" ) do

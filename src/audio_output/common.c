@@ -2,7 +2,7 @@
  * common.c : audio output management of common data structures
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 09dca5c1892ccc6468c2a840982d6ff4b05aec74 $
+ * $Id: f7dbc575578979ffa5588155fef8c08f4d2e14c5 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -87,12 +87,15 @@ unsigned int aout_BitsPerSample( vlc_fourcc_t i_format )
  *****************************************************************************/
 void aout_FormatPrepare( audio_sample_format_t * p_format )
 {
-    p_format->i_channels = aout_FormatNbChannels( p_format );
+
+    unsigned i_channels = aout_FormatNbChannels( p_format );
+    if( i_channels > 0 )
+        p_format->i_channels = i_channels;
     p_format->i_bitspersample = aout_BitsPerSample( p_format->i_format );
     if( p_format->i_bitspersample > 0 )
     {
         p_format->i_bytes_per_frame = ( p_format->i_bitspersample / 8 )
-                                    * aout_FormatNbChannels( p_format );
+                                    * p_format->i_channels;
         p_format->i_frame_length = 1;
     }
 }
@@ -102,39 +105,34 @@ void aout_FormatPrepare( audio_sample_format_t * p_format )
  *****************************************************************************/
 const char * aout_FormatPrintChannels( const audio_sample_format_t * p_format )
 {
+    if (p_format->channel_type == AUDIO_CHANNEL_TYPE_AMBISONICS)
+        return "Ambisonics";
+
+    /* AUDIO_CHANNEL_TYPE_BITMAP */
     switch ( p_format->i_physical_channels )
     {
     case AOUT_CHAN_LEFT:
     case AOUT_CHAN_RIGHT:
     case AOUT_CHAN_CENTER:
-        if ( (p_format->i_original_channels & AOUT_CHAN_CENTER)
-              || (p_format->i_original_channels
+        if ( (p_format->i_physical_channels & AOUT_CHAN_CENTER)
+              || (p_format->i_physical_channels
                    & (AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT)) )
             return "Mono";
-        else if ( p_format->i_original_channels & AOUT_CHAN_LEFT )
+        else if ( p_format->i_physical_channels & AOUT_CHAN_LEFT )
             return "Left";
         return "Right";
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT:
-        if ( p_format->i_original_channels & AOUT_CHAN_REVERSESTEREO )
-        {
-            if ( p_format->i_original_channels & AOUT_CHAN_DOLBYSTEREO )
-                return "Dolby/Reverse";
-            return "Stereo/Reverse";
-        }
-        else
-        {
-            if ( p_format->i_original_channels & AOUT_CHAN_DOLBYSTEREO )
-                return "Dolby";
-            else if ( p_format->i_original_channels & AOUT_CHAN_DUALMONO )
-                return "Dual-mono";
-            else if ( p_format->i_original_channels == AOUT_CHAN_CENTER )
-                return "Stereo/Mono";
-            else if ( !(p_format->i_original_channels & AOUT_CHAN_RIGHT) )
-                return "Stereo/Left";
-            else if ( !(p_format->i_original_channels & AOUT_CHAN_LEFT) )
-                return "Stereo/Right";
-            return "Stereo";
-        }
+        if ( p_format->i_chan_mode & AOUT_CHANMODE_DOLBYSTEREO )
+            return "Dolby";
+        else if ( p_format->i_chan_mode & AOUT_CHANMODE_DUALMONO )
+            return "Dual-mono";
+        else if ( p_format->i_physical_channels == AOUT_CHAN_CENTER )
+            return "Stereo/Mono";
+        else if ( !(p_format->i_physical_channels & AOUT_CHAN_RIGHT) )
+            return "Stereo/Left";
+        else if ( !(p_format->i_physical_channels & AOUT_CHAN_LEFT) )
+            return "Stereo/Right";
+        return "Stereo";
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER:
         return "3F";
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_REARCENTER:
@@ -156,23 +154,23 @@ const char * aout_FormatPrintChannels( const audio_sample_format_t * p_format )
         return "3F2M";
 
     case AOUT_CHAN_CENTER | AOUT_CHAN_LFE:
-        if ( (p_format->i_original_channels & AOUT_CHAN_CENTER)
-              || (p_format->i_original_channels
+        if ( (p_format->i_physical_channels & AOUT_CHAN_CENTER)
+              || (p_format->i_physical_channels
                    & (AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT)) )
             return "Mono/LFE";
-        else if ( p_format->i_original_channels & AOUT_CHAN_LEFT )
+        else if ( p_format->i_physical_channels & AOUT_CHAN_LEFT )
             return "Left/LFE";
         return "Right/LFE";
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_LFE:
-        if ( p_format->i_original_channels & AOUT_CHAN_DOLBYSTEREO )
+        if ( p_format->i_chan_mode & AOUT_CHANMODE_DOLBYSTEREO )
             return "Dolby/LFE";
-        else if ( p_format->i_original_channels & AOUT_CHAN_DUALMONO )
+        else if ( p_format->i_chan_mode & AOUT_CHANMODE_DUALMONO )
             return "Dual-mono/LFE";
-        else if ( p_format->i_original_channels == AOUT_CHAN_CENTER )
+        else if ( p_format->i_physical_channels == AOUT_CHAN_CENTER )
             return "Mono/LFE";
-        else if ( !(p_format->i_original_channels & AOUT_CHAN_RIGHT) )
+        else if ( !(p_format->i_physical_channels & AOUT_CHAN_RIGHT) )
             return "Stereo/Left/LFE";
-        else if ( !(p_format->i_original_channels & AOUT_CHAN_LEFT) )
+        else if ( !(p_format->i_physical_channels & AOUT_CHAN_LEFT) )
             return "Stereo/Right/LFE";
          return "Stereo/LFE";
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER | AOUT_CHAN_LFE:
@@ -193,8 +191,16 @@ const char * aout_FormatPrintChannels( const audio_sample_format_t * p_format )
           | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_LFE:
         return "3F2R/LFE";
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
+          | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_REARCENTER
+          | AOUT_CHAN_LFE:
+        return "3F3R/LFE";
+    case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
           | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT | AOUT_CHAN_LFE:
         return "3F2M/LFE";
+    case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT
+          | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_MIDDLELEFT
+          | AOUT_CHAN_MIDDLERIGHT:
+        return "2F2M2R";
     case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
           | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_MIDDLELEFT
           | AOUT_CHAN_MIDDLERIGHT:
@@ -207,9 +213,13 @@ const char * aout_FormatPrintChannels( const audio_sample_format_t * p_format )
           | AOUT_CHAN_REARCENTER | AOUT_CHAN_MIDDLELEFT
           | AOUT_CHAN_MIDDLERIGHT | AOUT_CHAN_LFE:
         return "3F2M1R/LFE";
+    case AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT | AOUT_CHAN_CENTER
+          | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT | AOUT_CHAN_REARCENTER
+          | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT | AOUT_CHAN_LFE:
+        return "3F2M3R/LFE";
     }
 
-    return "ERROR";
+    return "Unknown-chan-mask";
 }
 
 #undef aout_FormatPrint
@@ -248,6 +258,8 @@ unsigned aout_CheckChannelReorder( const uint32_t *chans_in,
                                    const uint32_t *chans_out,
                                    uint32_t mask, uint8_t *restrict table )
 {
+    static_assert(AOUT_CHAN_MAX <= (sizeof (mask) * CHAR_BIT), "Missing bits");
+
     unsigned channels = 0;
 
     if( chans_in == NULL )
@@ -286,11 +298,13 @@ unsigned aout_CheckChannelReorder( const uint32_t *chans_in,
  * \param fourcc sample format (must be a linear sample format)
  * \note The samples must be naturally aligned in memory.
  */
-void aout_ChannelReorder( void *ptr, size_t bytes, unsigned channels,
+void aout_ChannelReorder( void *ptr, size_t bytes, uint8_t channels,
                           const uint8_t *restrict chans_table, vlc_fourcc_t fourcc )
 {
+    if( unlikely(bytes == 0) )
+        return;
+
     assert( channels != 0 );
-    assert( channels <= AOUT_CHAN_MAX );
 
     /* The audio formats supported in audio output are inlined. For other
      * formats (used in demuxers and muxers), memcpy() is used to avoid
@@ -311,34 +325,32 @@ do { \
     } \
 } while(0)
 
-    switch( fourcc )
+    if( likely(channels <= AOUT_CHAN_MAX) )
     {
-        case VLC_CODEC_U8:   REORDER_TYPE(uint8_t); break;
-        case VLC_CODEC_S16N: REORDER_TYPE(int16_t); break;
-        case VLC_CODEC_FL32: REORDER_TYPE(float);   break;
-        case VLC_CODEC_S32N: REORDER_TYPE(int32_t); break;
-        case VLC_CODEC_FL64: REORDER_TYPE(double);  break;
-
-        default:
+        switch( fourcc )
         {
-            unsigned size = aout_BitsPerSample( fourcc ) / 8;
-            assert( size != 0 );
-
-            const size_t frames = bytes / (size * channels);
-            unsigned char *buf = ptr;
-
-            assert( bytes != 0 );
-            for( size_t i = 0; i < frames; i++ )
-            {
-                unsigned char tmp[AOUT_CHAN_MAX * size];
-
-                for( size_t j = 0; j < channels; j++ )
-                    memcpy( tmp + size * chans_table[j], buf + size * j, size );
-                memcpy( buf, tmp, size * channels );
-                buf += size * channels;
-            }
-            break;
+            case VLC_CODEC_U8:   REORDER_TYPE(uint8_t); return;
+            case VLC_CODEC_S16N: REORDER_TYPE(int16_t); return;
+            case VLC_CODEC_FL32: REORDER_TYPE(float);   return;
+            case VLC_CODEC_S32N: REORDER_TYPE(int32_t); return;
+            case VLC_CODEC_FL64: REORDER_TYPE(double);  return;
         }
+    }
+
+    unsigned size = aout_BitsPerSample( fourcc ) / 8;
+    assert( size != 0 && size <= 8 );
+
+    const size_t frames = bytes / (size * channels);
+    unsigned char *buf = ptr;
+
+    for( size_t i = 0; i < frames; i++ )
+    {
+        unsigned char tmp[256 * 8];
+
+        for( size_t j = 0; j < channels; j++ )
+             memcpy( tmp + size * chans_table[j], buf + size * j, size );
+         memcpy( buf, tmp, size * channels );
+         buf += size * channels;
     }
 }
 
@@ -369,11 +381,11 @@ do { \
     switch( fourcc )
     {
         case VLC_CODEC_U8:   INTERLEAVE_TYPE(uint8_t);  break;
-        case VLC_CODEC_S16N: INTERLEAVE_TYPE(uint16_t); break;
+        case VLC_CODEC_S16N: INTERLEAVE_TYPE(int16_t);  break;
         case VLC_CODEC_FL32: INTERLEAVE_TYPE(float);    break;
         case VLC_CODEC_S32N: INTERLEAVE_TYPE(int32_t);  break;
         case VLC_CODEC_FL64: INTERLEAVE_TYPE(double);   break;
-        default:             assert(0);
+        default:             vlc_assert_unreachable();
     }
 #undef INTERLEAVE_TYPE
 }
@@ -405,11 +417,11 @@ do { \
     switch( fourcc )
     {
         case VLC_CODEC_U8:   DEINTERLEAVE_TYPE(uint8_t);  break;
-        case VLC_CODEC_S16N: DEINTERLEAVE_TYPE(uint16_t); break;
+        case VLC_CODEC_S16N: DEINTERLEAVE_TYPE(int16_t);  break;
         case VLC_CODEC_FL32: DEINTERLEAVE_TYPE(float);    break;
         case VLC_CODEC_S32N: DEINTERLEAVE_TYPE(int32_t);  break;
         case VLC_CODEC_FL64: DEINTERLEAVE_TYPE(double);   break;
-        default:             assert(0);
+        default:             vlc_assert_unreachable();
     }
 #undef DEINTERLEAVE_TYPE
 }
@@ -454,7 +466,9 @@ bool aout_CheckChannelExtraction( int *pi_selection,
                                   const uint32_t pi_order_dst[AOUT_CHAN_MAX],
                                   const uint32_t *pi_order_src, int i_channels )
 {
-    const uint32_t pi_order_dual_mono[] = { AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT };
+    static_assert(AOUT_CHAN_MAX <= (sizeof (*pi_order_dst) * CHAR_BIT),
+                  "Missing bits");
+
     uint32_t i_layout = 0;
     int i_out = 0;
     int pi_index[AOUT_CHAN_MAX];
@@ -462,14 +476,6 @@ bool aout_CheckChannelExtraction( int *pi_selection,
     /* */
     if( !pi_order_dst )
         pi_order_dst = pi_vlc_chan_order_wg4;
-
-    /* Detect special dual mono case */
-    if( i_channels == 2 &&
-        pi_order_src[0] == AOUT_CHAN_CENTER && pi_order_src[1] == AOUT_CHAN_CENTER )
-    {
-        i_layout |= AOUT_CHAN_DUALMONO;
-        pi_order_src = pi_order_dual_mono;
-    }
 
     /* */
     for( int i = 0; i < i_channels; i++ )
@@ -548,8 +554,7 @@ bool aout_ChangeFilterString( vlc_object_t *p_obj, vlc_object_t *p_aout,
     }
     else
     {
-        psz_list = var_CreateGetString( p_obj->p_libvlc, psz_variable );
-        var_Destroy( p_obj->p_libvlc, psz_variable );
+        psz_list = var_InheritString( p_obj, psz_variable );
     }
 
     /* Split the string into an array of filters */
@@ -614,6 +619,14 @@ bool aout_ChangeFilterString( vlc_object_t *p_obj, vlc_object_t *p_aout,
         i_length += 1 + strlen( ppsz_filter[i] );
 
     char *psz_new = malloc( i_length + 1 );
+
+    if( unlikely( !psz_new ) )
+    {
+        free( ppsz_filter );
+        free( psz_list );
+        return false;
+    }
+
     *psz_new = '\0';
     for( int i = 0; i < i_count; i++ )
     {
@@ -626,10 +639,9 @@ bool aout_ChangeFilterString( vlc_object_t *p_obj, vlc_object_t *p_aout,
     free( ppsz_filter );
     free( psz_list );
 
+    var_SetString( p_obj, psz_variable, psz_new );
     if( p_aout )
         var_SetString( p_aout, psz_variable, psz_new );
-    else
-        config_PutPsz( p_obj, psz_variable, psz_new );
     free( psz_new );
 
     return true;

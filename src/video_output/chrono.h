@@ -2,7 +2,7 @@
  * chrono.h: vout chrono
  *****************************************************************************
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: 8a22511c5a72b3164f4b3ab6798fb1d7e879c1b4 $
+ * $Id: 594712e1cd2e803cbccd472efd7991d2f78d6de4 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -23,6 +23,8 @@
 
 #ifndef LIBVLC_VOUT_CHRONO_H
 #define LIBVLC_VOUT_CHRONO_H
+
+#include <assert.h>
 
 typedef struct {
     int     shift;

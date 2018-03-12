@@ -172,7 +172,7 @@ static int ControlSetCallback (vlc_object_t *obj, const char *var,
             ret = ControlSetStr (ctrl, cur.psz_string);
             break;
         default:
-            assert (0);
+            vlc_assert_unreachable ();
     }
 
     if (ret)
@@ -392,17 +392,14 @@ static vlc_v4l2_ctrl_t *ControlAddInteger (vlc_object_t *obj, int fd,
         val.i_int = ctrl.value;
         var_Change (obj, c->name, VLC_VAR_SETVALUE, &val, NULL);
     }
-    val.i_int = query->minimum;
-    var_Change (obj, c->name, VLC_VAR_SETMIN, &val, NULL);
-    val.i_int = query->maximum;
-    var_Change (obj, c->name, VLC_VAR_SETMAX, &val, NULL);
+    var_Change (obj, c->name, VLC_VAR_SETMINMAX,
+        &(vlc_value_t){ .i_int = query->minimum },
+        &(vlc_value_t){ .i_int = query->maximum } );
     if (query->step != 1)
     {
         val.i_int = query->step;
         var_Change (obj, c->name, VLC_VAR_SETSTEP, &val, NULL);
     }
-    val.i_int = query->default_value;
-    var_Change (obj, c->name, VLC_VAR_SETDEFAULT, &val, NULL);
     return c;
 }
 
@@ -434,8 +431,6 @@ static vlc_v4l2_ctrl_t *ControlAddBoolean (vlc_object_t *obj, int fd,
         val.b_bool = ctrl.value;
         var_Change (obj, c->name, VLC_VAR_SETVALUE, &val, NULL);
     }
-    val.b_bool = query->default_value;
-    var_Change (obj, c->name, VLC_VAR_SETDEFAULT, &val, NULL);
     return c;
 }
 
@@ -450,8 +445,7 @@ static vlc_v4l2_ctrl_t *ControlAddMenu (vlc_object_t *obj, int fd,
     if (unlikely(c == NULL))
         return NULL;
 
-    if (var_Create (obj, c->name, VLC_VAR_INTEGER | VLC_VAR_HASCHOICE
-                                                  | VLC_VAR_ISCOMMAND))
+    if (var_Create (obj, c->name, VLC_VAR_INTEGER | VLC_VAR_ISCOMMAND))
     {
         free (c);
         return NULL;
@@ -467,12 +461,9 @@ static vlc_v4l2_ctrl_t *ControlAddMenu (vlc_object_t *obj, int fd,
         val.i_int = ctrl.value;
         var_Change (obj, c->name, VLC_VAR_SETVALUE, &val, NULL);
     }
-    val.i_int = query->minimum;
-    var_Change (obj, c->name, VLC_VAR_SETMIN, &val, NULL);
-    val.i_int = query->maximum;
-    var_Change (obj, c->name, VLC_VAR_SETMAX, &val, NULL);
-    val.i_int = query->default_value;
-    var_Change (obj, c->name, VLC_VAR_SETDEFAULT, &val, NULL);
+    var_Change (obj, c->name, VLC_VAR_SETMINMAX,
+        &(vlc_value_t){ .i_int = query->minimum },
+        &(vlc_value_t){ .i_int = query->maximum } );
 
     /* Import menu choices */
     for (uint_fast32_t idx = query->minimum;
@@ -629,12 +620,9 @@ static vlc_v4l2_ctrl_t *ControlAddBitMask (vlc_object_t *obj, int fd,
         val.i_int = ctrl.value;
         var_Change (obj, c->name, VLC_VAR_SETVALUE, &val, NULL);
     }
-    val.i_int = 0;
-    var_Change (obj, c->name, VLC_VAR_SETMIN, &val, NULL);
-    val.i_int = (uint32_t)query->maximum;
-    var_Change (obj, c->name, VLC_VAR_SETMAX, &val, NULL);
-    val.i_int = query->default_value;
-    var_Change (obj, c->name, VLC_VAR_SETDEFAULT, &val, NULL);
+    var_Change (obj, c->name, VLC_VAR_SETMINMAX,
+        &(vlc_value_t){ .i_int = 0 },
+        &(vlc_value_t){ .i_int = (uint32_t)query->maximum } );
     return c;
 }
 
@@ -649,8 +637,7 @@ static vlc_v4l2_ctrl_t *ControlAddIntMenu (vlc_object_t *obj, int fd,
     if (unlikely(c == NULL))
         return NULL;
 
-    if (var_Create (obj, c->name, VLC_VAR_INTEGER | VLC_VAR_HASCHOICE
-                                                  | VLC_VAR_ISCOMMAND))
+    if (var_Create (obj, c->name, VLC_VAR_INTEGER | VLC_VAR_ISCOMMAND))
     {
         free (c);
         return NULL;
@@ -666,12 +653,9 @@ static vlc_v4l2_ctrl_t *ControlAddIntMenu (vlc_object_t *obj, int fd,
         val.i_int = ctrl.value;
         var_Change (obj, c->name, VLC_VAR_SETVALUE, &val, NULL);
     }
-    val.i_int = query->minimum;
-    var_Change (obj, c->name, VLC_VAR_SETMIN, &val, NULL);
-    val.i_int = query->maximum;
-    var_Change (obj, c->name, VLC_VAR_SETMAX, &val, NULL);
-    val.i_int = query->default_value;
-    var_Change (obj, c->name, VLC_VAR_SETDEFAULT, &val, NULL);
+    var_Change (obj, c->name, VLC_VAR_SETMINMAX,
+        &(vlc_value_t){ .i_int = query->minimum },
+        &(vlc_value_t){ .i_int = query->maximum } );
 
     /* Import menu choices */
     for (uint_fast32_t idx = query->minimum;
@@ -715,7 +699,7 @@ vlc_v4l2_ctrl_t *ControlsInit (vlc_object_t *obj, int fd)
 {
     /* A list of controls that can be modified at run-time is stored in the
      * "controls" variable. The V4L2 controls dialog can be built from this. */
-    var_Create (obj, "controls", VLC_VAR_INTEGER | VLC_VAR_HASCHOICE);
+    var_Create (obj, "controls", VLC_VAR_INTEGER);
 
     static const ctrl_type_cb handlers[] =
     {

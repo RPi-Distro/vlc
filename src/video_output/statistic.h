@@ -2,7 +2,7 @@
  * statistic.h : vout statistic
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 083b0d7aa74f1c8c5cf0dba1c67c5d6febb272db $
+ * $Id: 12f880d51b989a526b32301f44b1d7d417d7c653 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -44,7 +44,9 @@ static inline void vout_statistic_Clean(vout_statistic_t *stat)
     (void) stat;
 }
 
-static inline void vout_statistic_GetReset(vout_statistic_t *stat, int *displayed, int *lost)
+static inline void vout_statistic_GetReset(vout_statistic_t *stat,
+                                           unsigned *restrict displayed,
+                                           unsigned *restrict lost)
 {
     *displayed = atomic_exchange(&stat->displayed, 0);
     *lost      = atomic_exchange(&stat->lost, 0);

@@ -2,7 +2,7 @@
  * avcommon.h: common code for libav*
  *****************************************************************************
  * Copyright (C) 2012 VLC authors and VideoLAN
- * $Id: 411ddaceb1b8bbdb9d16e18e93e173ee76de7cbd $
+ * $Id: 65ad35f4ada4d2b7549ace885cc8b38ddbe20aed $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -31,6 +31,7 @@
 #include <vlc_avcodec.h>
 #include <vlc_configuration.h>
 #include <vlc_variables.h>
+#include <vlc_es.h>
 
 #include <limits.h>
 
@@ -42,22 +43,21 @@
 # include <libavutil/cpu.h>
 # include <libavutil/log.h>
 
-#define AV_OPTIONS_TEXT     "Advanced options"
-#define AV_OPTIONS_LONGTEXT "Advanced options, in the form {opt=val,opt2=val2}."
+#define AV_OPTIONS_TEXT     N_("Advanced options")
+#define AV_OPTIONS_LONGTEXT N_("Advanced options, in the form {opt=val,opt2=val2}.")
 
-static inline AVDictionary *vlc_av_get_options(const char *psz_opts)
+static inline void vlc_av_get_options(const char *psz_opts, AVDictionary** pp_dict)
 {
-    AVDictionary *options = NULL;
     config_chain_t *cfg = NULL;
     config_ChainParseOptions(&cfg, psz_opts);
     while (cfg) {
         config_chain_t *next = cfg->p_next;
-        av_dict_set(&options, cfg->psz_name, cfg->psz_value,
-            AV_DICT_DONT_STRDUP_KEY | AV_DICT_DONT_STRDUP_VAL);
+        av_dict_set(pp_dict, cfg->psz_name, cfg->psz_value, 0);
+        free(cfg->psz_name);
+        free(cfg->psz_value);
         free(cfg);
         cfg = next;
     }
-    return options;
 }
 
 static inline void vlc_init_avutil(vlc_object_t *obj)
@@ -73,7 +73,13 @@ static inline void vlc_init_avutil(vlc_object_t *obj)
         case VLC_MSG_WARN:
             level = AV_LOG_WARNING;
             break;
+        case VLC_MSG_INFO:
+            level = AV_LOG_INFO;
+            break;
         case VLC_MSG_DBG:
+            level = AV_LOG_VERBOSE;
+            break;
+        case VLC_MSG_DBG+1:
             level = AV_LOG_DEBUG;
         default:
             break;
@@ -110,13 +116,86 @@ static inline void vlc_init_avcodec(vlc_object_t *obj)
 
     vlc_init_avutil(obj);
 
-#if LIBAVCODEC_VERSION_MAJOR < 54
-    avcodec_init();
-#endif
     avcodec_register_all();
 
     vlc_avcodec_unlock();
 }
 #endif
+
+static inline vlc_rational_t FromAVRational(const AVRational rat)
+{
+    return (vlc_rational_t){.num = rat.num, .den = rat.den};
+}
+
+static inline void set_video_color_settings( const video_format_t *p_fmt, AVCodecContext *p_context )
+{
+    if( p_fmt->b_color_range_full )
+        p_context->color_range = AVCOL_RANGE_JPEG;
+
+    switch( p_fmt->space )
+    {
+        case COLOR_SPACE_BT709:
+            p_context->colorspace = AVCOL_SPC_BT709;
+            break;
+        case COLOR_SPACE_BT601:
+            p_context->colorspace = AVCOL_SPC_BT470BG;
+            break;
+        case COLOR_SPACE_BT2020:
+            p_context->colorspace = AVCOL_SPC_BT2020_CL;
+            break;
+        default:
+            p_context->colorspace = AVCOL_SPC_UNSPECIFIED;
+            break;
+    }
+
+    switch( p_fmt->transfer )
+    {
+        case TRANSFER_FUNC_LINEAR:
+            p_context->color_trc = AVCOL_TRC_LINEAR;
+            break;
+        case TRANSFER_FUNC_SRGB:
+            p_context->color_trc = AVCOL_TRC_GAMMA22;
+            break;
+        case TRANSFER_FUNC_BT470_BG:
+            p_context->color_trc = AVCOL_TRC_GAMMA28;
+            break;
+        case TRANSFER_FUNC_BT470_M:
+            p_context->color_trc = AVCOL_TRC_GAMMA22;
+            break;
+        case TRANSFER_FUNC_BT709:
+            p_context->color_trc = AVCOL_TRC_BT709;
+            break;
+        case TRANSFER_FUNC_SMPTE_ST2084:
+            p_context->color_trc = AVCOL_TRC_SMPTEST2084;
+            break;
+        case TRANSFER_FUNC_SMPTE_240:
+            p_context->color_trc = AVCOL_TRC_SMPTE240M;
+            break;
+        default:
+            p_context->color_trc = AVCOL_TRC_UNSPECIFIED;
+            break;
+    }
+    switch( p_fmt->primaries )
+    {
+        case COLOR_PRIMARIES_BT601_525:
+            p_context->color_primaries = AVCOL_PRI_SMPTE170M;
+            break;
+        case COLOR_PRIMARIES_BT601_625:
+            p_context->color_primaries = AVCOL_PRI_BT470BG;
+            break;
+        case COLOR_PRIMARIES_BT709:
+            p_context->color_primaries = AVCOL_PRI_BT709;
+            break;
+        case COLOR_PRIMARIES_BT2020:
+            p_context->color_primaries = AVCOL_PRI_BT2020;
+            break;
+        case COLOR_PRIMARIES_FCC1953:
+            p_context->color_primaries = AVCOL_PRI_BT470M;
+            break;
+        default:
+            p_context->color_primaries = AVCOL_PRI_UNSPECIFIED;
+            break;
+    }
+}
 
 #endif

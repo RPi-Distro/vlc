@@ -5,7 +5,7 @@
  * Copyright © 2007-2011 Mirsal Ennaime
  * Copyright © 2009-2011 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: cb570e7120b2227a98fd4b5400261ddd4b481212 $
+ * $Id: 1bc7f5dbccba70b8c180666f8153f9aef54cee1d $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
@@ -26,8 +26,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_DBUS_INTROSPECT_H
-#define _VLC_DBUS_INTROSPECT_H
+#ifndef VLC_DBUS_DBUS_INTROSPECT_H_
+#define VLC_DBUS_DBUS_INTROSPECT_H_
 
 #include "dbus_common.h"
 
@@ -153,4 +153,4 @@ DBUS_METHOD( handle_introspect )
     REPLY_SEND;
 }
 
-#endif //dbus-introspect.h
+#endif /* include-guard */

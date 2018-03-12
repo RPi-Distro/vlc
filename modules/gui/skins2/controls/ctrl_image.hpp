@@ -2,7 +2,7 @@
  * ctrl_image.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f1d18f17ae10070fa41cc717048ea565a896f22c $
+ * $Id: 422938785c09a9ebb8e6efbed770a4994a602ad4 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -63,7 +63,7 @@ public:
     virtual void draw( OSGraphics &rImage, int xDest, int yDest, int w, int h );
 
     /// Get the type of control (custom RTTI)
-    virtual string getType() const { return "image"; }
+    virtual std::string getType() const { return "image"; }
 
 private:
     /// Bitmap

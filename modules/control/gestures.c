@@ -2,7 +2,7 @@
  * gestures.c: control vlc with mouse gestures
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 3aa2ff27990b680533a485f4c28856e2b3ad5be9 $
+ * $Id: 4fc28910bb7bd5c7d1f5ddacb081d7595d41a810 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -29,11 +29,13 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
 #include <vlc_vout.h>
 #include <vlc_playlist.h>
+#include <vlc_input.h>
 #include <assert.h>
 
 /*****************************************************************************
@@ -162,11 +164,8 @@ static void Close ( vlc_object_t *p_this )
     /* Destroy the callbacks (the order matters!) */
     var_DelCallback( pl_Get(p_intf), "input-current", PlaylistEvent, p_intf );
 
-    if( p_sys->p_input )
-    {
+    if( p_sys->p_input != NULL )
         var_DelCallback( p_sys->p_input, "intf-event", InputEvent, p_intf );
-        vlc_object_release( p_sys->p_input );
-    }
 
     if( p_sys->p_vout )
     {
@@ -202,7 +201,7 @@ static void ProcessGesture( intf_thread_t *p_intf )
 
             int it = var_InheritInteger( p_intf , "short-jump-size" );
             if( it > 0 )
-                var_SetTime( p_input, "time-offset", -CLOCK_FREQ * it );
+                var_SetInteger( p_input, "time-offset", -CLOCK_FREQ * it );
             vlc_object_release( p_input );
             break;
         }
@@ -217,7 +216,7 @@ static void ProcessGesture( intf_thread_t *p_intf )
 
             int it = var_InheritInteger( p_intf , "short-jump-size" );
             if( it > 0 )
-                var_SetTime( p_input, "time-offset", CLOCK_FREQ * it );
+                var_SetInteger( p_input, "time-offset", CLOCK_FREQ * it );
             vlc_object_release( p_input );
             break;
         }
@@ -356,7 +355,7 @@ static void ProcessGesture( intf_thread_t *p_intf )
 
         case GESTURE(DOWN,LEFT,NONE,NONE):
             /* FIXME: Should close the vout!"*/
-            libvlc_Quit( p_intf->p_libvlc );
+            libvlc_Quit( p_intf->obj.libvlc );
             break;
 
         case GESTURE(DOWN,LEFT,UP,RIGHT):
@@ -384,8 +383,8 @@ static int MovedEvent( vlc_object_t *p_this, char const *psz_var,
         int i_vertical = newval.coords.y - p_sys->i_last_y;
         unsigned int pattern = 0;
 
-        i_horizontal = i_horizontal / p_sys->i_threshold;
-        i_vertical = i_vertical / p_sys->i_threshold;
+        i_horizontal /= p_sys->i_threshold;
+        i_vertical /= p_sys->i_threshold;
 
         if( i_horizontal < 0 )
         {
@@ -474,11 +473,6 @@ static int InputEvent( vlc_object_t *p_this, char const *psz_var,
 
     switch( val.i_int )
     {
-      case INPUT_EVENT_DEAD:
-        vlc_object_release( p_input );
-        p_sys->p_input = NULL; /* FIXME: locking!! */
-        break;
-
       case INPUT_EVENT_VOUT:
         /* intf-event is serialized against itself and is the sole user of
          * p_sys->p_vout. So there is no need to acquire the lock currently. */
@@ -511,10 +505,18 @@ static int PlaylistEvent( vlc_object_t *p_this, char const *psz_var,
     intf_sys_t *p_sys = p_intf->p_sys;
     input_thread_t *p_input = val.p_address;
 
-    (void) p_this; (void) psz_var; (void) oldval;
+    (void) p_this; (void) psz_var;
 
-    var_AddCallback( p_input, "intf-event", InputEvent, p_intf );
-    assert( p_sys->p_input == NULL );
-    p_sys->p_input = vlc_object_hold( p_input );
+    if( p_sys->p_input != NULL )
+    {
+        assert( p_sys->p_input == oldval.p_address );
+        var_DelCallback( p_sys->p_input, "intf-event", InputEvent, p_intf );
+    }
+
+    p_sys->p_input = p_input;
+
+    if( p_input != NULL )
+        var_AddCallback( p_input, "intf-event", InputEvent, p_intf );
+
     return VLC_SUCCESS;
 }

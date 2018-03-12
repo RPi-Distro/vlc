@@ -2,7 +2,7 @@
  * bitmap_font.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 15f2bcd0fa3661fff41f3b0f9390e76b809464ad $
+ * $Id: 6f98480dd5fb3e0eae01099e71c56b317893136d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -35,7 +35,7 @@ class BitmapFont: public GenericFont
 {
 public:
     BitmapFont( intf_thread_t *pIntf, const GenericBitmap &rBitmap,
-                const string &rType );
+                const std::string &rType );
     virtual ~BitmapFont() { }
 
     virtual bool init() { return true; }

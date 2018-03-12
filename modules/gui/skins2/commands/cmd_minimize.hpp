@@ -2,7 +2,7 @@
  * cmd_minimize.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 429631244c94b7bd55095abc22c946fcbb6d94cd $
+ * $Id: 298567b9009eb2af54c06fa7fcc2004a39118124 $
  *
  * Authors: Mohammed Adnène Trojette     <adn@via.ecp.fr>
  *
@@ -42,7 +42,7 @@ public:
                  TopWindow &rWindow );
     virtual ~CmdMaximize() { }
     virtual void execute();
-    virtual string getType() const { return "maximize"; }
+    virtual std::string getType() const { return "maximize"; }
 
 private:
     WindowManager &m_rWindowManager;
@@ -59,7 +59,7 @@ public:
                  TopWindow &rWindow );
     virtual ~CmdUnmaximize() { }
     virtual void execute();
-    virtual string getType() const { return "unmaximize"; }
+    virtual std::string getType() const { return "unmaximize"; }
 
 private:
     WindowManager &m_rWindowManager;

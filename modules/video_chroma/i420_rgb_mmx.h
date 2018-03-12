@@ -2,7 +2,7 @@
  * i420_rgb_mmx.h: MMX YUV transformation assembly
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 29d51b9307527bd1fe30d3a480faaa90b7b1033a $
+ * $Id: 54913292724cbf9f2566b9174fb41fd7741ea1f4 $
  *
  * Authors: Olie Lho <ollie@sis.com.tw>
  *          Gaël Hendryckx <jimmy@via.ecp.fr>
@@ -50,11 +50,11 @@ static const uint64_t mmx_mask_fc = 0xfcfcfcfcfcfcfcfcULL; /* -- as %13 */
         :                               \
         : "r" (p_y), "r" (p_u),         \
           "r" (p_v), "r" (p_buffer),    \
-	  "m" (mmx_80w), "m" (mmx_10w), \
-	  "m" (mmx_00ffw), "m" (mmx_Y_coeff), \
-	  "m" (mmx_U_green), "m" (mmx_U_blue), \
-	  "m" (mmx_V_red), "m" (mmx_V_green), \
-	  "m" (mmx_mask_f8), "m" (mmx_mask_fc) \
+          "m" (mmx_80w), "m" (mmx_10w), \
+          "m" (mmx_00ffw), "m" (mmx_Y_coeff), \
+          "m" (mmx_U_green), "m" (mmx_U_blue), \
+          "m" (mmx_V_red), "m" (mmx_V_green), \
+          "m" (mmx_mask_f8), "m" (mmx_mask_fc) \
         : "mm0", "mm1", "mm2", "mm3", "mm4", "mm5", "mm6", "mm7" );  \
     } while(0)
 

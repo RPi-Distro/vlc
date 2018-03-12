@@ -2,7 +2,7 @@
  * ctrl_list.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1f7e5c811b26efba43659d6c71e946090b0960bb $
+ * $Id: 0bfd248b02ee509b57fb92aed20275b8ac35a2cd $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -65,7 +65,7 @@ public:
     virtual bool isScrollable() const { return true; }
 
     /// Get the type of control (custom RTTI)
-    virtual string getType() const { return "list"; }
+    virtual std::string getType() const { return "list"; }
 
 private:
     /// List associated to the control

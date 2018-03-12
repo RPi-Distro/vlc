@@ -40,12 +40,6 @@ void flockfile (FILE *stream)
     _lock_file (stream);
 }
 
-int ftrylockfile (FILE *stream)
-{
-    flockfile (stream); /* Move along people, there is nothing to see here. */
-    return 0;
-}
-
 void funlockfile (FILE *stream)
 {
     _unlock_file (stream);
@@ -61,6 +55,16 @@ int putc_unlocked (int c, FILE *stream)
     return _putc_nolock (c, stream);
 }
 
+#elif defined __native_client__
+void flockfile (FILE *stream)
+{
+    _flockfile(stream);
+}
+
+void funlockfile (FILE *stream)
+{
+    _funlockfile(stream);
+}
 #else
 # error flockfile not implemented on your platform!
 #endif

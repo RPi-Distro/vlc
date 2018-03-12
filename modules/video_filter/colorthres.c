@@ -2,7 +2,7 @@
  * colorthres.c: Threshold color based on similarity to reference color
  *****************************************************************************
  * Copyright (C) 2000-2009 VLC authors and VideoLAN
- * $Id: 3778639e32f59fae27ab4516d7a8d35d347a7c42 $
+ * $Id: 314ac80f4111ae4ae9599c76a43f83874d5414b3 $
  *
  * Authors: Sigmund Augdal <dnumgis@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -37,6 +37,7 @@
 #include <vlc_sout.h>
 #include <vlc_atomic.h>
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include "filter_picture.h"
 
 /*****************************************************************************
@@ -71,7 +72,7 @@ vlc_module_begin ()
     set_help(COLOR_HELP)
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     add_rgb( CFG_PREFIX "color", 0x00FF0000, COLOR_TEXT,
                  COLOR_LONGTEXT, false )
         change_integer_list( pi_color_values, ppsz_color_descriptions )

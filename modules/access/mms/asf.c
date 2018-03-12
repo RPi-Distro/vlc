@@ -2,7 +2,7 @@
  * asf.c: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001-2004 VLC authors and VideoLAN
- * $Id: d353bfddf955506ab4c3536445e97bda4266da17 $
+ * $Id: ce6e20c6cf404c4a398ce377e701fe1470e40399 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -27,10 +27,10 @@
 
 #include <vlc_common.h>
 #include <vlc_rand.h>
-#include <vlc_codecs.h>
 
 #include "asf.h"
 #include "buffer.h"
+#include "../../demux/asf/libasf_guid.h"
 
 void  GenerateGuid ( guid_t *p_guid )
 {

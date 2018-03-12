@@ -33,11 +33,6 @@
 # include <config.h>
 #endif
 
-/* INT64_C and UINT64_C are only exposed to c++ if this is defined */
-#ifndef __STDC_CONSTANT_MACROS
-# define __STDC_CONSTANT_MACROS
-#endif
-
 #include <vlc_common.h>
 #include <vlc_input.h>
 #include <vlc_demux.h>
@@ -47,6 +42,8 @@
 
 #include <sidplay/sidplay2.h>
 #include <sidplay/builders/resid.h>
+
+#include <new>
 
 static int  Open (vlc_object_t *);
 static void Close (vlc_object_t *);
@@ -93,7 +90,7 @@ static int Open (vlc_object_t *obj)
         return VLC_EGENERIC;
 
     const uint8_t *peek;
-    if (stream_Peek (demux->s, &peek, 4) < 4)
+    if (vlc_stream_Peek (demux->s, &peek, 4) < 4)
         return VLC_EGENERIC;
 
     /* sidplay2 can read PSID and the newer RSID formats */
@@ -104,12 +101,12 @@ static int Open (vlc_object_t *obj)
     if (unlikely (data==NULL))
         goto error;
 
-    if (stream_Read (demux->s,data,size) < size) {
+    if (vlc_stream_Read (demux->s,data,size) < size) {
         free (data);
         goto error;
     }
 
-    tune = new SidTune(0);
+    tune = new (std::nothrow) SidTune(0);
     if (unlikely (tune==NULL)) {
         free (data);
         goto error;
@@ -120,7 +117,7 @@ static int Open (vlc_object_t *obj)
     if (!result)
         goto error;
 
-    player = new sidplay2();
+    player = new (std::nothrow) sidplay2();
     if (unlikely(player==NULL))
         goto error;
 
@@ -136,7 +133,7 @@ static int Open (vlc_object_t *obj)
     sys->info = player->info();
     sys->config = player->config();
 
-    builder = new ReSIDBuilder ("ReSID");
+    builder = new (std::nothrow) ReSIDBuilder ("ReSID");
     if (unlikely(builder==NULL))
         goto error;
 
@@ -223,7 +220,7 @@ static int Demux (demux_t *demux)
     block->i_buffer = i_read;
     block->i_pts = block->i_dts = VLC_TS_0 + date_Get (&sys->pts);
 
-    es_out_Control (demux->out, ES_OUT_SET_PCR, block->i_pts);
+    es_out_SetPCR (demux->out, block->i_pts);
 
     es_out_Send (demux->out, sys->es, block);
 
@@ -246,7 +243,7 @@ static int Control (demux_t *demux, int query, va_list args)
         }
 
         case DEMUX_GET_META : {
-            vlc_meta_t *p_meta = (vlc_meta_t *) va_arg (args, vlc_meta_t*);
+            vlc_meta_t *p_meta = va_arg (args, vlc_meta_t *);
 
             /* These are specified in the sid tune class as 0 = Title, 1 = Artist, 2 = Copyright/Publisher */
             vlc_meta_SetTitle( p_meta, sys->tuneInfo.infoString[0] );
@@ -258,11 +255,11 @@ static int Control (demux_t *demux, int query, va_list args)
 
         case DEMUX_GET_TITLE_INFO :
             if ( sys->tuneInfo.songs > 1 ) {
-                input_title_t ***ppp_title = (input_title_t***) va_arg (args, input_title_t***);
-                int *pi_int    = (int*)va_arg( args, int* );
+                input_title_t ***ppp_title = va_arg (args, input_title_t ***);
+                int *pi_int = va_arg( args, int* );
 
                 *pi_int = sys->tuneInfo.songs;
-                *ppp_title = (input_title_t**) malloc( sizeof (input_title_t*) * sys->tuneInfo.songs);
+                *ppp_title = (input_title_t**) vlc_alloc( sys->tuneInfo.songs, sizeof (input_title_t*));
 
                 for( int i = 0; i < sys->tuneInfo.songs; i++ ) {
                     (*ppp_title)[i] = vlc_input_title_New();
@@ -273,7 +270,7 @@ static int Control (demux_t *demux, int query, va_list args)
             return VLC_EGENERIC;
 
         case DEMUX_SET_TITLE : {
-            int i_idx = (int) va_arg (args, int);
+            int i_idx = va_arg (args, int);
             sys->tune->selectSong (i_idx+1);
             bool result = (sys->player->load (sys->tune) >=0 );
             if (!result)

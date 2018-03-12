@@ -174,7 +174,7 @@ static void stream_read_cb(pa_stream *s, size_t length, void *userdata)
     else
         pts -= latency;
 
-    es_out_Control(demux->out, ES_OUT_SET_PCR, pts);
+    es_out_SetPCR(demux->out, pts);
     if (unlikely(sys->es == NULL))
         goto race;
 
@@ -255,15 +255,13 @@ static int Open(vlc_object_t *obj)
 {
     demux_t *demux = (demux_t *)obj;
 
-    demux_sys_t *sys = malloc(sizeof (*sys));
+    demux_sys_t *sys = vlc_obj_malloc(obj, sizeof (*sys));
     if (unlikely(sys == NULL))
         return VLC_ENOMEM;
 
     sys->context = vlc_pa_connect(obj, &sys->mainloop);
-    if (sys->context == NULL) {
-        free(sys);
+    if (sys->context == NULL)
         return VLC_EGENERIC;
-    }
 
     sys->stream = NULL;
     sys->es = NULL;
@@ -343,8 +341,7 @@ static int Open(vlc_object_t *obj)
     }
 
     es_format_Init(&fmt, AUDIO_ES, format);
-    fmt.audio.i_physical_channels = fmt.audio.i_original_channels =
-        AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
+    fmt.audio.i_physical_channels = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
     fmt.audio.i_channels = ss.channels;
     fmt.audio.i_rate = pss->rate;
     fmt.audio.i_bitspersample = aout_BitsPerSample(format);
@@ -396,5 +393,4 @@ static void Close (vlc_object_t *obj)
     }
 
     vlc_pa_disconnect(obj, sys->context, sys->mainloop);
-    free(sys);
 }

@@ -2,7 +2,7 @@
  * parse.c: SPU parser
  *****************************************************************************
  * Copyright (C) 2000-2001, 2005, 2006 VLC authors and VideoLAN
- * $Id: ccc8cb6f0ffbe0b6a1b7a9636d7def2275241c77 $
+ * $Id: 275864f187aa62119914038186d4d7ea7b23bf03 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -113,7 +113,7 @@ subpicture_t * ParsePacket( decoder_t *p_dec )
     if( ParseControlSeq( p_dec, p_spu, &spu_data, &spu_properties, p_sys->i_pts ) )
     {
         /* There was a parse error, delete the subpicture */
-        decoder_DeleteSubpicture( p_dec, p_spu );
+        subpicture_Delete( p_spu );
         return NULL;
     }
 
@@ -125,13 +125,13 @@ subpicture_t * ParsePacket( decoder_t *p_dec )
      *  one byte gaves two nibbles and may be used twice (once per field)
      * generating 4 codes.
      */
-    spu_data.p_data = malloc( sizeof(*spu_data.p_data) * 2 * 2 * p_sys->i_rle_size );
+    spu_data.p_data = vlc_alloc( p_sys->i_rle_size, sizeof(*spu_data.p_data) * 2 * 2 );
 
     /* We try to display it */
     if( ParseRLE( p_dec, &spu_data, &spu_properties ) )
     {
         /* There was a parse error, delete the subpicture */
-        decoder_DeleteSubpicture( p_dec, p_spu );
+        subpicture_Delete( p_spu );
         free( spu_data.p_data );
         return NULL;
     }
@@ -238,6 +238,10 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
         case SPU_CMD_FORCE_DISPLAY: /* 00 (force displaying) */
             p_spu->i_start = i_pts + date;
             p_spu->b_ephemer = true;
+            /* ignores picture date as display start time
+             * works around non displayable (offset by few ms)
+             * spu menu over still frame in SPU_Select */
+            p_spu->b_subtitle = false;
             i_index += 1;
             break;
 
@@ -260,7 +264,7 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
                 return VLC_EGENERIC;
             }
 
-            if( p_dec->fmt_in.subs.spu.palette[0] == 0xBeeF )
+            if( p_dec->fmt_in.subs.spu.palette[0] == SPU_PALETTE_DEFINED )
             {
                 unsigned int idx[4];
                 int i;
@@ -692,8 +696,7 @@ static void Render( decoder_t *p_dec, subpicture_t *p_spu,
     video_palette_t palette;
 
     /* Create a new subpicture region */
-    memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_CODEC_YUVP;
+    video_format_Init( &fmt, VLC_CODEC_YUVP );
     fmt.i_sar_num = 0; /* 0 means use aspect ratio of background video */
     fmt.i_sar_den = 1;
     fmt.i_width = fmt.i_visible_width = p_spu_properties->i_width;
@@ -713,6 +716,8 @@ static void Render( decoder_t *p_dec, subpicture_t *p_spu,
     p_spu->p_region = subpicture_region_New( &fmt );
     if( !p_spu->p_region )
     {
+        fmt.p_palette = NULL;
+        video_format_Clean( &fmt );
         msg_Err( p_dec, "cannot allocate SPU region" );
         return;
     }
@@ -734,4 +739,7 @@ static void Render( decoder_t *p_dec, subpicture_t *p_spu,
             memset( p_p + i_x + i_y, i_color, i_len );
         }
     }
+
+    fmt.p_palette = NULL;
+    video_format_Clean( &fmt );
 }

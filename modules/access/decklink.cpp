@@ -22,8 +22,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#define __STDC_CONSTANT_MACROS 1
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -81,7 +79,7 @@ static const char *const ppsz_videoconns[] = {
     "sdi", "hdmi", "opticalsdi", "component", "composite", "svideo"
 };
 static const char *const ppsz_videoconns_text[] = {
-    N_("SDI"), N_("HDMI"), N_("Optical SDI"), N_("Component"), N_("Composite"), N_("S-video")
+    N_("SDI"), N_("HDMI"), N_("Optical SDI"), N_("Component"), N_("Composite"), N_("S-Video")
 };
 
 static const char *const ppsz_audioconns[] = {
@@ -135,13 +133,14 @@ struct demux_sys_t
     DeckLinkCaptureDelegate *delegate;
 
     /* We need to hold onto the IDeckLinkConfiguration object, or our settings will not apply.
-       See section 2.4.15 of the Blackmagic Decklink SDK documentation. */
+       See section 2.4.15 of the Blackmagic DeckLink SDK documentation. */
     IDeckLinkConfiguration *config;
     IDeckLinkAttributes *attributes;
 
     bool autodetect;
 
     es_out_id_t *video_es;
+    es_format_t video_fmt;
     es_out_id_t *audio_es;
     es_out_id_t *cc_es;
 
@@ -174,7 +173,8 @@ static const char *GetFieldDominance(BMDFieldDominance dom, uint32_t *flags)
     }
 }
 
-static es_format_t GetModeSettings(demux_t *demux, IDeckLinkDisplayMode *m)
+static es_format_t GetModeSettings(demux_t *demux, IDeckLinkDisplayMode *m,
+        BMDDetectedVideoInputFormatFlags fmt_flags)
 {
     demux_sys_t *sys = demux->p_sys;
     uint32_t flags = 0;
@@ -187,9 +187,21 @@ static es_format_t GetModeSettings(demux_t *demux, IDeckLinkDisplayMode *m)
     }
 
     es_format_t video_fmt;
-    vlc_fourcc_t chroma; chroma = sys->tenbits ? VLC_CODEC_I422_10L : VLC_CODEC_UYVY;
+    vlc_fourcc_t chroma = 0;
+    switch (fmt_flags) {
+        case bmdDetectedVideoInputYCbCr422:
+            chroma = sys->tenbits ? VLC_CODEC_I422_10L : VLC_CODEC_UYVY;
+            break;
+        case bmdDetectedVideoInputRGB444:
+            chroma = VLC_CODEC_ARGB;
+            break;
+        default:
+            msg_Err(demux, "Unsupported input format");
+            break;
+    }
     es_format_Init(&video_fmt, VIDEO_ES, chroma);
 
+    video_fmt.video.i_chroma = chroma;
     video_fmt.video.i_width = m->GetWidth();
     video_fmt.video.i_height = m->GetHeight();
     video_fmt.video.i_sar_num = 1;
@@ -215,25 +227,25 @@ class DeckLinkCaptureDelegate : public IDeckLinkInputCallback
 public:
     DeckLinkCaptureDelegate(demux_t *demux) : demux_(demux)
     {
-        atomic_store(&m_ref_, 1);
+        m_ref_.store(1);
     }
 
     virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID, LPVOID *) { return E_NOINTERFACE; }
 
     virtual ULONG STDMETHODCALLTYPE AddRef(void)
     {
-        return atomic_fetch_add(&m_ref_, 1);
+        return m_ref_.fetch_add(1);
     }
 
     virtual ULONG STDMETHODCALLTYPE Release(void)
     {
-        uintptr_t new_ref = atomic_fetch_sub(&m_ref_, 1);
+        uintptr_t new_ref = m_ref_.fetch_sub(1);
         if (new_ref == 0)
             delete this;
         return new_ref;
     }
 
-    virtual HRESULT STDMETHODCALLTYPE VideoInputFormatChanged(BMDVideoInputFormatChangedEvents events, IDeckLinkDisplayMode *mode, BMDDetectedVideoInputFormatFlags)
+    virtual HRESULT STDMETHODCALLTYPE VideoInputFormatChanged(BMDVideoInputFormatChangedEvents events, IDeckLinkDisplayMode *mode, BMDDetectedVideoInputFormatFlags flags)
     {
         demux_sys_t *sys = demux_->p_sys;
 
@@ -250,11 +262,23 @@ public:
             return S_OK;
         }
 
-        es_out_Del(demux_->out, sys->video_es);
-        es_format_t video_fmt = GetModeSettings(demux_, mode);
-        sys->video_es = es_out_Add(demux_->out, &video_fmt);
+        BMDPixelFormat fmt = 0;
+        switch (flags) {
+            case bmdDetectedVideoInputYCbCr422:
+                fmt = sys->tenbits ? bmdFormat10BitYUV : bmdFormat8BitYUV;
+                break;
+            case bmdDetectedVideoInputRGB444:
+                fmt = bmdFormat8BitARGB;
+                break;
+            default:
+                msg_Err(demux_, "Unsupported input format");
+                return S_OK;
+        }
 
-        BMDPixelFormat fmt = sys->tenbits ? bmdFormat10BitYUV : bmdFormat8BitYUV;
+        es_out_Del(demux_->out, sys->video_es);
+        sys->video_fmt = GetModeSettings(demux_, mode, flags);
+        sys->video_es = es_out_Add(demux_->out, &sys->video_fmt);
+
         sys->input->PauseStreams();
         sys->input->EnableVideoInput( mode->GetDisplayMode(), fmt, bmdVideoInputEnableFormatDetection );
         sys->input->FlushStreams();
@@ -266,7 +290,7 @@ public:
     virtual HRESULT STDMETHODCALLTYPE VideoInputFrameArrived(IDeckLinkVideoInputFrame*, IDeckLinkAudioInputPacket*);
 
 private:
-    atomic_uint m_ref_;
+    std::atomic_uint m_ref_;
     demux_t *demux_;
 };
 
@@ -276,7 +300,8 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
 
     if (videoFrame) {
         if (videoFrame->GetFlags() & bmdFrameHasNoInputSource) {
-            msg_Warn(demux_, "No input signal detected");
+            msg_Warn(demux_, "No input signal detected (%dx%d)",
+			    videoFrame->GetWidth(), videoFrame->GetHeight());
             return S_OK;
         }
 
@@ -284,7 +309,16 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
         const int height = videoFrame->GetHeight();
         const int stride = videoFrame->GetRowBytes();
 
-        int bpp = sys->tenbits ? 4 : 2;
+        int bpp = 0;
+        switch (sys->video_fmt.i_codec) {
+            case VLC_CODEC_I422_10L:
+            case VLC_CODEC_ARGB:
+                bpp = 4;
+                break;
+            case VLC_CODEC_UYVY:
+                bpp = 2;
+                break;
+        };
         block_t *video_frame = block_Alloc(width * height * bpp);
         if (!video_frame)
             return S_OK;
@@ -297,7 +331,7 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
         video_frame->i_flags = BLOCK_FLAG_TYPE_I | sys->dominance_flags;
         video_frame->i_pts = video_frame->i_dts = VLC_TS_0 + stream_time;
 
-        if (sys->tenbits) {
+        if (sys->video_fmt.i_codec == VLC_CODEC_I422_10L) {
             v210_convert((uint16_t*)video_frame->p_buffer, frame_bytes, width, height);
             IDeckLinkVideoFrameAncillary *vanc;
             if (videoFrame->GetAncillaryData(&vanc) == S_OK) {
@@ -315,7 +349,7 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
                     if (!sys->cc_es) {
                         es_format_t fmt;
 
-                        es_format_Init( &fmt, SPU_ES, VLC_FOURCC('c', 'c', '1' , ' ') );
+                        es_format_Init( &fmt, SPU_ES, VLC_CODEC_CEA608 );
                         fmt.psz_description = strdup(N_("Closed captions 1"));
                         if (fmt.psz_description) {
                             sys->cc_es = es_out_Add(demux_->out, &fmt);
@@ -330,12 +364,14 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
                 }
                 vanc->Release();
             }
-        } else {
+        } else if (sys->video_fmt.i_codec == VLC_CODEC_UYVY) {
             for (int y = 0; y < height; ++y) {
                 const uint8_t *src = (const uint8_t *)frame_bytes + stride * y;
                 uint8_t *dst = video_frame->p_buffer + width * 2 * y;
                 memcpy(dst, src, width * 2);
             }
+        } else {
+                memcpy(video_frame->p_buffer, frame_bytes, width * height * bpp);
         }
 
         vlc_mutex_lock(&sys->pts_lock);
@@ -343,7 +379,7 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
             sys->last_pts = video_frame->i_pts;
         vlc_mutex_unlock(&sys->pts_lock);
 
-        es_out_Control(demux_->out, ES_OUT_SET_PCR, video_frame->i_pts);
+        es_out_SetPCR(demux_->out, video_frame->i_pts);
         es_out_Send(demux_->out, sys->video_es, video_frame);
     }
 
@@ -367,7 +403,7 @@ HRESULT DeckLinkCaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame
             sys->last_pts = audio_frame->i_pts;
         vlc_mutex_unlock(&sys->pts_lock);
 
-        es_out_Control(demux_->out, ES_OUT_SET_PCR, audio_frame->i_pts);
+        es_out_SetPCR(demux_->out, audio_frame->i_pts);
         es_out_Send(demux_->out, sys->audio_es, audio_frame);
     }
 
@@ -559,8 +595,7 @@ static int Open(vlc_object_t *p_this)
         free(mode);
     }
 
-    es_format_t video_fmt;
-    video_fmt.video.i_width = 0;
+    sys->video_fmt.video.i_width = 0;
 
     for (IDeckLinkDisplayMode *m;; m->Release()) {
         if ((mode_it->Next(&m) != S_OK) || !m)
@@ -585,14 +620,14 @@ static int Open(vlc_object_t *p_this)
                  double(time_scale) / frame_duration, field);
 
         if (u.id == id) {
-            video_fmt = GetModeSettings(demux, m);
+            sys->video_fmt = GetModeSettings(demux, m, bmdDetectedVideoInputYCbCr422);
             msg_Dbg(demux, "Using that mode");
         }
     }
 
     mode_it->Release();
 
-    if (video_fmt.video.i_width == 0) {
+    if (sys->video_fmt.video.i_width == 0) {
         msg_Err(demux, "Unknown video mode `%4.4s\' specified.", (char*)&u.id);
         goto finish;
     }
@@ -636,8 +671,8 @@ static int Open(vlc_object_t *p_this)
     }
 
     msg_Dbg(demux, "added new video es %4.4s %dx%d",
-             (char*)&video_fmt.i_codec, video_fmt.video.i_width, video_fmt.video.i_height);
-    sys->video_es = es_out_Add(demux->out, &video_fmt);
+             (char*)&sys->video_fmt.i_codec, sys->video_fmt.video.i_width, sys->video_fmt.video.i_height);
+    sys->video_es = es_out_Add(demux->out, &sys->video_fmt);
 
     es_format_t audio_fmt;
     es_format_Init(&audio_fmt, AUDIO_ES, VLC_CODEC_S16N);
@@ -702,17 +737,17 @@ static int Control(demux_t *demux, int query, va_list args)
         case DEMUX_CAN_PAUSE:
         case DEMUX_CAN_SEEK:
         case DEMUX_CAN_CONTROL_PACE:
-            pb = (bool*)va_arg(args, bool *);
+            pb = va_arg(args, bool *);
             *pb = false;
             return VLC_SUCCESS;
 
         case DEMUX_GET_PTS_DELAY:
-            pi64 = (int64_t*)va_arg(args, int64_t *);
+            pi64 = va_arg(args, int64_t *);
             *pi64 = INT64_C(1000) * var_InheritInteger(demux, "live-caching");
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:
-            pi64 = (int64_t*)va_arg(args, int64_t *);
+            pi64 = va_arg(args, int64_t *);
             vlc_mutex_lock(&sys->pts_lock);
             *pi64 = sys->last_pts;
             vlc_mutex_unlock(&sys->pts_lock);

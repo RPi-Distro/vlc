@@ -55,10 +55,15 @@ char *vlc_getProxyUrl(const char *url)
     if (vlc_pipe(fd))
         return NULL;
 
-    posix_spawn_file_actions_init(&actions);
-    posix_spawn_file_actions_addopen(&actions, STDIN_FILENO, "/dev/null",
-                                     O_RDONLY, 0644);
-    posix_spawn_file_actions_adddup2(&actions, fd[1], STDOUT_FILENO);
+    if (posix_spawn_file_actions_init(&actions))
+        return NULL;
+    if (posix_spawn_file_actions_addopen(&actions, STDIN_FILENO, "/dev/null",
+                                         O_RDONLY, 0644) ||
+        posix_spawn_file_actions_adddup2(&actions, fd[1], STDOUT_FILENO))
+    {
+        posix_spawn_file_actions_destroy(&actions);
+        return NULL;
+    }
 
     posix_spawnattr_init(&attr);
     {
@@ -77,7 +82,7 @@ char *vlc_getProxyUrl(const char *url)
 
     posix_spawnattr_destroy(&attr);
     posix_spawn_file_actions_destroy(&actions);
-    close(fd[1]);
+    vlc_close(fd[1]);
 
     if (pid != -1)
     {
@@ -93,7 +98,7 @@ char *vlc_getProxyUrl(const char *url)
         }
         while (len < sizeof (buf));
 
-        close(fd[0]);
+        vlc_close(fd[0]);
         while (waitpid(pid, &(int){ 0 }, 0) == -1);
 
         if (len >= 9 && !strncasecmp(buf, "direct://", 9))
@@ -108,7 +113,7 @@ char *vlc_getProxyUrl(const char *url)
         /* Parse error: fallback (may be due to missing executable) */
     }
     else
-        close(fd[0]);
+        vlc_close(fd[0]);
 
     /* Fallback to environment variable */
     char *var = getenv("http_proxy");

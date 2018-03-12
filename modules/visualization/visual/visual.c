@@ -2,7 +2,7 @@
  * visual.c : Visualisation system
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 628fd7038564d293cff5edecc6b33050d6fb5744 $
+ * $Id: e0c47d83df78643215b8bda5f92a19c3c99eafc2 $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *
@@ -65,11 +65,11 @@
 #define KAISER_PARAMETER_TEXT N_( "Kaiser window parameter" )
 #define KAISER_PARAMETER_LONGTEXT N_( \
       "The parameter alpha for the Kaiser window. Increasing alpha " \
-      "increases the main-lobe width and decreases the side-lobe amplitude. " )
+      "increases the main-lobe width and decreases the side-lobe amplitude." )
 
 #define NBBANDS_TEXT N_( "Show 80 bands instead of 20" )
 #define SPNBBANDS_LONGTEXT N_( \
-      "More bands for the spectrometer : 80 if enabled else 20." )
+      "More bands for the spectrometer: 80 if enabled, else 20." )
 
 #define SEPAR_TEXT N_( "Number of blank pixels between bands.")
 
@@ -337,11 +337,12 @@ error:
 static block_t *DoRealWork( filter_t *p_filter, block_t *p_in_buf )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
-    picture_t *p_outpic;
 
     /* First, get a new picture */
-    while( ( p_outpic = vout_GetPicture( p_sys->p_vout ) ) == NULL )
-        msleep( VOUT_OUTMEM_SLEEP );
+    picture_t *p_outpic = vout_GetPicture( p_sys->p_vout );
+    p_outpic->b_progressive = true;
+    if( unlikely(p_outpic == NULL) )
+        return p_in_buf;
 
     /* Blank the picture */
     for( int i = 0 ; i < p_outpic->i_planes ; i++ )
@@ -381,7 +382,7 @@ static void *Thread( void *data )
         block_Release( DoRealWork( p_filter, block ) );
         vlc_restorecancel( canc );
     }
-    assert(0);
+    vlc_assert_unreachable();
 }
 
 static block_t *DoWork( filter_t *p_filter, block_t *p_in_buf )

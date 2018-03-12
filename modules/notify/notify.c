@@ -2,7 +2,7 @@
  * notify.c : libnotify notification plugin
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: ff6c3252025e70152b4b9b67e4f047b35cee1d90 $
+ * $Id: bd6bba6c32c8881bcb84c7d5030116a5508181ef $
  *
  * Authors: Christophe Mutricy <xtophe -at- videolan -dot- org>
  *
@@ -28,9 +28,11 @@
 # include "config.h"
 #endif
 
+#define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
+#include <vlc_input.h>
 #include <vlc_playlist.h>
 #include <vlc_url.h>
 
@@ -51,7 +53,7 @@ static void Close   ( vlc_object_t * );
 #define APPLICATION_NAME "VLC media player"
 
 #define TIMEOUT_TEXT N_("Timeout (ms)")
-#define TIMEOUT_LONGTEXT N_("How long the notification will be displayed ")
+#define TIMEOUT_LONGTEXT N_("How long the notification will be displayed.")
 
 vlc_module_begin ()
     set_category( CAT_INTERFACE )
@@ -121,7 +123,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     /* */
-    var_AddCallback( pl_Get( p_intf ), "activity", ItemChange, p_intf );
+    var_AddCallback( pl_Get( p_intf ), "input-current", ItemChange, p_intf );
 
     return VLC_SUCCESS;
 }
@@ -134,7 +136,7 @@ static void Close( vlc_object_t *p_this )
     intf_thread_t   *p_intf = ( intf_thread_t* ) p_this;
     intf_sys_t      *p_sys  = p_intf->p_sys;
 
-    var_DelCallback( pl_Get( p_this ), "activity", ItemChange, p_this );
+    var_DelCallback( pl_Get( p_intf ), "input-current", ItemChange, p_this );
 
     if( p_sys->notification )
     {
@@ -161,33 +163,28 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     char           *psz_artist;
     char           *psz_album;
     char           *psz_arturl;
-    input_thread_t *p_input = playlist_CurrentInput( (playlist_t*)p_this );
+    input_thread_t *p_input = newval.p_address;
     intf_thread_t  *p_intf  = param;
     intf_sys_t     *p_sys   = p_intf->p_sys;
 
     if( !p_input )
         return VLC_SUCCESS;
 
-    if( p_input->b_dead )
-    {
-        /* Not playing anything ... */
-        vlc_object_release( p_input );
-        return VLC_SUCCESS;
-    }
-
-    /* Wait a tad so the meta has been fetched
-     * FIXME that's awfully wrong */
-    msleep( 10000 );
-
     /* Playing something ... */
     input_item_t *p_input_item = input_GetItem( p_input );
     psz_title = input_item_GetTitleFbName( p_input_item );
+
+    /* Checking for click on directories */
+    if(p_input_item->i_type == ITEM_TYPE_DIRECTORY || p_input_item->i_type == ITEM_TYPE_PLAYLIST
+        || p_input_item->i_type == ITEM_TYPE_NODE || p_input_item->i_type== ITEM_TYPE_UNKNOWN
+        || p_input_item->i_type == ITEM_TYPE_CARD){
+        return VLC_SUCCESS;
+    }
 
     /* We need at least a title */
     if( EMPTY_STR( psz_title ) )
     {
         free( psz_title );
-        vlc_object_release( p_input );
         return VLC_SUCCESS;
     }
 
@@ -212,11 +209,10 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
 
     GdkPixbuf *pix = NULL;
     psz_arturl = input_item_GetArtURL( p_input_item );
-    vlc_object_release( p_input );
 
     if( psz_arturl )
     {
-        char *psz = make_path( psz_arturl );
+        char *psz = vlc_uri2path( psz_arturl );
         free( psz_arturl );
         psz_arturl = psz;
     }
@@ -283,7 +279,7 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
 /* libnotify callback, called when the "Next" button is pressed */
 static void Next( NotifyNotification *notification, gchar *psz, gpointer p )
 {
-    vlc_object_t *p_object = (vlc_object_t*)p;
+    intf_thread_t *p_object = (intf_thread_t *)p;
 
     VLC_UNUSED(psz);
     notify_notification_close( notification, NULL );
@@ -293,7 +289,7 @@ static void Next( NotifyNotification *notification, gchar *psz, gpointer p )
 /* libnotify callback, called when the "Previous" button is pressed */
 static void Prev( NotifyNotification *notification, gchar *psz, gpointer p )
 {
-    vlc_object_t *p_object = (vlc_object_t*)p;
+    intf_thread_t *p_object = (intf_thread_t *)p;
 
     VLC_UNUSED(psz);
     notify_notification_close( notification, NULL );

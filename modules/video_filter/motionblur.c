@@ -2,7 +2,7 @@
  * motionblur.c : motion blur filter for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 VLC authors and VideoLAN
- * $Id: 4dedc12dabde93986e8ac0d887c828c31dd282f6 $
+ * $Id: fc3eee9343ef356dd4db00801baab17fc5a9bf5c $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Antoine Cellerier <dionoea &t videolan d.t org>
@@ -35,6 +35,7 @@
 #include <vlc_sout.h>
 #include <vlc_filter.h>
 #include <vlc_atomic.h>
+#include <vlc_picture.h>
 #include "filter_picture.h"
 
 /*****************************************************************************
@@ -58,7 +59,7 @@ static int MotionBlurCallback( vlc_object_t *, char const *,
 vlc_module_begin ()
     set_shortname( N_("Motion blur") )
     set_description( N_("Motion blur filter") )
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
@@ -174,11 +175,10 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 static void RenderBlur( filter_sys_t *p_sys, picture_t *p_newpic,
                         picture_t *p_outpic )
 {
-    int i_plane;
     const int i_oldfactor = atomic_load( &p_sys->i_factor );
     int i_newfactor = 128 - i_oldfactor;
 
-    for( i_plane = 0; i_plane < p_outpic->i_planes; i_plane++ )
+    for( int i_plane = 0; i_plane < p_outpic->i_planes; i_plane++ )
     {
         uint8_t *p_old, *p_new, *p_out, *p_out_end, *p_out_line_end;
         const int i_visible_pitch = p_outpic->p[i_plane].i_visible_pitch;

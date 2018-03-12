@@ -2,7 +2,7 @@
  * delay.c: delay a stream
  *****************************************************************************
  * Copyright © 2009-2011 VLC authors and VideoLAN
- * $Id: ec5d10f2707adff0c34f8edd04d7e9503db77229 $
+ * $Id: 602810e5b7ff8491bd5ce61d25f21b338d60adce $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -72,8 +72,8 @@ static const char *ppsz_sout_options[] = {
     "id", "delay", NULL
 };
 
-static sout_stream_id_sys_t *Add   ( sout_stream_t *, es_format_t * );
-static int               Del   ( sout_stream_t *, sout_stream_id_sys_t * );
+static sout_stream_id_sys_t *Add( sout_stream_t *, const es_format_t * );
+static void              Del   ( sout_stream_t *, sout_stream_id_sys_t * );
 static int               Send  ( sout_stream_t *, sout_stream_id_sys_t *, block_t * );
 
 struct sout_stream_sys_t
@@ -128,7 +128,7 @@ static void Close( vlc_object_t * p_this )
     free( p_sys );
 }
 
-static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
+static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, const es_format_t *p_fmt )
 {
     sout_stream_sys_t *p_sys = (sout_stream_sys_t *)p_stream->p_sys;
 
@@ -143,14 +143,14 @@ static sout_stream_id_sys_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     return p_stream->p_next->pf_add( p_stream->p_next, p_fmt );
 }
 
-static int Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
+static void Del( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
 {
     sout_stream_sys_t *p_sys = (sout_stream_sys_t *)p_stream->p_sys;
 
     if ( id == p_sys->id )
         p_sys->id = NULL;
 
-    return p_stream->p_next->pf_del( p_stream->p_next, id );
+    p_stream->p_next->pf_del( p_stream->p_next, id );
 }
 
 static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
@@ -163,9 +163,9 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
         block_t *p_block = p_buffer;
         while ( p_block != NULL )
         {
-            if ( p_block->i_pts && p_block->i_pts != VLC_TS_INVALID )
+            if ( p_block->i_pts != VLC_TS_INVALID )
                 p_block->i_pts += p_sys->i_delay;
-            if ( p_block->i_dts && p_block->i_dts != VLC_TS_INVALID )
+            if ( p_block->i_dts != VLC_TS_INVALID )
                 p_block->i_dts += p_sys->i_delay;
             p_block = p_block->p_next;
         }

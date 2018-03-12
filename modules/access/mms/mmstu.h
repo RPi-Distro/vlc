@@ -2,7 +2,7 @@
  * mmstu.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: ee65939cba57138187eaa76d18441d463bb0bb15 $
+ * $Id: 186f8f1a4baad9f15aac493c3285ea417c1caf0b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,8 +21,8 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _MMSTU_H_
-#define _MMSTU_H_ 1
+#ifndef VLC_MMS_MMSTU_H_
+#define VLC_MMS_MMSTU_H_
 
 #define MMS_PACKET_ANY          0
 #define MMS_PACKET_CMD          1
@@ -43,6 +43,7 @@ struct access_sys_t
     char        sz_bind_addr[NI_MAXNUMERICHOST]; /* used by udp */
 
     vlc_url_t   url;
+    uint64_t    i_position;
     uint64_t    i_size;
 
     asf_header_t    asfh;
@@ -94,6 +95,7 @@ struct access_sys_t
 
     /* misc */
     bool  b_seekable;
+    bool  b_eof;
 
     vlc_mutex_t  lock_netwrite;
     bool         b_keep_alive;

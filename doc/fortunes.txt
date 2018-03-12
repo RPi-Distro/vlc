@@ -1017,3 +1017,59 @@ reactor leaks ionizing radiations."
  with pthreads, and the useless ones
  -- IRC, trol^Wdebating on mobile OSes
 %
+ -!- courmisch is now known as EvilCourmisch
+< cone-129> vlc.git Rémi Denis-Courmont NEWS configure.ac
+ modules/logger/Makefile.am modules/logger/journal.c:
+ journal: add native logger module for the SystemD Journal
+< EvilCourmisch> muahahahahahahahahahahahahahahahahahahahahaha
+ -- IRC, we're loosing Rémi!
+%
+< courmisch> lo
+< j-b> courmisch: SanDiego?
+< courmisch> j-b: uh?
+< j-b> uh!
+ * j-b lost context
+ * evilril gives j-b an MpegEncContext
+< courmisch> this happens when you omit the frame pointer
+< Sean_McG> lol
+ -- IRC, MpegEncContext is evil
+%
+< VLC> http://www.videolan.org/developers/libdvdcss.txt
+< VLC> i want to know if this is only for reading content, or also for ripping it
+< VLC> does VLC provide any kind of protection against unauthorized ripping?
+< VLC> or is this within the scope of the end user?
+<@j-b> end user
+< courmisch> VLC: what's the difference between ripping and reading?
+< TypX> courmisch: Jack the Reader was way less dangerous than Jack the Ripper
+ -- #videolan, badum ching
+%
+< refp> I'm going to bed (super early for a refp)
+< refp> maybe 2017 will be the year I adjust to some sort of normal rythm
+< refp> maybe.
+< courmisch> Yeah right
+< refp> courmisch: I mean.. it _could_ happen!
+< j-b> it could
+< courmisch> these days, it seems there are only two ways to get a normal rythm
+< courmisch> have kids or have strict working hours
+ * refp goes of to kindnap some kids
+< refp> kindnap.. I of course meant kidnap, but maybe "kindnapping" is the same thing, but doing
+        so in a kind manner
+* courmisch dials polisen
+< j-b> refp: kidnapping in a kind manner?
+< j-b> wtf?
+< refp> yes, I already see how that would play out in court so maybe I shouldn't
+< refp> anyhow.. time to sleep (and no, I will not kindnap anything)
+* refp *ploff*
+< No_se> refp: This is a smart approach: You should really get to on of courmisch's solutions
+         that way. By the kidnapped kids or the strict working hours in jail
+< refp> No_se: if I could bring my laptop to jail I'm not sure I'd mind that bad.. as long as
+         there's an internet connection, coffee, and a place to smoke
+* refp is now gone (fo'real)
+ -- #videolan, kind-napping and jails
+%
+< wm4> poor guy can't afford proper pants
+< j-b> yeah, poor guy
+< hanna> wm4: almost as bad as not being able to afford a proper HDR monitor :p
+< wm4> won't j-b buy hanna some pants???
+ -- #videolan, about HDR
+%

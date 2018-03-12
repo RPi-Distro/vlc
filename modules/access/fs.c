@@ -30,34 +30,6 @@
 #include "fs.h"
 #include <vlc_plugin.h>
 
-#define RECURSIVE_TEXT N_("Subdirectory behavior")
-#define RECURSIVE_LONGTEXT N_( \
-        "Select whether subdirectories must be expanded.\n" \
-        "none: subdirectories do not appear in the playlist.\n" \
-        "collapse: subdirectories appear but are expanded on first play.\n" \
-        "expand: all subdirectories are expanded.\n" )
-
-static const char *const psz_recursive_list[] = { "none", "collapse", "expand" };
-static const char *const psz_recursive_list_text[] = {
-    N_("None"), N_("Collapse"), N_("Expand") };
-
-#define IGNORE_TEXT N_("Ignored extensions")
-#define IGNORE_LONGTEXT N_( \
-        "Files with these extensions will not be added to playlist when " \
-        "opening a directory.\n" \
-        "This is useful if you add directories that contain playlist files " \
-        "for instance. Use a comma-separated list of extensions." )
-
-static const char *const psz_sort_list[] = { "collate", "version", "none" };
-static const char *const psz_sort_list_text[] = {
-    N_("Sort alphabetically according to the current language's collation rules."),
-    N_("Sort items in a natural order (for example: 1.ogg 2.ogg 10.ogg). This method does not take the current language's collation rules into account."),
-    N_("Do not sort the items.") };
-
-#define SORT_TEXT N_("Directory sort order")
-#define SORT_LONGTEXT N_( \
-    "Define the sort algorithm used when adding items from a directory." )
-
 vlc_module_begin ()
     set_description( N_("File input") )
     set_shortname( N_("File") )
@@ -71,17 +43,14 @@ vlc_module_begin ()
     add_submodule()
     set_section( N_("Directory" ), NULL )
     set_capability( "access", 55 )
-    add_string( "recursive", "expand" , RECURSIVE_TEXT,
-                RECURSIVE_LONGTEXT, false )
-      change_string_list( psz_recursive_list, psz_recursive_list_text )
-    add_string( "ignore-filetypes", "m3u,db,nfo,ini,jpg,jpeg,ljpg,gif,png,pgm,pgmyuv,pbm,pam,tga,bmp,pnm,xpm,xcf,pcx,tif,tiff,lbm,sfv,txt,sub,idx,srt,cue,ssa",
-                IGNORE_TEXT, IGNORE_LONGTEXT, false )
-    add_string( "directory-sort", "collate", SORT_TEXT, SORT_LONGTEXT, false )
-      change_string_list( psz_sort_list, psz_sort_list_text )
 #ifndef HAVE_FDOPENDIR
     add_shortcut( "file", "directory", "dir" )
 #else
     add_shortcut( "directory", "dir" )
 #endif
     set_callbacks( DirOpen, DirClose )
+
+    add_bool("list-special-files", false, N_("List special files"),
+             N_("Include devices and pipes when listing directories"), true)
+    add_obsolete_string("directory-sort") /* since 3.0.0 */
 vlc_module_end ()

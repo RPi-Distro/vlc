@@ -2,7 +2,7 @@
  * deinterlace.c : deinterlacer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2011 VLC authors and VideoLAN
- * $Id: e6a0b0fb196fcb1a8aaa26a96394fb4dd9da1d12 $
+ * $Id: 9f9d5291ff82e14cbc36dfaad031560c3592eba6 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Christophe Massiot <massiot@via.ecp.fr>
@@ -39,12 +39,215 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include <vlc_cpu.h>
 #include <vlc_mouse.h>
 
 #include "deinterlace.h"
 #include "helpers.h"
 #include "merge.h"
+
+/*****************************************************************************
+ * video filter functions
+ *****************************************************************************/
+
+/**
+ * Top-level filtering method.
+ *
+ * Open() sets this up as the processing method (pf_video_filter)
+ * in the filter structure.
+ *
+ * Note that there is no guarantee that the returned picture directly
+ * corresponds to p_pic. The first few times, the filter may not even
+ * return a picture, if it is still filling the history for temporal
+ * filtering (although such filters often return *something* also
+ * while starting up). It should be assumed that N input pictures map to
+ * M output pictures, with no restrictions for N and M (except that there
+ * is not much delay).
+ *
+ * Also, there is no guarantee that the PTS of the frame stays untouched.
+ * In fact, framerate doublers automatically compute the proper PTSs for the
+ * two output frames for each input frame, and IVTC does a nontrivial
+ * framerate conversion (29.97 > 23.976 fps).
+ *
+ * Yadif has an offset of one frame between input and output, but introduces
+ * no delay: the returned frame is the *previous* input frame deinterlaced,
+ * complete with its original PTS.
+ *
+ * Finally, note that returning NULL sometimes can be normal behaviour for some
+ * algorithms (e.g. IVTC).
+ *
+ * Currently:
+ *   Most algorithms:        1 -> 1, no offset
+ *   All framerate doublers: 1 -> 2, no offset
+ *   Yadif:                  1 -> 1, offset of one frame
+ *   IVTC:                   1 -> 1 or 0 (depends on whether a drop was needed)
+ *                                with an offset of one frame (in most cases)
+ *                                and framerate conversion.
+ *
+ * @param p_filter The filter instance.
+ * @param p_pic The latest input picture.
+ * @return Deinterlaced picture(s). Linked list of picture_t's or NULL.
+ * @see Open()
+ * @see filter_t
+ * @see filter_sys_t
+ */
+static picture_t *Deinterlace( filter_t *p_filter, picture_t *p_pic );
+
+/**
+ * Reads the configuration, sets up and starts the filter.
+ *
+ * Possible reasons for returning VLC_EGENERIC:
+ *  - Unsupported input chroma. See IsChromaSupported().
+ *  - Caller has set p_filter->b_allow_fmt_out_change to false,
+ *    but the algorithm chosen in the configuration
+ *    wants to convert the output to a format different
+ *    from the input. See SetFilterMethod().
+ *
+ * Open() is atomic: if an error occurs, the state of p_this
+ * is left as it was before the call to this function.
+ *
+ * @param p_this The filter instance as vlc_object_t.
+ * @return VLC error code
+ * @retval VLC_SUCCESS All ok, filter set up and started.
+ * @retval VLC_ENOMEM Memory allocation error, initialization aborted.
+ * @retval VLC_EGENERIC Something went wrong, initialization aborted.
+ * @see IsChromaSupported()
+ * @see SetFilterMethod()
+ */
+static int Open( vlc_object_t *p_this );
+
+/**
+ * Resets the filter state, including resetting all algorithm-specific state
+ * and discarding all histories, but does not stop the filter.
+ *
+ * Open() sets this up as the flush method (pf_flush)
+ * in the filter structure.
+ *
+ * @param p_filter The filter instance.
+ * @see Open()
+ * @see filter_t
+ * @see filter_sys_t
+ * @see metadata_history_t
+ * @see phosphor_sys_t
+ * @see ivtc_sys_t
+ */
+static void Flush( filter_t *p_filter );
+
+/**
+ * Mouse callback for the deinterlace filter.
+ *
+ * Open() sets this up as the mouse callback method (pf_video_mouse)
+ * in the filter structure.
+ *
+ * Currently, this handles the scaling of the y coordinate for algorithms
+ * that halve the output height.
+ *
+ * @param p_filter The filter instance.
+ * @param[out] p_mouse Updated mouse position data.
+ * @param[in] p_old Previous mouse position data. Unused in this filter.
+ * @param[in] p_new Latest mouse position data.
+ * @return VLC error code; currently always VLC_SUCCESS.
+ * @retval VLC_SUCCESS All ok.
+ * @see Open()
+ * @see filter_t
+ * @see vlc_mouse_t
+ */
+static int Mouse( filter_t *p_filter,
+                  vlc_mouse_t *p_mouse,
+                  const vlc_mouse_t *p_old,
+                  const vlc_mouse_t *p_new );
+
+/**
+ * Stops and uninitializes the filter, and deallocates memory.
+ * @param p_this The filter instance as vlc_object_t.
+ */
+static void Close( vlc_object_t *p_this );
+
+/*****************************************************************************
+ * Extra documentation
+ *****************************************************************************/
+
+/**
+ * \file
+ * Deinterlacer plugin for vlc. Data structures and video filter functions.
+ *
+ * Note on i_frame_offset:
+ *
+ * This value indicates the offset between input and output frames in the
+ * currently active deinterlace algorithm. See the rationale below for why
+ * this is needed and how it is used.
+ *
+ * Valid range: 0 <= i_frame_offset < METADATA_SIZE, or
+ *              i_frame_offset = CUSTOM_PTS.
+ *              The special value CUSTOM_PTS is only allowed
+ *              if b_double_rate is false.
+ *
+ *              If CUSTOM_PTS is used, the algorithm must compute the outgoing
+ *              PTSs itself, and additionally, read the TFF/BFF information
+ *              itself (if it needs it) from the incoming frames.
+ *
+ * Meaning of values:
+ * 0 = output frame corresponds to the current input frame
+ *     (no frame offset; default if not set),
+ * 1 = output frame corresponds to the previous input frame
+ *     (e.g. Yadif and Yadif2x work like this),
+ * ...
+ *
+ * If necessary, i_frame_offset should be updated by the active deinterlace
+ * algorithm to indicate the correct delay for the *next* input frame.
+ * It does not matter at which i_order the algorithm updates this information,
+ * but the new value will only take effect upon the next call to Deinterlace()
+ * (i.e. at the next incoming frame).
+ *
+ * The first-ever frame that arrives to the filter after Open() is always
+ * handled as having i_frame_offset = 0. For the second and all subsequent
+ * frames, each algorithm is responsible for setting the offset correctly.
+ * (The default is 0, so if that is correct, there's no need to do anything.)
+ *
+ * This solution guarantees that i_frame_offset:
+ *   1) is up to date at the start of each frame,
+ *   2) does not change (as far as Deinterlace() is concerned) during
+ *      a frame, and
+ *   3) does not need a special API for setting the value at the start of each
+ *      input frame, before the algorithm starts rendering the (first) output
+ *      frame for that input frame.
+ *
+ * The deinterlace algorithm is allowed to behave differently for different
+ * input frames. This is especially important for startup, when full history
+ * (as defined by each algorithm) is not yet available. During the first-ever
+ * input frame, it is clear that it is the only possible source for
+ * information, so i_frame_offset = 0 is necessarily correct. After that,
+ * what to do is up to each algorithm.
+ *
+ * Having the correct offset at the start of each input frame is critically
+ * important in order to:
+ *   1) Allocate the correct number of output frames for framerate doublers,
+ *      and to
+ *   2) Pass correct TFF/BFF information to the algorithm.
+ *
+ * These points are important for proper soft field repeat support. This
+ * feature is used in some streams (especially NTSC) originating from film.
+ * For example, in soft NTSC telecine, the number of fields alternates
+ * as 3,2,3,2,... and the video field dominance flips every two frames (after
+ * every "3"). Also, some streams request an occasional field repeat
+ * (nb_fields = 3), after which the video field dominance flips.
+ * To render such streams correctly, the nb_fields and TFF/BFF information
+ * must be taken from the specific input frame that the algorithm intends
+ * to render.
+ *
+ * Additionally, the output PTS is automatically computed by Deinterlace()
+ * from i_frame_offset and i_order.
+ *
+ * It is possible to use the special value CUSTOM_PTS to indicate that the
+ * algorithm computes the output PTSs itself. In this case, Deinterlace()
+ * will pass them through. This special value is not valid for framerate
+ * doublers, as by definition they are field renderers, so they need to
+ * use the original field timings to work correctly. Basically, this special
+ * value is only intended for algorithms that need to perform nontrivial
+ * framerate conversions (such as IVTC).
+ */
+
 
 /*****************************************************************************
  * Module descriptor
@@ -95,7 +298,7 @@
 vlc_module_begin ()
     set_description( N_("Deinterlacing video filter") )
     set_shortname( N_("Deinterlace" ))
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
@@ -134,6 +337,43 @@ static const char *const ppsz_filter_options[] = {
  * SetFilterMethod: setup the deinterlace method to use.
  *****************************************************************************/
 
+struct filter_mode_t
+{
+    const char           *psz_mode;
+    union {
+    int (*pf_render_ordered)(filter_t *, picture_t *p_dst, picture_t *p_pic,
+                             int order, int i_field);
+    int (*pf_render_single_pic)(filter_t *, picture_t *p_dst, picture_t *p_pic);
+    };
+    deinterlace_algo     settings;
+    bool                 can_pack;         /**< can handle packed pixel */
+    bool                 b_high_bit_depth; /**< can handle high bit depth */
+};
+static struct filter_mode_t filter_mode [] = {
+    { "discard", .pf_render_single_pic = RenderDiscard,
+                 { false, false, false, true }, true, true },
+    { "bob", .pf_render_ordered = RenderBob,
+                 { true, false, false, false }, true, true },
+    { "progressive-scan", .pf_render_ordered = RenderBob,
+                 { true, false, false, false }, true, true },
+    { "linear", .pf_render_ordered = RenderLinear,
+                 { true, false, false, false }, true, true },
+    { "mean", .pf_render_single_pic = RenderMean,
+                 { false, false, false, true }, true, true },
+    { "blend", .pf_render_single_pic = RenderBlend,
+                 { false, false, false, false }, true, true },
+    { "yadif", .pf_render_single_pic = RenderYadifSingle,
+                 { false, true, false, false }, false, true },
+    { "yadif2x", .pf_render_ordered = RenderYadif,
+                 { true, true, false, false }, false, true },
+    { "x", .pf_render_single_pic = RenderX,
+                 { false, false, false, false }, false, false },
+    { "phosphor", .pf_render_ordered = RenderPhosphor,
+                 { true, true, false, false }, false, false },
+    { "ivtc", .pf_render_single_pic = RenderIVTC,
+                 { false, true, true, false }, false, false },
+};
+
 /**
  * Setup the deinterlace method to use.
  *
@@ -147,79 +387,36 @@ static void SetFilterMethod( filter_t *p_filter, const char *mode, bool pack )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    if( mode == NULL )
-        mode = "blend";
+    if ( mode == NULL || !strcmp( mode, "auto" ) )
+        mode = "x";
 
-    p_sys->i_mode = DEINTERLACE_BLEND; /* default */
-    p_sys->b_double_rate = false;
-    p_sys->b_half_height = false;
-    p_sys->b_use_frame_history = false;
+    for ( size_t i = 0; i < ARRAY_SIZE(filter_mode); i++ )
+    {
+        if( !strcmp( mode, filter_mode[i].psz_mode ) )
+        {
+            if ( pack && !filter_mode[i].can_pack )
+            {
+                msg_Err( p_filter, "unknown or incompatible deinterlace mode \"%s\""
+                        " for packed format", mode );
+                SetFilterMethod( p_filter, "blend", pack );
+                return;
+            }
+            if( p_sys->chroma->pixel_size > 1 && !filter_mode[i].b_high_bit_depth )
+            {
+                msg_Err( p_filter, "unknown or incompatible deinterlace mode \"%s\""
+                        " for high depth format", mode );
+                SetFilterMethod( p_filter, "blend", pack );
+                return;
+            }
 
-    if( !strcmp( mode, "discard" ) )
-    {
-        p_sys->i_mode = DEINTERLACE_DISCARD;
-        p_sys->b_half_height = true;
+            msg_Dbg( p_filter, "using %s deinterlace method", mode );
+            p_sys->context.settings = filter_mode[i].settings;
+            p_sys->context.pf_render_ordered = filter_mode[i].pf_render_ordered;
+            return;
+        }
     }
-    else if( !strcmp( mode, "bob" ) || !strcmp( mode, "progressive-scan" ) )
-    {
-        p_sys->i_mode = DEINTERLACE_BOB;
-        p_sys->b_double_rate = true;
-    }
-    else if( !strcmp( mode, "linear" ) )
-    {
-        p_sys->i_mode = DEINTERLACE_LINEAR;
-        p_sys->b_double_rate = true;
-    }
-    else if( !strcmp( mode, "mean" ) )
-    {
-        p_sys->i_mode = DEINTERLACE_MEAN;
-        p_sys->b_half_height = true;
-    }
-    else if( !strcmp( mode, "blend" ) )
-    {
-    }
-    else if( pack )
-    {
-        msg_Err( p_filter, "unknown or incompatible deinterlace mode \"%s\""
-                 " for packed format", mode );
-        mode = "blend";
-    }
-    else if( !strcmp( mode, "yadif" ) )
-    {
-        p_sys->i_mode = DEINTERLACE_YADIF;
-        p_sys->b_use_frame_history = true;
-    }
-    else if( !strcmp( mode, "yadif2x" ) )
-    {
-        p_sys->i_mode = DEINTERLACE_YADIF2X;
-        p_sys->b_double_rate = true;
-        p_sys->b_use_frame_history = true;
-    }
-    else if( p_sys->chroma->pixel_size > 1 )
-    {
-        msg_Err( p_filter, "unknown or incompatible deinterlace mode \"%s\""
-                 " for high depth format", mode );
-        mode = "blend";
-    }
-    else if( !strcmp( mode, "x" ) )
-    {
-        p_sys->i_mode = DEINTERLACE_X;
-    }
-    else if( !strcmp( mode, "phosphor" ) )
-    {
-        p_sys->i_mode = DEINTERLACE_PHOSPHOR;
-        p_sys->b_double_rate = true;
-        p_sys->b_use_frame_history = true;
-    }
-    else if( !strcmp( mode, "ivtc" ) )
-    {
-        p_sys->i_mode = DEINTERLACE_IVTC;
-        p_sys->b_use_frame_history = true;
-    }
-    else
-        msg_Err( p_filter, "unknown deinterlace mode \"%s\"", mode );
 
-    msg_Dbg( p_filter, "using %s deinterlace method", mode );
+    msg_Err( p_filter, "unknown deinterlace mode \"%s\"", mode );
 }
 
 /**
@@ -237,324 +434,17 @@ static void SetFilterMethod( filter_t *p_filter, const char *mode, bool pack )
 static void GetOutputFormat( filter_t *p_filter,
                       video_format_t *p_dst, const video_format_t *p_src )
 {
-    filter_sys_t *p_sys = p_filter->p_sys;
-    *p_dst = *p_src;
-
-    if( p_sys->b_half_height )
-    {
-        p_dst->i_height /= 2;
-        p_dst->i_visible_height /= 2;
-        p_dst->i_y_offset /= 2;
-        p_dst->i_sar_den *= 2;
-    }
-
-    if( p_sys->b_double_rate )
-    {
-        p_dst->i_frame_rate *= 2;
-    }
-
-    if( p_sys->i_mode == DEINTERLACE_PHOSPHOR  &&
-        2 * p_sys->chroma->p[1].h.num == p_sys->chroma->p[1].h.den &&
-        2 * p_sys->chroma->p[2].h.num == p_sys->chroma->p[2].h.den &&
-        p_sys->phosphor.i_chroma_for_420 == PC_UPCONVERT )
-    {
-        p_dst->i_chroma = p_src->i_chroma == VLC_CODEC_J420 ? VLC_CODEC_J422 :
-                                                              VLC_CODEC_I422;
-    }
-    else
-    {
-        p_dst->i_chroma = p_src->i_chroma;
-    }
-
+    GetDeinterlacingOutput(&p_filter->p_sys->context, p_dst, p_src);
 }
 
 /*****************************************************************************
- * video filter2 functions
+ * video filter functions
  *****************************************************************************/
-
-#define DEINTERLACE_DST_SIZE 3
 
 /* This is the filter function. See Open(). */
 picture_t *Deinterlace( filter_t *p_filter, picture_t *p_pic )
 {
-    filter_sys_t *p_sys = p_filter->p_sys;
-    picture_t *p_dst[DEINTERLACE_DST_SIZE];
-
-    /* Request output picture */
-    p_dst[0] = filter_NewPicture( p_filter );
-    if( p_dst[0] == NULL )
-    {
-        picture_Release( p_pic );
-        return NULL;
-    }
-    picture_CopyProperties( p_dst[0], p_pic );
-
-    /* Any unused p_dst pointers must be NULL, because they are used to
-       check how many output frames we have. */
-    for( int i = 1; i < DEINTERLACE_DST_SIZE; ++i )
-        p_dst[i] = NULL;
-
-    /* Update the input frame history, if the currently active algorithm
-       needs it. */
-    if( p_sys->b_use_frame_history )
-    {
-        /* Duplicate the picture
-         * TODO when the vout rework is finished, picture_Hold() might be enough
-         * but becarefull, the pitches must match */
-        picture_t *p_dup = picture_NewFromFormat( &p_pic->format );
-        if( p_dup )
-            picture_Copy( p_dup, p_pic );
-
-        /* Slide the history */
-        if( p_sys->pp_history[0] )
-            picture_Release( p_sys->pp_history[0] );
-        for( int i = 1; i < HISTORY_SIZE; i++ )
-            p_sys->pp_history[i-1] = p_sys->pp_history[i];
-        p_sys->pp_history[HISTORY_SIZE-1] = p_dup;
-    }
-
-    /* Slide the metadata history. */
-    for( int i = 1; i < METADATA_SIZE; i++ )
-    {
-        p_sys->meta.pi_date[i-1]            = p_sys->meta.pi_date[i];
-        p_sys->meta.pi_nb_fields[i-1]       = p_sys->meta.pi_nb_fields[i];
-        p_sys->meta.pb_top_field_first[i-1] = p_sys->meta.pb_top_field_first[i];
-    }
-    /* The last element corresponds to the current input frame. */
-    p_sys->meta.pi_date[METADATA_SIZE-1]            = p_pic->date;
-    p_sys->meta.pi_nb_fields[METADATA_SIZE-1]       = p_pic->i_nb_fields;
-    p_sys->meta.pb_top_field_first[METADATA_SIZE-1] = p_pic->b_top_field_first;
-
-    /* Remember the frame offset that we should use for this frame.
-       The value in p_sys will be updated to reflect the correct value
-       for the *next* frame when we call the renderer. */
-    int i_frame_offset = p_sys->i_frame_offset;
-    int i_meta_idx     = (METADATA_SIZE-1) - i_frame_offset;
-
-    /* These correspond to the current *outgoing* frame. */
-    bool b_top_field_first;
-    int i_nb_fields;
-    if( i_frame_offset != CUSTOM_PTS )
-    {
-        /* Pick the correct values from the history. */
-        b_top_field_first = p_sys->meta.pb_top_field_first[i_meta_idx];
-        i_nb_fields       = p_sys->meta.pi_nb_fields[i_meta_idx];
-    }
-    else
-    {
-        /* Framerate doublers must not request CUSTOM_PTS, as they need the
-           original field timings, and need Deinterlace() to allocate the
-           correct number of output frames. */
-        assert( !p_sys->b_double_rate );
-
-        /* NOTE: i_nb_fields is only used for framerate doublers, so it is
-                 unused in this case. b_top_field_first is only passed to the
-                 algorithm. We assume that algorithms that request CUSTOM_PTS
-                 will, if necessary, extract the TFF/BFF information themselves.
-        */
-        b_top_field_first = p_pic->b_top_field_first; /* this is not guaranteed
-                                                         to be meaningful */
-        i_nb_fields       = p_pic->i_nb_fields;       /* unused */
-    }
-
-    /* For framerate doublers, determine field duration and allocate
-       output frames. */
-    mtime_t i_field_dur = 0;
-    int i_double_rate_alloc_end = 0; /* One past last for allocated output
-                                        frames in p_dst[]. Used only for
-                                        framerate doublers. Will be inited
-                                        below. Declared here because the
-                                        PTS logic needs the result. */
-    if( p_sys->b_double_rate )
-    {
-        /* Calculate one field duration. */
-        int i = 0;
-        int iend = METADATA_SIZE-1;
-        /* Find oldest valid logged date.
-           The current input frame doesn't count. */
-        for( ; i < iend; i++ )
-            if( p_sys->meta.pi_date[i] > VLC_TS_INVALID )
-                break;
-        if( i < iend )
-        {
-            /* Count how many fields the valid history entries
-               (except the new frame) represent. */
-            int i_fields_total = 0;
-            for( int j = i ; j < iend; j++ )
-                i_fields_total += p_sys->meta.pi_nb_fields[j];
-            /* One field took this long. */
-            i_field_dur = (p_pic->date - p_sys->meta.pi_date[i]) / i_fields_total;
-        }
-        /* Note that we default to field duration 0 if it could not be
-           determined. This behaves the same as the old code - leaving the
-           extra output frame dates the same as p_pic->date if the last cached
-           date was not valid.
-        */
-
-        i_double_rate_alloc_end = i_nb_fields;
-        if( i_nb_fields > DEINTERLACE_DST_SIZE )
-        {
-            /* Note that the effective buffer size depends also on the constant
-               private_picture in vout_wrapper.c, since that determines the
-               maximum number of output pictures filter_NewPicture() will
-               successfully allocate for one input frame.
-            */
-            msg_Err( p_filter, "Framerate doubler: output buffer too small; "\
-                               "fields = %d, buffer size = %d. Dropping the "\
-                               "remaining fields.",
-                               i_nb_fields, DEINTERLACE_DST_SIZE );
-            i_double_rate_alloc_end = DEINTERLACE_DST_SIZE;
-        }
-
-        /* Allocate output frames. */
-        for( int i = 1; i < i_double_rate_alloc_end ; ++i )
-        {
-            p_dst[i-1]->p_next =
-            p_dst[i]           = filter_NewPicture( p_filter );
-            if( p_dst[i] )
-            {
-                picture_CopyProperties( p_dst[i], p_pic );
-            }
-            else
-            {
-                msg_Err( p_filter, "Framerate doubler: could not allocate "\
-                                   "output frame %d", i+1 );
-                i_double_rate_alloc_end = i; /* Inform the PTS logic about the
-                                                correct end position. */
-                break; /* If this happens, the rest of the allocations
-                          aren't likely to work, either... */
-            }
-        }
-        /* Now we have allocated *up to* the correct number of frames;
-           normally, exactly the correct number. Upon alloc failure,
-           we may have succeeded in allocating *some* output frames,
-           but fewer than were desired. In such a case, as many will
-           be rendered as were successfully allocated.
-
-           Note that now p_dst[i] != NULL
-           for 0 <= i < i_double_rate_alloc_end. */
-    }
-    assert( p_sys->b_double_rate  ||  p_dst[1] == NULL );
-    assert( i_nb_fields > 2  ||  p_dst[2] == NULL );
-
-    /* Render */
-    switch( p_sys->i_mode )
-    {
-        case DEINTERLACE_DISCARD:
-            RenderDiscard( p_dst[0], p_pic, 0 );
-            break;
-
-        case DEINTERLACE_BOB:
-            RenderBob( p_dst[0], p_pic, !b_top_field_first );
-            if( p_dst[1] )
-                RenderBob( p_dst[1], p_pic, b_top_field_first );
-            if( p_dst[2] )
-                RenderBob( p_dst[2], p_pic, !b_top_field_first );
-            break;;
-
-        case DEINTERLACE_LINEAR:
-            RenderLinear( p_filter, p_dst[0], p_pic, !b_top_field_first );
-            if( p_dst[1] )
-                RenderLinear( p_filter, p_dst[1], p_pic, b_top_field_first );
-            if( p_dst[2] )
-                RenderLinear( p_filter, p_dst[2], p_pic, !b_top_field_first );
-            break;
-
-        case DEINTERLACE_MEAN:
-            RenderMean( p_filter, p_dst[0], p_pic );
-            break;
-
-        case DEINTERLACE_BLEND:
-            RenderBlend( p_filter, p_dst[0], p_pic );
-            break;
-
-        case DEINTERLACE_X:
-            RenderX( p_dst[0], p_pic );
-            break;
-
-        case DEINTERLACE_YADIF:
-            if( RenderYadif( p_filter, p_dst[0], p_pic, 0, 0 ) )
-                goto drop;
-            break;
-
-        case DEINTERLACE_YADIF2X:
-            if( RenderYadif( p_filter, p_dst[0], p_pic, 0, !b_top_field_first ) )
-                goto drop;
-            if( p_dst[1] )
-                RenderYadif( p_filter, p_dst[1], p_pic, 1, b_top_field_first );
-            if( p_dst[2] )
-                RenderYadif( p_filter, p_dst[2], p_pic, 2, !b_top_field_first );
-            break;
-
-        case DEINTERLACE_PHOSPHOR:
-            if( RenderPhosphor( p_filter, p_dst[0], 0,
-                                !b_top_field_first ) )
-                goto drop;
-            if( p_dst[1] )
-                RenderPhosphor( p_filter, p_dst[1], 1,
-                                b_top_field_first );
-            if( p_dst[2] )
-                RenderPhosphor( p_filter, p_dst[2], 2,
-                                !b_top_field_first );
-            break;
-
-        case DEINTERLACE_IVTC:
-            /* Note: RenderIVTC will automatically drop the duplicate frames
-                     produced by IVTC. This is part of normal operation. */
-            if( RenderIVTC( p_filter, p_dst[0] ) )
-                goto drop;
-            break;
-    }
-
-    /* Set output timestamps, if the algorithm didn't request CUSTOM_PTS
-       for this frame. */
-    assert( i_frame_offset <= METADATA_SIZE  ||  i_frame_offset == CUSTOM_PTS );
-    if( i_frame_offset != CUSTOM_PTS )
-    {
-        mtime_t i_base_pts = p_sys->meta.pi_date[i_meta_idx];
-
-        /* Note: in the usual case (i_frame_offset = 0  and
-                 b_double_rate = false), this effectively does nothing.
-                 This is needed to correct the timestamp
-                 when i_frame_offset > 0. */
-        p_dst[0]->date = i_base_pts;
-
-        if( p_sys->b_double_rate )
-        {
-            /* Processing all actually allocated output frames. */
-            for( int i = 1; i < i_double_rate_alloc_end; ++i )
-            {
-                /* XXX it's not really good especially for the first picture, but
-                 * I don't think that delaying by one frame is worth it */
-                if( i_base_pts > VLC_TS_INVALID )
-                    p_dst[i]->date = i_base_pts + i * i_field_dur;
-                else
-                    p_dst[i]->date = VLC_TS_INVALID;
-            }
-        }
-    }
-
-    for( int i = 0; i < DEINTERLACE_DST_SIZE; ++i )
-    {
-        if( p_dst[i] )
-        {
-            p_dst[i]->b_progressive = true;
-            p_dst[i]->i_nb_fields = 2;
-        }
-    }
-
-    picture_Release( p_pic );
-    return p_dst[0];
-
-drop:
-    picture_Release( p_dst[0] );
-    for( int i = 1; i < DEINTERLACE_DST_SIZE; ++i )
-    {
-        if( p_dst[i] )
-            picture_Release( p_dst[i] );
-    }
-    picture_Release( p_pic );
-    return NULL;
+    return DoDeinterlacing( p_filter, &p_filter->p_sys->context, p_pic );
 }
 
 /*****************************************************************************
@@ -563,22 +453,8 @@ drop:
 
 void Flush( filter_t *p_filter )
 {
-    filter_sys_t *p_sys = p_filter->p_sys;
+    FlushDeinterlacing(&p_filter->p_sys->context);
 
-    for( int i = 0; i < METADATA_SIZE; i++ )
-    {
-        p_sys->meta.pi_date[i] = VLC_TS_INVALID;
-        p_sys->meta.pi_nb_fields[i] = 2;
-        p_sys->meta.pb_top_field_first[i] = true;
-    }
-    p_sys->i_frame_offset = 0; /* reset to default value (first frame after
-                                  flush cannot have offset) */
-    for( int i = 0; i < HISTORY_SIZE; i++ )
-    {
-        if( p_sys->pp_history[i] )
-            picture_Release( p_sys->pp_history[i] );
-        p_sys->pp_history[i] = NULL;
-    }
     IVTCClearState( p_filter );
 }
 
@@ -592,7 +468,7 @@ int Mouse( filter_t *p_filter,
 {
     VLC_UNUSED(p_old);
     *p_mouse = *p_new;
-    if( p_filter->p_sys->b_half_height )
+    if( p_filter->p_sys->context.settings.b_half_height )
         p_mouse->i_y *= 2;
     return VLC_SUCCESS;
 }
@@ -612,7 +488,7 @@ int Open( vlc_object_t *p_this )
     if( chroma == NULL || chroma->pixel_size > 2 )
     {
 notsupp:
-        msg_Err( p_filter, "unsupported chroma %4.4s", (char*)&fourcc );
+        msg_Dbg( p_filter, "unsupported chroma %4.4s", (char*)&fourcc );
         return VLC_EGENERIC;
     }
 
@@ -644,22 +520,12 @@ notsupp:
 
     p_sys->chroma = chroma;
 
+    InitDeinterlacingContext( &p_sys->context );
+
     config_ChainParse( p_filter, FILTER_CFG_PREFIX, ppsz_filter_options,
                        p_filter->p_cfg );
     char *psz_mode = var_InheritString( p_filter, FILTER_CFG_PREFIX "mode" );
     SetFilterMethod( p_filter, psz_mode, packed );
-    free( psz_mode );
-
-    for( int i = 0; i < METADATA_SIZE; i++ )
-    {
-        p_sys->meta.pi_date[i] = VLC_TS_INVALID;
-        p_sys->meta.pi_nb_fields[i] = 2;
-        p_sys->meta.pb_top_field_first[i] = true;
-    }
-    p_sys->i_frame_offset = 0; /* start with default value (first-ever frame
-                                  cannot have offset) */
-    for( int i = 0; i < HISTORY_SIZE; i++ )
-        p_sys->pp_history[i] = NULL;
 
     IVTCClearState( p_filter );
 
@@ -700,6 +566,11 @@ notsupp:
         p_sys->pf_merge = pixel_size == 1 ? merge8_armv6 : merge16_armv6;
     else
 #endif
+#if defined(CAN_COMPILE_ARM64)
+    if( vlc_CPU_ARM64_NEON() )
+        p_sys->pf_merge = pixel_size == 1 ? merge8_arm64_neon : merge16_arm64_neon;
+    else
+#endif
     {
         p_sys->pf_merge = pixel_size == 1 ? Merge8BitGeneric : Merge16BitGeneric;
 #if defined(__i386__) || defined(__x86_64__)
@@ -708,7 +579,11 @@ notsupp:
     }
 
     /* */
-    if( p_sys->i_mode == DEINTERLACE_PHOSPHOR )
+    video_format_t fmt;
+    GetOutputFormat( p_filter, &fmt, &p_filter->fmt_in.video );
+
+    /* */
+    if( !strcmp( psz_mode, "phosphor" ) )
     {
         int i_c420 = var_GetInteger( p_filter,
                                      FILTER_CFG_PREFIX "phosphor-chroma" );
@@ -737,16 +612,17 @@ notsupp:
         msg_Dbg( p_filter, "using Phosphor dimmer strength %d", i_dimmer );
         /* The internal value ranges from 0 to 3. */
         p_sys->phosphor.i_dimmer_strength = i_dimmer - 1;
-    }
-    else
-    {
-        p_sys->phosphor.i_chroma_for_420 = PC_ALTLINE;
-        p_sys->phosphor.i_dimmer_strength = 1;
-    }
 
-    /* */
-    video_format_t fmt;
-    GetOutputFormat( p_filter, &fmt, &p_filter->fmt_in.video );
+        if( 2 * chroma->p[1].h.num == chroma->p[1].h.den &&
+            2 * chroma->p[2].h.num == chroma->p[2].h.den &&
+            i_c420 == PC_UPCONVERT )
+        {
+            fmt.i_chroma = p_filter->fmt_in.video.i_chroma == VLC_CODEC_J420 ?
+                        VLC_CODEC_J422 : VLC_CODEC_I422;
+        }
+    }
+    free( psz_mode );
+
     if( !p_filter->b_allow_fmt_out_change &&
         ( fmt.i_chroma != p_filter->fmt_in.video.i_chroma ||
           fmt.i_height != p_filter->fmt_in.video.i_height ) )
@@ -757,7 +633,7 @@ notsupp:
     p_filter->fmt_out.video = fmt;
     p_filter->fmt_out.i_codec = fmt.i_chroma;
     p_filter->pf_video_filter = Deinterlace;
-    p_filter->pf_video_flush  = Flush;
+    p_filter->pf_flush = Flush;
     p_filter->pf_video_mouse  = Mouse;
 
     msg_Dbg( p_filter, "deinterlacing" );

@@ -2,7 +2,7 @@
  * stream_io_callback.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 8e9c28faadebf8adc0e9b33d9445116b5d028af0 $
+ * $Id: d2c72a4214ebbe3d3b9009a4a61acd2d22fcec9f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -34,13 +34,15 @@ class vlc_stream_io_callback: public IOCallback
     bool           b_owner;
 
   public:
-    vlc_stream_io_callback( stream_t *, bool );
+    vlc_stream_io_callback( stream_t *, bool owner );
 
     virtual ~vlc_stream_io_callback()
     {
         if( b_owner )
-            stream_Delete( s );
+            vlc_stream_Delete( s );
     }
+
+    bool IsEOF() const { return mb_eof; }
 
     virtual uint32   read            ( void *p_buffer, size_t i_size);
     virtual void     setFilePointer  ( int64_t i_offset, seek_mode mode = seek_beginning );

@@ -2,7 +2,7 @@
  * buffer.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 6c94b818bc4ce7ea6aaf365f2201bb7093e02717 $
+ * $Id: 6c0c1478d683294d1359fddea901db7b803c19c3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,8 +21,8 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _MMS_BUFFER_H_
-#define _MMS_BUFFER_H_ 1
+#ifndef VLC_MMS_BUFFER_H_
+#define VLC_MMS_BUFFER_H_
 
 typedef struct
 {
@@ -43,7 +43,7 @@ void var_buffer_add16( var_buffer_t *p_buf, uint16_t i_word );
 void var_buffer_add32( var_buffer_t *p_buf, uint32_t i_word );
 void var_buffer_add64( var_buffer_t *p_buf, uint64_t i_word );
 void var_buffer_addmemory( var_buffer_t *p_buf, void *p_mem, int i_mem );
-void var_buffer_addUTF16( access_t  *p_access, var_buffer_t *p_buf, const char *p_str );
+void var_buffer_addUTF16( stream_t  *p_access, var_buffer_t *p_buf, const char *p_str );
 void var_buffer_free( var_buffer_t *p_buf );
 
 

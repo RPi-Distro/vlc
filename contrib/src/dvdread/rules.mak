@@ -1,5 +1,5 @@
 # DVDREAD
-LIBDVDREAD_VERSION := 5.0.3
+LIBDVDREAD_VERSION := 6.0.0
 LIBDVDREAD_URL := $(VIDEOLAN)/libdvdread/$(LIBDVDREAD_VERSION)/libdvdread-$(LIBDVDREAD_VERSION).tar.bz2
 
 ifdef BUILD_DISCS
@@ -24,6 +24,7 @@ dvdread: libdvdread-$(LIBDVDREAD_VERSION).tar.bz2 .sum-dvdread
 DEPS_dvdread = dvdcss
 
 .dvdread: dvdread .dvdcss
+	$(REQUIRE_GPL)
 	$(RECONF) -I m4
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) --with-libdvdcss
 	cd $< && $(MAKE) install

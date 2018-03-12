@@ -183,7 +183,7 @@ int Chunk::Parse( xml_reader_t *p_xmlReader, string p_node, int p_type){
                         return -1;
                     }
                     if ( this->i_vol_index != 1 ) {
-                        msg_Err(this->p_demux, "Only one VOLINDEX suported. Patch welcome.");
+                        msg_Err(this->p_demux, "Only one VOLINDEX supported. Patch welcome.");
                         return -1;
                     }
                     /* end of chunk tag parse */
@@ -723,22 +723,16 @@ int XmlFile::OpenXml()
 {
     char *psz_uri;
 
-    this->p_xml = xml_Create( this->p_demux );
-    if (! this->p_xml) {
-        return -1;
-    }
     psz_uri = vlc_path2uri( this->s_path.c_str(), "file" );
-    this->p_stream = stream_UrlNew(this->p_demux, psz_uri );
+    this->p_stream = vlc_stream_NewURL(this->p_demux, psz_uri );
     free(psz_uri);
     if( ! this->p_stream ) {
-        xml_Delete(this->p_xml );
         return -1;
     }
 
-    this->p_xmlReader = xml_ReaderCreate( this->p_xml, this->p_stream);
+    this->p_xmlReader = xml_ReaderCreate( this->p_demux, this->p_stream);
     if( ! this->p_xmlReader ) {
-        stream_Delete( this->p_stream );
-        xml_Delete(this->p_xml );
+        vlc_stream_Delete( this->p_stream );
         return -1;
     }
     return 0;
@@ -746,16 +740,16 @@ int XmlFile::OpenXml()
 
 int XmlFile::ReadNextNode( demux_t *p_demux, xml_reader_t *p_xmlReader, string& p_node )
 {
-    string s_node;
     const char * c_node;
-    int i;
-    size_t ui_pos;
+    int i = xml_ReaderNextNode( p_xmlReader, &c_node );
 
-    i = xml_ReaderNextNode( p_xmlReader, &c_node );
+    if( i <= XML_READER_NONE )
+        return i;
 
     /* remove namespaces, if there are any */
-    s_node = c_node;
-    ui_pos = s_node.find( ":" );
+    string s_node = c_node;
+    size_t ui_pos = s_node.find( ":" );
+
     if( ( i == XML_READER_STARTELEM || i == XML_READER_ENDELEM ) && ( ui_pos != string::npos ) )
     {
         try
@@ -825,12 +819,9 @@ int XmlFile::isCPL()
 
 void XmlFile::CloseXml() {
     if( this->p_stream )
-        stream_Delete( this->p_stream );
+        vlc_stream_Delete( this->p_stream );
     if( this->p_xmlReader )
         xml_ReaderDelete( this->p_xmlReader );
-    if( this->p_xml )
-        xml_Delete( this->p_xml );
-
 }
 
 /*
@@ -990,6 +981,7 @@ int PKL::FindCPLs()
                 break;
             case -1:
                 /* error */
+                delete cpl;
                 return -1;
             case 0:
             default:
@@ -1091,7 +1083,7 @@ int PKL::ParseSigner(string p_node, int p_type)
 
     while( ( type = XmlFile::ReadNextNode( this->p_demux, this->p_xmlReader, node ) ) > 0 ) {
         /* TODO not implemented. Just parse until end of Signer node */
-            if ((node == p_node) && (type = XML_READER_ENDELEM))
+            if ((node == p_node) && (type == XML_READER_ENDELEM))
                 return 0;
     }
 
@@ -1111,7 +1103,7 @@ int PKL::ParseSignature(string p_node, int p_type)
 
     while( ( type = XmlFile::ReadNextNode( this->p_demux, this->p_xmlReader, node ) ) > 0 ) {
         /* TODO not implemented. Just parse until end of Signature node */
-            if ((node == p_node) && (type = XML_READER_ENDELEM))
+            if ((node == p_node) && (type == XML_READER_ENDELEM))
                 return 0;
     }
     msg_Err(this->p_demux, "Parse of Signature finished bad");
@@ -1260,19 +1252,19 @@ int Reel::ParseAsset(string p_node, int p_type, TrackType_t e_track) {
                 } else if (node == "AnnotationText") {
                     if ( XmlFile::ReadEndNode( this->p_demux, this->p_xmlReader, node, type, s_value ) )
                         return -1;
-                        asset->setAnnotation(s_value);
+                    asset->setAnnotation(s_value);
                 } else if (node == "IntrinsicDuration") {
                     if ( XmlFile::ReadEndNode( this->p_demux, this->p_xmlReader, node, type, s_value ) )
                         return -1;
-                        asset->setIntrinsicDuration(atoi(s_value.c_str()));
+                    asset->setIntrinsicDuration(atoi(s_value.c_str()));
                 } else if (node == "EntryPoint") {
                     if ( XmlFile::ReadEndNode( this->p_demux, this->p_xmlReader, node, type, s_value ) )
                         return -1;
-                        asset->setEntryPoint(atoi(s_value.c_str()));
+                    asset->setEntryPoint(atoi(s_value.c_str()));
                 } else if (node == "Duration") {
                     if ( XmlFile::ReadEndNode( this->p_demux, this->p_xmlReader, node, type, s_value ) )
                         return -1;
-                        asset->setDuration(atoi(s_value.c_str()));
+                    asset->setDuration(atoi(s_value.c_str()));
                 } else if (node == "KeyId") {
                     if ( XmlFile::ReadEndNode( this->p_demux, this->p_xmlReader, node, type, s_value ) )
                         return -1;
@@ -1517,7 +1509,7 @@ int CPL::DummyParse(string p_node, int p_type)
 
     while( ( type = XmlFile::ReadNextNode( this->p_demux, this->p_xmlReader, node ) ) > 0 ) {
         /* TODO not implemented. Just pase until end of input node */
-        if ((node == p_node) && (type = XML_READER_ENDELEM))
+        if ((node == p_node) && (type == XML_READER_ENDELEM))
             return 0;
     }
 

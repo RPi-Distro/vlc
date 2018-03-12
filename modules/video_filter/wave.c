@@ -2,7 +2,7 @@
  * wave.c : Wave video effect plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2008 VLC authors and VideoLAN
- * $Id: 3fbfcab6651e27e69ad5c9277a941d41ae49a3dd $
+ * $Id: 8fce37128b52b7fcd699141402a915c24725c0b7 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -34,8 +34,8 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-
 #include <vlc_filter.h>
+#include <vlc_picture.h>
 #include "filter_picture.h"
 
 /*****************************************************************************
@@ -52,7 +52,7 @@ static picture_t *Filter( filter_t *, picture_t * );
 vlc_module_begin ()
     set_description( N_("Wave video filter") )
     set_shortname( N_( "Wave" ))
-    set_capability( "video filter2", 0 )
+    set_capability( "video filter", 0 )
     set_category( CAT_VIDEO )
     set_subcategory( SUBCAT_VIDEO_VFILTER )
 
@@ -120,7 +120,6 @@ static void Destroy( vlc_object_t *p_this )
 static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 {
     picture_t *p_outpic;
-    int i_index;
     double f_angle;
     mtime_t new_date = mdate();
 
@@ -137,9 +136,9 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     p_filter->p_sys->last_date = new_date;
     f_angle = p_filter->p_sys->f_angle;
 
-    for( i_index = 0 ; i_index < p_pic->i_planes ; i_index++ )
+    for( int i_index = 0 ; i_index < p_pic->i_planes ; i_index++ )
     {
-        int i_line, i_num_lines, i_visible_pitch, i_pixel_pitch, i_offset,
+        int i_num_lines, i_visible_pitch, i_pixel_pitch, i_offset,
             i_visible_pixels;
         uint8_t black_pixel;
         uint8_t *p_in, *p_out;
@@ -163,7 +162,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
                                                                     : 0x80;
 
         /* Ok, we do 3 times the sin() calculation for each line. So what ? */
-        for( i_line = 0 ; i_line < i_num_lines ; i_line++ )
+        for( int i_line = 0 ; i_line < i_num_lines ; i_line++ )
         {
             /* Calculate today's offset, don't go above 1/20th of the screen */
             i_offset = (int)( (double)(i_visible_pixels)

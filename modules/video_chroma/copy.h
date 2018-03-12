@@ -2,7 +2,7 @@
  * copy.h: Fast YV12/NV12 copy
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 39dbf1e19e6b110d93d141c83a57b17cdb822012 $
+ * $Id: f332f6d429d257f3d3b07e3a06b7a51dceeb3f3e $
  *
  * Authors: Laurent Aimar <fenrir_AT_ videolan _DOT_ org>
  *
@@ -21,8 +21,10 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_VIDEOCHROMA_COPY_H
-#define _VLC_VIDEOCHROMA_COPY_H 1
+#ifndef VLC_VIDEOCHROMA_COPY_H_
+#define VLC_VIDEOCHROMA_COPY_H_
+
+#include <assert.h>
 
 typedef struct {
 # ifdef CAN_COMPILE_SSE2
@@ -34,11 +36,55 @@ typedef struct {
 int  CopyInitCache(copy_cache_t *cache, unsigned width);
 void CopyCleanCache(copy_cache_t *cache);
 
-void CopyFromNv12(picture_t *dst, uint8_t *src[2], size_t src_pitch[2],
-                  unsigned width, unsigned height,
-                  copy_cache_t *cache);
-void CopyFromYv12(picture_t *dst, uint8_t *src[3], size_t src_pitch[3],
-                  unsigned width, unsigned height,
-                  copy_cache_t *cache);
+/* Copy planes from NV12/NV21 to NV12/NV21 */
+void Copy420_SP_to_SP(picture_t *dst, const uint8_t *src[static 2],
+                      const size_t src_pitch[static 2], unsigned height,
+                      const copy_cache_t *cache);
+
+/* Copy planes from I420/YV12 to I420/YV12 */
+void Copy420_P_to_P(picture_t *dst, const uint8_t *src[static 3],
+                    const size_t src_pitch[static 3], unsigned height,
+                    const copy_cache_t *cache);
+
+/* Copy planes from I420/YV12 to NV12/NV21 */
+void Copy420_P_to_SP(picture_t *dst, const uint8_t *src[static 3],
+                     const size_t src_pitch[static 3], unsigned height,
+                     const copy_cache_t *cache);
+
+/* Copy planes from NV12/NV21 to I420/YV12 */
+void Copy420_SP_to_P(picture_t *dst, const uint8_t *src[static 2],
+                     const size_t src_pitch[static 2], unsigned height,
+                     const copy_cache_t *cache);
+
+void Copy420_16_P_to_SP(picture_t *dst, const uint8_t *src[static 3],
+                     const size_t src_pitch[static 3], unsigned height,
+                     const copy_cache_t *cache);
+
+void Copy420_16_SP_to_P(picture_t *dst, const uint8_t *src[static 2],
+                        const size_t src_pitch[static 2], unsigned height,
+                        const copy_cache_t *cache);
+
+/* XXX: Not optimized copy (no SEE) */
+void CopyFromI420_10ToP010(picture_t *dst, const uint8_t *src[static 3],
+                           const size_t src_pitch[static 3],
+                           unsigned height, const copy_cache_t *cache);
+
+/**
+ * Swap UV planes of a Tri Planars picture.
+ *
+ * It just swap the planes information without doing any copy.
+ */
+void picture_SwapUV(picture_t *picture);
+
+/**
+ * This functions sets the internal plane pointers/dimensions for the given
+ * buffer.
+ * This is useful when mapping opaque surfaces into CPU planes.
+ *
+ * picture is the picture to update
+ * data is the buffer pointer to use as the start of data for all the planes
+ * pitch is the internal line pitch for the buffer
+ */
+int picture_UpdatePlanes(picture_t *picture, uint8_t *data, unsigned pitch);
 
 #endif

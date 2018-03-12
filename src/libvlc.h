@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: 0e769c6e85a36cf22c34389fe7bcd86e0b6574d9 $
+ * $Id: 7d7982157edf588137d7a6cb3693feefd20dcfe6 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -29,13 +29,6 @@ extern const char psz_vlc_changeset[];
 
 typedef struct variable_t variable_t;
 
-/* Actions (hot keys) */
-struct vlc_actions;
-struct vlc_actions *vlc_InitActions (libvlc_int_t *);
-extern void vlc_DeinitActions (libvlc_int_t *, struct vlc_actions *);
-
-size_t vlc_towc (const char *str, uint32_t *restrict pwc);
-
 /*
  * OS-specific initialization
  */
@@ -57,9 +50,6 @@ void vlc_CPU_dump(vlc_object_t *);
 /* This cannot be used as is from plugins yet: */
 int vlc_clone_detach (vlc_thread_t *, void *(*)(void *), void *, int);
 
-int vlc_object_waitpipe (vlc_object_t *obj);
-void ObjectKillChildrens (vlc_object_t *);
-
 int vlc_set_priority( vlc_thread_t, int );
 
 void vlc_threads_setup (libvlc_int_t *);
@@ -76,7 +66,10 @@ void vlc_assert_locked (vlc_mutex_t *);
 /*
  * Logging
  */
-void vlc_LogInit(libvlc_int_t *);
+typedef struct vlc_logger_t vlc_logger_t;
+
+int vlc_LogPreinit(libvlc_int_t *);
+int vlc_LogInit(libvlc_int_t *);
 void vlc_LogDeinit(libvlc_int_t *);
 
 /*
@@ -126,10 +119,47 @@ void vlc_object_set_destructor (vlc_object_t *, vlc_destructor_t);
 #define vlc_object_set_destructor(a,b) \
         vlc_object_set_destructor (VLC_OBJECT(a), b)
 
-/*
- * To be cleaned-up module stuff:
+/**
+ * Allocates an object resource.
+ *
+ * @param size storage size in bytes of the resource data
+ * @param release callback to release the resource
+ *
+ * @return a pointer to the (uninitialized) storage space, or NULL on error
  */
-module_t *module_find_by_shortcut (const char *psz_shortcut);
+void *vlc_objres_new(size_t size, void (*release)(void *));
+
+/**
+ * Pushes an object resource on the object resources stack.
+ *
+ * @param obj object to allocate the resource for
+ * @param data resource base address (as returned by vlc_objres_new())
+ */
+void vlc_objres_push(vlc_object_t *obj, void *data);
+
+/**
+ * Releases all resources of an object.
+ *
+ * All resources added with vlc_objres_add() are released in reverse order.
+ * The resource list is reset to empty.
+ *
+ * @param obj object whose resources to release
+ */
+void vlc_objres_clear(vlc_object_t *obj);
+
+/**
+ * Releases one object resource explicitly.
+ *
+ * If a resource associated with an object needs to be released explicitly
+ * earlier than normal, call this function. This is relatively slow and should
+ * be avoided.
+ *
+ * @param obj object whose resource to release
+ * @param data private data for the comparison function
+ * @param match comparison function to match the targeted resource
+ */
+void vlc_objres_remove(vlc_object_t *obj, void *data,
+                       bool (*match)(void *, void *));
 
 #define ZOOM_SECTION N_("Zoom")
 #define ZOOM_QUARTER_KEY_TEXT N_("1:4 Quarter")
@@ -137,37 +167,28 @@ module_t *module_find_by_shortcut (const char *psz_shortcut);
 #define ZOOM_ORIGINAL_KEY_TEXT N_("1:1 Original")
 #define ZOOM_DOUBLE_KEY_TEXT N_("2:1 Double")
 
-typedef struct sap_handler_t sap_handler_t;
-
 /**
  * Private LibVLC instance data.
  */
+typedef struct vlc_dialog_provider vlc_dialog_provider;
+typedef struct vlc_keystore vlc_keystore;
+typedef struct vlc_actions_t vlc_actions_t;
+
 typedef struct libvlc_priv_t
 {
     libvlc_int_t       public_data;
 
     /* Logging */
-    struct
-    {
-        void (*cb) (void *, int, const vlc_log_t *, const char *, va_list);
-        void *opaque;
-        signed char verbose;
-        vlc_rwlock_t lock;
-    } log;
     bool               b_stats;     ///< Whether to collect stats
 
     /* Singleton objects */
+    vlc_logger_t      *logger;
     vlm_t             *p_vlm;  ///< the VLM singleton (or NULL)
-    vlc_object_t      *p_dialog_provider; ///< dialog provider
-#ifdef ENABLE_SOUT
-    sap_handler_t     *p_sap; ///< SAP SDP advertiser
-#endif
+    vlc_dialog_provider *p_dialog_provider; ///< dialog provider
+    vlc_keystore      *p_memory_keystore; ///< memory keystore
     struct playlist_t *playlist; ///< Playlist for interfaces
     struct playlist_preparser_t *parser; ///< Input item meta data handler
-    struct vlc_actions *actions; ///< Hotkeys handler
-
-    /* Objects tree */
-    vlc_mutex_t        structure_lock;
+    vlc_actions_t *actions; ///< Hotkeys handler
 
     /* Exit callback */
     vlc_exit_t       exit;
@@ -175,14 +196,14 @@ typedef struct libvlc_priv_t
 
 static inline libvlc_priv_t *libvlc_priv (libvlc_int_t *libvlc)
 {
-    return (libvlc_priv_t *)libvlc;
+    return container_of(libvlc, libvlc_priv_t, public_data);
 }
 
-void intf_InsertItem(libvlc_int_t *, const char *mrl, unsigned optc,
-                     const char * const *optv, unsigned flags);
+int intf_InsertItem(libvlc_int_t *, const char *mrl, unsigned optc,
+                    const char * const *optv, unsigned flags);
 void intf_DestroyAll( libvlc_int_t * );
 
-#define libvlc_stats( o ) (libvlc_priv((VLC_OBJECT(o))->p_libvlc)->b_stats)
+#define libvlc_stats( o ) (libvlc_priv((VLC_OBJECT(o))->obj.libvlc)->b_stats)
 
 /*
  * Variables stuff

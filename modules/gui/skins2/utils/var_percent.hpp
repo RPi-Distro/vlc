@@ -2,7 +2,7 @@
  * var_percent.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: abf656922c298c6b8c0c8a23b39b591163f0ef72 $
+ * $Id: d74ee470aab15d6d4d7d829a8bfd3ae84ae68e1c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -40,7 +40,7 @@ public:
     virtual ~VarPercent() { }
 
     /// Get the variable type
-    virtual const string &getType() const { return m_type; }
+    virtual const std::string &getType() const { return m_type; }
 
     /// Set the internal value
     virtual void set( float percentage );
@@ -55,7 +55,7 @@ public:
 
 private:
     /// Variable type
-    static const string m_type;
+    static const std::string m_type;
     /// Percent value
     float m_value;
     /// preferred step (for scrolling)

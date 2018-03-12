@@ -5,7 +5,7 @@
  * Copyright © 2007-2011 Mirsal Ennaime
  * Copyright © 2009-2011 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: 09069343f412e7abaa6bab466decfb06877fc260 $
+ * $Id: 15680ec26de48b99d5fdcbe57936743e1910e0c7 $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
@@ -32,6 +32,7 @@
 
 #include <vlc_common.h>
 #include <vlc_playlist.h>
+#include <vlc_input.h>
 #include <vlc_interface.h>
 
 #include <math.h>
@@ -48,10 +49,9 @@ MarshalPosition( intf_thread_t *p_intf, DBusMessageIter *container )
 
     if( !p_input )
         i_pos = 0;
-
     else
     {
-        i_pos = var_GetTime( p_input, "time" );
+        i_pos = var_GetInteger( p_input, "time" );
         vlc_object_release( p_input );
     }
 
@@ -66,15 +66,17 @@ DBUS_METHOD( SetPosition )
 
     REPLY_INIT;
     dbus_int64_t i_pos;
-    vlc_value_t position;
-    char *psz_trackid, *psz_dbus_trackid;
-    input_item_t *p_item;
+    const char *psz_trackid;
+    playlist_t *playlist = pl_Get(p_this);
+    playlist_item_t *item;
+    input_thread_t *input = NULL;
+    int i_id;
 
     DBusError error;
     dbus_error_init( &error );
 
     dbus_message_get_args( p_from, &error,
-            DBUS_TYPE_OBJECT_PATH, &psz_dbus_trackid,
+            DBUS_TYPE_OBJECT_PATH, &psz_trackid,
             DBUS_TYPE_INT64, &i_pos,
             DBUS_TYPE_INVALID );
 
@@ -86,31 +88,20 @@ DBUS_METHOD( SetPosition )
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
 
-    input_thread_t *p_input = pl_CurrentInput( p_this );
+    if( sscanf( psz_trackid, MPRIS_TRACKID_FORMAT, &i_id ) < 1 )
+        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 
-    if( p_input )
+    playlist_Lock( playlist );
+    item = playlist_CurrentPlayingItem( playlist );
+    if( item != NULL && item->i_id == i_id )
+        input = playlist_CurrentInputLocked( playlist );
+    playlist_Unlock( playlist );
+
+    if( input != NULL )
     {
-        if( ( p_item = input_GetItem( p_input ) ) )
-        {
-            if( -1 == asprintf( &psz_trackid,
-                                MPRIS_TRACKID_FORMAT,
-                                p_item->i_id ) )
-            {
-                vlc_object_release( p_input );
-                return DBUS_HANDLER_RESULT_NEED_MEMORY;
-            }
-
-            if( !strcmp( psz_trackid, psz_dbus_trackid ) )
-            {
-                position.i_time = (mtime_t) i_pos;
-                var_Set( p_input, "time", position );
-            }
-            free( psz_trackid );
-        }
-
-        vlc_object_release( p_input );
+        var_SetInteger( input, "time", i_pos );
+        vlc_object_release( input );
     }
-
 
     REPLY_SEND;
 }
@@ -119,8 +110,6 @@ DBUS_METHOD( Seek )
 {
     REPLY_INIT;
     dbus_int64_t i_step;
-    vlc_value_t  newpos;
-    mtime_t      i_pos;
 
     DBusError error;
     dbus_error_init( &error );
@@ -140,13 +129,8 @@ DBUS_METHOD( Seek )
     input_thread_t *p_input = pl_CurrentInput( p_this );
     if( p_input && var_GetBool( p_input, "can-seek" ) )
     {
-        i_pos = var_GetTime( p_input, "time" );
-        newpos.i_time = (mtime_t) i_step + i_pos;
-
-        if( newpos.i_time < 0 )
-            newpos.i_time = 0;
-
-        var_Set( p_input, "time", newpos );
+        mtime_t i_pos = var_GetInteger( p_input, "time" ) + i_step;
+        var_SetInteger( p_input, "time", (i_pos >= 0) ? i_pos : 0 );
     }
 
     if( p_input )
@@ -207,44 +191,21 @@ DBUS_METHOD( Stop )
 DBUS_METHOD( Play )
 {
     REPLY_INIT;
-    input_thread_t *p_input =  pl_CurrentInput( p_this );
-
-    if( !p_input || var_GetInteger( p_input, "state" ) != PLAYING_S )
-        playlist_Play( PL );
-
-    if( p_input )
-        vlc_object_release( p_input );
-
+    playlist_Play( PL );
     REPLY_SEND;
 }
 
 DBUS_METHOD( Pause )
 {
     REPLY_INIT;
-    input_thread_t *p_input = pl_CurrentInput( p_this );
-
-    if( p_input && var_GetInteger(p_input, "state") == PLAYING_S )
-        playlist_Pause( PL );
-
-    if( p_input )
-        vlc_object_release( p_input );
-
+    playlist_Pause( PL );
     REPLY_SEND;
 }
 
 DBUS_METHOD( PlayPause )
 {
     REPLY_INIT;
-    input_thread_t *p_input = pl_CurrentInput( p_this );
-
-    if( p_input && var_GetInteger(p_input, "state") == PLAYING_S )
-        playlist_Pause( PL );
-    else
-        playlist_Play( PL );
-
-    if( p_input )
-        vlc_object_release( p_input );
-
+    playlist_TogglePause( PL );
     REPLY_SEND;
 }
 
@@ -268,9 +229,7 @@ DBUS_METHOD( OpenUri )
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
 
-    playlist_Add( PL, psz_mrl, NULL,
-                  PLAYLIST_APPEND | PLAYLIST_GO,
-                  PLAYLIST_END, true, false );
+    playlist_Add( PL, psz_mrl, true );
 
     REPLY_SEND;
 }
@@ -547,37 +506,27 @@ DBUS_METHOD( LoopStatusSet )
 static int
 MarshalMetadata( intf_thread_t *p_intf, DBusMessageIter *container )
 {
-    DBusMessageIter a;
-    input_thread_t *p_input = pl_CurrentInput( p_intf );
-    input_item_t   *p_item  = NULL;
+    playlist_t *playlist = pl_Get( p_intf );
+    playlist_item_t *item;
+    int result = VLC_SUCCESS;
 
-    if( p_input != NULL )
-    {
-        p_item = input_GetItem( p_input );
+    playlist_Lock( playlist );
+    item = playlist_CurrentPlayingItem( playlist );
 
-        if( p_item )
-        {
-            int result = GetInputMeta( p_item, container );
+    if( item != NULL )
+        result = GetInputMeta( item, container );
+    else
+    {   // avoid breaking the type marshalling
+        DBusMessageIter a;
 
-            if (result != VLC_SUCCESS)
-            {
-                vlc_object_release( (vlc_object_t*) p_input );
-                return result;
-            }
-        }
-
-        vlc_object_release( (vlc_object_t*) p_input );
+        if( !dbus_message_iter_open_container( container, DBUS_TYPE_ARRAY,
+                                               "{sv}", &a ) ||
+            !dbus_message_iter_close_container( container, &a ) )
+            result = VLC_ENOMEM;
     }
 
-    if (!p_item)
-    {
-        // avoid breaking the type marshalling
-        if( !dbus_message_iter_open_container( container, DBUS_TYPE_ARRAY, "{sv}", &a ) ||
-              !dbus_message_iter_close_container( container, &a ) )
-            return VLC_ENOMEM;
-    }
-
-    return VLC_SUCCESS;
+    playlist_Unlock( playlist );
+    return result;
 }
 
 
@@ -598,7 +547,7 @@ DBUS_SIGNAL( SeekedSignal )
 
     if( p_input )
     {
-        i_pos = var_GetTime( p_input, "time" );
+        i_pos = var_GetInteger( p_input, "time" );
         vlc_object_release( p_input );
     }
 
@@ -606,9 +555,9 @@ DBUS_SIGNAL( SeekedSignal )
     SIGNAL_SEND;
 }
 
-#define PROPERTY_MAPPING_BEGIN if( 0 ) {}
+#define PROPERTY_MAPPING_BEGIN
 #define PROPERTY_GET_FUNC( prop, signature ) \
-    else if( !strcmp( psz_property_name,  #prop ) ) { \
+    if( !strcmp( psz_property_name,  #prop ) ) { \
         if( !dbus_message_iter_open_container( &args, DBUS_TYPE_VARIANT, signature, &v ) ) \
             return DBUS_HANDLER_RESULT_NEED_MEMORY; \
         if( VLC_SUCCESS != Marshal##prop( p_this, &v ) ) { \
@@ -617,12 +566,12 @@ DBUS_SIGNAL( SeekedSignal )
         } \
         if( !dbus_message_iter_close_container( &args, &v ) ) \
             return DBUS_HANDLER_RESULT_NEED_MEMORY; \
-    }
+    } else
 #define PROPERTY_SET_FUNC( prop ) \
-    else if( !strcmp( psz_property_name,  #prop ) ) { \
+    if( !strcmp( psz_property_name,  #prop ) ) \
         return prop##Set( p_conn, p_from, p_this ); \
-    }
-#define PROPERTY_MAPPING_END else { return DBUS_HANDLER_RESULT_NOT_YET_HANDLED; }
+    else
+#define PROPERTY_MAPPING_END return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 
 DBUS_METHOD( GetProperty )
 {
@@ -817,9 +766,20 @@ int SeekedEmit( intf_thread_t * p_intf )
     { \
         if( VLC_SUCCESS != AddProperty( (intf_thread_t*) p_intf, \
                     &changed_properties, #prop, signature, Marshal##prop ) ) \
-            return DBUS_HANDLER_RESULT_NEED_MEMORY; \
+            { \
+                for( ; ppsz_properties[i]; ++i ) free( ppsz_properties[i] ); \
+                free( ppsz_properties ); \
+                dbus_message_iter_abandon_container( &args, &changed_properties ); \
+                return DBUS_HANDLER_RESULT_NEED_MEMORY; \
+            } \
     }
-#define PROPERTY_MAPPING_END else { return DBUS_HANDLER_RESULT_NOT_YET_HANDLED; }
+#define PROPERTY_MAPPING_END else \
+    { \
+        for( ; ppsz_properties[i]; ++i ) free( ppsz_properties[i] ); \
+        free( ppsz_properties ); \
+        dbus_message_iter_abandon_container( &args, &changed_properties ); \
+        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED; \
+    }
 
 /**
  * PropertiesChangedSignal() synthetizes and sends the
@@ -833,7 +793,6 @@ PropertiesChangedSignal( intf_thread_t    *p_intf,
     DBusMessageIter changed_properties, invalidated_properties;
     const char *psz_interface_name = DBUS_MPRIS_PLAYER_INTERFACE;
     char **ppsz_properties = NULL;
-    int i_properties = 0;
 
     SIGNAL_INIT( DBUS_INTERFACE_PROPERTIES,
                  DBUS_MPRIS_OBJECT_PATH,
@@ -846,7 +805,6 @@ PropertiesChangedSignal( intf_thread_t    *p_intf,
                                            &changed_properties ) )
         return DBUS_HANDLER_RESULT_NEED_MEMORY;
 
-    i_properties = vlc_dictionary_keys_count( p_changed_properties );
     ppsz_properties = vlc_dictionary_all_keys( p_changed_properties );
 
     if( unlikely(!ppsz_properties) )
@@ -855,7 +813,7 @@ PropertiesChangedSignal( intf_thread_t    *p_intf,
         return DBUS_HANDLER_RESULT_NEED_MEMORY;
     }
 
-    for( int i = 0; i < i_properties; i++ )
+    for( int i = 0; ppsz_properties[i]; i++ )
     {
         PROPERTY_MAPPING_BEGIN
         PROPERTY_ENTRY( Metadata,       "a{sv}" )

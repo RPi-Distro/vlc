@@ -2,7 +2,7 @@
  * var_string.hpp
  *****************************************************************************
  * Copyright (C) 2010 the VideoLAN team
- * $Id: 7a7a2d3f9d4a27f006694087505a648b891cc18a $
+ * $Id: 80e381ecc49476ae2d72f1b002870bae3253b05b $
  *
  * Author: Erwan Tulou      <erwan10 aT videolan DoT org>
  *
@@ -38,17 +38,17 @@ public:
     virtual ~VarString() { }
 
     /// Get the variable type
-    virtual const string &getType() const { return m_type; }
+    virtual const std::string &getType() const { return m_type; }
 
     /// Set the internal value
-    virtual void set( string str );
-    virtual string get() const { return m_value; }
+    virtual void set( std::string str );
+    virtual std::string get() const { return m_value; }
 
 private:
     /// Variable type
-    static const string m_type;
+    static const std::string m_type;
     /// string value
-    string m_value;
+    std::string m_value;
 };
 
 #endif

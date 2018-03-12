@@ -2,7 +2,7 @@
  * es_format.c : es_format_t helpers.
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: 27622bcb742992bfa9baa706e1e88c28ff49f6e3 $
+ * $Id: 1c9a78e1a4f254eaf1f078d0d8feec7025ae4433 $
  *
  * Author: Laurent Aimar <fenrir@videolan.org>
  *
@@ -28,6 +28,8 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_es.h>
@@ -170,10 +172,14 @@ void video_format_Setup( video_format_t *p_fmt, vlc_fourcc_t i_chroma,
     case VLC_CODEC_J440:
         p_fmt->i_bits_per_pixel = 16;
         break;
+    case VLC_CODEC_P010:
+        p_fmt->i_bits_per_pixel = 15;
+        break;
     case VLC_CODEC_I411:
     case VLC_CODEC_YV12:
     case VLC_CODEC_I420:
     case VLC_CODEC_J420:
+    case VLC_CODEC_NV12:
         p_fmt->i_bits_per_pixel = 12;
         break;
     case VLC_CODEC_YV9:
@@ -245,7 +251,7 @@ void video_format_ScaleCropAr( video_format_t *p_dst, const video_format_t *p_sr
                 p_dst->i_sar_num, p_dst->i_sar_den, 65536);
 }
 
-//Simplify transforms to have something more managable. Order: angle, hflip.
+//Simplify transforms to have something more manageable. Order: angle, hflip.
 static void transform_GetBasicOps( video_transform_t transform,
                                    unsigned *restrict angle,
                                    bool *restrict hflip )
@@ -270,6 +276,8 @@ static void transform_GetBasicOps( video_transform_t transform,
         case TRANSFORM_IDENTITY:
             *angle = 0;
             break;
+        default:
+            vlc_assert_unreachable ();
     }
 }
 
@@ -373,30 +381,35 @@ void video_format_ApplyRotation( video_format_t *restrict out,
     video_format_TransformTo(out, ORIENT_NORMAL);
 }
 
-bool video_format_IsSimilar( const video_format_t *p_fmt1, const video_format_t *p_fmt2 )
+bool video_format_IsSimilar( const video_format_t *f1,
+                             const video_format_t *f2 )
 {
-    video_format_t v1 = *p_fmt1;
-    video_format_t v2 = *p_fmt2;
-
-    if( v1.i_chroma != v2.i_chroma )
+    if( f1->i_chroma != f2->i_chroma )
         return false;
 
-    if( v1.i_width != v2.i_width || v1.i_height != v2.i_height ||
-        v1.i_visible_width != v2.i_visible_width ||
-        v1.i_visible_height != v2.i_visible_height ||
-        v1.i_x_offset != v2.i_x_offset || v1.i_y_offset != v2.i_y_offset )
+    if( f1->i_width != f2->i_width || f1->i_height != f2->i_height ||
+        f1->i_visible_width != f2->i_visible_width ||
+        f1->i_visible_height != f2->i_visible_height ||
+        f1->i_x_offset != f2->i_x_offset || f1->i_y_offset != f2->i_y_offset )
         return false;
-    if( v1.i_sar_num * v2.i_sar_den != v2.i_sar_num * v1.i_sar_den )
-        return false;
-
-    if( v1.orientation != v2.orientation)
+    if( (int64_t)f1->i_sar_num * f2->i_sar_den !=
+        (int64_t)f2->i_sar_num * f1->i_sar_den )
         return false;
 
-    if( v1.i_chroma == VLC_CODEC_RGB15 ||
-        v1.i_chroma == VLC_CODEC_RGB16 ||
-        v1.i_chroma == VLC_CODEC_RGB24 ||
-        v1.i_chroma == VLC_CODEC_RGB32 )
+    if( f1->orientation != f2->orientation)
+        return false;
+
+    if( f1->multiview_mode!= f2->multiview_mode )
+       return false;
+
+    if( f1->i_chroma == VLC_CODEC_RGB15 ||
+        f1->i_chroma == VLC_CODEC_RGB16 ||
+        f1->i_chroma == VLC_CODEC_RGB24 ||
+        f1->i_chroma == VLC_CODEC_RGB32 )
     {
+        video_format_t v1 = *f1;
+        video_format_t v2 = *f2;
+
         video_format_FixRgb( &v1 );
         video_format_FixRgb( &v2 );
 
@@ -423,28 +436,21 @@ void video_format_Print( vlc_object_t *p_this,
 void es_format_Init( es_format_t *fmt,
                      int i_cat, vlc_fourcc_t i_codec )
 {
+    memset(fmt, 0, sizeof (*fmt));
     fmt->i_cat                  = i_cat;
     fmt->i_codec                = i_codec;
-    fmt->i_original_fourcc      = 0;
     fmt->i_profile              = -1;
     fmt->i_level                = -1;
     fmt->i_id                   = -1;
-    fmt->i_group                = 0;
     fmt->i_priority             = ES_PRIORITY_SELECTABLE_MIN;
     fmt->psz_language           = NULL;
     fmt->psz_description        = NULL;
-
-    fmt->i_extra_languages      = 0;
     fmt->p_extra_languages      = NULL;
 
-    memset( &fmt->audio, 0, sizeof(audio_format_t) );
-    memset( &fmt->audio_replay_gain, 0, sizeof(audio_replay_gain_t) );
-    memset( &fmt->video, 0, sizeof(video_format_t) );
-    memset( &fmt->subs, 0, sizeof(subs_format_t) );
+    if (fmt->i_cat == VIDEO_ES)
+        video_format_Init(&fmt->video, 0);
 
     fmt->b_packetized           = true;
-    fmt->i_bitrate              = 0;
-    fmt->i_extra                = 0;
     fmt->p_extra                = NULL;
 }
 
@@ -454,92 +460,111 @@ void es_format_InitFromVideo( es_format_t *p_es, const video_format_t *p_fmt )
     video_format_Copy( &p_es->video, p_fmt );
 }
 
-int es_format_Copy( es_format_t *dst, const es_format_t *src )
+int es_format_Copy(es_format_t *restrict dst, const es_format_t *src)
 {
-    int i;
-    memcpy( dst, src, sizeof( es_format_t ) );
-    dst->psz_language = src->psz_language ? strdup( src->psz_language ) : NULL;
-    dst->psz_description = src->psz_description ? strdup( src->psz_description ) : NULL;
-    if( src->i_extra > 0 && dst->p_extra )
+    int ret = VLC_SUCCESS;
+
+    *dst = *src;
+
+    if (src->psz_language != NULL)
     {
-        dst->i_extra = src->i_extra;
+        dst->psz_language = strdup(src->psz_language);
+        if (unlikely(dst->psz_language == NULL))
+            ret = VLC_ENOMEM;
+    }
+    if (src->psz_description != NULL)
+    {
+        dst->psz_description = strdup(src->psz_description);
+        if (unlikely(dst->psz_description == NULL))
+            ret = VLC_ENOMEM;
+    }
+
+    if (src->i_extra > 0)
+    {
+        assert(src->p_extra != NULL);
         dst->p_extra = malloc( src->i_extra );
-        if(dst->p_extra)
-            memcpy( dst->p_extra, src->p_extra, src->i_extra );
+
+        if( likely(dst->p_extra != NULL) )
+            memcpy(dst->p_extra, src->p_extra, src->i_extra);
         else
+        {
             dst->i_extra = 0;
+            ret = VLC_ENOMEM;
+        }
     }
     else
-    {
-        dst->i_extra = 0;
         dst->p_extra = NULL;
-    }
 
-    dst->subs.psz_encoding = dst->subs.psz_encoding ? strdup( src->subs.psz_encoding ) : NULL;
-    dst->subs.p_style = src->subs.p_style ? text_style_Duplicate( src->subs.p_style ) : NULL;
+    if (src->i_cat == VIDEO_ES)
+        ret = video_format_Copy( &dst->video, &src->video );
 
-    if( src->video.p_palette )
+    if (src->i_cat == SPU_ES)
     {
-        dst->video.p_palette =
-            (video_palette_t*)malloc( sizeof( video_palette_t ) );
-        if(dst->video.p_palette)
+        if (src->subs.psz_encoding != NULL)
         {
-            memcpy( dst->video.p_palette, src->video.p_palette,
-                sizeof( video_palette_t ) );
+            dst->subs.psz_encoding = strdup(src->subs.psz_encoding);
+            if (unlikely(dst->subs.psz_encoding == NULL))
+                ret = VLC_ENOMEM;
+        }
+        if (src->subs.p_style != NULL)
+        {
+            dst->subs.p_style = text_style_Duplicate(src->subs.p_style);
+            if (unlikely(dst->subs.p_style == NULL))
+                ret = VLC_ENOMEM;
         }
     }
 
-    if( dst->i_extra_languages && src->p_extra_languages)
+    if (src->i_extra_languages > 0)
     {
-        dst->i_extra_languages = src->i_extra_languages;
-        dst->p_extra_languages = (extra_languages_t*)
-            malloc(dst->i_extra_languages * sizeof(*dst->p_extra_languages ));
-        if( dst->p_extra_languages )
+        assert(src->p_extra_languages != NULL);
+        dst->p_extra_languages = calloc(dst->i_extra_languages,
+                                        sizeof (*dst->p_extra_languages));
+        if (likely(dst->p_extra_languages != NULL))
         {
-            for( i = 0; i < dst->i_extra_languages; i++ ) {
-                if( src->p_extra_languages[i].psz_language )
-                    dst->p_extra_languages[i].psz_language = strdup( src->p_extra_languages[i].psz_language );
-                else
-                    dst->p_extra_languages[i].psz_language = NULL;
-                if( src->p_extra_languages[i].psz_description )
-                    dst->p_extra_languages[i].psz_description = strdup( src->p_extra_languages[i].psz_description );
-                else
-                    dst->p_extra_languages[i].psz_description = NULL;
+            for (unsigned i = 0; i < dst->i_extra_languages; i++)
+            {
+                if (src->p_extra_languages[i].psz_language != NULL)
+                    dst->p_extra_languages[i].psz_language = strdup(src->p_extra_languages[i].psz_language);
+                if (src->p_extra_languages[i].psz_description != NULL)
+                    dst->p_extra_languages[i].psz_description = strdup(src->p_extra_languages[i].psz_description);
             }
+            dst->i_extra_languages = src->i_extra_languages;
         }
         else
+        {
             dst->i_extra_languages = 0;
+            ret = VLC_ENOMEM;
+        }
     }
-    else
-        dst->i_extra_languages = 0;
-    return VLC_SUCCESS;
+    return ret;
 }
 
-void es_format_Clean( es_format_t *fmt )
+void es_format_Clean(es_format_t *fmt)
 {
-    free( fmt->psz_language );
-    free( fmt->psz_description );
+    free(fmt->psz_language);
+    free(fmt->psz_description);
+    assert(fmt->i_extra == 0 || fmt->p_extra != NULL);
+    free(fmt->p_extra);
 
-    if( fmt->i_extra > 0 ) free( fmt->p_extra );
-
-    free( fmt->video.p_palette );
-    free( fmt->subs.psz_encoding );
-
-    if ( fmt->subs.p_style ) text_style_Delete( fmt->subs.p_style );
-
-    if( fmt->i_extra_languages > 0 && fmt->p_extra_languages )
+    if (fmt->i_cat == VIDEO_ES)
+        video_format_Clean( &fmt->video );
+    if (fmt->i_cat == SPU_ES)
     {
-        int i;
-        for( i = 0; i < fmt->i_extra_languages; i++ )
-        {
-            free( fmt->p_extra_languages[i].psz_language );
-            free( fmt->p_extra_languages[i].psz_description );
-        }
-        free( fmt->p_extra_languages );
+        free(fmt->subs.psz_encoding);
+
+        if (fmt->subs.p_style != NULL)
+            text_style_Delete(fmt->subs.p_style);
     }
 
+    for (unsigned i = 0; i < fmt->i_extra_languages; i++)
+    {
+        free(fmt->p_extra_languages[i].psz_language);
+        free(fmt->p_extra_languages[i].psz_description);
+    }
+    free(fmt->p_extra_languages);
+
     /* es_format_Clean can be called multiple times */
-    memset( fmt, 0, sizeof(*fmt) );
+    es_format_Init(fmt, UNKNOWN_ES, 0);
 }
 
 bool es_format_IsSimilar( const es_format_t *p_fmt1, const es_format_t *p_fmt2 )
@@ -558,9 +583,13 @@ bool es_format_IsSimilar( const es_format_t *p_fmt1, const es_format_t *p_fmt2 )
 
         if( a1.i_format && a2.i_format && a1.i_format != a2.i_format )
             return false;
-        if( a1.i_rate != a2.i_rate ||
+        if( a1.channel_type != a2.channel_type ||
+            a1.i_rate != a2.i_rate ||
+            a1.i_channels != a2.i_channels ||
             a1.i_physical_channels != a2.i_physical_channels ||
-            a1.i_original_channels != a2.i_original_channels )
+            a1.i_chan_mode != a2.i_chan_mode )
+            return false;
+        if( p_fmt1->i_profile != p_fmt2->i_profile )
             return false;
         return true;
     }

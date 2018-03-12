@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 12b057d1f77185ddb2c92a0d1437edf48d86d961 $
+ * $Id: 25bae8e9aa0a44d4e81ac4871d4eb71d9c1d88cc $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -25,6 +25,8 @@
 #ifndef LIBVLC_VOUT_CONTROL_H
 #define LIBVLC_VOUT_CONTROL_H 1
 
+typedef struct vout_window_mouse_event_t vout_window_mouse_event_t;
+
 /**
  * This function will (un)pause the display of pictures.
  * It is thread safe
@@ -39,26 +41,20 @@ void spu_OffsetSubtitleDate( spu_t *p_spu, mtime_t i_duration );
 /**
  * This function will return and reset internal statistics.
  */
-void vout_GetResetStatistic( vout_thread_t *p_vout, int *pi_displayed, int *pi_lost );
+void vout_GetResetStatistic( vout_thread_t *p_vout, unsigned *pi_displayed,
+                             unsigned *pi_lost );
 
 /**
- * This function will ensure that all ready/displayed pciture have at most
- * the provided dat
+ * This function will ensure that all ready/displayed pictures have at most
+ * the provided date.
  */
 void vout_Flush( vout_thread_t *p_vout, mtime_t i_date );
 
-/**
- * This function will try to detect if pictures are being leaked. If so it
- * will release them.
- *
- * XXX This function is there to workaround bugs in decoder
- */
-void vout_FixLeaks( vout_thread_t *p_vout );
-
 /*
- * Reset the states of the vout.
+ * Cancel the vout, if cancel is true, it won't return any pictures after this
+ * call.
  */
-void vout_Reset( vout_thread_t *p_vout );
+void vout_Cancel( vout_thread_t *p_vout, bool b_canceled );
 
 /**
  * This function will force to display the next picture while paused
@@ -69,6 +65,9 @@ void vout_NextPicture( vout_thread_t *p_vout, mtime_t *pi_duration );
  * This function will ask the display of the input title
  */
 void vout_DisplayTitle( vout_thread_t *p_vout, const char *psz_title );
+
+void vout_WindowMouseEvent( vout_thread_t *p_vout,
+                            const vout_window_mouse_event_t *mouse );
 
 /**
  * This function will return true if no more pictures are to be displayed.

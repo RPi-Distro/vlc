@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: bc3499bba4d8bb7ee41b983d781adf77f52fa5fa $
+ * $Id: ccfe8ecd05d88d892ccc8b11f8c566874a3a48a7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -28,15 +28,12 @@
 #include <vlc_common.h>
 #include <vlc_codec.h>
 
-#define BLOCK_FLAG_CORE_FLUSH (1 <<BLOCK_FLAG_CORE_PRIVATE_SHIFT)
-#define BLOCK_FLAG_CORE_EOS   (1 <<(BLOCK_FLAG_CORE_PRIVATE_SHIFT + 1))
-
 decoder_t *input_DecoderNew( input_thread_t *, es_format_t *, input_clock_t *,
                              sout_instance_t * ) VLC_USED;
 
 /**
  * This function changes the pause state.
- * The date parameter MUST hold the exact date at wich the change has been
+ * The date parameter MUST hold the exact date at which the change has been
  * done for proper vout/aout pausing.
  */
 void input_DecoderChangePause( decoder_t *, bool b_paused, mtime_t i_date );
@@ -69,19 +66,18 @@ bool input_DecoderIsEmpty( decoder_t * );
 /**
  * This function activates the request closed caption channel.
  */
-int input_DecoderSetCcState( decoder_t *, bool b_decode, int i_channel );
+int input_DecoderSetCcState( decoder_t *, vlc_fourcc_t, int i_channel, bool b_decode );
 
 /**
  * This function returns an error if the requested channel does not exist and
  * set pb_decode to the channel status(active or not) otherwise.
  */
-int input_DecoderGetCcState( decoder_t *, bool *pb_decode, int i_channel );
+int input_DecoderGetCcState( decoder_t *, vlc_fourcc_t, int i_channel, bool *pb_decode );
 
 /**
- * This function set each pb_present entry to true if the corresponding channel
- * exists or false otherwise.
+ * This function get cc channels descriptions
  */
-void input_DecoderIsCcPresent( decoder_t *, bool pb_present[4] );
+void input_DecoderGetCcDesc( decoder_t *, decoder_cc_desc_t * );
 
 /**
  * This function force the display of the next picture and fills the stream

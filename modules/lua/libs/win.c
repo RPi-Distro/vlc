@@ -2,7 +2,7 @@
  * win.c: Windows specific functions
  *****************************************************************************
  * Copyright (C) 2007-2012 the VideoLAN team
- * $Id: c7c0ee649011d27be5339baf685dbb5491ea4597 $
+ * $Id: 14d6d30f7888169700cd922bb688232ce7181cf5 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -123,7 +123,7 @@ static int vlclua_console_init( lua_State *L )
 
 static int vlclua_console_wait( lua_State *L )
 {
-    int i_timeout = luaL_optint( L, 1, 0 );
+    int i_timeout = (int)luaL_optinteger( L, 1, 0 );
     DWORD status = WaitForSingleObject( GetConsole( L ), i_timeout );
     lua_pushboolean( L, status == WAIT_OBJECT_0 );
     return 1;

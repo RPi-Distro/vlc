@@ -2,7 +2,7 @@
  * utils.c: helper functions
  *****************************************************************************
  * Copyright (C) 2010 VLC authors and VideoLAN
- * $Id: af050c3a857bb905446aaa6fdbaa1fa95a38ac0a $
+ * $Id: bdb8e445ce9f5a1c9d243d9a24e9d0e26cd1f5ae $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -37,6 +37,7 @@
 #include "omxil.h"
 #include "qcom.h"
 #include "../../video_chroma/copy.h"
+#include "../../packetizer/h264_nal.h"
 
 /*****************************************************************************
  * Events utility functions
@@ -80,13 +81,14 @@ OMX_ERRORTYPE WaitForOmxEvent(OmxEventQueue *queue, OMX_EVENTTYPE *event,
     OMX_U32 *data_1, OMX_U32 *data_2, OMX_PTR *event_data)
 {
     OmxEvent *p_event;
+    mtime_t deadline = mdate() + CLOCK_FREQ;
 
     vlc_mutex_lock(&queue->mutex);
 
-    if(!queue->p_events)
-        vlc_cond_timedwait(&queue->cond, &queue->mutex, mdate()+CLOCK_FREQ);
+    while ((p_event = queue->p_events) == NULL)
+        if (vlc_cond_timedwait(&queue->cond, &queue->mutex, deadline))
+            break;
 
-    p_event = queue->p_events;
     if(p_event)
     {
         queue->p_events = p_event->next;
@@ -216,12 +218,14 @@ void CopyOmxPicture( int i_color_format, picture_t *p_pic,
     }
 #ifdef CAN_COMPILE_SSE2
     if( i_color_format == OMX_COLOR_FormatYUV420SemiPlanar
-        && vlc_CPU_SSE2() && p_architecture_specific->data )
+        && vlc_CPU_SSE2() && p_architecture_specific && p_architecture_specific->data )
     {
         copy_cache_t *p_surface_cache = (copy_cache_t*)p_architecture_specific->data;
-        uint8_t *ppi_src_pointers[2] = { p_src, p_src + i_src_stride * i_slice_height };
-        size_t pi_src_strides[2] = { i_src_stride, i_src_stride };
-        CopyFromNv12( p_pic, ppi_src_pointers, pi_src_strides, i_src_stride, i_slice_height, p_surface_cache );
+        const uint8_t *ppi_src_pointers[2] = { p_src, p_src + i_src_stride * i_slice_height };
+        const size_t pi_src_strides[2] = { i_src_stride, i_src_stride };
+        Copy420_SP_to_P( p_pic, ppi_src_pointers, pi_src_strides,
+                         i_slice_height, p_surface_cache );
+        picture_SwapUV( p_pic );
         return;
     }
 #endif
@@ -276,33 +280,151 @@ void CopyVlcPicture( decoder_t *p_dec, OMX_BUFFERHEADERTYPE *p_header,
     }
 }
 
-int IgnoreOmxDecoderPadding(const char *name)
+/*****************************************************************************
+ * Utility functions
+ *****************************************************************************/
+bool OMXCodec_IsBlacklisted( const char *p_name, unsigned int i_name_len )
 {
-    // The list of decoders that signal padding properly is not necessary,
-    // since that is the default, but keep it here for reference. (This is
-    // only relevant for manufacturers that are known to have decoders with
-    // this kind of bug.)
-/*
-    static const char *padding_decoders[] = {
-        "OMX.SEC.AVC.Decoder",
-        "OMX.SEC.wmv7.dec",
-        "OMX.SEC.wmv8.dec",
+    static const char *blacklisted_prefix[] = {
+        /* ignore OpenCore software codecs */
+        "OMX.PV.",
+        /* The same sw codecs, renamed in ICS (perhaps also in honeycomb) */
+        "OMX.google.",
+        /* This one has been seen on HTC One V - it behaves like it works,
+         * but FillBufferDone returns buffers filled with 0 bytes. The One V
+         * has got a working OMX.qcom.video.decoder.avc instead though. */
+        "OMX.ARICENT.",
+        /* Use VC1 decoder for WMV3 for now */
+        "OMX.SEC.WMV.Decoder",
+        /* This decoder does work, but has an insane latency (leading to errors
+         * about "main audio output playback way too late" and dropped frames).
+         * At least Samsung Galaxy S III (where this decoder is present) has
+         * got another one, OMX.SEC.mp3.dec, that works well and has a
+         * sensible latency. (Also, even if that one isn't found, in general,
+         * using SW codecs is usually more than fast enough for MP3.) */
+        "OMX.SEC.MP3.Decoder",
+        /* black screen */
+        "OMX.MTK.VIDEO.DECODER.VC1",
+        /* Not working or crashing (Samsung) */
+        "OMX.SEC.vp8.dec",
         NULL
     };
-*/
-    static const char *nopadding_decoders[] = {
-        "OMX.SEC.avc.dec",
-        "OMX.SEC.avcdec",
-        "OMX.SEC.MPEG4.Decoder",
-        "OMX.SEC.mpeg4.dec",
-        "OMX.SEC.vc1.dec",
+
+    static const char *blacklisted_suffix[] = {
+        /* Codecs with DRM, that don't output plain YUV data but only
+         * support direct rendering where the output can't be intercepted. */
+        ".secure",
+        /* Samsung sw decoders */
+        ".sw.dec",
         NULL
     };
-    for (const char **ptr = nopadding_decoders; *ptr; ptr++) {
-        if (!strcmp(*ptr, name))
-            return 1;
+
+    /* p_name is not '\0' terminated */
+
+    for( const char **pp_bl_prefix = blacklisted_prefix; *pp_bl_prefix != NULL;
+          pp_bl_prefix++ )
+    {
+        if( !strncmp( p_name, *pp_bl_prefix,
+           __MIN( strlen(*pp_bl_prefix), i_name_len ) ) )
+           return true;
     }
-    return 0;
+
+    for( const char **pp_bl_suffix = blacklisted_suffix; *pp_bl_suffix != NULL;
+         pp_bl_suffix++ )
+    {
+       size_t i_suffix_len = strlen( *pp_bl_suffix );
+
+       if( i_name_len > i_suffix_len
+        && !strncmp( p_name + i_name_len - i_suffix_len, *pp_bl_suffix,
+                     i_suffix_len ) )
+           return true;
+    }
+
+    return false;
+}
+
+struct str2quirks {
+    const char *psz_name;
+    int i_quirks;
+};
+
+int OMXCodec_GetQuirks( enum es_format_category_e i_cat, vlc_fourcc_t i_codec,
+                        const char *p_name, unsigned int i_name_len )
+{
+    static const struct str2quirks quirks_prefix[] = {
+        { "OMX.MTK.VIDEO.DECODER.MPEG4", OMXCODEC_QUIRKS_NEED_CSD },
+        { "OMX.Marvell", OMXCODEC_AUDIO_QUIRKS_NEED_CHANNELS },
+
+        /* The list of decoders that signal padding properly is not necessary,
+         * since that is the default, but keep it here for reference. (This is
+         * only relevant for manufacturers that are known to have decoders with
+         * this kind of bug.)
+         * static const char *padding_decoders[] = {
+         *    "OMX.SEC.AVC.Decoder",
+         *    "OMX.SEC.wmv7.dec",
+         *    "OMX.SEC.wmv8.dec",
+         *     NULL
+         * };
+         */
+        { "OMX.SEC.avc.dec", OMXCODEC_VIDEO_QUIRKS_IGNORE_PADDING },
+        { "OMX.SEC.avcdec", OMXCODEC_VIDEO_QUIRKS_IGNORE_PADDING },
+        { "OMX.SEC.MPEG4.Decoder", OMXCODEC_VIDEO_QUIRKS_IGNORE_PADDING },
+        { "OMX.SEC.mpeg4.dec", OMXCODEC_VIDEO_QUIRKS_IGNORE_PADDING },
+        { "OMX.SEC.vc1.dec", OMXCODEC_VIDEO_QUIRKS_IGNORE_PADDING },
+        { "OMX.amlogic.avc.decoder.awesome", OMXCODEC_VIDEO_QUIRKS_SUPPORT_INTERLACED },
+        { NULL, 0 }
+    };
+
+    static struct str2quirks quirks_suffix[] = {
+        { NULL, 0 }
+    };
+
+    int i_quirks = OMXCODEC_NO_QUIRKS;
+
+    if( i_cat == VIDEO_ES )
+    {
+        switch( i_codec )
+        {
+        case VLC_CODEC_H264:
+        case VLC_CODEC_VC1:
+            i_quirks |= OMXCODEC_QUIRKS_NEED_CSD;
+            break;
+        }
+    } else if( i_cat == AUDIO_ES )
+    {
+        switch( i_codec )
+        {
+        case VLC_CODEC_VORBIS:
+        case VLC_CODEC_MP4A:
+            i_quirks |= OMXCODEC_QUIRKS_NEED_CSD;
+            break;
+        }
+    }
+
+    /* p_name is not '\0' terminated */
+
+    for( const struct str2quirks *p_q_prefix = quirks_prefix; p_q_prefix->psz_name;
+         p_q_prefix++ )
+    {
+        const char *psz_prefix = p_q_prefix->psz_name;
+        if( !strncmp( p_name, psz_prefix,
+           __MIN( strlen(psz_prefix), i_name_len ) ) )
+           i_quirks |= p_q_prefix->i_quirks;
+    }
+
+    for( const struct str2quirks *p_q_suffix = quirks_suffix; p_q_suffix->psz_name;
+         p_q_suffix++ )
+    {
+        const char *psz_suffix = p_q_suffix->psz_name;
+        size_t i_suffix_len = strlen( psz_suffix );
+
+        if( i_name_len > i_suffix_len
+         && !strncmp( p_name + i_name_len - i_suffix_len, psz_suffix,
+                      i_suffix_len ) )
+           i_quirks |= p_q_suffix->i_quirks;
+    }
+
+    return i_quirks;
 }
 
 /*****************************************************************************
@@ -395,6 +517,7 @@ static const struct
 {
     { VLC_CODEC_MPGV, OMX_VIDEO_CodingMPEG2, "video_decoder.mpeg2" },
     { VLC_CODEC_MP4V, OMX_VIDEO_CodingMPEG4, "video_decoder.mpeg4" },
+    { VLC_CODEC_HEVC, OMX_VIDEO_CodingAutoDetect, "video_decoder.hevc" },
     { VLC_CODEC_H264, OMX_VIDEO_CodingAVC,   "video_decoder.avc"   },
     { VLC_CODEC_H263, OMX_VIDEO_CodingH263,  "video_decoder.h263"  },
     { VLC_CODEC_WMV1, OMX_VIDEO_CodingWMV,   "video_decoder.wmv1"  },
@@ -407,6 +530,8 @@ static const struct
     { VLC_CODEC_RV20, OMX_VIDEO_CodingRV,    "video_decoder.rv"    },
     { VLC_CODEC_RV30, OMX_VIDEO_CodingRV,    "video_decoder.rv"    },
     { VLC_CODEC_RV40, OMX_VIDEO_CodingRV,    "video_decoder.rv"    },
+    { VLC_CODEC_VP8,  OMX_VIDEO_CodingAutoDetect, "video_decoder.vp8" },
+    { VLC_CODEC_VP9,  OMX_VIDEO_CodingAutoDetect, "video_decoder.vp9" },
     { 0, 0, 0 }
 };
 
@@ -596,7 +721,8 @@ static const char *GetOmxAudioEncRole( vlc_fourcc_t i_fourcc )
     return audio_enc_format_table[i].psz_role;
 }
 
-const char *GetOmxRole( vlc_fourcc_t i_fourcc, int i_cat, bool b_enc )
+const char *GetOmxRole( vlc_fourcc_t i_fourcc, enum es_format_category_e i_cat,
+                        bool b_enc )
 {
     if(b_enc)
         return i_cat == VIDEO_ES ?
@@ -932,7 +1058,7 @@ OMX_ERRORTYPE GetAudioParameters(OMX_HANDLETYPE handle,
 }
 
 /*****************************************************************************
- * PrintOmx: print component summary 
+ * PrintOmx: print component summary
  *****************************************************************************/
 void PrintOmx(decoder_t *p_dec, OMX_HANDLETYPE omx_handle, OMX_U32 i_port)
 {
@@ -1044,49 +1170,19 @@ void PrintOmx(decoder_t *p_dec, OMX_HANDLETYPE omx_handle, OMX_U32 i_port)
     }
 }
 
-bool h264_get_profile_level(const es_format_t *p_fmt, size_t *p_profile, size_t *p_level, size_t *p_nal_size)
-{
-    uint8_t *p = (uint8_t*)p_fmt->p_extra;
-    if(!p || !p_fmt->p_extra) return false;
-
-    /* Check the profile / level */
-    if(p_fmt->i_original_fourcc == VLC_FOURCC('a','v','c','1') &&
-       p[0] == 1)
-    {
-	if(p_fmt->i_extra < 12) return false;
-	if (p_nal_size) *p_nal_size = 1 + (p[4]&0x03);
-	if( !(p[5]&0x1f) ) return false;
-	p += 8;
-    }
-    else
-    {
-	if(p_fmt->i_extra < 8) return false;
-	if(!p[0] && !p[1] && !p[2] && p[3] == 1) p += 4;
-	else if(!p[0] && !p[1] && p[2] == 1) p += 3;
-	else return false;
-    }
-
-    if( ((*p++)&0x1f) != 7) return false;
-
-    /* Get profile/level out of first SPS */
-    if (p_profile) *p_profile = p[0];
-    if (p_level) *p_level = p[2];
-    return true;
-}
-
 static const struct
 {
     OMX_VIDEO_AVCPROFILETYPE omx_profile;
     size_t                   profile_idc;
 } omx_to_profile_idc[] =
 {
-    { OMX_VIDEO_AVCProfileBaseline,  66 },
-    { OMX_VIDEO_AVCProfileMain,      77 },
-    { OMX_VIDEO_AVCProfileExtended,  88 },
-    { OMX_VIDEO_AVCProfileHigh,     100 },
-    { OMX_VIDEO_AVCProfileHigh10,   110 },
-    { OMX_VIDEO_AVCProfileHigh422,  122 },
-    { OMX_VIDEO_AVCProfileHigh444,  244 },
+    { OMX_VIDEO_AVCProfileBaseline,  PROFILE_H264_BASELINE },
+    { OMX_VIDEO_AVCProfileMain,      PROFILE_H264_MAIN },
+    { OMX_VIDEO_AVCProfileExtended,  PROFILE_H264_EXTENDED },
+    { OMX_VIDEO_AVCProfileHigh,      PROFILE_H264_HIGH },
+    { OMX_VIDEO_AVCProfileHigh10,    PROFILE_H264_HIGH_10 },
+    { OMX_VIDEO_AVCProfileHigh422,   PROFILE_H264_HIGH_422 },
+    { OMX_VIDEO_AVCProfileHigh444,   PROFILE_H264_HIGH_444 },
 };
 
 size_t convert_omx_to_profile_idc(OMX_VIDEO_AVCPROFILETYPE profile_type)

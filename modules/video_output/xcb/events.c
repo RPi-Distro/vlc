@@ -34,11 +34,12 @@
 
 #include "events.h"
 
-/**
- * Check for an error
- */
-int XCB_error_Check (vout_display_t *vd, xcb_connection_t *conn,
-                     const char *str, xcb_void_cookie_t ck)
+const char vlc_module_name[] = "vlcpulse";
+
+#pragma GCC visibility push(default)
+
+int vlc_xcb_error_Check(vout_display_t *vd, xcb_connection_t *conn,
+                        const char *str, xcb_void_cookie_t ck)
 {
     xcb_generic_error_t *err;
 
@@ -79,27 +80,6 @@ static xcb_connection_t *Connect (vlc_object_t *obj, const char *display)
 }
 
 /**
- * (Try to) register to mouse events on a window if needed.
- */
-static void RegisterEvents (vlc_object_t *obj, xcb_connection_t *conn,
-                            xcb_window_t wnd)
-{
-    /* Subscribe to parent window resize events */
-    uint32_t value = XCB_EVENT_MASK_POINTER_MOTION
-                   | XCB_EVENT_MASK_STRUCTURE_NOTIFY;
-    xcb_change_window_attributes (conn, wnd, XCB_CW_EVENT_MASK, &value);
-    /* Try to subscribe to click events */
-    /* (only one X11 client can get them, so might not work) */
-    if (var_InheritBool (obj, "mouse-events"))
-    {
-        value |= XCB_EVENT_MASK_BUTTON_PRESS
-               | XCB_EVENT_MASK_BUTTON_RELEASE;
-        xcb_change_window_attributes (conn, wnd,
-                                      XCB_CW_EVENT_MASK, &value);
-    }
-}
-
-/**
  * Find screen matching a given root window.
  */
 static const xcb_screen_t *FindScreen (vlc_object_t *obj,
@@ -121,25 +101,11 @@ static const xcb_screen_t *FindScreen (vlc_object_t *obj,
     return NULL;
 }
 
-/**
- * Create a VLC video X window object, connect to the corresponding X server,
- * find the corresponding X server screen.
- */
-vout_window_t *XCB_parent_Create (vout_display_t *vd,
-                                  xcb_connection_t **restrict pconn,
-                                  const xcb_screen_t **restrict pscreen,
-                                  uint16_t *restrict pwidth,
-                                  uint16_t *restrict pheight)
+vout_window_t *vlc_xcb_parent_Create(vout_display_t *vd,
+                                     xcb_connection_t **restrict pconn,
+                                     const xcb_screen_t **restrict pscreen)
 {
-    vout_window_cfg_t cfg = {
-        .type = VOUT_WINDOW_TYPE_XID,
-        .x = var_InheritInteger (vd, "video-x"),
-        .y = var_InheritInteger (vd, "video-y"),
-        .width  = vd->cfg->display.width,
-        .height = vd->cfg->display.height,
-    };
-
-    vout_window_t *wnd = vout_display_NewWindow (vd, &cfg);
+    vout_window_t *wnd = vout_display_NewWindow (vd, VOUT_WINDOW_TYPE_XID);
     if (wnd == NULL)
     {
         msg_Err (vd, "window not available");
@@ -151,10 +117,6 @@ vout_window_t *XCB_parent_Create (vout_display_t *vd,
         goto error;
     *pconn = conn;
 
-    /* Events must be registered before the window geometry is queried, so as
-     * to avoid missing impeding resize events. */
-    RegisterEvents (VLC_OBJECT(vd), conn, wnd->handle.xid);
-
     xcb_get_geometry_reply_t *geo =
         xcb_get_geometry_reply (conn, xcb_get_geometry (conn, wnd->handle.xid),
                                 NULL);
@@ -163,8 +125,6 @@ vout_window_t *XCB_parent_Create (vout_display_t *vd,
         msg_Err (vd, "window not valid");
         goto error;
     }
-    *pwidth = geo->width;
-    *pheight = geo->height;
 
     const xcb_screen_t *screen = FindScreen (VLC_OBJECT(vd), conn, geo->root);
     free (geo);
@@ -180,65 +140,10 @@ error:
     return NULL;
 }
 
-/**
- * Create a blank cursor.
- * Note that the pixmaps are leaked (until the X disconnection). Hence, this
- * function should be called no more than once per X connection.
- * @param conn XCB connection
- * @param scr target XCB screen
- */
-xcb_cursor_t XCB_cursor_Create (xcb_connection_t *conn,
-                                const xcb_screen_t *scr)
-{
-    xcb_cursor_t cur = xcb_generate_id (conn);
-    xcb_pixmap_t pix = xcb_generate_id (conn);
-
-    xcb_create_pixmap (conn, 1, pix, scr->root, 1, 1);
-    xcb_create_cursor (conn, cur, pix, pix, 0, 0, 0, 0, 0, 0, 1, 1);
-    return cur;
-}
-
 /* NOTE: we assume no other thread will be _setting_ our video output events
  * variables. Afterall, only this plugin is supposed to know when these occur.
   * Otherwise, we'd var_OrInteger() and var_NandInteger() functions...
  */
-
-/* FIXME we assume direct mapping between XCB and VLC */
-static void HandleButtonPress (vout_display_t *vd,
-                               const xcb_button_press_event_t *ev)
-{
-    vout_display_SendEventMousePressed (vd, ev->detail - 1);
-}
-
-static void HandleButtonRelease (vout_display_t *vd,
-                                 const xcb_button_release_event_t *ev)
-{
-    vout_display_SendEventMouseReleased (vd, ev->detail - 1);
-}
-
-static void HandleMotionNotify (vout_display_t *vd, xcb_connection_t *conn,
-                                const xcb_motion_notify_event_t *ev)
-{
-    vout_display_place_t place;
-
-    /* show the default cursor */
-    xcb_change_window_attributes (conn, ev->event, XCB_CW_CURSOR,
-                                  &(uint32_t) { XCB_CURSOR_NONE });
-    xcb_flush (conn);
-
-    /* TODO it could be saved */
-    vout_display_PlacePicture (&place, &vd->source, vd->cfg, false);
-
-    if (place.width <= 0 || place.height <= 0)
-        return;
-
-    const int x = vd->source.i_x_offset +
-        (int64_t)(ev->event_x - place.x) * vd->source.i_visible_width / place.width;
-    const int y = vd->source.i_y_offset +
-        (int64_t)(ev->event_y - place.y) * vd->source.i_visible_height/ place.height;
-
-    vout_display_SendEventMouseMoved (vd, x, y);
-}
 
 static void HandleVisibilityNotify (vout_display_t *vd, bool *visible,
                                     const xcb_visibility_notify_event_t *ev)
@@ -247,45 +152,17 @@ static void HandleVisibilityNotify (vout_display_t *vd, bool *visible,
     msg_Dbg (vd, "display is %svisible", *visible ? "" : "not ");
 }
 
-static void
-HandleParentStructure (vout_display_t *vd,
-                       const xcb_configure_notify_event_t *ev)
-{
-    vout_display_SendEventDisplaySize (vd, ev->width, ev->height, vd->cfg->is_fullscreen);
-}
-
 /**
  * Process an X11 event.
  */
-static int ProcessEvent (vout_display_t *vd, xcb_connection_t *conn,
+static int ProcessEvent (vout_display_t *vd,
                          bool *visible, xcb_generic_event_t *ev)
 {
     switch (ev->response_type & 0x7f)
     {
-        case XCB_BUTTON_PRESS:
-            HandleButtonPress (vd, (xcb_button_press_event_t *)ev);
-            break;
-
-        case XCB_BUTTON_RELEASE:
-            HandleButtonRelease (vd, (xcb_button_release_event_t *)ev);
-            break;
-
-        case XCB_MOTION_NOTIFY:
-            HandleMotionNotify (vd, conn, (xcb_motion_notify_event_t *)ev);
-            break;
-
         case XCB_VISIBILITY_NOTIFY:
             HandleVisibilityNotify (vd, visible,
                                     (xcb_visibility_notify_event_t *)ev);
-            break;
-
-        case XCB_CONFIGURE_NOTIFY:
-            HandleParentStructure (vd, (xcb_configure_notify_event_t *)ev);
-            break;
-
-        /* FIXME I am not sure it is the right one */
-        case XCB_DESTROY_NOTIFY:
-            vout_display_SendEventClose (vd);
             break;
 
         case XCB_MAPPING_NOTIFY:
@@ -299,15 +176,12 @@ static int ProcessEvent (vout_display_t *vd, xcb_connection_t *conn,
     return VLC_SUCCESS;
 }
 
-/**
- * Process incoming X events.
- */
-int XCB_Manage (vout_display_t *vd, xcb_connection_t *conn, bool *visible)
+int vlc_xcb_Manage(vout_display_t *vd, xcb_connection_t *conn, bool *visible)
 {
     xcb_generic_event_t *ev;
 
     while ((ev = xcb_poll_for_event (conn)) != NULL)
-        ProcessEvent (vd, conn, visible, ev);
+        ProcessEvent (vd, visible, ev);
 
     if (xcb_connection_has_error (conn))
     {

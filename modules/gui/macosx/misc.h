@@ -2,7 +2,7 @@
  * misc.h: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2014 VLC authors and VideoLAN
- * $Id: bbad86122b68fdc1c7a7298db88591216ab599bc $
+ * $Id: d3c68eccb9c14dda0c3308ce2d38edc4dee4f1e2 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -25,51 +25,6 @@
 #import <Cocoa/Cocoa.h>
 
 /*****************************************************************************
- * NSSound (VLCAdditions)
- *
- * added code to change the system volume, needed for the apple remote code
- * this is simplified code, which won't let you set the exact volume
- * (that's what the audio output is for after all), but just the system volume
- * in steps of 1/16 (matching the default AR or volume key implementation).
- *****************************************************************************/
-
-@interface NSSound (VLCAdditions)
-+ (float)systemVolumeForChannel:(int)channel;
-+ (bool)setSystemVolume:(float)volume forChannel:(int)channel;
-+ (void)increaseSystemVolume;
-+ (void)decreaseSystemVolume;
-@end
-
-/*****************************************************************************
- * NSAnimation (VLCAddition)
- *****************************************************************************/
-
-@interface NSAnimation (VLCAdditions)
-@property (readwrite) void * userInfo;
-
-@end
-
-/*****************************************************************************
- * NSScreen (VLCAdditions)
- *
- *  Missing extension to NSScreen
- *****************************************************************************/
-
-@interface NSScreen (VLCAdditions)
-
-+ (NSScreen *)screenWithDisplayID: (CGDirectDisplayID)displayID;
-- (BOOL)hasMenuBar;
-- (BOOL)hasDock;
-- (BOOL)isScreen: (NSScreen*)screen;
-- (CGDirectDisplayID)displayID;
-- (void)blackoutOtherScreens;
-+ (void)unblackoutScreens;
-
-- (void)setFullscreenPresentationOptions;
-- (void)setNonFullscreenPresentationOptions;
-@end
-
-/*****************************************************************************
  * VLCDragDropView
  *
  * Disables default drag / drop behaviour of an NSImageView.
@@ -86,111 +41,14 @@
  *****************************************************************************/
 
 @interface VLCDragDropView : NSView
-{
-    bool b_activeDragAndDrop;
-
-    id _dropHandler;
-}
 
 @property (nonatomic, assign) id dropHandler;
 @property (nonatomic, assign) BOOL drawBorder;
-
 
 - (void)enablePlaylistItems;
 
 @end
 
-
-/*****************************************************************************
- * MPSlider
- *****************************************************************************/
-
-@interface MPSlider : NSSlider
-
-@end
-
-/*****************************************************************************
- * ProgressView
- *****************************************************************************/
-
-@interface VLCProgressView : NSView
-
-- (void)scrollWheel:(NSEvent *)o_event;
-
-@end
-
-
-/*****************************************************************************
- * TimeLineSlider
- *****************************************************************************/
-
-@interface TimeLineSlider : NSSlider
-{
-    NSImage *o_knob_img;
-    NSRect img_rect;
-    BOOL b_dark;
-}
-@property (readonly) CGFloat knobPosition;
-
-- (void)drawRect:(NSRect)rect;
-- (void)drawKnobInRect:(NSRect)knobRect;
-
-@end
-
-/*****************************************************************************
- * VLCVolumeSliderCommon
- *****************************************************************************/
-
-@interface VLCVolumeSliderCommon : NSSlider
-{
-    BOOL _usesBrightArtwork;
-}
-@property (readwrite, nonatomic) BOOL usesBrightArtwork;
-
-- (void)scrollWheel:(NSEvent *)o_event;
-- (void)drawFullVolumeMarker;
-
-- (CGFloat)fullVolumePos;
-
-@end
-
-@interface VolumeSliderCell : NSSliderCell
-@end
-
-/*****************************************************************************
- * ITSlider
- *****************************************************************************/
-
-@interface ITSlider : VLCVolumeSliderCommon
-{
-    NSImage *img;
-    NSRect image_rect;
-}
-
-- (void)drawRect:(NSRect)rect;
-- (void)drawKnobInRect:(NSRect)knobRect;
-
-@end
-
-/*****************************************************************************
- * VLCTimeField interface
- *****************************************************************************
- * we need the implementation to catch our click-event in the controller window
- *****************************************************************************/
-
-@interface VLCTimeField : NSTextField
-{
-    NSShadow * o_string_shadow;
-    NSTextAlignment textAlignment;
-
-    NSString *o_remaining_identifier;
-    BOOL b_time_remaining;
-}
-@property (readonly) BOOL timeRemaining;
-
-- (void)setRemainingIdentifier:(NSString *)o_string;
-
-@end
 
 /*****************************************************************************
  * VLCMainWindowSplitView interface
@@ -203,13 +61,9 @@
  * VLCThreePartImageView interface
  *****************************************************************************/
 @interface VLCThreePartImageView : NSView
-{
-    NSImage * o_left_img;
-    NSImage * o_middle_img;
-    NSImage * o_right_img;
-}
 
 - (void)setImagesLeft:(NSImage *)left middle: (NSImage *)middle right:(NSImage *)right;
+
 @end
 
 
@@ -219,14 +73,16 @@
  * Formats a text field to only accept decimals and :
  *****************************************************************************/
 @interface PositionFormatter : NSFormatter
-{
-    NSCharacterSet *o_forbidden_characters;
-}
+
 - (NSString*)stringForObjectValue:(id)obj;
 
-- (BOOL)getObjectValue:(id*)obj forString:(NSString*)string errorDescription:(NSString**)error;
+- (BOOL)getObjectValue:(id*)obj
+             forString:(NSString*)string
+      errorDescription:(NSString**)error;
 
-- (BOOL)isPartialStringValid:(NSString*)partialString newEditingString:(NSString**)newString errorDescription:(NSString**)error;
+- (BOOL)isPartialStringValid:(NSString*)partialString
+            newEditingString:(NSString**)newString
+            errorDescription:(NSString**)error;
 
 @end
 

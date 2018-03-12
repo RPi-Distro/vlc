@@ -2,7 +2,7 @@
  * file.c : audio output which writes the samples to a file
  *****************************************************************************
  * Copyright (C) 2002 VLC authors and VideoLAN
- * $Id: f34c4c7262f04b16fa9ed4e8c5f56d2281f039ed $
+ * $Id: 6c6c59cfb41f5c82f26fb19760079965a5070ba0 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -106,7 +106,7 @@ static const int format_int[] = {
 };
 
 #define FILE_TEXT N_("Output file")
-#define FILE_LONGTEXT N_("File to which the audio samples will be written to. (\"-\" for stdout")
+#define FILE_LONGTEXT N_("File to which the audio samples will be written to (\"-\" for stdout).")
 
 vlc_module_begin ()
     set_description( N_("File audio output") )
@@ -134,6 +134,9 @@ static int Start( audio_output_t *p_aout, audio_sample_format_t *restrict fmt )
     char * psz_name, * psz_format;
     const char * const * ppsz_compare = format_list;
     int i_channels, i = 0;
+
+    if( aout_FormatNbChannels( fmt ) == 0 )
+        return VLC_EGENERIC;
 
     psz_name = var_InheritString( p_aout, "audiofile-file" );
     if( !psz_name )
@@ -167,7 +170,13 @@ static int Start( audio_output_t *p_aout, audio_sample_format_t *restrict fmt )
 
     /* Audio format */
     psz_format = var_InheritString( p_aout, "audiofile-format" );
-    if ( !psz_format ) abort(); /* FIXME */
+    if ( !psz_format ) /* FIXME */
+    {
+        if( p_aout->sys->p_file != stdout )
+            fclose( p_aout->sys->p_file );
+        free( p_aout->sys );
+        return VLC_EGENERIC;
+    }
 
     while ( *ppsz_compare != NULL )
     {
@@ -203,6 +212,7 @@ static int Start( audio_output_t *p_aout, audio_sample_format_t *restrict fmt )
     {
         fmt->i_physical_channels = pi_channels_maps[i_channels];
     }
+    fmt->channel_type = AUDIO_CHANNEL_TYPE_BITMAP;
 
     /* WAV header */
     p_aout->sys->b_add_wav_header = var_InheritBool( p_aout, "audiofile-wav" );

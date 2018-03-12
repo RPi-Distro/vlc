@@ -1,7 +1,7 @@
 /*****************************************************************************
  * vnc.c: libVNC access
  *****************************************************************************
- * Copyright (C) 2013 VideoLAN Authors
+ * Copyright (C) 2013 VideoLAN and VLC Authors
  *****************************************************************************
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -50,9 +50,9 @@
 #define RFB_CRL_TEXT N_("X.509 Certificate Revocation List")
 #define RFB_CRL_LONGTEXT N_("List of revoked servers certificates")
 #define RFB_CERT_TEXT N_("X.509 Client certificate")
-#define RFB_CERT_LONGTEXT N_("Certificate for client authentification")
+#define RFB_CERT_LONGTEXT N_("Certificate for client authentication")
 #define RFB_KEY_TEXT N_("X.509 Client private key")
-#define RFB_KEY_LONGTEXT N_("Private key for authentification by certificate")
+#define RFB_KEY_LONGTEXT N_("Private key for authentication by certificate")
 
 #define RFB_CHROMA N_("Frame buffer depth")
 #define RFB_CHROMA_LONGTEXT N_("RGB chroma (RV32, RV24, RV16, RGB2)")
@@ -167,8 +167,7 @@ static rfbBool mallocFrameBufferHandler( rfbClient* p_client )
     if ( i_chroma != VLC_CODEC_RGB8 ) /* Palette based, no mask */
     {
         video_format_t videofmt;
-        memset( &videofmt, 0, sizeof(video_format_t) );
-        videofmt.i_chroma = i_chroma;
+        video_format_Init( &videofmt, i_chroma );
         video_format_FixRgb( &videofmt );
 
         p_client->format.redShift = videofmt.i_lrshift;
@@ -177,6 +176,7 @@ static rfbBool mallocFrameBufferHandler( rfbClient* p_client )
         p_client->format.redMax = videofmt.i_rmask >> videofmt.i_lrshift;
         p_client->format.greenMax = videofmt.i_gmask >> videofmt.i_lgshift;
         p_client->format.blueMax = videofmt.i_bmask >> videofmt.i_lbshift;
+        video_format_Clean( &videofmt );
     }
 
     /* Set up framebuffer */
@@ -286,38 +286,38 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         case DEMUX_CAN_CONTROL_PACE:
         case DEMUX_CAN_CONTROL_RATE:
         case DEMUX_HAS_UNSUPPORTED_META:
-            pb = (bool*)va_arg( args, bool * );
+            pb = va_arg( args, bool * );
             *pb = false;
             return VLC_SUCCESS;
 
         case DEMUX_CAN_RECORD:
-            pb = (bool*)va_arg( args, bool * );
+            pb = va_arg( args, bool * );
             *pb = true;
             return VLC_SUCCESS;
 
         case DEMUX_GET_PTS_DELAY:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
             *pi64 = INT64_C(1000)
                   * var_InheritInteger( p_demux, "network-caching" );
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
             *pi64 = mdate() - p_demux->p_sys->i_starttime;
             return VLC_SUCCESS;
 
         case DEMUX_GET_LENGTH:
-            pi64 = (int64_t*)va_arg( args, int64_t * );
+            pi64 = va_arg( args, int64_t * );
             *pi64 = 0;
             return VLC_SUCCESS;
 
         case DEMUX_GET_FPS:
-            p_dbl = (double*)va_arg( args, double * );
+            p_dbl = va_arg( args, double * );
             *p_dbl = p_demux->p_sys->f_fps;
             return VLC_SUCCESS;
 
         case DEMUX_GET_META:
-            p_meta = (vlc_meta_t*)va_arg( args, vlc_meta_t* );
+            p_meta = va_arg( args, vlc_meta_t * );
             vlc_meta_Set( p_meta, vlc_meta_Title, p_demux->psz_location );
             return VLC_SUCCESS;
 
@@ -367,7 +367,7 @@ static void *DemuxThread( void *p_data )
                 if ( p_block ) /* drop frame/content if no next block */
                 {
                     p_sys->p_block->i_dts = p_sys->p_block->i_pts = mdate();
-                    es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->p_block->i_pts );
+                    es_out_SetPCR( p_demux->out, p_sys->p_block->i_pts );
                     es_out_Send( p_demux->out, p_sys->es, p_sys->p_block );
                     p_sys->p_block = p_block;
                 }
@@ -385,7 +385,7 @@ static int Open( vlc_object_t *p_this )
     demux_t      *p_demux = (demux_t*)p_this;
     demux_sys_t  *p_sys;
 
-    p_sys = calloc( 1, sizeof(demux_sys_t) );
+    p_sys = vlc_obj_calloc( p_this, 1, sizeof(demux_sys_t) );
     if( !p_sys ) return VLC_ENOMEM;
 
     p_sys->f_fps = var_InheritFloat( p_demux, CFG_PREFIX "fps" );
@@ -398,7 +398,6 @@ static int Open( vlc_object_t *p_this )
     if ( !i_chroma || vlc_fourcc_IsYUV( i_chroma ) )
     {
         msg_Err( p_demux, "Only RGB chroma are supported" );
-        free( p_sys );
         return VLC_EGENERIC;
     }
 
@@ -406,7 +405,6 @@ static int Open( vlc_object_t *p_this )
     if ( !p_chroma_desc )
     {
         msg_Err( p_demux, "Unable to get RGB chroma description" );
-        free( p_sys );
         return VLC_EGENERIC;
     }
 
@@ -421,7 +419,6 @@ static int Open( vlc_object_t *p_this )
     {
         msg_Dbg( p_demux, "Unable to set up client for %s",
                  vlc_fourcc_GetDescription( VIDEO_ES, i_chroma ) );
-        free( p_sys );
         return VLC_EGENERIC;
     }
 
@@ -442,7 +439,7 @@ static int Open( vlc_object_t *p_this )
 
     /* Parse uri params */
     vlc_url_t url;
-    vlc_UrlParse( &url, p_demux->psz_location, 0 );
+    vlc_UrlParse( &url, p_demux->psz_location );
 
     if ( !EMPTY_STR(url.psz_host) )
         p_sys->p_client->serverHost = strdup( url.psz_host );
@@ -466,7 +463,7 @@ static int Open( vlc_object_t *p_this )
     if( !rfbInitClient( p_sys->p_client, NULL, NULL ) )
     {
         msg_Err( p_demux, "can't connect to RFB server" );
-        goto error;
+        return VLC_EGENERIC;
     }
 
     p_sys->i_starttime = mdate();
@@ -474,17 +471,13 @@ static int Open( vlc_object_t *p_this )
     if ( vlc_clone( &p_sys->thread, DemuxThread, p_demux, VLC_THREAD_PRIORITY_INPUT ) != VLC_SUCCESS )
     {
         msg_Err( p_demux, "can't spawn thread" );
-        goto error;
+        return VLC_EGENERIC;
     }
 
     p_demux->pf_demux = NULL;
     p_demux->pf_control = Control;
 
     return VLC_SUCCESS;
-
-error:
-    free( p_sys );
-    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -505,6 +498,4 @@ static void Close( vlc_object_t *p_this )
 
     if ( p_sys->p_block )
         block_Release( p_sys->p_block );
-
-    free( p_sys );
 }

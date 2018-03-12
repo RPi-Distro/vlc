@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2003 ANEVIA
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 956482bb94d547691640de232b2cc7e9a254f1c9 $
+ * $Id: 2040b90c77ceb62164ec2fbdde2b0449e753b68b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien LUCAS <damien.lucas@anevia.com>
@@ -107,7 +107,8 @@ static const char *const ppsz_pos_descriptions[] =
  *****************************************************************************/
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
-static subpicture_t *Decode( decoder_t *, block_t ** );
+static int Decode( decoder_t *, block_t * );
+static void Flush( decoder_t * );
 
 #ifdef ENABLE_SOUT
 static int OpenEncoder  ( vlc_object_t * );
@@ -119,7 +120,7 @@ vlc_module_begin ()
 #   define DVBSUB_CFG_PREFIX "dvbsub-"
     set_description( N_("DVB subtitles decoder") )
     set_shortname( N_("DVB subtitles") )
-    set_capability( "decoder", 80 )
+    set_capability( "spu decoder", 80 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_SCODEC )
     set_callbacks( Open, Close )
@@ -333,7 +334,8 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    p_dec->pf_decode_sub = Decode;
+    p_dec->pf_decode = Decode;
+    p_dec->pf_flush  = Flush;
     p_sys = p_dec->p_sys = calloc( 1, sizeof(decoder_sys_t) );
     if( !p_sys )
         return VLC_ENOMEM;
@@ -365,7 +367,6 @@ static int Open( vlc_object_t *p_this )
         p_sys->i_spu_y = i_posy;
     }
 
-    p_dec->fmt_out.i_cat = SPU_ES;
     p_dec->fmt_out.i_codec = 0;
 
     default_clut_init( p_dec );
@@ -390,21 +391,38 @@ static void Close( vlc_object_t *p_this )
 }
 
 /*****************************************************************************
- * Decode:
+ * Flush:
  *****************************************************************************/
-static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
+static void Flush( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    block_t       *p_block;
-    subpicture_t  *p_spu = NULL;
 
-    if( ( pp_block == NULL ) || ( *pp_block == NULL ) ) return NULL;
-    p_block = *pp_block;
-    *pp_block = NULL;
+    p_sys->i_pts = VLC_TS_INVALID;
+}
+
+/*****************************************************************************
+ * Decode:
+ *****************************************************************************/
+static int Decode( decoder_t *p_dec, block_t *p_block )
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    if( p_block == NULL ) /* No Drain */
+        return VLCDEC_SUCCESS;
+
+    if( p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY | BLOCK_FLAG_CORRUPTED) )
+    {
+        Flush( p_dec );
+        if( p_block->i_flags & BLOCK_FLAG_CORRUPTED )
+        {
+            block_Release( p_block );
+            return VLCDEC_SUCCESS;
+        }
+    }
 
     /* configure for SD res in case DDS is not present */
     /* a change of PTS is a good indication we must get a new DDS */
-    if (p_sys->i_pts != p_block->i_pts)
+    if( p_sys->i_pts != p_block->i_pts )
         default_dds_init( p_dec );
 
     p_sys->i_pts = p_block->i_pts;
@@ -416,7 +434,7 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
         msg_Warn( p_dec, "non dated subtitle" );
 #endif
         block_Release( p_block );
-        return NULL;
+        return VLCDEC_SUCCESS;
     }
 
     bs_init( &p_sys->bs, p_block->p_buffer, p_block->i_buffer );
@@ -425,14 +443,14 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     {
         msg_Dbg( p_dec, "invalid data identifier" );
         block_Release( p_block );
-        return NULL;
+        return VLCDEC_SUCCESS;
     }
 
     if( bs_read( &p_sys->bs, 8 ) ) /* Subtitle stream id */
     {
         msg_Dbg( p_dec, "invalid subtitle stream id" );
         block_Release( p_block );
-        return NULL;
+        return VLCDEC_SUCCESS;
     }
 
 #ifdef DEBUG_DVBSUB
@@ -449,16 +467,20 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     {
         msg_Warn( p_dec, "end marker not found (corrupted subtitle ?)" );
         block_Release( p_block );
-        return NULL;
+        return VLCDEC_SUCCESS;
     }
 
     /* Check if the page is to be displayed */
     if( p_sys->p_page && p_sys->b_page )
-        p_spu = render( p_dec );
+    {
+        subpicture_t *p_spu = render( p_dec );
+        if( p_spu != NULL )
+            decoder_QueueSub( p_dec, p_spu );
+    }
 
     block_Release( p_block );
 
-    return p_spu;
+    return VLCDEC_SUCCESS;
 }
 
 /* following functions are local */
@@ -683,11 +705,8 @@ static void decode_clut( decoder_t *p_dec, bs_t *s )
     while( i_processed_length < i_segment_length )
     {
         uint8_t y, cb, cr, t;
-        uint8_t i_id;
-        uint8_t i_type;
-
-        i_id = bs_read( s, 8 );
-        i_type = bs_read( s, 3 );
+        uint_fast8_t cid = bs_read( s, 8 );
+        uint_fast8_t type = bs_read( s, 3 );
 
         bs_skip( s, 4 );
 
@@ -720,26 +739,26 @@ static void decode_clut( decoder_t *p_dec, bs_t *s )
         /* According to EN 300-743 section 7.2.3 note 1, type should
          * not have more than 1 bit set to one, but some streams don't
          * respect this note. */
-        if( ( i_type & 0x04 ) && ( i_id < 4 ) )
+        if( ( type & 0x04 ) && ( cid < 4 ) )
         {
-            p_clut->c_2b[i_id].Y = y;
-            p_clut->c_2b[i_id].Cr = cr;
-            p_clut->c_2b[i_id].Cb = cb;
-            p_clut->c_2b[i_id].T = t;
+            p_clut->c_2b[cid].Y = y;
+            p_clut->c_2b[cid].Cr = cr;
+            p_clut->c_2b[cid].Cb = cb;
+            p_clut->c_2b[cid].T = t;
         }
-        if( ( i_type & 0x02 ) && ( i_id < 16 ) )
+        if( ( type & 0x02 ) && ( cid < 16 ) )
         {
-            p_clut->c_4b[i_id].Y = y;
-            p_clut->c_4b[i_id].Cr = cr;
-            p_clut->c_4b[i_id].Cb = cb;
-            p_clut->c_4b[i_id].T = t;
+            p_clut->c_4b[cid].Y = y;
+            p_clut->c_4b[cid].Cr = cr;
+            p_clut->c_4b[cid].Cb = cb;
+            p_clut->c_4b[cid].T = t;
         }
-        if( i_type & 0x01 )
+        if( type & 0x01 )
         {
-            p_clut->c_8b[i_id].Y = y;
-            p_clut->c_8b[i_id].Cr = cr;
-            p_clut->c_8b[i_id].Cb = cb;
-            p_clut->c_8b[i_id].T = t;
+            p_clut->c_8b[cid].Y = y;
+            p_clut->c_8b[cid].Cr = cr;
+            p_clut->c_8b[cid].Cb = cb;
+            p_clut->c_8b[cid].T = t;
         }
     }
 }
@@ -817,7 +836,7 @@ static void decode_page_composition( decoder_t *p_dec, bs_t *s )
     if( p_sys->p_page->i_region_defs == 0 ) return;
 
     p_sys->p_page->p_region_defs =
-        malloc( p_sys->p_page->i_region_defs * sizeof(dvbsub_regiondef_t) );
+        vlc_alloc( p_sys->p_page->i_region_defs, sizeof(dvbsub_regiondef_t) );
     if( p_sys->p_page->p_region_defs )
     {
         for( i = 0; i < p_sys->p_page->i_region_defs; i++ )
@@ -931,8 +950,8 @@ static void decode_region_composition( decoder_t *p_dec, bs_t *s )
     /* Erase background of region */
     if( b_fill )
     {
-        int i_background = ( p_region->i_depth == 1 ) ? i_2_bg :
-            ( ( p_region->i_depth == 2 ) ? i_4_bg : i_8_bg );
+        int i_background = ( i_depth == 1 ) ? i_2_bg :
+            ( ( i_depth == 2 ) ? i_4_bg : i_8_bg );
         memset( p_region->p_pixbuf, i_background, i_width * i_height );
     }
 
@@ -1052,15 +1071,14 @@ static void decode_object( decoder_t *p_dec, bs_t *s )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     dvbsub_region_t *p_region;
-    int i_segment_length, i_coding_method, i_version, i_id, i;
-    bool b_non_modify_color;
+    int i_segment_length, i_coding_method, i_id, i;
 
     /* ETSI 300-743 paragraph 7.2.4
      * sync_byte, segment_type and page_id have already been processed.
      */
     i_segment_length = bs_read( s, 16 );
     i_id             = bs_read( s, 16 );
-    i_version        = bs_read( s, 4 );
+    bs_skip( s, 4 ); /* version */
     i_coding_method  = bs_read( s, 2 );
 
     if( i_coding_method > 1 )
@@ -1090,7 +1108,7 @@ static void decode_object( decoder_t *p_dec, bs_t *s )
     msg_Dbg( p_dec, "new object: %i", i_id );
 #endif
 
-    b_non_modify_color = bs_read( s, 1 );
+    bs_skip( s, 1 ); /* non_modify_color */
     bs_skip( s, 1 ); /* Reserved */
 
     if( i_coding_method == 0x00 )
@@ -1450,10 +1468,8 @@ static void free_all( decoder_t *p_dec )
 
     for( p_reg = p_sys->p_regions; p_reg != NULL; p_reg = p_reg_next )
     {
-        int i;
-
         p_reg_next = p_reg->p_next;
-        for( i = 0; i < p_reg->i_object_defs; i++ )
+        for( int i = 0; i < p_reg->i_object_defs; i++ )
             free( p_reg->p_object_defs[i].psz_text );
         if( p_reg->i_object_defs ) free( p_reg->p_object_defs );
         free( p_reg->p_pixbuf );
@@ -1496,8 +1512,6 @@ static subpicture_t *render( decoder_t *p_dec )
     /* Correct positioning of SPU */
     i_base_x = p_sys->i_spu_x;
     i_base_y = p_sys->i_spu_y;
-    p_spu->i_original_picture_width = 720;
-    p_spu->i_original_picture_height = 576;
 
     p_spu->i_original_picture_width = p_sys->display.i_width;
     p_spu->i_original_picture_height = p_sys->display.i_height;
@@ -1582,8 +1596,7 @@ static subpicture_t *render( decoder_t *p_dec )
          * when it actually is a TEXT region */
 
         /* Create new SPU region */
-        memset( &fmt, 0, sizeof(video_format_t) );
-        fmt.i_chroma = VLC_CODEC_YUVP;
+        video_format_Init( &fmt, VLC_CODEC_YUVP );
         fmt.i_sar_num = 0; /* 0 means use aspect ratio of background video */
         fmt.i_sar_den = 1;
         fmt.i_width = fmt.i_visible_width = p_region->i_width;
@@ -1603,6 +1616,8 @@ static subpicture_t *render( decoder_t *p_dec )
         }
 
         p_spu_region = subpicture_region_New( &fmt );
+        fmt.p_palette = NULL; /* was stack var */
+        video_format_Clean( &fmt );
         if( !p_spu_region )
         {
             msg_Err( p_dec, "cannot allocate SPU region" );
@@ -1636,16 +1651,16 @@ static subpicture_t *render( decoder_t *p_dec )
                 continue;
 
             /* Create new SPU region */
-            memset( &fmt, 0, sizeof(video_format_t) );
-            fmt.i_chroma = VLC_CODEC_TEXT;
+            video_format_Init( &fmt, VLC_CODEC_TEXT );
             fmt.i_sar_num = 1;
             fmt.i_sar_den = 1;
             fmt.i_width = fmt.i_visible_width = p_region->i_width;
             fmt.i_height = fmt.i_visible_height = p_region->i_height;
             fmt.i_x_offset = fmt.i_y_offset = 0;
             p_spu_region = subpicture_region_New( &fmt );
+            video_format_Clean( &fmt );
 
-            p_spu_region->psz_text = strdup( p_object_def->psz_text );
+            p_spu_region->p_text = text_segment_New( p_object_def->psz_text );
             p_spu_region->i_x = i_base_x + p_regiondef->i_x + p_object_def->i_x;
             p_spu_region->i_y = i_base_y + p_regiondef->i_y + p_object_def->i_y;
             p_spu_region->i_align = p_sys->i_spu_position;
@@ -1698,7 +1713,7 @@ static int OpenEncoder( vlc_object_t *p_this )
     encoder_sys_t *p_sys;
 
     if( ( p_enc->fmt_out.i_codec != VLC_CODEC_DVBS ) &&
-        !p_enc->b_force )
+        !p_enc->obj.force )
     {
         return VLC_EGENERIC;
     }
@@ -1967,10 +1982,7 @@ static block_t *Encode( encoder_t *p_enc, subpicture_t *p_subpic )
     if( ( p_region->fmt.i_chroma != VLC_CODEC_TEXT ) &&
         ( p_region->fmt.i_chroma != VLC_CODEC_YUVP ) )
     {
-        char psz_fourcc[5];
-        memset( &psz_fourcc, 0, sizeof( psz_fourcc ) );
-        vlc_fourcc_to_char( p_region->fmt.i_chroma, &psz_fourcc );
-        msg_Err( p_enc, "chroma %4.4s not supported", psz_fourcc );
+        msg_Err( p_enc, "chroma %4.4s not supported", (char *)&p_region->fmt.i_chroma );
         return NULL;
     }
 
@@ -2144,7 +2156,6 @@ static void encode_clut( encoder_t *p_enc, bs_t *s, subpicture_t *p_subpic )
     encoder_sys_t *p_sys = p_enc->p_sys;
     subpicture_region_t *p_region = p_subpic->p_region;
     video_palette_t *p_pal, pal;
-    int i;
 
     /* Sanity check */
     if( !p_region ) return;
@@ -2156,7 +2167,7 @@ static void encode_clut( encoder_t *p_enc, bs_t *s, subpicture_t *p_subpic )
     else
     {
         pal.i_entries = 4;
-        for( i = 0; i < 4; i++ )
+        for( int i = 0; i < 4; i++ )
         {
             pal.palette[i][0] = 0;
             pal.palette[i][1] = 0;
@@ -2175,7 +2186,7 @@ static void encode_clut( encoder_t *p_enc, bs_t *s, subpicture_t *p_subpic )
     bs_write( s, 4, p_sys->i_clut_ver++ );
     bs_write( s, 4, 0 ); /* Reserved */
 
-    for( i = 0; i < p_pal->i_entries; i++ )
+    for( int i = 0; i < p_pal->i_entries; i++ )
     {
         bs_write( s, 8, i ); /* Clut entry id */
         bs_write( s, 1, p_pal->i_entries == 4 );   /* 2bit/entry flag */
@@ -2307,14 +2318,14 @@ static void encode_object( encoder_t *p_enc, bs_t *s, subpicture_t *p_subpic )
         {
             int i_size, i;
 
-            if( !p_region->psz_text ) continue;
+            if( !p_region->p_text ) continue;
 
-            i_size = __MIN( strlen( p_region->psz_text ), 256 );
+            i_size = __MIN( strlen( p_region->p_text->psz_text ), 256 );
 
             bs_write( s, 8, i_size ); /* number of characters in string */
             for( i = 0; i < i_size; i++ )
             {
-                bs_write( s, 16, p_region->psz_text[i] );
+                bs_write( s, 16, p_region->p_text->psz_text[i] );
             }
 
             /* Update segment length */

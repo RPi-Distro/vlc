@@ -2,7 +2,7 @@
  * sort.c : Playlist sorting functions
  *****************************************************************************
  * Copyright (C) 1999-2009 VLC authors and VideoLAN
- * $Id: 2b91a90a304b5fc0dd398fca903d81781eda11b2 $
+ * $Id: c0982cd1330fa4522f1406b5dfe4cbe3c257a7e3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -62,7 +62,7 @@ static inline int meta_strcasecmp_title( const playlist_item_t *first,
 }
 
 /**
- * Compare two intems accoring to the given meta type
+ * Compare two intems according to the given meta type
  * @param first: the first item
  * @param second: the second item
  * @param meta: the meta type to use to sort the items
@@ -86,13 +86,12 @@ static inline int meta_sort( const playlist_item_t *first,
     else if( first->i_children >= 0 && second->i_children >= 0 )
         i_ret = meta_strcasecmp_title( first, second );
     /* Both are items */
+    else if( !psz_first && !psz_second )
+        i_ret = 0;
     else if( !psz_first && psz_second )
         i_ret = 1;
     else if( psz_first && !psz_second )
         i_ret = -1;
-    /* No meta, sort by name */
-    else if( !psz_first && !psz_second )
-        i_ret = meta_strcasecmp_title( first, second );
     else
     {
         if( b_integer )
@@ -193,6 +192,8 @@ static int recursiveNodeSort( playlist_t *p_playlist, playlist_item_t *p_node,
 int playlist_RecursiveNodeSort( playlist_t *p_playlist, playlist_item_t *p_node,
                                 int i_mode, int i_type )
 {
+    PL_ASSERT_LOCKED;
+
     /* Ask the playlist to reset as we are changing the order */
     pl_priv(p_playlist)->b_reset_currently_playing = true;
 
@@ -212,14 +213,39 @@ int playlist_RecursiveNodeSort( playlist_t *p_playlist, playlist_item_t *p_node,
  */
 
 #define SORTFN( SORT, first, second ) static inline int proto_##SORT \
-	( const playlist_item_t *first, const playlist_item_t *second )
+    ( const playlist_item_t *first, const playlist_item_t *second )
+
+SORTFN( SORT_TRACK_NUMBER, first, second )
+{
+    return meta_sort( first, second, vlc_meta_TrackNumber, true );
+}
+
+SORTFN( SORT_DISC_NUMBER, first, second )
+{
+    int i_ret = meta_sort( first, second, vlc_meta_DiscNumber, true );
+    /* Items came from the same disc: compare the track numbers */
+    if( i_ret == 0 )
+        i_ret = proto_SORT_TRACK_NUMBER( first, second );
+
+    return i_ret;
+}
 
 SORTFN( SORT_ALBUM, first, second )
 {
     int i_ret = meta_sort( first, second, vlc_meta_Album, false );
-    /* Items came from the same album: compare the track numbers */
+    /* Items came from the same album: compare the disc numbers */
     if( i_ret == 0 )
-        i_ret = meta_sort( first, second, vlc_meta_TrackNumber, true );
+        i_ret = proto_SORT_DISC_NUMBER( first, second );
+
+    return i_ret;
+}
+
+SORTFN( SORT_DATE, first, second )
+{
+    int i_ret = meta_sort( first, second, vlc_meta_Date, true );
+    /* Items came from the same date: compare the albums */
+    if( i_ret == 0 )
+        i_ret = proto_SORT_ALBUM( first, second );
 
     return i_ret;
 }
@@ -227,9 +253,9 @@ SORTFN( SORT_ALBUM, first, second )
 SORTFN( SORT_ARTIST, first, second )
 {
     int i_ret = meta_sort( first, second, vlc_meta_Artist, false );
-    /* Items came from the same artist: compare the albums */
+    /* Items came from the same artist: compare the dates */
     if( i_ret == 0 )
-        i_ret = proto_SORT_ALBUM( first, second );
+        i_ret = proto_SORT_DATE( first, second );
 
     return i_ret;
 }
@@ -301,11 +327,6 @@ SORTFN( SORT_TITLE_NUMERIC, first, second )
     return i_ret;
 }
 
-SORTFN( SORT_TRACK_NUMBER, first, second )
-{
-    return meta_sort( first, second, vlc_meta_TrackNumber, true );
-}
-
 SORTFN( SORT_URI, first, second )
 {
     int i_ret;
@@ -337,14 +358,14 @@ SORTFN( SORT_URI, first, second )
 #endif
 
 #define DEF( s ) \
-	static int cmp_a_##s(const void *l,const void *r) \
-	{ return proto_##s(*(const playlist_item_t *const *)l, \
+    static int cmp_a_##s(const void *l,const void *r) \
+    { return proto_##s(*(const playlist_item_t *const *)l, \
                            *(const playlist_item_t *const *)r); } \
-	static int cmp_d_##s(const void *l,const void *r) \
-	{ return -1*proto_##s(*(const playlist_item_t * const *)l, \
+    static int cmp_d_##s(const void *l,const void *r) \
+    { return -1*proto_##s(*(const playlist_item_t * const *)l, \
                               *(const playlist_item_t * const *)r); }
 
-	VLC_DEFINE_SORT_FUNCTIONS
+    VLC_DEFINE_SORT_FUNCTIONS
 
 #undef  DEF
 
@@ -354,4 +375,3 @@ static const sortfn_t sorting_fns[NUM_SORT_FNS][2] =
 #define DEF( a ) { cmp_a_##a, cmp_d_##a },
 { VLC_DEFINE_SORT_FUNCTIONS };
 #undef  DEF
-

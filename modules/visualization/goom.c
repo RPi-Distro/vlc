@@ -33,6 +33,7 @@
 #include <vlc_plugin.h>
 #include <vlc_aout.h>            /* aout_FormatNbChannels, AOUT_FMTS_SIMILAR */
 #include <vlc_vout.h>              /* vout_*Picture, aout_filter_RequestVout */
+#include <vlc_filter.h>
 
 #include <goom/goom.h>
 
@@ -159,7 +160,7 @@ static int Open( vlc_object_t *p_this )
     if( vlc_clone( &p_thread->thread,
                    Thread, p_thread, VLC_THREAD_PRIORITY_LOW ) )
     {
-        msg_Err( p_filter, "cannot lauch goom thread" );
+        msg_Err( p_filter, "cannot launch goom thread" );
         vlc_mutex_destroy( &p_thread->lock );
         vlc_cond_destroy( &p_thread->wait );
         aout_filter_RequestVout( p_filter, p_thread->p_vout, NULL );
@@ -326,17 +327,9 @@ static void *Thread( void *p_thread_data )
         plane = goom_update( p_plugin_info, p_data, 0, 0.0,
                              NULL, NULL );
 
-        while( !( p_pic = vout_GetPicture( p_thread->p_vout ) ) )
-        {
-            vlc_mutex_lock( &p_thread->lock );
-            bool b_exit = p_thread->b_exit;
-            vlc_mutex_unlock( &p_thread->lock );
-            if( b_exit )
-                break;
-            msleep( VOUT_OUTMEM_SLEEP );
-        }
-
-        if( p_pic == NULL ) break;
+        p_pic = vout_GetPicture( p_thread->p_vout );
+        if( unlikely(p_pic == NULL) )
+            continue;
 
         memcpy( p_pic->p[0].p_pixels, plane, p_thread->i_width * p_thread->i_height * 4 );
 

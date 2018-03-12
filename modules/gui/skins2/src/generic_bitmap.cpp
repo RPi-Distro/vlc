@@ -2,7 +2,7 @@
  * generic_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 66abaf1e6f6ec4fb63acdd03178b7911c4d8599c $
+ * $Id: 30c7ea92ab73882eab109edccb52c141284c7f76 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -74,10 +74,6 @@ bool BitmapImpl::drawBitmap( const GenericBitmap &rSource, int xSrc, int ySrc,
 {
     int srcWidth = rSource.getWidth();
     uint32_t *pSrc = (uint32_t*)rSource.getData() + ySrc * srcWidth + xSrc;
-    if( !pSrc )
-    {
-        return false;
-    }
     if( xSrc < 0 || xSrc + width > srcWidth ||
         ySrc < 0 || ySrc + height > rSource.getHeight() )
     {

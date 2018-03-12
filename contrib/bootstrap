@@ -31,6 +31,10 @@ usage()
 	echo "  --disable-sout   configure to not build stream output packages"
 	echo "  --enable-small   optimize libraries for size with slight speed decrease [DANGEROUS]"
 	echo "  --disable-gpl    configure to not build viral GPL code"
+	echo "  --disable-gnuv3  configure to not build version 3 (L)GPL code"
+	echo "  --enable-ad-clauses configure to build packages with advertising clauses"
+	echo "                   (USE AT YOUR OWN LEGAL RISKS)"
+	echo "  --disable-optim  disable optimization in libraries"
 }
 
 BUILD=
@@ -42,6 +46,9 @@ BUILD_ENCODERS="1"
 BUILD_NETWORK="1"
 BUILD_DISCS="1"
 GPL="1"
+GNUV3="1"
+AD_CLAUSES=
+WITH_OPTIMIZATION="1"
 
 if test ! -f "../../contrib/src/main.mak"
 then
@@ -74,11 +81,20 @@ do
 		--disable-sout)
 			BUILD_ENCODERS=
 			;;
+		--disable-optim)
+			WITH_OPTIMIZATION=
+			;;
 		--enable-small)
 			ENABLE_SMALL=1
 			;;
 		--disable-gpl)
 			GPL=
+			;;
+		--disable-gnuv3)
+			GNUV3=
+			;;
+		--enable-ad-clauses)
+			AD_CLAUSES=1
 			;;
 		--disable-*)
 			PKGS_DISABLE="${PKGS_DISABLE} ${1#--disable-}"
@@ -94,6 +110,12 @@ do
 	esac
 	shift
 done
+
+if test -n "$AD_CLAUSES" -a -n "$GPL" -a -z "$GNUV3"
+then
+	echo "Error: advertising clauses are not compatible with GPLv2!" >&2
+	exit 1
+fi
 
 if test -z "$BUILD"
 then
@@ -112,6 +134,26 @@ then
 	HOST="$BUILD"
 	echo "$HOST"
 fi
+
+echo -n "Packages licensing...    "
+if test -n "$GPL"
+then
+	if test -n "$GNUV3"
+	then
+		LICENSE="GPL version 3"
+	else
+		LICENSE="GPL version 2"
+	fi
+else
+	if test -n "$GNUV3"
+	then
+		LICENSE="Lesser GPL version 3"
+	else
+		LICENSE="Lesser GPL version 2.1"
+	fi
+fi
+test -z "$AD_CLAUSES" || LICENSE="$LICENSE, with advertisement clauses"
+echo "$LICENSE"
 
 if test "$PREFIX"
 then
@@ -153,20 +195,25 @@ add_make_enabled()
 
 check_ios_sdk()
 {
-   if test -z "$SDKROOT"
-   then
-      SDKROOT=`xcode-select -print-path`/Platforms/iPhone${PLATFORM}.platform/Developer/SDKs/iPhone${PLATFORM}${SDK_VERSION}.sdk
-      echo "SDKROOT not specified, assuming $SDKROOT"
-   else
-      SDKROOT="$SDKROOT"
-      fi
+    if test "$VLCSDKROOT"
+    then
+	    SDKROOT="$VLCSDKROOT"
+    else
+		if test -z "$SDKROOT"
+		then
+		   SDKROOT=`xcode-select -print-path`/Platforms/iPhone${PLATFORM}.platform/Developer/SDKs/iPhone${PLATFORM}${SDK_VERSION}.sdk
+		   echo "SDKROOT not specified, assuming $SDKROOT"
+		else
+		   SDKROOT="$SDKROOT"
+		fi
+    fi
 
-   if [ ! -d "${SDKROOT}" ]
-   then
-      echo "*** ${SDKROOT} does not exist, please install required SDK, or set SDKROOT manually. ***"
-      exit 1
-   fi
-   add_make "IOS_SDK=${SDKROOT}"
+    if [ ! -d "${SDKROOT}" ]
+    then
+       echo "*** ${SDKROOT} does not exist, please install required SDK, or set SDKROOT manually. ***"
+       exit 1
+    fi
+    add_make "IOS_SDK=${SDKROOT}"
 }
 
 check_macosx_sdk()
@@ -211,9 +258,23 @@ check_android_sdk()
 	add_make "ANDROID_NDK := ${ANDROID_NDK}"
 	[ -z "${ANDROID_ABI}" ] && echo "You must set ANDROID_ABI environment variable" && exit 1
 	add_make "ANDROID_ABI := ${ANDROID_ABI}"
+	[ -z "${ANDROID_API}" ] && echo "You should set ANDROID_API environment variable (using default android-9)" && ANDROID_API := android-9
+	add_make "ANDROID_API := ${ANDROID_API}"
 	[ ${ANDROID_ABI} = "armeabi-v7a" ] && add_make_enabled "HAVE_NEON"
 	[ ${ANDROID_ABI} = "armeabi-v7a" ] && add_make_enabled "HAVE_ARMV7A"
+	[ ${ANDROID_ABI} = "arm64-v8a" ] && add_make_enabled "HAVE_NEON"
+	[ ${ANDROID_ABI} = "arm64-v8a" ] && add_make_enabled "HAVE_ARMV8A"
 	[ ${ANDROID_ABI} = "armeabi" -a -z "${NO_ARMV6}" ] && add_make_enabled "HAVE_ARMV6"
+}
+
+check_tizen_sdk()
+{
+	[ -z "${TIZEN_SDK}" ] && echo "You must set TIZEN_SDK environment variable" && exit 1
+	add_make "TIZEN_SDK := ${TIZEN_SDK}"
+	[ -z "${TIZEN_ABI}" ] && echo "You must set TIZEN_ABI environment variable" && exit 1
+	add_make "TIZEN_ABI := ${TIZEN_ABI}"
+	[ ${TIZEN_ABI} = "armv7l" ] && add_make_enabled "HAVE_NEON"
+	[ ${TIZEN_ABI} = "armv7l" ] && add_make_enabled "HAVE_ARMV7A"
 }
 
 test -z "$PREFIX" || add_make "PREFIX := $PREFIX"
@@ -222,6 +283,10 @@ test -z "$BUILD_ENCODERS" || add_make_enabled "BUILD_ENCODERS"
 test -z "$BUILD_NETWORK" || add_make_enabled "BUILD_NETWORK"
 test -z "$ENABLE_SMALL" || add_make_enabled "ENABLE_SMALL"
 test -z "$GPL" || add_make_enabled "GPL"
+test -z "$GNUV3" || add_make_enabled "GNUV3"
+test -z "$AD_CLAUSES" || add_make_enabled "AD_CLAUSES"
+test -z "$WITH_OPTIMIZATION" || add_make_enabled "WITH_OPTIMIZATION"
+test "`uname -o 2>/dev/null`" != "Msys" || add_make "CMAKE_GENERATOR := -G \"MSYS Makefiles\""
 
 #
 # Checks
@@ -235,7 +300,17 @@ case "${OS}" in
 			add_make_enabled "HAVE_MACOSX" "HAVE_DARWIN_OS" "HAVE_BSD"
 		else
 			check_ios_sdk
-			add_make_enabled "HAVE_IOS" "HAVE_DARWIN_OS" "HAVE_BSD" "HAVE_NEON" "HAVE_ARMV7A"
+			add_make_enabled "HAVE_IOS" "HAVE_DARWIN_OS" "HAVE_BSD" "HAVE_FPU"
+
+			case "${HOST}" in
+				*arm*)
+				add_make_enabled "HAVE_NEON" "HAVE_ARMV7A"
+				;;
+			esac;
+		fi
+		if test "$BUILDFORTVOS"
+		then
+			add_make_enabled "HAVE_TVOS"
 		fi
 		;;
 	*bsd*)
@@ -248,8 +323,14 @@ case "${OS}" in
 			*arm*)
 			add_make "PLATFORM_SHORT_ARCH := arm"
 			;;
+			*arm64*|*aarch64*)
+			add_make "PLATFORM_SHORT_ARCH := arm64"
+			;;
 			*i686*)
 			add_make "PLATFORM_SHORT_ARCH := x86"
+			;;
+			*x86_64*)
+			add_make "PLATFORM_SHORT_ARCH := x86_64"
 			;;
 			*mipsel*)
 			add_make "PLATFORM_SHORT_ARCH := mips"
@@ -257,10 +338,43 @@ case "${OS}" in
 		esac
 		;;
 	*linux*)
+		if [ "`${CC} -v 2>&1 | grep tizen`" ]; then
+			check_tizen_sdk
+			add_make_enabled "HAVE_TIZEN"
+			case "${HOST}" in
+				*arm*)
+				add_make "PLATFORM_SHORT_ARCH := arm"
+				;;
+				*i386*)
+				add_make "PLATFORM_SHORT_ARCH := x86"
+				;;
+			esac
+		fi
+
 		add_make_enabled "HAVE_LINUX"
 		;;
 	*mingw*)
 		add_make_enabled "HAVE_WIN32"
+		case "${HOST}" in
+			*winphone*|*windowsphone*)
+			add_make_enabled "HAVE_WINDOWSPHONE"
+			;;
+		esac
+		case "${HOST}" in
+			*winphone*|*windowsphone*|*winrt*|*uwp*)
+			add_make_enabled "HAVE_WINSTORE"
+			;;
+		esac
+		case "${HOST}" in
+			amd64*|x86_64*)
+			add_make_enabled "HAVE_WIN64"
+			;;
+		esac
+        case "${HOST}" in
+            armv7*)
+                add_make_enabled "HAVE_ARMV7A"
+                ;;
+        esac
 		;;
 	*solaris*)
 		add_make_enabled "HAVE_SOLARIS"
@@ -272,21 +386,6 @@ esac
 #
 test -e Makefile && unlink Makefile
 ln -sf ../../contrib/src/main.mak Makefile || exit $?
-cat << EOF
-Bootstrap completed.
-
-Run "make" to start compilation.
-
-Other targets:
- * make install      same as "make"
- * make prebuilt     fetch and install prebuilt binaries
- * make list         list packages
- * make fetch        fetch required source tarballs
- * make fetch-all    fetch all source tarballs
- * make distclean    clean everything and undo bootstrap
- * make mostlyclean  clean everything except source tarballs
- * make clean        clean everything
- * make package      prepare prebuilt packages
-EOF
-
+echo "Bootstrap completed."
+make help
 mkdir -p ../../contrib/tarballs || exit $?

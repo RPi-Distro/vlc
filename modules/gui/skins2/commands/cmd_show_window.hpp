@@ -2,7 +2,7 @@
  * cmd_show_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6617e010d479edec6c0802d4b5493e8e8df2ee98 $
+ * $Id: e2523b8fc98e52eda26769df8a3c3039347522ef $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -41,7 +41,7 @@ public:
         CmdGeneric( pIntf ), m_rWinManager( rWinManager ), m_rWin( rWin ) { }
     virtual ~CmdShowWindow() { }
     virtual void execute() { m_rWinManager.show( m_rWin ); }
-    virtual string getType() const { return "show window"; }
+    virtual std::string getType() const { return "show window"; }
 
 private:
     /// Reference to the window manager
@@ -60,7 +60,7 @@ public:
         CmdGeneric( pIntf ), m_rWinManager( rWinManager ), m_rWin( rWin ) { }
     virtual ~CmdHideWindow() { }
     virtual void execute() { m_rWinManager.hide( m_rWin ); }
-    virtual string getType() const { return "hide window"; }
+    virtual std::string getType() const { return "hide window"; }
 
 private:
     /// Reference to the window manager
@@ -78,7 +78,7 @@ public:
         CmdGeneric( pIntf ), m_rWinManager( rWinManager ) { }
     virtual ~CmdRaiseAll() { }
     virtual void execute() { m_rWinManager.raiseAll(); }
-    virtual string getType() const { return "raise all windows"; }
+    virtual std::string getType() const { return "raise all windows"; }
 
 private:
     /// Reference to the window manager
@@ -101,7 +101,7 @@ public:
         m_rPopup.show( x, y );
     }
 
-    virtual string getType() const { return "show popup"; }
+    virtual std::string getType() const { return "show popup"; }
 
 private:
     /// Reference to the popup

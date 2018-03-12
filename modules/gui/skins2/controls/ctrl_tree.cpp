@@ -2,7 +2,7 @@
  * ctrl_tree.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 426587ce536b1ae3d5c24d55260a3d2f088859b5 $
+ * $Id: f851a25070e4546a181241aa6256260fd51a33c6 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -31,6 +31,7 @@
 #include "../src/generic_bitmap.hpp"
 #include "../src/generic_font.hpp"
 #include "../src/scaled_bitmap.hpp"
+#include "../src/dialogs.hpp"
 #include "../utils/position.hpp"
 #include "../utils/ustring.hpp"
 #include "../events/evt_key.hpp"
@@ -38,7 +39,7 @@
 #include "../events/evt_scroll.hpp"
 #include "../events/evt_dragndrop.hpp"
 #include "../vars/playtree.hpp"
-#include <vlc_keys.h>
+#include <vlc_actions.h>
 
 #define LINE_INTERVAL 1  // Number of pixels inserted between 2 lines
 
@@ -229,7 +230,7 @@ void CtrlTree::handleEvent( EvtGeneric &rEvent )
     bool needShow = false;
     bool needRefresh = false;
     Iterator toShow = m_firstPos;
-    if( rEvent.getAsString().find( "key:down" ) != string::npos )
+    if( rEvent.getAsString().find( "key:down" ) != std::string::npos )
     {
         int key = ((EvtKey&)rEvent).getKey();
 
@@ -382,12 +383,11 @@ void CtrlTree::handleEvent( EvtGeneric &rEvent )
         {
             // other keys to be forwarded to vlc core
             EvtKey& rEvtKey = (EvtKey&)rEvent;
-            var_SetInteger( getIntf()->p_libvlc, "key-pressed",
-                            rEvtKey.getModKey() );
+            getIntf()->p_sys->p_dialogs->sendKey( rEvtKey.getModKey() );
         }
     }
 
-    else if( rEvent.getAsString().find( "mouse:left" ) != string::npos )
+    else if( rEvent.getAsString().find( "mouse:left" ) != std::string::npos )
     {
         EvtMouse &rEvtMouse = (EvtMouse&)rEvent;
         const Position *pos = getPosition();
@@ -398,7 +398,7 @@ void CtrlTree::handleEvent( EvtGeneric &rEvent )
         if( itClicked != m_rTree.end() )
         {
             if( rEvent.getAsString().find( "mouse:left:down:ctrl,shift" ) !=
-                string::npos )
+                std::string::npos )
             {
                 // Flag to know if the current item must be selected
                 bool select = false;
@@ -424,7 +424,7 @@ void CtrlTree::handleEvent( EvtGeneric &rEvent )
                 }
             }
             else if( rEvent.getAsString().find( "mouse:left:down:ctrl" ) !=
-                     string::npos )
+                     std::string::npos )
             {
                 // Invert the selection of the item
                 itClicked->toggleSelected();
@@ -432,7 +432,7 @@ void CtrlTree::handleEvent( EvtGeneric &rEvent )
                 needRefresh = true;
             }
             else if( rEvent.getAsString().find( "mouse:left:down:shift" ) !=
-                     string::npos )
+                     std::string::npos )
             {
                 bool select = false;
                 for( Iterator it = m_firstPos; it != m_rTree.end(); ++it )
@@ -457,7 +457,7 @@ void CtrlTree::handleEvent( EvtGeneric &rEvent )
                 needRefresh = true;
             }
             else if( rEvent.getAsString().find( "mouse:left:down" ) !=
-                     string::npos )
+                     std::string::npos )
             {
                 if( !m_flat &&
                     itClicked->size() &&
@@ -478,7 +478,7 @@ void CtrlTree::handleEvent( EvtGeneric &rEvent )
                 needRefresh = true;
             }
             else if( rEvent.getAsString().find( "mouse:left:dblclick" ) !=
-                     string::npos )
+                     std::string::npos )
             {
                // Execute the action associated to this item
                m_rTree.action( &*itClicked );
@@ -486,7 +486,7 @@ void CtrlTree::handleEvent( EvtGeneric &rEvent )
         }
     }
 
-    else if( rEvent.getAsString().find( "scroll" ) != string::npos )
+    else if( rEvent.getAsString().find( "scroll" ) != std::string::npos )
     {
         int direction = static_cast<EvtScroll&>(rEvent).getDirection();
         if( direction == EvtScroll::kUp )
@@ -495,7 +495,7 @@ void CtrlTree::handleEvent( EvtGeneric &rEvent )
             m_rTree.getPositionVar().increment( -1 );
     }
 
-    else if( rEvent.getAsString().find( "drag:over" ) != string::npos )
+    else if( rEvent.getAsString().find( "drag:over" ) != std::string::npos )
     {
         EvtDragOver& evt = static_cast<EvtDragOver&>(rEvent);
         const Position *pos = getPosition();
@@ -509,7 +509,7 @@ void CtrlTree::handleEvent( EvtGeneric &rEvent )
         }
     }
 
-    else if( rEvent.getAsString().find( "drag:drop" ) != string::npos )
+    else if( rEvent.getAsString().find( "drag:drop" ) != std::string::npos )
     {
         EvtDragDrop& evt = static_cast<EvtDragDrop&>(rEvent);
         Playtree& rPlaytree = static_cast<Playtree&>(m_rTree);
@@ -519,7 +519,7 @@ void CtrlTree::handleEvent( EvtGeneric &rEvent )
         needRefresh = true;
     }
 
-    else if( rEvent.getAsString().find( "drag:leave" ) != string::npos )
+    else if( rEvent.getAsString().find( "drag:leave" ) != std::string::npos )
     {
         m_itOver = m_rTree.end();
         needRefresh = true;

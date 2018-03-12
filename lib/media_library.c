@@ -3,7 +3,7 @@
  * Create a tree of the 'tags' of a media_list's medias.
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 9edc5f787726df558ad9bf9b1a1661ad86e65589 $
+ * $Id: f2bf77a77fced2e1c1fb75ae60a1bd06f57781ea $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -26,11 +26,7 @@
 # include "config.h"
 #endif
 
-#include <vlc/libvlc.h>
-#include <vlc/libvlc_media.h>
-#include <vlc/libvlc_media_list.h>
-#include <vlc/libvlc_media_library.h>
-#include <vlc/libvlc_events.h>
+#include <vlc/vlc.h>
 
 #include <vlc_common.h>
 
@@ -38,7 +34,7 @@
 
 struct libvlc_media_library_t
 {
-    libvlc_event_manager_t * p_event_manager;
+    libvlc_event_manager_t   event_manager;
     libvlc_instance_t *      p_libvlc_instance;
     int                      i_refcount;
     libvlc_media_list_t *    p_mlist;
@@ -73,13 +69,8 @@ libvlc_media_library_new( libvlc_instance_t * p_inst )
     p_mlib->i_refcount = 1;
     p_mlib->p_mlist = NULL;
 
-    p_mlib->p_event_manager = libvlc_event_manager_new( p_mlib, p_inst );
-    if( unlikely(p_mlib->p_event_manager == NULL) )
-    {
-        free(p_mlib);
-        return NULL;
-    }
-
+    libvlc_event_manager_init( &p_mlib->event_manager, p_mlib );
+    libvlc_retain( p_inst );
     return p_mlib;
 }
 
@@ -93,7 +84,8 @@ void libvlc_media_library_release( libvlc_media_library_t * p_mlib )
     if( p_mlib->i_refcount > 0 )
         return;
 
-    libvlc_event_manager_release( p_mlib->p_event_manager );
+    libvlc_event_manager_destroy( &p_mlib->event_manager );
+    libvlc_release( p_mlib->p_libvlc_instance );
     free( p_mlib );
 }
 
@@ -116,7 +108,7 @@ int libvlc_media_library_load( libvlc_media_library_t * p_mlib )
     char * psz_uri;
 
     if( psz_datadir == NULL
-     || asprintf( &psz_uri, "file/xspf-open://%s" DIR_SEP "ml.xsp",
+     || asprintf( &psz_uri, "file/directory://%s" DIR_SEP "ml.xsp",
                   psz_datadir ) == -1 )
         psz_uri = NULL;
     free( psz_datadir );
