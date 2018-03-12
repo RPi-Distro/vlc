@@ -1,4 +1,5 @@
-usr/share/doc/vlc-data
+usr/share/doc/vlc/fortunes.*
+usr/share/doc/vlc/lua
 usr/share/icons
 usr/share/vlc/lua
 usr/share/vlc/utils

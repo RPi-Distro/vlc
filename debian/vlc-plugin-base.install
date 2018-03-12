@@ -1,13 +1,16 @@
 #!/bin/bash
 exec python3 $(dirname $0)/filter-plugin.py <<EOF
-usr/lib/*/vlc/libvlc_vdpau.so*
-usr/lib/*/vlc/lua/
+usr/lib/*/vlc/lua
+usr/lib/*/vlc/libvlc_pulse.so*
 usr/lib/*/vlc/plugins/access/libaccess_alsa_plugin.so [alsa]
+usr/lib/*/vlc/plugins/access/libaccess_concat_plugin.so
+usr/lib/*/vlc/plugins/access/libaccess_imem_plugin.so
 usr/lib/*/vlc/plugins/access/libaccess_mms_plugin.so
 usr/lib/*/vlc/plugins/access/libaccess_mtp_plugin.so
 usr/lib/*/vlc/plugins/access/libaccess_oss_plugin.so [oss]
 usr/lib/*/vlc/plugins/access/libaccess_realrtsp_plugin.so
 usr/lib/*/vlc/plugins/access/libattachment_plugin.so
+usr/lib/*/vlc/plugins/access/libavio_plugin.so
 usr/lib/*/vlc/plugins/access/libcdda_plugin.so [cdda]
 usr/lib/*/vlc/plugins/access/libdc1394_plugin.so [dc1394]
 usr/lib/*/vlc/plugins/access/libdtv_plugin.so [dtv]
@@ -18,15 +21,17 @@ usr/lib/*/vlc/plugins/access/libdvdread_plugin.so
 usr/lib/*/vlc/plugins/access/libfilesystem_plugin.so
 usr/lib/*/vlc/plugins/access/libftp_plugin.so
 usr/lib/*/vlc/plugins/access/libhttp_plugin.so
+usr/lib/*/vlc/plugins/access/libhttps_plugin.so
 usr/lib/*/vlc/plugins/access/libidummy_plugin.so
 usr/lib/*/vlc/plugins/access/libimem_plugin.so
 usr/lib/*/vlc/plugins/access/liblibbluray_plugin.so
 usr/lib/*/vlc/plugins/access/liblinsys_hdsdi_plugin.so [linsys]
 usr/lib/*/vlc/plugins/access/liblinsys_sdi_plugin.so [linsys]
 usr/lib/*/vlc/plugins/access/liblive555_plugin.so
+usr/lib/*/vlc/plugins/access/libnfs_plugin.so [nfs]
 usr/lib/*/vlc/plugins/access/libpulsesrc_plugin.so
-usr/lib/*/vlc/plugins/access/librar_plugin.so
 usr/lib/*/vlc/plugins/access/librtp_plugin.so
+usr/lib/*/vlc/plugins/access/libsatip_plugin.so
 usr/lib/*/vlc/plugins/access/libsdp_plugin.so
 usr/lib/*/vlc/plugins/access/libsftp_plugin.so
 usr/lib/*/vlc/plugins/access/libshm_plugin.so
@@ -35,9 +40,7 @@ usr/lib/*/vlc/plugins/access/libtimecode_plugin.so
 usr/lib/*/vlc/plugins/access/libudp_plugin.so
 usr/lib/*/vlc/plugins/access/libv4l2_plugin.so [v4l2]
 usr/lib/*/vlc/plugins/access/libvcd_plugin.so [vcd]
-usr/lib/*/vlc/plugins/access/libvcdx_plugin.so
 usr/lib/*/vlc/plugins/access/libvdr_plugin.so
-usr/lib/*/vlc/plugins/access/libzip_plugin.so
 usr/lib/*/vlc/plugins/access_output
 usr/lib/*/vlc/plugins/arm_neon [neon]
 usr/lib/*/vlc/plugins/audio_filter
@@ -58,27 +61,30 @@ usr/lib/*/vlc/plugins/codec/libcc_plugin.so
 usr/lib/*/vlc/plugins/codec/libcdg_plugin.so
 usr/lib/*/vlc/plugins/codec/libcrystalhd_plugin.so [crystalhd]
 usr/lib/*/vlc/plugins/codec/libcvdsub_plugin.so
+usr/lib/*/vlc/plugins/codec/libdca_plugin.so
 usr/lib/*/vlc/plugins/codec/libddummy_plugin.so
-usr/lib/*/vlc/plugins/codec/libdts_plugin.so
 usr/lib/*/vlc/plugins/codec/libdvbsub_plugin.so
 usr/lib/*/vlc/plugins/codec/libedummy_plugin.so
 usr/lib/*/vlc/plugins/codec/libfaad_plugin.so
 usr/lib/*/vlc/plugins/codec/libflac_plugin.so
 usr/lib/*/vlc/plugins/codec/libg711_plugin.so
-usr/lib/*/vlc/plugins/codec/libhwdummy_plugin.so
 usr/lib/*/vlc/plugins/codec/libjpeg_plugin.so
 usr/lib/*/vlc/plugins/codec/libkate_plugin.so
 usr/lib/*/vlc/plugins/codec/liblibass_plugin.so
 usr/lib/*/vlc/plugins/codec/liblibmpeg2_plugin.so
 usr/lib/*/vlc/plugins/codec/liblpcm_plugin.so
-usr/lib/*/vlc/plugins/codec/libmpeg_audio_plugin.so
+usr/lib/*/vlc/plugins/codec/libmpg123_plugin.so
+usr/lib/*/vlc/plugins/codec/liboggspots_plugin.so
 usr/lib/*/vlc/plugins/codec/libomxil_plugin.so [omxil]
 usr/lib/*/vlc/plugins/codec/libopus_plugin.so
 usr/lib/*/vlc/plugins/codec/libpng_plugin.so
 usr/lib/*/vlc/plugins/codec/librawvideo_plugin.so
+usr/lib/*/vlc/plugins/codec/librtpvideo_plugin.so
+usr/lib/*/vlc/plugins/codec/libscte18_plugin.so
 usr/lib/*/vlc/plugins/codec/libscte27_plugin.so
 usr/lib/*/vlc/plugins/codec/libsdl_image_plugin.so
 usr/lib/*/vlc/plugins/codec/libshine_plugin.so
+usr/lib/*/vlc/plugins/codec/libspdif_plugin.so
 usr/lib/*/vlc/plugins/codec/libspeex_plugin.so
 usr/lib/*/vlc/plugins/codec/libspudec_plugin.so
 usr/lib/*/vlc/plugins/codec/libstl_plugin.so
@@ -88,15 +94,19 @@ usr/lib/*/vlc/plugins/codec/libsubsusf_plugin.so
 usr/lib/*/vlc/plugins/codec/libsvcdsub_plugin.so
 usr/lib/*/vlc/plugins/codec/libsvgdec_plugin.so
 usr/lib/*/vlc/plugins/codec/libt140_plugin.so
+usr/lib/*/vlc/plugins/codec/libtextst_plugin.so
 usr/lib/*/vlc/plugins/codec/libtheora_plugin.so
+usr/lib/*/vlc/plugins/codec/libttml_plugin.so
 usr/lib/*/vlc/plugins/codec/libtwolame_plugin.so
 usr/lib/*/vlc/plugins/codec/libuleaddvaudio_plugin.so
 usr/lib/*/vlc/plugins/codec/libvaapi_drm_plugin.so [libva]
-usr/lib/*/vlc/plugins/codec/libvaapi_x11_plugin.so [libva]
+usr/lib/*/vlc/plugins/codec/libvaapi_plugin.so [libva]
 usr/lib/*/vlc/plugins/codec/libvorbis_plugin.so
+usr/lib/*/vlc/plugins/codec/libwebvtt_plugin.so
 usr/lib/*/vlc/plugins/codec/libx264_plugin.so
 usr/lib/*/vlc/plugins/codec/libx265_plugin.so
 usr/lib/*/vlc/plugins/codec/libxwd_plugin.so
+usr/lib/*/vlc/plugins/codec/libzvbi_plugin.so
 usr/lib/*/vlc/plugins/control/libdbus_plugin.so
 usr/lib/*/vlc/plugins/control/libdummy_plugin.so
 usr/lib/*/vlc/plugins/control/libgestures_plugin.so
@@ -108,6 +118,14 @@ usr/lib/*/vlc/plugins/control/liboldrc_plugin.so
 usr/lib/*/vlc/plugins/control/libxcb_hotkeys_plugin.so
 usr/lib/*/vlc/plugins/demux
 usr/lib/*/vlc/plugins/gui/libncurses_plugin.so
+usr/lib/*/vlc/plugins/keystore/libfile_keystore_plugin.so
+usr/lib/*/vlc/plugins/keystore/libkwallet_plugin.so
+usr/lib/*/vlc/plugins/keystore/libmemory_keystore_plugin.so
+usr/lib/*/vlc/plugins/keystore/libsecret_plugin.so
+usr/lib/*/vlc/plugins/logger/libconsole_logger_plugin.so
+usr/lib/*/vlc/plugins/logger/libfile_logger_plugin.so
+usr/lib/*/vlc/plugins/logger/libsd_journal_plugin.so [systemd]
+usr/lib/*/vlc/plugins/logger/libsyslog_plugin.so
 usr/lib/*/vlc/plugins/lua/liblua_plugin.so
 usr/lib/*/vlc/plugins/meta_engine
 usr/lib/*/vlc/plugins/misc/libaddonsfsstorage_plugin.so
@@ -124,8 +142,9 @@ usr/lib/*/vlc/plugins/misc/libxdg_screensaver_plugin.so
 usr/lib/*/vlc/plugins/misc/libxml_plugin.so
 usr/lib/*/vlc/plugins/mux
 usr/lib/*/vlc/plugins/packetizer
-usr/lib/*/vlc/plugins/services_discovery/libbonjour_plugin.so
+usr/lib/*/vlc/plugins/services_discovery/libavahi_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libmediadirs_plugin.so
+usr/lib/*/vlc/plugins/services_discovery/libmicrodns_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libmtp_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libpodcast_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libpulselist_plugin.so
@@ -133,18 +152,43 @@ usr/lib/*/vlc/plugins/services_discovery/libsap_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libudev_plugin.so [udev]
 usr/lib/*/vlc/plugins/services_discovery/libupnp_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libxcb_apps_plugin.so
+usr/lib/*/vlc/plugins/spu/libaudiobargraph_v_plugin.so
+usr/lib/*/vlc/plugins/spu/libdynamicoverlay_plugin.so
+usr/lib/*/vlc/plugins/spu/liblogo_plugin.so
+usr/lib/*/vlc/plugins/spu/libmarq_plugin.so
+usr/lib/*/vlc/plugins/spu/libmosaic_plugin.so
+usr/lib/*/vlc/plugins/spu/libremoteosd_plugin.so
+usr/lib/*/vlc/plugins/spu/librss_plugin.so
+usr/lib/*/vlc/plugins/spu/libsubsdelay_plugin.so
+usr/lib/*/vlc/plugins/stream_extractor/libarchive_plugin.so
 usr/lib/*/vlc/plugins/stream_filter
-usr/lib/*/vlc/plugins/stream_out
+usr/lib/*/vlc/plugins/stream_out/libstream_out_autodel_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_bridge_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_chromaprint_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_chromecast_plugin.so [chromecast]
+usr/lib/*/vlc/plugins/stream_out/libstream_out_cycle_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_delay_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_description_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_display_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_dummy_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_duplicate_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_es_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_gather_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_mosaic_bridge_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_record_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_rtp_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_setid_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_smem_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_standard_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_stats_plugin.so
+usr/lib/*/vlc/plugins/stream_out/libstream_out_transcode_plugin.so
 usr/lib/*/vlc/plugins/text_renderer/libfreetype_plugin.so
 usr/lib/*/vlc/plugins/text_renderer/libtdummy_plugin.so
-usr/lib/*/vlc/plugins/vdpau
 usr/lib/*/vlc/plugins/video_chroma
 usr/lib/*/vlc/plugins/video_filter/libadjust_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libalphamask_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libanaglyph_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libantiflicker_plugin.so
-usr/lib/*/vlc/plugins/video_filter/libatmo_plugin.so [atmo]
-usr/lib/*/vlc/plugins/video_filter/libaudiobargraph_v_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libball_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libblend_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libblendbench_plugin.so
@@ -153,9 +197,10 @@ usr/lib/*/vlc/plugins/video_filter/libcanvas_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libcolorthres_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libcroppadd_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libdeinterlace_plugin.so
-usr/lib/*/vlc/plugins/video_filter/libdynamicoverlay_plugin.so
+usr/lib/*/vlc/plugins/video_filter/libedgedetection_plugin.so
 usr/lib/*/vlc/plugins/video_filter/liberase_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libextract_plugin.so
+usr/lib/*/vlc/plugins/video_filter/libfps_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libfreeze_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libgaussianblur_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libgradfun_plugin.so
@@ -163,11 +208,8 @@ usr/lib/*/vlc/plugins/video_filter/libgradient_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libgrain_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libhqdn3d_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libinvert_plugin.so
-usr/lib/*/vlc/plugins/video_filter/liblogo_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libmagnify_plugin.so
-usr/lib/*/vlc/plugins/video_filter/libmarq_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libmirror_plugin.so
-usr/lib/*/vlc/plugins/video_filter/libmosaic_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libmotionblur_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libmotiondetect_plugin.so
 usr/lib/*/vlc/plugins/video_filter/liboldmovie_plugin.so
@@ -175,20 +217,15 @@ usr/lib/*/vlc/plugins/video_filter/libposterize_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libpostproc_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libpsychedelic_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libpuzzle_plugin.so
-usr/lib/*/vlc/plugins/video_filter/libremoteosd_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libripple_plugin.so
 usr/lib/*/vlc/plugins/video_filter/librotate_plugin.so
-usr/lib/*/vlc/plugins/video_filter/librss_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libscale_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libscene_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libsepia_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libsharpen_plugin.so
-usr/lib/*/vlc/plugins/video_filter/libsubsdelay_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libtransform_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libvhs_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libwave_plugin.so
-usr/lib/*/vlc/plugins/video_filter/libyuvp_plugin.so
-usr/lib/*/vlc/plugins/video_output/libdirectfb_plugin.so
 usr/lib/*/vlc/plugins/video_output/libfb_plugin.so [fb]
 usr/lib/*/vlc/plugins/video_output/libvdummy_plugin.so
 usr/lib/*/vlc/plugins/video_output/libvmem_plugin.so

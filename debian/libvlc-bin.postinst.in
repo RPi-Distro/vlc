@@ -2,9 +2,22 @@
 set -e
 
 run_vlc_cache_gen() {
-    if ! /usr/lib/#DEB_HOST_MULTIARCH#/vlc/vlc-cache-gen -f /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins ; then
-        echo "WARNING: Regenerating VLC plugin cache failed."
-        echo "Please run '/usr/lib/#DEB_HOST_MULTIARCH#/vlc/vlc-cache-gen -f /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins' manually."
+    if ! test -d /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins
+    then
+        return
+    fi
+    files=`find /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins -name '*.so' -type f -print -quit`
+    if test -n "$files"
+    then
+        # run vlc-cache-gen since there are plugins
+        if ! /usr/lib/#DEB_HOST_MULTIARCH#/vlc/vlc-cache-gen /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins
+        then
+            echo "WARNING: Regenerating VLC plugin cache failed."
+            echo "Please run '/usr/lib/#DEB_HOST_MULTIARCH#/vlc/vlc-cache-gen /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins' manually."
+        fi
+    else
+        # no plugins, so remove plugins.dat
+        rm -f /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins/plugins.dat
     fi
 }
 

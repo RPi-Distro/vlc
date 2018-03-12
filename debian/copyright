@@ -1,2125 +1,1471 @@
-This package was initially debianized by Sam Hocevar <sam@zoy.org> on
-Mon, 13 Mar 2000 02:21:45 +0100.
-
-Christophe Mutricy <xtophe@videolan.org>,  Reinhard Tartler, Mohammed
-Adnène Trojette have contributed to the packaging.
-
-It was taken from http://download.videolan.org/pub/vlc/
-
-1. Copyright holders list
-=========================
-
-With the exception of other files mentioned in this document, all code and
-artwork belongs to members of the VideoLAN team <videolan@videolan.org>. See
-each file for precise details about its respective authors.
-
-Copyright (c) 1996-2017 the VideoLAN Team
-Rémi Denis-Courmont
-Jean-Baptiste Kempf
-Laurent Aimar
-Gildas Bazin
-Felix Paul Kühne
-Rafaël Carré
-Pierre d'Herbemont
-Rémi Duraffort
-Derk-Jan Hartman
-Antoine Cellerier
-Samuel Hocevar
-Jean-Paul Saman
-Christophe Mutricy
-Clément Stenac
-Christophe Massiot
-Ilkka Ollakka
-Pierre Ynard
-François Cartegnie
-Damien Fouilleul
-Sigmund Augdal Helberg
-Erwan Tulou
-David Fuhrmann
-Olivier Teulière
-Cyril Deguet
-Eric Petit
-Filippo Carone
-Rocky Bernstein
-Hugo Beauzée-Luyssen
-Olivier Aubert
-Pavlov Konstantin
-Jakob Leben
-Benjamin Pracht
-Jean-Philippe André
-Steve Lhomme
-Stéphane Borel
-JP Dinger
-Geoffroy Couprie
-Martin Storsjö
-Marian Ďurkovič
-Ludovic Fauvet
-Yoann Peronneau
-Sébastien Escudier
-Jon Lech Johansen
-KO Myung-Hun
-Edward Wang
-Dennis van Amerongen
-Faustino Osuna
-Mirsal Ennaime
-Denis Charmet
-Jérôme Decoodt
-Loïc Minier
-David Flynn
-Frédéric Yhuel
-Kaarlo Raiha
-Mark Moriarty
-Christopher Mueller
-Fabio Ritrovato
-Tony Castley
-Srikanth Raju
-Michel Kaempf
-Jean-Marc Dressler
-Johan Bilien
-Vincent Seguin
-Simon Latapie
-Bernie Purcell
-Henri Fallon
-Sebastien Zwickert
-Christoph Miebach
-Adrien Maglo
-Emmanuel Puig
-Renaud Dartus
-Alexis de Lattre
-Vincent Penquerc'h
-Arnaud de Bossoreille de Ribou
-Mohammed Adnène Trojette
-Boris Dorès
-Jai Menon
-Anil Daoud
-Daniel Mierswa
-Naohiro Koriyama
-Rob Jonson
-Pierre Baillet
-Dominique Leuenberger
-Andre Pang
-Zoran Turalija
-Akash Mehrotra
-André Weber
-Anthony Loiseau
-Lukas Durfina
-Xavier Marchesini
-Cyril Mathé
-Devin Heitmueller
-Juho Vähä-Herttua
-Ken Self
-Alexis Ballier
-Juha Jeronen
-Nicolas Chauvet
-Richard Hosking
-Éric Lassauge
-Marc Ariberti
-Sébastien Toque
-Tobias Güntner
-Benoit Steiner
-Michel Lespinasse
-Carlo Calabrò
-Cheng Sun
-Michał Trzebiatowski
-Brad Smith
-Brendon Justin
-Alexey Sokolov
-Basos G
-Philippe Morin
-Steinar H. Gunderson
-Vicente Jimenez Aguilar
-Yuval Tze
-Yves Duret
-Benjamin Drung
-Michael Hanselmann
-Alex Merry
-Damien Lucas
-Grigori Goronzy
-Richard Shepherd
-Gaël Hendryckx
-Michael Feurstein
-Stephan Assmus
-Adrien Grand
-Colin Guthrie
-David Menestrina
-Dominique Martinet
-Gleb Pinigin
-Jason Luka
-Luc Saillard
-Luca Barbato
-Mario Speiß
-Pankaj Yadav
-Ramiro Polla
-Ronald Wright
-Rui Zhang
-Can Wu
-Christophe Courtaut
-FUJISAWA Tooru
-Hannes Domani
-Manol Manolov
-Timothy B. Terriberry
-Antoine Lejeune
-Arnaud Schauly
-Branko Kokanovic
-Dylan Yudaken
-Florian G. Pflug
-François Revol
-G Finch
-Keary Griffin
-Konstanty Bialkowski
-Ming Hu
-Philippe Coent
-Przemyslaw Fiala
-Tanguy Krotoff
-Vianney BOYER
-Casian Andrei
-Chris Smowton
-David Kaplan
-Eugenio Jarosiewicz
-Fabian Keil
-Guillaume Poussel
-John Peterson
-Justus Piater
-Mark Lee
-Martin T. H. Sandsmark
-Rune Botten
-Søren Bøg
-Toralf Niebuhr
-Tristan Matthews
-Angelo Haller
-Aurélien Nephtali
-Austin Burrow
-Bill C. Riemers
-Colin Delacroix
-Cristian Maglie
-Elminster2031
-Jakub Wieczorek
-John Freed
-Mark Hassman
-Martin Briza
-Mike Houben
-Romain Goyet
-Adrian Yanes
-Alexander Lakhin
-Anatoliy Anischovich
-Barry Wardell
-Ben Hutchings
-Besnard Jean-Baptiste
-Brian Weaver
-Clement Chesnin
-David Geldreich
-Diego Elio Pettenò
-Diego Fernando Nieto
-Georgi Chorbadzhiyski
-Jon Stacey
-Jonathan Rosser
-Joris van Rooij
-Kaloyan Kovachev
-Katsushi Kobayashi
-Kelly Anderson
-Loren Merritt
-Maciej Blizinski
-Mark Bidewell
-Miguel Angel Cabrera Moya
-Niles Bindel
-Samuel Pitoiset
-Scott Caudle
-Sean Robinson
-Sergey Radionov
-Simon Hailes
-Stephen Parry
-Sukrit Sangwan
-Thierry Reding
-Xavier Martin
-Alex Converse
-Alexander Bethke
-Alexandre Ratchov
-Andres Krapf
-Andrey Utkin
-Andri Pálsson
-Andy Chenee
-Anuradha Suraparaju
-Benjamin Poulain
-Brieuc Jeunhomme
-Chris Clayton
-Clément Lecigne
-Cédric Cocquebert
-Daniel Peng
-Danny Wood
-David K
-Edouard Gomez
-Emmanuel de Roux
-Frode Tennebø
-GBX
-Gaurav Narula
-Geraud CONTINSOUZAS
-Hugues Fruchet
-Jan Winter
-Jean-François Massol
-Jean-Philippe Grimaldi
-Josh Watzman
-Kai Lauterbach
-Konstantin Bogdanov
-Kuan-Chung Chiu
-Kuang Rufan
-Matthias Dahl
-Michael McEll
-Michael Ploujnikov
-Mike Schrag
-Nickolai Zeldovich
-Nicolas Bertrand
-Niklas Hayer
-Olafs Vandāns
-Olivier Gambier
-Paul Corke
-Ron Frederick
-Rov Juvano
-Sabourin Gilles
-Sam Lade
-Sandeep Kumar
-Sasha Koruga
-Sreng Jean
-Sven Petai
-Tomas Krotil
-Tomer Barletz
-Tristan Leteurtre
-Vittorio Giovara
-Wang Bo
-maxime Ripard
-xxcv
-Adam Hoka
-Adrian Knoth
-Adrien Cunin
-Alan Fischer
-Alan McCosh
-Alex Helfet
-Alexander Terentyev
-Alexandre Ferreira
-Alina Friedrichsen
-An L. Ber
-Andreas Schlick
-Andrew Schubert
-Andrey Makhnutin
-Arnaud Vallat
-Asad Mehmood
-Ashok Bhat
-Austin English
-Baptiste Coudurier
-Benoit Calvez
-Björn Stenberg
-Blake Livingston
-Brandon Brooks
-Brian Johnson
-Brian Kurle
-Cezar Elnazli
-Chris White
-Christian Masus
-Christoph Pfister
-Christoph Seibert
-Christopher Key
-Christopher Rath
-Claudio Ortelli
-Cody Russell
-Cristian Morales Vega
-Dan Rosenberg
-Daniel Marth
-Daniel Tisza
-Detlef Schroeder
-Diego Biurrun
-Dominik 'Rathann' Mierzejewski
-Duncan Salerno
-Edward Sheldrake
-Elliot Murphy
-Eren Inan Canpolat
-Ernest E. Teem III
-Etienne Membrives
-Fargier Sylvain
-Fathi Boudra
-Felix Geyer
-Filipe Azevedo
-Finn Hughes
-Florian Hubold
-Florian Roeske
-Frank Enderle
-Frédéric Crozat
-Georg Seifert
-Gertjan Van Droogenbroeck
-Gilles Chanteperdrix
-Greg Farrell
-Gregory Maxwell
-Gwenole Beauchesne
-Götz Waschk
-Hans-Kristian Arntzen
-Harry Sintonen
-Iain Wade
-Ibraheem Paredath
-Isamu Arimoto
-Ismael Luceno
-James Bates
-James Bond
-James Turner
-Janne Grunau
-Janne Kujanpää
-Jarmo Torvinen
-Jason Scheunemann
-Jeff Lu
-Jeroen Ost
-Joe Taber
-Johann Ransay
-Johannes Weißl
-John Hendrikx
-John Stebbins
-Jonas Gehring
-Joseph S. Atkinson
-Juergen Lock
-Julien 'Lta' BALLET
-Julien / Gellule
-Julien Humbert
-Kamil Baldyga
-Kamil Klimek
-Karlheinz Wohlmuth
-Kevin Anthony
-Kevin DuBois
-Lari Natri
-Lorenzo Pistone
-Lucas C. Villa Real
-Lukáš Lalinský
-Mal Graty
-Malte Tancred
-Martin Pöhlmann
-Martin Zeman
-Marton Balint
-Mathew King
-Mathieu Sonet
-Matthew A. Townsend
-Matthias Bauer
-Mika Tiainen
-Mike Cardillo
-Mounir Lamouri (volkmar)
-Natanael Copa
-Nathan Phillip Brink
-Nick Briggs
-Nick Pope
-Nil Geiswiller
-Pascal Thomet
-Pere Orga
-Peter Bak Nielsen
-Phil Roffe and David Grellscheid
-Philip Sequeira
-Pierre Souchay
-Piotr Fusik
-Pádraig Brady
-R.M
-Ralph Giles
-Ramon Gabarró
-Robert Forsman
-Robert Jedrzejczyk
-Robert Paciorek
-Rolf Ahrenberg
-Roman Pen
-Ruud Althuizen
-Samuli Suominen
-Scott Lyons
-Sebastian Birk
-Sergey Puzanov
-Sergio Ammirata
-Sharad Dixit
-Song Ye Wen
-Stephan Krempel
-Steven Kramer
-Steven Sheehy
-Sveinung Kvilhaugsvik
-Sylvain Cadhillac
-Sylver Bruneau
-Takahito HIRANO
-Theron Lewis
-Thijs Alkemade
-Tillmann Karras
-Timo Paulssen
-Timo Rothenpieler
-Tobias Rapp
-Tomasen
-Tony Vankrunkelsven
-Tristan Heaven
-Varphone Wong
-Vasily Fomin
-Vikram Narayanan
-Yannick Bréhon
-Yavor Doganov
-Yohann Martineau
-dharani.prabhu.s
-suheaven
-wucan
-김정은
-Adam Sampson
-Alexander Gall
-Alex Antropoff
-Alexis Guillard
-Alex Izvorski
-Amir Gouini
-Andrea Guzzo
-Andrew Flintham
-Andrew Zaikin
-Andy Lindsay
-Arai/Fujisawa Tooru
-Arkadiusz Miskiewicz
-Arnaud Gomes-do-Vale
-Arwed v. Merkatz
-Barak Ori
-Basil Achermann
-Benjamin Mironer
-Bill
-Bob Maguire
-Brian C. Wiles
-Brian Raymond
-Brian Robb
-Carsten Gottbehüt
-Carsten Haitzler
-Charles Hordis
-Chris Clepper
-Christian Henz
-Christof Baumgaertner
-Christophe Burgalat
-Christopher Johnson
-Cian Duffy
-Colin Simmonds
-Damian Ivereigh
-Daniel Fischer
-Daniel Stränger
-Danko Dolch
-Dennis Lou
-Dermot McGahon
-Diego Petteno
-Douglas West
-Dugal Harris
-Emmanuel Blindauer
-Enrico Gueli
-Enrique Osuna
-Eren Türkay
-Eric Dudiak
-Espen Skoglund
-Ethan C. Baldridge
-François Seingier
-Frans van Veen
-Frédéric Ruget
-Gerald Hansink
-Gisle Vanem
-Glen Gray
-Goetz Waschk
-Gregory Hazel
-Gustaf Neumann
-Hang Su
-Hans Lambermont
-Hans-Peter Jansen
-Harris Dugal
-Heiko Panther
-Igor Helman
-Isaac Osunkunle
-Jan David Mol
-Jan Gerber
-Jan Van Boghout
-Jasper Alias
-Jean-Alexis Montignies
-Jean-Baptiste Le Stang
-Jeffrey Baker
-Jeroen Massar
-Jérôme Guilbaud
-Johannes Buchner
-Johen Michael Zorko
-Johnathan Rosser
-John Dalgliesh
-John Paul Lorenti
-Jörg
-Joseph Tulou
-Julien Blache
-Julien Plissonneau Duquène
-Julien Robert
-Kenneth Ostby
-Kenneth Self
-Kevin H. Patterson
-Koehler, Vitally
-K. Staring
-Lahiru Lakmal Priyadarshana
-Laurent Mutricy
-Leo Spalteholz
-Loox Thefuture
-Marc Nolette
-Marco Munderloh
-Mark Gritter
-Markus Kern
-Markus Kuespert
-Martin Hamrle
-Martin Kahr
-Mateus Krepsky Ludwich
-Mathias Kretschmer
-Mats Rojestal
-Matthias P. Nowak
-Matthieu Lochegnies
-Michael Mondragon
-Michael S. Feurstein
-Michel Lanners
-Mickael Hoerdt
-Miguel Angel Cabrera
-Mikko Hirvonen
-Moritz Bunkus
-Nilmoni Deb
-Olivier Houchard
-Olivier Pomel
-Ondrej Kuda aka Albert
-Øyvind Kolbu
-Pascal Levesque
-Patrick Horn
-Patrick McLean
-Pauline Castets
-Paul Mackerras
-Peter Surda
-Petr Vacek
-Philippe Van Hecke
-Pierre-Luc Beaudoin
-Pierre Marc Dumuid
-Régis Duchesne
-Remco Poortinga
-Rene Gollent
-Rob Casey
-Robson Braga Araujo
-Roine Gustafsson
-Roman Bednarek
-Rudolf Cornelissen
-Sašo Kiselkov
-Sebastian Jenny
-Shane Harper
-Stefán Freyr Stefánsson
-Steve Brown
-Steven M. Schultz
-Tapio Hiltunen
-Thomas L. Wood
-Thomas Mühlgrabner
-Thomas Parmelan
-Tim 'O Callagha
-Tim Schuerewegen
-Tong Ka Man
-Torsten Spindler
-Udo Richter
-Vincent Dimar
-Vincent Penne
-Vitalijus Slavinskas
-Vitaly V. Bursov
-Vladimir Chernyshov
-Wade Majors
-Wallace Wadge
-Watanabe Go
-William Hawkins
-Xavier Maillard
-Ye zhang
-Yuehua Zhao
-  Licensed under the GNU Lesser General Public License, version 2.1 or later.
-
-mozilla/support/npunix.c:
-mozilla/support/npwin.cpp:
-  Copyright (c) 1998 Netscape Communications Corporation
-                     dp Suresh <dp@netscape.com>
-                     Stephen Mak <smak@sun.com>
-  Advertised as being under the Mozilla Public License, but effectively
-  under the MPL/GPL/LGPL triple license since the Mozilla relicensing,
-  hence used under the GNU General Public License, version 2 or later.
-
-Files in src/:
-  Copyright (c) 1996-2016 the VideoLAN Team
-  Licensed under the GNU Lesser General Public License, version 2.1 or later.
-
-The following files and folders:
-modules/gui/eject.c
-modules/gui/ncurses.c
-modules/gui/qt4
-modules/gui/macosx_dialog_provider
-modules/gui/skins2
-modules/gui/macosx
-modules/access/dtv
-modules/access/dvdnav.c
-modules/access/dvdread.c
-modules/access/dshow
-modules/access/vnc.c
-modules/access/v4l2/linux
-modules/access/rtsp
-modules/video_output/ios.m
-modules/control/hotkeys.c
-modules/control/lirc.c
-modules/control/gestures.c
-modules/control/rc.c
-modules/control/motionlib.h
-modules/control/dbus
-modules/control/globalhotkeys
-modules/control/dummy.c
-modules/control/netsync.c
-modules/control/motion.c
-modules/control/motionlib.c
-modules/control/ntservice.c
-modules/mmx/i420_rgb_mmx.h
-modules/audio_filter/channel_mixer
-modules/audio_filter/resampler/src.c
-modules/audio_filter/converter
-modules/visualization/visual
-modules/visualization/vsxu.cpp
-modules/visualization/goom.c
-modules/visualization/projectm.cpp
-modules/mux
-modules/mux/mpeg
-modules/codec/faad.c
-modules/codec/t140.c
-modules/codec/libmpeg2.c
-modules/codec/wmafixed
-modules/codec/x264.c
-modules/codec/shine
-modules/codec/dts.c
-modules/demux/real.c
-modules/demux/playlist
-modules/demux/sid.cpp
-modules/demux/mpc.c
-modules/lua
-modules/services_discovery
-modules/stream_out
-modules/access_output
-modules/video_filter
-modules/misc/audioscrobbler.c
-modules/misc/stats.c
-modules/misc/rtsp.c
-modules/misc/playlist
-modules/misc/logger.c
-modules/notify
-  Copyright (c) 1996-2013 the VideoLAN Team
-  Licensed under the GNU General Public License, version 2 or later.
-
-The following files and folders:
-modules/audio_output
-modules/gui/qt4/dialogs/fingerprintdialog.hpp
-modules/gui/qt4/dialogs/fingerprintdialog.cpp
-modules/gui/qt4/adapters/chromaprint.hpp
-modules/gui/qt4/adapters/chromaprint.cpp
-modules/gui/minimal_macosx
-modules/access/gnomevfs.c
-modules/access/smb.c
-modules/access/fs.c
-modules/access/eyetv.m
-modules/access/rar
-modules/access/attachment.c
-modules/access/rtp
-modules/access/dvb
-modules/access/bluray.c
-modules/access/live555.cpp
-modules/access/udp.c
-modules/access/file.c
-modules/access/fs.h
-modules/access/decklink.cpp
-modules/access/dtv
-modules/access/directory.c
-modules/access/screen
-modules/access/dvdnav.c
-modules/access/alsa.c
-modules/access/zip
-modules/access/linsys
-modules/access/qtsound.m
-modules/access/cdda.c
-modules/access/mtp.c
-modules/access/dvdread.c
-modules/access/timecode.c
-modules/access/oss.c
-modules/access/pulse.c
-modules/access/dc1394.c
-modules/access/tcp.c
-modules/access/qtcapture.m
-modules/access/idummy.c
-modules/access/sdp.c
-modules/access/dshow
-modules/access/vcdx
-modules/access/vnc.c
-modules/access/sftp.c
-modules/access/jack.c
-modules/access/imem.c
-modules/access/v4l2
-modules/access/avio.c
-modules/access/mms/mms.h
-modules/access/mms/mms.c
-modules/access/mms/mmsh.c
-modules/access/mms/asf.c
-modules/access/mms/buffer.c
-modules/access/mms/mmstu.h
-modules/access/mms/mmsh.h
-modules/access/mms/mmstu.c
-modules/access/mms/buffer.h
-modules/access/mms/asf.h
-modules/access/shm.c
-modules/access/avcapture.m
-modules/access/rdp.c
-modules/access/vdr.c
-modules/access/ftp.c
-modules/access/dv.c
-modules/access/avio.h
-modules/access/vcd
-modules/access/bd
-modules/access/http.c
-modules/video_output
-modules/arm_neon
-modules/text_renderer
-modules/audio_mixer
-modules/meta_engine
-modules/packetizer
-modules/audio_filter/spatializer/spatializer.cpp
-modules/audio_filter/normvol.c
-modules/audio_filter/chorus_flanger.c
-modules/audio_filter/compressor.c
-modules/audio_filter/channel_mixer/remap.c
-modules/audio_filter/channel_mixer/trivial.c
-modules/audio_filter/channel_mixer/simple.c
-modules/audio_filter/stereo_widen.c
-modules/audio_filter/resampler/bandlimited.c
-modules/audio_filter/resampler/bandlimited.h
-modules/audio_filter/resampler/src.c
-modules/audio_filter/resampler/speex.c
-modules/audio_filter/resampler/ugly.c
-modules/audio_filter/gain.c
-modules/audio_filter/scaletempo.c
-modules/audio_filter/equalizer_presets.h
-modules/audio_filter/equalizer.c
-modules/audio_filter/audiobargraph_a.c
-modules/audio_filter/converter/a52tofloat32.c
-modules/audio_filter/converter/a52tospdif.c
-modules/audio_filter/converter/mpgatofixed32.c
-modules/audio_filter/converter/dtstofloat32.c
-modules/audio_filter/converter/format.c
-modules/audio_filter/param_eq.c
-modules/audio_filter/karaoke.c
-modules/visualization/cyclic_buffer.h
-modules/mux/mpeg/dvbpsi_compat.h
-modules/codec/opus.c
-modules/codec/g711.c
-modules/codec/crystalhd.c
-modules/codec/sdl_image.c
-modules/codec/dts_header.c
-modules/codec/faad.c
-modules/codec/libass.c
-modules/codec/uleaddvaudio.c
-modules/codec/theora.c
-modules/codec/cc.h
-modules/codec/mash.cpp
-modules/codec/qsv.c
-modules/codec/a52.c
-modules/codec/schroedinger.c
-modules/codec/twolame.c
-modules/codec/a52.h
-modules/codec/stl.c
-modules/codec/adpcm.c
-modules/codec/fluidsynth.c
-modules/codec/libmpeg2.c
-modules/codec/flac.c
-modules/codec/speex.c
-modules/codec/dts_header.h
-modules/codec/zvbi.c
-modules/codec/spudec/spudec.c
-modules/codec/spudec/spudec.h
-modules/codec/spudec/parse.c
-modules/codec/scte27.c
-modules/codec/wmafixed/asf.h
-modules/codec/wmafixed/wma.c
-modules/codec/mpeg_audio.c
-modules/codec/xwd.c
-modules/codec/cc.c
-modules/codec/quicktime.c
-modules/codec/dirac.c
-modules/codec/telx.c
-modules/codec/aes3.c
-modules/codec/lpcm.c
-modules/codec/png.c
-modules/codec/svcdsub.c
-modules/codec/subsdec.c
-modules/codec/shine/shine_mod.c
-modules/codec/dvbsub.c
-modules/codec/subsusf.c
-modules/codec/ddummy.c
-modules/codec/omxil
-modules/codec/dmo
-modules/codec/araw.c
-modules/codec/edummy.c
-modules/codec/cvdsub.c
-modules/codec/avcodec
-modules/codec/rawvideo.c
-modules/codec/kate.c
-modules/codec/h264_nal.h
-modules/codec/vorbis.c
-modules/codec/cdg.c
-modules/sse2/i420_rgb_sse2.h
-modules/demux/rawdv.c
-modules/demux/avformat
-modules/demux/nuv.c
-modules/demux/tta.c
-modules/demux/voc.c
-modules/demux/nsc.c
-modules/demux/ps.h
-modules/demux/ogg.h
-modules/demux/ps.c
-modules/demux/dvb-text.h
-modules/demux/rawdv.h
-modules/demux/avi/avi.c
-modules/demux/avi/libavi.h
-modules/demux/avi/libavi.c
-modules/demux/xa.c
-modules/demux/smf.c
-modules/demux/stl.c
-modules/demux/asf/asf.c
-modules/demux/asf/libasf_guid.h
-modules/demux/asf/libasf.c
-modules/demux/asf/libasf.h
-modules/demux/xiph.h
-modules/demux/mjpeg.c
-modules/demux/flac.c
-modules/demux/mod.c
-modules/demux/xiph_metadata.c
-modules/demux/vobsub.h
-modules/demux/rawaud.c
-modules/demux/mkv
-modules/demux/playlist
-modules/demux/vc1.c
-modules/demux/sid.cpp
-modules/demux/ts.c
-modules/demux/wav.c
-modules/demux/gme.c
-modules/demux/ogg.c
-modules/demux/dirac.c
-modules/demux/oggseek.h
-modules/demux/demuxdump.c
-modules/demux/mp4
-modules/demux/pva.c
-modules/demux/aiff.c
-modules/demux/mpeg/mpgv.c
-modules/demux/mpeg/es.c
-modules/demux/mpeg/h264.c
-modules/demux/xiph_metadata.h
-modules/demux/nsv.c
-modules/demux/mxpeg_helper.h
-modules/demux/rawvid.c
-modules/demux/oggseek.c
-modules/demux/vobsub.c
-modules/demux/ty.c
-modules/demux/image.c
-modules/demux/au.c
-modules/demux/subtitle.c
-modules/demux/cdg.c
-modules/services_discovery
-modules/stream_out
-modules/video_chroma
-modules/access_output/livehttp.c
-modules/video_filter/alphamask.c
-modules/video_filter/puzzle.c
-modules/video_filter/puzzle_pce.h
-modules/video_filter/puzzle_pce.c
-modules/video_filter/puzzle.h
-modules/video_filter/panoramix.c
-modules/video_filter/anaglyph.c
-modules/video_filter/colorthres.c
-modules/video_filter/gradfun.c
-modules/video_filter/croppadd.c
-modules/video_filter/puzzle_lib.c
-modules/video_filter/gradient.c
-modules/video_filter/extract.c
-modules/video_filter/canvas.c
-modules/video_filter/opencv_wrapper.c
-modules/video_filter/gaussianblur.c
-modules/video_filter/swscale.c
-modules/video_filter/postproc.c
-modules/video_filter/audiobargraph_v.c
-modules/video_filter/grain.c
-modules/video_filter/sepia.c
-modules/video_filter/filter_picture.h
-modules/video_filter/puzzle_bezier.c
-modules/video_filter/subsdelay.c
-modules/video_filter/mosaic.c
-modules/video_filter/marq.c
-modules/video_filter/hqdn3d.c
-modules/video_filter/blendbench.c
-modules/video_filter/posterize.c
-modules/video_filter/yuvp.c
-modules/video_filter/antiflicker.c
-modules/video_filter/adjust_sat_hue.c
-modules/video_filter/magnify.c
-modules/video_filter/opencv_example.cpp
-modules/video_filter/puzzle_lib.h
-modules/video_filter/puzzle_bezier.h
-modules/video_filter/logo.c
-modules/video_filter/adjust_sat_hue.h
-modules/video_filter/blend.cpp
-modules/video_filter/mosaic.h
-modules/video_filter/wave.c
-modules/video_filter/clone.c
-modules/video_filter/atmo/FnordlichtConnection.h
-modules/video_filter/atmo/atmo.cpp
-modules/video_filter/atmo/FnordlichtConnection.cpp
-modules/video_filter/scene.c
-modules/video_filter/wall.c
-modules/video_filter/adjust.c
-modules/video_filter/motiondetect.c
-modules/video_filter/motionblur.c
-modules/video_filter/erase.c
-modules/video_filter/scale.c
-modules/video_filter/puzzle_mgt.c
-modules/video_filter/mirror.c
-modules/video_filter/deinterlace/mmx.h
-modules/video_filter/deinterlace/algo_phosphor.c
-modules/video_filter/deinterlace/algo_yadif.h
-modules/video_filter/deinterlace/merge_arm.S
-modules/video_filter/deinterlace/algo_ivtc.h
-modules/video_filter/deinterlace/algo_x.c
-modules/video_filter/deinterlace/merge.c
-modules/video_filter/deinterlace/deinterlace.c
-modules/video_filter/deinterlace/merge.h
-modules/video_filter/deinterlace/helpers.h
-modules/video_filter/deinterlace/deinterlace.h
-modules/video_filter/deinterlace/algo_basic.h
-modules/video_filter/deinterlace/algo_phosphor.h
-modules/video_filter/deinterlace/algo_x.h
-modules/video_filter/deinterlace/algo_ivtc.c
-modules/video_filter/deinterlace/algo_basic.c
-modules/video_filter/deinterlace/helpers.c
-modules/video_filter/deinterlace/common.h
-modules/video_filter/deinterlace/algo_yadif.c
-modules/video_filter/bluescreen.c
-modules/video_filter/remoteosd.c
-modules/video_filter/invert.c
-modules/video_filter/filter_event_info.h
-modules/video_filter/transform.c
-modules/video_filter/puzzle_mgt.h
-modules/video_filter/chain.c
-modules/video_filter/rss.c
-modules/video_filter/ball.c
-modules/video_filter/psychedelic.c
-modules/video_filter/dynamicoverlay
-modules/video_filter/ripple.c
-modules/video_filter/sharpen.c
-modules/misc/inhibit/dbus.c
-modules/misc/inhibit/xdg.c
-modules/misc/webservices/acoustid.c
-modules/misc/webservices/acoustid.h
-modules/misc/gnutls.c
-modules/misc/fingerprinter.c
-modules/misc/xml
-modules/stream_filter
-  Copyright (c) 1996-2016 the VideoLAN Team
-  Licensed under the GNU Lesser General Public License, version 2.1 or later.
-
-share/skins2/fonts/FreeSans.ttf:
-share/skins2/fonts/FreeSansBold.ttf:
-  Copyright (C) 2002 Free Software Foundation.
-                Primoz Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>
-  Licensed under the GNU General Public License, version 2 or later.
-
-Other files in share/skins2/:
-  Copyright (c) 2006 aLtgLasS <http://www.d-gfx.net.tc/>
-                1994-1996 Jos Buivenga <http://www.josbuivenga.demon.nl/>
-  Licensed under the Creative Commons Attribution 2.5 Scotland license
-
-2. License list
-===============
-
-The blurb for the GNU General Public License, version 2 or later:
-
- | This program is free software; you can redistribute it and/or modify
- | it under the terms of the GNU General Public License as published by
- | the Free Software Foundation; either version 2, or (at your option)
- | any later version.
- |
- |  This program is distributed in the hope that it will be useful,
- | but WITHOUT ANY WARRANTY; without even the implied warranty of
- | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- | General Public License for more details.
- |
- |  You should have received a copy of the GNU General Public License
- | along with this program; if not, write to the Free Software
- | Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
-
-The blurb for the GNU Lesser General Public Licence, version 2.1 or later:
-
- | This program is free software; you can redistribute it and/or modify it
- | under the terms of the GNU Lesser General Public License as published by
- | the Free Software Foundation; either version 2.1 of the License, or
- | (at your option) any later version.
- |
- |  This program is distributed in the hope that it will be useful,
- | but WITHOUT ANY WARRANTY; without even the implied warranty of
- | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- | General Public License for more details.
- |
- |  You should have received a copy of the GNU General Public License
- | along with this program; if not, write to the Free Software
- | Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
-
-However, this package is linked to LGPL v3 libraries. So while the source is
-GPL v2 or later, this package is GPL v3
-
-On Debian GNU/Linux systems, the complete text of the GNU General
-Public License can be found in `/usr/share/common-licenses/GPL-3'.
-
-The NetBSD license:
-
- | Redistribution and use in source and binary forms, with or without
- | modification, are permitted provided that the following conditions
- | are met:
- | 1. Redistributions of source code must retain the above copyright
- |    notice, this list of conditions and the following disclaimer.
- | 2. Redistributions in binary form must reproduce the above copyright
- |    notice, this list of conditions and the following disclaimer in the
- |    documentation and/or other materials provided with the distribution.
- | 3. All advertising materials mentioning features or use of this software
- |    must display the following acknowledgement:
- |        This product includes software developed by the NetBSD
- |        Foundation, Inc. and its contributors.
- | 4. Neither the name of The NetBSD Foundation nor the names of its
- |    contributors may be used to endorse or promote products derived
- |    from this software without specific prior written permission.
- |
- | THIS SOFTWARE IS PROVIDED BY THE NETBSD FOUNDATION, INC. AND CONTRIBUTORS
- | ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
- | TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- | PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION OR CONTRIBUTORS
- | BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- | CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- | SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- | INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- | CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- | ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- | POSSIBILITY OF SUCH DAMAGE.
-
-The Info-ZIP license:
-
- | For the purposes of this copyright and license, "Info-ZIP" is defined as
- | the following set of individuals:
- |
- |    Mark Adler, John Bush, Karl Davis, Harald Denker, Jean-Michel Dubois,
- |    Jean-loup Gailly, Hunter Goatley, Ed Gordon, Ian Gorman, Chris Herborth,
- |    Dirk Haase, Greg Hartwig, Robert Heath, Jonathan Hudson, Paul Kienitz,
- |    David Kirschbaum, Johnny Lee, Onno van der Linden, Igor Mandrichenko,
- |    Steve P. Miller, Sergio Monesi, Keith Owens, George Petrov, Greg Roelofs,
- |    Kai Uwe Rommel, Steve Salisbury, Dave Smith, Steven M. Schweda,
- |    Christian Spieler, Cosmin Truta, Antoine Verheijen, Paul von Behren,
- |    Rich Wales, Mike White
- |
- | This software is provided "as is," without warranty of any kind, express
- | or implied.  In no event shall Info-ZIP or its contributors be held liable
- | for any direct, indirect, incidental, special or consequential damages
- | arising out of the use of or inability to use this software.
- |
- | Permission is granted to anyone to use this software for any purpose,
- | including commercial applications, and to alter it and redistribute it
- | freely, subject to the following restrictions:
- |
- |  1. Redistributions of source code must retain the above copyright notice,
- |     definition, disclaimer, and this list of conditions.
- |
- |  2. Redistributions in binary form (compiled executables) must reproduce
- |     the above copyright notice, definition, disclaimer, and this list of
- |     conditions in documentation and/or other materials provided with the
- |     distribution.  The sole exception to this condition is redistribution
- |     of a standard UnZipSFX binary (including SFXWiz) as part of a
- |     self-extracting archive; that is permitted without inclusion of this
- |     license, as long as the normal SFX banner has not been removed from
- |     the binary or disabled.
- |
- |  3. Altered versions--including, but not limited to, ports to new operating
- |     systems, existing ports with new graphical interfaces, and dynamic,
- |     shared, or static library versions--must be plainly marked as such
- |     and must not be misrepresented as being the original source.  Such
- |     altered versions also must not be misrepresented as being Info-ZIP
- |     releases--including, but not limited to, labeling of the altered
- |     versions with the names "Info-ZIP" (or any variation thereof, including,
- |     but not limited to, different capitalizations), "Pocket UnZip," "WiZ"
- |     or "MacZip" without the explicit permission of Info-ZIP.  Such altered
- |     versions are further prohibited from misrepresentative use of the
- |     Zip-Bugs or Info-ZIP e-mail addresses or of the Info-ZIP URL(s).
- |
- |  4. Info-ZIP retains the right to use the names "Info-ZIP," "Zip," "UnZip,"
- |     "UnZipSFX," "WiZ," "Pocket UnZip," "Pocket Zip," and "MacZip" for its
- |     own source and binary releases.
-
-The Creative Commons Attribution 2.5 Scotland license:
-
- |  This Creative Commons Scotland public licence enables You to Use the
- |  Work worldwide provided that You keep to the terms of this Licence.
- |
- |  'The Licensor' (the Person offering the Work under the terms and
- |  conditions of this Licence)
- |
- |  and
- |
- |  'You' (the Person acquiring rights under this Licence)
- |
- |  agree as follows:
- |
- |  1. Definitions of Capitalised Words
- |    1. "Collective Work" means a work made up of the Work in its entirety
- |       in unmodified form, along with other work, assembled into a
- |       collective whole.
- |    2. "Derivative Work" means a work that Uses the Work (or any
- |       substantial part of the Work) in any material form whatsoever
- |       (such as a translation, dramatisation, or abridgment), other than
- |       (i) as a whole and in unmodified form or (ii) by modifying it as
- |       may be technically necessary to Use it in a different mode or
- |       format; but a Collective Work is not a Derivative Work for the
- |       purpose of this Licence.
- |    3. "Derogatory Treatment" means derogatory treatment as defined by
- |       section 80 of the Copyright Design and Patents Act 1988, except as
- |       allowed by that Act: and it has that meaning wherever that
- |       treatment may take place and whoever may carry it out.
- |    4. "Licence Elements" means the following licence attributes
- |       indicated in the title of this Licence: Attribution.
- |    5. "Original Author" means the Person who created the Work.
- |    6. "Person" means a natural person or a body of persons corporate or
- |       incorporate.
- |    7. "Use", as a verb, means doing any act which is restricted by
- |       copyright, whether in the original medium or any other; and
- |       includes modifying the Work as may be technically necessary to Use
- |       it in a different mode or format.
- |    8. "Work" means the work protected by copyright which is offered
- |       under the terms of this Licence, and includes the Work as
- |       incorporated in any Collective Work.
- |    9. Words in the singular include the plural and vice versa.
- |
- |  2. The Rights Granted
- |
- |  2.1 The Licensor grants to You a worldwide, royalty-free,
- |  non-exclusive, licence to Use the Work for the duration of its
- |  copyright.
- |
- |  So you may, for example:
- |    1. copy the Work, or create Derivative Works or incorporate it into a
- |       Collective Work;
- |    2. copy Derivative Works, or the Work as incorporated in any
- |       Collective Work; and
- |    3. publish, perform or communicate the Work and/or Derivative Works
- |       and/or the Work as incorporated in any Collective Work to anyone;
- |
- |  in any medium whether now known or created in the future.
- |
- |  2.2 However, this Licence does not allow you to:
- |    1. impose any terms or any technological measures on the Work, or a
- |       Derivative Work, that alter or restrict the terms of this Licence
- |       or any rights granted under it or have the effect or intent of
- |       restricting the ability of any person to exercise those rights;
- |    2. sublicense the Work; or
- |    3. subject the Work to Derogatory Treatment.
- |
- |  2.3 You must, if you publish or distribute the Work or any Derivative
- |  Work to anyone else in any way, give reasonable credit to the Original
- |  Author as follows:
- |    1. by giving the name of the Original Author if that has been
- |       supplied; or a pseudonym if that has been supplied instead; and/or
- |       the name of any other person if that has been supplied for
- |       attribution in place of the Original Author;
- |    2. by giving the title of the Work if that has been supplied;
- |    3. by giving the Uniform Resource Identifier of the Work if that has
- |       been supplied, but you need not do so if this does not refer to
- |       its copyright terms or to its licensing information;
- |    4. in the case of a Derivative Work, by identifying how the Work has
- |       been used (for example, "French translation of the Work by X", or
- |       "Screenplay based on original work by X"); and
- |    5. in the case of a Derivative Work or a Collective Work, placing
- |       that credit in the same place, and at least as prominently, as any
- |       comparable authorship credit.
- |
- |          But, if what you are publishing or distributing is a Derivative
- |          Work or a Collective Work, you must remove any of these credits
- |          if you are asked to do so by the Licensor and if it is
- |          practicable to do so.
- |
- |  These are important conditions of this licence and if you fail to do
- |  so you will be in material breach of its terms.
- |
- |  2.4 The Original Author asserts the right to be identified as the
- |  original author of the Work; but only as and when required by clause
- |  2.3 above.
- |
- |  2.5 You must also, if you publish or distribute the Work or any
- |  Derivative Work to anyone else in any way:
- |    1. include a copy of this Licence (or its Uniform Resource
- |       Identifier) with it; and
- |    2. keep intact any copyright notices for the Work and notices that
- |       refer to this Licence.
- |
- |  These are important conditions of this licence and if you fail to do
- |  so you will be in material breach of its terms.
- |
- |  2.6 Each time You publish the Work or any Derivative Work to anyone
- |  else in any way, the Licensor offers to the recipient a licence to the
- |  Work on the same terms and conditions as this Licence.
- |
- |  2.7 And:
- |    1. the right to release the Work under different terms, or to stop
- |       distributing the Work, is reserved; and
- |    2. all other rights not expressly granted by the Licensor are
- |       reserved.
- |
- |  2.8 This Licence does not affect any rights that You or anyone else
- |  may independently have under any applicable law (including fair
- |  dealing, fair use, or any other legally recognised limitation or
- |  exception to copyright infringement) to make any Use of this Work.
- |
- |  3. Warranties and Disclaimer
- |
- |  3.1 The Work is licensed by the Licensor "as is" and without any
- |  warranty of any kind, either express or implied, whether of title, of
- |  accuracy, of fitness for purpose, or otherwise.
- |
- |  4. Limit of Liability
- |
- |  4.1 Subject to any liability which may not be excluded or limited by
- |  law, the Licensor shall not be liable for, and expressly excludes, all
- |  liability for loss or damage however and whenever caused to anyone by
- |  any Use under this Licence, whether by You or by anyone else, and
- |  whether caused by any fault on the part of the Licensor or not. If
- |  liability may not be excluded by law, it is limited to actual and
- |  direct financial loss to the extent it is caused by proved negligence
- |  on the part of the Licensor.
- |
- |  5. Termination
- |
- |  5.1 Any breach by You of the terms of this licence (for example, by
- |  distributing the work licensed without attributing authorship as
- |  appropriate) entitles the Licensor to terminate this Licence with
- |  immediate effect and without notice to you. Persons who have received
- |  the Work, Derivative Works, or Collective Works from You under this
- |  Licence, however, will not have their licences terminated provided
- |  their use is in full compliance with this Licence or a licence granted
- |  under clause 2.6 of this Licence.
- |
- |  5.2 If You are not in breach of the terms of this licence, the
- |  Licensor may not terminate your rights under it.
- |
- |  5.3 Unless terminated under clause 5.1, this Licence is granted to you
- |  for the duration of copyright in the Work.
- |
- |  6. General
- |
- |  6.1 If any provision of this Licence is held to be invalid or
- |  unenforceable, that shall not affect the validity or enforceability of
- |  the remainder of the terms of this Licence.
- |
- |  6.2 This Licence is the entire agreement between the parties with
- |  respect to the Work licensed here. It replaces any earlier
- |  understandings, agreements or representations with respect to the Work
- |  not specified here.
- |
- |  6.3 If You are in breach of the terms of this Licence (for example, by
- |  distributing the work licensed without attributing authorship as
- |  appropriate) you will not be entitled to rely on the terms of this
- |  Licence or to complain of any breach by the Licensor.
- |
- |  6.4 Neither You, nor anyone else, may enforce any provision of this
- |  Licence by specific implement or interdict.
- |
- |  6.5 This Licence is governed by the law of Scotland and the parties
- |  accept the exclusive jurisdiction of the Courts of Scotland to decide
- |  any action or claim directed against the Licensor.
- |
- |  6.6 If there is any dispute as to the meaning or effect of any
- |  provision of this Licence, it must so far as possible be read and
- |  given effect in a way that is compatible with the provisions of the
- |  Creative Commons generic licence, version 2.5, which has the same
- |  Licence Elements.
-
-
-The embedded copy of ffmpeg (located in ffmpeg-2-8-X) is covered by the
-following terms (taken from ffmpeg_7:2.8.6-1):
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: vlc
+Upstream-Source: https://www.videolan.org
 
 Files: *
-Copyright:
-  Sebastien Bechet <s.bechet@av7.net>
-  1990, James Ashton - Sydney University
-  1993, Computer Science, Speech Group
-  1994-2012, by the Xiph.Org Foundation and contributors
-  1997-1999, H. Dietz
-  1997-1999, R. Fisher
-  1998-2009, Conifer Software
-  1999-2001, Chris Bagwell <cbagwell@sprynet.com>
-  1999, Intel Corporation
-  1999, Nick Bailey
-  1999, Roger Hardiman
-  1999-2000, Sebastien Rougeaux <sebastien.rougeaux@anu.edu.au>
-  2000, Chris Ausbrooks <weed@bucket.pp.ualr.edu>
-  2000, Fabien COELHO <fabien@coelho.net>
-  2000, Edward Beingessner And Sundry Contributors
-  2000-2003, 2005, Fabrice Bellard
-  2000-2001, Michel Lespinasse <walken@zoy.org>
-  2000-2001, 2003, Nick Kurshev <nickols_k@mail.ru>
-  2000-2001, Peter Gubanov <peter@elecard.net.ru>
-  2001-2003, BERO <bero@geocities.co.jp>
-  2001, Daniel Maas <dmaas@dcine.com> <dmaas@maasdigital.com>
-  2001, Heikki Leinonen
-  2001, Juan J. Sierralta P
-  2001, Lionel Ulmer
-  2001-2015, Michael Niedermayer <michaelni@gmx.at>
-  2001, 2005-2014, Peter Ross <pross@xvid.org>
-  2001, Tim Ferguson
-  2002-2006, Alex Beregszaszi
-  2002, Anders Johansson <ajh@atri.curtin.edu.au>
-  2002, Falk Hueffner <falk@debian.org>
-  2002, 2005, Francois Revol
-  2002, Frederic 'dilb' Boulay <dilb@handhelds.org>
-  2002, Gunnar Monell <gmo@linux.nu>
-  2001-2010, Krzysztof Foltman, Markus Schmidt, Thor Harald Johansen and others
-  2002, Laszlo Torok <torokl@alpha.dfmk.hu>
-  2002, Lennert Buytenhek <buytenh@gnu.org>
-  2002, Mark Hills <mark@pogo.org.uk>
-  2002-2004, 2006-2013, Maxim Poliakovski
-  2002, Remi Guyomarch <rguyom@pobox.com>
-  2002-2005, Roberto Togni
-  2002, Steve O'Hara-Smith
-  2002, The Xine project
-  2002, Zdenek Kabelac <kabi@informatics.muni.cz>
-  2003-2005, by Christopher R. Hertel <crh@ubiqx.mn.org>
-  2003, Donnie Smith
-  2003, Dr. Tim Ferguson
-  2003, Ewald Snel
-  2003, Gustavo Sverzut Barbieri <gsbarbieri@yahoo.com.br>
-  2003, Ivan Kalvachev
-  2003, James Klicman <james@klicman.org>
-  2003, Max Krasnyansky <maxk@qualcomm.com>
-  2003, 2004, 2007, Mike Melanson <melanson@pcisys.net>
-  2003, 2014, Pascal Massimino <skal@planet-d.net> <pascal.massimino@gmail.com>
-  2003-2004, 2006, Roman Shaposhnik
-  2003, Rich Felker
-  2003-2004, Romain Dolbeau <romain@dolbeau.org>
-  2003, 2008-2011, Sascha Sommer <saschasommer@freenet.de>
-  2003, Tinic Uro
-  2003, Thomas Raivio
-  2003-2013, x264 project
-  2004, Adam Thayer <krevnik@comcast.net>
-  2004, AGAWA Koji <i@atty.jp>
-  2004, 2007, Benjamin Zores <ben@geexbox.org>
-  2004-2005, Denes Balatoni <dbalatoni@programozo.hu>
-  2004-2007, Eric Lasota
-  2004, Gildas Bazin  <gbazin@netcourrier.com> <gbazin@videolan.org>
-  2004-2006, Lennart Poettering
-  2003-2013, Loren Merritt <lorenm@u.washington.edu>
-  2004, Maarten Daniels
-  2004, 2007, Marc Hoffman <marc.hoffman@analog.com> <mmh@pleasantst.com> <mmhoffm@gmail.com>
-  2004-2014, Konstantin Shishkov <kostya.shishkov@gmail.com>
-  2005, Alban Bedel <albeu@free.fr>
-  2005, Anonymous
-  2005-2011, Benjamin Larsson
-  2005, David Hammerton
-  2005, DivX, Inc
-  2005, 2007-2008, Ian Caulfield
-  2005, Jeff Muizelaar
-  2005-2007, 2013-2015, Luca Barbato <lu_zero@gentoo.org>
-  2005-2012, Mans Rullgard <mans@mansr.com>
-  2005, Matthieu CASTET
-  2005-2006, Oded Shimon <ods15@ods15.dyndns.org>
-  2005, Ole André Vadla Ravnås <oleavr@gmail.com>
-  2005, 2007-2011, 2013-2014, Reimar Döffinger <Reimar.Doeffinger@gmx.de>
-  2005-2006, Robert Edele <yartrebo@earthlink.net>
-  2005, Steve Underwood <steveu@coppice.org>
-  2005, Vidar Madsen
-  2005, Wim Taymans
-  2005, 2007, Wolfram Gloger
-  2005, Zoltan Hidvegi <hzoli@hzoli.com>
-  2006-2010, Aurelien Jacobs <aurel@gnuage.org>
-  2006-2011, Baptiste Coudurier <baptiste.coudurier@free.fr>
-  2006, Corey Hickey
-  2006, Cyril Zorin
-  2006, 2008, Gregory Montoir <cyx@users.sourceforge.net>
-  2006-2013, Justin Ruggles <justin.ruggles@gmail.com>
-  2006, Kartikey Mahendra BHATT <bhattkm@gmail.com>
-  2006-2007, Maxim Gavrilov <maxim.gavrilov@gmail.com>
-  2006, 2007, Michel Bardiaux <mbardiaux@mediaxim.be>
-  2006, Michael Benjamin <michael.benjamin@analog.com>
-  2006, Patrick Guimond
-  2006, Paul Richards <paul.richards@gmail.com>
-  2006, Guillaume Poirier <gpoirier@mplayerhq.hu>
-  2006-2010, Prakash Punnoor <prakash@punnoor.de>
-  2006-2010, 2013-2014, Ramiro Polla <ramiro.polla@gmail.com>
-  2006-2007, Reynaldo H. Verdejo Pinochet
-  2006-2009, 2012, Rob Sykes <robs@users.sourceforge.net>
-  2006-2009, Robert Swain <rob@opendot.cl>
-  2006-2007, Ryan Martell <rdm4@martellventures.com>
-  2006, Smartjog S.A.S, Baptiste Coudurier <baptiste.coudurier@gmail.com>
-  2006-2007, SmartJog S.A., Baptiste Coudurier <baptiste.coudurier@smartjog.com>
-  2006, Stefan Gehrer <stefan.gehrer@gmx.de>
-  2006, 2015, Steve Lhomme
-  2006, Thijs Vermeir <thijs.vermeir@barco.com>
-  2006-2011, Xvid Solutions GmbH
-  2007, Alexis Ballier
-  2007, 2010, 2013, Anssi Hannula <anssi.hannula@gmail.com>
-  2007-2009, Bartlomiej Wolowiec <bartek.wolowiec@gmail.com>
-  2007, 2014, Benoit Fouet <benoit.fouet@free.fr>
-  2007, 2009, Björn Axelsson
-  2007, Bobby Bingham
-  2007-2009, Bartlomiej Wolowiec <bartek.wolowiec@gmail.com>
-  2007, Christian Ohm
-  2007, Collabora Ltd, Philippe Kalaf
-  2007, Edward Hervey
-  2007-2008, Ivo van Poorten
-  2007-2008, Joseph Artsimovich <jart@users.sourceforge.net>
-  2007, Kamil Nowosad
-  2007-2009, Luca Abeni
-  2007-2008, Marco Gerards <marco@gnu.org>
-  2007, Nicholas Tung
-  2007, 2010-2014, Nicolas George <nicolas.george@normalesup.org>
-  2007, Nokia Corporation
-  2007, Richard Spindler
-  2007-2010, 2012-2015, Ronald S. Bultje <rsbultje@gmail.com>
-  2007-2008, Siarhei Siamashka <ssvb@users.sourceforge.net>
-  2007-2013, Stefano Sabatini <stefano.sabatini-lala@poste.it> <stefasab@gmail.com>
-  2007-2008, UAB "DKD"
-  2007, Ulion
-  2007-2011, Vitor Sessak <vitor1001@gmail.com>
-  2007-2008, 2011, Vladimir Voroshilov
-  2008, Affine Systems, Inc (Michael Sullivan, Bobby Impollonia)
-  2008, Alessandro Sappia
-  2008-2013, Alex Converse <alex.converse@gmail.com>
-  2008-2012, Alexander E. Patrakov
-  2008, 2010, Alexander Strange <astrange@ithinksw.com>
-  2008-2009, Andrej Stepanchuk
-  2008, BBC, Anuradha Suraparaju <asuraparaju@gmail.com>
-  2008-2010, David Conrad <lessen42@gmail.com>
-  2008, 2010, Eli Friedman <eli.friedman@gmail.com>
-  2008, GUCAS, Zhentan Feng <spyfeng@gmail.com>
-  2008-2010, Laurent Aimar <fenrir@videolan.org>
-  2008, NVIDIA
-  2008-2009, Jaikrishnan Menon <realityman@gmx.net>
-  2008-2010, Paul Kendall <paul@kcbbs.gen.nz>
-  2008, Robert Marston
-  2008, Sisir Koppaka
-  2008-2009, Splitted-Desktop Systems
-  2008, Victor Paesa
-  2008, vmrsss
-  2009, Colin McQuillan
-  2009-2010, 2013, Daniel Verkamp <daniel@drv.nu>
-  2009, Dylan Yudaken
-  2009, Giliard B. de Freitas <giliarde@gmail.com>
-  2009-2010, Howard Chu
-  2009-2013, 2015, James Darnley <james.darnley@gmail.com>
-  2009, Jimmy Christensen
-  2009, Joshua Warner
-  2009, Kenan Gillet
-  2009-2014, Martin Storsjo
-  2009, Michael Tison
-  2009, Naotoshi Nojiri
-  2009, 2012, Nathan Caldwell <saintdev@gmail.com>
-  2009, Nicolas Martin <martinic@iro.umontreal.ca>
-  2009, Samalyse
-  2009, 2011, Sebastian Gesemann
-  2009, Sebastien Lucas <sebastien.lucas@gmail.com>
-  2009, Stephen Backway
-  2009-2010, 2013-2014, Thilo Borgmann <thilo.borgmann@mail.de>
-  2009, Thomas P. Higdon <thomas.p.higdon@gmail.com>
-  2009, Tobias Bindhammer
-  2009, Toshimitsu Kimura
-  2009, Xuggle Incorporated
-  2009, Zuxy Meng <zuxy.meng@gmail.com>
-  2010, Adrian Daerr
-  2010, Amanda, Y.N. Wu <amanda11192003@gmail.com>
-  2010-2011, Anatoly Nenashev
-  2010, Brandon Mintern
-  2010-2012, Carl Eugen Hoyos
-  2010, Daniel G. Taylor <dan@programmer-art.org>
-  2010-2011, Elvis Presley
-  2010, Fiona Glaser <fiona@x264.com>
-  2010, Francesco Lavra <francescolavra@interfree.it>
-  2010, 2013, Georg Martius <georg.martius@web.de>
-  2010, 2012, Google, Inc
-  2010, Hans de Goede <hdegoede@redhat.com>
-  2010, Holger Lubitz
-  2010-2011, 2013-2014, Janne Grunau <janne-libav@jannau.net>
-  2010, Jacob Meuser
-  2010, Josh Allmann
-  2010, Marcelo Galvao Povoa
-  2010, Mark Heath <mjpeg0@silicontrip.org>
-  2010, Mark Nauwelaerts
-  2010, Michele Orrù
-  2010-2011, Mohamed Naufal Basheer <naufal11@gmail.com>
-  2010, Nolan Lum <nol888@gmail.com>
-  2010-2013, Philip Langdale <ffmpeg.philipl@overt.org> <philipl@overt.org>
-  2010, Rafael Carre
-  2010, Rob Clark <rob@ti.com>
-  2010, S.N. Hemanth Meenakshisundaram <smeenaks@ucsd.edu>
-  2010, Sebastian Vater <cdgs.basty@googlemail.com>
-  2010, tipok <piratfm@gmail.com>
-  2010, Tomas Härdin
-  2010-2011, Zhentan Feng <spyfeng@gmail.com>
-  2011, Anatoliy Wasserman
-  2011, Andreas Öman
-  2011-2013, 2015, Anton Khirnov <anton@khirnov.net>
-  2011-2014, Clément Bœsch <u@pkh.me>
-  2011-2015, Derek Buitenhuis
-  2011-2012, Hyllian/Jararaca <sergiogdb@gmail.com>
-  2011, Jordi Ortiz
-  2011, Juan Carlos Rodriguez <ing.juancarlosrodriguez@hotmail.com>
-  2011, 2014, Kieran Kunhya <kieran@kunhya.com>
-  2011, KO Myung-Hun <komh@chollian.net>
-  2011-2012, Mark Himsley
-  2011-2012, Mashiat Sarker Shakkhar
-  2011, Matthew Hoops <clone2727@gmail.com>
-  2011, Max Horn
-  2011-2012, Michael Bradshaw <mjbshaw@gmail.com>
-  2011, Michael Karcher
-  2011, Mina Nagy Zaki
-  2011, MirriAd Ltd
-  2011, Oskar Arvidsson
-  2011-2015, Paul B Mahol
-  2011, Roger Pau Monné <roger.pau@entel.upc.edu>
-  2011-2012, Sebastien Zwickert
-  2011-2012, Smartjog S.A.S, Clément Bœsch <clement.boesch@smartjog.com>
-  2011, Sven Hesse <drmccoy@drmccoy.de>
-  2011, Thomas Kuehnel
-  2012, Aleksi Nurmi
-  2012, Andrew D'Addesio
-  2012-2013, Andrey Utkin <andrey.krieger.utkin@gmail.com>
-  2012-2013, Aneesh Dogra (lionaneesh) <lionaneesh@gmail.com>
-  2012, Antti Seppälä
-  2012, AvxSynth Team.
-  2012, British Broadcasting Corporation
-  2012-2014, Christophe Gisquet <christophe.gisquet@gmail.com>
-  2012-2013, Daniel Kang <daniel.d.kang@gmail.com>
-  2012, David Kment
-  2012, Fredrik Mellbin
-  2012, 2014, Georg Lippitsch <georg.lippitsch@gmx.at>
-  2012-2013, Gildas Cocherel
-  2012-2013, Guillaume Martres <smarter@ubuntu.com>
-  2012-2015, James Almer <jamrial@gmail.com>
-  2012, Jan Ekström
-  2012, Laurent de Soras
-  2012, Li Cao <li@multicorewareinc.com>
-  2012-2013, Mickael Raulet
-  2012-2013, Oka Motofumi <chikuzen.mo@gmail.com>
-  2012, Pavel Koshevoy <pkoshevoy@gmail.com>
-  2012, Peng Gao <peng@multicorewareinc.com>
-  2012, Petri Hintukainen <phintuka@users.sourceforge.net>
-  2012, Robert Nagy <ronag89@gmail.com>
-  2012-2013, Rudolf Polzer <divverent@xonotic.org>
-  2012, Samuel Pitoiset
-  2012, Steven Robertson
-  2012, Vitaliy E Sugrobov
-  2012-2013, Wassim Hamidouche
-  2012-2013, Wei Gao <weigao@multicorewareinc.com>
-  2012, Xidorn Quan
-  2013, Anand Meher Kotra
-  2013-2014, Andrew Kelley
-  2013, Ash Hughes
-  2013, Calvin Walton <calvin.walton@kepstin.ca>
-  2013, Christian Schmidt
-  2013, Darryl Wallace <wallacdj@gmail.com>
-  2013-2014, Deti Fliegl
-  2013, Diego Biurrun <diego@biurrun.de>
-  2013, Dirk Farin <dirk.farin@gmail.com>
-  2013, Fredrik Mellbin
-  2013, Jeff Moguillansky
-  2013, Lenny Wang
-  2013-2014, Lukasz Marek <lukasz.m.luki@gmail.com>
-  2013, Marton Balint
-  2013, Matthew Heaney
-  2013, MIPS Technologies, Inc., California.
-  2013-2014, Mozilla Corporation
-  2013-2014, Nicolas Bertrand <nicoinattendu@gmail.com>
-  2013-2014, Pierre-Edouard Lepere
-  2013, Rémi Denis-Courmont
-  2013-2014, RISC OS Open Ltd
-  2013, Rl, Aetey Global Technologies AB
-  2013-2015, Seppo Tomperi <seppo.tomperi@vtt.fi>
-  2013-2014, Tiancheng "Timothy" Gu <timothygu99@gmail.com>
-  2013, Vadim Kalinsky <vadim@kalinsky.ru>
-  2013, VTT
-  2013-2015, Vittorio Giovara <vittorio.giovara@gmail.com>
-  2013, Xiaolei Yu <dreifachstein@gmail.com>
-  2013, Yukinori Yamazoe
-  2014, Alexandra Hájková
-  2014, Aman Gupta <ffmpeg@tmm1.net>
-  2014-2015, Arwa Arif <arwaarif1994@gmail.com>
-  2014, Daniel Oberhoff
-  2014, Dave Rice @dericed
-  2014, Eejya Singh
-  2014-2015, Hendrik Leppkes
-  2014, James Yu <james.yu@linaro.org>
-  2014, Marvin Scholz
-  2014, Muhammad Faiz <mfcc64@gmail.com>
-  2014, Neil Birkbeck <birkbeck@google.com>
-  2014, Nicholas Robbins
-  2014, Niels Möller
-  2014, Oleksij Rempel <linux@rempel-privat.de>
-  2014-2015, Peter Meerwald <pmeerw@pmeerw.net>
-  2014, Rong Yan
-  2014, Samsung Electronics
-  2014, StarBrilliant <m13253@hotmail.com>
-  2014-2015, Supraja Meedinti
-  2014-2015, Thomas Volkert <thomas@homer-conferencing.com>
-  2014, Tim Walker <tdskywalker@gmail.com>
-  2014-2015, Timo Rothenpieler <timo@rothenpieler.org>
-  2014-2015, Vignesh Venkatasubramanian
-  2015, Andreas Cadhalpun <Andreas.Cadhalpun@googlemail.com>
-  2015, Anshul Maheshwari
-  2015, Donny Yang
-  2015, Ganesh Ajjanagadde
-  2015, Gilles Chanteperdrix <gch@xenomai.org>
-  2015, Himangi Saraogi <himangi774@gmail.com>
-  2015, Imagination Technologies Ltd
-  2015, Kevin Wheatley <kevin.j.wheatley@gmail.com>
-  2015, Loongson Technology Corporation Limited
-  2015, LoRd_MuldeR <mulder2@gmx.de>
-  2015, Manojkumar Bhosale <Manojkumar.Bhosale@imgtec.com>
-  2015, Niklas Haas
-  2015, Parag Salasakar <Parag.Salasakar@imgtec.com>
-  2015, Pedro Arthur <bygrandao@gmail.com>
-  2015, Rodger Combs
-  2015, Roger Pack
-  2015, Rostislav Pehlivanov
-  2015, Shivraj Patil <Shivraj.Patil@imgtec.com>
-  2015, Stupeflix
-  2015, Tampere University of Technology
-  2015, Tom Butterworth <bangnoise@gmail.com>
-  2015, Urvang Joshi
-  2015, Vesselin Bontchev
-  2015, Zhang Rui <bbcallen@gmail.com>
-  2015, Zhang Shuangshuang <zhangshuangshuang@ict.ac.cn>
-  2015, Zhou Xiaoyong <zhouxiaoyong@loongson.cn>
+Copyright: 1999, AT&T Laboratories Cambridge
+           2013, Alex Merry
+           2010, Antoine Cellerier
+           2005-2006, Canonical Ltd, and Rosetta Contributors
+           2008-2015, Cédric Valmary
+           2016, Collection
+           2004, Daniel Molkentin
+           2003, Daniel Moreno
+           2009, Eirik U. Birkeland
+           2008-2015, Éric Lassauge
+           2011-2015, Felix Paul Kühne
+           1989-1999,2002-2009 Free Software Foundation, Inc
+           2013, Guillaume Le Maout
+           2012, John Freed
+           2009, Jon Stødle
+           2009, Laurent Aimar
+           2006-2009, M2X
+           2006, Michael Niedermayer
+           2007-2012, Mirsal Ennaime
+           2008-2010, Pierre d'Herbemont
+           2006-2014, Rafaël Carré
+           2002, RealVNC Ltd
+           2005-2016, Rémi Denis-Courmont
+           2007, Savoir-faire Linux
+           2007, Société des arts technologiques
+           2008-2015, Tòni Galhard
+           1998-2018, VideoLAN team and VLC authors
+           2002-2004, the xine project
+License: GPL-2+
+
+Files: bin/override.c
+       compat/aligned_alloc.c
+       compat/asprintf.c
+       compat/atof.c
+       compat/atoll.c
+       compat/dirfd.c
+       compat/fdopendir.c
+       compat/ffsll.c
+       compat/flockfile.c
+       compat/freeaddrinfo.c
+       compat/fsync.c
+       compat/gai_strerror.c
+       compat/getdelim.c
+       compat/getpid.c
+       compat/gettimeofday.c
+       compat/gmtime_r.c
+       compat/inet_pton.c
+       compat/lldiv.c
+       compat/localtime_r.c
+       compat/nrand48.c
+       compat/pathconf.c
+       compat/poll.c
+       compat/realpath.c
+       compat/recvmsg.c
+       compat/rewind.c
+       compat/sendmsg.c
+       compat/setenv.c
+       compat/sigwait.c
+       compat/sincos.c
+       compat/strcasecmp.c
+       compat/strcasestr.c
+       compat/strdup.c
+       compat/strlcpy.c
+       compat/strndup.c
+       compat/strnlen.c
+       compat/strnstr.c
+       compat/strsep.c
+       compat/strtof.c
+       compat/strtok_r.c
+       compat/strtoll.c
+       compat/strverscmp.c
+       compat/swab.c
+       compat/test/*
+       compat/timegm.c
+       compat/timespec_get.c
+       compat/vasprintf.c
+       contrib/src/d3d11/dxgi1_3.idl
+       contrib/src/d3d11/dxgi1_4.idl
+       contrib/src/d3d11/dxgi1_5.idl
+       contrib/src/d3d11/dxgi1_6.idl
+       extras/package/macosx/codesign.sh
+       include/vlc/*
+       include/vlc_access.h
+       include/vlc_actions.h
+       include/vlc_addons.h
+       include/vlc_aout.h
+       include/vlc_aout_volume.h
+       include/vlc_arrays.h
+       include/vlc_atomic.h
+       include/vlc_avcodec.h
+       include/vlc_bits.h
+       include/vlc_block.h
+       include/vlc_block_helper.h
+       include/vlc_boxes.h
+       include/vlc_charset.h
+       include/vlc_codec.h
+       include/vlc_codecs.h
+       include/vlc_common.h
+       include/vlc_config.h
+       include/vlc_config_cat.h
+       include/vlc_configuration.h
+       include/vlc_cpu.h
+       include/vlc_demux.h
+       include/vlc_dialog.h
+       include/vlc_epg.h
+       include/vlc_es.h
+       include/vlc_es_out.h
+       include/vlc_events.h
+       include/vlc_extensions.h
+       include/vlc_filter.h
+       include/vlc_fingerprinter.h
+       include/vlc_fixups.h
+       include/vlc_fourcc.h
+       include/vlc_fs.h
+       include/vlc_gcrypt.h
+       include/vlc_http.h
+       include/vlc_httpd.h
+       include/vlc_image.h
+       include/vlc_inhibit.h
+       include/vlc_input.h
+       include/vlc_input_item.h
+       include/vlc_interface.h
+       include/vlc_interrupt.h
+       include/vlc_intf_strings.h
+       include/vlc_iso_lang.h
+       include/vlc_keystore.h
+       include/vlc_main.h
+       include/vlc_md5.h
+       include/vlc_media_library.h
+       include/vlc_memory.h
+       include/vlc_memstream.h
+       include/vlc_messages.h
+       include/vlc_meta.h
+       include/vlc_meta_fetcher.h
+       include/vlc_mime.h
+       include/vlc_modules.h
+       include/vlc_mouse.h
+       include/vlc_mtime.h
+       include/vlc_network.h
+       include/vlc_objects.h
+       include/vlc_opengl.h
+       include/vlc_picture.h
+       include/vlc_picture_fifo.h
+       include/vlc_picture_pool.h
+       include/vlc_playlist.h
+       include/vlc_plugin.h
+       include/vlc_probe.h
+       include/vlc_rand.h
+       include/vlc_renderer_discovery.h
+       include/vlc_services_discovery.h
+       include/vlc_sout.h
+       include/vlc_spu.h
+       include/vlc_stream.h
+       include/vlc_stream_extractor.h
+       include/vlc_strings.h
+       include/vlc_subpicture.h
+       include/vlc_text_style.h
+       include/vlc_threads.h
+       include/vlc_timestamp_helper.h
+       include/vlc_tls.h
+       include/vlc_url.h
+       include/vlc_variables.h
+       include/vlc_video_splitter.h
+       include/vlc_viewpoint.h
+       include/vlc_vlm.h
+       include/vlc_vod.h
+       include/vlc_vout.h
+       include/vlc_vout_display.h
+       include/vlc_vout_osd.h
+       include/vlc_vout_window.h
+       include/vlc_vout_wrapper.h
+       include/vlc_xlib.h
+       include/vlc_xml.h
+       lib/audio.c
+       lib/core.c
+       lib/dialog.c
+       lib/error.c
+       lib/event.c
+       lib/libvlc_internal.h
+       lib/log.c
+       lib/media.c
+       lib/media_discoverer.c
+       lib/media_internal.h
+       lib/media_library.c
+       lib/media_list.c
+       lib/media_list_internal.h
+       lib/media_list_path.h
+       lib/media_list_player.c
+       lib/media_player.c
+       lib/media_player_internal.h
+       lib/playlist.c
+       lib/renderer_discoverer.c
+       lib/renderer_discoverer_internal.h
+       lib/video.c
+       lib/vlm.c
+       modules/access/alsa.c
+       modules/access/attachment.c
+       modules/access/avcapture.m
+       modules/access/avio.c
+       modules/access/avio.h
+       modules/access/bluray.c
+       modules/access/cdda.c
+       modules/access/concat.c
+       modules/access/dc1394.c
+       modules/access/dcp/*
+       modules/access/decklink.cpp
+       modules/access/directory.c
+       modules/access/dshow/*
+       modules/access/dsm/*
+       modules/access/dtv/*
+       modules/access/dv.c
+       modules/access/dvb/*
+       modules/access/dvdnav.c
+       modules/access/dvdread.c
+       modules/access/file.c
+       modules/access/fs.c
+       modules/access/fs.h
+       modules/access/ftp.c
+       modules/access/http.c
+       modules/access/http/access.c
+       modules/access/http/chunked.c
+       modules/access/http/chunked_test.c
+       modules/access/http/conn.h
+       modules/access/http/connmgr.c
+       modules/access/http/connmgr.h
+       modules/access/http/file.c
+       modules/access/http/file.h
+       modules/access/http/file_test.c
+       modules/access/http/h1conn.c
+       modules/access/http/h1conn_test.c
+       modules/access/http/h2conn.c
+       modules/access/http/h2conn_test.c
+       modules/access/http/h2frame.c
+       modules/access/http/h2frame.h
+       modules/access/http/h2frame_test.c
+       modules/access/http/h2output.c
+       modules/access/http/h2output.h
+       modules/access/http/h2output_test.c
+       modules/access/http/hpack.c
+       modules/access/http/hpack.h
+       modules/access/http/hpackenc.c
+       modules/access/http/live.c
+       modules/access/http/live.h
+       modules/access/http/message.c
+       modules/access/http/message.h
+       modules/access/http/message_test.c
+       modules/access/http/resource.c
+       modules/access/http/resource.h
+       modules/access/http/transport.h
+       modules/access/http/tunnel.c
+       modules/access/http/tunnel_test.c
+       modules/access/idummy.c
+       modules/access/imem-access.c
+       modules/access/imem.c
+       modules/access/jack.c
+       modules/access/linsys/*
+       modules/access/live555.cpp
+       modules/access/mms/*
+       modules/access/mtp.c
+       modules/access/nfs.c
+       modules/access/oss.c
+       modules/access/pulse.c
+       modules/access/qtsound.m
+       modules/access/rdp.c
+       modules/access/rtp/input.c
+       modules/access/rtp/rtp.c
+       modules/access/rtp/rtp.h
+       modules/access/rtp/session.c
+       modules/access/rtp/srtp-test-aes.c
+       modules/access/rtp/srtp-test-recv.c
+       modules/access/rtp/srtp.c
+       modules/access/rtp/srtp.h
+       modules/access/rtp/xiph.c
+       modules/access/satip.c
+       modules/access/screen/mac.c
+       modules/access/screen/screen.c
+       modules/access/screen/screen.h
+       modules/access/screen/wayland.c
+       modules/access/screen/win32.c
+       modules/access/screen/xcb.c
+       modules/access/sdi.c
+       modules/access/sdi.h
+       modules/access/sdp.c
+       modules/access/sftp.c
+       modules/access/shm.c
+       modules/access/smb.c
+       modules/access/smb_common.h
+       modules/access/srt.c
+       modules/access/tcp.c
+       modules/access/timecode.c
+       modules/access/udp.c
+       modules/access/v4l2/*
+       modules/access/vcd/*
+       modules/access/vdr.c
+       modules/access/vnc.c
+       modules/access/wasapi.c
+       modules/access_output/dummy.c
+       modules/access_output/file.c
+       modules/access_output/http.c
+       modules/access_output/livehttp.c
+       modules/access_output/shout.c
+       modules/access_output/srt.c
+       modules/access_output/udp.c
+       modules/arm_neon/amplify.S
+       modules/arm_neon/chroma_neon.h
+       modules/arm_neon/chroma_yuv.c
+       modules/arm_neon/deinterleave_chroma.S
+       modules/arm_neon/i420_rgb.S
+       modules/arm_neon/i420_rv16.S
+       modules/arm_neon/i420_yuyv.S
+       modules/arm_neon/i422_yuyv.S
+       modules/arm_neon/nv12_rgb.S
+       modules/arm_neon/nv21_rgb.S
+       modules/arm_neon/simple_channel_mixer.S
+       modules/arm_neon/volume.c
+       modules/arm_neon/yuv_rgb.c
+       modules/arm_neon/yuyv_i422.S
+       modules/audio_filter/audiobargraph_a.c
+       modules/audio_filter/channel_mixer/*
+       modules/audio_filter/chorus_flanger.c
+       modules/audio_filter/compressor.c
+       modules/audio_filter/converter/*
+       modules/audio_filter/equalizer.c
+       modules/audio_filter/equalizer_presets.h
+       modules/audio_filter/gain.c
+       modules/audio_filter/karaoke.c
+       modules/audio_filter/normvol.c
+       modules/audio_filter/param_eq.c
+       modules/audio_filter/resampler/*
+       modules/audio_filter/scaletempo.c
+       modules/audio_filter/spatializer/spatializer.cpp
+       modules/audio_filter/stereo_widen.c
+       modules/audio_mixer/float.c
+       modules/audio_mixer/integer.c
+       modules/audio_output/adummy.c
+       modules/audio_output/alsa.c
+       modules/audio_output/amem.c
+       modules/audio_output/audiotrack.c
+       modules/audio_output/audiounit_ios.m
+       modules/audio_output/auhal.c
+       modules/audio_output/coreaudio_common.c
+       modules/audio_output/coreaudio_common.h
+       modules/audio_output/directsound.c
+       modules/audio_output/file.c
+       modules/audio_output/jack.c
+       modules/audio_output/kai.c
+       modules/audio_output/mmdevice.c
+       modules/audio_output/mmdevice.h
+       modules/audio_output/opensles_android.c
+       modules/audio_output/oss.c
+       modules/audio_output/pulse.c
+       modules/audio_output/sndio.c
+       modules/audio_output/tizen_audio.c
+       modules/audio_output/vlcpulse.c
+       modules/audio_output/vlcpulse.h
+       modules/audio_output/volume.h
+       modules/audio_output/wasapi.c
+       modules/audio_output/waveout.c
+       modules/audio_output/windows_audio_common.h
+       modules/audio_output/winstore.c
+       modules/codec/a52.c
+       modules/codec/adpcm.c
+       modules/codec/aes3.c
+       modules/codec/aom.c
+       modules/codec/araw.c
+       modules/codec/arib/*
+       modules/codec/atsc_a65.c
+       modules/codec/atsc_a65.h
+       modules/codec/avcodec/*
+       modules/codec/bpg.c
+       modules/codec/cc.c
+       modules/codec/cc.h
+       modules/codec/cdg.c
+       modules/codec/cea708.c
+       modules/codec/cea708.h
+       modules/codec/crystalhd.c
+       modules/codec/cvdsub.c
+       modules/codec/daala.c
+       modules/codec/dca.c
+       modules/codec/ddummy.c
+       modules/codec/dmo/*
+       modules/codec/dvbsub.c
+       modules/codec/edummy.c
+       modules/codec/faad.c
+       modules/codec/flac.c
+       modules/codec/fluidsynth.c
+       modules/codec/g711.c
+       modules/codec/gstreamer/*
+       modules/codec/hxxx_helper.c
+       modules/codec/hxxx_helper.h
+       modules/codec/jpeg.c
+       modules/codec/jpeg2000.h
+       modules/codec/kate.c
+       modules/codec/libass.c
+       modules/codec/libmpeg2.c
+       modules/codec/lpcm.c
+       modules/codec/mad.c
+       modules/codec/mft.c
+       modules/codec/mpg123.c
+       modules/codec/oggspots.c
+       modules/codec/omxil/mediacodec.c
+       modules/codec/omxil/mediacodec.h
+       modules/codec/omxil/mediacodec_jni.c
+       modules/codec/omxil/mediacodec_ndk.c
+       modules/codec/omxil/omxil.c
+       modules/codec/omxil/omxil.h
+       modules/codec/omxil/omxil_core.c
+       modules/codec/omxil/omxil_core.h
+       modules/codec/omxil/omxil_utils.h
+       modules/codec/omxil/qcom.c
+       modules/codec/omxil/utils.c
+       modules/codec/omxil/vout.c
+       modules/codec/opus.c
+       modules/codec/png.c
+       modules/codec/qsv.c
+       modules/codec/rawvideo.c
+       modules/codec/rtpvideo.c
+       modules/codec/schroedinger.c
+       modules/codec/scte18.c
+       modules/codec/scte18.h
+       modules/codec/scte27.c
+       modules/codec/sdl_image.c
+       modules/codec/shine.c
+       modules/codec/spdif.c
+       modules/codec/speex.c
+       modules/codec/spudec/*
+       modules/codec/stl.c
+       modules/codec/subsdec.c
+       modules/codec/substext.h
+       modules/codec/substx3g.c
+       modules/codec/subsusf.c
+       modules/codec/svcdsub.c
+       modules/codec/svg.c
+       modules/codec/synchro.c
+       modules/codec/synchro.h
+       modules/codec/telx.c
+       modules/codec/textst.c
+       modules/codec/theora.c
+       modules/codec/ttml/*
+       modules/codec/twolame.c
+       modules/codec/uleaddvaudio.c
+       modules/codec/videotoolbox.m
+       modules/codec/vorbis.c
+       modules/codec/vpx.c
+       modules/codec/vt_utils.c
+       modules/codec/vt_utils.h
+       modules/codec/webvtt/*
+       modules/codec/wmafixed/asf.h
+       modules/codec/wmafixed/bitstream.c
+       modules/codec/wmafixed/bitstream.h
+       modules/codec/wmafixed/bswap.h
+       modules/codec/wmafixed/wma.c
+       modules/codec/wmafixed/wmadata.h
+       modules/codec/xwd.c
+       modules/codec/zvbi.c
+       modules/control/intromsg.h
+       modules/demux/adaptive/*
+       modules/demux/aiff.c
+       modules/demux/asf/*
+       modules/demux/au.c
+       modules/demux/avformat/*
+       modules/demux/avi/*
+       modules/demux/caf.c
+       modules/demux/cdg.c
+       modules/demux/dash/*
+       modules/demux/demuxdump.c
+       modules/demux/dirac.c
+       modules/demux/directory.c
+       modules/demux/dvb-text.h
+       modules/demux/filter/*
+       modules/demux/flac.c
+       modules/demux/gme.c
+       modules/demux/hls/*
+       modules/demux/image.c
+       modules/demux/mjpeg.c
+       modules/demux/mkv/*
+       modules/demux/mod.c
+       modules/demux/mp4/*
+       modules/demux/mpeg/*
+       modules/demux/mxpeg_helper.h
+       modules/demux/nsc.c
+       modules/demux/nsv.c
+       modules/demux/nuv.c
+       modules/demux/ogg.c
+       modules/demux/ogg.h
+       modules/demux/oggseek.c
+       modules/demux/oggseek.h
+       modules/demux/opus.h
+       modules/demux/playlist/*
+       modules/demux/pva.c
+       modules/demux/rawaud.c
+       modules/demux/rawdv.c
+       modules/demux/rawdv.h
+       modules/demux/rawvid.c
+       modules/demux/sid.cpp
+       modules/demux/smf.c
+       modules/demux/smooth/*
+       modules/demux/stl.c
+       modules/demux/subtitle.c
+       modules/demux/subtitle_helper.h
+       modules/demux/tta.c
+       modules/demux/ttml.c
+       modules/demux/ty.c
+       modules/demux/vc1.c
+       modules/demux/vobsub.c
+       modules/demux/vobsub.h
+       modules/demux/voc.c
+       modules/demux/wav.c
+       modules/demux/webvtt.c
+       modules/demux/windows_audio_commons.h
+       modules/demux/xa.c
+       modules/demux/xiph.h
+       modules/demux/xiph_metadata.c
+       modules/demux/xiph_metadata.h
+       modules/gui/minimal_macosx/*
+       modules/gui/qt/adapters/*
+       modules/gui/qt/dialogs/*
+       modules/hw/d3d11/d3d11_deinterlace.c
+       modules/hw/d3d11/d3d11_filters.c
+       modules/hw/d3d11/d3d11_filters.h
+       modules/hw/d3d11/d3d11_instance.c
+       modules/hw/d3d11/d3d11_surface.c
+       modules/hw/d3d9/d3d9_filters.c
+       modules/hw/d3d9/d3d9_filters.h
+       modules/hw/d3d9/d3d9_instance.c
+       modules/hw/d3d9/dxa9.c
+       modules/hw/d3d9/dxva2_deinterlace.c
+       modules/hw/mmal/codec.c
+       modules/hw/mmal/deinterlace.c
+       modules/hw/mmal/mmal_picture.c
+       modules/hw/mmal/mmal_picture.h
+       modules/hw/mmal/vout.c
+       modules/hw/vaapi/chroma.c
+       modules/hw/vaapi/filters.c
+       modules/hw/vaapi/filters.h
+       modules/hw/vaapi/vlc_vaapi.c
+       modules/hw/vaapi/vlc_vaapi.h
+       modules/hw/vdpau/adjust.c
+       modules/hw/vdpau/avcodec.c
+       modules/hw/vdpau/chroma.c
+       modules/hw/vdpau/deinterlace.c
+       modules/hw/vdpau/display.c
+       modules/hw/vdpau/instance.c
+       modules/hw/vdpau/picture.c
+       modules/hw/vdpau/sharpen.c
+       modules/hw/vdpau/vlc_vdpau.c
+       modules/hw/vdpau/vlc_vdpau.h
+       modules/keystore/file.c
+       modules/keystore/file_crypt.h
+       modules/keystore/file_crypt_android.c
+       modules/keystore/file_crypt_win32.c
+       modules/keystore/keychain.m
+       modules/keystore/kwallet.c
+       modules/keystore/list_util.c
+       modules/keystore/list_util.h
+       modules/keystore/memory.c
+       modules/keystore/secret.c
+       modules/logger/android.c
+       modules/logger/console.c
+       modules/logger/journal.c
+       modules/meta_engine/ID3Genres.h
+       modules/meta_engine/ID3Meta.h
+       modules/meta_engine/ID3Tag.h
+       modules/meta_engine/ID3Text.h
+       modules/meta_engine/folder.c
+       modules/meta_engine/taglib.cpp
+       modules/misc/addons/*
+       modules/misc/fingerprinter.c
+       modules/misc/gnutls.c
+       modules/misc/inhibit/*
+       modules/misc/securetransport.c
+       modules/misc/webservices/*
+       modules/misc/xml/*
+       modules/mux/asf.c
+       modules/mux/avi.c
+       modules/mux/dummy.c
+       modules/mux/mp4/*
+       modules/mux/mpeg/*
+       modules/mux/mpjpeg.c
+       modules/mux/ogg.c
+       modules/mux/wav.c
+       modules/packetizer/a52.c
+       modules/packetizer/a52.h
+       modules/packetizer/avparser.c
+       modules/packetizer/avparser.h
+       modules/packetizer/copy.c
+       modules/packetizer/dirac.c
+       modules/packetizer/dts.c
+       modules/packetizer/dts_header.c
+       modules/packetizer/dts_header.h
+       modules/packetizer/flac.c
+       modules/packetizer/h264.c
+       modules/packetizer/h264_nal.c
+       modules/packetizer/h264_nal.h
+       modules/packetizer/h264_slice.c
+       modules/packetizer/h264_slice.h
+       modules/packetizer/hevc.c
+       modules/packetizer/hevc_nal.c
+       modules/packetizer/hevc_nal.h
+       modules/packetizer/hxxx_common.c
+       modules/packetizer/hxxx_common.h
+       modules/packetizer/hxxx_nal.c
+       modules/packetizer/hxxx_nal.h
+       modules/packetizer/hxxx_sei.c
+       modules/packetizer/hxxx_sei.h
+       modules/packetizer/mlp.c
+       modules/packetizer/mpeg4audio.c
+       modules/packetizer/mpeg4audio.h
+       modules/packetizer/mpeg4video.c
+       modules/packetizer/mpegaudio.c
+       modules/packetizer/mpegvideo.c
+       modules/packetizer/packetizer_helper.h
+       modules/packetizer/startcode_helper.h
+       modules/packetizer/vc1.c
+       modules/services_discovery/bonjour.m
+       modules/services_discovery/microdns.c
+       modules/services_discovery/os2drive.c
+       modules/services_discovery/pulse.c
+       modules/services_discovery/udev.c
+       modules/services_discovery/upnp.cpp
+       modules/services_discovery/upnp.hpp
+       modules/services_discovery/windrive.c
+       modules/services_discovery/xcb_apps.c
+       modules/spu/audiobargraph_v.c
+       modules/spu/dynamicoverlay/*
+       modules/spu/logo.c
+       modules/spu/marq.c
+       modules/spu/mosaic.c
+       modules/spu/mosaic.h
+       modules/spu/remoteosd.c
+       modules/spu/rss.c
+       modules/spu/subsdelay.c
+       modules/stream_extractor/archive.c
+       modules/stream_filter/accesstweaks.c
+       modules/stream_filter/adf.c
+       modules/stream_filter/aribcam.c
+       modules/stream_filter/cache_block.c
+       modules/stream_filter/cache_read.c
+       modules/stream_filter/decomp.c
+       modules/stream_filter/hds/*
+       modules/stream_filter/inflate.c
+       modules/stream_filter/prefetch.c
+       modules/stream_filter/record.c
+       modules/stream_filter/skiptags.c
+       modules/stream_out/autodel.c
+       modules/stream_out/bridge.c
+       modules/stream_out/chromaprint.c
+       modules/stream_out/chromaprint_data.h
+       modules/stream_out/chromecast/*
+       modules/stream_out/delay.c
+       modules/stream_out/description.c
+       modules/stream_out/display.c
+       modules/stream_out/dummy.c
+       modules/stream_out/duplicate.c
+       modules/stream_out/es.c
+       modules/stream_out/gather.c
+       modules/stream_out/mosaic_bridge.c
+       modules/stream_out/record.c
+       modules/stream_out/rtcp.c
+       modules/stream_out/rtp.h
+       modules/stream_out/rtpfmt.c
+       modules/stream_out/rtsp.c
+       modules/stream_out/setid.c
+       modules/stream_out/smem.c
+       modules/stream_out/standard.c
+       modules/stream_out/stats.c
+       modules/stream_out/transcode/audio.c
+       modules/stream_out/transcode/spu.c
+       modules/stream_out/transcode/transcode.c
+       modules/stream_out/transcode/video.c
+       modules/stream_out/vod.c
+       modules/text_renderer/freetype/*
+       modules/text_renderer/nsspeechsynthesizer.m
+       modules/text_renderer/svg.c
+       modules/text_renderer/tdummy.c
+       modules/video_chroma/chain.c
+       modules/video_chroma/copy.c
+       modules/video_chroma/copy.h
+       modules/video_chroma/cvpx.c
+       modules/video_chroma/d3d11_fmt.c
+       modules/video_chroma/d3d11_fmt.h
+       modules/video_chroma/d3d9_fmt.c
+       modules/video_chroma/d3d9_fmt.h
+       modules/video_chroma/dxgi_fmt.c
+       modules/video_chroma/dxgi_fmt.h
+       modules/video_chroma/grey_yuv.c
+       modules/video_chroma/i420_10_p010.c
+       modules/video_chroma/i420_nv12.c
+       modules/video_chroma/i420_rgb.c
+       modules/video_chroma/i420_rgb.h
+       modules/video_chroma/i420_rgb16.c
+       modules/video_chroma/i420_rgb16_x86.c
+       modules/video_chroma/i420_rgb8.c
+       modules/video_chroma/i420_rgb_c.h
+       modules/video_chroma/i420_rgb_sse2.h
+       modules/video_chroma/i420_yuy2.c
+       modules/video_chroma/i420_yuy2.h
+       modules/video_chroma/i422_i420.c
+       modules/video_chroma/i422_yuy2.c
+       modules/video_chroma/i422_yuy2.h
+       modules/video_chroma/omxdl.c
+       modules/video_chroma/rv32.c
+       modules/video_chroma/swscale.c
+       modules/video_chroma/yuvp.c
+       modules/video_chroma/yuy2_i420.c
+       modules/video_chroma/yuy2_i422.c
+       modules/video_filter/adjust.c
+       modules/video_filter/adjust_sat_hue.c
+       modules/video_filter/adjust_sat_hue.h
+       modules/video_filter/alphamask.c
+       modules/video_filter/anaglyph.c
+       modules/video_filter/antiflicker.c
+       modules/video_filter/ball.c
+       modules/video_filter/blend.cpp
+       modules/video_filter/blendbench.c
+       modules/video_filter/bluescreen.c
+       modules/video_filter/canvas.c
+       modules/video_filter/ci_filters.m
+       modules/video_filter/colorthres.c
+       modules/video_filter/croppadd.c
+       modules/video_filter/deinterlace/algo_basic.c
+       modules/video_filter/deinterlace/algo_basic.h
+       modules/video_filter/deinterlace/algo_ivtc.c
+       modules/video_filter/deinterlace/algo_ivtc.h
+       modules/video_filter/deinterlace/algo_phosphor.c
+       modules/video_filter/deinterlace/algo_phosphor.h
+       modules/video_filter/deinterlace/algo_x.c
+       modules/video_filter/deinterlace/algo_x.h
+       modules/video_filter/deinterlace/algo_yadif.c
+       modules/video_filter/deinterlace/algo_yadif.h
+       modules/video_filter/deinterlace/common.c
+       modules/video_filter/deinterlace/common.h
+       modules/video_filter/deinterlace/deinterlace.c
+       modules/video_filter/deinterlace/deinterlace.h
+       modules/video_filter/deinterlace/helpers.c
+       modules/video_filter/deinterlace/helpers.h
+       modules/video_filter/deinterlace/merge.c
+       modules/video_filter/deinterlace/merge.h
+       modules/video_filter/deinterlace/merge_arm.S
+       modules/video_filter/deinterlace/merge_arm64.S
+       modules/video_filter/deinterlace/mmx.h
+       modules/video_filter/edgedetection.c
+       modules/video_filter/erase.c
+       modules/video_filter/extract.c
+       modules/video_filter/filter_event_info.h
+       modules/video_filter/filter_picture.h
+       modules/video_filter/fps.c
+       modules/video_filter/freeze.c
+       modules/video_filter/gaussianblur.c
+       modules/video_filter/gradfun.c
+       modules/video_filter/gradfun.h
+       modules/video_filter/gradient.c
+       modules/video_filter/grain.c
+       modules/video_filter/hqdn3d.c
+       modules/video_filter/invert.c
+       modules/video_filter/magnify.c
+       modules/video_filter/mirror.c
+       modules/video_filter/motionblur.c
+       modules/video_filter/motiondetect.c
+       modules/video_filter/oldmovie.c
+       modules/video_filter/opencv_example.cpp
+       modules/video_filter/opencv_wrapper.c
+       modules/video_filter/posterize.c
+       modules/video_filter/postproc.c
+       modules/video_filter/psychedelic.c
+       modules/video_filter/puzzle.c
+       modules/video_filter/puzzle.h
+       modules/video_filter/puzzle_bezier.c
+       modules/video_filter/puzzle_bezier.h
+       modules/video_filter/puzzle_lib.c
+       modules/video_filter/puzzle_lib.h
+       modules/video_filter/puzzle_mgt.c
+       modules/video_filter/puzzle_mgt.h
+       modules/video_filter/puzzle_pce.c
+       modules/video_filter/puzzle_pce.h
+       modules/video_filter/ripple.c
+       modules/video_filter/scale.c
+       modules/video_filter/scene.c
+       modules/video_filter/sepia.c
+       modules/video_filter/sharpen.c
+       modules/video_filter/transform.c
+       modules/video_filter/vhs.c
+       modules/video_filter/wave.c
+       modules/video_output/aa.c
+       modules/video_output/android/*
+       modules/video_output/caca.c
+       modules/video_output/caopengllayer.m
+       modules/video_output/decklink.cpp
+       modules/video_output/drawable.c
+       modules/video_output/evas.c
+       modules/video_output/event_thread.c
+       modules/video_output/event_thread.h
+       modules/video_output/fb.c
+       modules/video_output/flaschen.c
+       modules/video_output/glx.c
+       modules/video_output/ios.m
+       modules/video_output/kva.c
+       modules/video_output/macosx.m
+       modules/video_output/opengl/*
+       modules/video_output/vdummy.c
+       modules/video_output/vmem.c
+       modules/video_output/wayland/*
+       modules/video_output/win32/*
+       modules/video_output/xcb/events.c
+       modules/video_output/xcb/events.h
+       modules/video_output/xcb/keys.c
+       modules/video_output/xcb/pictures.c
+       modules/video_output/xcb/pictures.h
+       modules/video_output/xcb/window.c
+       modules/video_output/xcb/x11.c
+       modules/video_output/xcb/xvideo.c
+       modules/video_output/yuv.c
+       modules/video_splitter/clone.c
+       modules/video_splitter/panoramix.c
+       modules/video_splitter/wall.c
+       modules/visualization/cyclic_buffer.h
+       modules/visualization/glspectrum.c
+       modules/visualization/goom.c
+       modules/visualization/projectm.cpp
+       modules/visualization/visual/*
+       modules/visualization/vsxu.cpp
+       src/android/*
+       src/audio_output/*
+       src/config/*
+       src/darwin/*
+       src/extras/*
+       src/input/*
+       src/interface/*
+       src/libvlc-module.c
+       src/libvlc.c
+       src/libvlc.h
+       src/linux/*
+       src/misc/*
+       src/missing.c
+       src/modules/*
+       src/network/*
+       src/os2/*
+       src/playlist/*
+       src/posix/*
+       src/stream_output/*
+       src/test/*
+       src/text/*
+       src/version.c
+       src/video_output/*
+       src/win32/*
+       test/libvlc/media_discoverer.c
+       test/libvlc/renderer_discoverer.c
+       test/libvlc/slaves.c
+       test/modules/keystore/*
+       test/modules/misc/*
+       test/modules/packetizer/*
+       test/src/*
+Copyright: 2003, ANEVIA
+           2010, Adrien Maglo
+           2010, Alan Fischer
+           Arne Schirmacher
+           2009, Baptiste Coudurier
+           2017, Collabora Ltd
+           2013, David Fuhrmann
+           2012, David Geldreich
+           2012-2014, Edward Wang
+           2000-2001, Fabrice Bellard
+           2012-2014, Felix Paul Kühne
+           2016, François Revol
+           1987-2009, Free Software Foundation, Inc
+           2008-2010, Gabriel Finch
+           2009, Geoffroy Couprie
+           1997-1999, H. Dietz and R. Fisher
+           2016, Janne Grunau
+           2016, Julian Scheel
+           2010-2015, KO Myung-Hun
+           2009-2010, Keary Griffin
+           2010-2012, Klagenfurt University
+           2000, Klaus Schmidinger
+           2001-2016, Laurent Aimar
+           2009, Loren Merritt
+           2004-2009, M2X
+           2015, Martell Malone
+           2015, Martin Gräßlin
+           2012-2013, Martin Storsjö
+           2007-2008, Matthias Bauer
+           2002-2009, Michael Niedermayer
+           1999, Michael Zucchi, The Free Software Foundation
+           2012, Naohiro KORIYAMA
+           2005, Neal Symms
+           2010, Nolan Lum
+           2013, Petri Hintukainen
+           2007, Pierre d'Herbemont
+           2007-2014, Rafaël Carré
+           2002-2017, Rémi Denis-Courmont
+           2015, Remlab Tmi
+           2010-2014, Ronald Wright
+           2007, Savoir-faire Linux
+           2007, Société des arts technologiques
+           2010, Steinar H. Gunderson
+           2015-2017, Steve Lhomme
+           2011, Sébastien Toque
+           2002, The FFmpeg Project
+           2010, Tobias Güntner
+           2013, Vianney Boyer
+           2010-2012, libbluray AUTHORS
+           2013-2017, VideoLabs SAS
+           2007, Vincent Penne
+           2009-2012, Vovoid Media Technologies
+           2001-2005, dvb.matt
+           2014-2016, jusst technologies GmbH
+           1996-2018, VideoLAN team and VLC authors
+           the deCSA authors
 License: LGPL-2.1+
-Comment:
- You should have received a copy of the GNU Lesser General Public
- License along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- .
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
- .
- The copyright details for Joseph Artsimovich and UAB "DKD" were extracted
- from the referenced source:
- <http://samples.mplayerhq.hu/A-codecs/Nelly_Moser/ASAO/ASAO.zip>.
 
-Files: libavcodec/libzvbi-teletextdec.c
-Copyright:
-  2005-2010, 2012, Wolfram Gloger
-  2013, Marton Balint
+Files: debian/*
+Copyright: 2010-2015, Benjamin Drung
+           2009-2011, Christophe Mutricy
+           2006-2014, Reinhard Tartler
+           2006-2007, Sam Hocevar
+           2013-2018, Sebastian Ramacher
+License: GPL-2+
+
+Files: modules/audio_output/TPCircularBuffer.*
+Copyright: 2011-2012, A Tasty Pixel
+License: BSD-3-clause
+Comment:
+ See https://github.com/michaeltyson/TPCircularBuffer
+
+Files: modules/gui/macosx/PXSourceList.h
+       modules/gui/macosx/PXSourceList.m
+       modules/gui/macosx/PXSourceListDataSource.h
+       modules/gui/macosx/PXSourceListDelegate.h
+       modules/gui/macosx/SideBarItem.h
+       modules/gui/macosx/SideBarItem.m
+Copyright: 2009-2010 Alex Rozanski
+License: BSD-3-clause
+Comment:
+ See https://perspx.com/work/
+
+Files: share/lua/http/css/ui-lightness/jquery-ui-1.8.13.custom.css
+       share/lua/http/js/jquery.jstree.js
+Copyright: 2010, Ivan Bozhanov
+           2010-2011, jQuery UI authors
+License: Expat or GPL-2
+
+Files: m4/c11.m4
+       m4/codeset.m4
+       m4/extern-inline.m4
+       m4/gettext.m4
+       m4/glibc2.m4
+       m4/glibc21.m4
+       m4/iconv.m4
+       m4/intdiv0.m4
+       m4/intl.m4
+       m4/intldir.m4
+       m4/intlmacosx.m4
+       m4/intmax.m4
+       m4/inttypes-pri.m4
+       m4/inttypes_h.m4
+       m4/lcmessage.m4
+       m4/lib-ld.m4
+       m4/lib-link.m4
+       m4/lib-prefix.m4
+       m4/lock.m4
+       m4/longlong.m4
+       m4/ltoptions.m4
+       m4/ltsugar.m4
+       m4/ltversion.m4
+       m4/lt~obsolete.m4
+       m4/nls.m4
+       m4/po.m4
+       m4/printf-posix.m4
+       m4/progtest.m4
+       m4/size_max.m4
+       m4/stdint_h.m4
+       m4/uintmax_t.m4
+       m4/visibility.m4
+       m4/wchar_t.m4
+       m4/wint_t.m4
+       m4/xsize.m4
+Copyright: 1994-2017, Free Software Foundation
+           2015, Rémi Denis-Courmont
+License: FSFULLR
+
+Files: modules/access/linsys/linsys_sdi.h
+       modules/access/linsys/linsys_sdiaudio.h
+       modules/access/linsys/linsys_sdivideo.h
+       modules/codec/omxil/OMX_Broadcom.h
+       modules/gui/macosx/SPInvocationGrabbing.h
+       modules/gui/macosx/SPInvocationGrabbing.m
+       modules/gui/macosx/SPMediaKeyTap.h
+       modules/gui/macosx/SPMediaKeyTap.m
+       modules/gui/macosx/VLCHUDButtonCell.h
+       modules/gui/macosx/VLCHUDButtonCell.m
+       modules/gui/macosx/VLCHUDCheckboxCell.h
+       modules/gui/macosx/VLCHUDCheckboxCell.m
+       modules/gui/macosx/VLCHUDOutlineView.h
+       modules/gui/macosx/VLCHUDOutlineView.m
+       modules/gui/macosx/VLCHUDPopUpButtonCell.h
+       modules/gui/macosx/VLCHUDPopUpButtonCell.m
+       modules/gui/macosx/VLCHUDScroller.h
+       modules/gui/macosx/VLCHUDScroller.m
+       modules/gui/macosx/VLCHUDSegmentedCell.h
+       modules/gui/macosx/VLCHUDSegmentedCell.m
+       modules/gui/macosx/VLCHUDSliderCell.h
+       modules/gui/macosx/VLCHUDSliderCell.m
+       modules/gui/macosx/VLCHUDStepperCell.h
+       modules/gui/macosx/VLCHUDStepperCell.m
+       modules/gui/macosx/VLCHUDTableCornerView.h
+       modules/gui/macosx/VLCHUDTableCornerView.m
+       modules/gui/macosx/VLCHUDTableView.h
+       modules/gui/macosx/VLCHUDTableView.m
+       modules/gui/macosx/VLCHUDTextFieldCell.h
+       modules/gui/macosx/VLCHUDTextFieldCell.m
+       modules/stream_out/chromecast/cast_channel.proto
+Copyright: 2012, Broadcom Europe Ltd
+           2008-2009, CineCert, LLC
+           2011, Joachim Bengtsson
+           2003-2015, John Hurst
+           2004-2010, Linear Systems Ltd
+           2010, Spotify AB
+           2013, The Chromium Authors
+           2008, Tim Davis
+           2009, Tyler Bunnell
+           2009, Steve Audette
+License: BSD-3-clause
+
+Files: modules/codec/omxil/OMX_Audio.h
+       modules/codec/omxil/OMX_Component.h
+       modules/codec/omxil/OMX_Core.h
+       modules/codec/omxil/OMX_IVCommon.h
+       modules/codec/omxil/OMX_Image.h
+       modules/codec/omxil/OMX_Index.h
+       modules/codec/omxil/OMX_Other.h
+       modules/codec/omxil/OMX_Types.h
+       modules/codec/omxil/OMX_Video.h
+       modules/gui/qt/util/pictureflow.cpp
+       modules/gui/qt/util/pictureflow.hpp
+       modules/text_renderer/sapi.cpp
+       share/lua/modules/dkjson.lua
+Copyright: 2007-2009, Ariya Hidayat <ariya@kde.org>
+           2010-2011, David Heiko Kolf
+           2015, Moti Zilberman
+           Qxt Foundation
+           2008, The Khronos Group Inc
+License: Expat
+
+Files: modules/codec/wmafixed/wmafixed.c
+       modules/codec/wmafixed/wmafixed.h
+Copyright: 2007, Michael Giacomelli
+License: GPL-2+
+
+Files: include/vlc_update.h
+       modules/codec/webvtt/CSSGrammar.y
+       modules/codec/wmafixed/fft.c
+       modules/codec/wmafixed/fft.h
+       modules/codec/wmafixed/mdct.c
+       modules/codec/wmafixed/mdct.h
+       modules/codec/wmafixed/wmadec.h
+       modules/codec/wmafixed/wmadeci.c
+       src/misc/update.c
+       src/misc/update.h
+       src/misc/update_crypto.c
+Copyright: 2006, Alexey Proskuryakov <ap@nypop.com>
+           2004-2010, Apple Inc
+           2008, Eric Seidel <eric@webkit.org>
+           2012, Intel Corporation
+           2002-2003, Lars Knoll <knoll@kde.org>
+           2002, The FFmpeg Project
+           1998, The Internet Society
+           2017, VideoLabs, VideoLAN and VLC Authors
+           2005-2009, VLC authors and VideoLAN
 License: LGPL-2+
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
- License as published by the Free Software Foundation; either
- version 2 of the License, or (at your option) any later version.
- .
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
-Comment:
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2 can be found in the file `/usr/share/common-licenses/GPL-2'.
- .
- You should have received a copy of the GNU Lesser General Public
- License along with this library; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-Files:
-  libavcodec/aacdec_fixed.c
-  libavcodec/aacsbr_fixed.c
-  libavcodec/ac3dec_fixed.c
-  libavcodec/arm/vp8dsp_armv6.S
-  libavcodec/fft_init_table.c
-  libavcodec/fft_fixed_32.c
-  libavcodec/fft_table.h
-  libavcodec/mdct_fixed_32.c
-  libavcodec/mips/aaccoder_mips.c
-  libavcodec/mips/aacdec_mips.c
-  libavcodec/mips/aacdec_mips.h
-  libavcodec/mips/aacpsdsp_mips.c
-  libavcodec/mips/aacpsy_mips.h
-  libavcodec/mips/aacsbr_mips.c
-  libavcodec/mips/aacsbr_mips.h
-  libavcodec/mips/ac3dsp_mips.c
-  libavcodec/mips/acelp_filters_mips.c
-  libavcodec/mips/acelp_vectors_mips.c
-  libavcodec/mips/amrwbdec_mips.c
-  libavcodec/mips/amrwbdec_mips.h
-  libavcodec/mips/celp_filters_mips.c
-  libavcodec/mips/celp_math_mips.c
-  libavcodec/mips/compute_antialias_fixed.h
-  libavcodec/mips/compute_antialias_float.h
-  libavcodec/mips/fft_mips.c
-  libavcodec/mips/fmtconvert_mips.c
-  libavcodec/mips/iirfilter_mips.c
-  libavcodec/mips/lsp_mips.h
-  libavcodec/mips/mpegaudiodsp_mips_fixed.c
-  libavcodec/mips/mpegaudiodsp_mips_float.c
-  libavcodec/mips/sbrdsp_mips.c
-  libavutil/fixed_dsp.c
-  libavutil/fixed_dsp.h
-  libavutil/mips/float_dsp_mips.c
-  libavutil/mips/libm_mips.h
-  libavutil/softfloat_tables.h
-Copyright:
-  2005-2006, Oded Shimon <ods15@ods15.dyndns.org>
-  2006-2007, Maxim Gavrilov <maxim.gavrilov@gmail.com>
-  2008-2009, Robert Swain <rob@opendot.cl>
-  2009-2010, Alex Converse <alex.converse@gmail.com>
-  2010, Google Inc.
-  2010, Rob Clark <rob@ti.com>
-  2011, Mans Rullgard <mans@mansr.com>
-  2012-2013, MIPS Technologies, Inc., California.
-License: BSD-3-Clause and LGPL-2.1+
-Comment:
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
- .
- You should have received a copy of the GNU Lesser General Public
- License along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+Files: m4/with_pkg.m4
+Copyright: 2008, Diego Pettenò
+           2008, Jean-Baptiste Kempf
+           2008, Luca Barbato
+License: GPL-2+ with AutoConf exception
 
-Files: libavformat/aadec.c
-Copyright:
-  2001-2014, Jim Teeuwen
-  2015, Vesselin Bontchev
-License: BSD-1-Clause
+Files: m4/ax_append_compile_flags.m4
+       m4/ax_append_flag.m4
+       m4/ax_check_compile_flag.m4
+Copyright: 2008, Guido U. Draheim <guidod@gmx.de>
+           2011, Maarten Bosmans <mkbosmans@gmail.com>
+License: GPL-3+ with AutoConf exception
+
+Files: m4/ax_require_defined.m4
+       m4/dolt.m4
+       m4/stdcxx_11.m4
+Copyright: 2014, Alexey Sokolov <sokolov@google.com>
+           2008, Benjamin Kosnik <bkoz@redhat.com>
+           2014-2015, Google Inc
+           2007-2010, Josh Triplett <josh@joshtriplett.org>
+           2014, Mike Frysinger <vapier@gentoo.org>
+           2013, Roy Stogner <roystgnr@ices.utexas.edu>
+           2015-2016, VLC authors and VideoLAN
+           2012, Zack Weinberg <zackw@panix.com>
+License: FSFAP
+
+Files: modules/codec/opus_header.c
+       modules/codec/opus_header.h
+       modules/misc/webservices/json.c
+       modules/misc/webservices/json.h
+Copyright: 2012, James McLaughlin
+           2012, Xiph.Org Foundation
+License: BSD-2-clause
+
+Files: modules/access/v4l2/linux/*
+       modules/notify/osx_notifications.m
+Copyright: 2004-2005, The Growl Project
+           2008-2015, the VideoLAN team
+           1999-2012, the contributors
+License: BSD-3-clause or GPL-2+
+
+Files: doc/libvlc/QtPlayer/*
+       doc/libvlc/gtk_player.c
+       doc/libvlc/libvlc_DVD_ripper.c
+       doc/libvlc/wx_player.cpp
+       doc/libvlc/vlc-thumb.c
+Copyright: protonux
+           Rafaël Carré
+           Vincent Schüßler
+License: WTFPL
+
+Files: modules/access/v4l2/linux/v4l2-common.h
+Copyright: 2012, Nokia Corporation
+License: GPL-2
+
+Files: modules/gui/macosx/AppleRemote.h
+       modules/gui/macosx/AppleRemote.m
+Copyright: 2006-2009, VLC authors and VideoLAN
+           2006, martinkahr.com
+License: Expat or GPL-2+
+
+Files: modules/codec/webvtt/CSSGrammar.c
+       modules/codec/webvtt/CSSGrammar.h
+Copyright: 1984-2015, Free Software Foundation, Inc
+License: GPL-3+ with Bison exception
+
+Files: modules/control/unimotion.c
+Copyright: 2005, Christian Klein
+           2006, Lincoln Ramsay
+License: BSD-3-clause and LGPL-2.1
+
+Files: compat/memrchr.c
+Copyright: 2007, Todd C. Miller <Todd.Miller@courtesan.com>
+License: ISC
+
+Files: modules/codec/fdkaac.c
+Copyright: 2012, Sergio Ammirata
+License: BSD-2-clause or LGPL-2.1+
+
+Files: modules/control/unimotion.h
+Copyright: 2006, Lincoln Ramsay
+License: LGPL-2.1
+
+Files: share/vlc.appdata.xml.in.in
+Copyright: 2016, Jean-Baptiste Kempf
+License: CC0 or GPL-2+
+
+License: BSD-2-clause
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
  are met:
- 1. Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
  .
- THIS SOFTWARE IS PROVIDED BY THE MIPS TECHNOLOGIES, INC. ``AS IS'' AND
+  1. Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+
+License: BSD-3-clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ .
+  1. Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+  3. Neither the name of the Institute nor the names of its contributors
+     may be used to endorse or promote products derived from this software
+     without specific prior written permission.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- POSSIBILITY OF SUCH DAMAGE.
+ ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ SUCH DAMAGE.
 
-Files:
- libavfilter/af_chorus.c
-Copyright:
- 1998, Juergen Mueller And Sundry Contributors
- 2015, Paul B Mahol
-License: Sundry and LGPL-2.1+
-Comment:
- On Debian systems, the full text of the GNU Lesser General Public License
- version 2.1 can be found in the file `/usr/share/common-licenses/LGPL-2.1'.
+License: CC0
+ Statement of Purpose
  .
- You should have received a copy of the GNU Lesser General Public
- License along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ The laws of most jurisdictions throughout the world automatically confer
+ exclusive Copyright and Related Rights (defined below) upon the creator and
+ subsequent owner(s) (each and all, an "owner") of an original work of
+ authorship and/or a database (each, a "Work").
+ .
+ Certain owners wish to permanently relinquish those rights to a Work for the
+ purpose of contributing to a commons of creative, cultural and scientific
+ works ("Commons") that the public can reliably and without fear of later
+ claims of infringement build upon, modify, incorporate in other works, reuse
+ and redistribute as freely as possible in any form whatsoever and for any
+ purposes, including without limitation commercial purposes. These owners may
+ contribute to the Commons to promote the ideal of a free culture and the
+ further production of creative, cultural and scientific works, or to gain
+ reputation or greater distribution for their Work in part through the use and
+ efforts of others.
+ .
+ For these and/or other purposes and motivations, and without any expectation
+ of additional consideration or compensation, the person associating CC0 with a
+ Work (the "Affirmer"), to the extent that he or she is an owner of Copyright
+ and Related Rights in the Work, voluntarily elects to apply CC0 to the Work
+ and publicly distribute the Work under its terms, with knowledge of his or her
+ Copyright and Related Rights in the Work and the meaning and intended legal
+ effect of CC0 on those rights.
+ .
+ 1. Copyright and Related Rights. A Work made available under CC0 may be
+ protected by copyright and related or neighboring rights ("Copyright and
+ Related Rights"). Copyright and Related Rights include, but are not limited
+ to, the following:
+ .
+     the right to reproduce, adapt, distribute, perform, display, communicate,
+     and translate a Work;
+ .
+     moral rights retained by the original author(s) and/or performer(s);
+ .
+     publicity and privacy rights pertaining to a person's image or likeness
+     depicted in a Work;
+ .
+     rights protecting against unfair competition in regards to a Work, subject
+     to the limitations in paragraph 4(a), below;
+ .
+     rights protecting the extraction, dissemination, use and reuse of data in
+     a Work;
+ .
+     database rights (such as those arising under Directive 96/9/EC of the
+     European Parliament and of the Council of 11 March 1996 on the legal
+     protection of databases, and under any national implementation thereof,
+     including any amended or successor version of such directive); and
+ .
+     other similar, equivalent or corresponding rights throughout the world
+     based on applicable law or treaty, and any national implementations
+     thereof.
+ .
+ 2. Waiver. To the greatest extent permitted by, but not in contravention of,
+ applicable law, Affirmer hereby overtly, fully, permanently, irrevocably and
+ unconditionally waives, abandons, and surrenders all of Affirmer's Copyright
+ and Related Rights and associated claims and causes of action, whether now
+ known or unknown (including existing as well as future claims and causes of
+ action), in the Work (i) in all territories worldwide, (ii) for the maximum
+ duration provided by applicable law or treaty (including future time
+ extensions), (iii) in any current or future medium and for any number of
+ copies, and (iv) for any purpose whatsoever, including without limitation
+ commercial, advertising or promotional purposes (the "Waiver"). Affirmer makes
+ the Waiver for the benefit of each member of the public at large and to the
+ detriment of Affirmer's heirs and successors, fully intending that such Waiver
+ shall not be subject to revocation, rescission, cancellation, termination, or
+ any other legal or equitable action to disrupt the quiet enjoyment of the Work
+ by the public as contemplated by Affirmer's express Statement of Purpose.
+ .
+ 3. Public License Fallback. Should any part of the Waiver for any reason be
+ judged legally invalid or ineffective under applicable law, then the Waiver
+ shall be preserved to the maximum extent permitted taking into account
+ Affirmer's express Statement of Purpose. In addition, to the extent the Waiver
+ is so judged Affirmer hereby grants to each affected person a royalty-free,
+ non transferable, non sublicensable, non exclusive, irrevocable and
+ unconditional license to exercise Affirmer's Copyright and Related Rights in
+ the Work (i) in all territories worldwide, (ii) for the maximum duration
+ provided by applicable law or treaty (including future time extensions), (iii)
+ in any current or future medium and for any number of copies, and (iv) for any
+ purpose whatsoever, including without limitation commercial, advertising or
+ promotional purposes (the "License"). The License shall be deemed effective as
+ of the date CC0 was applied by Affirmer to the Work. Should any part of the
+ License for any reason be judged legally invalid or ineffective under
+ applicable law, such partial invalidity or ineffectiveness shall not
+ invalidate the remainder of the License, and in such case Affirmer hereby
+ affirms that he or she will not (i) exercise any of his or her remaining
+ Copyright and Related Rights in the Work or (ii) assert any associated claims
+ and causes of action with respect to the Work, in either case contrary to
+ Affirmer's express Statement of Purpose.
+ .
+ 4. Limitations and Disclaimers.
+ .
+     No trademark or patent rights held by Affirmer are waived, abandoned,
+     surrendered, licensed or otherwise affected by this document.
+ .
+     Affirmer offers the Work as-is and makes no representations or warranties
+     of any kind concerning the Work, express, implied, statutory or otherwise,
+     including without limitation warranties of title, merchantability, fitness
+     for a particular purpose, non infringement, or the absence of latent or
+      other defects, accuracy, or the present or absence of errors, whether or
+      not discoverable, all to the greatest extent permissible under applicable
+      law.
+ .
+     Affirmer disclaims responsibility for clearing rights of other persons
+     that may apply to the Work or any use thereof, including without
+     limitation any person's Copyright and Related Rights in the Work. Further,
+     Affirmer disclaims responsibility for obtaining any necessary consents,
+     permissions or other rights required for any use of the Work.
+ .
+     Affirmer understands and acknowledges that Creative Commons is not a party
+     to this document and has no duty or obligation with respect to this CC0 or
+     use of the Work.
 
-Files:
-  doc/texi2pod.pl
-  libavcodec/x86/flac_dsp_gpl.asm
-  libavdevice/x11grab.c
-  libavfilter/f_ebur128.c
-  libavfilter/vf_blackframe.c
-  libavfilter/vf_boxblur.c
-  libavfilter/vf_colormatrix.c
-  libavfilter/vf_cover_rect.c
-  libavfilter/vf_cropdetect.c
-  libavfilter/vf_delogo.c
-  libavfilter/vf_eq.c
-  libavfilter/vf_eq.h
-  libavfilter/vf_find_rect.c
-  libavfilter/vf_fspp.c
-  libavfilter/vf_fspp.h
-  libavfilter/vf_geq.c
-  libavfilter/vf_histeq.c
-  libavfilter/vf_hqdn3d.c
-  libavfilter/vf_hqdn3d.h
-  libavfilter/vf_interlace.c
-  libavfilter/vf_kerndeint.c
-  libavfilter/vf_mcdeint.c
-  libavfilter/vf_mpdecimate.c
-  libavfilter/vf_owdenoise.c
-  libavfilter/vf_perspective.c
-  libavfilter/vf_phase.c
-  libavfilter/vf_pp.c
-  libavfilter/vf_pp7.c
-  libavfilter/vf_pp7.h
-  libavfilter/vf_pullup.c
-  libavfilter/vf_pullup.h
-  libavfilter/vf_repeatfields.c
-  libavfilter/vf_sab.c
-  libavfilter/vf_smartblur.c
-  libavfilter/vf_spp.c
-  libavfilter/vf_spp.h
-  libavfilter/vf_stereo3d.c
-  libavfilter/vf_super2xsai.c
-  libavfilter/vf_tinterlace.c
-  libavfilter/vf_uspp.c
-  libavfilter/vsrc_mptestsrc.c
-  libavfilter/x86/vf_fspp.asm
-  libavfilter/x86/vf_fspp_init.c
-  libavfilter/x86/vf_hqdn3d_init.c
-  libavfilter/x86/vf_pp7.asm
-  libavfilter/x86/vf_pp7_init.c
-  libavfilter/x86/vf_pullup.asm
-  libavfilter/x86/vf_pullup_init.c
-  libavfilter/x86/vf_removegrain.asm
-  libavfilter/x86/vf_spp.c
-  libavfilter/yadif.h
-  libpostproc/postprocess_altivec_template.c
-  libpostproc/postprocess.c
-  libpostproc/postprocess.h
-  libpostproc/postprocess_internal.h
-  libpostproc/postprocess_template.c
-  libswresample/swresample-test.c
-  tests/checkasm/bswapdsp.c
-  tests/checkasm/checkasm.c
-  tests/checkasm/checkasm.h
-  tests/checkasm/h264pred.c
-  tests/checkasm/h264qpel.c
-  tests/checkasm/x86/checkasm.asm
-  tools/coverity.c
-  tests/tiny_ssim.c
-Copyright:
-  Wilbert Dijkhof
-  1997-1998, Rasca, Berlin
-  1997-2001, ZSNES Team <zsknight@zsnes.com> <_demo_@zsnes.com>
-  1999-2001, Free Software Foundation, Inc
-  2000-2002, Fabrice Bellard
-  2001, 2006, Daniel Maas <dmaas@dcine.com> <dmaas@maasdigital.com>
-  2001, 2003, Donald A. Graft
-  2001-2003, 2005-2007, 2011-2012, 2014-2015, Michael Niedermayer <michaelni@gmx.at>
-  2002, A'rpi
-  2002, Brian Foley
-  2002-2003, Brian J. Murrell
-  2002, Dieter Shirley
-  2002, Jindrich Makovicka <makovick@gmail.com>
-  2001-2008, 2013, The FFmpeg Project
-  2003, Daniel Moreno <comac@comac.darktech.org>
-  2003-2004, Karl H. Beckers, Frankfurt
-  2003-2014, Loren Merritt <lorenm@u.washington.edu>
-  2003, Michael Zucchi <notzed@ximian.com>
-  2003, Rich Felker
-  2003-2004, Romain Dolbeau <romain@dolbeau.org>
-  2004-2005, 2007, Denes Balatoni <dbalatoni@interware.hu> <dbalatoni@programozo.hu>
-  2004, Tobias Diedrich
-  2004, Ville Saari
-  2005, Nikolaj Poroshin <porosh3@psu.ru>
-  2006, Clemens Fruhwirth <clemens@endorphin.org>
-  2006, Edouard Gomez <ed.gomez@free.fr>
-  2006, Ivo van Poorten
-  2006-2007, Kevin Stone
-  2006, Julian Hall
-  2008, Loren Merritt
-  2010, Baptiste Coudurier <baptiste.coudurier@free.fr>
-  2010, Gordon Schmidt <gordon.schmidt@s2000.tu-chemnitz.de>
-  2010, Laurent Aimar
-  2010, Michael Chinen
-  2010, Niel van der Westhuizen <nielkie@gmail.com>
-  2010-2012, Stefano Sabatini <stefano.sabatini-lala@poste.it>
-  2012-2013, Clément Bœsch
-  2012, 2015, Henrik Gramner
-  2012, Jeremy Tran
-  2013, Jean Delvare <khali@linux-fr.org>
-  2013-2014, Paul B Mahol
-  2013, Vittorio Giovara <vittorio.giovara@gmail.com>
-  2014-2015, Arwa Arif <arwaarif1994@gmail.com>
-  2014-2015, James Darnley <james.darnley@gmail.com>
-  2014, Red Hat, Inc.
-License: GPL-2+
- FFmpeg is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+License: Expat
+ Permission is hereby granted, free of charge, to any person obtaining
+ a copy of this software and associated documentation files (the
+ “Software”), to deal in the Software without restriction, including
+ without limitation the rights to use, copy, modify, merge, publish,
+ distribute, sublicense, and/or sell copies of the Software, and to
+ permit persons to whom the Software is furnished to do so, subject to
+ the following conditions:
  .
- FFmpeg is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-Comment:
- On Debian systems, the full text of the GNU General Public License
- version 2 can be found in the file `/usr/share/common-licenses/GPL-2'.
+ The above copyright notice and this permission notice shall be included
+ in all copies or substantial portions of the Software.
  .
- You should have received a copy of the GNU General Public License
- along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Files:
-  compat/avisynth/avisynth_c.h
-  compat/avisynth/avs/capi.h
-  compat/avisynth/avs/config.h
-  compat/avisynth/avs/types.h
-  compat/avisynth/avxsynth_c.h
-Copyright: 2003, Kevin Atkinson
-License: GPL-2+ with Avisynth exception
+License: FSFAP
+ Copying and distribution of this file, with or without modification, are
+ permitted in any medium without royalty provided the copyright notice
+ and this notice are preserved. This file is offered as-is, without any
+ warranty.
+
+License: FSFULLR
+ This file is free software; the Free Software Foundation
+ gives unlimited permission to copy and/or distribute it,
+ with or without modifications, as long as this notice is preserved.
+
+License: GPL-2
  This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+ it under the terms of the GNU General Public License, version 2, as
+ published by the Free Software Foundation
  .
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
  .
- As a special exception, I give you permission to link to the
- Avisynth C interface with independent modules that communicate with
- the Avisynth C interface solely through the interfaces defined in
- avisynth_c.h, regardless of the license terms of these independent
- modules, and to copy and distribute the resulting combined work
- under terms of your choice, provided that every copy of the
- combined work is accompanied by a complete copy of the source code
- of the Avisynth C interface and Avisynth itself (with the version
- used to produce the combined work), being distributed under the
- terms of the GNU General Public License plus this exception.  An
- independent module is a module which is not derived from or based
- on Avisynth C Interface, such as 3rd-party filters, import and
- export plugins, or graphical user interfaces.
-Comment:
- On Debian systems, the full text of the GNU General Public License
- version 2 can be found in the file `/usr/share/common-licenses/GPL-2'.
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation, Inc.,
+ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  .
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA,
- or visit <http://www.gnu.org/copyleft/gpl.html>.
+ On Debian systems, the complete text of the GNU General Public
+ License version 2 can be found in `/usr/share/common-licenses/GPL-2'.
 
-Files:
-  libavcodec/libutvideodec.cpp
-  libavcodec/libutvideoenc.cpp
-  libavcodec/libutvideo.h
-Copyright:
-  2011-2012, Derek Buitenhuis
-License: GPL-2
- FFmpeg is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public
- License as published by the Free Software Foundation;
- version 2 of the License.
+License: GPL-2+
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation; either version 2 of the License, or (at your option) any later
+ version.
  .
- FFmpeg is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- General Public License for more details.
-Comment:
- On Debian systems, the full text of the GNU General Public License
- version 2 can be found in the file `/usr/share/common-licenses/GPL-2'.
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  .
- You should have received a copy of the GNU General Public
- License along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ You should have received a copy of the GNU General Public License along with
+ this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ St, Fifth Floor, Boston, MA 02110-1301 USA
+ .
+ On Debian systems, the complete text of the GNU General Public License version 2
+ can be found in /usr/share/common-licenses/GPL-2.
 
-Files: doc/t2h.pm
-Copyright:
-  2011, 2012, Free Software Foundation, Inc.
-  2014, Andreas Cadhalpun <Andreas.Cadhalpun@googlemail.com>
-  2014, Tiancheng "Timothy" Gu <timothygu99@gmail.com>
-License: GPL-3+
- FFmpeg is free software; you can redistribute it and/or modify
+License: GPL-2+ with AutoConf exception
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation; either version 2 of the License, or (at your option) any later
+ version.
+ .
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License along with
+ this program; if not, write to the Free Software Foundation, Inc., 51 Franklin
+ St, Fifth Floor, Boston, MA 02110-1301 USA
+ .
+ On Debian systems, the complete text of the GNU General Public License version 2
+ can be found in /usr/share/common-licenses/GPL-2.
+ .
+ As a special exception, the respective Autoconf Macro's copyright owner
+ gives unlimited permission to copy, distribute and modify the configure
+ scripts that are the output of Autoconf when processing the Macro. You
+ need not follow the terms of the GNU General Public License when using
+ or distributing such scripts, even though portions of the text of the
+ Macro appear in them. The GNU General Public License (GPL) does govern
+ all other use of the material that constitutes the Autoconf Macro.
+ .
+ This special exception to the GPL applies to versions of the Autoconf
+ Macro released by the Autoconf Archive. When you make and distribute a
+ modified version of the Autoconf Macro, you may extend this special
+ exception to the GPL to apply to your modified version as well.
+
+License: GPL-3+ with AutoConf exception
+ This file is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 3 of the License, or
+ the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
  .
- FFmpeg is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
-Comment:
- On Debian systems, the full text of the GNU General Public License
- version 3 can be found in the file `/usr/share/common-licenses/GPL-3'.
+ It is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+ License for more details.
  .
- You should have received a copy of the GNU General Public
- License along with FFmpeg; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ You should have received a copy of the GNU General Public License
+ along with it.  If not, see <http://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the full text of the GNU General Public License version 3
+ can be found in the file `/usr/share/common-licenses/GPL-3'.
+ .
+ As a special exception, the respective Autoconf Macro's copyright owner
+ gives unlimited permission to copy, distribute and modify the configure
+ scripts that are the output of Autoconf when processing the Macro. You
+ need not follow the terms of the GNU General Public License when using
+ or distributing such scripts, even though portions of the text of the
+ Macro appear in them. The GNU General Public License (GPL) does govern
+ all other use of the material that constitutes the Autoconf Macro.
+ .
+ This special exception to the GPL applies to versions of the Autoconf
+ Macro released by the Autoconf Archive. When you make and distribute a
+ modified version of the Autoconf Macro, you may extend this special
+ exception to the GPL to apply to your modified version as well.
 
-Files:
-  doc/bootstrap.min.css
-  doc/examples/avio_dir_cmd.c
-  doc/examples/avio_reading.c
-  doc/examples/decoding_encoding.c
-  doc/examples/demuxing_decoding.c
-  doc/examples/filtering_audio.c
-  doc/examples/extract_mvs.c
-  doc/examples/filtering_video.c
-  doc/examples/http_multiclient.c
-  doc/examples/metadata.c
-  doc/examples/muxing.c
-  doc/examples/qsvdec.c
-  doc/examples/remuxing.c
-  doc/examples/resampling_audio.c
-  doc/examples/scaling_video.c
-  doc/examples/transcoding.c
-  doc/style.min.css
-  libavcodec/arm/jrevdct_arm.S
-  libavcodec/cinepakenc.c
-  libavcodec/nellymoser.c
-  libavcodec/nellymoserdec.c
-  libavcodec/nellymoser.h
-  libavcodec/texturedsp.c
-  libavcodec/texturedspenc.c
-  libavcodec/x86/vc1dsp_init.c
-  libavcodec/x86/vc1dsp_mmx.c
-  libavformat/oggdec.c
-  libavformat/oggdec.h
-  libavformat/oggparseogm.c
-  libavformat/oggparsespeex.c
-  libavformat/oggparsetheora.c
-  libavformat/oggparsevorbis.c
-  tests/api/api-band-test.c
-  tests/api/api-flac-test.c
-  tests/api/api-h264-test.c
-  tests/api/api-seek-test.c
-  tests/reference.pnm
-Copyright:
-  2001, 2003, Fabrice Bellard
-  2001, Lionel Ulmer <lionel.ulmer@free.fr> <bbrox@bbrox.org>
-  2005, Alex Beregszaszi
-  2005, Måns Rullgård
-  2005, Matthieu CASTET
-  2005, Michael Ahlberg
-  2007, a840bda5870ba11f19698ff6eb9581dfb0f95fa5
-  2007, 520e17cd55896441042b14df2566a6eb610ed444
-  2007, 539459aeb7d425140b62a3ec7dbf6dc8e408a306
-  2007, Benjamin Larsson
-  2007, Christophe GISQUET <christophe.gisquet@free.fr>
-  2007, Loic Minier <lool at dooz.org>
-  2008, Reimar Döffinger
-  2009, Benjamin Dobell
-  2009, Glass Echidna
-  2010, Nicolas George
-  2011, Jonathan Baldwin
-  2011, 2014, Reinhard Tartler
-  2011-2014, Stefano Sabatini
-  2011, Tomas Härdin
-  2011-2014, Twitter, Inc
-  2012, 2014, Clément Bœsch
-  2012, Matthäus G. "Anteru" Chajdas (http://anteru.net)
-  2013-2014, Rl, Aetey Global Technologies AB
-  2014, Andrey Utkin
-  2014, Barbara Lepage <db0company@gmail.com>
-  2014, Lukasz Marek <lukasz.m.luki@gmail.com>
-  2015, Anton Khirnov <anton@khirnov.net>
-  2015, Ludmila Glinskih
-  2015, Stephan Holljes
-  2015, Vittorio Giovara <vittorio.giovara@gmail.com>
-License: Expat
+License: GPL-3+ with Bison exception
+ This file is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ .
+ It is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
+ License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with it.  If not, see <http://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the full text of the GNU General Public License version 3
+ can be found in the file `/usr/share/common-licenses/GPL-3'.
+ .
+ As a special exception, you may create a larger work that contains
+ part or all of the Bison parser skeleton and distribute that work
+ under terms of your choice, so long as that work isn't itself a
+ parser generator using the skeleton or a modified version thereof
+ as a parser skeleton.  Alternatively, if you modify or redistribute
+ the parser skeleton itself, you may (at your option) remove this
+ special exception, which will cause the skeleton and the resulting
+ Bison output files to be licensed under the GNU General Public
+ License without this special exception.
 
-Files:
-  tools/cws2fws.c
-  tools/qt-faststart.c
-Copyright:
-  Alex Beregszaszi
-  Mike Melanson <melanson@pcisys.net>
-License: public-domain
- This file is placed in the public domain. Use the program however you see fit.
-
-Files:
-  compat/windows/makedef
-  libavcodec/faandct.c
-  libavcodec/libfdk-aacdec.c
-  libavcodec/libfdk-aacenc.c
-  libavcodec/zerocodec.c
-  libavdevice/openal-dec.c
-  libavfilter/vf_hqx.c
-  libavutil/x86/x86inc.asm
-Copyright:
-  2003, Michael Niedermayer <michaelni@gmx.at>
-  2003, Roman Shaposhnik
-  2005-2015, x264 project
-  2011, Jonathan Baldwin
-  2012-2013, Derek Buitenhuis
-  2012, Martin Storsjo
-  2014, Clément Bœsch
 License: ISC
- Permission to use, copy, modify, and/or distribute this software for any
+ Permission to use, copy, modify, and distribute this software for any
  purpose with or without fee is hereby granted, provided that the above
  copyright notice and this permission notice appear in all copies.
  .
@@ -2131,120 +1477,68 @@ License: ISC
  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-Files: libavutil/adler32.c
-Copyright: 1995, Mark Adler
-License: Zlib
- This software is provided 'as-is', without any express or implied
- warranty.  In no event will the authors be held liable for any damages
- arising from the use of this software.
+License: LGPL-2+
+ This library is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Library General Public License as published by the
+ Free Software Foundation; either version 2 of the License, or (at your
+ option) any later version.
  .
- Permission is granted to anyone to use this software for any purpose,
- including commercial applications, and to alter it and redistribute it
- freely, subject to the following restrictions:
+ This library is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+ for more details.
  .
- 1. The origin of this software must not be misrepresented; you must not
-    claim that you wrote the original software. If you use this software
-    in a product, an acknowledgment in the product documentation would be
-    appreciated but is not required.
- 2. Altered source versions must be plainly marked as such, and must not be
-    misrepresented as being the original software.
- 3. This notice may not be removed or altered from any source distribution.
+ You should have received a copy of the GNU Library General Public License
+ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA.
+ .
+ On Debian systems, the full text of the GNU Library General Public License
+ version 2 can be found in the file `/usr/share/common-licenses/LGPL-2'.
 
-Files:
-  libavcodec/jfdctfst.c
-  libavcodec/jfdctint_template.c
-  libavcodec/jrevdct.c
-Copyright: 1991-1996, Thomas G. Lane
-License: IJG
- The authors make NO WARRANTY or representation, either express or implied,
- with respect to this software, its quality, accuracy, merchantability, or
- fitness for a particular purpose.  This software is provided "AS IS", and
- you, its user, assume the entire risk as to its quality and accuracy.
+License: LGPL-2.1
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License version 2.1 as published by the Free Software Foundation.
  .
- Permission is hereby granted to use, copy, modify, and distribute this
- software (or portions thereof) for any purpose, without fee, subject to
- these conditions:
- (1) If any part of the source code for this software is distributed, then
- this README file must be included, with this copyright and no-warranty
- notice unaltered; and any additions, deletions, or changes to the original
- files must be clearly indicated in accompanying documentation.
- (2) If only executable code is distributed, then the accompanying
- documentation must state that "this software is based in part on the work
- of the Independent JPEG Group".
- (3) Permission for use of this software is granted only if the user accepts
- full responsibility for any undesirable consequences; the authors accept
- NO LIABILITY for damages of any kind.
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
  .
- These conditions apply to any software derived from or based on the IJG
- code, not just to the unmodified library.  If you use our work, you ought
- to acknowledge us.
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  .
- Permission is NOT granted for the use of any IJG author's name or company
- name in advertising or publicity relating to this software or products
- derived from it.  This software may be referred to only as "the Independent
- JPEG Group's software".
- .
- We specifically permit and encourage the use of this software as the basis
- of commercial products, provided that all warranty or liability claims are
- assumed by the product vendor.
-
-License: BSD-3-Clause
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions
- are met:
- 1. Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
- 2. Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
- 3. Neither the name of the MIPS Technologies, Inc., nor the names of its
-    contributors may be used to endorse or promote products derived from
-    this software without specific prior written permission.
- .
- THIS SOFTWARE IS PROVIDED BY THE MIPS TECHNOLOGIES, INC. ``AS IS'' AND
- ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- ARE DISCLAIMED.  IN NO EVENT SHALL THE MIPS TECHNOLOGIES, INC. BE LIABLE
- FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- SUCH DAMAGE.
-
-License: Expat
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- .
- The above copyright notice and this permission notice shall be included in
- all copies or substantial portions of the Software.
- .
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- THE SOFTWARE.
+ On Debian systems, the complete text of the GNU Lesser General Public
+ License can be found in /usr/share/common-licenses/LGPL-2.1 file.
 
 License: LGPL-2.1+
- FFmpeg is free software; you can redistribute it and/or
+ This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
  License as published by the Free Software Foundation; either
  version 2.1 of the License, or (at your option) any later version.
  .
- FFmpeg is distributed in the hope that it will be useful,
+ This library is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  Lesser General Public License for more details.
+ .
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ .
+ On Debian systems, the complete text of the GNU Lesser General Public
+ License can be found in /usr/share/common-licenses/LGPL-2.1 file.
 
-License: Sundry
- This source code is freely redistributable and may be used for
- any purpose.  This copyright notice must be maintained.
- Juergen Mueller And Sundry Contributors are not responsible for
- the consequences of using this software.
+License: WTFPL
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+                    Version 2, December 2004
+ .
+ Everyone is permitted to copy and distribute verbatim or modified
+ copies of this license document, and changing it is allowed as long
+ as the name is changed.
+ .
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+ .
+  0. You just DO WHAT THE FUCK YOU WANT TO.

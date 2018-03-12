@@ -1,23 +1,10 @@
 #!/usr/bin/make -f
 
 DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed
+DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
 include /usr/share/dpkg/pkg-info.mk
 include /usr/share/dpkg/architecture.mk
-
-pluginpackages += access-extra
-pluginpackages += base
-pluginpackages += fluidsynth
-pluginpackages += jack
-pluginpackages += notify
-pluginpackages += qt
-pluginpackages += sdl
-pluginpackages += skins2
-pluginpackages += svg
-pluginpackages += video-output
-pluginpackages += video-splitter
-pluginpackages += visualization
-pluginpackages += zvbi
 
 ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
 confflags += --enable-debug
@@ -28,7 +15,7 @@ confflags += \
 	--config-cache \
 	--disable-update-check \
 	--enable-fast-install \
-	--docdir=/usr/share/doc/vlc-data \
+	--docdir=/usr/share/doc/vlc \
 	--with-binary-version=$(DEB_VERSION) \
 	$(NULL)
 # configure features
@@ -36,12 +23,12 @@ confflags += \
 	--enable-a52 \
 	--enable-aa \
 	--enable-bluray \
-	--enable-bonjour \
+	--enable-avahi \
 	--enable-caca \
 	--enable-chromaprint \
+	--enable-chromecast \
 	--enable-dbus \
 	--enable-dca \
-	--enable-directfb \
 	--enable-dvbpsi \
 	--enable-dvdnav \
 	--enable-faad \
@@ -50,9 +37,9 @@ confflags += \
 	--enable-freerdp \
 	--enable-freetype \
 	--enable-fribidi \
-	--enable-gles1 \
 	--enable-gles2 \
 	--enable-gnutls \
+	--enable-harfbuzz \
 	--enable-jack \
 	--enable-kate \
 	--enable-libass \
@@ -61,11 +48,11 @@ confflags += \
 	--enable-lirc \
 	--enable-live555 \
 	--enable-mad \
-	--enable-mkv \
+	--enable-matroska \
 	--enable-mod \
 	--enable-mpc \
+	--enable-mpg123 \
 	--enable-mtp \
-	--enable-mux_ogg \
 	--enable-ncurses \
 	--enable-notify \
 	--enable-ogg \
@@ -74,13 +61,13 @@ confflags += \
 	--enable-qt \
 	--enable-realrtsp \
 	--enable-samplerate \
-	--enable-sdl \
 	--enable-sdl-image \
 	--enable-sftp \
 	--enable-shine \
 	--enable-shout \
 	--enable-skins2 \
 	--enable-sndio \
+	--enable-soxr \
 	--enable-speex \
 	--enable-svg \
 	--enable-svgdec \
@@ -88,7 +75,6 @@ confflags += \
 	--enable-theora \
 	--enable-twolame \
 	--enable-upnp \
-	--enable-vcdx \
 	--enable-vdpau \
 	--enable-vnc \
 	--enable-vorbis \
@@ -98,33 +84,49 @@ confflags += \
 	--with-kde-solid=/usr/share/solid/actions/ \
 	$(NULL)
 # Reasons for disabling features:
+# d3d11va: Windows only
 # decklink: not in Debian
+# directx: Windows only
+# dsm: not in Debian
 # dxva2: Windows only
-# fdkaac: in Debian non-free
-# gnomevfs: poorly maintained
+# fdkaac: in Debian contrib
+# fluidlite: fluidsynth is enabled
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
 # libtar: security issue (#737534)
+# macosx*: MacOX only
 # mfx: currently not supported on Linux
 # opencv: developer plugin not required by end users
 # projectm: broken
 # schroedinger: removed from Debian (#845037)
+# sparkle: MacOS X only
+# srt: not in Debian
 # telx: incompatible with zvbi
 # vpx: not needed when having libavcodec
 # vsxu: not in Debian
 # wasapi: Windows only
 confflags += \
+	--disable-aribsub \
+	--disable-d3d11va \
 	--disable-decklink \
+	--disable-directx \
+	--disable-dsm \
 	--disable-dxva2 \
 	--disable-fdkaac \
-	--disable-gnomevfs \
+	--disable-fluidlite \
 	--disable-goom \
 	--disable-gst-decode \
+	--disable-libplacebo \
 	--disable-libtar \
+	--disable-macosx \
+	--disable-macosx-avfoundation \
+	--disable-macosx-qtkit \
 	--disable-mfx \
 	--disable-opencv \
 	--disable-projectm \
 	--disable-schroedinger \
+	--disable-sparkle \
+	--disable-srt \
 	--disable-telx \
 	--disable-vpx \
 	--disable-vsxu \
@@ -138,37 +140,41 @@ ifeq ($(DEB_HOST_ARCH_OS),linux)
 # V4L2 is disabled on kFreeBSD due to a build failure.
 confflags += \
 	--enable-alsa \
-	--enable-atmo \
 	--enable-dc1394 \
 	--enable-dv1394 \
 	--enable-linsys \
+	--enable-nfs \
 	--enable-omxil \
 	--enable-udev \
 	--enable-v4l2 \
+	--enable-wayland \
 	$(NULL)
 else
 confflags += \
 	--disable-alsa \
-	--disable-atmo \
 	--disable-dc1394 \
 	--disable-dv1394 \
 	--disable-linsys \
+	--disable-nfs \
 	--disable-omxil \
 	--disable-udev \
 	--disable-v4l2 \
+	--disable-wayland \
 	$(NULL)
 removeplugins += \
 	alsa \
-	atmo \
 	dc1394 \
 	dtv \
 	dv1394 \
 	dvb \
 	fb \
 	linsys \
+	nfs \
 	omxil \
+	systemd \
 	udev \
 	v4l2 \
+	wayland \
 	$(NULL)
 endif
 
@@ -185,8 +191,7 @@ endif
 ifeq (,$(filter-out kfreebsd,$(DEB_HOST_ARCH_OS)))
 confflags += --enable-oss
 else
-# Note: Use ALSA on Linux instead of OSS.
-#       Ubuntu has disabled OSS support in their Linux kernel.
+# Note: Use PulseAudio/ALSA on Linux instead of OSS.
 confflags += --disable-oss
 removeplugins += oss
 endif
@@ -240,94 +245,7 @@ DEB_CXXFLAGS_MAINT_APPEND += -mtune=8548
 endif
 endif
 
-# configuration for embedded ffmpeg
-ffmpegprefix = $(CURDIR)/ffmpeg/install
-ffmpegbuild = $(CURDIR)/ffmpeg/build
-
-ffmpegflags = \
-	--prefix=$(ffmpegprefix) \
-	--enable-pic \
-	--disable-stripping \
-	--enable-static \
-	--disable-shared
-
-# mostly based on contrib/src/ffmpeg/rules.mak
-ffmpegflags += \
-	--disable-doc \
-	--disable-avdevice \
-	--disable-devices \
-	--disable-avfilter \
-	--disable-avresample \
-	--disable-swresample \
-	--disable-programs \
-	--disable-filters \
-	--disable-bsfs \
-	--disable-protocol=concat
-
-# from ffmpeg 7:2.8.6-1 debian/rules and contrib/src/ffmpeg/rules.mak
-ffmpegflags += \
-	--enable-gpl \
-	--enable-gnutls \
-	--disable-libass \
-	--enable-libbluray \
-	--disable-libbs2b \
-	--disable-libcaca \
-	--disable-libcdio \
-	--disable-libflite \
-	--disable-libfontconfig \
-	--disable-libfreetype \
-	--disable-libfribidi \
-	--disable-libopenjpeg \
-	--disable-libschroedinger \
-	--enable-libgme \
-	--enable-libgsm \
-	--enable-libmodplug \
-	--enable-libmp3lame \
-	--enable-libopus \
-	--enable-librtmp \
-	--enable-libshine \
-	--enable-libsnappy \
-	--enable-libsoxr \
-	--enable-libspeex \
-	--enable-libssh \
-	--enable-libtheora \
-	--enable-libtwolame \
-	--enable-libvorbis \
-	--enable-libvpx \
-	--enable-libwavpack \
-	--enable-libwebp \
-	--enable-libx265 \
-	--enable-libxvid \
-	--enable-libzvbi \
-	--disable-openal \
-	--disable-opengl \
-	--disable-x11grab
-
-# Disable altivec optimizations on powerpc, because they are not always
-# available on this architecture.
-ifeq ($(DEB_HOST_ARCH),powerpc)
-ffmpegflags += --disable-altivec
-endif
-
-# Disable assembly optimizations on x32, because they don't work (yet).
-ifneq (,$(filter $(DEB_HOST_ARCH),x32))
-ffmpegflags += --disable-asm
-endif
-
-# Disable optimizations on mips(el) and some on mips64(el), because they are not
-# always available on these architectures.
-ifneq (,$(filter $(DEB_HOST_ARCH),mips mipsel mips64 mips64el))
-ffmpegflags += --disable-mipsdspr1 \
-	--disable-mipsdspr2 \
-	--disable-loongson3
-endif
-ifneq (,$(filter $(DEB_HOST_ARCH),mips mipsel))
-ffmpegflags += --disable-mipsfpu
-endif
-
-# merge ffmpeg based plugins to reduce installation size
-confflags += --enable-merge-ffmpeg
-
+export DEB_BUILD_MAINT_OPTIONS
 export DEB_CFLAGS_MAINT_APPEND
 export DEB_CXXFLAGS_MAINT_APPEND
 export DEB_LDFLAGS_MAINT_APPEND
@@ -336,21 +254,11 @@ export removeplugins
 %:
 	dh $@
 
-override_dh_auto_clean:
-	rm -rf $(ffmpegprefix) $(ffmpegbuild)
-	dh_auto_clean
-
 override_dh_autoreconf:
 	dh_autoreconf --as-needed
 
 override_dh_auto_configure:
-	mkdir -p $(ffmpegbuild) $(ffmpegprefix)
-	cd $(ffmpegbuild) && \
-		$(CURDIR)/ffmpeg-2-8-13/configure $(ffmpegflags)
-	dh_auto_build --sourcedirectory $(ffmpegbuild) -- V=1
-	$(MAKE) -C $(ffmpegbuild) install-libs install-headers V=1
-	PKG_CONFIG_PATH=$(ffmpegprefix)/lib/pkgconfig \
-		dh_auto_configure -- $(confflags)
+	dh_auto_configure -- $(confflags)
 
 override_dh_auto_build:
 	dh_auto_build
@@ -386,11 +294,7 @@ override_dh_install:
 	# Remove additional license files
 	find debian/tmp -name LICENSE -delete
 	# Remove examples installed in -dev packages
-	rm -rf debian/tmp/usr/share/doc/vlc-data/libvlc
-	# Contains only a 404 link
-	find debian/tmp -name bugreport-howto.txt -delete
-	# Remove old BluRay plugin
-	find debian/tmp -name libaccess_bd_plugin.so -delete
+	rm -rf debian/tmp/usr/share/doc/vlc/libvlc
 	# Install
 	dh_install --fail-missing
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
@@ -399,23 +303,28 @@ ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 endif
 	$(if $(shell dpkg-vendor --is Ubuntu && echo true),dh_install -pvlc-bin debian/source_vlc.py usr/share/apport/package-hooks/)
 
-override_dh_installchangelogs:
-	dh_installchangelogs NEWS $(pluginpackages:%=-Nvlc-plugin-%)
-
-override_dh_installdocs:
-	dh_installdocs $(pluginpackages:%=-Nvlc-plugin-%)
-	dh_installdocs --link-doc=libvlccore8 --remaining-packages
 
 override_dh_makeshlibs:
-	dh_makeshlibs -Xlibvlc_vdpau
+	dh_makeshlibs -Xlibvlc_vdpau -Xlibvlc_pulse -Xlibvlc_xcb_events
+
+debian/shlibs.local:
+	echo "libvlc 5 libvlc5 (>= $(DEB_VERSION_UPSTREAM))" > debian/shlibs.local
+	echo "libvlccore 9 libvlccore9 (>= $(DEB_VERSION_UPSTREAM))" >> debian/shlibs.local
+
+override_dh_shlibdeps: debian/shlibs.local
+	dh_shlibdeps
 
 override_dh_bugfiles:
 	dh_bugfiles -A
 
-override_dh_installdeb:
+override_dh_installdeb-arch:
 	sed 's/#DEB_HOST_MULTIARCH#/${DEB_HOST_MULTIARCH}/g' \
 		debian/libvlc-bin.postinst.in > debian/libvlc-bin.postinst
 	sed 's/#DEB_HOST_MULTIARCH#/${DEB_HOST_MULTIARCH}/g' \
-		debian/libvlc-bin.postrm.in > debian/libvlc-bin.postrm
+		debian/libvlc-bin.prerm.in > debian/libvlc-bin.prerm
 	echo 'interest-noawait /usr/lib/${DEB_HOST_MULTIARCH}/vlc/plugins' > debian/libvlc-bin.triggers
-	dh_installdeb
+	dh_installdeb -a
+
+override_dh_gencontrol-arch:
+	sed -n 's/^# define MODULE_SYMBOL \([0-9][_0-9a-z]*\)/-Vvlc:PluginABI=vlc-plugin-abi-\1/p' \
+		include/vlc_plugin.h | tr _ - | xargs dh_gencontrol -a --

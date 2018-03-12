@@ -1,0 +1,10 @@
+#! /bin/sh
+set -e
+
+#DEBHELPER#
+
+case "$1" in
+    remove)
+        rm -f /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins/plugins.dat
+        ;;
+esac
