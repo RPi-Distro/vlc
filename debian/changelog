@@ -1,8 +1,33 @@
 vlc (3.0.1-0+deb9u1) UNRELEASED; urgency=medium
 
-  * New usptream release.
+  * New upstream release following the LTS release branch.
+    - Install vlc_interface.h. (Closes: #768808)
+    - Fix stuttering with ALSA output. (Closes: #734100)
+    - Fix CRC errors in some FLAC files. (Closes: #772503)
+    - Add support for Wayland. (Closes: #857769)
+    - Better support for HLS. (Closes: #792647)
+    - Update VLSub. (Closes: #868236)
+    - Fix issues with green borders. (Closes: #765969)
+  * Remove embedded copy of ffmpeg.
+  * debian/: Adapt to vlc 3.0 packaging:
+    - Drop ffmpeg build dependencies.
+    - Remove unused build dependencies: libcdio-dev, libdirectfb-dev,
+      libgles1-mesa-dev.
+    - Add new build dependencies: bison, flex, libarchive-dev,
+      libharfbuzz-dev, libmicrodns-dev, libmpg123-dev, libnfs-dev,
+      libprotobuf-dev, libqt5svg5-dev, libsecret-1-dev, libsoxr-dev,
+      libsystemd-dev, protobuf-compiler, wayland-protocols.
+    - Drop vlc-plugin-sdl.
+    - Turn vlc-plugin-zvbi into a transitional package.
+    - Update Breaks+Replaces versions.
+    - Remove patches integrated upstream.
+    - Update copyright information.
+    - Add new symbols.
+    - Enable all hardening options.
+    - Update configure flags for 3.0.
+    - Update install files for new and removed plugins.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 12 Mar 2018 20:19:25 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 12 Mar 2018 23:37:49 +0100
 
 vlc (2.2.7-1~deb9u1) stretch-security; urgency=high
 
