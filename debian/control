@@ -194,8 +194,8 @@ Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Recommends: libvlc-bin (= ${binary:Version})
-Breaks: phonon-backend-vlc (<< 0.9.1-2~),
-        phonon4qt5-backend-vlc (<< 0.9.1-2~)
+Breaks: phonon-backend-vlc (<< 0.9.0-2+deb9u1~),
+        phonon4qt5-backend-vlc (<< 0.9.0-2+deb9u1~)
 Description: multimedia player and streamer library
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
