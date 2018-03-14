@@ -323,6 +323,7 @@ Description: multimedia player and streamer (extra access plugins)
 Package: vlc-plugin-video-output
 Architecture: any
 Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          ${vlc:PluginABI}
@@ -339,6 +340,7 @@ Description: multimedia player and streamer (video output plugins)
 Package: vlc-plugin-video-splitter
 Architecture: any
 Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          ${vlc:PluginABI}
@@ -353,6 +355,7 @@ Description: multimedia player and streamer (video splitter plugins)
 Package: vlc-plugin-visualization
 Architecture: any
 Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          ${vlc:PluginABI}
