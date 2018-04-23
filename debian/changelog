@@ -1,3 +1,15 @@
+vlc (3.0.2-1) UNRELEASED; urgency=medium
+
+  [ Felipe Sateler ]
+  * Change maintainer address to debian-multimedia@lists.debian.org
+
+  [ Sebastian Ramacher ]
+  * New upstream version.
+  * debian/rules: Install correct changelog.
+  * debian/control: Bump Standards-Version.
+
+ -- Sebastian Ramacher <sebastian.ramacher@iaik.tugraz.at>  Mon, 23 Apr 2018 16:31:58 +0200
+
 vlc (3.0.1-3) unstable; urgency=medium
 
   * debian/control: Re-add some Breaks+Replaces to help Ubuntu reduce the diff
