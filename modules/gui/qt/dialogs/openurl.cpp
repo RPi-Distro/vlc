@@ -2,7 +2,7 @@
  * openurl.cpp: Open a MRL or clipboard content
  *****************************************************************************
  * Copyright © 2009 the VideoLAN team
- * $Id: 2e4606c371df31273ff7e442d1f4a3a6654465a0 $
+ * $Id: 8895879c636d7ecf70c9982605f75f34c431f29c $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
@@ -83,13 +83,13 @@ OpenUrlDialog::OpenUrlDialog( intf_thread_t *_p_intf,
 void OpenUrlDialog::enqueue()
 {
     bShouldEnqueue = true;
-    lastUrl = edit->text();
+    lastUrl = edit->text().trimmed();
     accept();
 }
 
 void OpenUrlDialog::play()
 {
-    lastUrl = edit->text();
+    lastUrl = edit->text().trimmed();
     accept();
 }
 

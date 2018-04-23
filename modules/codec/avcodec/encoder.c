@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: df8f663b861dcd72b1456e3974dbdc799b8de34b $
+ * $Id: d09a5b01f0241c69ba5bdd6eff7124660b8e7cdd $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -344,12 +344,15 @@ int InitVideoEnc( vlc_object_t *p_this )
     {
         p_codec = avcodec_find_encoder_by_name( psz_encoder );
         if( !p_codec )
+        {
             msg_Err( p_this, "Encoder `%s' not found", psz_encoder );
+            return VLC_EGENERIC;
+        }
         else if( p_codec->id != i_codec_id )
         {
             msg_Err( p_this, "Encoder `%s' can't handle %4.4s",
                     psz_encoder, (char*)&p_enc->fmt_out.i_codec );
-            p_codec = NULL;
+            return VLC_EGENERIC;
         }
     }
     free( psz_encoder );
@@ -540,12 +543,26 @@ int InitVideoEnc( vlc_object_t *p_this )
 
         if( p_codec->pix_fmts )
         {
+            static const enum AVPixelFormat vlc_pix_fmts[] = {
+                AV_PIX_FMT_YUV420P,
+                AV_PIX_FMT_NV12,
+                AV_PIX_FMT_RGB24,
+            };
+            bool found = false;
             const enum PixelFormat *p = p_codec->pix_fmts;
-            for( ; *p != -1; p++ )
+            for( ; !found && *p != -1; p++ )
             {
-                if( *p == p_context->pix_fmt ) break;
+                for( size_t i = 0; i < ARRAY_SIZE(vlc_pix_fmts); ++i )
+                {
+                    if( *p == vlc_pix_fmts[i] )
+                    {
+                        found = true;
+                        p_context->pix_fmt = *p;
+                        break;
+                    }
+                }
             }
-            if( *p == -1 ) p_context->pix_fmt = p_codec->pix_fmts[0];
+            if (!found) p_context->pix_fmt = p_codec->pix_fmts[0];
             GetVlcChroma( &p_enc->fmt_in.video, p_context->pix_fmt );
             p_enc->fmt_in.i_codec = p_enc->fmt_in.video.i_chroma;
         }
@@ -1121,7 +1138,7 @@ static block_t *encode_avframe( encoder_t *p_enc, encoder_sys_t *p_sys, AVFrame 
     int ret = avcodec_send_frame( p_sys->p_context, frame );
     if( frame && ret != 0 && ret != AVERROR(EAGAIN) )
     {
-        msg_Warn( p_enc, "cannot send one frame to encoder");
+        msg_Warn( p_enc, "cannot send one frame to encoder %d", ret );
         return NULL;
     }
     ret = avcodec_receive_packet( p_sys->p_context, &av_pkt );

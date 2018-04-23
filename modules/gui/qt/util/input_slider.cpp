@@ -2,7 +2,7 @@
  * input_slider.cpp : VolumeSlider and SeekSlider
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: f76a784617743df4d80896501d9d9f7f0bbe8120 $
+ * $Id: 54b476d7b4a3abc9bae6c3f67bb05a4d089e16a0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -63,8 +63,8 @@ namespace {
     int const FADEOUT_DELAY = 2000;
 }
 
-SeekSlider::SeekSlider( Qt::Orientation q, QWidget *_parent, bool _static )
-          : QSlider( q, _parent ), b_classic( _static ), animLoading( NULL )
+SeekSlider::SeekSlider( intf_thread_t *p_intf, Qt::Orientation q, QWidget *_parent, bool _static )
+          : QSlider( q, _parent ), p_intf( p_intf ), b_classic( _static ), animLoading( NULL )
 {
     isSliding = false;
     isJumping = false;
@@ -401,10 +401,12 @@ void SeekSlider::wheelEvent( QWheelEvent *event )
     /* Don't do anything if we are for somehow reason sliding */
     if( !isSliding && isEnabled() )
     {
-        setValue( value() + event->delta() / 12 ); /* 12 = 8 * 15 / 10
-         Since delta is in 1/8 of ° and mouse have steps of 15 °
-         and that our slider is in 0.1% and we want one step to be a 1%
-         increment of position */
+        mtime_t i_size = var_InheritInteger( p_intf->obj.libvlc, "short-jump-size" );
+        int i_mode = var_InheritInteger( p_intf->obj.libvlc, "hotkeys-x-wheel-mode" );
+        if ( ( event->delta() < 0 && i_mode != 3 ) || ( event->delta() > 0 && i_mode == 3 ) )
+            i_size = - i_size;
+        float posOffset = static_cast<float>( i_size ) / static_cast<float>( inputLength );
+        setValue( value() + posOffset * maximum() );
         emit sliderDragged( value() / static_cast<float>( maximum() ) );
     }
     event->accept();

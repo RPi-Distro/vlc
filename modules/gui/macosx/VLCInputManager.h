@@ -2,7 +2,7 @@
  * VLCInputManager.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: c76a8a115228c64c272f33fa4bc3fa65f6f9707f $
+ * $Id: 3a21e6184faadbface0835e940915d2258387492 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@
 @interface VLCInputManager : NSObject
 
 - (id)initWithMain:(VLCMain *)o_mainObj;
+- (void)deinit;
 
 - (void)inputThreadChanged;
 

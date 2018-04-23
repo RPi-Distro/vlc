@@ -2,7 +2,7 @@
  * media_list_player.c: libvlc new API media_list player functions
  *****************************************************************************
  * Copyright (C) 2007-2015 VLC authors and VideoLAN
- * $Id: d73415b1b3fed93820e24ada6d6a735e9505dbd2 $
+ * $Id: 7f4d427f632098b26be956ec4289d15967ab4f7d $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *          Niles Bindel <zaggal69 # gmail.com>
@@ -159,8 +159,10 @@ get_next_path(libvlc_media_list_player_t * p_mlp, bool b_loop)
     /* If item just gained a sublist just play it */
     if (p_sublist_of_playing_item)
     {
+        int i_count = libvlc_media_list_count(p_sublist_of_playing_item);
         libvlc_media_list_release(p_sublist_of_playing_item);
-        return libvlc_media_list_path_copy_by_appending(p_mlp->current_playing_item_path, 0);
+        if (i_count > 0)
+            return libvlc_media_list_path_copy_by_appending(p_mlp->current_playing_item_path, 0);
     }
 
     /* Try to catch parent element */

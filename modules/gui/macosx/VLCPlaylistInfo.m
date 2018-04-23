@@ -2,7 +2,7 @@
  * VLCPlaylistInfo.m: Controller for the codec info panel
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 541b27630189816d2d58db7403a482dde3e3c32c $
+ * $Id: e46b0f13bd2ea154a9b45ad67251a124084afa7f $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -64,10 +64,9 @@
     [_authorLabel setStringValue: _NS("Artist")];
     [_saveMetaDataButton setStringValue: _NS("Save Metadata")];
 
-    [[_tabView tabViewItemAtIndex: 0] setLabel: _NS("General")];
-    [[_tabView tabViewItemAtIndex: 1] setLabel: _NS("Codec Details")];
-    [[_tabView tabViewItemAtIndex: 2] setLabel: _NS("Statistics")];
-    [_tabView selectTabViewItemAtIndex: 0];
+    [_segmentedView setLabel:_NS("General") forSegment:0];
+    [_segmentedView setLabel:_NS("Codec Details") forSegment:1];
+    [_segmentedView setLabel:_NS("Statistics") forSegment:2];
 
     /* constants defined in vlc_meta.h */
     [_genreLabel setStringValue: _NS(VLC_META_GENRE)];
@@ -102,8 +101,8 @@
 
     b_stats = var_InheritBool(getIntf(), "stats");
     if (!b_stats) {
-        if ([_tabView numberOfTabViewItems] > 2)
-            [_tabView removeTabViewItem: [_tabView tabViewItemAtIndex: 2]];
+        if ([_segmentedView segmentCount] >= 3)
+            [_segmentedView setSegmentCount: 2];
     }
     else
         [self initMediaPanelStats];

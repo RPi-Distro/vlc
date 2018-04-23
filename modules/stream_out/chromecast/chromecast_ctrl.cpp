@@ -91,13 +91,14 @@ intf_sys_t::intf_sys_t(vlc_object_t * const p_this, int port, std::string device
                        int device_port, httpd_host_t *httpd_host)
  : m_module(p_this)
  , m_streaming_port(port)
+ , m_device_port(device_port)
+ , m_device_addr(device_addr)
  , m_last_request_id( 0 )
  , m_mediaSessionId( 0 )
  , m_on_input_event( NULL )
  , m_on_input_event_data( NULL )
  , m_on_paused_changed( NULL )
  , m_on_paused_changed_data( NULL )
- , m_communication( p_this, device_addr.c_str(), device_port )
  , m_state( Authenticating )
  , m_retry_on_fail( false )
  , m_played_once( false )
@@ -117,6 +118,9 @@ intf_sys_t::intf_sys_t(vlc_object_t * const p_this, int port, std::string device
  , m_pause_delay( VLC_TS_INVALID )
  , m_pingRetriesLeft( PING_WAIT_RETRIES )
 {
+    m_communication = new ChromecastCommunication( p_this, m_device_addr.c_str(),
+                                                   m_device_port );
+
     m_ctl_thread_interrupt = vlc_interrupt_create();
     if( unlikely(m_ctl_thread_interrupt == NULL) )
         throw std::runtime_error( "error creating interrupt context" );
@@ -126,11 +130,11 @@ intf_sys_t::intf_sys_t(vlc_object_t * const p_this, int port, std::string device
     vlc_cond_init( &m_pace_cond );
 
     std::stringstream ss;
-    ss << "http://" << m_communication.getServerIp() << ":" << port;
+    ss << "http://" << m_communication->getServerIp() << ":" << port;
     m_art_http_ip = ss.str();
 
     m_common.p_opaque = this;
-    m_common.pf_set_on_paused_changed_cb = set_on_paused_changed_cb;
+    m_common.pf_set_demux_enabled = set_demux_enabled;
     m_common.pf_get_time         = get_time;
     m_common.pf_pace             = pace;
     m_common.pf_send_input_event = send_input_event;
@@ -158,31 +162,37 @@ intf_sys_t::~intf_sys_t()
     var_Destroy( m_module->obj.parent->obj.parent, CC_SHARED_VAR_NAME );
 
     vlc_mutex_lock(&m_lock);
-    switch ( m_state )
+    if( m_communication )
     {
-    case Ready:
-    case Loading:
-    case Buffering:
-    case Playing:
-    case Paused:
-    case Stopping:
-    case Stopped:
-        // Generate the close messages.
-        m_communication.msgReceiverClose( m_appTransportId );
-        /* fallthrough */
-    case Connecting:
-    case Connected:
-    case Launching:
-        m_communication.msgReceiverClose(DEFAULT_CHOMECAST_RECEIVER);
-        /* fallthrough */
-    default:
-        break;
+        switch ( m_state )
+        {
+        case Ready:
+        case Loading:
+        case Buffering:
+        case Playing:
+        case Paused:
+        case Stopping:
+        case Stopped:
+            // Generate the close messages.
+            m_communication->msgReceiverClose( m_appTransportId );
+            /* fallthrough */
+        case Connecting:
+        case Connected:
+        case Launching:
+            m_communication->msgReceiverClose(DEFAULT_CHOMECAST_RECEIVER);
+            /* fallthrough */
+        default:
+            break;
+        }
+
+        vlc_mutex_unlock(&m_lock);
+        vlc_interrupt_kill( m_ctl_thread_interrupt );
+        vlc_join(m_chromecastThread, NULL);
+
+        delete m_communication;
     }
-    vlc_mutex_unlock(&m_lock);
-
-    vlc_interrupt_kill( m_ctl_thread_interrupt );
-
-    vlc_join(m_chromecastThread, NULL);
+    else
+        vlc_mutex_unlock(&m_lock);
 
     vlc_interrupt_destroy( m_ctl_thread_interrupt );
 
@@ -197,6 +207,38 @@ intf_sys_t::~intf_sys_t()
     vlc_cond_destroy(&m_stateChangedCond);
     vlc_cond_destroy(&m_pace_cond);
     vlc_mutex_destroy(&m_lock);
+}
+
+void intf_sys_t::reinit()
+{
+    assert( m_state == Dead );
+
+    if( m_communication )
+    {
+        vlc_join( m_chromecastThread, NULL );
+        delete m_communication;
+        m_communication = NULL;
+    }
+
+    try
+    {
+        m_communication = new ChromecastCommunication( m_module,
+                                                       m_device_addr.c_str(),
+                                                       m_device_port );
+    } catch (const std::runtime_error& err )
+    {
+        msg_Warn( m_module, "failed to re-init ChromecastCommunication (%s)", err.what() );
+        m_communication = NULL;
+        return;
+    }
+
+    m_state = Authenticating;
+    if( vlc_clone( &m_chromecastThread, ChromecastThread, this, VLC_THREAD_PRIORITY_LOW) )
+    {
+        m_state = Dead;
+        delete m_communication;
+        m_communication = NULL;
+    }
 }
 
 int intf_sys_t::httpd_file_fill( uint8_t *psz_request, uint8_t **pp_data, int *pi_data )
@@ -313,10 +355,11 @@ void intf_sys_t::tryLoad()
         }
         else if( m_state == Connected )
         {
+            assert( m_communication );
             msg_Dbg( m_module, "Starting the media receiver application" );
             // Don't use setState as we don't want to signal the condition in this case.
             m_state = Launching;
-            m_communication.msgReceiverLaunchApp();
+            m_communication->msgReceiverLaunchApp();
         }
         return;
     }
@@ -328,7 +371,7 @@ void intf_sys_t::tryLoad()
     // Reset the mediaSessionID to allow the new session to become the current one.
     // we cannot start a new load when the last one is still processing
     m_last_request_id =
-        m_communication.msgPlayerLoad( m_appTransportId, m_streaming_port,
+        m_communication->msgPlayerLoad( m_appTransportId, m_streaming_port,
                                        m_mime, m_meta );
     if( m_last_request_id != ChromecastCommunication::kInvalidId )
         m_state = Loading;
@@ -344,6 +387,9 @@ void intf_sys_t::setHasInput( const std::string mime_type )
 {
     vlc_mutex_locker locker(&m_lock);
     msg_Dbg( m_module, "Loading content" );
+
+    if( m_state == Dead )
+        reinit();
 
     this->m_mime = mime_type;
 
@@ -405,6 +451,7 @@ bool intf_sys_t::isStateReady() const
         case Authenticating:
         case Connecting:
         case Stopping:
+        case Stopped:
         case Dead:
             return false;
         default:
@@ -459,10 +506,11 @@ int intf_sys_t::pace()
         return CC_PACE_OK_ENDED;
     else if( isStateError() || m_state == Stopped )
     {
-        States error_state = m_state;
-        m_state = Ready;
-        if( error_state == LoadFailed && m_retry_on_fail )
+        if( m_state == LoadFailed && m_retry_on_fail )
+        {
+            m_state = Ready;
             return CC_PACE_ERR_RETRY;
+        }
         return CC_PACE_ERR;
     }
 
@@ -501,7 +549,7 @@ void intf_sys_t::sendInputEvent(enum cc_input_event event, union cc_input_arg ar
  * @param msg the CastMessage to process
  * @return 0 if the message has been successfuly processed else -1
  */
-void intf_sys_t::processMessage(const castchannel::CastMessage &msg)
+bool intf_sys_t::processMessage(const castchannel::CastMessage &msg)
 {
     const std::string & namespace_ = msg.namespace_();
 
@@ -509,12 +557,13 @@ void intf_sys_t::processMessage(const castchannel::CastMessage &msg)
     msg_Dbg( m_module, "processMessage: %s->%s %s", namespace_.c_str(), msg.destination_id().c_str(), msg.payload_utf8().c_str());
 #endif
 
+    bool ret = true;
     if (namespace_ == NAMESPACE_DEVICEAUTH)
         processAuthMessage( msg );
     else if (namespace_ == NAMESPACE_HEARTBEAT)
         processHeartBeatMessage( msg );
     else if (namespace_ == NAMESPACE_RECEIVER)
-        processReceiverMessage( msg );
+        ret = processReceiverMessage( msg );
     else if (namespace_ == NAMESPACE_MEDIA)
         processMediaMessage( msg );
     else if (namespace_ == NAMESPACE_CONNECTION)
@@ -523,6 +572,7 @@ void intf_sys_t::processMessage(const castchannel::CastMessage &msg)
     {
         msg_Err( m_module, "Unknown namespace: %s", msg.namespace_().c_str());
     }
+    return ret;
 }
 
 void intf_sys_t::queueMessage( QueueableMessages msg )
@@ -548,7 +598,7 @@ void intf_sys_t::mainLoop()
     vlc_interrupt_set( m_ctl_thread_interrupt );
 
     // State was already initialized as Authenticating
-    m_communication.msgAuth();
+    m_communication->msgAuth();
 
     while ( !vlc_killed() )
     {
@@ -593,8 +643,8 @@ void intf_sys_t::processAuthMessage( const castchannel::CastMessage& msg )
     {
         vlc_mutex_locker locker(&m_lock);
         setState( Connecting );
-        m_communication.msgConnect(DEFAULT_CHOMECAST_RECEIVER);
-        m_communication.msgReceiverGetStatus();
+        m_communication->msgConnect(DEFAULT_CHOMECAST_RECEIVER);
+        m_communication->msgReceiverGetStatus();
     }
 }
 
@@ -606,7 +656,7 @@ void intf_sys_t::processHeartBeatMessage( const castchannel::CastMessage& msg )
     if (type == "PING")
     {
         msg_Dbg( m_module, "PING received from the Chromecast");
-        m_communication.msgPong();
+        m_communication->msgPong();
     }
     else if (type == "PONG")
     {
@@ -621,11 +671,12 @@ void intf_sys_t::processHeartBeatMessage( const castchannel::CastMessage& msg )
     json_value_free(p_data);
 }
 
-void intf_sys_t::processReceiverMessage( const castchannel::CastMessage& msg )
+bool intf_sys_t::processReceiverMessage( const castchannel::CastMessage& msg )
 {
     json_value *p_data = json_parse(msg.payload_utf8().c_str());
     std::string type((*p_data)["type"]);
 
+    bool ret = true;
     if (type == "RECEIVER_STATUS")
     {
         json_value applications = (*p_data)["status"]["applications"];
@@ -654,7 +705,7 @@ void intf_sys_t::processReceiverMessage( const castchannel::CastMessage& msg )
             {
                 msg_Dbg( m_module, "Media receiver application was already running" );
                 m_appTransportId = (const char*)(*p_app)["transportId"];
-                m_communication.msgConnect( m_appTransportId );
+                m_communication->msgConnect( m_appTransportId );
                 setState( Ready );
             }
             else
@@ -668,7 +719,7 @@ void intf_sys_t::processReceiverMessage( const castchannel::CastMessage& msg )
             {
                 msg_Dbg( m_module, "Media receiver application has been started." );
                 m_appTransportId = (const char*)(*p_app)["transportId"];
-                m_communication.msgConnect( m_appTransportId );
+                m_communication->msgConnect( m_appTransportId );
                 setState( Ready );
             }
             break;
@@ -698,7 +749,7 @@ void intf_sys_t::processReceiverMessage( const castchannel::CastMessage& msg )
             // This is likely because the chromecast refused the playback, but
             // let's check by explicitely probing the media status
             if (m_last_request_id == 0)
-                m_last_request_id = m_communication.msgPlayerGetStatus( m_appTransportId );
+                m_last_request_id = m_communication->msgPlayerGetStatus( m_appTransportId );
             break;
         }
     }
@@ -711,6 +762,7 @@ void intf_sys_t::processReceiverMessage( const castchannel::CastMessage& msg )
         m_appTransportId = "";
         m_mediaSessionId = 0;
         setState( Dead );
+        ret = false;
     }
     else
     {
@@ -719,6 +771,7 @@ void intf_sys_t::processReceiverMessage( const castchannel::CastMessage& msg )
     }
 
     json_value_free(p_data);
+    return ret;
 }
 
 void intf_sys_t::processMediaMessage( const castchannel::CastMessage& msg )
@@ -748,7 +801,7 @@ void intf_sys_t::processMediaMessage( const castchannel::CastMessage& msg )
                 status[0]["playerState"].operator const char *(),
                 sessionId );
 
-        if ((m_mediaSessionId != sessionId && m_mediaSessionId != 0))
+        if (sessionId != 0 && m_mediaSessionId != 0 && m_mediaSessionId != sessionId)
         {
             msg_Warn( m_module, "Ignoring message for a different media session");
             json_value_free(p_data);
@@ -802,7 +855,7 @@ void intf_sys_t::processMediaMessage( const castchannel::CastMessage& msg )
             {
                 m_request_stop = false;
                 m_last_request_id =
-                    m_communication.msgPlayerStop( m_appTransportId, m_mediaSessionId );
+                    m_communication->msgPlayerStop( m_appTransportId, m_mediaSessionId );
                 setState( Stopping );
             }
             else if (newPlayerState == "PLAYING")
@@ -905,7 +958,7 @@ bool intf_sys_t::handleMessages()
     {
         // If we haven't received the payload size yet, let's wait for it. Otherwise, we know
         // how many bytes to read
-        ssize_t i_ret = m_communication.receive( p_packet + i_received,
+        ssize_t i_ret = m_communication->receive( p_packet + i_received,
                                         i_payloadSize + PACKET_HEADER_LEN - i_received,
                                         PING_WAIT_TIME - ( mdate() - i_begin_time ) / CLOCK_FREQ,
                                         &b_timeout );
@@ -930,8 +983,8 @@ bool intf_sys_t::handleMessages()
                 return false;
             }
             --m_pingRetriesLeft;
-            m_communication.msgPing();
-            m_communication.msgReceiverGetStatus();
+            m_communication->msgPing();
+            m_communication->msgReceiverGetStatus();
             return true;
         }
         assert( i_ret != 0 );
@@ -954,8 +1007,7 @@ bool intf_sys_t::handleMessages()
     }
     castchannel::CastMessage msg;
     msg.ParseFromArray(p_packet + PACKET_HEADER_LEN, i_payloadSize);
-    processMessage(msg);
-    return true;
+    return processMessage(msg);
 }
 
 void intf_sys_t::doStop()
@@ -968,7 +1020,7 @@ void intf_sys_t::doStop()
     else
     {
         m_last_request_id =
-            m_communication.msgPlayerStop( m_appTransportId, m_mediaSessionId );
+            m_communication->msgPlayerStop( m_appTransportId, m_mediaSessionId );
         setState( Stopping );
     }
 }
@@ -1020,18 +1072,25 @@ void intf_sys_t::setOnInputEventCb(on_input_event_itf on_input_event,
     m_on_input_event_data = on_input_event_data;
 }
 
-void intf_sys_t::setOnPausedChangedCb(on_paused_changed_itf on_paused_changed,
-                                      void *on_paused_changed_data)
+void intf_sys_t::setDemuxEnabled(bool enabled,
+                                 on_paused_changed_itf on_paused_changed,
+                                 void *on_paused_changed_data)
 {
     vlc_mutex_locker locker(&m_lock);
     m_on_paused_changed = on_paused_changed;
     m_on_paused_changed_data = on_paused_changed_data;
+
+    if( enabled )
+    {
+        if( m_state == Dead && !vlc_killed() )
+            reinit();
+    }
 }
 
 void intf_sys_t::setPauseState(bool paused, mtime_t delay)
 {
     vlc_mutex_locker locker( &m_lock );
-    if ( m_mediaSessionId == 0 || paused == m_paused )
+    if ( m_mediaSessionId == 0 || paused == m_paused || !m_communication )
         return;
 
     m_paused = paused;
@@ -1039,12 +1098,12 @@ void intf_sys_t::setPauseState(bool paused, mtime_t delay)
     if ( !paused )
     {
         m_last_request_id =
-            m_communication.msgPlayerPlay( m_appTransportId, m_mediaSessionId );
+            m_communication->msgPlayerPlay( m_appTransportId, m_mediaSessionId );
         m_pause_delay = delay;
     }
     else if ( m_state != Paused )
         m_last_request_id =
-            m_communication.msgPlayerPause( m_appTransportId, m_mediaSessionId );
+            m_communication->msgPlayerPause( m_appTransportId, m_mediaSessionId );
 }
 
 mtime_t intf_sys_t::getPauseDelay()
@@ -1078,13 +1137,14 @@ mtime_t intf_sys_t::getPlaybackTimestamp()
             /* fallthrough */
         case Playing:
         {
+            assert( m_communication );
             mtime_t now = mdate();
             if( m_state == Playing && m_last_request_id == 0
              && now - m_cc_time_last_request_date > INT64_C(4000000) )
             {
                 m_cc_time_last_request_date = now;
                 m_last_request_id =
-                    m_communication.msgPlayerGetStatus( m_appTransportId );
+                    m_communication->msgPlayerGetStatus( m_appTransportId );
             }
             return m_cc_time + now - m_cc_time_date;
         }
@@ -1131,11 +1191,11 @@ mtime_t intf_sys_t::get_time(void *pt)
     return p_this->getPlaybackTimestamp();
 }
 
-void intf_sys_t::set_on_paused_changed_cb(void *pt,
-                                          on_paused_changed_itf itf, void *data)
+void intf_sys_t::set_demux_enabled(void *pt, bool enabled,
+                                   on_paused_changed_itf itf, void *data)
 {
     intf_sys_t *p_this = static_cast<intf_sys_t*>(pt);
-    p_this->setOnPausedChangedCb(itf, data);
+    p_this->setDemuxEnabled(enabled, itf, data);
 }
 
 int intf_sys_t::pace(void *pt)

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
  * Copyright (C) 2013      Vianney Boyer
- * $Id: 2a041986b1a42374140e2da44dda1e9a09832c4e $
+ * $Id: 37e6a8b4c2f0cfc92b8edcfb3a1a0a8832cb3ff3 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Vianney Boyer <vlcvboyer -at- gmail -dot- com>
@@ -138,7 +138,7 @@ static int Open( vlc_object_t *p_this )
 
     const vlc_chroma_description_t *p_chroma =
         vlc_fourcc_GetChromaDescription( p_filter->fmt_in.video.i_chroma );
-    if( p_chroma == NULL || p_chroma->plane_count == 0 )
+    if( p_chroma == NULL || p_chroma->plane_count == 0 || p_chroma->pixel_size > 1 )
         return VLC_EGENERIC;
 
     /* Allocate structure */

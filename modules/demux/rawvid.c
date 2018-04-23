@@ -2,7 +2,7 @@
  * rawvid.c : raw video input module for vlc
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 5abe796feb9c49d1577a3ed96e07940e48f4df91 $
+ * $Id: 6f40c48afdc79706ca534df86b24daccd244e504 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan d.t org>
@@ -349,8 +349,19 @@ valid:
                  (char*)&i_chroma );
         goto error;
     }
-    p_sys->frame_size = i_width * i_height
-                        * p_sys->fmt_video.video.i_bits_per_pixel / 8;
+    const vlc_chroma_description_t *dsc =
+            vlc_fourcc_GetChromaDescription(p_sys->fmt_video.video.i_chroma);
+    if (unlikely(dsc == NULL))
+        goto error;
+    p_sys->frame_size = 0;
+    for (unsigned i=0; i<dsc->plane_count; i++)
+    {
+        unsigned pitch = (i_width + (dsc->p[i].w.den - 1))
+                         * dsc->p[i].w.num / dsc->p[i].w.den * dsc->pixel_size;
+        unsigned lines = (i_height + (dsc->p[i].h.den - 1))
+                         * dsc->p[i].h.num / dsc->p[i].h.den;
+        p_sys->frame_size += pitch * lines;
+    }
     p_sys->p_es_video = es_out_Add( p_demux->out, &p_sys->fmt_video );
 
     p_demux->pf_demux   = Demux;

@@ -133,16 +133,16 @@ local options = {
       <a href='http://addons.videolan.org'>addons.videolan.org</a>.
       ]],
     int_no_support_mess = [[
-      <strong>VLSub is not working with Vlc 2.1.x on
+      <strong>VLSub is not working with VLC 2.1.x on
       any platform</strong>
       because the lua "net" module needed to interact
       with opensubtitles has been
       removed in this release for the extensions.
       <br>
-      <strong>Works with Vlc 2.2 on mac and linux.</strong>
+      <strong>Works with VLC 2.2 on mac and linux.</strong>
       <br>
       <strong>On windows you have to install an older version
-      of Vlc (2.0.8 for example)</strong>
+      of VLC (2.0.8 for example)</strong>
       to use Vlsub:
       <br>
       <a target="_blank" rel="nofollow"
@@ -181,7 +181,8 @@ local options = {
     mess_err_conf_access ='Can\'t find a suitable path to save'..
       'config, please set it manually',
     mess_err_wrong_path ='the path contains illegal character, '..
-      'please correct it'
+      'please correct it',
+    mess_err_hash = 'Failed to generate hash'
   }
 }
 
@@ -328,8 +329,8 @@ local select_conf = {} -- Drop down widget / option table association
 
 function descriptor()
   return {
-    title = "VLsub 0.10.0",
-    version = "0.10.0",
+    title = "VLsub 0.11.0",
+    version = "0.11.0",
     author = "exebetche",
     url = 'http://www.opensubtitles.org/',
     shortdesc = "VLsub";
@@ -342,8 +343,8 @@ function activate()
   vlc.msg.dbg("[VLsub] Welcome")
 
   if not check_config() then
-  	vlc.msg.err("[VLsub] Unsupported VLC version")
-  	return false
+        vlc.msg.err("[VLsub] Unsupported VLC version")
+        return false
   end
 
   if vlc.input.item() then
@@ -463,24 +464,6 @@ function interface_config()
     lang["int_remove_tag"]..':', 1, 5, 0, 1)
   input_table['removeTag'] = dlg:add_dropdown(3, 5, 1, 1)
 
-  if openSub.conf.dirPath then
-    if openSub.conf.os == "win" then
-      dlg:add_label(
-        "<a href='file:///"..openSub.conf.dirPath.."'>"..
-        lang["int_vlsub_work_dir"].."</a>", 1, 6, 2, 1)
-    else
-      dlg:add_label(
-        "<a href='"..openSub.conf.dirPath.."'>"..
-        lang["int_vlsub_work_dir"].."</a>", 1, 6, 2, 1)
-    end
-  else
-    dlg	:add_label(
-      lang["int_vlsub_work_dir"], 1, 6, 2, 1)
-  end
-
-  input_table['dir_path'] = dlg:add_text_input(
-    openSub.conf.dirPath, 2, 6, 2, 1)
-
   dlg:add_label(
     lang["int_os_username"]..':', 1, 7, 0, 1)
   input_table['os_username'] = dlg:add_text_input(
@@ -488,7 +471,7 @@ function interface_config()
     and openSub.option.os_username or "", 2, 7, 2, 1)
   dlg:add_label(
     lang["int_os_password"]..':', 1, 8, 0, 1)
-  input_table['os_password'] = dlg:add_text_input(
+  input_table['os_password'] = dlg:add_password(
     type(openSub.option.os_password) == "string"
     and openSub.option.os_password or "", 2, 8, 2, 1)
 
@@ -671,104 +654,34 @@ function check_config()
     trsl_names[lg[1]] = lg[2]
   end
 
-  if is_window_path(vlc.config.datadir()) then
+  slash = package.config:sub(1,1)
+  if slash == "\\" then
     openSub.conf.os = "win"
-    slash = "\\"
   else
     openSub.conf.os = "lin"
-    slash = "/"
   end
 
-  local path_generic = {"lua", "extensions", "userdata", "vlsub"}
-  local dirPath = slash..table.concat(path_generic, slash)
   local filePath	= slash.."vlsub_conf.xml"
-  local config_saved = false
-  sub_dir = slash.."vlsub_subtitles"
 
-  -- Check if config file path is stored in vlc config
-  local other_dirs = {}
-
-  for path in
-  vlc.config.get("sub-autodetect-path"):gmatch("[^,]+") do
-    if path:match(".*"..sub_dir.."$") then
-      openSub.conf.dirPath = path:gsub(
-        "%s*(.*)"..sub_dir.."%s*$", "%1")
-      config_saved = true
+  openSub.conf.dirPath = vlc.config.userdatadir()
+  local subdirs = { "lua", "extensions", "userdata", "vlsub" }
+  for _, dir in ipairs(subdirs) do
+    local res, err = vlc.io.mkdir( openSub.conf.dirPath .. slash .. dir, "0700" )
+    if res ~= 0 and err ~= vlc.errno.EEXIST then
+      vlc.msg.warn("Failed to create " .. openSub.conf.dirPath .. slash .. dir )
+      return false
     end
-    table.insert(other_dirs, path)
-  end
-
-  -- if not stored in vlc config
-  -- try to find a suitable config file path
-
-  if openSub.conf.dirPath then
-    if not is_dir(openSub.conf.dirPath) and
-    (openSub.conf.os == "lin"  or
-    is_win_safe(openSub.conf.dirPath)) then
-      mkdir_p(openSub.conf.dirPath)
-    end
-  else
-    local userdatadir = vlc.config.userdatadir()
-    local datadir = vlc.config.datadir()
-
-    -- check if the config already exist
-    if file_exist(userdatadir..dirPath..filePath) then
-      -- in vlc.config.userdatadir()
-      openSub.conf.dirPath = userdatadir..dirPath
-      config_saved = true
-    elseif file_exist(datadir..dirPath..filePath) then
-      -- in vlc.config.datadir()
-      openSub.conf.dirPath = datadir..dirPath
-      config_saved = true
-    else
-      -- if not found determine an accessible path
-      local extension_path = slash..path_generic[1]
-        ..slash..path_generic[2]
-
-      -- use the same folder as the extension if accessible
-      if is_dir(userdatadir..extension_path)
-      and file_touch(userdatadir..dirPath..filePath) then
-          openSub.conf.dirPath = userdatadir..dirPath
-      elseif file_touch(datadir..dirPath..filePath) then
-        openSub.conf.dirPath = datadir..dirPath
-      end
-
-      -- try to create working dir in user folder
-      if not openSub.conf.dirPath
-      and is_dir(userdatadir) then
-        if not is_dir(userdatadir..dirPath) then
-          mkdir_p(userdatadir..dirPath)
-        end
-        if is_dir(userdatadir..dirPath) and
-        file_touch(userdatadir..dirPath..filePath) then
-          openSub.conf.dirPath = userdatadir..dirPath
-        end
-      end
-
-      -- try to create working dir in vlc folder
-      if not openSub.conf.dirPath and
-      is_dir(datadir) then
-        if not is_dir(datadir..dirPath) then
-          mkdir_p(datadir..dirPath)
-        end
-        if file_touch(datadir..dirPath..filePath) then
-          openSub.conf.dirPath = datadir..dirPath
-        end
-      end
-    end
+    openSub.conf.dirPath = openSub.conf.dirPath .. slash .. dir
   end
 
   if openSub.conf.dirPath then
-    vlc.msg.dbg("[VLSub] Working directory: " ..
-      (openSub.conf.dirPath or "not found"))
+    vlc.msg.dbg("[VLSub] Working directory: " .. openSub.conf.dirPath)
 
     openSub.conf.filePath = openSub.conf.dirPath..filePath
     openSub.conf.localePath = openSub.conf.dirPath..slash.."locale"
 
-    if config_saved
-    and file_exist(openSub.conf.filePath) then
-      vlc.msg.dbg(
-        "[VLSub] Loading config file: "..openSub.conf.filePath)
+    if file_exist(openSub.conf.filePath) then
+      vlc.msg.dbg("[VLSub] Loading config file: "..openSub.conf.filePath)
       load_config()
     else
       vlc.msg.dbg("[VLSub] No config file")
@@ -817,6 +730,7 @@ function check_config()
   else
     vlc.msg.dbg("[VLSub] Unable to find a suitable path"..
       "to save config, please set it manually")
+    return false
   end
 
   lang = nil
@@ -831,9 +745,6 @@ function check_config()
   end
 
   SetDownloadBehaviours()
-  if not openSub.conf.dirPath then
-    setError(lang["mess_err_conf_access"])
-  end
 
   -- Set table list of available translations from assoc. array
   -- so it is sortable
@@ -851,11 +762,10 @@ end
 
 function load_config()
 -- Overwrite default conf with loaded conf
-  local tmpFile = io.open(openSub.conf.filePath, "rb")
+  local tmpFile = vlc.io.open(openSub.conf.filePath, "rb")
   if not tmpFile then return false end
   local resp = tmpFile:read("*all")
   tmpFile:flush()
-  tmpFile:close()
   local option = parse_xml(resp)
 
   for key, value in pairs(option) do
@@ -883,10 +793,9 @@ end
 
 function load_transl(path)
 -- Overwrite default conf with loaded conf
-  local tmpFile = assert(io.open(path, "rb"))
+  local tmpFile = assert(vlc.io.open(path, "rb"))
   local resp = tmpFile:read("*all")
   tmpFile:flush()
-  tmpFile:close()
   openSub.option.translation = nil
 
   openSub.option.translation = parse_xml(resp)
@@ -966,67 +875,9 @@ function apply_config()
     openSub.option.removeTag = not openSub.option.removeTag
   end
 
-  -- Set a custom working directory
-  local dir_path = input_table['dir_path']:get_text()
-  local dir_path_err = false
-  if trim(dir_path) == "" then dir_path = nil end
-
-  if dir_path ~= openSub.conf.dirPath then
-    if openSub.conf.os == "lin"
-    or is_win_safe(dir_path)
-    or not dir_path then
-      local other_dirs = {}
-
-      for path in
-      vlc.config.get(
-        "sub-autodetect-path"):gmatch("[^,]+"
-      ) do
-        path = trim(path)
-        if path ~= (openSub.conf.dirPath or "")..sub_dir then
-          table.insert(other_dirs, path)
-        end
-      end
-      openSub.conf.dirPath = dir_path
-      if dir_path then
-        table.insert(other_dirs,
-        string.gsub(dir_path, "^(.-)[\\/]?$", "%1")..sub_dir)
-
-        if not is_dir(dir_path) then
-          mkdir_p(dir_path)
-        end
-
-        openSub.conf.filePath = openSub.conf.dirPath..
-          slash.."vlsub_conf.xml"
-        openSub.conf.localePath = openSub.conf.dirPath..
-          slash.."locale"
-      else
-        openSub.conf.filePath = nil
-        openSub.conf.localePath = nil
-      end
-      vlc.config.set(
-        "sub-autodetect-path",
-        table.concat(other_dirs, ", "))
-    else
-      dir_path_err = true
-      setError(lang["mess_err_wrong_path"]..
-        "<br><b>"..
-        string.gsub(
-          dir_path,
-          "[^%:%w%p%s§¤]+",
-          "<span style='color:#B23'>%1</span>"
-        )..
-        "</b>")
-    end
-  end
-
-  if openSub.conf.dirPath and
-  not dir_path_err then
-    local config_saved = save_config()
-    trigger_menu(1)
-    if not config_saved then
-      setError(lang["mess_err_conf_access"])
-    end
-  else
+  local config_saved = save_config()
+  trigger_menu(1)
+  if not config_saved then
     setError(lang["mess_err_conf_access"])
   end
 end
@@ -1039,13 +890,11 @@ function save_config()
       "[VLSub] Saving config file:  "..
       openSub.conf.filePath)
 
-    if file_touch(openSub.conf.filePath) then
-      local tmpFile = assert(
-        io.open(openSub.conf.filePath, "wb"))
+    local tmpFile = vlc.io.open(openSub.conf.filePath, "wb")
+    if tmpFile ~= nil then
       local resp = dump_xml(openSub.option)
       tmpFile:write(resp)
       tmpFile:flush()
-      tmpFile:close()
       tmpFile = nil
     else
       return false
@@ -1064,7 +913,6 @@ function SetDownloadBehaviours()
   openSub.conf.downloadBehaviours = nil
   openSub.conf.downloadBehaviours = {
     {'save', lang["int_dowload_save"]},
-    {'load', lang["int_dowload_load"]},
     {'manual', lang["int_dowload_manual"]}
   }
 end
@@ -1082,8 +930,15 @@ function get_available_translations()
   then
     openSub.actionLabel = lang["int_searching_transl"]
 
-    local translations_content, lol = get(translations_url)
+    local translations_content, status, resp = get(translations_url)
     local translations_avail = openSub.option.translations_avail
+
+    if translations_content == false then
+        -- Translation list download error
+        setMessage(error_tag(lang["mess_error"] .. " (" .. status .. ")"))
+        return
+    end
+
     all_trsl = parse_xml(translations_content)
     local lg, trsl
 
@@ -1155,7 +1010,7 @@ openSub = {
     url = "http://api.opensubtitles.org/xml-rpc",
     path = nil,
     userAgentHTTP = "VLSub",
-    useragent = "VLSub 0.9",
+    useragent = "VLSub 0.11.0",
     translations_avail = {},
     downloadBehaviours = nil,
     languages = languages
@@ -1369,62 +1224,21 @@ openSub = {
     if not item then
       file.hasInput = false;
       file.cleanName = nil;
-      file.protocol = nil;
-      file.path = nil;
-      file.ext = nil;
       file.uri = nil;
     else
       vlc.msg.dbg("[VLSub] Video URI: "..item:uri())
-      local parsed_uri = vlc.strings.url_parse(item:uri())
       file.uri = item:uri()
-      file.protocol = parsed_uri["protocol"]
-      file.path = parsed_uri["path"]
-
+      local filePath = vlc.strings.make_path(file.uri)
+      if not filePath then
+        filePath = vlc.strings.decode_uri(file.uri)
+        filePath = string.match(filePath, "^.*[".. slash .."]([^" .. slash .. "]-).?[%a%d]*$")
+      else
+        file.dir, file.name = string.match(filePath, "^(.*[".. slash .."])([^" .. slash .. "]-).?[%a%d]*$")
+      end
+      if not file.name then
+        file.name = filePath
+      end
     -- Corrections
-
-      -- For windows
-      file.path = string.match(file.path, "^/(%a:/.+)$") or file.path
-
-      -- For file in archive
-      local archive_path, name_in_archive = string.match(
-        file.path, '^([^!]+)!/([^!/]*)$')
-      if archive_path and archive_path ~= "" then
-        file.path = string.gsub(
-          archive_path,
-          '\063',
-          '%%')
-        file.path = vlc.strings.decode_uri(file.path)
-        file.completeName = string.gsub(
-          name_in_archive,
-          '\063',
-          '%%')
-        file.completeName = vlc.strings.decode_uri(
-          file.completeName)
-        file.is_archive = true
-      else -- "classic" input
-        file.path = vlc.strings.decode_uri(file.path)
-        file.dir, file.completeName = string.match(
-          file.path,
-          '^(.*/)([^/]*)$')
-
-        local file_stat = vlc.net.stat(file.path)
-        if file_stat
-        then
-          file.stat = file_stat
-        end
-
-        file.is_archive = false
-      end
-
-      file.name, file.ext = string.match(
-        file.completeName,
-        '^([^/]-)%.?([^%.]*)$')
-
-      if file.ext == "part" then
-        file.name, file.ext = string.match(
-          file.name,
-          '^([^/]+)%.([^%.]+)$')
-      end
 
       file.hasInput = true;
       file.cleanName = string.gsub(
@@ -1444,12 +1258,12 @@ openSub = {
     end
 
     local showName, seasonNumber, episodeNumber = string.match(
-      openSub.file.cleanName,
+      openSub.file.cleanName or "",
       "(.+)[sS](%d%d)[eE](%d%d).*")
 
     if not showName then
       showName, seasonNumber, episodeNumber = string.match(
-      openSub.file.cleanName,
+      openSub.file.cleanName or "",
       "(.+)(%d)[xX](%d%d).*")
     end
 
@@ -1479,74 +1293,32 @@ openSub = {
 
     openSub.getFileInfo()
 
-    if not openSub.file.path then
-      setError(lang["mess_not_found"])
-      return false
-    end
-
     local data_start = ""
     local data_end = ""
     local size
     local chunk_size = 65536
+    local ok
+    local err
 
     -- Get data for hash calculation
-    if openSub.file.is_archive then
-      vlc.msg.dbg("[VLSub] Read hash data from stream")
+    vlc.msg.dbg("[VLSub] Read hash data from stream")
 
-      local file = vlc.stream(openSub.file.uri)
-      local dataTmp1 = ""
-      local dataTmp2 = ""
-      size = chunk_size
+    local file = vlc.stream(openSub.file.uri)
 
-      data_start = file:read(chunk_size)
-
-      while data_end do
-        size = size + string.len(data_end)
-        dataTmp1 = dataTmp2
-        dataTmp2 = data_end
-        data_end = file:read(chunk_size)
-        collectgarbage()
-      end
-      data_end = string.sub((dataTmp1..dataTmp2), -chunk_size)
-    elseif not file_exist(openSub.file.path)
-    and openSub.file.stat then
-      vlc.msg.dbg("[VLSub] Read hash data from stream")
-
-      local file = vlc.stream(openSub.file.uri)
-
-      if not file then
-        vlc.msg.dbg("[VLSub] No stream")
-        return false
-      end
-
-      size = openSub.file.stat.size
-      local decal = size%chunk_size
-
-      data_start = file:read(chunk_size)
-
-      -- "Seek" to the end
-      file:read(decal)
-
-      for i = 1, math.floor(((size-decal)/chunk_size))-2 do
-        file:read(chunk_size)
-      end
-
-      data_end = file:read(chunk_size)
-
-      file = nil
-    else
-      vlc.msg.dbg("[VLSub] Read hash data from file")
-      local file = io.open( openSub.file.path, "rb")
-      if not file then
-        vlc.msg.dbg("[VLSub] No stream")
-        return false
-      end
-
-      data_start = file:read(chunk_size)
-      size = file:seek("end", -chunk_size) + chunk_size
-      data_end = file:read(chunk_size)
-      file = nil
+    data_start = file:read(chunk_size)
+    ok, size = pcall(file.getsize, file)
+    if not size then
+      vlc.msg.warn("[VLSub] Failed to get stream size: " .. size )
+      setError(lang["mess_err_hash"])
+      return false
     end
+    ok, err = pcall(file.seek, file, size - chunk_size)
+    if not ok then
+      vlc.msg.warn("[VLSub] Failed to seek to the end of the stream: " .. err)
+      setError(lang["mess_err_hash"])
+      return false
+    end
+    data_end = file:read(chunk_size)
 
   -- Hash calculation
     local lo = size
@@ -1604,6 +1376,8 @@ function searchHash()
     openSub.checkSession()
     openSub.request("SearchSubtitlesByHash")
     display_subtitles()
+  else
+    setError(lang["mess_err_hash"])
   end
 end
 
@@ -1664,7 +1438,7 @@ function get_first_sel(list)
 end
 
 function find_subtitle_in_archive(archivePath, subfileExt)
-  local archive = vlc.directory_stream(archivePath)
+  local archive = vlc.directory_stream(vlc.strings.make_uri(archivePath))
   local items = archive:readdir()
   if not items then
     return nil
@@ -1676,72 +1450,6 @@ function find_subtitle_in_archive(archivePath, subfileExt)
     end
   end
   return nil
-end
-
-function dump_subtitle_file(item, subtitleMrl)
-  if is_dir(openSub.file.dir) then
-    tmp_dir = openSub.file.dir
-  elseif openSub.conf.dirPath then
-    tmp_dir = openSub.conf.dirPath
-
-    message = "<br>"..warn_tag(lang["mess_save_warn"].." &nbsp;"..
-    "<a href='"..vlc.strings.make_uri(openSub.conf.dirPath).."'>"..
-    lang["mess_click_link"].."</a>")
-  else
-    setError(lang["mess_save_fail"].." &nbsp;"..
-    "<a href='"..item.ZipDownloadLink.."'>"..
-    lang["mess_click_link"].."</a>")
-    return false
-  end
-
-  local subfileName = openSub.file.name or ""
-
-  if openSub.option.langExt then
-    subfileName = subfileName.."."..item.SubLanguageID
-  end
-
-  subfileName = subfileName.."."..item.SubFormat
-
-  -- Determine if the path to the video file is accessible for writing
-
-  local target = openSub.file.dir..subfileName
-
-  if not file_touch(target) then
-    if openSub.conf.dirPath then
-      target =  openSub.conf.dirPath..slash..subfileName
-      message = "<br>"..
-        warn_tag(lang["mess_save_warn"].." &nbsp;"..
-        "<a href='"..vlc.strings.make_uri(
-          openSub.conf.dirPath).."'>"..
-          lang["mess_click_link"].."</a>")
-    else
-      setError(lang["mess_save_fail"].." &nbsp;"..
-      "<a href='"..item.ZipDownloadLink.."'>"..
-      lang["mess_click_link"].."</a>")
-      return nil
-    end
-  end
-
-  vlc.msg.dbg("[VLsub] Subtitles files: "..target)
-
-  -- Unzipped data into file target
-
-  local stream = vlc.stream(subtitleMrl)
-  local data = ""
-  local subfile = io.open(target, "wb")
-
-  while data do
-    subfile:write(data)
-    data = stream:read(65536)
-  end
-
-  subfile:flush()
-  subfile:close()
-
-  stream = nil
-  collectgarbage()
-
-  return target
 end
 
 function download_subtitles()
@@ -1772,22 +1480,84 @@ function download_subtitles()
   end
 
   local message = ""
+  local subfileName = openSub.file.name or ""
 
-  local subtitleMrl = find_subtitle_in_archive(item.ZipDownloadLink, item.SubFormat)
+  if openSub.option.langExt then
+    subfileName = subfileName.."."..item.SubLanguageID
+  end
+
+  subfileName = subfileName.."."..item.SubFormat
+  local tmp_dir = vlc.config.cachedir()
+  local file_target_access = true
+
+  local tmpFileName = dump_zip(
+    item.ZipDownloadLink,
+    tmp_dir,
+    item.SubFileName)
+
+  if not tmpFileName then
+    setError(lang["mess_save_fail"].." &nbsp;"..
+    "<a href='"..item.ZipDownloadLink.."'>"..
+    lang["mess_click_link"].."</a>")
+    return false
+  end
+  vlc.msg.dbg("[VLsub] tmpFileName: "..tmpFileName)
+
+  local subtitleMrl = find_subtitle_in_archive(tmpFileName, item.SubFormat)
+
   if not subtitleMrl then
-    vlc.msg.err( "Failed to extract subtitle" )
+    setMessage( lang['mess_not_load'] )
     return false
   end
 
-  if openSub.option.downloadBehaviour == 'save' then
-    local target = dump_subtitle_file(item, subtitleMrl)
-    if target then
-      subtitleMrl = vlc.strings.make_uri(target)
+  -- Determine if the path to the video file is accessible for writing
+
+  local target
+  if openSub.file.dir then
+    target = openSub.file.dir..subfileName
+  end
+
+  if not target or not file_touch(target) then
+    if openSub.conf.dirPath then
+      target =  openSub.conf.dirPath..slash..subfileName
+      message = "<br>"..
+        warn_tag(lang["mess_save_warn"].." &nbsp;"..
+        "<a href='"..vlc.strings.make_uri(
+          openSub.conf.dirPath).."'>"..
+          lang["mess_click_link"].."</a>")
+    else
+      setError(lang["mess_save_fail"].." &nbsp;"..
+      "<a href='"..item.ZipDownloadLink.."'>"..
+      lang["mess_click_link"].."</a>")
+      return false
     end
   end
 
+  vlc.msg.dbg("[VLsub] Subtitles files: "..target)
+
+  -- Unzipped data into file target
+
+  local stream = vlc.stream(subtitleMrl)
+  local data = ""
+  local subfile = vlc.io.open(target, "wb")
+
+  while data do
+    subfile:write(data)
+    data = stream:read(65536)
+  end
+
+  subfile:flush()
+  subfile:close()
+
+  stream = nil
+  collectgarbage()
+
+  if not vlc.io.unlink(tmpFileName) then
+    vlc.msg.err("[VLsub] Unable to remove temp: "..tmpFileName)
+  end
+
   -- load subtitles
-  if add_sub(subtitleMrl) then
+  if add_sub(target) then
     message = success_tag(lang["mess_loaded"]) .. message
   else
     message = error_tag(lang["mess_not_load"]) .. message
@@ -1796,10 +1566,34 @@ function download_subtitles()
   setMessage(message)
 end
 
-function add_sub(subMrl)
+function dump_zip(url, dir, subfileName)
+  -- Dump zipped data in a temporary file
+  setMessage(openSub.actionLabel..": "..progressBarContent(0))
+  local resp = get(url)
+
+  if not resp then
+    setError(lang["mess_no_response"])
+    return false
+  end
+
+  local tmpFileName = dir..slash..subfileName..".gz"
+  local tmpFile = vlc.io.open(tmpFileName, "wb")
+  if tmpFile == nil then
+    return false
+  end
+
+  tmpFile:write(resp)
+  tmpFile:flush()
+  tmpFile = nil
+  collectgarbage()
+
+  return tmpFileName
+end
+
+function add_sub(subPath)
   if vlc.item or vlc.input.item() then
-    vlc.msg.dbg("[VLsub] Adding subtitle :" .. subMrl)
-    return vlc.input.add_subtitle_mrl(subMrl, true)
+    vlc.msg.dbg("[VLsub] Adding subtitle :" .. subPath)
+    return vlc.input.add_subtitle(subPath, true)
   end
   return false
 end
@@ -2138,29 +1932,12 @@ end
 
             --[[ Misc utils]]--
 
-function make_uri(str)
-  str = str:gsub("\\", "/")
-  local windowdrive = string.match(str, "^(%a:).+$")
-  local encode_uri = vlc.strings.encode_uri_component
-  local encodedPath = ""
-  for w in string.gmatch(str, "/([^/]+)") do
-    encodedPath = encodedPath.."/"..encode_uri(w)
-  end
-
-  if windowdrive then
-    return "file:///"..windowdrive..encodedPath
-  else
-    return "file://"..encodedPath
-  end
-end
-
 function file_touch(name) -- test write ability
   if not name or trim(name) == ""
   then return false end
 
-  local f=io.open(name ,"w")
+  local f=vlc.io.open(name, "w")
   if f~=nil then
-    io.close(f)
     return true
   else
     return false
@@ -2170,33 +1947,12 @@ end
 function file_exist(name) -- test readability
   if not name or trim(name) == ""
   then return false end
-  local f=io.open(name ,"r")
+  local f=vlc.io.open(name, "r")
   if f~=nil then
-    io.close(f)
     return true
   else
     return false
   end
-end
-
-function is_dir(path)
-  if not path or trim(path) == ""
-  then return false end
-  -- Remove slash at the end or it won't work on Windows
-  path = string.gsub(path, "^(.-)[\\/]?$", "%1")
-  local f, _, code = io.open(path, "rb")
-
-  if f then
-    _, _, code = f:read("*a")
-    f:close()
-    if code == 21 then
-      return true
-    end
-  elseif code == 13 then
-    return true
-  end
-
-  return false
 end
 
 function list_dir(path)
@@ -2204,39 +1960,19 @@ function list_dir(path)
   then return false end
   local dir_list_cmd
   local list = {}
-  if not is_dir(path) then return false end
 
-  if openSub.conf.os == "win" then
-    dir_list_cmd = io.popen('dir /b "'..path..'"')
-  elseif openSub.conf.os == "lin" then
-    dir_list_cmd = io.popen('ls -1 "'..path..'"')
-  end
+  dir_list_cmd = vlc.io.readdir(path)
 
   if dir_list_cmd then
-    for filename in dir_list_cmd:lines() do
-      if string.match(filename, "^[^%s]+.+$") then
-        table.insert(list, filename)
+    for _, entry in dir_list_cmd do
+      if string.match(entry, "^[^%s]+.+$") then
+        table.insert(list, entry.path .. slash .. entry.filename)
       end
     end
     return list
   else
     return false
   end
-end
-
-function mkdir_p(path)
-  if not path or trim(path) == ""
-  then return false end
-  if openSub.conf.os == "win" then
-    os.execute('mkdir "' .. path..'"')
-  elseif openSub.conf.os == "lin" then
-    os.execute("mkdir -p '" .. path.."'")
-  end
-end
-
-function decode_uri(str)
-  vlc.msg.err(slash)
-  return str:gsub("/", slash)
 end
 
 function is_window_path(path)

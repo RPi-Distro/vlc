@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 7cad9d71cde97263c31ec2eee1d59fa43619791e $
+ * $Id: 5f60d2f3078fb7db81f4a5ccfb5cb849ecd4dbeb $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -126,9 +126,9 @@ protected:
     void handleSystray();
 
     /* Central StackWidget Management */
-    void showTab( QWidget *);
+    void showTab( QWidget *, bool video_closing = false );
     void showVideo();
-    void restoreStackOldWidget();
+    void restoreStackOldWidget( bool video_closing = false );
 
     /* */
     void displayNormalView();

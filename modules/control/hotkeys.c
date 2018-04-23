@@ -2,7 +2,7 @@
  * hotkeys.c: Hotkey handling for vlc
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 690a4e5e6c9acbe31d048937fbc8e7ef6162542d $
+ * $Id: 95829efb2f667587739f88c7c77edf3fcf906590 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -1349,7 +1349,7 @@ static int PutAction( intf_thread_t *p_intf, input_thread_t *p_input,
                 {
                     i_scale = var_GetInteger( p_playlist, "sub-text-scale" );
                     i_scale += ((i_action == ACTIONID_SUBTITLE_TEXT_SCALE_UP) ? 1 : -1) * 25;
-                    i_scale = VLC_CLIP( i_scale, 10, 500 );
+                    i_scale = VLC_CLIP( i_scale, 25, 500 );
                 }
                 var_SetInteger( p_playlist, "sub-text-scale", i_scale );
                 DisplayMessage( p_vout, _( "Subtitle text scale %d%%" ), i_scale );

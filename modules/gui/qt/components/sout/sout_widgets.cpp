@@ -4,7 +4,7 @@
  * Copyright (C) 2007-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: 19b54f55a7fe323a832efe28182c29d36fdf649c $
+ * $Id: 8fb1b993dd9c9941b084be6e339fa7f1937580af $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Pierre-Luc Beaudoin <pierre-luc.beaudoin@savoirfairelinux.com>
@@ -169,8 +169,10 @@ QString FileDestBox::getMRL( const QString& mux )
 
 void FileDestBox::fileBrowse()
 {
-    QString fileName = QFileDialog::getSaveFileName( this, qtr( "Save file..." ),
-            p_intf->p_sys->filepath, qtr( "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)" ) );
+    const QStringList schemes = QStringList(QStringLiteral("file"));
+    QString fileName = QFileDialog::getSaveFileUrl( this, qtr( "Save file..." ),
+            p_intf->p_sys->filepath, qtr( "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)" ),
+            nullptr, QFileDialog::Options(), schemes).toLocalFile();
     fileEdit->setText( toNativeSeparators( fileName ) );
     emit mrlUpdated();
 }

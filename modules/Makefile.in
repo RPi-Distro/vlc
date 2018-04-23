@@ -422,7 +422,7 @@ TESTS = hpack_test$(EXEEXT) hpackenc_test$(EXEEXT) \
 @HAVE_OSX_TRUE@	libglconv_cvpx_plugin.la
 
 @HAVE_IOS_TRUE@am__append_208 = libvout_ios_plugin.la libglconv_cvpx_plugin.la
-@HAVE_TVOS_TRUE@am__append_209 = libvout_ios_plugin.la
+@HAVE_TVOS_TRUE@am__append_209 = libvout_ios_plugin.la libglconv_cvpx_plugin.la
 @HAVE_WIN32_TRUE@am__append_210 = -DHAVE_GL_CORE_SYMBOLS
 @HAVE_WIN32_TRUE@am__append_211 = $(GL_LIBS)
 @HAVE_GL_TRUE@am__append_212 = libgl_plugin.la
@@ -716,7 +716,7 @@ libaccess_output_srt_plugin_la_OBJECTS =  \
 	$(am_libaccess_output_srt_plugin_la_OBJECTS)
 libaccess_output_srt_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) \
+	$(libaccess_output_srt_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libaccess_output_srt_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 @ENABLE_SOUT_TRUE@am_libaccess_output_srt_plugin_la_rpath =
 @ENABLE_SOUT_TRUE@libaccess_output_udp_plugin_la_DEPENDENCIES =  \
@@ -1342,7 +1342,7 @@ libcrystalhd_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 libcvdsub_plugin_la_LIBADD =
 am_libcvdsub_plugin_la_OBJECTS = codec/cvdsub.lo
 libcvdsub_plugin_la_OBJECTS = $(am_libcvdsub_plugin_la_OBJECTS)
-libcvpx_plugin_la_LIBADD =
+libcvpx_plugin_la_DEPENDENCIES = libchroma_copy.la
 am_libcvpx_plugin_la_OBJECTS = codec/libcvpx_plugin_la-vt_utils.lo \
 	video_chroma/libcvpx_plugin_la-cvpx.lo
 libcvpx_plugin_la_OBJECTS = $(am_libcvpx_plugin_la_OBJECTS)
@@ -1993,6 +1993,7 @@ libglconv_cvpx_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libglconv_cvpx_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 @HAVE_IOS_TRUE@am_libglconv_cvpx_plugin_la_rpath = -rpath $(voutdir)
 @HAVE_OSX_TRUE@am_libglconv_cvpx_plugin_la_rpath = -rpath $(voutdir)
+@HAVE_TVOS_TRUE@am_libglconv_cvpx_plugin_la_rpath = -rpath $(voutdir)
 libglconv_vaapi_drm_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am__objects_23 = video_output/opengl/libglconv_vaapi_drm_plugin_la-converter_vaapi.lo \
@@ -2325,7 +2326,8 @@ libkate_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(libkate_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 libkeychain_plugin_la_LIBADD =
 am_libkeychain_plugin_la_OBJECTS =  \
-	keystore/libkeychain_plugin_la-keychain.lo
+	keystore/libkeychain_plugin_la-keychain.lo \
+	keystore/list_util.lo
 libkeychain_plugin_la_OBJECTS = $(am_libkeychain_plugin_la_OBJECTS)
 libkeychain_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(OBJCLD) \
@@ -2425,7 +2427,7 @@ am__liblua_plugin_la_SOURCES_DIST = lua/extension.c lua/extension.h \
 	lua/libs/playlist.c lua/libs/sd.c lua/libs/stream.c \
 	lua/libs/strings.c lua/libs/variables.c lua/libs/variables.h \
 	lua/libs/video.c lua/libs/vlm.c lua/libs/volume.c \
-	lua/libs/xml.c lua/libs/win.c
+	lua/libs/xml.c lua/libs/io.c lua/libs/errno.c lua/libs/win.c
 @HAVE_WIN32_TRUE@am__objects_29 = lua/libs/liblua_plugin_la-win.lo
 am_liblua_plugin_la_OBJECTS = lua/liblua_plugin_la-extension.lo \
 	lua/liblua_plugin_la-extension_thread.lo \
@@ -2452,7 +2454,9 @@ am_liblua_plugin_la_OBJECTS = lua/liblua_plugin_la-extension.lo \
 	lua/libs/liblua_plugin_la-video.lo \
 	lua/libs/liblua_plugin_la-vlm.lo \
 	lua/libs/liblua_plugin_la-volume.lo \
-	lua/libs/liblua_plugin_la-xml.lo $(am__objects_29)
+	lua/libs/liblua_plugin_la-xml.lo \
+	lua/libs/liblua_plugin_la-io.lo \
+	lua/libs/liblua_plugin_la-errno.lo $(am__objects_29)
 liblua_plugin_la_OBJECTS = $(am_liblua_plugin_la_OBJECTS)
 liblua_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
@@ -7606,7 +7610,7 @@ noinst_HEADERS = codec/omxil/OMX_Broadcom.h \
 	codec/omxil/OMX_Index.h codec/omxil/OMX_Other.h \
 	codec/omxil/OMX_Video.h packetizer/packetizer_helper.h \
 	packetizer/startcode_helper.h video_filter/filter_picture.h
-EXTRA_DIST = gui/eject.c gui/macosx/UI/About.xib \
+EXTRA_DIST = arm_neon/asm.S gui/eject.c gui/macosx/UI/About.xib \
 	gui/macosx/UI/AddonManager.xib gui/macosx/UI/AudioEffects.xib \
 	gui/macosx/UI/Bookmarks.xib gui/macosx/UI/ConvertAndSave.xib \
 	gui/macosx/UI/CoreDialogs.xib \
@@ -8657,7 +8661,7 @@ demux_LTLIBRARIES = libflacsys_plugin.la $(LTLIBogg) \
 	libnoseek_plugin.la $(am__append_252)
 libxiph_metadata_la_SOURCES = demux/xiph_metadata.h demux/xiph_metadata.c
 libxiph_metadata_la_LDFLAGS = -static
-libflacsys_plugin_la_SOURCES = demux/flac.c
+libflacsys_plugin_la_SOURCES = demux/flac.c packetizer/flac.h
 libflacsys_plugin_la_CPPFLAGS = $(AM_CPPFLAGS)
 libflacsys_plugin_la_LIBADD = libxiph_metadata.la
 libogg_plugin_la_SOURCES = demux/ogg.c demux/ogg.h demux/oggseek.c demux/oggseek.h \
@@ -8762,6 +8766,7 @@ libmp4_plugin_la_SOURCES = demux/mp4/mp4.c demux/mp4/mp4.h \
                            demux/mp4/languages.h \
                            demux/asf/asfpacket.c demux/asf/asfpacket.h \
                            demux/mp4/avci.h \
+                           demux/mp4/color_config.h \
                            demux/mp4/essetup.c demux/mp4/meta.c \
                            meta_engine/ID3Genres.h
 
@@ -10248,7 +10253,7 @@ libkwallet_plugin_la_SOURCES = keystore/kwallet.c
 libkwallet_plugin_la_CFLAGS = $(AM_CFLAGS) $(DBUS_CFLAGS)
 libkwallet_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(keystoredir)'
 libkwallet_plugin_la_LIBADD = $(DBUS_LIBS) $(LIBM)
-libkeychain_plugin_la_SOURCES = keystore/keychain.m
+libkeychain_plugin_la_SOURCES = keystore/keychain.m keystore/list_util.c keystore/list_util.h
 libkeychain_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -fobjc-arc
 libkeychain_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(keystoredir)' -Wl,-framework,Foundation -Wl,-framework,Security -Wl,-framework,Cocoa
 loggerdir = $(pluginsdir)/logger
@@ -10276,7 +10281,8 @@ liblua_plugin_la_SOURCES = lua/extension.c lua/extension.h \
 	lua/libs/playlist.c lua/libs/sd.c lua/libs/stream.c \
 	lua/libs/strings.c lua/libs/variables.c lua/libs/variables.h \
 	lua/libs/video.c lua/libs/vlm.c lua/libs/volume.c \
-	lua/libs/xml.c $(am__append_149)
+	lua/libs/xml.c lua/libs/io.c lua/libs/errno.c \
+	$(am__append_149)
 liblua_plugin_la_CFLAGS = $(AM_CFLAGS) $(LUA_CFLAGS) -I$(srcdir)/lua
 liblua_plugin_la_LIBADD = $(LUA_LIBS) $(SOCKET_LIBS) $(LIBDL) $(LIBM) $(LIBPTHREAD)
 @BUILD_LUA_TRUE@lua_LTLIBRARIES = liblua_plugin.la
@@ -10365,7 +10371,9 @@ libpacketizer_vc1_plugin_la_SOURCES = packetizer/vc1.c \
 
 libpacketizer_mlp_plugin_la_SOURCES = packetizer/mlp.c
 libpacketizer_dirac_plugin_la_SOURCES = packetizer/dirac.c
-libpacketizer_flac_plugin_la_SOURCES = packetizer/flac.c
+libpacketizer_flac_plugin_la_SOURCES = packetizer/flac.c \
+        packetizer/flac.h
+
 libpacketizer_hevc_plugin_la_SOURCES = packetizer/hevc.c \
 	packetizer/hevc_nal.h packetizer/hevc_nal.c \
 	packetizer/hxxx_sei.c packetizer/hxxx_sei.h \
@@ -10616,6 +10624,7 @@ libcvpx_plugin_la_SOURCES = codec/vt_utils.c codec/vt_utils.h video_chroma/cvpx.
 @HAVE_OSX_TRUE@libcvpx_plugin_la_CFLAGS = $(AM_CFLAGS) -mmacosx-version-min=10.8
 @HAVE_TVOS_TRUE@libcvpx_plugin_la_CFLAGS = $(AM_CFLAGS) -mtvos-version-min=10.2
 libcvpx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(chromadir)' -Wl,-framework,Foundation -Wl,-framework,VideoToolbox -Wl,-framework,CoreMedia -Wl,-framework,CoreVideo
+libcvpx_plugin_la_LIBADD = libchroma_copy.la
 
 # Tests
 chroma_copy_sse_test_SOURCES = $(libchroma_copy_la_SOURCES)
@@ -11097,6 +11106,7 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 
 ### SRT ###
 @ENABLE_SOUT_TRUE@libaccess_output_srt_plugin_la_SOURCES = access_output/srt.c
+@ENABLE_SOUT_TRUE@libaccess_output_srt_plugin_la_CFLAGS = $(AM_CFLAGS) $(SRT_CFLAGS)
 @ENABLE_SOUT_TRUE@libaccess_output_srt_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(SRT_CPPFLAGS)
 @ENABLE_SOUT_TRUE@libaccess_output_srt_plugin_la_LIBADD = $(SRT_LIBS) $(LIBPTHREAD)
 @ENABLE_SOUT_TRUE@libaccess_output_srt_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(access_outdir)'
@@ -14813,6 +14823,10 @@ lua/libs/liblua_plugin_la-vlm.lo: lua/libs/$(am__dirstamp) \
 lua/libs/liblua_plugin_la-volume.lo: lua/libs/$(am__dirstamp) \
 	lua/libs/$(DEPDIR)/$(am__dirstamp)
 lua/libs/liblua_plugin_la-xml.lo: lua/libs/$(am__dirstamp) \
+	lua/libs/$(DEPDIR)/$(am__dirstamp)
+lua/libs/liblua_plugin_la-io.lo: lua/libs/$(am__dirstamp) \
+	lua/libs/$(DEPDIR)/$(am__dirstamp)
+lua/libs/liblua_plugin_la-errno.lo: lua/libs/$(am__dirstamp) \
 	lua/libs/$(DEPDIR)/$(am__dirstamp)
 lua/libs/liblua_plugin_la-win.lo: lua/libs/$(am__dirstamp) \
 	lua/libs/$(DEPDIR)/$(am__dirstamp)
@@ -19157,9 +19171,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@lua/libs/$(DEPDIR)/liblua_plugin_la-configuration.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@lua/libs/$(DEPDIR)/liblua_plugin_la-dialog.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@lua/libs/$(DEPDIR)/liblua_plugin_la-equalizer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@lua/libs/$(DEPDIR)/liblua_plugin_la-errno.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@lua/libs/$(DEPDIR)/liblua_plugin_la-gettext.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@lua/libs/$(DEPDIR)/liblua_plugin_la-httpd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@lua/libs/$(DEPDIR)/liblua_plugin_la-input.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@lua/libs/$(DEPDIR)/liblua_plugin_la-io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@lua/libs/$(DEPDIR)/liblua_plugin_la-messages.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@lua/libs/$(DEPDIR)/liblua_plugin_la-misc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@lua/libs/$(DEPDIR)/liblua_plugin_la-net.Plo@am__quote@
@@ -19652,11 +19668,11 @@ access_output/libaccess_output_shout_plugin_la-shout.lo: access_output/shout.c
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_output_shout_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o access_output/libaccess_output_shout_plugin_la-shout.lo `test -f 'access_output/shout.c' || echo '$(srcdir)/'`access_output/shout.c
 
 access_output/libaccess_output_srt_plugin_la-srt.lo: access_output/srt.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_output_srt_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT access_output/libaccess_output_srt_plugin_la-srt.lo -MD -MP -MF access_output/$(DEPDIR)/libaccess_output_srt_plugin_la-srt.Tpo -c -o access_output/libaccess_output_srt_plugin_la-srt.lo `test -f 'access_output/srt.c' || echo '$(srcdir)/'`access_output/srt.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_output_srt_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libaccess_output_srt_plugin_la_CFLAGS) $(CFLAGS) -MT access_output/libaccess_output_srt_plugin_la-srt.lo -MD -MP -MF access_output/$(DEPDIR)/libaccess_output_srt_plugin_la-srt.Tpo -c -o access_output/libaccess_output_srt_plugin_la-srt.lo `test -f 'access_output/srt.c' || echo '$(srcdir)/'`access_output/srt.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) access_output/$(DEPDIR)/libaccess_output_srt_plugin_la-srt.Tpo access_output/$(DEPDIR)/libaccess_output_srt_plugin_la-srt.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='access_output/srt.c' object='access_output/libaccess_output_srt_plugin_la-srt.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_output_srt_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o access_output/libaccess_output_srt_plugin_la-srt.lo `test -f 'access_output/srt.c' || echo '$(srcdir)/'`access_output/srt.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_output_srt_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libaccess_output_srt_plugin_la_CFLAGS) $(CFLAGS) -c -o access_output/libaccess_output_srt_plugin_la-srt.lo `test -f 'access_output/srt.c' || echo '$(srcdir)/'`access_output/srt.c
 
 access/rtsp/libaccess_realrtsp_plugin_la-access.lo: access/rtsp/access.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libaccess_realrtsp_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT access/rtsp/libaccess_realrtsp_plugin_la-access.lo -MD -MP -MF access/rtsp/$(DEPDIR)/libaccess_realrtsp_plugin_la-access.Tpo -c -o access/rtsp/libaccess_realrtsp_plugin_la-access.lo `test -f 'access/rtsp/access.c' || echo '$(srcdir)/'`access/rtsp/access.c
@@ -21085,6 +21101,20 @@ lua/libs/liblua_plugin_la-xml.lo: lua/libs/xml.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='lua/libs/xml.c' object='lua/libs/liblua_plugin_la-xml.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblua_plugin_la_CFLAGS) $(CFLAGS) -c -o lua/libs/liblua_plugin_la-xml.lo `test -f 'lua/libs/xml.c' || echo '$(srcdir)/'`lua/libs/xml.c
+
+lua/libs/liblua_plugin_la-io.lo: lua/libs/io.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblua_plugin_la_CFLAGS) $(CFLAGS) -MT lua/libs/liblua_plugin_la-io.lo -MD -MP -MF lua/libs/$(DEPDIR)/liblua_plugin_la-io.Tpo -c -o lua/libs/liblua_plugin_la-io.lo `test -f 'lua/libs/io.c' || echo '$(srcdir)/'`lua/libs/io.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) lua/libs/$(DEPDIR)/liblua_plugin_la-io.Tpo lua/libs/$(DEPDIR)/liblua_plugin_la-io.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='lua/libs/io.c' object='lua/libs/liblua_plugin_la-io.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblua_plugin_la_CFLAGS) $(CFLAGS) -c -o lua/libs/liblua_plugin_la-io.lo `test -f 'lua/libs/io.c' || echo '$(srcdir)/'`lua/libs/io.c
+
+lua/libs/liblua_plugin_la-errno.lo: lua/libs/errno.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblua_plugin_la_CFLAGS) $(CFLAGS) -MT lua/libs/liblua_plugin_la-errno.lo -MD -MP -MF lua/libs/$(DEPDIR)/liblua_plugin_la-errno.Tpo -c -o lua/libs/liblua_plugin_la-errno.lo `test -f 'lua/libs/errno.c' || echo '$(srcdir)/'`lua/libs/errno.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) lua/libs/$(DEPDIR)/liblua_plugin_la-errno.Tpo lua/libs/$(DEPDIR)/liblua_plugin_la-errno.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='lua/libs/errno.c' object='lua/libs/liblua_plugin_la-errno.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblua_plugin_la_CFLAGS) $(CFLAGS) -c -o lua/libs/liblua_plugin_la-errno.lo `test -f 'lua/libs/errno.c' || echo '$(srcdir)/'`lua/libs/errno.c
 
 lua/libs/liblua_plugin_la-win.lo: lua/libs/win.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(liblua_plugin_la_CFLAGS) $(CFLAGS) -MT lua/libs/liblua_plugin_la-win.lo -MD -MP -MF lua/libs/$(DEPDIR)/liblua_plugin_la-win.Tpo -c -o lua/libs/liblua_plugin_la-win.lo `test -f 'lua/libs/win.c' || echo '$(srcdir)/'`lua/libs/win.c

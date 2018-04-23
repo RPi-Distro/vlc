@@ -1949,20 +1949,35 @@ static int MP4_ReadBox_vpcC( stream_t *p_stream, MP4_Box_t *p_box )
     if( p_box->i_size < 6 )
         MP4_READBOX_EXIT( 0 );
 
-    uint8_t i_version;
-    MP4_GET1BYTE( i_version );
-    if( i_version != 0 )
+    MP4_GET1BYTE( p_vpcC->i_version );
+    if( p_vpcC->i_version > 1 )
         MP4_READBOX_EXIT( 0 );
 
     MP4_GET1BYTE( p_vpcC->i_profile );
     MP4_GET1BYTE( p_vpcC->i_level );
     MP4_GET1BYTE( p_vpcC->i_bit_depth );
-    p_vpcC->i_color_space = p_vpcC->i_bit_depth & 0x0F;
-    p_vpcC->i_bit_depth >>= 4;
-    MP4_GET1BYTE( p_vpcC->i_chroma_subsampling );
-    p_vpcC->i_xfer_function = ( p_vpcC->i_chroma_subsampling & 0x0F ) >> 1;
-    p_vpcC->i_fullrange = p_vpcC->i_chroma_subsampling & 0x01;
-    p_vpcC->i_chroma_subsampling >>= 4;
+
+    /* Deprecated one
+       https://github.com/webmproject/vp9-dash/blob/master/archive/VPCodecISOMediaFileFormatBinding-v0.docx */
+    if( p_vpcC->i_version == 0 )
+    {
+        p_vpcC->i_color_primaries = p_vpcC->i_bit_depth & 0x0F;
+        p_vpcC->i_bit_depth >>= 4;
+        MP4_GET1BYTE( p_vpcC->i_chroma_subsampling );
+        p_vpcC->i_xfer_function = ( p_vpcC->i_chroma_subsampling & 0x0F ) >> 1;
+        p_vpcC->i_fullrange = p_vpcC->i_chroma_subsampling & 0x01;
+        p_vpcC->i_chroma_subsampling >>= 4;
+    }
+    else
+    {
+        p_vpcC->i_chroma_subsampling = ( p_vpcC->i_bit_depth & 0x0F ) >> 1;
+        p_vpcC->i_fullrange = p_vpcC->i_bit_depth & 0x01;
+        p_vpcC->i_bit_depth >>= 4;
+        MP4_GET1BYTE( p_vpcC->i_color_primaries );
+        MP4_GET1BYTE( p_vpcC->i_xfer_function );
+        MP4_GET1BYTE( p_vpcC->i_matrix_coeffs );
+    }
+
     MP4_GET2BYTES( p_vpcC->i_codec_init_datasize );
     if( p_vpcC->i_codec_init_datasize > i_read )
         p_vpcC->i_codec_init_datasize = i_read;
@@ -1975,6 +1990,30 @@ static int MP4_ReadBox_vpcC( stream_t *p_stream, MP4_Box_t *p_box )
         memcpy( p_vpcC->p_codec_init_data, p_peek, i_read );
     }
 
+    MP4_READBOX_EXIT( 1 );
+}
+
+static int MP4_ReadBox_SmDm( stream_t *p_stream, MP4_Box_t *p_box )
+{
+    MP4_READBOX_ENTER( MP4_Box_data_SmDm_t, NULL );
+    MP4_Box_data_SmDm_t *p_SmDm = p_box->data.p_SmDm;
+
+    for(int i=0; i<6; i++)
+        MP4_GET2BYTES( p_SmDm->primaries[i] );
+    for(int i=0; i<2; i++)
+        MP4_GET2BYTES( p_SmDm->white_point[i] );
+    MP4_GET4BYTES( p_SmDm->i_luminanceMax );
+    MP4_GET4BYTES( p_SmDm->i_luminanceMin );
+
+    MP4_READBOX_EXIT( 1 );
+}
+
+static int MP4_ReadBox_CoLL( stream_t *p_stream, MP4_Box_t *p_box )
+{
+    MP4_READBOX_ENTER( MP4_Box_data_CoLL_t, NULL );
+    MP4_Box_data_CoLL_t *p_CoLL = p_box->data.p_CoLL;
+    MP4_GET2BYTES( p_CoLL->i_maxCLL );
+    MP4_GET2BYTES( p_CoLL->i_maxFALL );
     MP4_READBOX_EXIT( 1 );
 }
 
@@ -4268,6 +4307,7 @@ static int MP4_ReadBox_default( stream_t *p_stream, MP4_Box_t *p_box )
             case ATOM_hint:
                 return MP4_ReadBox_sample_hint8( p_stream, p_box );
             case ATOM_text:
+            case ATOM_subt:
                 return MP4_ReadBox_sample_text( p_stream, p_box );
             case ATOM_tx3g:
             case ATOM_sbtl:
@@ -4410,6 +4450,8 @@ static const struct
     { ATOM_vpcC,    MP4_ReadBox_vpcC,         ATOM_vp08 },
     { ATOM_vpcC,    MP4_ReadBox_vpcC,         ATOM_vp09 },
     { ATOM_vpcC,    MP4_ReadBox_vpcC,         ATOM_vp10 },
+    { ATOM_SmDm,    MP4_ReadBox_SmDm,         ATOM_vpcC }, /* vpx mastering display */
+    { ATOM_CoLL,    MP4_ReadBox_CoLL,         ATOM_vpcC }, /* vpx light level */
     { ATOM_dac3,    MP4_ReadBox_dac3,         0 },
     { ATOM_dec3,    MP4_ReadBox_dec3,         0 },
     { ATOM_dvc1,    MP4_ReadBox_dvc1,         ATOM_vc1  },

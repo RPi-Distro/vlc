@@ -2,7 +2,7 @@
  * errors.cpp : Errors
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: 698c4c7d91f461a88cabacddd5cb518772104585 $
+ * $Id: ad568f04f56358b7565402a94d97b4498a33cf81 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -52,6 +52,7 @@ ErrorsDialog::ErrorsDialog( intf_thread_t *_p_intf )
     messages->setReadOnly( true );
     messages->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     stopShowing = new QCheckBox( qtr( "Hide future errors" ) );
+    stopShowing->setChecked( var_InheritInteger( p_intf, "qt-error-dialogs" ) != 0 );
 
     layout->addWidget( messages, 0, 0, 1, 3 );
     layout->addWidget( stopShowing, 1, 0 );
@@ -74,14 +75,14 @@ void ErrorsDialog::addError( const QString& title, const QString& text )
 
 void ErrorsDialog::add( bool error, const QString& title, const QString& text )
 {
-    if( stopShowing->isChecked() ) return;
     messages->textCursor().movePosition( QTextCursor::End );
     messages->setTextColor( error ? "red" : "yellow" );
     messages->insertPlainText( title + QString( ":\n" ) );
     messages->setTextColor( "black" );
     messages->insertPlainText( text + QString( "\n" ) );
     messages->ensureCursorVisible();
-    show();
+    if ( var_InheritInteger( p_intf, "qt-error-dialogs" ) != 0 )
+        show();
 }
 
 void ErrorsDialog::close()
@@ -98,6 +99,6 @@ void ErrorsDialog::dontShow()
 {
     if( stopShowing->isChecked() )
     {
-        config_PutInt( p_intf, "qt-show-errors", 0 );
+        config_PutInt( p_intf, "qt-error-dialogs", 0 );
     }
 }

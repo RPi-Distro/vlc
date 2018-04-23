@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: 35e46ece208bd7892848f81d82b064508ba86099 $
+ * $Id: e3b76ee228fc6f4ca6c7ecf4c3fb4104631fe25e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -590,9 +590,6 @@ inline void MainInterface::createStatusBar()
     CONNECT( THEMIM->getIM(), encryptionChanged( bool ),
              this, showCryptedLabel( bool ) );
 
-    CONNECT( THEMIM->getIM(), seekRequested( float ),
-             timeLabel, setDisplayPosition( float ) );
-
     /* This shouldn't be necessary, but for somehow reason, the statusBarr
        starts at height of 20px and when a text is shown it needs more space.
        But, as the QMainWindow policy doesn't allow statusBar to change QMW's
@@ -626,10 +623,10 @@ void MainInterface::debug()
 }
 
 inline void MainInterface::showVideo() { showTab( videoWidget ); }
-inline void MainInterface::restoreStackOldWidget()
-            { showTab( stackCentralOldWidget ); }
+inline void MainInterface::restoreStackOldWidget( bool video_closing )
+            { showTab( stackCentralOldWidget, video_closing ); }
 
-inline void MainInterface::showTab( QWidget *widget )
+inline void MainInterface::showTab( QWidget *widget, bool video_closing )
 {
     if ( !widget ) widget = bgWidget; /* trying to restore a null oldwidget */
 #ifdef DEBUG_INTF
@@ -649,10 +646,11 @@ inline void MainInterface::showTab( QWidget *widget )
         widget = bgWidget;
 
     stackCentralOldWidget = stackCentralW->currentWidget();
-    stackWidgetsSizes[stackCentralOldWidget] = stackCentralW->size();
+    if( !isFullScreen() )
+        stackWidgetsSizes[stackCentralOldWidget] = stackCentralW->size();
 
     /* If we are playing video, embedded */
-    if( videoWidget && THEMIM->getIM()->hasVideo() )
+    if( !video_closing && videoWidget && THEMIM->getIM()->hasVideo() )
     {
         /* Video -> Playlist */
         if( videoWidget == stackCentralOldWidget && widget == playlistWidget )
@@ -695,7 +693,7 @@ inline void MainInterface::showTab( QWidget *widget )
 #endif
 
     /* This part is done later, to account for the new pl size */
-    if( videoWidget && THEMIM->getIM()->hasVideo() &&
+    if( !video_closing && videoWidget && THEMIM->getIM()->hasVideo() &&
         videoWidget == stackCentralOldWidget && widget == playlistWidget )
     {
         playlistWidget->artContainer->addWidget( videoWidget );
@@ -789,7 +787,7 @@ void MainInterface::releaseVideoSlot( void )
     hideResumePanel();
 
     if( stackCentralW->currentWidget() == videoWidget )
-        restoreStackOldWidget();
+        restoreStackOldWidget( true );
     else if( playlistWidget &&
              playlistWidget->artContainer->currentWidget() == videoWidget )
     {
@@ -865,18 +863,11 @@ void MainInterface::setVideoFullScreen( bool fs )
     if( fs )
     {
         int numscreen = var_InheritInteger( p_intf, "qt-fullscreen-screennumber" );
-        /* if user hasn't defined screennumber, or screennumber that is bigger
-         * than current number of screens, take screennumber where current interface
-         * is
-         */
-        if( numscreen < 0 || numscreen >= QApplication::desktop()->screenCount() )
-            numscreen = QApplication::desktop()->screenNumber( p_intf->p_sys->p_mi );
 
-        if( fullscreenControls )
-            fullscreenControls->setTargetScreen( numscreen );
-
-        if ( numscreen >= 0 )
+        if ( numscreen >= 0 && numscreen < QApplication::desktop()->screenCount() )
         {
+            if( fullscreenControls )
+                fullscreenControls->setTargetScreen( numscreen );
 
             QRect screenres = QApplication::desktop()->screenGeometry( numscreen );
             lastWinScreen = windowHandle()->screen();
@@ -902,6 +893,9 @@ void MainInterface::setVideoFullScreen( bool fs )
                 showTab( videoWidget );
             }
         }
+
+        /* we won't be able to get its windowed sized once in fullscreen, so update it now */
+        stackWidgetsSizes[stackCentralW->currentWidget()] = stackCentralW->size();
 
         /* */
         displayNormalView();

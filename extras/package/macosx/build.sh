@@ -1,6 +1,5 @@
 #!/bin/sh
 set -e
-set -x
 
 info()
 {
@@ -197,6 +196,10 @@ export CFLAGS="-Werror=partial-availability"
 export CXXFLAGS="-Werror=partial-availability"
 export OBJCFLAGS="-Werror=partial-availability"
 
+export EXTRA_CFLAGS="-isysroot $SDKROOT -mmacosx-version-min=$MINIMAL_OSX_VERSION -DMACOSX_DEPLOYMENT_TARGET=$MINIMAL_OSX_VERSION"
+export EXTRA_LDFLAGS="-Wl,-syslibroot,$SDKROOT -mmacosx-version-min=$MINIMAL_OSX_VERSION -isysroot $SDKROOT -DMACOSX_DEPLOYMENT_TARGET=$MINIMAL_OSX_VERSION"
+export XCODE_FLAGS="MACOSX_DEPLOYMENT_TARGET=$MINIMAL_OSX_VERSION -sdk macosx$OSX_VERSION WARNING_CFLAGS=-Werror=partial-availability"
+
 info "Building contribs"
 spushd "${vlcroot}/contrib"
 mkdir -p contrib-$TRIPLET && cd contrib-$TRIPLET
@@ -223,6 +226,10 @@ spopd
 unset CFLAGS
 unset CXXFLAGS
 unset OBJCFLAGS
+
+unset EXTRA_CFLAGS
+unset EXTRA_LDFLAGS
+unset XCODE_FLAGS
 
 # Enable debug symbols by default
 export CFLAGS="-g"
@@ -286,6 +293,12 @@ if [ "$PACKAGETYPE" = "u" ]; then
     info "Copying app with debug symbols into VLC-debug.app and stripping"
     rm -rf VLC-debug.app
     cp -Rp VLC.app VLC-debug.app
+
+    # Workaround for breakpad symbol parsing:
+    # Symbols must be uploaded for libvlc(core).dylib, not libvlc(core).x.dylib
+    (cd VLC-debug.app/Contents/MacOS/lib/ && rm libvlccore.dylib && mv libvlccore.*.dylib libvlccore.dylib)
+    (cd VLC-debug.app/Contents/MacOS/lib/ && rm libvlc.dylib && mv libvlc.*.dylib libvlc.dylib)
+
 
     find VLC.app/ -name "*.dylib" -exec strip -x {} \;
     find VLC.app/ -type f -name "VLC" -exec strip -x {} \;

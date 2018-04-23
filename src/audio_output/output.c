@@ -2,7 +2,7 @@
  * output.c : internal management of output streams for the audio output
  *****************************************************************************
  * Copyright (C) 2002-2004 VLC authors and VideoLAN
- * $Id: 0549de044da4925c1e7122381f46b0622edff7fd $
+ * $Id: a1294110be2127cd0f43c2244c33c1453fbaeb75 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -412,15 +412,12 @@ static void aout_PrepareStereoMode (audio_output_t *aout,
     vlc_value_t val, txt, default_val = { .i_int = AOUT_VAR_CHAN_UNSET };
     val.i_int = 0;
 
-    if (!AOUT_FMT_LINEAR(fmt))
+    if (!AOUT_FMT_LINEAR(fmt) || i_nb_input_channels == 1)
         return;
 
-    if (i_nb_input_channels > 1)
-    {
-        val.i_int = AOUT_VAR_CHAN_MONO;
-        txt.psz_string = _("Mono");
-        var_Change (aout, "stereo-mode", VLC_VAR_ADDCHOICE, &val, &txt);
-    }
+    val.i_int = AOUT_VAR_CHAN_MONO;
+    txt.psz_string = _("Mono");
+    var_Change (aout, "stereo-mode", VLC_VAR_ADDCHOICE, &val, &txt);
 
     if (i_nb_input_channels != 2)
     {

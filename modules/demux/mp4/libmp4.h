@@ -384,6 +384,8 @@ typedef int64_t stime_t;
 #define ATOM_gsst VLC_FOURCC( 'g', 's', 's', 't' )
 #define ATOM_gstd VLC_FOURCC( 'g', 's', 't', 'd' )
 #define ATOM_colr VLC_FOURCC( 'c', 'o', 'l', 'r' )
+#define ATOM_SmDm VLC_FOURCC( 'S', 'm', 'D', 'm' )
+#define ATOM_CoLL VLC_FOURCC( 'C', 'o', 'L', 'L' )
 
 #define ATOM_0x40PRM VLC_FOURCC( '@', 'P', 'R', 'M' )
 #define ATOM_0x40PRQ VLC_FOURCC( '@', 'P', 'R', 'Q' )
@@ -1270,16 +1272,32 @@ typedef struct
 
 typedef struct
 {
+    uint8_t i_version;
     uint8_t i_profile;
     uint8_t i_level;
     uint8_t i_bit_depth;
-    uint8_t i_color_space;
     uint8_t i_chroma_subsampling;
+    uint8_t i_color_primaries;
     uint8_t i_xfer_function;
+    uint8_t i_matrix_coeffs;
     uint8_t i_fullrange;
     uint16_t i_codec_init_datasize;
     uint8_t *p_codec_init_data;
 } MP4_Box_data_vpcC_t;
+
+typedef struct
+{
+    uint16_t primaries[3*2]; /* G,B,R / x,y */
+    uint16_t white_point[2]; /* x,y */
+    uint32_t i_luminanceMax;
+    uint32_t i_luminanceMin;
+} MP4_Box_data_SmDm_t;
+
+typedef struct
+{
+    uint16_t i_maxCLL;
+    uint16_t i_maxFALL;
+} MP4_Box_data_CoLL_t;
 
 typedef struct
 {
@@ -1680,6 +1698,8 @@ typedef union MP4_Box_data_s
     MP4_Box_data_tsel_t *p_tsel;
     MP4_Box_data_load_t *p_load;
     MP4_Box_data_vpcC_t *p_vpcC;
+    MP4_Box_data_SmDm_t *p_SmDm;
+    MP4_Box_data_CoLL_t *p_CoLL;
 
     MP4_Box_data_tfra_t *p_tfra;
     MP4_Box_data_mfro_t *p_mfro;

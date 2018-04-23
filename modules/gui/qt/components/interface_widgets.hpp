@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: a4353a0d1d5fe524405d7f524242db3218cc4b77 $
+ * $Id: 772a6b7232fcefb07d15015abb84ab53c183570b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -198,12 +198,15 @@ protected:
 private:
     intf_thread_t *p_intf;
     bool b_remainingTime;
+    float cachedPos;
+    int64_t cachedTime;
     int cachedLength;
     TimeLabel::Display displayType;
 
     char psz_length[MSTRTIME_MAX_SIZE];
     char psz_time[MSTRTIME_MAX_SIZE];
     void toggleTimeDisplay();
+    void refresh();
 private slots:
     void setRemainingTime( bool );
     void setDisplayPosition( float pos, int64_t time, int length );

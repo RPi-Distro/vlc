@@ -4,7 +4,7 @@
  * Copyright (C) 2006-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: 71a983141de88d2ac087dbe1d9b33adc93fb3496 $
+ * $Id: 48044383a53bb0026863bdeafcb012a0b0c75bdf $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -96,8 +96,10 @@ class FileOpenBox: public QFileDialog
     Q_OBJECT
 public:
     FileOpenBox( QWidget *parent, const QString &caption,
-                 const QString &directory, const QString &filter ):
-                QFileDialog( parent, caption, directory, filter ) {}
+                 const QUrl &directory, const QString &filter ):
+                QFileDialog( parent, caption, "", filter ) {
+        setDirectoryUrl(directory);
+    }
 public slots:
     void accept(){}
     void reject(){}

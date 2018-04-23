@@ -95,6 +95,7 @@ struct sout_stream_sys_t
         , out_force_reload( false )
         , perf_warning_shown( false )
         , transcoding_state( TRANSCODING_NONE )
+        , venc_opt_idx ( -1 )
         , out_streams_added( 0 )
     {
         assert(p_intf != NULL);
@@ -141,11 +142,16 @@ struct sout_stream_sys_t
     bool                               out_force_reload;
     bool                               perf_warning_shown;
     int                                transcoding_state;
+    int                                venc_opt_idx;
     std::vector<sout_stream_id_sys_t*> streams;
     std::vector<sout_stream_id_sys_t*> out_streams;
     unsigned int                       out_streams_added;
 
 private:
+    std::string GetVencOption( sout_stream_t *, vlc_fourcc_t *,
+                               const video_format_t *, int );
+    std::string GetAcodecOption( sout_stream_t *, vlc_fourcc_t *, const audio_format_t *, int );
+    std::string GetVcodecOption( sout_stream_t *, vlc_fourcc_t *, const video_format_t *, int );
     bool UpdateOutput( sout_stream_t * );
 };
 
@@ -158,7 +164,6 @@ struct sout_stream_id_sys_t
 
 #define SOUT_CFG_PREFIX "sout-chromecast-"
 
-static const vlc_fourcc_t DEFAULT_TRANSCODE_VIDEO = VLC_CODEC_H264;
 static const char DEFAULT_MUXER[] = "avformat{mux=matroska,options={live=1}}";
 static const char DEFAULT_MUXER_WEBM[] = "avformat{mux=webm,options={live=1}}";
 
@@ -804,7 +809,6 @@ bool sout_stream_sys_t::canDecodeAudio( sout_stream_t *p_stream,
     if ( i_codec == VLC_FOURCC('h', 'a', 'a', 'c') ||
             i_codec == VLC_FOURCC('l', 'a', 'a', 'c') ||
             i_codec == VLC_FOURCC('s', 'a', 'a', 'c') ||
-            i_codec == VLC_CODEC_MPGA ||
             i_codec == VLC_CODEC_MP4A )
     {
         return p_fmt->i_channels <= 2;
@@ -905,6 +909,210 @@ bool sout_stream_sys_t::transcodingCanFallback() const
     return transcoding_state != (TRANSCODING_VIDEO|TRANSCODING_AUDIO);
 }
 
+static std::string GetVencVPXOption( sout_stream_t * /* p_stream */,
+                                      const video_format_t * /* p_vid */,
+                                      int /* i_quality */ )
+{
+    return "venc=vpx{quality-mode=1}";
+}
+
+static std::string GetVencX264Option( sout_stream_t * /* p_stream */,
+                                      const video_format_t *p_vid,
+                                      int i_quality )
+{
+    std::stringstream ssout;
+    static const char video_x264_preset_veryfast[] = "veryfast";
+    static const char video_x264_preset_ultrafast[] = "ultrafast";
+    const char *psz_video_x264_preset;
+    unsigned i_video_x264_crf_hd, i_video_x264_crf_720p;
+
+    switch ( i_quality )
+    {
+        case CONVERSION_QUALITY_HIGH:
+            i_video_x264_crf_hd = i_video_x264_crf_720p = 21;
+            psz_video_x264_preset = video_x264_preset_veryfast;
+            break;
+        case CONVERSION_QUALITY_MEDIUM:
+            i_video_x264_crf_hd = 23;
+            i_video_x264_crf_720p = 21;
+            psz_video_x264_preset = video_x264_preset_veryfast;
+            break;
+        case CONVERSION_QUALITY_LOW:
+            i_video_x264_crf_hd = i_video_x264_crf_720p = 23;
+            psz_video_x264_preset = video_x264_preset_veryfast;
+            break;
+        default:
+        case CONVERSION_QUALITY_LOWCPU:
+            i_video_x264_crf_hd = i_video_x264_crf_720p = 23;
+            psz_video_x264_preset = video_x264_preset_ultrafast;
+            break;
+    }
+
+    const bool b_hdres = p_vid == NULL || p_vid->i_height == 0 || p_vid->i_height >= 800;
+    unsigned i_video_x264_crf = b_hdres ? i_video_x264_crf_hd : i_video_x264_crf_720p;
+
+    ssout << "venc=x264{preset=" << psz_video_x264_preset
+          << ",crf=" << i_video_x264_crf << "}";
+    return ssout.str();
+}
+
+
+static struct
+{
+    vlc_fourcc_t fcc;
+    std::string (*get_opt)( sout_stream_t *, const video_format_t *, int);
+} venc_opt_list[] = {
+    { .fcc = VLC_CODEC_H264, .get_opt = GetVencX264Option },
+    { .fcc = VLC_CODEC_VP8,  .get_opt = GetVencVPXOption },
+    { .fcc = VLC_CODEC_H264, .get_opt = NULL },
+};
+
+std::string
+sout_stream_sys_t::GetVencOption( sout_stream_t *p_stream, vlc_fourcc_t *p_codec_video,
+                                  const video_format_t *p_vid, int i_quality )
+{
+    for( size_t i = (venc_opt_idx == -1 ? 0 : venc_opt_idx);
+         i < ARRAY_SIZE(venc_opt_list); ++i )
+    {
+        std::stringstream ssout, ssvenc;
+        char fourcc[5];
+        ssvenc << "vcodec=";
+        vlc_fourcc_to_char( venc_opt_list[i].fcc, fourcc );
+        fourcc[4] = '\0';
+        ssvenc << fourcc << ',';
+
+        if( venc_opt_list[i].get_opt != NULL )
+            ssvenc << venc_opt_list[i].get_opt( p_stream, p_vid, i_quality ) << ',';
+
+        if( venc_opt_list[i].get_opt == NULL
+         || ( venc_opt_idx != -1 && (unsigned) venc_opt_idx == i) )
+        {
+            venc_opt_idx = i;
+            *p_codec_video = venc_opt_list[i].fcc;
+            return ssvenc.str();
+        }
+
+        /* Test if a module can encode with the specified options / fmt_video. */
+        ssout << "transcode{" << ssvenc.str() << "}:dummy";
+
+        sout_stream_t *p_sout_test =
+            sout_StreamChainNew( p_stream->p_sout, ssout.str().c_str(), NULL, NULL );
+
+        if( p_sout_test != NULL )
+        {
+            p_sout_test->obj.flags |= OBJECT_FLAGS_QUIET|OBJECT_FLAGS_NOINTERACT;
+
+            es_format_t fmt;
+            es_format_InitFromVideo( &fmt, p_vid );
+            fmt.i_codec = fmt.video.i_chroma = VLC_CODEC_I420;
+
+            /* Test the maximum size/fps we will encode */
+            fmt.video.i_visible_width = fmt.video.i_width = 1920;
+            fmt.video.i_visible_height = fmt.video.i_height = 1080;
+            fmt.video.i_frame_rate = 30;
+            fmt.video.i_frame_rate_base = 1;
+
+            sout_stream_id_sys_t *id = sout_StreamIdAdd( p_sout_test, &fmt );
+
+            es_format_Clean( &fmt );
+            const bool success = id != NULL;
+
+            if( id )
+                sout_StreamIdDel( p_sout_test, id );
+            sout_StreamChainDelete( p_sout_test, NULL );
+
+            if( success )
+            {
+                venc_opt_idx = i;
+                *p_codec_video = venc_opt_list[i].fcc;
+                return ssvenc.str();
+            }
+        }
+    }
+    vlc_assert_unreachable();
+}
+
+std::string
+sout_stream_sys_t::GetVcodecOption( sout_stream_t *p_stream, vlc_fourcc_t *p_codec_video,
+                                    const video_format_t *p_vid, int i_quality )
+{
+    std::stringstream ssout;
+    static const char video_maxres_hd[] = "maxwidth=1920,maxheight=1080";
+    static const char video_maxres_720p[] = "maxwidth=1280,maxheight=720";
+
+    ssout << GetVencOption( p_stream, p_codec_video, p_vid, i_quality );
+
+    switch ( i_quality )
+    {
+        case CONVERSION_QUALITY_HIGH:
+        case CONVERSION_QUALITY_MEDIUM:
+            ssout << video_maxres_hd << ',';
+            break;
+        default:
+            ssout << video_maxres_720p << ',';
+    }
+
+    if( p_vid == NULL
+     || p_vid->i_frame_rate == 0 || p_vid->i_frame_rate_base == 0
+     || ( p_vid->i_frame_rate / p_vid->i_frame_rate_base ) > 30 )
+    {
+        /* Even force 24fps if the frame rate is unknown */
+        msg_Warn( p_stream, "lowering frame rate to 24fps" );
+        ssout << "fps=24,";
+    }
+
+    msg_Dbg( p_stream, "Converting video to %.4s", (const char*)p_codec_video );
+
+    return ssout.str();
+}
+
+std::string
+sout_stream_sys_t::GetAcodecOption( sout_stream_t *p_stream, vlc_fourcc_t *p_codec_audio,
+                                    const audio_format_t *p_aud, int i_quality )
+{
+    std::stringstream ssout;
+
+    bool b_audio_mp3;
+
+    /* If we were already transcoding: force mp3 because maybe the CC may
+     * have failed because of vorbis. */
+    if( transcoding_state & TRANSCODING_AUDIO )
+        b_audio_mp3 = true;
+    else
+    {
+        switch ( i_quality )
+        {
+            case CONVERSION_QUALITY_HIGH:
+            case CONVERSION_QUALITY_MEDIUM:
+                b_audio_mp3 = false;
+                break;
+            default:
+                b_audio_mp3 = true;
+                break;
+        }
+    }
+
+    if ( !b_audio_mp3
+      && p_aud->i_channels > 2 && module_exists( "vorbis" ) )
+        *p_codec_audio = VLC_CODEC_VORBIS;
+    else
+        *p_codec_audio = VLC_CODEC_MP3;
+
+    msg_Dbg( p_stream, "Converting audio to %.4s", (const char*)p_codec_audio );
+
+    ssout << "acodec=";
+    char fourcc[5];
+    vlc_fourcc_to_char( *p_codec_audio, fourcc );
+    fourcc[4] = '\0';
+    ssout << fourcc << ',';
+
+    /* XXX: higher vorbis qualities can cause glitches on some CC
+     * devices (Chromecast 1 & 2) */
+    if( *p_codec_audio == VLC_CODEC_VORBIS )
+        ssout << "aenc=vorbis{quality=4},";
+    return ssout.str();
+}
+
 bool sout_stream_sys_t::UpdateOutput( sout_stream_t *p_stream )
 {
     assert( p_stream->p_sys == this );
@@ -1002,103 +1210,20 @@ bool sout_stream_sys_t::UpdateOutput( sout_stream_t *p_stream )
                 config_PutInt(p_stream, SOUT_CFG_PREFIX "show-perf-warning", 0 );
         }
 
-        static const char video_maxres_hd[] = "maxwidth=1920,maxheight=1080";
-        static const char video_maxres_720p[] = "maxwidth=1280,maxheight=720";
-        static const char video_x264_preset_veryfast[] = "veryfast";
-        static const char video_x264_preset_ultrafast[] = "ultrafast";
-
         const int i_quality = var_InheritInteger( p_stream, SOUT_CFG_PREFIX "conversion-quality" );
-        const char *psz_video_maxres;
-        const char *psz_video_x264_preset;
-        unsigned i_video_x264_crf_hd, i_video_x264_crf_720p;
-        bool b_audio_mp3;
-
-        switch ( i_quality )
-        {
-            case CONVERSION_QUALITY_HIGH:
-                psz_video_maxres = video_maxres_hd;
-                i_video_x264_crf_hd = i_video_x264_crf_720p = 21;
-                psz_video_x264_preset = video_x264_preset_veryfast;
-                b_audio_mp3 = false;
-                break;
-            case CONVERSION_QUALITY_MEDIUM:
-                psz_video_maxres = video_maxres_hd;
-                i_video_x264_crf_hd = 23;
-                i_video_x264_crf_720p = 21;
-                psz_video_x264_preset = video_x264_preset_veryfast;
-                b_audio_mp3 = false;
-                break;
-            case CONVERSION_QUALITY_LOW:
-                psz_video_maxres = video_maxres_720p;
-                i_video_x264_crf_hd = i_video_x264_crf_720p = 23;
-                psz_video_x264_preset = video_x264_preset_veryfast;
-                b_audio_mp3 = true;
-                break;
-            default:
-            case CONVERSION_QUALITY_LOWCPU:
-                psz_video_maxres = video_maxres_720p;
-                i_video_x264_crf_hd = i_video_x264_crf_720p = 23;
-                psz_video_x264_preset = video_x264_preset_ultrafast;
-                b_audio_mp3 = true;
-                break;
-        }
-
-        /* If we were already transcoding: force mp3 because maybe the CC may
-         * have failed because of vorbis. */
-        if (transcoding_state & TRANSCODING_AUDIO)
-            b_audio_mp3 = true;
 
         /* TODO: provide audio samplerate and channels */
         ssout << "transcode{";
-        char s_fourcc[5];
         if ( i_codec_audio == 0 && p_original_audio )
         {
-            if ( !b_audio_mp3
-              && p_original_audio->audio.i_channels > 2 && module_exists( "vorbis" ) )
-                i_codec_audio = VLC_CODEC_VORBIS;
-            else
-                i_codec_audio = VLC_CODEC_MP3;
-
-            msg_Dbg( p_stream, "Converting audio to %.4s", (const char*)&i_codec_audio );
-            ssout << "acodec=";
-            vlc_fourcc_to_char( i_codec_audio, s_fourcc );
-            s_fourcc[4] = '\0';
-            ssout << s_fourcc << ',';
-
-            /* XXX: higher vorbis qualities can cause glitches on some CC
-             * devices (Chromecast 1 & 2) */
-            if( i_codec_audio == VLC_CODEC_VORBIS )
-                ssout << "aenc=vorbis{quality=4},";
+            ssout << GetAcodecOption( p_stream, &i_codec_audio,
+                                      &p_original_audio->audio, i_quality );
             new_transcoding_state |= TRANSCODING_AUDIO;
         }
         if ( i_codec_video == 0 && p_original_video )
         {
-            i_codec_video = DEFAULT_TRANSCODE_VIDEO;
-            msg_Dbg( p_stream, "Converting video to %.4s", (const char*)&i_codec_video );
-            ssout << "vcodec=";
-            vlc_fourcc_to_char( i_codec_video, s_fourcc );
-            s_fourcc[4] = '\0';
-            ssout << s_fourcc << ',' << psz_video_maxres << ',';
-
-            const video_format_t *p_vid = &p_original_video->video;
-            const bool b_hdres = p_vid == NULL || p_vid->i_height == 0 || p_vid->i_height >= 800;
-            unsigned i_video_x264_crf = b_hdres ? i_video_x264_crf_hd : i_video_x264_crf_720p;
-
-            if( p_vid == NULL
-             || p_vid->i_frame_rate == 0 || p_vid->i_frame_rate_base == 0
-             || ( p_vid->i_frame_rate / p_vid->i_frame_rate_base ) > 30 )
-            {
-                /* Even force 24fps if the frame rate is unknown */
-                msg_Warn( p_stream, "lowering frame rate to 24fps" );
-                ssout << "fps=24,";
-            }
-
-            if( i_codec_video == VLC_CODEC_H264 )
-            {
-                if ( module_exists("x264") )
-                    ssout << "venc=x264{preset=" << psz_video_x264_preset
-                          << ",crf=" << i_video_x264_crf << "},";
-            }
+            ssout << GetVcodecOption( p_stream, &i_codec_video,
+                                      &p_original_video->video, i_quality );
             new_transcoding_state |= TRANSCODING_VIDEO;
         }
         ssout << "}:";
@@ -1325,10 +1450,17 @@ static int Open(vlc_object_t *p_this)
 
     b_supports_video = var_GetBool(p_stream, SOUT_CFG_PREFIX "video");
 
-    p_sys = new(std::nothrow) sout_stream_sys_t( httpd_host, p_intf, b_supports_video,
-                                                 i_local_server_port );
-    if (unlikely(p_sys == NULL))
+    try
+    {
+        p_sys = new sout_stream_sys_t( httpd_host, p_intf, b_supports_video,
+                                                    i_local_server_port );
+    }
+    catch ( std::exception& ex )
+    {
+        msg_Err( p_stream, "Failed to instantiate sout_stream_sys_t: %s", ex.what() );
+        p_sys = NULL;
         goto error;
+    }
 
     p_intf->setOnInputEventCb(on_input_event_cb, p_stream);
 

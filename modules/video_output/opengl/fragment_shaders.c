@@ -127,9 +127,7 @@ tc_yuv_base_init(opengl_tex_converter_t *tc, GLenum tex_target,
             return VLC_EGENERIC;
 
         /* Do a bit shift if samples are stored on LSB */
-        /* This is a hackish way to detect endianness. FIXME: Add bit order
-         * in vlc_chroma_description_t */
-        if ((chroma >> 24) == 'L')
+        if (chroma != VLC_CODEC_P010)
             yuv_range_correction = (float)((1 << 16) - 1)
                                  / ((1 << desc->pixel_bits) - 1);
     }
@@ -178,7 +176,7 @@ tc_yuv_base_init(opengl_tex_converter_t *tc, GLenum tex_target,
                 GL_UNSIGNED_BYTE
             };
             tc->texs[1] = (struct opengl_tex_cfg) {
-                { 1, 2 }, { 1, 4 }, twoplanes_texfmt, twoplanes_texfmt,
+                { 1, 2 }, { 1, 2 }, twoplanes_texfmt, twoplanes_texfmt,
                 GL_UNSIGNED_BYTE
             };
         }
@@ -193,7 +191,7 @@ tc_yuv_base_init(opengl_tex_converter_t *tc, GLenum tex_target,
                 GL_UNSIGNED_SHORT
             };
             tc->texs[1] = (struct opengl_tex_cfg) {
-                { 1, 2 }, { 1, 4 }, twoplanes16_texfmt, twoplanes_texfmt,
+                { 1, 2 }, { 1, 2 }, twoplanes16_texfmt, twoplanes_texfmt,
                 GL_UNSIGNED_SHORT
             };
         }

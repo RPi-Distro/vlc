@@ -2,7 +2,7 @@
  * dec.c : audio output API towards decoders
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: cf7642ca0897ffc7b5133bfb4db8ed6728ab58eb $
+ * $Id: 60c35e6176cfc360a392f25b5ebc0f17faed910e $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -163,7 +163,7 @@ static int aout_CheckReady (audio_output_t *aout)
              * suitable codec (like an HDMI audio format). However, keep the
              * same codec if the aout was restarted because of a stereo-mode
              * change from the user. */
-            if (!(restart & AOUT_RESTART_STEREOMODE))
+            if (restart == AOUT_RESTART_OUTPUT)
                 status = AOUT_DEC_CHANGED;
         }
 

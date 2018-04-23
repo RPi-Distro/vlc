@@ -2,7 +2,7 @@
  * chapters.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: d42ee637d22b97c8bc5c11daf41163b82bb68e3b $
+ * $Id: a069b1fdeaa34cfd44fc836636d7c6a775cf84c1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -56,7 +56,7 @@ public:
     ,p_segment_uid(NULL)
     ,p_segment_edition_uid(NULL)
     ,b_display_seekpoint(true)
-    ,b_user_display(false)
+    ,b_user_display(true)
     ,p_parent(NULL)
     ,b_is_leaving(false)
     {}
@@ -102,7 +102,6 @@ public:
     std::string GetMainName() const;
     bool                        b_ordered;
     bool                        b_default;
-    /* TODO handle hidden chapters */
     bool                        b_hidden;
 };
 

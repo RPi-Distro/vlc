@@ -124,7 +124,7 @@ function host()
     local function write_console( client, data )
         -- FIXME: this method shouldn't be needed. vlc.net.write should
         -- just work
-        io.write(data or client.buffer)
+        vlc.win.console_write(data or client.buffer)
         return string.len(data or client.buffer)
     end
 
@@ -254,6 +254,9 @@ function host()
                 h:listen_stdio()
             else
                 u = vlc.strings.url_parse( url )
+                if u.host == nil then
+                    u = vlc.strings.url_parse( "//" .. url )
+                end
                 h:listen_tcp( u.host, u.port, (u.protocol == "telnet") )
             end
         end

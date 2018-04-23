@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 7218a99380415afd56aec5f0f93202dded4e640c $
+ * $Id: 864f5d7c55f3a17e2b9e26cb43f1a6fd18d71238 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -156,7 +156,7 @@ static char *StripPasswords( const char *psz_config )
     }
     if (n == 0)
         return strdup(psz_config);
- 
+
     char *psz_log = malloc(strlen(psz_config) + n * strlen("******") + 1);
     if (psz_log == NULL)
         return NULL;
@@ -277,6 +277,8 @@ static int Start_LuaIntf( vlc_object_t *p_this, const char *name )
     luaopen_gettext( L );
     luaopen_xml( L );
     luaopen_equalizer( L );
+    luaopen_vlcio( L );
+    luaopen_errno( L );
 #if defined(_WIN32) && !VLC_WINSTORE_APP
     luaopen_win( L );
 #endif

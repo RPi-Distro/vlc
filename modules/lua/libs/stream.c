@@ -2,7 +2,7 @@
  * stream.c: stream functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 9da67d4c411314a6b1e13a377c88de762aba6471 $
+ * $Id: c68275983877150b1890ca001094ca2edbc3870a $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -49,12 +49,16 @@ static int vlclua_stream_readline( lua_State * );
 static int vlclua_stream_delete( lua_State * );
 static int vlclua_stream_add_filter( lua_State *L );
 static int vlclua_stream_readdir( lua_State *L );
+static int vlclua_stream_getsize( lua_State *L );
+static int vlclua_stream_seek( lua_State *L );
 
 static const luaL_Reg vlclua_stream_reg[] = {
     { "read", vlclua_stream_read },
     { "readline", vlclua_stream_readline },
     { "addfilter", vlclua_stream_add_filter },
     { "readdir", vlclua_stream_readdir },
+    { "getsize", vlclua_stream_getsize },
+    { "seek", vlclua_stream_seek },
     { NULL, NULL }
 };
 
@@ -232,6 +236,7 @@ static int vlclua_stream_readdir( lua_State *L )
         input_item_AddOption( p_input, "show-hiddenfiles",
                               VLC_INPUT_OPTION_TRUSTED );
     input_item_node_t *p_items = input_item_node_Create( p_input );
+    input_item_Release( p_input );
     if( !p_items )
         return vlclua_error( L );
     if ( vlc_stream_ReadDir( *pp_stream, p_items ) )
@@ -247,7 +252,28 @@ static int vlclua_stream_readdir( lua_State *L )
         lua_settable( L, -3 );
     }
     input_item_node_Delete( p_items );
-    input_item_Release( p_input );
+    return 1;
+}
+
+static int vlclua_stream_getsize( lua_State *L )
+{
+    stream_t **pp_stream = (stream_t **)luaL_checkudata( L, 1, "stream" );
+    uint64_t i_size;
+    int i_res = vlc_stream_GetSize( *pp_stream, &i_size );
+    if ( i_res != 0 )
+        return luaL_error( L, "Failed to get stream size" );
+    lua_pushnumber( L, i_size );
+    return 1;
+}
+
+static int vlclua_stream_seek( lua_State *L )
+{
+    stream_t **pp_stream = (stream_t **)luaL_checkudata( L, 1, "stream" );
+    lua_Integer i_offset = luaL_checkinteger( L, 2 );
+    if ( i_offset < 0 )
+        return luaL_error( L, "Invalid negative seek offset" );
+    int i_res = vlc_stream_Seek( *pp_stream, (uint64_t)i_offset );
+    lua_pushboolean( L, i_res == 0 );
     return 1;
 }
 

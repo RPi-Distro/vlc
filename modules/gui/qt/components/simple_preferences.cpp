@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 461201b47a2ae8e5c80b43a12e3b952b72200fb3 $
+ * $Id: 635cc274c0d443507882faf4cb78f09262ab63ff $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -128,7 +128,15 @@ static struct {
 static int getDefaultAudioVolume(vlc_object_t *obj, const char *aout)
 {
     if (!strcmp(aout, "") || !strcmp(aout, "any"))
+#ifdef _WIN32
+        /* All Windows aouts, that can be selected automatically, handle volume
+         * saving. In case of automatic mode, we'll save the last volume for
+         * every modules. Therefore, all volumes variable we be the same and we
+         * can use the first one (mmdevice). */
+        return config_GetFloat(obj, "mmdevice-volume") * 100.f + .5f;
+#else
         return -1;
+#endif
     else
     /* Note: For hysterical raisins, this is sorted by decreasing priority
      * order (then alphabetical order). */
@@ -142,7 +150,7 @@ static int getDefaultAudioVolume(vlc_object_t *obj, const char *aout)
 #endif
 #ifdef _WIN32
     if (!strcmp(aout, "mmdevice"))
-        return -1;
+        return config_GetFloat(obj, "mmdevice-volume") * 100.f + .5f;
     else
 #endif
     if (!strcmp(aout, "sndio"))
@@ -490,6 +498,12 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
 #endif
 
 #ifdef _WIN32
+            audioControl( MMDevice );
+            optionWidgets["mmdeviceL" ] = MMDeviceLabel;
+            optionWidgets["mmdeviceW" ] = MMDeviceDevice;
+            CONFIG_GENERIC_NO_UI( "mmdevice-audio-device", StringList,
+                                  MMDeviceLabel, MMDeviceDevice );
+
             CONFIG_GENERIC( "mmdevice-passthrough", IntegerList,
                             ui.mmdevicePassthroughLabel, mmdevicePassthroughBox );
             optionWidgets["mmdevicePassthroughL"] = ui.mmdevicePassthroughLabel;
@@ -961,6 +975,8 @@ void SPrefsPanel::updateAudioOptions( int number)
     const bool mmDeviceEnabled = value == "mmdevice" || value == "any";
     optionWidgets["mmdevicePassthroughL"]->setVisible( mmDeviceEnabled );
     optionWidgets["mmdevicePassthroughB"]->setVisible( mmDeviceEnabled );
+    optionWidgets["mmdeviceW"]->setVisible( mmDeviceEnabled );
+    optionWidgets["mmdeviceL"]->setVisible( mmDeviceEnabled );
 
     optionWidgets["directxW"]->setVisible( ( value == "directsound" ) );
     optionWidgets["directxL"]->setVisible( ( value == "directsound" ) );
@@ -1107,6 +1123,8 @@ void SPrefsPanel::apply()
         //FIXME this is moot
 #if defined( _WIN32 )
         VLC_UNUSED( f_gain );
+        if( save_vol_aout( "mmdevice" ) )
+            config_PutFloat( p_intf, "mmdevice-volume", i_volume / 100.f );
         if( save_vol_aout( "directsound" ) )
             config_PutFloat( p_intf, "directx-volume", i_volume / 100.f );
         if( save_vol_aout( "waveout" ) )

@@ -263,7 +263,7 @@ static void SDTCallBack( demux_t *p_demux, dvbpsi_sdt_t *p_sdt )
                 msg_Dbg( p_demux, "    - type=%"PRIu8" provider=%s name=%s",
                          pD->i_service_type, str1, str2 );
 
-                if( strcmp( "Service01", str2 ) ) /* Skip bogus libav/ffmpeg SDT */
+                if( !str2 || strcmp( "Service01", str2 ) ) /* Skip bogus libav/ffmpeg SDT */
                 {
                     vlc_meta_SetTitle( p_meta, str2 );
                     vlc_meta_SetPublisher( p_meta, str1 );

@@ -2,7 +2,7 @@
  * intf_dummy.c: dummy interface plugin
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: d2a40da1108e6afc8456eb1c69b9e0b7d378bf8e $
+ * $Id: 4e0406dd5a6daa5fa744bb6a7c7d34f680d996f7 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -41,9 +41,6 @@
     "Enabling the quiet mode will not bring this command box but can also " \
     "be pretty annoying when you want to stop VLC and no video window is " \
     "open." )
-#if !VLC_WINSTORE_APP
-#include "intromsg.h"
-#endif
 #endif
 
 static int Open( vlc_object_t * );
@@ -64,13 +61,6 @@ vlc_module_end ()
 static int Open( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t*) p_this;
-
-#if defined(_WIN32) && !VLC_WINSTORE_APP
-    bool b_quiet;
-    b_quiet = var_InheritBool( p_intf, "dummy-quiet" );
-    if( !b_quiet )
-        intf_consoleIntroMsg(p_intf);
-#endif
 
     msg_Info( p_intf, "using the dummy interface module..." );
 

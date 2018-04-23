@@ -2,7 +2,7 @@
  * VLCPlaylistInfo.h: Controller for the codec info panel
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 63f7e7792c6fcd4712b0d0ac0a4345e4fcbdc5cb $
+ * $Id: 7b63fe378df96a560e7318c2d725ccfcdb523b01 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -32,7 +32,7 @@
 @property (readonly) input_item_t *item;
 
 @property (readwrite, weak) IBOutlet NSOutlineView *outlineView;
-@property (readwrite, weak) IBOutlet NSTabView *tabView;
+@property (readwrite, weak) IBOutlet NSSegmentedControl *segmentedView;
 
 @property (readwrite, weak) IBOutlet NSTextField *uriLabel;
 @property (readwrite, weak) IBOutlet NSTextField *titleLabel;

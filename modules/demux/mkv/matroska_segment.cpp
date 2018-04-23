@@ -2,7 +2,7 @@
  * matroska_segment.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 4ff15c75038ae49549d490ef8185e74633f2202d $
+ * $Id: 796336830fe1043dfe30681bc051ef61f10cedf5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -418,7 +418,7 @@ void matroska_segment_c::LoadTags( KaxTags *tags )
                             {
                                 ktttv_ptr->ReadData( es.I_O() );
 
-                                msg_Dbg( &sys.demuxer, "|   |   + TargetType: %u", ktttv_ptr->GetValue().c_str());
+                                msg_Dbg( &sys.demuxer, "|   |   + TargetType: %s", ktttv_ptr->GetValue().c_str());
                             }
                             else
                             {

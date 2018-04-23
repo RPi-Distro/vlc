@@ -2,7 +2,7 @@
  * misc.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: a0472e82a25841da118b69356b4bc178c0703de1 $
+ * $Id: 7aecce03bbd56b326db9c25429b89cca3353afcf $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -35,6 +35,7 @@
 #endif
 
 #include <math.h>
+#include <stdlib.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>

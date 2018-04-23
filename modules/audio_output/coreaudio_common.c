@@ -50,6 +50,7 @@ ca_Open(audio_output_t *p_aout)
     atomic_init(&p_sys->i_underrun_size, 0);
     atomic_init(&p_sys->b_paused, false);
     atomic_init(&p_sys->b_do_flush, false);
+    atomic_init(&p_sys->b_highlatency, true);
     vlc_sem_init(&p_sys->flush_sem, 0);
     vlc_mutex_init(&p_sys->lock);
 
@@ -70,9 +71,16 @@ ca_Close(audio_output_t *p_aout)
 
 /* Called from render callbacks. No lock, wait, and IO here */
 void
-ca_Render(audio_output_t *p_aout, uint8_t *p_output, size_t i_requested)
+ca_Render(audio_output_t *p_aout, uint32_t i_nb_samples, uint8_t *p_output,
+          size_t i_requested)
 {
     struct aout_sys_common *p_sys = (struct aout_sys_common *) p_aout->sys;
+
+    const bool b_highlatency = CLOCK_FREQ * (uint64_t)i_nb_samples / p_sys->i_rate
+                             > AOUT_MAX_PTS_DELAY;
+
+    if (b_highlatency)
+        atomic_store(&p_sys->b_highlatency, true);
 
     bool expected = true;
     if (atomic_compare_exchange_weak(&p_sys->b_do_flush, &expected, false))
@@ -109,12 +117,21 @@ ca_Render(audio_output_t *p_aout, uint8_t *p_output, size_t i_requested)
         atomic_fetch_add(&p_sys->i_underrun_size, i_requested - i_tocopy);
         memset(&p_output[i_tocopy], 0, i_requested - i_tocopy);
     }
+
+    /* Set high delay to false (re-enabling ca_Timeget) after consuming the
+     * circular buffer */
+    if (!b_highlatency)
+        atomic_store(&p_sys->b_highlatency, false);
 }
 
 int
 ca_TimeGet(audio_output_t *p_aout, mtime_t *delay)
 {
     struct aout_sys_common *p_sys = (struct aout_sys_common *) p_aout->sys;
+
+    /* Too high delay: TimeGet will be too imprecise */
+    if (atomic_load(&p_sys->b_highlatency))
+        return -1;
 
     int32_t i_bytes;
     TPCircularBufferTail(&p_sys->circular_buffer, &i_bytes);
@@ -239,6 +256,7 @@ ca_Initialize(audio_output_t *p_aout, const audio_sample_format_t *fmt,
 
     atomic_store(&p_sys->i_underrun_size, 0);
     atomic_store(&p_sys->b_paused, false);
+    atomic_store(&p_sys->b_highlatency, true);
     p_sys->i_rate = fmt->i_rate;
     p_sys->i_bytes_per_frame = fmt->i_bytes_per_frame;
     p_sys->i_frame_length = fmt->i_frame_length;
@@ -346,9 +364,8 @@ RenderCallback(void *p_data, AudioUnitRenderActionFlags *ioActionFlags,
     VLC_UNUSED(ioActionFlags);
     VLC_UNUSED(inTimeStamp);
     VLC_UNUSED(inBusNumber);
-    VLC_UNUSED(inNumberFrames);
 
-    ca_Render(p_data, ioData->mBuffers[0].mData,
+    ca_Render(p_data, inNumberFrames, ioData->mBuffers[0].mData,
               ioData->mBuffers[0].mDataByteSize);
 
     return noErr;
@@ -398,7 +415,7 @@ GetLayoutDescription(audio_output_t *p_aout,
 
 static int
 MapOutputLayout(audio_output_t *p_aout, audio_sample_format_t *fmt,
-                const AudioChannelLayout *outlayout)
+                const AudioChannelLayout *outlayout, bool *warn_configuration)
 {
     /* Fill VLC physical_channels from output layout */
     fmt->i_physical_channels = 0;
@@ -476,16 +493,8 @@ MapOutputLayout(audio_output_t *p_aout, audio_sample_format_t *fmt,
         if (fmt->i_physical_channels == 0)
         {
             fmt->i_physical_channels = AOUT_CHANS_STEREO;
-            msg_Err(p_aout, "You should configure your speaker layout with "
-                    "Audio Midi Setup in /Applications/Utilities. VLC will "
-                    "output Stereo only.");
-#if !TARGET_OS_IPHONE
-            vlc_dialog_display_error(p_aout,
-                _("Audio device is not configured"), "%s",
-                _("You should configure your speaker layout with "
-                "\"Audio Midi Setup\" in /Applications/"
-                "Utilities. VLC will output Stereo only."));
-#endif
+            if (warn_configuration)
+                *warn_configuration = true;
         }
 
         if (aout_FormatNbChannels(fmt) >= 8
@@ -701,10 +710,14 @@ SetupInputLayout(audio_output_t *p_aout, const audio_sample_format_t *fmt,
 
 int
 au_Initialize(audio_output_t *p_aout, AudioUnit au, audio_sample_format_t *fmt,
-              const AudioChannelLayout *outlayout, mtime_t i_dev_latency_us)
+              const AudioChannelLayout *outlayout, mtime_t i_dev_latency_us,
+              bool *warn_configuration)
 {
     int ret;
     AudioChannelLayoutTag inlayout_tag;
+
+    if (warn_configuration)
+        *warn_configuration = false;
 
     /* Set the desired format */
     AudioStreamBasicDescription desc;
@@ -712,7 +725,7 @@ au_Initialize(audio_output_t *p_aout, AudioUnit au, audio_sample_format_t *fmt,
     {
         /* PCM */
         fmt->i_format = VLC_CODEC_FL32;
-        ret = MapOutputLayout(p_aout, fmt, outlayout);
+        ret = MapOutputLayout(p_aout, fmt, outlayout, warn_configuration);
         if (ret != VLC_SUCCESS)
             return ret;
 

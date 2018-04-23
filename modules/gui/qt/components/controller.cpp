@@ -2,7 +2,7 @@
  * controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: e679206df8aa58eccd5c588f00c4965b9e91a1d1 $
+ * $Id: 07fbf0e28fa87d3de5732fa6b0796f10e0bc9b5d $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -350,7 +350,7 @@ QWidget *AbstractController::createWidget( buttonType_e button, int options )
         }
         break;
     case INPUT_SLIDER: {
-        SeekSlider *slider = new SeekSlider( Qt::Horizontal, NULL, !b_shiny );
+        SeekSlider *slider = new SeekSlider( p_intf, Qt::Horizontal, NULL, !b_shiny );
         SeekPoints *chapters = new SeekPoints( this, p_intf );
         CONNECT( THEMIM->getIM(), chapterChanged( bool ), chapters, update() );
         slider->setChapters( chapters );
@@ -850,7 +850,6 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
     previousPosition = getSettings()->value( "FullScreen/pos" ).toPoint();
     screenRes = getSettings()->value( "FullScreen/screen" ).toRect();
     isWideFSC = getSettings()->value( "FullScreen/wide" ).toBool();
-    i_screennumber = -1;
 
     CONNECT( this, fullscreenChanged( bool ), THEMIM, changeFullscreen( bool ) );
 }
@@ -889,7 +888,7 @@ void FullscreenControllerWidget::restoreFSC()
         }
 
         if( currentRes == screenRes &&
-            QApplication::desktop()->screen()->geometry().contains( previousPosition, true ) )
+            currentRes.contains( previousPosition, true ) )
         {
             /* Restore to the last known position */
             move( previousPosition );
@@ -1047,7 +1046,11 @@ void FullscreenControllerWidget::customEvent( QEvent *event )
             b_fs = b_fullscreen;
             vlc_mutex_unlock( &lock );
 
-            if( b_fs )
+            if( b_fs && ( isHidden()
+#if HAVE_TRANSPARENCY
+                 || p_slowHideTimer->isActive()
+#endif
+                    ) )
                 showFSC();
 
             break;

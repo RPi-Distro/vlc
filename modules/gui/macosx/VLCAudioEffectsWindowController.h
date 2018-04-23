@@ -2,7 +2,7 @@
  * VLCAudioEffectsWindowController.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2017 VLC authors and VideoLAN
- * $Id: ead4d711c438c74658beeae600ebeaf326f4f67f $
+ * $Id: 03dacbf0e7971e8409c4e97be610e0f20af9fae1 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jérôme Decoodt <djc@videolan.org>
@@ -30,7 +30,7 @@
 @interface VLCAudioEffectsWindowController : NSWindowController
 
 /* generic */
-@property (readwrite, weak) IBOutlet NSTabView *tabView;
+@property (readwrite, weak) IBOutlet NSSegmentedControl *segmentView;
 @property (readwrite, weak) IBOutlet NSPopUpButton *profilePopup;
 @property (readwrite, weak) IBOutlet NSButton *applyProfileCheckbox;
 
