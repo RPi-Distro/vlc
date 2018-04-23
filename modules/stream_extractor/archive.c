@@ -2,7 +2,7 @@
  * archive.c: libarchive based stream filter
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 9396c34c3e645d3cd56e6a75d1ee932bc148435b $
+ * $Id: b58453ab8c3cfa3e9b4133a5297d6137045bd041 $
  *
  * Authors: Filip Roséen <filip@atch.se>
  *
@@ -194,7 +194,7 @@ static la_ssize_t libarchive_read_cb( libarchive_t* p_arc, void* p_obj,
     if( i_ret < 0 )
     {
         archive_set_error( p_sys->p_archive, ARCHIVE_FATAL,
-          "libarchive_read_cb failed = %" PRId64, i_ret );
+          "libarchive_read_cb failed = %zd", i_ret );
 
         return ARCHIVE_FATAL;
     }

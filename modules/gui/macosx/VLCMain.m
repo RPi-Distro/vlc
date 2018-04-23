@@ -2,7 +2,7 @@
  * VLCMain.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2016 VLC authors and VideoLAN
- * $Id: 9f33cab3f0bd4ed1186046472df819bce1494494 $
+ * $Id: 8397c0fb5c09a6dfa3a8135758aa1584a7efc8ef $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -113,16 +113,6 @@ void CloseIntf (vlc_object_t *p_this)
         msg_Dbg(p_this, "Closing macosx interface");
         [[VLCMain sharedInstance] applicationWillTerminate:nil];
         [VLCMain killInstance];
-
-        /*
-         * Spinning the event loop here is important to help cleaning up all objects which should be
-         * destroyed here. Its possible that main thread selectors (which hold a strong reference
-         * to the target object), are still in the queue (e.g. fired from variable callback).
-         * Thus make sure those are still dispatched and the references to the targets are
-         * cleared, to allow the objects to be released.
-         */
-        msg_Dbg(p_this, "Spin the event loop to clean up the interface");
-        [[NSRunLoop mainRunLoop] runUntilDate:[NSDate date]];
 
         p_interface_thread = nil;
     }
@@ -337,6 +327,7 @@ static VLCMain *sharedInstance = nil;
     b_intf_terminating = true;
 
     [_input_manager onPlaybackHasEnded:nil];
+    [_input_manager deinit];
 
     if (notification == nil)
         [[NSNotificationCenter defaultCenter] postNotificationName: NSApplicationWillTerminateNotification object: nil];

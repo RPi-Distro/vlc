@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 9df2c413f81634a4c0eb464f219a00dd95601966 $
+ * $Id: a25f6ca4612f10051f7739f6f24024e55f6ce7c6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -351,8 +351,8 @@ static int lavc_CopyPicture(decoder_t *dec, picture_t *pic, AVFrame *frame)
                 sys->p_context->pix_fmt, (name != NULL) ? name : "unknown");
         return VLC_EGENERIC;
     } else if (fourcc != pic->format.i_chroma
-     || frame->width != (int) pic->format.i_visible_width
-     || frame->height != (int) pic->format.i_visible_height)
+     || frame->width > (int) pic->format.i_width
+     || frame->height > (int) pic->format.i_height)
     {
         msg_Warn(dec, "dropping frame because the vout changed");
         return VLC_EGENERIC;

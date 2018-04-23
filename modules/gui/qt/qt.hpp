@@ -2,7 +2,7 @@
  * qt.hpp : Qt interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 727ca8cf6aeafeaa7282059dfa36a7236225d367 $
+ * $Id: e59583ab712116f8590fa6465206e6505c0b51fc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -41,6 +41,7 @@
 
 #define QT_NO_CAST_TO_ASCII
 #include <QString>
+#include <QUrl>
 
 #if ( QT_VERSION < 0x050500 )
 # error Update your Qt version to at least 5.5.0
@@ -71,7 +72,7 @@ struct intf_sys_t
     class QSettings *mainSettings; /* Qt State settings not messing main VLC ones */
     class PLModel *pl_model;
 
-    QString filepath;        /* Last path used in dialogs */
+    QUrl filepath;        /* Last path used in dialogs */
 
     unsigned voutWindowType; /* Type of vout_window_t provided */
     bool b_isDialogProvider; /* Qt mode or Skins mode */

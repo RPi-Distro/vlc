@@ -2,7 +2,7 @@
  * VLCOutput.m: MacOS X Output Dialog
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 68bb3ce9a4c502de757613528ebc41ffc3f67f7c $
+ * $Id: 81d6ad2d6de8b232da1b952b4754ef168bb780c1 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -295,17 +295,20 @@
     else if ([mux isEqualToString: @"Raw"]) mux_string = @"raw";
     else mux_string = @"ts";
 
+    NSString *filename_string =
+            [[self.fileTextField stringValue] stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+
     if ([mode isEqualToString: _NS("File")]) {
         if ([self.dumpCheckbox state] == NSOnState) {
             _soutMRL = [NSArray arrayWithObjects:@":demux=dump",
                         [NSString stringWithFormat:
-                        @":demuxdump-file=%@",
-                        [self.fileTextField stringValue]], nil];
+                        @":demuxdump-file=\"%@\"",
+                        filename_string], nil];
             return;
         } else
             [mrl_string appendFormat:@"standard{mux=%@,access=file{no-overwrite},dst=\"%@\"}",
              mux_string,
-             [self.fileTextField stringValue]];
+             filename_string];
     }
     else if ([mode isEqualToString: _NS("Stream")]) {
         mode = [self.streamTypePopup titleOfSelectedItem];

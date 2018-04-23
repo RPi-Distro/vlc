@@ -2,7 +2,7 @@
  * vout_subpictures.c : subpicture management functions
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 0a1b9e680839dc3e8573ab7ca4893caa70c6d4b1 $
+ * $Id: 534d59e4604b628279d35ea5f4fce94c27c39b43 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -683,6 +683,8 @@ static void SpuRenderRegion(spu_t *spu,
         if (region->fmt.i_chroma == VLC_CODEC_TEXT)
             goto exit;
     }
+
+    video_format_AdjustColorSpace(&region->fmt);
 
     /* Force palette if requested
      * FIXME b_force_palette and force_crop are applied to all subpictures using palette

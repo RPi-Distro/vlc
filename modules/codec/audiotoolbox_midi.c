@@ -2,7 +2,7 @@
  * audiotoolbox_midi.c: Software MIDI synthesizer using AudioToolbox
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: 296d53b19eeddb7b1573017222cffa91057d23aa $
+ * $Id: 8adf545980e4ea16e5f04ebbf0da565ec1581fa5 $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -60,7 +60,7 @@ vlc_module_begin()
     set_category(CAT_INPUT)
     set_subcategory(SUBCAT_INPUT_ACODEC)
     set_callbacks(Open, Close)
-    add_loadfile("soundfont", "",
+    add_loadfile(CFG_PREFIX "soundfont", "",
                  SOUNDFONT_TEXT, SOUNDFONT_LONGTEXT, false)
 vlc_module_end()
 

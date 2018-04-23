@@ -166,11 +166,11 @@ static HKEY GetAdapterRegistry(DXGI_ADAPTER_DESC *adapterDesc)
 #undef D3D11_GetDriverVersion
 void D3D11_GetDriverVersion(vlc_object_t *obj, d3d11_device_t *d3d_dev)
 {
+    memset(&d3d_dev->WDDM, 0, sizeof(d3d_dev->WDDM));
+
 #if VLC_WINSTORE_APP
     return;
 #else
-    memset(&d3d_dev->WDDM, 0, sizeof(d3d_dev->WDDM));
-
     IDXGIAdapter *pAdapter = D3D11DeviceAdapter(d3d_dev->d3ddevice);
     if (!pAdapter)
         return;
@@ -269,21 +269,20 @@ HRESULT D3D11_CreateDevice(vlc_object_t *obj, d3d11_handle_t *hd3d,
     };
 
     for (UINT driver = 0; driver < ARRAY_SIZE(driverAttempts); driver++) {
-        D3D_FEATURE_LEVEL i_feature_level;
         hr = D3D11CreateDevice(NULL, driverAttempts[driver], NULL, creationFlags,
                     D3D11_features, ARRAY_SIZE(D3D11_features), D3D11_SDK_VERSION,
-                    &out->d3ddevice, &i_feature_level, &out->d3dcontext);
+                    &out->d3ddevice, &out->feature_level, &out->d3dcontext);
         if (SUCCEEDED(hr)) {
 #ifndef NDEBUG
             msg_Dbg(obj, "Created the D3D11 device 0x%p ctx 0x%p type %d level %x.",
                     (void *)out->d3ddevice, (void *)out->d3dcontext,
-                    driverAttempts[driver], i_feature_level);
+                    driverAttempts[driver], out->feature_level);
             D3D11_GetDriverVersion( obj, out );
 #endif
             /* we can work with legacy levels but only if forced */
-            if ( obj->obj.force || i_feature_level >= D3D_FEATURE_LEVEL_11_0 )
+            if ( obj->obj.force || out->feature_level >= D3D_FEATURE_LEVEL_11_0 )
                 break;
-            msg_Dbg(obj, "Incompatible feature level %x", i_feature_level);
+            msg_Dbg(obj, "Incompatible feature level %x", out->feature_level);
             ID3D11DeviceContext_Release(out->d3dcontext);
             ID3D11Device_Release(out->d3ddevice);
             out->d3dcontext = NULL;
@@ -376,19 +375,42 @@ int D3D11CheckDriverVersion(d3d11_device_t *d3d_dev, UINT vendorId, const struct
     if (vendorId && adapterDesc.VendorId != vendorId)
         return VLC_SUCCESS;
 
-#if VLC_WINSTORE_APP
-    return VLC_EGENERIC;
-#else
-    bool newer =
-           d3d_dev->WDDM.wddm > min_ver->wddm ||
-          (d3d_dev->WDDM.wddm == min_ver->wddm && (d3d_dev->WDDM.d3d_features > min_ver->d3d_features ||
-                                    (d3d_dev->WDDM.d3d_features == min_ver->d3d_features &&
-                                                (d3d_dev->WDDM.revision > min_ver->revision ||
-                                                (d3d_dev->WDDM.revision == min_ver->revision &&
-                                                       d3d_dev->WDDM.build > min_ver->build)))));
+    int build = d3d_dev->WDDM.build;
+    if (adapterDesc.VendorId == GPU_MANUFACTURER_INTEL && d3d_dev->WDDM.revision >= 100)
+    {
+        /* new Intel driver format */
+        build += (d3d_dev->WDDM.revision - 100) * 1000;
+    }
 
-    return newer ? VLC_SUCCESS : VLC_EGENERIC;
-#endif
+    if (min_ver->wddm)
+    {
+        if (d3d_dev->WDDM.wddm > min_ver->wddm)
+            return VLC_SUCCESS;
+        else if (d3d_dev->WDDM.wddm != min_ver->wddm)
+            return VLC_EGENERIC;
+    }
+    if (min_ver->d3d_features)
+    {
+        if (d3d_dev->WDDM.d3d_features > min_ver->d3d_features)
+            return VLC_SUCCESS;
+        else if (d3d_dev->WDDM.d3d_features != min_ver->d3d_features)
+            return VLC_EGENERIC;
+    }
+    if (min_ver->revision)
+    {
+        if (d3d_dev->WDDM.revision > min_ver->revision)
+            return VLC_SUCCESS;
+        else if (d3d_dev->WDDM.revision != min_ver->revision)
+            return VLC_EGENERIC;
+    }
+    if (min_ver->build)
+    {
+        if (build > min_ver->build)
+            return VLC_SUCCESS;
+        else if (build != min_ver->build)
+            return VLC_EGENERIC;
+    }
+    return VLC_SUCCESS;
 }
 
 const d3d_format_t *FindD3D11Format(ID3D11Device *d3ddevice,

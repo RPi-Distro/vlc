@@ -28,6 +28,7 @@
 #include "avci.h"
 #include "../xiph.h"
 #include "../../packetizer/dts_header.h"
+#include "color_config.h"
 
 #include <vlc_demux.h>
 #include <vlc_aout.h>
@@ -134,8 +135,8 @@ static void SetupESDS( demux_t *p_demux, mp4_track_t *p_track, const MP4_descrip
                 p_track->fmt.subs.spu.i_original_frame_width = p_track->i_width;
             if( p_track->i_height > 0 )
                 p_track->fmt.subs.spu.i_original_frame_height = p_track->i_height;
-            break;
         }
+        break;
     case( 0xe1 ): /* QCelp for 3gp */
         if( p_track->fmt.i_cat == AUDIO_ES )
         {
@@ -496,21 +497,12 @@ int SetupVideoES( demux_t *p_demux, mp4_track_t *p_track, MP4_Box_t *p_sample )
         if ( BOXDATA(p_colr)->i_type == VLC_FOURCC( 'n', 'c', 'l', 'c' ) ||
              BOXDATA(p_colr)->i_type == VLC_FOURCC( 'n', 'c', 'l', 'x' ) )
         {
-            switch ( BOXDATA( p_colr )->nclc.i_primary_idx )
-            {
-            case 1: p_track->fmt.video.primaries = COLOR_PRIMARIES_BT709; break;
-            case 5: p_track->fmt.video.primaries = COLOR_PRIMARIES_BT601_625; break;
-            case 6: p_track->fmt.video.primaries = COLOR_PRIMARIES_BT601_525; break;
-            }
-            switch ( BOXDATA( p_colr )->nclc.i_transfer_function_idx )
-            {
-            case 1: p_track->fmt.video.transfer = TRANSFER_FUNC_BT709; break;
-            }
-            switch ( BOXDATA( p_colr )->nclc.i_matrix_idx )
-            {
-            case 1: p_track->fmt.video.space = COLOR_SPACE_BT709; break;
-            case 2: p_track->fmt.video.space = COLOR_SPACE_BT601; break;
-            }
+            p_track->fmt.video.primaries =
+                    iso_23001_8_cp_to_vlc_primaries( BOXDATA( p_colr )->nclc.i_primary_idx );
+            p_track->fmt.video.transfer =
+                    iso_23001_8_tc_to_vlc_xfer( BOXDATA( p_colr )->nclc.i_transfer_function_idx );
+            p_track->fmt.video.space =
+                    iso_23001_8_mc_to_vlc_coeffs( BOXDATA( p_colr )->nclc.i_matrix_idx );
             p_track->fmt.video.b_color_range_full = BOXDATA(p_colr)->i_type == VLC_FOURCC( 'n', 'c', 'l', 'x' ) &&
                     (BOXDATA(p_colr)->nclc.i_full_range >> 7) != 0;
         }
@@ -670,24 +662,37 @@ int SetupVideoES( demux_t *p_demux, mp4_track_t *p_track, MP4_Box_t *p_sample )
                     p_track->fmt.i_codec = VLC_CODEC_VP8;
                 p_track->fmt.i_profile = p_data->i_profile;
                 p_track->fmt.i_level = p_data->i_level;
-                const uint8_t colorspacesmapping[] =
-                {
-                    COLOR_SPACE_UNDEF,
-                    COLOR_SPACE_BT601,
-                    COLOR_SPACE_BT709,
-                    COLOR_SPACE_SMPTE_170,
-                    COLOR_SPACE_SMPTE_240,
-                    COLOR_SPACE_BT2020,
-                    COLOR_SPACE_BT2020,
-                    COLOR_SPACE_SRGB,
-                };
-                if( p_data->i_color_space < ARRAY_SIZE(colorspacesmapping) )
-                    p_track->fmt.video.space = colorspacesmapping[p_data->i_color_space];
 
-                if( p_data->i_xfer_function == 0 )
-                    p_track->fmt.video.transfer = TRANSFER_FUNC_BT709;
-                else if ( p_data->i_xfer_function == 1 )
-                    p_track->fmt.video.transfer = TRANSFER_FUNC_SMPTE_ST2084;
+                if( p_data->i_version == 0 ) /* old deprecated */
+                {
+                    const uint8_t colorspacesmapping[] =
+                    {
+                        COLOR_SPACE_UNDEF,
+                        COLOR_SPACE_BT601,
+                        COLOR_SPACE_BT709,
+                        COLOR_SPACE_SMPTE_170,
+                        COLOR_SPACE_SMPTE_240,
+                        COLOR_SPACE_BT2020,
+                        COLOR_SPACE_BT2020,
+                        COLOR_SPACE_SRGB,
+                    };
+                    if( p_data->i_color_primaries < ARRAY_SIZE(colorspacesmapping) )
+                        p_track->fmt.video.space = colorspacesmapping[p_data->i_color_primaries];
+
+                    if( p_data->i_xfer_function == 0 )
+                        p_track->fmt.video.transfer = TRANSFER_FUNC_BT709;
+                    else if ( p_data->i_xfer_function == 1 )
+                        p_track->fmt.video.transfer = TRANSFER_FUNC_SMPTE_ST2084;
+                }
+                else
+                {
+                    p_track->fmt.video.primaries =
+                            iso_23001_8_cp_to_vlc_primaries( p_data->i_color_primaries );
+                    p_track->fmt.video.transfer =
+                            iso_23001_8_tc_to_vlc_xfer( p_data->i_xfer_function );
+                    p_track->fmt.video.space =
+                            iso_23001_8_mc_to_vlc_coeffs( p_data->i_matrix_coeffs );
+                }
 
                 p_track->fmt.video.b_color_range_full = p_data->i_fullrange;
                 p_track->fmt.video.i_bits_per_pixel = p_data->i_bit_depth;
@@ -702,13 +707,31 @@ int SetupVideoES( demux_t *p_demux, mp4_track_t *p_track, MP4_Box_t *p_sample )
                                 p_data->i_codec_init_datasize );
                     }
                 }
+
+                const MP4_Box_t *p_SmDm = MP4_BoxGet( p_sample, "SmDm" );
+                if( p_SmDm && BOXDATA(p_SmDm) )
+                {
+                    memcpy( p_track->fmt.video.mastering.primaries,
+                            BOXDATA(p_SmDm)->primaries, sizeof(uint16_t) * 6 );
+                    memcpy( p_track->fmt.video.mastering.white_point,
+                            BOXDATA(p_SmDm)->white_point, sizeof(uint16_t) * 2 );
+                    p_track->fmt.video.mastering.max_luminance = BOXDATA(p_SmDm)->i_luminanceMax;
+                    p_track->fmt.video.mastering.min_luminance = BOXDATA(p_SmDm)->i_luminanceMin;
+                }
+
+                const MP4_Box_t *p_CoLL = MP4_BoxGet( p_sample, "CoLL" );
+                if( p_CoLL && BOXDATA(p_CoLL) )
+                {
+                    p_track->fmt.video.lighting.MaxCLL = BOXDATA(p_CoLL)->i_maxCLL;
+                    p_track->fmt.video.lighting.MaxFALL = BOXDATA(p_CoLL)->i_maxFALL;
+                }
             }
         }
         break;
 
         case ATOM_WMV3:
             p_track->p_asf = MP4_BoxGet( p_sample, "ASF " );
-            /* fallsthrough */
+            /* fallthrough */
         case ATOM_H264:
         case VLC_FOURCC('W','V','C','1'):
         {
@@ -744,15 +767,12 @@ int SetupVideoES( demux_t *p_demux, mp4_track_t *p_track, MP4_Box_t *p_sample )
         case VLC_FOURCC( 'a', 'i', '1', '5' ):
         case VLC_FOURCC( 'a', 'i', '1', '6' ):
         {
-            if( !p_track->fmt.i_extra && p_track->fmt.video.i_width < UINT16_MAX )
+            if( !p_track->fmt.i_extra && p_track->fmt.video.i_width < UINT16_MAX &&
+                p_fiel && BOXDATA(p_fiel) )
             {
-                const MP4_Box_t *p_fiel = MP4_BoxGet( p_sample, "fiel" );
-                if( p_fiel && BOXDATA(p_fiel) )
-                {
-                    p_track->fmt.p_extra =
-                            AVCi_create_AnnexB( p_track->fmt.video.i_width,
-                                              !!BOXDATA(p_fiel)->i_flags, &p_track->fmt.i_extra );
-                }
+                p_track->fmt.p_extra =
+                        AVCi_create_AnnexB( p_track->fmt.video.i_width,
+                                            !!BOXDATA(p_fiel)->i_flags, &p_track->fmt.i_extra );
             }
             break;
         }

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: a5ad4ddabdab7d2bbe5da1bed8d9247e827890b6 $
+ * $Id: 8100bf844456416751cba4598a4d61bbb5a7e778 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont <rem # videolan.org> - EPSV support
@@ -900,7 +900,8 @@ static ssize_t Read( stream_t *p_access, void *p_buffer, size_t i_len )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
-    assert( p_sys->data != NULL );
+    if( p_sys->data == NULL )
+        return 0;
     assert( !p_sys->out );
 
     ssize_t i_read = vlc_tls_Read( p_sys->data, p_buffer, i_len, false );

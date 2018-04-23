@@ -2,7 +2,7 @@
  * toolbar.cpp : ToolbarEdit dialog
  ****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: b71dfe5d9700a62bb4d2039ab97a43008f8ae034 $
+ * $Id: 58a90f7c5b413718dd8b500d45afca08fa23ad88 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -463,7 +463,7 @@ WidgetListing::WidgetListing( intf_thread_t *p_intf, QWidget *_parent )
             break;
         case INPUT_SLIDER:
             {
-                SeekSlider *slider = new SeekSlider( Qt::Horizontal, this );
+                SeekSlider *slider = new SeekSlider( p_intf, Qt::Horizontal, this );
                 widget = slider;
             }
             widgetItem->setText( qtr("Time Slider") );

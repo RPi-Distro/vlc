@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2006 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
  *
- * $Id: d098fb142590d2431d4ea7c536419976a9b9e4ba $
+ * $Id: f8d3bc9805953000f80066604fd1a04c18da044e $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -617,7 +617,7 @@ int net_OpenDgram( vlc_object_t *obj, const char *psz_bind, int i_bind,
     int val = vlc_getaddrinfo (psz_server, i_server, &hints, &rem);
     if (val)
     {
-        msg_Err (obj, "cannot resolve %s port %d : %s", psz_bind, i_bind,
+        msg_Err (obj, "cannot resolve %s port %d : %s", psz_server, i_server,
                  gai_strerror (val));
         return -1;
     }

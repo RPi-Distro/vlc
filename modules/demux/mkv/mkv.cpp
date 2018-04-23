@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008, 2010 VLC authors and VideoLAN
- * $Id: d9c5f912b8a1b60fb7f462716ea8722b4b173d61 $
+ * $Id: 1667c12a0edbc6caca987a5303f84a385f1b8307 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -323,11 +323,10 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         case DEMUX_GET_LENGTH:
             pi64 = va_arg( args, int64_t * );
             if( p_sys->f_duration > 0.0 )
-            {
                 *pi64 = static_cast<int64_t>( p_sys->f_duration * 1000 );
-                return VLC_SUCCESS;
-            }
-            return VLC_EGENERIC;
+            else
+                *pi64 = VLC_TS_INVALID;
+            return VLC_SUCCESS;
 
         case DEMUX_GET_POSITION:
             pf = va_arg( args, double * );

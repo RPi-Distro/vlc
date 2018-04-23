@@ -2,7 +2,7 @@
  * ifo.c: Dummy ifo demux to enable opening DVDs rips by double cliking on VIDEO_TS.IFO
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 204a06180e6332080d9c103724db5e33c5cc691d $
+ * $Id: e91af613785f21331c503fd4bc625704d46b06cb $
  *
  * Authors: Antoine Cellerier <dionoea @t videolan d.t org>
  *
@@ -40,91 +40,101 @@
 static int ReadDVD( stream_t *, input_item_node_t * );
 static int ReadDVD_VR( stream_t *, input_item_node_t * );
 
+static const char *StreamLocation( const stream_t *s )
+{
+    return s->psz_filepath ? s->psz_filepath : s->psz_url;
+}
+
 /*****************************************************************************
  * Import_IFO: main import function
  *****************************************************************************/
 int Import_IFO( vlc_object_t *p_this )
 {
-    stream_t *p_demux = (stream_t *)p_this;
+    stream_t *p_stream = (stream_t *)p_this;
 
-    CHECK_FILE(p_demux);
-    if( p_demux->psz_filepath == NULL )
+    CHECK_FILE(p_stream);
+
+    if( !stream_HasExtension( p_stream, ".IFO" ) )
         return VLC_EGENERIC;
 
-    size_t len = strlen( p_demux->psz_filepath );
+    const char *psz_location = StreamLocation( p_stream );
+    if( psz_location == NULL )
+        return VLC_EGENERIC;
 
-    char *psz_file = p_demux->psz_filepath + len - strlen( "VIDEO_TS.IFO" );
+    size_t len = strlen( psz_location );
+    if( len < 12 )
+        return VLC_EGENERIC;
+
+    const char *psz_probe;
+    const char *psz_file = &psz_location[len - 12];
     /* Valid filenames are :
      *  - VIDEO_TS.IFO
      *  - VTS_XX_X.IFO where X are digits
      */
-    if( len > strlen( "VIDEO_TS.IFO" )
-        && ( !strcasecmp( psz_file, "VIDEO_TS.IFO" )
-        || (!strncasecmp( psz_file, "VTS_", 4 )
-        && !strcasecmp( psz_file + strlen( "VTS_00_0" ) , ".IFO" ) ) ) )
+    if( !strncasecmp( psz_file, "VIDEO_TS", 8 ) ||
+        !strncasecmp( psz_file, "VTS_", 4 ) )
     {
-        const uint8_t *p_peek;
-        ssize_t i_peek = vlc_stream_Peek( p_demux->p_source, &p_peek, 8 );
-
-        if( i_peek != 8 || memcmp( p_peek, "DVDVIDEO", 8 ) )
-            return VLC_EGENERIC;
-
-        p_demux->pf_readdir = ReadDVD;
+        psz_probe = "DVDVIDEO";
+        p_stream->pf_readdir = ReadDVD;
     }
     /* Valid filename for DVD-VR is VR_MANGR.IFO */
-    else if( len >= 12 && !strcmp( &p_demux->psz_filepath[len-12], "VR_MANGR.IFO" ) )
+    else if( !strncasecmp( psz_file, "VR_MANGR", 8 ) )
     {
-        const uint8_t *p_peek;
-        ssize_t i_peek = vlc_stream_Peek( p_demux->p_source, &p_peek, 8 );
-
-        if( i_peek != 8 || memcmp( p_peek, "DVD_RTR_", 8 ) )
-            return VLC_EGENERIC;
-
-        p_demux->pf_readdir = ReadDVD_VR;
+        psz_probe = "DVD_RTR_";
+        p_stream->pf_readdir = ReadDVD_VR;
     }
     else
         return VLC_EGENERIC;
 
-    p_demux->pf_control = access_vaDirectoryControlHelper;
+    const uint8_t *p_peek;
+    ssize_t i_peek = vlc_stream_Peek( p_stream->p_source, &p_peek, 8 );
+    if( i_peek < 8 || memcmp( p_peek, psz_probe, 8 ) )
+        return VLC_EGENERIC;
+
+    p_stream->pf_control = access_vaDirectoryControlHelper;
 
     return VLC_SUCCESS;
 }
 
-static int ReadDVD( stream_t *p_demux, input_item_node_t *node )
+static int ReadDVD( stream_t *p_stream, input_item_node_t *node )
 {
-    char *psz_url, *psz_dir;
+    const char *psz_location = StreamLocation(p_stream);
 
-    psz_dir = strrchr( p_demux->psz_location, '/' );
-    if( psz_dir != NULL )
-       psz_dir[1] = '\0';
-
-    if( asprintf( &psz_url, "dvd://%s", p_demux->psz_location ) == -1 )
-        return 0;
+    char *psz_url = strndup( psz_location, strlen( psz_location ) - 12 );
+    if( !psz_url )
+        return VLC_ENOMEM;
 
     input_item_t *p_input = input_item_New( psz_url, psz_url );
-    input_item_node_AppendItem( node, p_input );
-    input_item_Release( p_input );
+    if( p_input )
+    {
+        input_item_AddOption( p_input, "demux=dvd", VLC_INPUT_OPTION_TRUSTED );
+        input_item_node_AppendItem( node, p_input );
+        input_item_Release( p_input );
+    }
 
     free( psz_url );
 
     return VLC_SUCCESS;
 }
 
-static int ReadDVD_VR( stream_t *p_demux, input_item_node_t *node )
+static int ReadDVD_VR( stream_t *p_stream, input_item_node_t *node )
 {
-    size_t len = strlen( p_demux->psz_location );
-    char *psz_url = malloc( len + 1 );
+    const char *psz_location = StreamLocation(p_stream);
+
+    size_t len = strlen( psz_location );
+    char *psz_url = strdup( psz_location );
 
     if( unlikely( psz_url == NULL ) )
-        return 0;
-    assert( len >= 12 );
-    len -= 12;
-    memcpy( psz_url, p_demux->psz_location, len );
-    memcpy( psz_url + len, "VR_MOVIE.VRO", 13 );
+        return VLC_EGENERIC;
+
+    strcpy( &psz_url[len - 12], "VR_MOVIE.VRO" );
 
     input_item_t *p_input = input_item_New( psz_url, psz_url );
-    input_item_node_AppendItem( node, p_input );
-    input_item_Release( p_input );
+    if( p_input )
+    {
+        input_item_node_AppendItem( node, p_input );
+        input_item_Release( p_input );
+    }
 
     free( psz_url );
 

@@ -2,7 +2,7 @@
  * VLCVideoEffectsWindowController.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2015 Felix Paul Kühne
- * $Id: f09a5ada2ae7de2403f55042f6d663811cc3cb14 $
+ * $Id: 1954ab84aa957dc807abea0f5f8f49a243c599b0 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -29,7 +29,7 @@
 @interface VLCVideoEffectsWindowController : NSWindowController
 
 /* generic */
-@property (readwrite, weak) IBOutlet NSTabView *tabView;
+@property (readwrite, weak) IBOutlet NSSegmentedControl *segmentView;
 @property (readwrite, weak) IBOutlet NSPopUpButton *profilePopup;
 @property (readwrite, weak) IBOutlet NSButton *applyProfileCheckbox;
 

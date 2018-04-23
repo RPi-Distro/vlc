@@ -39,9 +39,9 @@
 
 static void on_paused_changed_cb(void *data, bool paused);
 
-struct demux_sys_t
+struct demux_cc
 {
-    demux_sys_t(demux_t * const demux, chromecast_common * const renderer)
+    demux_cc(demux_t * const demux, chromecast_common * const renderer)
         :p_demux(demux)
         ,p_renderer(renderer)
         ,m_enabled( true )
@@ -135,10 +135,17 @@ struct demux_sys_t
 
         es_out_Control( p_demux->p_next->out, ES_OUT_RESET_PCR );
 
-        p_renderer->pf_set_on_paused_changed_cb(p_renderer->p_opaque,
-                                                on_paused_changed_cb, p_demux);
+        p_renderer->pf_set_demux_enabled(p_renderer->p_opaque, true,
+                                         on_paused_changed_cb, p_demux);
 
         resetTimes();
+    }
+
+    void deinit()
+    {
+        assert(p_renderer);
+        p_renderer->pf_set_meta( p_renderer->p_opaque, NULL );
+        p_renderer->pf_set_demux_enabled(p_renderer->p_opaque, false, NULL, NULL);
     }
 
     void resetTimes()
@@ -159,14 +166,10 @@ struct demux_sys_t
         m_last_pos = m_start_pos;
     }
 
-    ~demux_sys_t()
+    ~demux_cc()
     {
         if( p_renderer )
-        {
-            p_renderer->pf_set_meta( p_renderer->p_opaque, NULL );
-            p_renderer->pf_set_on_paused_changed_cb( p_renderer->p_opaque,
-                                                     NULL, NULL );
-        }
+            deinit();
     }
 
     void resetDemuxEof()
@@ -414,14 +417,14 @@ struct demux_sys_t
         case DEMUX_FILTER_ENABLE:
             p_renderer = static_cast<chromecast_common *>(
                         var_InheritAddress( p_demux, CC_SHARED_VAR_NAME ) );
+            assert(p_renderer != NULL);
             m_enabled = true;
             init();
             return VLC_SUCCESS;
 
         case DEMUX_FILTER_DISABLE:
 
-            p_renderer->pf_set_on_paused_changed_cb( p_renderer->p_opaque,
-                                                     NULL, NULL );
+            deinit();
 
             /* Seek back to last known position. Indeed we don't want to resume
              * from the input position that can be more than 1 minutes forward
@@ -488,14 +491,14 @@ static void on_paused_changed_cb( void *data, bool paused )
 
 static int Demux( demux_t *p_demux_filter )
 {
-    demux_sys_t *p_sys = p_demux_filter->p_sys;
+    demux_cc *p_sys = reinterpret_cast<demux_cc*>(p_demux_filter->p_sys);
 
     return p_sys->Demux();
 }
 
 static int Control( demux_t *p_demux_filter, int i_query, va_list args)
 {
-    demux_sys_t *p_sys = p_demux_filter->p_sys;
+    demux_cc *p_sys = reinterpret_cast<demux_cc*>(p_demux_filter->p_sys);
 
     return p_sys->Control( p_demux_filter, i_query, args );
 }
@@ -511,11 +514,11 @@ int Open(vlc_object_t *p_this)
         return VLC_ENOOBJ;
     }
 
-    demux_sys_t *p_sys = new(std::nothrow) demux_sys_t( p_demux, p_renderer );
+    demux_cc *p_sys = new(std::nothrow) demux_cc( p_demux, p_renderer );
     if (unlikely(p_sys == NULL))
         return VLC_ENOMEM;
 
-    p_demux->p_sys = p_sys;
+    p_demux->p_sys = reinterpret_cast<demux_sys_t*>(p_sys);
     p_demux->pf_demux = Demux;
     p_demux->pf_control = Control;
 
@@ -525,7 +528,7 @@ int Open(vlc_object_t *p_this)
 void Close(vlc_object_t *p_this)
 {
     demux_t *p_demux = reinterpret_cast<demux_t*>(p_this);
-    demux_sys_t *p_sys = p_demux->p_sys;
+    demux_cc *p_sys = reinterpret_cast<demux_cc*>(p_demux->p_sys);
 
     delete p_sys;
 }

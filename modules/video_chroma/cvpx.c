@@ -36,6 +36,7 @@
 #include <vlc_picture.h>
 #include <vlc_modules.h>
 #include "../codec/vt_utils.h"
+#include "../video_chroma/copy.h"
 
 static int Open(vlc_object_t *);
 static void Close(vlc_object_t *);
@@ -50,7 +51,11 @@ struct filter_sys_t
     CVPixelBufferPoolRef pool;
     union
     {
-        filter_t *p_sw_filter;
+        struct
+        {
+            video_format_t fmt;
+            copy_cache_t cache;
+        } sw;
 #if !TARGET_OS_IPHONE
         VTPixelTransferSessionRef vttransfer;
 #endif
@@ -73,19 +78,104 @@ vlc_module_end ()
  * CVPX to/from I420 conversion *
  ********************************/
 
+static void Copy(filter_t *p_filter, picture_t *dst, picture_t *src)
+{
+    filter_sys_t *p_sys = p_filter->p_sys;
+
+    const uint8_t *src_planes[3] = { src->p[0].p_pixels,
+                                     src->p[1].p_pixels,
+                                     src->p[2].p_pixels };
+    const size_t src_pitches[3] = { src->p[0].i_pitch,
+                                    src->p[1].i_pitch,
+                                    src->p[2].i_pitch };
+
+#define DO(x) \
+    x(dst, src_planes, src_pitches, src->format.i_visible_height, &p_sys->sw.cache)
+#define DO_S(x, shift) \
+    x(dst, src_planes, src_pitches, src->format.i_visible_height, shift, &p_sys->sw.cache)
+#define DO_P(x) \
+    x(dst, src_planes[0], src_pitches[0], src->format.i_visible_height, &p_sys->sw.cache)
+
+    const vlc_fourcc_t infcc = src->format.i_chroma;
+    const vlc_fourcc_t outfcc = dst->format.i_chroma;
+
+    switch (infcc)
+    {
+        case VLC_CODEC_NV12:
+            if (outfcc == VLC_CODEC_NV12)
+                DO(Copy420_SP_to_SP);
+            else
+            {
+                assert(outfcc == VLC_CODEC_I420);
+                DO(Copy420_SP_to_P);
+            }
+            break;
+        case VLC_CODEC_P010:
+            if (outfcc == VLC_CODEC_P010)
+                DO(Copy420_SP_to_SP);
+            else
+            {
+                assert(dst->format.i_chroma == VLC_CODEC_I420_10L);
+                DO_S(Copy420_16_SP_to_P, 6);
+            }
+            break;
+        case VLC_CODEC_I420:
+            if (outfcc == VLC_CODEC_I420)
+                DO(Copy420_P_to_P);
+            else
+            {
+                assert(outfcc == VLC_CODEC_NV12);
+                DO(Copy420_P_to_SP);
+            }
+            break;
+        case VLC_CODEC_I420_10L:
+            assert(outfcc == VLC_CODEC_P010);
+            DO_S(Copy420_16_P_to_SP, -6);
+            break;
+        case VLC_CODEC_UYVY:
+            assert(outfcc == VLC_CODEC_UYVY);
+            DO_P(CopyPacked);
+            break;
+        case VLC_CODEC_BGRA:
+            assert(outfcc == VLC_CODEC_BGRA);
+            DO_P(CopyPacked);
+            break;
+        default:
+            vlc_assert_unreachable();
+    }
+
+#undef DO
+#undef DO_S
+#undef DO_P
+}
+
 static picture_t *CVPX_TO_SW_Filter(filter_t *p_filter, picture_t *src)
 {
+    filter_sys_t *p_sys = p_filter->p_sys;
+
     picture_t *src_sw =
-        cvpxpic_create_mapped(&p_filter->fmt_out.video, cvpxpic_get_ref(src),
-                              true);
+        cvpxpic_create_mapped(&p_sys->sw.fmt, cvpxpic_get_ref(src), true);
     if (!src_sw)
     {
         picture_Release(src);
         return NULL;
     }
-    picture_CopyProperties(src_sw, src);
+
+    picture_t *dst = filter_NewPicture(p_filter);
+    if (!dst)
+    {
+        picture_Release(src_sw);
+        picture_Release(src);
+        return NULL;
+    }
+
+    Copy(p_filter, dst, src_sw);
+    picture_Release(src_sw);
+
+    picture_CopyProperties(dst, src);
     picture_Release(src);
-    return src_sw;
+
+    return dst;
 }
 
 static picture_t *SW_TO_CVPX_Filter(filter_t *p_filter, picture_t *src)
@@ -101,7 +191,7 @@ static picture_t *SW_TO_CVPX_Filter(filter_t *p_filter, picture_t *src)
 
     /* Allocate a CPVX backed picture mapped for read/write */
     picture_t *mapped_dst =
-        cvpxpic_create_mapped(&p_filter->fmt_in.video, cvpx, false);
+        cvpxpic_create_mapped(&p_sys->sw.fmt, cvpx, false);
     CFRelease(cvpx);
     if (!mapped_dst)
     {
@@ -118,10 +208,7 @@ static picture_t *SW_TO_CVPX_Filter(filter_t *p_filter, picture_t *src)
         return NULL;
     }
 
-    /* Copy pixels to the CVPX backed picture. Don't use picture_CopyPixels()
-     * since we want to handle the context ourself. */
-    for( int i = 0; i < src->i_planes ; i++ )
-        plane_CopyPixels( mapped_dst->p+i, src->p+i );
+    Copy(p_filter, mapped_dst, src);
 
     /* Attach the CVPX to a new opaque picture */
     cvpxpic_attach(dst, cvpxpic_get_ref(mapped_dst));
@@ -134,76 +221,15 @@ static picture_t *SW_TO_CVPX_Filter(filter_t *p_filter, picture_t *src)
     return dst;
 }
 
-
-static picture_t *CVPX_TO_I420_Filter(filter_t *p_filter, picture_t *src)
-{
-    filter_sys_t *p_sys = p_filter->p_sys;
-    filter_t *p_sw_filter = p_sys->p_sw_filter;
-    assert(p_sw_filter != NULL);
-    picture_t *dst = NULL;
-
-    picture_t *src_sw =
-        cvpxpic_create_mapped(&p_sw_filter->fmt_in.video, cvpxpic_get_ref(src),
-                              true);
-
-    if (!src_sw)
-    {
-        picture_Release(src);
-        return NULL;
-    }
-    picture_CopyProperties(src_sw, src);
-    picture_Release(src);
-
-    dst = p_sw_filter->pf_video_filter(p_sw_filter, src_sw);
-
-    return dst;
-}
-
-static picture_t *SW_buffer_new(filter_t *p_filter)
-{
-    return picture_NewFromFormat( &p_filter->fmt_out.video );
-}
-
-static picture_t *CVPX_buffer_new(filter_t *p_sw_filter)
-{
-    filter_t *p_filter = p_sw_filter->owner.sys;
-    filter_sys_t *p_sys = p_filter->p_sys;
-
-    CVPixelBufferRef cvpx = cvpxpool_new_cvpx(p_sys->pool);
-    if (cvpx == NULL)
-        return NULL;
-
-    picture_t *pic =
-        cvpxpic_create_mapped(&p_sw_filter->fmt_out.video, cvpx, false);
-    CFRelease(cvpx);
-    return pic;
-}
-
-static picture_t *I420_TO_CVPX_Filter(filter_t *p_filter, picture_t *src)
-{
-    filter_sys_t *p_sys = p_filter->p_sys;
-    filter_t *p_sw_filter = p_sys->p_sw_filter;
-
-    picture_t *sw_dst = p_sw_filter->pf_video_filter(p_sw_filter, src);
-    if (sw_dst == NULL)
-        return NULL;
-
-    return cvpxpic_unmap(sw_dst);
-}
-
 static void Close(vlc_object_t *obj)
 {
     filter_t *p_filter = (filter_t *)obj;
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    if (p_sys->p_sw_filter != NULL)
-    {
-        module_unneed(p_sys->p_sw_filter, p_sys->p_sw_filter->p_module);
-        vlc_object_release(p_sys->p_sw_filter);
-    }
-
     if (p_sys->pool != NULL)
         CVPixelBufferPoolRelease(p_sys->pool);
+
+    CopyCleanCache(&p_sys->sw.cache);
     free(p_sys);
 }
 
@@ -215,58 +241,57 @@ static int Open(vlc_object_t *obj)
         || p_filter->fmt_in.video.i_width != p_filter->fmt_out.video.i_width)
         return VLC_EGENERIC;
 
-#define CASE_CVPX_INPUT(x) \
+    video_format_t sw_fmt;
+#define CASE_CVPX_INPUT(x, i420_fcc) \
     case VLC_CODEC_CVPX_##x: \
-        if (p_filter->fmt_out.video.i_chroma == VLC_CODEC_##x) { \
+        sw_fmt = p_filter->fmt_out.video; \
+        if (p_filter->fmt_out.video.i_chroma == VLC_CODEC_##x) \
             p_filter->pf_video_filter = CVPX_TO_SW_Filter; \
-        } else if (p_filter->fmt_out.video.i_chroma == VLC_CODEC_I420) {\
-            p_filter->pf_video_filter = CVPX_TO_I420_Filter; \
-            i_sw_filter_in_chroma = VLC_CODEC_##x; \
-            i_sw_filter_out_chroma = VLC_CODEC_I420; \
-            sw_filter_owner.video.buffer_new = SW_buffer_new; \
+        else if (i420_fcc != 0 && p_filter->fmt_out.video.i_chroma == i420_fcc) { \
+            p_filter->pf_video_filter = CVPX_TO_SW_Filter; \
+            sw_fmt.i_chroma = VLC_CODEC_##x; \
         } else return VLC_EGENERIC; \
-        b_need_pool = false;
 
-#define CASE_CVPX_OUTPUT(x) \
+#define CASE_CVPX_OUTPUT(x, i420_fcc) \
     case VLC_CODEC_CVPX_##x: \
+        sw_fmt = p_filter->fmt_in.video; \
         if (p_filter->fmt_in.video.i_chroma == VLC_CODEC_##x) { \
             p_filter->pf_video_filter = SW_TO_CVPX_Filter; \
-        } else if (p_filter->fmt_in.video.i_chroma == VLC_CODEC_I420) {\
-            p_filter->pf_video_filter = I420_TO_CVPX_Filter; \
-            i_sw_filter_in_chroma = VLC_CODEC_I420; \
-            i_sw_filter_out_chroma = VLC_CODEC_##x; \
-            sw_filter_owner.sys = p_filter; \
-            sw_filter_owner.video.buffer_new = CVPX_buffer_new; \
+        } \
+        else if (i420_fcc != 0 && p_filter->fmt_in.video.i_chroma == i420_fcc) { \
+            p_filter->pf_video_filter = SW_TO_CVPX_Filter; \
+            sw_fmt.i_chroma = VLC_CODEC_##x; \
         } else return VLC_EGENERIC; \
         b_need_pool = true;
 
-    bool b_need_pool;
-    vlc_fourcc_t i_sw_filter_in_chroma = 0, i_sw_filter_out_chroma = 0;
-    filter_owner_t sw_filter_owner = {};
+    bool b_need_pool = false;
+    unsigned i_cache_pixel_bytes = 1;
     switch (p_filter->fmt_in.video.i_chroma)
     {
-        CASE_CVPX_INPUT(NV12)
+        CASE_CVPX_INPUT(NV12, VLC_CODEC_I420)
             break;
-        CASE_CVPX_INPUT(P010)
+        CASE_CVPX_INPUT(P010, VLC_CODEC_I420_10L)
+            i_cache_pixel_bytes = 2;
             break;
-        CASE_CVPX_INPUT(UYVY)
+        CASE_CVPX_INPUT(UYVY, 0)
             break;
-        CASE_CVPX_INPUT(I420)
+        CASE_CVPX_INPUT(I420, 0)
             break;
-        CASE_CVPX_INPUT(BGRA)
+        CASE_CVPX_INPUT(BGRA, 0)
             break;
         default:
             switch (p_filter->fmt_out.video.i_chroma)
             {
-                CASE_CVPX_OUTPUT(NV12)
+                CASE_CVPX_OUTPUT(NV12, VLC_CODEC_I420)
                     break;
-                CASE_CVPX_OUTPUT(P010)
+                CASE_CVPX_OUTPUT(P010, VLC_CODEC_I420_10L)
+                    i_cache_pixel_bytes = 2;
                     break;
-                CASE_CVPX_OUTPUT(UYVY)
+                CASE_CVPX_OUTPUT(UYVY, 0)
                     break;
-                CASE_CVPX_OUTPUT(I420)
+                CASE_CVPX_OUTPUT(I420, 0)
                     break;
-                CASE_CVPX_OUTPUT(BGRA)
+                CASE_CVPX_OUTPUT(BGRA, 0)
                     break;
                 default:
                     return VLC_EGENERIC;
@@ -278,42 +303,24 @@ static int Open(vlc_object_t *obj)
     if (unlikely(!p_sys))
         return VLC_ENOMEM;
 
-    p_sys->p_sw_filter = NULL;
     p_sys->pool = NULL;
+    p_sys->sw.fmt = sw_fmt;
+
+    unsigned i_cache_width = p_filter->fmt_in.video.i_width * i_cache_pixel_bytes;
+    if (CopyInitCache(&p_sys->sw.cache, i_cache_width) != VLC_SUCCESS)
+    {
+        free(p_sys);
+        return VLC_ENOMEM;
+    }
 
     if (b_need_pool
      && (p_sys->pool = cvpxpool_create(&p_filter->fmt_out.video, 3)) == NULL)
-        goto error;
-
-    if (i_sw_filter_in_chroma != 0)
     {
-        filter_t *p_sw_filter = vlc_object_create(p_filter, sizeof(filter_t));
-        if (unlikely(p_sw_filter == NULL))
-            goto error;
-
-        p_sw_filter->fmt_in = p_filter->fmt_in;
-        p_sw_filter->fmt_out = p_filter->fmt_out;
-        p_sw_filter->fmt_in.i_codec = p_sw_filter->fmt_in.video.i_chroma
-                                    = i_sw_filter_in_chroma;
-        p_sw_filter->fmt_out.i_codec = p_sw_filter->fmt_out.video.i_chroma
-                                     = i_sw_filter_out_chroma;
-
-        p_sw_filter->owner = sw_filter_owner;
-        p_sw_filter->p_module = module_need(p_sw_filter, "video converter",
-                                            NULL, false);
-        if (p_sw_filter->p_module == NULL)
-        {
-            vlc_object_release(p_sw_filter);
-            goto error;
-        }
-        p_sys->p_sw_filter = p_sw_filter;
+        Close(obj);
+        return VLC_EGENERIC;
     }
 
     return VLC_SUCCESS;
-
-error:
-    Close(obj);
-    return VLC_EGENERIC;
 #undef CASE_CVPX_INPUT
 #undef CASE_CVPX_OUTPUT
 }

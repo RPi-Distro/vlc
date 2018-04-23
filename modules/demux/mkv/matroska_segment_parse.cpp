@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 5589825f951db9345316720a5c839bb7ff277b03 $
+ * $Id: 4bd4eaacee8fd59f5c806dea44dfbb95daed565b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1379,8 +1379,7 @@ void matroska_segment_c::ParseChapters( KaxChapters *chapters )
                 }
                 E_CASE( KaxEditionFlagHidden, flag_hidden )
                 {
-                    VLC_UNUSED( flag_hidden ); // TODO: FIXME: implement
-                    VLC_UNUSED( vars );
+                    vars.p_edition->b_hidden = static_cast<uint8>( flag_hidden ) != 0;
                 }
                 E_CASE( EbmlVoid, el )
                 {
@@ -1595,7 +1594,7 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
              *       we try to fix it. They fixed it in 16.0.0. */
             const char* app = vars.obj->psz_writing_application;
             if( p_extra && p_extra[0] == 0 && app != NULL &&
-                    strncmp(app, "mkvmerge", strlen("mkvmerge")) == 0 )
+                    strncmp(app, "mkvmerge", sizeof("mkvmerge")-1) == 0 )
             {
                 int major_version;
                 if( sscanf(app, "mkvmerge v%d.", &major_version) && major_version < 16 )

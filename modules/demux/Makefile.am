@@ -5,7 +5,7 @@ libxiph_metadata_la_SOURCES = demux/xiph_metadata.h demux/xiph_metadata.c
 libxiph_metadata_la_LDFLAGS = -static
 noinst_LTLIBRARIES += libxiph_metadata.la
 
-libflacsys_plugin_la_SOURCES = demux/flac.c
+libflacsys_plugin_la_SOURCES = demux/flac.c packetizer/flac.h
 libflacsys_plugin_la_CPPFLAGS = $(AM_CPPFLAGS)
 libflacsys_plugin_la_LIBADD = libxiph_metadata.la
 demux_LTLIBRARIES += libflacsys_plugin.la
@@ -208,6 +208,7 @@ libmp4_plugin_la_SOURCES = demux/mp4/mp4.c demux/mp4/mp4.h \
                            demux/mp4/languages.h \
                            demux/asf/asfpacket.c demux/asf/asfpacket.h \
                            demux/mp4/avci.h \
+                           demux/mp4/color_config.h \
                            demux/mp4/essetup.c demux/mp4/meta.c \
                            meta_engine/ID3Genres.h
 libmp4_plugin_la_LIBADD = $(LIBM)

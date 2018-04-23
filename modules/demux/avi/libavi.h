@@ -2,7 +2,7 @@
  * libavi.h : LibAVI library
  ******************************************************************************
  * Copyright (C) 2001-2003 VLC authors and VideoLAN
- * $Id: 26e1614a126d8f3d1af1e86b3378eaa29e1a6f59 $
+ * $Id: 785f4dfc1310a2cb09eeca0f0ddb5b8df035662e $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -225,7 +225,7 @@ typedef struct avi_chunk_indx_s
     uint32_t i_entriesinuse;
     vlc_fourcc_t i_id;
 
-    int64_t i_baseoffset;
+    uint64_t i_baseoffset;
 
     union
     {

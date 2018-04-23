@@ -49,6 +49,7 @@
 #import <mach/machine.h>
 
 #define ALIGN_16( x ) ( ( ( x ) + 15 ) / 16 * 16 )
+#define VT_RESTART_MAX 1
 
 #if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
@@ -100,6 +101,7 @@ enum vtsession_status
 {
     VTSESSION_STATUS_OK,
     VTSESSION_STATUS_RESTART,
+    VTSESSION_STATUS_RESTART_CHROMA,
     VTSESSION_STATUS_ABORT,
 };
 
@@ -175,11 +177,14 @@ struct decoder_sys_t
     bool                        b_format_propagated;
 
     enum vtsession_status       vtsession_status;
+    unsigned                    i_restart_count;
 
-    int                         i_forced_cvpx_format;
+    int                         i_cvpx_format;
+    bool                        b_cvpx_format_forced;
 
     h264_poc_context_t          h264_pocctx;
     hevc_poc_ctx_t              hevc_pocctx;
+    bool                        b_drop_blocks;
     date_t                      pts;
 
     struct pic_holder          *pic_holder;
@@ -194,11 +199,36 @@ struct pic_holder
     uint8_t     field_reorder_max;
 };
 
-static void pic_holder_update_reorder_max(struct pic_holder *, uint8_t);
+static void pic_holder_update_reorder_max(struct pic_holder *, uint8_t, uint8_t);
 
 #pragma mark - start & stop
 
 /* Codec Specific */
+
+static void HXXXGetBestChroma(decoder_t *p_dec)
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    if (p_sys->i_cvpx_format != 0 || p_sys->b_cvpx_format_forced)
+        return;
+
+    uint8_t i_chroma_format, i_depth_luma, i_depth_chroma;
+    if (hxxx_helper_get_chroma_chroma(&p_sys->hh, &i_chroma_format, &i_depth_luma,
+                                      &i_depth_chroma) != VLC_SUCCESS)
+        return;
+
+    if (i_chroma_format == 1 /* YUV 4:2:0 */)
+    {
+        if (i_depth_luma == 8 && i_depth_chroma == 8)
+            p_sys->i_cvpx_format = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange;
+#if !TARGET_OS_IPHONE
+        /* Not for iOS since there is no 10bits textures with the old iOS
+         * openGLES version, and therefore no P010 shaders */
+        else if (i_depth_luma == 10 && i_depth_chroma == 10 && deviceSupportsHEVC())
+            p_sys->i_cvpx_format = 'x420'; /* kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange */
+#endif
+    }
+}
 
 static void GetxPSH264(uint8_t i_pps_id, void *priv,
                       const h264_sequence_parameter_set_t **pp_sps,
@@ -274,18 +304,6 @@ static bool FillReorderInfoH264(decoder_t *p_dec, const block_t *p_block,
             GetxPSH264(slice.i_pic_parameter_set_id, p_sys, &p_sps, &p_pps);
             if(p_sps)
             {
-                if(!p_sys->b_invalid_pic_reorder_max && i_nal_type == H264_NAL_SLICE_IDR)
-                {
-                    unsigned dummy;
-                    uint8_t i_reorder;
-                    h264_get_dpb_values(p_sps, &i_reorder, &dummy);
-                    vlc_mutex_lock(&p_sys->lock);
-                    p_sys->i_pic_reorder_max = i_reorder;
-                    pic_holder_update_reorder_max(p_sys->pic_holder,
-                                                  p_sys->i_pic_reorder_max);
-                    vlc_mutex_unlock(&p_sys->lock);
-                }
-
                 int bFOC;
                 h264_compute_poc(p_sps, &slice, &p_sys->h264_pocctx,
                                  &p_info->i_poc, &p_info->i_foc, &bFOC);
@@ -301,7 +319,7 @@ static bool FillReorderInfoH264(decoder_t *p_dec, const block_t *p_block,
                 sei.i_pic_struct = UINT8_MAX;
 
                 for(size_t i=0; i<i_sei_count; i++)
-                    HxxxParseSEI(sei_array[i].p_nal, sei_array[i].i_nal, 2,
+                    HxxxParseSEI(sei_array[i].p_nal, sei_array[i].i_nal, 1,
                                  ParseH264SEI, &sei);
 
                 p_info->i_num_ts = h264_get_num_ts(p_sps, &slice, sei.i_pic_struct,
@@ -318,6 +336,20 @@ static bool FillReorderInfoH264(decoder_t *p_dec, const block_t *p_block,
                     date_Change( &p_sys->pts, p_sps->vui.i_time_scale,
                                               p_sps->vui.i_num_units_in_tick );
                 }
+
+                if(!p_sys->b_invalid_pic_reorder_max && i_nal_type == H264_NAL_SLICE_IDR)
+                {
+                    unsigned dummy;
+                    uint8_t i_reorder;
+                    h264_get_dpb_values(p_sps, &i_reorder, &dummy);
+                    vlc_mutex_lock(&p_sys->lock);
+                    p_sys->i_pic_reorder_max = i_reorder;
+                    pic_holder_update_reorder_max(p_sys->pic_holder,
+                                                  p_sys->i_pic_reorder_max,
+                                                  p_info->i_num_ts);
+                    vlc_mutex_unlock(&p_sys->lock);
+                }
+
             }
 
             return true; /* No need to parse further NAL */
@@ -427,6 +459,8 @@ static bool CodecSupportedH264(decoder_t *p_dec)
                 PRIx8, i_level);
         return false;
     }
+
+    HXXXGetBestChroma(p_dec);
 
     return true;
 }
@@ -617,6 +651,25 @@ static bool FillReorderInfoHEVC(decoder_t *p_dec, const block_t *p_block,
             if(!p_sli)
                 return false;
 
+            /* XXX: Work-around a VT bug on recent devices (iPhone X, MacBook
+             * Pro 2017). The VT session will report a BadDataErr if you send a
+             * RASL frame just after a CRA one. Indeed, RASL frames are
+             * corrupted if the decoding start at an IRAP frame (IDR/CRA), VT
+             * is likely failing to handle this case. */
+            if (!p_sys->b_vt_feed && (i_nal_type != HEVC_NAL_IDR_W_RADL &&
+                                      i_nal_type != HEVC_NAL_IDR_N_LP))
+                p_sys->b_drop_blocks = true;
+            else if (p_sys->b_drop_blocks)
+            {
+                if (i_nal_type == HEVC_NAL_RASL_N || i_nal_type == HEVC_NAL_RASL_R)
+                {
+                    hevc_rbsp_release_slice_header(p_sli);
+                    return false;
+                }
+                else
+                    p_sys->b_drop_blocks = false;
+            }
+
             p_info->b_keyframe = i_nal_type >= HEVC_NAL_BLA_W_LP;
 
             hevc_sequence_parameter_set_t *p_sps;
@@ -628,15 +681,6 @@ static bool FillReorderInfoHEVC(decoder_t *p_dec, const block_t *p_block,
                 struct hevc_sei_callback_s sei;
                 sei.p_sps = p_sps;
                 sei.p_timing = NULL;
-
-                if(!p_sys->b_invalid_pic_reorder_max && p_vps)
-                {
-                    vlc_mutex_lock(&p_sys->lock);
-                    p_sys->i_pic_reorder_max = hevc_get_max_num_reorder(p_vps);
-                    pic_holder_update_reorder_max(p_sys->pic_holder,
-                                                  p_sys->i_pic_reorder_max);
-                    vlc_mutex_unlock(&p_sys->lock);
-                }
 
                 const int POC = hevc_compute_picture_order_count(p_sps, p_sli,
                                                                  &p_sys->hevc_pocctx);
@@ -663,6 +707,17 @@ static bool FillReorderInfoHEVC(decoder_t *p_dec, const block_t *p_block,
 
                 if(sei.p_timing)
                     hevc_release_sei_pic_timing(sei.p_timing);
+
+                if(!p_sys->b_invalid_pic_reorder_max && p_vps)
+                {
+                    vlc_mutex_lock(&p_sys->lock);
+                    p_sys->i_pic_reorder_max = hevc_get_max_num_reorder(p_vps);
+                    pic_holder_update_reorder_max(p_sys->pic_holder,
+                                                  p_sys->i_pic_reorder_max,
+                                                  p_info->i_num_ts);
+                    vlc_mutex_unlock(&p_sys->lock);
+                }
+
             }
 
             hevc_rbsp_release_slice_header(p_sli);
@@ -721,20 +776,8 @@ static bool LateStartHEVC(decoder_t *p_dec)
 
 static bool CodecSupportedHEVC(decoder_t *p_dec)
 {
-#if !TARGET_OS_IPHONE
-    decoder_sys_t *p_sys = p_dec->p_sys;
+    HXXXGetBestChroma(p_dec);
 
-    if (p_sys->i_forced_cvpx_format == 0)
-    {
-        /* Force P010 chroma instead of RGBA in order to improve performances. */
-        uint8_t i_profile, i_level;
-        if (hxxx_helper_get_current_profile_level(&p_sys->hh, &i_profile,
-                                                  &i_level))
-            return true;
-        if (i_profile == HEVC_PROFILE_MAIN_10)
-            p_sys->i_forced_cvpx_format = 'x420'; /* kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange */
-    }
-#endif
     return true;
 }
 
@@ -908,7 +951,7 @@ static void OnDecodedFrame(decoder_t *p_dec, frame_info_t *p_info)
                 p_sys->b_invalid_pic_reorder_max = true;
                 p_sys->i_pic_reorder_max++;
                 pic_holder_update_reorder_max(p_sys->pic_holder,
-                                              p_sys->i_pic_reorder_max);
+                                              p_sys->i_pic_reorder_max, p_info->i_num_ts);
                 msg_Info(p_dec, "Raising max DPB to %"PRIu8, p_sys->i_pic_reorder_max);
                 break;
             }
@@ -919,7 +962,7 @@ static void OnDecodedFrame(decoder_t *p_dec, frame_info_t *p_info)
                 p_sys->b_invalid_pic_reorder_max = true;
                 p_sys->i_pic_reorder_max++;
                 pic_holder_update_reorder_max(p_sys->pic_holder,
-                                              p_sys->i_pic_reorder_max);
+                                              p_sys->i_pic_reorder_max, p_info->i_num_ts);
                 msg_Info(p_dec, "Raising max DPB to %"PRIu8, p_sys->i_pic_reorder_max);
                 break;
             }
@@ -1206,13 +1249,13 @@ static int StartVideoToolbox(decoder_t *p_dec)
     cfdict_set_int32(destinationPixelBufferAttributes,
                      kCVPixelBufferHeightKey, p_dec->fmt_out.video.i_visible_height);
 
-    if (p_sys->i_forced_cvpx_format != 0)
+    if (p_sys->i_cvpx_format != 0)
     {
-        int chroma = htonl(p_sys->i_forced_cvpx_format);
+        int chroma = htonl(p_sys->i_cvpx_format);
         msg_Warn(p_dec, "forcing CVPX format: %4.4s", (const char *) &chroma);
         cfdict_set_int32(destinationPixelBufferAttributes,
                          kCVPixelBufferPixelFormatTypeKey,
-                         p_sys->i_forced_cvpx_format);
+                         p_sys->i_cvpx_format);
     }
 
     cfdict_set_int32(destinationPixelBufferAttributes,
@@ -1278,6 +1321,7 @@ static void StopVideoToolbox(decoder_t *p_dec)
         p_sys->videoFormatDescription = nil;
     }
     p_sys->b_vt_feed = false;
+    p_sys->b_drop_blocks = false;
 }
 
 #pragma mark - module open and close
@@ -1317,6 +1361,7 @@ static int OpenDecoder(vlc_object_t *p_this)
     p_sys->videoFormatDescription = nil;
     p_sys->i_pic_reorder_max = 4;
     p_sys->vtsession_status = VTSESSION_STATUS_OK;
+    p_sys->b_cvpx_format_forced = false;
 
     char *cvpx_chroma = var_InheritString(p_dec, "videotoolbox-cvpx-chroma");
     if (cvpx_chroma != NULL)
@@ -1328,8 +1373,9 @@ static int OpenDecoder(vlc_object_t *p_this)
             free(p_sys);
             return VLC_EGENERIC;
         }
-        memcpy(&p_sys->i_forced_cvpx_format, cvpx_chroma, 4);
-        p_sys->i_forced_cvpx_format = ntohl(p_sys->i_forced_cvpx_format);
+        memcpy(&p_sys->i_cvpx_format, cvpx_chroma, 4);
+        p_sys->i_cvpx_format = ntohl(p_sys->i_cvpx_format);
+        p_sys->b_cvpx_format_forced = true;
         free(cvpx_chroma);
     }
 
@@ -1344,7 +1390,7 @@ static int OpenDecoder(vlc_object_t *p_this)
     vlc_cond_init(&p_sys->pic_holder->wait);
     p_sys->pic_holder->nb_field_out = 0;
     p_sys->pic_holder->closed = false;
-    pic_holder_update_reorder_max(p_sys->pic_holder, p_sys->i_pic_reorder_max);
+    p_sys->pic_holder->field_reorder_max = p_sys->i_pic_reorder_max * 2;
 
     vlc_mutex_init(&p_sys->lock);
 
@@ -1665,6 +1711,8 @@ static CMSampleBufferRef VTSampleBufferCreate(decoder_t *p_dec,
 static int HandleVTStatus(decoder_t *p_dec, OSStatus status,
                           enum vtsession_status * p_vtsession_status)
 {
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
 #define VTERRCASE(x) \
     case x: msg_Warn(p_dec, "vt session error: '" #x "'"); break;
 
@@ -1715,9 +1763,9 @@ static int HandleVTStatus(decoder_t *p_dec, OSStatus status,
     {
         switch (status)
         {
-            case kVTParameterErr:
-            case kCVReturnInvalidArgument:
-                *p_vtsession_status = VTSESSION_STATUS_ABORT;
+            case kVTPixelTransferNotSupportedErr:
+            case kVTPixelTransferNotPermittedErr:
+                *p_vtsession_status = VTSESSION_STATUS_RESTART_CHROMA;
                 break;
             case -8960 /* codecErr */:
             case kVTVideoDecoderMalfunctionErr:
@@ -1727,7 +1775,7 @@ static int HandleVTStatus(decoder_t *p_dec, OSStatus status,
                 *p_vtsession_status = VTSESSION_STATUS_RESTART;
                 break;
             default:
-                *p_vtsession_status = VTSESSION_STATUS_OK;
+                *p_vtsession_status = VTSESSION_STATUS_ABORT;
                 break;
         }
     }
@@ -1762,6 +1810,7 @@ static void Drain(decoder_t *p_dec, bool flush)
     assert(RemoveOneFrameFromDPB(p_sys) == NULL);
     p_sys->b_vt_flush = false;
     p_sys->b_vt_feed = false;
+    p_sys->b_drop_blocks = false;
     vlc_mutex_unlock(&p_sys->lock);
 }
 
@@ -1790,13 +1839,14 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
                  "aborting...");
         p_sys->vtsession_status = VTSESSION_STATUS_ABORT;
 #else
-        if (p_sys->i_forced_cvpx_format == 0)
+        if (!p_sys->b_cvpx_format_forced
+         && p_sys->i_cvpx_format == kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)
         {
             /* In case of interlaced content, force VT to output I420 since our
              * SW deinterlacer handle this chroma natively. This avoids having
              * 2 extra conversions (CVPX->I420 then I420->CVPX). */
 
-            p_sys->i_forced_cvpx_format = kCVPixelFormatType_420YpCbCr8Planar;
+            p_sys->i_cvpx_format = kCVPixelFormatType_420YpCbCr8Planar;
             msg_Warn(p_dec, "Interlaced content: forcing VT to output I420");
             if (p_sys->session != nil && p_sys->vtsession_status == VTSESSION_STATUS_OK)
             {
@@ -1813,21 +1863,48 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
 #endif
     }
 
-    if (p_sys->vtsession_status == VTSESSION_STATUS_RESTART)
+    if (p_sys->vtsession_status == VTSESSION_STATUS_RESTART ||
+        p_sys->vtsession_status == VTSESSION_STATUS_RESTART_CHROMA)
     {
-        msg_Warn(p_dec, "restarting vt session (dec callback failed)");
-        vlc_mutex_unlock(&p_sys->lock);
-
-        /* Session will be started by Late Start code block */
-        StopVideoToolbox(p_dec);
-        if (p_dec->fmt_in.i_extra == 0)
+        bool do_restart;
+        if (p_sys->vtsession_status == VTSESSION_STATUS_RESTART_CHROMA)
         {
-            /* Clean old parameter sets since they may be corrupt */
-            hxxx_helper_clean(&p_sys->hh);
+            if (p_sys->i_cvpx_format == 0 && p_sys->b_cvpx_format_forced)
+            {
+                /* Already tried to fallback to the original chroma, aborting... */
+                do_restart = false;
+            }
+            else
+            {
+                p_sys->i_cvpx_format = 0;
+                p_sys->b_cvpx_format_forced = true;
+                do_restart = true;
+            }
         }
+        else
+            do_restart = p_sys->i_restart_count <= VT_RESTART_MAX;
 
-        vlc_mutex_lock(&p_sys->lock);
-        p_sys->vtsession_status = VTSESSION_STATUS_OK;
+        if (do_restart)
+        {
+            msg_Warn(p_dec, "restarting vt session (dec callback failed)");
+            vlc_mutex_unlock(&p_sys->lock);
+
+            /* Session will be started by Late Start code block */
+            StopVideoToolbox(p_dec);
+            if (p_dec->fmt_in.i_extra == 0)
+            {
+                /* Clean old parameter sets since they may be corrupt */
+                hxxx_helper_clean(&p_sys->hh);
+            }
+
+            vlc_mutex_lock(&p_sys->lock);
+            p_sys->vtsession_status = VTSESSION_STATUS_OK;
+        }
+        else
+        {
+            msg_Warn(p_dec, "too many vt failure...");
+            p_sys->vtsession_status = VTSESSION_STATUS_ABORT;
+        }
     }
 
     if (p_sys->vtsession_status == VTSESSION_STATUS_ABORT)
@@ -1927,6 +2004,8 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
     else
     {
         vlc_mutex_lock(&p_sys->lock);
+        if (vtsession_status == VTSESSION_STATUS_RESTART)
+            p_sys->i_restart_count++;
         p_sys->vtsession_status = vtsession_status;
         /* In case of abort, the decoder module will be reloaded next time
          * since we already modified the input block */
@@ -2034,29 +2113,37 @@ pic_holder_on_cvpx_released(CVPixelBufferRef cvpx, void *data, unsigned nb_field
 }
 
 static void
-pic_holder_update_reorder_max(struct pic_holder *pic_holder, uint8_t pic_reorder_max)
+pic_holder_update_reorder_max(struct pic_holder *pic_holder, uint8_t pic_reorder_max,
+                              uint8_t nb_field)
 {
     vlc_mutex_lock(&pic_holder->lock);
 
-    pic_holder->field_reorder_max = pic_reorder_max * 2;
+    pic_holder->field_reorder_max = pic_reorder_max * (nb_field < 2 ? 2 : nb_field);
     vlc_cond_signal(&pic_holder->wait);
 
     vlc_mutex_unlock(&pic_holder->lock);
 }
 
-static void pic_holder_wait(struct pic_holder *pic_holder, const picture_t *pic)
+static int pic_holder_wait(struct pic_holder *pic_holder, const picture_t *pic)
 {
-    static const uint8_t reserved_fields = 4;
+    const uint8_t reserved_fields = 2 * (pic->i_nb_fields < 2 ? 2 : pic->i_nb_fields);
 
     vlc_mutex_lock(&pic_holder->lock);
 
-
-    while (pic_holder->field_reorder_max != 0
+    /* Wait 200 ms max. We can't really know what the video output will do with
+     * output pictures (will they be rendered immediately ?), so don't wait
+     * infinitely. The output will be paced anyway by the vlc_cond_timedwait()
+     * call. */
+    mtime_t deadline = mdate() + INT64_C(200000);
+    int ret = 0;
+    while (ret == 0 && pic_holder->field_reorder_max != 0
         && pic_holder->nb_field_out >= pic_holder->field_reorder_max + reserved_fields)
-        vlc_cond_wait(&pic_holder->wait, &pic_holder->lock);
+        ret = vlc_cond_timedwait(&pic_holder->wait, &pic_holder->lock, deadline);
     pic_holder->nb_field_out += pic->i_nb_fields;
 
     vlc_mutex_unlock(&pic_holder->lock);
+
+    return ret;
 }
 
 static void DecoderCallback(void *decompressionOutputRefCon,
@@ -2080,10 +2167,13 @@ static void DecoderCallback(void *decompressionOutputRefCon,
     if (HandleVTStatus(p_dec, status, &vtsession_status) != VLC_SUCCESS)
     {
         if (p_sys->vtsession_status != VTSESSION_STATUS_ABORT)
+        {
             p_sys->vtsession_status = vtsession_status;
+            if (vtsession_status == VTSESSION_STATUS_RESTART)
+                p_sys->i_restart_count++;
+        }
         goto end;
     }
-    assert(imageBuffer);
     if (unlikely(!imageBuffer))
     {
         msg_Err(p_dec, "critical: null imageBuffer with a valid status");
@@ -2156,7 +2246,9 @@ static void DecoderCallback(void *decompressionOutputRefCon,
          * FIXME: A proper way to fix this issue is to allow decoder modules to
          * specify the dpb and having the vout re-allocating output frames when
          * this number changes. */
-        pic_holder_wait(p_sys->pic_holder, p_pic);
+        if (pic_holder_wait(p_sys->pic_holder, p_pic))
+            msg_Warn(p_dec, "pic_holder_wait timed out");
+
 
         vlc_mutex_lock(&p_sys->lock);
 
@@ -2165,6 +2257,8 @@ static void DecoderCallback(void *decompressionOutputRefCon,
             picture_Release(p_pic);
             goto end;
         }
+
+        p_sys->i_restart_count = 0;
 
         OnDecodedFrame( p_dec, p_info );
         p_info = NULL;
