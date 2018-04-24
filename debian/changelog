@@ -7,8 +7,9 @@ vlc (3.0.2-1) UNRELEASED; urgency=medium
   * New upstream version.
   * debian/rules: Install correct changelog.
   * debian/control: Bump Standards-Version.
+  * debian/patches: Remove patched included upstream.
 
- -- Sebastian Ramacher <sebastian.ramacher@iaik.tugraz.at>  Mon, 23 Apr 2018 16:31:58 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 23 Apr 2018 16:31:58 +0200
 
 vlc (3.0.1-3) unstable; urgency=medium
 
