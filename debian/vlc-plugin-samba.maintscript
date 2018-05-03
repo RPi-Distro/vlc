@@ -1,3 +1,3 @@
-symlink_to_dir /usr/share/bug/vlc-plugin-samba vlc-nox 3.0.1-0+deb9u1~
-symlink_to_dir /usr/share/doc/vlc-plugin-samba libvlccore8 3.0.1-0+deb9u1~
-symlink_to_dir /usr/share/doc/vlc-plugin-samba vlc-nox 3.0.1-0+deb9u1~
+symlink_to_dir /usr/share/bug/vlc-plugin-samba vlc-nox 3.0.2-0+deb9u1~
+symlink_to_dir /usr/share/doc/vlc-plugin-samba libvlccore8 3.0.2-0+deb9u1~
+symlink_to_dir /usr/share/doc/vlc-plugin-samba vlc-nox 3.0.2-0+deb9u1~

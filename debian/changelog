@@ -1,4 +1,4 @@
-vlc (3.0.1-0+deb9u1) UNRELEASED; urgency=medium
+vlc (3.0.2-0+deb9u1) UNRELEASED; urgency=medium
 
   * New upstream release following the LTS release branch.
     - Install vlc_interface.h. (Closes: #768808)
