@@ -42,6 +42,8 @@ DEFINE_PROPERTYKEY(PKEY_Device_FriendlyName, 0xa45c254e, 0xdf1c, 0x4efd,
    0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0, 14);
 
 #include <vlc_common.h>
+#include <vlc_memory.h>
+#include <vlc_atomic.h>
 #include <vlc_plugin.h>
 #include <vlc_aout.h>
 #include <vlc_charset.h>
@@ -76,6 +78,7 @@ static void LeaveMTA(void)
 }
 
 static wchar_t default_device[1] = L"";
+static char default_device_b[1] = "";
 
 struct aout_sys_t
 {
@@ -97,6 +100,7 @@ struct aout_sys_t
     float requested_volume; /**< Requested volume, negative if none */
     signed char requested_mute; /**< Requested mute, negative if none */
     wchar_t *acquired_device; /**< Acquired device identifier, NULL if none */
+    bool request_device_restart;
     CRITICAL_SECTION lock;
     CONDITION_VARIABLE work;
     CONDITION_VARIABLE ready;
@@ -175,7 +179,7 @@ static void Flush(audio_output_t *aout, bool wait)
     vlc_FromHR(aout, hr);
 }
 
-static int VolumeSet(audio_output_t *aout, float vol)
+static int VolumeSetLocked(audio_output_t *aout, float vol)
 {
     aout_sys_t *sys = aout->sys;
     float gain = 1.f;
@@ -190,12 +194,20 @@ static int VolumeSet(audio_output_t *aout, float vol)
 
     aout_GainRequest(aout, gain);
 
-    EnterCriticalSection(&sys->lock);
     sys->gain = gain;
     sys->requested_volume = vol;
+    return 0;
+}
+
+static int VolumeSet(audio_output_t *aout, float vol)
+{
+    aout_sys_t *sys = aout->sys;
+
+    EnterCriticalSection(&sys->lock);
+    int ret = VolumeSetLocked(aout, vol);
     WakeConditionVariable(&sys->work);
     LeaveCriticalSection(&sys->lock);
-    return 0;
+    return ret;
 }
 
 static int MuteSet(audio_output_t *aout, bool mute)
@@ -448,25 +460,17 @@ static const struct IAudioVolumeDuckNotificationVtbl vlc_AudioVolumeDuckNotifica
 /*** Audio devices ***/
 
 /** Gets the user-readable device name */
-static int DeviceHotplugReport(audio_output_t *aout, LPCWSTR wid,
-                               IMMDevice *dev)
+static char *DeviceGetFriendlyName(IMMDevice *dev)
 {
     IPropertyStore *props;
-    char *name;
     PROPVARIANT v;
     HRESULT hr;
 
-    char *id = FromWide(wid);
-    if (unlikely(id == NULL))
-        return VLC_ENOMEM;
-
     hr = IMMDevice_OpenPropertyStore(dev, STGM_READ, &props);
     if (FAILED(hr))
-    {
-        free(id);
-        return VLC_EGENERIC;
-    }
+        return NULL;
 
+    char *name = NULL;
     PropVariantInit(&v);
     hr = IPropertyStore_GetValue(props, &PKEY_Device_FriendlyName, &v);
     if (SUCCEEDED(hr))
@@ -474,10 +478,23 @@ static int DeviceHotplugReport(audio_output_t *aout, LPCWSTR wid,
         name = FromWide(v.pwszVal);
         PropVariantClear(&v);
     }
-    else
-        name = id;
 
     IPropertyStore_Release(props);
+
+    return name;
+}
+
+static int DeviceHotplugReport(audio_output_t *aout, LPCWSTR wid,
+                               IMMDevice *dev)
+{
+    char *id = FromWide(wid);
+    if (!id)
+        return VLC_EGENERIC;
+
+    char *name = DeviceGetFriendlyName(dev);
+    if (name == NULL)
+        name = id;
+
     aout_HotplugReport(aout, id, name);
 
     free(id);
@@ -573,7 +590,15 @@ vlc_MMNotificationClient_OnDefaultDeviceChange(IMMNotificationClient *this,
     if (role != eConsole)
         return S_OK;
 
-    msg_Dbg(aout, "default device changed: %ls", wid); /* TODO? migrate */
+    EnterCriticalSection(&sys->lock);
+    if (sys->acquired_device == NULL || sys->acquired_device == default_device)
+    {
+        msg_Dbg(aout, "default device changed: %ls", wid);
+        sys->request_device_restart = true;
+        aout_RestartRequest(aout, AOUT_RESTART_OUTPUT);
+    }
+    LeaveCriticalSection(&sys->lock);
+
     return S_OK;
 }
 
@@ -669,28 +694,23 @@ static const struct IMMNotificationClientVtbl vlc_MMNotificationClient =
     vlc_MMNotificationClient_OnPropertyValueChanged,
 };
 
-static int DevicesEnum(audio_output_t *aout, IMMDeviceEnumerator *it)
+static HRESULT DevicesEnum(IMMDeviceEnumerator *it,
+                           void (*added_cb)(void *data, LPCWSTR wid, IMMDevice *dev),
+                           void *added_cb_data)
 {
     HRESULT hr;
     IMMDeviceCollection *devs;
+    assert(added_cb != NULL);
 
     hr = IMMDeviceEnumerator_EnumAudioEndpoints(it, eRender,
                                                 DEVICE_STATE_ACTIVE, &devs);
     if (FAILED(hr))
-    {
-        msg_Warn(aout, "cannot enumerate audio endpoints (error 0x%lx)", hr);
-        return -1;
-    }
+        return hr;
 
     UINT count;
     hr = IMMDeviceCollection_GetCount(devs, &count);
     if (FAILED(hr))
-    {
-        msg_Warn(aout, "cannot count audio endpoints (error 0x%lx)", hr);
-        count = 0;
-    }
-
-    unsigned n = 0;
+        return hr;
 
     for (UINT i = 0; i < count; i++)
     {
@@ -709,19 +729,20 @@ static int DevicesEnum(audio_output_t *aout, IMMDeviceEnumerator *it)
             continue;
         }
 
-        DeviceHotplugReport(aout, devid, dev);
+        added_cb(added_cb_data, devid, dev);
         IMMDevice_Release(dev);
         CoTaskMemFree(devid);
-        n++;
     }
     IMMDeviceCollection_Release(devs);
-    return n;
+    return S_OK;
 }
 
 static int DeviceRequestLocked(audio_output_t *aout)
 {
     aout_sys_t *sys = aout->sys;
     assert(sys->requested_device);
+
+    sys->request_device_restart = false;
 
     WakeConditionVariable(&sys->work);
     while (sys->requested_device != NULL)
@@ -738,7 +759,7 @@ static int DeviceSelectLocked(audio_output_t *aout, const char *id)
     aout_sys_t *sys = aout->sys;
     assert(sys->requested_device == NULL);
 
-    if (id != NULL)
+    if (id != NULL && strcmp(id, default_device_b) != 0)
     {
         sys->requested_device = ToWide(id);
         if (unlikely(sys->requested_device == NULL))
@@ -754,8 +775,8 @@ static int DeviceRestartLocked(audio_output_t *aout)
 {
     aout_sys_t *sys = aout->sys;
     assert(sys->requested_device == NULL);
-    assert(sys->acquired_device != NULL);
-    sys->requested_device = sys->acquired_device;
+    sys->requested_device = sys->acquired_device ? sys->acquired_device
+                                                 : default_device;
     return DeviceRequestLocked(aout);
 }
 
@@ -828,7 +849,10 @@ static HRESULT MMSession(audio_output_t *aout, IMMDeviceEnumerator *it)
         hr = IMMDeviceEnumerator_GetDefaultAudioEndpoint(it, eRender,
                                                          eConsole, &sys->dev);
         if (FAILED(hr))
+        {
             msg_Err(aout, "cannot get default device (error 0x%lx)", hr);
+            sys->acquired_device = NULL;
+        }
         else
             sys->acquired_device = default_device;
     }
@@ -840,15 +864,20 @@ static HRESULT MMSession(audio_output_t *aout, IMMDeviceEnumerator *it)
     {   /* Report actual device */
         LPWSTR wdevid;
 
-        hr = IMMDevice_GetId(sys->dev, &wdevid);
-        if (SUCCEEDED(hr))
+        if (sys->acquired_device == default_device)
+            aout_DeviceReport(aout, default_device_b);
+        else
         {
-            char *id = FromWide(wdevid);
-            CoTaskMemFree(wdevid);
-            if (likely(id != NULL))
+            hr = IMMDevice_GetId(sys->dev, &wdevid);
+            if (SUCCEEDED(hr))
             {
-                aout_DeviceReport(aout, id);
-                free(id);
+                char *id = FromWide(wdevid);
+                CoTaskMemFree(wdevid);
+                if (likely(id != NULL))
+                {
+                    aout_DeviceReport(aout, id);
+                    free(id);
+                }
             }
         }
     }
@@ -864,7 +893,7 @@ static HRESULT MMSession(audio_output_t *aout, IMMDeviceEnumerator *it)
     manager = pv;
     if (SUCCEEDED(hr))
     {
-        LPCGUID guid = &GUID_VLC_AUD_OUT;
+        LPCGUID guid = var_GetBool(aout, "volume-save") ? &GUID_VLC_AUD_OUT : NULL;
 
         /* Register session control */
         hr = IAudioSessionManager_GetAudioSessionControl(manager, guid, 0,
@@ -950,12 +979,6 @@ static HRESULT MMSession(audio_output_t *aout, IMMDeviceEnumerator *it)
         {
             float level;
 
-            hr = ISimpleAudioVolume_GetMasterVolume(volume, &level);
-            if (SUCCEEDED(hr))
-                aout_VolumeReport(aout, cbrtf(level * sys->gain));
-            else
-                msg_Err(aout, "cannot get master volume (error 0x%lx)", hr);
-
             level = sys->requested_volume;
             if (level >= 0.f)
             {
@@ -965,6 +988,12 @@ static HRESULT MMSession(audio_output_t *aout, IMMDeviceEnumerator *it)
                             hr);
             }
             sys->requested_volume = -1.f;
+
+            hr = ISimpleAudioVolume_GetMasterVolume(volume, &level);
+            if (SUCCEEDED(hr))
+                aout_VolumeReport(aout, cbrtf(level * sys->gain));
+            else
+                msg_Err(aout, "cannot get master volume (error 0x%lx)", hr);
 
             BOOL mute;
 
@@ -1023,6 +1052,13 @@ static HRESULT MMSession(audio_output_t *aout, IMMDeviceEnumerator *it)
     return S_OK;
 }
 
+static void MMThread_DevicesEnum_Added(void *data, LPCWSTR wid, IMMDevice *dev)
+{
+    audio_output_t *aout = data;
+
+    DeviceHotplugReport(aout, wid, dev);
+}
+
 static void *MMThread(void *data)
 {
     audio_output_t *aout = data;
@@ -1032,7 +1068,9 @@ static void *MMThread(void *data)
     EnterMTA();
     IMMDeviceEnumerator_RegisterEndpointNotificationCallback(it,
                                                           &sys->device_events);
-    DevicesEnum(aout, it);
+    HRESULT hr = DevicesEnum(it, MMThread_DevicesEnum_Added, aout);
+    if (FAILED(hr))
+        msg_Warn(aout, "cannot enumerate audio endpoints (error 0x%lx)", hr);
 
     EnterCriticalSection(&sys->lock);
 
@@ -1067,8 +1105,9 @@ static int aout_stream_Start(void *func, va_list ap)
     aout_stream_t *s = va_arg(ap, aout_stream_t *);
     audio_sample_format_t *fmt = va_arg(ap, audio_sample_format_t *);
     HRESULT *hr = va_arg(ap, HRESULT *);
+    LPCGUID sid = var_InheritBool(s, "volume-save") ? &GUID_VLC_AUD_OUT : NULL;
 
-    *hr = start(s, fmt, &GUID_VLC_AUD_OUT);
+    *hr = start(s, fmt, sid);
     if (*hr == AUDCLNT_E_DEVICE_INVALIDATED)
         return VLC_ETIMEOUT;
     return SUCCEEDED(*hr) ? VLC_SUCCESS : VLC_EGENERIC;
@@ -1085,9 +1124,6 @@ static void aout_stream_Stop(void *func, va_list ap)
 static int Start(audio_output_t *aout, audio_sample_format_t *restrict fmt)
 {
     aout_sys_t *sys = aout->sys;
-
-    if (sys->dev == NULL)
-        return -1;
 
     const bool b_spdif = AOUT_FMT_SPDIF(fmt);
     const bool b_hdmi = AOUT_FMT_HDMI(fmt);
@@ -1116,6 +1152,18 @@ static int Start(audio_output_t *aout, audio_sample_format_t *restrict fmt)
 
     EnterMTA();
     EnterCriticalSection(&sys->lock);
+
+    if ((sys->request_device_restart && DeviceRestartLocked(aout) != 0)
+      || sys->dev == NULL)
+    {
+        /* Error if the device restart failed or if a request previously
+         * failed. */
+        LeaveCriticalSection(&sys->lock);
+        LeaveMTA();
+        vlc_object_release(s);
+        return -1;
+    }
+
     for (;;)
     {
         HRESULT hr;
@@ -1222,13 +1270,34 @@ static int Open(vlc_object_t *obj)
     sys->ducks = 0;
 
     sys->gain = 1.f;
-    sys->requested_device = default_device;
     sys->requested_volume = -1.f;
     sys->requested_mute = -1;
     sys->acquired_device = NULL;
+    sys->request_device_restart = false;
+
+    if (!var_CreateGetBool(aout, "volume-save"))
+        VolumeSetLocked(aout, var_InheritFloat(aout, "mmdevice-volume"));
+
     InitializeCriticalSection(&sys->lock);
     InitializeConditionVariable(&sys->work);
     InitializeConditionVariable(&sys->ready);
+
+    aout_HotplugReport(aout, default_device_b, _("Default"));
+
+    char *saved_device_b = var_InheritString(aout, "mmdevice-audio-device");
+    if (saved_device_b != NULL && strcmp(saved_device_b, default_device_b) != 0)
+    {
+        sys->requested_device = ToWide(saved_device_b);
+        free(saved_device_b);
+
+        if (unlikely(sys->requested_device == NULL))
+            goto error;
+    }
+    else
+    {
+        free(saved_device_b);
+        sys->requested_device = default_device;
+    }
 
     /* Initialize MMDevice API */
     if (TryEnterMTA(aout))
@@ -1267,6 +1336,7 @@ static int Open(vlc_object_t *obj)
     aout->volume_set = VolumeSet;
     aout->mute_set = MuteSet;
     aout->device_select = DeviceSelect;
+
     return VLC_SUCCESS;
 
 error:
@@ -1292,6 +1362,91 @@ static void Close(vlc_object_t *obj)
     free(sys);
 }
 
+struct mm_list
+{
+    size_t count;
+    char **ids;
+    char **names;
+};
+
+static void Reload_DevicesEnum_Added(void *data, LPCWSTR wid, IMMDevice *dev)
+{
+    struct mm_list *list = data;
+
+    size_t new_count = list->count + 1;
+    list->ids = realloc_or_free(list->ids, new_count * sizeof(char *));
+    list->names = realloc_or_free(list->names, new_count * sizeof(char *));
+    if (!list->ids || !list->names)
+    {
+        free(list->ids);
+        return;
+    }
+
+    char *id = FromWide(wid);
+    if (!id)
+        return;
+
+    char *name = DeviceGetFriendlyName(dev);
+    if (!name && !(name = strdup(id)))
+    {
+        free(id);
+        return;
+    }
+    list->ids[list->count] = id;
+    list->names[list->count] = name;
+
+    list->count = new_count;
+}
+
+static int ReloadAudioDevices(vlc_object_t *this, char const *name,
+                              char ***values, char ***descs)
+{
+    (void) name;
+
+    bool in_mta = SUCCEEDED(CoInitializeEx(NULL, COINIT_MULTITHREADED));
+
+    struct mm_list list = { .count = 0 };
+    void *it;
+    HRESULT hr = CoCreateInstance(&CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL,
+                                  &IID_IMMDeviceEnumerator, &it);
+    if (FAILED(hr))
+        goto error;
+
+    list.ids = malloc(sizeof (char *));
+    list.names = malloc(sizeof (char *));
+    if (!list.ids || !list.names)
+    {
+        free(list.ids);
+        goto error;
+    }
+
+    list.ids[0] = strdup("");
+    list.names[0] = strdup(_("Default"));
+    if (!list.ids[0] || !list.names[0])
+    {
+        free(list.ids[0]);
+        free(list.ids);
+        free(list.names);
+        goto error;
+    }
+    list.count++;
+
+    DevicesEnum(it, Reload_DevicesEnum_Added, &list);
+
+error:
+    IMMDeviceEnumerator_Release((IMMDeviceEnumerator *)it);
+    if (in_mta)
+        CoUninitialize();
+
+    if (list.count > 0)
+    {
+        *values = list.ids;
+        *descs = list.names;
+    }
+
+    return list.count;
+}
+
 #define MM_PASSTHROUGH_TEXT N_( \
     "HDMI/SPDIF audio passthrough")
 #define MM_PASSTHROUGH_LONGTEXT N_( \
@@ -1303,9 +1458,15 @@ static const int pi_mmdevice_passthrough_values[] = {
 };
 static const char *const ppsz_mmdevice_passthrough_texts[] = {
     N_("Disabled"),
-    N_("Enabled (without HD codecs)"),
+    N_("Enabled (AC3/DTS only)"),
     N_("Enabled"),
 };
+
+#define DEVICE_TEXT N_("Output device")
+#define DEVICE_LONGTEXT N_("Select your audio output device")
+
+#define VOLUME_TEXT N_("Audio volume")
+#define VOLUME_LONGTEXT N_("Audio volume in hundredths of decibels (dB).")
 
 vlc_module_begin()
     set_shortname("MMDevice")
@@ -1321,4 +1482,8 @@ vlc_module_begin()
                  MM_PASSTHROUGH_TEXT, MM_PASSTHROUGH_LONGTEXT, false )
         change_integer_list( pi_mmdevice_passthrough_values,
                              ppsz_mmdevice_passthrough_texts )
+    add_string("mmdevice-audio-device", NULL, DEVICE_TEXT, DEVICE_LONGTEXT, false)
+        change_string_cb(ReloadAudioDevices)
+    add_float("mmdevice-volume", 1.f, VOLUME_TEXT, VOLUME_LONGTEXT, true)
+        change_float_range( 0.f, 1.25f )
 vlc_module_end()

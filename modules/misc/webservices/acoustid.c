@@ -91,7 +91,7 @@ static void parse_recordings( vlc_object_t *p_obj, json_value *node, acoustid_re
     }
 }
 
-static bool ParseJson( vlc_object_t *p_obj, char *psz_buffer, acoustid_results_t *p_results )
+static bool ParseJson( vlc_object_t *p_obj, const char *psz_buffer, acoustid_results_t *p_results )
 {
     json_settings settings;
     char psz_error[128];
@@ -206,6 +206,7 @@ int DoAcoustIdWebRequest( vlc_object_t *p_obj, acoustid_fingerprint_t *p_data )
         msg_Dbg( p_obj, "results count == %d", p_data->results.count );
     else
         msg_Dbg( p_obj, "No results" );
+    free( p_buffer );
 
     return VLC_SUCCESS;
 }

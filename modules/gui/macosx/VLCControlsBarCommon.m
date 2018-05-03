@@ -2,7 +2,7 @@
  * VLCControlsBarCommon.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2016 VLC authors and VideoLAN
- * $Id: 61942fe03fbc0a1ea0ade4af21ca9e150f05118f $
+ * $Id: 04a01057926c760457913f66432fe8c81a2ad74a $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -274,6 +274,9 @@
             return;
         case NSLeftMouseDown:
         case NSLeftMouseDragged:
+            f_updated = [sender floatValue];
+            break;
+        case NSScrollWheel:
             f_updated = [sender floatValue];
             break;
 

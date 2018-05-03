@@ -2,7 +2,7 @@
  * VLCVideoEffectsWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2015 Felix Paul Kühne
- * $Id: e5ef7e18326440df0ede8a8ba7a48640d7bb2bc2 $
+ * $Id: e5904eb81cc903cc3c800ba3ebd0ce1cece192b3 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -189,13 +189,14 @@
     [self.window setExcludedFromWindowsMenu:YES];
     [self.window setCollectionBehavior: NSWindowCollectionBehaviorFullScreenAuxiliary];
 
-    [[_tabView tabViewItemAtIndex:[_tabView indexOfTabViewItemWithIdentifier:@"basic"]] setLabel:_NS("Basic")];
-    [[_tabView tabViewItemAtIndex:[_tabView indexOfTabViewItemWithIdentifier:@"crop"]] setLabel:_NS("Crop")];
-    [[_tabView tabViewItemAtIndex:[_tabView indexOfTabViewItemWithIdentifier:@"geometry"]] setLabel:_NS("Geometry")];
-    [[_tabView tabViewItemAtIndex:[_tabView indexOfTabViewItemWithIdentifier:@"color"]] setLabel:_NS("Color")];
-    [[_tabView tabViewItemAtIndex:[_tabView indexOfTabViewItemWithIdentifier:@"misc"]] setLabel:_NS("Miscellaneous")];
+    [_segmentView setLabel:_NS("Basic") forSegment:0];
+    [_segmentView setLabel:_NS("Crop") forSegment:1];
+    [_segmentView setLabel:_NS("Geometry") forSegment:2];
+    [_segmentView setLabel:_NS("Color") forSegment:3];
+    [_segmentView setLabel:_NS("Miscellaneous") forSegment:4];
 
     [_applyProfileCheckbox setState:[[NSUserDefaults standardUserDefaults] boolForKey:@"VideoEffectApplyProfileOnStartup"]];
+    [_applyProfileCheckbox setTitle:_NS("Apply profile at next launch")];
 
     [self resetProfileSelector];
 
@@ -326,8 +327,6 @@
     [_addLogoPositionPopup addItemWithTitle: _NS("Bottom-Right")];
     [[_addLogoPositionPopup lastItem] setTag: 10];
     [_addLogoTransparencyLabel setStringValue:_NS("Transparency")];
-
-    [_tabView selectFirstTabViewItem:self];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(inputChangedEvent:)

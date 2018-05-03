@@ -2,7 +2,7 @@
  * virtual_segment.cpp : virtual segment implementation in the MKV demuxer
  *****************************************************************************
  * Copyright © 2003-2011 VideoLAN and VLC authors
- * $Id: e5673d896ac553220533520411f9cbe6ba5f0da9 $
+ * $Id: 8a0f1ca2cfd0392012d7ef5653b02cdd1653a298 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -172,7 +172,7 @@ virtual_edition_c::virtual_edition_c( chapter_edition_c * p_edit, matroska_segme
         tmp = 0;
 
         /* Append the main segment */
-        p_vchap = virtual_chapter_c::CreateVirtualChapter( (chapter_item_c*) p_edit, main_segment,
+        p_vchap = virtual_chapter_c::CreateVirtualChapter( p_edit, main_segment,
                                                            opened_segments, tmp, b_ordered );
         if( p_vchap )
             vchapters.push_back( p_vchap );
@@ -448,7 +448,8 @@ bool virtual_segment_c::UpdateCurrentToChapter( demux_t & demux )
     /* we have moved to a new chapter */
     if ( p_cur_vchapter != NULL && p_current_vchapter != p_cur_vchapter )
         {
-            msg_Dbg( &demux, "New Chapter %" PRId64 " uid=%" PRIu64, sys.i_pts - VLC_TS_0, p_cur_vchapter->p_chapter->i_uid );
+            msg_Dbg( &demux, "New Chapter %" PRId64 " uid=%" PRIu64, sys.i_pts - VLC_TS_0,
+                     p_cur_vchapter->p_chapter ? p_cur_vchapter->p_chapter->i_uid : 0 );
             if ( p_cur_vedition->b_ordered )
             {
                 /* FIXME EnterAndLeave has probably been broken for a long time */
@@ -589,23 +590,23 @@ virtual_chapter_c * virtual_segment_c::FindChapter( int64_t i_find_uid )
     return NULL;
 }
 
-int virtual_chapter_c::PublishChapters( input_title_t & title, int & i_user_chapters, int i_level )
+int virtual_chapter_c::PublishChapters( input_title_t & title, int & i_user_chapters, int i_level, bool allow_no_name )
 {
-    if ( p_chapter && ( !p_chapter->b_display_seekpoint || p_chapter->psz_name == "" ) )
-    {
-        p_chapter->psz_name = p_chapter->GetCodecName();
-        if ( p_chapter->psz_name != "" )
-            p_chapter->b_display_seekpoint = true;
-    }
-
     if ( p_chapter && p_chapter->b_display_seekpoint )
     {
-        if( p_chapter->b_user_display )
+        std::string chap_name;
+        if ( p_chapter->b_user_display )
+            chap_name = p_chapter->psz_name;
+        if (chap_name == "")
+            chap_name = p_chapter->GetCodecName();
+
+        if (allow_no_name || chap_name != "")
         {
             seekpoint_t *sk = vlc_seekpoint_New();
 
             sk->i_time_offset = i_mk_virtual_start_time;
-            sk->psz_name = strdup( p_chapter->psz_name.c_str() );
+            if (chap_name != "")
+                sk->psz_name = strdup( chap_name.c_str() );
 
             /* A start time of '0' is ok. A missing ChapterTime element is ok, too, because '0' is its default value. */
             title.i_seekpoint++;
@@ -619,7 +620,7 @@ int virtual_chapter_c::PublishChapters( input_title_t & title, int & i_user_chap
     i_seekpoint_num = i_user_chapters;
 
     for( size_t i = 0; i < sub_vchapters.size(); i++ )
-        sub_vchapters[i]->PublishChapters( title, i_user_chapters, i_level + 1 );
+        sub_vchapters[i]->PublishChapters( title, i_user_chapters, i_level + 1, true );
 
     return i_user_chapters;
 }
@@ -630,7 +631,7 @@ int virtual_edition_c::PublishChapters( input_title_t & title, int & i_user_chap
 
     /* HACK for now don't expose edition as a seekpoint if its start time is the same than it's first chapter */
     if( vchapters.size() > 0 &&
-        vchapters[0]->i_mk_virtual_start_time && p_edition )
+        vchapters[0]->i_mk_virtual_start_time && p_edition && !p_edition->b_hidden )
     {
         seekpoint_t *sk = vlc_seekpoint_New();
         sk->i_time_offset = 0;
@@ -648,7 +649,7 @@ int virtual_edition_c::PublishChapters( input_title_t & title, int & i_user_chap
 
 //    if( chapters.size() > 1 )
         for( size_t i = 0; i < vchapters.size(); i++ )
-            vchapters[i]->PublishChapters( title, i_user_chapters, i_level );
+            vchapters[i]->PublishChapters( title, i_user_chapters, i_level, false );
 
     return i_user_chapters;
 }

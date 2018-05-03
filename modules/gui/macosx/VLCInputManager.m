@@ -2,7 +2,7 @@
  * VLCInputManager.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: bdc115cef7b2ccb20fbf30804f9507c06d91acf1 $
+ * $Id: fbc75690c9c78aa9256437ece5ba82bb103faf5b $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -186,7 +186,14 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
     return self;
 }
 
-- (void)dealloc
+/*
+ * TODO: Investigate if this can be moved to dealloc again. Current problems:
+ * - dealloc might be never called of this object, as strong references could be in the
+ *   (already stopped) main loop, preventing the refcount to go 0.
+ * - Calling var_DelCallback waits for all callbacks to finish. Thus, while dealloc is already
+ *   called, callback might grab a reference to this object again, which could cause trouble.
+ */
+- (void)deinit
 {
     msg_Dbg(getIntf(), "Deinitializing input manager");
     if (p_current_input) {

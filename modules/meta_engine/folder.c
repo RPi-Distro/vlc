@@ -2,7 +2,7 @@
  * folder.c
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: d243172973eef9219e11ee07b7f1951cacfbb617 $
+ * $Id: aa25c8f945d11f71c503098efb9bf57b298ca748 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -40,6 +40,7 @@
 
 static const char* cover_files[] = {
     "Folder.jpg",           /* Windows */
+    "Folder.png",
     "AlbumArtSmall.jpg",    /* Windows */
     "AlbumArt.jpg",         /* Windows */
     "Album.jpg",

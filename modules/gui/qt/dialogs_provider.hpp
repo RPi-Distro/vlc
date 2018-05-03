@@ -2,7 +2,7 @@
  * dialogs_provider.hpp : Dialogs provider
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 4d65c7a599327df052823254c67678086928ef01 $
+ * $Id: 6476dbe124ff690b0d6e72d76be963ec85136452 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -88,17 +88,17 @@ public:
                                 int filters = EXT_FILTER_MEDIA |
                                 EXT_FILTER_VIDEO | EXT_FILTER_AUDIO |
                                 EXT_FILTER_PLAYLIST,
-                                const QString& path = QString() );
+                                const QUrl& path = QUrl() );
     bool isDying() { return b_isDying; }
     static QString getDirectoryDialog( intf_thread_t *p_intf);
     static QStringList getOpenURL(QWidget *parent = NULL,
                                   const QString &caption = QString(),
-                                  const QString &dir = QString(),
+                                  const QUrl &dir = QUrl(),
                                   const QString &filter = QString(),
                                   QString *selectedFilter = NULL );
-    static QString getSaveFileName( QWidget *parent = NULL,
+    static QString getSaveFileName(QWidget *parent = NULL,
                                     const QString &caption = QString(),
-                                    const QString &dir = QString(),
+                                    const QUrl &dir = QUrl(),
                                     const QString &filter = QString(),
                                     QString *selectedFilter = NULL );
 

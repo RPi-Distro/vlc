@@ -2,7 +2,7 @@
  * directdraw.c: Windows DirectDraw video output
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 13995577daeb242c25252d02611aec5fc90d226c $
+ * $Id: be583127f9fd7b2a9a55de3ab980eeec1b9ad63c $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -198,9 +198,6 @@ static int Open(vlc_object_t *object)
 {
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys;
-
-    if ( !vd->obj.force && vd->source.projection_mode != PROJECTION_MODE_RECTANGULAR)
-        return VLC_EGENERIC; /* let a module who can handle it do it */
 
     /* Allocate structure */
     vd->sys = sys = calloc(1, sizeof(*sys));

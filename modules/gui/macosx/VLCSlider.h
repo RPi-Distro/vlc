@@ -2,7 +2,7 @@
  * VLCSlider.h
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: ba95b63ab0e761a93ac1a207ee4744e4c0bb19e4 $
+ * $Id: 36e8659c8c603f40f0a1e0cb4f8050d6aedec0b6 $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -27,6 +27,9 @@
 
 @property (nonatomic, getter=getIndefinite,setter=setIndefinite:) BOOL indefinite;
 @property (nonatomic, getter=getKnobHidden,setter=setKnobHidden:) BOOL isKnobHidden;
+
+/* Indicates if the slider is scrollable with the mouse or trackpad scrollwheel. */
+@property (readwrite) BOOL isScrollable;
 
 - (void)setSliderStyleLight;
 - (void)setSliderStyleDark;

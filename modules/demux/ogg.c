@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 2e114dc3945474cc3255a0da84a65c898de3e958 $
+ * $Id: 5c72d6461a3376f1640277eb7599c8cad13856ad $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -875,8 +875,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             if ( p_sys->i_length <= 0 || !b /* || ! STREAM_CAN_FASTSEEK */ )
             {
                 Ogg_ResetStreamsHelper( p_sys );
-                Oggseek_BlindSeektoPosition( p_demux, p_stream, f, b );
-                return VLC_SUCCESS;
+                return Oggseek_BlindSeektoPosition( p_demux, p_stream, f, b );
             }
 
             assert( p_sys->i_length > 0 );
@@ -1013,6 +1012,10 @@ static void Ogg_UpdatePCR( demux_t *p_demux, logical_stream_t *p_stream,
     {
         /* We're in headers, and we haven't parsed 1st data packet yet */
 //        p_stream->i_pcr = VLC_TS_UNKNOWN;
+        if( p_stream->b_oggds && ogg_page_packets( p_oggpacket ) )
+        {
+            p_stream->i_pcr = VLC_TS_0 + p_ogg->i_nzpcr_offset;
+        }
     }
     else if( p_oggpacket->granulepos > 0 )
     {
@@ -1169,7 +1172,12 @@ static void Ogg_SendOrQueueBlocks( demux_t *p_demux, logical_stream_t *p_stream,
                 temp = temp->p_next;
                 tosend->p_next = NULL;
 
-                if( tosend->i_pts < VLC_TS_0 )
+                if( tosend->i_dts < VLC_TS_0 )
+                {
+                    tosend->i_dts = tosend->i_pts;
+                }
+
+                if( tosend->i_dts < VLC_TS_0 )
                 {
                     /* Don't send metadata from chained streams */
                     block_Release( tosend );
@@ -1456,18 +1464,7 @@ static void Ogg_DecodePacket( demux_t *p_demux,
     }
     else if( p_stream->fmt.i_cat == AUDIO_ES )
     {
-        if ( p_stream->fmt.i_codec == VLC_CODEC_FLAC &&
-             p_stream->p_es && 0 >= p_oggpacket->granulepos &&
-             p_stream->fmt.b_packetized )
-        {
-            /* Handle OggFlac spec violation (multiple frame/packet
-             * by turning on packetizer */
-            msg_Warn( p_demux, "Invalid FLAC in ogg detected. Restarting ES with packetizer." );
-            p_stream->fmt.b_packetized = false;
-            es_out_Del( p_demux->out, p_stream->p_es );
-            p_stream->p_es = es_out_Add( p_demux->out, &p_stream->fmt );
-        }
-        else if( p_stream->fmt.i_codec == VLC_CODEC_TARKIN )
+        if( p_stream->fmt.i_codec == VLC_CODEC_TARKIN )
         {
             /* FIXME: the biggest hack I've ever done */
             msg_Warn( p_demux, "tarkin pts: %"PRId64", granule: %"PRId64,
@@ -1699,6 +1696,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                         p_stream = NULL;
                         p_ogg->i_streams--;
                     }
+                    p_stream->fmt.b_packetized = false;
                 }
                 /* Check for Theora header */
                 else if( oggpacket.bytes >= 7 &&
@@ -2161,7 +2159,8 @@ static void Ogg_CreateES( demux_t *p_demux )
             /* Try first to reuse an old ES */
             if( p_old_stream &&
                 p_old_stream->fmt.i_cat == p_stream->fmt.i_cat &&
-                p_old_stream->fmt.i_codec == p_stream->fmt.i_codec )
+                p_old_stream->fmt.i_codec == p_stream->fmt.i_codec &&
+                p_old_stream->p_es != NULL )
             {
                 msg_Dbg( p_demux, "will reuse old stream to avoid glitch" );
 
@@ -2468,6 +2467,8 @@ static bool Ogg_LogicalStreamResetEsFormat( demux_t *p_demux, logical_stream_t *
         b_compatible = Ogg_IsVorbisFormatCompatible( &p_stream->fmt, &p_stream->fmt_old );
     else if( p_stream->fmt.i_codec == VLC_CODEC_OPUS )
         b_compatible = Ogg_IsOpusFormatCompatible( &p_stream->fmt, &p_stream->fmt_old );
+    else if( p_stream->fmt.i_codec == VLC_CODEC_FLAC )
+        b_compatible = !p_stream->fmt.b_packetized;
 
     if( !b_compatible )
         msg_Warn( p_demux, "cannot reuse old stream, resetting the decoder" );

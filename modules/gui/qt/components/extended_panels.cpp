@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2013 the VideoLAN team
- * $Id: 2433833a0b0c1f9fad1691e559c6a7ecb85f064a $
+ * $Id: 62152aff28a47ec5494a255634023dd12c3d6ea7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -303,6 +303,23 @@ static QString ChangeFiltersString( struct intf_thread_t *p_intf, const char *ps
     else if (!b_add)
         list.removeAll( psz_name );
 
+#ifdef _WIN32
+    /* VLC 3.x HACK: "adjust" d3d* filters can't work with other SW filters.
+     * There is not way to fix it until VLC 4.0. As a workaround, force the
+     * adjust filter to be added at the end of the list. Therefore the SW
+     * "adjust" filter will be used since the previous filter will be SW. */
+    if( b_add && strcmp( psz_filter_type, "video-filter" ) == 0
+     && strcmp( psz_name, "adjust" ) != 0 )
+    {
+        QList<QString>::iterator it = std::find(list.begin(), list.end(), "adjust");
+        if( it != list.end() )
+        {
+            list.erase(it);
+            list << "adjust";
+        }
+    }
+#endif
+
     free( psz_chain );
 
     return list.join( ":" );
@@ -358,22 +375,26 @@ void ExtVideo::updateFilters()
 
 void ExtVideo::browseLogo()
 {
+    const QStringList schemes = QStringList(QStringLiteral("file"));
     QString filter = QString( "%1 (*.png *.jpg);;%2 (*)" )
                         .arg( qtr("Image Files") )
                         .arg( TITLE_EXTENSIONS_ALL );
-    QString file = QFileDialog::getOpenFileName( NULL, qtr( "Logo filenames" ),
-                   p_intf->p_sys->filepath, filter );
+    QString file = QFileDialog::getOpenFileUrl( NULL, qtr( "Logo filenames" ),
+                   p_intf->p_sys->filepath, filter,
+                   NULL, QFileDialog::Options(), schemes ).toLocalFile();
 
     UPDATE_AND_APPLY_TEXT( logoFileText, file );
 }
 
 void ExtVideo::browseEraseFile()
 {
+    const QStringList schemes = QStringList(QStringLiteral("file"));
     QString filter = QString( "%1 (*.png *.jpg);;%2 (*)" )
                         .arg( qtr("Image Files") )
                         .arg( TITLE_EXTENSIONS_ALL );
-    QString file = QFileDialog::getOpenFileName( NULL, qtr( "Image mask" ),
-                   p_intf->p_sys->filepath, filter );
+    QString file = QFileDialog::getOpenFileUrl( NULL, qtr( "Image mask" ),
+                   p_intf->p_sys->filepath, filter,
+                   NULL, QFileDialog::Options(), schemes ).toLocalFile();
 
     UPDATE_AND_APPLY_TEXT( eraseMaskText, file );
 }

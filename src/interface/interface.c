@@ -4,7 +4,7 @@
  * interface, such as command line.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: a100e048e49f296551ec2ee6448834b5418f5759 $
+ * $Id: 6155d5ab7c403055e5c01c5973a6a0192a22e816 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -94,9 +94,6 @@ int intf_Create( playlist_t *playlist, const char *chain )
     var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );
     val.psz_string = (char *)"http,none";
     text.psz_string = (char *)_("Web");
-    var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );
-    val.psz_string = (char *)"logger,none";
-    text.psz_string = (char *)_("Debug logging");
     var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );
     val.psz_string = (char *)"gestures,none";
     text.psz_string = (char *)_("Mouse Gestures");

@@ -34,18 +34,106 @@
 #include <vlc_picture.h>
 #include "copy.h"
 
-/*****************************************************************************
- * Local and extern prototypes.
- *****************************************************************************/
-static void I420_NV12( filter_t *, picture_t *, picture_t * );
-static void YV12_NV12( filter_t *, picture_t *, picture_t * );
-static picture_t *I420_NV12_Filter( filter_t *, picture_t * );
-static picture_t *YV12_NV12_Filter( filter_t *, picture_t * );
-
 struct filter_sys_t
 {
     copy_cache_t cache;
 };
+
+#define GET_PITCHES( pic ) { \
+    pic->p[Y_PLANE].i_pitch, \
+    pic->p[U_PLANE].i_pitch, \
+    pic->p[V_PLANE].i_pitch  \
+}
+
+#define GET_PLANES( pic ) { \
+    pic->p[Y_PLANE].p_pixels, \
+    pic->p[U_PLANE].p_pixels, \
+    pic->p[V_PLANE].p_pixels \
+}
+
+/*****************************************************************************
+ * planar I420 4:2:0 Y:U:V to planar NV12 4:2:0 Y:UV
+ *****************************************************************************/
+static void I420_NV12( filter_t *p_filter, picture_t *p_src,
+                                           picture_t *p_dst )
+{
+    filter_sys_t *p_sys = p_filter->p_sys;
+    p_dst->format.i_x_offset = p_src->format.i_x_offset;
+    p_dst->format.i_y_offset = p_src->format.i_y_offset;
+    const size_t pitches[] = GET_PITCHES( p_src );
+    const uint8_t *planes[] = GET_PLANES( p_src );
+
+    Copy420_P_to_SP( p_dst, planes, pitches,
+                     p_src->format.i_y_offset + p_src->format.i_visible_height,
+                     &p_sys->cache );
+}
+
+/*****************************************************************************
+ * planar YV12 4:2:0 Y:V:U to planar NV12 4:2:0 Y:UV
+ *****************************************************************************/
+static void YV12_NV12( filter_t *p_filter, picture_t *p_src,
+                                           picture_t *p_dst )
+{
+    picture_SwapUV( p_src );
+    I420_NV12( p_filter, p_src, p_dst );
+}
+
+static void NV12_I420( filter_t *p_filter, picture_t *p_src,
+                                           picture_t *p_dst )
+{
+    filter_sys_t *p_sys = p_filter->p_sys;
+    p_dst->format.i_x_offset = p_src->format.i_x_offset;
+    p_dst->format.i_y_offset = p_src->format.i_y_offset;
+    const size_t pitches[] = GET_PITCHES( p_src );
+    const uint8_t *planes[] = GET_PLANES( p_src );
+
+    Copy420_SP_to_P( p_dst, planes, pitches,
+                     p_src->format.i_y_offset + p_src->format.i_visible_height,
+                     &p_sys->cache );
+}
+
+static void NV12_YV12( filter_t *p_filter, picture_t *p_src,
+                                           picture_t *p_dst )
+{
+    NV12_I420( p_filter, p_src, p_dst );
+    picture_SwapUV( p_dst );
+}
+
+static void I42010B_P010( filter_t *p_filter, picture_t *p_src,
+                                              picture_t *p_dst )
+{
+    filter_sys_t *p_sys = p_filter->p_sys;
+    p_dst->format.i_x_offset = p_src->format.i_x_offset;
+    p_dst->format.i_y_offset = p_src->format.i_y_offset;
+    const size_t pitches[] = GET_PITCHES( p_src );
+    const uint8_t *planes[] = GET_PLANES( p_src );
+
+    Copy420_16_P_to_SP( p_dst, planes, pitches,
+                        p_src->format.i_y_offset + p_src->format.i_visible_height,
+                        -6, &p_sys->cache );
+}
+
+static void P010_I42010B( filter_t *p_filter, picture_t *p_src,
+                                              picture_t *p_dst )
+{
+    filter_sys_t *p_sys = p_filter->p_sys;
+    p_dst->format.i_x_offset = p_src->format.i_x_offset;
+    p_dst->format.i_y_offset = p_src->format.i_y_offset;
+    const size_t pitches[] = GET_PITCHES( p_src );
+    const uint8_t *planes[] = GET_PLANES( p_src );
+
+    Copy420_16_SP_to_P( p_dst, planes, pitches,
+                        p_src->format.i_y_offset + p_src->format.i_visible_height,
+                        6, &p_sys->cache );
+}
+
+/* Following functions are local */
+VIDEO_FILTER_WRAPPER( I420_NV12 )
+VIDEO_FILTER_WRAPPER( YV12_NV12 )
+VIDEO_FILTER_WRAPPER( NV12_I420 )
+VIDEO_FILTER_WRAPPER( NV12_YV12 )
+VIDEO_FILTER_WRAPPER( I42010B_P010 )
+VIDEO_FILTER_WRAPPER( P010_I42010B )
 
 /*****************************************************************************
  * Create: allocate a chroma function
@@ -56,15 +144,11 @@ static int Create( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
 
-    if ( p_filter->fmt_out.video.i_chroma != VLC_CODEC_NV12 )
-        return -1;
 
     /* video must be even, because 4:2:0 is subsampled by 2 in both ways */
     if( p_filter->fmt_in.video.i_width  & 1
      || p_filter->fmt_in.video.i_height & 1 )
-    {
         return -1;
-    }
 
     /* resizing not supported */
     if( p_filter->fmt_in.video.i_x_offset + p_filter->fmt_in.video.i_visible_width !=
@@ -74,15 +158,51 @@ static int Create( vlc_object_t *p_this )
        || p_filter->fmt_in.video.orientation != p_filter->fmt_out.video.orientation )
         return -1;
 
-    switch( p_filter->fmt_in.video.i_chroma )
+    vlc_fourcc_t infcc = p_filter->fmt_in.video.i_chroma;
+    vlc_fourcc_t outfcc = p_filter->fmt_out.video.i_chroma;
+    uint8_t pixel_bytes = 1;
+
+    switch( infcc )
     {
         case VLC_CODEC_I420:
         case VLC_CODEC_J420:
+            if( outfcc != VLC_CODEC_NV12 )
+                return -1;
             p_filter->pf_video_filter = I420_NV12_Filter;
             break;
 
         case VLC_CODEC_YV12:
+            if( outfcc != VLC_CODEC_NV12 )
+                return -1;
             p_filter->pf_video_filter = YV12_NV12_Filter;
+            break;
+        case VLC_CODEC_NV12:
+            switch( outfcc )
+            {
+                case VLC_CODEC_I420:
+                case VLC_CODEC_J420:
+                    p_filter->pf_video_filter = NV12_I420_Filter;
+                    break;
+                case VLC_CODEC_YV12:
+                    p_filter->pf_video_filter = NV12_YV12_Filter;
+                    break;
+                default:
+                    return -1;
+            }
+            break;
+
+        case VLC_CODEC_I420_10L:
+            if( outfcc != VLC_CODEC_P010 )
+                return -1;
+            pixel_bytes = 2;
+            p_filter->pf_video_filter = I42010B_P010_Filter;
+            break;
+
+        case VLC_CODEC_P010:
+            if( outfcc != VLC_CODEC_I420_10L )
+                return -1;
+            pixel_bytes = 2;
+            p_filter->pf_video_filter = P010_I42010B_Filter;
             break;
 
         default:
@@ -94,8 +214,10 @@ static int Create( vlc_object_t *p_this )
     if (!p_sys)
          return VLC_ENOMEM;
 
-    CopyInitCache( &p_sys->cache, p_filter->fmt_in.video.i_x_offset +
-                                  p_filter->fmt_in.video.i_visible_width );
+    if( CopyInitCache( &p_sys->cache, ( p_filter->fmt_in.video.i_x_offset +
+                       p_filter->fmt_in.video.i_visible_width ) * pixel_bytes ) )
+        return VLC_ENOMEM;
+
     p_filter->p_sys = p_sys;
 
     return 0;
@@ -107,54 +229,6 @@ static void Delete(vlc_object_t *p_this)
     filter_sys_t *p_sys = p_filter->p_sys;
     CopyCleanCache( &p_sys->cache );
 }
-
-/* Following functions are local */
-VIDEO_FILTER_WRAPPER( I420_NV12 )
-VIDEO_FILTER_WRAPPER( YV12_NV12 )
-
-static void I420_YUV( filter_sys_t *p_sys, picture_t *p_src, picture_t *p_dst, bool invertUV )
-{
-    p_dst->format.i_x_offset = p_src->format.i_x_offset;
-    p_dst->format.i_y_offset = p_src->format.i_y_offset;
-
-    const size_t u_plane = invertUV ? V_PLANE : U_PLANE;
-    const size_t v_plane = invertUV ? U_PLANE : V_PLANE;
-
-    const size_t pitch[3] = {
-        p_src->p[Y_PLANE].i_pitch,
-        p_src->p[u_plane].i_pitch,
-        p_src->p[v_plane].i_pitch,
-    };
-
-    const uint8_t *plane[3] = {
-        (uint8_t*)p_src->p[Y_PLANE].p_pixels,
-        (uint8_t*)p_src->p[u_plane].p_pixels,
-        (uint8_t*)p_src->p[v_plane].p_pixels,
-    };
-
-    Copy420_P_to_SP( p_dst, plane, pitch,
-                     p_src->format.i_y_offset + p_src->format.i_visible_height,
-                     &p_sys->cache );
-}
-
-/*****************************************************************************
- * planar I420 4:2:0 Y:U:V to planar NV12 4:2:0 Y:UV
- *****************************************************************************/
-static void I420_NV12( filter_t *p_filter, picture_t *p_src,
-                                           picture_t *p_dst )
-{
-    I420_YUV( p_filter->p_sys, p_src, p_dst, false );
-}
-
-/*****************************************************************************
- * planar YV12 4:2:0 Y:V:U to planar NV12 4:2:0 Y:UV
- *****************************************************************************/
-static void YV12_NV12( filter_t *p_filter, picture_t *p_src,
-                                           picture_t *p_dst )
-{
-    I420_YUV( p_filter->p_sys, p_src, p_dst, true );
-}
-
 
 /*****************************************************************************
  * Module descriptor

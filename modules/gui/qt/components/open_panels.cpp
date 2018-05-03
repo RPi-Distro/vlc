@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: ef52b8e52e57655d76de02b6cb688b6e11f55f03 $
+ * $Id: 92b3522cc00a03e6c75a30b6dbdc469ce7fd2cce $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -233,7 +233,7 @@ void FileOpenPanel::browseFile()
             );
         item->setFlags( Qt::ItemIsEnabled );
         ui.fileListWidg->addItem( item );
-        savedirpathFromFile( file );
+        p_intf->p_sys->filepath = url;
     }
     updateButtons();
     updateMRL();
@@ -287,7 +287,7 @@ void FileOpenPanel::updateMRL()
 
     /* Options */
     if( ui.subGroupBox->isChecked() &&  !subUrl.isEmpty() ) {
-        mrl.append( " :sub-file=" + colon_escape( subUrl.toEncoded() ) );
+        mrl.append( " :sub-file=" + colon_escape( toNativeSeparators( subUrl.toLocalFile() ) ) );
     }
 
     emit methodChanged( "file-caching" );
@@ -633,8 +633,10 @@ void DiscOpenPanel::updateMRL()
 
 void DiscOpenPanel::browseDevice()
 {
-    QString dir = QFileDialog::getExistingDirectory( this,
-            qtr( I_DEVICE_TOOLTIP ), p_intf->p_sys->filepath );
+    const QStringList schemes = QStringList(QStringLiteral("file"));
+    QString dir = QFileDialog::getExistingDirectoryUrl( this,
+            qtr( I_DEVICE_TOOLTIP ), p_intf->p_sys->filepath,
+            QFileDialog::ShowDirsOnly, schemes ).toLocalFile();
     if( !dir.isEmpty() )
     {
         ui.deviceCombo->addItem( toNativeSepNoSlash( dir ) );
@@ -717,7 +719,7 @@ void NetOpenPanel::onFocus()
 
 void NetOpenPanel::updateMRL()
 {
-    QString url = ui.urlComboBox->lineEdit()->text();
+    QString url = ui.urlComboBox->lineEdit()->text().trimmed();
 
     emit methodChanged( qfu( "network-caching" ) );
 

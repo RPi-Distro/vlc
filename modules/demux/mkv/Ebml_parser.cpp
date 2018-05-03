@@ -3,7 +3,7 @@
  * EbmlParser for the matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: ccd7ccf11887ea96dd0c591acca6c99d84e7b28d $
+ * $Id: 4a9325bf2382c06d92b20f023e225e5f94c7b4c4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -110,7 +110,7 @@ void EbmlParser::Reset( demux_t *p_demux )
     this->p_demux = p_demux;
     mi_user_level = mi_level = 1;
     // a little faster and cleaner
-    m_es->I_O().setFilePointer( static_cast<KaxSegment*>(m_el[0])->GetGlobalPosition(0) );
+    m_es->I_O().setFilePointer( static_cast<EbmlMaster*>(m_el[0])->GetDataStart() );
 }
 
 

@@ -3,7 +3,7 @@ BUILT_SOURCES_distclean += \
 	extras/package/win32/NSIS/vlc.win32.nsi extras/package/win32/NSIS/spad.nsi
 endif
 
-win32_destdir=$(abs_top_builddir)/vlc-$(VERSION)
+win32_destdir=$(top_builddir)/vlc-$(VERSION)
 win32_debugdir=$(abs_top_builddir)/symbols-$(VERSION)
 win32_xpi_destdir=$(abs_top_builddir)/vlc-plugin-$(VERSION)
 
@@ -26,13 +26,12 @@ package-win-install:
 	$(MAKE) install
 	touch $@
 
-package-win-sdk:
+package-win-sdk: package-win-install
 	mkdir -p "$(win32_destdir)/sdk/lib/"
 	cp -r $(prefix)/include "$(win32_destdir)/sdk"
 	cp -r $(prefix)/lib/pkgconfig "$(win32_destdir)/sdk/lib"
-	cd $(prefix)/lib && cp -rv libvlc.la libvlccore.la "$(win32_destdir)/sdk/lib/"
-	cd $(prefix)/lib && cp -rv libvlc.dll.a "$(win32_destdir)/sdk/lib/libvlc.lib"
-	cd $(prefix)/lib && cp -rv libvlccore.dll.a "$(win32_destdir)/sdk/lib/libvlccore.lib"
+	cp -rv $(prefix)/lib/libvlc.dll.a "$(win32_destdir)/sdk/lib/libvlc.lib"
+	cp -rv $(prefix)/lib/libvlccore.dll.a "$(win32_destdir)/sdk/lib/libvlccore.lib"
 	$(DLLTOOL) -D libvlc.dll -l "$(win32_destdir)/sdk/lib/libvlc.lib" -d "$(top_builddir)/lib/.libs/libvlc.dll.def" "$(prefix)/bin/libvlc.dll"
 	echo "INPUT(libvlc.lib)" > "$(win32_destdir)/sdk/lib/vlc.lib"
 	$(DLLTOOL) -D libvlccore.dll -l "$(win32_destdir)/sdk/lib/libvlccore.lib" -d "$(top_builddir)/src/.libs/libvlccore.dll.def" "$(prefix)/bin/libvlccore.dll"
@@ -51,8 +50,11 @@ package-win-common: package-win-install package-win-sdk
 	done
 
 	cp $(srcdir)/share/icons/vlc.ico $(win32_destdir)
-	mkdir -p "$(win32_destdir)"/plugins
-	(cd $(prefix)/lib/vlc/plugins/ && find . -type f \( -not -name '*.la' -and -not -name '*.a' \) -exec cp -v --parents "{}" "$(win32_destdir)/plugins/" \;)
+	for plugindir in $(prefix)/lib/vlc/plugins/*/; do \
+		plugin_destdir="$(win32_destdir)/plugins/`basename $$plugindir`"; \
+		mkdir -p "$$plugin_destdir"; \
+		find "$$plugindir" -type f \( -not -name '*.la' -and -not -name '*.a' \) -exec cp -v "{}" "$$plugin_destdir" \; ;\
+	done
 	-cp -r $(prefix)/share/locale $(win32_destdir)
 
 # BD-J JAR
@@ -79,11 +81,11 @@ package-win-npapi: build-npapi
 	cp "$(top_builddir)/npapi-vlc/installed/lib/axvlc.dll" "$(win32_destdir)/"
 	cp "$(top_builddir)/npapi-vlc/installed/lib/npvlc.dll" "$(win32_destdir)/"
 	mkdir -p "$(win32_destdir)/sdk/activex/"
-	cd $(top_builddir)/npapi-vlc && cp activex/README.TXT share/test/test.html $(win32_destdir)/sdk/activex/
+	cp $(top_builddir)/npapi-vlc/activex/README.TXT $(top_builddir)/npapi-vlc/share/test/test.html $(win32_destdir)/sdk/activex/
 
 package-win-strip: package-win-common package-win-npapi
 	mkdir -p "$(win32_debugdir)"/
-	cd $(win32_destdir); find . -type f \( -name '*$(LIBEXT)' -or -name '*$(EXEEXT)' \) | while read i; \
+	find $(win32_destdir) -type f \( -name '*$(LIBEXT)' -or -name '*$(EXEEXT)' \) | while read i; \
 	do if test -n "$$i" ; then \
 	    $(OBJCOPY) --only-keep-debug "$$i" "$(win32_debugdir)/`basename $$i.dbg`"; \
 	    $(OBJCOPY) --strip-all "$$i" ; \
@@ -100,7 +102,7 @@ package-win32-webplugin-common: package-win-strip
 
 package-win32-xpi: package-win32-webplugin-common
 	cp $(top_builddir)/npapi-vlc/npapi/package/install.rdf "$(win32_xpi_destdir)/"
-	cd $(win32_xpi_destdir) && zip -r -9 "../$(WINVERSION).xpi" install.rdf plugins
+	zip -r -9 $(WINVERSION).xpi $(win32_xpi_destdir)/install.rdf $(win32_xpi_destdir)/plugins
 
 
 package-win32-crx: package-win32-webplugin-common
@@ -173,6 +175,14 @@ package-win32-release: package-win-strip $(win32_destdir)/NSIS/nsProcess.dll pac
 	cp -r $(srcdir)/extras/package/win32/NSIS/helpers      		  "$(win32_destdir)/"
 	cp "$(top_srcdir)/extras/package/win32/NSIS/nsProcess.nsh" "$(win32_destdir)/NSIS/"
 	cp "$(top_srcdir)/extras/package/win32/NSIS/vlc_branding.bmp" "$(win32_destdir)/NSIS/"
+
+	mkdir -p "$(win32_destdir)/msi/"
+	cp    $(top_builddir)/extras/package/win32/msi/config.wxi	  "$(win32_destdir)/msi/"
+	cp    $(top_srcdir)/extras/package/win32/msi/axvlc.wxs		  "$(win32_destdir)/msi/"
+	cp    $(top_srcdir)/extras/package/win32/msi/bannrbmp.bmp	  "$(win32_destdir)/msi/"
+	cp    $(top_srcdir)/extras/package/win32/msi/extensions.wxs	  "$(win32_destdir)/msi/"
+	cp    $(top_srcdir)/extras/package/win32/msi/LICENSE.rtf	  "$(win32_destdir)/msi/"
+	cp    $(top_srcdir)/extras/package/win32/msi/product.wxs	  "$(win32_destdir)/msi/"
 
 	7z a $(7Z_OPTS) $(WINVERSION)-release.7z $(win32_debugdir) "$(win32_destdir)/"
 

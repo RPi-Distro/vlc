@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: f6671edd510d014df9bbe54bdd32a0fca1b73b6d $
+ * $Id: b7eecb44862cf2af0054b0b171d19446ad4565ed $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -192,9 +192,9 @@ int picture_Setup( picture_t *p_picture, const video_format_t *restrict fmt )
         plane_t *p = &p_picture->p[i];
 
         p->i_lines         = (i_height_aligned + i_height_extra ) * p_dsc->p[i].h.num / p_dsc->p[i].h.den;
-        p->i_visible_lines = fmt->i_visible_height * p_dsc->p[i].h.num / p_dsc->p[i].h.den;
+        p->i_visible_lines = (fmt->i_visible_height + (p_dsc->p[i].h.den - 1)) / p_dsc->p[i].h.den * p_dsc->p[i].h.num;
         p->i_pitch         = i_width_aligned * p_dsc->p[i].w.num / p_dsc->p[i].w.den * p_dsc->pixel_size;
-        p->i_visible_pitch = fmt->i_visible_width * p_dsc->p[i].w.num / p_dsc->p[i].w.den * p_dsc->pixel_size;
+        p->i_visible_pitch = (fmt->i_visible_width + (p_dsc->p[i].w.den - 1)) / p_dsc->p[i].w.den * p_dsc->p[i].w.num * p_dsc->pixel_size;
         p->i_pixel_pitch   = p_dsc->pixel_size;
 
         assert( (p->i_pitch % 16) == 0 );

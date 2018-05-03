@@ -2,7 +2,7 @@
  * matroska_segment.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 7304e79e8230ced1a84baa7b8ed18a54092a1e21 $
+ * $Id: 3f28ae2997f8f3e9eb67bca2ab301866762a9dbf $
  *
  * Authors: Filip Roséen <filip@videolabs.io>
  *
@@ -500,6 +500,10 @@ SegmentSeeker::mkv_jump_to( matroska_segment_c& ms, fptr_t fpos )
             ms.cluster->InitTimecode( static_cast<uint64>( *p_tc ), ms.i_timescale );
             add_cluster(ms.cluster);
             break;
+        }
+        else if( MKV_CHECKED_PTR_DECL( p_tc, EbmlCrc32, el ) )
+        {
+            p_tc->ReadData( ms.es.I_O(), SCOPE_ALL_DATA ); /* avoid a skip that may fail */
         }
     }
 

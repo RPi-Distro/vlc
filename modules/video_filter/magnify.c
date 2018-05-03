@@ -2,7 +2,7 @@
  * magnify.c : Magnify/Zoom interactive effect
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: 9edd627983dec533d0359ecaf01b8b3c65b45881 $
+ * $Id: 4b667c6206980fea346ad51c32df394cb18374b5 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -186,7 +186,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
             const int o_yp = o_y * p_outpic->p[i_plane].i_visible_lines / p_outpic->p[Y_PLANE].i_visible_lines;
             const int o_xp = o_x * p_outpic->p[i_plane].i_visible_pitch / p_outpic->p[Y_PLANE].i_visible_pitch;
 
-            p_pic->p[i_plane].p_pixels += o_yp * p_pic->p[i_plane].i_visible_pitch + o_xp;
+            p_pic->p[i_plane].p_pixels += o_yp * p_pic->p[i_plane].i_pitch + o_xp;
         }
 
         /* */
@@ -230,7 +230,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         v_w = __MIN( fmt_out.i_visible_width  * ZOOM_FACTOR / o_zoom, fmt_out.i_visible_width - 1 );
         v_h = __MIN( fmt_out.i_visible_height * ZOOM_FACTOR / o_zoom, fmt_out.i_visible_height - 1 );
 
-        DrawRectangle( p_oyp->p_pixels, p_oyp->i_visible_pitch,
+        DrawRectangle( p_oyp->p_pixels, p_oyp->i_pitch,
                        p_oyp->i_visible_pitch, p_oyp->i_visible_lines,
                        o_x/VIS_ZOOM, o_y/VIS_ZOOM,
                        v_w, v_h );

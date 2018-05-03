@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 77ab8283ab3630a839c162c5d71d20b15c5c3d7d $
+ * $Id: 0c06bc8a98a440a990cb2868d3f238b083f78a7d $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -2656,7 +2656,6 @@ vlc_module_begin ()
     add_key( "key-viewpoint-roll-anticlock", NULL,
              VIEWPOINT_ROLL_ANTICLOCK_KEY_TEXT, VIEWPOINT_ROLL_ANTICLOCK_KEY_TEXT, true )
 
-    set_section ( N_("Zoom" ), NULL )
     add_key( "key-zoom-quarter",  KEY_ZOOM_QUARTER,
         ZOOM_QUARTER_KEY_TEXT,  NULL, false )
     add_key( "key-zoom-half",     KEY_ZOOM_HALF,

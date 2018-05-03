@@ -2,7 +2,7 @@
  * vlmshell.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 VLC authors and VideoLAN
- * $Id: 4f812b2d47ed700ffffc60acb3e6bc74a3eb586f $
+ * $Id: 51e6a123254a9224c59f7ef3b139860ab5da862a $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -1535,6 +1535,7 @@ static vlm_message_t *vlm_Show( vlm_t *vlm, vlm_media_sys_t *media,
 
         /* We must destroy the parent node "show" of show2
          * and not the children */
+        free( show2->child );
         free( show2->psz_name );
         free( show2 );
 

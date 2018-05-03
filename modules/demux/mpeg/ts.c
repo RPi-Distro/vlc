@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: 8b8d28ed2cd034fad984419c599d76f633b0e84b $
+ * $Id: e3ff94e277dff99538c1ead7cc7df287b252edcb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -2462,8 +2462,8 @@ static block_t * ProcessTSPacket( demux_t *p_demux, ts_pid_t *pid, block_t *p_pk
                 /* ignore, that's not that simple 2.4.3.5 */
                 //p_pkt->i_flags |= BLOCK_FLAG_DISCONTINUITY;
 
-                /* ... or don't ignore for our Bluray still frames hack */
-                if(p[5] == 0x82 && !strncmp((const char *)&p[7], "VLC_STILLFRAME", 14))
+                /* ... or don't ignore for our Bluray still frames and seek hacks */
+                if(p[5] == 0x82 && !strncmp((const char *)&p[7], "VLC_DISCONTINU", 14))
                     p_pkt->i_flags |= BLOCK_FLAG_DISCONTINUITY;
             }
 #if 0
