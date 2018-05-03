@@ -1,4 +1,4 @@
-vlc (3.0.2-0+deb9u1) UNRELEASED; urgency=medium
+vlc (3.0.2-0+deb9u1) stretch-security; urgency=high
 
   * New upstream release following the LTS release branch.
     - Install vlc_interface.h. (Closes: #768808)
@@ -27,7 +27,7 @@ vlc (3.0.2-0+deb9u1) UNRELEASED; urgency=medium
     - Update configure flags for 3.0.
     - Update install files for new and removed plugins.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 12 Mar 2018 23:37:49 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 03 May 2018 20:55:01 +0200
 
 vlc (2.2.7-1~deb9u1) stretch-security; urgency=high
 
