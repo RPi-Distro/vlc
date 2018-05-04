@@ -10,11 +10,11 @@ import sys
 
 remove_plugins = os.getenv("removeplugins")
 if remove_plugins is not None:
-    remove_plugins = remove_plugins.split(" ")
+    remove_plugins = set(remove_plugins.split(" "))
 else:
-    remove_plugins = []
+    remove_plugins = set()
 
-plugin_re = re.compile(r"^(\S*) \[([a-zA-Z1-9._-]*)\]$")
+plugin_re = re.compile(r"^(\S*) \[([a-zA-Z1-9.,_-]*)\]$")
 
 
 for line in sys.stdin.readlines():
@@ -25,6 +25,7 @@ for line in sys.stdin.readlines():
         continue
 
     path = match.group(1)
-    plugin = match.group(2)
-    if plugin not in remove_plugins:
+    plugins = match.group(2)
+    plugins = set(plugins.split(','))
+    if not plugins & remove_plugins:
         print(path)
