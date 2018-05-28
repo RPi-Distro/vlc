@@ -2,7 +2,7 @@
  * subsdec.c : text subtitle decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: c548ffe8e5afeef84835c1d844574713ec9b7353 $
+ * $Id: 9b6f5c57cd74d456a5612e419f5c880e7203105a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -361,7 +361,6 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     subpicture_t *p_spu = NULL;
-    char *psz_subtitle = NULL;
 
     if( p_block->i_flags & BLOCK_FLAG_CORRUPTED )
         return NULL;
@@ -382,12 +381,18 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
         return NULL;
     }
 
+    char *psz_subtitle = NULL;
+
     /* Should be resiliant against bad subtitles */
-    psz_subtitle = malloc( p_block->i_buffer + 1 );
-    if( psz_subtitle == NULL )
-        return NULL;
-    memcpy( psz_subtitle, p_block->p_buffer, p_block->i_buffer );
-    psz_subtitle[p_block->i_buffer] = '\0';
+    if( p_sys->iconv_handle == (vlc_iconv_t)-1 ||
+        p_sys->b_autodetect_utf8 )
+    {
+        psz_subtitle = malloc( p_block->i_buffer + 1 );
+        if( psz_subtitle == NULL )
+            return NULL;
+        memcpy( psz_subtitle, p_block->p_buffer, p_block->i_buffer );
+        psz_subtitle[p_block->i_buffer] = '\0';
+    }
 
     if( p_sys->iconv_handle == (vlc_iconv_t)-1 )
     {
@@ -400,7 +405,6 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
     }
     else
     {
-
         if( p_sys->b_autodetect_utf8 )
         {
             if( IsUTF8( psz_subtitle ) == NULL )
@@ -413,11 +417,12 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
 
         if( !p_sys->b_autodetect_utf8 )
         {
-            size_t inbytes_left = strlen( psz_subtitle );
+            size_t inbytes_left = p_block->i_buffer;
             size_t outbytes_left = 6 * inbytes_left;
             char *psz_new_subtitle = xmalloc( outbytes_left + 1 );
             char *psz_convert_buffer_out = psz_new_subtitle;
-            const char *psz_convert_buffer_in = psz_subtitle;
+            const char *psz_convert_buffer_in =
+                    psz_subtitle ? psz_subtitle : (char *)p_block->p_buffer;
 
             size_t ret = vlc_iconv( p_sys->iconv_handle,
                                     &psz_convert_buffer_in, &inbytes_left,

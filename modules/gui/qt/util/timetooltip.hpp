@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011 VideoLAN
- * $Id: d239d9984b9689ea7029fd6d8a6a8a5a9b201ae4 $
+ * $Id: b6d7c646c9ef2af11d4aa75bebafa24f6aee3fc6 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -25,13 +25,6 @@
 #include "qt.hpp"
 
 #include <QWidget>
-#include <QBitmap>
-
-class QPaintEvent;
-class QString;
-class QFont;
-class QRect;
-class QPainterPath;
 
 class TimeTooltip : public QWidget
 {
@@ -54,7 +47,6 @@ private:
     QFont mFont;
     QRect mBox;
     QPainterPath mPainterPath;
-    QBitmap mMask;
     int mTipX;
 };
 

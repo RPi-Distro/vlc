@@ -2,7 +2,7 @@
  * controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 07fbf0e28fa87d3de5732fa6b0796f10e0bc9b5d $
+ * $Id: cb97d3651042907c15b60a0ebc10daa56e1b1905 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -1226,7 +1226,7 @@ void FullscreenControllerWidget::setVoutList( vout_thread_t **pp_vout, int i_vou
         var_AddCallback( p_vout, "fullscreen",
                          FullscreenControllerWidget::FullscreenChanged, this );
         /* I miss a add and fire */
-        emit fullscreenChanged( p_vout, var_InheritBool( THEPL, "fullscreen" ),
+        emit fullscreenChanged( p_vout, var_InheritBool( p_vout, "fullscreen" ),
                            var_GetInteger( p_vout, "mouse-hide-timeout" ) );
         vlc_mutex_unlock( &lock );
     }

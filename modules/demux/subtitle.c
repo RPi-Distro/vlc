@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: 18508e3aeafb1cb63c54b0a3a7dd3f43399e76d2 $
+ * $Id: 83ba0726e5f265525f2de596891f83261f1f7293 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -716,8 +716,6 @@ static int Open ( vlc_object_t *p_this )
                  p_demux->psz_location );
     }
 
-    if( psz_bom )
-        fmt.subs.psz_encoding = strdup( psz_bom );
     char *psz_description = var_InheritString( p_demux, "sub-description" );
     if( psz_description && *psz_description )
         fmt.psz_description = psz_description;

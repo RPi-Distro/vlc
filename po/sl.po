@@ -6,17 +6,17 @@
 # Aljoša Žagar <anthon.manix@gmail.com>, 2013
 # janezm.74, 2014
 # Damir Jerovšek <jierro@windowslive.com>, 2014
-# Martin Srebotnjak <miles@filmsi.net>, 2013-2016
+# Martin Srebotnjak <miles@filmsi.net>, 2013-2018
 # Matej Urbančič, 2005-2010, 2014-2017
 # Peter Klofutar, 2014-2016
 # Rok Žerdin <zerdin.rok1@gmail.com>, 2017
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.0-rc8\n"
+"Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-04-19 08:59+0200\n"
-"PO-Revision-Date: 2017-10-08 10:16+0000\n"
-"Last-Translator: Martin Srebotnjak <miles@filmsi.net>, 2017\n"
+"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"PO-Revision-Date: 2018-05-16 23:29+0200\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>, 2018\n"
 "Language-Team: Slovenian (https://www.transifex.com/yaron/teams/16553/sl/)\n"
 "Language: sl\n"
 "MIME-Version: 1.0\n"
@@ -83,7 +83,7 @@ msgstr "Nastavitve vmesnikov upravljanja predvajalnika VLC"
 msgid "Hotkeys settings"
 msgstr "Nastavitve hitrih tipk"
 
-#: include/vlc_config_cat.h:53 src/input/es_out.c:3115 src/libvlc-module.c:1492
+#: include/vlc_config_cat.h:53 src/input/es_out.c:3120 src/libvlc-module.c:1492
 #: modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:414 modules/gui/macosx/VLCOutput.m:92
@@ -147,7 +147,7 @@ msgstr "Razno"
 msgid "Miscellaneous audio settings and modules."
 msgstr "Razne nastavitve zvoka in modulov."
 
-#: include/vlc_config_cat.h:73 src/input/es_out.c:3159 src/libvlc-module.c:142
+#: include/vlc_config_cat.h:73 src/input/es_out.c:3164 src/libvlc-module.c:142
 #: src/libvlc-module.c:1551 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:427 modules/gui/macosx/VLCOutput.m:82
@@ -476,12 +476,13 @@ msgstr "&O programu"
 #: include/vlc_intf_strings.h:65 modules/control/oldrc.c:71
 #: modules/gui/macosx/VLCControlsBarCommon.m:64
 #: modules/gui/macosx/VLCControlsBarCommon.m:397
+#: modules/gui/macosx/VLCFSPanelController.m:232
 #: modules/gui/macosx/VLCMainMenu.m:385 modules/gui/macosx/VLCMainMenu.m:497
 #: modules/gui/macosx/VLCMainMenu.m:504 modules/gui/macosx/VLCMainMenu.m:1339
 #: modules/gui/macosx/VLCMainMenu.m:1340 modules/gui/macosx/VLCMainMenu.m:1341
 #: modules/gui/macosx/VLCPlaylist.m:228
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:539 modules/gui/qt/ui/open.h:261
+#: modules/gui/qt/dialogs/vlm.cpp:538 modules/gui/qt/ui/open.h:261
 msgid "Play"
 msgstr "Predvajaj"
 
@@ -641,7 +642,7 @@ msgstr "Zvokovno filtriranje je spodletelo"
 msgid "The maximum number of filters (%u) was reached."
 msgstr "Doseženo je največje dovoljeno število filtrov (%u)."
 
-#: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:943
+#: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:948
 #: src/libvlc-module.c:540 modules/gui/macosx/VLCMainMenu.m:243
 #: modules/gui/macosx/VLCMainWindow.m:999 modules/video_filter/postproc.c:235
 msgid "Disable"
@@ -696,7 +697,7 @@ msgstr "Dolby Surround"
 msgid "Stereo"
 msgstr "Stereo"
 
-#: src/audio_output/output.c:445 src/input/es_out.c:3256
+#: src/audio_output/output.c:445 src/input/es_out.c:3261
 #: src/libvlc-module.c:197 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: src/misc/actions.c:81 modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -948,8 +949,8 @@ msgstr "paketnik"
 msgid "decoder"
 msgstr "odkodirnik"
 
-#: src/input/decoder.c:1909 src/input/decoder.c:2191
-#: modules/codec/avcodec/encoder.c:368 modules/codec/avcodec/encoder.c:896
+#: src/input/decoder.c:1909 src/input/decoder.c:2192
+#: modules/codec/avcodec/encoder.c:369 modules/codec/avcodec/encoder.c:903
 #: modules/stream_out/es.c:349 modules/stream_out/es.c:362
 msgid "Streaming / Transcoding failed"
 msgstr "Pretakanje / Prekodiranje je spodletelo"
@@ -959,55 +960,55 @@ msgstr "Pretakanje / Prekodiranje je spodletelo"
 msgid "VLC could not open the %s module."
 msgstr "Ni mogoče odpreti modula %s."
 
-#: src/input/decoder.c:2192
+#: src/input/decoder.c:2193
 msgid "VLC could not open the decoder module."
 msgstr "Ni mogoče odpreti modula odkodirnika."
 
-#: src/input/es_out.c:963 src/input/es_out.c:968 src/libvlc-module.c:239
+#: src/input/es_out.c:968 src/input/es_out.c:973 src/libvlc-module.c:239
 #: modules/gui/qt/components/open_panels.cpp:547
 msgid "Track"
 msgstr "Sled"
 
-#: src/input/es_out.c:1185
+#: src/input/es_out.c:1190
 #, c-format
 msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
-#: src/input/es_out.c:1186 src/input/es_out.c:1191 src/input/es_out.c:1206
+#: src/input/es_out.c:1191 src/input/es_out.c:1196 src/input/es_out.c:1211
 #: src/input/var.c:160 src/libvlc-module.c:564
 #: modules/gui/macosx/VLCMainMenu.m:407 modules/gui/macosx/VLCMainMenu.m:408
 msgid "Program"
 msgstr "Program"
 
-#: src/input/es_out.c:1216
+#: src/input/es_out.c:1221
 #, c-format
 msgid "Stream %d"
 msgstr "Pretakanje %d"
 
-#: src/input/es_out.c:1469 src/input/es_out.c:1471
+#: src/input/es_out.c:1474 src/input/es_out.c:1476
 msgid "Scrambled"
 msgstr "Kodirano"
 
-#: src/input/es_out.c:1469 modules/keystore/keychain.m:41
+#: src/input/es_out.c:1474 modules/keystore/keychain.m:41
 #: modules/lua/extension.c:1193
 msgid "Yes"
 msgstr "Da"
 
-#: src/input/es_out.c:2136
+#: src/input/es_out.c:2141
 #, c-format
 msgid "DTVCC Closed captions %u"
 msgstr "Opisni podnapisi DTVCC %u"
 
-#: src/input/es_out.c:2138
+#: src/input/es_out.c:2143
 #, c-format
 msgid "Closed captions %u"
 msgstr "Opisni podnapisi %u"
 
-#: src/input/es_out.c:3091
+#: src/input/es_out.c:3096
 msgid "Original ID"
 msgstr "Izvorni ID"
 
-#: src/input/es_out.c:3099 src/input/es_out.c:3102 modules/access/imem.c:67
+#: src/input/es_out.c:3104 src/input/es_out.c:3107 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
 #: modules/gui/qt/ui/profiles.h:728 modules/gui/qt/ui/profiles.h:754
@@ -1015,48 +1016,48 @@ msgstr "Izvorni ID"
 msgid "Codec"
 msgstr "Kodek"
 
-#: src/input/es_out.c:3106 src/input/meta.c:66 modules/access/imem.c:71
+#: src/input/es_out.c:3111 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:114
 #: modules/gui/macosx/VLCSimplePrefsController.m:311
 #: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:530
 msgid "Language"
 msgstr "Jezik"
 
-#: src/input/es_out.c:3109 src/input/meta.c:61
+#: src/input/es_out.c:3114 src/input/meta.c:61
 #: modules/gui/macosx/VLCBookmarksWindowController.m:83
 #: modules/gui/macosx/VLCPlaylist.m:112 modules/gui/qt/dialogs/bookmarks.cpp:75
 #: modules/gui/qt/dialogs/epg.cpp:55
 msgid "Description"
 msgstr "Opis"
 
-#: src/input/es_out.c:3115 src/input/es_out.c:3159 src/input/es_out.c:3349
+#: src/input/es_out.c:3120 src/input/es_out.c:3164 src/input/es_out.c:3354
 #: modules/gui/macosx/VLCAddonsWindowController.m:132
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
 #: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1487
 msgid "Type"
 msgstr "Vrsta"
 
-#: src/input/es_out.c:3118
+#: src/input/es_out.c:3123
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
 #: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:756
 msgid "Channels"
 msgstr "Kanali"
 
-#: src/input/es_out.c:3123 modules/access/alsa.c:39 modules/access/imem.c:75
+#: src/input/es_out.c:3128 modules/access/alsa.c:39 modules/access/imem.c:75
 #: modules/audio_output/amem.c:45 modules/codec/fluidsynth.c:64
 msgid "Sample rate"
 msgstr "Hitrost vzorčenja"
 
-#: src/input/es_out.c:3123
+#: src/input/es_out.c:3128
 #, c-format
 msgid "%u Hz"
 msgstr "%u Hz"
 
-#: src/input/es_out.c:3133
+#: src/input/es_out.c:3138
 msgid "Bits per sample"
 msgstr "Bitov na vzorec"
 
-#: src/input/es_out.c:3138 modules/access_output/shout.c:92
+#: src/input/es_out.c:3143 modules/access_output/shout.c:92
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
@@ -1064,33 +1065,33 @@ msgstr "Bitov na vzorec"
 msgid "Bitrate"
 msgstr "Bitna hitrost"
 
-#: src/input/es_out.c:3138
+#: src/input/es_out.c:3143
 #, c-format
 msgid "%u kb/s"
 msgstr "%u kb/s"
 
-#: src/input/es_out.c:3150
+#: src/input/es_out.c:3155
 msgid "Track replay gain"
 msgstr "Zaznana glasnost sledi"
 
-#: src/input/es_out.c:3152
+#: src/input/es_out.c:3157
 msgid "Album replay gain"
 msgstr "Zaznana glasnost albuma"
 
-#: src/input/es_out.c:3153
+#: src/input/es_out.c:3158
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:3163
+#: src/input/es_out.c:3168
 msgid "Video resolution"
 msgstr "Ločljivost videa"
 
-#: src/input/es_out.c:3168
+#: src/input/es_out.c:3173
 msgid "Buffer dimensions"
 msgstr "Velikost medpomnilnika"
 
-#: src/input/es_out.c:3178 src/input/es_out.c:3181 modules/access/imem.c:93
+#: src/input/es_out.c:3183 src/input/es_out.c:3186 modules/access/imem.c:93
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
@@ -1100,91 +1101,91 @@ msgstr "Velikost medpomnilnika"
 msgid "Frame rate"
 msgstr "Hitrost sličic"
 
-#: src/input/es_out.c:3189
+#: src/input/es_out.c:3194
 msgid "Decoded format"
 msgstr "Odkodiran zapis"
 
-#: src/input/es_out.c:3194
+#: src/input/es_out.c:3199
 msgid "Top left"
 msgstr "Levo zgoraj"
 
-#: src/input/es_out.c:3194
+#: src/input/es_out.c:3199
 msgid "Left top"
 msgstr "Levo zgoraj"
 
-#: src/input/es_out.c:3195
+#: src/input/es_out.c:3200
 msgid "Right bottom"
 msgstr "Desno spodaj"
 
-#: src/input/es_out.c:3195
+#: src/input/es_out.c:3200
 msgid "Top right"
 msgstr "Desno zgoraj"
 
-#: src/input/es_out.c:3196
+#: src/input/es_out.c:3201
 msgid "Bottom left"
 msgstr "Levo spodaj"
 
-#: src/input/es_out.c:3196
+#: src/input/es_out.c:3201
 msgid "Bottom right"
 msgstr "Desno spodaj"
 
-#: src/input/es_out.c:3197
+#: src/input/es_out.c:3202
 msgid "Left bottom"
 msgstr "Levo spodaj"
 
-#: src/input/es_out.c:3197
+#: src/input/es_out.c:3202
 msgid "Right top"
 msgstr "Desno zgoraj"
 
-#: src/input/es_out.c:3199
+#: src/input/es_out.c:3204
 msgid "Orientation"
 msgstr "Usmerjenost"
 
-#: src/input/es_out.c:3205 src/input/es_out.c:3223 src/input/es_out.c:3241
-#: src/input/es_out.c:3255 src/playlist/tree.c:67
+#: src/input/es_out.c:3210 src/input/es_out.c:3228 src/input/es_out.c:3246
+#: src/input/es_out.c:3260 src/playlist/tree.c:67
 #: modules/access/dtv/access.c:75 modules/access/v4l2/v4l2.c:242
 msgid "Undefined"
 msgstr "Nedoločeno"
 
-#: src/input/es_out.c:3207
+#: src/input/es_out.c:3212
 msgid "ITU-R BT.601 (525 lines, 60 Hz)"
 msgstr "ITU-R BT.601 (525 vrstic, 60 Hz)"
 
-#: src/input/es_out.c:3209
+#: src/input/es_out.c:3214
 msgid "ITU-R BT.601 (625 lines, 50 Hz)"
 msgstr "ITU-R BT.601 (625 vrstic, 50 Hz)"
 
-#: src/input/es_out.c:3217
+#: src/input/es_out.c:3222
 msgid "Color primaries"
 msgstr "Osnovne barve"
 
-#: src/input/es_out.c:3224 src/libvlc-module.c:362
+#: src/input/es_out.c:3229 src/libvlc-module.c:362
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Linear"
 msgstr "Linearno"
 
-#: src/input/es_out.c:3231
+#: src/input/es_out.c:3236
 msgid "Hybrid Log-Gamma"
 msgstr "Hibridni Log-Gamma"
 
-#: src/input/es_out.c:3235
+#: src/input/es_out.c:3240
 msgid "Color transfer function"
 msgstr "Funkcija prenosa barve"
 
-#: src/input/es_out.c:3248
+#: src/input/es_out.c:3253
 msgid "Color space"
 msgstr "Barvni prostor"
 
-#: src/input/es_out.c:3248
+#: src/input/es_out.c:3253
 #, c-format
 msgid "%s Range"
 msgstr "%s Obseg"
 
-#: src/input/es_out.c:3250
+#: src/input/es_out.c:3255
 msgid "Full"
 msgstr "Polno"
 
-#: src/input/es_out.c:3257 src/libvlc-module.c:295 src/libvlc-module.c:368
+#: src/input/es_out.c:3262 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: modules/audio_filter/channel_mixer/mono.c:91
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -1195,91 +1196,91 @@ msgstr "Polno"
 msgid "Center"
 msgstr "Sredinsko"
 
-#: src/input/es_out.c:3258
+#: src/input/es_out.c:3263
 msgid "Top Left"
 msgstr "Levo zgoraj"
 
-#: src/input/es_out.c:3259
+#: src/input/es_out.c:3264
 msgid "Top Center"
 msgstr "Na sredi zgoraj"
 
-#: src/input/es_out.c:3260
+#: src/input/es_out.c:3265
 msgid "Bottom Left"
 msgstr "Levo spodaj"
 
-#: src/input/es_out.c:3261
+#: src/input/es_out.c:3266
 msgid "Bottom Center"
 msgstr "Na sredi spodaj"
 
-#: src/input/es_out.c:3265
+#: src/input/es_out.c:3270
 msgid "Chroma location"
 msgstr ""
 
-#: src/input/es_out.c:3274
+#: src/input/es_out.c:3279
 msgid "Rectangular"
 msgstr "Pravokotno"
 
-#: src/input/es_out.c:3277
+#: src/input/es_out.c:3282
 msgid "Equirectangular"
 msgstr "Sferično"
 
-#: src/input/es_out.c:3280
+#: src/input/es_out.c:3285
 msgid "Cubemap"
 msgstr "Cubemap"
 
-#: src/input/es_out.c:3286
+#: src/input/es_out.c:3291
 msgid "Projection"
 msgstr "Projekcija"
 
-#: src/input/es_out.c:3288
+#: src/input/es_out.c:3293
 msgctxt "ViewPoint"
 msgid "Yaw"
 msgstr ""
 
-#: src/input/es_out.c:3290
+#: src/input/es_out.c:3295
 msgctxt "ViewPoint"
 msgid "Pitch"
 msgstr ""
 
-#: src/input/es_out.c:3292
+#: src/input/es_out.c:3297
 msgctxt "ViewPoint"
 msgid "Roll"
 msgstr ""
 
-#: src/input/es_out.c:3295
+#: src/input/es_out.c:3300
 msgctxt "ViewPoint"
 msgid "Field of view"
 msgstr "Polje pogleda"
 
-#: src/input/es_out.c:3300
+#: src/input/es_out.c:3305
 msgid "Max. luminance"
 msgstr "Največja osvetljenost"
 
-#: src/input/es_out.c:3305
+#: src/input/es_out.c:3310
 msgid "Min. luminance"
 msgstr "Najmanjša osvetljenost"
 
-#: src/input/es_out.c:3313
+#: src/input/es_out.c:3318
 msgid "Primary R"
 msgstr "Osnovna R"
 
-#: src/input/es_out.c:3320
+#: src/input/es_out.c:3325
 msgid "Primary G"
 msgstr "Osnovna G"
 
-#: src/input/es_out.c:3327
+#: src/input/es_out.c:3332
 msgid "Primary B"
 msgstr "Osnovna B"
 
-#: src/input/es_out.c:3334
+#: src/input/es_out.c:3339
 msgid "White point"
 msgstr "Bela točka"
 
-#: src/input/es_out.c:3349 modules/access/imem.c:64
+#: src/input/es_out.c:3354 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "Podnapisi"
 
-#: src/input/input.c:1813 modules/control/hotkeys.c:1511
+#: src/input/input.c:1813 modules/control/hotkeys.c:1510
 #, c-format
 msgid "Volume %ld%%"
 msgstr "Glasnost %ld%%"
@@ -1652,7 +1653,7 @@ msgstr "Vloga predvajalnika"
 msgid "Media (player) role for operating system policy."
 msgstr "Vloga predstavnega predvajalnika za operacijski sistem."
 
-#: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:268
+#: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:267
 #: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:410
 msgid "Enable audio"
 msgstr "Omogoči zvok"
@@ -1760,7 +1761,7 @@ msgid ""
 "support."
 msgstr "Možnost je v uporabi, kadar odvod zvoka ne podpira S/PDIF."
 
-#: src/libvlc-module.c:178 modules/gui/macosx/VLCSimplePrefsController.m:266
+#: src/libvlc-module.c:178
 msgid "Force detection of Dolby Surround"
 msgstr "Vsili zaznavanje sistema Dolby Surround"
 
@@ -2564,7 +2565,7 @@ msgstr ""
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
-#: modules/gui/macosx/VLCSimplePrefsController.m:656
+#: modules/gui/macosx/VLCSimplePrefsController.m:655
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
 #: modules/gui/macosx/prefs_widgets.m:1217
@@ -4113,7 +4114,7 @@ msgstr "Izbor hitre tipke za skok na predhodni predmet na seznamu predvajanja."
 #: modules/gui/macosx/VLCMainMenu.m:498 modules/gui/macosx/VLCMainMenu.m:505
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:61
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:545 modules/gui/qt/ui/streampanel.h:180
+#: modules/gui/qt/dialogs/vlm.cpp:544 modules/gui/qt/ui/streampanel.h:180
 msgid "Stop"
 msgstr "Zaustavi"
 
@@ -5216,6 +5217,7 @@ msgstr "Predhodna stran"
 
 #: src/misc/actions.c:107 modules/control/oldrc.c:72
 #: modules/gui/macosx/VLCControlsBarCommon.m:389
+#: modules/gui/macosx/VLCFSPanelController.m:238
 #: modules/gui/macosx/VLCMainMenu.m:1346 modules/gui/macosx/VLCMainMenu.m:1347
 #: modules/gui/macosx/VLCMainMenu.m:1348
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
@@ -5327,10 +5329,10 @@ msgstr "Odpiranje »%s« za zapisovanje je spodletelo"
 #: modules/gui/macosx/VLCMainWindow.m:211
 #: modules/gui/macosx/VLCOpenWindowController.m:134
 #: modules/gui/macosx/VLCOpenWindowController.m:192
-#: modules/gui/macosx/VLCSimplePrefsController.m:281
+#: modules/gui/macosx/VLCSimplePrefsController.m:280
 #: modules/gui/macosx/VLCSimplePrefsController.m:307
 #: modules/gui/macosx/VLCSimplePrefsController.m:378
-#: modules/gui/macosx/VLCSimplePrefsController.m:820
+#: modules/gui/macosx/VLCSimplePrefsController.m:821
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:50
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:791
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
@@ -7468,7 +7470,7 @@ msgstr "Na seznamu map prikaži tudi naprave in dovode "
 #: modules/access/smb_common.h:21 modules/access/vnc.c:46
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
-#: modules/gui/macosx/VLCSimplePrefsController.m:273
+#: modules/gui/macosx/VLCSimplePrefsController.m:272
 #: modules/gui/qt/dialogs/external.cpp:203 modules/misc/audioscrobbler.c:114
 #: modules/stream_out/rtp.c:173
 msgid "Username"
@@ -7488,7 +7490,7 @@ msgstr ""
 #: modules/access/smb_common.h:24 modules/access/vnc.c:47
 #: modules/access_output/http.c:55
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
-#: modules/gui/macosx/VLCSimplePrefsController.m:272
+#: modules/gui/macosx/VLCSimplePrefsController.m:271
 #: modules/gui/macosx/VLCSimplePrefsController.m:334
 #: modules/gui/qt/dialogs/external.cpp:208 modules/lua/vlc.c:54
 #: modules/lua/vlc.c:70 modules/misc/audioscrobbler.c:116
@@ -8375,8 +8377,8 @@ msgstr "Zaslonski dovod"
 #: modules/gui/macosx/VLCOpenWindowController.m:207
 #: modules/gui/macosx/VLCOpenWindowController.m:209
 #: modules/gui/macosx/VLCOpenWindowController.m:480
-#: modules/gui/macosx/VLCOpenWindowController.m:1096
-#: modules/gui/macosx/VLCSimplePrefsController.m:661
+#: modules/gui/macosx/VLCOpenWindowController.m:1098
+#: modules/gui/macosx/VLCSimplePrefsController.m:660
 msgid "Screen"
 msgstr "Prikaz na zaslonu"
 
@@ -8535,23 +8537,23 @@ msgstr ""
 "Vpisati je treba uporabniško ime (ime domene v zapisu DOMENA;uporabniško "
 "ime) in geslo."
 
-#: modules/access/srt.c:288 modules/access_output/srt.c:436
+#: modules/access/srt.c:386 modules/access_output/srt.c:436
 msgid "SRT"
 msgstr "SRT"
 
-#: modules/access/srt.c:289
+#: modules/access/srt.c:387
 msgid "SRT input"
 msgstr "Dovod SRT"
 
-#: modules/access/srt.c:294 modules/access_output/srt.c:442
+#: modules/access/srt.c:392 modules/access_output/srt.c:442
 msgid "SRT chunk size (bytes)"
 msgstr "Velikost dela SRT (v bajtih)"
 
-#: modules/access/srt.c:296 modules/access_output/srt.c:444
+#: modules/access/srt.c:394 modules/access_output/srt.c:444
 msgid "Return poll wait after timeout milliseconds (-1 = infinite)"
 msgstr ""
 
-#: modules/access/srt.c:297 modules/access_output/srt.c:445
+#: modules/access/srt.c:395 modules/access_output/srt.c:445
 msgid "SRT latency (ms)"
 msgstr "Pritajenost SRT (v milisekundah)"
 
@@ -9507,28 +9509,24 @@ msgid "Crypto key length in bytes"
 msgstr ""
 
 #: modules/access_output/srt.c:57
-#, fuzzy
 msgid "16 bytes"
-msgstr "16-bitno"
+msgstr ""
 
 #: modules/access_output/srt.c:57
-#, fuzzy
 msgid "24 bytes"
-msgstr "24-bitno"
+msgstr ""
 
 #: modules/access_output/srt.c:57
-#, fuzzy
 msgid "32 bytes"
-msgstr "32-bitno"
+msgstr ""
 
 #: modules/access_output/srt.c:437
 msgid "SRT stream output"
 msgstr "Odvod pretoka SRT"
 
 #: modules/access_output/srt.c:446
-#, fuzzy
 msgid "Password for stream encryption"
-msgstr "Geslo ciljne naprave."
+msgstr ""
 
 #: modules/access_output/udp.c:62 modules/stream_out/rtp.c:135
 msgid "Caching value (ms)"
@@ -11036,6 +11034,7 @@ msgstr ""
 "močno poveča hitrost delovanja."
 
 #: modules/codec/avcodec/avcodec.h:113
+#: modules/gui/macosx/VLCSimplePrefsController.m:297
 msgid "Hardware decoding"
 msgstr "Strojno odkodiranje"
 
@@ -11314,7 +11313,7 @@ msgstr "Video pospeševanje Direct3D11"
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr "DirectX video pospeševanje (DXVA) 2.0"
 
-#: modules/codec/avcodec/encoder.c:373
+#: modules/codec/avcodec/encoder.c:374
 #, c-format
 msgid ""
 "It seems your Libav/FFmpeg (libavcodec) installation lacks the following "
@@ -11332,23 +11331,23 @@ msgstr ""
 "To ni napaka predvajalnika VLC.\n"
 "Zaradi napake se obrnite na distributerja vašega operacijskega sistema.\n"
 
-#: modules/codec/avcodec/encoder.c:883
+#: modules/codec/avcodec/encoder.c:890
 msgid "unknown"
 msgstr "neznano"
 
-#: modules/codec/avcodec/encoder.c:883
+#: modules/codec/avcodec/encoder.c:890
 msgid "video"
 msgstr "slika"
 
-#: modules/codec/avcodec/encoder.c:884
+#: modules/codec/avcodec/encoder.c:891
 msgid "audio"
 msgstr "zvok"
 
-#: modules/codec/avcodec/encoder.c:884
+#: modules/codec/avcodec/encoder.c:891
 msgid "subpicture"
 msgstr "nalepka"
 
-#: modules/codec/avcodec/encoder.c:897
+#: modules/codec/avcodec/encoder.c:904
 #, c-format
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr "Ni mogoče odpreti kodirnika %4.4s %s."
@@ -13297,11 +13296,11 @@ msgstr "Kodirnik zvoka Libtwolame"
 msgid "Ulead DV audio decoder"
 msgstr "Odkodirnik zvoka Ulead DV"
 
-#: modules/codec/videotoolbox.m:81
+#: modules/codec/videotoolbox.m:82
 msgid "Use Hardware decoders only"
 msgstr "Uporabi le strojne odkodirnike"
 
-#: modules/codec/videotoolbox.m:89
+#: modules/codec/videotoolbox.m:90
 msgid "VideoToolbox video decoder"
 msgstr "Odkodirnik slike VideoToolbox"
 
@@ -14262,7 +14261,7 @@ msgstr "Hitro"
 
 #: modules/codec/x264.c:435 modules/gui/macosx/VLCMainMenu.m:290
 #: modules/gui/macosx/VLCMainMenu.m:392
-#: modules/gui/macosx/VLCSimplePrefsController.m:696
+#: modules/gui/macosx/VLCSimplePrefsController.m:697
 #: modules/gui/qt/components/simple_preferences.cpp:687
 #: modules/misc/gnutls.c:779 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
@@ -14401,14 +14400,14 @@ msgstr "Nadzorni vmesnik vodila D-Bus"
 #: modules/gui/macosx/VLCMainWindow.m:668
 #: modules/gui/macosx/VLCMainWindow.m:1272
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1261
-#: modules/gui/qt/main_interface.cpp:1265
-#: modules/gui/qt/main_interface.cpp:1304
-#: modules/gui/qt/main_interface.cpp:1306
-#: modules/gui/qt/main_interface.cpp:1415
-#: modules/gui/qt/main_interface.cpp:1432
-#: modules/gui/qt/main_interface.cpp:1440
-#: modules/gui/qt/main_interface.cpp:1463 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1258
+#: modules/gui/qt/main_interface.cpp:1262
+#: modules/gui/qt/main_interface.cpp:1301
+#: modules/gui/qt/main_interface.cpp:1303
+#: modules/gui/qt/main_interface.cpp:1411
+#: modules/gui/qt/main_interface.cpp:1428
+#: modules/gui/qt/main_interface.cpp:1436
+#: modules/gui/qt/main_interface.cpp:1459 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -14551,72 +14550,72 @@ msgstr "Zamik zvoka %i ms"
 msgid "Audio track: %s"
 msgstr "Zvokovna sled: %s"
 
-#: modules/control/hotkeys.c:771 modules/control/hotkeys.c:798
-#: modules/control/hotkeys.c:816 modules/control/hotkeys.c:848
+#: modules/control/hotkeys.c:771 modules/control/hotkeys.c:797
+#: modules/control/hotkeys.c:811 modules/control/hotkeys.c:847
 #, c-format
 msgid "Subtitle track: %s"
 msgstr "Sled podnapisov: %s"
 
-#: modules/control/hotkeys.c:772 modules/control/hotkeys.c:817
-#: modules/control/hotkeys.c:867
+#: modules/control/hotkeys.c:772 modules/control/hotkeys.c:812
+#: modules/control/hotkeys.c:866
 msgid "N/A"
 msgstr "Ni na voljo"
 
-#: modules/control/hotkeys.c:866 modules/control/hotkeys.c:898
+#: modules/control/hotkeys.c:865 modules/control/hotkeys.c:897
 #, c-format
 msgid "Program Service ID: %s"
 msgstr "ID programske storitve: %s"
 
-#: modules/control/hotkeys.c:1041
+#: modules/control/hotkeys.c:1040
 #, c-format
 msgid "Aspect ratio: %s"
 msgstr "Razmerje velikosti: %s"
 
-#: modules/control/hotkeys.c:1071
+#: modules/control/hotkeys.c:1070
 #, c-format
 msgid "Crop: %s"
 msgstr "Obrezovanje: %s"
 
-#: modules/control/hotkeys.c:1145
+#: modules/control/hotkeys.c:1144
 msgid "Zooming reset"
 msgstr "Preklic približanja"
 
-#: modules/control/hotkeys.c:1152
+#: modules/control/hotkeys.c:1151
 msgid "Scaled to screen"
 msgstr "Prilagojeno zaslonu"
 
-#: modules/control/hotkeys.c:1154
+#: modules/control/hotkeys.c:1153
 msgid "Original Size"
 msgstr "Izvorna velikost"
 
-#: modules/control/hotkeys.c:1223
+#: modules/control/hotkeys.c:1222
 #, c-format
 msgid "Zoom mode: %s"
 msgstr "Način približanja: %s"
 
-#: modules/control/hotkeys.c:1238 modules/control/hotkeys.c:1295
+#: modules/control/hotkeys.c:1237 modules/control/hotkeys.c:1294
 msgid "Deinterlace off"
 msgstr "Onemogočeno razpletanje"
 
-#: modules/control/hotkeys.c:1257 modules/control/hotkeys.c:1290
+#: modules/control/hotkeys.c:1256 modules/control/hotkeys.c:1289
 msgid "Deinterlace on"
 msgstr "Omogočeno razpletanje"
 
-#: modules/control/hotkeys.c:1320
+#: modules/control/hotkeys.c:1319
 msgid "Subtitle position: no active subtitle"
 msgstr "Položaj podnapisov: ni dejavnih podnapisov"
 
-#: modules/control/hotkeys.c:1332
+#: modules/control/hotkeys.c:1331
 #, c-format
 msgid "Subtitle position %d px"
 msgstr "Položaj podnapisov %d slikovnih točk"
 
-#: modules/control/hotkeys.c:1355
+#: modules/control/hotkeys.c:1354
 #, c-format
 msgid "Subtitle text scale %d%%"
 msgstr "Merilo velikosti podnapisov %d%%"
 
-#: modules/control/hotkeys.c:1516
+#: modules/control/hotkeys.c:1515
 #, c-format
 msgid "Speed: %.2fx"
 msgstr "Hitrost: %.2fx"
@@ -14828,16 +14827,18 @@ msgstr "Vmesnik za oddaljene povezave"
 
 #: modules/control/oldrc.c:369
 msgid "Remote control interface initialized. Type `help' for help."
-msgstr "Zagnan vmesnik oddaljenega nadzora. Vpišite 'help' za pomoč."
+msgstr ""
+"Vmesnik za oddaljeno predvajanje je zagnan. Vpišite »help« za več "
+"podrobnosti."
 
 #: modules/control/oldrc.c:768
 #, c-format
 msgid "Unknown command `%s'. Type `help' for help."
-msgstr "Neznan ukaz `%s'. Vtipkajte `help' za pomoč."
+msgstr "Neznan ukaz »%s«. Vpišite »help« za pomoč."
 
 #: modules/control/oldrc.c:786
 msgid "+----[ Remote control commands ]"
-msgstr "+----[Ukazi oddaljenega nadzora]"
+msgstr "+----[ Ukazi oddaljenega nadzora ]"
 
 #: modules/control/oldrc.c:788
 msgid "| add XYZ  . . . . . . . . . . . . add XYZ to playlist"
@@ -14850,7 +14851,7 @@ msgstr ""
 
 #: modules/control/oldrc.c:790
 msgid "| playlist . . . . .  show items currently in playlist"
-msgstr "| playlist . . . . .  pokaži predmete trenutno na seznamu predvajanja"
+msgstr "| playlist . . . . .  pokaži predmete trenutnega seznama predvajanja"
 
 #: modules/control/oldrc.c:791
 msgid "| play . . . . . . . . . . . . . . . . . . play stream"
@@ -14863,12 +14864,11 @@ msgstr "| stop . . . . . . . . . . . . . . . . . . zaustavi pretok"
 #: modules/control/oldrc.c:793
 msgid "| next . . . . . . . . . . . . . .  next playlist item"
 msgstr ""
-"| next . . . . . . . . . . . . . . naslednji predmet na seznamu predvajanja"
+"| next . . . . . . . . . . . . . . predvajaj naslednji predmet na seznamu"
 
 #: modules/control/oldrc.c:794
 msgid "| prev . . . . . . . . . . . .  previous playlist item"
-msgstr ""
-"| prev . . . . . . . . . . . . predhodni predmet na seznamu predvajanja"
+msgstr "| prev . . . . . . . . . . . . predvajaj predhodni predmet na seznamu"
 
 #: modules/control/oldrc.c:795
 msgid "| goto . . . . . . . . . . . . . .  goto item at index"
@@ -14876,15 +14876,16 @@ msgstr "| goto . . . . . . . . . . . . . . skoči na predmet kazala"
 
 #: modules/control/oldrc.c:796
 msgid "| repeat [on|off] . . . .  toggle playlist item repeat"
-msgstr "| repeat [on|off] . . . . preklop ponavljanja seznama predvajanja"
+msgstr "| repeat [on|off] . . . . preklopi ponavljanje predmetov na seznamu"
 
 #: modules/control/oldrc.c:797
 msgid "| loop [on|off] . . . . . . . . . toggle playlist loop"
-msgstr "| loop [on|off] . . . . . . preklop zanke predvajanja"
+msgstr "| loop [on|off] . . . . . . preklopi ponavljanje predvajanja seznama"
 
 #: modules/control/oldrc.c:798
 msgid "| random [on|off] . . . . . . .  toggle random jumping"
-msgstr "| random [on|off] . . . . . . . preklop naključnega preskoka"
+msgstr ""
+"| random [on|off] . . . . . . . preklopi naključno predvajanje na seznamu"
 
 #: modules/control/oldrc.c:799
 msgid "| clear . . . . . . . . . . . . . . clear the playlist"
@@ -14892,23 +14893,23 @@ msgstr "| clear . . . . . . . . . . . . . počisti seznam predvajanja"
 
 #: modules/control/oldrc.c:800
 msgid "| status . . . . . . . . . . . current playlist status"
-msgstr "| status . . . . . . . . . . . stanje trenutnega seznama predvajanja"
+msgstr "| status . . . . . . . . . . . izpiše stanje trenutnega seznama"
 
 #: modules/control/oldrc.c:801
 msgid "| title [X]  . . . . . . set/get title in current item"
-msgstr "| title [X] . . . . . . nastavi/izpiši naslov trenutnega predmeta"
+msgstr "| title [X] . . . . . . nastavi/izpiše naslov trenutnega predmeta"
 
 #: modules/control/oldrc.c:802
 msgid "| title_n  . . . . . . . .  next title in current item"
-msgstr "| title_n . . . . . . . . naslednji naslov trenutnega predmeta"
+msgstr "| title_n . . . . . . . . izpiše naslednji naslov trenutnega predmeta"
 
 #: modules/control/oldrc.c:803
 msgid "| title_p  . . . . . .  previous title in current item"
-msgstr "| title_p  . . . . . . predhodni naslov trenutnega predmeta"
+msgstr "| title_p  . . . . . . izpiše predhodni naslov trenutnega predmeta"
 
 #: modules/control/oldrc.c:804
 msgid "| chapter [X]  . . . . set/get chapter in current item"
-msgstr "| chapter [X] . . . . nastavi/izpiši poglavje trenutnega predmeta"
+msgstr "| chapter [X] . . . . nastavi/izpiše poglavje trenutnega predmeta"
 
 #: modules/control/oldrc.c:805
 msgid "| chapter_n  . . . . . .  next chapter in current item"
@@ -15041,33 +15042,33 @@ msgstr "| logout . . . . . . . odjava (če je vzpostavljena povezava)"
 
 #: modules/control/oldrc.c:840
 msgid "| quit . . . . . . . . . . . . . . . . . . .  quit vlc"
-msgstr "| quit . . . . . . . . . . . . . . . . . . . končaj VLC"
+msgstr "| quit . . . . . . . . . . . . . . . . . . . konča VLC"
 
 #: modules/control/oldrc.c:842
 msgid "+----[ end of help ]"
-msgstr "+----[ konec pomoči]"
+msgstr "+----[ konec pomoči ]"
 
 #: modules/control/oldrc.c:969
 msgid "Press pause to continue."
-msgstr "Pritisnite tipko premor za nadaljevanje."
+msgstr "Pritisnite tipko premora za nadaljevanje."
 
 #: modules/control/oldrc.c:1190 modules/control/oldrc.c:1439
 #: modules/control/oldrc.c:1483
 msgid "Type 'pause' to continue."
-msgstr "Vpišite ukaz 'pause' za nadaljevanje."
+msgstr "Vpišite ukaz »pause« za nadaljevanje."
 
 #: modules/control/oldrc.c:1279
 msgid "Error: `goto' needs an argument greater than zero."
-msgstr "Napaka: `goto' zahteva argument večji od nič."
+msgstr "Napaka: ukaz »goto« zahteva argument večji od nič."
 
 #: modules/control/oldrc.c:1289
 #, c-format
 msgid "Playlist has only %u element"
 msgid_plural "Playlist has only %u elements"
-msgstr[0] "Seznam predvajanja vsebuje le %u element"
-msgstr[1] "Seznam predvajanja vsebuje le %u elementa"
-msgstr[2] "Seznam predvajanja vsebuje le %u elemente"
-msgstr[3] "Seznam predvajanja vsebuje le %u elementov"
+msgstr[0] "Seznam predvajanja vsebuje le %u predmet"
+msgstr[1] "Seznam predvajanja vsebuje le %u predmeta"
+msgstr[2] "Seznam predvajanja vsebuje le %u predmete"
+msgstr[3] "Seznam predvajanja vsebuje le %u predmetov"
 
 #: modules/control/oldrc.c:1735 modules/gui/ncurses.c:808
 msgid "+-[Incoming]"
@@ -15223,7 +15224,7 @@ msgstr "Ni mogoče odviti pretoka ASF"
 
 #: modules/demux/asf/asf.c:268
 msgid "VLC failed to load the ASF header."
-msgstr "Predvajalnik VLC ni uspel naložiti ASF glave."
+msgstr "Nalaganje glave ASF je spodletelo."
 
 #: modules/demux/au.c:51
 msgid "AU demuxer"
@@ -15235,7 +15236,7 @@ msgstr "Odvijalnik Avformat"
 
 #: modules/demux/avformat/avformat.c:42
 msgid "Avformat"
-msgstr "AV zapis"
+msgstr "Avformat"
 
 #: modules/demux/avformat/avformat.c:45
 msgid "Demuxer"
@@ -15310,8 +15311,8 @@ msgid ""
 "This step might take a long time on a large file.\n"
 "What do you want to do?"
 msgstr ""
-"Ker je kazalo te datoteke okvarjeno ali manjka, iskanje po posnetku ne bo "
-"delovalo pravilno.\n"
+"Ker je kazalo te datoteke okvarjeno, ali pa manjka, iskanje po posnetku ne "
+"bo delovalo pravilno.\n"
 "Predvajalnik lahko težavo reši tako, da postavi začasno kazalo v pomnilniku "
 "in s tem omogoči iskanje.\n"
 "To opravilo je lahko pri velikih datotekah dolgotrajno.\n"
@@ -15323,7 +15324,7 @@ msgstr "Ne predvajaj"
 
 #: modules/demux/avi/avi.c:841
 msgid "Build index then play"
-msgstr "Sestavi kazalo in predvajaj"
+msgstr "Postavi kazalo in predvajaj"
 
 #: modules/demux/avi/avi.c:842
 msgid "Play as is"
@@ -15339,7 +15340,7 @@ msgstr "Okvarjeno ali manjkajoče kazalo AVI"
 
 #: modules/demux/avi/avi.c:2720
 msgid "Fixing AVI Index..."
-msgstr "Popravljanje AVI kazala ..."
+msgstr "Poteka popravljanje kazala AVI ..."
 
 #: modules/demux/caf.c:53
 msgid "CAF demuxer"
@@ -15351,15 +15352,15 @@ msgstr "Odvijalnik CDG"
 
 #: modules/demux/demuxdump.c:32
 msgid "Dump module"
-msgstr "Odloži modul"
+msgstr "Modul za odlaganje"
 
 #: modules/demux/demuxdump.c:33
 msgid "Dump filename"
-msgstr "Datoteka za odlaganje"
+msgstr "Ime datoteke za odlaganje"
 
 #: modules/demux/demuxdump.c:35
 msgid "Name of the file to which the raw stream will be dumped."
-msgstr "Ime datoteke v katero bo odložen surovi pretok."
+msgstr "Ime datoteke, v katero bo odložen surovi pretok."
 
 #: modules/demux/demuxdump.c:36
 msgid "Append to existing file"
@@ -15367,11 +15368,11 @@ msgstr "Pripni k obstoječi datoteki"
 
 #: modules/demux/demuxdump.c:38
 msgid "If the file already exists, it will not be overwritten."
-msgstr "Če datoteka že obstaja, ne bo prepisana."
+msgstr "Če datoteka s tem imenom v mapi že obstaja, ne bo prepisana."
 
 #: modules/demux/demuxdump.c:47
 msgid "File dumper"
-msgstr "Odlaganje datotek"
+msgstr "Odlagalnik datotek"
 
 #: modules/demux/dirac.c:41
 msgid "Value to adjust dts by"
@@ -15387,7 +15388,7 @@ msgstr "Uvoz mape"
 
 #: modules/demux/filter/noseek.c:79
 msgid "Seek prevention demux filter"
-msgstr ""
+msgstr "Filter preprečevanja iskanja med odvijanjem"
 
 #: modules/demux/flac.c:51
 msgid "FLAC demuxer"
@@ -15407,7 +15408,7 @@ msgstr "Odkodiraj v fazi odvijanja"
 
 #: modules/demux/image.c:56
 msgid "Forced chroma"
-msgstr "Vsiljena barva"
+msgstr "Vsili barvno shemo"
 
 #: modules/demux/image.c:58
 msgid ""
@@ -15415,7 +15416,7 @@ msgid ""
 "specified chroma."
 msgstr ""
 "Če polje ni prazno in je možnost odkodiranja slike omogočena, bo slika "
-"pretvorjena v določeno barvno shemo."
+"pretvorjena po določeni barvni shemi."
 
 #: modules/demux/image.c:61
 msgid "Duration in seconds"
@@ -15426,8 +15427,8 @@ msgid ""
 "Duration in seconds before simulating an end of file. A negative value means "
 "an unlimited play time."
 msgstr ""
-"Trajanje v sekundah pred simulacijo konca datoteke. Negativna vrednost "
-"pomeni neomejeni čas predvajanja."
+"Trajanje v sekundah preden se sproži navidezen konec datoteke. Negativna "
+"vrednost pomeni neomejeni čas predvajanja."
 
 #: modules/demux/image.c:68
 msgid "Frame rate of the elementary stream produced."
@@ -15465,8 +15466,8 @@ msgid ""
 "This is the desired frame rate when playing MJPEG from a file. Use 0 (this "
 "is the default value) for a live stream (from a camera)."
 msgstr ""
-"Želena hitrost sličic ob predvajanju MJPEG datotek. Uporabite 0 (privzeto) "
-"za živi pretok (preko kamere)"
+"Nastavitev določa želeno hitrost sličic ob predvajanju datotek MJPEG. "
+"Vrednost 0 (privzeto) določa pretok v živo (prek kamere)."
 
 #: modules/demux/mjpeg.c:53
 msgid "M-JPEG camera demuxer"
@@ -15478,7 +15479,7 @@ msgstr "Odvijalnik pretoka Matroska"
 
 #: modules/demux/mkv/mkv.cpp:56
 msgid "Respect ordered chapters"
-msgstr "Spoštuj razvrščena poglavja"
+msgstr "Upoštevaj razvrščena poglavja"
 
 #: modules/demux/mkv/mkv.cpp:57
 msgid "Play chapters in the order specified in the segment."
@@ -15507,11 +15508,11 @@ msgstr ""
 
 #: modules/demux/mkv/mkv.cpp:68 modules/demux/mpeg/ts.c:109
 msgid "Seek based on percent not time"
-msgstr "Iskanje po odstotku namesto po času."
+msgstr "Išči po deležu posnetka in ne po času"
 
 #: modules/demux/mkv/mkv.cpp:69
 msgid "Seek based on percent not time."
-msgstr "Iskanje po odstotku namesto po času."
+msgstr "Možnost omogoča iskanje po odstotku posnetka namesto po času."
 
 #: modules/demux/mkv/mkv.cpp:72
 msgid "Dummy Elements"
@@ -15536,7 +15537,7 @@ msgstr ""
 
 #: modules/demux/mod.c:55
 msgid "Enable noise reduction algorithm."
-msgstr "Omogoči algoritem zmanjšanja hrupa."
+msgstr "Omogoči algoritem zmanjševanja hrupa."
 
 #: modules/demux/mod.c:56
 msgid "Enable reverberation"
@@ -15552,27 +15553,28 @@ msgstr "Zamik odmeva v milisekundah. Običajne vrednosti so od 40 do 200 ms."
 
 #: modules/demux/mod.c:61
 msgid "Enable megabass mode"
-msgstr "Omogoči megabass način"
+msgstr "Omogoči način megabass"
 
 #: modules/demux/mod.c:62
 msgid "Megabass mode level (from 0 to 100, default value is 0)."
-msgstr "Raven megabass načina (od 0 do 100, privzeta vrednost je 0)."
+msgstr "Raven načina megabass (od 0 do 100, privzeta vrednost je 0)."
 
 #: modules/demux/mod.c:64
 msgid ""
 "Megabass mode cutoff frequency, in Hz. This is the maximum frequency for "
 "which the megabass effect applies. Valid values are from 10 to 100 Hz."
 msgstr ""
-"Mejna prekinitvena frekvenca Megabass načina v Hz. To je največja vrednost, "
-"za katero še velja megabass učinek. veljavne vrednosti so od 10 do 100 Hz."
+"Mejna prekinitvena frekvenca v načinu Megabass v Hz. To je največja "
+"vrednost, pri kateri se še upošteva učinek megabass. Veljavne vrednosti so "
+"od 10 do 100 Hz."
 
 #: modules/demux/mod.c:67
 msgid "Surround effect level (from 0 to 100, default value is 0)."
-msgstr "Raven učinka obdajanja (od 0 do 100, privzeta vrednost je 0)."
+msgstr "Raven učinka Surround (od 0 do 100, privzeta vrednost je 0)."
 
 #: modules/demux/mod.c:69
 msgid "Surround delay, in ms. Usual values are from 5 to 40 ms."
-msgstr "Zamik obdajanja zvoka v ms. Običajna vrednost je med 5 in 40 ms."
+msgstr "Zamik učinka zvoka Surround v ms. Običajna vrednost je med 5 in 40 ms."
 
 #: modules/demux/mod.c:74
 msgid "MOD demuxer (libmodplug)"
@@ -15584,11 +15586,11 @@ msgstr "Raven odmeva"
 
 #: modules/demux/mod.c:87
 msgid "Reverberation delay"
-msgstr "Zamik odmevanja"
+msgstr "Zamik odmeva"
 
 #: modules/demux/mod.c:89
 msgid "Mega bass"
-msgstr "Mega bas"
+msgstr "Megabass"
 
 #: modules/demux/mod.c:92
 msgid "Mega bass level"
@@ -15596,19 +15598,19 @@ msgstr "Raven megabass"
 
 #: modules/demux/mod.c:94
 msgid "Mega bass cutoff"
-msgstr "Mega bass prekinitev"
+msgstr "Prekinitev učinka Megabass"
 
 #: modules/demux/mod.c:96
 msgid "Surround"
-msgstr "Surround sistem zvoka"
+msgstr "Sistem Surround"
 
 #: modules/demux/mod.c:99
 msgid "Surround level"
-msgstr "Raven sistema obdajanja"
+msgstr "Raven sistema Surround"
 
 #: modules/demux/mod.c:101
 msgid "Surround delay (ms)"
-msgstr "Zamik zvoka obdajanja (ms)"
+msgstr "Zamik zvoka Surround (ms)"
 
 #: modules/demux/mp4/meta.c:68
 msgid "Writer"
@@ -15642,7 +15644,7 @@ msgstr "Izvirni zapis"
 
 #: modules/demux/mp4/meta.c:75
 msgid "Display Source As"
-msgstr "Prikaži kot izvor"
+msgstr "Prikaži vir kot"
 
 #: modules/demux/mp4/meta.c:76
 msgid "Host Computer"
@@ -15683,7 +15685,7 @@ msgstr "Model"
 
 #: modules/demux/mp4/meta.c:85
 msgid "Product"
-msgstr ""
+msgstr "Izdelek"
 
 #: modules/demux/mp4/meta.c:86
 msgid "Grouping"
@@ -15799,7 +15801,7 @@ msgstr ""
 
 #: modules/demux/mpeg/es.c:60
 msgid "MPEG-I/II/4 / A52 / DTS / MLP audio"
-msgstr "MPEG-I/II/4 / A52 / DTS / MLP zvok"
+msgstr "Zvok MPEG-I/II/4 / A52 / DTS / MLP"
 
 #: modules/demux/mpeg/es.c:61
 msgid "Audio ES"
@@ -15807,7 +15809,7 @@ msgstr "Audio ES"
 
 #: modules/demux/mpeg/es.c:73
 msgid "MPEG-4 video"
-msgstr "MPEG-4 Video"
+msgstr "Video MPEG-4"
 
 #: modules/demux/mpeg/h26x.c:47
 msgid "Desired frame rate for the stream."
@@ -15835,9 +15837,9 @@ msgid ""
 "duration. However sometimes this might not be usable. Disable this option to "
 "calculate from the bitrate instead."
 msgstr ""
-"Običajno se uporablja časovni žig pri izračunu trajanja in lege v MPEG "
-"datotekah. Včasih to ni uporabno, zato z onemogočanjem te možnosti določite "
-"izračun preko bitne hitrosti."
+"Običajno sta trajanje in položaj predvajanja v datotekah MPEG določena s "
+"časovnim žigom, včasih pa to ni uporabno. Onemogočena možnost določi "
+"izračunavanje prek bitne hitrosti."
 
 #: modules/demux/mpeg/ps.c:62 modules/demux/mpeg/ps.c:75
 msgid "MPEG-PS demuxer"
@@ -16037,7 +16039,7 @@ msgid ""
 "Use playlist options usually used to prevent ads skipping to detect ads and "
 "prevent adding them to the playlist."
 msgstr ""
-"Uporabi možnosti seznama predvajanja za zaznavo oglasov in preprečevanje "
+"Uporabi možnosti seznama predvajanja za zaznavanje oglasov in preprečevanje "
 "njihovega dodajanja na seznam predvajanja."
 
 #: modules/demux/playlist/playlist.c:67
@@ -16090,11 +16092,11 @@ msgstr "Odvijalnik Dummy IFO"
 
 #: modules/demux/playlist/playlist.c:124
 msgid "iTunes Music Library importer"
-msgstr "Uvoz zbirke iTunes"
+msgstr "Uvoznik glasbene zbirke iTunes"
 
 #: modules/demux/playlist/playlist.c:129
 msgid "WPL playlist import"
-msgstr "Uvoz seznama WPL"
+msgstr "Uvoznik seznama WPL"
 
 #: modules/demux/playlist/podcast.c:230 modules/demux/playlist/podcast.c:242
 #: modules/demux/playlist/podcast.c:304 modules/demux/playlist/podcast.c:327
@@ -16115,7 +16117,7 @@ msgstr "Kategorija posnetka Podcast"
 
 #: modules/demux/playlist/podcast.c:235 modules/demux/playlist/podcast.c:311
 msgid "Podcast Keywords"
-msgstr "Ključne besede Podcast"
+msgstr "Ključne besede posnetka Podcast"
 
 #: modules/demux/playlist/podcast.c:236 modules/demux/playlist/podcast.c:312
 msgid "Podcast Subtitle"
@@ -16123,11 +16125,11 @@ msgstr "Podnapisi posnetka Podcast"
 
 #: modules/demux/playlist/podcast.c:242 modules/demux/playlist/podcast.c:313
 msgid "Podcast Summary"
-msgstr "Povzetek Podcast"
+msgstr "Povzetek posnetka Podcast"
 
 #: modules/demux/playlist/podcast.c:307
 msgid "Podcast Publication Date"
-msgstr "Datum objave Podcast"
+msgstr "Datum objave posnetka Podcast"
 
 #: modules/demux/playlist/podcast.c:308
 msgid "Podcast Author"
@@ -16186,7 +16188,8 @@ msgstr "Zvokovni kanali"
 #: modules/demux/rawaud.c:47
 msgid "Audio channels in input stream. Numeric value >0. Default is 2."
 msgstr ""
-"Zvokovni kanali vhodnega pretoka. Številčna vrednost >0. Privzeta je 2."
+"Zvokovni kanali vhodnega pretoka. Zahtevana je številčna vrednost >0. "
+"Privzeta je 2."
 
 #: modules/demux/rawaud.c:49
 msgid "FOURCC code of raw input format"
@@ -16430,15 +16433,15 @@ msgid ""
 msgstr "Predvajalnik VLC in Video LAN sta blagovni znamki združenja VideoLAN."
 
 #: modules/gui/macosx/VLCAboutWindowController.m:134
-#: modules/gui/qt/dialogs/help.cpp:94
+#, fuzzy
 msgid ""
 "<p>VLC media player is a free and open source media player, encoder, and "
-"streamer made by the volunteers of the <a href=\"http://www.videolan.org/"
+"streamer made by the volunteers of the <a href=\"https://www.videolan.org/"
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
 "DVDs, network streams, capture cards and other media formats!</p><p><a href="
-"\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"\"https://www.videolan.org/contribute/\"><span style=\" text-decoration: "
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>Predvajalnik VLC je brezplačen odprtokodni predvajalnik, kodirnik in "
@@ -16457,7 +16460,7 @@ msgstr ""
 #: modules/gui/qt/dialogs/plugins.cpp:381
 #: modules/gui/qt/managers/addons_manager.cpp:88
 msgid "Playlist parsers"
-msgstr "Razčlenjevalniki seznamov"
+msgstr "Razčlenjevalniki seznama"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:106
 #: modules/gui/macosx/VLCAddonsWindowController.m:357
@@ -16594,7 +16597,7 @@ msgstr "Filter"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:276
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:84
-#: modules/gui/macosx/VLCSimplePrefsController.m:267
+#: modules/gui/macosx/VLCSimplePrefsController.m:266
 #: modules/gui/qt/dialogs/extended.cpp:96
 msgid "Audio Effects"
 msgstr "Zvokovni učinki"
@@ -16692,7 +16695,7 @@ msgid "Add"
 msgstr "Dodaj"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:79
-#: modules/gui/macosx/VLCSimplePrefsController.m:283
+#: modules/gui/macosx/VLCSimplePrefsController.m:282
 #: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:300
 msgid "Clear"
 msgstr "Počisti"
@@ -16720,7 +16723,7 @@ msgstr "Čas"
 #: modules/gui/macosx/VLCCoreDialogProvider.m:236
 #: modules/gui/macosx/VLCOpenWindowController.m:363
 #: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:341
-#: modules/gui/macosx/VLCSimplePrefsController.m:282
+#: modules/gui/macosx/VLCSimplePrefsController.m:281
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1365
 #: modules/stream_out/chromecast/cast.cpp:1201
@@ -16809,7 +16812,7 @@ msgstr "Začni!"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:138
 #: modules/gui/macosx/VLCMainWindow.m:191
 msgid "Drop media here"
-msgstr "Tukaj spustite predstavno datoteko"
+msgstr "Na to mesto spustite predstavno datoteko"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:139
 #: modules/gui/macosx/VLCMainWindow.m:193
@@ -16830,14 +16833,14 @@ msgstr "Izbor cilja"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:143
 msgid "Choose an output location"
-msgstr "Izberite mesto izhoda"
+msgstr "Izberite mesto odvoda"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:145
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:197
 #: modules/gui/macosx/VLCOpenWindowController.m:147
 #: modules/gui/macosx/VLCOpenWindowController.m:350
 #: modules/gui/macosx/VLCOutput.m:67
-#: modules/gui/macosx/VLCSimplePrefsController.m:290
+#: modules/gui/macosx/VLCSimplePrefsController.m:289
 #: modules/gui/macosx/VLCSimplePrefsController.m:367
 #: modules/gui/macosx/prefs_widgets.m:1121
 #: modules/gui/qt/components/preferences_widgets.cpp:264
@@ -16886,7 +16889,7 @@ msgstr "Ovijanje"
 #: share/lua/http/dialogs/create_stream.html:160
 #: modules/gui/qt/ui/profiles.h:751
 msgid "Video codec"
-msgstr "Slikovni kodek"
+msgstr "Video kodek"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:157
 #: share/lua/http/dialogs/create_stream.html:178
@@ -16897,7 +16900,7 @@ msgstr "Zvokovni kodek"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:161
 #: modules/gui/qt/ui/profiles.h:727
 msgid "Keep original video track"
-msgstr "Ohrani izvorno slikovno sled"
+msgstr "Ohrani izvorno video sled"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:165
 #: modules/gui/qt/ui/profiles.h:749
@@ -17049,9 +17052,9 @@ msgid "A SDP export is requested, but no URL is provided."
 msgstr "Zahtevan je izvoz SDP, toda ni naveden URL."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:1042
-#: modules/gui/macosx/VLCSimplePrefsController.m:690
-#: modules/gui/macosx/VLCSimplePrefsController.m:718
-#: modules/gui/macosx/VLCSimplePrefsController.m:1251
+#: modules/gui/macosx/VLCSimplePrefsController.m:691
+#: modules/gui/macosx/VLCSimplePrefsController.m:719
+#: modules/gui/macosx/VLCSimplePrefsController.m:1252
 #: modules/gui/qt/components/simple_preferences.cpp:684
 msgid "Custom"
 msgstr "Po meri"
@@ -17085,11 +17088,9 @@ msgid "Go to the previous item"
 msgstr "Skoči na predhodni predmet"
 
 #: modules/gui/macosx/VLCFSPanelController.m:124
-msgid "Toggle Fullscreen mode"
-msgstr "Preklopi celozaslonski način"
-
 #: modules/gui/macosx/VLCFSPanelController.m:125
-msgid "Leave fullscreen mode"
+#, fuzzy
+msgid "Leave fullscreen"
 msgstr "Zapusti celozaslonski način"
 
 #: modules/gui/macosx/VLCFSPanelController.m:127
@@ -17105,6 +17106,13 @@ msgstr "Prilagodi glasnost"
 #: modules/gui/macosx/VLCFSPanelController.m:131
 msgid "Adjust the current playback position"
 msgstr "Prilagodi trenutno mesto predvajanja"
+
+#: modules/gui/macosx/VLCFSPanelController.m:305
+#: modules/gui/macosx/VLCMainWindowControlsBar.m:74
+#: modules/gui/macosx/VLCMainWindowControlsBar.m:466
+#, c-format
+msgid "Volume: %i %%"
+msgstr "Glasnost: %i %%"
 
 #: modules/gui/macosx/macosx.m:51
 msgid "Video device"
@@ -17593,9 +17601,8 @@ msgid "Jump to Time"
 msgstr "Skoči na čas"
 
 #: modules/gui/macosx/VLCMainMenu.m:405
-#, fuzzy
 msgid "Renderer"
-msgstr "&Izrisovalnik"
+msgstr ""
 
 #: modules/gui/macosx/VLCMainMenu.m:406
 msgid "No renderer"
@@ -17767,7 +17774,7 @@ msgid "XML Shareable Playlist Format (XSPF)"
 msgstr "XML seznama predvajanja (XSPF)"
 
 #: modules/gui/macosx/VLCMainMenu.m:1161
-#: modules/gui/qt/dialogs_provider.cpp:646
+#: modules/gui/qt/dialogs_provider.cpp:655
 msgid "HTML playlist"
 msgstr "HTML seznam predvajanja"
 
@@ -17869,7 +17876,7 @@ msgid "Show/Hide Playlist"
 msgstr "Skrij/Pokaži seznam predvajanja"
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:67
-#: modules/gui/qt/dialogs/vlm.cpp:549 share/lua/http/index.html:241
+#: modules/gui/qt/dialogs/vlm.cpp:548 share/lua/http/index.html:241
 msgid "Repeat"
 msgstr "Ponavljanje"
 
@@ -17883,12 +17890,6 @@ msgstr ""
 #: share/lua/http/index.html:239
 msgid "Shuffle"
 msgstr "Premešaj"
-
-#: modules/gui/macosx/VLCMainWindowControlsBar.m:74
-#: modules/gui/macosx/VLCMainWindowControlsBar.m:466
-#, c-format
-msgid "Volume: %i %%"
-msgstr "Glasnost: %i %%"
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:81
 msgid "Full Volume"
@@ -17908,10 +17909,10 @@ msgstr "Naslov virov predstavnih datotek (MRL)"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:133
 #: modules/gui/macosx/VLCOpenWindowController.m:193
-#: modules/gui/macosx/VLCOpenWindowController.m:573
-#: modules/gui/macosx/VLCOpenWindowController.m:659
-#: modules/gui/macosx/VLCOpenWindowController.m:891
-#: modules/gui/macosx/VLCOpenWindowController.m:1259
+#: modules/gui/macosx/VLCOpenWindowController.m:575
+#: modules/gui/macosx/VLCOpenWindowController.m:661
+#: modules/gui/macosx/VLCOpenWindowController.m:893
+#: modules/gui/macosx/VLCOpenWindowController.m:1261
 #: modules/gui/qt/components/controller.hpp:107
 msgid "Open"
 msgstr "Odpri"
@@ -17933,7 +17934,7 @@ msgid "Disc"
 msgstr "Disk"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:142
-#: modules/gui/macosx/VLCSimplePrefsController.m:297
+#: modules/gui/macosx/VLCSimplePrefsController.m:296
 #: modules/gui/qt/ui/sprefs_input.h:371
 msgid "Network"
 msgstr "Omrežje"
@@ -18043,20 +18044,20 @@ msgid "Protocol"
 msgstr "Protokol"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:199
-#: modules/gui/macosx/VLCOpenWindowController.m:1006
-#: modules/gui/macosx/VLCOpenWindowController.m:1055
+#: modules/gui/macosx/VLCOpenWindowController.m:1008
+#: modules/gui/macosx/VLCOpenWindowController.m:1057
 msgid "Unicast"
 msgstr "Pošiljanje posamezniku"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:200
-#: modules/gui/macosx/VLCOpenWindowController.m:1019
-#: modules/gui/macosx/VLCOpenWindowController.m:1068
+#: modules/gui/macosx/VLCOpenWindowController.m:1021
+#: modules/gui/macosx/VLCOpenWindowController.m:1070
 msgid "Multicast"
 msgstr "Skupinsko pošiljanje"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:206
 #: modules/gui/macosx/VLCOpenWindowController.m:498
-#: modules/gui/macosx/VLCOpenWindowController.m:1146
+#: modules/gui/macosx/VLCOpenWindowController.m:1148
 msgid "Input Devices"
 msgstr "Vhodne naprave"
 
@@ -18126,14 +18127,14 @@ msgstr "Lastnosti pisave"
 msgid "Subtitle File"
 msgstr "Datoteka s podnapisi"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:572
-#: modules/gui/macosx/VLCOpenWindowController.m:658
-#: modules/gui/macosx/VLCOpenWindowController.m:1258
+#: modules/gui/macosx/VLCOpenWindowController.m:574
+#: modules/gui/macosx/VLCOpenWindowController.m:660
+#: modules/gui/macosx/VLCOpenWindowController.m:1260
 #: modules/gui/qt/ui/open_file.h:143
 msgid "Open File"
 msgstr "Odpri datoteko"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:757
+#: modules/gui/macosx/VLCOpenWindowController.m:759
 #, c-format
 msgid "%i tracks"
 msgstr "%i sledi"
@@ -18271,7 +18272,7 @@ msgid "Continue playback?"
 msgstr "Pokaži okno za potrditev nadaljevanja predvajanja"
 
 #: modules/gui/macosx/VLCResumeDialogController.m:49
-#: modules/gui/macosx/VLCSimplePrefsController.m:821
+#: modules/gui/macosx/VLCSimplePrefsController.m:822
 #: modules/gui/qt/dialogs/firstrun.cpp:106
 msgid "Continue"
 msgstr "Nadaljuj"
@@ -18318,76 +18319,76 @@ msgstr "Nastavitve za podnapise in zaslonski prikaz"
 msgid "Input & Codec Settings"
 msgstr "Nastavitve dovoda in kodekov"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:269
+#: modules/gui/macosx/VLCSimplePrefsController.m:268
 msgid "General Audio"
 msgstr "Splošni zvok"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:270
+#: modules/gui/macosx/VLCSimplePrefsController.m:269
 msgid "Preferred Audio language"
 msgstr "Prednostni jezik zvoka"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:271
+#: modules/gui/macosx/VLCSimplePrefsController.m:270
 msgid "Enable Last.fm submissions"
 msgstr "Omogoči pošiljanje last.fm"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:274
+#: modules/gui/macosx/VLCSimplePrefsController.m:273
 msgid "Visualization"
 msgstr "Predočenje"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:275
+#: modules/gui/macosx/VLCSimplePrefsController.m:274
 msgid "Keep audio level between sessions"
 msgstr "Ohrani zvokovno raven med sejami"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:276
+#: modules/gui/macosx/VLCSimplePrefsController.m:275
 #: modules/gui/qt/ui/sprefs_audio.h:413
 msgid "Always reset audio start level to:"
 msgstr "Vedno ponastavi glasnost zvoka na:"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:279
-#: modules/gui/qt/dialogs/vlm.cpp:493
+#: modules/gui/macosx/VLCSimplePrefsController.m:278
+#: modules/gui/qt/dialogs/vlm.cpp:492
 msgid "Change"
 msgstr "Spremeni"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:280
+#: modules/gui/macosx/VLCSimplePrefsController.m:279
 msgid "Change Hotkey"
 msgstr "Spremeni hitro tipko"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:284
+#: modules/gui/macosx/VLCSimplePrefsController.m:283
 msgid "Select an action to change the associated hotkey:"
 msgstr "Izbor dejanja za spreminjanje hitre tipke:"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:285
+#: modules/gui/macosx/VLCSimplePrefsController.m:284
 #: modules/gui/qt/components/preferences_widgets.cpp:1150
 msgid "Action"
 msgstr "Dejanje"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:286
+#: modules/gui/macosx/VLCSimplePrefsController.m:285
 msgid "Shortcut"
 msgstr "Bližnjica"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:289
+#: modules/gui/macosx/VLCSimplePrefsController.m:288
 #: modules/gui/qt/ui/sprefs_input.h:367
 msgid "Record directory or filename"
 msgstr "Mapa snemanja ali ime datoteke"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:291
+#: modules/gui/macosx/VLCSimplePrefsController.m:290
 msgid "Directory or filename where the records will be stored"
 msgstr "Mapa ali ime datoteke v kateri bodo shranjeni posnetki"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:292
+#: modules/gui/macosx/VLCSimplePrefsController.m:291
 msgid "Repair AVI Files"
 msgstr "Popravi datoteke AVI"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:293
+#: modules/gui/macosx/VLCSimplePrefsController.m:292
 msgid "Default Caching Level"
 msgstr "Privzeta raven predpomnjenja"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:294
+#: modules/gui/macosx/VLCSimplePrefsController.m:293
 #: modules/gui/qt/ui/open.h:266
 msgid "Caching"
 msgstr "Predpomnjenje"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:295
+#: modules/gui/macosx/VLCSimplePrefsController.m:294
 msgid ""
 "Use the complete preferences to configure custom caching values for each "
 "access module."
@@ -18395,7 +18396,7 @@ msgstr ""
 "Uporabi vse možnosti za nastavitev predpomnjenja po meri za vsak modul "
 "dostopa posebej."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:296
+#: modules/gui/macosx/VLCSimplePrefsController.m:295
 msgid "Codecs / Muxers"
 msgstr "Kodeki / Zvijalniki"
 
@@ -18490,12 +18491,12 @@ msgstr "Prednostni jezik podnapisov"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:346
 msgid "Enable OSD"
-msgstr "Omogoči OSD"
+msgstr "Omogoči zaslonski prikaz OSD"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:348
 #: modules/text_renderer/freetype/freetype.c:104
 msgid "Force bold"
-msgstr "Vsili krepki slog"
+msgstr "Vsili krepko pisavo"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:349
 #: modules/text_renderer/freetype/freetype.c:110
@@ -18516,7 +18517,7 @@ msgstr "Zaslon"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:355
 msgid "Show video within the main window"
-msgstr "Prikaži sliko v glavnem oknu"
+msgstr "Pokaži sliko znotraj glavnega okna"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
 msgid "Fullscreen settings"
@@ -18558,7 +18559,7 @@ msgstr "Uporabi zaporedno oštevilčenje"
 #: modules/gui/macosx/VLCSimplePrefsController.m:379
 #: modules/gui/macosx/prefs.m:190
 msgid "Reset All"
-msgstr "Počisti vse"
+msgstr "Ponastavi vse"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:381
 #: modules/gui/macosx/prefs.m:187 modules/gui/qt/dialogs/preferences.cpp:56
@@ -18580,28 +18581,28 @@ msgstr "Zadnje preverjanje: %@"
 msgid "No check was performed yet."
 msgstr "Preverjanje še ni bilo izvedeno."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:692
+#: modules/gui/macosx/VLCSimplePrefsController.m:693
 msgid "Lowest Latency"
 msgstr "Najnižja zakasnitev"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:694
+#: modules/gui/macosx/VLCSimplePrefsController.m:695
 msgid "Low Latency"
 msgstr "Nizka zakasnitev"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:698
+#: modules/gui/macosx/VLCSimplePrefsController.m:699
 msgid "Higher Latency"
 msgstr "Višja zakasnitev"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:700
+#: modules/gui/macosx/VLCSimplePrefsController.m:701
 msgid "Highest Latency"
 msgstr "Najvišja zakasnitev"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:820
+#: modules/gui/macosx/VLCSimplePrefsController.m:821
 #: modules/gui/qt/dialogs/preferences.cpp:336
 msgid "Reset Preferences"
-msgstr "Počisti možnosti"
+msgstr "Ponastavi možnosti"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:823
+#: modules/gui/macosx/VLCSimplePrefsController.m:824
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -18613,56 +18614,56 @@ msgid ""
 "\n"
 "Are you sure you want to continue?"
 msgstr ""
-"To bo ponastavilo nastavitve predvajalnika VLC.\n"
+"S tem dejanjem bodo ponastavljene vse nastavitve predvajalnika VLC.\n"
 "\n"
-"Upoštevajte, da se bo med tem VLC ponovno zagnal, tako da bo vaš trenutni "
-"seznam predvajanja izpraznjen in vsa morebitna dejanja predvajanja, "
-"pretakanja ali prekodiranja bodo takoj ustavljena.\n"
+"Upoštevajte, da se bo pri tem predvajalnik VLC ponovno zagnal, vaš trenutni "
+"seznam predvajanja bo izpraznjen in vsa morebitna dejanja predvajanja, "
+"pretakanja ali prekodiranja takoj zaustavljena.\n"
 "\n"
-"To ne bo vplivalo na zbirko predstavnih datotek.\n"
+"Zbirka predstavnih datotek bo ostala nespremenjena.\n"
 "\n"
-"Ali res želite nadaljevati?"
+"Ali ste prepričani, da želite nadaljevati?"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1093
+#: modules/gui/macosx/VLCSimplePrefsController.m:1094
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr ""
-"Te nastavitve se ne da spremeniti, ker je omogočen izvirni celozaslonski "
-"način."
+"Nastavitve ni mogoče spremeniti, ker je omogočen zagon v izvirnem "
+"celozaslonskem načinu."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1162
+#: modules/gui/macosx/VLCSimplePrefsController.m:1163
 msgid "Choose the folder to save your video snapshots to."
 msgstr "Izberite mapo za shranjevanje zajetih posnetkov."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1164
-#: modules/gui/macosx/VLCSimplePrefsController.m:1263
+#: modules/gui/macosx/VLCSimplePrefsController.m:1165
+#: modules/gui/macosx/VLCSimplePrefsController.m:1264
 msgid "Choose"
 msgstr "Izbor"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1261
+#: modules/gui/macosx/VLCSimplePrefsController.m:1262
 msgid "Choose the directory or filename where the records will be stored."
-msgstr "Zaprite mapo ali ime datoteke, kjer bodo shranjeni zapisi."
+msgstr "Izberite mapo ali ime datoteke, kjer bodo shranjeni zapisi."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1378
+#: modules/gui/macosx/VLCSimplePrefsController.m:1379
 msgid ""
 "Press new keys for\n"
 "\"%@\""
 msgstr ""
-"Pritisnite novo tipko za\n"
+"Pritisnite nove tipke za\n"
 "»%@»."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1451
-msgid "Invalid combination"
-msgstr "Neveljaven izbor"
-
 #: modules/gui/macosx/VLCSimplePrefsController.m:1452
+msgid "Invalid combination"
+msgstr "Neveljaven izbor tipk"
+
+#: modules/gui/macosx/VLCSimplePrefsController.m:1453
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "Na žalost teh tipk ni mogoče uporabiti kot hitre tipke."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1462
-#: modules/gui/macosx/VLCSimplePrefsController.m:1466
+#: modules/gui/macosx/VLCSimplePrefsController.m:1463
+#: modules/gui/macosx/VLCSimplePrefsController.m:1467
 msgid "This combination is already taken by \"%@\"."
-msgstr "Ta par je že izbran za »%@«."
+msgstr "Izbor tipk že določa možnost »%@«."
 
 #: modules/gui/macosx/VLCStatusBarIcon.m:103
 msgid "Toggle Play/Pause"
@@ -18723,7 +18724,7 @@ msgstr "Pozitivno število pomeni, da je zvok prehiteva sliko"
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:54
 #: modules/gui/qt/components/extended_panels.cpp:1424
 msgid "Subtitles/Video"
-msgstr "Podnapisi / Posnetek"
+msgstr "Podnapisi / Video"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:55
 #: modules/gui/qt/components/extended_panels.cpp:1428
@@ -18732,7 +18733,7 @@ msgstr "Časovni zamik podnapisov:"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:57
 msgid "A positive value means that the subtitles are ahead of the video"
-msgstr "Pozitivno število pomeni, da podanpisi prehitevajo sliko"
+msgstr "Pozitivno število pomeni, da podnapisi prehitevajo sliko."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:58
 #: modules/gui/qt/components/extended_panels.cpp:1435
@@ -18754,8 +18755,8 @@ msgid ""
 "Extend subtitle duration by this value.\n"
 "Set 0 to disable."
 msgstr ""
-"Podaljšaj trajanje podnapisov za to vrednost.\n"
-"Nastavite 0 za onemogočanje."
+"Možnost omogoča podaljšanje prikaza podnapisov.\n"
+"Vrednost 0 onemogoči prilagajanje."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:72
 #: modules/gui/qt/components/extended_panels.cpp:1565
@@ -18763,8 +18764,8 @@ msgid ""
 "Multiply subtitle duration by this value.\n"
 "Set 0 to disable."
 msgstr ""
-"Pomnoži trajanje podnapisov za to vrednost.\n"
-"Nastavite 0 za onemogočanje."
+"Možnost omogoča podaljšanje prikaza podnapisov z množenjem.\n"
+"Vrednost 0 onemogoči prilagajanje."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:76
 #: modules/gui/qt/components/extended_panels.cpp:1570
@@ -20393,7 +20394,7 @@ msgstr "Pretvori"
 #: modules/gui/qt/dialogs/plugins.cpp:1430
 #: modules/gui/qt/dialogs/plugins.cpp:1543
 #: modules/gui/qt/dialogs/podcast_configuration.cpp:36
-#: modules/gui/qt/dialogs/vlm.cpp:137
+#: modules/gui/qt/dialogs/vlm.cpp:136
 msgid "&Close"
 msgstr "&Zapri"
 
@@ -20555,6 +20556,28 @@ msgstr "Pojdi na čas"
 #: modules/gui/qt/dialogs/plugins.cpp:1451
 msgid "About"
 msgstr "O programu"
+
+#: modules/gui/qt/dialogs/help.cpp:94
+msgid ""
+"<p>VLC media player is a free and open source media player, encoder, and "
+"streamer made by the volunteers of the <a href=\"http://www.videolan.org/"
+"\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
+"span></a> community.</p><p>VLC uses its internal codecs, works on "
+"essentially every popular platform, and can read almost all files, CDs, "
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"underline; color:#0057ae;\">Help and join us!</span></a>"
+msgstr ""
+"<p>Predvajalnik VLC je brezplačen odprtokodni predvajalnik, kodirnik in "
+"orodje za pretakanje, ki so ga ustvarili prostovoljci skupnosti <a href="
+"\"http://www.videolan.org/\"><span style=\" text-decoration: underline; "
+"color:#0057ae;\">VideoLAN</span></a>.</p><p>Predvajalnik uporablja lastne "
+"kodeke, deluje pravzaprav v vsakem sistemskem okolju in predvaja skoraj vse "
+"zapise predstavnih datotek, vsebino nosilcev CD in DVD, omrežne pretoke, "
+"podpira kartice za zajem zvoka in slike ter omogoča še marsikaj drugega!</"
+"p><p><a href=\"http://www.videolan.org/contribute/\"><span style=\" text-"
+"decoration: underline; color:#0057ae;\">Pridružite se skupnosti in sodelujte "
+"pri razvoju!</span></a>"
 
 #: modules/gui/qt/dialogs/help.cpp:214
 msgid "&Recheck version"
@@ -21047,67 +21070,67 @@ msgstr "Izbirnik razmerja velikosti videa"
 msgid "Speed selector"
 msgstr "Izbirnik hitrosti"
 
-#: modules/gui/qt/dialogs/vlm.cpp:74
+#: modules/gui/qt/dialogs/vlm.cpp:73
 msgid "Broadcast"
 msgstr "Razpršeno oddajanje"
 
-#: modules/gui/qt/dialogs/vlm.cpp:75
+#: modules/gui/qt/dialogs/vlm.cpp:74
 msgid "Schedule"
 msgstr "Oddajanje po urniku"
 
-#: modules/gui/qt/dialogs/vlm.cpp:76
+#: modules/gui/qt/dialogs/vlm.cpp:75
 msgid "Video On Demand ( VOD )"
 msgstr "Video na zahtevo ( VOD )"
 
-#: modules/gui/qt/dialogs/vlm.cpp:81
+#: modules/gui/qt/dialogs/vlm.cpp:80
 msgid "Hours / Minutes / Seconds:"
 msgstr "Ure / Minute / Sekunde:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:83
+#: modules/gui/qt/dialogs/vlm.cpp:82
 msgid "Day / Month / Year:"
 msgstr "Dan / Mesec / Leto:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:85
+#: modules/gui/qt/dialogs/vlm.cpp:84
 msgid "Repeat:"
 msgstr "Ponovi:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:87
+#: modules/gui/qt/dialogs/vlm.cpp:86
 msgid "Repeat delay:"
 msgstr "Zamik ponovitve:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:112 modules/gui/qt/ui/sprefs_interface.h:558
+#: modules/gui/qt/dialogs/vlm.cpp:111 modules/gui/qt/ui/sprefs_interface.h:558
 msgid " days"
 msgstr " dni"
 
-#: modules/gui/qt/dialogs/vlm.cpp:131
+#: modules/gui/qt/dialogs/vlm.cpp:130
 msgid "I&mport"
 msgstr "&Uvozi"
 
-#: modules/gui/qt/dialogs/vlm.cpp:134
+#: modules/gui/qt/dialogs/vlm.cpp:133
 msgid "E&xport"
 msgstr "&Izvozi"
 
-#: modules/gui/qt/dialogs/vlm.cpp:265
+#: modules/gui/qt/dialogs/vlm.cpp:264
 msgid "Save VLM configuration as..."
 msgstr "Shrani nastavitve VLM kot ..."
 
-#: modules/gui/qt/dialogs/vlm.cpp:267 modules/gui/qt/dialogs/vlm.cpp:336
+#: modules/gui/qt/dialogs/vlm.cpp:266 modules/gui/qt/dialogs/vlm.cpp:335
 msgid "VLM conf (*.vlm);;All (*)"
 msgstr "VLM nastavitve (*.vlm) ;; Vse (*)"
 
-#: modules/gui/qt/dialogs/vlm.cpp:334
+#: modules/gui/qt/dialogs/vlm.cpp:333
 msgid "Open VLM configuration..."
 msgstr "Odpri nastavitve VLM ..."
 
-#: modules/gui/qt/dialogs/vlm.cpp:533
+#: modules/gui/qt/dialogs/vlm.cpp:532
 msgid "Broadcast: "
 msgstr "Razpršeno oddajanje:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:606
+#: modules/gui/qt/dialogs/vlm.cpp:605
 msgid "Schedule: "
 msgstr "Urnik:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:630
+#: modules/gui/qt/dialogs/vlm.cpp:629
 msgid "VOD: "
 msgstr "VOD: "
 
@@ -21119,27 +21142,27 @@ msgstr "Odpri mapo"
 msgid "Open Folder"
 msgstr "Odpri mapo"
 
-#: modules/gui/qt/dialogs_provider.cpp:620
+#: modules/gui/qt/dialogs_provider.cpp:629
 msgid "Open playlist..."
 msgstr "Odpri seznam predvajanja ..."
 
-#: modules/gui/qt/dialogs_provider.cpp:643
+#: modules/gui/qt/dialogs_provider.cpp:652
 msgid "XSPF playlist"
 msgstr "Seznam predvajanja XSPF"
 
-#: modules/gui/qt/dialogs_provider.cpp:644
+#: modules/gui/qt/dialogs_provider.cpp:653
 msgid "M3U playlist"
 msgstr "Seznam predvajanja M3U"
 
-#: modules/gui/qt/dialogs_provider.cpp:645
+#: modules/gui/qt/dialogs_provider.cpp:654
 msgid "M3U8 playlist"
 msgstr "Seznam predvajanja M3U8"
 
-#: modules/gui/qt/dialogs_provider.cpp:663
+#: modules/gui/qt/dialogs_provider.cpp:672
 msgid "Save playlist as..."
 msgstr "Shrani seznam predvajanja kot ..."
 
-#: modules/gui/qt/dialogs_provider.cpp:813
+#: modules/gui/qt/dialogs_provider.cpp:822
 msgid "Open subtitles..."
 msgstr "Odpri podnapise ..."
 
@@ -21173,11 +21196,11 @@ msgstr "Ali želite nadaljevati s predvajanjem na mestu, kjer ste končali?"
 msgid "&Continue"
 msgstr "&Nadaljuj"
 
-#: modules/gui/qt/main_interface.cpp:1416
+#: modules/gui/qt/main_interface.cpp:1412
 msgid "Control menu for the player"
 msgstr "Nadzorni meni za predvajalnik"
 
-#: modules/gui/qt/main_interface.cpp:1460
+#: modules/gui/qt/main_interface.cpp:1456
 msgid "Paused"
 msgstr "V premoru"
 
@@ -23077,11 +23100,11 @@ msgstr ""
 "Navedeno je nepravilno uporabniško ime ali geslo za last.fm. Preverite "
 "nastavitve predvajalnika. Program je treba znova zagnati."
 
-#: modules/misc/audioscrobbler.c:714
+#: modules/misc/audioscrobbler.c:713
 msgid "Last.fm username not set"
 msgstr "Uporabniško ime Last.fm ni določeno"
 
-#: modules/misc/audioscrobbler.c:715
+#: modules/misc/audioscrobbler.c:714
 msgid ""
 "Please set a username or disable the audioscrobbler plugin, and restart "
 "VLC.\n"
@@ -26298,7 +26321,6 @@ msgid "Ball speed"
 msgstr "Hitrost krogle"
 
 #: modules/video_filter/ball.c:104
-#, fuzzy
 msgid "Set ball speed, the displacement value in number of pixels by frame."
 msgstr ""
 "Nastavitev hitrosti krogle z vrednostjo premika v številu slikovnih točk na "
@@ -26309,9 +26331,8 @@ msgid "Ball size"
 msgstr "Velikost krogle"
 
 #: modules/video_filter/ball.c:108
-#, fuzzy
 msgid "Set ball size giving its radius in number of pixels"
-msgstr "Nastavite velikost krogle z njenim polmerom v št. sl. točk"
+msgstr "Nastavite velikost krogle z njenim polmerom v št. sl. točk."
 
 #: modules/video_filter/ball.c:111
 msgid "Gradient threshold"
@@ -29734,6 +29755,12 @@ msgstr "AAAA; "
 #: modules/gui/qt/ui/vlm.h:302
 msgid "Media Manager List"
 msgstr "Seznam upravljalnika predstavnih vsebin"
+
+#~ msgid "Toggle Fullscreen mode"
+#~ msgstr "Preklopi celozaslonski način"
+
+#~ msgid "Leave fullscreen mode"
+#~ msgstr "Zapusti celozaslonski način"
 
 #~ msgid "Debug logging"
 #~ msgstr "Beleženje razhroščevanja"

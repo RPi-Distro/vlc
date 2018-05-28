@@ -2,7 +2,7 @@
  * audioscrobbler.c : audioscrobbler submission plugin
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: 133829a0e97b73fc72c64758e6f0ddb12d8a0e12 $
+ * $Id: 709d81057588883f364e83adcd27bcb8d8e9020d $
  *
  * Author: Rafaël Carré <funman at videolanorg>
  *         Ilkka Ollakka <ileoo at videolan org>
@@ -603,7 +603,6 @@ static int Handshake(intf_thread_t *p_this)
         goto proto;
 
     /* We need to read the nowplaying url */
-    p_buffer_pos += 7; /* we skip "http://" */
     psz_url = strndup(p_buffer_pos, strcspn(p_buffer_pos, "\n"));
     if (!psz_url)
         goto oom;
@@ -616,13 +615,13 @@ static int Handshake(intf_thread_t *p_this)
         vlc_UrlClean(&p_sys->p_nowp_url);
         goto proto;
     }
+    p_buffer_pos += strcspn(p_buffer_pos, "\n");
 
     p_buffer_pos = strstr(p_buffer_pos, "http://");
     if (!p_buffer_pos || strlen(p_buffer_pos) == 7)
         goto proto;
 
     /* We need to read the submission url */
-    p_buffer_pos += 7; /* we skip "http://" */
     psz_url = strndup(p_buffer_pos, strcspn(p_buffer_pos, "\n"));
     if (!psz_url)
         goto oom;
