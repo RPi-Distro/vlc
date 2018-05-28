@@ -1,8 +1,8 @@
-vlc (3.0.3-1) UNRELEASED; urgency=medium
+vlc (3.0.3-1) unstable; urgency=medium
 
   * New upstream release.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 28 May 2018 23:50:51 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 28 May 2018 23:51:35 +0200
 
 vlc (3.0.2-1) unstable; urgency=medium
 
