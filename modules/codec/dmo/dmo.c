@@ -2,7 +2,7 @@
  * dmo.c : DirectMedia Object decoder module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 VLC authors and VideoLAN
- * $Id: 790617e74b61996044cb6c94f45001e96a80877c $
+ * $Id: ba59c613bacbd615c367575ab4798891a1cced42 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -457,6 +457,8 @@ static int DecOpen( decoder_t *p_dec )
         p_dec->fmt_out.audio.i_rate     = p_dec->fmt_in.audio.i_rate;
         p_dec->fmt_out.audio.i_channels = p_dec->fmt_in.audio.i_channels;
         p_dec->fmt_out.audio.i_bitspersample = 16;//p_dec->fmt_in.audio.i_bitspersample; We request 16
+        if( p_dec->fmt_in.audio.i_channels > 8 )
+            goto error;
         p_dec->fmt_out.audio.i_physical_channels =
             pi_channels_maps[p_dec->fmt_out.audio.i_channels];
 

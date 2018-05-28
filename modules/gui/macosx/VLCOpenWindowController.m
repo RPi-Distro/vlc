@@ -2,7 +2,7 @@
  * VLCOpenWindowController.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 0a47b06296115b1e58f3ed3d4cd2c19697fcb79d $
+ * $Id: 9a50e212571eda4407267616545beff2d2110a68 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -521,9 +521,10 @@ static NSString *kCaptureTabViewId  = @"capture";
         [self openFilePathChanged: nil];
     else if ([identifier isEqualToString: kDiscTabViewId])
         [self scanOpticalMedia: nil];
-    else if ([identifier isEqualToString: kNetworkTabViewId])
+    else if ([identifier isEqualToString: kNetworkTabViewId]) {
         [self openNetInfoChanged: nil];
-    else if ([identifier isEqualToString: kCaptureTabViewId])
+        [_netHTTPURLTextField selectText:nil];
+    } else if ([identifier isEqualToString: kCaptureTabViewId])
         [self openCaptureModeChanged: nil];
 }
 
@@ -556,6 +557,7 @@ static NSString *kCaptureTabViewId  = @"capture";
 {
     [self openNetInfoChanged: nil];
     [self openTarget: kNetworkTabViewId];
+    [_netHTTPURLTextField selectText:nil];
 }
 
 - (void)openCapture

@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: c5ec930b2aa30e93136d325be5d24fe00c99ec82 $
+ * $Id: 1cb9aa82fcd348e16e76220193877295e2c64af4 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -620,7 +620,7 @@ static mtime_t DecoderGetDisplayDate( decoder_t *p_dec, mtime_t i_ts )
     decoder_owner_sys_t *p_owner = p_dec->p_owner;
 
     vlc_mutex_lock( &p_owner->lock );
-    if( p_owner->b_waiting )
+    if( p_owner->b_waiting || p_owner->paused )
         i_ts = VLC_TS_INVALID;
     vlc_mutex_unlock( &p_owner->lock );
 
@@ -2120,9 +2120,10 @@ void input_DecoderFlush( decoder_t *p_dec )
      * a row. */
     p_owner->flushing = true;
 
-    /* Flushing video decoder when paused: increment frames_countdown in order
-     * to display one frame */
-    if( p_owner->fmt.i_cat == VIDEO_ES && p_owner->paused
+    /* Flush video/spu decoder when paused: increment frames_countdown in order
+     * to display one frame/subtitle */
+    if( p_owner->paused
+     && ( p_owner->fmt.i_cat == VIDEO_ES || p_owner->fmt.i_cat == SPU_ES )
      && p_owner->frames_countdown == 0 )
         p_owner->frames_countdown++;
 

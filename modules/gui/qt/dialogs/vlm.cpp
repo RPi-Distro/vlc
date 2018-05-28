@@ -2,7 +2,7 @@
  * vlm.cpp : VLM Management
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: 383140ced2a0336dc69b4821930efa6d4b7c40a5 $
+ * $Id: e88cc63caa50b52e75579fa37d7fa0840379a6ea $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Jean-François Massol <jf.massol -at- gmail.com>
@@ -27,9 +27,8 @@
 # include "config.h"
 #endif
 
-#include "dialogs/vlm.hpp"
-
 #ifdef ENABLE_VLM
+#include "dialogs/vlm.hpp"
 #include "dialogs/open.hpp"
 #include "dialogs/sout.hpp"
 #include "util/qt_dirs.hpp"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="17D47" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="17E202" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="1070" identifier="macosx"/>
         <development version="7000" identifier="xcode"/>
@@ -14,8 +14,6 @@
                 <outlet property="audio_autosavevolMatrix" destination="3664" id="qcu-Km-dKV"/>
                 <outlet property="audio_autosavevol_noButtonCell" destination="3666" id="BQT-wK-ru5"/>
                 <outlet property="audio_autosavevol_yesButtonCell" destination="3665" id="tcV-e8-VrC"/>
-                <outlet property="audio_dolbyLabel" destination="2339" id="YBO-jS-dA1"/>
-                <outlet property="audio_dolbyPopup" destination="2340" id="DWM-3P-YLm"/>
                 <outlet property="audio_effectsBox" destination="2347" id="J5K-qS-osR"/>
                 <outlet property="audio_enableCheckbox" destination="2331" id="wEX-Ng-Yug"/>
                 <outlet property="audio_generalBox" destination="2332" id="rHM-Za-3Gi"/>
@@ -51,6 +49,7 @@
                 <outlet property="input_cachelevelPopup" destination="2580" id="lts-mx-3Kh"/>
                 <outlet property="input_cachelevel_customLabel" destination="3162" id="fbZ-oF-HKW"/>
                 <outlet property="input_cachingBox" destination="2572" id="EC7-3Y-jc1"/>
+                <outlet property="input_hardwareAccelerationCheckbox" destination="E3R-AI-QGD" id="I73-W4-R8Y"/>
                 <outlet property="input_muxBox" destination="2585" id="Yng-39-8zd"/>
                 <outlet property="input_netBox" destination="2563" id="xSD-ks-oYK"/>
                 <outlet property="input_postprocLabel" destination="2592" id="Qs8-Ac-u30"/>
@@ -639,13 +638,13 @@ Gw
             <rect key="frame" x="0.0" y="0.0" width="594" height="425"/>
             <subviews>
                 <box title="Last.fm" translatesAutoresizingMaskIntoConstraints="NO" id="2363">
-                    <rect key="frame" x="17" y="16" width="560" height="117"/>
+                    <rect key="frame" x="17" y="16" width="560" height="142"/>
                     <view key="contentView" id="7U2-xM-E1M">
-                        <rect key="frame" x="2" y="2" width="556" height="100"/>
+                        <rect key="frame" x="2" y="2" width="556" height="125"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button mirrorLayoutDirectionWhenInternationalizing="always" translatesAutoresizingMaskIntoConstraints="NO" id="2365">
-                                <rect key="frame" x="14" y="73" width="190" height="18"/>
+                                <rect key="frame" x="14" y="73" width="190" height="43"/>
                                 <buttonCell key="cell" type="check" title="Enable Last.fm submissions" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="3472">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -655,7 +654,7 @@ Gw
                                 </connections>
                             </button>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2367">
-                                <rect key="frame" x="229" y="45" width="307" height="22"/>
+                                <rect key="frame" x="175" y="45" width="361" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" enabled="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="3474">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -668,7 +667,7 @@ Gw
                                 </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="2368">
-                                <rect key="frame" x="160" y="15" width="63" height="17"/>
+                                <rect key="frame" x="106" y="15" width="63" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Password" usesSingleLineMode="YES" id="3475">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -676,7 +675,7 @@ Gw
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2369" customClass="NSSecureTextField">
-                                <rect key="frame" x="229" y="13" width="307" height="22"/>
+                                <rect key="frame" x="175" y="13" width="361" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" enabled="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="3476">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -689,7 +688,7 @@ Gw
                                 </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="2366">
-                                <rect key="frame" x="153" y="47" width="70" height="17"/>
+                                <rect key="frame" x="99" y="47" width="70" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="User name" usesSingleLineMode="YES" id="3473">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -715,13 +714,13 @@ Gw
                     </view>
                 </box>
                 <box title="Effects" translatesAutoresizingMaskIntoConstraints="NO" id="2347">
-                    <rect key="frame" x="17" y="139" width="560" height="59"/>
+                    <rect key="frame" x="17" y="164" width="560" height="59"/>
                     <view key="contentView" id="N65-iQ-8gY">
                         <rect key="frame" x="2" y="2" width="556" height="42"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="2357">
-                                <rect key="frame" x="9" y="13" width="214" height="17"/>
+                                <rect key="frame" x="9" y="13" width="160" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Visualization" usesSingleLineMode="YES" id="3470">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -729,7 +728,7 @@ Gw
                                 </textFieldCell>
                             </textField>
                             <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2358">
-                                <rect key="frame" x="227" y="8" width="312" height="26"/>
+                                <rect key="frame" x="173" y="8" width="366" height="26"/>
                                 <popUpButtonCell key="cell" type="push" title="Default" bezelStyle="rounded" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="2361" id="3471">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="menu"/>
@@ -757,13 +756,13 @@ Gw
                     </view>
                 </box>
                 <box title="General Audio" translatesAutoresizingMaskIntoConstraints="NO" id="2332">
-                    <rect key="frame" x="17" y="204" width="560" height="178"/>
+                    <rect key="frame" x="17" y="229" width="560" height="153"/>
                     <view key="contentView" id="sX1-um-Nbr">
-                        <rect key="frame" x="2" y="2" width="556" height="161"/>
+                        <rect key="frame" x="2" y="2" width="556" height="136"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2335">
-                                <rect key="frame" x="227" y="77" width="257" height="19"/>
+                                <rect key="frame" x="173" y="52" width="311" height="19"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="205" id="4Mt-lP-4oa"/>
                                 </constraints>
@@ -775,7 +774,7 @@ Gw
                                 </connections>
                             </slider>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2336">
-                                <rect key="frame" x="490" y="75" width="46" height="22"/>
+                                <rect key="frame" x="490" y="50" width="46" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="46" id="96N-ME-SLD"/>
                                 </constraints>
@@ -804,33 +803,8 @@ Gw
                                     <outlet property="nextKeyView" destination="2346" id="3424"/>
                                 </connections>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2339">
-                                <rect key="frame" x="10" y="51" width="213" height="17"/>
-                                <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Force detection of Dolby Surround" usesSingleLineMode="YES" id="3462">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2340">
-                                <rect key="frame" x="227" y="46" width="312" height="26"/>
-                                <popUpButtonCell key="cell" type="push" title="Auto" bezelStyle="rounded" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="2344" id="3463">
-                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="menu"/>
-                                    <menu key="menu" title="OtherViews" id="2341">
-                                        <items>
-                                            <menuItem title="Auto" state="on" id="2344"/>
-                                            <menuItem title="On" id="2342"/>
-                                            <menuItem title="Off" id="2343"/>
-                                        </items>
-                                    </menu>
-                                </popUpButtonCell>
-                                <connections>
-                                    <action selector="audioSettingChanged:" target="-2" id="vXp-SU-H1J"/>
-                                </connections>
-                            </popUpButton>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2345">
-                                <rect key="frame" x="10" y="17" width="213" height="17"/>
+                                <rect key="frame" x="10" y="17" width="159" height="17"/>
                                 <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Preferred Audio language" usesSingleLineMode="YES" id="3464">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -838,7 +812,7 @@ Gw
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2346">
-                                <rect key="frame" x="229" y="15" width="307" height="22"/>
+                                <rect key="frame" x="175" y="15" width="361" height="22"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="3465">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -850,7 +824,7 @@ Gw
                                 </connections>
                             </textField>
                             <matrix verticalHuggingPriority="750" mirrorLayoutDirectionWhenInternationalizing="always" allowsEmptySelection="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3664">
-                                <rect key="frame" x="12" y="103" width="524" height="48"/>
+                                <rect key="frame" x="12" y="78" width="524" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="Vw9-Mr-7S2"/>
                                 </constraints>
@@ -885,25 +859,18 @@ Gw
                             </matrix>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="2345" firstAttribute="top" secondItem="2339" secondAttribute="bottom" constant="17" id="346-Ep-dRw"/>
+                            <constraint firstItem="2345" firstAttribute="leading" secondItem="3664" secondAttribute="leading" id="2qf-f2-Qz7"/>
                             <constraint firstItem="2346" firstAttribute="leading" secondItem="2345" secondAttribute="trailing" constant="8" symbolic="YES" id="4L3-Eo-Hwp"/>
-                            <constraint firstItem="2339" firstAttribute="centerY" secondItem="2340" secondAttribute="centerY" id="4RC-SX-1jq"/>
                             <constraint firstItem="2345" firstAttribute="centerY" secondItem="2346" secondAttribute="centerY" id="89p-ax-4G2"/>
                             <constraint firstItem="3664" firstAttribute="trailing" secondItem="2336" secondAttribute="trailing" id="8dc-wF-prY"/>
+                            <constraint firstItem="2345" firstAttribute="top" secondItem="2335" secondAttribute="bottom" constant="20" id="9cb-SC-NJS"/>
                             <constraint firstAttribute="bottom" secondItem="2346" secondAttribute="bottom" constant="15" id="EdX-1W-xO9"/>
-                            <constraint firstItem="2346" firstAttribute="top" secondItem="2340" secondAttribute="bottom" constant="12" id="Egv-Ad-aCt"/>
-                            <constraint firstItem="2339" firstAttribute="leading" secondItem="2345" secondAttribute="leading" id="Jvf-j0-oQA"/>
                             <constraint firstAttribute="trailing" secondItem="2336" secondAttribute="trailing" constant="20" id="RiT-2N-oVX"/>
                             <constraint firstAttribute="trailing" secondItem="3664" secondAttribute="trailing" constant="20" id="SEy-Pv-8qj"/>
-                            <constraint firstItem="2336" firstAttribute="trailing" secondItem="2340" secondAttribute="trailing" id="Urb-31-SDv"/>
-                            <constraint firstItem="2346" firstAttribute="leading" secondItem="2340" secondAttribute="leading" id="WZx-n4-rgd"/>
-                            <constraint firstItem="2340" firstAttribute="leading" secondItem="2339" secondAttribute="trailing" constant="8" symbolic="YES" id="YFL-YQ-MVY"/>
-                            <constraint firstItem="2339" firstAttribute="top" secondItem="2335" secondAttribute="bottom" constant="11" id="bCe-7y-1Xv"/>
+                            <constraint firstItem="2335" firstAttribute="leading" secondItem="2346" secondAttribute="leading" id="ZeQ-93-REl"/>
                             <constraint firstItem="2336" firstAttribute="leading" secondItem="2335" secondAttribute="trailing" constant="8" id="etL-aD-xyO"/>
-                            <constraint firstItem="2339" firstAttribute="leading" secondItem="3664" secondAttribute="leading" id="f4c-20-IXn"/>
                             <constraint firstItem="2336" firstAttribute="trailing" secondItem="2346" secondAttribute="trailing" id="hsX-v8-qU8"/>
                             <constraint firstItem="3664" firstAttribute="leading" secondItem="sX1-um-Nbr" secondAttribute="leading" constant="12" id="ipe-4k-4s8"/>
-                            <constraint firstItem="2340" firstAttribute="leading" secondItem="2335" secondAttribute="leading" id="lma-5t-iwF"/>
                             <constraint firstItem="2335" firstAttribute="top" secondItem="3664" secondAttribute="bottom" constant="9" id="tDz-VB-oVJ"/>
                             <constraint firstItem="2336" firstAttribute="centerY" secondItem="2335" secondAttribute="centerY" id="tpS-N0-gGA"/>
                             <constraint firstItem="3664" firstAttribute="top" secondItem="sX1-um-Nbr" secondAttribute="top" constant="10" id="ydK-et-WGv"/>
@@ -1329,10 +1296,10 @@ Gw
             <point key="canvasLocation" x="265" y="1524.5"/>
         </customView>
         <customView translatesAutoresizingMaskIntoConstraints="NO" id="2562" userLabel="Input &amp; Codecs">
-            <rect key="frame" x="0.0" y="0.0" width="572" height="422"/>
+            <rect key="frame" x="0.0" y="0.0" width="572" height="452"/>
             <subviews>
                 <box title="Record directory or filename" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="3623">
-                    <rect key="frame" x="17" y="342" width="538" height="60"/>
+                    <rect key="frame" x="17" y="372" width="538" height="60"/>
                     <view key="contentView" id="7b2-vV-8CM">
                         <rect key="frame" x="1" y="1" width="536" height="44"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1376,7 +1343,7 @@ Gw
                     </constraints>
                 </box>
                 <box title="Network" translatesAutoresizingMaskIntoConstraints="NO" id="2563">
-                    <rect key="frame" x="17" y="276" width="538" height="62"/>
+                    <rect key="frame" x="17" y="306" width="538" height="62"/>
                     <view key="contentView" id="1lv-cw-XiH">
                         <rect key="frame" x="2" y="2" width="534" height="45"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1403,7 +1370,7 @@ Gw
                     </constraints>
                 </box>
                 <box title="Caching" translatesAutoresizingMaskIntoConstraints="NO" id="2572">
-                    <rect key="frame" x="17" y="183" width="538" height="88"/>
+                    <rect key="frame" x="17" y="213" width="538" height="88"/>
                     <view key="contentView" id="deK-kX-Lvr">
                         <rect key="frame" x="2" y="2" width="534" height="71"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1460,9 +1427,9 @@ Gw
                     </view>
                 </box>
                 <box title="Codecs / Muxers" translatesAutoresizingMaskIntoConstraints="NO" id="2585">
-                    <rect key="frame" x="17" y="16" width="538" height="160"/>
+                    <rect key="frame" x="17" y="16" width="538" height="190"/>
                     <view key="contentView" id="30i-kg-rYI">
-                        <rect key="frame" x="2" y="2" width="534" height="143"/>
+                        <rect key="frame" x="2" y="2" width="534" height="173"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2592">
@@ -1560,6 +1527,16 @@ Gw
                                     <action selector="inputSettingChanged:" target="-2" id="I6O-un-hHx"/>
                                 </connections>
                             </popUpButton>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="E3R-AI-QGD">
+                                <rect key="frame" x="14" y="145" width="201" height="18"/>
+                                <buttonCell key="cell" type="check" title="Enable hardware acceleration" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="atu-5u-S8s">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="inputSettingChanged:" target="-2" id="FzO-lc-XLf"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="2589" firstAttribute="centerY" secondItem="2587" secondAttribute="centerY" id="4D0-CS-wLd"/>
@@ -1567,22 +1544,26 @@ Gw
                             <constraint firstItem="3434" firstAttribute="leading" secondItem="2593" secondAttribute="leading" id="DbT-Jq-Nxe"/>
                             <constraint firstItem="2592" firstAttribute="centerY" secondItem="2587" secondAttribute="centerY" id="Fkm-jR-oMF"/>
                             <constraint firstItem="2594" firstAttribute="leading" secondItem="2593" secondAttribute="trailing" constant="17" id="H8f-vv-gko"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="lem-yf-jZB" secondAttribute="trailing" constant="16" id="HZA-Ho-JPS"/>
                             <constraint firstAttribute="trailing" secondItem="2589" secondAttribute="trailing" constant="17" id="HmN-hM-nt0"/>
                             <constraint firstItem="lem-yf-jZB" firstAttribute="leading" secondItem="3434" secondAttribute="leading" id="IpM-8a-E67"/>
                             <constraint firstItem="2593" firstAttribute="top" secondItem="2592" secondAttribute="bottom" constant="16" id="JOz-5x-WGX"/>
                             <constraint firstItem="lem-yf-jZB" firstAttribute="top" secondItem="3434" secondAttribute="bottom" constant="16" id="RYW-Uf-buV"/>
                             <constraint firstItem="3434" firstAttribute="top" secondItem="2593" secondAttribute="bottom" constant="16" id="Tam-yC-51c"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="E3R-AI-QGD" secondAttribute="trailing" constant="16" id="UeL-aj-4Ov"/>
+                            <constraint firstItem="E3R-AI-QGD" firstAttribute="top" secondItem="30i-kg-rYI" secondAttribute="top" constant="12" id="Uiy-Rc-Z9G"/>
                             <constraint firstItem="3435" firstAttribute="width" secondItem="2594" secondAttribute="width" id="V0T-ah-xQd"/>
                             <constraint firstItem="3434" firstAttribute="centerY" secondItem="3435" secondAttribute="centerY" id="WV5-Nx-zJo"/>
-                            <constraint firstItem="2592" firstAttribute="leading" secondItem="30i-kg-rYI" secondAttribute="leading" constant="16" id="dQB-hm-G2h"/>
+                            <constraint firstItem="E3R-AI-QGD" firstAttribute="leading" secondItem="2592" secondAttribute="leading" id="Y0f-uz-v0S"/>
+                            <constraint firstItem="2592" firstAttribute="top" secondItem="E3R-AI-QGD" secondAttribute="bottom" constant="16" id="b0d-c4-Hi8"/>
                             <constraint firstItem="3435" firstAttribute="leading" secondItem="3434" secondAttribute="trailing" constant="17" id="eZZ-2v-na1"/>
                             <constraint firstItem="3435" firstAttribute="leading" secondItem="2594" secondAttribute="leading" id="h44-ac-8ao"/>
-                            <constraint firstItem="2592" firstAttribute="top" secondItem="30i-kg-rYI" secondAttribute="top" constant="12" id="hWU-Qa-oAW"/>
                             <constraint firstItem="2587" firstAttribute="leading" secondItem="2592" secondAttribute="trailing" constant="17" id="ihi-eb-hxM"/>
                             <constraint firstItem="2593" firstAttribute="centerY" secondItem="2594" secondAttribute="centerY" id="jae-OS-C7i"/>
                             <constraint firstAttribute="bottom" secondItem="lem-yf-jZB" secondAttribute="bottom" constant="18" id="jtV-Af-m7f"/>
                             <constraint firstItem="2589" firstAttribute="leading" secondItem="2587" secondAttribute="trailing" constant="8" id="pEK-ey-Plq"/>
                             <constraint firstItem="2593" firstAttribute="leading" secondItem="2592" secondAttribute="leading" id="raR-vS-fzh"/>
+                            <constraint firstItem="E3R-AI-QGD" firstAttribute="leading" secondItem="30i-kg-rYI" secondAttribute="leading" constant="16" id="v2C-3E-DlJ"/>
                         </constraints>
                     </view>
                 </box>
@@ -1962,7 +1943,7 @@ Gw
                     <rect key="frame" x="20" y="60" width="530" height="311"/>
                     <clipView key="contentView" id="EbT-aN-Pgg">
                         <rect key="frame" x="1" y="0.0" width="528" height="310"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" columnReordering="NO" multipleSelection="NO" emptySelection="NO" autosaveName="sprefs_hotkeys_view" headerView="3541" id="2670">
                                 <rect key="frame" x="0.0" y="0.0" width="528" height="287"/>
@@ -2093,7 +2074,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2803">
-                        <rect key="frame" x="112" y="54" width="217" height="14"/>
+                        <rect key="frame" x="112" y="54" width="218" height="14"/>
                         <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" title="This combination is already taken by %s" usesSingleLineMode="YES" id="3531">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlShadowColor" catalog="System" colorSpace="catalog"/>

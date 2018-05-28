@@ -2,7 +2,7 @@
  * mediainfo.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 59d4dd6e45d15aad7d871e68b93b6cbf74d4d350 $
+ * $Id: ff658b9ac5578b5f734944ad4cff9d063265a50c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -141,6 +141,11 @@ void MediaInfoDialog::showTab( panel i_tab = META_PANEL )
 {
     infoTabW->setCurrentIndex( i_tab );
     show();
+}
+
+int MediaInfoDialog::currentTab()
+{
+    return infoTabW->currentIndex();
 }
 
 void MediaInfoDialog::saveMeta()

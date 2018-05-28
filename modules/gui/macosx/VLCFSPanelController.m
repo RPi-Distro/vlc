@@ -2,7 +2,7 @@
  * VLCFSPanelController.m: macOS fullscreen controls window controller
  *****************************************************************************
  * Copyright (C) 2006-2016 VLC authors and VideoLAN
- * $Id: dd3e9ce578f9e7dd39834de9ee5a073a1f5939d9 $
+ * $Id: 325c505e7fec2432b9e4e11126ce7e4f1ba4e1b4 $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -100,7 +100,7 @@ static NSString *kAssociatedFullscreenRect = @"VLCFullscreenAssociatedWindowRect
                              forAttribute:NSAccessibilityTitleAttribute];             \
     [target accessibilitySetOverrideValue:desc                                        \
                              forAttribute:NSAccessibilityDescriptionAttribute];       \
-    [target setToolTip:desc];
+    [target setToolTip:title];
 
 - (void)setupControls
 {
@@ -121,8 +121,8 @@ static NSString *kAssociatedFullscreenRect = @"VLCFullscreenAssociatedWindowRect
                 _NS("Backward"),
                 _NS("Seek backward"));
     setupButton(_fullscreenButton,
-                _NS("Toggle Fullscreen mode"),
-                _NS("Leave fullscreen mode"));
+                _NS("Leave fullscreen"),
+                _NS("Leave fullscreen"));
     setupButton(_volumeSlider,
                 _NS("Volume"),
                 _NS("Adjust the volume"));
@@ -229,11 +229,13 @@ static NSString *kAssociatedFullscreenRect = @"VLCFullscreenAssociatedWindowRect
 - (void)setPlay
 {
     [_playPauseButton setState:NSOffState];
+    [_playPauseButton setToolTip: _NS("Play")];
 }
 
 - (void)setPause
 {
     [_playPauseButton setState:NSOnState];
+    [_playPauseButton setToolTip: _NS("Pause")];
 }
 
 - (void)setStreamTitle:(NSString *)title
@@ -300,6 +302,7 @@ static NSString *kAssociatedFullscreenRect = @"VLCFullscreenAssociatedWindowRect
 - (void)setVolumeLevel:(int)value
 {
     [_volumeSlider setIntValue:value];
+    [_volumeSlider setToolTip: [NSString stringWithFormat:_NS("Volume: %i %%"), (value*200)/AOUT_VOLUME_MAX]];
 }
 
 #pragma mark -

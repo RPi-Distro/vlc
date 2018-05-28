@@ -2,7 +2,7 @@
 * VLCSimplePrefsController.h: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2014 VLC authors and VideoLAN
-* $Id: 1147fdd2f45af41cb14696e68986d3e7fac39de8 $
+* $Id: ba4c5db67040274e6279418049ce0c867b009a4e $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -38,8 +38,6 @@
 // Audio pane
 @property (readwrite, strong) IBOutlet NSView *audioView;
 
-@property (readwrite, weak) IBOutlet NSPopUpButton *audio_dolbyPopup;
-@property (readwrite, weak) IBOutlet NSTextField *audio_dolbyLabel;
 @property (readwrite, weak) IBOutlet NSBox *audio_effectsBox;
 @property (readwrite, weak) IBOutlet NSButton *audio_enableCheckbox;
 @property (readwrite, weak) IBOutlet NSBox *audio_generalBox;
@@ -87,6 +85,7 @@
 @property (readwrite, weak) IBOutlet NSBox *input_cachingBox;
 @property (readwrite, weak) IBOutlet NSBox *input_muxBox;
 @property (readwrite, weak) IBOutlet NSBox *input_netBox;
+@property (readwrite, weak) IBOutlet NSButton *input_hardwareAccelerationCheckbox;
 @property (readwrite, weak) IBOutlet NSTextField *input_postprocTextField;
 @property (readwrite, weak) IBOutlet NSTextField *input_postprocLabel;
 @property (readwrite, weak) IBOutlet NSTextField *input_skipLoopLabel;

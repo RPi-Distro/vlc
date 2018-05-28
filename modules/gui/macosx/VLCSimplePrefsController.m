@@ -2,7 +2,7 @@
 * VLCSimplePrefsController.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2014 VLC authors and VideoLAN
-* $Id: 4a4f34dadf64d055fa194ffae3a35308d640eb84 $
+* $Id: f9b079803717ffe92675259fce8ab61ca48d011d $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -263,7 +263,6 @@ create_toolbar_item(NSString *itemIdent, NSString *name, NSString *desc, NSStrin
 - (void)initStrings
 {
     /* audio */
-    [_audio_dolbyLabel setStringValue: _NS("Force detection of Dolby Surround")];
     [_audio_effectsBox setTitle: _NS("Audio Effects")];
     [_audio_enableCheckbox setTitle: _NS("Enable audio")];
     [_audio_generalBox setTitle: _NS("General Audio")];
@@ -295,6 +294,7 @@ create_toolbar_item(NSString *itemIdent, NSString *name, NSString *desc, NSStrin
     [_input_cachelevel_customLabel setStringValue: _NS("Use the complete preferences to configure custom caching values for each access module.")];
     [_input_muxBox setTitle: _NS("Codecs / Muxers")];
     [_input_netBox setTitle: _NS("Network")];
+    [_input_hardwareAccelerationCheckbox setTitle: _NS("Hardware decoding")];
     [_input_postprocLabel setStringValue: _NS("Post-Processing Quality")];
     [_input_skipLoopLabel setStringValue: _NS("Skip the loop filter for H.264 decoding")];
     [_input_urlhandlerButton setTitle: _NS("Edit default application settings for network protocols")];
@@ -618,7 +618,6 @@ static inline const char * __config_GetLabel(vlc_object_t *p_this, const char *p
         [_audio_volTextField setIntValue: i];
     }
 
-    [self setupButton:_audio_dolbyPopup forIntList: "force-dolby-surround"];
     [self setupField:_audio_langTextField forOption: "audio-language"];
 
     [self setupButton:_audio_visualPopup forModuleList: "audio-visual"];
@@ -680,6 +679,8 @@ static inline const char * __config_GetLabel(vlc_object_t *p_this, const char *p
      * input & codecs settings *
      ***************************/
     [self setupField:_input_recordTextField forOption:"input-record-path"];
+
+    [self setupButton:_input_hardwareAccelerationCheckbox forBoolValue: "videotoolbox"];
     [_input_postprocTextField setIntValue: config_GetInt(p_intf, "postproc-q")];
     [_input_postprocTextField setToolTip: _NS(config_GetLabel(p_intf, "postproc-q"))];
     [self setupButton:_input_skipFramesCheckbox forBoolValue: "skip-frames"];
@@ -946,8 +947,6 @@ static inline void save_string_list(intf_thread_t * p_intf, id object, const cha
         if ([_audio_volTextField isEnabled])
             config_PutInt(p_intf, "auhal-volume", ([_audio_volTextField intValue] * AOUT_VOLUME_MAX) / 200);
 
-        SaveIntList(_audio_dolbyPopup, "force-dolby-surround");
-
         config_PutPsz(p_intf, "audio-language", [[_audio_langTextField stringValue] UTF8String]);
 
         SaveModuleList(_audio_visualPopup, "audio-visual");
@@ -998,6 +997,8 @@ static inline void save_string_list(intf_thread_t * p_intf, id object, const cha
      ***************************/
     if (_inputSettingChanged) {
         config_PutPsz(p_intf, "input-record-path", [[_input_recordTextField stringValue] UTF8String]);
+
+        config_PutInt(p_intf, "videotoolbox", [_input_hardwareAccelerationCheckbox state]);
         config_PutInt(p_intf, "postproc-q", [_input_postprocTextField intValue]);
         config_PutInt(p_intf, "skip-frames", [_input_skipFramesCheckbox state]);
 

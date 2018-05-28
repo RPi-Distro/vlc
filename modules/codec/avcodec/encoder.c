@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: d09a5b01f0241c69ba5bdd6eff7124660b8e7cdd $
+ * $Id: 964b18ed6e5017f72f6eae8528b2c40d63d25580 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -365,6 +365,7 @@ int InitVideoEnc( vlc_object_t *p_this )
 "*** Please check with your Libav/FFmpeg packager. ***\n"
 "*** This is NOT a VLC media player issue.   ***", psz_namecodec );
 
+#if !defined(_WIN32)
         vlc_dialog_display_error( p_enc, _("Streaming / Transcoding failed"), _(
 /* I have had enough of all these MPEG-3 transcoding bug reports.
  * Downstream packager, you had better not patch this out, or I will be really
@@ -377,6 +378,8 @@ int InitVideoEnc( vlc_object_t *p_this )
 "This is not an error inside VLC media player.\n"
 "Do not contact the VideoLAN project about this issue.\n"),
             psz_namecodec );
+#endif
+
         return VLC_EGENERIC;
     }
 
@@ -742,6 +745,7 @@ int InitVideoEnc( vlc_object_t *p_this )
          */
         const unsigned i_order_max = 8 * sizeof(p_context->channel_layout);
         uint32_t pi_order_dst[AOUT_CHAN_MAX] = { };
+        uint32_t order_mask = 0;
         int i_channels_src = 0;
 
         if( p_context->channel_layout )
@@ -753,6 +757,7 @@ int InitVideoEnc( vlc_object_t *p_this )
                 {
                     msg_Dbg( p_enc, "%d %"PRIx64" mapped to %"PRIx64"", i_channels_src, pi_channels_map[i][0], pi_channels_map[i][1]);
                     pi_order_dst[i_channels_src++] = pi_channels_map[i][1];
+                    order_mask |= pi_channels_map[i][1];
                 }
             }
         }
@@ -766,14 +771,16 @@ int InitVideoEnc( vlc_object_t *p_this )
                 {
                     msg_Dbg( p_enc, "%d channel is %"PRIx64"", i_channels_src, pi_channels_map[i][1]);
                     pi_order_dst[i_channels_src++] = pi_channels_map[i][1];
+                    order_mask |= pi_channels_map[i][1];
                 }
             }
         }
         if( i_channels_src != p_context->channels )
             msg_Err( p_enc, "Channel layout not understood" );
 
-        p_sys->i_channels_to_reorder = aout_CheckChannelReorder( NULL, pi_order_dst,
-            channel_mask[p_context->channels][0], p_sys->pi_reorder_layout );
+        p_sys->i_channels_to_reorder =
+            aout_CheckChannelReorder( NULL, pi_order_dst, order_mask,
+                                      p_sys->pi_reorder_layout );
 #endif
 
         if ( p_enc->fmt_out.i_codec == VLC_CODEC_MP4A )

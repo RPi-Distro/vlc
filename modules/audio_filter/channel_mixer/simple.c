@@ -2,7 +2,7 @@
  * simple.c : simple channel mixer plug-in
  *****************************************************************************
  * Copyright (C) 2002, 2004, 2006-2009 VLC authors and VideoLAN
- * $Id: f9faed46ce221cc43d9c0dd71894968b7da49358 $
+ * $Id: fb37a528f88e41c42432b87b022c27de7de91449 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -258,7 +258,7 @@ static void DoWork_6_1_to_5_x( filter_t * p_filter,  block_t * p_in_buf, block_t
     }
 }
 
-#if defined (CAN_COMPILE_ARM)
+#if defined (CAN_COMPILE_NEON)
 #include "simple_neon.h"
 #define GET_WORK(in, out) GET_WORK_##in##_to_##out##_neon()
 #else
