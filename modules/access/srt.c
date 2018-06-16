@@ -1,9 +1,11 @@
 /*****************************************************************************
  * srt.c: SRT (Secure Reliable Transport) input module
  *****************************************************************************
- * Copyright (C) 2017, Collabora Ltd.
+ * Copyright (C) 2017-2018, Collabora Ltd.
+ * Copyright (C) 2018, Haivision Systems Inc.
  *
  * Authors: Justin Kim <justin.kim@collabora.com>
+ *          Roman Diouskine <rdiouskine@haivision.com>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -24,9 +26,6 @@
 # include "config.h"
 #endif
 
-#include <errno.h>
-#include <fcntl.h>
-
 #include <vlc_common.h>
 #include <vlc_interrupt.h>
 #include <vlc_fs.h>
@@ -46,26 +45,44 @@
 /* The default latency is 125
  * which uses srt library internally */
 #define SRT_DEFAULT_LATENCY 125
+/* Crypto key length in bytes. */
+#define SRT_KEY_LENGTH_TEXT "Crypto key length in bytes"
+#define SRT_DEFAULT_KEY_LENGTH 16
+static const int srt_key_lengths[] = {
+    16, 24, 32,
+};
+
+static const char *const srt_key_length_names[] = {
+    "16 bytes", "24 bytes", "32 bytes",
+};
 
 struct stream_sys_t
 {
     SRTSOCKET   sock;
     int         i_poll_id;
-    int         i_poll_timeout;
-    int         i_latency;
-    size_t      i_chunk_size;
-    int         i_pipe_fds[2];
+    vlc_mutex_t lock;
+    bool        b_interrupted;
+    char       *psz_host;
+    int         i_port;
 };
 
 static void srt_wait_interrupted(void *p_data)
 {
     stream_t *p_stream = p_data;
     stream_sys_t *p_sys = p_stream->p_sys;
-    msg_Dbg( p_stream, "Waking up srt_epoll_wait");
-    if ( write( p_sys->i_pipe_fds[1], &( bool ) { true }, sizeof( bool ) ) < 0 )
+
+    vlc_mutex_lock( &p_sys->lock );
+    if ( p_sys->i_poll_id >= 0 &&  p_sys->sock != SRT_INVALID_SOCK )
     {
-        msg_Err( p_stream, "Failed to send data to pipe");
+        p_sys->b_interrupted = true;
+
+        msg_Dbg( p_stream, "Waking up srt_epoll_wait");
+
+        /* Removing all socket descriptors from the monitoring list
+         * wakes up SRT's threads. We only have one to remove. */
+        srt_epoll_remove_usock( p_sys->i_poll_id, p_sys->sock );
     }
+    vlc_mutex_unlock( &p_sys->lock );
 }
 
 static int Control(stream_t *p_stream, int i_query, va_list args)
@@ -92,12 +109,117 @@ static int Control(stream_t *p_stream, int i_query, va_list args)
     return i_ret;
 }
 
+static bool srt_schedule_reconnect(stream_t *p_stream)
+{
+    int         i_latency;
+    int         stat;
+    char        *psz_passphrase = NULL;
+
+    struct addrinfo hints = {
+        .ai_socktype = SOCK_DGRAM,
+    }, *res = NULL;
+
+    stream_sys_t *p_sys = p_stream->p_sys;
+    bool failed = false;
+
+    stat = vlc_getaddrinfo( p_sys->psz_host, p_sys->i_port, &hints, &res );
+    if ( stat )
+    {
+        msg_Err( p_stream, "Cannot resolve [%s]:%d (reason: %s)",
+                 p_sys->psz_host,
+                 p_sys->i_port,
+                 gai_strerror( stat ) );
+
+        failed = true;
+        goto out;
+    }
+
+    /* Always start with a fresh socket */
+    if (p_sys->sock != SRT_INVALID_SOCK)
+    {
+        srt_epoll_remove_usock( p_sys->i_poll_id, p_sys->sock );
+        srt_close( p_sys->sock );
+    }
+
+    p_sys->sock = srt_socket( res->ai_family, SOCK_DGRAM, 0 );
+    if ( p_sys->sock == SRT_INVALID_SOCK )
+    {
+        msg_Err( p_stream, "Failed to open socket." );
+        failed = true;
+        goto out;
+    }
+
+    /* Make SRT non-blocking */
+    srt_setsockopt( p_sys->sock, 0, SRTO_SNDSYN,
+        &(bool) { false }, sizeof( bool ) );
+    srt_setsockopt( p_sys->sock, 0, SRTO_RCVSYN,
+        &(bool) { false }, sizeof( bool ) );
+
+    /* Make sure TSBPD mode is enable (SRT mode) */
+    srt_setsockopt( p_sys->sock, 0, SRTO_TSBPDMODE,
+        &(int) { 1 }, sizeof( int ) );
+
+    /* This is an access module so it is always a receiver */
+    srt_setsockopt( p_sys->sock, 0, SRTO_SENDER,
+        &(int) { 0 }, sizeof( int ) );
+
+    /* Set latency */
+    i_latency = var_InheritInteger( p_stream, "latency" );
+    srt_setsockopt( p_sys->sock, 0, SRTO_TSBPDDELAY,
+        &i_latency, sizeof( int ) );
+
+    psz_passphrase = var_InheritString( p_stream, "passphrase" );
+    if ( psz_passphrase != NULL && psz_passphrase[0] != '\0')
+    {
+        int i_key_length = var_InheritInteger( p_stream, "key-length" );
+        srt_setsockopt( p_sys->sock, 0, SRTO_PASSPHRASE,
+            psz_passphrase, strlen( psz_passphrase ) );
+        srt_setsockopt( p_sys->sock, 0, SRTO_PBKEYLEN,
+            &i_key_length, sizeof( int ) );
+    }
+
+    srt_epoll_add_usock( p_sys->i_poll_id, p_sys->sock,
+        &(int) { SRT_EPOLL_ERR | SRT_EPOLL_IN });
+
+    /* Schedule a connect */
+    msg_Dbg( p_stream, "Schedule SRT connect (dest addresss: %s, port: %d).",
+        p_sys->psz_host, p_sys->i_port);
+
+    stat = srt_connect( p_sys->sock, res->ai_addr, res->ai_addrlen);
+    if ( stat == SRT_ERROR )
+    {
+        msg_Err( p_stream, "Failed to connect to server (reason: %s)",
+                 srt_getlasterror_str() );
+        failed = true;
+    }
+
+out:
+    if (failed && p_sys->sock != SRT_INVALID_SOCK)
+    {
+        srt_epoll_remove_usock( p_sys->i_poll_id, p_sys->sock );
+        srt_close(p_sys->sock);
+        p_sys->sock = SRT_INVALID_SOCK;
+    }
+
+    freeaddrinfo( res );
+    free( psz_passphrase );
+
+    return !failed;
+}
+
 static block_t *BlockSRT(stream_t *p_stream, bool *restrict eof)
 {
     stream_sys_t *p_sys = p_stream->p_sys;
+    int i_chunk_size = var_InheritInteger( p_stream, "chunk-size" );
+    int i_poll_timeout = var_InheritInteger( p_stream, "poll-timeout" );
 
-    block_t *pkt = block_Alloc( p_sys->i_chunk_size );
+    if ( vlc_killed() )
+    {
+        /* We are told to stop. Stop. */
+        return NULL;
+    }
 
+    block_t *pkt = block_Alloc( i_chunk_size );
     if ( unlikely( pkt == NULL ) )
     {
         return NULL;
@@ -105,53 +227,72 @@ static block_t *BlockSRT(stream_t *p_stream, bool *restrict eof)
 
     vlc_interrupt_register( srt_wait_interrupted, p_stream);
 
-    SRTSOCKET ready[2];
-
-    if ( srt_epoll_wait( p_sys->i_poll_id,
-        ready, &(int) { 2 }, NULL, 0, p_sys->i_poll_timeout,
-        &(int) { p_sys->i_pipe_fds[0] }, &(int) { 1 }, NULL, 0 ) == -1 )
+    SRTSOCKET ready[1];
+    int readycnt = 1;
+    while ( srt_epoll_wait( p_sys->i_poll_id,
+        ready, &readycnt, 0, 0,
+        i_poll_timeout, NULL, 0, NULL, 0 ) >= 0)
     {
-        int srt_err = srt_getlasterror( NULL );
-
-        /* Assuming that timeout error is normal when SRT socket is connected. */
-        if ( srt_err == SRT_ETIMEOUT && srt_getsockstate( p_sys->sock ) == SRTS_CONNECTED )
+        if ( readycnt < 0  || ready[0] != p_sys->sock )
         {
-            goto skip;
+            /* should never happen, force recovery */
+            srt_close(p_sys->sock);
+            p_sys->sock = SRT_INVALID_SOCK;
         }
 
-        msg_Err( p_stream, "released poll wait (reason : %s)", srt_getlasterror_str() );
-        goto endofstream;
+        switch( srt_getsockstate( p_sys->sock ) )
+        {
+            case SRTS_CONNECTED:
+                /* Good to go */
+                break;
+            case SRTS_BROKEN:
+            case SRTS_NONEXIST:
+            case SRTS_CLOSED:
+                /* Failed. Schedule recovery. */
+                if ( !srt_schedule_reconnect( p_stream ) )
+                    msg_Err( p_stream, "Failed to schedule connect" );
+                /* Fall-through */
+            default:
+                /* Not ready */
+                continue;
+        }
+
+        int stat = srt_recvmsg( p_sys->sock,
+            (char *)pkt->p_buffer, i_chunk_size );
+        if ( stat > 0 )
+        {
+            pkt->i_buffer = stat;
+            goto out;
+        }
+
+        msg_Err( p_stream, "failed to receive packet, set EOS (reason: %s)",
+            srt_getlasterror_str() );
+        *eof = true;
+        break;
     }
 
-    bool cancel = 0;
-    int ret = read( p_sys->i_pipe_fds[0], &cancel, sizeof( bool ) );
-    if ( ret > 0 && cancel )
-    {
-        msg_Dbg( p_stream, "Cancelled running" );
-        goto endofstream;
-    }
+    /* if the poll reports errors for any reason at all
+     * including a timeout, or there is a read error,
+     * we skip the turn.
+     */
 
-    int stat = srt_recvmsg( p_sys->sock, (char *)pkt->p_buffer, p_sys->i_chunk_size );
-
-    if ( stat == SRT_ERROR )
-    {
-        msg_Err( p_stream, "failed to recevie SRT packet (reason: %s)", srt_getlasterror_str() );
-        goto endofstream;
-    }
-
-    pkt->i_buffer = stat;
-    vlc_interrupt_unregister();
-    return pkt;
-
-endofstream:
-    msg_Dbg( p_stream, "EOS");
-   *eof = true;
-skip:
     block_Release(pkt);
-    srt_clearlasterror();
+    pkt = NULL;
+
+out:
     vlc_interrupt_unregister();
 
-    return NULL;
+    /* Re-add the socket to the poll if we were interrupted */
+    vlc_mutex_lock( &p_sys->lock );
+    if ( p_sys->b_interrupted )
+    {
+        srt_epoll_add_usock( p_sys->i_poll_id, p_sys->sock,
+            &(int) { SRT_EPOLL_ERR | SRT_EPOLL_IN } );
+        p_sys->b_interrupted = false;
+    }
+    vlc_mutex_unlock( &p_sys->lock );
+
+    return pkt;
 }
 
 static int Open(vlc_object_t *p_this)
@@ -159,55 +300,28 @@ static int Open(vlc_object_t *p_this)
     stream_t     *p_stream = (stream_t*)p_this;
     stream_sys_t *p_sys = NULL;
     vlc_url_t     parsed_url = { 0 };
-    struct addrinfo hints = {
-        .ai_socktype = SOCK_DGRAM,
-    }, *res = NULL;
-    int stat;
 
-    p_sys = vlc_obj_malloc( p_this, sizeof( *p_sys ) );
+    p_sys = vlc_obj_calloc( p_this, 1, sizeof( *p_sys ) );
     if( unlikely( p_sys == NULL ) )
         return VLC_ENOMEM;
 
+    srt_startup();
+
+    vlc_mutex_init( &p_sys->lock );
+
+    p_stream->p_sys = p_sys;
+
     if ( vlc_UrlParse( &parsed_url, p_stream->psz_url ) == -1 )
     {
-        msg_Err( p_stream, "Failed to parse a given URL (%s)", p_stream->psz_url );
+        msg_Err( p_stream, "Failed to parse input URL (%s)",
+            p_stream->psz_url );
         goto failed;
     }
 
-    p_sys->i_chunk_size = var_InheritInteger( p_stream, "chunk-size" );
-    p_sys->i_poll_timeout = var_InheritInteger( p_stream, "poll-timeout" );
-    p_sys->i_latency = var_InheritInteger( p_stream, "latency" );
-    p_sys->i_poll_id = -1;
-    p_stream->p_sys = p_sys;
-    p_stream->pf_block = BlockSRT;
-    p_stream->pf_control = Control;
+    p_sys->psz_host = strdup( parsed_url.psz_host );
+    p_sys->i_port = parsed_url.i_port;
 
-    stat = vlc_getaddrinfo( parsed_url.psz_host, parsed_url.i_port, &hints, &res );
-    if ( stat )
-    {
-        msg_Err( p_stream, "Cannot resolve [%s]:%d (reason: %s)",
-                 parsed_url.psz_host,
-                 parsed_url.i_port,
-                 gai_strerror( stat ) );
-
-        goto failed;
-    }
-
-    p_sys->sock = srt_socket( res->ai_family, SOCK_DGRAM, 0 );
-    if ( p_sys->sock == SRT_ERROR )
-    {
-        msg_Err( p_stream, "Failed to open socket." );
-        goto failed;
-    }
-
-    /* Make SRT non-blocking */
-    srt_setsockopt( p_sys->sock, 0, SRTO_SNDSYN, &(bool) { false }, sizeof( bool ) );
-
-    /* Make sure TSBPD mode is enable (SRT mode) */
-    srt_setsockopt( p_sys->sock, 0, SRTO_TSBPDMODE, &(int) { 1 }, sizeof( int ) );
-
-    /* Set latency */
-    srt_setsockopt( p_sys->sock, 0, SRTO_TSBPDDELAY, &p_sys->i_latency, sizeof( int ) );
+    vlc_UrlClean( &parsed_url );
 
     p_sys->i_poll_id = srt_epoll_create();
     if ( p_sys->i_poll_id == -1 )
@@ -216,52 +330,31 @@ static int Open(vlc_object_t *p_this)
         goto failed;
     }
 
-    if ( vlc_pipe( p_sys->i_pipe_fds ) != 0 )
+    if ( !srt_schedule_reconnect( p_stream ) )
     {
-        msg_Err( p_stream, "Failed to create pipe fds." );
+        msg_Err( p_stream, "Failed to schedule connect");
+
         goto failed;
     }
 
-    fcntl( p_sys->i_pipe_fds[0], F_SETFL, O_NONBLOCK | fcntl( p_sys->i_pipe_fds[0], F_GETFL ) );
-
-    srt_epoll_add_usock( p_sys->i_poll_id, p_sys->sock, &(int) { SRT_EPOLL_IN } );
-    srt_epoll_add_ssock( p_sys->i_poll_id, p_sys->i_pipe_fds[0], &(int) { SRT_EPOLL_IN } );
-
-    stat = srt_connect( p_sys->sock, res->ai_addr, sizeof (struct sockaddr) );
-
-    if ( stat == SRT_ERROR )
-    {
-        msg_Err( p_stream, "Failed to connect to server." );
-        goto failed;
-    }
-
-    vlc_UrlClean( &parsed_url );
-    freeaddrinfo( res );
+    p_stream->pf_block = BlockSRT;
+    p_stream->pf_control = Control;
 
     return VLC_SUCCESS;
 
 failed:
+    vlc_mutex_destroy( &p_sys->lock );
 
-    if ( parsed_url.psz_host != NULL
-      && parsed_url.psz_buffer != NULL)
+    if ( p_sys != NULL )
     {
-        vlc_UrlClean( &parsed_url );
-    }
+        if ( p_sys->sock != -1 ) srt_close( p_sys->sock );
+        if ( p_sys->i_poll_id != -1 ) srt_epoll_release( p_sys->i_poll_id );
 
-    if ( res != NULL )
-    {
-        freeaddrinfo( res );
-    }
+        free( p_sys->psz_host );
 
-    vlc_close( p_sys->i_pipe_fds[0] );
-    vlc_close( p_sys->i_pipe_fds[1] );
-
-    if ( p_sys->i_poll_id != -1 )
-    {
-        srt_epoll_release( p_sys->i_poll_id );
-        p_sys->i_poll_id = -1;
+        vlc_obj_free( p_this, p_sys );
+        p_stream->p_sys = NULL;
     }
-    srt_close( p_sys->sock );
 
     return VLC_EGENERIC;
 }
@@ -271,16 +364,21 @@ static void Close(vlc_object_t *p_this)
     stream_t     *p_stream = (stream_t*)p_this;
     stream_sys_t *p_sys = p_stream->p_sys;
 
-    if ( p_sys->i_poll_id != -1 )
+    if ( p_sys )
     {
-        srt_epoll_release( p_sys->i_poll_id );
-        p_sys->i_poll_id = -1;
-    }
-    msg_Dbg( p_stream, "closing server" );
-    srt_close( p_sys->sock );
+        vlc_mutex_destroy( &p_sys->lock );
 
-    vlc_close( p_sys->i_pipe_fds[0] );
-    vlc_close( p_sys->i_pipe_fds[1] );
+        srt_epoll_remove_usock( p_sys->i_poll_id, p_sys->sock );
+        srt_close( p_sys->sock );
+        srt_epoll_release( p_sys->i_poll_id );
+
+        free( p_sys->psz_host );
+
+        vlc_obj_free( p_this, p_sys );
+        p_stream->p_sys = NULL;
+    }
+
+    srt_cleanup();
 }
 
 /* Module descriptor */
@@ -295,6 +393,10 @@ vlc_module_begin ()
     add_integer( "poll-timeout", SRT_DEFAULT_POLL_TIMEOUT,
             N_("Return poll wait after timeout milliseconds (-1 = infinite)"), NULL, true )
     add_integer( "latency", SRT_DEFAULT_LATENCY, N_("SRT latency (ms)"), NULL, true )
+    add_password( "passphrase", "", "Password for stream encryption", NULL, false )
+    add_integer( "key-length", SRT_DEFAULT_KEY_LENGTH,
+            SRT_KEY_LENGTH_TEXT, SRT_KEY_LENGTH_TEXT, false )
+        change_integer_list( srt_key_lengths, srt_key_length_names )
 
     set_capability( "access", 0 )
     add_shortcut( "srt" )

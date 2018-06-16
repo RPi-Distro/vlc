@@ -116,6 +116,7 @@ typedef struct
     D3D11_VIEWPORT            cropViewport;
     unsigned int              i_width;
     unsigned int              i_height;
+    video_projection_mode_t   projection;
 
     PS_CONSTANT_BUFFER        shaderConstants;
 } d3d_quad_t;
@@ -239,7 +240,6 @@ static int SetupQuad(vout_display_t *, const video_format_t *, d3d_quad_t *, con
                      video_orientation_t);
 static bool UpdateQuadPosition( vout_display_t *vd, d3d_quad_t *quad,
                                 const RECT *output,
-                                video_projection_mode_t projection,
                                 video_orientation_t orientation );
 static void ReleaseQuad(d3d_quad_t *);
 static void UpdatePicQuadPosition(vout_display_t *);
@@ -710,6 +710,30 @@ static void DestroyDisplayPoolPicture(picture_t *picture)
     free(picture);
 }
 
+#if !VLC_WINSTORE_APP
+static void FillSwapChainDesc(vout_display_t *vd, DXGI_SWAP_CHAIN_DESC1 *out)
+{
+    ZeroMemory(out, sizeof(*out));
+    out->BufferCount = 3;
+    out->BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    out->SampleDesc.Count = 1;
+    out->SampleDesc.Quality = 0;
+    out->Width = vd->source.i_visible_width;
+    out->Height = vd->source.i_visible_height;
+    switch(vd->source.i_chroma)
+    {
+    case VLC_CODEC_D3D11_OPAQUE_10B:
+        out->Format = DXGI_FORMAT_R10G10B10A2_UNORM;
+        break;
+    default:
+        out->Format = DXGI_FORMAT_R8G8B8A8_UNORM; /* TODO: use DXGI_FORMAT_NV12 */
+        break;
+    }
+    //out->Flags = 512; // DXGI_SWAP_CHAIN_FLAG_YUV_VIDEO;
+    out->SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+}
+#endif
+
 static HRESULT UpdateBackBuffer(vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;
@@ -973,7 +997,7 @@ static void UpdateSize(vout_display_t *vd)
     UpdatePicQuadPosition(vd);
 
     UpdateQuadPosition(vd, &sys->picQuad, &sys->sys.rect_src_clipped,
-                       vd->fmt.projection_mode, vd->fmt.orientation);
+                       vd->fmt.orientation);
 
 #if defined(HAVE_ID3D11VIDEODECODER)
     if( sys->context_lock != INVALID_HANDLE_VALUE )
@@ -1080,6 +1104,8 @@ static void DisplayD3DPicture(vout_display_sys_t *sys, d3d_quad_t *quad, ID3D11S
 {
     UINT stride = sizeof(d3d_vertex_t);
     UINT offset = 0;
+
+    ID3D11DeviceContext_OMSetRenderTargets(sys->d3d_dev.d3dcontext, 1, &sys->d3drenderTargetView, sys->d3ddepthStencilView);
 
     /* Render the quad */
     /* vertex shader */
@@ -1251,8 +1277,6 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
     ID3D11DeviceContext_ClearRenderTargetView(sys->d3d_dev.d3dcontext, sys->d3drenderTargetView, blackRGBA);
 
     /* no ID3D11Device operations should come here */
-
-    ID3D11DeviceContext_OMSetRenderTargets(sys->d3d_dev.d3dcontext, 1, &sys->d3drenderTargetView, sys->d3ddepthStencilView);
 
     ID3D11DeviceContext_ClearDepthStencilView(sys->d3d_dev.d3dcontext, sys->d3ddepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -1537,24 +1561,7 @@ static int Direct3D11Open(vout_display_t *vd)
     HRESULT hr = S_OK;
 
     DXGI_SWAP_CHAIN_DESC1 scd;
-    memset(&scd, 0, sizeof(scd));
-    scd.BufferCount = 3;
-    scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    scd.SampleDesc.Count = 1;
-    scd.SampleDesc.Quality = 0;
-    scd.Width = vd->source.i_visible_width;
-    scd.Height = vd->source.i_visible_height;
-    switch(vd->source.i_chroma)
-    {
-    case VLC_CODEC_D3D11_OPAQUE_10B:
-        scd.Format = DXGI_FORMAT_R10G10B10A2_UNORM;
-        break;
-    default:
-        scd.Format = DXGI_FORMAT_R8G8B8A8_UNORM; /* TODO: use DXGI_FORMAT_NV12 */
-        break;
-    }
-    //scd.Flags = 512; // DXGI_SWAP_CHAIN_FLAG_YUV_VIDEO;
-    scd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+    FillSwapChainDesc(vd, &scd);
 
     hr = D3D11_CreateDevice(vd, &sys->hd3d,
                             is_d3d11_opaque(vd->source.i_chroma),
@@ -2198,8 +2205,11 @@ static int Direct3D11CreateGenericResources(vout_display_t *vd)
         hr = CompilePixelShader(vd, sys->d3dregion_format, TRANSFER_FUNC_SRGB, true, &sys->pSPUPixelShader);
         if (FAILED(hr))
         {
-            ID3D11PixelShader_Release(sys->picQuadPixelShader);
-            sys->picQuadPixelShader = NULL;
+            if (sys->picQuadPixelShader)
+            {
+                ID3D11PixelShader_Release(sys->picQuadPixelShader);
+                sys->picQuadPixelShader = NULL;
+            }
             msg_Err(vd, "Failed to create the SPU pixel shader. (hr=0x%lX)", hr);
             return VLC_EGENERIC;
         }
@@ -2662,13 +2672,12 @@ static void SetupQuadCube(d3d_vertex_t *dst_data, const RECT *output,
 }
 
 
-static bool AllocQuadVertices(vout_display_t *vd, d3d_quad_t *quad,
-                              video_projection_mode_t projection)
+static bool AllocQuadVertices(vout_display_t *vd, d3d_quad_t *quad)
 {
     HRESULT hr;
     vout_display_sys_t *sys = vd->sys;
 
-    switch (projection)
+    switch (quad->projection)
     {
     case PROJECTION_MODE_RECTANGULAR:
         quad->vertexCount = 4;
@@ -2683,7 +2692,7 @@ static bool AllocQuadVertices(vout_display_t *vd, d3d_quad_t *quad,
         quad->indexCount = 6 * 2 * 3;
         break;
     default:
-        msg_Warn(vd, "Projection mode %d not handled", projection);
+        msg_Warn(vd, "Projection mode %d not handled", quad->projection);
         return false;
     }
 
@@ -2721,7 +2730,6 @@ static bool AllocQuadVertices(vout_display_t *vd, d3d_quad_t *quad,
 
 static bool UpdateQuadPosition( vout_display_t *vd, d3d_quad_t *quad,
                                 const RECT *output,
-                                video_projection_mode_t projection,
                                 video_orientation_t orientation )
 {
     vout_display_sys_t *sys = vd->sys;
@@ -2748,7 +2756,7 @@ static bool UpdateQuadPosition( vout_display_t *vd, d3d_quad_t *quad,
     }
     WORD *triangle_pos = mappedResource.pData;
 
-    switch (projection)
+    switch (quad->projection)
     {
     case PROJECTION_MODE_RECTANGULAR:
         SetupQuadFlat(dst_data, output, quad, triangle_pos, orientation);
@@ -2760,7 +2768,7 @@ static bool UpdateQuadPosition( vout_display_t *vd, d3d_quad_t *quad,
         SetupQuadCube(dst_data, output, quad, triangle_pos);
         break;
     default:
-        msg_Warn(vd, "Projection mode %d not handled", projection);
+        msg_Warn(vd, "Projection mode %d not handled", quad->projection);
         return false;
     }
 
@@ -2909,6 +2917,7 @@ static int SetupQuad(vout_display_t *vd, const video_format_t *fmt, d3d_quad_t *
         goto error;
     }
     quad->PSConstantsCount = 2;
+    quad->projection = projection;
 
     /* vertex shader constant buffer */
     if (projection == PROJECTION_MODE_EQUIRECTANGULAR
@@ -2929,9 +2938,9 @@ static int SetupQuad(vout_display_t *vd, const video_format_t *fmt, d3d_quad_t *
     quad->picSys.context = sys->d3d_dev.d3dcontext;
     ID3D11DeviceContext_AddRef(quad->picSys.context);
 
-    if (!AllocQuadVertices(vd, quad, projection))
+    if (!AllocQuadVertices(vd, quad))
         goto error;
-    if (!UpdateQuadPosition(vd, quad, output, projection, orientation))
+    if (!UpdateQuadPosition(vd, quad, output, orientation))
         goto error;
 
     quad->d3dpixelShader = d3dpixelShader;
@@ -3155,7 +3164,7 @@ static int Direct3D11MapSubpicture(vout_display_t *vd, int *subpicture_region_co
             }
             quad_picture = (*region)[i];
         } else {
-            UpdateQuadPosition(vd, (d3d_quad_t *) quad_picture->p_sys, &output, PROJECTION_MODE_RECTANGULAR, ORIENT_NORMAL);
+            UpdateQuadPosition(vd, (d3d_quad_t *) quad_picture->p_sys, &output, ORIENT_NORMAL);
         }
 
         hr = ID3D11DeviceContext_Map(sys->d3d_dev.d3dcontext, ((d3d_quad_t *) quad_picture->p_sys)->picSys.resource[KNOWN_DXGI_INDEX], 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);

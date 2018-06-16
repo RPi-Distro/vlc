@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011-2012 VideoLAN
- * $Id: 23d47b2528273508bd70fb91bc85af6dd4d8e3d9 $
+ * $Id: 1314b520ea60eceabb83e0e90ddf07a98eccf9a2 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -33,13 +33,15 @@
 TimeTooltip::TimeTooltip( QWidget *parent ) :
     QWidget( parent )
 {
-    setWindowFlags( Qt::Tool                    |
+    setWindowFlags( Qt::ToolTip                 |
                     Qt::WindowStaysOnTopHint    |
                     Qt::FramelessWindowHint     );
 
     // Tell Qt that it doesn't need to erase the background before
     // a paintEvent occurs. This should save some CPU cycles.
     setAttribute( Qt::WA_OpaquePaintEvent );
+    setAttribute( Qt::WA_TranslucentBackground );
+    setAttribute( Qt::WA_TransparentForMouseEvents );
 
     // Inherit from the system default font size -5
     mFont = QFont( "Verdana", qMax( qApp->font().pointSize() - 5, 7 ) );
@@ -91,7 +93,6 @@ void TimeTooltip::adjustPosition()
 
         resize( size );
         buildPath();
-        setMask( mMask );
     }
 }
 
@@ -105,7 +106,7 @@ void TimeTooltip::buildPath()
     mPainterPath.addRect( mBox );
 
     // Draw the tip
-    QPolygon polygon;
+    QPolygonF polygon;
     polygon << QPoint( qMax( 0, mTipX - 3 ), mBox.height() )
             << QPoint( mTipX, mBox.height() + TIP_HEIGHT )
             << QPoint( qMin( mTipX + 3, mBox.width() ), mBox.height() );
@@ -113,16 +114,6 @@ void TimeTooltip::buildPath()
 
     // Store the simplified version of the path
     mPainterPath = mPainterPath.simplified();
-
-    // Create the mask used to erase the background
-    // Note: this is a binary bitmap (black & white)
-    mMask = QBitmap( size() );
-    QPainter painter( &mMask );
-    painter.fillRect( mMask.rect(), Qt::white );
-    painter.setPen( Qt::black );
-    painter.setBrush( Qt::black );
-    painter.drawPath( mPainterPath );
-    painter.end();
 }
 
 void TimeTooltip::setTip( const QPoint& target, const QString& time, const QString& text )

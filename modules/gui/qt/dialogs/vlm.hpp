@@ -2,7 +2,7 @@
  * vlm.hpp : VLM Management
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: 25d022ed82e81d92dc54ac46bbc2d968a20f127c $
+ * $Id: 2983115c148b6349227868fa6f86e02dcff087af $
  *
  * Authors: Jean-François Massol <jf.massol@gmail.com>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -28,8 +28,6 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
-
-#ifdef ENABLE_VLM
 
 #include <vlc_vlm.h>
 
@@ -224,7 +222,5 @@ private:
     int rNumber;
     int rDays;
 };
-
-#endif
 
 #endif

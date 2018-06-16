@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 5c72d6461a3376f1640277eb7599c8cad13856ad $
+ * $Id: 7d791f196f7d8d8904b015adf6fb78b251a7ebc6 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -297,7 +297,7 @@ static int Demux( demux_t * p_demux )
     {
         if ( p_sys->i_streams ) /* All finished */
         {
-            msg_Dbg( p_demux, "end of a group of logical streams" );
+            msg_Dbg( p_demux, "end of a group of %d logical streams", p_sys->i_streams );
 
             mtime_t i_lastpcr = VLC_TS_INVALID;
             for( i_stream = 0; i_stream < p_sys->i_streams; i_stream++ )
@@ -309,8 +309,10 @@ static int Demux( demux_t * p_demux )
 
             /* We keep the ES to try reusing it in Ogg_BeginningOfStream
              * only 1 ES is supported (common case for ogg web radio) */
-            if( p_sys->i_streams == 1 )
+            if( p_sys->i_streams == 1 && p_sys->pp_stream[0]->p_es )
             {
+                if( p_sys->p_old_stream ) /* if no setupEs has reused */
+                    Ogg_LogicalStreamDelete( p_demux, p_sys->p_old_stream );
                 p_sys->p_old_stream = p_sys->pp_stream[0];
                 TAB_CLEAN( p_sys->i_streams, p_sys->pp_stream );
             }
@@ -1012,7 +1014,8 @@ static void Ogg_UpdatePCR( demux_t *p_demux, logical_stream_t *p_stream,
     {
         /* We're in headers, and we haven't parsed 1st data packet yet */
 //        p_stream->i_pcr = VLC_TS_UNKNOWN;
-        if( p_stream->b_oggds && ogg_page_packets( p_oggpacket ) )
+        if( p_stream->b_oggds && p_oggpacket->bytes > 0 &&
+            (p_oggpacket->packet[0] & PACKET_TYPE_HEADER) == 0 )
         {
             p_stream->i_pcr = VLC_TS_0 + p_ogg->i_nzpcr_offset;
         }
@@ -1066,7 +1069,7 @@ static void Ogg_UpdatePCR( demux_t *p_demux, logical_stream_t *p_stream,
         {
             if( p_stream->i_previous_granulepos > 0 )
             {
-                p_stream->i_pcr = VLC_TS_0 + p_stream->i_previous_granulepos * CLOCK_FREQ / p_stream->f_rate;
+                p_stream->i_pcr = VLC_TS_0 + Oggseek_GranuleToAbsTimestamp( p_stream, ++p_stream->i_previous_granulepos, false );
                 p_stream->i_pcr += p_ogg->i_nzpcr_offset;
             }
             /* First frame in ogm can be -1 (0 0 -1 2 3 -1 5 ...) */

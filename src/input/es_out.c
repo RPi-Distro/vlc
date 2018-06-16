@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: b86e684f8dc81fef1ef3d6c5c244b5b480091846 $
+ * $Id: 77eca7d9662f50dc9e6294e3a557d3b72a7a8498 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -493,8 +493,13 @@ static int EsOutSetRecord(  es_out_t *out, bool b_record )
             char *psz_file = input_CreateFilename( p_input, psz_path, INPUT_RECORD_PREFIX, NULL );
             if( psz_file )
             {
-                if( asprintf( &psz_sout, "#record{dst-prefix='%s'}", psz_file ) < 0 )
-                    psz_sout = NULL;
+                char* psz_file_esc = config_StringEscape( psz_file );
+                if ( psz_file_esc )
+                {
+                    if( asprintf( &psz_sout, "#record{dst-prefix='%s'}", psz_file_esc ) < 0 )
+                        psz_sout = NULL;
+                    free( psz_file_esc );
+                }
                 free( psz_file );
             }
         }

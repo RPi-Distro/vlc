@@ -2,7 +2,7 @@
  * VLCControlsBarCommon.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2016 VLC authors and VideoLAN
- * $Id: 04a01057926c760457913f66432fe8c81a2ad74a $
+ * $Id: 86e91db39e3986a31bdac7b5f840217df76517b3 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>

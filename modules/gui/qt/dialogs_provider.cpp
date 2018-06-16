@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 0484af8c595c6e8e87b91b5c4db731c43b722bd9 $
+ * $Id: d6edaa06d5160de301496763a7606d1a5e45920b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -311,12 +311,20 @@ void DialogsProvider::aboutDialog()
 
 void DialogsProvider::mediaInfoDialog()
 {
-    MediaInfoDialog::getInstance( p_intf )->showTab( MediaInfoDialog::META_PANEL );
+    MediaInfoDialog *dialog = MediaInfoDialog::getInstance( p_intf );
+    if( !dialog->isVisible() || dialog->currentTab() != MediaInfoDialog::META_PANEL )
+        dialog->showTab( MediaInfoDialog::META_PANEL );
+    else
+        dialog->hide();
 }
 
 void DialogsProvider::mediaCodecDialog()
 {
-    MediaInfoDialog::getInstance( p_intf )->showTab( MediaInfoDialog::INFO_PANEL );
+    MediaInfoDialog *dialog = MediaInfoDialog::getInstance( p_intf );
+    if( !dialog->isVisible() || dialog->currentTab() != MediaInfoDialog::INFO_PANEL )
+        dialog->showTab( MediaInfoDialog::INFO_PANEL );
+    else
+        dialog->hide();
 }
 
 void DialogsProvider::bookmarksDialog()
@@ -573,14 +581,15 @@ static void openDirectory( intf_thread_t *p_intf, bool pl, bool go )
 QString DialogsProvider::getDirectoryDialog( intf_thread_t *p_intf )
 {
     const QStringList schemes = QStringList(QStringLiteral("file"));
-    QString dir = QFileDialog::getExistingDirectoryUrl( NULL,
+    QUrl dirurl = QFileDialog::getExistingDirectoryUrl( NULL,
             qtr( I_OP_DIR_WINTITLE ), p_intf->p_sys->filepath,
-            QFileDialog::ShowDirsOnly, schemes ).toLocalFile();
+            QFileDialog::ShowDirsOnly, schemes );
 
-    if( dir.isEmpty() ) return QString();
+    if( dirurl.isEmpty() ) return QString();
 
-    p_intf->p_sys->filepath = dir;
+    p_intf->p_sys->filepath = dirurl;
 
+    QString dir = dirurl.toLocalFile();
     const char *scheme = "directory";
     if( dir.endsWith( DIR_SEP "VIDEO_TS", Qt::CaseInsensitive ) )
         scheme = "dvd";
