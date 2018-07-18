@@ -4,8 +4,9 @@ vlc (3.0.3-1-1) unstable; urgency=high
     - mkv: Fix NULL pointer access. (CVE-2018-11529)
   * debian/bug-presubj: No longer include -f.
   * debian/bug-control: Remove Submit-As.
+  * debian/patches: Backport upstream patch for fribidi 1.0.x.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Wed, 18 Jul 2018 12:28:36 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 18 Jul 2018 13:44:16 +0200
 
 vlc (3.0.3-2) unstable; urgency=medium
 
