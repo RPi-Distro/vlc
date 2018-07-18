@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:29+0200\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Ganda (https://www.transifex.com/yaron/teams/16553/lg/)\n"
@@ -27043,14 +27043,12 @@ msgid "0.00 dB"
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:139
-#, fuzzy
 msgid "&Verbosity:"
-msgstr "Eddala lya Verbosity"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:140
-#, fuzzy
 msgid "&Filter:"
-msgstr "Sengejja:"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:141
 msgid "&Save as..."
@@ -27061,9 +27059,8 @@ msgid "Modules Tree"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:263
-#, fuzzy
 msgid "Show extended options"
-msgstr "Laga entegeka ezeyogedeyo"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:265
 msgid "Show &more options"
@@ -27082,19 +27079,16 @@ msgid "MRL"
 msgstr "MRL"
 
 #: modules/gui/qt/ui/open.h:272
-#, fuzzy
 msgid "Start Time"
-msgstr "Obudde Wotandikira"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:273
-#, fuzzy
 msgid "Stop Time"
-msgstr "Genda ku Biseera"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
-#, fuzzy
 msgid "Edit Options"
-msgstr "Ebilala"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:275
 msgid "Extra media"
@@ -27105,37 +27099,32 @@ msgid "Complete MRL for VLC internal"
 msgstr "Maliriza MRL kulwa VLC yamunda"
 
 #: modules/gui/qt/ui/open.h:280
-#, fuzzy
 msgid "Select the file"
-msgstr "Londa fayiro"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:284
-#, fuzzy
 msgid "Change the start time for the media"
-msgstr "Kyusa ekwata kulwe mpuuliziganya"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:286 modules/gui/qt/ui/open.h:290
 msgid "HH'H':mm'm':ss's'.zzz"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:288
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "Kyusa ekwata kulwe mpuuliziganya"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:291
 msgid "Play another media synchronously (extra audio file, ...)"
 msgstr "Zanya eddoboozzi eddala kinemu (extra audio file, ...)"
 
 #: modules/gui/qt/ui/open_capture.h:97
-#, fuzzy
 msgid "Capture mode"
-msgstr "Kwata"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:99
-#, fuzzy
 msgid "Select the capture device type"
-msgstr "Londa kuva kumu wotereka "
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:101
 msgid "Device Selection"
@@ -27154,56 +27143,48 @@ msgid "Advanced options..."
 msgstr "Ebilondwamu ebisunkawo..."
 
 #: modules/gui/qt/ui/open_disk.h:297
-#, fuzzy
 msgid "Disc Selection"
-msgstr "Okulonda Ekikozesidwa"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:301
 msgid "SVCD/VCD"
 msgstr "SVCD/VCD"
 
 #: modules/gui/qt/ui/open_disk.h:303
-#, fuzzy
 msgid "Disable Disc Menus"
-msgstr "Sobozesa"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:305
 msgid "No disc menus"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:306
-#, fuzzy
 msgid "Disc device"
-msgstr "Kilagidwa"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:308
-#, fuzzy
 msgid "Starting Position"
-msgstr "Ekifo"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:311
-#, fuzzy
 msgid "Audio and Subtitles"
-msgstr "Fayiro za Malobozi"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:144
-#, fuzzy
 msgid "Use a sub&title file"
-msgstr "Gatta obutundu bwa fayiro"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:146
-#, fuzzy
 msgid "Select the subtitle file"
-msgstr "Londa kimu oba fayiro nyigi"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:150
 msgid "Choose one or more media file to open"
 msgstr "Londamu kimu oba ebisingawo mu fayiro ze mpuuliziganya kuggulawo"
 
 #: modules/gui/qt/ui/open_file.h:152
-#, fuzzy
 msgid "File Selection"
-msgstr "Okulonda Ekikozesidwa"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:153
 msgid "You can select local files with the following list and buttons."
@@ -27214,18 +27195,16 @@ msgid "Add..."
 msgstr "Gatta..."
 
 #: modules/gui/qt/ui/open_net.h:97
-#, fuzzy
 msgid "Network Protocol"
-msgstr "Obugobelezi"
+msgstr ""
 
 #: modules/gui/qt/ui/open_net.h:98
 msgid "Please enter a network URL:"
 msgstr "Mwattu nyigiza URL yomukuttu:"
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "Profile edition"
-msgstr "Erinnya ly`Ebikukwatako"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "FLAC"
@@ -27272,9 +27251,8 @@ msgid "Webm"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:713
-#, fuzzy
 msgid "MPEG &1"
-msgstr "MPEG 1 Entereza"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:714
 msgid "AVI"
@@ -27289,94 +27267,80 @@ msgid "MP&3"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:717
-#, fuzzy
 msgid "Features"
-msgstr "Kwata"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:719
-#, fuzzy
 msgid "Streamable"
-msgstr "Ekyokugobberera edala lya bbiti"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:720
-#, fuzzy
 msgid "Chapters"
-msgstr "Omulamwa"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:723
-#, fuzzy
 msgid "Menus"
-msgstr "Ebirimu"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:730
 msgid "Fra&me Rate"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:731
-#, fuzzy
 msgid "Same as source"
-msgstr "Ensibiko"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:733
 msgid " fps"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734
-#, fuzzy
 msgid "Custom options"
-msgstr "Ebilala"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:735
-#, fuzzy
 msgid "&Quality"
-msgstr "Kikoleka-Oluvanyuma Kumutindo"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
-#, fuzzy
 msgid "Not Used"
-msgstr "Tteri Tegeka"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:738 modules/gui/qt/ui/profiles.h:757
 msgid " kb/s"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
-#, fuzzy
 msgid "Encoding parameters"
-msgstr "Gaziya Ebanga"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:742
-#, fuzzy
 msgid "Frame size"
-msgstr "Fulemu"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
 msgid "px"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:758
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "Ebeyi Elabibwako"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:766
-#, fuzzy
 msgid "Profile &Name"
-msgstr "Erinnya ly`Ebikukwatako"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:203
 msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:205
-#, fuzzy
 msgid "Destination Setup"
-msgstr "Wolaga"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:206
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr "Londa kuva kumu wotereka "
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:207
 msgid ""
@@ -27385,41 +27349,36 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:208
-#, fuzzy
 msgid "New destination"
-msgstr "Wolaga"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:210
 msgid "Display locally"
 msgstr "Yannukula nga bulijjo"
 
 #: modules/gui/qt/ui/sout.h:212
-#, fuzzy
 msgid "Transcoding Options"
-msgstr "Enkusike Ebyagalwa"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:213
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "Okugobberera era Enkusike Ebyagalwa"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:214
 msgid "Activate Transcoding"
 msgstr "Zumbulusa Ewandiika"
 
 #: modules/gui/qt/ui/sout.h:215
-#, fuzzy
 msgid "Option Setup"
-msgstr "Ebilala"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:216
 msgid "Set up any additional options for streaming"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:217
-#, fuzzy
 msgid "Miscellaneous Options"
-msgstr "Ebilondwamu nga sibiteekateeke"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:218
 msgid "Stream all elementary streams"
@@ -27450,9 +27409,8 @@ msgid "Visualization:"
 msgstr "Eddabika:"
 
 #: modules/gui/qt/ui/sprefs_audio.h:422
-#, fuzzy
 msgid "Enable Time-Stretching audio"
-msgstr "Nsobozesa eddobozzi"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:423
 msgid "Replay gain mode:"
@@ -27467,18 +27425,16 @@ msgid "Tracks"
 msgstr "Goberera"
 
 #: modules/gui/qt/ui/sprefs_audio.h:426
-#, fuzzy
 msgid "Preferred audio language:"
-msgstr "Elimi lye ddoboozi Elyagalwa"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:427
 msgid "Password:"
 msgstr "Akasumuluzo:"
 
 #: modules/gui/qt/ui/sprefs_audio.h:428
-#, fuzzy
 msgid "Username:"
-msgstr "Erinnya lyo mukozesa"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:429
 msgid "Submit played tracks stats to Last.fm"
@@ -27493,9 +27449,8 @@ msgid "x264 profile and level selection"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:359
-#, fuzzy
 msgid "Hardware-accelerated decoding"
-msgstr "Ekikozese ekitereka fulemu"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:360
 msgid "Video quality post-processing level"
@@ -27514,23 +27469,20 @@ msgid "Optical drive"
 msgstr "Disiki esoma zadisiki"
 
 #: modules/gui/qt/ui/sprefs_input.h:365
-#, fuzzy
 msgid "Default optical device"
-msgstr "Ekikozesidwa Eddobozzi"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:369
 msgid "Damaged or incomplete AVI file"
 msgstr "Fayiro za AVI zononedwa oba tekiwende"
 
 #: modules/gui/qt/ui/sprefs_input.h:372
-#, fuzzy
 msgid "HTTP proxy URL"
-msgstr "HTTP Pulox"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:373
-#, fuzzy
 msgid "HTTP (default)"
-msgstr "Ky`enkalakalira"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:374
 msgid "RTP over RTSP (TCP)"
@@ -27541,9 +27493,8 @@ msgid "Live555 stream transport"
 msgstr "Live555 ekyokugoberera muwereza"
 
 #: modules/gui/qt/ui/sprefs_input.h:376
-#, fuzzy
 msgid "Default caching policy"
-msgstr "Edala Lyompi Lyekalira"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:531
 msgid "Menus language:"
@@ -27568,14 +27519,12 @@ msgid "Use native style"
 msgstr "Kozesa enkola yo luganda"
 
 #: modules/gui/qt/ui/sprefs_interface.h:538
-#, fuzzy
 msgid "Resize interface to video size"
-msgstr "Fuza ekipimo kye nkolagano ku bugazi bwaligjo mu vidiyo "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:539
-#, fuzzy
 msgid "Show controls in full screen mode"
-msgstr "Laga efunga ku gyeri ya sikulini yona"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:540
 msgid "Pause playback when minimized"
@@ -27586,23 +27535,20 @@ msgid "Show media change popup:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:542
-#, fuzzy
 msgid "Start in minimal view mode"
-msgstr "Ntandiikira mu labika ye wasi (nga terina ebirimu)"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
 msgid "Force window style:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
-#, fuzzy
 msgid "Integrate video in interface"
-msgstr "Ekweka ya maemo enkolagano"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:545
-#, fuzzy
 msgid "Show systray icon"
-msgstr "Sys bawero ya kakoni"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
 msgid "Auto raising the interface:"
@@ -27613,9 +27559,8 @@ msgid "Skin resource file:"
 msgstr "Bika esibiko ya fayiro:"
 
 #: modules/gui/qt/ui/sprefs_interface.h:549
-#, fuzzy
 msgid "Playlist and Instances"
-msgstr "Fayiro yo Lukalala lwenyimba"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:552
 msgid "Pause on the last frame of a video"
@@ -27626,9 +27571,8 @@ msgid "Allow only one instance"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:557
-#, fuzzy
 msgid "Activate updates notifier"
-msgstr "Zza obungi bw'ebigja mu tegeeza"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:559
 msgid "Every "
@@ -27663,24 +27607,20 @@ msgid "Show media title on video start"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:294
-#, fuzzy
 msgid "Enable subtitles"
-msgstr "gattamu obutwe bwo kubiri"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:295
-#, fuzzy
 msgid "Subtitle Language"
-msgstr "Obutundu bwe Mitwe mu Limi"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:297
-#, fuzzy
 msgid "Default encoding"
-msgstr "Enkusike Yekalira"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:298
-#, fuzzy
 msgid "Subtitle effects"
-msgstr "Fayiro zo butundu bwe mitwe"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Add a shadow"
@@ -27703,9 +27643,8 @@ msgid "Add a background"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:316
-#, fuzzy
 msgid "O&utput"
-msgstr "Ebivundemu:"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
 msgid "DirectX"
@@ -27716,19 +27655,16 @@ msgid "Accelerated video output (Overlay)"
 msgstr "Endima ya vidiyo enfulumye (Kwawamu)"
 
 #: modules/gui/qt/ui/sprefs_video.h:323
-#, fuzzy
 msgid "KVA"
-msgstr "MKV"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:327
-#, fuzzy
 msgid "Deinterlacing"
-msgstr "Ddeinterlace"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:329
-#, fuzzy
 msgid "Force Aspect Ratio"
-msgstr "Ggalawo Egyero ye Kimpomo"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:334
 msgid "vlc-snap"
@@ -27739,32 +27675,28 @@ msgid "Stuff"
 msgstr "Abakola wamu"
 
 #: modules/gui/qt/ui/streampanel.h:173
-#, fuzzy
 msgid "Edit settings"
-msgstr "Entegeka za Maloboozi"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:174
-#, fuzzy
 msgid "Control"
-msgstr "Enfuga..."
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:175
 msgid "Run manually"
 msgstr "Ddukanya mubuntu"
 
 #: modules/gui/qt/ui/streampanel.h:176
-#, fuzzy
 msgid "Setup schedule"
-msgstr "Tegeka"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:177
 msgid "Run on schedule"
 msgstr "Ddukanyira ku nteekateeka"
 
 #: modules/gui/qt/ui/streampanel.h:178
-#, fuzzy
 msgid "Status"
-msgstr "Embeera"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:179
 msgid "P/P"
@@ -27775,23 +27707,20 @@ msgid "Prev"
 msgstr "Kwekanya"
 
 #: modules/gui/qt/ui/streampanel.h:183
-#, fuzzy
 msgid "Add Input"
-msgstr "Sunsula ku Bikozesa"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:184
 msgid "Edit Input"
 msgstr "Sunsula ku Bikozesa"
 
 #: modules/gui/qt/ui/streampanel.h:185
-#, fuzzy
 msgid "Clear List"
-msgstr "Gjawo"
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:148
-#, fuzzy
 msgid "Check for VLC updates"
-msgstr "Kebera kulwe &Bbigya..."
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:149
 msgid "Launching an update request..."
@@ -27811,14 +27740,12 @@ msgid ">HHHHHH;#"
 msgstr ">HHHHHH;#"
 
 #: modules/gui/qt/ui/video_effects.h:1243
-#, fuzzy
 msgid "Negate colors"
-msgstr "Kyusa langi"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1256
-#, fuzzy
 msgid "Colors"
-msgstr "Lagi"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1257
 msgid "Interactive Zoom"
@@ -27830,9 +27757,8 @@ msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1270
 #: modules/gui/qt/ui/video_effects.h:1287
-#, fuzzy
 msgid "..."
-msgstr "Gatta..."
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1275
 msgid "full"
@@ -27855,19 +27781,16 @@ msgid "Anaglyph 3D"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1290
-#, fuzzy
 msgid "Mirror"
-msgstr "Ensobi"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1294
-#, fuzzy
 msgid "Motion detect"
-msgstr "Okutambula okutalabika bulungi"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1295
-#, fuzzy
 msgid "Spatial blur"
-msgstr "Egaziya vidiyo"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1299
 msgid "Anti-Flickering"
@@ -27878,9 +27801,8 @@ msgid "Soften"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1301
-#, fuzzy
 msgid "Denoiser"
-msgstr "Okulekanya"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1302
 msgid "Spatial luma strength"
@@ -27899,9 +27821,8 @@ msgid "Temporal chroma strength"
 msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:286
-#, fuzzy
 msgid "VLM configurator"
-msgstr "&VLM Entegeka"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:287
 msgid "Media Manager Edition"
@@ -27928,9 +27849,8 @@ msgid "Select Output"
 msgstr "Londa Ebivundemu"
 
 #: modules/gui/qt/ui/vlm.h:294
-#, fuzzy
 msgid "Time Control"
-msgstr "Akabawo kebikola ke Biseera"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:295
 msgid "Mux Control"
@@ -28011,6 +27931,10 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgstr "Obusimu bwokumutwe bwetolode ebivaamu"
 
 #, fuzzy
+#~ msgid "Display device"
+#~ msgstr "Kilagidwa"
+
+#, fuzzy
 #~ msgid "Capture region heigh"
 #~ msgstr "Bwasikulini mubuwavu:"
 
@@ -28023,8 +27947,20 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgstr "Kikoleka-Oluvanyuma Kumutindo"
 
 #, fuzzy
+#~ msgid "High quality"
+#~ msgstr "Kikoleka-Oluvanyuma Kumutindo"
+
+#, fuzzy
 #~ msgid "Very high quality"
 #~ msgstr "Kikoleka-Oluvanyuma Kumutindo"
+
+#, fuzzy
+#~ msgid "YouTube Start Time"
+#~ msgstr "Obudde Wotandikira"
+
+#, fuzzy
+#~ msgid "Disable lua"
+#~ msgstr "Sobozesa"
 
 #, fuzzy
 #~ msgid "Display resolution"
@@ -28248,6 +28184,9 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgid "Click to mute or unmute the audio."
 #~ msgstr "Londa fayiro ku tereka"
 
+#~ msgid "User name"
+#~ msgstr "Erinnya lyo mukozesa"
+
 #~ msgid "Hide no user action dialogs"
 #~ msgstr "Kweka nga eleta akaboozi kenkola yo mukozesa"
 
@@ -28330,6 +28269,10 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #, fuzzy
 #~ msgid "Always continue"
 #~ msgstr "Kibera wagulu"
+
+#, fuzzy
+#~ msgid "Hardware Acceleration"
+#~ msgstr "Ekikozese ekitereka fulemu"
 
 #~ msgid "Show Fullscreen Controller"
 #~ msgstr "Laga Sikulinki mubujjuvu Enfuga"
@@ -28430,6 +28373,9 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgid "MPEG Transport Stream"
 #~ msgstr "MPEG Etabuza Ebingobberera"
 
+#~ msgid "MPEG 1 Format"
+#~ msgstr "MPEG 1 Entereza"
+
 #~ msgid "Enter the address of the computer to stream to."
 #~ msgstr "Nyigiza endagiriro ya kompyuta wo ngobberera."
 
@@ -28528,11 +28474,17 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgid "Save file to"
 #~ msgstr "Tereka fayiro ku"
 
+#~ msgid "Include subtitles"
+#~ msgstr "gattamu obutwe bwo kubiri"
+
 #~ msgid "No input selected"
 #~ msgstr "Tteri ebinyigizidwa ebilonze"
 
 #~ msgid "No valid destination"
 #~ msgstr "Tteri enkomerero etuufu"
+
+#~ msgid "Select the directory to save to"
+#~ msgstr "Londa kuva kumu wotereka "
 
 #~ msgid "No folder selected"
 #~ msgstr "Tteri terekero elilonde"
@@ -28765,6 +28717,10 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgstr "Ekitangaala kyobudde"
 
 #, fuzzy
+#~ msgid "DMX options"
+#~ msgstr "Ebilala"
+
+#, fuzzy
 #~ msgid "MoMoLight options"
 #~ msgstr "Sunsula Ebilondawamu"
 
@@ -28831,6 +28787,9 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #, fuzzy
 #~ msgid "Filter threshold (%)"
 #~ msgstr "Seegejja ekimpimo (%)"
+
+#~ msgid "MKV"
+#~ msgstr "MKV"
 
 #~ msgid "FLV"
 #~ msgstr "FLV"
@@ -28982,6 +28941,10 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ "Mac OS X OpenGL vidiyo ebivuddemu Bittini (Eggulawo eddirisa nga terina "
 #~ "bodda)"
 
+#, fuzzy
+#~ msgid "Add a subtitle file"
+#~ msgstr "Gatta obutundu bwa fayiro"
+
 #~ msgid "Album art download policy:"
 #~ msgstr "Enkola ya alibamu mukuwanula:"
 
@@ -29121,6 +29084,10 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgstr "Ebeyi yo`Lugo"
 
 #, fuzzy
+#~ msgid "B Frames"
+#~ msgstr "Fulemu"
+
+#, fuzzy
 #~ msgid "Bitrate peak"
 #~ msgstr "Omuwendo gwa bbiti"
 
@@ -29163,6 +29130,10 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #, fuzzy
 #~ msgid "OSS DSP device"
 #~ msgstr "Disiki ekikozesidwa"
+
+#, fuzzy
+#~ msgid "Default Audio Device"
+#~ msgstr "Ekikozesidwa Eddobozzi"
 
 #, fuzzy
 #~ msgid "Direct MV prediction mode."
@@ -29226,6 +29197,9 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgid "GNU/Linux osd/overlay framebuffer interface"
 #~ msgstr "GNU/Linux osd/overlay etereko tono lya fulemu enkolagana"
 
+#~ msgid "Maemo hildon interface"
+#~ msgstr "Ekweka ya maemo enkolagano"
+
 #~ msgid "Automatically save the volume on exit"
 #~ msgstr "Teleka eddoboozi nga ofuluma"
 
@@ -29269,6 +29243,9 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 
 #~ msgid "Enable Audio"
 #~ msgstr "Nsobozesa Eddoboozi"
+
+#~ msgid "HTTP Proxy"
+#~ msgstr "HTTP Pulox"
 
 #~ msgid "Font Size"
 #~ msgstr "Lagi ye Nukuta"
@@ -29468,6 +29445,10 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgstr "Endagiriro3D engeri ya Sikulini"
 
 #, fuzzy
+#~ msgid "Stream Name"
+#~ msgstr "Ekyokugobberera edala lya bbiti"
+
+#, fuzzy
 #~ msgid "Video Codec"
 #~ msgstr "Ebikka ya vidiyo"
 
@@ -29476,12 +29457,20 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgstr "Ebikka ye ddoboozzi"
 
 #, fuzzy
+#~ msgid "Subtitle Codec"
+#~ msgstr "Fayiro zo butundu bwe mitwe"
+
+#, fuzzy
 #~ msgid "Video Bit Rate"
 #~ msgstr "Segejja Vidiyo"
 
 #, fuzzy
 #~ msgid "Audio Bit Rate"
 #~ msgstr "Goberera eddobozzi"
+
+#, fuzzy
+#~ msgid "Audio Sample Rate"
+#~ msgstr "Ebeyi Elabibwako"
 
 #, fuzzy
 #~ msgid "MUX Options"
@@ -29538,6 +29527,10 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #, fuzzy
 #~ msgid "Enqueue files when in one instance mode"
 #~ msgstr "Fayiro ezeddirira nga zefaniriza engeri"
+
+#, fuzzy
+#~ msgid "Subtitles Language"
+#~ msgstr "Obutundu bwe Mitwe mu Limi"
 
 #, fuzzy
 #~ msgid "Black slot"
@@ -29696,6 +29689,10 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgid "Quiet mode."
 #~ msgstr "Engeri yo kukwata"
 
+#, fuzzy
+#~ msgid "Motion blue"
+#~ msgstr "Okutambula okutalabika bulungi"
+
 #~ msgid "Disable DVD Menus (for compatibility)"
 #~ msgstr "Jjamu Ebirimu bya DVD (Kulwe kwataganya)"
 
@@ -29766,6 +29763,10 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #, fuzzy
 #~ msgid "Video4Linux"
 #~ msgstr "S-VIDEO ebinyigize"
+
+#, fuzzy
+#~ msgid "default"
+#~ msgstr "Ky`enkalakalira"
 
 #, fuzzy
 #~ msgid "No Audio Device"
@@ -29868,6 +29869,9 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgid "Audio Filter"
 #~ msgstr "Sengejja Eddoboozi"
 
+#~ msgid "Controller..."
+#~ msgstr "Enfuga..."
+
 #~ msgid "Equalizer..."
 #~ msgstr "Eyekanisa..."
 
@@ -29930,12 +29934,20 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 #~ msgstr "Yamba"
 
 #, fuzzy
+#~ msgid "[Miscellaneous]"
+#~ msgstr "Ebilondwamu nga sibiteekateeke"
+
+#, fuzzy
 #~ msgid " Information "
 #~ msgstr "Amawulire"
 
 #, fuzzy
 #~ msgid "No item currently playing"
 #~ msgstr "Tteri bintu mu lukalala lwe nyimba"
+
+#, fuzzy
+#~ msgid " Stats "
+#~ msgstr "Embeera"
 
 #~ msgid "Input caching:"
 #~ msgstr "Nyigiza akatereka okumpi:"
@@ -29954,6 +29966,9 @@ msgstr "Olukalala lwe Mpulizinganya Enfugga"
 
 #~ msgid "C&lear"
 #~ msgstr "G&jawo"
+
+#~ msgid "Verbosity Level"
+#~ msgstr "Eddala lya Verbosity"
 
 #~ msgid "Message filter"
 #~ msgstr "Akasengejja obubaka"

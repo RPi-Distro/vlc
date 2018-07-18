@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:29+0200\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Georgian (https://www.transifex.com/yaron/teams/16553/ka/)\n"
@@ -27008,9 +27008,8 @@ msgstr ""
 
 #: modules/gui/qt/ui/about.h:288 modules/gui/qt/ui/open.h:260
 #: modules/gui/qt/ui/podcast_configuration.h:100
-#, fuzzy
 msgid "Dialog"
-msgstr "ტაგალოგი"
+msgstr ""
 
 #: modules/gui/qt/ui/equalizer.h:132 modules/gui/qt/ui/open_disk.h:296
 #: modules/gui/qt/ui/open_net.h:96 modules/gui/qt/ui/sprefs_audio.h:409
@@ -27018,9 +27017,8 @@ msgstr "ტაგალოგი"
 #: modules/gui/qt/ui/sprefs_interface.h:529
 #: modules/gui/qt/ui/sprefs_subtitles.h:289
 #: modules/gui/qt/ui/sprefs_video.h:313 modules/gui/qt/ui/streampanel.h:167
-#, fuzzy
 msgid "Form"
-msgstr "ფორმატი"
+msgstr ""
 
 #: modules/gui/qt/ui/equalizer.h:135
 msgid "Preset"
@@ -27035,71 +27033,60 @@ msgid "&Verbosity:"
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:140
-#, fuzzy
 msgid "&Filter:"
-msgstr "ფილტრი:"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:141
-#, fuzzy
 msgid "&Save as..."
-msgstr "დაკვრის სიის შენახვა..."
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:143
 msgid "Modules Tree"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:263
-#, fuzzy
 msgid "Show extended options"
-msgstr "აჩვენე დამატებითი პარამეტრები"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:265
-#, fuzzy
 msgid "Show &more options"
-msgstr "აჩვენე დამატებითი პარამეტრები"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:268
 msgid "Change the caching for the media"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:270
-#, fuzzy
 msgid " ms"
-msgstr "mms"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:271
-#, fuzzy
 msgid "MRL"
-msgstr "MRL:"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:272
-#, fuzzy
 msgid "Start Time"
-msgstr "დაწყების დრო"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:273
-#, fuzzy
 msgid "Stop Time"
-msgstr "დაწყების დრო"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
-#, fuzzy
 msgid "Edit Options"
-msgstr "ოფციები"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:275
-#, fuzzy
 msgid "Extra media"
-msgstr "ავტორის მეტა ინფორმაცია"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:277
 msgid "Complete MRL for VLC internal"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:280
-#, fuzzy
 msgid "Select the file"
-msgstr "ფაილის არჩევა"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:284
 msgid "Change the start time for the media"
@@ -27118,24 +27105,20 @@ msgid "Play another media synchronously (extra audio file, ...)"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:97
-#, fuzzy
 msgid "Capture mode"
-msgstr "სტერეო მოდუსი"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:99
-#, fuzzy
 msgid "Select the capture device type"
-msgstr "ფაილის არჩევა"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:101
-#, fuzzy
 msgid "Device Selection"
-msgstr "&არჩეული"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:102
-#, fuzzy
 msgid "Options"
-msgstr "ოფციები"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:104
 msgid "Access advanced options to tweak the device"
@@ -27146,56 +27129,48 @@ msgid "Advanced options..."
 msgstr "დამატებითი ოფციები..."
 
 #: modules/gui/qt/ui/open_disk.h:297
-#, fuzzy
 msgid "Disc Selection"
-msgstr "&არჩეული"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:301
 msgid "SVCD/VCD"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:303
-#, fuzzy
 msgid "Disable Disc Menus"
-msgstr "ეკრანდამცავის გამორთვა"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:305
 msgid "No disc menus"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:306
-#, fuzzy
 msgid "Disc device"
-msgstr "მოწყობილობები"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:308
-#, fuzzy
 msgid "Starting Position"
-msgstr "პოზიცია"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:311
-#, fuzzy
 msgid "Audio and Subtitles"
-msgstr "ფორმატირებული ტიტრები"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:144
-#, fuzzy
 msgid "Use a sub&title file"
-msgstr "ტიტრების ფაილის გამოყენება"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:146
-#, fuzzy
 msgid "Select the subtitle file"
-msgstr "ტიტრების ფაილის გამოყენება"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:150
 msgid "Choose one or more media file to open"
 msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:152
-#, fuzzy
 msgid "File Selection"
-msgstr "&არჩეული"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:153
 msgid "You can select local files with the following list and buttons."
@@ -27206,73 +27181,64 @@ msgid "Add..."
 msgstr ""
 
 #: modules/gui/qt/ui/open_net.h:97
-#, fuzzy
 msgid "Network Protocol"
-msgstr "პროტოკოლი:"
+msgstr ""
 
 #: modules/gui/qt/ui/open_net.h:98
 msgid "Please enter a network URL:"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "Profile edition"
-msgstr "პოზიცია"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "FLAC"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:703
-#, fuzzy
 msgid "MP&4/MOV"
-msgstr "MP4/MOV მუქსერი"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:704
-#, fuzzy
 msgid "Ogg/Ogm"
-msgstr "Ogg/OGM მუქსერი"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:705
 msgid "M&KV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:706
-#, fuzzy
 msgid "M&JPEG"
-msgstr "MJPEG:"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:707
-#, fuzzy
 msgid "MPEG-PS"
-msgstr "MJPEG"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:708
 msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:709
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "MJPEG"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:710
 msgid "RAW"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:711
-#, fuzzy
 msgid "WAV"
-msgstr "AVI"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:712
 msgid "Webm"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:713
-#, fuzzy
 msgid "MPEG &1"
-msgstr "MPEG1"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:714
 msgid "AVI"
@@ -27287,24 +27253,20 @@ msgid "MP&3"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:717
-#, fuzzy
 msgid "Features"
-msgstr "CPU-Features"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:719
-#, fuzzy
 msgid "Streamable"
-msgstr "ნაკადის სახელი"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:720
-#, fuzzy
 msgid "Chapters"
-msgstr "თავი"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:723
-#, fuzzy
 msgid "Menus"
-msgstr "მენიუ"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:730
 msgid "Fra&me Rate"
@@ -27319,14 +27281,12 @@ msgid " fps"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734
-#, fuzzy
 msgid "Custom options"
-msgstr "კონფიგურაციის ოფციები"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:735
-#, fuzzy
 msgid "&Quality"
-msgstr "ხარისხი:"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
 msgid "Not Used"
@@ -27337,42 +27297,36 @@ msgid " kb/s"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
-#, fuzzy
 msgid "Encoding parameters"
-msgstr "კოდირების ხარისხი"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:742
-#, fuzzy
 msgid "Frame size"
-msgstr "კადრი წამში"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
 msgid "px"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:758
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "კადრი წამში"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:766
-#, fuzzy
 msgid "Profile &Name"
-msgstr "ფაილის სახელი"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:203
 msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:205
-#, fuzzy
 msgid "Destination Setup"
-msgstr "სამიზნე"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:206
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr "დირექტორიის არჩევა"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:207
 msgid ""
@@ -27381,24 +27335,20 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:208
-#, fuzzy
 msgid "New destination"
-msgstr "სამიზნე"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:210
-#, fuzzy
 msgid "Display locally"
-msgstr "დისპლეი"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:212
-#, fuzzy
 msgid "Transcoding Options"
-msgstr "დამატებითი ოფციები"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:213
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "ამოირჩიე \"დამატებითი პარამეტრები\" ყველა პარამეტრის დასანახად."
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:214
 msgid "Activate Transcoding"
@@ -27413,27 +27363,24 @@ msgid "Set up any additional options for streaming"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:217
-#, fuzzy
 msgid "Miscellaneous Options"
-msgstr "სხვადასხვა"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:218
 msgid "Stream all elementary streams"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:219
-#, fuzzy
 msgid "Generated stream output string"
-msgstr "ნაკადის ფაილში შენახვა"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:412
 msgid " %"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:415
-#, fuzzy
 msgid "Output module:"
-msgstr "გასავალის მოდულები"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:418
 msgid "Use S/PDIF when available"
@@ -27444,19 +27391,16 @@ msgid "Effects"
 msgstr "ეფექტები"
 
 #: modules/gui/qt/ui/sprefs_audio.h:421
-#, fuzzy
 msgid "Visualization:"
-msgstr "ვიზუალიზაცია"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:422
-#, fuzzy
 msgid "Enable Time-Stretching audio"
-msgstr "ჩართე აუდიო"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:423
-#, fuzzy
 msgid "Replay gain mode:"
-msgstr "ფაილის არჩევა"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:424
 msgid "Normalize volume to:"
@@ -27467,37 +27411,32 @@ msgid "Tracks"
 msgstr "კვალი"
 
 #: modules/gui/qt/ui/sprefs_audio.h:426
-#, fuzzy
 msgid "Preferred audio language:"
-msgstr "აუდიოს ენა"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:427
-#, fuzzy
 msgid "Password:"
-msgstr "პაროლი"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:428
-#, fuzzy
 msgid "Username:"
-msgstr "მომხმარებლის სახელი"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:429
 msgid "Submit played tracks stats to Last.fm"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:357
-#, fuzzy
 msgid "Codecs"
-msgstr "კოდეკი"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:358
 msgid "x264 profile and level selection"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:359
-#, fuzzy
 msgid "Hardware-accelerated decoding"
-msgstr "ჩართვა"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:360
 msgid "Video quality post-processing level"
@@ -27516,41 +27455,36 @@ msgid "Optical drive"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:365
-#, fuzzy
 msgid "Default optical device"
-msgstr "ნაგულისხმევი აუდიო ხმის სიმაღლე"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:369
 msgid "Damaged or incomplete AVI file"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:372
-#, fuzzy
 msgid "HTTP proxy URL"
-msgstr "HTTP პროქსი"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:373
-#, fuzzy
 msgid "HTTP (default)"
-msgstr "ნაგულისხმევი"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:374
 msgid "RTP over RTSP (TCP)"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:375
-#, fuzzy
 msgid "Live555 stream transport"
-msgstr "ნაკადის ფაილში შენახვა"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:376
 msgid "Default caching policy"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:531
-#, fuzzy
 msgid "Menus language:"
-msgstr "აუდიოს ენა"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:532
 msgid "Look and feel"
@@ -27565,19 +27499,16 @@ msgid "This is VLC's default interface, with a native look and feel."
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:537
-#, fuzzy
 msgid "Use native style"
-msgstr "ტიტრების ფაილის გამოყენება"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:538
-#, fuzzy
 msgid "Resize interface to video size"
-msgstr "ვიდეოს დეინტერლაცია"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:539
-#, fuzzy
 msgid "Show controls in full screen mode"
-msgstr "ვიდეოს გაშვება სრულეკრანიან რეჟიმში"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:540
 msgid "Pause playback when minimized"
@@ -27588,38 +27519,32 @@ msgid "Show media change popup:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:542
-#, fuzzy
 msgid "Start in minimal view mode"
-msgstr "ვიდეოს გაშვება სრულეკრანიან რეჟიმში"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
-#, fuzzy
 msgid "Force window style:"
-msgstr "აქტიური ფანჯრები"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
-#, fuzzy
 msgid "Integrate video in interface"
-msgstr "ვიდეო დუიმი"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:545
-#, fuzzy
 msgid "Show systray icon"
-msgstr "აჩვენე ნაკადის პოზიცია"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "Ncurses ინტერფეისი"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Skin resource file:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:549
-#, fuzzy
 msgid "Playlist and Instances"
-msgstr "დაკვრა და შეჩერება"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:552
 msgid "Pause on the last frame of a video"
@@ -27654,38 +27579,32 @@ msgid "File extensions association"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:568
-#, fuzzy
 msgid "Set up associations..."
-msgstr "პარამეტრები..."
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:291
-#, fuzzy
 msgid "Enable On Screen Display (OSD)"
-msgstr "ჩართ. ეკრანი დისპლეი"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:292
 msgid "Show media title on video start"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:294
-#, fuzzy
 msgid "Enable subtitles"
-msgstr "სუბ-სურათების ჩართვა"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:295
-#, fuzzy
 msgid "Subtitle Language"
-msgstr "ტიტრების ენა"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:297
-#, fuzzy
 msgid "Default encoding"
-msgstr "დეკოდირება"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:298
-#, fuzzy
 msgid "Subtitle effects"
-msgstr "ტიტრები"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Add a shadow"
@@ -27708,33 +27627,28 @@ msgid "Add a background"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:316
-#, fuzzy
 msgid "O&utput"
-msgstr "URL"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
-#, fuzzy
 msgid "DirectX"
-msgstr "DirectShow"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:322
 msgid "Accelerated video output (Overlay)"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:323
-#, fuzzy
 msgid "KVA"
-msgstr "MOV"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:327
-#, fuzzy
 msgid "Deinterlacing"
-msgstr "დეინტერლაცია"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:329
-#, fuzzy
 msgid "Force Aspect Ratio"
-msgstr "სწორია შეფარდება"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:334
 msgid "vlc-snap"
@@ -27745,14 +27659,12 @@ msgid "Stuff"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:173
-#, fuzzy
 msgid "Edit settings"
-msgstr "აუდიო პარამეტრები"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:174
-#, fuzzy
 msgid "Control"
-msgstr "მართვის ინტერფეისები"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:175
 msgid "Run manually"
@@ -27767,39 +27679,32 @@ msgid "Run on schedule"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:178
-#, fuzzy
 msgid "Status"
-msgstr "სტატისტიკა"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:179
-#, fuzzy
 msgid "P/P"
-msgstr "UDP/RTP"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:182
-#, fuzzy
 msgid "Prev"
-msgstr "წინა"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:183
-#, fuzzy
 msgid "Add Input"
-msgstr "შესავალი"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:184
-#, fuzzy
 msgid "Edit Input"
-msgstr "შესავალი"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:185
-#, fuzzy
 msgid "Clear List"
-msgstr " გაწმენდა "
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:148
-#, fuzzy
 msgid "Check for VLC updates"
-msgstr "აცტომატური შემოწმება განახლებებზე"
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:149
 msgid "Launching an update request..."
@@ -27823,14 +27728,12 @@ msgid "Negate colors"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1256
-#, fuzzy
 msgid "Colors"
-msgstr "ფერი"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1257
-#, fuzzy
 msgid "Interactive Zoom"
-msgstr "ინტერფეისი"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1263
 msgid "Angle"
@@ -27862,19 +27765,16 @@ msgid "Anaglyph 3D"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1290
-#, fuzzy
 msgid "Mirror"
-msgstr "შეცდომა"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1294
-#, fuzzy
 msgid "Motion detect"
-msgstr "ავტო"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1295
-#, fuzzy
 msgid "Spatial blur"
-msgstr "ეკვალაიზერი"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1299
 msgid "Anti-Flickering"
@@ -27905,44 +27805,36 @@ msgid "Temporal chroma strength"
 msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:286
-#, fuzzy
 msgid "VLM configurator"
-msgstr "VLM კონფიგურაციის ფაილი"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:287
-#, fuzzy
 msgid "Media Manager Edition"
-msgstr "Media-ინფორმაცია"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:288
-#, fuzzy
 msgid "Name:"
-msgstr "სახელი"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:290
-#, fuzzy
 msgid "Input:"
-msgstr "შესავალი"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:291
-#, fuzzy
 msgid "Select Input"
-msgstr "არჩევა არა"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:292
-#, fuzzy
 msgid "Output:"
-msgstr "URL"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:293
-#, fuzzy
 msgid "Select Output"
-msgstr "არჩევა"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:294
-#, fuzzy
 msgid "Time Control"
-msgstr "ტაიმაუტი"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:295
 msgid "Mux Control"
@@ -27957,9 +27849,8 @@ msgid "AAAA; "
 msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:302
-#, fuzzy
 msgid "Media Manager List"
-msgstr "ფაილები"
+msgstr ""
 
 #~ msgid "Shows a sidebar in the main window listing media sources."
 #~ msgstr "ტიტრები"
@@ -28415,6 +28306,10 @@ msgstr "ფაილები"
 #~ msgstr "მუდმივად წინა პლანზე"
 
 #, fuzzy
+#~ msgid "Hardware Acceleration"
+#~ msgstr "ჩართვა"
+
+#, fuzzy
 #~ msgid "Show Fullscreen Controller"
 #~ msgstr "Telnet ინტერფეისი"
 
@@ -28633,6 +28528,14 @@ msgstr "ფაილები"
 #, fuzzy
 #~ msgid "No input selected"
 #~ msgstr "არა"
+
+#, fuzzy
+#~ msgid "No valid destination"
+#~ msgstr "სამიზნე"
+
+#, fuzzy
+#~ msgid "Select the directory to save to"
+#~ msgstr "დირექტორიის არჩევა"
 
 #~ msgid "No folder selected"
 #~ msgstr "არ არის ამორჩეული საქაღალდე"
@@ -29009,6 +28912,10 @@ msgstr "ფაილები"
 #~ msgid "Filter threshold (%)"
 #~ msgstr "სიკაშკაშე"
 
+#, fuzzy
+#~ msgid "MKV"
+#~ msgstr "MOV"
+
 #~ msgid "---  DVD Menu"
 #~ msgstr "---..DVD მენიუ"
 
@@ -29029,6 +28936,10 @@ msgstr "ფაილები"
 #, fuzzy
 #~ msgid "Subtitle track added"
 #~ msgstr "ტიტრების კვალი"
+
+#, fuzzy
+#~ msgid "Media in Zip"
+#~ msgstr "ფაილები"
 
 #~ msgid "Fast udp streaming"
 #~ msgstr "სწრაფი udp სტრიმინგი"
@@ -29134,6 +29045,10 @@ msgstr "ფაილები"
 #~ msgid "Open BDMV folder"
 #~ msgstr "ფაილის გახსნა..."
 
+#, fuzzy
+#~ msgid "Output module"
+#~ msgstr "გასავალის მოდულები"
+
 #~ msgid "Graphic Equalizer"
 #~ msgstr "გრაფიკული ეკვალაიზერი"
 
@@ -29195,6 +29110,9 @@ msgstr "ფაილები"
 #, fuzzy
 #~ msgid "General Input"
 #~ msgstr "ზოგადი"
+
+#~ msgid "CPU features"
+#~ msgstr "CPU-Features"
 
 #~ msgid "Quick &Open File..."
 #~ msgstr "ფაილის &ჩქარი გახსნა..."
@@ -29444,6 +29362,10 @@ msgstr "ფაილები"
 #~ msgstr "5.1"
 
 #, fuzzy
+#~ msgid "Default Audio Device"
+#~ msgstr "ნაგულისხმევი აუდიო ხმის სიმაღლე"
+
+#, fuzzy
 #~ msgid "RealVideo library decoder"
 #~ msgstr "Speex აუდიო დეკოდერი"
 
@@ -29681,6 +29603,10 @@ msgstr "ფაილები"
 
 #~ msgid "Font Size"
 #~ msgstr "შრიფტის ზომა"
+
+#, fuzzy
+#~ msgid "Preferred Subtitle Language"
+#~ msgstr "აუდიოს ენა"
 
 #, fuzzy
 #~ msgid "Force Bold"
@@ -29990,6 +29916,10 @@ msgstr "ფაილები"
 #~ msgstr "გასაღების ინტერვალი"
 
 #, fuzzy
+#~ msgid "On Screen Display menu"
+#~ msgstr "ჩართ. ეკრანი დისპლეი"
+
+#, fuzzy
 #~ msgid "Comma separated list of active windows, defaults to all"
 #~ msgstr "სია ის აქტიური -სკენ ყველა"
 
@@ -30010,6 +29940,10 @@ msgstr "ფაილები"
 #~ msgstr "აუდიო კოდეკი:"
 
 #, fuzzy
+#~ msgid "Subtitle Codec"
+#~ msgstr "ტიტრები"
+
+#, fuzzy
 #~ msgid "Video Bit Rate"
 #~ msgstr "ვიდეო:"
 
@@ -30022,12 +29956,20 @@ msgstr "ფაილები"
 #~ msgstr "აუდიო"
 
 #, fuzzy
+#~ msgid "MUX Options"
+#~ msgstr "ოფციები"
+
+#, fuzzy
 #~ msgid "Output Destination"
 #~ msgstr "ნიშნულება"
 
 #, fuzzy
 #~ msgid "Output File"
 #~ msgstr "გასავალი ფაილი"
+
+#, fuzzy
+#~ msgid "File Name"
+#~ msgstr "ფაილის სახელი"
 
 #, fuzzy
 #~ msgid "Rows:"
@@ -30065,12 +30007,20 @@ msgstr "ფაილები"
 #~ msgid "00000; "
 #~ msgstr "00:00:00"
 
+#, fuzzy
+#~ msgid "Destinations"
+#~ msgstr "სამიზნე"
+
 #~ msgid "Group name"
 #~ msgstr "ჯგუფის სახელი"
 
 #, fuzzy
 #~ msgid "Instances"
 #~ msgstr "ინტერფეისები"
+
+#, fuzzy
+#~ msgid "Subtitles Language"
+#~ msgstr "ტიტრების ენა"
 
 #, fuzzy
 #~ msgid "Black slot"
@@ -30189,6 +30139,10 @@ msgstr "ფაილები"
 #, fuzzy
 #~ msgid "Easy Stream"
 #~ msgstr "ნაკადი"
+
+#, fuzzy
+#~ msgid "Seek Time"
+#~ msgstr "დაწყების დრო"
 
 #, fuzzy
 #~ msgid "Graphical Equalizer"
@@ -30636,6 +30590,10 @@ msgstr "ფაილები"
 #~ msgstr "აუდიო"
 
 #, fuzzy
+#~ msgid "default"
+#~ msgstr "ნაგულისხმევი"
+
+#, fuzzy
 #~ msgid "No Audio Device"
 #~ msgstr "აუდიო მოწყობილობა"
 
@@ -30827,6 +30785,10 @@ msgstr "ფაილები"
 #~ msgid "Audio Filter"
 #~ msgstr "აუდიო ფილტრები"
 
+#, fuzzy
+#~ msgid "Controller..."
+#~ msgstr "მართვის ინტერფეისები"
+
 #~ msgid "Equalizer..."
 #~ msgstr "ეკვალაიზერი..."
 
@@ -30927,6 +30889,10 @@ msgstr "ფაილები"
 #, fuzzy
 #~ msgid "A new version of VLC("
 #~ msgstr "ეს VLC-ს ვერსია მოძველებულია."
+
+#, fuzzy
+#~ msgid "&Extra Metadata"
+#~ msgstr "ავტორის მეტა ინფორმაცია"
 
 #, fuzzy
 #~ msgid "&Codec Details"
@@ -31113,6 +31079,10 @@ msgstr "ფაილები"
 #~ msgstr "CDDB სერვერის მისამართი."
 
 #, fuzzy
+#~ msgid "Embed video in interface"
+#~ msgstr "ვიდეო დუიმი"
+
+#, fuzzy
 #~ msgid "Color fun"
 #~ msgstr "ფერი"
 
@@ -31152,6 +31122,10 @@ msgstr "ფაილები"
 #, fuzzy
 #~ msgid "Select the protocol for the URL."
 #~ msgstr "დირექტორიის არჩევა"
+
+#, fuzzy
+#~ msgid "Select the port used"
+#~ msgstr "ფაილის არჩევა"
 
 #~ msgid "Other codecs"
 #~ msgstr "სხვა კოდეკები"
@@ -31305,6 +31279,10 @@ msgstr "ფაილები"
 #~ msgstr "MPEG-4 ვიდეოს დემუქსერი"
 
 #, fuzzy
+#~ msgid "MPEG-4 V"
+#~ msgstr "MJPEG"
+
+#, fuzzy
 #~ msgid "BeOS standard API interface"
 #~ msgstr "ინტერფეისის დამატება"
 
@@ -31330,6 +31308,10 @@ msgstr "ფაილები"
 
 #~ msgid "VLC media player: Open Subtitle File"
 #~ msgstr "VLC მედია დამკვრელი: ტიტრების ფაილის გახსნა"
+
+#, fuzzy
+#~ msgid "Select None"
+#~ msgstr "არჩევა არა"
 
 #~ msgid "Sort Reverse"
 #~ msgstr "უკუღმად სორტირება"
@@ -31359,6 +31341,10 @@ msgstr "ფაილები"
 #~ msgstr "ვერტიკალური"
 
 #, fuzzy
+#~ msgid "Correct Aspect Ratio"
+#~ msgstr "სწორია შეფარდება"
+
+#, fuzzy
 #~ msgid "Stay On Top"
 #~ msgstr "ჩართ. ზემოთ"
 
@@ -31386,6 +31372,9 @@ msgstr "ფაილები"
 
 #~ msgid "00:00:00"
 #~ msgstr "00:00:00"
+
+#~ msgid "MRL:"
+#~ msgstr "MRL:"
 
 #~ msgid "Port:"
 #~ msgstr "პორტი:"
@@ -31425,6 +31414,12 @@ msgstr "ფაილები"
 #~ msgid "sout"
 #~ msgstr "sout"
 
+#~ msgid "mms"
+#~ msgstr "mms"
+
+#~ msgid "Protocol:"
+#~ msgstr "პროტოკოლი:"
+
 #, fuzzy
 #~ msgid "Transcode:"
 #~ msgstr "კოდირება"
@@ -31451,8 +31446,18 @@ msgstr "ფაილები"
 #~ msgid "Frequency:"
 #~ msgstr "სიხშირე:"
 
+#, fuzzy
+#~ msgid "Samplerate:"
+#~ msgstr "კადრი წამში"
+
+#~ msgid "Quality:"
+#~ msgstr "ხარისხი:"
+
 #~ msgid "Tuner:"
 #~ msgstr "ტუნერი:"
+
+#~ msgid "MJPEG:"
+#~ msgstr "MJPEG:"
 
 #, fuzzy
 #~ msgid "Decimation:"
@@ -31554,6 +31559,9 @@ msgstr "ფაილები"
 #~ msgid "TS"
 #~ msgstr "TS"
 
+#~ msgid "MPEG1"
+#~ msgstr "MPEG1"
+
 #~ msgid "OGG"
 #~ msgstr "OGG"
 
@@ -31598,6 +31606,9 @@ msgstr "ფაილები"
 #~ msgid "Announce Channel:"
 #~ msgstr "არხის ანონსი:"
 
+#~ msgid " Clear "
+#~ msgstr " გაწმენდა "
+
 #~ msgid " Save "
 #~ msgstr " შენახვა "
 
@@ -31637,12 +31648,20 @@ msgstr "ფაილები"
 #~ msgstr "ვიდეო პორტი"
 
 #, fuzzy
+#~ msgid "Select play mode"
+#~ msgstr "ფაილის არჩევა"
+
+#, fuzzy
 #~ msgid "Alignment:"
 #~ msgstr "მონაცემი"
 
 #, fuzzy
 #~ msgid "Default volume"
 #~ msgstr "ნაგულისხმევი აუდიო ხმის სიმაღლე"
+
+#, fuzzy
+#~ msgid "Disc Devices"
+#~ msgstr "მოწყობილობები"
 
 #, fuzzy
 #~ msgid "Server default port"
@@ -31834,12 +31853,19 @@ msgstr "ფაილები"
 #~ msgstr "FFmpeg ვიდეო ფილტრი"
 
 #, fuzzy
+#~ msgid "Autodetect"
+#~ msgstr "ავტო"
+
+#, fuzzy
 #~ msgid "Login:"
 #~ msgstr "შესვლა"
 
 #, fuzzy
 #~ msgid "New Node"
 #~ msgstr "ახალი"
+
+#~ msgid "UDP/RTP"
+#~ msgstr "UDP/RTP"
 
 #, fuzzy
 #~ msgid "UDP/RTP Multicast"
@@ -31959,6 +31985,10 @@ msgstr "ფაილები"
 #~ msgid "The above message had unknown vcdimager log level"
 #~ msgstr "უცნობი"
 
+#, fuzzy
+#~ msgid "spatializer"
+#~ msgstr "ეკვალაიზერი"
+
 #~ msgid "EsounD audio output"
 #~ msgstr "EsounD აუდიო გასავალი"
 
@@ -32052,6 +32082,14 @@ msgstr "ფაილები"
 #, fuzzy
 #~ msgid "Minimal View..."
 #~ msgstr "მინიმალური ინტერფეისი"
+
+#, fuzzy
+#~ msgid "Card Selection"
+#~ msgstr "&არჩეული"
+
+#, fuzzy
+#~ msgid "Outputs"
+#~ msgstr "URL"
 
 #, fuzzy
 #~ msgid ""

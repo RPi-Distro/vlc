@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:29+0200\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Kannada (https://www.transifex.com/yaron/teams/16553/kn/)\n"
@@ -28574,9 +28574,8 @@ msgid "Start Time"
 msgstr "ಸಮಯ ಪ್ರಾರಂಭಿಸಿ"
 
 #: modules/gui/qt/ui/open.h:273
-#, fuzzy
 msgid "Stop Time"
-msgstr "ಕೊನೆಯಾಗುವ ಸಮಯ"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
 msgid "Edit Options"
@@ -28603,9 +28602,8 @@ msgid "HH'H':mm'm':ss's'.zzz"
 msgstr "HH'H':mm'm':ss's'.zzz"
 
 #: modules/gui/qt/ui/open.h:288
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "ಮಾಧ್ಯಮದ ಪ್ರಾರಂಭ ಸಮಯವನ್ನು ಬದಲಾಯಿಸಿ"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:291
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -28704,9 +28702,8 @@ msgid "FLAC"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:703
-#, fuzzy
 msgid "MP&4/MOV"
-msgstr "MP4/MOV ಮಕ್ಸರ್"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:704
 msgid "Ogg/Ogm"
@@ -28729,9 +28726,8 @@ msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:709
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "MPEG-TS"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:710
 msgid "RAW"
@@ -28794,9 +28790,8 @@ msgid "Custom options"
 msgstr "ಇಚ್ಛೆಯ ಆಯ್ಕೆಗಳು"
 
 #: modules/gui/qt/ui/profiles.h:735
-#, fuzzy
 msgid "&Quality"
-msgstr "VBR ಗುಣಮಟ್ಟ"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
 msgid "Not Used"
@@ -28819,14 +28814,12 @@ msgid "px"
 msgstr "px"
 
 #: modules/gui/qt/ui/profiles.h:758
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "ಮಾದರಿ ಮಾಡಬೇಕಾಗಿರುವ ದರ"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:766
-#, fuzzy
 msgid "Profile &Name"
-msgstr "ವಿವರದ ಹೆಸರು"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:203
 msgid "Set up media sources to stream"
@@ -28961,9 +28954,8 @@ msgid "Skip H.264 in-loop deblocking filter"
 msgstr "H.264 ಇನ್ ಲೂಪ್ deblocking ಶೋಧಕವನ್ನು ಬಿಟ್ಟುಬಿಡಿ"
 
 #: modules/gui/qt/ui/sprefs_input.h:362
-#, fuzzy
 msgid "x264 preset and tuning selection"
-msgstr "x264 ಸ್ವವಿವರ ಮತ್ತು ಮಟ್ಟದ ಆಯ್ಕೆ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:364
 msgid "Optical drive"
@@ -29050,9 +29042,8 @@ msgid "Show systray icon"
 msgstr "Systray ಚಿಹ್ನೆಯನ್ನು ತೋರಿಸಿ"
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "Ncurses ಅಂತರ್ವರ್ತನ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Skin resource file:"
@@ -29143,9 +29134,8 @@ msgid "Add a background"
 msgstr "ಒಂದು ಹಿನ್ನೆಲೆಯನ್ನು ಸೇರಿಸಿ"
 
 #: modules/gui/qt/ui/sprefs_video.h:316
-#, fuzzy
 msgid "O&utput"
-msgstr "Output"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
 msgid "DirectX"
@@ -29302,29 +29292,24 @@ msgid "Soften"
 msgstr "ಮೃದುಗೊಳಿಸಿ"
 
 #: modules/gui/qt/ui/video_effects.h:1301
-#, fuzzy
 msgid "Denoiser"
-msgstr "HQ Denoiser 3D"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1302
-#, fuzzy
 msgid "Spatial luma strength"
-msgstr "Spatial ಲೂಮ strength (0-254)"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1303
-#, fuzzy
 msgid "Temporal luma strength"
-msgstr "ಅಲ್ಪಕಾಲಿಕ ಲೂಮ ಶಕ್ತಿ (0-254)"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1304
-#, fuzzy
 msgid "Spatial chroma strength"
-msgstr "ಪ್ರಾದೇಶಿಕ ವರ್ಣಶುದ್ಧತೆಯ ಶಕ್ತಿ (0-254)"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1305
-#, fuzzy
 msgid "Temporal chroma strength"
-msgstr "ಅಲ್ಪಕಾಲಿಕ ವರ್ಣಶುದ್ಧತೆಯ ಶಕ್ತಿ (0-254)"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:286
 msgid "VLM configurator"

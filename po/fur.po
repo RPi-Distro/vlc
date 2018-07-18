@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:29+0200\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Friulian (https://www.transifex.com/yaron/teams/16553/fur/)\n"
@@ -27029,9 +27029,8 @@ msgstr ""
 
 #: modules/gui/qt/ui/about.h:288 modules/gui/qt/ui/open.h:260
 #: modules/gui/qt/ui/podcast_configuration.h:100
-#, fuzzy
 msgid "Dialog"
-msgstr "Tagalog"
+msgstr ""
 
 #: modules/gui/qt/ui/equalizer.h:132 modules/gui/qt/ui/open_disk.h:296
 #: modules/gui/qt/ui/open_net.h:96 modules/gui/qt/ui/sprefs_audio.h:409
@@ -27055,57 +27054,48 @@ msgid "&Verbosity:"
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:140
-#, fuzzy
 msgid "&Filter:"
-msgstr "Filtris"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:141
-#, fuzzy
 msgid "&Save as..."
-msgstr "Sa&lve liste di riproduzion..."
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:143
 msgid "Modules Tree"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:263
-#, fuzzy
 msgid "Show extended options"
-msgstr "Mostre lis opzions avanzadis"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:265
-#, fuzzy
 msgid "Show &more options"
-msgstr "Mostre lis opzions avanzadis"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:268
-#, fuzzy
 msgid "Change the caching for the media"
-msgstr "Cambie il non mostrât pal servizi"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:270
-#, fuzzy
 msgid " ms"
-msgstr "mms"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:271
 msgid "MRL"
 msgstr "MRL"
 
 #: modules/gui/qt/ui/open.h:272
-#, fuzzy
 msgid "Start Time"
-msgstr "Timp iniziâl"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:273
-#, fuzzy
 msgid "Stop Time"
-msgstr "Timp finâl"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
-#, fuzzy
 msgid "Edit Options"
-msgstr "Opzions jutori"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:275
 msgid "Extra media"
@@ -27116,47 +27106,40 @@ msgid "Complete MRL for VLC internal"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:280
-#, fuzzy
 msgid "Select the file"
-msgstr "Sielç un file"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:284
-#, fuzzy
 msgid "Change the start time for the media"
-msgstr "Cambie il non mostrât pal servizi"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:286 modules/gui/qt/ui/open.h:290
 msgid "HH'H':mm'm':ss's'.zzz"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:288
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "Cambie il non mostrât pal servizi"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:291
 msgid "Play another media synchronously (extra audio file, ...)"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:97
-#, fuzzy
 msgid "Capture mode"
-msgstr "Mût stereo"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:99
-#, fuzzy
 msgid "Select the capture device type"
-msgstr "Selezionât"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:101
-#, fuzzy
 msgid "Device Selection"
-msgstr "Selezione nuie"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:102
-#, fuzzy
 msgid "Options"
-msgstr "Opzions jutori"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:104
 msgid "Access advanced options to tweak the device"
@@ -27167,56 +27150,48 @@ msgid "Advanced options..."
 msgstr "Opzions avanzadis..."
 
 #: modules/gui/qt/ui/open_disk.h:297
-#, fuzzy
 msgid "Disc Selection"
-msgstr "Selezione nuie"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:301
 msgid "SVCD/VCD"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:303
-#, fuzzy
 msgid "Disable Disc Menus"
-msgstr "Disative il salve-visôr"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:305
 msgid "No disc menus"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:306
-#, fuzzy
 msgid "Disc device"
-msgstr "Dispositîf DVD"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:308
-#, fuzzy
 msgid "Starting Position"
-msgstr "Posizion"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:311
-#, fuzzy
 msgid "Audio and Subtitles"
-msgstr "Vierç i sot titui"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:144
-#, fuzzy
 msgid "Use a sub&title file"
-msgstr "Dopre file sot titui"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:146
-#, fuzzy
 msgid "Select the subtitle file"
-msgstr "Rileve in automatic files dai sot titui"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:150
 msgid "Choose one or more media file to open"
 msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:152
-#, fuzzy
 msgid "File Selection"
-msgstr "Selezione nuie"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:153
 msgid "You can select local files with the following list and buttons."
@@ -27227,18 +27202,16 @@ msgid "Add..."
 msgstr ""
 
 #: modules/gui/qt/ui/open_net.h:97
-#, fuzzy
 msgid "Network Protocol"
-msgstr "Protocol:"
+msgstr ""
 
 #: modules/gui/qt/ui/open_net.h:98
 msgid "Please enter a network URL:"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "Profile edition"
-msgstr "Posizion"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "FLAC"
@@ -27257,41 +27230,36 @@ msgid "M&KV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:706
-#, fuzzy
 msgid "M&JPEG"
-msgstr "MJPEG:"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:707
-#, fuzzy
 msgid "MPEG-PS"
-msgstr "MPEG 4"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:708
 msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:709
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "MPEG 4"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:710
 msgid "RAW"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:711
-#, fuzzy
 msgid "WAV"
-msgstr "AVI"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:712
 msgid "Webm"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:713
-#, fuzzy
 msgid "MPEG &1"
-msgstr "MPEG1"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:714
 msgid "AVI"
@@ -27306,19 +27274,16 @@ msgid "MP&3"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:717
-#, fuzzy
 msgid "Features"
-msgstr "Carateristichis CPU"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:719
-#, fuzzy
 msgid "Streamable"
-msgstr "Non dal flus"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:720
-#, fuzzy
 msgid "Chapters"
-msgstr "Cjapitul"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:723
 msgid "Menus"
@@ -27337,14 +27302,12 @@ msgid " fps"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734
-#, fuzzy
 msgid "Custom options"
-msgstr "Opzions di configurazion"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:735
-#, fuzzy
 msgid "&Quality"
-msgstr "Cualitât"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
 msgid "Not Used"
@@ -27359,37 +27322,32 @@ msgid "Encoding parameters"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:742
-#, fuzzy
 msgid "Frame size"
-msgstr "Frecuence fotograms"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
 msgid "px"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:758
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "Frecuence fotograms"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:766
-#, fuzzy
 msgid "Profile &Name"
-msgstr "Non dal file"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:203
 msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:205
-#, fuzzy
 msgid "Destination Setup"
-msgstr "Destinazion"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:206
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr "Sielç la cartele dulà salvâ"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:207
 msgid ""
@@ -27398,24 +27356,20 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:208
-#, fuzzy
 msgid "New destination"
-msgstr "Destinazion"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:210
-#, fuzzy
 msgid "Display locally"
-msgstr "Mostre"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:212
-#, fuzzy
 msgid "Transcoding Options"
-msgstr "Codifiche CBR"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:213
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "Sielç \"Opzions avanzadis\" par viodi dutis lis opzions."
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:214
 msgid "Activate Transcoding"
@@ -27430,9 +27384,8 @@ msgid "Set up any additional options for streaming"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:217
-#, fuzzy
 msgid "Miscellaneous Options"
-msgstr "Variis"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:218
 msgid "Stream all elementary streams"
@@ -27447,33 +27400,28 @@ msgid " %"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:415
-#, fuzzy
 msgid "Output module:"
-msgstr "Modui in jessude"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:418
 msgid "Use S/PDIF when available"
 msgstr "Dopre S/PDIF cuant che al è disponibil"
 
 #: modules/gui/qt/ui/sprefs_audio.h:420
-#, fuzzy
 msgid "Effects"
-msgstr "Efiet"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:421
-#, fuzzy
 msgid "Visualization:"
-msgstr "Viodudis"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:422
-#, fuzzy
 msgid "Enable Time-Stretching audio"
-msgstr "Ative audio"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:423
-#, fuzzy
 msgid "Replay gain mode:"
-msgstr "Sielç un file"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:424
 msgid "Normalize volume to:"
@@ -27484,37 +27432,32 @@ msgid "Tracks"
 msgstr "Tracis"
 
 #: modules/gui/qt/ui/sprefs_audio.h:426
-#, fuzzy
 msgid "Preferred audio language:"
-msgstr "Lenghe audio"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:427
-#, fuzzy
 msgid "Password:"
-msgstr "Peraule clâf"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:428
-#, fuzzy
 msgid "Username:"
-msgstr "Non utent"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:429
 msgid "Submit played tracks stats to Last.fm"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:357
-#, fuzzy
 msgid "Codecs"
-msgstr "Codec"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:358
 msgid "x264 profile and level selection"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:359
-#, fuzzy
 msgid "Hardware-accelerated decoding"
-msgstr "Mût stereo"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:360
 msgid "Video quality post-processing level"
@@ -27533,24 +27476,20 @@ msgid "Optical drive"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:365
-#, fuzzy
 msgid "Default optical device"
-msgstr "Dispositîfs predeterminâts"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:369
-#, fuzzy
 msgid "Damaged or incomplete AVI file"
-msgstr "Propietâts filtri figuris"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:372
-#, fuzzy
 msgid "HTTP proxy URL"
-msgstr "Proxy HTTP"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:373
-#, fuzzy
 msgid "HTTP (default)"
-msgstr "Predeterminât"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:374
 msgid "RTP over RTSP (TCP)"
@@ -27565,38 +27504,32 @@ msgid "Default caching policy"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:531
-#, fuzzy
 msgid "Menus language:"
-msgstr "Lenghe audio"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:532
 msgid "Look and feel"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:533
-#, fuzzy
 msgid "Use custom skin"
-msgstr "Sielç une mascare"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:535
-#, fuzzy
 msgid "This is VLC's default interface, with a native look and feel."
-msgstr "Dopre une interface minimâl, cence sbare dai imprescj e mancul menùs."
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:537
-#, fuzzy
 msgid "Use native style"
-msgstr "Dopre file sot titui"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:538
-#, fuzzy
 msgid "Resize interface to video size"
-msgstr "Mût stereo"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:539
-#, fuzzy
 msgid "Show controls in full screen mode"
-msgstr "Invie il video te modalitât su dut il visôr"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:540
 msgid "Pause playback when minimized"
@@ -27607,38 +27540,32 @@ msgid "Show media change popup:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:542
-#, fuzzy
 msgid "Start in minimal view mode"
-msgstr "Invie il video te modalitât su dut il visôr"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
-#, fuzzy
 msgid "Force window style:"
-msgstr "Barcons atîfs"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
-#, fuzzy
 msgid "Integrate video in interface"
-msgstr "Cambie interface"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:545
-#, fuzzy
 msgid "Show systray icon"
-msgstr "Icone dongje dal orloi"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "Interface Gtk+"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Skin resource file:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:549
-#, fuzzy
 msgid "Playlist and Instances"
-msgstr "Riprodûs e ferme"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:552
 msgid "Pause on the last frame of a video"
@@ -27673,38 +27600,32 @@ msgid "File extensions association"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:568
-#, fuzzy
 msgid "Set up associations..."
-msgstr "Impostazions"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:291
-#, fuzzy
 msgid "Enable On Screen Display (OSD)"
-msgstr "Mostre sul visôr"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:292
 msgid "Show media title on video start"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:294
-#, fuzzy
 msgid "Enable subtitles"
-msgstr "Zonte sot titui"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:295
-#, fuzzy
 msgid "Subtitle Language"
-msgstr "Lenghe sot titui"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:297
-#, fuzzy
 msgid "Default encoding"
-msgstr "Dispositîfs predeterminâts"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:298
-#, fuzzy
 msgid "Subtitle effects"
-msgstr "Ritart dai sot titui"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Add a shadow"
@@ -27727,33 +27648,28 @@ msgid "Add a background"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:316
-#, fuzzy
 msgid "O&utput"
-msgstr "URL de jessude"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
-#, fuzzy
 msgid "DirectX"
-msgstr "DirectShow"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:322
 msgid "Accelerated video output (Overlay)"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:323
-#, fuzzy
 msgid "KVA"
-msgstr "MOV"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:327
-#, fuzzy
 msgid "Deinterlacing"
-msgstr "Interface KDE"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:329
-#, fuzzy
 msgid "Force Aspect Ratio"
-msgstr "Fuarce la creazion dal indis"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:334
 msgid "vlc-snap"
@@ -27764,14 +27680,12 @@ msgid "Stuff"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:173
-#, fuzzy
 msgid "Edit settings"
-msgstr "Impostazions audio"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:174
-#, fuzzy
 msgid "Control"
-msgstr "Controi"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:175
 msgid "Run manually"
@@ -27786,18 +27700,16 @@ msgid "Run on schedule"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:178
-#, fuzzy
 msgid "Status"
-msgstr "Statistichis"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:179
 msgid "P/P"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:182
-#, fuzzy
 msgid "Prev"
-msgstr "Precedent"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:183
 msgid "Add Input"
@@ -27808,14 +27720,12 @@ msgid "Edit Input"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:185
-#, fuzzy
 msgid "Clear List"
-msgstr " Nete "
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:148
-#, fuzzy
 msgid "Check for VLC updates"
-msgstr "Controle inzornaments"
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:149
 msgid "Launching an update request..."
@@ -27839,24 +27749,21 @@ msgid "Negate colors"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1256
-#, fuzzy
 msgid "Colors"
-msgstr "Compilatôr: "
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1257
 msgid "Interactive Zoom"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1263
-#, fuzzy
 msgid "Angle"
-msgstr "Jungle"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1270
 #: modules/gui/qt/ui/video_effects.h:1287
-#, fuzzy
 msgid "..."
-msgstr "Vierç..."
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1275
 msgid "full"
@@ -27879,19 +27786,16 @@ msgid "Anaglyph 3D"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1290
-#, fuzzy
 msgid "Mirror"
-msgstr "Erôr"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1294
-#, fuzzy
 msgid "Motion detect"
-msgstr "Automatic"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1295
-#, fuzzy
 msgid "Spatial blur"
-msgstr "spaziâl"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1299
 msgid "Anti-Flickering"
@@ -27902,9 +27806,8 @@ msgid "Soften"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1301
-#, fuzzy
 msgid "Denoiser"
-msgstr "Rumôr"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1302
 msgid "Spatial luma strength"
@@ -27923,43 +27826,36 @@ msgid "Temporal chroma strength"
 msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:286
-#, fuzzy
 msgid "VLM configurator"
-msgstr "File di configurazion"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:287
 msgid "Media Manager Edition"
 msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:288
-#, fuzzy
 msgid "Name:"
-msgstr "Non"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:290
-#, fuzzy
 msgid "Input:"
-msgstr "Flus in jentrade"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:291
-#, fuzzy
 msgid "Select Input"
-msgstr "Sielç une mascare"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:292
-#, fuzzy
 msgid "Output:"
-msgstr "URL de jessude"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:293
-#, fuzzy
 msgid "Select Output"
-msgstr "Flus "
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:294
-#, fuzzy
 msgid "Time Control"
-msgstr "Ore"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:295
 msgid "Mux Control"
@@ -27974,9 +27870,8 @@ msgid "AAAA; "
 msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:302
-#, fuzzy
 msgid "Media Manager List"
-msgstr "Meditative"
+msgstr ""
 
 #~ msgid "Shows a sidebar in the main window listing media sources."
 #~ msgstr "Codifiche test dai sot titui"
@@ -28052,6 +27947,10 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "Headphone surround effect"
 #~ msgstr "Sielç un efiet"
+
+#, fuzzy
+#~ msgid "Display device"
+#~ msgstr "Mostre"
 
 #, fuzzy
 #~ msgid "Capture region heigh"
@@ -28440,6 +28339,10 @@ msgstr "Meditative"
 #~ msgstr "Simpri in prin plan"
 
 #, fuzzy
+#~ msgid "Hardware Acceleration"
+#~ msgstr "Mût stereo"
+
+#, fuzzy
 #~ msgid "Show Fullscreen Controller"
 #~ msgstr "Mostre interface"
 
@@ -28517,6 +28420,10 @@ msgstr "Meditative"
 #~ "video. Par cambiâ dome il formât contenitôr, va a la prossime pagjine."
 
 #, fuzzy
+#~ msgid "Transcode audio"
+#~ msgstr "Codifiche CBR"
+
+#, fuzzy
 #~ msgid "Transcode video"
 #~ msgstr "Codifiche CBR"
 
@@ -28569,11 +28476,18 @@ msgstr "Meditative"
 #~ msgid "Save file to"
 #~ msgstr "Salve file in"
 
+#, fuzzy
+#~ msgid "Include subtitles"
+#~ msgstr "Zonte sot titui"
+
 #~ msgid "No input selected"
 #~ msgstr "Nissune jentrade sielte"
 
 #~ msgid "No valid destination"
 #~ msgstr "Destinazion invalide"
+
+#~ msgid "Select the directory to save to"
+#~ msgstr "Sielç la cartele dulà salvâ"
 
 #~ msgid "No folder selected"
 #~ msgstr "Nissune cartele sielte"
@@ -28957,6 +28871,10 @@ msgstr "Meditative"
 #~ msgid "Filter threshold (%)"
 #~ msgstr "Liminâr"
 
+#, fuzzy
+#~ msgid "MKV"
+#~ msgstr "MOV"
+
 #~ msgid "---  DVD Menu"
 #~ msgstr "Dopre menu DVD"
 
@@ -28977,6 +28895,10 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "Subtitle track added"
 #~ msgstr "Trace dai sot titui"
+
+#, fuzzy
+#~ msgid "Media in Zip"
+#~ msgstr "Meditative"
 
 #, fuzzy
 #~ msgid "Path to the media in the Zip archive"
@@ -29001,6 +28923,10 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "VLC media player - Flash Viewer"
 #~ msgstr "Riprodutôr multimediâl VLC"
+
+#, fuzzy
+#~ msgid "Streaming Output"
+#~ msgstr "Flus "
 
 #~ msgid "Choose your preferred video output and configure it here."
 #~ msgstr "Sielç il to filtri video preferît e configurilu culì."
@@ -29085,6 +29011,10 @@ msgstr "Meditative"
 #~ msgstr "Vierç un file..."
 
 #, fuzzy
+#~ msgid "Output module"
+#~ msgstr "Modui in jessude"
+
+#, fuzzy
 #~ msgid "Graphic Equalizer"
 #~ msgstr "Ecualizatôr"
 
@@ -29130,6 +29060,9 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "General Input"
 #~ msgstr "Gjenerâl"
+
+#~ msgid "CPU features"
+#~ msgstr "Carateristichis CPU"
 
 #, fuzzy
 #~ msgid ""
@@ -29503,6 +29436,10 @@ msgstr "Meditative"
 #~ msgstr "Dimension caratars"
 
 #, fuzzy
+#~ msgid "Preferred Subtitle Language"
+#~ msgstr "Lenghe audio"
+
+#, fuzzy
 #~ msgid "Force Bold"
 #~ msgstr "Sfuarce IPv6"
 
@@ -29826,6 +29763,10 @@ msgstr "Meditative"
 #~ msgstr "Codec audio:"
 
 #, fuzzy
+#~ msgid "Subtitle Codec"
+#~ msgstr "Ritart dai sot titui"
+
+#, fuzzy
 #~ msgid "Video Bit Rate"
 #~ msgstr "Trace video"
 
@@ -29838,12 +29779,20 @@ msgstr "Meditative"
 #~ msgstr "Puarte audio"
 
 #, fuzzy
+#~ msgid "MUX Options"
+#~ msgstr "Opzions jutori"
+
+#, fuzzy
 #~ msgid "Output Destination"
 #~ msgstr "Destinazion"
 
 #, fuzzy
 #~ msgid "Output File"
 #~ msgstr "Modui in jessude"
+
+#, fuzzy
+#~ msgid "File Name"
+#~ msgstr "Non dal file"
 
 #, fuzzy
 #~ msgid "Rows:"
@@ -29891,6 +29840,10 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "Instances"
 #~ msgstr "Interfacis"
+
+#, fuzzy
+#~ msgid "Subtitles Language"
+#~ msgstr "Lenghe sot titui"
 
 #, fuzzy
 #~ msgid "Black slot"
@@ -30057,6 +30010,9 @@ msgstr "Meditative"
 #~ msgid "Motion blue"
 #~ msgstr "Filtris audio"
 
+#~ msgid "Effect"
+#~ msgstr "Efiet"
+
 #, fuzzy
 #~ msgid "Zoom playlist"
 #~ msgstr "Salve liste di riproduzion"
@@ -30202,6 +30158,10 @@ msgstr "Meditative"
 #~ msgstr "Ative audio"
 
 #, fuzzy
+#~ msgid "default"
+#~ msgstr "Predeterminât"
+
+#, fuzzy
 #~ msgid "No Audio Device"
 #~ msgstr "Dispositîf CD audio"
 
@@ -30216,6 +30176,10 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "Reload image file every n seconds."
 #~ msgstr "Filtris audio"
+
+#, fuzzy
+#~ msgid "Deinterlace module to use."
+#~ msgstr "Mût stereo"
 
 #, fuzzy
 #~ msgid "Memory video decoder"
@@ -30327,6 +30291,10 @@ msgstr "Meditative"
 #~ msgstr "Filtris audio"
 
 #, fuzzy
+#~ msgid "Controller..."
+#~ msgstr "Controi"
+
+#, fuzzy
 #~ msgid "Equalizer..."
 #~ msgstr "Ecualizatôr"
 
@@ -30404,12 +30372,20 @@ msgstr "Meditative"
 #~ msgstr "Logo"
 
 #, fuzzy
+#~ msgid " Stats "
+#~ msgstr "Statistichis"
+
+#, fuzzy
 #~ msgid " Playlist (By category) "
 #~ msgstr "Par categorie"
 
 #, fuzzy
 #~ msgid " Playlist (Manually added) "
 #~ msgstr "Zontadis a man"
+
+#, fuzzy
+#~ msgid "Input caching:"
+#~ msgstr "Flus in jentrade"
 
 #, fuzzy
 #~ msgid "Privacy and Network Warning"
@@ -30593,6 +30569,10 @@ msgstr "Meditative"
 #~ msgstr "Direzion dal ordenadôr a cui inviâ il flus."
 
 #, fuzzy
+#~ msgid "Embed video in interface"
+#~ msgstr "Cambie interface"
+
+#, fuzzy
 #~ msgid "Color fun"
 #~ msgstr "Compilatôr: "
 
@@ -30635,6 +30615,10 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "Select the protocol for the URL."
 #~ msgstr "Sielç la cartele dulà salvâ"
+
+#, fuzzy
+#~ msgid "Select the port used"
+#~ msgstr "Selezionât"
 
 #~ msgid "Other codecs"
 #~ msgstr "Altris codecs"
@@ -30757,6 +30741,10 @@ msgstr "Meditative"
 #~ msgid "MPEG-4 video demuxer"
 #~ msgstr "Filtris audio"
 
+#, fuzzy
+#~ msgid "MPEG-4 V"
+#~ msgstr "MPEG 4"
+
 #~ msgid "Use DVD Menus"
 #~ msgstr "Dopre i menus DVD"
 
@@ -30818,6 +30806,9 @@ msgstr "Meditative"
 #~ msgid "Take Screen Shot"
 #~ msgstr "Cjape istantanie dal visôr"
 
+#~ msgid "Check for Updates"
+#~ msgstr "Controle inzornaments"
+
 #~ msgid "Download now"
 #~ msgstr "Discjame cumò"
 
@@ -30827,6 +30818,10 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "Autoplay selected file"
 #~ msgstr "Riprodûs il flus sielt"
+
+#, fuzzy
+#~ msgid "PDA Linux Gtk2+ interface"
+#~ msgstr "Interface Gtk+"
 
 #~ msgid "Permissions"
 #~ msgstr "Permès"
@@ -30877,6 +30872,12 @@ msgstr "Meditative"
 #~ msgid "sout"
 #~ msgstr "sout"
 
+#~ msgid "mms"
+#~ msgstr "mms"
+
+#~ msgid "Protocol:"
+#~ msgstr "Protocol:"
+
 #, fuzzy
 #~ msgid "Transcode:"
 #~ msgstr "Codifiche CBR"
@@ -30902,6 +30903,16 @@ msgstr "Meditative"
 
 #~ msgid "Frequency:"
 #~ msgstr "Frequence"
+
+#, fuzzy
+#~ msgid "Samplerate:"
+#~ msgstr "Frecuence fotograms"
+
+#~ msgid "Quality:"
+#~ msgstr "Cualitât"
+
+#~ msgid "MJPEG:"
+#~ msgstr "MJPEG:"
 
 #, fuzzy
 #~ msgid "Decimation:"
@@ -30979,6 +30990,10 @@ msgstr "Meditative"
 #~ msgstr "Mût stereo"
 
 #, fuzzy
+#~ msgid "Deinterlace:"
+#~ msgstr "Interface KDE"
+
+#, fuzzy
 #~ msgid "Access:"
 #~ msgstr "Direzion:"
 
@@ -31000,6 +31015,9 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "TS"
 #~ msgstr "DTS"
+
+#~ msgid "MPEG1"
+#~ msgstr "MPEG1"
 
 #~ msgid "OGG"
 #~ msgstr "OGG"
@@ -31040,6 +31058,9 @@ msgstr "Meditative"
 #~ msgid "Announce Channel:"
 #~ msgstr "Canâl audio"
 
+#~ msgid " Clear "
+#~ msgstr " Nete "
+
 #~ msgid " Save "
 #~ msgstr " Salve "
 
@@ -31071,12 +31092,20 @@ msgstr "Meditative"
 #~ msgstr "Puarte video"
 
 #, fuzzy
+#~ msgid "Select play mode"
+#~ msgstr "Sielç un file"
+
+#, fuzzy
 #~ msgid "Alignment:"
 #~ msgstr "Ambient"
 
 #, fuzzy
 #~ msgid "Default volume"
 #~ msgstr "Volum predeterminât dal audio"
+
+#, fuzzy
+#~ msgid "Disc Devices"
+#~ msgstr "Dispositîf DVD"
 
 #, fuzzy
 #~ msgid "Server default port"
@@ -31240,6 +31269,10 @@ msgstr "Meditative"
 #~ msgstr "Filtris audio"
 
 #, fuzzy
+#~ msgid "Autodetect"
+#~ msgstr "Automatic"
+
+#, fuzzy
 #~ msgid "An error occured while saving your settings via SimplePrefs."
 #~ msgstr "Daûr a controlâ i inzornaments..."
 
@@ -31336,6 +31369,10 @@ msgstr "Meditative"
 #~ msgstr "Menù audio"
 
 #, fuzzy
+#~ msgid "spatializer"
+#~ msgstr "spaziâl"
+
+#, fuzzy
 #~ msgid "EsounD audio output"
 #~ msgstr "URL de jessude audio"
 
@@ -31420,6 +31457,10 @@ msgstr "Meditative"
 #~ msgstr "1 element inte liste di riproduzion"
 
 #, fuzzy
+#~ msgid "Open a VLM Configuration File"
+#~ msgstr "File di configurazion"
+
+#, fuzzy
 #~ msgid "&Playlist"
 #~ msgstr "Liste di scolte"
 
@@ -31442,6 +31483,10 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "Card Selection"
 #~ msgstr "Selezion invalide"
+
+#, fuzzy
+#~ msgid "Outputs"
+#~ msgstr "URL de jessude"
 
 #~ msgid ""
 #~ "All playlists|*.pls;*.m3u;*.asx;*.b4s;*.xspf|M3U files|*.m3u|XSPF "
@@ -31615,6 +31660,10 @@ msgstr "Meditative"
 #~ msgstr "Ore"
 
 #, fuzzy
+#~ msgid "Color:"
+#~ msgstr "Compilatôr: "
+
+#, fuzzy
 #~ msgid "Opaqueness:"
 #~ msgstr "Vierç:"
 
@@ -31624,6 +31673,10 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "Marquee:"
 #~ msgstr "Vierç:"
+
+#, fuzzy
+#~ msgid "Timeout:"
+#~ msgstr "Ore"
 
 #, fuzzy
 #~ msgid "Subtitles & OSD settings"
@@ -31663,6 +31716,9 @@ msgstr "Meditative"
 
 #~ msgid "Save Messages As..."
 #~ msgstr "Salve messaçs come..."
+
+#~ msgid "Open..."
+#~ msgstr "Vierç..."
 
 #, fuzzy
 #~ msgid "Stream/Save"
@@ -31710,6 +31766,9 @@ msgstr "Meditative"
 #~ msgid "&Add URL..."
 #~ msgstr "Zonte un file"
 
+#~ msgid "&Save Playlist..."
+#~ msgstr "Sa&lve liste di riproduzion..."
+
 #, fuzzy
 #~ msgid "Sort by &Title"
 #~ msgstr "Ordene par non"
@@ -31720,6 +31779,10 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "S&ort"
 #~ msgstr "Puarte"
+
+#, fuzzy
+#~ msgid "&Selection"
+#~ msgstr "Selezione nuie"
 
 #, fuzzy
 #~ msgid "&View items"
@@ -31962,6 +32025,10 @@ msgstr "Meditative"
 #~ msgid ""
 #~ "Show extended GUI (equalizer, image adjust, video filters...) at startup"
 #~ msgstr "Mostre la GUI estindude"
+
+#~ msgid "Use minimal interface, with no toolbar and fewer menus."
+#~ msgstr ""
+#~ "Dopre une interface minimâl, cence sbare dai imprescj e mancul menùs."
 
 #~ msgid "Size to video"
 #~ msgstr "Dimensions dal video"
@@ -32683,3 +32750,6 @@ msgstr "Meditative"
 #, fuzzy
 #~ msgid "Disk"
 #~ msgstr "Disc"
+
+#~ msgid "Open Subtitles"
+#~ msgstr "Vierç i sot titui"

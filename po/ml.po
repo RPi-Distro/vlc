@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:29+0200\n"
 "Last-Translator: Hrishikesh <hrishi.kb@gmail.com>, 2018\n"
 "Language-Team: Malayalam (https://www.transifex.com/yaron/teams/16553/ml/)\n"
@@ -28532,9 +28532,8 @@ msgid "Start Time"
 msgstr "തുടക്ക തീയതി"
 
 #: modules/gui/qt/ui/open.h:273
-#, fuzzy
 msgid "Stop Time"
-msgstr "സമയം നിര്‍ത്തുക"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
 msgid "Edit Options"
@@ -28561,9 +28560,8 @@ msgid "HH'H':mm'm':ss's'.zzz"
 msgstr "HH'H':mm'm':ss's'.zzz"
 
 #: modules/gui/qt/ui/open.h:288
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "മീഡിയയുടെ ആരംഭ സമയം മാറ്റുക"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:291
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -28891,9 +28889,8 @@ msgid "Username:"
 msgstr "ഉപയോക്തനാമം:"
 
 #: modules/gui/qt/ui/sprefs_audio.h:429
-#, fuzzy
 msgid "Submit played tracks stats to Last.fm"
-msgstr "last.fm ലേയ്ക്ക് വായിക്കപ്പെട്ട പാട്ടുകളുടെ സമര്‍പ്പണം"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:357
 msgid "Codecs"
@@ -28916,9 +28913,8 @@ msgid "Skip H.264 in-loop deblocking filter"
 msgstr "H.264 ഇന്‍-ലൂപ് ഡീബ്ലോക്കിങ്ങ് അരിപ്പയെ അവഗണിക്കുക "
 
 #: modules/gui/qt/ui/sprefs_input.h:362
-#, fuzzy
 msgid "x264 preset and tuning selection"
-msgstr "x264 പ്രൊഫൈലും നില തിരഞ്ഞെടുക്കലും"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:364
 msgid "Optical drive"
@@ -29005,9 +29001,8 @@ msgid "Show systray icon"
 msgstr "സിസ്ട്രേ ഐക്കണ്‍ കാണിക്കുക"
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "Ncurses പൊതുപ്രതലം"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Skin resource file:"
@@ -29098,9 +29093,8 @@ msgid "Add a background"
 msgstr "പശ്ചാത്തലം ചേര്‍ക്കുക"
 
 #: modules/gui/qt/ui/sprefs_video.h:316
-#, fuzzy
 msgid "O&utput"
-msgstr "ഔട്ട്പുട്ട്"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
 msgid "DirectX"
