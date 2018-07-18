@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:28+0200\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Amharic (https://www.transifex.com/yaron/teams/16553/am/)\n"
@@ -27037,14 +27037,12 @@ msgid "0.00 dB"
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:139
-#, fuzzy
 msgid "&Verbosity:"
-msgstr "የመረጃዎች ድረታ ደረጃ  "
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:140
-#, fuzzy
 msgid "&Filter:"
-msgstr "ማጣሪያ፡ "
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:141
 msgid "&Save as..."
@@ -27079,9 +27077,8 @@ msgid "Start Time"
 msgstr "መጀመሪያ ሰአት "
 
 #: modules/gui/qt/ui/open.h:273
-#, fuzzy
 msgid "Stop Time"
-msgstr "ወደ ሰአት ሂድ "
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
 msgid "Edit Options"
@@ -27108,9 +27105,8 @@ msgid "HH'H':mm'm':ss's'.zzz"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:288
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "ለማህደረ መረጃው የመጀመሪያች ሰአት ለውጥ "
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:291
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -27149,9 +27145,8 @@ msgid "SVCD/VCD"
 msgstr "ኤስቪሲዲ/ቪሲዲ "
 
 #: modules/gui/qt/ui/open_disk.h:303
-#, fuzzy
 msgid "Disable Disc Menus"
-msgstr "አንቃ "
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:305
 msgid "No disc menus"
@@ -27170,14 +27165,12 @@ msgid "Audio and Subtitles"
 msgstr "ተሰሚና ጽሁፋዊ ትርጉሞች "
 
 #: modules/gui/qt/ui/open_file.h:144
-#, fuzzy
 msgid "Use a sub&title file"
-msgstr "የጽሁፋዊ ትርጉሞች ፋይል አክል "
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:146
-#, fuzzy
 msgid "Select the subtitle file"
-msgstr "ፋይሉን ምረጥ "
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:150
 msgid "Choose one or more media file to open"
@@ -27204,9 +27197,8 @@ msgid "Please enter a network URL:"
 msgstr "እባክዎን የአውታረ መረብ ዩአርኤል ያሰገቡ"
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "Profile edition"
-msgstr "የመገለጫ ስም፡"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "FLAC"
@@ -27237,9 +27229,8 @@ msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:709
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "ኤምፒኢጂ-ፒኤስ"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:710
 msgid "RAW"
@@ -27254,9 +27245,8 @@ msgid "Webm"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:713
-#, fuzzy
 msgid "MPEG &1"
-msgstr "ኤምፒኢጂ 1 ቅርጸት "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:714
 msgid "AVI"
@@ -27271,94 +27261,80 @@ msgid "MP&3"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:717
-#, fuzzy
 msgid "Features"
-msgstr "ቅረጽ "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:719
-#, fuzzy
 msgid "Streamable"
-msgstr "ቢትሬት ልቀቅ "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:720
-#, fuzzy
 msgid "Chapters"
-msgstr "ምዕራፍ "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:723
-#, fuzzy
 msgid "Menus"
-msgstr "ምናሌ  "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:730
 msgid "Fra&me Rate"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:731
-#, fuzzy
 msgid "Same as source"
-msgstr "ምንጭ "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:733
 msgid " fps"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734
-#, fuzzy
 msgid "Custom options"
-msgstr "ምርጫዎች "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:735
-#, fuzzy
 msgid "&Quality"
-msgstr "ድህረ-ቅንበራ ጥራት "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
-#, fuzzy
 msgid "Not Used"
-msgstr "አልተዘጋጀም "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:738 modules/gui/qt/ui/profiles.h:757
 msgid " kb/s"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
-#, fuzzy
 msgid "Encoding parameters"
-msgstr "አዘራዛሪውን ማስረዘም "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:742
-#, fuzzy
 msgid "Frame size"
-msgstr "ንዑስ ክፈፎች "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
 msgid "px"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:758
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "የናሙና ፍጥነት "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:766
-#, fuzzy
 msgid "Profile &Name"
-msgstr "የመገለጫ ስም፡"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:203
 msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:205
-#, fuzzy
 msgid "Destination Setup"
-msgstr "መድረሻ "
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:206
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr "የሚቀመጥበትን ዕፀ ማውጫ ምረጥ "
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:207
 msgid ""
@@ -27375,23 +27351,20 @@ msgid "Display locally"
 msgstr "በአካባቢ አሳይ "
 
 #: modules/gui/qt/ui/sout.h:212
-#, fuzzy
 msgid "Transcoding Options"
-msgstr "ትራንስኮድ  ምርጫዎች "
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:213
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "የልቀት እና የትራንስኮድ አማራጮች "
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:214
 msgid "Activate Transcoding"
 msgstr "ገባሪ ትራንስኮድ "
 
 #: modules/gui/qt/ui/sout.h:215
-#, fuzzy
 msgid "Option Setup"
-msgstr "ምርጫዎች "
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:216
 msgid "Set up any additional options for streaming"
@@ -27470,9 +27443,8 @@ msgid "x264 profile and level selection"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:359
-#, fuzzy
 msgid "Hardware-accelerated decoding"
-msgstr "የንዑስ ክፈፍ ቋት መሳሪያ "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:360
 msgid "Video quality post-processing level"
@@ -27555,18 +27527,16 @@ msgid "Show media change popup:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:542
-#, fuzzy
 msgid "Start in minimal view mode"
-msgstr "በዝቅተኛ ማያ ጀምር (ከምናሌዎች ውጪ) "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
 msgid "Force window style:"
 msgstr "መስኮትቅጥ አስገድድ፡  "
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
-#, fuzzy
 msgid "Integrate video in interface"
-msgstr "ማኢሞ ሂልደን በይነገጽ "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:545
 msgid "Show systray icon"
@@ -27581,9 +27551,8 @@ msgid "Skin resource file:"
 msgstr "የ Skin ንብረት  ፋይል"
 
 #: modules/gui/qt/ui/sprefs_interface.h:549
-#, fuzzy
 msgid "Playlist and Instances"
-msgstr "የሙዚቃዎች ዝርዝር ፋይሎች "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:552
 msgid "Pause on the last frame of a video"
@@ -27594,9 +27563,8 @@ msgid "Allow only one instance"
 msgstr "አንድ አብነት ብቻ ፍቀድ  "
 
 #: modules/gui/qt/ui/sprefs_interface.h:557
-#, fuzzy
 msgid "Activate updates notifier"
-msgstr "የዝመናዎች መኖር ማስታወቂያን አግብር  "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:559
 msgid "Every "
@@ -27631,23 +27599,20 @@ msgid "Show media title on video start"
 msgstr "በቪድዮ መጀመሪያ ላይ የማህደረ መረጃ ርዕስ አሳይ "
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:294
-#, fuzzy
 msgid "Enable subtitles"
-msgstr "ጽሁፋዊ ትርጉሞች አካት "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:295
-#, fuzzy
 msgid "Subtitle Language"
-msgstr "የጽሁፋዊ ትርጉሞች ቋንቋ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:297
 msgid "Default encoding"
 msgstr "ነባሪ ቅየራ "
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:298
-#, fuzzy
 msgid "Subtitle effects"
-msgstr "የጽሁፋዊ ትርጉሞች ፋይል "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Add a shadow"
@@ -27670,9 +27635,8 @@ msgid "Add a background"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:316
-#, fuzzy
 msgid "O&utput"
-msgstr "ውጽአት"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
 msgid "DirectX"
@@ -27683,9 +27647,8 @@ msgid "Accelerated video output (Overlay)"
 msgstr "የተጣደፈ የቪድዮ ውጽአት (ሽፋን) "
 
 #: modules/gui/qt/ui/sprefs_video.h:323
-#, fuzzy
 msgid "KVA"
-msgstr "ኤምኬቪ "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:327
 msgid "Deinterlacing"
@@ -27748,9 +27711,8 @@ msgid "Clear List"
 msgstr "ዝርዝሩን አጽዳ "
 
 #: modules/gui/qt/ui/update.h:148
-#, fuzzy
 msgid "Check for VLC updates"
-msgstr "ዝመናዎችን አጣራ... "
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:149
 msgid "Launching an update request..."
@@ -27770,14 +27732,12 @@ msgid ">HHHHHH;#"
 msgstr ">HHHHHH;#"
 
 #: modules/gui/qt/ui/video_effects.h:1243
-#, fuzzy
 msgid "Negate colors"
-msgstr "ቀለሞችን ገልብጥ "
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1256
-#, fuzzy
 msgid "Colors"
-msgstr "ቀለም  "
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1257
 msgid "Interactive Zoom"
@@ -27789,9 +27749,8 @@ msgstr "ማዕዘን "
 
 #: modules/gui/qt/ui/video_effects.h:1270
 #: modules/gui/qt/ui/video_effects.h:1287
-#, fuzzy
 msgid "..."
-msgstr "አክል... "
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1275
 msgid "full"
@@ -27814,18 +27773,16 @@ msgid "Anaglyph 3D"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1290
-#, fuzzy
 msgid "Mirror"
-msgstr "ስክተቶች "
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1294
 msgid "Motion detect"
 msgstr "እንቅስቃሴ አመላካች "
 
 #: modules/gui/qt/ui/video_effects.h:1295
-#, fuzzy
 msgid "Spatial blur"
-msgstr "ጠፈርተኛ "
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1299
 msgid "Anti-Flickering"
@@ -27836,9 +27793,8 @@ msgid "Soften"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1301
-#, fuzzy
 msgid "Denoiser"
-msgstr "ጫጫታ "
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1302
 msgid "Spatial luma strength"
@@ -27981,12 +27937,20 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 #~ msgstr "ድህረ-ቅንበራ ጥራት "
 
 #, fuzzy
+#~ msgid "High quality"
+#~ msgstr "ድህረ-ቅንበራ ጥራት "
+
+#, fuzzy
 #~ msgid "Very high quality"
 #~ msgstr "ድህረ-ቅንበራ ጥራት "
 
 #, fuzzy
 #~ msgid "YouTube Start Time"
 #~ msgstr "መጀመሪያ ሰአት "
+
+#, fuzzy
+#~ msgid "Disable lua"
+#~ msgstr "አንቃ "
 
 #, fuzzy
 #~ msgid "Display resolution"
@@ -28295,6 +28259,10 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 #~ msgid "Always continue"
 #~ msgstr "ሁልጊዜ ከላይ "
 
+#, fuzzy
+#~ msgid "Hardware Acceleration"
+#~ msgstr "የንዑስ ክፈፍ ቋት መሳሪያ "
+
 #~ msgid "Show Fullscreen Controller"
 #~ msgstr "የሙሉ ማያ ተቆጣጣሪውን አሳይ "
 
@@ -28387,6 +28355,9 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 
 #~ msgid "MPEG Transport Stream"
 #~ msgstr "ኤምፒኤጂ ትራንስፖርት ዥረት "
+
+#~ msgid "MPEG 1 Format"
+#~ msgstr "ኤምፒኢጂ 1 ቅርጸት "
 
 #~ msgid "Enter the address of the computer to stream to."
 #~ msgstr "የሚለቀቅበትን ኮምፒውተር አድራሻ አስገባ። "
@@ -28483,11 +28454,17 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 #~ msgid "Save file to"
 #~ msgstr "ፋይል አስቀምጥ "
 
+#~ msgid "Include subtitles"
+#~ msgstr "ጽሁፋዊ ትርጉሞች አካት "
+
 #~ msgid "No input selected"
 #~ msgstr "ግቢት አልተመረጠም "
 
 #~ msgid "No valid destination"
 #~ msgstr "ትክክለኛ መድረሻ የለም "
+
+#~ msgid "Select the directory to save to"
+#~ msgstr "የሚቀመጥበትን ዕፀ ማውጫ ምረጥ "
 
 #~ msgid "No folder selected"
 #~ msgstr "አቃፊ አልተመረጠም "
@@ -28717,6 +28694,10 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 #~ msgstr "የአቶም ብርሃን "
 
 #, fuzzy
+#~ msgid "DMX options"
+#~ msgstr "ምርጫዎች "
+
+#, fuzzy
 #~ msgid "MoMoLight options"
 #~ msgstr "ምርጫዎችን አርታእ  "
 
@@ -28775,6 +28756,9 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 
 #~ msgid "Filter threshold (%)"
 #~ msgstr "የማጣሪያ መጀመሪያ (%) "
+
+#~ msgid "MKV"
+#~ msgstr "ኤምኬቪ "
 
 #~ msgid "FLV"
 #~ msgstr "ኤፍኤልቪ"
@@ -28918,6 +28902,10 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 #~ msgid "Mac OS X OpenGL video output (requires drawable-nsobject)"
 #~ msgstr "ትንሹ የ Mac OS X OpenGL  ቪድዮ ውፅአት (ክፈፍ የሌለው መስኮት ይከፍታል ) "
 
+#, fuzzy
+#~ msgid "Add a subtitle file"
+#~ msgstr "የጽሁፋዊ ትርጉሞች ፋይል አክል "
+
 #~ msgid "Album art download policy:"
 #~ msgstr "የአልበም ጥበብ የማውረጃ መመሪያ፡ "
 
@@ -29057,6 +29045,10 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 #~ msgstr "የንዑስ ክፈፍ ፍጥነት "
 
 #, fuzzy
+#~ msgid "B Frames"
+#~ msgstr "ንዑስ ክፈፎች "
+
+#, fuzzy
 #~ msgid "Bitrate peak"
 #~ msgstr "ቢትሬት "
 
@@ -29165,6 +29157,9 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 
 #~ msgid "GNU/Linux osd/overlay framebuffer interface"
 #~ msgstr "ጂኤንዩ/ሊኑክስ ኦኤስዲ/የተሸፈነ የንዑስ ክፈፍ ቋት በይነገጽ "
+
+#~ msgid "Maemo hildon interface"
+#~ msgstr "ማኢሞ ሂልደን በይነገጽ "
 
 #~ msgid "Automatically save the volume on exit"
 #~ msgstr "በመውጫው የድምፅን መጠን በራሱ አስቀምጥ "
@@ -29409,6 +29404,10 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 #~ msgstr "ዳይሬክት3ዲ ደስክቶፕ ዘዴ "
 
 #, fuzzy
+#~ msgid "Stream Name"
+#~ msgstr "ቢትሬት ልቀቅ "
+
+#, fuzzy
 #~ msgid "Video Codec"
 #~ msgstr "የቪድዮ ኮዴክ "
 
@@ -29417,12 +29416,20 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 #~ msgstr "የተሰሚ ኮዴክ "
 
 #, fuzzy
+#~ msgid "Subtitle Codec"
+#~ msgstr "የጽሁፋዊ ትርጉሞች ፋይል "
+
+#, fuzzy
 #~ msgid "Video Bit Rate"
 #~ msgstr "የቪድዮ ማጣሪያ "
 
 #, fuzzy
 #~ msgid "Audio Bit Rate"
 #~ msgstr "የተሰሚ ሙዚቃ "
+
+#, fuzzy
+#~ msgid "Audio Sample Rate"
+#~ msgstr "የናሙና ፍጥነት "
 
 #, fuzzy
 #~ msgid "MUX Options"
@@ -29475,6 +29482,9 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 
 #~ msgid "Enqueue files when in one instance mode"
 #~ msgstr "በአንድ የአብነትሁነታ ላይ ያለ Enqueue ፋይሎች "
+
+#~ msgid "Subtitles Language"
+#~ msgstr "የጽሁፋዊ ትርጉሞች ቋንቋ"
 
 #~ msgid "Black slot"
 #~ msgstr "ጥቁር ቀዳዳ  "
@@ -29906,6 +29916,9 @@ msgstr "የማህደረ መረጃ አስተዳዳሪ ዝርዝር "
 
 #~ msgid "C&lear"
 #~ msgstr "ግ&ልጽ "
+
+#~ msgid "Verbosity Level"
+#~ msgstr "የመረጃዎች ድረታ ደረጃ  "
 
 #~ msgid "Message filter"
 #~ msgstr "መልዕክት ማጣሪያ "

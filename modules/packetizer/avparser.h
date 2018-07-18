@@ -2,7 +2,7 @@
  * avparser.h
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: a782e829e352b9a15c27babdf07418b104eb4cc4 $
+ * $Id: 73f4a1afd6ea15207a67cc27ae7008e00fa47cad $
  *
  * Authors: Denis Charmet <typx@videolan.org>
  *
@@ -40,12 +40,12 @@
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-int  OpenPacketizer ( vlc_object_t * );
-void ClosePacketizer( vlc_object_t * );
+int  avparser_OpenPacketizer ( vlc_object_t * );
+void avparser_ClosePacketizer( vlc_object_t * );
 
 #define AVPARSER_MODULE \
     set_category( CAT_SOUT )                            \
     set_subcategory( SUBCAT_SOUT_PACKETIZER )           \
     set_description( N_("avparser packetizer") )        \
     set_capability( "packetizer", 20 )                   \
-    set_callbacks( OpenPacketizer, ClosePacketizer )
+    set_callbacks( avparser_OpenPacketizer, avparser_ClosePacketizer )

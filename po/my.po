@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:29+0200\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Burmese (Myanmar) (https://www.transifex.com/yaron/"
@@ -27036,14 +27036,12 @@ msgid "&Verbosity:"
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:140
-#, fuzzy
 msgid "&Filter:"
-msgstr "စိစစ်သူ"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:141
-#, fuzzy
 msgid "&Save as..."
-msgstr "မှတ်သိမ်း..."
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:143
 msgid "Modules Tree"
@@ -27066,19 +27064,16 @@ msgid " ms"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:271
-#, fuzzy
 msgid "MRL"
-msgstr "URL"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:272
-#, fuzzy
 msgid "Start Time"
-msgstr "စမည့်အချိန်"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:273
-#, fuzzy
 msgid "Stop Time"
-msgstr "ရပ်မည့်အချိန်"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
 msgid "Edit Options"
@@ -27093,9 +27088,8 @@ msgid "Complete MRL for VLC internal"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:280
-#, fuzzy
 msgid "Select the file"
-msgstr "ဖိုင်တွဲရွေး"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:284
 msgid "Change the start time for the media"
@@ -27114,18 +27108,16 @@ msgid "Play another media synchronously (extra audio file, ...)"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:97
-#, fuzzy
 msgid "Capture mode"
-msgstr "_ူဒဖ"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:99
 msgid "Select the capture device type"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:101
-#, fuzzy
 msgid "Device Selection"
-msgstr "_ံအဋအ,္တ"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:102
 msgid "Options"
@@ -27136,14 +27128,12 @@ msgid "Access advanced options to tweak the device"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:106
-#, fuzzy
 msgid "Advanced options..."
-msgstr "အဆင့်မြင့်ဖွင့်(&A)..."
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:297
-#, fuzzy
 msgid "Disc Selection"
-msgstr "_ံအဋအ,္တ"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:301
 msgid "SVCD/VCD"
@@ -27158,37 +27148,32 @@ msgid "No disc menus"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:306
-#, fuzzy
 msgid "Disc device"
-msgstr "_ူဒဖ"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:308
 msgid "Starting Position"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:311
-#, fuzzy
 msgid "Audio and Subtitles"
-msgstr "အသံစိစစ်သူများ"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:144
 msgid "Use a sub&title file"
 msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:146
-#, fuzzy
 msgid "Select the subtitle file"
-msgstr "_့ဒတဂိ"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:150
-#, fuzzy
 msgid "Choose one or more media file to open"
-msgstr "ဖွင့်ရန်အတွက် ဖိုင်များ သို့မဟုတ် ဖိုင်တစ်ခုကိုရွေးပါ"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:152
-#, fuzzy
 msgid "File Selection"
-msgstr "_ံအဋအ,္တ"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:153
 msgid "You can select local files with the following list and buttons."
@@ -27199,9 +27184,8 @@ msgid "Add..."
 msgstr ""
 
 #: modules/gui/qt/ui/open_net.h:97
-#, fuzzy
 msgid "Network Protocol"
-msgstr "ကွန်ယက်"
+msgstr ""
 
 #: modules/gui/qt/ui/open_net.h:98
 msgid "Please enter a network URL:"
@@ -27276,14 +27260,12 @@ msgid "Features"
 msgstr "အင်္ဂါရပ်များ"
 
 #: modules/gui/qt/ui/profiles.h:719
-#, fuzzy
 msgid "Streamable"
-msgstr "အသံလမ်းကြောင်းစိစစ်သူများ"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:720
-#, fuzzy
 msgid "Chapters"
-msgstr "အခန်း  %i"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:723
 msgid "Menus"
@@ -27294,18 +27276,16 @@ msgid "Fra&me Rate"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:731
-#, fuzzy
 msgid "Same as source"
-msgstr "ရင်းမြစ်"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:733
 msgid " fps"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734
-#, fuzzy
 msgid "Custom options"
-msgstr "စိတ်ကြိုက်"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:735
 msgid "&Quality"
@@ -27362,9 +27342,8 @@ msgid "New destination"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:210
-#, fuzzy
 msgid "Display locally"
-msgstr "_ူဒဖ"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:212
 msgid "Transcoding Options"
@@ -27387,9 +27366,8 @@ msgid "Set up any additional options for streaming"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:217
-#, fuzzy
 msgid "Miscellaneous Options"
-msgstr "အမျိုးမျိုး"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:218
 msgid "Stream all elementary streams"
@@ -27404,28 +27382,24 @@ msgid " %"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:415
-#, fuzzy
 msgid "Output module:"
-msgstr "ထုတ်လွင့်အပိုင်းများ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:418
 msgid "Use S/PDIF when available"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:420
-#, fuzzy
 msgid "Effects"
-msgstr "_ံအဋအ,္တ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:421
-#, fuzzy
 msgid "Visualization:"
-msgstr "ပုံဖော်ကြည့်ခြင်းများ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:422
-#, fuzzy
 msgid "Enable Time-Stretching audio"
-msgstr "အသံဖွင့်ထားမည်"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:423
 msgid "Replay gain mode:"
@@ -27436,33 +27410,28 @@ msgid "Normalize volume to:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:425
-#, fuzzy
 msgid "Tracks"
-msgstr "တေးသံလမ်းကြော"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:426
-#, fuzzy
 msgid "Preferred audio language:"
-msgstr "အသံဘာသာစကား"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:427
-#, fuzzy
 msgid "Password:"
-msgstr "စကားဝှက်"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:428
-#, fuzzy
 msgid "Username:"
-msgstr "အသံုးပြုသူနာမည်"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:429
 msgid "Submit played tracks stats to Last.fm"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:357
-#, fuzzy
 msgid "Codecs"
-msgstr "အသွင်း/အသံချံ့ချဲ့"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:358
 msgid "x264 profile and level selection"
@@ -27517,9 +27486,8 @@ msgid "Default caching policy"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:531
-#, fuzzy
 msgid "Menus language:"
-msgstr "အသံဘာသာစကား"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:532
 msgid "Look and feel"
@@ -27562,18 +27530,16 @@ msgid "Force window style:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
-#, fuzzy
 msgid "Integrate video in interface"
-msgstr "ပင်မမျက်နှာပြင်အတွက်ချိန်ညှိချက်"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:545
 msgid "Show systray icon"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "ပင်မမျက်နှာပြင်အတွက်ချိန်ညှိချက်"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Skin resource file:"
@@ -27628,24 +27594,20 @@ msgid "Show media title on video start"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:294
-#, fuzzy
 msgid "Enable subtitles"
-msgstr "စာတန်းထိုး"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:295
-#, fuzzy
 msgid "Subtitle Language"
-msgstr "စာတန်းထိုးမည့်ဘာသာစကား"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:297
-#, fuzzy
 msgid "Default encoding"
-msgstr "ဘာသာပြန်စာသားကုဒ်ပြောင်း"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:298
-#, fuzzy
 msgid "Subtitle effects"
-msgstr "စာတန်းထိုး"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Add a shadow"
@@ -27672,9 +27634,8 @@ msgid "O&utput"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
-#, fuzzy
 msgid "DirectX"
-msgstr "ဖိုင်လမ်းညွှန်"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:322
 msgid "Accelerated video output (Overlay)"
@@ -27689,9 +27650,8 @@ msgid "Deinterlacing"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:329
-#, fuzzy
 msgid "Force Aspect Ratio"
-msgstr "_ံအဋအ,္တ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:334
 msgid "vlc-snap"
@@ -27702,9 +27662,8 @@ msgid "Stuff"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:173
-#, fuzzy
 msgid "Edit settings"
-msgstr "အသံချိန်ညှိချက်"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:174
 msgid "Control"
@@ -27731,9 +27690,8 @@ msgid "P/P"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:182
-#, fuzzy
 msgid "Prev"
-msgstr "ယခင်"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:183
 msgid "Add Input"
@@ -27744,14 +27702,12 @@ msgid "Edit Input"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:185
-#, fuzzy
 msgid "Clear List"
-msgstr "ဖွင့်စာရင်း"
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:148
-#, fuzzy
 msgid "Check for VLC updates"
-msgstr "_ံအဋအ,္တ"
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:149
 msgid "Launching an update request..."
@@ -27779,9 +27735,8 @@ msgid "Colors"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1257
-#, fuzzy
 msgid "Interactive Zoom"
-msgstr "မျက်နှာပြင်"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1263
 msgid "Angle"
@@ -27817,9 +27772,8 @@ msgid "Mirror"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1294
-#, fuzzy
 msgid "Motion detect"
-msgstr "_ံအဋအ,္တ"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1295
 msgid "Spatial blur"
@@ -27854,19 +27808,16 @@ msgid "Temporal chroma strength"
 msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:286
-#, fuzzy
 msgid "VLM configurator"
-msgstr "ဗီအလ်အမ်ပံုစံပြင်(&V)"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:287
-#, fuzzy
 msgid "Media Manager Edition"
-msgstr "မီဒီယာနှင့်အချက်အလက်(&I)"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:288
-#, fuzzy
 msgid "Name:"
-msgstr "နာမည်"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:290
 msgid "Input:"
@@ -27924,6 +27875,14 @@ msgstr ""
 #~ msgstr "_့ဒတဂိ"
 
 #, fuzzy
+#~ msgid "Display device"
+#~ msgstr "_ူဒဖ"
+
+#, fuzzy
+#~ msgid "Capture region heigh"
+#~ msgstr "_ူဒဖ"
+
+#, fuzzy
 #~ msgid "YouTube Start Time"
 #~ msgstr "စမည့်အချိန်"
 
@@ -27953,6 +27912,10 @@ msgstr ""
 #, fuzzy
 #~ msgid "Low Pass Ffilter"
 #~ msgstr "_ံအဋအ,္တ"
+
+#, fuzzy
+#~ msgid "Speed of the subtitles:"
+#~ msgstr "_့ဒတဂိ"
 
 #, fuzzy
 #~ msgid "Use systems codecs if available, for WMV codecs"
@@ -28009,6 +27972,10 @@ msgstr ""
 #, fuzzy
 #~ msgid "Refresh Streams"
 #~ msgstr "_့ဒတဂိ"
+
+#, fuzzy
+#~ msgid "Motion blue"
+#~ msgstr "_ံအဋအ,္တ"
 
 #, fuzzy
 #~ msgid "Satellite Polarisation [H/V/L/R]"
@@ -28105,6 +28072,10 @@ msgstr ""
 #, fuzzy
 #~ msgid "Stats video output function"
 #~ msgstr "_ဒဗိဩဂိ၇ာိ"
+
+#, fuzzy
+#~ msgid "Font Effect"
+#~ msgstr "_ံအဋအ,္တ"
 
 #, fuzzy
 #~ msgid "Embed the overlay"
@@ -28239,6 +28210,10 @@ msgstr ""
 #~ msgstr "_့ဒတဂိ"
 
 #, fuzzy
+#~ msgid "Card Selection"
+#~ msgstr "_ံအဋအ,္တ"
+
+#, fuzzy
 #~ msgid "Quartz video"
 #~ msgstr "_ံအဋအ,္တ"
 
@@ -28249,6 +28224,10 @@ msgstr ""
 #, fuzzy
 #~ msgid "A to B"
 #~ msgstr "_ူဒဖ"
+
+#, fuzzy
+#~ msgid "Check for updates..."
+#~ msgstr "_ံအဋအ,္တ"
 
 #, fuzzy
 #~ msgid "Skip Frames"
@@ -28273,6 +28252,10 @@ msgstr ""
 #, fuzzy
 #~ msgid "Open &Disc...\tCtrl-D"
 #~ msgstr "_မဧ္ာိရဟ,ိပ၇ာိ"
+
+#, fuzzy
+#~ msgid "Video canvas aspect ratio"
+#~ msgstr "_ံအဋအ,္တ"
 
 #, fuzzy
 #~ msgid "Find a name"
@@ -28329,6 +28312,10 @@ msgstr ""
 #, fuzzy
 #~ msgid "Add to Media Library"
 #~ msgstr "မီဒီယာတိုက်"
+
+#, fuzzy
+#~ msgid "Advanced Open..."
+#~ msgstr "အဆင့်မြင့်ဖွင့်(&A)..."
 
 #, fuzzy
 #~ msgid "Open Play&list..."
@@ -28467,6 +28454,10 @@ msgstr ""
 #~ msgstr "နောက်ခေါင်းစဉ်"
 
 #, fuzzy
+#~ msgid "Network: "
+#~ msgstr "ကွန်ယက်"
+
+#, fuzzy
 #~ msgid "Video:"
 #~ msgstr "ဗွီဒီယို"
 
@@ -28521,6 +28512,10 @@ msgstr ""
 #, fuzzy
 #~ msgid "Audio method"
 #~ msgstr "အသံချိန်ညှိချက်"
+
+#, fuzzy
+#~ msgid "16:9 subtitles"
+#~ msgstr "စာတန်းထိုး"
 
 #, fuzzy
 #~ msgid "Open playlist file"

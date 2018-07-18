@@ -46038,9 +46038,3 @@ Author: Francois Cartegnie <fcvlcdev@free.fr>
 Date:   Sun Jan 1 17:39:36 2017 +0100
 
     demux: adaptive: output http error messages
-
-commit f3fe29607f180025fd36d90068bca456929b30fc
-Author: Jean-Baptiste Kempf <jb@videolan.org>
-Date:   Sun Jan 1 16:24:08 2017 +0100
-
-    Update Copyright for 2017

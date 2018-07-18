@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:29+0200\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Pushto (https://www.transifex.com/yaron/teams/16553/ps/)\n"
@@ -27035,14 +27035,12 @@ msgid "&Verbosity:"
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:140
-#, fuzzy
 msgid "&Filter:"
-msgstr "چاڼ:"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:141
-#, fuzzy
 msgid "&Save as..."
-msgstr "_فايل"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:143
 msgid "Modules Tree"
@@ -27073,9 +27071,8 @@ msgid "Start Time"
 msgstr "پېل مهال"
 
 #: modules/gui/qt/ui/open.h:273
-#, fuzzy
 msgid "Stop Time"
-msgstr "تم مهال"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
 msgid "Edit Options"
@@ -27110,19 +27107,16 @@ msgid "Play another media synchronously (extra audio file, ...)"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:97
-#, fuzzy
 msgid "Capture mode"
-msgstr "تشه پوښۍ"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:99
-#, fuzzy
 msgid "Select the capture device type"
-msgstr "_وديو"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:101
-#, fuzzy
 msgid "Device Selection"
-msgstr "د ټيکلي ټاکنه"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:102
 msgid "Options"
@@ -27145,9 +27139,8 @@ msgid "SVCD/VCD"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:303
-#, fuzzy
 msgid "Disable Disc Menus"
-msgstr "پرده ساتونکی ناتوانول"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:305
 msgid "No disc menus"
@@ -27162,19 +27155,16 @@ msgid "Starting Position"
 msgstr "د پېلېدو ځای"
 
 #: modules/gui/qt/ui/open_disk.h:311
-#, fuzzy
 msgid "Audio and Subtitles"
-msgstr "څېرمه سرليکونه پرانيستل"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:144
-#, fuzzy
 msgid "Use a sub&title file"
-msgstr "_فايل"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:146
-#, fuzzy
 msgid "Select the subtitle file"
-msgstr "دوتنه وټاکئ"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:150
 msgid "Choose one or more media file to open"
@@ -27193,18 +27183,16 @@ msgid "Add..."
 msgstr "ډېرول..."
 
 #: modules/gui/qt/ui/open_net.h:97
-#, fuzzy
 msgid "Network Protocol"
-msgstr "ځال:"
+msgstr ""
 
 #: modules/gui/qt/ui/open_net.h:98
 msgid "Please enter a network URL:"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "Profile edition"
-msgstr "دوتنه ټاکل"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "FLAC"
@@ -27271,88 +27259,76 @@ msgid "Features"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:719
-#, fuzzy
 msgid "Streamable"
-msgstr "چوکاټ چټکتيا"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:720
-#, fuzzy
 msgid "Chapters"
-msgstr "څپرکی"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:723
-#, fuzzy
 msgid "Menus"
-msgstr "غورنۍ"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:730
 msgid "Fra&me Rate"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:731
-#, fuzzy
 msgid "Same as source"
-msgstr "سرچينه"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:733
 msgid " fps"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734
-#, fuzzy
 msgid "Custom options"
-msgstr "د سازونې غوراوي"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:735
-#, fuzzy
 msgid "&Quality"
-msgstr "_وديو"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
 msgid "Not Used"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:738 modules/gui/qt/ui/profiles.h:757
-#, fuzzy
 msgid " kb/s"
-msgstr "kb/s %u"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
 msgid "Encoding parameters"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:742
-#, fuzzy
 msgid "Frame size"
-msgstr "چوکاټ چټکتيا"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
-#, fuzzy
 msgid "px"
-msgstr " px"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:758
 msgid "Sa&mple Rate"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:766
-#, fuzzy
 msgid "Profile &Name"
-msgstr "دوتنې نوم"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:203
 msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:205
-#, fuzzy
 msgid "Destination Setup"
-msgstr "موخه"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:206
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr "هغه پوښۍ وټاکئ چې ساتل يې په کې غواړﺉ"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:207
 msgid ""
@@ -27365,14 +27341,12 @@ msgid "New destination"
 msgstr "نوې موخه"
 
 #: modules/gui/qt/ui/sout.h:210
-#, fuzzy
 msgid "Display locally"
-msgstr "ښوون"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:212
-#, fuzzy
 msgid "Transcoding Options"
-msgstr "بريونلي غوراوي"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:213
 msgid "Select and choose transcoding options"
@@ -27383,9 +27357,8 @@ msgid "Activate Transcoding"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:215
-#, fuzzy
 msgid "Option Setup"
-msgstr "غوراوي"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:216
 msgid "Set up any additional options for streaming"
@@ -27408,9 +27381,8 @@ msgid " %"
 msgstr " %"
 
 #: modules/gui/qt/ui/sprefs_audio.h:415
-#, fuzzy
 msgid "Output module:"
-msgstr "وتۍ رغبېلګه"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:418
 msgid "Use S/PDIF when available"
@@ -27421,19 +27393,16 @@ msgid "Effects"
 msgstr "اغېزې"
 
 #: modules/gui/qt/ui/sprefs_audio.h:421
-#, fuzzy
 msgid "Visualization:"
-msgstr "ليديزونې"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:422
-#, fuzzy
 msgid "Enable Time-Stretching audio"
-msgstr "غږيز توانول"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:423
-#, fuzzy
 msgid "Replay gain mode:"
-msgstr "_وديو"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:424
 msgid "Normalize volume to:"
@@ -27444,36 +27413,32 @@ msgid "Tracks"
 msgstr "پلنيوي"
 
 #: modules/gui/qt/ui/sprefs_audio.h:426
-#, fuzzy
 msgid "Preferred audio language:"
-msgstr "د غږيز غوره ژبه"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:427
 msgid "Password:"
 msgstr "تېرنويې:"
 
 #: modules/gui/qt/ui/sprefs_audio.h:428
-#, fuzzy
 msgid "Username:"
-msgstr "کارن نوم"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:429
 msgid "Submit played tracks stats to Last.fm"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:357
-#, fuzzy
 msgid "Codecs"
-msgstr "کوډېک"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:358
 msgid "x264 profile and level selection"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:359
-#, fuzzy
 msgid "Hardware-accelerated decoding"
-msgstr "_نويكيد"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:360
 msgid "Video quality post-processing level"
@@ -27492,23 +27457,20 @@ msgid "Optical drive"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:365
-#, fuzzy
 msgid "Default optical device"
-msgstr "تلواله وزلې"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:369
 msgid "Damaged or incomplete AVI file"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:372
-#, fuzzy
 msgid "HTTP proxy URL"
-msgstr "ګوډاګی HTTP"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:373
-#, fuzzy
 msgid "HTTP (default)"
-msgstr "تلواله"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:374
 msgid "RTP over RTSP (TCP)"
@@ -27519,23 +27481,20 @@ msgid "Live555 stream transport"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:376
-#, fuzzy
 msgid "Default caching policy"
-msgstr "د ليکبڼې تلواله رنګ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:531
-#, fuzzy
 msgid "Menus language:"
-msgstr "غږيز ژبه"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:532
 msgid "Look and feel"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:533
-#, fuzzy
 msgid "Use custom skin"
-msgstr "بڼه ټاکل"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:535
 msgid "This is VLC's default interface, with a native look and feel."
@@ -27566,33 +27525,28 @@ msgid "Start in minimal view mode"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
-#, fuzzy
 msgid "Force window style:"
-msgstr "چارنده کړکۍ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
-#, fuzzy
 msgid "Integrate video in interface"
-msgstr "مهار برسېرونه"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:545
-#, fuzzy
 msgid "Show systray icon"
-msgstr "امستنې ښودل"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "ار برسېر"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Skin resource file:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:549
-#, fuzzy
 msgid "Playlist and Instances"
-msgstr "لګول او تمول"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:552
 msgid "Pause on the last frame of a video"
@@ -27627,9 +27581,8 @@ msgid "File extensions association"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:568
-#, fuzzy
 msgid "Set up associations..."
-msgstr "امستنې..."
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:291
 msgid "Enable On Screen Display (OSD)"
@@ -27640,24 +27593,20 @@ msgid "Show media title on video start"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:294
-#, fuzzy
 msgid "Enable subtitles"
-msgstr "څېرمه سرليکونه DVB"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:295
-#, fuzzy
 msgid "Subtitle Language"
-msgstr "د څېرمه سرليکونو ژبه"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:297
-#, fuzzy
 msgid "Default encoding"
-msgstr "د ليکبڼې تلواله رنګ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:298
-#, fuzzy
 msgid "Subtitle effects"
-msgstr "_فايل"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Add a shadow"
@@ -27680,9 +27629,8 @@ msgid "Add a background"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:316
-#, fuzzy
 msgid "O&utput"
-msgstr "وتۍ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
 msgid "DirectX"
@@ -27701,9 +27649,8 @@ msgid "Deinterlacing"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:329
-#, fuzzy
 msgid "Force Aspect Ratio"
-msgstr "_وديو"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:334
 msgid "vlc-snap"
@@ -27726,14 +27673,12 @@ msgid "Run manually"
 msgstr "په لاس ځغلول"
 
 #: modules/gui/qt/ui/streampanel.h:176
-#, fuzzy
 msgid "Setup schedule"
-msgstr "مهالوېش"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:177
-#, fuzzy
 msgid "Run on schedule"
-msgstr "مهالوېش"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:178
 msgid "Status"
@@ -27760,9 +27705,8 @@ msgid "Clear List"
 msgstr "لړ پاکول"
 
 #: modules/gui/qt/ui/update.h:148
-#, fuzzy
 msgid "Check for VLC updates"
-msgstr "اوسمهالونې کتل"
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:149
 msgid "Launching an update request..."
@@ -27782,30 +27726,25 @@ msgid ">HHHHHH;#"
 msgstr ">HHHHHH;#"
 
 #: modules/gui/qt/ui/video_effects.h:1243
-#, fuzzy
 msgid "Negate colors"
-msgstr "د ليکبڼې رنګ"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1256
-#, fuzzy
 msgid "Colors"
-msgstr "رنګ"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1257
-#, fuzzy
 msgid "Interactive Zoom"
-msgstr "برسېر"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1263
-#, fuzzy
 msgid "Angle"
-msgstr "ځنګل"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1270
 #: modules/gui/qt/ui/video_effects.h:1287
-#, fuzzy
 msgid "..."
-msgstr "ډېرول..."
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1275
 msgid "full"
@@ -27828,14 +27767,12 @@ msgid "Anaglyph 3D"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1290
-#, fuzzy
 msgid "Mirror"
-msgstr "تېروتنه"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1294
-#, fuzzy
 msgid "Motion detect"
-msgstr "خپلکاری"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1295
 msgid "Spatial blur"
@@ -27870,14 +27807,12 @@ msgid "Temporal chroma strength"
 msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:286
-#, fuzzy
 msgid "VLM configurator"
-msgstr "سازونه VLM&"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:287
-#, fuzzy
 msgid "Media Manager Edition"
-msgstr "رسنۍ خبرتياوې"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:288
 msgid "Name:"
@@ -27904,9 +27839,8 @@ msgid "Time Control"
 msgstr "مهال مهار"
 
 #: modules/gui/qt/ui/vlm.h:295
-#, fuzzy
 msgid "Mux Control"
-msgstr "مهار"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:296
 msgid "Muxer:"
@@ -27917,9 +27851,8 @@ msgid "AAAA; "
 msgstr "AAAA; "
 
 #: modules/gui/qt/ui/vlm.h:302
-#, fuzzy
 msgid "Media Manager List"
-msgstr "رسنۍ دوتنې"
+msgstr ""
 
 #~ msgid "Renderer discovery off"
 #~ msgstr "پالنې"
@@ -27948,6 +27881,10 @@ msgstr "رسنۍ دوتنې"
 #~ msgid "packets"
 #~ msgstr "تشه"
 
+#, fuzzy
+#~ msgid "Upstream rate"
+#~ msgstr "چوکاټ چټکتيا"
+
 #~ msgid "Display device"
 #~ msgstr "ښوون وزله"
 
@@ -27961,6 +27898,10 @@ msgstr "رسنۍ دوتنې"
 
 #, fuzzy
 #~ msgid "Sox Resampling quality"
+#~ msgstr "_وديو"
+
+#, fuzzy
+#~ msgid "High quality"
 #~ msgstr "_وديو"
 
 #, fuzzy
@@ -28156,6 +28097,10 @@ msgstr "رسنۍ دوتنې"
 #~ msgid "Always continue"
 #~ msgstr "تل پر سر"
 
+#, fuzzy
+#~ msgid "Hardware Acceleration"
+#~ msgstr "_نويكيد"
+
 #~ msgid "Show Fullscreen Controller"
 #~ msgstr "د ټولې پردې مهاروونکی ښودل"
 
@@ -28173,6 +28118,9 @@ msgstr "رسنۍ دوتنې"
 
 #~ msgid "Save file to"
 #~ msgstr "دوتنه ساتل په"
+
+#~ msgid "Select the directory to save to"
+#~ msgstr "هغه پوښۍ وټاکئ چې ساتل يې په کې غواړﺉ"
 
 #~ msgid "%i items"
 #~ msgstr "توکي %i"
@@ -28434,6 +28382,10 @@ msgstr "رسنۍ دوتنې"
 #~ msgstr "د څېرمه سرليک پلنيوی"
 
 #, fuzzy
+#~ msgid "Media in Zip"
+#~ msgstr "رسنۍ دوتنې"
+
+#, fuzzy
 #~ msgid "Windows Store audio output"
 #~ msgstr "غږيز وتۍ رغبېلګه"
 
@@ -28472,6 +28424,9 @@ msgstr "رسنۍ دوتنې"
 #, fuzzy
 #~ msgid "Open BDMV folder"
 #~ msgstr "پوښۍ پرانيستل..."
+
+#~ msgid "Output module"
+#~ msgstr "وتۍ رغبېلګه"
 
 #, fuzzy
 #~ msgid "Get more extensions from"
@@ -28743,6 +28698,10 @@ msgstr "رسنۍ دوتنې"
 #~ msgstr "_غر"
 
 #, fuzzy
+#~ msgid "Subtitle Codec"
+#~ msgstr "_فايل"
+
+#, fuzzy
 #~ msgid "Video Bit Rate"
 #~ msgstr "د ويډيو سرليک"
 
@@ -28761,6 +28720,10 @@ msgstr "رسنۍ دوتنې"
 #, fuzzy
 #~ msgid "Output File"
 #~ msgstr "وتۍ دوتنه"
+
+#, fuzzy
+#~ msgid "File Name"
+#~ msgstr "دوتنې نوم"
 
 #, fuzzy
 #~ msgid "Rows:"
@@ -28795,6 +28758,9 @@ msgstr "رسنۍ دوتنې"
 #, fuzzy
 #~ msgid "Instances"
 #~ msgstr "برسېر"
+
+#~ msgid "Subtitles Language"
+#~ msgstr "د څېرمه سرليکونو ژبه"
 
 #, fuzzy
 #~ msgid "Black slot"
@@ -28880,6 +28846,10 @@ msgstr "رسنۍ دوتنې"
 #, fuzzy
 #~ msgid "Graphical Equalizer"
 #~ msgstr "د بروكرام به هكله"
+
+#, fuzzy
+#~ msgid "Capture Screen"
+#~ msgstr "تشه پوښۍ"
 
 #~ msgid "Close"
 #~ msgstr "بندول"
@@ -29009,6 +28979,9 @@ msgstr "رسنۍ دوتنې"
 
 #~ msgid "USERPTR"
 #~ msgstr "USERPTR"
+
+#~ msgid "default"
+#~ msgstr "تلواله"
 
 #~ msgid "No Audio Device"
 #~ msgstr "غږيز وزله نشته"
@@ -29145,6 +29118,10 @@ msgstr "رسنۍ دوتنې"
 #~ msgid "Select the protocol for the URL."
 #~ msgstr "_وديو"
 
+#, fuzzy
+#~ msgid "Select the port used"
+#~ msgstr "_وديو"
+
 #~ msgid "Other codecs"
 #~ msgstr "نور کوډېکونه"
 
@@ -29200,6 +29177,9 @@ msgstr "رسنۍ دوتنې"
 #~ msgid "200%"
 #~ msgstr "۲۰۰٪"
 
+#~ msgid "Check for Updates"
+#~ msgstr "اوسمهالونې کتل"
+
 #~ msgid "Download now"
 #~ msgstr "اوس رالېښل"
 
@@ -29214,6 +29194,9 @@ msgstr "رسنۍ دوتنې"
 
 #~ msgid "Address:"
 #~ msgstr "پته:"
+
+#~ msgid "Network: "
+#~ msgstr "ځال:"
 
 #~ msgid "Video:"
 #~ msgstr "ويډيو:"
@@ -29256,6 +29239,10 @@ msgstr "رسنۍ دوتنې"
 #~ msgid "Video Port"
 #~ msgstr "_وديو"
 
+#, fuzzy
+#~ msgid "Select play mode"
+#~ msgstr "_وديو"
+
 #~ msgid "Alignment:"
 #~ msgstr "لورموندنه"
 
@@ -29288,8 +29275,16 @@ msgstr "رسنۍ دوتنې"
 #~ msgstr "XCB"
 
 #, fuzzy
+#~ msgid "Autodetect"
+#~ msgstr "خپلکاری"
+
+#, fuzzy
 #~ msgid "An error occured while saving your settings via SimplePrefs."
 #~ msgstr "_نويكيد"
+
+#, fuzzy
+#~ msgid "Use a sub&amp;titles file"
+#~ msgstr "_فايل"
 
 #, fuzzy
 #~ msgid "textFormat"
@@ -29508,6 +29503,10 @@ msgstr "رسنۍ دوتنې"
 #~ msgstr "_وديو"
 
 #, fuzzy
+#~ msgid "Video canvas aspect ratio"
+#~ msgstr "_وديو"
+
+#, fuzzy
 #~ msgid "Security options"
 #~ msgstr "_فايل"
 
@@ -29595,3 +29594,10 @@ msgstr "رسنۍ دوتنې"
 #, fuzzy
 #~ msgid "Choose a VLM configuration file to open..."
 #~ msgstr "د بروكرام به هكله"
+
+#~ msgid "Open Subtitles"
+#~ msgstr "څېرمه سرليکونه پرانيستل"
+
+#, fuzzy
+#~ msgid "&Save Playlist..."
+#~ msgstr "_فايل"
