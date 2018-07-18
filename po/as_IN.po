@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:28+0200\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Assamese (India) (https://www.transifex.com/yaron/teams/16553/"
@@ -28457,9 +28457,8 @@ msgid "Start Time"
 msgstr "আৰম্ভণি সময়"
 
 #: modules/gui/qt/ui/open.h:273
-#, fuzzy
 msgid "Stop Time"
-msgstr "বন্ধৰ সময়"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
 msgid "Edit Options"
@@ -28486,9 +28485,8 @@ msgid "HH'H':mm'm':ss's'.zzz"
 msgstr "HH'H':mm'm':ss's'.zzz"
 
 #: modules/gui/qt/ui/open.h:288
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "মিডিয়াটোৰ বাবে আৰম্ভণিৰ সময়টো সলনি কৰক"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:291
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -28587,9 +28585,8 @@ msgid "FLAC"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:703
-#, fuzzy
 msgid "MP&4/MOV"
-msgstr "MP4/MOV মাক্সাৰ"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:704
 msgid "Ogg/Ogm"
@@ -28612,9 +28609,8 @@ msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:709
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "MPEG-PS"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:710
 msgid "RAW"
@@ -28629,9 +28625,8 @@ msgid "Webm"
 msgstr "ৱেবকেম"
 
 #: modules/gui/qt/ui/profiles.h:713
-#, fuzzy
 msgid "MPEG &1"
-msgstr "MPEG 1 ফৰমেট"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:714
 msgid "AVI"
@@ -28678,9 +28673,8 @@ msgid "Custom options"
 msgstr "ব্যৱস্থা কৰা বিকল্পবোৰ"
 
 #: modules/gui/qt/ui/profiles.h:735
-#, fuzzy
 msgid "&Quality"
-msgstr "VBR মানদণ্ড"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
 msgid "Not Used"
@@ -28703,14 +28697,12 @@ msgid "px"
 msgstr "px"
 
 #: modules/gui/qt/ui/profiles.h:758
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "নমুনাৰ হাৰ"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:766
-#, fuzzy
 msgid "Profile &Name"
-msgstr "প্ৰফাইল নাম"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:203
 msgid "Set up media sources to stream"
@@ -28845,9 +28837,8 @@ msgid "Skip H.264 in-loop deblocking filter"
 msgstr "H.264 ইন-লুপ ডিব্লকিং ফিল্টাৰটো এৰি যাওক"
 
 #: modules/gui/qt/ui/sprefs_input.h:362
-#, fuzzy
 msgid "x264 preset and tuning selection"
-msgstr "x264 প্ৰফাইল আৰু স্তৰ নিৰ্বাচন"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:364
 msgid "Optical drive"
@@ -28934,9 +28925,8 @@ msgid "Show systray icon"
 msgstr "ছিছষ্ট্ৰে আইকন দেখুৱাওক"
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "এনকাৰ্ছেছ ইন্টাৰফেছ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Skin resource file:"
@@ -29027,9 +29017,8 @@ msgid "Add a background"
 msgstr "পটভূমি এটা যোগকৰক"
 
 #: modules/gui/qt/ui/sprefs_video.h:316
-#, fuzzy
 msgid "O&utput"
-msgstr "আউটপুট"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
 msgid "DirectX"
@@ -30144,6 +30133,9 @@ msgstr "মিডিয়া পৰিচালকৰ তালিকা"
 
 #~ msgid "MPEG Transport Stream"
 #~ msgstr "MPEG সৰবৰাহ ষ্ট্ৰিম"
+
+#~ msgid "MPEG 1 Format"
+#~ msgstr "MPEG 1 ফৰমেট"
 
 #~ msgid ""
 #~ "Enter the local addresses you want to listen requests on. Do not enter "

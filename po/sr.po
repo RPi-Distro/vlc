@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:29+0200\n"
 "Last-Translator: Предраг Љубеновић <predragljubenovic@gmail.com>, 2018\n"
 "Language-Team: Serbian (https://www.transifex.com/yaron/teams/16553/sr/)\n"
@@ -27671,9 +27671,8 @@ msgstr ""
 
 #: modules/gui/qt/ui/about.h:288 modules/gui/qt/ui/open.h:260
 #: modules/gui/qt/ui/podcast_configuration.h:100
-#, fuzzy
 msgid "Dialog"
-msgstr "Аналогно"
+msgstr ""
 
 #: modules/gui/qt/ui/equalizer.h:132 modules/gui/qt/ui/open_disk.h:296
 #: modules/gui/qt/ui/open_net.h:96 modules/gui/qt/ui/sprefs_audio.h:409
@@ -27681,9 +27680,8 @@ msgstr "Аналогно"
 #: modules/gui/qt/ui/sprefs_interface.h:529
 #: modules/gui/qt/ui/sprefs_subtitles.h:289
 #: modules/gui/qt/ui/sprefs_video.h:313 modules/gui/qt/ui/streampanel.h:167
-#, fuzzy
 msgid "Form"
-msgstr "Формат"
+msgstr ""
 
 #: modules/gui/qt/ui/equalizer.h:135
 msgid "Preset"
@@ -27694,9 +27692,8 @@ msgid "0.00 dB"
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:139
-#, fuzzy
 msgid "&Verbosity:"
-msgstr "Детаљност (0, 1, 2)"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:140
 msgid "&Filter:"
@@ -27719,9 +27716,8 @@ msgid "Show &more options"
 msgstr "Прикажи &напредне опције"
 
 #: modules/gui/qt/ui/open.h:268
-#, fuzzy
 msgid "Change the caching for the media"
-msgstr "Промени наслов према тренутном медију"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:270
 msgid " ms"
@@ -27736,18 +27732,16 @@ msgid "Start Time"
 msgstr "Време почетка"
 
 #: modules/gui/qt/ui/open.h:273
-#, fuzzy
 msgid "Stop Time"
-msgstr "Време заустављања"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
 msgid "Edit Options"
 msgstr "Уреди опције"
 
 #: modules/gui/qt/ui/open.h:275
-#, fuzzy
 msgid "Extra media"
-msgstr "Додатни PMT"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:277
 msgid "Complete MRL for VLC internal"
@@ -27758,18 +27752,16 @@ msgid "Select the file"
 msgstr "Изабери фајл"
 
 #: modules/gui/qt/ui/open.h:284
-#, fuzzy
 msgid "Change the start time for the media"
-msgstr "Промени приказано име сервиса."
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:286 modules/gui/qt/ui/open.h:290
 msgid "HH'H':mm'm':ss's'.zzz"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:288
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "Промени приказано име сервиса."
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:291
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -27780,9 +27772,8 @@ msgid "Capture mode"
 msgstr "Мод снимања"
 
 #: modules/gui/qt/ui/open_capture.h:99
-#, fuzzy
 msgid "Select the capture device type"
-msgstr "Постави ову опцију ако уређај за захватање производи као излаз MJPEG"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:101
 msgid "Device Selection"
@@ -27861,18 +27852,16 @@ msgid "Please enter a network URL:"
 msgstr "Унеси мрежни URL:"
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "Profile edition"
-msgstr "Име профила недостаје"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "FLAC"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:703
-#, fuzzy
 msgid "MP&4/MOV"
-msgstr "MP4/MOV мултиплексержж"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:704
 msgid "Ogg/Ogm"
@@ -27895,9 +27884,8 @@ msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:709
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "MPEG-PS"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:710
 msgid "RAW"
@@ -27912,9 +27900,8 @@ msgid "Webm"
 msgstr "Webm"
 
 #: modules/gui/qt/ui/profiles.h:713
-#, fuzzy
 msgid "MPEG &1"
-msgstr "MPEG-PS"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:714
 msgid "AVI"
@@ -27933,9 +27920,8 @@ msgid "Features"
 msgstr "Могућности"
 
 #: modules/gui/qt/ui/profiles.h:719
-#, fuzzy
 msgid "Streamable"
-msgstr "Име тока"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:720
 msgid "Chapters"
@@ -27950,23 +27936,20 @@ msgid "Fra&me Rate"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:731
-#, fuzzy
 msgid "Same as source"
-msgstr "Сачувај датотеку"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:733
 msgid " fps"
 msgstr " fps"
 
 #: modules/gui/qt/ui/profiles.h:734
-#, fuzzy
 msgid "Custom options"
-msgstr "Листа прилагођених односа за исецање"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:735
-#, fuzzy
 msgid "&Quality"
-msgstr "Ниво квалитета"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
 msgid "Not Used"
@@ -27977,42 +27960,36 @@ msgid " kb/s"
 msgstr " kb/s"
 
 #: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
-#, fuzzy
 msgid "Encoding parameters"
-msgstr "Енкодирање X координате"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:742
-#, fuzzy
 msgid "Frame size"
-msgstr "Брзина кадрова"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
 msgid "px"
 msgstr "px"
 
 #: modules/gui/qt/ui/profiles.h:758
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "Брзина узорковања"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:766
-#, fuzzy
 msgid "Profile &Name"
-msgstr "Име профила"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:203
 msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:205
-#, fuzzy
 msgid "Destination Setup"
-msgstr "Одрериште"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:206
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr "Изаберите „Напредне опције“ да бисте видели све могућности."
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:207
 msgid ""
@@ -28021,52 +27998,44 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:208
-#, fuzzy
 msgid "New destination"
-msgstr "Одрериште"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:210
-#, fuzzy
 msgid "Display locally"
-msgstr "Прикажи ток локално"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:212
-#, fuzzy
 msgid "Transcoding Options"
-msgstr "Опције транскодовања"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:213
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "Пуштање Тока и Опције Транскодовања"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:214
-#, fuzzy
 msgid "Activate Transcoding"
-msgstr "Енкодинг титла"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:215
-#, fuzzy
 msgid "Option Setup"
-msgstr "Опције"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:216
 msgid "Set up any additional options for streaming"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:217
-#, fuzzy
 msgid "Miscellaneous Options"
-msgstr "Разно"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:218
 msgid "Stream all elementary streams"
 msgstr "Емитуј све основне токове"
 
 #: modules/gui/qt/ui/sout.h:219
-#, fuzzy
 msgid "Generated stream output string"
-msgstr "Опште поставке излаза тока"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:412
 msgid " %"
@@ -28129,9 +28098,8 @@ msgid "x264 profile and level selection"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:359
-#, fuzzy
 msgid "Hardware-accelerated decoding"
-msgstr "Хардверско декодирање"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:360
 msgid "Video quality post-processing level"
@@ -28150,37 +28118,32 @@ msgid "Optical drive"
 msgstr "Оптички уређај"
 
 #: modules/gui/qt/ui/sprefs_input.h:365
-#, fuzzy
 msgid "Default optical device"
-msgstr "Подразумевани уређаји"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:369
 msgid "Damaged or incomplete AVI file"
 msgstr "Оштећена или некомплетна AVI датотека"
 
 #: modules/gui/qt/ui/sprefs_input.h:372
-#, fuzzy
 msgid "HTTP proxy URL"
-msgstr "HTTP прокси"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:373
 msgid "HTTP (default)"
 msgstr "HTTP (подразумевано)"
 
 #: modules/gui/qt/ui/sprefs_input.h:374
-#, fuzzy
 msgid "RTP over RTSP (TCP)"
-msgstr "Користи RTP преко RTSP-а (TCP)"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:375
-#, fuzzy
 msgid "Live555 stream transport"
-msgstr "Излаз тока фајла"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:376
-#, fuzzy
 msgid "Default caching policy"
-msgstr "Подразумевано енкодовање"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:531
 msgid "Menus language:"
@@ -28235,9 +28198,8 @@ msgid "Show systray icon"
 msgstr "Икона у системској касети"
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "Ncurses интерфејс"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Skin resource file:"
@@ -28328,9 +28290,8 @@ msgid "Add a background"
 msgstr "Додај позадину"
 
 #: modules/gui/qt/ui/sprefs_video.h:316
-#, fuzzy
 msgid "O&utput"
-msgstr "Излаз"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
 msgid "DirectX"
@@ -28345,9 +28306,8 @@ msgid "KVA"
 msgstr "KVA"
 
 #: modules/gui/qt/ui/sprefs_video.h:327
-#, fuzzy
 msgid "Deinterlacing"
-msgstr "Расплитање"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:329
 msgid "Force Aspect Ratio"
@@ -28362,28 +28322,24 @@ msgid "Stuff"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:173
-#, fuzzy
 msgid "Edit settings"
-msgstr "Поставке звука"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:174
-#, fuzzy
 msgid "Control"
-msgstr "Контроле"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:175
 msgid "Run manually"
 msgstr "Ручно покрени"
 
 #: modules/gui/qt/ui/streampanel.h:176
-#, fuzzy
 msgid "Setup schedule"
-msgstr "Заказивање"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:177
-#, fuzzy
 msgid "Run on schedule"
-msgstr "Заказивање"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:178
 msgid "Status"
@@ -28394,9 +28350,8 @@ msgid "P/P"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:182
-#, fuzzy
 msgid "Prev"
-msgstr "Претходно"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:183
 msgid "Add Input"
@@ -28432,9 +28387,8 @@ msgid ">HHHHHH;#"
 msgstr ">HHHHHH;#"
 
 #: modules/gui/qt/ui/video_effects.h:1243
-#, fuzzy
 msgid "Negate colors"
-msgstr "Боја ивице"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1256
 msgid "Colors"
@@ -28474,32 +28428,28 @@ msgid "Anaglyph 3D"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1290
-#, fuzzy
 msgid "Mirror"
-msgstr "Грешка"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1294
 msgid "Motion detect"
 msgstr "Откривање кретања"
 
 #: modules/gui/qt/ui/video_effects.h:1295
-#, fuzzy
 msgid "Spatial blur"
-msgstr "Замућивање покрета"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1299
 msgid "Anti-Flickering"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1300
-#, fuzzy
 msgid "Soften"
-msgstr "Мекано"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1301
-#, fuzzy
 msgid "Denoiser"
-msgstr "Шум"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1302
 msgid "Spatial luma strength"
@@ -28518,14 +28468,12 @@ msgid "Temporal chroma strength"
 msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:286
-#, fuzzy
 msgid "VLM configurator"
-msgstr "&VLM подешавање"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:287
-#, fuzzy
 msgid "Media Manager Edition"
-msgstr "Информације датотеке"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:288
 msgid "Name:"
@@ -28548,14 +28496,12 @@ msgid "Select Output"
 msgstr "Изабери излаз"
 
 #: modules/gui/qt/ui/vlm.h:294
-#, fuzzy
 msgid "Time Control"
-msgstr "Контроле"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:295
-#, fuzzy
 msgid "Mux Control"
-msgstr "Контроле"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:296
 msgid "Muxer:"
@@ -28566,9 +28512,8 @@ msgid "AAAA; "
 msgstr "AAAA; "
 
 #: modules/gui/qt/ui/vlm.h:302
-#, fuzzy
 msgid "Media Manager List"
-msgstr "Угао медија"
+msgstr ""
 
 #~ msgid "Debug logging"
 #~ msgstr "Дневник отклањања грешака"
@@ -29981,6 +29926,10 @@ msgstr "Угао медија"
 
 #~ msgid "Tuner to use, if there are several ones."
 #~ msgstr "Тјунер за употребу, ако постоји више њих."
+
+#~ msgid "Set this option if the capture device outputs MJPEG"
+#~ msgstr ""
+#~ "Постави ову опцију ако уређај за захватање производи као излаз MJPEG"
 
 #~ msgid "Decimation level for MJPEG streams"
 #~ msgstr "Ниво десетковања за MJPEG токове"
@@ -34563,6 +34512,10 @@ msgstr "Угао медија"
 #, fuzzy
 #~ msgid "MPEG-4 video demuxer"
 #~ msgstr "MPEG-I/II видео демултиплексер"
+
+#, fuzzy
+#~ msgid "MPEG-4 V"
+#~ msgstr "MPEG-PS"
 
 #, fuzzy
 #~ msgid "BeOS standard API interface"

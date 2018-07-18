@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:29+0200\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Uighur (https://www.transifex.com/yaron/teams/16553/ug/)\n"
@@ -27067,9 +27067,8 @@ msgid "Form"
 msgstr "كۆزنەك"
 
 #: modules/gui/qt/ui/equalizer.h:135
-#, fuzzy
 msgid "Preset"
-msgstr "ئەسلىگە قايتۇر"
+msgstr ""
 
 #: modules/gui/qt/ui/equalizer.h:137
 msgid "0.00 dB"
@@ -27080,9 +27079,8 @@ msgid "&Verbosity:"
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:140
-#, fuzzy
 msgid "&Filter:"
-msgstr "سۈزگۈچ:"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:141
 msgid "&Save as..."
@@ -27093,14 +27091,12 @@ msgid "Modules Tree"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:263
-#, fuzzy
 msgid "Show extended options"
-msgstr "ئالىي تاللانما كۆرسەت"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:265
-#, fuzzy
 msgid "Show &more options"
-msgstr "ئالىي تاللانما كۆرسەت"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:268
 msgid "Change the caching for the media"
@@ -27111,18 +27107,16 @@ msgid " ms"
 msgstr " ms"
 
 #: modules/gui/qt/ui/open.h:271
-#, fuzzy
 msgid "MRL"
-msgstr "URL"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:272
 msgid "Start Time"
 msgstr "باشلىنىش ۋاقتى"
 
 #: modules/gui/qt/ui/open.h:273
-#, fuzzy
 msgid "Stop Time"
-msgstr "توختاش ۋاقتى"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
 msgid "Edit Options"
@@ -27137,9 +27131,8 @@ msgid "Complete MRL for VLC internal"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:280
-#, fuzzy
 msgid "Select the file"
-msgstr "بىر ھۆججەت تاللاڭ"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:284
 msgid "Change the start time for the media"
@@ -27158,18 +27151,16 @@ msgid "Play another media synchronously (extra audio file, ...)"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:97
-#, fuzzy
 msgid "Capture mode"
-msgstr "تۇت"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:99
 msgid "Select the capture device type"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:101
-#, fuzzy
 msgid "Device Selection"
-msgstr "ھۆججەت تاللا"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:102
 msgid "Options"
@@ -27180,14 +27171,12 @@ msgid "Access advanced options to tweak the device"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:106
-#, fuzzy
 msgid "Advanced options..."
-msgstr "ئالىي تاللانما"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:297
-#, fuzzy
 msgid "Disc Selection"
-msgstr "ھۆججەت تاللا"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:301
 msgid "SVCD/VCD"
@@ -27202,28 +27191,24 @@ msgid "No disc menus"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:306
-#, fuzzy
 msgid "Disc device"
-msgstr "DVD ئۈسكۈنە"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:308
-#, fuzzy
 msgid "Starting Position"
-msgstr "ئورنى"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:311
-#, fuzzy
 msgid "Audio and Subtitles"
-msgstr "ئۈن ھۆججەتلىرى"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:144
 msgid "Use a sub&title file"
 msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:146
-#, fuzzy
 msgid "Select the subtitle file"
-msgstr "بىر ھۆججەت تاللاڭ"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:150
 msgid "Choose one or more media file to open"
@@ -27242,18 +27227,16 @@ msgid "Add..."
 msgstr "قوش…"
 
 #: modules/gui/qt/ui/open_net.h:97
-#, fuzzy
 msgid "Network Protocol"
-msgstr "كېلىشىم"
+msgstr ""
 
 #: modules/gui/qt/ui/open_net.h:98
 msgid "Please enter a network URL:"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "Profile edition"
-msgstr "سەپلىمە ئاتى"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "FLAC"
@@ -27320,46 +27303,40 @@ msgid "Features"
 msgstr "ئىقتىدار"
 
 #: modules/gui/qt/ui/profiles.h:719
-#, fuzzy
 msgid "Streamable"
-msgstr "سانلىق مەلۇمات ئېقىمى"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:720
-#, fuzzy
 msgid "Chapters"
-msgstr "باب"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:723
-#, fuzzy
 msgid "Menus"
-msgstr "تىزىملىك"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:730
 msgid "Fra&me Rate"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:731
-#, fuzzy
 msgid "Same as source"
-msgstr "مەنبە"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:733
 msgid " fps"
 msgstr " fps"
 
 #: modules/gui/qt/ui/profiles.h:734
-#, fuzzy
 msgid "Custom options"
-msgstr "تەھرىرلەش تاللانمىسى"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:735
 msgid "&Quality"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
-#, fuzzy
 msgid "Not Used"
-msgstr "بەلگىلەنمىگەن"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:738 modules/gui/qt/ui/profiles.h:757
 msgid " kb/s"
@@ -27370,37 +27347,32 @@ msgid "Encoding parameters"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:742
-#, fuzzy
 msgid "Frame size"
-msgstr "خەت چوڭلۇقى"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
 msgid "px"
 msgstr "px"
 
 #: modules/gui/qt/ui/profiles.h:758
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "ئەۋرىشكە نىسبىتى"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:766
-#, fuzzy
 msgid "Profile &Name"
-msgstr "سەپلىمە ئاتى"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:203
 msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:205
-#, fuzzy
 msgid "Destination Setup"
-msgstr "نىشان"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:206
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr "بارلىق تاللانمىلارنى كۆرۈش ئۈچۈن «ئالىي تاللانمىلار» نى تاللاڭ."
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:207
 msgid ""
@@ -27409,33 +27381,28 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:208
-#, fuzzy
 msgid "New destination"
-msgstr "نىشان"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:210
-#, fuzzy
 msgid "Display locally"
-msgstr "كۆرسەت"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:212
-#, fuzzy
 msgid "Transcoding Options"
-msgstr "ئالىي تاللانما"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:213
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "بارلىق تاللانمىلارنى كۆرۈش ئۈچۈن «ئالىي تاللانمىلار» نى تاللاڭ."
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:214
 msgid "Activate Transcoding"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:215
-#, fuzzy
 msgid "Option Setup"
-msgstr "تاللانما"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:216
 msgid "Set up any additional options for streaming"
@@ -27458,9 +27425,8 @@ msgid " %"
 msgstr " %"
 
 #: modules/gui/qt/ui/sprefs_audio.h:415
-#, fuzzy
 msgid "Output module:"
-msgstr "چىقىرىش ھۆججىتى"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:418
 msgid "Use S/PDIF when available"
@@ -27471,9 +27437,8 @@ msgid "Effects"
 msgstr "ئۈنۈملەر"
 
 #: modules/gui/qt/ui/sprefs_audio.h:421
-#, fuzzy
 msgid "Visualization:"
-msgstr "كۆرۈنۈشچان ئۈنۈم"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:422
 msgid "Enable Time-Stretching audio"
@@ -27492,9 +27457,8 @@ msgid "Tracks"
 msgstr "نەغمىلەر"
 
 #: modules/gui/qt/ui/sprefs_audio.h:426
-#, fuzzy
 msgid "Preferred audio language:"
-msgstr "ئۈن تىلى"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:427
 msgid "Password:"
@@ -27537,18 +27501,16 @@ msgid "Optical drive"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:365
-#, fuzzy
 msgid "Default optical device"
-msgstr "چىقىرىش ئۈسكۈنىسى"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:369
 msgid "Damaged or incomplete AVI file"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:372
-#, fuzzy
 msgid "HTTP proxy URL"
-msgstr "HTTP ۋاكالەتچى"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:373
 msgid "HTTP (default)"
@@ -27567,9 +27529,8 @@ msgid "Default caching policy"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:531
-#, fuzzy
 msgid "Menus language:"
-msgstr "تىزىملىك تىلى"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:532
 msgid "Look and feel"
@@ -27612,19 +27573,16 @@ msgid "Force window style:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
-#, fuzzy
 msgid "Integrate video in interface"
-msgstr "ئاساسىي ئارايۈزنىڭ تەڭشەكلىرى"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:545
-#, fuzzy
 msgid "Show systray icon"
-msgstr "تەڭشەك كۆرسەت"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "ئاساسىي ئارايۈزنىڭ تەڭشەكلىرى"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Skin resource file:"
@@ -27667,9 +27625,8 @@ msgid "File extensions association"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:568
-#, fuzzy
 msgid "Set up associations..."
-msgstr "تەڭشەكلەر…"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:291
 msgid "Enable On Screen Display (OSD)"
@@ -27680,24 +27637,20 @@ msgid "Show media title on video start"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:294
-#, fuzzy
 msgid "Enable subtitles"
-msgstr "ئاستىدىكى خېتى"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:295
-#, fuzzy
 msgid "Subtitle Language"
-msgstr "ئېكران خەت تىلى"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:297
-#, fuzzy
 msgid "Default encoding"
-msgstr "كود يېشىش"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:298
-#, fuzzy
 msgid "Subtitle effects"
-msgstr "فىلىم خېتى كودلىنىشى"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Add a shadow"
@@ -27716,19 +27669,16 @@ msgid " px"
 msgstr " px"
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:307
-#, fuzzy
 msgid "Add a background"
-msgstr "تەگلىك"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:316
-#, fuzzy
 msgid "O&utput"
-msgstr "چىقار"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
-#, fuzzy
 msgid "DirectX"
-msgstr "مۇندەرىجە"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:322
 msgid "Accelerated video output (Overlay)"
@@ -27743,9 +27693,8 @@ msgid "Deinterlacing"
 msgstr "Deinterlacing"
 
 #: modules/gui/qt/ui/sprefs_video.h:329
-#, fuzzy
 msgid "Force Aspect Ratio"
-msgstr "ئېگىزلىك-كەڭلىك نىسبىتىنى ساقلاپ قال"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:334
 msgid "vlc-snap"
@@ -27756,9 +27705,8 @@ msgid "Stuff"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:173
-#, fuzzy
 msgid "Edit settings"
-msgstr "ئۈن تەڭشەكلەر"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:174
 msgid "Control"
@@ -27769,14 +27717,12 @@ msgid "Run manually"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:176
-#, fuzzy
 msgid "Setup schedule"
-msgstr "Schedule"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:177
-#, fuzzy
 msgid "Run on schedule"
-msgstr "Schedule"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:178
 msgid "Status"
@@ -27791,23 +27737,20 @@ msgid "Prev"
 msgstr "ئالدى"
 
 #: modules/gui/qt/ui/streampanel.h:183
-#, fuzzy
 msgid "Add Input"
-msgstr "كىرگۈز"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:184
-#, fuzzy
 msgid "Edit Input"
-msgstr "كىرگۈز"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:185
 msgid "Clear List"
 msgstr "تىزىملىكنى تازىلا"
 
 #: modules/gui/qt/ui/update.h:148
-#, fuzzy
 msgid "Check for VLC updates"
-msgstr "يېڭىلاشنى تەكشۈر…"
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:149
 msgid "Launching an update request..."
@@ -27827,19 +27770,16 @@ msgid ">HHHHHH;#"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1243
-#, fuzzy
 msgid "Negate colors"
-msgstr "قىسقۇچ قۇر"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1256
-#, fuzzy
 msgid "Colors"
-msgstr "رەڭ"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1257
-#, fuzzy
 msgid "Interactive Zoom"
-msgstr "ئارايۈز"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1263
 msgid "Angle"
@@ -27847,9 +27787,8 @@ msgstr "بۇلۇڭ"
 
 #: modules/gui/qt/ui/video_effects.h:1270
 #: modules/gui/qt/ui/video_effects.h:1287
-#, fuzzy
 msgid "..."
-msgstr "قوش…"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1275
 msgid "full"
@@ -27872,9 +27811,8 @@ msgid "Anaglyph 3D"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1290
-#, fuzzy
 msgid "Mirror"
-msgstr "خاتالىق"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1294
 msgid "Motion detect"
@@ -27889,14 +27827,12 @@ msgid "Anti-Flickering"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1300
-#, fuzzy
 msgid "Soften"
-msgstr "يۇمشاق"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1301
-#, fuzzy
 msgid "Denoiser"
-msgstr "شاۋقۇن"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1302
 msgid "Spatial luma strength"
@@ -27919,9 +27855,8 @@ msgid "VLM configurator"
 msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:287
-#, fuzzy
 msgid "Media Manager Edition"
-msgstr "ۋاسىتە ئۇچۇرى"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:288
 msgid "Name:"
@@ -27932,28 +27867,24 @@ msgid "Input:"
 msgstr "كىرگۈز:"
 
 #: modules/gui/qt/ui/vlm.h:291
-#, fuzzy
 msgid "Select Input"
-msgstr "تاللا"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:292
 msgid "Output:"
 msgstr "چىقار:"
 
 #: modules/gui/qt/ui/vlm.h:293
-#, fuzzy
 msgid "Select Output"
-msgstr "تاللا"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:294
-#, fuzzy
 msgid "Time Control"
-msgstr "تىزگىن"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:295
-#, fuzzy
 msgid "Mux Control"
-msgstr "تىزگىن"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:296
 msgid "Muxer:"

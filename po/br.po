@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.0-rc3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2017-02-06 13:43+0000\n"
 "Last-Translator: Irriep Nala Novram <allannkorh@yahoo.fr>, 2017\n"
 "Language-Team: Breton (https://www.transifex.com/yaron/teams/16553/br/)\n"
@@ -27441,9 +27441,8 @@ msgid "Menus"
 msgstr "Lañser"
 
 #: modules/gui/qt/ui/profiles.h:730
-#, fuzzy
 msgid "Fra&me Rate"
-msgstr "Feur standilhon"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:731
 #, fuzzy
@@ -27498,14 +27497,12 @@ msgid "Profile &Name"
 msgstr "Anv an aelad"
 
 #: modules/gui/qt/ui/sout.h:203
-#, fuzzy
 msgid "Set up media sources to stream"
-msgstr "Diuzañ un teuliad"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:205
-#, fuzzy
 msgid "Destination Setup"
-msgstr "Dibarzhioù"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:206
 #, fuzzy
@@ -27548,9 +27545,8 @@ msgid "Option Setup"
 msgstr "Dibarzhioù"
 
 #: modules/gui/qt/ui/sout.h:216
-#, fuzzy
 msgid "Set up any additional options for streaming"
-msgstr "Diuzañ un teuliad"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:217
 msgid "Miscellaneous Options"

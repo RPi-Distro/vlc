@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:29+0200\n"
 "Last-Translator: Bjørn I. <bjorn.svindseth@online.no>, 2018\n"
 "Language-Team: Norwegian Nynorsk (https://www.transifex.com/yaron/"
@@ -27351,9 +27351,8 @@ msgid "0.00 dB"
 msgstr "0.00 dB"
 
 #: modules/gui/qt/ui/messages_panel.h:139
-#, fuzzy
 msgid "&Verbosity:"
-msgstr "Detaljnivå (0,1,2)"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:140
 msgid "&Filter:"
@@ -27592,9 +27591,8 @@ msgid "Menus"
 msgstr "Menyar"
 
 #: modules/gui/qt/ui/profiles.h:730
-#, fuzzy
 msgid "Fra&me Rate"
-msgstr "Sa&mplingsrate"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:731
 msgid "Same as source"
@@ -27621,9 +27619,8 @@ msgid " kb/s"
 msgstr " kb/s"
 
 #: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
-#, fuzzy
 msgid "Encoding parameters"
-msgstr "ATSC-mottaksparameter"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:742
 msgid "Frame size"
@@ -27642,9 +27639,8 @@ msgid "Profile &Name"
 msgstr "Profil&namn"
 
 #: modules/gui/qt/ui/sout.h:203
-#, fuzzy
 msgid "Set up media sources to stream"
-msgstr "Vel målmappe å strøyma til"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:205
 msgid "Destination Setup"
@@ -27673,37 +27669,32 @@ msgid "Transcoding Options"
 msgstr "Innstillingar for omkoding"
 
 #: modules/gui/qt/ui/sout.h:213
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "Vel «Avanserte innstillingar» for å sjå alle vala."
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:214
 msgid "Activate Transcoding"
 msgstr "Slå på omkoding"
 
 #: modules/gui/qt/ui/sout.h:215
-#, fuzzy
 msgid "Option Setup"
-msgstr "Innstillingar for målmappe"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:216
-#, fuzzy
 msgid "Set up any additional options for streaming"
-msgstr "Vel målmappe å strøyma til"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:217
 msgid "Miscellaneous Options"
 msgstr "Ymse innstillingar"
 
 #: modules/gui/qt/ui/sout.h:218
-#, fuzzy
 msgid "Stream all elementary streams"
-msgstr "Samplingsfrekvensen til ein lydhovedstraum."
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:219
-#, fuzzy
 msgid "Generated stream output string"
-msgstr "Generelle innstillingar for straumutdata"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:412
 msgid " %"
@@ -27778,9 +27769,8 @@ msgid "Skip H.264 in-loop deblocking filter"
 msgstr "Hopp over intern avblokkingsfilter for H.264"
 
 #: modules/gui/qt/ui/sprefs_input.h:362
-#, fuzzy
 msgid "x264 preset and tuning selection"
-msgstr "x264 profil- og nivå-val"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:364
 msgid "Optical drive"
@@ -27867,9 +27857,8 @@ msgid "Show systray icon"
 msgstr "Vis systemtrauikon"
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "Ncurses-grensesnitt"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Skin resource file:"
@@ -27960,9 +27949,8 @@ msgid "Add a background"
 msgstr "Legg til ein bakgrunn"
 
 #: modules/gui/qt/ui/sprefs_video.h:316
-#, fuzzy
 msgid "O&utput"
-msgstr "Utgang"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
 msgid "DirectX"
@@ -28107,23 +28095,20 @@ msgid "Motion detect"
 msgstr "Rørslefølar"
 
 #: modules/gui/qt/ui/video_effects.h:1295
-#, fuzzy
 msgid "Spatial blur"
-msgstr "Spatial"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1299
 msgid "Anti-Flickering"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1300
-#, fuzzy
 msgid "Soften"
-msgstr "Soft"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1301
-#, fuzzy
 msgid "Denoiser"
-msgstr "Bråk"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1302
 msgid "Spatial luma strength"
@@ -28146,9 +28131,8 @@ msgid "VLM configurator"
 msgstr "VLM-oppsett"
 
 #: modules/gui/qt/ui/vlm.h:287
-#, fuzzy
 msgid "Media Manager Edition"
-msgstr "Medieinformasjon"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:288
 msgid "Name:"
@@ -28187,9 +28171,8 @@ msgid "AAAA; "
 msgstr "AAAA; "
 
 #: modules/gui/qt/ui/vlm.h:302
-#, fuzzy
 msgid "Media Manager List"
-msgstr "Mediavinkel"
+msgstr ""
 
 #~ msgid "Toggle Fullscreen mode"
 #~ msgstr "Fullskjermmodus av/på"

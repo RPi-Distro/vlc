@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-05-28 01:18+0200\n"
+"POT-Creation-Date: 2018-05-29 18:46+0200\n"
 "PO-Revision-Date: 2018-05-16 23:29+0200\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Zulu (https://www.transifex.com/yaron/teams/16553/zu/)\n"
@@ -27046,14 +27046,12 @@ msgid "0.00 dB"
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:139
-#, fuzzy
 msgid "&Verbosity:"
-msgstr "Ileveli yokushovuza"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:140
-#, fuzzy
 msgid "&Filter:"
-msgstr "Hlunga:"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:141
 msgid "&Save as..."
@@ -27088,9 +27086,8 @@ msgid "Start Time"
 msgstr "Isikhathi sokuqala"
 
 #: modules/gui/qt/ui/open.h:273
-#, fuzzy
 msgid "Stop Time"
-msgstr "Iya esikhathini"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
 msgid "Edit Options"
@@ -27117,9 +27114,8 @@ msgid "HH'H':mm'm':ss's'.zzz"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:288
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "Shintsha isikhathi sokuqala semidiya"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:291
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -27159,9 +27155,8 @@ msgid "SVCD/VCD"
 msgstr "SVCD/VCD"
 
 #: modules/gui/qt/ui/open_disk.h:303
-#, fuzzy
 msgid "Disable Disc Menus"
-msgstr "Vumela"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:305
 msgid "No disc menus"
@@ -27180,14 +27175,12 @@ msgid "Audio and Subtitles"
 msgstr "Umsindo nezihlokwana"
 
 #: modules/gui/qt/ui/open_file.h:144
-#, fuzzy
 msgid "Use a sub&title file"
-msgstr "Engeza ifayela lezihlokwana"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:146
-#, fuzzy
 msgid "Select the subtitle file"
-msgstr "Khetha ifayela"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:150
 msgid "Choose one or more media file to open"
@@ -27214,9 +27207,8 @@ msgid "Please enter a network URL:"
 msgstr "Sicela ufake i-URL yenethiwekhi:"
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "Profile edition"
-msgstr "Igama lephrofayili"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "FLAC"
@@ -27247,9 +27239,8 @@ msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:709
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "MPEG-PS"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:710
 msgid "RAW"
@@ -27264,9 +27255,8 @@ msgid "Webm"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:713
-#, fuzzy
 msgid "MPEG &1"
-msgstr "Isakhiwo se-MPEG 1"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:714
 msgid "AVI"
@@ -27281,94 +27271,80 @@ msgid "MP&3"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:717
-#, fuzzy
 msgid "Features"
-msgstr "Thwebula"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:719
-#, fuzzy
 msgid "Streamable"
-msgstr "Inani lokusakaza ngesikhashana"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:720
-#, fuzzy
 msgid "Chapters"
-msgstr "Isahluko"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:723
-#, fuzzy
 msgid "Menus"
-msgstr "Imenyu"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:730
 msgid "Fra&me Rate"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:731
-#, fuzzy
 msgid "Same as source"
-msgstr "Umthombo"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:733
 msgid " fps"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734
-#, fuzzy
 msgid "Custom options"
-msgstr "Izinketho"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:735
-#, fuzzy
 msgid "&Quality"
-msgstr "Ikhwalithi yokucubungula okuthunyelwe"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
-#, fuzzy
 msgid "Not Used"
-msgstr "Akuhleliwe"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:738 modules/gui/qt/ui/profiles.h:757
 msgid " kb/s"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
-#, fuzzy
 msgid "Encoding parameters"
-msgstr "Ukukhulisa usikhala"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:742
-#, fuzzy
 msgid "Frame size"
-msgstr "ozimele"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
 msgid "px"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:758
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "Isilinganiso sesampuli"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:766
-#, fuzzy
 msgid "Profile &Name"
-msgstr "Igama lephrofayili"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:203
 msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:205
-#, fuzzy
 msgid "Destination Setup"
-msgstr "Indawo"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:206
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr "Khetha umkhombandlela ozogcina kuwo"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:207
 msgid ""
@@ -27385,23 +27361,20 @@ msgid "Display locally"
 msgstr "Bonisa kwendawo"
 
 #: modules/gui/qt/ui/sout.h:212
-#, fuzzy
 msgid "Transcoding Options"
-msgstr "Izinketho zokufaka ikhodi"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:213
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "Izinketho zokusakaza nezokufaka ikhodi"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:214
 msgid "Activate Transcoding"
 msgstr "Ukufakwa kwekhodi okusebenzayo"
 
 #: modules/gui/qt/ui/sout.h:215
-#, fuzzy
 msgid "Option Setup"
-msgstr "Izinketho"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:216
 msgid "Set up any additional options for streaming"
@@ -27480,9 +27453,8 @@ msgid "x264 profile and level selection"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:359
-#, fuzzy
 msgid "Hardware-accelerated decoding"
-msgstr "Isisetshenziswa se-Framebuffer"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:360
 msgid "Video quality post-processing level"
@@ -27565,18 +27537,16 @@ msgid "Show media change popup:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:542
-#, fuzzy
 msgid "Start in minimal view mode"
-msgstr "Qala ekubukeni okuncane (ngaphandle kwamamenyu)"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
 msgid "Force window style:"
 msgstr "Phoqa isitayela sewindi:"
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
-#, fuzzy
 msgid "Integrate video in interface"
-msgstr "Isibonisi se-Maemo hildon"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:545
 msgid "Show systray icon"
@@ -27591,9 +27561,8 @@ msgid "Skin resource file:"
 msgstr "Ifayela lapho kutholakala khona iskhumba:"
 
 #: modules/gui/qt/ui/sprefs_interface.h:549
-#, fuzzy
 msgid "Playlist and Instances"
-msgstr "Amafayela wohlu lokudlalwayo"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:552
 msgid "Pause on the last frame of a video"
@@ -27604,9 +27573,8 @@ msgid "Allow only one instance"
 msgstr "Vumela ukwenziswa okukodwa kuphela"
 
 #: modules/gui/qt/ui/sprefs_interface.h:557
-#, fuzzy
 msgid "Activate updates notifier"
-msgstr "Yenza izaziso zokuvuselela ezikhona zisebenze"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:559
 msgid "Every "
@@ -27641,23 +27609,20 @@ msgid "Show media title on video start"
 msgstr "Bonisa isihloko semeidiya ekuqaleni kwevidiyo"
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:294
-#, fuzzy
 msgid "Enable subtitles"
-msgstr "Faka phakathi izihlokwana"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:295
-#, fuzzy
 msgid "Subtitle Language"
-msgstr "Izilimi zezihlokwana"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:297
 msgid "Default encoding"
 msgstr "Umbhalo wekhodi wakhona"
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:298
-#, fuzzy
 msgid "Subtitle effects"
-msgstr "Amafayela wezihlokwana"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Add a shadow"
@@ -27680,9 +27645,8 @@ msgid "Add a background"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:316
-#, fuzzy
 msgid "O&utput"
-msgstr "Okuphumayo"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:320
 msgid "DirectX"
@@ -27693,9 +27657,8 @@ msgid "Accelerated video output (Overlay)"
 msgstr "Ukuphumayo kwevidiyo okusheshisiwe (Ukunqwabelanisa)"
 
 #: modules/gui/qt/ui/sprefs_video.h:323
-#, fuzzy
 msgid "KVA"
-msgstr "MKV"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:327
 msgid "Deinterlacing"
@@ -27758,9 +27721,8 @@ msgid "Clear List"
 msgstr "Sula uhlu"
 
 #: modules/gui/qt/ui/update.h:148
-#, fuzzy
 msgid "Check for VLC updates"
-msgstr "Hlolela u&kuvuselela..."
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:149
 msgid "Launching an update request..."
@@ -27780,14 +27742,12 @@ msgid ">HHHHHH;#"
 msgstr ">HHHHHH;#"
 
 #: modules/gui/qt/ui/video_effects.h:1243
-#, fuzzy
 msgid "Negate colors"
-msgstr "Faka imibala"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1256
-#, fuzzy
 msgid "Colors"
-msgstr "Umbala"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1257
 msgid "Interactive Zoom"
@@ -27799,9 +27759,8 @@ msgstr "Ingxa"
 
 #: modules/gui/qt/ui/video_effects.h:1270
 #: modules/gui/qt/ui/video_effects.h:1287
-#, fuzzy
 msgid "..."
-msgstr "Engeza..."
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1275
 msgid "full"
@@ -27824,18 +27783,16 @@ msgid "Anaglyph 3D"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1290
-#, fuzzy
 msgid "Mirror"
-msgstr "Amaphutha"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1294
 msgid "Motion detect"
 msgstr "Ukutholakala kokunyakaza"
 
 #: modules/gui/qt/ui/video_effects.h:1295
-#, fuzzy
 msgid "Spatial blur"
-msgstr "i-Spatializer"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1299
 msgid "Anti-Flickering"
@@ -27846,9 +27803,8 @@ msgid "Soften"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1301
-#, fuzzy
 msgid "Denoiser"
-msgstr "Umsindo"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1302
 msgid "Spatial luma strength"
@@ -27991,12 +27947,20 @@ msgstr "Isiphathi sohlu semidiya"
 #~ msgstr "Ikhwalithi yokucubungula okuthunyelwe"
 
 #, fuzzy
+#~ msgid "High quality"
+#~ msgstr "Ikhwalithi yokucubungula okuthunyelwe"
+
+#, fuzzy
 #~ msgid "Very high quality"
 #~ msgstr "Ikhwalithi yokucubungula okuthunyelwe"
 
 #, fuzzy
 #~ msgid "YouTube Start Time"
 #~ msgstr "Isikhathi sokuqala"
+
+#, fuzzy
+#~ msgid "Disable lua"
+#~ msgstr "Vumela"
 
 #, fuzzy
 #~ msgid "Display resolution"
@@ -28307,6 +28271,10 @@ msgstr "Isiphathi sohlu semidiya"
 #~ msgid "Always continue"
 #~ msgstr "Phezulu njalo"
 
+#, fuzzy
+#~ msgid "Hardware Acceleration"
+#~ msgstr "Isisetshenziswa se-Framebuffer"
+
 #~ msgid "Show Fullscreen Controller"
 #~ msgstr "Bonisa isilawuli sesikrini esigcwele"
 
@@ -28408,6 +28376,9 @@ msgstr "Isiphathi sohlu semidiya"
 #~ msgid "MPEG Transport Stream"
 #~ msgstr "Ukusakaza kwesithuthi se-MPEG"
 
+#~ msgid "MPEG 1 Format"
+#~ msgstr "Isakhiwo se-MPEG 1"
+
 #~ msgid "Enter the address of the computer to stream to."
 #~ msgstr "Faka ikheli lekhompyutha ozosakazela kuyo."
 
@@ -28507,11 +28478,17 @@ msgstr "Isiphathi sohlu semidiya"
 #~ msgid "Save file to"
 #~ msgstr "Gcina ifayela ku"
 
+#~ msgid "Include subtitles"
+#~ msgstr "Faka phakathi izihlokwana"
+
 #~ msgid "No input selected"
 #~ msgstr "Akukho okungenayo okukhethiwe"
 
 #~ msgid "No valid destination"
 #~ msgstr "Ayikho indawo evumelekile"
+
+#~ msgid "Select the directory to save to"
+#~ msgstr "Khetha umkhombandlela ozogcina kuwo"
 
 #~ msgid "No folder selected"
 #~ msgstr "Ayikho ifolda ekhethiwe"
@@ -28745,6 +28722,10 @@ msgstr "Isiphathi sohlu semidiya"
 #~ msgstr "AtmoLight"
 
 #, fuzzy
+#~ msgid "DMX options"
+#~ msgstr "Izinketho"
+
+#, fuzzy
 #~ msgid "MoMoLight options"
 #~ msgstr "Hlela izinketho"
 
@@ -28805,6 +28786,9 @@ msgstr "Isiphathi sohlu semidiya"
 
 #~ msgid "Filter threshold (%)"
 #~ msgstr "Hlula udothi (%)"
+
+#~ msgid "MKV"
+#~ msgstr "MKV"
 
 #~ msgid "FLV"
 #~ msgstr "FLV"
@@ -28954,6 +28938,10 @@ msgstr "Isiphathi sohlu semidiya"
 #~ msgstr ""
 #~ "Ukuphuma kwevidiyo ye-Mac OS X OpenGL (ivula iwindo elinganamphetho)"
 
+#, fuzzy
+#~ msgid "Add a subtitle file"
+#~ msgstr "Engeza ifayela lezihlokwana"
+
 #~ msgid "Album art download policy:"
 #~ msgstr "inqubomgomo yokulayisha ungenise ubuciko be-albhamu:"
 
@@ -29093,6 +29081,10 @@ msgstr "Isiphathi sohlu semidiya"
 #~ msgstr "Isikalo sikazimele"
 
 #, fuzzy
+#~ msgid "B Frames"
+#~ msgstr "ozimele"
+
+#, fuzzy
 #~ msgid "Bitrate peak"
 #~ msgstr "Inani ngesikhashana"
 
@@ -29206,6 +29198,9 @@ msgstr "Isiphathi sohlu semidiya"
 
 #~ msgid "GNU/Linux osd/overlay framebuffer interface"
 #~ msgstr "Isibonisi sokunqwabelanisa se-GNU/Linux osd"
+
+#~ msgid "Maemo hildon interface"
+#~ msgstr "Isibonisi se-Maemo hildon"
 
 #~ msgid "Automatically save the volume on exit"
 #~ msgstr "Gcina ivolumu ngokuzenzakalela uma uphuma"
@@ -29451,6 +29446,10 @@ msgstr "Isiphathi sohlu semidiya"
 #~ msgstr "Isimo sobuso bekhompyutha se-3D ngqo"
 
 #, fuzzy
+#~ msgid "Stream Name"
+#~ msgstr "Inani lokusakaza ngesikhashana"
+
+#, fuzzy
 #~ msgid "Video Codec"
 #~ msgstr "I-codec yevidiyo"
 
@@ -29459,12 +29458,20 @@ msgstr "Isiphathi sohlu semidiya"
 #~ msgstr "I-codec yomsindo"
 
 #, fuzzy
+#~ msgid "Subtitle Codec"
+#~ msgstr "Amafayela wezihlokwana"
+
+#, fuzzy
 #~ msgid "Video Bit Rate"
 #~ msgstr "Ukuhlunga ividiyo"
 
 #, fuzzy
 #~ msgid "Audio Bit Rate"
 #~ msgstr "Umugqa womsindo"
+
+#, fuzzy
+#~ msgid "Audio Sample Rate"
+#~ msgstr "Isilinganiso sesampuli"
 
 #, fuzzy
 #~ msgid "MUX Options"
@@ -29517,6 +29524,9 @@ msgstr "Isiphathi sohlu semidiya"
 
 #~ msgid "Enqueue files when in one instance mode"
 #~ msgstr "Faka amafayela ohlwini uma asesimemi sokwenzisa esisodwa"
+
+#~ msgid "Subtitles Language"
+#~ msgstr "Izilimi zezihlokwana"
 
 #~ msgid "Black slot"
 #~ msgstr "Imbotshana emnyama"
@@ -29955,6 +29965,9 @@ msgstr "Isiphathi sohlu semidiya"
 
 #~ msgid "C&lear"
 #~ msgstr "&Sula"
+
+#~ msgid "Verbosity Level"
+#~ msgstr "Ileveli yokushovuza"
 
 #~ msgid "Message filter"
 #~ msgstr "Ukuhlungwa kwemiyalezo"
