@@ -1,8 +1,10 @@
-vlc (3.0.3-0+deb9u1) UNRELEASED; urgency=medium
+vlc (3.0.3-0+deb9u1) stretch-security; urgency=medium
 
   * New upstream bug fix release.
+    - Fix buffer over-read in avcodec audio encoding with non-default layouts.
+  * debian/control: Force libvlc5 to be upgraded. (Closes: #900979)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sat, 16 Jun 2018 22:01:27 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 18 Jul 2018 10:18:32 +0200
 
 vlc (3.0.2-0+deb9u1) stretch-security; urgency=high
 
