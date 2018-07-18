@@ -226,6 +226,7 @@ Depends: ${misc:Depends},
          ${shlibs:Depends}
 Recommends: libproxy-tools
 Provides: ${vlc:PluginABI}
+Breaks: libvlc5 (<< 3.0.0)
 Description: base library for VLC and its modules
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
  DivX, MOV, WMV, QuickTime, WebM, FLAC, MP3, Ogg/Vorbis files, DVDs, VCDs,
