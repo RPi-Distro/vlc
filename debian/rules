@@ -69,6 +69,7 @@ confflags += \
 	--enable-skins2 \
 	--enable-sndio \
 	--enable-soxr \
+	--enable-spatialaudio \
 	--enable-speex \
 	--enable-svg \
 	--enable-svgdec \
