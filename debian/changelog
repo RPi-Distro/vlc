@@ -1,3 +1,11 @@
+vlc (3.0.4-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+    - Fix OpenGL output for single plane devices. (LP: #1774119)
+    - Decode AV1 streams. (LP: #1789715)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 31 Aug 2018 19:27:05 +0200
+
 vlc (3.0.3-1-4) unstable; urgency=medium
 
   * Bump Standards-Version
