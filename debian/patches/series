@@ -1,4 +1,2 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
-0002-fribidi-update-for-version-1.0.patch
-0003-qt-fix-build-against-Qt-5.11.patch
-0004-x264-drop-148-build-support-and-fix-10bit-support.patch
+0002-x264-drop-148-build-support-and-fix-10bit-support.patch
