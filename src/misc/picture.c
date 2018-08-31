@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: b7eecb44862cf2af0054b0b171d19446ad4565ed $
+ * $Id: 9a08255e1646de3baf0aef1880bed65b52677d22 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -323,8 +323,7 @@ void plane_CopyPixels( plane_t *p_dst, const plane_t *p_src )
 {
     const unsigned i_width  = __MIN( p_dst->i_visible_pitch,
                                      p_src->i_visible_pitch );
-    const unsigned i_height = __MIN( p_dst->i_visible_lines,
-                                     p_src->i_visible_lines );
+    const unsigned i_height = __MIN( p_dst->i_lines, p_src->i_lines );
 
     /* The 2x visible pitch check does two things:
        1) Makes field plane_t's work correctly (see the deinterlacer module)

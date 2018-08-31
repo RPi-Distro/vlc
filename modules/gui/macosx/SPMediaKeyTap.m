@@ -2,28 +2,51 @@
  Copyright (c) 2011, Joachim Bengtsson
  All rights reserved.
 
- Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
 
- * Neither the name of the organization nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+ * Neither the name of the organization nor the names of its contributors may
+   be used to endorse or promote products derived from this software without
+   specific prior written permission.
 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 // Copyright (c) 2010 Spotify AB
 #import "SPMediaKeyTap.h"
-#import "SPInvocationGrabbing.h"
 
-@interface SPMediaKeyTap ()
--(BOOL)shouldInterceptMediaKeyEvents;
--(void)setShouldInterceptMediaKeyEvents:(BOOL)newSetting;
--(void)startWatchingAppSwitching;
--(void)stopWatchingAppSwitching;
--(void)eventTapThread;
+// Define to enable app list debug output
+// #define DEBUG_SPMEDIAKEY_APPLIST 1
+
+NSString *kIgnoreMediaKeysDefaultsKey = @"SPIgnoreMediaKeys";
+
+@interface SPMediaKeyTap () {
+    CFMachPortRef _eventPort;
+    CFRunLoopSourceRef _eventPortSource;
+    CFRunLoopRef _tapThreadRL;
+    NSThread *_tapThread;
+    BOOL _shouldInterceptMediaKeyEvents;
+    id _delegate;
+    // The app that is frontmost in this list owns media keys
+    NSMutableArray<NSRunningApplication *> *_mediaKeyAppList;
+}
+
+- (BOOL)shouldInterceptMediaKeyEvents;
+- (void)setShouldInterceptMediaKeyEvents:(BOOL)newSetting;
+- (void)startWatchingAppSwitching;
+- (void)stopWatchingAppSwitching;
+- (void)eventTapThread;
 @end
-static SPMediaKeyTap *singleton = nil;
 
-static pascal OSStatus appSwitched (EventHandlerCallRef nextHandler, EventRef evt, void* userData);
-static pascal OSStatus appTerminated (EventHandlerCallRef nextHandler, EventRef evt, void* userData);
 static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon);
 
 
@@ -33,43 +56,48 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 
 #pragma mark -
 #pragma mark Setup and teardown
--(id)initWithDelegate:(id)delegate;
+
+- (id)initWithDelegate:(id)delegate
 {
-    _delegate = delegate;
-    [self startWatchingAppSwitching];
-    singleton = self;
-    _mediaKeyAppList = [NSMutableArray new];
-    _tapThreadRL=nil;
-    _eventPort=nil;
-    _eventPortSource=nil;
+    self = [super init];
+    if (self) {
+        _delegate = delegate;
+        [self startWatchingAppSwitching];
+        _mediaKeyAppList = [NSMutableArray new];
+    }
     return self;
 }
--(void)dealloc;
+
+- (void)dealloc
 {
     [self stopWatchingMediaKeys];
     [self stopWatchingAppSwitching];
 }
 
--(void)startWatchingAppSwitching;
+- (void)startWatchingAppSwitching
 {
     // Listen to "app switched" event, so that we don't intercept media keys if we
     // weren't the last "media key listening" app to be active
-    EventTypeSpec eventType = { kEventClassApplication, kEventAppFrontSwitched };
-    OSStatus err = InstallApplicationEventHandler(NewEventHandlerUPP(appSwitched), 1, &eventType, (__bridge void*)(self), &_app_switching_ref);
-    assert(err == noErr);
 
-    eventType.eventKind = kEventAppTerminated;
-    err = InstallApplicationEventHandler(NewEventHandlerUPP(appTerminated), 1, &eventType, (__bridge void *)(self), &_app_terminating_ref);
-    assert(err == noErr);
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                           selector:@selector(frontmostAppChanged:)
+                                                               name:NSWorkspaceDidActivateApplicationNotification
+                                                             object:nil];
+
+
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+                                                           selector:@selector(appTerminated:)
+                                                               name:NSWorkspaceDidTerminateApplicationNotification
+                                                             object:nil];
 }
--(void)stopWatchingAppSwitching;
+
+- (void)stopWatchingAppSwitching
 {
-    if(!_app_switching_ref) return;
-    RemoveEventHandler(_app_switching_ref);
-    _app_switching_ref = NULL;
+    [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
 }
 
--(void)startWatchingMediaKeys;{
+- (BOOL)startWatchingMediaKeys
+{
     // Prevent having multiple mediaKeys threads
     [self stopWatchingMediaKeys];
 
@@ -82,39 +110,52 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
                                   CGEventMaskBit(NX_SYSDEFINED),
                                   tapEventCallback,
                                   (__bridge void * __nullable)(self));
-    assert(_eventPort != NULL);
+
+    // Can be NULL if the app has no accessibility access permission
+    if (_eventPort == NULL)
+        return NO;
 
     _eventPortSource = CFMachPortCreateRunLoopSource(kCFAllocatorSystemDefault, _eventPort, 0);
     assert(_eventPortSource != NULL);
 
-    // Let's do this in a separate thread so that a slow app doesn't lag the event tap
-    [NSThread detachNewThreadSelector:@selector(eventTapThread) toTarget:self withObject:nil];
-}
--(void)stopWatchingMediaKeys;
-{
-    // TODO<nevyn>: Shut down thread, remove event tap port and source
+    if (_eventPortSource == NULL)
+        return NO;
 
+    // Let's do this in a separate thread so that a slow app doesn't lag the event tap
+    _tapThread = [[NSThread alloc] initWithTarget:self
+                                         selector:@selector(eventTapThread)
+                                           object:nil];
+    [_tapThread start];
+
+    return YES;
+}
+
+- (void)stopWatchingMediaKeys
+{
+    // Shut down tap thread
     if(_tapThreadRL){
         CFRunLoopStop(_tapThreadRL);
-        _tapThreadRL=nil;
+        _tapThreadRL = nil;
     }
 
+    // Remove tap port
     if(_eventPort){
         CFMachPortInvalidate(_eventPort);
         CFRelease(_eventPort);
-        _eventPort=nil;
+        _eventPort = nil;
     }
 
+    // Remove tap source
     if(_eventPortSource){
         CFRelease(_eventPortSource);
-        _eventPortSource=nil;
+        _eventPortSource = nil;
     }
 }
 
 #pragma mark -
 #pragma mark Accessors
 
-+(BOOL)usesGlobalMediaKeyTap
++ (BOOL)usesGlobalMediaKeyTap
 {
 #ifdef _DEBUG
     // breaking in gdb with a key tap inserted sometimes locks up all mouse and keyboard input forever, forcing reboot
@@ -127,46 +168,51 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 #endif
 }
 
-+ (NSArray*)defaultMediaKeyUserBundleIdentifiers;
++ (NSArray*)mediaKeyUserBundleIdentifiers
 {
-    return [NSArray arrayWithObjects:
+    static NSArray *bundleIdentifiers;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        bundleIdentifiers = @[
             [[NSBundle mainBundle] bundleIdentifier], // your app
-             @"com.spotify.client",
-             @"com.apple.iTunes",
-             @"com.apple.QuickTimePlayerX",
-             @"com.apple.quicktimeplayer",
-             @"com.apple.iWork.Keynote",
-             @"com.apple.iPhoto",
-             @"org.videolan.vlc",
-             @"com.apple.Aperture",
-             @"com.plexsquared.Plex",
-             @"com.soundcloud.desktop",
-             @"org.niltsh.MPlayerX",
-             @"com.ilabs.PandorasHelper",
-             @"com.mahasoftware.pandabar",
-             @"com.bitcartel.pandorajam",
-             @"org.clementine-player.clementine",
-             @"fm.last.Last.fm",
-             @"fm.last.Scrobbler",
-             @"com.beatport.BeatportPro",
-             @"com.Timenut.SongKey",
-             @"com.macromedia.fireworks", // the tap messes up their mouse input
-             @"at.justp.Theremin",
-             @"ru.ya.themblsha.YandexMusic",
-             @"com.jriver.MediaCenter18",
-             @"com.jriver.MediaCenter19",
-             @"com.jriver.MediaCenter20",
-             @"co.rackit.mate",
-             @"com.ttitt.b-music",
-             @"com.beardedspice.BeardedSpice",
-             @"com.plug.Plug",
-             @"com.netease.163music",
-            nil
-    ];
+            @"com.spotify.client",
+            @"com.apple.iTunes",
+            @"com.apple.QuickTimePlayerX",
+            @"com.apple.quicktimeplayer",
+            @"com.apple.iWork.Keynote",
+            @"com.apple.iPhoto",
+            @"org.videolan.vlc",
+            @"com.apple.Aperture",
+            @"com.plexsquared.Plex",
+            @"com.soundcloud.desktop",
+            @"org.niltsh.MPlayerX",
+            @"com.ilabs.PandorasHelper",
+            @"com.mahasoftware.pandabar",
+            @"com.bitcartel.pandorajam",
+            @"org.clementine-player.clementine",
+            @"fm.last.Last.fm",
+            @"fm.last.Scrobbler",
+            @"com.beatport.BeatportPro",
+            @"com.Timenut.SongKey",
+            @"com.macromedia.fireworks", // the tap messes up their mouse input
+            @"at.justp.Theremin",
+            @"ru.ya.themblsha.YandexMusic",
+            @"com.jriver.MediaCenter18",
+            @"com.jriver.MediaCenter19",
+            @"com.jriver.MediaCenter20",
+            @"co.rackit.mate",
+            @"com.ttitt.b-music",
+            @"com.beardedspice.BeardedSpice",
+            @"com.plug.Plug",
+            @"com.netease.163music",
+        ];
+    });
+
+    return bundleIdentifiers;
 }
 
 
--(BOOL)shouldInterceptMediaKeyEvents;
+- (BOOL)shouldInterceptMediaKeyEvents
 {
     BOOL shouldIntercept = NO;
     @synchronized(self) {
@@ -175,11 +221,12 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
     return shouldIntercept;
 }
 
--(void)pauseTapOnTapThread:(BOOL)yeahno;
+- (void)pauseTapOnTapThread:(NSNumber *)yeahno
 {
-    CGEventTapEnable(self->_eventPort, yeahno);
+    CGEventTapEnable(self->_eventPort, [yeahno boolValue]);
 }
--(void)setShouldInterceptMediaKeyEvents:(BOOL)newSetting;
+
+- (void)setShouldInterceptMediaKeyEvents:(BOOL)newSetting
 {
     BOOL oldSetting;
     @synchronized(self) {
@@ -187,14 +234,15 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
         _shouldInterceptMediaKeyEvents = newSetting;
     }
     if(_tapThreadRL && oldSetting != newSetting) {
-        id grab = [self grab];
-        [grab pauseTapOnTapThread:newSetting];
-        NSTimer *timer = [NSTimer timerWithTimeInterval:0 invocation:[grab invocation] repeats:NO];
-        CFRunLoopAddTimer(_tapThreadRL, (CFRunLoopTimerRef)CFBridgingRetain(timer), kCFRunLoopCommonModes);
+        [self performSelector:@selector(pauseTapOnTapThread:)
+                     onThread:_tapThread
+                   withObject:@(newSetting)
+                waitUntilDone:NO];
+
     }
 }
 
-#pragma mark
+
 #pragma mark -
 #pragma mark Event tap callbacks
 
@@ -245,102 +293,70 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
     }
 }
 
--(void)handleAndReleaseMediaKeyEvent:(NSEvent *)event {
+- (void)handleAndReleaseMediaKeyEvent:(NSEvent *)event
+{
     [_delegate mediaKeyTap:self receivedMediaKeyEvent:event];
 }
 
--(void)eventTapThread;
+- (void)eventTapThread
 {
     _tapThreadRL = CFRunLoopGetCurrent();
     CFRunLoopAddSource(_tapThreadRL, _eventPortSource, kCFRunLoopCommonModes);
     CFRunLoopRun();
 }
 
+
+#pragma mark -
 #pragma mark Task switching callbacks
 
-NSString *kMediaKeyUsingBundleIdentifiersDefaultsKey = @"SPApplicationsNeedingMediaKeys";
-NSString *kIgnoreMediaKeysDefaultsKey = @"SPIgnoreMediaKeys";
-
-
-
--(void)mediaKeyAppListChanged;
+- (void)mediaKeyAppListChanged
 {
-    if([_mediaKeyAppList count] == 0) return;
+    #ifdef DEBUG_SPMEDIAKEY_APPLIST
+    [self debugPrintAppList];
+    #endif
 
-    /*NSLog(@"--");
-    int i = 0;
-    for (NSValue *psnv in _mediaKeyAppList) {
-        ProcessSerialNumber psn; [psnv getValue:&psn];
-        NSDictionary *processInfo = (id)ProcessInformationCopyDictionary(
-            &psn,
-            kProcessDictionaryIncludeAllInformationMask
-        );
-        NSString *bundleIdentifier = [processInfo objectForKey:(id)kCFBundleIdentifierKey];
-        NSLog(@"%d: %@", i++, bundleIdentifier);
-    }*/
+    if([_mediaKeyAppList count] == 0)
+        return;
 
-    ProcessSerialNumber mySerial, topSerial;
-    GetCurrentProcess(&mySerial);
-    [[_mediaKeyAppList firstObject] getValue:&topSerial];
+    NSRunningApplication *thisApp = [NSRunningApplication currentApplication];
+    NSRunningApplication *otherApp = [_mediaKeyAppList firstObject];
 
-    Boolean same;
-    OSErr err = SameProcess(&mySerial, &topSerial, &same);
-    [self setShouldInterceptMediaKeyEvents:(err == noErr && same)];
+    BOOL isCurrent = [thisApp isEqual:otherApp];
+
+    [self setShouldInterceptMediaKeyEvents:isCurrent];
 }
--(void)appIsNowFrontmost:(ProcessSerialNumber)psn;
+
+- (void)frontmostAppChanged:(NSNotification *)notification
 {
-    NSValue *psnv = [NSValue valueWithBytes:&psn objCType:@encode(ProcessSerialNumber)];
+    NSRunningApplication *app = [notification.userInfo objectForKey:NSWorkspaceApplicationKey]; 
+    if (app.bundleIdentifier == nil)
+        return;
 
-    NSDictionary *processInfo = (__bridge_transfer NSDictionary *)ProcessInformationCopyDictionary(
-        &psn,
-        kProcessDictionaryIncludeAllInformationMask
-    );
-    NSString *bundleIdentifier = [processInfo objectForKey:(id)kCFBundleIdentifierKey];
+    if (![[SPMediaKeyTap mediaKeyUserBundleIdentifiers] containsObject:app.bundleIdentifier])
+        return;
 
-    NSArray *whitelistIdentifiers = [[NSUserDefaults standardUserDefaults] arrayForKey:kMediaKeyUsingBundleIdentifiersDefaultsKey];
-    if(![whitelistIdentifiers containsObject:bundleIdentifier]) return;
-
-    [_mediaKeyAppList removeObject:psnv];
-    [_mediaKeyAppList insertObject:psnv atIndex:0];
-    [self mediaKeyAppListChanged];
-}
--(void)appTerminated:(ProcessSerialNumber)psn;
-{
-    NSValue *psnv = [NSValue valueWithBytes:&psn objCType:@encode(ProcessSerialNumber)];
-    [_mediaKeyAppList removeObject:psnv];
+    [_mediaKeyAppList removeObject:app];
+    [_mediaKeyAppList insertObject:app atIndex:0];
     [self mediaKeyAppListChanged];
 }
 
-static pascal OSStatus appSwitched (EventHandlerCallRef nextHandler, EventRef evt, void* userData)
+- (void)appTerminated:(NSNotification *)notification
 {
-    SPMediaKeyTap *self = (__bridge id)userData;
+    NSRunningApplication *app = [notification.userInfo objectForKey:NSWorkspaceApplicationKey];
+    [_mediaKeyAppList removeObject:app];
 
-    ProcessSerialNumber newSerial;
-    GetFrontProcess(&newSerial);
-
-    [self appIsNowFrontmost:newSerial];
-
-    return CallNextEventHandler(nextHandler, evt);
+    [self mediaKeyAppListChanged];
 }
 
-static pascal OSStatus appTerminated (EventHandlerCallRef nextHandler, EventRef evt, void* userData)
+#ifdef DEBUG_SPMEDIAKEY_APPLIST
+- (void)debugPrintAppList
 {
-    SPMediaKeyTap *self = (__bridge id)userData;
-
-    ProcessSerialNumber deadPSN;
-
-    GetEventParameter(
-        evt,
-        kEventParamProcessID,
-        typeProcessSerialNumber,
-        NULL,
-        sizeof(deadPSN),
-        NULL,
-        &deadPSN
-    );
-
-    [self appTerminated:deadPSN];
-    return CallNextEventHandler(nextHandler, evt);
+    NSMutableString *list = [NSMutableString stringWithCapacity:255];
+    for (NSRunningApplication *app in _mediaKeyAppList) {
+        [list appendFormat:@"     - %@\n", app.bundleIdentifier];
+    }
+    NSLog(@"List: \n%@", list);
 }
+#endif
 
 @end

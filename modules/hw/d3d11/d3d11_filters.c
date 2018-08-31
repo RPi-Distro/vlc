@@ -75,7 +75,6 @@ struct filter_sys_t
     ID3D11VideoProcessor           *videoProcessor;
     ID3D11VideoProcessorEnumerator *procEnumerator;
 
-    HANDLE                         context_mutex;
     union {
         ID3D11Texture2D            *texture;
         ID3D11Resource             *resource;
@@ -246,9 +245,6 @@ static picture_t *Filter(filter_t *p_filter, picture_t *p_pic)
 
     picture_CopyProperties( p_outpic, p_pic );
 
-    if( p_sys->context_mutex != INVALID_HANDLE_VALUE )
-        WaitForSingleObjectEx( p_sys->context_mutex, INFINITE, FALSE );
-
     ID3D11VideoProcessorInputView *inputs[4] = {
         p_src_sys->processorInput,
         p_sys->procInput[0],
@@ -262,6 +258,8 @@ static picture_t *Filter(filter_t *p_filter, picture_t *p_pic)
         p_sys->procOutput[0],
         p_sys->procOutput[1]
     };
+
+    d3d11_device_lock( &p_sys->d3d_dev );
 
     size_t idx = 0, count = 0;
     /* contrast */
@@ -318,8 +316,7 @@ static picture_t *Filter(filter_t *p_filter, picture_t *p_pic)
                                                   NULL);
     }
 
-    if( p_sys->context_mutex  != INVALID_HANDLE_VALUE )
-        ReleaseMutex( p_sys->context_mutex );
+    d3d11_device_unlock( &p_sys->d3d_dev );
 
     picture_Release( p_pic );
     return p_outpic;
@@ -383,10 +380,10 @@ static int D3D11OpenAdjust(vlc_object_t *obj)
 
     HANDLE context_lock = INVALID_HANDLE_VALUE;
     UINT dataSize = sizeof(context_lock);
-    hr = ID3D11Device_GetPrivateData(sys->d3d_dev.d3ddevice, &GUID_CONTEXT_MUTEX, &dataSize, &context_lock);
+    hr = ID3D11DeviceContext_GetPrivateData(sys->d3d_dev.d3dcontext, &GUID_CONTEXT_MUTEX, &dataSize, &context_lock);
     if (FAILED(hr))
         msg_Warn(filter, "No mutex found to lock the decoder");
-    sys->context_mutex = context_lock;
+    sys->d3d_dev.context_mutex = context_lock;
 
     const video_format_t *fmt = &filter->fmt_out.video;
 
@@ -551,7 +548,7 @@ static int D3D11OpenAdjust(vlc_object_t *obj)
         }
 
         hr = ID3D11VideoDevice_CreateVideoProcessorInputView(sys->d3dviddev,
-                                                             sys->out[0].resource,
+                                                             sys->out[i].resource,
                                                              processorEnumerator,
                                                              &inDesc,
                                                              &sys->procInput[i]);
@@ -612,8 +609,10 @@ static void D3D11CloseAdjust(vlc_object_t *obj)
 
     for (int i=0; i<PROCESSOR_SLICES; i++)
     {
-        ID3D11VideoProcessorInputView_Release(sys->procInput[i]);
-        ID3D11VideoProcessorOutputView_Release(sys->procOutput[i]);
+        if (sys->procInput[i])
+            ID3D11VideoProcessorInputView_Release(sys->procInput[i]);
+        if (sys->procOutput[i])
+            ID3D11VideoProcessorOutputView_Release(sys->procOutput[i]);
     }
     ID3D11Texture2D_Release(sys->out[0].texture);
     ID3D11Texture2D_Release(sys->out[1].texture);

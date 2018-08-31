@@ -2,7 +2,7 @@
  * common.c: Windows video output common code
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: f4787d20c3aeca876e0d58c614d9f5c5b8e7ee86 $
+ * $Id: ca7c5401e6563da40ac8501869b19413aa98a69c $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Martell Malone <martellmalone@gmail.com>
@@ -61,6 +61,16 @@ static bool GetRect(const vout_display_sys_t *sys, RECT *out)
 }
 #endif
 
+static unsigned int GetPictureWidth(const vout_display_t *vd)
+{
+    return vd->fmt.i_width;
+}
+
+static unsigned int GetPictureHeight(const vout_display_t *vd)
+{
+    return vd->fmt.i_height;
+}
+
 /* */
 int CommonInit(vout_display_t *vd)
 {
@@ -74,6 +84,8 @@ int CommonInit(vout_display_t *vd)
     sys->is_first_display = true;
     sys->is_on_top        = false;
 
+    sys->pf_GetPictureWidth  = GetPictureWidth;
+    sys->pf_GetPictureHeight = GetPictureHeight;
 #if !VLC_WINSTORE_APP
     sys->pf_GetRect = GetRect;
     SetRectEmpty(&sys->rect_display);
@@ -267,8 +279,8 @@ void UpdateRects(vout_display_t *vd,
     /* src image dimensions */
     rect_src.left = 0;
     rect_src.top = 0;
-    rect_src.right = vd->fmt.i_width;
-    rect_src.bottom = vd->fmt.i_height;
+    rect_src.right = sys->pf_GetPictureWidth(vd);
+    rect_src.bottom = sys->pf_GetPictureHeight(vd);
 
     /* Clip the source image */
     rect_src_clipped.left = source->i_x_offset +

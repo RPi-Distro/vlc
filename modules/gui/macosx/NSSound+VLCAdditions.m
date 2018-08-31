@@ -2,7 +2,7 @@
  * NSSound+VLCAdditions.m: Category that adds system volume control
  *****************************************************************************
  * Copyright (C) 2003-2014 VLC authors and VideoLAN
- * $Id: bd81bb734984e2cf3aa3c06490792cd6aa6410a3 $
+ * $Id: c3343c9c378be6cbb1801b0227886fdb3784eba4 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -80,6 +80,10 @@
         return NO;
     }
     err = AudioObjectSetPropertyData(i_device, &propertyAddress, 0, NULL, i_size, &f_volume);
+    if (err != noErr ) {
+        msg_Warn( getIntf(), "failed to set the main device volume" );
+        return NO;
+    }
 
     return YES;
 }

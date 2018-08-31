@@ -2,7 +2,7 @@
  * lpcm.c: lpcm decoder/packetizer module
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: b5ed1903642521cb5ab394025fc7a2424e2640ad $
+ * $Id: 69e27270ac8008889ae269667b457b37467ace57 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Henri Fallon <henri@videolan.org>
@@ -453,6 +453,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
             p_dec->fmt_out.i_codec = VLC_CODEC_S32N;
             p_dec->fmt_out.audio.i_bitspersample = 32;
         }
+        aout_FormatPrepare(&p_dec->fmt_out.audio);
 
         /* */
         block_t *p_aout_buffer;

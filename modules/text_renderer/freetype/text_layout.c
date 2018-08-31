@@ -2,7 +2,7 @@
  * text_layout.c : Text shaping and layout
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 1997492fa613219d91591188fcb7a0843f9fd73c $
+ * $Id: d030b4b47c21970ec80210a05bd416818c2a0b3b $
  *
  * Authors: Salah-Eddin Shaban <salshaaban@gmail.com>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -152,6 +152,9 @@ typedef struct paragraph_t
 
 #ifdef HAVE_FRIBIDI
     FriBidiCharType     *p_types;
+#if FRIBIDI_MAJOR_VERSION >= 1
+    FriBidiBracketType  *p_btypes;
+#endif
     FriBidiLevel        *p_levels;
     FriBidiStrIndex     *pi_reordered_indices;
     FriBidiParType       paragraph_type;
@@ -290,12 +293,18 @@ static paragraph_t *NewParagraph( filter_t *p_filter,
 #ifdef HAVE_FRIBIDI
     p_paragraph->p_levels = vlc_alloc( i_size, sizeof( *p_paragraph->p_levels ) );
     p_paragraph->p_types = vlc_alloc( i_size, sizeof( *p_paragraph->p_types ) );
+#if FRIBIDI_MAJOR_VERSION >= 1
+    p_paragraph->p_btypes = vlc_alloc( i_size, sizeof( *p_paragraph->p_btypes ) );
+#endif
     p_paragraph->pi_reordered_indices =
             vlc_alloc( i_size, sizeof( *p_paragraph->pi_reordered_indices ) );
 
     if( !p_paragraph->p_levels || !p_paragraph->p_types
      || !p_paragraph->pi_reordered_indices )
         goto error;
+
+    for( int i=0; i<i_size; i++ )
+        p_paragraph->pi_reordered_indices[i] = i;
 
     int i_direction = var_InheritInteger( p_filter, "freetype-text-direction" );
     if( i_direction == 0 )
@@ -323,6 +332,9 @@ error:
 #ifdef HAVE_FRIBIDI
     if( p_paragraph->p_levels ) free( p_paragraph->p_levels );
     if( p_paragraph->p_types ) free( p_paragraph->p_types );
+#if FRIBIDI_MAJOR_VERSION >= 1
+    if( p_paragraph->p_btypes ) free( p_paragraph->p_btypes );
+#endif
     if( p_paragraph->pi_reordered_indices )
         free( p_paragraph->pi_reordered_indices );
 #endif
@@ -348,6 +360,9 @@ static void FreeParagraph( paragraph_t *p_paragraph )
 #ifdef HAVE_FRIBIDI
     free( p_paragraph->pi_reordered_indices );
     free( p_paragraph->p_types );
+#if FRIBIDI_MAJOR_VERSION >= 1
+    free( p_paragraph->p_btypes );
+#endif
     free( p_paragraph->p_levels );
 #endif
 
@@ -360,10 +375,22 @@ static int AnalyzeParagraph( paragraph_t *p_paragraph )
     fribidi_get_bidi_types(  p_paragraph->p_code_points,
                              p_paragraph->i_size,
                              p_paragraph->p_types );
+#if FRIBIDI_MAJOR_VERSION >= 1
+    fribidi_get_bracket_types( p_paragraph->p_code_points,
+                               p_paragraph->i_size,
+                               p_paragraph->p_types,
+                               p_paragraph->p_btypes );
+    fribidi_get_par_embedding_levels_ex( p_paragraph->p_types,
+                                      p_paragraph->p_btypes,
+                                      p_paragraph->i_size,
+                                      &p_paragraph->paragraph_type,
+                                      p_paragraph->p_levels );
+#else
     fribidi_get_par_embedding_levels( p_paragraph->p_types,
                                       p_paragraph->i_size,
                                       &p_paragraph->paragraph_type,
                                       p_paragraph->p_levels );
+#endif
 
 #ifdef HAVE_HARFBUZZ
     hb_unicode_funcs_t *p_funcs = hb_unicode_funcs_get_default();
@@ -1037,11 +1064,11 @@ static int LoadGlyphs( filter_t *p_filter, paragraph_t *p_paragraph,
                 p_bitmaps->i_x_advance = p_face->glyph->advance.x;
                 p_bitmaps->i_y_advance = p_face->glyph->advance.y;
             }
-        }
 
-        int i_max_run_advance_x = FT_FLOOR( FT_MulFix( p_face->max_advance_width, p_face->size->metrics.x_scale ) );
-        if( i_max_run_advance_x > *pi_max_advance_x )
-            *pi_max_advance_x = i_max_run_advance_x;
+            unsigned i_x_advance = FT_FLOOR( p_bitmaps->i_x_advance );
+            if( i_x_advance > *pi_max_advance_x )
+                *pi_max_advance_x = i_x_advance;
+        }
     }
     return VLC_SUCCESS;
 }
@@ -1065,11 +1092,6 @@ static int LayoutLine( filter_t *p_filter,
         return VLC_EGENERIC;
     }
 
-    line_desc_t *p_line = NewLine( 1 + i_last_char - i_first_char );
-
-    if( !p_line )
-        return VLC_ENOMEM;
-
     filter_sys_t *p_sys = p_filter->p_sys;
     int i_last_run = -1;
     run_desc_t *p_run = 0;
@@ -1085,21 +1107,27 @@ static int LayoutLine( filter_t *p_filter,
     int i_ul_thickness = 0;
 
 #ifdef HAVE_FRIBIDI
-    fribidi_reorder_line( 0, &p_paragraph->p_types[i_first_char],
+    bool b_reordered = ( 0 !=
+        fribidi_reorder_line( 0, &p_paragraph->p_types[i_first_char],
                           1 + i_last_char - i_first_char,
                           0, p_paragraph->paragraph_type,
                           &p_paragraph->p_levels[i_first_char],
-                          0, &p_paragraph->pi_reordered_indices[i_first_char] );
+                          0, &p_paragraph->pi_reordered_indices[i_first_char] ) );
 #endif
+
+    line_desc_t *p_line = NewLine( 1 + i_last_char - i_first_char );
+    if( !p_line )
+        return VLC_ENOMEM;
 
     for( int i = i_first_char; i <= i_last_char; ++i, ++i_line_index )
     {
         int i_paragraph_index;
 #ifdef HAVE_FRIBIDI
-        i_paragraph_index = p_paragraph->pi_reordered_indices[ i ];
-#else
-        i_paragraph_index = i;
+        if( b_reordered )
+            i_paragraph_index = p_paragraph->pi_reordered_indices[ i ];
+        else
 #endif
+        i_paragraph_index = i;
 
         line_character_t *p_ch = p_line->p_character + i_line_index;
         p_ch->p_style = p_paragraph->pp_styles[ i_paragraph_index ];
@@ -1345,9 +1373,6 @@ static int LayoutParagraph( filter_t *p_filter, paragraph_t *p_paragraph,
 
     for( int i = 0; i < p_paragraph->i_size; ++i )
     {
-#ifdef HAVE_FRIBIDI
-        p_paragraph->pi_reordered_indices[ i ] = i;
-#endif
         if( !IsWhitespaceAt( p_paragraph, i ) || i != i_last_space + 1 )
             i_total_width += p_paragraph->p_glyph_bitmaps[ i ].i_x_advance;
         else

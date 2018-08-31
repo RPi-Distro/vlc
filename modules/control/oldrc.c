@@ -2,7 +2,7 @@
  * oldrc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 138fd21b325125076bb554d13c6ec579d7b333f8 $
+ * $Id: 0f56cb65d454e2d02b6dc7c5c9bb72f020a99fea $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -1129,7 +1129,10 @@ static int Input( vlc_object_t *p_this, char const *psz_cmd,
 
             if ( var_Change( p_input, psz_variable,
                              VLC_VAR_GETCHOICES, &val, &text ) < 0 )
+            {
+                free( val_name.psz_string );
                 goto out;
+            }
 
             msg_rc( "+----[ %s ]", val_name.psz_string );
             for ( int i = 0; i < val.p_list->i_count; i++ )

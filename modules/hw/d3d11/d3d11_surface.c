@@ -205,10 +205,10 @@ static int assert_staging(filter_t *p_filter, picture_sys_t *p_sys)
     texDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
     texDesc.BindFlags = 0;
 
-    ID3D11Device *p_device;
-    ID3D11DeviceContext_GetDevice(p_sys->context, &p_device);
+    d3d11_device_t d3d_dev = { .d3dcontext = p_sys->context };
+    ID3D11DeviceContext_GetDevice(d3d_dev.d3dcontext, &d3d_dev.d3ddevice);
     sys->staging = NULL;
-    hr = ID3D11Device_CreateTexture2D( p_device, &texDesc, NULL, &sys->staging);
+    hr = ID3D11Device_CreateTexture2D( d3d_dev.d3ddevice, &texDesc, NULL, &sys->staging);
     /* test if mapping the texture works ref #18746 */
     if (SUCCEEDED(hr) && FAILED(hr = can_map(sys, p_sys->context)))
         msg_Dbg(p_filter, "can't map default staging texture (hr=0x%0lx)", hr);
@@ -217,21 +217,21 @@ static int assert_staging(filter_t *p_filter, picture_sys_t *p_sys)
         /* failed with the this format, try a different one */
         UINT supportFlags = D3D11_FORMAT_SUPPORT_SHADER_LOAD | D3D11_FORMAT_SUPPORT_VIDEO_PROCESSOR_OUTPUT;
         const d3d_format_t *new_fmt =
-                FindD3D11Format( p_device, 0, false, 0, false, supportFlags );
+                FindD3D11Format( p_filter, &d3d_dev, 0, false, 0, false, supportFlags );
         if (new_fmt && texDesc.Format != new_fmt->formatTexture)
         {
             DXGI_FORMAT srcFormat = texDesc.Format;
             texDesc.Format = new_fmt->formatTexture;
-            hr = ID3D11Device_CreateTexture2D( p_device, &texDesc, NULL, &sys->staging);
+            hr = ID3D11Device_CreateTexture2D( d3d_dev.d3ddevice, &texDesc, NULL, &sys->staging);
             if (SUCCEEDED(hr))
             {
                 texDesc.Usage = D3D11_USAGE_DEFAULT;
                 texDesc.CPUAccessFlags = 0;
                 texDesc.BindFlags |= D3D11_BIND_RENDER_TARGET;
-                hr = ID3D11Device_CreateTexture2D( p_device, &texDesc, NULL, &sys->procOutTexture);
+                hr = ID3D11Device_CreateTexture2D( d3d_dev.d3ddevice, &texDesc, NULL, &sys->procOutTexture);
                 if (SUCCEEDED(hr) && SUCCEEDED(hr = can_map(sys, p_sys->context)))
                 {
-                    if (SetupProcessor(p_filter, p_device, p_sys->context, srcFormat, new_fmt->formatTexture))
+                    if (SetupProcessor(p_filter, d3d_dev.d3ddevice, p_sys->context, srcFormat, new_fmt->formatTexture))
                     {
                         ID3D11Texture2D_Release(sys->procOutTexture);
                         ID3D11Texture2D_Release(sys->staging);
@@ -251,7 +251,7 @@ static int assert_staging(filter_t *p_filter, picture_sys_t *p_sys)
         }
     }
 #endif
-    ID3D11Device_Release(p_device);
+    ID3D11Device_Release(d3d_dev.d3ddevice);
     if (FAILED(hr)) {
         msg_Err(p_filter, "Failed to create a %s staging texture to extract surface pixels (hr=0x%0lx)", DxgiFormatToStr(texDesc.Format), hr );
         return VLC_EGENERIC;
@@ -435,11 +435,16 @@ static void D3D11_NV12(filter_t *p_filter, picture_t *src, picture_t *dst)
         return;
     }
 
-    D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC viewDesc;
-    ID3D11VideoDecoderOutputView_GetDesc( p_sys->decoder, &viewDesc );
-
+    UINT srcSlice;
+    if (!p_sys->decoder)
+        srcSlice = p_sys->slice_index;
+    else
+    {
+        D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC viewDesc;
+        ID3D11VideoDecoderOutputView_GetDesc( p_sys->decoder, &viewDesc );
+        srcSlice = viewDesc.Texture2D.ArraySlice;
+    }
     ID3D11Resource *srcResource = p_sys->resource[KNOWN_DXGI_INDEX];
-    UINT srcSlice = viewDesc.Texture2D.ArraySlice;
 
 #if CAN_PROCESSOR
     if (sys->procEnumerator)
@@ -451,7 +456,7 @@ static void D3D11_NV12(filter_t *p_filter, picture_t *src, picture_t *dst)
                 .FourCC = 0,
                 .ViewDimension = D3D11_VPIV_DIMENSION_TEXTURE2D,
                 .Texture2D.MipSlice = 0,
-                .Texture2D.ArraySlice = viewDesc.Texture2D.ArraySlice,
+                .Texture2D.ArraySlice = srcSlice,
             };
 
             hr = ID3D11VideoDevice_CreateVideoProcessorInputView(sys->d3dviddev,
@@ -841,6 +846,9 @@ void D3D11CloseConverter( vlc_object_t *obj )
     filter_t *p_filter = (filter_t *)obj;
     filter_sys_t *p_sys = (filter_sys_t*) p_filter->p_sys;
 #if CAN_PROCESSOR
+    if (p_sys->procOutTexture)
+        ID3D11Texture2D_Release(p_sys->procOutTexture);
+
     if (p_sys->d3dviddev)
         ID3D11VideoDevice_Release(p_sys->d3dviddev);
     if (p_sys->d3dvidctx)

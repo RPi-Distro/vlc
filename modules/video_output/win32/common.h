@@ -2,7 +2,7 @@
  * common.h: Windows video output header file
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 0fb4e93c0206c8b0eb0a7225d206e65840e57406 $
+ * $Id: f3e912845b1a4a0435a60be04cd4759bc9451a39 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -80,6 +80,8 @@ typedef struct vout_display_sys_win32_t
     int  i_align_dest_size;
 
     bool (*pf_GetRect)(const struct vout_display_sys_win32_t *p_sys, RECT *out);
+    unsigned int (*pf_GetPictureWidth) (const vout_display_t *);
+    unsigned int (*pf_GetPictureHeight)(const vout_display_t *);
 } vout_display_sys_win32_t;
 
 

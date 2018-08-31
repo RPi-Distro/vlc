@@ -37,12 +37,12 @@ block_t * Retrieve::HTTP(vlc_object_t *obj, AuthStorage *auth, const std::string
     HTTPChunk *datachunk;
     try
     {
-        datachunk = new HTTPChunk(uri, &connManager, ID());
+        datachunk = new HTTPChunk(uri, &connManager, ID(), true);
     } catch (int) {
         return NULL;
     }
 
-    block_t *block = datachunk->read(1<<21);
+    block_t *block = datachunk->read(1<<25);
     delete datachunk;
     return block;
 }

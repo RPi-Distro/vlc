@@ -111,8 +111,6 @@ struct vlc_va_sys_t
     ID3D11VideoContext           *d3dvidctx;
     DXGI_FORMAT                  render;
 
-    HANDLE                       context_mutex;
-
     /* pool */
     picture_t                    *extern_pics[MAX_SURFACE_COUNT];
 
@@ -150,7 +148,7 @@ void SetupAVCodecContext(vlc_va_t *va)
     sys->hw.cfg = &sys->cfg;
     sys->hw.surface_count = dx_sys->va_pool.surface_count;
     sys->hw.surface = dx_sys->hw_surface;
-    sys->hw.context_mutex = sys->context_mutex;
+    sys->hw.context_mutex = sys->d3d_dev.context_mutex;
 
     if (IsEqualGUID(&dx_sys->input, &DXVA_Intel_H264_NoFGT_ClearVideo))
         sys->hw.workaround |= FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO;
@@ -320,6 +318,19 @@ static int Open(vlc_va_t *va, AVCodecContext *ctx, enum PixelFormat pix_fmt,
     if (pix_fmt != AV_PIX_FMT_D3D11VA_VLD)
         return VLC_EGENERIC;
 
+#if !VLC_WINSTORE_APP
+    /* Allow using D3D11VA automatically starting from Windows 8.1 */
+    if (!va->obj.force)
+    {
+        bool isWin81OrGreater = false;
+        HMODULE hKernel32 = GetModuleHandle(TEXT("kernel32.dll"));
+        if (likely(hKernel32 != NULL))
+            isWin81OrGreater = GetProcAddress(hKernel32, "IsProcessCritical") != NULL;
+        if (!isWin81OrGreater)
+            return VLC_EGENERIC;
+    }
+#endif
+
     vlc_va_sys_t *sys = calloc(1, sizeof (*sys));
     if (unlikely(sys == NULL))
         return VLC_ENOMEM;
@@ -350,10 +361,10 @@ static int Open(vlc_va_t *va, AVCodecContext *ctx, enum PixelFormat pix_fmt,
             ID3D11DeviceContext_GetDevice( p_sys->context, &sys->d3d_dev.d3ddevice );
             HANDLE context_lock = INVALID_HANDLE_VALUE;
             UINT dataSize = sizeof(context_lock);
-            hr = ID3D11Device_GetPrivateData(sys->d3d_dev.d3ddevice, &GUID_CONTEXT_MUTEX, &dataSize, &context_lock);
+            hr = ID3D11DeviceContext_GetPrivateData(p_sys->context, &GUID_CONTEXT_MUTEX, &dataSize, &context_lock);
             if (FAILED(hr))
                 msg_Warn(va, "No mutex found to lock the decoder");
-            sys->context_mutex = context_lock;
+            sys->d3d_dev.context_mutex = context_lock;
 
             sys->d3d_dev.d3dcontext = p_sys->context;
             sys->d3d_dev.owner = false;
@@ -543,27 +554,8 @@ static int DxGetInputList(vlc_va_t *va, input_list_t *p_list)
     return VLC_SUCCESS;
 }
 
-extern const GUID DXVA_ModeHEVC_VLD_Main;
 extern const GUID DXVA_ModeHEVC_VLD_Main10;
 extern const GUID DXVA_ModeVP9_VLD_10bit_Profile2;
-static bool CanUseIntelHEVC(vlc_va_t *va)
-{
-    vlc_va_sys_t *sys = va->sys;
-    IDXGIAdapter *pAdapter = D3D11DeviceAdapter(sys->d3d_dev.d3ddevice);
-    if (!pAdapter)
-        return false;
-
-    DXGI_ADAPTER_DESC adapterDesc;
-    HRESULT hr = IDXGIAdapter_GetDesc(pAdapter, &adapterDesc);
-    IDXGIAdapter_Release(pAdapter);
-    if (FAILED(hr))
-        return false;
-
-    if (adapterDesc.VendorId != GPU_MANUFACTURER_INTEL)
-        return true;
-
-    return directx_va_canUseHevc( va, adapterDesc.DeviceId );
-}
 
 static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *fmt)
 {
@@ -580,9 +572,25 @@ static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *
     }
 #endif
 
-    if ((IsEqualGUID(input,&DXVA_ModeHEVC_VLD_Main) ||
-         IsEqualGUID(input,&DXVA_ModeHEVC_VLD_Main10)) && !CanUseIntelHEVC(va))
+    IDXGIAdapter *pAdapter = D3D11DeviceAdapter(sys->d3d_dev.d3ddevice);
+    if (!pAdapter)
         return VLC_EGENERIC;
+
+    DXGI_ADAPTER_DESC adapterDesc;
+    hr = IDXGIAdapter_GetDesc(pAdapter, &adapterDesc);
+    IDXGIAdapter_Release(pAdapter);
+    if (FAILED(hr))
+        return VLC_EGENERIC;
+
+    char *psz_decoder_name = directx_va_GetDecoderName(input);
+
+    if (!directx_va_canUseDecoder(va, adapterDesc.VendorId, adapterDesc.DeviceId,
+                                  input, sys->d3d_dev.WDDM.build))
+    {
+        msg_Warn(va, "GPU blacklisted for %s codec", psz_decoder_name);
+        free(psz_decoder_name);
+        return VLC_EGENERIC;
+    }
 
     DXGI_FORMAT processorInput[5];
     int idx = 0;
@@ -593,8 +601,6 @@ static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *
     processorInput[idx++] = DXGI_FORMAT_NV12;
     processorInput[idx++] = DXGI_FORMAT_420_OPAQUE;
     processorInput[idx++] = DXGI_FORMAT_UNKNOWN;
-
-    char *psz_decoder_name = directx_va_GetDecoderName(input);
 
     /* */
     for (idx = 0; processorInput[idx] != DXGI_FORMAT_UNKNOWN; ++idx)

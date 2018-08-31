@@ -2,7 +2,7 @@
  * sftp.c: SFTP input module
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: 1219f573a1f3fbcedecab3598a10194e27da347c $
+ * $Id: 5bc054d310b67f514f04b3ef5ddcfc188f6d81c3 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *          Petri Hintukainen <phintuka@gmail.com>
@@ -306,7 +306,19 @@ static int Open( vlc_object_t* p_this )
         case LIBSSH2_HOSTKEY_TYPE_DSS:
             knownhost_fingerprint_algo = LIBSSH2_KNOWNHOST_KEY_SSHDSS;
             break;
+#if LIBSSH2_VERSION_NUM >= 0x010801
+        case LIBSSH2_HOSTKEY_TYPE_ECDSA_256:
+            knownhost_fingerprint_algo = LIBSSH2_KNOWNHOST_KEY_ECDSA_256;
+            break;
 
+        case LIBSSH2_HOSTKEY_TYPE_ECDSA_384:
+            knownhost_fingerprint_algo = LIBSSH2_KNOWNHOST_KEY_ECDSA_384;
+            break;
+
+        case LIBSSH2_HOSTKEY_TYPE_ECDSA_521:
+            knownhost_fingerprint_algo = LIBSSH2_KNOWNHOST_KEY_ECDSA_521;
+            break;
+#endif
         default:
             msg_Err( p_access, "Host uses unrecognized session-key algorithm" );
             libssh2_knownhost_free( ssh_knownhosts );

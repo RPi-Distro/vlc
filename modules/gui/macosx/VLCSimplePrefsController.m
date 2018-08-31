@@ -2,7 +2,7 @@
 * VLCSimplePrefsController.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2014 VLC authors and VideoLAN
-* $Id: f9b079803717ffe92675259fce8ab61ca48d011d $
+* $Id: 9a7a3484266c8c842863ed5cc8c2223f7cba149d $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -1311,38 +1311,34 @@ static inline void save_string_list(intf_thread_t * p_intf, id object, const cha
     NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
 
     if (sender == _input_urlhandlerButton) {
-        NSArray *handlers;
-        NSString *handler;
-        NSString *rawhandler;
-        NSMutableArray *rawHandlers;
-        NSUInteger count;
 
-#define fillUrlHandlerPopup( protocol, object ) \
-        handlers = (__bridge NSArray *)LSCopyAllHandlersForURLScheme(CFSTR( protocol )); \
-        rawHandlers = [[NSMutableArray alloc] init]; \
-        [object removeAllItems]; \
-        count = [handlers count]; \
-        for (NSUInteger x = 0; x < count; x++) { \
-            rawhandler = [handlers objectAtIndex:x]; \
-            handler = [self applicationNameForBundleIdentifier:rawhandler]; \
-            if (handler && ![handler isEqualToString:@""]) { \
-                [object addItemWithTitle:handler]; \
-                [[object lastItem] setImage: [self iconForBundleIdentifier:[handlers objectAtIndex:x]]]; \
-                [rawHandlers addObject: rawhandler]; \
-            } \
-        } \
-        [object selectItemAtIndex: [rawHandlers indexOfObject:(__bridge id)LSCopyDefaultHandlerForURLScheme(CFSTR( protocol ))]];
+        void (^fillUrlHandlerPopup)(NSString*, NSPopUpButton*) = ^void(NSString *protocol, NSPopUpButton *object) {
 
-        fillUrlHandlerPopup( "ftp", _urlhandler_ftpPopup);
-        fillUrlHandlerPopup( "mms", _urlhandler_mmsPopup);
-        fillUrlHandlerPopup( "rtmp", _urlhandler_rtmpPopup);
-        fillUrlHandlerPopup( "rtp", _urlhandler_rtpPopup);
-        fillUrlHandlerPopup( "rtsp", _urlhandler_rtspPopup);
-        fillUrlHandlerPopup( "sftp", _urlhandler_sftpPopup);
-        fillUrlHandlerPopup( "smb", _urlhandler_smbPopup);
-        fillUrlHandlerPopup( "udp", _urlhandler_udpPopup);
+            NSArray *handlers = (__bridge_transfer NSArray *)LSCopyAllHandlersForURLScheme((__bridge CFStringRef)protocol);
+            NSMutableArray *rawHandlers = [[NSMutableArray alloc] init];
+            [object removeAllItems];
+            NSUInteger count = [handlers count];
+            for (NSUInteger x = 0; x < count; x++) {
+                NSString *rawhandler = [handlers objectAtIndex:x];
+                NSString *handler = [self applicationNameForBundleIdentifier:rawhandler];
+                if (handler && ![handler isEqualToString:@""]) {
+                    [object addItemWithTitle:handler];
+                    [[object lastItem] setImage: [self iconForBundleIdentifier:[handlers objectAtIndex:x]]];
+                    [rawHandlers addObject: rawhandler];
+                }
+            }
+            [object selectItemAtIndex: [rawHandlers indexOfObject:(__bridge_transfer id)LSCopyDefaultHandlerForURLScheme((__bridge CFStringRef)protocol)]];
+        };
 
-#undef fillUrlHandlerPopup
+        fillUrlHandlerPopup(@"ftp", _urlhandler_ftpPopup);
+        fillUrlHandlerPopup(@"mms", _urlhandler_mmsPopup);
+        fillUrlHandlerPopup(@"rtmp", _urlhandler_rtmpPopup);
+        fillUrlHandlerPopup(@"rtp", _urlhandler_rtpPopup);
+        fillUrlHandlerPopup(@"rtsp", _urlhandler_rtspPopup);
+        fillUrlHandlerPopup(@"sftp", _urlhandler_sftpPopup);
+        fillUrlHandlerPopup(@"smb", _urlhandler_smbPopup);
+        fillUrlHandlerPopup(@"udp", _urlhandler_udpPopup);
+
 
         [NSApp beginSheet:_urlhandler_win modalForWindow:self.window modalDelegate:self didEndSelector:NULL contextInfo:nil];
     } else {
