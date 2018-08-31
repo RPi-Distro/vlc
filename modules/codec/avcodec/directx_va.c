@@ -4,7 +4,7 @@
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
  * Copyright (C) 2015 Steve Lhomme
- * $Id: 084a08dacf1df7e221f39928b5933f8725b593ab $
+ * $Id: e12704729ba882cd1152fb38199021b0af8a1373 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -48,7 +48,6 @@ struct picture_sys_t {
 #include "../../packetizer/h264_nal.h"
 #include "../../packetizer/hevc_nal.h"
 
-static const int PROF_MPEG2_SIMPLE[] = { FF_PROFILE_MPEG2_SIMPLE, 0 };
 static const int PROF_MPEG2_MAIN[]   = { FF_PROFILE_MPEG2_SIMPLE,
                                          FF_PROFILE_MPEG2_MAIN, 0 };
 static const int PROF_H264_HIGH[]    = { FF_PROFILE_H264_BASELINE,
@@ -176,7 +175,7 @@ static const directx_va_mode_t DXVA_MODES[] = {
     { "MPEG-2 decoder, restricted profile C",                                         &DXVA_ModeMPEG2_C,                      0, NULL },
     { "MPEG-2 decoder, restricted profile D",                                         &DXVA_ModeMPEG2_D,                      0, NULL },
 
-    { "MPEG-2 variable-length decoder",                                               &DXVA2_ModeMPEG2_VLD,                   AV_CODEC_ID_MPEG2VIDEO, PROF_MPEG2_SIMPLE },
+    { "MPEG-2 variable-length decoder",                                               &DXVA2_ModeMPEG2_VLD,                   AV_CODEC_ID_MPEG2VIDEO, PROF_MPEG2_MAIN },
     { "MPEG-2 & MPEG-1 variable-length decoder",                                      &DXVA2_ModeMPEG2and1_VLD,               AV_CODEC_ID_MPEG2VIDEO, PROF_MPEG2_MAIN },
     { "MPEG-2 & MPEG-1 variable-length decoder",                                      &DXVA2_ModeMPEG2and1_VLD,               AV_CODEC_ID_MPEG1VIDEO, NULL },
     { "MPEG-2 motion compensation",                                                   &DXVA2_ModeMPEG2_MoComp,                0, NULL },
@@ -446,35 +445,4 @@ static int FindVideoServiceConversion(vlc_va_t *va, directx_sys_t *dx_sys,
 
     p_list.pf_release(&p_list);
     return err;
-}
-
-static UINT hevc_blacklist[] = {
-    /* Intel Broadwell GPUs with hybrid HEVC */
-    0x1606, /* HD Graphics */
-    0x160E, /* HD Graphics */
-    0x1612, /* HD Graphics 5600 */
-    0x1616, /* HD Graphics 5500 */
-    0x161A, /* HD Graphics P5700 */
-    0x161E, /* HD Graphics 5300 */
-    0x1622, /* Iris Pro Graphics 6200 */
-    0x1626, /* HD Graphics 6000 */
-    0x162A, /* Iris Pro Graphics P6300 */
-    0x162B, /* Iris Graphics 6100 */
-};
-
-bool directx_va_canUseHevc(vlc_va_t *va, UINT DeviceId)
-{
-    if (va->obj.force)
-        return true;
-
-    for (size_t i=0; i<ARRAY_SIZE(hevc_blacklist); i++)
-    {
-        if (hevc_blacklist[i] == DeviceId)
-        {
-            msg_Warn(va, "Intel Hybrid HEVC detected, disabling hardware decoding");
-            return false;
-        }
-    }
-
-    return true;
 }

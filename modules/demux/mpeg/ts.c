@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: f7c87a853186983ba6eb0853be7d368988d333a9 $
+ * $Id: 549ea66c47d2c3353770f9e90fbc546cd8e3369e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -2103,7 +2103,7 @@ int ProbeStart( demux_t *p_demux, int i_program )
 
         /* Go ahead one more chunk if end of file contained only stuffing packets */
         i_probe_count += PROBE_CHUNK_COUNT;
-    } while( i_pos > 0 && (i_pcr == -1 || !b_found) &&
+    } while( i_pos < i_stream_size && !b_found &&
              i_probe_count < PROBE_MAX );
 
     if( vlc_stream_Seek( p_sys->stream, i_initial_pos ) )
@@ -2135,7 +2135,7 @@ int ProbeEnd( demux_t *p_demux, int i_program )
 
         /* Go ahead one more chunk if end of file contained only stuffing packets */
         i_probe_count += PROBE_CHUNK_COUNT;
-    } while( i_pos > 0 && (i_pcr == -1 || !b_found) &&
+    } while( i_pos > 0 && !b_found &&
              i_probe_count < PROBE_MAX );
 
     if( vlc_stream_Seek( p_sys->stream, i_initial_pos ) )

@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: e7e42bc6f47e9732c224b2507ae07f083fe250a5 $
+ * $Id: b5846b178c5a3c5bed7ef5f6c71bcc9932133b04 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -1291,6 +1291,8 @@ static int Play( demux_t *p_demux )
  *****************************************************************************/
 static bool HasSharedSession( MediaSubsession *session )
 {
+    if( session->sessionId() == NULL )
+        return false;
     MediaSubsessionIterator *it =
             new MediaSubsessionIterator( session->parentSession() );
     MediaSubsession *subsession;
@@ -1299,7 +1301,8 @@ static bool HasSharedSession( MediaSubsession *session )
     {
         if( session == subsession )
             continue;
-        if( !strcmp( session->sessionId(), subsession->sessionId() ) )
+        if( subsession->sessionId() != NULL &&
+            !strcmp( session->sessionId(), subsession->sessionId() ) )
         {
             b_shared = true;
             break;
@@ -2130,9 +2133,9 @@ static void StreamRead( void *p_private, unsigned int i_size,
                     case VLC_CODEC_MPGV:
                     case VLC_CODEC_H264:
                     case VLC_CODEC_HEVC:
-                    case VLC_CODEC_VP8:
                         p_block->i_dts = VLC_TS_INVALID;
                         break;
+                    case VLC_CODEC_VP8:
                     default:
                         p_block->i_dts = VLC_TS_0 + i_pts;
                         break;

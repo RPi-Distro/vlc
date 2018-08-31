@@ -2,7 +2,7 @@
  * VLCExtensionsDialogProvider.m: Mac OS X Extensions Dialogs
  *****************************************************************************
  * Copyright (C) 2010-2015 VLC authors and VideoLAN
- * $Id: f85cf139f007c8d24fcc20a35e96d8b4452a9c36 $
+ * $Id: f721b708ff11d7b187aad1281a220f5c995fb65a $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan org>
  *          Brendon Justin <brendonjustin@gmail.com>,
@@ -419,8 +419,10 @@ static void extensionDialogCallback(extension_dialog_t *p_ext_dialog,
             /* Explicitily release here, as we do not have transfered ownership to ARC,
              * given that not in all cases we want to destroy the widget.
              */
-            CFRelease(widget->p_sys_intf);
-            widget->p_sys_intf = NULL;
+            if (widget->p_sys_intf) {
+                CFRelease(widget->p_sys_intf);
+                widget->p_sys_intf = NULL;
+            }
         }
     }
     FOREACH_END()

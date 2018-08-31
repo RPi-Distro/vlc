@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 1999-2018 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.3)
+AC_INIT(vlc, 3.0.4)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=3
+VERSION_REVISION=4
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -2010,9 +2010,11 @@ AC_ARG_ENABLE(macosx-qtkit,
 if test "x${enable_macosx_qtkit}" != "xno" &&
   (test "${SYS}" = "darwin" || test "${enable_macosx_qtkit}" = "yes")
 then
+  AC_LANG_PUSH([Objective C])
   AC_CHECK_HEADERS(QTKit/QTKit.h, [
-      VLC_ADD_PLUGIN([qtsound])
+      VLC_ADD_PLUGIN([access_qtsound])
     ])
+  AC_LANG_POP([Objective C])
 fi
 
 dnl
@@ -3125,11 +3127,11 @@ dnl
 dnl  Wayland
 dnl
 AC_ARG_ENABLE(wayland,
-  [AS_HELP_STRING([--enable-wayland], [Wayland support (default auto)])])
+  [AS_HELP_STRING([--enable-wayland], [Incomplete Wayland support (default disabled)])])
 have_wayland="no"
 have_wayland_egl="no"
 
-AS_IF([test "${enable_wayland}" != "no"], [
+AS_IF([test "${enable_wayland}" = "yes"], [
   PKG_CHECK_MODULES([WAYLAND_CLIENT], [wayland-client >= 1.5.91], [
     AC_MSG_CHECKING([for the Wayland protocols])
     PKG_CHECK_EXISTS([wayland-protocols >= 1.4], [

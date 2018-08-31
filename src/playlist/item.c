@@ -2,7 +2,7 @@
  * item.c : Playlist item creation/deletion/add/removal functions
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: d2e98ff19547d79781466684a3a3669b6d757c60 $
+ * $Id: fcfa8ffadc12d2102c2646b90ad5a5edaa225a05 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -35,6 +35,7 @@
 #include <vlc_playlist.h>
 #include <vlc_rand.h>
 #include "playlist_internal.h"
+#include "libvlc.h"
 
 static void playlist_Preparse( playlist_t *, playlist_item_t * );
 
@@ -746,7 +747,7 @@ static void playlist_Preparse( playlist_t *p_playlist,
 
     if( sys->b_preparse && !input_item_IsPreparsed( input )
      && (EMPTY_STR(psz_artist) || EMPTY_STR(psz_album)) )
-        libvlc_MetadataRequest( p_playlist->obj.libvlc, input, 0, -1, p_item );
+        vlc_MetadataRequest( p_playlist->obj.libvlc, input, 0, -1, p_item );
     free( psz_artist );
     free( psz_album );
 }

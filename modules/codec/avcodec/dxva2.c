@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 6ec00e3dcc310077b7878b595159614c65bf9324 $
+ * $Id: ab4cdd9b85553cb9275ec39b2a601e127f7faa94 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -495,35 +495,35 @@ static int DxGetInputList(vlc_va_t *va, input_list_t *p_list)
     return VLC_SUCCESS;
 }
 
-extern const GUID DXVA_ModeHEVC_VLD_Main;
-extern const GUID DXVA_ModeHEVC_VLD_Main10;
-static bool CanUseIntelHEVC(vlc_va_t *va)
+static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *fmt)
 {
+    VLC_UNUSED(fmt);
     vlc_va_sys_t *sys = va->sys;
 
     D3DADAPTER_IDENTIFIER9 identifier;
     HRESULT hr = IDirect3D9_GetAdapterIdentifier(sys->hd3d.obj, sys->d3d_dev.adapterId, 0, &identifier);
     if (FAILED(hr))
-        return false;
-
-    if (identifier.VendorId != GPU_MANUFACTURER_INTEL)
-        return true;
-
-    return directx_va_canUseHevc( va, identifier.DeviceId );
-}
-
-static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *fmt)
-{
-    VLC_UNUSED(fmt);
-
-    if ((IsEqualGUID(input,&DXVA_ModeHEVC_VLD_Main) ||
-         IsEqualGUID(input,&DXVA_ModeHEVC_VLD_Main10)) && !CanUseIntelHEVC(va))
         return VLC_EGENERIC;
+
+    UINT driverBuild = identifier.DriverVersion.LowPart & 0xFFFF;
+    if (identifier.VendorId == GPU_MANUFACTURER_INTEL && (identifier.DriverVersion.LowPart >> 16) >= 100)
+    {
+        /* new Intel driver format */
+        driverBuild += ((identifier.DriverVersion.LowPart >> 16) - 100) * 1000;
+    }
+    if (!directx_va_canUseDecoder(va, identifier.VendorId, identifier.DeviceId,
+                                  input, driverBuild))
+    {
+        char* psz_decoder_name = directx_va_GetDecoderName(input);
+        msg_Warn(va, "GPU blacklisted for %s codec", psz_decoder_name);
+        free(psz_decoder_name);
+        return VLC_EGENERIC;
+    }
 
     int err = VLC_EGENERIC;
     UINT      output_count = 0;
     D3DFORMAT *output_list = NULL;
-    if (FAILED(IDirectXVideoDecoderService_GetDecoderRenderTargets(va->sys->dx_sys.d3ddec,
+    if (FAILED(IDirectXVideoDecoderService_GetDecoderRenderTargets(sys->dx_sys.d3ddec,
                                                                    input,
                                                                    &output_count,
                                                                    &output_list))) {
@@ -554,12 +554,12 @@ static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *
             }
             if (!is_supported)
                 continue;
-            if (pass == 0 && format->format != va->sys->render)
+            if (pass == 0 && format->format != sys->render)
                 continue;
 
             /* We have our solution */
             msg_Dbg(va, "Using decoder output '%s'", format->name);
-            va->sys->render = format->format;
+            sys->render = format->format;
             err = VLC_SUCCESS;
             break;
         }

@@ -2,7 +2,7 @@
  * screen.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004-2008 VLC authors and VideoLAN
- * $Id: 59eaaa6ecab2c3d1d6672e6b1eca53ef9f8b19c8 $
+ * $Id: 927d9c8c6bea4a4c170c14df9cd84f5c39f2d82a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -260,6 +260,11 @@ static void Close( vlc_object_t *p_this )
 #ifdef SCREEN_MOUSE
     if( p_sys->p_mouse )
         picture_Release( p_sys->p_mouse );
+    if( p_sys->p_blend )
+    {
+        module_unneed( p_sys->p_blend, p_sys->p_blend->p_module );
+        vlc_object_release( p_sys->p_blend );
+    }
 #endif
     free( p_sys );
 }

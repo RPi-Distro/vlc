@@ -38,6 +38,7 @@
 #include <iomanip>
 
 #include <vlc_stream.h>
+#include <vlc_rand.h>
 
 #include "../../misc/webservices/json.h"
 
@@ -90,7 +91,6 @@ static const char* StateToStr( States s )
 intf_sys_t::intf_sys_t(vlc_object_t * const p_this, int port, std::string device_addr,
                        int device_port, httpd_host_t *httpd_host)
  : m_module(p_this)
- , m_streaming_port(port)
  , m_device_port(device_port)
  , m_device_addr(device_addr)
  , m_last_request_id( 0 )
@@ -109,7 +109,7 @@ intf_sys_t::intf_sys_t(vlc_object_t * const p_this, int port, std::string device
  , m_cc_eof( false )
  , m_pace( false )
  , m_meta( NULL )
- , m_httpd_host(httpd_host)
+ , m_httpd( httpd_host, port )
  , m_httpd_file(NULL)
  , m_art_url(NULL)
  , m_art_idx(0)
@@ -118,8 +118,9 @@ intf_sys_t::intf_sys_t(vlc_object_t * const p_this, int port, std::string device
  , m_pause_delay( VLC_TS_INVALID )
  , m_pingRetriesLeft( PING_WAIT_RETRIES )
 {
-    m_communication = new ChromecastCommunication( p_this, m_device_addr.c_str(),
-                                                   m_device_port );
+    m_communication = new ChromecastCommunication( p_this,
+        getHttpStreamPath(), getHttpStreamPort(),
+        m_device_addr.c_str(), m_device_port );
 
     m_ctl_thread_interrupt = vlc_interrupt_create();
     if( unlikely(m_ctl_thread_interrupt == NULL) )
@@ -223,6 +224,8 @@ void intf_sys_t::reinit()
     try
     {
         m_communication = new ChromecastCommunication( m_module,
+                                                       getHttpStreamPath(),
+                                                       getHttpStreamPort(),
                                                        m_device_addr.c_str(),
                                                        m_device_port );
     } catch (const std::runtime_error& err )
@@ -310,21 +313,21 @@ void intf_sys_t::prepareHttpArtwork()
     {
         /* Same art: use the previous cached artwork url */
         assert( m_art_idx != 0 );
-        ss_art_idx << "/art" << (m_art_idx - 1);
+        ss_art_idx << getHttpArtRoot() << "/" << (m_art_idx - 1);
     }
     else
     {
         /* New art: create a new httpd file instance with a new url. The
          * artwork has to be different since the CC will cache the content. */
 
-        ss_art_idx << "/art" << m_art_idx;
+        ss_art_idx << getHttpArtRoot() << "/" << m_art_idx;
         m_art_idx++;
 
         vlc_mutex_unlock( &m_lock );
 
         if( m_httpd_file )
             httpd_FileDelete( m_httpd_file );
-        m_httpd_file = httpd_FileNew( m_httpd_host, ss_art_idx.str().c_str(),
+        m_httpd_file = httpd_FileNew( m_httpd.m_host, ss_art_idx.str().c_str(),
                                       "application/octet-stream", NULL, NULL,
                                       httpd_file_fill_cb, (httpd_file_sys_t *) this );
 
@@ -371,8 +374,7 @@ void intf_sys_t::tryLoad()
     // Reset the mediaSessionID to allow the new session to become the current one.
     // we cannot start a new load when the last one is still processing
     m_last_request_id =
-        m_communication->msgPlayerLoad( m_appTransportId, m_streaming_port,
-                                       m_mime, m_meta );
+        m_communication->msgPlayerLoad( m_appTransportId, m_mime, m_meta );
     if( m_last_request_id != ChromecastCommunication::kInvalidId )
         m_state = Loading;
 }
@@ -580,6 +582,34 @@ void intf_sys_t::queueMessage( QueueableMessages msg )
     // Assume lock is held by the called
     m_msgQueue.push( msg );
     vlc_interrupt_raise( m_ctl_thread_interrupt );
+}
+
+intf_sys_t::httpd_info_t::httpd_info_t( httpd_host_t* host, int port )
+    : m_host( host )
+    , m_port( port )
+{
+    for( int i = 0; i < 3; ++i )
+    {
+        std::ostringstream ss;
+        ss << "/chromecast"
+           << "/" << mdate()
+           << "/" << static_cast<uint64_t>( vlc_mrand48() );
+
+        m_root = ss.str();
+        m_url = httpd_UrlNew( m_host, m_root.c_str(), NULL, NULL );
+        if( m_url )
+            break;
+    }
+
+    if( m_url == NULL )
+        throw std::runtime_error( "unable to bind to http path" );
+}
+
+intf_sys_t::httpd_info_t::~httpd_info_t()
+
+{
+    if( m_url )
+        httpd_UrlDelete( m_url );
 }
 
 /*****************************************************************************
@@ -1110,6 +1140,21 @@ mtime_t intf_sys_t::getPauseDelay()
 {
     vlc_mutex_locker locker( &m_lock );
     return m_pause_delay;
+}
+
+unsigned int intf_sys_t::getHttpStreamPort() const
+{
+    return m_httpd.m_port;
+}
+
+std::string intf_sys_t::getHttpStreamPath() const
+{
+    return m_httpd.m_root + "/stream";
+}
+
+std::string intf_sys_t::getHttpArtRoot() const
+{
+    return m_httpd.m_root + "/art";
 }
 
 bool intf_sys_t::isFinishedPlaying()

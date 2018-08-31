@@ -2,7 +2,7 @@
  * upnp.hpp :  UPnP discovery module (libupnp) header
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: 39e19cbd56dbae1d7c554753e53f9a8707bb8581 $
+ * $Id: 9c128905d0f71445a62254f7232f2704321b2178 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -114,6 +114,7 @@ public:
 
 private:
     void parseNewServer( IXML_Document* doc, const std::string& location );
+    void parseSatipServer( IXML_Element* p_device_elem, const char *psz_base_url, const char *psz_udn, const char *psz_friendly_name, std::string iconUrl );
     std::string getIconURL( IXML_Element* p_device_elem , const char* psz_base_url );
 
 private:

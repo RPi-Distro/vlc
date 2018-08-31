@@ -2,7 +2,7 @@
  * VLCVoutView.m: MacOS X video output module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 4952afe18bfb45a20f317c0accb52d393f595fba $
+ * $Id: 658c193e50c30119281a9c22bf4be701cea46962 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -76,10 +76,9 @@
 {
     if (self = [super initWithFrame:frameRect]) {
         [self registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
+        i_lastScrollWheelDirection = 0;
+        f_cumulated_magnification = 0.0;
     }
-
-    i_lastScrollWheelDirection = 0;
-    f_cumulated_magnification = 0.0;
 
     return self;
 }

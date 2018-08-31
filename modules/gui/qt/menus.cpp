@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: 549e30913b2f285ce7f7b9351ae41b9cb3626e67 $
+ * $Id: f83bc232e96b9705777c6725ec4fc76de8c2d492 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -1309,16 +1309,6 @@ void VLCMenuBar::UpdateItem( intf_thread_t *p_intf, QMenu *menu,
         action->setData( psz_var );
     }
 
-    /* Some specific stuff */
-    bool forceDisabled = false;
-    if( !strcmp( psz_var, "spu-es" ) )
-    {
-        vout_thread_t *p_vout = THEMIM->getVout();
-        forceDisabled = ( p_vout == NULL );
-        if( p_vout )
-            vlc_object_release( p_vout );
-    }
-
     if( i_type & VLC_VAR_HASCHOICE )
     {
         /* Append choices menu */
@@ -1334,8 +1324,6 @@ void VLCMenuBar::UpdateItem( intf_thread_t *p_intf, QMenu *menu,
 
             action->setEnabled(
                 CreateChoicesMenu( submenu, psz_var, p_object ) == 0 );
-            if( forceDisabled )
-                action->setEnabled( false );
         }
         else
         {

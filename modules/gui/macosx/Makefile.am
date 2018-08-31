@@ -2,7 +2,7 @@ SUFFIXES += .xib
 
 libmacosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -fobjc-exceptions -fobjc-arc 
 libmacosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(guidir)' \
-	-Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,CoreServices \
+	-Wl,-framework,Cocoa -Wl,-framework,CoreServices \
 	-Wl,-framework,AVFoundation -Wl,-framework,CoreMedia -Wl,-framework,IOKit \
 	-Wl,-framework,AddressBook -Wl,-framework,WebKit -Wl,-framework,CoreAudio \
 	-Wl,-framework,SystemConfiguration -Wl,-framework,ScriptingBridge \
@@ -57,7 +57,6 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/VLCSimplePrefsController.h gui/macosx/VLCSimplePrefsController.m \
 	gui/macosx/VLCSimplePrefsWindow.h gui/macosx/VLCSimplePrefsWindow.m \
 	gui/macosx/VLCHotkeyChangeWindow.h gui/macosx/VLCHotkeyChangeWindow.m \
-	gui/macosx/SPInvocationGrabbing.h gui/macosx/SPInvocationGrabbing.m \
 	gui/macosx/SPMediaKeyTap.h gui/macosx/SPMediaKeyTap.m \
 	gui/macosx/Spotify.h \
 	gui/macosx/VLCStringUtility.h gui/macosx/VLCStringUtility.m \

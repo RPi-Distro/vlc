@@ -2,7 +2,7 @@
  * preparser.c
  *****************************************************************************
  * Copyright © 2017-2017 VLC authors and VideoLAN
- * $Id: 1122dd7cefe622fbc9ec64241111fb93976266ff $
+ * $Id: 661b2122e14a10340eefbb054dabfebd4fc7cc9b $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -64,8 +64,8 @@ static int PreparserOpenInput( void* preparser_, void* item_, void** out )
     var_AddCallback( input, "intf-event", InputEvent, preparser->worker );
     if( input_Start( input ) )
     {
-        input_Close( input );
         var_DelCallback( input, "intf-event", InputEvent, preparser->worker );
+        input_Close( input );
         input_item_SignalPreparseEnded( item_, ITEM_PREPARSE_FAILED );
         return VLC_EGENERIC;
     }

@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: a25f6ca4612f10051f7739f6f24024e55f6ce7c6 $
+ * $Id: 664d045c584edfae2e65f3c6cfcc28c8fa5ffff3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -204,8 +204,21 @@ static int lavc_GetVideoFormat(decoder_t *dec, video_format_t *restrict fmt,
                                  * __MAX(ctx->ticks_per_frame, 1);
     }
 
-    if( ctx->color_range == AVCOL_RANGE_JPEG )
+    /* FIXME we should only set the known values and let the core decide
+     * later of fallbacks, but we can't do that with a boolean */
+    switch ( ctx->color_range )
+    {
+    case AVCOL_RANGE_JPEG:
         fmt->b_color_range_full = true;
+        break;
+    case AVCOL_RANGE_UNSPECIFIED:
+        fmt->b_color_range_full = !vlc_fourcc_IsYUV( fmt->i_chroma );
+        break;
+    case AVCOL_RANGE_MPEG:
+    default:
+        fmt->b_color_range_full = false;
+        break;
+    }
 
     switch( ctx->colorspace )
     {
@@ -407,6 +420,13 @@ static int OpenVideoCodec( decoder_t *p_dec )
     cc_Init( &p_sys->cc );
 
     set_video_color_settings( &p_dec->fmt_in.video, ctx );
+    if( p_dec->fmt_in.video.i_frame_rate_base &&
+        p_dec->fmt_in.video.i_frame_rate &&
+        (double) p_dec->fmt_in.video.i_frame_rate /
+                 p_dec->fmt_in.video.i_frame_rate_base < 6 )
+    {
+        ctx->flags |= AV_CODEC_FLAG_LOW_DELAY;
+    }
 
     post_mt( p_sys );
     ret = ffmpeg_OpenCodec( p_dec, ctx, codec );
@@ -1014,11 +1034,6 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error
             p_block->i_dts = VLC_TS_INVALID;
         }
 
-#if LIBAVCODEC_VERSION_CHECK( 57, 0, 0xFFFFFFFFU, 64, 101 )
-        if( !b_need_output_picture )
-            pkt.flags |= AV_PKT_FLAG_DISCARD;
-#endif
-
         int ret = avcodec_send_packet(p_context, &pkt);
         if( ret != 0 && ret != AVERROR(EAGAIN) )
         {
@@ -1099,21 +1114,14 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error
 
         update_late_frame_count( p_dec, p_block, current_time, i_pts);
 
-        if( ( !p_sys->p_va && !frame->linesize[0] ) ||
+        if( !b_need_output_picture ||
+           ( !p_sys->p_va && !frame->linesize[0] ) ||
            ( p_dec->b_frame_drop_allowed && (frame->flags & AV_FRAME_FLAG_CORRUPT) &&
              !p_sys->b_show_corrupted ) )
         {
             av_frame_free(&frame);
             continue;
         }
-
-#if !LIBAVCODEC_VERSION_CHECK( 57, 0, 0xFFFFFFFFU, 64, 101 )
-        if( !b_need_output_picture )
-        {
-            av_frame_free(&frame);
-            continue;
-        }
-#endif
 
         if( p_context->pix_fmt == AV_PIX_FMT_PAL8
          && !p_dec->fmt_out.video.p_palette )
@@ -1516,25 +1524,40 @@ static enum PixelFormat ffmpeg_GetFormat( AVCodecContext *p_context,
             can_hwaccel = true;
     }
 
+    if (p_sys->pix_fmt == AV_PIX_FMT_NONE)
+        goto no_reuse;
+
     /* If the format did not actually change (e.g. seeking), try to reuse the
      * existing output format, and if present, hardware acceleration back-end.
      * This avoids resetting the pipeline downstream. This also avoids
      * needlessly probing for hardware acceleration support. */
-    if (p_sys->pix_fmt != AV_PIX_FMT_NONE
-     && lavc_GetVideoFormat(p_dec, &fmt, p_context, p_sys->pix_fmt, swfmt) == 0
-     && fmt.i_width == p_dec->fmt_out.video.i_width
-     && fmt.i_height == p_dec->fmt_out.video.i_height
-     && p_context->profile == p_sys->profile
-     && p_context->level <= p_sys->level)
-    {
-        for (size_t i = 0; pi_fmt[i] != AV_PIX_FMT_NONE; i++)
-            if (pi_fmt[i] == p_sys->pix_fmt)
-            {
-                msg_Dbg(p_dec, "reusing decoder output format %d", pi_fmt[i]);
-                return p_sys->pix_fmt;
-            }
-    }
+     if (lavc_GetVideoFormat(p_dec, &fmt, p_context, p_sys->pix_fmt, swfmt) != 0)
+     {
+         msg_Dbg(p_dec, "get format failed");
+         goto no_reuse;
+     }
+     if (fmt.i_width  != p_dec->fmt_out.video.i_width ||
+         fmt.i_height != p_dec->fmt_out.video.i_height)
+     {
+         msg_Dbg(p_dec, "mismatched dimensions %ux%u was %ux%u", fmt.i_width, fmt.i_height,
+                 p_dec->fmt_out.video.i_width, p_dec->fmt_out.video.i_height);
+         goto no_reuse;
+     }
+     if (p_context->profile != p_sys->profile || p_context->level > p_sys->level)
+     {
+         msg_Dbg(p_dec, "mismatched profile level %d/%d was %d/%d", p_context->profile,
+                 p_context->level, p_sys->profile, p_sys->level);
+         goto no_reuse;
+     }
 
+     for (size_t i = 0; pi_fmt[i] != AV_PIX_FMT_NONE; i++)
+        if (pi_fmt[i] == p_sys->pix_fmt)
+        {
+            msg_Dbg(p_dec, "reusing decoder output format %d", pi_fmt[i]);
+            return p_sys->pix_fmt;
+        }
+
+no_reuse:
     if (p_sys->p_va != NULL)
     {
         msg_Err(p_dec, "existing hardware acceleration cannot be reused");

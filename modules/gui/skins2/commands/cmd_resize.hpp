@@ -2,7 +2,7 @@
  * cmd_resize.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9a9d76b7316b49dd5c93fada5621c7f92bf221a4 $
+ * $Id: 6e13eb7c057428bfaa3be85a75af3db7da80d89a $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -77,7 +77,7 @@ public:
                       bool fullscreen );
     virtual ~CmdSetFullscreen() { }
     virtual void execute();
-    virtual std::string getType() const { return "toogle fullscreen"; }
+    virtual std::string getType() const { return "toggle fullscreen"; }
 
 private:
     vout_window_t* m_pWnd;

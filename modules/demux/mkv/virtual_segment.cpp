@@ -2,7 +2,7 @@
  * virtual_segment.cpp : virtual segment implementation in the MKV demuxer
  *****************************************************************************
  * Copyright © 2003-2011 VideoLAN and VLC authors
- * $Id: 8a0f1ca2cfd0392012d7ef5653b02cdd1653a298 $
+ * $Id: c643350ee22de1d6bbd491aed7924682039210d8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -489,6 +489,7 @@ bool virtual_segment_c::UpdateCurrentToChapter( demux_t & demux )
             {
                 if ( !p_current_vchapter->Leave( ) )
                 {
+                    p_current_vchapter->segment.ESDestroy();
                     p_current_vchapter = NULL;
                     b_current_vchapter_entered = false;
                 }

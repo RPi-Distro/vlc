@@ -2,7 +2,7 @@
  * direct3d9.c: Windows Direct3D9 video output module
  *****************************************************************************
  * Copyright (C) 2006-2014 VLC authors and VideoLAN
- *$Id: d60e92e7ed59f17aa3593289a7c197c1b355b29f $
+ *$Id: a97fd59e47ae57771924cc6a004ec3da3d3859db $
  *
  * Authors: Martell Malone <martellmalone@gmail.com>,
  *          Damien Fouilleul <damienf@videolan.org>,
@@ -251,10 +251,18 @@ static int Open(vlc_object_t *object)
     if ( !vd->obj.force && vd->source.mastering.max_luminance != 0)
         return VLC_EGENERIC; /* let a module who can handle it do it */
 
-    OSVERSIONINFO winVer;
-    winVer.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-    if(GetVersionEx(&winVer) && winVer.dwMajorVersion < 6 && !object->obj.force)
-        return VLC_EGENERIC;
+#if !VLC_WINSTORE_APP
+    /* do not use D3D9 on XP unless forced */
+    if (!vd->obj.force)
+    {
+        bool isVistaOrGreater = false;
+        HMODULE hKernel32 = GetModuleHandle(TEXT("kernel32.dll"));
+        if (likely(hKernel32 != NULL))
+            isVistaOrGreater = GetProcAddress(hKernel32, "EnumResourceLanguagesExW") != NULL;
+        if (!isVistaOrGreater)
+            return VLC_EGENERIC;
+    }
+#endif
 
     /* Allocate structure */
     vd->sys = sys = calloc(1, sizeof(vout_display_sys_t));

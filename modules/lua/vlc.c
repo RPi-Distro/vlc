@@ -2,7 +2,7 @@
  * vlc.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 103d8eb621214b18fb9a02d99ea9ce2485e90482 $
+ * $Id: 53e02047515c9eeb3664fd8f126891d3f2587b32 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -233,6 +233,8 @@ int vlclua_dir_list(const char *luadirname, char ***restrict listp)
     /* Source Lua Scripts in architecture-independent data directory */
     if (both || libdir == NULL)
         list = vlclua_dir_list_append(list, datadir, luadirname);
+    else
+        free(datadir);
 
     *list = NULL;
     return VLC_SUCCESS;
