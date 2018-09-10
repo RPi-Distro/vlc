@@ -1,3 +1,9 @@
+vlc (3.0.4-0+deb9u1) UNRELEASED; urgency=medium
+
+  * New upstream bug fix release.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 10 Sep 2018 02:12:01 +0200
+
 vlc (3.0.3-1-0+deb9u1) stretch-security; urgency=high
 
   * New upstream bug fix release.
