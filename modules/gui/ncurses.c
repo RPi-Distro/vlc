@@ -2,7 +2,7 @@
  * ncurses.c : NCurses interface for vlc
  *****************************************************************************
  * Copyright © 2001-2011 the VideoLAN team
- * $Id: a78cf2b197cd880dc1a0fa4a1d5bc2a6c561d5ad $
+ * $Id: 35327daded73d0f9d5bc47045be1ff98fb55a61a $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -1546,6 +1546,7 @@ static void CycleESTrack(input_thread_t *input, const char *var)
     if (++i >= list->i_count)
         i = 0;
     var_SetInteger(input, var, list->p_values[i].i_int);
+    var_FreeList(&val, NULL);
 }
 
 static void HandleCommonKey(intf_thread_t *intf, input_thread_t *input,

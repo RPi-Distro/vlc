@@ -58,7 +58,6 @@ struct filter_sys_t
     ID3D11VideoProcessor           *videoProcessor;
     ID3D11VideoProcessorEnumerator *procEnumerator;
 
-    HANDLE                         context_mutex;
     union {
         ID3D11Texture2D            *outTexture;
         ID3D11Resource             *outResource;
@@ -227,13 +226,11 @@ static picture_t *Deinterlace(filter_t *p_filter, picture_t *p_pic)
 {
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    if( p_sys->context_mutex != INVALID_HANDLE_VALUE )
-        WaitForSingleObjectEx( p_sys->context_mutex, INFINITE, FALSE );
+    d3d11_device_lock( &p_sys->d3d_dev );
 
     picture_t *res = DoDeinterlacing( p_filter, &p_sys->context, p_pic );
 
-    if( p_sys->context_mutex  != INVALID_HANDLE_VALUE )
-        ReleaseMutex( p_sys->context_mutex );
+    d3d11_device_unlock( &p_sys->d3d_dev );
 
     return res;
 }
@@ -382,10 +379,10 @@ int D3D11OpenDeinterlace(vlc_object_t *obj)
 
     HANDLE context_lock = INVALID_HANDLE_VALUE;
     UINT dataSize = sizeof(context_lock);
-    hr = ID3D11Device_GetPrivateData(sys->d3d_dev.d3ddevice, &GUID_CONTEXT_MUTEX, &dataSize, &context_lock);
+    hr = ID3D11DeviceContext_GetPrivateData(sys->d3d_dev.d3dcontext, &GUID_CONTEXT_MUTEX, &dataSize, &context_lock);
     if (FAILED(hr))
         msg_Warn(filter, "No mutex found to lock the decoder");
-    sys->context_mutex = context_lock;
+    sys->d3d_dev.context_mutex = context_lock;
 
     const video_format_t *fmt = &filter->fmt_out.video;
 

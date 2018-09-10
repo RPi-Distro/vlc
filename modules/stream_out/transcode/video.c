@@ -2,7 +2,7 @@
  * video.c: transcoding stream output module (video)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 779ff7c6eb7a3a9cc9ea996d1d91e21883c20af9 $
+ * $Id: b6fabead486ac4687fc9f25af48751316cc2fa35 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -532,6 +532,8 @@ static void transcode_video_size_init( sout_stream_t *p_stream,
      int i_dst_width =  lroundf(f_scale_width*p_vid_out->i_width);
      int i_dst_height = lroundf(f_scale_height*p_vid_out->i_height);
 
+     if( i_dst_visible_width & 1 ) ++i_dst_visible_width;
+     if( i_dst_visible_height & 1 ) ++i_dst_visible_height;
      if( i_dst_width & 1 ) ++i_dst_width;
      if( i_dst_height & 1 ) ++i_dst_height;
 

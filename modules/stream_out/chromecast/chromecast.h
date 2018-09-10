@@ -97,7 +97,9 @@ enum States
 class ChromecastCommunication
 {
 public:
-    ChromecastCommunication( vlc_object_t* module, const char* targetIP, unsigned int devicePort );
+    ChromecastCommunication( vlc_object_t* module,
+                             std::string serverPath, unsigned int serverPort,
+                             const char* targetIP, unsigned int devicePort );
     ~ChromecastCommunication();
     /**
      * @brief disconnect close the connection with the chromecast
@@ -117,7 +119,7 @@ public:
     unsigned msgReceiverGetStatus();
     unsigned msgReceiverClose(const std::string& destinationId);
     unsigned msgAuth();
-    unsigned msgPlayerLoad( const std::string& destinationId, unsigned int i_port,
+    unsigned msgPlayerLoad( const std::string& destinationId,
                             const std::string& mime, const vlc_meta_t *p_meta );
     unsigned msgPlayerPlay( const std::string& destinationId, int64_t mediaSessionId );
     unsigned msgPlayerStop( const std::string& destinationId, int64_t mediaSessionId );
@@ -141,8 +143,7 @@ private:
                      const std::string & destinationId = DEFAULT_CHOMECAST_RECEIVER,
                      castchannel::CastMessage_PayloadType payloadType = castchannel::CastMessage_PayloadType_STRING);
     int pushMediaPlayerMessage( const std::string& destinationId, const std::stringstream & payload );
-    std::string GetMedia( unsigned int i_port, const std::string& mime,
-                          const vlc_meta_t *p_meta );
+    std::string GetMedia( const std::string& mime, const vlc_meta_t *p_meta );
     unsigned getNextReceiverRequestId();
     unsigned getNextRequestId();
 
@@ -153,6 +154,8 @@ private:
     unsigned m_receiver_requestId;
     unsigned m_requestId;
     std::string m_serverIp;
+    const std::string m_serverPath;
+    const unsigned m_serverPort;
 };
 
 /*****************************************************************************
@@ -181,6 +184,10 @@ struct intf_sys_t
     int pace();
     void sendInputEvent(enum cc_input_event event, union cc_input_arg arg);
     mtime_t getPauseDelay();
+
+    unsigned int getHttpStreamPort() const;
+    std::string getHttpStreamPath() const;
+    std::string getHttpArtRoot() const;
 
     int httpd_file_fill( uint8_t *psz_request, uint8_t **pp_data, int *pi_data );
     void interrupt_wake_up();
@@ -237,7 +244,6 @@ private:
 
 private:
     vlc_object_t  * const m_module;
-    const int      m_streaming_port;
     const int      m_device_port;
     std::string    m_mime;
     std::string    m_device_addr;
@@ -274,7 +280,16 @@ private:
 
     vlc_interrupt_t *m_ctl_thread_interrupt;
 
-    httpd_host_t     *m_httpd_host;
+    struct httpd_info_t {
+        httpd_info_t( httpd_host_t* host, int port );
+        ~httpd_info_t();
+
+        httpd_host_t *m_host;
+        int           m_port;
+        httpd_url_t  *m_url;
+        std::string   m_root;
+    } const m_httpd;
+
     httpd_file_t     *m_httpd_file;
     std::string       m_art_http_ip;
     char             *m_art_url;

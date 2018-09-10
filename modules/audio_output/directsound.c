@@ -2,7 +2,7 @@
  * directsound.c: DirectSound audio output plugin for VLC
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: a38035121f3aaa68161978df3af66a65d30e98b7 $
+ * $Id: 534c9952e2cb1b0284d58447d3bf637f2700eaf1 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -833,20 +833,26 @@ static HRESULT StreamStart( aout_stream_t *s,
     if( unlikely(sys == NULL) )
         return E_OUTOFMEMORY;
 
-    DIRECTX_AUDIO_ACTIVATION_PARAMS params = {
-        .cbDirectXAudioActivationParams = sizeof( params ),
-        .guidAudioSession = *sid,
-        .dwAudioStreamFlags = 0,
-    };
-    PROPVARIANT prop;
-
-    PropVariantInit( &prop );
-    prop.vt = VT_BLOB;
-    prop.blob.cbSize = sizeof( params );
-    prop.blob.pBlobData = (BYTE *)&params;
-
     void *pv;
-    HRESULT hr = aout_stream_Activate( s, &IID_IDirectSound, &prop, &pv );
+    HRESULT hr;
+    if( sid )
+    {
+        DIRECTX_AUDIO_ACTIVATION_PARAMS params = {
+            .cbDirectXAudioActivationParams = sizeof( params ),
+            .guidAudioSession = *sid,
+            .dwAudioStreamFlags = 0,
+        };
+        PROPVARIANT prop;
+
+        PropVariantInit( &prop );
+        prop.vt = VT_BLOB;
+        prop.blob.cbSize = sizeof( params );
+        prop.blob.pBlobData = (BYTE *)&params;
+
+        hr = aout_stream_Activate( s, &IID_IDirectSound, &prop, &pv );
+    }
+    else
+        hr = aout_stream_Activate( s, &IID_IDirectSound, NULL, &pv );
     if( FAILED(hr) )
         goto error;
 

@@ -151,10 +151,6 @@ struct vout_display_sys_t
     HINSTANCE                hd3dcompiler_dll; /* handle of the opened d3dcompiler dll */
     pD3DCompile                            OurD3DCompile;
 #endif
-#if defined(HAVE_ID3D11VIDEODECODER)
-    HANDLE                   context_lock;     /* D3D11 Context lock necessary
-                                                  for hw decoding */
-#endif
     IDXGISwapChain1          *dxgiswapChain;   /* DXGI 1.2 swap chain */
     IDXGISwapChain4          *dxgiswapChain4;  /* DXGI 1.5 for HDR */
     d3d11_device_t           d3d_dev;
@@ -339,7 +335,7 @@ static const char* globPixelShaderDefault = "\
       const float B67_a = 0.17883277;\
       const float B67_b = 0.28466892;\
       const float B67_c = 0.55991073;\
-      const float B67_inv_r2 = 4.0; /* 1/0.5Â² */\
+      const float B67_inv_r2 = 4.0; /* 1/0.5² */\
       if (x <= 0.5)\
           x = x * x * B67_inv_r2;\
       else\
@@ -503,9 +499,32 @@ static bool GetRect(const vout_display_sys_win32_t *p_sys, RECT *out)
 }
 #endif
 
+static unsigned int GetPictureWidth(const vout_display_t *vd)
+{
+    return vd->sys->picQuad.i_width;
+}
+
+static unsigned int GetPictureHeight(const vout_display_t *vd)
+{
+    return vd->sys->picQuad.i_height;
+}
+
 static int Open(vlc_object_t *object)
 {
     vout_display_t *vd = (vout_display_t *)object;
+
+#if !VLC_WINSTORE_APP
+    /* Allow using D3D11 automatically starting from Windows 8.1 */
+    if (!vd->obj.force)
+    {
+        bool isWin81OrGreater = false;
+        HMODULE hKernel32 = GetModuleHandle(TEXT("kernel32.dll"));
+        if (likely(hKernel32 != NULL))
+            isWin81OrGreater = GetProcAddress(hKernel32, "IsProcessCritical") != NULL;
+        if (!isWin81OrGreater)
+            return VLC_EGENERIC;
+    }
+#endif
 
 #if !VLC_WINSTORE_APP
     int ret = OpenHwnd(vd);
@@ -522,6 +541,8 @@ static int Open(vlc_object_t *object)
 #if VLC_WINSTORE_APP
     vd->sys->sys.pf_GetRect = GetRect;
 #endif
+    vd->sys->sys.pf_GetPictureWidth  = GetPictureWidth;
+    vd->sys->sys.pf_GetPictureHeight = GetPictureHeight;
 
     if (Direct3D11Open(vd)) {
         msg_Err(vd, "Direct3D11 could not be opened");
@@ -987,24 +1008,14 @@ static void UpdateSize(vout_display_t *vd)
 
     UpdateBackBuffer(vd);
 
-#if defined(HAVE_ID3D11VIDEODECODER)
-    if( sys->context_lock != INVALID_HANDLE_VALUE )
-    {
-        WaitForSingleObjectEx( sys->context_lock, INFINITE, FALSE );
-    }
-#endif
+    d3d11_device_lock( &sys->d3d_dev );
 
     UpdatePicQuadPosition(vd);
 
     UpdateQuadPosition(vd, &sys->picQuad, &sys->sys.rect_src_clipped,
                        vd->fmt.orientation);
 
-#if defined(HAVE_ID3D11VIDEODECODER)
-    if( sys->context_lock != INVALID_HANDLE_VALUE )
-    {
-        ReleaseMutex( sys->context_lock );
-    }
-#endif
+    d3d11_device_unlock( &sys->d3d_dev );
 }
 
 static inline bool RectEquals(const RECT *r1, const RECT *r2)
@@ -1013,15 +1024,6 @@ static inline bool RectEquals(const RECT *r1, const RECT *r2)
            r1->left == r2->left && r1->right == r2->right;
 }
 
-#define BEFORE_UPDATE_RECTS \
-    unsigned int i_outside_width  = vd->fmt.i_width; \
-    unsigned int i_outside_height = vd->fmt.i_height; \
-    vd->fmt.i_width  = vd->sys->picQuad.i_width; \
-    vd->fmt.i_height = vd->sys->picQuad.i_height;
-#define AFTER_UPDATE_RECTS \
-    vd->fmt.i_width  = i_outside_width; \
-    vd->fmt.i_height = i_outside_height;
-
 static int Control(vout_display_t *vd, int query, va_list args)
 {
     vout_display_sys_t *sys = vd->sys;
@@ -1029,9 +1031,7 @@ static int Control(vout_display_t *vd, int query, va_list args)
     RECT before_dest_clipped = sys->sys.rect_dest_clipped;
     RECT before_dest         = sys->sys.rect_dest;
 
-    BEFORE_UPDATE_RECTS;
     int res = CommonControl( vd, query, args );
-    AFTER_UPDATE_RECTS;
 
     if (query == VOUT_DISPLAY_CHANGE_VIEWPOINT)
     {
@@ -1060,9 +1060,7 @@ static void Manage(vout_display_t *vd)
     RECT before_dest_clipped = sys->sys.rect_dest_clipped;
     RECT before_dest         = sys->sys.rect_dest;
 
-    BEFORE_UPDATE_RECTS;
     CommonManage(vd);
-    AFTER_UPDATE_RECTS;
 
     if (!RectEquals(&before_src_clipped, &sys->sys.rect_src_clipped) ||
         !RectEquals(&before_dest_clipped, &sys->sys.rect_dest_clipped) ||
@@ -1192,10 +1190,9 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
     {
         picture_sys_t *p_sys = ActivePictureSys(picture);
 
-#if defined(HAVE_ID3D11VIDEODECODER)
-        if (sys->context_lock != INVALID_HANDLE_VALUE && is_d3d11_opaque(picture->format.i_chroma))
-            WaitForSingleObjectEx( sys->context_lock, INFINITE, FALSE );
-#endif
+        if (is_d3d11_opaque(picture->format.i_chroma))
+            d3d11_device_lock( &sys->d3d_dev );
+
         if (!is_d3d11_opaque(picture->format.i_chroma) || sys->legacy_shader) {
             D3D11_TEXTURE2D_DESC srcDesc,texDesc;
             if (!is_d3d11_opaque(picture->format.i_chroma))
@@ -1233,9 +1230,7 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
                 sys->picQuad.i_height = texDesc.Height;
                 sys->picQuad.i_width = texDesc.Width;
 
-                BEFORE_UPDATE_RECTS;
                 UpdateRects(vd, NULL, true);
-                AFTER_UPDATE_RECTS;
                 UpdateSize(vd);
             }
         }
@@ -1299,14 +1294,10 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
         }
     }
 
-#if defined(HAVE_ID3D11VIDEODECODER)
-    if (sys->context_lock != INVALID_HANDLE_VALUE && is_d3d11_opaque(picture->format.i_chroma))
-    {
-        ReleaseMutex( sys->context_lock );
-    }
-#endif
-
     ID3D11DeviceContext_Flush(sys->d3d_dev.d3dcontext);
+
+    if (is_d3d11_opaque(picture->format.i_chroma))
+        d3d11_device_unlock( &sys->d3d_dev );
 }
 
 static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpicture)
@@ -1315,12 +1306,14 @@ static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
 
     DXGI_PRESENT_PARAMETERS presentParams;
     memset(&presentParams, 0, sizeof(presentParams));
+    d3d11_device_lock( &sys->d3d_dev );
     HRESULT hr = IDXGISwapChain1_Present1(sys->dxgiswapChain, 0, 0, &presentParams);
     if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
     {
         /* TODO device lost */
         msg_Dbg(vd, "SwapChain Present failed. (hr=0x%lX)", hr);
     }
+    d3d11_device_unlock( &sys->d3d_dev );
 
     picture_Release(picture);
     if (subpicture)
@@ -1529,13 +1522,13 @@ static const d3d_format_t *GetDirectRenderingFormat(vout_display_t *vd, vlc_four
     UINT supportFlags = D3D11_FORMAT_SUPPORT_SHADER_LOAD;
     if (is_d3d11_opaque(i_src_chroma))
         supportFlags |= D3D11_FORMAT_SUPPORT_DECODER_OUTPUT;
-    return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, i_src_chroma, false, 0, is_d3d11_opaque(i_src_chroma), supportFlags );
+    return FindD3D11Format( vd, &vd->sys->d3d_dev, i_src_chroma, false, 0, is_d3d11_opaque(i_src_chroma), supportFlags );
 }
 
 static const d3d_format_t *GetDirectDecoderFormat(vout_display_t *vd, vlc_fourcc_t i_src_chroma)
 {
     UINT supportFlags = D3D11_FORMAT_SUPPORT_DECODER_OUTPUT;
-    return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, i_src_chroma, false, 0, is_d3d11_opaque(i_src_chroma), supportFlags );
+    return FindD3D11Format( vd, &vd->sys->d3d_dev, i_src_chroma, false, 0, is_d3d11_opaque(i_src_chroma), supportFlags );
 }
 
 static const d3d_format_t *GetDisplayFormatByDepth(vout_display_t *vd, uint8_t bit_depth, bool from_processor, bool rgb_only)
@@ -1543,13 +1536,13 @@ static const d3d_format_t *GetDisplayFormatByDepth(vout_display_t *vd, uint8_t b
     UINT supportFlags = D3D11_FORMAT_SUPPORT_SHADER_LOAD;
     if (from_processor)
         supportFlags |= D3D11_FORMAT_SUPPORT_VIDEO_PROCESSOR_OUTPUT;
-    return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, 0, rgb_only, bit_depth, false, supportFlags );
+    return FindD3D11Format( vd, &vd->sys->d3d_dev, 0, rgb_only, bit_depth, false, supportFlags );
 }
 
 static const d3d_format_t *GetBlendableFormat(vout_display_t *vd, vlc_fourcc_t i_src_chroma)
 {
     UINT supportFlags = D3D11_FORMAT_SUPPORT_SHADER_LOAD | D3D11_FORMAT_SUPPORT_BLENDABLE;
-    return FindD3D11Format( vd->sys->d3d_dev.d3ddevice, i_src_chroma, false, 0, false, supportFlags );
+    return FindD3D11Format( vd, &vd->sys->d3d_dev, i_src_chroma, false, 0, false, supportFlags );
 }
 
 static int Direct3D11Open(vout_display_t *vd)
@@ -1633,7 +1626,6 @@ static int Direct3D11Open(vout_display_t *vd)
 
     if (Direct3D11CreateGenericResources(vd)) {
         msg_Err(vd, "Failed to allocate resources");
-        Direct3D11DestroyResources(vd);
         return VLC_EGENERIC;
     }
 
@@ -1695,10 +1687,9 @@ static int SetupOutputFormat(vout_display_t *vd, video_format_t *fmt)
        return VLC_EGENERIC;
     }
 
-    fmt->i_chroma = decoder_format ? decoder_format->fourcc : sys->picQuadConfig->fourcc;
-
     msg_Dbg( vd, "Using pixel format %s for chroma %4.4s", sys->picQuadConfig->name,
                  (char *)&fmt->i_chroma );
+    fmt->i_chroma = decoder_format ? decoder_format->fourcc : sys->picQuadConfig->fourcc;
     DxgiFormatMask( sys->picQuadConfig->formatTexture, fmt );
 
     /* check the region pixel format */
@@ -1708,10 +1699,8 @@ static int SetupOutputFormat(vout_display_t *vd, video_format_t *fmt)
 
     if (Direct3D11CreateFormatResources(vd, fmt)) {
         msg_Err(vd, "Failed to allocate format resources");
-        Direct3D11DestroyResources(vd);
         return VLC_EGENERIC;
     }
-    vd->fmt = *fmt;
 
     return VLC_SUCCESS;
 }
@@ -1964,13 +1953,13 @@ static HRESULT CompilePixelShader(vout_display_t *vd, const d3d_format_t *format
             switch (format->bitsPerChannel)
             {
             case 8:
-                /* Rec. ITU-R BT.709-6 Â§4.6 */
+                /* Rec. ITU-R BT.709-6 §4.6 */
                 itu_black_level  =              16.f / 255.f;
                 itu_white_level  =             235.f / 255.f;
                 itu_range_factor = (float)(235 - 16) / 255.f;
                 break;
             case 10:
-                /* Rec. ITU-R BT.709-6 Â§4.6 */
+                /* Rec. ITU-R BT.709-6 §4.6 */
                 itu_black_level  =              64.f / 1023.f;
                 itu_white_level  =             940.f / 1023.f;
                 itu_range_factor = (float)(940 - 64) / 1023.f;
@@ -2103,9 +2092,7 @@ static int Direct3D11CreateFormatResources(vout_display_t *vd, const video_forma
         sys->picQuad.i_height = (sys->picQuad.i_height + 0x01) & ~0x01;
     }
 
-    BEFORE_UPDATE_RECTS;
     UpdateRects(vd, NULL, true);
-    AFTER_UPDATE_RECTS;
 
 #ifdef HAVE_ID3D11VIDEODECODER
     if (!is_d3d11_opaque(fmt->i_chroma) || sys->legacy_shader)
@@ -2143,11 +2130,6 @@ static int Direct3D11CreateGenericResources(vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;
     HRESULT hr;
-
-#if defined(HAVE_ID3D11VIDEODECODER)
-    sys->context_lock = CreateMutexEx( NULL, NULL, 0, SYNCHRONIZE );
-    ID3D11Device_SetPrivateData( sys->d3d_dev.d3ddevice, &GUID_CONTEXT_MUTEX, sizeof( sys->context_lock ), &sys->context_lock );
-#endif
 
     ID3D11BlendState *pSpuBlendState;
     D3D11_BLEND_DESC spuBlendDesc = { 0 };
@@ -2193,6 +2175,8 @@ static int Direct3D11CreateGenericResources(vout_display_t *vd)
         ID3D11DeviceContext_OMSetDepthStencilState(sys->d3d_dev.d3dcontext, pDepthStencilState, 0);
         ID3D11DepthStencilState_Release(pDepthStencilState);
     }
+
+    UpdateRects(vd, NULL, true);
 
     hr = UpdateBackBuffer(vd);
     if (FAILED(hr)) {
@@ -2389,7 +2373,7 @@ static void SetupQuadFlat(d3d_vertex_t *dst_data, const RECT *output,
      * the rest of the visible area must correspond to -1,1 */
     switch (orientation)
     {
-    case ORIENT_ROTATED_90: /* 90Â° anti clockwise */
+    case ORIENT_ROTATED_90: /* 90° anti clockwise */
         /* right/top aligned */
         MidY = (output->left + output->right) / 2.f;
         MidX = (output->top + output->bottom) / 2.f;
@@ -2398,7 +2382,7 @@ static void SetupQuadFlat(d3d_vertex_t *dst_data, const RECT *output,
         left   =  (MidX - src_height) / (MidX - output->left);
         right  =                 MidX / (MidX - (src_width - output->right));
         break;
-    case ORIENT_ROTATED_180: /* 180Â° */
+    case ORIENT_ROTATED_180: /* 180° */
         /* right/top aligned */
         MidY = (output->top + output->bottom) / 2.f;
         MidX = (output->left + output->right) / 2.f;
@@ -2407,7 +2391,7 @@ static void SetupQuadFlat(d3d_vertex_t *dst_data, const RECT *output,
         left   = -MidX / (MidX - output->left);
         right  =  (src_width  - MidX) / (output->right - MidX);
         break;
-    case ORIENT_ROTATED_270: /* 90Â° clockwise */
+    case ORIENT_ROTATED_270: /* 90° clockwise */
         /* right/top aligned */
         MidY = (output->left + output->right) / 2.f;
         MidX = (output->top + output->bottom) / 2.f;
@@ -2821,12 +2805,12 @@ static int SetupQuad(vout_display_t *vd, const video_format_t *fmt, d3d_quad_t *
         switch (cfg->bitsPerChannel)
         {
         case 8:
-            /* Rec. ITU-R BT.709-6 Â§4.6 */
+            /* Rec. ITU-R BT.709-6 §4.6 */
             itu_black_level  =              16.f / 255.f;
             itu_achromacy    =             128.f / 255.f;
             break;
         case 10:
-            /* Rec. ITU-R BT.709-6 Â§4.6 */
+            /* Rec. ITU-R BT.709-6 §4.6 */
             itu_black_level  =              64.f / 1023.f;
             itu_achromacy    =             512.f / 1023.f;
             break;
@@ -3029,13 +3013,6 @@ static void Direct3D11DestroyResources(vout_display_t *vd)
         ID3D11PixelShader_Release(sys->picQuadPixelShader);
         sys->picQuadPixelShader = NULL;
     }
-#if defined(HAVE_ID3D11VIDEODECODER)
-    if( sys->context_lock != INVALID_HANDLE_VALUE )
-    {
-        CloseHandle( sys->context_lock );
-        sys->context_lock = INVALID_HANDLE_VALUE;
-    }
-#endif
 
     msg_Dbg(vd, "Direct3D11 resources destroyed");
 }

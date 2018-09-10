@@ -2,7 +2,7 @@
  * glwin32.c: Windows OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 521270bad1d24beeace326844b156effc815aa69 $
+ * $Id: b6e8fbd6d3f22d0e821db6530740efc454ebbd02 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -31,6 +31,7 @@
 #include <vlc_vout_display.h>
 
 #include <windows.h>
+#include <versionhelpers.h>
 
 #define GLEW_STATIC
 #include "../opengl/vout_helper.h"
@@ -112,6 +113,10 @@ static int Open(vlc_object_t *object)
 {
     vout_display_t *vd = (vout_display_t *)object;
     vout_display_sys_t *sys;
+
+    /* do not use OpenGL on XP unless forced */
+    if(!object->obj.force && !IsWindowsVistaOrGreater())
+        return VLC_EGENERIC;
 
     /* Allocate structure */
     vd->sys = sys = calloc(1, sizeof(*sys));

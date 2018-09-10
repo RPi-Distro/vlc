@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 VLC authors and VideoLAN
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: 1ff4f14d60b3ebcfea8ddaa02ad2ee5735fcf1f0 $
+ * $Id: 149ff6e1115a49e9219e5f99628d9980ac95d5eb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -910,17 +910,7 @@ static httpd_host_t *httpd_HostCreate(vlc_object_t *p_this,
                                        vlc_tls_creds_t *p_tls)
 {
     httpd_host_t *host;
-    char *hostname = var_InheritString(p_this, hostvar);
     unsigned port = var_InheritInteger(p_this, portvar);
-
-    vlc_url_t url;
-    vlc_UrlParse(&url, hostname);
-    free(hostname);
-    if (url.i_port != 0) {
-        msg_Err(p_this, "Ignoring port %d (using %d)", url.i_port, port);
-        msg_Info(p_this, "Specify port %d separately with the "
-                          "%s option instead.", url.i_port, portvar);
-    }
 
     /* to be sure to avoid multiple creation */
     vlc_mutex_lock(&httpd.mutex);
@@ -943,7 +933,6 @@ static httpd_host_t *httpd_HostCreate(vlc_object_t *p_this,
         vlc_mutex_unlock(&host->lock);
 
         vlc_mutex_unlock(&httpd.mutex);
-        vlc_UrlClean(&url);
         vlc_tls_Delete(p_tls);
         return host;
     }
@@ -958,7 +947,11 @@ static httpd_host_t *httpd_HostCreate(vlc_object_t *p_this,
     vlc_cond_init(&host->wait);
     host->i_ref = 1;
 
-    host->fds = net_ListenTCP(p_this, url.psz_host, port);
+    char *hostname = var_InheritString(p_this, hostvar);
+
+    host->fds = net_ListenTCP(p_this, hostname, port);
+    free(hostname);
+
     if (!host->fds) {
         msg_Err(p_this, "cannot create socket(s) for HTTP host");
         goto error;
@@ -983,8 +976,6 @@ static httpd_host_t *httpd_HostCreate(vlc_object_t *p_this,
     TAB_APPEND(httpd.i_host, httpd.host, host);
     vlc_mutex_unlock(&httpd.mutex);
 
-    vlc_UrlClean(&url);
-
     return host;
 
 error:
@@ -997,7 +988,6 @@ error:
         vlc_object_release(host);
     }
 
-    vlc_UrlClean(&url);
     vlc_tls_Delete(p_tls);
     return NULL;
 }
@@ -1325,7 +1315,8 @@ static void httpd_ClientRecv(httpd_client_t *cl)
             cl->i_state = HTTPD_CLIENT_RECEIVE_DONE;
     } else for (;;) { /* we are reading a header -> char by char */
         if (cl->i_buffer == cl->i_buffer_size) {
-            uint8_t *newbuf = realloc(cl->p_buffer, cl->i_buffer_size + 1024);
+            // Allocate an extra byte for the termination null byte
+            uint8_t *newbuf = realloc(cl->p_buffer, cl->i_buffer_size + 1025);
             if (!newbuf) {
                 i_len = 0;
                 break;
@@ -1464,10 +1455,12 @@ static void httpd_ClientRecv(httpd_client_t *cl)
                         }
                     }
 
-                    cl->query.psz_url = strdup(p);
-                    if ((p3 = strchr(cl->query.psz_url, '?')) ) {
-                        *p3++ = '\0';
-                        cl->query.psz_args = (uint8_t *)strdup(p3);
+                    if(cl->query.psz_url == NULL) {
+                        cl->query.psz_url = strdup(p);
+                        if ((p3 = strchr(cl->query.psz_url, '?')) ) {
+                            *p3++ = '\0';
+                            cl->query.psz_args = (uint8_t *)strdup(p3);
+                        }
                     }
                     p = p2;
                 }
@@ -1907,7 +1900,8 @@ static void httpdLoop(httpd_host_t *host)
                         cl->i_buffer = 0;
                         cl->i_buffer_size = 1000;
                         free(cl->p_buffer);
-                        cl->p_buffer = xmalloc(cl->i_buffer_size);
+                        // Allocate an extra byte for the null terminating byte
+                        cl->p_buffer = xmalloc(cl->i_buffer_size + 1);
                         cl->i_state = HTTPD_CLIENT_RECEIVING;
                     } else
                         cl->i_state = HTTPD_CLIENT_DEAD;

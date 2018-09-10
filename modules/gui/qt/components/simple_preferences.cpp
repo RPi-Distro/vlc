@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 635cc274c0d443507882faf4cb78f09262ab63ff $
+ * $Id: 7a31a6ea6f7cd5e3cde3b685ba726a32eb90ff61 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -36,6 +36,7 @@
 #include <QString>
 #include <QFont>
 #include <QToolButton>
+#include <QButtonGroup>
 #include <QSignalMapper>
 #include <QVBoxLayout>
 #include <QScrollArea>

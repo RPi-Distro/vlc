@@ -2,7 +2,7 @@
  * matroska_segment.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: a99b298fb1c072ffc993b1a82d9af4b0051f344d $
+ * $Id: 93647113f8d4dcc8e4944cc00657fd75bab49b01 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -825,7 +825,10 @@ bool matroska_segment_c::Seek( demux_t &demuxer, mtime_t i_absolute_mk_date, mti
         track.i_last_dts        = VLC_TS_INVALID;
 
         bool selected;
-        es_out_Control( demuxer.out, ES_OUT_GET_ES_STATE, track.p_es, &selected );
+        if (track.p_es == NULL)
+            selected = false;
+        else
+            es_out_Control( demuxer.out, ES_OUT_GET_ES_STATE, track.p_es, &selected );
         if ( selected )
             selected_tracks.push_back( track.i_number );
     }

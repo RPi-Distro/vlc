@@ -2,7 +2,7 @@
  * win32.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004-2011 VLC authors and VideoLAN
- * $Id: 6b94def13f80341dd40fdce0bd4e552ddc8fcfea $
+ * $Id: d64eada92b5131ebffe301cdb73cb14272971cc9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -133,6 +133,8 @@ int screen_InitCapture( demux_t *p_demux )
     p_sys->fmt.video.i_bits_per_pixel = i_bits_per_pixel;
     p_sys->fmt.video.i_sar_num = p_sys->fmt.video.i_sar_den = 1;
     p_sys->fmt.video.i_chroma         = i_chroma;
+    p_sys->fmt.video.transfer         = TRANSFER_FUNC_SRGB;
+    p_sys->fmt.video.b_color_range_full = true;
 
     switch( i_chroma )
     {

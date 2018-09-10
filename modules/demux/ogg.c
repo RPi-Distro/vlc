@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 7d791f196f7d8d8904b015adf6fb78b251a7ebc6 $
+ * $Id: 7506d8311290f5610c378a97f59910f68632b748 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -1671,6 +1671,7 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                     p_stream->b_force_backup = true;
                     p_stream->i_extra_headers_packets = 1;
                     p_stream->special.flac.b_old = true;
+                    p_stream->f_rate = 48000; /* better be safe since that's delayed */
                     es_format_Change( &p_stream->fmt, AUDIO_ES, VLC_CODEC_FLAC );
                 }
                 /* Check for Flac header (>= version 1.0.0) */

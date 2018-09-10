@@ -40,6 +40,7 @@ typedef struct
     ID3D11Device             *d3ddevice;       /* D3D device */
     ID3D11DeviceContext      *d3dcontext;      /* D3D context */
     bool                     owner;
+    HANDLE                   context_mutex;
     struct wddm_version      WDDM;
     D3D_FEATURE_LEVEL        feature_level;
 } d3d11_device_t;
@@ -122,12 +123,14 @@ static inline bool DeviceSupportsFormat(ID3D11Device *d3ddevice,
             && ( i_formatSupport & supportFlags ) == supportFlags;
 }
 
-const d3d_format_t *FindD3D11Format(ID3D11Device *d3ddevice,
+const d3d_format_t *FindD3D11Format(vlc_object_t *,
+                                    d3d11_device_t*,
                                     vlc_fourcc_t i_src_chroma,
                                     bool rgb_only,
                                     uint8_t bits_per_channel,
                                     bool allow_opaque,
                                     UINT supportFlags);
+#define FindD3D11Format(a,b,c,d,e,f,g)  FindD3D11Format(VLC_OBJECT(a),b,c,d,e,f,g)
 
 int AllocateTextures(vlc_object_t *obj, d3d11_device_t *d3d_dev,
                      const d3d_format_t *cfg, const video_format_t *fmt,
@@ -137,5 +140,17 @@ int AllocateTextures(vlc_object_t *obj, d3d11_device_t *d3d_dev,
 void D3D11_LogProcessorSupport(vlc_object_t*, ID3D11VideoProcessorEnumerator*);
 #define D3D11_LogProcessorSupport(a,b) D3D11_LogProcessorSupport( VLC_OBJECT(a), b )
 #endif
+
+static inline void d3d11_device_lock(d3d11_device_t *d3d_dev)
+{
+    if( d3d_dev->context_mutex != INVALID_HANDLE_VALUE )
+        WaitForSingleObjectEx( d3d_dev->context_mutex, INFINITE, FALSE );
+}
+
+static inline void d3d11_device_unlock(d3d11_device_t *d3d_dev)
+{
+    if( d3d_dev->context_mutex  != INVALID_HANDLE_VALUE )
+        ReleaseMutex( d3d_dev->context_mutex );
+}
 
 #endif /* include-guard */
