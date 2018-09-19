@@ -261,6 +261,14 @@ DEB_CXXFLAGS_MAINT_APPEND += -mtune=8548
 endif
 endif
 
+# AOM FTBFS on some architectures
+ifneq (,$(filter-out armel armhf ppc64el,$(DEB_HOST_ARCH)))
+confflags += --enable-aom
+else
+confflags += --disable-aom
+removeplugins += aom
+endif
+
 export DEB_BUILD_MAINT_OPTIONS
 export DEB_CFLAGS_MAINT_APPEND
 export DEB_CXXFLAGS_MAINT_APPEND
