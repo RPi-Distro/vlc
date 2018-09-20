@@ -23,9 +23,10 @@ confflags += \
 confflags += \
 	--enable-a52 \
 	--enable-aa \
+	--enable-aom \
 	--enable-aribsub \
-	--enable-bluray \
 	--enable-avahi \
+	--enable-bluray \
 	--enable-caca \
 	--enable-chromaprint \
 	--enable-chromecast \
@@ -259,14 +260,6 @@ ifeq (,$(filter-out powerpcspe,$(DEB_HOST_ARCH)))
 DEB_CFLAGS_MAINT_APPEND += -mtune=8548
 DEB_CXXFLAGS_MAINT_APPEND += -mtune=8548
 endif
-endif
-
-# AOM FTBFS on some architectures
-ifneq (,$(filter-out armel armhf ppc64el,$(DEB_HOST_ARCH)))
-confflags += --enable-aom
-else
-confflags += --disable-aom
-removeplugins += aom
 endif
 
 export DEB_BUILD_MAINT_OPTIONS
