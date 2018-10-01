@@ -1,2 +1,3 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
 0002-x264-drop-148-build-support-and-fix-10bit-support.patch
+0003-vout_opengl-update-for-libplacebo-0.6-API.patch

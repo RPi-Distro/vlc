@@ -1,0 +1,32 @@
+From: Niklas Haas <git@haasn.xyz>
+Date: Fri, 28 Sep 2018 19:18:44 +0200
+Subject: vout_opengl: update for libplacebo 0.6 API
+
+This removed a superfluous field from the pl_shader_alloc signature.
+
+Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+(cherry picked from commit b90995ef08c2d72a0222c527e1ef3d586d00bccd)
+Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+---
+ modules/video_output/opengl/vout_helper.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/modules/video_output/opengl/vout_helper.c b/modules/video_output/opengl/vout_helper.c
+index 4ff70ad..919560e 100644
+--- a/modules/video_output/opengl/vout_helper.c
++++ b/modules/video_output/opengl/vout_helper.c
+@@ -627,8 +627,13 @@ opengl_init_program(vout_display_opengl_t *vgl, struct prgm *prgm,
+             .log_priv  = tc,
+             .log_level = PL_LOG_INFO,
+         });
+-        if (tc->pl_ctx)
++        if (tc->pl_ctx) {
++#   if PL_API_VER >= 6
++            tc->pl_sh = pl_shader_alloc(tc->pl_ctx, NULL, 0);
++#   else
+             tc->pl_sh = pl_shader_alloc(tc->pl_ctx, NULL, 0, 0);
++#   endif
++        }
+     }
+ #endif
+ 
