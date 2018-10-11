@@ -1,3 +1,9 @@
+vlc (3.0.4-3) unstable; urgency=medium
+
+  * debian/patches: Add support for libplacebo 0.6.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 11 Oct 2018 18:53:22 +0200
+
 vlc (3.0.4-2) unstable; urgency=medium
 
   * debian/: Build AOM plugin.
