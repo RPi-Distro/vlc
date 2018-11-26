@@ -223,8 +223,9 @@ removeplugins += mmx sse2
 endif
 
 # ARM specific optimizations
-ifeq (,$(filter-out armhf,$(DEB_HOST_ARCH_CPU)))
+ifeq (,$(filter-out arm,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-neon
+confflags += --enable-mmal
 else
 confflags += --disable-neon
 removeplugins += neon
@@ -330,3 +331,7 @@ override_dh_installdeb-arch:
 override_dh_gencontrol-arch:
 	sed -n 's/^# define MODULE_SYMBOL \([0-9][_0-9a-z]*\)/-Vvlc:PluginABI=vlc-plugin-abi-\1/p' \
 		include/vlc_plugin.h | tr _ - | xargs dh_gencontrol -a --
+
+override_dh_clean:
+	find share/lua/ -name "*.luac" -delete
+	dh_clean

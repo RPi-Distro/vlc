@@ -1,3 +1,10 @@
+vlc (3.0.3-1-0+deb9u1+rpt1) stretch; urgency=medium
+
+  * Non-maintainer upload.
+  * Apply mmal_test_1.patch
+
+ -- Serge Schneider <serge@raspberrypi.org>  Mon, 05 Nov 2018 16:42:59 +0000
+
 vlc (3.0.3-1-0+deb9u1) stretch-security; urgency=high
 
   * New upstream bug fix release.
