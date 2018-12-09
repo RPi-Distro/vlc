@@ -1,3 +1,10 @@
+vlc (3.0.4-4) unstable; urgency=medium
+
+  * debian/patches: Apply upstream patch to fix integer underflow
+    (CVE-2018-19857). (Closes: #915760)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 09 Dec 2018 21:02:57 +0100
+
 vlc (3.0.4-3) unstable; urgency=medium
 
   * debian/patches: Add support for libplacebo 0.6.
