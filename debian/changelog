@@ -1,6 +1,7 @@
 vlc (3.0.5-1) UNRELEASED; urgency=medium
 
-  * New upstream release.
+  * New upstream release:
+    - Remove patches included upstream.
 
  -- Mateusz Łukasik <mati75@linuxmint.pl>  Thu, 27 Dec 2018 15:07:07 +0100
 
