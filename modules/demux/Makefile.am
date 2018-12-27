@@ -191,6 +191,7 @@ libmkv_plugin_la_SOURCES = \
 	demux/mkv/stream_io_callback.hpp demux/mkv/stream_io_callback.cpp \
 	demux/mp4/libmp4.c demux/vobsub.h \
 	demux/mkv/mkv.hpp demux/mkv/mkv.cpp \
+        demux/av1_unpack.h \
 	demux/windows_audio_commons.h
 libmkv_plugin_la_SOURCES += packetizer/dts_header.h packetizer/dts_header.c
 libmkv_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CFLAGS_mkv)
@@ -206,10 +207,11 @@ libmp4_plugin_la_SOURCES = demux/mp4/mp4.c demux/mp4/mp4.h \
                            demux/mp4/fragments.c demux/mp4/fragments.h \
                            demux/mp4/libmp4.c demux/mp4/libmp4.h \
                            demux/mp4/languages.h \
+                           demux/av1_unpack.h \
                            demux/asf/asfpacket.c demux/asf/asfpacket.h \
                            demux/mp4/avci.h \
-                           demux/mp4/color_config.h \
                            demux/mp4/essetup.c demux/mp4/meta.c \
+                           packetizer/iso_color_tables.h \
                            meta_engine/ID3Genres.h
 libmp4_plugin_la_LIBADD = $(LIBM)
 libmp4_plugin_la_LDFLAGS = $(AM_LDFLAGS)

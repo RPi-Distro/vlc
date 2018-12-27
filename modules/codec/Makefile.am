@@ -572,7 +572,8 @@ libvpx_plugin_la_LIBADD = $(VPX_LIBS)
 EXTRA_LTLIBRARIES += libvpx_plugin.la
 codec_LTLIBRARIES += $(LTLIBvpx)
 
-libaom_plugin_la_SOURCES = codec/aom.c
+libaom_plugin_la_SOURCES = codec/aom.c \
+                           packetizer/iso_color_tables.h
 libaom_plugin_la_CPPFLAGS = $(AM_CPPFLAGS)
 libaom_plugin_la_CFLAGS = $(AM_CFLAGS) $(AOM_CFLAGS) $(CPPFLAGS_aom)
 libaom_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)'
@@ -587,6 +588,14 @@ libtwolame_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)'
 libtwolame_plugin_la_LIBADD = $(TWOLAME_LIBS) $(LIBM)
 EXTRA_LTLIBRARIES += libtwolame_plugin.la
 codec_LTLIBRARIES += $(LTLIBtwolame)
+
+libdav1d_plugin_la_SOURCES = codec/dav1d.c
+libdav1d_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(DAV1D_CFLAGS)
+libdav1d_plugin_la_CFLAGS = $(AM_CFLAGS)
+libdav1d_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)'
+libdav1d_plugin_la_LIBADD = $(DAV1D_LIBS)
+EXTRA_LTLIBRARIES += libdav1d_plugin.la
+codec_LTLIBRARIES += $(LTLIBdav1d)
 
 
 ### Hardware encoders ###

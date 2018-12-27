@@ -37,6 +37,7 @@
 #include <assert.h>
 #include <limits.h>
 #include "../codec/cc.h"
+#include "../av1_unpack.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -565,6 +566,10 @@ static block_t * MP4_Block_Convert( demux_t *p_demux, const mp4_track_t *p_track
             p_block->i_buffer = 0;
             break;
         }
+    }
+    else if( p_track->fmt.i_codec == VLC_CODEC_AV1 )
+    {
+        p_block = AV1_Unpack_Sample( p_block );
     }
     else if( p_track->fmt.i_original_fourcc == ATOM_rrtp )
     {
@@ -3706,6 +3711,9 @@ static uint32_t MP4_TrackGetReadSize( mp4_track_t *p_track, uint32_t *pi_nb_samp
                 case VLC_CODEC_GSM:
                     *pi_nb_samples = 160 * p_track->fmt.audio.i_channels;
                     return 33 * p_track->fmt.audio.i_channels;
+                case VLC_CODEC_ADPCM_IMA_QT:
+                    *pi_nb_samples = 64 * p_track->fmt.audio.i_channels;
+                    return 34 * p_track->fmt.audio.i_channels;
                 default:
                     break;
             }
@@ -3787,6 +3795,10 @@ static uint64_t MP4_TrackGetPos( mp4_track_t *p_track )
             case VLC_CODEC_GSM: /* # Samples > data size */
                 i_pos += ( p_track->i_sample -
                            p_track->chunk[p_track->i_chunk].i_sample_first ) / 160 * 33;
+                return i_pos;
+            case VLC_CODEC_ADPCM_IMA_QT: /* # Samples > data size */
+                i_pos += ( p_track->i_sample -
+                           p_track->chunk[p_track->i_chunk].i_sample_first ) / 64 * 34;
                 return i_pos;
             default:
                 break;

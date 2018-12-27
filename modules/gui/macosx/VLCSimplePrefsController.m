@@ -1,8 +1,8 @@
 /*****************************************************************************
 * VLCSimplePrefsController.m: Simple Preferences for Mac OS X
 *****************************************************************************
-* Copyright (C) 2008-2014 VLC authors and VideoLAN
-* $Id: 9a7a3484266c8c842863ed5cc8c2223f7cba149d $
+* Copyright (C) 2008-2018 VLC authors and VideoLAN
+* $Id: 8fa8d9383ed9cf93ba03dfccc8c375211ecc728c $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *

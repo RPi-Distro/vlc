@@ -1,8 +1,8 @@
 /*****************************************************************************
  * VLCControlsBarCommon.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2012-2016 VLC authors and VideoLAN
- * $Id: 86e91db39e3986a31bdac7b5f840217df76517b3 $
+ * Copyright (C) 2012-2018 VLC authors and VideoLAN
+ * $Id: 46f70262446bb42dad3abd6405f5c45c18d3267a $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -42,6 +42,7 @@
     NSImage * _pressedPauseImage;
     NSImage * _playImage;
     NSImage * _pressedPlayImage;
+    BOOL _paused;
 
     NSTimeInterval last_fwd_event;
     NSTimeInterval last_bwd_event;
@@ -52,11 +53,27 @@
 
 @implementation VLCControlsBarCommon
 
+- (void)dealloc
+{
+    if (@available(macOS 10_14, *)) {
+        [[NSApplication sharedApplication] removeObserver:self forKeyPath:@"effectiveAppearance"];
+    }
+}
+
 - (void)awakeFromNib
 {
     [super awakeFromNib];
     
     _darkInterface = var_InheritBool(getIntf(), "macosx-interfacestyle");
+    if (@available(macOS 10_14, *)) {
+        NSApplication *app = [NSApplication sharedApplication];
+        _darkInterface = [app.effectiveAppearance.name isEqualToString:NSAppearanceNameDarkAqua];
+
+        [app addObserver:self
+              forKeyPath:@"effectiveAppearance"
+                 options:0
+                 context:nil];
+    }
     _nativeFullscreenMode = var_InheritBool(getIntf(), "macosx-nativefullscreenmode");
 
     [self.dropView setDrawBorder: NO];
@@ -83,43 +100,12 @@
 
     if (!_darkInterface) {
         [self.bottomBarView setDark:NO];
-
-        [self.backwardButton setImage: imageFromRes(@"backward-3btns")];
-        [self.backwardButton setAlternateImage: imageFromRes(@"backward-3btns-pressed")];
-        _playImage = imageFromRes(@"play");
-        _pressedPlayImage = imageFromRes(@"play-pressed");
-        _pauseImage = imageFromRes(@"pause");
-        _pressedPauseImage = imageFromRes(@"pause-pressed");
-        [self.forwardButton setImage: imageFromRes(@"forward-3btns")];
-        [self.forwardButton setAlternateImage: imageFromRes(@"forward-3btns-pressed")];
-
-        [self.fullscreenButton setImage: imageFromRes(@"fullscreen-one-button")];
-        [self.fullscreenButton setAlternateImage: imageFromRes(@"fullscreen-one-button-pressed")];
+        [self setBrightButtonImageSet];
     } else {
         [self.bottomBarView setDark:YES];
-
-        [self.backwardButton setImage: imageFromRes(@"backward-3btns-dark")];
-        [self.backwardButton setAlternateImage: imageFromRes(@"backward-3btns-dark-pressed")];
-        _playImage = imageFromRes(@"play_dark");
-        _pressedPlayImage = imageFromRes(@"play-pressed_dark");
-        _pauseImage = imageFromRes(@"pause_dark");
-        _pressedPauseImage = imageFromRes(@"pause-pressed_dark");
-        [self.forwardButton setImage: imageFromRes(@"forward-3btns-dark")];
-        [self.forwardButton setAlternateImage: imageFromRes(@"forward-3btns-dark-pressed")];
-
-        [self.fullscreenButton setImage: imageFromRes(@"fullscreen-one-button-pressed_dark")];
-        [self.fullscreenButton setAlternateImage: imageFromRes(@"fullscreen-one-button-pressed_dark")];
+        [self setDarkButtonImageSet];
     }
 
-    [self.playButton setImage: _playImage];
-    [self.playButton setAlternateImage: _pressedPlayImage];
-
-    NSColor *timeFieldTextColor;
-    if (!var_InheritBool(getIntf(), "macosx-interfacestyle"))
-        timeFieldTextColor = [NSColor colorWithCalibratedRed:0.229 green:0.229 blue:0.229 alpha:100.0];
-    else
-        timeFieldTextColor = [NSColor colorWithCalibratedRed:0.64 green:0.64 blue:0.64 alpha:100.0];
-    [self.timeField setTextColor: timeFieldTextColor];
     [self.timeField setFont:[NSFont titleBarFontOfSize:10.0]];
     [self.timeField setAlignment: NSCenterTextAlignment];
     [self.timeField setNeedsDisplay:YES];
@@ -134,7 +120,54 @@
 
     if (config_GetInt(getIntf(), "macosx-show-playback-buttons"))
         [self toggleForwardBackwardMode: YES];
+}
 
+- (void)setBrightButtonImageSet
+{
+    [self.backwardButton setImage: imageFromRes(@"backward-3btns")];
+    [self.backwardButton setAlternateImage: imageFromRes(@"backward-3btns-pressed")];
+    _playImage = imageFromRes(@"play");
+    _pressedPlayImage = imageFromRes(@"play-pressed");
+    _pauseImage = imageFromRes(@"pause");
+    _pressedPauseImage = imageFromRes(@"pause-pressed");
+    if (_paused) {
+        [self.playButton setImage: _pauseImage];
+        [self.playButton setAlternateImage: _pressedPauseImage];
+    } else {
+        [self.playButton setImage: _playImage];
+        [self.playButton setAlternateImage: _pressedPlayImage];
+    }
+    [self.forwardButton setImage: imageFromRes(@"forward-3btns")];
+    [self.forwardButton setAlternateImage: imageFromRes(@"forward-3btns-pressed")];
+
+    [self.fullscreenButton setImage: imageFromRes(@"fullscreen-one-button")];
+    [self.fullscreenButton setAlternateImage: imageFromRes(@"fullscreen-one-button-pressed")];
+
+    [self.timeField setTextColor: [NSColor colorWithCalibratedRed:0.229 green:0.229 blue:0.229 alpha:100.0]];
+}
+
+- (void)setDarkButtonImageSet
+{
+    [self.backwardButton setImage: imageFromRes(@"backward-3btns-dark")];
+    [self.backwardButton setAlternateImage: imageFromRes(@"backward-3btns-dark-pressed")];
+    _playImage = imageFromRes(@"play_dark");
+    _pressedPlayImage = imageFromRes(@"play-pressed_dark");
+    _pauseImage = imageFromRes(@"pause_dark");
+    _pressedPauseImage = imageFromRes(@"pause-pressed_dark");
+    if (_paused) {
+        [self.playButton setImage: _pauseImage];
+        [self.playButton setAlternateImage: _pressedPauseImage];
+    } else {
+        [self.playButton setImage: _playImage];
+        [self.playButton setAlternateImage: _pressedPlayImage];
+    }
+    [self.forwardButton setImage: imageFromRes(@"forward-3btns-dark")];
+    [self.forwardButton setAlternateImage: imageFromRes(@"forward-3btns-dark-pressed")];
+
+    [self.fullscreenButton setImage: imageFromRes(@"fullscreen-one-button-pressed_dark")];
+    [self.fullscreenButton setAlternateImage: imageFromRes(@"fullscreen-one-button-pressed_dark")];
+
+    [self.timeField setTextColor: [NSColor colorWithCalibratedRed:0.64 green:0.64 blue:0.64 alpha:100.0]];
 }
 
 - (CGFloat)height
@@ -384,6 +417,7 @@
 
 - (void)setPause
 {
+    _paused = YES;
     [self.playButton setImage: _pauseImage];
     [self.playButton setAlternateImage: _pressedPauseImage];
     [self.playButton setToolTip: _NS("Pause")];
@@ -392,6 +426,7 @@
 
 - (void)setPlay
 {
+    _paused = NO;
     [self.playButton setImage: _playImage];
     [self.playButton setAlternateImage: _pressedPlayImage];
     [self.playButton setToolTip: _NS("Play")];
@@ -402,6 +437,23 @@
 {
     if (!self.nativeFullscreenMode)
         [self.fullscreenButton setState:b_fullscreen];
+}
+
+// This is used for both VLCControlsBarCommon, as well as VLCMainWindowControlsBar instances
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSKeyValueChangeKey,id> *)change
+                       context:(void *)context
+{
+    if (@available(macOS 10_14, *)) {
+        if ([[NSApplication sharedApplication].effectiveAppearance.name isEqualToString:NSAppearanceNameDarkAqua]) {
+            _darkInterface = YES;
+            [self setDarkButtonImageSet];
+        } else {
+            _darkInterface = NO;
+            [self setBrightButtonImageSet];
+        }
+    }
 }
 
 @end

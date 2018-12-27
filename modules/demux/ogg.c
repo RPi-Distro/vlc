@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 7506d8311290f5610c378a97f59910f68632b748 $
+ * $Id: 0b368b77f8451d6d9bdbcf25a15d5906ee8fbd26 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -2164,7 +2164,7 @@ static void Ogg_CreateES( demux_t *p_demux )
             if( p_old_stream &&
                 p_old_stream->fmt.i_cat == p_stream->fmt.i_cat &&
                 p_old_stream->fmt.i_codec == p_stream->fmt.i_codec &&
-                p_old_stream->p_es != NULL )
+                p_old_stream->p_es != NULL && p_stream->p_es != NULL )
             {
                 msg_Dbg( p_demux, "will reuse old stream to avoid glitch" );
 

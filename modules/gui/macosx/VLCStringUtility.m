@@ -2,7 +2,7 @@
  * VLCStringUtility.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 448718765997ce58db5e77b3b2d3c7d744be20aa $
+ * $Id: 2a5c6761115311de2fd5f18269a2416a80541020 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -70,7 +70,6 @@ NSString *const kVLCMediaUnknown = @"Unknown";
     NSMutableString *o_wrapped;
     NSString *o_out_string;
     NSRange glyphRange, effectiveRange, charRange;
-    NSRect lineFragmentRect;
     unsigned glyphIndex, breaksInserted = 0;
 
     NSTextStorage *o_storage = [[NSTextStorage alloc] initWithString: o_in_string
@@ -88,8 +87,8 @@ NSString *const kVLCMediaUnknown = @"Unknown";
 
     for (glyphIndex = glyphRange.location ; glyphIndex < NSMaxRange(glyphRange) ;
         glyphIndex += effectiveRange.length) {
-        lineFragmentRect = [o_layout_manager lineFragmentRectForGlyphAtIndex: glyphIndex
-                                                              effectiveRange: &effectiveRange];
+        [o_layout_manager lineFragmentRectForGlyphAtIndex: glyphIndex
+                                           effectiveRange: &effectiveRange];
         charRange = [o_layout_manager characterRangeForGlyphRange: effectiveRange
                                                  actualGlyphRange: &effectiveRange];
         if ([o_wrapped lineRangeForRange:
@@ -520,6 +519,23 @@ NSImage *imageFromRes(NSString *o_id)
         result = [result stringByAppendingString:@"ys-"];
     }
 
+    result = [result stringByAppendingString:o_id];
+
+    return [NSImage imageNamed:result];
+}
+
+NSImage *sidebarImageFromRes(NSString *o_id, BOOL darkMode)
+{
+    if (!OSX_MOJAVE_AND_HIGHER) {
+        return imageFromRes(o_id);
+    }
+
+    NSString *result = @"";
+    if (darkMode) {
+        result = [result stringByAppendingString:@"mv-dark-"];
+    } else {
+        result = [result stringByAppendingString:@"mv-"];
+    }
     result = [result stringByAppendingString:o_id];
 
     return [NSImage imageNamed:result];

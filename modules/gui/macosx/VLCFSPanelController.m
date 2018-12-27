@@ -2,7 +2,7 @@
  * VLCFSPanelController.m: macOS fullscreen controls window controller
  *****************************************************************************
  * Copyright (C) 2006-2016 VLC authors and VideoLAN
- * $Id: 325c505e7fec2432b9e4e11126ce7e4f1ba4e1b4 $
+ * $Id: 2c797802646a2261fd2163c4c9ea4eee0e2c0a98 $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -294,6 +294,17 @@ static NSString *kAssociatedFullscreenRect = @"VLCFullscreenAssociatedWindowRect
 
 - (void)setSeekable:(BOOL)seekable
 {
+    // Workaround graphical issues in Mojave.
+    // TODO: This needs a proper fix
+    [_forwardButton setEnabled:NO];
+    [_backwardButton setEnabled:NO];
+    [_nextButton setEnabled:NO];
+    [_nextButton setEnabled:YES];
+    [_previousButton setEnabled:NO];
+    [_previousButton setEnabled:YES];
+    [_fullscreenButton setEnabled:NO];
+    [_fullscreenButton setEnabled:YES];
+
     [_timeSlider setEnabled:seekable];
     [_forwardButton setEnabled:seekable];
     [_backwardButton setEnabled:seekable];

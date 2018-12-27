@@ -3,7 +3,7 @@
  * VLCPLItem.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: 5ea1d4660351515a2c1b7ba60d008636aa8db928 $
+ * $Id: 2fbea38d1562e28c22e2acee515c01f50837a473 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,22 @@
 #include <vlc_input_item.h>
 #include <vlc_input.h>
 #include <vlc_url.h>
+
+@interface VLCPLModel ()
+{
+    playlist_t *p_playlist;
+    __weak NSOutlineView *_outlineView;
+
+    NSUInteger _retainedRowSelection;
+}
+
+- (void)VLCPLItemAppended:(NSArray *)valueArray;
+- (void)VLCPLItemRemoved:(NSNumber *)value;
+- (void)VLCPLItemUpdated;
+
+@end
+
+#pragma mark -
 
 static int VLCPLItemUpdated(vlc_object_t *p_this, const char *psz_var,
                          vlc_value_t oldval, vlc_value_t new_val, void *param)
@@ -104,15 +120,6 @@ static int VolumeUpdated(vlc_object_t *p_this, const char *psz_var,
 }
 
 #pragma mark -
-
-@interface VLCPLModel ()
-{
-    playlist_t *p_playlist;
-    __weak NSOutlineView *_outlineView;
-
-    NSUInteger _retainedRowSelection;
-}
-@end
 
 @implementation VLCPLModel
 

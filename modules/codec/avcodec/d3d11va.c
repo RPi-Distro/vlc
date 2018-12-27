@@ -375,13 +375,16 @@ static int Open(vlc_va_t *va, AVCodecContext *ctx, enum PixelFormat pix_fmt,
             D3D11_TEXTURE2D_DESC dstDesc;
             ID3D11Texture2D_GetDesc( p_sys->texture[KNOWN_DXGI_INDEX], &dstDesc);
             sys->render = dstDesc.Format;
-            va->sys->textureWidth = dstDesc.Width;
-            va->sys->textureHeight = dstDesc.Height;
-            va->sys->totalTextureSlices = dstDesc.ArraySize;
+            if (dstDesc.BindFlags & D3D11_BIND_DECODER)
+            {
+                va->sys->textureWidth = dstDesc.Width;
+                va->sys->textureHeight = dstDesc.Height;
+                va->sys->totalTextureSlices = dstDesc.ArraySize;
+            }
         }
     }
 
-    err = D3D11_Create( va, &sys->hd3d );
+    err = D3D11_Create( va, &sys->hd3d, false );
     if (err != VLC_SUCCESS)
         goto error;
 
@@ -439,7 +442,7 @@ static int D3dCreateDevice(vlc_va_t *va)
             msg_Err(va, "D3D11CreateDevice failed. (hr=0x%lX)", hr);
             return VLC_EGENERIC;
         }
-	}
+    }
 
     void *d3dvidctx = NULL;
     hr = ID3D11DeviceContext_QueryInterface(sys->d3d_dev.d3dcontext, &IID_ID3D11VideoContext, &d3dvidctx);
@@ -482,7 +485,7 @@ static char *DxDescribe(vlc_va_sys_t *sys)
         char *utfdesc = FromWide(adapterDesc.Description);
         if (likely(utfdesc!=NULL))
         {
-            if (asprintf(&description, "D3D11VA (%s, vendor %u(%s), device %u, revision %u)",
+            if (asprintf(&description, "D3D11VA (%s, vendor %x(%s), device %x, revision %x)",
                          utfdesc,
                          adapterDesc.VendorId, DxgiVendorStr(adapterDesc.VendorId), adapterDesc.DeviceId, adapterDesc.Revision) < 0)
                 description = NULL;
@@ -656,7 +659,7 @@ static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *
         }
 
         msg_Dbg(va, "Using output format %s for decoder %s", DxgiFormatToStr(processorInput[idx]), psz_decoder_name);
-        if ( sys->render == processorInput[idx] )
+        if ( sys->render == processorInput[idx] && sys->totalTextureSlices > 4)
         {
             if (CanUseVoutPool(&sys->d3d_dev, sys->totalTextureSlices))
                 dx_sys->can_extern_pool = true;
@@ -803,7 +806,7 @@ static int DxCreateDecoderSurfaces(vlc_va_t *va, int codec_id,
                 break;
             }
 
-            AllocateShaderView(VLC_OBJECT(va), sys->d3d_dev.d3ddevice, textureFmt, pic->p_sys->texture, pic->p_sys->slice_index, pic->p_sys->resourceView);
+            D3D11_AllocateShaderView(va, sys->d3d_dev.d3ddevice, textureFmt, pic->p_sys->texture, pic->p_sys->slice_index, pic->p_sys->resourceView);
 
             dx_sys->hw_surface[surface_idx] = pic->p_sys->decoder;
         }
@@ -873,7 +876,7 @@ static int DxCreateDecoderSurfaces(vlc_va_t *va, int codec_id,
             if (texDesc.BindFlags & D3D11_BIND_SHADER_RESOURCE)
             {
                 ID3D11Texture2D *textures[D3D11_MAX_SHADER_VIEW] = {p_texture, p_texture, p_texture};
-                AllocateShaderView(VLC_OBJECT(va), sys->d3d_dev.d3ddevice, textureFmt, textures, surface_idx,
+                D3D11_AllocateShaderView(va, sys->d3d_dev.d3ddevice, textureFmt, textures, surface_idx,
                                    &sys->resourceView[surface_idx * D3D11_MAX_SHADER_VIEW]);
             }
         }

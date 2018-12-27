@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: f546413905d4a9ae3a467d82832a15128eaa9c78 $
+ * $Id: e9035db1b062301288ef1ad309fc2f23b6e34e4a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1569,7 +1569,6 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
         }
         S_CASE("V_AV1") {
             vars.p_fmt->i_codec = VLC_CODEC_AV1;
-            vars.p_fmt->b_packetized = false;
             vars.p_tk->b_pts_only = true;
 
             fill_extra_data( vars.p_tk, 0 );

@@ -2,7 +2,7 @@
  * info_panels.cpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: f4b1fba65b0afaecf669d539c013484d45b835fe $
+ * $Id: 161f593942d9fe6de079130c732513920c6ac224 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -72,7 +72,7 @@ MetaPanel::MetaPanel( QWidget *parent,
     QLabel *label;
 
 #define ADD_META( string, widget, col, colspan ) {                        \
-    label = new QLabel( qtr( string ) ); label->setFont( smallFont );     \
+    label = new QLabel( qfu( string ) ); label->setFont( smallFont );     \
     label->setContentsMargins( 3, 2, 0, 0 );                              \
     metaLayout->addWidget( label, line++, col, 1, colspan );              \
     widget = new QLineEdit;                                               \
@@ -86,7 +86,7 @@ MetaPanel::MetaPanel( QWidget *parent,
     ADD_META( VLC_META_ALBUM, collection_text, 0, 7 );
 
     /* Date */
-    label = new QLabel( qtr( VLC_META_DATE ) );
+    label = new QLabel( qfu( VLC_META_DATE ) );
     label->setFont( smallFont ); label->setContentsMargins( 3, 2, 0, 0 );
     metaLayout->addWidget( label, line - 1, 7, 1, 2 );
 
@@ -103,7 +103,7 @@ MetaPanel::MetaPanel( QWidget *parent,
     ADD_META( VLC_META_GENRE, genre_text, 0, 7 );
 
     /* Number - on the same line */
-    label = new QLabel( qtr( VLC_META_TRACK_NUMBER ) );
+    label = new QLabel( qfu( VLC_META_TRACK_NUMBER ) );
     label->setFont( smallFont ); label->setContentsMargins( 3, 2, 0, 0 );
     metaLayout->addWidget( label, line - 1, 7, 1, 3  );
 

@@ -2,7 +2,7 @@
  * matroska_segment.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 93647113f8d4dcc8e4944cc00657fd75bab49b01 $
+ * $Id: 29e63a2459889d9aa94b363e429b9f00d898d30b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1216,7 +1216,6 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
         {
             VLC_UNUSED( kcue );
             msg_Warn( vars.p_demuxer, "find KaxCues FIXME" );
-            throw VLC_EGENERIC;
         }
         E_CASE_DEFAULT(element)
         {

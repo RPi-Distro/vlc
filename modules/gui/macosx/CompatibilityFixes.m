@@ -2,7 +2,7 @@
  * CompatibilityFixes.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2017 VLC authors and VideoLAN
- * $Id: 6dcbe2cb3d78dcc1645986146ec04e22c5f8441c $
+ * $Id: 75085bd2935dbadd53cda3de1e60eb6da797c54c $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Marvin Scholz <epirat07 -at- gmail -dot- com>
@@ -43,3 +43,23 @@ void swapoutOverride(Class cls, SEL selector)
     if (subclassMeth && baseImp)
         method_setImplementation(subclassMeth, baseImp);
 }
+
+@implementation NSColor (VLCAdditions)
+
++ (NSColor *)VLCSecondaryLabelColor
+{
+    SEL secondaryColorSelector = @selector(secondaryLabelColor);
+    if ([super respondsToSelector:secondaryColorSelector]) {
+        return [super performSelector:secondaryColorSelector];
+    } else {
+        return [NSColor colorWithCalibratedWhite:NSDarkGray alpha:1.];
+    }
+}
+
+@end
+
+#ifndef MAC_OS_X_VERSION_10_14
+
+NSString *const NSAppearanceNameDarkAqua = @"NSAppearanceNameDarkAqua";
+
+#endif

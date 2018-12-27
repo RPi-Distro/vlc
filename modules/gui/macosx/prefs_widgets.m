@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 431e93c78fecb4e0b878e034fbe1f89bab91d10e $
+ * $Id: a4bd1dbedcc08a21ed387f38df8c937b3c7a1636 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -2197,7 +2197,6 @@ o_moduleenabled = [NSNumber numberWithBool:NO];\
               row:(NSInteger)dropRow dropOperation:(NSTableViewDropOperation)op;
 {
     NSPasteboard    *pb = [info draggingPasteboard];
-    NSDragOperation srcMask = [info draggingSourceOperationMask];
     BOOL accepted = NO;
 
     NS_DURING
@@ -2209,7 +2208,6 @@ o_moduleenabled = [NSNumber numberWithBool:NO];\
                       [pb propertyListForType:@"VLC media player module"]) != NULL) {
         NSEnumerator *iter = nil;
         id val;
-        BOOL isCopy = (srcMask & NSDragOperationMove) ? NO:YES;
         // Move the modules
         iter = [array objectEnumerator];
         while ((val = [iter nextObject]) != NULL) {

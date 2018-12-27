@@ -2,7 +2,7 @@
  * applescript.m: MacOS X AppleScript support
  *****************************************************************************
  * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 8a5a124082cbd4d7a9ee779ef1645f1e37608ca0 $
+ * $Id: c9cd505eae435b717e286e6b1c02765c4fd36844 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -67,9 +67,6 @@
 - (id)performDefaultImplementation {
     NSString *o_command = [[self commandDescription] commandName];
     NSString *o_parameter = [self directParameter];
-
-    intf_thread_t * p_intf = getIntf();
-    playlist_t * p_playlist = pl_Get(p_intf);
 
     if ([o_command isEqualToString:@"play"])
         [[VLCCoreInteraction sharedInstance] playOrPause];

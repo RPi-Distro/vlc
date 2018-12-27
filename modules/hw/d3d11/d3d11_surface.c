@@ -217,7 +217,7 @@ static int assert_staging(filter_t *p_filter, picture_sys_t *p_sys)
         /* failed with the this format, try a different one */
         UINT supportFlags = D3D11_FORMAT_SUPPORT_SHADER_LOAD | D3D11_FORMAT_SUPPORT_VIDEO_PROCESSOR_OUTPUT;
         const d3d_format_t *new_fmt =
-                FindD3D11Format( p_filter, &d3d_dev, 0, false, 0, false, supportFlags );
+                FindD3D11Format( p_filter, &d3d_dev, 0, false, 0, 0, 0, false, supportFlags );
         if (new_fmt && texDesc.Format != new_fmt->formatTexture)
         {
             DXGI_FORMAT srcFormat = texDesc.Format;
@@ -705,7 +705,7 @@ int D3D11OpenConverter( vlc_object_t *obj )
     if (CopyInitCache(&p_sys->cache, p_filter->fmt_in.video.i_width * pixel_bytes))
         return VLC_ENOMEM;
 
-    if (D3D11_Create(p_filter, &p_sys->hd3d) != VLC_SUCCESS)
+    if (D3D11_Create(p_filter, &p_sys->hd3d, false) != VLC_SUCCESS)
     {
         msg_Warn(p_filter, "cannot load d3d11.dll, aborting");
         CopyCleanCache(&p_sys->cache);
@@ -813,7 +813,7 @@ int D3D11OpenCPUConverter( vlc_object_t *obj )
          goto done;
     }
 
-    if (D3D11_Create(p_filter, &p_sys->hd3d) != VLC_SUCCESS)
+    if (D3D11_Create(p_filter, &p_sys->hd3d, false) != VLC_SUCCESS)
     {
         msg_Warn(p_filter, "cannot load d3d11.dll, aborting");
         goto done;

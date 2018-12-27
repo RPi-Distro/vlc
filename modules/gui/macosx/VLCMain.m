@@ -2,7 +2,7 @@
  * VLCMain.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2016 VLC authors and VideoLAN
- * $Id: 8397c0fb5c09a6dfa3a8135758aa1584a7efc8ef $
+ * $Id: b561cd5bf7da7939af07cceeb348597f1f3daf7a $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -94,6 +94,16 @@ int OpenIntf (vlc_object_t *p_this)
         @try {
             [VLCApplication sharedApplication];
             [VLCMain sharedInstance];
+
+            if (@available(macOS 10.14, *)) {
+                if (var_InheritBool(getIntf(), "macosx-interfacestyle")) {
+
+                    // Use the native dark appearance style on Mojave
+                    // Automatic switching between both styles does not work yet, see commit msg
+                    NSApplication *app = [NSApplication sharedApplication];
+                    app.appearance = [NSAppearance appearanceNamed: NSAppearanceNameDarkAqua];
+                }
+            }
 
             [NSBundle loadNibNamed:@"MainMenu" owner:[[VLCMain sharedInstance] mainMenu]];
             [[[VLCMain sharedInstance] mainWindow] makeKeyAndOrderFront:nil];

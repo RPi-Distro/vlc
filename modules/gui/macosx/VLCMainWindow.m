@@ -1,8 +1,8 @@
 /*****************************************************************************
  * VLCMainWindow.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2013 VLC authors and VideoLAN
- * $Id: 57dc4d4d5f4e3add4e8595584ab338156611a65a $
+ * Copyright (C) 2002-2018 VLC authors and VideoLAN
+ * $Id: d9bbb9556ebec5a70a044076ffff194ab19afdaf $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -135,6 +135,9 @@ static const float f_min_window_height = 307.;
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
+    if (@available(macOS 10_14, *)) {
+        [[NSApplication sharedApplication] removeObserver:self forKeyPath:@"effectiveAppearance"];
+    }
 }
 
 - (void)awakeFromNib
@@ -189,7 +192,21 @@ static const float f_min_window_height = 307.;
 
     // Dropzone
     [_dropzoneLabel setStringValue:_NS("Drop media here")];
-    [_dropzoneImageView setImage:imageFromRes(@"dropzone")];
+    if (@available(macOS 10.14, *)) {
+        NSApplication *app = [NSApplication sharedApplication];
+        if ([app.effectiveAppearance.name isEqualToString:NSAppearanceNameDarkAqua]) {
+            [_dropzoneImageView setImage:[NSImage imageNamed:@"mj-dropzone-dark"]];
+        } else {
+            [_dropzoneImageView setImage:imageFromRes(@"dropzone")];
+        }
+        [app addObserver:self
+              forKeyPath:@"effectiveAppearance"
+                 options:0
+                 context:nil];
+        self.dropzoneBackgroundImageView.hidden = YES;
+    } else {
+        [_dropzoneImageView setImage:imageFromRes(@"dropzone")];
+    }
     [_dropzoneButton setTitle:_NS("Open media...")];
     [_dropzoneButton.cell accessibilitySetOverrideValue:_NS("Open a dialog to select the media to play")
                                            forAttribute:NSAccessibilityDescriptionAttribute];
@@ -289,12 +306,20 @@ static const float f_min_window_height = 307.;
     if (o_sidebaritems)
         isAReload = YES;
 
+    BOOL darkMode = NO;
+    if (@available(macOS 10.14, *)) {
+        NSApplication *app = [NSApplication sharedApplication];
+        if ([app.effectiveAppearance.name isEqualToString:NSAppearanceNameDarkAqua]) {
+            darkMode = YES;
+        }
+    }
+
     o_sidebaritems = [[NSMutableArray alloc] init];
     SideBarItem *libraryItem = [SideBarItem itemWithTitle:_NS("LIBRARY") identifier:@"library"];
     SideBarItem *playlistItem = [SideBarItem itemWithTitle:_NS("Playlist") identifier:@"playlist"];
-    [playlistItem setIcon: imageFromRes(@"sidebar-playlist")];
+    [playlistItem setIcon: sidebarImageFromRes(@"sidebar-playlist", darkMode)];
     SideBarItem *medialibraryItem = [SideBarItem itemWithTitle:_NS("Media Library") identifier:@"medialibrary"];
-    [medialibraryItem setIcon: imageFromRes(@"sidebar-playlist")];
+    [medialibraryItem setIcon: sidebarImageFromRes(@"sidebar-playlist", darkMode)];
     SideBarItem *mycompItem = [SideBarItem itemWithTitle:_NS("MY COMPUTER") identifier:@"mycomputer"];
     SideBarItem *devicesItem = [SideBarItem itemWithTitle:_NS("DEVICES") identifier:@"devices"];
     SideBarItem *lanItem = [SideBarItem itemWithTitle:_NS("LOCAL NETWORK") identifier:@"localnetwork"];
@@ -318,27 +343,27 @@ static const float f_min_window_height = 307.;
         switch (*p_category) {
             case SD_CAT_INTERNET:
                 [internetItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
-                [[internetItems lastObject] setIcon: imageFromRes(@"sidebar-podcast")];
+                [[internetItems lastObject] setIcon: sidebarImageFromRes(@"sidebar-podcast", darkMode)];
                 [[internetItems lastObject] setSdtype: SD_CAT_INTERNET];
                 break;
             case SD_CAT_DEVICES:
                 [devicesItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
-                [[devicesItems lastObject] setIcon: imageFromRes(@"sidebar-local")];
+                [[devicesItems lastObject] setIcon: sidebarImageFromRes(@"sidebar-local", darkMode)];
                 [[devicesItems lastObject] setSdtype: SD_CAT_DEVICES];
                 break;
             case SD_CAT_LAN:
                 [lanItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
-                [[lanItems lastObject] setIcon: imageFromRes(@"sidebar-local")];
+                [[lanItems lastObject] setIcon: sidebarImageFromRes(@"sidebar-local", darkMode)];
                 [[lanItems lastObject] setSdtype: SD_CAT_LAN];
                 break;
             case SD_CAT_MYCOMPUTER:
                 [mycompItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
                 if (!strncmp(*ppsz_name, "video_dir", 9))
-                    [[mycompItems lastObject] setIcon: imageFromRes(@"sidebar-movie")];
+                    [[mycompItems lastObject] setIcon: sidebarImageFromRes(@"sidebar-movie", darkMode)];
                 else if (!strncmp(*ppsz_name, "audio_dir", 9))
-                    [[mycompItems lastObject] setIcon: imageFromRes(@"sidebar-music")];
+                    [[mycompItems lastObject] setIcon: sidebarImageFromRes(@"sidebar-music", darkMode)];
                 else if (!strncmp(*ppsz_name, "picture_dir", 11))
-                    [[mycompItems lastObject] setIcon: imageFromRes(@"sidebar-pictures")];
+                    [[mycompItems lastObject] setIcon: sidebarImageFromRes(@"sidebar-pictures", darkMode)];
                 else
                     [[mycompItems lastObject] setIcon: [NSImage imageNamed:@"NSApplicationIcon"]];
                 [[mycompItems lastObject] setSdtype: SD_CAT_MYCOMPUTER];
@@ -728,6 +753,21 @@ static const float f_min_window_height = 307.;
 {
     [(VLCMainWindowControlsBar *)[self controlsBar] updateVolumeSlider];
     [self.fspanel setVolumeLevel:[[VLCCoreInteraction sharedInstance] volume]];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSKeyValueChangeKey,id> *)change
+                       context:(void *)context
+{
+    if (@available(macOS 10_14, *)) {
+        if ([[[NSApplication sharedApplication] effectiveAppearance].name isEqualToString:NSAppearanceNameDarkAqua]) {
+            [_dropzoneImageView setImage:[NSImage imageNamed:@"mj-dropzone-dark"]];
+        } else {
+            [_dropzoneImageView setImage:imageFromRes(@"dropzone")];
+        }
+        [self reloadSidebar];
+    }
 }
 
 #pragma mark -
@@ -1259,21 +1299,25 @@ static const float f_min_window_height = 307.;
     [super awakeFromNib];
     [self setAcceptsMouseMovedEvents: YES];
 
-    BOOL darkInterface = config_GetInt(getIntf(), "macosx-interfacestyle");
-
-    if (darkInterface) {
-        [self setBackgroundColor: [NSColor clearColor]];
-
-        [self setOpaque: NO];
-        [self display];
-        [self setHasShadow:NO];
-        [self setHasShadow:YES];
-
-        [self setTitle: _NS("VLC media player")];
-
-        [self setContentMinSize: NSMakeSize(363., f_min_video_height + [[self controlsBar] height] + [self.titlebarView frame].size.height)];
-    } else {
+    if (@available(macOS 10.14, *)) {
         [self setContentMinSize: NSMakeSize(363., f_min_video_height + [[self controlsBar] height])];
+    } else {
+        BOOL darkInterface = config_GetInt(getIntf(), "macosx-interfacestyle");
+
+        if (darkInterface) {
+            [self setBackgroundColor: [NSColor clearColor]];
+
+            [self setOpaque: NO];
+            [self display];
+            [self setHasShadow:NO];
+            [self setHasShadow:YES];
+
+            [self setTitle: _NS("VLC media player")];
+
+            [self setContentMinSize: NSMakeSize(363., f_min_video_height + [[self controlsBar] height] + [self.titlebarView frame].size.height)];
+        } else {
+            [self setContentMinSize: NSMakeSize(363., f_min_video_height + [[self controlsBar] height])];
+        }
     }
 }
 

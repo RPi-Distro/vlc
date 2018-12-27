@@ -76,6 +76,16 @@ endif
 	$(APPLY) $(SRC)/live555/add-pkgconfig-file.patch
 	# Expose Server:
 	$(APPLY) $(SRC)/live555/expose_server_string.patch
+ifdef HAVE_ANDROID
+ifneq ($(LEGACY_NDK), 1)
+	# Always access in_addr.s_addr field
+	$(APPLY) $(SRC)/live555/in_addr-s_addr-field.patch
+	# Don't use unavailable off64_t functions
+	$(APPLY) $(SRC)/live555/file-offset-bits-64.patch
+endif
+endif
+	# Fix creating static libs on mingw
+	$(APPLY) $(SRC)/live555/mingw-static-libs.patch
 
 	mv live.$(LIVE555_VERSION) $@ && touch $@
 

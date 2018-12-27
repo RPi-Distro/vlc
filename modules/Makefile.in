@@ -1389,6 +1389,13 @@ libdaala_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libdaala_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libdaala_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
+libdav1d_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am_libdav1d_plugin_la_OBJECTS = codec/libdav1d_plugin_la-dav1d.lo
+libdav1d_plugin_la_OBJECTS = $(am_libdav1d_plugin_la_OBJECTS)
+libdav1d_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libdav1d_plugin_la_CFLAGS) $(CFLAGS) \
+	$(libdav1d_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
 libdbus_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_libdbus_plugin_la_OBJECTS =  \
@@ -1560,7 +1567,11 @@ libdirect3d11_plugin_la_DEPENDENCIES = libchroma_copy.la \
 	libd3d11_common.la $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am__libdirect3d11_plugin_la_SOURCES_DIST =  \
-	video_output/win32/direct3d11.c video_output/win32/common.c \
+	video_output/win32/direct3d11.c \
+	video_output/win32/d3d11_quad.c \
+	video_output/win32/d3d11_quad.h \
+	video_output/win32/d3d11_shaders.c \
+	video_output/win32/d3d11_shaders.h video_output/win32/common.c \
 	video_output/win32/common.h video_output/win32/events.c \
 	video_output/win32/events.h video_output/win32/sensors.cpp \
 	video_output/win32/win32touch.c \
@@ -1570,6 +1581,8 @@ am__libdirect3d11_plugin_la_SOURCES_DIST =  \
 @HAVE_WINSTORE_FALSE@	video_output/win32/libdirect3d11_plugin_la-win32touch.lo
 am_libdirect3d11_plugin_la_OBJECTS =  \
 	video_output/win32/libdirect3d11_plugin_la-direct3d11.lo \
+	video_output/win32/libdirect3d11_plugin_la-d3d11_quad.lo \
+	video_output/win32/libdirect3d11_plugin_la-d3d11_shaders.lo \
 	video_output/win32/libdirect3d11_plugin_la-common.lo \
 	$(am__objects_11)
 libdirect3d11_plugin_la_OBJECTS =  \
@@ -2968,6 +2981,11 @@ libpacketizer_a52_plugin_la_LIBADD =
 am_libpacketizer_a52_plugin_la_OBJECTS = packetizer/a52.lo
 libpacketizer_a52_plugin_la_OBJECTS =  \
 	$(am_libpacketizer_a52_plugin_la_OBJECTS)
+libpacketizer_av1_plugin_la_LIBADD =
+am_libpacketizer_av1_plugin_la_OBJECTS = packetizer/av1.lo \
+	packetizer/av1_obu.lo
+libpacketizer_av1_plugin_la_OBJECTS =  \
+	$(am_libpacketizer_av1_plugin_la_OBJECTS)
 libpacketizer_avparser_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) libavcodec_common.la
 am_libpacketizer_avparser_plugin_la_OBJECTS =  \
@@ -5345,6 +5363,7 @@ am__depfiles_remade =  \
 	codec/$(DEPDIR)/libaom_plugin_la-aom.Plo \
 	codec/$(DEPDIR)/libcvpx_plugin_la-vt_utils.Plo \
 	codec/$(DEPDIR)/libdaala_plugin_la-daala.Plo \
+	codec/$(DEPDIR)/libdav1d_plugin_la-dav1d.Plo \
 	codec/$(DEPDIR)/libdca_plugin_la-dca.Plo \
 	codec/$(DEPDIR)/libfaad_plugin_la-faad.Plo \
 	codec/$(DEPDIR)/libfdkaac_plugin_la-fdkaac.Plo \
@@ -6065,7 +6084,8 @@ am__depfiles_remade =  \
 	mux/mpeg/$(DEPDIR)/pes.Plo mux/mpeg/$(DEPDIR)/ps.Plo \
 	notify/$(DEPDIR)/libnotify_plugin_la-notify.Plo \
 	notify/$(DEPDIR)/libosx_notifications_plugin_la-osx_notifications.Plo \
-	packetizer/$(DEPDIR)/a52.Plo packetizer/$(DEPDIR)/copy.Plo \
+	packetizer/$(DEPDIR)/a52.Plo packetizer/$(DEPDIR)/av1.Plo \
+	packetizer/$(DEPDIR)/av1_obu.Plo packetizer/$(DEPDIR)/copy.Plo \
 	packetizer/$(DEPDIR)/dirac.Plo packetizer/$(DEPDIR)/dts.Plo \
 	packetizer/$(DEPDIR)/dts_header.Plo \
 	packetizer/$(DEPDIR)/flac.Plo packetizer/$(DEPDIR)/h264.Plo \
@@ -6321,6 +6341,8 @@ am__depfiles_remade =  \
 	video_output/win32/$(DEPDIR)/events.Plo \
 	video_output/win32/$(DEPDIR)/inhibit.Plo \
 	video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-common.Plo \
+	video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_quad.Plo \
+	video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_shaders.Plo \
 	video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-direct3d11.Plo \
 	video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-events.Plo \
 	video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-sensors.Plo \
@@ -6515,7 +6537,7 @@ SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(libcvdsub_plugin_la_SOURCES) $(libcvpx_plugin_la_SOURCES) \
 	$(libd3d11_common_la_SOURCES) $(libd3d11va_plugin_la_SOURCES) \
 	$(libd3d9_common_la_SOURCES) $(libdaala_plugin_la_SOURCES) \
-	$(libdbus_plugin_la_SOURCES) \
+	$(libdav1d_plugin_la_SOURCES) $(libdbus_plugin_la_SOURCES) \
 	$(libdbus_screensaver_plugin_la_SOURCES) \
 	$(libdc1394_plugin_la_SOURCES) $(libdca_plugin_la_SOURCES) \
 	$(libdcp_plugin_la_SOURCES) $(libddummy_plugin_la_SOURCES) \
@@ -6659,6 +6681,7 @@ SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(liboss_plugin_la_SOURCES) \
 	$(libosx_notifications_plugin_la_SOURCES) \
 	$(libpacketizer_a52_plugin_la_SOURCES) \
+	$(libpacketizer_av1_plugin_la_SOURCES) \
 	$(libpacketizer_avparser_plugin_la_SOURCES) \
 	$(libpacketizer_copy_plugin_la_SOURCES) \
 	$(libpacketizer_dirac_plugin_la_SOURCES) \
@@ -6908,7 +6931,7 @@ DIST_SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(libcvdsub_plugin_la_SOURCES) $(libcvpx_plugin_la_SOURCES) \
 	$(libd3d11_common_la_SOURCES) $(libd3d11va_plugin_la_SOURCES) \
 	$(libd3d9_common_la_SOURCES) $(libdaala_plugin_la_SOURCES) \
-	$(libdbus_plugin_la_SOURCES) \
+	$(libdav1d_plugin_la_SOURCES) $(libdbus_plugin_la_SOURCES) \
 	$(libdbus_screensaver_plugin_la_SOURCES) \
 	$(libdc1394_plugin_la_SOURCES) $(libdca_plugin_la_SOURCES) \
 	$(libdcp_plugin_la_SOURCES) $(libddummy_plugin_la_SOURCES) \
@@ -7056,6 +7079,7 @@ DIST_SOURCES = $(liba52_plugin_la_SOURCES) $(libaa_plugin_la_SOURCES) \
 	$(liboss_plugin_la_SOURCES) \
 	$(libosx_notifications_plugin_la_SOURCES) \
 	$(libpacketizer_a52_plugin_la_SOURCES) \
+	$(libpacketizer_av1_plugin_la_SOURCES) \
 	$(libpacketizer_avparser_plugin_la_SOURCES) \
 	$(libpacketizer_copy_plugin_la_SOURCES) \
 	$(libpacketizer_dirac_plugin_la_SOURCES) \
@@ -7621,6 +7645,8 @@ am__dist_libmacosx_plugin_la_DATA_DIST =  \
 	gui/macosx/Resources/mainwindow_dark_yosemite/ys-volume-high_dark@2x.png \
 	gui/macosx/Resources/mainwindow_dark_yosemite/ys-volume-low_dark.png \
 	gui/macosx/Resources/mainwindow_dark_yosemite/ys-volume-low_dark@2x.png \
+	gui/macosx/Resources/mainwindow_mojave_dark/mj-dropzone-dark.png \
+	gui/macosx/Resources/mainwindow_mojave_dark/mj-dropzone-dark@2x.png \
 	gui/macosx/Resources/mainwindow_yosemite/ys-backward-3btns-pressed.png \
 	gui/macosx/Resources/mainwindow_yosemite/ys-backward-3btns-pressed@2x.png \
 	gui/macosx/Resources/mainwindow_yosemite/ys-backward-3btns.png \
@@ -7726,6 +7752,18 @@ am__dist_libmacosx_plugin_la_DATA_DIST =  \
 	gui/macosx/Resources/sidebar-icons/sidebar-playlist@2x.png \
 	gui/macosx/Resources/sidebar-icons/sidebar-podcast.png \
 	gui/macosx/Resources/sidebar-icons/sidebar-podcast@2x.png \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-local.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-movie.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-music.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-pictures.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-playlist.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-podcast.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-local.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-movie.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-music.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-pictures.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-playlist.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-podcast.pdf \
 	gui/macosx/Resources/sidebar-icons_yosemite/ys-sidebar-local.png \
 	gui/macosx/Resources/sidebar-icons_yosemite/ys-sidebar-local@2x.png \
 	gui/macosx/Resources/sidebar-icons_yosemite/ys-sidebar-movie.png \
@@ -8078,6 +8116,7 @@ CFLAGS_avahi = @CFLAGS_avahi@
 CFLAGS_caca = @CFLAGS_caca@
 CFLAGS_cdda = @CFLAGS_cdda@
 CFLAGS_daala = @CFLAGS_daala@
+CFLAGS_dav1d = @CFLAGS_dav1d@
 CFLAGS_dc1394 = @CFLAGS_dc1394@
 CFLAGS_dca = @CFLAGS_dca@
 CFLAGS_deinterlace = @CFLAGS_deinterlace@
@@ -8156,6 +8195,7 @@ CPPFLAGS_aribcam = @CPPFLAGS_aribcam@
 CPPFLAGS_avahi = @CPPFLAGS_avahi@
 CPPFLAGS_caca = @CPPFLAGS_caca@
 CPPFLAGS_daala = @CPPFLAGS_daala@
+CPPFLAGS_dav1d = @CPPFLAGS_dav1d@
 CPPFLAGS_dc1394 = @CPPFLAGS_dc1394@
 CPPFLAGS_dca = @CPPFLAGS_dca@
 CPPFLAGS_decklink = @CPPFLAGS_decklink@
@@ -8217,6 +8257,8 @@ CXXFLAGS_mod = @CXXFLAGS_mod@
 CYGPATH_W = @CYGPATH_W@
 DAALA_CFLAGS = @DAALA_CFLAGS@
 DAALA_LIBS = @DAALA_LIBS@
+DAV1D_CFLAGS = @DAV1D_CFLAGS@
+DAV1D_LIBS = @DAV1D_LIBS@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
 DC1394_CFLAGS = @DC1394_CFLAGS@
@@ -8353,6 +8395,7 @@ LIBS_caca = @LIBS_caca@
 LIBS_cdda = @LIBS_cdda@
 LIBS_crystalhd = @LIBS_crystalhd@
 LIBS_daala = @LIBS_daala@
+LIBS_dav1d = @LIBS_dav1d@
 LIBS_dc1394 = @LIBS_dc1394@
 LIBS_dca = @LIBS_dca@
 LIBS_dsm = @LIBS_dsm@
@@ -8464,6 +8507,7 @@ LTLIBcdda = @LTLIBcdda@
 LTLIBcrystalhd = @LTLIBcrystalhd@
 LTLIBcvpx = @LTLIBcvpx@
 LTLIBdaala = @LTLIBdaala@
+LTLIBdav1d = @LTLIBdav1d@
 LTLIBdc1394 = @LTLIBdc1394@
 LTLIBdca = @LTLIBdca@
 LTLIBdirect3d11 = @LTLIBdirect3d11@
@@ -8725,8 +8769,8 @@ WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
 X262_CFLAGS = @X262_CFLAGS@
 X262_LIBS = @X262_LIBS@
-X26410B_CFLAGS = @X26410B_CFLAGS@
-X26410B_LIBS = @X26410B_LIBS@
+X26410b_CFLAGS = @X26410b_CFLAGS@
+X26410b_LIBS = @X26410b_LIBS@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
 X265_CFLAGS = @X265_CFLAGS@
@@ -8892,17 +8936,18 @@ EXTRA_LTLIBRARIES = libaccess_qtsound_plugin.la libdc1394_plugin.la \
 	libomxil_plugin.la libomxil_vout_plugin.la libx265_plugin.la \
 	libx262_plugin.la libx264_plugin.la libx26410b_plugin.la \
 	libfdkaac_plugin.la libshine_plugin.la libvpx_plugin.la \
-	libaom_plugin.la libtwolame_plugin.la libcrystalhd_plugin.la \
-	libqsv_plugin.la libogg_plugin.la libmod_plugin.la \
-	libmpc_plugin.la libgme_plugin.la libsid_plugin.la \
-	libmkv_plugin.la libminimal_macosx_plugin.la $(am__append_140) \
-	libdirect3d11_filters_plugin.la libsecret_plugin.la \
-	libkwallet_plugin.la libtaglib_plugin.la libgnutls_plugin.la \
-	libxml_plugin.la libosx_notifications_plugin.la \
-	libnotify_plugin.la libavahi_plugin.la libmtp_plugin.la \
-	libupnp_plugin.la libudev_plugin.la libmicrodns_plugin.la \
-	libaribcam_plugin.la libarchive_plugin.la libsvg_plugin.la \
-	libswscale_plugin.la libchroma_omx_plugin.la libcvpx_plugin.la \
+	libaom_plugin.la libtwolame_plugin.la libdav1d_plugin.la \
+	libcrystalhd_plugin.la libqsv_plugin.la libogg_plugin.la \
+	libmod_plugin.la libmpc_plugin.la libgme_plugin.la \
+	libsid_plugin.la libmkv_plugin.la libminimal_macosx_plugin.la \
+	$(am__append_140) libdirect3d11_filters_plugin.la \
+	libsecret_plugin.la libkwallet_plugin.la libtaglib_plugin.la \
+	libgnutls_plugin.la libxml_plugin.la \
+	libosx_notifications_plugin.la libnotify_plugin.la \
+	libavahi_plugin.la libmtp_plugin.la libupnp_plugin.la \
+	libudev_plugin.la libmicrodns_plugin.la libaribcam_plugin.la \
+	libarchive_plugin.la libsvg_plugin.la libswscale_plugin.la \
+	libchroma_omx_plugin.la libcvpx_plugin.la \
 	libopencv_wrapper_plugin.la libpostproc_plugin.la \
 	libopencv_example_plugin.la libgles2_plugin.la \
 	$(am__append_229) libdirect3d11_plugin.la $(am__append_234) \
@@ -8987,7 +9032,7 @@ libpulsesrc_plugin_la_SOURCES = access/pulse.c
 libpulsesrc_plugin_la_CFLAGS = $(AM_CFLAGS) $(PULSE_CFLAGS)
 libpulsesrc_plugin_la_LIBADD = libvlc_pulse.la $(PULSE_LIBS)
 libaccess_qtsound_plugin_la_SOURCES = access/qtsound.m
-libaccess_qtsound_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)' -Wl,-framework,Foundation -Wl,-framework,QTKit -Wl,-framework,CoreAudio
+libaccess_qtsound_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)' -Wl,-framework,Foundation -Wl,-framework,QTKit -Wl,-framework,AVFoundation -Wl,-framework,CoreAudio
 libaccess_wasapi_plugin_la_SOURCES = access/wasapi.c
 libaccess_wasapi_plugin_la_LIBADD = $(LIBCOM) -lksuser
 
@@ -9075,7 +9120,9 @@ libdvdnav_plugin_la_CFLAGS = $(AM_CFLAGS) $(DVDNAV_CFLAGS)
 libdvdnav_plugin_la_LIBADD = $(DVDNAV_LIBS)
 libdvdnav_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)' \
 	$(am__append_26)
-libdvdread_plugin_la_SOURCES = access/dvdread.c demux/mpeg/ps.h demux/mpeg/pes.h
+libdvdread_plugin_la_SOURCES = access/dvdread.c demux/mpeg/ps.h demux/mpeg/pes.h \
+                               demux/moving_avg.h demux/timestamps_filter.h
+
 libdvdread_plugin_la_CFLAGS = $(AM_CFLAGS) $(DVDREAD_CFLAGS)
 libdvdread_plugin_la_LIBADD = $(DVDREAD_LIBS)
 libdvdread_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)' \
@@ -9110,7 +9157,9 @@ libftp_plugin_la_SOURCES = access/ftp.c
 libftp_plugin_la_LIBADD = $(SOCKET_LIBS)
 libhttp_plugin_la_SOURCES = access/http.c
 libhttp_plugin_la_LIBADD = $(SOCKET_LIBS)
-liblive555_plugin_la_SOURCES = access/live555.cpp access/mms/asf.c access/mms/buffer.c
+liblive555_plugin_la_SOURCES = access/live555.cpp access/mms/asf.c access/mms/buffer.c \
+                               access/live555_dtsgen.h
+
 liblive555_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_live555)
 liblive555_plugin_la_LIBADD = $(LIBS_live555) $(SOCKET_LIBS)
 liblive555_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)' \
@@ -9483,8 +9532,8 @@ codec_LTLIBRARIES = libddummy_plugin.la $(am__append_66) \
 	$(am__append_90) $(LTLIBomxil) $(LTLIBomxil_vout) \
 	$(am__append_92) $(LTLIBx265) $(LTLIBx262) $(LTLIBx264) \
 	$(LTLIBx26410b) $(LTLIBfdkaac) $(LTLIBshine) $(LTLIBvpx) \
-	$(LTLIBaom) $(LTLIBtwolame) $(LTLIBcrystalhd) $(LTLIBqsv) \
-	$(am__append_94) $(am__append_95)
+	$(LTLIBaom) $(LTLIBtwolame) $(LTLIBdav1d) $(LTLIBcrystalhd) \
+	$(LTLIBqsv) $(am__append_94) $(am__append_95)
 libddummy_plugin_la_SOURCES = codec/ddummy.c
 libedummy_plugin_la_SOURCES = codec/edummy.c
 
@@ -9796,7 +9845,9 @@ libvpx_plugin_la_CPPFLAGS = $(AM_CPPFLAGS)
 libvpx_plugin_la_CFLAGS = $(AM_CFLAGS) $(VPX_CFLAGS) $(CPPFLAGS_vpx)
 libvpx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)'
 libvpx_plugin_la_LIBADD = $(VPX_LIBS)
-libaom_plugin_la_SOURCES = codec/aom.c
+libaom_plugin_la_SOURCES = codec/aom.c \
+                           packetizer/iso_color_tables.h
+
 libaom_plugin_la_CPPFLAGS = $(AM_CPPFLAGS)
 libaom_plugin_la_CFLAGS = $(AM_CFLAGS) $(AOM_CFLAGS) $(CPPFLAGS_aom)
 libaom_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)'
@@ -9806,6 +9857,11 @@ libtwolame_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) -DLIBTWOLAME_STATIC
 libtwolame_plugin_la_CFLAGS = $(AM_CFLAGS) $(TWOLAME_CFLAGS)
 libtwolame_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)'
 libtwolame_plugin_la_LIBADD = $(TWOLAME_LIBS) $(LIBM)
+libdav1d_plugin_la_SOURCES = codec/dav1d.c
+libdav1d_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(DAV1D_CFLAGS)
+libdav1d_plugin_la_CFLAGS = $(AM_CFLAGS)
+libdav1d_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)'
+libdav1d_plugin_la_LIBADD = $(DAV1D_LIBS)
 
 ### Hardware encoders ###
 libcrystalhd_plugin_la_SOURCES = codec/crystalhd.c packetizer/h264_nal.c packetizer/h264_nal.h
@@ -9985,8 +10041,8 @@ libmkv_plugin_la_SOURCES = demux/mkv/util.hpp demux/mkv/util.cpp \
 	demux/mkv/stream_io_callback.hpp \
 	demux/mkv/stream_io_callback.cpp demux/mp4/libmp4.c \
 	demux/vobsub.h demux/mkv/mkv.hpp demux/mkv/mkv.cpp \
-	demux/windows_audio_commons.h packetizer/dts_header.h \
-	packetizer/dts_header.c
+	demux/av1_unpack.h demux/windows_audio_commons.h \
+	packetizer/dts_header.h packetizer/dts_header.c
 libmkv_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CFLAGS_mkv)
 libmkv_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(demuxdir)'
 libmkv_plugin_la_LIBADD = $(LIBS_mkv) $(am__append_108)
@@ -9994,10 +10050,11 @@ libmp4_plugin_la_SOURCES = demux/mp4/mp4.c demux/mp4/mp4.h \
                            demux/mp4/fragments.c demux/mp4/fragments.h \
                            demux/mp4/libmp4.c demux/mp4/libmp4.h \
                            demux/mp4/languages.h \
+                           demux/av1_unpack.h \
                            demux/asf/asfpacket.c demux/asf/asfpacket.h \
                            demux/mp4/avci.h \
-                           demux/mp4/color_config.h \
                            demux/mp4/essetup.c demux/mp4/meta.c \
+                           packetizer/iso_color_tables.h \
                            meta_engine/ID3Genres.h
 
 libmp4_plugin_la_LIBADD = $(LIBM) $(am__append_109)
@@ -10752,6 +10809,8 @@ libmacosx_plugin_la_RES =  \
 	gui/macosx/Resources/mainwindow_dark_yosemite/ys-volume-high_dark@2x.png \
 	gui/macosx/Resources/mainwindow_dark_yosemite/ys-volume-low_dark.png \
 	gui/macosx/Resources/mainwindow_dark_yosemite/ys-volume-low_dark@2x.png \
+	gui/macosx/Resources/mainwindow_mojave_dark/mj-dropzone-dark.png \
+	gui/macosx/Resources/mainwindow_mojave_dark/mj-dropzone-dark@2x.png \
 	gui/macosx/Resources/mainwindow_yosemite/ys-backward-3btns-pressed.png \
 	gui/macosx/Resources/mainwindow_yosemite/ys-backward-3btns-pressed@2x.png \
 	gui/macosx/Resources/mainwindow_yosemite/ys-backward-3btns.png \
@@ -10857,6 +10916,18 @@ libmacosx_plugin_la_RES =  \
 	gui/macosx/Resources/sidebar-icons/sidebar-playlist@2x.png \
 	gui/macosx/Resources/sidebar-icons/sidebar-podcast.png \
 	gui/macosx/Resources/sidebar-icons/sidebar-podcast@2x.png \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-local.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-movie.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-music.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-pictures.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-playlist.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-podcast.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-local.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-movie.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-music.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-pictures.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-playlist.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-podcast.pdf \
 	gui/macosx/Resources/sidebar-icons_yosemite/ys-sidebar-local.png \
 	gui/macosx/Resources/sidebar-icons_yosemite/ys-sidebar-local@2x.png \
 	gui/macosx/Resources/sidebar-icons_yosemite/ys-sidebar-movie.png \
@@ -11583,6 +11654,11 @@ libnotify_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(notifydir)'
 libnotify_plugin_la_LIBADD = $(NOTIFY_LIBS)
 notify_LTLIBRARIES = $(LTLIBosx_notifications) $(LTLIBnotify)
 packetizerdir = $(pluginsdir)/packetizer
+libpacketizer_av1_plugin_la_SOURCES = packetizer/av1.c \
+                                      packetizer/av1.h \
+                                      packetizer/av1_obu.c \
+                                      packetizer/av1_obu.h
+
 libpacketizer_copy_plugin_la_SOURCES = packetizer/copy.c
 libpacketizer_mpegvideo_plugin_la_SOURCES = packetizer/mpegvideo.c
 libpacketizer_mpeg4video_plugin_la_SOURCES = packetizer/mpeg4video.c
@@ -11619,7 +11695,8 @@ libpacketizer_avparser_plugin_la_SOURCES = packetizer/avparser.c \
 
 libpacketizer_avparser_plugin_la_CFLAGS = $(AVCODEC_CFLAGS) $(AVUTIL_CFLAGS) $(AM_CFLAGS)
 libpacketizer_avparser_plugin_la_LIBADD = $(AVCODEC_LIBS) $(AVUTIL_LIBS) $(LIBM) libavcodec_common.la
-packetizer_LTLIBRARIES = libpacketizer_mpegvideo_plugin.la \
+packetizer_LTLIBRARIES = libpacketizer_av1_plugin.la \
+	libpacketizer_mpegvideo_plugin.la \
 	libpacketizer_mpeg4video_plugin.la \
 	libpacketizer_mpeg4audio_plugin.la \
 	libpacketizer_mpegaudio_plugin.la libpacketizer_h264_plugin.la \
@@ -12177,8 +12254,11 @@ libdirect3d9_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
 libdirect3d9_plugin_la_LIBADD = libchroma_copy.la libd3d9_common.la -lgdi32 $(LIBCOM) -luuid
 libdirect3d9_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 libdirect3d11_plugin_la_SOURCES = video_output/win32/direct3d11.c \
-	video_output/win32/common.c video_output/win32/common.h \
-	$(am__append_230)
+	video_output/win32/d3d11_quad.c \
+	video_output/win32/d3d11_quad.h \
+	video_output/win32/d3d11_shaders.c \
+	video_output/win32/d3d11_shaders.h video_output/win32/common.c \
+	video_output/win32/common.h $(am__append_230)
 libdirect3d11_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
  -DMODULE_NAME_IS_direct3d11
 
@@ -14851,6 +14931,11 @@ codec/libdaala_plugin_la-daala.lo: codec/$(am__dirstamp) \
 
 libdaala_plugin.la: $(libdaala_plugin_la_OBJECTS) $(libdaala_plugin_la_DEPENDENCIES) $(EXTRA_libdaala_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libdaala_plugin_la_LINK)  $(libdaala_plugin_la_OBJECTS) $(libdaala_plugin_la_LIBADD) $(LIBS)
+codec/libdav1d_plugin_la-dav1d.lo: codec/$(am__dirstamp) \
+	codec/$(DEPDIR)/$(am__dirstamp)
+
+libdav1d_plugin.la: $(libdav1d_plugin_la_OBJECTS) $(libdav1d_plugin_la_DEPENDENCIES) $(EXTRA_libdav1d_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(libdav1d_plugin_la_LINK)  $(libdav1d_plugin_la_OBJECTS) $(libdav1d_plugin_la_LIBADD) $(LIBS)
 control/dbus/$(am__dirstamp):
 	@$(MKDIR_P) control/dbus
 	@: > control/dbus/$(am__dirstamp)
@@ -15030,6 +15115,12 @@ video_output/win32/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) video_output/win32/$(DEPDIR)
 	@: > video_output/win32/$(DEPDIR)/$(am__dirstamp)
 video_output/win32/libdirect3d11_plugin_la-direct3d11.lo:  \
+	video_output/win32/$(am__dirstamp) \
+	video_output/win32/$(DEPDIR)/$(am__dirstamp)
+video_output/win32/libdirect3d11_plugin_la-d3d11_quad.lo:  \
+	video_output/win32/$(am__dirstamp) \
+	video_output/win32/$(DEPDIR)/$(am__dirstamp)
+video_output/win32/libdirect3d11_plugin_la-d3d11_shaders.lo:  \
 	video_output/win32/$(am__dirstamp) \
 	video_output/win32/$(DEPDIR)/$(am__dirstamp)
 video_output/win32/libdirect3d11_plugin_la-common.lo:  \
@@ -16773,6 +16864,13 @@ packetizer/a52.lo: packetizer/$(am__dirstamp) \
 
 libpacketizer_a52_plugin.la: $(libpacketizer_a52_plugin_la_OBJECTS) $(libpacketizer_a52_plugin_la_DEPENDENCIES) $(EXTRA_libpacketizer_a52_plugin_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(LINK) -rpath $(packetizerdir) $(libpacketizer_a52_plugin_la_OBJECTS) $(libpacketizer_a52_plugin_la_LIBADD) $(LIBS)
+packetizer/av1.lo: packetizer/$(am__dirstamp) \
+	packetizer/$(DEPDIR)/$(am__dirstamp)
+packetizer/av1_obu.lo: packetizer/$(am__dirstamp) \
+	packetizer/$(DEPDIR)/$(am__dirstamp)
+
+libpacketizer_av1_plugin.la: $(libpacketizer_av1_plugin_la_OBJECTS) $(libpacketizer_av1_plugin_la_DEPENDENCIES) $(EXTRA_libpacketizer_av1_plugin_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(LINK) -rpath $(packetizerdir) $(libpacketizer_av1_plugin_la_OBJECTS) $(libpacketizer_av1_plugin_la_LIBADD) $(LIBS)
 packetizer/libpacketizer_avparser_plugin_la-avparser.lo:  \
 	packetizer/$(am__dirstamp) \
 	packetizer/$(DEPDIR)/$(am__dirstamp)
@@ -19696,6 +19794,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/libaom_plugin_la-aom.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/libcvpx_plugin_la-vt_utils.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/libdaala_plugin_la-daala.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/libdav1d_plugin_la-dav1d.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/libdca_plugin_la-dca.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/libfaad_plugin_la-faad.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@codec/$(DEPDIR)/libfdkaac_plugin_la-fdkaac.Plo@am__quote@ # am--include-marker
@@ -20459,6 +20558,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@notify/$(DEPDIR)/libnotify_plugin_la-notify.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@notify/$(DEPDIR)/libosx_notifications_plugin_la-osx_notifications.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@packetizer/$(DEPDIR)/a52.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@packetizer/$(DEPDIR)/av1.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@packetizer/$(DEPDIR)/av1_obu.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@packetizer/$(DEPDIR)/copy.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@packetizer/$(DEPDIR)/dirac.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@packetizer/$(DEPDIR)/dts.Plo@am__quote@ # am--include-marker
@@ -20726,6 +20827,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/events.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/inhibit.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-common.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_quad.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_shaders.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-direct3d11.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-events.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-sensors.Plo@am__quote@ # am--include-marker
@@ -21249,6 +21352,13 @@ codec/libdaala_plugin_la-daala.lo: codec/daala.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdaala_plugin_la_CFLAGS) $(CFLAGS) -c -o codec/libdaala_plugin_la-daala.lo `test -f 'codec/daala.c' || echo '$(srcdir)/'`codec/daala.c
 
+codec/libdav1d_plugin_la-dav1d.lo: codec/dav1d.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdav1d_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libdav1d_plugin_la_CFLAGS) $(CFLAGS) -MT codec/libdav1d_plugin_la-dav1d.lo -MD -MP -MF codec/$(DEPDIR)/libdav1d_plugin_la-dav1d.Tpo -c -o codec/libdav1d_plugin_la-dav1d.lo `test -f 'codec/dav1d.c' || echo '$(srcdir)/'`codec/dav1d.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) codec/$(DEPDIR)/libdav1d_plugin_la-dav1d.Tpo codec/$(DEPDIR)/libdav1d_plugin_la-dav1d.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='codec/dav1d.c' object='codec/libdav1d_plugin_la-dav1d.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdav1d_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libdav1d_plugin_la_CFLAGS) $(CFLAGS) -c -o codec/libdav1d_plugin_la-dav1d.lo `test -f 'codec/dav1d.c' || echo '$(srcdir)/'`codec/dav1d.c
+
 control/dbus/libdbus_plugin_la-dbus_root.lo: control/dbus/dbus_root.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdbus_plugin_la_CFLAGS) $(CFLAGS) -MT control/dbus/libdbus_plugin_la-dbus_root.lo -MD -MP -MF control/dbus/$(DEPDIR)/libdbus_plugin_la-dbus_root.Tpo -c -o control/dbus/libdbus_plugin_la-dbus_root.lo `test -f 'control/dbus/dbus_root.c' || echo '$(srcdir)/'`control/dbus/dbus_root.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) control/dbus/$(DEPDIR)/libdbus_plugin_la-dbus_root.Tpo control/dbus/$(DEPDIR)/libdbus_plugin_la-dbus_root.Plo
@@ -21381,6 +21491,20 @@ video_output/win32/libdirect3d11_plugin_la-direct3d11.lo: video_output/win32/dir
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/win32/direct3d11.c' object='video_output/win32/libdirect3d11_plugin_la-direct3d11.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdirect3d11_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/win32/libdirect3d11_plugin_la-direct3d11.lo `test -f 'video_output/win32/direct3d11.c' || echo '$(srcdir)/'`video_output/win32/direct3d11.c
+
+video_output/win32/libdirect3d11_plugin_la-d3d11_quad.lo: video_output/win32/d3d11_quad.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdirect3d11_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/win32/libdirect3d11_plugin_la-d3d11_quad.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_quad.Tpo -c -o video_output/win32/libdirect3d11_plugin_la-d3d11_quad.lo `test -f 'video_output/win32/d3d11_quad.c' || echo '$(srcdir)/'`video_output/win32/d3d11_quad.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_quad.Tpo video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_quad.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/win32/d3d11_quad.c' object='video_output/win32/libdirect3d11_plugin_la-d3d11_quad.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdirect3d11_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/win32/libdirect3d11_plugin_la-d3d11_quad.lo `test -f 'video_output/win32/d3d11_quad.c' || echo '$(srcdir)/'`video_output/win32/d3d11_quad.c
+
+video_output/win32/libdirect3d11_plugin_la-d3d11_shaders.lo: video_output/win32/d3d11_shaders.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdirect3d11_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/win32/libdirect3d11_plugin_la-d3d11_shaders.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_shaders.Tpo -c -o video_output/win32/libdirect3d11_plugin_la-d3d11_shaders.lo `test -f 'video_output/win32/d3d11_shaders.c' || echo '$(srcdir)/'`video_output/win32/d3d11_shaders.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_shaders.Tpo video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_shaders.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_output/win32/d3d11_shaders.c' object='video_output/win32/libdirect3d11_plugin_la-d3d11_shaders.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdirect3d11_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_output/win32/libdirect3d11_plugin_la-d3d11_shaders.lo `test -f 'video_output/win32/d3d11_shaders.c' || echo '$(srcdir)/'`video_output/win32/d3d11_shaders.c
 
 video_output/win32/libdirect3d11_plugin_la-common.lo: video_output/win32/common.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libdirect3d11_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_output/win32/libdirect3d11_plugin_la-common.lo -MD -MP -MF video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-common.Tpo -c -o video_output/win32/libdirect3d11_plugin_la-common.lo `test -f 'video_output/win32/common.c' || echo '$(srcdir)/'`video_output/win32/common.c
@@ -28313,6 +28437,7 @@ distclean: distclean-recursive
 	-rm -f codec/$(DEPDIR)/libaom_plugin_la-aom.Plo
 	-rm -f codec/$(DEPDIR)/libcvpx_plugin_la-vt_utils.Plo
 	-rm -f codec/$(DEPDIR)/libdaala_plugin_la-daala.Plo
+	-rm -f codec/$(DEPDIR)/libdav1d_plugin_la-dav1d.Plo
 	-rm -f codec/$(DEPDIR)/libdca_plugin_la-dca.Plo
 	-rm -f codec/$(DEPDIR)/libfaad_plugin_la-faad.Plo
 	-rm -f codec/$(DEPDIR)/libfdkaac_plugin_la-fdkaac.Plo
@@ -29076,6 +29201,8 @@ distclean: distclean-recursive
 	-rm -f notify/$(DEPDIR)/libnotify_plugin_la-notify.Plo
 	-rm -f notify/$(DEPDIR)/libosx_notifications_plugin_la-osx_notifications.Plo
 	-rm -f packetizer/$(DEPDIR)/a52.Plo
+	-rm -f packetizer/$(DEPDIR)/av1.Plo
+	-rm -f packetizer/$(DEPDIR)/av1_obu.Plo
 	-rm -f packetizer/$(DEPDIR)/copy.Plo
 	-rm -f packetizer/$(DEPDIR)/dirac.Plo
 	-rm -f packetizer/$(DEPDIR)/dts.Plo
@@ -29343,6 +29470,8 @@ distclean: distclean-recursive
 	-rm -f video_output/win32/$(DEPDIR)/events.Plo
 	-rm -f video_output/win32/$(DEPDIR)/inhibit.Plo
 	-rm -f video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-common.Plo
+	-rm -f video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_quad.Plo
+	-rm -f video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_shaders.Plo
 	-rm -f video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-direct3d11.Plo
 	-rm -f video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-events.Plo
 	-rm -f video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-sensors.Plo
@@ -29667,6 +29796,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f codec/$(DEPDIR)/libaom_plugin_la-aom.Plo
 	-rm -f codec/$(DEPDIR)/libcvpx_plugin_la-vt_utils.Plo
 	-rm -f codec/$(DEPDIR)/libdaala_plugin_la-daala.Plo
+	-rm -f codec/$(DEPDIR)/libdav1d_plugin_la-dav1d.Plo
 	-rm -f codec/$(DEPDIR)/libdca_plugin_la-dca.Plo
 	-rm -f codec/$(DEPDIR)/libfaad_plugin_la-faad.Plo
 	-rm -f codec/$(DEPDIR)/libfdkaac_plugin_la-fdkaac.Plo
@@ -30430,6 +30560,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f notify/$(DEPDIR)/libnotify_plugin_la-notify.Plo
 	-rm -f notify/$(DEPDIR)/libosx_notifications_plugin_la-osx_notifications.Plo
 	-rm -f packetizer/$(DEPDIR)/a52.Plo
+	-rm -f packetizer/$(DEPDIR)/av1.Plo
+	-rm -f packetizer/$(DEPDIR)/av1_obu.Plo
 	-rm -f packetizer/$(DEPDIR)/copy.Plo
 	-rm -f packetizer/$(DEPDIR)/dirac.Plo
 	-rm -f packetizer/$(DEPDIR)/dts.Plo
@@ -30697,6 +30829,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f video_output/win32/$(DEPDIR)/events.Plo
 	-rm -f video_output/win32/$(DEPDIR)/inhibit.Plo
 	-rm -f video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-common.Plo
+	-rm -f video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_quad.Plo
+	-rm -f video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-d3d11_shaders.Plo
 	-rm -f video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-direct3d11.Plo
 	-rm -f video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-events.Plo
 	-rm -f video_output/win32/$(DEPDIR)/libdirect3d11_plugin_la-sensors.Plo

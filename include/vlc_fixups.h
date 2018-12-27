@@ -318,6 +318,11 @@ void *aligned_alloc(size_t, size_t);
 # define HAVE_USELOCALE
 #endif
 
+#if !defined(HAVE_NEWLOCALE) && defined(HAVE_CXX_LOCALE_T) && defined(__cplusplus)
+# include <locale>
+# define HAVE_NEWLOCALE
+#endif
+
 /* locale.h */
 #ifndef HAVE_USELOCALE
 # ifndef HAVE_NEWLOCALE
@@ -412,11 +417,13 @@ int poll (struct pollfd *, unsigned, int);
 
 #ifndef HAVE_IF_NAMEINDEX
 #include <errno.h>
+# ifndef HAVE_STRUCT_IF_NAMEINDEX
 struct if_nameindex
 {
     unsigned if_index;
     char    *if_name;
 };
+# endif
 # ifndef HAVE_IF_NAMETOINDEX
 #  define if_nametoindex(name)   atoi(name)
 # endif
@@ -486,6 +493,8 @@ void *tsearch( const void *key, void **rootp, int(*cmp)(const void *, const void
 void *tfind( const void *key, const void **rootp, int(*cmp)(const void *, const void *) );
 void *tdelete( const void *key, void **rootp, int(*cmp)(const void *, const void *) );
 void twalk( const void *root, void(*action)(const void *nodep, VISIT which, int depth) );
+void *lfind( const void *key, const void *base, size_t *nmemb,
+             size_t size, int(*cmp)(const void *, const void *) );
 #endif /* HAVE_SEARCH_H */
 #ifndef HAVE_TDESTROY
 void tdestroy( void *root, void (*free_node)(void *nodep) );
