@@ -2,7 +2,7 @@
  * sap.c : SAP announce handler
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: ee5312eb7d8f0001277a24752de01cd75a041139 $
+ * $Id: 2b5b0e13a2bcb20a2ae91f907c1db41971b0b67d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -79,7 +79,7 @@ static vlc_mutex_t sap_mutex = VLC_STATIC_MUTEX;
 #define MIN_INTERVAL 2
 #define MAX_INTERVAL 300
 
-static void *RunThread (void *);
+noreturn static void *RunThread (void *);
 
 static sap_address_t *AddressCreate (vlc_object_t *obj, const char *group)
 {

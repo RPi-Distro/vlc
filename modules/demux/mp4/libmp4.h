@@ -243,8 +243,10 @@ typedef int64_t stime_t;
 #define ATOM_WMV3 VLC_FOURCC( 'W', 'M', 'V', '3' )
 #define ATOM_WVC1 VLC_FOURCC( 'W', 'V', 'C', '1' )
 
+#define ATOM_av01 VLC_FOURCC( 'a', 'v', '0', '1' )
 #define ATOM_avc1 VLC_FOURCC( 'a', 'v', 'c', '1' )
 #define ATOM_avc3 VLC_FOURCC( 'a', 'v', 'c', '3' )
+#define ATOM_av1C VLC_FOURCC( 'a', 'v', '1', 'C' )
 #define ATOM_avcC VLC_FOURCC( 'a', 'v', 'c', 'C' )
 #define ATOM_vpcC VLC_FOURCC( 'v', 'p', 'c', 'C' )
 #define ATOM_m4ds VLC_FOURCC( 'm', '4', 'd', 's' )
@@ -1273,6 +1275,17 @@ typedef struct
 
 typedef struct
 {
+    uint8_t i_profile;
+    uint8_t i_level;
+    uint8_t i_presentation_delay;
+
+    size_t   i_av1C;
+    uint8_t *p_av1C;
+
+} MP4_Box_data_av1C_t;
+
+typedef struct
+{
     uint8_t i_version;
     uint8_t i_profile;
     uint8_t i_level;
@@ -1682,6 +1695,7 @@ typedef union MP4_Box_data_s
     MP4_Box_data_sample_hint_t *p_sample_hint;
 
     MP4_Box_data_esds_t *p_esds;
+    MP4_Box_data_av1C_t *p_av1C;
     MP4_Box_data_avcC_t *p_avcC;
     MP4_Box_data_dac3_t *p_dac3;
     MP4_Box_data_dec3_t *p_dec3;

@@ -2,7 +2,7 @@
  * vout_subpictures.c : subpicture management functions
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 1c6f90da84af9e42d894ce140ef259b09a654596 $
+ * $Id: 41fe8d5159025df2d9cde99cdf4278f25ab30932 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -549,6 +549,10 @@ static void SpuSelectSubpictures(spu_t *spu,
         if (channel_count <= i)
             channel[channel_count++] = i_channel;
     }
+
+    /* Ensure a 1 pass garbage collection for rejected subpictures */
+    if(channel_count == 0)
+        channel[channel_count++] = VOUT_SPU_CHANNEL_INVALID;
 
     /* Fill up the subpicture_array arrays with relevant pictures */
     for (int i = 0; i < channel_count; i++) {
@@ -1652,7 +1656,7 @@ void spu_ClearChannel(spu_t *spu, int channel)
         if (subpic->i_channel != channel && (channel != -1 || subpic->i_channel == VOUT_SPU_CHANNEL_OSD))
             continue;
 
-        /* You cannot delete subpicture outside of spu_SortSubpictures */
+        /* You cannot delete subpicture outside of SpuSelectSubpictures */
         entry->reject = true;
     }
 

@@ -2,7 +2,7 @@
  * VLCVolumeSliderCell.m
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: 2bd98fd6b57fa5072072ccba5696ca66f4cb8882 $
+ * $Id: 3477126b5aab9a52ecc7ba70ac4e20a9fd0a68d3 $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -21,8 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-
 #import "VLCVolumeSliderCell.h"
+#import "CompatibilityFixes.h"
 
 @interface VLCVolumeSliderCell () {
     BOOL _isRTL;
@@ -68,6 +68,11 @@
                       _gradientColor, 0.0,
                       [_gradientColor blendedColorWithFraction:0.5 ofColor:_gradientColor2], 0.60,
                       _gradientColor2, 1.0, nil];
+    _knobGradientAngleHighlighted = 270;
+    _knobGradientAngle = 90;
+
+    // Reset gradient in case it was set before
+    _knobGradient = nil;
 
     // Shadow Declarations
     _knobShadow = [[NSShadow alloc] init];
@@ -87,14 +92,25 @@
 - (void)setSliderStyleDark
 {
     // Color Declarations
-    _gradientColor = [NSColor colorWithCalibratedRed: 0.24 green: 0.24 blue: 0.24 alpha: 1];
+    if (OSX_MOJAVE_AND_HIGHER) {
+        _gradientColor = [NSColor colorWithCalibratedRed: 0.20 green: 0.20 blue: 0.20 alpha: 1];
+        _knobFillColor = [NSColor colorWithCalibratedRed: 0.81 green: 0.81 blue: 0.81 alpha: 1];
+        _activeKnobFillColor = [NSColor colorWithCalibratedRed: 0.76 green: 0.76 blue: 0.76 alpha: 1];
+        _knobStrokeColor = [NSColor colorWithCalibratedRed:0.29 green:0.29 blue:0.29 alpha:1];
+        _knobGradientAngleHighlighted = 90;
+        _knobGradientAngle = 270;
+    } else {
+        _gradientColor = [NSColor colorWithCalibratedRed: 0.24 green: 0.24 blue: 0.24 alpha: 1];
+        _knobFillColor = [NSColor colorWithCalibratedRed:0.7 green:0.7 blue:0.7 alpha: 1];
+        _activeKnobFillColor = [NSColor colorWithCalibratedRed: 0.95 green: 0.95 blue: 0.95 alpha: 1];
+        _knobStrokeColor = [NSColor colorWithCalibratedRed:0 green:0 blue:0 alpha:1];
+        _knobGradientAngleHighlighted = 270;
+        _knobGradientAngle = 90;
+    }
     _gradientColor2 = [NSColor colorWithCalibratedRed: 0.15 green: 0.15 blue: 0.15 alpha: 1];
     _trackStrokeColor = [NSColor colorWithCalibratedRed: 0.23 green: 0.23 blue: 0.23 alpha: 1];
     _filledTrackColor = [NSColor colorWithCalibratedRed: 0.15 green: 0.15 blue: 0.15 alpha: 1];
-    _knobFillColor = [NSColor colorWithCalibratedRed:0.7 green:0.7 blue:0.7 alpha: 1];
-    _activeKnobFillColor = [NSColor colorWithCalibratedRed: 0.95 green: 0.95 blue: 0.95 alpha: 1];
     _shadowColor = [NSColor colorWithCalibratedRed: 0.32 green: 0.32 blue: 0.32 alpha: 1];
-    _knobStrokeColor = [NSColor colorWithCalibratedRed:0 green:0 blue:0 alpha:1];
 
     NSColor* knobGradientColor = [NSColor colorWithSRGBRed: 0.15 green: 0.15 blue: 0.15 alpha: 1];
     NSColor* knobGradientColor2 = [NSColor colorWithSRGBRed: 0.30 green: 0.30 blue: 0.30 alpha: 1];
@@ -130,13 +146,13 @@
     NSBezierPath* knobPath = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(knobRect, 1.0, 1.0)];
     if (self.isHighlighted) {
         if (_knobGradient) {
-            [_knobGradient drawInBezierPath:knobPath angle:270];
+            [_knobGradient drawInBezierPath:knobPath angle:_knobGradientAngleHighlighted];
         } else {
             [_activeKnobFillColor setFill];
         }
     } else {
         if (_knobGradient) {
-            [_knobGradient drawInBezierPath:knobPath angle:90];
+            [_knobGradient drawInBezierPath:knobPath angle:_knobGradientAngle];
         } else {
             [_knobFillColor setFill];
         }

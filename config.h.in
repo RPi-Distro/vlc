@@ -151,6 +151,9 @@
 /* define if the compiler supports basic C++11 syntax */
 #undef HAVE_CXX11
 
+/* Define to 1 if C++ headers define locale_t */
+#undef HAVE_CXX_LOCALE_T
+
 /* Define to 1 if you have the <d3d11.h> header file. */
 #undef HAVE_D3D11_H
 
@@ -304,6 +307,9 @@
 
 /* Define to 1 if you have the <lauxlib.h> header file. */
 #undef HAVE_LAUXLIB_H
+
+/* Define to 1 if you have the `lfind' function. */
+#undef HAVE_LFIND
 
 /* Define to 1 if you have the anl library */
 #undef HAVE_LIBANL
@@ -591,6 +597,9 @@
 
 /* Define to 1 if you have the `strtoll' function. */
 #undef HAVE_STRTOLL
+
+/* Define to 1 if the system has the type `struct if_nameindex'. */
+#undef HAVE_STRUCT_IF_NAMEINDEX
 
 /* Define to 1 if the system has the type `struct pollfd'. */
 #undef HAVE_STRUCT_POLLFD

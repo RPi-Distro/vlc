@@ -2,7 +2,7 @@
  * VLCDefaultValueSliderCell.m: SliderCell subclass for VLCDefaultValueSlider
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: b46f9d4cbf42b94370898e734c4e776d7c723286 $
+ * $Id: 4bec1b52b50632e314cbe3d3faa6da20a070a0c4 $
  *
  * Authors: Marvin Scholz <epirat07 -at- gmail -dot- com>
  *
@@ -66,7 +66,7 @@
 
 - (void)setDefaultValue:(double)value
 {
-    if (value > _maxValue || value < _minValue)
+    if (value > self.maxValue || value < self.minValue)
         value = DBL_MAX;
 
     if (_defaultValue == DBL_MAX && value != DBL_MAX) {
@@ -127,18 +127,19 @@
 - (NSRect)knobRectFlipped:(BOOL)flipped forValue:(double)doubleValue
  {
      NSRect resultRect;
+     NSRect trackRect = self.trackRect;
      double val = [self normalizedValue:doubleValue] / 100;
 
      if (self.isVertical) {
          resultRect.origin.x = -1;
-         resultRect.origin.y = (NSHeight(_trackRect) - self.knobThickness) * val;
+         resultRect.origin.y = (NSHeight(trackRect) - self.knobThickness) * val;
          if (_isRTL)
-             resultRect.origin.y = (NSHeight(_trackRect) - self.knobThickness) - resultRect.origin.y;
+             resultRect.origin.y = (NSHeight(trackRect) - self.knobThickness) - resultRect.origin.y;
      } else {
-         resultRect.origin.x = (NSWidth(_trackRect) - self.knobThickness) * val;
+         resultRect.origin.x = (NSWidth(trackRect) - self.knobThickness) * val;
          resultRect.origin.y = -1;
          if (_isRTL)
-             resultRect.origin.x = (NSWidth(_trackRect) - self.knobThickness) - resultRect.origin.x;
+             resultRect.origin.x = (NSWidth(trackRect) - self.knobThickness) - resultRect.origin.x;
      }
 
      resultRect.size.height = self.knobThickness;
@@ -227,7 +228,7 @@
     BOOL sliderMovingForward = (oldValue > newValue) ? NO : YES;
 
     // Claculate snap-threshhold
-    double thresh = 100 * (self.knobThickness/3) / _trackRect.size.width;
+    double thresh = 100 * (self.knobThickness/3) / self.trackRect.size.width;
 
     // Snap to default value
     if (_snapsToDefault && ABS(newValue - _normalizedDefaultValue) < thresh) {

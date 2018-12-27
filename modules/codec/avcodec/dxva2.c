@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: ab4cdd9b85553cb9275ec39b2a601e127f7faa94 $
+ * $Id: 6116fa3e21b812caff8b3c65e5f2a1c4cadacc4d $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -92,7 +92,7 @@ typedef struct {
 static const d3d9_format_t d3d_formats[] = {
     { "YV12",   MAKEFOURCC('Y','V','1','2'),    VLC_CODEC_YV12 },
     { "NV12",   MAKEFOURCC('N','V','1','2'),    VLC_CODEC_NV12 },
-    { "IMC3",   MAKEFOURCC('I','M','C','3'),    VLC_CODEC_YV12 },
+    //{ "IMC3",   MAKEFOURCC('I','M','C','3'),    VLC_CODEC_YV12 },
     { "P010",   MAKEFOURCC('P','0','1','0'),    VLC_CODEC_P010 },
 
     { NULL, 0, 0 }
@@ -376,7 +376,7 @@ static char *DxDescribe(vlc_va_sys_t *sys)
     }
 
     char *description;
-    if (asprintf(&description, "DXVA2 (%.*s, vendor %s(%lu), device %lu, revision %lu)",
+    if (asprintf(&description, "DXVA2 (%.*s, vendor %s(%lx), device %lx, revision %lx)",
                  (int)sizeof(d3dai.Description), d3dai.Description,
                  DxgiVendorStr(d3dai.VendorId), d3dai.VendorId, d3dai.DeviceId, d3dai.Revision) < 0)
         return NULL;

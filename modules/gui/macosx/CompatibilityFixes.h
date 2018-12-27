@@ -2,7 +2,7 @@
  * CompatibilityFixes.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2017 VLC authors and VideoLAN
- * $Id: 069aefd8d702a0a2df74852f54ee0c03dfd6a2cd $
+ * $Id: c098ad7b9559e8f4324fca9cf2b7c2907795fbf7 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Marvin Scholz <epirat07 -at- gmail -dot- com>
@@ -24,6 +24,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark -
 #pragma OS detection code
 #define OSX_LION_AND_HIGHER (NSAppKitVersionNumber >= 1115.2)
@@ -33,7 +35,7 @@
 #define OSX_EL_CAPITAN_AND_HIGHER (NSAppKitVersionNumber >= 1404)
 #define OSX_SIERRA_AND_HIGHER (NSAppKitVersionNumber >= 1485)
 #define OSX_HIGH_SIERRA_AND_HIGHER (NSAppKitVersionNumber >= 1560)
-
+#define OSX_MOJAVE_AND_HIGHER (NSAppKitVersionNumber >= 1639.10)
 
 // Sierra only APIs
 #ifndef MAC_OS_X_VERSION_10_12
@@ -58,3 +60,24 @@ typedef NSUInteger NSWindowStyleMask;
 
 void swapoutOverride(Class _Nonnull cls, SEL _Nonnull selector);
 
+@interface NSColor(VLCAdditions)
+
+@property(class, strong, readonly) NSColor * _Nonnull VLCSecondaryLabelColor;
+
+@end
+
+#ifndef MAC_OS_X_VERSION_10_14
+
+extern NSString *const NSAppearanceNameDarkAqua;
+
+@interface NSApplication (NSAppearanceCustomization)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability"
+@property (nullable, strong) NSAppearance *appearance;
+@property (readonly, strong) NSAppearance *effectiveAppearance;
+#pragma clang diagnostic pop
+@end
+
+#endif
+
+NS_ASSUME_NONNULL_END

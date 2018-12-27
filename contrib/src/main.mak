@@ -79,6 +79,9 @@ endif
 ifneq ($(findstring $(origin WIDL),undefined default),)
 WIDL := widl
 endif
+ifneq ($(findstring $(origin WINDRES),undefined default),)
+WINDRES := windres
+endif
 else
 ifneq ($(findstring $(origin CC),undefined default),)
 CC := $(HOST)-gcc
@@ -100,6 +103,9 @@ STRIP := $(HOST)-strip
 endif
 ifneq ($(findstring $(origin WIDL),undefined default),)
 WIDL := $(HOST)-widl
+endif
+ifneq ($(findstring $(origin WINDRES),undefined default),)
+WINDRES := $(HOST)-windres
 endif
 endif
 
@@ -139,6 +145,9 @@ endif
 ifdef HAVE_WIN32
 ifneq ($(shell $(CC) $(CFLAGS) -E -dM -include _mingw.h - < /dev/null | grep -E __MINGW64_VERSION_MAJOR),)
 HAVE_MINGW_W64 := 1
+endif
+ifneq ($(findstring clang, $(shell $(CC) --version)),)
+HAVE_CLANG := 1
 endif
 endif
 
@@ -280,7 +289,7 @@ HOSTTOOLS := \
 	CC="$(CC)" CXX="$(CXX)" LD="$(LD)" \
 	AR="$(AR)" CCAS="$(CCAS)" RANLIB="$(RANLIB)" STRIP="$(STRIP)" \
 	PATH="$(PREFIX)/bin:$(PATH)"
-HOSTVARS := $(HOSTTOOLS) \
+HOSTVARS := \
 	CPPFLAGS="$(CPPFLAGS)" \
 	CFLAGS="$(CFLAGS)" \
 	CXXFLAGS="$(CXXFLAGS)" \
@@ -290,6 +299,11 @@ HOSTVARS_PIC := $(HOSTTOOLS) \
 	CFLAGS="$(CFLAGS) $(PIC)" \
 	CXXFLAGS="$(CXXFLAGS) $(PIC)" \
 	LDFLAGS="$(LDFLAGS)"
+
+# Keep a version of HOSTVARS without the tools, since meson requires the
+# tools variables to point to the native ones
+HOSTVARS_MESON := $(HOSTVARS)
+HOSTVARS := $(HOSTTOOLS) $(HOSTVARS)
 
 download_git = \
 	rm -Rf -- "$(@:.tar.xz=)" && \
@@ -345,6 +359,18 @@ RECONF = mkdir -p -- $(PREFIX)/share/aclocal && \
 CMAKE = cmake . -DCMAKE_TOOLCHAIN_FILE=$(abspath toolchain.cmake) \
 		-DCMAKE_INSTALL_PREFIX=$(PREFIX) $(CMAKE_GENERATOR)
 
+MESON = meson --default-library static --prefix "$(PREFIX)" --backend ninja \
+	-Dlibdir=lib
+ifndef WITH_OPTIMIZATION
+MESON += --buildtype debug
+else
+MESON += --buildtype release
+endif
+
+ifdef HAVE_CROSS_COMPILE
+MESON += --cross-file $(abspath crossfile.meson)
+endif
+
 ifdef GPL
 REQUIRE_GPL =
 else
@@ -388,6 +414,7 @@ install: $(PKGS:%=.%)
 mostlyclean:
 	-$(RM) $(foreach p,$(PKGS_ALL),.$(p) .sum-$(p) .dep-$(p))
 	-$(RM) toolchain.cmake
+	-$(RM) crossfile.meson
 	-$(RM) -R "$(PREFIX)"
 	-$(RM) -R "$(BUILDBINDIR)"
 	-$(RM) -R */
@@ -498,6 +525,35 @@ endif
 ifdef HAVE_CROSS_COMPILE
 	echo "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)" >> $@
 	echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> $@
+endif
+
+crossfile.meson:
+	$(RM) $@
+	echo "[binaries]" >> $@
+	echo "c = '$(CC)'" >> $@
+	echo "cpp = '$(CXX)'" >> $@
+	echo "ar = '$(AR)'" >> $@
+	echo "strip = '$(STRIP)'" >> $@
+	echo "pkgconfig = '$(PKG_CONFIG)'" >> $@
+	echo "windres = '$(WINDRES)'" >> $@
+	echo "[properties]" >> $@
+	echo "needs_exe_wrapper = true" >> $@
+ifdef HAVE_CROSS_COMPILE
+	echo "[host_machine]" >> $@
+ifdef HAVE_WIN32
+	echo "system = 'windows'" >> $@
+else
+ifdef HAVE_IOS
+	echo "system = 'darwin'" >> $@
+else
+ifdef HAVE_ANDROID
+	echo "system = 'linux'" >> $@
+endif
+endif
+endif
+	echo "cpu_family = '$(subst i386,x86,$(ARCH))'" >> $@
+	echo "cpu = '`echo $(HOST) | cut -d - -f 1`'" >> $@
+	echo "endian = 'little'" >> $@
 endif
 
 # Default pattern rules

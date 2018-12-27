@@ -1813,6 +1813,48 @@ static int MP4_ReadBox_esds( stream_t *p_stream, MP4_Box_t *p_box )
 #undef es_descriptor
 }
 
+static void MP4_FreeBox_av1C( MP4_Box_t *p_box )
+{
+    MP4_Box_data_av1C_t *p_av1C = p_box->data.p_av1C;
+    free( p_av1C->p_av1C );
+}
+
+static int MP4_ReadBox_av1C( stream_t *p_stream, MP4_Box_t *p_box )
+{
+    MP4_Box_data_av1C_t *p_av1C;
+
+    MP4_READBOX_ENTER( MP4_Box_data_av1C_t, MP4_FreeBox_av1C );
+    p_av1C = p_box->data.p_av1C;
+
+    if( i_read < 4 ||
+       p_peek[0] != 0x81 ) /* marker / version */
+        MP4_READBOX_EXIT( 0 );
+
+    p_av1C->p_av1C = malloc( i_read );
+    if( p_av1C->p_av1C )
+    {
+        memcpy( p_av1C->p_av1C, p_peek, i_read );
+        p_av1C->i_av1C = i_read;
+    }
+
+    uint8_t i_8b;
+    MP4_GET1BYTE( i_8b ); /* marker / version */
+
+    MP4_GET1BYTE( i_8b );
+    p_av1C->i_profile = i_8b >> 5;
+    p_av1C->i_level = i_8b & 0x1F;
+
+    MP4_GET1BYTE( i_8b );
+    MP4_GET1BYTE( i_8b );
+
+    if( i_8b & 0x10 ) /* delay flag */
+        p_av1C->i_presentation_delay = 1 + (i_8b & 0x0F);
+    else
+        p_av1C->i_presentation_delay = 0;
+
+    MP4_READBOX_EXIT( 1 );
+}
+
 static void MP4_FreeBox_avcC( MP4_Box_t *p_box )
 {
     MP4_Box_data_avcC_t *p_avcC = p_box->data.p_avcC;
@@ -1998,12 +2040,32 @@ static int MP4_ReadBox_SmDm( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_READBOX_ENTER( MP4_Box_data_SmDm_t, NULL );
     MP4_Box_data_SmDm_t *p_SmDm = p_box->data.p_SmDm;
 
+    uint8_t i_version;
+    uint32_t i_flags;
+    MP4_GET1BYTE( i_version );
+    MP4_GET3BYTES( i_flags );
+    VLC_UNUSED(i_flags);
+    if( i_version != 0 )
+        MP4_READBOX_EXIT( 0 );
+
+    const uint8_t RGB2GBR[3] = {2,0,1};
     for(int i=0; i<6; i++)
-        MP4_GET2BYTES( p_SmDm->primaries[i] );
+    {
+        int index = RGB2GBR[i/2] + i%2;
+        MP4_GET2BYTES( p_SmDm->primaries[index] );
+        p_SmDm->primaries[index] = 50000 * (double)p_SmDm->primaries[index] / (double)(1<<16);
+    }
+
     for(int i=0; i<2; i++)
+    {
         MP4_GET2BYTES( p_SmDm->white_point[i] );
+        p_SmDm->white_point[i] = 50000 * (double)p_SmDm->white_point[i] / (double)(1<<16);
+    }
+
     MP4_GET4BYTES( p_SmDm->i_luminanceMax );
     MP4_GET4BYTES( p_SmDm->i_luminanceMin );
+    p_SmDm->i_luminanceMax = 10000 * (double)p_SmDm->i_luminanceMax / (double) (1<<8);
+    p_SmDm->i_luminanceMin = 10000 * (double)p_SmDm->i_luminanceMin / (double) (1<<14);
 
     MP4_READBOX_EXIT( 1 );
 }
@@ -2012,6 +2074,15 @@ static int MP4_ReadBox_CoLL( stream_t *p_stream, MP4_Box_t *p_box )
 {
     MP4_READBOX_ENTER( MP4_Box_data_CoLL_t, NULL );
     MP4_Box_data_CoLL_t *p_CoLL = p_box->data.p_CoLL;
+
+    uint8_t i_version;
+    uint32_t i_flags;
+    MP4_GET1BYTE( i_version );
+    MP4_GET3BYTES( i_flags );
+    VLC_UNUSED(i_flags);
+    if( i_version != 0 )
+        MP4_READBOX_EXIT( 0 );
+
     MP4_GET2BYTES( p_CoLL->i_maxCLL );
     MP4_GET2BYTES( p_CoLL->i_maxFALL );
     MP4_READBOX_EXIT( 1 );
@@ -4444,6 +4515,7 @@ static const struct
     { ATOM_dcom,    MP4_ReadBox_dcom,         0 },
     { ATOM_dfLa,    MP4_ReadBox_Binary,       ATOM_fLaC },
     { ATOM_cmvd,    MP4_ReadBox_cmvd,         0 },
+    { ATOM_av1C,    MP4_ReadBox_av1C,         ATOM_av01 },
     { ATOM_avcC,    MP4_ReadBox_avcC,         ATOM_avc1 },
     { ATOM_avcC,    MP4_ReadBox_avcC,         ATOM_avc3 },
     { ATOM_hvcC,    MP4_ReadBox_Binary,       0 },
@@ -4577,6 +4649,7 @@ static const struct
 
     { ATOM_jpeg,    MP4_ReadBox_sample_vide,  ATOM_stsd },
     { ATOM_vc1,     MP4_ReadBox_sample_vide,  ATOM_stsd },
+    { ATOM_av01,    MP4_ReadBox_sample_vide,  ATOM_stsd },
     { ATOM_avc1,    MP4_ReadBox_sample_vide,  ATOM_stsd },
     { ATOM_avc3,    MP4_ReadBox_sample_vide,  ATOM_stsd },
 

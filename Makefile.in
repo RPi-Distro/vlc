@@ -517,6 +517,7 @@ CFLAGS_avahi = @CFLAGS_avahi@
 CFLAGS_caca = @CFLAGS_caca@
 CFLAGS_cdda = @CFLAGS_cdda@
 CFLAGS_daala = @CFLAGS_daala@
+CFLAGS_dav1d = @CFLAGS_dav1d@
 CFLAGS_dc1394 = @CFLAGS_dc1394@
 CFLAGS_dca = @CFLAGS_dca@
 CFLAGS_deinterlace = @CFLAGS_deinterlace@
@@ -595,6 +596,7 @@ CPPFLAGS_aribcam = @CPPFLAGS_aribcam@
 CPPFLAGS_avahi = @CPPFLAGS_avahi@
 CPPFLAGS_caca = @CPPFLAGS_caca@
 CPPFLAGS_daala = @CPPFLAGS_daala@
+CPPFLAGS_dav1d = @CPPFLAGS_dav1d@
 CPPFLAGS_dc1394 = @CPPFLAGS_dc1394@
 CPPFLAGS_dca = @CPPFLAGS_dca@
 CPPFLAGS_decklink = @CPPFLAGS_decklink@
@@ -656,6 +658,8 @@ CXXFLAGS_mod = @CXXFLAGS_mod@
 CYGPATH_W = @CYGPATH_W@
 DAALA_CFLAGS = @DAALA_CFLAGS@
 DAALA_LIBS = @DAALA_LIBS@
+DAV1D_CFLAGS = @DAV1D_CFLAGS@
+DAV1D_LIBS = @DAV1D_LIBS@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
 DC1394_CFLAGS = @DC1394_CFLAGS@
@@ -792,6 +796,7 @@ LIBS_caca = @LIBS_caca@
 LIBS_cdda = @LIBS_cdda@
 LIBS_crystalhd = @LIBS_crystalhd@
 LIBS_daala = @LIBS_daala@
+LIBS_dav1d = @LIBS_dav1d@
 LIBS_dc1394 = @LIBS_dc1394@
 LIBS_dca = @LIBS_dca@
 LIBS_dsm = @LIBS_dsm@
@@ -903,6 +908,7 @@ LTLIBcdda = @LTLIBcdda@
 LTLIBcrystalhd = @LTLIBcrystalhd@
 LTLIBcvpx = @LTLIBcvpx@
 LTLIBdaala = @LTLIBdaala@
+LTLIBdav1d = @LTLIBdav1d@
 LTLIBdc1394 = @LTLIBdc1394@
 LTLIBdca = @LTLIBdca@
 LTLIBdirect3d11 = @LTLIBdirect3d11@
@@ -1164,8 +1170,8 @@ WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
 X262_CFLAGS = @X262_CFLAGS@
 X262_LIBS = @X262_LIBS@
-X26410B_CFLAGS = @X26410B_CFLAGS@
-X26410B_LIBS = @X26410B_LIBS@
+X26410b_CFLAGS = @X26410b_CFLAGS@
+X26410b_LIBS = @X26410b_LIBS@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
 X265_CFLAGS = @X265_CFLAGS@
@@ -2278,7 +2284,7 @@ package-macosx: VLC.app
 @HAVE_DMGBUILD_FALSE@	cp -Rp "$(top_builddir)/VLC.app" "$(top_builddir)/vlc-$(VERSION)/VLC.app"
 @HAVE_DMGBUILD_FALSE@	$(LN_S) -f /Applications "$(top_builddir)/vlc-$(VERSION)/"
 @HAVE_DMGBUILD_FALSE@	hdiutil create -srcfolder "$(top_builddir)/vlc-$(VERSION)" -volname "VLC Media Player" \
-@HAVE_DMGBUILD_FALSE@		-format UDBZ -o "$(top_builddir)/vlc-$(VERSION).dmg"
+@HAVE_DMGBUILD_FALSE@		-format UDBZ -fs HFS+ -o "$(top_builddir)/vlc-$(VERSION).dmg"
 @HAVE_DMGBUILD_FALSE@	rm -rf "$(top_builddir)/vlc-$(VERSION)"
 
 package-macosx-zip: VLC.app
@@ -2296,6 +2302,7 @@ package-macosx-release:
 	cp $(srcdir)/extras/package/macosx/dmg/* $(top_builddir)/vlc-$(VERSION)-release/
 	cp "$(srcdir)/extras/package/macosx/codesign.sh" $(top_builddir)/vlc-$(VERSION)-release/
 	cp "$(prefix)/lib/vlc/vlc-cache-gen" $(top_builddir)/vlc-$(VERSION)-release/
+	cp "$(srcdir)/extras/package/macosx/vlc-hardening.entitlements" $(top_builddir)/vlc-$(VERSION)-release/
 	install_name_tool -add_rpath "@executable_path/VLC.app/Contents/MacOS/lib" $(top_builddir)/vlc-$(VERSION)-release/vlc-cache-gen
 	zip -r -y -9 $(top_builddir)/vlc-$(VERSION)-release.zip $(top_builddir)/vlc-$(VERSION)-release
 	rm -rf "$(top_builddir)/vlc-$(VERSION)-release"

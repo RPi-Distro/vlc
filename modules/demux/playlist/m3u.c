@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: d872a91112d5238a2dec9053bff34b5067ed80b6 $
+ * $Id: 9fff1f0ff31f0a4b544c88cdec806cfc6d05ab3b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -312,7 +312,8 @@ static int ReadDir( stream_t *p_demux, input_item_node_t *p_subitems )
             if( !p_input )
                 goto error;
             input_item_AddOptions( p_input, i_options, ppsz_options, 0 );
-            input_item_CopyOptions( p_input, p_current_input );
+            if ( p_current_input )
+                input_item_CopyOptions( p_input, p_current_input );
 
             if( !EMPTY_STR(psz_artist) )
                 input_item_SetArtist( p_input, psz_artist );
