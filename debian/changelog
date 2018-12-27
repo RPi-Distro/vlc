@@ -1,9 +1,14 @@
-vlc (3.0.5-1) UNRELEASED; urgency=medium
+vlc (3.0.5-1) unstable; urgency=medium
 
+  [ Mateusz Łukasik ]
   * New upstream release:
     - Remove patches included upstream.
 
- -- Mateusz Łukasik <mati75@linuxmint.pl>  Thu, 27 Dec 2018 15:07:07 +0100
+  [ Sebastian Ramacher ]
+  * debian/control: Bump Standards-Version.
+  * debian/vlc-plugin-base.install: Install 10-bit x264 plugin.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 27 Dec 2018 19:11:50 +0100
 
 vlc (3.0.4-4) unstable; urgency=medium
 
