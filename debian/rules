@@ -295,7 +295,7 @@ endif
 override_dh_install:
 	# Remove plugin cache
 	find debian/tmp/usr/lib -name plugins.dat -delete
-	# Clean up libtool crap
+	# Clean up libtool la files
 	find debian/tmp -name '*.la' -delete
 	# Remove useless stuff
 	ln -sf /usr/share/fonts/truetype/freefont/FreeSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
