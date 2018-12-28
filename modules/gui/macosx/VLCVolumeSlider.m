@@ -2,7 +2,7 @@
  * VLCVolumeSlider.m
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: b912f9c7c4434a399bfde01a3b0ceb3e03f1efaf $
+ * $Id: 77987ed6f63a73403bee3bcb9e3d436938ed48d8 $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -21,9 +21,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-
 #import "VLCVolumeSlider.h"
 #import "VLCVolumeSliderCell.h"
+#import "CompatibilityFixes.h"
 
 @implementation VLCVolumeSlider
 
@@ -34,6 +34,11 @@
     if (self) {
         NSAssert([self.cell isKindOfClass:[VLCVolumeSliderCell class]],
                  @"VLCVolumeSlider cell is not VLCVolumeSliderCell");
+        if (@available(macOS 10.14, *)) {
+            [self viewDidChangeEffectiveAppearance];
+        } else {
+            [(VLCVolumeSliderCell*)self.cell setSliderStyleLight];
+        }
     }
     return self;
 }
@@ -47,6 +52,19 @@
 // http://stackoverflow.com/questions/3985816/custom-nsslidercell
 - (void)setNeedsDisplayInRect:(NSRect)invalidRect {
     [super setNeedsDisplayInRect:[self bounds]];
+}
+
+- (void)viewDidChangeEffectiveAppearance
+{
+    if (@available(macOS 10_14, *)) {
+        if ([self.effectiveAppearance.name isEqualToString:NSAppearanceNameDarkAqua]) {
+            [(VLCVolumeSliderCell*)self.cell setSliderStyleDark];
+        } else {
+            [(VLCVolumeSliderCell*)self.cell setSliderStyleLight];
+        }
+
+        [self setNeedsDisplay:YES];
+    }
 }
 
 - (void)setUsesBrightArtwork:(BOOL)brightArtwork

@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: 14a622f7ccf7e1ee9c7f8469c84c1df56f053c02 $
+ * $Id: efefc57e6f2381f91f866c2af268132d42dce491 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -841,10 +841,11 @@ static block_t *OutputPicture( decoder_t *p_dec )
     }
 
     /* Now rebuild NAL Sequence, inserting PPS/SPS if any */
-    if( p_sys->frame.p_head->i_flags & BLOCK_FLAG_PRIVATE_AUD )
+    if( p_sys->leading.p_head &&
+       (p_sys->leading.p_head->i_flags & BLOCK_FLAG_PRIVATE_AUD) )
     {
-        block_t *p_au = p_sys->frame.p_head;
-        p_sys->frame.p_head = p_au->p_next;
+        block_t *p_au = p_sys->leading.p_head;
+        p_sys->leading.p_head = p_au->p_next;
         p_au->p_next = NULL;
         block_ChainLastAppend( &pp_pic_last, p_au );
     }

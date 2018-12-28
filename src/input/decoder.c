@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 1cb9aa82fcd348e16e76220193877295e2c64af4 $
+ * $Id: 775f256313cd2a61eb9187bc72b5af419c808b70 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -284,6 +284,14 @@ static vout_thread_t *aout_request_vout( void *p_private,
     decoder_t *p_dec = p_private;
     decoder_owner_sys_t *p_owner = p_dec->p_owner;
     input_thread_t *p_input = p_owner->p_input;
+    video_format_t fmt;
+
+    if (p_fmt != NULL)
+    {
+        fmt = *p_fmt;
+        p_fmt = &fmt;
+        video_format_AdjustColorSpace( &fmt );
+    }
 
     p_vout = input_resource_RequestVout( p_owner->p_resource, p_vout, p_fmt, 1,
                                          b_recyle );

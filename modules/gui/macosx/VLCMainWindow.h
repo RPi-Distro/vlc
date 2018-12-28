@@ -1,8 +1,8 @@
 /*****************************************************************************
  * VLCMainWindow.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 7129b2e5c6c1a5a2e75dd2525548e051696b88c9 $
+ * Copyright (C) 2002-2018 VLC authors and VideoLAN
+ * $Id: b3e4307cf9ed499bfee8eb32c7fb75cd2ec3e1be $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -62,6 +62,7 @@ typedef enum {
 
 // Dropzone outlets
 @property (readwrite, weak) IBOutlet NSView             *dropzoneView;
+@property (readwrite, weak) IBOutlet NSView             *dropzoneBackgroundImageView;
 @property (readwrite, weak) IBOutlet NSButton           *dropzoneButton;
 @property (readwrite, weak) IBOutlet NSTextField        *dropzoneLabel;
 @property (readwrite, weak) IBOutlet NSBox              *dropzoneBox;

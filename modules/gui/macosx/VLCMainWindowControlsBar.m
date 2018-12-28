@@ -1,8 +1,8 @@
 /*****************************************************************************
  * ControlsBar.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2012-2016 VLC authors and VideoLAN
- * $Id: 6b79bc5ee5e13f96570d215543c0707de6a23c16 $
+ * Copyright (C) 2012-2018 VLC authors and VideoLAN
+ * $Id: 1266df136627d5658cde1a9f6d543d0697fbf5fd $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -48,6 +48,10 @@
     NSImage * _pressedShuffleImage;
     NSImage * _shuffleOnImage;
     NSImage * _pressedShuffleOnImage;
+
+    BOOL _shuffle;
+    BOOL _repeatOne;
+    BOOL _repeatAll;
 }
 
 @end
@@ -86,82 +90,10 @@
     [[self.effectsButton cell] accessibilitySetOverrideValue:[self.effectsButton toolTip] forAttribute:NSAccessibilityTitleAttribute];
 
     if (!self.darkInterface) {
-        [self.stopButton setImage: imageFromRes(@"stop")];
-        [self.stopButton setAlternateImage: imageFromRes(@"stop-pressed")];
-
-        [self.playlistButton setImage: imageFromRes(@"playlist-btn")];
-        [self.playlistButton setAlternateImage: imageFromRes(@"playlist-btn-pressed")];
-        _repeatImage = imageFromRes(@"repeat");
-        _pressedRepeatImage = imageFromRes(@"repeat-pressed");
-        _repeatAllImage  = imageFromRes(@"repeat-all");
-        _pressedRepeatAllImage = imageFromRes(@"repeat-all-pressed");
-        _repeatOneImage = imageFromRes(@"repeat-one");
-        _pressedRepeatOneImage = imageFromRes(@"repeat-one-pressed");
-        _shuffleImage = imageFromRes(@"shuffle");
-        _pressedShuffleImage = imageFromRes(@"shuffle-pressed");
-        _shuffleOnImage = imageFromRes(@"shuffle-blue");
-        _pressedShuffleOnImage = imageFromRes(@"shuffle-blue-pressed");
-
-        [self.volumeDownButton setImage: imageFromRes(@"volume-low")];
-        [self.volumeUpButton setImage: imageFromRes(@"volume-high")];
-        [self.volumeSlider setUsesBrightArtwork: YES];
-
-        if (self.nativeFullscreenMode) {
-            [self.effectsButton setImage: imageFromRes(@"effects-one-button")];
-            [self.effectsButton setAlternateImage: imageFromRes(@"effects-one-button-pressed")];
-        } else {
-            [self.effectsButton setImage: imageFromRes(@"effects-double-buttons")];
-            [self.effectsButton setAlternateImage: imageFromRes(@"effects-double-buttons-pressed")];
-        }
-
-        [self.fullscreenButton setImage: imageFromRes(@"fullscreen-double-buttons")];
-        [self.fullscreenButton setAlternateImage: imageFromRes(@"fullscreen-double-buttons-pressed")];
-
-        [self.prevButton setImage: imageFromRes(@"previous-6btns")];
-        [self.prevButton setAlternateImage: imageFromRes(@"previous-6btns-pressed")];
-        [self.nextButton setImage: imageFromRes(@"next-6btns")];
-        [self.nextButton setAlternateImage: imageFromRes(@"next-6btns-pressed")];
+        [self setBrightButtonImageSet];
     } else {
-        [self.stopButton setImage: imageFromRes(@"stop_dark")];
-        [self.stopButton setAlternateImage: imageFromRes(@"stop-pressed_dark")];
-
-        [self.playlistButton setImage: imageFromRes(@"playlist_dark")];
-        [self.playlistButton setAlternateImage: imageFromRes(@"playlist-pressed_dark")];
-        _repeatImage = imageFromRes(@"repeat_dark");
-        _pressedRepeatImage = imageFromRes(@"repeat-pressed_dark");
-        _repeatAllImage  = imageFromRes(@"repeat-all-blue_dark");
-        _pressedRepeatAllImage = imageFromRes(@"repeat-all-blue-pressed_dark");
-        _repeatOneImage = imageFromRes(@"repeat-one-blue_dark");
-        _pressedRepeatOneImage = imageFromRes(@"repeat-one-blue-pressed_dark");
-        _shuffleImage = imageFromRes(@"shuffle_dark");
-        _pressedShuffleImage = imageFromRes(@"shuffle-pressed_dark");
-        _shuffleOnImage = imageFromRes(@"shuffle-blue_dark");
-        _pressedShuffleOnImage = imageFromRes(@"shuffle-blue-pressed_dark");
-
-        [self.volumeDownButton setImage: imageFromRes(@"volume-low_dark")];
-        [self.volumeUpButton setImage: imageFromRes(@"volume-high_dark")];
-        [self.volumeSlider setUsesBrightArtwork: NO];
-
-        if (self.nativeFullscreenMode) {
-            [self.effectsButton setImage: imageFromRes(@"effects-one-button_dark")];
-            [self.effectsButton setAlternateImage: imageFromRes(@"effects-one-button-pressed-dark")];
-        } else {
-            [self.effectsButton setImage: imageFromRes(@"effects-double-buttons_dark")];
-            [self.effectsButton setAlternateImage: imageFromRes(@"effects-double-buttons-pressed_dark")];
-        }
-
-        [self.fullscreenButton setImage: imageFromRes(@"fullscreen-double-buttons_dark")];
-        [self.fullscreenButton setAlternateImage: imageFromRes(@"fullscreen-double-buttons-pressed_dark")];
-
-        [self.prevButton setImage: imageFromRes(@"previous-6btns-dark")];
-        [self.prevButton setAlternateImage: imageFromRes(@"previous-6btns-dark-pressed")];
-        [self.nextButton setImage: imageFromRes(@"next-6btns-dark")];
-        [self.nextButton setAlternateImage: imageFromRes(@"next-6btns-dark-pressed")];
+        [self setDarkButtonImageSet];
     }
-    [self.repeatButton setImage: _repeatImage];
-    [self.repeatButton setAlternateImage: _pressedRepeatImage];
-    [self.shuffleButton setImage: _shuffleImage];
-    [self.shuffleButton setAlternateImage: _pressedShuffleImage];
 
     BOOL b_mute = ![[VLCCoreInteraction sharedInstance] mute];
     [self.volumeSlider setEnabled: b_mute];
@@ -169,23 +101,120 @@
     [self.volumeSlider setDefaultValue: AOUT_VOLUME_DEFAULT];
     [self.volumeUpButton setEnabled: b_mute];
 
-    // configure optional buttons
-    if (!var_InheritBool(getIntf(), "macosx-show-effects-button"))
-        [self removeEffectsButton:NO];
-
-    if (!var_InheritBool(getIntf(), "macosx-show-playmode-buttons"))
-        [self removePlaymodeButtons:NO];
-
-    if (!var_InheritBool(getIntf(), "macosx-show-playback-buttons"))
-        [self removeJumpButtons:NO];
-
     [[[VLCMain sharedInstance] playlist] playbackModeUpdated];
+}
 
+- (void)setBrightButtonImageSet
+{
+    [super setBrightButtonImageSet];
+
+    [self.stopButton setImage: imageFromRes(@"stop")];
+    [self.stopButton setAlternateImage: imageFromRes(@"stop-pressed")];
+
+    _repeatImage = imageFromRes(@"repeat");
+    _pressedRepeatImage = imageFromRes(@"repeat-pressed");
+    _repeatAllImage  = imageFromRes(@"repeat-all");
+    _pressedRepeatAllImage = imageFromRes(@"repeat-all-pressed");
+    _repeatOneImage = imageFromRes(@"repeat-one");
+    _pressedRepeatOneImage = imageFromRes(@"repeat-one-pressed");
+    _shuffleImage = imageFromRes(@"shuffle");
+    _pressedShuffleImage = imageFromRes(@"shuffle-pressed");
+    _shuffleOnImage = imageFromRes(@"shuffle-blue");
+    _pressedShuffleOnImage = imageFromRes(@"shuffle-blue-pressed");
+
+    [self.volumeDownButton setImage: imageFromRes(@"volume-low")];
+    [self.volumeUpButton setImage: imageFromRes(@"volume-high")];
+    [self.volumeSlider setUsesBrightArtwork: YES];
+
+    if (self.nativeFullscreenMode) {
+        [self.effectsButton setImage: imageFromRes(@"effects-one-button")];
+        [self.effectsButton setAlternateImage: imageFromRes(@"effects-one-button-pressed")];
+    } else {
+        [self.effectsButton setImage: imageFromRes(@"effects-double-buttons")];
+        [self.effectsButton setAlternateImage: imageFromRes(@"effects-double-buttons-pressed")];
+    }
+
+    [self.fullscreenButton setImage: imageFromRes(@"fullscreen-double-buttons")];
+    [self.fullscreenButton setAlternateImage: imageFromRes(@"fullscreen-double-buttons-pressed")];
+
+    [self.prevButton setImage: imageFromRes(@"previous-6btns")];
+    [self.prevButton setAlternateImage: imageFromRes(@"previous-6btns-pressed")];
+    [self.nextButton setImage: imageFromRes(@"next-6btns")];
+    [self.nextButton setAlternateImage: imageFromRes(@"next-6btns-pressed")];
+
+    [self updatePlaymodeButtonImages];
+    [self setupJumpButtons:NO];
+    [self setupPlaymodeButtons:NO];
+    [self setupEffectsButton:NO];
+}
+
+- (void)setDarkButtonImageSet
+{
+    [super setDarkButtonImageSet];
+
+    [self.stopButton setImage: imageFromRes(@"stop_dark")];
+    [self.stopButton setAlternateImage: imageFromRes(@"stop-pressed_dark")];
+
+    _repeatImage = imageFromRes(@"repeat_dark");
+    _pressedRepeatImage = imageFromRes(@"repeat-pressed_dark");
+    _repeatAllImage  = imageFromRes(@"repeat-all-blue_dark");
+    _pressedRepeatAllImage = imageFromRes(@"repeat-all-blue-pressed_dark");
+    _repeatOneImage = imageFromRes(@"repeat-one-blue_dark");
+    _pressedRepeatOneImage = imageFromRes(@"repeat-one-blue-pressed_dark");
+    _shuffleImage = imageFromRes(@"shuffle_dark");
+    _pressedShuffleImage = imageFromRes(@"shuffle-pressed_dark");
+    _shuffleOnImage = imageFromRes(@"shuffle-blue_dark");
+    _pressedShuffleOnImage = imageFromRes(@"shuffle-blue-pressed_dark");
+
+    [self.volumeDownButton setImage: imageFromRes(@"volume-low_dark")];
+    [self.volumeUpButton setImage: imageFromRes(@"volume-high_dark")];
+    [self.volumeSlider setUsesBrightArtwork: NO];
+
+    if (self.nativeFullscreenMode) {
+        [self.effectsButton setImage: imageFromRes(@"effects-one-button_dark")];
+        [self.effectsButton setAlternateImage: imageFromRes(@"effects-one-button-pressed-dark")];
+    } else {
+        [self.effectsButton setImage: imageFromRes(@"effects-double-buttons_dark")];
+        [self.effectsButton setAlternateImage: imageFromRes(@"effects-double-buttons-pressed_dark")];
+    }
+
+    [self.fullscreenButton setImage: imageFromRes(@"fullscreen-double-buttons_dark")];
+    [self.fullscreenButton setAlternateImage: imageFromRes(@"fullscreen-double-buttons-pressed_dark")];
+
+    [self.prevButton setImage: imageFromRes(@"previous-6btns-dark")];
+    [self.prevButton setAlternateImage: imageFromRes(@"previous-6btns-dark-pressed")];
+    [self.nextButton setImage: imageFromRes(@"next-6btns-dark")];
+    [self.nextButton setAlternateImage: imageFromRes(@"next-6btns-dark-pressed")];
+
+    [self updatePlaymodeButtonImages];
+    [self setupJumpButtons:NO];
+    [self setupPlaymodeButtons:NO];
+    [self setupEffectsButton:NO];
+}
+
+- (void)updatePlaymodeButtonImages
+{
+    if (_shuffle) {
+        self.shuffleButton.image = _shuffleOnImage;
+        self.shuffleButton.alternateImage = _pressedShuffleImage;
+    } else {
+        self.shuffleButton.image = _shuffleImage;
+        self.shuffleButton.alternateImage = _pressedShuffleImage;
+    }
+    if (_repeatOne) {
+        self.repeatButton.image = _repeatOneImage;
+        self.repeatButton.alternateImage = _pressedRepeatOneImage;
+    } else if (_repeatAll) {
+        self.repeatButton.image = _repeatAllImage;
+        self.repeatButton.alternateImage = _pressedRepeatAllImage;
+    } else {
+        self.repeatButton.image = _repeatImage;
+        self.repeatButton.alternateImage = _pressedRepeatImage;
+    }
 }
 
 #pragma mark -
 #pragma mark interface customization
-
 
 - (void)hideButtonWithConstraint:(NSLayoutConstraint *)constraint animation:(BOOL)animation
 {
@@ -203,12 +232,12 @@
     animatedConstraint.constant = ((NSButton *)constraint.firstItem).image.size.width;
 }
 
-- (void)toggleEffectsButton
+- (void)setupEffectsButton:(BOOL)withAnimation
 {
     if (var_InheritBool(getIntf(), "macosx-show-effects-button"))
-        [self addEffectsButton:YES];
+        [self addEffectsButton:withAnimation];
     else
-        [self removeEffectsButton:YES];
+        [self removeEffectsButton:withAnimation];
 }
 
 - (void)addEffectsButton:(BOOL)withAnimation
@@ -247,12 +276,12 @@
     [NSAnimationContext endGrouping];
 }
 
-- (void)toggleJumpButtons
+- (void)setupJumpButtons:(BOOL)withAnimation
 {
     if (var_InheritBool(getIntf(), "macosx-show-playback-buttons"))
-        [self addJumpButtons:YES];
+        [self addJumpButtons:withAnimation];
     else
-        [self removeJumpButtons:YES];
+        [self removeJumpButtons:withAnimation];
 }
 
 - (void)addJumpButtons:(BOOL)withAnimation
@@ -303,12 +332,12 @@
     [self toggleForwardBackwardMode: NO];
 }
 
-- (void)togglePlaymodeButtons
+- (void)setupPlaymodeButtons:(BOOL)withAnimation
 {
     if (var_InheritBool(getIntf(), "macosx-show-playmode-buttons"))
-        [self addPlaymodeButtons:YES];
+        [self addPlaymodeButtons:withAnimation];
     else
-        [self removePlaymodeButtons:YES];
+        [self removePlaymodeButtons:withAnimation];
 }
 
 - (void)addPlaymodeButtons:(BOOL)withAnimation
@@ -369,18 +398,24 @@
 {
     [self.repeatButton setImage: _repeatOneImage];
     [self.repeatButton setAlternateImage: _pressedRepeatOneImage];
+    _repeatOne = YES;
+    _repeatAll = NO;
 }
 
 - (void)setRepeatAll
 {
     [self.repeatButton setImage: _repeatAllImage];
     [self.repeatButton setAlternateImage: _pressedRepeatAllImage];
+    _repeatOne = NO;
+    _repeatAll = YES;
 }
 
 - (void)setRepeatOff
 {
     [self.repeatButton setImage: _repeatImage];
     [self.repeatButton setAlternateImage: _pressedRepeatImage];
+    _repeatOne = NO;
+    _repeatAll = NO;
 }
 
 - (IBAction)repeat:(id)sender
@@ -415,9 +450,11 @@
     b_value = var_GetBool(p_playlist, "random");
 
     if (b_value) {
+        _shuffle = YES;
         [self.shuffleButton setImage: _shuffleOnImage];
         [self.shuffleButton setAlternateImage: _pressedShuffleOnImage];
     } else {
+        _shuffle = NO;
         [self.shuffleButton setImage: _shuffleImage];
         [self.shuffleButton setAlternateImage: _pressedShuffleImage];
     }

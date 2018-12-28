@@ -2,7 +2,7 @@
  * playlist_internal.h : Playlist internals
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: ae48c75e87eb3d9e1e83dba183f2a6196dc730a2 $
+ * $Id: 9537a5f2702f97a9f527b1478189a35d1254ce25 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -83,6 +83,7 @@ typedef struct playlist_private_t
     vlc_mutex_t lock; /**< dah big playlist global lock */
     vlc_cond_t signal; /**< wakes up the playlist engine thread */
     bool     killed; /**< playlist is shutting down */
+    bool     cork_effective; /**< Corked while actively playing */
 
     int      i_last_playlist_id; /**< Last id to an item */
     bool     b_reset_currently_playing; /** Reset current item array */

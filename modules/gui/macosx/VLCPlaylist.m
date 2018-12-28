@@ -2,7 +2,7 @@
  * VLCPlaylist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 8a881d7650e014e93852eb9eebb1f950071d074f $
+ * $Id: a6226de4961a6b1a7f2bb3d7d469874858b20331 $
  *
  * Authors: Derk-Jan Hartman <hartman at videola/n dot org>
  *          Benjamin Pracht <bigben at videolan dot org>
@@ -705,9 +705,9 @@
 - (void)outlineView:(NSOutlineView *)outlineView didClickTableColumn:(NSTableColumn *)aTableColumn
 {
     int type = 0;
-    intf_thread_t *p_intf = getIntf();
     NSString * identifier = [aTableColumn identifier];
 
+    intf_thread_t *p_intf = getIntf();
     playlist_t *p_playlist = pl_Get(p_intf);
 
     if (_sortTableColumn == aTableColumn)

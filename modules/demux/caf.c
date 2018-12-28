@@ -2,7 +2,7 @@
  * caf.c: Core Audio File Format demuxer
  *****************************************************************************
  * Copyright (C) 2013 VLC authors and VideoLAN
- * $Id: b1a621f59410d3d035501b7b5ab51e1c518226ed $
+ * $Id: f1e6724c3c35e2ed293b58f3e1818bd7b9164f18 $
  *
  * Authors: Matthias Keiser <matthias@tristan-inc.com>
  *
@@ -691,14 +691,13 @@ static int ReadKukiChunk( demux_t *p_demux, uint64_t i_size )
     demux_sys_t *p_sys = p_demux->p_sys;
     const uint8_t *p_peek;
 
-    /* vlc_stream_Peek can't handle sizes bigger than INT32_MAX, and also p_sys->fmt.i_extra is of type 'int'*/
-    if( i_size > INT32_MAX )
+    if( i_size > SSIZE_MAX )
     {
         msg_Err( p_demux, "Magic Cookie chunk too big" );
         return VLC_EGENERIC;
     }
 
-    if( (unsigned int)vlc_stream_Peek( p_demux->s, &p_peek, (int)i_size ) < i_size )
+    if( vlc_stream_Peek( p_demux->s, &p_peek, i_size ) < (ssize_t)i_size )
     {
         msg_Err( p_demux, "Couldn't peek extra data" );
         return VLC_EGENERIC;

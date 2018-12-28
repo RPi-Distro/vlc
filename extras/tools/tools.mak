@@ -62,6 +62,21 @@ CLEAN_FILE += .yasm
 CLEAN_PKG += yasm
 DISTCLEAN_PKG += yasm-$(YASM_VERSION).tar.gz
 
+nasm-$(NASM_VERSION).tar.gz:
+	$(call download_pkg,$(NASM_URL),nasm)
+
+nasm: nasm-$(NASM_VERSION).tar.gz
+	$(UNPACK)
+	$(MOVE)
+
+.nasm: nasm
+	(cd $<; ./configure --prefix=$(PREFIX) && $(MAKE) && $(MAKE) install)
+	touch $@
+
+CLEAN_FILE += .nasm
+CLEAN_PKG += nasm
+DISTCLEAN_PKG += nasm-$(NASM_VERSION).tar.gz
+
 # cmake
 
 cmake-$(CMAKE_VERSION).tar.gz:
@@ -88,6 +103,7 @@ libtool: libtool-$(LIBTOOL_VERSION).tar.gz
 	$(UNPACK)
 	$(APPLY) libtool-2.4.2-bitcode.patch
 	$(APPLY) libtool-2.4.2-san.patch
+	$(APPLY) libtool-2.4.6-clang-libs.patch
 	$(MOVE)
 
 .libtool: libtool .automake
@@ -334,6 +350,44 @@ CLEAN_PKG += flex
 DISTCLEAN_PKG += flex-$(FLEX_VERSION).tar.gz
 CLEAN_FILE += .flex
 
+#
+# meson build
+#
+
+meson-$(MESON_VERSION).tar.gz:
+	$(call download_pkg,$(MESON_URL),meson)
+
+meson: meson-$(MESON_VERSION).tar.gz
+	$(UNPACK)
+	$(MOVE)
+
+.meson: meson
+	printf "#!/bin/sh\n\npython3 $(abspath .)/meson/meson.py \"\$$@\"\n" >> $(PREFIX)/bin/meson
+	chmod +x $(PREFIX)/bin/meson
+	touch $@
+
+CLEAN_PKG += meson
+DISTCLEAN_PKG += meson-$(MESON_VERSION).tar.gz
+CLEAN_FILE += .meson
+
+#
+# ninja build
+#
+
+ninja-$(NINJA_VERSION).tar.gz:
+	$(call download_pkg,$(NINJA_URL),ninja)
+
+ninja: ninja-$(NINJA_VERSION).tar.gz
+	$(UNPACK)
+	$(MOVE)
+
+.ninja: ninja
+	(cd $<; ./configure.py --bootstrap && mv ninja $(PREFIX)/bin/)
+	touch $@
+
+CLEAN_PKG += ninja
+DISTCLEAN_PKG += ninja-$(NINJA_VERSION).tar.gz
+CLEAN_FILE += .ninja
 
 #
 #

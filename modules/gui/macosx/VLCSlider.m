@@ -2,7 +2,7 @@
  * VLCSlider.m
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: b89d2c3f0d0db32d1eabcefa6f359dbe0d25f256 $
+ * $Id: 8597cf98ef1213506ea2023eaafbf75c28403f90 $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -23,6 +23,7 @@
 
 #import "VLCSlider.h"
 #import "VLCSliderCell.h"
+#import "CompatibilityFixes.h"
 
 @implementation VLCSlider
 
@@ -34,6 +35,11 @@
         NSAssert([self.cell isKindOfClass:[VLCSliderCell class]],
                  @"VLCSlider cell is not VLCSliderCell");
         _isScrollable = YES;
+        if (@available(macOS 10.14, *)) {
+            [self viewDidChangeEffectiveAppearance];
+        } else {
+            [self setSliderStyleLight];
+        }
     }
     return self;
 }
@@ -107,6 +113,18 @@
 - (void)setSliderStyleDark
 {
     [(VLCSliderCell*)[self cell] setSliderStyleDark];
+}
+
+- (void)viewDidChangeEffectiveAppearance
+{
+    if (@available(macOS 10_14, *)) {
+        if ([self.effectiveAppearance.name isEqualToString:NSAppearanceNameDarkAqua])
+            [self setSliderStyleDark];
+        else
+            [self setSliderStyleLight];
+    }
+
+    [self setNeedsDisplay:YES];
 }
 
 @end

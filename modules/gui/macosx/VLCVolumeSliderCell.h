@@ -2,7 +2,7 @@
  * VLCVolumeSliderCell.m
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: 48a7913ff104ac309bc9593bac3cff90a32788cb $
+ * $Id: b1c6dfdc525ea229bb5042fd2a9b316b6d87f42f $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -42,6 +42,8 @@
 @property NSGradient *trackGradient;
 @property NSGradient *highlightGradient;
 @property NSGradient *knobGradient;
+@property CGFloat knobGradientAngle;
+@property CGFloat knobGradientAngleHighlighted;
 
 // Shadows
 @property NSShadow *knobShadow;

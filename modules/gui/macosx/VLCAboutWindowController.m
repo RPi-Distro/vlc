@@ -2,7 +2,7 @@
  * VLCAboutWindowController.m
  *****************************************************************************
  * Copyright (C) 2001-2014 VLC authors and VideoLAN
- * $Id: b3bb1b87d4b2b5b4a1ef234fbba760af562d9eb0 $
+ * $Id: a4badff8b5fd3a7d77b8567f53d2c9bf8c530600 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -42,7 +42,7 @@
 
 @interface VLCAboutWindowController ()
 {
-    NSString *o_authors;
+    NSString *_authorsString;
 }
 @end
 
@@ -52,14 +52,12 @@
 {
     self = [super initWithWindowNibName:@"About"];
     if (self) {
-
         [self setWindowFrameAutosaveName:@"about"];
     }
-
     return self;
 }
 
-- (void) dealloc
+- (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 }
@@ -89,15 +87,14 @@
     [[self window] setCollectionBehavior: NSWindowCollectionBehaviorFullScreenAuxiliary];
 
     /* Get the localized info dictionary (InfoPlist.strings) */
-    NSDictionary *o_local_dict;
-    o_local_dict = [[NSBundle mainBundle] localizedInfoDictionary];
+    NSDictionary *localizedInfoDict = [[NSBundle mainBundle] localizedInfoDictionary];
 
     /* Setup the copyright field */
-    [o_copyright_field setStringValue: [o_local_dict objectForKey:@"NSHumanReadableCopyright"]];
+    [o_copyright_field setStringValue: [localizedInfoDict objectForKey:@"NSHumanReadableCopyright"]];
 
     /* l10n */
     [[self window] setTitle: _NS("About VLC media player")];
-    NSDictionary *stringAttributes = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName, [NSColor colorWithCalibratedRed:0. green:0.3411 blue:0.6824 alpha:1.], NSForegroundColorAttributeName, [NSFont systemFontOfSize:13], NSFontAttributeName, nil];
+    NSDictionary *stringAttributes = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName, [NSColor VLCSecondaryLabelColor], NSForegroundColorAttributeName, [NSFont systemFontOfSize:13], NSFontAttributeName, nil];
     NSAttributedString *attrStr;
     attrStr = [[NSAttributedString alloc] initWithString:_NS("Credits") attributes:stringAttributes];
     [o_credits_btn setAttributedTitle:attrStr];
@@ -105,7 +102,6 @@
     [o_gpl_btn setAttributedTitle:attrStr];
     attrStr = [[NSAttributedString alloc] initWithString:_NS("Authors") attributes:stringAttributes];
     [o_authors_btn setAttributedTitle:attrStr];
-    attrStr = nil;
     [o_trademarks_txt setStringValue:_NS("VLC media player and VideoLAN are trademarks of the VideoLAN Association.")];
 
     /* setup the creator / revision field */
@@ -128,7 +124,7 @@
         [tmpArray replaceObjectAtIndex:i withObject:[[tmpArray objectAtIndex:i]stringByReplacingOccurrencesOfString:@"-, " withString:@"-\n" options:0 range:NSRangeFromString(@"0 30")]];
         [tmpArray replaceObjectAtIndex:i withObject:[[tmpArray objectAtIndex:i]stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@","]]];
     }
-    o_authors = [tmpArray componentsJoinedByString:@"\n\n"];
+    _authorsString = [tmpArray componentsJoinedByString:@"\n\n"];
 
     /* setup join us! */
     NSString *joinus = toNSStr(_(""
@@ -141,10 +137,13 @@
                                  "\"https://www.videolan.org/contribute/\"><span style=\" text-decoration: "
                                  "underline; color:#0057ae;\">Help and join us!</span></a>"));
 
-    NSString *fontfamily = (OSX_YOSEMITE_AND_HIGHER) ? @"Helvetica Neue" : @"Lucida Grande";
-    NSString *joinUsWithStyle = [NSString stringWithFormat:@"<div style=\"text-align:left;font-family: -apple-system, %@;\">%@</div>",
-                                 fontfamily, joinus];
-    NSAttributedString *joinus_readytorender = [[NSAttributedString alloc] initWithHTML:[joinUsWithStyle dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES] options:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:NSUTF8StringEncoding] forKey:NSCharacterEncodingDocumentOption] documentAttributes:NULL];
+    NSString *joinUsWithStyle = [NSString stringWithFormat:@"<div style=\"text-align:left;font-family: -apple-system, Helvetica Neue;\">%@</div>", joinus];
+    NSMutableAttributedString *joinus_readytorender = [[NSMutableAttributedString alloc] initWithHTML:[joinUsWithStyle dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES]
+                                                                                              options:@{NSCharacterEncodingDocumentOption : [NSNumber numberWithInt:NSUTF8StringEncoding]}
+                                                                                   documentAttributes:NULL];
+    [joinus_readytorender setAttributes:@{NSForegroundColorAttributeName : [NSColor VLCSecondaryLabelColor],
+                                          NSFontAttributeName : [NSFont systemFontOfSize:12.]}
+                                  range:NSMakeRange(0, joinus_readytorender.length)];
     [o_joinus_txt setAllowsEditingTextAttributes: YES];
     [o_joinus_txt setSelectable: YES];
     [o_joinus_txt setAttributedStringValue:joinus_readytorender];
@@ -156,7 +155,6 @@
     [o_credits_scrollview setDrawsBackground: NO];
     [[self window] setExcludedFromWindowsMenu:YES];
     [[self window] setMenu:nil];
-    [[self window] setBackgroundColor: [NSColor colorWithCalibratedWhite:.96 alpha:1.]];
 
     if (config_GetInt(getIntf(), "macosx-icon-change")) {
         /* After day 354 of the year, the usual VLC cone is replaced by another cone
@@ -191,15 +189,23 @@
     [o_revision_field setHidden:YES];
     [o_name_version_field setHidden:YES];
 
+    NSString *stringToDisplay;
     if (sender == o_authors_btn)
-        [o_credits_textview setString:o_authors];
+        stringToDisplay = _authorsString;
     else if (sender == o_credits_btn)
-        [o_credits_textview setString:[toNSStr(psz_thanks) stringByReplacingOccurrencesOfString:@"\n" withString:@" " options:0 range:NSRangeFromString(@"680 2")]];
+        stringToDisplay = [toNSStr(psz_thanks) stringByReplacingOccurrencesOfString:@"\n" withString:@" "
+                                                                            options:0 range:NSRangeFromString(@"680 2")];
     else
-        [o_credits_textview setString:toNSStr(psz_license)];
+        stringToDisplay = toNSStr(psz_license);
 
-    [(VLCScrollingClipView *)[o_credits_scrollview contentView] resetScrolling];
-    [(VLCScrollingClipView *)[o_credits_scrollview contentView] startScrolling];
+    NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:stringToDisplay
+                                                                           attributes:@{NSForegroundColorAttributeName : [NSColor VLCSecondaryLabelColor],
+                                                                                        NSFontAttributeName : [NSFont systemFontOfSize:12.]}];
+    [[o_credits_textview textStorage] setAttributedString:attributedString];
+
+    VLCScrollingClipView *scrollView = (VLCScrollingClipView *)[o_credits_scrollview contentView];
+    [scrollView resetScrolling];
+    [scrollView startScrolling];
 }
 
 /*****************************************************************************

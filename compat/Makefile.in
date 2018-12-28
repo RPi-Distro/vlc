@@ -180,20 +180,20 @@ am__depfiles_remade = $(DEPDIR)/aligned_alloc.Plo \
 	$(DEPDIR)/gai_strerror.Plo $(DEPDIR)/getdelim.Plo \
 	$(DEPDIR)/getpid.Plo $(DEPDIR)/gettimeofday.Plo \
 	$(DEPDIR)/gmtime_r.Plo $(DEPDIR)/inet_pton.Plo \
-	$(DEPDIR)/lldiv.Plo $(DEPDIR)/localtime_r.Plo \
-	$(DEPDIR)/memrchr.Plo $(DEPDIR)/nrand48.Plo \
-	$(DEPDIR)/pathconf.Plo $(DEPDIR)/poll.Plo \
-	$(DEPDIR)/realpath.Plo $(DEPDIR)/recvmsg.Plo \
-	$(DEPDIR)/rewind.Plo $(DEPDIR)/sendmsg.Plo \
-	$(DEPDIR)/setenv.Plo $(DEPDIR)/sigwait.Plo \
-	$(DEPDIR)/sincos.Plo $(DEPDIR)/strcasecmp.Plo \
-	$(DEPDIR)/strcasestr.Plo $(DEPDIR)/strdup.Plo \
-	$(DEPDIR)/strlcpy.Plo $(DEPDIR)/strndup.Plo \
-	$(DEPDIR)/strnlen.Plo $(DEPDIR)/strnstr.Plo \
-	$(DEPDIR)/strsep.Plo $(DEPDIR)/strtof.Plo \
-	$(DEPDIR)/strtok_r.Plo $(DEPDIR)/strtoll.Plo \
-	$(DEPDIR)/strverscmp.Plo $(DEPDIR)/swab.Plo \
-	$(DEPDIR)/tdestroy.Plo $(DEPDIR)/tfind.Plo \
+	$(DEPDIR)/lfind.Plo $(DEPDIR)/lldiv.Plo \
+	$(DEPDIR)/localtime_r.Plo $(DEPDIR)/memrchr.Plo \
+	$(DEPDIR)/nrand48.Plo $(DEPDIR)/pathconf.Plo \
+	$(DEPDIR)/poll.Plo $(DEPDIR)/realpath.Plo \
+	$(DEPDIR)/recvmsg.Plo $(DEPDIR)/rewind.Plo \
+	$(DEPDIR)/sendmsg.Plo $(DEPDIR)/setenv.Plo \
+	$(DEPDIR)/sigwait.Plo $(DEPDIR)/sincos.Plo \
+	$(DEPDIR)/strcasecmp.Plo $(DEPDIR)/strcasestr.Plo \
+	$(DEPDIR)/strdup.Plo $(DEPDIR)/strlcpy.Plo \
+	$(DEPDIR)/strndup.Plo $(DEPDIR)/strnlen.Plo \
+	$(DEPDIR)/strnstr.Plo $(DEPDIR)/strsep.Plo \
+	$(DEPDIR)/strtof.Plo $(DEPDIR)/strtok_r.Plo \
+	$(DEPDIR)/strtoll.Plo $(DEPDIR)/strverscmp.Plo \
+	$(DEPDIR)/swab.Plo $(DEPDIR)/tdestroy.Plo $(DEPDIR)/tfind.Plo \
 	$(DEPDIR)/timegm.Plo $(DEPDIR)/timespec_get.Plo \
 	$(DEPDIR)/vasprintf.Plo ./$(DEPDIR)/dummy.Plo \
 	test/$(DEPDIR)/strnstr.Po
@@ -420,12 +420,13 @@ am__DIST_COMMON = $(srcdir)/Makefile.in \
 	$(top_srcdir)/autotools/test-driver aligned_alloc.c asprintf.c \
 	atof.c atoll.c dirfd.c fdopendir.c ffsll.c flockfile.c \
 	freeaddrinfo.c fsync.c gai_strerror.c getdelim.c getpid.c \
-	gettimeofday.c gmtime_r.c inet_pton.c lldiv.c localtime_r.c \
-	memrchr.c nrand48.c pathconf.c poll.c realpath.c recvmsg.c \
-	rewind.c sendmsg.c setenv.c sigwait.c sincos.c strcasecmp.c \
-	strcasestr.c strdup.c strlcpy.c strndup.c strnlen.c strnstr.c \
-	strsep.c strtof.c strtok_r.c strtoll.c strverscmp.c swab.c \
-	tdestroy.c tfind.c timegm.c timespec_get.c vasprintf.c
+	gettimeofday.c gmtime_r.c inet_pton.c lfind.c lldiv.c \
+	localtime_r.c memrchr.c nrand48.c pathconf.c poll.c realpath.c \
+	recvmsg.c rewind.c sendmsg.c setenv.c sigwait.c sincos.c \
+	strcasecmp.c strcasestr.c strdup.c strlcpy.c strndup.c \
+	strnlen.c strnstr.c strsep.c strtof.c strtok_r.c strtoll.c \
+	strverscmp.c swab.c tdestroy.c tfind.c timegm.c timespec_get.c \
+	vasprintf.c
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
@@ -485,6 +486,7 @@ CFLAGS_avahi = @CFLAGS_avahi@
 CFLAGS_caca = @CFLAGS_caca@
 CFLAGS_cdda = @CFLAGS_cdda@
 CFLAGS_daala = @CFLAGS_daala@
+CFLAGS_dav1d = @CFLAGS_dav1d@
 CFLAGS_dc1394 = @CFLAGS_dc1394@
 CFLAGS_dca = @CFLAGS_dca@
 CFLAGS_deinterlace = @CFLAGS_deinterlace@
@@ -563,6 +565,7 @@ CPPFLAGS_aribcam = @CPPFLAGS_aribcam@
 CPPFLAGS_avahi = @CPPFLAGS_avahi@
 CPPFLAGS_caca = @CPPFLAGS_caca@
 CPPFLAGS_daala = @CPPFLAGS_daala@
+CPPFLAGS_dav1d = @CPPFLAGS_dav1d@
 CPPFLAGS_dc1394 = @CPPFLAGS_dc1394@
 CPPFLAGS_dca = @CPPFLAGS_dca@
 CPPFLAGS_decklink = @CPPFLAGS_decklink@
@@ -624,6 +627,8 @@ CXXFLAGS_mod = @CXXFLAGS_mod@
 CYGPATH_W = @CYGPATH_W@
 DAALA_CFLAGS = @DAALA_CFLAGS@
 DAALA_LIBS = @DAALA_LIBS@
+DAV1D_CFLAGS = @DAV1D_CFLAGS@
+DAV1D_LIBS = @DAV1D_LIBS@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_LIBS = @DBUS_LIBS@
 DC1394_CFLAGS = @DC1394_CFLAGS@
@@ -760,6 +765,7 @@ LIBS_caca = @LIBS_caca@
 LIBS_cdda = @LIBS_cdda@
 LIBS_crystalhd = @LIBS_crystalhd@
 LIBS_daala = @LIBS_daala@
+LIBS_dav1d = @LIBS_dav1d@
 LIBS_dc1394 = @LIBS_dc1394@
 LIBS_dca = @LIBS_dca@
 LIBS_dsm = @LIBS_dsm@
@@ -871,6 +877,7 @@ LTLIBcdda = @LTLIBcdda@
 LTLIBcrystalhd = @LTLIBcrystalhd@
 LTLIBcvpx = @LTLIBcvpx@
 LTLIBdaala = @LTLIBdaala@
+LTLIBdav1d = @LTLIBdav1d@
 LTLIBdc1394 = @LTLIBdc1394@
 LTLIBdca = @LTLIBdca@
 LTLIBdirect3d11 = @LTLIBdirect3d11@
@@ -1132,8 +1139,8 @@ WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
 X262_CFLAGS = @X262_CFLAGS@
 X262_LIBS = @X262_LIBS@
-X26410B_CFLAGS = @X26410B_CFLAGS@
-X26410B_LIBS = @X26410B_LIBS@
+X26410b_CFLAGS = @X26410b_CFLAGS@
+X26410b_LIBS = @X26410b_LIBS@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
 X265_CFLAGS = @X265_CFLAGS@
@@ -1358,6 +1365,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/gettimeofday.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/gmtime_r.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/inet_pton.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/lfind.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/lldiv.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/localtime_r.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/memrchr.Plo@am__quote@ # am--include-marker
@@ -1746,6 +1754,7 @@ distclean: distclean-am
 	-rm -f $(DEPDIR)/gettimeofday.Plo
 	-rm -f $(DEPDIR)/gmtime_r.Plo
 	-rm -f $(DEPDIR)/inet_pton.Plo
+	-rm -f $(DEPDIR)/lfind.Plo
 	-rm -f $(DEPDIR)/lldiv.Plo
 	-rm -f $(DEPDIR)/localtime_r.Plo
 	-rm -f $(DEPDIR)/memrchr.Plo
@@ -1840,6 +1849,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f $(DEPDIR)/gettimeofday.Plo
 	-rm -f $(DEPDIR)/gmtime_r.Plo
 	-rm -f $(DEPDIR)/inet_pton.Plo
+	-rm -f $(DEPDIR)/lfind.Plo
 	-rm -f $(DEPDIR)/lldiv.Plo
 	-rm -f $(DEPDIR)/localtime_r.Plo
 	-rm -f $(DEPDIR)/memrchr.Plo

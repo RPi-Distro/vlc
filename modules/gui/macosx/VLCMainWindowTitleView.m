@@ -2,7 +2,7 @@
  * MainWindowTitle.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: 73e2bb960aca3c5b8a269180ef55968cae8d4e24 $
+ * $Id: 817a131faecc90722fdf0ba04497f1118e8ce730 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -56,7 +56,6 @@
     NSImage * _oldFullscreenHoverImage;
     NSImage * _oldFullscreenOnClickImage;
 
-    NSShadow * _windowTitleShadow;
     NSDictionary * _windowTitleAttributesDictionary;
 
     BOOL b_nativeFullscreenMode;
@@ -237,17 +236,9 @@
 
 - (void)setWindowTitle:(NSString *)title
 {
-    if (!_windowTitleShadow) {
-        _windowTitleShadow = [[NSShadow alloc] init];
-        [_windowTitleShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.5]];
-        [_windowTitleShadow setShadowOffset:NSMakeSize(0.0, -1.5)];
-        [_windowTitleShadow setShadowBlurRadius:0.5];
-    }
-
     NSMutableAttributedString *attributedTitleString = [[NSMutableAttributedString alloc] initWithString:title attributes: _windowTitleAttributesDictionary];
     NSUInteger i_titleLength = [title length];
 
-    [attributedTitleString addAttribute:NSShadowAttributeName value:_windowTitleShadow range:NSMakeRange(0, i_titleLength)];
     [attributedTitleString setAlignment: NSCenterTextAlignment range:NSMakeRange(0, i_titleLength)];
     [_titleLabel setAttributedStringValue:attributedTitleString];
 }

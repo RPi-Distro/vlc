@@ -2,7 +2,7 @@
  * visual.c : Visualisation system
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: e0c47d83df78643215b8bda5f92a19c3c99eafc2 $
+ * $Id: b4c72201b8fffeb88d9c5849140cc374c533ac04 $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *
@@ -298,6 +298,9 @@ static int Open( vlc_object_t *p_this )
         .i_visible_height = height,
         .i_sar_num = 1,
         .i_sar_den = 1,
+        .transfer = TRANSFER_FUNC_SRGB,
+        .primaries = COLOR_PRIMARIES_SRGB,
+        .space = COLOR_SPACE_SRGB,
     };
     p_sys->p_vout = aout_filter_RequestVout( p_filter, NULL, &fmt );
     if( p_sys->p_vout == NULL )

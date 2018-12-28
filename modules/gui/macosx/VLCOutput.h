@@ -2,7 +2,7 @@
  * VLCOutput.h: MacOS X Output Dialog
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 0af25488feb449f71566ea1deef1185095e78ae7 $
+ * $Id: 7b63f03ecd413794c934f6b5c268ce9816103d15 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -87,7 +87,5 @@
 - (IBAction)transcodeChanged:(id)sender;
 - (IBAction)transcodeInfoChanged:(id)object;
 - (IBAction)announceChanged:(id)sender;
-
-- (IBAction)streamTTLStepperChanged:(id)sender;
 
 @end
