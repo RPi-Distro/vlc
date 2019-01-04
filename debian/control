@@ -12,7 +12,7 @@ Uploaders: Loic Minier <lool@dooz.org>,
            Sebastian Ramacher <sramacher@debian.org>
 Build-Depends: autopoint,
                bison,
-               debhelper (>= 11),
+               debhelper (>= 12),
                gettext,
                flex,
                liba52-0.7.4-dev,
