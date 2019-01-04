@@ -280,7 +280,6 @@ Files: bin/override.c
        modules/access/screen/mac.c
        modules/access/screen/screen.c
        modules/access/screen/screen.h
-       modules/access/screen/wayland.c
        modules/access/screen/win32.c
        modules/access/screen/xcb.c
        modules/access/sdi.c
@@ -921,12 +920,6 @@ Copyright: 2010-2015, Benjamin Drung
            2013-2018, Sebastian Ramacher
 License: GPL-2+
 
-Files: modules/audio_output/TPCircularBuffer.*
-Copyright: 2011-2012, A Tasty Pixel
-License: BSD-3-clause
-Comment:
- See https://github.com/michaeltyson/TPCircularBuffer
-
 Files: modules/gui/macosx/PXSourceList.h
        modules/gui/macosx/PXSourceList.m
        modules/gui/macosx/PXSourceListDataSource.h
@@ -987,8 +980,6 @@ Files: modules/access/linsys/linsys_sdi.h
        modules/access/linsys/linsys_sdiaudio.h
        modules/access/linsys/linsys_sdivideo.h
        modules/codec/omxil/OMX_Broadcom.h
-       modules/gui/macosx/SPInvocationGrabbing.h
-       modules/gui/macosx/SPInvocationGrabbing.m
        modules/gui/macosx/SPMediaKeyTap.h
        modules/gui/macosx/SPMediaKeyTap.m
        modules/gui/macosx/VLCHUDButtonCell.h
