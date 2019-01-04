@@ -1,3 +1,11 @@
+vlc (3.0.5-2) unstable; urgency=medium
+
+  * debian/control: Bump libbluray-dev to >= 1.0.0.
+  * debian/: Bump debhelper compat to 12.
+  * debian/copyright: Remove paragraphs for no longer existing files.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 04 Jan 2019 18:08:58 +0100
+
 vlc (3.0.5-1) unstable; urgency=medium
 
   [ Mateusz Łukasik ]
@@ -3919,4 +3927,3 @@ vlc (0.1.99-1) unstable; urgency=low
   * Initial Release.
 
  -- Samuel Hocevar <sam@via.ecp.fr>  Mon, 13 Mar 2000 02:21:45 +0100
-
