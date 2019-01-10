@@ -32,7 +32,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-12-26 18:46+0100\n"
+"POT-Creation-Date: 2019-01-10 16:40+0100\n"
 "PO-Revision-Date: 2018-07-20 11:34+0200\n"
 "Last-Translator: Tomáš Chvátal <tomas.chvatal@gmail.com>, 2018\n"
 "Language-Team: Czech (https://www.transifex.com/yaron/teams/16553/cs/)\n"
@@ -6157,16 +6157,16 @@ msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 "Nepodařilo se spustit přehrávání Blu-ray. Zkuste to prosím bez podpory menu."
 
-#: modules/access/bluray.c:974 modules/access/bluray.c:2733
-#: modules/access/bluray.c:2738
+#: modules/access/bluray.c:974 modules/access/bluray.c:2735
+#: modules/access/bluray.c:2740
 msgid "Blu-ray error"
 msgstr "Chyba Blu-Ray"
 
-#: modules/access/bluray.c:2042
+#: modules/access/bluray.c:2044
 msgid "Top Menu"
 msgstr "Horní nabídka"
 
-#: modules/access/bluray.c:2045
+#: modules/access/bluray.c:2047
 msgid "First Play"
 msgstr "První přehrání"
 

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-12-26 18:46+0100\n"
+"POT-Creation-Date: 2019-01-10 16:40+0100\n"
 "PO-Revision-Date: 2018-07-04 21:15+0200\n"
 "Last-Translator: Seanán Ó Coistín <seananoc@gmail.com>, 2018\n"
 "Language-Team: Irish (https://www.transifex.com/yaron/teams/16553/ga/)\n"
@@ -5868,16 +5868,16 @@ msgstr "Níor aimsíodh Java ar do chóras."
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 
-#: modules/access/bluray.c:974 modules/access/bluray.c:2733
-#: modules/access/bluray.c:2738
+#: modules/access/bluray.c:974 modules/access/bluray.c:2735
+#: modules/access/bluray.c:2740
 msgid "Blu-ray error"
 msgstr "Botún Blu-ray"
 
-#: modules/access/bluray.c:2042
+#: modules/access/bluray.c:2044
 msgid "Top Menu"
 msgstr "An Roghchlár ar Barr"
 
-#: modules/access/bluray.c:2045
+#: modules/access/bluray.c:2047
 msgid "First Play"
 msgstr "An chéad seinm"
 

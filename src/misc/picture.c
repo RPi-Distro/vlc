@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: 33e9242e702f5ffd04630b267f9db53770906aa4 $
+ * $Id: e03f9d592366c88f6156c742e2f110cc081a9869 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -70,6 +70,7 @@ static int AllocatePicture( picture_t *p_pic )
         return VLC_ENOMEM;
     }
 
+    i_bytes = (i_bytes + 63) & ~63; /* must be a multiple of 64 */
     uint8_t *p_data = aligned_alloc( 64, i_bytes );
     if( i_bytes > 0 && p_data == NULL )
     {
