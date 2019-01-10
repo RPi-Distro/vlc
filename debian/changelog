@@ -1,3 +1,9 @@
+vlc (3.0.6-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 10 Jan 2019 20:03:32 +0100
+
 vlc (3.0.5-2) unstable; urgency=medium
 
   * debian/control: Bump libbluray-dev to >= 1.0.0.
