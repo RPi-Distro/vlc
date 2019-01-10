@@ -1,9 +1,9 @@
-vlc (3.0.5-0+deb9u1) UNRELEASED; urgency=medium
+vlc (3.0.6-0+deb9u1) UNRELEASED; urgency=medium
 
   * New upstream bug fix release.
     - Fix CAF integer-underflow. (CVE-2018-19857)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Fri, 28 Dec 2018 09:48:23 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 10 Jan 2019 21:18:35 +0100
 
 vlc (3.0.3-1-0+deb9u1) stretch-security; urgency=high
 
