@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-12-26 18:46+0100\n"
+"POT-Creation-Date: 2019-01-10 16:40+0100\n"
 "PO-Revision-Date: 2018-07-09 01:04+0200\n"
 "Last-Translator: VideoLAN <videolan@videolan.org>, 2018\n"
 "Language-Team: Marathi (https://www.transifex.com/yaron/teams/16553/mr/)\n"
@@ -6191,16 +6191,16 @@ msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 "ब्लूरे पार्श्वगायन सुरुवात करण्यास अपयशी. कृपया विषयसूची पाठिंब्याशिवाय वापरुन पाहा."
 
-#: modules/access/bluray.c:974 modules/access/bluray.c:2733
-#: modules/access/bluray.c:2738
+#: modules/access/bluray.c:974 modules/access/bluray.c:2735
+#: modules/access/bluray.c:2740
 msgid "Blu-ray error"
 msgstr "ब्लू-रे चूक"
 
-#: modules/access/bluray.c:2042
+#: modules/access/bluray.c:2044
 msgid "Top Menu"
 msgstr "वरची विषयसूची"
 
-#: modules/access/bluray.c:2045
+#: modules/access/bluray.c:2047
 msgid "First Play"
 msgstr "सर्वप्रथम चालवा"
 
