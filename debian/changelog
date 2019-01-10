@@ -1,9 +1,12 @@
-vlc (3.0.6-0+deb9u1) UNRELEASED; urgency=medium
+vlc (3.0.6-0+deb9u1) stretch-security; urgency=high
 
   * New upstream bug fix release.
     - Fix CAF integer-underflow. (CVE-2018-19857)
+    - Fix crashes with LPCM streams.
+    - Fix live555 and screen capture crashes.
+  * debian/patches: Apply upstream patch for libbluray compatibility.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Thu, 10 Jan 2019 21:18:35 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 10 Jan 2019 21:42:19 +0100
 
 vlc (3.0.3-1-0+deb9u1) stretch-security; urgency=high
 
