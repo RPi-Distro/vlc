@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-12-26 18:46+0100\n"
+"POT-Creation-Date: 2019-01-10 16:40+0100\n"
 "PO-Revision-Date: 2018-07-09 01:16+0200\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Polish (https://www.transifex.com/yaron/teams/16553/pl/)\n"
@@ -6292,16 +6292,16 @@ msgstr "Java nie została znaleziona w twoim systemie"
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr "Nie można odtworzyć płyty Blu-ray. Spróbuj bez obsługi menu."
 
-#: modules/access/bluray.c:974 modules/access/bluray.c:2733
-#: modules/access/bluray.c:2738
+#: modules/access/bluray.c:974 modules/access/bluray.c:2735
+#: modules/access/bluray.c:2740
 msgid "Blu-ray error"
 msgstr "Błąd Blu-ray"
 
-#: modules/access/bluray.c:2042
+#: modules/access/bluray.c:2044
 msgid "Top Menu"
 msgstr "Główne menu"
 
-#: modules/access/bluray.c:2045
+#: modules/access/bluray.c:2047
 msgid "First Play"
 msgstr "Pierwsze odtwarzanie"
 

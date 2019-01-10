@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.3\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2018-12-26 18:46+0100\n"
+"POT-Creation-Date: 2019-01-10 16:40+0100\n"
 "PO-Revision-Date: 2018-07-08 22:43+0200\n"
 "Last-Translator: VideoLAN <videolan@videolan.org>, 2018\n"
 "Language-Team: Bodo (https://www.transifex.com/yaron/teams/16553/brx/)\n"
@@ -6185,16 +6185,16 @@ msgstr ""
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr "bluray प्लेबेकखौ जागायनो फेलें जाबाय। मेनु हेफाजाब गैयाबालानो अननानै नाजा।"
 
-#: modules/access/bluray.c:974 modules/access/bluray.c:2733
-#: modules/access/bluray.c:2738
+#: modules/access/bluray.c:974 modules/access/bluray.c:2735
+#: modules/access/bluray.c:2740
 msgid "Blu-ray error"
 msgstr "ब्लु-रे गोरोन्थि"
 
-#: modules/access/bluray.c:2042
+#: modules/access/bluray.c:2044
 msgid "Top Menu"
 msgstr "बिजौ मेनु"
 
-#: modules/access/bluray.c:2045
+#: modules/access/bluray.c:2047
 msgid "First Play"
 msgstr "गिब दामनाय"
 

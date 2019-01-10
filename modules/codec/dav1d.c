@@ -93,6 +93,10 @@ static const struct
     {VLC_CODEC_I420_10L, DAV1D_PIXEL_LAYOUT_I420, 10},
     {VLC_CODEC_I422_10L, DAV1D_PIXEL_LAYOUT_I422, 10},
     {VLC_CODEC_I444_10L, DAV1D_PIXEL_LAYOUT_I444, 10},
+
+    {VLC_CODEC_I420_12L, DAV1D_PIXEL_LAYOUT_I420, 12},
+    {VLC_CODEC_I422_12L, DAV1D_PIXEL_LAYOUT_I422, 12},
+    {VLC_CODEC_I444_12L, DAV1D_PIXEL_LAYOUT_I444, 12},
 };
 
 static vlc_fourcc_t FindVlcChroma(const Dav1dPicture *img)
@@ -310,6 +314,10 @@ static int OpenDecoder(vlc_object_t *p_this)
         dec->fmt_out.video.i_sar_num = dec->fmt_in.video.i_sar_num;
         dec->fmt_out.video.i_sar_den = dec->fmt_in.video.i_sar_den;
     }
+    dec->fmt_out.video.primaries   = dec->fmt_in.video.primaries;
+    dec->fmt_out.video.transfer    = dec->fmt_in.video.transfer;
+    dec->fmt_out.video.space       = dec->fmt_in.video.space;
+    dec->fmt_out.video.b_color_range_full = dec->fmt_in.video.b_color_range_full;
 
     return VLC_SUCCESS;
 }
