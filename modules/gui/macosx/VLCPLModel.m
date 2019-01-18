@@ -3,7 +3,7 @@
  * VLCPLItem.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: d1897f0dbdc279c45aca171b61e3d79a12372aa1 $
+ * $Id: 2fbea38d1562e28c22e2acee515c01f50837a473 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,22 @@
 #include <vlc_input_item.h>
 #include <vlc_input.h>
 #include <vlc_url.h>
+
+@interface VLCPLModel ()
+{
+    playlist_t *p_playlist;
+    __weak NSOutlineView *_outlineView;
+
+    NSUInteger _retainedRowSelection;
+}
+
+- (void)VLCPLItemAppended:(NSArray *)valueArray;
+- (void)VLCPLItemRemoved:(NSNumber *)value;
+- (void)VLCPLItemUpdated;
+
+@end
+
+#pragma mark -
 
 static int VLCPLItemUpdated(vlc_object_t *p_this, const char *psz_var,
                          vlc_value_t oldval, vlc_value_t new_val, void *param)
@@ -104,15 +120,6 @@ static int VolumeUpdated(vlc_object_t *p_this, const char *psz_var,
 }
 
 #pragma mark -
-
-@interface VLCPLModel ()
-{
-    playlist_t *p_playlist;
-    __weak NSOutlineView *_outlineView;
-
-    NSUInteger _retainedRowSelection;
-}
-@end
 
 @implementation VLCPLModel
 
@@ -681,6 +688,7 @@ static int VolumeUpdated(vlc_object_t *p_this, const char *psz_var,
         playlist_item_t *p_new_parent = playlist_ItemGetById(p_playlist, [targetItem plItemId]);
         if (!p_new_parent) {
             PL_UNLOCK;
+            free(pp_items);
             return NO;
         }
 
@@ -704,14 +712,19 @@ static int VolumeUpdated(vlc_object_t *p_this, const char *psz_var,
         PL_UNLOCK;
         free(pp_items);
 
+        // FIXME: Fix below code to avoid rebuilding the whole model
         // rebuild our model
-        NSUInteger filteredItemsCount = [o_filteredItems count];
-        for(NSUInteger i = 0; i < filteredItemsCount; ++i) {
-            VLCPLItem *o_item = [o_filteredItems objectAtIndex:i];
-            NSLog(@"delete child from parent %p", [o_item parent]);
-            [[o_item parent] deleteChild:o_item];
-            [targetItem addChild:o_item atPos:index + i];
-        }
+//        NSUInteger filteredItemsCount = [o_filteredItems count];
+//        for(int i = 0; i < filteredItemsCount; ++i) {
+//            VLCPLItem *o_item = [o_filteredItems objectAtIndex:i];
+//            NSLog(@"delete child from parent %p", [o_item parent]);
+//            [[o_item parent] deleteChild:o_item];
+//            [targetItem addChild:o_item atPos:(int)index + i];
+//        }
+
+        PL_LOCK;
+        [self rebuildVLCPLItem:_rootItem];
+        PL_UNLOCK;
 
         [_outlineView reloadData];
 

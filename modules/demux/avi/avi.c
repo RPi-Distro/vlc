@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 8e43a9d0f8602b794c41859c11c3fe95a7111301 $
+ * $Id: 3492485a25ba60fbd24fcc8a154df3a82966f80d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -278,6 +278,30 @@ static void Close ( vlc_object_t * p_this )
     free( p_sys );
 }
 
+static void Set_BMP_RGB_Masks( es_format_t *fmt )
+{
+    switch( fmt->i_codec )
+    {
+        case VLC_CODEC_RGB32:
+            fmt->video.i_bmask = 0xff000000;
+            fmt->video.i_gmask = 0x00ff0000;
+            fmt->video.i_rmask = 0x0000ff00;
+            break;
+        case VLC_CODEC_RGB24: /* BGR (see biBitCount) */
+            fmt->video.i_bmask = 0x00ff0000;
+            fmt->video.i_gmask = 0x0000ff00;
+            fmt->video.i_rmask = 0x000000ff;
+            break;
+        case VLC_CODEC_RGB15:
+            fmt->video.i_rmask = 0x7c00;
+            fmt->video.i_gmask = 0x03e0;
+            fmt->video.i_bmask = 0x001f;
+            break;
+        default:
+            break;
+    }
+}
+
 /*****************************************************************************
  * Open: check file and initializes AVI structures
  *****************************************************************************/
@@ -466,7 +490,7 @@ static int Open( vlc_object_t * p_this )
         tk->i_samplesize = p_strh->i_samplesize;
         msg_Dbg( p_demux, "stream[%u] rate:%u scale:%u samplesize:%u",
                 i, tk->i_rate, tk->i_scale, tk->i_samplesize );
-        if( tk->i_scale > tk->i_rate )
+        if( tk->i_scale > tk->i_rate || !tk->i_scale || !tk->i_rate )
         {
             free( tk );
             continue;
@@ -591,13 +615,16 @@ static int Open( vlc_object_t * p_this )
                     {
                         case 32:
                             tk->fmt.i_codec = VLC_CODEC_RGB32;
+                            Set_BMP_RGB_Masks( &tk->fmt );
                             break;
                         case 24:
-                            tk->fmt.i_codec = VLC_CODEC_RGB24;
+                            tk->fmt.i_codec = VLC_CODEC_RGB24; /* BGR (see biBitCount) */
+                            Set_BMP_RGB_Masks( &tk->fmt );
                             break;
                         case 16: /* Yes it is RV15 */
                         case 15:
                             tk->fmt.i_codec = VLC_CODEC_RGB15;
+                            Set_BMP_RGB_Masks( &tk->fmt );
                             break;
                         case 9: /* <- TODO check that */
                             tk->fmt.i_codec = VLC_CODEC_I410;
@@ -610,24 +637,7 @@ static int Open( vlc_object_t * p_this )
                             break;
                     }
 
-                    switch( tk->fmt.i_codec )
-                    {
-                    case VLC_CODEC_RGB32:
-                        tk->fmt.video.i_bmask = 0xff000000;
-                        tk->fmt.video.i_gmask = 0x00ff0000;
-                        tk->fmt.video.i_rmask = 0x0000ff00;
-                        break;
-                    case VLC_CODEC_RGB24: /* BGR (see biBitCount) */
-                        tk->fmt.video.i_bmask = 0x00ff0000;
-                        tk->fmt.video.i_gmask = 0x0000ff00;
-                        tk->fmt.video.i_rmask = 0x000000ff;
-                        break;
-                    case VLC_CODEC_RGB15: /* RGB (B least 5 bits) */
-                        tk->fmt.video.i_rmask = 0x7c00;
-                        tk->fmt.video.i_gmask = 0x03e0;
-                        tk->fmt.video.i_bmask = 0x001f;
-                        break;
-                    case VLC_CODEC_RGBP:
+                    if( tk->fmt.i_codec == VLC_CODEC_RGBP )
                     {
                         const VLC_BITMAPINFO *p_bi = (const VLC_BITMAPINFO *) p_vids->p_bih;
                         tk->fmt.video.p_palette = malloc( sizeof(video_palette_t) );
@@ -645,10 +655,6 @@ static int Open( vlc_object_t * p_this )
                             tk->fmt.video.p_palette->i_entries = p_vids->p_bih->biClrUsed;
                         }
                     }
-                        break;
-                    default:
-                        break;
-                    }
 
                     tk->i_width_bytes = p_vids->p_bih->biWidth * (p_vids->p_bih->biBitCount >> 3);
                     /* RGB DIB are coded from bottom to top */
@@ -663,6 +669,9 @@ static int Open( vlc_object_t * p_this )
                         tk->fmt.i_codec           =
                         tk->fmt.i_original_fourcc = VLC_FOURCC( 'X', 'V', 'I', 'D' );
                     }
+
+                    /* Shitty files storing chroma in biCompression */
+                    Set_BMP_RGB_Masks( &tk->fmt );
                 }
                 tk->i_samplesize = 0;
 
@@ -749,9 +758,9 @@ static int Open( vlc_object_t * p_this )
             case( AVIFOURCC_iavs):
             case( AVIFOURCC_ivas):
                 msg_Dbg( p_demux, "stream[%u] iavs with handler %4.4s", i, (char *)&p_strh->i_handler );
-                es_format_Init( &tk->fmt, VIDEO_ES, p_strh->i_handler );
+                es_format_Init( &tk->fmt, VIDEO_ES, AVI_FourccGetCodec( VIDEO_ES, p_strh->i_handler ) );
                 tk->i_samplesize = 0;
-                tk->i_dv_audio_rate = p_strh->i_handler == VLC_CODEC_DV ? -1 : 0;
+                tk->i_dv_audio_rate = tk->fmt.i_codec == VLC_CODEC_DV ? -1 : 0;
 
                 tk->fmt.video.i_visible_width =
                 tk->fmt.video.i_width  = p_avih->i_width;
@@ -1107,7 +1116,14 @@ static int Demux_Seekable( demux_t *p_demux )
         }
         else if ( i_dpts > -2 * CLOCK_FREQ ) /* don't send a too early dts (low fps video) */
         {
-            toread[i_track].i_toread = AVI_PTSToChunk( tk, i_dpts );
+            int64_t i_chunks_count = AVI_PTSToChunk( tk, i_dpts );
+            if( i_dpts > 0 && AVI_GetDPTS( tk, i_chunks_count ) < i_dpts )
+            {
+                /* AVI code is crap. toread is either bytes, or here, chunk count.
+                 * That does not even work when reading amount < scale / rate */
+                i_chunks_count++;
+            }
+            toread[i_track].i_toread = i_chunks_count;
         }
         else
             toread[i_track].i_toread = -1;

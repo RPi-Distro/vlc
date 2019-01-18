@@ -20,6 +20,12 @@ libvpx: libvpx-$(VPX_VERSION).tar.bz2 .sum-vpx
 ifdef HAVE_ANDROID
 	$(APPLY) $(SRC)/vpx/libvpx-android.patch
 endif
+	$(APPLY) $(SRC)/vpx/0001-ads2gas-Add-a-noelf-option.patch
+	$(APPLY) $(SRC)/vpx/0002-configure-Add-an-armv7-win32-gcc-target.patch
+	$(APPLY) $(SRC)/vpx/0003-configure-Add-an-arm64-win64-gcc-target.patch
+ifdef HAVE_WIN32
+	$(APPLY) $(SRC)/vpx/libvpx-pthread-w32.patch
+endif
 	$(MOVE)
 
 DEPS_vpx =
@@ -54,6 +60,8 @@ else ifeq ($(ARCH),sparc)
 VPX_ARCH := sparc
 else ifeq ($(ARCH),x86_64)
 VPX_ARCH := x86_64
+else ifeq ($(ARCH),aarch64)
+VPX_ARCH := arm64
 endif
 
 ifdef HAVE_ANDROID
@@ -68,7 +76,7 @@ VPX_OS := darwin10
 endif
 VPX_CROSS :=
 else ifdef HAVE_IOS
-ifeq ($(ARCH),arm)
+ifeq ($(ARCH),$(filter $(ARCH), arm aarch64))
 VPX_OS := darwin
 else
 VPX_OS := darwin11
@@ -99,8 +107,16 @@ VPX_CONF := \
 	--disable-dependency-tracking \
 	--enable-vp9-highbitdepth
 
+ifndef HAVE_WIN32
 ifndef HAVE_IOS
 VPX_CONF += --enable-runtime-cpu-detect
+endif
+else
+# WIN32
+ifeq ($(filter arm aarch64, $(ARCH)),)
+# Only enable runtime cpu detect on architectures other than arm/aarch64
+VPX_CONF += --enable-runtime-cpu-detect
+endif
 endif
 
 ifndef BUILD_ENCODERS
@@ -120,7 +136,7 @@ VPX_CONF += --sdk-path=$(IOS_SDK) --enable-vp8-decoder
 ifdef HAVE_TVOS
 VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -mtvos-version-min=9.0
 else
-VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -miphoneos-version-min=6.1
+VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -miphoneos-version-min=8.4
 endif
 ifeq ($(ARCH),aarch64)
 VPX_LDFLAGS += -arch arm64
@@ -135,7 +151,7 @@ ifdef HAVE_ANDROID
 # uses that path to look for the compiler (which we already know)
 VPX_CONF += --sdk-path=$(shell dirname $(shell which $(HOST)-clang))
 # broken text relocations
-ifeq ($(ARCH),x86_64)
+ifneq ($(filter i386 x86_64,$(ARCH)),)
 VPX_CONF += --disable-mmx
 endif
 endif

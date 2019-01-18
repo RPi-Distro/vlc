@@ -41,7 +41,17 @@
 
 #define QTKIT_VERSION_MIN_REQUIRED 70603
 
+#import <AvailabilityMacros.h>
 #import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
+
+#ifndef MAC_OS_X_VERSION_10_14
+@interface AVCaptureDevice (AVCaptureDeviceAuthorizationSince10_14)
+
++ (void)requestAccessForMediaType:(AVMediaType)mediaType completionHandler:(void (^)(BOOL granted))handler API_AVAILABLE(macos(10.14), ios(7.0));
+
+@end
+#endif
 
 /*****************************************************************************
  * Local prototypes.
@@ -307,6 +317,24 @@ static int Open(vlc_object_t *p_this)
             msg_Err(p_demux, "default audio capture device is exclusively in use by another application");
             goto error;
         }
+
+        if (@available(macOS 10.14, *)) {
+            msg_Dbg(p_demux, "Check user consent for access to the audio device");
+
+            dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+            __block bool accessGranted = NO;
+            [AVCaptureDevice requestAccessForMediaType: AVMediaTypeAudio completionHandler:^(BOOL granted) {
+                accessGranted = granted;
+                dispatch_semaphore_signal(sema);
+            } ];
+            dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+            dispatch_release(sema);
+            if (!accessGranted) {
+                msg_Err(p_demux, "Can't use the audio device as access has not been granted by the user");
+                goto error;
+            }
+        }
+
         audioInput = [[QTCaptureDeviceInput alloc] initWithDevice: p_sys->audiodevice];
         if(!audioInput) {
             msg_Err(p_demux, "can't create a valid audio capture input facility");

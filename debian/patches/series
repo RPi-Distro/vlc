@@ -1,2 +1,3 @@
+0001-bluray-Fix-build-with-libbluray-1.0.0.patch
 mmal_1.patch
 armv6.patch

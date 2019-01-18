@@ -128,21 +128,41 @@ namespace adaptive
                 stream_t *p_streamurl;
        };
 
-       class ConnectionFactory
+       class AbstractConnectionFactory
+       {
+           public:
+               AbstractConnectionFactory() {}
+               virtual ~AbstractConnectionFactory() {}
+               virtual AbstractConnection * createConnection(vlc_object_t *, const ConnectionParams &) = 0;
+       };
+
+       class NativeConnectionFactory : public AbstractConnectionFactory
+       {
+           public:
+               NativeConnectionFactory( AuthStorage * );
+               virtual ~NativeConnectionFactory();
+               virtual AbstractConnection * createConnection(vlc_object_t *, const ConnectionParams &);
+           private:
+               AuthStorage *authStorage;
+       };
+
+       class StreamUrlConnectionFactory : public AbstractConnectionFactory
+       {
+           public:
+               StreamUrlConnectionFactory();
+               virtual ~StreamUrlConnectionFactory() {}
+               virtual AbstractConnection * createConnection(vlc_object_t *, const ConnectionParams &);
+       };
+
+       class ConnectionFactory : public AbstractConnectionFactory
        {
            public:
                ConnectionFactory( AuthStorage * );
                virtual ~ConnectionFactory();
                virtual AbstractConnection * createConnection(vlc_object_t *, const ConnectionParams &);
            private:
-               AuthStorage *authStorage;
-       };
-
-       class StreamUrlConnectionFactory : public ConnectionFactory
-       {
-           public:
-               StreamUrlConnectionFactory();
-               virtual AbstractConnection * createConnection(vlc_object_t *, const ConnectionParams &);
+               NativeConnectionFactory *native;
+               StreamUrlConnectionFactory *streamurl;
        };
     }
 }

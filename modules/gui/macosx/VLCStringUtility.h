@@ -2,7 +2,7 @@
  * VLCStringUtility.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: e75666cc2c6896b2ea348da06c04e6d6b89c6830 $
+ * $Id: 4163d97c4b7f344a7ab7c097be4b61712025b7e0 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -57,6 +57,7 @@ unsigned int CocoaKeyToVLC(unichar i_key);
  * depending on the os version.
  */
 NSImage *imageFromRes(NSString *o_id);
+NSImage *sidebarImageFromRes(NSString *o_id, BOOL darkMode);
 
 @interface VLCStringUtility : NSObject
 

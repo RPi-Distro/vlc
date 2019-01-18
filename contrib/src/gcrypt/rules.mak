@@ -1,5 +1,5 @@
 # GCRYPT
-GCRYPT_VERSION := 1.7.9
+GCRYPT_VERSION := 1.7.10
 GCRYPT_URL := http://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-$(GCRYPT_VERSION).tar.bz2
 
 PKGS += gcrypt
@@ -13,6 +13,8 @@ gcrypt: libgcrypt-$(GCRYPT_VERSION).tar.bz2 .sum-gcrypt
 	$(UNPACK)
 	$(APPLY) $(SRC)/gcrypt/disable-tests-compilation.patch
 	$(APPLY) $(SRC)/gcrypt/fix-pthread-detection.patch
+	$(APPLY) $(SRC)/gcrypt/0001-random-Don-t-assume-that-_WIN64-implies-x86_64.patch
+	$(APPLY) $(SRC)/gcrypt/0002-aarch64-mpi-Fix-building-the-mpi-aarch64-assembly-fo.patch
 ifdef HAVE_WINSTORE
 	$(APPLY) $(SRC)/gcrypt/winrt.patch
 endif

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2005 VLC authors and VideoLAN
  * Copyright (C) 2007 Remi Denis-Courmont
- * $Id: cf6ebb7125402e6be9bd7fc2d80f3d5df14b6b78 $
+ * $Id: 84ae29601a47655d94295c53a718a9e6cde537b2 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Tristan Leteurtre <tooney@via.ecp.fr>
@@ -233,6 +233,12 @@ static block_t *BlockUDP(stream_t *access, bool *restrict eof)
         return NULL;
     }
 
+#ifdef __linux__
+    const int trunc_flag = MSG_TRUNC;
+#else
+    const int trunc_flag = 0;
+#endif
+
     struct iovec iov = {
         .iov_base = pkt->p_buffer,
         .iov_len = sys->mtu,
@@ -240,9 +246,7 @@ static block_t *BlockUDP(stream_t *access, bool *restrict eof)
     struct msghdr msg = {
         .msg_iov = &iov,
         .msg_iovlen = 1,
-#ifdef __linux__
-        .msg_flags = MSG_TRUNC,
-#endif
+        .msg_flags = trunc_flag,
     };
 
     struct pollfd ufd[1];
@@ -260,7 +264,8 @@ static block_t *BlockUDP(stream_t *access, bool *restrict eof)
             goto skip;
      }
 
-    ssize_t len = recvmsg(sys->fd, &msg, 0);
+    ssize_t len = recvmsg(sys->fd, &msg, trunc_flag);
+
     if (len < 0)
     {
 skip:
@@ -268,8 +273,7 @@ skip:
         return NULL;
     }
 
-#ifdef MSG_TRUNC
-    if (msg.msg_flags & MSG_TRUNC)
+    if (msg.msg_flags & trunc_flag)
     {
         msg_Err(access, "%zd bytes packet truncated (MTU was %zu)",
                 len, sys->mtu);
@@ -277,7 +281,6 @@ skip:
         sys->mtu = len;
     }
     else
-#endif
         pkt->i_buffer = len;
 
     return pkt;

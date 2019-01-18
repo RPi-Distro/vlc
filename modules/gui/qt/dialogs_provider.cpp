@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: d6edaa06d5160de301496763a7606d1a5e45920b $
+ * $Id: b816d29ae6f8886f12b41b7e4a1c7dff39826fe6 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -807,22 +807,20 @@ void DialogsProvider::loadSubtitlesFile()
     if( !p_item ) return;
 
     char *path = input_item_GetURI( p_item );
-    char *path2 = NULL;
+    QUrl url;
     if( path )
     {
-        path2 = vlc_uri2path( path );
-        free( path );
-        if( path2 )
-        {
-            char *sep = strrchr( path2, DIR_SEP_CHAR );
-            if( sep ) *sep = '\0';
-        }
+        url.setUrl( qfu(path) );
+        url = url.adjusted(QUrl::RemoveFilename);
+        if (url.scheme() != "file")
+            url.clear();
+        free(path);
     }
 
     QStringList qsl = showSimpleOpen( qtr( "Open subtitles..." ),
                                       EXT_FILTER_SUBTITLE,
-                                      qfu( path2 ) );
-    free( path2 );
+                                      url );
+
     foreach( const QString &qsUrl, qsl )
     {
         if( input_AddSlave( p_input, SLAVE_TYPE_SPU, qtu( qsUrl ), true, true, false ) )

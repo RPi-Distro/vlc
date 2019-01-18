@@ -58,7 +58,6 @@ struct filter_sys_t
     ID3D11VideoProcessor           *videoProcessor;
     ID3D11VideoProcessorEnumerator *procEnumerator;
 
-    HANDLE                         context_mutex;
     union {
         ID3D11Texture2D            *outTexture;
         ID3D11Resource             *outResource;
@@ -139,6 +138,7 @@ static int RenderPic( filter_t *p_filter, picture_t *p_outpic, picture_t *p_pic,
                 D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
 
     ID3D11VideoContext_VideoProcessorSetStreamFrameFormat(p_sys->d3dvidctx, p_sys->videoProcessor, 0, frameFormat);
+    ID3D11VideoContext_VideoProcessorSetStreamAutoProcessingMode(p_sys->d3dvidctx, p_sys->videoProcessor, 0, FALSE);
 
     D3D11_VIDEO_PROCESSOR_STREAM stream = {0};
     stream.Enable = TRUE;
@@ -227,13 +227,11 @@ static picture_t *Deinterlace(filter_t *p_filter, picture_t *p_pic)
 {
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    if( p_sys->context_mutex != INVALID_HANDLE_VALUE )
-        WaitForSingleObjectEx( p_sys->context_mutex, INFINITE, FALSE );
+    d3d11_device_lock( &p_sys->d3d_dev );
 
     picture_t *res = DoDeinterlacing( p_filter, &p_sys->context, p_pic );
 
-    if( p_sys->context_mutex  != INVALID_HANDLE_VALUE )
-        ReleaseMutex( p_sys->context_mutex );
+    d3d11_device_unlock( &p_sys->d3d_dev );
 
     return res;
 }
@@ -308,7 +306,7 @@ static picture_t *NewOutputPicture( filter_t *p_filter )
             video_format_t fmt = p_filter->fmt_out.video;
             fmt.i_width  = dstDesc.Width;
             fmt.i_height = dstDesc.Height;
-            if (AllocateTextures(VLC_OBJECT(p_filter), &p_filter->p_sys->d3d_dev, cfg,
+            if (AllocateTextures(p_filter, &p_filter->p_sys->d3d_dev, cfg,
                                  &fmt, 1, pic->p_sys->texture) != VLC_SUCCESS)
             {
                 free(pic->p_sys);
@@ -356,6 +354,12 @@ int D3D11OpenDeinterlace(vlc_object_t *obj)
         return VLC_ENOMEM;
     memset(sys, 0, sizeof (*sys));
 
+    if ( unlikely(D3D11_Create(filter, &sys->hd3d, false) != VLC_SUCCESS ))
+    {
+       msg_Err(filter, "Could not access the d3d11.");
+       goto error;
+    }
+
     D3D11_TEXTURE2D_DESC dstDesc;
     D3D11_FilterHoldInstance(filter, &sys->d3d_dev, &dstDesc);
     if (unlikely(sys->d3d_dev.d3dcontext==NULL))
@@ -365,7 +369,7 @@ int D3D11OpenDeinterlace(vlc_object_t *obj)
         return VLC_ENOOBJ;
     }
 
-    if (D3D11_Create(filter, &sys->hd3d) != VLC_SUCCESS)
+    if (D3D11_Create(filter, &sys->hd3d, false) != VLC_SUCCESS)
         goto error;
 
     hr = ID3D11Device_QueryInterface(sys->d3d_dev.d3ddevice, &IID_ID3D11VideoDevice, (void **)&sys->d3dviddev);
@@ -382,10 +386,10 @@ int D3D11OpenDeinterlace(vlc_object_t *obj)
 
     HANDLE context_lock = INVALID_HANDLE_VALUE;
     UINT dataSize = sizeof(context_lock);
-    hr = ID3D11Device_GetPrivateData(sys->d3d_dev.d3ddevice, &GUID_CONTEXT_MUTEX, &dataSize, &context_lock);
+    hr = ID3D11DeviceContext_GetPrivateData(sys->d3d_dev.d3dcontext, &GUID_CONTEXT_MUTEX, &dataSize, &context_lock);
     if (FAILED(hr))
         msg_Warn(filter, "No mutex found to lock the decoder");
-    sys->context_mutex = context_lock;
+    sys->d3d_dev.context_mutex = context_lock;
 
     const video_format_t *fmt = &filter->fmt_out.video;
 

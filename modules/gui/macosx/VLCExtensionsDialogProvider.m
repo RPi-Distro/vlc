@@ -2,7 +2,7 @@
  * VLCExtensionsDialogProvider.m: Mac OS X Extensions Dialogs
  *****************************************************************************
  * Copyright (C) 2010-2015 VLC authors and VideoLAN
- * $Id: f85cf139f007c8d24fcc20a35e96d8b4452a9c36 $
+ * $Id: f9c66f51be380738bb3aa6f7a85171a2700f6899 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan org>
  *          Brendon Justin <brendonjustin@gmail.com>,
@@ -140,6 +140,7 @@ static NSView *createControlFromWidget(extension_widget_t *widget, id self)
                 return spinner;
             }
             default:
+                msg_Err(getIntf(), "Unhandled Widget type %i", widget->type);
                 return nil;
         }
     }
@@ -384,6 +385,8 @@ static void extensionDialogCallback(extension_dialog_t *p_ext_dialog,
 
         if (!control && !shouldDestroy) {
             control = createControlFromWidget(widget, self);
+            if (control == NULL)
+                msg_Err(getIntf(), "Failed to create control from widget!");
             updateControlFromWidget(control, widget, self);
             /* Ownership needs to be given-up, if ARC would remain with the
              * ownership, the object could be freed while it is still referenced
@@ -419,8 +422,10 @@ static void extensionDialogCallback(extension_dialog_t *p_ext_dialog,
             /* Explicitily release here, as we do not have transfered ownership to ARC,
              * given that not in all cases we want to destroy the widget.
              */
-            CFRelease(widget->p_sys_intf);
-            widget->p_sys_intf = NULL;
+            if (widget->p_sys_intf) {
+                CFRelease(widget->p_sys_intf);
+                widget->p_sys_intf = NULL;
+            }
         }
     }
     FOREACH_END()

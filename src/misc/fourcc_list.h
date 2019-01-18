@@ -800,6 +800,10 @@ static const staticentry_t p_list_video[] = {
         A("AV32"),
     B(VLC_CODEC_BGRA, "32 bits BGRA"),
         A("BGRA"),
+    B(VLC_CODEC_RGBA10, "32 bits RGB 10bits A 2bits"),
+        A("RGA0"),
+    B(VLC_CODEC_RGBA64, "64 bits RGBA"),
+        A("RGA4"),
 
     B(VLC_CODEC_GREY, "8 bits greyscale"),
         A("GREY"),
@@ -835,6 +839,9 @@ static const staticentry_t p_list_video[] = {
 
     B(VLC_CODEC_V210, "10-bit 4:2:2 Component YCbCr"),
         A("v210"),
+
+    B(VLC_CODEC_VUYA, "Packed YUV 4:4:4, V:U:Y:A"),
+        A("VUYA"),
 
     B(VLC_CODEC_NV12, "Biplanar 4:2:0 Y/UV"),
         A("NV12"),

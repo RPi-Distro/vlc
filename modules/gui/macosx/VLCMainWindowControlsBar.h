@@ -2,7 +2,7 @@
  * ControlsBar.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2016 VLC authors and VideoLAN
- * $Id: 279a4697419084a29ba00ef0806b7454241ab716 $
+ * $Id: a0a04d29653ea837b4ca86a3bdd97b5c90b114c9 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -71,9 +71,9 @@
 
 - (IBAction)togglePlaylist:(id)sender;
 
-- (void)toggleEffectsButton;
-- (void)toggleJumpButtons;
-- (void)togglePlaymodeButtons;
+- (void)setupEffectsButton:(BOOL)withAnimation;
+- (void)setupJumpButtons:(BOOL)withAnimation;
+- (void)setupPlaymodeButtons:(BOOL)withAnimation;
 
 - (void)updateVolumeSlider;
 - (void)updateControls;

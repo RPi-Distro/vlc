@@ -2,7 +2,7 @@
  * VLCApplication.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2016 VLC authors and VideoLAN
- * $Id: f89e4a4513514ee5bfd0175790a733170b5c3402 $
+ * $Id: d22936f34661bd0cadfc93c6a5dcb47fa3fd447c $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -39,11 +39,22 @@
 // but we need to send a stop: to properly exits libvlc.
 // However, we are not able to change the action-method sent by this standard menu item.
 // thus we override terminate: to send a stop:
-// see [af97f24d528acab89969d6541d83f17ce1ecd580] that introduced the removal of setjmp() and longjmp()
 - (void)terminate:(id)sender
 {
     [self activateIgnoringOtherApps:YES];
     [self stop:sender];
+
+    // Trigger event in loop to force evaluating the stop flag
+    NSEvent* event = [NSEvent otherEventWithType:NSApplicationDefined
+                                        location:NSMakePoint(0,0)
+                                   modifierFlags:0
+                                       timestamp:0.0
+                                    windowNumber:0
+                                         context:nil
+                                         subtype:0
+                                           data1:0
+                                           data2:0];
+    [NSApp postEvent:event atStart:YES];
 }
 
 @end

@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 1999-2018 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.3)
+AC_INIT(vlc, 3.0.6)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=3
+VERSION_REVISION=6
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -541,21 +541,22 @@ dnl Check for broken versions of mingw-runtime compatability library
     ])
 
     dnl Check for fnative-struct or mms-bitfields support for mingw32
-    VLC_SAVE_FLAGS
-    CFLAGS="${CFLAGS} -mms-bitfields"
-    CXXFLAGS="${CXXFLAGS} -mms-bitfields"
-    AC_CACHE_CHECK([if \$CC accepts -mms-bitfields],
-        [ac_cv_c_mms_bitfields],
-        [AC_TRY_COMPILE([],,ac_cv_c_mms_bitfields=yes, ac_cv_c_mms_bitfields=no)])
-    if test "${ac_cv_c_mms_bitfields}" = "no"; then
-        VLC_RESTORE_FLAGS
-        CFLAGS="${CFLAGS} -fnative-struct"
-        CXXFLAGS="${CXXFLAGS} -fnative-struct"
-        AC_CACHE_CHECK([if \$CC accepts -fnative-struct],
-            [ac_cv_c_fnative_struct],
-            [AC_TRY_COMPILE([],,ac_cv_c_fnative_struct=yes, ac_cv_c_fnative_struct=no)])
-        "${ac_cv_c_fnative_struct}" = "no" && VLC_RESTORE_FLAGS
-    fi
+    AX_CHECK_COMPILE_FLAG([-mms-bitfields], [
+        AX_APPEND_FLAG([-mms-bitfields], [CFLAGS])
+        AX_APPEND_FLAG([-mms-bitfields], [CXXFLAGS])
+        # Check for the warning flag without "-Wno-", GCC accepts
+        # -Wno-<anything> for unsupported warnings, which can trigger
+        # other warnings instead.
+        AX_CHECK_COMPILE_FLAG([-Wincompatible-ms-struct], [
+            AX_APPEND_FLAG([-Wno-incompatible-ms-struct], [CFLAGS])
+            AX_APPEND_FLAG([-Wno-incompatible-ms-struct], [CXXFLAGS])
+        ])
+    ], [
+        AX_CHECK_COMPILE_FLAG([-fnative-struct], [
+            AX_APPEND_FLAG([-fnative-struct], [CFLAGS])
+            AX_APPEND_FLAG([-fnative-struct], [CXXFLAGS])
+        ])
+    ])
 ])
 
 
@@ -591,7 +592,7 @@ need_libc=false
 
 dnl Check for usual libc functions
 AC_CHECK_FUNCS([accept4 daemon fcntl flock fstatvfs fork getenv getpwuid_r isatty lstat memalign mkostemp mmap newlocale open_memstream openat pipe2 pread posix_fadvise posix_madvise posix_memalign setlocale stricmp strnicmp strptime uselocale])
-AC_REPLACE_FUNCS([aligned_alloc atof atoll dirfd fdopendir ffsll flockfile fsync getdelim getpid lldiv memrchr nrand48 poll recvmsg rewind sendmsg setenv strcasecmp strcasestr strdup strlcpy strndup strnlen strnstr strsep strtof strtok_r strtoll swab tdestroy tfind timegm timespec_get strverscmp pathconf])
+AC_REPLACE_FUNCS([aligned_alloc atof atoll dirfd fdopendir ffsll flockfile fsync getdelim getpid lfind lldiv memrchr nrand48 poll recvmsg rewind sendmsg setenv strcasecmp strcasestr strdup strlcpy strndup strnlen strnstr strsep strtof strtok_r strtoll swab tdestroy tfind timegm timespec_get strverscmp pathconf])
 AC_REPLACE_FUNCS([gettimeofday])
 AC_CHECK_FUNC(fdatasync,,
   [AC_DEFINE(fdatasync, fsync, [Alias fdatasync() to fsync() if missing.])
@@ -682,6 +683,7 @@ AC_LINK_IFELSE([
         char dst[[sizeof(struct in_addr)]];
         inet_pton(AF_INET, "127.0.0.1", dst);
     ])],[AC_DEFINE([HAVE_INET_PTON],[1],[Define to 1 if you have inet_pton function])],[AC_LIBOBJ([inet_pton])])
+AC_CHECK_TYPES([struct if_nameindex],,,[#include <net/if.h>])
 AC_CHECK_FUNCS([if_nameindex if_nametoindex])
 VLC_RESTORE_FLAGS
 AC_SUBST(SOCKET_LIBS)
@@ -851,6 +853,18 @@ AC_CHECK_HEADERS([features.h getopt.h linux/dccp.h linux/magic.h mntent.h sys/ev
 
 dnl  MacOS
 AC_CHECK_HEADERS([xlocale.h])
+
+dnl Check if C++ headers define locale_t
+AC_LANG_PUSH(C++)
+AC_CACHE_CHECK([if C++ headers define locale_t],
+  [ac_cv_cxx_locale_t],
+  [ac_cv_cxx_locale_t=no
+   AC_TRY_COMPILE([#include <locale>], [locale_t loc;],
+                    [ac_cv_cxx_locale_t=yes])])
+if test "${ac_cv_cxx_locale_t}" != "no"; then
+  AC_DEFINE(HAVE_CXX_LOCALE_T, 1, Define to 1 if C++ headers define locale_t)
+fi
+AC_LANG_POP(C++)
 
 dnl LP64 and LLP64 architectures had better define ssize_t by themselves...
 AH_TEMPLATE(ssize_t, [Define to `int' if <stddef.h> does not define.]) dnl ` (fix VIM syntax highlight
@@ -2010,9 +2024,11 @@ AC_ARG_ENABLE(macosx-qtkit,
 if test "x${enable_macosx_qtkit}" != "xno" &&
   (test "${SYS}" = "darwin" || test "${enable_macosx_qtkit}" = "yes")
 then
+  AC_LANG_PUSH([Objective C])
   AC_CHECK_HEADERS(QTKit/QTKit.h, [
-      VLC_ADD_PLUGIN([qtsound])
+      VLC_ADD_PLUGIN([access_qtsound])
     ])
+  AC_LANG_POP([Objective C])
 fi
 
 dnl
@@ -2610,6 +2626,11 @@ dnl
 PKG_ENABLE_MODULES_VLC([AOM], [], [aom], [experimental AV1 codec (default auto)])
 
 dnl
+dnl  Dav1d decoder plugin
+dnl
+PKG_ENABLE_MODULES_VLC([DAV1D], [], [dav1d], [AV1 decoder (default auto)])
+
+dnl
 dnl libvpx decoder plugin
 dnl
 AC_ARG_ENABLE(vpx,
@@ -2823,36 +2844,12 @@ dnl x265 encoder
 PKG_ENABLE_MODULES_VLC([X265],, [x265], [HEVC/H.265 encoder], [auto])
 
 dnl
-dnl H264 encoder plugin (10-bit lib264)
-dnl
-AC_ARG_ENABLE(x26410b,
-  [  --enable-x26410b           H264 10-bit encoding support with static libx264 (default disabled)])
-if test "${enable_x26410b}" != "no"; then
-    PKG_CHECK_MODULES(X26410B, x26410b, [
-        VLC_ADD_PLUGIN([x26410b])
-        VLC_ADD_LIBS([x26410b],[${X26410B_LIBS}])
-        AS_IF([test -n "${ac_cv_ld_bsymbolic}"], [
-          VLC_ADD_LDFLAGS([x26410b],[${ac_cv_ld_bsymbolic}])
-        ])
-        VLC_ADD_CFLAGS([x26410b],[${X26410B_CFLAGS}])
-        if echo ${X26410B_LIBS} |grep -q 'pthreadGC2'; then
-          VLC_ADD_CFLAGS([x26410b], [-DPTW32_STATIC_LIB])
-        fi
-    ], [
-       if test "${enable_x26410b}" = "yes"; then
-        AC_MSG_ERROR([x26410b module doesn't work without staticly compiled libx264.a])
-       fi
-    ])
-fi
-
-
-dnl
 dnl H264 encoder plugin (using libx264)
 dnl
 AC_ARG_ENABLE(x264,
   [  --enable-x264           H264 encoding support with libx264 (default enabled)])
 if test "${enable_x264}" != "no"; then
-      PKG_CHECK_MODULES(X264,x264 >= 0.86, [
+      PKG_CHECK_MODULES(X264,x264 >= 0.148, [
         VLC_ADD_PLUGIN([x264])
         VLC_ADD_LIBS([x264],[${X264_LIBS}])
 
@@ -2870,6 +2867,32 @@ if test "${enable_x264}" != "no"; then
           fi
       ])
 fi
+
+dnl
+dnl H264 encoder plugin (libx264 > 153)
+dnl
+AC_ARG_ENABLE(x26410b,
+  [  --enable-x26410b           H264 10-bit encoding support with libx264 (default enabled)])
+if test "${enable_x26410b}" != "no"; then
+      PKG_CHECK_MODULES(X26410b,x264 >= 0.153, [
+        VLC_ADD_PLUGIN([x26410b])
+        VLC_ADD_LIBS([x26410b],[${X264_LIBS}])
+
+        AS_IF([test -n "${ac_cv_ld_bsymbolic}"], [
+          VLC_ADD_LDFLAGS([x26410b],[${ac_cv_ld_bsymbolic}])
+        ])
+
+        VLC_ADD_CFLAGS([x26410b],[${X264_CFLAGS}])
+        if echo ${X264_LIBS} |grep -q 'pthreadGC2'; then
+          VLC_ADD_CFLAGS([x26410b], [-DPTW32_STATIC_LIB])
+        fi
+      ],[
+        if test "${enable_x26410b}" = "yes"; then
+            AC_MSG_ERROR([${X264_PKG_ERRORS}: you may get it from http://www.videolan.org/x264.html])
+          fi
+      ])
+fi
+
 
 dnl
 dnl Intel QuickSync (aka MediaSDK) H264/H262 encoder
@@ -3125,11 +3148,11 @@ dnl
 dnl  Wayland
 dnl
 AC_ARG_ENABLE(wayland,
-  [AS_HELP_STRING([--enable-wayland], [Wayland support (default auto)])])
+  [AS_HELP_STRING([--enable-wayland], [Incomplete Wayland support (default disabled)])])
 have_wayland="no"
 have_wayland_egl="no"
 
-AS_IF([test "${enable_wayland}" != "no"], [
+AS_IF([test "${enable_wayland}" = "yes"], [
   PKG_CHECK_MODULES([WAYLAND_CLIENT], [wayland-client >= 1.5.91], [
     AC_MSG_CHECKING([for the Wayland protocols])
     PKG_CHECK_EXISTS([wayland-protocols >= 1.4], [

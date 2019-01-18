@@ -2,7 +2,7 @@
  * libvlc.c: libvlc instances creation and deletion, interfaces handling
  *****************************************************************************
  * Copyright (C) 1998-2008 VLC authors and VideoLAN
- * $Id: 7e343a63658a0eec6e8c1b303ae4f399609146b7 $
+ * $Id: c3effa7016c6bf249df66dea12197d1551c74912 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -484,6 +484,26 @@ static void GetFilenames( libvlc_int_t *p_vlc, unsigned n,
                          VLC_INPUT_OPTION_TRUSTED );
         free( mrl );
     }
+}
+
+int vlc_MetadataRequest(libvlc_int_t *libvlc, input_item_t *item,
+                        input_item_meta_request_option_t i_options,
+                        int timeout, void *id)
+{
+    libvlc_priv_t *priv = libvlc_priv(libvlc);
+
+    if (unlikely(priv->parser == NULL))
+        return VLC_ENOMEM;
+
+    if( i_options & META_REQUEST_OPTION_DO_INTERACT )
+    {
+        vlc_mutex_lock( &item->lock );
+        item->b_preparse_interact = true;
+        vlc_mutex_unlock( &item->lock );
+    }
+    playlist_preparser_Push( priv->parser, item, i_options, timeout, id );
+    return VLC_SUCCESS;
+
 }
 
 /**

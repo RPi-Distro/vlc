@@ -2,7 +2,7 @@ SUFFIXES += .xib
 
 libmacosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -fobjc-exceptions -fobjc-arc 
 libmacosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(guidir)' \
-	-Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,CoreServices \
+	-Wl,-framework,Cocoa -Wl,-framework,CoreServices \
 	-Wl,-framework,AVFoundation -Wl,-framework,CoreMedia -Wl,-framework,IOKit \
 	-Wl,-framework,AddressBook -Wl,-framework,WebKit -Wl,-framework,CoreAudio \
 	-Wl,-framework,SystemConfiguration -Wl,-framework,ScriptingBridge \
@@ -57,7 +57,6 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/VLCSimplePrefsController.h gui/macosx/VLCSimplePrefsController.m \
 	gui/macosx/VLCSimplePrefsWindow.h gui/macosx/VLCSimplePrefsWindow.m \
 	gui/macosx/VLCHotkeyChangeWindow.h gui/macosx/VLCHotkeyChangeWindow.m \
-	gui/macosx/SPInvocationGrabbing.h gui/macosx/SPInvocationGrabbing.m \
 	gui/macosx/SPMediaKeyTap.h gui/macosx/SPMediaKeyTap.m \
 	gui/macosx/Spotify.h \
 	gui/macosx/VLCStringUtility.h gui/macosx/VLCStringUtility.m \
@@ -568,6 +567,8 @@ libmacosx_plugin_la_RES = \
 	gui/macosx/Resources/mainwindow_dark_yosemite/ys-volume-high_dark@2x.png \
 	gui/macosx/Resources/mainwindow_dark_yosemite/ys-volume-low_dark.png \
 	gui/macosx/Resources/mainwindow_dark_yosemite/ys-volume-low_dark@2x.png \
+	gui/macosx/Resources/mainwindow_mojave_dark/mj-dropzone-dark.png \
+	gui/macosx/Resources/mainwindow_mojave_dark/mj-dropzone-dark@2x.png \
 	gui/macosx/Resources/mainwindow_yosemite/ys-backward-3btns-pressed.png \
 	gui/macosx/Resources/mainwindow_yosemite/ys-backward-3btns-pressed@2x.png \
 	gui/macosx/Resources/mainwindow_yosemite/ys-backward-3btns.png \
@@ -673,6 +674,18 @@ libmacosx_plugin_la_RES = \
 	gui/macosx/Resources/sidebar-icons/sidebar-playlist@2x.png \
 	gui/macosx/Resources/sidebar-icons/sidebar-podcast.png \
 	gui/macosx/Resources/sidebar-icons/sidebar-podcast@2x.png \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-local.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-movie.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-music.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-pictures.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-playlist.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/dark/mv-dark-sidebar-podcast.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-local.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-movie.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-music.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-pictures.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-playlist.pdf \
+	gui/macosx/Resources/sidebar-icons_mojave/light/mv-sidebar-podcast.pdf \
 	gui/macosx/Resources/sidebar-icons_yosemite/ys-sidebar-local.png \
 	gui/macosx/Resources/sidebar-icons_yosemite/ys-sidebar-local@2x.png \
 	gui/macosx/Resources/sidebar-icons_yosemite/ys-sidebar-movie.png \

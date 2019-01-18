@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: a0f542cee2a78cd124c677d9f0ff97bbd9d968a1 $
+ * $Id: 0cb2729a40a3f5ee47095c2d97911786c34afa45 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -558,14 +558,22 @@ bool input_Stopped( input_thread_t *input )
  */
 static void MainLoopDemux( input_thread_t *p_input, bool *pb_changed )
 {
-    int i_ret;
-    demux_t *p_demux = input_priv(p_input)->master->p_demux;
+    input_thread_private_t* p_priv = input_priv(p_input);
+    demux_t *p_demux = p_priv->master->p_demux;
+    int i_ret = VLC_DEMUXER_SUCCESS;
 
     *pb_changed = false;
 
-    if( input_priv(p_input)->i_stop > 0 && input_priv(p_input)->i_time >= input_priv(p_input)->i_stop )
-        i_ret = VLC_DEMUXER_EOF;
-    else
+    if( p_priv->i_stop > 0 )
+    {
+        if( demux_Control( p_demux, DEMUX_GET_TIME, &p_priv->i_time ) )
+            p_priv->i_time = 0;
+
+        if( p_priv->i_stop <= p_priv->i_time )
+            i_ret = VLC_DEMUXER_EOF;
+    }
+
+    if( i_ret == VLC_DEMUXER_SUCCESS )
         i_ret = demux_Demux( p_demux );
 
     i_ret = i_ret > 0 ? VLC_DEMUXER_SUCCESS : ( i_ret < 0 ? VLC_DEMUXER_EGENERIC : VLC_DEMUXER_EOF);
@@ -575,7 +583,7 @@ static void MainLoopDemux( input_thread_t *p_input, bool *pb_changed )
         if( demux_TestAndClearFlags( p_demux, INPUT_UPDATE_TITLE_LIST ) )
             UpdateTitleListfromDemux( p_input );
 
-        if( input_priv(p_input)->master->b_title_demux )
+        if( p_priv->master->b_title_demux )
         {
             i_ret = UpdateTitleSeekpointFromDemux( p_input );
             *pb_changed = true;
@@ -587,14 +595,14 @@ static void MainLoopDemux( input_thread_t *p_input, bool *pb_changed )
     if( i_ret == VLC_DEMUXER_EOF )
     {
         msg_Dbg( p_input, "EOF reached" );
-        input_priv(p_input)->master->b_eof = true;
-        es_out_Eos(input_priv(p_input)->p_es_out);
+        p_priv->master->b_eof = true;
+        es_out_Eos(p_priv->p_es_out);
     }
     else if( i_ret == VLC_DEMUXER_EGENERIC )
     {
         input_ChangeState( p_input, ERROR_S );
     }
-    else if( input_priv(p_input)->i_slave > 0 )
+    else if( p_priv->i_slave > 0 )
         SlaveDemux( p_input );
 }
 
@@ -3170,6 +3178,7 @@ static void InputGetExtraFiles( input_thread_t *p_input,
         { NULL, ".part01.rar","%s.part%.2d.rar", 2, 99, },
         { NULL, ".part001.rar", "%s.part%.3d.rar", 2, 999 },
         { NULL, ".rar", "%s.r%.2d", 0, 99 },
+        { "concat", ".mts", "%s.mts%d", 1, 999 },
     };
 
     TAB_INIT( *pi_list, *pppsz_list );

@@ -166,6 +166,7 @@ struct decoder_sys_t
 
     bool                        b_vt_feed;
     bool                        b_vt_flush;
+    bool                        b_vt_need_keyframe;
     VTDecompressionSessionRef   session;
     CMVideoFormatDescriptionRef videoFormatDescription;
 
@@ -673,6 +674,11 @@ static bool FillReorderInfoHEVC(decoder_t *p_dec, const block_t *p_block,
             }
 
             p_info->b_keyframe = i_nal_type >= HEVC_NAL_BLA_W_LP;
+            enum hevc_slice_type_e slice_type;
+            if(hevc_get_slice_type(p_sli, &slice_type))
+            {
+                p_info->b_keyframe |= (slice_type == HEVC_SLICE_TYPE_I);
+            }
 
             hevc_sequence_parameter_set_t *p_sps;
             hevc_picture_parameter_set_t *p_pps;
@@ -1022,6 +1028,7 @@ static CMVideoCodecType CodecPrecheck(decoder_t *p_dec)
             switch (p_dec->fmt_in.i_original_fourcc) {
                 case VLC_FOURCC( 'a','p','4','c' ):
                 case VLC_FOURCC( 'a','p','4','h' ):
+                case VLC_FOURCC( 'a','p','4','x' ):
                     return kCMVideoCodecType_AppleProRes4444;
 
                 case VLC_FOURCC( 'a','p','c','h' ):
@@ -1396,6 +1403,7 @@ static int OpenDecoder(vlc_object_t *p_this)
     p_sys->pic_holder->nb_field_out = 0;
     p_sys->pic_holder->closed = false;
     p_sys->pic_holder->field_reorder_max = p_sys->i_pic_reorder_max * 2;
+    p_sys->b_vt_need_keyframe = false;
 
     vlc_mutex_init(&p_sys->lock);
 
@@ -1415,6 +1423,7 @@ static int OpenDecoder(vlc_object_t *p_this)
             p_sys->pf_get_extradata = GetDecoderExtradataH264;
             p_sys->pf_fill_reorder_info = FillReorderInfoH264;
             p_sys->b_poc_based_reorder = true;
+            p_sys->b_vt_need_keyframe = true;
             break;
 
         case kCMVideoCodecType_HEVC:
@@ -1428,6 +1437,7 @@ static int OpenDecoder(vlc_object_t *p_this)
             p_sys->pf_get_extradata = GetDecoderExtradataHEVC;
             p_sys->pf_fill_reorder_info = FillReorderInfoHEVC;
             p_sys->b_poc_based_reorder = true;
+            p_sys->b_vt_need_keyframe = true;
             break;
 
         case kCMVideoCodecType_MPEG4Video:
@@ -1893,11 +1903,6 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
 
             /* Session will be started by Late Start code block */
             StopVideoToolbox(p_dec);
-            if (p_dec->fmt_in.i_extra == 0)
-            {
-                /* Clean old parameter sets since they may be corrupt */
-                hxxx_helper_clean(&p_sys->hh);
-            }
 
             vlc_mutex_lock(&p_sys->lock);
             p_sys->vtsession_status = VTSESSION_STATUS_OK;
@@ -1975,7 +1980,7 @@ static int DecodeBlock(decoder_t *p_dec, block_t *p_block)
         }
     }
 
-    if (!p_sys->b_vt_feed && !p_info->b_keyframe)
+    if (!p_sys->b_vt_feed && p_sys->b_vt_need_keyframe && !p_info->b_keyframe)
     {
         free(p_info);
         goto skip;

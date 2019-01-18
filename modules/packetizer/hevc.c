@@ -2,7 +2,7 @@
  * hevc.c: h.265/hevc video packetizer
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: ec8873af7c5a67ce1edfea113998d986b4ebb95c $
+ * $Id: 0feeb659feb37cfee9ce89a5286a9e80e03bb49a $
  *
  * Authors: Denis Charmet <typx@videolan.org>
  *
@@ -682,10 +682,18 @@ static block_t *ParseVCL(decoder_t *p_dec, uint8_t i_nal_type, block_t *p_frag)
                     enum hevc_slice_type_e type;
                     if(hevc_get_slice_type( p_sli, &type ))
                     {
-                        if( type == HEVC_SLICE_TYPE_P )
-                            p_frag->i_flags |= BLOCK_FLAG_TYPE_P;
-                        else
-                            p_frag->i_flags |= BLOCK_FLAG_TYPE_B;
+                        switch(type)
+                        {
+                            case HEVC_SLICE_TYPE_B:
+                                p_frag->i_flags |= BLOCK_FLAG_TYPE_B;
+                                break;
+                            case HEVC_SLICE_TYPE_P:
+                                p_frag->i_flags |= BLOCK_FLAG_TYPE_P;
+                                break;
+                            case HEVC_SLICE_TYPE_I:
+                                p_frag->i_flags |= BLOCK_FLAG_TYPE_I;
+                                break;
+                        }
                     }
                 }
                 else p_frag->i_flags |= BLOCK_FLAG_TYPE_B;

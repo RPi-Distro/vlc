@@ -2,7 +2,7 @@
  * VLCConvertAndSaveWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012 Felix Paul Kühne
- * $Id: 6877dc92142a4255569231a3a2c35435747626c6 $
+ * $Id: e78c7cc962054a5ac18a35869430b33c382e6348 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -392,6 +392,21 @@
     [_okButton setTitle:_NS("Stream")];
 }
 
+- (void)resetDestination
+{
+    [self setOutputDestination:@""];
+
+    // File panel
+    [[_fileDestinationFileName animator] setHidden: YES];
+    [[_fileDestinationFileNameStub animator] setHidden: NO];
+
+    // Stream panel
+    [_streamDestinationURLLabel setStringValue:_NS("Select Streaming Method")];
+    b_streaming = NO;
+
+    [self updateOKButton];
+}
+
 - (IBAction)cancelDestination:(id)sender
 {
     if ([_streamDestinationView superview] != nil)
@@ -402,7 +417,8 @@
     [_destinationCancelBtn setHidden:YES];
     [[_destinationFileButton animator] setHidden: NO];
     [[_destinationStreamButton animator] setHidden: NO];
-    b_streaming = NO;
+
+    [self resetDestination];
 }
 
 - (IBAction)browseFileDestination:(id)sender
@@ -418,11 +434,8 @@
             [_fileDestinationFileName setStringValue: [[NSFileManager defaultManager] displayNameAtPath:_outputDestination]];
             [[_fileDestinationFileNameStub animator] setHidden: YES];
             [[_fileDestinationFileName animator] setHidden: NO];
-        } else {
-            [self setOutputDestination:@""];
-            [[_fileDestinationFileName animator] setHidden: YES];
-            [[_fileDestinationFileNameStub animator] setHidden: NO];
         }
+
         [self updateOKButton];
     }];
 }
@@ -931,10 +944,13 @@
             [composedOptions appendFormat:@",soverlay"];
     }
 
+    // Close transcode
+    [composedOptions appendString:@"}"];
+
     if (!b_streaming) {
         /* file transcoding */
         // add muxer
-        [composedOptions appendFormat:@"}:standard{mux=%@", [self.currentProfile firstObject]];
+        [composedOptions appendFormat:@":standard{mux=%@", [self.currentProfile firstObject]];
 
 
         // add output destination
@@ -942,15 +958,17 @@
                                                                            withString:@"\\\""];
         [composedOptions appendFormat:@",access=file{no-overwrite},dst=\"%@\"}", _outputDestination];
     } else {
+        NSString *destination = [NSString stringWithFormat:@"\"%@:%@\"", _outputDestination, [_streamPortField stringValue]];
+
         /* streaming */
         if ([[[_streamTypePopup selectedItem] title] isEqualToString:@"RTP"])
             [composedOptions appendFormat:@":rtp{mux=ts,dst=%@,port=%@", _outputDestination, [_streamPortField stringValue]];
         else if ([[[_streamTypePopup selectedItem] title] isEqualToString:@"UDP"])
-            [composedOptions appendFormat:@":standard{mux=ts,dst=%@,port=%@,access=udp", _outputDestination, [_streamPortField stringValue]];
+            [composedOptions appendFormat:@":standard{mux=ts,dst=%@,access=udp", destination];
         else if ([[[_streamTypePopup selectedItem] title] isEqualToString:@"MMSH"])
-            [composedOptions appendFormat:@":standard{mux=asfh,dst=%@,port=%@,access=mmsh", _outputDestination, [_streamPortField stringValue]];
+            [composedOptions appendFormat:@":standard{mux=asfh,dst=%@,access=mmsh", destination];
         else
-            [composedOptions appendFormat:@":standard{mux=%@,dst=%@,port=%@,access=http", [self.currentProfile firstObject], [_streamPortField stringValue], _outputDestination];
+            [composedOptions appendFormat:@":standard{mux=%@,dst=%@,access=http", [self.currentProfile firstObject], destination];
 
         if ([_streamSAPCheckbox state])
             [composedOptions appendFormat:@",sap,name=\"%@\"", [_streamChannelField stringValue]];
@@ -970,7 +988,7 @@
             }
         }
 
-        [composedOptions appendString:@"} :sout-keep"];
+        [composedOptions appendString:@"}"];
     }
 
     return [NSString stringWithString:composedOptions];

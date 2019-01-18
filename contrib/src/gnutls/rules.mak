@@ -1,7 +1,7 @@
 # GnuTLS
 
-GNUTLS_VERSION := 3.5.18
-GNUTLS_URL := ftp://ftp.gnutls.org/gcrypt/gnutls/v3.5/gnutls-$(GNUTLS_VERSION).tar.xz
+GNUTLS_VERSION := 3.5.19
+GNUTLS_URL := https://www.gnupg.org/ftp/gcrypt/gnutls/v3.5/gnutls-$(GNUTLS_VERSION).tar.xz
 
 ifdef BUILD_NETWORK
 ifndef HAVE_DARWIN_OS
@@ -72,6 +72,13 @@ endif
 ifdef HAVE_WINSTORE
 ifeq ($(ARCH),x86_64)
 	GNUTLS_CONF += --disable-hardware-acceleration
+endif
+endif
+ifdef HAVE_WIN32
+ifdef HAVE_CLANG
+ifeq ($(ARCH),aarch64)
+	GNUTLS_CONF += --disable-hardware-acceleration
+endif
 endif
 endif
 

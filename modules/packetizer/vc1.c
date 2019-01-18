@@ -2,7 +2,7 @@
  * vc1.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: 901e2c03d89aaeac1a990d66b0f8b7a3012931e1 $
+ * $Id: 0780dbdb6acdc1f0877ac87ff2ec353f59a23815 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -214,6 +214,10 @@ static void Close( vlc_object_t *p_this )
     packetizer_Clean( &p_sys->packetizer );
     if( p_sys->p_frame )
         block_Release( p_sys->p_frame );
+    if( p_sys->sh.p_sh )
+        block_Release( p_sys->sh.p_sh );
+    if( p_sys->ep.p_ep )
+        block_Release( p_sys->ep.p_ep );
 
     cc_Exit( &p_sys->cc_next );
     cc_Exit( &p_sys->cc );

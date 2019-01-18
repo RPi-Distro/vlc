@@ -214,7 +214,7 @@ tc_yuv_base_init(opengl_tex_converter_t *tc, GLenum tex_target,
         /* Y1 U Y2 V fits in R G B A */
         tc->tex_count = 1;
         tc->texs[0] = (struct opengl_tex_cfg) {
-            { 1, 2 }, { 1, 2 }, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE
+            { 1, 2 }, { 1, 1 }, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE
         };
 
         /*
@@ -537,7 +537,7 @@ static struct pl_color_space pl_color_space_from_video_format(const video_format
     // As a fallback value for the signal peak, we can also use the mastering
     // metadata's luminance information
     if (!sig_peak)
-        sig_peak = fmt->mastering.max_luminance / PL_COLOR_REF_WHITE;
+        sig_peak = fmt->mastering.max_luminance / (10000.0 * PL_COLOR_REF_WHITE);
 
     // Sanitize the sig_peak/sig_avg, because of buggy or low quality tagging
     // that's sadly common in lots of typical sources

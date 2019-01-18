@@ -2,7 +2,7 @@
  * VLCInputManager.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: fbc75690c9c78aa9256437ece5ba82bb103faf5b $
+ * $Id: 3dd9f371dca6e0cb3d33b74716ad8827cc772ffd $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,13 @@
 
 #import "iTunes.h"
 #import "Spotify.h"
+
+@interface VLCInputManager()
+- (void)updateMainMenu;
+- (void)updateMainWindow;
+- (void)updateMetaAndInfo;
+- (void)updateDelays;
+@end
 
 #pragma mark Callbacks
 

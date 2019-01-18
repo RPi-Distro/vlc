@@ -58,7 +58,7 @@ void AbstractConnectionManager::setDownloadRateObserver(IDownloadRateObserver *o
     rateObserver = obs;
 }
 
-HTTPConnectionManager::HTTPConnectionManager    (vlc_object_t *p_object_, ConnectionFactory *factory_)
+HTTPConnectionManager::HTTPConnectionManager    (vlc_object_t *p_object_, AbstractConnectionFactory *factory_)
     : AbstractConnectionManager( p_object_ )
 {
     vlc_mutex_init(&lock);
@@ -73,10 +73,7 @@ HTTPConnectionManager::HTTPConnectionManager    (vlc_object_t *p_object_, AuthSt
     vlc_mutex_init(&lock);
     downloader = new (std::nothrow) Downloader();
     downloader->start();
-    if(var_InheritBool(p_object, "adaptive-use-access"))
-        factory = new (std::nothrow) StreamUrlConnectionFactory();
-    else
-        factory = new (std::nothrow) ConnectionFactory( storage );
+    factory = new ConnectionFactory(storage);
 }
 
 HTTPConnectionManager::~HTTPConnectionManager   ()

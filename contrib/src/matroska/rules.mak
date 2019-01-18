@@ -21,9 +21,12 @@ libmatroska: libmatroska-$(MATROSKA_VERSION).tar.xz .sum-matroska
 	$(call pkg_static,"libmatroska.pc.in")
 	$(MOVE)
 
-MATROSKA_EXTRA_FLAGS = CXXFLAGS="${CXXFLAGS} -fvisibility=hidden"
+MATROSKA_CXXFLAGS := $(CXXFLAGS) $(PIC) -fvisibility=hidden
+ifdef HAVE_IOS
+MATROSKA_CXXFLAGS +=  -O2
+endif
 
 .matroska: libmatroska toolchain.cmake
-	cd $< && $(HOSTVARS_PIC) $(CMAKE) -DBUILD_SHARED_LIBS=OFF
+	cd $< && $(HOSTVARS_PIC) CXXFLAGS="$(MATROSKA_CXXFLAGS)" $(CMAKE) -DBUILD_SHARED_LIBS=OFF
 	cd $< && $(MAKE) install
 	touch $@

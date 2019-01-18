@@ -28,7 +28,7 @@
 #include "avci.h"
 #include "../xiph.h"
 #include "../../packetizer/dts_header.h"
-#include "color_config.h"
+#include "../../packetizer/iso_color_tables.h"
 
 #include <vlc_demux.h>
 #include <vlc_aout.h>
@@ -594,6 +594,28 @@ int SetupVideoES( demux_t *p_demux, mp4_track_t *p_track, MP4_Box_t *p_sample )
             break;
         }
 
+        case ATOM_av01:
+        {
+            static_assert(ATOM_av01 == VLC_CODEC_AV1, "VLC_CODEC_AV1 != ATOM_av01");
+            MP4_Box_t *p_av1C = MP4_BoxGet( p_sample, "av1C" );
+            if( p_av1C && BOXDATA(p_av1C) )
+            {
+                p_track->fmt.i_profile = BOXDATA(p_av1C)->i_profile;
+                p_track->fmt.i_level = BOXDATA(p_av1C)->i_level;
+                if( BOXDATA(p_av1C)->i_av1C )
+                {
+                    p_track->fmt.p_extra = malloc( BOXDATA(p_av1C)->i_av1C );
+                    if( p_track->fmt.p_extra )
+                    {
+                        memcpy( p_track->fmt.p_extra, BOXDATA(p_av1C)->p_av1C,
+                                BOXDATA(p_av1C)->i_av1C );
+                        p_track->fmt.i_extra = BOXDATA(p_av1C)->i_av1C;
+                    }
+                }
+            }
+            break;
+        }
+
         /* avc1: send avcC (h264 without annexe B, ie without start code)*/
         case VLC_FOURCC( 'a', 'v', 'c', '3' ):
         case VLC_FOURCC( 'a', 'v', 'c', '1' ):
@@ -999,6 +1021,7 @@ int SetupAudioES( demux_t *p_demux, mp4_track_t *p_track, MP4_Box_t *p_sample )
             }
             break;
         }
+        case( ATOM_AC3 ):
         case( ATOM_ac3 ):
         {
             p_track->fmt.i_codec = VLC_CODEC_A52;

@@ -514,7 +514,7 @@ static subpicture_t *Subtitle( decoder_t *p_dec, eia608_t *h, mtime_t i_pts )
     p_spu_sys->p_default_style->i_style_flags |= STYLE_MONOSPACED;
     if( p_dec->p_sys->b_opaque )
     {
-        p_spu_sys->p_default_style->i_background_alpha = STYLE_ALPHA_OPAQUE >> 1;
+        p_spu_sys->p_default_style->i_background_alpha = STYLE_ALPHA_OPAQUE;
         p_spu_sys->p_default_style->i_features |= STYLE_HAS_BACKGROUND_ALPHA;
         p_spu_sys->p_default_style->i_style_flags |= STYLE_BACKGROUND;
     }
@@ -798,6 +798,7 @@ static eia608_status_t Eia608ParseExtended( eia608_t *h, uint8_t d1, uint8_t d2 
 static eia608_status_t Eia608ParseCommand0x14( eia608_t *h, uint8_t d2 )
 {
     eia608_status_t i_status = EIA608_STATUS_DEFAULT;
+    eia608_mode_t proposed_mode;
 
     switch( d2 )
     {
@@ -825,14 +826,18 @@ static eia608_status_t Eia608ParseCommand0x14( eia608_t *h, uint8_t d2 )
         }
 
         if( d2 == 0x25 )
-            h->mode = EIA608_MODE_ROLLUP_2;
+            proposed_mode = EIA608_MODE_ROLLUP_2;
         else if( d2 == 0x26 )
-            h->mode = EIA608_MODE_ROLLUP_3;
+            proposed_mode = EIA608_MODE_ROLLUP_3;
         else
-            h->mode = EIA608_MODE_ROLLUP_4;
+            proposed_mode = EIA608_MODE_ROLLUP_4;
 
-        h->cursor.i_column = 0;
-        h->cursor.i_row = h->i_row_rollup;
+        if ( proposed_mode != h->mode )
+        {
+            h->mode = proposed_mode;
+            h->cursor.i_column = 0;
+            h->cursor.i_row = h->i_row_rollup;
+        }
         break;
     case 0x28:  /* Flash on */
         /* TODO */

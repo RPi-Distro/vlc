@@ -1,0 +1,31 @@
+From: =?utf-8?q?Hugo_Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Thu, 10 Jan 2019 10:50:18 +0100
+Subject: bluray: Fix build with libbluray < 1.0.0
+
+Fix #21613
+---
+ modules/access/bluray.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/modules/access/bluray.c b/modules/access/bluray.c
+index 09d8d10..f473f33 100644
+--- a/modules/access/bluray.c
++++ b/modules/access/bluray.c
+@@ -1960,6 +1960,7 @@ static void bluraySendOverlayToVout(demux_t *p_demux, bluray_overlay_t *p_ov)
+ static bool blurayTitleIsRepeating(BLURAY_TITLE_INFO *title_info,
+                                    unsigned repeats, unsigned ratio)
+ {
++#if BLURAY_VERSION >= BLURAY_VERSION_CODE(1, 0, 0)
+     const BLURAY_CLIP_INFO *prev = NULL;
+     unsigned maxrepeats = 0;
+     unsigned sequence = 0;
+@@ -1992,6 +1993,9 @@ static bool blurayTitleIsRepeating(BLURAY_TITLE_INFO *title_info,
+     }
+     return (maxrepeats > repeats &&
+             (100 * maxrepeats / title_info->chapter_count) >= ratio);
++#else
++    return false;
++#endif
+ }
+ 
+ static void blurayUpdateTitleInfo(input_title_t *t, BLURAY_TITLE_INFO *title_info)

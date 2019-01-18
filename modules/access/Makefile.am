@@ -75,7 +75,7 @@ access_LTLIBRARIES += libpulsesrc_plugin.la
 endif
 
 libaccess_qtsound_plugin_la_SOURCES = access/qtsound.m
-libaccess_qtsound_plugin_la_LDFLAGS = -Wl,-framework,QTKit -Wl,-framework,CoreAudio
+libaccess_qtsound_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)' -Wl,-framework,Foundation -Wl,-framework,QTKit -Wl,-framework,AVFoundation -Wl,-framework,CoreAudio
 access_LTLIBRARIES += $(LTLIBaccess_qtsound)
 EXTRA_LTLIBRARIES += libaccess_qtsound_plugin.la
 
@@ -233,7 +233,8 @@ endif
 access_LTLIBRARIES += $(LTLIBdvdnav)
 EXTRA_LTLIBRARIES += libdvdnav_plugin.la
 
-libdvdread_plugin_la_SOURCES = access/dvdread.c demux/mpeg/ps.h demux/mpeg/pes.h
+libdvdread_plugin_la_SOURCES = access/dvdread.c demux/mpeg/ps.h demux/mpeg/pes.h \
+                               demux/moving_avg.h demux/timestamps_filter.h
 libdvdread_plugin_la_CFLAGS = $(AM_CFLAGS) $(DVDREAD_CFLAGS)
 libdvdread_plugin_la_LIBADD = $(DVDREAD_LIBS)
 libdvdread_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)'
@@ -306,7 +307,8 @@ libhttp_plugin_la_SOURCES = access/http.c
 libhttp_plugin_la_LIBADD = $(SOCKET_LIBS)
 access_LTLIBRARIES += libhttp_plugin.la
 
-liblive555_plugin_la_SOURCES = access/live555.cpp access/mms/asf.c access/mms/buffer.c
+liblive555_plugin_la_SOURCES = access/live555.cpp access/mms/asf.c access/mms/buffer.c \
+                               access/live555_dtsgen.h
 liblive555_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(CXXFLAGS_live555)
 liblive555_plugin_la_LIBADD = $(LIBS_live555) $(SOCKET_LIBS)
 liblive555_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)' \

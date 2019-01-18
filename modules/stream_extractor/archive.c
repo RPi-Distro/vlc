@@ -2,7 +2,7 @@
  * archive.c: libarchive based stream filter
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: b58453ab8c3cfa3e9b4133a5297d6137045bd041 $
+ * $Id: af69a29094c5c07eb42945959d4fd36669954937 $
  *
  * Authors: Filip Roséen <filip@atch.se>
  *
@@ -73,6 +73,7 @@ struct private_sys_t
 
     struct archive_entry* p_entry;
     bool b_dead;
+    bool b_eof;
 
     uint64_t i_offset;
 
@@ -384,6 +385,25 @@ static int archive_seek_subentry( private_sys_t* p_sys, char const* psz_subentry
     return VLC_SUCCESS;
 }
 
+static int archive_extractor_reset( stream_extractor_t* p_extractor )
+{
+    private_sys_t* p_sys = p_extractor->p_sys;
+
+    if( vlc_stream_Seek( p_extractor->source, 0 )
+        || archive_clean( p_sys )
+        || archive_init( p_sys, p_extractor->source )
+        || archive_seek_subentry( p_sys, p_extractor->identifier ) )
+    {
+        p_sys->b_dead = true;
+        return VLC_EGENERIC;
+    }
+
+    p_sys->i_offset = 0;
+    p_sys->b_eof = false;
+    p_sys->b_dead = false;
+    return VLC_SUCCESS;
+}
+
 /* ------------------------------------------------------------------------- */
 
 static private_sys_t* setup( vlc_object_t* obj, stream_t* source )
@@ -473,9 +493,6 @@ static int Control( stream_extractor_t* p_extractor, int i_query, va_list args )
 {
     private_sys_t* p_sys = p_extractor->p_sys;
 
-    if( p_sys->b_dead )
-        return VLC_EGENERIC;
-
     switch( i_query )
     {
         case STREAM_CAN_FASTSEEK:
@@ -488,6 +505,9 @@ static int Control( stream_extractor_t* p_extractor, int i_query, va_list args )
 
         case STREAM_GET_SIZE:
             if( p_sys->p_entry == NULL )
+                return VLC_EGENERIC;
+
+            if( !archive_entry_size_is_set( p_sys->p_entry ) )
                 return VLC_EGENERIC;
 
             *va_arg( args, uint64_t* ) = archive_entry_size( p_sys->p_entry );
@@ -552,6 +572,9 @@ static ssize_t Read( stream_extractor_t *p_extractor, void* p_data, size_t i_siz
     if( p_sys->b_dead || p_sys->p_entry == NULL )
         return 0;
 
+    if( p_sys->b_eof )
+        return 0;
+
     i_ret = archive_read_data( p_arc,
       p_data ? p_data :                        dummy_buffer,
       p_data ? i_size : __MIN( i_size, sizeof( dummy_buffer ) ) );
@@ -561,40 +584,64 @@ static ssize_t Read( stream_extractor_t *p_extractor, void* p_data, size_t i_siz
         case ARCHIVE_RETRY:
         case ARCHIVE_FAILED:
             msg_Dbg( p_extractor, "libarchive: %s", archive_error_string( p_arc ) );
-            return -1;
+            goto eof;
 
         case ARCHIVE_WARN:
             msg_Warn( p_extractor, "libarchive: %s", archive_error_string( p_arc ) );
-            return -1;
+            goto eof;
 
         case ARCHIVE_FATAL:
-            p_sys->b_dead = true;
             msg_Err( p_extractor, "libarchive: %s", archive_error_string( p_arc ) );
-            return 0;
+            goto fatal_error;
     }
 
     p_sys->i_offset += i_ret;
     return i_ret;
+
+fatal_error:
+    p_sys->b_dead = true;
+
+eof:
+    p_sys->b_eof = true;
+    return 0;
+}
+
+static int archive_skip_decompressed( stream_extractor_t* p_extractor, uint64_t i_skip )
+{
+    while( i_skip )
+    {
+        ssize_t i_read = Read( p_extractor, NULL, i_skip );
+
+        if( i_read < 1 )
+            return VLC_EGENERIC;
+
+        i_skip -= i_read;
+    }
+
+    return VLC_SUCCESS;
 }
 
 static int Seek( stream_extractor_t* p_extractor, uint64_t i_req )
 {
     private_sys_t* p_sys = p_extractor->p_sys;
 
-    if( p_sys->b_dead )
+    if( !p_sys->p_entry || !p_sys->b_seekable_source )
         return VLC_EGENERIC;
 
-    if( !p_sys->p_entry )
-        return VLC_EGENERIC;
+    if( archive_entry_size_is_set( p_sys->p_entry ) &&
+        (uint64_t)archive_entry_size( p_sys->p_entry ) <= i_req )
+    {
+        p_sys->b_eof = true;
+        return VLC_SUCCESS;
+    }
 
-    if( !p_sys->b_seekable_source )
-        return VLC_EGENERIC;
+    p_sys->b_eof = false;
 
-    if( !p_sys->b_seekable_archive
+    if( !p_sys->b_seekable_archive || p_sys->b_dead
       || archive_seek_data( p_sys->p_archive, i_req, SEEK_SET ) < 0 )
     {
-        msg_Dbg( p_extractor, "libarchive intrinsic seek failed:"
-                              " '%s' (falling back to dumb seek)",
+        msg_Dbg( p_extractor,
+            "intrinsic seek failed: '%s' (falling back to dumb seek)",
             archive_error_string( p_sys->p_archive ) );
 
         uint64_t i_offset = p_sys->i_offset;
@@ -604,13 +651,9 @@ static int Seek( stream_extractor_t* p_extractor, uint64_t i_req )
 
         if( i_req < i_offset )
         {
-            if( archive_clean( p_sys ) )
-                return VLC_EGENERIC;
-
-            if( archive_init( p_sys, p_extractor->source ) ||
-                archive_seek_subentry( p_sys, p_extractor->identifier ) )
+            if( archive_extractor_reset( p_extractor ) )
             {
-                msg_Err( p_extractor, "unable to recreate libarchive handle" );
+                msg_Err( p_extractor, "unable to reset libarchive handle" );
                 return VLC_EGENERIC;
             }
 
@@ -618,18 +661,8 @@ static int Seek( stream_extractor_t* p_extractor, uint64_t i_req )
             i_offset = 0;
         }
 
-        /* SKIP _DECOMPRESSED_ DATA */
-
-        while( i_skip )
-        {
-            ssize_t i_read = Read( p_extractor, NULL, i_skip );
-
-            if( i_read < 1 )
-                return VLC_EGENERIC;
-
-            i_offset += i_read;
-            i_skip   -= i_read;
-        }
+        if( archive_skip_decompressed( p_extractor, i_skip ) )
+            msg_Dbg( p_extractor, "failed to skip to seek position" );
     }
 
     p_sys->i_offset = i_req;

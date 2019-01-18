@@ -2,7 +2,7 @@
  * demux.c: demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 60a3a940b8e021637a56a16475040011dc5114bb $
+ * $Id: 867b4fe0374b9efd7488d031f826faa7e6dbd2a9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -443,15 +443,26 @@ int avformat_OpenDemux( vlc_object_t *p_this )
 
 # warning FIXME: implement palette transmission
             psz_type = "video";
-#if (LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(55, 20, 0))
-            es_fmt.video.i_frame_rate = s->time_base.num;
-            es_fmt.video.i_frame_rate_base = s->time_base.den;
-            if( s->codec->ticks_per_frame > 0 )
-                es_fmt.video.i_frame_rate_base *= s->codec->ticks_per_frame;
-#else
-            es_fmt.video.i_frame_rate = s->codec->time_base.num;
-            es_fmt.video.i_frame_rate_base = s->codec->time_base.den * __MAX( s->codec->ticks_per_frame, 1 );
+
+            AVRational rate;
+#if (LIBAVUTIL_VERSION_MICRO < 100) /* libav */
+# if (LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(55, 20, 0))
+            rate.num = s->time_base.num;
+            rate.den = s->time_base.den;
+# else
+            rate.num = s->codec->time_base.num;
+            rate.den = s->codec->time_base.den;
+# endif
+            rate.den *= __MAX( s->codec->ticks_per_frame, 1 );
+#else /* ffmpeg */
+            rate = av_guess_frame_rate( p_sys->ic, s, NULL );
 #endif
+            if( rate.den && rate.num )
+            {
+                es_fmt.video.i_frame_rate = rate.num;
+                es_fmt.video.i_frame_rate_base = rate.den;
+            }
+
             es_fmt.video.i_sar_num = s->sample_aspect_ratio.num;
             if (s->sample_aspect_ratio.num > 0)
                 es_fmt.video.i_sar_den = s->sample_aspect_ratio.den;

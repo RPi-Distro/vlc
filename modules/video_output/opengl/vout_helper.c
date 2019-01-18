@@ -627,8 +627,13 @@ opengl_init_program(vout_display_opengl_t *vgl, struct prgm *prgm,
             .log_priv  = tc,
             .log_level = PL_LOG_INFO,
         });
-        if (tc->pl_ctx)
+        if (tc->pl_ctx) {
+#   if PL_API_VER >= 6
+            tc->pl_sh = pl_shader_alloc(tc->pl_ctx, NULL, 0);
+#   else
             tc->pl_sh = pl_shader_alloc(tc->pl_ctx, NULL, 0, 0);
+#   endif
+        }
     }
 #endif
 
@@ -1220,6 +1225,9 @@ int vout_display_opengl_Prepare(vout_display_opengl_t *vgl,
                 if (ret != VLC_SUCCESS)
                     continue;
             }
+            /* Use the visible pitch of the region */
+            r->p_picture->p[0].i_visible_pitch = r->fmt.i_visible_width
+                                               * r->p_picture->p[0].i_pixel_pitch;
             ret = tc->pf_update(tc, &glr->texture, &glr->width, &glr->height,
                                 r->p_picture, &pixels_offset);
         }

@@ -81,11 +81,9 @@ struct demux_sys_t
 
     enum
     {
-        NO_ES, /* for preparse */
         DELAY_ES,
         CREATE_ES
     } es_creation;
-    #define PREPARSING p_sys->es_creation == NO_ES
 
     /* */
     bool        b_es_id_pid;
@@ -97,6 +95,7 @@ struct demux_sys_t
     bool        b_valid_scrambling;
 
     bool        b_trust_pcr;
+    bool        b_check_pcr_offset;
 
     /* */
     bool        b_access_control;

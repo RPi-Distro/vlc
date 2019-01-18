@@ -19,9 +19,12 @@ $(TARBALLS)/microdns-$(LIBMICRODNS_VERSION).tar.gz:
 
 microdns: microdns-$(LIBMICRODNS_VERSION).tar.gz .sum-microdns
 	$(UNPACK)
+	$(APPLY) $(SRC)/microdns/0001-build-fix-getifaddrs-detection.patch
+	$(APPLY) $(SRC)/microdns/0002-fix-dummy-mdns_list_interfaces.patch
 	$(MOVE)
 
 .microdns: microdns
+	$(RECONF)
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF)
 	cd $< && $(MAKE) install
 	touch $@

@@ -2,7 +2,7 @@
  *MainMenu.h: MacOS X interface module
  *****************************************************************************
  *Copyright (C) 2011-2018 Felix Paul Kühne
- *$Id: 926604d4743238c2abc6cd4718bf6ddf95d15efa $
+ *$Id: 24d559ba7e6dbe3259975da48df576e19538d706 $
  *
  *Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -205,7 +205,7 @@
 @property (readwrite, weak) IBOutlet NSMenuItem *voutMenufullscreen;
 @property (readwrite, weak) IBOutlet NSMenuItem *voutMenusnapshot;
 
-@property (readwrite, weak) IBOutlet NSView *playlistSaveAccessoryView;
+@property (readwrite, strong) IBOutlet NSView *playlistSaveAccessoryView;
 @property (readwrite, weak) IBOutlet NSPopUpButton *playlistSaveAccessoryPopup;
 @property (readwrite, weak) IBOutlet NSTextField *playlistSaveAccessoryText;
 

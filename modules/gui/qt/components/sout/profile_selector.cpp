@@ -2,7 +2,7 @@
  * profile_selector.cpp : A small profile selector and editor
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 7e11f3aa1bc8cdf08aa972690d2677b621be27e1 $
+ * $Id: 6fae3a2eee6051bee060ea6dbed9a08aa3d1fe03 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -343,12 +343,18 @@ void VLCProfileSelector::updateOptions( int i )
     HASHPICK( "subtitles", "enable" );
     if( !value.isEmpty() )
     {
-        HASHPICK( "subtitles", "codec" );
-        smrl.option( "scodec", value );
-
         HASHPICK( "subtitles", "overlay" );
-        if ( !value.isEmpty() )
+        if ( value.isEmpty() )
+        {
+            HASHPICK( "subtitles", "codec" );
+            smrl.option( "scodec", value );
+        }
+        else
+        {
             smrl.option( "soverlay" );
+        }
+    } else {
+        smrl.option( "scodec", "none" );
     }
     smrl.end();
 #undef HASHPICK
@@ -450,6 +456,8 @@ VLCProfileEditor::VLCProfileEditor( const QString& qs_name, const QString& value
     CONNECT( ui.valueholder_video_copy, stateChanged( int ),
              this, activatePanels() );
     CONNECT( ui.valueholder_audio_copy, stateChanged( int ),
+             this, activatePanels() );
+    CONNECT( ui.valueholder_subtitles_overlay, stateChanged( int ),
              this, activatePanels() );
     CONNECT( ui.valueholder_vcodec_bitrate, editingFinished( ),
              this, fixBirateState() );
@@ -881,6 +889,7 @@ void VLCProfileEditor::activatePanels()
 {
     ui.transcodevideo->setEnabled( ! ui.valueholder_video_copy->isChecked() );
     ui.transcodeaudio->setEnabled( ! ui.valueholder_audio_copy->isChecked() );
+    ui.valueholder_subtitles_codec->setEnabled( ! ui.valueholder_subtitles_overlay->isChecked() );
 }
 
 void VLCProfileEditor::fixBirateState()

@@ -2,7 +2,7 @@
  * vout_manager.cpp
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 442c9b265e34b6db428f330cfd16f5c0a0c67d89 $
+ * $Id: e555e5e6f9acae915ce761b166a4bb9490abc490 $
  *
  * Authors: Erwan Tulou <brezhoneg1 at yahoo.fr>
  *
@@ -325,8 +325,6 @@ void VoutManager::onUpdate( Subject<VarBool> &rVariable, void *arg )
 void VoutManager::configureFullscreen( VoutWindow& rWindow )
 {
     int numScr = var_InheritInteger( getIntf(), "qt-fullscreen-screennumber" );
-    int x0 = m_pVoutMainWindow->getTop();
-    int y0 = m_pVoutMainWindow->getLeft();
 
     int x, y, w, h;
     if( numScr >= 0 )
@@ -341,16 +339,13 @@ void VoutManager::configureFullscreen( VoutWindow& rWindow )
         rWindow.getMonitorInfo( &x, &y, &w, &h );
     }
 
-    if( x != x0 || y != y0 )
-    {
-        // move and resize fullscreen
-        m_pVoutMainWindow->move( x, y );
-        m_pVoutMainWindow->resize( w, h );
+    // move and resize fullscreen
+    m_pVoutMainWindow->move( x, y );
+    m_pVoutMainWindow->resize( w, h );
 
-        // ensure the fs controller is also moved
-        if( m_pFscWindow )
-        {
-            m_pFscWindow->moveTo( x, y, w, h );
-        }
+    // ensure the fs controller is also moved
+    if( m_pFscWindow )
+    {
+        m_pFscWindow->moveTo( x, y, w, h );
     }
 }

@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 4bd4eaacee8fd59f5c806dea44dfbb95daed565b $
+ * $Id: e9035db1b062301288ef1ad309fc2f23b6e34e4a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1569,7 +1569,6 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
         }
         S_CASE("V_AV1") {
             vars.p_fmt->i_codec = VLC_CODEC_AV1;
-            vars.p_fmt->b_packetized = false;
             vars.p_tk->b_pts_only = true;
 
             fill_extra_data( vars.p_tk, 0 );
@@ -1593,17 +1592,13 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
             /* HACK: if we found invalid format, made by mkvmerge < 16.0.0,
              *       we try to fix it. They fixed it in 16.0.0. */
             const char* app = vars.obj->psz_writing_application;
-            if( p_extra && p_extra[0] == 0 && app != NULL &&
-                    strncmp(app, "mkvmerge", sizeof("mkvmerge")-1) == 0 )
+            if( p_extra && vars.p_tk->i_extra_data >= 3 &&
+                    p_extra[0] == 0 && (p_extra[1] != 0 || p_extra[2] > 1) )
             {
-                int major_version;
-                if( sscanf(app, "mkvmerge v%d.", &major_version) && major_version < 16 )
-                {
-                    msg_Dbg(vars.p_demuxer,
-                            "Invalid HEVC reserved bits in mkv file"
-                            "made by mkvmerge < v16.0.0 detected, fixing it");
-                    p_extra[0] = 0x01;
-                }
+                msg_Warn(vars.p_demuxer,
+                        "Invalid HEVC reserved bits in mkv file "
+                        "made by %s, fixing it", app ? app : "unknown app");
+                p_extra[0] = 0x01;
             }
 
             fill_extra_data( vars.p_tk, 0 );

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: b7eecb44862cf2af0054b0b171d19446ad4565ed $
+ * $Id: e03f9d592366c88f6156c742e2f110cc081a9869 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -70,7 +70,8 @@ static int AllocatePicture( picture_t *p_pic )
         return VLC_ENOMEM;
     }
 
-    uint8_t *p_data = aligned_alloc( 16, i_bytes );
+    i_bytes = (i_bytes + 63) & ~63; /* must be a multiple of 64 */
+    uint8_t *p_data = aligned_alloc( 64, i_bytes );
     if( i_bytes > 0 && p_data == NULL )
     {
         p_pic->i_planes = 0;
@@ -323,8 +324,7 @@ void plane_CopyPixels( plane_t *p_dst, const plane_t *p_src )
 {
     const unsigned i_width  = __MIN( p_dst->i_visible_pitch,
                                      p_src->i_visible_pitch );
-    const unsigned i_height = __MIN( p_dst->i_visible_lines,
-                                     p_src->i_visible_lines );
+    const unsigned i_height = __MIN( p_dst->i_lines, p_src->i_lines );
 
     /* The 2x visible pitch check does two things:
        1) Makes field plane_t's work correctly (see the deinterlacer module)
