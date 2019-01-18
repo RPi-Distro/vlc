@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3406,7 +3406,7 @@
+@@ -3429,7 +3429,7 @@
          VLC_ADD_PLUGIN([mmal])
          VLC_ADD_LDFLAGS([mmal],[ -L/opt/vc/lib ])
          VLC_ADD_CFLAGS([mmal],[ -isystem /opt/vc/include -isystem /opt/vc/include/interface/vcos/pthreads -isystem /opt/vc/include/interface/vmcs_host/linux ])
