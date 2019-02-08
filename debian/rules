@@ -7,8 +7,11 @@ include /usr/share/dpkg/architecture.mk
 include /usr/share/dpkg/pkg-info.mk
 include /usr/share/dpkg/vendor.mk
 
+# --enable-debug enables assertions
 ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
 confflags += --enable-debug
+else
+confflags += --disable-debug
 endif
 
 # configure flags
