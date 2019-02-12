@@ -8,32 +8,13 @@
  #include <vlc_plugin.h>
  #include <vlc_codec.h>
  #include <vlc_filter.h>
-@@ -1922,6 +1923,9 @@
-     const vlc_fourcc_t vfcc_src = p_filter->fmt_in.video.i_chroma;
-     const vlc_fourcc_t vfcc_dst = p_filter->fmt_out.video.i_chroma;
+@@ -1869,6 +1870,9 @@
+                 p_filter->fmt_out.video.i_visible_width, p_filter->fmt_out.video.i_visible_height);
+     }
  
 +    if (!vlc_CPU_ARM_NEON())
 +        return VLC_EGENERIC;
 +
      {
-         char dbuf0[5], dbuf1[5];
-         msg_Dbg(p_filter, "%s: (%s) %s,%dx%d [(%d,%d) %dx%d]->%s,%dx%d [(%d,%d) %dx%d]", __func__,
---- a/modules/hw/mmal/blend_rgba_neon.S
-+++ b/modules/hw/mmal/blend_rgba_neon.S
-@@ -1,7 +1,12 @@
--        .syntax unified
--        .arm
--//      .thumb
--        .text
-+#include "../../arm_neon/asm.S"
-+
-+	.syntax unified
-+#if HAVE_AS_FPU_DIRECTIVE
-+	.fpu	neon
-+#endif
-+        .arch   armv7-a
-+	.text
-+
-         .align 16
- 
- @ Deal with tail
+         blend_sys_t * const sys = calloc(1, sizeof (*sys));
+         if (sys == NULL)

@@ -1,3 +1,11 @@
+vlc (3.0.6-0+rpt2+deb9u1) stretch; urgency=medium
+
+  * New MMAL patch
+    - Fixes a few issues when used with the experimental vc4 driver
+    - Fixes colour channels when used as a library
+
+ -- Serge Schneider <serge@raspberrypi.org>  Tue, 12 Feb 2019 18:58:02 +0000
+
 vlc (3.0.6-0+rpt1+deb9u1) stretch; urgency=medium
 
   * Apply mmal_test_1.patch
