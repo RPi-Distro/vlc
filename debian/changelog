@@ -1,3 +1,10 @@
+vlc (3.0.6-0+rpt3+deb9u1) stretch; urgency=medium
+
+  * New MMAL patch
+    - Fixes crash when going into windowed mode
+
+ -- Serge Schneider <serge@raspberrypi.org>  Wed, 27 Feb 2019 17:27:59 +0000
+
 vlc (3.0.6-0+rpt2+deb9u1) stretch; urgency=medium
 
   * New MMAL patch

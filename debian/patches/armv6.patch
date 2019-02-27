@@ -1,3 +1,21 @@
+--- a/modules/hw/mmal/blend_rgba_neon.S
++++ b/modules/hw/mmal/blend_rgba_neon.S
+@@ -1,10 +1,10 @@
+-        .syntax unified
+-        .arm
+-//      .thumb
+-        .text
++#include "../../arm_neon/asm.S"
+         .align 16
+         .arch armv7-a
+-        .fpu neon-vfpv4
++        .syntax unified
++#if HAVE_AS_FPU_DIRECTIVE
++        .fpu    neon-vfpv4
++#endif
+ 
+ @ blend_rgbx_rgba_neon
+ 
 --- a/modules/hw/mmal/codec.c
 +++ b/modules/hw/mmal/codec.c
 @@ -29,6 +29,7 @@
@@ -8,13 +26,13 @@
  #include <vlc_plugin.h>
  #include <vlc_codec.h>
  #include <vlc_filter.h>
-@@ -1869,6 +1870,9 @@
-                 p_filter->fmt_out.video.i_visible_width, p_filter->fmt_out.video.i_visible_height);
-     }
+@@ -1871,6 +1872,9 @@
+     filter_t * const p_filter = (filter_t *)object;
+     const vlc_fourcc_t vfcc_dst = p_filter->fmt_out.video.i_chroma;
  
 +    if (!vlc_CPU_ARM_NEON())
 +        return VLC_EGENERIC;
 +
-     {
-         blend_sys_t * const sys = calloc(1, sizeof (*sys));
-         if (sys == NULL)
+     if ((vfcc_dst != VLC_CODEC_MMAL_OPAQUE &&
+          vfcc_dst != VLC_CODEC_MMAL_ZC_SAND8 &&
+          vfcc_dst != VLC_CODEC_MMAL_ZC_SAND10) ||
