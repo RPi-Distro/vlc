@@ -1,3 +1,10 @@
+vlc (3.0.6-0+rpt4+deb9u1) stretch; urgency=medium
+
+  * New MMAL patch
+    - Partially fixes snapshot functionality
+
+ -- Serge Schneider <serge@raspberrypi.org>  Tue, 05 Mar 2019 15:20:31 +0000
+
 vlc (3.0.6-0+rpt3+deb9u1) stretch; urgency=medium
 
   * New MMAL patch
