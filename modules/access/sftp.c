@@ -2,7 +2,7 @@
  * sftp.c: SFTP input module
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: 5bc054d310b67f514f04b3ef5ddcfc188f6d81c3 $
+ * $Id: 6ea58654ed4c158f005861b87edffba22582ec78 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *          Petri Hintukainen <phintuka@gmail.com>
@@ -306,7 +306,7 @@ static int Open( vlc_object_t* p_this )
         case LIBSSH2_HOSTKEY_TYPE_DSS:
             knownhost_fingerprint_algo = LIBSSH2_KNOWNHOST_KEY_SSHDSS;
             break;
-#if LIBSSH2_VERSION_NUM >= 0x010801
+#if LIBSSH2_VERSION_NUM >= 0x010900
         case LIBSSH2_HOSTKEY_TYPE_ECDSA_256:
             knownhost_fingerprint_algo = LIBSSH2_KNOWNHOST_KEY_ECDSA_256;
             break;

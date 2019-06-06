@@ -2,7 +2,7 @@
  * dmo.c : DirectMedia Object decoder module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 VLC authors and VideoLAN
- * $Id: ba59c613bacbd615c367575ab4798891a1cced42 $
+ * $Id: 5ab1a11c54f7d705363534448223022269e60d23 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -868,6 +868,7 @@ static int DecBlock( decoder_t *p_dec, block_t **pp_block )
                        (IMediaBuffer *)p_in, DMO_INPUT_DATA_BUFFERF_SYNCPOINT,
                        0, 0 );
 
+        *pp_block = NULL;
         p_in->vt->Release( (IUnknown *)p_in );
 
         if( i_result == S_FALSE )
@@ -893,8 +894,6 @@ static int DecBlock( decoder_t *p_dec, block_t **pp_block )
 #ifdef DMO_DEBUG
             msg_Dbg( p_dec, "ProcessInput(): successful" );
 #endif
-            block_Release( p_block );
-            *pp_block = NULL;
         }
     }
 

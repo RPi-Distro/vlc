@@ -266,22 +266,22 @@ static bo_t *GetESDS(mp4mux_trackinfo_t *p_track)
     case VLC_CODEC_MPGV:
         if(p_track->fmt.i_original_fourcc == VLC_CODEC_MP1V)
         {
-            i_object_type_indication = 0x6b;
+            i_object_type_indication = 0x6a; /* Visual ISO/IEC 11172-2  */
             break;
         }
         /* fallthrough */
     case VLC_CODEC_MP2V:
         /* MPEG-I=0x6b, MPEG-II = 0x60 -> 0x65 */
-        i_object_type_indication = 0x65;
+        i_object_type_indication = 0x61; /* Visual 13818-2 Main Profile */
         break;
     case VLC_CODEC_MP1V:
-        /* MPEG-I=0x6b, MPEG-II = 0x60 -> 0x65 */
-        i_object_type_indication = 0x6b;
+        i_object_type_indication = 0x6a; /* Visual ISO/IEC 11172-2  */
         break;
     case VLC_CODEC_MP4A:
         /* FIXME for mpeg2-aac == 0x66->0x68 */
         i_object_type_indication = 0x40;
         break;
+    case VLC_CODEC_MP3:
     case VLC_CODEC_MPGA:
         i_object_type_indication =
             p_track->fmt.audio.i_rate < 32000 ? 0x69 : 0x6b;
@@ -857,7 +857,8 @@ static bo_t *GetSounBox(vlc_object_t *p_obj, mp4mux_trackinfo_t *p_track, bool b
     vlc_fourcc_t codec = p_track->fmt.i_codec;
     char fcc[4];
 
-    if (codec == VLC_CODEC_MPGA) {
+    if (codec == VLC_CODEC_MPGA ||
+        codec == VLC_CODEC_MP3) {
         if (b_mov) {
             b_descr = false;
             memcpy(fcc, ".mp3", 4);
@@ -971,8 +972,8 @@ static bo_t *GetVideBox(vlc_object_t *p_obj, mp4mux_trackinfo_t *p_track, bool b
     for (int i = 0; i < 3; i++)
         bo_add_32be(vide, 0);     // predefined;
 
-    bo_add_16be(vide, p_track->fmt.video.i_width);  // i_width
-    bo_add_16be(vide, p_track->fmt.video.i_height); // i_height
+    bo_add_16be(vide, p_track->fmt.video.i_visible_width);  // i_width
+    bo_add_16be(vide, p_track->fmt.video.i_visible_height); // i_height
 
     bo_add_32be(vide, 0x00480000);                // h 72dpi
     bo_add_32be(vide, 0x00480000);                // v 72dpi
@@ -1288,6 +1289,16 @@ static bo_t *GetStblBox(vlc_object_t *p_obj, mp4mux_trackinfo_t *p_track, bool b
     return stbl;
 }
 
+static unsigned ApplyARtoWidth(const video_format_t *vfmt)
+{
+    if (vfmt->i_sar_num > 0 && vfmt->i_sar_den > 0)
+    {
+        return (int64_t)vfmt->i_sar_num *
+               (int64_t)vfmt->i_visible_width / vfmt->i_sar_den;
+    }
+    else return vfmt->i_visible_width;
+}
+
 bo_t * mp4mux_GetMoovBox(vlc_object_t *p_obj, mp4mux_trackinfo_t **pp_tracks, unsigned int i_tracks,
                          int64_t i_movie_duration,
                          bool b_fragmented, bool b_mov, bool b_64_ext, bool b_stco64 )
@@ -1422,34 +1433,24 @@ bo_t * mp4mux_GetMoovBox(vlc_object_t *p_obj, mp4mux_trackinfo_t **pp_tracks, un
             bo_add_32be(tkhd, 0);                 // width (presentation)
             bo_add_32be(tkhd, 0);                 // height(presentation)
         } else if (p_stream->fmt.i_cat == VIDEO_ES) {
-            int i_width = p_stream->fmt.video.i_width << 16;
-            if (p_stream->fmt.video.i_sar_num > 0 && p_stream->fmt.video.i_sar_den > 0) {
-                i_width = (int64_t)p_stream->fmt.video.i_sar_num *
-                          ((int64_t)p_stream->fmt.video.i_width << 16) /
-                          p_stream->fmt.video.i_sar_den;
-            }
             // width (presentation)
-            bo_add_32be(tkhd, i_width);
+            bo_add_32be(tkhd, ApplyARtoWidth(&p_stream->fmt.video) << 16);
             // height(presentation)
-            bo_add_32be(tkhd, p_stream->fmt.video.i_height << 16);
+            bo_add_32be(tkhd, p_stream->fmt.video.i_visible_height << 16);
         } else {
-            int i_width = 320 << 16;
-            int i_height = 200;
-            for (unsigned int i = 0; i < i_tracks; i++) {
-                mp4mux_trackinfo_t *tk = pp_tracks[i];
-                if (tk->fmt.i_cat == VIDEO_ES) {
-                    if (tk->fmt.video.i_sar_num > 0 &&
-                        tk->fmt.video.i_sar_den > 0)
-                        i_width = (int64_t)tk->fmt.video.i_sar_num *
-                                  ((int64_t)tk->fmt.video.i_width << 16) /
-                                  tk->fmt.video.i_sar_den;
-                    else
-                        i_width = tk->fmt.video.i_width << 16;
-                    i_height = tk->fmt.video.i_height;
-                    break;
-                }
+            unsigned i_width = 320;
+            unsigned i_height = 200;
+            /* Find video track for SPU representation */
+            for (unsigned int i = 0; i < i_tracks; i++)
+            {
+                const mp4mux_trackinfo_t *tk = pp_tracks[i];
+                if (tk->fmt.i_cat != VIDEO_ES)
+                    continue;
+                i_width = ApplyARtoWidth(&tk->fmt.video);
+                i_height = tk->fmt.video.i_visible_height;
+                break;
             }
-            bo_add_32be(tkhd, i_width);     // width (presentation)
+            bo_add_32be(tkhd, i_width << 16);     // width (presentation)
             bo_add_32be(tkhd, i_height << 16);    // height(presentation)
         }
 

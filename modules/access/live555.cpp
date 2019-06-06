@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: d59a633d3cb90a0d2e56aae63ac4241071d8d92c $
+ * $Id: 26db2d6f24955ddc482009285c0c7b0e8392821c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -2353,7 +2353,7 @@ static unsigned char* parseH264ConfigStr( char const* configStr,
         }
     }
 
-    size_t configMax = 5*strlen(dup);
+    size_t configMax = 4*i_records+strlen(configStr);
     unsigned char *cfg = new unsigned char[configMax];
     psz = dup;
     for( size_t i = 0; i < i_records; ++i )

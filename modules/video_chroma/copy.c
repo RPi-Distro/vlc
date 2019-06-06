@@ -2,7 +2,7 @@
  * copy.c: Fast YV12/NV12 copy
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 2baf076d535a65f790b728c7ead160c97bb992fe $
+ * $Id: 08f41f164b3f805750c6aa4281c4ed7271b0a0c4 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *          Victorien Le Couviour--Tuffet <victorien.lecouviour.tuffet@gmail.com>
@@ -469,7 +469,7 @@ static void SSE_CopyPlane(uint8_t *dst, size_t dst_pitch,
     const size_t copy_pitch = __MIN(src_pitch, dst_pitch);
     const unsigned w16 = (copy_pitch+15) & ~15;
     const unsigned hstep = cache_size / w16;
-    const unsigned cache_width = __MIN(src_pitch, hstep);
+    const unsigned cache_width = __MIN(src_pitch, cache_size);
     assert(hstep > 0);
 
     /* If SSE4.1: CopyFromUswc is faster than memcpy */
@@ -502,8 +502,8 @@ SSE_InterleavePlanes(uint8_t *dst, size_t dst_pitch,
     size_t copy_pitch = __MIN(dst_pitch / 2, srcu_pitch);
     unsigned int const  w16 = (srcu_pitch+15) & ~15;
     unsigned int const  hstep = (cache_size) / (2*w16);
-    const unsigned cacheu_width = __MIN(srcu_pitch, hstep);
-    const unsigned cachev_width = __MIN(srcv_pitch, hstep);
+    const unsigned cacheu_width = __MIN(srcu_pitch, cache_size);
+    const unsigned cachev_width = __MIN(srcv_pitch, cache_size);
     assert(hstep > 0);
 
     for (unsigned int y = 0; y < height; y += hstep)
@@ -536,7 +536,7 @@ static void SSE_SplitPlanes(uint8_t *dstu, size_t dstu_pitch,
     size_t copy_pitch = __MIN(__MIN(src_pitch / 2, dstu_pitch), dstv_pitch);
     const unsigned w16 = (src_pitch+15) & ~15;
     const unsigned hstep = cache_size / w16;
-    const unsigned cache_width = __MIN(src_pitch, hstep);
+    const unsigned cache_width = __MIN(src_pitch, cache_size);
     assert(hstep > 0);
 
     for (unsigned y = 0; y < height; y += hstep) {
@@ -969,7 +969,7 @@ int picture_UpdatePlanes(picture_t *picture, uint8_t *data, unsigned pitch)
 
             p->p_pixels = o->p_pixels + o->i_lines * o->i_pitch;
             p->i_pitch  = pitch;
-            p->i_lines  = picture->format.i_height;
+            p->i_lines  = picture->format.i_height / 2;
             assert(p->i_visible_pitch <= p->i_pitch);
             assert(p->i_visible_lines <= p->i_lines);
         }

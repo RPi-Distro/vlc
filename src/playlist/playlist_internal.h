@@ -2,7 +2,7 @@
  * playlist_internal.h : Playlist internals
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 9537a5f2702f97a9f527b1478189a35d1254ce25 $
+ * $Id: 178933c76d533f19bf3e8707559951ffd7bae098 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -87,6 +87,7 @@ typedef struct playlist_private_t
 
     int      i_last_playlist_id; /**< Last id to an item */
     bool     b_reset_currently_playing; /** Reset current item array */
+    unsigned i_consecutive_errors; /**< Number of consecutive items in error */
 
     bool     b_tree; /**< Display as a tree */
     bool     b_preparse; /**< Preparse items */

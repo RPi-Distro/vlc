@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: b9f19fcba8bb74f6805acdac6548d2757af15839 $
+ * $Id: df2f3030bb7fdf3709c6e551893822b4c6fcd236 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -339,6 +339,14 @@ static void PictureDisplay (vout_display_t *vd, picture_t *pic, subpicture_t *su
     [sys->glView setVoutFlushing:YES];
     if (vlc_gl_MakeCurrent(sys->gl) == VLC_SUCCESS)
     {
+        if (@available(macOS 10.14, *)) {
+            vout_display_place_t place;
+            vout_display_PlacePicture(&place, &vd->source, vd->cfg, false);
+            vout_display_opengl_Viewport(vd->sys->vgl, place.x,
+                                         vd->cfg->display.height - (place.y + place.height),
+                                         place.width, place.height);
+        }
+
         vout_display_opengl_Display (sys->vgl, &vd->source);
         vlc_gl_ReleaseCurrent(sys->gl);
     }
