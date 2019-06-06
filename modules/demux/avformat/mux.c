@@ -2,7 +2,7 @@
  * mux.c: muxer using libavformat
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 9500c915b4e4a457826fc0477153ced5d3d72ec0 $
+ * $Id: b5b0c9a0b6583efcf1b6b2ad8296673963d2ca4e $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -44,7 +44,7 @@
 //#define AVFORMAT_DEBUG 1
 
 static const char *const ppsz_mux_options[] = {
-    "mux", "options", NULL
+    "mux", "options", "reset-ts", NULL
 };
 
 /*****************************************************************************
@@ -150,6 +150,8 @@ int avformat_OpenMux( vlc_object_t *p_this )
     p_sys->io->write_data_type = IOWriteTyped;
     p_sys->b_header_done = false;
 #endif
+    if( var_GetBool( p_mux, "sout-avformat-reset-ts" ) )
+        p_sys->oc->avoid_negative_ts = AVFMT_AVOID_NEG_TS_MAKE_ZERO;
 
     /* Fill p_mux fields */
     p_mux->pf_control   = Control;

@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 0b368b77f8451d6d9bdbcf25a15d5906ee8fbd26 $
+ * $Id: 69fa492c42c6d285b9a745a1506f7bc8db93f50b $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -715,6 +715,7 @@ static void Ogg_ResetStream( logical_stream_t *p_stream )
     p_stream->i_pcr = VLC_TS_UNKNOWN;
     p_stream->i_previous_granulepos = -1;
     p_stream->i_previous_pcr = VLC_TS_UNKNOWN;
+    p_stream->b_interpolation_failed = false;
     ogg_stream_reset( &p_stream->os );
     FREENULL( p_stream->prepcr.pp_blocks );
     p_stream->prepcr.i_size = 0;
@@ -1137,6 +1138,7 @@ static void Ogg_UpdatePCR( demux_t *p_demux, logical_stream_t *p_stream,
             p_stream->i_pcr += ( CLOCK_FREQ * p_oggpacket->bytes /
                                  p_stream->fmt.i_bitrate / 8 );
         }
+        else p_stream->b_interpolation_failed = true;
     }
 
     p_stream->i_previous_granulepos = p_oggpacket->granulepos;
@@ -1477,13 +1479,16 @@ static void Ogg_DecodePacket( demux_t *p_demux,
 
         /* Blatant abuse of the i_length field. */
         p_block->i_length = p_stream->i_end_trim;
-        p_block->i_pts = p_block->i_dts = p_stream->i_pcr;
+        p_block->i_dts = p_stream->i_pcr;
+        p_block->i_pts = p_stream->b_interpolation_failed ? VLC_TS_INVALID : p_stream->i_pcr;
     }
     else if( p_stream->fmt.i_cat == SPU_ES )
     {
         p_block->i_length = 0;
         p_block->i_pts = p_block->i_dts = p_stream->i_pcr;
     }
+
+    p_stream->b_interpolation_failed = false;
 
     if( p_stream->fmt.i_codec != VLC_CODEC_VORBIS &&
         p_stream->fmt.i_codec != VLC_CODEC_SPEEX &&
@@ -1609,8 +1614,11 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
                     return VLC_EGENERIC;
                 }
 
-                /* FIXME: check return value */
-                ogg_stream_packetpeek( &p_stream->os, &oggpacket );
+                if ( ogg_stream_packetpeek( &p_stream->os, &oggpacket ) != 1 )
+                {
+                    msg_Err( p_demux, "error in ogg_stream_packetpeek" );
+                    return VLC_EGENERIC;
+                }
 
                 /* Check for Vorbis header */
                 if( oggpacket.bytes >= 7 &&
@@ -3141,6 +3149,8 @@ static void Ogg_ReadAnnodexHeader( demux_t *p_demux,
 static void Ogg_ReadSkeletonHeader( demux_t *p_demux, logical_stream_t *p_stream,
                                     ogg_packet *p_oggpacket )
 {
+    if( p_oggpacket->bytes < 12 )
+        return;
     p_demux->p_sys->p_skelstream = p_stream;
     /* There can be only 1 skeleton for streams */
     p_demux->p_sys->skeleton.major = GetWLE( &p_oggpacket->packet[8] );

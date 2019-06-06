@@ -2,7 +2,7 @@
  * chroma.c: libavutil <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: e622e25c7a68e74c9dc3caa132606ccfe7280427 $
+ * $Id: 10338450b2c2342edb857e513cef5dc83b3745c6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -143,6 +143,14 @@ static const struct
 
 #ifdef AV_PIX_FMT_0BGR32
     VLC_RGB( VLC_CODEC_RGB32, AV_PIX_FMT_0BGR32, AV_PIX_FMT_0RGB32, 0x000000ff, 0x0000ff00, 0x00ff0000 )
+#endif
+
+#if (LIBAVUTIL_VERSION_MICRO == 0 || LIBAVUTIL_VERSION_INT >= AV_VERSION_INT( 55, 0, 100 ) )
+#ifdef WORDS_BIGENDIAN
+    {VLC_CODEC_RGBA64, AV_PIX_FMT_RGBA64BE, 0, 0, 0 },
+#else /* !WORDS_BIGENDIAN */
+    {VLC_CODEC_RGBA64, AV_PIX_FMT_RGBA64LE, 0, 0, 0 },
+#endif /* !WORDS_BIGENDIAN */
 #endif
 
     {VLC_CODEC_RGBA, AV_PIX_FMT_RGBA, 0, 0, 0 },

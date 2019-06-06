@@ -2,7 +2,7 @@
  * HelpWindowController.m
  *****************************************************************************
  * Copyright (C) 2001-2014 VLC authors and VideoLAN
- * $Id: ed973de85e07ab288268b01d0d31fd58a19e4811 $
+ * $Id: 9520e5aead0dbcd99fce04073c7b3dc317df3115 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -63,7 +63,7 @@
                                ((OSX_YOSEMITE_AND_HIGHER) ? @"Helvetica Neue" : @"Lucida Grande"), _NS(I_LONGHELP)];
 
     [[helpWebView mainFrame] loadHTMLString:htmlWithStyle
-                                    baseURL:[NSURL URLWithString:@"http://videolan.org"]];
+                                    baseURL:[NSURL URLWithString:@"https://videolan.org"]];
 }
 
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame

@@ -2,7 +2,7 @@
  * intf-prefs.m
  *****************************************************************************
  * Copyright (C) 2001-2015 VLC authors and VideoLAN
- * $Id: 7e28d17c79a9b824bf5bc07cd08f6f046c70aa25 $
+ * $Id: a99ca3d8796040d9bb37265cfbfcd884e1314344 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -60,6 +60,11 @@ static const int kCurrentPreferencesVersion = 4;
 {
     NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
     int version = [defaults integerForKey:kVLCPreferencesVersion];
+
+    // This was set in user defaults in VLC 2.0.x (preferences version 2), overriding any
+    // value in the Info.plist. Make sure to delete it here, always,
+    // as it could be set if an old version of VLC is launched again.
+    [defaults removeObjectForKey:@"SUFeedURL"];
 
     /*
      * Store version explicitely in file, for ease of debugging.

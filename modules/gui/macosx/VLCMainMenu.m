@@ -2,7 +2,7 @@
  *MainMenu.m: MacOS X interface module
  *****************************************************************************
  *Copyright (C) 2011-2018 Felix Paul Kühne
- *$Id: 0be5de87a0011fbe905d142de14abdb503d0e80a $
+ *$Id: 736dd27b492cc7dc5f11bb393a2f8c5445a7d4c7 $
  *
  *Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -1301,28 +1301,28 @@
 
 - (IBAction)openDocumentation:(id)sender
 {
-    NSURL *url = [NSURL URLWithString: @"http://www.videolan.org/doc/"];
+    NSURL *url = [NSURL URLWithString: @"https://www.videolan.org/doc/"];
 
     [[NSWorkspace sharedWorkspace] openURL: url];
 }
 
 - (IBAction)openWebsite:(id)sender
 {
-    NSURL *url = [NSURL URLWithString: @"http://www.videolan.org/"];
+    NSURL *url = [NSURL URLWithString: @"https://www.videolan.org/"];
 
     [[NSWorkspace sharedWorkspace] openURL: url];
 }
 
 - (IBAction)openForum:(id)sender
 {
-    NSURL *url = [NSURL URLWithString: @"http://forum.videolan.org/"];
+    NSURL *url = [NSURL URLWithString: @"https://forum.videolan.org/"];
 
     [[NSWorkspace sharedWorkspace] openURL: url];
 }
 
 - (IBAction)openDonate:(id)sender
 {
-    NSURL *url = [NSURL URLWithString: @"http://www.videolan.org/contribute.html#paypal"];
+    NSURL *url = [NSURL URLWithString: @"https://www.videolan.org/contribute.html#paypal"];
 
     [[NSWorkspace sharedWorkspace] openURL: url];
 }

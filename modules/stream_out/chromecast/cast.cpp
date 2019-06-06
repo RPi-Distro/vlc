@@ -90,6 +90,7 @@ struct sout_stream_sys_t
         , cc_has_input( false )
         , cc_reload( false )
         , cc_flushing( false )
+        , cc_eof( false )
         , has_video( false )
         , out_force_reload( false )
         , perf_warning_shown( false )
@@ -137,6 +138,7 @@ struct sout_stream_sys_t
     bool                               cc_has_input;
     bool                               cc_reload;
     bool                               cc_flushing;
+    bool                               cc_eof;
     bool                               has_video;
     bool                               out_force_reload;
     bool                               perf_warning_shown;
@@ -163,8 +165,8 @@ struct sout_stream_id_sys_t
 
 #define SOUT_CFG_PREFIX "sout-chromecast-"
 
-static const char DEFAULT_MUXER[] = "avformat{mux=matroska,options={live=1}}";
-static const char DEFAULT_MUXER_WEBM[] = "avformat{mux=webm,options={live=1}}";
+static const char DEFAULT_MUXER[] = "avformat{mux=matroska,options={live=1},reset-ts}";
+static const char DEFAULT_MUXER_WEBM[] = "avformat{mux=webm,options={live=1},reset-ts}";
 
 
 /*****************************************************************************
@@ -317,12 +319,6 @@ static int ProxySend(sout_stream_t *p_stream, sout_stream_id_sys_t *id,
                 return VLC_SUCCESS;
             }
         }
-
-        mtime_t pause_delay = p_sys->p_intf->getPauseDelay();
-        if( p_buffer->i_pts != VLC_TS_INVALID )
-            p_buffer->i_pts -= pause_delay;
-        if( p_buffer->i_dts != VLC_TS_INVALID )
-            p_buffer->i_dts -= pause_delay;
 
         int ret = sout_StreamIdSend(p_stream->p_next, id, p_buffer);
         if (ret == VLC_SUCCESS && !p_sys->cc_has_input)
@@ -1227,9 +1223,9 @@ bool sout_stream_sys_t::UpdateOutput( sout_stream_t *p_stream )
         ssout << "}:";
     }
 
-    const bool is_webm = ( i_codec_audio == 0 || i_codec_audio == VLC_CODEC_VORBIS ||
+    const bool is_webm = ( i_codec_audio == VLC_CODEC_VORBIS ||
                            i_codec_audio == VLC_CODEC_OPUS ) &&
-                         ( i_codec_video == 0 || i_codec_video == VLC_CODEC_VP8 ||
+                         ( i_codec_video == VLC_CODEC_VP8 ||
                            i_codec_video == VLC_CODEC_VP9 );
 
     if ( !p_original_video )
@@ -1307,7 +1303,7 @@ static int Send(sout_stream_t *p_stream, sout_stream_id_sys_t *id,
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     vlc_mutex_locker locker(&p_sys->lock);
 
-    if( p_sys->isFlushing( p_stream ) )
+    if( p_sys->isFlushing( p_stream ) || p_sys->cc_eof )
     {
         block_Release( p_buffer );
         return VLC_SUCCESS;
@@ -1335,7 +1331,7 @@ static void Flush( sout_stream_t *p_stream, sout_stream_id_sys_t *id )
     sout_stream_id_sys_t *next_id = p_sys->GetSubId( p_stream, id, false );
     if ( next_id == NULL )
         return;
-    next_id->flushed = true;
+    id->flushed = true;
 
     if( !p_sys->cc_flushing )
     {
@@ -1366,7 +1362,8 @@ static void on_input_event_cb(void *data, enum cc_input_event event, union cc_in
             /* In case of EOF: stop the sout chain in order to drain all
              * sout/demuxers/access. If EOF changes to false, reset es_changed
              * in order to reload the sout from next Send calls. */
-            if( arg.eof )
+            p_sys->cc_eof = arg.eof;
+            if( p_sys->cc_eof )
                 p_sys->stopSoutChain( p_stream );
             else
                 p_sys->out_force_reload = p_sys->es_changed = true;
