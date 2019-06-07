@@ -2,7 +2,7 @@
  * upnp.cpp :  UPnP discovery module (libupnp)
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: 127f562837b49ba29009f5e5c275e35f0bc6b50f $
+ * $Id: f1037c82c8ec98d7d54608494818b8e395ced240 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -507,25 +507,20 @@ void MediaServerList::parseNewServer( IXML_Document *doc, const std::string &loc
             }
 
             /* Try to browse content directory. */
-            char* psz_url = ( char* ) malloc( strlen( psz_base_url ) + strlen( psz_control_url ) + 1 );
-            if ( psz_url )
+            char* psz_url = NULL;
+            if ( UpnpResolveURL2( psz_base_url, psz_control_url, &psz_url ) == UPNP_E_SUCCESS )
             {
-                if ( UpnpResolveURL( psz_base_url, psz_control_url, psz_url ) == UPNP_E_SUCCESS )
-                {
-                    SD::MediaServerDesc* p_server = new(std::nothrow) SD::MediaServerDesc( psz_udn,
-                            psz_friendly_name, psz_url, iconUrl );
-                    free( psz_url );
-                    if ( unlikely( !p_server ) )
-                        break;
+                SD::MediaServerDesc* p_server = new(std::nothrow) SD::MediaServerDesc( psz_udn,
+                    psz_friendly_name, psz_url, iconUrl );
+                free( psz_url );
+                if ( unlikely( !p_server ) )
+                    break;
 
-                    if ( !addServer( p_server ) )
-                    {
-                        delete p_server;
-                        continue;
-                    }
+                if ( !addServer( p_server ) )
+                {
+                    delete p_server;
+                    continue;
                 }
-                else
-                    free( psz_url );
             }
         }
         ixmlNodeList_free( p_service_list );
@@ -1542,11 +1537,74 @@ done:
 
 #ifdef UPNP_ENABLE_IPV6
 
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if defined(TARGET_OS_OSX) && TARGET_OS_OSX
+#include <CoreFoundation/CoreFoundation.h>
+#include <SystemConfiguration/SystemConfiguration.h>
+#include "vlc_charset.h"
+
+inline char *FromCFString(const CFStringRef cfString,
+                          const CFStringEncoding cfStringEncoding)
+{
+    // Try the quick way to obtain the buffer
+    const char *tmpBuffer = CFStringGetCStringPtr(cfString, cfStringEncoding);
+    if (tmpBuffer != NULL) {
+        return strdup(tmpBuffer);
+    }
+
+    // The quick way did not work, try the long way
+    CFIndex length = CFStringGetLength(cfString);
+    CFIndex maxSize = CFStringGetMaximumSizeForEncoding(length, cfStringEncoding);
+
+    // If result would exceed LONG_MAX, kCFNotFound is returned
+    if (unlikely(maxSize == kCFNotFound)) {
+        return NULL;
+    }
+
+    // Account for the null terminator
+    maxSize++;
+
+    char *buffer = (char *)malloc(maxSize);
+    if (unlikely(buffer == NULL)) {
+        return NULL;
+    }
+
+    // Copy CFString in requested encoding to buffer
+    Boolean success = CFStringGetCString(cfString, buffer, maxSize, cfStringEncoding);
+
+    if (!success)
+        FREENULL(buffer);
+    return buffer;
+}
+
+inline char *getPreferedAdapter()
+{
+    SCDynamicStoreRef session = SCDynamicStoreCreate(NULL, CFSTR("session"), NULL, NULL);
+    CFDictionaryRef q = (CFDictionaryRef) SCDynamicStoreCopyValue(session, CFSTR("State:/Network/Global/IPv4"));
+    char *returnValue = NULL;
+
+    if (q != NULL) {
+        const void *val;
+        if (CFDictionaryGetValueIfPresent(q, CFSTR("PrimaryInterface"), &val)) {
+            returnValue = FromCFString((CFStringRef)val, kCFStringEncodingUTF8);
+        }
+    }
+    CFRelease(q);
+    CFRelease(session);
+
+    return returnValue;
+}
+#else
+
 static char *getPreferedAdapter()
 {
     return NULL;
 }
 
+#endif
 #else
 
 static char *getIpv4ForMulticast()

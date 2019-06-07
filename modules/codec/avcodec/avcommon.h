@@ -2,7 +2,7 @@
  * avcommon.h: common code for libav*
  *****************************************************************************
  * Copyright (C) 2012 VLC authors and VideoLAN
- * $Id: 65ad35f4ada4d2b7549ace885cc8b38ddbe20aed $
+ * $Id: 8c8298014ff95600cb5a171b93331979e3174047 $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -45,6 +45,9 @@
 
 #define AV_OPTIONS_TEXT     N_("Advanced options")
 #define AV_OPTIONS_LONGTEXT N_("Advanced options, in the form {opt=val,opt2=val2}.")
+
+#define AV_RESET_TS_TEXT     "Reset timestamps"
+#define AV_RESET_TS_LONGTEXT "The muxed content will start near a 0 timestamp."
 
 static inline void vlc_av_get_options(const char *psz_opts, AVDictionary** pp_dict)
 {

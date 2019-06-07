@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 9fff1f0ff31f0a4b544c88cdec806cfc6d05ab3b $
+ * $Id: 9bd25379795b98f62d210cd4b7ef2b84b0533518 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -225,7 +225,7 @@ static int ReadDir( stream_t *p_demux, input_item_node_t *p_subitems )
     bool b_cleanup = false;
     input_item_t *p_input;
 
-    input_item_t *p_current_input = GetCurrentItem(p_demux);
+    input_item_t *p_current_input = p_demux->p_input ? GetCurrentItem(p_demux) : NULL;
 
     psz_line = vlc_stream_ReadLine( p_demux->p_source );
     while( psz_line )
