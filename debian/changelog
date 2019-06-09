@@ -1,6 +1,6 @@
 vlc (3.0.7-0+deb9u1) stretch-security; urgency=medium
 
-  * New upstream bug fix release.
+  * New upstream bug fix release. (Closes: #930276)
     - Fix multiple integer overflows.
     - Fix multiple buffer overflows.
     - Fix use-after-free issue.
@@ -8,7 +8,7 @@ vlc (3.0.7-0+deb9u1) stretch-security; urgency=medium
     - Fix other memory access bugs and infinite loops.
   * debian/patches: Removed, included upstream.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Fri, 07 Jun 2019 09:40:46 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 09 Jun 2019 22:00:27 +0200
 
 vlc (3.0.6-0+deb9u1) stretch-security; urgency=high
 
