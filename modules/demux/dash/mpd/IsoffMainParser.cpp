@@ -45,6 +45,7 @@
 #include "../adaptive/tools/Conversions.hpp"
 #include <vlc_stream.h>
 #include <cstdio>
+#include <limits>
 
 using namespace dash::mpd;
 using namespace adaptive::xml;
@@ -264,7 +265,11 @@ void    IsoffMainParser::parseAdaptationSets  (Node *periodNode, Period *period)
         parseSegmentInformation(*it, adaptationSet, &nextid);
 
         parseRepresentations((*it), adaptationSet);
-        period->addAdaptationSet(adaptationSet);
+
+        if(!adaptationSet->getRepresentations().empty())
+            period->addAdaptationSet(adaptationSet);
+        else
+            delete adaptationSet;
     }
 }
 void    IsoffMainParser::parseRepresentations (Node *adaptationSetNode, AdaptationSet *adaptationSet)
@@ -459,9 +464,13 @@ void IsoffMainParser::parseTimeline(Node *node, MediaSegmentTemplate *templ)
             if(!s->hasAttribute("d")) /* Mandatory */
                 continue;
             stime_t d = Integer<stime_t>(s->getAttributeValue("d"));
-            uint64_t r = 0; // never repeats by default
+            int64_t r = 0; // never repeats by default
             if(s->hasAttribute("r"))
-                r = Integer<uint64_t>(s->getAttributeValue("r"));
+            {
+                r = Integer<int64_t>(s->getAttributeValue("r"));
+                if(r < 0)
+                    r = std::numeric_limits<unsigned>::max();
+            }
 
             if(s->hasAttribute("t"))
             {

@@ -332,9 +332,9 @@ checksum = \
 		"$(SRC)/$(patsubst .sum-%,%,$@)/$(2)SUMS"
 CHECK_SHA512 = $(call checksum,$(SHA512SUM),SHA512)
 UNPACK = $(RM) -R $@ \
-	$(foreach f,$(filter %.tar.gz %.tgz,$^), && tar xvzf $(f)) \
-	$(foreach f,$(filter %.tar.bz2,$^), && tar xvjf $(f)) \
-	$(foreach f,$(filter %.tar.xz,$^), && tar xvJf $(f)) \
+	$(foreach f,$(filter %.tar.gz %.tgz,$^), && tar xvzfo $(f)) \
+	$(foreach f,$(filter %.tar.bz2,$^), && tar xvjfo $(f)) \
+	$(foreach f,$(filter %.tar.xz,$^), && tar xvJfo $(f)) \
 	$(foreach f,$(filter %.zip,$^), && unzip $(f))
 UNPACK_DIR = $(patsubst %.tar,%,$(basename $(notdir $<)))
 APPLY = (cd $(UNPACK_DIR) && patch -fp1) <
@@ -539,14 +539,35 @@ crossfile.meson:
 	echo "[properties]" >> $@
 	echo "needs_exe_wrapper = true" >> $@
 ifdef HAVE_CROSS_COMPILE
+	echo "cpp_args = [ '-I$(PREFIX)/include' ]" >> $@
+	echo "cpp_link_args = [ '-L$(PREFIX)/lib' ]" >> $@
+ifdef HAVE_DARWIN_OS
+ifdef HAVE_IOS
+ifdef HAVE_TVOS
+	echo "c_args = ['-I$(PREFIX)/include', '-isysroot', '$(IOS_SDK)', '-mtvos-version-min=10.2', '-arch', '$(PLATFORM_SHORT_ARCH)', '-fembed-bitcode']" >> $@
+	echo "c_link_args = ['-L$(PREFIX)/lib', '-isysroot', '$(IOS_SDK)', '-arch', '$(PLATFORM_SHORT_ARCH)', '-fembed-bitcode']" >> $@
+else
+	echo "c_args = ['-I$(PREFIX)/include', '-isysroot', '$(IOS_SDK)', '-miphoneos-version-min=8.4', '-arch', '$(PLATFORM_SHORT_ARCH)']" >> $@
+	echo "c_link_args = ['-L$(PREFIX)/lib', '-isysroot', '$(IOS_SDK)', '-arch', '$(PLATFORM_SHORT_ARCH)']" >> $@
+endif
+endif
+ifdef HAVE_MACOSX
+	echo "c_args = ['-I$(PREFIX)/include', '-isysroot', '$(MACOSX_SDK)', '-mmacosx-version-min=10.10', '-arch', '$(ARCH)']" >> $@
+	echo "c_link_args = ['-L$(PREFIX)/lib', '-isysroot', '$(MACOSX_SDK)', '-arch', '$(ARCH)']" >> $@
+endif
+else
+	echo "c_args = [ '-I$(PREFIX)/include' ]" >> $@
+	echo "c_link_args = [ '-L$(PREFIX)/lib' ]" >> $@
+endif
 	echo "[host_machine]" >> $@
 ifdef HAVE_WIN32
 	echo "system = 'windows'" >> $@
 else
-ifdef HAVE_IOS
+ifdef HAVE_DARWIN_OS
 	echo "system = 'darwin'" >> $@
 else
-ifdef HAVE_ANDROID
+ifdef HAVE_LINUX
+	# android has also system = linux and defines HAVE_LINUX
 	echo "system = 'linux'" >> $@
 endif
 endif

@@ -2,7 +2,7 @@
  * podcast.c : podcast playlist imports
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: 9be1b08823d85f1b88abb38b439ec502daef0071 $
+ * $Id: a0d74a232de59a21aacb0664ec8b84fee0e899a5 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -287,7 +287,8 @@ static int ReadDir( stream_t *p_demux, input_item_node_t *p_subitems )
                     }
 
                     vlc_xml_decode( psz_item_mrl );
-                    vlc_xml_decode( psz_item_name );
+                    if( psz_item_name )
+                       vlc_xml_decode( psz_item_name );
                     p_input = input_item_New( psz_item_mrl, psz_item_name );
                     FREENULL( psz_item_mrl );
                     FREENULL( psz_item_name );

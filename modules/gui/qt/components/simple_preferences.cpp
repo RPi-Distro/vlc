@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 7a31a6ea6f7cd5e3cde3b685ba726a32eb90ff61 $
+ * $Id: 8d27260fda3dcab87f3cc0ea711e3825009cc1df $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -40,6 +40,7 @@
 #include <QSignalMapper>
 #include <QVBoxLayout>
 #include <QScrollArea>
+#include <QHeaderView>
 
 #include <QStyleFactory>
 #include <QSettings>
@@ -67,6 +68,11 @@ static struct {
     { "auto",  N_("Auto") },
     { "en",    "American English" },
     { "ar",    "عربي" },
+    { "an",    "Aragonés" },
+    { "as_IN", "অসমীয়া" },
+    { "ast",   "Asturianu" },
+    { "be",    "беларуская мова" },
+    { "brx",   "बर'/बड़" },
     { "bn",    "বাংলা" },
     { "pt_BR", "Português Brasileiro" },
     { "en_GB", "British English" },
@@ -85,19 +91,20 @@ static struct {
     { "ga",    "Gaeilge" },
     { "gd",    "Gàidhlig" },
     { "gl",    "Galego" },
-    { "ka",    "ქართული" },
+    { "gu",    "ગુજરાતી" },
     { "de",    "Deutsch" },
     { "he",    "עברית" },
     { "hr",    "hrvatski" },
+    { "kn",    "ಕನ್ನಡ" },
+    { "lv",    "Latviešu valoda" },
     { "hu",    "Magyar" },
-    { "hy",    "հայերեն" },
+    { "mr",    "मराठी" },
     { "is",    "íslenska" },
     { "id",    "Bahasa Indonesia" },
     { "it",    "Italiano" },
     { "ja",    "日本語" },
     { "ko",    "한국어" },
     { "lt",    "lietuvių" },
-    { "mn",    "Монгол хэл" },
     { "ms",    "Melayu" },
     { "nb",    "Bokmål" },
     { "nn",    "Nynorsk" },
@@ -105,7 +112,6 @@ static struct {
     { "km",    "ភាសាខ្មែរ" },
     { "ne",    "नेपाली" },
     { "oc",    "Occitan" },
-    { "fa",    "فارسی" },
     { "pl",    "Polski" },
     { "pt_PT", "Português" },
     { "pa",    "ਪੰਜਾਬੀ" },
@@ -116,10 +122,10 @@ static struct {
     { "sr",    "српски" },
     { "sk",    "Slovensky" },
     { "sl",    "slovenščina" },
-    { "ckb",   "کوردیی سۆرانی" },
     { "es",    "Español" },
+    { "es_MX", "Español Mexicano" },
     { "sv",    "Svenska" },
-    { "te",    "తెలుగు" },
+    { "th",    "ภาษาไทย" },
     { "tr",    "Türkçe" },
     { "uk",    "украї́нська мо́ва" },
     { "vi",    "tiếng Việt" },

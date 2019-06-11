@@ -2,7 +2,7 @@
  * ps.h: Program Stream demuxer helper
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: c73309e9be43d779f7ea178b634c914284641ec8 $
+ * $Id: c4aa75df4efb34fe365cc6bb30c0d8e7dc30c332 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -322,7 +322,7 @@ static inline int ps_pkt_id( block_t *p_pkt )
     {
         uint8_t i_sub_id = 0;
         if( p_pkt->i_buffer >= 9 &&
-            p_pkt->i_buffer >= 9 + (size_t)p_pkt->p_buffer[8] )
+            p_pkt->i_buffer > 9 + (size_t)p_pkt->p_buffer[8] )
         {
             const unsigned i_start = 9 + p_pkt->p_buffer[8];
             i_sub_id = p_pkt->p_buffer[i_start];
@@ -624,7 +624,10 @@ static inline int ps_psm_fill( ps_psm_t *p_psm, block_t *p_pkt,
     int i_version;
     bool b_single_extension;
 
-    if( !p_psm || p_buffer[3] != PS_STREAM_ID_MAP )
+    // Demux() checks that we have at least 4 bytes, but we need
+    // at least 10 to read up to the info_length field
+    assert(i_buffer >= 4);
+    if( !p_psm || i_buffer < 10 || p_buffer[3] != PS_STREAM_ID_MAP)
         return VLC_EGENERIC;
 
     i_length = GetWBE(&p_buffer[4]) + 6;

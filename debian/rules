@@ -7,8 +7,14 @@ include /usr/share/dpkg/architecture.mk
 include /usr/share/dpkg/pkg-info.mk
 include /usr/share/dpkg/vendor.mk
 
+# custom build option: debug
+# VLC enables assertions if --enable-debug is passed to the configure script. To debug issues, it
+# might be useful to have them enabled. In that case, rebuilding the package with
+# DEB_BUILD_OPTIONS=debug produces a build with the assertions enabled.
 ifneq (,$(filter debug,$(DEB_BUILD_OPTIONS)))
 confflags += --enable-debug
+else
+confflags += --disable-debug
 endif
 
 # configure flags

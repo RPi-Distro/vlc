@@ -166,6 +166,7 @@ static void MP4_GetDefaultSizeAndDuration( MP4_Box_t *p_moov,
 static stime_t GetMoovTrackDuration( demux_sys_t *p_sys, unsigned i_track_ID );
 
 static int  ProbeFragments( demux_t *p_demux, bool b_force, bool *pb_fragmented );
+static int  ProbeFragmentsChecked( demux_t *p_demux );
 static int  ProbeIndex( demux_t *p_demux );
 
 static int FragCreateTrunIndex( demux_t *, MP4_Box_t *, MP4_Box_t *, stime_t, bool );
@@ -1168,6 +1169,27 @@ static block_t * MP4_RTPHint_Convert( demux_t *p_demux, block_t *p_block, vlc_fo
     return p_converted;
 }
 
+static uint64_t OverflowCheck( demux_t *p_demux, mp4_track_t *tk,
+                               uint64_t i_readpos, uint64_t i_samplessize )
+{
+    demux_sys_t *p_sys = p_demux->p_sys;
+    if( !p_sys->b_seekable && p_sys->b_fragmented &&
+         p_sys->context.i_post_mdat_offset )
+    {
+        /* avoid breaking non seekable demux */
+        if( i_readpos + i_samplessize > p_sys->context.i_post_mdat_offset )
+        {
+            msg_Err(p_demux, "Broken file. track[0x%x] "
+                             "Sample @%" PRIu64 " overflowing "
+                             "parent mdat by %" PRIu64,
+                    tk->i_track_ID, i_readpos,
+                    i_readpos + i_samplessize - p_sys->context.i_post_mdat_offset );
+            i_samplessize = p_sys->context.i_post_mdat_offset - i_readpos;
+        }
+    }
+    return i_samplessize;
+}
+
 /*****************************************************************************
  * Demux: read packet and send them to decoders
  *****************************************************************************
@@ -1220,6 +1242,8 @@ static int DemuxTrack( demux_t *p_demux, mp4_track_t *tk, uint64_t i_readpos,
                 }
             }
 
+            i_samplessize = OverflowCheck( p_demux, tk, i_readpos, i_samplessize );
+
             /* now read pes */
             if( !(p_block = vlc_stream_Block( p_demux->s, i_samplessize )) )
             {
@@ -1251,8 +1275,9 @@ static int DemuxTrack( demux_t *p_demux, mp4_track_t *tk, uint64_t i_readpos,
         }
 
         /* Next sample */
-        if ( i_nb_samples ) /* sample size could be 0, need to go fwd. see return */
-            MP4_TrackNextSample( p_demux, tk, i_nb_samples );
+        if ( i_nb_samples && /* sample size could be 0, need to go fwd. see return */
+             MP4_TrackNextSample( p_demux, tk, i_nb_samples ) )
+            goto end;
 
         uint32_t i_next_run_seq = MP4_TrackGetRunSeq( tk );
         if( i_next_run_seq != i_run_seq )
@@ -1665,46 +1690,17 @@ static int FragSeekToTime( demux_t *p_demux, mtime_t i_nztime, bool b_accurate )
     }
     else
     {
-        bool b_buildindex = false;
-
         if( FragGetMoofByTfraIndex( p_demux, i_nztime, i_seek_track_ID, &i64, &i_sync_time ) == VLC_SUCCESS )
         {
             /* Does only provide segment position and a sync sample time */
             msg_Dbg( p_demux, "seeking to sync point %" PRId64, i_sync_time );
             b_iframesync = true;
         }
-        else if( !p_sys->b_fragments_probed && !p_sys->b_fastseekable )
+        else if( !p_sys->b_fragments_probed )
         {
-            const char *psz_msg = _(
-                "Because this file index is broken or missing, "
-                "seeking will not work correctly.\n"
-                "VLC won't repair your file but can temporary fix this "
-                "problem by building an index in memory.\n"
-                "This step might take a long time on a large file.\n"
-                "What do you want to do?");
-            b_buildindex = vlc_dialog_wait_question( p_demux,
-                                                     VLC_DIALOG_QUESTION_NORMAL,
-                                                     _("Do not seek"),
-                                                     _("Build index"),
-                                                     NULL,
-                                                     _("Broken or missing Index"),
-                                                     "%s", psz_msg );
-        }
-
-        if( !p_sys->b_fragments_probed && ( p_sys->b_fastseekable || b_buildindex ) )
-        {
-            bool foo;
-            int i_ret = vlc_stream_Seek( p_demux->s, p_sys->p_moov->i_pos + p_sys->p_moov->i_size );
-            if( i_ret == VLC_SUCCESS )
-            {
-                i_ret = ProbeFragments( p_demux, true, &foo );
-                p_sys->b_fragments_probed = true;
-            }
+            int i_ret = ProbeFragmentsChecked( p_demux );
             if( i_ret != VLC_SUCCESS )
-            {
-                p_sys->b_error = (vlc_stream_Seek( p_demux->s, i_backup_pos ) != VLC_SUCCESS);
                 return i_ret;
-            }
         }
 
         if( p_sys->b_fragments_probed && p_sys->p_fragsindex )
@@ -1770,9 +1766,20 @@ static int FragSeekToTime( demux_t *p_demux, mtime_t i_nztime, bool b_accurate )
 static int FragSeekToPos( demux_t *p_demux, double f, bool b_accurate )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    const uint64_t i_duration = __MAX(p_sys->i_duration, p_sys->i_cumulated_duration);
 
-    if ( !p_sys->b_seekable || !p_sys->i_timescale || !i_duration )
+    if ( !p_sys->b_seekable || !p_sys->i_timescale )
+        return VLC_EGENERIC;
+
+    uint64_t i_duration = __MAX(p_sys->i_duration, p_sys->i_cumulated_duration);
+    if( !i_duration && !p_sys->b_fragments_probed )
+    {
+        int i_ret = ProbeFragmentsChecked( p_demux );
+        if( i_ret != VLC_SUCCESS )
+            return i_ret;
+        i_duration = __MAX(p_sys->i_duration, p_sys->i_cumulated_duration);
+    }
+
+    if( !i_duration )
         return VLC_EGENERIC;
 
     return FragSeekToTime( p_demux, (mtime_t)( f *
@@ -2864,7 +2871,8 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
     case SPU_ES:
         if ( ( p_sample->i_handler != ATOM_text &&
                p_sample->i_handler != ATOM_subt &&
-               p_sample->i_handler != ATOM_sbtl ) ||
+               p_sample->i_handler != ATOM_sbtl &&
+               p_sample->i_handler != ATOM_clcp ) ||
              !SetupSpuES( p_demux, p_track, p_sample ) )
            return VLC_EGENERIC;
         break;
@@ -3026,7 +3034,8 @@ static int TrackTimeToSampleChunk( demux_t *p_demux, mp4_track_t *p_track,
     /* *** find sample in the chunk *** */
     i_sample = p_track->chunk[i_chunk].i_sample_first;
     i_dts    = p_track->chunk[i_chunk].i_first_dts;
-    for( i_index = 0; i_sample < p_track->chunk[i_chunk].i_sample_count; )
+    for( i_index = 0;  i_index < p_track->chunk[i_chunk].i_entries_dts &&
+                       i_sample < p_track->chunk[i_chunk].i_sample_count; )
     {
         if( i_dts +
             p_track->chunk[i_chunk].p_sample_count_dts[i_index] *
@@ -4230,6 +4239,48 @@ static int ProbeFragments( demux_t *p_demux, bool b_force, bool *pb_fragmented )
     return VLC_SUCCESS;
 }
 
+static int ProbeFragmentsChecked( demux_t *p_demux )
+{
+    demux_sys_t *p_sys = p_demux->p_sys;
+
+    if( p_sys->b_fragments_probed )
+        return VLC_SUCCESS;
+
+    if( !p_sys->b_fastseekable )
+    {
+        const char *psz_msg = _(
+            "Because this file index is broken or missing, "
+            "seeking will not work correctly.\n"
+            "VLC won't repair your file but can temporary fix this "
+            "problem by building an index in memory.\n"
+            "This step might take a long time on a large file.\n"
+            "What do you want to do?");
+        bool b_continue = vlc_dialog_wait_question( p_demux,
+                                               VLC_DIALOG_QUESTION_NORMAL,
+                                               _("Do not seek"),
+                                               _("Build index"),
+                                               NULL,
+                                               _("Broken or missing Index"),
+                                               "%s", psz_msg );
+        if( !b_continue )
+            return VLC_EGENERIC;
+    }
+
+    const uint64_t i_backup_pos = vlc_stream_Tell( p_demux->s );
+    int i_ret = vlc_stream_Seek( p_demux->s, p_sys->p_moov->i_pos + p_sys->p_moov->i_size );
+    if( i_ret == VLC_SUCCESS )
+    {
+        bool foo;
+        i_ret = ProbeFragments( p_demux, true, &foo );
+        p_sys->b_fragments_probed = true;
+    }
+
+    if( i_ret != VLC_SUCCESS )
+        p_sys->b_error = (vlc_stream_Seek( p_demux->s, i_backup_pos ) != VLC_SUCCESS);
+
+    return i_ret;
+}
+
 static void FragResetContext( demux_sys_t *p_sys )
 {
     if( p_sys->context.p_fragment_atom )
@@ -4304,6 +4355,8 @@ static int FragDemuxTrack( demux_t *p_demux, mp4_track_t *p_track,
 
         if( !len )
             msg_Warn(p_demux, "Zero length sample in trun.");
+
+        len = OverflowCheck( p_demux, p_track, vlc_stream_Tell(p_demux->s), len );
 
         block_t *p_block = vlc_stream_Block( p_demux->s, len );
         uint32_t i_read = ( p_block ) ? p_block->i_buffer : 0;
@@ -4695,6 +4748,8 @@ static int FragGetMoofBySidxIndex( demux_t *p_demux, mtime_t i_target_time,
     stime_t i_time = 0;
     for( uint16_t i=0; i<p_data->i_reference_count; i++ )
     {
+        if(p_data->p_items[i].b_reference_type != 0)
+            continue;
         if( i_time + p_data->p_items[i].i_subsegment_duration > i_target_time )
         {
             *pi_sampletime = MP4_rescale( i_time, p_data->i_timescale, CLOCK_FREQ );

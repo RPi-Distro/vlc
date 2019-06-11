@@ -2,7 +2,7 @@
  * util.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: d2bdaef5552db7265e31158f1d1fda8eef41a868 $
+ * $Id: 68f715a821cd120f198e3b26aad3e31bceb55043 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -87,6 +87,7 @@ int32_t zlib_decompress_extra( demux_t * p_demux, mkv_track_t & tk )
         msg_Err( p_demux, "Couldn't allocate buffer to inflate data, ignore track %u",
                  tk.i_number );
         inflateEnd( &d_stream );
+        tk.p_extra_data = NULL;
         return 1;
     }
 
@@ -177,6 +178,7 @@ void handle_real_audio(demux_t * p_demux, mkv_track_t * p_tk, block_t * p_blk, m
                 p_sys->p_subpackets[i] = NULL;
             }
         p_sys->i_subpacket = 0;
+        p_sys->i_subpackets = 0;
 
         if ( !( p_blk->i_flags & BLOCK_FLAG_TYPE_I) )
         {
@@ -190,7 +192,9 @@ void handle_real_audio(demux_t * p_demux, mkv_track_t * p_tk, block_t * p_blk, m
         p_tk->fmt.i_codec == VLC_CODEC_ATRAC3 )
     {
         const uint16_t i_num = p_sys->i_frame_size / p_sys->i_subpacket_size;
-        const size_t y = p_sys->i_subpacket / ( p_sys->i_frame_size / p_sys->i_subpacket_size );
+        if ( i_num == 0 )
+            return;
+        const size_t y = p_sys->i_subpacket / i_num;
 
         for( uint16_t i = 0; i < i_num; i++ )
         {
@@ -234,6 +238,7 @@ void handle_real_audio(demux_t * p_demux, mkv_track_t * p_tk, block_t * p_blk, m
             p_sys->p_subpackets[i] = NULL;
         }
         p_sys->i_subpacket = 0;
+        p_sys->i_subpackets = 0;
     }
 }
 

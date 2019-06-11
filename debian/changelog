@@ -1,8 +1,20 @@
-vlc (3.0.6-1+b1+rpt1) buster; urgency=medium
+vlc (3.0.7-1+rpt1) buster; urgency=medium
 
   * Applied MMAL patch 7
 
- -- Serge Schneider <serge@raspberrypi.org>  Thu, 28 Feb 2019 11:38:12 +0000
+ -- Serge Schneider <serge@raspberrypi.org>  Tue, 11 Jun 2019 15:26:50 +0100
+
+vlc (3.0.7-1) unstable; urgency=high
+
+  * New upstream release.
+    - Fix multiple integer overflows.
+    - Fix multiple buffer overflows.
+    - Fix use-after-free issue.
+    - Fix NULL pointer dereference.
+    - Fix other memory access bugs and infinite loops.
+  * debian/rules: Be explicit about --enable-debug/disable-debug.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 07 Jun 2019 01:08:14 +0200
 
 vlc (3.0.6-1) unstable; urgency=medium
 

@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: efefc57e6f2381f91f866c2af268132d42dce491 $
+ * $Id: c625005c8eddf345713c0e89607d2e322925c8ba $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -939,6 +939,9 @@ static block_t *OutputPicture( decoder_t *p_dec )
                 date_Decrement( &pts, -diff );
 
             p_pic->i_pts = date_Get( &pts );
+            /* non monotonically increasing dts on some videos 33333 33333...35000 */
+            if( p_pic->i_pts < p_pic->i_dts )
+                p_pic->i_pts = p_pic->i_dts;
         }
         /* In case there's no PTS at all */
         else if( CanSwapPTSwithDTS( &p_sys->slice, p_sps ) )

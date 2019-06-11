@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 0cb2729a40a3f5ee47095c2d97911786c34afa45 $
+ * $Id: ef8d95adacdb83e18152405ffb3a721639335ac5 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -3217,6 +3217,8 @@ static void input_ChangeState( input_thread_t *p_input, int i_state )
     input_priv(p_input)->i_state = i_state;
     if( i_state == ERROR_S )
         input_item_SetErrorWhenReading( input_priv(p_input)->p_item, true );
+    else if ( i_state == PLAYING_S )
+        input_item_SetErrorWhenReading( input_priv(p_input)->p_item, false );
     input_SendEventState( p_input, i_state );
 }
 

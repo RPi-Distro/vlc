@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 3492485a25ba60fbd24fcc8a154df3a82966f80d $
+ * $Id: fb1c8e728b2f4b22545c47836d88b125156c4a6f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -944,7 +944,7 @@ static block_t * ReadFrame( demux_t *p_demux, const avi_track_t *tk,
         p_frame->i_buffer--;
     }
 
-    if( i_header >= p_frame->i_buffer )
+    if( i_header >= p_frame->i_buffer || tk->i_width_bytes > INT32_MAX - 3 )
     {
         p_frame->i_buffer = 0;
         return p_frame;
@@ -954,7 +954,7 @@ static block_t * ReadFrame( demux_t *p_demux, const avi_track_t *tk,
     p_frame->p_buffer += i_header;
     p_frame->i_buffer -= i_header;
 
-    const unsigned int i_stride_bytes = ((( (tk->i_width_bytes << 3) + 31) & ~31) >> 3);
+    const unsigned int i_stride_bytes = (tk->i_width_bytes + 3) & ~3;
 
     if ( !tk->i_width_bytes || !i_stride_bytes )
         return p_frame;

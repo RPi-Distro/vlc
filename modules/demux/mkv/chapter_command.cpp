@@ -2,7 +2,7 @@
  * chapter_command.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: cff2d56f9c0d2a683bcdce5ff860186cb4f44e93 $
+ * $Id: 1ec3ffe9f26c5cf51c6de8908561a1c7c1e5ab36 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -716,7 +716,7 @@ bool matroska_script_interpretor_c::Interpret( const binary * p_command, size_t 
         }
 
         std::string st = sz_command.substr( i+1, j-i-1 );
-        int64_t i_chapter_uid = atoi( st.c_str() );
+        int64_t i_chapter_uid = atoll( st.c_str() );
 
         virtual_segment_c *p_vsegment;
         virtual_chapter_c *p_vchapter = sys.FindChapter( i_chapter_uid, p_vsegment );

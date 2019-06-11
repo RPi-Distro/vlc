@@ -162,6 +162,9 @@ struct  demux_sys_t
     unsigned int        i_longest_title;
     input_title_t       **pp_title;
 
+    /* Events */
+    DECL_ARRAY(BD_EVENT) events_delayed;
+
     vlc_mutex_t             pl_info_lock;
     BLURAY_TITLE_INFO      *p_pl_info;
     const BLURAY_CLIP_INFO *p_clip_info;
@@ -782,6 +785,7 @@ static int blurayOpen(vlc_object_t *object)
 
     TAB_INIT(p_sys->i_title, p_sys->pp_title);
     TAB_INIT(p_sys->i_attachments, p_sys->attachments);
+    ARRAY_INIT(p_sys->events_delayed);
 
     vlc_mutex_init(&p_sys->pl_info_lock);
     vlc_mutex_init(&p_sys->bdj_overlay_lock);
@@ -1026,6 +1030,8 @@ static void blurayClose(vlc_object_t *object)
     for (int i = 0; i < p_sys->i_attachments; i++)
       vlc_input_attachment_Delete(p_sys->attachments[i]);
     TAB_CLEAN(p_sys->i_attachments, p_sys->attachments);
+
+    ARRAY_RESET(p_sys->events_delayed);
 
     vlc_mutex_destroy(&p_sys->pl_info_lock);
     vlc_mutex_destroy(&p_sys->bdj_overlay_lock);
@@ -1960,6 +1966,7 @@ static void bluraySendOverlayToVout(demux_t *p_demux, bluray_overlay_t *p_ov)
 static bool blurayTitleIsRepeating(BLURAY_TITLE_INFO *title_info,
                                    unsigned repeats, unsigned ratio)
 {
+#if BLURAY_VERSION >= BLURAY_VERSION_CODE(1, 0, 0)
     const BLURAY_CLIP_INFO *prev = NULL;
     unsigned maxrepeats = 0;
     unsigned sequence = 0;
@@ -1992,6 +1999,9 @@ static bool blurayTitleIsRepeating(BLURAY_TITLE_INFO *title_info,
     }
     return (maxrepeats > repeats &&
             (100 * maxrepeats / title_info->chapter_count) >= ratio);
+#else
+    return false;
+#endif
 }
 
 static void blurayUpdateTitleInfo(input_title_t *t, BLURAY_TITLE_INFO *title_info)
@@ -2139,8 +2149,9 @@ static int bluraySetTitle(demux_t *p_demux, int i_title)
 #  define BLURAY_AUDIO_STREAM 0
 #endif
 
-static void blurayOnUserStreamSelection(demux_sys_t *p_sys, int i_pid)
+static void blurayOnUserStreamSelection(demux_t *p_demux, int i_pid)
 {
+    demux_sys_t *p_sys = p_demux->p_sys;
     vlc_mutex_lock(&p_sys->pl_info_lock);
 
     if(i_pid == -AUDIO_ES)
@@ -2149,19 +2160,30 @@ static void blurayOnUserStreamSelection(demux_sys_t *p_sys, int i_pid)
         bd_select_stream(p_sys->bluray, BLURAY_PG_TEXTST_STREAM, 0, 0);
     else if (p_sys->p_clip_info)
     {
-
         if ((i_pid & 0xff00) == 0x1100) {
+            bool b_in_playlist = false;
             // audio
             for (int i_id = 0; i_id < p_sys->p_clip_info->audio_stream_count; i_id++) {
                 if (i_pid == p_sys->p_clip_info->audio_streams[i_id].pid) {
                     bd_select_stream(p_sys->bluray, BLURAY_AUDIO_STREAM, i_id + 1, 1);
+
                     if(!p_sys->b_menu)
                         bd_set_player_setting_str(p_sys->bluray, BLURAY_PLAYER_SETTING_AUDIO_LANG,
                                   (const char *) p_sys->p_clip_info->audio_streams[i_id].lang);
+                    b_in_playlist = true;
                     break;
                 }
             }
-        } else if ((i_pid & 0xff00) == 0x1400 || i_pid == 0x1800) {
+            if(!b_in_playlist && !p_sys->b_menu)
+            {
+                /* Without menu, the selected playlist might not be correct and only
+                   exposing a subset of PID, although same length */
+                msg_Warn(p_demux, "Incorrect playlist for menuless track, forcing");
+                es_out_Control(p_sys->p_out, BLURAY_ES_OUT_CONTROL_SET_ES_BY_PID,
+                               BD_EVENT_AUDIO_STREAM, i_pid);
+            }
+        } else if ((i_pid & 0xff00) == 0x1200 || i_pid == 0x1800) {
+            bool b_in_playlist = false;
             // subtitle
             for (int i_id = 0; i_id < p_sys->p_clip_info->pg_stream_count; i_id++) {
                 if (i_pid == p_sys->p_clip_info->pg_streams[i_id].pid) {
@@ -2169,8 +2191,15 @@ static void blurayOnUserStreamSelection(demux_sys_t *p_sys, int i_pid)
                     if(!p_sys->b_menu)
                         bd_set_player_setting_str(p_sys->bluray, BLURAY_PLAYER_SETTING_PG_LANG,
                                    (const char *) p_sys->p_clip_info->pg_streams[i_id].lang);
+                    b_in_playlist = true;
                     break;
                 }
+            }
+            if(!b_in_playlist && !p_sys->b_menu)
+            {
+                msg_Warn(p_demux, "Incorrect playlist for menuless track, forcing");
+                es_out_Control(p_sys->p_out, BLURAY_ES_OUT_CONTROL_SET_ES_BY_PID,
+                               BD_EVENT_PG_TEXTST_STREAM, i_pid);
             }
         }
     }
@@ -2213,7 +2242,7 @@ static int blurayControl(demux_t *p_demux, int query, va_list args)
     case DEMUX_SET_ES:
     {
         int i_id = va_arg(args, int);
-        blurayOnUserStreamSelection(p_sys, i_id);
+        blurayOnUserStreamSelection(p_demux, i_id);
         break;
     }
     case DEMUX_SET_TITLE:
@@ -2665,7 +2694,7 @@ static void blurayOnClipUpdate(demux_t *p_demux, uint32_t clip)
     blurayResetStillImage(p_demux);
 }
 
-static void blurayHandleEvent(demux_t *p_demux, const BD_EVENT *e)
+static void blurayHandleEvent(demux_t *p_demux, const BD_EVENT *e, bool b_delayed)
 {
     demux_sys_t *p_sys = p_demux->p_sys;
 
@@ -2753,7 +2782,10 @@ static void blurayHandleEvent(demux_t *p_demux, const BD_EVENT *e)
         break;
     case BD_EVENT_AUDIO_STREAM:
     case BD_EVENT_PG_TEXTST_STREAM:
-        blurayOnStreamSelectedEvent(p_demux, e->event, e->param);
+         if(b_delayed)
+             blurayOnStreamSelectedEvent(p_demux, e->event, e->param);
+         else
+             ARRAY_APPEND(p_sys->events_delayed, *e);
         break;
     case BD_EVENT_IG_STREAM:
     case BD_EVENT_SECONDARY_AUDIO:
@@ -2909,14 +2941,19 @@ static int blurayDemux(demux_t *p_demux)
     if (p_sys->b_menu == false) {
         nread = bd_read(p_sys->bluray, p_block->p_buffer, BD_READ_SIZE);
         while (bd_get_event(p_sys->bluray, &e))
-            blurayHandleEvent(p_demux, &e);
+            blurayHandleEvent(p_demux, &e, false);
     } else {
         nread = bd_read_ext(p_sys->bluray, p_block->p_buffer, BD_READ_SIZE, &e);
         while (e.event != BD_EVENT_NONE) {
-            blurayHandleEvent(p_demux, &e);
+            blurayHandleEvent(p_demux, &e, false);
             bd_get_event(p_sys->bluray, &e);
         }
     }
+
+    /* Process delayed selections events */
+    for(int i=0; i<p_sys->events_delayed.i_size; i++)
+        blurayHandleEvent(p_demux, &p_sys->events_delayed.p_elems[i], true);
+    p_sys->events_delayed.i_size = 0;
 
     blurayHandleOverlays(p_demux, nread);
 
