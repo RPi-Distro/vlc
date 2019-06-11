@@ -962,11 +962,12 @@ StartPassthrough( JNIEnv *env, audio_output_t *p_aout )
     aout_sys_t *p_sys = p_aout->sys;
     int i_at_format;
 
+    bool b_dtshd;
+    if( !AudioTrack_HasEncoding( p_aout, p_sys->fmt.i_format, &b_dtshd ) )
+        return VLC_EGENERIC;
+
     if( jfields.AudioFormat.has_ENCODING_IEC61937 )
     {
-        bool b_dtshd;
-        if( !AudioTrack_HasEncoding( p_aout, p_sys->fmt.i_format, &b_dtshd ) )
-            return VLC_EGENERIC;
         i_at_format = jfields.AudioFormat.ENCODING_IEC61937;
         switch( p_sys->fmt.i_format )
         {
@@ -1748,6 +1749,9 @@ ConvertFromIEC61937( audio_output_t *p_aout, block_t *p_buffer )
     VLC_UNUSED( p_aout );
     uint8_t i_length_mul;
 
+    if( p_buffer->i_buffer < 6 )
+        return -1;
+
     switch( GetWBE( &p_buffer->p_buffer[4] ) & 0xFF )
     {
         case 0x01: /* IEC61937_AC3 */
@@ -1759,8 +1763,10 @@ ConvertFromIEC61937( audio_output_t *p_aout, block_t *p_buffer )
         case 0x0B: /* IEC61937_DTS1 */
         case 0x0C: /* IEC61937_DTS2 */
         case 0x0D: /* IEC61937_DTS3 */
-        case 0x11: /* IEC61937_DTSHD */
             i_length_mul = 8;
+            break;
+        case 0x11: /* IEC61937_DTSHD */
+            i_length_mul = 1;
             break;
         default:
             vlc_assert_unreachable();
@@ -1768,8 +1774,13 @@ ConvertFromIEC61937( audio_output_t *p_aout, block_t *p_buffer )
     uint16_t i_length = GetWBE( &p_buffer->p_buffer[6] );
     if( i_length == 0 )
         return -1;
+
+    i_length /= i_length_mul;
+    if( i_length > p_buffer->i_buffer - 8 )
+        return -1;
+
     p_buffer->p_buffer += 8; /* SPDIF_HEADER_SIZE */
-    p_buffer->i_buffer = i_length / i_length_mul;
+    p_buffer->i_buffer = i_length;
 
     return 0;
 }
@@ -1781,7 +1792,7 @@ Play( audio_output_t *p_aout, block_t *p_buffer )
     size_t i_buffer_offset = 0;
     aout_sys_t *p_sys = p_aout->sys;
 
-    if( p_sys->b_passthrough && !jfields.AudioFormat.has_ENCODING_IEC61937
+    if( p_sys->b_passthrough && p_sys->fmt.i_format == VLC_CODEC_SPDIFB
      && ConvertFromIEC61937( p_aout, p_buffer ) != 0 )
     {
         block_Release(p_buffer);

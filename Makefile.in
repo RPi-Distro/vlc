@@ -2350,10 +2350,10 @@ package-translations:
 @HAVE_WIN32_TRUE@	if test -d npapi-vlc; then \
 @HAVE_WIN32_TRUE@		cd npapi-vlc && \
 @HAVE_WIN32_TRUE@		git fetch origin && \
-@HAVE_WIN32_TRUE@		git reset --hard origin/master; \
+@HAVE_WIN32_TRUE@		git reset --hard origin/3.0.x; \
 @HAVE_WIN32_TRUE@		git submodule update; \
 @HAVE_WIN32_TRUE@	else \
-@HAVE_WIN32_TRUE@		git clone https://code.videolan.org/videolan/npapi-vlc.git npapi-vlc && \
+@HAVE_WIN32_TRUE@		git clone -b 3.0.x --single-branch https://code.videolan.org/videolan/npapi-vlc.git npapi-vlc && \
 @HAVE_WIN32_TRUE@		cd npapi-vlc && \
 @HAVE_WIN32_TRUE@		git submodule update --init; \
 @HAVE_WIN32_TRUE@	fi
