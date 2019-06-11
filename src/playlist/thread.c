@@ -2,7 +2,7 @@
  * thread.c : Playlist management functions
  *****************************************************************************
  * Copyright © 1999-2008 VLC authors and VideoLAN
- * $Id: 8f2d1ca87609c77a335e00ccd0dfb86c85a32857 $
+ * $Id: b78f31a7eacde94f150b245a80b029bacafc6a05 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -506,7 +506,7 @@ static void *Thread ( void *data )
                 if (p_sys->i_consecutive_errors < 6)
                     p_sys->i_consecutive_errors++;
 
-                int slowdown = 1 << p_sys->i_consecutive_errors;
+                int slowdown = 1 << (p_sys->i_consecutive_errors - 1);
                 /* 100ms, 200ms, 400ms, 800ms, 1.6s, 3.2s */
                 mtime_t deadline = mdate() + slowdown * 100000L; /* usecs */
                 vlc_cond_timedwait(&p_sys->signal, &p_sys->lock, deadline);
