@@ -1,3 +1,9 @@
+vlc (3.0.6-1+b1+rpt1) buster; urgency=medium
+
+  * Applied MMAL patch 7
+
+ -- Serge Schneider <serge@raspberrypi.org>  Thu, 28 Feb 2019 11:38:12 +0000
+
 vlc (3.0.6-1) unstable; urgency=medium
 
   * New upstream release.

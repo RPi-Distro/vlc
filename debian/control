@@ -132,7 +132,8 @@ Build-Depends: autopoint,
                qtbase5-private-dev (>= 5.6),
                wayland-protocols [linux-any],
                zlib1g-dev,
-               zsh
+               zsh,
+               libraspberrypi-dev
 Standards-Version: 4.3.0
 Homepage: https://www.videolan.org/vlc/
 Vcs-Git: https://salsa.debian.org/multimedia-team/vlc.git
@@ -294,7 +295,8 @@ Multi-Arch: same
 Depends: vlc-data (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
-         ${vlc:PluginABI}
+         ${vlc:PluginABI},
+         libraspberrypi0
 Recommends: xdg-utils
 Suggests: libdvdcss2
 Breaks: vlc-plugin-zvbi (<< 3.0.0-1~)
@@ -326,7 +328,8 @@ Architecture: any
 Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         ${vlc:PluginABI}
+         ${vlc:PluginABI},
+         libraspberrypi0
 Enhances: vlc
 Breaks: vlc-plugin-base (<< 3.0.0-1~)
 Replaces: vlc-plugin-base (<< 3.0.0-1~)
