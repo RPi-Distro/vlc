@@ -2,7 +2,7 @@
  * smf.c : Standard MIDI File (.mid) demux module for vlc
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 37b16d6ac5f8cbebe0ac98052b6e397708743957 $
+ * $Id: ab03097a80101cacf645f5d1c7d89765b25a1ec0 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -234,10 +234,8 @@ int HandleMeta (demux_t *p_demux, mtrk_t *tr)
             break;
 
         case 0x59: /* Key signature */
-            if (length == 2)
-                ;
-            else
-                ret = -1;
+            if (length != 2)
+                msg_Warn(p_demux, "invalid key signature");
             break;
 
         case 0x7f: /* Proprietary event */

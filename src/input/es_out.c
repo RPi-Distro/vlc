@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 77eca7d9662f50dc9e6294e3a557d3b72a7a8498 $
+ * $Id: 5a2b1946880b30ba023c4e3b00101bf57b533a41 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -3231,7 +3231,7 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
                [TRANSFER_FUNC_BT470_BG] = "ITU-R BT.470 BG",
                [TRANSFER_FUNC_BT470_M] = "ITU-R BT.470 M",
                [TRANSFER_FUNC_BT709] = "ITU-R BT.709",
-               [TRANSFER_FUNC_SMPTE_ST2084] = "SMPTE ST2084",
+               [TRANSFER_FUNC_SMPTE_ST2084] = "SMPTE ST2084 (PQ)",
                [TRANSFER_FUNC_SMPTE_240] = "SMPTE 240M",
                [TRANSFER_FUNC_HLG] = N_("Hybrid Log-Gamma"),
            };

@@ -2,7 +2,7 @@
  * update_crypto.c: OpenPGP related functions used for updating
  *****************************************************************************
  * Copyright © 2008-2009 VLC authors and VideoLAN
- * $Id: 1ed64769a0bd957f3251a014204e270e898ea08d $
+ * $Id: 87800d11a403d4bfe72fae56bef3c19ff6c6d72f $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -856,6 +856,9 @@ uint8_t *hash_from_public_key( public_key_t *p_pkey )
 
     if( p_pkey->sig.type < GENERIC_KEY_SIGNATURE ||
         p_pkey->sig.type > POSITIVE_KEY_SIGNATURE )
+        return NULL;
+
+    if( p_pkey->psz_username == NULL )
         return NULL;
 
     gcry_error_t error = 0;

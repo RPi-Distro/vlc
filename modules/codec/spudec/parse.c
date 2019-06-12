@@ -2,7 +2,7 @@
  * parse.c: SPU parser
  *****************************************************************************
  * Copyright (C) 2000-2001, 2005, 2006 VLC authors and VideoLAN
- * $Id: 275864f187aa62119914038186d4d7ea7b23bf03 $
+ * $Id: 24eb465a7e8ff518fbc54e6e2420ba33881296db $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -325,6 +325,11 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
                          ((p_sys->buffer[i_index+5]>>4)&0x0f);
             p_spu_properties->i_height = (((p_sys->buffer[i_index+5]&0x0f)<<8)|
                               p_sys->buffer[i_index+6]) - p_spu_properties->i_y + 1;
+
+            if (p_spu_properties->i_width < 0 || p_spu_properties->i_height < 0) {
+                msg_Err( p_dec, "integer overflow in SPU command" );
+                return VLC_EGENERIC;
+            }
 
             /* Auto crop fullscreen subtitles */
             if( p_spu_properties->i_height > 250 )

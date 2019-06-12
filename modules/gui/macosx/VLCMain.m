@@ -2,7 +2,7 @@
  * VLCMain.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2016 VLC authors and VideoLAN
- * $Id: b561cd5bf7da7939af07cceeb348597f1f3daf7a $
+ * $Id: 3e08c48da9f131136a22eb2adda49ea1f5abf3e5 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -123,9 +123,9 @@ void CloseIntf (vlc_object_t *p_this)
         msg_Dbg(p_this, "Closing macosx interface");
         [[VLCMain sharedInstance] applicationWillTerminate:nil];
         [VLCMain killInstance];
-
-        p_interface_thread = nil;
     }
+
+    p_interface_thread = nil;
 }
 
 #pragma mark -

@@ -2,7 +2,7 @@
  * ios.m: iOS OpenGL ES provider
  *****************************************************************************
  * Copyright (C) 2001-2017 VLC authors and VideoLAN
- * $Id: 1ea2ee45aae294ef4359791e2d2f3added7fe5e3 $
+ * $Id: 26f84667ea254f4bbbb814a4b488b22bdc913849 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -111,9 +111,9 @@ vlc_module_end ()
     vout_display_cfg_t _cfg;
 }
 
-- (id)initWithFrameAndVd:(CGRect)frame withVd:(vout_display_t*)vd;
+- (id)initWithFrame:(CGRect)frame andVD:(vout_display_t*)vd;
 - (void)cleanAndRelease:(BOOL)flushed;
-- (BOOL)makeCurrentWithGL:(EAGLContext **)previousEaglContext withGL:(vlc_gl_t *)gl;
+- (BOOL)makeCurrent:(EAGLContext **)previousEaglContext withGL:(vlc_gl_t *)gl;
 - (void)releaseCurrent:(EAGLContext *)previousEaglContext;
 - (void)presentRenderbuffer;
 
@@ -351,7 +351,7 @@ static int GLESMakeCurrent(vlc_gl_t *gl)
 {
     struct gl_sys *sys = gl->sys;
 
-    if (![sys->glESView makeCurrentWithGL:&sys->previousEaglContext withGL:gl])
+    if (![sys->glESView makeCurrent:&sys->previousEaglContext withGL:gl])
         return VLC_EGENERIC;
     return VLC_SUCCESS;
 }
@@ -385,10 +385,10 @@ static void GLESSwap(vlc_gl_t *gl)
 {
     id *ret = [[value objectAtIndex:0] pointerValue];
     vout_display_t *vd = [[value objectAtIndex:1] pointerValue];
-    *ret = [[self alloc] initWithFrameAndVd:CGRectMake(0.,0.,320.,240.) withVd:vd];
+    *ret = [[self alloc] initWithFrame:CGRectMake(0.,0.,320.,240.) andVD:vd];
 }
 
-- (id)initWithFrameAndVd:(CGRect)frame withVd:(vout_display_t*)vd
+- (id)initWithFrame:(CGRect)frame andVD:(vout_display_t*)vd
 {
     _appActive = ([UIApplication sharedApplication].applicationState == UIApplicationStateActive);
     if (unlikely(!_appActive))
@@ -418,11 +418,8 @@ static void GLESSwap(vlc_gl_t *gl)
     if (unlikely(!_eaglContext)
      || unlikely(![EAGLContext setCurrentContext:_eaglContext]))
     {
-        if (_eaglContext)
-            [_eaglContext release];
-        vlc_mutex_destroy(&_mutex);
-        vlc_cond_destroy(&_gl_attached_wait);
-        [super dealloc];
+        [_eaglContext release];
+        [self release];
         return nil;
     }
     [self releaseCurrent:previousEaglContext];
@@ -438,10 +435,8 @@ static void GLESSwap(vlc_gl_t *gl)
 
     if (![self fetchViewContainer])
     {
-        vlc_mutex_destroy(&_mutex);
-        vlc_cond_destroy(&_gl_attached_wait);
         [_eaglContext release];
-        [super dealloc];
+        [self release];
         return nil;
     }
 
@@ -597,7 +592,7 @@ static void GLESSwap(vlc_gl_t *gl)
     return YES;
 }
 
-- (BOOL)makeCurrentWithGL:(EAGLContext **)previousEaglContext withGL:(vlc_gl_t *)gl
+- (BOOL)makeCurrent:(EAGLContext **)previousEaglContext withGL:(vlc_gl_t *)gl
 {
     vlc_mutex_lock(&_mutex);
     assert(!_gl_attached);
@@ -607,14 +602,19 @@ static void GLESSwap(vlc_gl_t *gl)
         vlc_mutex_unlock(&_mutex);
         return NO;
     }
-    assert(_eaglEnabled);
 
+    assert(_eaglEnabled);
     *previousEaglContext = [EAGLContext currentContext];
 
-    BOOL success = [EAGLContext setCurrentContext:_eaglContext];
+    if (![EAGLContext setCurrentContext:_eaglContext])
+    {
+        vlc_mutex_unlock(&_mutex);
+        return NO;
+    }
+
     BOOL resetBuffers = NO;
 
-    if (success && gl != NULL)
+    if (gl != NULL)
     {
         struct gl_sys *glsys = gl->sys;
 
@@ -636,8 +636,7 @@ static void GLESSwap(vlc_gl_t *gl)
         }
     }
 
-    if (success)
-        _gl_attached = YES;
+    _gl_attached = YES;
 
     vlc_mutex_unlock(&_mutex);
 
@@ -646,7 +645,7 @@ static void GLESSwap(vlc_gl_t *gl)
         [self releaseCurrent:*previousEaglContext];
         return NO;
     }
-    return success;
+    return YES;
 }
 
 - (void)releaseCurrent:(EAGLContext *)previousEaglContext
@@ -780,13 +779,15 @@ static void GLESSwap(vlc_gl_t *gl)
     {
         _appActive = NO;
 
-        if (_eaglEnabled)
-        {
-            /* Wait for the vout to unlock the eagl context before releasing
-             * it. */
-            while (_gl_attached)
-                vlc_cond_wait(&_gl_attached_wait, &_mutex);
+        /* Wait for the vout to unlock the eagl context before releasing
+         * it. */
+        while (_gl_attached && _eaglEnabled)
+            vlc_cond_wait(&_gl_attached_wait, &_mutex);
 
+        /* _eaglEnabled can change during the vlc_cond_wait
+         * as the mutex is unlocked during that, so this check
+         * has to be done after the vlc_cond_wait! */
+        if (_eaglEnabled) {
             [self flushEAGLLocked];
             _eaglEnabled = NO;
         }

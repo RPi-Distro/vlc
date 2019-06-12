@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 8cb4003561532c72bc405f051b7e26a14bf773f6 $
+ * $Id: 097e7cb11ad5ed24766038a765da84376d69ea3d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1557,8 +1557,11 @@ static enum PixelFormat ffmpeg_GetFormat( AVCodecContext *p_context,
      for (size_t i = 0; pi_fmt[i] != AV_PIX_FMT_NONE; i++)
         if (pi_fmt[i] == p_sys->pix_fmt)
         {
-            msg_Dbg(p_dec, "reusing decoder output format %d", pi_fmt[i]);
-            return p_sys->pix_fmt;
+            if (lavc_UpdateVideoFormat(p_dec, p_context, p_sys->pix_fmt, swfmt) == 0)
+            {
+                msg_Dbg(p_dec, "reusing decoder output format %d", pi_fmt[i]);
+                return p_sys->pix_fmt;
+            }
         }
 
 no_reuse:
