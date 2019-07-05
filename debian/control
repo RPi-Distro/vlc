@@ -480,12 +480,3 @@ Description: Samba plugin for VLC
  podcasts, and multimedia streams from various network sources.
  .
  This plugin adds support to access Samba shares from the VLC media player.
-
-Package: vlc-plugin-zvbi
-Architecture: any
-Multi-Arch: same
-Section: oldlibs
-Depends: ${misc:Depends},
-         vlc-plugin-base (= ${binary:Version})
-Description: transitional dummy package
- This is a transitional dummy package. It can safely be removed.
