@@ -4,11 +4,12 @@ vlc (3.0.7.1-2) unstable; urgency=medium
   * debian/control:
     - Remove obsolete transitional package.
     - Remove obsolete Breaks+Replaces.
+    - Bump Standards-Version.
   * debian/patches: Apply upstream patches to
     - unbreak rendering in subsvtt.
-    - fix integer underflows in mp4. (CVE-2019-13602) (Close: #932131)
+    - fix integer underflows in mp4. (CVE-2019-13602) (Closes: #932131)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 15 Jul 2019 19:50:32 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 15 Jul 2019 19:55:05 +0200
 
 vlc (3.0.7.1-1) unstable; urgency=medium
 
