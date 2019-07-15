@@ -1,0 +1,29 @@
+From: =?utf-8?q?R=C3=A9mi_Denis-Courmont?= <remi@remlab.net>
+Date: Thu, 27 Jun 2019 23:19:38 +0300
+Subject: mp4: fix integer underflow
+
+Reported-by: Hyeon-Ju Lee <zorurione@gmail.com>
+(cherry picked from commit 8e8e0d72447f8378244f5b4a3dcde036dbeb1491)
+---
+ modules/demux/mp4/mp4.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/modules/demux/mp4/mp4.c b/modules/demux/mp4/mp4.c
+index 0c7aa2d..9a70272 100644
+--- a/modules/demux/mp4/mp4.c
++++ b/modules/demux/mp4/mp4.c
+@@ -447,10 +447,10 @@ static block_t * MP4_EIA608_Convert( block_t * p_block )
+     } while( i_bytes >= 2 );
+ 
+     /* cdt2 is optional */
+-    if ( i_remaining >= 10 &&
+-         (i_bytes = GetDWBE(p_read)) &&
+-         (i_bytes <= i_remaining) &&
+-         !memcmp("cdt2", &p_read[4], 4) )
++    i_bytes = GetDWBE(p_read);
++
++    if (10 <= i_bytes && i_bytes <= i_remaining &&
++        !memcmp("cdt2", &p_read[4], 4))
+     {
+         p_read += 8;
+         i_bytes -= 8;

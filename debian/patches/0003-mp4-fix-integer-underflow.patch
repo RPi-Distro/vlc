@@ -1,0 +1,31 @@
+From: =?utf-8?q?R=C3=A9mi_Denis-Courmont?= <remi@remlab.net>
+Date: Thu, 27 Jun 2019 23:19:38 +0300
+Subject: mp4: fix integer underflow
+
+Reported-by: Hyeon-Ju Lee <zorurione@gmail.com>
+(cherry picked from commit b2b157076d9e94df34502dd8df0787deb940e938)
+---
+ modules/demux/mp4/mp4.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/modules/demux/mp4/mp4.c b/modules/demux/mp4/mp4.c
+index edda423..0c7aa2d 100644
+--- a/modules/demux/mp4/mp4.c
++++ b/modules/demux/mp4/mp4.c
+@@ -421,11 +421,11 @@ static block_t * MP4_EIA608_Convert( block_t * p_block )
+     block_t *p_newblock;
+ 
+     /* always need at least 10 bytes (atom size+header+1pair)*/
+-    if ( i_remaining < 10 ||
+-         !(i_bytes = GetDWBE(p_block->p_buffer)) ||
+-         (i_bytes > i_remaining) ||
+-         memcmp("cdat", &p_block->p_buffer[4], 4) ||
+-         !(p_newblock = block_Alloc( i_remaining * 3 - 8 )) )
++    i_bytes = GetDWBE(p_block->p_buffer);
++
++    if (10 < i_bytes || i_bytes < i_remaining ||
++        memcmp("cdat", &p_block->p_buffer[4], 4) ||
++        (p_newblock = block_Alloc(i_remaining * 3 - 8)) == NULL)
+     {
+         p_block->i_buffer = 0;
+         return p_block;

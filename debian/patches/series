@@ -1,1 +1,4 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
+0002-codec-subsvtt-unbreak-rendering-fix-22425.patch
+0003-mp4-fix-integer-underflow.patch
+0004-mp4-fix-integer-underflow.patch
