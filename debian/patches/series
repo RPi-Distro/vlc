@@ -2,3 +2,4 @@
 0002-codec-subsvtt-unbreak-rendering-fix-22425.patch
 0003-mp4-fix-integer-underflow.patch
 0004-mp4-fix-integer-underflow.patch
+0005-vout-opengl-converter-prevent-FPE-with-cropped-empty.patch
