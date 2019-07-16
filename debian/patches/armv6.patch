@@ -26,7 +26,7 @@
  #include <vlc_plugin.h>
  #include <vlc_codec.h>
  #include <vlc_filter.h>
-@@ -1871,6 +1872,9 @@
+@@ -2026,6 +2027,9 @@
      filter_t * const p_filter = (filter_t *)object;
      const vlc_fourcc_t vfcc_dst = p_filter->fmt_out.video.i_chroma;
  
