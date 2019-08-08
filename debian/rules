@@ -93,6 +93,7 @@ confflags += \
 	--with-kde-solid=/usr/share/solid/actions/ \
 	$(NULL)
 # Reasons for disabling features:
+# crystalhd: unusble without firmware (#934242)
 # d3d11va: Windows only
 # decklink: not in Debian
 # directx: Windows only
@@ -116,6 +117,7 @@ confflags += \
 # vsxu: not in Debian
 # wasapi: Windows only
 confflags += \
+	--disable-crystalhd \
 	--disable-d3d11va \
 	--disable-decklink \
 	--disable-directx \
@@ -217,14 +219,6 @@ else
 # Note: Use PulseAudio/ALSA on Linux instead of OSS.
 confflags += --disable-oss
 removeplugins += oss
-endif
-
-# Linux amd64 and i386 specific flags
-ifeq (,$(filter-out amd64 i386,$(DEB_HOST_ARCH)))
-confflags += --enable-crystalhd
-else
-confflags += --disable-crystalhd
-removeplugins += crystalhd
 endif
 
 ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
