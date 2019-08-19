@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.7\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2019-06-11 20:12+0200\n"
-"PO-Revision-Date: 2019-04-24 07:41+0200\n"
+"POT-Creation-Date: 2019-08-19 08:54+0200\n"
+"PO-Revision-Date: 2019-07-11 07:30+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>, 2019\n"
 "Language-Team: Hebrew (https://www.transifex.com/yaron/teams/16553/he/)\n"
 "Language: he\n"
@@ -87,7 +87,7 @@ msgstr "הגדרות קיצורי מקלדת"
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
-#: modules/gui/qt/ui/profiles.h:721 modules/gui/qt/ui/profiles.h:752
+#: modules/gui/qt/ui/profiles.h:719 modules/gui/qt/ui/profiles.h:750
 msgid "Audio"
 msgstr "שמע"
 
@@ -100,7 +100,7 @@ msgid "General audio settings"
 msgstr "הגדרות שמע כלליות"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:81
-#: modules/gui/qt/ui/profiles.h:750 modules/gui/qt/ui/profiles.h:760
+#: modules/gui/qt/ui/profiles.h:748 modules/gui/qt/ui/profiles.h:758
 msgid "Filters"
 msgstr "מסננים"
 
@@ -152,8 +152,8 @@ msgstr "הגדרות ומודולי שמע שונים"
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
-#: modules/gui/qt/ui/profiles.h:722 modules/gui/qt/ui/profiles.h:726
-#: modules/gui/qt/ui/sprefs_video.h:326
+#: modules/gui/qt/ui/profiles.h:720 modules/gui/qt/ui/profiles.h:724
+#: modules/gui/qt/ui/sprefs_video.h:323
 msgid "Video"
 msgstr "וידאו"
 
@@ -388,7 +388,7 @@ msgstr ""
 
 #: include/vlc_config_cat.h:184 src/libvlc-module.c:1862
 #: modules/gui/qt/dialogs/extended.cpp:93
-#: modules/gui/qt/ui/video_effects.h:1308
+#: modules/gui/qt/ui/video_effects.h:1305
 msgid "Advanced"
 msgstr "מתקדם"
 
@@ -465,7 +465,7 @@ msgstr "על &אודות"
 #: modules/gui/macosx/VLCMainMenu.m:1340 modules/gui/macosx/VLCMainMenu.m:1341
 #: modules/gui/macosx/VLCPlaylist.m:228
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:538 modules/gui/qt/ui/open.h:261
+#: modules/gui/qt/dialogs/vlm.cpp:538 modules/gui/qt/ui/open.h:258
 msgid "Play"
 msgstr "נגן"
 
@@ -557,7 +557,7 @@ msgstr "חיפוש"
 
 #: include/vlc_intf_strings.h:99
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:282
-#: modules/gui/qt/ui/video_effects.h:1292
+#: modules/gui/qt/ui/video_effects.h:1289
 msgid "Waves"
 msgstr "גלים"
 
@@ -687,9 +687,9 @@ msgstr "סטריאו"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:313
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1231
-#: modules/gui/qt/ui/video_effects.h:1273
-#: modules/gui/qt/ui/video_effects.h:1283
+#: modules/gui/qt/ui/video_effects.h:1228
+#: modules/gui/qt/ui/video_effects.h:1270
+#: modules/gui/qt/ui/video_effects.h:1280
 msgid "Left"
 msgstr "שמאל"
 
@@ -704,7 +704,7 @@ msgstr "שמאל"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:315
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1232
+#: modules/gui/qt/ui/video_effects.h:1229
 msgid "Right"
 msgstr "ימין"
 
@@ -982,15 +982,15 @@ msgstr "מזהה מקורי"
 #: src/input/es_out.c:3104 src/input/es_out.c:3107 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
-#: modules/gui/qt/ui/profiles.h:728 modules/gui/qt/ui/profiles.h:754
-#: modules/gui/qt/ui/profiles.h:763
+#: modules/gui/qt/ui/profiles.h:726 modules/gui/qt/ui/profiles.h:752
+#: modules/gui/qt/ui/profiles.h:761
 msgid "Codec"
 msgstr "מקודד/מפענח"
 
 #: src/input/es_out.c:3111 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:114
 #: modules/gui/macosx/VLCSimplePrefsController.m:316
-#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:530
+#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:527
 msgid "Language"
 msgstr "שפה"
 
@@ -1010,7 +1010,7 @@ msgstr "סוג"
 
 #: src/input/es_out.c:3123
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
-#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:756
+#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:754
 msgid "Channels"
 msgstr "ערוצים"
 
@@ -1032,7 +1032,7 @@ msgstr "סיביות לדגימה"
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
-#: modules/gui/qt/ui/profiles.h:729 modules/gui/qt/ui/profiles.h:755
+#: modules/gui/qt/ui/profiles.h:727 modules/gui/qt/ui/profiles.h:753
 msgid "Bitrate"
 msgstr "קצב סיביות"
 
@@ -1056,11 +1056,11 @@ msgstr "%.2f דציבל"
 
 #: src/input/es_out.c:3168
 msgid "Video resolution"
-msgstr ""
+msgstr "רזולוציית וידאו"
 
 #: src/input/es_out.c:3173
 msgid "Buffer dimensions"
-msgstr ""
+msgstr "ממדי האוגרים"
 
 #: src/input/es_out.c:3183 src/input/es_out.c:3186 modules/access/imem.c:93
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
@@ -1273,7 +1273,7 @@ msgstr "הכתובת הבאה לא נפתחה על ידי VLC '%s'. יש לעי�
 #: modules/gui/qt/components/open_panels.cpp:507
 #: modules/gui/qt/components/open_panels.cpp:521
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
-#: modules/gui/qt/ui/open_disk.h:309
+#: modules/gui/qt/ui/open_disk.h:306
 msgid "Title"
 msgstr "כותרת"
 
@@ -1314,7 +1314,7 @@ msgid "Setting"
 msgstr "הגדרות"
 
 #: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
-#: modules/gui/qt/ui/podcast_configuration.h:102
+#: modules/gui/qt/ui/podcast_configuration.h:100
 msgid "URL"
 msgstr "כתובת"
 
@@ -1382,7 +1382,7 @@ msgstr "תכניות"
 #: modules/gui/macosx/VLCMainMenu.m:412
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
-#: modules/gui/qt/ui/open_disk.h:310
+#: modules/gui/qt/ui/open_disk.h:307
 msgid "Chapter"
 msgstr "פרק"
 
@@ -1609,14 +1609,14 @@ msgstr ""
 
 #: src/libvlc-module.c:129
 msgid "Media role"
-msgstr ""
+msgstr "תפקיד מדיה"
 
 #: src/libvlc-module.c:130
 msgid "Media (player) role for operating system policy."
-msgstr ""
+msgstr "תפקיד (נגן) מדיה למדיניות מערכת ההפעלה."
 
 #: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:272
-#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:410
+#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:407
 msgid "Enable audio"
 msgstr "אפשר שמע"
 
@@ -1674,16 +1674,16 @@ msgstr "גודל הצעד בין רמת עוצמת שמע אחת לאחרת"
 
 #: src/libvlc-module.c:153
 msgid "The step size of the volume is adjustable using this option."
-msgstr ""
+msgstr "גודל הצעד של שינוי עצמת השמע ניתן לכוונון דרך אפשרות זו."
 
 #: src/libvlc-module.c:156
 msgid "Remember the audio volume"
-msgstr ""
+msgstr "לזכור את עצמת השמע"
 
 #: src/libvlc-module.c:158
 msgid ""
 "The volume can be recorded and automatically restored next time VLC is used."
-msgstr ""
+msgstr "ניתן לשמור ולשחזר את עצמת השמע בהפעלה הבאה של VLC אוטומטית."
 
 #: src/libvlc-module.c:161
 msgid "Audio desynchronization compensation"
@@ -1740,8 +1740,8 @@ msgstr ""
 #: modules/services_discovery/upnp.cpp:78
 #: modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
-#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:744
-#: modules/gui/qt/ui/profiles.h:747
+#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:742
+#: modules/gui/qt/ui/profiles.h:745
 msgid "Auto"
 msgstr "אוטומטי"
 
@@ -1857,7 +1857,7 @@ msgstr ""
 "את השיטה הזמינה הטובה ביותר."
 
 #: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:358
-#: modules/stream_out/display.c:42 modules/gui/qt/ui/sprefs_video.h:314
+#: modules/stream_out/display.c:42 modules/gui/qt/ui/sprefs_video.h:311
 msgid "Enable video"
 msgstr "הפעלת וידאו"
 
@@ -1946,9 +1946,9 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:317
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1229
-#: modules/gui/qt/ui/video_effects.h:1271
-#: modules/gui/qt/ui/video_effects.h:1282
+#: modules/gui/qt/ui/video_effects.h:1226
+#: modules/gui/qt/ui/video_effects.h:1268
+#: modules/gui/qt/ui/video_effects.h:1279
 msgid "Top"
 msgstr "למעלה"
 
@@ -1959,7 +1959,7 @@ msgstr "למעלה"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:319
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1233
+#: modules/gui/qt/ui/video_effects.h:1230
 msgid "Bottom"
 msgstr "למטה"
 
@@ -2141,7 +2141,7 @@ msgid "Disable the screensaver during video playback."
 msgstr "מונע את הפעלת שומר המסך בזמן ניגון וידאו."
 
 #: src/libvlc-module.c:374 modules/gui/macosx/VLCSimplePrefsController.m:363
-#: modules/gui/qt/ui/sprefs_video.h:317
+#: modules/gui/qt/ui/sprefs_video.h:314
 msgid "Window decorations"
 msgstr "קישוטי חלון"
 
@@ -2483,7 +2483,7 @@ msgstr "בררת מחדל"
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
 #: modules/gui/macosx/VLCMainWindow.m:1037
 #: modules/gui/qt/components/extended_panels.cpp:949
-#: modules/gui/qt/ui/equalizer.h:133 modules/gui/qt/ui/vlm.h:289
+#: modules/gui/qt/ui/equalizer.h:130 modules/gui/qt/ui/vlm.h:286
 msgid "Enable"
 msgstr "הפעלה"
 
@@ -2539,7 +2539,7 @@ msgid ""
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:578 modules/gui/qt/ui/open_disk.h:312
+#: src/libvlc-module.c:578 modules/gui/qt/ui/open_disk.h:309
 msgid "Audio track"
 msgstr "רצועת שמע"
 
@@ -2547,7 +2547,7 @@ msgstr "רצועת שמע"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr ""
 
-#: src/libvlc-module.c:583 modules/gui/qt/ui/open_disk.h:313
+#: src/libvlc-module.c:583 modules/gui/qt/ui/open_disk.h:310
 msgid "Subtitle track"
 msgstr "רצועת כתוביות"
 
@@ -2585,6 +2585,8 @@ msgid ""
 "Language of the menus you want to use with DVD/BluRay (comma separated, two "
 "or three letters country code, you may use 'any' as a fallback)."
 msgstr ""
+"השפות בהן יופיעו התפריטים ב־DVD/BluRay (מופרדות בפסיקים, 2 או 3 אותיות לקוד "
+"מדינה, ניתן להשתמש ב־‚any’ במקרה של ספק)."
 
 #: src/libvlc-module.c:604
 msgid "Audio track ID"
@@ -2674,7 +2676,7 @@ msgstr "זמן ההתחלה"
 msgid "The stream will run this duration (in seconds)."
 msgstr "התזרים ירוץ למשך זמן זה (בשניות)."
 
-#: src/libvlc-module.c:646 modules/gui/qt/ui/sprefs_input.h:363
+#: src/libvlc-module.c:646 modules/gui/qt/ui/sprefs_input.h:360
 msgid "Fast seek"
 msgstr "מעבר מהיר"
 
@@ -2785,7 +2787,7 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:305
+#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Force subtitle position"
 msgstr "קיבוע מיקום הכתוביות"
 
@@ -2815,7 +2817,7 @@ msgstr "ניתן לנטרל לחלוטין את עיבוד תת־התמונות.
 
 #: src/libvlc-module.c:717 src/libvlc-module.c:1674 src/text/iso-639_def.h:145
 #: modules/gui/macosx/VLCSimplePrefsController.m:350
-#: modules/gui/qt/ui/sprefs_subtitles.h:290
+#: modules/gui/qt/ui/sprefs_subtitles.h:287
 msgid "On Screen Display"
 msgstr "חיווי על גבי המסך"
 
@@ -3475,7 +3477,7 @@ msgstr "VLC מופעל דרך קובץ משויך"
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr "לספר ל־VLC מתי הוא מופעל בעקבות קובץ משויך במערכת ההפעלה"
 
-#: src/libvlc-module.c:1087 modules/gui/qt/ui/sprefs_interface.h:550
+#: src/libvlc-module.c:1087 modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Use only one instance when started from file manager"
 msgstr "הפעלת מופע יחיד בלבד בעת הפעלה ממנהל קבצים"
 
@@ -3493,7 +3495,7 @@ msgid ""
 "machine."
 msgstr ""
 
-#: src/libvlc-module.c:1099 modules/gui/qt/ui/sprefs_interface.h:553
+#: src/libvlc-module.c:1099 modules/gui/qt/ui/sprefs_interface.h:550
 msgid "Enqueue items into playlist in one instance mode"
 msgstr "הוספת פריטים לרשימת הנגינה במצב מופע בודד"
 
@@ -3539,7 +3541,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1126 modules/gui/macosx/VLCSimplePrefsController.m:333
 #: modules/gui/qt/dialogs/firstrun.cpp:95
-#: modules/gui/qt/ui/sprefs_interface.h:565
+#: modules/gui/qt/ui/sprefs_interface.h:562
 msgid "Allow metadata network access"
 msgstr ""
 
@@ -3680,7 +3682,7 @@ msgid ""
 "VLC."
 msgstr "ספריית המדיה נשמרת ונטענת מחדש עם כל הפעלה של VLC."
 
-#: src/libvlc-module.c:1198 modules/gui/qt/ui/sprefs_interface.h:551
+#: src/libvlc-module.c:1198 modules/gui/qt/ui/sprefs_interface.h:548
 msgid "Display playlist tree"
 msgstr "הצגת עץ רשימת נגינה"
 
@@ -3734,7 +3736,7 @@ msgstr ""
 #: modules/gui/macosx/VLCControlsBarCommon.m:98
 #: modules/gui/macosx/VLCMainMenu.m:432 modules/gui/macosx/VLCMainMenu.m:511
 #: modules/gui/qt/components/controller.hpp:108
-#: modules/gui/qt/ui/sprefs_video.h:318
+#: modules/gui/qt/ui/sprefs_video.h:315
 msgid "Fullscreen"
 msgstr "מסך מלא"
 
@@ -3817,7 +3819,7 @@ msgstr "אטי יותר (מעודן)"
 #: modules/gui/macosx/VLCMainMenu.m:507
 #: modules/gui/qt/components/controller.hpp:112
 #: modules/gui/qt/dialogs/sout.cpp:93 modules/notify/notify.c:335
-#: modules/gui/qt/ui/streampanel.h:181
+#: modules/gui/qt/ui/streampanel.h:179
 msgid "Next"
 msgstr "הבא"
 
@@ -3842,7 +3844,7 @@ msgstr "נא לבחור את קיצור המקלדת למעבר לפריט הק�
 #: modules/gui/macosx/VLCMainMenu.m:498 modules/gui/macosx/VLCMainMenu.m:505
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:65
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:544 modules/gui/qt/ui/streampanel.h:180
+#: modules/gui/qt/dialogs/vlm.cpp:544 modules/gui/qt/ui/streampanel.h:178
 msgid "Stop"
 msgstr "עצור"
 
@@ -3855,8 +3857,8 @@ msgstr "נא לבחור את מקש הקיצור לעצירת הנגינה."
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
-#: modules/gui/qt/ui/sprefs_subtitles.h:293
-#: modules/gui/qt/ui/video_effects.h:1279
+#: modules/gui/qt/ui/sprefs_subtitles.h:290
+#: modules/gui/qt/ui/video_effects.h:1276
 msgid "Position"
 msgstr "מיקום"
 
@@ -4568,8 +4570,8 @@ msgstr "תת־תמונות"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
 #: modules/gui/macosx/VLCMainMenu.m:450
 #: share/lua/http/dialogs/create_stream.html:153
-#: modules/gui/qt/ui/profiles.h:718 modules/gui/qt/ui/profiles.h:762
-#: modules/gui/qt/ui/profiles.h:765
+#: modules/gui/qt/ui/profiles.h:716 modules/gui/qt/ui/profiles.h:760
+#: modules/gui/qt/ui/profiles.h:763
 msgid "Subtitles"
 msgstr "כתוביות"
 
@@ -4741,8 +4743,8 @@ msgstr "עצירה בדפדפן"
 
 #: src/misc/actions.c:62 modules/gui/macosx/VLCMainMenu.m:370
 #: modules/gui/macosx/VLCPlaylist.m:229 modules/gui/qt/dialogs/bookmarks.cpp:50
-#: modules/gui/qt/ui/podcast_configuration.h:104
-#: modules/gui/qt/ui/streampanel.h:172
+#: modules/gui/qt/ui/podcast_configuration.h:102
+#: modules/gui/qt/ui/streampanel.h:170
 msgid "Delete"
 msgstr "מחק"
 
@@ -5015,7 +5017,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "פתיחת „%s” לכתיבה נכשלה"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2734
+#: modules/demux/avi/avi.c:2772
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:825
@@ -5790,7 +5792,7 @@ msgstr ""
 #: src/video_output/vout_intf.c:203 modules/gui/macosx/VLCMainMenu.m:439
 #: modules/gui/macosx/VLCMainMenu.m:440
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:193
-#: modules/video_filter/croppadd.c:87 modules/gui/qt/ui/video_effects.h:1239
+#: modules/video_filter/croppadd.c:87 modules/gui/qt/ui/video_effects.h:1236
 msgid "Crop"
 msgstr "חיתוך"
 
@@ -5931,7 +5933,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/bluray.c:103 modules/services_discovery/udev.c:603
-#: modules/gui/qt/ui/open_disk.h:299
+#: modules/gui/qt/ui/open_disk.h:296
 msgid "Blu-ray"
 msgstr "Blu-ray"
 
@@ -6023,7 +6025,7 @@ msgid "Audio CD - Track %02i"
 msgstr ""
 
 #: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
-#: modules/gui/qt/ui/open_disk.h:300
+#: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "תקליטור שמע"
 
@@ -6996,8 +6998,8 @@ msgid "DVDnav demuxer"
 msgstr "מפלג DVDnav"
 
 #: modules/access/dvdnav.c:298 modules/access/dvdread.c:201
-#: modules/access/dvdread.c:216 modules/access/dvdread.c:471
-#: modules/access/dvdread.c:539
+#: modules/access/dvdread.c:216 modules/access/dvdread.c:477
+#: modules/access/dvdread.c:545
 msgid "Playback failure"
 msgstr ""
 
@@ -7023,12 +7025,12 @@ msgstr ""
 msgid "Cannot play a non-UDF mastered DVD."
 msgstr ""
 
-#: modules/access/dvdread.c:472
+#: modules/access/dvdread.c:478
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr ""
 
-#: modules/access/dvdread.c:540
+#: modules/access/dvdread.c:546
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr ""
@@ -7050,7 +7052,7 @@ msgid "File"
 msgstr "קובץ"
 
 #: modules/access/fs.c:44 modules/demux/directory.c:93
-#: modules/gui/qt/ui/sprefs_video.h:331
+#: modules/gui/qt/ui/sprefs_video.h:328
 msgid "Directory"
 msgstr "תיקייה"
 
@@ -7281,7 +7283,7 @@ msgstr "ספירת הערוצים של תזרים שמע בסיסי"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
 #: modules/gui/qt/components/extended_panels.cpp:1318 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
-#: modules/gui/qt/ui/profiles.h:743
+#: modules/gui/qt/ui/profiles.h:741
 msgid "Width"
 msgstr "רוחב"
 
@@ -7294,7 +7296,7 @@ msgstr ""
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:168
 #: modules/spu/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
-#: modules/gui/qt/ui/profiles.h:746
+#: modules/gui/qt/ui/profiles.h:744
 msgid "Height"
 msgstr "גוה"
 
@@ -8222,7 +8224,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
-#: modules/gui/qt/ui/video_effects.h:1217
+#: modules/gui/qt/ui/video_effects.h:1214
 msgid "Brightness"
 msgstr "בהירות"
 
@@ -8240,7 +8242,7 @@ msgstr "התאמת בהירות התמונה באופן אוטומטי."
 
 #: modules/access/v4l2/v4l2.c:89
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:205
-#: modules/gui/qt/ui/video_effects.h:1219
+#: modules/gui/qt/ui/video_effects.h:1216
 msgid "Contrast"
 msgstr "ניגודיות"
 
@@ -8251,8 +8253,8 @@ msgstr ""
 #: modules/access/v4l2/v4l2.c:91
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:208
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:254
-#: modules/gui/qt/ui/video_effects.h:1220
-#: modules/gui/qt/ui/video_effects.h:1252
+#: modules/gui/qt/ui/video_effects.h:1217
+#: modules/gui/qt/ui/video_effects.h:1249
 msgid "Saturation"
 msgstr "רוויה"
 
@@ -8262,7 +8264,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:93
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:204
-#: modules/gui/qt/ui/video_effects.h:1216
+#: modules/gui/qt/ui/video_effects.h:1213
 msgid "Hue"
 msgstr "גוון"
 
@@ -8314,7 +8316,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:111
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:209
-#: modules/gui/qt/ui/video_effects.h:1221
+#: modules/gui/qt/ui/video_effects.h:1218
 msgid "Gamma"
 msgstr "גאמה"
 
@@ -8439,7 +8441,7 @@ msgstr "שחור ולבן"
 
 #: modules/access/v4l2/v4l2.c:164
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:256
-#: modules/video_filter/sepia.c:66 modules/gui/qt/ui/video_effects.h:1254
+#: modules/video_filter/sepia.c:66 modules/gui/qt/ui/video_effects.h:1251
 msgid "Sepia"
 msgstr "ספיה"
 
@@ -9948,7 +9950,7 @@ msgstr "סראונד 7.1"
 msgid "ALSA audio output"
 msgstr "פלט שמע ALSA"
 
-#: modules/audio_output/alsa.c:393 modules/audio_output/auhal.c:1182
+#: modules/audio_output/alsa.c:393 modules/audio_output/auhal.c:1180
 msgid "Audio output failed"
 msgstr "פלט השמע נכשל"
 
@@ -10000,7 +10002,7 @@ msgid ""
 "Applications/Utilities. VLC will output Stereo only."
 msgstr ""
 
-#: modules/audio_output/auhal.c:1183
+#: modules/audio_output/auhal.c:1181
 msgid ""
 "The selected audio output device is exclusively in use by another program."
 msgstr ""
@@ -10123,7 +10125,7 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "פלט שמע של מנשק שמע K ‏(KAI)"
 
-#: modules/audio_output/mmdevice.c:1451 modules/gui/qt/ui/sprefs_audio.h:419
+#: modules/audio_output/mmdevice.c:1451 modules/gui/qt/ui/sprefs_audio.h:416
 msgid "HDMI/SPDIF audio passthrough"
 msgstr ""
 
@@ -10181,7 +10183,7 @@ msgstr ""
 msgid "This linear gain will be applied in software."
 msgstr ""
 
-#: modules/audio_output/wasapi.c:651
+#: modules/audio_output/wasapi.c:652
 msgid "Windows Audio Session API output"
 msgstr ""
 
@@ -10758,7 +10760,7 @@ msgstr ""
 
 #: modules/codec/cc.c:51 modules/codec/zvbi.c:65
 #: modules/gui/macosx/VLCSimplePrefsController.m:352 modules/spu/marq.c:108
-#: modules/spu/rss.c:144 modules/gui/qt/ui/video_effects.h:1276
+#: modules/spu/rss.c:144 modules/gui/qt/ui/video_effects.h:1273
 msgid "Opacity"
 msgstr "אטימות"
 
@@ -10927,7 +10929,7 @@ msgstr ""
 msgid "AAC audio decoder (using libfaad2)"
 msgstr "מפענח אודיו AAC (בעזרת libfaad2)"
 
-#: modules/codec/faad.c:433
+#: modules/codec/faad.c:434
 msgid "AAC extension"
 msgstr ""
 
@@ -12036,7 +12038,7 @@ msgstr ""
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
-#: modules/gui/qt/ui/sprefs_video.h:328 modules/gui/qt/ui/video_effects.h:1246
+#: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1243
 msgid "Mode"
 msgstr "מצב"
 
@@ -12798,7 +12800,7 @@ msgstr ""
 
 #: modules/codec/x264.c:164
 msgid "Interlaced mode"
-msgstr ""
+msgstr "מצב שזור"
 
 #: modules/codec/x264.c:165
 msgid "Pure-interlaced mode."
@@ -12919,11 +12921,11 @@ msgstr ""
 
 #: modules/codec/x264.c:217
 msgid "VBV buffer"
-msgstr ""
+msgstr "אוגר VBV"
 
 #: modules/codec/x264.c:218
 msgid "Averaging period for the maximum local bitrate (in kbits)."
-msgstr ""
+msgstr "טווח מיצוע של קצב הסיביות המרבי (בקילוסיביות)."
 
 #: modules/codec/x264.c:221
 msgid "Initial VBV buffer occupancy"
@@ -13242,11 +13244,11 @@ msgstr ""
 
 #: modules/codec/x264.c:381
 msgid "CPU optimizations"
-msgstr ""
+msgstr "שיפורי מעבד"
 
 #: modules/codec/x264.c:382
 msgid "Use assembler CPU optimizations."
-msgstr ""
+msgstr "שימוש בשיפורי אסמבלי למעבד."
 
 #: modules/codec/x264.c:384
 msgid "Filename for 2 pass stats file"
@@ -13258,30 +13260,30 @@ msgstr ""
 
 #: modules/codec/x264.c:387
 msgid "PSNR computation"
-msgstr ""
+msgstr "חישוב PSNR"
 
 #: modules/codec/x264.c:388
 msgid ""
 "Compute and print PSNR stats. This has no effect on the actual encoding "
 "quality."
-msgstr ""
+msgstr "חישוב והצגה של סטטיסטיקת PSNR. אין לזה כל השפעה על איכות הקידוד בפועל."
 
 #: modules/codec/x264.c:391
 msgid "SSIM computation"
-msgstr ""
+msgstr "חישוב SSIM"
 
 #: modules/codec/x264.c:392
 msgid ""
 "Compute and print SSIM stats. This has no effect on the actual encoding "
 "quality."
-msgstr ""
+msgstr "חישוב והצגה של סטטיסטיקת SSIM. אין לזה כל השפעה על איכות הקידוד בפועל."
 
 #: modules/codec/x264.c:395
 msgid "Quiet mode"
-msgstr ""
+msgstr "מצב שקט"
 
 #: modules/codec/x264.c:397 modules/gui/macosx/VLCPlaylistInfo.m:69
-#: modules/gui/qt/ui/streampanel.h:170
+#: modules/gui/qt/ui/streampanel.h:168
 msgid "Statistics"
 msgstr "סטטיסטיקה"
 
@@ -13291,13 +13293,14 @@ msgstr "הצגת סטטיסטיקה לכל שקופית."
 
 #: modules/codec/x264.c:400
 msgid "SPS and PPS id numbers"
-msgstr ""
+msgstr "מספרי זיהוי של SPS ושל PPS"
 
 #: modules/codec/x264.c:401
 msgid ""
 "Set SPS and PPS id numbers to allow concatenating streams with different "
 "settings."
 msgstr ""
+"הגדרת מספרי זיהוי של SPS ושל PPS כדי לאפשר חיבור של תזרימים עם הגדרות שונות."
 
 #: modules/codec/x264.c:404
 msgid "Access unit delimiters"
@@ -13331,31 +13334,31 @@ msgstr ""
 
 #: modules/codec/x264.c:415
 msgid "x264 advanced options"
-msgstr ""
+msgstr "אפשרויות מתקדמות של x264"
 
 #: modules/codec/x264.c:416
 msgid "x264 advanced options, in the form {opt=val,op2=val2}."
-msgstr ""
+msgstr "אפשרויות מתקדמות של x264, בצורה {אפשרות=ערך,אפשרות2=ערך2}"
 
 #: modules/codec/x264.c:421
 msgid "dia"
-msgstr ""
+msgstr "dia"
 
 #: modules/codec/x264.c:421
 msgid "hex"
-msgstr ""
+msgstr "hex"
 
 #: modules/codec/x264.c:421
 msgid "umh"
-msgstr ""
+msgstr "umh"
 
 #: modules/codec/x264.c:421
 msgid "esa"
-msgstr ""
+msgstr "esa"
 
 #: modules/codec/x264.c:421
 msgid "tesa"
-msgstr ""
+msgstr "tesa"
 
 #: modules/codec/x264.c:429
 msgid "Fast"
@@ -13461,7 +13464,7 @@ msgstr ""
 msgid "Presentation Level"
 msgstr ""
 
-#: modules/codec/zvbi.c:88 modules/gui/qt/ui/streampanel.h:169
+#: modules/codec/zvbi.c:88 modules/gui/qt/ui/streampanel.h:167
 msgid "1"
 msgstr "1"
 
@@ -14374,7 +14377,7 @@ msgstr "לתקן במידת הצורך"
 msgid "AVI demuxer"
 msgstr "מפלג AVI"
 
-#: modules/demux/avi/avi.c:841 modules/demux/mp4/mp4.c:4252
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4252
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14384,27 +14387,27 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:849
+#: modules/demux/avi/avi.c:884
 msgid "Do not play"
 msgstr "לא לנגן"
 
-#: modules/demux/avi/avi.c:850
+#: modules/demux/avi/avi.c:885
 msgid "Build index then play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:851
+#: modules/demux/avi/avi.c:886
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:852 modules/demux/mp4/mp4.c:4263
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4263
 msgid "Broken or missing Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2735
+#: modules/demux/avi/avi.c:2773
 msgid "Broken or missing AVI Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2736
+#: modules/demux/avi/avi.c:2774
 msgid "Fixing AVI Index..."
 msgstr ""
 
@@ -14553,7 +14556,7 @@ msgstr ""
 msgid "Use chapter codecs found in the segment."
 msgstr ""
 
-#: modules/demux/mkv/mkv.cpp:68 modules/gui/qt/ui/sprefs_input.h:370
+#: modules/demux/mkv/mkv.cpp:68 modules/gui/qt/ui/sprefs_input.h:367
 msgid "Preload MKV files in the same directory"
 msgstr "טעינה מוקדמת של קובצי ה־MKV מאותה התיקייה"
 
@@ -15558,13 +15561,13 @@ msgid "Apply profile at next launch"
 msgstr ""
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:216
-#: modules/gui/qt/ui/equalizer.h:134
+#: modules/gui/qt/ui/equalizer.h:131
 msgid "2 Pass"
 msgstr "2 מעברים"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:219
 #: modules/gui/qt/components/extended_panels.cpp:1132
-#: modules/gui/qt/ui/equalizer.h:136
+#: modules/gui/qt/ui/equalizer.h:133
 msgid "Preamp"
 msgstr "Preamp"
 
@@ -15653,7 +15656,7 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:792
 #: modules/gui/macosx/prefs.m:188
 #: modules/gui/qt/components/sout/profile_selector.cpp:449
-#: modules/gui/qt/ui/vlm.h:301
+#: modules/gui/qt/ui/vlm.h:298
 msgid "Save"
 msgstr "שמירה"
 
@@ -15684,7 +15687,7 @@ msgstr ""
 #: modules/gui/macosx/VLCBookmarksWindowController.m:81
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:859
-#: modules/gui/qt/ui/open_file.h:155
+#: modules/gui/qt/ui/open_file.h:153
 msgid "Remove"
 msgstr "הסרה"
 
@@ -15709,14 +15712,14 @@ msgid "Bookmarks"
 msgstr "סימניות"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:78
-#: modules/gui/qt/ui/podcast_configuration.h:103 modules/gui/qt/ui/sout.h:209
-#: modules/gui/qt/ui/vlm.h:299
+#: modules/gui/qt/ui/podcast_configuration.h:101 modules/gui/qt/ui/sout.h:206
+#: modules/gui/qt/ui/vlm.h:296
 msgid "Add"
 msgstr "הוספה"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:79
 #: modules/gui/macosx/VLCSimplePrefsController.m:287
-#: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:300
+#: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:297
 msgid "Clear"
 msgstr "ניקוי"
 
@@ -15864,9 +15867,9 @@ msgstr "בחירת מיקום לפלט"
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:462
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
-#: modules/gui/qt/ui/open.h:282 modules/gui/qt/ui/open_disk.h:307
-#: modules/gui/qt/ui/open_file.h:148 modules/gui/qt/ui/sprefs_audio.h:417
-#: modules/gui/qt/ui/sprefs_input.h:368 modules/gui/qt/ui/sprefs_video.h:332
+#: modules/gui/qt/ui/open.h:279 modules/gui/qt/ui/open_disk.h:304
+#: modules/gui/qt/ui/open_file.h:146 modules/gui/qt/ui/sprefs_audio.h:414
+#: modules/gui/qt/ui/sprefs_input.h:365 modules/gui/qt/ui/sprefs_video.h:329
 msgid "Browse..."
 msgstr "עיון..."
 
@@ -15900,51 +15903,51 @@ msgid "Save as new Profile..."
 msgstr "שמירה כפרופיל חדש…"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:155
-#: modules/gui/qt/ui/profiles.h:725
+#: modules/gui/qt/ui/profiles.h:723
 msgid "Encapsulation"
 msgstr "כימוס"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:156
 #: share/lua/http/dialogs/create_stream.html:160
-#: modules/gui/qt/ui/profiles.h:751
+#: modules/gui/qt/ui/profiles.h:749
 msgid "Video codec"
 msgstr "מפענח וידאו"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:157
 #: share/lua/http/dialogs/create_stream.html:178
-#: modules/gui/qt/ui/profiles.h:761
+#: modules/gui/qt/ui/profiles.h:759
 msgid "Audio codec"
 msgstr "מקודד שמע"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:161
-#: modules/gui/qt/ui/profiles.h:727
+#: modules/gui/qt/ui/profiles.h:725
 msgid "Keep original video track"
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:165
-#: modules/gui/qt/ui/profiles.h:749
+#: modules/gui/qt/ui/profiles.h:747
 msgid "Resolution"
 msgstr "רזולוציה"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:166
-#: modules/gui/qt/ui/profiles.h:740
+#: modules/gui/qt/ui/profiles.h:738
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:169
-#: modules/gui/macosx/VLCOutput.m:88 modules/gui/qt/ui/profiles.h:741
+#: modules/gui/macosx/VLCOutput.m:88 modules/gui/qt/ui/profiles.h:739
 msgid "Scale"
 msgstr "יחס"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:172
-#: modules/gui/qt/ui/profiles.h:753
+#: modules/gui/qt/ui/profiles.h:751
 msgid "Keep original audio track"
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:179
-#: modules/gui/qt/ui/profiles.h:764
+#: modules/gui/qt/ui/profiles.h:762
 msgid "Overlay subtitles on the video"
 msgstr ""
 
@@ -16109,7 +16112,7 @@ msgstr "יציאה ממסך מלא"
 
 #: modules/gui/macosx/VLCFSPanelController.m:127
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:80
-#: modules/gui/qt/dialogs/toolbar.cpp:477 modules/gui/qt/ui/sprefs_audio.h:411
+#: modules/gui/qt/dialogs/toolbar.cpp:477 modules/gui/qt/ui/sprefs_audio.h:408
 msgid "Volume"
 msgstr "עצמת שמע"
 
@@ -16631,7 +16634,7 @@ msgstr "ציפה מלמעלה"
 
 #: modules/gui/macosx/VLCMainMenu.m:441 modules/gui/macosx/VLCMainMenu.m:442
 #: modules/gui/macosx/VLCSimplePrefsController.m:369
-#: modules/gui/qt/ui/sprefs_video.h:319
+#: modules/gui/qt/ui/sprefs_video.h:316
 msgid "Fullscreen Video Device"
 msgstr "התקן וידאו מסך מלא"
 
@@ -16914,7 +16917,7 @@ msgstr "תקליטור"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:142
 #: modules/gui/macosx/VLCSimplePrefsController.m:301
-#: modules/gui/qt/ui/sprefs_input.h:371
+#: modules/gui/qt/ui/sprefs_input.h:368
 msgid "Network"
 msgstr "רשת"
 
@@ -16943,7 +16946,7 @@ msgstr "נגינת מדיה אחרת בו זמנית"
 #: modules/gui/macosx/VLCOpenWindowController.m:152
 #: modules/gui/macosx/VLCOpenWindowController.m:348
 #: modules/gui/macosx/VLCSimplePrefsController.m:344
-#: modules/gui/qt/ui/sprefs_interface.h:548
+#: modules/gui/qt/ui/sprefs_interface.h:545
 msgid "Choose..."
 msgstr "בחירה..."
 
@@ -17073,7 +17076,7 @@ msgstr "קידוד כתוביות"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:360
 #: modules/gui/macosx/VLCSimplePrefsController.m:346
-#: modules/gui/qt/ui/sprefs_subtitles.h:300
+#: modules/gui/qt/ui/sprefs_subtitles.h:297
 msgid "Font size"
 msgstr "גודל גופן"
 
@@ -17107,7 +17110,7 @@ msgstr ""
 #: modules/gui/macosx/VLCOpenWindowController.m:579
 #: modules/gui/macosx/VLCOpenWindowController.m:665
 #: modules/gui/macosx/VLCOpenWindowController.m:1265
-#: modules/gui/qt/ui/open_file.h:143
+#: modules/gui/qt/ui/open_file.h:141
 msgid "Open File"
 msgstr "פתיחת קובץ"
 
@@ -17244,7 +17247,7 @@ msgid "VLC was unable to save the meta data."
 msgstr "ל־VLC לא הייתה אפשרות לשמור את נתוני העל"
 
 #: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:194
-#: modules/gui/qt/ui/sprefs_interface.h:554
+#: modules/gui/qt/ui/sprefs_interface.h:551
 msgid "Continue playback?"
 msgstr "להמשיך נגינה?"
 
@@ -17317,7 +17320,7 @@ msgid "Keep audio level between sessions"
 msgstr "שמירה על עצמת השמע בין ההפעלות"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:280
-#: modules/gui/qt/ui/sprefs_audio.h:413
+#: modules/gui/qt/ui/sprefs_audio.h:410
 msgid "Always reset audio start level to:"
 msgstr "תמיד יש לאפס את עצמת השמע בהתחלה כך שתהיה:"
 
@@ -17344,7 +17347,7 @@ msgid "Shortcut"
 msgstr "קיצור"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:293
-#: modules/gui/qt/ui/sprefs_input.h:367
+#: modules/gui/qt/ui/sprefs_input.h:364
 msgid "Record directory or filename"
 msgstr "תיקייה או שם הקובץ המשמשים להקלטות"
 
@@ -17361,7 +17364,7 @@ msgid "Default Caching Level"
 msgstr "רמת המטמון כבררת המחדל"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:298
-#: modules/gui/qt/ui/open.h:266
+#: modules/gui/qt/ui/open.h:263
 msgid "Caching"
 msgstr "מטמון"
 
@@ -17420,7 +17423,7 @@ msgid "Enable notifications on playlist item change"
 msgstr "הפעלת התראות עם שינוי פריט ברשימת הנגינה"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:332
-#: modules/gui/qt/ui/sprefs_interface.h:556
+#: modules/gui/qt/ui/sprefs_interface.h:553
 msgid "Privacy / Network Interaction"
 msgstr "פרטיות / אינטראקציה מול הרשת"
 
@@ -17445,13 +17448,13 @@ msgid "Display Settings"
 msgstr "הגדרות תצוגה"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:345
-#: modules/gui/qt/ui/sprefs_subtitles.h:301
+#: modules/gui/qt/ui/sprefs_subtitles.h:298
 msgid "Font color"
 msgstr "צבע הגופן"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:347 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
-#: modules/gui/qt/ui/sprefs_subtitles.h:299
+#: modules/gui/qt/ui/sprefs_subtitles.h:296
 msgid "Font"
 msgstr "גופן"
 
@@ -17460,7 +17463,7 @@ msgid "Subtitle languages"
 msgstr "שפות הכתוביות"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:349
-#: modules/gui/qt/ui/sprefs_subtitles.h:296
+#: modules/gui/qt/ui/sprefs_subtitles.h:293
 msgid "Preferred subtitle language"
 msgstr "שפת הכתוביות המועדפת"
 
@@ -17475,18 +17478,18 @@ msgstr "אילוץ הדגשה"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:354
 #: modules/text_renderer/freetype/freetype.c:110
-#: modules/gui/qt/ui/sprefs_subtitles.h:303
+#: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Outline color"
 msgstr "צבע קו המתאר"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:355
 #: modules/text_renderer/freetype/freetype.c:111
-#: modules/gui/qt/ui/sprefs_subtitles.h:302
+#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Outline thickness"
 msgstr "עובי קו המתאר"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:359
-#: modules/stream_out/display.c:53 modules/gui/qt/ui/sprefs_video.h:315
+#: modules/stream_out/display.c:53 modules/gui/qt/ui/sprefs_video.h:312
 msgid "Display"
 msgstr "תצוגה"
 
@@ -17507,7 +17510,7 @@ msgid "Black screens in Fullscreen mode"
 msgstr "מסכים שחורים במצב מסך מלא"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:371
-#: modules/gui/qt/ui/sprefs_video.h:330
+#: modules/gui/qt/ui/sprefs_video.h:327
 msgid "Video snapshots"
 msgstr "צילומי וידאו"
 
@@ -17517,17 +17520,17 @@ msgid "Folder"
 msgstr "תיקייה"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:374
-#: modules/gui/qt/ui/sprefs_video.h:336
+#: modules/gui/qt/ui/sprefs_video.h:333
 msgid "Format"
 msgstr "מבנה"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:375
-#: modules/gui/qt/ui/sprefs_video.h:333
+#: modules/gui/qt/ui/sprefs_video.h:330
 msgid "Prefix"
 msgstr "קידומת"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:376
-#: modules/gui/qt/ui/sprefs_video.h:335
+#: modules/gui/qt/ui/sprefs_video.h:332
 msgid "Sequential numbering"
 msgstr "מספור רציף"
 
@@ -17734,7 +17737,7 @@ msgid "Basic"
 msgstr "בסיסי"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:194
-#: modules/gui/qt/ui/video_effects.h:1267
+#: modules/gui/qt/ui/video_effects.h:1264
 msgid "Geometry"
 msgstr "גאומטריה"
 
@@ -17743,9 +17746,9 @@ msgstr "גאומטריה"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:270
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:273
 #: modules/spu/marq.c:115 modules/spu/rss.c:152
-#: modules/video_filter/colorthres.c:55 modules/gui/qt/ui/video_effects.h:1241
+#: modules/video_filter/colorthres.c:55 modules/gui/qt/ui/video_effects.h:1238
+#: modules/gui/qt/ui/video_effects.h:1244
 #: modules/gui/qt/ui/video_effects.h:1247
-#: modules/gui/qt/ui/video_effects.h:1250
 msgid "Color"
 msgstr "צבע"
 
@@ -17754,53 +17757,53 @@ msgid "Image Adjust"
 msgstr "התאמת תמונה"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:207
-#: modules/gui/qt/ui/video_effects.h:1218
+#: modules/gui/qt/ui/video_effects.h:1215
 msgid "Brightness Threshold"
 msgstr "סף בהירות"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:211
-#: modules/video_filter/sharpen.c:69 modules/gui/qt/ui/video_effects.h:1222
+#: modules/video_filter/sharpen.c:69 modules/gui/qt/ui/video_effects.h:1219
 msgid "Sharpen"
 msgstr "חידוד"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:212
-#: modules/gui/qt/ui/video_effects.h:1223
-#: modules/gui/qt/ui/video_effects.h:1296
+#: modules/gui/qt/ui/video_effects.h:1220
+#: modules/gui/qt/ui/video_effects.h:1293
 msgid "Sigma"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:213
-#: modules/gui/qt/ui/video_effects.h:1224
+#: modules/gui/qt/ui/video_effects.h:1221
 msgid "Banding removal"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:214
-#: modules/video_filter/gradfun.c:50 modules/gui/qt/ui/video_effects.h:1225
+#: modules/video_filter/gradfun.c:50 modules/gui/qt/ui/video_effects.h:1222
 msgid "Radius"
 msgstr "רדיוס"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:215
-#: modules/gui/qt/ui/video_effects.h:1226
+#: modules/gui/qt/ui/video_effects.h:1223
 msgid "Film Grain"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:216
-#: modules/video_filter/grain.c:53 modules/gui/qt/ui/video_effects.h:1227
+#: modules/video_filter/grain.c:53 modules/gui/qt/ui/video_effects.h:1224
 msgid "Variance"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:221
-#: modules/gui/qt/ui/video_effects.h:1235
+#: modules/gui/qt/ui/video_effects.h:1232
 msgid "Synchronize top and bottom"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:222
-#: modules/gui/qt/ui/video_effects.h:1236
+#: modules/gui/qt/ui/video_effects.h:1233
 msgid "Synchronize left and right"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:224
-#: modules/gui/qt/ui/video_effects.h:1261
+#: modules/gui/qt/ui/video_effects.h:1258
 msgid "Transform"
 msgstr "היפוך"
 
@@ -17834,60 +17837,60 @@ msgid "Magnification/Zoom"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:242
-#: modules/gui/qt/ui/video_effects.h:1264
+#: modules/gui/qt/ui/video_effects.h:1261
 msgid "Puzzle game"
 msgstr "משחק תצרף"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:243
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:248
 #: share/lua/http/dialogs/mosaic_window.html:96
-#: modules/gui/qt/ui/video_effects.h:1259
-#: modules/gui/qt/ui/video_effects.h:1265
+#: modules/gui/qt/ui/video_effects.h:1256
+#: modules/gui/qt/ui/video_effects.h:1262
 msgid "Rows"
 msgstr "שורות"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:244
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:249
 #: share/lua/http/dialogs/mosaic_window.html:114
-#: modules/gui/qt/ui/video_effects.h:1260
-#: modules/gui/qt/ui/video_effects.h:1266
+#: modules/gui/qt/ui/video_effects.h:1257
+#: modules/gui/qt/ui/video_effects.h:1263
 msgid "Columns"
 msgstr "עמודות"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
-#: modules/video_splitter/clone.c:57 modules/gui/qt/ui/video_effects.h:1306
+#: modules/video_splitter/clone.c:57 modules/gui/qt/ui/video_effects.h:1303
 msgid "Clone"
 msgstr "שכפול"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:246
-#: modules/video_splitter/clone.c:39 modules/gui/qt/ui/video_effects.h:1307
+#: modules/video_splitter/clone.c:39 modules/gui/qt/ui/video_effects.h:1304
 msgid "Number of clones"
 msgstr "מספר הכפילים"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:247
-#: modules/gui/qt/ui/video_effects.h:1258
+#: modules/gui/qt/ui/video_effects.h:1255
 msgid "Wall"
 msgstr "קיר"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:251
-#: modules/video_filter/colorthres.c:71 modules/gui/qt/ui/video_effects.h:1249
+#: modules/video_filter/colorthres.c:71 modules/gui/qt/ui/video_effects.h:1246
 msgid "Color threshold"
 msgstr "סף צבע"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:255
-#: modules/gui/qt/ui/video_effects.h:1253
+#: modules/gui/qt/ui/video_effects.h:1250
 msgid "Similarity"
 msgstr "דמיון"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:257
-#: modules/gui/qt/ui/video_effects.h:1255
+#: modules/gui/qt/ui/video_effects.h:1252
 msgid "Intensity"
 msgstr "חוזק"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:258
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:261
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
-#: modules/gui/qt/ui/video_effects.h:1245
+#: modules/gui/qt/ui/video_effects.h:1242
 msgid "Gradient"
 msgstr "מדרג"
 
@@ -17902,12 +17905,12 @@ msgid "Hough"
 msgstr "האף"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:271
-#: modules/gui/qt/ui/video_effects.h:1248
+#: modules/gui/qt/ui/video_effects.h:1245
 msgid "Cartoon"
 msgstr "דמות מצוירת"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:272
-#: modules/gui/qt/ui/video_effects.h:1240
+#: modules/gui/qt/ui/video_effects.h:1237
 msgid "Color extraction"
 msgstr "חילוץ צבעים"
 
@@ -17916,7 +17919,7 @@ msgid "Invert colors"
 msgstr "היפוך הצבעים"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:276
-#: modules/video_filter/posterize.c:69 modules/gui/qt/ui/video_effects.h:1244
+#: modules/video_filter/posterize.c:69 modules/gui/qt/ui/video_effects.h:1241
 msgid "Posterize"
 msgstr ""
 
@@ -17926,12 +17929,12 @@ msgid "Posterize level"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:278
-#: modules/video_filter/motionblur.c:60 modules/gui/qt/ui/video_effects.h:1297
+#: modules/video_filter/motionblur.c:60 modules/gui/qt/ui/video_effects.h:1294
 msgid "Motion blur"
 msgstr "טשטוש תנועה"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:279
-#: modules/gui/qt/ui/video_effects.h:1298
+#: modules/gui/qt/ui/video_effects.h:1295
 msgid "Factor"
 msgstr "מקדם"
 
@@ -17941,13 +17944,13 @@ msgid "Motion Detect"
 msgstr "זיהוי תנועה"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
-#: modules/gui/qt/ui/video_effects.h:1293
+#: modules/gui/qt/ui/video_effects.h:1290
 msgid "Water effect"
 msgstr "אפקט מים"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:283
 #: modules/meta_engine/ID3Genres.h:100 modules/video_filter/psychedelic.c:55
-#: modules/gui/qt/ui/video_effects.h:1291
+#: modules/gui/qt/ui/video_effects.h:1288
 msgid "Psychedelic"
 msgstr "פסיכודלי"
 
@@ -17957,23 +17960,23 @@ msgid "Anaglyph"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
-#: modules/gui/qt/ui/video_effects.h:1278
+#: modules/gui/qt/ui/video_effects.h:1275
 msgid "Add text"
 msgstr "הוספת טקסט"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:286
 #: modules/logger/file.c:193 modules/spu/marq.c:88
-#: modules/gui/qt/ui/video_effects.h:1280
+#: modules/gui/qt/ui/video_effects.h:1277
 msgid "Text"
 msgstr "טקסט"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
-#: modules/gui/qt/ui/video_effects.h:1268
+#: modules/gui/qt/ui/video_effects.h:1265
 msgid "Add logo"
 msgstr "הוספת לוגו"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:308
-#: modules/gui/qt/ui/video_effects.h:1269
+#: modules/gui/qt/ui/video_effects.h:1266
 msgid "Logo"
 msgstr "לוגו"
 
@@ -18804,7 +18807,7 @@ msgid "File names:"
 msgstr "שמות הקבצים:"
 
 #: modules/gui/qt/components/open_panels.cpp:162
-#: modules/gui/qt/ui/sprefs_interface.h:561
+#: modules/gui/qt/ui/sprefs_interface.h:558
 msgid "Filter:"
 msgstr "מסנן:"
 
@@ -19206,7 +19209,7 @@ msgid "File/Folder"
 msgstr "קובץ/תיקייה"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:47
-#: modules/gui/qt/ui/sout.h:202
+#: modules/gui/qt/ui/sout.h:199
 msgid "Source"
 msgstr "מקור"
 
@@ -19327,7 +19330,7 @@ msgstr ""
 msgid "Destination"
 msgstr "יעד"
 
-#: modules/gui/qt/dialogs/convert.cpp:71 modules/gui/qt/ui/sprefs_audio.h:416
+#: modules/gui/qt/dialogs/convert.cpp:71 modules/gui/qt/ui/sprefs_audio.h:413
 msgid "Destination file:"
 msgstr "קובץ היעד"
 
@@ -19371,8 +19374,8 @@ msgstr "מארזים"
 msgid "Program Guide"
 msgstr "מדריך תכניות"
 
-#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:289
-#: modules/gui/qt/ui/about.h:290
+#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:286
+#: modules/gui/qt/ui/about.h:287
 msgid "Update"
 msgstr "עדכון"
 
@@ -19494,7 +19497,7 @@ msgstr "&כן"
 msgid "&No"
 msgstr "&לא"
 
-#: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:147
+#: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:144
 msgid "VLC media player updates"
 msgstr "עדכוני נגן המדיה VLC"
 
@@ -19539,8 +19542,8 @@ msgid "Location:"
 msgstr "מיקום:"
 
 #: modules/gui/qt/dialogs/messages.cpp:80
-#: modules/gui/qt/ui/messages_panel.h:138
-#: modules/gui/qt/ui/messages_panel.h:142
+#: modules/gui/qt/ui/messages_panel.h:136
+#: modules/gui/qt/ui/messages_panel.h:140
 msgid "Messages"
 msgstr "הודעות"
 
@@ -19743,7 +19746,7 @@ msgstr "גרסה"
 msgid "Website"
 msgstr "אתר אינטרנט"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1533 modules/gui/qt/ui/sprefs_input.h:366
+#: modules/gui/qt/dialogs/plugins.cpp:1533 modules/gui/qt/ui/sprefs_input.h:363
 msgid "Files"
 msgstr "קבצים"
 
@@ -19803,7 +19806,7 @@ msgstr "לא ניתן לשמור את קובץ התצורה"
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr "האם אכן ברצונך לאפס את העדפות נגן המדיה שלך VLC?"
 
-#: modules/gui/qt/dialogs/sout.cpp:45 modules/gui/qt/ui/sout.h:201
+#: modules/gui/qt/dialogs/sout.cpp:45 modules/gui/qt/ui/sout.h:198
 msgid "Stream Output"
 msgstr "פלט תזרים"
 
@@ -19982,7 +19985,7 @@ msgstr "חזרה:"
 msgid "Repeat delay:"
 msgstr "השהיית החזרה:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:111 modules/gui/qt/ui/sprefs_interface.h:558
+#: modules/gui/qt/dialogs/vlm.cpp:111 modules/gui/qt/ui/sprefs_interface.h:555
 msgid " days"
 msgstr " ימים"
 
@@ -22700,7 +22703,7 @@ msgid "Podcasts"
 msgstr "פודקאסטים"
 
 #: modules/services_discovery/podcast.c:56
-#: modules/gui/qt/ui/podcast_configuration.h:101
+#: modules/gui/qt/ui/podcast_configuration.h:99
 msgid "Podcast URLs list"
 msgstr "רשימת כתובות הפודקאסטים"
 
@@ -22803,7 +22806,7 @@ msgstr "לכידת שמע (ALSA)"
 msgid "CD"
 msgstr "תקליטור"
 
-#: modules/services_discovery/udev.c:601 modules/gui/qt/ui/open_disk.h:298
+#: modules/services_discovery/udev.c:601 modules/gui/qt/ui/open_disk.h:295
 msgid "DVD"
 msgstr "DVD"
 
@@ -22949,7 +22952,7 @@ msgstr ""
 
 #: modules/spu/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
-#: modules/gui/qt/ui/video_effects.h:1288
+#: modules/gui/qt/ui/video_effects.h:1285
 msgid "Overlay"
 msgstr "שכבה"
 
@@ -23764,15 +23767,15 @@ msgstr "יש להשבית אם המגבר שלך אינו תומך ב־Dolby®�
 
 #: modules/stream_out/chromecast/cast.cpp:217
 msgid "High (high quality and high bandwidth)"
-msgstr ""
+msgstr "גבוהה (איכות גבוהה ורוחב פס גבוה)"
 
 #: modules/stream_out/chromecast/cast.cpp:218
 msgid "Medium (medium quality and medium bandwidth)"
-msgstr ""
+msgstr "בינונית (איכות בינונית ורוחב פס בינוני)"
 
 #: modules/stream_out/chromecast/cast.cpp:219
 msgid "Low (low quality and low bandwidth)"
-msgstr ""
+msgstr "נמוכה (איכות נמוכה ורוחב פס נמוך)"
 
 #: modules/stream_out/chromecast/cast.cpp:220
 msgid "Low CPU (low quality but high bandwidth)"
@@ -23815,10 +23818,12 @@ msgid ""
 "Casting this video requires conversion. This conversion can use all the "
 "available power and could quickly drain your battery."
 msgstr ""
+"לצורך שידור הסרטון הזה נדרשת המרה. המרה זו יכולה להשתמש בכל תכולת הסוללה "
+"ואולי אף לרוקן אותה בזמן קצר."
 
 #: modules/stream_out/chromecast/chromecast_demux.cpp:511
 msgid "Chromecast demux wrapper"
-msgstr ""
+msgstr "עוטף פילוג Chromecast"
 
 #: modules/stream_out/cycle.c:325
 msgid "cycle"
@@ -24137,7 +24142,7 @@ msgstr "הגדרה זו מאפשרת לציין את פתחת הווידאו כ�
 
 #: modules/stream_out/rtp.c:130
 msgid "RTP/RTCP multiplexing"
-msgstr ""
+msgstr "ריבוב RTP/RTCP"
 
 #: modules/stream_out/rtp.c:132
 msgid ""
@@ -24151,7 +24156,7 @@ msgstr ""
 msgid ""
 "Default caching value for outbound RTP streams. This value should be set in "
 "milliseconds."
-msgstr ""
+msgstr "ערך המטמון כבררת מחדל לתזרימי RTP יוצאים. הערך הוא במילישניות."
 
 #: modules/stream_out/rtp.c:140
 msgid "Transport protocol"
@@ -24495,13 +24500,14 @@ msgstr ""
 
 #: modules/stream_out/transcode/transcode.c:108
 msgid "Subtitle encoder"
-msgstr ""
+msgstr "מקודד כתוביות"
 
 #: modules/stream_out/transcode/transcode.c:110
 msgid ""
 "This is the subtitle encoder module that will be used (and its associated "
 "options)."
 msgstr ""
+"זה הוא מודול קידוד הכתוביות בוא יעשה שימוש (לרבות האפשרויות המשויכות אליו)."
 
 #: modules/stream_out/transcode/transcode.c:112
 msgid "Destination subtitle codec"
@@ -24556,13 +24562,15 @@ msgstr ""
 
 #: modules/stream_out/transcode/transcode.c:201
 msgid "Overlays/Subtitles"
-msgstr ""
+msgstr "שכבות על/כתוביות"
 
 #: modules/text_renderer/freetype/fonts/fontconfig.c:79
 msgid ""
 "Please wait while your font cache is rebuilt.\n"
 "This should take less than a few minutes."
 msgstr ""
+"נא להמתין לבניית מטמון הגופנים שלך מחדש.\n"
+"פעולה זו לא אמורה להימשך מעבר למספר דקות."
 
 #: modules/text_renderer/freetype/freetype.c:81
 msgid "Monospace Font"
@@ -24596,6 +24604,8 @@ msgid ""
 "The opacity (inverse of transparency) of the text that will be rendered on "
 "the video. 0 = transparent, 255 = totally opaque."
 msgstr ""
+"האטימות (ההפך משקיפות) של הטקסט שיעובד על גבי הווידאו. 0 = שקוף, 255 = אטום "
+"לחלוטין."
 
 #: modules/text_renderer/freetype/freetype.c:95
 msgid "Text default color"
@@ -24649,11 +24659,11 @@ msgstr "מרחק הצל"
 
 #: modules/text_renderer/freetype/freetype.c:118
 msgid "Text direction"
-msgstr ""
+msgstr "כיוון הטקסט"
 
 #: modules/text_renderer/freetype/freetype.c:119
 msgid "Paragraph base direction for the Unicode bi-directional algorithm."
-msgstr ""
+msgstr "כיוון הבסיס לפסקה עבור אלגוריתם יוניקוד דו־כיווני"
 
 #: modules/text_renderer/freetype/freetype.c:125
 msgid "Use YUVP renderer"
@@ -24836,7 +24846,7 @@ msgstr ""
 msgid "Image properties filter"
 msgstr ""
 
-#: modules/video_filter/adjust.c:78 modules/gui/qt/ui/video_effects.h:1215
+#: modules/video_filter/adjust.c:78 modules/gui/qt/ui/video_effects.h:1212
 msgid "Image adjust"
 msgstr "התאמת התמונה"
 
@@ -25130,10 +25140,11 @@ msgstr ""
 msgid ""
 "Example: 'CICrystallize', 'CIBumpDistortion', 'CIThermal', 'CIComicEffect'"
 msgstr ""
+"לדוגמה: ‚CICrystallize’,‏ ‚CIBumpDistortion’,‏ ‚CIThermal’,‏ ’CIComicEffect‚"
 
 #: modules/video_filter/ci_filters.m:763
 msgid "Mac OS X hardware video filters"
-msgstr ""
+msgstr "מסנני וידאו חומרתיים של Mac OS X"
 
 #: modules/video_filter/colorthres.c:56
 msgid ""
@@ -25544,7 +25555,7 @@ msgstr "כיווניות"
 
 #: modules/video_filter/mirror.c:72
 msgid "Direction of the mirroring."
-msgstr ""
+msgstr "כיוון השיקוף."
 
 #: modules/video_filter/mirror.c:75
 msgid "Left to right/Top to bottom"
@@ -25552,19 +25563,19 @@ msgstr "שמאל לימין/למעלה למטה"
 
 #: modules/video_filter/mirror.c:75
 msgid "Right to left/Bottom to top"
-msgstr ""
+msgstr "מימין לשמאל/מלמעלה למטה"
 
 #: modules/video_filter/mirror.c:80
 msgid "Mirror video filter"
-msgstr ""
+msgstr "מסנן שיקוף סרטונים"
 
 #: modules/video_filter/mirror.c:81
 msgid "Mirror video"
-msgstr ""
+msgstr "שיקוף סרטון"
 
 #: modules/video_filter/mirror.c:82
 msgid "Splits video in two same parts, like in a mirror"
-msgstr ""
+msgstr "פיצול סרטון לכמה חלקים, כמו במראה"
 
 #: modules/video_filter/motionblur.c:54
 msgid "Blur factor (1-127)"
@@ -25576,7 +25587,7 @@ msgstr "מידת הטשטוש, מ-1 ועד 127."
 
 #: modules/video_filter/motionblur.c:61
 msgid "Motion blur filter"
-msgstr ""
+msgstr "מסנן טשטוש תנועה"
 
 #: modules/video_filter/motiondetect.c:48
 msgid "Motion detect video filter"
@@ -25592,7 +25603,7 @@ msgstr "סרט ישן"
 
 #: modules/video_filter/opencv_example.cpp:72
 msgid "OpenCV face detection example filter"
-msgstr ""
+msgstr "מסנן זיהוי פנים של OpenCV לדוגמה"
 
 #: modules/video_filter/opencv_example.cpp:73
 msgid "OpenCV example"
@@ -25612,7 +25623,7 @@ msgstr ""
 
 #: modules/video_filter/opencv_wrapper.c:62
 msgid "I420 - first plane is grayscale"
-msgstr ""
+msgstr "I420 - המישור הראשון הוא בגווני אפור"
 
 #: modules/video_filter/opencv_wrapper.c:62
 msgid "RGB32"
@@ -25865,7 +25876,7 @@ msgstr "שימוש בחיישני תנועה"
 msgid "Rotate video filter"
 msgstr "מסנן הטיית וידאו"
 
-#: modules/video_filter/rotate.c:69 modules/gui/qt/ui/video_effects.h:1262
+#: modules/video_filter/rotate.c:69 modules/gui/qt/ui/video_effects.h:1259
 msgid "Rotate"
 msgstr "הטיה"
 
@@ -26213,7 +26224,7 @@ msgstr "GLX"
 msgid "GLX extension for OpenGL"
 msgstr "הרחבת GLX עבור OpenGL"
 
-#: modules/video_output/kva.c:50 modules/gui/qt/ui/sprefs_video.h:324
+#: modules/video_output/kva.c:50 modules/gui/qt/ui/sprefs_video.h:321
 msgid "Enable a workaround for T23"
 msgstr "הפעלת מעקף עבור T23"
 
@@ -26223,7 +26234,7 @@ msgid ""
 "size is equal to or smaller than the movie size."
 msgstr ""
 
-#: modules/video_output/kva.c:55 modules/gui/qt/ui/sprefs_video.h:325
+#: modules/video_output/kva.c:55 modules/gui/qt/ui/sprefs_video.h:322
 msgid "Video mode"
 msgstr "מצב הווידאו"
 
@@ -26342,7 +26353,7 @@ msgid "Direct3D11 video output"
 msgstr "פלט וידאו Direct3D11"
 
 #: modules/video_output/win32/directdraw.c:65
-#: modules/gui/qt/ui/sprefs_video.h:321
+#: modules/gui/qt/ui/sprefs_video.h:318
 msgid "Use hardware YUV->RGB conversions"
 msgstr "שימוש בהמרות YUV->RGB באמצעות חומרה"
 
@@ -27172,7 +27183,7 @@ msgid "Play List"
 msgstr "נגינת רשימה"
 
 #: share/lua/http/dialogs/create_stream.html:156
-#: modules/gui/qt/ui/sprefs_audio.h:414
+#: modules/gui/qt/ui/sprefs_audio.h:411
 msgid "Output"
 msgstr "פלט"
 
@@ -27287,7 +27298,7 @@ msgstr "סנכרון רצועות"
 msgid "VLM Batch Commands"
 msgstr "פקודות כמותיות של VLM"
 
-#: share/lua/http/index.html:240 modules/gui/qt/ui/vlm.h:298
+#: share/lua/http/index.html:240 modules/gui/qt/ui/vlm.h:295
 msgid "Loop"
 msgstr "לולאה"
 
@@ -27351,854 +27362,856 @@ msgid ""
 "To stop the stream and resume normal controls, click the <i>Open Stream</i> "
 "button again."
 msgstr ""
+"כדי לעצור את התזרים ולהמשיך עם הפקדים הרגילים יש ללחוץ על הכפתור <i>פתיחת "
+"תזרים</i> שוב."
 
 #: share/lua/http/index.html:278
 msgid "Are you sure you wish to create the stream?"
 msgstr "ליצור את התזרים?"
 
-#: modules/gui/qt/ui/about.h:288 modules/gui/qt/ui/open.h:260
-#: modules/gui/qt/ui/podcast_configuration.h:100
+#: modules/gui/qt/ui/about.h:285 modules/gui/qt/ui/open.h:257
+#: modules/gui/qt/ui/podcast_configuration.h:98
 msgid "Dialog"
 msgstr "תיבת דו־שיח"
 
-#: modules/gui/qt/ui/equalizer.h:132 modules/gui/qt/ui/open_disk.h:296
-#: modules/gui/qt/ui/open_net.h:96 modules/gui/qt/ui/sprefs_audio.h:409
-#: modules/gui/qt/ui/sprefs_input.h:356
-#: modules/gui/qt/ui/sprefs_interface.h:529
-#: modules/gui/qt/ui/sprefs_subtitles.h:289
-#: modules/gui/qt/ui/sprefs_video.h:313 modules/gui/qt/ui/streampanel.h:167
+#: modules/gui/qt/ui/equalizer.h:129 modules/gui/qt/ui/open_disk.h:293
+#: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:406
+#: modules/gui/qt/ui/sprefs_input.h:353
+#: modules/gui/qt/ui/sprefs_interface.h:526
+#: modules/gui/qt/ui/sprefs_subtitles.h:286
+#: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
 msgid "Form"
 msgstr "צורה"
 
-#: modules/gui/qt/ui/equalizer.h:135
+#: modules/gui/qt/ui/equalizer.h:132
 msgid "Preset"
 msgstr "ערכה"
 
-#: modules/gui/qt/ui/equalizer.h:137
+#: modules/gui/qt/ui/equalizer.h:134
 msgid "0.00 dB"
 msgstr "0.00 דציבל"
 
-#: modules/gui/qt/ui/messages_panel.h:139
+#: modules/gui/qt/ui/messages_panel.h:137
 msgid "&Verbosity:"
 msgstr "&רמת פירוט:"
 
-#: modules/gui/qt/ui/messages_panel.h:140
+#: modules/gui/qt/ui/messages_panel.h:138
 msgid "&Filter:"
 msgstr "מ&סנן:"
 
-#: modules/gui/qt/ui/messages_panel.h:141
+#: modules/gui/qt/ui/messages_panel.h:139
 msgid "&Save as..."
 msgstr "שמירה &בשם..."
 
-#: modules/gui/qt/ui/messages_panel.h:143
+#: modules/gui/qt/ui/messages_panel.h:141
 msgid "Modules Tree"
 msgstr "עץ המודולים"
 
-#: modules/gui/qt/ui/open.h:263
+#: modules/gui/qt/ui/open.h:260
 msgid "Show extended options"
 msgstr "הצגת אפשרויות מורחבות"
 
-#: modules/gui/qt/ui/open.h:265
+#: modules/gui/qt/ui/open.h:262
 msgid "Show &more options"
 msgstr "הצגת אפשרויות &נוספות"
 
-#: modules/gui/qt/ui/open.h:268
+#: modules/gui/qt/ui/open.h:265
 msgid "Change the caching for the media"
 msgstr "החלפת מטמון המדיה"
 
-#: modules/gui/qt/ui/open.h:270
+#: modules/gui/qt/ui/open.h:267
 msgid " ms"
 msgstr " מ״ש"
 
-#: modules/gui/qt/ui/open.h:271
+#: modules/gui/qt/ui/open.h:268
 msgid "MRL"
 msgstr "כתובת המדיה"
 
-#: modules/gui/qt/ui/open.h:272
+#: modules/gui/qt/ui/open.h:269
 msgid "Start Time"
 msgstr "זמן ההתחלה"
 
-#: modules/gui/qt/ui/open.h:273
+#: modules/gui/qt/ui/open.h:270
 msgid "Stop Time"
 msgstr "זמן עצירה"
 
-#: modules/gui/qt/ui/open.h:274
+#: modules/gui/qt/ui/open.h:271
 msgid "Edit Options"
 msgstr "עריכת האפשרויות"
 
-#: modules/gui/qt/ui/open.h:275
+#: modules/gui/qt/ui/open.h:272
 msgid "Extra media"
 msgstr "מדיה נוספת"
 
-#: modules/gui/qt/ui/open.h:277
+#: modules/gui/qt/ui/open.h:274
 msgid "Complete MRL for VLC internal"
 msgstr "כתובת המדיה המלאה לשימוש פנימי של VLC"
 
-#: modules/gui/qt/ui/open.h:280
+#: modules/gui/qt/ui/open.h:277
 msgid "Select the file"
 msgstr "נא לבחור את הקובץ"
 
-#: modules/gui/qt/ui/open.h:284
+#: modules/gui/qt/ui/open.h:281
 msgid "Change the start time for the media"
 msgstr "שינוי זמן ההתחלה של המדיה"
 
-#: modules/gui/qt/ui/open.h:286 modules/gui/qt/ui/open.h:290
+#: modules/gui/qt/ui/open.h:283 modules/gui/qt/ui/open.h:287
 msgid "HH'H':mm'm':ss's'.zzz"
 msgstr ""
 
-#: modules/gui/qt/ui/open.h:288
+#: modules/gui/qt/ui/open.h:285
 msgid "Change the stop time for the media"
 msgstr "שינוי זמן העצירה למדיה"
 
-#: modules/gui/qt/ui/open.h:291
+#: modules/gui/qt/ui/open.h:288
 msgid "Play another media synchronously (extra audio file, ...)"
 msgstr "נגינת מדיה אחרת בו זמנית (קובץ שמע נוסף, ...)"
 
-#: modules/gui/qt/ui/open_capture.h:97
+#: modules/gui/qt/ui/open_capture.h:94
 msgid "Capture mode"
 msgstr "מצב לכידה"
 
-#: modules/gui/qt/ui/open_capture.h:99
+#: modules/gui/qt/ui/open_capture.h:96
 msgid "Select the capture device type"
 msgstr "נא לבחור את סוג התקן הלכידה"
 
-#: modules/gui/qt/ui/open_capture.h:101
+#: modules/gui/qt/ui/open_capture.h:98
 msgid "Device Selection"
 msgstr "בחירת התקן"
 
-#: modules/gui/qt/ui/open_capture.h:102
+#: modules/gui/qt/ui/open_capture.h:99
 msgid "Options"
 msgstr "אפשרויות"
 
-#: modules/gui/qt/ui/open_capture.h:104
+#: modules/gui/qt/ui/open_capture.h:101
 msgid "Access advanced options to tweak the device"
 msgstr "גישה לאפשרויות מתקדמות כדי לשפר את ההתקן"
 
-#: modules/gui/qt/ui/open_capture.h:106
+#: modules/gui/qt/ui/open_capture.h:103
 msgid "Advanced options..."
 msgstr "אפשרויות מתקדמות..."
 
-#: modules/gui/qt/ui/open_disk.h:297
+#: modules/gui/qt/ui/open_disk.h:294
 msgid "Disc Selection"
 msgstr "בחירת תקליטור"
 
-#: modules/gui/qt/ui/open_disk.h:301
+#: modules/gui/qt/ui/open_disk.h:298
 msgid "SVCD/VCD"
 msgstr "SVCD/VCD"
 
-#: modules/gui/qt/ui/open_disk.h:303
+#: modules/gui/qt/ui/open_disk.h:300
 msgid "Disable Disc Menus"
 msgstr "נטרול תפריטי הדיסק"
 
-#: modules/gui/qt/ui/open_disk.h:305
+#: modules/gui/qt/ui/open_disk.h:302
 msgid "No disc menus"
 msgstr "בדיסק אין תפריטים"
 
-#: modules/gui/qt/ui/open_disk.h:306
+#: modules/gui/qt/ui/open_disk.h:303
 msgid "Disc device"
 msgstr "התקן תקליטור"
 
-#: modules/gui/qt/ui/open_disk.h:308
+#: modules/gui/qt/ui/open_disk.h:305
 msgid "Starting Position"
 msgstr "מיקום ההתחלה"
 
-#: modules/gui/qt/ui/open_disk.h:311
+#: modules/gui/qt/ui/open_disk.h:308
 msgid "Audio and Subtitles"
 msgstr "שמע וכתוביות"
 
-#: modules/gui/qt/ui/open_file.h:144
+#: modules/gui/qt/ui/open_file.h:142
 msgid "Use a sub&title file"
 msgstr "שימוש בקובץ &כתוביות"
 
-#: modules/gui/qt/ui/open_file.h:146
+#: modules/gui/qt/ui/open_file.h:144
 msgid "Select the subtitle file"
 msgstr "בחירת קובץ הכתוביות"
 
-#: modules/gui/qt/ui/open_file.h:150
+#: modules/gui/qt/ui/open_file.h:148
 msgid "Choose one or more media file to open"
 msgstr "נא לבחור קובץ מדיה אחד או יותר לפתיחה"
 
-#: modules/gui/qt/ui/open_file.h:152
+#: modules/gui/qt/ui/open_file.h:150
 msgid "File Selection"
 msgstr "בחירת קובץ"
 
-#: modules/gui/qt/ui/open_file.h:153
+#: modules/gui/qt/ui/open_file.h:151
 msgid "You can select local files with the following list and buttons."
 msgstr "ניתן לבחור בקבצים מקומיים עם הרשימה והלחצנים שלהלן."
 
-#: modules/gui/qt/ui/open_file.h:154
+#: modules/gui/qt/ui/open_file.h:152
 msgid "Add..."
 msgstr "הוספה..."
 
-#: modules/gui/qt/ui/open_net.h:97
+#: modules/gui/qt/ui/open_net.h:94
 msgid "Network Protocol"
 msgstr "פרוטוקול הרשת"
 
-#: modules/gui/qt/ui/open_net.h:98
+#: modules/gui/qt/ui/open_net.h:95
 msgid "Please enter a network URL:"
 msgstr "נא להזין כתובת מהרשת:"
 
-#: modules/gui/qt/ui/profiles.h:701
+#: modules/gui/qt/ui/profiles.h:699
 msgid "Profile edition"
 msgstr "מהדורת פרופיל"
 
-#: modules/gui/qt/ui/profiles.h:702
+#: modules/gui/qt/ui/profiles.h:700
 msgid "FLAC"
 msgstr "FLAC"
 
-#: modules/gui/qt/ui/profiles.h:703
+#: modules/gui/qt/ui/profiles.h:701
 msgid "MP&4/MOV"
 msgstr "MP&4/MOV"
 
-#: modules/gui/qt/ui/profiles.h:704
+#: modules/gui/qt/ui/profiles.h:702
 msgid "Ogg/Ogm"
 msgstr "Ogg/Ogm"
 
-#: modules/gui/qt/ui/profiles.h:705
+#: modules/gui/qt/ui/profiles.h:703
 msgid "M&KV"
 msgstr "M&KV"
 
-#: modules/gui/qt/ui/profiles.h:706
+#: modules/gui/qt/ui/profiles.h:704
 msgid "M&JPEG"
 msgstr "M&JPEG"
 
-#: modules/gui/qt/ui/profiles.h:707
+#: modules/gui/qt/ui/profiles.h:705
 msgid "MPEG-PS"
 msgstr "MPEG-PS"
 
-#: modules/gui/qt/ui/profiles.h:708
+#: modules/gui/qt/ui/profiles.h:706
 msgid "F&LV"
 msgstr "F&LV"
 
-#: modules/gui/qt/ui/profiles.h:709
+#: modules/gui/qt/ui/profiles.h:707
 msgid "&MPEG-TS"
 msgstr "&MPEG-TS"
 
-#: modules/gui/qt/ui/profiles.h:710
+#: modules/gui/qt/ui/profiles.h:708
 msgid "RAW"
 msgstr "RAW"
 
-#: modules/gui/qt/ui/profiles.h:711
+#: modules/gui/qt/ui/profiles.h:709
 msgid "WAV"
 msgstr "WAV"
 
-#: modules/gui/qt/ui/profiles.h:712
+#: modules/gui/qt/ui/profiles.h:710
 msgid "Webm"
 msgstr "Webm"
 
-#: modules/gui/qt/ui/profiles.h:713
+#: modules/gui/qt/ui/profiles.h:711
 msgid "MPEG &1"
 msgstr "MPEG &1"
 
-#: modules/gui/qt/ui/profiles.h:714
+#: modules/gui/qt/ui/profiles.h:712
 msgid "AVI"
 msgstr "AVI"
 
-#: modules/gui/qt/ui/profiles.h:715
+#: modules/gui/qt/ui/profiles.h:713
 msgid "ASF/WMV"
 msgstr "ASF/WMV"
 
-#: modules/gui/qt/ui/profiles.h:716
+#: modules/gui/qt/ui/profiles.h:714
 msgid "MP&3"
 msgstr "MP&3"
 
-#: modules/gui/qt/ui/profiles.h:717
+#: modules/gui/qt/ui/profiles.h:715
 msgid "Features"
 msgstr "תכונות"
 
-#: modules/gui/qt/ui/profiles.h:719
+#: modules/gui/qt/ui/profiles.h:717
 msgid "Streamable"
 msgstr "ניתן להזרמה"
 
-#: modules/gui/qt/ui/profiles.h:720
+#: modules/gui/qt/ui/profiles.h:718
 msgid "Chapters"
 msgstr "פרקים"
 
-#: modules/gui/qt/ui/profiles.h:723
+#: modules/gui/qt/ui/profiles.h:721
 msgid "Menus"
 msgstr "תפריטים"
 
-#: modules/gui/qt/ui/profiles.h:730
+#: modules/gui/qt/ui/profiles.h:728
 msgid "Fra&me Rate"
 msgstr "ק&צב שקופיות"
 
-#: modules/gui/qt/ui/profiles.h:731
+#: modules/gui/qt/ui/profiles.h:729
 msgid "Same as source"
 msgstr "כמו המקור"
 
-#: modules/gui/qt/ui/profiles.h:733
+#: modules/gui/qt/ui/profiles.h:731
 msgid " fps"
 msgstr ""
 
-#: modules/gui/qt/ui/profiles.h:734
+#: modules/gui/qt/ui/profiles.h:732
 msgid "Custom options"
 msgstr "אפשרויות בהתאמה אישית"
 
-#: modules/gui/qt/ui/profiles.h:735
+#: modules/gui/qt/ui/profiles.h:733
 msgid "&Quality"
 msgstr "&איכות"
 
-#: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:737
+#: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
 msgid "Not Used"
 msgstr "לא בשימוש"
 
-#: modules/gui/qt/ui/profiles.h:738 modules/gui/qt/ui/profiles.h:757
+#: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:755
 msgid " kb/s"
 msgstr " ק״ב/ש׳"
 
-#: modules/gui/qt/ui/profiles.h:739 modules/gui/qt/ui/profiles.h:759
+#: modules/gui/qt/ui/profiles.h:737 modules/gui/qt/ui/profiles.h:757
 msgid "Encoding parameters"
 msgstr "משתני הצפנה"
 
-#: modules/gui/qt/ui/profiles.h:742
+#: modules/gui/qt/ui/profiles.h:740
 msgid "Frame size"
 msgstr "גודל השקופית"
 
-#: modules/gui/qt/ui/profiles.h:745 modules/gui/qt/ui/profiles.h:748
+#: modules/gui/qt/ui/profiles.h:743 modules/gui/qt/ui/profiles.h:746
 msgid "px"
 msgstr "פיקסלים"
 
-#: modules/gui/qt/ui/profiles.h:758
+#: modules/gui/qt/ui/profiles.h:756
 msgid "Sa&mple Rate"
 msgstr "קצב &דגימה"
 
-#: modules/gui/qt/ui/profiles.h:766
+#: modules/gui/qt/ui/profiles.h:764
 msgid "Profile &Name"
 msgstr "שם &פרופיל"
 
-#: modules/gui/qt/ui/sout.h:203
+#: modules/gui/qt/ui/sout.h:200
 msgid "Set up media sources to stream"
 msgstr "הגדרת מקור מדיה להזרמה"
 
-#: modules/gui/qt/ui/sout.h:205
+#: modules/gui/qt/ui/sout.h:202
 msgid "Destination Setup"
 msgstr "הגדרת יעד"
 
-#: modules/gui/qt/ui/sout.h:206
+#: modules/gui/qt/ui/sout.h:203
 msgid "Select destinations to stream to"
 msgstr "בחירת יעדי הזרמה"
 
-#: modules/gui/qt/ui/sout.h:207
+#: modules/gui/qt/ui/sout.h:204
 msgid ""
 "Add destinations following the streaming methods you need. Be sure to check "
 "with transcoding that the format is compatible with the method used."
 msgstr ""
 
-#: modules/gui/qt/ui/sout.h:208
+#: modules/gui/qt/ui/sout.h:205
 msgid "New destination"
 msgstr "יעד חדש"
 
-#: modules/gui/qt/ui/sout.h:210
+#: modules/gui/qt/ui/sout.h:207
 msgid "Display locally"
 msgstr "הצגה מקומית"
 
-#: modules/gui/qt/ui/sout.h:212
+#: modules/gui/qt/ui/sout.h:209
 msgid "Transcoding Options"
 msgstr "אפשרויות התמרה"
 
-#: modules/gui/qt/ui/sout.h:213
+#: modules/gui/qt/ui/sout.h:210
 msgid "Select and choose transcoding options"
 msgstr "בחירת אפשרויות התמרה"
 
-#: modules/gui/qt/ui/sout.h:214
+#: modules/gui/qt/ui/sout.h:211
 msgid "Activate Transcoding"
 msgstr "הפעלת התמרה"
 
-#: modules/gui/qt/ui/sout.h:215
+#: modules/gui/qt/ui/sout.h:212
 msgid "Option Setup"
 msgstr ""
 
-#: modules/gui/qt/ui/sout.h:216
+#: modules/gui/qt/ui/sout.h:213
 msgid "Set up any additional options for streaming"
 msgstr ""
 
-#: modules/gui/qt/ui/sout.h:217
+#: modules/gui/qt/ui/sout.h:214
 msgid "Miscellaneous Options"
 msgstr "אפשרויות שונות"
 
-#: modules/gui/qt/ui/sout.h:218
+#: modules/gui/qt/ui/sout.h:215
 msgid "Stream all elementary streams"
 msgstr ""
 
-#: modules/gui/qt/ui/sout.h:219
+#: modules/gui/qt/ui/sout.h:216
 msgid "Generated stream output string"
 msgstr ""
 
-#: modules/gui/qt/ui/sprefs_audio.h:412
+#: modules/gui/qt/ui/sprefs_audio.h:409
 msgid " %"
 msgstr " %"
 
-#: modules/gui/qt/ui/sprefs_audio.h:415
+#: modules/gui/qt/ui/sprefs_audio.h:412
 msgid "Output module:"
 msgstr "מודול פלט:"
 
-#: modules/gui/qt/ui/sprefs_audio.h:418
+#: modules/gui/qt/ui/sprefs_audio.h:415
 msgid "Use S/PDIF when available"
 msgstr "יש להשתמש ב־S/PDIF כשניתן"
 
-#: modules/gui/qt/ui/sprefs_audio.h:420
+#: modules/gui/qt/ui/sprefs_audio.h:417
 msgid "Effects"
 msgstr "אפקטים"
 
-#: modules/gui/qt/ui/sprefs_audio.h:421
+#: modules/gui/qt/ui/sprefs_audio.h:418
 msgid "Visualization:"
 msgstr "אפקט חזותי:"
 
-#: modules/gui/qt/ui/sprefs_audio.h:422
+#: modules/gui/qt/ui/sprefs_audio.h:419
 msgid "Enable Time-Stretching audio"
 msgstr ""
 
-#: modules/gui/qt/ui/sprefs_audio.h:423
+#: modules/gui/qt/ui/sprefs_audio.h:420
 msgid "Replay gain mode:"
 msgstr ""
 
-#: modules/gui/qt/ui/sprefs_audio.h:424
+#: modules/gui/qt/ui/sprefs_audio.h:421
 msgid "Normalize volume to:"
 msgstr ""
 
-#: modules/gui/qt/ui/sprefs_audio.h:425
+#: modules/gui/qt/ui/sprefs_audio.h:422
 msgid "Tracks"
 msgstr "רצועות"
 
-#: modules/gui/qt/ui/sprefs_audio.h:426
+#: modules/gui/qt/ui/sprefs_audio.h:423
 msgid "Preferred audio language:"
 msgstr "שפת השמע המועדפת:"
 
-#: modules/gui/qt/ui/sprefs_audio.h:427
+#: modules/gui/qt/ui/sprefs_audio.h:424
 msgid "Password:"
 msgstr "ססמה:"
 
-#: modules/gui/qt/ui/sprefs_audio.h:428
+#: modules/gui/qt/ui/sprefs_audio.h:425
 msgid "Username:"
 msgstr "שם משתמש:"
 
-#: modules/gui/qt/ui/sprefs_audio.h:429
+#: modules/gui/qt/ui/sprefs_audio.h:426
 msgid "Submit played tracks stats to Last.fm"
 msgstr "שליחת סטטיסטיקת הרצועות שהתנגנו ל־Last.fm"
 
-#: modules/gui/qt/ui/sprefs_input.h:357
+#: modules/gui/qt/ui/sprefs_input.h:354
 msgid "Codecs"
 msgstr "מקודדים"
 
-#: modules/gui/qt/ui/sprefs_input.h:358
+#: modules/gui/qt/ui/sprefs_input.h:355
 msgid "x264 profile and level selection"
 msgstr "בחירת רמה ופרופיל של x264"
 
-#: modules/gui/qt/ui/sprefs_input.h:359
+#: modules/gui/qt/ui/sprefs_input.h:356
 msgid "Hardware-accelerated decoding"
 msgstr "קידוד בהאצת חומרה"
 
-#: modules/gui/qt/ui/sprefs_input.h:360
+#: modules/gui/qt/ui/sprefs_input.h:357
 msgid "Video quality post-processing level"
 msgstr "רמת העיבוד המאוחר של איכות הווידאו"
 
-#: modules/gui/qt/ui/sprefs_input.h:361
+#: modules/gui/qt/ui/sprefs_input.h:358
 msgid "Skip H.264 in-loop deblocking filter"
 msgstr ""
 
-#: modules/gui/qt/ui/sprefs_input.h:362
+#: modules/gui/qt/ui/sprefs_input.h:359
 msgid "x264 preset and tuning selection"
 msgstr "בחירת כוונון וערכת הגדרות ל־x264"
 
-#: modules/gui/qt/ui/sprefs_input.h:364
+#: modules/gui/qt/ui/sprefs_input.h:361
 msgid "Optical drive"
 msgstr "כונן אופטי"
 
-#: modules/gui/qt/ui/sprefs_input.h:365
+#: modules/gui/qt/ui/sprefs_input.h:362
 msgid "Default optical device"
 msgstr "ההתקן האופטי כבררת מחדל"
 
-#: modules/gui/qt/ui/sprefs_input.h:369
+#: modules/gui/qt/ui/sprefs_input.h:366
 msgid "Damaged or incomplete AVI file"
 msgstr "קובץ ה־AVI פגום או חלקי"
 
-#: modules/gui/qt/ui/sprefs_input.h:372
+#: modules/gui/qt/ui/sprefs_input.h:369
 msgid "HTTP proxy URL"
 msgstr "כתובת מתווך ה־HTTP"
 
-#: modules/gui/qt/ui/sprefs_input.h:373
+#: modules/gui/qt/ui/sprefs_input.h:370
 msgid "HTTP (default)"
 msgstr "HTTP (בררת מחדל)"
 
-#: modules/gui/qt/ui/sprefs_input.h:374
+#: modules/gui/qt/ui/sprefs_input.h:371
 msgid "RTP over RTSP (TCP)"
 msgstr "RTP על גבי RTSP (TCP)"
 
-#: modules/gui/qt/ui/sprefs_input.h:375
+#: modules/gui/qt/ui/sprefs_input.h:372
 msgid "Live555 stream transport"
 msgstr "תעבורת תזרים Live555"
 
-#: modules/gui/qt/ui/sprefs_input.h:376
+#: modules/gui/qt/ui/sprefs_input.h:373
 msgid "Default caching policy"
 msgstr "מדיניות המטמון כבררת המחדל"
 
-#: modules/gui/qt/ui/sprefs_interface.h:531
+#: modules/gui/qt/ui/sprefs_interface.h:528
 msgid "Menus language:"
 msgstr "שפת התפריטים"
 
-#: modules/gui/qt/ui/sprefs_interface.h:532
+#: modules/gui/qt/ui/sprefs_interface.h:529
 msgid "Look and feel"
 msgstr "מראה ותחושה"
 
-#: modules/gui/qt/ui/sprefs_interface.h:533
+#: modules/gui/qt/ui/sprefs_interface.h:530
 msgid "Use custom skin"
 msgstr "שימוש במעטפת מותאמת אישית"
 
-#: modules/gui/qt/ui/sprefs_interface.h:535
+#: modules/gui/qt/ui/sprefs_interface.h:532
 msgid "This is VLC's default interface, with a native look and feel."
 msgstr "זהו מנשק בררת המחדל של VLC, בעל מראה ותחושה מקוריים."
 
-#: modules/gui/qt/ui/sprefs_interface.h:537
+#: modules/gui/qt/ui/sprefs_interface.h:534
 msgid "Use native style"
 msgstr "שימוש בסגנון הטבעי"
 
-#: modules/gui/qt/ui/sprefs_interface.h:538
+#: modules/gui/qt/ui/sprefs_interface.h:535
 msgid "Resize interface to video size"
 msgstr "שינוי גודל המנשק כדי שיתאים לגודל הווידאו"
 
-#: modules/gui/qt/ui/sprefs_interface.h:539
+#: modules/gui/qt/ui/sprefs_interface.h:536
 msgid "Show controls in full screen mode"
 msgstr "הצגת הפקדים במצב מסך מלא"
 
-#: modules/gui/qt/ui/sprefs_interface.h:540
+#: modules/gui/qt/ui/sprefs_interface.h:537
 msgid "Pause playback when minimized"
 msgstr "השהיית הנגינה בעת מזעור"
 
-#: modules/gui/qt/ui/sprefs_interface.h:541
+#: modules/gui/qt/ui/sprefs_interface.h:538
 msgid "Show media change popup:"
 msgstr "הצגת חלונית החלפת מדיה:"
 
-#: modules/gui/qt/ui/sprefs_interface.h:542
+#: modules/gui/qt/ui/sprefs_interface.h:539
 msgid "Start in minimal view mode"
 msgstr "התחלה במצב תצוגה מזערי"
 
-#: modules/gui/qt/ui/sprefs_interface.h:543
+#: modules/gui/qt/ui/sprefs_interface.h:540
 msgid "Force window style:"
 msgstr "אילוץ סגנון חלון:"
 
-#: modules/gui/qt/ui/sprefs_interface.h:544
+#: modules/gui/qt/ui/sprefs_interface.h:541
 msgid "Integrate video in interface"
 msgstr "הטמעת הווידאו במנשק"
 
-#: modules/gui/qt/ui/sprefs_interface.h:545
+#: modules/gui/qt/ui/sprefs_interface.h:542
 msgid "Show systray icon"
 msgstr "הצגת סמל בשורת המשימות"
 
-#: modules/gui/qt/ui/sprefs_interface.h:546
+#: modules/gui/qt/ui/sprefs_interface.h:543
 msgid "Auto raising the interface:"
 msgstr "הגבהת המנשק אוטומטית:"
 
-#: modules/gui/qt/ui/sprefs_interface.h:547
+#: modules/gui/qt/ui/sprefs_interface.h:544
 msgid "Skin resource file:"
 msgstr "קובץ משאב המעטפת:"
 
-#: modules/gui/qt/ui/sprefs_interface.h:549
+#: modules/gui/qt/ui/sprefs_interface.h:546
 msgid "Playlist and Instances"
 msgstr "רשימת נגינה ומופעים"
 
-#: modules/gui/qt/ui/sprefs_interface.h:552
+#: modules/gui/qt/ui/sprefs_interface.h:549
 msgid "Pause on the last frame of a video"
 msgstr "השהייה בעת הצגת השקף האחרון של הווידאו"
 
-#: modules/gui/qt/ui/sprefs_interface.h:555
+#: modules/gui/qt/ui/sprefs_interface.h:552
 msgid "Allow only one instance"
 msgstr "אילוץ הרצת מופע אחד בלבד"
 
-#: modules/gui/qt/ui/sprefs_interface.h:557
+#: modules/gui/qt/ui/sprefs_interface.h:554
 msgid "Activate updates notifier"
 msgstr "הפעלת התרעות על עדכונים"
 
-#: modules/gui/qt/ui/sprefs_interface.h:559
+#: modules/gui/qt/ui/sprefs_interface.h:556
 msgid "Every "
 msgstr "בכל "
 
-#: modules/gui/qt/ui/sprefs_interface.h:560
+#: modules/gui/qt/ui/sprefs_interface.h:557
 msgid "Save recently played items"
 msgstr "שמירת הפריטים שהתנגנו לאחרונה"
 
-#: modules/gui/qt/ui/sprefs_interface.h:563
+#: modules/gui/qt/ui/sprefs_interface.h:560
 msgid "Separate words by | (without space)"
 msgstr "הפרדת מילים ב־| (ללא רווחים)"
 
-#: modules/gui/qt/ui/sprefs_interface.h:566
+#: modules/gui/qt/ui/sprefs_interface.h:563
 msgid "Operating System Integration"
 msgstr "שילוב במערכת ההפעלה"
 
-#: modules/gui/qt/ui/sprefs_interface.h:567
+#: modules/gui/qt/ui/sprefs_interface.h:564
 msgid "File extensions association"
 msgstr "שיוך סוגי קבצים"
 
-#: modules/gui/qt/ui/sprefs_interface.h:568
+#: modules/gui/qt/ui/sprefs_interface.h:565
 msgid "Set up associations..."
 msgstr "הגדרת שיוכים..."
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:291
+#: modules/gui/qt/ui/sprefs_subtitles.h:288
 msgid "Enable On Screen Display (OSD)"
 msgstr "הפעלת חיווי על גבי המסך (OSD)"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:292
+#: modules/gui/qt/ui/sprefs_subtitles.h:289
 msgid "Show media title on video start"
 msgstr "הצגת כותרת המדיה עם התחלת הווידאו"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:294
+#: modules/gui/qt/ui/sprefs_subtitles.h:291
 msgid "Enable subtitles"
 msgstr "הפעלת כתוביות"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:295
+#: modules/gui/qt/ui/sprefs_subtitles.h:292
 msgid "Subtitle Language"
 msgstr "שפת הכתוביות"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:297
+#: modules/gui/qt/ui/sprefs_subtitles.h:294
 msgid "Default encoding"
 msgstr "קידוד בררת המחדל"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:298
+#: modules/gui/qt/ui/sprefs_subtitles.h:295
 msgid "Subtitle effects"
 msgstr "האפקטים של הכתוביות"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:304
+#: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Add a shadow"
 msgstr "הוספת צללית"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:306
-#: modules/gui/qt/ui/video_effects.h:1230
+#: modules/gui/qt/ui/sprefs_subtitles.h:303
+#: modules/gui/qt/ui/video_effects.h:1227
+#: modules/gui/qt/ui/video_effects.h:1231
 #: modules/gui/qt/ui/video_effects.h:1234
-#: modules/gui/qt/ui/video_effects.h:1237
-#: modules/gui/qt/ui/video_effects.h:1238
-#: modules/gui/qt/ui/video_effects.h:1272
-#: modules/gui/qt/ui/video_effects.h:1274
-#: modules/gui/qt/ui/video_effects.h:1284
-#: modules/gui/qt/ui/video_effects.h:1285
+#: modules/gui/qt/ui/video_effects.h:1235
+#: modules/gui/qt/ui/video_effects.h:1269
+#: modules/gui/qt/ui/video_effects.h:1271
+#: modules/gui/qt/ui/video_effects.h:1281
+#: modules/gui/qt/ui/video_effects.h:1282
 msgid " px"
 msgstr " פיקסלים"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:307
+#: modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Add a background"
 msgstr "הוספת רקע"
 
-#: modules/gui/qt/ui/sprefs_video.h:316
+#: modules/gui/qt/ui/sprefs_video.h:313
 msgid "O&utput"
 msgstr "&פלט"
 
-#: modules/gui/qt/ui/sprefs_video.h:320
+#: modules/gui/qt/ui/sprefs_video.h:317
 msgid "DirectX"
 msgstr "DirectX"
 
-#: modules/gui/qt/ui/sprefs_video.h:322
+#: modules/gui/qt/ui/sprefs_video.h:319
 msgid "Accelerated video output (Overlay)"
 msgstr "פלט וידאו מואץ (שכבת על)"
 
-#: modules/gui/qt/ui/sprefs_video.h:323
+#: modules/gui/qt/ui/sprefs_video.h:320
 msgid "KVA"
 msgstr ""
 
-#: modules/gui/qt/ui/sprefs_video.h:327
+#: modules/gui/qt/ui/sprefs_video.h:324
 msgid "Deinterlacing"
 msgstr "יישור פסים"
 
-#: modules/gui/qt/ui/sprefs_video.h:329
+#: modules/gui/qt/ui/sprefs_video.h:326
 msgid "Force Aspect Ratio"
 msgstr "אילוץ יחס תצוגה"
 
-#: modules/gui/qt/ui/sprefs_video.h:334
+#: modules/gui/qt/ui/sprefs_video.h:331
 msgid "vlc-snap"
 msgstr "לכידת-vlc"
 
-#: modules/gui/qt/ui/streampanel.h:171
+#: modules/gui/qt/ui/streampanel.h:169
 msgid "Stuff"
 msgstr ""
 
-#: modules/gui/qt/ui/streampanel.h:173
+#: modules/gui/qt/ui/streampanel.h:171
 msgid "Edit settings"
 msgstr "עריכת ההגדרות"
 
-#: modules/gui/qt/ui/streampanel.h:174
+#: modules/gui/qt/ui/streampanel.h:172
 msgid "Control"
 msgstr "בקרה"
 
-#: modules/gui/qt/ui/streampanel.h:175
+#: modules/gui/qt/ui/streampanel.h:173
 msgid "Run manually"
 msgstr "הפעלה ידנית"
 
-#: modules/gui/qt/ui/streampanel.h:176
+#: modules/gui/qt/ui/streampanel.h:174
 msgid "Setup schedule"
 msgstr "הגדרת תזמון"
 
-#: modules/gui/qt/ui/streampanel.h:177
+#: modules/gui/qt/ui/streampanel.h:175
 msgid "Run on schedule"
 msgstr "הצגה לפי תזמון"
 
-#: modules/gui/qt/ui/streampanel.h:178
+#: modules/gui/qt/ui/streampanel.h:176
 msgid "Status"
 msgstr "מצב"
 
-#: modules/gui/qt/ui/streampanel.h:179
+#: modules/gui/qt/ui/streampanel.h:177
 msgid "P/P"
 msgstr ""
 
-#: modules/gui/qt/ui/streampanel.h:182
+#: modules/gui/qt/ui/streampanel.h:180
 msgid "Prev"
 msgstr "הקודם"
 
-#: modules/gui/qt/ui/streampanel.h:183
+#: modules/gui/qt/ui/streampanel.h:181
 msgid "Add Input"
 msgstr "הוספת קלט"
 
-#: modules/gui/qt/ui/streampanel.h:184
+#: modules/gui/qt/ui/streampanel.h:182
 msgid "Edit Input"
 msgstr "עריכת קלט"
 
-#: modules/gui/qt/ui/streampanel.h:185
+#: modules/gui/qt/ui/streampanel.h:183
 msgid "Clear List"
 msgstr "ניקוי הרשימה"
 
-#: modules/gui/qt/ui/update.h:148
+#: modules/gui/qt/ui/update.h:145
 msgid "Check for VLC updates"
 msgstr "חיפוש עדכונים ל־VLC"
 
-#: modules/gui/qt/ui/update.h:149
+#: modules/gui/qt/ui/update.h:146
 msgid "Launching an update request..."
 msgstr "מופעלת בקשת עדכון..."
 
-#: modules/gui/qt/ui/update.h:150
+#: modules/gui/qt/ui/update.h:147
 msgid "Do you want to download it?"
 msgstr "האם להוריד אותו?"
 
-#: modules/gui/qt/ui/video_effects.h:1228
+#: modules/gui/qt/ui/video_effects.h:1225
 msgid "Essential"
 msgstr "חיוני"
 
-#: modules/gui/qt/ui/video_effects.h:1242
-#: modules/gui/qt/ui/video_effects.h:1251
+#: modules/gui/qt/ui/video_effects.h:1239
+#: modules/gui/qt/ui/video_effects.h:1248
 msgid ">HHHHHH;#"
 msgstr ""
 
-#: modules/gui/qt/ui/video_effects.h:1243
+#: modules/gui/qt/ui/video_effects.h:1240
 msgid "Negate colors"
 msgstr "היפוך הצבעים"
 
-#: modules/gui/qt/ui/video_effects.h:1256
+#: modules/gui/qt/ui/video_effects.h:1253
 msgid "Colors"
 msgstr "צבעים"
 
-#: modules/gui/qt/ui/video_effects.h:1257
+#: modules/gui/qt/ui/video_effects.h:1254
 msgid "Interactive Zoom"
 msgstr "תקריב אינטראקטיבי"
 
-#: modules/gui/qt/ui/video_effects.h:1263
+#: modules/gui/qt/ui/video_effects.h:1260
 msgid "Angle"
 msgstr "זווית"
 
-#: modules/gui/qt/ui/video_effects.h:1270
-#: modules/gui/qt/ui/video_effects.h:1287
+#: modules/gui/qt/ui/video_effects.h:1267
+#: modules/gui/qt/ui/video_effects.h:1284
 msgid "..."
 msgstr "..."
 
-#: modules/gui/qt/ui/video_effects.h:1275
+#: modules/gui/qt/ui/video_effects.h:1272
 msgid "full"
 msgstr "מלא"
 
-#: modules/gui/qt/ui/video_effects.h:1277
+#: modules/gui/qt/ui/video_effects.h:1274
 msgid "none"
 msgstr "שום דבר"
 
-#: modules/gui/qt/ui/video_effects.h:1281
+#: modules/gui/qt/ui/video_effects.h:1278
 msgid "Logo erase"
 msgstr "מחיקת לוגו"
 
-#: modules/gui/qt/ui/video_effects.h:1286
+#: modules/gui/qt/ui/video_effects.h:1283
 msgid "Mask"
 msgstr "מסכה"
 
-#: modules/gui/qt/ui/video_effects.h:1289
+#: modules/gui/qt/ui/video_effects.h:1286
 msgid "Anaglyph 3D"
 msgstr ""
 
-#: modules/gui/qt/ui/video_effects.h:1290
+#: modules/gui/qt/ui/video_effects.h:1287
 msgid "Mirror"
 msgstr "מראה"
 
-#: modules/gui/qt/ui/video_effects.h:1294
+#: modules/gui/qt/ui/video_effects.h:1291
 msgid "Motion detect"
 msgstr "גלאי תנועה"
 
-#: modules/gui/qt/ui/video_effects.h:1295
+#: modules/gui/qt/ui/video_effects.h:1292
 msgid "Spatial blur"
 msgstr ""
 
-#: modules/gui/qt/ui/video_effects.h:1299
+#: modules/gui/qt/ui/video_effects.h:1296
 msgid "Anti-Flickering"
 msgstr "מניעת ריצוד"
 
-#: modules/gui/qt/ui/video_effects.h:1300
+#: modules/gui/qt/ui/video_effects.h:1297
 msgid "Soften"
 msgstr "ריכוך"
 
-#: modules/gui/qt/ui/video_effects.h:1301
+#: modules/gui/qt/ui/video_effects.h:1298
 msgid "Denoiser"
 msgstr ""
 
-#: modules/gui/qt/ui/video_effects.h:1302
+#: modules/gui/qt/ui/video_effects.h:1299
 msgid "Spatial luma strength"
 msgstr ""
 
-#: modules/gui/qt/ui/video_effects.h:1303
+#: modules/gui/qt/ui/video_effects.h:1300
 msgid "Temporal luma strength"
 msgstr ""
 
-#: modules/gui/qt/ui/video_effects.h:1304
+#: modules/gui/qt/ui/video_effects.h:1301
 msgid "Spatial chroma strength"
 msgstr ""
 
-#: modules/gui/qt/ui/video_effects.h:1305
+#: modules/gui/qt/ui/video_effects.h:1302
 msgid "Temporal chroma strength"
 msgstr ""
 
-#: modules/gui/qt/ui/vlm.h:286
+#: modules/gui/qt/ui/vlm.h:283
 msgid "VLM configurator"
 msgstr "תכנית ההגדרה של VLM"
 
-#: modules/gui/qt/ui/vlm.h:287
+#: modules/gui/qt/ui/vlm.h:284
 msgid "Media Manager Edition"
 msgstr "מהדורת מנהל המדיה"
 
-#: modules/gui/qt/ui/vlm.h:288
+#: modules/gui/qt/ui/vlm.h:285
 msgid "Name:"
 msgstr "שם:"
 
-#: modules/gui/qt/ui/vlm.h:290
+#: modules/gui/qt/ui/vlm.h:287
 msgid "Input:"
 msgstr "קלט:"
 
-#: modules/gui/qt/ui/vlm.h:291
+#: modules/gui/qt/ui/vlm.h:288
 msgid "Select Input"
 msgstr "בחירת קלט"
 
-#: modules/gui/qt/ui/vlm.h:292
+#: modules/gui/qt/ui/vlm.h:289
 msgid "Output:"
 msgstr "פלט:"
 
-#: modules/gui/qt/ui/vlm.h:293
+#: modules/gui/qt/ui/vlm.h:290
 msgid "Select Output"
 msgstr "בחירת פלט"
 
-#: modules/gui/qt/ui/vlm.h:294
+#: modules/gui/qt/ui/vlm.h:291
 msgid "Time Control"
 msgstr "בקרת זמנים"
 
-#: modules/gui/qt/ui/vlm.h:295
+#: modules/gui/qt/ui/vlm.h:292
 msgid "Mux Control"
 msgstr "בקרת ריבוב"
 
-#: modules/gui/qt/ui/vlm.h:296
+#: modules/gui/qt/ui/vlm.h:293
 msgid "Muxer:"
 msgstr "מרבב:"
 
-#: modules/gui/qt/ui/vlm.h:297
+#: modules/gui/qt/ui/vlm.h:294
 msgid "AAAA; "
 msgstr ""
 
-#: modules/gui/qt/ui/vlm.h:302
+#: modules/gui/qt/ui/vlm.h:299
 msgid "Media Manager List"
 msgstr "רשימת מנהל המדיה"
 

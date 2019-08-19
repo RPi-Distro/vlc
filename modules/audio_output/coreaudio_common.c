@@ -211,15 +211,15 @@ ca_TimeGet(audio_output_t *p_aout, mtime_t *delay)
 
     lock_lock(p_sys);
 
-    mtime_t i_render_delay;
-    if (likely(p_sys->i_render_host_time != 0))
+    if (p_sys->i_render_host_time == 0)
     {
-        const uint64_t i_render_time_us = p_sys->i_render_host_time
-                                        * tinfo.numer / tinfo.denom / 1000;
-        i_render_delay = i_render_time_us - mdate();
+        lock_unlock(p_sys);
+        return -1;
     }
-    else
-        i_render_delay = 0;
+
+    const uint64_t i_render_time_us = p_sys->i_render_host_time
+                                    * tinfo.numer / tinfo.denom / 1000;
+    const mtime_t i_render_delay = i_render_time_us - mdate();
 
     const int64_t i_out_frames = BytesToFrames(p_sys, p_sys->i_out_size);
     *delay = FramesToUs(p_sys, i_out_frames + p_sys->i_render_frames)
@@ -271,6 +271,8 @@ ca_Flush(audio_output_t *p_aout, bool wait)
     p_sys->i_render_host_time = 0;
     p_sys->i_render_frames = 0;
     lock_unlock(p_sys);
+
+    p_sys->b_played = false;
 }
 
 void
@@ -352,7 +354,9 @@ ca_Play(audio_output_t * p_aout, block_t * p_block)
 
     lock_unlock(p_sys);
 
-    if (i_underrun_size > 0)
+    if (!p_sys->b_played)
+        p_sys->b_played = true;
+    else if (i_underrun_size > 0)
         msg_Warn(p_aout, "underrun of %zu bytes", i_underrun_size);
 }
 
@@ -371,9 +375,6 @@ ca_Initialize(audio_output_t *p_aout, const audio_sample_format_t *fmt,
     p_sys->i_bytes_per_frame = fmt->i_bytes_per_frame;
     p_sys->i_frame_length = fmt->i_frame_length;
     p_sys->chans_to_reorder = 0;
-
-    msg_Dbg(p_aout, "Current device has a latency of %lld us",
-            i_dev_latency_us);
 
     /* TODO VLC can't handle latency higher than 1 seconds */
     if (i_dev_latency_us > 1000000)
@@ -400,6 +401,7 @@ ca_Initialize(audio_output_t *p_aout, const audio_sample_format_t *fmt,
     }
 
     ca_ClearOutBuffers(p_aout);
+    p_sys->b_played = false;
 
     return VLC_SUCCESS;
 }
@@ -424,6 +426,7 @@ ca_SetAliveState(audio_output_t *p_aout, bool alive)
     if (!alive && p_sys->b_do_flush)
     {
         ca_ClearOutBuffers(p_aout);
+        p_sys->b_played = false;
         p_sys->b_do_flush = false;
         b_sem_post = true;
     }
@@ -432,6 +435,16 @@ ca_SetAliveState(audio_output_t *p_aout, bool alive)
 
     if (b_sem_post)
         vlc_sem_post(&p_sys->flush_sem);
+}
+
+void ca_SetDeviceLatency(audio_output_t *p_aout, mtime_t i_dev_latency_us)
+{
+    struct aout_sys_common *p_sys = (struct aout_sys_common *) p_aout->sys;
+
+    lock_lock(p_sys);
+    /* cf. TODO in ca_Initialize */
+    p_sys->i_dev_latency_us = i_dev_latency_us > 1000000 ? 1000000 : i_dev_latency_us;
+    lock_unlock(p_sys);
 }
 
 AudioUnit

@@ -2,7 +2,7 @@
  * matroska_segment.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 29e63a2459889d9aa94b363e429b9f00d898d30b $
+ * $Id: b3d897a533a746ca05aa77b41b2d89c203df7b61 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -622,7 +622,6 @@ bool matroska_segment_c::Preload( )
             if ( tracks.size() == 0 )
             {
                 msg_Err( &sys.demuxer, "No tracks supported" );
-                return false;
             }
             i_tracks_position = el->GetElementPosition();
         }

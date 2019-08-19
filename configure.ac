@@ -2,11 +2,11 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 1999-2019 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.7.1)
+AC_INIT(vlc, 3.0.8)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=7
-VERSION_EXTRA=1
+VERSION_REVISION=8
+VERSION_EXTRA=0
 VERSION_DEV=
 
 PKGDIR="vlc"
@@ -2142,7 +2142,7 @@ fi
 dnl
 dnl  matroska demux plugin
 dnl
-PKG_ENABLE_MODULES_VLC([MATROSKA], [mkv], [libebml libmatroska], [MKV format support], [auto])
+PKG_ENABLE_MODULES_VLC([MATROSKA], [mkv], [libebml >= 1.3.6 libmatroska], [MKV format support], [auto])
 
 dnl
 dnl  modplug demux plugin
@@ -2151,7 +2151,7 @@ AC_ARG_ENABLE(mod,
   [AS_HELP_STRING([--disable-mod],
     [do not use libmodplug (default auto)])])
 if test "${enable_mod}" != "no" ; then
-    PKG_CHECK_MODULES(LIBMODPLUG, [libmodplug >= 0.8.4 libmodplug != 0.8.8], [
+    PKG_CHECK_MODULES(LIBMODPLUG, [libmodplug >= 0.8.9.0], [
           VLC_ADD_PLUGIN([mod])
           VLC_ADD_CXXFLAGS([mod],[$LIBMODPLUG_CFLAGS])
           VLC_ADD_CFLAGS([mod],[$LIBMODPLUG_CFLAGS]) #modules/demux/mod.c needs CFLAGS_mod, not CXXFLAGS_mod

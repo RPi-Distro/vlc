@@ -1,7 +1,7 @@
 # Qt
 
 QT_VERSION := 5.6.3
-QT_URL := https://download.qt.io/official_releases/qt/5.6/$(QT_VERSION)/submodules/qtbase-opensource-src-$(QT_VERSION).tar.xz
+QT_URL := https://download.qt.io/archive/qt/5.6/$(QT_VERSION)/submodules/qtbase-opensource-src-$(QT_VERSION).tar.xz
 
 ifdef HAVE_MACOSX
 #PKGS += qt
@@ -15,7 +15,7 @@ PKGS_FOUND += qt
 endif
 
 $(TARBALLS)/qt-$(QT_VERSION).tar.xz:
-	$(call download,$(QT_URL))
+	$(call download_pkg,$(QT_URL),qt)
 
 .sum-qt: qt-$(QT_VERSION).tar.xz
 
