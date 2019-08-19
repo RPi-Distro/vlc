@@ -421,11 +421,11 @@ static block_t * MP4_EIA608_Convert( block_t * p_block )
     block_t *p_newblock;
 
     /* always need at least 10 bytes (atom size+header+1pair)*/
-    if ( i_remaining < 10 ||
-         !(i_bytes = GetDWBE(p_block->p_buffer)) ||
-         (i_bytes > i_remaining) ||
-         memcmp("cdat", &p_block->p_buffer[4], 4) ||
-         !(p_newblock = block_Alloc( i_remaining * 3 - 8 )) )
+    i_bytes = GetDWBE(p_block->p_buffer);
+
+    if (10 < i_bytes || i_bytes < i_remaining ||
+        memcmp("cdat", &p_block->p_buffer[4], 4) ||
+        (p_newblock = block_Alloc(i_remaining * 3 - 8)) == NULL)
     {
         p_block->i_buffer = 0;
         return p_block;
@@ -447,10 +447,10 @@ static block_t * MP4_EIA608_Convert( block_t * p_block )
     } while( i_bytes >= 2 );
 
     /* cdt2 is optional */
-    if ( i_remaining >= 10 &&
-         (i_bytes = GetDWBE(p_read)) &&
-         (i_bytes <= i_remaining) &&
-         !memcmp("cdt2", &p_read[4], 4) )
+    i_bytes = GetDWBE(p_read);
+
+    if (10 <= i_bytes && i_bytes <= i_remaining &&
+        !memcmp("cdt2", &p_read[4], 4))
     {
         p_read += 8;
         i_bytes -= 8;
@@ -4413,6 +4413,10 @@ static int DemuxMoof( demux_t *p_demux )
     if( p_sys->i_pcr == VLC_TS_INVALID )
         es_out_SetPCR( p_demux->out, VLC_TS_0 + i_nztime );
 
+    /* Set per track read state */
+    for( unsigned i = 0; i < p_sys->i_tracks; i++ )
+        p_sys->track[i].context.i_temp = VLC_DEMUXER_SUCCESS;
+
     /* demux up to increment amount of data on every track, or just set pcr if empty data */
     for( ;; )
     {
@@ -4426,7 +4430,8 @@ static int DemuxMoof( demux_t *p_demux )
 
             if( !tk_tmp->b_ok || tk_tmp->b_chapters_source ||
                (!tk_tmp->b_selected && !p_sys->b_seekable) ||
-                tk_tmp->context.runs.i_current >= tk_tmp->context.runs.i_count )
+                tk_tmp->context.runs.i_current >= tk_tmp->context.runs.i_count ||
+                tk_tmp->context.i_temp != VLC_DEMUXER_SUCCESS )
                 continue;
 
             /* At least still have data to demux on this or next turns */
@@ -4465,6 +4470,7 @@ static int DemuxMoof( demux_t *p_demux )
 
             int i_ret = FragDemuxTrack( p_demux, tk, i_max_preload );
 
+            tk->context.i_temp = i_ret;
             if( i_ret == VLC_DEMUXER_SUCCESS )
                 i_status = VLC_DEMUXER_SUCCESS;
             else if( i_ret == VLC_DEMUXER_FATAL )

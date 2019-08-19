@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: c5b178f51441a48b1b525dced868186130362621 $
+ * $Id: 631c5f361fea78f49fd88a6f4deaf99043d8265a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  * RFC 4175 support based on gstrtpvrawpay.c (LGPL 2) by:
@@ -73,8 +73,9 @@ static int rtp_xiph_pack_headers(size_t room, void *p_extra, size_t i_extra,
                                  uint8_t *theora_pixel_fmt)
 {
     unsigned packet_size[XIPH_MAX_HEADER_COUNT];
-    void *packet[XIPH_MAX_HEADER_COUNT];
+    const void *packet[XIPH_MAX_HEADER_COUNT];
     unsigned packet_count;
+
     if (xiph_SplitHeaders(packet_size, packet, &packet_count,
                                 i_extra, p_extra))
         return VLC_EGENERIC;;
@@ -85,7 +86,7 @@ static int rtp_xiph_pack_headers(size_t room, void *p_extra, size_t i_extra,
     {
         if (packet_size[0] < 42)
             return VLC_EGENERIC;
-        *theora_pixel_fmt = (((uint8_t *)packet[0])[41] >> 3) & 0x03;
+        *theora_pixel_fmt = (((const uint8_t *)packet[0])[41] >> 3) & 0x03;
     }
 
     unsigned length_size[2] = { 0, 0 };

@@ -150,6 +150,10 @@ AbstractDemuxer *HLSStream::newDemux(demux_t *p_realdemux, const StreamFormat &f
             break;
 */
 
+        case StreamFormat::UNKNOWN:
+            ret = new MimeDemuxer(p_realdemux, this, out, source);
+            break;
+
         default:
         case StreamFormat::UNSUPPORTED:
             break;
@@ -157,11 +161,11 @@ AbstractDemuxer *HLSStream::newDemux(demux_t *p_realdemux, const StreamFormat &f
     return ret;
 }
 
-AbstractStream * HLSStreamFactory::create(demux_t *realdemux, const StreamFormat &,
+AbstractStream * HLSStreamFactory::create(demux_t *realdemux, const StreamFormat &format,
                                SegmentTracker *tracker, AbstractConnectionManager *manager) const
 {
     HLSStream *stream = new (std::nothrow) HLSStream(realdemux);
-    if(stream && !stream->init(StreamFormat(StreamFormat::UNKNOWN), tracker, manager))
+    if(stream && !stream->init(format, tracker, manager))
     {
         delete stream;
         return NULL;

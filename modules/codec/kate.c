@@ -2,7 +2,7 @@
  * kate.c : a decoder for the kate bitstream format
  *****************************************************************************
  * Copyright (C) 2000-2008 VLC authors and VideoLAN
- * $Id: b50d94c7d03bd5bf07478dce7b32e442f0ccb761 $
+ * $Id: 5f7784791d8edb8d304c9c3114e9123cf342f104 $
  *
  * Authors: Vincent Penquerc'h <ogg.k.ogg.k@googlemail.com>
  *
@@ -540,7 +540,7 @@ static int ProcessHeaders( decoder_t *p_dec )
     kate_packet kp;
 
     unsigned pi_size[XIPH_MAX_HEADER_COUNT];
-    void     *pp_data[XIPH_MAX_HEADER_COUNT];
+    const void *pp_data[XIPH_MAX_HEADER_COUNT];
     unsigned i_count;
     if( xiph_SplitHeaders( pi_size, pp_data, &i_count,
                            p_dec->fmt_in.i_extra, p_dec->fmt_in.p_extra) )
@@ -551,7 +551,7 @@ static int ProcessHeaders( decoder_t *p_dec )
 
     /* Take care of the initial Kate header */
     kp.nbytes = pi_size[0];
-    kp.data   = pp_data[0];
+    kp.data   = (void *)pp_data[0];
     int i_ret = kate_decode_headerin( &p_sys->ki, &p_sys->kc, &kp );
     if( i_ret < 0 )
     {
@@ -568,7 +568,7 @@ static int ProcessHeaders( decoder_t *p_dec )
     for( unsigned i_headeridx = 1; i_headeridx < i_count; i_headeridx++ )
     {
         kp.nbytes = pi_size[i_headeridx];
-        kp.data   = pp_data[i_headeridx];
+        kp.data   = (void *)pp_data[i_headeridx];
         i_ret = kate_decode_headerin( &p_sys->ki, &p_sys->kc, &kp );
         if( i_ret < 0 )
         {
