@@ -1,8 +1,19 @@
-vlc (3.0.8-1) UNRELEASED; urgency=medium
+vlc (3.0.8-1) unstable; urgency=medium
 
   * New upstream release.
+    - Fix a read buffer overflow in the avcodec decoder (CVE-2019-13962)
+    - Fix a read buffer overflow in the OGG demuxer (CVE-2019-14437, CVE-2019-14438)
+    - Fix a read buffer overflow in the ASF demuxer (CVE-2019-14776)
+    - Fix a use after free in the MKV demuxer (CVE-2019-14777, CVE-2019-14778)
+    - Fix a use after free in the ASF demuxer (CVE-2019-14533)
+    - Fix a null dereference in the ASF demuxer (CVE-2019-14534)
+    - Fix a division by zero in the CAF demuxer (CVE-2019-14498)
+    - Fix a division by zero in the ASF demuxer (CVE-2019-14535)
+  * debian/: Remove crystalhd plugin. libcrystalhd-dev is scheduled for
+    removal.
+  * debian/patches: Remove patches included upstream.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 19 Aug 2019 18:35:01 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 19 Aug 2019 18:43:08 +0200
 
 vlc (3.0.7.1-3) unstable; urgency=medium
 
