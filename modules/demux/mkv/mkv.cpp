@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008, 2010 VLC authors and VideoLAN
- * $Id: 6b9a818fd87bbb20e0ae66ceb0130e2ead7b402c $
+ * $Id: 87a8736d16991ecdf39158450b7c8503bcf2391d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -244,7 +244,11 @@ static int Open( vlc_object_t * p_this )
         goto error;
     }
 
-    p_sys->FreeUnused();
+    if (!p_sys->FreeUnused())
+    {
+        msg_Err( p_demux, "no usable segment" );
+        goto error;
+    }
 
     p_sys->InitUi();
 
@@ -634,7 +638,8 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
             if ( track.fmt.i_cat == DATA_ES )
             {
                 // TODO handle the start/stop times of this packet
-                p_sys->p_ev->SetPci( (const pci_t *)&p_block->p_buffer[1]);
+                if( p_block->i_size >= sizeof(pci_t))
+                    p_sys->p_ev->SetPci( (const pci_t *)&p_block->p_buffer[1]);
                 block_Release( p_block );
                 return;
             }
