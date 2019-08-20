@@ -1,0 +1,22 @@
+From: Sebastian Ramacher <sramacher@debian.org>
+Date: Tue, 20 Aug 2019 20:57:13 +0200
+Subject: Revert "configure: Require libebml >= 1.3.6"
+
+This reverts commit f3047d413432cf472fd1ca3c3559063ab0f03975.
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 500fb17..4909c43 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -2142,7 +2142,7 @@ fi
+ dnl
+ dnl  matroska demux plugin
+ dnl
+-PKG_ENABLE_MODULES_VLC([MATROSKA], [mkv], [libebml >= 1.3.6 libmatroska], [MKV format support], [auto])
++PKG_ENABLE_MODULES_VLC([MATROSKA], [mkv], [libebml libmatroska], [MKV format support], [auto])
+ 
+ dnl
+ dnl  modplug demux plugin
