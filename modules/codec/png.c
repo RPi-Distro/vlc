@@ -2,7 +2,7 @@
  * png.c: png decoder module making use of libpng.
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 37d83347fe732c0e834180776b1e5374896b9749 $
+ * $Id: 5ef76f0a07753ebc9f382434ba5fbd1a7a114dd2 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -124,7 +124,9 @@ static int OpenDecoder( vlc_object_t *p_this )
 
     /* Set output properties */
     p_dec->fmt_out.i_codec = VLC_CODEC_RGBA;
-    p_dec->fmt_out.video.transfer = TRANSFER_FUNC_SRGB;
+    p_dec->fmt_out.video.transfer  = TRANSFER_FUNC_SRGB;
+    p_dec->fmt_out.video.space     = COLOR_SPACE_SRGB;
+    p_dec->fmt_out.video.primaries = COLOR_PRIMARIES_SRGB;
     p_dec->fmt_out.video.b_color_range_full = true;
 
     /* Set callbacks */

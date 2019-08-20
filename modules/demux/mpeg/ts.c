@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: eae6a54947e5a10a97b48834853b1ad52c9328fb $
+ * $Id: 3dbe5277569491bde5e9e3485934591ac5b91b56 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -2510,9 +2510,16 @@ static block_t * ProcessTSPacket( demux_t *p_demux, ts_pid_t *pid, block_t *p_pk
                          pid->i_pid, i_cc );
                 pid->i_cc = i_cc;
             }
-            else if( i_diff == 0 && pid->i_dup == 0 )
+            else if( i_diff == 0 && pid->i_dup == 0 &&
+                     !memcmp(pid->prevpktbytes, /* see comment below */
+                             &p_pkt->p_buffer[1], PREVPKTKEEPBYTES)  )
             {
                 /* Discard duplicated payload 2.4.3.3 */
+                /* Added previous pkt bytes comparison for
+                 * stupid HLS dumps/joined segments which are
+                 * triggering erroneous duplicates instead of discontinuity.
+                 * That should not need CRC or full payload as it should be
+                 * restarting with PSI packets */
                 pid->i_dup++;
                 block_Release( p_pkt );
                 return NULL;
@@ -2528,6 +2535,7 @@ static block_t * ProcessTSPacket( demux_t *p_demux, ts_pid_t *pid, block_t *p_pk
             }
             else pid->i_cc = i_cc;
         }
+        memcpy(pid->prevpktbytes, &p_pkt->p_buffer[1], PREVPKTKEEPBYTES);
     }
     else /* Ignore all 00 or 10 as in 2.4.3.3 CC counter must not be
             incremented in those cases, but there is humax inserting
