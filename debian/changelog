@@ -1,4 +1,4 @@
-vlc (3.0.8-0+deb10u1) UNRELEASED; urgency=medium
+vlc (3.0.8-0+deb10u1) buster-security; urgency=high
 
   * New upstream release.
     - Fix a buffer overflow in the MKV demuxer (CVE-2019-14970)
@@ -15,8 +15,11 @@ vlc (3.0.8-0+deb10u1) UNRELEASED; urgency=medium
     - Fix a division by zero in the ASF demuxer (CVE-2019-14535)
     - Fix a division by zero when playing DVDs. (Closes: #929491, #923017,
       #932182)
+  * debian/control: Bump libebml-dev B-D according to configure check changes.
+  * debian/patches: Revert modplug version bump. We use the libopenmpt compat
+    layer anyway.
 
- -- Sebastian Ramacher <sramacher@debian.org>  Mon, 19 Aug 2019 19:15:51 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 20 Aug 2019 20:34:42 +0200
 
 vlc (3.0.7-1) unstable; urgency=high
 
