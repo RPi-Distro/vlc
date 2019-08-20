@@ -8,6 +8,7 @@ vlc (3.0.8-2) unstable; urgency=medium
 vlc (3.0.8-1) unstable; urgency=medium
 
   * New upstream release.
+    - Fix a buffer overflow in the MKV demuxer (CVE-2019-14970)
     - Fix a read buffer overflow in the avcodec decoder (CVE-2019-13962)
     - Fix a read buffer overflow in the OGG demuxer (CVE-2019-14437,
       CVE-2019-14438)
