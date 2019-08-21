@@ -55,6 +55,7 @@ struct aout_sys_common
 
     size_t              i_out_max_size;
     size_t              i_out_size;
+    bool                b_played;
     block_t             *p_out_chain;
     block_t             **pp_out_last;
     uint64_t            i_render_host_time;
@@ -101,6 +102,8 @@ int  ca_Initialize(audio_output_t *p_aout, const audio_sample_format_t *fmt,
 void ca_Uninitialize(audio_output_t *p_aout);
 
 void ca_SetAliveState(audio_output_t *p_aout, bool alive);
+
+void ca_SetDeviceLatency(audio_output_t *p_aout, mtime_t i_dev_latency_us);
 
 AudioUnit au_NewOutputInstance(audio_output_t *p_aout, OSType comp_sub_type);
 

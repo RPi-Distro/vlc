@@ -2,7 +2,7 @@
  * logo.c : logo video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 VLC authors and VideoLAN
- * $Id: 44b1bca6de636dd602bd8e214fd30f74d4fb72b0 $
+ * $Id: 5d09f4273b48afe06e060f61c8120955c4a6c6a0 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Simon Latapie <garf@videolan.org>
@@ -387,6 +387,10 @@ static subpicture_t *FilterSub( filter_t *p_filter, mtime_t date )
     fmt.i_width = fmt.i_visible_width = p_pic->p[Y_PLANE].i_visible_pitch;
     fmt.i_height = fmt.i_visible_height = p_pic->p[Y_PLANE].i_visible_lines;
     fmt.i_x_offset = fmt.i_y_offset = 0;
+    fmt.transfer    = p_pic->format.transfer;
+    fmt.primaries   = p_pic->format.primaries;
+    fmt.space       = p_pic->format.space;
+    fmt.b_color_range_full = p_pic->format.b_color_range_full;
     p_region = subpicture_region_New( &fmt );
     if( !p_region )
     {
