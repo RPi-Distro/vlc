@@ -76,8 +76,8 @@ vlc_module_begin ()
     add_bool("direct3d11-hw-blending", true, HW_BLENDING_TEXT, HW_BLENDING_LONGTEXT, true)
 
 #if VLC_WINSTORE_APP
-    add_integer("winrt-d3dcontext",    0x0, NULL, NULL, true); /* ID3D11DeviceContext* */
-    add_integer("winrt-swapchain",     0x0, NULL, NULL, true); /* IDXGISwapChain1*     */
+    add_integer("winrt-d3dcontext",    0x0, NULL, NULL, true) /* ID3D11DeviceContext* */
+    add_integer("winrt-swapchain",     0x0, NULL, NULL, true) /* IDXGISwapChain1*     */
 #endif
 
     set_capability("vout display", 300)
@@ -946,7 +946,7 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
 
     if (picture->format.mastering.max_luminance)
     {
-        D3D11_UpdateQuadLuminanceScale(vd, &sys->d3d_dev, &sys->picQuad, GetFormatLuminance(VLC_OBJECT(vd), &picture->format) / (float)sys->display.luminance_peak);
+        D3D11_UpdateQuadLuminanceScale(vd, &sys->d3d_dev, &sys->picQuad, (float)sys->display.luminance_peak / GetFormatLuminance(VLC_OBJECT(vd), &picture->format));
 
         if (sys->dxgiswapChain4)
         {
@@ -1468,14 +1468,29 @@ static bool CanUseTextureArray(vout_display_t *vd)
     (void) vd;
     return false;
 #else
-    struct wddm_version WDDM = {
-        .revision     = 162, // 17.5.1 - 2017/05/04
+    // 15.200.1062.1004 is wrong - 2015/08/03 - 15.7.1 WHQL
+    // 21.19.144.1281 is wrong   -
+    // 22.19.165.3 is good       - 2017/05/04 - ReLive Edition 17.5.1
+    struct wddm_version WDDM_os = {
+        .wddm         = 21,  // starting with drivers designed for W10 Anniversary Update
     };
-    if (D3D11CheckDriverVersion(&vd->sys->d3d_dev, GPU_MANUFACTURER_AMD, &WDDM) == VLC_SUCCESS)
-        return true;
+    if (D3D11CheckDriverVersion(&vd->sys->d3d_dev, GPU_MANUFACTURER_AMD, &WDDM_os) != VLC_SUCCESS)
+    {
+        msg_Dbg(vd, "AMD driver too old, fallback to legacy shader mode");
+        return false;
+    }
 
-    msg_Dbg(vd, "fallback to legacy shader mode for old AMD drivers");
-    return false;
+    // xx.xx.1000.xxx drivers can't happen here for WDDM > 2.0
+    struct wddm_version WDDM_build = {
+        .revision     = 162,
+    };
+    if (D3D11CheckDriverVersion(&vd->sys->d3d_dev, GPU_MANUFACTURER_AMD, &WDDM_build) != VLC_SUCCESS)
+    {
+        msg_Dbg(vd, "Bogus AMD driver detected, fallback to legacy shader mode");
+        return false;
+    }
+
+    return true;
 #endif
 }
 

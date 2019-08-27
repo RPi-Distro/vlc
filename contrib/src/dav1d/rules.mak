@@ -1,6 +1,6 @@
 # libdav1d
 
-DAV1D_VERSION := 0.3.1
+DAV1D_VERSION := 0.4.0
 DAV1D_URL := $(VIDEOLAN)/dav1d/$(DAV1D_VERSION)/dav1d-$(DAV1D_VERSION).tar.xz
 #~ DAV1D_HASH := de2059a1167ed560269c3253768929ef19cae989
 #~ DAV1D_VERSION := git-$(DAV1D_HASH)
@@ -11,7 +11,7 @@ ifeq ($(call need_pkg,"dav1d"),)
 PKGS_FOUND += dav1d
 endif
 
-DAV1D_CONF = -D build_tests=false -D build_tools=false
+DAV1D_CONF = -D enable_tests=false -D enable_tools=false
 ifdef HAVE_WIN32
 DAV1D_CONF += -D win32_ver=false
 endif

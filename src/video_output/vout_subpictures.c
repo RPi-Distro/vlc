@@ -2,7 +2,7 @@
  * vout_subpictures.c : subpicture management functions
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 41fe8d5159025df2d9cde99cdf4278f25ab30932 $
+ * $Id: 7dbeee3a2a80c836788fc2d1b74a3525cd5a4691 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -679,6 +679,14 @@ static void SpuRenderRegion(spu_t *spu,
 
     /* Render text region */
     if (region->fmt.i_chroma == VLC_CODEC_TEXT) {
+        // assume rendered text is in sRGB if nothing is set
+        if (region->fmt.transfer == TRANSFER_FUNC_UNDEF)
+            region->fmt.transfer = TRANSFER_FUNC_SRGB;
+        if (region->fmt.primaries == COLOR_PRIMARIES_UNDEF)
+            region->fmt.primaries = COLOR_PRIMARIES_SRGB;
+        if (region->fmt.space == COLOR_SPACE_UNDEF)
+            region->fmt.space = COLOR_SPACE_SRGB;
+
         SpuRenderText(spu, &restore_text, region,
                       chroma_list,
                       render_date - subpic->i_start);

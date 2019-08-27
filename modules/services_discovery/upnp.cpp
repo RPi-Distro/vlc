@@ -2,7 +2,7 @@
  * upnp.cpp :  UPnP discovery module (libupnp)
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: f1037c82c8ec98d7d54608494818b8e395ced240 $
+ * $Id: e3a6496b3e07a97fd6ee766e85d7d77757a77019 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -1698,7 +1698,7 @@ UpnpInstanceWrapper *UpnpInstanceWrapper::get(vlc_object_t *p_obj, services_disc
 void UpnpInstanceWrapper::release(bool isSd)
 {
     UpnpInstanceWrapper *p_delete = NULL;
-    vlc_mutex_lock( &s_lock );
+    vlc_mutex_locker lock( &s_lock );
     if ( isSd )
     {
         delete UpnpInstanceWrapper::p_server_list;
@@ -1709,7 +1709,6 @@ void UpnpInstanceWrapper::release(bool isSd)
         p_delete = s_instance;
         s_instance = NULL;
     }
-    vlc_mutex_unlock( &s_lock );
     delete p_delete;
 }
 

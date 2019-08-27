@@ -1,8 +1,31 @@
-vlc (3.0.7-0+rpt1+deb9u1) stretch; urgency=medium
+vlc (3.0.8-0+deb9u1+rpt1) stretch; urgency=medium
 
   * Apply MMAL patch
 
- -- Serge Schneider <serge@raspberrypi.org>  Wed, 12 Jun 2019 09:51:25 +0100
+ -- Serge Schneider <serge@raspberrypi.org>  Tue, 27 Aug 2019 17:44:24 +0100
+
+vlc (3.0.8-0+deb9u1) stretch-security; urgency=high
+
+  * New upstream release.
+    - Fix a buffer overflow in the MKV demuxer (CVE-2019-14970)
+    - Fix a read buffer overflow in the avcodec decoder (CVE-2019-13962)
+    - Fix a read buffer overflow in the OGG demuxer (CVE-2019-14437,
+      CVE-2019-14438)
+    - Fix a read buffer overflow in the ASF demuxer (CVE-2019-14776)
+    - Fix a use after free in the MKV demuxer (CVE-2019-14777, CVE-2019-14778)
+    - Fix a use after free in the ASF demuxer (CVE-2019-14533)
+    - Fix a couple of integer underflows in the MP4 demuxer (CVE-2019-13602)
+      (Closes: #932131)
+    - Fix a null dereference in the ASF demuxer (CVE-2019-14534)
+    - Fix a division by zero in the CAF demuxer (CVE-2019-14498)
+    - Fix a division by zero in the ASF demuxer (CVE-2019-14535)
+    - Fix a division by zero when playing DVDs. (Closes: #929491, #923017,
+      #932182)
+  * debian/patches:
+    - Revert modplug version bump. We use the libopenmpt compat layer anyway.
+    - Revert libebml version bump. libebml has been fixed separately.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 20 Aug 2019 20:58:05 +0200
 
 vlc (3.0.7-0+deb9u1) stretch-security; urgency=medium
 

@@ -2,7 +2,7 @@
  * video.c: transcoding stream output module (video)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: b6fabead486ac4687fc9f25af48751316cc2fa35 $
+ * $Id: 9070babb2d33cdc6bdf26acfa41a10d8abd94480 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -60,6 +60,9 @@ static int video_update_format_decoder( decoder_t *p_dec )
     filter_owner_t filter_owner = {
         .sys = sys,
     };
+
+    /* will need proper chroma for get_buffer */
+    p_dec->fmt_out.video.i_chroma = p_dec->fmt_out.i_codec;
 
     if( id->p_encoder->fmt_in.i_codec == p_dec->fmt_out.i_codec ||
         video_format_IsSimilar( &id->video_dec_out,

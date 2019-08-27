@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 566dd5078aafe81cfa26f709d3fc5490937174ac $
+ * $Id: d552160befaaf888f6cb1af70a39bb34e87bacb8 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1225,13 +1225,14 @@ static int ThreadDisplayPicture(vout_thread_t *vout, mtime_t *deadline)
     }
     bool force_refresh = !drop_next_frame && refresh;
 
+    if (!frame_by_frame) {
+        if (date_refresh != VLC_TS_INVALID)
+            *deadline = date_refresh;
+        if (date_next != VLC_TS_INVALID && date_next < *deadline)
+            *deadline = date_next;
+    }
+
     if (!first && !refresh && !drop_next_frame) {
-        if (!frame_by_frame) {
-            if (date_refresh != VLC_TS_INVALID)
-                *deadline = date_refresh;
-            if (date_next != VLC_TS_INVALID && date_next < *deadline)
-                *deadline = date_next;
-        }
         return VLC_EGENERIC;
     }
 

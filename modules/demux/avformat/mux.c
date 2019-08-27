@@ -2,7 +2,7 @@
  * mux.c: muxer using libavformat
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: b5b0c9a0b6583efcf1b6b2ad8296673963d2ca4e $
+ * $Id: 48878c712b3cea59debcc7390a3f4dfc92f96ab5 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -202,7 +202,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     }
 
     unsigned opus_size[XIPH_MAX_HEADER_COUNT];
-    void     *opus_packet[XIPH_MAX_HEADER_COUNT];
+    const void *opus_packet[XIPH_MAX_HEADER_COUNT];
     if( fmt->i_codec == VLC_CODEC_OPUS )
     {
         unsigned count;

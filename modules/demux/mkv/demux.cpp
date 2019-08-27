@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: f95d9b9c078a98f0c76cc3d9247889d82e56ac05 $
+ * $Id: 6fa2418dd2b8f0544ec0b00fe54b71fcbc03ac11 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -46,10 +46,11 @@ void event_thread_t::SetPci(const pci_t *data)
 {
     vlc_mutex_locker l(&lock);
 
-    pci_packet = *data;
+    memcpy(&pci_packet, data, sizeof(pci_packet));
 
 #ifndef WORDS_BIGENDIAN
-    for( uint8_t button = 1; button <= pci_packet.hli.hl_gi.btn_ns; button++) {
+    for( uint8_t button = 1; button <= pci_packet.hli.hl_gi.btn_ns &&
+         button < ARRAY_SIZE(pci_packet.hli.btnit); button++) {
         btni_t *button_ptr = &(pci_packet.hli.btnit[button-1]);
         binary *p_data = (binary*) button_ptr;
 
@@ -699,26 +700,24 @@ bool demux_sys_t::PreloadLinked()
     return true;
 }
 
-void demux_sys_t::FreeUnused()
+bool demux_sys_t::FreeUnused()
 {
-    size_t i;
-    for( i = 0; i < streams.size(); i++ )
-    {
-        struct matroska_stream_c *p_s = streams[i];
-        if( !p_s->isUsed() )
-        {
-            streams[i] = NULL;
-            delete p_s;
-        }
-    }
-    for( i = 0; i < opened_segments.size(); i++)
-    {
-        if( !opened_segments[i]->b_preloaded )
-        {
-            delete opened_segments[i];
-            opened_segments[i] = NULL;
-        }
-    }
+    auto sIt = std::remove_if(begin(streams), end(streams), [](const matroska_stream_c* p_s) {
+        return !p_s->isUsed();
+    });
+    for (auto it = sIt; it != end(streams); ++it)
+        delete *it;
+    streams.erase(sIt, end(streams));
+
+    auto sgIt = std::remove_if(begin(opened_segments), end(opened_segments),
+                [](const matroska_segment_c* p_sg) {
+        return !p_sg->b_preloaded;
+    });
+    for (auto it = sgIt; it != end(opened_segments); ++it)
+        delete *it;
+    opened_segments.erase(sgIt, end(opened_segments));
+
+    return !streams.empty() && !opened_segments.empty();
 }
 
 bool demux_sys_t::PreparePlayback( virtual_segment_c & new_vsegment, mtime_t i_mk_date )
