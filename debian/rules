@@ -249,7 +249,7 @@ endif
 ifeq (,$(filter-out arm,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-neon
 confflags += --enable-mmal
-confflags += --disable-mmal-avcodec
+confflags += --enable-mmal-avcodec
 else
 confflags += --disable-neon
 removeplugins += neon
