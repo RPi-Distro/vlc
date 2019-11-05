@@ -1184,7 +1184,7 @@
 -        ret = -1;
 -        goto err;
 -    }
- 
+-
 -    p_sys = picture->p_sys;
 -    for (int i = 0; i < picture->i_planes; i++)
 -        buffer_size += picture->p[i].i_lines * picture->p[i].i_pitch;
@@ -1198,7 +1198,7 @@
 -            ret = VLC_EGENERIC;
 -            goto err;
 -        }
--
+ 
 -        if (!sys->opaque)
 -            buffer->data = picture->p[0].p_pixels;
 -    } else {
@@ -1242,6 +1242,11 @@
 +static MMAL_STATUS_T decoder_send_extradata(decoder_t * const dec, decoder_sys_t *const sys)
  {
 -    decoder_sys_t *sys = dec->p_sys;
+-
+-    unsigned max_buffers_in_transit = 0;
+-    int buffers_available = 0;
+-    int buffers_to_send = 0;
+-    int i;
 +    if (dec->fmt_in.i_codec == VLC_CODEC_H264 &&
 +        dec->fmt_in.i_extra > 0)
 +    {
@@ -1256,11 +1261,6 @@
 +        buf->data = dec->fmt_in.p_extra;
 +        buf->flags = MMAL_BUFFER_HEADER_FLAG_CONFIG;
  
--    unsigned max_buffers_in_transit = 0;
--    int buffers_available = 0;
--    int buffers_to_send = 0;
--    int i;
--
 -    if (sys->output_pool) {
 -        max_buffers_in_transit = __MAX(sys->output_pool->headers_num,
 -                MIN_NUM_BUFFERS_IN_TRANSIT);
@@ -1276,10 +1276,10 @@
 +        }
      }
 -    buffers_to_send = max_buffers_in_transit - atomic_load(&sys->output_in_transit);
- 
+-
 -    if (buffers_to_send > buffers_available)
 -        buffers_to_send = buffers_available;
--
+ 
 -#ifndef NDEBUG
 -    msg_Dbg(dec, "Send %d buffers to output port (available: %d, "
 -                    "in_transit: %d, buffer_num: %d)",
@@ -1427,7 +1427,7 @@
  
          len = block->i_buffer;
          if (len > buffer->alloc_size)
-@@ -590,89 +683,1572 @@
+@@ -590,89 +683,1525 @@
          }
          buffer->flags = flags;
  
@@ -1703,19 +1703,15 @@
 +
 +    pic_fifo_t ret_pics;
 +
++    unsigned int pic_n;
 +    vlc_sem_t sem;
 +    vlc_mutex_t lock;
 +
-+    bool b_top_field_first;
-+    bool b_progressive;
-+
 +    MMAL_STATUS_T err_stream;
-+    int in_count;
 +
 +    bool is_cma;
 +    bool is_sliced;
 +    bool out_fmt_set;
-+    bool latency_set;
 +    const char * component_name;
 +    MMAL_PORT_BH_CB_T in_port_cb_fn;
 +    MMAL_PORT_BH_CB_T out_port_cb_fn;
@@ -1773,7 +1769,7 @@
 +    if (sys->is_cma)
 +    {
 +        if (sys->cma_out_pool == NULL &&
-+            (sys->cma_out_pool = cma_buf_pool_new(5, 5, true)) == NULL)
++            (sys->cma_out_pool = cma_buf_pool_new(5, 5, true, "mmal_resizer")) == NULL)
 +        {
 +            msg_Err(p_filter, "Failed to alloc cma buf pool");
 +            return MMAL_ENOMEM;
@@ -1910,8 +1906,7 @@
 +        else
 +        {
 +            buf_to_pic_copy_props(pic, buf);
- 
--        sys->output_format = format;
++
 +            // Set pic data pointers from buf aux info now it has it
 +            if (sys->is_cma) {
 +                if (cma_pic_set_data(pic, sys->output->format, buf) != VLC_SUCCESS)
@@ -2053,7 +2048,7 @@
 +    if (sys->output != NULL && sys->output->is_enabled)
 +        mmal_port_disable(sys->output);
 +
-+    cma_buf_pool_deletez(&sys->cma_out_pool);
++//    cma_buf_pool_deletez(&sys->cma_out_pool);
 +
 +    // Free up anything we may have already lying around
 +    // Don't need lock as the above disables should have prevented anything
@@ -2076,13 +2071,9 @@
 +    pic_fifo_release_all(&sys->ret_pics);
 +
 +    // Reset sem values - easiest & most reliable way is to just kill & re-init
-+    // This will also dig us out of situations where we have got out of sync somehow
 +    vlc_sem_destroy(&sys->sem);
-+    vlc_sem_init(&sys->sem, CONV_MAX_LATENCY);
- 
--        mmal_buffer_header_release(buffer);
-+    // No buffers in either port now
-+    sys->in_count = 0;
++    vlc_sem_init(&sys->sem, 0);
++    sys->pic_n = 0;
 +
 +    // Reset error status
 +    sys->err_stream = MMAL_SUCCESS;
@@ -2276,8 +2267,10 @@
 +        (err = conv_enable_in(p_filter, sys)) != MMAL_SUCCESS)
 +        goto fail;
 +
-+    // If ZC then we need to allocate the out pic before we stuff the input
-+    if (sys->is_sliced) {
++    // We attach pic to buf before stuffing the output port
++    // We could attach the pic on output for cma, but it is a lot easier to keep
++    // the code common.
++    {
 +        picture_t * const out_pic = filter_NewPicture(p_filter);
 +
 +        if (out_pic == NULL)
@@ -2286,17 +2279,89 @@
 +            goto fail;
 +        }
 +
-+        vlc_mutex_lock(&sys->lock);
-+        pic_fifo_put(&sys->slice.pics, out_pic);
-+        vlc_mutex_unlock(&sys->lock);
++        if (sys->is_sliced) {
++            vlc_mutex_lock(&sys->lock);
++            pic_fifo_put(&sys->slice.pics, out_pic);
++            vlc_mutex_unlock(&sys->lock);
 +
-+        // Poke any returned pic buffers into output
-+        // In general this should only happen immediately after enable
-+        while ((out_buf = mmal_queue_get(sys->out_pool->queue)) != NULL)
-+            mmal_port_send_buffer(sys->output, out_buf);
++            // Poke any returned pic buffers into output
++            // In general this should only happen immediately after enable
++            while ((out_buf = mmal_queue_get(sys->out_pool->queue)) != NULL)
++                mmal_port_send_buffer(sys->output, out_buf);
++        }
++        else
++        {
++            // 1 in - 1 out
++            if ((out_buf = mmal_queue_wait(sys->out_pool->queue)) == NULL)
++            {
++                msg_Err(p_filter, "Failed to get output buffer");
++                picture_Release(out_pic);
++                goto fail;
++            }
++            mmal_buffer_header_reset(out_buf);
 +
-+        ++sys->in_count;
++            // Attach out_pic to the buffer & ensure it is freed when the buffer is released
++            // On a good send callback the pic will be extracted to avoid this
++            out_buf->user_data = out_pic;
++            mmal_buffer_header_pre_release_cb_set(out_buf, out_buffer_pre_release_cb, NULL);
++
++#if 0
++            char dbuf0[5];
++            msg_Dbg(p_filter, "out_pic %s,%dx%d [(%d,%d) %d/%d] sar:%d/%d",
++                    str_fourcc(dbuf0, out_pic->format.i_chroma),
++                    out_pic->format.i_width, out_pic->format.i_height,
++                    out_pic->format.i_x_offset, out_pic->format.i_y_offset,
++                    out_pic->format.i_visible_width, out_pic->format.i_visible_height,
++                    out_pic->format.i_sar_num, out_pic->format.i_sar_den);
++#endif
++
++
++            if (sys->is_cma) {
++                int rv;
++
++                cma_buf_t * const cb = cma_buf_pool_alloc_buf(sys->cma_out_pool, sys->output->buffer_size);
++                if (cb == NULL) {
++                    char dbuf0[5];
++                    msg_Err(p_filter, "Failed to alloc CMA buf: fmt=%s, size=%d",
++                            str_fourcc(dbuf0, out_pic->format.i_chroma),
++                            sys->output->buffer_size);
++                    goto fail;
++                }
++                const unsigned int vc_h = cma_buf_vc_handle(cb);  // Cannot coerce without going via variable
++                out_buf->data = (uint8_t *)vc_h;
++                out_buf->alloc_size = sys->output->buffer_size;
++
++                if ((rv = cma_buf_pic_attach(cb, out_pic)) != VLC_SUCCESS)
++                {
++                    char dbuf0[5];
++                    msg_Err(p_filter, "Failed to attach CMA to pic: fmt=%s err=%d",
++                            str_fourcc(dbuf0, out_pic->format.i_chroma),
++                            rv);
++                    cma_buf_unref(cb);
++                    goto fail;
++                }
++            }
++            else {
++                out_buf->data = out_pic->p[0].p_pixels;
++                out_buf->alloc_size = out_pic->p[0].i_pitch * out_pic->p[0].i_lines;
++                //**** stride ????
++            }
++
++#if TRACE_ALL
++            msg_Dbg(p_filter, "Out buf send: pic=%p, data=%p, user=%p, flags=%#x, len=%d/%d, pts=%lld",
++                    p_pic, out_buf->data, out_buf->user_data, out_buf->flags,
++                    out_buf->length, out_buf->alloc_size, (long long)out_buf->pts);
++#endif
++
++            if ((err = mmal_port_send_buffer(sys->output, out_buf)) != MMAL_SUCCESS)
++            {
++                msg_Err(p_filter, "Send buffer to output failed");
++                goto fail;
++            }
++            out_buf = NULL;
++        }
 +    }
++
 +
 +    // Stuff into input
 +    // We assume the BH is already set up with values reflecting pic date etc.
@@ -2321,146 +2386,30 @@
 +            mmal_buffer_header_release(pic_buf);
 +            goto fail;
 +        }
-+
-+        --sys->in_count;
 +    }
 +
-+    if (!sys->is_sliced) {
-+
-+        while ((out_buf = sys->in_count < 0 ?
-+                mmal_queue_wait(sys->out_pool->queue) : mmal_queue_get(sys->out_pool->queue)) != NULL)
-+        {
-+            picture_t * const out_pic = filter_NewPicture(p_filter);
-+
-+            mmal_buffer_header_reset(out_buf);
-+
-+            if (out_pic == NULL) {
-+                msg_Warn(p_filter, "Failed to alloc new filter output pic");
-+                mmal_buffer_header_release(out_buf);
-+                out_buf = NULL;
-+                break;
-+            }
-+
-+            // Attach out_pic to the buffer & ensure it is freed when the buffer is released
-+            // On a good send callback the pic will be extracted to avoid this
-+            out_buf->user_data = out_pic;
-+            mmal_buffer_header_pre_release_cb_set(out_buf, out_buffer_pre_release_cb, NULL);
-+
-+#if 0
-+            char dbuf0[5];
-+            msg_Dbg(p_filter, "out_pic %s,%dx%d [(%d,%d) %d/%d] sar:%d/%d",
-+                    str_fourcc(dbuf0, out_pic->format.i_chroma),
-+                    out_pic->format.i_width, out_pic->format.i_height,
-+                    out_pic->format.i_x_offset, out_pic->format.i_y_offset,
-+                    out_pic->format.i_visible_width, out_pic->format.i_visible_height,
-+                    out_pic->format.i_sar_num, out_pic->format.i_sar_den);
-+#endif
-+
-+
-+            if (sys->is_cma) {
-+                int rv;
-+
-+                cma_buf_t * const cb = cma_buf_pool_alloc_buf(sys->cma_out_pool, sys->output->buffer_size);
-+                if (cb == NULL) {
-+                    char dbuf0[5];
-+                    msg_Err(p_filter, "Failed to alloc CMA buf: fmt=%s, size=%d, err=%d",
-+                            str_fourcc(dbuf0, out_pic->format.i_chroma),
-+                            sys->output->buffer_size,
-+                            rv);
-+                    goto fail;
-+                }
-+
-+                if ((rv = cma_buf_pic_attach(cb, out_pic)) != VLC_SUCCESS)
-+                {
-+                    char dbuf0[5];
-+                    msg_Err(p_filter, "Failed to attach CMA to pic: fmt=%s err=%d",
-+                            str_fourcc(dbuf0, out_pic->format.i_chroma),
-+                            rv);
-+                    cma_buf_unref(cb);
-+                    goto fail;
-+                }
-+                const unsigned int vc_h = cma_buf_vc_handle(cb);
-+                if (vc_h == 0)
-+                {
-+                    msg_Err(p_filter, "Pic has no vc handle");
-+                    goto fail;
-+                }
-+                out_buf->data = (uint8_t *)vc_h;
-+                out_buf->alloc_size = sys->output->buffer_size;
-+            }
-+            else {
-+                out_buf->data = out_pic->p[0].p_pixels;
-+                out_buf->alloc_size = out_pic->p[0].i_pitch * out_pic->p[0].i_lines;
-+                //**** stride ????
-+            }
-+
++    // We have a 1 pic latency for everything except the 1st pic which we
++    // wait for.
++    // This means we get a single static pic out
++    if (sys->pic_n++ == 1) {
 +#if TRACE_ALL
-+            msg_Dbg(p_filter, "Out buf send: pic=%p, data=%p, user=%p, flags=%#x, len=%d/%d, pts=%lld",
-+                    p_pic, out_buf->data, out_buf->user_data, out_buf->flags,
-+                    out_buf->length, out_buf->alloc_size, (long long)out_buf->pts);
++        msg_Dbg(p_filter, ">>> %s: Pic1=NULL", __func__);
 +#endif
-+
-+            if ((err = mmal_port_send_buffer(sys->output, out_buf)) != MMAL_SUCCESS)
-+            {
-+                msg_Err(p_filter, "Send buffer to output failed");
-+                goto fail;
-+            }
-+            out_buf = NULL;
-+
-+            ++sys->in_count;
-+        }
++        return NULL;
 +    }
-+
-+    if (sys->in_count < 0)
-+    {
-+        msg_Err(p_filter, "Buffer count somehow negative");
-+        goto fail;
-+    }
-+
-+    // Avoid being more than 1 pic behind
 +    vlc_sem_wait(&sys->sem);
 +
-+    // Set sem for delayed scale if not already set
-+    if (!sys->latency_set) {
-+        unsigned int i;
-+        sys->latency_set = true;
-+        for (i = 0; i != CONV_MAX_LATENCY; ++i) {
-+            vlc_sem_post(&sys->sem);
-+        }
-+    }
-+
-+    // Return all pending buffers
++    // Return a single pending buffer
 +    vlc_mutex_lock(&sys->lock);
-+    ret_pics = pic_fifo_get_all(&sys->ret_pics);
++    ret_pics = pic_fifo_get(&sys->ret_pics);
 +    vlc_mutex_unlock(&sys->lock);
 +
 +    if (sys->err_stream != MMAL_SUCCESS)
 +        goto stream_fail;
 +
-+    // Sink as many sem posts as we have pics
-+    // (shouldn't normally wait, but there is a small race)
-+    if (ret_pics != NULL)
-+    {
-+        picture_t *next_pic = ret_pics->p_next;
-+
-+        conv_stash_fixup(p_filter, sys, ret_pics);
-+#if 0
-+        char dbuf0[5];
-+
-+        msg_Dbg(p_filter, "pic_out %s,%dx%d [(%d,%d) %d/%d] sar:%d/%d",
-+                str_fourcc(dbuf0, ret_pics->format.i_chroma),
-+                ret_pics->format.i_width, ret_pics->format.i_height,
-+                ret_pics->format.i_x_offset, ret_pics->format.i_y_offset,
-+                ret_pics->format.i_visible_width, ret_pics->format.i_visible_height,
-+                ret_pics->format.i_sar_num, ret_pics->format.i_sar_den);
-+#endif
-+        while (next_pic != NULL) {
-+            vlc_sem_wait(&sys->sem);
-+            conv_stash_fixup(p_filter, sys, next_pic);
-+            next_pic = next_pic->p_next;
-+        }
-+    }
-+
++    conv_stash_fixup(p_filter, sys, ret_pics);
+ 
+-        sys->output_format = format;
 +#if TRACE_ALL
 +    msg_Dbg(p_filter, ">>> %s: pic=%p", __func__, ret_pics);
 +#endif
@@ -2472,6 +2421,7 @@
 +fail:
 +#if TRACE_ALL
 +    msg_Err(p_filter, ">>> %s: FAIL", __func__);
++    picture_Release(ret_pics);
 +#endif
 +    if (out_buf != NULL)
 +        mmal_buffer_header_release(out_buf);
@@ -2505,6 +2455,8 @@
 +
 +    // Disables input & output ports
 +    conv_flush(p_filter);
++
++    cma_buf_pool_deletez(&sys->cma_out_pool);
 +
 +    if (sys->component && sys->component->control->is_enabled)
 +        mmal_port_disable(sys->component->control);
@@ -2590,7 +2542,8 @@
 +
 +    use_resizer = var_InheritBool(p_filter, MMAL_RESIZE_NAME);
 +    use_isp = var_InheritBool(p_filter, MMAL_ISP_NAME);
-+
+ 
+-        mmal_buffer_header_release(buffer);
 +retry:
 +    // ** Make more generic by checking supported encs
 +    //
@@ -2682,7 +2635,7 @@
 +        sys->is_sliced = false;  // Copy directly into filter picture
 +        sys->component_name = MMAL_COMPONENT_HVS;
 +        sys->out_port_cb_fn = conv_output_port_cb;
-+    }
+     }
 +    sys->is_cma = is_cma_buf_pic_chroma(p_filter->fmt_out.video.i_chroma);
 +
 +    status = mmal_component_create(sys->component_name, &sys->component);
@@ -2736,7 +2689,7 @@
 +        msg_Err(p_filter, "Failed to enable component %s (status=%"PRIx32" %s)",
 +                sys->component->name, status, mmal_status_to_string(status));
 +        goto fail;
-     }
++    }
 +
 +    if ((sys->in_pool = mmal_pool_create(sys->input->buffer_num, 0)) == NULL)
 +    {
@@ -2779,7 +2732,7 @@
 +    msg_Dbg(p_filter, ">>> %s: FAIL: %d", __func__, ret);
 +#endif
 +    return ret;
-+}
+ }
 +
 +
 +typedef struct blend_sys_s {
@@ -2893,7 +2846,7 @@
 +fail:
 +    CloseBlendMmal(VLC_OBJECT(p_filter));
 +    return VLC_ENOMEM;
- }
++}
 +
 +// ---------------------------------------------------------------------------
 +
@@ -3055,7 +3008,7 @@
 +
 --- /dev/null
 +++ b/modules/hw/mmal/converter_mmal.c
-@@ -0,0 +1,480 @@
+@@ -0,0 +1,479 @@
 +#ifdef HAVE_CONFIG_H
 +# include "config.h"
 +#endif
@@ -3140,7 +3093,6 @@
 +static void tex_context_delete(tex_context_t * const tex)
 +{
 +    tex->DeleteTextures(1, &tex->texture);
-+
 +    free(tex);
 +}
 +
@@ -3408,11 +3360,11 @@
 +        case VLC_CODEC_MMAL_OPAQUE:
 +        case VLC_CODEC_MMAL_ZC_I420:
 +        case VLC_CODEC_MMAL_ZC_SAND8:
-+        case VLC_CODEC_MMAL_ZC_SAND10:   // ISP only
++        case VLC_CODEC_MMAL_ZC_SAND10:          // ISP only
 +            return VLC_CODEC_MMAL_ZC_I420;
-+        case VLC_CODEC_MMAL_ZC_SAND30:   // HVS only
++        case VLC_CODEC_MMAL_ZC_SAND30:          // HVS only
 +        case VLC_CODEC_MMAL_ZC_RGB32:
-+            return VLC_CODEC_MMAL_ZC_RGB32;
++            return VLC_CODEC_MMAL_ZC_RGB32;     // HVS can't generate YUV of any sort
 +        default:
 +            break;
 +    }
@@ -3553,7 +3505,7 @@
  
  #include "mmal_picture.h"
  
-@@ -39,415 +40,472 @@
+@@ -39,468 +40,813 @@
  #include <interface/mmal/util/mmal_util.h>
  #include <interface/mmal/util/mmal_default_components.h>
  
@@ -3590,8 +3542,7 @@
 +#define MMAL_DEINTERLACE_NONE_TEXT N_("Force no deinterlace")
 +#define MMAL_DEINTERLACE_NONE_LONGTEXT N_("Force no interlace. Simply strips off the interlace markers and passes the frame straight through. "\
 +    "This is the default for > SD if < 96M gpu-mem")
- 
--struct filter_sys_t {
++
 +#define MMAL_DEINTERLACE_HALF_RATE "mmal-deinterlace-half-rate"
 +#define MMAL_DEINTERLACE_HALF_RATE_TEXT N_("Halve output framerate")
 +#define MMAL_DEINTERLACE_HALF_RATE_LONGTEXT N_("Halve output framerate. 1 output frame for each pair of interlaced fields input")
@@ -3599,7 +3550,8 @@
 +#define MMAL_DEINTERLACE_FULL_RATE "mmal-deinterlace-full-rate"
 +#define MMAL_DEINTERLACE_FULL_RATE_TEXT N_("Full output framerate")
 +#define MMAL_DEINTERLACE_FULL_RATE_LONGTEXT N_("Full output framerate. 1 output frame for each interlaced field input")
-+
+ 
+-struct filter_sys_t {
 +
 +typedef struct filter_sys_t
 +{
@@ -3607,16 +3559,29 @@
      MMAL_PORT_T *input;
      MMAL_PORT_T *output;
 +    MMAL_POOL_T *in_pool;
- 
--    MMAL_QUEUE_T *filtered_pictures;
--    vlc_sem_t sem;
++
 +    MMAL_QUEUE_T * out_q;
- 
--    atomic_bool started;
++
 +    // Bind this lot somehow into ppr????
 +    bool is_cma;
 +    cma_buf_pool_t * cma_out_pool;
 +    MMAL_POOL_T * out_pool;
++
++    hw_mmal_port_pool_ref_t *out_ppr;
++
++    bool half_rate;
++    bool use_qpu;
++    bool use_fast;
++    bool use_passthrough;
++    unsigned int seq_in;    // Seq of next frame to submit (1-15) [Init=1]
++    unsigned int seq_out;   // Seq of last frame received  (1-15) [Init=15]
+ 
+-    MMAL_QUEUE_T *filtered_pictures;
+-    vlc_sem_t sem;
++    vcsm_init_type_t vcsm_init_type;
+ 
+-    atomic_bool started;
++} filter_sys_t;
  
 -    /* statistics */
 -    int output_in_transit;
@@ -3628,23 +3593,23 @@
 -static void output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
 -static picture_t *deinterlace(filter_t *filter, picture_t *picture);
 -static void flush(filter_t *filter);
-+    hw_mmal_port_pool_ref_t *out_ppr;
  
--#define MMAL_COMPONENT_DEFAULT_DEINTERLACE "vc.ril.image_fx"
-+    bool half_rate;
-+    bool use_qpu;
-+    bool use_fast;
-+    bool use_passthrough;
-+    unsigned int seq_in;    // Seq of next frame to submit (1-15) [Init=1]
-+    unsigned int seq_out;   // Seq of last frame received  (1-15) [Init=15]
+ #define MMAL_COMPONENT_DEFAULT_DEINTERLACE "vc.ril.image_fx"
  
 -static int Open(filter_t *filter)
--{
++#define TRACE_ALL 0
++
++
++
++// Buffer attached to pic on success, is still valid on failure
++static picture_t * di_alloc_opaque(filter_t * const p_filter, MMAL_BUFFER_HEADER_T * const buf)
+ {
 -    int32_t frame_duration = filter->fmt_in.video.i_frame_rate != 0 ?
 -            (int64_t)1000000 * filter->fmt_in.video.i_frame_rate_base /
 -            filter->fmt_in.video.i_frame_rate : 0;
 -    bool use_qpu = var_InheritBool(filter, MMAL_DEINTERLACE_QPU);
-+    vcsm_init_type_t vcsm_init_type;
++    filter_sys_t *const filter_sys = p_filter->p_sys;
++    picture_t * const pic = filter_NewPicture(p_filter);
  
 -    MMAL_PARAMETER_IMAGEFX_PARAMETERS_T imfx_param = {
 -            { MMAL_PARAMETER_IMAGE_EFFECT_PARAMETERS, sizeof(imfx_param) },
@@ -3652,103 +3617,39 @@
 -            4,
 -            { 3, frame_duration, 0, use_qpu }
 -    };
-+} filter_sys_t;
++    if (pic == NULL)
++        goto fail1;
  
 -    int ret = VLC_SUCCESS;
 -    MMAL_STATUS_T status;
 -    filter_sys_t *sys;
++    if (buf->length == 0) {
++        msg_Err(p_filter, "%s: Empty buffer", __func__);
++        goto fail2;
++    }
  
 -    msg_Dbg(filter, "Try to open mmal_deinterlace filter. frame_duration: %d, QPU %s!",
 -            frame_duration, use_qpu ? "used" : "unused");
-+#define MMAL_COMPONENT_DEFAULT_DEINTERLACE "vc.ril.image_fx"
++    if ((pic->context = hw_mmal_gen_context(buf, filter_sys->out_ppr)) == NULL)
++        goto fail2;
  
 -    if (filter->fmt_in.video.i_chroma != VLC_CODEC_MMAL_OPAQUE)
 -        return VLC_EGENERIC;
-+#define TRACE_ALL 0
++    buf_to_pic_copy_props(pic, buf);
  
 -    if (filter->fmt_out.video.i_chroma != VLC_CODEC_MMAL_OPAQUE)
 -        return VLC_EGENERIC;
++#if TRACE_ALL
++    msg_Dbg(p_filter, "pic: prog=%d, tff=%d, date=%lld", pic->b_progressive, pic->b_top_field_first, (long long)pic->date);
++#endif
  
 -    sys = calloc(1, sizeof(filter_sys_t));
 -    if (!sys)
 -        return VLC_ENOMEM;
 -    filter->p_sys = sys;
- 
--    bcm_host_init();
-+// Buffer attached to pic on success, is still valid on failure
-+static picture_t * di_alloc_opaque(filter_t * const p_filter, MMAL_BUFFER_HEADER_T * const buf)
-+{
-+    filter_sys_t *const filter_sys = p_filter->p_sys;
-+    picture_t * const pic = filter_NewPicture(p_filter);
- 
--    status = mmal_component_create(MMAL_COMPONENT_DEFAULT_DEINTERLACE, &sys->component);
--    if (status != MMAL_SUCCESS) {
--        msg_Err(filter, "Failed to create MMAL component %s (status=%"PRIx32" %s)",
--                MMAL_COMPONENT_DEFAULT_DEINTERLACE, status, mmal_status_to_string(status));
--        ret = VLC_EGENERIC;
--        goto out;
--    }
-+    if (pic == NULL)
-+        goto fail1;
- 
--    status = mmal_port_parameter_set(sys->component->output[0], &imfx_param.hdr);
--    if (status != MMAL_SUCCESS) {
--        msg_Err(filter, "Failed to configure MMAL component %s (status=%"PRIx32" %s)",
--                MMAL_COMPONENT_DEFAULT_DEINTERLACE, status, mmal_status_to_string(status));
--        ret = VLC_EGENERIC;
--        goto out;
-+    if (buf->length == 0) {
-+        msg_Err(p_filter, "%s: Empty buffer", __func__);
-+        goto fail2;
-     }
- 
--    sys->component->control->userdata = (struct MMAL_PORT_USERDATA_T *)filter;
--    status = mmal_port_enable(sys->component->control, control_port_cb);
--    if (status != MMAL_SUCCESS) {
--        msg_Err(filter, "Failed to enable control port %s (status=%"PRIx32" %s)",
--                sys->component->control->name, status, mmal_status_to_string(status));
--        ret = VLC_EGENERIC;
--        goto out;
--    }
-+    if ((pic->context = hw_mmal_gen_context(buf, filter_sys->out_ppr)) == NULL)
-+        goto fail2;
- 
--    sys->input = sys->component->input[0];
--    sys->input->userdata = (struct MMAL_PORT_USERDATA_T *)filter;
--    if (filter->fmt_in.i_codec == VLC_CODEC_MMAL_OPAQUE)
--        sys->input->format->encoding = MMAL_ENCODING_OPAQUE;
--    sys->input->format->es->video.width = filter->fmt_in.video.i_width;
--    sys->input->format->es->video.height = filter->fmt_in.video.i_height;
--    sys->input->format->es->video.crop.x = 0;
--    sys->input->format->es->video.crop.y = 0;
--    sys->input->format->es->video.crop.width = filter->fmt_in.video.i_width;
--    sys->input->format->es->video.crop.height = filter->fmt_in.video.i_height;
--    sys->input->format->es->video.par.num = filter->fmt_in.video.i_sar_num;
--    sys->input->format->es->video.par.den = filter->fmt_in.video.i_sar_den;
-+    buf_to_pic_copy_props(pic, buf);
- 
--    es_format_Copy(&filter->fmt_out, &filter->fmt_in);
--    filter->fmt_out.video.i_frame_rate *= 2;
-+#if TRACE_ALL
-+    msg_Dbg(p_filter, "pic: prog=%d, tff=%d, date=%lld", pic->b_progressive, pic->b_top_field_first, (long long)pic->date);
-+#endif
- 
--    status = mmal_port_format_commit(sys->input);
--    if (status != MMAL_SUCCESS) {
--        msg_Err(filter, "Failed to commit format for input port %s (status=%"PRIx32" %s)",
--                        sys->input->name, status, mmal_status_to_string(status));
--        ret = VLC_EGENERIC;
--        goto out;
--    }
--    sys->input->buffer_size = sys->input->buffer_size_recommended;
--    sys->input->buffer_num = sys->input->buffer_num_recommended;
 +    return pic;
  
--    if (filter->fmt_in.i_codec == VLC_CODEC_MMAL_OPAQUE) {
--        MMAL_PARAMETER_BOOLEAN_T zero_copy = {
--            { MMAL_PARAMETER_ZERO_COPY, sizeof(MMAL_PARAMETER_BOOLEAN_T) },
--            1
--        };
+-    bcm_host_init();
 +fail2:
 +    picture_Release(pic);
 +fail1:
@@ -3756,12 +3657,12 @@
 +    return NULL;
 +}
  
--        status = mmal_port_parameter_set(sys->input, &zero_copy.hdr);
--        if (status != MMAL_SUCCESS) {
--           msg_Err(filter, "Failed to set zero copy on port %s (status=%"PRIx32" %s)",
--                    sys->input->name, status, mmal_status_to_string(status));
--           goto out;
--        }
+-    status = mmal_component_create(MMAL_COMPONENT_DEFAULT_DEINTERLACE, &sys->component);
+-    if (status != MMAL_SUCCESS) {
+-        msg_Err(filter, "Failed to create MMAL component %s (status=%"PRIx32" %s)",
+-                MMAL_COMPONENT_DEFAULT_DEINTERLACE, status, mmal_status_to_string(status));
+-        ret = VLC_EGENERIC;
+-        goto out;
 -    }
 +static void di_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 +{
@@ -3775,30 +3676,27 @@
 +    VLC_UNUSED(port);
 +#endif
  
--    status = mmal_port_enable(sys->input, input_port_cb);
+-    status = mmal_port_parameter_set(sys->component->output[0], &imfx_param.hdr);
 -    if (status != MMAL_SUCCESS) {
--        msg_Err(filter, "Failed to enable input port %s (status=%"PRIx32" %s)",
--                sys->input->name, status, mmal_status_to_string(status));
+-        msg_Err(filter, "Failed to configure MMAL component %s (status=%"PRIx32" %s)",
+-                MMAL_COMPONENT_DEFAULT_DEINTERLACE, status, mmal_status_to_string(status));
 -        ret = VLC_EGENERIC;
 -        goto out;
 -    }
 +    mmal_buffer_header_release(buffer);
  
--    sys->output = sys->component->output[0];
--    sys->output->userdata = (struct MMAL_PORT_USERDATA_T *)filter;
--    mmal_format_full_copy(sys->output->format, sys->input->format);
+-    sys->component->control->userdata = (struct MMAL_PORT_USERDATA_T *)filter;
+-    status = mmal_port_enable(sys->component->control, control_port_cb);
+-    if (status != MMAL_SUCCESS) {
+-        msg_Err(filter, "Failed to enable control port %s (status=%"PRIx32" %s)",
+-                sys->component->control->name, status, mmal_status_to_string(status));
+-        ret = VLC_EGENERIC;
+-        goto out;
 +#if TRACE_ALL
 +    msg_Dbg((filter_t *)port->userdata, ">>> %s", __func__);
 +#endif
 +}
- 
--    status = mmal_port_format_commit(sys->output);
--    if (status != MMAL_SUCCESS) {
--        msg_Err(filter, "Failed to commit format for output port %s (status=%"PRIx32" %s)",
--                        sys->input->name, status, mmal_status_to_string(status));
--        ret = VLC_EGENERIC;
--        goto out;
--    }
++
 +static void di_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf)
 +{
 +    if (buf->cmd == 0 && buf->length != 0)
@@ -3807,8 +3705,7 @@
 +        // but might not on later flushes as we shut down
 +        filter_t * const p_filter = (filter_t *)port->userdata;
 +        filter_sys_t * const sys = p_filter->p_sys;
- 
--    sys->output->buffer_num = 3;
++
 +#if TRACE_ALL
 +        msg_Dbg(p_filter, "<<< %s: cmd=%d; flags=%#x, pts=%lld", __func__, buf->cmd, buf->flags, (long long) buf->pts);
 +#endif
@@ -3817,53 +3714,51 @@
 +        msg_Dbg(p_filter, ">>> %s: out Q len=%d", __func__, mmal_queue_length(sys->out_q));
 +#endif
 +        return;
-+    }
+     }
  
--    if (filter->fmt_in.i_codec == VLC_CODEC_MMAL_OPAQUE) {
--        MMAL_PARAMETER_UINT32_T extra_buffers = {
--            { MMAL_PARAMETER_EXTRA_BUFFERS, sizeof(MMAL_PARAMETER_UINT32_T) },
--            5
--        };
--        status = mmal_port_parameter_set(sys->output, &extra_buffers.hdr);
--        if (status != MMAL_SUCCESS) {
--            msg_Err(filter, "Failed to set MMAL_PARAMETER_EXTRA_BUFFERS on output port (status=%"PRIx32" %s)",
--                    status, mmal_status_to_string(status));
--            goto out;
--        }
+-    sys->input = sys->component->input[0];
+-    sys->input->userdata = (struct MMAL_PORT_USERDATA_T *)filter;
+-    if (filter->fmt_in.i_codec == VLC_CODEC_MMAL_OPAQUE)
+-        sys->input->format->encoding = MMAL_ENCODING_OPAQUE;
+-    sys->input->format->es->video.width = filter->fmt_in.video.i_width;
+-    sys->input->format->es->video.height = filter->fmt_in.video.i_height;
+-    sys->input->format->es->video.crop.x = 0;
+-    sys->input->format->es->video.crop.y = 0;
+-    sys->input->format->es->video.crop.width = filter->fmt_in.video.i_width;
+-    sys->input->format->es->video.crop.height = filter->fmt_in.video.i_height;
+-    sys->input->format->es->video.par.num = filter->fmt_in.video.i_sar_num;
+-    sys->input->format->es->video.par.den = filter->fmt_in.video.i_sar_den;
 +    mmal_buffer_header_reset(buf);   // User data stays intact so release will kill pic
 +    mmal_buffer_header_release(buf);
 +}
  
+-    es_format_Copy(&filter->fmt_out, &filter->fmt_in);
+-    filter->fmt_out.video.i_frame_rate *= 2;
+ 
+-    status = mmal_port_format_commit(sys->input);
+-    if (status != MMAL_SUCCESS) {
+-        msg_Err(filter, "Failed to commit format for input port %s (status=%"PRIx32" %s)",
+-                        sys->input->name, status, mmal_status_to_string(status));
+-        ret = VLC_EGENERIC;
+-        goto out;
+-    }
+-    sys->input->buffer_size = sys->input->buffer_size_recommended;
+-    sys->input->buffer_num = sys->input->buffer_num_recommended;
+ 
+-    if (filter->fmt_in.i_codec == VLC_CODEC_MMAL_OPAQUE) {
 -        MMAL_PARAMETER_BOOLEAN_T zero_copy = {
 -            { MMAL_PARAMETER_ZERO_COPY, sizeof(MMAL_PARAMETER_BOOLEAN_T) },
 -            1
 -        };
- 
--        status = mmal_port_parameter_set(sys->output, &zero_copy.hdr);
--        if (status != MMAL_SUCCESS) {
--           msg_Err(filter, "Failed to set zero copy on port %s (status=%"PRIx32" %s)",
--                    sys->output->name, status, mmal_status_to_string(status));
--           goto out;
--        }
--    }
- 
--    status = mmal_port_enable(sys->output, output_port_cb);
--    if (status != MMAL_SUCCESS) {
--        msg_Err(filter, "Failed to enable output port %s (status=%"PRIx32" %s)",
--                sys->output->name, status, mmal_status_to_string(status));
--        ret = VLC_EGENERIC;
--        goto out;
--    }
 +static MMAL_STATUS_T fill_output_from_q(filter_t * const p_filter, filter_sys_t * const sys, MMAL_QUEUE_T * const q)
 +{
 +    MMAL_BUFFER_HEADER_T * out_buf;
  
--    status = mmal_component_enable(sys->component);
--    if (status != MMAL_SUCCESS) {
--        msg_Err(filter, "Failed to enable component %s (status=%"PRIx32" %s)",
--                sys->component->name, status, mmal_status_to_string(status));
--        ret = VLC_EGENERIC;
--        goto out;
+-        status = mmal_port_parameter_set(sys->input, &zero_copy.hdr);
+-        if (status != MMAL_SUCCESS) {
+-           msg_Err(filter, "Failed to set zero copy on port %s (status=%"PRIx32" %s)",
+-                    sys->input->name, status, mmal_status_to_string(status));
+-           goto out;
 +    while ((out_buf = mmal_queue_get(q)) != NULL)
 +    {
 +        MMAL_STATUS_T err;
@@ -3872,73 +3767,61 @@
 +            msg_Err(p_filter, "Send buffer to output failed");
 +            mmal_queue_put_back(q, out_buf);
 +            return err;
-+        }
+         }
      }
 +    return MMAL_SUCCESS;
 +}
  
--    sys->filtered_pictures = mmal_queue_create();
--
--    filter->pf_video_filter = deinterlace;
--    filter->pf_flush = flush;
+-    status = mmal_port_enable(sys->input, input_port_cb);
+-    if (status != MMAL_SUCCESS) {
+-        msg_Err(filter, "Failed to enable input port %s (status=%"PRIx32" %s)",
+-                sys->input->name, status, mmal_status_to_string(status));
+-        ret = VLC_EGENERIC;
+-        goto out;
+-    }
 +// Output buffers may contain a pic ref on error or flush
 +// Free it
 +static MMAL_BOOL_T out_buffer_pre_release_cb(MMAL_BUFFER_HEADER_T *header, void *userdata)
 +{
 +    VLC_UNUSED(userdata);
  
--    vlc_sem_init(&sys->sem, 0);
-+    picture_t * const pic = header->user_data;
+-    sys->output = sys->component->output[0];
+-    sys->output->userdata = (struct MMAL_PORT_USERDATA_T *)filter;
+-    mmal_format_full_copy(sys->output->format, sys->input->format);
++    cma_buf_t * const cb = header->user_data;
 +    header->user_data = NULL;
++    cma_buf_unref(cb);  // Copes fine with NULL
  
--out:
--    if (ret != VLC_SUCCESS)
--        Close(filter);
-+    if (pic != NULL)
-+        picture_Release(pic);
- 
--    return ret;
+-    status = mmal_port_format_commit(sys->output);
+-    if (status != MMAL_SUCCESS) {
+-        msg_Err(filter, "Failed to commit format for output port %s (status=%"PRIx32" %s)",
+-                        sys->input->name, status, mmal_status_to_string(status));
+-        ret = VLC_EGENERIC;
+-        goto out;
 +    return MMAL_FALSE;
- }
- 
--static void Close(filter_t *filter)
++}
++
 +static inline unsigned int seq_inc(unsigned int x)
- {
--    filter_sys_t *sys = filter->p_sys;
--    MMAL_BUFFER_HEADER_T *buffer;
--
--    if (!sys)
--        return;
--
--    if (sys->component && sys->component->control->is_enabled)
--        mmal_port_disable(sys->component->control);
++{
 +    return x + 1 >= 16 ? 1 : x + 1;
 +}
- 
--    if (sys->input && sys->input->is_enabled)
--        mmal_port_disable(sys->input);
++
 +static inline unsigned int seq_delta(unsigned int sseq, unsigned int fseq)
 +{
 +    return fseq == 0 ? 0 : fseq <= sseq ? sseq - fseq : 15 - (fseq - sseq);
 +}
- 
--    if (sys->output && sys->output->is_enabled)
--        mmal_port_disable(sys->output);
++
 +static picture_t *deinterlace(filter_t * p_filter, picture_t * p_pic)
 +{
 +    filter_sys_t * const sys = p_filter->p_sys;
 +    picture_t *ret_pics = NULL;
 +    MMAL_STATUS_T err;
- 
--    if (sys->component && sys->component->is_enabled)
--        mmal_component_disable(sys->component);
++    MMAL_BUFFER_HEADER_T * out_buf = NULL;
++
 +#if TRACE_ALL
 +    msg_Dbg(p_filter, "<<< %s", __func__);
 +#endif
- 
--    while ((buffer = mmal_queue_get(sys->filtered_pictures))) {
--        picture_t *pic = (picture_t *)buffer->user_data;
--        picture_Release(pic);
++
 +    if (hw_mmal_vlc_pic_to_mmal_fmt_update(sys->input->format, p_pic))
 +    {
 +        // ****** Breaks on opaque (at least)
@@ -3984,8 +3867,6 @@
 +    {
 +        // We are expecting one in - one out so simply wedge a new bufer
 +        // into the output port.  Flow control will happen on cma alloc.
-+        int rv;
-+        MMAL_BUFFER_HEADER_T * out_buf;
 +
 +        if ((out_buf = mmal_queue_get(sys->out_pool->queue)) == NULL)
 +        {
@@ -3995,82 +3876,52 @@
 +        }
 +        mmal_buffer_header_reset(out_buf);
  
--    if (sys->filtered_pictures)
--        mmal_queue_destroy(sys->filtered_pictures);
-+        picture_t * const out_pic = filter_NewPicture(p_filter);
- 
--    if (sys->component)
--        mmal_component_release(sys->component);
-+        if (out_pic == NULL) {
-+            msg_Warn(p_filter, "Failed to alloc new filter output pic");
-+            goto fail;
-+        }
- 
--    vlc_sem_destroy(&sys->sem);
--    free(sys);
-+        // Attach out_pic to the buffer & ensure it is freed when the buffer is released
+-    sys->output->buffer_num = 3;
++        // Attach cma_buf to the buffer & ensure it is freed when the buffer is released
 +        // On a good send callback the pic will be extracted to avoid this
-+        out_buf->user_data = out_pic;
-+        mmal_buffer_header_pre_release_cb_set(out_buf, out_buffer_pre_release_cb, NULL);
++        mmal_buffer_header_pre_release_cb_set(out_buf, out_buffer_pre_release_cb, p_filter);
 +
 +        cma_buf_t * const cb = cma_buf_pool_alloc_buf(sys->cma_out_pool, sys->output->buffer_size);
-+        if (cb == NULL) {
++        if ((out_buf->user_data = cb) == NULL)  // Check & attach cb to buf
++        {
 +            char dbuf0[5];
 +            msg_Err(p_filter, "Failed to alloc CMA buf: fmt=%s, size=%d",
-+                    str_fourcc(dbuf0, out_pic->format.i_chroma),
++                    str_fourcc(dbuf0, p_pic->format.i_chroma),
 +                    sys->output->buffer_size);
 +            goto fail;
 +        }
- 
--    bcm_host_deinit();
--}
-+        if ((rv = cma_buf_pic_attach(cb, out_pic)) != VLC_SUCCESS)
-+        {
-+            char dbuf0[5];
-+            msg_Err(p_filter, "Failed to attach CMA to pic: fmt=%s err=%d",
-+                    str_fourcc(dbuf0, out_pic->format.i_chroma),
-+                    rv);
-+            cma_buf_unref(cb);
-+            goto fail;
-+        }
-+        const unsigned int vc_h = cma_buf_vc_handle(cb);
-+        if (vc_h == 0)
-+        {
-+            msg_Err(p_filter, "Pic has no vc handle");
-+            goto fail;
-+        }
++        const unsigned int vc_h = cma_buf_vc_handle(cb);  // Cannot coerce without going via variable
 +        out_buf->data = (uint8_t *)vc_h;
 +        out_buf->alloc_size = sys->output->buffer_size;
- 
--static int send_output_buffer(filter_t *filter)
--{
--    filter_sys_t *sys = filter->p_sys;
--    MMAL_BUFFER_HEADER_T *buffer;
--    MMAL_STATUS_T status;
--    picture_t *picture;
--    int ret = 0;
++
 +#if TRACE_ALL
 +        msg_Dbg(p_filter, "Out buf send: pic=%p, data=%p, user=%p, flags=%#x, len=%d/%d, pts=%lld",
 +                p_pic, out_buf->data, out_buf->user_data, out_buf->flags,
 +                out_buf->length, out_buf->alloc_size, (long long)out_buf->pts);
 +#endif
  
--    if (!sys->output->is_enabled) {
--        ret = VLC_EGENERIC;
--        goto out;
+-    if (filter->fmt_in.i_codec == VLC_CODEC_MMAL_OPAQUE) {
+-        MMAL_PARAMETER_UINT32_T extra_buffers = {
+-            { MMAL_PARAMETER_EXTRA_BUFFERS, sizeof(MMAL_PARAMETER_UINT32_T) },
+-            5
+-        };
+-        status = mmal_port_parameter_set(sys->output, &extra_buffers.hdr);
+-        if (status != MMAL_SUCCESS) {
+-            msg_Err(filter, "Failed to set MMAL_PARAMETER_EXTRA_BUFFERS on output port (status=%"PRIx32" %s)",
+-                    status, mmal_status_to_string(status));
+-            goto out;
 +        if ((err = mmal_port_send_buffer(sys->output, out_buf)) != MMAL_SUCCESS)
 +        {
 +            msg_Err(p_filter, "Send buffer to output failed");
 +            goto fail;
-+        }
+         }
 +        out_buf = NULL;
-     }
++    }
  
--    picture = filter_NewPicture(filter);
--    if (!picture) {
--        msg_Warn(filter, "Failed to get new picture");
--        ret = -1;
--        goto out;
+-        MMAL_PARAMETER_BOOLEAN_T zero_copy = {
+-            { MMAL_PARAMETER_ZERO_COPY, sizeof(MMAL_PARAMETER_BOOLEAN_T) },
+-            1
+-        };
 +    // Stuff into input
 +    // We assume the BH is already set up with values reflecting pic date etc.
 +    {
@@ -4081,7 +3932,12 @@
 +            msg_Err(p_filter, "Pic has not attached buffer");
 +            goto fail;
 +        }
-+
+ 
+-        status = mmal_port_parameter_set(sys->output, &zero_copy.hdr);
+-        if (status != MMAL_SUCCESS) {
+-           msg_Err(filter, "Failed to set zero copy on port %s (status=%"PRIx32" %s)",
+-                    sys->output->name, status, mmal_status_to_string(status));
+-           goto out;
 +        picture_Release(p_pic);
 +
 +        // Add a sequence to the flags so we can track what we have actually
@@ -4094,17 +3950,17 @@
 +            msg_Err(p_filter, "Send buffer to input failed");
 +            mmal_buffer_header_release(pic_buf);
 +            goto fail;
-+        }
+         }
      }
--    picture->format.i_frame_rate = filter->fmt_out.video.i_frame_rate;
--    picture->format.i_frame_rate_base = filter->fmt_out.video.i_frame_rate_base;
  
--    buffer = picture->p_sys->buffer;
--    buffer->user_data = picture;
--    buffer->cmd = 0;
+-    status = mmal_port_enable(sys->output, output_port_cb);
+-    if (status != MMAL_SUCCESS) {
+-        msg_Err(filter, "Failed to enable output port %s (status=%"PRIx32" %s)",
+-                sys->output->name, status, mmal_status_to_string(status));
+-        ret = VLC_EGENERIC;
+-        goto out;
 +    // Return anything that is in the out Q
 +    {
-+        MMAL_BUFFER_HEADER_T * out_buf;  // *** Worry about error leaks
 +        picture_t ** pp_pic = &ret_pics;
 +
 +        // Advanced di has a 3 frame latency, so if the seq delta is greater
@@ -4123,8 +3979,28 @@
 +
 +            if (sys->is_cma)
 +            {
-+                // Extract pic from buf
-+                out_pic = (picture_t *)out_buf->user_data;
++                // Alloc pic
++                if ((out_pic = filter_NewPicture(p_filter)) == NULL)
++                {
++                    // Can't alloc pic - just stop extraction
++                    mmal_queue_put_back(sys->out_q, out_buf);
++                    out_buf = NULL;
++                    msg_Warn(p_filter, "Failed to alloc new filter output pic");
++                    break;
++                }
++
++                // Extract cma_buf from buf & attach to pic
++                cma_buf_t * const cb = (cma_buf_t *)out_buf->user_data;
++                if ((rv = cma_buf_pic_attach(cb, out_pic)) != VLC_SUCCESS)
++                {
++                    char dbuf0[5];
++                    msg_Err(p_filter, "Failed to attach CMA to pic: fmt=%s err=%d",
++                            str_fourcc(dbuf0, out_pic->format.i_chroma),
++                            rv);
++                    // cb still attached to buffer and will be freed with it
++                    goto fail;
++                }
++                out_buf->user_data = NULL;
 +
 +                buf_to_pic_copy_props(out_pic, out_buf);
 +
@@ -4136,8 +4012,7 @@
 +                            str_fourcc(dbuf0, sys->output->format->encoding),
 +                            rv);
 +                }
- 
--    mmal_picture_lock(picture);
++
 +                out_buf->user_data = NULL;  // Responsability for this pic no longer with buffer
 +                mmal_buffer_header_release(out_buf);
 +            }
@@ -4148,122 +4023,59 @@
 +                if (out_pic == NULL) {
 +                    msg_Warn(p_filter, "Failed to alloc new filter output pic");
 +                    mmal_queue_put_back(sys->out_q, out_buf);  // Wedge buf back into Q in the hope we can alloc a pic later
++                    out_buf = NULL;
 +                    break;
 +                }
 +            }
- 
--    status = mmal_port_send_buffer(sys->output, buffer);
--    if (status != MMAL_SUCCESS) {
--        msg_Err(filter, "Failed to send buffer to output port (status=%"PRIx32" %s)",
--                status, mmal_status_to_string(status));
--        mmal_buffer_header_release(buffer);
--        picture_Release(picture);
--        ret = -1;
--    } else {
--        atomic_fetch_add(&sys->output_in_transit, 1);
--        vlc_sem_post(&sys->sem);
--    }
++            out_buf = NULL;  // Now attached to pic or recycled
++
 +#if TRACE_ALL
 +            msg_Dbg(p_filter, "-- %s: Q pic=%p: seq_in=%d, seq_out=%d, delta=%d", __func__, out_pic, sys->seq_in, seq_out, seq_delta(sys->seq_in, seq_out));
 +#endif
- 
--out:
--    return ret;
--}
++
 +            *pp_pic = out_pic;
 +            pp_pic = &out_pic->p_next;
- 
--static void fill_output_port(filter_t *filter)
--{
--    filter_sys_t *sys = filter->p_sys;
--    /* allow at least 2 buffers in transit */
--    unsigned max_buffers_in_transit = __MAX(2, MIN_NUM_BUFFERS_IN_TRANSIT);
--    int buffers_available = sys->output->buffer_num -
--        atomic_load(&sys->output_in_transit) -
--        mmal_queue_length(sys->filtered_pictures);
--    int buffers_to_send = max_buffers_in_transit - sys->output_in_transit;
--    int i;
++
 +            // Ignore 0 seqs
 +            // Don't think these should actually happen
 +            if (seq_out != 0)
 +                sys->seq_out = seq_out;
 +        }
- 
--    if (buffers_to_send > buffers_available)
--        buffers_to_send = buffers_available;
++
 +        // Crash on lockup
 +        assert(ret_pics != NULL || seq_delta(sys->seq_in, sys->seq_out) < 5);
-+    }
+     }
  
--#ifndef NDEBUG
--    msg_Dbg(filter, "Send %d buffers to output port (available: %d, in_transit: %d, buffer_num: %d)",
--                    buffers_to_send, buffers_available, sys->output_in_transit,
--                    sys->output->buffer_num);
+-    status = mmal_component_enable(sys->component);
+-    if (status != MMAL_SUCCESS) {
+-        msg_Err(filter, "Failed to enable component %s (status=%"PRIx32" %s)",
+-                sys->component->name, status, mmal_status_to_string(status));
+-        ret = VLC_EGENERIC;
+-        goto out;
 +#if TRACE_ALL
 +    msg_Dbg(p_filter, ">>> %s: pic=%p", __func__, ret_pics);
- #endif
--    for (i = 0; i < buffers_to_send; ++i) {
--        if (send_output_buffer(filter) < 0)
--            break;
--    }
++#endif
 +
 +    return ret_pics;
 +
 +fail:
++    if (out_buf != NULL)
++        mmal_buffer_header_release(out_buf);
 +    picture_Release(p_pic);
 +    return NULL;
- }
- 
--static picture_t *deinterlace(filter_t *filter, picture_t *picture)
++}
++
 +static void di_flush(filter_t *p_filter)
- {
--    filter_sys_t *sys = filter->p_sys;
--    MMAL_BUFFER_HEADER_T *buffer;
--    picture_t *out_picture = NULL;
--    picture_t *ret = NULL;
--    MMAL_STATUS_T status;
--    unsigned i = 0;
++{
 +    filter_sys_t * const sys = p_filter->p_sys;
- 
--    fill_output_port(filter);
++
 +#if TRACE_ALL
 +    msg_Dbg(p_filter, "<<< %s", __func__);
 +#endif
- 
--    buffer = picture->p_sys->buffer;
--    buffer->user_data = picture;
--    buffer->pts = picture->date;
--    buffer->cmd = 0;
++
 +    if (sys->input != NULL && sys->input->is_enabled)
 +        mmal_port_disable(sys->input);
- 
--    if (!picture->p_sys->displayed) {
--        status = mmal_port_send_buffer(sys->input, buffer);
--        if (status != MMAL_SUCCESS) {
--            msg_Err(filter, "Failed to send buffer to input port (status=%"PRIx32" %s)",
--                    status, mmal_status_to_string(status));
--            picture_Release(picture);
--        } else {
--            picture->p_sys->displayed = true;
--            atomic_fetch_add(&sys->input_in_transit, 1);
--            vlc_sem_post(&sys->sem);
--        }
--    } else {
--        picture_Release(picture);
--    }
--
--    /*
--     * Send output buffers
--     */
--    while(atomic_load(&sys->started) && i < 2) {
--        if (buffer = mmal_queue_timedwait(sys->filtered_pictures, 2000)) {
--            i++;
--            if (!out_picture) {
--                out_picture = (picture_t *)buffer->user_data;
--                ret = out_picture;
--            } else {
--                out_picture->p_next = (picture_t *)buffer->user_data;
--                out_picture = out_picture->p_next;
++
 +    if (sys->output != NULL && sys->output->is_enabled)
 +    {
 +        if (sys->is_cma)
@@ -4287,112 +4099,99 @@
 +                fill_output_from_q(p_filter, sys, sys->out_q);
 +                mmal_port_disable(sys->output);
 +                // Out q should now be empty & should remain so until the input is reenabled
-             }
--            out_picture->date = buffer->pts;
--        } else {
--            msg_Dbg(filter, "Failed waiting for filtered picture");
--            break;
-         }
++            }
++        }
 +        mmal_port_enable(sys->output, di_output_port_cb);
 +
 +        // Leaving the input disabled is fine - but we want to leave the output enabled
 +        // so we can retrieve buffers that are still bound to pictures
      }
--    if (out_picture)
--        out_picture->p_next = NULL;
  
--    return ret;
+-    sys->filtered_pictures = mmal_queue_create();
 +    sys->seq_in = 1;
 +    sys->seq_out = 15;
-+
+ 
+-    filter->pf_video_filter = deinterlace;
+-    filter->pf_flush = flush;
 +#if TRACE_ALL
 +    msg_Dbg(p_filter, ">>> %s", __func__);
 +#endif
- }
++}
  
--static void flush(filter_t *filter)
-+
+-    vlc_sem_init(&sys->sem, 0);
+ 
+-out:
+-    if (ret != VLC_SUCCESS)
+-        Close(filter);
 +static void pass_flush(filter_t *p_filter)
- {
--    filter_sys_t *sys = filter->p_sys;
--    MMAL_BUFFER_HEADER_T *buffer;
++{
 +    // Nothing to do
 +    VLC_UNUSED(p_filter);
 +}
  
--    msg_Dbg(filter, "flush deinterlace filter");
+-    return ret;
 +static picture_t * pass_deinterlace(filter_t * p_filter, picture_t * p_pic)
 +{
 +    VLC_UNUSED(p_filter);
- 
--    msg_Dbg(filter, "flush: flush ports (input: %d, output: %d in transit)",
--            sys->input_in_transit, sys->output_in_transit);
--    mmal_port_flush(sys->output);
--    mmal_port_flush(sys->input);
--
--    msg_Dbg(filter, "flush: wait for all buffers to be returned");
--    while (atomic_load(&sys->input_in_transit) ||
--            atomic_load(&sys->output_in_transit))
--        vlc_sem_wait(&sys->sem);
--
--    while ((buffer = mmal_queue_get(sys->filtered_pictures))) {
--        picture_t *pic = (picture_t *)buffer->user_data;
--        msg_Dbg(filter, "flush: release already filtered pic %p",
--                (void *)pic);
--        picture_Release(pic);
--    }
--    atomic_store(&sys->started, false);
--    msg_Dbg(filter, "flush: done");
++
 +    p_pic->b_progressive = true;
 +    return p_pic;
  }
  
+-static void Close(filter_t *filter)
 +
- static void control_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
++static void control_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
  {
-     filter_t *filter = (filter_t *)port->userdata;
-@@ -459,48 +517,338 @@
-                 mmal_status_to_string(status));
-     }
- 
-+    mmal_buffer_header_reset(buffer);
-     mmal_buffer_header_release(buffer);
- }
- 
--static void input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
-+static void CloseMmalDeinterlace(filter_t *filter)
- {
--    picture_t *picture = (picture_t *)buffer->user_data;
--    filter_t *filter = (filter_t *)port->userdata;
 -    filter_sys_t *sys = filter->p_sys;
+-    MMAL_BUFFER_HEADER_T *buffer;
++    filter_t *filter = (filter_t *)port->userdata;
++    MMAL_STATUS_T status;
+ 
+-    if (!sys)
++    if (buffer->cmd == MMAL_EVENT_ERROR) {
++        status = *(uint32_t *)buffer->data;
++        msg_Err(filter, "MMAL error %"PRIx32" \"%s\"", status,
++                mmal_status_to_string(status));
++    }
++
++    mmal_buffer_header_reset(buffer);
++    mmal_buffer_header_release(buffer);
++}
++
++static void CloseMmalDeinterlace(filter_t *filter)
++{
 +    filter_sys_t * const sys = filter->p_sys;
 +
 +#if TRACE_ALL
 +    msg_Dbg(filter, "<<< %s", __func__);
 +#endif
- 
--    if (picture) {
--        picture_Release(picture);
--    } else {
--        msg_Warn(filter, "Got buffer without picture on input port - OOOPS");
--        mmal_buffer_header_release(buffer);
-+    if (sys == NULL)
-+        return;
 +
++    if (sys == NULL)
+         return;
+ 
+-    if (sys->component && sys->component->control->is_enabled)
+-        mmal_port_disable(sys->component->control);
 +    if (sys->use_passthrough)
 +    {
 +        free(sys);
 +        return;
 +    }
-+
+ 
+-    if (sys->input && sys->input->is_enabled)
+-        mmal_port_disable(sys->input);
 +    di_flush(filter);
-+
+ 
+-    if (sys->output && sys->output->is_enabled)
+-        mmal_port_disable(sys->output);
 +    if (sys->component && sys->component->control->is_enabled)
 +        mmal_port_disable(sys->component->control);
-+
-+    if (sys->component && sys->component->is_enabled)
-+        mmal_component_disable(sys->component);
-+
+ 
+     if (sys->component && sys->component->is_enabled)
+         mmal_component_disable(sys->component);
+ 
+-    while ((buffer = mmal_queue_get(sys->filtered_pictures))) {
+-        picture_t *pic = (picture_t *)buffer->user_data;
+-        picture_Release(pic);
 +    if (sys->in_pool != NULL)
 +        mmal_pool_destroy(sys->in_pool);
 +
@@ -4411,39 +4210,42 @@
 +            mmal_pool_destroy(sys->out_pool);
      }
  
--    atomic_fetch_sub(&sys->input_in_transit, 1);
--    vlc_sem_post(&sys->sem);
+-    if (sys->filtered_pictures)
+-        mmal_queue_destroy(sys->filtered_pictures);
 +    if (sys->out_q != NULL)
 +        mmal_queue_destroy(sys->out_q);
-+
-+    if (sys->component)
-+        mmal_component_release(sys->component);
-+
+ 
+     if (sys->component)
+         mmal_component_release(sys->component);
+ 
+-    vlc_sem_destroy(&sys->sem);
 +    cma_vcsm_exit(sys->vcsm_init_type);
 +
-+    free(sys);
- }
- 
--static void output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
+     free(sys);
++}
 +
+ 
+-    bcm_host_deinit();
 +static bool is_fmt_valid_in(const vlc_fourcc_t fmt)
- {
--    filter_t *filter = (filter_t *)port->userdata;
--    filter_sys_t *sys = filter->p_sys;
--    picture_t *picture;
++{
 +    return fmt == VLC_CODEC_MMAL_OPAQUE ||
 +           fmt == VLC_CODEC_MMAL_ZC_I420 ||
 +           fmt == VLC_CODEC_MMAL_ZC_SAND8;
-+}
-+
+ }
+ 
+-static int send_output_buffer(filter_t *filter)
 +static int OpenMmalDeinterlace(filter_t *filter)
-+{
+ {
+-    filter_sys_t *sys = filter->p_sys;
+-    MMAL_BUFFER_HEADER_T *buffer;
 +    int32_t frame_duration = filter->fmt_in.video.i_frame_rate != 0 ?
 +            CLOCK_FREQ * filter->fmt_in.video.i_frame_rate_base /
 +            filter->fmt_in.video.i_frame_rate : 0;
 +
 +    int ret = VLC_EGENERIC;
-+    MMAL_STATUS_T status;
+     MMAL_STATUS_T status;
+-    picture_t *picture;
+-    int ret = 0;
 +    filter_sys_t *sys;
 +
 +    msg_Dbg(filter, "<<< %s", __func__);
@@ -4451,7 +4253,10 @@
 +    if (!is_fmt_valid_in(filter->fmt_in.video.i_chroma) ||
 +        filter->fmt_out.video.i_chroma != filter->fmt_in.video.i_chroma)
 +        return VLC_EGENERIC;
-+
+ 
+-    if (!sys->output->is_enabled) {
+-        ret = VLC_EGENERIC;
+-        goto out;
 +    sys = calloc(1, sizeof(filter_sys_t));
 +    if (!sys)
 +        return VLC_ENOMEM;
@@ -4493,8 +4298,13 @@
 +            sys->use_passthrough = true;
 +            msg_Warn(filter, "Deinterlace bypassed due to lack of GPU memory");
 +        }
-+    }
-+
+     }
+ 
+-    picture = filter_NewPicture(filter);
+-    if (!picture) {
+-        msg_Warn(filter, "Failed to get new picture");
+-        ret = -1;
+-        goto out;
 +    if (var_InheritBool(filter, MMAL_DEINTERLACE_NO_QPU))
 +        sys->use_qpu = false;
 +    if (var_InheritBool(filter, MMAL_DEINTERLACE_ADV))
@@ -4538,32 +4348,21 @@
 +                sys->use_qpu ? "QPU" : "VPU",
 +                sys->use_fast ? "FAST" : "ADV",
 +                sys->use_passthrough ? "PASS" : sys->half_rate ? "HALF" : "FULL");
-+    }
+     }
+-    picture->format.i_frame_rate = filter->fmt_out.video.i_frame_rate;
+-    picture->format.i_frame_rate_base = filter->fmt_out.video.i_frame_rate_base;
  
--    if (buffer->cmd == 0) {
--        if (buffer->length > 0) {
--            atomic_store(&sys->started, true);
--            mmal_queue_put(sys->filtered_pictures, buffer);
--            picture = (picture_t *)buffer->user_data;
--        } else {
--            picture = (picture_t *)buffer->user_data;
--            picture_Release(picture);
--        }
--
--        atomic_fetch_sub(&sys->output_in_transit, 1);
--        vlc_sem_post(&sys->sem);
--    } else if (buffer->cmd == MMAL_EVENT_FORMAT_CHANGED) {
--        msg_Warn(filter, "MMAL_EVENT_FORMAT_CHANGED seen but not handled");
--        mmal_buffer_header_release(buffer);
--    } else {
--        mmal_buffer_header_release(buffer);
+-    buffer = picture->p_sys->buffer;
+-    buffer->user_data = picture;
+-    buffer->cmd = 0;
 +    status = mmal_component_create(MMAL_COMPONENT_DEFAULT_DEINTERLACE, &sys->component);
 +    if (status != MMAL_SUCCESS) {
 +        msg_Err(filter, "Failed to create MMAL component %s (status=%"PRIx32" %s)",
 +                MMAL_COMPONENT_DEFAULT_DEINTERLACE, status, mmal_status_to_string(status));
 +        goto fail;
-     }
-+
++    }
+ 
+-    mmal_picture_lock(picture);
 +    {
 +        const MMAL_PARAMETER_IMAGEFX_PARAMETERS_T imfx_param = {
 +            { MMAL_PARAMETER_IMAGE_EFFECT_PARAMETERS, sizeof(imfx_param) },
@@ -4573,7 +4372,8 @@
 +            4,
 +            { 5 /* Frame type: mixed */, frame_duration, sys->half_rate, sys->use_qpu }
 +        };
-+
+ 
+-    status = mmal_port_send_buffer(sys->output, buffer);
 +        status = mmal_port_parameter_set(sys->component->output[0], &imfx_param.hdr);
 +        if (status != MMAL_SUCCESS) {
 +            msg_Err(filter, "Failed to configure MMAL component %s (status=%"PRIx32" %s)",
@@ -4584,21 +4384,44 @@
 +
 +    sys->component->control->userdata = (struct MMAL_PORT_USERDATA_T *)filter;
 +    status = mmal_port_enable(sys->component->control, control_port_cb);
-+    if (status != MMAL_SUCCESS) {
+     if (status != MMAL_SUCCESS) {
+-        msg_Err(filter, "Failed to send buffer to output port (status=%"PRIx32" %s)",
+-                status, mmal_status_to_string(status));
+-        mmal_buffer_header_release(buffer);
+-        picture_Release(picture);
+-        ret = -1;
+-    } else {
+-        atomic_fetch_add(&sys->output_in_transit, 1);
+-        vlc_sem_post(&sys->sem);
 +        msg_Err(filter, "Failed to enable control port %s (status=%"PRIx32" %s)",
 +                sys->component->control->name, status, mmal_status_to_string(status));
 +        goto fail;
-+    }
-+
+     }
+ 
+-out:
+-    return ret;
+-}
 +    sys->input = sys->component->input[0];
 +    sys->input->userdata = (struct MMAL_PORT_USERDATA_T *)filter;
 +    sys->input->format->encoding = vlc_to_mmal_video_fourcc(&filter->fmt_in.video);
 +    hw_mmal_vlc_fmt_to_mmal_fmt(sys->input->format, &filter->fmt_in.video);
-+
+ 
+-static void fill_output_port(filter_t *filter)
+-{
+-    filter_sys_t *sys = filter->p_sys;
+-    /* allow at least 2 buffers in transit */
+-    unsigned max_buffers_in_transit = __MAX(2, MIN_NUM_BUFFERS_IN_TRANSIT);
+-    int buffers_available = sys->output->buffer_num -
+-        atomic_load(&sys->output_in_transit) -
+-        mmal_queue_length(sys->filtered_pictures);
+-    int buffers_to_send = max_buffers_in_transit - sys->output_in_transit;
+-    int i;
 +    es_format_Copy(&filter->fmt_out, &filter->fmt_in);
 +    if (!sys->half_rate)
 +        filter->fmt_out.video.i_frame_rate *= 2;
-+
+ 
+-    if (buffers_to_send > buffers_available)
+-        buffers_to_send = buffers_available;
 +    status = mmal_port_format_commit(sys->input);
 +    if (status != MMAL_SUCCESS) {
 +        msg_Err(filter, "Failed to commit format for input port %s (status=%"PRIx32" %s)",
@@ -4608,37 +4431,102 @@
 +    sys->input->buffer_size = sys->input->buffer_size_recommended;
 +    sys->input->buffer_num = 30;
 +//    sys->input->buffer_num = sys->input->buffer_num_recommended;
-+
+ 
+-#ifndef NDEBUG
+-    msg_Dbg(filter, "Send %d buffers to output port (available: %d, in_transit: %d, buffer_num: %d)",
+-                    buffers_to_send, buffers_available, sys->output_in_transit,
+-                    sys->output->buffer_num);
+-#endif
+-    for (i = 0; i < buffers_to_send; ++i) {
+-        if (send_output_buffer(filter) < 0)
+-            break;
 +    if ((sys->in_pool = mmal_pool_create(sys->input->buffer_num, 0)) == NULL)
 +    {
 +        msg_Err(filter, "Failed to create input pool");
 +        goto fail;
-+    }
-+
+     }
+-}
+ 
+-static picture_t *deinterlace(filter_t *filter, picture_t *picture)
+-{
+-    filter_sys_t *sys = filter->p_sys;
+-    MMAL_BUFFER_HEADER_T *buffer;
+-    picture_t *out_picture = NULL;
+-    picture_t *ret = NULL;
+-    MMAL_STATUS_T status;
+-    unsigned i = 0;
 +    status = port_parameter_set_bool(sys->input, MMAL_PARAMETER_ZERO_COPY, true);
 +    if (status != MMAL_SUCCESS) {
 +       msg_Err(filter, "Failed to set zero copy on port %s (status=%"PRIx32" %s)",
 +                sys->input->name, status, mmal_status_to_string(status));
 +       goto fail;
 +    }
-+
+ 
+-    fill_output_port(filter);
 +    status = mmal_port_enable(sys->input, di_input_port_cb);
 +    if (status != MMAL_SUCCESS) {
 +        msg_Err(filter, "Failed to enable input port %s (status=%"PRIx32" %s)",
 +                sys->input->name, status, mmal_status_to_string(status));
 +        goto fail;
 +    }
-+
-+
+ 
+-    buffer = picture->p_sys->buffer;
+-    buffer->user_data = picture;
+-    buffer->pts = picture->date;
+-    buffer->cmd = 0;
+ 
+-    if (!picture->p_sys->displayed) {
+-        status = mmal_port_send_buffer(sys->input, buffer);
+-        if (status != MMAL_SUCCESS) {
+-            msg_Err(filter, "Failed to send buffer to input port (status=%"PRIx32" %s)",
+-                    status, mmal_status_to_string(status));
+-            picture_Release(picture);
+-        } else {
+-            picture->p_sys->displayed = true;
+-            atomic_fetch_add(&sys->input_in_transit, 1);
+-            vlc_sem_post(&sys->sem);
+-        }
+-    } else {
+-        picture_Release(picture);
+-    }
+-
+-    /*
+-     * Send output buffers
+-     */
+-    while(atomic_load(&sys->started) && i < 2) {
+-        if (buffer = mmal_queue_timedwait(sys->filtered_pictures, 2000)) {
+-            i++;
+-            if (!out_picture) {
+-                out_picture = (picture_t *)buffer->user_data;
+-                ret = out_picture;
+-            } else {
+-                out_picture->p_next = (picture_t *)buffer->user_data;
+-                out_picture = out_picture->p_next;
+-            }
+-            out_picture->date = buffer->pts;
+-        } else {
+-            msg_Dbg(filter, "Failed waiting for filtered picture");
+-            break;
+-        }
 +    if ((sys->out_q = mmal_queue_create()) == NULL)
 +    {
 +        msg_Err(filter, "Failed to create out Q");
 +        goto fail;
-+    }
-+
+     }
+-    if (out_picture)
+-        out_picture->p_next = NULL;
+ 
+-    return ret;
+-}
+-
+-static void flush(filter_t *filter)
+-{
+-    filter_sys_t *sys = filter->p_sys;
+-    MMAL_BUFFER_HEADER_T *buffer;
 +    sys->output = sys->component->output[0];
 +    mmal_format_full_copy(sys->output->format, sys->input->format);
-+
+ 
+-    msg_Dbg(filter, "flush deinterlace filter");
 +    if (!sys->is_cma)
 +    {
 +        if ((status = hw_mmal_opaque_output(VLC_OBJECT(filter), &sys->out_ppr, sys->output, 5, di_output_port_cb)) != MMAL_SUCCESS)
@@ -4649,30 +4537,65 @@
 +        // CMA stuff
 +        sys->output->userdata = (struct MMAL_PORT_USERDATA_T *)filter;
 +
-+        if ((sys->cma_out_pool = cma_buf_pool_new(8, 8, true)) == NULL)
++        if ((sys->cma_out_pool = cma_buf_pool_new(8, 8, true, "deinterlace")) == NULL)
 +        {
 +            msg_Err(filter, "Failed to alloc cma buf pool");
 +            goto fail;
 +        }
-+
+ 
+-    msg_Dbg(filter, "flush: flush ports (input: %d, output: %d in transit)",
+-            sys->input_in_transit, sys->output_in_transit);
+-    mmal_port_flush(sys->output);
+-    mmal_port_flush(sys->input);
+-
+-    msg_Dbg(filter, "flush: wait for all buffers to be returned");
+-    while (atomic_load(&sys->input_in_transit) ||
+-            atomic_load(&sys->output_in_transit))
+-        vlc_sem_wait(&sys->sem);
+-
+-    while ((buffer = mmal_queue_get(sys->filtered_pictures))) {
+-        picture_t *pic = (picture_t *)buffer->user_data;
+-        msg_Dbg(filter, "flush: release already filtered pic %p",
+-                (void *)pic);
+-        picture_Release(pic);
+-    }
+-    atomic_store(&sys->started, false);
+-    msg_Dbg(filter, "flush: done");
+-}
 +        // Rate control done by CMA in flight logic, so have "inexhaustable" pool here
 +        if ((sys->out_pool = mmal_pool_create(30, 0)) == NULL)
 +        {
 +            msg_Err(filter, "Failed to alloc out pool");
 +            goto fail;
 +        }
-+
+ 
+-static void control_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
+-{
+-    filter_t *filter = (filter_t *)port->userdata;
+-    MMAL_STATUS_T status;
 +        port_parameter_set_bool(sys->output, MMAL_PARAMETER_ZERO_COPY, true);
-+
+ 
+-    if (buffer->cmd == MMAL_EVENT_ERROR) {
+-        status = *(uint32_t *)buffer->data;
+-        msg_Err(filter, "MMAL error %"PRIx32" \"%s\"", status,
+-                mmal_status_to_string(status));
+-    }
 +        if ((status = mmal_port_format_commit(sys->output)) != MMAL_SUCCESS)
 +        {
 +            msg_Err(filter, "Output port format commit failed");
 +            goto fail;
 +        }
-+
+ 
+-    mmal_buffer_header_release(buffer);
+-}
 +        sys->output->buffer_num = 30;
 +        sys->output->buffer_size = sys->output->buffer_size_recommended;
-+
+ 
+-static void input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
+-{
+-    picture_t *picture = (picture_t *)buffer->user_data;
+-    filter_t *filter = (filter_t *)port->userdata;
+-    filter_sys_t *sys = filter->p_sys;
 +        // CB just drops all bufs into out_q
 +        if ((status = mmal_port_enable(sys->output, di_output_port_cb)) != MMAL_SUCCESS)
 +        {
@@ -4681,14 +4604,21 @@
 +            goto fail;
 +        }
 +    }
-+
+ 
+-    if (picture) {
+-        picture_Release(picture);
+-    } else {
+-        msg_Warn(filter, "Got buffer without picture on input port - OOOPS");
+-        mmal_buffer_header_release(buffer);
 +    status = mmal_component_enable(sys->component);
 +    if (status != MMAL_SUCCESS) {
 +        msg_Err(filter, "Failed to enable component %s (status=%"PRIx32" %s)",
 +                sys->component->name, status, mmal_status_to_string(status));
 +        goto fail;
-+    }
-+
+     }
+ 
+-    atomic_fetch_sub(&sys->input_in_transit, 1);
+-    vlc_sem_post(&sys->sem);
 +    filter->pf_video_filter = deinterlace;
 +    filter->pf_flush = di_flush;
 +    return 0;
@@ -4697,7 +4627,12 @@
 +    CloseMmalDeinterlace(filter);
 +    return ret;
  }
-+
+ 
+-static void output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
+-{
+-    filter_t *filter = (filter_t *)port->userdata;
+-    filter_sys_t *sys = filter->p_sys;
+-    picture_t *picture;
 +vlc_module_begin()
 +    set_shortname(N_("MMAL deinterlace"))
 +    set_description(N_("MMAL-based deinterlace filter plugin"))
@@ -4721,10 +4656,29 @@
 +
 +vlc_module_end()
 +
-+
+ 
+-    if (buffer->cmd == 0) {
+-        if (buffer->length > 0) {
+-            atomic_store(&sys->started, true);
+-            mmal_queue_put(sys->filtered_pictures, buffer);
+-            picture = (picture_t *)buffer->user_data;
+-        } else {
+-            picture = (picture_t *)buffer->user_data;
+-            picture_Release(picture);
+-        }
+-
+-        atomic_fetch_sub(&sys->output_in_transit, 1);
+-        vlc_sem_post(&sys->sem);
+-    } else if (buffer->cmd == MMAL_EVENT_FORMAT_CHANGED) {
+-        msg_Warn(filter, "MMAL_EVENT_FORMAT_CHANGED seen but not handled");
+-        mmal_buffer_header_release(buffer);
+-    } else {
+-        mmal_buffer_header_release(buffer);
+-    }
+-}
 --- /dev/null
 +++ b/modules/hw/mmal/mmal_avcodec.c
-@@ -0,0 +1,2110 @@
+@@ -0,0 +1,2144 @@
 +/*****************************************************************************
 + * video.c: video decoder using the libavcodec library
 + *****************************************************************************
@@ -5681,7 +5635,9 @@
 +{
 +    video_format_t fmt_out;
 +    int val;
-+
++#if TRACE_ALL
++    msg_Dbg(dec, "<<< %s", __func__);
++#endif
 +    val = lavc_GetVideoFormat(dec, &fmt_out, ctx, fmt, swfmt);
 +    if (val)
 +    {
@@ -5712,7 +5668,11 @@
 +        dec->fmt_out.video.mastering = dec->fmt_in.video.mastering;
 +    dec->fmt_out.video.lighting = dec->fmt_in.video.lighting;
 +
-+    return decoder_UpdateVideoFormat(dec);
++    val = decoder_UpdateVideoFormat(dec);
++#if TRACE_ALL
++    msg_Dbg(dec, ">>> %s: rv=%d", __func__, val);
++#endif
++    return val;
 +}
 +
 +static int OpenVideoCodec( decoder_t *p_dec )
@@ -6008,7 +5968,7 @@
 +    } else
 +        p_sys->palette_sent = true;
 +
-+    if ((p_sys->cma_pool = cma_buf_pool_new(p_sys->cma_in_flight_max, p_sys->cma_in_flight_max, false)) == NULL)
++    if ((p_sys->cma_pool = cma_buf_pool_new(p_sys->cma_in_flight_max, p_sys->cma_in_flight_max, false, "mmal_avcodec")) == NULL)
 +    {
 +        msg_Err(p_dec, "CMA pool alloc failure");
 +        goto fail;
@@ -6035,10 +5995,22 @@
 +    if( p_context->level != FF_LEVEL_UNKNOWN )
 +        p_dec->fmt_in.i_level = p_context->level;
 +
++#if 1
++    // Most of the time we have nothing useful by way of a format here
++    // wait till we've decoded something
++#else
 +    // Update output format
-+    lavc_UpdateVideoFormat(p_dec, p_context, p_context->pix_fmt,
-+                               p_context->pix_fmt);
++    if (lavc_UpdateVideoFormat(p_dec, p_context, p_context->pix_fmt,
++                               p_context->pix_fmt) != 0)
++    {
++        msg_Err(p_dec, "Unable to update format: pix_fmt=%d", p_context->pix_fmt);
++//        goto fail;
++    }
++#endif
 +
++#if TRACE_ALL
++    msg_Dbg(p_dec, "<<< %s: OK", __func__);
++#endif
 +    return VLC_SUCCESS;
 +
 +fail:
@@ -6322,6 +6294,7 @@
 +/*****************************************************************************
 + * DecodeBlock: Called to decode one or more frames
 + *****************************************************************************/
++
 +static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error )
 +{
 +    decoder_sys_t *p_sys = p_dec->p_sys;
@@ -6338,6 +6311,11 @@
 +
 +    block_t *p_block;
 +    mtime_t current_time;
++    picture_t *p_pic = NULL;
++    AVFrame *frame = NULL;
++
++    // By default we are OK
++    *error = false;
 +
 +    if( !p_context->extradata_size && p_dec->fmt_in.i_extra )
 +    {
@@ -6471,7 +6449,7 @@
 +        i_used = ret != AVERROR(EAGAIN) ? pkt.size : 0;
 +        av_packet_unref( &pkt );
 +
-+        AVFrame *frame = av_frame_alloc();
++        frame = av_frame_alloc();
 +        if (unlikely(frame == NULL))
 +        {
 +            *error = true;
@@ -6581,38 +6559,36 @@
 +        }
 +
 +#if 1
-+        picture_t *p_pic = NULL;
-+
 +        {
 +            cma_buf_t * const cb = av_rpi_zc_buf_v(frame->buf[0]);
 +
 +            if (cb == NULL)
 +            {
 +                msg_Err(p_dec, "Frame has no attached CMA buffer");
-+                av_frame_free(&frame);
-+                return NULL;
++                goto fail;
 +            }
 +
-+            lavc_UpdateVideoFormat(p_dec, p_context, p_context->pix_fmt,
-+                                       p_context->pix_fmt);
++            if (lavc_UpdateVideoFormat(p_dec, p_context, p_context->pix_fmt,
++                                       p_context->pix_fmt) != 0)
++            {
++                msg_Err(p_dec, "Failed to update format");
++                goto fail;
++            }
 +
 +            if ((p_pic = decoder_NewPicture(p_dec)) == NULL)
 +            {
 +                msg_Err(p_dec, "Failed to allocate pic");
-+                av_frame_free(&frame);
-+                return NULL;
++                goto fail;
 +            }
 +
 +            cma_buf_in_flight(cb);
 +
 +            if (cma_buf_pic_attach(cma_buf_ref(cb), p_pic) != 0)
 +            {
++                cma_buf_unref(cb);  // Undo the in_flight
 +                char dbuf0[5];
 +                msg_Err(p_dec, "Failed to attach bufs to pic: fmt=%s", str_fourcc(dbuf0, p_pic->format.i_chroma));
-+                cma_buf_unref(cb);
-+                av_frame_free(&frame);
-+                picture_Release(p_pic);
-+                return NULL;
++                goto fail;
 +            }
 +
 +            // ****** Set planes etc.
@@ -6705,6 +6681,18 @@
 +#if TRACE_ALL
 +     msg_Dbg(p_dec, ">>> %s: NULL", __func__);
 +#endif
++    return NULL;
++
++fail:
++#if TRACE_ALL
++     msg_Dbg(p_dec, ">>> %s: FAIL", __func__);
++#endif
++    av_frame_free(&frame);
++    if (p_pic != NULL)
++        picture_Release(p_pic);
++    if (p_block != NULL)
++        block_Release(p_block);
++    *error = true;
 +    return NULL;
 +}
 +
@@ -6837,7 +6825,7 @@
 +
 --- /dev/null
 +++ b/modules/hw/mmal/mmal_cma.c
-@@ -0,0 +1,505 @@
+@@ -0,0 +1,526 @@
 +#ifdef HAVE_CONFIG_H
 +# include "config.h"
 +#endif
@@ -6868,6 +6856,10 @@
 +typedef void * cma_pool_alloc_fn(void * v, size_t size);
 +typedef void cma_pool_free_fn(void * v, void * el, size_t size);
 +
++#if TRACE_ALL
++static atomic_int pool_seq;
++#endif
++
 +// Pool structure
 +// Ref count is held by pool owner and pool els that have been got
 +// Els in the pool do not count towards its ref count
@@ -6889,6 +6881,11 @@
 +    cma_pool_alloc_fn * el_alloc_fn;
 +    cma_pool_free_fn * el_free_fn;
 +    cma_pool_on_delete_fn * on_delete_fn;
++
++    const char * name;
++#if TRACE_ALL
++    int seq;
++#endif
 +};
 +
 +static void free_pool(const cma_pool_fixed_t * const p, void ** pool, unsigned int n, size_t el_size)
@@ -6912,6 +6909,9 @@
 +
 +    if (p->pool != NULL)
 +        free_pool(p, p->pool, p->n_in, p->el_size);
++
++    if (p->name != NULL)
++        free((void *)p->name);  // Discard const
 +
 +    vlc_mutex_destroy(&p->lock);
 +    free(p);
@@ -7048,7 +7048,8 @@
 +                   const int flight_size,
 +                   void * const alloc_v,
 +                   cma_pool_alloc_fn * const alloc_fn, cma_pool_free_fn * const free_fn,
-+                   cma_pool_on_delete_fn * const on_delete_fn)
++                   cma_pool_on_delete_fn * const on_delete_fn,
++                   const char * const name)
 +{
 +    cma_pool_fixed_t* const p = calloc(1, sizeof(cma_pool_fixed_t));
 +    if (p == NULL)
@@ -7064,6 +7065,10 @@
 +    p->el_alloc_fn = alloc_fn;
 +    p->el_free_fn = free_fn;
 +    p->on_delete_fn = on_delete_fn;
++    p->name = name == NULL ? NULL : strdup(name);
++#if TRACE_ALL
++    p->seq = atomic_fetch_add(&pool_seq, 1);
++#endif
 +
 +    return p;
 +}
@@ -7102,7 +7107,7 @@
 +#if TRACE_ALL
 +    cb->cbp->alloc_size -= cb->size;
 +    --cb->cbp->alloc_n;
-+    printf("%s: N=%d, Total=%d\n", __func__, cb->cbp->alloc_n, cb->cbp->alloc_size);
++    fprintf(stderr, "%s[%d:%s]: N=%d, Total=%d\n", __func__, cb->cbp->pool->seq, cb->cbp->pool->name, cb->cbp->alloc_n, cb->cbp->alloc_size);
 +#endif
 +
 +    if (cb->ctx2 != NULL)
@@ -7152,7 +7157,7 @@
 +#if TRACE_ALL
 +    cb->cbp->alloc_size += cb->size;
 +    ++cb->cbp->alloc_n;
-+    printf("%s: N=%d, Total=%d\n", __func__, cbp->alloc_n, cbp->alloc_size);
++    fprintf(stderr, "%s[%d:%s]: N=%d, Total=%d\n", __func__, cbp->pool->seq, cbp->pool->name, cbp->alloc_n, cbp->alloc_size);
 +#endif
 +
 +    // 0x80 is magic value to force full ARM-side mapping - otherwise
@@ -7160,7 +7165,7 @@
 +    if ((cb->vcsm_h = vcsm_malloc_cache(size, VCSM_CACHE_TYPE_HOST | 0x80, "VLC frame")) == 0)
 +    {
 +#if TRACE_ALL
-+        printf("vcsm_malloc_cache fail\n");
++        fprintf(stderr, "vcsm_malloc_cache fail\n");
 +#endif
 +        goto fail;
 +    }
@@ -7168,7 +7173,7 @@
 +    if ((cb->vc_h = vcsm_vc_hdl_from_hdl(cb->vcsm_h)) == 0)
 +    {
 +#if TRACE_ALL
-+        printf("vcsm_vc_hdl_from_hdl fail\n");
++        fprintf(stderr, "vcsm_vc_hdl_from_hdl fail\n");
 +#endif
 +        goto fail;
 +    }
@@ -7178,7 +7183,7 @@
 +        if ((cb->fd = vcsm_export_dmabuf(cb->vcsm_h)) == -1)
 +        {
 +#if TRACE_ALL
-+            printf("vcsm_export_dmabuf fail\n");
++            fprintf(stderr, "vcsm_export_dmabuf fail\n");
 +#endif
 +            goto fail;
 +        }
@@ -7192,7 +7197,7 @@
 +        if ((arm_addr = vcsm_lock(cb->vcsm_h)) == NULL)
 +        {
 +#if TRACE_ALL
-+            printf("vcsm_lock fail\n");
++            fprintf(stderr, "vcsm_lock fail\n");
 +#endif
 +            goto fail;
 +        }
@@ -7236,7 +7241,7 @@
 +    }
 +}
 +
-+cma_buf_pool_t * cma_buf_pool_new(const unsigned int pool_size, const unsigned int flight_size, const bool all_in_flight)
++cma_buf_pool_t * cma_buf_pool_new(const unsigned int pool_size, const unsigned int flight_size, const bool all_in_flight, const char * const name)
 +{
 +    vcsm_init_type_t const init_type = cma_vcsm_init();
 +    if (init_type == VCSM_INIT_NONE)
@@ -7249,7 +7254,7 @@
 +    cbp->init_type = init_type;
 +    cbp->all_in_flight = all_in_flight;
 +
-+    if ((cbp->pool = cma_pool_fixed_new(pool_size, flight_size, cbp, cma_pool_alloc_cb, cma_pool_free_cb, cma_buf_pool_on_delete_cb)) == NULL)
++    if ((cbp->pool = cma_pool_fixed_new(pool_size, flight_size, cbp, cma_pool_alloc_cb, cma_pool_free_cb, cma_buf_pool_on_delete_cb, name)) == NULL)
 +        goto fail;
 +    return cbp;
 +
@@ -7337,6 +7342,10 @@
 +cma_buf_t * cma_buf_pool_alloc_buf(cma_buf_pool_t * const cbp, const size_t size)
 +{
 +    cma_buf_t *const cb = cma_pool_fixed_get(cbp->pool, size, cbp->all_in_flight);
++
++    if (cb == NULL)
++        return NULL;
++
 +    cb->in_flight = cbp->all_in_flight;
 +    // When 1st allocated or retrieved from the pool the block will have a
 +    // ref count of 0 so ref here
@@ -7345,7 +7354,7 @@
 +
 --- /dev/null
 +++ b/modules/hw/mmal/mmal_cma.h
-@@ -0,0 +1,57 @@
+@@ -0,0 +1,58 @@
 +#ifndef VLC_MMAL_MMAL_CMA_H_
 +#define VLC_MMAL_MMAL_CMA_H_
 +
@@ -7367,7 +7376,8 @@
 +                   const int flight_size,
 +                   void * const alloc_v,
 +                   cma_pool_alloc_fn * const alloc_fn, cma_pool_free_fn * const free_fn,
-+                   cma_pool_on_delete_fn * const on_delete_fn);
++                   cma_pool_on_delete_fn * const on_delete_fn,
++                   const char * const name);
 +
 +
 +struct cma_buf_s;
@@ -7391,7 +7401,7 @@
 +
 +cma_buf_t * cma_buf_pool_alloc_buf(cma_buf_pool_t * const p, const size_t size);
 +void cma_buf_pool_delete(cma_buf_pool_t * const p);
-+cma_buf_pool_t * cma_buf_pool_new(const unsigned int pool_size, const unsigned int flight_size, const bool all_in_flight);
++cma_buf_pool_t * cma_buf_pool_new(const unsigned int pool_size, const unsigned int flight_size, const bool all_in_flight, const char * const name);
 +
 +static inline void cma_buf_pool_deletez(cma_buf_pool_t ** const pp)
 +{
@@ -11754,7 +11764,7 @@
 +
 --- /dev/null
 +++ b/modules/hw/mmal/xsplitter.c
-@@ -0,0 +1,459 @@
+@@ -0,0 +1,555 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -11776,15 +11786,96 @@
 +
 +#define TRACE_ALL 0
 +
++typedef struct display_desc_s
++{
++    vout_display_t * vout;
++    unsigned int max_pels;
++} display_desc_t;
++
 +typedef struct mmal_x11_sys_s
 +{
 +    bool use_mmal;
-+    vout_display_t * cur_vout;
-+    vout_display_t * mmal_vout;
-+    vout_display_t * x_vout;
++    display_desc_t * cur_desc;
++    display_desc_t mmal_desc;
++    display_desc_t x_desc;
 +    uint32_t changed;
 +    vlc_fourcc_t subpicture_chromas[16];
 +} mmal_x11_sys_t;
++
++#define MAX_GL_PELS (1920*1080)
++#define MAX_MMAL_PELS (4096*4096)  // Should never be hit
++
++#if 0
++// Gen prog for the following table
++// Not done inline in case we end up pulling in FP libs we don't want
++#include <math.h>
++#include <stdio.h>
++
++int main(int argc, char *argv[])
++{
++    unsigned int i;
++    for (i = 0; i != 64; ++i)
++    {
++        printf(" [%2u]=%5u,", i, (unsigned int)(0.5 + (1/sqrt((i + 5)/4.0) * 65536.0)));
++        if (i % 4 == 3)
++            printf("\n");
++    }
++}
++#endif
++
++static const uint16_t sqrt_tab[64] = {
++    [ 0]=58617, [ 1]=53510, [ 2]=49541, [ 3]=46341,
++    [ 4]=43691, [ 5]=41449, [ 6]=39520, [ 7]=37837,
++    [ 8]=36353, [ 9]=35030, [10]=33843, [11]=32768,
++    [12]=31790, [13]=30894, [14]=30070, [15]=29309,
++    [16]=28602, [17]=27945, [18]=27330, [19]=26755,
++    [20]=26214, [21]=25705, [22]=25225, [23]=24770,
++    [24]=24339, [25]=23930, [26]=23541, [27]=23170,
++    [28]=22817, [29]=22479, [30]=22155, [31]=21845,
++    [32]=21548, [33]=21263, [34]=20988, [35]=20724,
++    [36]=20470, [37]=20225, [38]=19988, [39]=19760,
++    [40]=19539, [41]=19326, [42]=19119, [43]=18919,
++    [44]=18725, [45]=18536, [46]=18354, [47]=18176,
++    [48]=18004, [49]=17837, [50]=17674, [51]=17515,
++    [52]=17361, [53]=17211, [54]=17064, [55]=16921,
++    [56]=16782, [57]=16646, [58]=16514, [59]=16384,
++    [60]=16257, [61]=16134, [62]=16013, [63]=15895
++};
++#define SQRT_MAX (sizeof(sqrt_tab)/sizeof(sqrt_tab[0]) - 1)
++
++static bool cpy_fmt_limit_size(const display_desc_t * const dd,
++                           video_format_t * const dst,
++                           const video_format_t * const src)
++{
++    const unsigned int src_pel = src->i_visible_width * src->i_visible_height;
++
++    *dst = *src;
++
++    if (src_pel <= dd->max_pels)
++        return false;
++
++    // scaling factor sqrt(max_pel/cur_pel)
++    // sqrt done by lookup & 16 bit fixed-point maths - not exactly accurate but
++    // easily good enough & avoids floating point (which may be slow)
++    // src_pel > max_pel so n >= 0
++    // Rounding should be such that exact sqrts work and everything else rounds
++    // down
++    unsigned int n = ((src_pel * 4 - 1) / dd->max_pels) - 4;
++    unsigned int scale = sqrt_tab[n >= SQRT_MAX ? SQRT_MAX : n];
++
++    // Rescale width - rounding up to 16
++    unsigned int width = ((src->i_visible_width * scale + (16 << 16) - 1) >> 16) & ~15;
++    // Rescale height based on new width
++    unsigned int height = (src->i_visible_height * width + src->i_visible_width/2) / src->i_visible_width;
++
++//    fprintf(stderr, "%dx%d -> %dx%d\n", src->i_visible_width, src->i_visible_height, width, height);
++
++    dst->i_width          = width;
++    dst->i_visible_width  = width;
++    dst->i_height         = height;
++    dst->i_visible_height = height;
++    return true;
++}
 +
 +static void unload_display_module(vout_display_t * const x_vout)
 +{
@@ -11806,9 +11897,9 @@
 +    if (sys == NULL)
 +        return;
 +
-+    unload_display_module(sys->x_vout);
++    unload_display_module(sys->x_desc.vout);
 +
-+    unload_display_module(sys->mmal_vout);
++    unload_display_module(sys->mmal_desc.vout);
 +
 +    free(sys);
 +
@@ -11849,13 +11940,16 @@
 +}
 +
 +
-+static vout_display_t * load_display_module(vout_display_t * const vd,
-+                                            const char * const cap, const char * const module_name)
++static int load_display_module(vout_display_t * const vd,
++                                display_desc_t * const dd,
++                                const char * const cap,
++                                const char * const module_name)
 +{
 +    vout_display_t * const x_vout = vlc_object_create(vd, sizeof(*x_vout));
 +
++    dd->vout = NULL;
 +    if (!x_vout)
-+        return NULL;
++        return -1;
 +
 +    x_vout->owner.sys = vd;
 +    x_vout->owner.event = mmal_x11_event;
@@ -11863,10 +11957,9 @@
 +    x_vout->owner.window_del = mmal_x11_window_del;
 +
 +    x_vout->cfg    = vd->cfg;
-+    x_vout->source = vd->source;
 +    x_vout->info   = vd->info;
-+
-+    x_vout->fmt = vd->fmt;
++    cpy_fmt_limit_size(dd, &x_vout->source, &vd->source);
++    cpy_fmt_limit_size(dd, &x_vout->fmt,    &vd->fmt);
 +
 +    if ((x_vout->module = module_need(x_vout, cap, module_name, true)) == NULL)
 +    {
@@ -11876,11 +11969,12 @@
 +
 +    msg_Dbg(vd, "R/G/B: %08x/%08x/%08x", x_vout->fmt.i_rmask, x_vout->fmt.i_gmask, x_vout->fmt.i_bmask);
 +
-+    return x_vout;
++    dd->vout = x_vout;
++    return 0;
 +
 +fail:
 +    vlc_object_release(x_vout);
-+    return NULL;
++    return -1;
 +}
 +
 +
@@ -11896,7 +11990,7 @@
 +static picture_pool_t * mmal_x11_pool(vout_display_t * vd, unsigned count)
 +{
 +    mmal_x11_sys_t * const sys = (mmal_x11_sys_t *)vd->sys;
-+    vout_display_t * const x_vd = sys->cur_vout;
++    vout_display_t * const x_vd = sys->cur_desc->vout;
 +#if TRACE_ALL
 +    char buf0[5];
 +    msg_Dbg(vd, "<<< %s (count=%d) %s:%dx%d->%s:%dx%d", __func__, count,
@@ -11925,7 +12019,7 @@
 +static void mmal_x11_prepare(vout_display_t * vd, picture_t * pic, subpicture_t * sub)
 +{
 +    mmal_x11_sys_t * const sys = (mmal_x11_sys_t *)vd->sys;
-+    vout_display_t * const x_vd = sys->cur_vout;
++    vout_display_t * const x_vd = sys->cur_desc->vout;
 +#if TRACE_ALL
 +    msg_Dbg(vd, "<<< %s", __func__);
 +#endif
@@ -11946,7 +12040,7 @@
 +static void mmal_x11_display(vout_display_t * vd, picture_t * pic, subpicture_t * sub)
 +{
 +    mmal_x11_sys_t * const sys = (mmal_x11_sys_t *)vd->sys;
-+    vout_display_t * const x_vd = sys->cur_vout;
++    vout_display_t * const x_vd = sys->cur_desc->vout;
 +
 +#if TRACE_ALL
 +    const bool is_mmal_pic = hw_mmal_pic_is_mmal(pic);
@@ -11969,28 +12063,29 @@
 +}
 +
 +
-+static int vout_display_Control(vout_display_t *vd, int query, ...)
++static int vout_display_Control(display_desc_t * const dd, int query, ...)
 +{
 +    va_list args;
 +    int result;
 +
 +    va_start(args, query);
-+    result = vd->control(vd, query, args);
++    result = dd->vout->control(dd->vout, query, args);
 +    va_end(args);
 +
 +    return result;
 +}
 +
-+static bool want_mmal_vout(vout_display_t * vd, const mmal_x11_sys_t * const sys)
++static bool want_mmal_vout(vout_display_t * const vd, const mmal_x11_sys_t * const sys)
 +{
-+    return sys->mmal_vout != NULL && (sys->x_vout == NULL || var_InheritBool(vd, "fullscreen"));
++    return sys->mmal_desc.vout != NULL &&
++        (sys->x_desc.vout == NULL || var_InheritBool(vd, "fullscreen"));
 +}
 +
 +/* Control on the module (mandatory) */
 +static int mmal_x11_control(vout_display_t * vd, int ctl, va_list va)
 +{
 +    mmal_x11_sys_t * const sys = (mmal_x11_sys_t *)vd->sys;
-+    vout_display_t *x_vd = sys->cur_vout;
++    display_desc_t *x_desc = sys->cur_desc;
 +    int rv;
 +#if TRACE_ALL
 +    msg_Dbg(vd, "<<< %s[%d] (ctl=%d)", __func__, sys->use_mmal, ctl);
@@ -12005,23 +12100,23 @@
 +            const vout_display_cfg_t * const cfg = va_arg(va, const vout_display_cfg_t *);
 +            const bool want_mmal = want_mmal_vout(vd, sys);
 +            const bool swap_vout = (sys->use_mmal != want_mmal);
-+            vout_display_t * const new_vd = want_mmal ? sys->mmal_vout : sys->x_vout;
++            display_desc_t * const new_desc = want_mmal ? &sys->mmal_desc : &sys->x_desc;
 +
 +            msg_Dbg(vd, "Change size: %d, %d: mmal_vout=%p, want_mmal=%d, fs=%d",
-+                    cfg->display.width, cfg->display.height, sys->mmal_vout, want_mmal,
++                    cfg->display.width, cfg->display.height, sys->mmal_desc.vout, want_mmal,
 +                    var_InheritBool(vd, "fullscreen"));
 +
 +            if (swap_vout) {
 +                if (sys->use_mmal) {
-+                    vout_display_Control(x_vd, VOUT_DISPLAY_CHANGE_MMAL_HIDE);
++                    vout_display_Control(x_desc, VOUT_DISPLAY_CHANGE_MMAL_HIDE);
 +                }
 +                vout_display_SendEventPicturesInvalid(vd);
 +            }
 +
-+            rv = vout_display_Control(new_vd, ctl, cfg);
++            rv = vout_display_Control(new_desc, ctl, cfg);
 +            if (rv == VLC_SUCCESS) {
-+                vd->fmt       = new_vd->fmt;
-+                sys->cur_vout = new_vd;
++                vd->fmt       = new_desc->vout->fmt;
++                sys->cur_desc = new_desc;
 +                sys->use_mmal = want_mmal;
 +            }
 +
@@ -12030,17 +12125,18 @@
 +                const uint32_t changed = sys->changed;
 +                sys->changed = 0;
 +                if ((changed & (1 << VOUT_DISPLAY_CHANGE_DISPLAY_FILLED)) != 0)
-+                    vout_display_Control(new_vd, VOUT_DISPLAY_CHANGE_DISPLAY_FILLED, vd->cfg);
++                    vout_display_Control(new_desc, VOUT_DISPLAY_CHANGE_DISPLAY_FILLED, vd->cfg);
 +                if ((changed & (1 << VOUT_DISPLAY_CHANGE_ZOOM)) != 0)
-+                    vout_display_Control(new_vd, VOUT_DISPLAY_CHANGE_ZOOM, vd->cfg);
-+                if ((changed & ((1 << VOUT_DISPLAY_CHANGE_SOURCE_CROP) | (1 << VOUT_DISPLAY_CHANGE_SOURCE_ASPECT))) != 0)
-+                    new_vd->source = vd->source;
++                    vout_display_Control(new_desc, VOUT_DISPLAY_CHANGE_ZOOM, vd->cfg);
++                if ((changed & ((1 << VOUT_DISPLAY_CHANGE_SOURCE_CROP) |
++                                (1 << VOUT_DISPLAY_CHANGE_SOURCE_ASPECT))) != 0)
++                    cpy_fmt_limit_size(new_desc, &new_desc->vout->source, &vd->source);
 +                if ((changed & (1 << VOUT_DISPLAY_CHANGE_SOURCE_ASPECT)) != 0)
-+                    vout_display_Control(new_vd, VOUT_DISPLAY_CHANGE_SOURCE_ASPECT);
++                    vout_display_Control(new_desc, VOUT_DISPLAY_CHANGE_SOURCE_ASPECT);
 +                if ((changed & (1 << VOUT_DISPLAY_CHANGE_SOURCE_CROP)) != 0)
-+                    vout_display_Control(new_vd, VOUT_DISPLAY_CHANGE_SOURCE_CROP);
++                    vout_display_Control(new_desc, VOUT_DISPLAY_CHANGE_SOURCE_CROP);
 +                if ((changed & (1 << VOUT_DISPLAY_CHANGE_VIEWPOINT)) != 0)
-+                    vout_display_Control(new_vd, VOUT_DISPLAY_CHANGE_ZOOM, vd->cfg);
++                    vout_display_Control(new_desc, VOUT_DISPLAY_CHANGE_VIEWPOINT, vd->cfg);
 +            }
 +
 +            break;
@@ -12048,25 +12144,26 @@
 +
 +        case VOUT_DISPLAY_RESET_PICTURES:
 +            msg_Dbg(vd, "<<< %s: Pic reset: fmt: %dx%d<-%dx%d, source: %dx%d/%dx%d", __func__,
-+                    vd->fmt.i_width, vd->fmt.i_height, x_vd->fmt.i_width, x_vd->fmt.i_height,
-+                    vd->source.i_width, vd->source.i_height, x_vd->source.i_width, x_vd->source.i_height);
++                    vd->fmt.i_width, vd->fmt.i_height, x_desc->vout->fmt.i_width, x_desc->vout->fmt.i_height,
++                    vd->source.i_width, vd->source.i_height, x_desc->vout->source.i_width, x_desc->vout->source.i_height);
 +            // If the display doesn't have has_pictures_invalid then it doesn't
 +            // expect RESET_PICTURES
-+            if (sys->x_vout->info.has_pictures_invalid) {
-+                rv = sys->x_vout->control(sys->x_vout, ctl, va);
++            if (sys->x_desc.vout->info.has_pictures_invalid) {
++                rv = sys->x_desc.vout->control(sys->x_desc.vout, ctl, va);
 +            }
-+            if (sys->mmal_vout && sys->mmal_vout->info.has_pictures_invalid) {
-+                rv = sys->mmal_vout->control(sys->mmal_vout, ctl, va);
++            if (sys->mmal_desc.vout && sys->mmal_desc.vout->info.has_pictures_invalid) {
++                rv = sys->mmal_desc.vout->control(sys->mmal_desc.vout, ctl, va);
 +            }
-+            vd->fmt = x_vd->fmt;
++            vd->fmt = x_desc->vout->fmt;
 +            break;
 +
 +        case VOUT_DISPLAY_CHANGE_SOURCE_ASPECT:
 +        case VOUT_DISPLAY_CHANGE_SOURCE_CROP:
-+            x_vd->source = vd->source;
++            cpy_fmt_limit_size(x_desc, &x_desc->vout->source, &vd->source);
++
 +            /* FALLTHRU */
 +        default:
-+            rv = x_vd->control(x_vd, ctl, va);
++            rv = x_desc->vout->control(x_desc->vout, ctl, va);
 +//            vd->fmt  = x_vd->fmt;
 +            break;
 +    }
@@ -12083,7 +12180,7 @@
 +static void mmal_x11_manage(vout_display_t * vd)
 +{
 +    mmal_x11_sys_t * const sys = (mmal_x11_sys_t *)vd->sys;
-+    vout_display_t * const x_vd = sys->cur_vout;
++    vout_display_t * const x_vd = sys->cur_desc->vout;
 +#if TRACE_ALL
 +    msg_Dbg(vd, "<<< %s", __func__);
 +#endif
@@ -12120,15 +12217,24 @@
 +                vd->fmt.i_sar_num,       vd->fmt.i_sar_den);
 +    }
 +
-+    if ((sys->x_vout = load_display_module(vd, "vout display", "opengles2")) != NULL)
-+        msg_Dbg(vd, "Opengles2 output found");
-+    else if ((sys->x_vout = load_display_module(vd, "vout display", "xcb_x11")) != NULL)
-+        msg_Dbg(vd, "X11 XCB output found");
++    sys->x_desc.max_pels = MAX_GL_PELS;
++    sys->mmal_desc.max_pels = MAX_MMAL_PELS;
 +
-+    if ((sys->mmal_vout = load_display_module(vd, "vout display", "mmal_vout")) != NULL)
++    if (load_display_module(vd, &sys->x_desc, "vout display", "opengles2") == 0)
++    {
++        msg_Dbg(vd, "Opengles2 output found");
++    }
++    else
++    {
++        sys->x_desc.max_pels = MAX_MMAL_PELS;
++        if (load_display_module(vd, &sys->x_desc, "vout display", "xcb_x11") == 0)
++            msg_Dbg(vd, "X11 XCB output found");
++    }
++
++    if ((load_display_module(vd, &sys->mmal_desc, "vout display", "mmal_vout")) == 0)
 +        msg_Dbg(vd, "MMAL output found");
 +
-+    if (sys->mmal_vout == NULL && sys->x_vout == NULL) {
++    if (sys->mmal_desc.vout == NULL && sys->x_desc.vout == NULL) {
 +        char dbuf0[5], dbuf1[5];
 +        msg_Info(vd, "No valid output found for vout (%s/%s)", str_fourcc(dbuf0, vd->fmt.i_chroma), str_fourcc(dbuf1, vd->source.i_chroma));
 +        goto fail;
@@ -12143,33 +12249,33 @@
 +#endif
 +
 +    if (want_mmal_vout(vd, sys)) {
-+        sys->cur_vout = sys->mmal_vout;
++        sys->cur_desc = &sys->mmal_desc;
 +        sys->use_mmal = true;
 +    }
 +    else {
-+        sys->cur_vout = sys->x_vout;
++        sys->cur_desc = &sys->x_desc;
 +        sys->use_mmal = false;
 +    }
 +
-+    if (sys->mmal_vout == NULL || sys->x_vout == NULL) {
-+        vd->info = sys->cur_vout->info;
++    if (sys->mmal_desc.vout == NULL || sys->x_desc.vout == NULL) {
++        vd->info = sys->cur_desc->vout->info;
 +        vd->info.has_pictures_invalid = true;  // Should make this unwanted
 +    }
 +    else {
 +        // We have both - construct a combination
 +        vd->info = (vout_display_info_t){
 +            .is_slow              = false,
-+            .has_double_click     = sys->mmal_vout->info.has_double_click || sys->x_vout->info.has_double_click,
-+            .needs_hide_mouse     = sys->mmal_vout->info.needs_hide_mouse || sys->x_vout->info.needs_hide_mouse,
++            .has_double_click     = sys->mmal_desc.vout->info.has_double_click || sys->x_desc.vout->info.has_double_click,
++            .needs_hide_mouse     = sys->mmal_desc.vout->info.needs_hide_mouse || sys->x_desc.vout->info.needs_hide_mouse,
 +            .has_pictures_invalid = true,
 +        };
 +        // Construct intersection of subpicture chromas
 +        // sys calloced so no need to add the terminating zero
-+        if (sys->mmal_vout->info.subpicture_chromas != NULL && sys->x_vout->info.subpicture_chromas != NULL) {
++        if (sys->mmal_desc.vout->info.subpicture_chromas != NULL && sys->x_desc.vout->info.subpicture_chromas != NULL) {
 +            unsigned int n = 0;
 +            // N^2 - fix if we ever care
-+            for (const vlc_fourcc_t * p1 = sys->mmal_vout->info.subpicture_chromas; *p1 != 0 && n != 15; ++p1) {
-+                for (const vlc_fourcc_t * p2 = sys->x_vout->info.subpicture_chromas; *p2 != 0; ++p2) {
++            for (const vlc_fourcc_t * p1 = sys->mmal_desc.vout->info.subpicture_chromas; *p1 != 0 && n != 15; ++p1) {
++                for (const vlc_fourcc_t * p2 = sys->x_desc.vout->info.subpicture_chromas; *p2 != 0; ++p2) {
 +                    if (*p1 == *p2) {
 +                        sys->subpicture_chromas[n++] = *p1;
 +                        break;
@@ -12180,13 +12286,13 @@
 +                vd->info.subpicture_chromas = sys->subpicture_chromas;
 +        }
 +    }
-+    vd->fmt  = sys->cur_vout->fmt;
++    vd->fmt  = sys->cur_desc->vout->fmt;
 +
 +#if TRACE_ALL
 +    {
 +        char dbuf0[5];
 +        msg_Dbg(vd, ">>> %s: (%s) %s,%dx%d [(%d,%d) %d/%d] sar:%d/%d", __func__,
-+                module_get_name(sys->cur_vout->module, false),
++                module_get_name(sys->cur_desc->vout->module, false),
 +                str_fourcc(dbuf0, vd->fmt.i_chroma),
 +                vd->fmt.i_width,         vd->fmt.i_height,
 +                vd->fmt.i_x_offset,      vd->fmt.i_y_offset,

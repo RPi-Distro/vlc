@@ -1,6 +1,6 @@
 vlc (3.0.8-0+deb10u1+rpt2) buster; urgency=medium
 
-  * Apply MMAL patch 11
+  * Apply MMAL patch 12
 
  -- Serge Schneider <serge@raspberrypi.org>  Mon, 21 Oct 2019 13:28:13 +0100
 
