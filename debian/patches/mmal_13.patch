@@ -4907,6 +4907,8 @@
 +        return NULL;
 +    }
 +
++//    msg_Info(dec, "Pool size=%d", av_rpi_zc_get_decoder_pool_size(sys->p_context->get_buffer_context));
++
 +    AVBufferRef *const avbuf = av_rpi_zc_buf(cma_buf_size(cmabuf), 0, cmabuf, &zc_buf_fn_tab);
 +
 +    if (avbuf == NULL)
@@ -5896,9 +5898,9 @@
 +    if( i_thread_count <= 0 )
 +#if 1
 +    {
-+        // Pick 5 threads for everything on Pi
-+        // * Reduce to 3 for Pi4 HEVC?
-+        i_thread_count = 5;
++        // Pick 5 threads for everything on Pi except for HEVC where the h/w
++        // really limits the useful size to 3
++        i_thread_count = p_codec->id == AV_CODEC_ID_HEVC ? 3 : 5;
 +    }
 +#else
 +    {
@@ -6581,8 +6583,6 @@
 +                goto fail;
 +            }
 +
-+            cma_buf_in_flight(cb);
-+
 +            if (cma_buf_pic_attach(cma_buf_ref(cb), p_pic) != 0)
 +            {
 +                cma_buf_unref(cb);  // Undo the in_flight
@@ -6825,7 +6825,7 @@
 +
 --- /dev/null
 +++ b/modules/hw/mmal/mmal_cma.c
-@@ -0,0 +1,526 @@
+@@ -0,0 +1,546 @@
 +#ifdef HAVE_CONFIG_H
 +# include "config.h"
 +#endif
@@ -7028,6 +7028,14 @@
 +{
 +    vlc_mutex_lock(&p->lock);
 +    ++p->in_flight;
++    vlc_mutex_unlock(&p->lock);
++}
++
++void cma_pool_fixed_dec_in_flight(cma_pool_fixed_t * const p)
++{
++    vlc_mutex_lock(&p->lock);
++    if (--p->in_flight == 0)
++        vlc_cond_signal(&p->flight_cond);
 +    vlc_mutex_unlock(&p->lock);
 +}
 +
@@ -7266,11 +7274,23 @@
 +
 +void cma_buf_in_flight(cma_buf_t * const cb)
 +{
-+    assert(!cb->in_flight);
-+
-+    cb->in_flight = true;
-+    cma_pool_fixed_inc_in_flight(cb->cbp->pool);
++    if (!cb->cbp->all_in_flight)
++    {
++        assert(!cb->in_flight);
++        cb->in_flight = true;
++        cma_pool_fixed_inc_in_flight(cb->cbp->pool);
++    }
 +}
++
++void cma_buf_end_flight(cma_buf_t * const cb)
++{
++    if (cb != NULL && !cb->cbp->all_in_flight && cb->in_flight)
++    {
++        cb->in_flight = false;
++        cma_pool_fixed_dec_in_flight(cb->cbp->pool);
++    }
++}
++
 +
 +// Return vcsm handle
 +unsigned int cma_buf_vcsm_handle(const cma_buf_t * const cb)
@@ -7354,7 +7374,7 @@
 +
 --- /dev/null
 +++ b/modules/hw/mmal/mmal_cma.h
-@@ -0,0 +1,58 @@
+@@ -0,0 +1,60 @@
 +#ifndef VLC_MMAL_MMAL_CMA_H_
 +#define VLC_MMAL_MMAL_CMA_H_
 +
@@ -7371,6 +7391,7 @@
 +void * cma_pool_fixed_get(cma_pool_fixed_t * const p, const size_t req_el_size, const bool in_flight);
 +void cma_pool_fixed_put(cma_pool_fixed_t * const p, void * v, const size_t el_size, const bool was_in_flight);
 +void cma_pool_fixed_inc_in_flight(cma_pool_fixed_t * const p);
++void cma_pool_fixed_dec_in_flight(cma_pool_fixed_t * const p);
 +void cma_pool_fixed_kill(cma_pool_fixed_t * const p);
 +cma_pool_fixed_t * cma_pool_fixed_new(const unsigned int pool_size,
 +                   const int flight_size,
@@ -7384,6 +7405,7 @@
 +typedef struct cma_buf_s cma_buf_t;
 +
 +void cma_buf_in_flight(cma_buf_t * const cb);
++void cma_buf_end_flight(cma_buf_t * const cb);
 +unsigned int cma_buf_vcsm_handle(const cma_buf_t * const cb);
 +size_t cma_buf_size(const cma_buf_t * const cb);
 +int cma_buf_add_context2(cma_buf_t *const cb, picture_context_t * const ctx2);
@@ -7463,7 +7485,7 @@
 +
 --- a/modules/hw/mmal/mmal_picture.c
 +++ b/modules/hw/mmal/mmal_picture.c
-@@ -21,25 +21,1289 @@
+@@ -21,25 +21,1305 @@
   * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
   *****************************************************************************/
  
@@ -7567,6 +7589,16 @@
 +                return MMAL_ENCODING_ARGB;
 +            break;
 +        }
++        case VLC_CODEC_RGB16:
++        {
++            // VLC RGB16 aka RV16 means we have to look at the mask values
++            const uint32_t r = vf_vlc->i_rmask;
++            const uint32_t g = vf_vlc->i_gmask;
++            const uint32_t b = vf_vlc->i_bmask;
++            if (r == 0xf800 && g == 0x7e0 && b == 0x1f)
++                return MMAL_ENCODING_RGB16;
++            break;
++        }
 +        case VLC_CODEC_MMAL_ZC_I420:
 +            return MMAL_ENCODING_I420;
 +        case VLC_CODEC_RGBA:
@@ -7619,18 +7651,11 @@
 +}
 +
 +bool hw_mmal_vlc_pic_to_mmal_fmt_update(MMAL_ES_FORMAT_T *const es_fmt, const picture_t * const pic)
- {
--    picture_sys_t *pic_sys = picture->p_sys;
--    MMAL_BUFFER_HEADER_T *buffer = pic_sys->buffer;
++{
 +    MMAL_VIDEO_FORMAT_T vf_new_ss;
 +    MMAL_VIDEO_FORMAT_T *const vf_old = &es_fmt->es->video;
 +    MMAL_VIDEO_FORMAT_T *const vf_new = &vf_new_ss;
- 
--    int offset = 0;
--    picture->p[0].p_pixels = buffer->data;
--    for (int i = 1; i < picture->i_planes; i++) {
--        offset = offset + picture->p[i - 1].i_pitch * picture->p[i - 1].i_lines;
--        picture->p[i].p_pixels = (ptrdiff_t)buffer->data + offset;
++
 +    vlc_fmt_to_video_format(vf_new, &pic->format);
 +
 +    // If we have a format that might have come from ffmpeg then rework for
@@ -7680,7 +7705,7 @@
 +#endif
 +        *vf_old = *vf_new;
 +        return true;
-     }
++    }
 +    return false;
 +}
 +
@@ -7694,8 +7719,7 @@
 +
 +    if ((ppr->pool = mmal_port_pool_create(port, headers, payload_size)) == NULL)
 +        goto fail;
- 
--    pic_sys->displayed = false;
++
 +    ppr->port = port;
 +    atomic_store(&ppr->refs, 1);
 +    return ppr;
@@ -7827,6 +7851,7 @@
 +            mmal_buffer_header_release(ctx->bufs[i]);
 +    }
 +
++    cma_buf_end_flight(ctx->cb);
 +    cma_buf_unref(ctx->cb);
 +
 +    free(ctx);
@@ -7880,7 +7905,7 @@
 +hw_mmal_gen_context(MMAL_BUFFER_HEADER_T * buf, hw_mmal_port_pool_ref_t * const ppr)
 +{
 +    pic_ctx_mmal_t * const ctx = calloc(1, sizeof(pic_ctx_mmal_t));
- 
++
 +    if (ctx == NULL)
 +        return NULL;
 +
@@ -8241,7 +8266,9 @@
 +
 +// * This could be made more efficient, but this is easy
 +static void pool_recycle_list(vzc_pool_ctl_t * const pc, ent_list_hdr_t * const elh)
-+{
+ {
+-    picture_sys_t *pic_sys = picture->p_sys;
+-    MMAL_BUFFER_HEADER_T *buffer = pic_sys->buffer;
 +    pool_ent_t * ent;
 +    while ((ent = ent_extract_tail(elh)) != NULL) {
 +        pool_recycle(pc, ent);
@@ -8264,11 +8291,17 @@
 +                best = ent;
 +            ent = ent->next;
 +        }
-+
+ 
+-    int offset = 0;
+-    picture->p[0].p_pixels = buffer->data;
+-    for (int i = 1; i < picture->i_planes; i++) {
+-        offset = offset + picture->p[i - 1].i_pitch * picture->p[i - 1].i_lines;
+-        picture->p[i].p_pixels = (ptrdiff_t)buffer->data + offset;
 +        // extract best from chain if we've found it
 +        ent_extract(&pc->ent_pool, best);
-+    }
-+
+     }
+ 
+-    pic_sys->displayed = false;
 +    vlc_mutex_unlock(&pc->lock);
 +
 +    if (best == NULL)
@@ -8475,7 +8508,7 @@
 +            .width  = fmt->i_visible_width,
 +            .height = fmt->i_visible_height
 +        };
-+
+ 
 +        if (needs_copy)
 +        {
 +            ent->width = dst_stride / bpp;
@@ -8635,6 +8668,9 @@
 +        case MMAL_ENCODING_BGR32:
 +            pb = 4;
 +            break;
++        case MMAL_ENCODING_RGB16:
++            pb = 2;
++            break;
 +
 +        case MMAL_ENCODING_I420:
 +            ws = shift_01;
@@ -8678,6 +8714,8 @@
 +    ctx->cmn.destroy = hw_mmal_pic_ctx_destroy;
 +    ctx->buf_count = 1; // cb takes the place of the 1st buf
 +    ctx->cb = cb;
++
++    cma_buf_in_flight(cb);
 +
 +    pic->context = &ctx->cmn;
 +    return VLC_SUCCESS;
@@ -8764,7 +8802,7 @@
 +
 --- a/modules/hw/mmal/mmal_picture.h
 +++ b/modules/hw/mmal/mmal_picture.h
-@@ -24,19 +24,286 @@
+@@ -24,19 +24,288 @@
  #ifndef VLC_MMAL_MMAL_PICTURE_H_
  #define VLC_MMAL_MMAL_PICTURE_H_
  
@@ -9015,6 +9053,8 @@
 +                    const MMAL_ES_FORMAT_T * const mm_esfmt,
 +                    const MMAL_BUFFER_HEADER_T * const buf);
 +
++// Attaches cma buf to pic
++// Marks in_flight if not all_in_flight anyway
 +int cma_buf_pic_attach(cma_buf_t * const cb, picture_t * const pic);
 +// Returns a pointer to the cma_buf attached to the pic
 +// Just a pointer - doesn't add a ref
