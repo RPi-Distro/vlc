@@ -1,3 +1,12 @@
+vlc (3.0.8-3) unstable; urgency=medium
+
+  * debian/control:
+    - Replace libfreetype6-dev with libfreetype-dev
+    - Bump Standards-Version
+  * debian/: Build srt access plugin
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 18 Nov 2019 22:38:08 +0100
+
 vlc (3.0.8-2) unstable; urgency=medium
 
   * debian/: Revert "Switch back to libmodplug-dev since vlc now requires
