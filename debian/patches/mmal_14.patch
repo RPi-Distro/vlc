@@ -4678,7 +4678,7 @@
 -}
 --- /dev/null
 +++ b/modules/hw/mmal/mmal_avcodec.c
-@@ -0,0 +1,2144 @@
+@@ -0,0 +1,2148 @@
 +/*****************************************************************************
 + * video.c: video decoder using the libavcodec library
 + *****************************************************************************
@@ -6045,6 +6045,7 @@
 +     * for a picture. This will avoid a deadlock between avcodec_flush_buffers
 +     * and workers threads */
 +    decoder_AbortPictures( p_dec, true );
++    cma_buf_pool_cancel(p_sys->cma_pool);
 +
 +    post_mt( p_sys );
 +    /* do not flush buffers if codec hasn't been opened (theora/vorbis/VC1) */
@@ -6053,6 +6054,7 @@
 +    wait_mt( p_sys );
 +
 +    /* Reset cancel state to false */
++    cma_buf_pool_uncancel(p_sys->cma_pool);
 +    decoder_AbortPictures( p_dec, false );
 +
 +#if TRACE_ALL
@@ -6723,6 +6725,8 @@
 +
 +    post_mt( p_sys );
 +
++    cma_buf_pool_cancel(p_sys->cma_pool);  // Abort any pending frame allocs
++
 +    /* do not flush buffers if codec hasn't been opened (theora/vorbis/VC1) */
 +    if( avcodec_is_open( ctx ) )
 +        avcodec_flush_buffers( ctx );
@@ -6825,7 +6829,7 @@
 +
 --- /dev/null
 +++ b/modules/hw/mmal/mmal_cma.c
-@@ -0,0 +1,546 @@
+@@ -0,0 +1,585 @@
 +#ifdef HAVE_CONFIG_H
 +# include "config.h"
 +#endif
@@ -6874,6 +6878,7 @@
 +    size_t el_size;
 +    void ** pool;
 +
++    bool cancel;
 +    int in_flight;
 +    vlc_cond_t flight_cond;
 +
@@ -6932,13 +6937,13 @@
 +    atomic_fetch_add(&p->ref_count, 1);
 +}
 +
-+void * cma_pool_fixed_get(cma_pool_fixed_t * const p, const size_t req_el_size, const bool is_in_flight)
++void * cma_pool_fixed_get(cma_pool_fixed_t * const p, const size_t req_el_size, const bool inc_flight)
 +{
 +    void * v = NULL;
 +
 +    vlc_mutex_lock(&p->lock);
 +
-+    do
++    for (;;)
 +    {
 +        if (req_el_size != p->el_size)
 +        {
@@ -6961,8 +6966,12 @@
 +            }
 +        }
 +
-+        if (req_el_size == 0)
-+            break;
++        // Late abort if flush or cancel so we can still kill the pool
++        if (req_el_size == 0 || p->cancel)
++        {
++            vlc_mutex_unlock(&p->lock);
++            return NULL;
++        }
 +
 +        if (p->pool != NULL)
 +        {
@@ -6979,10 +6988,9 @@
 +            break;
 +
 +        vlc_cond_wait(&p->flight_cond, &p->lock);
++    }
 +
-+    } while (1);
-+
-+    if (is_in_flight && req_el_size != 0)
++    if (inc_flight)
 +        ++p->in_flight;
 +
 +    vlc_mutex_unlock(&p->lock);
@@ -6993,6 +7001,9 @@
 +    // Tag ref
 +    if (v != NULL)
 +        cma_pool_fixed_ref(p);
++    // Remove flight if we set it and error
++    else if (inc_flight)
++        cma_pool_fixed_dec_in_flight(p);
 +
 +    return v;
 +}
@@ -7038,6 +7049,22 @@
 +        vlc_cond_signal(&p->flight_cond);
 +    vlc_mutex_unlock(&p->lock);
 +}
++
++void cma_pool_fixed_cancel(cma_pool_fixed_t * const p)
++{
++    vlc_mutex_lock(&p->lock);
++    p->cancel = true;
++    vlc_cond_broadcast(&p->flight_cond);
++    vlc_mutex_unlock(&p->lock);
++}
++
++void cma_pool_fixed_uncancel(cma_pool_fixed_t * const p)
++{
++    vlc_mutex_lock(&p->lock);
++    p->cancel = false;
++    vlc_mutex_unlock(&p->lock);
++}
++
 +
 +// Purge pool & unref
 +void cma_pool_fixed_kill(cma_pool_fixed_t * const p)
@@ -7230,6 +7257,22 @@
 +    free(cbp);
 +}
 +
++void cma_buf_pool_cancel(cma_buf_pool_t * const cbp)
++{
++    if (cbp == NULL || cbp->pool == NULL)
++        return;
++
++    cma_pool_fixed_cancel(cbp->pool);
++}
++
++void cma_buf_pool_uncancel(cma_buf_pool_t * const cbp)
++{
++    if (cbp == NULL || cbp->pool == NULL)
++        return;
++
++    cma_pool_fixed_uncancel(cbp->pool);
++}
++
 +// User finished with pool
 +void cma_buf_pool_delete(cma_buf_pool_t * const cbp)
 +{
@@ -7374,7 +7417,7 @@
 +
 --- /dev/null
 +++ b/modules/hw/mmal/mmal_cma.h
-@@ -0,0 +1,60 @@
+@@ -0,0 +1,64 @@
 +#ifndef VLC_MMAL_MMAL_CMA_H_
 +#define VLC_MMAL_MMAL_CMA_H_
 +
@@ -7392,6 +7435,8 @@
 +void cma_pool_fixed_put(cma_pool_fixed_t * const p, void * v, const size_t el_size, const bool was_in_flight);
 +void cma_pool_fixed_inc_in_flight(cma_pool_fixed_t * const p);
 +void cma_pool_fixed_dec_in_flight(cma_pool_fixed_t * const p);
++void cma_pool_fixed_cancel(cma_pool_fixed_t * const p);
++void cma_pool_fixed_uncancel(cma_pool_fixed_t * const p);
 +void cma_pool_fixed_kill(cma_pool_fixed_t * const p);
 +cma_pool_fixed_t * cma_pool_fixed_new(const unsigned int pool_size,
 +                   const int flight_size,
@@ -7422,6 +7467,8 @@
 +typedef struct cma_buf_pool_s cma_buf_pool_t;
 +
 +cma_buf_t * cma_buf_pool_alloc_buf(cma_buf_pool_t * const p, const size_t size);
++void cma_buf_pool_cancel(cma_buf_pool_t * const cbp);
++void cma_buf_pool_uncancel(cma_buf_pool_t * const cbp);
 +void cma_buf_pool_delete(cma_buf_pool_t * const p);
 +cma_buf_pool_t * cma_buf_pool_new(const unsigned int pool_size, const unsigned int flight_size, const bool all_in_flight, const char * const name);
 +
@@ -7485,7 +7532,7 @@
 +
 --- a/modules/hw/mmal/mmal_picture.c
 +++ b/modules/hw/mmal/mmal_picture.c
-@@ -21,25 +21,1305 @@
+@@ -21,25 +21,1312 @@
   * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
   *****************************************************************************/
  
@@ -7927,10 +7974,17 @@
 +
 +
 +static MMAL_BOOL_T rep_buf_free_cb(MMAL_BUFFER_HEADER_T *header, void *userdata)
-+{
+ {
+-    picture_sys_t *pic_sys = picture->p_sys;
+-    MMAL_BUFFER_HEADER_T *buffer = pic_sys->buffer;
 +    cma_buf_t * const cb = userdata;
 +    VLC_UNUSED(header);
-+
+ 
+-    int offset = 0;
+-    picture->p[0].p_pixels = buffer->data;
+-    for (int i = 1; i < picture->i_planes; i++) {
+-        offset = offset + picture->p[i - 1].i_pitch * picture->p[i - 1].i_lines;
+-        picture->p[i].p_pixels = (ptrdiff_t)buffer->data + offset;
 +    cma_buf_unref(cb);
 +    return MMAL_FALSE;
 +}
@@ -7963,7 +8017,7 @@
 +        rep_buf->length = rep_buf->alloc_size;
 +        // Ensure cb remains valid for the duration of this buffer
 +        mmal_buffer_header_pre_release_cb_set(rep_buf, rep_buf_free_cb, cma_buf_ref(ctx->cb));
-+    }
+     }
 +    else
 +        goto fail;
 +
@@ -7977,7 +8031,8 @@
 +
 +
 +
-+
+ 
+-    pic_sys->displayed = false;
 +int hw_mmal_get_gpu_mem(void) {
 +    static int stashed_val = -2;
 +    VCHI_INSTANCE_T vchi_instance;
@@ -8065,7 +8120,7 @@
 +   .tail = NULL, \
 +   .n = 0 \
 +}
-+
+ 
 +struct vzc_pool_ctl_s
 +{
 +    atomic_int ref_count;
@@ -8080,6 +8135,8 @@
 +    vlc_mutex_t lock;
 +
 +    MMAL_POOL_T * buf_pool;
++
++    vcsm_init_type_t vcsm_init_type;
 +};
 +
 +typedef struct vzc_subbuf_ent_s
@@ -8266,9 +8323,7 @@
 +
 +// * This could be made more efficient, but this is easy
 +static void pool_recycle_list(vzc_pool_ctl_t * const pc, ent_list_hdr_t * const elh)
- {
--    picture_sys_t *pic_sys = picture->p_sys;
--    MMAL_BUFFER_HEADER_T *buffer = pic_sys->buffer;
++{
 +    pool_ent_t * ent;
 +    while ((ent = ent_extract_tail(elh)) != NULL) {
 +        pool_recycle(pc, ent);
@@ -8291,17 +8346,11 @@
 +                best = ent;
 +            ent = ent->next;
 +        }
- 
--    int offset = 0;
--    picture->p[0].p_pixels = buffer->data;
--    for (int i = 1; i < picture->i_planes; i++) {
--        offset = offset + picture->p[i - 1].i_pitch * picture->p[i - 1].i_lines;
--        picture->p[i].p_pixels = (ptrdiff_t)buffer->data + offset;
++
 +        // extract best from chain if we've found it
 +        ent_extract(&pc->ent_pool, best);
-     }
- 
--    pic_sys->displayed = false;
++    }
++
 +    vlc_mutex_unlock(&pc->lock);
 +
 +    if (best == NULL)
@@ -8508,7 +8557,7 @@
 +            .width  = fmt->i_visible_width,
 +            .height = fmt->i_visible_height
 +        };
- 
++
 +        if (needs_copy)
 +        {
 +            ent->width = dst_stride / bpp;
@@ -8526,7 +8575,9 @@
 +                }
 +
 +                // And make sure it is actually in memory
-+                flush_range(ent->buf, d - (uint8_t *)ent->buf);
++                if (pc->vcsm_init_type != VCSM_INIT_CMA) {  // ** CMA is currently always uncached
++                    flush_range(ent->buf, d - (uint8_t *)ent->buf);
++                }
 +            }
 +        }
 +    }
@@ -8560,13 +8611,12 @@
 +
 +    vlc_mutex_destroy(&pc->lock);
 +
-+//    memset(pc, 0xba, sizeof(*pc)); // Zap for (hopefully) faster crash
++    cma_vcsm_exit(pc->vcsm_init_type);
 +
++//    memset(pc, 0xba, sizeof(*pc)); // Zap for (hopefully) faster crash
 +    free (pc);
 +
-+    vcsm_exit();
-+
-+//    printf(">>> %s\n", __func__);
++    //    printf(">>> %s\n", __func__);
 +}
 +
 +void hw_mmal_vzc_pool_release(vzc_pool_ctl_t * const pc)
@@ -8617,7 +8667,11 @@
 +    if (pc == NULL)
 +        return NULL;
 +
-+    vcsm_init();
++    if ((pc->vcsm_init_type = cma_vcsm_init()) == VCSM_INIT_NONE)
++    {
++        free(pc);
++        return NULL;
++    }
 +
 +    pc->max_n = 8;
 +    vlc_mutex_init(&pc->lock);  // Must init before potential destruction
@@ -11126,7 +11180,7 @@
 +
 +            if ((sys->subpic_bufs[n] = hw_mmal_vzc_buf_from_pic(sys->vzc,
 +                src,
-+                (MMAL_RECT_T){.width = vd->cfg->display.width, .height=vd->cfg->display.height},
++                (MMAL_RECT_T){.width = vd->source.i_visible_width, .height=vd->source.i_visible_height},
 +                sreg->i_x, sreg->i_y,
 +                sreg->i_alpha,
 +                n == 0)) == NULL)
