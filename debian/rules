@@ -29,7 +29,6 @@ confflags += \
 confflags += \
 	--enable-a52 \
 	--enable-aa \
-	--enable-aom \
 	--enable-aribsub \
 	--enable-avahi \
 	--enable-bluray \
@@ -84,7 +83,6 @@ confflags += \
 	--enable-theora \
 	--enable-twolame \
 	--enable-upnp \
-	--enable-vdpau \
 	--enable-vnc \
 	--enable-vorbis \
 	--enable-x264 \
@@ -250,9 +248,19 @@ ifeq (,$(filter-out arm,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-neon
 confflags += --enable-mmal
 confflags += --enable-mmal-avcodec
+confflags += --disable-vdpau
+confflags += --disable-libva
+confflags += --enable-dav1d
+confflags += --disable-aom
+removeplugins += vdpau
+removeplugins += libva
+removeplugins += aom
 else
+confflags += --enable-aom
+confflags += --enable-vdpau
 confflags += --disable-neon
 removeplugins += neon
+removeplugins += dav1d
 endif
 
 # PowerPC specific optimizations (excluding powerpcspe)
