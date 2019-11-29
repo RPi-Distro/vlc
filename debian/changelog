@@ -1,3 +1,9 @@
+vlc (3.0.8-0+deb10u1+rpt6) buster; urgency=medium
+
+  * Apply MMAL patch 15
+
+ -- Serge Schneider <serge@raspberrypi.org>  Fri, 29 Nov 2019 10:13:57 +0000
+
 vlc (3.0.8-0+deb10u1+rpt5) buster; urgency=medium
 
   * Disable vdpau, libva, aom
