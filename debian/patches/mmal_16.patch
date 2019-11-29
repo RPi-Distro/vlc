@@ -500,7 +500,7 @@
 +
 --- a/modules/hw/mmal/codec.c
 +++ b/modules/hw/mmal/codec.c
-@@ -26,267 +26,394 @@
+@@ -26,267 +26,396 @@
  #include "config.h"
  #endif
  
@@ -528,6 +528,8 @@
 +
 +#define TRACE_ALL 0
 +
++#define OPT_TO_FROM_ZC 0
++
  /*
   * This seems to be a bit high, but reducing it causes instabilities
   */
@@ -548,15 +550,6 @@
  
 -static int OpenDecoder(decoder_t *dec);
 -static void CloseDecoder(decoder_t *dec);
--
--vlc_module_begin()
--    set_shortname(N_("MMAL decoder"))
--    set_description(N_("MMAL-based decoder plugin for Raspberry Pi"))
--    set_capability("video decoder", 90)
--    add_shortcut("mmal_decoder")
--    add_bool(MMAL_OPAQUE_NAME, true, MMAL_OPAQUE_TEXT, MMAL_OPAQUE_LONGTEXT, false)
--    set_callbacks(OpenDecoder, CloseDecoder)
--vlc_module_end()
 +#define MMAL_RESIZE_NAME "mmal-resize"
 +#define MMAL_RESIZE_TEXT N_("Use mmal resizer rather than hvs.")
 +#define MMAL_RESIZE_LONGTEXT N_("Use mmal resizer rather than isp. This uses less gpu memory than the ISP but is slower.")
@@ -565,6 +558,15 @@
 +#define MMAL_ISP_TEXT N_("Use mmal isp rather than hvs.")
 +#define MMAL_ISP_LONGTEXT N_("Use mmal isp rather than hvs. This may be faster but has no blend.")
  
+-vlc_module_begin()
+-    set_shortname(N_("MMAL decoder"))
+-    set_description(N_("MMAL-based decoder plugin for Raspberry Pi"))
+-    set_capability("video decoder", 90)
+-    add_shortcut("mmal_decoder")
+-    add_bool(MMAL_OPAQUE_NAME, true, MMAL_OPAQUE_TEXT, MMAL_OPAQUE_LONGTEXT, false)
+-    set_callbacks(OpenDecoder, CloseDecoder)
+-vlc_module_end()
+-
 -struct decoder_sys_t {
 -    bool opaque;
 +typedef struct decoder_sys_t
@@ -1044,11 +1046,11 @@
 +#if TRACE_ALL
 +        msg_Dbg(dec, "%s: Updated", __func__);
 +#endif
-+
-+        return;
-+    }
  
 -    bcm_host_deinit();
++        return;
++    }
++
 +    hw_mmal_port_pool_ref_fill(sys->ppr);
 +    return;
  }
@@ -1069,7 +1071,7 @@
      if (atomic_load(&sys->started)) {
          mmal_format_full_copy(sys->output->format, sys->output_format);
          status = mmal_port_format_commit(sys->output);
-@@ -300,7 +427,9 @@
+@@ -300,7 +429,9 @@
      }
  
  port_reset:
@@ -1079,7 +1081,7 @@
      status = mmal_port_disable(sys->output);
      if (status != MMAL_SUCCESS) {
          msg_Err(dec, "Failed to disable output port (status=%"PRIx32" %s)",
-@@ -318,18 +447,10 @@
+@@ -318,18 +449,10 @@
          goto out;
      }
  
@@ -1100,7 +1102,7 @@
      if (status != MMAL_SUCCESS) {
          msg_Err(dec, "Failed to enable output port (status=%"PRIx32" %s)",
                  status, mmal_status_to_string(status));
-@@ -338,25 +459,14 @@
+@@ -338,25 +461,14 @@
      }
  
      if (!atomic_load(&sys->started)) {
@@ -1129,7 +1131,7 @@
      }
  
  apply_fmt:
-@@ -382,12 +492,19 @@
+@@ -382,12 +494,19 @@
          sys->b_progressive = (interlace_type.eMode == MMAL_InterlaceProgressive);
          sys->b_top_field_first = sys->b_progressive ? true :
              (interlace_type.eMode == MMAL_InterlaceFieldsInterleavedUpperFirst);
@@ -1149,7 +1151,7 @@
  out:
      mmal_format_free(sys->output_format);
      sys->output_format = NULL;
-@@ -395,144 +512,85 @@
+@@ -395,144 +514,85 @@
      return ret;
  }
  
@@ -1243,11 +1245,6 @@
 +static MMAL_STATUS_T decoder_send_extradata(decoder_t * const dec, decoder_sys_t *const sys)
  {
 -    decoder_sys_t *sys = dec->p_sys;
--
--    unsigned max_buffers_in_transit = 0;
--    int buffers_available = 0;
--    int buffers_to_send = 0;
--    int i;
 +    if (dec->fmt_in.i_codec == VLC_CODEC_H264 &&
 +        dec->fmt_in.i_extra > 0)
 +    {
@@ -1262,6 +1259,11 @@
 +        buf->data = dec->fmt_in.p_extra;
 +        buf->flags = MMAL_BUFFER_HEADER_FLAG_CONFIG;
  
+-    unsigned max_buffers_in_transit = 0;
+-    int buffers_available = 0;
+-    int buffers_to_send = 0;
+-    int i;
+-
 -    if (sys->output_pool) {
 -        max_buffers_in_transit = __MAX(sys->output_pool->headers_num,
 -                MIN_NUM_BUFFERS_IN_TRANSIT);
@@ -1277,10 +1279,10 @@
 +        }
      }
 -    buffers_to_send = max_buffers_in_transit - atomic_load(&sys->output_in_transit);
--
+ 
 -    if (buffers_to_send > buffers_available)
 -        buffers_to_send = buffers_available;
- 
+-
 -#ifndef NDEBUG
 -    msg_Dbg(dec, "Send %d buffers to output port (available: %d, "
 -                    "in_transit: %d, buffer_num: %d)",
@@ -1300,6 +1302,10 @@
 -    MMAL_BUFFER_HEADER_T *buffer;
 -    MMAL_STATUS_T status;
 +    decoder_sys_t *const sys = dec->p_sys;
++
++#if TRACE_ALL
++    msg_Dbg(dec, "%s: <<<", __func__);
++#endif
  
 -    msg_Dbg(dec, "Flushing decoder ports...");
 -    mmal_port_flush(sys->output);
@@ -1308,10 +1314,6 @@
 -    while (atomic_load(&sys->output_in_transit) ||
 -           atomic_load(&sys->input_in_transit))
 -        vlc_sem_wait(&sys->sem);
-+#if TRACE_ALL
-+    msg_Dbg(dec, "%s: <<<", __func__);
-+#endif
-+
 +    if (!sys->b_flushed) {
 +        mmal_port_disable(sys->input);
 +        mmal_port_disable(sys->output);
@@ -1347,7 +1349,7 @@
      /*
       * Configure output port if necessary
       */
-@@ -541,18 +599,50 @@
+@@ -541,18 +601,50 @@
              msg_Err(dec, "Failed to change output port format");
      }
  
@@ -1401,7 +1403,7 @@
      if (atomic_load(&sys->started))
          fill_output_port(dec);
  
-@@ -563,18 +653,21 @@
+@@ -563,18 +655,21 @@
      if (block->i_flags & BLOCK_FLAG_CORRUPTED)
          flags |= MMAL_BUFFER_HEADER_FLAG_CORRUPTED;
  
@@ -1428,7 +1430,7 @@
  
          len = block->i_buffer;
          if (len > buffer->alloc_size)
-@@ -590,89 +683,1734 @@
+@@ -590,89 +685,1733 @@
          }
          buffer->flags = flags;
  
@@ -2052,8 +2054,7 @@
 +        mmal_port_disable(sys->output);
 +
 +//    cma_buf_pool_deletez(&sys->cma_out_pool);
- 
--        sys->output_format = format;
++
 +    // Free up anything we may have already lying around
 +    // Don't need lock as the above disables should have prevented anything
 +    // happening in the background
@@ -2098,8 +2099,7 @@
 +        if (stash->sub_bufs[sub_no] != NULL) {
 +            // **** Do stashed blend
 +            // **** Aaargh, bother... need to rescale subs too
- 
--        mmal_buffer_header_release(buffer);
++
 +            mmal_buffer_header_release(stash->sub_bufs[sub_no]);
 +            stash->sub_bufs[sub_no] = NULL;
 +        }
@@ -2511,7 +2511,8 @@
 +
 +    return 0;
 +}
-+
+ 
+-        sys->output_format = format;
 +static inline MMAL_FOURCC_T filter_enc_out(const video_format_t * const fmt)
 +{
 +    const MMAL_FOURCC_T mmes = vlc_to_mmal_video_fourcc(fmt);
@@ -2598,7 +2599,8 @@
 +        goto fail;
 +    }
 +    p_filter->p_sys = sys;
-+
+ 
+-        mmal_buffer_header_release(buffer);
 +    // Init stuff the we destroy unconditionaly in Close first
 +    vlc_mutex_init(&sys->lock);
 +    vlc_sem_init(&sys->sem, 0);
@@ -2729,15 +2731,15 @@
 +        use_resizer = true;
 +        msg_Warn(p_filter, "Lack of memory to use HVS/ISP: trying resizer");
 +        goto retry;
-+    }
+     }
 +
 +#if TRACE_ALL
 +    msg_Dbg(p_filter, ">>> %s: FAIL: %d", __func__, ret);
 +#endif
 +    return ret;
-+}
+ }
 +
-+#if 0
++#if OPT_TO_FROM_ZC
 +//----------------------------------------------------------------------------
 +//
 +// Simple copy in to ZC
@@ -2748,7 +2750,6 @@
 +} to_zc_sys_t;
 +
 +
-+#error MMAL doesnt like our sizing for e.g. 624x352
 +static size_t buf_alloc_size(const vlc_fourcc_t i_chroma, const unsigned int width, const unsigned int height)
 +{
 +    const unsigned int pels = width * height;
@@ -2788,7 +2789,7 @@
 +    hw_mmal_vlc_fmt_to_mmal_fmt(&mm_esfmt, &p_filter->fmt_out.video);
 +
 +    const size_t buf_alloc = buf_alloc_size(p_filter->fmt_out.video.i_chroma,
-+                                            p_filter->fmt_out.video.i_width, p_filter->fmt_out.video.i_height);
++                                            mm_vfmt.video.width, mm_vfmt.video.height);
 +    if (buf_alloc == 0)
 +        goto fail1;
 +    cma_buf_t *const cb = cma_buf_pool_alloc_buf(sys->cma_out_pool, buf_alloc);
@@ -2892,7 +2893,7 @@
 +    if ((sys->vcsm_init_type = cma_vcsm_init()) == VCSM_INIT_NONE) {
 +        msg_Err(p_filter, "VCSM init failed");
 +        goto fail;
-     }
++    }
 +
 +    if ((sys->cma_out_pool = cma_buf_pool_new(5, 5, true, "conv-to-zc")) == NULL)
 +    {
@@ -2907,7 +2908,7 @@
 +fail:
 +    CloseConverterToZc(obj);
 +    return ret;
- }
++}
 +
 +//----------------------------------------------------------------------------
 +//
@@ -3177,7 +3178,7 @@
 +    add_bool(MMAL_ISP_NAME, /* default */ false, MMAL_ISP_TEXT, MMAL_ISP_LONGTEXT, /* advanced option */ false)
 +    set_callbacks(OpenConverter, CloseConverter)
 +
-+#if 0
++#if OPT_TO_FROM_ZC
 +    add_submodule()
 +    set_category( CAT_VIDEO )
 +    set_subcategory( SUBCAT_VIDEO_VFILTER )
@@ -11771,7 +11772,7 @@
          }
  
          sys->need_configure_display = false;
-@@ -676,56 +863,169 @@
+@@ -676,56 +863,171 @@
      vlc_mutex_unlock(&sys->manage_mutex);
  }
  
@@ -11817,9 +11818,11 @@
 +                    str_fourcc(dbuf0, src->format.i_chroma));
 +#endif
 +
++            // At this point I think the subtitles are being placed in the
++            // coord space of the cfg rectangle
 +            if ((sys->subpic_bufs[n] = hw_mmal_vzc_buf_from_pic(sys->vzc,
 +                src,
-+                (MMAL_RECT_T){.width = sys->dest_rect.width, .height=sys->dest_rect.height},  // Ignore dest offsets - just want size
++                (MMAL_RECT_T){.width = vd->cfg->display.width, .height=vd->cfg->display.height},
 +                sreg->i_x, sreg->i_y,
 +                sreg->i_alpha,
 +                n == 0)) == NULL)
@@ -11975,7 +11978,7 @@
  }
  
  static void tvservice_cb(void *callback_data, uint32_t reason, uint32_t param1, uint32_t param2)
-@@ -780,9 +1080,9 @@
+@@ -780,9 +1082,9 @@
      double best_score, score;
      int i;
  
@@ -11987,7 +11990,7 @@
                          supported_modes, VC_TV_MAX_MODE_IDS, NULL, NULL);
  
          for (i = 0; i < num_modes; ++i) {
-@@ -810,7 +1110,7 @@
+@@ -810,7 +1112,7 @@
          if((best_id >= 0) && (display_state.display.hdmi.mode != supported_modes[best_id].code)) {
              msg_Info(vd, "Setting HDMI refresh rate to %"PRIu32,
                              supported_modes[best_id].frame_rate);
@@ -11996,7 +11999,7 @@
                              supported_modes[best_id].group,
                              supported_modes[best_id].code);
          }
-@@ -828,148 +1128,12 @@
+@@ -828,148 +1130,12 @@
      }
  }
  
@@ -12146,7 +12149,7 @@
          ((double)vd->sys->i_frame_rate /
          vd->sys->i_frame_rate_base);
      vout_display_sys_t *sys = vd->sys;
-@@ -1012,32 +1176,317 @@
+@@ -1012,32 +1178,317 @@
      }
  }
  
