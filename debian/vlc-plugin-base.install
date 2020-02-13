@@ -146,7 +146,6 @@ usr/lib/*/vlc/plugins/mux
 usr/lib/*/vlc/plugins/packetizer
 usr/lib/*/vlc/plugins/services_discovery/libavahi_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libmediadirs_plugin.so
-usr/lib/*/vlc/plugins/services_discovery/libmicrodns_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libmtp_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libpodcast_plugin.so
 usr/lib/*/vlc/plugins/services_discovery/libpulselist_plugin.so
