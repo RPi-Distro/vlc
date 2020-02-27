@@ -1,2 +1,9 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
 0002-Revert-configure-Require-libmodplug-0.8.9.patch
+0003-avahi-Explicitly-handle-AVAHI_BROWSER_REMOVE-events.patch
+0004-avahi-Fix-leaking-AvahiServiceResolver-in-the-error-.patch
+0005-avahi-Prepare-code-for-support-of-renderer-discovery.patch
+0006-avahi-Add-support-for-chromecast-renderer-discovery.patch
+0007-sd-avahi-fix-invalid-release-of-renderer-items.patch
+0008-sd-avahi-fix-use-after-free-of-renderer-items.patch
+0009-avahi-change-discovered-items-type-from-file-to-dire.patch
