@@ -1,7 +1,7 @@
 vlc (3.0.8-4) unstable; urgency=medium
 
   * debian/control: Bump Standards-Version
-  * debian/upstream: Apply upstream patches for chromechast support in avahi
+  * debian/upstream: Apply upstream patches for chromecast support in avahi
   * debian/: Disable microdns plugin
 
  -- Sebastian Ramacher <sramacher@debian.org>  Thu, 27 Feb 2020 21:44:49 +0100
