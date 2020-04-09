@@ -8,10 +8,10 @@ This reverts commit 48f014768dc22ecad23d0e9f53c38805a3aff832.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/configure.ac b/configure.ac
-index ae99094..b4496f7 100644
+index e6fa2dc..2231f89 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -2152,7 +2152,7 @@ AC_ARG_ENABLE(mod,
+@@ -2150,7 +2150,7 @@ AC_ARG_ENABLE(mod,
    [AS_HELP_STRING([--disable-mod],
      [do not use libmodplug (default auto)])])
  if test "${enable_mod}" != "no" ; then
