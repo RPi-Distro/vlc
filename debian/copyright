@@ -29,7 +29,7 @@ Copyright: 1999, AT&T Laboratories Cambridge
            2007, Savoir-faire Linux
            2007, Société des arts technologiques
            2008-2015, Tòni Galhard
-           1998-2018, VideoLAN team and VLC authors
+           1998-2020, VideoLAN team and VLC authors
            2002-2004, the xine project
 License: GPL-2+
 
@@ -917,7 +917,7 @@ Copyright: 2010-2015, Benjamin Drung
            2009-2011, Christophe Mutricy
            2006-2014, Reinhard Tartler
            2006-2007, Sam Hocevar
-           2013-2018, Sebastian Ramacher
+           2013-2020, Sebastian Ramacher
 License: GPL-2+
 
 Files: modules/gui/macosx/PXSourceList.h
