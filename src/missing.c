@@ -3,9 +3,9 @@
  *****************************************************************************
  * Copyright (C) 2008-2011 Rémi Denis-Courmont
  * Copyright (C) 2009-2014 VLC authors and VideoLAN
- * $Id: 59a4770a96fb0423963729f9f371882acbae0196 $
+ * $Id: eb359b9f5269c1fbe6db5f9a8ee5e4440c4cf3a5 $
  *
- * Authors: Rémi Denis-Courmont <rem # videolan : org>
+ * Authors: Rémi Denis-Courmont
  *          Pierre Ynard <linkfanel # yahoo fr>
  *          Toralf Niebuhr <gmthor85 # aim com>
  *          Felix Paul Kühne <fkuehne # videolan org>

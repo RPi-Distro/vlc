@@ -24,14 +24,14 @@
 
 #include "SourceStream.hpp"
 
-#include "../ChunksSource.hpp"
+#include "../AbstractSource.hpp"
 #include "../http/Chunk.h"
 #include <vlc_stream.h>
 #include <vlc_demux.h>
 
 using namespace adaptive;
 
-AbstractChunksSourceStream::AbstractChunksSourceStream(vlc_object_t *p_obj_, ChunksSource *source_)
+AbstractChunksSourceStream::AbstractChunksSourceStream(vlc_object_t *p_obj_, AbstractSource *source_)
     : b_eof( false )
     , p_obj( p_obj_ )
     , source( source_ )
@@ -114,7 +114,7 @@ stream_t * AbstractChunksSourceStream::makeStream()
     return p_stream;
 }
 
-ChunksSourceStream::ChunksSourceStream(vlc_object_t *p_obj_, ChunksSource *source_)
+ChunksSourceStream::ChunksSourceStream(vlc_object_t *p_obj_, AbstractSource *source_)
     : AbstractChunksSourceStream(p_obj_, source_)
 {
     p_block = NULL;
@@ -198,7 +198,7 @@ int ChunksSourceStream::Seek(uint64_t)
     return VLC_EGENERIC;
 }
 
-BufferedChunksSourceStream::BufferedChunksSourceStream(vlc_object_t *p_obj_, ChunksSource *source_)
+BufferedChunksSourceStream::BufferedChunksSourceStream(vlc_object_t *p_obj_, AbstractSource *source_)
     : AbstractChunksSourceStream( p_obj_, source_ )
 {
     i_global_offset = 0;
@@ -231,13 +231,13 @@ ssize_t BufferedChunksSourceStream::Read(uint8_t *buf, size_t size)
         if(i_remain < i_toread)
         {
             block_t *p_add = source->readNextBlock();
-            if(!p_add)
+            if(p_add)
             {
-                b_eof = true;
-                break;
+                i_remain += p_add->i_buffer;
+                block_BytestreamPush(&bs, p_add);
+
             }
-            i_remain += p_add->i_buffer;
-            block_BytestreamPush(&bs, p_add);
+            else b_eof = true;
         }
 
         size_t i_read;

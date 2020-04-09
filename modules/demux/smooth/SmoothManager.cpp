@@ -26,6 +26,7 @@
 
 #include "SmoothManager.hpp"
 
+#include "../adaptive/SharedResources.hpp"
 #include "../adaptive/tools/Retrieve.hpp"
 #include "playlist/Parser.hpp"
 #include "../adaptive/xml/DOMParser.h"
@@ -40,11 +41,11 @@ using namespace smooth;
 using namespace smooth::playlist;
 
 SmoothManager::SmoothManager(demux_t *demux_,
-                             AuthStorage *auth,
+                             SharedResources *res,
                              Manifest *playlist,
                        AbstractStreamFactory *factory,
                        AbstractAdaptationLogic::LogicType type) :
-             PlaylistManager(demux_, auth, playlist, factory, type)
+             PlaylistManager(demux_, res, playlist, factory, type)
 {
 }
 
@@ -58,7 +59,7 @@ Manifest * SmoothManager::fetchManifest()
     playlisturl.append("://");
     playlisturl.append(p_demux->psz_location);
 
-    block_t *p_block = Retrieve::HTTP(VLC_OBJECT(p_demux), authStorage, playlisturl);
+    block_t *p_block = Retrieve::HTTP(resources, playlisturl);
     if(!p_block)
         return NULL;
 
@@ -103,7 +104,7 @@ bool SmoothManager::updatePlaylist()
     {
         const AbstractStream *st = *it;
         const mtime_t m = st->getMinAheadTime();
-        if(st->isDisabled() || !st->isSelected())
+        if(!st->isValid() || st->isDisabled() || !st->isSelected())
         {
             continue;
         }
@@ -125,7 +126,7 @@ void SmoothManager::scheduleNextUpdate()
     for(it=streams.begin(); it!=streams.end(); ++it)
     {
         const AbstractStream *st = *it;
-        if(st->isDisabled() || !st->isSelected())
+        if(!st->isValid() || st->isDisabled() || !st->isSelected())
             continue;
         const mtime_t m = st->getMinAheadTime();
         if(m > 0 && (m < minbuffer || minbuffer == 0))
@@ -165,7 +166,7 @@ bool SmoothManager::updatePlaylist(bool forcemanifest)
         Manifest *newManifest = fetchManifest();
         if(newManifest)
         {
-            playlist->mergeWith(newManifest, 0);
+            playlist->updateWith(newManifest);
             delete newManifest;
 
 #ifdef NDEBUG
@@ -174,8 +175,6 @@ bool SmoothManager::updatePlaylist(bool forcemanifest)
         }
         else return false;
     }
-
-    pruneLiveStream();
 
     return true;
 }

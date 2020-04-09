@@ -23,7 +23,7 @@
 
 #include "ForgedInitSegment.hpp"
 #include "MemoryChunk.hpp"
-#include "../adaptive/playlist/SegmentChunk.hpp"
+#include "../../adaptive/playlist/SegmentChunk.hpp"
 
 #include <vlc_common.h>
 
@@ -31,10 +31,11 @@
 
 extern "C"
 {
-    #include "../../mux/mp4/libmp4mux.h"
-    #include "../../demux/mp4/libmp4.h" /* majors */
+    #include "../../../mux/mp4/libmp4mux.h"
+    #include "../../mp4/libmp4.h" /* majors */
 }
 
+using namespace adaptive;
 using namespace adaptive::playlist;
 using namespace smooth::playlist;
 using namespace smooth::http;
@@ -304,7 +305,8 @@ block_t * ForgedInitSegment::buildMoovBox()
     return moov;
 }
 
-SegmentChunk* ForgedInitSegment::toChunk(size_t, BaseRepresentation *rep, AbstractConnectionManager *)
+SegmentChunk* ForgedInitSegment::toChunk(SharedResources *, AbstractConnectionManager *,
+                                         size_t, BaseRepresentation *rep)
 {
     block_t *moov = buildMoovBox();
     if(moov)
@@ -312,7 +314,7 @@ SegmentChunk* ForgedInitSegment::toChunk(size_t, BaseRepresentation *rep, Abstra
         MemoryChunkSource *source = new (std::nothrow) MemoryChunkSource(moov);
         if( source )
         {
-            SegmentChunk *chunk = new (std::nothrow) SegmentChunk(this, source, rep);
+            SegmentChunk *chunk = new (std::nothrow) SegmentChunk(source, rep);
             if( chunk )
                 return chunk;
             else

@@ -2,7 +2,7 @@
  * VLCFSPanelController.m: macOS fullscreen controls window controller
  *****************************************************************************
  * Copyright (C) 2006-2016 VLC authors and VideoLAN
- * $Id: 2c797802646a2261fd2163c4c9ea4eee0e2c0a98 $
+ * $Id: 61c82f4603bb56a8073bc80eebcff3c8323587de $
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -31,6 +31,7 @@
 
 @interface VLCFSPanelController () {
     BOOL _isCounting;
+    BOOL _isFadingIn;
 
     // Only used to track changes and trigger centering of FS panel
     NSRect _associatedVoutFrame;
@@ -324,20 +325,26 @@ static NSString *kAssociatedFullscreenRect = @"VLCFullscreenAssociatedWindowRect
     if (!var_InheritBool(getIntf(), "macosx-fspanel"))
         return;
 
-    [NSAnimationContext beginGrouping];
-    [[NSAnimationContext currentContext] setDuration:0.4f];
-    [[self.window animator] setAlphaValue:1.0f];
-    [NSAnimationContext endGrouping];
+    if (_isFadingIn)
+        return;
 
-    [self startAutohideTimer];
+    [self stopAutohideTimer];
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
+        _isFadingIn = YES;
+        [context setDuration:0.4f];
+        [[self.window animator] setAlphaValue:1.0f];
+    } completionHandler:^{
+        _isFadingIn = NO;
+        [self startAutohideTimer];
+    }];
 }
 
 - (void)fadeOut
 {
-    [NSAnimationContext beginGrouping];
-    [[NSAnimationContext currentContext] setDuration:0.4f];
-    [[self.window animator] setAlphaValue:0.0f];
-    [NSAnimationContext endGrouping];
+    [NSAnimationContext runAnimationGroup:^(NSAnimationContext * _Nonnull context) {
+        [context setDuration:0.4f];
+        [[self.window animator] setAlphaValue:0.0f];
+    } completionHandler:nil];
 }
 
 - (void)centerPanel
@@ -401,7 +408,14 @@ static NSString *kAssociatedFullscreenRect = @"VLCFullscreenAssociatedWindowRect
     _associatedVoutWindow = voutWindow;
 
     NSRect voutRect = voutWindow.frame;
-    if (!NSEqualRects(_associatedVoutFrame, voutRect)) {
+
+    // In some cases, the FSPanel frame has moved outside of the
+    // vout view --> Also re-center in this case
+    NSRect currentFrame = [self.window frame];
+    NSRect constrainedFrame = [self contrainFrameToAssociatedVoutWindow: currentFrame];
+
+    if (!NSEqualRects(_associatedVoutFrame, voutRect) ||
+        !NSEqualRects(currentFrame, constrainedFrame)) {
         _associatedVoutFrame = voutRect;
         [[NSUserDefaults standardUserDefaults] setObject:NSStringFromRect(_associatedVoutFrame) forKey:kAssociatedFullscreenRect];
 

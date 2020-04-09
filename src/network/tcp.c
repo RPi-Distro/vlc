@@ -3,10 +3,10 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 VLC authors and VideoLAN
  * Copyright (C) 2005-2006 Rémi Denis-Courmont
- * $Id: f03a7168994b9960f1b1a3ae5032a23d2dfb76bc $
+ * $Id: 9df40806f93687ff826b4c39a92737b6173f20c9 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
- *          Rémi Denis-Courmont <rem # videolan.org>
+ *          Rémi Denis-Courmont
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by

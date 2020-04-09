@@ -2,7 +2,7 @@
  * sdl_image.c: sdl decoder module making use of libsdl_image.
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: 65a1223e1a4b76d5c92cc2027e7cccf800688139 $
+ * $Id: 76290dbd1a09fdf472ed817247d3800ad3a60b4b $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -224,7 +224,9 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
                 for ( int j = 0; j < p_surface->w; j++ )
                 {
                     uint8_t r, g, b;
-                    SDL_GetRGB( *(uint32_t*)p_src, p_surface->format,
+                    uint32_t pixel = 0;
+                    memcpy(&pixel, p_src, 3);
+                    SDL_GetRGB( pixel, p_surface->format,
                                 &r, &g, &b );
                     *(p_dst++) = r;
                     *(p_dst++) = g;

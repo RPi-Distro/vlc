@@ -2,7 +2,7 @@
  * text_layout.c : Text shaping and layout
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: ab95466ff67f506635877490f1bf22195b9e2c8d $
+ * $Id: 239a9fa9886cd42b247a4daad3634589fb114f93 $
  *
  * Authors: Salah-Eddin Shaban <salshaaban@gmail.com>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -400,6 +400,7 @@ static int AnalyzeParagraph( paragraph_t *p_paragraph )
     for( int i = 0; i < p_paragraph->i_size; ++i )
         p_paragraph->p_scripts[ i ] =
             hb_unicode_script( p_funcs, p_paragraph->p_code_points[ i ] );
+    hb_unicode_funcs_destroy( p_funcs );
 
     hb_script_t i_last_script;
     int i_last_script_index = -1;
@@ -958,7 +959,8 @@ static int LoadGlyphs( filter_t *p_filter, paragraph_t *p_paragraph,
         FT_Face p_face = 0;
         if( !p_run->p_face )
         {
-            p_face = SelectAndLoadFace( p_filter, p_style, p_paragraph->p_code_points );
+            p_face = SelectAndLoadFace( p_filter, p_style,
+                                        p_paragraph->p_code_points[p_run->i_start_offset] );
             if( !p_face )
             {
                 /* Uses the default font and style */

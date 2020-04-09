@@ -2,7 +2,7 @@
  * directsound.c: DirectSound audio output plugin for VLC
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 4aa9d28d5366223d308228aafa6aed039d972474 $
+ * $Id: 048d107bb17e9c67fca91f4a8e321a6ea0a8b6e6 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -803,19 +803,8 @@ static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
         if( ret != ENOMEM )
             msg_Err( obj, "Couldn't start eraser thread" );
 
-        vlc_cond_destroy(&sys->cond);
-        vlc_mutex_destroy(&sys->lock);
-
-        if( sys->p_notify != NULL )
-        {
-            IDirectSoundNotify_Release( sys->p_notify );
-            sys->p_notify = NULL;
-        }
-        IDirectSoundBuffer_Release( sys->p_dsbuffer );
-        sys->p_dsbuffer = NULL;
-        IDirectSound_Release( sys->p_dsobject );
-        sys->p_dsobject = NULL;
-        return ret;
+        hr = E_FAIL;
+        goto error;
     }
 
     fmt.channel_type = AUDIO_CHANNEL_TYPE_BITMAP;
@@ -829,7 +818,21 @@ static HRESULT Start( vlc_object_t *obj, aout_stream_sys_t *sys,
     return DS_OK;
 
 error:
-    Stop( sys );
+    vlc_cond_destroy(&sys->cond);
+    vlc_mutex_destroy(&sys->lock);
+
+    if( sys->p_notify != NULL )
+    {
+        IDirectSoundNotify_Release( sys->p_notify );
+        sys->p_notify = NULL;
+    }
+    if( sys->p_dsbuffer != NULL )
+    {
+        IDirectSoundBuffer_Release( sys->p_dsbuffer );
+        sys->p_dsbuffer = NULL;
+    }
+    IDirectSound_Release( sys->p_dsobject );
+    sys->p_dsobject = NULL;
     return hr;
 }
 

@@ -2,7 +2,7 @@
 * VLCSimplePrefsController.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2018 VLC authors and VideoLAN
-* $Id: 8f20d5ab3ed95ef5eb416067099fbdc7bf2771ef $
+* $Id: edea15ea8de669ea7aee1fd82d7942acf1430e88 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -66,6 +66,7 @@ static struct {
     { "bg",    "български език",        NO },
     { "ca",    "Català",                NO },
     { "zh_TW", "正體中文",                NO },
+    { "co",    "Corsu",                 NO },
     { "cs",    "Čeština",               NO },
     { "cy",    "Cymraeg",               NO },
     { "da",    "Dansk",                 NO },

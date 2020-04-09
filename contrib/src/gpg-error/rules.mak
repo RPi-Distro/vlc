@@ -5,6 +5,10 @@ GPGERROR_URL := ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-$(GPGERROR_
 $(TARBALLS)/libgpg-error-$(GPGERROR_VERSION).tar.bz2:
 	$(call download_pkg,$(GPGERROR_URL),gpg-error)
 
+ifeq ($(call need_pkg,"gpg-error >= 1.27"),)
+PKGS_FOUND += gpg-error
+endif
+
 .sum-gpg-error: libgpg-error-$(GPGERROR_VERSION).tar.bz2
 
 libgpg-error: libgpg-error-$(GPGERROR_VERSION).tar.bz2 .sum-gpg-error
@@ -18,6 +22,7 @@ endif
 	$(APPLY) $(SRC)/gpg-error/missing-unistd-include.patch
 	$(APPLY) $(SRC)/gpg-error/no-executable.patch
 	$(APPLY) $(SRC)/gpg-error/win32-unicode.patch
+	$(APPLY) $(SRC)/gpg-error/version-bump-gawk-5.patch
 	$(MOVE)
 ifdef HAVE_ANDROID
 ifeq ($(ARCH),aarch64)

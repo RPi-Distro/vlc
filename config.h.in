@@ -242,6 +242,9 @@
 /* Define to 1 if you have the `getenv' function. */
 #undef HAVE_GETENV
 
+/* Define to 1 if you have the `getmntent_r' function. */
+#undef HAVE_GETMNTENT_R
+
 /* Define to 1 if you have the <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 
@@ -413,9 +416,6 @@
 /* Define to 1 if MMX intrinsics are available. */
 #undef HAVE_MMX_INTRINSICS
 
-/* Define to 1 if you have the <mntent.h> header file. */
-#undef HAVE_MNTENT_H
-
 /* Define to 1 if you have the <mpcdec/mpcdec.h> header file. */
 #undef HAVE_MPCDEC_MPCDEC_H
 
@@ -485,9 +485,6 @@
 
 /* Define to 1 if you have the <pthread.h> header file. */
 #undef HAVE_PTHREAD_H
-
-/* Define to 1 if you have the <QTKit/QTKit.h> header file. */
-#undef HAVE_QTKIT_QTKIT_H
 
 /* Define to 1 if you have realpath function */
 #undef HAVE_REALPATH

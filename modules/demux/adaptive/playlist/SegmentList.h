@@ -44,14 +44,16 @@ namespace adaptive
                 const std::vector<ISegment *>&   getSegments() const;
                 ISegment *              getSegmentByNumber(uint64_t);
                 void                    addSegment(ISegment *seg);
-                void                    mergeWith(SegmentList *, bool = false);
+                void                    updateWith(SegmentList *, bool = false);
                 void                    pruneBySegmentNumber(uint64_t);
                 void                    pruneByPlaybackTime(mtime_t);
                 bool                    getSegmentNumberByScaledTime(stime_t, uint64_t *) const;
                 bool                    getPlaybackTimeDurationBySegmentNumber(uint64_t, mtime_t *, mtime_t *) const;
+                stime_t                 getTotalLength() const;
 
             private:
                 std::vector<ISegment *>  segments;
+                stime_t totalLength;
         };
     }
 }

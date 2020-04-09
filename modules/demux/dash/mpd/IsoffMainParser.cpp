@@ -27,22 +27,22 @@
 #endif
 
 #include "IsoffMainParser.h"
-#include "../adaptive/playlist/SegmentTemplate.h"
-#include "../adaptive/playlist/Segment.h"
-#include "../adaptive/playlist/SegmentBase.h"
-#include "../adaptive/playlist/SegmentList.h"
-#include "../adaptive/playlist/SegmentTimeline.h"
-#include "../adaptive/playlist/SegmentInformation.hpp"
+#include "../../adaptive/playlist/SegmentTemplate.h"
+#include "../../adaptive/playlist/Segment.h"
+#include "../../adaptive/playlist/SegmentBase.h"
+#include "../../adaptive/playlist/SegmentList.h"
+#include "../../adaptive/playlist/SegmentTimeline.h"
+#include "../../adaptive/playlist/SegmentInformation.hpp"
 #include "MPD.h"
 #include "Representation.h"
 #include "Period.h"
 #include "AdaptationSet.h"
 #include "ProgramInformation.h"
 #include "DASHSegment.h"
-#include "../adaptive/xml/DOMHelper.h"
-#include "../adaptive/tools/Helper.h"
-#include "../adaptive/tools/Debug.hpp"
-#include "../adaptive/tools/Conversions.hpp"
+#include "../../adaptive/xml/DOMHelper.h"
+#include "../../adaptive/tools/Helper.h"
+#include "../../adaptive/tools/Debug.hpp"
+#include "../../adaptive/tools/Conversions.hpp"
 #include <vlc_stream.h>
 #include <cstdio>
 #include <limits>
@@ -62,6 +62,23 @@ IsoffMainParser::IsoffMainParser    (Node *root_, vlc_object_t *p_object_,
 
 IsoffMainParser::~IsoffMainParser   ()
 {
+}
+
+template <class T>
+static void parseAvailability(MPD *mpd, Node *node, T *s)
+{
+    if(node->hasAttribute("availabilityTimeOffset"))
+    {
+        double val = Integer<double>(node->getAttributeValue("availabilityTimeOffset"));
+        s->setAvailabilityTimeOffset(val * CLOCK_FREQ);
+    }
+    if(node->hasAttribute("availabilityTimeComplete"))
+    {
+        bool b = (node->getAttributeValue("availabilityTimeComplete") == "false");
+        s->setAvailabilityTimeComplete(!b);
+        if(b)
+            mpd->setLowLatency(b);
+    }
 }
 
 void IsoffMainParser::parseMPDBaseUrl(MPD *mpd, Node *root)
@@ -120,7 +137,11 @@ void    IsoffMainParser::parseMPDAttributes   (MPD *mpd, xml::Node *node)
 
     it = attr.find("availabilityStartTime");
     if(it != attr.end())
-        mpd->availabilityStartTime.Set(UTCTime(it->second).time());
+        mpd->availabilityStartTime.Set(UTCTime(it->second).mtime());
+
+    it = attr.find("availabilityEndTime");
+    if(it != attr.end())
+        mpd->availabilityEndTime.Set(UTCTime(it->second).mtime());
 
     it = attr.find("timeShiftBufferDepth");
         if(it != attr.end())
@@ -142,40 +163,48 @@ void IsoffMainParser::parsePeriods(MPD *mpd, Node *root)
         Period *period = new (std::nothrow) Period(mpd);
         if (!period)
             continue;
-        parseSegmentInformation(*it, period, &nextid);
+        parseSegmentInformation(mpd, *it, period, &nextid);
         if((*it)->hasAttribute("start"))
             period->startTime.Set(IsoTime((*it)->getAttributeValue("start")) * CLOCK_FREQ);
         if((*it)->hasAttribute("duration"))
             period->duration.Set(IsoTime((*it)->getAttributeValue("duration")) * CLOCK_FREQ);
         std::vector<Node *> baseUrls = DOMHelper::getChildElementByTagName(*it, "BaseURL");
         if(!baseUrls.empty())
+        {
             period->baseUrl.Set( new Url( baseUrls.front()->getText() ) );
+            parseAvailability<Period>(mpd, baseUrls.front(), period);
+        }
 
-        parseAdaptationSets(*it, period);
+        parseAdaptationSets(mpd, *it, period);
         mpd->addPeriod(period);
     }
 }
 
-size_t IsoffMainParser::parseSegmentTemplate(Node *templateNode, SegmentInformation *info)
+size_t IsoffMainParser::parseSegmentTemplate(MPD *mpd, Node *templateNode, SegmentInformation *info)
 {
     size_t total = 0;
-    if (templateNode == NULL || !templateNode->hasAttribute("media"))
+    if (templateNode == NULL)
         return total;
 
-    std::string mediaurl = templateNode->getAttributeValue("media");
+    std::string mediaurl;
+    if(templateNode->hasAttribute("media"))
+        mediaurl = templateNode->getAttributeValue("media");
+
     MediaSegmentTemplate *mediaTemplate = NULL;
-    if(mediaurl.empty() || !(mediaTemplate = new (std::nothrow) MediaSegmentTemplate(info)) )
+    if( !(mediaTemplate = new (std::nothrow) MediaSegmentTemplate(info)) )
         return total;
     mediaTemplate->setSourceUrl(mediaurl);
 
     if(templateNode->hasAttribute("startNumber"))
-        mediaTemplate->startNumber.Set(Integer<uint64_t>(templateNode->getAttributeValue("startNumber")));
+        mediaTemplate->setStartNumber(Integer<uint64_t>(templateNode->getAttributeValue("startNumber")));
 
     if(templateNode->hasAttribute("timescale"))
         mediaTemplate->setTimescale(Integer<uint64_t>(templateNode->getAttributeValue("timescale")));
 
     if(templateNode->hasAttribute("duration"))
         mediaTemplate->duration.Set(Integer<stime_t>(templateNode->getAttributeValue("duration")));
+
+    parseAvailability<SegmentInformation>(mpd, templateNode, info);
 
     InitSegmentTemplate *initTemplate = NULL;
 
@@ -191,28 +220,20 @@ size_t IsoffMainParser::parseSegmentTemplate(Node *templateNode, SegmentInformat
 
     info->setSegmentTemplate(mediaTemplate);
 
-    return ++total;
+    return mediaurl.empty() ? ++total : 0;
 }
 
-size_t IsoffMainParser::parseSegmentInformation(Node *node, SegmentInformation *info, uint64_t *nextid)
+size_t IsoffMainParser::parseSegmentInformation(MPD *mpd, Node *node,
+                                                SegmentInformation *info, uint64_t *nextid)
 {
     size_t total = 0;
-    total += parseSegmentBase(DOMHelper::getFirstChildElementByName(node, "SegmentBase"), info);
-    total += parseSegmentList(DOMHelper::getFirstChildElementByName(node, "SegmentList"), info);
-    total += parseSegmentTemplate(DOMHelper::getFirstChildElementByName(node, "SegmentTemplate" ), info);
-    if(node->hasAttribute("bitstreamSwitching") && node->getAttributeValue("bitstreamSwitching") == "true")
-    {
-        info->setSwitchPolicy(SegmentInformation::SWITCH_BITSWITCHEABLE);
-    }
-    else if(node->hasAttribute("segmentAlignment"))
-    {
-        if( node->getAttributeValue("segmentAlignment") == "true" )
-            info->setSwitchPolicy(SegmentInformation::SWITCH_SEGMENT_ALIGNED);
-        else
-            info->setSwitchPolicy(SegmentInformation::SWITCH_UNAVAILABLE);
-    }
+    total += parseSegmentBase(mpd, DOMHelper::getFirstChildElementByName(node, "SegmentBase"), info);
+    total += parseSegmentList(mpd, DOMHelper::getFirstChildElementByName(node, "SegmentList"), info);
+    total += parseSegmentTemplate(mpd, DOMHelper::getFirstChildElementByName(node, "SegmentTemplate" ), info);
     if(node->hasAttribute("timescale"))
         info->setTimescale(Integer<uint64_t>(node->getAttributeValue("timescale")));
+
+    parseAvailability<SegmentInformation>(mpd, node, info);
 
     if(node->hasAttribute("id"))
         info->setID(ID(node->getAttributeValue("id")));
@@ -222,7 +243,7 @@ size_t IsoffMainParser::parseSegmentInformation(Node *node, SegmentInformation *
     return total;
 }
 
-void    IsoffMainParser::parseAdaptationSets  (Node *periodNode, Period *period)
+void    IsoffMainParser::parseAdaptationSets  (MPD *mpd, Node *periodNode, Period *period)
 {
     std::vector<Node *> adaptationSets = DOMHelper::getElementByTagName(periodNode, "AdaptationSet", false);
     std::vector<Node *>::const_iterator it;
@@ -237,34 +258,53 @@ void    IsoffMainParser::parseAdaptationSets  (Node *periodNode, Period *period)
             adaptationSet->setMimeType((*it)->getAttributeValue("mimeType"));
 
         if((*it)->hasAttribute("lang"))
-        {
-            std::string lang = (*it)->getAttributeValue("lang");
-            std::size_t pos = lang.find_first_of('-');
-            if(pos != std::string::npos && pos > 0)
-                adaptationSet->addLang(lang.substr(0, pos));
-            else if (lang.size() < 4)
-                adaptationSet->addLang(lang);
-        }
+            adaptationSet->setLang((*it)->getAttributeValue("lang"));
+
+        if((*it)->hasAttribute("bitstreamSwitching"))
+            adaptationSet->setBitswitchAble((*it)->getAttributeValue("bitstreamSwitching") == "true");
+
+        if((*it)->hasAttribute("segmentAlignment"))
+            adaptationSet->setSegmentAligned((*it)->getAttributeValue("segmentAlignment") == "true");
 
         Node *baseUrl = DOMHelper::getFirstChildElementByName((*it), "BaseURL");
         if(baseUrl)
+        {
+            parseAvailability<AdaptationSet>(mpd, baseUrl, adaptationSet);
             adaptationSet->baseUrl.Set(new Url(baseUrl->getText()));
+        }
 
         Node *role = DOMHelper::getFirstChildElementByName((*it), "Role");
         if(role && role->hasAttribute("schemeIdUri") && role->hasAttribute("value"))
         {
             std::string uri = role->getAttributeValue("schemeIdUri");
             if(uri == "urn:mpeg:dash:role:2011")
-                adaptationSet->description.Set(role->getAttributeValue("value"));
+            {
+                const std::string &rolevalue = role->getAttributeValue("value");
+                adaptationSet->description.Set(rolevalue);
+                if(rolevalue == "main")
+                    adaptationSet->setRole(Role::ROLE_MAIN);
+                else if(rolevalue == "alternate")
+                    adaptationSet->setRole(Role::ROLE_ALTERNATE);
+                else if(rolevalue == "supplementary")
+                    adaptationSet->setRole(Role::ROLE_SUPPLEMENTARY);
+                else if(rolevalue == "commentary")
+                    adaptationSet->setRole(Role::ROLE_COMMENTARY);
+                else if(rolevalue == "dub")
+                    adaptationSet->setRole(Role::ROLE_DUB);
+                else if(rolevalue == "caption")
+                    adaptationSet->setRole(Role::ROLE_CAPTION);
+                else if(rolevalue == "subtitle")
+                    adaptationSet->setRole(Role::ROLE_SUBTITLE);
+            }
         }
 #ifdef ADAPTATIVE_ADVANCED_DEBUG
         if(adaptationSet->description.Get().empty())
             adaptationSet->description.Set(adaptationSet->getMimeType());
 #endif
 
-        parseSegmentInformation(*it, adaptationSet, &nextid);
+        parseSegmentInformation(mpd, *it, adaptationSet, &nextid);
 
-        parseRepresentations((*it), adaptationSet);
+        parseRepresentations(mpd, (*it), adaptationSet);
 
         if(!adaptationSet->getRepresentations().empty())
             period->addAdaptationSet(adaptationSet);
@@ -272,7 +312,7 @@ void    IsoffMainParser::parseAdaptationSets  (Node *periodNode, Period *period)
             delete adaptationSet;
     }
 }
-void    IsoffMainParser::parseRepresentations (Node *adaptationSetNode, AdaptationSet *adaptationSet)
+void    IsoffMainParser::parseRepresentations (MPD *mpd, Node *adaptationSetNode, AdaptationSet *adaptationSet)
 {
     std::vector<Node *> representations = DOMHelper::getElementByTagName(adaptationSetNode, "Representation", false);
     uint64_t nextid = 0;
@@ -284,7 +324,10 @@ void    IsoffMainParser::parseRepresentations (Node *adaptationSetNode, Adaptati
 
         std::vector<Node *> baseUrls = DOMHelper::getChildElementByTagName(repNode, "BaseURL");
         if(!baseUrls.empty())
+        {
             currentRepresentation->baseUrl.Set(new Url(baseUrls.front()->getText()));
+            parseAvailability<Representation>(mpd, baseUrls.front(), currentRepresentation);
+        }
 
         if(repNode->hasAttribute("id"))
             currentRepresentation->setID(ID(repNode->getAttributeValue("id")));
@@ -302,20 +345,9 @@ void    IsoffMainParser::parseRepresentations (Node *adaptationSetNode, Adaptati
             currentRepresentation->setMimeType(repNode->getAttributeValue("mimeType"));
 
         if(repNode->hasAttribute("codecs"))
-        {
-            std::list<std::string> list = Helper::tokenize(repNode->getAttributeValue("codecs"), ',');
-            std::list<std::string>::const_iterator it;
-            for(it=list.begin(); it!=list.end(); ++it)
-            {
-                std::size_t pos = (*it).find_first_of('.', 0);
-                if(pos != std::string::npos)
-                    currentRepresentation->addCodec((*it).substr(0, pos));
-                else
-                    currentRepresentation->addCodec(*it);
-            }
-        }
+            currentRepresentation->addCodecs(repNode->getAttributeValue("codecs"));
 
-        size_t i_total = parseSegmentInformation(repNode, currentRepresentation, &nextid);
+        size_t i_total = parseSegmentInformation(mpd, repNode, currentRepresentation, &nextid);
         /* Empty Representation with just baseurl (ex: subtitles) */
         if(i_total == 0 &&
            (currentRepresentation->baseUrl.Get() && !currentRepresentation->baseUrl.Get()->empty()) &&
@@ -329,7 +361,7 @@ void    IsoffMainParser::parseRepresentations (Node *adaptationSetNode, Adaptati
         adaptationSet->addRepresentation(currentRepresentation);
     }
 }
-size_t IsoffMainParser::parseSegmentBase(Node * segmentBaseNode, SegmentInformation *info)
+size_t IsoffMainParser::parseSegmentBase(MPD *mpd, Node * segmentBaseNode, SegmentInformation *info)
 {
     SegmentBase *base;
 
@@ -353,6 +385,7 @@ size_t IsoffMainParser::parseSegmentBase(Node * segmentBaseNode, SegmentInformat
     }
 
     parseInitSegment(DOMHelper::getFirstChildElementByName(segmentBaseNode, "Initialization"), base, info);
+    parseAvailability<SegmentInformation>(mpd, segmentBaseNode, info);
 
     if(!base->initialisationSegment.Get() && base->indexSegment.Get() && base->indexSegment.Get()->getOffset())
     {
@@ -367,7 +400,7 @@ size_t IsoffMainParser::parseSegmentBase(Node * segmentBaseNode, SegmentInformat
     return 1;
 }
 
-size_t IsoffMainParser::parseSegmentList(Node * segListNode, SegmentInformation *info)
+size_t IsoffMainParser::parseSegmentList(MPD *mpd, Node * segListNode, SegmentInformation *info)
 {
     size_t total = 0;
     if(segListNode)
@@ -383,6 +416,8 @@ size_t IsoffMainParser::parseSegmentList(Node * segListNode, SegmentInformation 
 
             if(segListNode->hasAttribute("timescale"))
                 list->setTimescale(Integer<uint64_t>(segListNode->getAttributeValue("timescale")));
+
+            parseAvailability<SegmentInformation>(mpd, segListNode, info);
 
             uint64_t nzStartTime = 0;
             std::vector<Node *>::const_iterator it;
@@ -418,7 +453,7 @@ size_t IsoffMainParser::parseSegmentList(Node * segListNode, SegmentInformation 
                 total++;
             }
 
-            info->appendSegmentList(list, true);
+            info->updateSegmentList(list, true);
         }
     }
     return total;
@@ -450,8 +485,8 @@ void IsoffMainParser::parseTimeline(Node *node, MediaSegmentTemplate *templ)
     uint64_t number = 0;
     if(node->hasAttribute("startNumber"))
         number = Integer<uint64_t>(node->getAttributeValue("startNumber"));
-    else if(templ->startNumber.Get())
-        number = templ->startNumber.Get();
+    else if(templ->inheritStartNumber())
+        number = templ->inheritStartNumber();
 
     SegmentTimeline *timeline = new (std::nothrow) SegmentTimeline(templ);
     if(timeline)
@@ -481,7 +516,7 @@ void IsoffMainParser::parseTimeline(Node *node, MediaSegmentTemplate *templ)
 
             number += (1 + r);
         }
-        templ->segmentTimeline.Set(timeline);
+        templ->setSegmentTimeline(timeline);
     }
 }
 

@@ -27,14 +27,14 @@
 #include "Representation.hpp"
 #include "ForgedInitSegment.hpp"
 #include "SmoothSegment.hpp"
-#include "../adaptive/playlist/BasePeriod.h"
-#include "../adaptive/playlist/BaseAdaptationSet.h"
-#include "../adaptive/playlist/SegmentTimeline.h"
-#include "../adaptive/playlist/SegmentList.h"
-#include "../adaptive/xml/DOMHelper.h"
-#include "../adaptive/xml/Node.h"
-#include "../adaptive/tools/Helper.h"
-#include "../adaptive/tools/Conversions.hpp"
+#include "../../adaptive/playlist/BasePeriod.h"
+#include "../../adaptive/playlist/BaseAdaptationSet.h"
+#include "../../adaptive/playlist/SegmentTimeline.h"
+#include "../../adaptive/playlist/SegmentList.h"
+#include "../../adaptive/xml/DOMHelper.h"
+#include "../../adaptive/xml/Node.h"
+#include "../../adaptive/tools/Helper.h"
+#include "../../adaptive/tools/Conversions.hpp"
 
 using namespace smooth::playlist;
 using namespace adaptive::xml;
@@ -149,64 +149,64 @@ static void ParseQualityLevel(BaseAdaptationSet *adaptSet, Node *qualNode, const
     if(rep)
     {
         rep->setID(ID(id));
-        SegmentList *segmentList = new (std::nothrow) SegmentList(rep);
-        if(segmentList)
+
+        if(qualNode->hasAttribute("Bitrate"))
+            rep->setBandwidth(Integer<uint64_t>(qualNode->getAttributeValue("Bitrate")));
+
+        if(qualNode->hasAttribute("MaxWidth"))
+            rep->setWidth(Integer<uint64_t>(qualNode->getAttributeValue("MaxWidth")));
+        else if(qualNode->hasAttribute("Width"))
+            rep->setWidth(Integer<uint64_t>(qualNode->getAttributeValue("Width")));
+
+        if(qualNode->hasAttribute("MaxHeight"))
+            rep->setHeight(Integer<uint64_t>(qualNode->getAttributeValue("MaxHeight")));
+        else if(qualNode->hasAttribute("Height"))
+            rep->setHeight(Integer<uint64_t>(qualNode->getAttributeValue("Height")));
+
+        if(qualNode->hasAttribute("FourCC"))
+            rep->addCodecs(qualNode->getAttributeValue("FourCC"));
+
+        ForgedInitSegment *initSegment = new (std::nothrow)
+                ForgedInitSegment(rep, type,
+                                  adaptSet->inheritTimescale(),
+                                  adaptSet->getPlaylist()->duration.Get());
+        if(initSegment)
         {
-            if(qualNode->hasAttribute("Bitrate"))
-                rep->setBandwidth(Integer<uint64_t>(qualNode->getAttributeValue("Bitrate")));
+            initSegment->setTrackID(trackid);
 
-            if(qualNode->hasAttribute("MaxWidth"))
-                rep->setWidth(Integer<uint64_t>(qualNode->getAttributeValue("MaxWidth")));
-            else if(qualNode->hasAttribute("Width"))
-                rep->setWidth(Integer<uint64_t>(qualNode->getAttributeValue("Width")));
+            if(!adaptSet->getLang().empty())
+                initSegment->setLanguage(adaptSet->getLang());
 
-            if(qualNode->hasAttribute("MaxHeight"))
-                rep->setHeight(Integer<uint64_t>(qualNode->getAttributeValue("MaxHeight")));
-            else if(qualNode->hasAttribute("Height"))
-                rep->setHeight(Integer<uint64_t>(qualNode->getAttributeValue("Height")));
+            if(rep->getWidth() > 0 && rep->getHeight() > 0)
+                initSegment->setVideoSize(rep->getWidth(), rep->getHeight());
 
-            ForgedInitSegment *initSegment = new (std::nothrow)
-                    ForgedInitSegment(segmentList, type,
-                                      adaptSet->inheritTimescale(),
-                                      adaptSet->getPlaylist()->duration.Get());
-            if(initSegment)
-            {
-                initSegment->setTrackID(trackid);
+            if(qualNode->hasAttribute("FourCC"))
+                initSegment->setFourCC(qualNode->getAttributeValue("FourCC"));
 
-                if(!adaptSet->getLang().empty())
-                    initSegment->setLanguage(adaptSet->getLang().front());
+            if(qualNode->hasAttribute("PacketSize"))
+                initSegment->setPacketSize(Integer<uint16_t>(qualNode->getAttributeValue("PacketSize")));
 
-                if(rep->getWidth() > 0 && rep->getHeight() > 0)
-                    initSegment->setVideoSize(rep->getWidth(), rep->getHeight());
+            if(qualNode->hasAttribute("Channels"))
+                initSegment->setChannels(Integer<uint16_t>(qualNode->getAttributeValue("Channels")));
 
-                if(qualNode->hasAttribute("FourCC"))
-                    initSegment->setFourCC(qualNode->getAttributeValue("FourCC"));
+            if(qualNode->hasAttribute("SamplingRate"))
+                initSegment->setSamplingRate(Integer<uint32_t>(qualNode->getAttributeValue("SamplingRate")));
 
-                if(qualNode->hasAttribute("PacketSize"))
-                    initSegment->setPacketSize(Integer<uint16_t>(qualNode->getAttributeValue("PacketSize")));
+            if(qualNode->hasAttribute("BitsPerSample"))
+                initSegment->setBitsPerSample(Integer<uint32_t>(qualNode->getAttributeValue("BitsPerSample")));
 
-                if(qualNode->hasAttribute("Channels"))
-                    initSegment->setChannels(Integer<uint16_t>(qualNode->getAttributeValue("Channels")));
+            if(qualNode->hasAttribute("CodecPrivateData"))
+                initSegment->setCodecPrivateData(qualNode->getAttributeValue("CodecPrivateData"));
 
-                if(qualNode->hasAttribute("SamplingRate"))
-                    initSegment->setSamplingRate(Integer<uint32_t>(qualNode->getAttributeValue("SamplingRate")));
+            if(qualNode->hasAttribute("AudioTag"))
+                initSegment->setAudioTag(Integer<uint16_t>(qualNode->getAttributeValue("AudioTag")));
 
-                if(qualNode->hasAttribute("BitsPerSample"))
-                    initSegment->setBitsPerSample(Integer<uint32_t>(qualNode->getAttributeValue("BitsPerSample")));
+            if(qualNode->hasAttribute("WaveFormatEx"))
+                initSegment->setWaveFormatEx(qualNode->getAttributeValue("WaveFormatEx"));
 
-                if(qualNode->hasAttribute("CodecPrivateData"))
-                    initSegment->setCodecPrivateData(qualNode->getAttributeValue("CodecPrivateData"));
+            initSegment->setSourceUrl("forged://");
 
-                if(qualNode->hasAttribute("AudioTag"))
-                    initSegment->setAudioTag(Integer<uint16_t>(qualNode->getAttributeValue("AudioTag")));
-
-                if(qualNode->hasAttribute("WaveFormatEx"))
-                    initSegment->setWaveFormatEx(qualNode->getAttributeValue("WaveFormatEx"));
-
-                initSegment->setSourceUrl("forged://");
-                segmentList->initialisationSegment.Set(initSegment);
-            }
-            rep->appendSegmentList(segmentList);
+            rep->initialisationSegment.Set(initSegment);
 
             adaptSet->addRepresentation(rep);
         }
@@ -220,7 +220,7 @@ static void ParseStreamIndex(BasePeriod *period, Node *streamIndexNode, unsigned
     {
         adaptSet->setID(ID(id));
         if(streamIndexNode->hasAttribute("Language"))
-            adaptSet->addLang(streamIndexNode->getAttributeValue("Language"));
+            adaptSet->setLang(streamIndexNode->getAttributeValue("Language"));
 
         if(streamIndexNode->hasAttribute("Name"))
             adaptSet->description.Set(streamIndexNode->getAttributeValue("Name"));
@@ -237,7 +237,7 @@ static void ParseStreamIndex(BasePeriod *period, Node *streamIndexNode, unsigned
             {
                 templ->setSourceUrl(url);
                 SegmentTimeline *timeline = createTimeline(streamIndexNode, period->inheritTimescale());
-                templ->segmentTimeline.Set(timeline);
+                templ->setSegmentTimeline(timeline);
                 adaptSet->setSegmentTemplate(templ);
             }
 

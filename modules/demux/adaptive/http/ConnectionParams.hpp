@@ -29,6 +29,15 @@ namespace adaptive
     {
         class Transport;
 
+        enum RequestStatus
+        {
+            Success,
+            Redirection,
+            Unauthorized,
+            NotFound,
+            GenericError,
+        };
+
         class BackendPrefInterface
         {
             /* Design Hack for now to force fallback on regular access
@@ -50,6 +59,7 @@ namespace adaptive
                 const std::string & getScheme() const;
                 const std::string & getHostname() const;
                 const std::string & getPath() const;
+                bool isLocal() const;
                 void setPath(const std::string &);
                 uint16_t getPort() const;
 
