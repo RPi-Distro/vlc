@@ -58,17 +58,10 @@ void AbstractConnectionManager::setDownloadRateObserver(IDownloadRateObserver *o
     rateObserver = obs;
 }
 
-HTTPConnectionManager::HTTPConnectionManager    (vlc_object_t *p_object_, AbstractConnectionFactory *factory_)
-    : AbstractConnectionManager( p_object_ )
-{
-    vlc_mutex_init(&lock);
-    downloader = new (std::nothrow) Downloader();
-    downloader->start();
-    factory = factory_;
-}
 
 HTTPConnectionManager::HTTPConnectionManager    (vlc_object_t *p_object_, AuthStorage *storage)
-    : AbstractConnectionManager( p_object_ )
+    : AbstractConnectionManager( p_object_ ),
+      localAllowed(false)
 {
     vlc_mutex_init(&lock);
     downloader = new (std::nothrow) Downloader();
@@ -116,6 +109,14 @@ AbstractConnection * HTTPConnectionManager::getConnection(ConnectionParams &para
     if(unlikely(!factory || !downloader))
         return NULL;
 
+    if(params.isLocal())
+    {
+        if(!localAllowed)
+            return NULL;
+        /* Only access can read local files */
+        params.setUseAccess(true);
+    }
+
     vlc_mutex_lock(&lock);
     AbstractConnection *conn = reuseConnection(params);
     if(!conn)
@@ -153,4 +154,9 @@ void HTTPConnectionManager::cancel(AbstractChunkSource *source)
     HTTPChunkBufferedSource *src = dynamic_cast<HTTPChunkBufferedSource *>(source);
     if(src)
         downloader->cancel(src);
+}
+
+void HTTPConnectionManager::setLocalConnectionsAllowed()
+{
+    localAllowed = true;
 }

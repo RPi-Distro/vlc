@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: c625005c8eddf345713c0e89607d2e322925c8ba $
+ * $Id: c149d7b5fef1df99ac0446c599ce0a3f69d79abb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -145,6 +145,7 @@ static void PacketizeFlush( decoder_t * );
 static void PacketizeReset( void *p_private, bool b_broken );
 static block_t *PacketizeParse( void *p_private, bool *pb_ts_used, block_t * );
 static int PacketizeValidate( void *p_private, block_t * );
+static block_t * PacketizeDrain( void *p_private );
 
 static block_t *ParseNALBlock( decoder_t *, bool *pb_ts_used, block_t * );
 
@@ -211,27 +212,28 @@ static void ActivateSets( decoder_t *p_dec, const h264_sequence_parameter_set_t 
             p_dec->fmt_out.video.i_sar_den = p_sps->vui.i_sar_den;
         }
 
-        if( p_sps->vui.b_valid )
+        if( !p_dec->fmt_out.video.i_frame_rate ||
+            !p_dec->fmt_out.video.i_frame_rate_base )
         {
-            if( !p_dec->fmt_in.video.i_frame_rate_base &&
-                p_sps->vui.i_num_units_in_tick > 0 && p_sps->vui.i_time_scale > 1 )
+            /* on first run == if fmt_in does not provide frame rate info */
+            /* If we have frame rate info in the stream */
+            if(p_sps->vui.b_valid &&
+               p_sps->vui.i_num_units_in_tick > 0 &&
+               p_sps->vui.i_time_scale > 1 )
             {
-                const unsigned i_rate_base = p_sps->vui.i_num_units_in_tick;
-                const unsigned i_rate = p_sps->vui.i_time_scale >> 1; /* num_clock_ts == 2 */
-                if( i_rate_base != p_dec->fmt_out.video.i_frame_rate_base ||
-                    i_rate != p_dec->fmt_out.video.i_frame_rate )
-                {
-                    p_dec->fmt_out.video.i_frame_rate_base = i_rate_base;
-                    p_dec->fmt_out.video.i_frame_rate = i_rate;
-                    date_Change( &p_sys->dts, p_sps->vui.i_time_scale, p_sps->vui.i_num_units_in_tick );
-                }
+                date_Change( &p_sys->dts, p_sps->vui.i_time_scale,
+                                          p_sps->vui.i_num_units_in_tick );
             }
-            if( p_dec->fmt_in.video.primaries == COLOR_PRIMARIES_UNDEF )
-                h264_get_colorimetry( p_sps, &p_dec->fmt_out.video.primaries,
-                                      &p_dec->fmt_out.video.transfer,
-                                      &p_dec->fmt_out.video.space,
-                                      &p_dec->fmt_out.video.b_color_range_full );
+            /* else use the default num/den */
+            p_dec->fmt_out.video.i_frame_rate = p_sys->dts.i_divider_num >> 1; /* num_clock_ts == 2 */
+            p_dec->fmt_out.video.i_frame_rate_base = p_sys->dts.i_divider_den;
         }
+
+        if( p_dec->fmt_in.video.primaries == COLOR_PRIMARIES_UNDEF )
+            h264_get_colorimetry( p_sps, &p_dec->fmt_out.video.primaries,
+                                  &p_dec->fmt_out.video.transfer,
+                                  &p_dec->fmt_out.video.space,
+                                  &p_dec->fmt_out.video.b_color_range_full );
 
         if( p_dec->fmt_out.i_extra == 0 && p_pps )
         {
@@ -334,7 +336,8 @@ static int Open( vlc_object_t *p_this )
     packetizer_Init( &p_sys->packetizer,
                      p_h264_startcode, sizeof(p_h264_startcode), startcode_FindAnnexB,
                      p_h264_startcode, 1, 5,
-                     PacketizeReset, PacketizeParse, PacketizeValidate, p_dec );
+                     PacketizeReset, PacketizeParse, PacketizeValidate, PacketizeDrain,
+                     p_dec );
 
     p_sys->b_slice = false;
     p_sys->frame.p_head = NULL;
@@ -574,6 +577,24 @@ static int PacketizeValidate( void *p_private, block_t *p_au )
     VLC_UNUSED(p_private);
     VLC_UNUSED(p_au);
     return VLC_SUCCESS;
+}
+
+static block_t * PacketizeDrain( void *p_private )
+{
+    decoder_t *p_dec = p_private;
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    if( !p_sys->b_slice )
+        return NULL;
+
+    block_t *p_out = OutputPicture( p_dec );
+    if( p_out && (p_out->i_flags & BLOCK_FLAG_DROP) )
+    {
+        block_Release( p_out );
+        p_out = NULL;
+    }
+
+    return p_out;
 }
 
 /*****************************************************************************
@@ -973,17 +994,9 @@ static block_t *OutputPicture( decoder_t *p_dec )
 
     if( p_pic->i_length == 0 )
     {
-        if( p_sps->vui.i_time_scale )
-        {
-            p_pic->i_length = CLOCK_FREQ * i_num_clock_ts *
-                              p_sps->vui.i_num_units_in_tick / p_sps->vui.i_time_scale;
-        }
-        else
-        {
-            date_t next = p_sys->dts;
-            date_Increment( &next, i_num_clock_ts );
-            p_pic->i_length = date_Get( &next ) - date_Get( &p_sys->dts );
-        }
+        date_t next = p_sys->dts;
+        date_Increment( &next, i_num_clock_ts );
+        p_pic->i_length = date_Get( &next ) - date_Get( &p_sys->dts );
     }
 
 #if 0

@@ -2,7 +2,7 @@
  * dec.c : audio output API towards decoders
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 60c35e6176cfc360a392f25b5ebc0f17faed910e $
+ * $Id: c25f249fbf4ac8b69c11bd003d1ac72da8cddf55 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -58,7 +58,7 @@ int aout_DecNew( audio_output_t *p_aout,
         }
     }
 
-    if( p_format->i_rate > 352800 )
+    if( p_format->i_rate > 384000 )
     {
         msg_Err( p_aout, "excessive audio sample frequency (%u)",
                  p_format->i_rate );

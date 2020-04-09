@@ -87,8 +87,6 @@ static void CEA708_DTVCC_Demux_ServiceBlocks( cea708_demux_t *h, mtime_t i_start
         }
         else if( i_sid == 0x07 )
         {
-            if( i_data < 2 )
-                return;
             i_sid = p_data[1] & 0x3F;
             if( i_sid < 0x07 )
                 return;
@@ -698,9 +696,9 @@ static void CEA708_Window_Scroll( cea708_window_t *p_w )
             break;
         case CEA708_WA_DIRECTION_TB:
             /* Move DOWN */
-            if( p_w->i_firstrow == CEA708_WINDOW_MAX_ROWS - 1 )
+            if( p_w->i_lastrow == CEA708_WINDOW_MAX_ROWS - 1 )
                 CEA708_Window_Truncate( p_w, CEA708_WA_DIRECTION_TB );
-            for( int i=p_w->i_lastrow; i > p_w->i_firstrow; i-- )
+            for( int i=p_w->i_lastrow; i >= p_w->i_firstrow; i-- )
                 p_w->rows[i+1] = p_w->rows[i];
             p_w->rows[p_w->i_firstrow] = NULL;
             p_w->i_firstrow++;

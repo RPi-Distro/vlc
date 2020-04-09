@@ -34,6 +34,7 @@
 #include "mpd/IsoffMainParser.h"
 #include "xml/DOMParser.h"
 #include "xml/Node.h"
+#include "../adaptive/SharedResources.hpp"
 #include "../adaptive/tools/Helper.h"
 #include "../adaptive/http/HTTPConnectionManager.h"
 #include <vlc_stream.h>
@@ -50,11 +51,11 @@ using namespace dash::mpd;
 using namespace adaptive::logic;
 
 DASHManager::DASHManager(demux_t *demux_,
-                         AuthStorage *auth,
+                         SharedResources *res,
                          MPD *mpd,
                          AbstractStreamFactory *factory,
                          AbstractAdaptationLogic::LogicType type) :
-             PlaylistManager(demux_, auth, mpd, factory, type)
+             PlaylistManager(demux_, res, mpd, factory, type)
 {
 }
 
@@ -105,7 +106,7 @@ bool DASHManager::updatePlaylist()
         url.append("://");
         url.append(p_demux->psz_location);
 
-        block_t *p_block = Retrieve::HTTP(VLC_OBJECT(p_demux), authStorage, url);
+        block_t *p_block = Retrieve::HTTP(resources, url);
         if(!p_block)
             return false;
 
@@ -124,21 +125,12 @@ bool DASHManager::updatePlaylist()
             return false;
         }
 
-        mtime_t minsegmentTime = 0;
-        std::vector<AbstractStream *>::iterator it;
-        for(it=streams.begin(); it!=streams.end(); it++)
-        {
-            mtime_t segmentTime = (*it)->getPlaybackTime();
-            if(!minsegmentTime || segmentTime < minsegmentTime)
-                minsegmentTime = segmentTime;
-        }
-
         IsoffMainParser mpdparser(parser.getRootNode(), VLC_OBJECT(p_demux),
                                   mpdstream, Helper::getDirectoryPath(url).append("/"));
         MPD *newmpd = mpdparser.parse();
         if(newmpd)
         {
-            playlist->mergeWith(newmpd, minsegmentTime);
+            playlist->updateWith(newmpd);
             delete newmpd;
         }
         vlc_stream_Delete(mpdstream);

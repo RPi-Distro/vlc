@@ -21,6 +21,7 @@
 #define SEGMENTTRACKER_HPP
 
 #include "StreamFormat.hpp"
+#include "playlist/Role.hpp"
 
 #include <vlc_common.h>
 #include <list>
@@ -28,6 +29,7 @@
 namespace adaptive
 {
     class ID;
+    class SharedResources;
 
     namespace http
     {
@@ -37,6 +39,7 @@ namespace adaptive
     namespace logic
     {
         class AbstractAdaptationLogic;
+        class AbstractBufferingLogic;
     }
 
     namespace playlist
@@ -107,26 +110,36 @@ namespace adaptive
     {
         public:
             virtual void trackerEvent(const SegmentTrackerEvent &) = 0;
+            virtual ~SegmentTrackerListenerInterface() = default;
     };
 
     class SegmentTracker
     {
         public:
-            SegmentTracker(AbstractAdaptationLogic *, BaseAdaptationSet *);
+            SegmentTracker(SharedResources *,
+                           AbstractAdaptationLogic *,
+                           const AbstractBufferingLogic *,
+                           BaseAdaptationSet *);
             ~SegmentTracker();
 
             StreamFormat getCurrentFormat() const;
+            std::list<std::string> getCurrentCodecs() const;
+            const std::string & getStreamDescription() const;
+            const std::string & getStreamLanguage() const;
+            const Role & getStreamRole() const;
             bool segmentsListReady() const;
             void reset();
             SegmentChunk* getNextChunk(bool, AbstractConnectionManager *);
             bool setPositionByTime(mtime_t, bool, bool);
             void setPositionByNumber(uint64_t, bool);
             mtime_t getPlaybackTime() const; /* Current segment start time if selected */
+            bool getMediaPlaybackRange(mtime_t *, mtime_t *, mtime_t *) const;
             mtime_t getMinAheadTime() const;
             void notifyBufferingState(bool) const;
             void notifyBufferingLevel(mtime_t, mtime_t, mtime_t) const;
             void registerListener(SegmentTrackerListenerInterface *);
             void updateSelected();
+            bool bufferingAvailable() const;
 
         private:
             void setAdaptationLogic(AbstractAdaptationLogic *);
@@ -138,7 +151,9 @@ namespace adaptive
             uint64_t next;
             uint64_t curNumber;
             StreamFormat format;
+            SharedResources *resources;
             AbstractAdaptationLogic *logic;
+            const AbstractBufferingLogic *bufferingLogic;
             BaseAdaptationSet *adaptationSet;
             BaseRepresentation *curRepresentation;
             std::list<SegmentTrackerListenerInterface *> listeners;

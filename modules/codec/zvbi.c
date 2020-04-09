@@ -2,7 +2,7 @@
  * zvbi.c : VBI and Teletext PES demux and decoder using libzvbi
  *****************************************************************************
  * Copyright (C) 2007, M2X
- * $Id: ffef4dcc7731233c1cd93b49d15799b5aec6ee22 $
+ * $Id: e90443a56ae2bdd3cd9ddc34c6c1348aca698897 $
  *
  * Authors: Derk-Jan Hartman <djhartman at m2x dot nl>
  *          Jean-Paul Saman <jpsaman at m2x dot nl>
@@ -118,6 +118,7 @@ vlc_module_end ()
 // #define ZVBI_DEBUG
 
 //Guessing table for missing "default region triplet"
+/* Triplet 1 values from Table 32 */
 static const int pi_default_triplet[] = {
  0, 0, 0, 0,     // slo slk cze ces
  8,              // pol
@@ -126,7 +127,7 @@ static const int pi_default_triplet[] = {
  32,32,32,32,32, //est lit rus bul ukr
  48,48,          //gre ell
  64,             //ara
- 88,             //heb
+ 80,             //heb
  16 };           //default
 static const char *const ppsz_default_triplet[] = {
  "slo", "slk", "cze", "ces",

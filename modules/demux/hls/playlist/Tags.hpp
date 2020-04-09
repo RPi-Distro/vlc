@@ -96,7 +96,9 @@ namespace hls
                     EXTXKEY = 20,
                     EXTXMAP,
                     EXTXMEDIA,
+                    EXTXSTART,
                     EXTXSTREAMINF,
+                    EXTXSESSIONKEY,
                 };
                 AttributesTag(int, const std::string &);
                 virtual ~AttributesTag();

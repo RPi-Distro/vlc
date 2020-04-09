@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 8d27260fda3dcab87f3cc0ea711e3825009cc1df $
+ * $Id: 78ba18ec6f30d919942e7ba2d7082965214d75b6 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -80,6 +80,7 @@ static struct {
     { "bg",    "български език" },
     { "ca",    "Català" },
     { "zh_TW", "正體中文" },
+    { "co",    "Corsu" },
     { "cs",    "Čeština" },
     { "cy",    "Cymraeg" },
     { "da",    "Dansk" },

@@ -39,7 +39,7 @@
 #include "mediacodec.h"
 
 char* MediaCodec_GetName(vlc_object_t *p_obj, const char *psz_mime,
-                         int profile, bool *p_adaptive);
+                         int profile, int *p_quirks);
 
 #define THREAD_NAME "mediacodec_jni"
 
@@ -314,11 +314,41 @@ struct mc_api_sys
     jobject input_buffers, output_buffers;
 };
 
+static char *GetManufacturer(JNIEnv *env)
+{
+    char *manufacturer = NULL;
+
+    jclass clazz = (*env)->FindClass(env, "android/os/Build");
+    if (CHECK_EXCEPTION())
+        return NULL;
+
+    jfieldID id = (*env)->GetStaticFieldID(env, clazz, "MANUFACTURER",
+                                           "Ljava/lang/String;");
+    if (CHECK_EXCEPTION())
+        goto end;
+
+    jstring jstr = (*env)->GetStaticObjectField(env, clazz, id);
+
+    if (CHECK_EXCEPTION())
+        goto end;
+
+    const char *str = (*env)->GetStringUTFChars(env, jstr, 0);
+    if (str)
+    {
+        manufacturer = strdup(str);
+        (*env)->ReleaseStringUTFChars(env, jstr, str);
+    }
+
+end:
+    (*env)->DeleteLocalRef(env, clazz);
+    return manufacturer;
+}
+
 /*****************************************************************************
  * MediaCodec_GetName
  *****************************************************************************/
 char* MediaCodec_GetName(vlc_object_t *p_obj, const char *psz_mime,
-                         int profile, bool *p_adaptive)
+                         int profile, int *p_quirks)
 {
     JNIEnv *env;
     int num_codecs;
@@ -453,8 +483,36 @@ char* MediaCodec_GetName(vlc_object_t *p_obj, const char *psz_mime,
             {
                 memcpy(psz_name, name_ptr, name_len);
                 psz_name[name_len] = '\0';
+
+                bool ignore_size = false;
+
+                /* The AVC/HEVC MediaCodec implementation on Amazon fire TV
+                 * seems to report the Output surface size instead of the Video
+                 * size. This bug is specific to Amazon devices since other MTK
+                 * implementations report the correct size. The manufacturer is
+                 * checked only if the codec matches the MTK one in order to
+                 * avoid extra manufacturer check for other every devices.
+                 * */
+                static const char mtk_dec[] = "OMX.MTK.VIDEO.DECODER.";
+                if (strncmp(psz_name, mtk_dec, sizeof(mtk_dec) - 1) == 0)
+                {
+                    char *manufacturer = GetManufacturer(env);
+                    if (manufacturer && strcmp(manufacturer, "Amazon") == 0)
+                        ignore_size = true;
+                    free(manufacturer);
+                }
+
+                if (ignore_size)
+                {
+                    *p_quirks |= MC_API_VIDEO_QUIRKS_IGNORE_SIZE;
+                    /* If the MediaCodec size is ignored, the adaptive mode
+                     * should be disabled in order to trigger the hxxx_helper
+                     * parsers that will parse the correct video size. Hence
+                     * the following 'else if' */
+                }
+                else if (b_adaptive)
+                    *p_quirks |= MC_API_VIDEO_QUIRKS_ADAPTIVE;
             }
-            *p_adaptive = b_adaptive;
         }
 loopclean:
         if (name)
@@ -988,19 +1046,18 @@ static void Clean(mc_api *api)
 static int Configure(mc_api *api, int i_profile)
 {
     free(api->psz_name);
-    bool b_adaptive;
+
+    api->i_quirks = 0;
     api->psz_name = MediaCodec_GetName(api->p_obj, api->psz_mime,
-                                       i_profile, &b_adaptive);
+                                       i_profile, &api->i_quirks);
     if (!api->psz_name)
         return MC_API_ERROR;
-    api->i_quirks = OMXCodec_GetQuirks(api->i_cat, api->i_codec, api->psz_name,
-                                       strlen(api->psz_name));
+    api->i_quirks |= OMXCodec_GetQuirks(api->i_cat, api->i_codec, api->psz_name,
+                                        strlen(api->psz_name));
 
     /* Allow interlaced picture after API 21 */
     if (jfields.get_input_buffer && jfields.get_output_buffer)
         api->i_quirks |= MC_API_VIDEO_QUIRKS_SUPPORT_INTERLACED;
-    if (b_adaptive)
-        api->i_quirks |= MC_API_VIDEO_QUIRKS_ADAPTIVE;
     return 0;
 }
 

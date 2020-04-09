@@ -43,8 +43,7 @@ using namespace adaptive::playlist;
 
 BaseAdaptationSet::BaseAdaptationSet(BasePeriod *period) :
     CommonAttributesElements(),
-    SegmentInformation( period ),
-    isBitstreamSwitching( false )
+    SegmentInformation( period )
 {
 }
 
@@ -88,14 +87,48 @@ void BaseAdaptationSet::addRepresentation(BaseRepresentation *rep)
     childs.push_back(rep);
 }
 
-void BaseAdaptationSet::setSwitchPolicy  (bool value)
+const std::string & BaseAdaptationSet::getLang() const
 {
-    this->isBitstreamSwitching = value;
+    return lang;
 }
 
-bool BaseAdaptationSet::getBitstreamSwitching  () const
+void BaseAdaptationSet::setLang( const std::string &lang_ )
 {
-    return this->isBitstreamSwitching;
+    std::size_t pos = lang.find_first_of('-');
+    if(pos != std::string::npos && pos > 0)
+        lang = lang_.substr(0, pos);
+    else if(lang_.size() < 4)
+        lang = lang_;
+}
+
+void BaseAdaptationSet::setSegmentAligned(bool b)
+{
+    segmentAligned = b;
+}
+
+void BaseAdaptationSet::setBitswitchAble(bool b)
+{
+    bitswitchAble = b;
+}
+
+bool BaseAdaptationSet::isSegmentAligned() const
+{
+    return segmentAligned.isSet() && segmentAligned.value();
+}
+
+bool BaseAdaptationSet::isBitSwitchable() const
+{
+    return bitswitchAble.isSet() && segmentAligned.value();
+}
+
+void BaseAdaptationSet::setRole(const Role &r)
+{
+    role = r;
+}
+
+const Role & BaseAdaptationSet::getRole() const
+{
+    return role;
 }
 
 void BaseAdaptationSet::debug(vlc_object_t *obj, int indent) const

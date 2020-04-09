@@ -2,10 +2,10 @@
  * sap.c : SAP announce handler
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: 2b5b0e13a2bcb20a2ae91f907c1db41971b0b67d $
+ * $Id: c645dfac2c4988d2525fde3c3c736bad080ecf53 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
- *          Rémi Denis-Courmont <rem # videolan.org>
+ *          Rémi Denis-Courmont
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by

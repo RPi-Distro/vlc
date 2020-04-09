@@ -35,8 +35,10 @@
 #include <vlc_variables.h>
 #include <vlc_keystore.h>
 #include <vlc_network.h>
+#include <vlc_interrupt.h>
 
 #include <assert.h>
+#include <errno.h>
 #include <string.h>
 #ifdef HAVE_SYS_SOCKET_H
 # include <sys/socket.h>
@@ -55,7 +57,16 @@ int bdsm_SdOpen( vlc_object_t * );
 void bdsm_SdClose( vlc_object_t * );
 int bdsm_sd_probe_Open( vlc_object_t * );
 
-static int Open( vlc_object_t * );
+/* Not translated since added after the VLC 3.0 release */
+#define SMB_FORCE_V1_TEXT "Force the SMBv1 protocol (At your own risk)"
+#define SMB_FORCE_V1_LONGTEXT \
+    "Enable it, at your own risk, if you can't connect to Windows shares. " \
+    "If this option is needed, you should consider updating your Windows / " \
+    "Samba server and disabling the SMBv1 protocol as using this protocol " \
+    "has security implications."
+
+static int OpenNotForced( vlc_object_t * );
+static int OpenForced( vlc_object_t * );
 static void Close( vlc_object_t * );
 
 VLC_SD_PROBE_HELPER( "dsm", N_("Windows networks"), SD_CAT_LAN )
@@ -66,14 +77,21 @@ vlc_module_begin ()
     set_shortname( "dsm" )
     set_description( N_("libdsm SMB input") )
     set_help(BDSM_HELP)
-    set_capability( "access", 20 )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
     add_string( "smb-user", NULL, SMB_USER_TEXT, SMB_USER_LONGTEXT, false )
     add_password( "smb-pwd", NULL, SMB_PASS_TEXT, SMB_PASS_LONGTEXT, false )
     add_string( "smb-domain", NULL, SMB_DOMAIN_TEXT, SMB_DOMAIN_LONGTEXT, false )
+    add_bool( "smb-force-v1", false, SMB_FORCE_V1_TEXT, SMB_FORCE_V1_LONGTEXT, false )
     add_shortcut( "smb", "cifs" )
-    set_callbacks( Open, Close )
+
+    set_capability( "access", 22 )
+    set_callbacks( OpenForced, Close )
+
+    add_submodule()
+        set_capability( "access", 20 )
+        set_callbacks( OpenNotForced, Close )
+        add_shortcut( "smb", "cifs" )
 
     add_submodule()
         add_shortcut( "dsm-sd" )
@@ -126,6 +144,7 @@ static int Open( vlc_object_t *p_this )
     stream_t     *p_access = (stream_t*)p_this;
     access_sys_t *p_sys;
     smb_stat st;
+    int status = DSM_ERROR_GENERIC;
 
     /* Init p_access */
     p_sys = p_access->p_sys = (access_sys_t*)calloc( 1, sizeof( access_sys_t ) );
@@ -144,17 +163,23 @@ static int Open( vlc_object_t *p_this )
         goto error;
 
     if( get_address( p_access ) != VLC_SUCCESS )
+    {
+        status = DSM_ERROR_NETWORK;
         goto error;
+    }
 
     msg_Dbg( p_access, "Session: Host name = %s, ip = %s", p_sys->netbios_name,
              inet_ntoa( p_sys->addr ) );
 
     /* Now that we have the required data, let's establish a session */
-    if( smb_session_connect( p_sys->p_session, p_sys->netbios_name,
-                             p_sys->addr.s_addr, SMB_TRANSPORT_TCP )
-                             != DSM_SUCCESS )
+    status = smb_session_connect( p_sys->p_session, p_sys->netbios_name,
+                                  p_sys->addr.s_addr, SMB_TRANSPORT_TCP );
+    if( status != DSM_SUCCESS )
     {
         msg_Err( p_access, "Unable to connect/negotiate SMB session");
+        /* FIXME: libdsm wrongly return network error when the server can't
+         * handle the SMBv1 protocol */
+        status = DSM_ERROR_GENERIC;
         goto error;
     }
 
@@ -190,7 +215,31 @@ static int Open( vlc_object_t *p_this )
 
     error:
         Close( p_this );
+
+        /* Returning VLC_ETIMEOUT will stop the module probe and prevent to
+         * load the next smb module. The dsm module can return this specific
+         * error in case of network error (DSM_ERROR_NETWORK) or when the user
+         * asked to cancel it (vlc_killed()). Indeed, in these cases, it is
+         * useless to try next smb modules. */
+        return vlc_killed() || status == DSM_ERROR_NETWORK ? VLC_ETIMEOUT
+             : VLC_EGENERIC;
+}
+
+static int OpenForced( vlc_object_t *p_this )
+{
+    if( !var_InheritBool( p_this , "smb-force-v1" ) )
         return VLC_EGENERIC;
+
+    msg_Warn( p_this, "SMB 2/3 disabled by the user, using *unsafe* SMB 1" );
+    return Open( p_this );
+}
+
+static int OpenNotForced( vlc_object_t *p_this )
+{
+    if( var_InheritBool( p_this , "smb-force-v1" ) )
+        return VLC_EGENERIC; /* OpenForced should have breen probed first */
+
+    return Open( p_this );
 }
 
 /*****************************************************************************
@@ -269,32 +318,37 @@ static int get_address( stream_t *p_access )
     return VLC_SUCCESS;
 }
 
+/* Returns an errno code */
 static int smb_connect( stream_t *p_access, const char *psz_login,
                         const char *psz_password, const char *psz_domain)
 {
     access_sys_t *p_sys = p_access->p_sys;
+    int ret;
 
     smb_session_set_creds( p_sys->p_session, psz_domain,
                            psz_login, psz_password );
-    if( smb_session_login( p_sys->p_session ) == DSM_SUCCESS )
-    {
-        if( p_sys->psz_share )
-        {
-            /* Connect to the share */
-            if( smb_tree_connect( p_sys->p_session, p_sys->psz_share,
-                                  &p_sys->i_tid ) != DSM_SUCCESS )
-                return VLC_EGENERIC;
+    if( smb_session_login( p_sys->p_session ) != DSM_SUCCESS )
+        return EACCES;
 
-            /* Let's finally ask a handle to the file we wanna read ! */
-            return smb_fopen( p_sys->p_session, p_sys->i_tid, p_sys->psz_path,
-                              SMB_MOD_RO, &p_sys->i_fd )
-                              == DSM_SUCCESS ? VLC_SUCCESS : VLC_EGENERIC;
-        }
-        else
-            return VLC_SUCCESS;
-    }
-    else
-        return VLC_EGENERIC;
+    if( !p_sys->psz_share )
+        return 0;
+
+    /* Connect to the share */
+    ret = smb_tree_connect( p_sys->p_session, p_sys->psz_share, &p_sys->i_tid );
+    if( ret != DSM_SUCCESS )
+        goto error;
+
+    /* Let's finally ask a handle to the file we wanna read ! */
+    ret = smb_fopen( p_sys->p_session, p_sys->i_tid, p_sys->psz_path,
+                     SMB_MOD_RO, &p_sys->i_fd );
+    if( ret != DSM_SUCCESS )
+        goto error;
+
+    return 0;
+
+error:
+    return ret == DSM_ERROR_NT && smb_session_get_nt_status( p_sys->p_session )
+        == NT_STATUS_ACCESS_DENIED ? EACCES : ENOENT;
 }
 
 /* Performs login with existing credentials and ask the user for new ones on
@@ -329,11 +383,21 @@ static int login( stream_t *p_access )
     psz_domain = credential.psz_realm ? credential.psz_realm : p_sys->netbios_name;
 
     /* Try to authenticate on the remote machine */
-    if( smb_connect( p_access, psz_login, psz_password, psz_domain )
-                     != VLC_SUCCESS )
+    int connect_err = smb_connect( p_access, psz_login, psz_password, psz_domain );
+    if( connect_err == ENOENT )
+        goto error;
+
+    if( connect_err == EACCES )
     {
-        while( vlc_credential_get( &credential, p_access, "smb-user", "smb-pwd",
-                                   SMB_LOGIN_DIALOG_TITLE,
+        if (var_Type(p_access, "smb-dialog-failed") != 0)
+        {
+            /* A higher priority smb module (likely smb2) already requested
+             * credentials to the users. It is useless to request it again. */
+            goto error;
+        }
+        while( connect_err == EACCES
+            && vlc_credential_get( &credential, p_access, "smb-user", "smb-pwd",
+                                   SMB1_LOGIN_DIALOG_TITLE,
                                    SMB_LOGIN_DIALOG_TEXT, p_sys->netbios_name ) )
         {
             b_guest = false;
@@ -341,21 +405,23 @@ static int login( stream_t *p_access )
             psz_password = credential.psz_password;
             psz_domain = credential.psz_realm ? credential.psz_realm
                                               : p_sys->netbios_name;
-            if( smb_connect( p_access, psz_login, psz_password, psz_domain )
-                             == VLC_SUCCESS )
-                goto success;
+            connect_err = smb_connect( p_access, psz_login, psz_password, psz_domain );
         }
 
-        msg_Err( p_access, "Unable to login" );
-        goto error;
+        if( connect_err != 0 )
+        {
+            msg_Err( p_access, "Unable to login" );
+            goto error;
+        }
     }
-    else if( smb_session_is_guest( p_sys->p_session ) == 1 )
+    assert( connect_err == 0 );
+
+    if( smb_session_is_guest( p_sys->p_session ) == 1 )
     {
         msg_Warn( p_access, "Login failure but you were logged in as a Guest");
         b_guest = true;
     }
 
-success:
     msg_Warn( p_access, "Creds: username = '%s', domain = '%s'",
              psz_login, psz_domain );
     if( !b_guest )
@@ -457,6 +523,8 @@ static ssize_t Read( stream_t *p_access, void *p_buffer, size_t i_len )
     if( i_read < 0 )
     {
         msg_Err( p_access, "read failed" );
+        if (errno != EINTR && errno != EAGAIN)
+            return 0;
         return -1;
     }
 

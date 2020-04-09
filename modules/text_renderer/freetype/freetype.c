@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2015 VLC authors and VideoLAN
- * $Id: b92c66ceac5a3a82728ef2e9872989862685f808 $
+ * $Id: c5d3ff803642456cba6a15de3fb346165e025ca4 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -737,8 +737,6 @@ static inline void RenderBackground( subpicture_region_t *p_region,
                                      void (*ExtractComponents)( uint32_t, uint8_t *, uint8_t *, uint8_t * ),
                                      void (*BlendPixel)(picture_t *, int, int, int, int, int, int, int) )
 {
-    FT_BBox prevbox;
-
     for( const line_desc_t *p_line = p_line_head; p_line != NULL; p_line = p_line->p_next )
     {
         FT_Vector offset = GetAlignedOffset( p_line, p_textbbox, p_region->i_text_align );
@@ -753,8 +751,8 @@ static inline void RenderBackground( subpicture_region_t *p_region,
             continue; /* only spaces */
 
         /* add padding */
-        linebgbox.yMax += (p_paddedbbox->xMax - p_textbbox->xMax);
-        linebgbox.yMin -= (p_textbbox->xMin - p_paddedbbox->xMin);
+        linebgbox.yMax += (p_paddedbbox->yMax - p_textbbox->yMax);
+        linebgbox.yMin -= (p_textbbox->yMin - p_paddedbbox->yMin);
         linebgbox.xMin -= (p_textbbox->xMin - p_paddedbbox->xMin);
         linebgbox.xMax += (p_paddedbbox->xMax - p_textbbox->xMax);
 
@@ -1160,17 +1158,17 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region_out,
     else if( p_region_in->i_y > 0 && (unsigned)p_region_in->i_y < i_max_height )
         i_max_height -= p_region_in->i_y;
 
+    rv = LayoutText( p_filter,
+                     psz_text, pp_styles, pi_k_durations, i_text_length,
+                     p_region_in->b_gridmode, p_region_in->b_balanced_text,
+                     i_max_width, i_max_height, &p_lines, &bbox, &i_max_face_height );
+
     uint8_t i_background_opacity = var_InheritInteger( p_filter, "freetype-background-opacity" );
     i_background_opacity = VLC_CLIP( i_background_opacity, 0, 255 );
     int i_margin = (i_background_opacity > 0 && !p_region_in->b_gridmode) ? i_max_face_height / 4 : 0;
 
     if( (unsigned)i_margin * 2 >= i_max_width || (unsigned)i_margin * 2 >= i_max_height )
         i_margin = 0;
-
-    rv = LayoutText( p_filter,
-                     psz_text, pp_styles, pi_k_durations, i_text_length,
-                     p_region_in->b_gridmode, p_region_in->b_balanced_text,
-                     i_max_width, i_max_height, &p_lines, &bbox, &i_max_face_height );
 
     /* Don't attempt to render text that couldn't be layed out
      * properly. */

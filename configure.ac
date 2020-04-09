@@ -1,12 +1,12 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 1999-2019 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 1999-2020 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.8)
+AC_INIT(vlc, 3.0.9.2)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=8
-VERSION_EXTRA=0
+VERSION_REVISION=9
+VERSION_EXTRA=2
 VERSION_DEV=
 
 PKGDIR="vlc"
@@ -14,7 +14,7 @@ AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Vetinari"
-COPYRIGHT_YEARS="1996-2019"
+COPYRIGHT_YEARS="1996-2020"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -591,7 +591,7 @@ dnl Check for system libs needed
 need_libc=false
 
 dnl Check for usual libc functions
-AC_CHECK_FUNCS([accept4 daemon fcntl flock fstatvfs fork getenv getpwuid_r isatty lstat memalign mkostemp mmap newlocale open_memstream openat pipe2 pread posix_fadvise posix_madvise posix_memalign setlocale stricmp strnicmp strptime uselocale])
+AC_CHECK_FUNCS([accept4 daemon fcntl flock fstatvfs fork getenv getmntent_r getpwuid_r isatty lstat memalign mkostemp mmap newlocale open_memstream openat pipe2 pread posix_fadvise posix_madvise posix_memalign setlocale stricmp strnicmp strptime uselocale])
 AC_REPLACE_FUNCS([aligned_alloc atof atoll dirfd fdopendir ffsll flockfile fsync getdelim getpid lfind lldiv memrchr nrand48 poll recvmsg rewind sendmsg setenv strcasecmp strcasestr strdup strlcpy strndup strnlen strnstr strsep strtof strtok_r strtoll swab tdestroy tfind timegm timespec_get strverscmp pathconf])
 AC_REPLACE_FUNCS([gettimeofday])
 AC_CHECK_FUNC(fdatasync,,
@@ -849,7 +849,7 @@ dnl  BSD
 AC_CHECK_HEADERS([netinet/tcp.h netinet/udplite.h sys/param.h sys/mount.h])
 
 dnl  GNU/Linux
-AC_CHECK_HEADERS([features.h getopt.h linux/dccp.h linux/magic.h mntent.h sys/eventfd.h])
+AC_CHECK_HEADERS([features.h getopt.h linux/dccp.h linux/magic.h sys/eventfd.h])
 
 dnl  MacOS
 AC_CHECK_HEADERS([xlocale.h])
@@ -1854,7 +1854,14 @@ AS_IF([test "${SYS}" = "mingw32" -a "${enable_winstore_app}" != "yes"], [ VLC_AD
 dnl
 dnl  liBDSM access module
 dnl
-PKG_ENABLE_MODULES_VLC([DSM], [dsm], [libdsm >= 0.2.0], [libdsm SMB/CIFS access/sd module], [auto])
+AM_CONDITIONAL(HAVE_DSM, [test "$AS_TR_SH(with_dsm)" = "yes"])
+PKG_WITH_MODULES([DSM], [libdsm >= 0.2.0], [
+       VLC_ADD_PLUGIN([dsm])
+       VLC_ADD_CFLAGS([dsm], [$DSM_CFLAGS])
+       VLC_ADD_LIBS([dsm], [$DSM_LIBS])
+       have_dsm="yes"
+   ],,[libdsm SMB/CIFS access/sd module], [auto])
+AM_CONDITIONAL([HAVE_DSM], [test "${have_dsm}" = "yes"])
 
 dnl
 dnl sftp access support
@@ -1865,6 +1872,12 @@ dnl
 dnl nfs access support
 dnl
 PKG_ENABLE_MODULES_VLC([NFS], [nfs], [libnfs >= 1.10.0], (support nfs protocol via libnfs), [auto])
+
+dnl
+dnl smb2 access support
+dnl Disabled by default, since it was added after the initial VLC 3.0 release
+dnl
+PKG_ENABLE_MODULES_VLC([SMB2], [smb2], [libsmb2 >= 3.0.0], (support smb2 protocol via libsmb2), [disabled])
 
 dnl
 dnl  Video4Linux 2
@@ -2017,21 +2030,6 @@ if test "${enable_realrtsp}" = "yes"; then
   VLC_ADD_PLUGIN([access_realrtsp])
 fi
 
-dnl
-dnl QTKit
-AC_ARG_ENABLE(macosx-qtkit,
-  [  --enable-macosx-qtkit Mac OS X qtsound (audio) module (default enabled on Mac OS X <= v10.11)])
-if test "x${enable_macosx_qtkit}" != "xno" &&
-  (test "${SYS}" = "darwin" || test "${enable_macosx_qtkit}" = "yes")
-then
-  AC_LANG_PUSH([Objective C])
-  AC_CHECK_HEADERS(QTKit/QTKit.h, [
-      VLC_ADD_PLUGIN([access_qtsound])
-    ])
-  AC_LANG_POP([Objective C])
-fi
-
-dnl
 dnl AVFoundation
 AC_SUBST(have_avfoundation, ["no"])
 AC_ARG_ENABLE(macosx-avfoundation,
@@ -2997,7 +2995,7 @@ AS_IF([test "${enable_tiger}" != "no"], [
 ])
 
 dnl
-dnl  check if we can build the css selector engine 
+dnl  check if we can build the css selector engine
 dnl
 AC_ARG_ENABLE(css,
 [  --enable-css            CSS selector engine (default auto)])
@@ -4021,7 +4019,7 @@ PKG_ENABLE_MODULES_VLC([UPNP], [upnp], [libupnp], [Intel UPNP SDK],[auto])
 dnl
 dnl mDNS using libmicrodns
 dnl
-PKG_ENABLE_MODULES_VLC([MICRODNS], [], [microdns], [mDNS services discovery], [auto])
+PKG_ENABLE_MODULES_VLC([MICRODNS], [], [microdns >= 0.1.2], [mDNS services discovery], [auto])
 
 
 EXTEND_HELP_STRING([Misc options:])
@@ -4206,7 +4204,7 @@ AC_SUBST(soliddatadir)
 AM_CONDITIONAL(KDE_SOLID, [test "x${soliddatadir}" != "x"])
 
 dnl
-dnl Check wether we have the PROCESS_MITIGATION_IMAGE_LOAD_POLICY 
+dnl Check wether we have the PROCESS_MITIGATION_IMAGE_LOAD_POLICY
 dnl It should only be available when building for win10, but some SDKs define it unconditionnaly
 dnl
 if test "${SYS}" = "mingw32"; then
