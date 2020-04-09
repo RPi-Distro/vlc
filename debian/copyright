@@ -265,7 +265,6 @@ Files: bin/override.c
        modules/access/nfs.c
        modules/access/oss.c
        modules/access/pulse.c
-       modules/access/qtsound.m
        modules/access/rdp.c
        modules/access/rtp/input.c
        modules/access/rtp/rtp.c
