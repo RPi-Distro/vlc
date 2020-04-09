@@ -2,7 +2,7 @@
  * VLCInputManager.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 3dd9f371dca6e0cb3d33b74716ad8827cc772ffd $
+ * $Id: 2b736dc2da1c30f1a89addc5c608f053cf570f33 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -158,8 +158,9 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
 
     IOPMAssertionID userActivityAssertionID;
 
-    /* iTunes/Spotify play/pause support */
+    /* iTunes/Apple Music/Spotify play/pause support */
     BOOL b_has_itunes_paused;
+    BOOL b_has_applemusic_paused;
     BOOL b_has_spotify_paused;
 
     NSTimer *hasEndedTimer;
@@ -368,6 +369,18 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
         }
     }
 
+    // pause Apple Music
+    if (!b_has_applemusic_paused) {
+        iTunesApplication *iTunesApp = (iTunesApplication *) [SBApplication applicationWithBundleIdentifier:@"com.apple.Music"];
+        if (iTunesApp && [iTunesApp isRunning]) {
+            if ([iTunesApp playerState] == iTunesEPlSPlaying) {
+                msg_Dbg(p_intf, "pausing Apple Music");
+                [iTunesApp pause];
+                b_has_itunes_paused = YES;
+            }
+        }
+    }
+
     // pause Spotify
     if (!b_has_spotify_paused) {
         SpotifyApplication *spotifyApp = (SpotifyApplication *) [SBApplication applicationWithBundleIdentifier:@"com.spotify.client"];
@@ -398,6 +411,16 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
             }
         }
 
+        if (b_has_applemusic_paused) {
+            iTunesApplication *iTunesApp = (iTunesApplication *) [SBApplication applicationWithBundleIdentifier:@"com.apple.Music"];
+            if (iTunesApp && [iTunesApp isRunning]) {
+                if ([iTunesApp playerState] == iTunesEPlSPaused) {
+                    msg_Dbg(p_intf, "unpausing Apple Music");
+                    [iTunesApp playpause];
+                }
+            }
+        }
+
         if (b_has_spotify_paused) {
             SpotifyApplication *spotifyApp = (SpotifyApplication *) [SBApplication applicationWithBundleIdentifier:@"com.spotify.client"];
             if (spotifyApp) {
@@ -412,6 +435,7 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
     }
 
     b_has_itunes_paused = NO;
+    b_has_applemusic_paused = NO;
     b_has_spotify_paused = NO;
 }
 
@@ -618,6 +642,32 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
 
 }
 
+static const int64_t MinimumDuration = 3 * 60 * 1000;
+static const float MinimumStorePercent = 0.05;
+static const float MaximumStorePercent = 0.95;
+static const int64_t MinimumStoreTime = 60 * 1000;
+static const int64_t MinimumStoreRemainingTime = 60 * 1000;
+
+BOOL ShouldStorePlaybackPosition(float position, int64_t duration)
+{
+    int64_t positionTime = position * duration;
+    int64_t remainingTime = duration - positionTime;
+
+    if (duration < MinimumDuration) {
+        return NO;
+    }
+
+    if (position < MinimumStorePercent && positionTime < MinimumStoreTime) {
+        return NO;
+    }
+
+    if (position > MaximumStorePercent && remainingTime < MinimumStoreRemainingTime) {
+        return NO;
+    }
+
+    return YES;
+}
+
 - (void)storePlaybackPositionForItem:(input_thread_t *)p_input_thread
 {
     if (!var_InheritBool(getIntf(), "macosx-recentitems"))
@@ -645,7 +695,7 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
 
     NSMutableArray *mediaList = [[defaults objectForKey:@"recentlyPlayedMediaList"] mutableCopy];
 
-    if (relativePos > .05 && relativePos < .95 && dur > 180) {
+    if (ShouldStorePlaybackPosition(relativePos, dur*1000)) {
         msg_Dbg(getIntf(), "Store current playback position of %f", relativePos);
         [mutDict setObject:[NSNumber numberWithInt:pos] forKey:url];
 

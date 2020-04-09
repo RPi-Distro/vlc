@@ -559,6 +559,7 @@ CFLAGS_sftp = @CFLAGS_sftp@
 CFLAGS_shine = @CFLAGS_shine@
 CFLAGS_sid = @CFLAGS_sid@
 CFLAGS_smb = @CFLAGS_smb@
+CFLAGS_smb2 = @CFLAGS_smb2@
 CFLAGS_soxr = @CFLAGS_soxr@
 CFLAGS_spatialaudio = @CFLAGS_spatialaudio@
 CFLAGS_speex = @CFLAGS_speex@
@@ -601,7 +602,6 @@ CPPFLAGS_dc1394 = @CPPFLAGS_dc1394@
 CPPFLAGS_dca = @CPPFLAGS_dca@
 CPPFLAGS_decklink = @CPPFLAGS_decklink@
 CPPFLAGS_decklinkoutput = @CPPFLAGS_decklinkoutput@
-CPPFLAGS_dsm = @CPPFLAGS_dsm@
 CPPFLAGS_dv1394 = @CPPFLAGS_dv1394@
 CPPFLAGS_dvdnav = @CPPFLAGS_dvdnav@
 CPPFLAGS_dvdread = @CPPFLAGS_dvdread@
@@ -635,6 +635,7 @@ CPPFLAGS_sftp = @CPPFLAGS_sftp@
 CPPFLAGS_shine = @CPPFLAGS_shine@
 CPPFLAGS_skins2 = @CPPFLAGS_skins2@
 CPPFLAGS_smb = @CPPFLAGS_smb@
+CPPFLAGS_smb2 = @CPPFLAGS_smb2@
 CPPFLAGS_soxr = @CPPFLAGS_soxr@
 CPPFLAGS_spatialaudio = @CPPFLAGS_spatialaudio@
 CPPFLAGS_speex = @CPPFLAGS_speex@
@@ -844,6 +845,7 @@ LIBS_shine = @LIBS_shine@
 LIBS_sid = @LIBS_sid@
 LIBS_skins2 = @LIBS_skins2@
 LIBS_smb = @LIBS_smb@
+LIBS_smb2 = @LIBS_smb2@
 LIBS_soxr = @LIBS_soxr@
 LIBS_spatialaudio = @LIBS_spatialaudio@
 LIBS_speex = @LIBS_speex@
@@ -892,7 +894,6 @@ LTLIBaa = @LTLIBaa@
 LTLIBaccess_mtp = @LTLIBaccess_mtp@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_output_srt = @LTLIBaccess_output_srt@
-LTLIBaccess_qtsound = @LTLIBaccess_qtsound@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
 LTLIBaccess_srt = @LTLIBaccess_srt@
 LTLIBaom = @LTLIBaom@
@@ -973,6 +974,7 @@ LTLIBsftp = @LTLIBsftp@
 LTLIBshine = @LTLIBshine@
 LTLIBsid = @LTLIBsid@
 LTLIBsmb = @LTLIBsmb@
+LTLIBsmb2 = @LTLIBsmb2@
 LTLIBsoxr = @LTLIBsoxr@
 LTLIBspatialaudio = @LTLIBspatialaudio@
 LTLIBspeex = @LTLIBspeex@
@@ -1042,7 +1044,6 @@ OBJCDEPMODE = @OBJCDEPMODE@
 OBJCFLAGS = @OBJCFLAGS@
 OBJCFLAGS_osx_notifications = @OBJCFLAGS_osx_notifications@
 OBJCOPY = @OBJCOPY@
-OBJCPP = @OBJCPP@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OGGSPOTS_CFLAGS = @OGGSPOTS_CFLAGS@
@@ -1104,6 +1105,8 @@ SHOUT_CFLAGS = @SHOUT_CFLAGS@
 SHOUT_LIBS = @SHOUT_LIBS@
 SID_CFLAGS = @SID_CFLAGS@
 SID_LIBS = @SID_LIBS@
+SMB2_CFLAGS = @SMB2_CFLAGS@
+SMB2_LIBS = @SMB2_LIBS@
 SMBCLIENT_CFLAGS = @SMBCLIENT_CFLAGS@
 SMBCLIENT_LIBS = @SMBCLIENT_LIBS@
 SOCKET_LIBS = @SOCKET_LIBS@
@@ -1324,11 +1327,13 @@ EXTRA_DIST = extras/package/macosx/package.mak \
 	extras/package/win32/NSIS/languages/AfrikaansExtra.nsh \
 	extras/package/win32/NSIS/languages/AlbanianExtra.nsh \
 	extras/package/win32/NSIS/languages/ArabicExtra.nsh \
+	extras/package/win32/NSIS/languages/AsturianExtra.nsh \
 	extras/package/win32/NSIS/languages/BasqueExtra.nsh \
 	extras/package/win32/NSIS/languages/BosnianExtra.nsh \
 	extras/package/win32/NSIS/languages/BretonExtra.nsh \
 	extras/package/win32/NSIS/languages/BulgarianExtra.nsh \
 	extras/package/win32/NSIS/languages/CatalanExtra.nsh \
+	extras/package/win32/NSIS/languages/CorsicanExtra.nsh \
 	extras/package/win32/NSIS/languages/CroatianExtra.nsh \
 	extras/package/win32/NSIS/languages/CzechExtra.nsh \
 	extras/package/win32/NSIS/languages/DanishExtra.nsh \
@@ -1346,10 +1351,12 @@ EXTRA_DIST = extras/package/macosx/package.mak \
 	extras/package/win32/NSIS/languages/IndonesianExtra.nsh \
 	extras/package/win32/NSIS/languages/ItalianExtra.nsh \
 	extras/package/win32/NSIS/languages/JapaneseExtra.nsh \
+	extras/package/win32/NSIS/languages/KhmerExtra.nsh \
 	extras/package/win32/NSIS/languages/KoreanExtra.nsh \
 	extras/package/win32/NSIS/languages/LatvianExtra.nsh \
 	extras/package/win32/NSIS/languages/LithuanianExtra.nsh \
 	extras/package/win32/NSIS/languages/MalayExtra.nsh \
+	extras/package/win32/NSIS/languages/MongolianExtra.nsh \
 	extras/package/win32/NSIS/languages/NorwegianExtra.nsh \
 	extras/package/win32/NSIS/languages/NorwegianNynorskExtra.nsh \
 	extras/package/win32/NSIS/languages/PolishExtra.nsh \

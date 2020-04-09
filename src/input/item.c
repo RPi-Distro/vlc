@@ -2,7 +2,7 @@
  * item.c: input_item management
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: 2000de84a2be3f14bd1fe752d40ee6b2fd8945c7 $
+ * $Id: 8eb5e84df46dc030e73086e758130e7b6635f859 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -1726,8 +1726,8 @@ void vlc_readdir_helper_finish(struct vlc_readdir_helper *p_rdh, bool b_success)
 {
     if (b_success)
     {
-        rdh_attach_slaves(p_rdh, p_rdh->p_node);
         rdh_sort(p_rdh->p_node);
+        rdh_attach_slaves(p_rdh, p_rdh->p_node);
     }
     free(p_rdh->psz_ignored_exts);
 

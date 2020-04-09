@@ -32,7 +32,7 @@ namespace hls
     {
         public:
             HLSManager( demux_t *,
-                        AuthStorage *,
+                        SharedResources *,
                         playlist::M3U8 *,
                         AbstractStreamFactory *,
                         logic::AbstractAdaptationLogic::LogicType type );

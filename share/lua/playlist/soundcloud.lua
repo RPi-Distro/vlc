@@ -1,7 +1,7 @@
 --[[
  $Id$
 
- Copyright © 2012, 2015 the VideoLAN team
+ Copyright © 2012, 2015, 2019-2020 the VideoLAN team
 
  Authors: Cheng Sun <chengsun9atgmail.com>
           Pierre Ynard
@@ -38,20 +38,54 @@ function fix_quotes( value )
     return string.gsub( value, "\\\"", "\"" )
 end
 
+-- Search and extract API magic parameter from web asset
+function extract_magic( url )
+    local s = vlc.stream( url )
+    if not s then
+        return nil
+    end
+
+    while true do
+        local line = s:readline()
+        if not line then break end
+
+        -- The API magic appears under a similar form several times
+        -- in one of the javascript assets
+        -- {client_id:"z21TN9SfM0GjGteSzk4ViM1KEwMRNWZF"}
+        local client_id = string.match( line, '[{,]client_id:"(%w+)"[},]' )
+        if client_id then
+            vlc.msg.dbg( "Found soundcloud API magic" )
+            return client_id
+        end
+    end
+    return nil
+end
+
 -- Parse function.
 function parse()
     while true do
-        line = vlc.readline()
+        local line = vlc.readline()
         if not line then break end
 
-        -- Parameters for API call
-        if not track then
-            track = string.match( line, "soundcloud:tracks:(%d+)" )
+        -- API endpoint for audio stream URL
+        if not stream then
+            -- The URL may feature an optional query string: for private
+            -- tracks in particular it contains a secret token, e.g.
+            -- https://api-v2.soundcloud.com/media/soundcloud:tracks:123456789/986421ee-f9ba-42b2-a642-df8e9761a49b/stream/progressive?secret_token=s-ABCDE
+            stream = string.match( line, '"url":"([^"]-/stream/progressive[^"]-)"' )
         end
 
-        -- For private tracks
-        if not secret then
-            secret = string.match( line, "[\"']secret_token[\"'] *: *[\"'](.-)[\"']" )
+        -- API magic parameter
+        if not client_id then
+            local script = string.match( line, '<script( .-)>' )
+            if script then
+                local src = string.match( script, ' src="(.-)"' )
+                if src then
+                    -- Assume absolute path
+                    -- https://a-v2.sndcdn.com/assets/48-551fb851-3.js
+                    client_id = extract_magic( src )
+                end
+            end
         end
 
         -- Metadata
@@ -81,23 +115,16 @@ function parse()
         end
     end
 
-    if track then
-        -- API magic
-        local client_id = "NxDq1GKZ5tLDRohQGfJ7lYVKiephsF3G"
-        -- app_version is not required by the API but we send it anyway
-        -- to remain unconspicuous
-        local app_version = "1553518929"
-
-        local api = vlc.stream( vlc.access.."://api.soundcloud.com/i1/tracks/"..track.."/streams?client_id="..client_id.."&app_version="..app_version..( secret and "&secret_token="..secret or "" ) )
+    if stream then
+        if client_id then
+            stream = stream..( string.match( stream, "?" ) and "&" or "?" ).."client_id="..client_id
+        end
+        local api = vlc.stream( stream )
 
         if api then
             local streams = api:readline() -- data is on one line only
-            -- For now only quality available is 128 kbps (http_mp3_128_url)
-            path = string.match( streams, "[\"']http_mp3_%d+_url[\"'] *: *[\"'](.-)[\"']" )
-            if path then
-                -- FIXME: do this properly
-                path = string.gsub( path, "\\u0026", "&" )
-            end
+            -- This API seems to return a single JSON field
+            path = string.match( streams, '"url":"(.-)"' )
         end
     end
 

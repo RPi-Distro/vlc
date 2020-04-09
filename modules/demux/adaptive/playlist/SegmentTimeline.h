@@ -2,7 +2,7 @@
  * SegmentTimeline.cpp: Implement the SegmentTimeline tag.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 4094963bf24461d923d5ae251fed0d11c2f7a633 $
+ * $Id: dfa647b1c5c9a4df1310240c17a857213f5851cb $
  *
  * Authors: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
  *
@@ -45,17 +45,17 @@ namespace adaptive
                 bool    getScaledPlaybackTimeDurationBySegmentNumber(uint64_t, mtime_t *, mtime_t *) const;
                 stime_t getScaledPlaybackTimeByElementNumber(uint64_t) const;
                 stime_t getMinAheadScaledTime(uint64_t) const;
+                stime_t getTotalLength() const;
                 uint64_t maxElementNumber() const;
                 uint64_t minElementNumber() const;
                 void pruneByPlaybackTime(mtime_t);
                 size_t pruneBySequenceNumber(uint64_t);
-                void mergeWith(SegmentTimeline &);
-                mtime_t start() const;
-                mtime_t end() const;
+                void updateWith(SegmentTimeline &);
                 void debug(vlc_object_t *, int = 0) const;
 
             private:
                 std::list<Element *> elements;
+                stime_t totalLength;
 
                 class Element
                 {

@@ -37,24 +37,24 @@ namespace adaptive
     namespace http
     {
         class AbstractConnectionManager;
-        class AuthStorage;
     }
 
     using namespace playlist;
     using namespace logic;
-    using namespace http;
 
     class PlaylistManager
     {
         public:
             PlaylistManager( demux_t *,
-                             AuthStorage *,
+                             SharedResources *,
                              AbstractPlaylist *,
                              AbstractStreamFactory *,
                              AbstractAdaptationLogic::LogicType type );
             virtual ~PlaylistManager    ();
 
+            bool    init();
             bool    start();
+            bool    started() const;
             void    stop();
 
             AbstractStream::buffering_status bufferize(mtime_t, unsigned, unsigned);
@@ -75,29 +75,27 @@ namespace adaptive
             virtual int doDemux(int64_t);
 
             virtual bool    setPosition(mtime_t);
-            virtual mtime_t getDuration() const;
             mtime_t getPCR() const;
             mtime_t getFirstDTS() const;
 
             virtual mtime_t getFirstPlaybackTime() const;
-            mtime_t getCurrentPlaybackTime() const;
+            mtime_t getCurrentDemuxTime() const;
 
-            void pruneLiveStream();
             virtual bool reactivateStream(AbstractStream *);
             bool setupPeriod();
             void unsetPeriod();
 
             void updateControlsPosition();
-            void updateControlsContentType();
 
             /* local factories */
             virtual AbstractAdaptationLogic *createLogic(AbstractAdaptationLogic::LogicType,
                                                          AbstractConnectionManager *);
+            virtual AbstractBufferingLogic *createBufferingLogic() const;
 
-            AuthStorage                         *authStorage;
-            AbstractConnectionManager           *conManager;
+            SharedResources                     *resources;
             AbstractAdaptationLogic::LogicType  logicType;
             AbstractAdaptationLogic             *logic;
+            AbstractBufferingLogic              *bufferingLogic;
             AbstractPlaylist                    *playlist;
             AbstractStreamFactory               *streamFactory;
             demux_t                             *p_demux;
@@ -121,10 +119,13 @@ namespace adaptive
             struct
             {
                 bool        b_live;
-                mtime_t     i_length;
                 mtime_t     i_time;
                 double      f_position;
-                vlc_mutex_t lock;
+                mutable vlc_mutex_t lock;
+                mtime_t     playlistStart;
+                mtime_t     playlistEnd;
+                mtime_t     playlistLength;
+                time_t      lastupdate;
             } cached;
 
         private:
@@ -136,6 +137,7 @@ namespace adaptive
             bool         b_thread;
             vlc_cond_t   waitcond;
             bool         b_buffering;
+            bool         b_canceled;
     };
 
 }

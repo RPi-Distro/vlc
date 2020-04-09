@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: ef8d95adacdb83e18152405ffb3a721639335ac5 $
+ * $Id: c139964f62d634471e8b3f9433f3d7c95fe644c3 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -2040,6 +2040,7 @@ static bool Control( input_thread_t *p_input,
                                     DEMUX_GET_LENGTH, &i_length ) && i_length > 0 )
                 {
                     double f_pos = (double)i_time / (double)i_length;
+                    f_pos = VLC_CLIP(f_pos, 0.0, 1.0);
                     i_ret = demux_Control( input_priv(p_input)->master->p_demux,
                                             DEMUX_SET_POSITION, f_pos,
                                             !input_priv(p_input)->b_fast_seek );
@@ -2289,6 +2290,8 @@ static bool Control( input_thread_t *p_input,
             demux_Control( input_priv(p_input)->master->p_demux,
                            DEMUX_SET_SEEKPOINT, i_seekpoint );
             input_SendEventSeekpoint( p_input, i_title, i_seekpoint );
+            if( input_priv(p_input)->i_slave > 0 )
+                SlaveSeek( p_input );
             break;
         }
 
@@ -2501,6 +2504,7 @@ static void UpdateTitleListfromDemux( input_thread_t *p_input )
     input_thread_private_t *priv = input_priv(p_input);
     input_source_t *in = priv->master;
 
+    vlc_mutex_lock( &priv->p_item->lock );
     /* Delete the preexisting titles */
     if( in->i_title > 0 )
     {
@@ -2519,6 +2523,8 @@ static void UpdateTitleListfromDemux( input_thread_t *p_input )
         TAB_INIT( in->i_title, in->title );
     else
         in->b_title_demux = true;
+
+    vlc_mutex_unlock( &priv->p_item->lock );
 
     InitTitle( p_input );
 }

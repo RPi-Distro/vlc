@@ -329,8 +329,8 @@ local select_conf = {} -- Drop down widget / option table association
 
 function descriptor()
   return {
-    title = "VLsub 0.11.0",
-    version = "0.11.0",
+    title = "VLsub 0.11.1",
+    version = "0.11.1",
     author = "exebetche",
     url = 'http://www.opensubtitles.org/',
     shortdesc = "VLsub";
@@ -1010,7 +1010,7 @@ openSub = {
     url = "http://api.opensubtitles.org/xml-rpc",
     path = nil,
     userAgentHTTP = "VLSub",
-    useragent = "VLSub 0.11.0",
+    useragent = "VLSub 0.11.1",
     translations_avail = {},
     downloadBehaviours = nil,
     languages = languages
@@ -1113,8 +1113,8 @@ openSub = {
         return {
           { value={ string=openSub.option.os_username } },
           { value={ string=openSub.option.os_password } },
+          { value={ string=openSub.conf.useragent } },
           { value={ string=openSub.movie.sublanguageid } },
-          { value={ string=openSub.conf.useragent } }
         }
       end,
       callback = function(resp)

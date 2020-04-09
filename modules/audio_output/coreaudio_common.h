@@ -33,6 +33,7 @@
 #import <AudioUnit/AudioUnit.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import <os/lock.h>
+#import <mach/mach_time.h>
 
 #define STREAM_FORMAT_MSG(pre, sfm) \
     pre "[%f][%4.4s][%u][%u][%u][%u][%u][%u]", \
@@ -46,8 +47,10 @@
 
 struct aout_sys_common
 {
-    /* The following is owned by common.c (initialized from ca_Init, cleaned
-     * from ca_Clean) */
+    /* The following is owned by common.c (initialized from ca_Open, cleaned
+     * from ca_Close) */
+
+    mach_timebase_info_data_t tinfo;
 
     size_t              i_underrun_size;
     bool                b_paused;
@@ -59,6 +62,7 @@ struct aout_sys_common
     block_t             *p_out_chain;
     block_t             **pp_out_last;
     uint64_t            i_render_host_time;
+    uint64_t            i_first_render_host_time;
     uint32_t            i_render_frames;
 
     vlc_sem_t           flush_sem;
@@ -81,7 +85,7 @@ struct aout_sys_common
     mtime_t             i_dev_latency_us;
 };
 
-void ca_Open(audio_output_t *p_aout);
+int ca_Open(audio_output_t *p_aout);
 
 void ca_Close(audio_output_t *p_aout);
 

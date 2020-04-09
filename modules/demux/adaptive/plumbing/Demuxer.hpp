@@ -32,20 +32,27 @@ namespace adaptive
     class AbstractDemuxer
     {
         public:
+            enum Status
+            {
+                STATUS_SUCCESS,
+                STATUS_ERROR,
+                STATUS_END_OF_FILE,
+            };
             AbstractDemuxer();
             virtual ~AbstractDemuxer();
-            virtual int demux(mtime_t) = 0;
+            virtual Status demux(mtime_t) = 0;
             virtual void drain() = 0;
             virtual bool create() = 0;
             virtual void destroy() = 0;
             bool alwaysStartsFromZero() const;
             bool needsRestartOnSeek() const;
-            bool needsRestartOnSwitch() const;
+            bool bitstreamSwitchCompatible() const;
             bool needsRestartOnEachSegment() const;
-            void setCanDetectSwitches(bool);
+            void setBitstreamSwitchCompatible(bool);
             void setRestartsOnEachSegment(bool);
 
         protected:
+            static Status returnCode(int);
             bool b_startsfromzero;
             bool b_reinitsonseek;
             bool b_alwaysrestarts;
@@ -55,17 +62,17 @@ namespace adaptive
     class MimeDemuxer : public AbstractDemuxer
     {
         public:
-            MimeDemuxer(demux_t *, const DemuxerFactoryInterface *,
+            MimeDemuxer(vlc_object_t *, const DemuxerFactoryInterface *,
                         es_out_t *, AbstractSourceStream *);
             virtual ~MimeDemuxer();
-            virtual int demux(mtime_t); /* impl */
+            virtual Status demux(mtime_t); /* impl */
             virtual void drain(); /* impl */
             virtual bool create(); /* impl */
             virtual void destroy(); /* impl */
 
         protected:
             AbstractSourceStream *sourcestream;
-            demux_t *p_realdemux;
+            vlc_object_t *p_obj;
             AbstractDemuxer *demuxer;
             const DemuxerFactoryInterface *factory;
             es_out_t *p_es_out;
@@ -74,16 +81,16 @@ namespace adaptive
     class Demuxer : public AbstractDemuxer
     {
         public:
-            Demuxer(demux_t *, const std::string &, es_out_t *, AbstractSourceStream *);
+            Demuxer(vlc_object_t *, const std::string &, es_out_t *, AbstractSourceStream *);
             virtual ~Demuxer();
-            virtual int demux(mtime_t); /* impl */
+            virtual Status demux(mtime_t); /* impl */
             virtual void drain(); /* impl */
             virtual bool create(); /* impl */
             virtual void destroy(); /* impl */
 
         protected:
             AbstractSourceStream *sourcestream;
-            demux_t *p_realdemux;
+            vlc_object_t *p_obj;
             demux_t *p_demux;
             std::string name;
             es_out_t *p_es_out;
@@ -93,10 +100,10 @@ namespace adaptive
     class SlaveDemuxer : public Demuxer
     {
         public:
-            SlaveDemuxer(demux_t *, const std::string &, es_out_t *, AbstractSourceStream *);
+            SlaveDemuxer(vlc_object_t *, const std::string &, es_out_t *, AbstractSourceStream *);
             virtual ~SlaveDemuxer();
             virtual bool create(); /* reimpl */
-            virtual int demux(mtime_t); /* reimpl */
+            virtual Status demux(mtime_t); /* reimpl */
 
         private:
             mtime_t length;
@@ -105,8 +112,9 @@ namespace adaptive
     class DemuxerFactoryInterface
     {
         public:
-            virtual AbstractDemuxer * newDemux(demux_t *, const StreamFormat &,
+            virtual AbstractDemuxer * newDemux(vlc_object_t *, const StreamFormat &,
                                                es_out_t *, AbstractSourceStream *) const = 0;
+            virtual ~DemuxerFactoryInterface() = default;
     };
 }
 

@@ -2,7 +2,7 @@
  * SegmentTemplate.cpp: Implement the UrlTemplate element.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 3c1d08084c8117f03b64d55528d29711b817af56 $
+ * $Id: 8c808c7a854b9f8ec1be337e0bc0905ab8cc8db1 $
  *
  * Authors: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
  *
@@ -35,31 +35,40 @@ namespace adaptive
         class ICanonicalUrl;
         class InitSegmentTemplate;
         class SegmentInformation;
+        class SegmentTimeline;
 
         class BaseSegmentTemplate : public Segment
         {
             public:
                 BaseSegmentTemplate( ICanonicalUrl * = NULL );
+                virtual ~BaseSegmentTemplate();
+                virtual void setSourceUrl( const std::string &url ); /* reimpl */
         };
 
         class MediaSegmentTemplate : public BaseSegmentTemplate,
                                      public Initializable<InitSegmentTemplate>,
-                                     public Timelineable,
                                      public TimescaleAble
         {
             public:
                 MediaSegmentTemplate( SegmentInformation * = NULL );
-                virtual void setSourceUrl( const std::string &url ); /* reimpl */
-                void mergeWith( MediaSegmentTemplate *, mtime_t );
+                virtual ~MediaSegmentTemplate();
+                void setStartNumber( uint64_t );
+                void setSegmentTimeline( SegmentTimeline * );
+                void updateWith( MediaSegmentTemplate * );
                 virtual uint64_t getSequenceNumber() const; /* reimpl */
-                uint64_t getCurrentLiveTemplateNumber() const;
+                uint64_t getLiveTemplateNumber(mtime_t, bool = true) const;
                 stime_t getMinAheadScaledTime(uint64_t) const;
                 void pruneByPlaybackTime(mtime_t);
                 size_t pruneBySequenceNumber(uint64_t);
+                virtual Timescale inheritTimescale() const; /* reimpl */
+                virtual uint64_t inheritStartNumber() const;
+                stime_t inheritDuration() const;
+                SegmentTimeline * inheritSegmentTimeline() const;
                 virtual void debug(vlc_object_t *, int = 0) const; /* reimpl */
-                Property<size_t>        startNumber;
 
             protected:
+                uint64_t startNumber;
+                SegmentTimeline *segmentTimeline;
                 SegmentInformation *parentSegmentInformation;
         };
 

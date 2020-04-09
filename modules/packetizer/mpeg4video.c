@@ -2,7 +2,7 @@
  * mpeg4video.c: mpeg 4 video packetizer
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: 8b26ed557d9785bee35360563588a0fd8bcc10cc $
+ * $Id: 979f9bc6a7539456b086b3402978da6bae927511 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -148,7 +148,8 @@ static int Open( vlc_object_t *p_this )
     packetizer_Init( &p_sys->packetizer,
                      p_mp4v_startcode, sizeof(p_mp4v_startcode), startcode_FindAnnexB,
                      NULL, 0, 4,
-                     PacketizeReset, PacketizeParse, PacketizeValidate, p_dec );
+                     PacketizeReset, PacketizeParse, PacketizeValidate, NULL,
+                     p_dec );
 
     p_sys->p_frame = NULL;
     p_sys->pp_last = &p_sys->p_frame;

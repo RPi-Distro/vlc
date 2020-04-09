@@ -66,7 +66,6 @@ namespace adaptive
         class HTTPConnectionManager : public AbstractConnectionManager
         {
             public:
-                HTTPConnectionManager           (vlc_object_t *p_object, AbstractConnectionFactory *);
                 HTTPConnectionManager           (vlc_object_t *p_object, AuthStorage *);
                 virtual ~HTTPConnectionManager  ();
 
@@ -75,6 +74,7 @@ namespace adaptive
 
                 virtual void start(AbstractChunkSource *) /* impl */;
                 virtual void cancel(AbstractChunkSource *) /* impl */;
+                void         setLocalConnectionsAllowed();
 
             private:
                 void    releaseAllConnections ();
@@ -82,6 +82,7 @@ namespace adaptive
                 vlc_mutex_t                                         lock;
                 std::vector<AbstractConnection *>                   connectionPool;
                 AbstractConnectionFactory                          *factory;
+                bool                                                localAllowed;
                 AbstractConnection * reuseConnection(ConnectionParams &);
         };
     }

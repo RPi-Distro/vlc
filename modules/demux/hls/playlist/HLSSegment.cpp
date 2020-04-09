@@ -22,121 +22,44 @@
 #endif
 
 #include "HLSSegment.hpp"
-#include "../adaptive/playlist/SegmentChunk.hpp"
-#include "../adaptive/playlist/BaseRepresentation.h"
+#include "../../adaptive/playlist/BaseRepresentation.h"
 
-#include <vlc_common.h>
-#include <vlc_block.h>
-#ifdef HAVE_GCRYPT
- #include <vlc_gcrypt.h>
-#endif
 
 using namespace hls::playlist;
-
-SegmentEncryption::SegmentEncryption()
-{
-    method = SegmentEncryption::NONE;
-}
 
 HLSSegment::HLSSegment( ICanonicalUrl *parent, uint64_t seq ) :
     Segment( parent )
 {
     setSequenceNumber(seq);
     utcTime = 0;
-#ifdef HAVE_GCRYPT
-    ctx = NULL;
-#endif
 }
 
 HLSSegment::~HLSSegment()
 {
-#ifdef HAVE_GCRYPT
-    if(ctx)
-        gcry_cipher_close(ctx);
-#endif
 }
 
-void HLSSegment::onChunkDownload(block_t **pp_block, SegmentChunk *chunk, BaseRepresentation *)
+bool HLSSegment::prepareChunk(SharedResources *res, SegmentChunk *chunk, BaseRepresentation *rep)
 {
-    block_t *p_block = *pp_block;
-
-#ifndef HAVE_GCRYPT
-    (void)chunk;
-#else
-    if(encryption.method == SegmentEncryption::AES_128)
+    if(encryption.method == CommonEncryption::Method::AES_128)
     {
-        block_t *p_block = *pp_block;
-        /* first bytes */
-        if(!ctx && chunk->getBytesRead() == p_block->i_buffer)
+        if (encryption.iv.size() != 16)
         {
-            vlc_gcrypt_init();
-            if (encryption.iv.size() != 16)
-            {
-                encryption.iv.clear();
-                encryption.iv.resize(16);
-                encryption.iv[15] = (getSequenceNumber() - Segment::SEQUENCE_FIRST) & 0xff;
-                encryption.iv[14] = ((getSequenceNumber() - Segment::SEQUENCE_FIRST) >> 8)& 0xff;
-                encryption.iv[13] = ((getSequenceNumber() - Segment::SEQUENCE_FIRST) >> 16)& 0xff;
-                encryption.iv[12] = ((getSequenceNumber() - Segment::SEQUENCE_FIRST) >> 24)& 0xff;
-            }
-
-            if( gcry_cipher_open(&ctx, GCRY_CIPHER_AES, GCRY_CIPHER_MODE_CBC, 0) ||
-                encryption.key.size() != 16 ||
-                gcry_cipher_setkey(ctx, &encryption.key[0], 16) ||
-                gcry_cipher_setiv(ctx, &encryption.iv[0], 16) )
-            {
-                gcry_cipher_close(ctx);
-                ctx = NULL;
-            }
-        }
-
-        if(ctx)
-        {
-            if ((p_block->i_buffer % 16) != 0 || p_block->i_buffer < 16 ||
-                gcry_cipher_decrypt(ctx, p_block->p_buffer, p_block->i_buffer, NULL, 0))
-            {
-                p_block->i_buffer = 0;
-                gcry_cipher_close(ctx);
-                ctx = NULL;
-            }
-            else
-            {
-                /* last bytes */
-                if(chunk->isEmpty())
-                {
-                    /* remove the PKCS#7 padding from the buffer */
-                    const uint8_t pad = p_block->p_buffer[p_block->i_buffer - 1];
-                    for(uint8_t i=0; i<pad && i<16; i++)
-                    {
-                        if(p_block->p_buffer[p_block->i_buffer - i - 1] != pad)
-                            break;
-
-                        if(i+1==pad)
-                            p_block->i_buffer -= pad;
-                    }
-
-                    gcry_cipher_close(ctx);
-                    ctx = NULL;
-                }
-            }
+            uint64_t sequence = getSequenceNumber() - Segment::SEQUENCE_FIRST;
+            encryption.iv.clear();
+            encryption.iv.resize(16);
+            encryption.iv[15] = (sequence >> 0) & 0xff;
+            encryption.iv[14] = (sequence >> 8) & 0xff;
+            encryption.iv[13] = (sequence >> 16) & 0xff;
+            encryption.iv[12] = (sequence >> 24) & 0xff;
         }
     }
-    else
-#endif
-    if(encryption.method != SegmentEncryption::NONE)
-    {
-        p_block->i_buffer = 0;
-    }
+
+    return Segment::prepareChunk(res, chunk, rep);
 }
 
 mtime_t HLSSegment::getUTCTime() const
 {
     return utcTime;
-}
-
-void HLSSegment::setEncryption(SegmentEncryption &enc)
-{
-    encryption = enc;
 }
 
 int HLSSegment::compare(ISegment *segment) const

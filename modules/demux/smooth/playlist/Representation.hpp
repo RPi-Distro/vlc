@@ -20,8 +20,8 @@
 #ifndef SMOOTHREPRESENTATION_HPP
 #define SMOOTHREPRESENTATION_HPP
 
-#include "../adaptive/playlist/SegmentInfoCommon.h"
-#include "../adaptive/playlist/BaseRepresentation.h"
+#include "../../adaptive/playlist/SegmentInfoCommon.h"
+#include "../../adaptive/playlist/BaseRepresentation.h"
 
 namespace adaptive
 {
@@ -38,12 +38,14 @@ namespace smooth
         using namespace adaptive;
         using namespace adaptive::playlist;
 
-        class Representation : public BaseRepresentation
+        class Representation : public BaseRepresentation,
+                               public Initializable<Segment>
         {
             public:
                 Representation(BaseAdaptationSet *);
                 virtual ~Representation ();
 
+                virtual std::size_t getSegments(SegmentInfoType, std::vector<ISegment *>&) const; /* reimpl */
                 virtual StreamFormat getStreamFormat() const; /* reimpl */
 
                 /* for segment templates */

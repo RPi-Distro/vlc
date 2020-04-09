@@ -25,17 +25,6 @@
 #import "coreaudio_common.h"
 #import <CoreAudio/CoreAudioTypes.h>
 
-#import <dlfcn.h>
-#import <mach/mach_time.h>
-
-static struct
-{
-    void (*lock)(os_unfair_lock *lock);
-    void (*unlock)(os_unfair_lock *lock);
-} unfair_lock;
-
-static mach_timebase_info_data_t tinfo;
-
 static inline uint64_t
 BytesToFrames(struct aout_sys_common *p_sys, size_t i_bytes)
 {
@@ -46,6 +35,30 @@ static inline mtime_t
 FramesToUs(struct aout_sys_common *p_sys, uint64_t i_nb_frames)
 {
     return i_nb_frames * CLOCK_FREQ / p_sys->i_rate;
+}
+
+static inline size_t
+FramesToBytes(struct aout_sys_common *p_sys, uint64_t i_frames)
+{
+    return i_frames * p_sys->i_bytes_per_frame / p_sys->i_frame_length;
+}
+
+static inline uint64_t
+UsToFrames(struct aout_sys_common *p_sys, mtime_t i_us)
+{
+    return i_us * p_sys->i_rate / CLOCK_FREQ;
+}
+
+static inline mtime_t
+HostTimeToTick(struct aout_sys_common *p_sys, uint64_t i_host_time)
+{
+    return i_host_time * p_sys->tinfo.numer / p_sys->tinfo.denom / 1000;
+}
+
+static inline uint64_t
+TickToHostTime(struct aout_sys_common *p_sys, mtime_t i_us)
+{
+    return i_us * 1000 * p_sys->tinfo.denom / p_sys->tinfo.numer;
 }
 
 static void
@@ -61,60 +74,48 @@ ca_ClearOutBuffers(audio_output_t *p_aout)
 }
 
 static void
-ca_init_once(void)
-{
-    unfair_lock.lock = dlsym(RTLD_DEFAULT, "os_unfair_lock_lock");
-    if (!unfair_lock.lock)
-        return;
-    unfair_lock.unlock = dlsym(RTLD_DEFAULT, "os_unfair_lock_unlock");
-    if (!unfair_lock.unlock)
-        unfair_lock.lock = NULL;
-
-    if (mach_timebase_info(&tinfo) != KERN_SUCCESS)
-        tinfo.numer = tinfo.denom = 0;
-}
-
-static void
 lock_init(struct aout_sys_common *p_sys)
 {
-    if (unfair_lock.lock)
+    if (likely(os_unfair_lock_lock))
         p_sys->lock.unfair = OS_UNFAIR_LOCK_INIT;
     else
         vlc_mutex_init(&p_sys->lock.mutex);
 }
 
-static void
+static inline void
 lock_destroy(struct aout_sys_common *p_sys)
 {
-    if (!unfair_lock.lock)
+    if (unlikely(!os_unfair_lock_lock))
         vlc_mutex_destroy(&p_sys->lock.mutex);
 }
 
-static void
+static inline void
 lock_lock(struct aout_sys_common *p_sys)
 {
-    if (unfair_lock.lock)
-        unfair_lock.lock(&p_sys->lock.unfair);
+    if (likely(os_unfair_lock_lock))
+        os_unfair_lock_lock(&p_sys->lock.unfair);
     else
         vlc_mutex_lock(&p_sys->lock.mutex);
 }
 
-static void
+static inline void
 lock_unlock(struct aout_sys_common *p_sys)
 {
-    if (unfair_lock.lock)
-        unfair_lock.unlock(&p_sys->lock.unfair);
+    if (likely(os_unfair_lock_lock))
+        os_unfair_lock_unlock(&p_sys->lock.unfair);
     else
         vlc_mutex_unlock(&p_sys->lock.mutex);
 }
 
-void
+int
 ca_Open(audio_output_t *p_aout)
 {
     struct aout_sys_common *p_sys = (struct aout_sys_common *) p_aout->sys;
 
-    static pthread_once_t once = PTHREAD_ONCE_INIT;
-    pthread_once(&once, ca_init_once);
+    if (mach_timebase_info(&p_sys->tinfo) != KERN_SUCCESS)
+        return VLC_EGENERIC;
+
+    assert(p_sys->tinfo.denom != 0 && p_sys->tinfo.numer != 0);
 
     vlc_sem_init(&p_sys->flush_sem, 0);
     lock_init(p_sys);
@@ -124,6 +125,8 @@ ca_Open(audio_output_t *p_aout)
     p_aout->pause = ca_Pause;
     p_aout->flush = ca_Flush;
     p_aout->time_get = ca_TimeGet;
+
+    return VLC_SUCCESS;
 }
 
 void
@@ -144,9 +147,6 @@ ca_Render(audio_output_t *p_aout, uint32_t i_frames, uint64_t i_host_time,
 
     lock_lock(p_sys);
 
-    p_sys->i_render_host_time = i_host_time;
-    p_sys->i_render_frames = i_frames;
-
     if (p_sys->b_do_flush)
     {
         ca_ClearOutBuffers(p_aout);
@@ -155,8 +155,42 @@ ca_Render(audio_output_t *p_aout, uint32_t i_frames, uint64_t i_host_time,
         vlc_sem_post(&p_sys->flush_sem);
     }
 
-    if (p_sys->b_paused)
+    if (p_sys->b_paused || unlikely(p_sys->i_first_render_host_time == 0))
         goto drop;
+
+    /* Start deferred: write silence (zeros) until we reach the first render
+     * host time. */
+    if (unlikely(p_sys->i_first_render_host_time > i_host_time ))
+    {
+        /* Convert the requested bytes into host time and check that it does
+         * not overlap between the first_render host time and the current one.
+         * */
+        const size_t i_requested_us =
+            FramesToUs(p_sys, BytesToFrames(p_sys, i_requested));
+        const uint64_t i_requested_host_time =
+            TickToHostTime(p_sys, i_requested_us);
+        if (p_sys->i_first_render_host_time >= i_host_time + i_requested_host_time)
+        {
+            /* Fill the buffer with silence */
+            goto drop;
+        }
+
+        /* Write silence to reach the first_render host time */
+        const mtime_t i_silence_us =
+            HostTimeToTick(p_sys, p_sys->i_first_render_host_time - i_host_time);
+
+        const uint64_t i_silence_bytes =
+            FramesToBytes(p_sys, UsToFrames(p_sys, i_silence_us));
+        assert(i_silence_bytes <= i_requested);
+        memset(p_output, 0, i_silence_bytes);
+
+        i_requested -= i_silence_bytes;
+
+        /* Start the first rendering */
+    }
+
+    p_sys->i_render_host_time = i_host_time;
+    p_sys->i_render_frames = i_frames;
 
     size_t i_copied = 0;
     block_t *p_block = p_sys->p_out_chain;
@@ -201,30 +235,35 @@ drop:
     lock_unlock(p_sys);
 }
 
+static mtime_t
+ca_GetLatencyLocked(audio_output_t *p_aout)
+{
+    struct aout_sys_common *p_sys = (struct aout_sys_common *) p_aout->sys;
+
+    const int64_t i_out_frames = BytesToFrames(p_sys, p_sys->i_out_size);
+    return FramesToUs(p_sys, i_out_frames + p_sys->i_render_frames)
+           + p_sys->i_dev_latency_us;
+}
+
 int
 ca_TimeGet(audio_output_t *p_aout, mtime_t *delay)
 {
     struct aout_sys_common *p_sys = (struct aout_sys_common *) p_aout->sys;
 
-    if (unlikely(tinfo.denom == 0))
-        return -1;
-
     lock_lock(p_sys);
 
-    if (p_sys->i_render_host_time == 0)
+    if (p_sys->i_render_host_time == 0 || p_sys->i_first_render_host_time == 0)
     {
+        /* Not yet started (or reached the first_render host time) */
         lock_unlock(p_sys);
         return -1;
     }
 
-    const uint64_t i_render_time_us = p_sys->i_render_host_time
-                                    * tinfo.numer / tinfo.denom / 1000;
+    const mtime_t i_render_time_us =
+        HostTimeToTick(p_sys, p_sys->i_render_host_time);
     const mtime_t i_render_delay = i_render_time_us - mdate();
 
-    const int64_t i_out_frames = BytesToFrames(p_sys, p_sys->i_out_size);
-    *delay = FramesToUs(p_sys, i_out_frames + p_sys->i_render_frames)
-           + p_sys->i_dev_latency_us + i_render_delay;
-
+    *delay = ca_GetLatencyLocked(p_aout) + i_render_delay;
     lock_unlock(p_sys);
     return 0;
 }
@@ -268,7 +307,7 @@ ca_Flush(audio_output_t *p_aout, bool wait)
         }
     }
 
-    p_sys->i_render_host_time = 0;
+    p_sys->i_render_host_time = p_sys->i_first_render_host_time = 0;
     p_sys->i_render_frames = 0;
     lock_unlock(p_sys);
 
@@ -298,6 +337,18 @@ ca_Play(audio_output_t * p_aout, block_t * p_block)
                            VLC_CODEC_FL32);
 
     lock_lock(p_sys);
+
+    if (p_sys->i_render_host_time == 0)
+    {
+        /* Setup the first render time, this date must be updated until the
+         * first (non-silence/zero) frame is rendered by the render callback.
+         * Once the rendering is truly started, the date can be ignored. */
+
+        const mtime_t first_render_time = p_block->i_pts - ca_GetLatencyLocked(p_aout);
+        p_sys->i_first_render_host_time =
+            TickToHostTime(p_sys, first_render_time);
+    }
+
     do
     {
         const size_t i_avalaible_bytes =
@@ -368,7 +419,7 @@ ca_Initialize(audio_output_t *p_aout, const audio_sample_format_t *fmt,
 
     p_sys->i_underrun_size = 0;
     p_sys->b_paused = false;
-    p_sys->i_render_host_time = 0;
+    p_sys->i_render_host_time = p_sys->i_first_render_host_time = 0;
     p_sys->i_render_frames = 0;
 
     p_sys->i_rate = fmt->i_rate;

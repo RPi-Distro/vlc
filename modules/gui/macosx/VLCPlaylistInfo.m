@@ -2,7 +2,7 @@
  * VLCPlaylistInfo.m: Controller for the codec info panel
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: ef9817ff474fa78726933ecaf8cf11b52523fbb3 $
+ * $Id: 53b05221edd4d1ac582045e69d093802b0663098 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -43,10 +43,6 @@
 - (id)init
 {
     self = [super initWithWindowNibName:@"MediaInfo"];
-    if (self) {
-
-    }
-
     return self;
 }
 
@@ -303,15 +299,15 @@ FREENULL( psz_##foo );
             info_category_t *cat = p_item->pp_categories[i];
 
             VLCInfoTreeItem *subItem = [[VLCInfoTreeItem alloc] init];
-            subItem.name = toNSStr(cat->psz_name);
+            subItem.propertyName = toNSStr(cat->psz_name);
 
             // Build list of codec details
             NSMutableArray *infos = [NSMutableArray array];
 
             for (int j = 0; j < cat->i_infos; j++) {
                 VLCInfoTreeItem *infoItem = [[VLCInfoTreeItem alloc] init];
-                infoItem.name = toNSStr(cat->pp_infos[j]->psz_name);
-                infoItem.value = toNSStr(cat->pp_infos[j]->psz_value);
+                infoItem.propertyName = toNSStr(cat->pp_infos[j]->psz_name);
+                infoItem.propertyValue = toNSStr(cat->pp_infos[j]->psz_value);
                 [infos addObject:infoItem];
             }
 
@@ -397,9 +393,9 @@ FREENULL( psz_##foo );
         return @"";
 
     if ([[tableColumn identifier] isEqualToString:@"0"])
-        return [item name];
+        return [item propertyName];
     else
-        return [item value];
+        return [item propertyValue];
 }
 
 @end

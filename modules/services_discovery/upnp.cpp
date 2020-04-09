@@ -2,9 +2,9 @@
  * upnp.cpp :  UPnP discovery module (libupnp)
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: e3a6496b3e07a97fd6ee766e85d7d77757a77019 $
+ * $Id: d51a533b478f291069046cd668cd8ac27e864b94 $
  *
- * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
+ * Authors: Rémi Denis-Courmont (original plugin)
  *          Christian Henz <henz # c-lab.de>
  *          Mirsal Ennaime <mirsal dot ennaime at gmail dot com>
  *          Hugo Beauzée-Luyssen <hugo@beauzee.fr>
@@ -1583,6 +1583,9 @@ inline char *FromCFString(const CFStringRef cfString,
 inline char *getPreferedAdapter()
 {
     SCDynamicStoreRef session = SCDynamicStoreCreate(NULL, CFSTR("session"), NULL, NULL);
+    if (session == NULL)
+        return NULL;
+
     CFDictionaryRef q = (CFDictionaryRef) SCDynamicStoreCopyValue(session, CFSTR("State:/Network/Global/IPv4"));
     char *returnValue = NULL;
 
@@ -1591,8 +1594,8 @@ inline char *getPreferedAdapter()
         if (CFDictionaryGetValueIfPresent(q, CFSTR("PrimaryInterface"), &val)) {
             returnValue = FromCFString((CFStringRef)val, kCFStringEncodingUTF8);
         }
+        CFRelease(q);
     }
-    CFRelease(q);
     CFRelease(session);
 
     return returnValue;

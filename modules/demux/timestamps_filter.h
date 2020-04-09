@@ -39,6 +39,13 @@ struct timestamps_filter_s
     struct moving_average_s mva;
     mtime_t sequence_offset;
     mtime_t contiguous_last;
+    /**/
+    struct name
+    {
+        mtime_t stream;
+        mtime_t contiguous;
+    } sync;
+    /**/
     unsigned sequence;
 };
 
@@ -49,10 +56,11 @@ struct tf_es_out_id_s
     struct timestamps_filter_s tf;
     mtime_t pcrdiff;
     unsigned pcrpacket;
+    unsigned sequence;
     bool contiguous;
 };
 
-struct tf_es_out_sys_s
+struct tf_es_out_s
 {
     es_out_t *original_es_out;
     DECL_ARRAY(struct tf_es_out_id_s *) es_list;
@@ -65,21 +73,24 @@ static void timestamps_filter_init(struct timestamps_filter_s *tf)
     mva_init(&tf->mva);
     tf->sequence_offset = 0;
     tf->contiguous_last = 0;
+    tf->sync.stream = 0;
+    tf->sync.contiguous = 0;
     tf->sequence = -1;
 }
 
-static void timestamps_filter_push(const char *s, struct timestamps_filter_s *tf,
+static bool timestamps_filter_push(const char *s, struct timestamps_filter_s *tf,
                                    mtime_t i_dts, mtime_t i_length,
                                    bool b_discontinuity, bool b_contiguous)
 {
+    bool b_desync = false;
     if(i_dts == 0 && i_length == 0)
-        return;
+        return false;
 
     struct mva_packet_s *prev = mva_getLastPacket(&tf->mva);
     if (prev)
     {
         if(prev->dts == i_dts)
-            return; /* duplicate packet */
+            return false; /* duplicate packet */
 
         if(b_contiguous)
         {
@@ -87,10 +98,13 @@ static void timestamps_filter_push(const char *s, struct timestamps_filter_s *tf
             if(llabs(i_dts - prev->dts) > i_maxdiff || b_discontinuity) /* Desync */
             {
                 prev->diff = mva_get(&tf->mva);
-                tf->sequence_offset = tf->contiguous_last - i_dts + prev->diff;
+                tf->sync.stream = i_dts;
+                tf->sync.contiguous = tf->contiguous_last + prev->diff;
+                tf->sequence_offset = tf->sync.contiguous - tf->sync.stream;
 #ifdef DEBUG_TIMESTAMPS_FILTER
                 printf("%4.4s found offset of %ld\n", s, (prev->dts - i_dts));
 #endif
+                b_desync = true;
             }
             else prev->diff = i_dts - prev->dts;
         }
@@ -109,9 +123,23 @@ static void timestamps_filter_push(const char *s, struct timestamps_filter_s *tf
     tf->contiguous_last = i_dts + tf->sequence_offset;
 
     mva_add(&tf->mva, i_dts, i_length);
+
+    return b_desync;
 }
 
-static void timestamps_filter_es_out_Reset(struct tf_es_out_sys_s *out)
+static struct tf_es_out_id_s * timestamps_filter_es_out_getID(struct tf_es_out_s *p_sys, es_out_id_t *id)
+{
+    for(int i=0; i<p_sys->es_list.i_size; i++)
+    {
+        struct tf_es_out_id_s *cur = (struct tf_es_out_id_s *)p_sys->es_list.p_elems[i];
+        if(cur->id != id)
+            continue;
+        return cur;
+    }
+    return NULL;
+}
+
+static void timestamps_filter_es_out_Reset(struct tf_es_out_s *out)
 {
     for(int i=0; i<out->es_list.i_size; i++)
     {
@@ -124,7 +152,7 @@ static void timestamps_filter_es_out_Reset(struct tf_es_out_sys_s *out)
 
 static int timestamps_filter_es_out_Control(es_out_t *out, int i_query, va_list va_list)
 {
-    struct tf_es_out_sys_s *p_sys = (struct tf_es_out_sys_s *) out->p_sys;
+    struct tf_es_out_s *p_sys = (struct tf_es_out_s *) out->p_sys;
     switch(i_query)
     {
         case ES_OUT_SET_PCR:
@@ -137,7 +165,30 @@ static int timestamps_filter_es_out_Control(es_out_t *out, int i_query, va_list 
                 i_group = 0;
             int64_t pcr = va_arg(va_list, int64_t);
 
-            timestamps_filter_push("PCR ", &p_sys->pcrtf, pcr, 0, p_sys->b_discontinuity, true);
+            if(timestamps_filter_push("PCR ", &p_sys->pcrtf, pcr, 0, p_sys->b_discontinuity, true))
+            {
+                p_sys->pcrtf.sequence++;
+                /* Handle special start case, there was 1 single PCR before */
+                if(p_sys->pcrtf.mva.i_packet == 2)
+                {
+                    mtime_t max = 0;
+                    for(int i=0; i<p_sys->es_list.i_size; i++)
+                    {
+                        struct tf_es_out_id_s *cur = (struct tf_es_out_id_s *)p_sys->es_list.p_elems[i];
+                        if(cur->contiguous && cur->tf.contiguous_last)
+                            max = __MAX(max, cur->tf.contiguous_last);
+                    }
+                    if(max)
+                    {
+#ifdef DEBUG_TIMESTAMPS_FILTER
+                    printf("PCR  no previous value, using %ld\n", max);
+#endif
+                    p_sys->pcrtf.sync.stream = pcr;
+                    p_sys->pcrtf.sync.contiguous = max;
+                    p_sys->pcrtf.sequence_offset = max - pcr;
+                    }
+                }
+            }
 
             pcr += p_sys->pcrtf.sequence_offset;
 
@@ -151,6 +202,15 @@ static int timestamps_filter_es_out_Control(es_out_t *out, int i_query, va_list 
         {
             timestamps_filter_es_out_Reset(p_sys);
             break;
+        }
+        case ES_OUT_SET_ES_FMT:
+        {
+            es_out_id_t *id = va_arg(va_list, es_out_id_t *);
+            const es_format_t *p_fmt = va_arg(va_list, es_format_t *);
+            struct tf_es_out_id_s *cur = timestamps_filter_es_out_getID(p_sys, id);
+            if(cur)
+                cur->fourcc = p_fmt->i_codec;
+            return es_out_Control(p_sys->original_es_out, ES_OUT_SET_ES_FMT, id, p_fmt);
         }
         /* Private controls, never forwarded */
         case ES_OUT_TF_FILTER_GET_TIME:
@@ -175,42 +235,48 @@ static int timestamps_filter_es_out_Control(es_out_t *out, int i_query, va_list 
     return es_out_vaControl(p_sys->original_es_out, i_query, va_list);
 }
 
-static struct tf_es_out_id_s * timestamps_filter_es_out_getID(struct tf_es_out_sys_s *p_sys, es_out_id_t *id)
-{
-    for(int i=0; i<p_sys->es_list.i_size; i++)
-    {
-        struct tf_es_out_id_s *cur = (struct tf_es_out_id_s *)p_sys->es_list.p_elems[i];
-        if(cur->id != id)
-            continue;
-        return cur;
-    }
-    return NULL;
-}
-
 static int timestamps_filter_es_out_Send(es_out_t *out, es_out_id_t *id, block_t *p_block)
 {
-    struct tf_es_out_sys_s *p_sys = (struct tf_es_out_sys_s *) out->p_sys;
+    struct tf_es_out_s *p_sys = (struct tf_es_out_s *) out->p_sys;
     struct tf_es_out_id_s *cur = timestamps_filter_es_out_getID(p_sys, id);
 
     timestamps_filter_push((char*)&cur->fourcc, &cur->tf,
                             p_block->i_dts, p_block->i_length,
                            p_sys->b_discontinuity, cur->contiguous);
 
-    /* Record diff with last PCR */
-    if(p_sys->pcrtf.mva.i_packet > 0 &&
-        p_sys->pcrtf.mva.i_packet != cur->pcrpacket)
+    if(cur->tf.sequence == p_sys->pcrtf.sequence) /* Still in the same timestamps segments as PCR */
     {
-        cur->pcrpacket = p_sys->pcrtf.mva.i_packet;
-        cur->pcrdiff = mva_getLastDTS(&cur->tf.mva) - mva_getLastDTS(&p_sys->pcrtf.mva);
-
-        mtime_t i_offsetdiff = cur->tf.sequence_offset - p_sys->pcrtf.sequence_offset;
-        if(i_offsetdiff != 0)
+        /* Record diff with last PCR */
+        if(p_sys->pcrtf.mva.i_packet > 0 &&
+           p_sys->pcrtf.mva.i_packet != cur->pcrpacket)
         {
-            cur->tf.sequence_offset -= i_offsetdiff;
+            cur->pcrdiff = mva_getLastDTS(&cur->tf.mva) - mva_getLastDTS(&p_sys->pcrtf.mva);
+
+            mtime_t i_offsetdiff = cur->tf.sequence_offset - p_sys->pcrtf.sequence_offset;
+            if(i_offsetdiff != 0)
+                cur->tf.sequence_offset -= i_offsetdiff;
 #ifdef DEBUG_TIMESTAMPS_FILTER
-            printf("PCR diff %ld %ld **********\n", cur->pcrdiff, i_offsetdiff);
+            printf("    ^ diff pcr %ld off %ld ********** pcrnum %ld seq %d/%d\n",
+                   cur->pcrdiff, i_offsetdiff, p_sys->pcrtf.mva.i_packet,
+                   cur->tf.sequence, p_sys->pcrtf.sequence);
 #endif
         }
+    }
+    else /* PCR had discontinuity, we're in a new segment */
+    {
+        if(cur->tf.mva.i_packet == 1 || !cur->contiguous)
+        {
+          cur->tf.sync.stream = p_sys->pcrtf.sync.stream;
+          cur->tf.sync.contiguous = p_sys->pcrtf.sync.contiguous;
+          cur->tf.sequence_offset = cur->tf.sync.contiguous - cur->tf.sync.stream;
+        }
+    }
+
+    /* Record our state */
+    if(p_sys->pcrtf.mva.i_packet > 0)
+    {
+        cur->pcrpacket = p_sys->pcrtf.mva.i_packet;
+        cur->tf.sequence = p_sys->pcrtf.sequence;
     }
 
     /* Fix timestamps */
@@ -224,7 +290,7 @@ static int timestamps_filter_es_out_Send(es_out_t *out, es_out_id_t *id, block_t
 
 static void timestamps_filter_es_out_Delete(es_out_t *out)
 {
-    struct tf_es_out_sys_s *p_sys = (struct tf_es_out_sys_s *) out->p_sys;
+    struct tf_es_out_s *p_sys = (struct tf_es_out_s *) out->p_sys;
     for(int i=0; i<p_sys->es_list.i_size; i++)
         free(p_sys->es_list.p_elems[i]);
     ARRAY_RESET(p_sys->es_list);
@@ -234,7 +300,7 @@ static void timestamps_filter_es_out_Delete(es_out_t *out)
 
 static es_out_id_t *timestamps_filter_es_out_Add(es_out_t *out, const es_format_t *fmt)
 {
-    struct tf_es_out_sys_s *p_sys = (struct tf_es_out_sys_s *) out->p_sys;
+    struct tf_es_out_s *p_sys = (struct tf_es_out_s *) out->p_sys;
 
     struct tf_es_out_id_s *tf_es_sys = malloc(sizeof(*tf_es_sys));
     if(!tf_es_sys)
@@ -243,6 +309,7 @@ static es_out_id_t *timestamps_filter_es_out_Add(es_out_t *out, const es_format_
     tf_es_sys->fourcc = fmt->i_codec;
     tf_es_sys->pcrdiff = 0;
     tf_es_sys->pcrpacket = -1;
+    tf_es_sys->sequence = -1;
     tf_es_sys->contiguous = (fmt->i_cat == VIDEO_ES || fmt->i_cat == AUDIO_ES);
 
     tf_es_sys->id = es_out_Add(p_sys->original_es_out, fmt);
@@ -259,7 +326,7 @@ static es_out_id_t *timestamps_filter_es_out_Add(es_out_t *out, const es_format_
 
 static void timestamps_filter_es_out_Del(es_out_t *out, es_out_id_t *id)
 {
-    struct tf_es_out_sys_s *p_sys = (struct tf_es_out_sys_s *) out->p_sys;
+    struct tf_es_out_s *p_sys = (struct tf_es_out_s *) out->p_sys;
 
     es_out_Del(p_sys->original_es_out, id);
 
@@ -279,7 +346,7 @@ static es_out_t * timestamps_filter_es_out_New(es_out_t *orig)
     es_out_t *p_out = malloc(sizeof(*p_out));
     if(!p_out)
         return NULL;
-    struct tf_es_out_sys_s *tf = malloc(sizeof(*tf));
+    struct tf_es_out_s *tf = malloc(sizeof(*tf));
     if(!tf)
     {
         free(p_out);

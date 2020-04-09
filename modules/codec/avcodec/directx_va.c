@@ -4,7 +4,7 @@
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
  * Copyright (C) 2015 Steve Lhomme
- * $Id: e12704729ba882cd1152fb38199021b0af8a1373 $
+ * $Id: 3c46bb960f57071e3c5e0fe27d7c65130ba4b126 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -49,14 +49,21 @@ struct picture_sys_t {
 #include "../../packetizer/hevc_nal.h"
 
 static const int PROF_MPEG2_MAIN[]   = { FF_PROFILE_MPEG2_SIMPLE,
-                                         FF_PROFILE_MPEG2_MAIN, 0 };
+                                         FF_PROFILE_MPEG2_MAIN,
+                                         FF_PROFILE_UNKNOWN };
 static const int PROF_H264_HIGH[]    = { FF_PROFILE_H264_BASELINE,
                                          FF_PROFILE_H264_CONSTRAINED_BASELINE,
                                          FF_PROFILE_H264_MAIN,
-                                         FF_PROFILE_H264_HIGH, 0 };
-static const int PROF_HEVC_MAIN[]    = { FF_PROFILE_HEVC_MAIN, 0 };
+                                         FF_PROFILE_H264_HIGH,
+                                         FF_PROFILE_UNKNOWN };
+static const int PROF_HEVC_MAIN[]    = { FF_PROFILE_HEVC_MAIN,
+                                         FF_PROFILE_UNKNOWN };
 static const int PROF_HEVC_MAIN10[]  = { FF_PROFILE_HEVC_MAIN,
-                                         FF_PROFILE_HEVC_MAIN_10, 0 };
+                                         FF_PROFILE_HEVC_MAIN_10,
+                                         FF_PROFILE_UNKNOWN };
+
+static const int PROF_VP9_MAIN[]    = { FF_PROFILE_VP9_0, FF_PROFILE_UNKNOWN };
+static const int PROF_VP9_10[]      = { FF_PROFILE_VP9_2, FF_PROFILE_UNKNOWN };
 
 #include <winapifamily.h>
 #if defined(WINAPI_FAMILY)
@@ -256,11 +263,12 @@ static const directx_va_mode_t DXVA_MODES[] = {
     /* VPx */
     { "VP8",                                                                          &DXVA_ModeVP8_VLD,                      0, NULL },
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 57, 17, 100 ) && LIBAVCODEC_VERSION_MICRO >= 100
-    { "VP9 profile 0",                                                                &DXVA_ModeVP9_VLD_Profile0,             AV_CODEC_ID_VP9, NULL },
+    { "VP9 profile 0",                                                                &DXVA_ModeVP9_VLD_Profile0,             AV_CODEC_ID_VP9, PROF_VP9_MAIN },
+    { "VP9 profile 2",                                                                &DXVA_ModeVP9_VLD_10bit_Profile2,       AV_CODEC_ID_VP9, PROF_VP9_10 },
 #else
     { "VP9 profile 0",                                                                &DXVA_ModeVP9_VLD_Profile0,             0, NULL },
-#endif
     { "VP9 profile 2",                                                                &DXVA_ModeVP9_VLD_10bit_Profile2,       0, NULL },
+#endif
     { "VP9 profile Intel",                                                            &DXVA_ModeVP9_VLD_Intel,                0, NULL },
 
     { NULL, NULL, 0, NULL }
@@ -353,7 +361,7 @@ error:
 static bool profile_supported(const directx_va_mode_t *mode, const es_format_t *fmt,
                               const AVCodecContext *avctx)
 {
-    bool is_supported = mode->p_profiles == NULL || !mode->p_profiles[0];
+    bool is_supported = mode->p_profiles == NULL;
     if (!is_supported)
     {
         int profile = fmt->i_profile >= 0 ? fmt->i_profile : avctx->profile;
@@ -372,7 +380,7 @@ static bool profile_supported(const directx_va_mode_t *mode, const es_format_t *
 
         if (profile <= 0)
             is_supported = true;
-        else for (const int *p_profile = &mode->p_profiles[0]; *p_profile; ++p_profile)
+        else for (const int *p_profile = &mode->p_profiles[0]; *p_profile != FF_PROFILE_UNKNOWN; ++p_profile)
         {
             if (*p_profile == profile)
             {

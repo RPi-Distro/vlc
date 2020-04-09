@@ -29,29 +29,64 @@ namespace adaptive
     {
         public:
             virtual void fillExtraFMTInfo( es_format_t * ) const = 0;
+            virtual ~ExtraFMTInfoInterface() = default;
     };
 
     class CommandsQueue;
     class FakeESOutID;
 
-    class FakeESOut
+    class AbstractFakeEsOut
+    {
+        friend class EsOutCallbacks;
+        public:
+            AbstractFakeEsOut();
+            virtual ~AbstractFakeEsOut();
+            operator es_out_t*();
+
+        private:
+            void *esoutpriv;
+            virtual es_out_id_t *esOutAdd( const es_format_t * ) = 0;
+            virtual int esOutSend( es_out_id_t *, block_t * ) = 0;
+            virtual void esOutDel( es_out_id_t * ) = 0;
+            virtual int esOutControl( int, va_list ) = 0;
+            virtual void esOutDestroy() = 0;
+    };
+
+    class FakeESOut : public AbstractFakeEsOut
     {
         public:
+            class LockedFakeEsOut
+            {
+                friend class FakeESOut;
+                public:
+                    ~LockedFakeEsOut();
+                    operator es_out_t*();
+                    FakeESOut & operator*();
+                    FakeESOut * operator->();
+                private:
+                    FakeESOut *p;
+                    LockedFakeEsOut(FakeESOut &q);
+            };
             FakeESOut( es_out_t *, CommandsQueue * );
-            ~FakeESOut();
-            es_out_t * getEsOut();
-            void setTimestampOffset( mtime_t );
-            void setExpectedTimestampOffset(mtime_t);
+            virtual ~FakeESOut();
+            LockedFakeEsOut WithLock();
+            CommandsQueue * commandsQueue();
+            void setAssociatedTimestamp( mtime_t );
+            void setExpectedTimestamp( mtime_t );
+            void resetTimestamps();
+            bool getStartTimestamps( mtime_t *, mtime_t * );
             size_t esCount() const;
             bool hasSelectedEs() const;
             bool decodersDrained();
             bool restarting() const;
             void setExtraInfoProvider( ExtraFMTInfoInterface * );
-            void checkTimestampsStart(mtime_t);
+            mtime_t fixTimestamp( mtime_t );
+            void declareEs( const es_format_t * );
 
             /* Used by FakeES ID */
             void recycle( FakeESOutID *id );
             void createOrRecycleRealEsID( FakeESOutID * );
+            void setPriority(int);
 
             /**/
             void schedulePCRReset();
@@ -59,26 +94,30 @@ namespace adaptive
             void recycleAll(); /* Cancels all commands and send fakees for recycling */
             void gc();
 
-            /* static callbacks for demuxer */
-            static es_out_id_t *esOutAdd_Callback( es_out_t *, const es_format_t * );
-            static int esOutSend_Callback( es_out_t *, es_out_id_t *, block_t * );
-            static void esOutDel_Callback( es_out_t *, es_out_id_t * );
-            static int esOutControl_Callback( es_out_t *, int, va_list );
-            static void esOutDestroy_Callback( es_out_t * );
-
         private:
+            friend class LockedFakeESOut;
             vlc_mutex_t lock;
+            virtual es_out_id_t *esOutAdd( const es_format_t * ); /* impl */
+            virtual int esOutSend( es_out_id_t *, block_t * ); /* impl */
+            virtual void esOutDel( es_out_id_t * ); /* impl */
+            virtual int esOutControl( int, va_list ); /* impl */
+            virtual void esOutDestroy(); /* impl */
             es_out_t *real_es_out;
             FakeESOutID * createNewID( const es_format_t * );
             ExtraFMTInfoInterface *extrainfo;
-            mtime_t getTimestampOffset() const;
             CommandsQueue *commandsqueue;
-            es_out_t *fakeesout;
+            struct
+            {
+                mtime_t timestamp;
+                bool b_timestamp_set;
+                bool b_offset_calculated;
+            } associated, expected;
+            mtime_t timestamp_first;
             mtime_t timestamps_offset;
-            mtime_t timestamps_expected;
-            bool timestamps_check_done;
+            int priority;
             std::list<FakeESOutID *> fakeesidlist;
             std::list<FakeESOutID *> recycle_candidates;
+            std::list<FakeESOutID *> declared;
     };
 
 }

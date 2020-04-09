@@ -21,9 +21,9 @@
 #ifndef HLSREPRESENTATION_H_
 #define HLSREPRESENTATION_H_
 
-#include "../adaptive/playlist/BaseRepresentation.h"
-#include "../adaptive/tools/Properties.hpp"
-#include "../adaptive/StreamFormat.hpp"
+#include "../../adaptive/playlist/BaseRepresentation.h"
+#include "../../adaptive/tools/Properties.hpp"
+#include "../../adaptive/StreamFormat.hpp"
 
 namespace hls
 {
@@ -50,13 +50,14 @@ namespace hls
                 virtual void scheduleNextUpdate(uint64_t); /* reimpl */
                 virtual bool needsUpdate() const;  /* reimpl */
                 virtual void debug(vlc_object_t *, int) const;  /* reimpl */
-                virtual bool runLocalUpdates(mtime_t, uint64_t, bool); /* reimpl */
+                virtual bool runLocalUpdates(SharedResources *); /* reimpl */
                 virtual uint64_t translateSegmentNumber(uint64_t, const SegmentInformation *) const; /* reimpl */
 
             private:
                 StreamFormat streamFormat;
                 bool b_live;
                 bool b_loaded;
+                bool b_failed;
                 time_t nextUpdateTime;
                 time_t targetDuration;
                 Url playlistUrl;
