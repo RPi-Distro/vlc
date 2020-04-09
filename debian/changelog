@@ -1,3 +1,11 @@
+vlc (3.0.9.2-1) unstable; urgency=medium
+
+  * New upstream release
+  * debian/patches: Remove patches integrated upstream
+  * debian/copyright: Bump copyright years
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 09 Apr 2020 21:11:40 +0200
+
 vlc (3.0.8-4) unstable; urgency=medium
 
   * debian/control: Bump Standards-Version
