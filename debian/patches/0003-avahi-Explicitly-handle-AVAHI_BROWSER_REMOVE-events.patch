@@ -1,0 +1,28 @@
+From: =?utf-8?q?Stefan_Br=C3=BCns?= <stefan.bruens@rwth-aachen.de>
+Date: Sat, 19 Jan 2019 22:41:11 +0100
+Subject: avahi: Explicitly handle AVAHI_BROWSER_REMOVE events
+
+name is only set for AVAHI_BROWSER_NEW and AVAHI_BROWSER_REMOVE. Explicitly
+check for REMOVE instead of deducing the event type from the name being
+set.
+
+Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+(cherry picked from commit aaba1daa2683a403ab4adefffa1abd59f9339d2b)
+Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+---
+ modules/services_discovery/avahi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/services_discovery/avahi.c b/modules/services_discovery/avahi.c
+index 1457c75..f1d4d06 100644
+--- a/modules/services_discovery/avahi.c
++++ b/modules/services_discovery/avahi.c
+@@ -241,7 +241,7 @@ static void browse_callback(
+                      avahi_strerror( avahi_client_errno( p_sys->client ) ) );
+         }
+     }
+-    else if( name )
++    else if( event == AVAHI_BROWSER_REMOVE && name )
+     {
+         /** \todo Store the input id and search it, rather than searching the items */
+         input_item_t *p_item;

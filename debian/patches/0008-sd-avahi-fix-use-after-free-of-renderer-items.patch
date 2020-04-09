@@ -1,0 +1,22 @@
+From: Thomas Guillem <thomas@gllm.fr>
+Date: Fri, 1 Feb 2019 15:25:53 +0100
+Subject: sd: avahi: fix use-after-free of renderer items
+
+(cherry picked from commit 7e6756602054e4c32d4d4407ada7eaf9396e7023)
+Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+---
+ modules/services_discovery/avahi.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/modules/services_discovery/avahi.c b/modules/services_discovery/avahi.c
+index 79928db..1cc719c 100644
+--- a/modules/services_discovery/avahi.c
++++ b/modules/services_discovery/avahi.c
+@@ -199,7 +199,6 @@ static void add_renderer( const char *psz_protocol, const char *psz_name,
+     vlc_dictionary_insert( &p_sys->services_name_to_input_item,
+         psz_name, p_renderer_item);
+     vlc_rd_add_item( p_rd, p_renderer_item );
+-    vlc_renderer_item_release( p_renderer_item );
+ 
+ error:
+     free( friendly_name );

@@ -1,0 +1,24 @@
+From: Pierre Lamot <pierre@videolabs.io>
+Date: Thu, 5 Sep 2019 12:19:54 +0200
+Subject: avahi: change discovered items type from file to directory
+
+Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+(cherry picked from commit a72b4e881c51522b9df603df66b82211485eee1a)
+Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+---
+ modules/services_discovery/avahi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/services_discovery/avahi.c b/modules/services_discovery/avahi.c
+index 1cc719c..080a8d6 100644
+--- a/modules/services_discovery/avahi.c
++++ b/modules/services_discovery/avahi.c
+@@ -338,7 +338,7 @@ static void resolve_callback(
+ 
+         if( psz_uri != NULL )
+         {
+-            p_input = input_item_New( psz_uri, name );
++            p_input = input_item_NewDirectory( psz_uri, name, ITEM_NET );
+             free( psz_uri );
+         }
+         if( p_input != NULL )
