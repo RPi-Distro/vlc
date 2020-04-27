@@ -1,3 +1,9 @@
+vlc (3.0.10-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 27 Apr 2020 22:10:09 +0200
+
 vlc (3.0.9.2-1) unstable; urgency=medium
 
   * New upstream release
