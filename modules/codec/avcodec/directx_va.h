@@ -4,7 +4,7 @@
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
  * Copyright (C) 2015 Steve Lhomme
- * $Id: 335cca7bd37babf57b631330f4b592f93ea40cef $
+ * $Id: 6b66979e0195651bc55afd94578b1843cb58f663 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -28,7 +28,7 @@
 #ifndef AVCODEC_DIRECTX_VA_H
 #define AVCODEC_DIRECTX_VA_H
 
-# if _WIN32_WINNT < _WIN32_WINNT_VISTA
+# if _WIN32_WINNT < 0x0600 // _WIN32_WINNT_VISTA
 /* d3d11 needs Vista support */
 #  undef _WIN32_WINNT
 #  define _WIN32_WINNT _WIN32_WINNT_VISTA
