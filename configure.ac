@@ -2,11 +2,11 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 1999-2020 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.9.2)
+AC_INIT(vlc, 3.0.10)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=9
-VERSION_EXTRA=2
+VERSION_REVISION=10
+VERSION_EXTRA=0
 VERSION_DEV=
 
 PKGDIR="vlc"
@@ -137,6 +137,10 @@ case "${host_os}" in
     SYS=dragonfly
     ;;
   darwin*)
+    dnl Workaround possible Xcode 11 bug
+    CFLAGS="${CFLAGS} -fno-stack-check"
+    CXXFLAGS="${CXXFLAGS} -fno-stack-check"
+    OBJCFLAGS="${OBJCFLAGS} -fno-stack-check"
 
     dnl Force gcc "-arch" flag
     ARCH_flag=""
@@ -218,9 +222,19 @@ case "${host_os}" in
     CXXFLAGS="${CXXFLAGS} -static-libgcc"
     AC_CHECK_TOOL(WINDRES, windres, :)
     AC_CHECK_TOOL(OBJCOPY, objcopy, :)
-    AH_TOP([#if defined(_WIN32) && !defined(_WIN32_WINNT)])
-    AH_TOP([# define _WIN32_WINNT 0x0502 /* Windows XP SP2 */])
-    AH_TOP([#endif])
+    AC_PREPROC_IFELSE([AC_LANG_PROGRAM(
+      [[#ifdef _WIN32_WINNT
+       # error _WIN32_WINNT already defined
+       #else
+       # include <windows.h>
+       # if defined(_WIN32_WINNT) && _WIN32_WINNT >= 0x0502
+       #  error _WIN32_WINNT toolchain default high enough
+       # endif
+       #endif
+      ]],[[;]])
+    ],[
+      AC_DEFINE([_WIN32_WINNT], 0x0502, [Define to '0x0502' for Windows XP SP2 APIs.])
+    ])
     AC_DEFINE([_WIN32_IE], 0x0600, [Define to '0x0600' for IE 6.0 (and shell) APIs.])
     AC_DEFINE([_UNICODE], [1], [Define to 1 for Unicode (Wide Chars) APIs.])
     AC_DEFINE([UNICODE], [1], [Define to 1 for Unicode (Wide Chars) APIs.])
@@ -659,7 +673,7 @@ AC_SEARCH_LIBS(connect, [socket], [
   ])
 ], [
   AS_IF([test "${SYS}" = "mingw32"], [
-    SOCKET_LIBS="-lws2_32"
+    SOCKET_LIBS="-lws2_32 -liphlpapi"
   ])
 ])
 
@@ -670,12 +684,14 @@ AC_SEARCH_LIBS([inet_pton], [nsl], [
 ],, [${SOCKET_LIBS}])
 
 LIBS="${LIBS} ${SOCKET_LIBS}"
+CFLAGS="${CFLAGS} -Werror-implicit-function-declaration"
 AC_LINK_IFELSE([
     AC_LANG_PROGRAM([#ifdef _WIN32
+        #include <ws2tcpip.h>
+        #include <windows.h>
         # if _WIN32_WINNT < 0x600
         #  error Needs vista+
         # endif
-        #include <ws2tcpip.h>
         #else
         #include <sys/socket.h>
         #include <arpa/inet.h>
@@ -683,8 +699,18 @@ AC_LINK_IFELSE([
         char dst[[sizeof(struct in_addr)]];
         inet_pton(AF_INET, "127.0.0.1", dst);
     ])],[AC_DEFINE([HAVE_INET_PTON],[1],[Define to 1 if you have inet_pton function])],[AC_LIBOBJ([inet_pton])])
+AC_LINK_IFELSE([
+    AC_LANG_PROGRAM([#ifdef _WIN32
+        #include <iphlpapi.h>
+        #else
+        #include <sys/types.h>
+        #include <sys/socket.h>
+        #include <net/if.h>
+        #endif], [
+        if_nametoindex("");
+    ])],[AC_DEFINE([HAVE_IF_NAMETOINDEX],[1],[Define to 1 if you have if_nametoindex function])])
 AC_CHECK_TYPES([struct if_nameindex],,,[#include <net/if.h>])
-AC_CHECK_FUNCS([if_nameindex if_nametoindex])
+AC_CHECK_FUNCS([if_nameindex])
 VLC_RESTORE_FLAGS
 AC_SUBST(SOCKET_LIBS)
 

@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2006 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
  *
- * $Id: aaee9d88f48ce4c36c60459ed7bea92686cde552 $
+ * $Id: 2c1bc722de07a3f782a0bc98d6cf37ea78bff00c $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont
@@ -41,6 +41,7 @@
 #ifdef _WIN32
 #   undef EAFNOSUPPORT
 #   define EAFNOSUPPORT WSAEAFNOSUPPORT
+#   include <iphlpapi.h>
 #else
 #   include <unistd.h>
 #   ifdef HAVE_NET_IF_H
