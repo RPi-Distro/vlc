@@ -1,9 +1,11 @@
-vlc (3.0.9.2-0+deb10u1) buster-security; urgency=medium
+vlc (3.0.10-0+deb10u1) buster-security; urgency=medium
 
   * New upstream release
   * debian/: Disable microdns plugin due to microdns security issues
+    (CVE-2020-6071, CVE-2020-6072, CVE-2020-6073, CVE-2020-6077,
+    CVE-2020-6078, CVE-2020-6079, CVE-2020-6080)
 
- -- Sebastian Ramacher <sramacher@debian.org>  Thu, 09 Apr 2020 21:48:54 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 28 Apr 2020 18:53:47 +0200
 
 vlc (3.0.8-0+deb10u1) buster-security; urgency=high
 
