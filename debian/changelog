@@ -3,8 +3,9 @@ vlc (3.0.10-0+deb10u1+rpt1) buster; urgency=medium
   * Apply MMAL patch 16
   * Disable vdpau, libva, aom
   * Enable dav1d
+  * Add libdrm-dev dependency
 
- -- Serge Schneider <serge@raspberrypi.org>  Fri, 29 Nov 2019 14:32:53 +0000
+ -- Serge Schneider <serge@raspberrypi.org>  Sun, 03 May 2020 02:02:02 +0100
 
 vlc (3.0.10-0+deb10u1) buster-security; urgency=medium
 

@@ -134,6 +134,7 @@ Build-Depends: autopoint,
                wayland-protocols [linux-any],
                zlib1g-dev,
                zsh,
+               libdrm-dev,
                libraspberrypi-dev
 Standards-Version: 4.3.0
 Homepage: https://www.videolan.org/vlc/
