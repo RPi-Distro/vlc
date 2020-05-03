@@ -4,10 +4,10 @@
  * Copyright (C) 2004-2006 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
  *
- * $Id: f8d3bc9805953000f80066604fd1a04c18da044e $
+ * $Id: 2c1bc722de07a3f782a0bc98d6cf37ea78bff00c $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
- *          Rémi Denis-Courmont <rem # videolan.org>
+ *          Rémi Denis-Courmont
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -41,6 +41,7 @@
 #ifdef _WIN32
 #   undef EAFNOSUPPORT
 #   define EAFNOSUPPORT WSAEAFNOSUPPORT
+#   include <iphlpapi.h>
 #else
 #   include <unistd.h>
 #   ifdef HAVE_NET_IF_H
@@ -92,7 +93,7 @@ extern int net_Socket( vlc_object_t *p_this, int i_family, int i_socktype,
 static int net_SetupDgramSocket (vlc_object_t *p_obj, int fd,
                                  const struct addrinfo *ptr)
 {
-#ifdef SO_REUSEPORT
+#if defined (SO_REUSEPORT) && !defined (__linux__)
     setsockopt (fd, SOL_SOCKET, SO_REUSEPORT, &(int){ 1 }, sizeof (int));
 #endif
 

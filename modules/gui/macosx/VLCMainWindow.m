@@ -2,7 +2,7 @@
  * VLCMainWindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2018 VLC authors and VideoLAN
- * $Id: d9bbb9556ebec5a70a044076ffff194ab19afdaf $
+ * $Id: 61907818054011303c037cb5218d6190e0fea9e1 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -1076,6 +1076,9 @@ static const float f_min_window_height = 307.;
     playlist_t * p_playlist = pl_Get(getIntf());
 
     NSIndexSet *selectedIndexes = [_sidebarView selectedRowIndexes];
+    if (selectedIndexes.count == 0)
+        return;
+
     id item = [_sidebarView itemAtRow:[selectedIndexes firstIndex]];
 
     //Set the label text to represent the new selection

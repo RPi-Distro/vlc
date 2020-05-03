@@ -2,7 +2,7 @@
  * vobsub.c: Demux vobsub files.
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 119233b26a5e75319a49fdf1f6fe1922adbb08f7 $
+ * $Id: 98cdf07ae504e5a0656230f8c1fd98929df8e564 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -292,6 +292,10 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 es_out_Control( p_demux->out, ES_OUT_GET_ES_STATE,
                                 p_sys->track[i].p_es, &b_selected );
                 if( b_selected ) break;
+            }
+            if (i >= p_sys->i_tracks) {
+                /* No selected ES found */
+                return VLC_EGENERIC;
             }
             if( p_sys->track[i].i_current_subtitle >= p_sys->track[i].i_subtitles )
             {

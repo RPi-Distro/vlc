@@ -44,8 +44,10 @@ AbstractPlaylist::AbstractPlaylist (vlc_object_t *p_object_) :
     minUpdatePeriod.Set( 2 * CLOCK_FREQ );
     maxSegmentDuration.Set( 0 );
     minBufferTime = 0;
+    maxBufferTime = 0;
     timeShiftBufferDepth.Set( 0 );
     suggestedPresentationDelay.Set( 0 );
+    b_needsUpdates = true;
 }
 
 AbstractPlaylist::~AbstractPlaylist()
@@ -69,9 +71,34 @@ void AbstractPlaylist::setPlaylistUrl(const std::string &url)
     playlistUrl = url;
 }
 
+void AbstractPlaylist::setAvailabilityTimeOffset(mtime_t t)
+{
+    availabilityTimeOffset = t;
+}
+
+void AbstractPlaylist::setAvailabilityTimeComplete(bool b)
+{
+    availabilityTimeComplete = b;
+}
+
+mtime_t AbstractPlaylist::getAvailabilityTimeOffset() const
+{
+    return availabilityTimeOffset.isSet() ? availabilityTimeOffset.value() : 0;
+}
+
+bool AbstractPlaylist::getAvailabilityTimeComplete() const
+{
+    return !availabilityTimeComplete.isSet() || availabilityTimeComplete.value();
+}
+
 void AbstractPlaylist::addPeriod(BasePeriod *period)
 {
     periods.push_back(period);
+}
+
+bool AbstractPlaylist::isLowLatency() const
+{
+    return false;
 }
 
 void AbstractPlaylist::setType(const std::string &type_)
@@ -84,15 +111,19 @@ void AbstractPlaylist::setMinBuffering( mtime_t min )
     minBufferTime = min;
 }
 
+void AbstractPlaylist::setMaxBuffering( mtime_t max )
+{
+    maxBufferTime = max;
+}
+
 mtime_t AbstractPlaylist::getMinBuffering() const
 {
-    return std::max(minBufferTime, 6*CLOCK_FREQ);
+    return minBufferTime;
 }
 
 mtime_t AbstractPlaylist::getMaxBuffering() const
 {
-    const mtime_t minbuf = getMinBuffering();
-    return std::max(minbuf, 60 * CLOCK_FREQ);
+    return maxBufferTime;
 }
 
 Url AbstractPlaylist::getUrlSegment() const
@@ -136,17 +167,16 @@ BasePeriod* AbstractPlaylist::getNextPeriod(BasePeriod *period)
     return NULL;
 }
 
-void AbstractPlaylist::mergeWith(AbstractPlaylist *updatedAbstractPlaylist, mtime_t prunebarrier)
+bool AbstractPlaylist::needsUpdates() const
+{
+    return b_needsUpdates;
+}
+
+void AbstractPlaylist::updateWith(AbstractPlaylist *updatedAbstractPlaylist)
 {
     availabilityEndTime.Set(updatedAbstractPlaylist->availabilityEndTime.Get());
 
     for(size_t i = 0; i < periods.size() && i < updatedAbstractPlaylist->periods.size(); i++)
-        periods.at(i)->mergeWith(updatedAbstractPlaylist->periods.at(i), prunebarrier);
-}
-
-void AbstractPlaylist::pruneByPlaybackTime(mtime_t time)
-{
-    for(size_t i = 0; i < periods.size(); i++)
-        periods.at(i)->pruneByPlaybackTime(time);
+        periods.at(i)->updateWith(updatedAbstractPlaylist->periods.at(i));
 }
 

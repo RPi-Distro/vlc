@@ -118,6 +118,13 @@ CXX := clang++
 endif
 endif
 
+# -fno-stack-check is a workaround for a possible
+# bug in Xcode 11 or macOS 10.15+
+ifdef HAVE_DARWIN_OS
+EXTRA_CFLAGS += -fno-stack-check
+XCODE_FLAGS += OTHER_CFLAGS=-fno-stack-check
+endif
+
 ifdef HAVE_MACOSX
 EXTRA_CXXFLAGS += -stdlib=libc++
 ifeq ($(ARCH),x86_64)
@@ -139,7 +146,6 @@ ifdef HAVE_NEON
 AS=perl $(abspath ../../extras/tools/build/bin/gas-preprocessor.pl) $(CC)
 CCAS=gas-preprocessor.pl $(CC) -c
 endif
-EXTRA_CFLAGS += $(CFLAGS)
 endif
 
 ifdef HAVE_WIN32
@@ -165,17 +171,9 @@ cppcheck = $(shell $(CC) $(CFLAGS) -E -dM - < /dev/null | grep -E $(1))
 
 EXTRA_CFLAGS += -I$(PREFIX)/include
 CPPFLAGS := $(CPPFLAGS) $(EXTRA_CFLAGS)
-CFLAGS := $(CFLAGS) $(EXTRA_CFLAGS) -g
-CXXFLAGS := $(CXXFLAGS) $(EXTRA_CFLAGS) $(EXTRA_CXXFLAGS) -g
+CFLAGS := $(CFLAGS) $(EXTRA_CFLAGS)
+CXXFLAGS := $(CXXFLAGS) $(EXTRA_CFLAGS) $(EXTRA_CXXFLAGS)
 LDFLAGS := $(LDFLAGS) -L$(PREFIX)/lib $(EXTRA_LDFLAGS)
-
-ifndef WITH_OPTIMIZATION
-CFLAGS := $(CFLAGS) -O0
-CXXFLAGS := $(CXXFLAGS) -O0
-else
-CFLAGS := $(CFLAGS) -O2
-CXXFLAGS := $(CXXFLAGS) -O2
-endif
 
 # Do not export those! Use HOSTVARS.
 
@@ -288,8 +286,28 @@ endif
 HOSTTOOLS := \
 	CC="$(CC)" CXX="$(CXX)" LD="$(LD)" \
 	AR="$(AR)" CCAS="$(CCAS)" RANLIB="$(RANLIB)" STRIP="$(STRIP)" \
-	PATH="$(PREFIX)/bin:$(PATH)"
-HOSTVARS := \
+	PATH="$(PREFIX)/bin:$(PATH)" \
+	PKG_CONFIG="$(PKG_CONFIG)"
+
+HOSTVARS_MESON := $(HOSTTOOLS) \
+	CPPFLAGS="$(CPPFLAGS)" \
+	CFLAGS="$(CFLAGS)" \
+	CXXFLAGS="$(CXXFLAGS)" \
+	LDFLAGS="$(LDFLAGS)"
+
+# Add these flags after Meson consumed the CFLAGS/CXXFLAGS
+# as when setting those for Meson, it would apply to tests
+# and cause the check if symbols have underscore prefix to
+# incorrectly report they have not, even if they have.
+ifndef WITH_OPTIMIZATION
+CFLAGS := $(CFLAGS) -g -O0
+CXXFLAGS := $(CXXFLAGS) -g -O0
+else
+CFLAGS := $(CFLAGS) -g -O2
+CXXFLAGS := $(CXXFLAGS) -g -O2
+endif
+
+HOSTVARS := $(HOSTTOOLS) \
 	CPPFLAGS="$(CPPFLAGS)" \
 	CFLAGS="$(CFLAGS)" \
 	CXXFLAGS="$(CXXFLAGS)" \
@@ -299,11 +317,6 @@ HOSTVARS_PIC := $(HOSTTOOLS) \
 	CFLAGS="$(CFLAGS) $(PIC)" \
 	CXXFLAGS="$(CXXFLAGS) $(PIC)" \
 	LDFLAGS="$(LDFLAGS)"
-
-# Keep a version of HOSTVARS without the tools, since meson requires the
-# tools variables to point to the native ones
-HOSTVARS_MESON := $(HOSTVARS)
-HOSTVARS := $(HOSTTOOLS) $(HOSTVARS)
 
 download_git = \
 	rm -Rf -- "$(@:.tar.xz=)" && \
@@ -359,16 +372,30 @@ RECONF = mkdir -p -- $(PREFIX)/share/aclocal && \
 CMAKE = cmake . -DCMAKE_TOOLCHAIN_FILE=$(abspath toolchain.cmake) \
 		-DCMAKE_INSTALL_PREFIX=$(PREFIX) $(CMAKE_GENERATOR)
 
-MESON = meson --default-library static --prefix "$(PREFIX)" --backend ninja \
+MESONFLAGS = --default-library static --prefix "$(PREFIX)" --backend ninja \
 	-Dlibdir=lib
 ifndef WITH_OPTIMIZATION
-MESON += --buildtype debug
+MESONFLAGS += --buildtype debug
 else
-MESON += --buildtype release
+MESONFLAGS += --buildtype release
 endif
 
 ifdef HAVE_CROSS_COMPILE
-MESON += --cross-file $(abspath crossfile.meson)
+# When cross-compiling meson uses the env vars like
+# CC, CXX, etc. and CFLAGS, CXXFLAGS, etc. for the
+# build machine compiler and not like most other
+# buildsystems for the host compilation. Therefore
+# we clear the enviornment variables using the env
+# command, except PATH, which is needed.
+# The values of the mentioned relevant env variables
+# are passed for the host compilation using the
+# generated crossfile, so everything should work as
+# expected.
+MESONFLAGS += --cross-file $(abspath crossfile.meson)
+MESON = env -i PATH="$(PREFIX)/bin:$(PATH)" PKG_CONFIG_LIBDIR="$(PKG_CONFIG_LIBDIR)" \
+	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)" meson $(MESONFLAGS)
+else
+MESON = meson $(MESONFLAGS)
 endif
 
 ifdef GPL
@@ -500,7 +527,7 @@ endif
 ifdef HAVE_DARWIN_OS
 	echo "set(CMAKE_SYSTEM_NAME Darwin)" >> $@
 	echo "set(CMAKE_C_FLAGS \"$(CFLAGS) $(EXTRA_CFLAGS)\")" >> $@
-	echo "set(CMAKE_CXX_FLAGS \"$(CFLAGS) $(EXTRA_CXXFLAGS)\")" >> $@
+	echo "set(CMAKE_CXX_FLAGS \"$(CXXFLAGS) $(EXTRA_CXXFLAGS)\")" >> $@
 	echo "set(CMAKE_LD_FLAGS \"$(LDFLAGS)\")" >> $@
 	echo "set(CMAKE_AR ar CACHE FILEPATH "Archiver")" >> $@
 ifdef HAVE_IOS
@@ -527,55 +554,36 @@ ifdef HAVE_CROSS_COMPILE
 	echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> $@
 endif
 
-crossfile.meson:
-	$(RM) $@
-	echo "[binaries]" >> $@
-	echo "c = '$(CC)'" >> $@
-	echo "cpp = '$(CXX)'" >> $@
-	echo "ar = '$(AR)'" >> $@
-	echo "strip = '$(STRIP)'" >> $@
-	echo "pkgconfig = '$(PKG_CONFIG)'" >> $@
-	echo "windres = '$(WINDRES)'" >> $@
-	echo "[properties]" >> $@
-	echo "needs_exe_wrapper = true" >> $@
-ifdef HAVE_CROSS_COMPILE
-	echo "cpp_args = [ '-I$(PREFIX)/include' ]" >> $@
-	echo "cpp_link_args = [ '-L$(PREFIX)/lib' ]" >> $@
-ifdef HAVE_DARWIN_OS
-ifdef HAVE_IOS
-ifdef HAVE_TVOS
-	echo "c_args = ['-I$(PREFIX)/include', '-isysroot', '$(IOS_SDK)', '-mtvos-version-min=10.2', '-arch', '$(PLATFORM_SHORT_ARCH)', '-fembed-bitcode']" >> $@
-	echo "c_link_args = ['-L$(PREFIX)/lib', '-isysroot', '$(IOS_SDK)', '-arch', '$(PLATFORM_SHORT_ARCH)', '-fembed-bitcode']" >> $@
-else
-	echo "c_args = ['-I$(PREFIX)/include', '-isysroot', '$(IOS_SDK)', '-miphoneos-version-min=8.4', '-arch', '$(PLATFORM_SHORT_ARCH)']" >> $@
-	echo "c_link_args = ['-L$(PREFIX)/lib', '-isysroot', '$(IOS_SDK)', '-arch', '$(PLATFORM_SHORT_ARCH)']" >> $@
-endif
-endif
-ifdef HAVE_MACOSX
-	echo "c_args = ['-I$(PREFIX)/include', '-isysroot', '$(MACOSX_SDK)', '-mmacosx-version-min=10.10', '-arch', '$(ARCH)']" >> $@
-	echo "c_link_args = ['-L$(PREFIX)/lib', '-isysroot', '$(MACOSX_SDK)', '-arch', '$(ARCH)']" >> $@
-endif
-else
-	echo "c_args = [ '-I$(PREFIX)/include' ]" >> $@
-	echo "c_link_args = [ '-L$(PREFIX)/lib' ]" >> $@
-endif
-	echo "[host_machine]" >> $@
+MESON_SYSTEM_NAME =
 ifdef HAVE_WIN32
-	echo "system = 'windows'" >> $@
+	MESON_SYSTEM_NAME = windows
 else
 ifdef HAVE_DARWIN_OS
-	echo "system = 'darwin'" >> $@
+	MESON_SYSTEM_NAME = darwin
+else
+ifdef HAVE_ANDROID
+	MESON_SYSTEM_NAME = android
 else
 ifdef HAVE_LINUX
 	# android has also system = linux and defines HAVE_LINUX
-	echo "system = 'linux'" >> $@
+	MESON_SYSTEM_NAME = linux
+else
+	$(error "No meson system name known for this target")
 endif
 endif
 endif
-	echo "cpu_family = '$(subst i386,x86,$(ARCH))'" >> $@
-	echo "cpu = '`echo $(HOST) | cut -d - -f 1`'" >> $@
-	echo "endian = 'little'" >> $@
 endif
+
+
+crossfile.meson: $(SRC)/gen-meson-crossfile.py
+	$(HOSTVARS_MESON) \
+	WINDRES="$(WINDRES)" \
+	PKG_CONFIG="$(PKG_CONFIG)" \
+	HOST_SYSTEM="$(MESON_SYSTEM_NAME)" \
+	HOST_ARCH="$(subst i386,x86,$(ARCH))" \
+	HOST="$(HOST)" \
+	$(SRC)/gen-meson-crossfile.py $@
+	cat $@
 
 # Default pattern rules
 .sum-%: $(SRC)/%/SHA512SUMS

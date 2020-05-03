@@ -2,7 +2,7 @@
  * variables.c: Generic lua<->vlc variables interface
  *****************************************************************************
  * Copyright (C) 2007-2010 the VideoLAN team
- * $Id: 76e4290f139ad905bc41217c60abb14ce5d95631 $
+ * $Id: 739d2eb707f962403f4f37348ca5e56f37cbdf15 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -160,7 +160,7 @@ static int vlclua_var_inherit( lua_State *L )
 
     lua_pop( L, 2 );
     vlclua_pushvalue( L, i_type, val );
-    if( i_type == VLC_VAR_STRING )
+    if( (i_type & VLC_VAR_CLASS) == VLC_VAR_STRING )
         free( val.psz_string );
     return 1;
 }
@@ -177,7 +177,7 @@ static int vlclua_var_get( lua_State *L )
 
     lua_pop( L, 2 );
     vlclua_pushvalue( L, i_type, val );
-    if( i_type == VLC_VAR_STRING )
+    if( (i_type & VLC_VAR_CLASS) == VLC_VAR_STRING )
         free( val.psz_string );
     return 1;
 }

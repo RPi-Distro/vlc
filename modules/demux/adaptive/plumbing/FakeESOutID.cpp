@@ -75,12 +75,26 @@ bool FakeESOutID::isCompatible( const FakeESOutID *p_other ) const
     if( p_other->fmt.i_cat != fmt.i_cat )
         return false;
 
+    if(fmt.i_original_fourcc != p_other->fmt.i_original_fourcc)
+        return false;
+    if((fmt.i_extra > 0) ^ (p_other->fmt.i_extra > 0))
+        return false;
+
     switch(fmt.i_codec)
     {
         case VLC_CODEC_H264:
         case VLC_CODEC_HEVC:
         case VLC_CODEC_VC1:
-                return true;
+        case VLC_CODEC_AV1:
+        {
+            if(fmt.i_codec == p_other->fmt.i_codec &&
+               fmt.i_extra && p_other->fmt.i_extra &&
+               fmt.i_extra == p_other->fmt.i_extra)
+            {
+               return !!memcmp(fmt.p_extra, p_other->fmt.p_extra, fmt.i_extra);
+            }
+            else return false; /* no extra, can't tell anything */
+        }
 
         default:
             if(fmt.i_cat == AUDIO_ES)
@@ -90,8 +104,7 @@ bool FakeESOutID::isCompatible( const FakeESOutID *p_other ) const
                     return false;
             }
 
-            return es_format_IsSimilar( &p_other->fmt, &fmt ) &&
-                   !p_other->fmt.i_extra && !fmt.i_extra;
+            return es_format_IsSimilar( &p_other->fmt, &fmt );
     }
 }
 

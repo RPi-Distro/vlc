@@ -2,7 +2,7 @@
  * SegmentTimeline.cpp: Implement the SegmentTimeline tag.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 92eb1f470c9fc639a55a8dbcd35ce2297fe424f2 $
+ * $Id: 7daa517ddec8e31240e0283bc2e4beb0c90cdf9d $
  *
  * Authors: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
  *
@@ -33,12 +33,14 @@ using namespace adaptive::playlist;
 SegmentTimeline::SegmentTimeline(TimescaleAble *parent)
     :TimescaleAble(parent)
 {
+    totalLength = 0;
 }
 
 SegmentTimeline::SegmentTimeline(uint64_t scale)
     :TimescaleAble(NULL)
 {
     setTimescale(scale);
+    totalLength = 0;
 }
 
 SegmentTimeline::~SegmentTimeline()
@@ -59,6 +61,7 @@ void SegmentTimeline::addElement(uint64_t number, stime_t d, uint64_t r, stime_t
             element->t = el->t + (el->d * (el->r + 1));
         }
         elements.push_back(element);
+        totalLength += (d * (r + 1));
     }
 }
 
@@ -66,21 +69,21 @@ mtime_t SegmentTimeline::getMinAheadScaledTime(uint64_t number) const
 {
     stime_t totalscaledtime = 0;
 
+    if(!elements.size() ||
+       minElementNumber() > number ||
+       maxElementNumber() < number)
+        return 0;
+
     std::list<Element *>::const_reverse_iterator it;
     for(it = elements.rbegin(); it != elements.rend(); ++it)
     {
         const Element *el = *it;
-
-        if(number < el->number)
-        {
-            totalscaledtime += (el->d * (el->r + 1));
+        if(number > el->number + el->r)
             break;
-        }
-        else if(number <= el->number + el->r)
-        {
+        else if(number < el->number + el->r)
+            totalscaledtime += (el->d * (el->r + 1));
+        else /* within repeat range */
             totalscaledtime += el->d * (el->number + el->r - number);
-        }
-        else break;
     }
 
     return totalscaledtime;
@@ -88,74 +91,65 @@ mtime_t SegmentTimeline::getMinAheadScaledTime(uint64_t number) const
 
 uint64_t SegmentTimeline::getElementNumberByScaledPlaybackTime(stime_t scaled) const
 {
-    uint64_t prevnumber = 0;
+    const Element *prevel = NULL;
     std::list<Element *>::const_iterator it;
+
+    if(!elements.size())
+        return 0;
+
     for(it = elements.begin(); it != elements.end(); ++it)
     {
         const Element *el = *it;
-        if(it == elements.begin())
+        if(scaled >= el->t)
         {
-            scaled -= el->t;
-            prevnumber = el->number;
+            if((uint64_t)scaled < el->t + (el->d * el->r))
+                return el->number + (scaled - el->t) / el->d;
         }
-
-        for(uint64_t repeat = 1 + el->r; repeat; repeat--)
-        {
-            if(el->d >= scaled)
-                return prevnumber;
-
-            scaled -= el->d;
-            prevnumber++;
-        }
-
         /* might have been discontinuity */
-        prevnumber = el->number;
+        else
+        {
+            if(prevel) /* > prev but < current */
+                return prevel->number + prevel->r;
+            else /* << first of the list */
+                return el->number;
+        }
+        prevel = el;
     }
 
-    return prevnumber;
+    /* time is >> any of the list */
+    return prevel->number + prevel->r;
 }
 
 bool SegmentTimeline::getScaledPlaybackTimeDurationBySegmentNumber(uint64_t number,
                                                                    stime_t *time, stime_t *duration) const
 {
-    stime_t totalscaledtime = 0;
-    stime_t lastduration = 0;
-
     std::list<Element *>::const_iterator it;
     for(it = elements.begin(); it != elements.end(); ++it)
     {
         const Element *el = *it;
-
-        /* set start time, or from discontinuity */
-        if(it == elements.begin() || el->t)
+        if(number >= el->number)
         {
-            totalscaledtime = el->t;
+            if(number <= el->number + el->r)
+            {
+                *time = el->t + el->d * (number - el->number);
+                *duration = el->d;
+                return true;
+            }
         }
-
-        lastduration = el->d;
-
-        if(number <= el->number)
-            break;
-
-        if(number <= el->number + el->r)
-        {
-            totalscaledtime += el->d * (number - el->number);
-            break;
-        }
-
-        totalscaledtime += (el->d * (el->r + 1));
     }
-
-    *time = totalscaledtime;
-    *duration = lastduration;
-    return true;
+    return false;
 }
 
 stime_t SegmentTimeline::getScaledPlaybackTimeByElementNumber(uint64_t number) const
 {
-    stime_t time, duration;
+    stime_t time = 0, duration = 0;
     (void) getScaledPlaybackTimeDurationBySegmentNumber(number, &time, &duration);
     return time;
+}
+
+stime_t SegmentTimeline::getTotalLength() const
+{
+    return totalLength;
 }
 
 uint64_t SegmentTimeline::maxElementNumber() const
@@ -204,6 +198,7 @@ size_t SegmentTimeline::pruneBySequenceNumber(uint64_t number)
         {
             prunednow += el->r + 1;
             elements.pop_front();
+            totalLength -= (el->d * (el->r + 1));
             delete el;
         }
     }
@@ -211,7 +206,7 @@ size_t SegmentTimeline::pruneBySequenceNumber(uint64_t number)
     return prunednow;
 }
 
-void SegmentTimeline::mergeWith(SegmentTimeline &other)
+void SegmentTimeline::updateWith(SegmentTimeline &other)
 {
     if(elements.empty())
     {
@@ -232,7 +227,9 @@ void SegmentTimeline::mergeWith(SegmentTimeline &other)
         if(last->contains(el->t)) /* Same element, but prev could have been middle of repeat */
         {
             const uint64_t count = (el->t - last->t) / last->d;
+            totalLength -= (last->d * (last->r + 1));
             last->r = std::max(last->r, el->r + count);
+            totalLength += (last->d * (last->r + 1));
             delete el;
         }
         else if(el->t < last->t)
@@ -241,27 +238,12 @@ void SegmentTimeline::mergeWith(SegmentTimeline &other)
         }
         else /* Did not exist in previous list */
         {
+            totalLength += (el->d * (el->r + 1));
             elements.push_back(el);
             el->number = last->number + last->r + 1;
             last = el;
         }
     }
-}
-
-mtime_t SegmentTimeline::start() const
-{
-    if(elements.empty())
-        return 0;
-    return inheritTimescale().ToTime(elements.front()->t);
-}
-
-mtime_t SegmentTimeline::end() const
-{
-    if(elements.empty())
-        return 0;
-    const Element *last = elements.back();
-    stime_t scaled = last->t + last->d * (last->r + 1);
-    return inheritTimescale().ToTime(scaled);
 }
 
 void SegmentTimeline::debug(vlc_object_t *obj, int indent) const

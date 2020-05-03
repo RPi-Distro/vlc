@@ -41,8 +41,10 @@ namespace adaptive
                 virtual ~AbstractPlaylist();
 
                 virtual bool                    isLive() const = 0;
+                virtual bool                    isLowLatency() const;
                 void                            setType(const std::string &);
                 void                            setMinBuffering( mtime_t );
+                void                            setMaxBuffering( mtime_t );
                 mtime_t                         getMinBuffering() const;
                 mtime_t                         getMaxBuffering() const;
                 virtual void                    debug() = 0;
@@ -50,6 +52,10 @@ namespace adaptive
                 void    addPeriod               (BasePeriod *period);
                 void    addBaseUrl              (const std::string &);
                 void    setPlaylistUrl          (const std::string &);
+                void    setAvailabilityTimeOffset(mtime_t);
+                void    setAvailabilityTimeComplete(bool);
+                mtime_t getAvailabilityTimeOffset() const;
+                bool    getAvailabilityTimeComplete() const;
 
                 virtual Url         getUrlSegment() const; /* impl */
                 vlc_object_t *      getVLCObject()  const;
@@ -58,13 +64,13 @@ namespace adaptive
                 virtual BasePeriod*                      getFirstPeriod();
                 virtual BasePeriod*                      getNextPeriod(BasePeriod *period);
 
-                void                mergeWith(AbstractPlaylist *, mtime_t = 0);
-                void                pruneByPlaybackTime(mtime_t);
+                bool                needsUpdates() const;
+                void                updateWith(AbstractPlaylist *);
 
                 Property<mtime_t>                   duration;
                 Property<time_t>                    playbackStart;
-                Property<time_t>                    availabilityEndTime;
-                Property<time_t>                    availabilityStartTime;
+                Property<mtime_t>                   availabilityEndTime;
+                Property<mtime_t>                   availabilityStartTime;
                 Property<mtime_t>                   minUpdatePeriod;
                 Property<mtime_t>                   maxSegmentDuration;
                 Property<mtime_t>                   timeShiftBufferDepth;
@@ -77,6 +83,12 @@ namespace adaptive
                 std::string                         playlistUrl;
                 std::string                         type;
                 mtime_t                             minBufferTime;
+                mtime_t                             maxBufferTime;
+                bool                                b_needsUpdates;
+
+             private:
+                Undef<bool>                         availabilityTimeComplete;
+                Undef<mtime_t>                      availabilityTimeOffset;
         };
     }
 }

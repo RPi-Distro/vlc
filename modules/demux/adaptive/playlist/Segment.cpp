@@ -51,7 +51,6 @@ ISegment::ISegment(const ICanonicalUrl *parent):
     classId = CLASSID_ISEGMENT;
     startTime.Set(0);
     duration.Set(0);
-    chunksuse.Set(0);
     sequence = SEQUENCE_INVALID;
     templated = false;
     discontinuity = false;
@@ -59,15 +58,28 @@ ISegment::ISegment(const ICanonicalUrl *parent):
 
 ISegment::~ISegment()
 {
-    assert(chunksuse.Get() == 0);
 }
 
-void ISegment::onChunkDownload(block_t **, SegmentChunk *, BaseRepresentation *)
+bool ISegment::prepareChunk(SharedResources *res, SegmentChunk *chunk, BaseRepresentation *rep)
 {
+    CommonEncryption enc = encryption;
+    enc.mergeWith(rep->intheritEncryption());
 
+    if(enc.method != CommonEncryption::Method::NONE)
+    {
+        CommonEncryptionSession *encryptionSession = new CommonEncryptionSession();
+        if(!encryptionSession->start(res, enc))
+        {
+            delete encryptionSession;
+            return false;
+        }
+        chunk->setEncryptionSession(encryptionSession);
+    }
+    return true;
 }
 
-SegmentChunk* ISegment::toChunk(size_t index, BaseRepresentation *rep, AbstractConnectionManager *connManager)
+SegmentChunk* ISegment::toChunk(SharedResources *res, AbstractConnectionManager *connManager,
+                                size_t index, BaseRepresentation *rep)
 {
     const std::string url = getUrlSegment().toString(index, rep);
     HTTPChunkBufferedSource *source = new (std::nothrow) HTTPChunkBufferedSource(url, connManager,
@@ -77,9 +89,15 @@ SegmentChunk* ISegment::toChunk(size_t index, BaseRepresentation *rep, AbstractC
         if(startByte != endByte)
             source->setBytesRange(BytesRange(startByte, endByte));
 
-        SegmentChunk *chunk = new (std::nothrow) SegmentChunk(this, source, rep);
-        if( chunk )
+        SegmentChunk *chunk = createChunk(source, rep);
+        if(chunk)
         {
+            chunk->discontinuity = discontinuity;
+            if(!prepareChunk(res, chunk, rep))
+            {
+                delete chunk;
+                return NULL;
+            }
             connManager->start(source);
             return chunk;
         }
@@ -162,6 +180,11 @@ int ISegment::compare(ISegment *other) const
     return 0;
 }
 
+void ISegment::setEncryption(CommonEncryption &e)
+{
+    encryption = e;
+}
+
 int ISegment::getClassId() const
 {
     return classId;
@@ -172,6 +195,12 @@ Segment::Segment(ICanonicalUrl *parent) :
 {
     size = -1;
     classId = CLASSID_SEGMENT;
+}
+
+SegmentChunk* Segment::createChunk(AbstractChunkSource *source, BaseRepresentation *rep)
+{
+     /* act as factory */
+    return new (std::nothrow) SegmentChunk(source, rep);
 }
 
 void Segment::addSubSegment(SubSegment *subsegment)
@@ -267,6 +296,12 @@ SubSegment::SubSegment(ISegment *main, size_t start, size_t end) :
     setByteRange(start, end);
     debugName = "SubSegment";
     classId = CLASSID_SUBSEGMENT;
+}
+
+SegmentChunk* SubSegment::createChunk(AbstractChunkSource *source, BaseRepresentation *rep)
+{
+     /* act as factory */
+    return new (std::nothrow) SegmentChunk(source, rep);
 }
 
 Url SubSegment::getUrlSegment() const

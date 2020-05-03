@@ -40,6 +40,7 @@ using namespace adaptive::http;
 AbstractChunkSource::AbstractChunkSource()
 {
     contentLength = 0;
+    requeststatus = RequestStatus::Success;
 }
 
 AbstractChunkSource::~AbstractChunkSource()
@@ -64,6 +65,11 @@ std::string AbstractChunkSource::getContentType() const
     return std::string();
 }
 
+enum RequestStatus AbstractChunkSource::getRequestStatus() const
+{
+    return requeststatus;
+}
+
 AbstractChunk::AbstractChunk(AbstractChunkSource *source_)
 {
     bytesRead = 0;
@@ -78,6 +84,11 @@ AbstractChunk::~AbstractChunk()
 std::string AbstractChunk::getContentType()
 {
     return source->getContentType();
+}
+
+enum RequestStatus AbstractChunk::getRequestStatus() const
+{
+    return source->getRequestStatus();
 }
 
 size_t AbstractChunk::getBytesRead() const
@@ -250,10 +261,10 @@ bool HTTPChunkSource::prepare()
                 break;
         }
 
-        int i_ret = connection->request(connparams.getPath(), bytesRange);
-        if(i_ret != VLC_SUCCESS)
+        requeststatus = connection->request(connparams.getPath(), bytesRange);
+        if(requeststatus != RequestStatus::Success)
         {
-            if(i_ret == VLC_ETIMEOUT) /* redirection */
+            if(requeststatus == RequestStatus::Redirection)
             {
                 HTTPConnection *httpconn = dynamic_cast<HTTPConnection *>(connection);
                 if(httpconn)

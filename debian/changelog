@@ -1,45 +1,19 @@
-vlc (3.0.8-0+deb10u1+rpt7) buster; urgency=medium
+vlc (3.0.10-0+deb10u1+rpt1) buster; urgency=medium
 
   * Apply MMAL patch 16
-
- -- Serge Schneider <serge@raspberrypi.org>  Fri, 29 Nov 2019 14:32:53 +0000
-
-vlc (3.0.8-0+deb10u1+rpt6) buster; urgency=medium
-
-  * Apply MMAL patch 15
-
- -- Serge Schneider <serge@raspberrypi.org>  Fri, 29 Nov 2019 10:13:57 +0000
-
-vlc (3.0.8-0+deb10u1+rpt5) buster; urgency=medium
-
   * Disable vdpau, libva, aom
   * Enable dav1d
 
- -- Serge Schneider <serge@raspberrypi.org>  Tue, 26 Nov 2019 13:19:24 +0000
+ -- Serge Schneider <serge@raspberrypi.org>  Fri, 29 Nov 2019 14:32:53 +0000
 
-vlc (3.0.8-0+deb10u1+rpt4) buster; urgency=medium
+vlc (3.0.10-0+deb10u1) buster-security; urgency=medium
 
-  * Apply MMAL patch 14
+  * New upstream release
+  * debian/: Disable microdns plugin due to microdns security issues
+    (CVE-2020-6071, CVE-2020-6072, CVE-2020-6073, CVE-2020-6077,
+    CVE-2020-6078, CVE-2020-6079, CVE-2020-6080)
 
- -- Serge Schneider <serge@raspberrypi.org>  Wed, 20 Nov 2019 18:49:16 +0000
-
-vlc (3.0.8-0+deb10u1+rpt3) buster; urgency=medium
-
-  * Apply MMAL patch 13
-
- -- Serge Schneider <serge@raspberrypi.org>  Thu, 14 Nov 2019 15:20:50 +0000
-
-vlc (3.0.8-0+deb10u1+rpt2) buster; urgency=medium
-
-  * Apply MMAL patch 12
-
- -- Serge Schneider <serge@raspberrypi.org>  Mon, 21 Oct 2019 13:28:13 +0100
-
-vlc (3.0.8-0+deb10u1+rpt1) buster; urgency=medium
-
-  * Apply MMAL patch 10
-
- -- Serge Schneider <serge@raspberrypi.org>  Wed, 21 Aug 2019 15:42:50 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 28 Apr 2020 18:53:47 +0200
 
 vlc (3.0.8-0+deb10u1) buster-security; urgency=high
 

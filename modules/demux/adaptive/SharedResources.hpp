@@ -1,7 +1,7 @@
 /*
- * ChunksSource.hpp
+ * SharedResources.h
  *****************************************************************************
- * Copyright © 2015 - VideoLAN and VLC Authors
+ * Copyright © 2019 VideoLabs, VideoLAN and VLC Authors
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published
@@ -17,21 +17,41 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#ifndef CHUNKSSOURCE_HPP
-#define CHUNKSSOURCE_HPP
+#ifndef SHAREDRESOURCES_H_
+#define SHAREDRESOURCES_H_
 
 #include <vlc_common.h>
 
 namespace adaptive
 {
-    class ChunksSource
+    namespace http
+    {
+        class AuthStorage;
+        class AbstractConnectionManager;
+    }
+
+    namespace encryption
+    {
+        class Keyring;
+    }
+
+    using namespace http;
+    using namespace encryption;
+
+    class SharedResources
     {
         public:
-            virtual ~ChunksSource() {}
-            virtual block_t *readNextBlock() = 0;
-            virtual std::string getContentType() = 0;
+            SharedResources(vlc_object_t *, bool = false);
+            ~SharedResources();
+            AuthStorage *getAuthStorage();
+            Keyring     *getKeyring();
+            AbstractConnectionManager *getConnManager();
+
+        private:
+            AuthStorage *authStorage;
+            Keyring *encryptionKeyring;
+            AbstractConnectionManager *connManager;
     };
 }
 
-#endif // CHUNKSSOURCE_HPP
-
+#endif

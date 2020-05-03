@@ -23,16 +23,15 @@
 
 #include "Representation.hpp"
 #include "Manifest.hpp"
-#include "../adaptive/playlist/SegmentTemplate.h"
-#include "../adaptive/playlist/SegmentTimeline.h"
-#include "../adaptive/playlist/BaseAdaptationSet.h"
+#include "../../adaptive/playlist/SegmentTemplate.h"
+#include "../../adaptive/playlist/SegmentTimeline.h"
+#include "../../adaptive/playlist/BaseAdaptationSet.h"
 
 using namespace smooth::playlist;
 
 Representation::Representation  ( BaseAdaptationSet *set ) :
                 BaseRepresentation( set )
 {
-    switchpolicy = SegmentInformation::SWITCH_SEGMENT_ALIGNED;
 }
 
 Representation::~Representation ()
@@ -44,11 +43,24 @@ StreamFormat Representation::getStreamFormat() const
     return StreamFormat(StreamFormat::MP4);
 }
 
+std::size_t Representation::getSegments(SegmentInfoType type, std::vector<ISegment *> &retSegments) const
+{
+    if(type == INFOTYPE_INIT && initialisationSegment.Get())
+    {
+        retSegments.push_back(initialisationSegment.Get());
+        return retSegments.size();
+    }
+    return BaseRepresentation::getSegments(type, retSegments);
+}
+
 std::string Representation::contextualize(size_t number, const std::string &component,
                                           const BaseSegmentTemplate *basetempl) const
 {
     std::string ret(component);
     size_t pos;
+
+    if(!basetempl)
+        return ret;
 
     const MediaSegmentTemplate *templ = dynamic_cast<const MediaSegmentTemplate *>(basetempl);
 
@@ -61,8 +73,12 @@ std::string Representation::contextualize(size_t number, const std::string &comp
         {
             std::stringstream ss;
             ss.imbue(std::locale("C"));
-            ss << templ->segmentTimeline.Get()->getScaledPlaybackTimeByElementNumber(number);
-            ret.replace(pos, std::string("{start_time}").length(), ss.str());
+            const SegmentTimeline *tl = templ->inheritSegmentTimeline();
+            if(tl)
+            {
+                ss << tl->getScaledPlaybackTimeByElementNumber(number);
+                ret.replace(pos, std::string("{start_time}").length(), ss.str());
+            }
         }
     }
 

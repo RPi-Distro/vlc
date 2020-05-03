@@ -169,6 +169,7 @@ lib/vlm.c
 # modules
 modules/access/alsa.c
 modules/access/attachment.c
+modules/access/avaudiocapture.m
 modules/access/avcapture.m
 modules/access/avio.h
 modules/access/bluray.c
@@ -202,7 +203,6 @@ modules/access/mtp.c
 modules/access/nfs.c
 modules/access/oss.c
 modules/access/pulse.c
-modules/access/qtsound.m
 modules/access/rdp.c
 modules/access/rtp/rtp.c
 modules/access/rtsp/access.c
@@ -1221,7 +1221,7 @@ share/lua/http/mobile_view.html
 
 
 # qt .ui files
-# uncomment (and prepend $builddir} if you want to generate a proper vlc.pot 
+# uncomment (and prepend $builddir} if you want to generate a proper vlc.pot
 
 modules/gui/qt/ui/about.h
 modules/gui/qt/ui/equalizer.h

@@ -1,11 +1,11 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 1999-2019 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 1999-2020 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.8)
+AC_INIT(vlc, 3.0.10)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=8
+VERSION_REVISION=10
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -14,7 +14,7 @@ AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Vetinari"
-COPYRIGHT_YEARS="1996-2019"
+COPYRIGHT_YEARS="1996-2020"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -137,6 +137,10 @@ case "${host_os}" in
     SYS=dragonfly
     ;;
   darwin*)
+    dnl Workaround possible Xcode 11 bug
+    CFLAGS="${CFLAGS} -fno-stack-check"
+    CXXFLAGS="${CXXFLAGS} -fno-stack-check"
+    OBJCFLAGS="${OBJCFLAGS} -fno-stack-check"
 
     dnl Force gcc "-arch" flag
     ARCH_flag=""
@@ -218,9 +222,19 @@ case "${host_os}" in
     CXXFLAGS="${CXXFLAGS} -static-libgcc"
     AC_CHECK_TOOL(WINDRES, windres, :)
     AC_CHECK_TOOL(OBJCOPY, objcopy, :)
-    AH_TOP([#if defined(_WIN32) && !defined(_WIN32_WINNT)])
-    AH_TOP([# define _WIN32_WINNT 0x0502 /* Windows XP SP2 */])
-    AH_TOP([#endif])
+    AC_PREPROC_IFELSE([AC_LANG_PROGRAM(
+      [[#ifdef _WIN32_WINNT
+       # error _WIN32_WINNT already defined
+       #else
+       # include <windows.h>
+       # if defined(_WIN32_WINNT) && _WIN32_WINNT >= 0x0502
+       #  error _WIN32_WINNT toolchain default high enough
+       # endif
+       #endif
+      ]],[[;]])
+    ],[
+      AC_DEFINE([_WIN32_WINNT], 0x0502, [Define to '0x0502' for Windows XP SP2 APIs.])
+    ])
     AC_DEFINE([_WIN32_IE], 0x0600, [Define to '0x0600' for IE 6.0 (and shell) APIs.])
     AC_DEFINE([_UNICODE], [1], [Define to 1 for Unicode (Wide Chars) APIs.])
     AC_DEFINE([UNICODE], [1], [Define to 1 for Unicode (Wide Chars) APIs.])
@@ -591,7 +605,7 @@ dnl Check for system libs needed
 need_libc=false
 
 dnl Check for usual libc functions
-AC_CHECK_FUNCS([accept4 daemon fcntl flock fstatvfs fork getenv getpwuid_r isatty lstat memalign mkostemp mmap newlocale open_memstream openat pipe2 pread posix_fadvise posix_madvise posix_memalign setlocale stricmp strnicmp strptime uselocale])
+AC_CHECK_FUNCS([accept4 daemon fcntl flock fstatvfs fork getenv getmntent_r getpwuid_r isatty lstat memalign mkostemp mmap newlocale open_memstream openat pipe2 pread posix_fadvise posix_madvise posix_memalign setlocale stricmp strnicmp strptime uselocale])
 AC_REPLACE_FUNCS([aligned_alloc atof atoll dirfd fdopendir ffsll flockfile fsync getdelim getpid lfind lldiv memrchr nrand48 poll recvmsg rewind sendmsg setenv strcasecmp strcasestr strdup strlcpy strndup strnlen strnstr strsep strtof strtok_r strtoll swab tdestroy tfind timegm timespec_get strverscmp pathconf])
 AC_REPLACE_FUNCS([gettimeofday])
 AC_CHECK_FUNC(fdatasync,,
@@ -659,7 +673,7 @@ AC_SEARCH_LIBS(connect, [socket], [
   ])
 ], [
   AS_IF([test "${SYS}" = "mingw32"], [
-    SOCKET_LIBS="-lws2_32"
+    SOCKET_LIBS="-lws2_32 -liphlpapi"
   ])
 ])
 
@@ -670,12 +684,14 @@ AC_SEARCH_LIBS([inet_pton], [nsl], [
 ],, [${SOCKET_LIBS}])
 
 LIBS="${LIBS} ${SOCKET_LIBS}"
+CFLAGS="${CFLAGS} -Werror-implicit-function-declaration"
 AC_LINK_IFELSE([
     AC_LANG_PROGRAM([#ifdef _WIN32
+        #include <ws2tcpip.h>
+        #include <windows.h>
         # if _WIN32_WINNT < 0x600
         #  error Needs vista+
         # endif
-        #include <ws2tcpip.h>
         #else
         #include <sys/socket.h>
         #include <arpa/inet.h>
@@ -683,8 +699,18 @@ AC_LINK_IFELSE([
         char dst[[sizeof(struct in_addr)]];
         inet_pton(AF_INET, "127.0.0.1", dst);
     ])],[AC_DEFINE([HAVE_INET_PTON],[1],[Define to 1 if you have inet_pton function])],[AC_LIBOBJ([inet_pton])])
+AC_LINK_IFELSE([
+    AC_LANG_PROGRAM([#ifdef _WIN32
+        #include <iphlpapi.h>
+        #else
+        #include <sys/types.h>
+        #include <sys/socket.h>
+        #include <net/if.h>
+        #endif], [
+        if_nametoindex("");
+    ])],[AC_DEFINE([HAVE_IF_NAMETOINDEX],[1],[Define to 1 if you have if_nametoindex function])])
 AC_CHECK_TYPES([struct if_nameindex],,,[#include <net/if.h>])
-AC_CHECK_FUNCS([if_nameindex if_nametoindex])
+AC_CHECK_FUNCS([if_nameindex])
 VLC_RESTORE_FLAGS
 AC_SUBST(SOCKET_LIBS)
 
@@ -849,7 +875,7 @@ dnl  BSD
 AC_CHECK_HEADERS([netinet/tcp.h netinet/udplite.h sys/param.h sys/mount.h])
 
 dnl  GNU/Linux
-AC_CHECK_HEADERS([features.h getopt.h linux/dccp.h linux/magic.h mntent.h sys/eventfd.h])
+AC_CHECK_HEADERS([features.h getopt.h linux/dccp.h linux/magic.h sys/eventfd.h])
 
 dnl  MacOS
 AC_CHECK_HEADERS([xlocale.h])
@@ -1854,7 +1880,14 @@ AS_IF([test "${SYS}" = "mingw32" -a "${enable_winstore_app}" != "yes"], [ VLC_AD
 dnl
 dnl  liBDSM access module
 dnl
-PKG_ENABLE_MODULES_VLC([DSM], [dsm], [libdsm >= 0.2.0], [libdsm SMB/CIFS access/sd module], [auto])
+AM_CONDITIONAL(HAVE_DSM, [test "$AS_TR_SH(with_dsm)" = "yes"])
+PKG_WITH_MODULES([DSM], [libdsm >= 0.2.0], [
+       VLC_ADD_PLUGIN([dsm])
+       VLC_ADD_CFLAGS([dsm], [$DSM_CFLAGS])
+       VLC_ADD_LIBS([dsm], [$DSM_LIBS])
+       have_dsm="yes"
+   ],,[libdsm SMB/CIFS access/sd module], [auto])
+AM_CONDITIONAL([HAVE_DSM], [test "${have_dsm}" = "yes"])
 
 dnl
 dnl sftp access support
@@ -1865,6 +1898,12 @@ dnl
 dnl nfs access support
 dnl
 PKG_ENABLE_MODULES_VLC([NFS], [nfs], [libnfs >= 1.10.0], (support nfs protocol via libnfs), [auto])
+
+dnl
+dnl smb2 access support
+dnl Disabled by default, since it was added after the initial VLC 3.0 release
+dnl
+PKG_ENABLE_MODULES_VLC([SMB2], [smb2], [libsmb2 >= 3.0.0], (support smb2 protocol via libsmb2), [disabled])
 
 dnl
 dnl  Video4Linux 2
@@ -2017,21 +2056,6 @@ if test "${enable_realrtsp}" = "yes"; then
   VLC_ADD_PLUGIN([access_realrtsp])
 fi
 
-dnl
-dnl QTKit
-AC_ARG_ENABLE(macosx-qtkit,
-  [  --enable-macosx-qtkit Mac OS X qtsound (audio) module (default enabled on Mac OS X <= v10.11)])
-if test "x${enable_macosx_qtkit}" != "xno" &&
-  (test "${SYS}" = "darwin" || test "${enable_macosx_qtkit}" = "yes")
-then
-  AC_LANG_PUSH([Objective C])
-  AC_CHECK_HEADERS(QTKit/QTKit.h, [
-      VLC_ADD_PLUGIN([access_qtsound])
-    ])
-  AC_LANG_POP([Objective C])
-fi
-
-dnl
 dnl AVFoundation
 AC_SUBST(have_avfoundation, ["no"])
 AC_ARG_ENABLE(macosx-avfoundation,
@@ -2997,7 +3021,7 @@ AS_IF([test "${enable_tiger}" != "no"], [
 ])
 
 dnl
-dnl  check if we can build the css selector engine 
+dnl  check if we can build the css selector engine
 dnl
 AC_ARG_ENABLE(css,
 [  --enable-css            CSS selector engine (default auto)])
@@ -4021,7 +4045,7 @@ PKG_ENABLE_MODULES_VLC([UPNP], [upnp], [libupnp], [Intel UPNP SDK],[auto])
 dnl
 dnl mDNS using libmicrodns
 dnl
-PKG_ENABLE_MODULES_VLC([MICRODNS], [], [microdns], [mDNS services discovery], [auto])
+PKG_ENABLE_MODULES_VLC([MICRODNS], [], [microdns >= 0.1.2], [mDNS services discovery], [auto])
 
 
 EXTEND_HELP_STRING([Misc options:])
@@ -4206,7 +4230,7 @@ AC_SUBST(soliddatadir)
 AM_CONDITIONAL(KDE_SOLID, [test "x${soliddatadir}" != "x"])
 
 dnl
-dnl Check wether we have the PROCESS_MITIGATION_IMAGE_LOAD_POLICY 
+dnl Check wether we have the PROCESS_MITIGATION_IMAGE_LOAD_POLICY
 dnl It should only be available when building for win10, but some SDKs define it unconditionnaly
 dnl
 if test "${SYS}" = "mingw32"; then

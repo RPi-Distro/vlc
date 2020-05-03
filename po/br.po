@@ -1,19 +1,19 @@
 # Breton translation
-# Copyright (C) 2019 VideoLAN
+# Copyright (C) 2020 VideoLAN
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
 # Denis ARNAUD <denisarnuad@hotmail.com>, 2012,2015
 # ernest olory <ernestolory@hotmail.fr>, 2016
 # Gwenn M <tornoz@laposte.net>, 2016-2019
-# Irriep Nala Novram <allannkorh@yahoo.fr>, 2016-2019
+# Irriep Nala Novram <allannkorh@yahoo.fr>, 2016-2020
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.7\n"
+"Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2019-08-19 08:54+0200\n"
-"PO-Revision-Date: 2019-03-10 12:00+0100\n"
-"Last-Translator: Gwenn M <tornoz@laposte.net>, 2019\n"
+"POT-Creation-Date: 2020-04-23 11:48+0200\n"
+"PO-Revision-Date: 2020-03-13 09:47+0100\n"
+"Last-Translator: Irriep Nala Novram <allannkorh@yahoo.fr>, 2020\n"
 "Language-Team: Breton (https://www.transifex.com/yaron/teams/16553/br/)\n"
 "Language: br\n"
 "MIME-Version: 1.0\n"
@@ -32,12 +32,12 @@ msgid ""
 "see the file named COPYING for details.\n"
 "Written by the VideoLAN team; see the AUTHORS file.\n"
 msgstr ""
-"Dont a ra ar programm-mañ gant GWARANT EBET, en astennad aotreet dre "
+"Ne zeu ar programm-mañ gant tamm GWARANT EBET, en astennad aotreet gant al "
 "lezenn.\n"
-"Marteze e c’hallot disrannañ se en-dro dindan termenoù Aotre Publik Dre vras "
-"ar GNU;\n"
-"gwelet ar restr anvet OC’H EILAÑ EMAÑ evit munudoù.\n"
-"Skrivet gant skipailh VideoLAN; gwelet restr an OBEROURIEN.\n"
+"Gellout a rafec'h e zisrannañ marteze en-dro dindan Lisañs Publik Hollek ar "
+"GNU;\n"
+"gwelet ar restr anvet EILAÑ evit munudoù.\n"
+"Skrivet gant skipailh VideoLAN; gwelet restr an AOZERIEN.\n"
 "\n"
 
 #: include/vlc_config_cat.h:33
@@ -49,8 +49,8 @@ msgid "Select \"Advanced Options\" to see all options."
 msgstr "Diuzañ \"Dibarzhioù kempleshoc'h\" evit gwel an dibarzhioù all."
 
 #: include/vlc_config_cat.h:38
-#: modules/gui/macosx/VLCSimplePrefsController.m:232
-#: modules/gui/qt/components/simple_preferences.cpp:238
+#: modules/gui/macosx/VLCSimplePrefsController.m:233
+#: modules/gui/qt/components/simple_preferences.cpp:239
 #: modules/gui/qt/menus.cpp:1093
 msgid "Interface"
 msgstr "Etrefas"
@@ -80,7 +80,7 @@ msgid "Settings for VLC's control interfaces"
 msgstr "Arventennoù evit kontroloù etrefas VLC"
 
 #: include/vlc_config_cat.h:49 include/vlc_config_cat.h:50
-#: modules/gui/macosx/VLCSimplePrefsController.m:242
+#: modules/gui/macosx/VLCSimplePrefsController.m:243
 msgid "Hotkeys settings"
 msgstr "Arventennoù ar berradennoù"
 
@@ -88,10 +88,10 @@ msgstr "Arventennoù ar berradennoù"
 #: modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:414 modules/gui/macosx/VLCOutput.m:92
-#: modules/gui/macosx/VLCPlaylistInfo.m:95
-#: modules/gui/macosx/VLCSimplePrefsController.m:234
+#: modules/gui/macosx/VLCPlaylistInfo.m:91
+#: modules/gui/macosx/VLCSimplePrefsController.m:235
 #: modules/gui/qt/components/info_panels.cpp:572
-#: modules/gui/qt/components/simple_preferences.cpp:240
+#: modules/gui/qt/components/simple_preferences.cpp:241
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
@@ -152,11 +152,11 @@ msgstr "Arventennoù aodio liesseurt ha moduloù."
 #: src/libvlc-module.c:1551 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:427 modules/gui/macosx/VLCOutput.m:82
-#: modules/gui/macosx/VLCPlaylistInfo.m:90
-#: modules/gui/macosx/VLCSimplePrefsController.m:236
-#: modules/gui/macosx/VLCSimplePrefsController.m:379
+#: modules/gui/macosx/VLCPlaylistInfo.m:86
+#: modules/gui/macosx/VLCSimplePrefsController.m:237
+#: modules/gui/macosx/VLCSimplePrefsController.m:380
 #: modules/gui/qt/components/info_panels.cpp:573
-#: modules/gui/qt/components/simple_preferences.cpp:242
+#: modules/gui/qt/components/simple_preferences.cpp:243
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
@@ -477,7 +477,7 @@ msgstr "&Diwar-benn"
 #: include/vlc_intf_strings.h:65 modules/control/oldrc.c:71
 #: modules/gui/macosx/VLCControlsBarCommon.m:81
 #: modules/gui/macosx/VLCControlsBarCommon.m:432
-#: modules/gui/macosx/VLCFSPanelController.m:232
+#: modules/gui/macosx/VLCFSPanelController.m:233
 #: modules/gui/macosx/VLCMainMenu.m:385 modules/gui/macosx/VLCMainMenu.m:497
 #: modules/gui/macosx/VLCMainMenu.m:504 modules/gui/macosx/VLCMainMenu.m:1339
 #: modules/gui/macosx/VLCMainMenu.m:1340 modules/gui/macosx/VLCMainMenu.m:1341
@@ -628,13 +628,13 @@ msgstr ""
 "\"http://www.videolan.org/support/faq.html\">FAG</a> mar plij.</p><p>Gellout "
 "a refet kaout (ha reiñ give) sikour war ar <a href=\"http://forum.videolan."
 "org\">Foromoù</a>, al<a href=\"http://www.videolan.org/vlc/lists.html"
-"\">rolloù-posteloù</a> pe hor chadenn irc (<em>#videolan</em> war irc."
-"freenode.net).</p><h3>Kemerit-perzh e-barzh ar raktres</h3><p>Gellout a rit "
-"reiñ an dorn d'ar raktres VideoLAN en ur reiñ amzer evit reiñ sikour d'ar "
-"gumuniezh, evit tresañ temoù, en ur reiñ an dorn evit treiñ an teuliadur "
-"skoazell, evit testiñ ha kodiñ. Gellout a rit reiñ roadennoù-arc'hant deomp "
-"pe madoù evit reiñ an dorn deomp. Hag evel-just e c'hallit <b>arwerzhiñ</b> "
-"VLC media player.</p></body></html>"
+"\">listennadoù-postel skignañ</a> pe hor chadenn irc (<em>#videolan</em> war "
+"irc.freenode.net).</p><h3>Kemerit-perzh e-barzh ar raktres</h3><p>Gellout a "
+"rit reiñ an dorn d'ar raktres VideoLAN en ur reiñ amzer evit reiñ sikour "
+"d'ar gumuniezh, evit tresañ temoù, en ur reiñ an dorn evit treiñ an "
+"teuliadur skoazell, evit testiñ ha kodiñ. Gellout a rit reiñ roadennoù-"
+"arc'hant deomp pe madoù evit reiñ an dorn deomp. Hag evel-just e c'hallit "
+"<b>arwerzhiñ</b> VLC media player.</p></body></html>"
 
 #: src/audio_output/filters.c:267
 msgid "Audio filtering failed"
@@ -646,8 +646,9 @@ msgid "The maximum number of filters (%u) was reached."
 msgstr "Tizhet eo bet niver siloù (%u) ar brasañ."
 
 #: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:948
-#: src/libvlc-module.c:540 modules/gui/macosx/VLCMainMenu.m:243
-#: modules/gui/macosx/VLCMainWindow.m:1039 modules/video_filter/postproc.c:235
+#: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:124
+#: modules/gui/macosx/VLCMainMenu.m:243 modules/gui/macosx/VLCMainWindow.m:1039
+#: modules/video_filter/postproc.c:235
 msgid "Disable"
 msgstr "Diweredekaat"
 
@@ -746,7 +747,7 @@ msgstr "Tokarnioù"
 #: modules/access/dtv/access.c:125 modules/access/dtv/access.c:134
 #: modules/access/dtv/access.c:142 modules/access/dtv/access.c:164
 #: modules/access/v4l2/v4l2.c:137 modules/gui/qt/components/open_panels.cpp:976
-#: modules/gui/qt/components/simple_preferences.cpp:385
+#: modules/gui/qt/components/simple_preferences.cpp:386
 msgid "Automatic"
 msgstr "Emgefre"
 
@@ -1025,7 +1026,7 @@ msgstr "Bonez"
 
 #: src/input/es_out.c:3111 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:114
-#: modules/gui/macosx/VLCSimplePrefsController.m:316
+#: modules/gui/macosx/VLCSimplePrefsController.m:317
 #: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:527
 msgid "Language"
 msgstr "Yezh"
@@ -1051,7 +1052,7 @@ msgid "Channels"
 msgstr "Sanneloù"
 
 #: src/input/es_out.c:3128 modules/access/alsa.c:39 modules/access/imem.c:75
-#: modules/audio_output/amem.c:45 modules/codec/fluidsynth.c:64
+#: modules/audio_output/amem.c:47 modules/codec/fluidsynth.c:64
 msgid "Sample rate"
 msgstr "Feur standilhon"
 
@@ -1292,11 +1293,11 @@ msgstr "Istitl"
 msgid "Volume %ld%%"
 msgstr "Live-son %ld%%"
 
-#: src/input/input.c:2719
+#: src/input/input.c:2725
 msgid "Your input can't be opened"
 msgstr "N'haller ket digeriñ hoc'h ec'hankad"
 
-#: src/input/input.c:2720
+#: src/input/input.c:2726
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
@@ -1307,7 +1308,7 @@ msgstr ""
 #: modules/gui/macosx/VLCMainMenu.m:410
 #: modules/gui/macosx/VLCOpenWindowController.m:178
 #: modules/gui/macosx/VLCOpenWindowController.m:180
-#: modules/gui/macosx/VLCPlaylist.m:107 modules/gui/macosx/VLCPlaylistInfo.m:63
+#: modules/gui/macosx/VLCPlaylist.m:107 modules/gui/macosx/VLCPlaylistInfo.m:59
 #: modules/gui/qt/components/open_panels.cpp:507
 #: modules/gui/qt/components/open_panels.cpp:521
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
@@ -1315,7 +1316,7 @@ msgstr ""
 msgid "Title"
 msgstr "Titl"
 
-#: src/input/meta.c:56 modules/gui/macosx/VLCPlaylistInfo.m:64
+#: src/input/meta.c:56 modules/gui/macosx/VLCPlaylistInfo.m:60
 #: modules/mux/avi.c:49
 msgid "Artist"
 msgstr "Arzour"
@@ -1472,7 +1473,7 @@ msgstr "Chabistr da-heul"
 msgid "Previous chapter"
 msgstr "Chabistr kent"
 
-#: src/input/vlm.c:623 src/input/vlm.c:999
+#: src/input/vlm.c:641 src/input/vlm.c:1018
 #, c-format
 msgid "Media: %s"
 msgstr "Media : %s"
@@ -1655,7 +1656,7 @@ msgstr ""
 msgid "Media (player) role for operating system policy."
 msgstr ""
 
-#: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:272
+#: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:273
 #: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:407
 msgid "Enable audio"
 msgstr "Enaouiñ an aodio"
@@ -1769,8 +1770,8 @@ msgstr ""
 
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:942
 #: modules/audio_output/kai.c:106 modules/codec/subsdec.c:167
-#: modules/codec/x264.c:434 modules/demux/mpeg/ts.c:128
-#: modules/gui/macosx/VLCSimplePrefsController.m:54
+#: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:122
+#: modules/demux/mpeg/ts.c:128 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:68
 #: modules/gui/qt/components/sout/profile_selector.cpp:590
 #: modules/services_discovery/upnp.cpp:78
@@ -1890,7 +1891,7 @@ msgid ""
 "automatically select the best method available."
 msgstr ""
 
-#: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:358
+#: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:359
 #: modules/stream_out/display.c:42 modules/gui/qt/ui/sprefs_video.h:311
 msgid "Enable video"
 msgstr "Enaouiñ ar video"
@@ -2114,7 +2115,7 @@ msgstr ""
 #: src/libvlc-module.c:342 src/libvlc-module.c:344
 #: src/video_output/interlacing.c:112 modules/gui/macosx/VLCMainMenu.m:443
 #: modules/gui/macosx/VLCMainMenu.m:444
-#: modules/gui/macosx/VLCSimplePrefsController.m:377
+#: modules/gui/macosx/VLCSimplePrefsController.m:378
 #: modules/gui/qt/dialogs/convert.cpp:123 modules/hw/vdpau/chroma.c:896
 #: modules/video_filter/deinterlace/deinterlace.c:300
 #: share/lua/http/dialogs/create_stream.html:346
@@ -2123,7 +2124,7 @@ msgstr "Digenweañ"
 
 #: src/libvlc-module.c:352 src/video_output/interlacing.c:128
 #: modules/gui/macosx/VLCMainMenu.m:445 modules/gui/macosx/VLCMainMenu.m:446
-#: modules/gui/macosx/VLCSimplePrefsController.m:378
+#: modules/gui/macosx/VLCSimplePrefsController.m:379
 #: modules/video_filter/deinterlace/deinterlace.c:256
 msgid "Deinterlace mode"
 msgstr "Mod digenweañ"
@@ -2166,7 +2167,7 @@ msgstr "Diweredekaat "
 msgid "Disable the screensaver during video playback."
 msgstr ""
 
-#: src/libvlc-module.c:374 modules/gui/macosx/VLCSimplePrefsController.m:363
+#: src/libvlc-module.c:374 modules/gui/macosx/VLCSimplePrefsController.m:364
 #: modules/gui/qt/ui/sprefs_video.h:314
 msgid "Window decorations"
 msgstr "Kinklañ ar prenestr"
@@ -2335,7 +2336,7 @@ msgid ""
 "order to keep proportions."
 msgstr ""
 
-#: src/libvlc-module.c:468 modules/gui/macosx/VLCSimplePrefsController.m:306
+#: src/libvlc-module.c:468 modules/gui/macosx/VLCSimplePrefsController.m:307
 msgid "Skip frames"
 msgstr "Lamm frammoù"
 
@@ -2464,13 +2465,13 @@ msgstr ""
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
 #: modules/access/dshow/dshow.cpp:2081 modules/audio_output/alsa.c:767
-#: modules/audio_output/directsound.c:1045 modules/audio_output/mmdevice.c:1285
+#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1285
 #: modules/audio_output/mmdevice.c:1424 modules/codec/avcodec/avcodec.c:50
-#: modules/demux/adaptive/adaptive.cpp:97
+#: modules/demux/adaptive/adaptive.cpp:106
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
-#: modules/gui/macosx/VLCSimplePrefsController.m:660
+#: modules/gui/macosx/VLCSimplePrefsController.m:661
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
 #: modules/gui/macosx/prefs_widgets.m:1221
@@ -2580,7 +2581,7 @@ msgstr ""
 
 #: src/libvlc-module.c:598
 msgid "Menu language"
-msgstr ""
+msgstr "Yezh al lañserioù"
 
 #: src/libvlc-module.c:600
 msgid ""
@@ -2610,7 +2611,7 @@ msgstr "Digoder istitloù muiañ karet"
 
 #: src/libvlc-module.c:616
 msgid "Preferred video resolution"
-msgstr ""
+msgstr "Spisder video karetañ"
 
 #: src/libvlc-module.c:618
 msgid ""
@@ -2619,6 +2620,10 @@ msgid ""
 "option if you don't have enough CPU power or network bandwidth to play "
 "higher resolutions."
 msgstr ""
+"Pa vez hegerz meur a furmad video, diuzit 'ta an hini a zo tostoc'h e "
+"spisder ouzh (ha n'eo ket uheloc'h eget) an arventenn-mañ, e niver a "
+"linennoù. Implijit an opsion-mañ ma n'ho po ket trawalc'h a c'halloud CPU pe "
+"a vandenn dremen kenrouedad evit gellout lenn spisderioù uheloc'h."
 
 #: src/libvlc-module.c:624
 msgid "Best available"
@@ -2814,7 +2819,7 @@ msgid "You can completely disable the sub-picture processing."
 msgstr ""
 
 #: src/libvlc-module.c:717 src/libvlc-module.c:1674 src/text/iso-639_def.h:145
-#: modules/gui/macosx/VLCSimplePrefsController.m:350
+#: modules/gui/macosx/VLCSimplePrefsController.m:351
 #: modules/gui/qt/ui/sprefs_subtitles.h:287
 msgid "On Screen Display"
 msgstr ""
@@ -3526,7 +3531,7 @@ msgstr ""
 msgid "Maximum time allowed to preparse an item, in milliseconds"
 msgstr ""
 
-#: src/libvlc-module.c:1126 modules/gui/macosx/VLCSimplePrefsController.m:333
+#: src/libvlc-module.c:1126 modules/gui/macosx/VLCSimplePrefsController.m:334
 #: modules/gui/qt/dialogs/firstrun.cpp:95
 #: modules/gui/qt/ui/sprefs_interface.h:562
 msgid "Allow metadata network access"
@@ -3740,7 +3745,7 @@ msgstr ""
 msgid "Select the hotkey to use to exit fullscreen state."
 msgstr ""
 
-#: src/libvlc-module.c:1230 modules/gui/macosx/VLCFSPanelController.m:109
+#: src/libvlc-module.c:1230 modules/gui/macosx/VLCFSPanelController.m:110
 msgid "Play/Pause"
 msgstr "Lenn/Paouez"
 
@@ -3802,7 +3807,7 @@ msgstr "Gorrekoc'h"
 
 #: src/libvlc-module.c:1246 modules/control/hotkeys.c:410
 #: modules/gui/macosx/VLCControlsBarCommon.m:196
-#: modules/gui/macosx/VLCFSPanelController.m:112
+#: modules/gui/macosx/VLCFSPanelController.m:113
 #: modules/gui/macosx/VLCMainMenu.m:396 modules/gui/macosx/VLCMainMenu.m:499
 #: modules/gui/macosx/VLCMainMenu.m:507
 #: modules/gui/qt/components/controller.hpp:112
@@ -3817,7 +3822,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1248 modules/control/hotkeys.c:414
 #: modules/gui/macosx/VLCControlsBarCommon.m:193
-#: modules/gui/macosx/VLCFSPanelController.m:115
+#: modules/gui/macosx/VLCFSPanelController.m:116
 #: modules/gui/macosx/VLCMainMenu.m:395 modules/gui/macosx/VLCMainMenu.m:500
 #: modules/gui/macosx/VLCMainMenu.m:506
 #: modules/gui/qt/components/controller.hpp:112 modules/notify/notify.c:333
@@ -3841,7 +3846,7 @@ msgid "Select the hotkey to stop playback."
 msgstr "Diuzañ ur verradenn da baouez al lenn"
 
 #: src/libvlc-module.c:1252 modules/gui/macosx/VLCControlsBarCommon.m:92
-#: modules/gui/macosx/VLCFSPanelController.m:130
+#: modules/gui/macosx/VLCFSPanelController.m:131
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
@@ -4576,7 +4581,7 @@ msgstr ""
 msgid "Track settings"
 msgstr "Arventennoù al loabroù"
 
-#: src/libvlc-module.c:1753 modules/gui/macosx/VLCSimplePrefsController.m:321
+#: src/libvlc-module.c:1753 modules/gui/macosx/VLCSimplePrefsController.m:322
 msgid "Playback control"
 msgstr ""
 
@@ -4601,7 +4606,7 @@ msgid "Decoders"
 msgstr "Ezvonegerioù"
 
 #: src/libvlc-module.c:1944 modules/access/avio.h:40
-#: modules/access/v4l2/v4l2.c:59 modules/gui/macosx/VLCPlaylistInfo.m:84
+#: modules/access/v4l2/v4l2.c:59 modules/gui/macosx/VLCPlaylistInfo.m:80
 msgid "Input"
 msgstr "Enankad"
 
@@ -4913,7 +4918,7 @@ msgstr "E barr ar Bajenn"
 
 #: src/misc/actions.c:107 modules/control/oldrc.c:72
 #: modules/gui/macosx/VLCControlsBarCommon.m:423
-#: modules/gui/macosx/VLCFSPanelController.m:238
+#: modules/gui/macosx/VLCFSPanelController.m:239
 #: modules/gui/macosx/VLCMainMenu.m:1346 modules/gui/macosx/VLCMainMenu.m:1347
 #: modules/gui/macosx/VLCMainMenu.m:1348
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
@@ -4987,8 +4992,8 @@ msgstr ""
 msgid "%.1f MiB"
 msgstr ""
 
-#: src/misc/update.c:486 modules/gui/macosx/VLCPlaylistInfo.m:142
-#: modules/gui/macosx/VLCPlaylistInfo.m:144
+#: src/misc/update.c:486 modules/gui/macosx/VLCPlaylistInfo.m:138
+#: modules/gui/macosx/VLCPlaylistInfo.m:140
 #, c-format
 msgid "%.1f KiB"
 msgstr ""
@@ -5025,10 +5030,10 @@ msgstr ""
 #: modules/gui/macosx/VLCMainWindow.m:228
 #: modules/gui/macosx/VLCOpenWindowController.m:134
 #: modules/gui/macosx/VLCOpenWindowController.m:192
-#: modules/gui/macosx/VLCSimplePrefsController.m:285
-#: modules/gui/macosx/VLCSimplePrefsController.m:312
-#: modules/gui/macosx/VLCSimplePrefsController.m:383
-#: modules/gui/macosx/VLCSimplePrefsController.m:826
+#: modules/gui/macosx/VLCSimplePrefsController.m:286
+#: modules/gui/macosx/VLCSimplePrefsController.m:313
+#: modules/gui/macosx/VLCSimplePrefsController.m:384
+#: modules/gui/macosx/VLCSimplePrefsController.m:827
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:50
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:791
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
@@ -5037,7 +5042,7 @@ msgstr ""
 #: modules/gui/qt/components/preferences_widgets.cpp:1428
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
 #: modules/gui/qt/dialogs/sout.cpp:92
-#: modules/stream_out/chromecast/cast.cpp:1195
+#: modules/stream_out/chromecast/cast.cpp:1197
 msgid "Cancel"
 msgstr "Nullañ"
 
@@ -5167,7 +5172,7 @@ msgstr "Euskareg"
 
 #: src/text/iso-639_def.h:53
 msgid "Belarusian"
-msgstr ""
+msgstr "Bieloruseg"
 
 #: src/text/iso-639_def.h:54
 msgid "Bengali"
@@ -5179,7 +5184,7 @@ msgstr ""
 
 #: src/text/iso-639_def.h:56
 msgid "Bislama"
-msgstr ""
+msgstr "Bislama"
 
 #: src/text/iso-639_def.h:57
 msgid "Bosnian"
@@ -5307,7 +5312,7 @@ msgstr ""
 
 #: src/text/iso-639_def.h:88
 msgid "Guarani"
-msgstr ""
+msgstr "Guarani"
 
 #: src/text/iso-639_def.h:89
 msgid "Gujarati"
@@ -5623,7 +5628,7 @@ msgstr ""
 
 #: src/text/iso-639_def.h:168
 msgid "Shona"
-msgstr ""
+msgstr "Shona"
 
 #: src/text/iso-639_def.h:169
 msgid "Sindhi"
@@ -5743,7 +5748,7 @@ msgstr "Vietnameg"
 
 #: src/text/iso-639_def.h:198
 msgid "Volapuk"
-msgstr ""
+msgstr "Volapuk"
 
 #: src/text/iso-639_def.h:199
 msgid "Welsh"
@@ -5868,6 +5873,37 @@ msgstr "Kenstagadenn"
 msgid "Attachment input"
 msgstr ""
 
+#: modules/access/avaudiocapture.m:212
+msgid "No Audio Input device found"
+msgstr ""
+
+#: modules/access/avaudiocapture.m:213
+msgid ""
+"Your Mac does not seem to be equipped with a suitable audio input device."
+"Please check your connectors and drivers."
+msgstr ""
+
+#: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:350
+#: modules/access/dvdnav.c:381 modules/access/dvdread.c:215
+msgid "Problem accessing a system resource"
+msgstr ""
+
+#: modules/access/avaudiocapture.m:237
+msgid ""
+"Please open \"System Preferences\" -> \"Security & Privacy\" and allow VLC "
+"to access your microphone."
+msgstr ""
+
+#: modules/access/avaudiocapture.m:341
+#, fuzzy
+msgid "AVFoundation Audio Capture"
+msgstr "Enrollañ an aodio"
+
+#: modules/access/avaudiocapture.m:342
+#, fuzzy
+msgid "AVFoundation audio capture module."
+msgstr "Modulenn an ec'hankad aodio"
+
 #: modules/access/avcapture.m:66
 msgid "AVFoundation Video Capture"
 msgstr ""
@@ -5890,6 +5926,12 @@ msgstr ""
 msgid ""
 "Your Mac does not seem to be equipped with a suitable input device. Please "
 "check your connectors and drivers."
+msgstr ""
+
+#: modules/access/avcapture.m:351
+msgid ""
+"Please open \"System Preferences\" -> \"Security & Privacy\" and allow VLC "
+"to access your camera."
 msgstr ""
 
 #: modules/access/avio.h:33
@@ -5994,16 +6036,16 @@ msgstr ""
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 
-#: modules/access/bluray.c:978 modules/access/bluray.c:2764
-#: modules/access/bluray.c:2769
+#: modules/access/bluray.c:988 modules/access/bluray.c:2819
+#: modules/access/bluray.c:2824
 msgid "Blu-ray error"
 msgstr ""
 
-#: modules/access/bluray.c:2054
+#: modules/access/bluray.c:2109
 msgid "Top Menu"
 msgstr ""
 
-#: modules/access/bluray.c:2057
+#: modules/access/bluray.c:2112
 msgid "First Play"
 msgstr ""
 
@@ -6184,7 +6226,7 @@ msgstr ""
 
 #: modules/access/decklink.cpp:102
 msgid "DeckLink"
-msgstr ""
+msgstr "DeckLink"
 
 #: modules/access/decklink.cpp:103
 msgid "Blackmagic DeckLink SDI input"
@@ -6446,19 +6488,19 @@ msgstr ""
 msgid "The capture device \"%s\" does not support the required parameters."
 msgstr ""
 
-#: modules/access/dsm/access.c:61 modules/access/dsm/sd.c:138
+#: modules/access/dsm/access.c:72 modules/access/dsm/sd.c:138
 msgid "Windows networks"
 msgstr ""
 
-#: modules/access/dsm/access.c:63
+#: modules/access/dsm/access.c:74
 msgid "libdsm's SMB (Windows network shares) input and browser"
 msgstr ""
 
-#: modules/access/dsm/access.c:67
+#: modules/access/dsm/access.c:78
 msgid "libdsm SMB input"
 msgstr ""
 
-#: modules/access/dsm/access.c:80
+#: modules/access/dsm/access.c:98
 msgid "libdsm NETBIOS discovery module"
 msgstr ""
 
@@ -6946,70 +6988,77 @@ msgstr ""
 msgid "Scanning DVB"
 msgstr ""
 
-#: modules/access/dvdnav.c:69 modules/access/dvdread.c:68
+#: modules/access/dvdnav.c:71 modules/access/dvdread.c:69
 msgid "DVD angle"
 msgstr ""
 
-#: modules/access/dvdnav.c:71 modules/access/dvdread.c:70
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:71
 msgid "Default DVD angle."
-msgstr ""
-
-#: modules/access/dvdnav.c:73
-msgid "Start directly in menu"
-msgstr ""
+msgstr "Korn DVD dre-ziouer."
 
 #: modules/access/dvdnav.c:75
+msgid "Start directly in menu"
+msgstr "Kregiñ d'al lañser nemetken"
+
+#: modules/access/dvdnav.c:77
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
 msgstr ""
 
-#: modules/access/dvdnav.c:89
+#: modules/access/dvdnav.c:91
 msgid "DVD with menus"
 msgstr "DVD gant lañser"
 
-#: modules/access/dvdnav.c:90
+#: modules/access/dvdnav.c:92
 msgid "DVDnav Input"
 msgstr "Enank DVDnav"
 
-#: modules/access/dvdnav.c:102
+#: modules/access/dvdnav.c:104
 msgid "DVDnav demuxer"
 msgstr ""
 
-#: modules/access/dvdnav.c:298 modules/access/dvdread.c:201
-#: modules/access/dvdread.c:216 modules/access/dvdread.c:477
-#: modules/access/dvdread.c:545
+#: modules/access/dvdnav.c:282 modules/access/dvdread.c:220
+#: modules/access/dvdread.c:237 modules/access/dvdread.c:496
+#: modules/access/dvdread.c:561
 msgid "Playback failure"
 msgstr "Fazi en ur lenn"
 
-#: modules/access/dvdnav.c:299
+#: modules/access/dvdnav.c:283
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
 
-#: modules/access/dvdread.c:76
+#: modules/access/dvdnav.c:382 modules/access/dvdread.c:216
+msgid ""
+"Potentially, macOS blocks access to your disc. Please open \"System "
+"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
+"external media in \"Files and Folders\" section."
+msgstr ""
+
+#: modules/access/dvdread.c:77
 msgid "DVD without menus"
 msgstr "DVD hep lañser"
 
-#: modules/access/dvdread.c:77
+#: modules/access/dvdread.c:78
 msgid "DVDRead Input (no menu support)"
 msgstr ""
 
-#: modules/access/dvdread.c:202
+#: modules/access/dvdread.c:221
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
 msgstr ""
 
-#: modules/access/dvdread.c:217
+#: modules/access/dvdread.c:238
 msgid "Cannot play a non-UDF mastered DVD."
 msgstr ""
 
-#: modules/access/dvdread.c:478
+#: modules/access/dvdread.c:497
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr ""
 
-#: modules/access/dvdread.c:546
+#: modules/access/dvdread.c:562
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr ""
@@ -7048,7 +7097,7 @@ msgstr ""
 #: modules/access/smb_common.h:21 modules/access/vnc.c:46
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
-#: modules/gui/macosx/VLCSimplePrefsController.m:277
+#: modules/gui/macosx/VLCSimplePrefsController.m:278
 #: modules/gui/qt/dialogs/external.cpp:203 modules/misc/audioscrobbler.c:114
 #: modules/stream_out/rtp.c:173
 msgid "Username"
@@ -7068,8 +7117,8 @@ msgstr ""
 #: modules/access/smb_common.h:24 modules/access/vnc.c:47
 #: modules/access_output/http.c:55
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
-#: modules/gui/macosx/VLCSimplePrefsController.m:276
-#: modules/gui/macosx/VLCSimplePrefsController.m:339
+#: modules/gui/macosx/VLCSimplePrefsController.m:277
+#: modules/gui/macosx/VLCSimplePrefsController.m:340
 #: modules/gui/qt/dialogs/external.cpp:208 modules/lua/vlc.c:54
 #: modules/lua/vlc.c:70 modules/misc/audioscrobbler.c:116
 #: modules/stream_out/rtp.c:176
@@ -7255,7 +7304,7 @@ msgstr ""
 msgid "Sample rate of an audio elementary stream"
 msgstr ""
 
-#: modules/access/imem.c:79 modules/audio_output/amem.c:49
+#: modules/access/imem.c:79 modules/audio_output/amem.c:51
 msgid "Channels count"
 msgstr ""
 
@@ -7410,7 +7459,7 @@ msgstr ""
 #: modules/access/linsys/linsys_hdsdi.c:81
 #: modules/access/linsys/linsys_sdi.c:77
 msgid "Audio configuration"
-msgstr ""
+msgstr "Kefluniadur aodio"
 
 #: modules/access/linsys/linsys_hdsdi.c:83
 #: modules/access/linsys/linsys_sdi.c:79
@@ -7499,7 +7548,7 @@ msgstr ""
 
 #: modules/access/live555.cpp:97
 msgid "RTP/RTSP/SDP demuxer (using Live555)"
-msgstr "Displezher RTP/RTSP/SDP (oc'h arverañ Live555)"
+msgstr "Displezher RTP/RTSP/SDP (oc'h implijout Live555)"
 
 #: modules/access/live555.cpp:106
 msgid "RTSP/RTP access and demux"
@@ -7658,28 +7707,6 @@ msgstr "PulseAudio"
 #: modules/access/pulse.c:43
 msgid "PulseAudio input"
 msgstr "Enankad PulseAudio"
-
-#: modules/access/qtsound.m:69
-msgid "QTSound"
-msgstr ""
-
-#: modules/access/qtsound.m:70
-msgid "QuickTime Sound Capture"
-msgstr ""
-
-#: modules/access/qtsound.m:272
-msgid "No Audio Input device found"
-msgstr ""
-
-#: modules/access/qtsound.m:273 modules/access/qtsound.m:304
-msgid ""
-"Your Mac does not seem to be equipped with a suitable audio input device."
-"Please check your connectors and drivers."
-msgstr ""
-
-#: modules/access/qtsound.m:303
-msgid "No audio input device found"
-msgstr ""
 
 #: modules/access/rdp.c:72
 msgid "Encrypted connexion"
@@ -7922,7 +7949,7 @@ msgstr "Enankad ar skramm"
 #: modules/gui/macosx/VLCOpenWindowController.m:209
 #: modules/gui/macosx/VLCOpenWindowController.m:485
 #: modules/gui/macosx/VLCOpenWindowController.m:1103
-#: modules/gui/macosx/VLCSimplePrefsController.m:665
+#: modules/gui/macosx/VLCSimplePrefsController.m:666
 msgid "Screen"
 msgstr "Skramm"
 
@@ -8020,7 +8047,7 @@ msgstr ""
 
 #: modules/access/shm.c:76 modules/access/vnc.c:68
 msgid "8 bits"
-msgstr ""
+msgstr "8 bits"
 
 #: modules/access/shm.c:76
 msgid "15 bits"
@@ -8036,11 +8063,11 @@ msgstr ""
 
 #: modules/access/shm.c:76 modules/access/vnc.c:68
 msgid "32 bits"
-msgstr ""
+msgstr "32 bits"
 
 #: modules/access/shm.c:83
 msgid "Framebuffer input"
-msgstr ""
+msgstr "Enmont memor-skurzer"
 
 #: modules/access/shm.c:84
 msgid "Shared memory framebuffer"
@@ -8062,11 +8089,11 @@ msgstr "Domani SMB"
 msgid "Domain/Workgroup that will be used for the connection."
 msgstr ""
 
-#: modules/access/smb_common.h:31
+#: modules/access/smb_common.h:34
 msgid "SMB authentication required"
 msgstr ""
 
-#: modules/access/smb_common.h:32
+#: modules/access/smb_common.h:35
 #, c-format
 msgid ""
 "The computer (%s) you are trying to connect to requires authentication.\n"
@@ -8178,6 +8205,8 @@ msgid ""
 "The specified pixel resolution is forced (if both width and height are "
 "strictly positive)."
 msgstr ""
+"Forset eo spisder ar pikseloù spisaet (m'emañ pozitivel da vat an uhelder "
+"hag al ledander)."
 
 #: modules/access/v4l2/v4l2.c:71
 msgid "Maximum frame rate to use (0 = no limits)."
@@ -8714,7 +8743,7 @@ msgstr ""
 
 #: modules/access/vnc.c:82
 msgid "VNC client access"
-msgstr ""
+msgstr "Moned pratik VNC"
 
 #: modules/access/wasapi.c:485
 msgid "Loopback mode"
@@ -9252,7 +9281,7 @@ msgstr ""
 
 #: modules/audio_filter/channel_mixer/simple.c:43
 msgid "Audio filter for simple channel mixing"
-msgstr ""
+msgstr "Meskañ ar chadennoù simpl"
 
 #: modules/audio_filter/channel_mixer/spatialaudio.cpp:50
 msgid "HRTF file for the binauralization"
@@ -9715,7 +9744,7 @@ msgstr ""
 
 #: modules/audio_filter/resampler/src.c:50
 msgid "Sinc function (fast)"
-msgstr ""
+msgstr "Arc'hweladur sink (herrek)"
 
 #: modules/audio_filter/resampler/src.c:50
 msgid "Zero Order Hold (fastest)"
@@ -9937,7 +9966,7 @@ msgstr ""
 msgid "ALSA audio output"
 msgstr "Ec'hankad an aodio ALSA"
 
-#: modules/audio_output/alsa.c:393 modules/audio_output/auhal.c:1180
+#: modules/audio_output/alsa.c:393 modules/audio_output/auhal.c:1185
 msgid "Audio output failed"
 msgstr "Sac'het eo an ec'hakad aodio"
 
@@ -9948,15 +9977,15 @@ msgid ""
 "%s."
 msgstr ""
 
-#: modules/audio_output/amem.c:34
+#: modules/audio_output/amem.c:36
 msgid "Audio memory"
 msgstr "Memor an aodio"
 
-#: modules/audio_output/amem.c:35
+#: modules/audio_output/amem.c:37
 msgid "Audio memory output"
 msgstr "Ec'hankad ar memor video"
 
-#: modules/audio_output/amem.c:42
+#: modules/audio_output/amem.c:44
 msgid "Sample format"
 msgstr ""
 
@@ -9972,22 +10001,22 @@ msgstr "Ec'hankad an AudioUnit HAL"
 msgid "System Sound Output Device"
 msgstr ""
 
-#: modules/audio_output/auhal.c:542
+#: modules/audio_output/auhal.c:543
 #, c-format
 msgid "%s (Encoded Output)"
 msgstr "%s (Ec'hankad enboneget)"
 
-#: modules/audio_output/auhal.c:1036
+#: modules/audio_output/auhal.c:1041
 msgid "Audio device is not configured"
 msgstr ""
 
-#: modules/audio_output/auhal.c:1037
+#: modules/audio_output/auhal.c:1042
 msgid ""
 "You should configure your speaker layout with \"Audio Midi Setup\" in /"
 "Applications/Utilities. VLC will output Stereo only."
 msgstr ""
 
-#: modules/audio_output/auhal.c:1181
+#: modules/audio_output/auhal.c:1186
 msgid ""
 "The selected audio output device is exclusively in use by another program."
 msgstr ""
@@ -10117,7 +10146,7 @@ msgstr ""
 
 #: modules/audio_output/mmdevice.c:1460
 msgid "Disabled"
-msgstr ""
+msgstr "Lazhet"
 
 #: modules/audio_output/mmdevice.c:1461
 msgid "Enabled (AC3/DTS only)"
@@ -10425,7 +10454,7 @@ msgid "Internal libavcodec codec name"
 msgstr "Anv kodek libavcodec diabarzh"
 
 #: modules/codec/avcodec/avcodec.h:108
-#: modules/gui/macosx/VLCSimplePrefsController.m:304
+#: modules/gui/macosx/VLCSimplePrefsController.m:305
 msgid "Skip the loop filter for H.264 decoding"
 msgstr ""
 
@@ -10436,7 +10465,7 @@ msgid ""
 msgstr ""
 
 #: modules/codec/avcodec/avcodec.h:113
-#: modules/gui/macosx/VLCSimplePrefsController.m:302
+#: modules/gui/macosx/VLCSimplePrefsController.m:303
 msgid "Hardware decoding"
 msgstr "Ezvoneger gant ar periant"
 
@@ -10733,7 +10762,7 @@ msgid "BPG image decoder"
 msgstr ""
 
 #: modules/codec/cc.c:51 modules/codec/zvbi.c:65
-#: modules/gui/macosx/VLCSimplePrefsController.m:352 modules/spu/marq.c:108
+#: modules/gui/macosx/VLCSimplePrefsController.m:353 modules/spu/marq.c:108
 #: modules/spu/rss.c:144 modules/gui/qt/ui/video_effects.h:1273
 msgid "Opacity"
 msgstr "Demerez"
@@ -11041,7 +11070,7 @@ msgstr ""
 
 #: modules/codec/g711.c:54
 msgid "G.711 encoder"
-msgstr ""
+msgstr "Enkoder G.711"
 
 #: modules/codec/gstreamer/gstdecode.c:76
 msgid "Uses GStreamer framework's plugins to decode the media codecs"
@@ -11119,7 +11148,7 @@ msgstr "Gwenn"
 #: modules/codec/kate.c:207 modules/spu/marq.c:62 modules/spu/rss.c:70
 #: modules/text_renderer/freetype/freetype.c:135
 msgid "Maroon"
-msgstr ""
+msgstr "Gell"
 
 #: modules/codec/kate.c:208 modules/gui/macosx/VLCMainMenu.m:468
 #: modules/gui/macosx/VLCMainMenu.m:1103 modules/spu/marq.c:62
@@ -11420,6 +11449,9 @@ msgid ""
 "the correct profile from other sources, such as resolution and bitrate. E.g. "
 "'high'"
 msgstr ""
+"Spisait profil ar c'hodek en un doare splann. Ma ne rafec'h ket, ar c'hodek "
+"a dermeno ar profil mat adalek mammennoù all, evel da skouer ar spister hag "
+"ar c'has. D.sk. \"uhel\""
 
 #: modules/codec/qsv.c:67
 msgid "Codec Level"
@@ -11431,6 +11463,9 @@ msgid ""
 "the correct profile from other sources, such as resolution and bitrate. E.g. "
 "'4.2' for mpeg4-part10 or 'low' for mpeg2"
 msgstr ""
+"Spisait live ar c'hodek en un doare splann. Ma ne rafec'h ket, ar c'hodek a "
+"dermeno ar profil adalek mammennoù all, evel da skouer ar spisder hag ar "
+"c'has. D.sk. \"4.2\" evit mpeg4-part10 pe \"gwan\" evit mpeg2"
 
 #: modules/codec/qsv.c:73
 msgid "Group of Picture size"
@@ -11455,7 +11490,7 @@ msgstr ""
 
 #: modules/codec/qsv.c:85
 msgid "Target Usage"
-msgstr ""
+msgstr "Implij buket"
 
 #: modules/codec/qsv.c:86
 msgid ""
@@ -11719,7 +11754,7 @@ msgstr ""
 
 #: modules/codec/schroedinger.c:129
 msgid "GOP length"
-msgstr ""
+msgstr "Hirded GOP"
 
 #: modules/codec/schroedinger.c:130
 msgid ""
@@ -12481,7 +12516,7 @@ msgstr ""
 
 #: modules/codec/ttml/ttml.c:54
 msgid "TTML demuxer"
-msgstr ""
+msgstr "Displezher TTML"
 
 #: modules/codec/twolame.c:56
 msgid ""
@@ -12648,6 +12683,9 @@ msgid ""
 "ray compatibility\n"
 "e.g. resolution, framerate, level"
 msgstr ""
+"Enaouiñ an hentoù-tro evit ar skor Blu-ray, daoust da-se ne fors ket kement "
+"arvez evit kenglotusted ar Blu-ray\n"
+"d.sk. spisder, ar c'has-skeudennoù pe al live"
 
 #: modules/codec/x264.c:93
 msgid "Extra I-frames aggressivity"
@@ -12925,7 +12963,7 @@ msgstr ""
 
 #: modules/codec/x264.c:231
 msgid "Strength of AQ"
-msgstr ""
+msgstr "Rediañ evit AQ"
 
 #: modules/codec/x264.c:232
 msgid ""
@@ -13255,7 +13293,7 @@ msgstr ""
 msgid "Quiet mode"
 msgstr "Mod didrouz"
 
-#: modules/codec/x264.c:397 modules/gui/macosx/VLCPlaylistInfo.m:69
+#: modules/codec/x264.c:397 modules/gui/macosx/VLCPlaylistInfo.m:65
 #: modules/gui/qt/ui/streampanel.h:168
 msgid "Statistics"
 msgstr ""
@@ -13338,8 +13376,8 @@ msgstr ""
 
 #: modules/codec/x264.c:429 modules/gui/macosx/VLCMainMenu.m:290
 #: modules/gui/macosx/VLCMainMenu.m:392
-#: modules/gui/macosx/VLCSimplePrefsController.m:702
-#: modules/gui/qt/components/simple_preferences.cpp:694
+#: modules/gui/macosx/VLCSimplePrefsController.m:703
+#: modules/gui/qt/components/simple_preferences.cpp:695
 #: modules/misc/gnutls.c:779 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
@@ -13471,7 +13509,7 @@ msgstr ""
 #: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:185
 #: modules/gui/macosx/VLCMainWindow.m:687
 #: modules/gui/macosx/VLCMainWindow.m:693
-#: modules/gui/macosx/VLCMainWindow.m:1315
+#: modules/gui/macosx/VLCMainWindow.m:1318
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
 #: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1258
 #: modules/gui/qt/main_interface.cpp:1262
@@ -13543,9 +13581,9 @@ msgid "Global Hotkeys interface"
 msgstr "Etrefas ar berradennoù "
 
 #: modules/control/hotkeys.c:100
-#: modules/gui/macosx/VLCSimplePrefsController.m:242
+#: modules/gui/macosx/VLCSimplePrefsController.m:243
 #: modules/gui/qt/components/preferences_widgets.cpp:1145
-#: modules/gui/qt/components/simple_preferences.cpp:248
+#: modules/gui/qt/components/simple_preferences.cpp:249
 msgid "Hotkeys"
 msgstr "Berradennoù"
 
@@ -13821,7 +13859,7 @@ msgstr ""
 
 #: modules/control/oldrc.c:69
 msgid "Initializing"
-msgstr ""
+msgstr "Deraouekaat"
 
 #: modules/control/oldrc.c:70
 msgid "Opening"
@@ -14206,63 +14244,88 @@ msgstr ""
 msgid "Windows messages interface"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:68
+#: modules/demux/adaptive/adaptive.cpp:69
 msgid "Maximum device width"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:69
+#: modules/demux/adaptive/adaptive.cpp:70
 msgid "Maximum device height"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:71
+#: modules/demux/adaptive/adaptive.cpp:72
 msgid "Fixed Bandwidth in KiB/s"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:72
+#: modules/demux/adaptive/adaptive.cpp:73
 msgid "Preferred bandwidth for non adaptive streams"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:74
-msgid "Adaptive Logic"
+#: modules/demux/adaptive/adaptive.cpp:75
+msgid "Live Playback delay (ms)"
 msgstr ""
 
 #: modules/demux/adaptive/adaptive.cpp:76
+msgid "Tradeoff between stability and real time"
+msgstr ""
+
+#: modules/demux/adaptive/adaptive.cpp:78
+msgid "Max buffering (ms)"
+msgstr ""
+
+#: modules/demux/adaptive/adaptive.cpp:80
+msgid "Adaptive Logic"
+msgstr ""
+
+#: modules/demux/adaptive/adaptive.cpp:82
 msgid "Use regular HTTP modules"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:77
+#: modules/demux/adaptive/adaptive.cpp:83
 msgid "Connect using HTTP access instead of custom HTTP code"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:98
+#: modules/demux/adaptive/adaptive.cpp:85
+#: modules/gui/qt/components/simple_preferences.cpp:694
+msgid "Low latency"
+msgstr ""
+
+#: modules/demux/adaptive/adaptive.cpp:86
+msgid "Overrides low latency parameters"
+msgstr ""
+
+#: modules/demux/adaptive/adaptive.cpp:107
 msgid "Predictive"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:99
+#: modules/demux/adaptive/adaptive.cpp:108
 msgid "Near Optimal"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:100
+#: modules/demux/adaptive/adaptive.cpp:109
 msgid "Bandwidth Adaptive"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:101
+#: modules/demux/adaptive/adaptive.cpp:110
 msgid "Fixed Bandwidth"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:102
+#: modules/demux/adaptive/adaptive.cpp:111
 msgid "Lowest Bandwidth/Quality"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:103
+#: modules/demux/adaptive/adaptive.cpp:112
 msgid "Highest Bandwidth/Quality"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:112
+#: modules/demux/adaptive/adaptive.cpp:123
+msgid "Force"
+msgstr ""
+
+#: modules/demux/adaptive/adaptive.cpp:127
 msgid "Adaptive"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:113
+#: modules/demux/adaptive/adaptive.cpp:128
 msgid "Unified adaptive streaming for DASH/HLS"
 msgstr ""
 
@@ -14276,7 +14339,7 @@ msgstr "Displezher ASF/WMW"
 
 #: modules/demux/asf/asf.c:267 modules/demux/asf/asf.c:821
 msgid "Could not demux ASF stream"
-msgstr ""
+msgstr "N'heller ket diliesaat ar froud ASF"
 
 #: modules/demux/asf/asf.c:268
 msgid "VLC failed to load the ASF header."
@@ -14312,7 +14375,7 @@ msgstr ""
 
 #: modules/demux/avformat/avformat.h:36
 msgid "Force use of a specific avformat muxer."
-msgstr ""
+msgstr "Rediañ implij al liesplezher avformat."
 
 #: modules/demux/avformat/avformat.h:37
 msgid "Format name"
@@ -14356,7 +14419,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr "Displezher AVI"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4252
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4256
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14376,9 +14439,9 @@ msgstr ""
 
 #: modules/demux/avi/avi.c:886
 msgid "Play as is"
-msgstr ""
+msgstr "Lenn evel"
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4263
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4267
 msgid "Broken or missing Index"
 msgstr ""
 
@@ -14444,7 +14507,7 @@ msgstr "Displezher Flac"
 
 #: modules/demux/image.c:44
 msgid "ES ID"
-msgstr ""
+msgstr "ID ES"
 
 #: modules/demux/image.c:52
 msgid "Decode"
@@ -14466,7 +14529,7 @@ msgstr ""
 
 #: modules/demux/image.c:61
 msgid "Duration in seconds"
-msgstr ""
+msgstr "Padelezh en eilennoù"
 
 #: modules/demux/image.c:63
 msgid ""
@@ -14674,7 +14737,7 @@ msgstr ""
 
 #: modules/demux/mp4/meta.c:75
 msgid "Display Source As"
-msgstr ""
+msgstr "Diskouez ar mamennoù evel"
 
 #: modules/demux/mp4/meta.c:76
 msgid "Host Computer"
@@ -14682,7 +14745,7 @@ msgstr ""
 
 #: modules/demux/mp4/meta.c:77
 msgid "Performers"
-msgstr ""
+msgstr "C'hoarier/Kaner"
 
 #: modules/demux/mp4/meta.c:78
 msgid "Original Performer"
@@ -14809,17 +14872,17 @@ msgstr "Displezher lanvioù MP4"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4260
+#: modules/demux/mp4/mp4.c:4264
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4261
+#: modules/demux/mp4/mp4.c:4265
 msgid "Build index"
 msgstr ""
 
 #: modules/demux/mpc.c:63
 msgid "MusePack demuxer"
-msgstr "Displezher Musepack"
+msgstr "Displezher MusePack"
 
 #: modules/demux/mpeg/es.c:54
 msgid ""
@@ -14849,7 +14912,7 @@ msgstr "Displezher videoioù H264"
 
 #: modules/demux/mpeg/h26x.c:64 modules/demux/mpeg/h26x.c:66
 msgid "HEVC/H.265 video demuxer"
-msgstr ""
+msgstr "Displezher videoioù HEVC/H.265"
 
 #: modules/demux/mpeg/mpgv.c:46
 msgid "MPEG-I/II video demuxer"
@@ -15001,15 +15064,15 @@ msgstr ""
 msgid "DVB subtitles: hearing impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:1332
+#: modules/demux/mpeg/ts_psi.c:1333
 msgid "clean effects"
 msgstr "naetaat an efedoù"
 
-#: modules/demux/mpeg/ts_psi.c:1333
+#: modules/demux/mpeg/ts_psi.c:1334
 msgid "hearing impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:1334
+#: modules/demux/mpeg/ts_psi.c:1335
 msgid "visual impaired commentary"
 msgstr ""
 
@@ -15019,7 +15082,7 @@ msgstr ""
 
 #: modules/demux/nsv.c:49
 msgid "NullSoft demuxer"
-msgstr "Displezher Nullsoft"
+msgstr "Displezher NullSoft"
 
 #: modules/demux/nuv.c:50
 msgid "Nuv demuxer"
@@ -15126,7 +15189,7 @@ msgstr ""
 
 #: modules/demux/playlist/podcast.c:236 modules/demux/playlist/podcast.c:313
 msgid "Podcast Subtitle"
-msgstr ""
+msgstr "Istitl ar podkast"
 
 #: modules/demux/playlist/podcast.c:242 modules/demux/playlist/podcast.c:314
 msgid "Podcast Summary"
@@ -15223,7 +15286,7 @@ msgstr ""
 
 #: modules/demux/rawdv.c:51
 msgid "DV (Digital Video) demuxer"
-msgstr ""
+msgstr "Displezher DV (Digital Video)"
 
 #: modules/demux/rawvid.c:44
 msgid ""
@@ -15293,7 +15356,7 @@ msgstr ""
 
 #: modules/demux/subtitle.c:80 modules/spu/subsdelay.c:275
 msgid "Subtitle delay"
-msgstr ""
+msgstr "Dale an istitloù"
 
 #: modules/demux/subtitle.c:82
 msgid "Subtitle format"
@@ -15373,7 +15436,7 @@ msgstr ""
 
 #: modules/demux/xiph_metadata.h:54
 msgid "Semantic annotations"
-msgstr ""
+msgstr "Enotadurioù steroniezh"
 
 #: modules/demux/xiph_metadata.h:56
 msgid "Transcript"
@@ -15412,7 +15475,7 @@ msgstr "Kreditoù"
 #: modules/gui/macosx/VLCAboutWindowController.m:101
 #: modules/gui/macosx/VLCMainMenu.m:490 modules/gui/qt/dialogs/help.cpp:119
 msgid "License"
-msgstr "Lañvaz"
+msgstr "Lisañs"
 
 #: modules/gui/macosx/VLCAboutWindowController.m:103
 #: modules/gui/qt/dialogs/help.cpp:122
@@ -15511,7 +15574,7 @@ msgstr ""
 #: modules/gui/qt/managers/addons_manager.cpp:86
 #: modules/gui/skins2/src/skin_main.cpp:535
 msgid "Skins"
-msgstr "Krec'hin"
+msgstr "Temoù"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:211
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:199
@@ -15578,7 +15641,7 @@ msgstr "Sil"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:276
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:88
-#: modules/gui/macosx/VLCSimplePrefsController.m:271
+#: modules/gui/macosx/VLCSimplePrefsController.m:272
 #: modules/gui/qt/dialogs/extended.cpp:96
 msgid "Audio Effects"
 msgstr "Efedoù aodio"
@@ -15609,8 +15672,8 @@ msgstr "Ebarzhit un anv d'ar profil nevez:"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:377
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:489
 #: modules/gui/macosx/VLCMainMenu.m:1164 modules/gui/macosx/VLCOutput.m:414
-#: modules/gui/macosx/VLCSimplePrefsController.m:311
-#: modules/gui/macosx/VLCSimplePrefsController.m:385
+#: modules/gui/macosx/VLCSimplePrefsController.m:312
+#: modules/gui/macosx/VLCSimplePrefsController.m:386
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:792
 #: modules/gui/macosx/prefs.m:188
 #: modules/gui/qt/components/sout/profile_selector.cpp:449
@@ -15655,7 +15718,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:652
 msgid "Organize Presets..."
-msgstr ""
+msgstr "Aozañ ar c'hefluniadurioù..."
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:823
 msgid "Save current selection as new preset"
@@ -15676,7 +15739,7 @@ msgid "Add"
 msgstr "Ouzhpennañ"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:79
-#: modules/gui/macosx/VLCSimplePrefsController.m:287
+#: modules/gui/macosx/VLCSimplePrefsController.m:288
 #: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:297
 msgid "Clear"
 msgstr "Skarzhañ"
@@ -15703,11 +15766,11 @@ msgstr "Amzer"
 #: modules/gui/macosx/VLCCoreDialogProvider.m:194
 #: modules/gui/macosx/VLCCoreDialogProvider.m:236
 #: modules/gui/macosx/VLCOpenWindowController.m:364
-#: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:341
-#: modules/gui/macosx/VLCSimplePrefsController.m:286
+#: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:337
+#: modules/gui/macosx/VLCSimplePrefsController.m:287
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1365
-#: modules/stream_out/chromecast/cast.cpp:1195
+#: modules/stream_out/chromecast/cast.cpp:1197
 msgid "OK"
 msgstr "Mat eo"
 
@@ -15740,25 +15803,25 @@ msgstr ""
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:84
 #: modules/gui/macosx/VLCControlsBarCommon.m:182
-#: modules/gui/macosx/VLCFSPanelController.m:121
+#: modules/gui/macosx/VLCFSPanelController.m:122
 msgid "Backward"
 msgstr ""
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:85
 #: modules/gui/macosx/VLCControlsBarCommon.m:183
-#: modules/gui/macosx/VLCFSPanelController.m:122
+#: modules/gui/macosx/VLCFSPanelController.m:123
 msgid "Seek backward"
 msgstr ""
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:88
 #: modules/gui/macosx/VLCControlsBarCommon.m:185
-#: modules/gui/macosx/VLCFSPanelController.m:118
+#: modules/gui/macosx/VLCFSPanelController.m:119
 msgid "Forward"
 msgstr ""
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:89
 #: modules/gui/macosx/VLCControlsBarCommon.m:186
-#: modules/gui/macosx/VLCFSPanelController.m:119
+#: modules/gui/macosx/VLCFSPanelController.m:120
 msgid "Seek forward"
 msgstr ""
 
@@ -15776,7 +15839,7 @@ msgid "Go to previous item"
 msgstr ""
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:197
-#: modules/gui/macosx/VLCFSPanelController.m:113
+#: modules/gui/macosx/VLCFSPanelController.m:114
 #: modules/gui/macosx/VLCStatusBarIcon.m:106
 msgid "Go to next item"
 msgstr ""
@@ -15820,11 +15883,11 @@ msgstr ""
 #: modules/gui/macosx/VLCOpenWindowController.m:147
 #: modules/gui/macosx/VLCOpenWindowController.m:351
 #: modules/gui/macosx/VLCOutput.m:67
-#: modules/gui/macosx/VLCSimplePrefsController.m:294
-#: modules/gui/macosx/VLCSimplePrefsController.m:372
+#: modules/gui/macosx/VLCSimplePrefsController.m:295
+#: modules/gui/macosx/VLCSimplePrefsController.m:373
 #: modules/gui/macosx/prefs_widgets.m:1125
 #: modules/gui/qt/components/preferences_widgets.cpp:264
-#: modules/gui/qt/components/simple_preferences.cpp:462
+#: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
 #: modules/gui/qt/ui/open.h:279 modules/gui/qt/ui/open_disk.h:304
 #: modules/gui/qt/ui/open_file.h:146 modules/gui/qt/ui/sprefs_audio.h:414
@@ -15886,7 +15949,7 @@ msgstr "Mirout ar roudenn video orin"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:165
 #: modules/gui/qt/ui/profiles.h:747
 msgid "Resolution"
-msgstr "Diarunusted"
+msgstr "Spisder"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:166
 #: modules/gui/qt/ui/profiles.h:738
@@ -16030,10 +16093,10 @@ msgid "A SDP export is requested, but no URL is provided."
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:1060
-#: modules/gui/macosx/VLCSimplePrefsController.m:696
-#: modules/gui/macosx/VLCSimplePrefsController.m:724
-#: modules/gui/macosx/VLCSimplePrefsController.m:1257
-#: modules/gui/qt/components/simple_preferences.cpp:691
+#: modules/gui/macosx/VLCSimplePrefsController.m:697
+#: modules/gui/macosx/VLCSimplePrefsController.m:725
+#: modules/gui/macosx/VLCSimplePrefsController.m:1258
+#: modules/gui/qt/components/simple_preferences.cpp:692
 msgid "Custom"
 msgstr "Personelaat"
 
@@ -16057,34 +16120,34 @@ msgstr "Fazioù ha kemennoù"
 msgid "Clean up"
 msgstr "Skarzhañ"
 
-#: modules/gui/macosx/VLCFSPanelController.m:110
+#: modules/gui/macosx/VLCFSPanelController.m:111
 msgid "Play/Pause the current media"
 msgstr ""
 
-#: modules/gui/macosx/VLCFSPanelController.m:116
+#: modules/gui/macosx/VLCFSPanelController.m:117
 msgid "Go to the previous item"
 msgstr ""
 
-#: modules/gui/macosx/VLCFSPanelController.m:124
 #: modules/gui/macosx/VLCFSPanelController.m:125
+#: modules/gui/macosx/VLCFSPanelController.m:126
 msgid "Leave fullscreen"
 msgstr ""
 
-#: modules/gui/macosx/VLCFSPanelController.m:127
+#: modules/gui/macosx/VLCFSPanelController.m:128
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:80
 #: modules/gui/qt/dialogs/toolbar.cpp:477 modules/gui/qt/ui/sprefs_audio.h:408
 msgid "Volume"
 msgstr "Son"
 
-#: modules/gui/macosx/VLCFSPanelController.m:128
+#: modules/gui/macosx/VLCFSPanelController.m:129
 msgid "Adjust the volume"
 msgstr "Keidañ al live-son"
 
-#: modules/gui/macosx/VLCFSPanelController.m:131
+#: modules/gui/macosx/VLCFSPanelController.m:132
 msgid "Adjust the current playback position"
 msgstr ""
 
-#: modules/gui/macosx/VLCFSPanelController.m:316
+#: modules/gui/macosx/VLCFSPanelController.m:317
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:78
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:503
 #, c-format
@@ -16147,7 +16210,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:76
-#: modules/gui/macosx/VLCSimplePrefsController.m:323
+#: modules/gui/macosx/VLCSimplePrefsController.m:324
 msgid "Control playback with the Apple Remote"
 msgstr ""
 
@@ -16156,7 +16219,7 @@ msgid "By default, VLC can be remotely controlled with the Apple Remote."
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:79
-#: modules/gui/macosx/VLCSimplePrefsController.m:325
+#: modules/gui/macosx/VLCSimplePrefsController.m:326
 msgid "Control system volume with the Apple Remote"
 msgstr "Reoilhit an ampled reizhiad gant ar pellurzhier Apple"
 
@@ -16169,7 +16232,7 @@ msgstr ""
 "Padal, gellout a rit dibab kontroliñ al live-son hollek e-plas."
 
 #: modules/gui/macosx/macosx.m:82
-#: modules/gui/macosx/VLCSimplePrefsController.m:326
+#: modules/gui/macosx/VLCSimplePrefsController.m:327
 msgid "Display VLC status menu icon"
 msgstr ""
 
@@ -16190,7 +16253,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:88
-#: modules/gui/macosx/VLCSimplePrefsController.m:324
+#: modules/gui/macosx/VLCSimplePrefsController.m:325
 msgid "Control playback with media keys"
 msgstr ""
 
@@ -16213,7 +16276,7 @@ msgstr ""
 "Peotramant, an etrefas gris a vez implijet."
 
 #: modules/gui/macosx/macosx.m:95
-#: modules/gui/macosx/VLCSimplePrefsController.m:368
+#: modules/gui/macosx/VLCSimplePrefsController.m:369
 msgid "Use the native fullscreen mode"
 msgstr ""
 
@@ -16237,7 +16300,7 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:104
-#: modules/gui/macosx/VLCSimplePrefsController.m:361 modules/gui/qt/qt.cpp:178
+#: modules/gui/macosx/VLCSimplePrefsController.m:362 modules/gui/qt/qt.cpp:178
 msgid "Pause the video playback when minimized"
 msgstr ""
 
@@ -16300,7 +16363,7 @@ msgid "Shows the audio effects button in the main window."
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:125
-#: modules/gui/macosx/VLCSimplePrefsController.m:330
+#: modules/gui/macosx/VLCSimplePrefsController.m:331
 msgid "Control external music players"
 msgstr ""
 
@@ -16430,7 +16493,7 @@ msgid "Hide Others"
 msgstr "Kuzhat ar re all"
 
 #: modules/gui/macosx/VLCMainMenu.m:351
-#: modules/gui/macosx/VLCSimplePrefsController.m:382
+#: modules/gui/macosx/VLCSimplePrefsController.m:383
 msgid "Show All"
 msgstr ""
 
@@ -16520,7 +16583,7 @@ msgstr "Lenn"
 
 #: modules/gui/macosx/VLCMainMenu.m:390
 msgid "Playback Speed"
-msgstr ""
+msgstr "Tizh lenn"
 
 #: modules/gui/macosx/VLCMainMenu.m:394
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:48
@@ -16586,12 +16649,12 @@ msgid "Fit to Screen"
 msgstr ""
 
 #: modules/gui/macosx/VLCMainMenu.m:433
-#: modules/gui/macosx/VLCSimplePrefsController.m:362
+#: modules/gui/macosx/VLCSimplePrefsController.m:363
 msgid "Float on Top"
 msgstr ""
 
 #: modules/gui/macosx/VLCMainMenu.m:441 modules/gui/macosx/VLCMainMenu.m:442
-#: modules/gui/macosx/VLCSimplePrefsController.m:369
+#: modules/gui/macosx/VLCSimplePrefsController.m:370
 #: modules/gui/qt/ui/sprefs_video.h:316
 msgid "Fullscreen Video Device"
 msgstr ""
@@ -16874,7 +16937,7 @@ msgid "Disc"
 msgstr "Kantenn"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:142
-#: modules/gui/macosx/VLCSimplePrefsController.m:301
+#: modules/gui/macosx/VLCSimplePrefsController.m:302
 #: modules/gui/qt/ui/sprefs_input.h:368
 msgid "Network"
 msgstr "Rouedad"
@@ -16903,7 +16966,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCOpenWindowController.m:152
 #: modules/gui/macosx/VLCOpenWindowController.m:348
-#: modules/gui/macosx/VLCSimplePrefsController.m:344
+#: modules/gui/macosx/VLCSimplePrefsController.m:345
 #: modules/gui/qt/ui/sprefs_interface.h:545
 msgid "Choose..."
 msgstr "Dibab..."
@@ -17006,7 +17069,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCOpenWindowController.m:215
 msgid "Capture Audio"
-msgstr ""
+msgstr "Tapadenn aodio"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:344
 msgid "Add Subtitle File:"
@@ -17033,7 +17096,7 @@ msgid "Subtitle encoding"
 msgstr ""
 
 #: modules/gui/macosx/VLCOpenWindowController.m:360
-#: modules/gui/macosx/VLCSimplePrefsController.m:346
+#: modules/gui/macosx/VLCSimplePrefsController.m:347
 #: modules/gui/qt/ui/sprefs_subtitles.h:297
 msgid "Font size"
 msgstr "Ment an nodrezh"
@@ -17136,71 +17199,71 @@ msgstr ""
 msgid "Collapse All"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:58
+#: modules/gui/macosx/VLCPlaylistInfo.m:54
 #: modules/gui/qt/dialogs/mediainfo.cpp:54
 msgid "Media Information"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:62
+#: modules/gui/macosx/VLCPlaylistInfo.m:58
 msgid "Location"
 msgstr "Lec'hiadur"
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:65
+#: modules/gui/macosx/VLCPlaylistInfo.m:61
 msgid "Save Metadata"
 msgstr "Enrollañ ar metaroadennoù"
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:67
+#: modules/gui/macosx/VLCPlaylistInfo.m:63
 #: modules/visualization/visual/visual.c:122
 msgid "General"
 msgstr "Hollek"
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:68
+#: modules/gui/macosx/VLCPlaylistInfo.m:64
 msgid "Codec Details"
 msgstr "Munudoù ar bonez"
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:85
+#: modules/gui/macosx/VLCPlaylistInfo.m:81
 msgid "Read at media"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:86
+#: modules/gui/macosx/VLCPlaylistInfo.m:82
 #: modules/gui/qt/components/info_panels.cpp:578
 msgid "Input bitrate"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:87
+#: modules/gui/macosx/VLCPlaylistInfo.m:83
 msgid "Demuxed"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:88
+#: modules/gui/macosx/VLCPlaylistInfo.m:84
 msgid "Stream bitrate"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:91
-#: modules/gui/macosx/VLCPlaylistInfo.m:96
+#: modules/gui/macosx/VLCPlaylistInfo.m:87
+#: modules/gui/macosx/VLCPlaylistInfo.m:92
 msgid "Decoded blocks"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:92
+#: modules/gui/macosx/VLCPlaylistInfo.m:88
 msgid "Displayed frames"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:93
+#: modules/gui/macosx/VLCPlaylistInfo.m:89
 msgid "Lost frames"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:97
+#: modules/gui/macosx/VLCPlaylistInfo.m:93
 msgid "Played buffers"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:98
+#: modules/gui/macosx/VLCPlaylistInfo.m:94
 msgid "Lost buffers"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:339
+#: modules/gui/macosx/VLCPlaylistInfo.m:335
 msgid "Error while saving meta"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylistInfo.m:340
+#: modules/gui/macosx/VLCPlaylistInfo.m:336
 msgid "VLC was unable to save the meta data."
 msgstr ""
 
@@ -17210,7 +17273,7 @@ msgid "Continue playback?"
 msgstr ""
 
 #: modules/gui/macosx/VLCResumeDialogController.m:49
-#: modules/gui/macosx/VLCSimplePrefsController.m:827
+#: modules/gui/macosx/VLCSimplePrefsController.m:828
 #: modules/gui/qt/dialogs/firstrun.cpp:106
 msgid "Continue"
 msgstr "Kenderc'hel"
@@ -17228,315 +17291,315 @@ msgstr ""
 msgid "Playback of \"%@\" will continue at %@"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:232
-#: modules/gui/qt/components/simple_preferences.cpp:238
-#: modules/gui/qt/components/simple_preferences.cpp:718
+#: modules/gui/macosx/VLCSimplePrefsController.m:233
+#: modules/gui/qt/components/simple_preferences.cpp:239
+#: modules/gui/qt/components/simple_preferences.cpp:719
 #: modules/gui/qt/dialogs/plugins.cpp:375
 msgid "Interface Settings"
 msgstr "Arventennoù an etrefas"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:234
-#: modules/gui/qt/components/simple_preferences.cpp:240
-#: modules/gui/qt/components/simple_preferences.cpp:437
+#: modules/gui/macosx/VLCSimplePrefsController.m:235
+#: modules/gui/qt/components/simple_preferences.cpp:241
+#: modules/gui/qt/components/simple_preferences.cpp:438
 msgid "Audio Settings"
 msgstr "Arventennoù aodio"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:236
-#: modules/gui/qt/components/simple_preferences.cpp:242
-#: modules/gui/qt/components/simple_preferences.cpp:370
+#: modules/gui/macosx/VLCSimplePrefsController.m:237
+#: modules/gui/qt/components/simple_preferences.cpp:243
+#: modules/gui/qt/components/simple_preferences.cpp:371
 msgid "Video Settings"
 msgstr "Arventennoù video"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:238
-#: modules/gui/qt/components/simple_preferences.cpp:244
-#: modules/gui/qt/components/simple_preferences.cpp:859
+#: modules/gui/macosx/VLCSimplePrefsController.m:239
+#: modules/gui/qt/components/simple_preferences.cpp:245
+#: modules/gui/qt/components/simple_preferences.cpp:860
 msgid "Subtitle & On Screen Display Settings"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:240
+#: modules/gui/macosx/VLCSimplePrefsController.m:241
 msgid "Input & Codec Settings"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:273
+#: modules/gui/macosx/VLCSimplePrefsController.m:274
 msgid "General Audio"
 msgstr "Aodio hollek"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:274
+#: modules/gui/macosx/VLCSimplePrefsController.m:275
 msgid "Preferred Audio language"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:275
+#: modules/gui/macosx/VLCSimplePrefsController.m:276
 msgid "Enable Last.fm submissions"
 msgstr "Enaouiñ kasadennoù Last.fm"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:278
+#: modules/gui/macosx/VLCSimplePrefsController.m:279
 msgid "Visualization"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:279
+#: modules/gui/macosx/VLCSimplePrefsController.m:280
 msgid "Keep audio level between sessions"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:280
+#: modules/gui/macosx/VLCSimplePrefsController.m:281
 #: modules/gui/qt/ui/sprefs_audio.h:410
 msgid "Always reset audio start level to:"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:283
+#: modules/gui/macosx/VLCSimplePrefsController.m:284
 #: modules/gui/qt/dialogs/vlm.cpp:492
 msgid "Change"
 msgstr "Kemmañ"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:284
+#: modules/gui/macosx/VLCSimplePrefsController.m:285
 msgid "Change Hotkey"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:288
+#: modules/gui/macosx/VLCSimplePrefsController.m:289
 msgid "Select an action to change the associated hotkey:"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:289
+#: modules/gui/macosx/VLCSimplePrefsController.m:290
 #: modules/gui/qt/components/preferences_widgets.cpp:1150
 msgid "Action"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:290
+#: modules/gui/macosx/VLCSimplePrefsController.m:291
 msgid "Shortcut"
 msgstr "Berradenn"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:293
+#: modules/gui/macosx/VLCSimplePrefsController.m:294
 #: modules/gui/qt/ui/sprefs_input.h:364
 msgid "Record directory or filename"
 msgstr "Enrollañ ar c'havlec'h pe anv ar restr"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:295
+#: modules/gui/macosx/VLCSimplePrefsController.m:296
 msgid "Directory or filename where the records will be stored"
 msgstr "Kavlec'h pe anv ar restr lec'h ma vo stoket an enrolladennoù"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:296
+#: modules/gui/macosx/VLCSimplePrefsController.m:297
 msgid "Repair AVI Files"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:297
+#: modules/gui/macosx/VLCSimplePrefsController.m:298
 msgid "Default Caching Level"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:298
+#: modules/gui/macosx/VLCSimplePrefsController.m:299
 #: modules/gui/qt/ui/open.h:263
 msgid "Caching"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:299
+#: modules/gui/macosx/VLCSimplePrefsController.m:300
 msgid ""
 "Use the complete preferences to configure custom caching values for each "
 "access module."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:300
+#: modules/gui/macosx/VLCSimplePrefsController.m:301
 msgid "Codecs / Muxers"
 msgstr "Bonezioù / Displezherioù"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:303
+#: modules/gui/macosx/VLCSimplePrefsController.m:304
 msgid "Post-Processing Quality"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:305
+#: modules/gui/macosx/VLCSimplePrefsController.m:306
 msgid "Edit default application settings for network protocols"
 msgstr "Aozañ arventennoù dre ziouer an arload evit ar protokoloù kenrouedel"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:309
+#: modules/gui/macosx/VLCSimplePrefsController.m:310
 msgid "Open network streams using the following protocols"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:310
+#: modules/gui/macosx/VLCSimplePrefsController.m:311
 msgid "Note that these are system-wide settings."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:315
+#: modules/gui/macosx/VLCSimplePrefsController.m:316
 msgid "General settings"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:317
+#: modules/gui/macosx/VLCSimplePrefsController.m:318
 msgid "Interface style"
 msgstr "Doare an etrefas"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:318
+#: modules/gui/macosx/VLCSimplePrefsController.m:319
 msgid "Dark"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:319
+#: modules/gui/macosx/VLCSimplePrefsController.m:320
 msgid "Bright"
 msgstr "Lintr"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:322
+#: modules/gui/macosx/VLCSimplePrefsController.m:323
 msgid "Continue playback"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:328
+#: modules/gui/macosx/VLCSimplePrefsController.m:329
 msgid "Playback behaviour"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:329
+#: modules/gui/macosx/VLCSimplePrefsController.m:330
 msgid "Enable notifications on playlist item change"
 msgstr "Enaouiñ ar c'hemennadennoù war ar cheñchamant elfenn roll-lenn"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:332
+#: modules/gui/macosx/VLCSimplePrefsController.m:333
 #: modules/gui/qt/ui/sprefs_interface.h:553
 msgid "Privacy / Network Interaction"
-msgstr ""
+msgstr "Buhez prevez / Etregweredoù Kenrouedad"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:334
+#: modules/gui/macosx/VLCSimplePrefsController.m:335
 msgid "Automatically check for updates"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:337
+#: modules/gui/macosx/VLCSimplePrefsController.m:338
 msgid "HTTP web interface"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:338
+#: modules/gui/macosx/VLCSimplePrefsController.m:339
 msgid "Enable HTTP web interface"
 msgstr "Enaouiñ an etrefas web HTTP"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:342
+#: modules/gui/macosx/VLCSimplePrefsController.m:343
 msgid "Default Encoding"
 msgstr "Enbonegañ dre ziouer"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:343
+#: modules/gui/macosx/VLCSimplePrefsController.m:344
 msgid "Display Settings"
 msgstr "Skrammañ an arventennoù"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:345
+#: modules/gui/macosx/VLCSimplePrefsController.m:346
 #: modules/gui/qt/ui/sprefs_subtitles.h:298
 msgid "Font color"
 msgstr "Liv an nodrezh"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:347 modules/spu/marq.c:157
+#: modules/gui/macosx/VLCSimplePrefsController.m:348 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
 #: modules/gui/qt/ui/sprefs_subtitles.h:296
 msgid "Font"
 msgstr "Nodrezh"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:348
+#: modules/gui/macosx/VLCSimplePrefsController.m:349
 msgid "Subtitle languages"
 msgstr "Yezhoù an istitloù"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:349
+#: modules/gui/macosx/VLCSimplePrefsController.m:350
 #: modules/gui/qt/ui/sprefs_subtitles.h:293
 msgid "Preferred subtitle language"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:351
+#: modules/gui/macosx/VLCSimplePrefsController.m:352
 msgid "Enable OSD"
 msgstr "Enaouiñ an OSD"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:353
+#: modules/gui/macosx/VLCSimplePrefsController.m:354
 #: modules/text_renderer/freetype/freetype.c:104
 msgid "Force bold"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:354
+#: modules/gui/macosx/VLCSimplePrefsController.m:355
 #: modules/text_renderer/freetype/freetype.c:110
 #: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Outline color"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:355
+#: modules/gui/macosx/VLCSimplePrefsController.m:356
 #: modules/text_renderer/freetype/freetype.c:111
 #: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Outline thickness"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:359
+#: modules/gui/macosx/VLCSimplePrefsController.m:360
 #: modules/stream_out/display.c:53 modules/gui/qt/ui/sprefs_video.h:312
 msgid "Display"
 msgstr "Skrammañ"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:360
+#: modules/gui/macosx/VLCSimplePrefsController.m:361
 msgid "Show video within the main window"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:365
+#: modules/gui/macosx/VLCSimplePrefsController.m:366
 msgid "Fullscreen settings"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:366
+#: modules/gui/macosx/VLCSimplePrefsController.m:367
 msgid "Start in fullscreen"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:367
+#: modules/gui/macosx/VLCSimplePrefsController.m:368
 msgid "Black screens in Fullscreen mode"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:371
+#: modules/gui/macosx/VLCSimplePrefsController.m:372
 #: modules/gui/qt/ui/sprefs_video.h:327
 msgid "Video snapshots"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:373
+#: modules/gui/macosx/VLCSimplePrefsController.m:374
 #: modules/meta_engine/folder.c:70
 msgid "Folder"
 msgstr "Teuliad"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:374
+#: modules/gui/macosx/VLCSimplePrefsController.m:375
 #: modules/gui/qt/ui/sprefs_video.h:333
 msgid "Format"
 msgstr "Furmad"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:375
+#: modules/gui/macosx/VLCSimplePrefsController.m:376
 #: modules/gui/qt/ui/sprefs_video.h:330
 msgid "Prefix"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:376
+#: modules/gui/macosx/VLCSimplePrefsController.m:377
 #: modules/gui/qt/ui/sprefs_video.h:332
 msgid "Sequential numbering"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:384
+#: modules/gui/macosx/VLCSimplePrefsController.m:385
 #: modules/gui/macosx/prefs.m:190
 msgid "Reset All"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:386
+#: modules/gui/macosx/VLCSimplePrefsController.m:387
 #: modules/gui/macosx/prefs.m:187 modules/gui/qt/dialogs/preferences.cpp:56
 msgid "Preferences"
 msgstr "Gwellvezioù"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:559
+#: modules/gui/macosx/VLCSimplePrefsController.m:560
 msgid ""
 "Media files cannot be resumed because keeping recent media items is disabled."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:579
+#: modules/gui/macosx/VLCSimplePrefsController.m:580
 msgid "Last check on: %@"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:581
+#: modules/gui/macosx/VLCSimplePrefsController.m:582
 msgid "No check was performed yet."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:698
+#: modules/gui/macosx/VLCSimplePrefsController.m:699
 msgid "Lowest Latency"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:700
+#: modules/gui/macosx/VLCSimplePrefsController.m:701
 msgid "Low Latency"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:704
+#: modules/gui/macosx/VLCSimplePrefsController.m:705
 msgid "Higher Latency"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:706
+#: modules/gui/macosx/VLCSimplePrefsController.m:707
 msgid "Highest Latency"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:826
+#: modules/gui/macosx/VLCSimplePrefsController.m:827
 #: modules/gui/qt/dialogs/preferences.cpp:336
 msgid "Reset Preferences"
 msgstr "Adderaouekaat ar gwellvezioù"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:829
+#: modules/gui/macosx/VLCSimplePrefsController.m:830
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -17549,43 +17612,43 @@ msgid ""
 "Are you sure you want to continue?"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1099
+#: modules/gui/macosx/VLCSimplePrefsController.m:1100
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr ""
 "An arventennoù-mañ n'hallont ket bezañ cheñchet dre ma 'z eo enaouet ar mod "
 "skramm-leun genidik."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1168
+#: modules/gui/macosx/VLCSimplePrefsController.m:1169
 msgid "Choose the folder to save your video snapshots to."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1170
-#: modules/gui/macosx/VLCSimplePrefsController.m:1269
+#: modules/gui/macosx/VLCSimplePrefsController.m:1171
+#: modules/gui/macosx/VLCSimplePrefsController.m:1270
 msgid "Choose"
 msgstr "Dibab"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1267
+#: modules/gui/macosx/VLCSimplePrefsController.m:1268
 msgid "Choose the directory or filename where the records will be stored."
 msgstr ""
 "Dibabit ar c'havlec'h pe anv ar restr lec'h ma vo stoket an enrolladennoù."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1380
+#: modules/gui/macosx/VLCSimplePrefsController.m:1381
 msgid ""
 "Press new keys for\n"
 "\"%@\""
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1453
+#: modules/gui/macosx/VLCSimplePrefsController.m:1454
 msgid "Invalid combination"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1454
+#: modules/gui/macosx/VLCSimplePrefsController.m:1455
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1464
-#: modules/gui/macosx/VLCSimplePrefsController.m:1468
+#: modules/gui/macosx/VLCSimplePrefsController.m:1465
+#: modules/gui/macosx/VLCSimplePrefsController.m:1469
 msgid "This combination is already taken by \"%@\"."
 msgstr ""
 
@@ -17759,7 +17822,7 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:222
 #: modules/gui/qt/ui/video_effects.h:1233
 msgid "Synchronize left and right"
-msgstr ""
+msgstr "Sinkronelaat kleiz ha dehoù"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:224
 #: modules/gui/qt/ui/video_effects.h:1258
@@ -17851,7 +17914,7 @@ msgstr ""
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
 #: modules/gui/qt/ui/video_effects.h:1242
 msgid "Gradient"
-msgstr ""
+msgstr "Gradiant"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:264
 #: modules/video_filter/gradient.c:76
@@ -18054,7 +18117,7 @@ msgstr ""
 
 #: modules/gui/ncurses.c:870
 msgid " Ctrl-l                 Refresh the screen"
-msgstr ""
+msgstr " Ktrl-l                 Freskaat ar skramm"
 
 #: modules/gui/ncurses.c:874
 msgid "[Global]"
@@ -18172,7 +18235,7 @@ msgstr "     A           Ouzhpennañ un elfenn"
 #. xgettext: You can use ⌫ character to translate <backspace>
 #: modules/gui/ncurses.c:911
 msgid " D, <backspace>, <del>  Delete an entry"
-msgstr ""
+msgstr " D, <backspace>, <del>  Dilemel un enmont"
 
 #: modules/gui/ncurses.c:912
 msgid " e                      Eject (if stopped)"
@@ -18443,7 +18506,7 @@ msgstr ""
 #: modules/gui/qt/components/controller_widget.cpp:275
 #: modules/video_output/decklink.cpp:80
 msgid "Aspect Ratio"
-msgstr ""
+msgstr "Feur Neuz"
 
 #: modules/gui/qt/components/epg/EPGWidget.cpp:65
 msgid "No EPG Data Available"
@@ -18521,7 +18584,7 @@ msgstr ""
 
 #: modules/gui/qt/components/extended_panels.cpp:1113
 msgid "6 KHz"
-msgstr ""
+msgstr "6 KHz"
 
 #: modules/gui/qt/components/extended_panels.cpp:1114
 msgid "12 KHz"
@@ -18546,7 +18609,7 @@ msgstr ""
 
 #: modules/gui/qt/components/extended_panels.cpp:1122
 msgid "125 Hz"
-msgstr ""
+msgstr "125 Hz"
 
 #: modules/gui/qt/components/extended_panels.cpp:1123
 msgid "250 Hz"
@@ -18690,7 +18753,7 @@ msgstr ""
 
 #: modules/gui/qt/components/info_panels.cpp:623
 msgid "Overall"
-msgstr ""
+msgstr "En holl"
 
 #: modules/gui/qt/components/interface_widgets.cpp:639
 msgid ""
@@ -18721,7 +18784,7 @@ msgstr ""
 #: modules/gui/qt/components/interface_widgets.cpp:917
 #: modules/gui/qt/dialogs/toolbar.cpp:573
 msgid "Elapsed time"
-msgstr ""
+msgstr "Amzer aet e-bioù"
 
 #: modules/gui/qt/components/interface_widgets.cpp:921
 #: modules/gui/qt/dialogs/toolbar.cpp:577
@@ -19027,21 +19090,21 @@ msgstr ""
 msgid "Key: "
 msgstr "Alc'hwez :"
 
-#: modules/gui/qt/components/simple_preferences.cpp:246
-#: modules/gui/qt/components/simple_preferences.cpp:619
+#: modules/gui/qt/components/simple_preferences.cpp:247
+#: modules/gui/qt/components/simple_preferences.cpp:620
 msgid "Input & Codecs Settings"
 msgstr "Arventennoù an enakad hag ar bonezioù"
 
-#: modules/gui/qt/components/simple_preferences.cpp:248
-#: modules/gui/qt/components/simple_preferences.cpp:903
+#: modules/gui/qt/components/simple_preferences.cpp:249
+#: modules/gui/qt/components/simple_preferences.cpp:904
 msgid "Configure Hotkeys"
 msgstr "Kefluniañ ar berradennoù"
 
-#: modules/gui/qt/components/simple_preferences.cpp:445
+#: modules/gui/qt/components/simple_preferences.cpp:446
 msgid "Device:"
 msgstr "Trobarzhell :"
 
-#: modules/gui/qt/components/simple_preferences.cpp:624
+#: modules/gui/qt/components/simple_preferences.cpp:625
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -19049,58 +19112,56 @@ msgid ""
 "individually in the advanced preferences."
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:692
+#: modules/gui/qt/components/simple_preferences.cpp:693
 msgid "Lowest latency"
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:693
-msgid "Low latency"
-msgstr ""
-
-#: modules/gui/qt/components/simple_preferences.cpp:695
+#: modules/gui/qt/components/simple_preferences.cpp:696
 msgid "High latency"
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:696
+#: modules/gui/qt/components/simple_preferences.cpp:697
 msgid "Higher latency"
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:744
+#: modules/gui/qt/components/simple_preferences.cpp:745
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr ""
+"An dra-mañ a zo etrefas VLC hag a c'haller cheñch e dem. Gellout a rit "
+"pellgargañ temoù war"
 
-#: modules/gui/qt/components/simple_preferences.cpp:746
+#: modules/gui/qt/components/simple_preferences.cpp:747
 msgid "VLC skins website"
-msgstr ""
+msgstr "lec'hienn web temoù VLC"
 
-#: modules/gui/qt/components/simple_preferences.cpp:770
+#: modules/gui/qt/components/simple_preferences.cpp:771
 msgid "System's default"
 msgstr ""
 
-#: modules/gui/qt/components/simple_preferences.cpp:1308
+#: modules/gui/qt/components/simple_preferences.cpp:1309
 msgid "File associations"
 msgstr "Kevreadenn ar restroù"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1317
+#: modules/gui/qt/components/simple_preferences.cpp:1318
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "Restroù aodio"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1318
+#: modules/gui/qt/components/simple_preferences.cpp:1319
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "Restroù video"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1319
+#: modules/gui/qt/components/simple_preferences.cpp:1320
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "Restroù rolloù-lenn"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1384
+#: modules/gui/qt/components/simple_preferences.cpp:1385
 msgid "&Apply"
 msgstr "&Arload"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1385
+#: modules/gui/qt/components/simple_preferences.cpp:1386
 #: modules/gui/qt/dialogs/convert.cpp:137
 #: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
 #: modules/gui/qt/dialogs/openurl.cpp:60
@@ -19623,6 +19684,8 @@ msgid ""
 "Skins customize player's appearance. You can activate them through "
 "preferences."
 msgstr ""
+"Gant an temoù e vez personelaet neuz al lenner. Gellout a rit enaouiñ anezho "
+"e-barzh an arventennoù."
 
 #: modules/gui/qt/dialogs/plugins.cpp:382
 msgid ""
@@ -19721,7 +19784,7 @@ msgstr "&Adderaouekaat ar gwellvezioù"
 
 #: modules/gui/qt/dialogs/preferences.cpp:167
 msgid "Only show current"
-msgstr ""
+msgstr "Diskouez war-ober hepken"
 
 #: modules/gui/qt/dialogs/preferences.cpp:169
 msgid "Only show modules related to current playback"
@@ -19792,7 +19855,7 @@ msgstr "Afell vras"
 
 #: modules/gui/qt/dialogs/toolbar.cpp:80
 msgid "Native Slider"
-msgstr ""
+msgstr "Rinkler genidik"
 
 #: modules/gui/qt/dialogs/toolbar.cpp:94
 msgid "Main Toolbar"
@@ -20142,7 +20205,7 @@ msgstr "Roll-&lenn"
 
 #: modules/gui/qt/menus.cpp:488
 msgid "Ctrl+L"
-msgstr "Ctrl+L"
+msgstr "Ktrl+L"
 
 #: modules/gui/qt/menus.cpp:491
 msgid "Docked Playlist"
@@ -20158,7 +20221,7 @@ msgstr ""
 
 #: modules/gui/qt/menus.cpp:510
 msgid "Ctrl+H"
-msgstr "Ctrl+H"
+msgstr "Krl+H"
 
 #: modules/gui/qt/menus.cpp:519
 msgid "&Fullscreen Interface"
@@ -20310,7 +20373,7 @@ msgstr "Lammat &distro"
 
 #: modules/gui/qt/menus.cpp:926
 msgid "Ctrl+T"
-msgstr ""
+msgstr "Ktrl+T"
 
 #: modules/gui/qt/menus.cpp:941
 msgid "Open &Network..."
@@ -20512,7 +20575,7 @@ msgstr ""
 
 #: modules/gui/qt/qt.cpp:162
 msgid "Start in minimal view (without menus)"
-msgstr ""
+msgstr "Loc'hañ gant ar mod-gwelet bihanañ (hep lañser)"
 
 #: modules/gui/qt/qt.cpp:164
 msgid "Display background cone or art"
@@ -20564,7 +20627,7 @@ msgstr ""
 
 #: modules/gui/qt/qt.cpp:200
 msgid "When minimized"
-msgstr ""
+msgstr "Pa vez bihanikaet"
 
 #: modules/gui/qt/qt.cpp:218
 msgid "Qt interface"
@@ -20666,6 +20729,8 @@ msgid ""
 "When set to 'no', this parameter is intended to give old skins a chance to "
 "play back video even though no video tag is implemented"
 msgstr ""
+"P'emañ lakaet war \"Ket\", an arventenn-mañ a zo soñjet evit reiñ an tu d'an "
+"temoù kozh da lenn ar videoioù ha pa ne vefe ket emplementet baliz ar video"
 
 #: modules/gui/skins2/src/skin_main.cpp:536
 msgid "Skinnable Interface"
@@ -20838,7 +20903,7 @@ msgstr ""
 
 #: modules/hw/vdpau/chroma.c:883
 msgid "Temporal-spatial"
-msgstr ""
+msgstr "Amzerel-spas"
 
 #: modules/hw/vdpau/chroma.c:887 modules/hw/vdpau/display.c:45
 msgid "VDPAU"
@@ -20906,7 +20971,7 @@ msgstr ""
 
 #: modules/keystore/keychain.m:41
 msgid "No"
-msgstr ""
+msgstr "Ket"
 
 #: modules/keystore/keychain.m:41
 msgid "Any"
@@ -21203,7 +21268,7 @@ msgstr "Lua"
 
 #: modules/lua/vlc.c:86
 msgid "Lua interpreter"
-msgstr ""
+msgstr "Jubenner Lua"
 
 #: modules/lua/vlc.c:97 modules/lua/vlc.c:104
 msgid "Lua HTTP"
@@ -21632,7 +21697,7 @@ msgstr ""
 
 #: modules/meta_engine/ID3Genres.h:134
 msgid "Speech"
-msgstr ""
+msgstr "Komzoù"
 
 #: modules/meta_engine/ID3Genres.h:135
 msgid "Chanson"
@@ -21640,7 +21705,7 @@ msgstr ""
 
 #: modules/meta_engine/ID3Genres.h:136
 msgid "Opera"
-msgstr ""
+msgstr "Opera"
 
 #: modules/meta_engine/ID3Genres.h:137
 msgid "Chamber Music"
@@ -21704,7 +21769,7 @@ msgstr ""
 
 #: modules/meta_engine/ID3Genres.h:153
 msgid "Duet"
-msgstr ""
+msgstr "Daouad"
 
 #: modules/meta_engine/ID3Genres.h:154
 msgid "Punk Rock"
@@ -22221,7 +22286,7 @@ msgstr "Liesplezher MP4/MOV"
 
 #: modules/mux/mp4/mp4.c:77
 msgid "Fragmented and streamable MP4 muxer"
-msgstr ""
+msgstr "Liesplezher MP4 bruzunet ha skignus"
 
 #: modules/mux/mpeg/ps.c:48 modules/mux/mpeg/ts.c:162
 msgid "DTS delay (ms)"
@@ -22441,7 +22506,7 @@ msgstr "Liesplezher TS (libdvbpsi)"
 
 #: modules/mux/mpjpeg.c:47
 msgid "Multipart JPEG muxer"
-msgstr ""
+msgstr "Liesplezher liesfurmad JPEG"
 
 #: modules/mux/ogg.c:47
 msgid "Index interval"
@@ -22574,12 +22639,16 @@ msgstr "Video MPEG"
 msgid "VC-1 packetizer"
 msgstr "Paketer VC-1"
 
-#: modules/services_discovery/avahi.c:52 modules/services_discovery/avahi.c:283
+#: modules/services_discovery/avahi.c:55 modules/services_discovery/avahi.c:484
 msgid "Zeroconf network services"
 msgstr ""
 
-#: modules/services_discovery/avahi.c:56
+#: modules/services_discovery/avahi.c:60
 msgid "Zeroconf services"
+msgstr ""
+
+#: modules/services_discovery/avahi.c:69
+msgid "Avahi Renderer Discovery"
 msgstr ""
 
 #: modules/services_discovery/bonjour.m:44
@@ -22811,7 +22880,7 @@ msgid "Applications"
 msgstr "Arloadoù"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:326
+#: modules/video_output/win32/direct3d9.c:340
 msgid "Desktop"
 msgstr "Burev"
 
@@ -23570,7 +23639,7 @@ msgstr ""
 
 #: modules/stream_filter/skiptags.c:243
 msgid "APE/ID3 tags-skipping filter"
-msgstr ""
+msgstr "Sil ar balizoù APR/ID3"
 
 #: modules/stream_out/autodel.c:46
 msgid "Autodel"
@@ -23661,7 +23730,7 @@ msgstr ""
 
 #: modules/stream_out/bridge.c:92
 msgid "Bridge"
-msgstr ""
+msgstr "Pont"
 
 #: modules/stream_out/bridge.c:93
 msgid "Bridge stream output"
@@ -23698,7 +23767,7 @@ msgid ""
 msgstr ""
 
 #: modules/stream_out/chromecast/cast.cpp:192
-#: modules/stream_out/chromecast/cast.cpp:1196
+#: modules/stream_out/chromecast/cast.cpp:1198
 msgid "Performance warning"
 msgstr ""
 
@@ -23732,7 +23801,7 @@ msgstr ""
 
 #: modules/stream_out/chromecast/cast.cpp:223
 msgid "Conversion quality"
-msgstr ""
+msgstr "Kalite an emdroañ"
 
 #: modules/stream_out/chromecast/cast.cpp:224
 msgid "Change this option to increase conversion speed or quality."
@@ -23758,11 +23827,11 @@ msgstr ""
 msgid "Chromecast stream output"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:1195
+#: modules/stream_out/chromecast/cast.cpp:1197
 msgid "Ok, Don't warn me again"
 msgstr "Mat eo, chom hep kemenn ac'hanon ken"
 
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/stream_out/chromecast/cast.cpp:1199
 msgid ""
 "Casting this video requires conversion. This conversion can use all the "
 "available power and could quickly drain your battery."
@@ -23856,15 +23925,15 @@ msgstr ""
 
 #: modules/stream_out/es.c:53 modules/stream_out/standard.c:45
 msgid "Output muxer"
-msgstr "Liesplezher an ec'hankad"
+msgstr "Liesplezher an ezvont"
 
 #: modules/stream_out/es.c:55
 msgid "This is the default muxer method that will be used."
-msgstr ""
+msgstr "An hentenn liesplezher dre-ziouer-mañ a vo implijet."
 
 #: modules/stream_out/es.c:56
 msgid "Audio output muxer"
-msgstr "Liesplezher an ec'hankad aodio"
+msgstr "Liesplezher an ezvont aodio"
 
 #: modules/stream_out/es.c:58
 msgid "This is the muxer that will be used for audio."
@@ -23876,7 +23945,7 @@ msgstr "Liesplezher an ec'hankad video"
 
 #: modules/stream_out/es.c:61
 msgid "This is the muxer that will be used for video."
-msgstr ""
+msgstr "Al liesplezher-mañ eo a vo implijet evit ar video."
 
 #: modules/stream_out/es.c:63
 msgid "Output URL"
@@ -24161,7 +24230,7 @@ msgstr ""
 
 #: modules/stream_out/setid.c:61
 msgid "Set ID"
-msgstr ""
+msgstr "Dibab an ID"
 
 #: modules/stream_out/setid.c:62
 msgid "Set ES id"
@@ -24335,7 +24404,7 @@ msgstr ""
 #: modules/stream_out/transcode/transcode.c:52
 #: share/lua/http/dialogs/create_stream.html:212
 msgid "Video bitrate"
-msgstr ""
+msgstr "Kas binarel video"
 
 #: modules/stream_out/transcode/transcode.c:54
 msgid "Target bitrate of the transcoded video stream."
@@ -24411,7 +24480,7 @@ msgstr ""
 
 #: modules/stream_out/transcode/transcode.c:90
 msgid "This is the audio codec that will be used."
-msgstr ""
+msgstr "Kodek aodio da implijout."
 
 #: modules/stream_out/transcode/transcode.c:91
 #: share/lua/http/dialogs/create_stream.html:231
@@ -24706,7 +24775,7 @@ msgstr ""
 
 #: modules/video_chroma/omxdl.c:36
 msgid "OpenMAX DL image processing"
-msgstr ""
+msgstr "Tretadur ar skeudennoù OpenMAX DL"
 
 #: modules/video_chroma/rv32.c:46
 msgid "RV32 conversion filter"
@@ -24714,7 +24783,7 @@ msgstr "Sil an amdrodur RV32"
 
 #: modules/video_chroma/swscale.c:58
 msgid "Scaling mode"
-msgstr ""
+msgstr "Mod skeuliañ"
 
 #: modules/video_chroma/swscale.c:59
 msgid "Scaling mode to use."
@@ -25034,7 +25103,7 @@ msgstr ""
 
 #: modules/video_filter/canvas.c:86
 msgid "Output height"
-msgstr ""
+msgstr "Uhelder an ezvont"
 
 #: modules/video_filter/canvas.c:88
 msgid "Output (canvas) image height"
@@ -25111,7 +25180,7 @@ msgstr ""
 
 #: modules/video_filter/croppadd.c:47
 msgid "Pixels to crop from top"
-msgstr ""
+msgstr "Pikselioù da grennañ adalek al laez"
 
 #: modules/video_filter/croppadd.c:49
 msgid "Number of pixels to crop from the top of the image."
@@ -25199,7 +25268,7 @@ msgstr ""
 
 #: modules/video_filter/deinterlace/algo_phosphor.h:56
 msgid "Low"
-msgstr ""
+msgstr "Izel"
 
 #: modules/video_filter/deinterlace/algo_phosphor.h:57
 msgid "Medium"
@@ -25249,6 +25318,9 @@ msgid ""
 "phosphor light decay for the old field in the Phosphor framerate doubler. "
 "Default: Low."
 msgstr ""
+"An dra-se a gontrol kreñver ar sil teñvalaat hag a ra evel ma vefe ar "
+"c'houlaouenn fosforek a oa gant ar skrammoù kozh d'an TVoù gant ur sil "
+"fosfor. Dre ziouer: izel."
 
 #: modules/video_filter/deinterlace/deinterlace.c:299
 msgid "Deinterlacing video filter"
@@ -25601,7 +25673,7 @@ msgstr ""
 
 #: modules/video_filter/opencv_wrapper.c:81
 msgid "Scale factor (0.1-2.0)"
-msgstr ""
+msgstr "Feur skeuliañ (0,1-2,0)"
 
 #: modules/video_filter/opencv_wrapper.c:82
 msgid ""
@@ -25800,7 +25872,7 @@ msgstr ""
 
 #: modules/video_filter/rotate.c:56
 msgid "Angle in degrees"
-msgstr ""
+msgstr "Korn e derezioù"
 
 #: modules/video_filter/rotate.c:57
 msgid "Angle in degrees (0 to 359)"
@@ -25985,7 +26057,7 @@ msgstr ""
 msgid "Color ASCII art video output"
 msgstr ""
 
-#: modules/video_output/caopengllayer.m:55
+#: modules/video_output/caopengllayer.m:946
 msgid "Core Animation OpenGL Layer (Mac OS X)"
 msgstr ""
 
@@ -26126,17 +26198,19 @@ msgstr ""
 
 #: modules/video_output/fb.c:65
 msgid "Framebuffer resolution to use"
-msgstr ""
+msgstr "Spisder memor-skurzer da implijout"
 
 #: modules/video_output/fb.c:67
 msgid ""
 "Select the resolution for the framebuffer. Currently it supports the values "
 "0=QCIF 1=CIF 2=NTSC 3=PAL, 4=auto (default 4=auto)"
 msgstr ""
+"Diuzit ar spisder evit ar memor-skurzer. An talvoudegezhioù 0=QCIF 1=CIF "
+"2=NTSC 3=PAL, 4=auto (dre ziouer 4=otom) a vez degemeret gantañ"
 
 #: modules/video_output/fb.c:70
 msgid "Framebuffer uses hw acceleration"
-msgstr ""
+msgstr "Ar \"memor-skurzer\" a implij fonusadurioù an dafar"
 
 #: modules/video_output/fb.c:71
 msgid "Disable for double buffering in software."
@@ -26234,53 +26308,53 @@ msgstr "OpenGL"
 msgid "OpenGL video output"
 msgstr "Ec'hankad video OpenGL"
 
-#: modules/video_output/opengl/egl.c:440
+#: modules/video_output/opengl/egl.c:441
 msgid "EGL"
 msgstr "EGL"
 
-#: modules/video_output/opengl/egl.c:441
+#: modules/video_output/opengl/egl.c:442
 msgid "EGL extension for OpenGL"
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:70
+#: modules/video_output/win32/direct3d9.c:77
 msgid "The desktop mode allows you to display the video on the desktop."
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:72
+#: modules/video_output/win32/direct3d9.c:79
 #: modules/video_output/win32/direct3d11.c:65
 msgid "Use hardware blending support"
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:74
+#: modules/video_output/win32/direct3d9.c:81
 #: modules/video_output/win32/direct3d11.c:67
 msgid "Try to use hardware acceleration for subtitle/OSD blending."
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:76
+#: modules/video_output/win32/direct3d9.c:83
 msgid "Pixel Shader"
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:78
+#: modules/video_output/win32/direct3d9.c:85
 msgid "Choose a pixel shader to apply."
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:79
+#: modules/video_output/win32/direct3d9.c:86
 msgid "Path to HLSL file"
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:80
+#: modules/video_output/win32/direct3d9.c:87
 msgid "Path to an HLSL file containing a single pixel shader."
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:82
+#: modules/video_output/win32/direct3d9.c:89
 msgid "HLSL File"
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:84
+#: modules/video_output/win32/direct3d9.c:91
 msgid "Recommended video output for Windows Vista and later versions"
 msgstr ""
 
-#: modules/video_output/win32/direct3d9.c:91
+#: modules/video_output/win32/direct3d9.c:98
 msgid "Direct3D9 video output"
 msgstr ""
 
@@ -26667,7 +26741,7 @@ msgstr ""
 
 #: modules/video_splitter/panoramix.c:110
 msgid "Attenuation, middle (in %)"
-msgstr ""
+msgstr "Skañvadur, kreizad (e %)"
 
 #: modules/video_splitter/panoramix.c:111
 msgid ""
@@ -26868,6 +26942,8 @@ msgid ""
 "This allows you to set the resolution of the Goom display (bigger resolution "
 "will be prettier but more CPU intensive)."
 msgstr ""
+"An dra-se a ro an tu deoc'h da dermeniñ spisder diskwel ar prenestr Goom (ur "
+"spisder uheloc'h a vo bravoc'h met a c'houlenno muioc'h digant ar prosesor)."
 
 #: modules/visualization/goom.c:51
 msgid "Goom animation speed"
@@ -27317,24 +27393,28 @@ msgstr "Diviz"
 #: modules/gui/qt/ui/sprefs_interface.h:526
 #: modules/gui/qt/ui/sprefs_subtitles.h:286
 #: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
+#, fuzzy
 msgid "Form"
-msgstr ""
+msgstr "Furmad"
 
 #: modules/gui/qt/ui/equalizer.h:132
+#, fuzzy
 msgid "Preset"
-msgstr ""
+msgstr "Adderaouekaat"
 
 #: modules/gui/qt/ui/equalizer.h:134
 msgid "0.00 dB"
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:137
+#, fuzzy
 msgid "&Verbosity:"
-msgstr ""
+msgstr "Munudoù"
 
 #: modules/gui/qt/ui/messages_panel.h:138
+#, fuzzy
 msgid "&Filter:"
-msgstr ""
+msgstr "Silañ :"
 
 #: modules/gui/qt/ui/messages_panel.h:139
 msgid "&Save as..."
@@ -27353,8 +27433,9 @@ msgid "Show &more options"
 msgstr "Diskouez muioc'h a zibarzhioù"
 
 #: modules/gui/qt/ui/open.h:265
+#, fuzzy
 msgid "Change the caching for the media"
-msgstr ""
+msgstr "Cheñch anv ar servij diskouezet."
 
 #: modules/gui/qt/ui/open.h:267
 msgid " ms"
@@ -27365,20 +27446,23 @@ msgid "MRL"
 msgstr "MRL"
 
 #: modules/gui/qt/ui/open.h:269
+#, fuzzy
 msgid "Start Time"
-msgstr ""
+msgstr "Amzer deraouiñ"
 
 #: modules/gui/qt/ui/open.h:270
+#, fuzzy
 msgid "Stop Time"
-msgstr ""
+msgstr "Amzer ehan"
 
 #: modules/gui/qt/ui/open.h:271
 msgid "Edit Options"
 msgstr "Aozañ an dibarzhioù"
 
 #: modules/gui/qt/ui/open.h:272
+#, fuzzy
 msgid "Extra media"
-msgstr ""
+msgstr "PMT ouzhpenn"
 
 #: modules/gui/qt/ui/open.h:274
 msgid "Complete MRL for VLC internal"
@@ -27389,16 +27473,18 @@ msgid "Select the file"
 msgstr "Diuzañ ur restr"
 
 #: modules/gui/qt/ui/open.h:281
+#, fuzzy
 msgid "Change the start time for the media"
-msgstr ""
+msgstr "Cheñch anv ar servij diskouezet."
 
 #: modules/gui/qt/ui/open.h:283 modules/gui/qt/ui/open.h:287
 msgid "HH'H':mm'm':ss's'.zzz"
 msgstr "HH'H':mm'm':ss's'.zzz"
 
 #: modules/gui/qt/ui/open.h:285
+#, fuzzy
 msgid "Change the stop time for the media"
-msgstr ""
+msgstr "Cheñch anv ar servij diskouezet."
 
 #: modules/gui/qt/ui/open.h:288
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -27437,8 +27523,9 @@ msgid "SVCD/VCD"
 msgstr "SVCD/VCD"
 
 #: modules/gui/qt/ui/open_disk.h:300
+#, fuzzy
 msgid "Disable Disc Menus"
-msgstr ""
+msgstr "Diweredekaat "
 
 #: modules/gui/qt/ui/open_disk.h:302
 msgid "No disc menus"
@@ -27449,24 +27536,28 @@ msgid "Disc device"
 msgstr "Trobarzhell kantennoù"
 
 #: modules/gui/qt/ui/open_disk.h:305
+#, fuzzy
 msgid "Starting Position"
-msgstr ""
+msgstr "Lec'hiadur"
 
 #: modules/gui/qt/ui/open_disk.h:308
 msgid "Audio and Subtitles"
 msgstr "Aodio hag istitloù"
 
 #: modules/gui/qt/ui/open_file.h:142
+#, fuzzy
 msgid "Use a sub&title file"
-msgstr ""
+msgstr "Arverañ ar restr is titloù"
 
 #: modules/gui/qt/ui/open_file.h:144
+#, fuzzy
 msgid "Select the subtitle file"
-msgstr ""
+msgstr "Diuzañ ur restr"
 
 #: modules/gui/qt/ui/open_file.h:148
+#, fuzzy
 msgid "Choose one or more media file to open"
-msgstr ""
+msgstr "Dibab ur pe vuioc’h a restr da zigeriñ"
 
 #: modules/gui/qt/ui/open_file.h:150
 msgid "File Selection"
@@ -27486,8 +27577,9 @@ msgid "Network Protocol"
 msgstr "Komenad ar rouedad"
 
 #: modules/gui/qt/ui/open_net.h:95
+#, fuzzy
 msgid "Please enter a network URL:"
-msgstr ""
+msgstr "Ebarzhit anv ar profil nevez."
 
 #: modules/gui/qt/ui/profiles.h:699
 msgid "Profile edition"
@@ -27498,8 +27590,9 @@ msgid "FLAC"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:701
+#, fuzzy
 msgid "MP&4/MOV"
-msgstr ""
+msgstr "Liesplezher MP4/MOV"
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "Ogg/Ogm"
@@ -27522,8 +27615,9 @@ msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:707
+#, fuzzy
 msgid "&MPEG-TS"
-msgstr ""
+msgstr "MPEG-PS"
 
 #: modules/gui/qt/ui/profiles.h:708
 msgid "RAW"
@@ -27551,67 +27645,77 @@ msgstr "ASF/WMV"
 
 #: modules/gui/qt/ui/profiles.h:714
 msgid "MP&3"
-msgstr ""
+msgstr "MP&3"
 
 #: modules/gui/qt/ui/profiles.h:715
 msgid "Features"
 msgstr "Arc'hweladurioù"
 
 #: modules/gui/qt/ui/profiles.h:717
+#, fuzzy
 msgid "Streamable"
-msgstr ""
+msgstr "Anv al lanv"
 
 #: modules/gui/qt/ui/profiles.h:718
+#, fuzzy
 msgid "Chapters"
-msgstr ""
+msgstr "Chabistr"
 
 #: modules/gui/qt/ui/profiles.h:721
+#, fuzzy
 msgid "Menus"
-msgstr ""
+msgstr "Lañser"
 
 #: modules/gui/qt/ui/profiles.h:728
 msgid "Fra&me Rate"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:729
+#, fuzzy
 msgid "Same as source"
-msgstr ""
+msgstr "Tarzh"
 
 #: modules/gui/qt/ui/profiles.h:731
 msgid " fps"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:732
+#, fuzzy
 msgid "Custom options"
-msgstr ""
+msgstr "Dibarzhioù ar c'hefluniad"
 
 #: modules/gui/qt/ui/profiles.h:733
+#, fuzzy
 msgid "&Quality"
-msgstr ""
+msgstr "Live ar perzhded"
 
 #: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
 msgid "Not Used"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:755
+#, fuzzy
 msgid " kb/s"
-msgstr ""
+msgstr "%u kb/s"
 
 #: modules/gui/qt/ui/profiles.h:737 modules/gui/qt/ui/profiles.h:757
+#, fuzzy
 msgid "Encoding parameters"
-msgstr ""
+msgstr "Perzhded an enbonegañ"
 
 #: modules/gui/qt/ui/profiles.h:740
+#, fuzzy
 msgid "Frame size"
-msgstr ""
+msgstr "Feur framm"
 
 #: modules/gui/qt/ui/profiles.h:743 modules/gui/qt/ui/profiles.h:746
 msgid "px"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:756
+#, fuzzy
 msgid "Sa&mple Rate"
-msgstr ""
+msgstr "Feur standilhon"
 
 #: modules/gui/qt/ui/profiles.h:764
 msgid "Profile &Name"
@@ -27622,12 +27726,14 @@ msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:202
+#, fuzzy
 msgid "Destination Setup"
-msgstr ""
+msgstr "Anv ar pont enmont degemer"
 
 #: modules/gui/qt/ui/sout.h:203
+#, fuzzy
 msgid "Select destinations to stream to"
-msgstr ""
+msgstr "Diuzañ \"Dibarzhioù kempleshoc'h\" evit gwel an dibarzhioù all."
 
 #: modules/gui/qt/ui/sout.h:204
 msgid ""
@@ -27636,28 +27742,33 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:205
+#, fuzzy
 msgid "New destination"
-msgstr ""
+msgstr "Deskrivadur ar rumm"
 
 #: modules/gui/qt/ui/sout.h:207
+#, fuzzy
 msgid "Display locally"
-msgstr ""
+msgstr "Skrammañ"
 
 #: modules/gui/qt/ui/sout.h:209
+#, fuzzy
 msgid "Transcoding Options"
-msgstr ""
+msgstr "Dibarzhioù ar treuzvonegañ"
 
 #: modules/gui/qt/ui/sout.h:210
+#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr ""
+msgstr "Dibarzhioù ar treuzvonegañ"
 
 #: modules/gui/qt/ui/sout.h:211
 msgid "Activate Transcoding"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:212
+#, fuzzy
 msgid "Option Setup"
-msgstr ""
+msgstr "Dibarzhioù"
 
 #: modules/gui/qt/ui/sout.h:213
 msgid "Set up any additional options for streaming"
@@ -27672,8 +27783,9 @@ msgid "Stream all elementary streams"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:216
+#, fuzzy
 msgid "Generated stream output string"
-msgstr ""
+msgstr "Arventennoù ec'hankad al lanv hollek"
 
 #: modules/gui/qt/ui/sprefs_audio.h:409
 msgid " %"
@@ -27700,8 +27812,9 @@ msgid "Enable Time-Stretching audio"
 msgstr "Enaouiñ astennadur amzerel an aodio"
 
 #: modules/gui/qt/ui/sprefs_audio.h:420
+#, fuzzy
 msgid "Replay gain mode:"
-msgstr ""
+msgstr "Adlenn en-dro"
 
 #: modules/gui/qt/ui/sprefs_audio.h:421
 msgid "Normalize volume to:"
@@ -27736,8 +27849,9 @@ msgid "x264 profile and level selection"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:356
+#, fuzzy
 msgid "Hardware-accelerated decoding"
-msgstr ""
+msgstr "Ezvoneger gant ar periant"
 
 #: modules/gui/qt/ui/sprefs_input.h:357
 msgid "Video quality post-processing level"
@@ -27761,7 +27875,7 @@ msgstr "Trobarzhell lenner kantennoù dre ziouer"
 
 #: modules/gui/qt/ui/sprefs_input.h:366
 msgid "Damaged or incomplete AVI file"
-msgstr ""
+msgstr "Restr AVI labezet pe diglok"
 
 #: modules/gui/qt/ui/sprefs_input.h:369
 msgid "HTTP proxy URL"
@@ -27780,8 +27894,9 @@ msgid "Live555 stream transport"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:373
+#, fuzzy
 msgid "Default caching policy"
-msgstr ""
+msgstr "Enbonegañ dre ziouer"
 
 #: modules/gui/qt/ui/sprefs_interface.h:528
 msgid "Menus language:"
@@ -27800,8 +27915,9 @@ msgid "This is VLC's default interface, with a native look and feel."
 msgstr "An dra-mañ a zo etrefas dre ziouer VLC, gant an neuz orin."
 
 #: modules/gui/qt/ui/sprefs_interface.h:534
+#, fuzzy
 msgid "Use native style"
-msgstr ""
+msgstr "Arverañ ar restr is titloù"
 
 #: modules/gui/qt/ui/sprefs_interface.h:535
 msgid "Resize interface to video size"
@@ -27812,40 +27928,46 @@ msgid "Show controls in full screen mode"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:537
+#, fuzzy
 msgid "Pause playback when minimized"
-msgstr ""
+msgstr "Pa vez bihanikaet"
 
 #: modules/gui/qt/ui/sprefs_interface.h:538
 msgid "Show media change popup:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:539
+#, fuzzy
 msgid "Start in minimal view mode"
-msgstr ""
+msgstr "Loc'hañ gant ar mod-gwelet bihanañ (hep lañser)"
 
 #: modules/gui/qt/ui/sprefs_interface.h:540
 msgid "Force window style:"
-msgstr ""
+msgstr "Rediañ neuz ar prenestr:"
 
 #: modules/gui/qt/ui/sprefs_interface.h:541
+#, fuzzy
 msgid "Integrate video in interface"
-msgstr ""
+msgstr "Tuginañ sil ar video"
 
 #: modules/gui/qt/ui/sprefs_interface.h:542
+#, fuzzy
 msgid "Show systray icon"
-msgstr ""
+msgstr "Arlun ar varrenn labourioù"
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
+#, fuzzy
 msgid "Auto raising the interface:"
-msgstr ""
+msgstr "Etrefas Ncurses"
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
 msgid "Skin resource file:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
+#, fuzzy
 msgid "Playlist and Instances"
-msgstr ""
+msgstr "Lenn ha paouez"
 
 #: modules/gui/qt/ui/sprefs_interface.h:549
 msgid "Pause on the last frame of a video"
@@ -27876,12 +27998,14 @@ msgid "Operating System Integration"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:564
+#, fuzzy
 msgid "File extensions association"
-msgstr ""
+msgstr "Kevreadenn ar restroù"
 
 #: modules/gui/qt/ui/sprefs_interface.h:565
+#, fuzzy
 msgid "Set up associations..."
-msgstr ""
+msgstr "Kevreadenn ar restroù"
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:288
 msgid "Enable On Screen Display (OSD)"
@@ -27896,16 +28020,18 @@ msgid "Enable subtitles"
 msgstr "Enaouiñ an istitloù"
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:292
+#, fuzzy
 msgid "Subtitle Language"
-msgstr ""
+msgstr "Yezh an istitloù"
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:294
 msgid "Default encoding"
 msgstr "Enbonegañ dre ziouer"
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:295
+#, fuzzy
 msgid "Subtitle effects"
-msgstr ""
+msgstr "Kodekoù Istitl"
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Add a shadow"
@@ -27924,12 +28050,14 @@ msgid " px"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:304
+#, fuzzy
 msgid "Add a background"
-msgstr ""
+msgstr "Drekva "
 
 #: modules/gui/qt/ui/sprefs_video.h:313
+#, fuzzy
 msgid "O&utput"
-msgstr ""
+msgstr "Ec'hankad"
 
 #: modules/gui/qt/ui/sprefs_video.h:317
 msgid "DirectX"
@@ -27944,12 +28072,14 @@ msgid "KVA"
 msgstr "KVA"
 
 #: modules/gui/qt/ui/sprefs_video.h:324
+#, fuzzy
 msgid "Deinterlacing"
-msgstr ""
+msgstr "Digenweañ"
 
 #: modules/gui/qt/ui/sprefs_video.h:326
+#, fuzzy
 msgid "Force Aspect Ratio"
-msgstr ""
+msgstr "Prennañ kenfeur an neuze"
 
 #: modules/gui/qt/ui/sprefs_video.h:331
 msgid "vlc-snap"
@@ -27972,12 +28102,14 @@ msgid "Run manually"
 msgstr "Lañsañ dre zorn"
 
 #: modules/gui/qt/ui/streampanel.h:174
+#, fuzzy
 msgid "Setup schedule"
-msgstr ""
+msgstr "Frammad amzer"
 
 #: modules/gui/qt/ui/streampanel.h:175
+#, fuzzy
 msgid "Run on schedule"
-msgstr ""
+msgstr "Frammad amzer"
 
 #: modules/gui/qt/ui/streampanel.h:176
 msgid "Status"
@@ -28004,8 +28136,9 @@ msgid "Clear List"
 msgstr "Skarzhañ ar roll"
 
 #: modules/gui/qt/ui/update.h:145
+#, fuzzy
 msgid "Check for VLC updates"
-msgstr ""
+msgstr "Gwiriañ an hizi&vadennoù..."
 
 #: modules/gui/qt/ui/update.h:146
 msgid "Launching an update request..."
@@ -28033,8 +28166,9 @@ msgid "Colors"
 msgstr "Livioù"
 
 #: modules/gui/qt/ui/video_effects.h:1254
+#, fuzzy
 msgid "Interactive Zoom"
-msgstr ""
+msgstr "Mod kenweet"
 
 #: modules/gui/qt/ui/video_effects.h:1260
 msgid "Angle"
@@ -28054,8 +28188,9 @@ msgid "none"
 msgstr "hini ebet"
 
 #: modules/gui/qt/ui/video_effects.h:1278
+#, fuzzy
 msgid "Logo erase"
-msgstr ""
+msgstr "Anvioù ar restroù logo"
 
 #: modules/gui/qt/ui/video_effects.h:1283
 msgid "Mask"
@@ -28082,12 +28217,14 @@ msgid "Anti-Flickering"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1297
+#, fuzzy
 msgid "Soften"
-msgstr ""
+msgstr "Meziant"
 
 #: modules/gui/qt/ui/video_effects.h:1298
+#, fuzzy
 msgid "Denoiser"
-msgstr ""
+msgstr "Trouz"
 
 #: modules/gui/qt/ui/video_effects.h:1299
 msgid "Spatial luma strength"
@@ -28134,12 +28271,14 @@ msgid "Select Output"
 msgstr "Diuzañ un ec'hankad"
 
 #: modules/gui/qt/ui/vlm.h:291
+#, fuzzy
 msgid "Time Control"
-msgstr ""
+msgstr "Reoliñ"
 
 #: modules/gui/qt/ui/vlm.h:292
+#, fuzzy
 msgid "Mux Control"
-msgstr ""
+msgstr "Reoliñ"
 
 #: modules/gui/qt/ui/vlm.h:293
 msgid "Muxer:"
@@ -28150,8 +28289,9 @@ msgid "AAAA; "
 msgstr "AAAA; "
 
 #: modules/gui/qt/ui/vlm.h:299
+#, fuzzy
 msgid "Media Manager List"
-msgstr ""
+msgstr "Merer ar mediaoù"
 
 #~ msgid "Debug logging"
 #~ msgstr "Penel diveugañ"

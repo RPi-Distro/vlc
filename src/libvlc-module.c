@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 0c06bc8a98a440a990cb2868d3f238b083f78a7d $
+ * $Id: 79dfb9d5aec2e864d7c69c2461edf5b825148d2c $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -1861,7 +1861,7 @@ vlc_module_begin ()
 
     set_section( N_( "Advanced" ), NULL )
 
-    add_integer( "file-caching", DEFAULT_PTS_DELAY / 1000,
+    add_integer( "file-caching", CLOCK_FREQ / 1000,
                  CACHING_TEXT, CACHING_LONGTEXT, true )
         change_integer_range( 0, 60000 )
         change_safe()

@@ -2,7 +2,7 @@
  * vlm_internal.h: Internal vlm structures
  *****************************************************************************
  * Copyright (C) 1998-2006 VLC authors and VideoLAN
- * $Id: d5a6905291e44421b8dc3eda9d55cc3396f5b4b7 $
+ * $Id: 8c2a25b0b06255d7e746cd1ade47ae819921ca2c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -86,6 +86,11 @@ struct vlm_t
     VLC_COMMON_MEMBERS
 
     vlc_mutex_t  lock;
+
+    /* a separate mutex is needed: "lock" must remain locked while waiting */
+    vlc_mutex_t  lock_delete;
+    vlc_cond_t   wait_delete;
+
     vlc_thread_t thread;
     vlc_mutex_t  lock_manage;
     vlc_cond_t   wait_manage;
@@ -106,6 +111,8 @@ struct vlm_t
     /* Schedule list */
     int            i_schedule;
     vlm_schedule_sys_t **schedule;
+
+    unsigned i_consecutive_errors;
 };
 
 int vlm_ControlInternal( vlm_t *p_vlm, int i_query, ... );

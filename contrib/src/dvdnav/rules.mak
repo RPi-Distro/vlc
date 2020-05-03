@@ -1,6 +1,6 @@
 # DVDNAV
 
-LIBDVDNAV_VERSION := 6.0.0
+LIBDVDNAV_VERSION := 6.1.0
 LIBDVDNAV_URL := $(VIDEOLAN)/libdvdnav/$(LIBDVDNAV_VERSION)/libdvdnav-$(LIBDVDNAV_VERSION).tar.bz2
 
 ifdef BUILD_DISCS
@@ -19,12 +19,12 @@ $(TARBALLS)/libdvdnav-$(LIBDVDNAV_VERSION).tar.bz2:
 
 dvdnav: libdvdnav-$(LIBDVDNAV_VERSION).tar.bz2 .sum-dvdnav
 	$(UNPACK)
-	cd $(UNPACK_DIR) && sed -i -e 's,Requires.private,Requires,g' misc/*.pc.in
+	$(call pkg_static,"misc/dvdnav.pc.in")
 	$(MOVE)
 
-DEPS_dvdnav = dvdcss dvdread
+DEPS_dvdnav = dvdread $(DEPS_dvdread)
 
-.dvdnav: dvdnav .dvdcss .dvdread
+.dvdnav: dvdnav
 	$(REQUIRE_GPL)
 	$(RECONF) -I m4
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) --disable-examples

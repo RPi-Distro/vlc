@@ -20,13 +20,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#if !defined(_WIN32_WINNT) || _WIN32_WINNT < _WIN32_WINNT_WIN7
-# undef _WIN32_WINNT
-# define _WIN32_WINNT _WIN32_WINNT_WIN7
-#endif
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
+#endif
+
+#if _WIN32_WINNT < 0x0601 // _WIN32_WINNT_WIN7
+# undef _WIN32_WINNT
+# define _WIN32_WINNT _WIN32_WINNT_WIN7
 #endif
 
 #include <vlc_common.h>
@@ -684,6 +684,9 @@ static HINSTANCE Direct3D11LoadShaderLibrary(void)
 int D3D11_Create(vlc_object_t *obj, d3d11_handle_t *hd3d, bool with_shaders)
 {
 #if !VLC_WINSTORE_APP
+#if !defined(NDEBUG) && defined(HAVE_DXGIDEBUG_H)
+    hd3d->dxgidebug_dll = NULL;
+#endif
     hd3d->hdll = LoadLibrary(TEXT("D3D11.DLL"));
     if (!hd3d->hdll)
     {

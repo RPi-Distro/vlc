@@ -103,6 +103,7 @@ confflags += \
 # gst-decode: not needed when having libavcodec
 # libtar: security issue (#737534)
 # macosx*: MacOX only
+# microdns: functionality already provided by avahi
 # mfx: currently not supported on Linux
 # opencv: developer plugin not required by end users
 # projectm: broken
@@ -128,6 +129,7 @@ confflags += \
 	--disable-macosx \
 	--disable-macosx-avfoundation \
 	--disable-macosx-qtkit \
+	--disable-microdns \
 	--disable-mfx \
 	--disable-opencv \
 	--disable-projectm \
