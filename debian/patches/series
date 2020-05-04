@@ -1,4 +1,5 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
 0002-Revert-configure-Require-libmodplug-0.8.9.patch
-mmal_16.patch
+mmal_17.patch
+vlc-3.0.10-fix_transfom_chroma_resize_1.patch
 armv6.patch
