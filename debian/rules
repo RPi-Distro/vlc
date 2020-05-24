@@ -318,9 +318,6 @@ endif
 	# Create empty directory for plugins.dat
 	mkdir -p debian/libvlc-bin/usr/lib/${DEB_HOST_MULTIARCH}/vlc/plugins
 
-override_dh_missing:
-	dh_missing --fail-missing
-
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS
 
