@@ -101,7 +101,7 @@ confflags += \
 # dxva2: Windows only
 # fdkaac: in Debian contrib
 # fluidlite: fluidsynth is enabled
-# freerdp: scheduled for removal (#888323)
+# freerdp: removed from Debian (#888323)
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
 # libtar: security issue (#737534)
