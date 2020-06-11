@@ -78,7 +78,6 @@ confflags += \
 	--enable-soxr \
 	--enable-spatialaudio \
 	--enable-speex \
-	--enable-srt \
 	--enable-svg \
 	--enable-svgdec \
 	--enable-taglib \
@@ -113,6 +112,7 @@ confflags += \
 # projectm: broken
 # schroedinger: removed from Debian (#845037)
 # sparkle: MacOS X only
+# srt: broken package (#962624)
 # telx: incompatible with zvbi
 # vpx: not needed when having libavcodec
 # vsxu: not in Debian
@@ -139,6 +139,7 @@ confflags += \
 	--disable-projectm \
 	--disable-schroedinger \
 	--disable-sparkle \
+	--disable-srt \
 	--disable-telx \
 	--disable-vpx \
 	--disable-vsxu \
