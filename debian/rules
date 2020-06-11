@@ -148,8 +148,6 @@ confflags += \
 
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
-# omxil should be enabled on all systems, but libomxil-bellagio does
-# not build on kfreebsd and hurd (currently).
 # V4L2 is disabled on kFreeBSD due to a build failure.
 confflags += \
 	--enable-alsa \
@@ -158,7 +156,6 @@ confflags += \
 	--enable-libplacebo \
 	--enable-linsys \
 	--enable-nfs \
-	--enable-omxil \
 	--enable-udev \
 	--enable-v4l2 \
 	--enable-wayland \
@@ -171,7 +168,6 @@ confflags += \
 	--disable-libplacebo \
 	--disable-linsys \
 	--disable-nfs \
-	--disable-omxil \
 	--disable-udev \
 	--disable-v4l2 \
 	--disable-wayland \
@@ -185,7 +181,6 @@ removeplugins += \
 	fb \
 	linsys \
 	nfs \
-	omxil \
 	systemd \
 	udev \
 	v4l2 \
@@ -262,6 +257,14 @@ ifeq (,$(filter-out powerpcspe,$(DEB_HOST_ARCH)))
 DEB_CFLAGS_MAINT_APPEND += -mtune=8548
 DEB_CXXFLAGS_MAINT_APPEND += -mtune=8548
 endif
+endif
+
+# Raspbian specifc flags
+ifeq ($(shell dpkg-vendor --derives-from Raspbian && echo yes),yes)
+confflags += --enable-omxil --enable-omxil-vout --enable-rpi-omxil
+else
+confflags += --disable-omxil
+removeplugins += omxil
 endif
 
 export DEB_BUILD_MAINT_OPTIONS

@@ -77,6 +77,7 @@ usr/lib/*/vlc/plugins/codec/liblpcm_plugin.so
 usr/lib/*/vlc/plugins/codec/libmpg123_plugin.so
 usr/lib/*/vlc/plugins/codec/liboggspots_plugin.so
 usr/lib/*/vlc/plugins/codec/libomxil_plugin.so [omxil]
+usr/lib/*/vlc/plugins/codec/libomxil_vout_plugin.so [omxil]
 usr/lib/*/vlc/plugins/codec/libopus_plugin.so
 usr/lib/*/vlc/plugins/codec/libpng_plugin.so
 usr/lib/*/vlc/plugins/codec/librawvideo_plugin.so
