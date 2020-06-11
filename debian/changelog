@@ -1,3 +1,12 @@
+vlc (3.0.10-2) unstable; urgency=medium
+
+  * debian/:
+    - Bump debhleper compat to 13
+    - Disable srt until the package is fixed
+    - Build omxil plugin only on Raspbian (Closes: #957915)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 11 Jun 2020 23:36:54 +0200
+
 vlc (3.0.10-1) unstable; urgency=medium
 
   * New upstream release
