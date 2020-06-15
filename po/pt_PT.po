@@ -9,6 +9,7 @@
 # enVide neFelibata <info@envidenefelibata.com>, 2014
 # Gonçalo Matos , 2015-2017
 # Gonçalo Silva, 2013-2016
+# Hugo Carvalho <hugokarvalho@hotmail.com>, 2020
 # João Paulo de Almeida Ribeiro <jpauribeiro@hotmail.com>, 2014
 # José Góis <joseldgois@hotmail.com>, 2013
 # Leandro Sousa <leandrorlsousa@gmail.com>, 2013
@@ -27,9 +28,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-04-23 11:48+0200\n"
-"PO-Revision-Date: 2019-06-05 11:30+0200\n"
-"Last-Translator: Manuela Silva <manuelarodsilva@gmail.com>, 2019\n"
+"POT-Creation-Date: 2020-06-10 11:26+0200\n"
+"PO-Revision-Date: 2020-05-04 14:54+0200\n"
+"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>, 2020\n"
 "Language-Team: Portuguese (Portugal) (https://www.transifex.com/yaron/"
 "teams/16553/pt_PT/)\n"
 "Language: pt_PT\n"
@@ -2601,8 +2602,8 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:661
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
-#: modules/gui/macosx/prefs_widgets.m:1221
-#: modules/gui/macosx/prefs_widgets.m:1278
+#: modules/gui/macosx/prefs_widgets.m:1215
+#: modules/gui/macosx/prefs_widgets.m:1272
 #: modules/gui/qt/components/preferences_widgets.cpp:546
 #: modules/logger/file.c:203 modules/spu/marq.c:61 modules/spu/rss.c:69
 #: modules/spu/rss.c:182 modules/video_output/win32/directdraw.c:1492
@@ -3110,7 +3111,7 @@ msgstr "Dispositivo DVD"
 msgid "VCD device"
 msgstr "Dispositivo VCD"
 
-#: src/libvlc-module.c:764 modules/access/cdda.c:701
+#: src/libvlc-module.c:764 modules/access/cdda.c:708
 msgid "Audio CD device"
 msgstr "Dispositivo CD Áudio"
 
@@ -3130,7 +3131,7 @@ msgstr ""
 "Este é o leitor padrão de VCD (ou ficheiro) a ser usado. Não esqueça de usar "
 "os dois-pontos depois da letra de unidade (por exemplo D:)"
 
-#: src/libvlc-module.c:774 modules/access/cdda.c:704
+#: src/libvlc-module.c:774 modules/access/cdda.c:711
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -3146,7 +3147,7 @@ msgstr "Esta é o dispositivo por defeito do DVD a utilizar."
 msgid "This is the default VCD device to use."
 msgstr "Esta é o dispositivo VCD por defeito a utilizar."
 
-#: src/libvlc-module.c:785 modules/access/cdda.c:709
+#: src/libvlc-module.c:785 modules/access/cdda.c:716
 msgid "This is the default Audio CD device to use."
 msgstr "Esta é o dispositivo CD áudio por defeito a utilizar."
 
@@ -6236,26 +6237,25 @@ msgstr ""
 "Verifique os seus conectores e os controladores."
 
 #: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:350
-#: modules/access/dvdnav.c:381 modules/access/dvdread.c:215
-#, fuzzy
+#: modules/access/disc_helper.h:56
 msgid "Problem accessing a system resource"
-msgstr "Detalhes do problema e configuração do sistema"
+msgstr "Problema de acesso a um recurso do sistema"
 
 #: modules/access/avaudiocapture.m:237
 msgid ""
 "Please open \"System Preferences\" -> \"Security & Privacy\" and allow VLC "
 "to access your microphone."
 msgstr ""
+"Abrir \"Preferências do sistema\" -> \"Segurança e Privacidade\" e permita o "
+"VLC aceder ao microfone."
 
 #: modules/access/avaudiocapture.m:341
-#, fuzzy
 msgid "AVFoundation Audio Capture"
-msgstr "Captura de vídeo AVFoundation"
+msgstr "Captura de áudio AVFoundation"
 
 #: modules/access/avaudiocapture.m:342
-#, fuzzy
 msgid "AVFoundation audio capture module."
-msgstr "Módulo para captura de vídeo AVFoundation."
+msgstr "Módulo para captura de áudio AVFoundation."
 
 #: modules/access/avcapture.m:66
 msgid "AVFoundation Video Capture"
@@ -6290,6 +6290,8 @@ msgid ""
 "Please open \"System Preferences\" -> \"Security & Privacy\" and allow VLC "
 "to access your camera."
 msgstr ""
+"Abrir \"Preferências do sistema\" -> \"Segurança e Privacidade\" e permita o "
+"VLC aceder à câmara."
 
 #: modules/access/avio.h:33
 msgid "AVIO"
@@ -6333,11 +6335,11 @@ msgstr "Blu-ray"
 msgid "Blu-ray Disc support (libbluray)"
 msgstr "Suporte Disco Blu-ray (libbluray)"
 
-#: modules/access/bluray.c:845
+#: modules/access/bluray.c:849
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr "O caminho não parece ser um Blu-ray"
 
-#: modules/access/bluray.c:860
+#: modules/access/bluray.c:864
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
@@ -6345,35 +6347,35 @@ msgstr ""
 "O disco Blu-Ray necessita de uma biblioteca para descodificação AACS e o seu "
 "sistema não a tem."
 
-#: modules/access/bluray.c:866
+#: modules/access/bluray.c:870
 msgid "Blu-ray Disc is corrupted."
 msgstr "Disco Blu-ray está corrompido."
 
-#: modules/access/bluray.c:868
+#: modules/access/bluray.c:872
 msgid "Missing AACS configuration file!"
 msgstr "Falta o ficheiro de configuração do AACS!"
 
-#: modules/access/bluray.c:870
+#: modules/access/bluray.c:874
 msgid "No valid processing key found in AACS config file."
 msgstr ""
 "Não foi encontrada uma chave de processamento válida do ficheiro de "
 "configuração do AACS."
 
-#: modules/access/bluray.c:872
+#: modules/access/bluray.c:876
 msgid "No valid host certificate found in AACS config file."
 msgstr ""
 "Não foi encontrado nenhum certificado de host no ficheiro de configuração do "
 "AACS."
 
-#: modules/access/bluray.c:874
+#: modules/access/bluray.c:878
 msgid "AACS Host certificate revoked."
 msgstr "Certificado do anfitrião do AACS revogado."
 
-#: modules/access/bluray.c:876
+#: modules/access/bluray.c:880
 msgid "AACS MMC failed."
 msgstr "AACS MMC falhou."
 
-#: modules/access/bluray.c:886
+#: modules/access/bluray.c:890
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
@@ -6381,17 +6383,17 @@ msgstr ""
 "O disco Blu-Ray necessita de uma biblioteca para descodificação BD+ e o seu "
 "sistema não a tem."
 
-#: modules/access/bluray.c:889
+#: modules/access/bluray.c:893
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr ""
 "A biblioteca de descodificação BD+ do seu sistema não funciona. Será que "
 "está bem configurada?"
 
-#: modules/access/bluray.c:922
+#: modules/access/bluray.c:926
 msgid "Java required"
 msgstr "Necessário Java"
 
-#: modules/access/bluray.c:923
+#: modules/access/bluray.c:927
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
@@ -6400,58 +6402,58 @@ msgstr ""
 "Este disco Blu-ray necessita do Java para suportar menus.%s\n"
 "O disco será reproduzido sem menus."
 
-#: modules/access/bluray.c:924
+#: modules/access/bluray.c:928
 msgid "Java was not found on your system."
 msgstr "Não foi encontrado o Java no seu sistema."
 
-#: modules/access/bluray.c:947
+#: modules/access/bluray.c:951
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr "Falha ao iniciar visualização de Blu-Ray. Tente sem o suporte de menu."
 
-#: modules/access/bluray.c:988 modules/access/bluray.c:2819
-#: modules/access/bluray.c:2824
+#: modules/access/bluray.c:992 modules/access/bluray.c:2823
+#: modules/access/bluray.c:2828
 msgid "Blu-ray error"
 msgstr "Erro Blu-ray"
 
-#: modules/access/bluray.c:2109
+#: modules/access/bluray.c:2113
 msgid "Top Menu"
 msgstr "Menu superior"
 
-#: modules/access/bluray.c:2112
+#: modules/access/bluray.c:2116
 msgid "First Play"
 msgstr "Primeira reprodução"
 
-#: modules/access/cdda.c:480
+#: modules/access/cdda.c:487
 #, c-format
 msgid "Audio CD - Track %02i"
 msgstr "CD áudio - Faixa %02i"
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/access/cdda.c:727 modules/gui/macosx/VLCOpenWindowController.m:169
 #: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "CD áudio"
 
-#: modules/access/cdda.c:721
+#: modules/access/cdda.c:728
 msgid "Audio CD input"
 msgstr "Entrada de CD áudio"
 
-#: modules/access/cdda.c:730
+#: modules/access/cdda.c:737
 msgid "[cdda:][device][@[track]]"
 msgstr "[cdda:][dispositivo][@[faixa]]"
 
-#: modules/access/cdda.c:739
+#: modules/access/cdda.c:746
 msgid "CDDB Server"
 msgstr "Servidor CDDB"
 
-#: modules/access/cdda.c:740
+#: modules/access/cdda.c:747
 msgid "Address of the CDDB server to use."
 msgstr "Endereço do servidor CDDB a ser usado."
 
-#: modules/access/cdda.c:741
+#: modules/access/cdda.c:748
 msgid "CDDB port"
 msgstr "Porta CDDB"
 
-#: modules/access/cdda.c:742
+#: modules/access/cdda.c:749
 msgid "CDDB Server port to use."
 msgstr "Porta do servidor CDDB a utilizar."
 
@@ -6626,6 +6628,16 @@ msgstr "10 bits"
 #: modules/access/decklink.cpp:358 modules/demux/ty.c:769
 msgid "Closed captions 1"
 msgstr "Legendas ocultas 1"
+
+#: modules/access/disc_helper.h:57
+msgid ""
+"Potentially, macOS blocks access to your disc. Please open \"System "
+"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
+"external media in \"Files and Folders\" section."
+msgstr ""
+"Potencialmente, o macOS bloqueia o acesso ao disco. Abrir \"Preferências do "
+"sistema\" -> \"Segurança e Privacidade\" e permita o VLC aceder aos seus "
+"media externos na secção \"Ficheiros e Pastas\"."
 
 #: modules/access/dshow/dshow.cpp:92
 msgid "Cable"
@@ -7451,19 +7463,19 @@ msgstr ""
 msgid "Scanning DVB"
 msgstr "A analisar DVB"
 
-#: modules/access/dvdnav.c:71 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:76
 msgid "DVD angle"
 msgstr "Ângulo do DVD"
 
-#: modules/access/dvdnav.c:73 modules/access/dvdread.c:71
+#: modules/access/dvdnav.c:75 modules/access/dvdread.c:78
 msgid "Default DVD angle."
 msgstr "Ângulo padrão do DVD"
 
-#: modules/access/dvdnav.c:75
+#: modules/access/dvdnav.c:77
 msgid "Start directly in menu"
 msgstr "Começar diretamente no menu"
 
-#: modules/access/dvdnav.c:77
+#: modules/access/dvdnav.c:79
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -7471,61 +7483,54 @@ msgstr ""
 "Iniciar o DVD diretamente no menu principal. Este vai tentar saltar todas as "
 "introduções de alerta inúteis."
 
-#: modules/access/dvdnav.c:91
+#: modules/access/dvdnav.c:93
 msgid "DVD with menus"
 msgstr "DVD com menus"
 
-#: modules/access/dvdnav.c:92
+#: modules/access/dvdnav.c:94
 msgid "DVDnav Input"
 msgstr "Entrada DVDnav"
 
-#: modules/access/dvdnav.c:104
+#: modules/access/dvdnav.c:106
 msgid "DVDnav demuxer"
 msgstr "Desmultiplexador DVDnav"
 
-#: modules/access/dvdnav.c:282 modules/access/dvdread.c:220
-#: modules/access/dvdread.c:237 modules/access/dvdread.c:496
-#: modules/access/dvdread.c:561
+#: modules/access/dvdnav.c:284 modules/access/dvdread.c:227
+#: modules/access/dvdread.c:243 modules/access/dvdread.c:502
+#: modules/access/dvdread.c:567
 msgid "Playback failure"
 msgstr "Falha ao reproduzir"
 
-#: modules/access/dvdnav.c:283
+#: modules/access/dvdnav.c:285
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
 "O VLC não pode definir o título do DVD. Possivelmente, não é possível "
 "desencriptar todo o disco."
 
-#: modules/access/dvdnav.c:382 modules/access/dvdread.c:216
-msgid ""
-"Potentially, macOS blocks access to your disc. Please open \"System "
-"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
-"external media in \"Files and Folders\" section."
-msgstr ""
-
-#: modules/access/dvdread.c:77
+#: modules/access/dvdread.c:84
 msgid "DVD without menus"
 msgstr "DVD sem menus"
 
-#: modules/access/dvdread.c:78
+#: modules/access/dvdread.c:85
 msgid "DVDRead Input (no menu support)"
 msgstr "Entrada DVDRead (sem suporte de menu)"
 
-#: modules/access/dvdread.c:221
+#: modules/access/dvdread.c:228
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
 msgstr "DVDRead não conseguiu abrir o disco \"%s\"."
 
-#: modules/access/dvdread.c:238
+#: modules/access/dvdread.c:244
 msgid "Cannot play a non-UDF mastered DVD."
 msgstr "Não se pode reproduzir um DVD masterizado como não-UDF."
 
-#: modules/access/dvdread.c:497
+#: modules/access/dvdread.c:503
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr "DVDRead não conseguiu ler o bloco %d."
 
-#: modules/access/dvdread.c:562
+#: modules/access/dvdread.c:568
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr "DVDRead não conseguiu ler %d/%d blocos em 0x%02x."
@@ -8319,11 +8324,11 @@ msgstr "RTP"
 msgid "Real-Time Protocol (RTP) input"
 msgstr "Entrada de protocolo em tempo real (RTP)"
 
-#: modules/access/rtp/rtp.c:770
+#: modules/access/rtp/rtp.c:773
 msgid "SDP required"
 msgstr "É necessário o SDP"
 
-#: modules/access/rtp/rtp.c:771
+#: modules/access/rtp/rtp.c:774
 #, c-format
 msgid ""
 "A description in SDP format is required to receive the RTP stream. Note that "
@@ -15470,7 +15475,7 @@ msgstr "Corrigir se necessário"
 msgid "AVI demuxer"
 msgstr "Desmultiplexador AVI"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4256
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15498,7 +15503,7 @@ msgstr "Construir índice e reproduzir"
 msgid "Play as is"
 msgstr "Reproduzir como está"
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4267
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
 msgid "Broken or missing Index"
 msgstr "Índice danificado ou ausente"
 
@@ -15947,11 +15952,11 @@ msgstr "Desmultiplexador de transmissão MP4"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4264
+#: modules/demux/mp4/mp4.c:4262
 msgid "Do not seek"
 msgstr "Não procurar"
 
-#: modules/demux/mp4/mp4.c:4265
+#: modules/demux/mp4/mp4.c:4263
 msgid "Build index"
 msgstr "Construir índice"
 
@@ -17014,7 +17019,7 @@ msgstr "Escolher uma localização de saída"
 #: modules/gui/macosx/VLCOutput.m:67
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCSimplePrefsController.m:373
-#: modules/gui/macosx/prefs_widgets.m:1125
+#: modules/gui/macosx/prefs_widgets.m:1122
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
@@ -19239,15 +19244,15 @@ msgstr "TB"
 msgid "Show Basic"
 msgstr "Mostrar básico"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a directory"
 msgstr "Selecione uma pasta"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a file"
 msgstr "Selecione um ficheiro"
 
-#: modules/gui/macosx/prefs_widgets.m:1154
+#: modules/gui/macosx/prefs_widgets.m:1148
 msgid "Select"
 msgstr "Selecionar"
 
@@ -24076,9 +24081,8 @@ msgid "Zeroconf services"
 msgstr "Serviços Zeroconf"
 
 #: modules/services_discovery/avahi.c:69
-#, fuzzy
 msgid "Avahi Renderer Discovery"
-msgstr "Serviços de renderização mDNS"
+msgstr "Serviços de renderização Avahi"
 
 #: modules/services_discovery/bonjour.m:44
 #: modules/services_discovery/bonjour.m:62

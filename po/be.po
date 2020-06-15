@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-04-23 11:48+0200\n"
+"POT-Creation-Date: 2020-06-10 11:26+0200\n"
 "PO-Revision-Date: 2018-12-19 22:50+0100\n"
 "Last-Translator: VideoLAN <videolan@videolan.org>, 2018\n"
 "Language-Team: Belarusian (https://www.transifex.com/yaron/teams/16553/be/)\n"
@@ -2532,8 +2532,8 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:661
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
-#: modules/gui/macosx/prefs_widgets.m:1221
-#: modules/gui/macosx/prefs_widgets.m:1278
+#: modules/gui/macosx/prefs_widgets.m:1215
+#: modules/gui/macosx/prefs_widgets.m:1272
 #: modules/gui/qt/components/preferences_widgets.cpp:546
 #: modules/logger/file.c:203 modules/spu/marq.c:61 modules/spu/rss.c:69
 #: modules/spu/rss.c:182 modules/video_output/win32/directdraw.c:1492
@@ -3026,7 +3026,7 @@ msgstr "Прылада DVD"
 msgid "VCD device"
 msgstr "Прылада VCD"
 
-#: src/libvlc-module.c:764 modules/access/cdda.c:701
+#: src/libvlc-module.c:764 modules/access/cdda.c:708
 msgid "Audio CD device"
 msgstr "Прылада Audio CD"
 
@@ -3046,7 +3046,7 @@ msgstr ""
 "Стандартная прылада (або файл) VCD. Не забудзьцеся на двукроп'е пасля назвы "
 "дыска (напрыклад, D:)"
 
-#: src/libvlc-module.c:774 modules/access/cdda.c:704
+#: src/libvlc-module.c:774 modules/access/cdda.c:711
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -3062,7 +3062,7 @@ msgstr "Стандартная прылада DVD."
 msgid "This is the default VCD device to use."
 msgstr "Стандартная прылада VCD."
 
-#: src/libvlc-module.c:785 modules/access/cdda.c:709
+#: src/libvlc-module.c:785 modules/access/cdda.c:716
 msgid "This is the default Audio CD device to use."
 msgstr "Стандартная прылада Audio CD."
 
@@ -6095,7 +6095,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:350
-#: modules/access/dvdnav.c:381 modules/access/dvdread.c:215
+#: modules/access/disc_helper.h:56
 msgid "Problem accessing a system resource"
 msgstr ""
 
@@ -6186,11 +6186,11 @@ msgstr "Blu-ray"
 msgid "Blu-ray Disc support (libbluray)"
 msgstr "Падтрымка Blu-ray дыскаў (libbluray)"
 
-#: modules/access/bluray.c:845
+#: modules/access/bluray.c:849
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr ""
 
-#: modules/access/bluray.c:860
+#: modules/access/bluray.c:864
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
@@ -6198,31 +6198,31 @@ msgstr ""
 "Гэты дыск Blu-ray вымагае бібліятэкі для дэкадавання AACS, а ў сістэме яе "
 "няма."
 
-#: modules/access/bluray.c:866
+#: modules/access/bluray.c:870
 msgid "Blu-ray Disc is corrupted."
 msgstr "Дыск Blu-ray пашкоджаны."
 
-#: modules/access/bluray.c:868
+#: modules/access/bluray.c:872
 msgid "Missing AACS configuration file!"
 msgstr "Не стае файла канфігурацыі AACS!"
 
-#: modules/access/bluray.c:870
+#: modules/access/bluray.c:874
 msgid "No valid processing key found in AACS config file."
 msgstr "У файле канфігурацыі AACS не знойдзена дзейснага ключа апрацоўкі."
 
-#: modules/access/bluray.c:872
+#: modules/access/bluray.c:876
 msgid "No valid host certificate found in AACS config file."
 msgstr "У файле канфігурацыі AACS не знойдзена дзейснага сертыфіката вузла."
 
-#: modules/access/bluray.c:874
+#: modules/access/bluray.c:878
 msgid "AACS Host certificate revoked."
 msgstr "Сертыфікат вузла AACS ануляваны."
 
-#: modules/access/bluray.c:876
+#: modules/access/bluray.c:880
 msgid "AACS MMC failed."
 msgstr "Збой AACS MMC."
 
-#: modules/access/bluray.c:886
+#: modules/access/bluray.c:890
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
@@ -6230,75 +6230,75 @@ msgstr ""
 "Гэты дыск Blu-ray вымагае бібліятэкі для дэкадавання BD+, а ў сістэме яе "
 "няма."
 
-#: modules/access/bluray.c:889
+#: modules/access/bluray.c:893
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr ""
 "Усталяваная ў сістэме бібліятэка дэкадавання BD+ не працуе. Хібная "
 "канфігурацыя?"
 
-#: modules/access/bluray.c:922
+#: modules/access/bluray.c:926
 msgid "Java required"
 msgstr ""
 
-#: modules/access/bluray.c:923
+#: modules/access/bluray.c:927
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
 "The disc will be played without menus."
 msgstr ""
 
-#: modules/access/bluray.c:924
+#: modules/access/bluray.c:928
 msgid "Java was not found on your system."
 msgstr ""
 
-#: modules/access/bluray.c:947
+#: modules/access/bluray.c:951
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 
-#: modules/access/bluray.c:988 modules/access/bluray.c:2819
-#: modules/access/bluray.c:2824
+#: modules/access/bluray.c:992 modules/access/bluray.c:2823
+#: modules/access/bluray.c:2828
 msgid "Blu-ray error"
 msgstr "Памылка Blu-ray"
 
-#: modules/access/bluray.c:2109
+#: modules/access/bluray.c:2113
 msgid "Top Menu"
 msgstr ""
 
-#: modules/access/bluray.c:2112
+#: modules/access/bluray.c:2116
 msgid "First Play"
 msgstr ""
 
-#: modules/access/cdda.c:480
+#: modules/access/cdda.c:487
 #, c-format
 msgid "Audio CD - Track %02i"
 msgstr "Audio CD — Дарожка %02i"
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/access/cdda.c:727 modules/gui/macosx/VLCOpenWindowController.m:169
 #: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "Audio CD"
 
-#: modules/access/cdda.c:721
+#: modules/access/cdda.c:728
 msgid "Audio CD input"
 msgstr "Увод з Audio CD"
 
-#: modules/access/cdda.c:730
+#: modules/access/cdda.c:737
 msgid "[cdda:][device][@[track]]"
 msgstr "[cdda:][прылада[@[дарожка]]"
 
-#: modules/access/cdda.c:739
+#: modules/access/cdda.c:746
 msgid "CDDB Server"
 msgstr "Сервер CDDB"
 
-#: modules/access/cdda.c:740
+#: modules/access/cdda.c:747
 msgid "Address of the CDDB server to use."
 msgstr "Адрас сервера CDDB"
 
-#: modules/access/cdda.c:741
+#: modules/access/cdda.c:748
 msgid "CDDB port"
 msgstr "Порт CDDB"
 
-#: modules/access/cdda.c:742
+#: modules/access/cdda.c:749
 msgid "CDDB Server port to use."
 msgstr "Порт сервера CDDB"
 
@@ -6470,6 +6470,13 @@ msgstr "10 біт"
 #: modules/access/decklink.cpp:358 modules/demux/ty.c:769
 msgid "Closed captions 1"
 msgstr "Схаваныя тытры 1"
+
+#: modules/access/disc_helper.h:57
+msgid ""
+"Potentially, macOS blocks access to your disc. Please open \"System "
+"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
+"external media in \"Files and Folders\" section."
+msgstr ""
 
 #: modules/access/dshow/dshow.cpp:92
 msgid "Cable"
@@ -7279,19 +7286,19 @@ msgstr ""
 msgid "Scanning DVB"
 msgstr "Сканирование DVB"
 
-#: modules/access/dvdnav.c:71 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:76
 msgid "DVD angle"
 msgstr "Вугал DVD"
 
-#: modules/access/dvdnav.c:73 modules/access/dvdread.c:71
+#: modules/access/dvdnav.c:75 modules/access/dvdread.c:78
 msgid "Default DVD angle."
 msgstr "Стандартны вугал DVD."
 
-#: modules/access/dvdnav.c:75
+#: modules/access/dvdnav.c:77
 msgid "Start directly in menu"
 msgstr "Запуск непасрэдна ў меню"
 
-#: modules/access/dvdnav.c:77
+#: modules/access/dvdnav.c:79
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -7299,61 +7306,54 @@ msgstr ""
 "Запуск DVD непасрэдна ў галоўнае меню. Пры ўключаным параметры ўсе "
 "бескарысныя ўступныя папярэджанні будуць прапушчаны пры магчымасці."
 
-#: modules/access/dvdnav.c:91
+#: modules/access/dvdnav.c:93
 msgid "DVD with menus"
 msgstr "DVD з меню"
 
-#: modules/access/dvdnav.c:92
+#: modules/access/dvdnav.c:94
 msgid "DVDnav Input"
 msgstr "Увод DVDnav"
 
-#: modules/access/dvdnav.c:104
+#: modules/access/dvdnav.c:106
 msgid "DVDnav demuxer"
 msgstr ""
 
-#: modules/access/dvdnav.c:282 modules/access/dvdread.c:220
-#: modules/access/dvdread.c:237 modules/access/dvdread.c:496
-#: modules/access/dvdread.c:561
+#: modules/access/dvdnav.c:284 modules/access/dvdread.c:227
+#: modules/access/dvdread.c:243 modules/access/dvdread.c:502
+#: modules/access/dvdread.c:567
 msgid "Playback failure"
 msgstr "Памылка прайгравання"
 
-#: modules/access/dvdnav.c:283
+#: modules/access/dvdnav.c:285
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
 "VLC не здолеў вызначыць раздзел DVD. Магчыма, не выходзіць дэшыфраваць увесь "
 "дыск."
 
-#: modules/access/dvdnav.c:382 modules/access/dvdread.c:216
-msgid ""
-"Potentially, macOS blocks access to your disc. Please open \"System "
-"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
-"external media in \"Files and Folders\" section."
-msgstr ""
-
-#: modules/access/dvdread.c:77
+#: modules/access/dvdread.c:84
 msgid "DVD without menus"
 msgstr "DVD без меню"
 
-#: modules/access/dvdread.c:78
+#: modules/access/dvdread.c:85
 msgid "DVDRead Input (no menu support)"
 msgstr "Увод DVDRead (без падтрымкі меню)"
 
-#: modules/access/dvdread.c:221
+#: modules/access/dvdread.c:228
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
 msgstr "DVDRead не можа адкрыць дыск \"%s\"."
 
-#: modules/access/dvdread.c:238
+#: modules/access/dvdread.c:244
 msgid "Cannot play a non-UDF mastered DVD."
 msgstr ""
 
-#: modules/access/dvdread.c:497
+#: modules/access/dvdread.c:503
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr "DVDRead не можа прачытаць блок %d."
 
-#: modules/access/dvdread.c:562
+#: modules/access/dvdread.c:568
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr "DVDRead не можа прачытаць %d/%d блокаў на 0x%02x."
@@ -8123,11 +8123,11 @@ msgstr "RTP"
 msgid "Real-Time Protocol (RTP) input"
 msgstr "Увод праз пратакол перадачы даных у рэальным часе (RTP)"
 
-#: modules/access/rtp/rtp.c:770
+#: modules/access/rtp/rtp.c:773
 msgid "SDP required"
 msgstr "Патрабуецца SDP"
 
-#: modules/access/rtp/rtp.c:771
+#: modules/access/rtp/rtp.c:774
 #, c-format
 msgid ""
 "A description in SDP format is required to receive the RTP stream. Note that "
@@ -15130,7 +15130,7 @@ msgstr "Выпраўляць пры неабходнасці"
 msgid "AVI demuxer"
 msgstr "Дэмультыплексар AVI"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4256
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15152,7 +15152,7 @@ msgstr "Збудаваць індэкс, пасля граць"
 msgid "Play as is"
 msgstr "Граць як ёсць"
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4267
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
 msgid "Broken or missing Index"
 msgstr ""
 
@@ -15597,11 +15597,11 @@ msgstr "Дэмультыплексар MP4-патоку"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4264
+#: modules/demux/mp4/mp4.c:4262
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4265
+#: modules/demux/mp4/mp4.c:4263
 msgid "Build index"
 msgstr ""
 
@@ -16650,7 +16650,7 @@ msgstr "Задайце адрас прызначэння"
 #: modules/gui/macosx/VLCOutput.m:67
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCSimplePrefsController.m:373
-#: modules/gui/macosx/prefs_widgets.m:1125
+#: modules/gui/macosx/prefs_widgets.m:1122
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
@@ -18847,15 +18847,15 @@ msgstr ""
 msgid "Show Basic"
 msgstr "Асноўныя"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a directory"
 msgstr "Выбраць каталог"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a file"
 msgstr "Выбраць файл"
 
-#: modules/gui/macosx/prefs_widgets.m:1154
+#: modules/gui/macosx/prefs_widgets.m:1148
 msgid "Select"
 msgstr "Выбраць"
 
@@ -28622,9 +28622,8 @@ msgid "Start Time"
 msgstr "Старт праз"
 
 #: modules/gui/qt/ui/open.h:270
-#, fuzzy
 msgid "Stop Time"
-msgstr "і канца"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:271
 msgid "Edit Options"
@@ -28653,9 +28652,8 @@ msgid "HH'H':mm'm':ss's'.zzz"
 msgstr "HH'H':mm'm':ss's'.zzz"
 
 #: modules/gui/qt/ui/open.h:285
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "Змяніць пачатковы час медыяаб'екта"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:288
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -28754,9 +28752,8 @@ msgid "FLAC"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "MP&4/MOV"
-msgstr "Мультыплексар MP4/MOV"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "Ogg/Ogm"
@@ -28779,9 +28776,8 @@ msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:707
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "MPEG-PS"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:708
 msgid "RAW"
@@ -28796,9 +28792,8 @@ msgid "Webm"
 msgstr "Webm"
 
 #: modules/gui/qt/ui/profiles.h:711
-#, fuzzy
 msgid "MPEG &1"
-msgstr "Фармат MPEG 1"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:712
 msgid "AVI"
@@ -28845,9 +28840,8 @@ msgid "Custom options"
 msgstr "Уласныя настаўленні"
 
 #: modules/gui/qt/ui/profiles.h:733
-#, fuzzy
 msgid "&Quality"
-msgstr "Якасць VBR"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
 msgid "Not Used"
@@ -28870,14 +28864,12 @@ msgid "px"
 msgstr "пікс."
 
 #: modules/gui/qt/ui/profiles.h:756
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "Частата дыскрэтызацыі"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:764
-#, fuzzy
 msgid "Profile &Name"
-msgstr "Назва профілю"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:200
 msgid "Set up media sources to stream"
@@ -29012,9 +29004,8 @@ msgid "Skip H.264 in-loop deblocking filter"
 msgstr "Ігнараванне фільтра распакоўкі блокаў H.264"
 
 #: modules/gui/qt/ui/sprefs_input.h:359
-#, fuzzy
 msgid "x264 preset and tuning selection"
-msgstr "Выбар профілю і ўзроўню x264"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:361
 msgid "Optical drive"
@@ -29101,9 +29092,8 @@ msgid "Show systray icon"
 msgstr "Значок у сістэмным трэі"
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "Інтэрфейс ncurses"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
 msgid "Skin resource file:"
@@ -29194,9 +29184,8 @@ msgid "Add a background"
 msgstr "Дадаць фон"
 
 #: modules/gui/qt/ui/sprefs_video.h:313
-#, fuzzy
 msgid "O&utput"
-msgstr "Вывад"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:317
 msgid "DirectX"
@@ -29353,29 +29342,24 @@ msgid "Soften"
 msgstr "Змякчэнне"
 
 #: modules/gui/qt/ui/video_effects.h:1298
-#, fuzzy
 msgid "Denoiser"
-msgstr "HQ Denoiser 3D"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1299
-#, fuzzy
 msgid "Spatial luma strength"
-msgstr "Сіла прасторавай яркасці (0-254)"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1300
-#, fuzzy
 msgid "Temporal luma strength"
-msgstr "Сіла часавай яркасці (0-254)"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1301
-#, fuzzy
 msgid "Spatial chroma strength"
-msgstr "Сіла прасторавай каляровасці(0-254)"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1302
-#, fuzzy
 msgid "Temporal chroma strength"
-msgstr "Сіла часавай колернасці (0-254)"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:283
 msgid "VLM configurator"
@@ -30310,6 +30294,9 @@ msgstr "Спіс медыякіраўніка"
 
 #~ msgid "MPEG Transport Stream"
 #~ msgstr "MPEG Transport Stream"
+
+#~ msgid "MPEG 1 Format"
+#~ msgstr "Фармат MPEG 1"
 
 #~ msgid ""
 #~ "Enter the local addresses you want to listen requests on. Do not enter "

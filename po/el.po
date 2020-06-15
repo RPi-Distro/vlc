@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-04-23 11:48+0200\n"
+"POT-Creation-Date: 2020-06-10 11:26+0200\n"
 "PO-Revision-Date: 2019-12-02 05:51+0100\n"
 "Last-Translator: firespin <dartworldgr@hotmail.com>, 2019\n"
 "Language-Team: Greek (https://www.transifex.com/yaron/teams/16553/el/)\n"
@@ -2615,8 +2615,8 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:661
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
-#: modules/gui/macosx/prefs_widgets.m:1221
-#: modules/gui/macosx/prefs_widgets.m:1278
+#: modules/gui/macosx/prefs_widgets.m:1215
+#: modules/gui/macosx/prefs_widgets.m:1272
 #: modules/gui/qt/components/preferences_widgets.cpp:546
 #: modules/logger/file.c:203 modules/spu/marq.c:61 modules/spu/rss.c:69
 #: modules/spu/rss.c:182 modules/video_output/win32/directdraw.c:1492
@@ -3134,7 +3134,7 @@ msgstr "Συσκευή DVD"
 msgid "VCD device"
 msgstr "Συσκευή VCD"
 
-#: src/libvlc-module.c:764 modules/access/cdda.c:701
+#: src/libvlc-module.c:764 modules/access/cdda.c:708
 msgid "Audio CD device"
 msgstr "Συσκευή CD ήχου"
 
@@ -3154,7 +3154,7 @@ msgstr ""
 "Αυτός είναι ο προεπιλεγμένος οδηγός VCD (ή αρχείο) που θα χρησιμοποιηθεί. "
 "Μην ξεχάσετε την άνω-κάτω τελεία μετά το γράμμα του οδηγού (π.χ. D:)"
 
-#: src/libvlc-module.c:774 modules/access/cdda.c:704
+#: src/libvlc-module.c:774 modules/access/cdda.c:711
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -3171,7 +3171,7 @@ msgstr "Αυτή είναι η προεπιλεγμένη συσκευή DVD π�
 msgid "This is the default VCD device to use."
 msgstr "Αυτή είναι η προεπιλεγμένη συσκευή VCD που θα χρησιμοποιηθεί."
 
-#: src/libvlc-module.c:785 modules/access/cdda.c:709
+#: src/libvlc-module.c:785 modules/access/cdda.c:716
 msgid "This is the default Audio CD device to use."
 msgstr "Αυτή είναι η προεπιλεγμένη συσκευή CD ήχου που θα χρησιμοποιηθεί."
 
@@ -6301,7 +6301,7 @@ msgstr ""
 "υλικού σας."
 
 #: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:350
-#: modules/access/dvdnav.c:381 modules/access/dvdread.c:215
+#: modules/access/disc_helper.h:56
 #, fuzzy
 msgid "Problem accessing a system resource"
 msgstr "Λεπτομέρειες του συστήματος και της διαρρύθμισης του συστήματος"
@@ -6398,11 +6398,11 @@ msgstr "Blu-ray"
 msgid "Blu-ray Disc support (libbluray)"
 msgstr "Υποστήριξη δίσκου Blu-ray (libbluray)"
 
-#: modules/access/bluray.c:845
+#: modules/access/bluray.c:849
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr "Η διαδρομή δεν είναι Blu-ray"
 
-#: modules/access/bluray.c:860
+#: modules/access/bluray.c:864
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
@@ -6410,33 +6410,33 @@ msgstr ""
 "Αυτός ο δίσκος Blu-ray χρειάζεται μία βιβλιοθήκη για αποκωδικοποίηση AACS "
 "και το σύστημά σας δεν τη διαθέτει."
 
-#: modules/access/bluray.c:866
+#: modules/access/bluray.c:870
 msgid "Blu-ray Disc is corrupted."
 msgstr "Ο δίσκος Blu-ray είναι φθαρμένος."
 
-#: modules/access/bluray.c:868
+#: modules/access/bluray.c:872
 msgid "Missing AACS configuration file!"
 msgstr "Λείπει το αρχείο ρυθμίσεων AACS!"
 
-#: modules/access/bluray.c:870
+#: modules/access/bluray.c:874
 msgid "No valid processing key found in AACS config file."
 msgstr ""
 "Δεν βρέθηκε κανένα έγκυρο κλειδί επεξεργασίας στο αρχείο ρυθμίσεων AACS."
 
-#: modules/access/bluray.c:872
+#: modules/access/bluray.c:876
 msgid "No valid host certificate found in AACS config file."
 msgstr ""
 "Δεν βρέθηκε κανένα έγκυρο πιστοποιητικό υποδοχής στο αρχείο ρυθμίσεων AACS."
 
-#: modules/access/bluray.c:874
+#: modules/access/bluray.c:878
 msgid "AACS Host certificate revoked."
 msgstr "Το πιστοποιητικό AACS Host ανακλήθηκε."
 
-#: modules/access/bluray.c:876
+#: modules/access/bluray.c:880
 msgid "AACS MMC failed."
 msgstr "Το AACS MMC απέτυχε."
 
-#: modules/access/bluray.c:886
+#: modules/access/bluray.c:890
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
@@ -6444,77 +6444,77 @@ msgstr ""
 "Αυτός ο δίσκος Blu-ray χρειάζεται μία βιβλιοθήκη για αποκωδικοποίηση BD+ και "
 "το σύστημά σας δεν τη διαθέτει."
 
-#: modules/access/bluray.c:889
+#: modules/access/bluray.c:893
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr ""
 "Η βιβλιοθήκη αποκωδικοποίησης BD+ του συστήματός σας δεν δουλεύει. Λείπουν "
 "οι ρυθμίσεις;"
 
-#: modules/access/bluray.c:922
+#: modules/access/bluray.c:926
 msgid "Java required"
 msgstr "Απαιτείται η Java"
 
-#: modules/access/bluray.c:923
+#: modules/access/bluray.c:927
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
 "The disc will be played without menus."
 msgstr ""
 
-#: modules/access/bluray.c:924
+#: modules/access/bluray.c:928
 msgid "Java was not found on your system."
 msgstr ""
 
-#: modules/access/bluray.c:947
+#: modules/access/bluray.c:951
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 "Απέτυχε η εκκίνηση της αναπαραγωγής bluray. Παρακαλώ δοκιμάστε χωρίς την "
 "υποστήριξη μενού."
 
-#: modules/access/bluray.c:988 modules/access/bluray.c:2819
-#: modules/access/bluray.c:2824
+#: modules/access/bluray.c:992 modules/access/bluray.c:2823
+#: modules/access/bluray.c:2828
 msgid "Blu-ray error"
 msgstr "Σφάλμα Blu-ray"
 
-#: modules/access/bluray.c:2109
+#: modules/access/bluray.c:2113
 msgid "Top Menu"
 msgstr "Αρχικό μενού"
 
-#: modules/access/bluray.c:2112
+#: modules/access/bluray.c:2116
 msgid "First Play"
 msgstr "Πρώτη αναπαραγωγή"
 
-#: modules/access/cdda.c:480
+#: modules/access/cdda.c:487
 #, c-format
 msgid "Audio CD - Track %02i"
 msgstr "CD ήχου - Κομμάτι %02i"
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/access/cdda.c:727 modules/gui/macosx/VLCOpenWindowController.m:169
 #: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "CD ήχου"
 
-#: modules/access/cdda.c:721
+#: modules/access/cdda.c:728
 msgid "Audio CD input"
 msgstr "Είσοδος CD ήχου"
 
-#: modules/access/cdda.c:730
+#: modules/access/cdda.c:737
 msgid "[cdda:][device][@[track]]"
 msgstr "[cdda:][συσκευή][@[κομμάτι]]"
 
-#: modules/access/cdda.c:739
+#: modules/access/cdda.c:746
 msgid "CDDB Server"
 msgstr "Εξυπηρετητής CDDB"
 
-#: modules/access/cdda.c:740
+#: modules/access/cdda.c:747
 msgid "Address of the CDDB server to use."
 msgstr "Διεύθυνση του εξυπηρετητή CDDB που θα χρησιμοποιηθεί."
 
-#: modules/access/cdda.c:741
+#: modules/access/cdda.c:748
 msgid "CDDB port"
 msgstr "Θύρα CDDB"
 
-#: modules/access/cdda.c:742
+#: modules/access/cdda.c:749
 msgid "CDDB Server port to use."
 msgstr "Θύρα εξυπηρετητή CDDB που θα χρησιμοποιηθεί."
 
@@ -6690,6 +6690,13 @@ msgstr "10 bits"
 #: modules/access/decklink.cpp:358 modules/demux/ty.c:769
 msgid "Closed captions 1"
 msgstr "Κλεισμένες λεζάντες 1"
+
+#: modules/access/disc_helper.h:57
+msgid ""
+"Potentially, macOS blocks access to your disc. Please open \"System "
+"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
+"external media in \"Files and Folders\" section."
+msgstr ""
 
 #: modules/access/dshow/dshow.cpp:92
 msgid "Cable"
@@ -7515,19 +7522,19 @@ msgstr ""
 msgid "Scanning DVB"
 msgstr "Σάρωση DVB"
 
-#: modules/access/dvdnav.c:71 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:76
 msgid "DVD angle"
 msgstr "Γωνία DVD"
 
-#: modules/access/dvdnav.c:73 modules/access/dvdread.c:71
+#: modules/access/dvdnav.c:75 modules/access/dvdread.c:78
 msgid "Default DVD angle."
 msgstr "Προεπιλεγμένη γωνία DVD."
 
-#: modules/access/dvdnav.c:75
+#: modules/access/dvdnav.c:77
 msgid "Start directly in menu"
 msgstr "Απευθείας έναρξη στο μενού"
 
-#: modules/access/dvdnav.c:77
+#: modules/access/dvdnav.c:79
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -7535,61 +7542,54 @@ msgstr ""
 "Έναρξη του DVD απευθείας στο κεντρικό μενού. Με αυτή την επιλογή η εφαρμογή "
 "θα προσπαθήσει να παραλείψει όλες τις άχρηστες εισαγωγές προειδοποιήσεων."
 
-#: modules/access/dvdnav.c:91
+#: modules/access/dvdnav.c:93
 msgid "DVD with menus"
 msgstr "DVD με μενού"
 
-#: modules/access/dvdnav.c:92
+#: modules/access/dvdnav.c:94
 msgid "DVDnav Input"
 msgstr "Είσοδος DVDnav"
 
-#: modules/access/dvdnav.c:104
+#: modules/access/dvdnav.c:106
 msgid "DVDnav demuxer"
 msgstr "Αποπολυπλέκτης DVDnav "
 
-#: modules/access/dvdnav.c:282 modules/access/dvdread.c:220
-#: modules/access/dvdread.c:237 modules/access/dvdread.c:496
-#: modules/access/dvdread.c:561
+#: modules/access/dvdnav.c:284 modules/access/dvdread.c:227
+#: modules/access/dvdread.c:243 modules/access/dvdread.c:502
+#: modules/access/dvdread.c:567
 msgid "Playback failure"
 msgstr "Αποτυχία αναπαραγωγής"
 
-#: modules/access/dvdnav.c:283
+#: modules/access/dvdnav.c:285
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
 "Ο VLC δεν μπορεί να ρυθμίσει τον τίτλο του DVD. Πιθανόν δεν μπορεί να "
 "αποκρυπτογραφήσει ολόκληρο το δίσκο."
 
-#: modules/access/dvdnav.c:382 modules/access/dvdread.c:216
-msgid ""
-"Potentially, macOS blocks access to your disc. Please open \"System "
-"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
-"external media in \"Files and Folders\" section."
-msgstr ""
-
-#: modules/access/dvdread.c:77
+#: modules/access/dvdread.c:84
 msgid "DVD without menus"
 msgstr "DVD χωρίς μενού"
 
-#: modules/access/dvdread.c:78
+#: modules/access/dvdread.c:85
 msgid "DVDRead Input (no menu support)"
 msgstr "Είσοδος DVDRead (χωρίς υποστήριξη μενού)"
 
-#: modules/access/dvdread.c:221
+#: modules/access/dvdread.c:228
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
 msgstr "Το DVDRead δεν μπόρεσε να ανοίξει το δίσκο \"%s\"."
 
-#: modules/access/dvdread.c:238
+#: modules/access/dvdread.c:244
 msgid "Cannot play a non-UDF mastered DVD."
 msgstr ""
 
-#: modules/access/dvdread.c:497
+#: modules/access/dvdread.c:503
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr "Το DVDRead δεν μπορεί να αναγνώσει την ομάδα δεδομένων %d."
 
-#: modules/access/dvdread.c:562
+#: modules/access/dvdread.c:568
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr "Το DVDRead δεν μπόρεσε να αναγνώσει %d/%d ομάδες δεδομένων σε 0x%02x."
@@ -8380,11 +8380,11 @@ msgstr "RTP"
 msgid "Real-Time Protocol (RTP) input"
 msgstr "Είσοδος πρωτοκόλλου πραγματικού χρόνου (RTP)"
 
-#: modules/access/rtp/rtp.c:770
+#: modules/access/rtp/rtp.c:773
 msgid "SDP required"
 msgstr "Απαιτείται SDP"
 
-#: modules/access/rtp/rtp.c:771
+#: modules/access/rtp/rtp.c:774
 #, c-format
 msgid ""
 "A description in SDP format is required to receive the RTP stream. Note that "
@@ -15528,7 +15528,7 @@ msgstr "Επιδιόρθωση όταν χρειαστεί"
 msgid "AVI demuxer"
 msgstr "Αποπολυπλέκτης AVI"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4256
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15550,7 +15550,7 @@ msgstr "Δημιουργία ευρετηρίου και μετά αναπαρα
 msgid "Play as is"
 msgstr "Αναπαραγωγή όπως είναι"
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4267
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
 msgid "Broken or missing Index"
 msgstr ""
 
@@ -16004,11 +16004,11 @@ msgstr "Αποπολυπλέκτης ροής δεδομένων MP4"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4264
+#: modules/demux/mp4/mp4.c:4262
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4265
+#: modules/demux/mp4/mp4.c:4263
 msgid "Build index"
 msgstr ""
 
@@ -17074,7 +17074,7 @@ msgstr "Επιλέξτε τοποθεσία εξόδου"
 #: modules/gui/macosx/VLCOutput.m:67
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCSimplePrefsController.m:373
-#: modules/gui/macosx/prefs_widgets.m:1125
+#: modules/gui/macosx/prefs_widgets.m:1122
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
@@ -19300,15 +19300,15 @@ msgstr "TB"
 msgid "Show Basic"
 msgstr "Προβολή βασικών"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a directory"
 msgstr "Επιλογή ενός καταλόγου"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a file"
 msgstr "Επιλογή ενός αρχείου"
 
-#: modules/gui/macosx/prefs_widgets.m:1154
+#: modules/gui/macosx/prefs_widgets.m:1148
 msgid "Select"
 msgstr "Επιλογή"
 
@@ -29354,9 +29354,8 @@ msgid "Start Time"
 msgstr "Χρόνος έναρξης"
 
 #: modules/gui/qt/ui/open.h:270
-#, fuzzy
 msgid "Stop Time"
-msgstr "Χρόνος διακοπής"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:271
 msgid "Edit Options"
@@ -29383,9 +29382,8 @@ msgid "HH'H':mm'm':ss's'.zzz"
 msgstr "HH'H':mm'm':ss's'.zzz"
 
 #: modules/gui/qt/ui/open.h:285
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "Αλλαγή του χρόνου έναρξης του πολυμέσου"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:288
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -29488,9 +29486,8 @@ msgid "FLAC"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "MP&4/MOV"
-msgstr "Πολυπλέκτης MP4/MOV"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "Ogg/Ogm"
@@ -29513,9 +29510,8 @@ msgid "F&LV"
 msgstr "F&LV"
 
 #: modules/gui/qt/ui/profiles.h:707
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "MPEG PS"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:708
 msgid "RAW"
@@ -29602,14 +29598,12 @@ msgid "px"
 msgstr "px"
 
 #: modules/gui/qt/ui/profiles.h:756
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "Ρυθμός δειγματοληψίας"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:764
-#, fuzzy
 msgid "Profile &Name"
-msgstr "Όνομα προφίλ"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:200
 msgid "Set up media sources to stream"
@@ -29745,9 +29739,8 @@ msgid "Skip H.264 in-loop deblocking filter"
 msgstr "Παράλειψη φίλτρου απεμπλοκής H.264 σε βρόχο"
 
 #: modules/gui/qt/ui/sprefs_input.h:359
-#, fuzzy
 msgid "x264 preset and tuning selection"
-msgstr "Προφίλ x264 και επιλογή επιπέδου"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:361
 msgid "Optical drive"
@@ -29836,9 +29829,8 @@ msgid "Show systray icon"
 msgstr "Προβολή εικονιδίου περιοχής ειδοποιήσεων"
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "Διεπαφή Νcurses"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
 msgid "Skin resource file:"
@@ -29929,9 +29921,8 @@ msgid "Add a background"
 msgstr "Προσθήκη παρασκηνίου"
 
 #: modules/gui/qt/ui/sprefs_video.h:313
-#, fuzzy
 msgid "O&utput"
-msgstr "Έξοδος"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:317
 msgid "DirectX"

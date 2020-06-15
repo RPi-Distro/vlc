@@ -15,9 +15,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-04-23 11:48+0200\n"
-"PO-Revision-Date: 2018-12-19 22:50+0100\n"
-"Last-Translator: VideoLAN <videolan@videolan.org>, 2018\n"
+"POT-Creation-Date: 2020-06-10 11:26+0200\n"
+"PO-Revision-Date: 2020-04-14 23:08+0200\n"
+"Last-Translator: Goudarz Jafari <goudarz.jafari@gmail.com>, 2020\n"
 "Language-Team: Persian (https://www.transifex.com/yaron/teams/16553/fa/)\n"
 "Language: fa\n"
 "MIME-Version: 1.0\n"
@@ -679,7 +679,7 @@ msgstr "مونو"
 
 #: src/audio_output/output.c:425
 msgid "Original"
-msgstr ""
+msgstr "اصلی"
 
 #: src/audio_output/output.c:431 src/libvlc-module.c:197
 msgid "Dolby Surround"
@@ -801,7 +801,7 @@ msgstr ""
 
 #: src/config/help.c:490
 msgid "(default enabled)"
-msgstr ""
+msgstr "(پیش‌فرض فعال)"
 
 #: src/config/help.c:491
 msgid "(default disabled)"
@@ -1389,7 +1389,7 @@ msgstr "عنوان قبلی"
 
 #: src/input/var.c:278
 msgid "Menu title"
-msgstr ""
+msgstr "عنوان منو"
 
 #: src/input/var.c:285
 msgid "Menu popup"
@@ -1613,11 +1613,11 @@ msgstr ""
 
 #: src/libvlc-module.c:142
 msgid "Music"
-msgstr ""
+msgstr "موسیقی"
 
 #: src/libvlc-module.c:142
 msgid "Communication"
-msgstr ""
+msgstr "ارتباطات"
 
 #: src/libvlc-module.c:142 modules/meta_engine/ID3Genres.h:69
 msgid "Game"
@@ -1625,7 +1625,7 @@ msgstr "بازی"
 
 #: src/libvlc-module.c:143
 msgid "Notification"
-msgstr ""
+msgstr "هشدار ها"
 
 #: src/libvlc-module.c:143
 msgid "Animation"
@@ -1637,7 +1637,7 @@ msgstr ""
 
 #: src/libvlc-module.c:144
 msgid "Accessibility"
-msgstr ""
+msgstr "وضعیت دسترسی"
 
 #: src/libvlc-module.c:144
 msgid "Test"
@@ -2489,8 +2489,8 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:661
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
-#: modules/gui/macosx/prefs_widgets.m:1221
-#: modules/gui/macosx/prefs_widgets.m:1278
+#: modules/gui/macosx/prefs_widgets.m:1215
+#: modules/gui/macosx/prefs_widgets.m:1272
 #: modules/gui/qt/components/preferences_widgets.cpp:546
 #: modules/logger/file.c:203 modules/spu/marq.c:61 modules/spu/rss.c:69
 #: modules/spu/rss.c:182 modules/video_output/win32/directdraw.c:1492
@@ -2836,7 +2836,7 @@ msgstr ""
 
 #: src/libvlc-module.c:711
 msgid "Changes the subtitles size where possible"
-msgstr ""
+msgstr "تغییر اندازه ی زیرنویس هر موقع که مقدور باشد."
 
 #: src/libvlc-module.c:713
 msgid "Enable sub-pictures"
@@ -2958,7 +2958,7 @@ msgstr "دستگاه دی‌وی‌دی"
 msgid "VCD device"
 msgstr "دستگاه وی‌سی‌دی"
 
-#: src/libvlc-module.c:764 modules/access/cdda.c:701
+#: src/libvlc-module.c:764 modules/access/cdda.c:708
 msgid "Audio CD device"
 msgstr "دستگاه سی‌دی صوتی"
 
@@ -2978,7 +2978,7 @@ msgstr ""
 "درایو (یا پرونده) پیش‌فرض وی‌سی‌دی. فراموش نکنید بعد از حرف درایو دونقطه "
 "بگذارید (مثلا D:‎)"
 
-#: src/libvlc-module.c:774 modules/access/cdda.c:704
+#: src/libvlc-module.c:774 modules/access/cdda.c:711
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -2994,7 +2994,7 @@ msgstr "این دستگاه به صورت پیش‌فرض به عنوان دست
 msgid "This is the default VCD device to use."
 msgstr "این دستگاه به صورت پیش‌فرض به عنوان دستگاه وی‌سی‌دی‌خوان استفاده می‌شود."
 
-#: src/libvlc-module.c:785 modules/access/cdda.c:709
+#: src/libvlc-module.c:785 modules/access/cdda.c:716
 msgid "This is the default Audio CD device to use."
 msgstr ""
 "این دستگاه به صورت پیش‌فرض به عنوان دستگاه خوانش سی‌دی صوتی استفاده می‌شود."
@@ -3098,7 +3098,7 @@ msgstr ""
 
 #: src/libvlc-module.c:855
 msgid "If your HTTP proxy requires a password, set it here."
-msgstr ""
+msgstr "اگر پروکسی http  شما نیاز به پسورد دارد، اینجا آن را تعیین کنید."
 
 #: src/libvlc-module.c:857
 msgid "SOCKS server"
@@ -5169,6 +5169,8 @@ msgid ""
 "The new version was successfully downloaded. Do you want to close VLC and "
 "install it now?"
 msgstr ""
+"نسخه جدید با موفقیت بارگیری شد. آیا می خواهید VLC را ببندید و نسخه بروز را "
+"نصب کنید؟"
 
 #: src/misc/update.c:726 modules/gui/macosx/VLCAddonsWindowController.m:200
 msgid "Install"
@@ -5949,7 +5951,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:350
-#: modules/access/dvdnav.c:381 modules/access/dvdread.c:215
+#: modules/access/disc_helper.h:56
 msgid "Problem accessing a system resource"
 msgstr ""
 
@@ -5964,9 +5966,8 @@ msgid "AVFoundation Audio Capture"
 msgstr ""
 
 #: modules/access/avaudiocapture.m:342
-#, fuzzy
 msgid "AVFoundation audio capture module."
-msgstr "پیمانهٔ خروجی صدا"
+msgstr ""
 
 #: modules/access/avcapture.m:66
 msgid "AVFoundation Video Capture"
@@ -6037,113 +6038,113 @@ msgstr "بلوری"
 msgid "Blu-ray Disc support (libbluray)"
 msgstr ""
 
-#: modules/access/bluray.c:845
+#: modules/access/bluray.c:849
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr "مسیر مربوط به یک بلوری نمی‌باشد"
 
-#: modules/access/bluray.c:860
+#: modules/access/bluray.c:864
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
 msgstr ""
 
-#: modules/access/bluray.c:866
+#: modules/access/bluray.c:870
 msgid "Blu-ray Disc is corrupted."
-msgstr ""
+msgstr "ٔدیسک بلو-ری خراب شده است."
 
-#: modules/access/bluray.c:868
+#: modules/access/bluray.c:872
 msgid "Missing AACS configuration file!"
 msgstr ""
 
-#: modules/access/bluray.c:870
+#: modules/access/bluray.c:874
 msgid "No valid processing key found in AACS config file."
 msgstr ""
 
-#: modules/access/bluray.c:872
+#: modules/access/bluray.c:876
 msgid "No valid host certificate found in AACS config file."
 msgstr ""
 
-#: modules/access/bluray.c:874
+#: modules/access/bluray.c:878
 msgid "AACS Host certificate revoked."
 msgstr ""
 
-#: modules/access/bluray.c:876
+#: modules/access/bluray.c:880
 msgid "AACS MMC failed."
 msgstr ""
 
-#: modules/access/bluray.c:886
+#: modules/access/bluray.c:890
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
 msgstr ""
 
-#: modules/access/bluray.c:889
+#: modules/access/bluray.c:893
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr ""
 
-#: modules/access/bluray.c:922
+#: modules/access/bluray.c:926
 msgid "Java required"
 msgstr ""
 
-#: modules/access/bluray.c:923
+#: modules/access/bluray.c:927
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
 "The disc will be played without menus."
 msgstr ""
 
-#: modules/access/bluray.c:924
+#: modules/access/bluray.c:928
 msgid "Java was not found on your system."
 msgstr ""
 
-#: modules/access/bluray.c:947
+#: modules/access/bluray.c:951
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 
-#: modules/access/bluray.c:988 modules/access/bluray.c:2819
-#: modules/access/bluray.c:2824
+#: modules/access/bluray.c:992 modules/access/bluray.c:2823
+#: modules/access/bluray.c:2828
 msgid "Blu-ray error"
 msgstr ""
 
-#: modules/access/bluray.c:2109
+#: modules/access/bluray.c:2113
 msgid "Top Menu"
 msgstr ""
 
-#: modules/access/bluray.c:2112
+#: modules/access/bluray.c:2116
 msgid "First Play"
 msgstr "اولین پخش"
 
-#: modules/access/cdda.c:480
+#: modules/access/cdda.c:487
 #, c-format
 msgid "Audio CD - Track %02i"
 msgstr ""
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/access/cdda.c:727 modules/gui/macosx/VLCOpenWindowController.m:169
 #: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "سی‌دی صوتی"
 
-#: modules/access/cdda.c:721
+#: modules/access/cdda.c:728
 msgid "Audio CD input"
 msgstr "ورودی سی‌دی صوتی"
 
-#: modules/access/cdda.c:730
+#: modules/access/cdda.c:737
 msgid "[cdda:][device][@[track]]"
 msgstr "[cdda:][device][@[track]]"
 
-#: modules/access/cdda.c:739
+#: modules/access/cdda.c:746
 msgid "CDDB Server"
 msgstr "کارگزار CDDB"
 
-#: modules/access/cdda.c:740
+#: modules/access/cdda.c:747
 msgid "Address of the CDDB server to use."
 msgstr "نشانی کارگزار CDDB مورد استفاده."
 
-#: modules/access/cdda.c:741
+#: modules/access/cdda.c:748
 msgid "CDDB port"
 msgstr "درگاه CDDB"
 
-#: modules/access/cdda.c:742
+#: modules/access/cdda.c:749
 msgid "CDDB Server port to use."
 msgstr "درگاه مورد استفادهٔ کارگزار CDDB."
 
@@ -6302,6 +6303,13 @@ msgstr ""
 
 #: modules/access/decklink.cpp:358 modules/demux/ty.c:769
 msgid "Closed captions 1"
+msgstr ""
+
+#: modules/access/disc_helper.h:57
+msgid ""
+"Potentially, macOS blocks access to your disc. Please open \"System "
+"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
+"external media in \"Files and Folders\" section."
 msgstr ""
 
 #: modules/access/dshow/dshow.cpp:92
@@ -7054,19 +7062,19 @@ msgstr ""
 msgid "Scanning DVB"
 msgstr ""
 
-#: modules/access/dvdnav.c:71 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:76
 msgid "DVD angle"
 msgstr "زاویهٔ دی‌وی‌دی"
 
-#: modules/access/dvdnav.c:73 modules/access/dvdread.c:71
+#: modules/access/dvdnav.c:75 modules/access/dvdread.c:78
 msgid "Default DVD angle."
 msgstr "زاویهٔ پیش‌فرض دی‌وی‌دی."
 
-#: modules/access/dvdnav.c:75
+#: modules/access/dvdnav.c:77
 msgid "Start directly in menu"
 msgstr "آغاز مستقیماً از منو"
 
-#: modules/access/dvdnav.c:77
+#: modules/access/dvdnav.c:79
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -7074,59 +7082,52 @@ msgstr ""
 "آغاز دی‌وی‌دی‌ها از منوی اصلی. سعی می‌کند از همهٔ مقدمات و اخطارهای بی‌فایدهٔ اولیه "
 "بگذرد."
 
-#: modules/access/dvdnav.c:91
+#: modules/access/dvdnav.c:93
 msgid "DVD with menus"
 msgstr "دی‌وی‌دی با منو"
 
-#: modules/access/dvdnav.c:92
+#: modules/access/dvdnav.c:94
 msgid "DVDnav Input"
 msgstr "ورودی DVDnav"
 
-#: modules/access/dvdnav.c:104
+#: modules/access/dvdnav.c:106
 msgid "DVDnav demuxer"
 msgstr ""
 
-#: modules/access/dvdnav.c:282 modules/access/dvdread.c:220
-#: modules/access/dvdread.c:237 modules/access/dvdread.c:496
-#: modules/access/dvdread.c:561
+#: modules/access/dvdnav.c:284 modules/access/dvdread.c:227
+#: modules/access/dvdread.c:243 modules/access/dvdread.c:502
+#: modules/access/dvdread.c:567
 msgid "Playback failure"
 msgstr ""
 
-#: modules/access/dvdnav.c:283
+#: modules/access/dvdnav.c:285
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
 
-#: modules/access/dvdnav.c:382 modules/access/dvdread.c:216
-msgid ""
-"Potentially, macOS blocks access to your disc. Please open \"System "
-"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
-"external media in \"Files and Folders\" section."
-msgstr ""
-
-#: modules/access/dvdread.c:77
+#: modules/access/dvdread.c:84
 msgid "DVD without menus"
-msgstr "دی‌وی‌دی بدون منو"
+msgstr "دی‌وی‌دی بدون منوها"
 
-#: modules/access/dvdread.c:78
+#: modules/access/dvdread.c:85
 msgid "DVDRead Input (no menu support)"
 msgstr ""
 
-#: modules/access/dvdread.c:221
+#: modules/access/dvdread.c:228
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
 msgstr ""
 
-#: modules/access/dvdread.c:238
+#: modules/access/dvdread.c:244
 msgid "Cannot play a non-UDF mastered DVD."
 msgstr ""
 
-#: modules/access/dvdread.c:497
+#: modules/access/dvdread.c:503
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr ""
 
-#: modules/access/dvdread.c:562
+#: modules/access/dvdread.c:568
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr ""
@@ -7863,11 +7864,11 @@ msgstr "RTP"
 msgid "Real-Time Protocol (RTP) input"
 msgstr ""
 
-#: modules/access/rtp/rtp.c:770
+#: modules/access/rtp/rtp.c:773
 msgid "SDP required"
 msgstr ""
 
-#: modules/access/rtp/rtp.c:771
+#: modules/access/rtp/rtp.c:774
 #, c-format
 msgid ""
 "A description in SDP format is required to receive the RTP stream. Note that "
@@ -10190,7 +10191,7 @@ msgstr ""
 
 #: modules/audio_output/mmdevice.c:1460
 msgid "Disabled"
-msgstr ""
+msgstr "غیرفعال"
 
 #: modules/audio_output/mmdevice.c:1461
 msgid "Enabled (AC3/DTS only)"
@@ -10198,7 +10199,7 @@ msgstr ""
 
 #: modules/audio_output/mmdevice.c:1462
 msgid "Enabled"
-msgstr ""
+msgstr "فعال"
 
 #: modules/audio_output/mmdevice.c:1473
 msgid "Windows Multimedia Device output"
@@ -14446,7 +14447,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr ""
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4256
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14468,7 +14469,7 @@ msgstr ""
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4267
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
 msgid "Broken or missing Index"
 msgstr ""
 
@@ -14901,11 +14902,11 @@ msgstr ""
 msgid "MP4"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4264
+#: modules/demux/mp4/mp4.c:4262
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4265
+#: modules/demux/mp4/mp4.c:4263
 msgid "Build index"
 msgstr ""
 
@@ -15912,7 +15913,7 @@ msgstr ""
 #: modules/gui/macosx/VLCOutput.m:67
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCSimplePrefsController.m:373
-#: modules/gui/macosx/prefs_widgets.m:1125
+#: modules/gui/macosx/prefs_widgets.m:1122
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
@@ -16619,7 +16620,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCMainMenu.m:401
 msgid "Quit after Playback"
-msgstr ""
+msgstr "خروج پس از پخش"
 
 #: modules/gui/macosx/VLCMainMenu.m:402
 msgid "Step Forward"
@@ -18054,15 +18055,15 @@ msgstr "TB"
 msgid "Show Basic"
 msgstr ""
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a directory"
 msgstr "یک شاخه انتخاب کنید"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a file"
 msgstr "یک پرونده انتخاب کنید"
 
-#: modules/gui/macosx/prefs_widgets.m:1154
+#: modules/gui/macosx/prefs_widgets.m:1148
 msgid "Select"
 msgstr "انتخاب"
 
@@ -19502,7 +19503,7 @@ msgstr ""
 
 #: modules/gui/qt/dialogs/help.cpp:214
 msgid "&Recheck version"
-msgstr ""
+msgstr "بررسی مجدد نسخه"
 
 #: modules/gui/qt/dialogs/help.cpp:217
 msgid "&Yes"
@@ -19514,15 +19515,15 @@ msgstr ""
 
 #: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:144
 msgid "VLC media player updates"
-msgstr ""
+msgstr "بروز رسانی VLC  مدیا پلیر"
 
 #: modules/gui/qt/dialogs/help.cpp:294
 msgid "A new version of VLC (%1.%2.%3%4) is available."
-msgstr ""
+msgstr "بروزترین نسخه VLC (%1.%2.%3%4) در دسترس است."
 
 #: modules/gui/qt/dialogs/help.cpp:319
 msgid "You have the latest version of VLC media player."
-msgstr ""
+msgstr "شما از آخرین نسخه VLC مدیا پلیر استفاده می‌کنید."
 
 #: modules/gui/qt/dialogs/help.cpp:326
 msgid "An error occurred while checking for updates..."
@@ -19865,7 +19866,7 @@ msgstr ""
 
 #: modules/gui/qt/dialogs/toolbar.cpp:94
 msgid "Main Toolbar"
-msgstr ""
+msgstr "نوار ابزار اصلی"
 
 #: modules/gui/qt/dialogs/toolbar.cpp:97
 msgid "Above the Video"
@@ -20041,7 +20042,7 @@ msgstr ""
 
 #: modules/gui/qt/dialogs_provider.cpp:629
 msgid "Open playlist..."
-msgstr ""
+msgstr "باز کردن فهرست پخش..."
 
 #: modules/gui/qt/dialogs_provider.cpp:652
 msgid "XSPF playlist"
@@ -20057,7 +20058,7 @@ msgstr ""
 
 #: modules/gui/qt/dialogs_provider.cpp:672
 msgid "Save playlist as..."
-msgstr ""
+msgstr "ذخیره فهرست پخش در..."
 
 #: modules/gui/qt/dialogs_provider.cpp:820
 msgid "Open subtitles..."
@@ -20171,7 +20172,7 @@ msgstr "جریان..."
 
 #: modules/gui/qt/menus.cpp:394
 msgid "Quit at the end of playlist"
-msgstr ""
+msgstr "خروج پس از پایان فهرست پخش"
 
 #: modules/gui/qt/menus.cpp:401
 msgid "Close to systray"
@@ -20663,11 +20664,11 @@ msgstr ""
 
 #: modules/gui/skins2/src/dialogs.cpp:222
 msgid "Open playlist"
-msgstr ""
+msgstr "باز کردن فهرست پخش"
 
 #: modules/gui/skins2/src/dialogs.cpp:230
 msgid "Save playlist"
-msgstr ""
+msgstr "‌ذخیره فهرست پخش"
 
 #: modules/gui/skins2/src/dialogs.cpp:230
 msgid "XSPF playlist |*.xspf|M3U file |*.m3u|HTML playlist |*.html"
@@ -27342,9 +27343,8 @@ msgstr ""
 
 #: modules/gui/qt/ui/about.h:285 modules/gui/qt/ui/open.h:257
 #: modules/gui/qt/ui/podcast_configuration.h:98
-#, fuzzy
 msgid "Dialog"
-msgstr "آنالوگ"
+msgstr ""
 
 #: modules/gui/qt/ui/equalizer.h:129 modules/gui/qt/ui/open_disk.h:293
 #: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:406
@@ -27364,14 +27364,12 @@ msgid "0.00 dB"
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:137
-#, fuzzy
 msgid "&Verbosity:"
-msgstr "تفصیل (۰‏،۱،‏۲)"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:138
-#, fuzzy
 msgid "&Filter:"
-msgstr "پالایه‌ها"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:139
 msgid "&Save as..."
@@ -27382,90 +27380,76 @@ msgid "Modules Tree"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:260
-#, fuzzy
 msgid "Show extended options"
-msgstr "نمایش گزینه‌های پیشرفته"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:262
-#, fuzzy
 msgid "Show &more options"
-msgstr "نمایش گزینه‌های پیشرفته"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:265
-#, fuzzy
 msgid "Change the caching for the media"
-msgstr "تغییر عنوان مطابق با رسانه جاری"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:267
-#, fuzzy
 msgid " ms"
-msgstr "ms"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:268
-#, fuzzy
 msgid "MRL"
-msgstr "نشانی اینترنتی"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:269
-#, fuzzy
 msgid "Start Time"
-msgstr "زمان آغاز"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:270
-#, fuzzy
 msgid "Stop Time"
-msgstr "زمان توقف"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:271
-#, fuzzy
 msgid "Edit Options"
-msgstr "ویرایش تنظیمات"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:272
-#, fuzzy
 msgid "Extra media"
-msgstr "رسانه‌ی ورودی"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:274
 msgid "Complete MRL for VLC internal"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:277
-#, fuzzy
 msgid "Select the file"
-msgstr "یک پرونده انتخاب کنید"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:281
-#, fuzzy
 msgid "Change the start time for the media"
-msgstr "تغییر عنوان مطابق با رسانه جاری"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:283 modules/gui/qt/ui/open.h:287
 msgid "HH'H':mm'm':ss's'.zzz"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:285
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "تغییر عنوان مطابق با رسانه جاری"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:288
 msgid "Play another media synchronously (extra audio file, ...)"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:94
-#, fuzzy
 msgid "Capture mode"
-msgstr "حالت استریو"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:96
 msgid "Select the capture device type"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:98
-#, fuzzy
 msgid "Device Selection"
-msgstr "حذف موارد انتخاب‌شده"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:99
 msgid "Options"
@@ -27480,55 +27464,48 @@ msgid "Advanced options..."
 msgstr "گزینه‌های پیشرفته..."
 
 #: modules/gui/qt/ui/open_disk.h:294
-#, fuzzy
 msgid "Disc Selection"
-msgstr "انتخاب پوشه"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:298
 msgid "SVCD/VCD"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:300
-#, fuzzy
 msgid "Disable Disc Menus"
-msgstr "غیرفعال سازی منوهای DVD"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:302
 msgid "No disc menus"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:303
-#, fuzzy
 msgid "Disc device"
-msgstr "دستگاه دی‌وی‌دی"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:305
-#, fuzzy
 msgid "Starting Position"
-msgstr "موقعیت"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:308
 msgid "Audio and Subtitles"
 msgstr "صوت و زیرنویس ها"
 
 #: modules/gui/qt/ui/open_file.h:142
-#, fuzzy
 msgid "Use a sub&title file"
-msgstr "استفاده از پروندهٔ زیرنویس"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:144
 msgid "Select the subtitle file"
 msgstr "انتخاب پرونده زیرنویس"
 
 #: modules/gui/qt/ui/open_file.h:148
-#, fuzzy
 msgid "Choose one or more media file to open"
-msgstr "یک یا چند پرونده انتخاب کنید تا باز شوند"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:150
-#, fuzzy
 msgid "File Selection"
-msgstr "انتخاب پوشه"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:151
 msgid "You can select local files with the following list and buttons."
@@ -27539,18 +27516,16 @@ msgid "Add..."
 msgstr ""
 
 #: modules/gui/qt/ui/open_net.h:94
-#, fuzzy
 msgid "Network Protocol"
-msgstr "همگام سازی شبکه"
+msgstr ""
 
 #: modules/gui/qt/ui/open_net.h:95
 msgid "Please enter a network URL:"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:699
-#, fuzzy
 msgid "Profile edition"
-msgstr "موقعیت"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:700
 msgid "FLAC"
@@ -27617,89 +27592,76 @@ msgid "Features"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:717
-#, fuzzy
 msgid "Streamable"
-msgstr "جریان"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:718
-#, fuzzy
 msgid "Chapters"
-msgstr "فصل"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:721
-#, fuzzy
 msgid "Menus"
-msgstr "Menu"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:728
 msgid "Fra&me Rate"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:729
-#, fuzzy
 msgid "Same as source"
-msgstr "ذخیره به عنوان پرونده"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:731
 msgid " fps"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:732
-#, fuzzy
 msgid "Custom options"
-msgstr "فهرست نسبت‌های حاشیه‌گیری سفارشی"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:733
-#, fuzzy
 msgid "&Quality"
-msgstr "سطح کیفی"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
 msgid "Not Used"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:755
-#, fuzzy
 msgid " kb/s"
-msgstr "%u kb/s"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:737 modules/gui/qt/ui/profiles.h:757
-#, fuzzy
 msgid "Encoding parameters"
-msgstr "مختصات X کدگذاری"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:740
-#, fuzzy
 msgid "Frame size"
-msgstr "سرعت فریم‌ها"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:743 modules/gui/qt/ui/profiles.h:746
 msgid "px"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:756
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "نرخ نمونه"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:764
-#, fuzzy
 msgid "Profile &Name"
-msgstr "نام پروندهٔ ثبتی"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:200
 msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:202
-#, fuzzy
 msgid "Destination Setup"
-msgstr "کُدک ویدئوی هدف"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:203
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr "برای دیدن همهٔ گزینه‌ها، «گزینه‌های پیشرفته» را انتخاب کنید."
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:204
 msgid ""
@@ -27708,24 +27670,20 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:205
-#, fuzzy
 msgid "New destination"
-msgstr "مقصد خروجی"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:207
-#, fuzzy
 msgid "Display locally"
-msgstr "نمایش محلی جریان"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:209
-#, fuzzy
 msgid "Transcoding Options"
-msgstr "گزینه‌های تبدیل کد"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:210
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "گزینه‌های جریان‌سازی و تبدیل کد"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:211
 msgid "Activate Transcoding"
@@ -27740,28 +27698,24 @@ msgid "Set up any additional options for streaming"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:214
-#, fuzzy
 msgid "Miscellaneous Options"
-msgstr "متفرقه"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:215
-#, fuzzy
 msgid "Stream all elementary streams"
-msgstr "جاری‌سازی همهٔ جریان‌های پایه (ویدئو، صدا و زیرنویس)"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:216
-#, fuzzy
 msgid "Generated stream output string"
-msgstr "تنظیمات عمومی خروجی جریان"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:409
 msgid " %"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:412
-#, fuzzy
 msgid "Output module:"
-msgstr "پیمانه‌های خروجی"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:415
 msgid "Use S/PDIF when available"
@@ -27772,19 +27726,16 @@ msgid "Effects"
 msgstr "جلوه ها"
 
 #: modules/gui/qt/ui/sprefs_audio.h:418
-#, fuzzy
 msgid "Visualization:"
-msgstr "جلوه ها"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:419
-#, fuzzy
 msgid "Enable Time-Stretching audio"
-msgstr "به کار انداختن صدا"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:420
-#, fuzzy
 msgid "Replay gain mode:"
-msgstr "افزایش بازپخش"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:421
 msgid "Normalize volume to:"
@@ -27795,28 +27746,24 @@ msgid "Tracks"
 msgstr "قطعه"
 
 #: modules/gui/qt/ui/sprefs_audio.h:423
-#, fuzzy
 msgid "Preferred audio language:"
-msgstr "زبان پیش فرض صدا"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:424
-#, fuzzy
 msgid "Password:"
-msgstr "گذرواژه"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:425
-#, fuzzy
 msgid "Username:"
-msgstr "نام کاربری"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:426
 msgid "Submit played tracks stats to Last.fm"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:354
-#, fuzzy
 msgid "Codecs"
-msgstr "کُدک"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:355
 msgid "x264 profile and level selection"
@@ -27843,18 +27790,16 @@ msgid "Optical drive"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:362
-#, fuzzy
 msgid "Default optical device"
-msgstr "دستگاه‌های پیش‌فرض"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:366
 msgid "Damaged or incomplete AVI file"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:369
-#, fuzzy
 msgid "HTTP proxy URL"
-msgstr "پیشکار HTTP"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:370
 msgid "HTTP (default)"
@@ -27869,14 +27814,12 @@ msgid "Live555 stream transport"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:373
-#, fuzzy
 msgid "Default caching policy"
-msgstr "کدگشای پیش فرش"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:528
-#, fuzzy
 msgid "Menus language:"
-msgstr "زبان منو"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:529
 msgid "Look and feel"
@@ -27891,19 +27834,16 @@ msgid "This is VLC's default interface, with a native look and feel."
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:534
-#, fuzzy
 msgid "Use native style"
-msgstr "استفاده از پروندهٔ زیرنویس"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:535
-#, fuzzy
 msgid "Resize interface to video size"
-msgstr "نادرهم‌بافی ویدئو"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:536
-#, fuzzy
 msgid "Show controls in full screen mode"
-msgstr "نمایش دکمه‌های کنترلی در حالت تمام‌صفحه"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:537
 msgid "Pause playback when minimized"
@@ -27918,42 +27858,36 @@ msgid "Start in minimal view mode"
 msgstr "شروع در حداقل نمایش"
 
 #: modules/gui/qt/ui/sprefs_interface.h:540
-#, fuzzy
 msgid "Force window style:"
-msgstr "پنجره‌های فعال"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:541
-#, fuzzy
 msgid "Integrate video in interface"
-msgstr "تعامل با واسط"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:542
-#, fuzzy
 msgid "Show systray icon"
-msgstr "نمایش تنظیمات"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "تنظیمات واسط اصلی"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
 msgid "Skin resource file:"
 msgstr "پرونده منبع پوسته:"
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Playlist and Instances"
-msgstr "پخش و توقف"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:549
 msgid "Pause on the last frame of a video"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:552
-#, fuzzy
 msgid "Allow only one instance"
-msgstr "فقط اجرای یک نمونه مجاز باشد"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:554
 msgid "Activate updates notifier"
@@ -27980,9 +27914,8 @@ msgid "File extensions association"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:565
-#, fuzzy
 msgid "Set up associations..."
-msgstr "تنظیمات..."
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:288
 msgid "Enable On Screen Display (OSD)"
@@ -28029,9 +27962,8 @@ msgid "Add a background"
 msgstr "افزودن پس‌زمینه"
 
 #: modules/gui/qt/ui/sprefs_video.h:313
-#, fuzzy
 msgid "O&utput"
-msgstr "خروجی"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:317
 msgid "DirectX"
@@ -28046,14 +27978,12 @@ msgid "KVA"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:324
-#, fuzzy
 msgid "Deinterlacing"
-msgstr "نادَرهم‌بافی"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:326
-#, fuzzy
 msgid "Force Aspect Ratio"
-msgstr "نسبت نسبت طول به عرض مبدأ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:331
 msgid "vlc-snap"
@@ -28129,9 +28059,8 @@ msgid ">HHHHHH;#"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1240
-#, fuzzy
 msgid "Negate colors"
-msgstr "رنگ متن"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1253
 msgid "Colors"
@@ -28159,9 +28088,8 @@ msgid "none"
 msgstr "هیچ‌کدام"
 
 #: modules/gui/qt/ui/video_effects.h:1278
-#, fuzzy
 msgid "Logo erase"
-msgstr "نام پرونده‌های نشان"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1283
 msgid "Mask"
@@ -28188,9 +28116,8 @@ msgid "Anti-Flickering"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1297
-#, fuzzy
 msgid "Soften"
-msgstr "ملایم"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1298
 msgid "Denoiser"
@@ -28245,14 +28172,12 @@ msgid "Time Control"
 msgstr "کنترل زمان"
 
 #: modules/gui/qt/ui/vlm.h:292
-#, fuzzy
 msgid "Mux Control"
-msgstr "کنترل"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:293
-#, fuzzy
 msgid "Muxer:"
-msgstr "همتافتگرها"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:294
 msgid "AAAA; "
@@ -31088,6 +31013,10 @@ msgstr "مدیریت لیست رسانه"
 #, fuzzy
 #~ msgid "VLC media player: Open Subtitle File"
 #~ msgstr "پخش کننده رسانه ای VLC - رابط کاربری وب"
+
+#, fuzzy
+#~ msgid "Select None"
+#~ msgstr "انتخاب پوشه"
 
 #, fuzzy
 #~ msgid "Randomize"

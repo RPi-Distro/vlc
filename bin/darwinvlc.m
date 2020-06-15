@@ -2,7 +2,7 @@
  * darwinvlc.m: OS X specific main executable for VLC media player
  *****************************************************************************
  * Copyright (C) 2013-2015 VLC authors and VideoLAN
- * $Id: e3da5722a03e7d5fad8adc93357c26a9e4ebd0ba $
+ * $Id: 022c559b44795227e118670d4ca89a2712aed934 $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          David Fuhrmann <dfuhrmann at videolan dot org>
@@ -114,6 +114,13 @@ BreakpadRef initBreakpad()
  *****************************************************************************/
 int main(int i_argc, const char *ppsz_argv[])
 {
+#ifdef HAVE_BREAKPAD
+    BreakpadRef breakpad = NULL;
+
+    if (!getenv("VLC_DISABLE_BREAKPAD"))
+        breakpad = initBreakpad();
+#endif
+
     /* The so-called POSIX-compliant MacOS X reportedly processes SIGPIPE even
      * if it is blocked in all thread.
      * Note: this is NOT an excuse for not protecting against SIGPIPE. If
@@ -297,10 +304,6 @@ int main(int i_argc, const char *ppsz_argv[])
      * runloop is used. Otherwise, [NSApp run] needs to be called, which setups more stuff
      * before actually starting the loop.
      */
-#ifdef HAVE_BREAKPAD
-    BreakpadRef breakpad;
-    breakpad = initBreakpad();
-#endif
     @autoreleasepool {
         if(NSApp == nil) {
             CFRunLoopRun();
@@ -320,7 +323,8 @@ out:
     libvlc_release(vlc);
 
 #ifdef HAVE_BREAKPAD
-    BreakpadRelease(breakpad);
+    if (breakpad)
+        BreakpadRelease(breakpad);
 #endif
 
     return ret;

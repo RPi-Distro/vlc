@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-04-23 11:48+0200\n"
+"POT-Creation-Date: 2020-06-10 11:26+0200\n"
 "PO-Revision-Date: 2020-03-28 03:23+0100\n"
 "Last-Translator: Dilip Re <dilip_meet@rediffmail.com>, 2020\n"
 "Language-Team: Malayalam (https://www.transifex.com/yaron/teams/16553/ml/)\n"
@@ -2515,8 +2515,8 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:661
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
-#: modules/gui/macosx/prefs_widgets.m:1221
-#: modules/gui/macosx/prefs_widgets.m:1278
+#: modules/gui/macosx/prefs_widgets.m:1215
+#: modules/gui/macosx/prefs_widgets.m:1272
 #: modules/gui/qt/components/preferences_widgets.cpp:546
 #: modules/logger/file.c:203 modules/spu/marq.c:61 modules/spu/rss.c:69
 #: modules/spu/rss.c:182 modules/video_output/win32/directdraw.c:1492
@@ -3015,7 +3015,7 @@ msgstr "ഡിവിഡി ഡിവൈസ്"
 msgid "VCD device"
 msgstr "വിസിഡി ഡിവൈസ്"
 
-#: src/libvlc-module.c:764 modules/access/cdda.c:701
+#: src/libvlc-module.c:764 modules/access/cdda.c:708
 msgid "Audio CD device"
 msgstr "ഓഡിയോ സിഡി ഡിവൈസ്"
 
@@ -3035,7 +3035,7 @@ msgstr ""
 "ഇത് ഉപയോഗിക്കാനുള്ള സ്ഥിരസ്ഥിതി വിസിഡി ഡ്രൈവ് (അല്ലെങ്കിൽ ഫയൽ) ആണ്. ഡ്രൈവ് അക്ഷരത്തിന് ശേഷം "
 "കോളൻ മറക്കരുത് (ഉദാ. D:)"
 
-#: src/libvlc-module.c:774 modules/access/cdda.c:704
+#: src/libvlc-module.c:774 modules/access/cdda.c:711
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -3051,7 +3051,7 @@ msgstr "ഉപയോഗിക്കേണ്ട സഹജമായ ഡിവി�
 msgid "This is the default VCD device to use."
 msgstr "ഉപയോഗിക്കേണ്ട സഹജമായ വിസിഡി ഡിവൈസ് ഇതാണ്."
 
-#: src/libvlc-module.c:785 modules/access/cdda.c:709
+#: src/libvlc-module.c:785 modules/access/cdda.c:716
 msgid "This is the default Audio CD device to use."
 msgstr "ഉപയോഗിക്കേണ്ട സഹജമായ ഓഡിയോ സിഡി ഡിവൈസാണ് ഇത്."
 
@@ -6100,7 +6100,7 @@ msgstr ""
 "നിങ്ങളുടെ കണക്റ്ററുകളും ഡ്രൈവറുകളും പരിശോധിക്കുക."
 
 #: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:350
-#: modules/access/dvdnav.c:381 modules/access/dvdread.c:215
+#: modules/access/disc_helper.h:56
 msgid "Problem accessing a system resource"
 msgstr "ഒരു സിസ്റ്റം അംശം കൈകാര്യം ചെയ്യുന്നതിൽ പ്രശ്നം"
 
@@ -6197,11 +6197,11 @@ msgstr "ബ്ലൂ-റേ"
 msgid "Blu-ray Disc support (libbluray)"
 msgstr "ബ്ലൂ-റേ ഡിസ്ക് പിന്തുണ (ലിബ്ബ്ലൂറേ)"
 
-#: modules/access/bluray.c:845
+#: modules/access/bluray.c:849
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr "പാത ബ്ലൂ-റേ ആയി പ്രത്യക്ഷപ്പെടുന്നില്ല"
 
-#: modules/access/bluray.c:860
+#: modules/access/bluray.c:864
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
@@ -6209,31 +6209,31 @@ msgstr ""
 "എ‌എ‌സി‌എസ് ഡികോഡിങ്ങിന് വേണ്ടി ബ്ലൂ-റേ ഡിസ്കിന് ഒരു ലൈബ്രറി വേണം, കൂടാതെ നിങ്ങളുടെ സിസ്റ്റത്തിന് "
 "അതില്ല."
 
-#: modules/access/bluray.c:866
+#: modules/access/bluray.c:870
 msgid "Blu-ray Disc is corrupted."
 msgstr "ബ്ലൂ-റേ ഡിസ്ക് കറപ്റ്റ് ആയതാണ്."
 
-#: modules/access/bluray.c:868
+#: modules/access/bluray.c:872
 msgid "Missing AACS configuration file!"
 msgstr "എഎസിഎസ് കോണ്‍ഫിഗറേഷന്‍ ഫയല്‍ കാണ്മാനില്ല!"
 
-#: modules/access/bluray.c:870
+#: modules/access/bluray.c:874
 msgid "No valid processing key found in AACS config file."
 msgstr "എ‌എ‌സി‌എസ് കോന്‍ഫീഗ് ഫയലില്‍ പ്രബലമായ സംസ്കരണ കീ ഇല്ല."
 
-#: modules/access/bluray.c:872
+#: modules/access/bluray.c:876
 msgid "No valid host certificate found in AACS config file."
 msgstr "എ‌എ‌സി‌എസ് കോണ്‍ഫിഗ് ഫയലില്‍ സാധുവായ ഒരു ആതിഥേയ സര്‍ട്ടിഫിക്കറ്റ് കണ്ടില്ല."
 
-#: modules/access/bluray.c:874
+#: modules/access/bluray.c:878
 msgid "AACS Host certificate revoked."
 msgstr "എഎസിഎസ് ഹോസ്റ്റ് സര്‍ട്ടിഫിക്കറ്റ് റിവോക്ക് ചെയ്തിരിക്കുന്നു."
 
-#: modules/access/bluray.c:876
+#: modules/access/bluray.c:880
 msgid "AACS MMC failed."
 msgstr "എഎസിഎസ് എംഎംസി പരാജയപ്പെട്ടു"
 
-#: modules/access/bluray.c:886
+#: modules/access/bluray.c:890
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
@@ -6241,16 +6241,16 @@ msgstr ""
 "ബി‌ഡി+ ഡികോഡിങ്ങിന് വേണ്ടി ബ്ലൂ-റേ ഡിസ്കിന് ഒരു ലൈബ്രറി വേണം, കൂടാതെ നിങ്ങളുടെ സിസ്റ്റത്തിന് "
 "അതില്ല."
 
-#: modules/access/bluray.c:889
+#: modules/access/bluray.c:893
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr ""
 "നിങ്ങളുടെ സിസ്റ്റത്തിന്റെ ബി‌ഡി+ ഡികോഡിങ് ലൈബ്രറി പ്രവര്‍ത്തിക്കുന്നില്ല.  രൂപരേഖ നഷ്ട്ടമായോ?"
 
-#: modules/access/bluray.c:922
+#: modules/access/bluray.c:926
 msgid "Java required"
 msgstr "ജാവ ആവശ്യമാണ്"
 
-#: modules/access/bluray.c:923
+#: modules/access/bluray.c:927
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
@@ -6259,58 +6259,58 @@ msgstr ""
 "ഈ ബ്ലൂ-റേ ഡിസ്കിന് മെനുകൾ പിന്തുണയ്ക്കായി ജാവ ആവശ്യമാണ്.%s\n"
 "മെനുകൾ ഇല്ലാതെ ഡിസ്ക് പ്ലേ ചെയ്യും."
 
-#: modules/access/bluray.c:924
+#: modules/access/bluray.c:928
 msgid "Java was not found on your system."
 msgstr "നിങ്ങളുടെ സിസ്റ്റത്തിൽ ജാവ കണ്ടെത്തിയില്ല."
 
-#: modules/access/bluray.c:947
+#: modules/access/bluray.c:951
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr "ബ്ലൂറേ പ്ലേബാക്ക് തുടങ്ങാന്‍ പരാജയപ്പെട്ടു. മെനു പിന്തുണ ഇല്ലാതെ ദയവായി ശ്രമിക്കുക."
 
-#: modules/access/bluray.c:988 modules/access/bluray.c:2819
-#: modules/access/bluray.c:2824
+#: modules/access/bluray.c:992 modules/access/bluray.c:2823
+#: modules/access/bluray.c:2828
 msgid "Blu-ray error"
 msgstr "ബ്ലൂ-റേ പിശക്"
 
-#: modules/access/bluray.c:2109
+#: modules/access/bluray.c:2113
 msgid "Top Menu"
 msgstr "ടോപ് മെനു"
 
-#: modules/access/bluray.c:2112
+#: modules/access/bluray.c:2116
 msgid "First Play"
 msgstr "ആദ്യ കളി"
 
-#: modules/access/cdda.c:480
+#: modules/access/cdda.c:487
 #, c-format
 msgid "Audio CD - Track %02i"
 msgstr "ഓഡിയോ സിഡി - ട്രാക്ക്  %02i"
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/access/cdda.c:727 modules/gui/macosx/VLCOpenWindowController.m:169
 #: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "ഓഡിയോ സിഡി"
 
-#: modules/access/cdda.c:721
+#: modules/access/cdda.c:728
 msgid "Audio CD input"
 msgstr "ഓഡിയോ സിഡി ഇന്‍പുട്ട്"
 
-#: modules/access/cdda.c:730
+#: modules/access/cdda.c:737
 msgid "[cdda:][device][@[track]]"
 msgstr "[cdda:][device][@[track]]"
 
-#: modules/access/cdda.c:739
+#: modules/access/cdda.c:746
 msgid "CDDB Server"
 msgstr "സിഡിഡിബി സര്‍വ്വര്‍"
 
-#: modules/access/cdda.c:740
+#: modules/access/cdda.c:747
 msgid "Address of the CDDB server to use."
 msgstr "ഉപയോഗിക്കേണ്ട സിഡിഡിബി സര്‍വ്വറിന്റെ വിലാസം."
 
-#: modules/access/cdda.c:741
+#: modules/access/cdda.c:748
 msgid "CDDB port"
 msgstr "സിഡിഡിബി പോര്‍ട്ട്"
 
-#: modules/access/cdda.c:742
+#: modules/access/cdda.c:749
 msgid "CDDB Server port to use."
 msgstr "ഉപയോഗിക്കേണ്ട സിഡിഡിബി സര്‍വ്വര്‍ പോര്‍ട്ട്"
 
@@ -6483,6 +6483,16 @@ msgstr "10 ബിറ്റുകള്‍"
 #: modules/access/decklink.cpp:358 modules/demux/ty.c:769
 msgid "Closed captions 1"
 msgstr "അടച്ച ശീര്‍ഷകങ്ങള്‍ 1"
+
+#: modules/access/disc_helper.h:57
+msgid ""
+"Potentially, macOS blocks access to your disc. Please open \"System "
+"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
+"external media in \"Files and Folders\" section."
+msgstr ""
+"നിങ്ങളുടെ ഡിസ്കിലേക്കുള്ള ആക്സസ് മാക് ഓഎസ് തടയാൻ സാധ്യതയുണ്ട്. ദയവായി \"സിസ്റ്റം മുൻ‌ഗണനകൾ\" -"
+"> \"സുരക്ഷയും സ്വകാര്യതയും\" തുറന്ന് \"ഫയലുകളും ഫോൾഡറുകളും\" വിഭാഗത്തിൽ നിങ്ങളുടെ ബാഹ്യ "
+"മീഡിയയിലേക്ക് പ്രവേശിക്കാൻ വി‌എൽ‌സിയെ അനുവദിക്കുക."
 
 #: modules/access/dshow/dshow.cpp:92
 msgid "Cable"
@@ -7293,19 +7303,19 @@ msgstr ""
 msgid "Scanning DVB"
 msgstr "ഡിവിബി സ്കാൻ ചെയ്യുന്നു "
 
-#: modules/access/dvdnav.c:71 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:76
 msgid "DVD angle"
 msgstr "ഡിവിഡി ആംഗിള്‍"
 
-#: modules/access/dvdnav.c:73 modules/access/dvdread.c:71
+#: modules/access/dvdnav.c:75 modules/access/dvdread.c:78
 msgid "Default DVD angle."
 msgstr "സഹജമായ ഡിവിഡി ആംഗിള്‍"
 
-#: modules/access/dvdnav.c:75
+#: modules/access/dvdnav.c:77
 msgid "Start directly in menu"
 msgstr "മെനുവില്‍ നേരിട്ട് ആരംഭിക്കുക"
 
-#: modules/access/dvdnav.c:77
+#: modules/access/dvdnav.c:79
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -7313,64 +7323,54 @@ msgstr ""
 "പ്രധാന മെനുവില്‍ നേരിട്ടു ഡി‌വി‌ഡി ആരംഭിക്കുക. ഉപയോഗമില്ലാത്ത എല്ലാ മുന്നറിയിപ്പിന്‍റെ മുഖവുരയും "
 "ഒഴിവാക്കാന്‍ ഇത് ശ്രമിക്കും."
 
-#: modules/access/dvdnav.c:91
+#: modules/access/dvdnav.c:93
 msgid "DVD with menus"
 msgstr "ഡിവിഡി മെനുകള്‍"
 
-#: modules/access/dvdnav.c:92
+#: modules/access/dvdnav.c:94
 msgid "DVDnav Input"
 msgstr "ഡിവിഡിനാവ് ഇന്‍പുട്ട്"
 
-#: modules/access/dvdnav.c:104
+#: modules/access/dvdnav.c:106
 msgid "DVDnav demuxer"
 msgstr "ഡിവിഡിനാവ് ഡീമക്സര്‍"
 
-#: modules/access/dvdnav.c:282 modules/access/dvdread.c:220
-#: modules/access/dvdread.c:237 modules/access/dvdread.c:496
-#: modules/access/dvdread.c:561
+#: modules/access/dvdnav.c:284 modules/access/dvdread.c:227
+#: modules/access/dvdread.c:243 modules/access/dvdread.c:502
+#: modules/access/dvdread.c:567
 msgid "Playback failure"
 msgstr "പ്ലേബാക്ക് പരാജയം"
 
-#: modules/access/dvdnav.c:283
+#: modules/access/dvdnav.c:285
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
 "ഡി‌വി‌ഡികളുടെ തലകെട്ട് സജ്ജീകരിക്കാന്‍ വി‌എല്‍‌സിക്കു കഴിയില്ല. അതിനു ഒരുപക്ഷേ മുഴുവന്‍ ഡിസ്ക്കും "
 "ഡിക്രിപ്റ്റ് ചെയ്യാന്‍ കഴിയില്ല"
 
-#: modules/access/dvdnav.c:382 modules/access/dvdread.c:216
-msgid ""
-"Potentially, macOS blocks access to your disc. Please open \"System "
-"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
-"external media in \"Files and Folders\" section."
-msgstr ""
-"നിങ്ങളുടെ ഡിസ്കിലേക്കുള്ള ആക്സസ് മാക് ഓഎസ് തടയാൻ സാധ്യതയുണ്ട്. ദയവായി \"സിസ്റ്റം മുൻ‌ഗണനകൾ\" -"
-"> \"സുരക്ഷയും സ്വകാര്യതയും\" തുറന്ന് \"ഫയലുകളും ഫോൾഡറുകളും\" വിഭാഗത്തിൽ നിങ്ങളുടെ ബാഹ്യ "
-"മീഡിയയിലേക്ക് പ്രവേശിക്കാൻ വി‌എൽ‌സിയെ അനുവദിക്കുക."
-
-#: modules/access/dvdread.c:77
+#: modules/access/dvdread.c:84
 msgid "DVD without menus"
 msgstr "മെനുകളില്ലാത്ത ഡിവിഡി"
 
-#: modules/access/dvdread.c:78
+#: modules/access/dvdread.c:85
 msgid "DVDRead Input (no menu support)"
 msgstr "ഡിവിഡിറീഡ് ഇന്‍പുട്ട്(മെനു പിന്തുണയില്ല)"
 
-#: modules/access/dvdread.c:221
+#: modules/access/dvdread.c:228
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
 msgstr "ഡി‌വി‌ഡിറീഡിന് ഡിസ്ക് തുറക്കാന്‍ സാധിച്ചില്ല\"%s\"."
 
-#: modules/access/dvdread.c:238
+#: modules/access/dvdread.c:244
 msgid "Cannot play a non-UDF mastered DVD."
 msgstr "യുഡിഎഫ് അല്ലാത്ത മാസ്റ്റേർഡ് ഡിവിഡി പ്ലേ ചെയ്യാൻ കഴിയില്ല."
 
-#: modules/access/dvdread.c:497
+#: modules/access/dvdread.c:503
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr "ഡി‌വി‌ഡിറീഡിന് ബ്ളോക്ക് വായിക്കാന്‍ കഴിഞ്ഞില്ല %d."
 
-#: modules/access/dvdread.c:562
+#: modules/access/dvdread.c:568
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr "ഡി‌വി‌ഡിറീഡിന് %d/%d ബ്ലോക്കുകള്‍ വായിക്കാന്‍ സാധിച്ചില്ല 0x%02x ഇടത്തു."
@@ -8156,11 +8156,11 @@ msgstr "ആര്‍ടിപി"
 msgid "Real-Time Protocol (RTP) input"
 msgstr "റിയല്‍-ടൈം പ്രോട്ടോക്കോള്‍(ആര്‍ടിപി) ഇന്‍പുട്ട്"
 
-#: modules/access/rtp/rtp.c:770
+#: modules/access/rtp/rtp.c:773
 msgid "SDP required"
 msgstr "എസ്ഡിപി ആവശ്യം"
 
-#: modules/access/rtp/rtp.c:771
+#: modules/access/rtp/rtp.c:774
 #, c-format
 msgid ""
 "A description in SDP format is required to receive the RTP stream. Note that "
@@ -15212,7 +15212,7 @@ msgstr "ആവശ്യമുള്ളപ്പോള്‍ ഫിക്സ് �
 msgid "AVI demuxer"
 msgstr "എവിഐ ഡീമക്സര്‍"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4256
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15239,7 +15239,7 @@ msgstr "സൂചിക നിര്‍മ്മിച്ചതിന്‍ശ�
 msgid "Play as is"
 msgstr "ഉള്ളതുപോലേ പ്ലേ ചെയ്യുക"
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4267
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
 msgid "Broken or missing Index"
 msgstr "സൂചിക കേടാണ് അല്ലെങ്കിൽ കാണുന്നില്ല"
 
@@ -15683,11 +15683,11 @@ msgstr "എം‌പി4 സ്ട്രീം ടിമക്സര്‍"
 msgid "MP4"
 msgstr "എം‌പി4"
 
-#: modules/demux/mp4/mp4.c:4264
+#: modules/demux/mp4/mp4.c:4262
 msgid "Do not seek"
 msgstr "തേടരുത് "
 
-#: modules/demux/mp4/mp4.c:4265
+#: modules/demux/mp4/mp4.c:4263
 msgid "Build index"
 msgstr "സൂചിക നിർമ്മിക്കുക"
 
@@ -16737,7 +16737,7 @@ msgstr "ഔട്ട്പുട്ട് സ്ഥാനം തിരഞ്ഞ�
 #: modules/gui/macosx/VLCOutput.m:67
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCSimplePrefsController.m:373
-#: modules/gui/macosx/prefs_widgets.m:1125
+#: modules/gui/macosx/prefs_widgets.m:1122
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
@@ -18952,15 +18952,15 @@ msgstr "ടിബി"
 msgid "Show Basic"
 msgstr "അടിസ്ഥാനം കാണിക്കുക"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a directory"
 msgstr "ഡയറക്ടറി തിരഞ്ഞെടുക്കുക"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a file"
 msgstr "ഫയല്‍ തിരഞ്ഞെടുക്കുക"
 
-#: modules/gui/macosx/prefs_widgets.m:1154
+#: modules/gui/macosx/prefs_widgets.m:1148
 msgid "Select"
 msgstr "തിരഞ്ഞെടുക്കുക"
 

@@ -227,8 +227,7 @@ SegmentChunk * SegmentTracker::getNextChunk(bool switch_allowed,
         next = rep->translateSegmentNumber(next, prevRep);
     }
 
-    if(b_updated)
-        curRepresentation->scheduleNextUpdate(next);
+    curRepresentation->scheduleNextUpdate(next, b_updated);
 
     if(rep->getStreamFormat() != format)
     {
@@ -355,7 +354,7 @@ void SegmentTracker::setPositionByNumber(uint64_t segnumber, bool restarted)
     curNumber = next = segnumber;
 }
 
-mtime_t SegmentTracker::getPlaybackTime() const
+mtime_t SegmentTracker::getPlaybackTime(bool b_next) const
 {
     mtime_t time, duration;
 
@@ -364,7 +363,7 @@ mtime_t SegmentTracker::getPlaybackTime() const
         rep = logic->getNextRepresentation(adaptationSet, NULL);
 
     if(rep &&
-       rep->getPlaybackTimeDurationBySegmentNumber(next, &time, &duration))
+       rep->getPlaybackTimeDurationBySegmentNumber(b_next ? next : curNumber, &time, &duration))
     {
         return time;
     }
@@ -390,7 +389,9 @@ mtime_t SegmentTracker::getMinAheadTime() const
         if(rep->needsUpdate())
             (void) rep->runLocalUpdates(resources);
 
-        uint64_t startnumber = bufferingLogic->getStartSegmentNumber(rep);
+        uint64_t startnumber = curNumber;
+        if(startnumber == std::numeric_limits<uint64_t>::max())
+            startnumber = bufferingLogic->getStartSegmentNumber(rep);
         if(startnumber != std::numeric_limits<uint64_t>::max())
             return rep->getMinAheadTime(startnumber);
     }
@@ -415,7 +416,7 @@ void SegmentTracker::registerListener(SegmentTrackerListenerInterface *listener)
 bool SegmentTracker::bufferingAvailable() const
 {
     if(adaptationSet->getPlaylist()->isLive())
-        return bufferingLogic->getMinBuffering(adaptationSet->getPlaylist()) <= getMinAheadTime();
+        return getMinAheadTime() > 0;
     return true;
 }
 
@@ -423,8 +424,8 @@ void SegmentTracker::updateSelected()
 {
     if(curRepresentation && curRepresentation->needsUpdate())
     {
-        curRepresentation->runLocalUpdates(resources);
-        curRepresentation->scheduleNextUpdate(curNumber);
+        bool b_updated = curRepresentation->runLocalUpdates(resources);
+        curRepresentation->scheduleNextUpdate(curNumber, b_updated);
     }
 }
 
