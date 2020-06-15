@@ -1,7 +1,7 @@
 vlc (3.0.11-1) unstable; urgency=high
 
   * New upstream release
-    - Fix a heap-based buffer overflow in haxxx_nall (CVE-2020-13428)
+    - Fix a heap-based buffer overflow in hxxx_nall (CVE-2020-13428)
 
  -- Sebastian Ramacher <sramacher@debian.org>  Mon, 15 Jun 2020 22:47:37 +0200
 
@@ -2222,7 +2222,7 @@ vlc (0.8.6.h-1) unstable; urgency=high
   [ Christophe Mutricy ]
   * Acknowledge NMU by Nico Golde. Thanks.
   * Acknowledge NMU by Mike Hommey. Thanks.
-  * New security upstrem release
+  * New security upstream release
     - Fix buffer overflow (CVE-2008-1881)
     - Fix out of bound array access (CVE-2008-1769)
     - Fix various integer overflow in MP4 demuxer, Cinepak, RTSP
