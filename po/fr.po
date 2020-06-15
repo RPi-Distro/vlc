@@ -25,9 +25,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-04-23 11:48+0200\n"
-"PO-Revision-Date: 2020-03-26 11:04+0100\n"
-"Last-Translator: JeanDeLaMouche <urgau@numericable.fr>, 2020\n"
+"POT-Creation-Date: 2020-06-10 11:26+0200\n"
+"PO-Revision-Date: 2020-04-24 22:11+0200\n"
+"Last-Translator: Yann Ricquebourg <yann.ricquebourg@gmail.com>, 2020\n"
 "Language-Team: French (https://www.transifex.com/yaron/teams/16553/fr/)\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -1364,7 +1364,7 @@ msgstr "URL"
 
 #: src/input/meta.c:67 src/input/meta.c:68 modules/notify/notify.c:314
 msgid "Now Playing"
-msgstr "En lecture"
+msgstr "Lecture en cours"
 
 #: src/input/meta.c:69 modules/demux/mp4/meta.c:96
 msgid "Publisher"
@@ -2585,8 +2585,8 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:661
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
-#: modules/gui/macosx/prefs_widgets.m:1221
-#: modules/gui/macosx/prefs_widgets.m:1278
+#: modules/gui/macosx/prefs_widgets.m:1215
+#: modules/gui/macosx/prefs_widgets.m:1272
 #: modules/gui/qt/components/preferences_widgets.cpp:546
 #: modules/logger/file.c:203 modules/spu/marq.c:61 modules/spu/rss.c:69
 #: modules/spu/rss.c:182 modules/video_output/win32/directdraw.c:1492
@@ -2923,9 +2923,9 @@ msgid ""
 "Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: \"Now playing"
 "\" (Fall back on Title - Artist)"
 msgstr ""
-"Cette option permet de choisr le titre en fonction de ce qui est lut <br>"
-"$a : Artiste<br>$b : Album<br>$c : Copyright<br>$t : Titre<br>$g : Genre<br>"
-"$n : num de piste<br>$p : en cours de lecture<br>$A : Date<br>$D : Durée<br>"
+"Cette option permet de choisr le titre en fonction de ce qui est lu<br>$a : "
+"Artiste<br>$b : Album<br>$c : Droit de copie<br>$t : Titre<br>$g : Genre<br>"
+"$n : N° de piste<br>$p : En cours de lecture<br>$A : Date<br>$D : Durée<br>"
 "$Z : « En cours de lecture » (par défaut vaut Titre - Artiste)"
 
 #: src/libvlc-module.c:695
@@ -3093,7 +3093,7 @@ msgstr "Périphérique DVD"
 msgid "VCD device"
 msgstr "Périphérique VCD"
 
-#: src/libvlc-module.c:764 modules/access/cdda.c:701
+#: src/libvlc-module.c:764 modules/access/cdda.c:708
 msgid "Audio CD device"
 msgstr "Périphérique CD audio"
 
@@ -3113,7 +3113,7 @@ msgstr ""
 "Spécifie le périphérique VCD (ou fichier) à utiliser par défaut. Ne pas "
 "oublier les deux-points après la lettre du disque (par ex. D:)"
 
-#: src/libvlc-module.c:774 modules/access/cdda.c:704
+#: src/libvlc-module.c:774 modules/access/cdda.c:711
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -3129,7 +3129,7 @@ msgstr "Ceci est le périphérique DVD à utiliser par défaut."
 msgid "This is the default VCD device to use."
 msgstr "Ceci est le périphérique VCD à utiliser par défaut."
 
-#: src/libvlc-module.c:785 modules/access/cdda.c:709
+#: src/libvlc-module.c:785 modules/access/cdda.c:716
 msgid "This is the default Audio CD device to use."
 msgstr "Ceci est le lecteur de CD audio à utiliser par défaut."
 
@@ -3887,7 +3887,7 @@ msgstr "Répéter l'élément actuel"
 
 #: src/libvlc-module.c:1166
 msgid "VLC will keep playing the current playlist item."
-msgstr "Jouer en boucle l'élément actuel de la liste de lecture."
+msgstr "VLC lira en boucle l'élément actuel de la liste de lecture."
 
 #: src/libvlc-module.c:1168
 msgid "Play and stop"
@@ -5000,7 +5000,7 @@ msgstr ""
 
 #: src/libvlc-module.c:2761
 msgid "ask for extra verbosity when displaying help"
-msgstr "Afficher plus de détails dans l'aide"
+msgstr "demande à afficher plus de détails dans l'aide"
 
 #: src/libvlc-module.c:2763
 msgid "print a list of available modules"
@@ -6244,7 +6244,7 @@ msgstr ""
 "Merci de vérifier ses branchements et pilotes."
 
 #: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:350
-#: modules/access/dvdnav.c:381 modules/access/dvdread.c:215
+#: modules/access/disc_helper.h:56
 msgid "Problem accessing a system resource"
 msgstr "Problème d'accès à une ressource du système"
 
@@ -6343,11 +6343,11 @@ msgstr "Blu-ray"
 msgid "Blu-ray Disc support (libbluray)"
 msgstr "Prise en charge des disques Blu-ray (libbluray)"
 
-#: modules/access/bluray.c:845
+#: modules/access/bluray.c:849
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr "Le chemin spécifié ne semble pas être un Blu-ray"
 
-#: modules/access/bluray.c:860
+#: modules/access/bluray.c:864
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
@@ -6355,35 +6355,35 @@ msgstr ""
 "Ce disque Blu-ray a besoin d'une bibliothèque de décodage AACS, et votre "
 "système ne l'a pas."
 
-#: modules/access/bluray.c:866
+#: modules/access/bluray.c:870
 msgid "Blu-ray Disc is corrupted."
 msgstr "Disque Blu-ray corrompu."
 
-#: modules/access/bluray.c:868
+#: modules/access/bluray.c:872
 msgid "Missing AACS configuration file!"
 msgstr "Fichier de configuration AACS manquant !"
 
-#: modules/access/bluray.c:870
+#: modules/access/bluray.c:874
 msgid "No valid processing key found in AACS config file."
 msgstr ""
 "Aucune clé de traitement valide n'a été trouvée dans le fichier de "
 "configuration d'AACS."
 
-#: modules/access/bluray.c:872
+#: modules/access/bluray.c:876
 msgid "No valid host certificate found in AACS config file."
 msgstr ""
 "Aucun certificat d'hôte valide n'a été trouvé dans le fichier de "
 "configuration d'AACS."
 
-#: modules/access/bluray.c:874
+#: modules/access/bluray.c:878
 msgid "AACS Host certificate revoked."
 msgstr "Certificat hôte AACS révoqué."
 
-#: modules/access/bluray.c:876
+#: modules/access/bluray.c:880
 msgid "AACS MMC failed."
 msgstr "AACS MMC échoué"
 
-#: modules/access/bluray.c:886
+#: modules/access/bluray.c:890
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
@@ -6391,16 +6391,16 @@ msgstr ""
 "Ce disque Blu-ray a besoin d'une bibliothèque de décodage BD+, absente de "
 "votre système."
 
-#: modules/access/bluray.c:889
+#: modules/access/bluray.c:893
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr ""
 "Votre bibliothèque système BD+ ne fonctionne pas. Configuration manquante ?"
 
-#: modules/access/bluray.c:922
+#: modules/access/bluray.c:926
 msgid "Java required"
 msgstr "Java nécessaire"
 
-#: modules/access/bluray.c:923
+#: modules/access/bluray.c:927
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
@@ -6409,60 +6409,60 @@ msgstr ""
 "Ce disque Blu-ray nécessite Java pour la prise en charge des menus.%s\n"
 "Le disque sera lu sans les menus."
 
-#: modules/access/bluray.c:924
+#: modules/access/bluray.c:928
 msgid "Java was not found on your system."
 msgstr "Java n'a pas été trouvé sur votre système."
 
-#: modules/access/bluray.c:947
+#: modules/access/bluray.c:951
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 "Échec au démarrage de la lecture du Blu-ray. Veuillez essayer sans la prise "
 "en charge des menus."
 
-#: modules/access/bluray.c:988 modules/access/bluray.c:2819
-#: modules/access/bluray.c:2824
+#: modules/access/bluray.c:992 modules/access/bluray.c:2823
+#: modules/access/bluray.c:2828
 msgid "Blu-ray error"
 msgstr "Erreur Blu-ray"
 
-#: modules/access/bluray.c:2109
+#: modules/access/bluray.c:2113
 msgid "Top Menu"
 msgstr "Menu principal"
 
-#: modules/access/bluray.c:2112
+#: modules/access/bluray.c:2116
 msgid "First Play"
 msgstr "Premier lu"
 
-#: modules/access/cdda.c:480
+#: modules/access/cdda.c:487
 #, c-format
 msgid "Audio CD - Track %02i"
 msgstr "CD audio - Piste %02i"
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/access/cdda.c:727 modules/gui/macosx/VLCOpenWindowController.m:169
 #: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "CD audio"
 
-#: modules/access/cdda.c:721
+#: modules/access/cdda.c:728
 msgid "Audio CD input"
 msgstr "Entrée CD audio"
 
-#: modules/access/cdda.c:730
+#: modules/access/cdda.c:737
 msgid "[cdda:][device][@[track]]"
 msgstr "[cdda://][périphérique-ou-fichier][@[numéro de piste]]"
 
-#: modules/access/cdda.c:739
+#: modules/access/cdda.c:746
 msgid "CDDB Server"
 msgstr "Serveur CDDB"
 
-#: modules/access/cdda.c:740
+#: modules/access/cdda.c:747
 msgid "Address of the CDDB server to use."
 msgstr "Adresse du serveur CDDB à utiliser."
 
-#: modules/access/cdda.c:741
+#: modules/access/cdda.c:748
 msgid "CDDB port"
 msgstr "Port CDDB"
 
-#: modules/access/cdda.c:742
+#: modules/access/cdda.c:749
 msgid "CDDB Server port to use."
 msgstr "Port du serveur CDDB à utiliser."
 
@@ -6637,6 +6637,16 @@ msgstr "10 bits"
 #: modules/access/decklink.cpp:358 modules/demux/ty.c:769
 msgid "Closed captions 1"
 msgstr "Sous-titrage malentendants 1"
+
+#: modules/access/disc_helper.h:57
+msgid ""
+"Potentially, macOS blocks access to your disc. Please open \"System "
+"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
+"external media in \"Files and Folders\" section."
+msgstr ""
+"Potentiellement, macOS bloque l'accès à votre disque. Veuillez ouvrir "
+"\"Préférences système\" -> \"Sécurité et confidentialité\" et autoriser VLC "
+"à accéder à vos médias externes dans la section \"Fichiers et dossiers\"."
 
 #: modules/access/dshow/dshow.cpp:92
 msgid "Cable"
@@ -7463,19 +7473,19 @@ msgstr ""
 msgid "Scanning DVB"
 msgstr "Balayage DVB"
 
-#: modules/access/dvdnav.c:71 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:76
 msgid "DVD angle"
 msgstr "Angle DVD"
 
-#: modules/access/dvdnav.c:73 modules/access/dvdread.c:71
+#: modules/access/dvdnav.c:75 modules/access/dvdread.c:78
 msgid "Default DVD angle."
 msgstr "Angle DVD par défaut."
 
-#: modules/access/dvdnav.c:75
+#: modules/access/dvdnav.c:77
 msgid "Start directly in menu"
 msgstr "Commencer directement au menu"
 
-#: modules/access/dvdnav.c:77
+#: modules/access/dvdnav.c:79
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -7483,64 +7493,54 @@ msgstr ""
 "Commencer directement le DVD au menu principal, en essayant de passer toutes "
 "les introductions d'avertissements inutiles."
 
-#: modules/access/dvdnav.c:91
+#: modules/access/dvdnav.c:93
 msgid "DVD with menus"
 msgstr "DVD avec menus"
 
-#: modules/access/dvdnav.c:92
+#: modules/access/dvdnav.c:94
 msgid "DVDnav Input"
 msgstr "Entrée DVDnav"
 
-#: modules/access/dvdnav.c:104
+#: modules/access/dvdnav.c:106
 msgid "DVDnav demuxer"
 msgstr "Démultiplexeur DVDnav"
 
-#: modules/access/dvdnav.c:282 modules/access/dvdread.c:220
-#: modules/access/dvdread.c:237 modules/access/dvdread.c:496
-#: modules/access/dvdread.c:561
+#: modules/access/dvdnav.c:284 modules/access/dvdread.c:227
+#: modules/access/dvdread.c:243 modules/access/dvdread.c:502
+#: modules/access/dvdread.c:567
 msgid "Playback failure"
 msgstr "Échec de la lecture"
 
-#: modules/access/dvdnav.c:283
+#: modules/access/dvdnav.c:285
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
 "VLC ne peut pas définir le titre du DVD. Peut être qu'il ne pourra pas "
 "déchiffrer le disque entièrement."
 
-#: modules/access/dvdnav.c:382 modules/access/dvdread.c:216
-msgid ""
-"Potentially, macOS blocks access to your disc. Please open \"System "
-"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
-"external media in \"Files and Folders\" section."
-msgstr ""
-"Potentiellement, macOS bloque l'accès à votre disque. Veuillez ouvrir "
-"\"Préférences système\" -> \"Sécurité et confidentialité\" et autoriser VLC "
-"à accéder à vos médias externes dans la section \"Fichiers et dossiers\"."
-
-#: modules/access/dvdread.c:77
+#: modules/access/dvdread.c:84
 msgid "DVD without menus"
 msgstr "DVD sans menus"
 
-#: modules/access/dvdread.c:78
+#: modules/access/dvdread.c:85
 msgid "DVDRead Input (no menu support)"
 msgstr "Entrée DVDRead (DVD sans menus)"
 
-#: modules/access/dvdread.c:221
+#: modules/access/dvdread.c:228
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
 msgstr "DVDRead n'a pas pu ouvrir le disque « %s »."
 
-#: modules/access/dvdread.c:238
+#: modules/access/dvdread.c:244
 msgid "Cannot play a non-UDF mastered DVD."
 msgstr "Impossible de lire un DVD non-UDF."
 
-#: modules/access/dvdread.c:497
+#: modules/access/dvdread.c:503
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr "DVDRead : impossible de lire le block %d."
 
-#: modules/access/dvdread.c:562
+#: modules/access/dvdread.c:568
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr "DVDRead : impossible de lire les blocks %d/%d à 0x%02x."
@@ -8332,11 +8332,11 @@ msgstr "RTP"
 msgid "Real-Time Protocol (RTP) input"
 msgstr "Entrée RTP (Real Time Protocol)"
 
-#: modules/access/rtp/rtp.c:770
+#: modules/access/rtp/rtp.c:773
 msgid "SDP required"
 msgstr "SDP nécessaire"
 
-#: modules/access/rtp/rtp.c:771
+#: modules/access/rtp/rtp.c:774
 #, c-format
 msgid ""
 "A description in SDP format is required to receive the RTP stream. Note that "
@@ -15096,15 +15096,15 @@ msgstr "| rewind . . . . . . . . . . . . . . . . .  rembobiner"
 
 #: modules/control/oldrc.c:812
 msgid "| faster . . . . . . . . . .  faster playing of stream"
-msgstr "| faster . . . . . . . . . . . . . . . jouer plus vite"
+msgstr "| faster . . . . . . . . . . . . . . . lire plus vite"
 
 #: modules/control/oldrc.c:813
 msgid "| slower . . . . . . . . . .  slower playing of stream"
-msgstr "| slower . . . . . . . . . . . .  jouer plus lentement"
+msgstr "| slower . . . . . . . . . . . .  lire plus lentement"
 
 #: modules/control/oldrc.c:814
 msgid "| normal . . . . . . . . . .  normal playing of stream"
-msgstr "| normal . . . . . . . . . . . jouer à vitesse normale"
+msgstr "| normal . . . . . . . . . . . lire à vitesse normale"
 
 #: modules/control/oldrc.c:815
 msgid "| frame. . . . . . . . . .  play frame by frame"
@@ -15128,7 +15128,7 @@ msgstr "| get_time . .  temps parcouru depuis le début du flux"
 
 #: modules/control/oldrc.c:820
 msgid "| is_playing . . . .  1 if a stream plays, 0 otherwise"
-msgstr "| is_playing . . . . 1 si un élément est joué, 0 sinon"
+msgstr "| is_playing . . . . 1 si un flux est lu, 0 sinon"
 
 #: modules/control/oldrc.c:821
 msgid "| get_title . . . . .  the title of the current stream"
@@ -15487,7 +15487,7 @@ msgstr "Réparer si nécessaire"
 msgid "AVI demuxer"
 msgstr "Démultiplexeur AVI"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4256
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15515,7 +15515,7 @@ msgstr "Construire l'index puis lancer la lecture"
 msgid "Play as is"
 msgstr "Lire tel quel"
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4267
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
 msgid "Broken or missing Index"
 msgstr "Index endommagé ou absent"
 
@@ -15963,11 +15963,11 @@ msgstr "Démultiplexeur de flux MP4"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4264
+#: modules/demux/mp4/mp4.c:4262
 msgid "Do not seek"
 msgstr "Ne pas chercher"
 
-#: modules/demux/mp4/mp4.c:4265
+#: modules/demux/mp4/mp4.c:4263
 msgid "Build index"
 msgstr "Construire l'index"
 
@@ -17029,7 +17029,7 @@ msgstr "Choisir une destination"
 #: modules/gui/macosx/VLCOutput.m:67
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCSimplePrefsController.m:373
-#: modules/gui/macosx/prefs_widgets.m:1125
+#: modules/gui/macosx/prefs_widgets.m:1122
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
@@ -18041,7 +18041,7 @@ msgid ""
 msgstr ""
 "VLC peut rechercher en ligne des images et métadonnées relatives à l'album "
 "afin d'enrichir l'expérience, par ex. en fournissant des informations sur "
-"les pistes des CD audio jouées. Pour proposer cette fonctionnalité, VLC "
+"les pistes des CD audio lues. Pour proposer cette fonctionnalité, VLC "
 "enverra des informations sur les contenus à des services de confiance, de "
 "façon anonyme."
 
@@ -19262,15 +19262,15 @@ msgstr "To"
 msgid "Show Basic"
 msgstr "Afficher les bases"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a directory"
 msgstr "Sélectionner un répertoire"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a file"
 msgstr "Sélectionner un fichier"
 
-#: modules/gui/macosx/prefs_widgets.m:1154
+#: modules/gui/macosx/prefs_widgets.m:1148
 msgid "Select"
 msgstr "Sélectionner"
 
@@ -19427,7 +19427,7 @@ msgstr "[Liste de lecture]"
 
 #: modules/gui/ncurses.c:901
 msgid " r                      Toggle Random playing"
-msgstr "     r           Commuter le lecture aléatoire"
+msgstr "     r           Commuter la lecture aléatoire"
 
 #: modules/gui/ncurses.c:902
 msgid " l                      Toggle Loop Playlist"
@@ -19447,7 +19447,7 @@ msgstr "     O           Trier la liste de lecture par titre (inversé)"
 
 #: modules/gui/ncurses.c:906
 msgid " g                      Go to the current playing item"
-msgstr "     g           Aller à l'élément courant"
+msgstr "     g           Aller à l'élément en cours de lecture"
 
 #: modules/gui/ncurses.c:907
 msgid " /                      Look for an item"
@@ -19771,7 +19771,7 @@ msgid ""
 "Controls will automatically appear here."
 msgstr ""
 "Pas d'instance de v4l2.\n"
-"Vérifier que le périphérique a été ouvert avec VLC et fonctionne.\n"
+"Vérifier que le périphérique a été ouvert avec VLC et est en lecture.\n"
 "\n"
 "Les contrôles apparaîtront automatiquement ici."
 
@@ -21911,8 +21911,8 @@ msgid ""
 "Display background cone or current album art when not playing. Can be "
 "disabled to prevent burning screen."
 msgstr ""
-"Afficher le cône ou la pochette de l'album en cours pendant la pause. Peut "
-"être inhibé pour éviter d'abimer l'écran."
+"Afficher le cône ou la jaquette de l'album en cours pendant la pause. Peut "
+"être désactivé pour éviter d'abîmer l'écran."
 
 #: modules/gui/qt/qt.cpp:168
 msgid "Expanding background cone or art"
@@ -22681,7 +22681,7 @@ msgstr "Art Lua"
 
 #: modules/lua/vlc.c:155
 msgid "Fetch artwork using lua scripts"
-msgstr "Récupère des artworks en utilisant des scripts lua"
+msgstr "Récupère des illustrations en utilisant des scripts lua"
 
 #: modules/lua/vlc.c:160 modules/lua/vlc.c:161
 msgid "Lua Extension"
@@ -23989,7 +23989,7 @@ msgstr "Nouvelle entrée en lecture"
 
 #: modules/notify/osx_notifications.m:377
 msgid "Now playing"
-msgstr "En lecture"
+msgstr "Lecture en cours"
 
 #: modules/notify/osx_notifications.m:402
 msgid "Skip"
@@ -29165,9 +29165,9 @@ msgid ""
 "item, the first selected item from the <i>Library</i> will be the subject of "
 "the stream."
 msgstr ""
-"Le média en cours de lecture sera diffusé. S'il n'y a pas d'élément en cours "
-"de lecture, le premier sélectionné dans la <i>Bibliothèque</i> sera utilisé "
-"pour la diffusion."
+"L'élément en cours de lecture sera diffusé. S'il n'y a pas d'élément en "
+"cours de lecture, le premier sélectionné dans la <i>Bibliothèque</i> sera "
+"utilisé pour la diffusion."
 
 #: share/lua/http/index.html:275
 msgid ""

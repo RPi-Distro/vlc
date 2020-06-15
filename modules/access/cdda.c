@@ -2,7 +2,7 @@
  * cdda.c : CD digital audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003-2006, 2008-2009 VLC authors and VideoLAN
- * $Id: e52594d30d746f58439619443cefab88e63c16ea $
+ * $Id: 6f7ae19cc5f29fc0ba5793c8d2c297537bc4c4c6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -50,7 +50,9 @@
 #include <vlc_charset.h> /* ToLocaleDup */
 #include <vlc_url.h>
 
+#include "disc_helper.h"
 #include "vcd/cdrom.h"  /* For CDDA_DATA_SIZE */
+
 
 #ifdef HAVE_LIBCDDB
  #include <cddb/cddb.h>
@@ -102,6 +104,11 @@ static vcddev_t *DiscOpen(vlc_object_t *obj, const char *location,
     if (devpath[0] != '\0' && !strcmp(&devpath[1], ":" DIR_SEP))
         devpath[2] = '\0';
 #endif
+
+    if (DiscProbeMacOSPermission(obj, devpath) != VLC_SUCCESS) {
+        free(devpath);
+        return NULL;
+    }
 
     /* Open CDDA */
     vcddev_t *dev = ioctl_Open(obj, devpath);

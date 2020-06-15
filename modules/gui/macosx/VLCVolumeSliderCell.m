@@ -2,7 +2,7 @@
  * VLCVolumeSliderCell.m
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: 3477126b5aab9a52ecc7ba70ac4e20a9fd0a68d3 $
+ * $Id: e655ccb0910ab7fb08d36d9dd5f58f2dda386741 $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -23,6 +23,7 @@
 
 #import "VLCVolumeSliderCell.h"
 #import "CompatibilityFixes.h"
+#import "NSGradient+VLCAdditions.h"
 
 @interface VLCVolumeSliderCell () {
     BOOL _isRTL;
@@ -146,13 +147,13 @@
     NSBezierPath* knobPath = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(knobRect, 1.0, 1.0)];
     if (self.isHighlighted) {
         if (_knobGradient) {
-            [_knobGradient drawInBezierPath:knobPath angle:_knobGradientAngleHighlighted];
+            [_knobGradient vlc_safeDrawInBezierPath:knobPath angle:_knobGradientAngleHighlighted];
         } else {
             [_activeKnobFillColor setFill];
         }
     } else {
         if (_knobGradient) {
-            [_knobGradient drawInBezierPath:knobPath angle:_knobGradientAngle];
+            [_knobGradient vlc_safeDrawInBezierPath:knobPath angle:_knobGradientAngle];
         } else {
             [_knobFillColor setFill];
         }
@@ -201,10 +202,10 @@
         [emptyTrackPath fill];
 
         // Filled part drawing
-        [_trackGradient drawInBezierPath:leadingTrackPath angle:-90];
+        [_trackGradient vlc_safeDrawInBezierPath:leadingTrackPath angle:-90];
     } else {
         // Empty part drawing
-        [_trackGradient drawInBezierPath:emptyTrackPath angle:-90];
+        [_trackGradient vlc_safeDrawInBezierPath:emptyTrackPath angle:-90];
 
         // Filled part drawing
         [_filledTrackColor setFill];

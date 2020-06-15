@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.5.3.  */
+/* A Bison parser, made by GNU Bison 3.6.3.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_CODEC_WEBVTT_CSSGRAMMAR_H_INCLUDED
 # define YY_YY_CODEC_WEBVTT_CSSGRAMMAR_H_INCLUDED
@@ -44,44 +45,50 @@
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    TOKEN_EOF = 0,
-    LOWEST_PREC = 258,
-    UNIMPORTANT_TOK = 259,
-    WHITESPACE = 260,
-    SGML_CD = 261,
-    INCLUDES = 262,
-    DASHMATCH = 263,
-    BEGINSWITH = 264,
-    ENDSWITH = 265,
-    CONTAINS = 266,
-    STRING = 267,
-    IDENT = 268,
-    IDSEL = 269,
-    HASH = 270,
-    FONT_FACE_SYM = 271,
-    CHARSET_SYM = 272,
-    IMPORTANT_SYM = 273,
-    CDO = 274,
-    CDC = 275,
-    LENGTH = 276,
-    ANGLE = 277,
-    TIME = 278,
-    FREQ = 279,
-    DIMEN = 280,
-    PERCENTAGE = 281,
-    NUMBER = 282,
-    URI = 283,
-    FUNCTION = 284,
-    UNICODERANGE = 285
+    YYEMPTY = -2,
+    TOKEN_EOF = 0,                 /* TOKEN_EOF  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    LOWEST_PREC = 258,             /* LOWEST_PREC  */
+    UNIMPORTANT_TOK = 259,         /* UNIMPORTANT_TOK  */
+    WHITESPACE = 260,              /* WHITESPACE  */
+    SGML_CD = 261,                 /* SGML_CD  */
+    INCLUDES = 262,                /* INCLUDES  */
+    DASHMATCH = 263,               /* DASHMATCH  */
+    BEGINSWITH = 264,              /* BEGINSWITH  */
+    ENDSWITH = 265,                /* ENDSWITH  */
+    CONTAINS = 266,                /* CONTAINS  */
+    STRING = 267,                  /* STRING  */
+    IDENT = 268,                   /* IDENT  */
+    IDSEL = 269,                   /* IDSEL  */
+    HASH = 270,                    /* HASH  */
+    FONT_FACE_SYM = 271,           /* FONT_FACE_SYM  */
+    CHARSET_SYM = 272,             /* CHARSET_SYM  */
+    IMPORTANT_SYM = 273,           /* IMPORTANT_SYM  */
+    CDO = 274,                     /* CDO  */
+    CDC = 275,                     /* CDC  */
+    LENGTH = 276,                  /* LENGTH  */
+    ANGLE = 277,                   /* ANGLE  */
+    TIME = 278,                    /* TIME  */
+    FREQ = 279,                    /* FREQ  */
+    DIMEN = 280,                   /* DIMEN  */
+    PERCENTAGE = 281,              /* PERCENTAGE  */
+    NUMBER = 282,                  /* NUMBER  */
+    URI = 283,                     /* URI  */
+    FUNCTION = 284,                /* FUNCTION  */
+    UNICODERANGE = 285             /* UNICODERANGE  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
 #define TOKEN_EOF 0
+#define YYerror 256
+#define YYUNDEF 257
 #define LOWEST_PREC 258
 #define UNIMPORTANT_TOK 259
 #define WHITESPACE 260
@@ -131,7 +138,7 @@ union YYSTYPE
     vlc_css_selector_t *selector;
     vlc_css_selector_t *selectorList;
 
-#line 135 "codec/webvtt/CSSGrammar.h"
+#line 142 "codec/webvtt/CSSGrammar.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

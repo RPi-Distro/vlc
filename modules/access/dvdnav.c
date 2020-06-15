@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 4c19de047e8f8c5b92524fb186f4aaa7c39f7e4b $
+ * $Id: 89fb66f11eb1189ef4612d87cd3b2ea0bd6357ee $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -64,6 +64,8 @@ dvdnav_status_t dvdnav_jump_to_sector_by_time(dvdnav_t *, uint64_t, int32_t);
 
 #include "../demux/mpeg/pes.h"
 #include "../demux/mpeg/ps.h"
+
+#include "disc_helper.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -365,6 +367,9 @@ static int AccessDemuxOpen ( vlc_object_t *p_this )
     if( !forced && ProbeDVD( psz_file ) != VLC_SUCCESS )
         goto bailout;
 
+    if( forced && DiscProbeMacOSPermission( p_this, psz_file ) != VLC_SUCCESS )
+        goto bailout;
+
     /* Open dvdnav */
     psz_path = ToLocale( psz_file );
 #if DVDNAV_VERSION >= 60100
@@ -376,13 +381,6 @@ static int AccessDemuxOpen ( vlc_object_t *p_this )
 #endif
     {
         msg_Warn( p_demux, "cannot open DVD (%s)", psz_file);
-
-#ifdef __APPLE__
-        vlc_dialog_display_error( p_demux, _("Problem accessing a system resource"),
-            _("Potentially, macOS blocks access to your disc. "
-              "Please open \"System Preferences\" -> \"Security & Privacy\" "
-              "and allow VLC to access your external media in \"Files and Folders\" section."));
-#endif
         goto bailout;
     }
 

@@ -2,7 +2,7 @@
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: 442b3a0e4902ee25318564204b4ea455549513bc $
+ * $Id: e75bef5986e987657ff554718d43f16bab440141 $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -60,8 +60,15 @@
 #include <dvdread/nav_read.h>
 #include <dvdread/nav_print.h>
 
+#ifndef DVDREAD_VERSION_CODE
+# define DVDREAD_VERSION_CODE(major, minor, micro) (((major) * 10000) + ((minor) * 100) +  ((micro) * 1))
+# define DVDREAD_VERSION DVDREAD_VERSION_CODE(5,0,3)
+#endif
+
 #include <assert.h>
 #include <limits.h>
+
+#include "disc_helper.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -198,6 +205,12 @@ static int Open( vlc_object_t *p_this )
     if( unlikely(psz_file == NULL) )
         return VLC_EGENERIC;
 
+    if( DiscProbeMacOSPermission( p_this, psz_file ) != VLC_SUCCESS )
+    {
+        free( psz_file );
+        return VLC_EGENERIC;
+    }
+
     /* Open dvdread */
     const char *psz_path = ToLocale( psz_file );
 #if DVDREAD_VERSION >= DVDREAD_VERSION_CODE(6, 1, 0)
@@ -211,15 +224,8 @@ static int Open( vlc_object_t *p_this )
     if( p_dvdread == NULL )
     {
         msg_Err( p_demux, "DVDRead cannot open source: %s", psz_file );
-#ifdef __APPLE__
-        vlc_dialog_display_error( p_demux, _("Problem accessing a system resource"),
-            _("Potentially, macOS blocks access to your disc. "
-              "Please open \"System Preferences\" -> \"Security & Privacy\" "
-              "and allow VLC to access your external media in \"Files and Folders\" section."));
-#else
         vlc_dialog_display_error( p_demux, _("Playback failure"),
                       _("DVDRead could not open the disc \"%s\"."), psz_file );
-#endif
 
         free( psz_file );
         return VLC_EGENERIC;
