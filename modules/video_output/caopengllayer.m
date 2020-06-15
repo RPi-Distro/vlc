@@ -2,7 +2,7 @@
  * caopengllayer.m: CAOpenGLLayer (Mac OS X) video output
  *****************************************************************************
  * Copyright (C) 2014-2017 VLC authors and VideoLAN
- * $Id: 6a360d6d402e5979387f7e380c533a398d886c8a $
+ * $Id: aef7b538f77fab601998bc0aaeda247cf000a04e $
  *
  * Authors: David Fuhrmann <david dot fuhrmann at googlemail dot com>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -624,7 +624,7 @@ shouldInheritContentsScale:(CGFloat)newScale
 
 - (BOOL)mouseDownCanMoveWindow
 {
-    return NO;
+    return YES;
 }
 
 

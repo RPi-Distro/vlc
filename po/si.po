@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-04-23 11:48+0200\n"
+"POT-Creation-Date: 2020-06-10 11:26+0200\n"
 "PO-Revision-Date: 2018-12-19 22:50+0100\n"
 "Last-Translator: VideoLAN <videolan@videolan.org>, 2018\n"
 "Language-Team: Sinhala (https://www.transifex.com/yaron/teams/16553/si/)\n"
@@ -2378,8 +2378,8 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:661
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
-#: modules/gui/macosx/prefs_widgets.m:1221
-#: modules/gui/macosx/prefs_widgets.m:1278
+#: modules/gui/macosx/prefs_widgets.m:1215
+#: modules/gui/macosx/prefs_widgets.m:1272
 #: modules/gui/qt/components/preferences_widgets.cpp:546
 #: modules/logger/file.c:203 modules/spu/marq.c:61 modules/spu/rss.c:69
 #: modules/spu/rss.c:182 modules/video_output/win32/directdraw.c:1492
@@ -2828,7 +2828,7 @@ msgstr "DVD ආම්පන්නය"
 msgid "VCD device"
 msgstr "VCD ආම්පන්නය"
 
-#: src/libvlc-module.c:764 modules/access/cdda.c:701
+#: src/libvlc-module.c:764 modules/access/cdda.c:708
 msgid "Audio CD device"
 msgstr "ශ්‍රව්‍ය සීඩී ආම්පන්නය"
 
@@ -2848,7 +2848,7 @@ msgstr ""
 "මෙය භාවිතයට ගනු ලබන පෙරනිමි VCD ධාවකය (හෝ ගොනුව) වේ. ධාවකයේ අක්ෂරයට පිටුපසින් දෙතිත "
 "යෙදීමට අමතක නොකරන්න. (උදා. D:)"
 
-#: src/libvlc-module.c:774 modules/access/cdda.c:704
+#: src/libvlc-module.c:774 modules/access/cdda.c:711
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -2864,7 +2864,7 @@ msgstr "මෙය භාවිතයට ගනු ලබන පෙරනිම�
 msgid "This is the default VCD device to use."
 msgstr "මෙය භාවිතයට ගනු ලබන පෙරනිමි VCD ධාවකයයි."
 
-#: src/libvlc-module.c:785 modules/access/cdda.c:709
+#: src/libvlc-module.c:785 modules/access/cdda.c:716
 msgid "This is the default Audio CD device to use."
 msgstr "මෙය භාවිතයට ගනු ලබන පෙරනිමි ශ්‍රව්‍ය සීඩී ධාවකයයි."
 
@@ -5782,7 +5782,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:350
-#: modules/access/dvdnav.c:381 modules/access/dvdread.c:215
+#: modules/access/disc_helper.h:56
 msgid "Problem accessing a system resource"
 msgstr ""
 
@@ -5871,113 +5871,113 @@ msgstr "බ්ලූ-රේ"
 msgid "Blu-ray Disc support (libbluray)"
 msgstr ""
 
-#: modules/access/bluray.c:845
+#: modules/access/bluray.c:849
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr ""
 
-#: modules/access/bluray.c:860
+#: modules/access/bluray.c:864
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
 msgstr ""
 
-#: modules/access/bluray.c:866
+#: modules/access/bluray.c:870
 msgid "Blu-ray Disc is corrupted."
 msgstr ""
 
-#: modules/access/bluray.c:868
+#: modules/access/bluray.c:872
 msgid "Missing AACS configuration file!"
 msgstr ""
 
-#: modules/access/bluray.c:870
+#: modules/access/bluray.c:874
 msgid "No valid processing key found in AACS config file."
 msgstr ""
 
-#: modules/access/bluray.c:872
+#: modules/access/bluray.c:876
 msgid "No valid host certificate found in AACS config file."
 msgstr ""
 
-#: modules/access/bluray.c:874
+#: modules/access/bluray.c:878
 msgid "AACS Host certificate revoked."
 msgstr ""
 
-#: modules/access/bluray.c:876
+#: modules/access/bluray.c:880
 msgid "AACS MMC failed."
 msgstr "AACS MMC අසාර්ථකයි."
 
-#: modules/access/bluray.c:886
+#: modules/access/bluray.c:890
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
 msgstr ""
 
-#: modules/access/bluray.c:889
+#: modules/access/bluray.c:893
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr ""
 
-#: modules/access/bluray.c:922
+#: modules/access/bluray.c:926
 msgid "Java required"
 msgstr ""
 
-#: modules/access/bluray.c:923
+#: modules/access/bluray.c:927
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
 "The disc will be played without menus."
 msgstr ""
 
-#: modules/access/bluray.c:924
+#: modules/access/bluray.c:928
 msgid "Java was not found on your system."
 msgstr ""
 
-#: modules/access/bluray.c:947
+#: modules/access/bluray.c:951
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 
-#: modules/access/bluray.c:988 modules/access/bluray.c:2819
-#: modules/access/bluray.c:2824
+#: modules/access/bluray.c:992 modules/access/bluray.c:2823
+#: modules/access/bluray.c:2828
 msgid "Blu-ray error"
 msgstr ""
 
-#: modules/access/bluray.c:2109
+#: modules/access/bluray.c:2113
 msgid "Top Menu"
 msgstr ""
 
-#: modules/access/bluray.c:2112
+#: modules/access/bluray.c:2116
 msgid "First Play"
 msgstr ""
 
-#: modules/access/cdda.c:480
+#: modules/access/cdda.c:487
 #, c-format
 msgid "Audio CD - Track %02i"
 msgstr "ශ්‍රව්‍ය සීඩී - පථය %02i"
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/access/cdda.c:727 modules/gui/macosx/VLCOpenWindowController.m:169
 #: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "ශ්‍රව්‍ය සීඩී"
 
-#: modules/access/cdda.c:721
+#: modules/access/cdda.c:728
 msgid "Audio CD input"
 msgstr "ශ්‍රව්‍ය සීඩී ආදානය"
 
-#: modules/access/cdda.c:730
+#: modules/access/cdda.c:737
 msgid "[cdda:][device][@[track]]"
 msgstr "[cdda:][device][@[track]]"
 
-#: modules/access/cdda.c:739
+#: modules/access/cdda.c:746
 msgid "CDDB Server"
 msgstr "CDDB සේවාදායකය"
 
-#: modules/access/cdda.c:740
+#: modules/access/cdda.c:747
 msgid "Address of the CDDB server to use."
 msgstr "භාවිතයට ඇති CDDB සේවාදායකයේ ලිපිනය"
 
-#: modules/access/cdda.c:741
+#: modules/access/cdda.c:748
 msgid "CDDB port"
 msgstr "CDDB තොට"
 
-#: modules/access/cdda.c:742
+#: modules/access/cdda.c:749
 msgid "CDDB Server port to use."
 msgstr "භාවිතයට ඇති CDDB සේවාදායකයේ තොට"
 
@@ -6136,6 +6136,13 @@ msgstr "10 බිටු"
 
 #: modules/access/decklink.cpp:358 modules/demux/ty.c:769
 msgid "Closed captions 1"
+msgstr ""
+
+#: modules/access/disc_helper.h:57
+msgid ""
+"Potentially, macOS blocks access to your disc. Please open \"System "
+"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
+"external media in \"Files and Folders\" section."
 msgstr ""
 
 #: modules/access/dshow/dshow.cpp:92
@@ -6889,19 +6896,19 @@ msgstr ""
 msgid "Scanning DVB"
 msgstr ""
 
-#: modules/access/dvdnav.c:71 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:76
 msgid "DVD angle"
 msgstr "ඩීවීඩී‍ කෝණය"
 
-#: modules/access/dvdnav.c:73 modules/access/dvdread.c:71
+#: modules/access/dvdnav.c:75 modules/access/dvdread.c:78
 msgid "Default DVD angle."
 msgstr "පෙරනිමි ඩීවීඩී කෝණය"
 
-#: modules/access/dvdnav.c:75
+#: modules/access/dvdnav.c:77
 msgid "Start directly in menu"
 msgstr "කෙළින්ම මෙනු තුළ ආරම්භ කරන්න"
 
-#: modules/access/dvdnav.c:77
+#: modules/access/dvdnav.c:79
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -6909,61 +6916,54 @@ msgstr ""
 "ඩීවීඩී කෙළින්ම ප්‍රධාන මෙනුවෙන් ආරම්භ කරන්න. මෙහි දී උත්සාහ කරනු ලබන්නේ සියලුම අතවශ්‍ය නොවන "
 "අවවාදාත්මක පණිවුඩ සහ විස්තර මග හැරීමටයි."
 
-#: modules/access/dvdnav.c:91
+#: modules/access/dvdnav.c:93
 msgid "DVD with menus"
 msgstr "ඩීවිඩී මෙනු සමග"
 
-#: modules/access/dvdnav.c:92
+#: modules/access/dvdnav.c:94
 msgid "DVDnav Input"
 msgstr "DVDnav ආදානය"
 
-#: modules/access/dvdnav.c:104
+#: modules/access/dvdnav.c:106
 msgid "DVDnav demuxer"
 msgstr ""
 
-#: modules/access/dvdnav.c:282 modules/access/dvdread.c:220
-#: modules/access/dvdread.c:237 modules/access/dvdread.c:496
-#: modules/access/dvdread.c:561
+#: modules/access/dvdnav.c:284 modules/access/dvdread.c:227
+#: modules/access/dvdread.c:243 modules/access/dvdread.c:502
+#: modules/access/dvdread.c:567
 msgid "Playback failure"
 msgstr "ධාවනය අසමත් විය"
 
-#: modules/access/dvdnav.c:283
+#: modules/access/dvdnav.c:285
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
 "VLC හට ඩීවීඩී මාතෘකාව සකස් කිරීමට නොහැකි විය. සම්පූර්ණ තැටියම විසංකේතනය කිරීමට කිසිසේත්ම "
 "නොහැකිය."
 
-#: modules/access/dvdnav.c:382 modules/access/dvdread.c:216
-msgid ""
-"Potentially, macOS blocks access to your disc. Please open \"System "
-"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
-"external media in \"Files and Folders\" section."
-msgstr ""
-
-#: modules/access/dvdread.c:77
+#: modules/access/dvdread.c:84
 msgid "DVD without menus"
 msgstr "මෙනු රහිතව ඩීවීඩී"
 
-#: modules/access/dvdread.c:78
+#: modules/access/dvdread.c:85
 msgid "DVDRead Input (no menu support)"
 msgstr "DVDRead ආදානය. (මෙනු සඳහා සහයෝගය නොදක්වයි)"
 
-#: modules/access/dvdread.c:221
+#: modules/access/dvdread.c:228
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
 msgstr "DVDRead හට \"%s\" තැටිය විවෘත කිරීමට නොහැකි විය."
 
-#: modules/access/dvdread.c:238
+#: modules/access/dvdread.c:244
 msgid "Cannot play a non-UDF mastered DVD."
 msgstr ""
 
-#: modules/access/dvdread.c:497
+#: modules/access/dvdread.c:503
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr "DVDRead හට %d කොටස කියවීමට නොහැකි විය."
 
-#: modules/access/dvdread.c:562
+#: modules/access/dvdread.c:568
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr "DVDRead හට %d/%d කොටස 0x%02x වේගයෙන් කියවීමට නොහැකි විය."
@@ -7702,11 +7702,11 @@ msgstr "RTP"
 msgid "Real-Time Protocol (RTP) input"
 msgstr "තත්-කාලීන ප්‍රොටොකෝල (RTP) ආදානය"
 
-#: modules/access/rtp/rtp.c:770
+#: modules/access/rtp/rtp.c:773
 msgid "SDP required"
 msgstr "SDP අවශ්‍යයි"
 
-#: modules/access/rtp/rtp.c:771
+#: modules/access/rtp/rtp.c:774
 #, c-format
 msgid ""
 "A description in SDP format is required to receive the RTP stream. Note that "
@@ -14281,7 +14281,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr "AVI demuxer"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4256
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14303,7 +14303,7 @@ msgstr ""
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4267
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
 msgid "Broken or missing Index"
 msgstr ""
 
@@ -14734,11 +14734,11 @@ msgstr "MP4 දහරා ඩිමක්සර්"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4264
+#: modules/demux/mp4/mp4.c:4262
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4265
+#: modules/demux/mp4/mp4.c:4263
 msgid "Build index"
 msgstr ""
 
@@ -15752,7 +15752,7 @@ msgstr ""
 #: modules/gui/macosx/VLCOutput.m:67
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCSimplePrefsController.m:373
-#: modules/gui/macosx/prefs_widgets.m:1125
+#: modules/gui/macosx/prefs_widgets.m:1122
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
@@ -17903,15 +17903,15 @@ msgstr ""
 msgid "Show Basic"
 msgstr "මූලිකව පෙන්වන්න"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a directory"
 msgstr "ඩිරෙක්ටරියක් ‍තෝරන්න"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a file"
 msgstr "ගොනුවක් ‍තෝරන්න"
 
-#: modules/gui/macosx/prefs_widgets.m:1154
+#: modules/gui/macosx/prefs_widgets.m:1148
 msgid "Select"
 msgstr "තෝරන්න"
 
@@ -27262,14 +27262,12 @@ msgid "0.00 dB"
 msgstr "0.00 dB"
 
 #: modules/gui/qt/ui/messages_panel.h:137
-#, fuzzy
 msgid "&Verbosity:"
-msgstr "වාග්බාහුල්‍යය (0,1,2)"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:138
-#, fuzzy
 msgid "&Filter:"
-msgstr "පෙරහන:"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:139
 msgid "&Save as..."
@@ -27304,9 +27302,8 @@ msgid "Start Time"
 msgstr "ආරම්භක කාලය"
 
 #: modules/gui/qt/ui/open.h:270
-#, fuzzy
 msgid "Stop Time"
-msgstr "නවත්වන වේලාව"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:271
 msgid "Edit Options"
@@ -27333,9 +27330,8 @@ msgid "HH'H':mm'm':ss's'.zzz"
 msgstr "HH'H':mm'm':ss's'.zzz"
 
 #: modules/gui/qt/ui/open.h:285
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "මාධ්‍යය සඳහා ආරම්භක වේලාව වෙනස් කරන්න"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:288
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -27374,9 +27370,8 @@ msgid "SVCD/VCD"
 msgstr "SVCD/VCD"
 
 #: modules/gui/qt/ui/open_disk.h:300
-#, fuzzy
 msgid "Disable Disc Menus"
-msgstr "ඩීවිඩී මෙනු අක්‍රිය කරන්න"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:302
 msgid "No disc menus"
@@ -27395,14 +27390,12 @@ msgid "Audio and Subtitles"
 msgstr "ශ්‍රව්‍ය සහ උපසිරැසි"
 
 #: modules/gui/qt/ui/open_file.h:142
-#, fuzzy
 msgid "Use a sub&title file"
-msgstr "උපසිරැසි ගොනුව භාවිතා කරන්න"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:144
-#, fuzzy
 msgid "Select the subtitle file"
-msgstr "ගොනුව තෝරන්න"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:148
 msgid "Choose one or more media file to open"
@@ -27429,9 +27422,8 @@ msgid "Please enter a network URL:"
 msgstr "කරුණාකර ජාලයේ URL ලබාදෙන්න:"
 
 #: modules/gui/qt/ui/profiles.h:699
-#, fuzzy
 msgid "Profile edition"
-msgstr "පැතිකඩ නාමය අස්ථානගත වී ඇත"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:700
 msgid "FLAC"
@@ -27462,9 +27454,8 @@ msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:707
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "MPEG-PS"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:708
 msgid "RAW"
@@ -27499,9 +27490,8 @@ msgid "Features"
 msgstr "මුහුණුවර"
 
 #: modules/gui/qt/ui/profiles.h:717
-#, fuzzy
 msgid "Streamable"
-msgstr "දහරා"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:718
 msgid "Chapters"
@@ -27528,9 +27518,8 @@ msgid "Custom options"
 msgstr "රිසිකළ විකල්ප"
 
 #: modules/gui/qt/ui/profiles.h:733
-#, fuzzy
 msgid "&Quality"
-msgstr "VBR ගුණත්වය"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
 msgid "Not Used"
@@ -27553,14 +27542,12 @@ msgid "px"
 msgstr "px"
 
 #: modules/gui/qt/ui/profiles.h:756
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "නියැදි අනුපාතය"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:764
-#, fuzzy
 msgid "Profile &Name"
-msgstr "පැතිකඩේ නම"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:200
 msgid "Set up media sources to stream"
@@ -27571,9 +27558,8 @@ msgid "Destination Setup"
 msgstr "ඉලක්ක පිහිටුම"
 
 #: modules/gui/qt/ui/sout.h:203
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr "සියලුම විකල්ප නැරඹීම සඳහා \"සංකීර්ණ විකල්ප\" තෝරන්න."
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:204
 msgid ""
@@ -27590,14 +27576,12 @@ msgid "Display locally"
 msgstr "ප්‍රාදේශීයව දර්ශනය කරන්න"
 
 #: modules/gui/qt/ui/sout.h:209
-#, fuzzy
 msgid "Transcoding Options"
-msgstr "අන්තර්කේත විකල්ප"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:210
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "අන්තර්කේත විකල්ප"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:211
 msgid "Activate Transcoding"
@@ -27616,14 +27600,12 @@ msgid "Miscellaneous Options"
 msgstr "විවිධ වූ සිටුවම්"
 
 #: modules/gui/qt/ui/sout.h:215
-#, fuzzy
 msgid "Stream all elementary streams"
-msgstr "ආරම්භක දහරාවේ හැඳුනුම සකස් කරන්න"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:216
-#, fuzzy
 msgid "Generated stream output string"
-msgstr "ප්‍රධාන දහරා ප්‍රතිදාන සැකසුම්"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:409
 msgid " %"
@@ -27786,18 +27768,16 @@ msgid "Show systray icon"
 msgstr "systray අයිකනය පෙන්වන්න"
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "Ncurses අතුරුමුහුණත"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
 msgid "Skin resource file:"
 msgstr "ඈඳුම් සම්පත් ගොනුව:"
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Playlist and Instances"
-msgstr "ධාවනය සහ නවතන්න"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:549
 msgid "Pause on the last frame of a video"
@@ -27856,9 +27836,8 @@ msgid "Default encoding"
 msgstr "පෙරනිමි කේතීකරණය"
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:295
-#, fuzzy
 msgid "Subtitle effects"
-msgstr "උපසිරැසි කොඩෙක්"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Add a shadow"
@@ -27881,9 +27860,8 @@ msgid "Add a background"
 msgstr "පසුබිමක් එක් කරන්න"
 
 #: modules/gui/qt/ui/sprefs_video.h:313
-#, fuzzy
 msgid "O&utput"
-msgstr "ප්‍රතිදානය"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:317
 msgid "DirectX"
@@ -28040,14 +28018,12 @@ msgid "Soften"
 msgstr "මෘදු කෙරූ"
 
 #: modules/gui/qt/ui/video_effects.h:1298
-#, fuzzy
 msgid "Denoiser"
-msgstr "ඝෝෂාව"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1299
-#, fuzzy
 msgid "Spatial luma strength"
-msgstr "අවකාශ නොපැහැදිලි බව"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1300
 msgid "Temporal luma strength"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-04-23 11:48+0200\n"
+"POT-Creation-Date: 2020-06-10 11:26+0200\n"
 "PO-Revision-Date: 2018-12-19 22:50+0100\n"
 "Last-Translator: VideoLAN <videolan@videolan.org>, 2018\n"
 "Language-Team: Assamese (India) (https://www.transifex.com/yaron/teams/16553/"
@@ -2526,8 +2526,8 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:661
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
-#: modules/gui/macosx/prefs_widgets.m:1221
-#: modules/gui/macosx/prefs_widgets.m:1278
+#: modules/gui/macosx/prefs_widgets.m:1215
+#: modules/gui/macosx/prefs_widgets.m:1272
 #: modules/gui/qt/components/preferences_widgets.cpp:546
 #: modules/logger/file.c:203 modules/spu/marq.c:61 modules/spu/rss.c:69
 #: modules/spu/rss.c:182 modules/video_output/win32/directdraw.c:1492
@@ -3023,7 +3023,7 @@ msgstr "DVD ডিভাইচ"
 msgid "VCD device"
 msgstr "VCD ডিভাইচ"
 
-#: src/libvlc-module.c:764 modules/access/cdda.c:701
+#: src/libvlc-module.c:764 modules/access/cdda.c:708
 msgid "Audio CD device"
 msgstr "অডিঅ' CD ডিভাইচ"
 
@@ -3043,7 +3043,7 @@ msgstr ""
 "এইটো হল ব্যৱহাৰ কৰিবলৈ ডিফল্ট VCD ড্ৰাইভ (বা ফাইল). ড্ৰাইভ আখৰটোৰ পিছত কলনটো "
 "দিবলৈ নাপাহৰিব (উদাহৰণ, D:)"
 
-#: src/libvlc-module.c:774 modules/access/cdda.c:704
+#: src/libvlc-module.c:774 modules/access/cdda.c:711
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -3059,7 +3059,7 @@ msgstr "এইটো হল ব্যৱহাৰ কৰিবলৈ ডিফ�
 msgid "This is the default VCD device to use."
 msgstr "এইটো হল ব্যৱহাৰ কৰিবলৈ ডিফল্ট VCD ডিভাইচ."
 
-#: src/libvlc-module.c:785 modules/access/cdda.c:709
+#: src/libvlc-module.c:785 modules/access/cdda.c:716
 msgid "This is the default Audio CD device to use."
 msgstr "ব্যৱহাৰ কৰিবলৈ এইটো হল ডিফল্ট অডিঅ' CD ডিভাইচ."
 
@@ -6095,7 +6095,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:350
-#: modules/access/dvdnav.c:381 modules/access/dvdread.c:215
+#: modules/access/disc_helper.h:56
 #, fuzzy
 msgid "Problem accessing a system resource"
 msgstr "সমস্যাৰ পূংখানুপূংখ বিৱৰণ আৰু ছিষ্টেম ৰূপৰেখাকৰণ"
@@ -6190,11 +6190,11 @@ msgstr "ব্লু-ৰে "
 msgid "Blu-ray Disc support (libbluray)"
 msgstr "ব্লু-ৰে ডিস্ক সমৰ্থন (লাইব্ৰেৰী ব্লু-ৰে)"
 
-#: modules/access/bluray.c:845
+#: modules/access/bluray.c:849
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr "এটা ব্লু-ৰে হিচাপে পথটো দৃষ্টিগোচৰ নহয়"
 
-#: modules/access/bluray.c:860
+#: modules/access/bluray.c:864
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
@@ -6202,31 +6202,31 @@ msgstr ""
 "AACS ডিকোডিংৰ বাবে এই ব্লু-ৰে ডিস্কটোৱে লাইব্ৰেৰী এটা দাবী কৰে, আৰু আপোনাৰ "
 "ছিষ্টেমৰ এইটো নাই."
 
-#: modules/access/bluray.c:866
+#: modules/access/bluray.c:870
 msgid "Blu-ray Disc is corrupted."
 msgstr "ব্লু-ৰে ডিস্ক নষ্ট হৈছে."
 
-#: modules/access/bluray.c:868
+#: modules/access/bluray.c:872
 msgid "Missing AACS configuration file!"
 msgstr "AACS ৰূপৰেখা ফাইল হেৰাইছে!"
 
-#: modules/access/bluray.c:870
+#: modules/access/bluray.c:874
 msgid "No valid processing key found in AACS config file."
 msgstr "AACS ৰূপৰেখা ফাইলত কোনো বৈধ প্ৰক্ৰিয়া কৰা কী বিচাৰি পোৱা নগল."
 
-#: modules/access/bluray.c:872
+#: modules/access/bluray.c:876
 msgid "No valid host certificate found in AACS config file."
 msgstr "AACS ৰূপৰেখা ফাইলত কোনো বৈধ হষ্ট প্ৰমাণপত্ৰ বিচাৰি পোৱা নগল."
 
-#: modules/access/bluray.c:874
+#: modules/access/bluray.c:878
 msgid "AACS Host certificate revoked."
 msgstr "AACS হষ্ট প্ৰমাণপত্ৰ বাতিল কৰা হল."
 
-#: modules/access/bluray.c:876
+#: modules/access/bluray.c:880
 msgid "AACS MMC failed."
 msgstr "AACS MMC ব্যৰ্থ হল."
 
-#: modules/access/bluray.c:886
+#: modules/access/bluray.c:890
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
@@ -6234,74 +6234,74 @@ msgstr ""
 "BD+ ডিকোডিংৰ বাবে এই ব্ল-ৰে ডিস্কটোৱে লাইব্ৰেৰী এটা বিচাৰে, আৰু আপোনাৰ ছিষ্টেমৰ "
 "এইটো নাই."
 
-#: modules/access/bluray.c:889
+#: modules/access/bluray.c:893
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr "আপোনাৰ ছিষ্টেম BD+ ডিকোডিং লাইব্ৰেৰীটোৱে কাৰ্য নকৰে. ৰূপৰেখা হেৰাইছে নেকি?"
 
-#: modules/access/bluray.c:922
+#: modules/access/bluray.c:926
 msgid "Java required"
 msgstr ""
 
-#: modules/access/bluray.c:923
+#: modules/access/bluray.c:927
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
 "The disc will be played without menus."
 msgstr ""
 
-#: modules/access/bluray.c:924
+#: modules/access/bluray.c:928
 msgid "Java was not found on your system."
 msgstr ""
 
-#: modules/access/bluray.c:947
+#: modules/access/bluray.c:951
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 "ব্লু-ৰে প্লেবেক আৰম্ভ কৰিবলৈ ব্যৰ্থ হল. অনুগ্ৰহ কৰি তালিকা সমৰ্থন অবিহনে চেষ্টাক কৰক."
 
-#: modules/access/bluray.c:988 modules/access/bluray.c:2819
-#: modules/access/bluray.c:2824
+#: modules/access/bluray.c:992 modules/access/bluray.c:2823
+#: modules/access/bluray.c:2828
 msgid "Blu-ray error"
 msgstr "ব্লু-ৰে ভুল"
 
-#: modules/access/bluray.c:2109
+#: modules/access/bluray.c:2113
 msgid "Top Menu"
 msgstr "ওপৰৰ মেনু"
 
-#: modules/access/bluray.c:2112
+#: modules/access/bluray.c:2116
 msgid "First Play"
 msgstr "প্ৰথমে চলোৱা"
 
-#: modules/access/cdda.c:480
+#: modules/access/cdda.c:487
 #, c-format
 msgid "Audio CD - Track %02i"
 msgstr "অডিঅ' CD - পথ %02i"
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/access/cdda.c:727 modules/gui/macosx/VLCOpenWindowController.m:169
 #: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "অডিঅ' CD"
 
-#: modules/access/cdda.c:721
+#: modules/access/cdda.c:728
 msgid "Audio CD input"
 msgstr "অডিঅ' CD ইনপুট"
 
-#: modules/access/cdda.c:730
+#: modules/access/cdda.c:737
 msgid "[cdda:][device][@[track]]"
 msgstr "[cdda:][ডিভাইছ][@[পথ]]"
 
-#: modules/access/cdda.c:739
+#: modules/access/cdda.c:746
 msgid "CDDB Server"
 msgstr "CDDB ছাৰ্ভাৰ"
 
-#: modules/access/cdda.c:740
+#: modules/access/cdda.c:747
 msgid "Address of the CDDB server to use."
 msgstr "ব্যৱহাৰ কৰিবলৈ CDDB ছাৰ্ভাৰটোৰ ঠিকনা."
 
-#: modules/access/cdda.c:741
+#: modules/access/cdda.c:748
 msgid "CDDB port"
 msgstr "CDDB পোৰ্ট"
 
-#: modules/access/cdda.c:742
+#: modules/access/cdda.c:749
 msgid "CDDB Server port to use."
 msgstr "ব্যৱহাৰ কৰিবলৈ CDDB ছাৰ্ভাৰ পোৰ্ট."
 
@@ -6473,6 +6473,13 @@ msgstr "10 বিট"
 #: modules/access/decklink.cpp:358 modules/demux/ty.c:769
 msgid "Closed captions 1"
 msgstr "কেপশ্বনবোৰ 1 বন্ধ কৰা হল"
+
+#: modules/access/disc_helper.h:57
+msgid ""
+"Potentially, macOS blocks access to your disc. Please open \"System "
+"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
+"external media in \"Files and Folders\" section."
+msgstr ""
 
 #: modules/access/dshow/dshow.cpp:92
 msgid "Cable"
@@ -7272,19 +7279,19 @@ msgstr ""
 msgid "Scanning DVB"
 msgstr ""
 
-#: modules/access/dvdnav.c:71 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:76
 msgid "DVD angle"
 msgstr "DVD কোণ"
 
-#: modules/access/dvdnav.c:73 modules/access/dvdread.c:71
+#: modules/access/dvdnav.c:75 modules/access/dvdread.c:78
 msgid "Default DVD angle."
 msgstr "ডিফল্ট DVD কোণ."
 
-#: modules/access/dvdnav.c:75
+#: modules/access/dvdnav.c:77
 msgid "Start directly in menu"
 msgstr "প্ৰত্যক্ষভাৱে মেনুত আৰম্ভ কৰক"
 
-#: modules/access/dvdnav.c:77
+#: modules/access/dvdnav.c:79
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -7292,61 +7299,54 @@ msgstr ""
 "মুখ্য মেনুটোত DVD প্ৰত্যক্ষভাৱে আৰম্ভ কৰক. এইটোৱে সকলোবোৰ ব্যৱহাৰ অযোগ্য সতৰ্কীকৰণ "
 "পৰিচয়বোৰ আওকাণ কৰিবলৈ চেষ্টা কৰিব."
 
-#: modules/access/dvdnav.c:91
+#: modules/access/dvdnav.c:93
 msgid "DVD with menus"
 msgstr "মেনুবোৰৰ সৈতে DVD"
 
-#: modules/access/dvdnav.c:92
+#: modules/access/dvdnav.c:94
 msgid "DVDnav Input"
 msgstr "DVDnav ইনপুট"
 
-#: modules/access/dvdnav.c:104
+#: modules/access/dvdnav.c:106
 msgid "DVDnav demuxer"
 msgstr ""
 
-#: modules/access/dvdnav.c:282 modules/access/dvdread.c:220
-#: modules/access/dvdread.c:237 modules/access/dvdread.c:496
-#: modules/access/dvdread.c:561
+#: modules/access/dvdnav.c:284 modules/access/dvdread.c:227
+#: modules/access/dvdread.c:243 modules/access/dvdread.c:502
+#: modules/access/dvdread.c:567
 msgid "Playback failure"
 msgstr "প্লেবেক ব্যৰ্থতা"
 
-#: modules/access/dvdnav.c:283
+#: modules/access/dvdnav.c:285
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
 "VLC য়ে DVD ৰ শিৰোনামবোৰ ছেট কৰিব নোৱাৰে. এইটোৱে সম্ভৱত সমগ্ৰ ডিস্কটো ডিক্ৰিপ্ট "
 "কৰিব নোৱাৰে."
 
-#: modules/access/dvdnav.c:382 modules/access/dvdread.c:216
-msgid ""
-"Potentially, macOS blocks access to your disc. Please open \"System "
-"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
-"external media in \"Files and Folders\" section."
-msgstr ""
-
-#: modules/access/dvdread.c:77
+#: modules/access/dvdread.c:84
 msgid "DVD without menus"
 msgstr "তালিকাবোৰ অবিহনে DVD"
 
-#: modules/access/dvdread.c:78
+#: modules/access/dvdread.c:85
 msgid "DVDRead Input (no menu support)"
 msgstr "DVDRead ইনপুট (কোনো তালিকা সমৰ্থন নকৰে)"
 
-#: modules/access/dvdread.c:221
+#: modules/access/dvdread.c:228
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
 msgstr "DVDRead য়ে \"%s\" ডিস্কটো খুলিব নোৱাৰিলে."
 
-#: modules/access/dvdread.c:238
+#: modules/access/dvdread.c:244
 msgid "Cannot play a non-UDF mastered DVD."
 msgstr ""
 
-#: modules/access/dvdread.c:497
+#: modules/access/dvdread.c:503
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr "DVDRead য়ে %d খণ্ডটো পঢ়িব নোৱাৰিলে."
 
-#: modules/access/dvdread.c:562
+#: modules/access/dvdread.c:568
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr "DVDপঢ়াটোৱে পঢ়িব নোৱাৰিলে %d/%d খণ্ডবোৰ 0x%02x ত."
@@ -8122,11 +8122,11 @@ msgstr "RTP"
 msgid "Real-Time Protocol (RTP) input"
 msgstr "প্ৰকৃত-সময়ৰ প্ৰটকল (RTP) ইনপুট"
 
-#: modules/access/rtp/rtp.c:770
+#: modules/access/rtp/rtp.c:773
 msgid "SDP required"
 msgstr "SDP দাবী কৰে"
 
-#: modules/access/rtp/rtp.c:771
+#: modules/access/rtp/rtp.c:774
 #, c-format
 msgid ""
 "A description in SDP format is required to receive the RTP stream. Note that "
@@ -15071,7 +15071,7 @@ msgstr "যেতিয়া প্ৰয়োজন হয় নিৰ্দিষ্
 msgid "AVI demuxer"
 msgstr "AVI ডিমাক্সাৰ"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4256
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15093,7 +15093,7 @@ msgstr "সূচী তৈয়াৰ কৰক তাৰ পিছত চলা�
 msgid "Play as is"
 msgstr "থকাৰ দৰে চলাওক"
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4267
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
 msgid "Broken or missing Index"
 msgstr ""
 
@@ -15536,11 +15536,11 @@ msgstr "MP4 ষ্ট্ৰিম ডিমাক্সাৰ"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4264
+#: modules/demux/mp4/mp4.c:4262
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4265
+#: modules/demux/mp4/mp4.c:4263
 msgid "Build index"
 msgstr ""
 
@@ -16574,7 +16574,7 @@ msgstr "আউপুট স্থান এটা পছন্দ কৰক"
 #: modules/gui/macosx/VLCOutput.m:67
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCSimplePrefsController.m:373
-#: modules/gui/macosx/prefs_widgets.m:1125
+#: modules/gui/macosx/prefs_widgets.m:1122
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
@@ -18771,15 +18771,15 @@ msgstr "TB"
 msgid "Show Basic"
 msgstr "প্ৰাথমিকটো দেখুৱাওক"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a directory"
 msgstr "নিৰ্দেশিকা এটা নিৰ্বাচন কৰক"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a file"
 msgstr "ফাইল এটা নিৰ্বাচন কৰক"
 
-#: modules/gui/macosx/prefs_widgets.m:1154
+#: modules/gui/macosx/prefs_widgets.m:1148
 msgid "Select"
 msgstr "নিৰ্বাচন কৰক"
 
@@ -28506,9 +28506,8 @@ msgid "Start Time"
 msgstr "আৰম্ভণি সময়"
 
 #: modules/gui/qt/ui/open.h:270
-#, fuzzy
 msgid "Stop Time"
-msgstr "বন্ধৰ সময়"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:271
 msgid "Edit Options"
@@ -28535,9 +28534,8 @@ msgid "HH'H':mm'm':ss's'.zzz"
 msgstr "HH'H':mm'm':ss's'.zzz"
 
 #: modules/gui/qt/ui/open.h:285
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "মিডিয়াটোৰ বাবে আৰম্ভণিৰ সময়টো সলনি কৰক"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:288
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -28636,9 +28634,8 @@ msgid "FLAC"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "MP&4/MOV"
-msgstr "MP4/MOV মাক্সাৰ"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "Ogg/Ogm"
@@ -28661,9 +28658,8 @@ msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:707
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "MPEG-PS"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:708
 msgid "RAW"
@@ -28678,9 +28674,8 @@ msgid "Webm"
 msgstr "ৱেবকেম"
 
 #: modules/gui/qt/ui/profiles.h:711
-#, fuzzy
 msgid "MPEG &1"
-msgstr "MPEG 1 ফৰমেট"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:712
 msgid "AVI"
@@ -28727,9 +28722,8 @@ msgid "Custom options"
 msgstr "ব্যৱস্থা কৰা বিকল্পবোৰ"
 
 #: modules/gui/qt/ui/profiles.h:733
-#, fuzzy
 msgid "&Quality"
-msgstr "VBR মানদণ্ড"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
 msgid "Not Used"
@@ -28752,14 +28746,12 @@ msgid "px"
 msgstr "px"
 
 #: modules/gui/qt/ui/profiles.h:756
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "নমুনাৰ হাৰ"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:764
-#, fuzzy
 msgid "Profile &Name"
-msgstr "প্ৰফাইল নাম"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:200
 msgid "Set up media sources to stream"
@@ -28894,9 +28886,8 @@ msgid "Skip H.264 in-loop deblocking filter"
 msgstr "H.264 ইন-লুপ ডিব্লকিং ফিল্টাৰটো এৰি যাওক"
 
 #: modules/gui/qt/ui/sprefs_input.h:359
-#, fuzzy
 msgid "x264 preset and tuning selection"
-msgstr "x264 প্ৰফাইল আৰু স্তৰ নিৰ্বাচন"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:361
 msgid "Optical drive"
@@ -28983,9 +28974,8 @@ msgid "Show systray icon"
 msgstr "ছিছষ্ট্ৰে আইকন দেখুৱাওক"
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "এনকাৰ্ছেছ ইন্টাৰফেছ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
 msgid "Skin resource file:"
@@ -29076,9 +29066,8 @@ msgid "Add a background"
 msgstr "পটভূমি এটা যোগকৰক"
 
 #: modules/gui/qt/ui/sprefs_video.h:313
-#, fuzzy
 msgid "O&utput"
-msgstr "আউটপুট"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:317
 msgid "DirectX"
@@ -30195,6 +30184,9 @@ msgstr "মিডিয়া পৰিচালকৰ তালিকা"
 
 #~ msgid "MPEG Transport Stream"
 #~ msgstr "MPEG সৰবৰাহ ষ্ট্ৰিম"
+
+#~ msgid "MPEG 1 Format"
+#~ msgstr "MPEG 1 ফৰমেট"
 
 #~ msgid ""
 #~ "Enter the local addresses you want to listen requests on. Do not enter "

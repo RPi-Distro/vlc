@@ -2,7 +2,7 @@
  * VLCSliderCell.m
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: 7db11da6665040b714d89c9ec7084fe746848ed2 $
+ * $Id: 6cd71de105bb6c32bf35cd5c0ef3ab1781ae28ef $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
@@ -23,6 +23,7 @@
 
 #import "VLCSliderCell.h"
 #import "CompatibilityFixes.h"
+#import "NSGradient+VLCAdditions.h"
 
 @interface VLCSliderCell () {
     NSInteger _animationPosition;
@@ -227,7 +228,8 @@ static CVReturn DisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeSt
 
     // Empty Track Drawing
     NSBezierPath* emptyTrackPath = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:3 yRadius:3];
-    [_trackGradient drawInBezierPath:emptyTrackPath angle:-90];
+
+    [_trackGradient vlc_safeDrawInBezierPath:emptyTrackPath angle:-90];
 
     if (_isKnobHidden) {
         [_trackStrokeColor setStroke];

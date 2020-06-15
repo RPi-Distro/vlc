@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: a4bd1dbedcc08a21ed387f38df8c937b3c7a1636 $
+ * $Id: e77e39805ba0eaacc6a12b79984948b0ad3542da $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -936,10 +936,7 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
         [self addSubview: self.label];
 
         /* build the textfield */
-        if (p_item->value.psz)
-            o_textfieldString = toNSStr(p_item->value.psz);
-        else
-            o_textfieldString = @"";
+        o_textfieldString = toNSStr(p_item->value.psz);
         if (p_item->i_type == CONFIG_ITEM_PASSWORD) {
             ADD_SECURETEXTFIELD(o_textfield, mainFrame, [self.label frame].size.width + 2,
                                 0, mainFrame.size.width - [self.label frame].size.width -
@@ -1127,10 +1124,7 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
         [self addSubview: o_button];
 
         /* build the textfield */
-        if (p_item->value.psz)
-            o_textfieldString = [NSString stringWithFormat: @"%s", (char *)p_item->value.psz];
-        else
-            o_textfieldString = @"";
+        o_textfieldString = toNSStr(p_item->value.psz);
         ADD_TEXTFIELD(o_textfield, mainFrame, 12, 2, mainFrame.size.width -
                       8 - [o_button frame].size.width,
                       o_itemTooltip, o_textfieldString)
@@ -2102,10 +2096,7 @@ o_moduleenabled = [NSNumber numberWithBool:NO];\
     [self addSubview: self.label];
 
     /* build the textfield */
-    if (p_item->value.psz)
-        o_textfieldString = _NS(p_item->value.psz);
-    else
-        o_textfieldString = @"";
+    o_textfieldString = _NS(p_item->value.psz);
     ADD_TEXTFIELD(o_textfield, mainFrame, [self.label frame].size.width + 2,
                   mainFrame.size.height - 22, mainFrame.size.width -
                   [self.label frame].size.width - 2, toolTip, o_textfieldString)

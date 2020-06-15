@@ -29,7 +29,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-04-23 11:48+0200\n"
+"POT-Creation-Date: 2020-06-10 11:26+0200\n"
 "PO-Revision-Date: 2019-06-30 19:28+0200\n"
 "Last-Translator: Petr Dolejší <dolejsi.petr@gmail.com>, 2019\n"
 "Language-Team: Czech (https://www.transifex.com/yaron/teams/16553/cs/)\n"
@@ -2557,8 +2557,8 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:661
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
-#: modules/gui/macosx/prefs_widgets.m:1221
-#: modules/gui/macosx/prefs_widgets.m:1278
+#: modules/gui/macosx/prefs_widgets.m:1215
+#: modules/gui/macosx/prefs_widgets.m:1272
 #: modules/gui/qt/components/preferences_widgets.cpp:546
 #: modules/logger/file.c:203 modules/spu/marq.c:61 modules/spu/rss.c:69
 #: modules/spu/rss.c:182 modules/video_output/win32/directdraw.c:1492
@@ -3034,7 +3034,7 @@ msgstr "DVD zařízení"
 msgid "VCD device"
 msgstr "VCD zařízení"
 
-#: src/libvlc-module.c:764 modules/access/cdda.c:701
+#: src/libvlc-module.c:764 modules/access/cdda.c:708
 msgid "Audio CD device"
 msgstr "Zařízení pro zvuková CD"
 
@@ -3054,7 +3054,7 @@ msgstr ""
 "Výchozí používaná VCD mechanika (nebo soubor). Nezapomínejte na dvojtečku za "
 "písmenem označujícím mechaniku (např. D:)"
 
-#: src/libvlc-module.c:774 modules/access/cdda.c:704
+#: src/libvlc-module.c:774 modules/access/cdda.c:711
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -3070,7 +3070,7 @@ msgstr "Výchozí DVD zařízení."
 msgid "This is the default VCD device to use."
 msgstr "Výchozí zařízení pro VCD."
 
-#: src/libvlc-module.c:785 modules/access/cdda.c:709
+#: src/libvlc-module.c:785 modules/access/cdda.c:716
 msgid "This is the default Audio CD device to use."
 msgstr "Výchozí zařízení pro zvuková CD."
 
@@ -6043,7 +6043,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:350
-#: modules/access/dvdnav.c:381 modules/access/dvdread.c:215
+#: modules/access/disc_helper.h:56
 msgid "Problem accessing a system resource"
 msgstr ""
 
@@ -6134,11 +6134,11 @@ msgstr "Blu-ray"
 msgid "Blu-ray Disc support (libbluray)"
 msgstr "Podpora Blu-ray disků (libbluray)"
 
-#: modules/access/bluray.c:845
+#: modules/access/bluray.c:849
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr "Cesta se nejeví jako Blu-ray"
 
-#: modules/access/bluray.c:860
+#: modules/access/bluray.c:864
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
@@ -6146,33 +6146,33 @@ msgstr ""
 "Tento disk Blu-Ray potřebuje knihovnu pro dekódování AACS, ale váš systém ji "
 "neobsahuje."
 
-#: modules/access/bluray.c:866
+#: modules/access/bluray.c:870
 msgid "Blu-ray Disc is corrupted."
 msgstr "Blu-ray disk je poškozen."
 
-#: modules/access/bluray.c:868
+#: modules/access/bluray.c:872
 msgid "Missing AACS configuration file!"
 msgstr "Schází soubor nastavení AACS."
 
-#: modules/access/bluray.c:870
+#: modules/access/bluray.c:874
 msgid "No valid processing key found in AACS config file."
 msgstr ""
 "V konfiguračním souboru AACS nebyl nalezen žádný platný klíč pro zpracování."
 
-#: modules/access/bluray.c:872
+#: modules/access/bluray.c:876
 msgid "No valid host certificate found in AACS config file."
 msgstr ""
 "V konfiguračním souboru AACS nebyl nalezen žádný platný certifikát hostitele."
 
-#: modules/access/bluray.c:874
+#: modules/access/bluray.c:878
 msgid "AACS Host certificate revoked."
 msgstr "Certifikát hostitele AACS byl zrušen."
 
-#: modules/access/bluray.c:876
+#: modules/access/bluray.c:880
 msgid "AACS MMC failed."
 msgstr "AACS MMC selhalo."
 
-#: modules/access/bluray.c:886
+#: modules/access/bluray.c:890
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
@@ -6180,15 +6180,15 @@ msgstr ""
 "Tento disk Blu-Ray potřebuje knihovnu pro dekódování BD+, ale váš systém ji "
 "neobsahuje."
 
-#: modules/access/bluray.c:889
+#: modules/access/bluray.c:893
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr "Systémová knihovna dekódování BD+ nefunguje. Nesprávné nastavení?"
 
-#: modules/access/bluray.c:922
+#: modules/access/bluray.c:926
 msgid "Java required"
 msgstr "Je vyžadována Java"
 
-#: modules/access/bluray.c:923
+#: modules/access/bluray.c:927
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
@@ -6197,59 +6197,59 @@ msgstr ""
 "Tento disk Blu-ray vyžaduje podporu jazyka Java pro podporu nabídek.%s Disk "
 "bude přehráván bez menu."
 
-#: modules/access/bluray.c:924
+#: modules/access/bluray.c:928
 msgid "Java was not found on your system."
 msgstr "Java nebyla ve vašem systému nalezena."
 
-#: modules/access/bluray.c:947
+#: modules/access/bluray.c:951
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 "Nepodařilo se spustit přehrávání Blu-ray. Zkuste to prosím bez podpory menu."
 
-#: modules/access/bluray.c:988 modules/access/bluray.c:2819
-#: modules/access/bluray.c:2824
+#: modules/access/bluray.c:992 modules/access/bluray.c:2823
+#: modules/access/bluray.c:2828
 msgid "Blu-ray error"
 msgstr "Chyba Blu-Ray"
 
-#: modules/access/bluray.c:2109
+#: modules/access/bluray.c:2113
 msgid "Top Menu"
 msgstr "Horní nabídka"
 
-#: modules/access/bluray.c:2112
+#: modules/access/bluray.c:2116
 msgid "First Play"
 msgstr "První přehrání"
 
-#: modules/access/cdda.c:480
+#: modules/access/cdda.c:487
 #, c-format
 msgid "Audio CD - Track %02i"
 msgstr "Audio CD - Stopa %02i"
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/access/cdda.c:727 modules/gui/macosx/VLCOpenWindowController.m:169
 #: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "Zvukové CD"
 
-#: modules/access/cdda.c:721
+#: modules/access/cdda.c:728
 msgid "Audio CD input"
 msgstr "Vstup zvukového CD"
 
-#: modules/access/cdda.c:730
+#: modules/access/cdda.c:737
 msgid "[cdda:][device][@[track]]"
 msgstr "[cdda:][zařízení][@[stopa]]"
 
-#: modules/access/cdda.c:739
+#: modules/access/cdda.c:746
 msgid "CDDB Server"
 msgstr "CDDB server"
 
-#: modules/access/cdda.c:740
+#: modules/access/cdda.c:747
 msgid "Address of the CDDB server to use."
 msgstr "Adresa serveru CDDB."
 
-#: modules/access/cdda.c:741
+#: modules/access/cdda.c:748
 msgid "CDDB port"
 msgstr "Port CDDB"
 
-#: modules/access/cdda.c:742
+#: modules/access/cdda.c:749
 msgid "CDDB Server port to use."
 msgstr "Port pro spojení se serverem CDDB"
 
@@ -6410,6 +6410,13 @@ msgstr "10 bitů"
 #: modules/access/decklink.cpp:358 modules/demux/ty.c:769
 msgid "Closed captions 1"
 msgstr "Skryté titulky 1"
+
+#: modules/access/disc_helper.h:57
+msgid ""
+"Potentially, macOS blocks access to your disc. Please open \"System "
+"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
+"external media in \"Files and Folders\" section."
+msgstr ""
 
 #: modules/access/dshow/dshow.cpp:92
 msgid "Cable"
@@ -7166,19 +7173,19 @@ msgstr "%.1f MHz (%d služeb)~%s zbývá"
 msgid "Scanning DVB"
 msgstr "Vyhledávání DVB"
 
-#: modules/access/dvdnav.c:71 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:76
 msgid "DVD angle"
 msgstr "Úhel DVD"
 
-#: modules/access/dvdnav.c:73 modules/access/dvdread.c:71
+#: modules/access/dvdnav.c:75 modules/access/dvdread.c:78
 msgid "Default DVD angle."
 msgstr "Výchozí úhel DVD."
 
-#: modules/access/dvdnav.c:75
+#: modules/access/dvdnav.c:77
 msgid "Start directly in menu"
 msgstr "Spustit přímo v nabídce"
 
-#: modules/access/dvdnav.c:77
+#: modules/access/dvdnav.c:79
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -7186,60 +7193,53 @@ msgstr ""
 "Spustit DVD přímo v hlavní nabídce. Tato volba se pokusí přeskočit všechna "
 "zbytečná upozornění a úvod."
 
-#: modules/access/dvdnav.c:91
+#: modules/access/dvdnav.c:93
 msgid "DVD with menus"
 msgstr "DVD s nabídkou"
 
-#: modules/access/dvdnav.c:92
+#: modules/access/dvdnav.c:94
 msgid "DVDnav Input"
 msgstr "Vstup DVDnav"
 
-#: modules/access/dvdnav.c:104
+#: modules/access/dvdnav.c:106
 msgid "DVDnav demuxer"
 msgstr ""
 
-#: modules/access/dvdnav.c:282 modules/access/dvdread.c:220
-#: modules/access/dvdread.c:237 modules/access/dvdread.c:496
-#: modules/access/dvdread.c:561
+#: modules/access/dvdnav.c:284 modules/access/dvdread.c:227
+#: modules/access/dvdread.c:243 modules/access/dvdread.c:502
+#: modules/access/dvdread.c:567
 msgid "Playback failure"
 msgstr "Přehrávání selhalo"
 
-#: modules/access/dvdnav.c:283
+#: modules/access/dvdnav.c:285
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
 "VLC nemůže nastavit titul DVD. Pravděpodobně nedokáže dešifrovat celý disk."
 
-#: modules/access/dvdnav.c:382 modules/access/dvdread.c:216
-msgid ""
-"Potentially, macOS blocks access to your disc. Please open \"System "
-"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
-"external media in \"Files and Folders\" section."
-msgstr ""
-
-#: modules/access/dvdread.c:77
+#: modules/access/dvdread.c:84
 msgid "DVD without menus"
 msgstr "DVD bez nabídky"
 
-#: modules/access/dvdread.c:78
+#: modules/access/dvdread.c:85
 msgid "DVDRead Input (no menu support)"
 msgstr "Vstup DVDRead (bez podpory nabídky)"
 
-#: modules/access/dvdread.c:221
+#: modules/access/dvdread.c:228
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
 msgstr "DVDRead nemohl otevřít disk \"%s\"."
 
-#: modules/access/dvdread.c:238
+#: modules/access/dvdread.c:244
 msgid "Cannot play a non-UDF mastered DVD."
 msgstr "Nelze přehrávat disk DVD nemasterovaný v UDF."
 
-#: modules/access/dvdread.c:497
+#: modules/access/dvdread.c:503
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr "DVDRead nemohl přečíst blok %d."
 
-#: modules/access/dvdread.c:562
+#: modules/access/dvdread.c:568
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr "DVDRead nemohl přečíst %d/%d bloků na 0x%02x.;"
@@ -7982,11 +7982,11 @@ msgstr "RTP"
 msgid "Real-Time Protocol (RTP) input"
 msgstr "Vstup protokolu reálného času (RTP)"
 
-#: modules/access/rtp/rtp.c:770
+#: modules/access/rtp/rtp.c:773
 msgid "SDP required"
 msgstr ""
 
-#: modules/access/rtp/rtp.c:771
+#: modules/access/rtp/rtp.c:774
 #, c-format
 msgid ""
 "A description in SDP format is required to receive the RTP stream. Note that "
@@ -14630,7 +14630,7 @@ msgstr "V případě potřeby opravit"
 msgid "AVI demuxer"
 msgstr "Demultiplexer AVI"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4256
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14652,7 +14652,7 @@ msgstr "Sestavit rejstřík a přehrát"
 msgid "Play as is"
 msgstr "Přehrát jak je"
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4267
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
 msgid "Broken or missing Index"
 msgstr ""
 
@@ -15083,11 +15083,11 @@ msgstr ""
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4264
+#: modules/demux/mp4/mp4.c:4262
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4265
+#: modules/demux/mp4/mp4.c:4263
 msgid "Build index"
 msgstr ""
 
@@ -16101,7 +16101,7 @@ msgstr ""
 #: modules/gui/macosx/VLCOutput.m:67
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCSimplePrefsController.m:373
-#: modules/gui/macosx/prefs_widgets.m:1125
+#: modules/gui/macosx/prefs_widgets.m:1122
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
@@ -18249,15 +18249,15 @@ msgstr ""
 msgid "Show Basic"
 msgstr "Zobrazit základní"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a directory"
 msgstr "Vyberte adresář"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a file"
 msgstr "Vyberte soubor"
 
-#: modules/gui/macosx/prefs_widgets.m:1154
+#: modules/gui/macosx/prefs_widgets.m:1148
 msgid "Select"
 msgstr "Vybrat"
 
@@ -27679,9 +27679,8 @@ msgid "Start Time"
 msgstr "Čas zahájení"
 
 #: modules/gui/qt/ui/open.h:270
-#, fuzzy
 msgid "Stop Time"
-msgstr "Čas zastavení"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:271
 msgid "Edit Options"
@@ -27700,18 +27699,16 @@ msgid "Select the file"
 msgstr "Vyberte soubor"
 
 #: modules/gui/qt/ui/open.h:281
-#, fuzzy
 msgid "Change the start time for the media"
-msgstr "Změnit mezipaměť pro média"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:283 modules/gui/qt/ui/open.h:287
 msgid "HH'H':mm'm':ss's'.zzz"
 msgstr "HH'H':mm'm':ss's'.zzz"
 
 #: modules/gui/qt/ui/open.h:285
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "Změnit mezipaměť pro média"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:288
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -27803,9 +27800,8 @@ msgid "Please enter a network URL:"
 msgstr "Zadejte prosím adresu URL:"
 
 #: modules/gui/qt/ui/profiles.h:699
-#, fuzzy
 msgid "Profile edition"
-msgstr "Název profilu"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:700
 msgid "FLAC"
@@ -27940,9 +27936,8 @@ msgid "Destination Setup"
 msgstr "Nastavení cíle"
 
 #: modules/gui/qt/ui/sout.h:203
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr "Vyberte \"Pokročilé možnosti\" pro zobrazení všech možností."
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:204
 msgid ""
@@ -27959,23 +27954,20 @@ msgid "Display locally"
 msgstr "Zobrazit lokálně"
 
 #: modules/gui/qt/ui/sout.h:209
-#, fuzzy
 msgid "Transcoding Options"
-msgstr "Pokročilé možnosti"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:210
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "Vyberte \"Pokročilé možnosti\" pro zobrazení všech možností."
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:211
 msgid "Activate Transcoding"
 msgstr "Zapnout překódování"
 
 #: modules/gui/qt/ui/sout.h:212
-#, fuzzy
 msgid "Option Setup"
-msgstr "Nastavení cíle"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:213
 msgid "Set up any additional options for streaming"
@@ -27986,14 +27978,12 @@ msgid "Miscellaneous Options"
 msgstr "Různá nastavení"
 
 #: modules/gui/qt/ui/sout.h:215
-#, fuzzy
 msgid "Stream all elementary streams"
-msgstr "Nastavit ID elementárního proudu"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:216
-#, fuzzy
 msgid "Generated stream output string"
-msgstr "Obecná nastavení proudového výstupu"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:409
 msgid " %"
@@ -28292,9 +28282,8 @@ msgid "Run manually"
 msgstr "Spustit ručně"
 
 #: modules/gui/qt/ui/streampanel.h:174
-#, fuzzy
 msgid "Setup schedule"
-msgstr "Plán"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:175
 msgid "Run on schedule"
@@ -28431,9 +28420,8 @@ msgid "VLM configurator"
 msgstr "Konfigurátor VLM"
 
 #: modules/gui/qt/ui/vlm.h:284
-#, fuzzy
 msgid "Media Manager Edition"
-msgstr "Seznam správců médií"
+msgstr ""
 
 #: modules/gui/qt/ui/vlm.h:285
 msgid "Name:"

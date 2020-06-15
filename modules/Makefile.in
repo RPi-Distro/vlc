@@ -2521,6 +2521,7 @@ am_libmacosx_plugin_la_OBJECTS =  \
 	gui/macosx/libmacosx_plugin_la-VLCMainMenu.lo \
 	gui/macosx/libmacosx_plugin_la-VLCMainWindowTitleView.lo \
 	gui/macosx/libmacosx_plugin_la-misc.lo \
+	gui/macosx/libmacosx_plugin_la-NSGradient+VLCAdditions.lo \
 	gui/macosx/libmacosx_plugin_la-NSSound+VLCAdditions.lo \
 	gui/macosx/libmacosx_plugin_la-NSScreen+VLCAdditions.lo \
 	gui/macosx/libmacosx_plugin_la-VLCOpenWindowController.lo \
@@ -5666,6 +5667,7 @@ am__depfiles_remade =  \
 	gui/$(DEPDIR)/libncurses_plugin_la-ncurses.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-AppleRemote.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-CompatibilityFixes.Plo \
+	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSGradient+VLCAdditions.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSScreen+VLCAdditions.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSSound+VLCAdditions.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-PXSourceList.Plo \
@@ -9138,7 +9140,9 @@ libvnc_plugin_la_LIBADD = $(VNC_LIBS)
 libvnc_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)'
 
 ### Optical media ###
-libcdda_plugin_la_SOURCES = access/cdda.c access/vcd/cdrom.c access/vcd/cdrom.h access/vcd/cdrom_internals.h
+libcdda_plugin_la_SOURCES = access/cdda.c access/disc_helper.h access/vcd/cdrom.c \
+                            access/vcd/cdrom.h access/vcd/cdrom_internals.h
+
 libcdda_plugin_la_CFLAGS = $(AM_CFLAGS) $(LIBCDDB_CFLAGS)
 libcdda_plugin_la_LIBADD = $(LIBCDDB_LIBS) $(LIBM) $(am__append_24)
 libcdda_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)' \
@@ -9147,12 +9151,12 @@ libvcd_plugin_la_SOURCES = access/vcd/vcd.c access/vcd/cdrom.c access/vcd/cdrom.
 libvcd_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)' \
 	$(am__append_26)
 @HAVE_DARWIN_TRUE@libvcd_plugin_la_LIBADD = -liconv
-libdvdnav_plugin_la_SOURCES = access/dvdnav.c demux/mpeg/ps.h demux/mpeg/pes.h
+libdvdnav_plugin_la_SOURCES = access/disc_helper.h access/dvdnav.c demux/mpeg/ps.h demux/mpeg/pes.h
 libdvdnav_plugin_la_CFLAGS = $(AM_CFLAGS) $(DVDNAV_CFLAGS)
 libdvdnav_plugin_la_LIBADD = $(DVDNAV_LIBS)
 libdvdnav_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(accessdir)' \
 	$(am__append_27)
-libdvdread_plugin_la_SOURCES = access/dvdread.c demux/mpeg/ps.h demux/mpeg/pes.h \
+libdvdread_plugin_la_SOURCES = access/disc_helper.h access/dvdread.c demux/mpeg/ps.h demux/mpeg/pes.h \
                                demux/moving_avg.h demux/timestamps_filter.h
 
 libdvdread_plugin_la_CFLAGS = $(AM_CFLAGS) $(DVDREAD_CFLAGS)
@@ -10376,6 +10380,7 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/VLCMainMenu.h gui/macosx/VLCMainMenu.m \
 	gui/macosx/VLCMainWindowTitleView.h gui/macosx/VLCMainWindowTitleView.m \
 	gui/macosx/misc.h gui/macosx/misc.m \
+	gui/macosx/NSGradient+VLCAdditions.h gui/macosx/NSGradient+VLCAdditions.m \
 	gui/macosx/NSSound+VLCAdditions.h gui/macosx/NSSound+VLCAdditions.m \
 	gui/macosx/NSScreen+VLCAdditions.h gui/macosx/NSScreen+VLCAdditions.m \
 	gui/macosx/VLCOpenWindowController.h gui/macosx/VLCOpenWindowController.m \
@@ -16312,6 +16317,9 @@ gui/macosx/libmacosx_plugin_la-VLCMainWindowTitleView.lo:  \
 	gui/macosx/$(DEPDIR)/$(am__dirstamp)
 gui/macosx/libmacosx_plugin_la-misc.lo: gui/macosx/$(am__dirstamp) \
 	gui/macosx/$(DEPDIR)/$(am__dirstamp)
+gui/macosx/libmacosx_plugin_la-NSGradient+VLCAdditions.lo:  \
+	gui/macosx/$(am__dirstamp) \
+	gui/macosx/$(DEPDIR)/$(am__dirstamp)
 gui/macosx/libmacosx_plugin_la-NSSound+VLCAdditions.lo:  \
 	gui/macosx/$(am__dirstamp) \
 	gui/macosx/$(DEPDIR)/$(am__dirstamp)
@@ -20192,6 +20200,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@gui/$(DEPDIR)/libncurses_plugin_la-ncurses.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-AppleRemote.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-CompatibilityFixes.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSGradient+VLCAdditions.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSScreen+VLCAdditions.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSSound+VLCAdditions.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-PXSourceList.Plo@am__quote@ # am--include-marker
@@ -26971,6 +26980,13 @@ gui/macosx/libmacosx_plugin_la-misc.lo: gui/macosx/misc.m
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-misc.lo `test -f 'gui/macosx/misc.m' || echo '$(srcdir)/'`gui/macosx/misc.m
 
+gui/macosx/libmacosx_plugin_la-NSGradient+VLCAdditions.lo: gui/macosx/NSGradient+VLCAdditions.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/macosx/libmacosx_plugin_la-NSGradient+VLCAdditions.lo -MD -MP -MF gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSGradient+VLCAdditions.Tpo -c -o gui/macosx/libmacosx_plugin_la-NSGradient+VLCAdditions.lo `test -f 'gui/macosx/NSGradient+VLCAdditions.m' || echo '$(srcdir)/'`gui/macosx/NSGradient+VLCAdditions.m
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSGradient+VLCAdditions.Tpo gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSGradient+VLCAdditions.Plo
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='gui/macosx/NSGradient+VLCAdditions.m' object='gui/macosx/libmacosx_plugin_la-NSGradient+VLCAdditions.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-NSGradient+VLCAdditions.lo `test -f 'gui/macosx/NSGradient+VLCAdditions.m' || echo '$(srcdir)/'`gui/macosx/NSGradient+VLCAdditions.m
+
 gui/macosx/libmacosx_plugin_la-NSSound+VLCAdditions.lo: gui/macosx/NSSound+VLCAdditions.m
 @am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/macosx/libmacosx_plugin_la-NSSound+VLCAdditions.lo -MD -MP -MF gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSSound+VLCAdditions.Tpo -c -o gui/macosx/libmacosx_plugin_la-NSSound+VLCAdditions.lo `test -f 'gui/macosx/NSSound+VLCAdditions.m' || echo '$(srcdir)/'`gui/macosx/NSSound+VLCAdditions.m
 @am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSSound+VLCAdditions.Tpo gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSSound+VLCAdditions.Plo
@@ -28901,6 +28917,7 @@ distclean: distclean-recursive
 	-rm -f gui/$(DEPDIR)/libncurses_plugin_la-ncurses.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-AppleRemote.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-CompatibilityFixes.Plo
+	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSGradient+VLCAdditions.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSScreen+VLCAdditions.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSSound+VLCAdditions.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-PXSourceList.Plo
@@ -30267,6 +30284,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f gui/$(DEPDIR)/libncurses_plugin_la-ncurses.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-AppleRemote.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-CompatibilityFixes.Plo
+	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSGradient+VLCAdditions.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSScreen+VLCAdditions.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-NSSound+VLCAdditions.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-PXSourceList.Plo
