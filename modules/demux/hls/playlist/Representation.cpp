@@ -33,6 +33,7 @@
 #include "../../adaptive/playlist/SegmentList.h"
 
 #include <ctime>
+#include <cassert>
 
 using namespace hls;
 using namespace hls::playlist;
@@ -99,13 +100,18 @@ void Representation::debug(vlc_object_t *obj, int indent) const
     }
 }
 
-void Representation::scheduleNextUpdate(uint64_t number)
+void Representation::scheduleNextUpdate(uint64_t number, bool b_updated)
 {
-    const AbstractPlaylist *playlist = getPlaylist();
-    const time_t now = time(NULL);
+    if(!isLive())
+        return;
+
+    if(!b_updated && nextUpdateTime > 0)
+        return;
 
     /* Compute new update time */
     mtime_t minbuffer = getMinAheadTime(number);
+    const AbstractPlaylist *playlist = getPlaylist();
+    const mtime_t now = mdate();
 
     /* Update frequency must always be at least targetDuration (if any)
      * but we need to update before reaching that last segment, thus -1 */
@@ -124,34 +130,30 @@ void Representation::scheduleNextUpdate(uint64_t number)
             minbuffer /= 2;
     }
 
-    nextUpdateTime = now + minbuffer / CLOCK_FREQ;
+    nextUpdateTime = now + minbuffer;
 
     msg_Dbg(playlist->getVLCObject(), "Updated playlist ID %s, next update in %" PRId64 "s",
-            getID().str().c_str(), (mtime_t) nextUpdateTime - now);
+            getID().str().c_str(), (nextUpdateTime - now)/CLOCK_FREQ);
 
     debug(playlist->getVLCObject(), 0);
 }
 
 bool Representation::needsUpdate() const
 {
-    return !b_failed && (!b_loaded || (isLive() && nextUpdateTime < time(NULL)));
+    return !b_failed && (!b_loaded || (isLive() &&
+                                       nextUpdateTime != 0 &&
+                                       nextUpdateTime < mdate()));
 }
 
 bool Representation::runLocalUpdates(SharedResources *res)
 {
-    const time_t now = time(NULL);
     AbstractPlaylist *playlist = getPlaylist();
-    if(!b_loaded || (isLive() && nextUpdateTime < now))
-    {
-        M3U8Parser parser(res);
-        if(!parser.appendSegmentsFromPlaylistURI(playlist->getVLCObject(), this))
-            b_failed = true;
-        else
-            b_loaded = true;
-
-        return true;
-    }
-
+    assert(needsUpdate());
+    M3U8Parser parser(res);
+    if(!parser.appendSegmentsFromPlaylistURI(playlist->getVLCObject(), this))
+        b_failed = true;
+    else
+        b_loaded = true;
     return true;
 }
 
@@ -163,7 +165,8 @@ uint64_t Representation::translateSegmentNumber(uint64_t num, const SegmentInfor
     HLSSegment *fromHlsSeg = dynamic_cast<HLSSegment *>(fromSeg);
     if(!fromHlsSeg)
         return 1;
-    const mtime_t utcTime = fromHlsSeg->getUTCTime();
+    const mtime_t utcTime = fromHlsSeg->getUTCTime() +
+                               getTimescale().ToTime(fromHlsSeg->duration.Get()) / 2;
 
     std::vector<ISegment *> list;
     std::vector<ISegment *>::const_iterator it;

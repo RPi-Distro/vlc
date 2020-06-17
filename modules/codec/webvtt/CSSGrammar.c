@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.5.3.  */
+/* A Bison parser, made by GNU Bison 3.6.3.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
@@ -34,6 +34,10 @@
 /* C LALR(1) parser skeleton written by Richard Stallman, by
    simplifying the original so-called "semantic" parser.  */
 
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
+
 /* All symbols defined below should begin with yy or YY, to avoid
    infringing on user name space.  This should be done even for local
    variables, as they might otherwise be expanded by user macros.
@@ -41,14 +45,11 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
-
 /* Identify Bison output.  */
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.5.3"
+#define YYBISON_VERSION "3.6.3"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -79,7 +80,7 @@
 typedef void* yyscan_t;
 #endif
 
-#line 83 "codec/webvtt/CSSGrammar.c"
+#line 84 "codec/webvtt/CSSGrammar.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -102,14 +103,6 @@ typedef void* yyscan_t;
 #  endif
 # endif
 
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 0
-#endif
-
 /* Use api.header.include to #include this header
    instead of duplicating it here.  */
 #ifndef YY_YY_CODEC_WEBVTT_CSSGRAMMAR_H_INCLUDED
@@ -122,44 +115,50 @@ typedef void* yyscan_t;
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    TOKEN_EOF = 0,
-    LOWEST_PREC = 258,
-    UNIMPORTANT_TOK = 259,
-    WHITESPACE = 260,
-    SGML_CD = 261,
-    INCLUDES = 262,
-    DASHMATCH = 263,
-    BEGINSWITH = 264,
-    ENDSWITH = 265,
-    CONTAINS = 266,
-    STRING = 267,
-    IDENT = 268,
-    IDSEL = 269,
-    HASH = 270,
-    FONT_FACE_SYM = 271,
-    CHARSET_SYM = 272,
-    IMPORTANT_SYM = 273,
-    CDO = 274,
-    CDC = 275,
-    LENGTH = 276,
-    ANGLE = 277,
-    TIME = 278,
-    FREQ = 279,
-    DIMEN = 280,
-    PERCENTAGE = 281,
-    NUMBER = 282,
-    URI = 283,
-    FUNCTION = 284,
-    UNICODERANGE = 285
+    YYEMPTY = -2,
+    TOKEN_EOF = 0,                 /* TOKEN_EOF  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    LOWEST_PREC = 258,             /* LOWEST_PREC  */
+    UNIMPORTANT_TOK = 259,         /* UNIMPORTANT_TOK  */
+    WHITESPACE = 260,              /* WHITESPACE  */
+    SGML_CD = 261,                 /* SGML_CD  */
+    INCLUDES = 262,                /* INCLUDES  */
+    DASHMATCH = 263,               /* DASHMATCH  */
+    BEGINSWITH = 264,              /* BEGINSWITH  */
+    ENDSWITH = 265,                /* ENDSWITH  */
+    CONTAINS = 266,                /* CONTAINS  */
+    STRING = 267,                  /* STRING  */
+    IDENT = 268,                   /* IDENT  */
+    IDSEL = 269,                   /* IDSEL  */
+    HASH = 270,                    /* HASH  */
+    FONT_FACE_SYM = 271,           /* FONT_FACE_SYM  */
+    CHARSET_SYM = 272,             /* CHARSET_SYM  */
+    IMPORTANT_SYM = 273,           /* IMPORTANT_SYM  */
+    CDO = 274,                     /* CDO  */
+    CDC = 275,                     /* CDC  */
+    LENGTH = 276,                  /* LENGTH  */
+    ANGLE = 277,                   /* ANGLE  */
+    TIME = 278,                    /* TIME  */
+    FREQ = 279,                    /* FREQ  */
+    DIMEN = 280,                   /* DIMEN  */
+    PERCENTAGE = 281,              /* PERCENTAGE  */
+    NUMBER = 282,                  /* NUMBER  */
+    URI = 283,                     /* URI  */
+    FUNCTION = 284,                /* FUNCTION  */
+    UNICODERANGE = 285             /* UNICODERANGE  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
 #define TOKEN_EOF 0
+#define YYerror 256
+#define YYUNDEF 257
 #define LOWEST_PREC 258
 #define UNIMPORTANT_TOK 259
 #define WHITESPACE 260
@@ -209,7 +208,7 @@ union YYSTYPE
     vlc_css_selector_t *selector;
     vlc_css_selector_t *selectorList;
 
-#line 213 "codec/webvtt/CSSGrammar.c"
+#line 212 "codec/webvtt/CSSGrammar.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -222,6 +221,105 @@ typedef union YYSTYPE YYSTYPE;
 int yyparse (yyscan_t scanner, vlc_css_parser_t *css_parser);
 
 #endif /* !YY_YY_CODEC_WEBVTT_CSSGRAMMAR_H_INCLUDED  */
+/* Symbol kind.  */
+enum yysymbol_kind_t
+{
+  YYSYMBOL_YYEMPTY = -2,
+  YYSYMBOL_YYEOF = 0,                      /* TOKEN_EOF  */
+  YYSYMBOL_YYerror = 1,                    /* error  */
+  YYSYMBOL_YYUNDEF = 2,                    /* "invalid token"  */
+  YYSYMBOL_LOWEST_PREC = 3,                /* LOWEST_PREC  */
+  YYSYMBOL_UNIMPORTANT_TOK = 4,            /* UNIMPORTANT_TOK  */
+  YYSYMBOL_WHITESPACE = 5,                 /* WHITESPACE  */
+  YYSYMBOL_SGML_CD = 6,                    /* SGML_CD  */
+  YYSYMBOL_INCLUDES = 7,                   /* INCLUDES  */
+  YYSYMBOL_DASHMATCH = 8,                  /* DASHMATCH  */
+  YYSYMBOL_BEGINSWITH = 9,                 /* BEGINSWITH  */
+  YYSYMBOL_ENDSWITH = 10,                  /* ENDSWITH  */
+  YYSYMBOL_CONTAINS = 11,                  /* CONTAINS  */
+  YYSYMBOL_STRING = 12,                    /* STRING  */
+  YYSYMBOL_IDENT = 13,                     /* IDENT  */
+  YYSYMBOL_IDSEL = 14,                     /* IDSEL  */
+  YYSYMBOL_HASH = 15,                      /* HASH  */
+  YYSYMBOL_16_ = 16,                       /* ':'  */
+  YYSYMBOL_17_ = 17,                       /* '.'  */
+  YYSYMBOL_18_ = 18,                       /* '['  */
+  YYSYMBOL_19_ = 19,                       /* '*'  */
+  YYSYMBOL_20_ = 20,                       /* '|'  */
+  YYSYMBOL_FONT_FACE_SYM = 21,             /* FONT_FACE_SYM  */
+  YYSYMBOL_CHARSET_SYM = 22,               /* CHARSET_SYM  */
+  YYSYMBOL_IMPORTANT_SYM = 23,             /* IMPORTANT_SYM  */
+  YYSYMBOL_CDO = 24,                       /* CDO  */
+  YYSYMBOL_CDC = 25,                       /* CDC  */
+  YYSYMBOL_LENGTH = 26,                    /* LENGTH  */
+  YYSYMBOL_ANGLE = 27,                     /* ANGLE  */
+  YYSYMBOL_TIME = 28,                      /* TIME  */
+  YYSYMBOL_FREQ = 29,                      /* FREQ  */
+  YYSYMBOL_DIMEN = 30,                     /* DIMEN  */
+  YYSYMBOL_PERCENTAGE = 31,                /* PERCENTAGE  */
+  YYSYMBOL_NUMBER = 32,                    /* NUMBER  */
+  YYSYMBOL_URI = 33,                       /* URI  */
+  YYSYMBOL_FUNCTION = 34,                  /* FUNCTION  */
+  YYSYMBOL_UNICODERANGE = 35,              /* UNICODERANGE  */
+  YYSYMBOL_36_ = 36,                       /* '}'  */
+  YYSYMBOL_37_ = 37,                       /* ';'  */
+  YYSYMBOL_38_ = 38,                       /* '{'  */
+  YYSYMBOL_39_ = 39,                       /* '+'  */
+  YYSYMBOL_40_ = 40,                       /* '~'  */
+  YYSYMBOL_41_ = 41,                       /* '>'  */
+  YYSYMBOL_42_ = 42,                       /* '-'  */
+  YYSYMBOL_43_ = 43,                       /* ','  */
+  YYSYMBOL_44_ = 44,                       /* ']'  */
+  YYSYMBOL_45_ = 45,                       /* '='  */
+  YYSYMBOL_46_ = 46,                       /* ')'  */
+  YYSYMBOL_47_ = 47,                       /* '/'  */
+  YYSYMBOL_48_ = 48,                       /* '#'  */
+  YYSYMBOL_49_ = 49,                       /* '%'  */
+  YYSYMBOL_YYACCEPT = 50,                  /* $accept  */
+  YYSYMBOL_stylesheet = 51,                /* stylesheet  */
+  YYSYMBOL_maybe_space = 52,               /* maybe_space  */
+  YYSYMBOL_maybe_sgml = 53,                /* maybe_sgml  */
+  YYSYMBOL_maybe_charset = 54,             /* maybe_charset  */
+  YYSYMBOL_closing_brace = 55,             /* closing_brace  */
+  YYSYMBOL_charset = 56,                   /* charset  */
+  YYSYMBOL_ignored_charset = 57,           /* ignored_charset  */
+  YYSYMBOL_rule_list = 58,                 /* rule_list  */
+  YYSYMBOL_valid_rule = 59,                /* valid_rule  */
+  YYSYMBOL_rule = 60,                      /* rule  */
+  YYSYMBOL_font_face = 61,                 /* font_face  */
+  YYSYMBOL_combinator = 62,                /* combinator  */
+  YYSYMBOL_maybe_unary_operator = 63,      /* maybe_unary_operator  */
+  YYSYMBOL_unary_operator = 64,            /* unary_operator  */
+  YYSYMBOL_ruleset = 65,                   /* ruleset  */
+  YYSYMBOL_selector_list = 66,             /* selector_list  */
+  YYSYMBOL_selector_with_trailing_whitespace = 67, /* selector_with_trailing_whitespace  */
+  YYSYMBOL_selector = 68,                  /* selector  */
+  YYSYMBOL_simple_selector = 69,           /* simple_selector  */
+  YYSYMBOL_element_name = 70,              /* element_name  */
+  YYSYMBOL_specifier_list = 71,            /* specifier_list  */
+  YYSYMBOL_specifier = 72,                 /* specifier  */
+  YYSYMBOL_class = 73,                     /* class  */
+  YYSYMBOL_attr_name = 74,                 /* attr_name  */
+  YYSYMBOL_attrib = 75,                    /* attrib  */
+  YYSYMBOL_match = 76,                     /* match  */
+  YYSYMBOL_ident_or_string = 77,           /* ident_or_string  */
+  YYSYMBOL_pseudo = 78,                    /* pseudo  */
+  YYSYMBOL_declaration_list = 79,          /* declaration_list  */
+  YYSYMBOL_decl_list = 80,                 /* decl_list  */
+  YYSYMBOL_declaration = 81,               /* declaration  */
+  YYSYMBOL_property = 82,                  /* property  */
+  YYSYMBOL_prio = 83,                      /* prio  */
+  YYSYMBOL_expr = 84,                      /* expr  */
+  YYSYMBOL_operator = 85,                  /* operator  */
+  YYSYMBOL_term = 86,                      /* term  */
+  YYSYMBOL_unary_term = 87,                /* unary_term  */
+  YYSYMBOL_function = 88,                  /* function  */
+  YYSYMBOL_invalid_rule = 89,              /* invalid_rule  */
+  YYSYMBOL_invalid_block = 90,             /* invalid_block  */
+  YYSYMBOL_invalid_block_list = 91         /* invalid_block_list  */
+};
+typedef enum yysymbol_kind_t yysymbol_kind_t;
+
 
 /* Second part of user prologue.  */
 #line 65 "../../modules/codec/webvtt/CSSGrammar.y"
@@ -236,7 +334,7 @@ static int yyerror(yyscan_t scanner, vlc_css_parser_t *p, const char *msg)
 }
 
 
-#line 240 "codec/webvtt/CSSGrammar.c"
+#line 338 "codec/webvtt/CSSGrammar.c"
 
 
 #ifdef short
@@ -335,6 +433,7 @@ typedef int yytype_uint16;
 
 #define YYSIZEOF(X) YY_CAST (YYPTRDIFF_T, sizeof (X))
 
+
 /* Stored state numbers (used for stacks). */
 typedef yytype_uint8 yy_state_t;
 
@@ -352,6 +451,7 @@ typedef int yy_state_fast_t;
 #  define YY_(Msgid) Msgid
 # endif
 #endif
+
 
 #ifndef YY_ATTRIBUTE_PURE
 # if defined __GNUC__ && 2 < __GNUC__ + (96 <= __GNUC_MINOR__)
@@ -410,7 +510,7 @@ typedef int yy_state_fast_t;
 
 #define YY_ASSERT(E) ((void) (0 && (E)))
 
-#if ! defined yyoverflow || YYERROR_VERBOSE
+#if !defined yyoverflow
 
 /* The parser invokes alloca or malloc; define the necessary symbols.  */
 
@@ -475,8 +575,7 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
 # endif
-#endif /* ! defined yyoverflow || YYERROR_VERBOSE */
-
+#endif /* !defined yyoverflow */
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
@@ -552,14 +651,15 @@ union yyalloc
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  230
 
-#define YYUNDEFTOK  2
 #define YYMAXUTOK   285
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex, with out-of-bounds checking.  */
-#define YYTRANSLATE(YYX)                                                \
-  (0 <= (YYX) && (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
+#define YYTRANSLATE(YYX)                                \
+  (0 <= (YYX) && (YYX) <= YYMAXUTOK                     \
+   ? YY_CAST (yysymbol_kind_t, yytranslate[YYX])        \
+   : YYSYMBOL_YYUNDEF)
 
 /* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex.  */
@@ -617,32 +717,45 @@ static const yytype_int16 yyrline[] =
 };
 #endif
 
-#if YYDEBUG || YYERROR_VERBOSE || 0
+/** Accessing symbol of state STATE.  */
+#define YY_ACCESSING_SYMBOL(State) YY_CAST (yysymbol_kind_t, yystos[State])
+
+#if YYDEBUG || 0
+/* The user-facing name of the symbol whose (internal) number is
+   YYSYMBOL.  No bounds checking.  */
+static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
+
 /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "TOKEN_EOF", "error", "$undefined", "LOWEST_PREC", "UNIMPORTANT_TOK",
-  "WHITESPACE", "SGML_CD", "INCLUDES", "DASHMATCH", "BEGINSWITH",
-  "ENDSWITH", "CONTAINS", "STRING", "IDENT", "IDSEL", "HASH", "':'", "'.'",
-  "'['", "'*'", "'|'", "FONT_FACE_SYM", "CHARSET_SYM", "IMPORTANT_SYM",
-  "CDO", "CDC", "LENGTH", "ANGLE", "TIME", "FREQ", "DIMEN", "PERCENTAGE",
-  "NUMBER", "URI", "FUNCTION", "UNICODERANGE", "'}'", "';'", "'{'", "'+'",
-  "'~'", "'>'", "'-'", "','", "']'", "'='", "')'", "'/'", "'#'", "'%'",
-  "$accept", "stylesheet", "maybe_space", "maybe_sgml", "maybe_charset",
-  "closing_brace", "charset", "ignored_charset", "rule_list", "valid_rule",
-  "rule", "font_face", "combinator", "maybe_unary_operator",
-  "unary_operator", "ruleset", "selector_list",
-  "selector_with_trailing_whitespace", "selector", "simple_selector",
-  "element_name", "specifier_list", "specifier", "class", "attr_name",
-  "attrib", "match", "ident_or_string", "pseudo", "declaration_list",
-  "decl_list", "declaration", "property", "prio", "expr", "operator",
-  "term", "unary_term", "function", "invalid_rule", "invalid_block",
-  "invalid_block_list", YY_NULLPTR
+  "TOKEN_EOF", "error", "\"invalid token\"", "LOWEST_PREC",
+  "UNIMPORTANT_TOK", "WHITESPACE", "SGML_CD", "INCLUDES", "DASHMATCH",
+  "BEGINSWITH", "ENDSWITH", "CONTAINS", "STRING", "IDENT", "IDSEL", "HASH",
+  "':'", "'.'", "'['", "'*'", "'|'", "FONT_FACE_SYM", "CHARSET_SYM",
+  "IMPORTANT_SYM", "CDO", "CDC", "LENGTH", "ANGLE", "TIME", "FREQ",
+  "DIMEN", "PERCENTAGE", "NUMBER", "URI", "FUNCTION", "UNICODERANGE",
+  "'}'", "';'", "'{'", "'+'", "'~'", "'>'", "'-'", "','", "']'", "'='",
+  "')'", "'/'", "'#'", "'%'", "$accept", "stylesheet", "maybe_space",
+  "maybe_sgml", "maybe_charset", "closing_brace", "charset",
+  "ignored_charset", "rule_list", "valid_rule", "rule", "font_face",
+  "combinator", "maybe_unary_operator", "unary_operator", "ruleset",
+  "selector_list", "selector_with_trailing_whitespace", "selector",
+  "simple_selector", "element_name", "specifier_list", "specifier",
+  "class", "attr_name", "attrib", "match", "ident_or_string", "pseudo",
+  "declaration_list", "decl_list", "declaration", "property", "prio",
+  "expr", "operator", "term", "unary_term", "function", "invalid_rule",
+  "invalid_block", "invalid_block_list", YY_NULLPTR
 };
+
+static const char *
+yysymbol_name (yysymbol_kind_t yysymbol)
+{
+  return yytname[yysymbol];
+}
 #endif
 
-# ifdef YYPRINT
+#ifdef YYPRINT
 /* YYTOKNUM[NUM] -- (External) token number corresponding to the
    (internal) symbol number NUM (which must be that of a token).  */
 static const yytype_int16 yytoknum[] =
@@ -653,7 +766,7 @@ static const yytype_int16 yytoknum[] =
      280,   281,   282,   283,   284,   285,   125,    59,   123,    43,
      126,    62,    45,    44,    93,    61,    41,    47,    35,    37
 };
-# endif
+#endif
 
 #define YYPACT_NINF (-126)
 
@@ -919,10 +1032,10 @@ static const yytype_int8 yyr2[] =
 };
 
 
+enum { YYENOMEM = -2 };
+
 #define yyerrok         (yyerrstatus = 0)
 #define yyclearin       (yychar = YYEMPTY)
-#define YYEMPTY         (-2)
-#define YYEOF           0
 
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
@@ -948,10 +1061,9 @@ static const yytype_int8 yyr2[] =
       }                                                           \
   while (0)
 
-/* Error token number */
-#define YYTERROR        1
-#define YYERRCODE       256
-
+/* Backward compatibility with an undocumented macro.
+   Use YYerror or YYUNDEF. */
+#define YYERRCODE YYUNDEF
 
 
 /* Enable debugging if requested.  */
@@ -969,18 +1081,18 @@ do {                                            \
 } while (0)
 
 /* This macro is provided for backward compatibility. */
-#ifndef YY_LOCATION_PRINT
-# define YY_LOCATION_PRINT(File, Loc) ((void) 0)
-#endif
+# ifndef YY_LOCATION_PRINT
+#  define YY_LOCATION_PRINT(File, Loc) ((void) 0)
+# endif
 
 
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)                    \
+# define YY_SYMBOL_PRINT(Title, Kind, Value, Location)                    \
 do {                                                                      \
   if (yydebug)                                                            \
     {                                                                     \
       YYFPRINTF (stderr, "%s ", Title);                                   \
       yy_symbol_print (stderr,                                            \
-                  Type, Value, scanner, css_parser); \
+                  Kind, Value, scanner, css_parser); \
       YYFPRINTF (stderr, "\n");                                           \
     }                                                                     \
 } while (0)
@@ -991,7 +1103,8 @@ do {                                                                      \
 `-----------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yyscan_t scanner, vlc_css_parser_t *css_parser)
+yy_symbol_value_print (FILE *yyo,
+                       yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep, yyscan_t scanner, vlc_css_parser_t *css_parser)
 {
   FILE *yyoutput = yyo;
   YYUSE (yyoutput);
@@ -1000,11 +1113,11 @@ yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yy
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
-  if (yytype < YYNTOKENS)
-    YYPRINT (yyo, yytoknum[yytype], *yyvaluep);
+  if (yykind < YYNTOKENS)
+    YYPRINT (yyo, yytoknum[yykind], *yyvaluep);
 # endif
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yytype);
+  YYUSE (yykind);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -1014,12 +1127,13 @@ yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yy
 `---------------------------*/
 
 static void
-yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, yyscan_t scanner, vlc_css_parser_t *css_parser)
+yy_symbol_print (FILE *yyo,
+                 yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep, yyscan_t scanner, vlc_css_parser_t *css_parser)
 {
   YYFPRINTF (yyo, "%s %s (",
-             yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
+             yykind < YYNTOKENS ? "token" : "nterm", yysymbol_name (yykind));
 
-  yy_symbol_value_print (yyo, yytype, yyvaluep, scanner, css_parser);
+  yy_symbol_value_print (yyo, yykind, yyvaluep, scanner, css_parser);
   YYFPRINTF (yyo, ")");
 }
 
@@ -1052,7 +1166,8 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule, yyscan_t scanner, vlc_css_parser_t *css_parser)
+yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp,
+                 int yyrule, yyscan_t scanner, vlc_css_parser_t *css_parser)
 {
   int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
@@ -1064,9 +1179,8 @@ yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule, yyscan_t scanner
     {
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr,
-                       yystos[+yyssp[yyi + 1 - yynrhs]],
-                       &yyvsp[(yyi + 1) - (yynrhs)]
-                                              , scanner, css_parser);
+                       YY_ACCESSING_SYMBOL (+yyssp[yyi + 1 - yynrhs]),
+                       &yyvsp[(yyi + 1) - (yynrhs)], scanner, css_parser);
       YYFPRINTF (stderr, "\n");
     }
 }
@@ -1081,8 +1195,8 @@ do {                                    \
    multiple parsers can coexist.  */
 int yydebug;
 #else /* !YYDEBUG */
-# define YYDPRINTF(Args)
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
+# define YYDPRINTF(Args) ((void) 0)
+# define YY_SYMBOL_PRINT(Title, Kind, Value, Location)
 # define YY_STACK_PRINT(Bottom, Top)
 # define YY_REDUCE_PRINT(Rule)
 #endif /* !YYDEBUG */
@@ -1105,499 +1219,272 @@ int yydebug;
 #endif
 
 
-#if YYERROR_VERBOSE
 
-# ifndef yystrlen
-#  if defined __GLIBC__ && defined _STRING_H
-#   define yystrlen(S) (YY_CAST (YYPTRDIFF_T, strlen (S)))
-#  else
-/* Return the length of YYSTR.  */
-static YYPTRDIFF_T
-yystrlen (const char *yystr)
-{
-  YYPTRDIFF_T yylen;
-  for (yylen = 0; yystr[yylen]; yylen++)
-    continue;
-  return yylen;
-}
-#  endif
-# endif
 
-# ifndef yystpcpy
-#  if defined __GLIBC__ && defined _STRING_H && defined _GNU_SOURCE
-#   define yystpcpy stpcpy
-#  else
-/* Copy YYSRC to YYDEST, returning the address of the terminating '\0' in
-   YYDEST.  */
-static char *
-yystpcpy (char *yydest, const char *yysrc)
-{
-  char *yyd = yydest;
-  const char *yys = yysrc;
 
-  while ((*yyd++ = *yys++) != '\0')
-    continue;
-
-  return yyd - 1;
-}
-#  endif
-# endif
-
-# ifndef yytnamerr
-/* Copy to YYRES the contents of YYSTR after stripping away unnecessary
-   quotes and backslashes, so that it's suitable for yyerror.  The
-   heuristic is that double-quoting is unnecessary unless the string
-   contains an apostrophe, a comma, or backslash (other than
-   backslash-backslash).  YYSTR is taken from yytname.  If YYRES is
-   null, do not copy; instead, return the length of what the result
-   would have been.  */
-static YYPTRDIFF_T
-yytnamerr (char *yyres, const char *yystr)
-{
-  if (*yystr == '"')
-    {
-      YYPTRDIFF_T yyn = 0;
-      char const *yyp = yystr;
-
-      for (;;)
-        switch (*++yyp)
-          {
-          case '\'':
-          case ',':
-            goto do_not_strip_quotes;
-
-          case '\\':
-            if (*++yyp != '\\')
-              goto do_not_strip_quotes;
-            else
-              goto append;
-
-          append:
-          default:
-            if (yyres)
-              yyres[yyn] = *yyp;
-            yyn++;
-            break;
-
-          case '"':
-            if (yyres)
-              yyres[yyn] = '\0';
-            return yyn;
-          }
-    do_not_strip_quotes: ;
-    }
-
-  if (yyres)
-    return yystpcpy (yyres, yystr) - yyres;
-  else
-    return yystrlen (yystr);
-}
-# endif
-
-/* Copy into *YYMSG, which is of size *YYMSG_ALLOC, an error message
-   about the unexpected token YYTOKEN for the state stack whose top is
-   YYSSP.
-
-   Return 0 if *YYMSG was successfully written.  Return 1 if *YYMSG is
-   not large enough to hold the message.  In that case, also set
-   *YYMSG_ALLOC to the required number of bytes.  Return 2 if the
-   required number of bytes is too large to store.  */
-static int
-yysyntax_error (YYPTRDIFF_T *yymsg_alloc, char **yymsg,
-                yy_state_t *yyssp, int yytoken)
-{
-  enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
-  /* Internationalized format string. */
-  const char *yyformat = YY_NULLPTR;
-  /* Arguments of yyformat: reported tokens (one for the "unexpected",
-     one per "expected"). */
-  char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
-  /* Actual size of YYARG. */
-  int yycount = 0;
-  /* Cumulated lengths of YYARG.  */
-  YYPTRDIFF_T yysize = 0;
-
-  /* There are many possibilities here to consider:
-     - If this state is a consistent state with a default action, then
-       the only way this function was invoked is if the default action
-       is an error action.  In that case, don't check for expected
-       tokens because there are none.
-     - The only way there can be no lookahead present (in yychar) is if
-       this state is a consistent state with a default action.  Thus,
-       detecting the absence of a lookahead is sufficient to determine
-       that there is no unexpected or expected token to report.  In that
-       case, just report a simple "syntax error".
-     - Don't assume there isn't a lookahead just because this state is a
-       consistent state with a default action.  There might have been a
-       previous inconsistent state, consistent state with a non-default
-       action, or user semantic action that manipulated yychar.
-     - Of course, the expected token list depends on states to have
-       correct lookahead information, and it depends on the parser not
-       to perform extra reductions after fetching a lookahead from the
-       scanner and before detecting a syntax error.  Thus, state merging
-       (from LALR or IELR) and default reductions corrupt the expected
-       token list.  However, the list is correct for canonical LR with
-       one exception: it will still contain any token that will not be
-       accepted due to an error action in a later state.
-  */
-  if (yytoken != YYEMPTY)
-    {
-      int yyn = yypact[+*yyssp];
-      YYPTRDIFF_T yysize0 = yytnamerr (YY_NULLPTR, yytname[yytoken]);
-      yysize = yysize0;
-      yyarg[yycount++] = yytname[yytoken];
-      if (!yypact_value_is_default (yyn))
-        {
-          /* Start YYX at -YYN if negative to avoid negative indexes in
-             YYCHECK.  In other words, skip the first -YYN actions for
-             this state because they are default actions.  */
-          int yyxbegin = yyn < 0 ? -yyn : 0;
-          /* Stay within bounds of both yycheck and yytname.  */
-          int yychecklim = YYLAST - yyn + 1;
-          int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
-          int yyx;
-
-          for (yyx = yyxbegin; yyx < yyxend; ++yyx)
-            if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR
-                && !yytable_value_is_error (yytable[yyx + yyn]))
-              {
-                if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
-                  {
-                    yycount = 1;
-                    yysize = yysize0;
-                    break;
-                  }
-                yyarg[yycount++] = yytname[yyx];
-                {
-                  YYPTRDIFF_T yysize1
-                    = yysize + yytnamerr (YY_NULLPTR, yytname[yyx]);
-                  if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
-                    yysize = yysize1;
-                  else
-                    return 2;
-                }
-              }
-        }
-    }
-
-  switch (yycount)
-    {
-# define YYCASE_(N, S)                      \
-      case N:                               \
-        yyformat = S;                       \
-      break
-    default: /* Avoid compiler warnings. */
-      YYCASE_(0, YY_("syntax error"));
-      YYCASE_(1, YY_("syntax error, unexpected %s"));
-      YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
-      YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
-      YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
-      YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
-# undef YYCASE_
-    }
-
-  {
-    /* Don't count the "%s"s in the final size, but reserve room for
-       the terminator.  */
-    YYPTRDIFF_T yysize1 = yysize + (yystrlen (yyformat) - 2 * yycount) + 1;
-    if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
-      yysize = yysize1;
-    else
-      return 2;
-  }
-
-  if (*yymsg_alloc < yysize)
-    {
-      *yymsg_alloc = 2 * yysize;
-      if (! (yysize <= *yymsg_alloc
-             && *yymsg_alloc <= YYSTACK_ALLOC_MAXIMUM))
-        *yymsg_alloc = YYSTACK_ALLOC_MAXIMUM;
-      return 1;
-    }
-
-  /* Avoid sprintf, as that infringes on the user's name space.
-     Don't have undefined behavior even if the translation
-     produced a string with the wrong number of "%s"s.  */
-  {
-    char *yyp = *yymsg;
-    int yyi = 0;
-    while ((*yyp = *yyformat) != '\0')
-      if (*yyp == '%' && yyformat[1] == 's' && yyi < yycount)
-        {
-          yyp += yytnamerr (yyp, yyarg[yyi++]);
-          yyformat += 2;
-        }
-      else
-        {
-          ++yyp;
-          ++yyformat;
-        }
-  }
-  return 0;
-}
-#endif /* YYERROR_VERBOSE */
 
 /*-----------------------------------------------.
 | Release the memory associated to this symbol.  |
 `-----------------------------------------------*/
 
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, yyscan_t scanner, vlc_css_parser_t *css_parser)
+yydestruct (const char *yymsg,
+            yysymbol_kind_t yykind, YYSTYPE *yyvaluep, yyscan_t scanner, vlc_css_parser_t *css_parser)
 {
   YYUSE (yyvaluep);
   YYUSE (scanner);
   YYUSE (css_parser);
   if (!yymsg)
     yymsg = "Deleting";
-  YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
+  YY_SYMBOL_PRINT (yymsg, yykind, yyvaluep, yylocationp);
 
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  switch (yytype)
+  switch (yykind)
     {
     case 12: /* STRING  */
 #line 171 "../../modules/codec/webvtt/CSSGrammar.y"
             { free(((*yyvaluep).string)); }
-#line 1361 "codec/webvtt/CSSGrammar.c"
+#line 1248 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 13: /* IDENT  */
 #line 171 "../../modules/codec/webvtt/CSSGrammar.y"
             { free(((*yyvaluep).string)); }
-#line 1367 "codec/webvtt/CSSGrammar.c"
+#line 1254 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 14: /* IDSEL  */
 #line 171 "../../modules/codec/webvtt/CSSGrammar.y"
             { free(((*yyvaluep).string)); }
-#line 1373 "codec/webvtt/CSSGrammar.c"
+#line 1260 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 15: /* HASH  */
 #line 171 "../../modules/codec/webvtt/CSSGrammar.y"
             { free(((*yyvaluep).string)); }
-#line 1379 "codec/webvtt/CSSGrammar.c"
+#line 1266 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 26: /* LENGTH  */
 #line 119 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_term_Clean(((*yyvaluep).term)); }
-#line 1385 "codec/webvtt/CSSGrammar.c"
+#line 1272 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 27: /* ANGLE  */
 #line 119 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_term_Clean(((*yyvaluep).term)); }
-#line 1391 "codec/webvtt/CSSGrammar.c"
+#line 1278 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 28: /* TIME  */
 #line 119 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_term_Clean(((*yyvaluep).term)); }
-#line 1397 "codec/webvtt/CSSGrammar.c"
+#line 1284 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 29: /* FREQ  */
 #line 119 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_term_Clean(((*yyvaluep).term)); }
-#line 1403 "codec/webvtt/CSSGrammar.c"
+#line 1290 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 30: /* DIMEN  */
 #line 119 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_term_Clean(((*yyvaluep).term)); }
-#line 1409 "codec/webvtt/CSSGrammar.c"
+#line 1296 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 31: /* PERCENTAGE  */
 #line 119 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_term_Clean(((*yyvaluep).term)); }
-#line 1415 "codec/webvtt/CSSGrammar.c"
+#line 1302 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 32: /* NUMBER  */
 #line 119 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_term_Clean(((*yyvaluep).term)); }
-#line 1421 "codec/webvtt/CSSGrammar.c"
+#line 1308 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 33: /* URI  */
 #line 171 "../../modules/codec/webvtt/CSSGrammar.y"
             { free(((*yyvaluep).string)); }
-#line 1427 "codec/webvtt/CSSGrammar.c"
+#line 1314 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 34: /* FUNCTION  */
 #line 171 "../../modules/codec/webvtt/CSSGrammar.y"
             { free(((*yyvaluep).string)); }
-#line 1433 "codec/webvtt/CSSGrammar.c"
+#line 1320 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 35: /* UNICODERANGE  */
 #line 171 "../../modules/codec/webvtt/CSSGrammar.y"
             { free(((*yyvaluep).string)); }
-#line 1439 "codec/webvtt/CSSGrammar.c"
+#line 1326 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 56: /* charset  */
 #line 134 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_rules_Delete(((*yyvaluep).rule)); }
-#line 1445 "codec/webvtt/CSSGrammar.c"
+#line 1332 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 57: /* ignored_charset  */
 #line 134 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_rules_Delete(((*yyvaluep).rule)); }
-#line 1451 "codec/webvtt/CSSGrammar.c"
+#line 1338 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 59: /* valid_rule  */
 #line 134 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_rules_Delete(((*yyvaluep).rule)); }
-#line 1457 "codec/webvtt/CSSGrammar.c"
+#line 1344 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 60: /* rule  */
 #line 134 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_rules_Delete(((*yyvaluep).rule)); }
-#line 1463 "codec/webvtt/CSSGrammar.c"
+#line 1350 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 61: /* font_face  */
 #line 134 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_rules_Delete(((*yyvaluep).rule)); }
-#line 1469 "codec/webvtt/CSSGrammar.c"
+#line 1356 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 65: /* ruleset  */
 #line 134 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_rules_Delete(((*yyvaluep).rule)); }
-#line 1475 "codec/webvtt/CSSGrammar.c"
+#line 1362 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 66: /* selector_list  */
 #line 148 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_selectors_Delete(((*yyvaluep).selectorList)); }
-#line 1481 "codec/webvtt/CSSGrammar.c"
+#line 1368 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 67: /* selector_with_trailing_whitespace  */
 #line 148 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_selectors_Delete(((*yyvaluep).selector)); }
-#line 1487 "codec/webvtt/CSSGrammar.c"
+#line 1374 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 68: /* selector  */
 #line 148 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_selectors_Delete(((*yyvaluep).selector)); }
-#line 1493 "codec/webvtt/CSSGrammar.c"
+#line 1380 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 69: /* simple_selector  */
 #line 148 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_selectors_Delete(((*yyvaluep).selector)); }
-#line 1499 "codec/webvtt/CSSGrammar.c"
+#line 1386 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 70: /* element_name  */
 #line 171 "../../modules/codec/webvtt/CSSGrammar.y"
             { free(((*yyvaluep).string)); }
-#line 1505 "codec/webvtt/CSSGrammar.c"
+#line 1392 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 71: /* specifier_list  */
 #line 148 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_selectors_Delete(((*yyvaluep).selector)); }
-#line 1511 "codec/webvtt/CSSGrammar.c"
+#line 1398 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 72: /* specifier  */
 #line 148 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_selectors_Delete(((*yyvaluep).selector)); }
-#line 1517 "codec/webvtt/CSSGrammar.c"
+#line 1404 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 73: /* class  */
 #line 148 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_selectors_Delete(((*yyvaluep).selector)); }
-#line 1523 "codec/webvtt/CSSGrammar.c"
+#line 1410 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 74: /* attr_name  */
 #line 171 "../../modules/codec/webvtt/CSSGrammar.y"
             { free(((*yyvaluep).string)); }
-#line 1529 "codec/webvtt/CSSGrammar.c"
+#line 1416 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 75: /* attrib  */
 #line 148 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_selectors_Delete(((*yyvaluep).selector)); }
-#line 1535 "codec/webvtt/CSSGrammar.c"
+#line 1422 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 77: /* ident_or_string  */
 #line 171 "../../modules/codec/webvtt/CSSGrammar.y"
             { free(((*yyvaluep).string)); }
-#line 1541 "codec/webvtt/CSSGrammar.c"
+#line 1428 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 78: /* pseudo  */
 #line 148 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_selectors_Delete(((*yyvaluep).selector)); }
-#line 1547 "codec/webvtt/CSSGrammar.c"
+#line 1434 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 79: /* declaration_list  */
 #line 153 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_declarations_Delete(((*yyvaluep).declarationList)); }
-#line 1553 "codec/webvtt/CSSGrammar.c"
+#line 1440 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 80: /* decl_list  */
 #line 153 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_declarations_Delete(((*yyvaluep).declarationList)); }
-#line 1559 "codec/webvtt/CSSGrammar.c"
+#line 1446 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 81: /* declaration  */
 #line 153 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_declarations_Delete(((*yyvaluep).declaration)); }
-#line 1565 "codec/webvtt/CSSGrammar.c"
+#line 1452 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 82: /* property  */
 #line 171 "../../modules/codec/webvtt/CSSGrammar.y"
             { free(((*yyvaluep).string)); }
-#line 1571 "codec/webvtt/CSSGrammar.c"
+#line 1458 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 84: /* expr  */
 #line 166 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_expression_Delete(((*yyvaluep).expr)); }
-#line 1577 "codec/webvtt/CSSGrammar.c"
+#line 1464 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 86: /* term  */
 #line 119 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_term_Clean(((*yyvaluep).term)); }
-#line 1583 "codec/webvtt/CSSGrammar.c"
+#line 1470 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 87: /* unary_term  */
 #line 119 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_term_Clean(((*yyvaluep).term)); }
-#line 1589 "codec/webvtt/CSSGrammar.c"
+#line 1476 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 88: /* function  */
 #line 119 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_term_Clean(((*yyvaluep).term)); }
-#line 1595 "codec/webvtt/CSSGrammar.c"
+#line 1482 "codec/webvtt/CSSGrammar.c"
         break;
 
     case 89: /* invalid_rule  */
 #line 134 "../../modules/codec/webvtt/CSSGrammar.y"
             { vlc_css_rules_Delete(((*yyvaluep).rule)); }
-#line 1601 "codec/webvtt/CSSGrammar.c"
+#line 1488 "codec/webvtt/CSSGrammar.c"
         break;
 
       default:
@@ -1605,6 +1492,8 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, yyscan_t scanner, 
     }
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
+
+
 
 
 
@@ -1640,6 +1529,9 @@ YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
        Refer to the stacks through separate pointers, to allow yyoverflow
        to reallocate them elsewhere.  */
 
+    /* Their size.  */
+    YYPTRDIFF_T yystacksize;
+
     /* The state stack.  */
     yy_state_t yyssa[YYINITDEPTH];
     yy_state_t *yyss;
@@ -1650,22 +1542,16 @@ YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
     YYSTYPE *yyvs;
     YYSTYPE *yyvsp;
 
-    YYPTRDIFF_T yystacksize;
-
   int yyn;
+  /* The return value of yyparse.  */
   int yyresult;
   /* Lookahead token as an internal (translated) token number.  */
-  int yytoken = 0;
+  yysymbol_kind_t yytoken = YYSYMBOL_YYEMPTY;
   /* The variables used to return semantic value and location from the
      action routines.  */
   YYSTYPE yyval;
 
-#if YYERROR_VERBOSE
-  /* Buffer for error messages, and its allocated size.  */
-  char yymsgbuf[128];
-  char *yymsg = yymsgbuf;
-  YYPTRDIFF_T yymsg_alloc = sizeof yymsgbuf;
-#endif
+
 
 #define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
 
@@ -1673,15 +1559,17 @@ YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
 
+  yynerrs = 0;
+  yystate = 0;
+  yyerrstatus = 0;
+
+  yystacksize = YYINITDEPTH;
   yyssp = yyss = yyssa;
   yyvsp = yyvs = yyvsa;
-  yystacksize = YYINITDEPTH;
+
 
   YYDPRINTF ((stderr, "Starting parse\n"));
 
-  yystate = 0;
-  yyerrstatus = 0;
-  yynerrs = 0;
   yychar = YYEMPTY; /* Cause a token to be read.  */
   goto yysetstate;
 
@@ -1704,6 +1592,7 @@ yysetstate:
   YY_IGNORE_USELESS_CAST_BEGIN
   *yyssp = YY_CAST (yy_state_t, yystate);
   YY_IGNORE_USELESS_CAST_END
+  YY_STACK_PRINT (yyss, yyssp);
 
   if (yyss + yystacksize - 1 <= yyssp)
 #if !defined yyoverflow && !defined YYSTACK_RELOCATE
@@ -1749,7 +1638,7 @@ yysetstate:
           goto yyexhaustedlab;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
-# undef YYSTACK_RELOCATE
+#  undef YYSTACK_RELOCATE
         if (yyss1 != yyssa)
           YYSTACK_FREE (yyss1);
       }
@@ -1788,17 +1677,28 @@ yybackup:
 
   /* Not known => get a lookahead token if don't already have one.  */
 
-  /* YYCHAR is either YYEMPTY or YYEOF or a valid lookahead symbol.  */
+  /* YYCHAR is either empty, or end-of-input, or a valid lookahead.  */
   if (yychar == YYEMPTY)
     {
-      YYDPRINTF ((stderr, "Reading a token: "));
+      YYDPRINTF ((stderr, "Reading a token\n"));
       yychar = yylex (&yylval, scanner, css_parser);
     }
 
-  if (yychar <= YYEOF)
+  if (yychar <= TOKEN_EOF)
     {
-      yychar = yytoken = YYEOF;
+      yychar = TOKEN_EOF;
+      yytoken = YYSYMBOL_YYEOF;
       YYDPRINTF ((stderr, "Now at end of input.\n"));
+    }
+  else if (yychar == YYerror)
+    {
+      /* The scanner already issued an error message, process directly
+         to error recovery.  But do not keep the error token as
+         lookahead, it is too special and may lead us to an endless
+         loop in error recovery. */
+      yychar = YYUNDEF;
+      yytoken = YYSYMBOL_YYerror;
+      goto yyerrlab1;
     }
   else
     {
@@ -1873,7 +1773,7 @@ yyreduce:
             {
     vlc_css_rules_Delete((yyvsp[0].rule));
   }
-#line 1877 "codec/webvtt/CSSGrammar.c"
+#line 1777 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 12:
@@ -1882,7 +1782,7 @@ yyreduce:
       free( (yyvsp[-2].string) );
       (yyval.rule) = 0;
   }
-#line 1886 "codec/webvtt/CSSGrammar.c"
+#line 1786 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 13:
@@ -1890,7 +1790,7 @@ yyreduce:
                                     {
       (yyval.rule) = 0;
   }
-#line 1894 "codec/webvtt/CSSGrammar.c"
+#line 1794 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 14:
@@ -1898,7 +1798,7 @@ yyreduce:
                           {
       (yyval.rule) = 0;
   }
-#line 1902 "codec/webvtt/CSSGrammar.c"
+#line 1802 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 15:
@@ -1908,7 +1808,7 @@ yyreduce:
         free( (yyvsp[-2].string) );
         (yyval.rule) = 0;
     }
-#line 1912 "codec/webvtt/CSSGrammar.c"
+#line 1812 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 16:
@@ -1916,7 +1816,7 @@ yyreduce:
                                   {
         (yyval.rule) = 0;
     }
-#line 1920 "codec/webvtt/CSSGrammar.c"
+#line 1820 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 18:
@@ -1925,7 +1825,7 @@ yyreduce:
      if( (yyvsp[-1].rule) )
          vlc_css_parser_AddRule( css_parser, (yyvsp[-1].rule) );
  }
-#line 1929 "codec/webvtt/CSSGrammar.c"
+#line 1829 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 21:
@@ -1935,7 +1835,7 @@ yyreduce:
         if((yyval.rule))
             (yyval.rule)->b_valid = true;
     }
-#line 1939 "codec/webvtt/CSSGrammar.c"
+#line 1839 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 24:
@@ -1944,7 +1844,7 @@ yyreduce:
         vlc_css_declarations_Delete( (yyvsp[-1].declarationList) );
         (yyval.rule) = NULL;
     }
-#line 1948 "codec/webvtt/CSSGrammar.c"
+#line 1848 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 25:
@@ -1952,7 +1852,7 @@ yyreduce:
                                         {
         (yyval.rule) = NULL;
     }
-#line 1956 "codec/webvtt/CSSGrammar.c"
+#line 1856 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 26:
@@ -1960,49 +1860,49 @@ yyreduce:
                               {
         (yyval.rule) = NULL;
     }
-#line 1964 "codec/webvtt/CSSGrammar.c"
+#line 1864 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 27:
 #line 264 "../../modules/codec/webvtt/CSSGrammar.y"
                     { (yyval.relation) = RELATION_DIRECTADJACENT; }
-#line 1970 "codec/webvtt/CSSGrammar.c"
+#line 1870 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 28:
 #line 265 "../../modules/codec/webvtt/CSSGrammar.y"
                     { (yyval.relation) = RELATION_INDIRECTADJACENT; }
-#line 1976 "codec/webvtt/CSSGrammar.c"
+#line 1876 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 29:
 #line 266 "../../modules/codec/webvtt/CSSGrammar.y"
                     { (yyval.relation) = RELATION_CHILD; }
-#line 1982 "codec/webvtt/CSSGrammar.c"
+#line 1882 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 30:
 #line 270 "../../modules/codec/webvtt/CSSGrammar.y"
                    { (yyval.integer) = (yyvsp[0].integer); }
-#line 1988 "codec/webvtt/CSSGrammar.c"
+#line 1888 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 31:
 #line 271 "../../modules/codec/webvtt/CSSGrammar.y"
       { (yyval.integer) = 1; }
-#line 1994 "codec/webvtt/CSSGrammar.c"
+#line 1894 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 32:
 #line 275 "../../modules/codec/webvtt/CSSGrammar.y"
         { (yyval.integer) = -1; }
-#line 2000 "codec/webvtt/CSSGrammar.c"
+#line 1900 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 33:
 #line 276 "../../modules/codec/webvtt/CSSGrammar.y"
         { (yyval.integer) = 1; }
-#line 2006 "codec/webvtt/CSSGrammar.c"
+#line 1906 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 34:
@@ -2015,7 +1915,7 @@ yyreduce:
             (yyval.rule)->p_declarations = (yyvsp[-1].declarationList);
         }
     }
-#line 2019 "codec/webvtt/CSSGrammar.c"
+#line 1919 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 35:
@@ -2025,7 +1925,7 @@ yyreduce:
             (yyval.selectorList) = (yyvsp[0].selector);
         }
     }
-#line 2029 "codec/webvtt/CSSGrammar.c"
+#line 1929 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 36:
@@ -2043,7 +1943,7 @@ yyreduce:
             (yyval.selectorList) = NULL;
         }
     }
-#line 2047 "codec/webvtt/CSSGrammar.c"
+#line 1947 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 37:
@@ -2052,7 +1952,7 @@ yyreduce:
         vlc_css_selectors_Delete( (yyvsp[-1].selectorList) );
         (yyval.selectorList) = NULL;
     }
-#line 2056 "codec/webvtt/CSSGrammar.c"
+#line 1956 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 38:
@@ -2060,7 +1960,7 @@ yyreduce:
                         {
         (yyval.selector) = (yyvsp[-1].selector);
     }
-#line 2064 "codec/webvtt/CSSGrammar.c"
+#line 1964 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 39:
@@ -2068,7 +1968,7 @@ yyreduce:
                     {
         (yyval.selector) = (yyvsp[0].selector);
     }
-#line 2072 "codec/webvtt/CSSGrammar.c"
+#line 1972 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 40:
@@ -2076,7 +1976,7 @@ yyreduce:
     {
         (yyval.selector) = (yyvsp[0].selector);
     }
-#line 2080 "codec/webvtt/CSSGrammar.c"
+#line 1980 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 41:
@@ -2090,7 +1990,7 @@ yyreduce:
         }
         else (yyval.selector) = (yyvsp[0].selector);
     }
-#line 2094 "codec/webvtt/CSSGrammar.c"
+#line 1994 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 42:
@@ -2104,7 +2004,7 @@ yyreduce:
         }
         else (yyval.selector) = (yyvsp[0].selector);
     }
-#line 2108 "codec/webvtt/CSSGrammar.c"
+#line 2008 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 43:
@@ -2113,7 +2013,7 @@ yyreduce:
         vlc_css_selectors_Delete( (yyvsp[-1].selector) );
         (yyval.selector) = NULL;
     }
-#line 2117 "codec/webvtt/CSSGrammar.c"
+#line 2017 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 44:
@@ -2122,7 +2022,7 @@ yyreduce:
         (yyval.selector) = vlc_css_selector_New( SELECTOR_SIMPLE, (yyvsp[0].string) );
         free( (yyvsp[0].string) );
     }
-#line 2126 "codec/webvtt/CSSGrammar.c"
+#line 2026 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 45:
@@ -2139,7 +2039,7 @@ yyreduce:
         }
         free( (yyvsp[-1].string) );
     }
-#line 2143 "codec/webvtt/CSSGrammar.c"
+#line 2043 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 46:
@@ -2147,13 +2047,13 @@ yyreduce:
                      {
         (yyval.selector) = (yyvsp[0].selector);
     }
-#line 2151 "codec/webvtt/CSSGrammar.c"
+#line 2051 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 48:
 #line 378 "../../modules/codec/webvtt/CSSGrammar.y"
           { (yyval.string) = strdup("*"); }
-#line 2157 "codec/webvtt/CSSGrammar.c"
+#line 2057 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 49:
@@ -2161,7 +2061,7 @@ yyreduce:
               {
         (yyval.selector) = (yyvsp[0].selector);
     }
-#line 2165 "codec/webvtt/CSSGrammar.c"
+#line 2065 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 50:
@@ -2176,7 +2076,7 @@ yyreduce:
         }
         else (yyval.selector) = (yyvsp[0].selector);
     }
-#line 2180 "codec/webvtt/CSSGrammar.c"
+#line 2080 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 51:
@@ -2185,7 +2085,7 @@ yyreduce:
         vlc_css_selectors_Delete( (yyvsp[-1].selector) );
         (yyval.selector) = NULL;
     }
-#line 2189 "codec/webvtt/CSSGrammar.c"
+#line 2089 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 52:
@@ -2194,7 +2094,7 @@ yyreduce:
         (yyval.selector) = vlc_css_selector_New( SPECIFIER_ID, (yyvsp[0].string) );
         free( (yyvsp[0].string) );
     }
-#line 2198 "codec/webvtt/CSSGrammar.c"
+#line 2098 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 53:
@@ -2207,7 +2107,7 @@ yyreduce:
         }
         free( (yyvsp[0].string) );
     }
-#line 2211 "codec/webvtt/CSSGrammar.c"
+#line 2111 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 57:
@@ -2216,7 +2116,7 @@ yyreduce:
         (yyval.selector) = vlc_css_selector_New( SPECIFIER_CLASS, (yyvsp[0].string) );
         free( (yyvsp[0].string) );
     }
-#line 2220 "codec/webvtt/CSSGrammar.c"
+#line 2120 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 58:
@@ -2224,7 +2124,7 @@ yyreduce:
                       {
         (yyval.string) = (yyvsp[-1].string);
     }
-#line 2228 "codec/webvtt/CSSGrammar.c"
+#line 2128 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 59:
@@ -2233,7 +2133,7 @@ yyreduce:
         (yyval.selector) = vlc_css_selector_New( SPECIFIER_ATTRIB, (yyvsp[-1].string) );
         free( (yyvsp[-1].string) );
     }
-#line 2237 "codec/webvtt/CSSGrammar.c"
+#line 2137 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 60:
@@ -2248,7 +2148,7 @@ yyreduce:
         free( (yyvsp[-5].string) );
         free( (yyvsp[-2].string) );
     }
-#line 2252 "codec/webvtt/CSSGrammar.c"
+#line 2152 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 61:
@@ -2256,7 +2156,7 @@ yyreduce:
         {
         (yyval.integer) = MATCH_EQUALS;
     }
-#line 2260 "codec/webvtt/CSSGrammar.c"
+#line 2160 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 62:
@@ -2264,7 +2164,7 @@ yyreduce:
                {
         (yyval.integer) = MATCH_INCLUDES;
     }
-#line 2268 "codec/webvtt/CSSGrammar.c"
+#line 2168 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 63:
@@ -2272,7 +2172,7 @@ yyreduce:
                 {
         (yyval.integer) = MATCH_DASHMATCH;
     }
-#line 2276 "codec/webvtt/CSSGrammar.c"
+#line 2176 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 64:
@@ -2280,7 +2180,7 @@ yyreduce:
                  {
         (yyval.integer) = MATCH_BEGINSWITH;
     }
-#line 2284 "codec/webvtt/CSSGrammar.c"
+#line 2184 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 65:
@@ -2288,7 +2188,7 @@ yyreduce:
                {
         (yyval.integer) = MATCH_ENDSWITH;
     }
-#line 2292 "codec/webvtt/CSSGrammar.c"
+#line 2192 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 66:
@@ -2296,7 +2196,7 @@ yyreduce:
                {
         (yyval.integer) = MATCH_CONTAINS;
     }
-#line 2300 "codec/webvtt/CSSGrammar.c"
+#line 2200 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 69:
@@ -2305,7 +2205,7 @@ yyreduce:
         (yyval.selector) = vlc_css_selector_New( SELECTOR_PSEUDOCLASS, (yyvsp[0].string) );
         free( (yyvsp[0].string) );
     }
-#line 2309 "codec/webvtt/CSSGrammar.c"
+#line 2209 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 70:
@@ -2314,7 +2214,7 @@ yyreduce:
         (yyval.selector) = vlc_css_selector_New( SELECTOR_PSEUDOELEMENT, (yyvsp[0].string) );
         free( (yyvsp[0].string) );
     }
-#line 2318 "codec/webvtt/CSSGrammar.c"
+#line 2218 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 71:
@@ -2327,7 +2227,7 @@ yyreduce:
         free( (yyvsp[-5].string) );
         vlc_css_term_Clean( (yyvsp[-2].term) );
     }
-#line 2331 "codec/webvtt/CSSGrammar.c"
+#line 2231 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 72:
@@ -2345,7 +2245,7 @@ yyreduce:
         else
             vlc_css_selectors_Delete( (yyvsp[-2].selector) );
     }
-#line 2349 "codec/webvtt/CSSGrammar.c"
+#line 2249 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 73:
@@ -2357,7 +2257,7 @@ yyreduce:
         free( (yyvsp[-4].string) );
         free( (yyvsp[-2].string) );
     }
-#line 2361 "codec/webvtt/CSSGrammar.c"
+#line 2261 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 74:
@@ -2365,7 +2265,7 @@ yyreduce:
                 {
         (yyval.declarationList) = (yyvsp[0].declaration);
     }
-#line 2369 "codec/webvtt/CSSGrammar.c"
+#line 2269 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 75:
@@ -2375,7 +2275,7 @@ yyreduce:
         if( (yyval.declarationList) )
             vlc_css_declarations_Append( (yyval.declarationList), (yyvsp[0].declaration) );
     }
-#line 2379 "codec/webvtt/CSSGrammar.c"
+#line 2279 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 76:
@@ -2383,7 +2283,7 @@ yyreduce:
                 {
         (yyval.declarationList) = (yyvsp[0].declarationList);
     }
-#line 2387 "codec/webvtt/CSSGrammar.c"
+#line 2287 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 77:
@@ -2391,7 +2291,7 @@ yyreduce:
                                      {
         (yyval.declarationList) = NULL;
     }
-#line 2395 "codec/webvtt/CSSGrammar.c"
+#line 2295 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 78:
@@ -2399,7 +2299,7 @@ yyreduce:
             {
         (yyval.declarationList) = NULL;
     }
-#line 2403 "codec/webvtt/CSSGrammar.c"
+#line 2303 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 79:
@@ -2407,7 +2307,7 @@ yyreduce:
                       {
         (yyval.declarationList) = (yyvsp[-1].declarationList);
     }
-#line 2411 "codec/webvtt/CSSGrammar.c"
+#line 2311 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 80:
@@ -2415,7 +2315,7 @@ yyreduce:
                                    {
         (yyval.declarationList) = (yyvsp[-1].declarationList);
     }
-#line 2419 "codec/webvtt/CSSGrammar.c"
+#line 2319 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 81:
@@ -2423,7 +2323,7 @@ yyreduce:
                                 {
         (yyval.declarationList) = (yyvsp[-2].declaration);
     }
-#line 2427 "codec/webvtt/CSSGrammar.c"
+#line 2327 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 82:
@@ -2432,7 +2332,7 @@ yyreduce:
         vlc_css_declarations_Delete( (yyvsp[-2].declaration) );
         (yyval.declarationList) = NULL;
     }
-#line 2436 "codec/webvtt/CSSGrammar.c"
+#line 2336 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 83:
@@ -2441,7 +2341,7 @@ yyreduce:
         vlc_css_declarations_Delete( (yyvsp[-3].declaration) );
         (yyval.declarationList) = NULL;
     }
-#line 2445 "codec/webvtt/CSSGrammar.c"
+#line 2345 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 84:
@@ -2449,7 +2349,7 @@ yyreduce:
                             {
         (yyval.declarationList) = NULL;
     }
-#line 2453 "codec/webvtt/CSSGrammar.c"
+#line 2353 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 85:
@@ -2457,7 +2357,7 @@ yyreduce:
                                                      {
         (yyval.declarationList) = NULL;
     }
-#line 2461 "codec/webvtt/CSSGrammar.c"
+#line 2361 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 86:
@@ -2470,7 +2370,7 @@ yyreduce:
         }
         else (yyval.declarationList) = (yyvsp[-2].declaration);
     }
-#line 2474 "codec/webvtt/CSSGrammar.c"
+#line 2374 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 87:
@@ -2478,7 +2378,7 @@ yyreduce:
                                       {
         (yyval.declarationList) = (yyvsp[-3].declarationList);
     }
-#line 2482 "codec/webvtt/CSSGrammar.c"
+#line 2382 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 88:
@@ -2486,7 +2386,7 @@ yyreduce:
                                                                {
         (yyval.declarationList) = (yyvsp[-5].declarationList);
     }
-#line 2490 "codec/webvtt/CSSGrammar.c"
+#line 2390 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 89:
@@ -2499,7 +2399,7 @@ yyreduce:
             vlc_css_expression_Delete( (yyvsp[-1].expr) );
         free( (yyvsp[-4].string) );
     }
-#line 2503 "codec/webvtt/CSSGrammar.c"
+#line 2403 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 90:
@@ -2508,7 +2408,7 @@ yyreduce:
         free( (yyvsp[-1].string) );
         (yyval.declaration) = NULL;
     }
-#line 2512 "codec/webvtt/CSSGrammar.c"
+#line 2412 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 91:
@@ -2521,7 +2421,7 @@ yyreduce:
         up and deleting the shifted expr.  */
         (yyval.declaration) = NULL;
     }
-#line 2525 "codec/webvtt/CSSGrammar.c"
+#line 2425 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 92:
@@ -2532,7 +2432,7 @@ yyreduce:
         /* When we encounter something like p {color: red !important fail;} we should drop the declaration */
         (yyval.declaration) = NULL;
     }
-#line 2536 "codec/webvtt/CSSGrammar.c"
+#line 2436 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 93:
@@ -2541,7 +2441,7 @@ yyreduce:
         /* Handle this case: div { text-align: center; !important } Just reduce away the stray !important. */
         (yyval.declaration) = NULL;
     }
-#line 2545 "codec/webvtt/CSSGrammar.c"
+#line 2445 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 94:
@@ -2551,7 +2451,7 @@ yyreduce:
         /* div { font-family: } Just reduce away this property with no value. */
         (yyval.declaration) = NULL;
     }
-#line 2555 "codec/webvtt/CSSGrammar.c"
+#line 2455 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 95:
@@ -2561,7 +2461,7 @@ yyreduce:
         /* if we come across rules with invalid values like this case: p { weight: *; }, just discard the rule */
         (yyval.declaration) = NULL;
     }
-#line 2565 "codec/webvtt/CSSGrammar.c"
+#line 2465 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 96:
@@ -2571,7 +2471,7 @@ yyreduce:
         free( (yyvsp[-1].string) );
         (yyval.declaration) = NULL;
     }
-#line 2575 "codec/webvtt/CSSGrammar.c"
+#line 2475 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 97:
@@ -2579,19 +2479,19 @@ yyreduce:
                       {
         (yyval.string) = (yyvsp[-1].string);
     }
-#line 2583 "codec/webvtt/CSSGrammar.c"
+#line 2483 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 98:
 #line 640 "../../modules/codec/webvtt/CSSGrammar.y"
                               { (yyval.boolean) = true; }
-#line 2589 "codec/webvtt/CSSGrammar.c"
+#line 2489 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 99:
 #line 641 "../../modules/codec/webvtt/CSSGrammar.y"
                   { (yyval.boolean) = false; }
-#line 2595 "codec/webvtt/CSSGrammar.c"
+#line 2495 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 100:
@@ -2601,7 +2501,7 @@ yyreduce:
         if( !(yyval.expr) )
             vlc_css_term_Clean( (yyvsp[0].term) );
     }
-#line 2605 "codec/webvtt/CSSGrammar.c"
+#line 2505 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 101:
@@ -2611,7 +2511,7 @@ yyreduce:
         if( !(yyvsp[-2].expr) || !vlc_css_expression_AddTerm((yyvsp[-2].expr), (yyvsp[-1].character), (yyvsp[0].term)) )
             vlc_css_term_Clean( (yyvsp[0].term) );
     }
-#line 2615 "codec/webvtt/CSSGrammar.c"
+#line 2515 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 102:
@@ -2620,7 +2520,7 @@ yyreduce:
         vlc_css_expression_Delete( (yyvsp[-1].expr) );
         (yyval.expr) = NULL;
     }
-#line 2624 "codec/webvtt/CSSGrammar.c"
+#line 2524 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 103:
@@ -2629,7 +2529,7 @@ yyreduce:
         vlc_css_expression_Delete( (yyvsp[-2].expr) );
         (yyval.expr) = NULL;
     }
-#line 2633 "codec/webvtt/CSSGrammar.c"
+#line 2533 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 104:
@@ -2638,7 +2538,7 @@ yyreduce:
         vlc_css_expression_Delete( (yyvsp[-1].expr) );
         (yyval.expr) = NULL;
     }
-#line 2642 "codec/webvtt/CSSGrammar.c"
+#line 2542 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 105:
@@ -2646,7 +2546,7 @@ yyreduce:
                     {
         (yyval.character) = '/';
     }
-#line 2650 "codec/webvtt/CSSGrammar.c"
+#line 2550 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 106:
@@ -2654,7 +2554,7 @@ yyreduce:
                     {
         (yyval.character) = ',';
     }
-#line 2658 "codec/webvtt/CSSGrammar.c"
+#line 2558 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 107:
@@ -2662,13 +2562,13 @@ yyreduce:
                 {
         (yyval.character) = 0;
   }
-#line 2666 "codec/webvtt/CSSGrammar.c"
+#line 2566 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 108:
 #line 682 "../../modules/codec/webvtt/CSSGrammar.y"
              { (yyval.term) = (yyvsp[0].term); }
-#line 2672 "codec/webvtt/CSSGrammar.c"
+#line 2572 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 109:
@@ -2677,61 +2577,61 @@ yyreduce:
       (yyval.term) = (yyvsp[0].term);
       (yyval.term).val *= (yyvsp[-1].integer);
   }
-#line 2681 "codec/webvtt/CSSGrammar.c"
+#line 2581 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 110:
 #line 687 "../../modules/codec/webvtt/CSSGrammar.y"
                        { (yyval.term).type = TYPE_STRING; (yyval.term).psz = (yyvsp[-1].string); }
-#line 2687 "codec/webvtt/CSSGrammar.c"
+#line 2587 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 111:
 #line 688 "../../modules/codec/webvtt/CSSGrammar.y"
                       { (yyval.term).type = TYPE_IDENTIFIER; (yyval.term).psz = (yyvsp[-1].string); }
-#line 2693 "codec/webvtt/CSSGrammar.c"
+#line 2593 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 112:
 #line 690 "../../modules/codec/webvtt/CSSGrammar.y"
                       { (yyval.term) = (yyvsp[-1].term); }
-#line 2699 "codec/webvtt/CSSGrammar.c"
+#line 2599 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 113:
 #line 691 "../../modules/codec/webvtt/CSSGrammar.y"
                                      { (yyval.term) = (yyvsp[-1].term); }
-#line 2705 "codec/webvtt/CSSGrammar.c"
+#line 2605 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 114:
 #line 692 "../../modules/codec/webvtt/CSSGrammar.y"
                     { (yyval.term).type = TYPE_URI; (yyval.term).psz = (yyvsp[-1].string); }
-#line 2711 "codec/webvtt/CSSGrammar.c"
+#line 2611 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 115:
 #line 693 "../../modules/codec/webvtt/CSSGrammar.y"
                              { (yyval.term).type = TYPE_UNICODERANGE; (yyval.term).psz = (yyvsp[-1].string); }
-#line 2717 "codec/webvtt/CSSGrammar.c"
+#line 2617 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 116:
 #line 694 "../../modules/codec/webvtt/CSSGrammar.y"
                       { (yyval.term).type = TYPE_HEXCOLOR; (yyval.term).psz = (yyvsp[-1].string); }
-#line 2723 "codec/webvtt/CSSGrammar.c"
+#line 2623 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 117:
 #line 695 "../../modules/codec/webvtt/CSSGrammar.y"
                      { (yyval.term).type = TYPE_HEXCOLOR; (yyval.term).psz = (yyvsp[-1].string); }
-#line 2729 "codec/webvtt/CSSGrammar.c"
+#line 2629 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 118:
 #line 696 "../../modules/codec/webvtt/CSSGrammar.y"
                     { (yyval.term).type = TYPE_HEXCOLOR; (yyval.term).psz = NULL; }
-#line 2735 "codec/webvtt/CSSGrammar.c"
+#line 2635 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 119:
@@ -2739,7 +2639,7 @@ yyreduce:
              {
       (yyval.term) = (yyvsp[0].term);
   }
-#line 2743 "codec/webvtt/CSSGrammar.c"
+#line 2643 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 120:
@@ -2747,7 +2647,7 @@ yyreduce:
                     { /* Handle width: %; */
       (yyval.term).type = TYPE_PERCENT; (yyval.term).val = 0;
   }
-#line 2751 "codec/webvtt/CSSGrammar.c"
+#line 2651 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 127:
@@ -2758,7 +2658,7 @@ yyreduce:
         if(*(yyval.term).psz != 0)
             (yyval.term).psz[strlen((yyval.term).psz) - 1] = 0;
     }
-#line 2762 "codec/webvtt/CSSGrammar.c"
+#line 2662 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 128:
@@ -2768,7 +2668,7 @@ yyreduce:
         if(*(yyval.term).psz != 0)
             (yyval.term).psz[strlen((yyval.term).psz) - 1] = 0;
     }
-#line 2772 "codec/webvtt/CSSGrammar.c"
+#line 2672 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 129:
@@ -2778,7 +2678,7 @@ yyreduce:
         if(*(yyval.term).psz != 0)
             (yyval.term).psz[strlen((yyval.term).psz) - 1] = 0;
     }
-#line 2782 "codec/webvtt/CSSGrammar.c"
+#line 2682 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 130:
@@ -2788,7 +2688,7 @@ yyreduce:
         if(*(yyval.term).psz != 0)
             (yyval.term).psz[strlen((yyval.term).psz) - 1] = 0;
   }
-#line 2792 "codec/webvtt/CSSGrammar.c"
+#line 2692 "codec/webvtt/CSSGrammar.c"
     break;
 
   case 131:
@@ -2796,11 +2696,11 @@ yyreduce:
                         {
         (yyval.rule) = NULL;
     }
-#line 2800 "codec/webvtt/CSSGrammar.c"
+#line 2700 "codec/webvtt/CSSGrammar.c"
     break;
 
 
-#line 2804 "codec/webvtt/CSSGrammar.c"
+#line 2704 "codec/webvtt/CSSGrammar.c"
 
       default: break;
     }
@@ -2815,11 +2715,10 @@ yyreduce:
      case of YYERROR or YYBACKUP, subsequent parser actions might lead
      to an incorrect destructor call or verbose syntax error message
      before the lookahead is translated.  */
-  YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
+  YY_SYMBOL_PRINT ("-> $$ =", YY_CAST (yysymbol_kind_t, yyr1[yyn]), &yyval, &yyloc);
 
   YYPOPSTACK (yylen);
   yylen = 0;
-  YY_STACK_PRINT (yyss, yyssp);
 
   *++yyvsp = yyval;
 
@@ -2843,59 +2742,23 @@ yyreduce:
 yyerrlab:
   /* Make sure we have latest lookahead translation.  See comments at
      user semantic actions for why this is necessary.  */
-  yytoken = yychar == YYEMPTY ? YYEMPTY : YYTRANSLATE (yychar);
-
+  yytoken = yychar == YYEMPTY ? YYSYMBOL_YYEMPTY : YYTRANSLATE (yychar);
   /* If not already recovering from an error, report this error.  */
   if (!yyerrstatus)
     {
       ++yynerrs;
-#if ! YYERROR_VERBOSE
       yyerror (scanner, css_parser, YY_("syntax error"));
-#else
-# define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
-                                        yyssp, yytoken)
-      {
-        char const *yymsgp = YY_("syntax error");
-        int yysyntax_error_status;
-        yysyntax_error_status = YYSYNTAX_ERROR;
-        if (yysyntax_error_status == 0)
-          yymsgp = yymsg;
-        else if (yysyntax_error_status == 1)
-          {
-            if (yymsg != yymsgbuf)
-              YYSTACK_FREE (yymsg);
-            yymsg = YY_CAST (char *, YYSTACK_ALLOC (YY_CAST (YYSIZE_T, yymsg_alloc)));
-            if (!yymsg)
-              {
-                yymsg = yymsgbuf;
-                yymsg_alloc = sizeof yymsgbuf;
-                yysyntax_error_status = 2;
-              }
-            else
-              {
-                yysyntax_error_status = YYSYNTAX_ERROR;
-                yymsgp = yymsg;
-              }
-          }
-        yyerror (scanner, css_parser, yymsgp);
-        if (yysyntax_error_status == 2)
-          goto yyexhaustedlab;
-      }
-# undef YYSYNTAX_ERROR
-#endif
     }
-
-
 
   if (yyerrstatus == 3)
     {
       /* If just tried and failed to reuse lookahead token after an
          error, discard it.  */
 
-      if (yychar <= YYEOF)
+      if (yychar <= TOKEN_EOF)
         {
           /* Return failure if at end of input.  */
-          if (yychar == YYEOF)
+          if (yychar == TOKEN_EOF)
             YYABORT;
         }
       else
@@ -2935,13 +2798,14 @@ yyerrorlab:
 yyerrlab1:
   yyerrstatus = 3;      /* Each real token shifted decrements this.  */
 
+  /* Pop stack until we find a state that shifts the error token.  */
   for (;;)
     {
       yyn = yypact[yystate];
       if (!yypact_value_is_default (yyn))
         {
-          yyn += YYTERROR;
-          if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
+          yyn += YYSYMBOL_YYerror;
+          if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYSYMBOL_YYerror)
             {
               yyn = yytable[yyn];
               if (0 < yyn)
@@ -2955,7 +2819,7 @@ yyerrlab1:
 
 
       yydestruct ("Error: popping",
-                  yystos[yystate], yyvsp, scanner, css_parser);
+                  YY_ACCESSING_SYMBOL (yystate), yyvsp, scanner, css_parser);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -2967,7 +2831,7 @@ yyerrlab1:
 
 
   /* Shift the error token.  */
-  YY_SYMBOL_PRINT ("Shifting", yystos[yyn], yyvsp, yylsp);
+  YY_SYMBOL_PRINT ("Shifting", YY_ACCESSING_SYMBOL (yyn), yyvsp, yylsp);
 
   yystate = yyn;
   goto yynewstate;
@@ -2989,7 +2853,7 @@ yyabortlab:
   goto yyreturn;
 
 
-#if !defined yyoverflow || YYERROR_VERBOSE
+#if !defined yyoverflow
 /*-------------------------------------------------.
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
@@ -3019,19 +2883,17 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-                  yystos[+*yyssp], yyvsp, scanner, css_parser);
+                  YY_ACCESSING_SYMBOL (+*yyssp), yyvsp, scanner, css_parser);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
   if (yyss != yyssa)
     YYSTACK_FREE (yyss);
 #endif
-#if YYERROR_VERBOSE
-  if (yymsg != yymsgbuf)
-    YYSTACK_FREE (yymsg);
-#endif
+
   return yyresult;
 }
+
 #line 769 "../../modules/codec/webvtt/CSSGrammar.y"
 
 

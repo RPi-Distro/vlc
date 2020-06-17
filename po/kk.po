@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-04-23 11:48+0200\n"
+"POT-Creation-Date: 2020-06-10 11:26+0200\n"
 "PO-Revision-Date: 2018-12-19 22:50+0100\n"
 "Last-Translator: VideoLAN <videolan@videolan.org>, 2018\n"
 "Language-Team: Kazakh (https://www.transifex.com/yaron/teams/16553/kk/)\n"
@@ -2452,8 +2452,8 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:661
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
-#: modules/gui/macosx/prefs_widgets.m:1221
-#: modules/gui/macosx/prefs_widgets.m:1278
+#: modules/gui/macosx/prefs_widgets.m:1215
+#: modules/gui/macosx/prefs_widgets.m:1272
 #: modules/gui/qt/components/preferences_widgets.cpp:546
 #: modules/logger/file.c:203 modules/spu/marq.c:61 modules/spu/rss.c:69
 #: modules/spu/rss.c:182 modules/video_output/win32/directdraw.c:1492
@@ -2884,7 +2884,7 @@ msgstr "DVD құрылғы"
 msgid "VCD device"
 msgstr "VCD құрылғы"
 
-#: src/libvlc-module.c:764 modules/access/cdda.c:701
+#: src/libvlc-module.c:764 modules/access/cdda.c:708
 msgid "Audio CD device"
 msgstr "Дыбыстық CD құрылғы"
 
@@ -2900,7 +2900,7 @@ msgid ""
 "the drive letter (e.g. D:)"
 msgstr ""
 
-#: src/libvlc-module.c:774 modules/access/cdda.c:704
+#: src/libvlc-module.c:774 modules/access/cdda.c:711
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -2914,7 +2914,7 @@ msgstr "Бұл қолданбақ әдепкі DVD құрылғысы."
 msgid "This is the default VCD device to use."
 msgstr "Бұл қолданбақ әдепкі DVD құрылғысы."
 
-#: src/libvlc-module.c:785 modules/access/cdda.c:709
+#: src/libvlc-module.c:785 modules/access/cdda.c:716
 msgid "This is the default Audio CD device to use."
 msgstr "Бұл қолданбақ әдепкі дыбыстық CD құрылғысы."
 
@@ -5832,7 +5832,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:350
-#: modules/access/dvdnav.c:381 modules/access/dvdread.c:215
+#: modules/access/disc_helper.h:56
 msgid "Problem accessing a system resource"
 msgstr ""
 
@@ -5920,113 +5920,113 @@ msgstr ""
 msgid "Blu-ray Disc support (libbluray)"
 msgstr ""
 
-#: modules/access/bluray.c:845
+#: modules/access/bluray.c:849
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr ""
 
-#: modules/access/bluray.c:860
+#: modules/access/bluray.c:864
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
 msgstr ""
 
-#: modules/access/bluray.c:866
+#: modules/access/bluray.c:870
 msgid "Blu-ray Disc is corrupted."
 msgstr ""
 
-#: modules/access/bluray.c:868
+#: modules/access/bluray.c:872
 msgid "Missing AACS configuration file!"
 msgstr ""
 
-#: modules/access/bluray.c:870
+#: modules/access/bluray.c:874
 msgid "No valid processing key found in AACS config file."
 msgstr ""
 
-#: modules/access/bluray.c:872
+#: modules/access/bluray.c:876
 msgid "No valid host certificate found in AACS config file."
 msgstr ""
 
-#: modules/access/bluray.c:874
+#: modules/access/bluray.c:878
 msgid "AACS Host certificate revoked."
 msgstr ""
 
-#: modules/access/bluray.c:876
+#: modules/access/bluray.c:880
 msgid "AACS MMC failed."
 msgstr ""
 
-#: modules/access/bluray.c:886
+#: modules/access/bluray.c:890
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
 msgstr ""
 
-#: modules/access/bluray.c:889
+#: modules/access/bluray.c:893
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr ""
 
-#: modules/access/bluray.c:922
+#: modules/access/bluray.c:926
 msgid "Java required"
 msgstr ""
 
-#: modules/access/bluray.c:923
+#: modules/access/bluray.c:927
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
 "The disc will be played without menus."
 msgstr ""
 
-#: modules/access/bluray.c:924
+#: modules/access/bluray.c:928
 msgid "Java was not found on your system."
 msgstr ""
 
-#: modules/access/bluray.c:947
+#: modules/access/bluray.c:951
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 
-#: modules/access/bluray.c:988 modules/access/bluray.c:2819
-#: modules/access/bluray.c:2824
+#: modules/access/bluray.c:992 modules/access/bluray.c:2823
+#: modules/access/bluray.c:2828
 msgid "Blu-ray error"
 msgstr ""
 
-#: modules/access/bluray.c:2109
+#: modules/access/bluray.c:2113
 msgid "Top Menu"
 msgstr ""
 
-#: modules/access/bluray.c:2112
+#: modules/access/bluray.c:2116
 msgid "First Play"
 msgstr ""
 
-#: modules/access/cdda.c:480
+#: modules/access/cdda.c:487
 #, c-format
 msgid "Audio CD - Track %02i"
 msgstr "Дыбыстық CD - Жолшық %02i"
 
-#: modules/access/cdda.c:720 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/access/cdda.c:727 modules/gui/macosx/VLCOpenWindowController.m:169
 #: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "Дыбыстық CD"
 
-#: modules/access/cdda.c:721
+#: modules/access/cdda.c:728
 msgid "Audio CD input"
 msgstr "Дыбыстық CD кіресіні"
 
-#: modules/access/cdda.c:730
+#: modules/access/cdda.c:737
 msgid "[cdda:][device][@[track]]"
 msgstr "[cdda:][құрылғы][@[жолшық]]"
 
-#: modules/access/cdda.c:739
+#: modules/access/cdda.c:746
 msgid "CDDB Server"
 msgstr "CDDB сервері"
 
-#: modules/access/cdda.c:740
+#: modules/access/cdda.c:747
 msgid "Address of the CDDB server to use."
 msgstr "CDDB серверінің қолданбақ мекенжайы."
 
-#: modules/access/cdda.c:741
+#: modules/access/cdda.c:748
 msgid "CDDB port"
 msgstr "CDDB порты"
 
-#: modules/access/cdda.c:742
+#: modules/access/cdda.c:749
 msgid "CDDB Server port to use."
 msgstr "CDDB серверінің қолданбақ порты."
 
@@ -6187,6 +6187,13 @@ msgstr ""
 #: modules/access/decklink.cpp:358 modules/demux/ty.c:769
 msgid "Closed captions 1"
 msgstr "Жасырын титрлер 1"
+
+#: modules/access/disc_helper.h:57
+msgid ""
+"Potentially, macOS blocks access to your disc. Please open \"System "
+"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
+"external media in \"Files and Folders\" section."
+msgstr ""
 
 #: modules/access/dshow/dshow.cpp:92
 msgid "Cable"
@@ -6932,77 +6939,70 @@ msgstr ""
 msgid "Scanning DVB"
 msgstr ""
 
-#: modules/access/dvdnav.c:71 modules/access/dvdread.c:69
+#: modules/access/dvdnav.c:73 modules/access/dvdread.c:76
 msgid "DVD angle"
 msgstr "DVD бұрышы"
 
-#: modules/access/dvdnav.c:73 modules/access/dvdread.c:71
+#: modules/access/dvdnav.c:75 modules/access/dvdread.c:78
 msgid "Default DVD angle."
 msgstr "Әдепкі DVD бұрышы"
 
-#: modules/access/dvdnav.c:75
+#: modules/access/dvdnav.c:77
 msgid "Start directly in menu"
 msgstr "Мәзір ішінен тікелей іске қосылу"
 
-#: modules/access/dvdnav.c:77
+#: modules/access/dvdnav.c:79
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
 msgstr ""
 
-#: modules/access/dvdnav.c:91
+#: modules/access/dvdnav.c:93
 msgid "DVD with menus"
 msgstr "Мәзірлі DVD "
 
-#: modules/access/dvdnav.c:92
+#: modules/access/dvdnav.c:94
 msgid "DVDnav Input"
 msgstr "DVDnav кіресіні"
 
-#: modules/access/dvdnav.c:104
+#: modules/access/dvdnav.c:106
 msgid "DVDnav demuxer"
 msgstr ""
 
-#: modules/access/dvdnav.c:282 modules/access/dvdread.c:220
-#: modules/access/dvdread.c:237 modules/access/dvdread.c:496
-#: modules/access/dvdread.c:561
+#: modules/access/dvdnav.c:284 modules/access/dvdread.c:227
+#: modules/access/dvdread.c:243 modules/access/dvdread.c:502
+#: modules/access/dvdread.c:567
 msgid "Playback failure"
 msgstr "Ойнату сәтсіздігі"
 
-#: modules/access/dvdnav.c:283
+#: modules/access/dvdnav.c:285
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
 
-#: modules/access/dvdnav.c:382 modules/access/dvdread.c:216
-msgid ""
-"Potentially, macOS blocks access to your disc. Please open \"System "
-"Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
-"external media in \"Files and Folders\" section."
-msgstr ""
-
-#: modules/access/dvdread.c:77
+#: modules/access/dvdread.c:84
 msgid "DVD without menus"
 msgstr "Мәзірсіз DVD "
 
-#: modules/access/dvdread.c:78
+#: modules/access/dvdread.c:85
 msgid "DVDRead Input (no menu support)"
 msgstr "DVDRead кіресіні (мәзір қолдаусыз)"
 
-#: modules/access/dvdread.c:221
+#: modules/access/dvdread.c:228
 #, c-format
 msgid "DVDRead could not open the disc \"%s\"."
 msgstr "DVDRead \"%s\" дискін ашу мүмкін емес."
 
-#: modules/access/dvdread.c:238
+#: modules/access/dvdread.c:244
 msgid "Cannot play a non-UDF mastered DVD."
 msgstr ""
 
-#: modules/access/dvdread.c:497
+#: modules/access/dvdread.c:503
 #, c-format
 msgid "DVDRead could not read block %d."
 msgstr "DVDRead %d телімін оқуы іске аспады."
 
-#: modules/access/dvdread.c:562
+#: modules/access/dvdread.c:568
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
 msgstr ""
@@ -7739,11 +7739,11 @@ msgstr "RTP"
 msgid "Real-Time Protocol (RTP) input"
 msgstr "Нақты уақыт хаттамасының (RTP) кіресіні"
 
-#: modules/access/rtp/rtp.c:770
+#: modules/access/rtp/rtp.c:773
 msgid "SDP required"
 msgstr "SDP URL"
 
-#: modules/access/rtp/rtp.c:771
+#: modules/access/rtp/rtp.c:774
 #, c-format
 msgid ""
 "A description in SDP format is required to receive the RTP stream. Note that "
@@ -14316,7 +14316,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr "AVI демуксері"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4256
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14338,7 +14338,7 @@ msgstr ""
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4267
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
 msgid "Broken or missing Index"
 msgstr ""
 
@@ -14769,11 +14769,11 @@ msgstr "MP4 ағындық демуксері"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4264
+#: modules/demux/mp4/mp4.c:4262
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4265
+#: modules/demux/mp4/mp4.c:4263
 msgid "Build index"
 msgstr ""
 
@@ -15779,7 +15779,7 @@ msgstr ""
 #: modules/gui/macosx/VLCOutput.m:67
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCSimplePrefsController.m:373
-#: modules/gui/macosx/prefs_widgets.m:1125
+#: modules/gui/macosx/prefs_widgets.m:1122
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
@@ -17919,15 +17919,15 @@ msgstr ""
 msgid "Show Basic"
 msgstr ""
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a directory"
 msgstr "Тізімдеме бөлектеу"
 
-#: modules/gui/macosx/prefs_widgets.m:1153
+#: modules/gui/macosx/prefs_widgets.m:1147
 msgid "Select a file"
 msgstr "Файл бөлектеу"
 
-#: modules/gui/macosx/prefs_widgets.m:1154
+#: modules/gui/macosx/prefs_widgets.m:1148
 msgid "Select"
 msgstr "Бөлектеу"
 
@@ -27239,14 +27239,12 @@ msgid "0.00 dB"
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:137
-#, fuzzy
 msgid "&Verbosity:"
-msgstr "Сөзуарлық (0,1,2)"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:138
-#, fuzzy
 msgid "&Filter:"
-msgstr "Сүзгі:"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:139
 msgid "&Save as..."
@@ -27281,9 +27279,8 @@ msgid "Start Time"
 msgstr "Басталу уақыты"
 
 #: modules/gui/qt/ui/open.h:270
-#, fuzzy
 msgid "Stop Time"
-msgstr "Тоқтату уақыты"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:271
 msgid "Edit Options"
@@ -27310,9 +27307,8 @@ msgid "HH'H':mm'm':ss's'.zzz"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:285
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "Тасушы ойнатуының басталу уақытын ауыстыру"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:288
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -27351,9 +27347,8 @@ msgid "SVCD/VCD"
 msgstr "SVCD/VCD"
 
 #: modules/gui/qt/ui/open_disk.h:300
-#, fuzzy
 msgid "Disable Disc Menus"
-msgstr "Бейнебет қорғауышты доғару"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:302
 msgid "No disc menus"
@@ -27372,14 +27367,12 @@ msgid "Audio and Subtitles"
 msgstr "Дыбыс және субтитрлер"
 
 #: modules/gui/qt/ui/open_file.h:142
-#, fuzzy
 msgid "Use a sub&title file"
-msgstr "Субтитр файлын қолдану"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:144
-#, fuzzy
 msgid "Select the subtitle file"
-msgstr "Файл бөлектеу"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:148
 msgid "Choose one or more media file to open"
@@ -27403,23 +27396,20 @@ msgid "Network Protocol"
 msgstr "Желілік хаттама"
 
 #: modules/gui/qt/ui/open_net.h:95
-#, fuzzy
 msgid "Please enter a network URL:"
-msgstr "Бейіндің жаңа атауын енгізіңіз."
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:699
-#, fuzzy
 msgid "Profile edition"
-msgstr " Бейін атауы айырлған"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:700
 msgid "FLAC"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "MP&4/MOV"
-msgstr "MP4/MOV муксері"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "Ogg/Ogm"
@@ -27430,9 +27420,8 @@ msgid "M&KV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:704
-#, fuzzy
 msgid "M&JPEG"
-msgstr "MJPEG"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:705
 msgid "MPEG-PS"
@@ -27443,9 +27432,8 @@ msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:707
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "MPEG-PS"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:708
 msgid "RAW"
@@ -27460,9 +27448,8 @@ msgid "Webm"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:711
-#, fuzzy
 msgid "MPEG &1"
-msgstr "MPEG 1"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:712
 msgid "AVI"
@@ -27477,19 +27464,16 @@ msgid "MP&3"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:715
-#, fuzzy
 msgid "Features"
-msgstr "Ымдар"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:717
-#, fuzzy
 msgid "Streamable"
-msgstr "Ағын атауы"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:718
-#, fuzzy
 msgid "Chapters"
-msgstr "Бөлім"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:721
 msgid "Menus"
@@ -27500,71 +27484,60 @@ msgid "Fra&me Rate"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:729
-#, fuzzy
 msgid "Same as source"
-msgstr "Ең көп RTP көздері"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:731
 msgid " fps"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:732
-#, fuzzy
 msgid "Custom options"
-msgstr "Теңшелетін шұнтиту арақатынас тізімі"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:733
-#, fuzzy
 msgid "&Quality"
-msgstr "Сапа деңгейі"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
-#, fuzzy
 msgid "Not Used"
-msgstr "Орнатылмаған"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:755
 msgid " kb/s"
 msgstr " kb/s"
 
 #: modules/gui/qt/ui/profiles.h:737 modules/gui/qt/ui/profiles.h:757
-#, fuzzy
 msgid "Encoding parameters"
-msgstr "X тұрағиатын кодтау"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:740
-#, fuzzy
 msgid "Frame size"
-msgstr "Кадр қарқыны"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:743 modules/gui/qt/ui/profiles.h:746
-#, fuzzy
 msgid "px"
-msgstr " нкт"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:756
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "Іріктеме қарқыны"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:764
-#, fuzzy
 msgid "Profile &Name"
-msgstr "Бейін атауы"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:200
 msgid "Set up media sources to stream"
 msgstr ""
 
 #: modules/gui/qt/ui/sout.h:202
-#, fuzzy
 msgid "Destination Setup"
-msgstr "Жеткілімі"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:203
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr " Барлық баптауларды көру үшін \"Қосымша параметрлерді\" таңдаңыз."
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:204
 msgid ""
@@ -27584,23 +27557,20 @@ msgid "Display locally"
 msgstr "Жергілікті бейнелеу"
 
 #: modules/gui/qt/ui/sout.h:209
-#, fuzzy
 msgid "Transcoding Options"
-msgstr "Қайта кодтау параметрлері"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:210
-#, fuzzy
 msgid "Select and choose transcoding options"
-msgstr "Ағындық жіберу және қайта кодтау параметрлері"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:211
 msgid "Activate Transcoding"
 msgstr "Қайта кодтауды белсендіру"
 
 #: modules/gui/qt/ui/sout.h:212
-#, fuzzy
 msgid "Option Setup"
-msgstr "Параметрлер"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:213
 msgid "Set up any additional options for streaming"
@@ -27623,9 +27593,8 @@ msgid " %"
 msgstr " %"
 
 #: modules/gui/qt/ui/sprefs_audio.h:412
-#, fuzzy
 msgid "Output module:"
-msgstr "Шығыс модульдері"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:415
 msgid "Use S/PDIF when available"
@@ -27636,19 +27605,16 @@ msgid "Effects"
 msgstr "Әсерлер"
 
 #: modules/gui/qt/ui/sprefs_audio.h:418
-#, fuzzy
 msgid "Visualization:"
-msgstr "Көрнекі бейнелеу"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:419
-#, fuzzy
 msgid "Enable Time-Stretching audio"
-msgstr "Уақыты созылған дыбысты іске қосу"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:420
-#, fuzzy
 msgid "Replay gain mode:"
-msgstr "Қайталауды күшейту режімі"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:421
 msgid "Normalize volume to:"
@@ -27659,29 +27625,24 @@ msgid "Tracks"
 msgstr "Жолшықтар"
 
 #: modules/gui/qt/ui/sprefs_audio.h:423
-#, fuzzy
 msgid "Preferred audio language:"
-msgstr " Дыбыстың ұнамды тілі"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:424
-#, fuzzy
 msgid "Password:"
-msgstr "Құпия сөз"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:425
-#, fuzzy
 msgid "Username:"
-msgstr "Пайдаланушы аты"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:426
-#, fuzzy
 msgid "Submit played tracks stats to Last.fm"
-msgstr "Ойнатылған әндер туралы last.fm торабына ақпар жіберу"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:354
-#, fuzzy
 msgid "Codecs"
-msgstr "Кодек"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:355
 msgid "x264 profile and level selection"
@@ -27692,14 +27653,12 @@ msgid "Hardware-accelerated decoding"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:357
-#, fuzzy
 msgid "Video quality post-processing level"
-msgstr "Бейнені кейіңгі өңдету сүзгісі"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:358
-#, fuzzy
 msgid "Skip H.264 in-loop deblocking filter"
-msgstr "Тұйық сүзгісін елемеу"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:359
 msgid "x264 preset and tuning selection"
@@ -27710,69 +27669,60 @@ msgid "Optical drive"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:362
-#, fuzzy
 msgid "Default optical device"
-msgstr "Әдепкі құрылғылар"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:366
-#, fuzzy
 msgid "Damaged or incomplete AVI file"
-msgstr "Кескін сипаттары сүзгісі "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:369
-#, fuzzy
 msgid "HTTP proxy URL"
-msgstr "HTTP прокси"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:370
 msgid "HTTP (default)"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:371
-#, fuzzy
 msgid "RTP over RTSP (TCP)"
-msgstr "RTSP (TCP) үстінде RTP қолданып"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:372
 msgid "Live555 stream transport"
 msgstr "MPEG тасымалдау ағыны"
 
 #: modules/gui/qt/ui/sprefs_input.h:373
-#, fuzzy
 msgid "Default caching policy"
-msgstr "Бүркемелеудің әдепкі деңгейі"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:528
-#, fuzzy
 msgid "Menus language:"
-msgstr "Дыбыс тілі"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:529
 msgid "Look and feel"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:530
-#, fuzzy
 msgid "Use custom skin"
-msgstr "Мұқаба бөлектеу"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:532
 msgid "This is VLC's default interface, with a native look and feel."
 msgstr "Бұл әдепкі VLC тілдесуі, тумыс әсерін және түйсігін сақтаған."
 
 #: modules/gui/qt/ui/sprefs_interface.h:534
-#, fuzzy
 msgid "Use native style"
-msgstr "Субтитр файлын қолдану"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:535
 msgid "Resize interface to video size"
 msgstr "Бейне мөлшері үшін тілдесу өлшемін өзгерту"
 
 #: modules/gui/qt/ui/sprefs_interface.h:536
-#, fuzzy
 msgid "Show controls in full screen mode"
-msgstr "Басқару тақтасын толық бейнебет режімнде көрсету"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:537
 msgid "Pause playback when minimized"
@@ -27783,38 +27733,32 @@ msgid "Show media change popup:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:539
-#, fuzzy
 msgid "Start in minimal view mode"
-msgstr "Бейне іске қосылуынан толық бейнебет режімінде"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:540
-#, fuzzy
 msgid "Force window style:"
-msgstr "Белсенді терезелер"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:541
-#, fuzzy
 msgid "Integrate video in interface"
-msgstr "Керілеудің бейнелік сүзгісі"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:542
-#, fuzzy
 msgid "Show systray icon"
-msgstr "Жүйе жаймасындағы белгіше"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "Ncurses тілдесуі"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:544
 msgid "Skin resource file:"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:546
-#, fuzzy
 msgid "Playlist and Instances"
-msgstr "Lua ойнату тізімі талдағыштың тілдесуі"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:549
 msgid "Pause on the last frame of a video"
@@ -27825,9 +27769,8 @@ msgid "Allow only one instance"
 msgstr "Тек қана бір данасына рұқсат ету"
 
 #: modules/gui/qt/ui/sprefs_interface.h:554
-#, fuzzy
 msgid "Activate updates notifier"
-msgstr "Жаңарту мүмкіндігі туралы құлақтандыруларды белсендіру"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:556
 msgid "Every "
@@ -27850,38 +27793,32 @@ msgid "File extensions association"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:565
-#, fuzzy
 msgid "Set up associations..."
-msgstr "Теңшеу..."
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:288
-#, fuzzy
 msgid "Enable On Screen Display (OSD)"
-msgstr "Бейнебеттік мәзір"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:289
-#, fuzzy
 msgid "Show media title on video start"
-msgstr "Тасушы тақырыбын бейнеде көрсету"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:291
-#, fuzzy
 msgid "Enable subtitles"
-msgstr "Суретшелерді қосу"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:292
-#, fuzzy
 msgid "Subtitle Language"
-msgstr "Субтитр тілі"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:294
 msgid "Default encoding"
 msgstr "Әдепкі кодтау"
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:295
-#, fuzzy
 msgid "Subtitle effects"
-msgstr "Субтитр файлы"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Add a shadow"
@@ -27900,14 +27837,12 @@ msgid " px"
 msgstr " нкт"
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:304
-#, fuzzy
 msgid "Add a background"
-msgstr "Әдепкі өң түсі"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:313
-#, fuzzy
 msgid "O&utput"
-msgstr "Шығасын"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:317
 msgid "DirectX"
@@ -27922,9 +27857,8 @@ msgid "KVA"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:324
-#, fuzzy
 msgid "Deinterlacing"
-msgstr "Тізбектестіру"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:326
 msgid "Force Aspect Ratio"
@@ -27983,9 +27917,8 @@ msgid "Clear List"
 msgstr "Тізімді аластау"
 
 #: modules/gui/qt/ui/update.h:145
-#, fuzzy
 msgid "Check for VLC updates"
-msgstr "Жаңартуларды тексеру..."
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:146
 msgid "Launching an update request..."
@@ -28005,14 +27938,12 @@ msgid ">HHHHHH;#"
 msgstr ">HHHHHH;#"
 
 #: modules/gui/qt/ui/video_effects.h:1240
-#, fuzzy
 msgid "Negate colors"
-msgstr "Түстерді керілеу"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1253
-#, fuzzy
 msgid "Colors"
-msgstr "Түс"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1254
 msgid "Interactive Zoom"
@@ -28024,9 +27955,8 @@ msgstr "Бұрыш"
 
 #: modules/gui/qt/ui/video_effects.h:1267
 #: modules/gui/qt/ui/video_effects.h:1284
-#, fuzzy
 msgid "..."
-msgstr "Үстеу..."
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1272
 msgid "full"
@@ -28049,32 +27979,28 @@ msgid "Anaglyph 3D"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1287
-#, fuzzy
 msgid "Mirror"
-msgstr "Қателік"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1291
 msgid "Motion detect"
 msgstr "Қимылды байқау"
 
 #: modules/gui/qt/ui/video_effects.h:1292
-#, fuzzy
 msgid "Spatial blur"
-msgstr "Кеңістіктендіргіш"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1296
 msgid "Anti-Flickering"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1297
-#, fuzzy
 msgid "Soften"
-msgstr "Софт"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1298
-#, fuzzy
 msgid "Denoiser"
-msgstr "Шуыл"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1299
 msgid "Spatial luma strength"
@@ -31328,6 +31254,10 @@ msgstr "Тасушы меңгеру тізімі"
 #~ msgstr "Дыбыстық кодек"
 
 #, fuzzy
+#~ msgid "Subtitle Codec"
+#~ msgstr "Субтитр файлы"
+
+#, fuzzy
 #~ msgid "Output Method"
 #~ msgstr "Шығасын қатынау әдісі"
 
@@ -32477,6 +32407,10 @@ msgstr "Тасушы меңгеру тізімі"
 #~ msgstr "Тюнер"
 
 #, fuzzy
+#~ msgid "MJPEG:"
+#~ msgstr "MJPEG"
+
+#, fuzzy
 #~ msgid "Decimation:"
 #~ msgstr "Жеткілімі"
 
@@ -32495,6 +32429,10 @@ msgstr "Тасушы меңгеру тізімі"
 #, fuzzy
 #~ msgid "Time To Live (TTL):"
 #~ msgstr "Өмір мерзімі (TTL)"
+
+#, fuzzy
+#~ msgid "MPEG1"
+#~ msgstr "MPEG 1"
 
 #, fuzzy
 #~ msgid "MOV"

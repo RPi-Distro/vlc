@@ -2,7 +2,7 @@
  * VLCBottomBarView.m
  *****************************************************************************
  * Copyright (C) 2017-2018 VLC authors and VideoLAN
- * $Id: d52ac90e7fb0ef741e2d7a60fb6c187e3f89187b $
+ * $Id: f0d97f7cfb21ca30d9300f67b10c425515920086 $
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -24,6 +24,7 @@
 
 #import "VLCBottomBarView.h"
 #import "CompatibilityFixes.h"
+#import "NSGradient+VLCAdditions.h"
 
 @interface VLCBottomBarView () {
     NSBezierPath *_rectanglePath;
@@ -123,14 +124,17 @@
 
     NSRect barRect = self.bounds;
 
+    if (NSIsEmptyRect(barRect))
+        return;
+
     [[NSColor clearColor] setFill];
     NSRectFill(barRect);
 
     if (_isDark) {
-        [_darkGradient drawInBezierPath:_rectanglePath angle:270.0];
+        [_darkGradient vlc_safeDrawInBezierPath:_rectanglePath angle:270.0];
         [_darkStroke setStroke];
     } else {
-        [_lightGradient drawInBezierPath:_rectanglePath angle:270.0];
+        [_lightGradient vlc_safeDrawInBezierPath:_rectanglePath angle:270.0];
         [_lightStroke setStroke];
     }
 
