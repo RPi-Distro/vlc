@@ -29,13 +29,13 @@ confflags += \
 confflags += \
 	--enable-a52 \
 	--enable-aa \
-	--enable-aom \
 	--enable-aribsub \
 	--enable-avahi \
 	--enable-bluray \
 	--enable-caca \
 	--enable-chromaprint \
 	--enable-chromecast \
+	--enable-dav1d \
 	--enable-dbus \
 	--enable-dca \
 	--enable-dvbpsi \
@@ -93,6 +93,7 @@ confflags += \
 	--with-kde-solid=/usr/share/solid/actions/ \
 	$(NULL)
 # Reasons for disabling features:
+# aom: dav1d support enabled
 # crystalhd: unusble without firmware (#934242)
 # d3d11va: Windows only
 # decklink: not in Debian
@@ -118,6 +119,7 @@ confflags += \
 # vsxu: not in Debian
 # wasapi: Windows only
 confflags += \
+	--disable-aom \
 	--disable-crystalhd \
 	--disable-d3d11va \
 	--disable-decklink \
