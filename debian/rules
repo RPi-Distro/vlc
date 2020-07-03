@@ -1,6 +1,5 @@
 #!/usr/bin/make -f
 
-DEB_LDFLAGS_MAINT_APPEND=-Wl,--as-needed
 DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
 include /usr/share/dpkg/architecture.mk
@@ -272,14 +271,10 @@ endif
 export DEB_BUILD_MAINT_OPTIONS
 export DEB_CFLAGS_MAINT_APPEND
 export DEB_CXXFLAGS_MAINT_APPEND
-export DEB_LDFLAGS_MAINT_APPEND
 export removeplugins
 
 %:
 	dh $@
-
-override_dh_autoreconf:
-	dh_autoreconf --as-needed
 
 override_dh_auto_configure:
 	dh_auto_configure -- $(confflags)
