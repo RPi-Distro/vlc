@@ -1,3 +1,10 @@
+vlc (3.0.11-3~exp1) experimental; urgency=medium
+
+  * debian/rules: Disable dav1d plugin on arm64 and ppc64el to check if it is
+    reponsible for vlc-cache-gen SIGSEGV
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 05 Jul 2020 23:24:14 +0200
+
 vlc (3.0.11-2) unstable; urgency=medium
 
   * debian/: Use dav1d instead of aom for decoding AV1 videos
