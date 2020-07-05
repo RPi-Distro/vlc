@@ -34,7 +34,6 @@ confflags += \
 	--enable-caca \
 	--enable-chromaprint \
 	--enable-chromecast \
-	--enable-dav1d \
 	--enable-dbus \
 	--enable-dca \
 	--enable-dvbpsi \
@@ -258,6 +257,14 @@ ifeq (,$(filter-out powerpcspe,$(DEB_HOST_ARCH)))
 DEB_CFLAGS_MAINT_APPEND += -mtune=8548
 DEB_CXXFLAGS_MAINT_APPEND += -mtune=8548
 endif
+endif
+
+# temporary workaround
+ifeq (,$(filter-out arm64 ppc64el,$(DEB_HOST_ARCH)))
+confflags += --enable-dav1d
+else
+confflags += --disable-dav1d
+removeplugins += dav1d
 endif
 
 # Raspbian specifc flags
