@@ -1,3 +1,9 @@
+vlc (3.0.11-3) unstable; urgency=medium
+
+  * debian/patches: Disable cache generation
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 07 Jul 2020 00:19:43 +0200
+
 vlc (3.0.11-2) unstable; urgency=medium
 
   * debian/: Use dav1d instead of aom for decoding AV1 videos
