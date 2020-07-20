@@ -17,5 +17,6 @@ Depends:
  vlc-plugin-samba,
  vlc-plugin-skins2,
  vlc-plugin-video-splitter,
- vlc-plugin-visualization
+ vlc-plugin-visualization,
+ gdb
 Restrictions: allow-stderr
