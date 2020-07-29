@@ -1,6 +1,6 @@
 --- a/bin/vlc.c
 +++ b/bin/vlc.c
-@@ -106,7 +106,10 @@
+@@ -106,7 +106,10 @@ static void vlc_kill (void *data)
  static void exit_timeout (int signum)
  {
      (void) signum;

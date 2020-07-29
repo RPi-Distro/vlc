@@ -1,6 +1,6 @@
 --- a/modules/video_chroma/chain.c
 +++ b/modules/video_chroma/chain.c
-@@ -280,8 +280,9 @@
+@@ -280,8 +280,9 @@ static int BuildTransformChain( filter_t
          return VLC_SUCCESS;
  
      /* Lets try resize+chroma first, then transform */
