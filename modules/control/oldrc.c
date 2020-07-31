@@ -2,7 +2,7 @@
  * oldrc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 0f56cb65d454e2d02b6dc7c5c9bb72f020a99fea $
+ * $Id: 85b21183e89796f75707fca0aecdf5585040a376 $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -31,7 +31,6 @@
 #endif
 
 #include <errno.h>                                                 /* ENOMEM */
-#include <signal.h>
 #include <assert.h>
 #include <math.h>
 

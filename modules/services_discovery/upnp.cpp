@@ -2,7 +2,7 @@
  * upnp.cpp :  UPnP discovery module (libupnp)
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: d51a533b478f291069046cd668cd8ac27e864b94 $
+ * $Id: 99f0ee830b1b8de029b82d5848191fb59591f1c5 $
  *
  * Authors: Rémi Denis-Courmont (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -1142,6 +1142,7 @@ int MediaServer::sendActionCb( Upnp_EventType eventType,
 IXML_Document* MediaServer::_browseAction( const char* psz_object_id_,
                                            const char* psz_browser_flag_,
                                            const char* psz_filter_,
+                                           const char* psz_starting_index,
                                            const char* psz_requested_count_,
                                            const char* psz_sort_criteria_ )
 {
@@ -1186,7 +1187,7 @@ IXML_Document* MediaServer::_browseAction( const char* psz_object_id_,
     }
 
     i_res = UpnpAddToAction( &p_action, "Browse",
-            CONTENT_DIRECTORY_SERVICE_TYPE, "StartingIndex", "0" );
+            CONTENT_DIRECTORY_SERVICE_TYPE, "StartingIndex", psz_starting_index );
     if ( i_res != UPNP_E_SUCCESS )
     {
         msg_Dbg( m_access, "AddToAction 'StartingIndex' failed: %s",
@@ -1242,53 +1243,71 @@ browseActionCleanup:
  */
 bool MediaServer::fetchContents()
 {
-    IXML_Document* p_response = _browseAction( m_psz_objectId,
-                                      "BrowseDirectChildren",
-                                      "*",
-                                      // Some servers don't understand "0" as "no-limit"
-                                      "5000", /* RequestedCount */
-                                      "" /* SortCriteria */
-                                      );
-    if ( !p_response )
+    std::string StartingIndex = "0";
+    std::string RequestedCount = "5000";
+    const char* psz_TotalMatches = "0";
+    const char* psz_NumberReturned = "0";
+    long  l_reqCount = 0;
+
+    do
     {
-        msg_Err( m_access, "No response from browse() action" );
-        return false;
-    }
+        IXML_Document* p_response = _browseAction( m_psz_objectId,
+                                                  "BrowseDirectChildren",
+                                                  "*",
+                                                  StartingIndex.c_str(),
+                                                  // Some servers don't understand "0" as "no-limit"
+                                                  RequestedCount.c_str(), /* RequestedCount */
+                                                  "" /* SortCriteria */
+                                                  );
+        if ( !p_response )
+        {
+            msg_Err( m_access, "No response from browse() action" );
+            return false;
+        }
 
-    IXML_Document* p_result = parseBrowseResult( p_response );
+        psz_TotalMatches = xml_getChildElementValue( (IXML_Element*)p_response, "TotalMatches" );
+        psz_NumberReturned = xml_getChildElementValue( (IXML_Element*)p_response, "NumberReturned" );
 
-    ixmlDocument_free( p_response );
+        StartingIndex = std::to_string(  std::stol(psz_NumberReturned) + std::stol(StartingIndex) );
+        l_reqCount = std::stol(psz_TotalMatches) - std::stol(StartingIndex) ;
+        RequestedCount = std::to_string(l_reqCount);
 
-    if ( !p_result )
-    {
-        msg_Err( m_access, "browse() response parsing failed" );
-        return false;
-    }
+        IXML_Document* p_result = parseBrowseResult( p_response );
+
+        ixmlDocument_free( p_response );
+
+        if ( !p_result )
+        {
+            msg_Err( m_access, "browse() response parsing failed" );
+            return false;
+        }
 
 #ifndef NDEBUG
-    msg_Dbg( m_access, "Got DIDL document: %s", ixmlPrintDocument( p_result ) );
+        msg_Dbg( m_access, "Got DIDL document: %s", ixmlPrintDocument( p_result ) );
 #endif
 
-    IXML_NodeList* containerNodeList =
-                ixmlDocument_getElementsByTagName( p_result, "container" );
+        IXML_NodeList* containerNodeList =
+        ixmlDocument_getElementsByTagName( p_result, "container" );
 
-    if ( containerNodeList )
-    {
-        for ( unsigned int i = 0; i < ixmlNodeList_length( containerNodeList ); i++ )
-            addContainer( (IXML_Element*)ixmlNodeList_item( containerNodeList, i ) );
-        ixmlNodeList_free( containerNodeList );
+        if ( containerNodeList )
+        {
+            for ( unsigned int i = 0; i < ixmlNodeList_length( containerNodeList ); i++)
+                addContainer( (IXML_Element*)ixmlNodeList_item( containerNodeList, i ) );
+            ixmlNodeList_free( containerNodeList );
+        }
+
+        IXML_NodeList* itemNodeList = ixmlDocument_getElementsByTagName( p_result,
+                                                                        "item" );
+        if ( itemNodeList )
+        {
+            for ( unsigned int i = 0; i < ixmlNodeList_length( itemNodeList ); i++)
+                addItem( (IXML_Element*)ixmlNodeList_item( itemNodeList, i ) );
+            ixmlNodeList_free( itemNodeList );
+        }
+
+        ixmlDocument_free( p_result );
     }
-
-    IXML_NodeList* itemNodeList = ixmlDocument_getElementsByTagName( p_result,
-                                                                     "item" );
-    if ( itemNodeList )
-    {
-        for ( unsigned int i = 0; i < ixmlNodeList_length( itemNodeList ); i++ )
-            addItem( (IXML_Element*)ixmlNodeList_item( itemNodeList, i ) );
-        ixmlNodeList_free( itemNodeList );
-    }
-
-    ixmlDocument_free( p_result );
+    while( l_reqCount );
     return true;
 }
 
@@ -1539,7 +1558,6 @@ done:
 
 #ifdef __APPLE__
 #include <TargetConditionals.h>
-#endif
 
 #if defined(TARGET_OS_OSX) && TARGET_OS_OSX
 #include <CoreFoundation/CoreFoundation.h>
@@ -1600,9 +1618,49 @@ inline char *getPreferedAdapter()
 
     return returnValue;
 }
-#else
 
-static char *getPreferedAdapter()
+#else /* iOS and tvOS */
+
+inline bool necessaryFlagsSetOnInterface(struct ifaddrs *anInterface)
+{
+    unsigned int flags = anInterface->ifa_flags;
+    if( (flags & IFF_UP) && (flags & IFF_RUNNING) && !(flags & IFF_LOOPBACK) && !(flags & IFF_POINTOPOINT) ) {
+        return true;
+    }
+    return false;
+}
+
+inline char *getPreferedAdapter()
+{
+    struct ifaddrs *listOfInterfaces;
+    struct ifaddrs *anInterface;
+    int ret = getifaddrs(&listOfInterfaces);
+    char *adapterName = NULL;
+
+    if (ret != 0) {
+        return NULL;
+    }
+
+    anInterface = listOfInterfaces;
+    while (anInterface != NULL) {
+        bool ret = necessaryFlagsSetOnInterface(anInterface);
+        if (ret) {
+            adapterName = strdup(anInterface->ifa_name);
+            break;
+        }
+
+        anInterface = anInterface->ifa_next;
+    }
+    freeifaddrs(listOfInterfaces);
+
+    return adapterName;
+}
+
+#endif
+
+#else /* *nix and Android */
+
+inline char *getPreferedAdapter()
 {
     return NULL;
 }

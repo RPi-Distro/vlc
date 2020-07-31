@@ -30,6 +30,7 @@ DEPS_vpx =
 
 ifdef HAVE_WIN32
 DEPS_vpx += pthreads $(DEPS_pthreads)
+VPX_HOSTVARS = $(HOSTVARS) CFLAGS="$(CFLAGS) -DPTW32_STATIC_LIB" CXXFLAGS="$(CXXFLAGS) -DPTW32_STATIC_LIB"
 endif
 
 ifdef HAVE_CROSS_COMPILE
@@ -177,6 +178,6 @@ endif
 	cd $< && LDFLAGS="$(VPX_LDFLAGS)" CROSS=$(VPX_CROSS) $(VPX_HOSTVARS) ./configure --target=$(VPX_TARGET) \
 		$(VPX_CONF) --prefix=$(PREFIX)
 	cd $< && $(MAKE)
-	cd $< && ../../../contrib/src/pkg-static.sh vpx.pc
+	$(call pkg_static,"vpx.pc")
 	cd $< && $(MAKE) install
 	touch $@

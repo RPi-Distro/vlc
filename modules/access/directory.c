@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access_browser plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: b7500c1f6ba0706c8efcb19aea5edd4d147865d2 $
+ * $Id: 5011424edda726761a823915c3ce52808b28e8a9 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Rémi Denis-Courmont
@@ -136,10 +136,10 @@ int DirRead (stream_t *access, input_item_node_t *node)
         if (fstatat(dirfd(sys->dir), entry, &st, 0))
             continue;
 #else
-        char path[PATH_MAX];
+        char *path;
 
-        if (snprintf(path, PATH_MAX, "%s"DIR_SEP"%s", access->psz_filepath,
-                     entry) >= PATH_MAX || vlc_stat(path, &st))
+        if (asprintf(&path, "%s"DIR_SEP"%s", access->psz_filepath, entry) == -1
+         || (type = vlc_stat(path, &st), free(path), type))
             continue;
 #endif
         switch (st.st_mode & S_IFMT)

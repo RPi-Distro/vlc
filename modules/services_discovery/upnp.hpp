@@ -2,7 +2,7 @@
  * upnp.hpp :  UPnP discovery module (libupnp) header
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: 93de05b8a1871f4a2817511fbce4306db7f0a122 $
+ * $Id: 682ac96879144dcf905cf4c64236c74dbd5e0a20 $
  *
  * Authors: Rémi Denis-Courmont (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -157,7 +157,7 @@ private:
     bool addContainer( IXML_Element* containerElement );
     bool addItem( IXML_Element* itemElement );
 
-    IXML_Document* _browseAction(const char*, const char*,
+    IXML_Document* _browseAction(const char*, const char*, const char*,
             const char*, const char*, const char* );
     static int sendActionCb( Upnp_EventType, UpnpEventPtr, void *);
 

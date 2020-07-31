@@ -2,7 +2,7 @@
  * matroska_segment.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 3f28ae2997f8f3e9eb67bca2ab301866762a9dbf $
+ * $Id: d22c60f444a48838166b42c4d1649094e5197eaa $
  *
  * Authors: Filip Roséen <filip@videolabs.io>
  *
@@ -352,13 +352,15 @@ SegmentSeeker::index_unsearched_range( matroska_segment_c& ms, Range search_area
     {
         KaxBlock * block;
         KaxSimpleBlock * simpleblock;
+        KaxBlockAdditions *additions;
 
         bool     b_key_picture;
         bool     b_discardable_picture;
         int64_t  i_block_duration;
         track_id_t track_id;
 
-        if( ms.BlockGet( block, simpleblock, &b_key_picture, &b_discardable_picture, &i_block_duration ) )
+        if( ms.BlockGet( block, simpleblock, additions,
+                         &b_key_picture, &b_discardable_picture, &i_block_duration ) )
             break;
 
         if( simpleblock ) {

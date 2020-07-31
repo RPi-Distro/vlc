@@ -1299,10 +1299,14 @@ EXTRA_DIST = extras/package/macosx/package.mak \
 	extras/package/win32/package.mak extras/package/npapi.am \
 	extras/tools/bootstrap extras/tools/packages.mak \
 	extras/tools/tools.mak extras/tools/SHA512SUMS \
+	extras/tools/automake-clang.patch \
 	extras/tools/bison-macOS-7df04f9.patch \
 	extras/tools/bison-macOS-c41f233c.patch \
-	extras/tools/libtool-2.4.2-bitcode.patch \
-	extras/tools/libtool-2.4.2-san.patch \
+	extras/tools/cmake-enable-ALPN-support-on-macOS-10.14.patch \
+	extras/tools/libtool-2.4.6-bitcode.patch \
+	extras/tools/libtool-2.4.6-clang-libs.patch \
+	extras/tools/libtool-2.4.6-response-files.patch \
+	extras/tools/libtool-2.4.6-san.patch \
 	extras/tools/ragel-6.8-javacodegen.patch \
 	extras/analyser/zsh_completion.sh extras/analyser/zsh.cpp \
 	extras/analyser/emacs.init extras/analyser/vlc.vim \
@@ -1427,6 +1431,7 @@ win32_destdir = $(top_builddir)/vlc-$(VERSION)
 win32_debugdir = $(abs_top_builddir)/symbols-$(VERSION)
 win32_xpi_destdir = $(abs_top_builddir)/vlc-plugin-$(VERSION)
 7Z_OPTS = -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on
+@ENABLE_PDB_TRUE@@HAVE_WIN32_TRUE@ENABLE_PDB_OPTION := --enable-pdb
 @HAVE_WIN64_FALSE@WINVERSION = vlc-$(VERSION)-win32
 @HAVE_WIN64_TRUE@WINVERSION = vlc-$(VERSION)-win64
 WIXPATH = `wine winepath -u 'C:\\Program Files (x86)\\Windows Installer XML v3.5\\bin'`
@@ -2390,12 +2395,14 @@ package-translations:
 @HAVE_WIN32_TRUE@	$(SHELL) ./configure \
 @HAVE_WIN32_TRUE@		--prefix=/ \
 @HAVE_WIN32_TRUE@		--host=$(host_alias) --build=$(build_alias) \
+@HAVE_WIN32_TRUE@		$(ENABLE_PDB_OPTION) \
 @HAVE_WIN32_TRUE@		CPP="$(CPP)" CPPFLAGS="$(CPPFLAGS)" \
 @HAVE_WIN32_TRUE@		CC="$(CC)" CFLAGS="$(CFLAGS)" \
 @HAVE_WIN32_TRUE@		CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)" \
 @HAVE_WIN32_TRUE@		LD="$(LD)" LDFLAGS="$(LDFLAGS)" \
 @HAVE_WIN32_TRUE@		SHELL="$(SHELL)" \
-@HAVE_WIN32_TRUE@		PKG_CONFIG_PATH="$(libdir)/pkgconfig:$(CONTRIB_DIR)/lib/pkgconfig"
+@HAVE_WIN32_TRUE@		PKG_CONFIG_PATH="$(libdir)/pkgconfig:$(CONTRIB_DIR)/lib/pkgconfig" \
+@HAVE_WIN32_TRUE@		PKG_CONFIG="$(PKG_CONFIG)"
 @HAVE_WIN32_TRUE@	touch $@
 
 @HAVE_WIN32_TRUE@npapi-vlc/npapi/npvlc.la: npapi-vlc/Makefile
@@ -2417,9 +2424,9 @@ package-win-sdk: package-win-install
 	cp -r $(prefix)/lib/pkgconfig "$(win32_destdir)/sdk/lib"
 	cp -rv $(prefix)/lib/libvlc.dll.a "$(win32_destdir)/sdk/lib/libvlc.lib"
 	cp -rv $(prefix)/lib/libvlccore.dll.a "$(win32_destdir)/sdk/lib/libvlccore.lib"
-	$(DLLTOOL) -D libvlc.dll -l "$(win32_destdir)/sdk/lib/libvlc.lib" -d "$(top_builddir)/lib/.libs/libvlc.dll.def" "$(prefix)/bin/libvlc.dll"
+	$(DLLTOOL) -D libvlc.dll -l "$(win32_destdir)/sdk/lib/libvlc.lib" -d "$(top_builddir)/lib/.libs/libvlc.dll.def"
 	echo "INPUT(libvlc.lib)" > "$(win32_destdir)/sdk/lib/vlc.lib"
-	$(DLLTOOL) -D libvlccore.dll -l "$(win32_destdir)/sdk/lib/libvlccore.lib" -d "$(top_builddir)/src/.libs/libvlccore.dll.def" "$(prefix)/bin/libvlccore.dll"
+	$(DLLTOOL) -D libvlccore.dll -l "$(win32_destdir)/sdk/lib/libvlccore.lib" -d "$(top_builddir)/src/.libs/libvlccore.dll.def"
 	echo "INPUT(libvlccore.lib)" > "$(win32_destdir)/sdk/lib/vlccore.lib"
 
 package-win-common: package-win-install package-win-sdk

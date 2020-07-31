@@ -35,6 +35,7 @@ usage()
 	echo "  --enable-ad-clauses configure to build packages with advertising clauses"
 	echo "                   (USE AT YOUR OWN LEGAL RISKS)"
 	echo "  --disable-optim  disable optimization in libraries"
+	echo "  --enable-pdb     generate debug information in PDB format"
 }
 
 BUILD=
@@ -49,12 +50,7 @@ GPL="1"
 GNUV3="1"
 AD_CLAUSES=
 WITH_OPTIMIZATION="1"
-
-if test ! -f "../../contrib/src/main.mak"
-then
-	echo "$0 must be run from a subdirectory"
-	exit 1
-fi
+ENABLE_PDB=
 
 while test -n "$1"
 do
@@ -83,6 +79,9 @@ do
 			;;
 		--disable-optim)
 			WITH_OPTIMIZATION=
+			;;
+		--enable-pdb)
+			ENABLE_PDB=1
 			;;
 		--enable-small)
 			ENABLE_SMALL=1
@@ -119,8 +118,8 @@ fi
 
 if test -z "$BUILD"
 then
-	echo -n "Guessing build system... "
-	BUILD="`${CC:-cc} -dumpmachine`"
+	printf "Guessing build system... "
+	BUILD="`${CC:-cc} -dumpmachine | sed s/windows-gnu/mingw32/`"
 	if test -z "$BUILD"; then
 		echo "FAIL!"
 		exit 1
@@ -130,12 +129,12 @@ fi
 
 if test -z "$HOST"
 then
-	echo -n "Guessing host system...  "
+	printf "Guessing host system...  "
 	HOST="$BUILD"
 	echo "$HOST"
 fi
 
-echo -n "Packages licensing...    "
+printf "Packages licensing...    "
 if test -n "$GPL"
 then
 	if test -n "$GNUV3"
@@ -164,8 +163,9 @@ fi
 #
 # Prepare files
 #
-echo "Creating configuration file... config.mak"
-exec 3>config.mak || exit $?
+echo "Creating makefile..."
+test -e Makefile && unlink Makefile
+exec 3>Makefile || exit $?
 cat >&3 << EOF
 # This file was automatically generated.
 # Any change will be overwritten if ../bootstrap is run again.
@@ -286,6 +286,7 @@ test -z "$GPL" || add_make_enabled "GPL"
 test -z "$GNUV3" || add_make_enabled "GNUV3"
 test -z "$AD_CLAUSES" || add_make_enabled "AD_CLAUSES"
 test -z "$WITH_OPTIMIZATION" || add_make_enabled "WITH_OPTIMIZATION"
+test -z "$ENABLE_PDB" || add_make_enabled "ENABLE_PDB"
 test "`uname -o 2>/dev/null`" != "Msys" || add_make "CMAKE_GENERATOR := -G \"MSYS Makefiles\""
 
 #
@@ -380,11 +381,6 @@ case "${OS}" in
 			;;
 		esac
 		case "${HOST}" in
-			amd64*|x86_64*)
-			add_make_enabled "HAVE_WIN64"
-			;;
-		esac
-        case "${HOST}" in
             armv7*)
                 add_make_enabled "HAVE_ARMV7A"
                 ;;
@@ -398,8 +394,17 @@ esac
 #
 # Results output
 #
-test -e Makefile && unlink Makefile
-ln -sf ../../contrib/src/main.mak Makefile || exit $?
+BOOTSTRAP_PATH="$( cd "$(dirname "$0")" ; pwd -P )"
+CURRENT_PATH="$( pwd -P )"
+# location of the contrib/src folder from the root of the contrib build folder
+TOPSRC=$(python3 -c "import os; print(os.path.relpath('$BOOTSTRAP_PATH', '$CURRENT_PATH'))")
+# location of the contrib/src folder from a built library folder
+TOPSRC_BUILT=$(python3 -c "import os; print(os.path.relpath('$BOOTSTRAP_PATH', '$CURRENT_PATH/libfoo'))")
+add_make "TOPSRC = $TOPSRC"
+add_make "TOPSRC_BUILT = $TOPSRC_BUILT"
+add_make "TOPDST = .."
+add_make "-include config.mak"
+add_make 'include $(TOPSRC)/src/main.mak'
 echo "Bootstrap completed."
 make help
-mkdir -p ../../contrib/tarballs || exit $?
+mkdir -p $BOOTSTRAP_PATH/tarballs || exit $?
