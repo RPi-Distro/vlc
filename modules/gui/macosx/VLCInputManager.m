@@ -2,7 +2,7 @@
  * VLCInputManager.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 2b736dc2da1c30f1a89addc5c608f053cf570f33 $
+ * $Id: 5938c3921ebd55b4cc3c7c1b5624c04802cb8835 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -376,7 +376,7 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
             if ([iTunesApp playerState] == iTunesEPlSPlaying) {
                 msg_Dbg(p_intf, "pausing Apple Music");
                 [iTunesApp pause];
-                b_has_itunes_paused = YES;
+                b_has_applemusic_paused = YES;
             }
         }
     }

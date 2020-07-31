@@ -2,7 +2,7 @@
  * file.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: fbefce0be841161dc457281d4d0240bad26d3abc $
+ * $Id: ef4f2d18d1c8997cf1f217e7198e8f1c70504d62 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -31,7 +31,6 @@
 #endif
 
 #include <assert.h>
-#include <signal.h>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <errno.h>

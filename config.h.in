@@ -254,6 +254,9 @@
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
 
+/* Defined if having OpenGL */
+#undef HAVE_GL
+
 /* Define to 1 if you have the <GL/wglew.h> header file. */
 #undef HAVE_GL_WGLEW_H
 

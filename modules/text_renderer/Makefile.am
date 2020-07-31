@@ -9,8 +9,8 @@ libfreetype_plugin_la_SOURCES = \
 	text_renderer/freetype/text_layout.c text_renderer/freetype/text_layout.h
 
 libfreetype_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(FREETYPE_CFLAGS)
-libfreetype_plugin_la_LIBADD = $(LIBM)
-libfreetype_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(FREETYPE_LDFLAGS) -rpath '$(textdir)'
+libfreetype_plugin_la_LIBADD = $(AM_LIBADD) $(LIBM)
+libfreetype_plugin_la_LDFLAGS = $(FREETYPE_LDFLAGS) -rpath '$(textdir)'
 
 if HAVE_WIN32
 libfreetype_plugin_la_SOURCES += text_renderer/freetype/fonts/dwrite.cpp
@@ -19,7 +19,7 @@ if HAVE_WIN32_DESKTOP
 libfreetype_plugin_la_SOURCES += text_renderer/freetype/fonts/win32.c
 libfreetype_plugin_la_LIBADD += -liconv -lz -lusp10 -lgdi32 -luuid
 else
-libfreetype_plugin_la_LIBADD += -ldwrite
+libfreetype_plugin_la_LIBADD += -ldwrite -luuid
 endif
 else
 libfreetype_plugin_la_LINK = $(LINK)
@@ -27,14 +27,14 @@ endif
 if HAVE_FONTCONFIG
 libfreetype_plugin_la_SOURCES += text_renderer/freetype/fonts/fontconfig.c
 libfreetype_plugin_la_CPPFLAGS += -DHAVE_FONTCONFIG
-libfreetype_plugin_la_LIBADD += -lfontconfig
+libfreetype_plugin_la_LIBADD += $(FONTCONFIG_LIBS)
 endif
 if HAVE_ANDROID
 libfreetype_plugin_la_SOURCES += text_renderer/freetype/fonts/android.c
 endif
 if HAVE_DARWIN
 libfreetype_plugin_la_SOURCES += text_renderer/freetype/fonts/darwin.c
-libfreetype_plugin_la_LINK += -Wl,-framework,CoreFoundation -Wl,-framework,CoreText
+libfreetype_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation -Wl,-framework,CoreText
 endif
 if HAVE_FRIBIDI
 libfreetype_plugin_la_CPPFLAGS += $(FRIBIDI_CFLAGS) -DHAVE_FRIBIDI
@@ -44,6 +44,7 @@ if HAVE_HARFBUZZ
 libfreetype_plugin_la_CPPFLAGS += $(HARFBUZZ_CFLAGS) -DHAVE_HARFBUZZ
 libfreetype_plugin_la_LIBADD += $(HARFBUZZ_LIBS)
 endif
+libfreetype_plugin_la_LINK += $(libfreetype_plugin_la_LDFLAGS)
 libfreetype_plugin_la_LIBADD += $(FREETYPE_LIBS)
 if HAVE_FREETYPE
 text_LTLIBRARIES += libfreetype_plugin.la

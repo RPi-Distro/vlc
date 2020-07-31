@@ -2,7 +2,7 @@
  * direct3d9.c: Windows Direct3D9 video output module
  *****************************************************************************
  * Copyright (C) 2006-2014 VLC authors and VideoLAN
- *$Id: 0548738207bcf960587ede3fb4e582fd72979d1f $
+ *$Id: 669af0f27d06b2ac0714e2b2673eddf5a89ddd61 $
  *
  * Authors: Martell Malone <martellmalone@gmail.com>,
  *          Damien Fouilleul <damienf@videolan.org>,
@@ -110,10 +110,12 @@ vlc_module_begin ()
     add_shortcut("direct3d9", "direct3d")
     set_callbacks(Open, Close)
 
+#ifdef HAVE_GL
     add_submodule()
     set_description("DX OpenGL surface converter for D3D9")
     set_capability("glconv", 1)
     set_callbacks(GLConvOpen, GLConvClose)
+#endif
 vlc_module_end ()
 
 /*****************************************************************************
@@ -2031,6 +2033,7 @@ static int FindShadersCallback(vlc_object_t *object, const char *name,
 
 }
 
+#ifdef HAVE_GL
 #include "../opengl/converter.h"
 #include <GL/wglew.h>
 
@@ -2249,3 +2252,4 @@ error:
     GLConvClose(obj);
     return VLC_EGENERIC;
 }
+#endif

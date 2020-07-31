@@ -381,10 +381,10 @@ TESTS = hpack_test$(EXEEXT) hpackenc_test$(EXEEXT) \
 @HAVE_WIN32_TRUE@am__append_177 = text_renderer/freetype/fonts/dwrite.cpp
 @HAVE_WIN32_DESKTOP_TRUE@@HAVE_WIN32_TRUE@am__append_178 = text_renderer/freetype/fonts/win32.c
 @HAVE_WIN32_DESKTOP_TRUE@@HAVE_WIN32_TRUE@am__append_179 = -liconv -lz -lusp10 -lgdi32 -luuid
-@HAVE_WIN32_DESKTOP_FALSE@@HAVE_WIN32_TRUE@am__append_180 = -ldwrite
+@HAVE_WIN32_DESKTOP_FALSE@@HAVE_WIN32_TRUE@am__append_180 = -ldwrite -luuid
 @HAVE_FONTCONFIG_TRUE@am__append_181 = text_renderer/freetype/fonts/fontconfig.c
 @HAVE_FONTCONFIG_TRUE@am__append_182 = -DHAVE_FONTCONFIG
-@HAVE_FONTCONFIG_TRUE@am__append_183 = -lfontconfig
+@HAVE_FONTCONFIG_TRUE@am__append_183 = $(FONTCONFIG_LIBS)
 @HAVE_ANDROID_TRUE@am__append_184 = text_renderer/freetype/fonts/android.c
 @HAVE_DARWIN_TRUE@am__append_185 = text_renderer/freetype/fonts/darwin.c
 @HAVE_DARWIN_TRUE@am__append_186 = -Wl,-framework,CoreFoundation -Wl,-framework,CoreText
@@ -1937,12 +1937,13 @@ libfolder_plugin_la_OBJECTS = $(am_libfolder_plugin_la_OBJECTS)
 libfps_plugin_la_LIBADD =
 am_libfps_plugin_la_OBJECTS = video_filter/fps.lo
 libfps_plugin_la_OBJECTS = $(am_libfps_plugin_la_OBJECTS)
-@HAVE_FRIBIDI_TRUE@am__DEPENDENCIES_9 = $(am__DEPENDENCIES_1)
-@HAVE_HARFBUZZ_TRUE@am__DEPENDENCIES_10 = $(am__DEPENDENCIES_1)
+@HAVE_FONTCONFIG_TRUE@am__DEPENDENCIES_9 = $(am__DEPENDENCIES_1)
+@HAVE_FRIBIDI_TRUE@am__DEPENDENCIES_10 = $(am__DEPENDENCIES_1)
+@HAVE_HARFBUZZ_TRUE@am__DEPENDENCIES_11 = $(am__DEPENDENCIES_1)
 libfreetype_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_9) \
-	$(am__DEPENDENCIES_10) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_9) $(am__DEPENDENCIES_10) \
+	$(am__DEPENDENCIES_11) $(am__DEPENDENCIES_1)
 am__libfreetype_plugin_la_SOURCES_DIST =  \
 	text_renderer/freetype/platform_fonts.c \
 	text_renderer/freetype/platform_fonts.h \
@@ -2306,8 +2307,8 @@ libinteger_mixer_plugin_la_OBJECTS =  \
 libinvert_plugin_la_LIBADD =
 am_libinvert_plugin_la_OBJECTS = video_filter/invert.lo
 libinvert_plugin_la_OBJECTS = $(am_libinvert_plugin_la_OBJECTS)
-am__DEPENDENCIES_11 = libchroma_copy.la $(am__DEPENDENCIES_1)
-libiomx_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_11)
+am__DEPENDENCIES_12 = libchroma_copy.la $(am__DEPENDENCIES_1)
+libiomx_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_12)
 am__libiomx_plugin_la_SOURCES_DIST = codec/omxil/utils.c \
 	codec/omxil/omxil_utils.h packetizer/h264_nal.c \
 	packetizer/h264_nal.h packetizer/hevc_nal.c \
@@ -3069,10 +3070,10 @@ libpacketizer_vc1_plugin_la_LIBADD =
 am_libpacketizer_vc1_plugin_la_OBJECTS = packetizer/vc1.lo
 libpacketizer_vc1_plugin_la_OBJECTS =  \
 	$(am_libpacketizer_vc1_plugin_la_OBJECTS)
-@HAVE_WIN32_DESKTOP_FALSE@@HAVE_XCB_RANDR_TRUE@am__DEPENDENCIES_12 = $(am__DEPENDENCIES_1) \
+@HAVE_WIN32_DESKTOP_FALSE@@HAVE_XCB_RANDR_TRUE@am__DEPENDENCIES_13 = $(am__DEPENDENCIES_1) \
 @HAVE_WIN32_DESKTOP_FALSE@@HAVE_XCB_RANDR_TRUE@	$(am__DEPENDENCIES_1)
 libpanoramix_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_12)
+	$(am__DEPENDENCIES_13)
 am_libpanoramix_plugin_la_OBJECTS =  \
 	video_splitter/libpanoramix_plugin_la-panoramix.lo
 libpanoramix_plugin_la_OBJECTS = $(am_libpanoramix_plugin_la_OBJECTS)
@@ -3186,12 +3187,12 @@ libqsv_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libqsv_plugin_la_CFLAGS) $(CFLAGS) \
 	$(libqsv_plugin_la_LDFLAGS) $(LDFLAGS) -o $@
-@HAVE_QT5_X11_TRUE@am__DEPENDENCIES_13 = $(am__DEPENDENCIES_1) \
+@HAVE_QT5_X11_TRUE@am__DEPENDENCIES_14 = $(am__DEPENDENCIES_1) \
 @HAVE_QT5_X11_TRUE@	$(am__DEPENDENCIES_1)
-@HAVE_WAYLAND_TRUE@am__DEPENDENCIES_14 = $(am__DEPENDENCIES_1)
+@HAVE_WAYLAND_TRUE@am__DEPENDENCIES_15 = $(am__DEPENDENCIES_1)
 libqt_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_13) \
-	$(am__DEPENDENCIES_14) $(am__DEPENDENCIES_8)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_14) \
+	$(am__DEPENDENCIES_15) $(am__DEPENDENCIES_8)
 am__libqt_plugin_la_SOURCES_DIST = gui/qt/qt.cpp gui/qt/qt.hpp \
 	gui/qt/menus.cpp gui/qt/menus.hpp gui/qt/main_interface.cpp \
 	gui/qt/main_interface.hpp gui/qt/dialogs_provider.cpp \
@@ -3510,7 +3511,7 @@ librotate_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 librss_plugin_la_LIBADD =
 am_librss_plugin_la_OBJECTS = spu/rss.lo
 librss_plugin_la_OBJECTS = $(am_librss_plugin_la_OBJECTS)
-@HAVE_GCRYPT_TRUE@am__DEPENDENCIES_15 = libvlc_srtp.la \
+@HAVE_GCRYPT_TRUE@am__DEPENDENCIES_16 = libvlc_srtp.la \
 @HAVE_GCRYPT_TRUE@	$(am__DEPENDENCIES_1)
 am_librtp_plugin_la_OBJECTS = access/rtp/librtp_plugin_la-input.lo \
 	access/rtp/librtp_plugin_la-session.lo \
@@ -3694,6 +3695,11 @@ am__libsimple_channel_mixer_plugin_arm_neon_la_SOURCES_DIST =  \
 @HAVE_NEON_TRUE@	arm_neon/simple_channel_mixer.lo
 libsimple_channel_mixer_plugin_arm_neon_la_OBJECTS =  \
 	$(am_libsimple_channel_mixer_plugin_arm_neon_la_OBJECTS)
+libsimple_channel_mixer_plugin_arm_neon_la_LINK = $(LIBTOOL) \
+	$(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(libsimple_channel_mixer_plugin_arm_neon_la_LDFLAGS) \
+	$(LDFLAGS) -o $@
 @HAVE_NEON_TRUE@am_libsimple_channel_mixer_plugin_arm_neon_la_rpath =
 libskins2_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__libskins2_plugin_la_SOURCES_DIST =  \
@@ -3994,9 +4000,9 @@ libskins2_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 libskiptags_plugin_la_LIBADD =
 am_libskiptags_plugin_la_OBJECTS = stream_filter/skiptags.lo
 libskiptags_plugin_la_OBJECTS = $(am_libskiptags_plugin_la_OBJECTS)
-@HAVE_DSM_TRUE@am__DEPENDENCIES_16 = $(am__DEPENDENCIES_1)
+@HAVE_DSM_TRUE@am__DEPENDENCIES_17 = $(am__DEPENDENCIES_1)
 libsmb2_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_16)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_17)
 am_libsmb2_plugin_la_OBJECTS = access/libsmb2_plugin_la-smb2.lo
 libsmb2_plugin_la_OBJECTS = $(am_libsmb2_plugin_la_OBJECTS)
 libsmb2_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
@@ -4217,12 +4223,12 @@ libstream_out_record_plugin_la_OBJECTS =  \
 	$(am_libstream_out_record_plugin_la_OBJECTS)
 @ENABLE_SOUT_TRUE@am_libstream_out_record_plugin_la_rpath = -rpath \
 @ENABLE_SOUT_TRUE@	$(soutdir)
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__DEPENDENCIES_17 =  \
+@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__DEPENDENCIES_18 =  \
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@	$(SRTP_LIBS) \
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@	$(am__DEPENDENCIES_1)
 @ENABLE_SOUT_TRUE@libstream_out_rtp_plugin_la_DEPENDENCIES =  \
 @ENABLE_SOUT_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-@ENABLE_SOUT_TRUE@	$(am__DEPENDENCIES_17)
+@ENABLE_SOUT_TRUE@	$(am__DEPENDENCIES_18)
 am__libstream_out_rtp_plugin_la_SOURCES_DIST = stream_out/rtp.c \
 	stream_out/rtp.h stream_out/rtpfmt.c stream_out/rtcp.c \
 	stream_out/rtsp.c stream_out/vod.c
@@ -4407,9 +4413,9 @@ am_libtrivial_channel_mixer_plugin_la_OBJECTS =  \
 	audio_filter/channel_mixer/trivial.lo
 libtrivial_channel_mixer_plugin_la_OBJECTS =  \
 	$(am_libtrivial_channel_mixer_plugin_la_OBJECTS)
-@HAVE_ARIBB24_TRUE@am__DEPENDENCIES_18 = $(am__DEPENDENCIES_1)
+@HAVE_ARIBB24_TRUE@am__DEPENDENCIES_19 = $(am__DEPENDENCIES_1)
 libts_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_18)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_19)
 am_libts_plugin_la_OBJECTS = demux/mpeg/libts_plugin_la-ts.lo \
 	demux/mpeg/libts_plugin_la-ts_pid.lo \
 	demux/mpeg/libts_plugin_la-ts_psi.lo \
@@ -4455,9 +4461,9 @@ libtwolame_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 libty_plugin_la_LIBADD =
 am_libty_plugin_la_OBJECTS = demux/ty.lo
 libty_plugin_la_OBJECTS = $(am_libty_plugin_la_OBJECTS)
-@HAVE_ALSA_TRUE@am__DEPENDENCIES_19 = $(am__DEPENDENCIES_1)
+@HAVE_ALSA_TRUE@am__DEPENDENCIES_20 = $(am__DEPENDENCIES_1)
 libudev_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_19)
+	$(am__DEPENDENCIES_20)
 am_libudev_plugin_la_OBJECTS =  \
 	services_discovery/libudev_plugin_la-udev.lo
 libudev_plugin_la_OBJECTS = $(am_libudev_plugin_la_OBJECTS)
@@ -9436,6 +9442,9 @@ libsimple_channel_mixer_plugin_la_SOURCES =  \
 libsimple_channel_mixer_plugin_la_CFLAGS = $(am__append_50)
 libsimple_channel_mixer_plugin_la_LIBADD = $(am__append_49)
 @HAVE_NEON_TRUE@libsimple_channel_mixer_plugin_arm_neon_la_SOURCES = arm_neon/simple_channel_mixer.S
+# Intentionally leaving out AM_LDFLAGS from this one; it's not meant to be
+# built like a plugin.
+@HAVE_NEON_TRUE@libsimple_channel_mixer_plugin_arm_neon_la_LDFLAGS = -static
 
 # Spatial audio: ambisonics / binaural
 libspatialaudio_plugin_la_SOURCES = \
@@ -9522,7 +9531,7 @@ libjack_plugin_la_LIBADD = $(JACK_LIBS) $(LIBM)
 libmmdevice_plugin_la_SOURCES = audio_output/mmdevice.c audio_output/mmdevice.h
 libmmdevice_plugin_la_LIBADD = $(LIBCOM) $(LIBM)
 libwinstore_plugin_la_SOURCES = audio_output/winstore.c audio_output/mmdevice.h
-libwinstore_plugin_la_LIBADD = $(LIBCOM)
+libwinstore_plugin_la_LIBADD = $(LIBCOM) -lmmdevapi
 libwasapi_plugin_la_SOURCES = audio_output/wasapi.c
 libwasapi_plugin_la_LIBADD = $(LIBCOM) -lksuser
 libdirectsound_plugin_la_SOURCES = audio_output/directsound.c \
@@ -10084,8 +10093,9 @@ libmkv_plugin_la_SOURCES = demux/mkv/util.hpp demux/mkv/util.cpp \
 	demux/mkv/stream_io_callback.hpp \
 	demux/mkv/stream_io_callback.cpp demux/mp4/libmp4.c \
 	demux/vobsub.h demux/mkv/mkv.hpp demux/mkv/mkv.cpp \
-	demux/av1_unpack.h demux/windows_audio_commons.h \
-	packetizer/dts_header.h packetizer/dts_header.c
+	demux/av1_unpack.h codec/webvtt/helpers.h \
+	demux/windows_audio_commons.h packetizer/dts_header.h \
+	packetizer/dts_header.c
 libmkv_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(CFLAGS_mkv)
 libmkv_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(demuxdir)'
 libmkv_plugin_la_LIBADD = $(LIBS_mkv) $(am__append_111)
@@ -11881,14 +11891,15 @@ libfreetype_plugin_la_SOURCES =  \
 	$(am__append_185)
 libfreetype_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(FREETYPE_CFLAGS) \
 	$(am__append_182) $(am__append_187) $(am__append_189)
-libfreetype_plugin_la_LIBADD = $(LIBM) $(am__append_179) \
+libfreetype_plugin_la_LIBADD = $(AM_LIBADD) $(LIBM) $(am__append_179) \
 	$(am__append_180) $(am__append_183) $(am__append_188) \
 	$(am__append_190) $(FREETYPE_LIBS)
-libfreetype_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(FREETYPE_LDFLAGS) -rpath '$(textdir)'
+libfreetype_plugin_la_LDFLAGS = $(FREETYPE_LDFLAGS) -rpath \
+	'$(textdir)' $(am__append_186)
 @HAVE_WIN32_FALSE@libfreetype_plugin_la_LINK = $(LINK) \
-@HAVE_WIN32_FALSE@	$(am__append_186)
+@HAVE_WIN32_FALSE@	$(libfreetype_plugin_la_LDFLAGS)
 @HAVE_WIN32_TRUE@libfreetype_plugin_la_LINK = $(CXXLINK) \
-@HAVE_WIN32_TRUE@	$(am__append_186)
+@HAVE_WIN32_TRUE@	$(libfreetype_plugin_la_LDFLAGS)
 
 # SVG plugin
 libsvg_plugin_la_SOURCES = text_renderer/svg.c
@@ -17859,7 +17870,7 @@ arm_neon/simple_channel_mixer.lo: arm_neon/$(am__dirstamp) \
 	arm_neon/$(DEPDIR)/$(am__dirstamp)
 
 libsimple_channel_mixer_plugin_arm_neon.la: $(libsimple_channel_mixer_plugin_arm_neon_la_OBJECTS) $(libsimple_channel_mixer_plugin_arm_neon_la_DEPENDENCIES) $(EXTRA_libsimple_channel_mixer_plugin_arm_neon_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(LINK) $(am_libsimple_channel_mixer_plugin_arm_neon_la_rpath) $(libsimple_channel_mixer_plugin_arm_neon_la_OBJECTS) $(libsimple_channel_mixer_plugin_arm_neon_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(libsimple_channel_mixer_plugin_arm_neon_la_LINK) $(am_libsimple_channel_mixer_plugin_arm_neon_la_rpath) $(libsimple_channel_mixer_plugin_arm_neon_la_OBJECTS) $(libsimple_channel_mixer_plugin_arm_neon_la_LIBADD) $(LIBS)
 gui/skins2/commands/$(am__dirstamp):
 	@$(MKDIR_P) gui/skins2/commands
 	@: > gui/skins2/commands/$(am__dirstamp)
