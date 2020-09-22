@@ -145,11 +145,15 @@ Depends: vlc-bin (= ${binary:Version}),
          vlc-plugin-video-output (= ${binary:Version}),
          ${misc:Depends}
 Recommends: vlc-l10n (= ${source:Version}),
+            vlc-plugin-access-extra (= ${binary:Version}),
             vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-samba (= ${binary:Version}) [linux-any kfreebsd-any],
             vlc-plugin-skins2 (= ${binary:Version}),
             vlc-plugin-video-splitter (= ${binary:Version}),
             vlc-plugin-visualization (= ${binary:Version})
+Suggests: vlc-plugin-fluidsynth (= ${source:Version}),
+          vlc-plugin-jack (= ${source:Version}),
+          vlc-plugin-svg (= ${source:Version})
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,
