@@ -1,0 +1,23 @@
+From: Pierre Lamot <pierre@videolabs.io>
+Date: Wed, 27 May 2020 11:05:53 +0200
+Subject: qt: fix missing header when compiling with Qt 5.15
+
+Cherry-picked from commit 0e88143ed2fe8eedfa4d3afdafcd0df901644c1d.
+
+Signed-off-by: Alexandre Janniaux <ajanni@videolabs.io>
+---
+ modules/gui/qt/dialogs/plugins.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/modules/gui/qt/dialogs/plugins.cpp b/modules/gui/qt/dialogs/plugins.cpp
+index d233382..9ae9a63 100644
+--- a/modules/gui/qt/dialogs/plugins.cpp
++++ b/modules/gui/qt/dialogs/plugins.cpp
+@@ -66,6 +66,7 @@
+ #include <QSplitter>
+ #include <QToolButton>
+ #include <QStackedWidget>
++#include <QPainterPath>
+ 
+ //match the image source (width/height)
+ #define SCORE_ICON_WIDTH_SCALE 4

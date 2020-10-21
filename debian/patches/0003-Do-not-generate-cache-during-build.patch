@@ -11,10 +11,10 @@ elsewhere.
  2 files changed, 33 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index 3ac8262..6a3b7a0 100644
+index 35ee1e8..4c7a99c 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -157,21 +157,6 @@ endif
+@@ -161,21 +161,6 @@ endif
  TESTS = test/run_vlc.sh
  dist_noinst_SCRIPTS += test/run_vlc.sh
  
@@ -37,10 +37,10 @@ index 3ac8262..6a3b7a0 100644
  	rm -f -- "$(DESTDIR)$(vlclibdir)/plugins/plugins.dat"
  
 diff --git a/bin/Makefile.am b/bin/Makefile.am
-index 2877e8b..2629afc 100644
+index 257a065..685ce5e 100644
 --- a/bin/Makefile.am
 +++ b/bin/Makefile.am
-@@ -121,14 +121,6 @@ vlc_cache_gen_LDADD += vlc_win32_rc.$(OBJEXT)
+@@ -122,14 +122,6 @@ vlc_cache_gen_LDFLAGS = -Wc,-static
  vlc_cache_gen_DEPENDENCIES = vlc_win32_rc.$(OBJEXT)
  endif
  
@@ -55,7 +55,7 @@ index 2877e8b..2629afc 100644
  if HAVE_OSX
  if BUILD_VLC
  install-data-local:
-@@ -136,13 +128,3 @@ install-data-local:
+@@ -137,13 +129,3 @@ install-data-local:
  
  endif
  endif
