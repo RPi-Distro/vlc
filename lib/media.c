@@ -2,7 +2,7 @@
  * media.c: Libvlc API media descripor management
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 54875d6a0e156732d644f77e5873245563cc5407 $
+ * $Id: b909f324362d543926b24f76294afa10b4b9781a $
  *
  * Authors: Pierre d'Herbemont <pdherbemont@videolan.org>
  *
@@ -272,24 +272,21 @@ static void send_parsed_changed( libvlc_media_t *p_md,
 
     vlc_mutex_unlock( &p_md->parsed_lock );
 
-    if( new_status == libvlc_media_parsed_status_done )
-    {
-        libvlc_media_list_t *p_subitems = media_get_subitems( p_md, false );
-        if( p_subitems != NULL )
-        {
-            /* notify the media list */
-            libvlc_media_list_lock( p_subitems );
-            libvlc_media_list_internal_end_reached( p_subitems );
-            libvlc_media_list_unlock( p_subitems );
-        }
-    }
-
     /* Construct the event */
     event.type = libvlc_MediaParsedChanged;
     event.u.media_parsed_changed.new_status = new_status;
 
     /* Send the event */
     libvlc_event_send( &p_md->event_manager, &event );
+
+    libvlc_media_list_t *p_subitems = media_get_subitems( p_md, false );
+    if( p_subitems != NULL )
+    {
+        /* notify the media list */
+        libvlc_media_list_lock( p_subitems );
+        libvlc_media_list_internal_end_reached( p_subitems );
+        libvlc_media_list_unlock( p_subitems );
+    }
 }
 
 /**************************************************************************

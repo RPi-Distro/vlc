@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-07-28 16:45+0200\n"
-"PO-Revision-Date: 2020-01-18 12:22+0100\n"
+"POT-Creation-Date: 2021-01-17 23:10+0100\n"
+"PO-Revision-Date: 2020-10-18 10:10+0200\n"
 "Last-Translator: Bjørn I. <bjorn.svindseth@online.no>, 2020\n"
 "Language-Team: Norwegian Nynorsk (https://www.transifex.com/yaron/"
 "teams/16553/nn/)\n"
@@ -358,8 +358,8 @@ msgstr "VLC sitt grensesnitt for videotorg (VOD)"
 #: include/vlc_config_cat.h:173 src/libvlc-module.c:2070
 #: src/playlist/engine.c:243 modules/demux/playlist/playlist.c:64
 #: modules/demux/playlist/playlist.c:65 modules/demux/playlist/wpl.c:99
-#: modules/gui/macosx/VLCMainWindow.m:319
-#: modules/gui/macosx/VLCMainWindow.m:896
+#: modules/gui/macosx/VLCMainWindow.m:321
+#: modules/gui/macosx/VLCMainWindow.m:902
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
@@ -467,7 +467,7 @@ msgstr "&Om"
 #: modules/gui/macosx/VLCMainMenu.m:385 modules/gui/macosx/VLCMainMenu.m:497
 #: modules/gui/macosx/VLCMainMenu.m:504 modules/gui/macosx/VLCMainMenu.m:1339
 #: modules/gui/macosx/VLCMainMenu.m:1340 modules/gui/macosx/VLCMainMenu.m:1341
-#: modules/gui/macosx/VLCPlaylist.m:228
+#: modules/gui/macosx/VLCPlaylist.m:223
 #: modules/gui/qt/components/controller.hpp:107
 #: modules/gui/qt/dialogs/vlm.cpp:538
 msgid "Play"
@@ -538,7 +538,7 @@ msgstr "Tilfeldig avslått"
 msgid "Add to Playlist"
 msgstr "Legg til i speleliste"
 
-#: include/vlc_intf_strings.h:85 modules/gui/macosx/VLCPlaylist.m:235
+#: include/vlc_intf_strings.h:85 modules/gui/macosx/VLCPlaylist.m:230
 msgid "Add File..."
 msgstr "Legg til fil…"
 
@@ -554,7 +554,7 @@ msgstr "Legg til mappe…"
 msgid "Save Playlist to &File..."
 msgstr "Lagra spelelista til &fil…"
 
-#: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:189
+#: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:191
 #: modules/gui/qt/components/preferences_widgets.cpp:1138
 msgid "Search"
 msgstr "Søk"
@@ -593,7 +593,7 @@ msgid ""
 "can <b>promote</b> VLC media player.</p></body></html>"
 msgstr ""
 "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; "
-"charset=utf-8\" /></head><body><h2>Velkomen til hjelp for VLC mediaspelar</"
+"charset=utf-8\" /></head><body><h2>Velkomen til hjelp for VLC mediespelar</"
 "h2><h3>Dokumentasjon</h3><p>Du finn VLC-dokumentasjonen på <a href=\"http://"
 "wiki.videolan.org\">wikinettstaden</a> til VideoLAN.</p><p>Viss du nett har "
 "byrja å bruka VLC mediespelar, les <br><a href=\"http://wiki.videolan.org/"
@@ -629,7 +629,7 @@ msgstr "Maks. tal på filter (%u) er nådd."
 
 #: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:948
 #: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:124
-#: modules/gui/macosx/VLCMainMenu.m:243 modules/gui/macosx/VLCMainWindow.m:1039
+#: modules/gui/macosx/VLCMainMenu.m:243 modules/gui/macosx/VLCMainWindow.m:999
 #: modules/video_filter/postproc.c:235
 msgid "Disable"
 msgstr "Slå av"
@@ -956,15 +956,15 @@ msgid "Codec"
 msgstr "Kodek"
 
 #: src/input/es_out.c:3111 src/input/meta.c:66 modules/access/imem.c:71
-#: modules/gui/macosx/VLCPlaylist.m:114
+#: modules/gui/macosx/VLCPlaylist.m:98
 #: modules/gui/macosx/VLCSimplePrefsController.m:317
 #: modules/stream_out/setid.c:49
 msgid "Language"
 msgstr "Språk"
 
 #: src/input/es_out.c:3114 src/input/meta.c:61
-#: modules/gui/macosx/VLCBookmarksWindowController.m:83
-#: modules/gui/macosx/VLCPlaylist.m:112 modules/gui/qt/dialogs/bookmarks.cpp:75
+#: modules/gui/macosx/VLCBookmarksWindowController.m:80
+#: modules/gui/macosx/VLCPlaylist.m:96 modules/gui/qt/dialogs/bookmarks.cpp:75
 #: modules/gui/qt/dialogs/epg.cpp:55
 msgid "Description"
 msgstr "Skildring"
@@ -972,7 +972,7 @@ msgstr "Skildring"
 #: src/input/es_out.c:3120 src/input/es_out.c:3164 src/input/es_out.c:3354
 #: modules/gui/macosx/VLCAddonsWindowController.m:133
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
-#: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1487
+#: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1488
 msgid "Type"
 msgstr "Type"
 
@@ -1104,7 +1104,7 @@ msgstr "Lineær"
 
 #: src/input/es_out.c:3236
 msgid "Hybrid Log-Gamma"
-msgstr ""
+msgstr "Hybrid Log-Gamma"
 
 #: src/input/es_out.c:3240
 msgid "Color transfer function"
@@ -1178,7 +1178,7 @@ msgstr "Yaw"
 #: src/input/es_out.c:3295
 msgctxt "ViewPoint"
 msgid "Pitch"
-msgstr ""
+msgstr "Tone"
 
 #: src/input/es_out.c:3297
 msgctxt "ViewPoint"
@@ -1236,7 +1236,7 @@ msgstr "VLC klarer ikkje opna MRL-en «%s». Sjå loggen for detaljar."
 #: modules/gui/macosx/VLCMainMenu.m:410
 #: modules/gui/macosx/VLCOpenWindowController.m:178
 #: modules/gui/macosx/VLCOpenWindowController.m:180
-#: modules/gui/macosx/VLCPlaylist.m:107 modules/gui/macosx/VLCPlaylistInfo.m:59
+#: modules/gui/macosx/VLCPlaylist.m:91 modules/gui/macosx/VLCPlaylistInfo.m:59
 #: modules/gui/qt/components/open_panels.cpp:507
 #: modules/gui/qt/components/open_panels.cpp:521
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
@@ -1249,7 +1249,7 @@ msgid "Artist"
 msgstr "Artist"
 
 #: src/input/meta.c:57 modules/demux/mp4/meta.c:87
-#: modules/gui/macosx/VLCPlaylist.m:110 modules/mux/avi.c:51
+#: modules/gui/macosx/VLCPlaylist.m:94 modules/mux/avi.c:51
 msgid "Genre"
 msgstr "Sjanger"
 
@@ -1258,7 +1258,7 @@ msgid "Copyright"
 msgstr "Opphavsrett"
 
 #: src/input/meta.c:59 src/libvlc-module.c:239
-#: modules/gui/macosx/VLCPlaylist.m:111
+#: modules/gui/macosx/VLCPlaylist.m:95
 msgid "Album"
 msgstr "Album"
 
@@ -1270,8 +1270,7 @@ msgstr "Spornummer"
 msgid "Rating"
 msgstr "Vurdering"
 
-#: src/input/meta.c:63 modules/gui/macosx/VLCPlaylist.m:113
-#: modules/mux/avi.c:50
+#: src/input/meta.c:63 modules/gui/macosx/VLCPlaylist.m:97 modules/mux/avi.c:50
 msgid "Date"
 msgstr "Dato"
 
@@ -1398,7 +1397,7 @@ msgstr "Neste kapittel"
 msgid "Previous chapter"
 msgstr "Førre kapittel"
 
-#: src/input/vlm.c:641 src/input/vlm.c:1018
+#: src/input/vlm.c:641 src/input/vlm.c:1020
 #, c-format
 msgid "Media: %s"
 msgstr "Medium: %s"
@@ -1632,7 +1631,7 @@ msgstr "Lydforsterking"
 
 #: src/libvlc-module.c:149
 msgid "This linear gain will be applied to outputted audio."
-msgstr ""
+msgstr "Dette lineære sporvolumet vil vere gjengs for all avspelt lyd."
 
 #: src/libvlc-module.c:151
 msgid "Audio output volume step"
@@ -1640,7 +1639,7 @@ msgstr "Lydnivåsteg for utdata"
 
 #: src/libvlc-module.c:153
 msgid "The step size of the volume is adjustable using this option."
-msgstr ""
+msgstr "Storleiken på volumhoppa kan stillast på med dette valet."
 
 #: src/libvlc-module.c:156
 msgid "Remember the audio volume"
@@ -1650,6 +1649,7 @@ msgstr "Hugs lydstyrken"
 msgid ""
 "The volume can be recorded and automatically restored next time VLC is used."
 msgstr ""
+"Lydnivået kan bli spelt inn og automatisk lagra neste gang VLC vert starta."
 
 #: src/libvlc-module.c:161
 msgid "Audio desynchronization compensation"
@@ -2022,7 +2022,7 @@ msgstr "Plasser alltid videovindauget over andre vindauge."
 
 #: src/libvlc-module.c:319
 msgid "Enable wallpaper mode"
-msgstr ""
+msgstr "Slå på bakgrunnsmodus"
 
 #: src/libvlc-module.c:321
 msgid ""
@@ -2453,9 +2453,9 @@ msgstr ""
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
 #: modules/access/dshow/dshow.cpp:2081 modules/audio_output/alsa.c:767
-#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1285
-#: modules/audio_output/mmdevice.c:1424 modules/codec/avcodec/avcodec.c:50
-#: modules/demux/adaptive/adaptive.cpp:106
+#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1286
+#: modules/audio_output/mmdevice.c:1425 modules/audio_output/winstore.c:564
+#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:106
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
@@ -2472,7 +2472,7 @@ msgstr "Standard"
 
 #: src/libvlc-module.c:540
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
-#: modules/gui/macosx/VLCMainWindow.m:1037
+#: modules/gui/macosx/VLCMainWindow.m:997
 #: modules/gui/qt/components/extended_panels.cpp:949
 msgid "Enable"
 msgstr "Slå på"
@@ -3239,7 +3239,7 @@ msgstr ""
 
 #: src/libvlc-module.c:953
 msgid "Enable SPU stream output"
-msgstr ""
+msgstr "Slå på SPU-strøymeutdata"
 
 #: src/libvlc-module.c:955
 msgid ""
@@ -3345,7 +3345,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1011
 msgid "Demux filter module"
-msgstr ""
+msgstr "Demux filtermodul"
 
 #: src/libvlc-module.c:1013
 msgid "Demux filters are used to modify/control the stream that is being read."
@@ -3353,7 +3353,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1015
 msgid "Demux module"
-msgstr ""
+msgstr "Demux-modul"
 
 #: src/libvlc-module.c:1017
 msgid ""
@@ -4458,7 +4458,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1416
 msgid "Boss key"
-msgstr ""
+msgstr "Universalnykel"
 
 #: src/libvlc-module.c:1417
 msgid "Hide the interface and pause playback."
@@ -4640,7 +4640,7 @@ msgstr "VLM"
 msgid "Special modules"
 msgstr "Spesialmodular"
 
-#: src/libvlc-module.c:2031 modules/gui/qt/dialogs/plugins.cpp:89
+#: src/libvlc-module.c:2031 modules/gui/qt/dialogs/plugins.cpp:90
 msgid "Plugins"
 msgstr "Tillegg"
 
@@ -4760,7 +4760,7 @@ msgid "Browser Stop"
 msgstr "Nettlesar stopp"
 
 #: src/misc/actions.c:62 modules/gui/macosx/VLCMainMenu.m:370
-#: modules/gui/macosx/VLCPlaylist.m:229 modules/gui/qt/dialogs/bookmarks.cpp:50
+#: modules/gui/macosx/VLCPlaylist.m:224 modules/gui/qt/dialogs/bookmarks.cpp:50
 msgid "Delete"
 msgstr "Slett"
 
@@ -5033,12 +5033,12 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "Klarte ikkje opna «%s» for skriving"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2772
+#: modules/demux/avi/avi.c:2773
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:825
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:871
-#: modules/gui/macosx/VLCBookmarksWindowController.m:89
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:900
+#: modules/gui/macosx/VLCBookmarksWindowController.m:86
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:153
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:182
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:339
@@ -5046,8 +5046,8 @@ msgstr "Klarte ikkje opna «%s» for skriving"
 #: modules/gui/macosx/VLCCoreDialogProvider.m:193
 #: modules/gui/macosx/VLCCoreDialogProvider.m:197
 #: modules/gui/macosx/VLCCoreDialogProvider.m:293
-#: modules/gui/macosx/VLCMainWindow.m:222
-#: modules/gui/macosx/VLCMainWindow.m:228
+#: modules/gui/macosx/VLCMainWindow.m:224
+#: modules/gui/macosx/VLCMainWindow.m:230
 #: modules/gui/macosx/VLCOpenWindowController.m:134
 #: modules/gui/macosx/VLCOpenWindowController.m:192
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
@@ -5137,11 +5137,11 @@ msgstr "Installer"
 
 #: src/misc/update.c:727
 msgid "Update VLC media player"
-msgstr "Oppdater VLC mediaspelar"
+msgstr "Oppdater VLC mediespelar"
 
 #: src/playlist/engine.c:247 src/playlist/loadsave.c:159 lib/media_list.c:237
-#: modules/gui/macosx/VLCMainWindow.m:321
-#: modules/gui/macosx/VLCMainWindow.m:898
+#: modules/gui/macosx/VLCMainWindow.m:323
+#: modules/gui/macosx/VLCMainWindow.m:904
 #: modules/gui/qt/components/playlist/selector.cpp:236
 msgid "Media Library"
 msgstr "Mediebibliotek"
@@ -6060,16 +6060,16 @@ msgstr ""
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 
-#: modules/access/bluray.c:992 modules/access/bluray.c:2823
-#: modules/access/bluray.c:2828
+#: modules/access/bluray.c:992 modules/access/bluray.c:2825
+#: modules/access/bluray.c:2830
 msgid "Blu-ray error"
 msgstr "Blu-ray feil"
 
-#: modules/access/bluray.c:2113
+#: modules/access/bluray.c:2115
 msgid "Top Menu"
 msgstr "Hovudmeny"
 
-#: modules/access/bluray.c:2116
+#: modules/access/bluray.c:2118
 msgid "First Play"
 msgstr "Første avspeling"
 
@@ -7092,7 +7092,7 @@ msgstr "Fil-inndata"
 #: modules/audio_output/file.c:113
 #: modules/gui/macosx/VLCOpenWindowController.m:140
 #: modules/gui/macosx/VLCOutput.m:64 modules/gui/macosx/VLCOutput.m:175
-#: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1421
+#: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1422
 #: modules/gui/qt/dialogs/sout.cpp:69 modules/gui/qt/dialogs/sout.cpp:121
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
@@ -7954,8 +7954,8 @@ msgstr "Skjerminngang"
 #: modules/gui/macosx/VLCMainMenu.m:610
 #: modules/gui/macosx/VLCOpenWindowController.m:207
 #: modules/gui/macosx/VLCOpenWindowController.m:209
-#: modules/gui/macosx/VLCOpenWindowController.m:485
-#: modules/gui/macosx/VLCOpenWindowController.m:1103
+#: modules/gui/macosx/VLCOpenWindowController.m:488
+#: modules/gui/macosx/VLCOpenWindowController.m:1106
 #: modules/gui/macosx/VLCSimplePrefsController.m:666
 msgid "Screen"
 msgstr "Skjerm"
@@ -8492,7 +8492,7 @@ msgid "Vivid"
 msgstr "Livleg"
 
 #: modules/access/v4l2/v4l2.c:169 modules/audio_output/auhal.c:42
-#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1468
+#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1469
 #: modules/audio_output/waveout.c:145
 msgid "Audio volume"
 msgstr "Lydstyrke"
@@ -8554,7 +8554,7 @@ msgstr ""
 #: modules/control/hotkeys.c:395
 #: modules/gui/macosx/VLCAddonsWindowController.m:100
 #: modules/gui/qt/dialogs/convert.cpp:164
-#: modules/gui/qt/dialogs/plugins.cpp:375
+#: modules/gui/qt/dialogs/plugins.cpp:376
 #: modules/gui/qt/dialogs/preferences.cpp:79
 msgid "All"
 msgstr "Alle"
@@ -9507,7 +9507,7 @@ msgstr ""
 
 #: modules/audio_filter/equalizer.c:81
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:271
-#: modules/gui/qt/dialogs/extended.cpp:67 share/lua/http/index.html:219
+#: modules/gui/qt/dialogs/extended.cpp:67 share/lua/http/index.html:238
 msgid "Equalizer"
 msgstr "Tonekontroll"
 
@@ -10013,11 +10013,11 @@ msgid ""
 "The selected audio output device is exclusively in use by another program."
 msgstr ""
 
-#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1465
+#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1466
 msgid "Output device"
 msgstr "Ut-eining"
 
-#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1466
+#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1467
 msgid "Select your audio output device"
 msgstr "Vel lyd ut-eining"
 
@@ -10031,7 +10031,7 @@ msgid ""
 "NO e.g. Stereo -> 5.1 conversion."
 msgstr ""
 
-#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1469
+#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1470
 msgid "Audio volume in hundredths of decibels (dB)."
 msgstr ""
 
@@ -10124,37 +10124,37 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1451
+#: modules/audio_output/mmdevice.c:1452
 msgid "HDMI/SPDIF audio passthrough"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1453
+#: modules/audio_output/mmdevice.c:1454
 msgid ""
 "Change this value if you have issue with HD codecs when using a HDMI "
 "receiver."
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1460
+#: modules/audio_output/mmdevice.c:1461
 msgid "Disabled"
 msgstr "Slått av"
 
-#: modules/audio_output/mmdevice.c:1461
+#: modules/audio_output/mmdevice.c:1462
 msgid "Enabled (AC3/DTS only)"
 msgstr "Slått på (berre AC3/DTS)"
 
-#: modules/audio_output/mmdevice.c:1462
+#: modules/audio_output/mmdevice.c:1463
 msgid "Enabled"
 msgstr "Slått på"
 
-#: modules/audio_output/mmdevice.c:1473
+#: modules/audio_output/mmdevice.c:1474
 msgid "Windows Multimedia Device output"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1479
+#: modules/audio_output/mmdevice.c:1480
 msgid "Output back-end"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1479
+#: modules/audio_output/mmdevice.c:1480
 msgid "Audio output back-end interface."
 msgstr ""
 
@@ -13485,10 +13485,10 @@ msgstr "DBus"
 msgid "D-Bus control interface"
 msgstr "D-Bus-styringsgrensesnitt"
 
-#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:185
-#: modules/gui/macosx/VLCMainWindow.m:687
-#: modules/gui/macosx/VLCMainWindow.m:693
-#: modules/gui/macosx/VLCMainWindow.m:1318
+#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:187
+#: modules/gui/macosx/VLCMainWindow.m:689
+#: modules/gui/macosx/VLCMainWindow.m:695
+#: modules/gui/macosx/VLCMainWindow.m:1326
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
 #: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1258
 #: modules/gui/qt/main_interface.cpp:1262
@@ -13503,7 +13503,7 @@ msgstr "D-Bus-styringsgrensesnitt"
 #: modules/video_output/wayland/xdg-shell.c:291
 #: modules/video_output/xcb/window.c:464
 msgid "VLC media player"
-msgstr "VLC mediaspelar"
+msgstr "VLC mediespelar"
 
 #: modules/control/dummy.c:38 modules/control/oldrc.c:175
 msgid "Do not open a DOS command box interface"
@@ -13744,7 +13744,7 @@ msgstr "rørsle"
 msgid "motion control interface"
 msgstr "rørslekontrollgrensesnitt"
 
-#: modules/control/motion.c:71 modules/video_filter/rotate.c:59
+#: modules/control/motion.c:71 modules/video_filter/rotate.c:62
 msgid ""
 "Use HDAPS, AMS, APPLESMC or UNIMOTION motion sensors to rotate the video"
 msgstr ""
@@ -14311,11 +14311,11 @@ msgstr "AIFF-demultipleksar"
 msgid "ASF/WMV demuxer"
 msgstr "ASF/WMV-demultipleksar"
 
-#: modules/demux/asf/asf.c:267 modules/demux/asf/asf.c:821
+#: modules/demux/asf/asf.c:277 modules/demux/asf/asf.c:834
 msgid "Could not demux ASF stream"
 msgstr ""
 
-#: modules/demux/asf/asf.c:268
+#: modules/demux/asf/asf.c:278
 msgid "VLC failed to load the ASF header."
 msgstr ""
 
@@ -14395,7 +14395,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr "AVI-demultipleksar"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4255
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14417,15 +14417,15 @@ msgstr ""
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4266
 msgid "Broken or missing Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2773
+#: modules/demux/avi/avi.c:2774
 msgid "Broken or missing AVI Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2774
+#: modules/demux/avi/avi.c:2775
 msgid "Fixing AVI Index..."
 msgstr ""
 
@@ -14848,11 +14848,11 @@ msgstr "MP4-straumdemultipleksar"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4262
+#: modules/demux/mp4/mp4.c:4263
 msgid "Do not seek"
 msgstr "Ikkje søk"
 
-#: modules/demux/mp4/mp4.c:4263
+#: modules/demux/mp4/mp4.c:4264
 msgid "Build index"
 msgstr "Byggindes"
 
@@ -15438,32 +15438,32 @@ msgstr "Lysbilde (tekst)"
 msgid "Slides (images)"
 msgstr "Lysbilde (bilde)"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:96
+#: modules/gui/macosx/VLCAboutWindowController.m:94
 #: modules/gui/macosx/VLCMainMenu.m:339
 msgid "About VLC media player"
-msgstr "Om VLC mediaspelar"
+msgstr "Om VLC mediespelar"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:99
+#: modules/gui/macosx/VLCAboutWindowController.m:97
 #: modules/gui/qt/dialogs/help.cpp:125
 msgid "Credits"
 msgstr "Bidragsytarar"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:101
+#: modules/gui/macosx/VLCAboutWindowController.m:99
 #: modules/gui/macosx/VLCMainMenu.m:490 modules/gui/qt/dialogs/help.cpp:119
 msgid "License"
 msgstr "Lisens"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:103
+#: modules/gui/macosx/VLCAboutWindowController.m:101
 #: modules/gui/qt/dialogs/help.cpp:122
 msgid "Authors"
 msgstr "Artistar"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:105
+#: modules/gui/macosx/VLCAboutWindowController.m:103
 msgid ""
 "VLC media player and VideoLAN are trademarks of the VideoLAN Association."
 msgstr ""
 
-#: modules/gui/macosx/VLCAboutWindowController.m:130
+#: modules/gui/macosx/VLCAboutWindowController.m:128
 msgid ""
 "<p>VLC media player is a free and open source media player, encoder, and "
 "streamer made by the volunteers of the <a href=\"https://www.videolan.org/"
@@ -15474,10 +15474,10 @@ msgid ""
 "\"https://www.videolan.org/contribute/\"><span style=\" text-decoration: "
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
-"<p>VLC mediaspelar er ein fri og open kjeldekode-mediespelar, straumkodar og "
+"<p>VLC mediespelar er ein fri og open kjeldekode-mediespelar, straumkodar og "
 "kringkastar (streamer) som er laga av dei frivillige i <a href=\"https://www."
 "videolan.org/\"><span style=\" text-decoration: underline; color:#0057ae;"
-"\">VideoLAN</span></a>-fellesskapet.</p><p>VLC brukar eigne interne kodeker, "
+"\">VideoLAN</span></a>-fellesskapet.</p><p>VLC brukar eigne interne kodekar, "
 "fungerer på praktisk talt alle filer, CD-ar, DVD-ar, nettverksstraumar, "
 "opptakskort og andre medieformat!</p><p><a href=\"https://www.videolan.org/"
 "contribute/\"><span style=\" text-decoration: underline; color:#0057ae;"
@@ -15485,26 +15485,26 @@ msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:105
 #: modules/gui/macosx/VLCAddonsWindowController.m:357
-#: modules/gui/qt/dialogs/plugins.cpp:381
+#: modules/gui/qt/dialogs/plugins.cpp:382
 #: modules/gui/qt/managers/addons_manager.cpp:88
 msgid "Playlist parsers"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:107
 #: modules/gui/macosx/VLCAddonsWindowController.m:359
-#: modules/gui/qt/dialogs/plugins.cpp:385
+#: modules/gui/qt/dialogs/plugins.cpp:386
 #: modules/gui/qt/managers/addons_manager.cpp:90
 msgid "Service Discovery"
 msgstr "Tenesteoppdaging"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:109
-#: modules/gui/qt/dialogs/plugins.cpp:389
+#: modules/gui/qt/dialogs/plugins.cpp:390
 #: modules/gui/qt/managers/addons_manager.cpp:92
 msgid "Interfaces"
 msgstr "Grensesnitt"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:111
-#: modules/gui/qt/dialogs/plugins.cpp:392
+#: modules/gui/qt/dialogs/plugins.cpp:393
 #: modules/gui/qt/managers/addons_manager.cpp:94
 msgid "Art and meta fetchers"
 msgstr ""
@@ -15512,7 +15512,7 @@ msgstr ""
 #: modules/gui/macosx/VLCAddonsWindowController.m:113
 #: modules/gui/macosx/VLCAddonsWindowController.m:361
 #: modules/gui/macosx/VLCMainMenu.m:343 modules/gui/macosx/VLCMainMenu.m:344
-#: modules/gui/qt/dialogs/plugins.cpp:395
+#: modules/gui/qt/dialogs/plugins.cpp:396
 #: modules/gui/qt/managers/addons_manager.cpp:96
 msgid "Extensions"
 msgstr "Utvidingar"
@@ -15522,30 +15522,30 @@ msgid "Show Installed Only"
 msgstr "Vis berre installerte"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:118
-#: modules/gui/qt/dialogs/plugins.cpp:423
+#: modules/gui/qt/dialogs/plugins.cpp:424
 msgid "Find more addons online"
 msgstr "Finn fleire utvidingar på nettet"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:128
-#: modules/gui/macosx/VLCMainMenu.m:345 modules/gui/qt/dialogs/plugins.cpp:85
+#: modules/gui/macosx/VLCMainMenu.m:345 modules/gui/qt/dialogs/plugins.cpp:86
 msgid "Addons Manager"
 msgstr "Utvidingshandsamar"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:130
-#: modules/gui/qt/dialogs/plugins.cpp:1165
-#: modules/gui/qt/dialogs/plugins.cpp:1178
+#: modules/gui/qt/dialogs/plugins.cpp:1166
+#: modules/gui/qt/dialogs/plugins.cpp:1179
 msgid "Installed"
 msgstr "Installert"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:131
-#: modules/gui/macosx/VLCBookmarksWindowController.m:90
-#: modules/gui/qt/dialogs/plugins.cpp:127 modules/mux/avi.c:54
+#: modules/gui/macosx/VLCBookmarksWindowController.m:87
+#: modules/gui/qt/dialogs/plugins.cpp:128 modules/mux/avi.c:54
 msgid "Name"
 msgstr "Namn"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:132
-#: modules/gui/macosx/VLCPlaylist.m:108 modules/gui/qt/dialogs/plugins.cpp:1397
-#: modules/gui/qt/dialogs/plugins.cpp:1502 modules/mux/asf.c:58
+#: modules/gui/macosx/VLCPlaylist.m:92 modules/gui/qt/dialogs/plugins.cpp:1398
+#: modules/gui/qt/dialogs/plugins.cpp:1503 modules/mux/asf.c:58
 msgid "Author"
 msgstr "Artist"
 
@@ -15554,7 +15554,7 @@ msgid "Uninstall"
 msgstr "Avinstaller"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:355
-#: modules/gui/qt/dialogs/plugins.cpp:377
+#: modules/gui/qt/dialogs/plugins.cpp:378
 #: modules/gui/qt/managers/addons_manager.cpp:86
 #: modules/gui/skins2/src/skin_main.cpp:535
 msgid "Skins"
@@ -15650,7 +15650,7 @@ msgid "Enter a name for the new profile:"
 msgstr "Skriv inn eit namn for den nye profilen:"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:514
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:826
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:855
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:377
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:489
 #: modules/gui/macosx/VLCMainMenu.m:1164 modules/gui/macosx/VLCOutput.m:414
@@ -15673,20 +15673,20 @@ msgid "Multiple profiles with the same name are not allowed."
 msgstr "Fleire profilar med same namn er ikkje tillatne."
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:568
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:868
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:897
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:857
 msgid "Remove a preset"
 msgstr "Fjern førehandsval"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:569
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:869
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:898
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:858
 msgid "Select the preset you would like to remove:"
 msgstr "Vel førehandsvalet du vil ta fjerna:"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:570
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:870
-#: modules/gui/macosx/VLCBookmarksWindowController.m:81
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:899
+#: modules/gui/macosx/VLCBookmarksWindowController.m:78
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:859
 msgid "Remove"
@@ -15700,43 +15700,43 @@ msgstr "Legg til nytt førehandsval…"
 msgid "Organize Presets..."
 msgstr "Organiser førehandsval"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:823
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:852
 msgid "Save current selection as new preset"
 msgstr "Lagra gjeldande val som ei ny førehandsinnstilling"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:824
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:853
 msgid "Enter a name for the new preset:"
 msgstr "Skriv inn eit namn for den nye førehandsinnstillinga:"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:77
+#: modules/gui/macosx/VLCBookmarksWindowController.m:74
 msgid "Bookmarks"
 msgstr "Bokmerke"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:78
+#: modules/gui/macosx/VLCBookmarksWindowController.m:75
 msgid "Add"
 msgstr "Legg til"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:79
+#: modules/gui/macosx/VLCBookmarksWindowController.m:76
 #: modules/gui/macosx/VLCSimplePrefsController.m:288
 #: modules/gui/qt/dialogs/bookmarks.cpp:53
 msgid "Clear"
 msgstr "Tøm"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:80
+#: modules/gui/macosx/VLCBookmarksWindowController.m:77
 #: modules/gui/macosx/VLCMainMenu.m:366
 msgid "Edit"
 msgstr "Rediger"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:85
-#: modules/gui/macosx/VLCBookmarksWindowController.m:91
+#: modules/gui/macosx/VLCBookmarksWindowController.m:82
+#: modules/gui/macosx/VLCBookmarksWindowController.m:88
 #: modules/gui/qt/dialogs/bookmarks.cpp:77
 #: modules/gui/qt/dialogs/toolbar.cpp:493
 msgid "Time"
 msgstr "Tid"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:88
-#: modules/gui/macosx/VLCBookmarksWindowController.m:211
-#: modules/gui/macosx/VLCBookmarksWindowController.m:215
+#: modules/gui/macosx/VLCBookmarksWindowController.m:85
+#: modules/gui/macosx/VLCBookmarksWindowController.m:209
+#: modules/gui/macosx/VLCBookmarksWindowController.m:213
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:270
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:545
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:552
@@ -15752,27 +15752,27 @@ msgstr "Tid"
 msgid "OK"
 msgstr "OK"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:131
+#: modules/gui/macosx/VLCBookmarksWindowController.m:128
 #: modules/gui/macosx/VLCMainMenu.m:1154
 msgid "Untitled"
 msgstr "Namnlaus"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:211
+#: modules/gui/macosx/VLCBookmarksWindowController.m:209
 msgid "No input"
 msgstr "Ingen inndata"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:211
+#: modules/gui/macosx/VLCBookmarksWindowController.m:209
 msgid ""
 "No input found. A stream must be playing or paused for bookmarks to work."
 msgstr ""
 "Fann ingen inndata. Ein straum må spelast eller vere i pause for at bokmerka "
 "skal fungere."
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:215
+#: modules/gui/macosx/VLCBookmarksWindowController.m:213
 msgid "Input has changed"
 msgstr "Inndata er endra"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:215
+#: modules/gui/macosx/VLCBookmarksWindowController.m:213
 msgid ""
 "Input has changed, unable to save bookmark. Suspending playback with \"Pause"
 "\" while editing bookmarks to ensure to keep the same input."
@@ -15830,12 +15830,12 @@ msgid "Go!"
 msgstr "Gå!"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:138
-#: modules/gui/macosx/VLCMainWindow.m:194
+#: modules/gui/macosx/VLCMainWindow.m:196
 msgid "Drop media here"
 msgstr "Slepp media her"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:139
-#: modules/gui/macosx/VLCMainWindow.m:210
+#: modules/gui/macosx/VLCMainWindow.m:212
 msgid "Open media..."
 msgstr "Opna media"
 
@@ -16504,7 +16504,7 @@ msgstr "Konverter/Strøym…"
 msgid "Save Playlist..."
 msgstr "Lagra speleliste…"
 
-#: modules/gui/macosx/VLCMainMenu.m:364 modules/gui/macosx/VLCPlaylist.m:234
+#: modules/gui/macosx/VLCMainMenu.m:364 modules/gui/macosx/VLCPlaylist.m:229
 msgid "Reveal in Finder"
 msgstr "Vis i Finder"
 
@@ -16520,7 +16520,7 @@ msgstr "Kopier"
 msgid "Paste"
 msgstr "Lim inn"
 
-#: modules/gui/macosx/VLCMainMenu.m:371 modules/gui/macosx/VLCPlaylist.m:232
+#: modules/gui/macosx/VLCMainMenu.m:371 modules/gui/macosx/VLCPlaylist.m:227
 msgid "Select All"
 msgstr "Vel allle"
 
@@ -16593,7 +16593,7 @@ msgstr "Lågare lyd"
 
 #: modules/gui/macosx/VLCMainMenu.m:422 modules/gui/macosx/VLCMainMenu.m:423
 msgid "Audio Device"
-msgstr "Audio-eining"
+msgstr "Lydeining"
 
 #: modules/gui/macosx/VLCMainMenu.m:428
 msgid "Half Size"
@@ -16694,7 +16694,7 @@ msgstr "Bokmerke…"
 msgid "Playlist..."
 msgstr "Speleliste…"
 
-#: modules/gui/macosx/VLCMainMenu.m:482 modules/gui/macosx/VLCPlaylist.m:233
+#: modules/gui/macosx/VLCMainMenu.m:482 modules/gui/macosx/VLCPlaylist.m:228
 msgid "Media Information..."
 msgstr "Medieinformasjon…"
 
@@ -16717,7 +16717,7 @@ msgstr "Hjelp"
 
 #: modules/gui/macosx/VLCMainMenu.m:489
 msgid "VLC media player Help..."
-msgstr "Hjelp for VLC mediaspelar…"
+msgstr "Hjelp for VLC mediespelar…"
 
 #: modules/gui/macosx/VLCMainMenu.m:491
 msgid "Online Documentation..."
@@ -16756,61 +16756,61 @@ msgstr "HTML-speleliste"
 msgid "Save Playlist"
 msgstr "Lagra speleliste"
 
-#: modules/gui/macosx/VLCMainWindow.m:188
+#: modules/gui/macosx/VLCMainWindow.m:190
 msgid "Search in Playlist"
 msgstr "Søk i spelelista"
 
-#: modules/gui/macosx/VLCMainWindow.m:190
+#: modules/gui/macosx/VLCMainWindow.m:192
 msgid "Search the playlist. Results will be selected in the table."
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:211
+#: modules/gui/macosx/VLCMainWindow.m:213
 msgid "Open a dialog to select the media to play"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:215
-#: modules/gui/macosx/VLCMainWindow.m:221
+#: modules/gui/macosx/VLCMainWindow.m:217
+#: modules/gui/macosx/VLCMainWindow.m:223
 #: modules/gui/qt/components/playlist/selector.cpp:580
 msgid "Subscribe"
 msgstr "Abonner"
 
-#: modules/gui/macosx/VLCMainWindow.m:216
-#: modules/gui/macosx/VLCMainWindow.m:227
+#: modules/gui/macosx/VLCMainWindow.m:218
+#: modules/gui/macosx/VLCMainWindow.m:229
 #: modules/gui/qt/components/playlist/selector.cpp:597
 msgid "Unsubscribe"
 msgstr "Ikkje abonner"
 
-#: modules/gui/macosx/VLCMainWindow.m:219
+#: modules/gui/macosx/VLCMainWindow.m:221
 #: modules/gui/qt/components/playlist/selector.cpp:279
 msgid "Subscribe to a podcast"
 msgstr "Abonner på ein podkast"
 
-#: modules/gui/macosx/VLCMainWindow.m:220
+#: modules/gui/macosx/VLCMainWindow.m:222
 #: modules/gui/qt/components/playlist/selector.cpp:581
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr "Skriv inn adressa til podkasten du vil abbonera på:"
 
-#: modules/gui/macosx/VLCMainWindow.m:225
+#: modules/gui/macosx/VLCMainWindow.m:227
 msgid "Unsubscribe from a podcast"
 msgstr "Meld av frå podkast"
 
-#: modules/gui/macosx/VLCMainWindow.m:226
+#: modules/gui/macosx/VLCMainWindow.m:228
 msgid "Select the podcast you would like to unsubscribe from:"
 msgstr "Vel podkasten du vil melda deg av:"
 
-#: modules/gui/macosx/VLCMainWindow.m:252
+#: modules/gui/macosx/VLCMainWindow.m:254
 msgid "Check for album art and metadata?"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:252
+#: modules/gui/macosx/VLCMainWindow.m:254
 msgid "Enable Metadata Retrieval"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:252
+#: modules/gui/macosx/VLCMainWindow.m:254
 msgid "No, Thanks"
 msgstr "Nei takk"
 
-#: modules/gui/macosx/VLCMainWindow.m:252
+#: modules/gui/macosx/VLCMainWindow.m:254
 msgid ""
 "VLC can check online for album art and metadata to enrich your playback "
 "experience, e.g. by providing track information when playing Audio CDs. To "
@@ -16818,23 +16818,23 @@ msgid ""
 "trusted services in an anonymized form."
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:318
+#: modules/gui/macosx/VLCMainWindow.m:320
 msgid "LIBRARY"
 msgstr "BIBLIOTEK"
 
-#: modules/gui/macosx/VLCMainWindow.m:323
+#: modules/gui/macosx/VLCMainWindow.m:325
 msgid "MY COMPUTER"
 msgstr "DENNE DATAMASKINA"
 
-#: modules/gui/macosx/VLCMainWindow.m:324
+#: modules/gui/macosx/VLCMainWindow.m:326
 msgid "DEVICES"
 msgstr "EININGAR"
 
-#: modules/gui/macosx/VLCMainWindow.m:325
+#: modules/gui/macosx/VLCMainWindow.m:327
 msgid "LOCAL NETWORK"
 msgstr "LOKALT NETTVERK"
 
-#: modules/gui/macosx/VLCMainWindow.m:326
+#: modules/gui/macosx/VLCMainWindow.m:328
 msgid "INTERNET"
 msgstr "INTERNETT"
 
@@ -16843,7 +16843,7 @@ msgid "Show/Hide Playlist"
 msgstr "Vis/Gøym speleliste"
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:71
-#: modules/gui/qt/dialogs/vlm.cpp:548 share/lua/http/index.html:241
+#: modules/gui/qt/dialogs/vlm.cpp:548 share/lua/http/index.html:260
 msgid "Repeat"
 msgstr "Repeter"
 
@@ -16853,7 +16853,7 @@ msgstr ""
 "Endre repeter-modus. Modus: repeter ein, repeter alle og inga repetering."
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:75
-#: share/lua/http/index.html:239
+#: share/lua/http/index.html:258
 msgid "Shuffle"
 msgstr "Bland"
 
@@ -16875,10 +16875,10 @@ msgstr ""
 
 #: modules/gui/macosx/VLCOpenWindowController.m:133
 #: modules/gui/macosx/VLCOpenWindowController.m:193
-#: modules/gui/macosx/VLCOpenWindowController.m:580
-#: modules/gui/macosx/VLCOpenWindowController.m:666
-#: modules/gui/macosx/VLCOpenWindowController.m:898
-#: modules/gui/macosx/VLCOpenWindowController.m:1266
+#: modules/gui/macosx/VLCOpenWindowController.m:583
+#: modules/gui/macosx/VLCOpenWindowController.m:669
+#: modules/gui/macosx/VLCOpenWindowController.m:901
+#: modules/gui/macosx/VLCOpenWindowController.m:1269
 #: modules/gui/qt/components/controller.hpp:107
 msgid "Open"
 msgstr "Opna"
@@ -16995,20 +16995,20 @@ msgid "Protocol"
 msgstr "Protokoll"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:199
-#: modules/gui/macosx/VLCOpenWindowController.m:1013
-#: modules/gui/macosx/VLCOpenWindowController.m:1062
+#: modules/gui/macosx/VLCOpenWindowController.m:1016
+#: modules/gui/macosx/VLCOpenWindowController.m:1065
 msgid "Unicast"
 msgstr "Unicast"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:200
-#: modules/gui/macosx/VLCOpenWindowController.m:1026
-#: modules/gui/macosx/VLCOpenWindowController.m:1075
+#: modules/gui/macosx/VLCOpenWindowController.m:1029
+#: modules/gui/macosx/VLCOpenWindowController.m:1078
 msgid "Multicast"
 msgstr "Multicast"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:206
-#: modules/gui/macosx/VLCOpenWindowController.m:503
-#: modules/gui/macosx/VLCOpenWindowController.m:1153
+#: modules/gui/macosx/VLCOpenWindowController.m:506
+#: modules/gui/macosx/VLCOpenWindowController.m:1156
 msgid "Input Devices"
 msgstr "Inngangseiningar"
 
@@ -17088,13 +17088,13 @@ msgstr " s"
 msgid "fps"
 msgstr "fps"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:579
-#: modules/gui/macosx/VLCOpenWindowController.m:665
-#: modules/gui/macosx/VLCOpenWindowController.m:1265
+#: modules/gui/macosx/VLCOpenWindowController.m:582
+#: modules/gui/macosx/VLCOpenWindowController.m:668
+#: modules/gui/macosx/VLCOpenWindowController.m:1268
 msgid "Open File"
 msgstr "Opna fil"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:764
+#: modules/gui/macosx/VLCOpenWindowController.m:767
 #, c-format
 msgid "%i tracks"
 msgstr "%i spor"
@@ -17132,29 +17132,29 @@ msgstr ""
 msgid "Save File"
 msgstr "Lagra fil"
 
-#: modules/gui/macosx/VLCPlaylist.m:106
+#: modules/gui/macosx/VLCPlaylist.m:90
 msgid "Track Number"
 msgstr "Spornummer"
 
-#: modules/gui/macosx/VLCPlaylist.m:109
+#: modules/gui/macosx/VLCPlaylist.m:93
 #: modules/gui/qt/components/playlist/sorting.h:61
 msgid "Duration"
 msgstr "Tid"
 
-#: modules/gui/macosx/VLCPlaylist.m:115
+#: modules/gui/macosx/VLCPlaylist.m:99
 #: modules/gui/qt/components/playlist/sorting.h:67
 msgid "URI"
 msgstr "URI"
 
-#: modules/gui/macosx/VLCPlaylist.m:116
+#: modules/gui/macosx/VLCPlaylist.m:100
 msgid "File Size"
-msgstr "Filstørrelse"
+msgstr "Filstorleik"
 
-#: modules/gui/macosx/VLCPlaylist.m:230
+#: modules/gui/macosx/VLCPlaylist.m:225
 msgid "Expand All"
 msgstr "Utvid alle"
 
-#: modules/gui/macosx/VLCPlaylist.m:231
+#: modules/gui/macosx/VLCPlaylist.m:226
 msgid "Collapse All"
 msgstr "Fald saman alle"
 
@@ -17252,7 +17252,7 @@ msgstr "Avspeling av \"%@\" vil halde fram på %@"
 #: modules/gui/macosx/VLCSimplePrefsController.m:233
 #: modules/gui/qt/components/simple_preferences.cpp:239
 #: modules/gui/qt/components/simple_preferences.cpp:719
-#: modules/gui/qt/dialogs/plugins.cpp:375
+#: modules/gui/qt/dialogs/plugins.cpp:376
 msgid "Interface Settings"
 msgstr "Grensesnitt-innstillingar"
 
@@ -19238,9 +19238,9 @@ msgstr "Pakk ut"
 #: modules/gui/qt/dialogs/errors.cpp:49 modules/gui/qt/dialogs/extended.cpp:130
 #: modules/gui/qt/dialogs/help.cpp:66 modules/gui/qt/dialogs/help.cpp:212
 #: modules/gui/qt/dialogs/mediainfo.cpp:80
-#: modules/gui/qt/dialogs/messages.cpp:84 modules/gui/qt/dialogs/plugins.cpp:93
-#: modules/gui/qt/dialogs/plugins.cpp:1430
-#: modules/gui/qt/dialogs/plugins.cpp:1543
+#: modules/gui/qt/dialogs/messages.cpp:84 modules/gui/qt/dialogs/plugins.cpp:94
+#: modules/gui/qt/dialogs/plugins.cpp:1431
+#: modules/gui/qt/dialogs/plugins.cpp:1544
 #: modules/gui/qt/dialogs/podcast_configuration.cpp:36
 #: modules/gui/qt/dialogs/vlm.cpp:136
 msgid "&Close"
@@ -19376,7 +19376,7 @@ msgstr ""
 
 #: modules/gui/qt/dialogs/firstrun.cpp:100
 msgid "Regularly check for VLC updates"
-msgstr ""
+msgstr "Sjå regelmessig etter VLC-oppdateringar"
 
 #: modules/gui/qt/dialogs/gototime.cpp:42
 msgid "Go to Time"
@@ -19390,8 +19390,8 @@ msgstr "&Gå"
 msgid "Go to time"
 msgstr "Gå til tid"
 
-#: modules/gui/qt/dialogs/help.cpp:86 modules/gui/qt/dialogs/plugins.cpp:1368
-#: modules/gui/qt/dialogs/plugins.cpp:1451
+#: modules/gui/qt/dialogs/help.cpp:86 modules/gui/qt/dialogs/plugins.cpp:1369
+#: modules/gui/qt/dialogs/plugins.cpp:1452
 msgid "About"
 msgstr "Om"
 
@@ -19429,7 +19429,7 @@ msgstr "&Nei"
 
 #: modules/gui/qt/dialogs/help.cpp:222
 msgid "VLC media player updates"
-msgstr "Oppdateringar for VLC mediaspelar"
+msgstr "Oppdateringar for VLC mediespelar"
 
 #: modules/gui/qt/dialogs/help.cpp:294
 msgid "A new version of VLC (%1.%2.%3%4) is available."
@@ -19437,7 +19437,7 @@ msgstr "Ein ny versjon avVLC (%1.%2.%3%4) er tilgjengeleg."
 
 #: modules/gui/qt/dialogs/help.cpp:319
 msgid "You have the latest version of VLC media player."
-msgstr "Du har den nyaste versjonen av VLC mediaspelar."
+msgstr "Du har den nyaste versjonen av VLC mediespelar."
 
 #: modules/gui/qt/dialogs/help.cpp:326
 msgid "An error occurred while checking for updates..."
@@ -19573,105 +19573,105 @@ msgid ""
 "it will be automatically selected."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:79
+#: modules/gui/qt/dialogs/plugins.cpp:80
 msgid "Plugins and extensions"
 msgstr "Programtillegg og utvidingar"
 
-#: modules/gui/qt/dialogs/plugins.cpp:87
+#: modules/gui/qt/dialogs/plugins.cpp:88
 msgid "Active Extensions"
 msgstr "Aktive utvidingar"
 
-#: modules/gui/qt/dialogs/plugins.cpp:127
+#: modules/gui/qt/dialogs/plugins.cpp:128
 msgid "Capability"
 msgstr "Kapabilitet"
 
-#: modules/gui/qt/dialogs/plugins.cpp:127
+#: modules/gui/qt/dialogs/plugins.cpp:128
 msgid "Score"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:140
+#: modules/gui/qt/dialogs/plugins.cpp:141
 msgid "&Search:"
 msgstr "&Søk:"
 
-#: modules/gui/qt/dialogs/plugins.cpp:251
-#: modules/gui/qt/dialogs/plugins.cpp:1284
+#: modules/gui/qt/dialogs/plugins.cpp:252
+#: modules/gui/qt/dialogs/plugins.cpp:1285
 msgid "More information..."
 msgstr "Meir informasjon"
 
-#: modules/gui/qt/dialogs/plugins.cpp:259
+#: modules/gui/qt/dialogs/plugins.cpp:260
 msgid "Reload extensions"
 msgstr "Last omatt utvidingar"
 
-#: modules/gui/qt/dialogs/plugins.cpp:378
+#: modules/gui/qt/dialogs/plugins.cpp:379
 msgid ""
 "Skins customize player's appearance. You can activate them through "
 "preferences."
 msgstr "Kler opp avspelarens utsjåande. Du kan aktivere dei i innstillingane."
 
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:383
 msgid ""
 "Playlist parsers add new capabilities to read internet streams or extract "
 "meta data."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:386
+#: modules/gui/qt/dialogs/plugins.cpp:387
 msgid ""
 "Service discoveries adds new sources to your playlist such as web radios, "
 "video websites, ..."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:393
+#: modules/gui/qt/dialogs/plugins.cpp:394
 msgid "Retrieves extra info and art for playlist items"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:396
+#: modules/gui/qt/dialogs/plugins.cpp:397
 msgid ""
 "Extensions brings various enhancements. Check descriptions for more details"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:417
+#: modules/gui/qt/dialogs/plugins.cpp:418
 msgid "Only installed"
 msgstr "Berre installert"
 
-#: modules/gui/qt/dialogs/plugins.cpp:523
+#: modules/gui/qt/dialogs/plugins.cpp:524
 msgid "Retrieving addons..."
 msgstr "Hentar utvidingar"
 
-#: modules/gui/qt/dialogs/plugins.cpp:534
+#: modules/gui/qt/dialogs/plugins.cpp:535
 msgid "No addons found"
 msgstr "Fann ingen utvidingar"
 
-#: modules/gui/qt/dialogs/plugins.cpp:813
+#: modules/gui/qt/dialogs/plugins.cpp:814
 msgid "This addon has been installed manually. VLC can't manage it by itself."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:1196
+#: modules/gui/qt/dialogs/plugins.cpp:1197
 msgid "Version %1"
 msgstr "Versjon %1"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1224
+#: modules/gui/qt/dialogs/plugins.cpp:1225
 msgid "%1 downloads"
 msgstr "%1 nedlastingar"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1293
+#: modules/gui/qt/dialogs/plugins.cpp:1294
 msgid "&Uninstall"
 msgstr "&Avinstaller"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1296
+#: modules/gui/qt/dialogs/plugins.cpp:1297
 msgid "&Install"
 msgstr "&Installer"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1391
-#: modules/gui/qt/dialogs/plugins.cpp:1494
+#: modules/gui/qt/dialogs/plugins.cpp:1392
+#: modules/gui/qt/dialogs/plugins.cpp:1495
 msgid "Version"
 msgstr "Versjon"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1411
-#: modules/gui/qt/dialogs/plugins.cpp:1521
+#: modules/gui/qt/dialogs/plugins.cpp:1412
+#: modules/gui/qt/dialogs/plugins.cpp:1522
 msgid "Website"
 msgstr "Nettstad"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1533
+#: modules/gui/qt/dialogs/plugins.cpp:1534
 msgid "Files"
 msgstr "Filer"
 
@@ -19729,7 +19729,7 @@ msgstr ""
 
 #: modules/gui/qt/dialogs/preferences.cpp:337
 msgid "Are you sure you want to reset your VLC media player preferences?"
-msgstr "Er du sikker på at du vil nullstilla innstillingane i VLC mediaspelar?"
+msgstr "Er du sikker på at du vil nullstilla innstillingane i VLC mediespelar?"
 
 #: modules/gui/qt/dialogs/sout.cpp:45
 msgid "Stream Output"
@@ -20310,11 +20310,11 @@ msgstr "&Avspeling"
 
 #: modules/gui/qt/menus.cpp:1174
 msgid "&Hide VLC media player in taskbar"
-msgstr "&Gøym VLC-mediaspelar i oppgåvelinja"
+msgstr "&Gøym VLC-mediespelar i oppgåvelinja"
 
 #: modules/gui/qt/menus.cpp:1180
 msgid "Sho&w VLC media player"
-msgstr "&Vis VLC-mediaspelar"
+msgstr "&Vis VLC-mediespelar"
 
 #: modules/gui/qt/menus.cpp:1191
 msgid "&Open Media"
@@ -20357,7 +20357,7 @@ msgid ""
 "basic actions."
 msgstr ""
 "Vis eit ikon i systemkorga som lèt deg kontrollera dei grunnleggjande "
-"funksjonane i VLC mediaspelar."
+"funksjonane i VLC mediespelar."
 
 #: modules/gui/qt/qt.cpp:91
 msgid "Start VLC with only a systray icon"
@@ -23741,11 +23741,11 @@ msgstr ""
 msgid "Chromecast demux wrapper"
 msgstr ""
 
-#: modules/stream_out/cycle.c:325
+#: modules/stream_out/cycle.c:326
 msgid "cycle"
 msgstr ""
 
-#: modules/stream_out/cycle.c:326
+#: modules/stream_out/cycle.c:327
 msgid "Cyclic stream output"
 msgstr ""
 
@@ -25763,23 +25763,23 @@ msgstr ""
 msgid "Ripple"
 msgstr ""
 
-#: modules/video_filter/rotate.c:56
+#: modules/video_filter/rotate.c:59
 msgid "Angle in degrees"
 msgstr ""
 
-#: modules/video_filter/rotate.c:57
+#: modules/video_filter/rotate.c:60
 msgid "Angle in degrees (0 to 359)"
 msgstr ""
 
-#: modules/video_filter/rotate.c:58
+#: modules/video_filter/rotate.c:61
 msgid "Use motion sensors"
 msgstr ""
 
-#: modules/video_filter/rotate.c:68
+#: modules/video_filter/rotate.c:71
 msgid "Rotate video filter"
 msgstr ""
 
-#: modules/video_filter/rotate.c:69
+#: modules/video_filter/rotate.c:72
 msgid "Rotate"
 msgstr "Snu"
 
@@ -25936,11 +25936,11 @@ msgstr ""
 
 #: modules/video_output/android/window.c:50
 msgid "Android Window"
-msgstr ""
+msgstr "Android-vindauge"
 
 #: modules/video_output/android/window.c:51
 msgid "Android native window"
-msgstr ""
+msgstr "Androids innebygde vindaugestil"
 
 #: modules/video_output/caca.c:57
 msgid "Color ASCII art video output"
@@ -26051,7 +26051,7 @@ msgstr ""
 
 #: modules/video_output/drawable.c:34
 msgid "Window handle (HWND)"
-msgstr ""
+msgstr "Vindaugehandtering (HWND)"
 
 #: modules/video_output/drawable.c:36 modules/video_output/xcb/window.c:707
 msgid ""
@@ -26065,7 +26065,7 @@ msgstr ""
 
 #: modules/video_output/drawable.c:47 modules/video_output/xcb/window.c:729
 msgid "Embedded window video"
-msgstr ""
+msgstr "Innebygd videovindauge"
 
 #: modules/video_output/fb.c:56
 msgid "Framebuffer device"
@@ -26328,7 +26328,7 @@ msgstr ""
 
 #: modules/video_output/win32/wingdi.c:52
 msgid "Windows GDI video output"
-msgstr ""
+msgstr "Windows GDI-videoutdata"
 
 #: modules/video_output/win32/wgl.c:42
 msgid "GPU affinity"
@@ -26433,7 +26433,7 @@ msgstr ""
 #: modules/video_output/xcb/window.c:433
 msgctxt "ASCII"
 msgid "VLC media player"
-msgstr "VLC mediaspelar"
+msgstr "VLC mediespelar"
 
 #. xgettext: This is a plain ASCII spelling of "VLC"
 #. for the ICCCM window name. This must be pure ASCII.
@@ -27074,7 +27074,7 @@ msgid "#separate commands with a new line or a semi-colon"
 msgstr ""
 
 #: share/lua/http/dialogs/browse_window.html:41
-#: share/lua/http/mobile_browse.html:48
+#: share/lua/http/mobile_browse.html:49
 msgid "Play List"
 msgstr "Speleliste"
 
@@ -27132,7 +27132,7 @@ msgid "File name"
 msgstr "FIlnamn"
 
 #: share/lua/http/dialogs/equalizer_window.html:49
-#: share/lua/http/mobile_equalizer.html:62
+#: share/lua/http/mobile_equalizer.html:63
 msgid "Preamp:"
 msgstr "Forforsterkar:"
 
@@ -27171,94 +27171,107 @@ msgstr "Tid:"
 #: share/lua/http/index.html:26 share/lua/http/mobile_browse.html:25
 #: share/lua/http/mobile_equalizer.html:25 share/lua/http/mobile_view.html:25
 msgid "VLC media player - Web Interface"
-msgstr "VLC mediaspelar - nettgrensesnitt"
+msgstr "VLC mediespelar - nettgrensesnitt"
 
-#: share/lua/http/index.html:215
+#: share/lua/http/index.html:234
 msgid "Hide / Show Library"
 msgstr "Vis/Gøym bibliotek"
 
-#: share/lua/http/index.html:216
+#: share/lua/http/index.html:235
 msgid "Hide / Show Viewer"
 msgstr ""
 
-#: share/lua/http/index.html:217
+#: share/lua/http/index.html:236
 msgid "Manage Streams"
 msgstr "Handter straumar"
 
-#: share/lua/http/index.html:218
+#: share/lua/http/index.html:237
 msgid "Track Synchronisation"
 msgstr "Sporsynkronisering"
 
-#: share/lua/http/index.html:220
+#: share/lua/http/index.html:239
 msgid "VLM Batch Commands"
 msgstr ""
 
-#: share/lua/http/index.html:240
+#: share/lua/http/index.html:259
 msgid "Loop"
 msgstr "I sløyfe"
 
-#: share/lua/http/index.html:242
+#: share/lua/http/index.html:261
 msgid "Empty Playlist"
 msgstr "Tom speleliste"
 
-#: share/lua/http/index.html:243
+#: share/lua/http/index.html:262
 msgid "Queue Selected"
 msgstr ""
 
-#: share/lua/http/index.html:244
+#: share/lua/http/index.html:263
 msgid "Play Selected"
 msgstr "Spel valt"
 
-#: share/lua/http/index.html:245
+#: share/lua/http/index.html:264
 msgid "Refresh List"
 msgstr "Oppdater liste"
 
-#: share/lua/http/index.html:252
+#: share/lua/http/index.html:271
 msgid "Loading flowplayer..."
 msgstr ""
 
-#: share/lua/http/index.html:252
+#: share/lua/http/index.html:271
 msgid "If nothing appears, check your internet connection."
 msgstr ""
 
-#: share/lua/http/index.html:263
+#: share/lua/http/index.html:282
+msgid ""
+"VLC can display a QR code linking to the mobile version of the web "
+"interface; the web address of the web interface of your VLC media player "
+"instance will be transmitted over the internet to the Google Image Charts "
+"web service to generate this QR code."
+msgstr ""
+
+#: share/lua/http/index.html:285
+#, fuzzy
+msgid "Do you want to go ahead with this?"
+msgstr "Ønskjer du å lasta henne ned?"
+
+#: share/lua/http/index.html:290
 msgid ""
 "By creating a stream, the <i>Main Controls</i> will operate the stream "
 "instead of the main interface."
 msgstr ""
 
-#: share/lua/http/index.html:264
+#: share/lua/http/index.html:291
 msgid ""
 "The stream will be created using default settings, for more advanced "
 "configuration, or to modify the default settings, select the button to the "
 "right: <i>Manage Streams</i>"
 msgstr ""
 
-#: share/lua/http/index.html:268
+#: share/lua/http/index.html:295
 msgid ""
 "Once the stream is created, the <i>Media Viewer</i> window will display the "
 "stream."
 msgstr ""
 
-#: share/lua/http/index.html:269
+#: share/lua/http/index.html:296
 msgid ""
 "Volume will be controlled by the player, and not the <i>Main Controls</i>."
 msgstr ""
 
-#: share/lua/http/index.html:272
+#: share/lua/http/index.html:299
 msgid ""
 "The current playing item will be streamed. If there is no currently playing "
 "item, the first selected item from the <i>Library</i> will be the subject of "
 "the stream."
 msgstr ""
 
-#: share/lua/http/index.html:275
+#: share/lua/http/index.html:302
 msgid ""
 "To stop the stream and resume normal controls, click the <i>Open Stream</i> "
 "button again."
 msgstr ""
 
-#: share/lua/http/index.html:278
+#: share/lua/http/index.html:305
 msgid "Are you sure you wish to create the stream?"
 msgstr "Ønskjer du å opprette straumen?"
 
@@ -27720,9 +27733,6 @@ msgstr "Ønskjer du å opprette straumen?"
 
 #~ msgid "Launching an update request..."
 #~ msgstr "Startar ein oppdateringsførespurnad…"
-
-#~ msgid "Do you want to download it?"
-#~ msgstr "Ønskjer du å lasta henne ned?"
 
 #~ msgid "Essential"
 #~ msgstr "Vesentleg"

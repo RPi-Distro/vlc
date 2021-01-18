@@ -1,6 +1,6 @@
 SUFFIXES += .xib
 
-libmacosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -fobjc-exceptions -fobjc-arc 
+libmacosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -fobjc-exceptions -fobjc-arc
 libmacosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(guidir)' \
 	-Wl,-framework,Cocoa -Wl,-framework,CoreServices \
 	-Wl,-framework,AVFoundation -Wl,-framework,CoreMedia -Wl,-framework,IOKit \
@@ -50,9 +50,6 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/VLCPLModel.h gui/macosx/VLCPLModel.m \
 	gui/macosx/prefs.h gui/macosx/prefs.m \
 	gui/macosx/prefs_widgets.h gui/macosx/prefs_widgets.m \
-	gui/macosx/PXSourceList.h gui/macosx/PXSourceList.m \
-	gui/macosx/PXSourceListDataSource.h gui/macosx/PXSourceListDelegate.h \
-	gui/macosx/SideBarItem.h gui/macosx/SideBarItem.m \
 	gui/macosx/VLCPopupPanelController.h gui/macosx/VLCPopupPanelController.m \
 	gui/macosx/VLCTextfieldPanelController.h gui/macosx/VLCTextfieldPanelController.m \
 	gui/macosx/VLCSimplePrefsController.h gui/macosx/VLCSimplePrefsController.m \
@@ -91,6 +88,9 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/VLCRendererItem.h gui/macosx/VLCRendererItem.m \
 	gui/macosx/VLCRendererMenuController.h gui/macosx/VLCRendererMenuController.m \
 	gui/macosx/VLCResumeDialogController.h gui/macosx/VLCResumeDialogController.m \
+	gui/macosx/VLCSourceListItem.h gui/macosx/VLCSourceListItem.m \
+	gui/macosx/VLCSourceListTableCellView.h gui/macosx/VLCSourceListTableCellView.m \
+	gui/macosx/VLCSourceListBadgeButton.h gui/macosx/VLCSourceListBadgeButton.m \
 	gui/macosx/VLCTrackSynchronizationWindowController.h gui/macosx/VLCTrackSynchronizationWindowController.m \
 	gui/macosx/VLCVideoEffectsWindowController.h gui/macosx/VLCVideoEffectsWindowController.m \
 	gui/macosx/VLCFSPanelController.h gui/macosx/VLCFSPanelController.m \
@@ -107,6 +107,25 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/VLCVolumeSliderCell.h gui/macosx/VLCVolumeSliderCell.m \
 	gui/macosx/VLCWrappableTextField.h gui/macosx/VLCWrappableTextField.m
 
+# PXSourceList sources
+libmacosx_plugin_la_SOURCES += \
+	gui/macosx/PXSourceList/PXSourceList.h \
+	gui/macosx/PXSourceList/PXSourceList.m \
+	gui/macosx/PXSourceList/PXSourceListBadgeCell.h \
+	gui/macosx/PXSourceList/PXSourceListBadgeCell.m \
+	gui/macosx/PXSourceList/PXSourceListBadgeView.h \
+	gui/macosx/PXSourceList/PXSourceListBadgeView.m \
+	gui/macosx/PXSourceList/PXSourceListItem.h \
+	gui/macosx/PXSourceList/PXSourceListItem.m \
+	gui/macosx/PXSourceList/PXSourceListTableCellView.h \
+	gui/macosx/PXSourceList/PXSourceListTableCellView.m \
+	gui/macosx/PXSourceList/Internal/PXSourceListDelegateDataSourceProxy.h \
+	gui/macosx/PXSourceList/Internal/PXSourceListDelegateDataSourceProxy.m \
+	gui/macosx/PXSourceList/Internal/PXSourceListRuntimeAdditions.h \
+	gui/macosx/PXSourceList/Internal/PXSourceListRuntimeAdditions.m \
+	gui/macosx/PXSourceList/Internal/PXSourceListPrivateConstants.h \
+	gui/macosx/PXSourceList/PXSourceListDataSource.h \
+	gui/macosx/PXSourceList/PXSourceListDelegate.h
 
 # User interface compilation
 
@@ -719,6 +738,34 @@ libmacosx_plugin_la_RES += \
 	gui/macosx/Resources/README \
 	gui/macosx/Resources/vlc.scriptSuite \
 	gui/macosx/Resources/vlc.scriptTerminology
+
+EXTRA_DIST += \
+	gui/macosx/Resources/English.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ar.lproj/InfoPlist.strings \
+	gui/macosx/Resources/bg.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ca.lproj/InfoPlist.strings \
+	gui/macosx/Resources/cs.lproj/InfoPlist.strings \
+	gui/macosx/Resources/de.lproj/InfoPlist.strings \
+	gui/macosx/Resources/el.lproj/InfoPlist.strings \
+	gui/macosx/Resources/es.lproj/InfoPlist.strings \
+	gui/macosx/Resources/fr.lproj/InfoPlist.strings \
+	gui/macosx/Resources/gl.lproj/InfoPlist.strings \
+	gui/macosx/Resources/he.lproj/InfoPlist.strings \
+	gui/macosx/Resources/hu.lproj/InfoPlist.strings \
+	gui/macosx/Resources/it.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ja.lproj/InfoPlist.strings \
+	gui/macosx/Resources/lv.lproj/InfoPlist.strings \
+	gui/macosx/Resources/nl.lproj/InfoPlist.strings \
+	gui/macosx/Resources/pl.lproj/InfoPlist.strings \
+	gui/macosx/Resources/pt-BR.lproj/InfoPlist.strings \
+	gui/macosx/Resources/pt-PT.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ro.lproj/InfoPlist.strings \
+	gui/macosx/Resources/sk.lproj/InfoPlist.strings \
+	gui/macosx/Resources/sl.lproj/InfoPlist.strings \
+	gui/macosx/Resources/sv.lproj/InfoPlist.strings \
+	gui/macosx/Resources/tr.lproj/InfoPlist.strings \
+	gui/macosx/Resources/uk.lproj/InfoPlist.strings \
+	gui/macosx/Resources/zh-Hans.lproj/InfoPlist.strings
 
 if ENABLE_MACOSX_UI
 dist_libmacosx_plugin_la_DATA = $(libmacosx_plugin_la_RES)

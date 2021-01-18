@@ -2,7 +2,7 @@
  * VLCOpenWindowController.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 994953a8b02f9f086356e2b5f148801ea7be8b3b $
+ * $Id: 57920bc09dd7abbac33afaac4740a55c91eff863 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -414,8 +414,11 @@ static NSString *kCaptureTabViewId  = @"capture";
     // load window
     [self window];
 
-    [_tabView selectTabViewItemWithIdentifier:identifier];
-    [_fileSubCheckbox setState: NSOffState];
+    // Delay this to allow the full animation to run inside the modal event loop
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_tabView selectTabViewItemWithIdentifier:identifier];
+        [_fileSubCheckbox setState: NSOffState];
+    });
 
     int i_result = [NSApp runModalForWindow: self.window];
     [self.window close];

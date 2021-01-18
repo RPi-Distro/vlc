@@ -69,7 +69,7 @@ AOM_CONF += -DAOM_ADS2GAS_REQUIRED=1 -DAOM_ADS2GAS=../build/make/ads2gas.pl -DAO
 endif
 endif
 
-ifdef HAVE_IOS
+ifdef HAVE_DARWIN_OS
 ifneq ($(filter arm aarch64, $(ARCH)),)
 # These targets don't have runtime cpu detection.
 AOM_CONF += -DCONFIG_RUNTIME_CPU_DETECT=0
@@ -94,7 +94,7 @@ endif
 .aom: aom toolchain.cmake
 	cd $< && mkdir -p aom_build
 	cd $</aom_build && LDFLAGS="$(AOM_LDFLAGS)" $(HOSTVARS) CFLAGS="$(AOM_CFLAGS)" CXXFLAGS="$(AOM_CXXFLAGS)" $(CMAKE) ../ $(AOM_CONF)
-	cd $< && $(MAKE) -C aom_build
+	cd $< && $(CMAKEBUILD) aom_build
 	$(call pkg_static,"aom_build/aom.pc")
-	cd $</aom_build && $(MAKE) install
+	cd $</aom_build && $(CMAKEBUILD) . --target install
 	touch $@

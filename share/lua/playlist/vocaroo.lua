@@ -1,7 +1,7 @@
 --[[
  $Id$
 
- Copyright © 2016, 2019 the VideoLAN team
+ Copyright © 2016, 2019-2020 the VideoLAN team
 
  Authors: Pierre Ynard
 
@@ -20,34 +20,25 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
 --]]
 
--- Set to "mp3", "ogg", "flac" or "wav"
-local fmt = "mp3"
-
 -- Probe function.
 function probe()
     return ( vlc.access == "http" or vlc.access == "https" )
-        and ( string.match( vlc.path, "^old%.vocaroo%.com/i/" )
-            or string.match( vlc.path, "^beta%.vocaroo%.com/." )
-            or string.match( vlc.path, "^vocaroo%.com/." ) )
+        and string.match( vlc.path, "^vocaroo%.com/." )
 end
 
 -- Parse function.
 function parse()
-    -- At the moment, a new/beta platform coexists with the old one:
-    -- classic URLs for old media are redirected to the old platform,
-    -- while new media seems accessible only through the new platform.
+    -- The HTML page contains no metadata and is not worth parsing
+    local id = string.match( vlc.path, "^vocaroo%.com/([^?]+)" )
 
-    -- With either platform, HTML pages contain no metadata and are not
-    -- worth parsing.
+    -- Dispatch media to correct CDN server
+    -- function Ic(e){return function(e){if(e.length){if(11==e.length)return ControlConfig.mediaMp3FileUrl;if(12==e.length&&"1"==e[0])return ControlConfig.mediaMp3FileUrl1;if(10==e.length)return ControlConfig.mediaMp3FileUrl1}return ControlConfig.mediaMp3FileUrl}(e)+e}
+    local cdn = ( string.len( id ) == 10 or
+                  ( string.len( id ) == 12 and string.match( id, "^1" ) ) )
+        and "//media1.vocaroo.com/mp3/"
+        or "//media.vocaroo.com/mp3/"
 
-    if string.match( vlc.path, "^old%.vocaroo%.com/" ) then -- Old platform
-        local id = string.match( vlc.path, "vocaroo%.com/i/([^?]*)" )
-        local path = vlc.access.."://old.vocaroo.com/media_command.php?media="..id.."&command=download_"..fmt
-        return { { path = path } }
-    else -- New/beta platform
-        local id = string.match( vlc.path, "vocaroo%.com/([^?]+)" )
-        local path = vlc.access.."://media.vocaroo.com/mp3/"..id
-        return { { path = path } }
-    end
+    local path = vlc.access..":"..cdn..id
+    return { { path = path } }
 end
 

@@ -3,7 +3,7 @@ APACHE=http://mir2.ovh.net/ftp.apache.org/dist
 SF= http://downloads.sourceforge.net/project
 VIDEOLAN=http://downloads.videolan.org/pub/contrib
 
-YASM_VERSION=1.2.0
+YASM_VERSION=1.3.0
 YASM_URL=http://www.tortall.net/projects/yasm/releases/yasm-$(YASM_VERSION).tar.gz
 
 NASM_VERSION=2.14
@@ -57,7 +57,7 @@ FLEX_URL=https://github.com/westes/flex/releases/download/v$(FLEX_VERSION)/flex-
 HELP2MAN_VERSION=1.47.6
 HELP2MAN_URL=$(GNU)/help2man/help2man-$(HELP2MAN_VERSION).tar.xz
 
-MESON_VERSION=0.54.2
+MESON_VERSION=0.55.1
 MESON_URL=https://github.com/mesonbuild/meson/releases/download/$(MESON_VERSION)/meson-$(MESON_VERSION).tar.gz
 
 NINJA_VERSION=1.8.2

@@ -73,11 +73,8 @@ function process_raw(filename)
     end
     str=string.rep("=",#str-1)
 
-    --[[ FIXME:
-    <?xml version="1.0" encoding="charset" standalone="yes" ?> is still a problem. The closing '?>' needs to be printed using '?<?vlc print ">" ?>' to prevent a parse error.
-    --]]
-    local code0 = string.gsub(input,escape(close_tag)," print(["..str.."[")
-    local code1 = string.gsub(code0,escape(open_tag),"]"..str.."]) ")
+    local code0 = string.gsub(input,escape(open_tag),"]"..str.."]) ")
+    local code1 = string.gsub(code0,"(%]"..str.."%]%) "..".-)("..escape(close_tag)..")","%1 print(["..str.."[")
     local code = "print(["..str.."["..code1.."]"..str.."])"
     --[[ Uncomment to debug
     if string.match(filename,"vlm_cmd.xml$") then
@@ -107,6 +104,15 @@ function process(filename)
     end
 end
 
+
+-- TODO: print localized error message
+-- For now this relies on lua bindings inappropriately doing so
+local function callback_nopassword()
+    return [[Status: 403
+Content-Length: 0
+
+]]
+end
 
 function callback_error(path,url,msg)
     local url = url or "&lt;page unknown&gt;"
@@ -163,15 +169,11 @@ function callback_art(data, request, args)
             item = vlc.playlist.get(num).item
         end
         local metas = item:metas()
-        local filename = vlc.strings.decode_uri(string.gsub(metas["artwork_url"],"file://",""))
-        local windowsdrive = string.match(filename, "^/%a:/.+$")  --match windows drive letter
-        if windowsdrive then
-            filename = string.sub(filename, 2)  --remove starting forward slash before the drive letter
-        end
+        local filename = vlc.strings.make_path(metas["artwork_url"])
         local size = vlc.net.stat(filename).size
         local ext = string.match(filename,"%.([^%.]-)$")
         local raw = io.open(filename, 'rb'):read("*a")
-        local content = [[Content-Type: ]]..mimes[ext]..[[
+        local content = [[Content-Type: ]]..(mimes[ext] or "application/octet-stream")..[[
 
 Content-Length: ]]..size..[[
 
@@ -334,5 +336,11 @@ end
 password = vlc.var.inherit(nil,"http-password")
 
 h = vlc.httpd()
-load_dir( http_dir )
-a = h:handler("/art",nil,password,callback_art,nil)
+if password == "" then
+    vlc.msg.err("Password unset, insecure web interface disabled")
+    vlc.msg.info("Set --http-password on the command line if you want to enable the web interface.")
+    p = h:handler("/",nil,nil,callback_nopassword,nil)
+else
+    load_dir( http_dir )
+    a = h:handler("/art",nil,password,callback_art,nil)
+end

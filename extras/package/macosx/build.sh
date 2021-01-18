@@ -10,9 +10,9 @@ info()
 
 ARCH="x86_64"
 MINIMAL_OSX_VERSION="10.7"
-OSX_VERSION=`xcrun --show-sdk-version`
 OSX_KERNELVERSION=`uname -r | cut -d. -f1`
-SDKROOT=`xcode-select -print-path`/Platforms/MacOSX.platform/Developer/SDKs/MacOSX$OSX_VERSION.sdk
+BUILD_ARCH=`uname -m | cut -d. -f1`
+SDKROOT=$(xcrun --show-sdk-path)
 VLCBUILDDIR=""
 
 CORE_COUNT=`getconf NPROCESSORS_ONLN 2>&1`
@@ -53,6 +53,22 @@ spushd()
 spopd()
 {
     popd > /dev/null
+}
+
+get_actual_arch() {
+    if [ "$1" = "aarch64" ]; then
+        echo "arm64"
+    else
+        echo "$1"
+    fi
+}
+
+get_buildsystem_arch() {
+    if [ "$1" = "arm64" ]; then
+        echo "aarch64"
+    else
+        echo "$1"
+    fi
 }
 
 while getopts "hvrcpi:k:a:j:C:b:" OPTION
@@ -115,7 +131,12 @@ if [ "$QUIET" = "yes" ]; then
     out="/dev/null"
 fi
 
-info "Building VLC for the Mac OS X"
+ACTUAL_ARCH=`get_actual_arch $ARCH`
+BUILD_ARCH=`get_buildsystem_arch $BUILD_ARCH`
+BUILD_TRIPLET=$BUILD_ARCH-apple-darwin$OSX_KERNELVERSION
+HOST_TRIPLET=$ARCH-apple-darwin$OSX_KERNELVERSION
+
+info "Building VLC for macOS for architecture ${ACTUAL_ARCH} on a ${BUILD_ARCH} device"
 
 spushd `dirname $0`/../../..
 vlcroot=`pwd`
@@ -125,20 +146,21 @@ builddir=`pwd`
 
 info "Building in \"$builddir\""
 
-TRIPLET=$ARCH-apple-darwin$OSX_KERNELVERSION
-
 python3Path=$(echo /Library/Frameworks/Python.framework/Versions/3.*/bin | awk '{print $1;}')
 if [ ! -d "$python3Path" ]; then
 	python3Path=""
 fi
 
+export AR="`xcrun --find ar`"
 export CC="`xcrun --find clang`"
 export CXX="`xcrun --find clang++`"
+export NM="`xcrun --find nm`"
 export OBJC="`xcrun --find clang`"
-export OSX_VERSION
+export RANLIB="`xcrun --find ranlib`"
+export STRINGS="`xcrun --find strings`"
+export STRIP="`xcrun --find strip`"
 export SDKROOT
-export PATH="${vlcroot}/extras/tools/build/bin:${vlcroot}/contrib/${TRIPLET}/bin:$python3Path:${VLC_PATH}:/bin:/sbin:/usr/bin:/usr/sbin"
-
+export PATH="${vlcroot}/extras/tools/build/bin:${vlcroot}/contrib/${BUILD_TRIPLET}/bin:$python3Path:${VLC_PATH}:/bin:/sbin:/usr/bin:/usr/sbin"
 
 # Select avcodec flavor to compile contribs with
 export USE_FFMPEG=1
@@ -218,14 +240,15 @@ export CFLAGS="-Werror=partial-availability"
 export CXXFLAGS="-Werror=partial-availability"
 export OBJCFLAGS="-Werror=partial-availability"
 
-export EXTRA_CFLAGS="-isysroot $SDKROOT -mmacosx-version-min=$MINIMAL_OSX_VERSION -DMACOSX_DEPLOYMENT_TARGET=$MINIMAL_OSX_VERSION"
-export EXTRA_LDFLAGS="-Wl,-syslibroot,$SDKROOT -mmacosx-version-min=$MINIMAL_OSX_VERSION -isysroot $SDKROOT -DMACOSX_DEPLOYMENT_TARGET=$MINIMAL_OSX_VERSION"
-export XCODE_FLAGS="MACOSX_DEPLOYMENT_TARGET=$MINIMAL_OSX_VERSION -sdk macosx$OSX_VERSION WARNING_CFLAGS=-Werror=partial-availability"
+export EXTRA_CFLAGS="-isysroot $SDKROOT -mmacosx-version-min=$MINIMAL_OSX_VERSION -DMACOSX_DEPLOYMENT_TARGET=$MINIMAL_OSX_VERSION -arch $ACTUAL_ARCH"
+export EXTRA_LDFLAGS="-Wl,-syslibroot,$SDKROOT -mmacosx-version-min=$MINIMAL_OSX_VERSION -isysroot $SDKROOT -DMACOSX_DEPLOYMENT_TARGET=$MINIMAL_OSX_VERSION -arch $ACTUAL_ARCH"
+# xcodebuild only allows to set a build-in sdk, not a custom one. Therefore use the default included SDK here
+export XCODE_FLAGS="MACOSX_DEPLOYMENT_TARGET=$MINIMAL_OSX_VERSION -sdk macosx WARNING_CFLAGS=-Werror=partial-availability"
 
 info "Building contribs"
 spushd "${vlcroot}/contrib"
-mkdir -p contrib-$TRIPLET && cd contrib-$TRIPLET
-../bootstrap --build=$TRIPLET --host=$TRIPLET > $out
+mkdir -p contrib-$HOST_TRIPLET && cd contrib-$HOST_TRIPLET
+../bootstrap --build=$BUILD_TRIPLET --host=$HOST_TRIPLET > $out
 if [ "$REBUILD" = "yes" ]; then
     make clean
 fi
@@ -239,7 +262,7 @@ if [ "$CONTRIBFROMSOURCE" = "yes" ]; then
     fi
 
 else
-if [ ! -e "../$TRIPLET" ]; then
+if [ ! -e "../$HOST_TRIPLET" ]; then
     make prebuilt > $out
 fi
 fi
@@ -254,9 +277,10 @@ unset EXTRA_LDFLAGS
 unset XCODE_FLAGS
 
 # Enable debug symbols by default
-export CFLAGS="-g"
-export CXXFLAGS="-g"
-export OBJCFLAGS="-g"
+export CFLAGS="-g -arch $ACTUAL_ARCH"
+export CXXFLAGS="-g -arch $ACTUAL_ARCH"
+export OBJCFLAGS="-g -arch $ACTUAL_ARCH"
+export LDFLAGS="-arch $ACTUAL_ARCH"
 
 #
 # vlc/bootstrap
@@ -286,14 +310,13 @@ fi
 if [ "${vlcroot}/configure" -nt Makefile ]; then
 
   ${vlcroot}/extras/package/macosx/configure.sh \
-      --build=$TRIPLET \
-      --host=$TRIPLET \
+      --build=$BUILD_TRIPLET \
+      --host=$HOST_TRIPLET \
       --with-macosx-version-min=$MINIMAL_OSX_VERSION \
       --with-macosx-sdk=$SDKROOT \
       $CONFIGFLAGS \
       $VLC_CONFIGURE_ARGS > $out
 fi
-
 
 #
 # make
@@ -309,7 +332,6 @@ make -j$JOBS
 
 info "Preparing VLC.app"
 make VLC.app
-
 
 if [ "$PACKAGETYPE" = "u" ]; then
     info "Copying app with debug symbols into VLC-debug.app and stripping"
@@ -328,7 +350,9 @@ if [ "$PACKAGETYPE" = "u" ]; then
     find VLC.app/ -type f -name "Growl" -exec strip -x {} \;
     find VLC.app/ -type f -name "Breakpad" -exec strip -x {} \;
 
+if [ "$BUILD_TRIPLET" = "$HOST_TRIPLET" ]; then
     bin/vlc-cache-gen VLC.app/Contents/MacOS/plugins
+fi
 
     info "Building VLC release archive"
     make package-macosx-release

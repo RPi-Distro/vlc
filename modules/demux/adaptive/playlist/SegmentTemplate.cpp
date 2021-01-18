@@ -2,7 +2,7 @@
  * SegmentTemplate.cpp: Implement the UrlTemplate element.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 990ee0bb1c730143fe70b529119306dc10da8120 $
+ * $Id: b13f85a494e379247b4055818200f059097d05e8 $
  *
  * Authors: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
  *
@@ -96,6 +96,9 @@ size_t MediaSegmentTemplate::pruneBySequenceNumber(uint64_t number)
 
 uint64_t MediaSegmentTemplate::inheritStartNumber() const
 {
+    if( startNumber != std::numeric_limits<uint64_t>::max() )
+        return startNumber;
+
     const SegmentInformation *ulevel = parentSegmentInformation ? parentSegmentInformation
                                                                 : NULL;
     for( ; ulevel ; ulevel = ulevel->parent )

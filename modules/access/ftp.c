@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: cda4d67014b4e67de622735c225a976a78bb80be $
+ * $Id: 0aea13ac95979c931a6cb13676ca9681fc5da2aa $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont - EPSV support
@@ -1154,7 +1154,7 @@ static int ftp_StartStream( vlc_object_t *p_access, access_sys_t *p_sys,
         }
         else
         if( ftp_SendCommand( p_access, p_sys, "NLST" ) < 0 ||
-            ftp_RecvCommandInit( p_access, p_sys ) == 1 )
+            ftp_RecvCommandInit( p_access, p_sys ) != 1 )
         {
             msg_Err( p_access, "cannot list directory contents" );
             return VLC_EGENERIC;

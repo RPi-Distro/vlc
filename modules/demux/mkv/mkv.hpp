@@ -2,7 +2,7 @@
  * mkv.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008 VLC authors and VideoLAN
- * $Id: 38a62aa2af2ca8462eedfda25608543d1bd9eec6 $
+ * $Id: fa9a1e81a5994a487ec846fed6d8c9a2cec3139e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -113,7 +113,7 @@ enum
 
 #define MKVD_TIMECODESCALE 1000000
 
-#define MKV_IS_ID( el, C ) ( el != NULL && (el->operator const EbmlId&()) == (C::ClassInfos.ClassId()) )
+#define MKV_IS_ID( el, C ) ( el != NULL && (el->operator const EbmlId&()) == (C::ClassInfos.ClassId()) && !el->IsDummy() )
 #define MKV_CHECKED_PTR_DECL( name, type, src ) type * name = MKV_IS_ID(src, type) ? static_cast<type*>(src) : NULL
 #define MKV_CHECKED_PTR_DECL_CONST( name, type, src ) const type * name = MKV_IS_ID(src, type) ? static_cast<const type*>(src) : NULL
 

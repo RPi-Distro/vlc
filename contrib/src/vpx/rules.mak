@@ -1,6 +1,6 @@
 # libvpx
 
-VPX_VERSION := 1.8.2
+VPX_VERSION := 1.9.0
 VPX_URL := http://github.com/webmproject/libvpx/archive/v${VPX_VERSION}.tar.gz
 
 PKGS += vpx
@@ -23,6 +23,9 @@ ifdef HAVE_ANDROID
 endif
 ifdef HAVE_MACOSX
 	$(APPLY) $(SRC)/vpx/darwin-do-not-overwrite-ld.patch
+ifeq ($(ARCH),aarch64)
+	$(APPLY) $(SRC)/vpx/libvpx-darwin-aarch64.patch
+endif
 endif
 	$(MOVE)
 
@@ -71,20 +74,12 @@ ifdef HAVE_ANDROID
 VPX_OS := android
 else ifdef HAVE_LINUX
 VPX_OS := linux
-else ifdef HAVE_MACOSX
-ifeq ($(OSX_VERSION),10.5)
-VPX_OS := darwin9
-else
-VPX_OS := darwin10
-endif
-VPX_CROSS :=
-else ifdef HAVE_IOS
+else ifdef HAVE_DARWIN_OS
 VPX_CROSS :=
 ifeq ($(ARCH),$(filter $(ARCH), arm aarch64))
 VPX_OS := darwin
 else
 VPX_OS := darwin11
-VPX_CROSS :=
 endif
 else ifdef HAVE_SOLARIS
 VPX_OS := solaris
@@ -113,15 +108,13 @@ VPX_CONF := \
 	--enable-vp9-highbitdepth \
 	--disable-tools
 
+ifneq ($(filter arm aarch64, $(ARCH)),)
+# Only enable runtime cpu detect on architectures other than arm/aarch64
+# when building for Windows and Darwin
 ifndef HAVE_WIN32
-ifndef HAVE_IOS
+ifndef HAVE_DARWIN_OS
 VPX_CONF += --enable-runtime-cpu-detect
 endif
-else
-# WIN32
-ifeq ($(filter arm aarch64, $(ARCH)),)
-# Only enable runtime cpu detect on architectures other than arm/aarch64
-VPX_CONF += --enable-runtime-cpu-detect
 endif
 endif
 
@@ -134,24 +127,17 @@ VPX_CONF += --enable-pic
 else
 VPX_CONF += --extra-cflags="-mstackrealign"
 endif
-ifdef HAVE_MACOSX
-VPX_CONF += --extra-cflags="$(CFLAGS) $(EXTRA_CFLAGS)"
-endif
-ifdef HAVE_IOS
+ifdef HAVE_DARWIN_OS
 VPX_CONF += --enable-vp8-decoder --disable-tools
 VPX_CONF += --extra-cflags="$(CFLAGS) $(EXTRA_CFLAGS)"
+ifdef HAVE_IOS
 ifdef HAVE_TVOS
 VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -mtvos-version-min=9.0
 else
 VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -miphoneos-version-min=8.4
 endif
-ifeq ($(ARCH),aarch64)
-VPX_LDFLAGS += -arch arm64
-else
-ifndef HAVE_IOS
-VPX_LDFLAGS += -arch $(ARCH)
 endif
-endif
+VPX_LDFLAGS += -arch $(PLATFORM_SHORT_ARCH)
 endif
 
 ifneq ($(filter i386 x86_64,$(ARCH)),)
