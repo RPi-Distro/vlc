@@ -2,7 +2,7 @@
  * VLCPlaylist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: a6226de4961a6b1a7f2bb3d7d469874858b20331 $
+ * $Id: 07413d05a5471d7c99459ddb1f232b244249590c $
  *
  * Authors: Derk-Jan Hartman <hartman at videola/n dot org>
  *          Benjamin Pracht <bigben at videolan dot org>
@@ -52,19 +52,6 @@
 #import <vlc_interface.h>
 #include <vlc_url.h>
 
-/*****************************************************************************
- * An extension to NSOutlineView's interface to fix compilation warnings
- * and let us access these 2 functions properly.
- * This uses a private API, but works fine on all current OSX releases.
- * Radar ID 11739459 request a public API for this. However, it is probably
- * easier and faster to recreate similar looking bitmaps ourselves.
- *****************************************************************************/
-
-@interface NSOutlineView (UndocumentedSortImages)
-+ (NSImage *)_defaultTableHeaderSortImage;
-+ (NSImage *)_defaultTableHeaderReverseSortImage;
-@end
-
 @interface VLCPlaylist ()
 {
     NSImage *_descendingSortingImage;
@@ -93,11 +80,8 @@
 {
     self = [super init];
     if (self) {
-        /* This uses a private API, but works fine on all current OSX releases.
-         * Radar ID 11739459 request a public API for this. However, it is probably
-         * easier and faster to recreate similar looking bitmaps ourselves. */
-        _ascendingSortingImage = [[NSOutlineView class] _defaultTableHeaderSortImage];
-        _descendingSortingImage = [[NSOutlineView class] _defaultTableHeaderReverseSortImage];
+        _ascendingSortingImage = [NSImage imageNamed:@"NSAscendingSortIndicator"];
+        _descendingSortingImage = [NSImage imageNamed:@"NSDescendingSortIndicator"];
 
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(applicationWillTerminate:) name: NSApplicationWillTerminateNotification object: nil];
 
@@ -198,23 +182,34 @@
     // Setup playlist table column selection for both context and main menu
     NSMenu *contextMenu = [[NSMenu alloc] init];
     [self setupPlaylistTableColumnsForMenu:contextMenu];
-    [_playlistHeaderView setMenu: contextMenu];
+    [_playlistHeaderView setMenu:contextMenu];
     [self setupPlaylistTableColumnsForMenu:[[[VLCMain sharedInstance] mainMenu] playlistTableColumnsMenu]];
 
-    NSArray * columnArray = [[NSUserDefaults standardUserDefaults] arrayForKey:@"PlaylistColumnSelection"];
-    NSUInteger columnCount = [columnArray count];
-    NSString * column;
+    NSArray *columnArray = [[NSUserDefaults standardUserDefaults] arrayForKey:@"PlaylistColumnSelection"];
 
-    for (NSUInteger i = 0; i < columnCount; i++) {
-        column = [[columnArray objectAtIndex:i] firstObject];
-        if ([column isEqualToString:@"status"])
+    BOOL hasTitleItem = NO;
+
+    for (NSArray *column in columnArray) {
+        NSString *columnName = [column objectAtIndex:0];
+        NSNumber *columnWidth = [column objectAtIndex:1];
+
+        if ([columnName isEqualToString:STATUS_COLUMN])
             continue;
 
-        if(![self setPlaylistColumnTableState: NSOnState forColumn:column])
+        // Memorize if we custom set always-enabled title item
+        if ([columnName isEqualToString:TITLE_COLUMN]) {
+            hasTitleItem = YES;
+        }
+
+        if(![self setPlaylistColumnTableState: NSOnState forColumn:columnName])
             continue;
 
-        [[_outlineView tableColumnWithIdentifier: column] setWidth: [[[columnArray objectAtIndex:i] objectAtIndex:1] floatValue]];
+        [[_outlineView tableColumnWithIdentifier:columnName] setWidth:[columnWidth floatValue]];
     }
+
+    // Set the always enabled title item if not already done
+    if (!hasTitleItem)
+        [self setPlaylistColumnTableState:NSOnState forColumn:TITLE_COLUMN];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification

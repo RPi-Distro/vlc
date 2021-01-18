@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: e77e39805ba0eaacc6a12b79984948b0ad3542da $
+ * $Id: 5f2bb1bfceac66ffe909e2cfb1d8d46c1b6768b9 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -810,7 +810,7 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
                                                      withView: parentView];
             break;
         case CONFIG_ITEM_FLOAT:
-            if (_p_item->min.f > FLT_MIN && _p_item->max.f < FLT_MAX)
+            if (_p_item->min.f > -FLT_MAX && _p_item->max.f < FLT_MAX)
                 control = [[RangedFloatConfigControl alloc] initWithItem: _p_item withView: parentView];
             else
                 control = [[FloatConfigControl alloc] initWithItem: _p_item withView: parentView];
@@ -1257,7 +1257,7 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
             module_config_t *p_cfg = p_config + i;
             /* Hack: required subcategory is stored in i_min */
             if (p_cfg->i_type == CONFIG_SUBCATEGORY &&
-                p_cfg->value.i == p_cfg->min.i) {
+                p_cfg->value.i == self.p_item->min.i) {
                 NSString *o_description = _NS(module_get_name(p_parser, TRUE));
                 if ([newval isEqualToString: o_description]) {
                     returnval = strdup(module_get_object(p_parser));

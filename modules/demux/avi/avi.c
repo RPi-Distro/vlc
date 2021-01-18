@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 8a39b5dd77517f81becec505a9bf3f649f4752fa $
+ * $Id: ee31340bb6e213a2e0d9eb5e22b390007debe28c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -916,7 +916,7 @@ aviindex:
             tk->i_samplesize != 0 )
             continue;
 
-        avi_chunk_list_t *p_strl = AVI_ChunkFind( p_hdrl, AVIFOURCC_strl, i, true );
+        avi_chunk_list_t *p_strl = AVI_ChunkFind( p_hdrl, AVIFOURCC_strl, tk->fmt.i_id, true );
         avi_chunk_strf_t *p_strf = AVI_ChunkFind( p_strl, AVIFOURCC_strf, 0, false );
         if( !p_strf || p_strf->i_cat != AUDIO_ES )
             continue;
@@ -2660,7 +2660,8 @@ static void AVI_IndexLoad_indx( demux_t *p_demux,
                 {
                     break;
                 }
-                if( ck_sub.indx.i_indextype == AVI_INDEX_OF_CHUNKS )
+                if( ck_sub.common.i_chunk_fourcc == AVIFOURCC_indx &&
+                     ck_sub.indx.i_indextype == AVI_INDEX_OF_CHUNKS )
                     __Parse_indx( p_demux, &p_index[i_stream], pi_last_offset, &ck_sub.indx );
                 AVI_ChunkClean( p_demux->s, &ck_sub );
             }
@@ -3002,7 +3003,8 @@ static void AVI_ExtractSubtitle( demux_t *p_demux,
             p_indx->i_entriesinuse > 0 )
         {
             if( vlc_stream_Seek( p_demux->s, p_indx->idx.super[0].i_offset ) ||
-                AVI_ChunkRead( p_demux->s, &ck, NULL  ) )
+                AVI_ChunkRead( p_demux->s, &ck, NULL  ) ||
+                ck.common.i_chunk_fourcc != AVIFOURCC_indx )
                 goto exit;
             p_indx = &ck.indx;
         }
@@ -3077,7 +3079,7 @@ static void AVI_ExtractSubtitle( demux_t *p_demux,
     if( i_size < 6 || GetWLE( &p[0] ) != 0x04 )
         goto exit;
     const unsigned i_payload = GetDWLE( &p[2] );
-    if( i_size < 6 + i_payload || i_payload <= 0 )
+    if( i_size - 6 < i_payload || i_payload == 0 )
         goto exit;
     p += 6;
     i_size -= 6;

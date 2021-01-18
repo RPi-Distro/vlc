@@ -6,6 +6,8 @@
 	<string>English</string>
 	<key>NSRequiresAquaSystemAppearance</key>
 	<true/>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<true/>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -1373,8 +1375,6 @@
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>VLC</string>
-	<key>CFBundleGetInfoString</key>
-	<string>@COPYRIGHT_MESSAGE@</string>
 	<key>CFBundleIconFile</key>
 	<string>VLC.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -1385,10 +1385,10 @@
 	<string>VLC media player</string>
 	<key>CFBundleDisplayName</key>
 	<string>VLC</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>@VERSION@</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>VLC#</string>
 	<key>BreakpadProduct</key>
@@ -1399,6 +1399,24 @@
 	<string>1</string>
 	<key>BreakpadURL</key>
 	<string>@BREAKPAD_URL@/reports</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright (c) @COPYRIGHT_YEARS@ VLC authors and VideoLAN</string>
+	<key>NSCameraUsageDescription</key>
+	<string>VLC wants to access the camera as requested by the user.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>VLC wants to access the microphone as requested by the user.</string>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>VLC wants to pause and resume external media players.</string>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>VLC wants to access the desktop folder as requested by the user.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>VLC wants to access the documents folder as requested by the user.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>VLC wants to access the downloads folder as requested by the user.</string>
+	<key>NSNetworkVolumesUsageDescription</key>
+	<string>VLC wants to access a network volume as requested by the user.</string>
+	<key>NSRemovableVolumesUsageDescription</key>
+	<string>VLC wants to access a removable volume as requested by the user.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -1520,8 +1538,6 @@
 	<string>VLCApplication</string>
 	<key>NSSupportsAutomaticGraphicsSwitching</key>
 	<true/>
-	<key>SUFeedURL</key>
-	<string>https://update.videolan.org/vlc/sparkle/vlc-intel64.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>UTExportedTypeDeclarations</key>

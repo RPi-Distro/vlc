@@ -25,6 +25,7 @@
 	<head>
 		<title><?vlc gettext("VLC media player - Web Interface") ?></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="referrer" content="no-referrer" />
 		<link href="favicon.ico" type="image/x-icon" rel="shortcut icon" />
 		<script type="text/javascript" src="js/common.js"></script>
 		<script type="text/javascript">
@@ -36,8 +37,8 @@
 		</script>
 		<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.13.custom.css" rel="stylesheet" />
 		<link type="text/css" href="css/main.css" rel="stylesheet" />
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="js/jquery.jstree.js"></script>
 		<script type="text/javascript" src="js/ui.js"></script>
 		<script type="text/javascript" src="js/controllers.js"></script>
@@ -162,13 +163,31 @@
 					}
 					return false;
 				});
+				$('#qrCodeConfirm').dialog({
+					autoOpen: false,
+					width:600,
+					modal: true,
+					buttons:{
+						"<?vlc gettext("Yes") ?>":function(){
+							$(this).dialog('close');
+							var urlimg = $('#mobileintflink').prop('href');
+							var codeimg = $('<img width="350" height="350" alt="qrcode"/>');
+							codeimg.attr('src', 'https://chart.apis.google.com/chart?cht=qr&chs=350x350&chld=L&choe=UTF-8&chl=' + encodeURIComponent(urlimg));
+							codeimg.dialog({width: 350, height: 350, title: "<?vlc gettext("QR Code") ?>"});
+						},
+						"<?vlc gettext("No") ?>":function(){
+							$(this).dialog('close');
+							window.location = $('#mobileintflink').attr('href');
+						}
+					}
+				});
 				$('#windowStreamConfirm').dialog({
 					autoOpen: false,
 					width:600,
 					modal: true,
 					buttons:{
 						"<?vlc gettext("Yes") ?>":function(){
-							var file			=	$('[current="current"]','#libraryTree').length>0 ? $('[current="current"]','#libraryTree').first().attr('uri') : ($('.jstree-clicked','#libraryTree').length>0 ? $('.jstree-clicked','#libraryTree').first().parents().first().attr('uri') : ($('#plid_'+current_id).attr('uri') ? $('#plid_'+current_id).attr('uri') : false));
+							var file			=	$('[current="current"]','#libraryTree').length>0 ? $('[current="current"]','#libraryTree').first().attr('uri') : ($('.jstree-clicked','#libraryTree').length>0 ? $('.jstree-clicked','#libraryTree').first().parents().first().attr('uri') : ($('#plid_'+current_playlist_id).attr('uri') ? $('#plid_'+current_playlist_id).attr('uri') : false));
 							if(file){
 								if($('#viewContainer').css('display')=='none'){
 									$('#buttonViewer').click();
@@ -189,9 +208,9 @@
 				$('#viewContainer').animate({height: 'toggle'});
 			});
 			/* delay script loading so we won't block if we have no net access */
-			$.getScript('http://releases.flowplayer.org/js/flowplayer-3.2.6.min.js', function(data, textStatus){
+			$.getScript('https://releases.flowplayer.org/js/flowplayer-3.2.6.min.js', function(data, textStatus){
 				$('#player').empty();
-				flowplayer("player", "http://releases.flowplayer.org/swf/flowplayer-3.2.7.swf");
+				flowplayer("player", "https://releases.flowplayer.org/swf/flowplayer-3.2.7.swf");
 				/* .getScript only handles success() */
 			 });
 		//]]>
@@ -254,11 +273,19 @@
 				</div>
 			</div>
 			<div class="footer">
-				VLC <?vlc print(vlc.misc.version() .. ' - Lua Web Interface - <a id="mobileintflink" href="/mobile.html">Mobile Interface</a> - ' .. vlc.misc.copyright()) ?>
+				VLC <?vlc print(vlc.misc.version() .. ' - Lua Web Interface - <a id="mobileintflink" href="mobile.html">Mobile Interface</a> - ' .. vlc.misc.copyright()) ?>
 			</div>
 		</div>
 		</div>
-		<div id="windowStreamConfirm" title="Confirm Stream Settings">
+		<div id="qrCodeConfirm" title="<?vlc gettext("Generate QR Code") ?>">
+			<p>
+				<?vlc gettext("VLC can display a QR code linking to the mobile version of the web interface; the web address of the web interface of your VLC media player instance will be transmitted over the internet to the Google Image Charts web service to generate this QR code.") ?>
+			</p>
+			<p>
+				<?vlc gettext("Do you want to go ahead with this?") ?>
+			</p>
+		</div>
+		<div id="windowStreamConfirm" title="<?vlc gettext("Confirm Stream Settings") ?>">
 			<p>
 				<?vlc gettext("By creating a stream, the <i>Main Controls</i> will operate the stream instead of the main interface.") ?>
 				<?vlc gettext("The stream will be created using default settings, for more advanced configuration, or to modify the default settings, select the button to the right: <i>Manage Streams</i>") ?>

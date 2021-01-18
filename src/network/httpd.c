@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 VLC authors and VideoLAN
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: d3bc3d97aa6dd3a48fa15cf22c3b00085451ca49 $
+ * $Id: 69e639948330378388f1103698e75796139023a4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont
@@ -93,6 +93,7 @@ struct httpd_host_t
     int         i_url;
     httpd_url_t **url;
 
+    bool           b_no_timeout;
     int            i_client;
     httpd_client_t **client;
 
@@ -244,7 +245,7 @@ static const char *httpd_ReasonFromCode(unsigned i_code)
     assert((i_code >= 100) && (i_code <= 599));
 
     const http_status_info *p = http_reason;
-    while (i_code < p->i_code)
+    while (i_code > p->i_code)
         p++;
 
     if (p->i_code == i_code)
@@ -947,6 +948,10 @@ static httpd_host_t *httpd_HostCreate(vlc_object_t *p_this,
     vlc_cond_init(&host->wait);
     host->i_ref = 1;
 
+    host->b_no_timeout = var_Type(p_this, "http-no-timeout") != 0;
+    if (host->b_no_timeout)
+        msg_Warn(p_this, "httpd timeout disabled");
+
     char *hostname = var_InheritString(p_this, hostvar);
 
     host->fds = net_ListenTCP(p_this, hostname, port);
@@ -1599,11 +1604,6 @@ static int httpd_ClientSend(httpd_client_t *cl)
     i_len = httpd_NetSend(cl, &cl->p_buffer[cl->i_buffer],
                            cl->i_buffer_size - cl->i_buffer);
 
-    if (i_len == 0) {
-        cl->i_state = HTTPD_CLIENT_DEAD; /* connection closed */
-        return 0;
-    }
-
     if (i_len < 0) {
 #if defined(_WIN32)
         if (WSAGetLastError() == WSAEWOULDBLOCK)
@@ -2036,6 +2036,8 @@ static void httpdLoop(httpd_host_t *host)
         }
 
         cl = httpd_ClientNew(sk, now);
+        if (host->b_no_timeout)
+            cl->i_activity_timeout = 0;
 
         if (host->p_tls != NULL)
             cl->i_state = HTTPD_CLIENT_TLS_HS_OUT;

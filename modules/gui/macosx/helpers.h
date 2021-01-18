@@ -2,7 +2,7 @@
  * helpers.h
  *****************************************************************************
  * Copyright (C) 2009-2015 VLC authors and VideoLAN
- * $Id: d58a761b5200c0d9f140f3ac2e5228352013a7af $
+ * $Id: 3c6fc44d13674ae0b159e51c12c8a2e15ff1c609 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -55,10 +55,16 @@ static inline NSArray<NSValue *> *getVouts(void)
     vout_thread_t **pp_vouts;
     size_t i_num_vouts;
 
-    if (!p_input
-        || input_Control(p_input, INPUT_GET_VOUTS, &pp_vouts, &i_num_vouts)
-        || !i_num_vouts)
+    if (!p_input)
         return nil;
+
+    if (input_Control(p_input, INPUT_GET_VOUTS, &pp_vouts, &i_num_vouts)
+        || !i_num_vouts) {
+        vlc_object_release(p_input);
+        return nil;
+    }
+
+    vlc_object_release(p_input);
 
     NSMutableArray<NSValue *> *vouts =
         [NSMutableArray arrayWithCapacity:i_num_vouts];

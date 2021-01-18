@@ -2,7 +2,7 @@
  * prefs.m: MacOS X module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2018 VLC authors and VideoLAN
- * $Id: 2d3f2e8d89cdfcada997b26b9a709d2902b5ac9b $
+ * $Id: ddb91f69662d11dddf078461b7e0a4abec823419 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -535,7 +535,7 @@
                 }
             }
             else if (!module_is_main(p_module) && (CONFIG_ITEM(configType) || configType == CONFIG_SECTION)) {
-                if (![[subCategoryItem children] containsObject: pluginItem]) {
+                if (subCategoryItem && ![[subCategoryItem children] containsObject: pluginItem]) {
                     [[subCategoryItem children] addObject:pluginItem];
                 }
 

@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: ede449141f03711f5909d45d897247db82d5fa09 $
+ * $Id: 5aee413ff4a4f1f4f206ef66a97e47d1007b5056 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -894,12 +894,12 @@ void InputManager::reverse()
 
 void InputManager::slower()
 {
-    var_TriggerCallback( THEPL, "rate-slower" );
+    var_SetInteger( p_intf->obj.libvlc, "key-action", ACTIONID_SLOWER );
 }
 
 void InputManager::faster()
 {
-    var_TriggerCallback( THEPL, "rate-faster" );
+    var_SetInteger( p_intf->obj.libvlc, "key-action", ACTIONID_FASTER );
 }
 
 void InputManager::littlefaster()

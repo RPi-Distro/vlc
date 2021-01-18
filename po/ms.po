@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-07-28 16:45+0200\n"
-"PO-Revision-Date: 2020-03-29 09:23+0200\n"
+"POT-Creation-Date: 2021-01-17 23:10+0100\n"
+"PO-Revision-Date: 2020-09-11 01:36+0200\n"
 "Last-Translator: abuyop <abuyop@gmail.com>, 2020\n"
 "Language-Team: Malay (https://www.transifex.com/yaron/teams/16553/ms/)\n"
 "Language: ms\n"
@@ -358,8 +358,8 @@ msgstr "Perlaksanaan Video atas Permintaan VLC"
 #: include/vlc_config_cat.h:173 src/libvlc-module.c:2070
 #: src/playlist/engine.c:243 modules/demux/playlist/playlist.c:64
 #: modules/demux/playlist/playlist.c:65 modules/demux/playlist/wpl.c:99
-#: modules/gui/macosx/VLCMainWindow.m:319
-#: modules/gui/macosx/VLCMainWindow.m:896
+#: modules/gui/macosx/VLCMainWindow.m:321
+#: modules/gui/macosx/VLCMainWindow.m:902
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
@@ -468,7 +468,7 @@ msgstr "Perih&al"
 #: modules/gui/macosx/VLCMainMenu.m:385 modules/gui/macosx/VLCMainMenu.m:497
 #: modules/gui/macosx/VLCMainMenu.m:504 modules/gui/macosx/VLCMainMenu.m:1339
 #: modules/gui/macosx/VLCMainMenu.m:1340 modules/gui/macosx/VLCMainMenu.m:1341
-#: modules/gui/macosx/VLCPlaylist.m:228
+#: modules/gui/macosx/VLCPlaylist.m:223
 #: modules/gui/qt/components/controller.hpp:107
 #: modules/gui/qt/dialogs/vlm.cpp:538
 msgid "Play"
@@ -539,7 +539,7 @@ msgstr "Random Mati"
 msgid "Add to Playlist"
 msgstr "Tambah ke Senarai Main"
 
-#: include/vlc_intf_strings.h:85 modules/gui/macosx/VLCPlaylist.m:235
+#: include/vlc_intf_strings.h:85 modules/gui/macosx/VLCPlaylist.m:230
 msgid "Add File..."
 msgstr "Tambah Fail..."
 
@@ -555,7 +555,7 @@ msgstr "Tambah Folder..."
 msgid "Save Playlist to &File..."
 msgstr "Simpan Senarai Main ke dalam &Fail..."
 
-#: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:189
+#: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:191
 #: modules/gui/qt/components/preferences_widgets.cpp:1138
 msgid "Search"
 msgstr "Gelintar"
@@ -633,7 +633,7 @@ msgstr "Bilangan penapis maksimum (%u) telah dicapai."
 
 #: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:948
 #: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:124
-#: modules/gui/macosx/VLCMainMenu.m:243 modules/gui/macosx/VLCMainWindow.m:1039
+#: modules/gui/macosx/VLCMainMenu.m:243 modules/gui/macosx/VLCMainWindow.m:999
 #: modules/video_filter/postproc.c:235
 msgid "Disable"
 msgstr "Dilumpuhkan"
@@ -991,15 +991,15 @@ msgid "Codec"
 msgstr "Kodeks"
 
 #: src/input/es_out.c:3111 src/input/meta.c:66 modules/access/imem.c:71
-#: modules/gui/macosx/VLCPlaylist.m:114
+#: modules/gui/macosx/VLCPlaylist.m:98
 #: modules/gui/macosx/VLCSimplePrefsController.m:317
 #: modules/stream_out/setid.c:49
 msgid "Language"
 msgstr "Bahasa"
 
 #: src/input/es_out.c:3114 src/input/meta.c:61
-#: modules/gui/macosx/VLCBookmarksWindowController.m:83
-#: modules/gui/macosx/VLCPlaylist.m:112 modules/gui/qt/dialogs/bookmarks.cpp:75
+#: modules/gui/macosx/VLCBookmarksWindowController.m:80
+#: modules/gui/macosx/VLCPlaylist.m:96 modules/gui/qt/dialogs/bookmarks.cpp:75
 #: modules/gui/qt/dialogs/epg.cpp:55
 msgid "Description"
 msgstr "Keterangan"
@@ -1007,7 +1007,7 @@ msgstr "Keterangan"
 #: src/input/es_out.c:3120 src/input/es_out.c:3164 src/input/es_out.c:3354
 #: modules/gui/macosx/VLCAddonsWindowController.m:133
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
-#: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1487
+#: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1488
 msgid "Type"
 msgstr "Jenis"
 
@@ -1271,7 +1271,7 @@ msgstr "VLC tidak dapat membuka MRL '%s'. Periksa log untuk perincian."
 #: modules/gui/macosx/VLCMainMenu.m:410
 #: modules/gui/macosx/VLCOpenWindowController.m:178
 #: modules/gui/macosx/VLCOpenWindowController.m:180
-#: modules/gui/macosx/VLCPlaylist.m:107 modules/gui/macosx/VLCPlaylistInfo.m:59
+#: modules/gui/macosx/VLCPlaylist.m:91 modules/gui/macosx/VLCPlaylistInfo.m:59
 #: modules/gui/qt/components/open_panels.cpp:507
 #: modules/gui/qt/components/open_panels.cpp:521
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
@@ -1284,7 +1284,7 @@ msgid "Artist"
 msgstr "Artis"
 
 #: src/input/meta.c:57 modules/demux/mp4/meta.c:87
-#: modules/gui/macosx/VLCPlaylist.m:110 modules/mux/avi.c:51
+#: modules/gui/macosx/VLCPlaylist.m:94 modules/mux/avi.c:51
 msgid "Genre"
 msgstr "Genre"
 
@@ -1293,7 +1293,7 @@ msgid "Copyright"
 msgstr "Hakcipta"
 
 #: src/input/meta.c:59 src/libvlc-module.c:239
-#: modules/gui/macosx/VLCPlaylist.m:111
+#: modules/gui/macosx/VLCPlaylist.m:95
 msgid "Album"
 msgstr "Album"
 
@@ -1305,8 +1305,7 @@ msgstr "Nombor trek"
 msgid "Rating"
 msgstr "Penarafan"
 
-#: src/input/meta.c:63 modules/gui/macosx/VLCPlaylist.m:113
-#: modules/mux/avi.c:50
+#: src/input/meta.c:63 modules/gui/macosx/VLCPlaylist.m:97 modules/mux/avi.c:50
 msgid "Date"
 msgstr "Tarikh"
 
@@ -1433,7 +1432,7 @@ msgstr "Bab berikut"
 msgid "Previous chapter"
 msgstr "Bab terdahulu"
 
-#: src/input/vlm.c:641 src/input/vlm.c:1018
+#: src/input/vlm.c:641 src/input/vlm.c:1020
 #, c-format
 msgid "Media: %s"
 msgstr "Media: %s"
@@ -1786,8 +1785,8 @@ msgstr "Unset"
 #: src/libvlc-module.c:203
 msgid "This adds audio post processing filters, to modify the sound rendering."
 msgstr ""
-"Ini akan menambah penapis pasca pemprosesan audio, untuk mengubahsuai "
-"penerapan bunyi."
+"Ini akan menambah penapis pasca pemprosesan audio, untuk mengubah suai "
+"pengemasgabungan bunyi."
 
 #: src/libvlc-module.c:208
 msgid "This adds visualization modules (spectrum analyzer, etc.)."
@@ -2083,7 +2082,7 @@ msgstr "Benarkan mod kertas dinding"
 msgid ""
 "The wallpaper mode allows you to display the video as the desktop background."
 msgstr ""
-"Mod kertas dinding membenarkan anda paparkan video sebagai latar desktop."
+"Mod kertas dinding membenarkan anda paparkan video sebagai latar atas meja."
 
 #: src/libvlc-module.c:324
 msgid "Show media title on video"
@@ -2518,9 +2517,9 @@ msgstr ""
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
 #: modules/access/dshow/dshow.cpp:2081 modules/audio_output/alsa.c:767
-#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1285
-#: modules/audio_output/mmdevice.c:1424 modules/codec/avcodec/avcodec.c:50
-#: modules/demux/adaptive/adaptive.cpp:106
+#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1286
+#: modules/audio_output/mmdevice.c:1425 modules/audio_output/winstore.c:564
+#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:106
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
@@ -2537,7 +2536,7 @@ msgstr "Lalai"
 
 #: src/libvlc-module.c:540
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
-#: modules/gui/macosx/VLCMainWindow.m:1037
+#: modules/gui/macosx/VLCMainWindow.m:997
 #: modules/gui/qt/components/extended_panels.cpp:949
 msgid "Enable"
 msgstr "Benarkan"
@@ -2922,15 +2921,15 @@ msgstr ""
 
 #: src/libvlc-module.c:722
 msgid "Text rendering module"
-msgstr "Modul penerapan teks"
+msgstr "Modul pengemasgabungan teks"
 
 #: src/libvlc-module.c:724
 msgid ""
 "VLC normally uses Freetype for rendering, but this allows you to use svg for "
 "instance."
 msgstr ""
-"VLC biasanya menggunakan Freetype untuk penerapan, tetapi ini membolehkan "
-"anda untuk gunakan svg untuk kejadian."
+"VLC biasanya menggunakan Freetype untuk pengemasgabungan, tetapi ini "
+"membolehkan anda guna svg untuk kejadian."
 
 #: src/libvlc-module.c:726
 msgid "Subpictures source module"
@@ -3673,11 +3672,11 @@ msgid ""
 "machine."
 msgstr ""
 "Meningkatkan prioriti proses akan meningkatkan sedikit pengalaman "
-"memautarkannya kerana ianya membenarkan VLC tidak diganggu oleh aplikasi "
-"lain yang mungkin mengambil terlalu banyak masa pemproses. Bagaimanapun "
+"memainkannya kerana ianya membenarkan VLC tidak diganggu oleh aplikasi lain "
+"yang mungkin mengambil terlalu banyak masa pemproses. Bagaimanapun "
 "dinasihatkan dalam keadaan tertentu (pijat) VLC mungkin mengambil masa "
 "pemproses dan memberikan keseluruhan sistem tidak bertindak balas yang mana "
-"mungkin memerlukan but semual sistem anda."
+"mungkin memerlukan but semua sistem anda."
 
 #: src/libvlc-module.c:1099
 msgid "Enqueue items into playlist in one instance mode"
@@ -4838,7 +4837,7 @@ msgstr "VLM"
 msgid "Special modules"
 msgstr "Modul khas"
 
-#: src/libvlc-module.c:2031 modules/gui/qt/dialogs/plugins.cpp:89
+#: src/libvlc-module.c:2031 modules/gui/qt/dialogs/plugins.cpp:90
 msgid "Plugins"
 msgstr "Pemalam"
 
@@ -4960,7 +4959,7 @@ msgid "Browser Stop"
 msgstr "Pelayar Henti"
 
 #: src/misc/actions.c:62 modules/gui/macosx/VLCMainMenu.m:370
-#: modules/gui/macosx/VLCPlaylist.m:229 modules/gui/qt/dialogs/bookmarks.cpp:50
+#: modules/gui/macosx/VLCPlaylist.m:224 modules/gui/qt/dialogs/bookmarks.cpp:50
 msgid "Delete"
 msgstr "Padam"
 
@@ -5233,12 +5232,12 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "Gagal membuka \"%s\" untuk penulisan"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2772
+#: modules/demux/avi/avi.c:2773
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:825
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:871
-#: modules/gui/macosx/VLCBookmarksWindowController.m:89
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:900
+#: modules/gui/macosx/VLCBookmarksWindowController.m:86
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:153
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:182
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:339
@@ -5246,8 +5245,8 @@ msgstr "Gagal membuka \"%s\" untuk penulisan"
 #: modules/gui/macosx/VLCCoreDialogProvider.m:193
 #: modules/gui/macosx/VLCCoreDialogProvider.m:197
 #: modules/gui/macosx/VLCCoreDialogProvider.m:293
-#: modules/gui/macosx/VLCMainWindow.m:222
-#: modules/gui/macosx/VLCMainWindow.m:228
+#: modules/gui/macosx/VLCMainWindow.m:224
+#: modules/gui/macosx/VLCMainWindow.m:230
 #: modules/gui/macosx/VLCOpenWindowController.m:134
 #: modules/gui/macosx/VLCOpenWindowController.m:192
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
@@ -5340,8 +5339,8 @@ msgid "Update VLC media player"
 msgstr "Kemaskini pemain media VLC"
 
 #: src/playlist/engine.c:247 src/playlist/loadsave.c:159 lib/media_list.c:237
-#: modules/gui/macosx/VLCMainWindow.m:321
-#: modules/gui/macosx/VLCMainWindow.m:898
+#: modules/gui/macosx/VLCMainWindow.m:323
+#: modules/gui/macosx/VLCMainWindow.m:904
 #: modules/gui/qt/components/playlist/selector.cpp:236
 msgid "Media Library"
 msgstr "Pustaka Media"
@@ -6280,16 +6279,16 @@ msgstr "Java tidak ditemui dalam sistem anda."
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr "Gagal memulakan main balik bluray. Sila cuba tanpa sokongan menu."
 
-#: modules/access/bluray.c:992 modules/access/bluray.c:2823
-#: modules/access/bluray.c:2828
+#: modules/access/bluray.c:992 modules/access/bluray.c:2825
+#: modules/access/bluray.c:2830
 msgid "Blu-ray error"
 msgstr "Ralat Blu-ray"
 
-#: modules/access/bluray.c:2113
+#: modules/access/bluray.c:2115
 msgid "Top Menu"
 msgstr "Menu Atas"
 
-#: modules/access/bluray.c:2116
+#: modules/access/bluray.c:2118
 msgid "First Play"
 msgstr "Main Pertama"
 
@@ -6576,7 +6575,7 @@ msgstr ""
 
 #: modules/access/dshow/dshow.cpp:145 modules/access/v4l2/v4l2.c:196
 msgid "Picture aspect-ratio n:m"
-msgstr "Nisbah-aspek gambar n:m"
+msgstr "Nisbah-bidang gambar n:m"
 
 #: modules/access/dshow/dshow.cpp:146 modules/access/v4l2/v4l2.c:197
 msgid "Define input picture aspect-ratio to use. Default is 4:3"
@@ -7398,7 +7397,7 @@ msgstr "Input fail"
 #: modules/audio_output/file.c:113
 #: modules/gui/macosx/VLCOpenWindowController.m:140
 #: modules/gui/macosx/VLCOutput.m:64 modules/gui/macosx/VLCOutput.m:175
-#: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1421
+#: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1422
 #: modules/gui/qt/dialogs/sout.cpp:69 modules/gui/qt/dialogs/sout.cpp:121
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
@@ -8072,7 +8071,7 @@ msgstr "RDP"
 
 #: modules/access/rdp.c:89
 msgid "RDP Remote Desktop"
-msgstr "Desktop Jauh RDP"
+msgstr "Atas Meja Jauh RDP"
 
 #: modules/access/rtp/rtp.c:44
 msgid "RTCP (local) port"
@@ -8318,8 +8317,8 @@ msgstr "Input Skrin"
 #: modules/gui/macosx/VLCMainMenu.m:610
 #: modules/gui/macosx/VLCOpenWindowController.m:207
 #: modules/gui/macosx/VLCOpenWindowController.m:209
-#: modules/gui/macosx/VLCOpenWindowController.m:485
-#: modules/gui/macosx/VLCOpenWindowController.m:1103
+#: modules/gui/macosx/VLCOpenWindowController.m:488
+#: modules/gui/macosx/VLCOpenWindowController.m:1106
 #: modules/gui/macosx/VLCSimplePrefsController.m:666
 msgid "Screen"
 msgstr "Skrin"
@@ -8874,7 +8873,7 @@ msgid "Vivid"
 msgstr "Vivid"
 
 #: modules/access/v4l2/v4l2.c:169 modules/audio_output/auhal.c:42
-#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1468
+#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1469
 #: modules/audio_output/waveout.c:145
 msgid "Audio volume"
 msgstr "Volum audio"
@@ -8941,7 +8940,7 @@ msgstr ""
 #: modules/control/hotkeys.c:395
 #: modules/gui/macosx/VLCAddonsWindowController.m:100
 #: modules/gui/qt/dialogs/convert.cpp:164
-#: modules/gui/qt/dialogs/plugins.cpp:375
+#: modules/gui/qt/dialogs/plugins.cpp:376
 #: modules/gui/qt/dialogs/preferences.cpp:79
 msgid "All"
 msgstr "Semua"
@@ -9134,7 +9133,7 @@ msgstr "Mod gelung balik"
 
 #: modules/access/wasapi.c:486
 msgid "Record an audio rendering endpoint."
-msgstr "Rakam takat akhir penerapan audio."
+msgstr "Rakam takat akhir pengemasgabungan audio."
 
 #: modules/access/wasapi.c:489
 msgid "WASAPI"
@@ -9729,11 +9728,12 @@ msgstr "Mod fon kepala (binaural)"
 
 #: modules/audio_filter/channel_mixer/spatialaudio.cpp:55
 msgid "If the output is stereo, render ambisonics with the binaural decoder."
-msgstr "Jika output adalah stereo, terap ambisonic dengan penyahkod binaural."
+msgstr ""
+"Jika output adalah stereo, kemas gabung ambisonic dengan penyahkod binaural."
 
 #: modules/audio_filter/channel_mixer/spatialaudio.cpp:65
 msgid "Ambisonics renderer and binauralizer"
-msgstr "Penerap dan binauralizer Ambisonics"
+msgstr "Pengemas gabung dan binauralizer Ambisonics"
 
 #: modules/audio_filter/channel_mixer/spatialaudio.cpp:77
 msgid "Binauralizer"
@@ -9948,7 +9948,7 @@ msgstr "Penyama dengan 10 jalur"
 
 #: modules/audio_filter/equalizer.c:81
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:271
-#: modules/gui/qt/dialogs/extended.cpp:67 share/lua/http/index.html:219
+#: modules/gui/qt/dialogs/extended.cpp:67 share/lua/http/index.html:238
 msgid "Equalizer"
 msgstr "Penyama"
 
@@ -10479,11 +10479,11 @@ msgstr ""
 "Peranti output audio dipilih adalah diguna secara eksklusif oleh program "
 "lain."
 
-#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1465
+#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1466
 msgid "Output device"
 msgstr "Peranti output"
 
-#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1466
+#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1467
 msgid "Select your audio output device"
 msgstr "Pilih peranti output audio anda"
 
@@ -10499,7 +10499,7 @@ msgstr ""
 "Pilih konfigurasi pembesar suara yang anda mahu guna. Pilihan ini tidak "
 "diadun-maik Oleh itu TIADA penukaran Stereo -> 5.1."
 
-#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1469
+#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1470
 msgid "Audio volume in hundredths of decibels (dB)."
 msgstr "Volum audio dalam perseratus desibel (dB)."
 
@@ -10602,11 +10602,11 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "Output audio antaramuka K Audio"
 
-#: modules/audio_output/mmdevice.c:1451
+#: modules/audio_output/mmdevice.c:1452
 msgid "HDMI/SPDIF audio passthrough"
 msgstr "Passthrough audio HDMI/SPDIF"
 
-#: modules/audio_output/mmdevice.c:1453
+#: modules/audio_output/mmdevice.c:1454
 msgid ""
 "Change this value if you have issue with HD codecs when using a HDMI "
 "receiver."
@@ -10614,27 +10614,27 @@ msgstr ""
 "Ubah nilai jika anda menghadapi masalah dengan kodesk HD ketika menggunakan "
 "penerima HDMI."
 
-#: modules/audio_output/mmdevice.c:1460
+#: modules/audio_output/mmdevice.c:1461
 msgid "Disabled"
 msgstr "Dilumpuhkan"
 
-#: modules/audio_output/mmdevice.c:1461
+#: modules/audio_output/mmdevice.c:1462
 msgid "Enabled (AC3/DTS only)"
 msgstr "Dibenarkan (AC3/DTS sahaja)"
 
-#: modules/audio_output/mmdevice.c:1462
+#: modules/audio_output/mmdevice.c:1463
 msgid "Enabled"
 msgstr "Dibenarkan"
 
-#: modules/audio_output/mmdevice.c:1473
+#: modules/audio_output/mmdevice.c:1474
 msgid "Windows Multimedia Device output"
 msgstr "Output Peranti Multimedia Windows"
 
-#: modules/audio_output/mmdevice.c:1479
+#: modules/audio_output/mmdevice.c:1480
 msgid "Output back-end"
 msgstr "Bahagian belakang output"
 
-#: modules/audio_output/mmdevice.c:1479
+#: modules/audio_output/mmdevice.c:1480
 msgid "Audio output back-end interface."
 msgstr "Antaramuka bahagian belakang output audio."
 
@@ -10676,7 +10676,7 @@ msgid ""
 "VLC restart to apply."
 msgstr ""
 "Pilih peranti Audio khas, atau biarkan windows tetapkan (lalai), ubah "
-"keperluan VLC mula semula untuk laksanakan."
+"keperluan VLC mula semula untuk diterapkan."
 
 #: modules/audio_output/waveout.c:149
 msgid "WaveOut audio output"
@@ -10770,11 +10770,11 @@ msgstr "Abai ruby (furigana) dalam sarikata."
 
 #: modules/codec/arib/aribsub.c:48
 msgid "Use Core Text renderer"
-msgstr "Guna penerap Teks Teras"
+msgstr "Guna pengemas gabung Core Text"
 
 #: modules/codec/arib/aribsub.c:49
 msgid "Use Core Text renderer in the subtitle."
-msgstr "Guna penerap Teks Teras dalam sarikata."
+msgstr "Guna pengemas gabung Core Text dalam sari kata."
 
 #: modules/codec/arib/aribsub.c:53
 msgid "ARIB subtitles decoder"
@@ -10840,7 +10840,7 @@ msgstr "Enkoder audio/video FFmpeg"
 
 #: modules/codec/avcodec/avcodec.h:56
 msgid "Direct rendering"
-msgstr "Persembahan langsung"
+msgstr "Pengemas gabung terus"
 
 #: modules/codec/avcodec/avcodec.h:59
 msgid "Show corrupted frames"
@@ -11424,7 +11424,7 @@ msgstr "Menyahkod kordinat X"
 
 #: modules/codec/dvbsub.c:84
 msgid "X coordinate of the rendered subtitle"
-msgstr "Koordinat X sarikata diterjemahkan yang dikemukakan"
+msgstr "Koordinat X bagi sari kata terkemas gabung"
 
 #: modules/codec/dvbsub.c:86
 msgid "Decoding Y coordinate"
@@ -11432,7 +11432,7 @@ msgstr "Menyahkod kordinat Y"
 
 #: modules/codec/dvbsub.c:87
 msgid "Y coordinate of the rendered subtitle"
-msgstr "Kordinat Y sarikata diterjemahkan"
+msgstr "Koordinat Y bagi sari kata terkemas gabung"
 
 #: modules/codec/dvbsub.c:89
 msgid "Subpicture position"
@@ -11687,9 +11687,9 @@ msgid ""
 "can choose to disable all formatting. Note that this has no effect is "
 "rendering via Tiger is enabled."
 msgstr ""
-"Strim Kate membolehkan pemformatan teks. VLC sebahagiannya melaksananya, "
+"Strim Kate membolehkan pemformatan teks. VLC sebahagiannya melaksanakannya, "
 "tetapi anda boleh pilih untuk lumpuhkan semua pemformatan. Perhatian, ia "
-"tidak memberi kesan jika penerapan melalui Tiger dibenarkan."
+"tidak memberi kesan jika pengemasgabungan melalui Tiger dibenarkan."
 
 #: modules/codec/kate.c:199
 msgid "Shadow"
@@ -11793,27 +11793,27 @@ msgstr "Aqua"
 
 #: modules/codec/kate.c:211
 msgid "Use Tiger for rendering"
-msgstr "Guna Tiger untuk mengemukakan"
+msgstr "Guna Tiger untuk pengemasgabungan"
 
 #: modules/codec/kate.c:212
 msgid ""
 "Kate streams can be rendered using the Tiger library. Disabling this will "
 "only render static text and bitmap based streams."
 msgstr ""
-"Strim Kate membolehkan pemformatan teks. Lumpuhkan ini hanya akan terap teks "
-"statik dan strim berasaskan peta bit."
+"Strim Kate boleh dikemas gabung menggunakan pustaka Tiger. Lumpuhkan ini "
+"hanya akan mengemas gabung teks statik dan strim berasaskan peta bit."
 
 #: modules/codec/kate.c:216
 msgid "Rendering quality"
-msgstr "Kualiti mengemukakan"
+msgstr "Kualiti pengemasgabungan"
 
 #: modules/codec/kate.c:217
 msgid ""
 "Select rendering quality, at the expense of speed. 0 is fastest, 1 is "
 "highest quality."
 msgstr ""
-"Pilih kualiti penerapan, tetapi dipengaruhi oleh kelajuan. 0 terpantas, 1 "
-"kualiti tertinggi."
+"Pilih kualiti pengemasgabungan, tetapi dipengaruhi oleh kelajuan. 0 "
+"terpantas, 1 kualiti tertinggi."
 
 #: modules/codec/kate.c:221
 msgid "Default font effect"
@@ -11906,10 +11906,10 @@ msgid ""
 "Note that changing settings below will not take effect until a new stream is "
 "played. This will hopefully be fixed soon."
 msgstr ""
-"Kate adalah kodeks unutk tindihan berasaskan teks dan imej.\n"
-"Pustaka penerapan Tiger diperlukan untuk menerap strim Kate yang kompleks, "
-"tetapi VLC masih dapat menerap sarikata berasaskan teks dan imej statik jika "
-"ia tidak tersedia.\n"
+"Kate adalah kodeks untuk tindihan berasaskan teks dan imej.\n"
+"Pustaka pengemasgabungan Tiger diperlukan untuk mengemas gabung strim Kate "
+"yang kompleks, tetapi VLC masih dapat mengemas gabung sari kata berasaskan "
+"teks dan imej statik jika ia tidak tersedia.\n"
 "Perhatian pengubahan tetapan dibawah tidak akan berkesan sehinggalah strim "
 "baharu dimainkan. Diharap ia akan dibaiki kelak."
 
@@ -11923,7 +11923,7 @@ msgstr "Dekoder lapisan Kate"
 
 #: modules/codec/kate.c:288
 msgid "Tiger rendering defaults"
-msgstr "Lalai penerapan tiger"
+msgstr "Lalai pengemas gabung Tiger"
 
 #: modules/codec/kate.c:323
 msgid "Kate text subtitles packetizer"
@@ -11935,7 +11935,7 @@ msgstr "Sarikata (lanjutan)"
 
 #: modules/codec/libass.c:61
 msgid "Subtitle renderers using libass"
-msgstr "Penerap sarikata menggunakan libass"
+msgstr "Pengemas gabung sari kata menggunakan libass"
 
 #: modules/codec/libass.c:249
 #: modules/text_renderer/freetype/fonts/fontconfig.c:78
@@ -11988,11 +11988,11 @@ msgstr "Pempaket video OggSpots"
 
 #: modules/codec/omxil/omxil.c:139
 msgid "OMX direct rendering"
-msgstr "Penerap langsung OMX"
+msgstr "Pengemas gabung terus OMX"
 
 #: modules/codec/omxil/omxil.c:141
 msgid "Enable OMX direct rendering."
-msgstr "Benarkan penerapan langsung OMX."
+msgstr "Benarkan pengemas gabung terus OMX."
 
 #: modules/codec/omxil/omxil.c:145
 msgid "Audio/Video decoder (using OpenMAX IL)"
@@ -13091,7 +13091,7 @@ msgstr "Faktor skala"
 
 #: modules/codec/svg.c:55
 msgid "Scale factor to apply to image"
-msgstr "Faktor skala untuk dilaksana pada imej"
+msgstr "Faktor skala untuk diterapkan pada imej"
 
 #: modules/codec/svg.c:63
 msgid "SVG video decoder"
@@ -14317,10 +14317,10 @@ msgstr "DBus"
 msgid "D-Bus control interface"
 msgstr "Antaramuka kawalan D-Bus"
 
-#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:185
-#: modules/gui/macosx/VLCMainWindow.m:687
-#: modules/gui/macosx/VLCMainWindow.m:693
-#: modules/gui/macosx/VLCMainWindow.m:1318
+#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:187
+#: modules/gui/macosx/VLCMainWindow.m:689
+#: modules/gui/macosx/VLCMainWindow.m:695
+#: modules/gui/macosx/VLCMainWindow.m:1326
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
 #: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1258
 #: modules/gui/qt/main_interface.cpp:1262
@@ -14580,7 +14580,7 @@ msgstr "gerakan"
 msgid "motion control interface"
 msgstr "Antaramuka kawalan gerakan"
 
-#: modules/control/motion.c:71 modules/video_filter/rotate.c:59
+#: modules/control/motion.c:71 modules/video_filter/rotate.c:62
 msgid ""
 "Use HDAPS, AMS, APPLESMC or UNIMOTION motion sensors to rotate the video"
 msgstr ""
@@ -15160,11 +15160,11 @@ msgstr "Demuxer AIFF"
 msgid "ASF/WMV demuxer"
 msgstr " Demuxer ASF/WMV"
 
-#: modules/demux/asf/asf.c:267 modules/demux/asf/asf.c:821
+#: modules/demux/asf/asf.c:277 modules/demux/asf/asf.c:834
 msgid "Could not demux ASF stream"
 msgstr "Tidak dapat demux strim ASF"
 
-#: modules/demux/asf/asf.c:268
+#: modules/demux/asf/asf.c:278
 msgid "VLC failed to load the ASF header."
 msgstr "VLC gagal memuatkan pengepala ASF."
 
@@ -15244,7 +15244,7 @@ msgstr "Pulihkan jika perlu"
 msgid "AVI demuxer"
 msgstr "Demuxer AVI"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4255
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15273,15 +15273,15 @@ msgstr "Bina indeks kemudian main"
 msgid "Play as is"
 msgstr "Putar seadanya"
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4266
 msgid "Broken or missing Index"
 msgstr "Indeks rosak atau hilang"
 
-#: modules/demux/avi/avi.c:2773
+#: modules/demux/avi/avi.c:2774
 msgid "Broken or missing AVI Index"
 msgstr "Indeks AVI rosak atau hilang"
 
-#: modules/demux/avi/avi.c:2774
+#: modules/demux/avi/avi.c:2775
 msgid "Fixing AVI Index..."
 msgstr "Membaiki Indeks AVI..."
 
@@ -15721,11 +15721,11 @@ msgstr "Demuxer strim MP4"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4262
+#: modules/demux/mp4/mp4.c:4263
 msgid "Do not seek"
 msgstr "Jangan jangkau"
 
-#: modules/demux/mp4/mp4.c:4263
+#: modules/demux/mp4/mp4.c:4264
 msgid "Build index"
 msgstr "Bina indeks"
 
@@ -16345,33 +16345,33 @@ msgstr "Slaid (teks)"
 msgid "Slides (images)"
 msgstr "Slaid (imej)"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:96
+#: modules/gui/macosx/VLCAboutWindowController.m:94
 #: modules/gui/macosx/VLCMainMenu.m:339
 msgid "About VLC media player"
 msgstr "Perihal peman media VLC"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:99
+#: modules/gui/macosx/VLCAboutWindowController.m:97
 #: modules/gui/qt/dialogs/help.cpp:125
 msgid "Credits"
 msgstr "Penghargaan"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:101
+#: modules/gui/macosx/VLCAboutWindowController.m:99
 #: modules/gui/macosx/VLCMainMenu.m:490 modules/gui/qt/dialogs/help.cpp:119
 msgid "License"
 msgstr "Lesen"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:103
+#: modules/gui/macosx/VLCAboutWindowController.m:101
 #: modules/gui/qt/dialogs/help.cpp:122
 msgid "Authors"
 msgstr "Authors"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:105
+#: modules/gui/macosx/VLCAboutWindowController.m:103
 msgid ""
 "VLC media player and VideoLAN are trademarks of the VideoLAN Association."
 msgstr ""
 "Pemain media VLC dan VideoLAN adalah tanda dagangan Persatuan VideoLAN."
 
-#: modules/gui/macosx/VLCAboutWindowController.m:130
+#: modules/gui/macosx/VLCAboutWindowController.m:128
 msgid ""
 "<p>VLC media player is a free and open source media player, encoder, and "
 "streamer made by the volunteers of the <a href=\"https://www.videolan.org/"
@@ -16393,26 +16393,26 @@ msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:105
 #: modules/gui/macosx/VLCAddonsWindowController.m:357
-#: modules/gui/qt/dialogs/plugins.cpp:381
+#: modules/gui/qt/dialogs/plugins.cpp:382
 #: modules/gui/qt/managers/addons_manager.cpp:88
 msgid "Playlist parsers"
 msgstr "Penghurai senarai main"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:107
 #: modules/gui/macosx/VLCAddonsWindowController.m:359
-#: modules/gui/qt/dialogs/plugins.cpp:385
+#: modules/gui/qt/dialogs/plugins.cpp:386
 #: modules/gui/qt/managers/addons_manager.cpp:90
 msgid "Service Discovery"
 msgstr "Penemuan Perkhidmatan"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:109
-#: modules/gui/qt/dialogs/plugins.cpp:389
+#: modules/gui/qt/dialogs/plugins.cpp:390
 #: modules/gui/qt/managers/addons_manager.cpp:92
 msgid "Interfaces"
 msgstr "Antaramuka"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:111
-#: modules/gui/qt/dialogs/plugins.cpp:392
+#: modules/gui/qt/dialogs/plugins.cpp:393
 #: modules/gui/qt/managers/addons_manager.cpp:94
 msgid "Art and meta fetchers"
 msgstr "Pengambil seni dan meta"
@@ -16420,7 +16420,7 @@ msgstr "Pengambil seni dan meta"
 #: modules/gui/macosx/VLCAddonsWindowController.m:113
 #: modules/gui/macosx/VLCAddonsWindowController.m:361
 #: modules/gui/macosx/VLCMainMenu.m:343 modules/gui/macosx/VLCMainMenu.m:344
-#: modules/gui/qt/dialogs/plugins.cpp:395
+#: modules/gui/qt/dialogs/plugins.cpp:396
 #: modules/gui/qt/managers/addons_manager.cpp:96
 msgid "Extensions"
 msgstr "Sambungan"
@@ -16430,30 +16430,30 @@ msgid "Show Installed Only"
 msgstr "Tunjuk Dipasang Sahaja"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:118
-#: modules/gui/qt/dialogs/plugins.cpp:423
+#: modules/gui/qt/dialogs/plugins.cpp:424
 msgid "Find more addons online"
 msgstr "Cari lagi tambahan atas-talian"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:128
-#: modules/gui/macosx/VLCMainMenu.m:345 modules/gui/qt/dialogs/plugins.cpp:85
+#: modules/gui/macosx/VLCMainMenu.m:345 modules/gui/qt/dialogs/plugins.cpp:86
 msgid "Addons Manager"
 msgstr "Pengurus Tambahan"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:130
-#: modules/gui/qt/dialogs/plugins.cpp:1165
-#: modules/gui/qt/dialogs/plugins.cpp:1178
+#: modules/gui/qt/dialogs/plugins.cpp:1166
+#: modules/gui/qt/dialogs/plugins.cpp:1179
 msgid "Installed"
 msgstr "Dipasang"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:131
-#: modules/gui/macosx/VLCBookmarksWindowController.m:90
-#: modules/gui/qt/dialogs/plugins.cpp:127 modules/mux/avi.c:54
+#: modules/gui/macosx/VLCBookmarksWindowController.m:87
+#: modules/gui/qt/dialogs/plugins.cpp:128 modules/mux/avi.c:54
 msgid "Name"
 msgstr "Nama"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:132
-#: modules/gui/macosx/VLCPlaylist.m:108 modules/gui/qt/dialogs/plugins.cpp:1397
-#: modules/gui/qt/dialogs/plugins.cpp:1502 modules/mux/asf.c:58
+#: modules/gui/macosx/VLCPlaylist.m:92 modules/gui/qt/dialogs/plugins.cpp:1398
+#: modules/gui/qt/dialogs/plugins.cpp:1503 modules/mux/asf.c:58
 msgid "Author"
 msgstr "Pengarang"
 
@@ -16462,7 +16462,7 @@ msgid "Uninstall"
 msgstr "Nyahpasang"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:355
-#: modules/gui/qt/dialogs/plugins.cpp:377
+#: modules/gui/qt/dialogs/plugins.cpp:378
 #: modules/gui/qt/managers/addons_manager.cpp:86
 #: modules/gui/skins2/src/skin_main.cpp:535
 msgid "Skins"
@@ -16471,7 +16471,7 @@ msgstr "Kulit"
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:211
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:199
 msgid "Apply profile at next launch"
-msgstr "Laksana profil pada perlancaran berikutnya"
+msgstr "Terap profil pada perlancaran berikutnya"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:216
 msgid "2 Pass"
@@ -16558,7 +16558,7 @@ msgid "Enter a name for the new profile:"
 msgstr "Masukkan nama untuk profil baharu:"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:514
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:826
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:855
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:377
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:489
 #: modules/gui/macosx/VLCMainMenu.m:1164 modules/gui/macosx/VLCOutput.m:414
@@ -16581,20 +16581,20 @@ msgid "Multiple profiles with the same name are not allowed."
 msgstr "Profil berbilang dengan nama yang serupa tidak dibenarkan."
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:568
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:868
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:897
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:857
 msgid "Remove a preset"
 msgstr "Buang praset"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:569
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:869
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:898
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:858
 msgid "Select the preset you would like to remove:"
 msgstr "Pilih praset yang anda mahu buang:"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:570
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:870
-#: modules/gui/macosx/VLCBookmarksWindowController.m:81
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:899
+#: modules/gui/macosx/VLCBookmarksWindowController.m:78
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:859
 msgid "Remove"
@@ -16608,43 +16608,43 @@ msgstr "Tambah Praset baharu..."
 msgid "Organize Presets..."
 msgstr "Urus Praset..."
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:823
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:852
 msgid "Save current selection as new preset"
 msgstr "Simpan pemilihan semasa sebagai praset baharu"
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:824
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:853
 msgid "Enter a name for the new preset:"
 msgstr "Masukkan nama untuk praset baharu:"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:77
+#: modules/gui/macosx/VLCBookmarksWindowController.m:74
 msgid "Bookmarks"
 msgstr "Tanda Buku"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:78
+#: modules/gui/macosx/VLCBookmarksWindowController.m:75
 msgid "Add"
 msgstr "Tambah"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:79
+#: modules/gui/macosx/VLCBookmarksWindowController.m:76
 #: modules/gui/macosx/VLCSimplePrefsController.m:288
 #: modules/gui/qt/dialogs/bookmarks.cpp:53
 msgid "Clear"
 msgstr "Kosongkan"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:80
+#: modules/gui/macosx/VLCBookmarksWindowController.m:77
 #: modules/gui/macosx/VLCMainMenu.m:366
 msgid "Edit"
 msgstr "Edit"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:85
-#: modules/gui/macosx/VLCBookmarksWindowController.m:91
+#: modules/gui/macosx/VLCBookmarksWindowController.m:82
+#: modules/gui/macosx/VLCBookmarksWindowController.m:88
 #: modules/gui/qt/dialogs/bookmarks.cpp:77
 #: modules/gui/qt/dialogs/toolbar.cpp:493
 msgid "Time"
 msgstr "Masa"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:88
-#: modules/gui/macosx/VLCBookmarksWindowController.m:211
-#: modules/gui/macosx/VLCBookmarksWindowController.m:215
+#: modules/gui/macosx/VLCBookmarksWindowController.m:85
+#: modules/gui/macosx/VLCBookmarksWindowController.m:209
+#: modules/gui/macosx/VLCBookmarksWindowController.m:213
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:270
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:545
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:552
@@ -16660,27 +16660,27 @@ msgstr "Masa"
 msgid "OK"
 msgstr "OK"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:131
+#: modules/gui/macosx/VLCBookmarksWindowController.m:128
 #: modules/gui/macosx/VLCMainMenu.m:1154
 msgid "Untitled"
 msgstr "Tiada tajuk"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:211
+#: modules/gui/macosx/VLCBookmarksWindowController.m:209
 msgid "No input"
 msgstr "Tiada input"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:211
+#: modules/gui/macosx/VLCBookmarksWindowController.m:209
 msgid ""
 "No input found. A stream must be playing or paused for bookmarks to work."
 msgstr ""
 "Tiada input ditemui. Strim mesti dimainkan atau dihenti seketika untuk tanda "
 "buku berfungsi."
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:215
+#: modules/gui/macosx/VLCBookmarksWindowController.m:213
 msgid "Input has changed"
 msgstr "Input telah berubah"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:215
+#: modules/gui/macosx/VLCBookmarksWindowController.m:213
 msgid ""
 "Input has changed, unable to save bookmark. Suspending playback with \"Pause"
 "\" while editing bookmarks to ensure to keep the same input."
@@ -16741,12 +16741,12 @@ msgid "Go!"
 msgstr "Pergi!"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:138
-#: modules/gui/macosx/VLCMainWindow.m:194
+#: modules/gui/macosx/VLCMainWindow.m:196
 msgid "Drop media here"
 msgstr "Lepaskan media di sini"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:139
-#: modules/gui/macosx/VLCMainWindow.m:210
+#: modules/gui/macosx/VLCMainWindow.m:212
 msgid "Open media..."
 msgstr "Buka media..."
 
@@ -16803,7 +16803,7 @@ msgstr "Strim"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:152
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:181
 msgid "Apply"
-msgstr "Laksana"
+msgstr "Terap"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:154
 msgid "Save as new Profile..."
@@ -17455,7 +17455,7 @@ msgstr "Tukar / Strim..."
 msgid "Save Playlist..."
 msgstr "Simpan Senarai Main..."
 
-#: modules/gui/macosx/VLCMainMenu.m:364 modules/gui/macosx/VLCPlaylist.m:234
+#: modules/gui/macosx/VLCMainMenu.m:364 modules/gui/macosx/VLCPlaylist.m:229
 msgid "Reveal in Finder"
 msgstr "Dedahkan dalam Pencari"
 
@@ -17471,7 +17471,7 @@ msgstr "Salin"
 msgid "Paste"
 msgstr "Tepek"
 
-#: modules/gui/macosx/VLCMainMenu.m:371 modules/gui/macosx/VLCPlaylist.m:232
+#: modules/gui/macosx/VLCMainMenu.m:371 modules/gui/macosx/VLCPlaylist.m:227
 msgid "Select All"
 msgstr "Pilih Semua"
 
@@ -17528,11 +17528,11 @@ msgstr "Lompat ke Masa"
 
 #: modules/gui/macosx/VLCMainMenu.m:405
 msgid "Renderer"
-msgstr "Penerap"
+msgstr "Pengemas Gabung"
 
 #: modules/gui/macosx/VLCMainMenu.m:406
 msgid "No renderer"
-msgstr "Tiada penerap"
+msgstr "Tiada pengemas gabung"
 
 #: modules/gui/macosx/VLCMainMenu.m:415
 msgid "Increase Volume"
@@ -17645,7 +17645,7 @@ msgstr "Tandabuku..."
 msgid "Playlist..."
 msgstr "Senarai..."
 
-#: modules/gui/macosx/VLCMainMenu.m:482 modules/gui/macosx/VLCPlaylist.m:233
+#: modules/gui/macosx/VLCMainMenu.m:482 modules/gui/macosx/VLCPlaylist.m:228
 msgid "Media Information..."
 msgstr "Maklumat Media..."
 
@@ -17707,61 +17707,61 @@ msgstr "Senarai main HTML"
 msgid "Save Playlist"
 msgstr "Simpan Senarai Main"
 
-#: modules/gui/macosx/VLCMainWindow.m:188
+#: modules/gui/macosx/VLCMainWindow.m:190
 msgid "Search in Playlist"
 msgstr "Cari dalam Senarai Main"
 
-#: modules/gui/macosx/VLCMainWindow.m:190
+#: modules/gui/macosx/VLCMainWindow.m:192
 msgid "Search the playlist. Results will be selected in the table."
 msgstr "Gelintar senarai main. Keputusan akan dipilih dalam jadual."
 
-#: modules/gui/macosx/VLCMainWindow.m:211
+#: modules/gui/macosx/VLCMainWindow.m:213
 msgid "Open a dialog to select the media to play"
 msgstr "Buka satu dialog untuk memilih media yang hendak dimainkan"
 
-#: modules/gui/macosx/VLCMainWindow.m:215
-#: modules/gui/macosx/VLCMainWindow.m:221
+#: modules/gui/macosx/VLCMainWindow.m:217
+#: modules/gui/macosx/VLCMainWindow.m:223
 #: modules/gui/qt/components/playlist/selector.cpp:580
 msgid "Subscribe"
 msgstr "Langgan"
 
-#: modules/gui/macosx/VLCMainWindow.m:216
-#: modules/gui/macosx/VLCMainWindow.m:227
+#: modules/gui/macosx/VLCMainWindow.m:218
+#: modules/gui/macosx/VLCMainWindow.m:229
 #: modules/gui/qt/components/playlist/selector.cpp:597
 msgid "Unsubscribe"
 msgstr "Nyahlanggan"
 
-#: modules/gui/macosx/VLCMainWindow.m:219
+#: modules/gui/macosx/VLCMainWindow.m:221
 #: modules/gui/qt/components/playlist/selector.cpp:279
 msgid "Subscribe to a podcast"
 msgstr "Langgan ke podcast"
 
-#: modules/gui/macosx/VLCMainWindow.m:220
+#: modules/gui/macosx/VLCMainWindow.m:222
 #: modules/gui/qt/components/playlist/selector.cpp:581
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr "Masukkan URL podcast untuk langgan ke:"
 
-#: modules/gui/macosx/VLCMainWindow.m:225
+#: modules/gui/macosx/VLCMainWindow.m:227
 msgid "Unsubscribe from a podcast"
 msgstr "Nyahlanggan dari podcast"
 
-#: modules/gui/macosx/VLCMainWindow.m:226
+#: modules/gui/macosx/VLCMainWindow.m:228
 msgid "Select the podcast you would like to unsubscribe from:"
 msgstr "Pilih podcast yang anda mahu nyahlanggankan:"
 
-#: modules/gui/macosx/VLCMainWindow.m:252
+#: modules/gui/macosx/VLCMainWindow.m:254
 msgid "Check for album art and metadata?"
 msgstr "Semak seni album dan data meta?"
 
-#: modules/gui/macosx/VLCMainWindow.m:252
+#: modules/gui/macosx/VLCMainWindow.m:254
 msgid "Enable Metadata Retrieval"
 msgstr "Benarkan Dapatan Semula Data Meta"
 
-#: modules/gui/macosx/VLCMainWindow.m:252
+#: modules/gui/macosx/VLCMainWindow.m:254
 msgid "No, Thanks"
 msgstr "Tidak, Terima Kasih"
 
-#: modules/gui/macosx/VLCMainWindow.m:252
+#: modules/gui/macosx/VLCMainWindow.m:254
 msgid ""
 "VLC can check online for album art and metadata to enrich your playback "
 "experience, e.g. by providing track information when playing Audio CDs. To "
@@ -17774,23 +17774,23 @@ msgstr ""
 "menghantar maklumat mengenai kandungan anda ke perkhidmatan yang dipercayai "
 "dalam bentuk awanama."
 
-#: modules/gui/macosx/VLCMainWindow.m:318
+#: modules/gui/macosx/VLCMainWindow.m:320
 msgid "LIBRARY"
 msgstr "LIBRARY"
 
-#: modules/gui/macosx/VLCMainWindow.m:323
+#: modules/gui/macosx/VLCMainWindow.m:325
 msgid "MY COMPUTER"
 msgstr "MY COMPUTER"
 
-#: modules/gui/macosx/VLCMainWindow.m:324
+#: modules/gui/macosx/VLCMainWindow.m:326
 msgid "DEVICES"
 msgstr "DEVICES"
 
-#: modules/gui/macosx/VLCMainWindow.m:325
+#: modules/gui/macosx/VLCMainWindow.m:327
 msgid "LOCAL NETWORK"
 msgstr "LOCAL NETWORK"
 
-#: modules/gui/macosx/VLCMainWindow.m:326
+#: modules/gui/macosx/VLCMainWindow.m:328
 msgid "INTERNET"
 msgstr "INTERNET"
 
@@ -17799,7 +17799,7 @@ msgid "Show/Hide Playlist"
 msgstr "Tunjuk/Sembunyi Senarai Main"
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:71
-#: modules/gui/qt/dialogs/vlm.cpp:548 share/lua/http/index.html:241
+#: modules/gui/qt/dialogs/vlm.cpp:548 share/lua/http/index.html:260
 msgid "Repeat"
 msgstr "Ulang"
 
@@ -17808,7 +17808,7 @@ msgid "Change repeat mode. Modes: repeat one, repeat all and no repeat."
 msgstr "Ubah mod ulang. Mod: ulang sekali, ulang semua dan tidak diulang."
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:75
-#: share/lua/http/index.html:239
+#: share/lua/http/index.html:258
 msgid "Shuffle"
 msgstr "Kocok"
 
@@ -17830,10 +17830,10 @@ msgstr "Pelokasi Sumber Media (MRL)"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:133
 #: modules/gui/macosx/VLCOpenWindowController.m:193
-#: modules/gui/macosx/VLCOpenWindowController.m:580
-#: modules/gui/macosx/VLCOpenWindowController.m:666
-#: modules/gui/macosx/VLCOpenWindowController.m:898
-#: modules/gui/macosx/VLCOpenWindowController.m:1266
+#: modules/gui/macosx/VLCOpenWindowController.m:583
+#: modules/gui/macosx/VLCOpenWindowController.m:669
+#: modules/gui/macosx/VLCOpenWindowController.m:901
+#: modules/gui/macosx/VLCOpenWindowController.m:1269
 #: modules/gui/qt/components/controller.hpp:107
 msgid "Open"
 msgstr "Buka"
@@ -17963,20 +17963,20 @@ msgid "Protocol"
 msgstr "Protokol"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:199
-#: modules/gui/macosx/VLCOpenWindowController.m:1013
-#: modules/gui/macosx/VLCOpenWindowController.m:1062
+#: modules/gui/macosx/VLCOpenWindowController.m:1016
+#: modules/gui/macosx/VLCOpenWindowController.m:1065
 msgid "Unicast"
 msgstr "Unicast"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:200
-#: modules/gui/macosx/VLCOpenWindowController.m:1026
-#: modules/gui/macosx/VLCOpenWindowController.m:1075
+#: modules/gui/macosx/VLCOpenWindowController.m:1029
+#: modules/gui/macosx/VLCOpenWindowController.m:1078
 msgid "Multicast"
 msgstr "Multicast"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:206
-#: modules/gui/macosx/VLCOpenWindowController.m:503
-#: modules/gui/macosx/VLCOpenWindowController.m:1153
+#: modules/gui/macosx/VLCOpenWindowController.m:506
+#: modules/gui/macosx/VLCOpenWindowController.m:1156
 msgid "Input Devices"
 msgstr "Peranti Input"
 
@@ -18056,13 +18056,13 @@ msgstr "s"
 msgid "fps"
 msgstr "FPS"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:579
-#: modules/gui/macosx/VLCOpenWindowController.m:665
-#: modules/gui/macosx/VLCOpenWindowController.m:1265
+#: modules/gui/macosx/VLCOpenWindowController.m:582
+#: modules/gui/macosx/VLCOpenWindowController.m:668
+#: modules/gui/macosx/VLCOpenWindowController.m:1268
 msgid "Open File"
 msgstr "Buka Fail"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:764
+#: modules/gui/macosx/VLCOpenWindowController.m:767
 #, c-format
 msgid "%i tracks"
 msgstr "%i trek"
@@ -18100,29 +18100,29 @@ msgstr "Pemberitahuan Strim"
 msgid "Save File"
 msgstr "Simpan Fail"
 
-#: modules/gui/macosx/VLCPlaylist.m:106
+#: modules/gui/macosx/VLCPlaylist.m:90
 msgid "Track Number"
 msgstr "Nombor Trek"
 
-#: modules/gui/macosx/VLCPlaylist.m:109
+#: modules/gui/macosx/VLCPlaylist.m:93
 #: modules/gui/qt/components/playlist/sorting.h:61
 msgid "Duration"
 msgstr "Tempoh"
 
-#: modules/gui/macosx/VLCPlaylist.m:115
+#: modules/gui/macosx/VLCPlaylist.m:99
 #: modules/gui/qt/components/playlist/sorting.h:67
 msgid "URI"
 msgstr "URI"
 
-#: modules/gui/macosx/VLCPlaylist.m:116
+#: modules/gui/macosx/VLCPlaylist.m:100
 msgid "File Size"
 msgstr "Saiz Fail"
 
-#: modules/gui/macosx/VLCPlaylist.m:230
+#: modules/gui/macosx/VLCPlaylist.m:225
 msgid "Expand All"
 msgstr "Kembang Semua"
 
-#: modules/gui/macosx/VLCPlaylist.m:231
+#: modules/gui/macosx/VLCPlaylist.m:226
 msgid "Collapse All"
 msgstr "Kuncup Semua"
 
@@ -18220,7 +18220,7 @@ msgstr "Main balik \"%@\" akan diteruskan pada %@"
 #: modules/gui/macosx/VLCSimplePrefsController.m:233
 #: modules/gui/qt/components/simple_preferences.cpp:239
 #: modules/gui/qt/components/simple_preferences.cpp:719
-#: modules/gui/qt/dialogs/plugins.cpp:375
+#: modules/gui/qt/dialogs/plugins.cpp:376
 msgid "Interface Settings"
 msgstr "Tetapan Antaramuka"
 
@@ -18992,7 +18992,7 @@ msgstr " h,H Tunjuk/Sembunyi kotak bantuan"
 
 #: modules/gui/ncurses.c:862
 msgid " i                      Show/Hide info box"
-msgstr " i                      Tunjuk/Sorok kotak info"
+msgstr " i                      Tunjuk/Sembunyi kotak info"
 
 #: modules/gui/ncurses.c:863
 msgid " M                      Show/Hide metadata box"
@@ -19000,11 +19000,11 @@ msgstr "M Tunjuk/Sembunyi kotak data meta"
 
 #: modules/gui/ncurses.c:864
 msgid " L                      Show/Hide messages box"
-msgstr " L                      Tunjuk/Sorok kotak mesej"
+msgstr " L                      Tunjuk/Sembunyi kotak mesej"
 
 #: modules/gui/ncurses.c:865
 msgid " P                      Show/Hide playlist box"
-msgstr " P                      Tunjuk/Sorok kotak senarai main"
+msgstr " P                      Tunjuk/Sembunyi kotak senarai main"
 
 #: modules/gui/ncurses.c:866
 msgid " B                      Show/Hide filebrowser"
@@ -19940,7 +19940,7 @@ msgstr "Senarai"
 
 #: modules/gui/qt/components/playlist/standardpanel.hpp:146
 msgid "PictureFlow"
-msgstr "AliranGambar"
+msgstr "Aliran Gambar"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:305
 msgid "Select File"
@@ -19981,7 +19981,7 @@ msgstr "Global"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1154
 msgid "Desktop level hotkey"
-msgstr "Kekunci panas aras dekstop"
+msgstr "Kekunci panas aras atas meja"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1237
 #: modules/gui/qt/components/preferences_widgets.cpp:1238
@@ -20248,9 +20248,9 @@ msgstr "Ekstrak"
 #: modules/gui/qt/dialogs/errors.cpp:49 modules/gui/qt/dialogs/extended.cpp:130
 #: modules/gui/qt/dialogs/help.cpp:66 modules/gui/qt/dialogs/help.cpp:212
 #: modules/gui/qt/dialogs/mediainfo.cpp:80
-#: modules/gui/qt/dialogs/messages.cpp:84 modules/gui/qt/dialogs/plugins.cpp:93
-#: modules/gui/qt/dialogs/plugins.cpp:1430
-#: modules/gui/qt/dialogs/plugins.cpp:1543
+#: modules/gui/qt/dialogs/messages.cpp:84 modules/gui/qt/dialogs/plugins.cpp:94
+#: modules/gui/qt/dialogs/plugins.cpp:1431
+#: modules/gui/qt/dialogs/plugins.cpp:1544
 #: modules/gui/qt/dialogs/podcast_configuration.cpp:36
 #: modules/gui/qt/dialogs/vlm.cpp:136
 msgid "&Close"
@@ -20412,8 +20412,8 @@ msgstr "&Pergi"
 msgid "Go to time"
 msgstr "Lompat ke masa"
 
-#: modules/gui/qt/dialogs/help.cpp:86 modules/gui/qt/dialogs/plugins.cpp:1368
-#: modules/gui/qt/dialogs/plugins.cpp:1451
+#: modules/gui/qt/dialogs/help.cpp:86 modules/gui/qt/dialogs/plugins.cpp:1369
+#: modules/gui/qt/dialogs/plugins.cpp:1452
 msgid "About"
 msgstr "Perihal"
 
@@ -20451,7 +20451,7 @@ msgstr "T&idak"
 
 #: modules/gui/qt/dialogs/help.cpp:222
 msgid "VLC media player updates"
-msgstr "Kemakini pemain media VLC"
+msgstr "Kemas kini pemain media VLC"
 
 #: modules/gui/qt/dialogs/help.cpp:294
 msgid "A new version of VLC (%1.%2.%3%4) is available."
@@ -20599,43 +20599,44 @@ msgstr ""
 "komputer anda, ia akan dipilih secara\n"
 "automatik."
 
-#: modules/gui/qt/dialogs/plugins.cpp:79
+#: modules/gui/qt/dialogs/plugins.cpp:80
 msgid "Plugins and extensions"
 msgstr "Pemalam dan sambungan"
 
-#: modules/gui/qt/dialogs/plugins.cpp:87
+#: modules/gui/qt/dialogs/plugins.cpp:88
 msgid "Active Extensions"
 msgstr "Sambungan Aktif"
 
-#: modules/gui/qt/dialogs/plugins.cpp:127
+#: modules/gui/qt/dialogs/plugins.cpp:128
 msgid "Capability"
 msgstr "Keupayaan"
 
-#: modules/gui/qt/dialogs/plugins.cpp:127
+#: modules/gui/qt/dialogs/plugins.cpp:128
 msgid "Score"
 msgstr "Skor"
 
-#: modules/gui/qt/dialogs/plugins.cpp:140
+#: modules/gui/qt/dialogs/plugins.cpp:141
 msgid "&Search:"
 msgstr "&Gelintar:"
 
-#: modules/gui/qt/dialogs/plugins.cpp:251
-#: modules/gui/qt/dialogs/plugins.cpp:1284
+#: modules/gui/qt/dialogs/plugins.cpp:252
+#: modules/gui/qt/dialogs/plugins.cpp:1285
 msgid "More information..."
 msgstr "Lagi maklumat..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:259
+#: modules/gui/qt/dialogs/plugins.cpp:260
 msgid "Reload extensions"
 msgstr "Muat semula sambungan"
 
-#: modules/gui/qt/dialogs/plugins.cpp:378
+#: modules/gui/qt/dialogs/plugins.cpp:379
 msgid ""
 "Skins customize player's appearance. You can activate them through "
 "preferences."
 msgstr ""
-"Skin suaikan penampilan pemain. Anda boleh aktifkan ia menerusi keutamaan."
+"Kulit menyuaikan penampilan pemain. Anda boleh mengaktifkan ia menerusi "
+"keutamaan."
 
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:383
 msgid ""
 "Playlist parsers add new capabilities to read internet streams or extract "
 "meta data."
@@ -20643,7 +20644,7 @@ msgstr ""
 "Penghurai senarai main menambah keupayaan baharu untuk membaca strim "
 "internet atau mengekstrak data meta."
 
-#: modules/gui/qt/dialogs/plugins.cpp:386
+#: modules/gui/qt/dialogs/plugins.cpp:387
 msgid ""
 "Service discoveries adds new sources to your playlist such as web radios, "
 "video websites, ..."
@@ -20651,61 +20652,61 @@ msgstr ""
 "Penemuan perkhidmatan menambah sumber baharu ke dalam senarai main anda "
 "seperti radio sesawang, laman sesawang video, ..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:393
+#: modules/gui/qt/dialogs/plugins.cpp:394
 msgid "Retrieves extra info and art for playlist items"
 msgstr "Dapatkan maklumat dan seni ekstra untuk item senarai main"
 
-#: modules/gui/qt/dialogs/plugins.cpp:396
+#: modules/gui/qt/dialogs/plugins.cpp:397
 msgid ""
 "Extensions brings various enhancements. Check descriptions for more details"
 msgstr ""
 "Sambungan memberikan pelbagai penambahbaikan. Semak keterangan untuk lebih "
 "perincian"
 
-#: modules/gui/qt/dialogs/plugins.cpp:417
+#: modules/gui/qt/dialogs/plugins.cpp:418
 msgid "Only installed"
 msgstr "Hanya dipasang"
 
-#: modules/gui/qt/dialogs/plugins.cpp:523
+#: modules/gui/qt/dialogs/plugins.cpp:524
 msgid "Retrieving addons..."
 msgstr "Mendapatkan tambahan..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:534
+#: modules/gui/qt/dialogs/plugins.cpp:535
 msgid "No addons found"
 msgstr "Tiada tambahan ditemui"
 
-#: modules/gui/qt/dialogs/plugins.cpp:813
+#: modules/gui/qt/dialogs/plugins.cpp:814
 msgid "This addon has been installed manually. VLC can't manage it by itself."
 msgstr ""
 "Tambahan ini telah dipasang secara manual. VLC tidak dapat mengurus ia."
 
-#: modules/gui/qt/dialogs/plugins.cpp:1196
+#: modules/gui/qt/dialogs/plugins.cpp:1197
 msgid "Version %1"
 msgstr "Versi %1"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1224
+#: modules/gui/qt/dialogs/plugins.cpp:1225
 msgid "%1 downloads"
 msgstr "%1 muat turun"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1293
+#: modules/gui/qt/dialogs/plugins.cpp:1294
 msgid "&Uninstall"
 msgstr "N&yahpasang"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1296
+#: modules/gui/qt/dialogs/plugins.cpp:1297
 msgid "&Install"
 msgstr "&Pasang"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1391
-#: modules/gui/qt/dialogs/plugins.cpp:1494
+#: modules/gui/qt/dialogs/plugins.cpp:1392
+#: modules/gui/qt/dialogs/plugins.cpp:1495
 msgid "Version"
 msgstr "Versi"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1411
-#: modules/gui/qt/dialogs/plugins.cpp:1521
+#: modules/gui/qt/dialogs/plugins.cpp:1412
+#: modules/gui/qt/dialogs/plugins.cpp:1522
 msgid "Website"
 msgstr "Laman sesawang"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1533
+#: modules/gui/qt/dialogs/plugins.cpp:1534
 msgid "Files"
 msgstr "Fail"
 
@@ -21357,7 +21358,7 @@ msgstr "S&embunyi pemain media dalam palang tugas"
 
 #: modules/gui/qt/menus.cpp:1180
 msgid "Sho&w VLC media player"
-msgstr "T&unju pemain media VLC"
+msgstr "T&unjuk pemain media VLC"
 
 #: modules/gui/qt/menus.cpp:1191
 msgid "&Open Media"
@@ -21369,7 +21370,7 @@ msgstr "Kosongkan"
 
 #: modules/gui/qt/menus.cpp:1629
 msgid "&Renderer"
-msgstr "Pene&rap"
+msgstr "Penge&mas Gabung"
 
 #: modules/gui/qt/menus.cpp:1633
 msgid "<Local>"
@@ -21860,7 +21861,7 @@ msgstr "Skrin gelpa di bawah video."
 
 #: modules/hw/mmal/vout.c:55
 msgid "Render blank screen below video. Increases VideoCore load."
-msgstr "Terap skrin gelap di bawah video. Tingkatkan beban VideoCore."
+msgstr "Kemas gabung skrin gelap di bawah video. Tingkatkan beban VideoCore."
 
 #: modules/hw/mmal/vout.c:59 modules/hw/mmal/vout.c:60
 msgid "Adjust HDMI refresh rate to the video."
@@ -23739,7 +23740,7 @@ msgstr "Serivs zeroconf "
 
 #: modules/services_discovery/avahi.c:69
 msgid "Avahi Renderer Discovery"
-msgstr "Penemuan Penerap Avahi"
+msgstr "Penemuan Pengemas Gabung Avahi"
 
 #: modules/services_discovery/bonjour.m:44
 #: modules/services_discovery/bonjour.m:62
@@ -23749,7 +23750,7 @@ msgstr "Penemuan Rangkaian Bonjour"
 
 #: modules/services_discovery/bonjour.m:70
 msgid "Bonjour Renderer Discovery"
-msgstr "Penemuan Penerap Bonjour"
+msgstr "Penemuan Pengemas Gabung Bonjour"
 
 #: modules/services_discovery/mediadirs.c:71
 #: modules/services_discovery/mediadirs.c:133
@@ -23761,17 +23762,17 @@ msgstr "Video Saya"
 #: modules/services_discovery/mediadirs.c:141
 #: modules/services_discovery/mediadirs.c:358
 msgid "My Music"
-msgstr "My Music"
+msgstr "Muzik Saya"
 
 #: modules/services_discovery/mediadirs.c:84
 msgid "Picture"
-msgstr "Picture"
+msgstr "Gambar"
 
 #: modules/services_discovery/mediadirs.c:85
 #: modules/services_discovery/mediadirs.c:149
 #: modules/services_discovery/mediadirs.c:359
 msgid "My Pictures"
-msgstr "My Pictures"
+msgstr "Gambar Saya"
 
 #: modules/services_discovery/microdns.c:44
 #: modules/services_discovery/microdns.c:57
@@ -23781,7 +23782,7 @@ msgstr "Penemuan Rangkaian mDNS"
 
 #: modules/services_discovery/microdns.c:65
 msgid "mDNS Renderer Discovery"
-msgstr "Penemuan Penerap mDNS"
+msgstr "Penemuan Pengemas gabung mDNS"
 
 #: modules/services_discovery/mtp.c:40 modules/services_discovery/mtp.c:44
 #: modules/services_discovery/mtp.c:96
@@ -23977,7 +23978,7 @@ msgstr "Aplikasi"
 #: modules/services_discovery/xcb_apps.c:361
 #: modules/video_output/win32/direct3d9.c:342
 msgid "Desktop"
-msgstr "Desktop"
+msgstr "Atas meja"
 
 #: modules/spu/audiobargraph_v.c:44 modules/spu/logo.c:59
 #: modules/video_filter/erase.c:58
@@ -24228,7 +24229,7 @@ msgid ""
 "then blue. #000000 = black, #FF0000 = red, #00FF00 = green, #FFFF00 = yellow "
 "(red + green), #FFFFFF = white"
 msgstr ""
-"Warna teks yang akan dipersembahkan pada video. Mestilah heksadesimal "
+"Warna teks yang akan dikemas gabung pada video. Mestilah heksadesimal "
 "(seperti warna HTML). Dua aksara pertama untuk murah, berikutnya hijau, "
 "kemudian biru. #000000 = hitam, #FF0000 = merah, #00FF00 = hijau, #FFFF00 = "
 "kuning (merah + hijau), #FFFFFF = putih"
@@ -25026,11 +25027,11 @@ msgstr ""
 msgid "Chromecast demux wrapper"
 msgstr "Pelilit demux Chromecast"
 
-#: modules/stream_out/cycle.c:325
+#: modules/stream_out/cycle.c:326
 msgid "cycle"
 msgstr "kitar"
 
-#: modules/stream_out/cycle.c:326
+#: modules/stream_out/cycle.c:327
 msgid "Cyclic stream output"
 msgstr "Output strim berkitar"
 
@@ -25064,11 +25065,11 @@ msgstr "Takrifan output strim"
 
 #: modules/stream_out/display.c:41
 msgid "Enable/disable audio rendering."
-msgstr "Hidup/lumpuh persembahan audio."
+msgstr "Benar/lumpuhkan pengemasgabungan audio."
 
 #: modules/stream_out/display.c:43
 msgid "Enable/disable video rendering."
-msgstr "Hidup/Lumpuh persembahan video."
+msgstr "Benar/lumpuhkan pengemasgabungan video."
 
 #: modules/stream_out/display.c:44
 msgid "Delay (ms)"
@@ -25469,7 +25470,7 @@ msgstr "Ubah bahasa strim asas"
 
 #: modules/stream_out/smem.c:61
 msgid "Video prerender callback"
-msgstr "Panggil balik pra-terap video"
+msgstr "Panggil balik pra-kemas-gabung video"
 
 #: modules/stream_out/smem.c:62
 msgid ""
@@ -25477,35 +25478,35 @@ msgid ""
 "buffer where render will be done."
 msgstr ""
 "Alamat bagi fungsi panggil balik pra-terap video. Fungsi ini akan tetapkan "
-"penimbal yang mana terap akan dibuat."
+"penimbal yang mana kemas gabung akan dibuat."
 
 #: modules/stream_out/smem.c:65
 msgid "Audio prerender callback"
-msgstr "Panggil balik pra-terap audio"
+msgstr "Panggil balik pra-kemas-gabung audio"
 
 #: modules/stream_out/smem.c:66
 msgid ""
 "Address of the audio prerender callback function. This function will set the "
 "buffer where render will be done."
 msgstr ""
-"Alamat fungsi panggil balik pra-terap audio. Fungsi ini akan tetapkan "
-"penimbal yang mana terap akan dibuat."
+"Alamat fungsi panggil balik pra-kemas-gabung audio. Fungsi ini akan tetapkan "
+"penimbal yang mana kemas gabung akan dibuat."
 
 #: modules/stream_out/smem.c:69
 msgid "Video postrender callback"
-msgstr "Panggil balik pasca-terap video"
+msgstr "Panggil balik pasca-kemas-gabung video"
 
 #: modules/stream_out/smem.c:70
 msgid ""
 "Address of the video postrender callback function. This function will be "
 "called when the render is into the buffer."
 msgstr ""
-"Alamat fungsi panggil balik pasca-terap video. Fungsi ini akan dikenali bila "
-"terap ke dalam penimbal."
+"Alamat fungsi panggil balik pasca-kemas-gabung video. Fungsi ini akan "
+"dikenali bila kemas gabung ke dalam penimbal."
 
 #: modules/stream_out/smem.c:73
 msgid "Audio postrender callback"
-msgstr "Panggil balik pasca-terap audio"
+msgstr "Panggil balik pasca-kemas-gabung audio"
 
 #: modules/stream_out/smem.c:74
 msgid ""
@@ -25513,7 +25514,7 @@ msgid ""
 "called when the render is into the buffer."
 msgstr ""
 "Alamat fungsi panggil balik pasca-terap audio. Fungsi ini akan dikenali bila "
-"terap ke dalam penimbal."
+"kemas gabung ke dalam penimbal."
 
 #: modules/stream_out/smem.c:77
 msgid "Video Callback data"
@@ -25540,8 +25541,9 @@ msgid ""
 "Time Synchronisation option for output. If true, stream will render as "
 "usual, else it will be rendered as fast as possible."
 msgstr ""
-"Pilihan Penyegerakan masa untuk output. Jika benar, strim akan diterap "
-"seperti biasa, jika tidak ia akan diterap sepantas yang mungkin."
+"Pilihan Penyegerakan masa untuk output. Jika benar, strim akan dikemas "
+"gabung seperti biasa, jika tidak ia akan dikemas gabung sepantas yang "
+"mungkin."
 
 #: modules/stream_out/smem.c:96
 msgid "Smem"
@@ -25855,8 +25857,9 @@ msgid ""
 "set to something different than 0 this option will override the relative "
 "font size."
 msgstr ""
-"Ini adalah saiz lalai font yang akan dikemukana pada video. Jika ditetapkan "
-"kepada sesuatu yang lain dari 0 pilihan ini akan menindih saiz font relatif."
+"Ini adalah saiz lalai font yang akan dikemas gabung pada video. Jika "
+"ditetapkan kepada sesuatu yang lain dari 0 pilihan ini akan menindih saiz "
+"font relatif."
 
 #: modules/text_renderer/freetype/freetype.c:91
 msgid "Text opacity"
@@ -25867,7 +25870,7 @@ msgid ""
 "The opacity (inverse of transparency) of the text that will be rendered on "
 "the video. 0 = transparent, 255 = totally opaque."
 msgstr ""
-"Kelegapan (songsang ketelusan) teks yang akan diterapkan pada video. 0 = "
+"Kelegapan (songsang ketelusan) teks yang akan dikemas gabung pada video. 0 = "
 "lutsinar, 255 = sepenuhnya legap."
 
 #: modules/text_renderer/freetype/freetype.c:95
@@ -25881,7 +25884,7 @@ msgid ""
 "then blue. #000000 = black, #FF0000 = red, #00FF00 = green, #FFFF00 = yellow "
 "(red + green), #FFFFFF = white"
 msgstr ""
-"Warna teks yang akan dipersembahkan pada video. Mestilah heksadesimal "
+"Warna teks yang akan dikemas gabung pada video. Mestilah heksadesimal "
 "(seperti warna HTML). Dua aksara pertama untuk murah, berikutnya hijau, "
 "kemudian biru. #000000 = hitam, #FF0000 = merah, #00FF00 = hijau, #FFFF00 = "
 "kuning (merah + hijau), #FFFFFF = putih"
@@ -25895,8 +25898,8 @@ msgid ""
 "This is the relative default size of the fonts that will be rendered on the "
 "video. If absolute font size is set, relative size will be overridden."
 msgstr ""
-"Ini adalah saiz lalai relatif fon yang akan diterap pada video. Jika saiz "
-"fon mutlak ditetapkan, saiz relatif akan dibatalkan."
+"Ini adalah saiz lalai relatif fon yang akan dikemas gabung pada video. Jika "
+"saiz fon mutlak ditetapkan, saiz relatif akan dibatalkan."
 
 #: modules/text_renderer/freetype/freetype.c:106
 msgid "Background opacity"
@@ -25936,15 +25939,15 @@ msgstr "Arah berasaskan perenggan untuk algoritma dwi-arah Unikod."
 
 #: modules/text_renderer/freetype/freetype.c:125
 msgid "Use YUVP renderer"
-msgstr "Guna pengemuka YUVP"
+msgstr "Guna pengemas gabung YUVP"
 
 #: modules/text_renderer/freetype/freetype.c:126
 msgid ""
 "This renders the font using \"paletized YUV\". This option is only needed if "
 "you want to encode into DVB subtitles"
 msgstr ""
-"Persembahan font menggunakan \"YUV terpalet\". Pilihan ini hanya diperlukan "
-"jika anda ingin mengkodnya kepada sarikata DVB"
+"Tindakan ini mengemas gabung fon menggunakan \"YUV terpalet\". Pilihan ini "
+"hanya diperlukan jika anda ingin mengkodnya kepada sari kata DVB"
 
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Thin"
@@ -25964,11 +25967,11 @@ msgstr "Kanan ke kiri"
 
 #: modules/text_renderer/freetype/freetype.c:156
 msgid "Text renderer"
-msgstr "Pengemuka teks"
+msgstr "Pengemas gabung teks"
 
 #: modules/text_renderer/freetype/freetype.c:157
 msgid "Freetype2 font renderer"
-msgstr "Pengemuka fon Freetype2"
+msgstr "Pengemas gabung fon Freetype2"
 
 #: modules/text_renderer/nsspeechsynthesizer.m:47
 msgid "Speech synthesis for Mac OS X"
@@ -25989,7 +25992,7 @@ msgstr "Lokasi fail yang memegang tempat SVG untuk penukaran automatik string"
 
 #: modules/text_renderer/tdummy.c:36
 msgid "Dummy font renderer"
-msgstr "Penerap fon semu"
+msgstr "Pengemas gabung fon semu"
 
 #: modules/video_chroma/chain.c:46
 msgid "Video filtering using a chain of video filter modules"
@@ -26773,7 +26776,7 @@ msgstr "Terap kesan kartun. Ia hanya digunakan oleh \"curam\" dan \"bucu\"."
 
 #: modules/video_filter/gradient.c:73
 msgid "Apply color gradient or edge detection effects"
-msgstr "Laksana gradien warna atau kesan pengesanan pinggir"
+msgstr "Terap gradien warna atau kesan pengesanan pinggir"
 
 #: modules/video_filter/gradient.c:81
 msgid "Gradient video filter"
@@ -27191,23 +27194,23 @@ msgstr "Penapis video ripple"
 msgid "Ripple"
 msgstr "Desir"
 
-#: modules/video_filter/rotate.c:56
+#: modules/video_filter/rotate.c:59
 msgid "Angle in degrees"
 msgstr "Arah dalam darjah"
 
-#: modules/video_filter/rotate.c:57
+#: modules/video_filter/rotate.c:60
 msgid "Angle in degrees (0 to 359)"
 msgstr "Sudut dalam darjah (0 hingga 359)"
 
-#: modules/video_filter/rotate.c:58
+#: modules/video_filter/rotate.c:61
 msgid "Use motion sensors"
 msgstr "Guna penderia gerakan"
 
-#: modules/video_filter/rotate.c:68
+#: modules/video_filter/rotate.c:71
 msgid "Rotate video filter"
 msgstr "Penapis video pusing"
 
-#: modules/video_filter/rotate.c:69
+#: modules/video_filter/rotate.c:72
 msgid "Rotate"
 msgstr "Pusing"
 
@@ -27308,7 +27311,7 @@ msgstr "Penapisa video sepia"
 
 #: modules/video_filter/sepia.c:67
 msgid "Gives video a warmer tone by applying sepia effect"
-msgstr "Berikan video ton lebih panas dengan melaksanakan kesan sepia"
+msgstr "Berikan video ton lebih panas dengan menerapkan kesan sepia"
 
 #: modules/video_filter/sharpen.c:48
 msgid "Sharpen strength (0-2)"
@@ -27526,8 +27529,8 @@ msgstr "Peranti penimbal bingkai"
 #: modules/video_output/fb.c:58
 msgid "Framebuffer device to use for rendering (usually /dev/fb0)."
 msgstr ""
-"Peranti penimbal bingkai untuk diguna sebagai persembahan (kebiasaannya /dev/"
-"fb0)."
+"Peranti penimbal bingkai untuk digunakan untuk pengemasgabungan "
+"(kebiasaannya /dev/fb0)."
 
 #: modules/video_output/fb.c:60
 msgid "Run fb on current tty"
@@ -27667,7 +27670,7 @@ msgstr "Sambungan EGL untuk OpenGL"
 
 #: modules/video_output/win32/direct3d9.c:77
 msgid "The desktop mode allows you to display the video on the desktop."
-msgstr "Mod desktop membolehkan anda paparkan video diatas desktop."
+msgstr "Mod atas meja membolehkan anda paparkan video di atas meja."
 
 #: modules/video_output/win32/direct3d9.c:79
 #: modules/video_output/win32/direct3d11.c:65
@@ -27685,7 +27688,7 @@ msgstr "Pelorek Piksel"
 
 #: modules/video_output/win32/direct3d9.c:85
 msgid "Choose a pixel shader to apply."
-msgstr "Pilih satu pelorek piksel untuk dilaksanakan."
+msgstr "Pilih satu pelorek piksel untuk diterapkan."
 
 #: modules/video_output/win32/direct3d9.c:86
 msgid "Path to HLSL file"
@@ -27736,8 +27739,9 @@ msgid ""
 "Overlay is the hardware acceleration capability of your video card (ability "
 "to render video directly). VLC will try to use it by default."
 msgstr ""
-"Lapisan adalah keupayaan pemecutan perkakasan kad video anda (keupayaan "
-"untuk terap video secara terus). VLC akan cuba gunakannya sebagai lalai."
+"Tindihan adalah keupayaan pemecutan perkakasan kad video anda (keupayaan "
+"untuk kemas gabung video secara terus). VLC akan cuba gunakannya sebagai "
+"lalai."
 
 #: modules/video_output/win32/directdraw.c:75
 msgid "Use video buffers in system memory"
@@ -27879,8 +27883,8 @@ msgid ""
 "Video will be rendered with this Wayland display. If empty, the default "
 "display will be used."
 msgstr ""
-"Video akan diterap dengan paparan Wayland ini. Jika kosong, paparan lalai "
-"akan digunakan."
+"Video akan dikemas gabung dengan paparan Wayland ini. Jika kosong, paparan "
+"lalai akan digunakan."
 
 #: modules/video_output/wayland/shell.c:411
 msgid "WL shell"
@@ -27936,8 +27940,8 @@ msgid ""
 "Video will be rendered with this X11 display. If empty, the default display "
 "will be used."
 msgstr ""
-"Video akan diterap dengan paparan X11 ini. Jika kosong, paparan lalai akan "
-"digunakan."
+"Video akan dikemas gabung dengan paparan X11 ini. Jika kosong, paparan lalai "
+"akan digunakan."
 
 #: modules/video_output/xcb/window.c:705
 msgid "X11 window ID"
@@ -28579,7 +28583,7 @@ msgid "#separate commands with a new line or a semi-colon"
 msgstr "#asingkan arahan dengan baris baru atau semi-colon"
 
 #: share/lua/http/dialogs/browse_window.html:41
-#: share/lua/http/mobile_browse.html:48
+#: share/lua/http/mobile_browse.html:49
 msgid "Play List"
 msgstr "Senarai Main"
 
@@ -28637,7 +28641,7 @@ msgid "File name"
 msgstr "Nama fail"
 
 #: share/lua/http/dialogs/equalizer_window.html:49
-#: share/lua/http/mobile_equalizer.html:62
+#: share/lua/http/mobile_equalizer.html:63
 msgid "Preamp:"
 msgstr "Preamp:"
 
@@ -28678,55 +28682,68 @@ msgstr "Masa:"
 msgid "VLC media player - Web Interface"
 msgstr "Pemain media VLC - Antaramuka Web"
 
-#: share/lua/http/index.html:215
+#: share/lua/http/index.html:234
 msgid "Hide / Show Library"
-msgstr " Tunjuk/Sorok Pustaka"
+msgstr " Tunjuk/Sembunyi Pustaka"
 
-#: share/lua/http/index.html:216
+#: share/lua/http/index.html:235
 msgid "Hide / Show Viewer"
 msgstr "Tunjuk/Sorok Pelihat"
 
-#: share/lua/http/index.html:217
+#: share/lua/http/index.html:236
 msgid "Manage Streams"
 msgstr "Urus Strim"
 
-#: share/lua/http/index.html:218
+#: share/lua/http/index.html:237
 msgid "Track Synchronisation"
 msgstr "Penyegerakan Trek"
 
-#: share/lua/http/index.html:220
+#: share/lua/http/index.html:239
 msgid "VLM Batch Commands"
 msgstr "Arahan Kelomppok VLM"
 
-#: share/lua/http/index.html:240
+#: share/lua/http/index.html:259
 msgid "Loop"
 msgstr "Gelung "
 
-#: share/lua/http/index.html:242
+#: share/lua/http/index.html:261
 msgid "Empty Playlist"
 msgstr "Senarai main kosong"
 
-#: share/lua/http/index.html:243
+#: share/lua/http/index.html:262
 msgid "Queue Selected"
 msgstr "Bariskan Yang Dipilih"
 
-#: share/lua/http/index.html:244
+#: share/lua/http/index.html:263
 msgid "Play Selected"
 msgstr "Mainkan Yang Dipilih"
 
-#: share/lua/http/index.html:245
+#: share/lua/http/index.html:264
 msgid "Refresh List"
 msgstr "Segar semula Senarail"
 
-#: share/lua/http/index.html:252
+#: share/lua/http/index.html:271
 msgid "Loading flowplayer..."
 msgstr "Memuatkan flowplayer..."
 
-#: share/lua/http/index.html:252
+#: share/lua/http/index.html:271
 msgid "If nothing appears, check your internet connection."
 msgstr "Jika tiada apa yang muncul, periksa sambungan internet anda."
 
-#: share/lua/http/index.html:263
+#: share/lua/http/index.html:282
+msgid ""
+"VLC can display a QR code linking to the mobile version of the web "
+"interface; the web address of the web interface of your VLC media player "
+"instance will be transmitted over the internet to the Google Image Charts "
+"web service to generate this QR code."
+msgstr ""
+
+#: share/lua/http/index.html:285
+#, fuzzy
+msgid "Do you want to go ahead with this?"
+msgstr "Anda ingin memuat turunnya?"
+
+#: share/lua/http/index.html:290
 msgid ""
 "By creating a stream, the <i>Main Controls</i> will operate the stream "
 "instead of the main interface."
@@ -28734,7 +28751,7 @@ msgstr ""
 "Dengan mencipta strim, <i>Kawalan Utama<i> akan mengoperasikan strim "
 "bukannya antaramuka utama."
 
-#: share/lua/http/index.html:264
+#: share/lua/http/index.html:291
 msgid ""
 "The stream will be created using default settings, for more advanced "
 "configuration, or to modify the default settings, select the button to the "
@@ -28743,19 +28760,19 @@ msgstr ""
 "Strim akan dicipta menggunakan tetapan lalai, untuk konfigurasi lanjutan, "
 "atau mengubah tetapan lalai, pilih butang kanan: <i>Urus Strim<i>"
 
-#: share/lua/http/index.html:268
+#: share/lua/http/index.html:295
 msgid ""
 "Once the stream is created, the <i>Media Viewer</i> window will display the "
 "stream."
 msgstr ""
 "Sekali strim dicipta, Tetingkap <i>Pelihat Media</i> akan memaparkan strim."
 
-#: share/lua/http/index.html:269
+#: share/lua/http/index.html:296
 msgid ""
 "Volume will be controlled by the player, and not the <i>Main Controls</i>."
 msgstr "Volum akan dikawal oleh pemain, dan bukan <i>Kawalan Utama<i/>."
 
-#: share/lua/http/index.html:272
+#: share/lua/http/index.html:299
 msgid ""
 "The current playing item will be streamed. If there is no currently playing "
 "item, the first selected item from the <i>Library</i> will be the subject of "
@@ -28764,7 +28781,7 @@ msgstr ""
 "Item yang sedang dimainkan akan distrim. Jika tiada item sedang dimainkan, "
 "item dipilih yang pertama daripada <i>Pustaka</i> akan menjadi subjek strim."
 
-#: share/lua/http/index.html:275
+#: share/lua/http/index.html:302
 msgid ""
 "To stop the stream and resume normal controls, click the <i>Open Stream</i> "
 "button again."
@@ -28772,7 +28789,7 @@ msgstr ""
 "Untuk menghentikan strim dan sambung kawalan normal, klik butang <i>Buka "
 "Strim</i> sekali lagi."
 
-#: share/lua/http/index.html:278
+#: share/lua/http/index.html:305
 msgid "Are you sure you wish to create the stream?"
 msgstr "Adakah pasti anda ingin mencipta strim?"
 
@@ -29160,7 +29177,7 @@ msgstr "Adakah pasti anda ingin mencipta strim?"
 #~ msgstr "Jeda mainbalik ketika minima"
 
 #~ msgid "Show media change popup:"
-#~ msgstr "Tunjuk popup penukaran media:"
+#~ msgstr "Tunjuk tetingkap timbul penukaran media:"
 
 #~ msgid "Start in minimal view mode"
 #~ msgstr "Mula dalam mod lihat minima"
@@ -36967,10 +36984,6 @@ msgstr "Adakah pasti anda ingin mencipta strim?"
 #, fuzzy
 #~ msgid "Subtitles effects"
 #~ msgstr "Kesan sarikata"
-
-#, fuzzy
-#~ msgid "Do you want to download it ?"
-#~ msgstr "Anda ingin memuat turunnya?"
 
 #, fuzzy
 #~ msgid "Black slot"

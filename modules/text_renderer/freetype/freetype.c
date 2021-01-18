@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2015 VLC authors and VideoLAN
- * $Id: 314e5024b642bc0656d2da6335f9d4f4079e8ebf $
+ * $Id: 32f1ea403b52111c7213fc462f0bc70819874aa1 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1130,7 +1130,7 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region_out,
                          subpicture_region_t *p_region_in,
                          const vlc_fourcc_t *p_chroma_list )
 {
-    if( !p_region_in )
+    if( !p_region_in || !p_region_in->p_text )
         return VLC_EGENERIC;
 
     filter_sys_t *p_sys = p_filter->p_sys;

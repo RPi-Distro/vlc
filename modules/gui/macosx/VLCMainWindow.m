@@ -2,7 +2,7 @@
  * VLCMainWindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2018 VLC authors and VideoLAN
- * $Id: 61907818054011303c037cb5218d6190e0fea9e1 $
+ * $Id: 84d33a5ed40735072e0ffa1c7a34c27f0779de86 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -34,7 +34,7 @@
 #import "VLCMainMenu.h"
 #import "VLCOpenWindowController.h"
 #import "VLCPlaylist.h"
-#import "SideBarItem.h"
+#import "VLCSourceListItem.h"
 #import <math.h>
 #import <vlc_playlist.h>
 #import <vlc_url.h>
@@ -42,8 +42,10 @@
 #import <vlc_services_discovery.h>
 #import "VLCPLModel.h"
 
-#import "PXSourceList.h"
-#import "PXSourceListDataSource.h"
+#import "PXSourceList/PXSourceList.h"
+#import "PXSourceList/PXSourceListDataSource.h"
+
+#import "VLCSourceListTableCellView.h"
 
 #import "VLCMainWindowControlsBar.h"
 #import "VLCVoutView.h"
@@ -315,15 +317,15 @@ static const float f_min_window_height = 307.;
     }
 
     o_sidebaritems = [[NSMutableArray alloc] init];
-    SideBarItem *libraryItem = [SideBarItem itemWithTitle:_NS("LIBRARY") identifier:@"library"];
-    SideBarItem *playlistItem = [SideBarItem itemWithTitle:_NS("Playlist") identifier:@"playlist"];
+    VLCSourceListItem *libraryItem = [VLCSourceListItem itemWithTitle:_NS("LIBRARY") identifier:@"library"];
+    VLCSourceListItem *playlistItem = [VLCSourceListItem itemWithTitle:_NS("Playlist") identifier:@"playlist"];
     [playlistItem setIcon: sidebarImageFromRes(@"sidebar-playlist", darkMode)];
-    SideBarItem *medialibraryItem = [SideBarItem itemWithTitle:_NS("Media Library") identifier:@"medialibrary"];
+    VLCSourceListItem *medialibraryItem = [VLCSourceListItem itemWithTitle:_NS("Media Library") identifier:@"medialibrary"];
     [medialibraryItem setIcon: sidebarImageFromRes(@"sidebar-playlist", darkMode)];
-    SideBarItem *mycompItem = [SideBarItem itemWithTitle:_NS("MY COMPUTER") identifier:@"mycomputer"];
-    SideBarItem *devicesItem = [SideBarItem itemWithTitle:_NS("DEVICES") identifier:@"devices"];
-    SideBarItem *lanItem = [SideBarItem itemWithTitle:_NS("LOCAL NETWORK") identifier:@"localnetwork"];
-    SideBarItem *internetItem = [SideBarItem itemWithTitle:_NS("INTERNET") identifier:@"internet"];
+    VLCSourceListItem *mycompItem = [VLCSourceListItem itemWithTitle:_NS("MY COMPUTER") identifier:@"mycomputer"];
+    VLCSourceListItem *devicesItem = [VLCSourceListItem itemWithTitle:_NS("DEVICES") identifier:@"devices"];
+    VLCSourceListItem *lanItem = [VLCSourceListItem itemWithTitle:_NS("LOCAL NETWORK") identifier:@"localnetwork"];
+    VLCSourceListItem *internetItem = [VLCSourceListItem itemWithTitle:_NS("INTERNET") identifier:@"internet"];
 
     /* SD subnodes, inspired by the Qt intf */
     char **ppsz_longnames = NULL;
@@ -342,22 +344,22 @@ static const float f_min_window_height = 307.;
         o_identifier = toNSStr(*ppsz_name);
         switch (*p_category) {
             case SD_CAT_INTERNET:
-                [internetItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
+                [internetItems addObject: [VLCSourceListItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
                 [[internetItems lastObject] setIcon: sidebarImageFromRes(@"sidebar-podcast", darkMode)];
                 [[internetItems lastObject] setSdtype: SD_CAT_INTERNET];
                 break;
             case SD_CAT_DEVICES:
-                [devicesItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
+                [devicesItems addObject: [VLCSourceListItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
                 [[devicesItems lastObject] setIcon: sidebarImageFromRes(@"sidebar-local", darkMode)];
                 [[devicesItems lastObject] setSdtype: SD_CAT_DEVICES];
                 break;
             case SD_CAT_LAN:
-                [lanItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
+                [lanItems addObject: [VLCSourceListItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
                 [[lanItems lastObject] setIcon: sidebarImageFromRes(@"sidebar-local", darkMode)];
                 [[lanItems lastObject] setSdtype: SD_CAT_LAN];
                 break;
             case SD_CAT_MYCOMPUTER:
-                [mycompItems addObject: [SideBarItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
+                [mycompItems addObject: [VLCSourceListItem itemWithTitle: _NS(*ppsz_longname) identifier: o_identifier]];
                 if (!strncmp(*ppsz_name, "video_dir", 9))
                     [[mycompItems lastObject] setIcon: sidebarImageFromRes(@"sidebar-movie", darkMode)];
                 else if (!strncmp(*ppsz_name, "audio_dir", 9))
@@ -726,6 +728,10 @@ static const float f_min_window_height = 307.;
     PL_UNLOCK;
     [_sidebarView setNeedsDisplay:YES];
 
+    // Update badge in the sidebar for the first two items (Playlist and Media library)
+    [_sidebarView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(1,2)]
+                            columnIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [[_sidebarView tableColumns] count])]];
+
     [self _updatePlaylistTitle];
 }
 
@@ -962,60 +968,14 @@ static const float f_min_window_height = 307.;
         return [[item children] objectAtIndex:index];
 }
 
-
-- (id)sourceList:(PXSourceList*)aSourceList objectValueForItem:(id)item
-{
-    return [item title];
-}
-
-- (void)sourceList:(PXSourceList*)aSourceList setObjectValue:(id)object forItem:(id)item
-{
-    [item setTitle:object];
-}
-
 - (BOOL)sourceList:(PXSourceList*)aSourceList isItemExpandable:(id)item
 {
     return [item hasChildren];
 }
 
-
-- (BOOL)sourceList:(PXSourceList*)aSourceList itemHasBadge:(id)item
-{
-    if ([[item identifier] isEqualToString: @"playlist"] || [[item identifier] isEqualToString: @"medialibrary"])
-        return YES;
-
-    return [item hasBadge];
-}
-
-
-- (NSInteger)sourceList:(PXSourceList*)aSourceList badgeValueForItem:(id)item
-{
-    playlist_t * p_playlist = pl_Get(getIntf());
-    NSInteger i_playlist_size = 0;
-
-    if ([[item identifier] isEqualToString: @"playlist"]) {
-        PL_LOCK;
-        i_playlist_size = p_playlist->p_playing->i_children;
-        PL_UNLOCK;
-
-        return i_playlist_size;
-    }
-    if ([[item identifier] isEqualToString: @"medialibrary"]) {
-        PL_LOCK;
-        if (p_playlist->p_media_library)
-            i_playlist_size = p_playlist->p_media_library->i_children;
-        PL_UNLOCK;
-
-        return i_playlist_size;
-    }
-
-    return [item badgeValue];
-}
-
-
 - (BOOL)sourceList:(PXSourceList*)aSourceList itemHasIcon:(id)item
 {
-    return [item hasIcon];
+    return ([item icon] != nil);
 }
 
 
@@ -1136,6 +1096,54 @@ static const float f_min_window_height = 307.;
     [[NSNotificationCenter defaultCenter] postNotificationName: VLCMediaKeySupportSettingChangedNotification
                                                         object: nil
                                                       userInfo: nil];
+}
+
+- (NSView *)sourceList:(PXSourceList *)aSourceList viewForItem:(id)item
+{
+    PXSourceListItem *sourceListItem = item;
+
+    if ([aSourceList levelForItem:item] == 0) {
+        PXSourceListTableCellView *cellView = [aSourceList makeViewWithIdentifier:@"HeaderCell" owner:nil];
+
+        cellView.textField.editable = NO;
+        cellView.textField.selectable = NO;
+        cellView.textField.stringValue = sourceListItem.title ? sourceListItem.title : @"";
+
+        return cellView;
+    }
+
+    VLCSourceListTableCellView * cellView = [aSourceList makeViewWithIdentifier:@"DataCell" owner:nil];
+
+    cellView.textField.editable = NO;
+    cellView.textField.selectable = NO;
+    cellView.textField.stringValue = sourceListItem.title ? sourceListItem.title : @"";
+    cellView.imageView.image = [sourceListItem icon];
+
+    // Badge count
+    {
+        playlist_t *p_playlist = pl_Get(getIntf());
+        playlist_item_t *p_pl_item = NULL;
+        NSInteger i_playlist_size = 0;
+
+        if ([[sourceListItem identifier] isEqualToString: @"playlist"]) {
+            p_pl_item = p_playlist->p_playing;
+        } else if ([[sourceListItem identifier] isEqualToString: @"medialibrary"]) {
+            p_pl_item = p_playlist->p_media_library;
+        }
+
+        PL_LOCK;
+        if (p_pl_item)
+            i_playlist_size = p_pl_item->i_children;
+        PL_UNLOCK;
+
+        if (p_pl_item) {
+            cellView.badgeView.integerValue = i_playlist_size;
+        } else {
+            cellView.badgeView.integerValue = sourceListItem.badgeValue.integerValue;
+        }
+    }
+
+    return cellView;
 }
 
 - (NSDragOperation)sourceList:(PXSourceList *)aSourceList validateDrop:(id <NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index

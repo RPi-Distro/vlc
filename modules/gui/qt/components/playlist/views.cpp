@@ -2,7 +2,7 @@
  * views.cpp : Views for the Playlist
  ****************************************************************************
  * Copyright © 2010 the VideoLAN team
- * $Id: ecc6b9918d220424e1d45aa75ffa1cfab6f2de6f $
+ * $Id: 70dd29df72caf08a8a427cd0f0171e647cc0afff $
  *
  * Authors:         Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -27,6 +27,7 @@
 #include "input_manager.hpp"                      /* THEMIM */
 
 #include <QPainter>
+#include <QPainterPath>
 #include <QRect>
 #include <QStyleOptionViewItem>
 #include <QFontMetrics>

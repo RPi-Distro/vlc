@@ -2,7 +2,7 @@
  * hevc.c: h.265/hevc video packetizer
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: 51f169fcf646c6a54d663a688206a4cc963ab234 $
+ * $Id: c1742b890f031f58a5629ba6c27f6d45ad65446a $
  *
  * Authors: Denis Charmet <typx@videolan.org>
  *
@@ -506,7 +506,7 @@ static void AppendAsAnnexB(const block_t *p_block,
         if(((set != rg[i].p_decoded) == !b) && rg[i].p_nal)\
         {\
             AppendAsAnnexB(rg[i].p_nal, &p_data, &i_data);\
-            break;\
+            if(b) break;\
         }\
     }
 
@@ -746,7 +746,7 @@ static block_t * ParseAUHead(decoder_t *p_dec, uint8_t i_nal_type, block_t *p_na
             const uint8_t *p_xps = p_nalb->p_buffer;
             size_t i_xps = p_nalb->i_buffer;
             if(hxxx_strip_AnnexB_startcode(&p_xps, &i_xps) &&
-               hevc_get_xps_id(p_nalb->p_buffer, p_nalb->i_buffer, &i_id))
+               hevc_get_xps_id(p_xps, i_xps, &i_id))
                 InsertXPS(p_dec, i_nal_type, i_id, p_nalb);
             break;
         }

@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011 VideoLAN
- * $Id: b6d7c646c9ef2af11d4aa75bebafa24f6aee3fc6 $
+ * $Id: f213eac4591f5b95b4a36f6376859f78f3251335 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -25,6 +25,7 @@
 #include "qt.hpp"
 
 #include <QWidget>
+#include <QPainterPath>
 
 class TimeTooltip : public QWidget
 {

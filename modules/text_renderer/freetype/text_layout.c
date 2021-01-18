@@ -2,7 +2,7 @@
  * text_layout.c : Text shaping and layout
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 239a9fa9886cd42b247a4daad3634589fb114f93 $
+ * $Id: 4dce1e30ba4a2de7468ae59b3c395ee3ea52898e $
  *
  * Authors: Salah-Eddin Shaban <salshaaban@gmail.com>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -172,7 +172,7 @@ static void FreeLine( line_desc_t *p_line )
         FT_Done_Glyph( (FT_Glyph)ch->p_glyph );
         if( ch->p_outline )
             FT_Done_Glyph( (FT_Glyph)ch->p_outline );
-        if( ch->p_shadow )
+        if( ch->p_shadow && ch->p_shadow != ch->p_glyph )
             FT_Done_Glyph( (FT_Glyph)ch->p_shadow );
     }
 
@@ -374,6 +374,7 @@ static void FreeParagraph( paragraph_t *p_paragraph )
 #ifdef HAVE_FRIBIDI
 static int AnalyzeParagraph( paragraph_t *p_paragraph )
 {
+    int i_max;
     fribidi_get_bidi_types(  p_paragraph->p_code_points,
                              p_paragraph->i_size,
                              p_paragraph->p_types );
@@ -382,17 +383,21 @@ static int AnalyzeParagraph( paragraph_t *p_paragraph )
                                p_paragraph->i_size,
                                p_paragraph->p_types,
                                p_paragraph->p_btypes );
-    fribidi_get_par_embedding_levels_ex( p_paragraph->p_types,
+    i_max = fribidi_get_par_embedding_levels_ex(
+                                      p_paragraph->p_types,
                                       p_paragraph->p_btypes,
                                       p_paragraph->i_size,
                                       &p_paragraph->paragraph_type,
                                       p_paragraph->p_levels );
 #else
-    fribidi_get_par_embedding_levels( p_paragraph->p_types,
+    i_max = fribidi_get_par_embedding_levels(
+                                      p_paragraph->p_types,
                                       p_paragraph->i_size,
                                       &p_paragraph->paragraph_type,
                                       p_paragraph->p_levels );
 #endif
+    if( i_max == 0 )
+        return VLC_EGENERIC;
 
 #ifdef HAVE_HARFBUZZ
     hb_unicode_funcs_t *p_funcs =
@@ -1187,7 +1192,7 @@ static int LayoutLine( filter_t *p_filter,
                 FT_Done_Glyph( p_bitmaps->p_glyph );
                 if( p_bitmaps->p_outline )
                     FT_Done_Glyph( p_bitmaps->p_outline );
-                if( p_bitmaps->p_shadow )
+                if( p_bitmaps->p_shadow != p_bitmaps->p_glyph )
                     FT_Done_Glyph( p_bitmaps->p_shadow );
                 --i_line_index;
                 continue;
@@ -1227,12 +1232,12 @@ static int LayoutLine( filter_t *p_filter,
         if( p_ch->p_style->i_style_flags & (STYLE_UNDERLINE | STYLE_STRIKEOUT) )
         {
             i_line_offset =
-                abs( FT_FLOOR( FT_MulFix( p_face->underline_position,
-                                          p_face->size->metrics.y_scale ) ) );
+                labs( FT_FLOOR( FT_MulFix( p_face->underline_position,
+                                           p_face->size->metrics.y_scale ) ) );
 
             i_line_thickness =
-                abs( FT_CEIL( FT_MulFix( p_face->underline_thickness,
-                                         p_face->size->metrics.y_scale ) ) );
+                labs( FT_CEIL( FT_MulFix( p_face->underline_thickness,
+                                          p_face->size->metrics.y_scale ) ) );
 
             if( p_ch->p_style->i_style_flags & STYLE_STRIKEOUT )
             {
@@ -1240,8 +1245,8 @@ static int LayoutLine( filter_t *p_filter,
                  * underline. That means that strikethrough takes precedence
                  */
                 i_line_offset -=
-                    abs( FT_FLOOR( FT_MulFix( p_face->descender * 2,
-                                              p_face->size->metrics.y_scale ) ) );
+                    labs( FT_FLOOR( FT_MulFix( p_face->descender * 2,
+                                               p_face->size->metrics.y_scale ) ) );
                 p_bitmaps->glyph_bbox.yMax =
                     __MAX( p_bitmaps->glyph_bbox.yMax,
                            - i_line_offset );
@@ -1286,7 +1291,7 @@ static int LayoutLine( filter_t *p_filter,
         /* Get max advance for grid mode */
         if( b_grid && i_font_max_advance_y == 0 && p_face )
         {
-            i_font_max_advance_y = abs( FT_FLOOR( FT_MulFix( p_face->max_advance_height,
+            i_font_max_advance_y = labs( FT_FLOOR( FT_MulFix( p_face->max_advance_height,
                                       p_face->size->metrics.y_scale ) ) );
         }
 
@@ -1478,7 +1483,10 @@ static int LayoutParagraph( filter_t *p_filter, paragraph_t *p_paragraph,
             {
                 i_width = i_width - i_last_space_width;
                 if( i_newline_start + 1 < p_paragraph->i_size )
+                {
                     i_line_start = i_newline_start + 1;
+                    ReleaseGlyphBitMaps( &p_paragraph->p_glyph_bitmaps[ i_newline_start ] );
+                }
                 else
                     i_line_start = i_newline_start; // == i
             }
