@@ -11,10 +11,10 @@ elsewhere.
  2 files changed, 33 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index 35ee1e8..4c7a99c 100644
+index 1b4bdb7..c01f5b4 100644
 --- a/Makefile.am
 +++ b/Makefile.am
-@@ -161,21 +161,6 @@ endif
+@@ -163,21 +163,6 @@ endif
  TESTS = test/run_vlc.sh
  dist_noinst_SCRIPTS += test/run_vlc.sh
  
