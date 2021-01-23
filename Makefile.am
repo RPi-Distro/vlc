@@ -61,10 +61,14 @@ EXTRA_DIST += \
 	extras/tools/packages.mak \
 	extras/tools/tools.mak \
 	extras/tools/SHA512SUMS \
+	extras/tools/automake-clang.patch \
 	extras/tools/bison-macOS-7df04f9.patch \
 	extras/tools/bison-macOS-c41f233c.patch \
-	extras/tools/libtool-2.4.2-bitcode.patch \
-	extras/tools/libtool-2.4.2-san.patch \
+	extras/tools/cmake-enable-ALPN-support-on-macOS-10.14.patch \
+	extras/tools/libtool-2.4.6-bitcode.patch \
+	extras/tools/libtool-2.4.6-clang-libs.patch \
+	extras/tools/libtool-2.4.6-response-files.patch \
+	extras/tools/libtool-2.4.6-san.patch \
 	extras/tools/ragel-6.8-javacodegen.patch
 
 ###############################################################################
@@ -120,7 +124,9 @@ doc:
 ###############################################################################
 
 ALL_ALIASES = cvlc rvlc svlc qvlc nvlc
+if BUILD_VLC
 bin_SCRIPTS = $(ALIASES)
+endif
 CLEANFILES += $(ALIASES) $(noinst_SCRIPTS)
 EXTRA_SCRIPTS = $(ALL_ALIASES)
 

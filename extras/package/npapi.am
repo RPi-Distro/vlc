@@ -30,17 +30,23 @@ npapi-vlc/configure: stamp-npapi
 	$(SHELL) ./autogen.sh
 	touch $@
 
+if ENABLE_PDB
+ENABLE_PDB_OPTION := --enable-pdb
+endif
+
 npapi-vlc/Makefile: npapi-vlc/configure
 	cd npapi-vlc && \
 	$(SHELL) ./configure \
 		--prefix=/ \
 		--host=$(host_alias) --build=$(build_alias) \
+		$(ENABLE_PDB_OPTION) \
 		CPP="$(CPP)" CPPFLAGS="$(CPPFLAGS)" \
 		CC="$(CC)" CFLAGS="$(CFLAGS)" \
 		CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)" \
 		LD="$(LD)" LDFLAGS="$(LDFLAGS)" \
 		SHELL="$(SHELL)" \
-		PKG_CONFIG_PATH="$(libdir)/pkgconfig:$(CONTRIB_DIR)/lib/pkgconfig"
+		PKG_CONFIG_PATH="$(libdir)/pkgconfig:$(CONTRIB_DIR)/lib/pkgconfig" \
+		PKG_CONFIG="$(PKG_CONFIG)"
 	touch $@
 
 npapi-vlc/npapi/npvlc.la: npapi-vlc/Makefile

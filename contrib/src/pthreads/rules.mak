@@ -23,19 +23,24 @@ endif
 	$(APPLY) $(SRC)/pthreads/remove-inline.patch
 	$(APPLY) $(SRC)/pthreads/x86-inline-asm.patch
 	$(APPLY) $(SRC)/pthreads/arm64.patch
+	$(APPLY) $(SRC)/pthreads/pthreads-fix-mode_t.patch
+	$(APPLY) $(SRC)/pthreads/pthread-fix-inline.patch
+	$(APPLY) $(SRC)/pthreads/pthreads-fix-old-mingw.patch
 	$(MOVE)
 
+PTHREADS_W32_CONF := LFLAGS="$(LDFLAGS)" PTW32_FLAGS="$(CFLAGS)"
 ifdef HAVE_CROSS_COMPILE
-PTHREADS_W32_CONF := CROSS="$(HOST)-"
+PTHREADS_W32_CONF += CROSS="$(HOST)-"
 endif
 
 .pthreads: pthreads
-	cd $< && $(HOSTVARS) $(PTHREADS_W32_CONF) $(MAKE) MAKEFLAGS=-j1 GC GC-static
+	cd $< && $(HOSTVARS) $(PTHREADS_W32_CONF) $(MAKE) MAKEFLAGS=-j1 GC-static
 	mkdir -p -- "$(PREFIX)/include"
 	cd $< && cp -v pthread.h sched.h semaphore.h "$(PREFIX)/include/"
 	sed -e 's/#if HAVE_CONFIG_H/#if 0 \&\& HAVE_CONFIG_H/' -i \
 		"$(PREFIX)/include/pthread.h"
 	mkdir -p -- "$(PREFIX)/lib"
-	cp -v $</*.a $</*.dll "$(PREFIX)/lib/"
+	cp -v $</*.a "$(PREFIX)/lib/"
+	cp -f "$(PREFIX)/lib/libpthreadGC2.a" "$(PREFIX)/lib/libpthread.a"
 	touch $@
 endif

@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 1999-2020 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.11)
+AC_INIT(vlc, 3.0.12)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=11
+VERSION_REVISION=12
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -235,6 +235,18 @@ case "${host_os}" in
     ],[
       AC_DEFINE([_WIN32_WINNT], 0x0502, [Define to '0x0502' for Windows XP SP2 APIs.])
     ])
+    AC_MSG_CHECKING([if libsynchronization is needed])
+    AC_PREPROC_IFELSE([AC_LANG_PROGRAM(
+      [[#if _WIN32_WINNT >= 0x0602
+       # error building for Win8+ and above
+       #endif
+      ]],[[;]])
+    ],[
+      AC_MSG_RESULT([no])
+    ],[
+      AC_MSG_RESULT([yes])
+      VLC_ADD_LIBS([libvlccore], [-lsynchronization])
+    ])
     AC_DEFINE([_WIN32_IE], 0x0600, [Define to '0x0600' for IE 6.0 (and shell) APIs.])
     AC_DEFINE([_UNICODE], [1], [Define to 1 for Unicode (Wide Chars) APIs.])
     AC_DEFINE([UNICODE], [1], [Define to 1 for Unicode (Wide Chars) APIs.])
@@ -336,6 +348,19 @@ AS_IF([test "${SYS}" = "mingw32"],[
   ])
 AC_DEFINE_UNQUOTED(VLC_WINSTORE_APP, ${vlc_winstore_app}, [Define to 1 if you want to build for Windows Store apps])
 
+vlc_build_pdb=0
+AC_ARG_ENABLE([pdb],
+     AS_HELP_STRING([--enable-pdb],
+                    [Build PDB files for windows targets (default off)]))
+AS_IF([test "${SYS}" = "mingw32"],[
+  AS_IF([test "${enable_pdb}" = "yes"], [
+    vlc_build_pdb=1
+    AX_APPEND_FLAG([-g -gcodeview],[CFLAGS])
+    AX_APPEND_FLAG([-g -gcodeview],[CXXFLAGS])
+    LDFLAGS="${LDFLAGS} -Wl,-pdb="
+  ],[])
+])
+
 AM_CONDITIONAL(HAVE_LINUX,   test "${SYS}" = "linux")
 AM_CONDITIONAL(HAVE_OS2,     test "${SYS}" = "os2")
 
@@ -351,6 +376,7 @@ AM_CONDITIONAL(HAVE_WIN32,   test "${SYS}" = "mingw32")
 AM_CONDITIONAL(HAVE_WIN64,   test "${HAVE_WIN64}" = "1") dnl Only used for the packaging
 AM_CONDITIONAL([HAVE_WINSTORE], [test "$vlc_winstore_app" = "1"])
 AM_CONDITIONAL([HAVE_WIN32_DESKTOP], [test "${SYS}" = "mingw32" -a "$vlc_winstore_app" = "0"])
+AM_CONDITIONAL([ENABLE_PDB],   [test "$vlc_build_pdb" = "1"])
 
 dnl
 dnl Sadly autoconf does not think about testing foo.exe when ask to test
@@ -664,56 +690,6 @@ dnl Check for max_align_t
 AC_CHECK_TYPES([max_align_t],,,
 [#include <stddef.h>])
 
-dnl Checks for socket stuff
-VLC_SAVE_FLAGS
-SOCKET_LIBS=""
-AC_SEARCH_LIBS(connect, [socket], [
-  AS_IF([test "$ac_cv_search_connect" != "none required"], [
-    SOCKET_LIBS="$ac_cv_search_connect"
-  ])
-], [
-  AS_IF([test "${SYS}" = "mingw32"], [
-    SOCKET_LIBS="-lws2_32 -liphlpapi"
-  ])
-])
-
-AC_SEARCH_LIBS([inet_pton], [nsl], [
- AS_IF([test "$ac_cv_search_inet_pton" != "none required"], [
-    SOCKET_LIBS="$ac_cv_search_inet_pton $SOCKET_LIBS"
-  ])
-],, [${SOCKET_LIBS}])
-
-LIBS="${LIBS} ${SOCKET_LIBS}"
-CFLAGS="${CFLAGS} -Werror-implicit-function-declaration"
-AC_LINK_IFELSE([
-    AC_LANG_PROGRAM([#ifdef _WIN32
-        #include <ws2tcpip.h>
-        #include <windows.h>
-        # if _WIN32_WINNT < 0x600
-        #  error Needs vista+
-        # endif
-        #else
-        #include <sys/socket.h>
-        #include <arpa/inet.h>
-        #endif], [
-        char dst[[sizeof(struct in_addr)]];
-        inet_pton(AF_INET, "127.0.0.1", dst);
-    ])],[AC_DEFINE([HAVE_INET_PTON],[1],[Define to 1 if you have inet_pton function])],[AC_LIBOBJ([inet_pton])])
-AC_LINK_IFELSE([
-    AC_LANG_PROGRAM([#ifdef _WIN32
-        #include <iphlpapi.h>
-        #else
-        #include <sys/types.h>
-        #include <sys/socket.h>
-        #include <net/if.h>
-        #endif], [
-        if_nametoindex("");
-    ])],[AC_DEFINE([HAVE_IF_NAMETOINDEX],[1],[Define to 1 if you have if_nametoindex function])])
-AC_CHECK_TYPES([struct if_nameindex],,,[#include <net/if.h>])
-AC_CHECK_FUNCS([if_nameindex])
-VLC_RESTORE_FLAGS
-AC_SUBST(SOCKET_LIBS)
-
 dnl Check for socklen_t
 AH_TEMPLATE(socklen_t, [Define to `int' if <sys/socket.h> does not define.])
 AC_CACHE_CHECK([for socklen_t in sys/socket.h], dnl ` (fix VIM syntax highlight
@@ -981,8 +957,59 @@ dnl
 AX_APPEND_COMPILE_FLAGS([-Wall -Wextra -Wsign-compare -Wundef -Wpointer-arith -Wvolatile-register-var -Wformat -Wformat-security], [CFLAGS])
 AX_APPEND_COMPILE_FLAGS([-Wall -Wextra -Wsign-compare -Wundef -Wpointer-arith -Wvolatile-register-var -Wformat -Wformat-security], [CXXFLAGS])
 
+dnl -Werror-implicit-function-declaration is used for the if_nametoindex detection with winstore
 AX_APPEND_COMPILE_FLAGS([-Wbad-function-cast -Wwrite-strings -Wmissing-prototypes -Werror-implicit-function-declaration -Winit-self -Wlogical-op -Wshadow=local], [CFLAGS])
 AX_APPEND_COMPILE_FLAGS([-pipe], [CFLAGS])
+
+dnl Checks for socket stuff
+VLC_SAVE_FLAGS
+SOCKET_LIBS=""
+AC_SEARCH_LIBS(connect, [socket], [
+  AS_IF([test "$ac_cv_search_connect" != "none required"], [
+    SOCKET_LIBS="$ac_cv_search_connect"
+  ])
+], [
+  AS_IF([test "${SYS}" = "mingw32"], [
+    SOCKET_LIBS="-lws2_32 -liphlpapi"
+  ])
+])
+
+AC_SEARCH_LIBS([inet_pton], [nsl], [
+ AS_IF([test "$ac_cv_search_inet_pton" != "none required"], [
+    SOCKET_LIBS="$ac_cv_search_inet_pton $SOCKET_LIBS"
+  ])
+],, [${SOCKET_LIBS}])
+
+LIBS="${LIBS} ${SOCKET_LIBS}"
+CFLAGS="${CFLAGS} -Werror-implicit-function-declaration"
+AC_LINK_IFELSE([
+    AC_LANG_PROGRAM([#ifdef _WIN32
+        #include <ws2tcpip.h>
+        #include <windows.h>
+        # if _WIN32_WINNT < 0x600
+        #  error Needs vista+
+        # endif
+        #else
+        #include <sys/socket.h>
+        #include <arpa/inet.h>
+        #endif], [
+        char dst[[sizeof(struct in_addr)]];
+        inet_pton(AF_INET, "127.0.0.1", dst);
+    ])],[AC_DEFINE([HAVE_INET_PTON],[1],[Define to 1 if you have inet_pton function])],[AC_LIBOBJ([inet_pton])])
+AC_LINK_IFELSE([
+    AC_LANG_PROGRAM([#ifdef _WIN32
+        #include <iphlpapi.h>
+        #else
+        #include <sys/types.h>
+        #include <sys/socket.h>
+        #include <net/if.h>
+        #endif], [
+        if_nametoindex("");
+    ])],[AC_DEFINE([HAVE_IF_NAMETOINDEX],[1],[Define to 1 if you have if_nametoindex function])])
+AC_CHECK_TYPES([struct if_nameindex],,,[#include <net/if.h>])
+AC_CHECK_FUNCS([if_nameindex])
+VLC_RESTORE_FLAGS
+AC_SUBST(SOCKET_LIBS)
 
 dnl
 dnl  Debugging mode
@@ -1208,6 +1235,10 @@ dnl
 case "${host_cpu}" in
   "")
     ARCH=unknown
+    ;;
+  armv*)
+    ARCH="arm"
+    host_cpu="arm"
     ;;
   *)
     ARCH="${host_cpu}"
@@ -3072,6 +3103,9 @@ PKG_CHECK_MODULES([GL], [gl], [
   AC_MSG_RESULT([${have_gl}])
 ])
 AM_CONDITIONAL([HAVE_GL], [test "${have_gl}" = "yes"])
+AS_IF([test "${have_gl}" = "yes"], [
+  AC_DEFINE([HAVE_GL], 1, [Defined if having OpenGL])
+])
 
 dnl OpenGL ES 2: depends on EGL 1.1
 PKG_ENABLE_MODULES_VLC([GLES2], [], [glesv2], [OpenGL ES v2 support], [disabled])
@@ -4339,7 +4373,6 @@ AM_COND_IF([HAVE_WIN32], [
 
 AM_COND_IF([HAVE_DARWIN], [
   AC_CONFIG_FILES([
-    modules/gui/macosx/UI/InfoPlist.strings:modules/gui/macosx/Resources/InfoPlist.strings.in
     share/macosx/Info.plist:share/Info.plist.in
   ])
 ])

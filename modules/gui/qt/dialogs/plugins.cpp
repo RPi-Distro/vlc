@@ -2,7 +2,7 @@
  * plugins.cpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008-2010 the VideoLAN team
- * $Id: 93c92b9fa651e89f12cbb45b72ec7573bda1b38d $
+ * $Id: e05ec0594ad6deb2f2d41673ea18bfde1d8f5644 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *          Jean-Philippe André <jpeg (at) videolan.org>
@@ -66,6 +66,7 @@
 #include <QSplitter>
 #include <QToolButton>
 #include <QStackedWidget>
+#include <QPainterPath>
 
 //match the image source (width/height)
 #define SCORE_ICON_WIDTH_SCALE 4

@@ -46014,33 +46014,3 @@ Author: Francois Cartegnie <fcvlcdev@free.fr>
 Date:   Mon Jan 2 10:44:39 2017 +0100
 
     mux: ts: fix AC3/EAC3 (fix #17834)
-
-commit 9a559764be9e94305b1e034d6c044e38d0169b47
-Author: Francois Cartegnie <fcvlcdev@free.fr>
-Date:   Fri Dec 30 21:00:50 2016 +0100
-
-    demux: ts: use bsearch for pid lookup/insertion
-
-commit 2efd018968bcc96923b0507f7921421a86f54421
-Author: Francois Cartegnie <fcvlcdev@free.fr>
-Date:   Fri Dec 30 19:17:44 2016 +0100
-
-    demux: ts: lower first packet msg to debug level
-
-commit f77bb3953a4178212d1873e69323f6c2f19075a7
-Author: Francois Cartegnie <fcvlcdev@free.fr>
-Date:   Fri Dec 30 19:14:30 2016 +0100
-
-    demux: ts: fix pre pmt SI continuity warnings
-
-commit 3dcdfe1d35282bd6b61262c2a2d506bd08055c15
-Author: Francois Cartegnie <fcvlcdev@free.fr>
-Date:   Sun Jan 1 17:39:36 2017 +0100
-
-    demux: adaptive: output http error messages
-
-commit f3fe29607f180025fd36d90068bca456929b30fc
-Author: Jean-Baptiste Kempf <jb@videolan.org>
-Date:   Sun Jan 1 16:24:08 2017 +0100
-
-    Update Copyright for 2017

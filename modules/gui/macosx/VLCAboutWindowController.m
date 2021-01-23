@@ -2,7 +2,7 @@
  * VLCAboutWindowController.m
  *****************************************************************************
  * Copyright (C) 2001-2014 VLC authors and VideoLAN
- * $Id: a4badff8b5fd3a7d77b8567f53d2c9bf8c530600 $
+ * $Id: f11e7fe1917017edd8767583f53e82fa0d35c88e $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -35,10 +35,11 @@
 
 #import "VLCScrollingClipView.h"
 
-
-/* this is a bit weird, but we should be confident that there will be more than
- * one arch to support again one day */
+#ifdef __x86_64__
 #define PLATFORM "Intel 64bit"
+#else
+#define PLATFORM "Apple Silicon"
+#endif
 
 @interface VLCAboutWindowController ()
 {
@@ -86,11 +87,8 @@
 {
     [[self window] setCollectionBehavior: NSWindowCollectionBehaviorFullScreenAuxiliary];
 
-    /* Get the localized info dictionary (InfoPlist.strings) */
-    NSDictionary *localizedInfoDict = [[NSBundle mainBundle] localizedInfoDictionary];
-
-    /* Setup the copyright field */
-    [o_copyright_field setStringValue: [localizedInfoDict objectForKey:@"NSHumanReadableCopyright"]];
+    NSString *copyrightText = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"NSHumanReadableCopyright"];
+    [o_copyright_field setStringValue: copyrightText];
 
     /* l10n */
     [[self window] setTitle: _NS("About VLC media player")];

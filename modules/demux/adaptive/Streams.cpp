@@ -298,9 +298,9 @@ AbstractStream::buffering_status AbstractStream::getLastBufferStatus() const
     return last_buffer_status;
 }
 
-mtime_t AbstractStream::getDemuxedAmount() const
+mtime_t AbstractStream::getDemuxedAmount(mtime_t from) const
 {
-    return fakeEsOut()->commandsQueue()->getDemuxedAmount();
+    return fakeEsOut()->commandsQueue()->getDemuxedAmount(from);
 }
 
 AbstractStream::buffering_status AbstractStream::bufferize(mtime_t nz_deadline,
@@ -340,6 +340,8 @@ AbstractStream::buffering_status AbstractStream::doBufferize(mtime_t nz_deadline
         return AbstractStream::buffering_suspended;
     }
 
+    segmentTracker->setStartPosition();
+
     /* Reached end of live playlist */
     if(!segmentTracker->bufferingAvailable())
     {
@@ -371,16 +373,10 @@ AbstractStream::buffering_status AbstractStream::doBufferize(mtime_t nz_deadline
 
     const int64_t i_total_buffering = i_min_buffering + i_extra_buffering;
 
-    mtime_t i_demuxed = fakeEsOut()->commandsQueue()->getDemuxedAmount();
+    mtime_t i_demuxed = fakeEsOut()->commandsQueue()->getDemuxedAmount(nz_deadline);
     segmentTracker->notifyBufferingLevel(i_min_buffering, i_demuxed, i_total_buffering);
     if(i_demuxed < i_total_buffering) /* not already demuxed */
     {
-        if(!segmentTracker->segmentsListReady()) /* Live Streams */
-        {
-            vlc_mutex_unlock(&lock);
-            return AbstractStream::buffering_suspended;
-        }
-
         mtime_t nz_extdeadline = fakeEsOut()->commandsQueue()->getBufferingLevel() +
                                     (i_total_buffering - i_demuxed) / 4;
         nz_deadline = std::max(nz_deadline, nz_extdeadline);
@@ -409,7 +405,7 @@ AbstractStream::buffering_status AbstractStream::doBufferize(mtime_t nz_deadline
             vlc_mutex_unlock(&lock);
             return AbstractStream::buffering_end;
         }
-        i_demuxed = fakeEsOut()->commandsQueue()->getDemuxedAmount();
+        i_demuxed = fakeEsOut()->commandsQueue()->getDemuxedAmount(nz_deadline);
         segmentTracker->notifyBufferingLevel(i_min_buffering, i_demuxed, i_total_buffering);
     }
     vlc_mutex_unlock(&lock);

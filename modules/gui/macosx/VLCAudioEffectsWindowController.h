@@ -2,7 +2,7 @@
  * VLCAudioEffectsWindowController.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2017 VLC authors and VideoLAN
- * $Id: 03dacbf0e7971e8409c4e97be610e0f20af9fae1 $
+ * $Id: 3a715b5dd701d6122b4e30c142e6292ab785709c $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jérôme Decoodt <djc@videolan.org>
@@ -41,15 +41,25 @@
 @property (readwrite, weak) IBOutlet NSTextField *equalizerPreampLabel;
 @property (readwrite, weak) IBOutlet NSPopUpButton *equalizerPresetsPopup;
 @property (readwrite, weak) IBOutlet NSSlider *equalizerBand1Slider;
+@property (readwrite, weak) IBOutlet NSTextField *equalizerBand1TextField;
 @property (readwrite, weak) IBOutlet NSSlider *equalizerBand2Slider;
+@property (readwrite, weak) IBOutlet NSTextField *equalizerBand2TextField;
 @property (readwrite, weak) IBOutlet NSSlider *equalizerBand3Slider;
+@property (readwrite, weak) IBOutlet NSTextField *equalizerBand3TextField;
 @property (readwrite, weak) IBOutlet NSSlider *equalizerBand4Slider;
+@property (readwrite, weak) IBOutlet NSTextField *equalizerBand4TextField;
 @property (readwrite, weak) IBOutlet NSSlider *equalizerBand5Slider;
+@property (readwrite, weak) IBOutlet NSTextField *equalizerBand5TextField;
 @property (readwrite, weak) IBOutlet NSSlider *equalizerBand6Slider;
+@property (readwrite, weak) IBOutlet NSTextField *equalizerBand6TextField;
 @property (readwrite, weak) IBOutlet NSSlider *equalizerBand7Slider;
+@property (readwrite, weak) IBOutlet NSTextField *equalizerBand7TextField;
 @property (readwrite, weak) IBOutlet NSSlider *equalizerBand8Slider;
+@property (readwrite, weak) IBOutlet NSTextField *equalizerBand8TextField;
 @property (readwrite, weak) IBOutlet NSSlider *equalizerBand9Slider;
+@property (readwrite, weak) IBOutlet NSTextField *equalizerBand9TextField;
 @property (readwrite, weak) IBOutlet NSSlider *equalizerBand10Slider;
+@property (readwrite, weak) IBOutlet NSTextField *equalizerBand10TextField;
 @property (readwrite, weak) IBOutlet NSSlider *equalizerPreampSlider;
 
 /* Compressor */

@@ -5,15 +5,12 @@
 
 all: install
 
-# bootstrap configuration
-include config.mak
-
-TOPSRC ?= ../../contrib
-TOPDST ?= ..
 SRC := $(TOPSRC)/src
+SRC_BUILT := $(TOPSRC_BUILT)/src
 TARBALLS := $(TOPSRC)/tarballs
+VLC_TOOLS ?= $(TOPSRC)/../extras/tools/build
 
-PATH :=$(abspath ../../extras/tools/build/bin):$(PATH)
+PATH :=$(abspath $(VLC_TOOLS)/bin):$(PATH)
 export PATH
 
 PKGS_ALL := $(patsubst $(SRC)/%/rules.mak,%,$(wildcard $(SRC)/*/rules.mak))
@@ -127,33 +124,29 @@ endif
 
 ifdef HAVE_MACOSX
 EXTRA_CXXFLAGS += -stdlib=libc++
-ifeq ($(ARCH),x86_64)
-EXTRA_CFLAGS += -m64
-EXTRA_LDFLAGS += -m64
+ifeq ($(ARCH),aarch64)
+XCODE_FLAGS += -arch arm64
 else
-EXTRA_CFLAGS += -m32
-EXTRA_LDFLAGS += -m32
-endif
-
 XCODE_FLAGS += -arch $(ARCH)
-
+endif
 endif
 
 CCAS=$(CC) -c
 
 ifdef HAVE_IOS
 ifdef HAVE_NEON
-AS=perl $(abspath ../../extras/tools/build/bin/gas-preprocessor.pl) $(CC)
+AS=perl $(abspath $(VLC_TOOLS)/bin/gas-preprocessor.pl) $(CC)
 CCAS=gas-preprocessor.pl $(CC) -c
 endif
 endif
 
+LN_S = ln -s
 ifdef HAVE_WIN32
 ifneq ($(shell $(CC) $(CFLAGS) -E -dM -include _mingw.h - < /dev/null | grep -E __MINGW64_VERSION_MAJOR),)
 HAVE_MINGW_W64 := 1
 endif
-ifneq ($(findstring clang, $(shell $(CC) --version)),)
-HAVE_CLANG := 1
+ifndef HAVE_CROSS_COMPILE
+LN_S = cp -R
 endif
 endif
 
@@ -165,6 +158,10 @@ else
 EXTRA_CFLAGS += -m32
 EXTRA_LDFLAGS += -m32
 endif
+endif
+
+ifneq ($(findstring clang, $(shell $(CC) --version)),)
+HAVE_CLANG := 1
 endif
 
 cppcheck = $(shell $(CC) $(CFLAGS) -E -dM - < /dev/null | grep -E $(1))
@@ -192,6 +189,9 @@ HAVE_FPU = 1
 endif
 
 ACLOCAL_AMFLAGS += -I$(PREFIX)/share/aclocal
+ifneq ($(wildcard $(VLC_TOOLS)/share/aclocal/*),)
+ACLOCAL_AMFLAGS += -I$(abspath $(VLC_TOOLS)/share/aclocal)
+endif
 export ACLOCAL_AMFLAGS
 
 #########
@@ -307,6 +307,15 @@ CFLAGS := $(CFLAGS) -g -O2
 CXXFLAGS := $(CXXFLAGS) -g -O2
 endif
 
+ifdef ENABLE_PDB
+ifdef HAVE_CLANG
+ifneq ($(findstring $(ARCH),i686 x86_64),)
+CFLAGS := $(CFLAGS) -gcodeview
+CXXFLAGS := $(CXXFLAGS) -gcodeview
+endif
+endif
+endif
+
 HOSTVARS := $(HOSTTOOLS) \
 	CPPFLAGS="$(CPPFLAGS)" \
 	CFLAGS="$(CFLAGS)" \
@@ -333,7 +342,7 @@ download_git = \
 	rm -f "$(@:.xz=)" && \
 	mv -f -- "$@.tmp" "$@"
 check_githash = \
-	h=`sed -n -e "s,^\([0-9a-fA-F]\{40\}\) $<,\1,p" \
+	h=`sed -e "s,^\([0-9a-fA-F]\{40\}\) .*/$(notdir $<),\1,g" \
 		< "$(<:.tar.xz=.githash)"` && \
 	test "$$h" = "$1"
 
@@ -351,7 +360,7 @@ UNPACK = $(RM) -R $@ \
 	$(foreach f,$(filter %.zip,$^), && unzip $(f))
 UNPACK_DIR = $(patsubst %.tar,%,$(basename $(notdir $<)))
 APPLY = (cd $(UNPACK_DIR) && patch -fp1) <
-pkg_static = (cd $(UNPACK_DIR) && ../../../contrib/src/pkg-static.sh $(1))
+pkg_static = (cd $(UNPACK_DIR) && $(SRC_BUILT)/pkg-static.sh $(1))
 MOVE = mv $(UNPACK_DIR) $@ && touch $@
 
 AUTOMAKE_DATA_DIRS=$(foreach n,$(foreach n,$(subst :, ,$(shell echo $$PATH)),$(abspath $(n)/../share)),$(wildcard $(n)/automake*))
@@ -369,8 +378,16 @@ AUTORECONF = autoreconf
 endif
 RECONF = mkdir -p -- $(PREFIX)/share/aclocal && \
 	cd $< && $(AUTORECONF) -fiv $(ACLOCAL_AMFLAGS)
+CMAKEBUILD := cmake --build
 CMAKE = cmake . -DCMAKE_TOOLCHAIN_FILE=$(abspath toolchain.cmake) \
-		-DCMAKE_INSTALL_PREFIX=$(PREFIX) $(CMAKE_GENERATOR)
+		-DCMAKE_INSTALL_PREFIX=$(PREFIX) \
+		-DBUILD_SHARED_LIBS:BOOL=OFF
+ifdef HAVE_WIN32
+CMAKE += -DCMAKE_DEBUG_POSTFIX:STRING=
+endif
+ifeq ($(findstring mingw32,$(BUILD)),mingw32)
+CMAKE += -DCMAKE_LINK_LIBRARY_SUFFIX:STRING=.a
+endif
 
 MESONFLAGS = --default-library static --prefix "$(PREFIX)" --backend ninja \
 	-Dlibdir=lib
@@ -459,13 +476,13 @@ vlc-contrib-$(HOST)-latest.tar.bz2:
 	$(call download,$(PREBUILT_URL))
 
 prebuilt: vlc-contrib-$(HOST)-latest.tar.bz2
+	$(RM) -r $(PREFIX)
 	-$(UNPACK)
-	$(RM) -r $(TOPDST)/$(HOST)
-	mv $(HOST) $(TOPDST)
-	cd $(TOPDST)/$(HOST) && $(SRC)/change_prefix.sh
+	mv $(HOST) $(PREFIX)
+	cd $(PREFIX) && $(abspath $(SRC))/change_prefix.sh
 ifdef HAVE_WIN32
 ifndef HAVE_CROSS_COMPILE
-	$(RM) `find $(TOPDST)/$(HOST)/bin | file -f- | grep ELF | awk -F: '{print $$1}' | xargs`
+	$(RM) `find $(PREFIX)/bin | file -f- | grep ELF | awk -F: '{print $$1}' | xargs`
 endif
 endif
 
@@ -478,7 +495,10 @@ package: install
 		cd share; rm -Rf man doc gtk-doc info lua projectM; cd ..; \
 		rm -Rf man sbin etc lib/lua lib/sidplay
 	cd tmp/$(notdir $(PREFIX)) && $(abspath $(SRC))/change_prefix.sh $(PREFIX) @@CONTRIB_PREFIX@@
-	(cd tmp && tar c $(notdir $(PREFIX))/) | bzip2 -c > ../vlc-contrib-$(HOST)-$(DATE).tar.bz2
+ifneq ($(notdir $(PREFIX)),$(HOST))
+	(cd tmp && mv $(notdir $(PREFIX)) $(HOST))
+endif
+	(cd tmp && tar c $(HOST)/) | bzip2 -c > ../vlc-contrib-$(HOST)-$(DATE).tar.bz2
 
 list:
 	@echo All packages:
@@ -501,6 +521,22 @@ help:
 
 .PHONY: all fetch fetch-all install mostlyclean clean distclean package list help prebuilt
 
+CMAKE_SYSTEM_NAME =
+ifdef HAVE_WIN32
+CMAKE_SYSTEM_NAME = Windows
+ifdef HAVE_VISUALSTUDIO
+ifdef HAVE_WINSTORE
+CMAKE_SYSTEM_NAME = WindowsStore
+endif
+ifdef HAVE_WINDOWSPHONE
+CMAKE_SYSTEM_NAME = WindowsPhone
+endif
+endif
+endif
+ifdef HAVE_DARWIN_OS
+CMAKE_SYSTEM_NAME = Darwin
+endif
+
 # CMake toolchain
 toolchain.cmake:
 	$(RM) $@
@@ -510,31 +546,26 @@ else
 	echo "set(CMAKE_BUILD_TYPE RelWithDebInfo)" >> $@
 endif
 	echo "set(CMAKE_SYSTEM_PROCESSOR $(ARCH))" >> $@
+	if test -n "$(CMAKE_SYSTEM_NAME)"; then \
+		echo "set(CMAKE_SYSTEM_NAME $(CMAKE_SYSTEM_NAME))" >> $@; \
+	fi;
 ifdef HAVE_WIN32
-ifdef HAVE_WINDOWSPHONE
-	echo "set(CMAKE_SYSTEM_NAME WindowsPhone)" >> $@
-else
-ifdef HAVE_WINSTORE
-	echo "set(CMAKE_SYSTEM_NAME WindowsStore)" >> $@
-else
-	echo "set(CMAKE_SYSTEM_NAME Windows)" >> $@
-endif
-endif
 ifdef HAVE_CROSS_COMPILE
-	echo "set(CMAKE_RC_COMPILER $(HOST)-windres)" >> $@
+	echo "set(CMAKE_RC_COMPILER $(WINDRES))" >> $@
 endif
 endif
 ifdef HAVE_DARWIN_OS
-	echo "set(CMAKE_SYSTEM_NAME Darwin)" >> $@
-	echo "set(CMAKE_C_FLAGS \"$(CFLAGS) $(EXTRA_CFLAGS)\")" >> $@
-	echo "set(CMAKE_CXX_FLAGS \"$(CXXFLAGS) $(EXTRA_CXXFLAGS)\")" >> $@
+	echo "set(CMAKE_C_FLAGS \"$(CFLAGS)\")" >> $@
+	echo "set(CMAKE_CXX_FLAGS \"$(CXXFLAGS)\")" >> $@
 	echo "set(CMAKE_LD_FLAGS \"$(LDFLAGS)\")" >> $@
-	echo "set(CMAKE_AR ar CACHE FILEPATH "Archiver")" >> $@
+	echo "set(CMAKE_AR ar CACHE FILEPATH \"Archiver\")" >> $@
 ifdef HAVE_IOS
 	echo "set(CMAKE_OSX_SYSROOT $(IOS_SDK))" >> $@
 else
 	echo "set(CMAKE_OSX_SYSROOT $(MACOSX_SDK))" >> $@
 endif
+else
+	echo "set(CMAKE_AR $(AR) CACHE FILEPATH \"Archiver\")" >> $@
 endif
 ifdef HAVE_CROSS_COMPILE
 	echo "set(_CMAKE_TOOLCHAIN_PREFIX $(HOST)-)" >> $@
@@ -547,7 +578,11 @@ endif
 endif
 	echo "set(CMAKE_C_COMPILER $(CC))" >> $@
 	echo "set(CMAKE_CXX_COMPILER $(CXX))" >> $@
+ifeq ($(findstring msys,$(BUILD)),msys)
+	echo "set(CMAKE_FIND_ROOT_PATH `cygpath -m $(PREFIX)`)" >> $@
+else
 	echo "set(CMAKE_FIND_ROOT_PATH $(PREFIX))" >> $@
+endif
 	echo "set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)" >> $@
 ifdef HAVE_CROSS_COMPILE
 	echo "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)" >> $@

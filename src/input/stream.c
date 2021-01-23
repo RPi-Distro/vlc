@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
  * Copyright 2008-2015 Rémi Denis-Courmont
- * $Id: 07f3f886f761da28b17eb9089d89fdda61e3477d $
+ * $Id: b94279b4316e127c2d0d4b0d146b524e62afff1c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -195,17 +195,20 @@ char *vlc_stream_ReadLine( stream_t *s )
         if( i_pos == 0 && i_data >= 2 )
         {
             const char *psz_encoding = NULL;
+            bool little_endian = false;
 
             if( unlikely(priv->text.conv != (vlc_iconv_t)-1) )
             {   /* seek back to beginning? reset */
                 vlc_iconv_close( priv->text.conv );
                 priv->text.conv = (vlc_iconv_t)-1;
             }
+            priv->text.char_width = 1;
+            priv->text.little_endian = false;
 
             if( !memcmp( p_data, "\xFF\xFE", 2 ) )
             {
                 psz_encoding = "UTF-16LE";
-                priv->text.little_endian = true;
+                little_endian = true;
             }
             else if( !memcmp( p_data, "\xFE\xFF", 2 ) )
             {
@@ -223,6 +226,7 @@ char *vlc_stream_ReadLine( stream_t *s )
                     goto error;
                 }
                 priv->text.char_width = 2;
+                priv->text.little_endian = little_endian;
             }
         }
 
@@ -248,7 +252,7 @@ char *vlc_stream_ReadLine( stream_t *s )
         else
         {
             const uint8_t *p_last = p_data + i_data - priv->text.char_width;
-            uint16_t eol = priv->text.little_endian ? 0x0A00 : 0x00A0;
+            uint16_t eol = priv->text.little_endian ? 0x0A00 : 0x000A;
 
             assert( priv->text.char_width == 2 );
             psz_eol = NULL;
@@ -264,7 +268,7 @@ char *vlc_stream_ReadLine( stream_t *s )
 
             if( psz_eol == NULL )
             {   /* UTF-16: 000D <CR> */
-                eol = priv->text.little_endian ? 0x0D00 : 0x00D0;
+                eol = priv->text.little_endian ? 0x0D00 : 0x000D;
                 for( const uint8_t *p = p_data; p <= p_last; p += 2 )
                 {
                     if( U16_AT( p ) == eol )
@@ -351,13 +355,6 @@ char *vlc_stream_ReadLine( stream_t *s )
 error:
     /* We failed to read any data, probably EOF */
     free( p_line );
-
-    /* */
-    if( priv->text.conv != (vlc_iconv_t)(-1) )
-    {
-        vlc_iconv_close( priv->text.conv );
-        priv->text.conv = (vlc_iconv_t)(-1);
-    }
     return NULL;
 }
 

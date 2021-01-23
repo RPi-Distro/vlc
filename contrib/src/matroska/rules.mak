@@ -1,6 +1,6 @@
 # matroska
 
-MATROSKA_VERSION := 1.5.2
+MATROSKA_VERSION := 1.6.0
 MATROSKA_URL := http://dl.matroska.org/downloads/libmatroska/libmatroska-$(MATROSKA_VERSION).tar.xz
 
 PKGS += matroska
@@ -16,17 +16,12 @@ $(TARBALLS)/libmatroska-$(MATROSKA_VERSION).tar.xz:
 
 .sum-matroska: libmatroska-$(MATROSKA_VERSION).tar.xz
 
-libmatroska: libmatroska-$(MATROSKA_VERSION).tar.xz .sum-matroska
+matroska: libmatroska-$(MATROSKA_VERSION).tar.xz .sum-matroska
 	$(UNPACK)
 	$(call pkg_static,"libmatroska.pc.in")
 	$(MOVE)
 
-MATROSKA_CXXFLAGS := $(CXXFLAGS) $(PIC) -fvisibility=hidden
-ifdef HAVE_IOS
-MATROSKA_CXXFLAGS +=  -O2
-endif
-
-.matroska: libmatroska toolchain.cmake
-	cd $< && $(HOSTVARS_PIC) CXXFLAGS="$(MATROSKA_CXXFLAGS)" $(CMAKE) -DBUILD_SHARED_LIBS=OFF
-	cd $< && $(MAKE) install
+.matroska: matroska toolchain.cmake
+	cd $< && $(HOSTVARS_PIC) $(CMAKE)
+	cd $< && $(CMAKEBUILD) . --target install
 	touch $@

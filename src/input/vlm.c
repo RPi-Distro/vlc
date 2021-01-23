@@ -2,7 +2,7 @@
  * vlm.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 VLC authors and VideoLAN
- * $Id: d001cdb86cacf17cd09690c2510adc50fdda89b2 $
+ * $Id: 67b2fc1b3458464cb0951598c807d792599bf3c0 $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -754,6 +754,8 @@ static int vlm_ControlMediaAdd( vlm_t *p_vlm, vlm_media_t *p_cfg, int64_t *p_id 
     /* Check if we need to load the VOD server */
     if( p_cfg->b_vod && !p_vlm->p_vod )
     {
+        msg_Info( p_vlm, "VoD support will be removed from the VLM in the next major version of VLC." );
+
         p_vlm->p_vod = vlc_custom_create( VLC_OBJECT(p_vlm), sizeof( vod_t ),
                                           "vod server" );
         p_vlm->p_vod->p_module = module_need( p_vlm->p_vod, "vod server", "$vod-server", false );

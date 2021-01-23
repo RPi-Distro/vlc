@@ -2,7 +2,7 @@
  * chapter_command.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 1ec3ffe9f26c5cf51c6de8908561a1c7c1e5ab36 $
+ * $Id: 94a591f2d4f070c6157bda22f6f1924350b197ef $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -30,7 +30,7 @@ void chapter_codec_cmds_c::AddCommand( const KaxChapterProcessCommand & command 
     uint32 codec_time = uint32(-1);
     for( size_t i = 0; i < command.ListSize(); i++ )
     {
-        if( MKV_CHECKED_PTR_DECL( p_cpt, KaxChapterProcessTime const, command[i] ) )
+        if( MKV_CHECKED_PTR_DECL_CONST( p_cpt, KaxChapterProcessTime, command[i] ) )
         {
             codec_time = static_cast<uint32>( *p_cpt );
             break;
@@ -39,7 +39,7 @@ void chapter_codec_cmds_c::AddCommand( const KaxChapterProcessCommand & command 
 
     for( size_t i = 0; i < command.ListSize(); i++ )
     {
-        if( MKV_CHECKED_PTR_DECL( p_cpd, KaxChapterProcessData const, command[i] ) )
+        if( MKV_CHECKED_PTR_DECL_CONST( p_cpd, KaxChapterProcessData, command[i] ) )
         {
             std::vector<KaxChapterProcessData*> *containers[] = {
                 &during_cmds, /* codec_time = 0 */

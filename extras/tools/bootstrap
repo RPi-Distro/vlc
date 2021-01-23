@@ -16,13 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
 
 export LC_ALL=
-NEEDED=
-
-if [ ! -f tools.mak ]
-then
-	echo "You must run me in ./extras/tools !"
-	exit 1
-fi
+FOUND=
 
 check_version() {
     gotver=$2
@@ -39,7 +33,26 @@ check_version() {
          -o "$needmajor" -eq "$gotmajor" -a "$needminor" -eq "$gotminor" -a "$needmicro" -gt "$gotmicro" ]
     then
         echo "$1 too old"
-        NEEDED="$NEEDED .$1"
+        NEEDED="$NEEDED $1"
+    else
+        FOUND="$FOUND $1"
+    fi
+
+}
+
+check_version_majmin() {
+    gotver=$2
+    gotmajor=`echo $gotver|cut -d. -f1`
+    gotminor=`echo $gotver|cut -d. -f2`
+    needmajor=`echo $3|cut -d. -f1`
+    needminor=`echo $3|cut -d. -f2`
+    if [ "$needmajor" -ne "$gotmajor" \
+         -o "$needminor" -ne "$gotminor" ]
+    then
+        echo "$1 not compatible"
+        NEEDED="$NEEDED $1"
+    else
+        FOUND="$FOUND $1"
     fi
 
 }
@@ -48,7 +61,9 @@ check_tar() {
 if ! tar PcJ /dev/null >/dev/null 2>&1
 then
     echo "tar doesn't support xz (J option)"
-    NEEDED="$NEEDED .tar .xz"
+    NEEDED="$NEEDED tar xz"
+else
+    FOUND="$FOUND tar xz"
 fi
 }
 
@@ -59,7 +74,9 @@ echo "test file for GNU sed" > $tmp
 if ! sed -i -e 's/sed//' $tmp >/dev/null 2>&1
 then
     echo "sed doesn't do in-place editing (-i option)"
-    NEEDED="$NEEDED .sed"
+    NEEDED="$NEEDED sed"
+else
+    FOUND="$FOUND sed"
 fi
 }
 
@@ -67,12 +84,15 @@ check_nasm() {
 if ! nasm -v >/dev/null 2>&1
 then
     echo "nasm not found"
-    NEEDED="$NEEDED .nasm"
+    NEEDED="$NEEDED nasm"
 else
     # found, need to check version ?
-    [ -z "$1" ] && return # no
-    gotver=`nasm -v | cut -d ' ' -f 3`
-    check_version nasm $gotver $1
+    if [ -z "$1" ];then
+        FOUND="$FOUND nasm"
+    else
+        gotver=`nasm -v | cut -d ' ' -f 3`
+        check_version nasm $gotver $1
+    fi
 fi
 }
 
@@ -80,12 +100,31 @@ check() {
 if ! $1 --version >/dev/null 2>&1 && ! $1 -version >/dev/null 2>&1
 then
     echo "$1 not found"
-    NEEDED="$NEEDED .$1"
+    NEEDED="$NEEDED $1"
 else
     # found, need to check version ?
-    [ -z "$2" ] && return # no
-    gotver=`$1 --version | head -1 | sed s/'.* '//`
-    check_version $1 $gotver $2
+    if [ -z "$2" ];then
+        FOUND="$FOUND $1"
+    else
+        gotver=`$1 --version | head -1 | sed s/'.* '//`
+        check_version $1 $gotver $2
+    fi
+fi
+}
+
+check_majmin() {
+if ! $1 --version >/dev/null 2>&1 && ! $1 -version >/dev/null 2>&1 && ! $1 --version 2>/dev/null
+then
+    echo "$1 not found"
+    NEEDED="$NEEDED $1"
+else
+    # found, need to check version ?
+    if [ -z "$2" ];then
+        FOUND="$FOUND $1"
+    else
+        gotver=`$1 --version | head -1 | sed s/'.* '//`
+        check_version_majmin $1 $gotver $2
+    fi
 fi
 }
 
@@ -94,7 +133,7 @@ check automake 1.15
 check m4 1.4.16
 check libtool 2.4
 check pkg-config
-check cmake 3.8.2
+check cmake 3.17.0
 check yasm
 check_tar
 check ragel
@@ -105,10 +144,11 @@ check xz
 check bison 3.0.0
 check flex
 check_nasm 2.14
-check meson 0.51.1
+check help2man
+check meson 0.54.2
 check ninja
 
-[ -n "$NEEDED" ] && mkdir -p build/bin && echo "To-be-built packages: `echo $NEEDED | sed 's/\.//g'`"
+DEPS_ONLY="help2man"
 
 CPUS=
 case `uname` in
@@ -129,14 +169,37 @@ case `uname` in
      ;;
 esac
 
+BOOTSTRAP_PATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
 cat > Makefile << EOF
+TOOLS = $BOOTSTRAP_PATH
 MAKEFLAGS += -j$CPUS
 CMAKEFLAGS += --parallel=$CPUS
 PREFIX=\$(abspath ./build)
+PATH=\${PREFIX}/bin:$PATH
+EOF
 
-all: $NEEDED
+for t in $FOUND; do
+    echo ".$t:" >> Makefile
+done
+
+for t in $NEEDED; do
+    echo .$t: .build$t >> Makefile
+    case "$t" in
+        *$DEPS_ONLY*)
+            ;; # Dependency only, not build by default
+        *)
+            PACKAGES="$PACKAGES $t"
+            TARGETS="$TARGETS .build$t"
+            ;;
+    esac
+done
+
+[ -n "$PACKAGES" ] && mkdir -p build/bin && echo "To-be-built packages: $PACKAGES"
+
+cat >> Makefile << EOF
+all: $TARGETS
 	@echo "You are ready to build VLC and its contribs"
 
-include tools.mak
+include \$(TOOLS)/tools.mak
 EOF
