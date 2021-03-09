@@ -1,3 +1,10 @@
+vlc (3.0.12-3) unstable; urgency=medium
+
+  * debian/patches: Apply upstream patches to prevent process freeze on exit
+    (Closes: #916595) (LP: #1819543)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 09 Mar 2021 17:42:00 +0100
+
 vlc (3.0.12-2) unstable; urgency=medium
 
   * debian/: Disable live555 plugin due to #981439
