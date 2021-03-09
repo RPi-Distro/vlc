@@ -1,0 +1,106 @@
+From: =?utf-8?q?R=C3=A9mi_Denis-Courmont?= <remi@remlab.net>
+Date: Fri, 5 Feb 2021 19:46:15 +0200
+Subject: qt: reparent video window to root whence UI closes
+
+The video window has to exist until it is closed by its owner, i.e.
+WindowClose() is called. If it stayed as a child of the main UI window,
+it would be destroyed with the main UI window.
+
+This reparents it (back) to the root window before the main UI window
+gets destroyed. This works around #21875.
+---
+ modules/gui/qt/components/interface_widgets.cpp |  2 ++
+ modules/gui/qt/main_interface.cpp               |  2 ++
+ modules/gui/qt/qt.cpp                           | 25 +++++++++++++++++++++++++
+ 3 files changed, 29 insertions(+)
+
+diff --git a/modules/gui/qt/components/interface_widgets.cpp b/modules/gui/qt/components/interface_widgets.cpp
+index 0dbefd1..cfebe61 100644
+--- a/modules/gui/qt/components/interface_widgets.cpp
++++ b/modules/gui/qt/components/interface_widgets.cpp
+@@ -228,6 +228,7 @@ QSize VideoWidget::physicalSize() const
+ }
+ 
+ void WindowResized(vout_window_t *, const QSize&);
++void WindowReleased(vout_window_t *);
+ 
+ void VideoWidget::reportSize()
+ {
+@@ -377,6 +378,7 @@ void VideoWidget::release( void )
+ 
+     if( stable )
+     {
++        WindowReleased(p_window);
+         layout->removeWidget( stable );
+         stable->deleteLater();
+         stable = NULL;
+diff --git a/modules/gui/qt/main_interface.cpp b/modules/gui/qt/main_interface.cpp
+index bb5dad8..1f29f5e 100644
+--- a/modules/gui/qt/main_interface.cpp
++++ b/modules/gui/qt/main_interface.cpp
+@@ -1664,6 +1664,8 @@ void MainInterface::closeEvent( QCloseEvent *e )
+ //  hide();
+     if ( b_minimalView )
+         setMinimalView( false );
++    if( videoWidget )
++        releaseVideoSlot();
+     emit askToQuit(); /* ask THEDP to quit, so we have a unique method */
+     /* Accept session quit. Otherwise we break the desktop mamager. */
+     e->accept();
+diff --git a/modules/gui/qt/qt.cpp b/modules/gui/qt/qt.cpp
+index b900e74..7f4c550 100644
+--- a/modules/gui/qt/qt.cpp
++++ b/modules/gui/qt/qt.cpp
+@@ -714,6 +714,8 @@ typedef struct {
+ #ifdef QT5_HAS_X11
+     Display *dpy;
+ #endif
++    bool orphaned;
++    QMutex lock;
+ } vout_window_qt_t;
+ 
+ static int WindowOpen( vout_window_t *p_wnd, const vout_window_cfg_t *cfg )
+@@ -748,6 +750,7 @@ static int WindowOpen( vout_window_t *p_wnd, const vout_window_cfg_t *cfg )
+     vout_window_qt_t *sys = new vout_window_qt_t;
+ 
+     sys->mi = p_intf->p_sys->p_mi;
++    sys->orphaned = false;
+     p_wnd->sys = (vout_window_sys_t *)sys;
+     msg_Dbg( p_wnd, "requesting video window..." );
+ 
+@@ -785,6 +788,8 @@ static int WindowOpen( vout_window_t *p_wnd, const vout_window_cfg_t *cfg )
+ #ifdef QT5_HAS_X11
+     if (QX11Info::isPlatformX11())
+     {
++        QMutexLocker locker2(&sys->lock);
++
+         XReparentWindow(sys->dpy, xid, p_wnd->handle.xid, 0, 0);
+         XMapWindow(sys->dpy, xid);
+         XSync(sys->dpy, True);
+@@ -824,6 +829,26 @@ static int WindowControl( vout_window_t *p_wnd, int i_query, va_list args )
+     return sys->mi->controlVideo(i_query, args);
+ }
+ 
++void WindowReleased(vout_window_t *wnd)
++{
++    vout_window_qt_t *sys = (vout_window_qt_t *)wnd->sys;
++    QMutexLocker locker(&sys->lock);
++
++    msg_Warn(wnd, "orphaned video window");
++    sys->orphaned = true;
++#if defined (QT5_HAS_X11)
++    if (QX11Info::isPlatformX11())
++    {   /* In the unlikely event that WindowOpen() has not yet reparented the
++         * window, WindowOpen() will skip reparenting. Then this call will be
++         * a no-op.
++         */
++        XReparentWindow(sys->dpy, wnd->handle.xid,
++                        RootWindow(sys->dpy, DefaultScreen(sys->dpy)), 0, 0);
++        XSync(sys->dpy, True);
++    }
++#endif
++}
++
+ static void WindowClose( vout_window_t *p_wnd )
+ {
+     vout_window_qt_t *sys = (vout_window_qt_t *)p_wnd->sys;
