@@ -30,6 +30,7 @@ usr/lib/*/vlc/plugins/access/liblinsys_sdi_plugin.so [linsys]
 usr/lib/*/vlc/plugins/access/liblive555_plugin.so
 usr/lib/*/vlc/plugins/access/libnfs_plugin.so [nfs]
 usr/lib/*/vlc/plugins/access/libpulsesrc_plugin.so
+usr/lib/*/vlc/plugins/access/librist_plugin.so
 usr/lib/*/vlc/plugins/access/librtp_plugin.so
 usr/lib/*/vlc/plugins/access/libsatip_plugin.so
 usr/lib/*/vlc/plugins/access/libsdp_plugin.so

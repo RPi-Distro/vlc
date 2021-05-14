@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3444,6 +3444,9 @@ dnl
+@@ -3478,6 +3478,9 @@ dnl
  AC_ARG_ENABLE(mmal,
    AS_HELP_STRING([--enable-mmal],
      [Multi-Media Abstraction Layer (MMAL) hardware plugin (default enable)]))
@@ -10,7 +10,7 @@
  if test "${enable_mmal}" != "no"; then
    VLC_SAVE_FLAGS
    LDFLAGS="${LDFLAGS} -L/opt/vc/lib -lvchostif"
-@@ -3454,7 +3457,7 @@ if test "${enable_mmal}" != "no"; then
+@@ -3488,7 +3491,7 @@ if test "${enable_mmal}" != "no"; then
          VLC_ADD_PLUGIN([mmal])
          VLC_ADD_LDFLAGS([mmal],[ -L/opt/vc/lib ])
          VLC_ADD_CFLAGS([mmal],[ -isystem /opt/vc/include -isystem /opt/vc/include/interface/vcos/pthreads -isystem /opt/vc/include/interface/vmcs_host/linux ])
@@ -19,7 +19,7 @@
            AS_IF([test "${enable_mmal}" = "yes"],
              [ AC_MSG_ERROR([Cannot find bcm library...]) ],
              [ AC_MSG_WARN([Cannot find bcm library...]) ])
-@@ -3466,6 +3469,7 @@ if test "${enable_mmal}" != "no"; then
+@@ -3500,6 +3503,7 @@ if test "${enable_mmal}" != "no"; then
    VLC_RESTORE_FLAGS
  fi
  AM_CONDITIONAL([HAVE_MMAL], [test "${have_mmal}" = "yes"])

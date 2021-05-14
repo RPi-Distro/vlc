@@ -1,3 +1,11 @@
+vlc (3.0.12-0+deb10u1+rpt1) buster-security; urgency=medium
+
+  * New upstream release
+    - mkv: Fix heap-based buffer overflow (CVE-2020-26664) (Closes: #979676)
+  * debian/vlc-plugin-base.install: Install RIST plugins
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 18 Jan 2021 17:35:27 +0100
+
 vlc (3.0.11-0+deb10u1+rpt3) buster; urgency=medium
 
   * Add MMAL patch 20
