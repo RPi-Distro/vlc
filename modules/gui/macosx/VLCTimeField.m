@@ -2,7 +2,7 @@
  * VLCTimeField.m: NSTextField subclass for playback time fields
  *****************************************************************************
  * Copyright (C) 2003-2017 VLC authors and VideoLAN
- * $Id: 91d515a3c623067f83f2ea97dc378236fda87fde $
+ * $Id: ed482d7ab00a5549cf40aff8cc1bf61612d1a0a0 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -30,8 +30,11 @@
 
 @interface VLCTimeField ()
 {
-    NSString *o_remaining_identifier;
-    BOOL b_time_remaining;
+    NSString *_identifier;
+    BOOL _isTimeRemaining;
+
+    NSString *_cachedTime;
+    NSString *_remainingTime;
 }
 @end
 
@@ -48,10 +51,10 @@
 }
 
 
-- (void)setRemainingIdentifier:(NSString *)o_string
+- (void)setRemainingIdentifier:(NSString *)identifier
 {
-    o_remaining_identifier = o_string;
-    b_time_remaining = [[NSUserDefaults standardUserDefaults] boolForKey:o_remaining_identifier];
+    _identifier = identifier;
+    _isTimeRemaining = [[NSUserDefaults standardUserDefaults] boolForKey:_identifier];
 }
 
 - (void)mouseDown: (NSEvent *)ourEvent
@@ -60,24 +63,54 @@
         [[[VLCMain sharedInstance] mainMenu] goToSpecificTime: nil];
     else
     {
-        if (o_remaining_identifier) {
-            b_time_remaining = [[NSUserDefaults standardUserDefaults] boolForKey:o_remaining_identifier];
-            b_time_remaining = !b_time_remaining;
-            [[NSUserDefaults standardUserDefaults] setObject:(b_time_remaining ? @"YES" : @"NO") forKey:o_remaining_identifier];
+        if (_identifier) {
+            _isTimeRemaining = [[NSUserDefaults standardUserDefaults] boolForKey:_identifier];
+            _isTimeRemaining = !_isTimeRemaining;
+            [[NSUserDefaults standardUserDefaults] setObject:(_isTimeRemaining ? @"YES" : @"NO") forKey:_identifier];
         } else {
-            b_time_remaining = !b_time_remaining;
+            _isTimeRemaining = !_isTimeRemaining;
         }
+
+        [self updateTimeValue];
     }
 
     [[self nextResponder] mouseDown:ourEvent];
 }
 
+- (void)setTime:(NSString *)time withRemainingTime:(NSString *)remainingTime
+{
+    _cachedTime = time;
+    _remainingTime = remainingTime;
+
+    [self updateTimeValue];
+}
+
+- (void)updateTimeValue
+{
+    if (!_cachedTime || !_remainingTime)
+        return;
+
+    if ([self timeRemaining]) {
+        [super setStringValue:_remainingTime];
+    } else {
+        [super setStringValue:_cachedTime];
+    }
+}
+
+- (void)setStringValue:(NSString *)stringValue
+{
+    [super setStringValue:stringValue];
+
+    _cachedTime = nil;
+    _remainingTime = nil;
+}
+
 - (BOOL)timeRemaining
 {
-    if (o_remaining_identifier)
-        return [[NSUserDefaults standardUserDefaults] boolForKey:o_remaining_identifier];
+    if (_identifier)
+        return [[NSUserDefaults standardUserDefaults] boolForKey:_identifier];
     else
-        return b_time_remaining;
+        return _isTimeRemaining;
 }
 
 @end

@@ -1,7 +1,7 @@
 --[[
  $Id$
 
- Copyright © 2012, 2017 VideoLAN and AUTHORS
+ Copyright © 2012, 2017, 2021 VideoLAN and AUTHORS
 
  Authors: Ludovic Fauvet <etix@videolan.org>
           Pierre Ynard
@@ -23,14 +23,10 @@
 
 -- Probe function.
 function probe()
-    return ( vlc.access == "http" or vlc.access == "https" )
-        and string.match( vlc.path, "^www%.liveleak%.com/view" )
-end
-
--- Util function
-function find( haystack, needle )
-    local _,_,r = string.find( haystack, needle )
-    return r
+    return ( vlc.access == "http" or vlc.access == "https" ) and (
+               string.match( vlc.path, "^www%.liveleak%.com/v%?" )
+            or string.match( vlc.path, "^www%.liveleak%.com/view%?" )
+           )
 end
 
 -- Parse function.
@@ -45,9 +41,16 @@ function parse()
         if not line then break end
 
         -- Try to find the title
-        if string.match( line, '<span class="section_title"' ) then
-            title = find( line, '<span class="section_title"[^>]*>(.-)<' )
-            title = vlc.strings.resolve_xml_special_chars( title )
+        if not title then
+            title = string.match( line, "shareTitle: *'(.-[^\\])'" )
+            if title then
+                if string.match( title, "^'" ) then
+                    title = nil
+                else
+                    -- FIXME: do this properly (see #24958)
+                    title = string.gsub( title, "\\'", "'" )
+                end
+            end
         end
 
         -- Try to find the art
@@ -56,18 +59,27 @@ function parse()
         end
 
         -- Try to find the video
-        if not video and string.match( line, '<source ' ) then
+        if not video and string.match( line, '<video ' ) then
+            while not string.match( line, '</video>') do
+                local more = vlc.readline()
+                if not more then break end
+                line = line..more
+            end
+
             -- Apparently the two formats are listed HD first, SD second
             local prefres = vlc.var.inherit( nil, 'preferred-resolution' )
-            for src in string.gmatch( line, '<source src="([^"]+)"' ) do
-                video = src
+            for source in string.gmatch( line, '<source( .-)>' ) do
+                local src = string.match( source, ' src="([^"]+)"' )
+                if src then
+                    video = vlc.strings.resolve_xml_special_chars( src )
 
-                if prefres < 0 then
-                    break
-                end
-                local height = tonumber( string.match( src, '_(%d+)p%.mp4' ) )
-                if ( not height ) or height <= prefres then
-                    break
+                    if prefres < 0 then
+                        break
+                    end
+                    local height = tonumber( string.match( source, ' label="(%d+).-"' ) )
+                    if ( not height ) or height <= prefres then
+                        break
+                    end
                 end
             end
         end

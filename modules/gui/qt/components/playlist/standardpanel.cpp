@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright © 2000-2010 VideoLAN
- * $Id: 3d6fe6e6a8b9b5d55e720d348fda47a42495247a $
+ * $Id: 6e7ba66cca4e356d62246e046bc1cc08e47ff92b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -322,8 +322,10 @@ void StandardPLPanel::popupAction( QAction *action )
         temp = model->getURI( index );
         if( ! temp.isEmpty() ) path = vlc_uri2path( temp.toLatin1().constData() );
         if( path == NULL ) return;
+        temp = QFileInfo( qfu( path ) ).absolutePath();
+        if( !QFileInfo( temp ).isDir() ) return;
         QDesktopServices::openUrl(
-                    QUrl::fromLocalFile( QFileInfo( qfu( path ) ).absolutePath() ) );
+                    QUrl::fromLocalFile( temp ) );
         free( path );
         break;
 

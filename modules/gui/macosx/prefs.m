@@ -2,7 +2,7 @@
  * prefs.m: MacOS X module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2018 VLC authors and VideoLAN
- * $Id: ddb91f69662d11dddf078461b7e0a4abec823419 $
+ * $Id: 3dc232bc9133d6d452b8b2c97972cf3196c0298b $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -317,7 +317,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"%@: name: %@, number of children %li", NSStringFromClass([self class]), [self name], [self numberOfChildren]];
+    return [NSString stringWithFormat:@"%@: name: %@, number of children %i", NSStringFromClass([self class]), [self name], [self numberOfChildren]];
 }
 
 - (VLCTreeItem *)childAtIndex:(NSInteger)i_index

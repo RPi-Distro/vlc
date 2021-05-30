@@ -2,7 +2,7 @@
  * fluidsynth.c: Software MIDI synthesizer using libfluidsynth
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: f461f3fd14716f2147a200ba614c53ae6c2712f4 $
+ * $Id: 1212603281abf50bdfc3d5c9eded42eeb4f9dbdd $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -129,7 +129,10 @@ static int Open (vlc_object_t *p_this)
     {
         glob_t gl;
 
-        glob ("/usr/share/sounds/sf2/*.sf2", GLOB_NOESCAPE, NULL, &gl);
+        glob("/usr/share/sounds/sf2/*.sf2", GLOB_NOESCAPE, NULL, &gl);
+        glob("/usr/share/soundfonts/*.sf2", GLOB_NOESCAPE | GLOB_APPEND, NULL,
+             &gl);
+
         for (size_t i = 0; i < gl.gl_pathc; i++)
         {
             const char *path = gl.gl_pathv[i];

@@ -2,7 +2,7 @@
  * url.c: Test for url encoding/decoding stuff
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: e170d8b0ab3a3f55fc709b261aefd303fa747da5 $
+ * $Id: ab02571ac77b83acc765e05f0c9ee5452f5dfc8b $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -156,16 +156,6 @@ static void test_rfc3986(const char *reference, const char *expected)
 static void test_fixup_noop(const char *expected)
 {
     test(vlc_uri_fixup, expected, expected);
-}
-
-static char *vlc_uri_resolve_separators_test(const char *in)
-{
-    return vlc_uri_resolve("file:///a/b/c//d.ext", in);
-}
-
-static void test_separators(const char *reference, const char *expected)
-{
-    test(vlc_uri_resolve_separators_test, reference, expected);
 }
 
 int main (void)
@@ -373,16 +363,6 @@ int main (void)
 
     for (size_t i = 0; i < ARRAY_SIZE(rfc3986_cases); i += 2)
         test_rfc3986(rfc3986_cases[i], rfc3986_cases[i + 1]);
-    static const char* separators_patterns[] = {
-        "../",                      "file:///a/b/",
-        "./",                       "file:///a/b/c/",
-        "../../../../../../../",    "file:///",
-        "..///////////////",        "file:///a/b/",
-        ".///////////////",         "file:///a/b/c/",
-        "..//..//",                 "file:///a/",
-    };
-    for (size_t i = 0; i < ARRAY_SIZE(separators_patterns); i += 2)
-        test_separators(separators_patterns[i], separators_patterns[i + 1]);
 
     /* Check that fixup does not mangle valid URIs */
     static const char *valid_uris[] =

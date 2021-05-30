@@ -50,10 +50,10 @@
 #ifdef HAVE_DSM
 # include <bdsm/netbios_ns.h>
 # include <bdsm/netbios_defs.h>
+#endif
 
-# ifdef HAVE_ARPA_INET_H
-#  include <arpa/inet.h>
-# endif
+#ifdef HAVE_ARPA_INET_H
+# include <arpa/inet.h>
 #endif
 
 #include "smb_common.h"
@@ -133,6 +133,34 @@ smb2_set_error(stream_t *access, const char *psz_func, int err)
 
 #define VLC_SMB2_STATUS_DENIED(x) (x == -ECONNREFUSED || x == -EACCES)
 
+#if defined (__ELF__) || defined (__MACH__) /* weak support */
+/* There is no way to know if libsmb2 has these new symbols and we don't want
+ * to increase the version requirement on VLC 3.0, therefore implement a weak
+ * compat version. */
+const t_socket *
+smb2_get_fds(struct smb2_context *smb2, size_t *fd_count, int *timeout);
+int
+smb2_service_fd(struct smb2_context *smb2, int fd, int revents);
+
+__attribute__((weak)) const t_socket *
+smb2_get_fds(struct smb2_context *smb2, size_t *fd_count, int *timeout)
+{
+    (void) timeout;
+    static thread_local t_socket fd;
+
+    *fd_count = 1;
+    fd = smb2_get_fd(smb2);
+    return &fd;
+}
+
+__attribute__((weak)) int
+smb2_service_fd(struct smb2_context *smb2, int fd, int revents)
+{
+    (void) fd;
+    return smb2_service(smb2, revents);
+}
+#endif
+
 static int
 vlc_smb2_mainloop(stream_t *access, bool teardown)
 {
@@ -161,12 +189,21 @@ vlc_smb2_mainloop(stream_t *access, bool teardown)
     sys->res_done = false;
     while (sys->error_status == 0 && !sys->res_done)
     {
-        struct pollfd p_fds[1];
-        int ret;
-        p_fds[0].fd = smb2_get_fd(sys->smb2);
-        p_fds[0].events = smb2_which_events(sys->smb2);
+        int ret, smb2_timeout;
+        size_t fd_count;
+        const t_socket *fds = smb2_get_fds(sys->smb2, &fd_count, &smb2_timeout);
+        int events = smb2_which_events(sys->smb2);
 
-        if (p_fds[0].fd == -1 || (ret = poll_func(p_fds, 1, timeout)) < 0)
+        struct pollfd p_fds[fd_count];
+        for (size_t i = 0; i < fd_count; ++i)
+        {
+            p_fds[i].events = events;
+            p_fds[i].fd = fds[i];
+        }
+        if (smb2_timeout != -1)
+            timeout = smb2_timeout;
+
+        if (fds == NULL || (ret = poll_func(p_fds, fd_count, timeout)) < 0)
         {
             if (errno == EINTR)
             {
@@ -189,10 +226,21 @@ vlc_smb2_mainloop(stream_t *access, bool teardown)
             }
         }
         else if (ret == 0)
-            sys->error_status = -ETIMEDOUT;
-        else if (ret > 0 && p_fds[0].revents
-             && smb2_service(sys->smb2, p_fds[0].revents) < 0)
-            VLC_SMB2_SET_ERROR(access, "smb2_service", 1);
+        {
+            if (teardown)
+                sys->error_status = -ETIMEDOUT;
+            else if (smb2_service_fd(sys->smb2, -1, 0) < 0)
+                VLC_SMB2_SET_ERROR(access, "smb2_service", 1);
+        }
+        else
+        {
+            for (size_t i = 0; i < fd_count; ++i)
+            {
+                if (p_fds[i].revents
+                 && smb2_service_fd(sys->smb2, p_fds[i].fd, p_fds[i].revents) < 0)
+                    VLC_SMB2_SET_ERROR(access, "smb2_service", 1);
+            }
+        }
     }
 
     int ret = sys->error_status == 0 ? 0 : -1;
@@ -483,6 +531,38 @@ smb2_share_enum_cb(struct smb2_context *smb2, int status, void *data,
     sys->share_enum = data;
 }
 
+static void
+vlc_smb2_print_addr(stream_t *access)
+{
+    struct access_sys *sys = access->p_sys;
+
+    struct sockaddr_storage addr;
+    if (getsockname(smb2_get_fd(sys->smb2), (struct sockaddr *)&addr,
+                    &(socklen_t){ sizeof(addr) }) != 0)
+        return;
+
+    void *sin_addr;
+    switch (addr.ss_family)
+    {
+        case AF_INET6:
+            sin_addr = &((struct sockaddr_in6 *)&addr)->sin6_addr;
+            break;
+        case AF_INET:
+            sin_addr = &((struct sockaddr_in *)&addr)->sin_addr;
+            break;
+        default:
+            return;
+    }
+    char ip[INET6_ADDRSTRLEN];
+    if (inet_ntop(addr.ss_family, sin_addr, ip, sizeof(ip)) == NULL)
+        return;
+
+    if (strcmp(ip, sys->encoded_url.psz_host) == 0)
+        return;
+
+    msg_Dbg(access, "%s: connected from %s\n", sys->encoded_url.psz_host, ip);
+}
+
 static int
 vlc_smb2_open_share(stream_t *access, const char *url,
                     const vlc_credential *credential)
@@ -531,6 +611,8 @@ vlc_smb2_open_share(stream_t *access, const char *url,
     if (vlc_smb2_mainloop(access, false) != 0)
         goto error;
     sys->smb2_connected = true;
+
+    vlc_smb2_print_addr(access);
 
     int ret;
     if (do_enum)
@@ -613,7 +695,7 @@ vlc_smb2_resolve(stream_t *access, const char *host, unsigned port)
     uint32_t ip4_addr;
     if (netbios_ns_resolve(ns, host, NETBIOS_FILESERVER, &ip4_addr) == 0)
     {
-        char ip[] = "xxx.xxx.xxx.xxx";
+        char ip[INET_ADDRSTRLEN];
         if (inet_ntop(AF_INET, &ip4_addr, ip, sizeof(ip)))
             out_host = strdup(ip);
     }
@@ -645,7 +727,6 @@ Open(vlc_object_t *p_obj)
 
     char *resolved_host = vlc_smb2_resolve(access, sys->encoded_url.psz_host,
                                            sys->encoded_url.i_port);
-    const char *host;
 
     /* smb2_* functions need a decoded url. Re compose the url from the
      * modified sys->encoded_url (with the resolved host). */
@@ -655,12 +736,10 @@ Open(vlc_object_t *p_obj)
         vlc_url_t resolved_url = sys->encoded_url;
         resolved_url.psz_host = resolved_host;
         url = vlc_uri_compose(&resolved_url);
-        host = resolved_host;
     }
     else
     {
         url = vlc_uri_compose(&sys->encoded_url);
-        host = sys->encoded_url.psz_host;
     }
     if (!vlc_uri_decode(url))
     {
@@ -685,7 +764,7 @@ Open(vlc_object_t *p_obj)
         && (!sys->error_status || VLC_SMB2_STATUS_DENIED(sys->error_status))
         && vlc_credential_get(&credential, access, "smb-user", "smb-pwd",
                               SMB_LOGIN_DIALOG_TITLE, SMB_LOGIN_DIALOG_TEXT,
-                              host))
+                              sys->encoded_url.psz_host))
     {
         sys->error_status = 0;
         ret = vlc_smb2_open_share(access, url, &credential);

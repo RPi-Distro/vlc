@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: c139964f62d634471e8b3f9433f3d7c95fe644c3 $
+ * $Id: f8c0cf796c7a9014411bef4af4f200b8682a2c8c $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -1058,8 +1058,28 @@ static void GetVarSlaves( input_thread_t *p_input,
         if( uri == NULL )
             continue;
 
+        vlc_url_t parsed_uri;
+        if ( vlc_UrlParse( &parsed_uri, uri ) != VLC_SUCCESS )
+        {
+            msg_Err( p_input,
+                    "Invalid url passed to the \"input-slave\" option" );
+            vlc_UrlClean( &parsed_uri );
+            free( uri );
+            continue;
+        }
+
+        enum slave_type i_type;
+        if ( !input_item_slave_GetType( parsed_uri.psz_path, &i_type ) )
+        {
+            msg_Warn( p_input,
+                     "Can't deduce slave type of `%s\" with file extension.",
+                     uri );
+            i_type = SLAVE_TYPE_AUDIO;
+        }
         input_item_slave_t *p_slave =
-            input_item_slave_New( uri, SLAVE_TYPE_AUDIO, SLAVE_PRIORITY_USER );
+            input_item_slave_New( uri, i_type, SLAVE_PRIORITY_USER );
+
+        vlc_UrlClean( &parsed_uri );
         free( uri );
 
         if( unlikely( p_slave == NULL ) )
@@ -1128,6 +1148,9 @@ static void LoadSlaves( input_thread_t *p_input )
         free( psz_autopath );
     }
 
+    /* Add slaves from the "input-slave" option */
+    GetVarSlaves( p_input, &pp_slaves, &i_slaves );
+
     /* Add slaves found by the directory demuxer or via libvlc */
     input_item_t *p_item = input_priv(p_input)->p_item;
     vlc_mutex_lock( &p_item->lock );
@@ -1144,9 +1167,6 @@ static void LoadSlaves( input_thread_t *p_input )
     /* Slaves that are successfully loaded will be added back to the item */
     TAB_CLEAN( p_item->i_slaves, p_item->pp_slaves );
     vlc_mutex_unlock( &p_item->lock );
-
-    /* Add slaves from the "input-slave" option */
-    GetVarSlaves( p_input, &pp_slaves, &i_slaves );
 
     if( i_slaves > 0 )
         qsort( pp_slaves, i_slaves, sizeof (input_item_slave_t*),

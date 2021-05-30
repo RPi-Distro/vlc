@@ -2,7 +2,7 @@
  * VLCMainWindow.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2018 VLC authors and VideoLAN
- * $Id: b3e4307cf9ed499bfee8eb32c7fb75cd2ec3e1be $
+ * $Id: d681c9636761c2cfdf841a2b8ff4ca5e861b77d5 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -37,6 +37,7 @@
 
 @class VLCDetachedVideoWindow;
 @class VLCMainWindowControlsBar;
+@class VLCSidebarDataSource;
 @class VLCVoutView;
 @class PXSourceList;
 
@@ -95,6 +96,9 @@ typedef enum {
 
 @property (readonly) VLCFSPanelController* fspanel;
 
+@property (readwrite, strong) VLCSidebarDataSource *sidebarDataSource;
+
+
 - (void)changePlaylistState:(VLCPlaylistStateEvent)event;
 
 - (IBAction)dropzoneButtonAction:(id)sender;
@@ -109,7 +113,6 @@ typedef enum {
 
 - (void)windowResizedOrMoved:(NSNotification *)notification;
 
-- (void)reloadSidebar;
 
 - (void)toggleLeftSubSplitView;
 - (void)showDropZone;
@@ -125,6 +128,8 @@ typedef enum {
 
 - (void)videoplayWillBeStarted;
 - (void)setVideoplayEnabled;
+
+- (void)sourceListSelectionDidChange:(NSNotification *)notification;
 
 @end
 

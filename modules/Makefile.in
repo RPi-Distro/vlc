@@ -2584,6 +2584,7 @@ am_libmacosx_plugin_la_OBJECTS =  \
 	gui/macosx/libmacosx_plugin_la-VLCRendererItem.lo \
 	gui/macosx/libmacosx_plugin_la-VLCRendererMenuController.lo \
 	gui/macosx/libmacosx_plugin_la-VLCResumeDialogController.lo \
+	gui/macosx/libmacosx_plugin_la-VLCSidebarDataSource.lo \
 	gui/macosx/libmacosx_plugin_la-VLCSourceListItem.lo \
 	gui/macosx/libmacosx_plugin_la-VLCSourceListTableCellView.lo \
 	gui/macosx/libmacosx_plugin_la-VLCSourceListBadgeButton.lo \
@@ -5764,6 +5765,7 @@ am__depfiles_remade =  \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererMenuController.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCResumeDialogController.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCScrollingClipView.Plo \
+	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSidebarDataSource.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSimplePrefsController.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSimplePrefsWindow.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSlider.Plo \
@@ -8986,31 +8988,81 @@ EXTRA_DIST = arm_neon/asm.S gui/eject.c gui/macosx/UI/About.xib \
 	gui/macosx/UI/VLCFullScreenPanel.xib \
 	gui/macosx/UI/VLCStatusBarIconMainMenu.xib \
 	gui/macosx/Resources/English.lproj/InfoPlist.strings \
+	gui/macosx/Resources/an.lproj/InfoPlist.strings \
 	gui/macosx/Resources/ar.lproj/InfoPlist.strings \
+	gui/macosx/Resources/as-IN.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ast.lproj/InfoPlist.strings \
+	gui/macosx/Resources/be.lproj/InfoPlist.strings \
 	gui/macosx/Resources/bg.lproj/InfoPlist.strings \
+	gui/macosx/Resources/bn-IN.lproj/InfoPlist.strings \
+	gui/macosx/Resources/br.lproj/InfoPlist.strings \
+	gui/macosx/Resources/brx.lproj/InfoPlist.strings \
 	gui/macosx/Resources/ca.lproj/InfoPlist.strings \
+	gui/macosx/Resources/co.lproj/InfoPlist.strings \
 	gui/macosx/Resources/cs.lproj/InfoPlist.strings \
+	gui/macosx/Resources/cy.lproj/InfoPlist.strings \
+	gui/macosx/Resources/da.lproj/InfoPlist.strings \
 	gui/macosx/Resources/de.lproj/InfoPlist.strings \
 	gui/macosx/Resources/el.lproj/InfoPlist.strings \
+	gui/macosx/Resources/en-GB.lproj/InfoPlist.strings \
+	gui/macosx/Resources/es-MX.lproj/InfoPlist.strings \
 	gui/macosx/Resources/es.lproj/InfoPlist.strings \
+	gui/macosx/Resources/et.lproj/InfoPlist.strings \
+	gui/macosx/Resources/eu.lproj/InfoPlist.strings \
+	gui/macosx/Resources/fa.lproj/InfoPlist.strings \
+	gui/macosx/Resources/fi.lproj/InfoPlist.strings \
 	gui/macosx/Resources/fr.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ga.lproj/InfoPlist.strings \
+	gui/macosx/Resources/gd.lproj/InfoPlist.strings \
 	gui/macosx/Resources/gl.lproj/InfoPlist.strings \
+	gui/macosx/Resources/gu-IN.lproj/InfoPlist.strings \
 	gui/macosx/Resources/he.lproj/InfoPlist.strings \
+	gui/macosx/Resources/hi.lproj/InfoPlist.strings \
+	gui/macosx/Resources/hr.lproj/InfoPlist.strings \
 	gui/macosx/Resources/hu.lproj/InfoPlist.strings \
+	gui/macosx/Resources/id.lproj/InfoPlist.strings \
+	gui/macosx/Resources/is.lproj/InfoPlist.strings \
 	gui/macosx/Resources/it.lproj/InfoPlist.strings \
 	gui/macosx/Resources/ja.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ka.lproj/InfoPlist.strings \
+	gui/macosx/Resources/kab.lproj/InfoPlist.strings \
+	gui/macosx/Resources/kk.lproj/InfoPlist.strings \
+	gui/macosx/Resources/km.lproj/InfoPlist.strings \
+	gui/macosx/Resources/kn.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ko.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ku.lproj/InfoPlist.strings \
+	gui/macosx/Resources/lt.lproj/InfoPlist.strings \
 	gui/macosx/Resources/lv.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ml.lproj/InfoPlist.strings \
+	gui/macosx/Resources/mr.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ms.lproj/InfoPlist.strings \
+	gui/macosx/Resources/my.lproj/InfoPlist.strings \
+	gui/macosx/Resources/nb.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ne.lproj/InfoPlist.strings \
 	gui/macosx/Resources/nl.lproj/InfoPlist.strings \
+	gui/macosx/Resources/nn.lproj/InfoPlist.strings \
+	gui/macosx/Resources/oc.lproj/InfoPlist.strings \
+	gui/macosx/Resources/pa.lproj/InfoPlist.strings \
 	gui/macosx/Resources/pl.lproj/InfoPlist.strings \
 	gui/macosx/Resources/pt-BR.lproj/InfoPlist.strings \
 	gui/macosx/Resources/pt-PT.lproj/InfoPlist.strings \
 	gui/macosx/Resources/ro.lproj/InfoPlist.strings \
+	gui/macosx/Resources/ru.lproj/InfoPlist.strings \
+	gui/macosx/Resources/sat.lproj/InfoPlist.strings \
+	gui/macosx/Resources/sc.lproj/InfoPlist.strings \
+	gui/macosx/Resources/si.lproj/InfoPlist.strings \
 	gui/macosx/Resources/sk.lproj/InfoPlist.strings \
 	gui/macosx/Resources/sl.lproj/InfoPlist.strings \
+	gui/macosx/Resources/sq.lproj/InfoPlist.strings \
+	gui/macosx/Resources/sr.lproj/InfoPlist.strings \
 	gui/macosx/Resources/sv.lproj/InfoPlist.strings \
+	gui/macosx/Resources/th.lproj/InfoPlist.strings \
 	gui/macosx/Resources/tr.lproj/InfoPlist.strings \
 	gui/macosx/Resources/uk.lproj/InfoPlist.strings \
+	gui/macosx/Resources/vi.lproj/InfoPlist.strings \
+	gui/macosx/Resources/wa.lproj/InfoPlist.strings \
 	gui/macosx/Resources/zh-Hans.lproj/InfoPlist.strings \
+	gui/macosx/Resources/zh-Hant.lproj/InfoPlist.strings \
 	$(libqt_plugin_la_UI) gui/qt/vlc.qrc $(libqt_plugin_la_RES) \
 	video_output/README video_output/wayland/server-decoration.xml
 EXTRA_SUBDIRS = \
@@ -10547,6 +10599,8 @@ libmacosx_plugin_la_SOURCES = gui/macosx/helpers.h \
 	gui/macosx/VLCRendererMenuController.m \
 	gui/macosx/VLCResumeDialogController.h \
 	gui/macosx/VLCResumeDialogController.m \
+	gui/macosx/VLCSidebarDataSource.h \
+	gui/macosx/VLCSidebarDataSource.m \
 	gui/macosx/VLCSourceListItem.h gui/macosx/VLCSourceListItem.m \
 	gui/macosx/VLCSourceListTableCellView.h \
 	gui/macosx/VLCSourceListTableCellView.m \
@@ -16619,6 +16673,9 @@ gui/macosx/libmacosx_plugin_la-VLCRendererMenuController.lo:  \
 gui/macosx/libmacosx_plugin_la-VLCResumeDialogController.lo:  \
 	gui/macosx/$(am__dirstamp) \
 	gui/macosx/$(DEPDIR)/$(am__dirstamp)
+gui/macosx/libmacosx_plugin_la-VLCSidebarDataSource.lo:  \
+	gui/macosx/$(am__dirstamp) \
+	gui/macosx/$(DEPDIR)/$(am__dirstamp)
 gui/macosx/libmacosx_plugin_la-VLCSourceListItem.lo:  \
 	gui/macosx/$(am__dirstamp) \
 	gui/macosx/$(DEPDIR)/$(am__dirstamp)
@@ -20465,6 +20522,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererMenuController.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCResumeDialogController.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCScrollingClipView.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSidebarDataSource.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSimplePrefsController.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSimplePrefsWindow.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSlider.Plo@am__quote@ # am--include-marker
@@ -27549,6 +27607,13 @@ gui/macosx/libmacosx_plugin_la-VLCResumeDialogController.lo: gui/macosx/VLCResum
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-VLCResumeDialogController.lo `test -f 'gui/macosx/VLCResumeDialogController.m' || echo '$(srcdir)/'`gui/macosx/VLCResumeDialogController.m
 
+gui/macosx/libmacosx_plugin_la-VLCSidebarDataSource.lo: gui/macosx/VLCSidebarDataSource.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/macosx/libmacosx_plugin_la-VLCSidebarDataSource.lo -MD -MP -MF gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSidebarDataSource.Tpo -c -o gui/macosx/libmacosx_plugin_la-VLCSidebarDataSource.lo `test -f 'gui/macosx/VLCSidebarDataSource.m' || echo '$(srcdir)/'`gui/macosx/VLCSidebarDataSource.m
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSidebarDataSource.Tpo gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSidebarDataSource.Plo
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='gui/macosx/VLCSidebarDataSource.m' object='gui/macosx/libmacosx_plugin_la-VLCSidebarDataSource.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-VLCSidebarDataSource.lo `test -f 'gui/macosx/VLCSidebarDataSource.m' || echo '$(srcdir)/'`gui/macosx/VLCSidebarDataSource.m
+
 gui/macosx/libmacosx_plugin_la-VLCSourceListItem.lo: gui/macosx/VLCSourceListItem.m
 @am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/macosx/libmacosx_plugin_la-VLCSourceListItem.lo -MD -MP -MF gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSourceListItem.Tpo -c -o gui/macosx/libmacosx_plugin_la-VLCSourceListItem.lo `test -f 'gui/macosx/VLCSourceListItem.m' || echo '$(srcdir)/'`gui/macosx/VLCSourceListItem.m
 @am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSourceListItem.Tpo gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSourceListItem.Plo
@@ -29269,6 +29334,7 @@ distclean: distclean-recursive
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererMenuController.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCResumeDialogController.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCScrollingClipView.Plo
+	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSidebarDataSource.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSimplePrefsController.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSimplePrefsWindow.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSlider.Plo
@@ -30646,6 +30712,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererMenuController.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCResumeDialogController.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCScrollingClipView.Plo
+	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSidebarDataSource.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSimplePrefsController.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSimplePrefsWindow.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCSlider.Plo

@@ -148,6 +148,9 @@
 /* Define to 1 if C++ headers define locale_t */
 #undef HAVE_CXX_LOCALE_T
 
+/* Define to 1 if you have the <d3d11_4.h> header file. */
+#undef HAVE_D3D11_4_H
+
 /* Define to 1 if you have the <d3d11.h> header file. */
 #undef HAVE_D3D11_H
 

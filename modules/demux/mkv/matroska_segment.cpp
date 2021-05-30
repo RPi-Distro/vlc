@@ -2,7 +2,7 @@
  * matroska_segment.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 4b4c73e23c648e596e5a77342c8f10a5ecd0baac $
+ * $Id: 7e2bd8a0aea85a4f3fa9ade2ffda05852a032fed $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -31,6 +31,7 @@
 
 #include <new>
 #include <iterator>
+#include <limits>
 
 matroska_segment_c::matroska_segment_c( demux_sys_t & demuxer, EbmlStream & estream, KaxSegment *p_seg )
     :segment(p_seg)

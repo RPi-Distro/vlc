@@ -23,31 +23,33 @@
 
 #import <Cocoa/Cocoa.h>
 #import <IOKit/hidsystem/ev_keymap.h>
+#import <IOKit/hidsystem/IOLLEvent.h>
 
-// http://overooped.com/post/2593597587/mediakeys
+typedef NS_ENUM(uint8_t, SPKeyCode) {
+    SPKeyCodePlay           = NX_KEYTYPE_PLAY,
+    SPKeyCodeNext           = NX_KEYTYPE_NEXT,
+    SPKeyCodePrevious       = NX_KEYTYPE_PREVIOUS,
+    SPKeyCodeFastForward    = NX_KEYTYPE_FAST,
+    SPKeyCodeRewind         = NX_KEYTYPE_REWIND
+};
 
-#define SPSystemDefinedEventMediaKeys 8
+typedef NS_ENUM(uint8_t, SPKeyState) {
+    SPKeyStateDown  = NX_KEYDOWN,
+    SPKeyStateUp    = NX_KEYUP
+};
+
+@class SPMediaKeyTap;
+
+@protocol SPMediaKeyTapDelegate <NSObject>
+- (void)mediaKeyTap:(SPMediaKeyTap *)keyTap
+   receivedMediaKey:(SPKeyCode)keyCode
+              state:(SPKeyState)keyState
+             repeat:(BOOL)isRepeat;
+@end
 
 @interface SPMediaKeyTap : NSObject
+- (id)initWithDelegate:(id<SPMediaKeyTapDelegate>)delegate;
 
-- (id)initWithDelegate:(id)delegate;
-
-+ (BOOL)usesGlobalMediaKeyTap;
 - (BOOL)startWatchingMediaKeys;
 - (void)stopWatchingMediaKeys;
-- (void)handleAndReleaseMediaKeyEvent:(NSEvent *)event;
 @end
-
-@interface NSObject (SPMediaKeyTapDelegate)
-- (void)mediaKeyTap:(SPMediaKeyTap*)keyTap receivedMediaKeyEvent:(NSEvent*)event;
-@end
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-extern NSString *kIgnoreMediaKeysDefaultsKey;
-
-#ifdef __cplusplus
-}
-#endif

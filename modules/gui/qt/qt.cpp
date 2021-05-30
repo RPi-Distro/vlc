@@ -2,7 +2,7 @@
  * qt.cpp : Qt interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: cbd197750ae0a2a4dc484ead9256535f0d58b2fe $
+ * $Id: eda27528978e4a357c515d49fd00824790ce97f4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -361,6 +361,7 @@ static void Abort( void *obj )
 
 #if defined (QT5_HAS_X11)
 # include <vlc_xlib.h>
+# include <QX11Info>
 
 static void *ThreadXCB( void *data )
 {
@@ -708,6 +709,15 @@ static void ShowDialog( intf_thread_t *p_intf, int i_dialog_event, int i_arg,
  */
 static int WindowControl( vout_window_t *, int i_query, va_list );
 
+typedef struct {
+    MainInterface *mi;
+#ifdef QT5_HAS_X11
+    Display *dpy;
+#endif
+    bool orphaned;
+    QMutex lock;
+} vout_window_qt_t;
+
 static int WindowOpen( vout_window_t *p_wnd, const vout_window_cfg_t *cfg )
 {
     if( cfg->is_standalone )
@@ -737,21 +747,78 @@ static int WindowOpen( vout_window_t *p_wnd, const vout_window_cfg_t *cfg )
     if (unlikely(!active))
         return VLC_EGENERIC;
 
-    MainInterface *p_mi = p_intf->p_sys->p_mi;
+    vout_window_qt_t *sys = new vout_window_qt_t;
+
+    sys->mi = p_intf->p_sys->p_mi;
+    sys->orphaned = false;
+    p_wnd->sys = (vout_window_sys_t *)sys;
     msg_Dbg( p_wnd, "requesting video window..." );
 
-    if( !p_mi->getVideo( p_wnd, cfg->width, cfg->height, cfg->is_fullscreen ) )
-        return VLC_EGENERIC;
+#ifdef QT5_HAS_X11
+    Window xid;
 
+    if (QX11Info::isPlatformX11())
+    {
+        sys->dpy = XOpenDisplay(NULL);
+        if (unlikely(sys->dpy == NULL))
+        {
+            delete sys;
+            return VLC_EGENERIC;
+        }
+
+        int snum = DefaultScreen(sys->dpy);
+        unsigned long black = BlackPixel(sys->dpy, snum);
+
+        xid = XCreateSimpleWindow(sys->dpy, RootWindow(sys->dpy, snum),
+                                  0, 0, cfg->width, cfg->height,
+                                  0, black, black);
+    }
+#endif
+
+    if (!sys->mi->getVideo(p_wnd, cfg->width, cfg->height, cfg->is_fullscreen))
+    {
+#ifdef QT5_HAS_X11
+        if (QX11Info::isPlatformX11())
+            XCloseDisplay(sys->dpy);
+#endif
+        delete sys;
+        return VLC_EGENERIC;
+    }
+
+#ifdef QT5_HAS_X11
+    if (QX11Info::isPlatformX11())
+    {
+        QMutexLocker locker2(&sys->lock);
+
+        XReparentWindow(sys->dpy, xid, p_wnd->handle.xid, 0, 0);
+        XMapWindow(sys->dpy, xid);
+        XSync(sys->dpy, True);
+        p_wnd->handle.xid = xid;
+    }
+#endif
     p_wnd->info.has_double_click = true;
     p_wnd->control = WindowControl;
-    p_wnd->sys = (vout_window_sys_t*)p_mi;
     return VLC_SUCCESS;
+}
+
+void WindowResized(vout_window_t *wnd, const QSize& size)
+{
+#ifdef QT5_HAS_X11
+    vout_window_qt_t *sys = (vout_window_qt_t *)wnd->sys;
+
+    if (QX11Info::isPlatformX11())
+    {
+        XResizeWindow(sys->dpy, wnd->handle.xid, size.width(), size.height());
+        XClearWindow(sys->dpy, wnd->handle.xid);
+        XSync(sys->dpy, True);
+    }
+#endif
+    vout_window_ReportSize(wnd, size.width(), size.height());
 }
 
 static int WindowControl( vout_window_t *p_wnd, int i_query, va_list args )
 {
-    MainInterface *p_mi = (MainInterface *)p_wnd->sys;
+    vout_window_qt_t *sys = (vout_window_qt_t *)p_wnd->sys;
     QMutexLocker locker (&lock);
 
     if (unlikely(!active))
@@ -759,12 +826,32 @@ static int WindowControl( vout_window_t *p_wnd, int i_query, va_list args )
         msg_Warn (p_wnd, "video already released before control");
         return VLC_EGENERIC;
     }
-    return p_mi->controlVideo( i_query, args );
+    return sys->mi->controlVideo(i_query, args);
+}
+
+void WindowReleased(vout_window_t *wnd)
+{
+    vout_window_qt_t *sys = (vout_window_qt_t *)wnd->sys;
+    QMutexLocker locker(&sys->lock);
+
+    msg_Warn(wnd, "orphaned video window");
+    sys->orphaned = true;
+#if defined (QT5_HAS_X11)
+    if (QX11Info::isPlatformX11())
+    {   /* In the unlikely event that WindowOpen() has not yet reparented the
+         * window, WindowOpen() will skip reparenting. Then this call will be
+         * a no-op.
+         */
+        XReparentWindow(sys->dpy, wnd->handle.xid,
+                        RootWindow(sys->dpy, DefaultScreen(sys->dpy)), 0, 0);
+        XSync(sys->dpy, True);
+    }
+#endif
 }
 
 static void WindowClose( vout_window_t *p_wnd )
 {
-    MainInterface *p_mi = (MainInterface *)p_wnd->sys;
+    vout_window_qt_t *sys = (vout_window_qt_t *)p_wnd->sys;
     QMutexLocker locker (&lock);
 
     /* Normally, the interface terminates after the video. In the contrary, the
@@ -776,11 +863,17 @@ static void WindowClose( vout_window_t *p_wnd )
      * That assumes the video output will behave sanely if it window is
      * destroyed asynchronously.
      * XCB and Xlib-XCB are fine with that. Plain Xlib wouldn't, */
-    if (unlikely(!active))
+    if (likely(active))
     {
-        msg_Warn (p_wnd, "video already released");
-        return;
+        msg_Dbg(p_wnd, "releasing video...");
+        sys->mi->releaseVideo();
     }
-    msg_Dbg (p_wnd, "releasing video...");
-    p_mi->releaseVideo();
+    else
+        msg_Warn (p_wnd, "video already released");
+
+#if defined (QT5_HAS_X11)
+    if (QX11Info::isPlatformX11())
+        XCloseDisplay(sys->dpy);
+#endif
+    delete sys;
 }
