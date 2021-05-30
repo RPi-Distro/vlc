@@ -1,3 +1,10 @@
+vlc (3.0.14-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+  * Remove patches included upstream.
+
+ -- Mateusz Łukasik <mati75@linuxmint.pl>  Sun, 30 May 2021 20:31:11 +0200
+
 vlc (3.0.12-3) unstable; urgency=medium
 
   * debian/patches: Apply upstream patches to prevent process freeze on exit

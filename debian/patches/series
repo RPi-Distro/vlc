@@ -1,6 +1,3 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
 0002-Revert-configure-Require-libmodplug-0.8.9.patch
 0003-Do-not-generate-cache-during-build.patch
-0004-qt-add-a-private-structure-for-window-provider.patch
-0005-qt-create-another-indirection-X11-window.patch
-0006-qt-reparent-video-window-to-root-whence-UI-closes.patch
