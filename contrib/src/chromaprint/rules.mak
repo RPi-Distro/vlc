@@ -21,6 +21,6 @@ chromaprint: chromaprint-$(CHROMAPRINT_VERSION).tar.gz .sum-chromaprint
 DEPS_chromaprint = ffmpeg $(DEPS_ffmpeg)
 
 .chromaprint: chromaprint .ffmpeg toolchain.cmake
-	cd $< && $(HOSTVARS_PIC) $(CMAKE) -DBUILD_SHARED_LIBS:BOOL=OFF
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS_PIC) $(CMAKE)
+	cd $< && $(CMAKEBUILD) . --target install
 	touch $@

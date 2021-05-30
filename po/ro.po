@@ -19,9 +19,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.9\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2020-06-10 11:26+0200\n"
-"PO-Revision-Date: 2019-05-20 11:46+0200\n"
-"Last-Translator: Eduard Pintilie <eduard.pintilie@gmail.com>, 2019\n"
+"POT-Creation-Date: 2021-01-17 23:10+0100\n"
+"PO-Revision-Date: 2020-12-09 17:45+0100\n"
+"Last-Translator: Eduard Pintilie <eduard.pintilie@gmail.com>, 2020\n"
 "Language-Team: Romanian (https://www.transifex.com/yaron/teams/16553/ro/)\n"
 "Language: ro\n"
 "MIME-Version: 1.0\n"
@@ -98,7 +98,6 @@ msgstr "Setări de taste rapide"
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
-#: modules/gui/qt/ui/profiles.h:719 modules/gui/qt/ui/profiles.h:750
 msgid "Audio"
 msgstr "Audio"
 
@@ -111,7 +110,6 @@ msgid "General audio settings"
 msgstr "Setări audio generale"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:81
-#: modules/gui/qt/ui/profiles.h:748 modules/gui/qt/ui/profiles.h:758
 msgid "Filters"
 msgstr "Filtre"
 
@@ -163,8 +161,6 @@ msgstr "Diverse setări audio și module."
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
-#: modules/gui/qt/ui/profiles.h:720 modules/gui/qt/ui/profiles.h:724
-#: modules/gui/qt/ui/sprefs_video.h:323
 msgid "Video"
 msgstr "Video"
 
@@ -379,8 +375,8 @@ msgstr "Implementarea VLC pentru video la cerere (Video On Demand)"
 #: include/vlc_config_cat.h:173 src/libvlc-module.c:2070
 #: src/playlist/engine.c:243 modules/demux/playlist/playlist.c:64
 #: modules/demux/playlist/playlist.c:65 modules/demux/playlist/wpl.c:99
-#: modules/gui/macosx/VLCMainWindow.m:319
-#: modules/gui/macosx/VLCMainWindow.m:896
+#: modules/gui/macosx/VLCMainWindow.m:321
+#: modules/gui/macosx/VLCMainWindow.m:902
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
@@ -415,7 +411,6 @@ msgstr ""
 
 #: include/vlc_config_cat.h:184 src/libvlc-module.c:1862
 #: modules/gui/qt/dialogs/extended.cpp:93
-#: modules/gui/qt/ui/video_effects.h:1305
 msgid "Advanced"
 msgstr "Avansat"
 
@@ -483,16 +478,16 @@ msgstr "Configurație &VLM"
 msgid "&About"
 msgstr "&Despre"
 
-#: include/vlc_intf_strings.h:65 modules/control/oldrc.c:71
+#: include/vlc_intf_strings.h:65 modules/control/oldrc.c:70
 #: modules/gui/macosx/VLCControlsBarCommon.m:81
 #: modules/gui/macosx/VLCControlsBarCommon.m:432
 #: modules/gui/macosx/VLCFSPanelController.m:233
 #: modules/gui/macosx/VLCMainMenu.m:385 modules/gui/macosx/VLCMainMenu.m:497
 #: modules/gui/macosx/VLCMainMenu.m:504 modules/gui/macosx/VLCMainMenu.m:1339
 #: modules/gui/macosx/VLCMainMenu.m:1340 modules/gui/macosx/VLCMainMenu.m:1341
-#: modules/gui/macosx/VLCPlaylist.m:228
+#: modules/gui/macosx/VLCPlaylist.m:223
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:538 modules/gui/qt/ui/open.h:258
+#: modules/gui/qt/dialogs/vlm.cpp:538
 msgid "Play"
 msgstr "Redă"
 
@@ -561,7 +556,7 @@ msgstr "Aleator oprit"
 msgid "Add to Playlist"
 msgstr "Adaugă la lista de redare"
 
-#: include/vlc_intf_strings.h:85 modules/gui/macosx/VLCPlaylist.m:235
+#: include/vlc_intf_strings.h:85 modules/gui/macosx/VLCPlaylist.m:230
 msgid "Add File..."
 msgstr "Adaugă un fișier..."
 
@@ -577,14 +572,13 @@ msgstr "Adaugă un dosar..."
 msgid "Save Playlist to &File..."
 msgstr "Salvează lista de redare în &fișierul..."
 
-#: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:189
+#: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:191
 #: modules/gui/qt/components/preferences_widgets.cpp:1138
 msgid "Search"
 msgstr "Caută"
 
 #: include/vlc_intf_strings.h:99
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:282
-#: modules/gui/qt/ui/video_effects.h:1289
 msgid "Waves"
 msgstr "Unde"
 
@@ -654,7 +648,7 @@ msgstr "A fost atins numărul maxim de filtre (%u)."
 
 #: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:948
 #: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:124
-#: modules/gui/macosx/VLCMainMenu.m:243 modules/gui/macosx/VLCMainWindow.m:1039
+#: modules/gui/macosx/VLCMainMenu.m:243 modules/gui/macosx/VLCMainWindow.m:999
 #: modules/video_filter/postproc.c:235
 msgid "Disable"
 msgstr "Dezactivat"
@@ -673,7 +667,7 @@ msgstr "Spectru"
 
 #: src/audio_output/output.c:275
 msgid "VU meter"
-msgstr ""
+msgstr "VU metru"
 
 #: src/audio_output/output.c:314 src/libvlc-module.c:201
 msgid "Audio filters"
@@ -719,9 +713,6 @@ msgstr "Stereo"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:313
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1228
-#: modules/gui/qt/ui/video_effects.h:1270
-#: modules/gui/qt/ui/video_effects.h:1280
 msgid "Left"
 msgstr "Stânga"
 
@@ -736,7 +727,6 @@ msgstr "Stânga"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:315
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1229
 msgid "Right"
 msgstr "Dreapta"
 
@@ -1003,7 +993,7 @@ msgstr "Da"
 #: src/input/es_out.c:2141
 #, c-format
 msgid "DTVCC Closed captions %u"
-msgstr ""
+msgstr "Subtitrări DTVCC %u"
 
 #: src/input/es_out.c:2143
 #, c-format
@@ -1017,21 +1007,19 @@ msgstr "ID original"
 #: src/input/es_out.c:3104 src/input/es_out.c:3107 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
-#: modules/gui/qt/ui/profiles.h:726 modules/gui/qt/ui/profiles.h:752
-#: modules/gui/qt/ui/profiles.h:761
 msgid "Codec"
 msgstr "Codec"
 
 #: src/input/es_out.c:3111 src/input/meta.c:66 modules/access/imem.c:71
-#: modules/gui/macosx/VLCPlaylist.m:114
+#: modules/gui/macosx/VLCPlaylist.m:98
 #: modules/gui/macosx/VLCSimplePrefsController.m:317
-#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:527
+#: modules/stream_out/setid.c:49
 msgid "Language"
 msgstr "Limbă"
 
 #: src/input/es_out.c:3114 src/input/meta.c:61
-#: modules/gui/macosx/VLCBookmarksWindowController.m:83
-#: modules/gui/macosx/VLCPlaylist.m:112 modules/gui/qt/dialogs/bookmarks.cpp:75
+#: modules/gui/macosx/VLCBookmarksWindowController.m:80
+#: modules/gui/macosx/VLCPlaylist.m:96 modules/gui/qt/dialogs/bookmarks.cpp:75
 #: modules/gui/qt/dialogs/epg.cpp:55
 msgid "Description"
 msgstr "Descriere"
@@ -1039,13 +1027,13 @@ msgstr "Descriere"
 #: src/input/es_out.c:3120 src/input/es_out.c:3164 src/input/es_out.c:3354
 #: modules/gui/macosx/VLCAddonsWindowController.m:133
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
-#: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1487
+#: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1488
 msgid "Type"
 msgstr "Tip"
 
 #: src/input/es_out.c:3123
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
-#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:754
+#: modules/gui/macosx/VLCOutput.m:98
 msgid "Channels"
 msgstr "Canale"
 
@@ -1067,7 +1055,6 @@ msgstr "Biți per eșantion"
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
-#: modules/gui/qt/ui/profiles.h:727 modules/gui/qt/ui/profiles.h:753
 msgid "Bitrate"
 msgstr "Rată de biți"
 
@@ -1180,12 +1167,12 @@ msgstr "Funcția de transfer de culoare"
 
 #: src/input/es_out.c:3253
 msgid "Color space"
-msgstr ""
+msgstr "Spațiu culori"
 
 #: src/input/es_out.c:3253
 #, c-format
 msgid "%s Range"
-msgstr ""
+msgstr "%s Gamă"
 
 #: src/input/es_out.c:3255
 msgid "Full"
@@ -1220,7 +1207,7 @@ msgstr "Centru jos"
 
 #: src/input/es_out.c:3270
 msgid "Chroma location"
-msgstr ""
+msgstr "Locație chroma"
 
 #: src/input/es_out.c:3279
 msgid "Rectangular"
@@ -1228,11 +1215,11 @@ msgstr "Dreptunghiular"
 
 #: src/input/es_out.c:3282
 msgid "Equirectangular"
-msgstr ""
+msgstr "Equirectangular"
 
 #: src/input/es_out.c:3285
 msgid "Cubemap"
-msgstr ""
+msgstr "Cubemap"
 
 #: src/input/es_out.c:3291
 msgid "Projection"
@@ -1246,7 +1233,7 @@ msgstr "Girație"
 #: src/input/es_out.c:3295
 msgctxt "ViewPoint"
 msgid "Pitch"
-msgstr ""
+msgstr "Ton"
 
 #: src/input/es_out.c:3297
 msgctxt "ViewPoint"
@@ -1256,7 +1243,7 @@ msgstr ""
 #: src/input/es_out.c:3300
 msgctxt "ViewPoint"
 msgid "Field of view"
-msgstr ""
+msgstr "Câmp de vizualizare"
 
 #: src/input/es_out.c:3305
 msgid "Max. luminance"
@@ -1280,7 +1267,7 @@ msgstr ""
 
 #: src/input/es_out.c:3339
 msgid "White point"
-msgstr ""
+msgstr "Punctul alb"
 
 #: src/input/es_out.c:3354 modules/access/imem.c:64
 msgid "Subtitle"
@@ -1304,11 +1291,10 @@ msgstr "VLC nu a putut deschide MRL-ul '%s'. Verifică jurnalul pentru detalii."
 #: modules/gui/macosx/VLCMainMenu.m:410
 #: modules/gui/macosx/VLCOpenWindowController.m:178
 #: modules/gui/macosx/VLCOpenWindowController.m:180
-#: modules/gui/macosx/VLCPlaylist.m:107 modules/gui/macosx/VLCPlaylistInfo.m:59
+#: modules/gui/macosx/VLCPlaylist.m:91 modules/gui/macosx/VLCPlaylistInfo.m:59
 #: modules/gui/qt/components/open_panels.cpp:507
 #: modules/gui/qt/components/open_panels.cpp:521
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
-#: modules/gui/qt/ui/open_disk.h:306
 msgid "Title"
 msgstr "Titlu"
 
@@ -1318,7 +1304,7 @@ msgid "Artist"
 msgstr "Artist"
 
 #: src/input/meta.c:57 modules/demux/mp4/meta.c:87
-#: modules/gui/macosx/VLCPlaylist.m:110 modules/mux/avi.c:51
+#: modules/gui/macosx/VLCPlaylist.m:94 modules/mux/avi.c:51
 msgid "Genre"
 msgstr "Gen"
 
@@ -1327,7 +1313,7 @@ msgid "Copyright"
 msgstr "Drepturi de autor"
 
 #: src/input/meta.c:59 src/libvlc-module.c:239
-#: modules/gui/macosx/VLCPlaylist.m:111
+#: modules/gui/macosx/VLCPlaylist.m:95
 msgid "Album"
 msgstr "Album"
 
@@ -1339,8 +1325,7 @@ msgstr "Număr pistă"
 msgid "Rating"
 msgstr "Rating"
 
-#: src/input/meta.c:63 modules/gui/macosx/VLCPlaylist.m:113
-#: modules/mux/avi.c:50
+#: src/input/meta.c:63 modules/gui/macosx/VLCPlaylist.m:97 modules/mux/avi.c:50
 msgid "Date"
 msgstr "Dată"
 
@@ -1349,7 +1334,6 @@ msgid "Setting"
 msgstr "Setare"
 
 #: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
-#: modules/gui/qt/ui/podcast_configuration.h:100
 msgid "URL"
 msgstr "URL"
 
@@ -1417,7 +1401,6 @@ msgstr "Programe"
 #: modules/gui/macosx/VLCMainMenu.m:412
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
-#: modules/gui/qt/ui/open_disk.h:307
 msgid "Chapter"
 msgstr "Capitol"
 
@@ -1469,7 +1452,7 @@ msgstr "Capitolul următor"
 msgid "Previous chapter"
 msgstr "Capitolul precedent"
 
-#: src/input/vlm.c:641 src/input/vlm.c:1018
+#: src/input/vlm.c:641 src/input/vlm.c:1020
 #, c-format
 msgid "Media: %s"
 msgstr "Media: %s"
@@ -1655,14 +1638,14 @@ msgstr ""
 
 #: src/libvlc-module.c:129
 msgid "Media role"
-msgstr ""
+msgstr "Rolul media"
 
 #: src/libvlc-module.c:130
 msgid "Media (player) role for operating system policy."
-msgstr ""
+msgstr "Rolul media (player) pentru politica sistemului de operare."
 
 #: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:273
-#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:407
+#: modules/stream_out/display.c:40
 msgid "Enable audio"
 msgstr "Activează audio"
 
@@ -1759,7 +1742,7 @@ msgstr ""
 
 #: src/libvlc-module.c:174
 msgid "Force S/PDIF support"
-msgstr ""
+msgstr "Forțează suportul S/PDIF"
 
 #: src/libvlc-module.c:176
 msgid ""
@@ -1786,7 +1769,7 @@ msgstr ""
 "îmbunătăți experiența de utilizare, în special atunci când se combină cu "
 "mixerul canalului de căști."
 
-#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:942
+#: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:957
 #: modules/audio_output/kai.c:106 modules/codec/subsdec.c:167
 #: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:122
 #: modules/demux/mpeg/ts.c:128 modules/gui/macosx/VLCSimplePrefsController.m:54
@@ -1795,8 +1778,7 @@ msgstr ""
 #: modules/services_discovery/upnp.cpp:78
 #: modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
-#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:742
-#: modules/gui/qt/ui/profiles.h:745
+#: modules/video_output/xcb/xvideo.c:821
 msgid "Auto"
 msgstr "Automat"
 
@@ -1920,7 +1902,7 @@ msgstr ""
 "este de a selecta automat cea mai bună metodă disponibilă."
 
 #: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:359
-#: modules/stream_out/display.c:42 modules/gui/qt/ui/sprefs_video.h:311
+#: modules/stream_out/display.c:42
 msgid "Enable video"
 msgstr "Activează video"
 
@@ -2019,9 +2001,6 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:317
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1226
-#: modules/gui/qt/ui/video_effects.h:1268
-#: modules/gui/qt/ui/video_effects.h:1279
 msgid "Top"
 msgstr "Sus"
 
@@ -2032,7 +2011,6 @@ msgstr "Sus"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:319
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
-#: modules/gui/qt/ui/video_effects.h:1230
 msgid "Bottom"
 msgstr "Jos"
 
@@ -2221,7 +2199,6 @@ msgid "Disable the screensaver during video playback."
 msgstr "Dezactivează screensaver-ul în timpul redării video."
 
 #: src/libvlc-module.c:374 modules/gui/macosx/VLCSimplePrefsController.m:364
-#: modules/gui/qt/ui/sprefs_video.h:314
 msgid "Window decorations"
 msgstr "Decorațiuni fereastră"
 
@@ -2576,9 +2553,9 @@ msgstr ""
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
 #: modules/access/dshow/dshow.cpp:2081 modules/audio_output/alsa.c:767
-#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1285
-#: modules/audio_output/mmdevice.c:1424 modules/codec/avcodec/avcodec.c:50
-#: modules/demux/adaptive/adaptive.cpp:106
+#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1286
+#: modules/audio_output/mmdevice.c:1425 modules/audio_output/winstore.c:564
+#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:106
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
@@ -2595,9 +2572,8 @@ msgstr "Implicit"
 
 #: src/libvlc-module.c:540
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
-#: modules/gui/macosx/VLCMainWindow.m:1037
+#: modules/gui/macosx/VLCMainWindow.m:997
 #: modules/gui/qt/components/extended_panels.cpp:949
-#: modules/gui/qt/ui/equalizer.h:130 modules/gui/qt/ui/vlm.h:286
 msgid "Enable"
 msgstr "Activează"
 
@@ -2669,7 +2645,7 @@ msgstr ""
 "Folosiți acestă opțiune doar dacă vreți să citiți un flux multiprogram (de "
 "exemplu cum ar fi fluxuri DVB)."
 
-#: src/libvlc-module.c:578 modules/gui/qt/ui/open_disk.h:309
+#: src/libvlc-module.c:578
 msgid "Audio track"
 msgstr "Pistă audio"
 
@@ -2677,7 +2653,7 @@ msgstr "Pistă audio"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Numărul fluxului pistei audio de folosit (de la 0 la n)."
 
-#: src/libvlc-module.c:583 modules/gui/qt/ui/open_disk.h:310
+#: src/libvlc-module.c:583
 msgid "Subtitle track"
 msgstr "Pistă subtitlu"
 
@@ -2814,7 +2790,7 @@ msgstr "Timp de rulare"
 msgid "The stream will run this duration (in seconds)."
 msgstr "Fluxul va rula această durată (în secunde)."
 
-#: src/libvlc-module.c:646 modules/gui/qt/ui/sprefs_input.h:360
+#: src/libvlc-module.c:646
 msgid "Fast seek"
 msgstr "Căutare rapidă"
 
@@ -2940,7 +2916,7 @@ msgstr ""
 "\"filtre de sub-surse\". Puteţi de asemenea, stabili mai multe opţiuni "
 "diverse pentru sub-cadre."
 
-#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:302
+#: src/libvlc-module.c:705
 msgid "Force subtitle position"
 msgstr "Forțează poziția subtitlului"
 
@@ -2970,7 +2946,6 @@ msgstr "Puteți dezactiva complet procesarea sub-imaginilor."
 
 #: src/libvlc-module.c:717 src/libvlc-module.c:1674 src/text/iso-639_def.h:145
 #: modules/gui/macosx/VLCSimplePrefsController.m:351
-#: modules/gui/qt/ui/sprefs_subtitles.h:287
 msgid "On Screen Display"
 msgstr "Afișare pe ecran (OSD)"
 
@@ -3714,7 +3689,7 @@ msgstr ""
 "Informează VLC că este lansat datorită unei asocieri de fișier în sistemul "
 "de operare"
 
-#: src/libvlc-module.c:1087 modules/gui/qt/ui/sprefs_interface.h:547
+#: src/libvlc-module.c:1087
 msgid "Use only one instance when started from file manager"
 msgstr "Folosește o singură instanță când este pornit din managerul de fișiere"
 
@@ -3738,7 +3713,7 @@ msgstr ""
 "tot timpul procesorului și determina întreg sistemul să devină neresponsiv, "
 "lucru care ar putea necesita o repornire a mașinii dumneavoastră."
 
-#: src/libvlc-module.c:1099 modules/gui/qt/ui/sprefs_interface.h:550
+#: src/libvlc-module.c:1099
 msgid "Enqueue items into playlist in one instance mode"
 msgstr ""
 "Adaugă elementele în lista de redare când rulează în modul o singură instanță"
@@ -3787,7 +3762,6 @@ msgstr "Timpul maxim permis pentru pregătirea unui element, în milisecunde"
 
 #: src/libvlc-module.c:1126 modules/gui/macosx/VLCSimplePrefsController.m:334
 #: modules/gui/qt/dialogs/firstrun.cpp:95
-#: modules/gui/qt/ui/sprefs_interface.h:562
 msgid "Allow metadata network access"
 msgstr ""
 
@@ -3940,7 +3914,7 @@ msgstr ""
 "Mediateca este salvată automat și reîncărcată de fiecare dată la pornirea "
 "VLC."
 
-#: src/libvlc-module.c:1198 modules/gui/qt/ui/sprefs_interface.h:548
+#: src/libvlc-module.c:1198
 msgid "Display playlist tree"
 msgstr "Afișează arborele listei de redare"
 
@@ -3998,7 +3972,6 @@ msgstr ""
 #: modules/gui/macosx/VLCControlsBarCommon.m:98
 #: modules/gui/macosx/VLCMainMenu.m:432 modules/gui/macosx/VLCMainMenu.m:511
 #: modules/gui/qt/components/controller.hpp:108
-#: modules/gui/qt/ui/sprefs_video.h:315
 msgid "Fullscreen"
 msgstr "Pe tot ecranul"
 
@@ -4087,7 +4060,6 @@ msgstr "Mai lent (fin)"
 #: modules/gui/macosx/VLCMainMenu.m:507
 #: modules/gui/qt/components/controller.hpp:112
 #: modules/gui/qt/dialogs/sout.cpp:93 modules/notify/notify.c:335
-#: modules/gui/qt/ui/streampanel.h:179
 msgid "Next"
 msgstr "Următor"
 
@@ -4116,7 +4088,7 @@ msgstr ""
 #: modules/gui/macosx/VLCMainMenu.m:498 modules/gui/macosx/VLCMainMenu.m:505
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:65
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:544 modules/gui/qt/ui/streampanel.h:178
+#: modules/gui/qt/dialogs/vlm.cpp:544
 msgid "Stop"
 msgstr "Stop"
 
@@ -4129,8 +4101,6 @@ msgstr "Selectează tasta rapidă pentru a opri redarea."
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
-#: modules/gui/qt/ui/sprefs_subtitles.h:290
-#: modules/gui/qt/ui/video_effects.h:1276
 msgid "Position"
 msgstr "Poziție"
 
@@ -4863,8 +4833,6 @@ msgstr "Subimagini"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
 #: modules/gui/macosx/VLCMainMenu.m:450
 #: share/lua/http/dialogs/create_stream.html:153
-#: modules/gui/qt/ui/profiles.h:716 modules/gui/qt/ui/profiles.h:760
-#: modules/gui/qt/ui/profiles.h:763
 msgid "Subtitles"
 msgstr "Subtitluri"
 
@@ -4913,7 +4881,7 @@ msgstr "VLM"
 msgid "Special modules"
 msgstr "Module speciale"
 
-#: src/libvlc-module.c:2031 modules/gui/qt/dialogs/plugins.cpp:89
+#: src/libvlc-module.c:2031 modules/gui/qt/dialogs/plugins.cpp:90
 msgid "Plugins"
 msgstr "Module"
 
@@ -5040,9 +5008,7 @@ msgid "Browser Stop"
 msgstr "Browser Stop"
 
 #: src/misc/actions.c:62 modules/gui/macosx/VLCMainMenu.m:370
-#: modules/gui/macosx/VLCPlaylist.m:229 modules/gui/qt/dialogs/bookmarks.cpp:50
-#: modules/gui/qt/ui/podcast_configuration.h:102
-#: modules/gui/qt/ui/streampanel.h:170
+#: modules/gui/macosx/VLCPlaylist.m:224 modules/gui/qt/dialogs/bookmarks.cpp:50
 msgid "Delete"
 msgstr "Șterge"
 
@@ -5050,7 +5016,7 @@ msgstr "Șterge"
 msgid "Down"
 msgstr "Jos"
 
-#: src/misc/actions.c:64 modules/control/oldrc.c:73
+#: src/misc/actions.c:64 modules/control/oldrc.c:72
 msgid "End"
 msgstr "Sfârșit"
 
@@ -5218,7 +5184,7 @@ msgstr "Pagină în Jos"
 msgid "Page Up"
 msgstr "Pagină în Sus"
 
-#: src/misc/actions.c:107 modules/control/oldrc.c:72
+#: src/misc/actions.c:107 modules/control/oldrc.c:71
 #: modules/gui/macosx/VLCControlsBarCommon.m:423
 #: modules/gui/macosx/VLCFSPanelController.m:239
 #: modules/gui/macosx/VLCMainMenu.m:1346 modules/gui/macosx/VLCMainMenu.m:1347
@@ -5315,12 +5281,12 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "Deschiderea „%s” pentru scriere a eșuat"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2772
+#: modules/demux/avi/avi.c:2773
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:825
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:871
-#: modules/gui/macosx/VLCBookmarksWindowController.m:89
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:900
+#: modules/gui/macosx/VLCBookmarksWindowController.m:86
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:153
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:182
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:339
@@ -5328,8 +5294,8 @@ msgstr "Deschiderea „%s” pentru scriere a eșuat"
 #: modules/gui/macosx/VLCCoreDialogProvider.m:193
 #: modules/gui/macosx/VLCCoreDialogProvider.m:197
 #: modules/gui/macosx/VLCCoreDialogProvider.m:293
-#: modules/gui/macosx/VLCMainWindow.m:222
-#: modules/gui/macosx/VLCMainWindow.m:228
+#: modules/gui/macosx/VLCMainWindow.m:224
+#: modules/gui/macosx/VLCMainWindow.m:230
 #: modules/gui/macosx/VLCOpenWindowController.m:134
 #: modules/gui/macosx/VLCOpenWindowController.m:192
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
@@ -5423,8 +5389,8 @@ msgid "Update VLC media player"
 msgstr "Actualizare VLC media player"
 
 #: src/playlist/engine.c:247 src/playlist/loadsave.c:159 lib/media_list.c:237
-#: modules/gui/macosx/VLCMainWindow.m:321
-#: modules/gui/macosx/VLCMainWindow.m:898
+#: modules/gui/macosx/VLCMainWindow.m:323
+#: modules/gui/macosx/VLCMainWindow.m:904
 #: modules/gui/qt/components/playlist/selector.cpp:236
 msgid "Media Library"
 msgstr "Bibliotecă media"
@@ -6096,7 +6062,7 @@ msgstr "Scalează video automat"
 #: src/video_output/vout_intf.c:203 modules/gui/macosx/VLCMainMenu.m:439
 #: modules/gui/macosx/VLCMainMenu.m:440
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:193
-#: modules/video_filter/croppadd.c:87 modules/gui/qt/ui/video_effects.h:1236
+#: modules/video_filter/croppadd.c:87
 msgid "Crop"
 msgstr "Trunchiere"
 
@@ -6285,7 +6251,6 @@ msgstr ""
 "un cod de regiune corect."
 
 #: modules/access/bluray.c:103 modules/services_discovery/udev.c:603
-#: modules/gui/qt/ui/open_disk.h:296
 msgid "Blu-ray"
 msgstr "Blu-ray"
 
@@ -6369,16 +6334,16 @@ msgstr ""
 "Eroare la pornirea redării Blu-ray. Vă rugăm să încercați fără suport de "
 "meniu."
 
-#: modules/access/bluray.c:992 modules/access/bluray.c:2823
-#: modules/access/bluray.c:2828
+#: modules/access/bluray.c:992 modules/access/bluray.c:2825
+#: modules/access/bluray.c:2830
 msgid "Blu-ray error"
 msgstr "Eroare Blu-ray"
 
-#: modules/access/bluray.c:2113
+#: modules/access/bluray.c:2115
 msgid "Top Menu"
 msgstr "Meniul de sus"
 
-#: modules/access/bluray.c:2116
+#: modules/access/bluray.c:2118
 msgid "First Play"
 msgstr "Primul redat"
 
@@ -6388,7 +6353,6 @@ msgid "Audio CD - Track %02i"
 msgstr "CD audio - pista %02i"
 
 #: modules/access/cdda.c:727 modules/gui/macosx/VLCOpenWindowController.m:169
-#: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "CD Audio"
 
@@ -7498,11 +7462,11 @@ msgstr "DVDRead nu a putut citi %d/%d blocuri la 0x%02x."
 msgid "File input"
 msgstr "Intrare fișier"
 
-#: modules/access/fs.c:35 modules/access_output/file.c:389
+#: modules/access/fs.c:35 modules/access_output/file.c:388
 #: modules/audio_output/file.c:113
 #: modules/gui/macosx/VLCOpenWindowController.m:140
 #: modules/gui/macosx/VLCOutput.m:64 modules/gui/macosx/VLCOutput.m:175
-#: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1421
+#: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1422
 #: modules/gui/qt/dialogs/sout.cpp:69 modules/gui/qt/dialogs/sout.cpp:121
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
@@ -7511,7 +7475,6 @@ msgid "File"
 msgstr "Fișier"
 
 #: modules/access/fs.c:44 modules/demux/directory.c:93
-#: modules/gui/qt/ui/sprefs_video.h:328
 msgid "Directory"
 msgstr "Dosar"
 
@@ -7750,7 +7713,6 @@ msgstr "Numărul de canale a unui flux audio elementar"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
 #: modules/gui/qt/components/extended_panels.cpp:1318 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
-#: modules/gui/qt/ui/profiles.h:741
 msgid "Width"
 msgstr "Lățime"
 
@@ -7763,7 +7725,6 @@ msgstr "Lăţimea fluxurilor, video sau de subtitrare, elementare"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:168
 #: modules/spu/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
-#: modules/gui/qt/ui/profiles.h:744
 msgid "Height"
 msgstr "Înalțime"
 
@@ -8325,7 +8286,7 @@ msgstr ""
 
 #: modules/access/satip.c:64
 msgid "Request server to send stream as multicast"
-msgstr ""
+msgstr "Cere serverului să trimită fluxul ca și multicast"
 
 #: modules/access/satip.c:66 modules/lua/vlc.c:62
 #: share/lua/http/dialogs/stream_config_window.html:28
@@ -8422,8 +8383,8 @@ msgstr "Intrare ecran"
 #: modules/gui/macosx/VLCMainMenu.m:610
 #: modules/gui/macosx/VLCOpenWindowController.m:207
 #: modules/gui/macosx/VLCOpenWindowController.m:209
-#: modules/gui/macosx/VLCOpenWindowController.m:485
-#: modules/gui/macosx/VLCOpenWindowController.m:1103
+#: modules/gui/macosx/VLCOpenWindowController.m:488
+#: modules/gui/macosx/VLCOpenWindowController.m:1106
 #: modules/gui/macosx/VLCSimplePrefsController.m:666
 msgid "Screen"
 msgstr "Ecran"
@@ -8729,7 +8690,6 @@ msgstr "Resetează controalele la implicit."
 
 #: modules/access/v4l2/v4l2.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
-#: modules/gui/qt/ui/video_effects.h:1214
 msgid "Brightness"
 msgstr "Luminozitate"
 
@@ -8747,7 +8707,6 @@ msgstr "Ajustează automat luminozitatea imaginii."
 
 #: modules/access/v4l2/v4l2.c:89
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:205
-#: modules/gui/qt/ui/video_effects.h:1216
 msgid "Contrast"
 msgstr "Contrast"
 
@@ -8758,8 +8717,6 @@ msgstr "Contrast imagine sau compensare luminantă-luma."
 #: modules/access/v4l2/v4l2.c:91
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:208
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:254
-#: modules/gui/qt/ui/video_effects.h:1217
-#: modules/gui/qt/ui/video_effects.h:1249
 msgid "Saturation"
 msgstr "Saturație"
 
@@ -8769,7 +8726,6 @@ msgstr "Saturaţie imagine sau compensare de saturaţie cromatică."
 
 #: modules/access/v4l2/v4l2.c:93
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:204
-#: modules/gui/qt/ui/video_effects.h:1213
 msgid "Hue"
 msgstr "Nuanță"
 
@@ -8823,7 +8779,6 @@ msgstr "Saturaţia cromatică de Albastru."
 
 #: modules/access/v4l2/v4l2.c:111
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:209
-#: modules/gui/qt/ui/video_effects.h:1218
 msgid "Gamma"
 msgstr "Gama"
 
@@ -8952,7 +8907,7 @@ msgstr "Negru & alb"
 
 #: modules/access/v4l2/v4l2.c:164
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:256
-#: modules/video_filter/sepia.c:66 modules/gui/qt/ui/video_effects.h:1251
+#: modules/video_filter/sepia.c:66
 msgid "Sepia"
 msgstr "Sepia"
 
@@ -8985,7 +8940,7 @@ msgid "Vivid"
 msgstr "Vivid"
 
 #: modules/access/v4l2/v4l2.c:169 modules/audio_output/auhal.c:42
-#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1468
+#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1469
 #: modules/audio_output/waveout.c:145
 msgid "Audio volume"
 msgstr "Volum audio"
@@ -9052,7 +9007,7 @@ msgstr ""
 #: modules/control/hotkeys.c:395
 #: modules/gui/macosx/VLCAddonsWindowController.m:100
 #: modules/gui/qt/dialogs/convert.cpp:164
-#: modules/gui/qt/dialogs/plugins.cpp:375
+#: modules/gui/qt/dialogs/plugins.cpp:376
 #: modules/gui/qt/dialogs/preferences.cpp:79
 msgid "All"
 msgstr "Tot"
@@ -9260,15 +9215,15 @@ msgstr "Intrare Windows Audio Session API"
 msgid "Dummy stream output"
 msgstr "Ieșire de flux falsă"
 
-#: modules/access_output/file.c:315
+#: modules/access_output/file.c:314
 msgid "Keep existing file"
 msgstr "Păstrare fişier existent"
 
-#: modules/access_output/file.c:316
+#: modules/access_output/file.c:315
 msgid "Overwrite"
 msgstr "Suprascrie"
 
-#: modules/access_output/file.c:317
+#: modules/access_output/file.c:316
 msgid ""
 "The output file already exists. If recording continues, the file will be "
 "overridden and its content will be lost."
@@ -9276,40 +9231,40 @@ msgstr ""
 "Fișierul de ieșire, există deja. Dacă înregistrare va continua, fişierul va "
 "fi suprascris, iar conţinutul său se va pierde. "
 
-#: modules/access_output/file.c:375
+#: modules/access_output/file.c:374
 msgid "Overwrite existing file"
 msgstr "Suprascriere fişier existent"
 
-#: modules/access_output/file.c:377
+#: modules/access_output/file.c:376
 msgid "If the file already exists, it will be overwritten."
 msgstr "Dacă fişierul există deja, va fi suprascris."
 
-#: modules/access_output/file.c:378
+#: modules/access_output/file.c:377
 msgid "Append to file"
 msgstr "Adaugă la fișier"
 
-#: modules/access_output/file.c:379
+#: modules/access_output/file.c:378
 msgid "Append to file if it exists instead of replacing it."
 msgstr ""
 "Adaugă la fișier în cazul în care acesta există, în loc de a-l înlocui."
 
-#: modules/access_output/file.c:381
+#: modules/access_output/file.c:380
 msgid "Format time and date"
 msgstr "Format dată şi oră"
 
-#: modules/access_output/file.c:382
+#: modules/access_output/file.c:381
 msgid "Perform ISO C time and date formatting on the file path"
 msgstr "Execută formatarea ISO C, a datei şi orei pe calea fișierului "
 
-#: modules/access_output/file.c:384
+#: modules/access_output/file.c:383
 msgid "Synchronous writing"
 msgstr "Scriere sincronă"
 
-#: modules/access_output/file.c:385
+#: modules/access_output/file.c:384
 msgid "Open the file with synchronous writing."
 msgstr "Deschidere fişier cu scriere sincronă."
 
-#: modules/access_output/file.c:388
+#: modules/access_output/file.c:387
 msgid "File stream output"
 msgstr "Flux de ieșire în fișier"
 
@@ -10074,7 +10029,7 @@ msgstr "Egalizator cu 10 benzi"
 
 #: modules/audio_filter/equalizer.c:81
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:271
-#: modules/gui/qt/dialogs/extended.cpp:67 share/lua/http/index.html:219
+#: modules/gui/qt/dialogs/extended.cpp:67 share/lua/http/index.html:238
 msgid "Equalizer"
 msgstr "Egalizator"
 
@@ -10609,11 +10564,11 @@ msgstr ""
 "Dispozitivele audio, de ieşire, selectate, sunt exclusiv utilizate de către "
 "un alt program."
 
-#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1465
+#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1466
 msgid "Output device"
 msgstr "Dispozitiv de ieșire"
 
-#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1466
+#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1467
 msgid "Select your audio output device"
 msgstr "Selectaţi dispozitivul audio de ieşire"
 
@@ -10629,7 +10584,7 @@ msgstr ""
 "Selectaţi ce configurare de difuzor, doriţi să folosiţi. Această opţiune nu "
 "face supra-mixare! Deci NU o conversie, de ex. din Stereo -> 5.1"
 
-#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1469
+#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1470
 msgid "Audio volume in hundredths of decibels (dB)."
 msgstr "Volumul audio, în sutimi de decibeli (dB)."
 
@@ -10732,11 +10687,11 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "Ieşire audio, Interfaţă Audio K"
 
-#: modules/audio_output/mmdevice.c:1451 modules/gui/qt/ui/sprefs_audio.h:416
+#: modules/audio_output/mmdevice.c:1452
 msgid "HDMI/SPDIF audio passthrough"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1453
+#: modules/audio_output/mmdevice.c:1454
 msgid ""
 "Change this value if you have issue with HD codecs when using a HDMI "
 "receiver."
@@ -10744,27 +10699,27 @@ msgstr ""
 "Schimbați această valoare dacă aveți o problemă cu codecuri HD atunci când "
 "utilizați un receptor HDMI."
 
-#: modules/audio_output/mmdevice.c:1460
+#: modules/audio_output/mmdevice.c:1461
 msgid "Disabled"
 msgstr "Dezactivat"
 
-#: modules/audio_output/mmdevice.c:1461
+#: modules/audio_output/mmdevice.c:1462
 msgid "Enabled (AC3/DTS only)"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1462
+#: modules/audio_output/mmdevice.c:1463
 msgid "Enabled"
 msgstr "Activat"
 
-#: modules/audio_output/mmdevice.c:1473
+#: modules/audio_output/mmdevice.c:1474
 msgid "Windows Multimedia Device output"
 msgstr "Ieșire dispozitiv Windows Multimedia "
 
-#: modules/audio_output/mmdevice.c:1479
+#: modules/audio_output/mmdevice.c:1480
 msgid "Output back-end"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1479
+#: modules/audio_output/mmdevice.c:1480
 msgid "Audio output back-end interface."
 msgstr ""
 
@@ -11450,7 +11405,7 @@ msgstr "Decodor de imagine BPG"
 
 #: modules/codec/cc.c:51 modules/codec/zvbi.c:65
 #: modules/gui/macosx/VLCSimplePrefsController.m:353 modules/spu/marq.c:108
-#: modules/spu/rss.c:144 modules/gui/qt/ui/video_effects.h:1273
+#: modules/spu/rss.c:144
 msgid "Opacity"
 msgstr "Opacitate"
 
@@ -12806,7 +12761,6 @@ msgstr ""
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
-#: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1243
 msgid "Mode"
 msgstr "Mod"
 
@@ -14117,7 +14071,6 @@ msgid "Quiet mode"
 msgstr "Mod tăcut"
 
 #: modules/codec/x264.c:397 modules/gui/macosx/VLCPlaylistInfo.m:65
-#: modules/gui/qt/ui/streampanel.h:168
 msgid "Statistics"
 msgstr "Statistici"
 
@@ -14203,7 +14156,7 @@ msgstr "Rapid"
 #: modules/gui/macosx/VLCMainMenu.m:392
 #: modules/gui/macosx/VLCSimplePrefsController.m:703
 #: modules/gui/qt/components/simple_preferences.cpp:695
-#: modules/misc/gnutls.c:779 modules/text_renderer/freetype/freetype.c:124
+#: modules/misc/gnutls.c:778 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
 msgstr "Normală"
@@ -14302,7 +14255,7 @@ msgstr ""
 msgid "Presentation Level"
 msgstr ""
 
-#: modules/codec/zvbi.c:88 modules/gui/qt/ui/streampanel.h:167
+#: modules/codec/zvbi.c:88
 msgid "1"
 msgstr "1"
 
@@ -14334,10 +14287,10 @@ msgstr "DBus"
 msgid "D-Bus control interface"
 msgstr "Interfețe de control D-Bus"
 
-#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:185
-#: modules/gui/macosx/VLCMainWindow.m:687
-#: modules/gui/macosx/VLCMainWindow.m:693
-#: modules/gui/macosx/VLCMainWindow.m:1318
+#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:187
+#: modules/gui/macosx/VLCMainWindow.m:689
+#: modules/gui/macosx/VLCMainWindow.m:695
+#: modules/gui/macosx/VLCMainWindow.m:1326
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
 #: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1258
 #: modules/gui/qt/main_interface.cpp:1262
@@ -14354,7 +14307,7 @@ msgstr "Interfețe de control D-Bus"
 msgid "VLC media player"
 msgstr "VLC media player"
 
-#: modules/control/dummy.c:38 modules/control/oldrc.c:176
+#: modules/control/dummy.c:38 modules/control/oldrc.c:175
 msgid "Do not open a DOS command box interface"
 msgstr ""
 
@@ -14594,7 +14547,7 @@ msgstr "mișcare"
 msgid "motion control interface"
 msgstr "interfață de control de mișcare"
 
-#: modules/control/motion.c:71 modules/video_filter/rotate.c:59
+#: modules/control/motion.c:71 modules/video_filter/rotate.c:62
 msgid ""
 "Use HDAPS, AMS, APPLESMC or UNIMOTION motion sensors to rotate the video"
 msgstr ""
@@ -14691,303 +14644,303 @@ msgstr "Serviciu NT"
 msgid "Windows Service interface"
 msgstr "Interfață serviciu Windows"
 
-#: modules/control/oldrc.c:69
+#: modules/control/oldrc.c:68
 msgid "Initializing"
 msgstr "Inițializare"
 
-#: modules/control/oldrc.c:70
+#: modules/control/oldrc.c:69
 msgid "Opening"
 msgstr "Deschidere"
 
-#: modules/control/oldrc.c:74 modules/logger/file.c:203
+#: modules/control/oldrc.c:73 modules/logger/file.c:203
 msgid "Error"
 msgstr "Eroare"
 
-#: modules/control/oldrc.c:160
+#: modules/control/oldrc.c:159
 msgid "Show stream position"
 msgstr "Arată poziția fluxului"
 
-#: modules/control/oldrc.c:161
+#: modules/control/oldrc.c:160
 msgid ""
 "Show the current position in seconds within the stream from time to time."
 msgstr ""
 "Arată din timp în timp poziția curentă în secunde în interiorul fluxului."
 
-#: modules/control/oldrc.c:164
+#: modules/control/oldrc.c:163
 msgid "Fake TTY"
 msgstr "TTY fals"
 
-#: modules/control/oldrc.c:165
+#: modules/control/oldrc.c:164
 msgid "Force the rc module to use stdin as if it was a TTY."
 msgstr ""
 
-#: modules/control/oldrc.c:167
+#: modules/control/oldrc.c:166
 msgid "UNIX socket command input"
 msgstr "Intrare de comandă socket UNIX"
 
-#: modules/control/oldrc.c:168
+#: modules/control/oldrc.c:167
 msgid "Accept commands over a Unix socket rather than stdin."
 msgstr ""
 
-#: modules/control/oldrc.c:171 modules/lua/vlc.c:73
+#: modules/control/oldrc.c:170 modules/lua/vlc.c:73
 msgid "TCP command input"
 msgstr "Intrare de comandă TCP"
 
-#: modules/control/oldrc.c:172 modules/lua/vlc.c:74
+#: modules/control/oldrc.c:171 modules/lua/vlc.c:74
 msgid ""
 "Accept commands over a socket rather than stdin. You can set the address and "
 "port the interface will bind to."
 msgstr ""
 
-#: modules/control/oldrc.c:178
+#: modules/control/oldrc.c:177
 msgid ""
 "By default the rc interface plugin will start a DOS command box. Enabling "
 "the quiet mode will not bring this command box but can also be pretty "
 "annoying when you want to stop VLC and no video window is open."
 msgstr ""
 
-#: modules/control/oldrc.c:188
+#: modules/control/oldrc.c:187
 msgid "RC"
 msgstr "RC"
 
-#: modules/control/oldrc.c:191
+#: modules/control/oldrc.c:190
 msgid "Remote control interface"
 msgstr "Interfață de control la distanță"
 
-#: modules/control/oldrc.c:369
+#: modules/control/oldrc.c:368
 msgid "Remote control interface initialized. Type `help' for help."
 msgstr ""
 "Interfața de control la distanță este inițializată. Introduceți 'help' "
 "pentru ajutor."
 
-#: modules/control/oldrc.c:768
+#: modules/control/oldrc.c:767
 #, c-format
 msgid "Unknown command `%s'. Type `help' for help."
 msgstr "Comanda '%s' este necunoscută. Introduceți 'help' pentru ajutor."
 
-#: modules/control/oldrc.c:786
+#: modules/control/oldrc.c:785
 msgid "+----[ Remote control commands ]"
 msgstr "+----[ Comenzi de control la distanță ]"
 
-#: modules/control/oldrc.c:788
+#: modules/control/oldrc.c:787
 msgid "| add XYZ  . . . . . . . . . . . . add XYZ to playlist"
 msgstr ""
 
-#: modules/control/oldrc.c:789
+#: modules/control/oldrc.c:788
 msgid "| enqueue XYZ  . . . . . . . . . queue XYZ to playlist"
 msgstr "| enqueue XYZ  . . . . . . . . . adaugă XYZ la coada listei de redare"
 
-#: modules/control/oldrc.c:790
+#: modules/control/oldrc.c:789
 msgid "| playlist . . . . .  show items currently in playlist"
 msgstr ""
 
-#: modules/control/oldrc.c:791
+#: modules/control/oldrc.c:790
 msgid "| play . . . . . . . . . . . . . . . . . . play stream"
 msgstr ""
 
-#: modules/control/oldrc.c:792
+#: modules/control/oldrc.c:791
 msgid "| stop . . . . . . . . . . . . . . . . . . stop stream"
 msgstr ""
 
-#: modules/control/oldrc.c:793
+#: modules/control/oldrc.c:792
 msgid "| next . . . . . . . . . . . . . .  next playlist item"
 msgstr ""
 
-#: modules/control/oldrc.c:794
+#: modules/control/oldrc.c:793
 msgid "| prev . . . . . . . . . . . .  previous playlist item"
 msgstr ""
 "| prev . . . . . . . . . . . .  elementul precedent din lista de redare"
 
-#: modules/control/oldrc.c:795
+#: modules/control/oldrc.c:794
 msgid "| goto . . . . . . . . . . . . . .  goto item at index"
 msgstr ""
 
-#: modules/control/oldrc.c:796
+#: modules/control/oldrc.c:795
 msgid "| repeat [on|off] . . . .  toggle playlist item repeat"
 msgstr ""
 
-#: modules/control/oldrc.c:797
+#: modules/control/oldrc.c:796
 msgid "| loop [on|off] . . . . . . . . . toggle playlist loop"
 msgstr ""
 
-#: modules/control/oldrc.c:798
+#: modules/control/oldrc.c:797
 msgid "| random [on|off] . . . . . . .  toggle random jumping"
 msgstr ""
 
-#: modules/control/oldrc.c:799
+#: modules/control/oldrc.c:798
 msgid "| clear . . . . . . . . . . . . . . clear the playlist"
 msgstr "| clear . . . . . . . . . . . . . . golește lista de redare"
 
-#: modules/control/oldrc.c:800
+#: modules/control/oldrc.c:799
 msgid "| status . . . . . . . . . . . current playlist status"
 msgstr ""
 
-#: modules/control/oldrc.c:801
+#: modules/control/oldrc.c:800
 msgid "| title [X]  . . . . . . set/get title in current item"
 msgstr ""
 
-#: modules/control/oldrc.c:802
+#: modules/control/oldrc.c:801
 msgid "| title_n  . . . . . . . .  next title in current item"
 msgstr ""
 
-#: modules/control/oldrc.c:803
+#: modules/control/oldrc.c:802
 msgid "| title_p  . . . . . .  previous title in current item"
 msgstr "| title_p  . . . . . .  titlul precedent din elementul curent"
 
-#: modules/control/oldrc.c:804
+#: modules/control/oldrc.c:803
 msgid "| chapter [X]  . . . . set/get chapter in current item"
 msgstr ""
 
-#: modules/control/oldrc.c:805
+#: modules/control/oldrc.c:804
 msgid "| chapter_n  . . . . . .  next chapter in current item"
 msgstr ""
 
-#: modules/control/oldrc.c:806
+#: modules/control/oldrc.c:805
 msgid "| chapter_p  . . . .  previous chapter in current item"
 msgstr "| chapter_p  . . . .  capitolul precedent din elementul curent"
 
-#: modules/control/oldrc.c:808
+#: modules/control/oldrc.c:807
 msgid "| seek X . . . seek in seconds, for instance `seek 12'"
 msgstr ""
 
-#: modules/control/oldrc.c:809
+#: modules/control/oldrc.c:808
 msgid "| pause  . . . . . . . . . . . . . . . .  toggle pause"
 msgstr ""
 
-#: modules/control/oldrc.c:810
+#: modules/control/oldrc.c:809
 msgid "| fastforward  . . . . . . . .  .  set to maximum rate"
 msgstr ""
 
-#: modules/control/oldrc.c:811
+#: modules/control/oldrc.c:810
 msgid "| rewind  . . . . . . . . . . . .  set to minimum rate"
 msgstr ""
 
-#: modules/control/oldrc.c:812
+#: modules/control/oldrc.c:811
 msgid "| faster . . . . . . . . . .  faster playing of stream"
 msgstr ""
 
-#: modules/control/oldrc.c:813
+#: modules/control/oldrc.c:812
 msgid "| slower . . . . . . . . . .  slower playing of stream"
 msgstr ""
 
-#: modules/control/oldrc.c:814
+#: modules/control/oldrc.c:813
 msgid "| normal . . . . . . . . . .  normal playing of stream"
 msgstr ""
 
-#: modules/control/oldrc.c:815
+#: modules/control/oldrc.c:814
 msgid "| frame. . . . . . . . . .  play frame by frame"
 msgstr ""
 
-#: modules/control/oldrc.c:816
+#: modules/control/oldrc.c:815
 msgid "| f [on|off] . . . . . . . . . . . . toggle fullscreen"
 msgstr ""
 
-#: modules/control/oldrc.c:817
+#: modules/control/oldrc.c:816
 msgid "| info . . . . .  information about the current stream"
 msgstr ""
 
-#: modules/control/oldrc.c:818
+#: modules/control/oldrc.c:817
 msgid "| stats  . . . . . . . .  show statistical information"
 msgstr ""
 
-#: modules/control/oldrc.c:819
+#: modules/control/oldrc.c:818
 msgid "| get_time . . seconds elapsed since stream's beginning"
 msgstr ""
 
-#: modules/control/oldrc.c:820
+#: modules/control/oldrc.c:819
 msgid "| is_playing . . . .  1 if a stream plays, 0 otherwise"
 msgstr ""
 
-#: modules/control/oldrc.c:821
+#: modules/control/oldrc.c:820
 msgid "| get_title . . . . .  the title of the current stream"
 msgstr ""
 
-#: modules/control/oldrc.c:822
+#: modules/control/oldrc.c:821
 msgid "| get_length . . . .  the length of the current stream"
 msgstr ""
 
-#: modules/control/oldrc.c:824
+#: modules/control/oldrc.c:823
 msgid "| volume [X] . . . . . . . . . .  set/get audio volume"
 msgstr ""
 
-#: modules/control/oldrc.c:825
+#: modules/control/oldrc.c:824
 msgid "| volup [X]  . . . . . . .  raise audio volume X steps"
 msgstr ""
 
-#: modules/control/oldrc.c:826
+#: modules/control/oldrc.c:825
 msgid "| voldown [X]  . . . . . .  lower audio volume X steps"
 msgstr ""
 
-#: modules/control/oldrc.c:827
+#: modules/control/oldrc.c:826
 msgid "| adev [device]  . . . . . . . .  set/get audio device"
 msgstr ""
 
-#: modules/control/oldrc.c:828
+#: modules/control/oldrc.c:827
 msgid "| achan [X]. . . . . . . . . .  set/get audio channels"
 msgstr ""
 
-#: modules/control/oldrc.c:829
+#: modules/control/oldrc.c:828
 msgid "| atrack [X] . . . . . . . . . . . set/get audio track"
 msgstr ""
 
-#: modules/control/oldrc.c:830
+#: modules/control/oldrc.c:829
 msgid "| vtrack [X] . . . . . . . . . . . set/get video track"
 msgstr ""
 
-#: modules/control/oldrc.c:831
+#: modules/control/oldrc.c:830
 msgid "| vratio [X]  . . . . . . . set/get video aspect ratio"
 msgstr ""
 
-#: modules/control/oldrc.c:832
+#: modules/control/oldrc.c:831
 msgid "| vcrop [X]  . . . . . . . . . . .  set/get video crop"
 msgstr ""
 
-#: modules/control/oldrc.c:833
+#: modules/control/oldrc.c:832
 msgid "| vzoom [X]  . . . . . . . . . . .  set/get video zoom"
 msgstr ""
 
-#: modules/control/oldrc.c:834
+#: modules/control/oldrc.c:833
 msgid "| snapshot . . . . . . . . . . . . take video snapshot"
 msgstr ""
 
-#: modules/control/oldrc.c:835
+#: modules/control/oldrc.c:834
 msgid "| strack [X] . . . . . . . . .  set/get subtitle track"
 msgstr ""
 
-#: modules/control/oldrc.c:836
+#: modules/control/oldrc.c:835
 msgid "| key [hotkey name] . . . . . .  simulate hotkey press"
 msgstr ""
 
-#: modules/control/oldrc.c:838
+#: modules/control/oldrc.c:837
 msgid "| help . . . . . . . . . . . . . . . this help message"
 msgstr ""
 
-#: modules/control/oldrc.c:839
+#: modules/control/oldrc.c:838
 msgid "| logout . . . . . . .  exit (if in socket connection)"
 msgstr ""
 
-#: modules/control/oldrc.c:840
+#: modules/control/oldrc.c:839
 msgid "| quit . . . . . . . . . . . . . . . . . . .  quit vlc"
 msgstr ""
 
-#: modules/control/oldrc.c:842
+#: modules/control/oldrc.c:841
 msgid "+----[ end of help ]"
 msgstr ""
 
-#: modules/control/oldrc.c:969
+#: modules/control/oldrc.c:968
 msgid "Press pause to continue."
 msgstr "Apasă pauză pentru a continua."
 
-#: modules/control/oldrc.c:1193 modules/control/oldrc.c:1442
-#: modules/control/oldrc.c:1486
+#: modules/control/oldrc.c:1192 modules/control/oldrc.c:1441
+#: modules/control/oldrc.c:1485
 msgid "Type 'pause' to continue."
 msgstr ""
 
-#: modules/control/oldrc.c:1282
+#: modules/control/oldrc.c:1281
 msgid "Error: `goto' needs an argument greater than zero."
 msgstr ""
 
-#: modules/control/oldrc.c:1292
+#: modules/control/oldrc.c:1291
 #, c-format
 msgid "Playlist has only %u element"
 msgid_plural "Playlist has only %u elements"
@@ -14995,74 +14948,74 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: modules/control/oldrc.c:1738 modules/gui/ncurses.c:808
+#: modules/control/oldrc.c:1737 modules/gui/ncurses.c:808
 msgid "+-[Incoming]"
 msgstr ""
 
-#: modules/control/oldrc.c:1739 modules/gui/ncurses.c:810
+#: modules/control/oldrc.c:1738 modules/gui/ncurses.c:810
 #, c-format
 msgid "| input bytes read : %8.0f KiB"
 msgstr ""
 
-#: modules/control/oldrc.c:1741 modules/gui/ncurses.c:812
+#: modules/control/oldrc.c:1740 modules/gui/ncurses.c:812
 #, c-format
 msgid "| input bitrate    :   %6.0f kb/s"
 msgstr ""
 
-#: modules/control/oldrc.c:1743 modules/gui/ncurses.c:814
+#: modules/control/oldrc.c:1742 modules/gui/ncurses.c:814
 #, c-format
 msgid "| demux bytes read : %8.0f KiB"
 msgstr "| demux baiți citiți : %8.0f KiB"
 
-#: modules/control/oldrc.c:1745 modules/gui/ncurses.c:816
+#: modules/control/oldrc.c:1744 modules/gui/ncurses.c:816
 #, c-format
 msgid "| demux bitrate    :   %6.0f kb/s"
 msgstr ""
 
-#: modules/control/oldrc.c:1747
+#: modules/control/oldrc.c:1746
 #, c-format
 msgid "| demux corrupted  :    %5<PRIi64>"
 msgstr ""
 
-#: modules/control/oldrc.c:1749
+#: modules/control/oldrc.c:1748
 #, c-format
 msgid "| discontinuities  :    %5<PRIi64>"
 msgstr ""
 
-#: modules/control/oldrc.c:1753 modules/gui/ncurses.c:822
+#: modules/control/oldrc.c:1752 modules/gui/ncurses.c:822
 msgid "+-[Video Decoding]"
 msgstr ""
 
-#: modules/control/oldrc.c:1754 modules/gui/ncurses.c:824
+#: modules/control/oldrc.c:1753 modules/gui/ncurses.c:824
 #, c-format
 msgid "| video decoded    :    %5<PRIi64>"
 msgstr ""
 
-#: modules/control/oldrc.c:1756 modules/gui/ncurses.c:826
+#: modules/control/oldrc.c:1755 modules/gui/ncurses.c:826
 #, c-format
 msgid "| frames displayed :    %5<PRIi64>"
 msgstr ""
 
-#: modules/control/oldrc.c:1758 modules/gui/ncurses.c:828
+#: modules/control/oldrc.c:1757 modules/gui/ncurses.c:828
 #, c-format
 msgid "| frames lost      :    %5<PRIi64>"
 msgstr ""
 
-#: modules/control/oldrc.c:1762 modules/gui/ncurses.c:834
+#: modules/control/oldrc.c:1761 modules/gui/ncurses.c:834
 msgid "+-[Audio Decoding]"
 msgstr ""
 
-#: modules/control/oldrc.c:1763 modules/gui/ncurses.c:836
+#: modules/control/oldrc.c:1762 modules/gui/ncurses.c:836
 #, c-format
 msgid "| audio decoded    :    %5<PRIi64>"
 msgstr ""
 
-#: modules/control/oldrc.c:1765 modules/gui/ncurses.c:838
+#: modules/control/oldrc.c:1764 modules/gui/ncurses.c:838
 #, c-format
 msgid "| buffers played   :    %5<PRIi64>"
 msgstr ""
 
-#: modules/control/oldrc.c:1767 modules/gui/ncurses.c:840
+#: modules/control/oldrc.c:1766 modules/gui/ncurses.c:840
 #, c-format
 msgid "| buffers lost     :    %5<PRIi64>"
 msgstr ""
@@ -15171,11 +15124,11 @@ msgstr ""
 msgid "ASF/WMV demuxer"
 msgstr ""
 
-#: modules/demux/asf/asf.c:267 modules/demux/asf/asf.c:821
+#: modules/demux/asf/asf.c:277 modules/demux/asf/asf.c:834
 msgid "Could not demux ASF stream"
 msgstr ""
 
-#: modules/demux/asf/asf.c:268
+#: modules/demux/asf/asf.c:278
 msgid "VLC failed to load the ASF header."
 msgstr ""
 
@@ -15255,7 +15208,7 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr "Demultiplexor AVI"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4254
+#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4255
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15277,15 +15230,15 @@ msgstr ""
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4265
+#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4266
 msgid "Broken or missing Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2773
+#: modules/demux/avi/avi.c:2774
 msgid "Broken or missing AVI Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2774
+#: modules/demux/avi/avi.c:2775
 msgid "Fixing AVI Index..."
 msgstr "Reparare index AVI..."
 
@@ -15432,7 +15385,7 @@ msgstr "Codecuri de capitol"
 msgid "Use chapter codecs found in the segment."
 msgstr "Folosește codecurile de capitol găsite în segment."
 
-#: modules/demux/mkv/mkv.cpp:68 modules/gui/qt/ui/sprefs_input.h:367
+#: modules/demux/mkv/mkv.cpp:68
 msgid "Preload MKV files in the same directory"
 msgstr ""
 
@@ -15714,11 +15667,11 @@ msgstr "Demultiplexor flux MP4"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4262
+#: modules/demux/mp4/mp4.c:4263
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4263
+#: modules/demux/mp4/mp4.c:4264
 msgid "Build index"
 msgstr ""
 
@@ -16318,33 +16271,33 @@ msgstr "Diapozitive (text)"
 msgid "Slides (images)"
 msgstr "Diapozitive (imagini)"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:96
+#: modules/gui/macosx/VLCAboutWindowController.m:94
 #: modules/gui/macosx/VLCMainMenu.m:339
 msgid "About VLC media player"
 msgstr "Despre VLC media player"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:99
+#: modules/gui/macosx/VLCAboutWindowController.m:97
 #: modules/gui/qt/dialogs/help.cpp:125
 msgid "Credits"
 msgstr "Credite"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:101
+#: modules/gui/macosx/VLCAboutWindowController.m:99
 #: modules/gui/macosx/VLCMainMenu.m:490 modules/gui/qt/dialogs/help.cpp:119
 msgid "License"
 msgstr "Licență"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:103
+#: modules/gui/macosx/VLCAboutWindowController.m:101
 #: modules/gui/qt/dialogs/help.cpp:122
 msgid "Authors"
 msgstr "Autori"
 
-#: modules/gui/macosx/VLCAboutWindowController.m:105
+#: modules/gui/macosx/VLCAboutWindowController.m:103
 msgid ""
 "VLC media player and VideoLAN are trademarks of the VideoLAN Association."
 msgstr ""
 "VLC media player și VideoLAN sunt mărci înregistrate ale Asociației VideoLAN."
 
-#: modules/gui/macosx/VLCAboutWindowController.m:130
+#: modules/gui/macosx/VLCAboutWindowController.m:128
 msgid ""
 "<p>VLC media player is a free and open source media player, encoder, and "
 "streamer made by the volunteers of the <a href=\"https://www.videolan.org/"
@@ -16367,26 +16320,26 @@ msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:105
 #: modules/gui/macosx/VLCAddonsWindowController.m:357
-#: modules/gui/qt/dialogs/plugins.cpp:381
+#: modules/gui/qt/dialogs/plugins.cpp:382
 #: modules/gui/qt/managers/addons_manager.cpp:88
 msgid "Playlist parsers"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:107
 #: modules/gui/macosx/VLCAddonsWindowController.m:359
-#: modules/gui/qt/dialogs/plugins.cpp:385
+#: modules/gui/qt/dialogs/plugins.cpp:386
 #: modules/gui/qt/managers/addons_manager.cpp:90
 msgid "Service Discovery"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:109
-#: modules/gui/qt/dialogs/plugins.cpp:389
+#: modules/gui/qt/dialogs/plugins.cpp:390
 #: modules/gui/qt/managers/addons_manager.cpp:92
 msgid "Interfaces"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:111
-#: modules/gui/qt/dialogs/plugins.cpp:392
+#: modules/gui/qt/dialogs/plugins.cpp:393
 #: modules/gui/qt/managers/addons_manager.cpp:94
 msgid "Art and meta fetchers"
 msgstr ""
@@ -16394,7 +16347,7 @@ msgstr ""
 #: modules/gui/macosx/VLCAddonsWindowController.m:113
 #: modules/gui/macosx/VLCAddonsWindowController.m:361
 #: modules/gui/macosx/VLCMainMenu.m:343 modules/gui/macosx/VLCMainMenu.m:344
-#: modules/gui/qt/dialogs/plugins.cpp:395
+#: modules/gui/qt/dialogs/plugins.cpp:396
 #: modules/gui/qt/managers/addons_manager.cpp:96
 msgid "Extensions"
 msgstr "Extensii"
@@ -16404,30 +16357,30 @@ msgid "Show Installed Only"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:118
-#: modules/gui/qt/dialogs/plugins.cpp:423
+#: modules/gui/qt/dialogs/plugins.cpp:424
 msgid "Find more addons online"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:128
-#: modules/gui/macosx/VLCMainMenu.m:345 modules/gui/qt/dialogs/plugins.cpp:85
+#: modules/gui/macosx/VLCMainMenu.m:345 modules/gui/qt/dialogs/plugins.cpp:86
 msgid "Addons Manager"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:130
-#: modules/gui/qt/dialogs/plugins.cpp:1165
-#: modules/gui/qt/dialogs/plugins.cpp:1178
+#: modules/gui/qt/dialogs/plugins.cpp:1166
+#: modules/gui/qt/dialogs/plugins.cpp:1179
 msgid "Installed"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:131
-#: modules/gui/macosx/VLCBookmarksWindowController.m:90
-#: modules/gui/qt/dialogs/plugins.cpp:127 modules/mux/avi.c:54
+#: modules/gui/macosx/VLCBookmarksWindowController.m:87
+#: modules/gui/qt/dialogs/plugins.cpp:128 modules/mux/avi.c:54
 msgid "Name"
 msgstr "Nume"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:132
-#: modules/gui/macosx/VLCPlaylist.m:108 modules/gui/qt/dialogs/plugins.cpp:1397
-#: modules/gui/qt/dialogs/plugins.cpp:1502 modules/mux/asf.c:58
+#: modules/gui/macosx/VLCPlaylist.m:92 modules/gui/qt/dialogs/plugins.cpp:1398
+#: modules/gui/qt/dialogs/plugins.cpp:1503 modules/mux/asf.c:58
 msgid "Author"
 msgstr "Autor"
 
@@ -16436,7 +16389,7 @@ msgid "Uninstall"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:355
-#: modules/gui/qt/dialogs/plugins.cpp:377
+#: modules/gui/qt/dialogs/plugins.cpp:378
 #: modules/gui/qt/managers/addons_manager.cpp:86
 #: modules/gui/skins2/src/skin_main.cpp:535
 msgid "Skins"
@@ -16448,13 +16401,11 @@ msgid "Apply profile at next launch"
 msgstr ""
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:216
-#: modules/gui/qt/ui/equalizer.h:131
 msgid "2 Pass"
 msgstr "2 treceri"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:219
 #: modules/gui/qt/components/extended_panels.cpp:1132
-#: modules/gui/qt/ui/equalizer.h:133
 msgid "Preamp"
 msgstr "Preamplificator"
 
@@ -16534,7 +16485,7 @@ msgid "Enter a name for the new profile:"
 msgstr "Introdu un nume pentru profilul nou:"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:514
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:826
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:855
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:377
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:489
 #: modules/gui/macosx/VLCMainMenu.m:1164 modules/gui/macosx/VLCOutput.m:414
@@ -16543,7 +16494,6 @@ msgstr "Introdu un nume pentru profilul nou:"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:792
 #: modules/gui/macosx/prefs.m:188
 #: modules/gui/qt/components/sout/profile_selector.cpp:449
-#: modules/gui/qt/ui/vlm.h:298
 msgid "Save"
 msgstr "Salvează"
 
@@ -16558,23 +16508,22 @@ msgid "Multiple profiles with the same name are not allowed."
 msgstr ""
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:568
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:868
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:897
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:857
 msgid "Remove a preset"
 msgstr "Elimină o presetare"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:569
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:869
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:898
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:858
 msgid "Select the preset you would like to remove:"
 msgstr ""
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:570
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:870
-#: modules/gui/macosx/VLCBookmarksWindowController.m:81
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:899
+#: modules/gui/macosx/VLCBookmarksWindowController.m:78
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:859
-#: modules/gui/qt/ui/open_file.h:153
 msgid "Remove"
 msgstr "Elimină"
 
@@ -16586,45 +16535,43 @@ msgstr "Adaugă presetare nouă..."
 msgid "Organize Presets..."
 msgstr "Organizează presetări..."
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:823
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:852
 msgid "Save current selection as new preset"
 msgstr ""
 
-#: modules/gui/macosx/VLCAudioEffectsWindowController.m:824
+#: modules/gui/macosx/VLCAudioEffectsWindowController.m:853
 msgid "Enter a name for the new preset:"
 msgstr ""
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:77
+#: modules/gui/macosx/VLCBookmarksWindowController.m:74
 msgid "Bookmarks"
 msgstr "Semne de carte"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:78
-#: modules/gui/qt/ui/podcast_configuration.h:101 modules/gui/qt/ui/sout.h:206
-#: modules/gui/qt/ui/vlm.h:296
+#: modules/gui/macosx/VLCBookmarksWindowController.m:75
 msgid "Add"
 msgstr "Adaugă"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:79
+#: modules/gui/macosx/VLCBookmarksWindowController.m:76
 #: modules/gui/macosx/VLCSimplePrefsController.m:288
-#: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:297
+#: modules/gui/qt/dialogs/bookmarks.cpp:53
 msgid "Clear"
 msgstr "Golește"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:80
+#: modules/gui/macosx/VLCBookmarksWindowController.m:77
 #: modules/gui/macosx/VLCMainMenu.m:366
 msgid "Edit"
 msgstr "Editează"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:85
-#: modules/gui/macosx/VLCBookmarksWindowController.m:91
+#: modules/gui/macosx/VLCBookmarksWindowController.m:82
+#: modules/gui/macosx/VLCBookmarksWindowController.m:88
 #: modules/gui/qt/dialogs/bookmarks.cpp:77
 #: modules/gui/qt/dialogs/toolbar.cpp:493
 msgid "Time"
 msgstr "Timp"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:88
-#: modules/gui/macosx/VLCBookmarksWindowController.m:211
-#: modules/gui/macosx/VLCBookmarksWindowController.m:215
+#: modules/gui/macosx/VLCBookmarksWindowController.m:85
+#: modules/gui/macosx/VLCBookmarksWindowController.m:209
+#: modules/gui/macosx/VLCBookmarksWindowController.m:213
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:270
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:545
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:552
@@ -16640,25 +16587,25 @@ msgstr "Timp"
 msgid "OK"
 msgstr "OK"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:131
+#: modules/gui/macosx/VLCBookmarksWindowController.m:128
 #: modules/gui/macosx/VLCMainMenu.m:1154
 msgid "Untitled"
 msgstr "Neintitulat"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:211
+#: modules/gui/macosx/VLCBookmarksWindowController.m:209
 msgid "No input"
 msgstr "Nicio intrare"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:211
+#: modules/gui/macosx/VLCBookmarksWindowController.m:209
 msgid ""
 "No input found. A stream must be playing or paused for bookmarks to work."
 msgstr ""
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:215
+#: modules/gui/macosx/VLCBookmarksWindowController.m:213
 msgid "Input has changed"
 msgstr "Intrarea s-a modificat"
 
-#: modules/gui/macosx/VLCBookmarksWindowController.m:215
+#: modules/gui/macosx/VLCBookmarksWindowController.m:213
 msgid ""
 "Input has changed, unable to save bookmark. Suspending playback with \"Pause"
 "\" while editing bookmarks to ensure to keep the same input."
@@ -16716,12 +16663,12 @@ msgid "Go!"
 msgstr "Hai!"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:138
-#: modules/gui/macosx/VLCMainWindow.m:194
+#: modules/gui/macosx/VLCMainWindow.m:196
 msgid "Drop media here"
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:139
-#: modules/gui/macosx/VLCMainWindow.m:210
+#: modules/gui/macosx/VLCMainWindow.m:212
 msgid "Open media..."
 msgstr "Deschide media..."
 
@@ -16752,9 +16699,6 @@ msgstr ""
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
-#: modules/gui/qt/ui/open.h:279 modules/gui/qt/ui/open_disk.h:304
-#: modules/gui/qt/ui/open_file.h:146 modules/gui/qt/ui/sprefs_audio.h:414
-#: modules/gui/qt/ui/sprefs_input.h:365 modules/gui/qt/ui/sprefs_video.h:329
 msgid "Browse..."
 msgstr "Răsfoiește..."
 
@@ -16788,51 +16732,43 @@ msgid "Save as new Profile..."
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:155
-#: modules/gui/qt/ui/profiles.h:723
 msgid "Encapsulation"
 msgstr "Încapsulare"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:156
 #: share/lua/http/dialogs/create_stream.html:160
-#: modules/gui/qt/ui/profiles.h:749
 msgid "Video codec"
 msgstr "Codec video"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:157
 #: share/lua/http/dialogs/create_stream.html:178
-#: modules/gui/qt/ui/profiles.h:759
 msgid "Audio codec"
 msgstr "Codec audio"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:161
-#: modules/gui/qt/ui/profiles.h:725
 msgid "Keep original video track"
 msgstr "Păstrează pista  originală de video"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:165
-#: modules/gui/qt/ui/profiles.h:747
 msgid "Resolution"
 msgstr "Rezoluție"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:166
-#: modules/gui/qt/ui/profiles.h:738
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:169
-#: modules/gui/macosx/VLCOutput.m:88 modules/gui/qt/ui/profiles.h:739
+#: modules/gui/macosx/VLCOutput.m:88
 msgid "Scale"
 msgstr "Scală"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:172
-#: modules/gui/qt/ui/profiles.h:751
 msgid "Keep original audio track"
 msgstr "Păstrează pista originală de audio"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:179
-#: modules/gui/qt/ui/profiles.h:762
 msgid "Overlay subtitles on the video"
 msgstr "Suprapune subtitlurile pe video"
 
@@ -16997,7 +16933,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCFSPanelController.m:128
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:80
-#: modules/gui/qt/dialogs/toolbar.cpp:477 modules/gui/qt/ui/sprefs_audio.h:408
+#: modules/gui/qt/dialogs/toolbar.cpp:477
 msgid "Volume"
 msgstr "Volum"
 
@@ -17409,7 +17345,7 @@ msgstr ""
 msgid "Save Playlist..."
 msgstr "Salvează lista de redare..."
 
-#: modules/gui/macosx/VLCMainMenu.m:364 modules/gui/macosx/VLCPlaylist.m:234
+#: modules/gui/macosx/VLCMainMenu.m:364 modules/gui/macosx/VLCPlaylist.m:229
 msgid "Reveal in Finder"
 msgstr ""
 
@@ -17425,7 +17361,7 @@ msgstr "Copiază"
 msgid "Paste"
 msgstr "Lipește"
 
-#: modules/gui/macosx/VLCMainMenu.m:371 modules/gui/macosx/VLCPlaylist.m:232
+#: modules/gui/macosx/VLCMainMenu.m:371 modules/gui/macosx/VLCPlaylist.m:227
 msgid "Select All"
 msgstr "Selectează tot"
 
@@ -17523,7 +17459,6 @@ msgstr "Flotant deasupra"
 
 #: modules/gui/macosx/VLCMainMenu.m:441 modules/gui/macosx/VLCMainMenu.m:442
 #: modules/gui/macosx/VLCSimplePrefsController.m:370
-#: modules/gui/qt/ui/sprefs_video.h:316
 msgid "Fullscreen Video Device"
 msgstr "Dispozitiv video pe tot ecranul"
 
@@ -17600,7 +17535,7 @@ msgstr "Semne de carte..."
 msgid "Playlist..."
 msgstr "Listă de redare..."
 
-#: modules/gui/macosx/VLCMainMenu.m:482 modules/gui/macosx/VLCPlaylist.m:233
+#: modules/gui/macosx/VLCMainMenu.m:482 modules/gui/macosx/VLCPlaylist.m:228
 msgid "Media Information..."
 msgstr "Informații despre media..."
 
@@ -17662,61 +17597,61 @@ msgstr "Listă de redare HTML"
 msgid "Save Playlist"
 msgstr "Salvează lista de redare"
 
-#: modules/gui/macosx/VLCMainWindow.m:188
+#: modules/gui/macosx/VLCMainWindow.m:190
 msgid "Search in Playlist"
 msgstr "Caută în lista de redare"
 
-#: modules/gui/macosx/VLCMainWindow.m:190
+#: modules/gui/macosx/VLCMainWindow.m:192
 msgid "Search the playlist. Results will be selected in the table."
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:211
+#: modules/gui/macosx/VLCMainWindow.m:213
 msgid "Open a dialog to select the media to play"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:215
-#: modules/gui/macosx/VLCMainWindow.m:221
+#: modules/gui/macosx/VLCMainWindow.m:217
+#: modules/gui/macosx/VLCMainWindow.m:223
 #: modules/gui/qt/components/playlist/selector.cpp:580
 msgid "Subscribe"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:216
-#: modules/gui/macosx/VLCMainWindow.m:227
+#: modules/gui/macosx/VLCMainWindow.m:218
+#: modules/gui/macosx/VLCMainWindow.m:229
 #: modules/gui/qt/components/playlist/selector.cpp:597
 msgid "Unsubscribe"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:219
+#: modules/gui/macosx/VLCMainWindow.m:221
 #: modules/gui/qt/components/playlist/selector.cpp:279
 msgid "Subscribe to a podcast"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:220
+#: modules/gui/macosx/VLCMainWindow.m:222
 #: modules/gui/qt/components/playlist/selector.cpp:581
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:225
+#: modules/gui/macosx/VLCMainWindow.m:227
 msgid "Unsubscribe from a podcast"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:226
+#: modules/gui/macosx/VLCMainWindow.m:228
 msgid "Select the podcast you would like to unsubscribe from:"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:252
+#: modules/gui/macosx/VLCMainWindow.m:254
 msgid "Check for album art and metadata?"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:252
+#: modules/gui/macosx/VLCMainWindow.m:254
 msgid "Enable Metadata Retrieval"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:252
+#: modules/gui/macosx/VLCMainWindow.m:254
 msgid "No, Thanks"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:252
+#: modules/gui/macosx/VLCMainWindow.m:254
 msgid ""
 "VLC can check online for album art and metadata to enrich your playback "
 "experience, e.g. by providing track information when playing Audio CDs. To "
@@ -17724,23 +17659,23 @@ msgid ""
 "trusted services in an anonymized form."
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:318
+#: modules/gui/macosx/VLCMainWindow.m:320
 msgid "LIBRARY"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:323
+#: modules/gui/macosx/VLCMainWindow.m:325
 msgid "MY COMPUTER"
 msgstr "CALCULATORUL MEU"
 
-#: modules/gui/macosx/VLCMainWindow.m:324
+#: modules/gui/macosx/VLCMainWindow.m:326
 msgid "DEVICES"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:325
+#: modules/gui/macosx/VLCMainWindow.m:327
 msgid "LOCAL NETWORK"
 msgstr ""
 
-#: modules/gui/macosx/VLCMainWindow.m:326
+#: modules/gui/macosx/VLCMainWindow.m:328
 msgid "INTERNET"
 msgstr ""
 
@@ -17749,7 +17684,7 @@ msgid "Show/Hide Playlist"
 msgstr "Arată sau ascunde lista de redare"
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:71
-#: modules/gui/qt/dialogs/vlm.cpp:548 share/lua/http/index.html:241
+#: modules/gui/qt/dialogs/vlm.cpp:548 share/lua/http/index.html:260
 msgid "Repeat"
 msgstr "Repetă"
 
@@ -17758,7 +17693,7 @@ msgid "Change repeat mode. Modes: repeat one, repeat all and no repeat."
 msgstr ""
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:75
-#: share/lua/http/index.html:239
+#: share/lua/http/index.html:258
 msgid "Shuffle"
 msgstr "Amestecă"
 
@@ -17780,10 +17715,10 @@ msgstr ""
 
 #: modules/gui/macosx/VLCOpenWindowController.m:133
 #: modules/gui/macosx/VLCOpenWindowController.m:193
-#: modules/gui/macosx/VLCOpenWindowController.m:580
-#: modules/gui/macosx/VLCOpenWindowController.m:666
-#: modules/gui/macosx/VLCOpenWindowController.m:898
-#: modules/gui/macosx/VLCOpenWindowController.m:1266
+#: modules/gui/macosx/VLCOpenWindowController.m:583
+#: modules/gui/macosx/VLCOpenWindowController.m:669
+#: modules/gui/macosx/VLCOpenWindowController.m:901
+#: modules/gui/macosx/VLCOpenWindowController.m:1269
 #: modules/gui/qt/components/controller.hpp:107
 msgid "Open"
 msgstr "Deschide"
@@ -17806,7 +17741,6 @@ msgstr "Disc"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:142
 #: modules/gui/macosx/VLCSimplePrefsController.m:302
-#: modules/gui/qt/ui/sprefs_input.h:368
 msgid "Network"
 msgstr "Rețea"
 
@@ -17835,7 +17769,6 @@ msgstr "Redă sincron alt media"
 #: modules/gui/macosx/VLCOpenWindowController.m:152
 #: modules/gui/macosx/VLCOpenWindowController.m:348
 #: modules/gui/macosx/VLCSimplePrefsController.m:345
-#: modules/gui/qt/ui/sprefs_interface.h:545
 msgid "Choose..."
 msgstr "Alege..."
 
@@ -17902,20 +17835,20 @@ msgid "Protocol"
 msgstr "Protocol"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:199
-#: modules/gui/macosx/VLCOpenWindowController.m:1013
-#: modules/gui/macosx/VLCOpenWindowController.m:1062
+#: modules/gui/macosx/VLCOpenWindowController.m:1016
+#: modules/gui/macosx/VLCOpenWindowController.m:1065
 msgid "Unicast"
 msgstr "Unicast"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:200
-#: modules/gui/macosx/VLCOpenWindowController.m:1026
-#: modules/gui/macosx/VLCOpenWindowController.m:1075
+#: modules/gui/macosx/VLCOpenWindowController.m:1029
+#: modules/gui/macosx/VLCOpenWindowController.m:1078
 msgid "Multicast"
 msgstr "Multicast"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:206
-#: modules/gui/macosx/VLCOpenWindowController.m:503
-#: modules/gui/macosx/VLCOpenWindowController.m:1153
+#: modules/gui/macosx/VLCOpenWindowController.m:506
+#: modules/gui/macosx/VLCOpenWindowController.m:1156
 msgid "Input Devices"
 msgstr ""
 
@@ -17965,7 +17898,6 @@ msgstr "Codare subtitlu"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:360
 #: modules/gui/macosx/VLCSimplePrefsController.m:347
-#: modules/gui/qt/ui/sprefs_subtitles.h:297
 msgid "Font size"
 msgstr "Dimensiune de font"
 
@@ -17996,14 +17928,13 @@ msgstr "s"
 msgid "fps"
 msgstr "fps"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:579
-#: modules/gui/macosx/VLCOpenWindowController.m:665
-#: modules/gui/macosx/VLCOpenWindowController.m:1265
-#: modules/gui/qt/ui/open_file.h:141
+#: modules/gui/macosx/VLCOpenWindowController.m:582
+#: modules/gui/macosx/VLCOpenWindowController.m:668
+#: modules/gui/macosx/VLCOpenWindowController.m:1268
 msgid "Open File"
 msgstr "Deschide un fișier"
 
-#: modules/gui/macosx/VLCOpenWindowController.m:764
+#: modules/gui/macosx/VLCOpenWindowController.m:767
 #, c-format
 msgid "%i tracks"
 msgstr "%i piste"
@@ -18041,29 +17972,29 @@ msgstr "Anunțare flux"
 msgid "Save File"
 msgstr "Salvează fișier"
 
-#: modules/gui/macosx/VLCPlaylist.m:106
+#: modules/gui/macosx/VLCPlaylist.m:90
 msgid "Track Number"
 msgstr "Număr piesă"
 
-#: modules/gui/macosx/VLCPlaylist.m:109
+#: modules/gui/macosx/VLCPlaylist.m:93
 #: modules/gui/qt/components/playlist/sorting.h:61
 msgid "Duration"
 msgstr "Durată"
 
-#: modules/gui/macosx/VLCPlaylist.m:115
+#: modules/gui/macosx/VLCPlaylist.m:99
 #: modules/gui/qt/components/playlist/sorting.h:67
 msgid "URI"
 msgstr "URI"
 
-#: modules/gui/macosx/VLCPlaylist.m:116
+#: modules/gui/macosx/VLCPlaylist.m:100
 msgid "File Size"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylist.m:230
+#: modules/gui/macosx/VLCPlaylist.m:225
 msgid "Expand All"
 msgstr ""
 
-#: modules/gui/macosx/VLCPlaylist.m:231
+#: modules/gui/macosx/VLCPlaylist.m:226
 msgid "Collapse All"
 msgstr ""
 
@@ -18136,7 +18067,6 @@ msgid "VLC was unable to save the meta data."
 msgstr ""
 
 #: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:194
-#: modules/gui/qt/ui/sprefs_interface.h:551
 msgid "Continue playback?"
 msgstr ""
 
@@ -18162,7 +18092,7 @@ msgstr ""
 #: modules/gui/macosx/VLCSimplePrefsController.m:233
 #: modules/gui/qt/components/simple_preferences.cpp:239
 #: modules/gui/qt/components/simple_preferences.cpp:719
-#: modules/gui/qt/dialogs/plugins.cpp:375
+#: modules/gui/qt/dialogs/plugins.cpp:376
 msgid "Interface Settings"
 msgstr "Setări de interfață"
 
@@ -18209,7 +18139,6 @@ msgid "Keep audio level between sessions"
 msgstr "Păstrează nivelul audio între sesiuni"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:281
-#: modules/gui/qt/ui/sprefs_audio.h:410
 msgid "Always reset audio start level to:"
 msgstr "Resetează oricum nivelul audio de pornire la:"
 
@@ -18236,7 +18165,6 @@ msgid "Shortcut"
 msgstr "Scurtătură"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:294
-#: modules/gui/qt/ui/sprefs_input.h:364
 msgid "Record directory or filename"
 msgstr "Dosar sau fișier pentru înregistrare"
 
@@ -18253,7 +18181,6 @@ msgid "Default Caching Level"
 msgstr "Nivel implicit de stocare în cache"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:299
-#: modules/gui/qt/ui/open.h:263
 msgid "Caching"
 msgstr "Stocare în cache"
 
@@ -18312,7 +18239,6 @@ msgid "Enable notifications on playlist item change"
 msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:333
-#: modules/gui/qt/ui/sprefs_interface.h:553
 msgid "Privacy / Network Interaction"
 msgstr "Intimitate și interacțiune de rețea"
 
@@ -18337,13 +18263,11 @@ msgid "Display Settings"
 msgstr "Setări de afișare"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:346
-#: modules/gui/qt/ui/sprefs_subtitles.h:298
 msgid "Font color"
 msgstr "Culoare de font"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:348 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
-#: modules/gui/qt/ui/sprefs_subtitles.h:296
 msgid "Font"
 msgstr "Font"
 
@@ -18352,7 +18276,6 @@ msgid "Subtitle languages"
 msgstr "Limbi subtitlu"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:350
-#: modules/gui/qt/ui/sprefs_subtitles.h:293
 msgid "Preferred subtitle language"
 msgstr "Limba preferată pentru subtitlu"
 
@@ -18367,18 +18290,16 @@ msgstr "Forțează aldin"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:355
 #: modules/text_renderer/freetype/freetype.c:110
-#: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Outline color"
 msgstr "Culoarea conturului"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:356
 #: modules/text_renderer/freetype/freetype.c:111
-#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Outline thickness"
 msgstr "Grosimea conturului"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
-#: modules/stream_out/display.c:53 modules/gui/qt/ui/sprefs_video.h:312
+#: modules/stream_out/display.c:53
 msgid "Display"
 msgstr "Afișare"
 
@@ -18399,7 +18320,6 @@ msgid "Black screens in Fullscreen mode"
 msgstr "Zone negre de ecran în modul pe tot ecranul"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:372
-#: modules/gui/qt/ui/sprefs_video.h:327
 msgid "Video snapshots"
 msgstr "Capturi video instantanee"
 
@@ -18409,17 +18329,14 @@ msgid "Folder"
 msgstr "Dosar"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:375
-#: modules/gui/qt/ui/sprefs_video.h:333
 msgid "Format"
 msgstr "Format"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:376
-#: modules/gui/qt/ui/sprefs_video.h:330
 msgid "Prefix"
 msgstr "Prefix"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:377
-#: modules/gui/qt/ui/sprefs_video.h:332
 msgid "Sequential numbering"
 msgstr "Numerotare secvențială"
 
@@ -18625,7 +18542,6 @@ msgid "Basic"
 msgstr "De bază"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:194
-#: modules/gui/qt/ui/video_effects.h:1264
 msgid "Geometry"
 msgstr "Geometrie"
 
@@ -18634,9 +18550,7 @@ msgstr "Geometrie"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:270
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:273
 #: modules/spu/marq.c:115 modules/spu/rss.c:152
-#: modules/video_filter/colorthres.c:55 modules/gui/qt/ui/video_effects.h:1238
-#: modules/gui/qt/ui/video_effects.h:1244
-#: modules/gui/qt/ui/video_effects.h:1247
+#: modules/video_filter/colorthres.c:55
 msgid "Color"
 msgstr "Culoare"
 
@@ -18645,53 +18559,45 @@ msgid "Image Adjust"
 msgstr "Ajustare de imagine"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:207
-#: modules/gui/qt/ui/video_effects.h:1215
 msgid "Brightness Threshold"
 msgstr "Prag de luminozitate"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:211
-#: modules/video_filter/sharpen.c:69 modules/gui/qt/ui/video_effects.h:1219
+#: modules/video_filter/sharpen.c:69
 msgid "Sharpen"
 msgstr "Accentuare de claritate"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:212
-#: modules/gui/qt/ui/video_effects.h:1220
-#: modules/gui/qt/ui/video_effects.h:1293
 msgid "Sigma"
 msgstr "Sigma"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:213
-#: modules/gui/qt/ui/video_effects.h:1221
 msgid "Banding removal"
 msgstr "Eliminare benzi de degrade (banding)"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:214
-#: modules/video_filter/gradfun.c:50 modules/gui/qt/ui/video_effects.h:1222
+#: modules/video_filter/gradfun.c:50
 msgid "Radius"
 msgstr "Rază"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:215
-#: modules/gui/qt/ui/video_effects.h:1223
 msgid "Film Grain"
 msgstr "Granulație de film"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:216
-#: modules/video_filter/grain.c:53 modules/gui/qt/ui/video_effects.h:1224
+#: modules/video_filter/grain.c:53
 msgid "Variance"
 msgstr "Dispersie"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:221
-#: modules/gui/qt/ui/video_effects.h:1232
 msgid "Synchronize top and bottom"
 msgstr "Sincronizează sus și jos"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:222
-#: modules/gui/qt/ui/video_effects.h:1233
 msgid "Synchronize left and right"
 msgstr "Sincronizează stânga și dreapta"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:224
-#: modules/gui/qt/ui/video_effects.h:1258
 msgid "Transform"
 msgstr "Transformare"
 
@@ -18725,60 +18631,51 @@ msgid "Magnification/Zoom"
 msgstr "Lupă/Zoom"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:242
-#: modules/gui/qt/ui/video_effects.h:1261
 msgid "Puzzle game"
 msgstr "Joc de puzzle"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:243
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:248
 #: share/lua/http/dialogs/mosaic_window.html:96
-#: modules/gui/qt/ui/video_effects.h:1256
-#: modules/gui/qt/ui/video_effects.h:1262
 msgid "Rows"
 msgstr "Rânduri"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:244
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:249
 #: share/lua/http/dialogs/mosaic_window.html:114
-#: modules/gui/qt/ui/video_effects.h:1257
-#: modules/gui/qt/ui/video_effects.h:1263
 msgid "Columns"
 msgstr "Coloane"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
-#: modules/video_splitter/clone.c:57 modules/gui/qt/ui/video_effects.h:1303
+#: modules/video_splitter/clone.c:57
 msgid "Clone"
 msgstr "Clonă"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:246
-#: modules/video_splitter/clone.c:39 modules/gui/qt/ui/video_effects.h:1304
+#: modules/video_splitter/clone.c:39
 msgid "Number of clones"
 msgstr "Număr de clone"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:247
-#: modules/gui/qt/ui/video_effects.h:1255
 msgid "Wall"
 msgstr "Zid"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:251
-#: modules/video_filter/colorthres.c:71 modules/gui/qt/ui/video_effects.h:1246
+#: modules/video_filter/colorthres.c:71
 msgid "Color threshold"
 msgstr "Prag de culoare"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:255
-#: modules/gui/qt/ui/video_effects.h:1250
 msgid "Similarity"
 msgstr "Similaritate"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:257
-#: modules/gui/qt/ui/video_effects.h:1252
 msgid "Intensity"
 msgstr "Intensitate"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:258
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:261
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
-#: modules/gui/qt/ui/video_effects.h:1242
 msgid "Gradient"
 msgstr "Degrade"
 
@@ -18793,12 +18690,10 @@ msgid "Hough"
 msgstr "Transformare Hough"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:271
-#: modules/gui/qt/ui/video_effects.h:1245
 msgid "Cartoon"
 msgstr "Desene animate"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:272
-#: modules/gui/qt/ui/video_effects.h:1237
 msgid "Color extraction"
 msgstr "Extragere de culoare"
 
@@ -18807,7 +18702,7 @@ msgid "Invert colors"
 msgstr "Inversează culorile"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:276
-#: modules/video_filter/posterize.c:69 modules/gui/qt/ui/video_effects.h:1241
+#: modules/video_filter/posterize.c:69
 msgid "Posterize"
 msgstr ""
 
@@ -18817,12 +18712,11 @@ msgid "Posterize level"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:278
-#: modules/video_filter/motionblur.c:60 modules/gui/qt/ui/video_effects.h:1294
+#: modules/video_filter/motionblur.c:60
 msgid "Motion blur"
 msgstr "Neclaritate de mișcare"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:279
-#: modules/gui/qt/ui/video_effects.h:1295
 msgid "Factor"
 msgstr "Factor"
 
@@ -18832,13 +18726,11 @@ msgid "Motion Detect"
 msgstr "Detecție de mișcare"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
-#: modules/gui/qt/ui/video_effects.h:1290
 msgid "Water effect"
 msgstr "Efect de apă"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:283
 #: modules/meta_engine/ID3Genres.h:100 modules/video_filter/psychedelic.c:55
-#: modules/gui/qt/ui/video_effects.h:1288
 msgid "Psychedelic"
 msgstr "Psihedelic"
 
@@ -18848,23 +18740,19 @@ msgid "Anaglyph"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
-#: modules/gui/qt/ui/video_effects.h:1275
 msgid "Add text"
 msgstr "Adăugare de text"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:286
 #: modules/logger/file.c:193 modules/spu/marq.c:88
-#: modules/gui/qt/ui/video_effects.h:1277
 msgid "Text"
 msgstr "Text"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
-#: modules/gui/qt/ui/video_effects.h:1265
 msgid "Add logo"
 msgstr "Adăugare de siglă"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:308
-#: modules/gui/qt/ui/video_effects.h:1266
 msgid "Logo"
 msgstr "Siglă"
 
@@ -19701,7 +19589,6 @@ msgid "File names:"
 msgstr "Nume fișier:"
 
 #: modules/gui/qt/components/open_panels.cpp:162
-#: modules/gui/qt/ui/sprefs_interface.h:558
 msgid "Filter:"
 msgstr "Filtru:"
 
@@ -20102,7 +19989,6 @@ msgid "File/Folder"
 msgstr "Fișier sau dosar"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:47
-#: modules/gui/qt/ui/sout.h:199
 msgid "Source"
 msgstr "Sursă"
 
@@ -20200,9 +20086,9 @@ msgstr "Extrage"
 #: modules/gui/qt/dialogs/errors.cpp:49 modules/gui/qt/dialogs/extended.cpp:130
 #: modules/gui/qt/dialogs/help.cpp:66 modules/gui/qt/dialogs/help.cpp:212
 #: modules/gui/qt/dialogs/mediainfo.cpp:80
-#: modules/gui/qt/dialogs/messages.cpp:84 modules/gui/qt/dialogs/plugins.cpp:93
-#: modules/gui/qt/dialogs/plugins.cpp:1430
-#: modules/gui/qt/dialogs/plugins.cpp:1543
+#: modules/gui/qt/dialogs/messages.cpp:84 modules/gui/qt/dialogs/plugins.cpp:94
+#: modules/gui/qt/dialogs/plugins.cpp:1431
+#: modules/gui/qt/dialogs/plugins.cpp:1544
 #: modules/gui/qt/dialogs/podcast_configuration.cpp:36
 #: modules/gui/qt/dialogs/vlm.cpp:136
 msgid "&Close"
@@ -20224,7 +20110,7 @@ msgstr ""
 msgid "Destination"
 msgstr "Destinație"
 
-#: modules/gui/qt/dialogs/convert.cpp:71 modules/gui/qt/ui/sprefs_audio.h:413
+#: modules/gui/qt/dialogs/convert.cpp:71
 msgid "Destination file:"
 msgstr "Fișier de destinație:"
 
@@ -20268,8 +20154,7 @@ msgstr ""
 msgid "Program Guide"
 msgstr "Ghidul programelor"
 
-#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:286
-#: modules/gui/qt/ui/about.h:287
+#: modules/gui/qt/dialogs/epg.cpp:87
 msgid "Update"
 msgstr "Actualizează"
 
@@ -20353,8 +20238,8 @@ msgstr "&Du-te"
 msgid "Go to time"
 msgstr "Du-te la timpul"
 
-#: modules/gui/qt/dialogs/help.cpp:86 modules/gui/qt/dialogs/plugins.cpp:1368
-#: modules/gui/qt/dialogs/plugins.cpp:1451
+#: modules/gui/qt/dialogs/help.cpp:86 modules/gui/qt/dialogs/plugins.cpp:1369
+#: modules/gui/qt/dialogs/plugins.cpp:1452
 msgid "About"
 msgstr "Despre"
 
@@ -20391,7 +20276,7 @@ msgstr "&Da"
 msgid "&No"
 msgstr "&Nu"
 
-#: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:144
+#: modules/gui/qt/dialogs/help.cpp:222
 msgid "VLC media player updates"
 msgstr "Actualizări VLC media player"
 
@@ -20436,8 +20321,6 @@ msgid "Location:"
 msgstr "Locație:"
 
 #: modules/gui/qt/dialogs/messages.cpp:80
-#: modules/gui/qt/ui/messages_panel.h:136
-#: modules/gui/qt/ui/messages_panel.h:140
 msgid "Messages"
 msgstr "Mesaje"
 
@@ -20539,105 +20422,105 @@ msgid ""
 "it will be automatically selected."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:79
+#: modules/gui/qt/dialogs/plugins.cpp:80
 msgid "Plugins and extensions"
 msgstr "Module și extensii"
 
-#: modules/gui/qt/dialogs/plugins.cpp:87
+#: modules/gui/qt/dialogs/plugins.cpp:88
 msgid "Active Extensions"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:127
+#: modules/gui/qt/dialogs/plugins.cpp:128
 msgid "Capability"
 msgstr "Capabilitate"
 
-#: modules/gui/qt/dialogs/plugins.cpp:127
+#: modules/gui/qt/dialogs/plugins.cpp:128
 msgid "Score"
 msgstr "Scor"
 
-#: modules/gui/qt/dialogs/plugins.cpp:140
+#: modules/gui/qt/dialogs/plugins.cpp:141
 msgid "&Search:"
 msgstr "&Caută:"
 
-#: modules/gui/qt/dialogs/plugins.cpp:251
-#: modules/gui/qt/dialogs/plugins.cpp:1284
+#: modules/gui/qt/dialogs/plugins.cpp:252
+#: modules/gui/qt/dialogs/plugins.cpp:1285
 msgid "More information..."
 msgstr "Mai multe informații..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:259
+#: modules/gui/qt/dialogs/plugins.cpp:260
 msgid "Reload extensions"
 msgstr "Încarcă extensiile din nou"
 
-#: modules/gui/qt/dialogs/plugins.cpp:378
+#: modules/gui/qt/dialogs/plugins.cpp:379
 msgid ""
 "Skins customize player's appearance. You can activate them through "
 "preferences."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:383
 msgid ""
 "Playlist parsers add new capabilities to read internet streams or extract "
 "meta data."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:386
+#: modules/gui/qt/dialogs/plugins.cpp:387
 msgid ""
 "Service discoveries adds new sources to your playlist such as web radios, "
 "video websites, ..."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:393
+#: modules/gui/qt/dialogs/plugins.cpp:394
 msgid "Retrieves extra info and art for playlist items"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:396
+#: modules/gui/qt/dialogs/plugins.cpp:397
 msgid ""
 "Extensions brings various enhancements. Check descriptions for more details"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:417
+#: modules/gui/qt/dialogs/plugins.cpp:418
 msgid "Only installed"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:523
+#: modules/gui/qt/dialogs/plugins.cpp:524
 msgid "Retrieving addons..."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:534
+#: modules/gui/qt/dialogs/plugins.cpp:535
 msgid "No addons found"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:813
+#: modules/gui/qt/dialogs/plugins.cpp:814
 msgid "This addon has been installed manually. VLC can't manage it by itself."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:1196
+#: modules/gui/qt/dialogs/plugins.cpp:1197
 msgid "Version %1"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:1224
+#: modules/gui/qt/dialogs/plugins.cpp:1225
 msgid "%1 downloads"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:1293
+#: modules/gui/qt/dialogs/plugins.cpp:1294
 msgid "&Uninstall"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:1296
+#: modules/gui/qt/dialogs/plugins.cpp:1297
 msgid "&Install"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:1391
-#: modules/gui/qt/dialogs/plugins.cpp:1494
+#: modules/gui/qt/dialogs/plugins.cpp:1392
+#: modules/gui/qt/dialogs/plugins.cpp:1495
 msgid "Version"
 msgstr "Versiune"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1411
-#: modules/gui/qt/dialogs/plugins.cpp:1521
+#: modules/gui/qt/dialogs/plugins.cpp:1412
+#: modules/gui/qt/dialogs/plugins.cpp:1522
 msgid "Website"
 msgstr "Pagină Web"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1533 modules/gui/qt/ui/sprefs_input.h:363
+#: modules/gui/qt/dialogs/plugins.cpp:1534
 msgid "Files"
 msgstr "Fișiere"
 
@@ -20697,7 +20580,7 @@ msgstr "Preferințele nu au putut fi salvate"
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr "Sigur vreți să resetați preferințele VLC media player ?"
 
-#: modules/gui/qt/dialogs/sout.cpp:45 modules/gui/qt/ui/sout.h:198
+#: modules/gui/qt/dialogs/sout.cpp:45
 msgid "Stream Output"
 msgstr "Flux de ieșire"
 
@@ -20879,7 +20762,7 @@ msgstr "Repetă:"
 msgid "Repeat delay:"
 msgstr "Întârziere de repetare:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:111 modules/gui/qt/ui/sprefs_interface.h:555
+#: modules/gui/qt/dialogs/vlm.cpp:111
 msgid " days"
 msgstr " zile"
 
@@ -22937,27 +22820,23 @@ msgid ""
 "selected. Refer to GNU TLS documentation for detailed syntax."
 msgstr ""
 
-#: modules/misc/gnutls.c:778
+#: modules/misc/gnutls.c:777
 msgid "Performance (prioritize faster ciphers)"
 msgstr ""
 
-#: modules/misc/gnutls.c:780
+#: modules/misc/gnutls.c:779
 msgid "Secure 128-bits (exclude 256-bits ciphers)"
 msgstr ""
 
-#: modules/misc/gnutls.c:781
+#: modules/misc/gnutls.c:780
 msgid "Secure 256-bits (prioritize 256-bits ciphers)"
 msgstr ""
 
-#: modules/misc/gnutls.c:782
-msgid "Export (include insecure ciphers)"
-msgstr ""
-
-#: modules/misc/gnutls.c:787
+#: modules/misc/gnutls.c:785
 msgid "GNU TLS transport layer security"
 msgstr ""
 
-#: modules/misc/gnutls.c:801
+#: modules/misc/gnutls.c:799
 msgid "GNU TLS server"
 msgstr ""
 
@@ -23625,7 +23504,6 @@ msgid "Podcasts"
 msgstr "Podcasturi"
 
 #: modules/services_discovery/podcast.c:56
-#: modules/gui/qt/ui/podcast_configuration.h:99
 msgid "Podcast URLs list"
 msgstr "Listă URL-uri podcast"
 
@@ -23736,7 +23614,7 @@ msgstr "Captură audio (ALSA)"
 msgid "CD"
 msgstr "CD"
 
-#: modules/services_discovery/udev.c:601 modules/gui/qt/ui/open_disk.h:295
+#: modules/services_discovery/udev.c:601
 msgid "DVD"
 msgstr "DVD"
 
@@ -23791,7 +23669,7 @@ msgid "Applications"
 msgstr "Aplicații"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:340
+#: modules/video_output/win32/direct3d9.c:342
 msgid "Desktop"
 msgstr "Desktop"
 
@@ -23880,7 +23758,6 @@ msgstr ""
 
 #: modules/spu/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
-#: modules/gui/qt/ui/video_effects.h:1285
 msgid "Overlay"
 msgstr "Overlay"
 
@@ -24781,11 +24658,11 @@ msgstr ""
 msgid "Chromecast demux wrapper"
 msgstr ""
 
-#: modules/stream_out/cycle.c:325
+#: modules/stream_out/cycle.c:326
 msgid "cycle"
 msgstr ""
 
-#: modules/stream_out/cycle.c:326
+#: modules/stream_out/cycle.c:327
 msgid "Cyclic stream output"
 msgstr ""
 
@@ -25826,7 +25703,7 @@ msgstr ""
 msgid "Image properties filter"
 msgstr "Filtru de proprietăți de imagine"
 
-#: modules/video_filter/adjust.c:78 modules/gui/qt/ui/video_effects.h:1212
+#: modules/video_filter/adjust.c:78
 msgid "Image adjust"
 msgstr "Ajustare de imagine"
 
@@ -26856,23 +26733,23 @@ msgstr ""
 msgid "Ripple"
 msgstr "Ondulat"
 
-#: modules/video_filter/rotate.c:56
+#: modules/video_filter/rotate.c:59
 msgid "Angle in degrees"
 msgstr "Unghiul în grade"
 
-#: modules/video_filter/rotate.c:57
+#: modules/video_filter/rotate.c:60
 msgid "Angle in degrees (0 to 359)"
 msgstr "Unghiul în grade (0 la 359)"
 
-#: modules/video_filter/rotate.c:58
+#: modules/video_filter/rotate.c:61
 msgid "Use motion sensors"
 msgstr "Utilizează senzor mișcare"
 
-#: modules/video_filter/rotate.c:68
+#: modules/video_filter/rotate.c:71
 msgid "Rotate video filter"
 msgstr ""
 
-#: modules/video_filter/rotate.c:69 modules/gui/qt/ui/video_effects.h:1259
+#: modules/video_filter/rotate.c:72
 msgid "Rotate"
 msgstr "Rotire"
 
@@ -27226,7 +27103,7 @@ msgstr "GLX"
 msgid "GLX extension for OpenGL"
 msgstr "Extensie GLX pentru OpenGL"
 
-#: modules/video_output/kva.c:50 modules/gui/qt/ui/sprefs_video.h:321
+#: modules/video_output/kva.c:50
 msgid "Enable a workaround for T23"
 msgstr ""
 
@@ -27236,7 +27113,7 @@ msgid ""
 "size is equal to or smaller than the movie size."
 msgstr ""
 
-#: modules/video_output/kva.c:55 modules/gui/qt/ui/sprefs_video.h:322
+#: modules/video_output/kva.c:55
 msgid "Video mode"
 msgstr "Mod video"
 
@@ -27355,7 +27232,6 @@ msgid "Direct3D11 video output"
 msgstr ""
 
 #: modules/video_output/win32/directdraw.c:65
-#: modules/gui/qt/ui/sprefs_video.h:318
 msgid "Use hardware YUV->RGB conversions"
 msgstr "Utilizează conversii YUV->RGB hardware"
 
@@ -28193,12 +28069,11 @@ msgid "#separate commands with a new line or a semi-colon"
 msgstr "#separă comenzile cu o linie nouă sau cu punct și virgulă"
 
 #: share/lua/http/dialogs/browse_window.html:41
-#: share/lua/http/mobile_browse.html:48
+#: share/lua/http/mobile_browse.html:49
 msgid "Play List"
 msgstr "Listă de redare"
 
 #: share/lua/http/dialogs/create_stream.html:156
-#: modules/gui/qt/ui/sprefs_audio.h:411
 msgid "Output"
 msgstr "Ieșire"
 
@@ -28252,7 +28127,7 @@ msgid "File name"
 msgstr "Nume fișier"
 
 #: share/lua/http/dialogs/equalizer_window.html:49
-#: share/lua/http/mobile_equalizer.html:62
+#: share/lua/http/mobile_equalizer.html:63
 msgid "Preamp:"
 msgstr "Preamplificator:"
 
@@ -28293,943 +28168,627 @@ msgstr "Timp:"
 msgid "VLC media player - Web Interface"
 msgstr "Interfață Web - VLC media player"
 
-#: share/lua/http/index.html:215
+#: share/lua/http/index.html:234
 msgid "Hide / Show Library"
 msgstr "Ascunde / arată biblioteca"
 
-#: share/lua/http/index.html:216
+#: share/lua/http/index.html:235
 msgid "Hide / Show Viewer"
 msgstr "Ascunde / arată vizualizatorul"
 
-#: share/lua/http/index.html:217
+#: share/lua/http/index.html:236
 msgid "Manage Streams"
 msgstr "Gestionează fluxuri"
 
-#: share/lua/http/index.html:218
+#: share/lua/http/index.html:237
 msgid "Track Synchronisation"
 msgstr "Sincronizare pistă"
 
-#: share/lua/http/index.html:220
+#: share/lua/http/index.html:239
 msgid "VLM Batch Commands"
 msgstr ""
 
-#: share/lua/http/index.html:240 modules/gui/qt/ui/vlm.h:295
+#: share/lua/http/index.html:259
 msgid "Loop"
 msgstr "Buclă"
 
-#: share/lua/http/index.html:242
+#: share/lua/http/index.html:261
 msgid "Empty Playlist"
 msgstr "Golește lista de redare"
 
-#: share/lua/http/index.html:243
+#: share/lua/http/index.html:262
 msgid "Queue Selected"
 msgstr "Pune selecția la coadă"
 
-#: share/lua/http/index.html:244
+#: share/lua/http/index.html:263
 msgid "Play Selected"
 msgstr "Redă selecția"
 
-#: share/lua/http/index.html:245
+#: share/lua/http/index.html:264
 msgid "Refresh List"
 msgstr "Reîmprospătează lista"
 
-#: share/lua/http/index.html:252
+#: share/lua/http/index.html:271
 msgid "Loading flowplayer..."
 msgstr "Se încarcă flowplayer..."
 
-#: share/lua/http/index.html:252
+#: share/lua/http/index.html:271
 msgid "If nothing appears, check your internet connection."
 msgstr ""
 
-#: share/lua/http/index.html:263
+#: share/lua/http/index.html:282
+msgid ""
+"VLC can display a QR code linking to the mobile version of the web "
+"interface; the web address of the web interface of your VLC media player "
+"instance will be transmitted over the internet to the Google Image Charts "
+"web service to generate this QR code."
+msgstr ""
+
+#: share/lua/http/index.html:285
+#, fuzzy
+msgid "Do you want to go ahead with this?"
+msgstr "Vrei să descarci?"
+
+#: share/lua/http/index.html:290
 msgid ""
 "By creating a stream, the <i>Main Controls</i> will operate the stream "
 "instead of the main interface."
 msgstr ""
 
-#: share/lua/http/index.html:264
+#: share/lua/http/index.html:291
 msgid ""
 "The stream will be created using default settings, for more advanced "
 "configuration, or to modify the default settings, select the button to the "
 "right: <i>Manage Streams</i>"
 msgstr ""
 
-#: share/lua/http/index.html:268
+#: share/lua/http/index.html:295
 msgid ""
 "Once the stream is created, the <i>Media Viewer</i> window will display the "
 "stream."
 msgstr ""
 
-#: share/lua/http/index.html:269
+#: share/lua/http/index.html:296
 msgid ""
 "Volume will be controlled by the player, and not the <i>Main Controls</i>."
 msgstr ""
 
-#: share/lua/http/index.html:272
+#: share/lua/http/index.html:299
 msgid ""
 "The current playing item will be streamed. If there is no currently playing "
 "item, the first selected item from the <i>Library</i> will be the subject of "
 "the stream."
 msgstr ""
 
-#: share/lua/http/index.html:275
+#: share/lua/http/index.html:302
 msgid ""
 "To stop the stream and resume normal controls, click the <i>Open Stream</i> "
 "button again."
 msgstr ""
 
-#: share/lua/http/index.html:278
+#: share/lua/http/index.html:305
 msgid "Are you sure you wish to create the stream?"
 msgstr "Ești sigur că dorești să creezi fluxul?"
 
-#: modules/gui/qt/ui/about.h:285 modules/gui/qt/ui/open.h:257
-#: modules/gui/qt/ui/podcast_configuration.h:98
-msgid "Dialog"
-msgstr "Dialog"
-
-#: modules/gui/qt/ui/equalizer.h:129 modules/gui/qt/ui/open_disk.h:293
-#: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:406
-#: modules/gui/qt/ui/sprefs_input.h:353
-#: modules/gui/qt/ui/sprefs_interface.h:526
-#: modules/gui/qt/ui/sprefs_subtitles.h:286
-#: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
-msgid "Form"
-msgstr "Formular"
-
-#: modules/gui/qt/ui/equalizer.h:132
-msgid "Preset"
-msgstr "Profil prestabilit"
-
-#: modules/gui/qt/ui/equalizer.h:134
-msgid "0.00 dB"
-msgstr "0.00 dB"
-
-#: modules/gui/qt/ui/messages_panel.h:137
-msgid "&Verbosity:"
-msgstr "&Detaliere:"
-
-#: modules/gui/qt/ui/messages_panel.h:138
-msgid "&Filter:"
-msgstr "&Filtru:"
-
-#: modules/gui/qt/ui/messages_panel.h:139
-msgid "&Save as..."
-msgstr "&Salvează ca..."
-
-#: modules/gui/qt/ui/messages_panel.h:141
-msgid "Modules Tree"
-msgstr "Arbore de module"
-
-#: modules/gui/qt/ui/open.h:260
-msgid "Show extended options"
-msgstr "Arată opțiunile extinse"
-
-#: modules/gui/qt/ui/open.h:262
-msgid "Show &more options"
-msgstr "Arată mai &multe opțiuni"
-
-#: modules/gui/qt/ui/open.h:265
-msgid "Change the caching for the media"
-msgstr "Schimbă stocarea în cache pentru media"
-
-#: modules/gui/qt/ui/open.h:267
-msgid " ms"
-msgstr " ms"
-
-#: modules/gui/qt/ui/open.h:268
-msgid "MRL"
-msgstr "MRL"
-
-#: modules/gui/qt/ui/open.h:269
-msgid "Start Time"
-msgstr "Timpul de start"
-
-#: modules/gui/qt/ui/open.h:270
-msgid "Stop Time"
-msgstr ""
-
-#: modules/gui/qt/ui/open.h:271
-msgid "Edit Options"
-msgstr "Editare opțiuni"
-
-#: modules/gui/qt/ui/open.h:272
-msgid "Extra media"
-msgstr "Media suplimentar"
-
-#: modules/gui/qt/ui/open.h:274
-msgid "Complete MRL for VLC internal"
-msgstr "MRL intern complet pentru VLC"
-
-#: modules/gui/qt/ui/open.h:277
-msgid "Select the file"
-msgstr "Selectează fișierul"
-
-#: modules/gui/qt/ui/open.h:281
-msgid "Change the start time for the media"
-msgstr "Schimbă timpul de start pentru media"
-
-#: modules/gui/qt/ui/open.h:283 modules/gui/qt/ui/open.h:287
-msgid "HH'H':mm'm':ss's'.zzz"
-msgstr "HH'H':mm'm':ss's'.zzz"
-
-#: modules/gui/qt/ui/open.h:285
-msgid "Change the stop time for the media"
-msgstr ""
-
-#: modules/gui/qt/ui/open.h:288
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr "Redă sincron alt media (fișier audio suplimentar, ...)"
-
-#: modules/gui/qt/ui/open_capture.h:94
-msgid "Capture mode"
-msgstr "Mod de captură"
-
-#: modules/gui/qt/ui/open_capture.h:96
-msgid "Select the capture device type"
-msgstr "Selectează tipul dispozitivului de captură"
-
-#: modules/gui/qt/ui/open_capture.h:98
-msgid "Device Selection"
-msgstr "Selecție de dispozitiv"
-
-#: modules/gui/qt/ui/open_capture.h:99
-msgid "Options"
-msgstr "Opțiuni"
-
-#: modules/gui/qt/ui/open_capture.h:101
-msgid "Access advanced options to tweak the device"
-msgstr ""
-
-#: modules/gui/qt/ui/open_capture.h:103
-msgid "Advanced options..."
-msgstr "Opțiuni avansate..."
-
-#: modules/gui/qt/ui/open_disk.h:294
-msgid "Disc Selection"
-msgstr "Selecție de disc"
-
-#: modules/gui/qt/ui/open_disk.h:298
-msgid "SVCD/VCD"
-msgstr "SVCD/VCD"
-
-#: modules/gui/qt/ui/open_disk.h:300
-msgid "Disable Disc Menus"
-msgstr "Dezactivează meniurile de disc"
-
-#: modules/gui/qt/ui/open_disk.h:302
-msgid "No disc menus"
-msgstr "Fără meniuri de disc"
-
-#: modules/gui/qt/ui/open_disk.h:303
-msgid "Disc device"
-msgstr "Dispozitivul discului"
-
-#: modules/gui/qt/ui/open_disk.h:305
-msgid "Starting Position"
-msgstr "Poziție de start"
-
-#: modules/gui/qt/ui/open_disk.h:308
-msgid "Audio and Subtitles"
-msgstr "Audio și subtitluri"
-
-#: modules/gui/qt/ui/open_file.h:142
-msgid "Use a sub&title file"
-msgstr "Folosește un fișier sub&titlu"
-
-#: modules/gui/qt/ui/open_file.h:144
-msgid "Select the subtitle file"
-msgstr "Selectează fișierul subtitlu"
-
-#: modules/gui/qt/ui/open_file.h:148
-msgid "Choose one or more media file to open"
-msgstr "Alege unul sau mai multe fișiere media de deschis"
-
-#: modules/gui/qt/ui/open_file.h:150
-msgid "File Selection"
-msgstr "Selecție de fișier"
-
-#: modules/gui/qt/ui/open_file.h:151
-msgid "You can select local files with the following list and buttons."
-msgstr "Poți selecta fișiere locale folosind lista și butoanele următoare."
-
-#: modules/gui/qt/ui/open_file.h:152
-msgid "Add..."
-msgstr "Adaugă..."
-
-#: modules/gui/qt/ui/open_net.h:94
-msgid "Network Protocol"
-msgstr "Protocol de rețea"
-
-#: modules/gui/qt/ui/open_net.h:95
-msgid "Please enter a network URL:"
-msgstr "Te rog introdu un URL de rețea:"
-
-#: modules/gui/qt/ui/profiles.h:699
-msgid "Profile edition"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:700
-msgid "FLAC"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:701
-msgid "MP&4/MOV"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:702
-msgid "Ogg/Ogm"
-msgstr "Ogg/Ogm"
-
-#: modules/gui/qt/ui/profiles.h:703
-msgid "M&KV"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:704
-msgid "M&JPEG"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:705
-msgid "MPEG-PS"
-msgstr "MPEG-PS"
-
-#: modules/gui/qt/ui/profiles.h:706
-msgid "F&LV"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:707
-msgid "&MPEG-TS"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:708
-msgid "RAW"
-msgstr "RAW"
-
-#: modules/gui/qt/ui/profiles.h:709
-msgid "WAV"
-msgstr "WAV"
-
-#: modules/gui/qt/ui/profiles.h:710
-msgid "Webm"
-msgstr "Webm"
-
-#: modules/gui/qt/ui/profiles.h:711
-msgid "MPEG &1"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:712
-msgid "AVI"
-msgstr "AVI"
-
-#: modules/gui/qt/ui/profiles.h:713
-msgid "ASF/WMV"
-msgstr "ASF/WMV"
-
-#: modules/gui/qt/ui/profiles.h:714
-msgid "MP&3"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:715
-msgid "Features"
-msgstr "Caracteristici"
-
-#: modules/gui/qt/ui/profiles.h:717
-msgid "Streamable"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:718
-msgid "Chapters"
-msgstr "Capitole"
-
-#: modules/gui/qt/ui/profiles.h:721
-msgid "Menus"
-msgstr "Meniuri"
-
-#: modules/gui/qt/ui/profiles.h:728
-msgid "Fra&me Rate"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:729
-msgid "Same as source"
-msgstr "La fel ca sursa"
-
-#: modules/gui/qt/ui/profiles.h:731
-msgid " fps"
-msgstr " fps"
-
-#: modules/gui/qt/ui/profiles.h:732
-msgid "Custom options"
-msgstr "Opțiuni personalizate"
-
-#: modules/gui/qt/ui/profiles.h:733
-msgid "&Quality"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
-msgid "Not Used"
-msgstr "Nu se folosește"
-
-#: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:755
-msgid " kb/s"
-msgstr " kb/s"
-
-#: modules/gui/qt/ui/profiles.h:737 modules/gui/qt/ui/profiles.h:757
-msgid "Encoding parameters"
-msgstr "Parametri pentru codare"
-
-#: modules/gui/qt/ui/profiles.h:740
-msgid "Frame size"
-msgstr "Mărime cadru"
-
-#: modules/gui/qt/ui/profiles.h:743 modules/gui/qt/ui/profiles.h:746
-msgid "px"
-msgstr "px"
-
-#: modules/gui/qt/ui/profiles.h:756
-msgid "Sa&mple Rate"
-msgstr ""
-
-#: modules/gui/qt/ui/profiles.h:764
-msgid "Profile &Name"
-msgstr ""
-
-#: modules/gui/qt/ui/sout.h:200
-msgid "Set up media sources to stream"
-msgstr ""
-
-#: modules/gui/qt/ui/sout.h:202
-msgid "Destination Setup"
-msgstr ""
-
-#: modules/gui/qt/ui/sout.h:203
-msgid "Select destinations to stream to"
-msgstr ""
-
-#: modules/gui/qt/ui/sout.h:204
-msgid ""
-"Add destinations following the streaming methods you need. Be sure to check "
-"with transcoding that the format is compatible with the method used."
-msgstr ""
-"Adăugați destinații în funcție de metodele necesare de difuzare prin flux. "
-"Asigurați-vă la transcodare că formatul este compatibil cu metoda folosită."
-
-#: modules/gui/qt/ui/sout.h:205
-msgid "New destination"
-msgstr "Destinație nouă"
-
-#: modules/gui/qt/ui/sout.h:207
-msgid "Display locally"
-msgstr "Afișează local"
-
-#: modules/gui/qt/ui/sout.h:209
-msgid "Transcoding Options"
-msgstr "Opțiuni de transcodare"
-
-#: modules/gui/qt/ui/sout.h:210
-msgid "Select and choose transcoding options"
-msgstr ""
-
-#: modules/gui/qt/ui/sout.h:211
-msgid "Activate Transcoding"
-msgstr "Activează transcodarea"
-
-#: modules/gui/qt/ui/sout.h:212
-msgid "Option Setup"
-msgstr ""
-
-#: modules/gui/qt/ui/sout.h:213
-msgid "Set up any additional options for streaming"
-msgstr ""
-
-#: modules/gui/qt/ui/sout.h:214
-msgid "Miscellaneous Options"
-msgstr "Opțiuni diverse"
-
-#: modules/gui/qt/ui/sout.h:215
-msgid "Stream all elementary streams"
-msgstr "Difuzează toate fluxurile elementare"
-
-#: modules/gui/qt/ui/sout.h:216
-msgid "Generated stream output string"
-msgstr "Șirul de ieșire al fluxului generat"
-
-#: modules/gui/qt/ui/sprefs_audio.h:409
-msgid " %"
-msgstr " %"
-
-#: modules/gui/qt/ui/sprefs_audio.h:412
-msgid "Output module:"
-msgstr "Modul de ieșire:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:415
-msgid "Use S/PDIF when available"
-msgstr "Folosește S/PDIF atunci când este disponibil"
-
-#: modules/gui/qt/ui/sprefs_audio.h:417
-msgid "Effects"
-msgstr "Efecte"
-
-#: modules/gui/qt/ui/sprefs_audio.h:418
-msgid "Visualization:"
-msgstr "Vizualizare:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:419
-msgid "Enable Time-Stretching audio"
-msgstr "Activează întinderea temporală pe audio"
-
-#: modules/gui/qt/ui/sprefs_audio.h:420
-msgid "Replay gain mode:"
-msgstr "Modul nivelului de redare:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:421
-msgid "Normalize volume to:"
-msgstr "Normalizează volumul la:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:422
-msgid "Tracks"
-msgstr "Piste"
-
-#: modules/gui/qt/ui/sprefs_audio.h:423
-msgid "Preferred audio language:"
-msgstr "Limbă audio preferată:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:424
-msgid "Password:"
-msgstr "Parolă:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:425
-msgid "Username:"
-msgstr "Utilizator:"
-
-#: modules/gui/qt/ui/sprefs_audio.h:426
-msgid "Submit played tracks stats to Last.fm"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_input.h:354
-msgid "Codecs"
-msgstr "Codecuri"
-
-#: modules/gui/qt/ui/sprefs_input.h:355
-msgid "x264 profile and level selection"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_input.h:356
-msgid "Hardware-accelerated decoding"
-msgstr "Decodare prin accelerare hardware"
-
-#: modules/gui/qt/ui/sprefs_input.h:357
-msgid "Video quality post-processing level"
-msgstr "Nivel de post procesare a calității video"
-
-#: modules/gui/qt/ui/sprefs_input.h:358
-msgid "Skip H.264 in-loop deblocking filter"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_input.h:359
-msgid "x264 preset and tuning selection"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_input.h:361
-msgid "Optical drive"
-msgstr "Unitate optică"
-
-#: modules/gui/qt/ui/sprefs_input.h:362
-msgid "Default optical device"
-msgstr "Dispozitiv optic implicit"
-
-#: modules/gui/qt/ui/sprefs_input.h:366
-msgid "Damaged or incomplete AVI file"
-msgstr "Fișier AVI deteriorat, sau incomplet"
-
-#: modules/gui/qt/ui/sprefs_input.h:369
-msgid "HTTP proxy URL"
-msgstr "URL de proxy HTTP"
-
-#: modules/gui/qt/ui/sprefs_input.h:370
-msgid "HTTP (default)"
-msgstr "HTTP (implicit)"
-
-#: modules/gui/qt/ui/sprefs_input.h:371
-msgid "RTP over RTSP (TCP)"
-msgstr "RTP peste RTSP (TCP)"
-
-#: modules/gui/qt/ui/sprefs_input.h:372
-msgid "Live555 stream transport"
-msgstr "Transport de flux Live555"
-
-#: modules/gui/qt/ui/sprefs_input.h:373
-msgid "Default caching policy"
-msgstr "Politica implicită de stocare în cache"
-
-#: modules/gui/qt/ui/sprefs_interface.h:528
-msgid "Menus language:"
-msgstr "Limba meniurilor:"
-
-#: modules/gui/qt/ui/sprefs_interface.h:529
-msgid "Look and feel"
-msgstr "Aspect și percepție"
-
-#: modules/gui/qt/ui/sprefs_interface.h:530
-msgid "Use custom skin"
-msgstr "Folosește o tematică personalizată"
-
-#: modules/gui/qt/ui/sprefs_interface.h:532
-msgid "This is VLC's default interface, with a native look and feel."
-msgstr ""
-"Aceasta este interfața implicită a VLC, cu un aspect și o percepție nativă."
-
-#: modules/gui/qt/ui/sprefs_interface.h:534
-msgid "Use native style"
-msgstr "Foloșeste stilul nativ"
-
-#: modules/gui/qt/ui/sprefs_interface.h:535
-msgid "Resize interface to video size"
-msgstr "Redimensionează interfața la dimensiunea video"
-
-#: modules/gui/qt/ui/sprefs_interface.h:536
-msgid "Show controls in full screen mode"
-msgstr "Arată controalele în modul pe tot ecranul"
-
-#: modules/gui/qt/ui/sprefs_interface.h:537
-msgid "Pause playback when minimized"
-msgstr "Pune redarea în pauză când este minimizat"
-
-#: modules/gui/qt/ui/sprefs_interface.h:538
-msgid "Show media change popup:"
-msgstr "Arată o notificare la schimarea media:"
-
-#: modules/gui/qt/ui/sprefs_interface.h:539
-msgid "Start in minimal view mode"
-msgstr "Pornește în modul de vizualizare minimal"
-
-#: modules/gui/qt/ui/sprefs_interface.h:540
-msgid "Force window style:"
-msgstr "Forțează stilul de fereastră:"
-
-#: modules/gui/qt/ui/sprefs_interface.h:541
-msgid "Integrate video in interface"
-msgstr "Integrează video în interfață"
-
-#: modules/gui/qt/ui/sprefs_interface.h:542
-msgid "Show systray icon"
-msgstr "Arată o pictogramă în zona de notificare"
-
-#: modules/gui/qt/ui/sprefs_interface.h:543
-msgid "Auto raising the interface:"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_interface.h:544
-msgid "Skin resource file:"
-msgstr "Fișier de resursă tematică:"
-
-#: modules/gui/qt/ui/sprefs_interface.h:546
-msgid "Playlist and Instances"
-msgstr "Liste de redare și instanțe"
-
-#: modules/gui/qt/ui/sprefs_interface.h:549
-msgid "Pause on the last frame of a video"
-msgstr "Pune pauză pe ultimul cadru al unui video"
-
-#: modules/gui/qt/ui/sprefs_interface.h:552
-msgid "Allow only one instance"
-msgstr "Permite numai o singură instanță"
-
-#: modules/gui/qt/ui/sprefs_interface.h:554
-msgid "Activate updates notifier"
-msgstr "Activează notificarea pentru disponibilitatea actualizărilor"
-
-#: modules/gui/qt/ui/sprefs_interface.h:556
-msgid "Every "
-msgstr "La fiecare "
-
-#: modules/gui/qt/ui/sprefs_interface.h:557
-msgid "Save recently played items"
-msgstr "Salvează elementele redate recent"
-
-#: modules/gui/qt/ui/sprefs_interface.h:560
-msgid "Separate words by | (without space)"
-msgstr "Separă cuvintele cu | (făsă spații)"
-
-#: modules/gui/qt/ui/sprefs_interface.h:563
-msgid "Operating System Integration"
-msgstr "Integrare în sistemul de operare"
-
-#: modules/gui/qt/ui/sprefs_interface.h:564
-msgid "File extensions association"
-msgstr "Asocieri de extensii de fișier"
-
-#: modules/gui/qt/ui/sprefs_interface.h:565
-msgid "Set up associations..."
-msgstr "Stabilește asocierile..."
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:288
-msgid "Enable On Screen Display (OSD)"
-msgstr "Activează afișarea pe ecran (OSD)"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:289
-msgid "Show media title on video start"
-msgstr "Arată titlul media la pornirea video"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:291
-msgid "Enable subtitles"
-msgstr "Activează subtitluri"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:292
-msgid "Subtitle Language"
-msgstr "Limbă subtitlu"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:294
-msgid "Default encoding"
-msgstr "Codare implicită"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:295
-msgid "Subtitle effects"
-msgstr "Efecte subtitlu"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:301
-msgid "Add a shadow"
-msgstr "Adaugă o umbră"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:303
-#: modules/gui/qt/ui/video_effects.h:1227
-#: modules/gui/qt/ui/video_effects.h:1231
-#: modules/gui/qt/ui/video_effects.h:1234
-#: modules/gui/qt/ui/video_effects.h:1235
-#: modules/gui/qt/ui/video_effects.h:1269
-#: modules/gui/qt/ui/video_effects.h:1271
-#: modules/gui/qt/ui/video_effects.h:1281
-#: modules/gui/qt/ui/video_effects.h:1282
-msgid " px"
-msgstr " px"
-
-#: modules/gui/qt/ui/sprefs_subtitles.h:304
-msgid "Add a background"
-msgstr "Adaugă un fundal"
-
-#: modules/gui/qt/ui/sprefs_video.h:313
-msgid "O&utput"
-msgstr ""
-
-#: modules/gui/qt/ui/sprefs_video.h:317
-msgid "DirectX"
-msgstr "DirectX"
-
-#: modules/gui/qt/ui/sprefs_video.h:319
-msgid "Accelerated video output (Overlay)"
-msgstr "Ieșire video accelerată (overlay)"
-
-#: modules/gui/qt/ui/sprefs_video.h:320
-msgid "KVA"
-msgstr "KVA"
-
-#: modules/gui/qt/ui/sprefs_video.h:324
-msgid "Deinterlacing"
-msgstr "Deîntrețesere"
-
-#: modules/gui/qt/ui/sprefs_video.h:326
-msgid "Force Aspect Ratio"
-msgstr "Forțează raportul de aspect"
-
-#: modules/gui/qt/ui/sprefs_video.h:331
-msgid "vlc-snap"
-msgstr "captură-vlc"
-
-#: modules/gui/qt/ui/streampanel.h:169
-msgid "Stuff"
-msgstr "Chestii"
-
-#: modules/gui/qt/ui/streampanel.h:171
-msgid "Edit settings"
-msgstr "Modifică setările"
-
-#: modules/gui/qt/ui/streampanel.h:172
-msgid "Control"
-msgstr "Controale"
-
-#: modules/gui/qt/ui/streampanel.h:173
-msgid "Run manually"
-msgstr "Rulează manual"
-
-#: modules/gui/qt/ui/streampanel.h:174
-msgid "Setup schedule"
-msgstr "Configurează planificarea"
-
-#: modules/gui/qt/ui/streampanel.h:175
-msgid "Run on schedule"
-msgstr "Rulează conform planificării"
-
-#: modules/gui/qt/ui/streampanel.h:176
-msgid "Status"
-msgstr "Stare"
-
-#: modules/gui/qt/ui/streampanel.h:177
-msgid "P/P"
-msgstr "P/P"
-
-#: modules/gui/qt/ui/streampanel.h:180
-msgid "Prev"
-msgstr "Precedent"
-
-#: modules/gui/qt/ui/streampanel.h:181
-msgid "Add Input"
-msgstr "Adaugă o intrare"
-
-#: modules/gui/qt/ui/streampanel.h:182
-msgid "Edit Input"
-msgstr "Editează intrarea"
-
-#: modules/gui/qt/ui/streampanel.h:183
-msgid "Clear List"
-msgstr "Golește lista"
-
-#: modules/gui/qt/ui/update.h:145
-msgid "Check for VLC updates"
-msgstr "Se caută actualizări pentru VLC"
-
-#: modules/gui/qt/ui/update.h:146
-msgid "Launching an update request..."
-msgstr "Se pornește cererea de actualizare..."
-
-#: modules/gui/qt/ui/update.h:147
-msgid "Do you want to download it?"
-msgstr "Vrei să descarci?"
-
-#: modules/gui/qt/ui/video_effects.h:1225
-msgid "Essential"
-msgstr "Esențial"
-
-#: modules/gui/qt/ui/video_effects.h:1239
-#: modules/gui/qt/ui/video_effects.h:1248
-msgid ">HHHHHH;#"
-msgstr ">HHHHHH;#"
-
-#: modules/gui/qt/ui/video_effects.h:1240
-msgid "Negate colors"
-msgstr "Negativează culorile"
-
-#: modules/gui/qt/ui/video_effects.h:1253
-msgid "Colors"
-msgstr "Culori"
-
-#: modules/gui/qt/ui/video_effects.h:1254
-msgid "Interactive Zoom"
-msgstr "Zoom interactiv"
-
-#: modules/gui/qt/ui/video_effects.h:1260
-msgid "Angle"
-msgstr "Unghi"
-
-#: modules/gui/qt/ui/video_effects.h:1267
-#: modules/gui/qt/ui/video_effects.h:1284
-msgid "..."
-msgstr "..."
-
-#: modules/gui/qt/ui/video_effects.h:1272
-msgid "full"
-msgstr "complet"
-
-#: modules/gui/qt/ui/video_effects.h:1274
-msgid "none"
-msgstr "fără"
-
-#: modules/gui/qt/ui/video_effects.h:1278
-msgid "Logo erase"
-msgstr "Ștergere de siglă"
-
-#: modules/gui/qt/ui/video_effects.h:1283
-msgid "Mask"
-msgstr "Mască"
-
-#: modules/gui/qt/ui/video_effects.h:1286
-msgid "Anaglyph 3D"
-msgstr ""
-
-#: modules/gui/qt/ui/video_effects.h:1287
-msgid "Mirror"
-msgstr "Oglindă"
-
-#: modules/gui/qt/ui/video_effects.h:1291
-msgid "Motion detect"
-msgstr "Detecție de mișcare"
-
-#: modules/gui/qt/ui/video_effects.h:1292
-msgid "Spatial blur"
-msgstr "Neclaritate spațială"
-
-#: modules/gui/qt/ui/video_effects.h:1296
-msgid "Anti-Flickering"
-msgstr "Anti pâlpâire"
-
-#: modules/gui/qt/ui/video_effects.h:1297
-msgid "Soften"
-msgstr "Netezire"
-
-#: modules/gui/qt/ui/video_effects.h:1298
-msgid "Denoiser"
-msgstr ""
-
-#: modules/gui/qt/ui/video_effects.h:1299
-msgid "Spatial luma strength"
-msgstr ""
-
-#: modules/gui/qt/ui/video_effects.h:1300
-msgid "Temporal luma strength"
-msgstr ""
-
-#: modules/gui/qt/ui/video_effects.h:1301
-msgid "Spatial chroma strength"
-msgstr ""
-
-#: modules/gui/qt/ui/video_effects.h:1302
-msgid "Temporal chroma strength"
-msgstr ""
-
-#: modules/gui/qt/ui/vlm.h:283
-msgid "VLM configurator"
-msgstr "Configurator VLM"
-
-#: modules/gui/qt/ui/vlm.h:284
-msgid "Media Manager Edition"
-msgstr "Ediție Media Manager"
-
-#: modules/gui/qt/ui/vlm.h:285
-msgid "Name:"
-msgstr "Nume:"
-
-#: modules/gui/qt/ui/vlm.h:287
-msgid "Input:"
-msgstr "Intrare:"
-
-#: modules/gui/qt/ui/vlm.h:288
-msgid "Select Input"
-msgstr "Selectează intrarea"
-
-#: modules/gui/qt/ui/vlm.h:289
-msgid "Output:"
-msgstr "Ieșire:"
-
-#: modules/gui/qt/ui/vlm.h:290
-msgid "Select Output"
-msgstr "Selectează ieșirea"
-
-#: modules/gui/qt/ui/vlm.h:291
-msgid "Time Control"
-msgstr "Control de timp"
-
-#: modules/gui/qt/ui/vlm.h:292
-msgid "Mux Control"
-msgstr "Control de multiplexor"
-
-#: modules/gui/qt/ui/vlm.h:293
-msgid "Muxer:"
-msgstr "Multiplexor:"
-
-#: modules/gui/qt/ui/vlm.h:294
-msgid "AAAA; "
-msgstr "AAAA; "
-
-#: modules/gui/qt/ui/vlm.h:299
-msgid "Media Manager List"
-msgstr "Lista gestionarului media"
+#~ msgid "Dialog"
+#~ msgstr "Dialog"
+
+#~ msgid "Form"
+#~ msgstr "Formular"
+
+#~ msgid "Preset"
+#~ msgstr "Profil prestabilit"
+
+#~ msgid "0.00 dB"
+#~ msgstr "0.00 dB"
+
+#~ msgid "&Verbosity:"
+#~ msgstr "&Detaliere:"
+
+#~ msgid "&Filter:"
+#~ msgstr "&Filtru:"
+
+#~ msgid "&Save as..."
+#~ msgstr "&Salvează ca..."
+
+#~ msgid "Modules Tree"
+#~ msgstr "Arbore de module"
+
+#~ msgid "Show extended options"
+#~ msgstr "Arată opțiunile extinse"
+
+#~ msgid "Show &more options"
+#~ msgstr "Arată mai &multe opțiuni"
+
+#~ msgid "Change the caching for the media"
+#~ msgstr "Schimbă stocarea în cache pentru media"
+
+#~ msgid " ms"
+#~ msgstr " ms"
+
+#~ msgid "MRL"
+#~ msgstr "MRL"
+
+#~ msgid "Start Time"
+#~ msgstr "Timpul de start"
+
+#~ msgid "Edit Options"
+#~ msgstr "Editare opțiuni"
+
+#~ msgid "Extra media"
+#~ msgstr "Media suplimentar"
+
+#~ msgid "Complete MRL for VLC internal"
+#~ msgstr "MRL intern complet pentru VLC"
+
+#~ msgid "Select the file"
+#~ msgstr "Selectează fișierul"
+
+#~ msgid "Change the start time for the media"
+#~ msgstr "Schimbă timpul de start pentru media"
+
+#~ msgid "HH'H':mm'm':ss's'.zzz"
+#~ msgstr "HH'H':mm'm':ss's'.zzz"
+
+#~ msgid "Play another media synchronously (extra audio file, ...)"
+#~ msgstr "Redă sincron alt media (fișier audio suplimentar, ...)"
+
+#~ msgid "Capture mode"
+#~ msgstr "Mod de captură"
+
+#~ msgid "Select the capture device type"
+#~ msgstr "Selectează tipul dispozitivului de captură"
+
+#~ msgid "Device Selection"
+#~ msgstr "Selecție de dispozitiv"
+
+#~ msgid "Options"
+#~ msgstr "Opțiuni"
+
+#~ msgid "Advanced options..."
+#~ msgstr "Opțiuni avansate..."
+
+#~ msgid "Disc Selection"
+#~ msgstr "Selecție de disc"
+
+#~ msgid "SVCD/VCD"
+#~ msgstr "SVCD/VCD"
+
+#~ msgid "Disable Disc Menus"
+#~ msgstr "Dezactivează meniurile de disc"
+
+#~ msgid "No disc menus"
+#~ msgstr "Fără meniuri de disc"
+
+#~ msgid "Disc device"
+#~ msgstr "Dispozitivul discului"
+
+#~ msgid "Starting Position"
+#~ msgstr "Poziție de start"
+
+#~ msgid "Audio and Subtitles"
+#~ msgstr "Audio și subtitluri"
+
+#~ msgid "Use a sub&title file"
+#~ msgstr "Folosește un fișier sub&titlu"
+
+#~ msgid "Select the subtitle file"
+#~ msgstr "Selectează fișierul subtitlu"
+
+#~ msgid "Choose one or more media file to open"
+#~ msgstr "Alege unul sau mai multe fișiere media de deschis"
+
+#~ msgid "File Selection"
+#~ msgstr "Selecție de fișier"
+
+#~ msgid "You can select local files with the following list and buttons."
+#~ msgstr "Poți selecta fișiere locale folosind lista și butoanele următoare."
+
+#~ msgid "Add..."
+#~ msgstr "Adaugă..."
+
+#~ msgid "Network Protocol"
+#~ msgstr "Protocol de rețea"
+
+#~ msgid "Please enter a network URL:"
+#~ msgstr "Te rog introdu un URL de rețea:"
+
+#~ msgid "Ogg/Ogm"
+#~ msgstr "Ogg/Ogm"
+
+#~ msgid "MPEG-PS"
+#~ msgstr "MPEG-PS"
+
+#~ msgid "RAW"
+#~ msgstr "RAW"
+
+#~ msgid "WAV"
+#~ msgstr "WAV"
+
+#~ msgid "Webm"
+#~ msgstr "Webm"
+
+#~ msgid "AVI"
+#~ msgstr "AVI"
+
+#~ msgid "ASF/WMV"
+#~ msgstr "ASF/WMV"
+
+#~ msgid "Features"
+#~ msgstr "Caracteristici"
+
+#~ msgid "Chapters"
+#~ msgstr "Capitole"
+
+#~ msgid "Menus"
+#~ msgstr "Meniuri"
+
+#~ msgid "Same as source"
+#~ msgstr "La fel ca sursa"
+
+#~ msgid " fps"
+#~ msgstr " fps"
+
+#~ msgid "Custom options"
+#~ msgstr "Opțiuni personalizate"
+
+#~ msgid "Not Used"
+#~ msgstr "Nu se folosește"
+
+#~ msgid " kb/s"
+#~ msgstr " kb/s"
+
+#~ msgid "Encoding parameters"
+#~ msgstr "Parametri pentru codare"
+
+#~ msgid "Frame size"
+#~ msgstr "Mărime cadru"
+
+#~ msgid "px"
+#~ msgstr "px"
+
+#~ msgid ""
+#~ "Add destinations following the streaming methods you need. Be sure to "
+#~ "check with transcoding that the format is compatible with the method used."
+#~ msgstr ""
+#~ "Adăugați destinații în funcție de metodele necesare de difuzare prin "
+#~ "flux. Asigurați-vă la transcodare că formatul este compatibil cu metoda "
+#~ "folosită."
+
+#~ msgid "New destination"
+#~ msgstr "Destinație nouă"
+
+#~ msgid "Display locally"
+#~ msgstr "Afișează local"
+
+#~ msgid "Transcoding Options"
+#~ msgstr "Opțiuni de transcodare"
+
+#~ msgid "Activate Transcoding"
+#~ msgstr "Activează transcodarea"
+
+#~ msgid "Miscellaneous Options"
+#~ msgstr "Opțiuni diverse"
+
+#~ msgid "Stream all elementary streams"
+#~ msgstr "Difuzează toate fluxurile elementare"
+
+#~ msgid "Generated stream output string"
+#~ msgstr "Șirul de ieșire al fluxului generat"
+
+#~ msgid " %"
+#~ msgstr " %"
+
+#~ msgid "Output module:"
+#~ msgstr "Modul de ieșire:"
+
+#~ msgid "Use S/PDIF when available"
+#~ msgstr "Folosește S/PDIF atunci când este disponibil"
+
+#~ msgid "Effects"
+#~ msgstr "Efecte"
+
+#~ msgid "Visualization:"
+#~ msgstr "Vizualizare:"
+
+#~ msgid "Enable Time-Stretching audio"
+#~ msgstr "Activează întinderea temporală pe audio"
+
+#~ msgid "Replay gain mode:"
+#~ msgstr "Modul nivelului de redare:"
+
+#~ msgid "Normalize volume to:"
+#~ msgstr "Normalizează volumul la:"
+
+#~ msgid "Tracks"
+#~ msgstr "Piste"
+
+#~ msgid "Preferred audio language:"
+#~ msgstr "Limbă audio preferată:"
+
+#~ msgid "Password:"
+#~ msgstr "Parolă:"
+
+#~ msgid "Username:"
+#~ msgstr "Utilizator:"
+
+#~ msgid "Codecs"
+#~ msgstr "Codecuri"
+
+#~ msgid "Hardware-accelerated decoding"
+#~ msgstr "Decodare prin accelerare hardware"
+
+#~ msgid "Video quality post-processing level"
+#~ msgstr "Nivel de post procesare a calității video"
+
+#~ msgid "Optical drive"
+#~ msgstr "Unitate optică"
+
+#~ msgid "Default optical device"
+#~ msgstr "Dispozitiv optic implicit"
+
+#~ msgid "Damaged or incomplete AVI file"
+#~ msgstr "Fișier AVI deteriorat, sau incomplet"
+
+#~ msgid "HTTP proxy URL"
+#~ msgstr "URL de proxy HTTP"
+
+#~ msgid "HTTP (default)"
+#~ msgstr "HTTP (implicit)"
+
+#~ msgid "RTP over RTSP (TCP)"
+#~ msgstr "RTP peste RTSP (TCP)"
+
+#~ msgid "Live555 stream transport"
+#~ msgstr "Transport de flux Live555"
+
+#~ msgid "Default caching policy"
+#~ msgstr "Politica implicită de stocare în cache"
+
+#~ msgid "Menus language:"
+#~ msgstr "Limba meniurilor:"
+
+#~ msgid "Look and feel"
+#~ msgstr "Aspect și percepție"
+
+#~ msgid "Use custom skin"
+#~ msgstr "Folosește o tematică personalizată"
+
+#~ msgid "This is VLC's default interface, with a native look and feel."
+#~ msgstr ""
+#~ "Aceasta este interfața implicită a VLC, cu un aspect și o percepție "
+#~ "nativă."
+
+#~ msgid "Use native style"
+#~ msgstr "Foloșeste stilul nativ"
+
+#~ msgid "Resize interface to video size"
+#~ msgstr "Redimensionează interfața la dimensiunea video"
+
+#~ msgid "Show controls in full screen mode"
+#~ msgstr "Arată controalele în modul pe tot ecranul"
+
+#~ msgid "Pause playback when minimized"
+#~ msgstr "Pune redarea în pauză când este minimizat"
+
+#~ msgid "Show media change popup:"
+#~ msgstr "Arată o notificare la schimarea media:"
+
+#~ msgid "Start in minimal view mode"
+#~ msgstr "Pornește în modul de vizualizare minimal"
+
+#~ msgid "Force window style:"
+#~ msgstr "Forțează stilul de fereastră:"
+
+#~ msgid "Integrate video in interface"
+#~ msgstr "Integrează video în interfață"
+
+#~ msgid "Show systray icon"
+#~ msgstr "Arată o pictogramă în zona de notificare"
+
+#~ msgid "Skin resource file:"
+#~ msgstr "Fișier de resursă tematică:"
+
+#~ msgid "Playlist and Instances"
+#~ msgstr "Liste de redare și instanțe"
+
+#~ msgid "Pause on the last frame of a video"
+#~ msgstr "Pune pauză pe ultimul cadru al unui video"
+
+#~ msgid "Allow only one instance"
+#~ msgstr "Permite numai o singură instanță"
+
+#~ msgid "Activate updates notifier"
+#~ msgstr "Activează notificarea pentru disponibilitatea actualizărilor"
+
+#~ msgid "Every "
+#~ msgstr "La fiecare "
+
+#~ msgid "Save recently played items"
+#~ msgstr "Salvează elementele redate recent"
+
+#~ msgid "Separate words by | (without space)"
+#~ msgstr "Separă cuvintele cu | (făsă spații)"
+
+#~ msgid "Operating System Integration"
+#~ msgstr "Integrare în sistemul de operare"
+
+#~ msgid "File extensions association"
+#~ msgstr "Asocieri de extensii de fișier"
+
+#~ msgid "Set up associations..."
+#~ msgstr "Stabilește asocierile..."
+
+#~ msgid "Enable On Screen Display (OSD)"
+#~ msgstr "Activează afișarea pe ecran (OSD)"
+
+#~ msgid "Show media title on video start"
+#~ msgstr "Arată titlul media la pornirea video"
+
+#~ msgid "Enable subtitles"
+#~ msgstr "Activează subtitluri"
+
+#~ msgid "Subtitle Language"
+#~ msgstr "Limbă subtitlu"
+
+#~ msgid "Default encoding"
+#~ msgstr "Codare implicită"
+
+#~ msgid "Subtitle effects"
+#~ msgstr "Efecte subtitlu"
+
+#~ msgid "Add a shadow"
+#~ msgstr "Adaugă o umbră"
+
+#~ msgid " px"
+#~ msgstr " px"
+
+#~ msgid "Add a background"
+#~ msgstr "Adaugă un fundal"
+
+#~ msgid "DirectX"
+#~ msgstr "DirectX"
+
+#~ msgid "Accelerated video output (Overlay)"
+#~ msgstr "Ieșire video accelerată (overlay)"
+
+#~ msgid "KVA"
+#~ msgstr "KVA"
+
+#~ msgid "Deinterlacing"
+#~ msgstr "Deîntrețesere"
+
+#~ msgid "Force Aspect Ratio"
+#~ msgstr "Forțează raportul de aspect"
+
+#~ msgid "vlc-snap"
+#~ msgstr "captură-vlc"
+
+#~ msgid "Stuff"
+#~ msgstr "Chestii"
+
+#~ msgid "Edit settings"
+#~ msgstr "Modifică setările"
+
+#~ msgid "Control"
+#~ msgstr "Controale"
+
+#~ msgid "Run manually"
+#~ msgstr "Rulează manual"
+
+#~ msgid "Setup schedule"
+#~ msgstr "Configurează planificarea"
+
+#~ msgid "Run on schedule"
+#~ msgstr "Rulează conform planificării"
+
+#~ msgid "Status"
+#~ msgstr "Stare"
+
+#~ msgid "P/P"
+#~ msgstr "P/P"
+
+#~ msgid "Prev"
+#~ msgstr "Precedent"
+
+#~ msgid "Add Input"
+#~ msgstr "Adaugă o intrare"
+
+#~ msgid "Edit Input"
+#~ msgstr "Editează intrarea"
+
+#~ msgid "Clear List"
+#~ msgstr "Golește lista"
+
+#~ msgid "Check for VLC updates"
+#~ msgstr "Se caută actualizări pentru VLC"
+
+#~ msgid "Launching an update request..."
+#~ msgstr "Se pornește cererea de actualizare..."
+
+#~ msgid "Essential"
+#~ msgstr "Esențial"
+
+#~ msgid ">HHHHHH;#"
+#~ msgstr ">HHHHHH;#"
+
+#~ msgid "Negate colors"
+#~ msgstr "Negativează culorile"
+
+#~ msgid "Colors"
+#~ msgstr "Culori"
+
+#~ msgid "Interactive Zoom"
+#~ msgstr "Zoom interactiv"
+
+#~ msgid "Angle"
+#~ msgstr "Unghi"
+
+#~ msgid "..."
+#~ msgstr "..."
+
+#~ msgid "full"
+#~ msgstr "complet"
+
+#~ msgid "none"
+#~ msgstr "fără"
+
+#~ msgid "Logo erase"
+#~ msgstr "Ștergere de siglă"
+
+#~ msgid "Mask"
+#~ msgstr "Mască"
+
+#~ msgid "Mirror"
+#~ msgstr "Oglindă"
+
+#~ msgid "Motion detect"
+#~ msgstr "Detecție de mișcare"
+
+#~ msgid "Spatial blur"
+#~ msgstr "Neclaritate spațială"
+
+#~ msgid "Anti-Flickering"
+#~ msgstr "Anti pâlpâire"
+
+#~ msgid "Soften"
+#~ msgstr "Netezire"
+
+#~ msgid "VLM configurator"
+#~ msgstr "Configurator VLM"
+
+#~ msgid "Media Manager Edition"
+#~ msgstr "Ediție Media Manager"
+
+#~ msgid "Name:"
+#~ msgstr "Nume:"
+
+#~ msgid "Input:"
+#~ msgstr "Intrare:"
+
+#~ msgid "Select Input"
+#~ msgstr "Selectează intrarea"
+
+#~ msgid "Output:"
+#~ msgstr "Ieșire:"
+
+#~ msgid "Select Output"
+#~ msgstr "Selectează ieșirea"
+
+#~ msgid "Time Control"
+#~ msgstr "Control de timp"
+
+#~ msgid "Mux Control"
+#~ msgstr "Control de multiplexor"
+
+#~ msgid "Muxer:"
+#~ msgstr "Multiplexor:"
+
+#~ msgid "AAAA; "
+#~ msgstr "AAAA; "
+
+#~ msgid "Media Manager List"
+#~ msgstr "Lista gestionarului media"
 
 #~ msgid "QTSound"
 #~ msgstr "QTSound"

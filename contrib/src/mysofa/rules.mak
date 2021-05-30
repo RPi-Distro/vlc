@@ -9,7 +9,14 @@ ifeq ($(call need_pkg,"libmysofa"),)
 PKGS_FOUND += mysofa
 endif
 
-DEPS_mysofa += pthreads zlib $(DEPS_pthreads) $(DEPS_zlib)
+MYSOFA_CFLAGS   := $(CFLAGS)
+MYSOFA_CXXFLAGS := $(CXXFLAGS)
+DEPS_mysofa += zlib $(DEPS_zlib)
+ifdef HAVE_WIN32
+DEPS_mysofa += pthreads $(DEPS_pthreads)
+MYSOFA_CFLAGS   += -DPTW32_STATIC_LIB
+MYSOFA_CXXFLAGS += -DPTW32_STATIC_LIB
+endif
 
 $(TARBALLS)/libmysofa-$(MYSOFA_VERSION).tar.gz:
 	$(call download_pkg,$(MYSOFA_URL),mysofa)
@@ -21,8 +28,8 @@ mysofa: libmysofa-$(MYSOFA_VERSION).tar.gz .sum-mysofa
 	$(MOVE)
 
 .mysofa: mysofa toolchain.cmake
-	-cd $< && rm CMakeCache.txt
-	cd $< && $(HOSTVARS) $(CMAKE) -DBUILD_TESTS=OFF -DBUILD_SHARED_LIBS=OFF
-	cd $< && $(MAKE) install
+	cd $< && rm -f CMakeCache.txt
+	cd $< && $(HOSTVARS) CFLAGS="$(MYSOFA_CFLAGS)" CXXFLAGS="$(MYSOFA_CXXFLAGS)" $(CMAKE) -DBUILD_TESTS=OFF
+	cd $< && $(CMAKEBUILD) . --target install
 	touch $@
 

@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011-2012 VideoLAN
- * $Id: 7a63a9d7d9f13db7d68e426b448218ced3ae2b2d $
+ * $Id: 8cfdab3206bb2fafab98f3fba87c921da11d0d6a $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -23,7 +23,6 @@
 
 #include <QApplication>
 #include <QPainter>
-#include <QPainterPath>
 #include <QBitmap>
 #include <QFontMetrics>
 #include <QDesktopWidget>

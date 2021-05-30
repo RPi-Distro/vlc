@@ -1,4 +1,13 @@
 #!/bin/sh
 set -e
 
+DEB_HOST_MULTIARCH=$(dpkg-architecture -q DEB_HOST_MULTIARCH)
+
+if ! test -f /usr/lib/$DEB_HOST_MULTIARCH/vlc/plugins/plugins.dat
+then
+  cp -R --preserve /usr/lib/$DEB_HOST_MULTIARCH/vlc/plugins $AUTOPKGTEST_TMP
+  gdb -batch -ex run -ex "bt full" -ex quit --args \
+    /usr/lib/$DEB_HOST_MULTIARCH/vlc/vlc-cache-gen $AUTOPKGTEST_TMP/plugins
+fi
+
 vlc -vvv --ignore-config --list --no-color

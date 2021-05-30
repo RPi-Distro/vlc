@@ -20,9 +20,6 @@ aom: aom-$(AOM_VERSION).tar.gz .sum-aom
 	mkdir -p $@-$(AOM_VERSION)
 	tar xvzfo "$<" -C $@-$(AOM_VERSION)
 	$(APPLY) $(SRC)/aom/aom-target-cpu.patch
-ifdef HAVE_WINSTORE
-	$(APPLY) $(SRC)/aom/aom-pthreads-win32.patch
-endif
 ifdef HAVE_ANDROID
 	$(APPLY) $(SRC)/aom/aom-android-pthreads.patch
 	$(APPLY) $(SRC)/aom/aom-android-cpufeatures.patch
@@ -32,7 +29,14 @@ ifdef HAVE_ANDROID
 	cp $(ANDROID_NDK)/sources/android/cpufeatures/cpu-features.c $(ANDROID_NDK)/sources/android/cpufeatures/cpu-features.h aom/aom_ports/
 endif
 
+AOM_CFLAGS   := $(CFLAGS)
+AOM_CXXFLAGS := $(CXXFLAGS)
 DEPS_aom =
+ifdef HAVE_WIN32
+DEPS_aom += pthreads $(DEPS_pthreads)
+AOM_CFLAGS   += -DPTW32_STATIC_LIB
+AOM_CXXFLAGS += -DPTW32_STATIC_LIB
+endif
 
 AOM_LDFLAGS := $(LDFLAGS)
 
@@ -65,7 +69,7 @@ AOM_CONF += -DAOM_ADS2GAS_REQUIRED=1 -DAOM_ADS2GAS=../build/make/ads2gas.pl -DAO
 endif
 endif
 
-ifdef HAVE_IOS
+ifdef HAVE_DARWIN_OS
 ifneq ($(filter arm aarch64, $(ARCH)),)
 # These targets don't have runtime cpu detection.
 AOM_CONF += -DCONFIG_RUNTIME_CPU_DETECT=0
@@ -89,8 +93,8 @@ endif
 # libaom doesn't allow in-tree builds
 .aom: aom toolchain.cmake
 	cd $< && mkdir -p aom_build
-	cd $</aom_build && LDFLAGS="$(AOM_LDFLAGS)" $(HOSTVARS) $(CMAKE) ../ $(AOM_CONF)
-	cd $</aom_build && $(MAKE)
-	cd $</aom_build && ../../../../contrib/src/pkg-static.sh aom.pc
-	cd $</aom_build && $(MAKE) install
+	cd $</aom_build && LDFLAGS="$(AOM_LDFLAGS)" $(HOSTVARS) CFLAGS="$(AOM_CFLAGS)" CXXFLAGS="$(AOM_CXXFLAGS)" $(CMAKE) ../ $(AOM_CONF)
+	cd $< && $(CMAKEBUILD) aom_build
+	$(call pkg_static,"aom_build/aom.pc")
+	cd $</aom_build && $(CMAKEBUILD) . --target install
 	touch $@

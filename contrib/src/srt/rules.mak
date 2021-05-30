@@ -13,6 +13,8 @@ endif
 
 ifdef HAVE_WIN32
 DEPS_srt += pthreads $(DEPS_pthreads)
+SRT_CFLAGS   += -DPTW32_STATIC_LIB
+SRT_CXXFLAGS += -DPTW32_STATIC_LIB
 endif
 
 $(TARBALLS)/srt-$(SRT_VERSION).tar.gz:
@@ -34,5 +36,5 @@ DEPS_srt = gnutls $(DEPS_gnutls)
 .srt: srt toolchain.cmake
 	cd $< && $(HOSTVARS_PIC) $(CMAKE) \
 		-DENABLE_SHARED=OFF -DUSE_GNUTLS=ON -DENABLE_CXX11=OFF
-	cd $< && $(MAKE) install
+	cd $< && $(CMAKEBUILD) . --target install
 	touch $@

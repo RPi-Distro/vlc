@@ -35,9 +35,19 @@ ifndef HAVE_WIN32
 X264CONF += --enable-pic
 else
 X264CONF += --enable-win32thread
+ifeq ($(ARCH), arm)
+X264_AS = AS="./tools/gas-preprocessor.pl -arch arm -as-type clang -force-thumb -- $(CC) -mimplicit-it=always"
+endif
+ifeq ($(ARCH),aarch64)
+# Configure defaults to gas-preprocessor + armasm64 for this target,
+# unless overridden.
+X264_AS = AS="$(CC)"
+endif
 endif
 ifdef HAVE_CROSS_COMPILE
+ifndef HAVE_DARWIN_OS
 X264CONF += --cross-prefix="$(HOST)-"
+endif
 ifdef HAVE_ANDROID
 # broken text relocations
 ifeq ($(ANDROID_ABI), x86)
@@ -46,6 +56,11 @@ endif
 ifeq ($(ANDROID_ABI), x86_64)
 X264CONF += --disable-asm
 endif
+endif
+endif
+ifdef HAVE_DARWIN_OS
+ifeq ($(ARCH),aarch64)
+X264CONF += --extra-asflags="-arch $(PLATFORM_SHORT_ARCH)"
 endif
 endif
 
@@ -89,7 +104,7 @@ x262: x262-git.tar.gz .sum-x262
 
 .x264: x264
 	$(REQUIRE_GPL)
-	cd $< && $(HOSTVARS) ./configure $(X264CONF)
+	cd $< && $(HOSTVARS) $(X264_AS) ./configure $(X264CONF)
 	cd $< && $(MAKE) install
 	touch $@
 

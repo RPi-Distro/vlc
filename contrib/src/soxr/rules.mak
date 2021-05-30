@@ -32,12 +32,11 @@ endif
 	rm -f $</CMakeCache.txt
 	cd $< && $(HOSTVARS_PIC) $(CMAKE) \
 		$(SOXR_EXTRA_CONF) \
-		-DBUILD_SHARED_LIBS=OFF \
 		-DBUILD_EXAMPLES=OFF \
 		-DBUILD_TESTS=OFF \
 		-DWITH_LSR_BINDINGS=OFF \
 		-DWITH_OPENMP=OFF \
 		-DWITH_AVFFT=ON \
-		-Wno-dev $(CMAKE_GENERATOR)
-	cd $< && $(MAKE) install
+		-Wno-dev
+	cd $< && $(CMAKEBUILD) . --target install
 	touch $@

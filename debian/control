@@ -25,7 +25,6 @@ Build-Depends: autopoint,
                libavc1394-dev (>= 0.5.3) [linux-any],
                libavcodec-dev (>= 7:3.0),
                libavformat-dev (>= 7:3.0),
-               libavresample-dev (>= 7:3.0),
                libbluray-dev (>= 1:1.0.0),
                libcaca-dev (>= 0.99.beta4),
                libcairo2-dev (>= 1.13.1),
@@ -33,7 +32,7 @@ Build-Depends: autopoint,
                libchromaprint-dev (>= 0.6.0),
                libdav1d-dev,
                libdbus-1-dev (>= 1.6.0),
-               libdc1394-22-dev (>= 2.1.0) [linux-any],
+               libdc1394-dev (>= 2.1.0) [linux-any],
                libdca-dev,
                libdvbpsi-dev (>= 1.2.0),
                libdvdnav-dev (>= 4.9.0),
@@ -55,7 +54,6 @@ Build-Depends: autopoint,
                libjack-jackd2-dev | libjack-dev,
                libkate-dev (>= 0.3.0),
                liblirc-dev,
-               liblivemedia-dev (>= 2011.12.23),
                liblua5.2-dev,
                libmad0-dev,
                libmatroska-dev (>= 1.0.0),
@@ -85,7 +83,7 @@ Build-Depends: autopoint,
                libsdl1.2-dev (>= 1.2.10),
                libsecret-1-dev,
                libshine-dev (>= 3.0.0),
-               libshout3-dev,
+               libshout-dev,
                libsidplay2-dev,
                libsmbclient-dev [!hurd-any],
                libsndio-dev,
@@ -132,7 +130,7 @@ Build-Depends: autopoint,
                wayland-protocols [linux-any],
                zlib1g-dev,
                zsh
-Standards-Version: 4.5.0
+Standards-Version: 4.5.1
 Homepage: https://www.videolan.org/vlc/
 Vcs-Git: https://salsa.debian.org/multimedia-team/vlc.git
 Vcs-Browser: https://salsa.debian.org/multimedia-team/vlc
@@ -146,11 +144,15 @@ Depends: vlc-bin (= ${binary:Version}),
          vlc-plugin-video-output (= ${binary:Version}),
          ${misc:Depends}
 Recommends: vlc-l10n (= ${source:Version}),
+            vlc-plugin-access-extra (= ${binary:Version}),
             vlc-plugin-notify (= ${binary:Version}),
             vlc-plugin-samba (= ${binary:Version}) [linux-any kfreebsd-any],
             vlc-plugin-skins2 (= ${binary:Version}),
             vlc-plugin-video-splitter (= ${binary:Version}),
             vlc-plugin-visualization (= ${binary:Version})
+Suggests: vlc-plugin-fluidsynth (= ${source:Version}),
+          vlc-plugin-jack (= ${source:Version}),
+          vlc-plugin-svg (= ${source:Version})
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,

@@ -1,6 +1,6 @@
 # ebml
 
-EBML_VERSION := 1.3.10
+EBML_VERSION := 1.4.0
 EBML_URL := http://dl.matroska.org/downloads/libebml/libebml-$(EBML_VERSION).tar.xz
 
 ifeq ($(call need_pkg,"libebml >= 1.3.8"),)
@@ -16,10 +16,7 @@ ebml: libebml-$(EBML_VERSION).tar.xz .sum-ebml
 	$(UNPACK)
 	$(MOVE)
 
-# libebml requires exceptions
-EBML_CXXFLAGS := $(CXXFLAGS) $(PIC) -fexceptions -fvisibility=hidden
-
 .ebml: ebml toolchain.cmake
-	cd $< && $(HOSTVARS_PIC) CXXFLAGS="$(EBML_CXXFLAGS)" $(CMAKE) -DBUILD_SHARED_LIBS=OFF
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS_PIC) $(CMAKE) -DENABLE_WIN32_IO=OFF
+	cd $< && $(CMAKEBUILD) . --target install
 	touch $@

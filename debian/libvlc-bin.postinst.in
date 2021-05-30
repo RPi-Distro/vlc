@@ -10,7 +10,7 @@ run_vlc_cache_gen() {
     if test -n "$files"
     then
         # run vlc-cache-gen since there are plugins
-        if ! /usr/lib/#DEB_HOST_MULTIARCH#/vlc/vlc-cache-gen /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins
+        if ! /usr/lib/#DEB_HOST_MULTIARCH#/vlc/vlc-cache-gen /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins 2>&1
         then
             echo "WARNING: Regenerating VLC plugin cache failed."
             echo "Please run '/usr/lib/#DEB_HOST_MULTIARCH#/vlc/vlc-cache-gen /usr/lib/#DEB_HOST_MULTIARCH#/vlc/plugins' manually."

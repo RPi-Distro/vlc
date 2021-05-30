@@ -18,9 +18,9 @@ gcrypt: libgcrypt-$(GCRYPT_VERSION).tar.bz2 .sum-gcrypt
 	$(APPLY) $(SRC)/gcrypt/fix-pthread-detection.patch
 	$(APPLY) $(SRC)/gcrypt/0001-random-Don-t-assume-that-_WIN64-implies-x86_64.patch
 	$(APPLY) $(SRC)/gcrypt/0002-aarch64-mpi-Fix-building-the-mpi-aarch64-assembly-fo.patch
-ifdef HAVE_WINSTORE
-	$(APPLY) $(SRC)/gcrypt/winrt.patch
-endif
+	$(APPLY) $(SRC)/gcrypt/0001-compat-provide-a-getpid-replacement-that-works-on-Wi.patch
+	$(APPLY) $(SRC)/gcrypt/0007-random-don-t-use-API-s-that-are-forbidden-in-UWP-app.patch
+	$(APPLY) $(SRC)/gcrypt/0008-random-only-use-wincrypt-in-UWP-builds-if-WINSTORECO.patch
 ifdef HAVE_WIN64
 	$(APPLY) $(SRC)/gcrypt/64bits-relocation.patch
 endif
@@ -51,6 +51,9 @@ GCRYPT_EXTRA_CFLAGS =
 endif
 ifdef HAVE_MACOSX
 GCRYPT_CONF += --disable-aesni-support
+ifeq ($(ARCH),aarch64)
+GCRYPT_CONF += --disable-asm --disable-arm-crypto-support
+endif
 else
 ifdef HAVE_BSD
 GCRYPT_CONF += --disable-asm --disable-aesni-support
@@ -74,6 +77,10 @@ endif
 endif
 
 .gcrypt: gcrypt
+	# Reconfiguring this requires a git repo to be available, to
+	# successfully produce a nonempty mym4_revision_dec.
+	cd $< && git init && git config --local user.email "cone@example.com" && git config --local user.name "Cony Cone" && \
+		git commit --allow-empty -m "dummy commit"
 	$(RECONF)
 	cd $< && $(HOSTVARS) CFLAGS="$(CFLAGS) $(GCRYPT_EXTRA_CFLAGS)" ./configure $(HOSTCONF) $(GCRYPT_CONF)
 	cd $< && $(MAKE) install

@@ -2,7 +2,7 @@
  * util.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 68f715a821cd120f198e3b26aad3e31bceb55043 $
+ * $Id: 8afed9df72676d073bb401d9a9b53d659eb0445f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -24,6 +24,7 @@
 #include "mkv.hpp"
 #include "util.hpp"
 #include "demux.hpp"
+#include "../../codec/webvtt/helpers.h"
 
 /*****************************************************************************
  * Local prototypes
@@ -240,6 +241,73 @@ void handle_real_audio(demux_t * p_demux, mkv_track_t * p_tk, block_t * p_blk, m
         p_sys->i_subpacket = 0;
         p_sys->i_subpackets = 0;
     }
+}
+
+block_t *WEBVTT_Repack_Sample(block_t *p_block, bool b_webm,
+                              const uint8_t *p_add, size_t i_add)
+{
+    struct webvtt_cueelements_s els;
+    memset(&els, 0, sizeof(els));
+    size_t newsize = 0;
+    block_t *newblock = nullptr;
+    /* Repack to ISOBMFF samples format */
+    if( !b_webm ) /* S_TEXT/WEBVTT */
+    {
+        /* process addition fields */
+        if( i_add )
+        {
+            const uint8_t *end = p_add + i_add;
+            const uint8_t *iden =
+                    reinterpret_cast<const uint8_t *>(std::memchr( p_add, '\n', i_add ));
+            if( iden && ++iden != end )
+            {
+                els.sttg.p_data = p_add;
+                els.sttg.i_data = &iden[-1] - p_add;
+                const uint8_t *comm =
+                        reinterpret_cast<const uint8_t *>(std::memchr( iden, '\n', end - iden ));
+                els.iden.p_data = iden;
+                if( comm )
+                    els.iden.i_data = comm - iden;
+                else
+                    els.iden.i_data = end - iden;
+            }
+        }
+        /* the payload being in the block */
+        els.payl.p_data = p_block->p_buffer;
+        els.payl.i_data = p_block->i_buffer;
+    }
+    else /* deprecated D_WEBVTT/ */
+    {
+        const uint8_t *start = p_block->p_buffer;
+        const uint8_t *end = p_block->p_buffer + p_block->i_buffer;
+        const uint8_t *sttg =
+                reinterpret_cast<const uint8_t *>(std::memchr( start, '\n', p_block->i_buffer ));
+        if( !sttg || ++sttg == end )
+            goto error;
+        const uint8_t *payl =
+                reinterpret_cast<const uint8_t *>(std::memchr( sttg, '\n', end - sttg ));
+        if( !payl || ++payl == end )
+            goto error;
+        els.iden.p_data = start;
+        els.iden.i_data = &sttg[-1] - start;
+        els.sttg.p_data = sttg;
+        els.sttg.i_data = &payl[-1] - sttg;
+        els.payl.p_data = payl;
+        els.payl.i_data = end - payl;
+    }
+
+    newsize = WEBVTT_Pack_CueElementsGetNewSize( &els );
+    newblock = block_Alloc( newsize );
+    if( !newblock )
+        goto error;
+    WEBVTT_Pack_CueElements( &els, newblock->p_buffer );
+    block_CopyProperties( newblock, p_block );
+    block_Release( p_block );
+    return newblock;
+
+error:
+    block_Release( p_block );
+    return NULL;
 }
 
 void send_Block( demux_t * p_demux, mkv_track_t * p_tk, block_t * p_block, unsigned int i_number_frames, mtime_t i_duration )

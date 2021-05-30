@@ -1,6 +1,6 @@
 # FLAC
 
-FLAC_VERSION := 1.3.2
+FLAC_VERSION := 1.3.3
 FLAC_URL := http://downloads.xiph.org/releases/flac/flac-$(FLAC_VERSION).tar.xz
 
 PKGS += flac
@@ -15,6 +15,7 @@ $(TARBALLS)/flac-$(FLAC_VERSION).tar.xz:
 
 flac: flac-$(FLAC_VERSION).tar.xz .sum-flac
 	$(UNPACK)
+	$(APPLY) $(SRC)/flac/mingw-min-max.patch
 ifdef HAVE_WINSTORE
 	$(APPLY) $(SRC)/flac/console_write.patch
 	$(APPLY) $(SRC)/flac/remove_blocking_code_useless_flaclib.patch
@@ -59,6 +60,6 @@ DEPS_flac = ogg $(DEPS_ogg)
 .flac: flac
 	cd $< && $(AUTORECONF)
 	cd $< && $(HOSTVARS) CFLAGS="$(FLAC_CFLAGS)" ./configure $(FLACCONF)
-	cd $</include && $(MAKE) install
-	cd $</src && $(MAKE) -C libFLAC install && $(MAKE) -C share install
+	cd $< && $(MAKE) -C include install
+	cd $< && $(MAKE) -C src/libFLAC install && $(MAKE) -C src/share install
 	touch $@

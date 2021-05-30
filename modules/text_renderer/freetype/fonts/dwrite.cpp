@@ -2,7 +2,7 @@
  * dwrite.cpp : DirectWrite font functions
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: a30c535a011bc85ee47e0579b32a85136e3ee895 $
+ * $Id: 7b9143432a5dfe2cfe77b3e2d213d6cdb2ca1e15 $
  *
  * Authors: Salah-Eddin Shaban <salah@videolan.org>
  *
@@ -229,27 +229,28 @@ public:
     virtual ~TextSource() {}
 
     virtual HRESULT STDMETHODCALLTYPE GetLocaleName( UINT32, UINT32 *,
-                                             const WCHAR **ppwsz_locale_name )
+                                        const WCHAR **ppwsz_locale_name ) noexcept
     {
         *ppwsz_locale_name = L"en-US";
         return S_OK;
     }
 
     virtual HRESULT STDMETHODCALLTYPE GetNumberSubstitution( UINT32, UINT32 *,
-                                                     IDWriteNumberSubstitution **pp_substitution )
+                                        IDWriteNumberSubstitution **pp_substitution ) noexcept
     {
         mp_substitution->AddRef();
         *pp_substitution = mp_substitution;
         return S_OK;
     }
 
-    virtual DWRITE_READING_DIRECTION STDMETHODCALLTYPE GetParagraphReadingDirection()
+    virtual DWRITE_READING_DIRECTION STDMETHODCALLTYPE GetParagraphReadingDirection() noexcept
     {
         return DWRITE_READING_DIRECTION_LEFT_TO_RIGHT;
     }
 
-    virtual HRESULT STDMETHODCALLTYPE GetTextAtPosition( UINT32 i_text_position, const WCHAR **ppwsz_text,
-                                                 UINT32 *pi_text_length )
+    virtual HRESULT STDMETHODCALLTYPE GetTextAtPosition( UINT32 i_text_position,
+                                                         const WCHAR **ppwsz_text,
+                                                         UINT32 *pi_text_length ) noexcept
     {
         if( i_text_position > mi_text_length )
             return E_INVALIDARG;
@@ -260,8 +261,9 @@ public:
         return S_OK;
     }
 
-    virtual HRESULT STDMETHODCALLTYPE GetTextBeforePosition( UINT32 i_text_position, const WCHAR **ppwsz_text,
-                                                     UINT32 *pi_text_length )
+    virtual HRESULT STDMETHODCALLTYPE GetTextBeforePosition( UINT32 i_text_position,
+                                                             const WCHAR **ppwsz_text,
+                                                             UINT32 *pi_text_length ) noexcept
     {
         if( i_text_position > mi_text_length )
             return E_INVALIDARG;

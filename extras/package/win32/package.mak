@@ -24,6 +24,13 @@ endif
 
 package-win-install:
 	$(MAKE) install
+	cp '$(DESTDIR)$(libdir)/libvlc.dll.a' '$(DESTDIR)$(libdir)/libvlc.lib'
+	cp '$(DESTDIR)$(libdir)/libvlccore.dll.a' '$(DESTDIR)$(libdir)/libvlccore.lib'
+if ENABLE_PDB
+	cp lib/.libs/libvlc.pdb '$(DESTDIR)$(bindir)'
+	cp src/.libs/libvlccore.pdb '$(DESTDIR)$(bindir)'
+	find '$(DESTDIR)$(libdir)/vlc/plugins' -name "*.dll" -exec sh -c "echo {} | sed -e 's@$(DESTDIR)$(libdir)/vlc/plugins/\(.*\)/\(.*\).dll@modules/.libs/\2.pdb $(DESTDIR)$(libdir)/vlc/plugins/\1@' | xargs -t cp " \;
+endif
 	touch $@
 
 package-win-sdk: package-win-install
@@ -32,9 +39,9 @@ package-win-sdk: package-win-install
 	cp -r $(prefix)/lib/pkgconfig "$(win32_destdir)/sdk/lib"
 	cp -rv $(prefix)/lib/libvlc.dll.a "$(win32_destdir)/sdk/lib/libvlc.lib"
 	cp -rv $(prefix)/lib/libvlccore.dll.a "$(win32_destdir)/sdk/lib/libvlccore.lib"
-	$(DLLTOOL) -D libvlc.dll -l "$(win32_destdir)/sdk/lib/libvlc.lib" -d "$(top_builddir)/lib/.libs/libvlc.dll.def" "$(prefix)/bin/libvlc.dll"
+	$(DLLTOOL) -D libvlc.dll -l "$(win32_destdir)/sdk/lib/libvlc.lib" -d "$(top_builddir)/lib/.libs/libvlc.dll.def"
 	echo "INPUT(libvlc.lib)" > "$(win32_destdir)/sdk/lib/vlc.lib"
-	$(DLLTOOL) -D libvlccore.dll -l "$(win32_destdir)/sdk/lib/libvlccore.lib" -d "$(top_builddir)/src/.libs/libvlccore.dll.def" "$(prefix)/bin/libvlccore.dll"
+	$(DLLTOOL) -D libvlccore.dll -l "$(win32_destdir)/sdk/lib/libvlccore.lib" -d "$(top_builddir)/src/.libs/libvlccore.dll.def"
 	echo "INPUT(libvlccore.lib)" > "$(win32_destdir)/sdk/lib/vlccore.lib"
 
 package-win-common: package-win-install package-win-sdk
