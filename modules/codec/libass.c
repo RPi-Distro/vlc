@@ -2,7 +2,7 @@
  * SSA/ASS subtitle decoder using libass.
  *****************************************************************************
  * Copyright (C) 2008-2009 VLC authors and VideoLAN
- * $Id: f743fbb616da1908bec901966861509fe7140f58 $
+ * $Id: ac03830e3ca7eecec3d6596c4771d34ae6799549 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -56,6 +56,8 @@
 static int  Create ( vlc_object_t * );
 static void Destroy( vlc_object_t * );
 
+#define TEXT_SSA_FONTSDIR   N_("Additional fonts directory")
+
 vlc_module_begin ()
     set_shortname( N_("Subtitles (advanced)"))
     set_description( N_("Subtitle renderers using libass") )
@@ -63,6 +65,7 @@ vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_SCODEC )
     set_callbacks( Create, Destroy )
+    add_string("ssa-fontsdir", NULL, TEXT_SSA_FONTSDIR, NULL, false)
 vlc_module_end ()
 
 /*****************************************************************************
@@ -75,12 +78,14 @@ static void Flush( decoder_t * );
 struct decoder_sys_t
 {
     mtime_t        i_max_stop;
+    int            i_scale;
 
     /* The following fields of decoder_sys_t are shared between decoder and spu units */
     vlc_mutex_t    lock;
     int            i_refcount;
 
     /* */
+    vlc_object_t *p_callbackobj;
     ASS_Library    *p_library;
     ASS_Renderer   *p_renderer;
     video_format_t fmt;
@@ -123,6 +128,19 @@ typedef struct
 static int BuildRegions( rectangle_t *p_region, int i_max_region, ASS_Image *p_img_list, int i_width, int i_height );
 static void RegionDraw( subpicture_region_t *p_region, ASS_Image *p_img );
 
+static int ScalingCallback (vlc_object_t *obj, const char *var,
+                            vlc_value_t old, vlc_value_t cur, void *data)
+{
+    decoder_sys_t *p_sys = data;
+    VLC_UNUSED(obj);
+    VLC_UNUSED(var);
+    VLC_UNUSED(old);
+    vlc_mutex_lock(&p_sys->lock);
+    p_sys->i_scale = cur.i_int;
+    vlc_mutex_unlock(&p_sys->lock);
+    return VLC_SUCCESS;
+}
+
 //#define DEBUG_REGION
 
 /*****************************************************************************
@@ -148,6 +166,7 @@ static int Create( vlc_object_t *p_this )
     p_sys->i_refcount = 1;
     memset( &p_sys->fmt, 0, sizeof(p_sys->fmt) );
     p_sys->i_max_stop = VLC_TS_INVALID;
+    p_sys->i_scale = var_InheritInteger( p_dec, "sub-text-scale" );
     p_sys->p_library  = NULL;
     p_sys->p_renderer = NULL;
     p_sys->p_track    = NULL;
@@ -196,6 +215,13 @@ static int Create( vlc_object_t *p_this )
         vlc_input_attachment_Delete( p_attach );
     }
     free( pp_attachments );
+
+    char *psz_fontsdir = var_InheritString( p_dec, "ssa-fontsdir" );
+    if( psz_fontsdir )
+    {
+        ass_set_fonts_dir( p_library, psz_fontsdir );
+        free( psz_fontsdir );
+    }
 
     ass_set_extract_fonts( p_library, true );
     ass_set_style_overrides( p_library, NULL );
@@ -272,6 +298,18 @@ static int Create( vlc_object_t *p_this )
     }
     ass_process_codec_private( p_track, p_dec->fmt_in.p_extra, p_dec->fmt_in.i_extra );
 
+    vlc_value_t val;
+    for ( vlc_object_t *obj = p_dec; obj; obj = obj->obj.parent )
+    {
+        if( var_GetChecked( obj,  "sub-text-scale" ,
+                            VLC_VAR_INTEGER, &val ) == VLC_SUCCESS )
+        {
+            var_AddCallback( obj, "sub-text-scale", ScalingCallback, p_sys );
+            p_sys->p_callbackobj = obj;
+            break;
+        }
+    }
+
     p_dec->fmt_out.i_codec = VLC_CODEC_RGBA;
 
     return VLC_SUCCESS;
@@ -304,6 +342,11 @@ static void DecSysRelease( decoder_sys_t *p_sys )
         return;
     }
     vlc_mutex_unlock( &p_sys->lock );
+
+    if( p_sys->p_callbackobj )
+        var_DelCallback( p_sys->p_callbackobj, "sub-text-scale",
+                         ScalingCallback, p_sys );
+
     vlc_mutex_destroy( &p_sys->lock );
 
     if( p_sys->p_track )
@@ -435,6 +478,8 @@ static int SubpictureValidate( subpicture_t *p_subpic,
         ass_set_aspect_ratio( p_sys->p_renderer, dst_ratio / src_ratio, 1 );
         p_sys->fmt = fmt;
     }
+
+    ass_set_font_scale( p_sys->p_renderer, p_sys->i_scale / 100.0 );
 
     /* */
     const mtime_t i_stream_date = p_subpic->updater.p_sys->i_pts + (i_ts - p_subpic->i_start);

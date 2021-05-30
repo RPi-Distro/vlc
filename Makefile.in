@@ -412,7 +412,7 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/share/Info.plist.in ABOUT-NLS AUTHORS COPYING \
 	COPYING.LIB ChangeLog INSTALL NEWS README THANKS \
 	autotools/compile autotools/config.guess \
-	autotools/config.rpath autotools/config.sub autotools/depcomp \
+	autotools/config.rpath autotools/config.sub \
 	autotools/install-sh autotools/ltmain.sh autotools/missing \
 	autotools/ylwrap
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -2174,7 +2174,7 @@ uninstall-am: uninstall-binSCRIPTS
 ChangeLog: Makefile.am
 	rm -f -- "$@"
 	cd doc && $(MAKE) $(AM_MAKEFLAGS) changelogs
-	$(LN_S) -f doc/ChangeLog-2015 "$@"
+	$(LN_S) -f doc/ChangeLog-2021 "$@"
 
 # Shortcut for developers to rebuild the core (libvlc + vlc)
 # Don't use it if you don't know what it is about.
@@ -2279,7 +2279,7 @@ VLC.app: install
 	cp -R $(top_builddir)/share/macosx/Info.plist $@/Contents/
 	xcrun plutil -convert binary1 $@/Contents/Info.plist
 	mkdir -p $@/Contents/Frameworks
-	cp -R $(CONTRIB_DIR)/Frameworks/Growl.framework $@/Contents/Frameworks
+@HAVE_OSX_NOTIFICATIONS_TRUE@	cp -R $(CONTRIB_DIR)/Frameworks/Growl.framework $@/Contents/Frameworks
 @HAVE_SPARKLE_TRUE@	cp -R $(CONTRIB_DIR)/Frameworks/Sparkle.framework $@/Contents/Frameworks
 @HAVE_BREAKPAD_TRUE@	cp -R $(CONTRIB_DIR)/Frameworks/Breakpad.framework $@/Contents/Frameworks
 	mkdir -p $@/Contents/MacOS/share/
@@ -2288,7 +2288,7 @@ VLC.app: install
 	cp -r $(srcdir)/share/hrtfs $@/Contents/MacOS/share/
 	mkdir -p $@/Contents/MacOS/include/
 	(cd "$(prefix)/include" && $(AMTAR) -c --exclude "plugins" vlc) | $(AMTAR) -x -C $@/Contents/MacOS/include/
-	cp -r "$(prefix)/share/locale" $@/Contents/MacOS/share/
+	-cp -r "$(prefix)/share/locale" $@/Contents/MacOS/share/
 	printf "APPLVLC#" >| $@/Contents/PkgInfo
 	mkdir -p $@/Contents/MacOS/lib
 	find $(prefix)/lib -name 'libvlc*.dylib' -maxdepth 1 -exec cp -a {} $@/Contents/MacOS/lib \;

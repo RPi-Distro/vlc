@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: 259dcf7109ff245d520753f52c3e882d05b2ee07 $
+ * $Id: a57506533d635a67ca3fff0d9be35635eec11997 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -1664,6 +1664,8 @@ void MainInterface::closeEvent( QCloseEvent *e )
 //  hide();
     if ( b_minimalView )
         setMinimalView( false );
+    if( videoWidget )
+        releaseVideoSlot();
     emit askToQuit(); /* ask THEDP to quit, so we have a unique method */
     /* Accept session quit. Otherwise we break the desktop mamager. */
     e->accept();

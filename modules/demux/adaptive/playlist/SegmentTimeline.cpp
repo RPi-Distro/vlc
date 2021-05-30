@@ -2,7 +2,7 @@
  * SegmentTimeline.cpp: Implement the SegmentTimeline tag.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 7daa517ddec8e31240e0283bc2e4beb0c90cdf9d $
+ * $Id: cab205ca773394cb05cdf589f6abca52b4516d68 $
  *
  * Authors: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
  *
@@ -27,6 +27,7 @@
 #include "SegmentTimeline.h"
 
 #include <algorithm>
+#include <limits>
 
 using namespace adaptive::playlist;
 

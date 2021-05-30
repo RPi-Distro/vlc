@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 78dbc2f9c3562e481f980d5751031740aaf22b07 $
+ * $Id: ff44bf2e44af584f28c70cc4c51436cd275b271a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -35,6 +35,7 @@
 
 #include "menus.hpp"             /* Popup menu on bgWidget */
 
+#include <QDate>
 #include <QLabel>
 #include <QToolButton>
 #include <QPalette>
@@ -227,13 +228,16 @@ QSize VideoWidget::physicalSize() const
     return current_size;
 }
 
+void WindowResized(vout_window_t *, const QSize&);
+void WindowReleased(vout_window_t *);
+
 void VideoWidget::reportSize()
 {
     if( !p_window )
         return;
 
     QSize size = physicalSize();
-    vout_window_ReportSize( p_window, size.width(), size.height() );
+    WindowResized(p_window, size);
 }
 
 /* Set the Widget to the correct Size */
@@ -375,6 +379,7 @@ void VideoWidget::release( void )
 
     if( stable )
     {
+        WindowReleased(p_window);
         layout->removeWidget( stable );
         stable->deleteLater();
         stable = NULL;
@@ -445,6 +450,8 @@ void BackgroundWidget::titleUpdated( const QString& title )
             i_pos + 5 == title.indexOf( "Bi" /* directional */ "ll",
                                        i_pos, Qt::CaseInsensitive ) )
                 updateDefaultArt( ":/logo/vlc128-kb.png" );
+        else if( QDate::currentDate().dayOfYear() >= QT_XMAS_JOKE_DAY )
+                updateDefaultArt( ":/logo/vlc128-xmas.png" );
         else
                 updateDefaultArt( ":/logo/vlc128.png" );
     }

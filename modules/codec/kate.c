@@ -2,7 +2,7 @@
  * kate.c : a decoder for the kate bitstream format
  *****************************************************************************
  * Copyright (C) 2000-2008 VLC authors and VideoLAN
- * $Id: 5f7784791d8edb8d304c9c3114e9123cf342f104 $
+ * $Id: cbcb0090c44de7bf44125f22b1bf75a763ee2134 $
  *
  * Authors: Vincent Penquerc'h <ogg.k.ogg.k@googlemail.com>
  *
@@ -1169,7 +1169,6 @@ static subpicture_t *SetupSimpleKateSPU( decoder_t *p_dec, subpicture_t *p_spu,
         CreateKatePalette( fmt.p_palette, ev->palette );
 
         p_bitmap_region = subpicture_region_New( &fmt );
-        video_format_Clean( &fmt );
         if( !p_bitmap_region )
         {
             msg_Err( p_dec, "cannot allocate SPU region" );

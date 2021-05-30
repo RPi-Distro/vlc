@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008, 2010 VLC authors and VideoLAN
- * $Id: 9fecb52ed670b32e4a30affda07748f2d5683796 $
+ * $Id: 44e9fa805fa7b77eb2b8b3dd8ad68a6fe981d086 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -34,6 +34,7 @@
 #include "stream_io_callback.hpp"
 
 #include <new>
+#include <limits>
 
 extern "C" {
     #include "../av1_unpack.h"

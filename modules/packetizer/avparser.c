@@ -2,7 +2,7 @@
  * avparser.c
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 1dfa9dffaf7308ea00dc771e23fbf80e59963d6d $
+ * $Id: 272f494b212440a05d2a90426d289274df8c2741 $
  *
  * Authors: Denis Charmet <typx@videolan.org>
  *
@@ -182,18 +182,56 @@ static block_t *Packetize ( decoder_t *p_dec, block_t **pp_block )
     if( unlikely( i_outlen <= 0 || !p_outdata ) )
         goto out;
 
-    block_t * p_ret = block_Alloc( i_outlen );
+    block_t * p_ret;
+    if( (size_t)i_outlen < p_block->i_buffer )
+    {
+        p_ret = block_Alloc( i_outlen );
+        if( unlikely ( !p_ret ) )
+            goto out;
+    }
+    else /* just pass block as-is */
+    {
+        p_ret = p_block;
+    }
 
-    if( unlikely ( !p_ret ) )
-        goto out;
+    if( p_ret != p_block )
+    {
+        p_ret->i_flags = p_block->i_flags;
 
-    memcpy( p_ret->p_buffer, p_outdata, i_outlen );
-    p_ret->i_pts = p_block->i_pts;
-    p_ret->i_dts = p_block->i_dts;
+        if( p_block->i_flags & BLOCK_FLAG_DISCONTINUITY )
+            p_block->i_flags &= ~BLOCK_FLAG_DISCONTINUITY;
+
+        memcpy( p_ret->p_buffer, p_outdata, i_outlen );
+        p_ret->i_pts = p_block->i_pts;
+        p_ret->i_dts = p_block->i_dts;
+        p_block->i_pts = p_block->i_dts = VLC_TS_INVALID;
+    }
+    else /* as-is block is now used */
+    {
+        p_sys->i_offset = 0;
+        *pp_block = NULL;
+    }
+
+    if( p_dec->fmt_in.i_cat == VIDEO_ES )
+    {
+        switch ( p_sys->p_parser_ctx->pict_type )
+        {
+        case AV_PICTURE_TYPE_I:
+            p_ret->i_flags |= BLOCK_FLAG_TYPE_I;
+            break;
+        case AV_PICTURE_TYPE_P:
+            p_ret->i_flags |= BLOCK_FLAG_TYPE_P;
+            break;
+        case AV_PICTURE_TYPE_B:
+            p_ret->i_flags |= BLOCK_FLAG_TYPE_B;
+            break;
+        default:
+            break;
+        }
+    }
+
     if( p_sys->p_parser_ctx->key_frame == 1 )
         p_ret->i_flags |= BLOCK_FLAG_TYPE_I;
-
-    p_block->i_pts = p_block->i_dts = VLC_TS_INVALID;
 
     return p_ret;
 

@@ -1,22 +1,22 @@
 # Malayalam translation
-# Copyright (C) 2020 VideoLAN
+# Copyright (C) 2021 VideoLAN
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
-# akkuvijay <akkuvijay@aol.com>, 2014
-# Dilip Re <dilip_meet@rediffmail.com>, 2020
+# akkuvijay <akkuvijay@aol.com>, 2014, 2020
+# Dilip Re <dilip_meet@rediffmail.com>, 2020-2021
 # Hrishikesh <hrishi.kb@gmail.com>, 2018
 # Kiran Sivadas <kiransivadas@protonmail.com>, 2020
 # Mujeeb Rahman <mujeebcpy@gmail.com>, 2018
 # Sajeer P <sajeerforyou@gmail.com>, 2016
-# Sreejith <sreejithpro@gmail.com>, 2009,2019
+# Sreejith P <sreejithpro@gmail.com>, 2009, 2019
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.9\n"
+"Project-Id-Version: vlc 3.0.13\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2021-01-17 23:10+0100\n"
-"PO-Revision-Date: 2020-03-28 03:23+0100\n"
-"Last-Translator: Dilip Re <dilip_meet@rediffmail.com>, 2020\n"
+"POT-Creation-Date: 2021-05-10 19:12+0200\n"
+"PO-Revision-Date: 2021-02-25 14:11+0100\n"
+"Last-Translator: Dilip Re <dilip_meet@rediffmail.com>, 2021\n"
 "Language-Team: Malayalam (https://www.transifex.com/yaron/teams/16553/ml/)\n"
 "Language: ml\n"
 "MIME-Version: 1.0\n"
@@ -91,6 +91,7 @@ msgstr "ഹോട്ട്കീസ് ക്രമീകരണങ്ങള്�
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
+#: modules/gui/qt/ui/profiles.h:719 modules/gui/qt/ui/profiles.h:750
 msgid "Audio"
 msgstr "ശബ്ദം"
 
@@ -103,6 +104,7 @@ msgid "General audio settings"
 msgstr "പൊതു ശബ്ദ ക്രമീകരണങ്ങള്‍"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:81
+#: modules/gui/qt/ui/profiles.h:748 modules/gui/qt/ui/profiles.h:758
 msgid "Filters"
 msgstr "ഫില്‍റ്ററുകള്‍"
 
@@ -154,6 +156,8 @@ msgstr "നിരവധി ഓഡിയോ ക്രമീകരണങ്ങള�
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
+#: modules/gui/qt/ui/profiles.h:720 modules/gui/qt/ui/profiles.h:724
+#: modules/gui/qt/ui/sprefs_video.h:323
 msgid "Video"
 msgstr "വീഡിയോ"
 
@@ -360,8 +364,8 @@ msgstr "വീഡിയോ ഓണ്‍ ഡിമാന്‍ഡിന്റെ 
 #: include/vlc_config_cat.h:173 src/libvlc-module.c:2070
 #: src/playlist/engine.c:243 modules/demux/playlist/playlist.c:64
 #: modules/demux/playlist/playlist.c:65 modules/demux/playlist/wpl.c:99
-#: modules/gui/macosx/VLCMainWindow.m:321
-#: modules/gui/macosx/VLCMainWindow.m:902
+#: modules/gui/macosx/VLCMainWindow.m:794
+#: modules/gui/macosx/VLCSidebarDataSource.m:68
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
@@ -394,6 +398,7 @@ msgstr "പ്ലേലിസ്റ്റിലേക്ക് സ്വമേ�
 
 #: include/vlc_config_cat.h:184 src/libvlc-module.c:1862
 #: modules/gui/qt/dialogs/extended.cpp:93
+#: modules/gui/qt/ui/video_effects.h:1305
 msgid "Advanced"
 msgstr "നൂതനമായ"
 
@@ -464,13 +469,13 @@ msgstr "കുറിച്ച്(_A)"
 #: include/vlc_intf_strings.h:65 modules/control/oldrc.c:70
 #: modules/gui/macosx/VLCControlsBarCommon.m:81
 #: modules/gui/macosx/VLCControlsBarCommon.m:432
-#: modules/gui/macosx/VLCFSPanelController.m:233
+#: modules/gui/macosx/VLCFSPanelController.m:245
 #: modules/gui/macosx/VLCMainMenu.m:385 modules/gui/macosx/VLCMainMenu.m:497
 #: modules/gui/macosx/VLCMainMenu.m:504 modules/gui/macosx/VLCMainMenu.m:1339
 #: modules/gui/macosx/VLCMainMenu.m:1340 modules/gui/macosx/VLCMainMenu.m:1341
 #: modules/gui/macosx/VLCPlaylist.m:223
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:538
+#: modules/gui/qt/dialogs/vlm.cpp:538 modules/gui/qt/ui/open.h:258
 msgid "Play"
 msgstr "പ്ലേ"
 
@@ -555,13 +560,14 @@ msgstr "ഭോള്‍ഡര്‍ ചേര്‍ക്കുക..."
 msgid "Save Playlist to &File..."
 msgstr "ഫയലിലേക്ക് പ്ലേലിസ്റ്റ് സേവ് ചെയ്യുക(_F)..."
 
-#: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:191
+#: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:194
 #: modules/gui/qt/components/preferences_widgets.cpp:1138
 msgid "Search"
 msgstr "തിരയുക"
 
 #: include/vlc_intf_strings.h:99
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:282
+#: modules/gui/qt/ui/video_effects.h:1289
 msgid "Waves"
 msgstr "വേവുകള്‍"
 
@@ -630,7 +636,8 @@ msgstr "ഫില്‍റ്ററുകളുടെ കൂടിയ എണ്�
 
 #: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:948
 #: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:124
-#: modules/gui/macosx/VLCMainMenu.m:243 modules/gui/macosx/VLCMainWindow.m:999
+#: modules/gui/macosx/VLCMainMenu.m:243
+#: modules/gui/macosx/VLCSidebarDataSource.m:211
 #: modules/video_filter/postproc.c:235
 msgid "Disable"
 msgstr "നിര്‍ജ്ജീവമാക്കുക"
@@ -695,6 +702,9 @@ msgstr "സ്റ്റീരിയോ"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:313
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1228
+#: modules/gui/qt/ui/video_effects.h:1270
+#: modules/gui/qt/ui/video_effects.h:1280
 msgid "Left"
 msgstr "ഇടത്"
 
@@ -709,6 +719,7 @@ msgstr "ഇടത്"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:315
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1229
 msgid "Right"
 msgstr "വലത്"
 
@@ -956,13 +967,15 @@ msgstr "യഥാര്‍ത്ഥ ഐഡി"
 #: src/input/es_out.c:3104 src/input/es_out.c:3107 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
+#: modules/gui/qt/ui/profiles.h:726 modules/gui/qt/ui/profiles.h:752
+#: modules/gui/qt/ui/profiles.h:761
 msgid "Codec"
 msgstr "കോഡെക്ക്"
 
 #: src/input/es_out.c:3111 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:98
 #: modules/gui/macosx/VLCSimplePrefsController.m:317
-#: modules/stream_out/setid.c:49
+#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:527
 msgid "Language"
 msgstr "ഭാഷ"
 
@@ -982,7 +995,7 @@ msgstr "തരം"
 
 #: src/input/es_out.c:3123
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
-#: modules/gui/macosx/VLCOutput.m:98
+#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:754
 msgid "Channels"
 msgstr "ചാനലുകള്‍"
 
@@ -1004,6 +1017,7 @@ msgstr "പ്രതി സാമ്പിള്‍ ബിറ്റുകള്�
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
+#: modules/gui/qt/ui/profiles.h:727 modules/gui/qt/ui/profiles.h:753
 msgid "Bitrate"
 msgstr "ബിറ്റ്റേറ്റ്"
 
@@ -1222,16 +1236,16 @@ msgstr "വെളുത്ത പോയിന്റ് "
 msgid "Subtitle"
 msgstr "ഉപശീര്‍ഷകം"
 
-#: src/input/input.c:1821 modules/control/hotkeys.c:1512
+#: src/input/input.c:1841 modules/control/hotkeys.c:1512
 #, c-format
 msgid "Volume %ld%%"
 msgstr "വോള്യം %ld%%"
 
-#: src/input/input.c:2725
+#: src/input/input.c:2745
 msgid "Your input can't be opened"
 msgstr "താങ്കളുടെ ഇന്‍പുട്ട് തുറക്കാനാകുന്നില്ല"
 
-#: src/input/input.c:2726
+#: src/input/input.c:2746
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr "വിഎല്‍സിക്കു  '%s' എംആര്‍എല്‍ തുറക്കാനാകുന്നില്ല. വിശദാംശങ്ങള്‍ക്കായി ലോഗ് പരിശോധിക്കുക."
@@ -1244,6 +1258,7 @@ msgstr "വിഎല്‍സിക്കു  '%s' എംആര്‍എല്�
 #: modules/gui/qt/components/open_panels.cpp:507
 #: modules/gui/qt/components/open_panels.cpp:521
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
+#: modules/gui/qt/ui/open_disk.h:306
 msgid "Title"
 msgstr "തലക്കെട്ട്"
 
@@ -1283,6 +1298,7 @@ msgid "Setting"
 msgstr "സംവിധാനം"
 
 #: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
+#: modules/gui/qt/ui/podcast_configuration.h:100
 msgid "URL"
 msgstr "URL"
 
@@ -1350,6 +1366,7 @@ msgstr "പ്രോഗ്രാമുകള്‍"
 #: modules/gui/macosx/VLCMainMenu.m:412
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
+#: modules/gui/qt/ui/open_disk.h:307
 msgid "Chapter"
 msgstr "പാഠം"
 
@@ -1592,7 +1609,7 @@ msgid "Media (player) role for operating system policy."
 msgstr "ഓപ്പറേറ്റിംഗ് സിസ്റ്റം നയത്തിനായുള്ള മീഡിയ (പ്ലെയർ) റോൾ."
 
 #: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:273
-#: modules/stream_out/display.c:40
+#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:407
 msgid "Enable audio"
 msgstr "ഓഡിയോ സാധ്യമാക്കുക"
 
@@ -1725,7 +1742,8 @@ msgstr ""
 #: modules/services_discovery/upnp.cpp:78
 #: modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
-#: modules/video_output/xcb/xvideo.c:821
+#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:742
+#: modules/gui/qt/ui/profiles.h:745
 msgid "Auto"
 msgstr "ഓട്ടോ"
 
@@ -1747,7 +1765,7 @@ msgstr "സ്റ്റീരിയോ ഓഡിയോ ഔട്ട്പുട�
 
 #: src/libvlc-module.c:195 src/misc/actions.c:112
 #: modules/gui/qt/components/preferences_widgets.cpp:1429
-#: modules/gui/qt/util/customwidgets.cpp:314
+#: modules/gui/qt/util/customwidgets.cpp:330
 msgid "Unset"
 msgstr "അണ്‍സെറ്റ്"
 
@@ -1851,7 +1869,7 @@ msgstr ""
 "ഗ്ഗം സ്വയം തിരഞ്ഞെടുക്കല്‍ എന്നതാണു."
 
 #: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:359
-#: modules/stream_out/display.c:42
+#: modules/stream_out/display.c:42 modules/gui/qt/ui/sprefs_video.h:311
 msgid "Enable video"
 msgstr "വീഡിയോ സാധ്യമാക്കുക"
 
@@ -1948,6 +1966,9 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:317
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1226
+#: modules/gui/qt/ui/video_effects.h:1268
+#: modules/gui/qt/ui/video_effects.h:1279
 msgid "Top"
 msgstr "ടോപ്"
 
@@ -1958,6 +1979,7 @@ msgstr "ടോപ്"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:319
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1230
 msgid "Bottom"
 msgstr "താഴ്ഭാഗം"
 
@@ -2142,6 +2164,7 @@ msgid "Disable the screensaver during video playback."
 msgstr "വീഡിയോ പ്ലേബാക്കില്‍ സ്ക്രീന്‍സേവര്‍ അസാധ്യമാക്കുക."
 
 #: src/libvlc-module.c:374 modules/gui/macosx/VLCSimplePrefsController.m:364
+#: modules/gui/qt/ui/sprefs_video.h:314
 msgid "Window decorations"
 msgstr "വിന്‍ഡോ ഡെക്കറേഷന്‍സ്"
 
@@ -2502,8 +2525,9 @@ msgstr "സഹജമായ"
 
 #: src/libvlc-module.c:540
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
-#: modules/gui/macosx/VLCMainWindow.m:997
+#: modules/gui/macosx/VLCSidebarDataSource.m:209
 #: modules/gui/qt/components/extended_panels.cpp:949
+#: modules/gui/qt/ui/equalizer.h:130 modules/gui/qt/ui/vlm.h:286
 msgid "Enable"
 msgstr "സാധ്യമാക്കുക"
 
@@ -2573,7 +2597,7 @@ msgstr ""
 "തിരഞ്ഞെടുക്കുക. ബഹു-പ്രോഗ്രാം വായിക്കണമെങ്കില്‍ മാത്രം നിങ്ങള്‍ ഈ ഐഛികം ഉപയോഗിക്കുക. "
 "(ഉദാഹരണത്തിന് വേണ്ടി ഡി‌വി‌ബി സ്ട്രീമുകള്‍ പോലെ)."
 
-#: src/libvlc-module.c:578
+#: src/libvlc-module.c:578 modules/gui/qt/ui/open_disk.h:309
 msgid "Audio track"
 msgstr "ഓഡിയോ ട്രാക്ക്"
 
@@ -2581,7 +2605,7 @@ msgstr "ഓഡിയോ ട്രാക്ക്"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "ഉപയോഗിക്കേണ്ട ഓഡിയോ ട്രാക്കിന്റെ സ്ട്രീം സംഖ്യ (0 മുതല്‍ n വരെ)."
 
-#: src/libvlc-module.c:583
+#: src/libvlc-module.c:583 modules/gui/qt/ui/open_disk.h:310
 msgid "Subtitle track"
 msgstr "ഉപശീര്‍ഷക ട്രാക്ക്"
 
@@ -2721,7 +2745,7 @@ msgstr "റണ്‍ ടൈം"
 msgid "The stream will run this duration (in seconds)."
 msgstr "ഇത്രയും കാലയളവ് ഈ സ്ട്രീം പ്രവര്‍ത്തിക്കും (സെക്കന്‍ഡില്‍)."
 
-#: src/libvlc-module.c:646
+#: src/libvlc-module.c:646 modules/gui/qt/ui/sprefs_input.h:360
 msgid "Fast seek"
 msgstr "ഫാസ്റ്റ് സീക്ക്"
 
@@ -2846,7 +2870,7 @@ msgstr ""
 "ഇവിടെ പ്രവര്‍ത്തനക്ഷമമാക്കി കൂടാതെ അവയെ \"ഉപഉറവിട ഫീല്‍റ്ററുകള്\" ഘടക വകുപ്പില്‍ കോണ്‍ഫിഗര്‍ "
 "ചെയ്യാം."
 
-#: src/libvlc-module.c:705
+#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Force subtitle position"
 msgstr "ഉപശീര്‍ഷക സ്ഥാനം ഫോഴ്സ് ചെയ്യുക"
 
@@ -2876,6 +2900,7 @@ msgstr "താങ്കള്‍ക്ക് പൂര്‍ണ്ണമായ�
 
 #: src/libvlc-module.c:717 src/libvlc-module.c:1674 src/text/iso-639_def.h:145
 #: modules/gui/macosx/VLCSimplePrefsController.m:351
+#: modules/gui/qt/ui/sprefs_subtitles.h:287
 msgid "On Screen Display"
 msgstr "ഓണ്‍ സ്ക്രീന്‍ ഡിസ്പ്ലേ"
 
@@ -3616,7 +3641,7 @@ msgstr "ഫയല്‍ അസോസ്സിയേഷനില്‍ നിന�
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr "ഒ‌എസിലെ ഒരു ഫയൽ അസോസിയേഷൻ കാരണം ഇത് സമാരംഭിക്കുന്നുവെന്ന് വി‌എൽ‌സിയോട് പറയുക"
 
-#: src/libvlc-module.c:1087
+#: src/libvlc-module.c:1087 modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Use only one instance when started from file manager"
 msgstr "ഫയല്‍ മാനേജറില്‍ നിന്ന് ആരംഭിക്കുമ്പോള്‍ ഒരു ഇന്‍സ്റ്റന്‍സ് മാത്രം ഉപയോഗിക്കുക"
 
@@ -3639,7 +3664,7 @@ msgstr ""
 "സി മുഴുവന്‍ പ്രോസസ്സര്‍ സമയവും എടുക്കാം കൂടാതെ ഒരു മെഷിന്‍ റീബൂട് ആവശ്യമുണ്ടായേക്കാവുന്ന തരത്തില്‍ "
 "മുഴുവന്‍ സിസ്റ്റം പ്രതികരണരഹിതം ആകും."
 
-#: src/libvlc-module.c:1099
+#: src/libvlc-module.c:1099 modules/gui/qt/ui/sprefs_interface.h:550
 msgid "Enqueue items into playlist in one instance mode"
 msgstr "ഒരു ഉദാഹരണ മോഡില്‍ ഇനങ്ങളെ പ്ലേലിസ്റ്റില്‍ വരിയാക്കുക"
 
@@ -3691,6 +3716,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1126 modules/gui/macosx/VLCSimplePrefsController.m:334
 #: modules/gui/qt/dialogs/firstrun.cpp:95
+#: modules/gui/qt/ui/sprefs_interface.h:562
 msgid "Allow metadata network access"
 msgstr "മെറ്റാഡേറ്റ നെറ്റ്വര്‍ക്ക് അക്സസ്സ്"
 
@@ -3841,7 +3867,7 @@ msgstr ""
 "മീഡിയ ലൈബ്രറി സ്വയമേവ സേവ് ചെയ്യപ്പെടുകയും കൂടാതെ നിങ്ങള്‍ വി‌എല്‍‌സി ഓരോ തവണയും പ്രവര്‍"
 "ത്തിപ്പിക്കുമ്പോളും വീണ്ടും ലോഡ് ചെയ്യപ്പെടും."
 
-#: src/libvlc-module.c:1198
+#: src/libvlc-module.c:1198 modules/gui/qt/ui/sprefs_interface.h:548
 msgid "Display playlist tree"
 msgstr "ഡിസ്പ്ലേ പ്ലേലിസ്റ്റ് ട്രീ"
 
@@ -3900,6 +3926,7 @@ msgstr ""
 #: modules/gui/macosx/VLCControlsBarCommon.m:98
 #: modules/gui/macosx/VLCMainMenu.m:432 modules/gui/macosx/VLCMainMenu.m:511
 #: modules/gui/qt/components/controller.hpp:108
+#: modules/gui/qt/ui/sprefs_video.h:315
 msgid "Fullscreen"
 msgstr "മുഴുവന്‍ സ്ക്രീന്‍"
 
@@ -3915,7 +3942,7 @@ msgstr "ഫുള്‍സ്ക്രീന്‍ എക്സിറ്റ് �
 msgid "Select the hotkey to use to exit fullscreen state."
 msgstr "ഫുള്‍സ്ക്രീന്‍ അവസ്ഥ എക്സിറ്റ് ചെയ്യാനായി ഉപയോഗിക്കേണ്ട ഹോട്ട് കീ തിരഞ്ഞെടുക്കുക."
 
-#: src/libvlc-module.c:1230 modules/gui/macosx/VLCFSPanelController.m:110
+#: src/libvlc-module.c:1230 modules/gui/macosx/VLCFSPanelController.m:122
 msgid "Play/Pause"
 msgstr "പ്ലേ/പോസ്"
 
@@ -3978,11 +4005,13 @@ msgstr "പതുക്കെ(ഫൈന്‍)"
 
 #: src/libvlc-module.c:1246 modules/control/hotkeys.c:410
 #: modules/gui/macosx/VLCControlsBarCommon.m:196
-#: modules/gui/macosx/VLCFSPanelController.m:113
+#: modules/gui/macosx/VLCFSPanelController.m:125
+#: modules/gui/macosx/VLCHelpWindowController.m:48
 #: modules/gui/macosx/VLCMainMenu.m:396 modules/gui/macosx/VLCMainMenu.m:499
 #: modules/gui/macosx/VLCMainMenu.m:507
 #: modules/gui/qt/components/controller.hpp:112
 #: modules/gui/qt/dialogs/sout.cpp:93 modules/notify/notify.c:335
+#: modules/gui/qt/ui/streampanel.h:179
 msgid "Next"
 msgstr "അടുത്തത്"
 
@@ -3992,7 +4021,8 @@ msgstr "പ്ലേലിസ്റ്റിലെ അടുത്ത വസ്�
 
 #: src/libvlc-module.c:1248 modules/control/hotkeys.c:414
 #: modules/gui/macosx/VLCControlsBarCommon.m:193
-#: modules/gui/macosx/VLCFSPanelController.m:116
+#: modules/gui/macosx/VLCFSPanelController.m:128
+#: modules/gui/macosx/VLCHelpWindowController.m:49
 #: modules/gui/macosx/VLCMainMenu.m:395 modules/gui/macosx/VLCMainMenu.m:500
 #: modules/gui/macosx/VLCMainMenu.m:506
 #: modules/gui/qt/components/controller.hpp:112 modules/notify/notify.c:333
@@ -4007,7 +4037,7 @@ msgstr "പ്ലേലിസ്റ്റിലെ മുമ്പത്തെ �
 #: modules/gui/macosx/VLCMainMenu.m:498 modules/gui/macosx/VLCMainMenu.m:505
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:65
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:544
+#: modules/gui/qt/dialogs/vlm.cpp:544 modules/gui/qt/ui/streampanel.h:178
 msgid "Stop"
 msgstr "നിര്‍ത്തുക"
 
@@ -4016,10 +4046,12 @@ msgid "Select the hotkey to stop playback."
 msgstr "പ്ലേബാക്ക് സ്റ്റോപ്പ് ചെയ്യാനായി ഉപയോഗിക്കേണ്ട ഹോട്ട്കീ തിരഞ്ഞെടുക്കുക"
 
 #: src/libvlc-module.c:1252 modules/gui/macosx/VLCControlsBarCommon.m:92
-#: modules/gui/macosx/VLCFSPanelController.m:131
+#: modules/gui/macosx/VLCFSPanelController.m:143
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
+#: modules/gui/qt/ui/sprefs_subtitles.h:290
+#: modules/gui/qt/ui/video_effects.h:1276
 msgid "Position"
 msgstr "സ്ഥാനം"
 
@@ -4741,6 +4773,8 @@ msgstr "ഉപചിത്രങ്ങള്‍"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
 #: modules/gui/macosx/VLCMainMenu.m:450
 #: share/lua/http/dialogs/create_stream.html:153
+#: modules/gui/qt/ui/profiles.h:716 modules/gui/qt/ui/profiles.h:760
+#: modules/gui/qt/ui/profiles.h:763
 msgid "Subtitles"
 msgstr "ഉപശീര്‍ഷകങ്ങള്‍"
 
@@ -4913,6 +4947,8 @@ msgstr "ബ്രൗസര്‍ സ്റ്റോപ്പ്"
 
 #: src/misc/actions.c:62 modules/gui/macosx/VLCMainMenu.m:370
 #: modules/gui/macosx/VLCPlaylist.m:224 modules/gui/qt/dialogs/bookmarks.cpp:50
+#: modules/gui/qt/ui/podcast_configuration.h:102
+#: modules/gui/qt/ui/streampanel.h:170
 msgid "Delete"
 msgstr "മായ്ക്കുക"
 
@@ -5090,7 +5126,7 @@ msgstr "പേജ് മുകളിലേക്ക്"
 
 #: src/misc/actions.c:107 modules/control/oldrc.c:71
 #: modules/gui/macosx/VLCControlsBarCommon.m:423
-#: modules/gui/macosx/VLCFSPanelController.m:239
+#: modules/gui/macosx/VLCFSPanelController.m:251
 #: modules/gui/macosx/VLCMainMenu.m:1346 modules/gui/macosx/VLCMainMenu.m:1347
 #: modules/gui/macosx/VLCMainMenu.m:1348
 #: modules/gui/qt/components/playlist/standardpanel.cpp:196
@@ -5185,7 +5221,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "റൈറ്റ് ചെയ്യാനായി  \"%s\" തുറക്കുന്നതില്‍ പരാജയപ്പെട്ടു"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2773
+#: modules/demux/avi/avi.c:2775
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
@@ -5198,8 +5234,8 @@ msgstr "റൈറ്റ് ചെയ്യാനായി  \"%s\" തുറക�
 #: modules/gui/macosx/VLCCoreDialogProvider.m:193
 #: modules/gui/macosx/VLCCoreDialogProvider.m:197
 #: modules/gui/macosx/VLCCoreDialogProvider.m:293
-#: modules/gui/macosx/VLCMainWindow.m:224
-#: modules/gui/macosx/VLCMainWindow.m:230
+#: modules/gui/macosx/VLCMainWindow.m:227
+#: modules/gui/macosx/VLCMainWindow.m:233
 #: modules/gui/macosx/VLCOpenWindowController.m:134
 #: modules/gui/macosx/VLCOpenWindowController.m:192
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
@@ -5292,8 +5328,8 @@ msgid "Update VLC media player"
 msgstr "വിഎല്‍സി മീഡിയ പ്ലേയര്‍ പുതുക്കുക"
 
 #: src/playlist/engine.c:247 src/playlist/loadsave.c:159 lib/media_list.c:237
-#: modules/gui/macosx/VLCMainWindow.m:323
-#: modules/gui/macosx/VLCMainWindow.m:904
+#: modules/gui/macosx/VLCMainWindow.m:796
+#: modules/gui/macosx/VLCSidebarDataSource.m:70
 #: modules/gui/qt/components/playlist/selector.cpp:236
 msgid "Media Library"
 msgstr "മീഡിയ ലൈബ്രറി"
@@ -5965,7 +6001,7 @@ msgstr "ഓട്ടോസ്കെയില്‍ വീഡിയോ"
 #: src/video_output/vout_intf.c:203 modules/gui/macosx/VLCMainMenu.m:439
 #: modules/gui/macosx/VLCMainMenu.m:440
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:193
-#: modules/video_filter/croppadd.c:87
+#: modules/video_filter/croppadd.c:87 modules/gui/qt/ui/video_effects.h:1236
 msgid "Crop"
 msgstr "മുറിക്കുക"
 
@@ -6155,6 +6191,7 @@ msgstr ""
 "കഴിയുകയുള്ളൂ."
 
 #: modules/access/bluray.c:103 modules/services_discovery/udev.c:603
+#: modules/gui/qt/ui/open_disk.h:296
 msgid "Blu-ray"
 msgstr "ബ്ലൂ-റേ"
 
@@ -6251,6 +6288,7 @@ msgid "Audio CD - Track %02i"
 msgstr "ഓഡിയോ സിഡി - ട്രാക്ക്  %02i"
 
 #: modules/access/cdda.c:727 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "ഓഡിയോ സിഡി"
 
@@ -7356,6 +7394,7 @@ msgid "File"
 msgstr "ഫയല്‍"
 
 #: modules/access/fs.c:44 modules/demux/directory.c:93
+#: modules/gui/qt/ui/sprefs_video.h:328
 msgid "Directory"
 msgstr "ഡയറക്ടറി"
 
@@ -7594,6 +7633,7 @@ msgstr "ഒരു ഓഡിയോ പ്രാഥമിക സ്ട്രീമ
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
 #: modules/gui/qt/components/extended_panels.cpp:1318 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
+#: modules/gui/qt/ui/profiles.h:741
 msgid "Width"
 msgstr "വീതി"
 
@@ -7606,6 +7646,7 @@ msgstr "വീഡിയോ അല്ലെങ്കില്‍ ഉപശീര�
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:168
 #: modules/spu/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
+#: modules/gui/qt/ui/profiles.h:744
 msgid "Height"
 msgstr "ഉയരം"
 
@@ -8018,6 +8059,80 @@ msgstr "ആര്‍ഡിപി"
 #: modules/access/rdp.c:89
 msgid "RDP Remote Desktop"
 msgstr "ആര്‍ഡിപി റിമോട്ട് ഡെസ്ക്ടോപ്പ്"
+
+#: modules/access/rist.c:65
+#, fuzzy
+msgid "Range"
+msgstr "%s ശ്രേണി"
+
+#: modules/access/rist.c:65
+msgid "Bitmask"
+msgstr ""
+
+#: modules/access/rist.c:1127 modules/access_output/rist.c:849
+msgid "RIST"
+msgstr ""
+
+#: modules/access/rist.c:1128
+#, fuzzy
+msgid "RIST input"
+msgstr "എസ് ആർ ടി ഇൻപുട്ട് "
+
+#: modules/access/rist.c:1133
+#, fuzzy
+msgid "RIST maximum packet size (bytes)"
+msgstr "എസ് ആർ ടി ചങ്ക് വലുപ്പം (ബൈറ്റുകൾ)"
+
+#: modules/access/rist.c:1135
+msgid "RIST demux/decode maximum jitter (default is 5ms)"
+msgstr ""
+
+#: modules/access/rist.c:1136
+msgid ""
+"This controls the maximum jitter that will be passed to the demux/decode "
+"chain. The lower the value, the more CPU cycles the algorithm will consume"
+msgstr ""
+
+#: modules/access/rist.c:1138
+#, fuzzy
+msgid "RIST latency (ms)"
+msgstr "എസ് ആർ ടി ലെറ്റെൻസി (മില്ലി സെക്കൻഡ്‌സ് )"
+
+#: modules/access/rist.c:1139
+#, fuzzy
+msgid "RIST nack retry interval (ms)"
+msgstr "PCR ഇടവേള (ms)"
+
+#: modules/access/rist.c:1141
+#, fuzzy
+msgid "RIST reorder buffer (ms)"
+msgstr "ആര്‍ടിഎസ്പി ഫ്രെയിം ബഫര്‍ വലുപ്പം"
+
+#: modules/access/rist.c:1143
+msgid "RIST maximum retry count"
+msgstr ""
+
+#: modules/access/rist.c:1145
+msgid "RIST nack type, 0 = range, 1 = bitmask. Default is range"
+msgstr ""
+
+#: modules/access/rist.c:1147
+msgid "Disable NACK output packets"
+msgstr ""
+
+#: modules/access/rist.c:1148
+msgid "Use this to disable packet recovery"
+msgstr ""
+
+#: modules/access/rist.c:1149
+msgid "Do not check for a valid rtcp message from the encoder"
+msgstr ""
+
+#: modules/access/rist.c:1150
+msgid ""
+"Send nack messages even when we have not confirmed that the encoder is on "
+"our local network."
+msgstr ""
 
 #: modules/access/rtp/rtp.c:44
 msgid "RTCP (local) port"
@@ -8566,6 +8681,7 @@ msgstr "കണ്‍ട്രോളുകള്‍ സഹജമായവയി�
 
 #: modules/access/v4l2/v4l2.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
+#: modules/gui/qt/ui/video_effects.h:1214
 msgid "Brightness"
 msgstr "തെളിച്ചം"
 
@@ -8583,6 +8699,7 @@ msgstr "ചിത്ര ബ്രൈറ്റ്നെസ്സ് സ്വമ�
 
 #: modules/access/v4l2/v4l2.c:89
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:205
+#: modules/gui/qt/ui/video_effects.h:1216
 msgid "Contrast"
 msgstr "കോണ്‍ട്രാസ്റ്റ്"
 
@@ -8593,6 +8710,8 @@ msgstr "ചിത്ര കോണ്ട്രാസ്റ്റ് അല്ല�
 #: modules/access/v4l2/v4l2.c:91
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:208
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:254
+#: modules/gui/qt/ui/video_effects.h:1217
+#: modules/gui/qt/ui/video_effects.h:1249
 msgid "Saturation"
 msgstr "സാച്യുറേഷന്‍"
 
@@ -8602,6 +8721,7 @@ msgstr "പിക്ച്ചര്‍ സാച്യുറേഷന്‍ അ�
 
 #: modules/access/v4l2/v4l2.c:93
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:204
+#: modules/gui/qt/ui/video_effects.h:1213
 msgid "Hue"
 msgstr "ഹ്യൂ"
 
@@ -8655,6 +8775,7 @@ msgstr "നീല ക്രോമ ബാലന്‍സ്"
 
 #: modules/access/v4l2/v4l2.c:111
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:209
+#: modules/gui/qt/ui/video_effects.h:1218
 msgid "Gamma"
 msgstr "ഗാമ"
 
@@ -8783,7 +8904,7 @@ msgstr "കറുപ്പും & വെളുപ്പും"
 
 #: modules/access/v4l2/v4l2.c:164
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:256
-#: modules/video_filter/sepia.c:66
+#: modules/video_filter/sepia.c:66 modules/gui/qt/ui/video_effects.h:1251
 msgid "Sepia"
 msgstr "സെപിയ"
 
@@ -9285,11 +9406,60 @@ msgstr "എച്ച്ടിടിപി ലൈവ് സ്ട്രീമി�
 msgid "LiveHTTP"
 msgstr "ലൈവ്എച്ച്ടിടിപി"
 
-#: modules/access_output/shout.c:64
+#: modules/access_output/rist.c:824
+#, fuzzy
+msgid "RIST data output caching size (ms)"
+msgstr "സ്ട്രീം ഔട്ട്പുട്ട് മക്സര്‍ കാഷിംഗ് (എംഎസ്)"
+
+#: modules/access_output/rist.c:826
+msgid ""
+"Having this cache will guarantee that the packets going out are delivered at "
+"a spacing determined by the chain timestamps thus ensuring a near jitter "
+"free output. Be aware that this setting will also add to the overall latency "
+"of the stream."
+msgstr ""
+
+#: modules/access_output/rist.c:831
+msgid "RIST retry-buffer queue size (ms)"
+msgstr ""
+
+#: modules/access_output/rist.c:833
+msgid ""
+"This must match the buffer size (latency) configured on the server side. If "
+"you are not sure, leave the default of 0 which will set it the maximum value "
+"and will use about 100MB of RAM"
+msgstr ""
+
+#: modules/access_output/rist.c:837
+msgid "SSRC used in RTP output (default is random, i.e. 0)"
+msgstr ""
+
+#: modules/access_output/rist.c:839
+msgid ""
+"Use this setting to specify a known SSRC for the RTP header. This is only "
+"useful if your receiver acts on it. When using VLC as receiver, it is not."
+msgstr ""
+
+#: modules/access_output/rist.c:842 modules/access_output/shout.c:64
 #: modules/gui/qt/components/sout/sout_widgets.cpp:385
 #: share/lua/http/dialogs/create_stream.html:139
 msgid "Stream name"
 msgstr "സ്ട്രീം നാമം"
+
+#: modules/access_output/rist.c:844
+msgid ""
+"This Stream name will be sent to the receiver using the rist RTCP channel"
+msgstr ""
+
+#: modules/access_output/rist.c:850
+#, fuzzy
+msgid "RIST stream output"
+msgstr "എസ് ആർ ടി സ്ട്രീം ഔട്ട് പുട്ട് "
+
+#: modules/access_output/rist.c:855
+#, fuzzy
+msgid "RIST target packet size (bytes)"
+msgstr "എസ് ആർ ടി ചങ്ക് വലുപ്പം (ബൈറ്റുകൾ)"
 
 #: modules/access_output/shout.c:65
 msgid "Name to give to this stream/channel on the shoutcast/icecast server."
@@ -10534,7 +10704,7 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "കെ ഓഡിയോ ഇന്റര്‍ഫേസ് ഓഡിയോ ഔട്ട്പുട്ട്"
 
-#: modules/audio_output/mmdevice.c:1452
+#: modules/audio_output/mmdevice.c:1452 modules/gui/qt/ui/sprefs_audio.h:416
 msgid "HDMI/SPDIF audio passthrough"
 msgstr "HDMI/SPDIF ഓഡിയോ പാസ്സ്ത്രു "
 
@@ -11243,7 +11413,7 @@ msgstr "ബിപിജി ഇമേജ് ഡീകോഡർ"
 
 #: modules/codec/cc.c:51 modules/codec/zvbi.c:65
 #: modules/gui/macosx/VLCSimplePrefsController.m:353 modules/spu/marq.c:108
-#: modules/spu/rss.c:144
+#: modules/spu/rss.c:144 modules/gui/qt/ui/video_effects.h:1273
 msgid "Opacity"
 msgstr "ഒപേസിറ്റി"
 
@@ -11315,6 +11485,31 @@ msgid ""
 "Picking chroma format will force a conversion of the video into that format"
 msgstr ""
 "ക്രോമ ഘടന തിരഞ്ഞെടുക്കുന്നത് വഴി വീഡിയോയെ ആ ഘടനയിലേക്ക് രൂപാന്തരപ്പെടുത്താന്‍ നിര്‍ബന്ധിക്കും"
+
+#: modules/codec/dav1d.c:52
+#, fuzzy
+msgid "Frames Threads"
+msgstr "ത്രെഡുകള്‍"
+
+#: modules/codec/dav1d.c:53
+#, fuzzy
+msgid "Max number of threads used for frame decoding, default 0=auto"
+msgstr "ഡീകോഡ് ചെയ്യാന്‍ ഉപയോഗിയ്ക്കുന്ന ത്രഡുകളുടെ എണ്ണം, 0 എന്നുവെച്ചാല്‍ സ്വയം"
+
+#: modules/codec/dav1d.c:54
+#, fuzzy
+msgid "Tiles Threads"
+msgstr "ത്രെഡുകള്‍"
+
+#: modules/codec/dav1d.c:55
+#, fuzzy
+msgid "Max number of threads used for tile decoding, default 0=auto"
+msgstr "ഡീകോഡ് ചെയ്യാന്‍ ഉപയോഗിയ്ക്കുന്ന ത്രഡുകളുടെ എണ്ണം, 0 എന്നുവെച്ചാല്‍ സ്വയം"
+
+#: modules/codec/dav1d.c:60
+#, fuzzy
+msgid "Dav1d video decoder"
+msgstr "Daala വീഡിയോ ഡീക്കോഡെർ "
 
 #: modules/codec/dca.c:61
 msgid "DTS dynamic range compression"
@@ -11549,11 +11744,11 @@ msgstr "ഫ്ലൂയിഡ്സിന്ത് എംഐഡിഐ സിന�
 msgid "FluidSynth"
 msgstr "ഫ്ലൂയിഡ്സിന്ത്"
 
-#: modules/codec/fluidsynth.c:150
+#: modules/codec/fluidsynth.c:153
 msgid "MIDI synthesis not set up"
 msgstr "എംഐഡിഐ സിന്തസിസ് സെറ്റപ്പ് ചെയ്തിട്ടില്ല"
 
-#: modules/codec/fluidsynth.c:151
+#: modules/codec/fluidsynth.c:154
 msgid ""
 "A sound font file (.SF2) is required for MIDI synthesis.\n"
 "Please install a sound font and configure it from the VLC preferences "
@@ -11861,20 +12056,24 @@ msgstr "ടൈഗര്‍ റെണ്ടറിംഗ് ഡീഫോള്‍�
 msgid "Kate text subtitles packetizer"
 msgstr "കേറ്റ് ടെക്സ്റ്റ് ഉപശീര്‍ഷകങ്ങളുടെ പാക്കറ്റൈസര്‍"
 
-#: modules/codec/libass.c:60
+#: modules/codec/libass.c:59
+msgid "Additional fonts directory"
+msgstr "അധികമുള്ള കയ്യക്ഷര പെട്ടി"
+
+#: modules/codec/libass.c:62
 msgid "Subtitles (advanced)"
 msgstr "ഉപശീര്‍ഷകങ്ങള്‍ (നൂതനമായ)"
 
-#: modules/codec/libass.c:61
+#: modules/codec/libass.c:63
 msgid "Subtitle renderers using libass"
 msgstr "ലിബസ്സ് ഉപയോഗിച്ച് ഉപശീര്‍ഷകം തര്‍ജ്ജമപ്പെടുന്നു"
 
-#: modules/codec/libass.c:249
+#: modules/codec/libass.c:275
 #: modules/text_renderer/freetype/fonts/fontconfig.c:78
 msgid "Building font cache"
 msgstr "ബില്‍ഡിംഗ് ഫോണ്ട് കാഷ്"
 
-#: modules/codec/libass.c:250
+#: modules/codec/libass.c:276
 msgid ""
 "Please wait while your font cache is rebuilt.\n"
 "This should take less than a minute."
@@ -12630,6 +12829,7 @@ msgstr "S / PDIF പാസ്-ത്രൂ ഡീകോഡർ"
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
+#: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1243
 msgid "Mode"
 msgstr "മോഡ്"
 
@@ -14017,6 +14217,7 @@ msgid "Quiet mode"
 msgstr "നിശബ്ദമായ മോഡ്"
 
 #: modules/codec/x264.c:397 modules/gui/macosx/VLCPlaylistInfo.m:65
+#: modules/gui/qt/ui/streampanel.h:168
 msgid "Statistics"
 msgstr "സ്ഥിതി വിവരം"
 
@@ -14203,7 +14404,7 @@ msgstr "RGBA എന്നതിന് പകരം ടെക്‌സ്റ്�
 msgid "Presentation Level"
 msgstr "അവതരണ നില"
 
-#: modules/codec/zvbi.c:88
+#: modules/codec/zvbi.c:88 modules/gui/qt/ui/streampanel.h:167
 msgid "1"
 msgstr "1"
 
@@ -14235,10 +14436,10 @@ msgstr "ഡിബസ്"
 msgid "D-Bus control interface"
 msgstr "ഡി-ബസ് നിയന്ത്രണ പൊതുപ്രതലം"
 
-#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:187
-#: modules/gui/macosx/VLCMainWindow.m:689
-#: modules/gui/macosx/VLCMainWindow.m:695
-#: modules/gui/macosx/VLCMainWindow.m:1326
+#: modules/control/dbus/dbus_root.c:81 modules/gui/macosx/VLCMainWindow.m:190
+#: modules/gui/macosx/VLCMainWindow.m:581
+#: modules/gui/macosx/VLCMainWindow.m:587
+#: modules/gui/macosx/VLCMainWindow.m:1030
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
 #: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1258
 #: modules/gui/qt/main_interface.cpp:1262
@@ -15002,17 +15203,16 @@ msgid "Preferred bandwidth for non adaptive streams"
 msgstr "അഡാപ്റ്റീവ് അല്ലാത്ത സ്ട്രീമുകൾക്കായി തിരഞ്ഞെടുത്ത ബാൻഡ്‌വിഡ്ത്ത്"
 
 #: modules/demux/adaptive/adaptive.cpp:75
-#, fuzzy
 msgid "Live Playback delay (ms)"
-msgstr "DTS താമസ്സം (ms)"
+msgstr "തത്സമയ പ്ലേബാക്ക് കാലതാമസം (എം‌എസ്)"
 
 #: modules/demux/adaptive/adaptive.cpp:76
 msgid "Tradeoff between stability and real time"
-msgstr ""
+msgstr "സ്ഥിരതയും തത്സമയവും തമ്മിലുള്ള താത്പര്യം"
 
 #: modules/demux/adaptive/adaptive.cpp:78
 msgid "Max buffering (ms)"
-msgstr ""
+msgstr "പരമാവധി ബഫറിംഗ് (എം‌എസ്)"
 
 #: modules/demux/adaptive/adaptive.cpp:80
 msgid "Adaptive Logic"
@@ -15032,9 +15232,8 @@ msgid "Low latency"
 msgstr "കുറഞ്ഞ ലാറ്റന്‍സി"
 
 #: modules/demux/adaptive/adaptive.cpp:86
-#, fuzzy
 msgid "Overrides low latency parameters"
-msgstr "ഓവര്‍റൈഡ് പരാമീറ്ററുകള്‍"
+msgstr "കുറഞ്ഞ ലേറ്റൻസിയുള്ള പാരാമീറ്ററുകൾ അസാധുവാക്കുന്നു"
 
 #: modules/demux/adaptive/adaptive.cpp:107
 msgid "Predictive"
@@ -15061,9 +15260,8 @@ msgid "Highest Bandwidth/Quality"
 msgstr "ഏറ്റവും ഉയർന്ന ബാൻഡ്‌വിഡ്ത്ത് / ഗുണമേന്മ"
 
 #: modules/demux/adaptive/adaptive.cpp:123
-#, fuzzy
 msgid "Force"
-msgstr "ഫോഴ്സ് ബോള്‍ഡ്"
+msgstr "നിർബന്ധിക്കുക"
 
 #: modules/demux/adaptive/adaptive.cpp:127
 msgid "Adaptive"
@@ -15165,7 +15363,7 @@ msgstr "ആവശ്യമുള്ളപ്പോള്‍ ഫിക്സ് �
 msgid "AVI demuxer"
 msgstr "എവിഐ ഡീമക്സര്‍"
 
-#: modules/demux/avi/avi.c:876 modules/demux/mp4/mp4.c:4255
+#: modules/demux/avi/avi.c:878 modules/demux/mp4/mp4.c:4255
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15180,27 +15378,27 @@ msgstr ""
 "ഈ ഘട്ടത്തിൽ വലിയ ഫയൽ നിർമിക്കലും സമയനഷ്ടവും സംഭവിച്ചേക്കാം \n"
 "നിങ്ങൾ എന്താണ് ചെയ്യാൻ ഉദേശിക്കുന്നത്?"
 
-#: modules/demux/avi/avi.c:884
+#: modules/demux/avi/avi.c:886
 msgid "Do not play"
 msgstr "പ്ലേ ചെയ്യരുത്"
 
-#: modules/demux/avi/avi.c:885
+#: modules/demux/avi/avi.c:887
 msgid "Build index then play"
 msgstr "സൂചിക നിര്‍മ്മിച്ചതിന്‍ശേഷം പ്ലേ ചെയ്യുക"
 
-#: modules/demux/avi/avi.c:886
+#: modules/demux/avi/avi.c:888
 msgid "Play as is"
 msgstr "ഉള്ളതുപോലേ പ്ലേ ചെയ്യുക"
 
-#: modules/demux/avi/avi.c:887 modules/demux/mp4/mp4.c:4266
+#: modules/demux/avi/avi.c:889 modules/demux/mp4/mp4.c:4266
 msgid "Broken or missing Index"
 msgstr "സൂചിക കേടാണ് അല്ലെങ്കിൽ കാണുന്നില്ല"
 
-#: modules/demux/avi/avi.c:2774
+#: modules/demux/avi/avi.c:2776
 msgid "Broken or missing AVI Index"
 msgstr "പൊട്ടിപ്പോയ അല്ലെങ്കില്‍ നഷ്ട്ടപ്പെട്ട എ‌വി‌ഐ സൂചിക"
 
-#: modules/demux/avi/avi.c:2775
+#: modules/demux/avi/avi.c:2777
 msgid "Fixing AVI Index..."
 msgstr "എവിഐ ഇന്‍ഡെക്സ് ഫിക്സ് ചെയ്യുന്നു..."
 
@@ -15335,31 +15533,31 @@ msgstr ""
 msgid "M-JPEG camera demuxer"
 msgstr "എം-ജെപേഗ് ക്യാമറ ഡിമക്സര്‍"
 
-#: modules/demux/mkv/mkv.cpp:53
+#: modules/demux/mkv/mkv.cpp:54
 msgid "Matroska stream demuxer"
 msgstr "മട്രോസ്ക സ്ട്രീം ടിമക്സര്‍"
 
-#: modules/demux/mkv/mkv.cpp:60
+#: modules/demux/mkv/mkv.cpp:61
 msgid "Respect ordered chapters"
 msgstr "നിരയുള്ള അദ്ധ്യായങ്ങളെ ബഹുമാനിക്കുക"
 
-#: modules/demux/mkv/mkv.cpp:61
+#: modules/demux/mkv/mkv.cpp:62
 msgid "Play chapters in the order specified in the segment."
 msgstr "ഘടകത്തില്‍ നിര്‍ദ്ദേശിച്ചിട്ടുള്ള നിലയനുസരിച്ച് അദ്ധ്യായങ്ങള്‍ പ്ലേ ചെയ്യുക."
 
-#: modules/demux/mkv/mkv.cpp:64
+#: modules/demux/mkv/mkv.cpp:65
 msgid "Chapter codecs"
 msgstr "ചാപ്റ്റര്‍ കോഡെക്കുകള്‍"
 
-#: modules/demux/mkv/mkv.cpp:65
+#: modules/demux/mkv/mkv.cpp:66
 msgid "Use chapter codecs found in the segment."
 msgstr "ഘടകത്തില്‍ കാണുന്ന അദ്ധ്യായങ്ങളുടെ കോടക്കുകള്‍ ഉപയോഗിക്കുക."
 
-#: modules/demux/mkv/mkv.cpp:68
+#: modules/demux/mkv/mkv.cpp:69 modules/gui/qt/ui/sprefs_input.h:367
 msgid "Preload MKV files in the same directory"
 msgstr "അതേ ഡിറക്ടറിയില്‍ എം‌കെ‌വി ഫയലുകള്‍ മുന്നമേ ലോഡ് ചെയ്യുക"
 
-#: modules/demux/mkv/mkv.cpp:69
+#: modules/demux/mkv/mkv.cpp:70
 msgid ""
 "Preload matroska files in the same directory to find linked segments (not "
 "good for broken files)."
@@ -15367,28 +15565,28 @@ msgstr ""
 "ബന്ധമുള്ള ഘടകങ്ങള്‍ കണ്ടുപിടിക്കാന്‍ അതേ ഡിറക്ടറിയില്‍ മട്രോസ്ക ഫയലുകള്‍ മുന്നമേ ലോഡ് ചെയ്യുക (മുറിഞ്ഞ "
 "ഫയലുകള്‍ക്ക് നല്ലതല്ല)"
 
-#: modules/demux/mkv/mkv.cpp:72 modules/demux/mpeg/ts.c:109
+#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:109
 msgid "Seek based on percent not time"
 msgstr "ശതമാനം അനുസരിച്ചു തിരഞ്ഞെടുക്കുക സമയം അല്ല"
 
-#: modules/demux/mkv/mkv.cpp:73
+#: modules/demux/mkv/mkv.cpp:74
 msgid "Seek based on percent not time."
 msgstr "ശതമാനം അനുസരിച്ചു തിരഞ്ഞെടുക്കുക സമയം അല്ല"
 
-#: modules/demux/mkv/mkv.cpp:76
+#: modules/demux/mkv/mkv.cpp:77
 msgid "Dummy Elements"
 msgstr "ഡമ്മി ഘടകങ്ങള്‍"
 
-#: modules/demux/mkv/mkv.cpp:77
+#: modules/demux/mkv/mkv.cpp:78
 msgid "Read and discard unknown EBML elements (not good for broken files)."
 msgstr ""
 "അറിയാത്ത ഇ‌ബി‌എം‌എല്‍ ഘടകങ്ങള്‍ വായിക്കുക അല്ലെങ്കില്‍ തിരസ്കരിക്കുക (മുറിഞ്ഞ ഫയലുകള്‍ക്ക് നല്ലതല്ല)"
 
-#: modules/demux/mkv/mkv.cpp:80
+#: modules/demux/mkv/mkv.cpp:81
 msgid "Preload clusters"
 msgstr "ക്ലസ്റ്ററുകൾ പ്രീലോഡുചെയ്യുക"
 
-#: modules/demux/mkv/mkv.cpp:81
+#: modules/demux/mkv/mkv.cpp:82
 msgid ""
 "Find all cluster positions by jumping cluster-to-cluster before playback"
 msgstr "പ്ലേബാക്കിന് മുമ്പ് ക്ലസ്റ്റർ-ടു-ക്ലസ്റ്റർ ചാടി എല്ലാ ക്ലസ്റ്റർ സ്ഥാനങ്ങളും കണ്ടെത്തുക"
@@ -16135,9 +16333,10 @@ msgstr ""
 "ഐപി(എസ്ആര്‍ടി) ഉപശീര്‍ഷകങ്ങളുമായി മാത്രമേ പ്രവര്‍ത്തിക്കകയുള്ളു."
 
 #: modules/demux/subtitle.c:58
+#, fuzzy
 msgid ""
-"Force the subtiles format. Selecting \"auto\" means autodetection and should "
-"always work."
+"Force the subtitles format. Selecting \"auto\" means autodetection and "
+"should always work."
 msgstr ""
 "ഉപശീര്‍ഷകങ്ങളുടെ ഘടന ഫോഴ്സ് ചെയ്യുക. \"auto\" തിരഞ്ഞെടുക്കുന്നതിനര്‍ത്ഥം ഓട്ടോഡിറ്റക്ഷനും എപ്പോഴും "
 "വര്‍ക്ക് ചെയ്യണമെന്നുമാണ്."
@@ -16386,11 +16585,13 @@ msgid "Apply profile at next launch"
 msgstr "അടുത്ത സമാരംഭത്തിൽ പ്രൊഫൈൽ പ്രയോഗിക്കുക"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:216
+#: modules/gui/qt/ui/equalizer.h:131
 msgid "2 Pass"
 msgstr "2 പാസ്സ്"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:219
 #: modules/gui/qt/components/extended_panels.cpp:1132
+#: modules/gui/qt/ui/equalizer.h:133
 msgid "Preamp"
 msgstr "പ്രീആംപ്"
 
@@ -16479,6 +16680,7 @@ msgstr "പുതിയ പ്രൊഫൈലിനായി ഒരു പേര
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:792
 #: modules/gui/macosx/prefs.m:188
 #: modules/gui/qt/components/sout/profile_selector.cpp:449
+#: modules/gui/qt/ui/vlm.h:298
 msgid "Save"
 msgstr "സംരക്ഷിക്കുക"
 
@@ -16509,6 +16711,7 @@ msgstr "നിങ്ങള്‍ക്ക് നീക്കം ചെയ്യ�
 #: modules/gui/macosx/VLCBookmarksWindowController.m:78
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:859
+#: modules/gui/qt/ui/open_file.h:153
 msgid "Remove"
 msgstr "നീക്കം ചെയ്യുക"
 
@@ -16533,12 +16736,14 @@ msgid "Bookmarks"
 msgstr "ബുക്ക്മാര്‍ക്കുകള്‍"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:75
+#: modules/gui/qt/ui/podcast_configuration.h:101 modules/gui/qt/ui/sout.h:206
+#: modules/gui/qt/ui/vlm.h:296
 msgid "Add"
 msgstr "ചേര്‍ക്കുക"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:76
 #: modules/gui/macosx/VLCSimplePrefsController.m:288
-#: modules/gui/qt/dialogs/bookmarks.cpp:53
+#: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:297
 msgid "Clear"
 msgstr "കാലിയാക്കുക"
 
@@ -16602,25 +16807,25 @@ msgstr ""
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:84
 #: modules/gui/macosx/VLCControlsBarCommon.m:182
-#: modules/gui/macosx/VLCFSPanelController.m:122
+#: modules/gui/macosx/VLCFSPanelController.m:134
 msgid "Backward"
 msgstr "പുറകിലേക്ക്"
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:85
 #: modules/gui/macosx/VLCControlsBarCommon.m:183
-#: modules/gui/macosx/VLCFSPanelController.m:123
+#: modules/gui/macosx/VLCFSPanelController.m:135
 msgid "Seek backward"
 msgstr "പിന്നോട്ട് തേടുക "
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:88
 #: modules/gui/macosx/VLCControlsBarCommon.m:185
-#: modules/gui/macosx/VLCFSPanelController.m:119
+#: modules/gui/macosx/VLCFSPanelController.m:131
 msgid "Forward"
 msgstr "മുമ്പോട്ട്"
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:89
 #: modules/gui/macosx/VLCControlsBarCommon.m:186
-#: modules/gui/macosx/VLCFSPanelController.m:120
+#: modules/gui/macosx/VLCFSPanelController.m:132
 msgid "Seek forward"
 msgstr "മുന്നോട്ട് തേടുക "
 
@@ -16638,7 +16843,7 @@ msgid "Go to previous item"
 msgstr "മുമ്പത്തെ ഇനത്തിലേക്ക് പോകുക"
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:197
-#: modules/gui/macosx/VLCFSPanelController.m:114
+#: modules/gui/macosx/VLCFSPanelController.m:126
 #: modules/gui/macosx/VLCStatusBarIcon.m:106
 msgid "Go to next item"
 msgstr "അടുത്ത ഇനത്തിലേക്ക് പോകുക"
@@ -16652,12 +16857,12 @@ msgid "Go!"
 msgstr "പോകുക!"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:138
-#: modules/gui/macosx/VLCMainWindow.m:196
+#: modules/gui/macosx/VLCMainWindow.m:199
 msgid "Drop media here"
 msgstr "മീഡിയയെ ഇവിടെ നിക്ഷേപിക്കുക"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:139
-#: modules/gui/macosx/VLCMainWindow.m:212
+#: modules/gui/macosx/VLCMainWindow.m:215
 msgid "Open media..."
 msgstr "മീഡിയ തുറക്കുക"
 
@@ -16688,6 +16893,9 @@ msgstr "ഔട്ട്പുട്ട് സ്ഥാനം തിരഞ്ഞ�
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
+#: modules/gui/qt/ui/open.h:279 modules/gui/qt/ui/open_disk.h:304
+#: modules/gui/qt/ui/open_file.h:146 modules/gui/qt/ui/sprefs_audio.h:414
+#: modules/gui/qt/ui/sprefs_input.h:365 modules/gui/qt/ui/sprefs_video.h:329
 msgid "Browse..."
 msgstr "ബ്രൗസ്..."
 
@@ -16721,28 +16929,34 @@ msgid "Save as new Profile..."
 msgstr "പുതിയ പ്രൊഫൈലായി സംരക്ഷിക്കുക"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:155
+#: modules/gui/qt/ui/profiles.h:723
 msgid "Encapsulation"
 msgstr "സാരാംശപ്പെടുത്തല്‍"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:156
 #: share/lua/http/dialogs/create_stream.html:160
+#: modules/gui/qt/ui/profiles.h:749
 msgid "Video codec"
 msgstr "വീഡിയോ കൊഡീക്"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:157
 #: share/lua/http/dialogs/create_stream.html:178
+#: modules/gui/qt/ui/profiles.h:759
 msgid "Audio codec"
 msgstr "ആഡിയോ കൊഡീക്"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:161
+#: modules/gui/qt/ui/profiles.h:725
 msgid "Keep original video track"
 msgstr "യഥാര്‍ത്ഥ വീഡിയൂ ട്രാക്ക് സൂക്ഷിക്കുക"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:165
+#: modules/gui/qt/ui/profiles.h:747
 msgid "Resolution"
 msgstr "റസല്യൂഷന്‍"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:166
+#: modules/gui/qt/ui/profiles.h:738
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
@@ -16751,15 +16965,17 @@ msgstr ""
 "ആവശ്യമുള്ളൂ. യഥാര്‍ത്ഥ ആസ്പെക്റ്റ് റേഷ്യോ ഉപയോഗിച്ച് VLC മറ്റുള്ളവയെ തനിയെ കണ്ടെടുത്തുകൊള്ളും."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:169
-#: modules/gui/macosx/VLCOutput.m:88
+#: modules/gui/macosx/VLCOutput.m:88 modules/gui/qt/ui/profiles.h:739
 msgid "Scale"
 msgstr "അളക്കുക"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:172
+#: modules/gui/qt/ui/profiles.h:751
 msgid "Keep original audio track"
 msgstr "യഥാര്‍ത്ഥ ആഡിയോ ട്രാക്ക് സൂക്ഷിക്കുക"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:179
+#: modules/gui/qt/ui/profiles.h:762
 msgid "Overlay subtitles on the video"
 msgstr "വീഡിയോയിലെ ആവരണ സഹശീര്‍ഷകം"
 
@@ -16912,346 +17128,106 @@ msgstr "തെറ്റുകളും മുന്നറിയിപ്പു�
 msgid "Clean up"
 msgstr "വൃത്തിയാക്കല്‍"
 
-#: modules/gui/macosx/VLCFSPanelController.m:111
+#: modules/gui/macosx/VLCFSPanelController.m:123
 msgid "Play/Pause the current media"
 msgstr "നിലവിലെ മീഡിയ പ്ലേ ചെയ്യുക / താൽക്കാലികമായി നിർത്തുക"
 
-#: modules/gui/macosx/VLCFSPanelController.m:117
+#: modules/gui/macosx/VLCFSPanelController.m:129
 msgid "Go to the previous item"
 msgstr "മുമ്പത്തെ ഇനത്തിലേക്ക് പോകുക"
 
-#: modules/gui/macosx/VLCFSPanelController.m:125
-#: modules/gui/macosx/VLCFSPanelController.m:126
+#: modules/gui/macosx/VLCFSPanelController.m:137
+#: modules/gui/macosx/VLCFSPanelController.m:138
 msgid "Leave fullscreen"
 msgstr "പൂർണ്ണസ്‌ക്രീൻ വിടുക"
 
-#: modules/gui/macosx/VLCFSPanelController.m:128
+#: modules/gui/macosx/VLCFSPanelController.m:140
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:80
-#: modules/gui/qt/dialogs/toolbar.cpp:477
+#: modules/gui/qt/dialogs/toolbar.cpp:477 modules/gui/qt/ui/sprefs_audio.h:408
 msgid "Volume"
 msgstr "ഒച്ച"
 
-#: modules/gui/macosx/VLCFSPanelController.m:129
+#: modules/gui/macosx/VLCFSPanelController.m:141
 msgid "Adjust the volume"
 msgstr "ശബ്ദം ക്രമീകരിക്കുക"
 
-#: modules/gui/macosx/VLCFSPanelController.m:132
+#: modules/gui/macosx/VLCFSPanelController.m:144
 msgid "Adjust the current playback position"
 msgstr "നിലവിലെ പ്ലേബാക്ക് സ്ഥാനം ക്രമീകരിക്കുക"
 
-#: modules/gui/macosx/VLCFSPanelController.m:317
+#: modules/gui/macosx/VLCFSPanelController.m:325
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:78
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:503
 #, c-format
 msgid "Volume: %i %%"
 msgstr "ശബ്ദം: %i %%"
 
-#: modules/gui/macosx/macosx.m:51
-msgid "Video device"
-msgstr "വീഡിയോ ഉപകരണം"
+#: modules/gui/macosx/VLCHelpWindowController.m:47
+#, fuzzy
+msgid "VLC media player Help"
+msgstr "വി‌എല്‍‌സി മെഡിയ പ്ലേയര്‍ സഹായം"
 
-#: modules/gui/macosx/macosx.m:52
-msgid ""
-"Number of the screen to use by default to display videos in 'fullscreen'. "
-"The screen number correspondance can be found in the video device selection "
-"menu."
+#: modules/gui/macosx/VLCHelpWindowController.m:50
+#: modules/gui/macosx/VLCMainMenu.m:467 modules/gui/macosx/VLCMainMenu.m:1101
+msgid "Index"
+msgstr "സൂചിക"
+
+#: modules/gui/macosx/VLCInputManager.m:451
+#: modules/gui/macosx/VLCInputManager.m:478
+#, fuzzy
+msgid "VLC media playback"
+msgstr "വിഎല്‍സി മീഡിയ പ്ലേയര്‍"
+
+#: modules/gui/macosx/VLCLogWindowController.m:94
+#: modules/gui/qt/dialogs/messages.cpp:80
+#: modules/gui/qt/ui/messages_panel.h:136
+#: modules/gui/qt/ui/messages_panel.h:140
+msgid "Messages"
+msgstr "സന്ദേശങ്ങള്‍"
+
+#: modules/gui/macosx/VLCLogWindowController.m:104
+#, fuzzy
+msgid "Save log"
+msgstr "ഫയല്‍ സേവ് ചെയ്യുക"
+
+#: modules/gui/macosx/VLCLogWindowController.m:105
+#, fuzzy
+msgid "Save the debug log to a file"
+msgstr "പ്രദര്‍ശിപ്പിച്ചിരിക്കുന്ന എല്ലാ ലോഗുകളെയും ഒരു ഫയലിലേയ്ക്ക് സംരക്ഷിക്കുന്നു"
+
+#: modules/gui/macosx/VLCLogWindowController.m:107
+#, fuzzy
+msgid "Refresh log"
+msgstr "സമയം റിഫ്രെഷ് ചെയ്യുക"
+
+#: modules/gui/macosx/VLCLogWindowController.m:108
+#, fuzzy
+msgid "Refresh the log output"
+msgstr "റെക്കോര്‍ഡ് സ്ട്രീം ഔട്ട്പുട്ട്"
+
+#: modules/gui/macosx/VLCLogWindowController.m:110
+#, fuzzy
+msgid "Clear log"
+msgstr "കാലിയാക്കുക"
+
+#: modules/gui/macosx/VLCLogWindowController.m:111
+#, fuzzy
+msgid "Clear the log output"
+msgstr "ഔട്ട്പുട്ട് പ്രദര്‍ശിപ്പിക്കുക"
+
+#: modules/gui/macosx/VLCLogWindowController.m:113
+#, fuzzy
+msgid "Toggle details"
+msgstr "ഉപശീര്‍ഷകങ്ങള്‍ ടോഗിള്‍ ചെയ്യുക"
+
+#: modules/gui/macosx/VLCLogWindowController.m:114
+msgid "Show/hide details about a log message"
 msgstr ""
-"സ്ഥിരസ്ഥിതിയില്‍  മുഴുവന്‍ സ്ക്രീനില്‍ വീഡിയോകള്‍ അവതരിപ്പിക്കുന്നതിനായി ഉപയോഗിക്കേണ്ട സ്ക്രീനുകളുടെ "
-"എണ്ണം. വീഡിയോ ഉപകരണ തിരഞ്ഞെടുക്കല്‍ പട്ടികയില്‍ ഈ സ്ക്രീന്‍ നമ്പര്‍ സാദൃശ്യം കാണാവുന്നതാണ്"
 
-#: modules/gui/macosx/macosx.m:56
-msgid "Opaqueness"
-msgstr "അവ്യക്തത"
-
-#: modules/gui/macosx/macosx.m:57
-msgid ""
-"Set the transparency of the video output. 1 is non-transparent (default) 0 "
-"is fully transparent."
+#: modules/gui/macosx/VLCLogWindowController.m:198
+#, c-format
+msgid "VLC Debug Log (%s).txt"
 msgstr ""
-"വീഡിയോ ഔട്ട്പുട്ടിന്‍റെ സുതാര്യത ശരിയാക്കുക. 1 എന്നത് അതാര്യതയെയും(സ്ഥിരസ്ഥിതി) 0 മുഴുവനായ "
-"സുതാര്യതയെയും സൂചിപ്പിക്കുന്നു"
-
-#: modules/gui/macosx/macosx.m:60
-msgid "Black screens in fullscreen"
-msgstr "ഫുള്‍ സ്ക്രീനില്‍ കറുത്ത സ്ക്രീനുകള്‍"
-
-#: modules/gui/macosx/macosx.m:61
-msgid "In fullscreen mode, keep screen where there is no video displayed black"
-msgstr ""
-"മുഴുവന്‍ സ്ക്രീനിന്‍റെ രീതിയില്‍, വീഡിയോ ഒന്നും കറുത്തതായി പ്രദര്‍ശിപ്പിക്കപ്പെട്ടിട്ടില്ലാത്ത സ്ഥലത്തു "
-"സ്ക്രീന്‍ വയ്ക്കുക"
-
-#: modules/gui/macosx/macosx.m:64
-msgid "Show Fullscreen controller"
-msgstr "മുഴുവന്‍ സ്ക്രീന്‍ നിയന്ത്രകന്‍ "
-
-#: modules/gui/macosx/macosx.m:65
-msgid "Shows a lucent controller when moving the mouse in fullscreen mode."
-msgstr "മുഴുവന്‍ സ്ക്രീന്‍ രീതിയില്‍ മൌസ് ചലിപ്പിക്കുമ്പോള്‍ ഒരു തിളക്കമാര്‍ന്ന നിയന്ത്രകനെ കാണിക്കുന്നു"
-
-#: modules/gui/macosx/macosx.m:68
-msgid "Auto-playback of new items"
-msgstr "പുതിയ ഇനങ്ങളുടെ ഓട്ടോ-പ്ലേബാക്ക്"
-
-#: modules/gui/macosx/macosx.m:69
-msgid "Start playback of new items immediately once they were added."
-msgstr "പുതിയ ഇനങ്ങള്‍ ചേര്‍ത്ത ഉടനെ തന്നെ അവ പാടാന്‍ തുടങ്ങുക"
-
-#: modules/gui/macosx/macosx.m:72
-msgid "Keep Recent Items"
-msgstr "അടുത്തിടെയുള്ള ഇനങ്ങള്‍ സൂക്ഷിക്കുക"
-
-#: modules/gui/macosx/macosx.m:73
-msgid ""
-"By default, VLC keeps a list of the last 10 items. This feature can be "
-"disabled here."
-msgstr ""
-"സ്ഥിരസ്ഥിതിയില്‍, VLC അവസാനമായി ഉപയോഗിച്ച 10 ഇനങ്ങളുടെ ലിസ്റ്റ് സൂക്ഷിക്കുന്നു. ഈ സവിശേഷത "
-"ഇവിടെ അപ്രാപ്തമാക്കാന്‍ കഴിയും"
-
-#: modules/gui/macosx/macosx.m:76
-#: modules/gui/macosx/VLCSimplePrefsController.m:324
-msgid "Control playback with the Apple Remote"
-msgstr "ആപ്പിള്‍  റിമോട്ട് ഉപയോഗിച്ച് പ്ലേബാക്ക് നിയന്ത്രിക്കുക"
-
-#: modules/gui/macosx/macosx.m:77
-msgid "By default, VLC can be remotely controlled with the Apple Remote."
-msgstr "സ്ഥിരസ്ഥിതിയില്‍, VLCയെ ആപ്പിള്‍ റിമോട്ട് ഉപയോഗിച്ച് നിയന്ത്രിക്കാവുന്നതാണ്"
-
-#: modules/gui/macosx/macosx.m:79
-#: modules/gui/macosx/VLCSimplePrefsController.m:326
-msgid "Control system volume with the Apple Remote"
-msgstr "സിസ്റ്റത്തിന്റെ ശബ്ദം ആപ്പിള്‍ റിമോട്ട് ഉപയോഗിച്ച്  നിയന്ത്രിക്കുക"
-
-#: modules/gui/macosx/macosx.m:80
-msgid ""
-"By default, VLC will control its own volume with the Apple Remote. However, "
-"you can choose to control the global system volume instead."
-msgstr ""
-"സ്ഥിരസ്ഥിതിയില്‍, VLC അതിന്‍റെ ശബ്ദം ആപ്പിള്‍ റിമോട്ട് ഉപയോഗിച്ച് നിയന്ത്രിക്കാറുണ്ട്. "
-"എന്നിരുന്നാലും, നിങ്ങള്‍ക്ക് ആഗോള സിസ്റ്റത്തിന്‍റെ ശബ്ദം നിയന്ത്രിക്കുന്നത് തിരഞ്ഞെടുക്കാന്‍ സാധിക്കും"
-
-#: modules/gui/macosx/macosx.m:82
-#: modules/gui/macosx/VLCSimplePrefsController.m:327
-msgid "Display VLC status menu icon"
-msgstr "വി‌എൽ‌സി സ്റ്റാറ്റസ് മെനു ഐക്കൺ പ്രദർശിപ്പിക്കുക"
-
-#: modules/gui/macosx/macosx.m:83
-msgid ""
-"By default, VLC will show the statusbar icon menu. However, you can choose "
-"to disable it (restart required)."
-msgstr ""
-"സ്ഥിരസ്ഥിതിയായി, വി‌എൽ‌സി സ്റ്റാറ്റസ്ബാർ ഐക്കൺ മെനു കാണിക്കും. എന്നിരുന്നാലും, ഇത് "
-"പ്രവർത്തനരഹിതമാക്കാൻ നിങ്ങൾക്ക് തിരഞ്ഞെടുക്കാം (പുനരാരംഭിക്കൽ ആവശ്യമാണ്)."
-
-#: modules/gui/macosx/macosx.m:85
-msgid "Control playlist items with the Apple Remote"
-msgstr "പ്ലേലിസ്റ്റിലെ ഇനങ്ങളെ ആപ്പിള്‍ റിമോട്ട് ഉപയോഗിച്ച് നിയന്ത്രിക്കുക"
-
-#: modules/gui/macosx/macosx.m:86
-msgid ""
-"By default, VLC will allow you to switch to the next or previous item with "
-"the Apple Remote. You can disable this behavior with this option."
-msgstr ""
-"സ്ഥിരസ്ഥിതിയില്‍, VLC അടുത്ത ഇനത്തിലേയ്ക്ക് പോകാനോ കഴിഞ്ഞത് തിരഞ്ഞെടുക്കാനോ ആപ്പിള്‍ "
-"റിമോട്ടിലൂടെ അനുവദിക്കും.  ഈ സൌകര്യം നിങ്ങള്‍ക്ക്  അപ്രാപ്യമാക്കാന്‍ സാധിയ്ക്കും"
-
-#: modules/gui/macosx/macosx.m:88
-#: modules/gui/macosx/VLCSimplePrefsController.m:325
-msgid "Control playback with media keys"
-msgstr "മീഡിയ കീകള്‍ വഴി പ്ലേബാക്ക് നിയന്ത്രിക്കുക"
-
-#: modules/gui/macosx/macosx.m:89
-msgid ""
-"By default, VLC can be controlled using the media keys on modern Apple "
-"keyboards."
-msgstr ""
-"സ്ഥിരസ്ഥിതിയില്‍, VLCയെ പുതിയ ആപ്പിള്‍ കീബോര്‍ഡിലെ മീഡിയ കീകള്‍  ഉപയോഗിച്ച് "
-"നിയന്ത്രിക്കാവുന്നതാണ്"
-
-#: modules/gui/macosx/macosx.m:92
-msgid "Run VLC with dark interface style"
-msgstr "ഇരുണ്ട പൊതുപ്രതല ശൈലിയില്‍ VLC പ്രവര്‍ത്തിപ്പിക്കുക"
-
-#: modules/gui/macosx/macosx.m:93
-msgid ""
-"If this option is enabled, VLC will use the dark interface style. Otherwise, "
-"the grey interface style is used."
-msgstr ""
-"ഈ ഓപ്ഷന്‍ പ്രാപ്തമാക്കിയിട്ടുണ്ടെങ്കില്‍, VLC കറുത്ത പൊതുപ്രതല  ശൈലി ഉപയോഗിക്കും. അല്ലെങ്കില്‍, "
-"ചാര പൊതുപ്രതല ശൈലി ഉപയോഗിക്കും"
-
-#: modules/gui/macosx/macosx.m:95
-#: modules/gui/macosx/VLCSimplePrefsController.m:369
-msgid "Use the native fullscreen mode"
-msgstr "തദ്ദേശീയമായ മുഴുവന്‍ സ്ക്രീന്‍ രീതി ഉപയോഗിക്കുക"
-
-#: modules/gui/macosx/macosx.m:96
-msgid ""
-"By default, VLC uses the fullscreen mode known from previous Mac OS X "
-"releases. It can also use the native fullscreen mode on Mac OS X 10.7 and "
-"later."
-msgstr ""
-"സ്ഥിരസ്ഥിതിയില്‍, പഴയ MacOS X റിലീസുകളില്‍ നിന്നുള്ള മുഴുവന്‍ സ്ക്രീന്‍ ശൈലിയാണ് VLC "
-"ഉപയോഗിക്കുന്നത്. പിന്നീടുള്ള  Mac OS X 10.7 റിലീസുകളില്‍ നിന്നുള്ള തദ്ദേശീയമായ മുഴുവന്‍ സ്ക്രീന്‍ "
-"ശൈലിയും ഇതിന് ഉപയോഗിക്കാന്‍ സാധിയ്ക്കും"
-
-#: modules/gui/macosx/macosx.m:98 modules/gui/qt/qt.cpp:95
-msgid "Resize interface to the native video size"
-msgstr "പൊതുപ്രതലത്തിന്റെ വലിപ്പം  തദ്ദേശീയമായ വീഡിയോസൈസിലേയ്ക്ക് മാറ്റുക "
-
-#: modules/gui/macosx/macosx.m:99 modules/gui/qt/qt.cpp:96
-msgid ""
-"You have two choices:\n"
-" - The interface will resize to the native video size\n"
-" - The video will fit to the interface size\n"
-" By default, interface resize to the native video size."
-msgstr ""
-"നിങ്ങള്‍ക്ക് രണ്ടു തിരഞ്ഞെടുക്കലുകള്‍ ആണ് ഉള്ളത്:\n"
-"- പൊതുപ്രതലത്തിനെ തദ്ദേശീയമായ വീഡിയോ സൈസിലേയ്ക്ക് വലിപ്പം മാറ്റുക\n"
-"-പൊതുപ്രതലത്തിന്റെ വലിപ്പത്തിനു പറ്റിയ രീതിയില്‍ വീഡിയോയെ യുക്തമാക്കുകസ്ഥിരസ്ഥിതിയില്‍, "
-"പൊതുപ്രതലം തദ്ദേശീയമായ വീഡിയോ വലിപ്പത്തിലേയ്ക്ക് അതിന്‍റെ വലിപ്പം മാറ്റുന്നു"
-
-#: modules/gui/macosx/macosx.m:104
-#: modules/gui/macosx/VLCSimplePrefsController.m:362 modules/gui/qt/qt.cpp:178
-msgid "Pause the video playback when minimized"
-msgstr "ചെറുതാക്കുമ്പോള്‍ വീഡിയോ പ്ലേബാക്ക് അല്പ്പം നിര്‍ത്തുക"
-
-#: modules/gui/macosx/macosx.m:105 modules/gui/qt/qt.cpp:180
-msgid ""
-"With this option enabled, the playback will be automatically paused when "
-"minimizing the window."
-msgstr ""
-"ഈ ഓപ്ഷന്‍ പ്രാപ്തമാക്കിയിട്ടുണ്ടെങ്കില്‍, വിന്‍ഡോ ചെറുതാകുമ്പോള്‍  പ്ലേബാക്ക് സ്വയമേതന്നെ  അല്‍"
-"പ്പനേരത്തെയ്ക്ക് നിലയ്ക്കുന്നതാണ്"
-
-#: modules/gui/macosx/macosx.m:108 modules/gui/qt/qt.cpp:182
-msgid "Allow automatic icon changes"
-msgstr "സ്വയമേ ഉള്ള ഐക്കണ്‍ വ്യത്യാസങ്ങള്‍ അനുവദിക്കുക"
-
-#: modules/gui/macosx/macosx.m:109 modules/gui/qt/qt.cpp:184
-msgid ""
-"This option allows the interface to change its icon on various occasions."
-msgstr ""
-"ഈ ഓപ്ഷന്‍ പൊതുപ്രതലത്തിനെ വിവിധ അവസരങ്ങളില്‍ അതിന്‍റെ ഐക്കണ്‍ വ്യത്യാസപ്പെടുത്താന്‍ സഹായിക്കുന്നു"
-
-#: modules/gui/macosx/macosx.m:111 modules/gui/macosx/VLCMainMenu.m:1460
-msgid "Lock Aspect Ratio"
-msgstr "ലോക്ക് ആസ്പെക്റ്റ് റേഷ്യോ"
-
-#: modules/gui/macosx/macosx.m:113
-msgid "Dim keyboard backlight during fullscreen playback"
-msgstr "പൂർണ്ണസ്‌ക്രീൻ പ്ലേബാക്കിനിടെ കീബോർഡ് ബാക്ക്‌ലൈറ്റ് തെളിച്ചം കുറയ്ക്കുക "
-
-#: modules/gui/macosx/macosx.m:114
-msgid ""
-"Turn off the MacBook keyboard backlight while a video is playing in "
-"fullscreen. Automatic brightness adjustment should be disabled in System "
-"Preferences."
-msgstr ""
-"ഒരു വീഡിയോ പൂർണ്ണസ്‌ക്രീനിൽ പ്ലേ ചെയ്യുമ്പോൾ മാക്ബുക്ക് കീബോർഡ് ബാക്ക്‌ലൈറ്റ് ഓഫാക്കുക. സിസ്റ്റം "
-"മുൻഗണനകളിൽ യാന്ത്രിക തെളിച്ച ക്രമീകരണം പ്രവർത്തനരഹിതമാക്കണം."
-
-#: modules/gui/macosx/macosx.m:116 modules/gui/macosx/VLCMainMenu.m:375
-msgid "Show Previous & Next Buttons"
-msgstr "കഴിഞ്ഞതും അടുത്തതുമായ ബട്ടണുകള്‍ കാണിക്കുക"
-
-#: modules/gui/macosx/macosx.m:117
-msgid "Shows the previous and next buttons in the main window."
-msgstr "കഴിഞ്ഞതും അടുത്തതുമായ ബട്ടണുകള്‍ പ്രധാന വിന്‍ഡോയില്‍ കാണിക്കുക"
-
-#: modules/gui/macosx/macosx.m:119 modules/gui/macosx/VLCMainMenu.m:377
-msgid "Show Shuffle & Repeat Buttons"
-msgstr "ക്രമം തെറ്റിയതും ആവര്‍ത്തിക്കപ്പെടുന്നതുമായ ബട്ടണുകള്‍ കാണിക്കുക"
-
-#: modules/gui/macosx/macosx.m:120
-msgid "Shows the shuffle and repeat buttons in the main window."
-msgstr "ക്രമം തെറ്റിയതും ആവര്‍ത്തിക്കപ്പെടുന്നതുമായ ബട്ടണുകള്‍ പ്രധാന വിന്‍ഡോയില്‍ കാണിക്കുക"
-
-#: modules/gui/macosx/macosx.m:122 modules/gui/macosx/VLCMainMenu.m:379
-msgid "Show Audio Effects Button"
-msgstr "ആഡിയോ ഇഫക്റ്റ്സ് ബട്ടണ്‍ കാണിക്കുക"
-
-#: modules/gui/macosx/macosx.m:123
-msgid "Shows the audio effects button in the main window."
-msgstr "ആഡിയോ ഇഫക്റ്റ്സ് ബട്ടണ്‍ പ്രധാന വിന്‍ഡോയില്‍ കാണിക്കുക"
-
-#: modules/gui/macosx/macosx.m:125
-#: modules/gui/macosx/VLCSimplePrefsController.m:331
-msgid "Control external music players"
-msgstr "പുറമെയുള്ള മ്യൂസിക് പ്ലെയറുകള്‍ നിയന്ത്രിക്കുക"
-
-#: modules/gui/macosx/macosx.m:126
-msgid "VLC will pause and resume supported music players on playback."
-msgstr ""
-"പ്ലേബാക്ക് ചെയ്യുന്ന സമയത്ത് പിന്താങ്ങുന്ന മറ്റ് മ്യൂസിക് പ്ലെയറുകളെ VLC  അല്‍പ്പനേരത്തേയ്ക്ക് നിര്‍"
-"ത്തുകയും പിന്നെ തുടരുകയും ചെയ്യുന്നു"
-
-#: modules/gui/macosx/macosx.m:128
-msgid "Use large text for list views"
-msgstr "ലിസ്റ്റ് വ്യൂസീനായി വലിയ ടെക്സ്റ്റ് ഉപയോഗിക്കുക"
-
-#: modules/gui/macosx/macosx.m:133
-msgid "Do nothing"
-msgstr "ഒന്നും ചെയ്യണ്ട"
-
-#: modules/gui/macosx/macosx.m:133
-msgid "Pause iTunes / Spotify"
-msgstr "ഐട്യൂണ്‍സ് /സ്പോട്ടിഫൈയും അല്പ്പം നിര്‍ത്തുക"
-
-#: modules/gui/macosx/macosx.m:133
-msgid "Pause and resume iTunes / Spotify"
-msgstr "ഐട്യൂണ്‍സും/സ്പോട്ടിഫൈയും അല്പ്പം നിര്‍ത്തി വീണ്ടും തുടരുക"
-
-#: modules/gui/macosx/macosx.m:136
-msgid "Continue playback where you left off"
-msgstr "നിങ്ങള്‍ നിര്‍ത്തിയിടത്ത് നിന്നും പ്ലേബാക്ക് തുടരുക"
-
-#: modules/gui/macosx/macosx.m:137
-msgid ""
-"VLC will store playback positions of the last 30 items you played. If you re-"
-"open one of those, playback will continue."
-msgstr ""
-"നിങ്ങള്‍ പ്രവര്‍ത്തിപ്പിച്ച അവസാന 30 എണ്ണത്തിന്‍റെ പ്ലേബാക്ക് സ്ഥാനങ്ങള്‍ VLC സൂക്ഷിക്കുന്നു. അതില്‍ "
-"ഏതെങ്കിലും ഒന്ന്‍ നിങ്ങള്‍ വീണ്ടും തുറക്കുകയാണെങ്കില്‍, പ്ലേബാക്ക് തുടരും"
-
-#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:206
-msgid "Ask"
-msgstr "ചോദിക്ക്"
-
-#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:200
-#: modules/gui/qt/qt.cpp:206 modules/keystore/keychain.m:50
-msgid "Always"
-msgstr "(എപ്പോഴും)"
-
-#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:200
-#: modules/gui/qt/qt.cpp:206 modules/gui/qt/qt.cpp:213
-msgid "Never"
-msgstr "ഒരിക്കലും"
-
-#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:186
-msgid "Maximum Volume displayed"
-msgstr "പരമാവധി ശബ്ദം പ്രദര്‍ശിപ്പിച്ചിട്ടുണ്ട്"
-
-#: modules/gui/macosx/macosx.m:149
-msgid "Mac OS X interface"
-msgstr "MAcOS X പൊതുപ്രതലം"
-
-#: modules/gui/macosx/macosx.m:156
-msgid "Appearance"
-msgstr "ബാഹ്യരൂപം"
-
-#: modules/gui/macosx/macosx.m:167
-msgid "Behavior"
-msgstr "പെരുമാറ്റം"
-
-#: modules/gui/macosx/macosx.m:180
-msgid "Apple Remote and media keys"
-msgstr "ആപ്പിള്‍ റിമോട്ട് ആന്‍ഡ് മീഡിയ കീസ്"
-
-#: modules/gui/macosx/macosx.m:196
-msgid "Video output"
-msgstr "വീഡിയോ ഔട്ട്പുട്ട്"
 
 #: modules/gui/macosx/VLCMain+OldPrefs.m:118
 msgid "Remove old preferences?"
@@ -17387,6 +17363,18 @@ msgstr "തിരയുക"
 msgid "View"
 msgstr "കാണുക"
 
+#: modules/gui/macosx/VLCMainMenu.m:375 modules/gui/macosx/macosx.m:116
+msgid "Show Previous & Next Buttons"
+msgstr "കഴിഞ്ഞതും അടുത്തതുമായ ബട്ടണുകള്‍ കാണിക്കുക"
+
+#: modules/gui/macosx/VLCMainMenu.m:377 modules/gui/macosx/macosx.m:119
+msgid "Show Shuffle & Repeat Buttons"
+msgstr "ക്രമം തെറ്റിയതും ആവര്‍ത്തിക്കപ്പെടുന്നതുമായ ബട്ടണുകള്‍ കാണിക്കുക"
+
+#: modules/gui/macosx/VLCMainMenu.m:379 modules/gui/macosx/macosx.m:122
+msgid "Show Audio Effects Button"
+msgstr "ആഡിയോ ഇഫക്റ്റ്സ് ബട്ടണ്‍ കാണിക്കുക"
+
 #: modules/gui/macosx/VLCMainMenu.m:381
 msgid "Show Sidebar"
 msgstr "സൈഡ്ബാര്‍ കാണിക്കുക"
@@ -17473,6 +17461,7 @@ msgstr "മുകളില്‍ ഒഴുകി നടക്കുക"
 
 #: modules/gui/macosx/VLCMainMenu.m:441 modules/gui/macosx/VLCMainMenu.m:442
 #: modules/gui/macosx/VLCSimplePrefsController.m:370
+#: modules/gui/qt/ui/sprefs_video.h:316
 msgid "Fullscreen Video Device"
 msgstr "മുഴുവന്‍പ്രതല വീഡിയോ ഉപകരണം"
 
@@ -17512,10 +17501,6 @@ msgstr "പശ്ചാത്തല നിറം."
 #: modules/gui/macosx/VLCMainMenu.m:466
 msgid "Transparent"
 msgstr "സുതാര്യം"
-
-#: modules/gui/macosx/VLCMainMenu.m:467 modules/gui/macosx/VLCMainMenu.m:1101
-msgid "Index"
-msgstr "സൂചിക"
 
 #: modules/gui/macosx/VLCMainMenu.m:473
 msgid "Window"
@@ -17611,61 +17596,65 @@ msgstr "എച്ച്ടിഎംഎല്‍ പ്ലേലിസ്റ്�
 msgid "Save Playlist"
 msgstr "പ്ലേലിസ്റ്റ് സേവ് ചെയ്യുക"
 
-#: modules/gui/macosx/VLCMainWindow.m:190
+#: modules/gui/macosx/VLCMainMenu.m:1460 modules/gui/macosx/macosx.m:111
+msgid "Lock Aspect Ratio"
+msgstr "ലോക്ക് ആസ്പെക്റ്റ് റേഷ്യോ"
+
+#: modules/gui/macosx/VLCMainWindow.m:193
 msgid "Search in Playlist"
 msgstr "പ്ലേലിസ്റ്റിലുള്ള തിരച്ചി"
 
-#: modules/gui/macosx/VLCMainWindow.m:192
+#: modules/gui/macosx/VLCMainWindow.m:195
 msgid "Search the playlist. Results will be selected in the table."
 msgstr "പ്ലേലിസ്റ്റ് തിരയുക. ഫലങ്ങൾ പട്ടികയിൽ തിരഞ്ഞെടുക്കും."
 
-#: modules/gui/macosx/VLCMainWindow.m:213
+#: modules/gui/macosx/VLCMainWindow.m:216
 msgid "Open a dialog to select the media to play"
 msgstr "പ്ലേ ചെയ്യുന്നതിനുള്ള മീഡിയ തിരഞ്ഞെടുക്കുന്നതിന് ഒരു ഡയലോഗ് തുറക്കുക"
 
-#: modules/gui/macosx/VLCMainWindow.m:217
-#: modules/gui/macosx/VLCMainWindow.m:223
+#: modules/gui/macosx/VLCMainWindow.m:220
+#: modules/gui/macosx/VLCMainWindow.m:226
 #: modules/gui/qt/components/playlist/selector.cpp:580
 msgid "Subscribe"
 msgstr "സംഭാവന ചെയ്യുക"
 
-#: modules/gui/macosx/VLCMainWindow.m:218
-#: modules/gui/macosx/VLCMainWindow.m:229
+#: modules/gui/macosx/VLCMainWindow.m:221
+#: modules/gui/macosx/VLCMainWindow.m:232
 #: modules/gui/qt/components/playlist/selector.cpp:597
 msgid "Unsubscribe"
 msgstr "അണ്‍സബ്സ്ക്രൈബ്"
 
-#: modules/gui/macosx/VLCMainWindow.m:221
+#: modules/gui/macosx/VLCMainWindow.m:224
 #: modules/gui/qt/components/playlist/selector.cpp:279
 msgid "Subscribe to a podcast"
 msgstr "പോഡ്കാസ്റ്റിലേക്ക് സബ്സ്ക്രൈബ് ചെയ്യുക"
 
-#: modules/gui/macosx/VLCMainWindow.m:222
+#: modules/gui/macosx/VLCMainWindow.m:225
 #: modules/gui/qt/components/playlist/selector.cpp:581
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr "പോഡ്കാസ്റ്റിന്റെ URL ചേര്‍ക്കുക വരിക്കാരാവുന്നതിന്:"
 
-#: modules/gui/macosx/VLCMainWindow.m:227
+#: modules/gui/macosx/VLCMainWindow.m:230
 msgid "Unsubscribe from a podcast"
 msgstr "പോഡ്കാസ്റ്റില്‍ നിന്ന് വരിക്കാരനല്ലാതാകുക"
 
-#: modules/gui/macosx/VLCMainWindow.m:228
+#: modules/gui/macosx/VLCMainWindow.m:231
 msgid "Select the podcast you would like to unsubscribe from:"
 msgstr "നിങ്ങള്‍ക്ക് വരിക്കാരനല്ലാതാവുന്നതിനുള്ള പോഡ്കാസ്റ്റ് തിരഞ്ഞെടുക്കുക ഇതില്‍ നിന്നും:"
 
-#: modules/gui/macosx/VLCMainWindow.m:254
+#: modules/gui/macosx/VLCMainWindow.m:257
 msgid "Check for album art and metadata?"
 msgstr "ആല്‍ബം ആര്‍ട്ടിനും കൂടാതെ മെറ്റാ‍ഡാറ്റയ്ക്കും വേണ്ടി പരിശോധിക്കുക?"
 
-#: modules/gui/macosx/VLCMainWindow.m:254
+#: modules/gui/macosx/VLCMainWindow.m:257
 msgid "Enable Metadata Retrieval"
 msgstr "മെറ്റാഡാറ്റ വീണ്ടെടുക്കല്‍ പ്രവര്‍ത്തനസജ്ജമാക്കുക"
 
-#: modules/gui/macosx/VLCMainWindow.m:254
+#: modules/gui/macosx/VLCMainWindow.m:257
 msgid "No, Thanks"
 msgstr "വേണ്ട, നന്ദി"
 
-#: modules/gui/macosx/VLCMainWindow.m:254
+#: modules/gui/macosx/VLCMainWindow.m:257
 msgid ""
 "VLC can check online for album art and metadata to enrich your playback "
 "experience, e.g. by providing track information when playing Audio CDs. To "
@@ -17676,26 +17665,6 @@ msgstr ""
 "ഓണ്‍ലൈന്‍ പരിശോധിക്കുന്നു, ഉദാഹരണമായി ഓഡിയോ സീഡികള്‍ പ്ലേ ചെയ്യുമ്പോള്‍ നല്‍കുന്ന ട്രാക്ക് വിവരങ്ങള്‍. "
 "VLC നിങ്ങളുടെ ഉള്ളടക്കത്തെക്കുറിച്ചുള്ള വിവരങ്ങള്‍ ഒരു വിശ്വസ്ത സേവനങ്ങളിലേയ്ക്ക് ഒരു അജ്ഞാത "
 "രൂപത്തില്‍‌ അയയ്ക്കുന്നു."
-
-#: modules/gui/macosx/VLCMainWindow.m:320
-msgid "LIBRARY"
-msgstr "ലൈബ്രറി"
-
-#: modules/gui/macosx/VLCMainWindow.m:325
-msgid "MY COMPUTER"
-msgstr "എന്റെ കംപ്യൂട്ടര്‍"
-
-#: modules/gui/macosx/VLCMainWindow.m:326
-msgid "DEVICES"
-msgstr "ഡിവൈസുകള്‍"
-
-#: modules/gui/macosx/VLCMainWindow.m:327
-msgid "LOCAL NETWORK"
-msgstr "ലോക്കല്‍ നെറ്റ്വര്‍ക്ക്"
-
-#: modules/gui/macosx/VLCMainWindow.m:328
-msgid "INTERNET"
-msgstr "ഇന്റര്‍നെറ്റ്"
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:68
 msgid "Show/Hide Playlist"
@@ -17736,7 +17705,7 @@ msgstr "മീഡിയ ഉറവിട നിര്‍ണ്ണയക്കാ�
 #: modules/gui/macosx/VLCOpenWindowController.m:583
 #: modules/gui/macosx/VLCOpenWindowController.m:669
 #: modules/gui/macosx/VLCOpenWindowController.m:901
-#: modules/gui/macosx/VLCOpenWindowController.m:1269
+#: modules/gui/macosx/VLCOpenWindowController.m:1274
 #: modules/gui/qt/components/controller.hpp:107
 msgid "Open"
 msgstr "തുറക്കുക"
@@ -17759,6 +17728,7 @@ msgstr "ഡിസ്ക്"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:142
 #: modules/gui/macosx/VLCSimplePrefsController.m:302
+#: modules/gui/qt/ui/sprefs_input.h:368
 msgid "Network"
 msgstr "നെറ്റ്വര്‍ക്ക്"
 
@@ -17787,6 +17757,7 @@ msgstr "മറ്റൊരു മീഡിയ ഏകകാലികമായി 
 #: modules/gui/macosx/VLCOpenWindowController.m:152
 #: modules/gui/macosx/VLCOpenWindowController.m:348
 #: modules/gui/macosx/VLCSimplePrefsController.m:345
+#: modules/gui/qt/ui/sprefs_interface.h:545
 msgid "Choose..."
 msgstr "തിരഞ്ഞെടുക്കുക..."
 
@@ -17927,6 +17898,7 @@ msgstr "ഉപശീര്‍ഷക എന്‍കോഡിംഗ്"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:360
 #: modules/gui/macosx/VLCSimplePrefsController.m:347
+#: modules/gui/qt/ui/sprefs_subtitles.h:297
 msgid "Font size"
 msgstr "ഫോണ്ടിന്‍റെ വലിപ്പം"
 
@@ -17959,7 +17931,8 @@ msgstr "എഫ്പിഎസ്"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:582
 #: modules/gui/macosx/VLCOpenWindowController.m:668
-#: modules/gui/macosx/VLCOpenWindowController.m:1268
+#: modules/gui/macosx/VLCOpenWindowController.m:1273
+#: modules/gui/qt/ui/open_file.h:141
 msgid "Open File"
 msgstr "ഫയല്‍ തുറക്കുക"
 
@@ -18096,6 +18069,7 @@ msgid "VLC was unable to save the meta data."
 msgstr "മെറ്റാ‍ഡാറ്റ സംരക്ഷിക്കുവാന്‍ VLCയ്ക്ക് കഴിയില്ല."
 
 #: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:194
+#: modules/gui/qt/ui/sprefs_interface.h:551
 msgid "Continue playback?"
 msgstr "പ്ലേബാക്ക് തുടരുക?"
 
@@ -18117,6 +18091,26 @@ msgstr "പ്ലേബാക്ക് പുനരാരംഭിക്കു�
 #: modules/gui/macosx/VLCResumeDialogController.m:69
 msgid "Playback of \"%@\" will continue at %@"
 msgstr " \"%@\" ന്റെ പ്ലേബാക്ക് %@ ല്‍ തുടരും"
+
+#: modules/gui/macosx/VLCSidebarDataSource.m:67
+msgid "LIBRARY"
+msgstr "ലൈബ്രറി"
+
+#: modules/gui/macosx/VLCSidebarDataSource.m:72
+msgid "MY COMPUTER"
+msgstr "എന്റെ കംപ്യൂട്ടര്‍"
+
+#: modules/gui/macosx/VLCSidebarDataSource.m:73
+msgid "DEVICES"
+msgstr "ഡിവൈസുകള്‍"
+
+#: modules/gui/macosx/VLCSidebarDataSource.m:74
+msgid "LOCAL NETWORK"
+msgstr "ലോക്കല്‍ നെറ്റ്വര്‍ക്ക്"
+
+#: modules/gui/macosx/VLCSidebarDataSource.m:75
+msgid "INTERNET"
+msgstr "ഇന്റര്‍നെറ്റ്"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:233
 #: modules/gui/qt/components/simple_preferences.cpp:239
@@ -18168,6 +18162,7 @@ msgid "Keep audio level between sessions"
 msgstr "സെഷനുകള്‍ക്കിടയില്‍ ഓഡിയോ ലെവല്‍ പാലിക്കുക"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:281
+#: modules/gui/qt/ui/sprefs_audio.h:410
 msgid "Always reset audio start level to:"
 msgstr "എല്ലായ്പ്പോഴും ഓഡിയോ ആരംഭ പരിധി പുനക്രമീകരിക്കക ഇതായി:"
 
@@ -18194,6 +18189,7 @@ msgid "Shortcut"
 msgstr "ഷോര്‍ട്ട്കട്ട്"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:294
+#: modules/gui/qt/ui/sprefs_input.h:364
 msgid "Record directory or filename"
 msgstr "ഡയറക്ടറി അല്ലേല്‍ ഫയല്‍നാമം റെക്കോര്‍ഡ് ചെയ്യുക"
 
@@ -18210,6 +18206,7 @@ msgid "Default Caching Level"
 msgstr "സഹജമായ കാഷിംഗ് നില"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:299
+#: modules/gui/qt/ui/open.h:263
 msgid "Caching"
 msgstr "പിടിക്കുന്നു"
 
@@ -18261,6 +18258,26 @@ msgstr "ബ്രൈറ്റ്"
 msgid "Continue playback"
 msgstr "പ്ലേബാക്ക് തുടരുക"
 
+#: modules/gui/macosx/VLCSimplePrefsController.m:324
+#: modules/gui/macosx/macosx.m:76
+msgid "Control playback with the Apple Remote"
+msgstr "ആപ്പിള്‍  റിമോട്ട് ഉപയോഗിച്ച് പ്ലേബാക്ക് നിയന്ത്രിക്കുക"
+
+#: modules/gui/macosx/VLCSimplePrefsController.m:325
+#: modules/gui/macosx/macosx.m:88
+msgid "Control playback with media keys"
+msgstr "മീഡിയ കീകള്‍ വഴി പ്ലേബാക്ക് നിയന്ത്രിക്കുക"
+
+#: modules/gui/macosx/VLCSimplePrefsController.m:326
+#: modules/gui/macosx/macosx.m:79
+msgid "Control system volume with the Apple Remote"
+msgstr "സിസ്റ്റത്തിന്റെ ശബ്ദം ആപ്പിള്‍ റിമോട്ട് ഉപയോഗിച്ച്  നിയന്ത്രിക്കുക"
+
+#: modules/gui/macosx/VLCSimplePrefsController.m:327
+#: modules/gui/macosx/macosx.m:82
+msgid "Display VLC status menu icon"
+msgstr "വി‌എൽ‌സി സ്റ്റാറ്റസ് മെനു ഐക്കൺ പ്രദർശിപ്പിക്കുക"
+
 #: modules/gui/macosx/VLCSimplePrefsController.m:329
 msgid "Playback behaviour"
 msgstr "പ്ലേബാക്ക് സ്വഭാവം"
@@ -18269,7 +18286,13 @@ msgstr "പ്ലേബാക്ക് സ്വഭാവം"
 msgid "Enable notifications on playlist item change"
 msgstr "പ്ലേലിസ്റ്റ് ഇന മാറ്റത്തിൽ അറിയിപ്പുകൾ പ്രവർത്തനക്ഷമമാക്കുക"
 
+#: modules/gui/macosx/VLCSimplePrefsController.m:331
+#: modules/gui/macosx/macosx.m:125
+msgid "Control external music players"
+msgstr "പുറമെയുള്ള മ്യൂസിക് പ്ലെയറുകള്‍ നിയന്ത്രിക്കുക"
+
 #: modules/gui/macosx/VLCSimplePrefsController.m:333
+#: modules/gui/qt/ui/sprefs_interface.h:553
 msgid "Privacy / Network Interaction"
 msgstr "സ്വകാര്യത / നെറ്റ്വര്‍ക്ക് ഇടപെടല്‍"
 
@@ -18294,11 +18317,13 @@ msgid "Display Settings"
 msgstr "ഡിസ്പ്ലേ സജ്ജീകരണങ്ങള്‍"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:346
+#: modules/gui/qt/ui/sprefs_subtitles.h:298
 msgid "Font color"
 msgstr "ഫോണ്ട് നിറം"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:348 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
+#: modules/gui/qt/ui/sprefs_subtitles.h:296
 msgid "Font"
 msgstr "ഫോണ്ട്"
 
@@ -18307,6 +18332,7 @@ msgid "Subtitle languages"
 msgstr "ഉപശീര്‍ഷക ഭാഷകള്‍"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:350
+#: modules/gui/qt/ui/sprefs_subtitles.h:293
 msgid "Preferred subtitle language"
 msgstr "മുന്‍ഗണനയുള്ള ഉപശീര്‍ഷക ഭാഷ"
 
@@ -18321,22 +18347,29 @@ msgstr "ഫോഴ്സ് ബോള്‍ഡ്"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:355
 #: modules/text_renderer/freetype/freetype.c:110
+#: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Outline color"
 msgstr "ഔട്ട്ലൈന്‍ നിറം"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:356
 #: modules/text_renderer/freetype/freetype.c:111
+#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Outline thickness"
 msgstr "ഔട്ട്ലൈന്‍ തിക്ക്നെസ്സ്"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
-#: modules/stream_out/display.c:53
+#: modules/stream_out/display.c:53 modules/gui/qt/ui/sprefs_video.h:312
 msgid "Display"
 msgstr "പ്രദര്‍ശിപ്പിക്കുക"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:361
 msgid "Show video within the main window"
 msgstr "പ്രധാന ജാലകത്തില്‍ തന്നെ വീഡിയോ കാണിക്കുക"
+
+#: modules/gui/macosx/VLCSimplePrefsController.m:362
+#: modules/gui/macosx/macosx.m:104 modules/gui/qt/qt.cpp:178
+msgid "Pause the video playback when minimized"
+msgstr "ചെറുതാക്കുമ്പോള്‍ വീഡിയോ പ്ലേബാക്ക് അല്പ്പം നിര്‍ത്തുക"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:366
 msgid "Fullscreen settings"
@@ -18350,7 +18383,13 @@ msgstr "പൂർണ്ണസ്‌ക്രീനിൽ ആരംഭിക്�
 msgid "Black screens in Fullscreen mode"
 msgstr "കറുത്ത പ്രതലങ്ങള്‍ മുഴുവന്‍ പ്രതല മോഡില്‍"
 
+#: modules/gui/macosx/VLCSimplePrefsController.m:369
+#: modules/gui/macosx/macosx.m:95
+msgid "Use the native fullscreen mode"
+msgstr "തദ്ദേശീയമായ മുഴുവന്‍ സ്ക്രീന്‍ രീതി ഉപയോഗിക്കുക"
+
 #: modules/gui/macosx/VLCSimplePrefsController.m:372
+#: modules/gui/qt/ui/sprefs_video.h:327
 msgid "Video snapshots"
 msgstr "വീഡിയോ സ്നാപ്ഷോട്ടുകള്‍"
 
@@ -18360,14 +18399,17 @@ msgid "Folder"
 msgstr "ഫോള്‍ഡര്‍"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:375
+#: modules/gui/qt/ui/sprefs_video.h:333
 msgid "Format"
 msgstr "ആകാരം"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:376
+#: modules/gui/qt/ui/sprefs_video.h:330
 msgid "Prefix"
 msgstr "ഉപസര്‍ഗ്ഗം:"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:377
+#: modules/gui/qt/ui/sprefs_video.h:332
 msgid "Sequential numbering"
 msgstr "ക്രമാനുഗത അക്കമിടീല്‍"
 
@@ -18593,6 +18635,7 @@ msgid "Basic"
 msgstr "അടിസ്ഥാന"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:194
+#: modules/gui/qt/ui/video_effects.h:1264
 msgid "Geometry"
 msgstr "ജ്യാമിതി"
 
@@ -18601,7 +18644,9 @@ msgstr "ജ്യാമിതി"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:270
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:273
 #: modules/spu/marq.c:115 modules/spu/rss.c:152
-#: modules/video_filter/colorthres.c:55
+#: modules/video_filter/colorthres.c:55 modules/gui/qt/ui/video_effects.h:1238
+#: modules/gui/qt/ui/video_effects.h:1244
+#: modules/gui/qt/ui/video_effects.h:1247
 msgid "Color"
 msgstr "നിറം"
 
@@ -18610,45 +18655,53 @@ msgid "Image Adjust"
 msgstr "ചിത്രം അഡ്ജസ്റ്റ് ചെയ്യുക"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:207
+#: modules/gui/qt/ui/video_effects.h:1215
 msgid "Brightness Threshold"
 msgstr "ബ്രൈറ്റ്നെസ്സ് ത്രെഷ്ഹോള്‍ഡ്"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:211
-#: modules/video_filter/sharpen.c:69
+#: modules/video_filter/sharpen.c:69 modules/gui/qt/ui/video_effects.h:1219
 msgid "Sharpen"
 msgstr "ഷാര്‍പ്പെന്‍"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:212
+#: modules/gui/qt/ui/video_effects.h:1220
+#: modules/gui/qt/ui/video_effects.h:1293
 msgid "Sigma"
 msgstr "സിഗ്മ"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:213
+#: modules/gui/qt/ui/video_effects.h:1221
 msgid "Banding removal"
 msgstr "ബാന്‍ഡിംഗ് നീക്കംചെയ്യല്‍"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:214
-#: modules/video_filter/gradfun.c:50
+#: modules/video_filter/gradfun.c:50 modules/gui/qt/ui/video_effects.h:1222
 msgid "Radius"
 msgstr "റേഡിയസ്"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:215
+#: modules/gui/qt/ui/video_effects.h:1223
 msgid "Film Grain"
 msgstr "ഫിലിം ഗ്രെയിന്‍"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:216
-#: modules/video_filter/grain.c:53
+#: modules/video_filter/grain.c:53 modules/gui/qt/ui/video_effects.h:1224
 msgid "Variance"
 msgstr "വേരിയന്‍സ്"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:221
+#: modules/gui/qt/ui/video_effects.h:1232
 msgid "Synchronize top and bottom"
 msgstr "മുകളിലും താഴെയും സമന്വയിപ്പിക്കുക"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:222
+#: modules/gui/qt/ui/video_effects.h:1233
 msgid "Synchronize left and right"
 msgstr "ഇടതും വലതും ഏകകാലീകരണം നടത്തുക"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:224
+#: modules/gui/qt/ui/video_effects.h:1258
 msgid "Transform"
 msgstr "ട്രാന്‍സ്ഫോം"
 
@@ -18682,51 +18735,60 @@ msgid "Magnification/Zoom"
 msgstr "മാഗ്നിഫിക്കേഷന്‍/സൂം"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:242
+#: modules/gui/qt/ui/video_effects.h:1261
 msgid "Puzzle game"
 msgstr "പസിള്‍ ഗെയിം"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:243
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:248
 #: share/lua/http/dialogs/mosaic_window.html:96
+#: modules/gui/qt/ui/video_effects.h:1256
+#: modules/gui/qt/ui/video_effects.h:1262
 msgid "Rows"
 msgstr "വരികള്‍"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:244
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:249
 #: share/lua/http/dialogs/mosaic_window.html:114
+#: modules/gui/qt/ui/video_effects.h:1257
+#: modules/gui/qt/ui/video_effects.h:1263
 msgid "Columns"
 msgstr "നിരകള്‍"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
-#: modules/video_splitter/clone.c:57
+#: modules/video_splitter/clone.c:57 modules/gui/qt/ui/video_effects.h:1303
 msgid "Clone"
 msgstr "ക്ലോണ്‍"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:246
-#: modules/video_splitter/clone.c:39
+#: modules/video_splitter/clone.c:39 modules/gui/qt/ui/video_effects.h:1304
 msgid "Number of clones"
 msgstr "ക്ലോണുകളുടെ എണ്ണം"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:247
+#: modules/gui/qt/ui/video_effects.h:1255
 msgid "Wall"
 msgstr "വാള്‍"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:251
-#: modules/video_filter/colorthres.c:71
+#: modules/video_filter/colorthres.c:71 modules/gui/qt/ui/video_effects.h:1246
 msgid "Color threshold"
 msgstr "നിറം ത്രെഷ്ഹോള്‍ഡ്"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:255
+#: modules/gui/qt/ui/video_effects.h:1250
 msgid "Similarity"
 msgstr "സാദൃശ്യം"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:257
+#: modules/gui/qt/ui/video_effects.h:1252
 msgid "Intensity"
 msgstr "തീവ്രത"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:258
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:261
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
+#: modules/gui/qt/ui/video_effects.h:1242
 msgid "Gradient"
 msgstr "ഗ്രേഡിയന്റ്"
 
@@ -18741,10 +18803,12 @@ msgid "Hough"
 msgstr "ഹൗ"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:271
+#: modules/gui/qt/ui/video_effects.h:1245
 msgid "Cartoon"
 msgstr "കാര്‍ട്ടൂണ്‍"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:272
+#: modules/gui/qt/ui/video_effects.h:1237
 msgid "Color extraction"
 msgstr "നിറം എക്സ്ട്രാക്ഷന്‍"
 
@@ -18753,7 +18817,7 @@ msgid "Invert colors"
 msgstr "നിറങ്ങളെ വിപരീതമാക്കുക"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:276
-#: modules/video_filter/posterize.c:69
+#: modules/video_filter/posterize.c:69 modules/gui/qt/ui/video_effects.h:1241
 msgid "Posterize"
 msgstr "പോസ്റ്ററൈസ്"
 
@@ -18763,11 +18827,12 @@ msgid "Posterize level"
 msgstr "പോസ്റ്ററൈസ് പരിധി"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:278
-#: modules/video_filter/motionblur.c:60
+#: modules/video_filter/motionblur.c:60 modules/gui/qt/ui/video_effects.h:1294
 msgid "Motion blur"
 msgstr "മോഷന്‍ ബ്ലര്‍"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:279
+#: modules/gui/qt/ui/video_effects.h:1295
 msgid "Factor"
 msgstr "ഫാക്ടര്‍"
 
@@ -18777,11 +18842,13 @@ msgid "Motion Detect"
 msgstr "മോഷന്‍ ഡിറ്റെക്ട്"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
+#: modules/gui/qt/ui/video_effects.h:1290
 msgid "Water effect"
 msgstr "വാട്ടര്‍ എഫക്ട്"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:283
 #: modules/meta_engine/ID3Genres.h:100 modules/video_filter/psychedelic.c:55
+#: modules/gui/qt/ui/video_effects.h:1288
 msgid "Psychedelic"
 msgstr "സൈക്കെഡെലിക്ക്"
 
@@ -18791,19 +18858,23 @@ msgid "Anaglyph"
 msgstr "ആനഗ്ലിഫ്"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
+#: modules/gui/qt/ui/video_effects.h:1275
 msgid "Add text"
 msgstr "ടെക്സ്റ്റ് ചേര്‍ക്കുക"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:286
 #: modules/logger/file.c:193 modules/spu/marq.c:88
+#: modules/gui/qt/ui/video_effects.h:1277
 msgid "Text"
 msgstr "ടെക്സ്റ്റ്"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
+#: modules/gui/qt/ui/video_effects.h:1265
 msgid "Add logo"
 msgstr "ലോഗോ ചേര്‍ക്കുക"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:308
+#: modules/gui/qt/ui/video_effects.h:1266
 msgid "Logo"
 msgstr "ലോഗോ"
 
@@ -18815,6 +18886,262 @@ msgstr "ട്രാന്‍സ്പരന്‍സി"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:398
 msgid "Organize profiles..."
 msgstr "പ്രൊഫൈലുകള്‍ ഓര്‍ഗനൈസ് ചെയ്യുക..."
+
+#: modules/gui/macosx/macosx.m:51
+msgid "Video device"
+msgstr "വീഡിയോ ഉപകരണം"
+
+#: modules/gui/macosx/macosx.m:52
+msgid ""
+"Number of the screen to use by default to display videos in 'fullscreen'. "
+"The screen number correspondance can be found in the video device selection "
+"menu."
+msgstr ""
+"സ്ഥിരസ്ഥിതിയില്‍  മുഴുവന്‍ സ്ക്രീനില്‍ വീഡിയോകള്‍ അവതരിപ്പിക്കുന്നതിനായി ഉപയോഗിക്കേണ്ട സ്ക്രീനുകളുടെ "
+"എണ്ണം. വീഡിയോ ഉപകരണ തിരഞ്ഞെടുക്കല്‍ പട്ടികയില്‍ ഈ സ്ക്രീന്‍ നമ്പര്‍ സാദൃശ്യം കാണാവുന്നതാണ്"
+
+#: modules/gui/macosx/macosx.m:56
+msgid "Opaqueness"
+msgstr "അവ്യക്തത"
+
+#: modules/gui/macosx/macosx.m:57
+msgid ""
+"Set the transparency of the video output. 1 is non-transparent (default) 0 "
+"is fully transparent."
+msgstr ""
+"വീഡിയോ ഔട്ട്പുട്ടിന്‍റെ സുതാര്യത ശരിയാക്കുക. 1 എന്നത് അതാര്യതയെയും(സ്ഥിരസ്ഥിതി) 0 മുഴുവനായ "
+"സുതാര്യതയെയും സൂചിപ്പിക്കുന്നു"
+
+#: modules/gui/macosx/macosx.m:60
+msgid "Black screens in fullscreen"
+msgstr "ഫുള്‍ സ്ക്രീനില്‍ കറുത്ത സ്ക്രീനുകള്‍"
+
+#: modules/gui/macosx/macosx.m:61
+msgid "In fullscreen mode, keep screen where there is no video displayed black"
+msgstr ""
+"മുഴുവന്‍ സ്ക്രീനിന്‍റെ രീതിയില്‍, വീഡിയോ ഒന്നും കറുത്തതായി പ്രദര്‍ശിപ്പിക്കപ്പെട്ടിട്ടില്ലാത്ത സ്ഥലത്തു "
+"സ്ക്രീന്‍ വയ്ക്കുക"
+
+#: modules/gui/macosx/macosx.m:64
+msgid "Show Fullscreen controller"
+msgstr "മുഴുവന്‍ സ്ക്രീന്‍ നിയന്ത്രകന്‍ "
+
+#: modules/gui/macosx/macosx.m:65
+msgid "Shows a lucent controller when moving the mouse in fullscreen mode."
+msgstr "മുഴുവന്‍ സ്ക്രീന്‍ രീതിയില്‍ മൌസ് ചലിപ്പിക്കുമ്പോള്‍ ഒരു തിളക്കമാര്‍ന്ന നിയന്ത്രകനെ കാണിക്കുന്നു"
+
+#: modules/gui/macosx/macosx.m:68
+msgid "Auto-playback of new items"
+msgstr "പുതിയ ഇനങ്ങളുടെ ഓട്ടോ-പ്ലേബാക്ക്"
+
+#: modules/gui/macosx/macosx.m:69
+msgid "Start playback of new items immediately once they were added."
+msgstr "പുതിയ ഇനങ്ങള്‍ ചേര്‍ത്ത ഉടനെ തന്നെ അവ പാടാന്‍ തുടങ്ങുക"
+
+#: modules/gui/macosx/macosx.m:72
+msgid "Keep Recent Items"
+msgstr "അടുത്തിടെയുള്ള ഇനങ്ങള്‍ സൂക്ഷിക്കുക"
+
+#: modules/gui/macosx/macosx.m:73
+msgid ""
+"By default, VLC keeps a list of the last 10 items. This feature can be "
+"disabled here."
+msgstr ""
+"സ്ഥിരസ്ഥിതിയില്‍, VLC അവസാനമായി ഉപയോഗിച്ച 10 ഇനങ്ങളുടെ ലിസ്റ്റ് സൂക്ഷിക്കുന്നു. ഈ സവിശേഷത "
+"ഇവിടെ അപ്രാപ്തമാക്കാന്‍ കഴിയും"
+
+#: modules/gui/macosx/macosx.m:77
+msgid "By default, VLC can be remotely controlled with the Apple Remote."
+msgstr "സ്ഥിരസ്ഥിതിയില്‍, VLCയെ ആപ്പിള്‍ റിമോട്ട് ഉപയോഗിച്ച് നിയന്ത്രിക്കാവുന്നതാണ്"
+
+#: modules/gui/macosx/macosx.m:80
+msgid ""
+"By default, VLC will control its own volume with the Apple Remote. However, "
+"you can choose to control the global system volume instead."
+msgstr ""
+"സ്ഥിരസ്ഥിതിയില്‍, VLC അതിന്‍റെ ശബ്ദം ആപ്പിള്‍ റിമോട്ട് ഉപയോഗിച്ച് നിയന്ത്രിക്കാറുണ്ട്. "
+"എന്നിരുന്നാലും, നിങ്ങള്‍ക്ക് ആഗോള സിസ്റ്റത്തിന്‍റെ ശബ്ദം നിയന്ത്രിക്കുന്നത് തിരഞ്ഞെടുക്കാന്‍ സാധിക്കും"
+
+#: modules/gui/macosx/macosx.m:83
+msgid ""
+"By default, VLC will show the statusbar icon menu. However, you can choose "
+"to disable it (restart required)."
+msgstr ""
+"സ്ഥിരസ്ഥിതിയായി, വി‌എൽ‌സി സ്റ്റാറ്റസ്ബാർ ഐക്കൺ മെനു കാണിക്കും. എന്നിരുന്നാലും, ഇത് "
+"പ്രവർത്തനരഹിതമാക്കാൻ നിങ്ങൾക്ക് തിരഞ്ഞെടുക്കാം (പുനരാരംഭിക്കൽ ആവശ്യമാണ്)."
+
+#: modules/gui/macosx/macosx.m:85
+msgid "Control playlist items with the Apple Remote"
+msgstr "പ്ലേലിസ്റ്റിലെ ഇനങ്ങളെ ആപ്പിള്‍ റിമോട്ട് ഉപയോഗിച്ച് നിയന്ത്രിക്കുക"
+
+#: modules/gui/macosx/macosx.m:86
+msgid ""
+"By default, VLC will allow you to switch to the next or previous item with "
+"the Apple Remote. You can disable this behavior with this option."
+msgstr ""
+"സ്ഥിരസ്ഥിതിയില്‍, VLC അടുത്ത ഇനത്തിലേയ്ക്ക് പോകാനോ കഴിഞ്ഞത് തിരഞ്ഞെടുക്കാനോ ആപ്പിള്‍ "
+"റിമോട്ടിലൂടെ അനുവദിക്കും.  ഈ സൌകര്യം നിങ്ങള്‍ക്ക്  അപ്രാപ്യമാക്കാന്‍ സാധിയ്ക്കും"
+
+#: modules/gui/macosx/macosx.m:89
+msgid ""
+"By default, VLC can be controlled using the media keys on modern Apple "
+"keyboards."
+msgstr ""
+"സ്ഥിരസ്ഥിതിയില്‍, VLCയെ പുതിയ ആപ്പിള്‍ കീബോര്‍ഡിലെ മീഡിയ കീകള്‍  ഉപയോഗിച്ച് "
+"നിയന്ത്രിക്കാവുന്നതാണ്"
+
+#: modules/gui/macosx/macosx.m:92
+msgid "Run VLC with dark interface style"
+msgstr "ഇരുണ്ട പൊതുപ്രതല ശൈലിയില്‍ VLC പ്രവര്‍ത്തിപ്പിക്കുക"
+
+#: modules/gui/macosx/macosx.m:93
+msgid ""
+"If this option is enabled, VLC will use the dark interface style. Otherwise, "
+"the grey interface style is used."
+msgstr ""
+"ഈ ഓപ്ഷന്‍ പ്രാപ്തമാക്കിയിട്ടുണ്ടെങ്കില്‍, VLC കറുത്ത പൊതുപ്രതല  ശൈലി ഉപയോഗിക്കും. അല്ലെങ്കില്‍, "
+"ചാര പൊതുപ്രതല ശൈലി ഉപയോഗിക്കും"
+
+#: modules/gui/macosx/macosx.m:96
+msgid ""
+"By default, VLC uses the fullscreen mode known from previous Mac OS X "
+"releases. It can also use the native fullscreen mode on Mac OS X 10.7 and "
+"later."
+msgstr ""
+"സ്ഥിരസ്ഥിതിയില്‍, പഴയ MacOS X റിലീസുകളില്‍ നിന്നുള്ള മുഴുവന്‍ സ്ക്രീന്‍ ശൈലിയാണ് VLC "
+"ഉപയോഗിക്കുന്നത്. പിന്നീടുള്ള  Mac OS X 10.7 റിലീസുകളില്‍ നിന്നുള്ള തദ്ദേശീയമായ മുഴുവന്‍ സ്ക്രീന്‍ "
+"ശൈലിയും ഇതിന് ഉപയോഗിക്കാന്‍ സാധിയ്ക്കും"
+
+#: modules/gui/macosx/macosx.m:98 modules/gui/qt/qt.cpp:95
+msgid "Resize interface to the native video size"
+msgstr "പൊതുപ്രതലത്തിന്റെ വലിപ്പം  തദ്ദേശീയമായ വീഡിയോസൈസിലേയ്ക്ക് മാറ്റുക "
+
+#: modules/gui/macosx/macosx.m:99 modules/gui/qt/qt.cpp:96
+msgid ""
+"You have two choices:\n"
+" - The interface will resize to the native video size\n"
+" - The video will fit to the interface size\n"
+" By default, interface resize to the native video size."
+msgstr ""
+"നിങ്ങള്‍ക്ക് രണ്ടു തിരഞ്ഞെടുക്കലുകള്‍ ആണ് ഉള്ളത്:\n"
+"- പൊതുപ്രതലത്തിനെ തദ്ദേശീയമായ വീഡിയോ സൈസിലേയ്ക്ക് വലിപ്പം മാറ്റുക\n"
+"-പൊതുപ്രതലത്തിന്റെ വലിപ്പത്തിനു പറ്റിയ രീതിയില്‍ വീഡിയോയെ യുക്തമാക്കുകസ്ഥിരസ്ഥിതിയില്‍, "
+"പൊതുപ്രതലം തദ്ദേശീയമായ വീഡിയോ വലിപ്പത്തിലേയ്ക്ക് അതിന്‍റെ വലിപ്പം മാറ്റുന്നു"
+
+#: modules/gui/macosx/macosx.m:105 modules/gui/qt/qt.cpp:180
+msgid ""
+"With this option enabled, the playback will be automatically paused when "
+"minimizing the window."
+msgstr ""
+"ഈ ഓപ്ഷന്‍ പ്രാപ്തമാക്കിയിട്ടുണ്ടെങ്കില്‍, വിന്‍ഡോ ചെറുതാകുമ്പോള്‍  പ്ലേബാക്ക് സ്വയമേതന്നെ  അല്‍"
+"പ്പനേരത്തെയ്ക്ക് നിലയ്ക്കുന്നതാണ്"
+
+#: modules/gui/macosx/macosx.m:108 modules/gui/qt/qt.cpp:182
+msgid "Allow automatic icon changes"
+msgstr "സ്വയമേ ഉള്ള ഐക്കണ്‍ വ്യത്യാസങ്ങള്‍ അനുവദിക്കുക"
+
+#: modules/gui/macosx/macosx.m:109 modules/gui/qt/qt.cpp:184
+msgid ""
+"This option allows the interface to change its icon on various occasions."
+msgstr ""
+"ഈ ഓപ്ഷന്‍ പൊതുപ്രതലത്തിനെ വിവിധ അവസരങ്ങളില്‍ അതിന്‍റെ ഐക്കണ്‍ വ്യത്യാസപ്പെടുത്താന്‍ സഹായിക്കുന്നു"
+
+#: modules/gui/macosx/macosx.m:113
+msgid "Dim keyboard backlight during fullscreen playback"
+msgstr "പൂർണ്ണസ്‌ക്രീൻ പ്ലേബാക്കിനിടെ കീബോർഡ് ബാക്ക്‌ലൈറ്റ് തെളിച്ചം കുറയ്ക്കുക "
+
+#: modules/gui/macosx/macosx.m:114
+msgid ""
+"Turn off the MacBook keyboard backlight while a video is playing in "
+"fullscreen. Automatic brightness adjustment should be disabled in System "
+"Preferences."
+msgstr ""
+"ഒരു വീഡിയോ പൂർണ്ണസ്‌ക്രീനിൽ പ്ലേ ചെയ്യുമ്പോൾ മാക്ബുക്ക് കീബോർഡ് ബാക്ക്‌ലൈറ്റ് ഓഫാക്കുക. സിസ്റ്റം "
+"മുൻഗണനകളിൽ യാന്ത്രിക തെളിച്ച ക്രമീകരണം പ്രവർത്തനരഹിതമാക്കണം."
+
+#: modules/gui/macosx/macosx.m:117
+msgid "Shows the previous and next buttons in the main window."
+msgstr "കഴിഞ്ഞതും അടുത്തതുമായ ബട്ടണുകള്‍ പ്രധാന വിന്‍ഡോയില്‍ കാണിക്കുക"
+
+#: modules/gui/macosx/macosx.m:120
+msgid "Shows the shuffle and repeat buttons in the main window."
+msgstr "ക്രമം തെറ്റിയതും ആവര്‍ത്തിക്കപ്പെടുന്നതുമായ ബട്ടണുകള്‍ പ്രധാന വിന്‍ഡോയില്‍ കാണിക്കുക"
+
+#: modules/gui/macosx/macosx.m:123
+msgid "Shows the audio effects button in the main window."
+msgstr "ആഡിയോ ഇഫക്റ്റ്സ് ബട്ടണ്‍ പ്രധാന വിന്‍ഡോയില്‍ കാണിക്കുക"
+
+#: modules/gui/macosx/macosx.m:126
+msgid "VLC will pause and resume supported music players on playback."
+msgstr ""
+"പ്ലേബാക്ക് ചെയ്യുന്ന സമയത്ത് പിന്താങ്ങുന്ന മറ്റ് മ്യൂസിക് പ്ലെയറുകളെ VLC  അല്‍പ്പനേരത്തേയ്ക്ക് നിര്‍"
+"ത്തുകയും പിന്നെ തുടരുകയും ചെയ്യുന്നു"
+
+#: modules/gui/macosx/macosx.m:128
+msgid "Use large text for list views"
+msgstr "ലിസ്റ്റ് വ്യൂസീനായി വലിയ ടെക്സ്റ്റ് ഉപയോഗിക്കുക"
+
+#: modules/gui/macosx/macosx.m:133
+msgid "Do nothing"
+msgstr "ഒന്നും ചെയ്യണ്ട"
+
+#: modules/gui/macosx/macosx.m:133
+msgid "Pause iTunes / Spotify"
+msgstr "ഐട്യൂണ്‍സ് /സ്പോട്ടിഫൈയും അല്പ്പം നിര്‍ത്തുക"
+
+#: modules/gui/macosx/macosx.m:133
+msgid "Pause and resume iTunes / Spotify"
+msgstr "ഐട്യൂണ്‍സും/സ്പോട്ടിഫൈയും അല്പ്പം നിര്‍ത്തി വീണ്ടും തുടരുക"
+
+#: modules/gui/macosx/macosx.m:136
+msgid "Continue playback where you left off"
+msgstr "നിങ്ങള്‍ നിര്‍ത്തിയിടത്ത് നിന്നും പ്ലേബാക്ക് തുടരുക"
+
+#: modules/gui/macosx/macosx.m:137
+msgid ""
+"VLC will store playback positions of the last 30 items you played. If you re-"
+"open one of those, playback will continue."
+msgstr ""
+"നിങ്ങള്‍ പ്രവര്‍ത്തിപ്പിച്ച അവസാന 30 എണ്ണത്തിന്‍റെ പ്ലേബാക്ക് സ്ഥാനങ്ങള്‍ VLC സൂക്ഷിക്കുന്നു. അതില്‍ "
+"ഏതെങ്കിലും ഒന്ന്‍ നിങ്ങള്‍ വീണ്ടും തുറക്കുകയാണെങ്കില്‍, പ്ലേബാക്ക് തുടരും"
+
+#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:206
+msgid "Ask"
+msgstr "ചോദിക്ക്"
+
+#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:200
+#: modules/gui/qt/qt.cpp:206 modules/keystore/keychain.m:50
+msgid "Always"
+msgstr "(എപ്പോഴും)"
+
+#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:200
+#: modules/gui/qt/qt.cpp:206 modules/gui/qt/qt.cpp:213
+msgid "Never"
+msgstr "ഒരിക്കലും"
+
+#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:186
+msgid "Maximum Volume displayed"
+msgstr "പരമാവധി ശബ്ദം പ്രദര്‍ശിപ്പിച്ചിട്ടുണ്ട്"
+
+#: modules/gui/macosx/macosx.m:149
+msgid "Mac OS X interface"
+msgstr "MAcOS X പൊതുപ്രതലം"
+
+#: modules/gui/macosx/macosx.m:156
+msgid "Appearance"
+msgstr "ബാഹ്യരൂപം"
+
+#: modules/gui/macosx/macosx.m:167
+msgid "Behavior"
+msgstr "പെരുമാറ്റം"
+
+#: modules/gui/macosx/macosx.m:180
+msgid "Apple Remote and media keys"
+msgstr "ആപ്പിള്‍ റിമോട്ട് ആന്‍ഡ് മീഡിയ കീസ്"
+
+#: modules/gui/macosx/macosx.m:196
+msgid "Video output"
+msgstr "വീഡിയോ ഔട്ട്പുട്ട്"
 
 #: modules/gui/macosx/misc.m:301
 msgid "B"
@@ -19578,7 +19905,7 @@ msgstr "അവസാന 60 സെക്കന്റുകള്‍"
 msgid "Overall"
 msgstr "ആകെ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:639
+#: modules/gui/qt/components/interface_widgets.cpp:646
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
@@ -19586,45 +19913,45 @@ msgstr ""
 "നിലവിലെ പ്ലേബാക്ക് വേഗം:%1\n"
 "ക്രമപ്പെടുത്തുന്നതിന് അമര്‍ത്തുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:712
+#: modules/gui/qt/components/interface_widgets.cpp:719
 msgid "Revert to normal play speed"
 msgstr "സാധാരണ പ്ലേ വേഗതയിലേയ്ക്ക് തിരിച്ചാക്കുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:819
+#: modules/gui/qt/components/interface_widgets.cpp:826
 msgid "Download cover art"
 msgstr "കവര്‍ ആര്‍ട്ട് ഡൌണ്‍ലോഡ് ചെയ്യുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:823
+#: modules/gui/qt/components/interface_widgets.cpp:830
 msgid "Add cover art from file"
 msgstr "ഫയലില്‍ നിന്നും കവര്‍ ആര്‍ട്ട് ചേര്‍ക്കുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:889
+#: modules/gui/qt/components/interface_widgets.cpp:896
 msgid "Choose Cover Art"
 msgstr "കവര്‍ ആര്‍ട്ട് തിരഞ്ഞെടുക്കുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:890
+#: modules/gui/qt/components/interface_widgets.cpp:897
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "ചിത്ര ഫയലുകള്‍  (*.gif *.jpg *.jpeg *.png)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:917
+#: modules/gui/qt/components/interface_widgets.cpp:924
 #: modules/gui/qt/dialogs/toolbar.cpp:573
 msgid "Elapsed time"
 msgstr "കഴിഞ്ഞ സമയം"
 
-#: modules/gui/qt/components/interface_widgets.cpp:921
+#: modules/gui/qt/components/interface_widgets.cpp:928
 #: modules/gui/qt/dialogs/toolbar.cpp:577
 msgid "Total/Remaining time"
 msgstr "മൊത്തം/അവശേഷിക്കുന്ന സമയം"
 
-#: modules/gui/qt/components/interface_widgets.cpp:923
+#: modules/gui/qt/components/interface_widgets.cpp:930
 msgid "Click to toggle between total and remaining time"
 msgstr "ആകെയുള്ളതും കൂടാതെ ബാക്കിയുള്ളതുമായ സമയത്തിനിടയ്ക്ക് ടോഗ്ഗിള്‍ അമര്‍ത്തുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:929
+#: modules/gui/qt/components/interface_widgets.cpp:936
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "കഴിഞ്ഞതും കൂടാതെ ബാക്കിയുള്ളതുമായ സമയത്തിനിടയ്ക്ക് ടോഗ്ഗിള് അമര്‍ത്തുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:931
+#: modules/gui/qt/components/interface_widgets.cpp:938
 msgid "Double click to jump to a chosen time position"
 msgstr "തിരഞ്ഞെടുത്ത സമയ സ്ഥാനത്തേയ്ക്ക് കുതിക്കുന്നതിന് രണ്ട്പ്രാവശ്യം അമര്‍ത്തുക"
 
@@ -19646,6 +19973,7 @@ msgid "File names:"
 msgstr "ഫയല്‍ നാമങ്ങള്‍:"
 
 #: modules/gui/qt/components/open_panels.cpp:162
+#: modules/gui/qt/ui/sprefs_interface.h:558
 msgid "Filter:"
 msgstr "ഫില്‍റ്റര്‍:"
 
@@ -19816,11 +20144,11 @@ msgstr "വര്‍ദ്ധന"
 msgid "Decrease"
 msgstr "കുറയല്‍"
 
-#: modules/gui/qt/components/playlist/standardpanel.cpp:406
+#: modules/gui/qt/components/playlist/standardpanel.cpp:408
 msgid "Playlist View Mode"
 msgstr "പ്ലേലിസ്റ്റ് വ്യൂ മോഡ്"
 
-#: modules/gui/qt/components/playlist/standardpanel.cpp:585
+#: modules/gui/qt/components/playlist/standardpanel.cpp:587
 msgid ""
 "Playlist is currently empty.\n"
 "Drop a file here or select a media source from the left."
@@ -20053,6 +20381,7 @@ msgid "File/Folder"
 msgstr "ഫയല്‍/ഫോള്‍ഡര്‍"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:47
+#: modules/gui/qt/ui/sout.h:199
 msgid "Source"
 msgstr "സ്രോതസ്സ്"
 
@@ -20179,7 +20508,7 @@ msgstr "ഒന്നിലധികം ഫയലുകൾ തിരഞ്ഞെ�
 msgid "Destination"
 msgstr "ലക്ഷ്യം"
 
-#: modules/gui/qt/dialogs/convert.cpp:71
+#: modules/gui/qt/dialogs/convert.cpp:71 modules/gui/qt/ui/sprefs_audio.h:413
 msgid "Destination file:"
 msgstr "ഉദ്ദിഷ്ടസ്ഥാന ഫയല്‍:"
 
@@ -20224,7 +20553,8 @@ msgstr "കണ്ടയ്നറുകള്‍"
 msgid "Program Guide"
 msgstr "പ്രോഗ്രാം ഗൈഡ്"
 
-#: modules/gui/qt/dialogs/epg.cpp:87
+#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:286
+#: modules/gui/qt/ui/about.h:287
 msgid "Update"
 msgstr "പുതുക്കുക"
 
@@ -20354,7 +20684,7 @@ msgstr "അതെ(_Y)"
 msgid "&No"
 msgstr "അല്ല(_N)"
 
-#: modules/gui/qt/dialogs/help.cpp:222
+#: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:144
 msgid "VLC media player updates"
 msgstr "VLC മീഡിയാ പ്ലേയര്‍ കാലികമാക്കലുകള്‍"
 
@@ -20397,10 +20727,6 @@ msgstr "സേവ് മെറ്റാഡേറ്റ(_S)"
 #: modules/gui/qt/dialogs/mediainfo.cpp:83
 msgid "Location:"
 msgstr "സ്ഥാനം:"
-
-#: modules/gui/qt/dialogs/messages.cpp:80
-msgid "Messages"
-msgstr "സന്ദേശങ്ങള്‍"
 
 #: modules/gui/qt/dialogs/messages.cpp:91
 msgid "Saves all the displayed logs to a file"
@@ -20609,7 +20935,7 @@ msgstr "പതിപ്പ്"
 msgid "Website"
 msgstr "വെബ്സൈറ്റ്"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1534
+#: modules/gui/qt/dialogs/plugins.cpp:1534 modules/gui/qt/ui/sprefs_input.h:363
 msgid "Files"
 msgstr "ഫയലുകള്‍"
 
@@ -20670,7 +20996,7 @@ msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr ""
 "നിങ്ങളുടെ VLC മീഡിയാ പ്ലേയറിന്റെ മുന്‍ഗണനകള്‍ പുനഃസജ്ജമാക്കുക എന്നുള്ളത് നിങ്ങള്‍ക്ക് തീര്‍ച്ചയാണോ?"
 
-#: modules/gui/qt/dialogs/sout.cpp:45
+#: modules/gui/qt/dialogs/sout.cpp:45 modules/gui/qt/ui/sout.h:198
 msgid "Stream Output"
 msgstr "സ്ട്രീം ഔട്ട്പുട്ട്"
 
@@ -20856,7 +21182,7 @@ msgstr "ആവര്‍ത്തനം:"
 msgid "Repeat delay:"
 msgstr "ആവര്‍ത്തിക്കുന്ന കാലതാമസം:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:111
+#: modules/gui/qt/dialogs/vlm.cpp:111 modules/gui/qt/ui/sprefs_interface.h:555
 msgid " days"
 msgstr "ദിനങ്ങള്‍"
 
@@ -21519,15 +21845,15 @@ msgstr "എപ്പോഴാണ് ചെറുതാക്കിയിരി�
 msgid "Qt interface"
 msgstr "ക്യുടി ഇന്റര്‍ഫേസ്"
 
-#: modules/gui/qt/util/customwidgets.cpp:81
+#: modules/gui/qt/util/customwidgets.cpp:82
 msgid "errors"
 msgstr "പിശകുകള്‍"
 
-#: modules/gui/qt/util/customwidgets.cpp:82
+#: modules/gui/qt/util/customwidgets.cpp:83
 msgid "warnings"
 msgstr "വാര്‍ണിംഗുകള്‍"
 
-#: modules/gui/qt/util/customwidgets.cpp:83
+#: modules/gui/qt/util/customwidgets.cpp:84
 msgid "debug"
 msgstr "ഡീബഗ്ഗ്"
 
@@ -23709,6 +24035,7 @@ msgid "Podcasts"
 msgstr "പോഡ്കാസ്റ്റുകള്‍"
 
 #: modules/services_discovery/podcast.c:56
+#: modules/gui/qt/ui/podcast_configuration.h:99
 msgid "Podcast URLs list"
 msgstr "പോഡ്കാസ്റ്റ് ചെയ്യപ്പെടുന്ന URLകളുടെ പട്ടിക"
 
@@ -23819,7 +24146,7 @@ msgstr "ഓഡിയോ ക്യാപ്ച്ചര്‍(എഎല്‍എ�
 msgid "CD"
 msgstr "സിഡി"
 
-#: modules/services_discovery/udev.c:601
+#: modules/services_discovery/udev.c:601 modules/gui/qt/ui/open_disk.h:295
 msgid "DVD"
 msgstr "ഡിവിഡി"
 
@@ -23965,6 +24292,7 @@ msgstr "ഡൈനാമിക്ക് വീഡിയോ ഓവര്‍ലേ"
 
 #: modules/spu/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
+#: modules/gui/qt/ui/video_effects.h:1285
 msgid "Overlay"
 msgstr "ഓവര്‍ലേ"
 
@@ -26006,7 +26334,7 @@ msgstr "ഇമേജ് ഹ്യൂ -180 നും 180 നും ഇടയി�
 msgid "Image properties filter"
 msgstr "ചിത്ര ഗുണവിഷേശതാ അരിപ്പ"
 
-#: modules/video_filter/adjust.c:78
+#: modules/video_filter/adjust.c:78 modules/gui/qt/ui/video_effects.h:1212
 msgid "Image adjust"
 msgstr "ചിത്ര അഡ്ജസ്റ്റ്"
 
@@ -27081,7 +27409,7 @@ msgstr "മോഷന്‍ സെന്‍സറുകള്‍ ഉപയോഗ�
 msgid "Rotate video filter"
 msgstr "റോട്ടേറ്റ് വീഡിയോ ഫില്‍റ്റര്‍"
 
-#: modules/video_filter/rotate.c:72
+#: modules/video_filter/rotate.c:72 modules/gui/qt/ui/video_effects.h:1259
 msgid "Rotate"
 msgstr "തിരിക്കുക"
 
@@ -27456,7 +27784,7 @@ msgstr "ജിഎല്‍എക്സ്"
 msgid "GLX extension for OpenGL"
 msgstr "ഓപ്പണ്‍ ജിഎല്‍നായുള്ള ജിഎല്‍എക്സ് അനുബന്ധം"
 
-#: modules/video_output/kva.c:50
+#: modules/video_output/kva.c:50 modules/gui/qt/ui/sprefs_video.h:321
 msgid "Enable a workaround for T23"
 msgstr "ടി23യ്ക്കായുള്ള വര്‍ക്ക്എറൗണ്ട് സാധ്യമാക്കുക"
 
@@ -27468,7 +27796,7 @@ msgstr ""
 "ചലച്ചിത്രത്തിന്റെ വലിപ്പം വിന്‍ഡോ വലിപ്പത്തിന് സമാനമോ ചെറുതോ ആണെങ്കിലോ ഡയഗണല്‍ സ്ട്രൈപ്സ് പ്രദര്‍"
 "ശിപ്പിക്കപ്പെട്ടിരിക്കുകയോ ചെയ്യുന്നെങ്കില്‍ ഈ ഐഛികം പ്രവര്‍ത്തനസജ്ജമാക്കുക."
 
-#: modules/video_output/kva.c:55
+#: modules/video_output/kva.c:55 modules/gui/qt/ui/sprefs_video.h:322
 msgid "Video mode"
 msgstr "വീഡിയോ മോഡ്"
 
@@ -27541,12 +27869,12 @@ msgid "The desktop mode allows you to display the video on the desktop."
 msgstr "ഡെസ്ക്ടോപ് രീതി  ഡെസ്ക്ടോപില്‍ തന്നെ വീഡിയോ കാണിക്കാന്‍ നിങ്ങളെ സഹായിക്കുന്നു"
 
 #: modules/video_output/win32/direct3d9.c:79
-#: modules/video_output/win32/direct3d11.c:65
+#: modules/video_output/win32/direct3d11.c:68
 msgid "Use hardware blending support"
 msgstr "ഹാര്‍ഡ്വെയര്‍ ബ്ലെന്‍ഡിംഗ് പിന്തുണ ഉപയോഗിക്കുക"
 
 #: modules/video_output/win32/direct3d9.c:81
-#: modules/video_output/win32/direct3d11.c:67
+#: modules/video_output/win32/direct3d11.c:70
 msgid "Try to use hardware acceleration for subtitle/OSD blending."
 msgstr "സബ്ടൈറ്റില്‍/OSD ബ്ലെന്‍ഡിംങ്ങിനായി ഹാര്‍ഡ് വയര്‍ ആക്സിലറേഷന്‍ ഉപയോഗിക്കാന്‍ ശ്രമിക്കുക"
 
@@ -27578,15 +27906,16 @@ msgstr "വിന്‍ഡോസ് വിസ്റ്റയ്ക്കും �
 msgid "Direct3D9 video output"
 msgstr "ഡയറക്റ്റ് 3 ഡി 9 വീഡിയോ ഔട്ട്പുട്ട് "
 
-#: modules/video_output/win32/direct3d11.c:64
+#: modules/video_output/win32/direct3d11.c:67
 msgid "Recommended video output for Windows 8 and later versions"
 msgstr "വിൻഡോസ് 8 നും അതിനുശേഷമുള്ള പതിപ്പുകൾക്കുമായി ശുപാർശ ചെയ്യുന്ന വീഡിയോ ഔട്ട്പുട്ട് "
 
-#: modules/video_output/win32/direct3d11.c:71
+#: modules/video_output/win32/direct3d11.c:74
 msgid "Direct3D11 video output"
 msgstr "ഡയറക്റ്റ് 3 ഡി 11 വീഡിയോ ഔട്ട്പുട്ട് "
 
 #: modules/video_output/win32/directdraw.c:65
+#: modules/gui/qt/ui/sprefs_video.h:318
 msgid "Use hardware YUV->RGB conversions"
 msgstr "ഹാര്‍ഡ്വേയര്‍ YUV->RGB പരിവര്‍ത്തനങ്ങള്‍ ഉപയോഗിക്കുക."
 
@@ -28458,6 +28787,7 @@ msgid "Play List"
 msgstr "പ്ലേ ലിസ്റ്റ്"
 
 #: share/lua/http/dialogs/create_stream.html:156
+#: modules/gui/qt/ui/sprefs_audio.h:411
 msgid "Output"
 msgstr "ഔട്ട്പുട്ട്"
 
@@ -28572,7 +28902,7 @@ msgstr "ട്രാക്ക് സിങ്ക്രണൈസേഷന്‍"
 msgid "VLM Batch Commands"
 msgstr "വിഎല്‍എം ബാച്ച് കമാന്‍ഡുകള്‍"
 
-#: share/lua/http/index.html:259
+#: share/lua/http/index.html:259 modules/gui/qt/ui/vlm.h:295
 msgid "Loop"
 msgstr "ലൂപ്പ്"
 
@@ -28607,11 +28937,14 @@ msgid ""
 "instance will be transmitted over the internet to the Google Image Charts "
 "web service to generate this QR code."
 msgstr ""
+"വെബ് ഇന്റർഫേസിന്റെ മൊബൈൽ പതിപ്പിലേക്ക് ലിങ്കുചെയ്യുന്ന ഒരു ക്യുആർ കോഡ് വി‌എൽ‌സിക്ക് "
+"പ്രദർശിപ്പിക്കാൻ കഴിയും; ഈ ക്യുആർ കോഡ് ജനറേറ്റ് ചെയ്യുന്നതിന് നിങ്ങളുടെ വി‌എൽ‌സി മീഡിയ പ്ലെയർ "
+"ഇൻസ്റ്റൻസിന്റെ വെബ് ഇന്റർഫേസിന്റെ വെബ് വിലാസം ഇൻറർനെറ്റിലൂടെ ഗൂഗിൾ ഇമേജ് ചാർട്ടുകളുടെ വെബ് "
+"സേവനത്തിലേക്ക് കൈമാറും."
 
 #: share/lua/http/index.html:285
-#, fuzzy
 msgid "Do you want to go ahead with this?"
-msgstr "താങ്കള്‍ക്ക് ഇത് ഡൗണ്‍ലോഡ് ചെയ്യേണമോ?"
+msgstr "ഇത് തുടരണോ ?"
 
 #: share/lua/http/index.html:290
 msgid ""
@@ -28665,632 +28998,857 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr "നിങ്ങള്‍ സ്ട്രീം സൃഷ്ടിക്കുന്നതിന് ആഗ്രഹിക്കുന്നു എന്നുള്ളത് തീര്‍ച്ചയാണോ?"
 
+#: modules/gui/qt/ui/about.h:285 modules/gui/qt/ui/open.h:257
+#: modules/gui/qt/ui/podcast_configuration.h:98
+msgid "Dialog"
+msgstr "ഡയലോഗ്"
+
+#: modules/gui/qt/ui/equalizer.h:129 modules/gui/qt/ui/open_disk.h:293
+#: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:406
+#: modules/gui/qt/ui/sprefs_input.h:353
+#: modules/gui/qt/ui/sprefs_interface.h:526
+#: modules/gui/qt/ui/sprefs_subtitles.h:286
+#: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
+msgid "Form"
+msgstr "ഫോം"
+
+#: modules/gui/qt/ui/equalizer.h:132
+msgid "Preset"
+msgstr "പ്രിസെറ്റ്"
+
+#: modules/gui/qt/ui/equalizer.h:134
+msgid "0.00 dB"
+msgstr "0.00 dB"
+
+#: modules/gui/qt/ui/messages_panel.h:137
+msgid "&Verbosity:"
+msgstr "വെര്‍ബോസിറ്റി:(_V)"
+
+#: modules/gui/qt/ui/messages_panel.h:138
+msgid "&Filter:"
+msgstr "ഫില്‍റ്റര്‍:(_F)"
+
+#: modules/gui/qt/ui/messages_panel.h:139
+msgid "&Save as..."
+msgstr "അതു പോലെ സംരക്ഷക്കുക...(_S)"
+
+#: modules/gui/qt/ui/messages_panel.h:141
+msgid "Modules Tree"
+msgstr "മോഡ്യൂള്‍ ട്രീകള്‍"
+
+#: modules/gui/qt/ui/open.h:260
+msgid "Show extended options"
+msgstr "അനുബന്ധ താല്പര്യങ്ങള്‍ കാണിക്കുക"
+
+#: modules/gui/qt/ui/open.h:262
+msgid "Show &more options"
+msgstr "കൂടുതല്‍ താല്പര്യങ്ങള്‍ കാണിക്കുക(_m)"
+
+#: modules/gui/qt/ui/open.h:265
+msgid "Change the caching for the media"
+msgstr "മീഡിയയുടെ കാഷിംഗ് മാറ്റുക"
+
+#: modules/gui/qt/ui/open.h:267
+msgid " ms"
+msgstr "എംഎസ്"
+
+#: modules/gui/qt/ui/open.h:268
+msgid "MRL"
+msgstr "എംആര്‍എല്‍"
+
+#: modules/gui/qt/ui/open.h:269
+msgid "Start Time"
+msgstr "തുടക്ക തീയതി"
+
+#: modules/gui/qt/ui/open.h:270
+msgid "Stop Time"
+msgstr "നിർത്തൽ സമയം "
+
+#: modules/gui/qt/ui/open.h:271
+msgid "Edit Options"
+msgstr "എഡിറ്റ് ഓപ്ഷന്‍സ്"
+
+#: modules/gui/qt/ui/open.h:272
+msgid "Extra media"
+msgstr "എക്സ്ട്രാ മീഡിയ"
+
+#: modules/gui/qt/ui/open.h:274
+msgid "Complete MRL for VLC internal"
+msgstr "വിഎല്‍സി ഇന്റേര്‍ണലിനായുള്ള പൂര്‍ണ്ണമായ എംആര്‍എല്‍"
+
+#: modules/gui/qt/ui/open.h:277
+msgid "Select the file"
+msgstr "ഫയല്‍ തിരഞ്ഞെടുക്കുക"
+
+#: modules/gui/qt/ui/open.h:281
+msgid "Change the start time for the media"
+msgstr "മീഡിയയുടെ ആരംഭ സമയം മാറ്റുക"
+
+#: modules/gui/qt/ui/open.h:283 modules/gui/qt/ui/open.h:287
+msgid "HH'H':mm'm':ss's'.zzz"
+msgstr "HH'H':mm'm':ss's'.zzz"
+
+#: modules/gui/qt/ui/open.h:285
+msgid "Change the stop time for the media"
+msgstr "മീഡിയയ്‌ക്കുള്ള സ്റ്റോപ്പ് സമയം മാറ്റുക"
+
+#: modules/gui/qt/ui/open.h:288
+msgid "Play another media synchronously (extra audio file, ...)"
+msgstr "മറ്റൊരു മീഡിയ ഏകകാലികമായി പ്ലേ ചെയ്യുക (അധിക ഓഡിയോ ഫയല്‍, ...)"
+
+#: modules/gui/qt/ui/open_capture.h:94
+msgid "Capture mode"
+msgstr "ക്യാപ്ച്ചര്‍ മോഡ്"
+
+#: modules/gui/qt/ui/open_capture.h:96
+msgid "Select the capture device type"
+msgstr "ക്യാപ്ച്ചര്‍ ഡിവൈസ് തരം തിരഞ്ഞെടുക്കുക"
+
+#: modules/gui/qt/ui/open_capture.h:98
+msgid "Device Selection"
+msgstr "ഡിവൈസ് തിരഞ്ഞെടുക്കല്‍"
+
+#: modules/gui/qt/ui/open_capture.h:99
+msgid "Options"
+msgstr "സാധ്യതകള്‍"
+
+#: modules/gui/qt/ui/open_capture.h:101
+msgid "Access advanced options to tweak the device"
+msgstr "ഉപകരണത്തെ വലിക്കുന്നതിന് പ്രവേശിക്കപ്പെട്ട നൂതന ഐഛികങ്ങള്‍ "
+
+#: modules/gui/qt/ui/open_capture.h:103
+msgid "Advanced options..."
+msgstr "നൂതനമായ താല്പര്യങ്ങള്‍..."
+
+#: modules/gui/qt/ui/open_disk.h:294
+msgid "Disc Selection"
+msgstr "ഡിസ്ക് തിരഞ്ഞെടുക്കല്‍"
+
+#: modules/gui/qt/ui/open_disk.h:298
+msgid "SVCD/VCD"
+msgstr "എസ്വിസിഡി/വിസിഡി"
+
+#: modules/gui/qt/ui/open_disk.h:300
+msgid "Disable Disc Menus"
+msgstr "ഡിസ്ക് മെനുകള്‍ അസാധ്യമാക്കുക"
+
+#: modules/gui/qt/ui/open_disk.h:302
+msgid "No disc menus"
+msgstr "ഡിസ്ക് മെനുകള്‍ ഇല്ല"
+
+#: modules/gui/qt/ui/open_disk.h:303
+msgid "Disc device"
+msgstr "ഡിസ്ക് ഡിവൈസ്"
+
+#: modules/gui/qt/ui/open_disk.h:305
+msgid "Starting Position"
+msgstr "ആരംഭ സ്ഥാനം"
+
+#: modules/gui/qt/ui/open_disk.h:308
+msgid "Audio and Subtitles"
+msgstr "ഓഡിയോയും ഉപശീര്‍ഷകങ്ങളും"
+
+#: modules/gui/qt/ui/open_file.h:142
+msgid "Use a sub&title file"
+msgstr "ഒരു ഉപ&ശീര്‍ഷക ഫയല്‍ ഉപയോഗിക്കുക"
+
+#: modules/gui/qt/ui/open_file.h:144
+msgid "Select the subtitle file"
+msgstr "ഉപശീര്‍ഷക ഫയല്‍ തിരഞ്ഞെടുക്കുക"
+
+#: modules/gui/qt/ui/open_file.h:148
+msgid "Choose one or more media file to open"
+msgstr "തുറക്കാനായി ഒന്നോ അതിലധികമോ മീഡിയ ഫയല്‍ തിരഞ്ഞെടുക്കുക"
+
+#: modules/gui/qt/ui/open_file.h:150
+msgid "File Selection"
+msgstr "ഫയല്‍ തിരഞ്ഞെടുക്കല്‍"
+
+#: modules/gui/qt/ui/open_file.h:151
+msgid "You can select local files with the following list and buttons."
+msgstr ""
+"നിങ്ങള്‍ക്ക് താഴെയുള്ള പട്ടികയും ബട്ടണുകളും അടങ്ങിയ പ്രാദേശിക ഫയലുകളെ തിരഞ്ഞെടുക്കാവുന്നതാണ്."
+
+#: modules/gui/qt/ui/open_file.h:152
+msgid "Add..."
+msgstr "ചേര്‍ക്കുക..."
+
+#: modules/gui/qt/ui/open_net.h:94
+msgid "Network Protocol"
+msgstr "നെറ്റ്വര്‍ക്ക് പ്രോട്ടോക്കോള്‍"
+
+#: modules/gui/qt/ui/open_net.h:95
+msgid "Please enter a network URL:"
+msgstr "ദയവായി നെറ്റ്വര്‍ക്ക് യുആര്‍എല്‍ നല്‍കുക:"
+
+#: modules/gui/qt/ui/profiles.h:699
+msgid "Profile edition"
+msgstr "പ്രൊഫൈല്‍ എഡിഷന്‍"
+
+#: modules/gui/qt/ui/profiles.h:700
+msgid "FLAC"
+msgstr "FLAC"
+
+#: modules/gui/qt/ui/profiles.h:701
+msgid "MP&4/MOV"
+msgstr "MP&4/MOV"
+
+#: modules/gui/qt/ui/profiles.h:702
+msgid "Ogg/Ogm"
+msgstr "ഒജിജി/ഒജിഎം"
+
+#: modules/gui/qt/ui/profiles.h:703
+msgid "M&KV"
+msgstr "M&KV"
+
+#: modules/gui/qt/ui/profiles.h:704
+msgid "M&JPEG"
+msgstr "M&JPEG"
+
+#: modules/gui/qt/ui/profiles.h:705
+msgid "MPEG-PS"
+msgstr "എംപിഇജി-പിഎസ്"
+
+#: modules/gui/qt/ui/profiles.h:706
+msgid "F&LV"
+msgstr "F&LV"
+
+#: modules/gui/qt/ui/profiles.h:707
+msgid "&MPEG-TS"
+msgstr "&MPEG-TS"
+
+#: modules/gui/qt/ui/profiles.h:708
+msgid "RAW"
+msgstr "റോ"
+
+#: modules/gui/qt/ui/profiles.h:709
+msgid "WAV"
+msgstr "ഡബ്ല്യുഎവി"
+
+#: modules/gui/qt/ui/profiles.h:710
+msgid "Webm"
+msgstr "വെബ്ബ്എം"
+
+#: modules/gui/qt/ui/profiles.h:711
+msgid "MPEG &1"
+msgstr "MPEG &1"
+
+#: modules/gui/qt/ui/profiles.h:712
+msgid "AVI"
+msgstr "എവിഐ"
+
+#: modules/gui/qt/ui/profiles.h:713
+msgid "ASF/WMV"
+msgstr "എഎസ്എഫ്/ഡബ്ല്യുഎംവി"
+
+#: modules/gui/qt/ui/profiles.h:714
+msgid "MP&3"
+msgstr "MP&3"
+
+#: modules/gui/qt/ui/profiles.h:715
+msgid "Features"
+msgstr "സവിശേഷതകള്‍"
+
+#: modules/gui/qt/ui/profiles.h:717
+msgid "Streamable"
+msgstr "സ്ട്രീംചെയ്യാവുന്നത്"
+
+#: modules/gui/qt/ui/profiles.h:718
+msgid "Chapters"
+msgstr "പാഠങ്ങള്‍"
+
+#: modules/gui/qt/ui/profiles.h:721
+msgid "Menus"
+msgstr "മെനുകള്‍"
+
+#: modules/gui/qt/ui/profiles.h:728
+msgid "Fra&me Rate"
+msgstr "Fra&me Rate"
+
+#: modules/gui/qt/ui/profiles.h:729
+msgid "Same as source"
+msgstr "സ്രോതസ്സിനു തുല്യമായി"
+
+#: modules/gui/qt/ui/profiles.h:731
+msgid " fps"
+msgstr "എഫ്പിഎസ്"
+
+#: modules/gui/qt/ui/profiles.h:732
+msgid "Custom options"
+msgstr "കസ്റ്റം താല്പര്യങ്ങള്‍"
+
+#: modules/gui/qt/ui/profiles.h:733
+msgid "&Quality"
+msgstr "നിലവാരം"
+
+#: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
+msgid "Not Used"
+msgstr "ഉപയോഗിച്ചിട്ടില്ലാത്ത"
+
+#: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:755
+msgid " kb/s"
+msgstr "കെബി/എസ്"
+
+#: modules/gui/qt/ui/profiles.h:737 modules/gui/qt/ui/profiles.h:757
+msgid "Encoding parameters"
+msgstr "എന്‍കോഡിംഗ് പരാമീറ്ററുകള്‍"
+
+#: modules/gui/qt/ui/profiles.h:740
+msgid "Frame size"
+msgstr "ഫ്രെയിം വലുപ്പം"
+
+#: modules/gui/qt/ui/profiles.h:743 modules/gui/qt/ui/profiles.h:746
+msgid "px"
+msgstr "പിഎക്സ്"
+
+#: modules/gui/qt/ui/profiles.h:756
+msgid "Sa&mple Rate"
+msgstr "Sa&mple Rate"
+
+#: modules/gui/qt/ui/profiles.h:764
+msgid "Profile &Name"
+msgstr "പ്രൊഫൈൽ & പേര്"
+
+#: modules/gui/qt/ui/sout.h:200
+msgid "Set up media sources to stream"
+msgstr "സ്ട്രീം ചെയ്യാനുള്ള മീഡിയ സ്രോതസ്സുകള്‍ സെറ്റപ്പ് ചെയ്യുക"
+
+#: modules/gui/qt/ui/sout.h:202
+msgid "Destination Setup"
+msgstr "ലക്ഷ്യസ്ഥാനം സെറ്റപ്പ്"
+
+#: modules/gui/qt/ui/sout.h:203
+msgid "Select destinations to stream to"
+msgstr "സ്ട്രീം ചെയ്യേണ്ട ലക്ഷ്യസ്ഥാനങ്ങള്‍ തിരഞ്ഞെടുക്കുക"
+
+#: modules/gui/qt/ui/sout.h:204
+msgid ""
+"Add destinations following the streaming methods you need. Be sure to check "
+"with transcoding that the format is compatible with the method used."
+msgstr ""
+"നിങ്ങള്‍ക്ക് ആവശ്യമായ സ്ട്രീമിങ്ങ് രീതികളോടൊപ്പം ഉദ്ദിഷ്ടസ്ഥാനങ്ങള്‍ ചേര്‍ക്കുക. ഉപയോഗിച്ചിരിക്കുന്ന "
+"രീതിയ്ക്ക് ഘടന അനുയോജ്യമാണോ എന്ന് ഉറപ്പുവരുത്താനായി ട്രാന്‍സ്കോഡിങ്ങിനോടൊപ്പം പരിശോധിക്കുക."
+
+#: modules/gui/qt/ui/sout.h:205
+msgid "New destination"
+msgstr "പുതിയ ലക്ഷ്യസ്ഥാനം"
+
+#: modules/gui/qt/ui/sout.h:207
+msgid "Display locally"
+msgstr "പ്രാദേശികമായി കാണിക്കുക"
+
+#: modules/gui/qt/ui/sout.h:209
+msgid "Transcoding Options"
+msgstr "ട്രാന്‍സ്കോഡിംഗ് താല്പര്യങ്ങള്‍"
+
+#: modules/gui/qt/ui/sout.h:210
+msgid "Select and choose transcoding options"
+msgstr "ട്രാന്‍സ്കോഡിംഗ് താല്പര്യങ്ങള്‍ തിരഞ്ഞെടുക്കുക"
+
+#: modules/gui/qt/ui/sout.h:211
+msgid "Activate Transcoding"
+msgstr "ട്രാന്‍സ്കോഡിംഗ് സജീവമാക്കുക"
+
+#: modules/gui/qt/ui/sout.h:212
+msgid "Option Setup"
+msgstr "താല്പര്യങ്ങള്‍ സെറ്റപ്പ്"
+
+#: modules/gui/qt/ui/sout.h:213
+msgid "Set up any additional options for streaming"
+msgstr "സ്ട്രീമിങ്ങിന് ഏതെങ്കിലും സഹ ഐഛികങ്ങള്‍ ക്രമീകരിക്കുക"
+
+#: modules/gui/qt/ui/sout.h:214
+msgid "Miscellaneous Options"
+msgstr "നിരവധി താല്പര്യങ്ങള്‍"
+
+#: modules/gui/qt/ui/sout.h:215
+msgid "Stream all elementary streams"
+msgstr "എല്ലാ എലിമെന്ററി സ്ട്രീമുകളും സ്ട്രീം ചെയ്യുക"
+
+#: modules/gui/qt/ui/sout.h:216
+msgid "Generated stream output string"
+msgstr "ജെനറേറ്റ് ചെയ്ത സ്ട്രീം ഔട്ട്പുട്ട് സ്ട്രിംഗ്"
+
+#: modules/gui/qt/ui/sprefs_audio.h:409
+msgid " %"
+msgstr " %"
+
+#: modules/gui/qt/ui/sprefs_audio.h:412
+msgid "Output module:"
+msgstr "ഔട്ട്പുട്ട് മോഡ്യൂള്‍:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:415
+msgid "Use S/PDIF when available"
+msgstr "എസ്/പിഡിഐഎഫ് ഉപയോഗിക്കുക ലഭ്യമാവുമ്പോള്‍."
+
+#: modules/gui/qt/ui/sprefs_audio.h:417
+msgid "Effects"
+msgstr "പ്രഭാവങ്ങള്‍"
+
+#: modules/gui/qt/ui/sprefs_audio.h:418
+msgid "Visualization:"
+msgstr "വിശ്വലൈസേഷന്‍:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:419
+msgid "Enable Time-Stretching audio"
+msgstr "ടൈം സ്ട്രെച്ചിംഗ് ഓഡിയോ സാധ്യമാക്കുക"
+
+#: modules/gui/qt/ui/sprefs_audio.h:420
+msgid "Replay gain mode:"
+msgstr "റീപ്ലേ ഗെയിന്‍ മോഡ്:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:421
+msgid "Normalize volume to:"
+msgstr "ശബ്ദം നോര്‍മലൈസ് ചെയ്യുക:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:422
+msgid "Tracks"
+msgstr "ട്രാക്കുകള്‍"
+
+#: modules/gui/qt/ui/sprefs_audio.h:423
+msgid "Preferred audio language:"
+msgstr "മുന്‍ഗണനയുള്ള ഓഡിയോ ഭാഷ:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:424
+msgid "Password:"
+msgstr "രഹസ്യവാക്ക്:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:425
+msgid "Username:"
+msgstr "ഉപയോക്തനാമം:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:426
+msgid "Submit played tracks stats to Last.fm"
+msgstr "Last.fm ലേക്ക് പ്ലേ ചെയ്ത ട്രാക്കുകളുടെ സ്ഥിതിവിവരക്കണക്കുകൾ സമർപ്പിക്കുക"
+
+#: modules/gui/qt/ui/sprefs_input.h:354
+msgid "Codecs"
+msgstr "കോഡെക്കുകള്‍"
+
+#: modules/gui/qt/ui/sprefs_input.h:355
+msgid "x264 profile and level selection"
+msgstr "x264 പ്രൊഫൈലും നില തിരഞ്ഞെടുക്കലും"
+
+#: modules/gui/qt/ui/sprefs_input.h:356
+msgid "Hardware-accelerated decoding"
+msgstr "ഹാര്‍ഡ്വെയര്‍-ആക്സിലറേറ്റഡ് ഡീക്കോഡിംഗ്"
+
+#: modules/gui/qt/ui/sprefs_input.h:357
+msgid "Video quality post-processing level"
+msgstr "വീഡിയോ ക്വാളിറ്റി പോസ്റ്റ്-പ്രോസ്സിംഗ് നില"
+
+#: modules/gui/qt/ui/sprefs_input.h:358
+msgid "Skip H.264 in-loop deblocking filter"
+msgstr "H.264 ഇന്‍-ലൂപ് ഡീബ്ലോക്കിങ്ങ് അരിപ്പയെ അവഗണിക്കുക "
+
+#: modules/gui/qt/ui/sprefs_input.h:359
+msgid "x264 preset and tuning selection"
+msgstr "x264 പ്രീസെറ്റ്, ട്യൂണിംഗ് തിരഞ്ഞെടുക്കൽ"
+
+#: modules/gui/qt/ui/sprefs_input.h:361
+msgid "Optical drive"
+msgstr "ഒപ്റ്റിക്കല്‍ ഡ്രൈവ്"
+
+#: modules/gui/qt/ui/sprefs_input.h:362
+msgid "Default optical device"
+msgstr "സഹജമായ ഒപ്റ്റിക്കല്‍ ഡിവൈസ്"
+
+#: modules/gui/qt/ui/sprefs_input.h:366
+msgid "Damaged or incomplete AVI file"
+msgstr "നശിച്ച അല്ലേല്‍ അപൂര്‍ണ്ണമായ എവിഐ ഫയല്‍"
+
+#: modules/gui/qt/ui/sprefs_input.h:369
+msgid "HTTP proxy URL"
+msgstr "എച്ച്ടിടിപി പ്രോക്സി യുആര്‍എല്‍"
+
+#: modules/gui/qt/ui/sprefs_input.h:370
+msgid "HTTP (default)"
+msgstr "എച്ച്ടിടിപി (സഹജമായ)"
+
+#: modules/gui/qt/ui/sprefs_input.h:371
+msgid "RTP over RTSP (TCP)"
+msgstr "ആര്‍ടിപി ഓവര്‍ ആര്‍ടിഎസ്പി (ടിസിപി)"
+
+#: modules/gui/qt/ui/sprefs_input.h:372
+msgid "Live555 stream transport"
+msgstr "ലൈവ്555 സ്ട്രീം ട്രാന്‍സ്പോര്‍ട്ട്"
+
+#: modules/gui/qt/ui/sprefs_input.h:373
+msgid "Default caching policy"
+msgstr "സഹജമായ കാഷിംഗ് പോളിസി"
+
+#: modules/gui/qt/ui/sprefs_interface.h:528
+msgid "Menus language:"
+msgstr "മെനുകളുടെ ഭാഷ:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:529
+msgid "Look and feel"
+msgstr "ലുക്കും ഫീലും"
+
+#: modules/gui/qt/ui/sprefs_interface.h:530
+msgid "Use custom skin"
+msgstr "കസ്റ്റം സ്കിന്‍ ഉപയോഗിക്കുക"
+
+#: modules/gui/qt/ui/sprefs_interface.h:532
+msgid "This is VLC's default interface, with a native look and feel."
+msgstr "ഇത് VLCയുടെ തദ്ദേശീയ രൂപവും ആസ്വാദ്യതയും ചേര്‍ന്ന സ്വയമേവയുള്ള പൊതുപ്രതലമാണ്."
+
+#: modules/gui/qt/ui/sprefs_interface.h:534
+msgid "Use native style"
+msgstr "നേറ്റീവ് ശൈലി ഉപയോഗിക്കുക"
+
+#: modules/gui/qt/ui/sprefs_interface.h:535
+msgid "Resize interface to video size"
+msgstr "ഇന്റര്‍ഫേസ് വീഡിയോ വലുപ്പത്തിലേക്ക് പുനക്രമീകരിക്കുക"
+
+#: modules/gui/qt/ui/sprefs_interface.h:536
+msgid "Show controls in full screen mode"
+msgstr "മുഴുവന്‍ സ്ക്രീന്‍ മോഡില്‍ നിയന്ത്രണങ്ങള്‍ കാണിക്കുക"
+
+#: modules/gui/qt/ui/sprefs_interface.h:537
+msgid "Pause playback when minimized"
+msgstr "മിനിമൈസ് ചെയ്യുമ്പോള്‍ പ്ലേബാക്ക് പോസ് ചെയ്യുക"
+
+#: modules/gui/qt/ui/sprefs_interface.h:538
+msgid "Show media change popup:"
+msgstr "മീഡിയ ചേഞ്ച് പോപ്പ്അപ്പ് കാണിക്കുക:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:539
+msgid "Start in minimal view mode"
+msgstr "മിനിമല്‍ വ്യൂ മോഡില്‍ ആരംഭിക്കുക"
+
+#: modules/gui/qt/ui/sprefs_interface.h:540
+msgid "Force window style:"
+msgstr "ജാലക രീതി ഫോഴ്സ് ചെയ്യുക:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:541
+msgid "Integrate video in interface"
+msgstr "ഇന്റര്‍ഫേസില്‍ വീഡിയോ ഇന്റഗ്രേറ്റ് ചെയ്യുക"
+
+#: modules/gui/qt/ui/sprefs_interface.h:542
+msgid "Show systray icon"
+msgstr "സിസ്ട്രേ ഐക്കണ്‍ കാണിക്കുക"
+
+#: modules/gui/qt/ui/sprefs_interface.h:543
+msgid "Auto raising the interface:"
+msgstr "സമ്പർഖ മുഘം സ്വയമേവ ഉയർത്തുന്നു:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:544
+msgid "Skin resource file:"
+msgstr "സ്കിന്‍ റിസോഴ്സ് ഫയല്‍:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:546
+msgid "Playlist and Instances"
+msgstr "പ്ലേലിസ്റ്റുകളും ഇന്‍സ്റ്റന്‍സുകളും"
+
+#: modules/gui/qt/ui/sprefs_interface.h:549
+msgid "Pause on the last frame of a video"
+msgstr "വീഡിയോയുടെ അവസാന ഫ്രെയിമില്‍ പോസ് ചെയ്യുക"
+
+#: modules/gui/qt/ui/sprefs_interface.h:552
+msgid "Allow only one instance"
+msgstr "ഒരു ഇന്‍സ്റ്റന്‍സ് മാത്രം അനുവദിക്കുക"
+
+#: modules/gui/qt/ui/sprefs_interface.h:554
+msgid "Activate updates notifier"
+msgstr "പുതുക്കലുകളുടെ നോട്ടിഫയര്‍ ആക്ടിവേറ്റ് ചെയ്യുക"
+
+#: modules/gui/qt/ui/sprefs_interface.h:556
+msgid "Every "
+msgstr "എല്ലാം"
+
+#: modules/gui/qt/ui/sprefs_interface.h:557
+msgid "Save recently played items"
+msgstr "അടുത്തിടെ പ്രവര്‍ത്തിപ്പിച്ച വസ്തുകളെ സേവ് ചെയ്യുക"
+
+#: modules/gui/qt/ui/sprefs_interface.h:560
+msgid "Separate words by | (without space)"
+msgstr "വാക്കുകളെ | വേര്‍തിരിക്കുക (സ്പേസ് ഇല്ലാതെ)"
+
+#: modules/gui/qt/ui/sprefs_interface.h:563
+msgid "Operating System Integration"
+msgstr "ഓപ്പറേറ്റിംഗ് സിസ്റ്റം ഇന്റഗ്രേഷന്‍"
+
+#: modules/gui/qt/ui/sprefs_interface.h:564
+msgid "File extensions association"
+msgstr "ഫയല്‍ അനുബന്ധങ്ങളുടെ അസോസിയേഷന്‍"
+
+#: modules/gui/qt/ui/sprefs_interface.h:565
+msgid "Set up associations..."
+msgstr "അസോസിയേഷനുകള്‍ സെറ്റപ്പ് ചെയ്യുക..."
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:288
+msgid "Enable On Screen Display (OSD)"
+msgstr "ഓണ്‍ സ്ക്രീന്‍ ഡിസ്പ്ലേ(ഒഎസ്ഡി) സാധ്യമാക്കുക"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:289
+msgid "Show media title on video start"
+msgstr "വീഡിയോ ആരംഭത്തില്‍ മീഡിയ ശീര്‍ഷകം കാണിക്കുക"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:291
+msgid "Enable subtitles"
+msgstr "ഉപശീര്‍ഷകങ്ങള്‍ സാധ്യമാക്കുക"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:292
+msgid "Subtitle Language"
+msgstr "ഉപശീര്‍ഷക ഭാഷ"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:294
+msgid "Default encoding"
+msgstr "ഡീഫാള്‍ട്ട് എന്‍കോഡിങ്ങ്"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:295
+msgid "Subtitle effects"
+msgstr "ഉപശീര്‍ഷക പ്രഭാവങ്ങള്‍"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:301
+msgid "Add a shadow"
+msgstr "നിഴല്‍ ചേര്‍ക്കുക"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:303
+#: modules/gui/qt/ui/video_effects.h:1227
+#: modules/gui/qt/ui/video_effects.h:1231
+#: modules/gui/qt/ui/video_effects.h:1234
+#: modules/gui/qt/ui/video_effects.h:1235
+#: modules/gui/qt/ui/video_effects.h:1269
+#: modules/gui/qt/ui/video_effects.h:1271
+#: modules/gui/qt/ui/video_effects.h:1281
+#: modules/gui/qt/ui/video_effects.h:1282
+msgid " px"
+msgstr "പിഎക്സ്"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:304
+msgid "Add a background"
+msgstr "പശ്ചാത്തലം ചേര്‍ക്കുക"
+
+#: modules/gui/qt/ui/sprefs_video.h:313
+msgid "O&utput"
+msgstr "ഔ&ട്ട്പുട്ട് "
+
+#: modules/gui/qt/ui/sprefs_video.h:317
+msgid "DirectX"
+msgstr "ഡയറക്ട്എക്സ്"
+
+#: modules/gui/qt/ui/sprefs_video.h:319
+msgid "Accelerated video output (Overlay)"
+msgstr "ആക്സിലറേറ്റഡ് വീഡിയോ ഔട്ട്പുട്ട്(ഓവര്‍ലേ)"
+
+#: modules/gui/qt/ui/sprefs_video.h:320
+msgid "KVA"
+msgstr "കെവിഎ"
+
+#: modules/gui/qt/ui/sprefs_video.h:324
+msgid "Deinterlacing"
+msgstr "ഡീഇന്റര്‍ലേസിംഗ്"
+
+#: modules/gui/qt/ui/sprefs_video.h:326
+msgid "Force Aspect Ratio"
+msgstr "ആസ്പെക്ട് റേഷ്യോ ഫോഴ്സ് ചെയ്യുക"
+
+#: modules/gui/qt/ui/sprefs_video.h:331
+msgid "vlc-snap"
+msgstr "വിഎല്‍സി-സ്നാപ്പ്"
+
+#: modules/gui/qt/ui/streampanel.h:169
+msgid "Stuff"
+msgstr "സ്റ്റഫ്"
+
+#: modules/gui/qt/ui/streampanel.h:171
+msgid "Edit settings"
+msgstr "സംവിധാനങ്ങള്‍ തിരുത്തുക"
+
+#: modules/gui/qt/ui/streampanel.h:172
+msgid "Control"
+msgstr "കണ്‍ട്രോള്‍"
+
+#: modules/gui/qt/ui/streampanel.h:173
+msgid "Run manually"
+msgstr "മാന്വലായി പ്രവര്‍ത്തിപ്പിക്കുക"
+
+#: modules/gui/qt/ui/streampanel.h:174
+msgid "Setup schedule"
+msgstr "ഷെഡ്യൂള്‍ സെറ്റപ്പ് ചെയ്യുക"
+
+#: modules/gui/qt/ui/streampanel.h:175
+msgid "Run on schedule"
+msgstr "ഷെഡ്യൂളില്‍ ഓടുക"
+
+#: modules/gui/qt/ui/streampanel.h:176
+msgid "Status"
+msgstr "അവസ്ഥ"
+
+#: modules/gui/qt/ui/streampanel.h:177
+msgid "P/P"
+msgstr "പി/പി"
+
+#: modules/gui/qt/ui/streampanel.h:180
+msgid "Prev"
+msgstr "മുമ്പത്തെ"
+
+#: modules/gui/qt/ui/streampanel.h:181
+msgid "Add Input"
+msgstr "ഇന്‍പുട്ട് ചേര്‍ക്കുക"
+
+#: modules/gui/qt/ui/streampanel.h:182
+msgid "Edit Input"
+msgstr "ഇന്‍പുട്ട് തിരുത്തുക"
+
+#: modules/gui/qt/ui/streampanel.h:183
+msgid "Clear List"
+msgstr "ക്ലിയര്‍ ലിസ്റ്റ്"
+
+#: modules/gui/qt/ui/update.h:145
+msgid "Check for VLC updates"
+msgstr "വിഎല്‍സി പുതുക്കലുകള്‍ക്കായി പരിശോധിക്കുക"
+
+#: modules/gui/qt/ui/update.h:146
+msgid "Launching an update request..."
+msgstr "ഒരു പുതുക്കല്‍ ആവശ്യം ലോഞ്ച് ചെയ്യുന്നു..."
+
+#: modules/gui/qt/ui/update.h:147
+msgid "Do you want to download it?"
+msgstr "താങ്കള്‍ക്ക് ഇത് ഡൗണ്‍ലോഡ് ചെയ്യേണമോ?"
+
+#: modules/gui/qt/ui/video_effects.h:1225
+msgid "Essential"
+msgstr "ആവശ്യമായ"
+
+#: modules/gui/qt/ui/video_effects.h:1239
+#: modules/gui/qt/ui/video_effects.h:1248
+msgid ">HHHHHH;#"
+msgstr ">HHHHHH;#"
+
+#: modules/gui/qt/ui/video_effects.h:1240
+msgid "Negate colors"
+msgstr "നിറങ്ങള്‍ നെഗേറ്റ് ചെയ്യുക"
+
+#: modules/gui/qt/ui/video_effects.h:1253
+msgid "Colors"
+msgstr "നിറങ്ങള്‍"
+
+#: modules/gui/qt/ui/video_effects.h:1254
+msgid "Interactive Zoom"
+msgstr "ഇന്ററാക്ടീവ് സൂം"
+
+#: modules/gui/qt/ui/video_effects.h:1260
+msgid "Angle"
+msgstr "ആംഗിള്‍"
+
+#: modules/gui/qt/ui/video_effects.h:1267
+#: modules/gui/qt/ui/video_effects.h:1284
+msgid "..."
+msgstr "..."
+
+#: modules/gui/qt/ui/video_effects.h:1272
+msgid "full"
+msgstr "മുഴുവന്‍"
+
+#: modules/gui/qt/ui/video_effects.h:1274
+msgid "none"
+msgstr "ഒന്നുമല്ല"
+
+#: modules/gui/qt/ui/video_effects.h:1278
+msgid "Logo erase"
+msgstr "ലോഗോ ഇറേസ്"
+
+#: modules/gui/qt/ui/video_effects.h:1283
+msgid "Mask"
+msgstr "മാസ്ക്"
+
+#: modules/gui/qt/ui/video_effects.h:1286
+msgid "Anaglyph 3D"
+msgstr "ആനഗ്ലിഫ് 3ഡി"
+
+#: modules/gui/qt/ui/video_effects.h:1287
+msgid "Mirror"
+msgstr "കണ്ണാടി"
+
+#: modules/gui/qt/ui/video_effects.h:1291
+msgid "Motion detect"
+msgstr "മോഷന്‍ ഡിറ്റെക്ട്"
+
+#: modules/gui/qt/ui/video_effects.h:1292
+msgid "Spatial blur"
+msgstr "സ്പാറ്റിയല്‍ ബ്ലര്‍"
+
+#: modules/gui/qt/ui/video_effects.h:1296
+msgid "Anti-Flickering"
+msgstr "ആന്റി-ഫ്ലിക്കറിംഗ്"
+
+#: modules/gui/qt/ui/video_effects.h:1297
+msgid "Soften"
+msgstr "സോഫ്ടെന്‍"
+
+#: modules/gui/qt/ui/video_effects.h:1298
+msgid "Denoiser"
+msgstr "ഡീനോയിസര്‍"
+
+#: modules/gui/qt/ui/video_effects.h:1299
+msgid "Spatial luma strength"
+msgstr "സ്പാറ്റിയല്‍ ലുമ സ്ട്രെംഗത്ത്"
+
+#: modules/gui/qt/ui/video_effects.h:1300
+msgid "Temporal luma strength"
+msgstr "ടെംപറല്‍ ലുമ സ്ട്രെംഗത്ത്"
+
+#: modules/gui/qt/ui/video_effects.h:1301
+msgid "Spatial chroma strength"
+msgstr "സ്പാറ്റിയല്‍ ക്രോമ സ്ട്രെംഗത്ത്"
+
+#: modules/gui/qt/ui/video_effects.h:1302
+msgid "Temporal chroma strength"
+msgstr "ടെംപറല്‍ ക്രോമ സ്ട്രെംഗ്ത്ത്"
+
+#: modules/gui/qt/ui/vlm.h:283
+msgid "VLM configurator"
+msgstr "വിഎല്‍എം കോണ്‍ഫിഗറേറ്റര്‍"
+
+#: modules/gui/qt/ui/vlm.h:284
+msgid "Media Manager Edition"
+msgstr "മീഡിയ മാനേജര്‍ എഡിഷന്‍"
+
+#: modules/gui/qt/ui/vlm.h:285
+msgid "Name:"
+msgstr "പേര്:"
+
+#: modules/gui/qt/ui/vlm.h:287
+msgid "Input:"
+msgstr "ഇന്‍പുട്ട്:"
+
+#: modules/gui/qt/ui/vlm.h:288
+msgid "Select Input"
+msgstr "ഇന്‍പുട്ട് തിരഞ്ഞെടുക്കുക"
+
+#: modules/gui/qt/ui/vlm.h:289
+msgid "Output:"
+msgstr "ഔട്ട്പുട്ട്:"
+
+#: modules/gui/qt/ui/vlm.h:290
+msgid "Select Output"
+msgstr "ഔട്ട്പുട്ട് തിരഞ്ഞെടുക്കുക"
+
+#: modules/gui/qt/ui/vlm.h:291
+msgid "Time Control"
+msgstr "ടൈം കണ്‍ട്രോള്‍"
+
+#: modules/gui/qt/ui/vlm.h:292
+msgid "Mux Control"
+msgstr "മക്സ് കണ്‍ട്രോള്‍"
+
+#: modules/gui/qt/ui/vlm.h:293
+msgid "Muxer:"
+msgstr "മക്സര്‍:"
+
+#: modules/gui/qt/ui/vlm.h:294
+msgid "AAAA; "
+msgstr "AAAA; "
+
+#: modules/gui/qt/ui/vlm.h:299
+msgid "Media Manager List"
+msgstr "മീഡിയ മാനേജര്‍ ലിസ്റ്റ്"
+
 #~ msgid "Export (include insecure ciphers)"
 #~ msgstr "കയറ്റുമതി ചെയ്യുക (സുരക്ഷിതമല്ലാത്ത സിഫറുകള്‍ ഉള്‍പ്പെടുന്നു)"
-
-#~ msgid "Dialog"
-#~ msgstr "ഡയലോഗ്"
-
-#~ msgid "Form"
-#~ msgstr "ഫോം"
-
-#~ msgid "Preset"
-#~ msgstr "പ്രിസെറ്റ്"
-
-#~ msgid "0.00 dB"
-#~ msgstr "0.00 dB"
-
-#~ msgid "&Verbosity:"
-#~ msgstr "വെര്‍ബോസിറ്റി:(_V)"
-
-#~ msgid "&Filter:"
-#~ msgstr "ഫില്‍റ്റര്‍:(_F)"
-
-#~ msgid "&Save as..."
-#~ msgstr "അതു പോലെ സംരക്ഷക്കുക...(_S)"
-
-#~ msgid "Modules Tree"
-#~ msgstr "മോഡ്യൂള്‍ ട്രീകള്‍"
-
-#~ msgid "Show extended options"
-#~ msgstr "അനുബന്ധ താല്പര്യങ്ങള്‍ കാണിക്കുക"
-
-#~ msgid "Show &more options"
-#~ msgstr "കൂടുതല്‍ താല്പര്യങ്ങള്‍ കാണിക്കുക(_m)"
-
-#~ msgid "Change the caching for the media"
-#~ msgstr "മീഡിയയുടെ കാഷിംഗ് മാറ്റുക"
-
-#~ msgid " ms"
-#~ msgstr "എംഎസ്"
-
-#~ msgid "MRL"
-#~ msgstr "എംആര്‍എല്‍"
-
-#~ msgid "Start Time"
-#~ msgstr "തുടക്ക തീയതി"
-
-#~ msgid "Stop Time"
-#~ msgstr "നിർത്തൽ സമയം "
-
-#~ msgid "Edit Options"
-#~ msgstr "എഡിറ്റ് ഓപ്ഷന്‍സ്"
-
-#~ msgid "Extra media"
-#~ msgstr "എക്സ്ട്രാ മീഡിയ"
-
-#~ msgid "Complete MRL for VLC internal"
-#~ msgstr "വിഎല്‍സി ഇന്റേര്‍ണലിനായുള്ള പൂര്‍ണ്ണമായ എംആര്‍എല്‍"
-
-#~ msgid "Select the file"
-#~ msgstr "ഫയല്‍ തിരഞ്ഞെടുക്കുക"
-
-#~ msgid "Change the start time for the media"
-#~ msgstr "മീഡിയയുടെ ആരംഭ സമയം മാറ്റുക"
-
-#~ msgid "HH'H':mm'm':ss's'.zzz"
-#~ msgstr "HH'H':mm'm':ss's'.zzz"
-
-#~ msgid "Change the stop time for the media"
-#~ msgstr "മീഡിയയ്‌ക്കുള്ള സ്റ്റോപ്പ് സമയം മാറ്റുക"
-
-#~ msgid "Play another media synchronously (extra audio file, ...)"
-#~ msgstr "മറ്റൊരു മീഡിയ ഏകകാലികമായി പ്ലേ ചെയ്യുക (അധിക ഓഡിയോ ഫയല്‍, ...)"
-
-#~ msgid "Capture mode"
-#~ msgstr "ക്യാപ്ച്ചര്‍ മോഡ്"
-
-#~ msgid "Select the capture device type"
-#~ msgstr "ക്യാപ്ച്ചര്‍ ഡിവൈസ് തരം തിരഞ്ഞെടുക്കുക"
-
-#~ msgid "Device Selection"
-#~ msgstr "ഡിവൈസ് തിരഞ്ഞെടുക്കല്‍"
-
-#~ msgid "Options"
-#~ msgstr "സാധ്യതകള്‍"
-
-#~ msgid "Access advanced options to tweak the device"
-#~ msgstr "ഉപകരണത്തെ വലിക്കുന്നതിന് പ്രവേശിക്കപ്പെട്ട നൂതന ഐഛികങ്ങള്‍ "
-
-#~ msgid "Advanced options..."
-#~ msgstr "നൂതനമായ താല്പര്യങ്ങള്‍..."
-
-#~ msgid "Disc Selection"
-#~ msgstr "ഡിസ്ക് തിരഞ്ഞെടുക്കല്‍"
-
-#~ msgid "SVCD/VCD"
-#~ msgstr "എസ്വിസിഡി/വിസിഡി"
-
-#~ msgid "Disable Disc Menus"
-#~ msgstr "ഡിസ്ക് മെനുകള്‍ അസാധ്യമാക്കുക"
-
-#~ msgid "No disc menus"
-#~ msgstr "ഡിസ്ക് മെനുകള്‍ ഇല്ല"
-
-#~ msgid "Disc device"
-#~ msgstr "ഡിസ്ക് ഡിവൈസ്"
-
-#~ msgid "Starting Position"
-#~ msgstr "ആരംഭ സ്ഥാനം"
-
-#~ msgid "Audio and Subtitles"
-#~ msgstr "ഓഡിയോയും ഉപശീര്‍ഷകങ്ങളും"
-
-#~ msgid "Use a sub&title file"
-#~ msgstr "ഒരു ഉപ&ശീര്‍ഷക ഫയല്‍ ഉപയോഗിക്കുക"
-
-#~ msgid "Select the subtitle file"
-#~ msgstr "ഉപശീര്‍ഷക ഫയല്‍ തിരഞ്ഞെടുക്കുക"
-
-#~ msgid "Choose one or more media file to open"
-#~ msgstr "തുറക്കാനായി ഒന്നോ അതിലധികമോ മീഡിയ ഫയല്‍ തിരഞ്ഞെടുക്കുക"
-
-#~ msgid "File Selection"
-#~ msgstr "ഫയല്‍ തിരഞ്ഞെടുക്കല്‍"
-
-#~ msgid "You can select local files with the following list and buttons."
-#~ msgstr ""
-#~ "നിങ്ങള്‍ക്ക് താഴെയുള്ള പട്ടികയും ബട്ടണുകളും അടങ്ങിയ പ്രാദേശിക ഫയലുകളെ തിരഞ്ഞെടുക്കാവുന്നതാണ്."
-
-#~ msgid "Add..."
-#~ msgstr "ചേര്‍ക്കുക..."
-
-#~ msgid "Network Protocol"
-#~ msgstr "നെറ്റ്വര്‍ക്ക് പ്രോട്ടോക്കോള്‍"
-
-#~ msgid "Please enter a network URL:"
-#~ msgstr "ദയവായി നെറ്റ്വര്‍ക്ക് യുആര്‍എല്‍ നല്‍കുക:"
-
-#~ msgid "Profile edition"
-#~ msgstr "പ്രൊഫൈല്‍ എഡിഷന്‍"
-
-#~ msgid "FLAC"
-#~ msgstr "FLAC"
-
-#~ msgid "MP&4/MOV"
-#~ msgstr "MP&4/MOV"
-
-#~ msgid "Ogg/Ogm"
-#~ msgstr "ഒജിജി/ഒജിഎം"
-
-#~ msgid "M&KV"
-#~ msgstr "M&KV"
-
-#~ msgid "M&JPEG"
-#~ msgstr "M&JPEG"
-
-#~ msgid "MPEG-PS"
-#~ msgstr "എംപിഇജി-പിഎസ്"
-
-#~ msgid "F&LV"
-#~ msgstr "F&LV"
-
-#~ msgid "&MPEG-TS"
-#~ msgstr "&MPEG-TS"
-
-#~ msgid "RAW"
-#~ msgstr "റോ"
-
-#~ msgid "WAV"
-#~ msgstr "ഡബ്ല്യുഎവി"
-
-#~ msgid "Webm"
-#~ msgstr "വെബ്ബ്എം"
-
-#~ msgid "MPEG &1"
-#~ msgstr "MPEG &1"
-
-#~ msgid "AVI"
-#~ msgstr "എവിഐ"
-
-#~ msgid "ASF/WMV"
-#~ msgstr "എഎസ്എഫ്/ഡബ്ല്യുഎംവി"
-
-#~ msgid "MP&3"
-#~ msgstr "MP&3"
-
-#~ msgid "Features"
-#~ msgstr "സവിശേഷതകള്‍"
-
-#~ msgid "Streamable"
-#~ msgstr "സ്ട്രീംചെയ്യാവുന്നത്"
-
-#~ msgid "Chapters"
-#~ msgstr "പാഠങ്ങള്‍"
-
-#~ msgid "Menus"
-#~ msgstr "മെനുകള്‍"
-
-#~ msgid "Fra&me Rate"
-#~ msgstr "Fra&me Rate"
-
-#~ msgid "Same as source"
-#~ msgstr "സ്രോതസ്സിനു തുല്യമായി"
-
-#~ msgid " fps"
-#~ msgstr "എഫ്പിഎസ്"
-
-#~ msgid "Custom options"
-#~ msgstr "കസ്റ്റം താല്പര്യങ്ങള്‍"
-
-#~ msgid "&Quality"
-#~ msgstr "നിലവാരം"
-
-#~ msgid "Not Used"
-#~ msgstr "ഉപയോഗിച്ചിട്ടില്ലാത്ത"
-
-#~ msgid " kb/s"
-#~ msgstr "കെബി/എസ്"
-
-#~ msgid "Encoding parameters"
-#~ msgstr "എന്‍കോഡിംഗ് പരാമീറ്ററുകള്‍"
-
-#~ msgid "Frame size"
-#~ msgstr "ഫ്രെയിം വലുപ്പം"
-
-#~ msgid "px"
-#~ msgstr "പിഎക്സ്"
-
-#~ msgid "Sa&mple Rate"
-#~ msgstr "Sa&mple Rate"
-
-#~ msgid "Profile &Name"
-#~ msgstr "പ്രൊഫൈൽ & പേര്"
-
-#~ msgid "Set up media sources to stream"
-#~ msgstr "സ്ട്രീം ചെയ്യാനുള്ള മീഡിയ സ്രോതസ്സുകള്‍ സെറ്റപ്പ് ചെയ്യുക"
-
-#~ msgid "Destination Setup"
-#~ msgstr "ലക്ഷ്യസ്ഥാനം സെറ്റപ്പ്"
-
-#~ msgid "Select destinations to stream to"
-#~ msgstr "സ്ട്രീം ചെയ്യേണ്ട ലക്ഷ്യസ്ഥാനങ്ങള്‍ തിരഞ്ഞെടുക്കുക"
-
-#~ msgid ""
-#~ "Add destinations following the streaming methods you need. Be sure to "
-#~ "check with transcoding that the format is compatible with the method used."
-#~ msgstr ""
-#~ "നിങ്ങള്‍ക്ക് ആവശ്യമായ സ്ട്രീമിങ്ങ് രീതികളോടൊപ്പം ഉദ്ദിഷ്ടസ്ഥാനങ്ങള്‍ ചേര്‍ക്കുക. "
-#~ "ഉപയോഗിച്ചിരിക്കുന്ന രീതിയ്ക്ക് ഘടന അനുയോജ്യമാണോ എന്ന് ഉറപ്പുവരുത്താനായി ട്രാന്‍"
-#~ "സ്കോഡിങ്ങിനോടൊപ്പം പരിശോധിക്കുക."
-
-#~ msgid "New destination"
-#~ msgstr "പുതിയ ലക്ഷ്യസ്ഥാനം"
-
-#~ msgid "Display locally"
-#~ msgstr "പ്രാദേശികമായി കാണിക്കുക"
-
-#~ msgid "Transcoding Options"
-#~ msgstr "ട്രാന്‍സ്കോഡിംഗ് താല്പര്യങ്ങള്‍"
-
-#~ msgid "Select and choose transcoding options"
-#~ msgstr "ട്രാന്‍സ്കോഡിംഗ് താല്പര്യങ്ങള്‍ തിരഞ്ഞെടുക്കുക"
-
-#~ msgid "Activate Transcoding"
-#~ msgstr "ട്രാന്‍സ്കോഡിംഗ് സജീവമാക്കുക"
-
-#~ msgid "Option Setup"
-#~ msgstr "താല്പര്യങ്ങള്‍ സെറ്റപ്പ്"
-
-#~ msgid "Set up any additional options for streaming"
-#~ msgstr "സ്ട്രീമിങ്ങിന് ഏതെങ്കിലും സഹ ഐഛികങ്ങള്‍ ക്രമീകരിക്കുക"
-
-#~ msgid "Miscellaneous Options"
-#~ msgstr "നിരവധി താല്പര്യങ്ങള്‍"
-
-#~ msgid "Stream all elementary streams"
-#~ msgstr "എല്ലാ എലിമെന്ററി സ്ട്രീമുകളും സ്ട്രീം ചെയ്യുക"
-
-#~ msgid "Generated stream output string"
-#~ msgstr "ജെനറേറ്റ് ചെയ്ത സ്ട്രീം ഔട്ട്പുട്ട് സ്ട്രിംഗ്"
-
-#~ msgid " %"
-#~ msgstr " %"
-
-#~ msgid "Output module:"
-#~ msgstr "ഔട്ട്പുട്ട് മോഡ്യൂള്‍:"
-
-#~ msgid "Use S/PDIF when available"
-#~ msgstr "എസ്/പിഡിഐഎഫ് ഉപയോഗിക്കുക ലഭ്യമാവുമ്പോള്‍."
-
-#~ msgid "Effects"
-#~ msgstr "പ്രഭാവങ്ങള്‍"
-
-#~ msgid "Visualization:"
-#~ msgstr "വിശ്വലൈസേഷന്‍:"
-
-#~ msgid "Enable Time-Stretching audio"
-#~ msgstr "ടൈം സ്ട്രെച്ചിംഗ് ഓഡിയോ സാധ്യമാക്കുക"
-
-#~ msgid "Replay gain mode:"
-#~ msgstr "റീപ്ലേ ഗെയിന്‍ മോഡ്:"
-
-#~ msgid "Normalize volume to:"
-#~ msgstr "ശബ്ദം നോര്‍മലൈസ് ചെയ്യുക:"
-
-#~ msgid "Tracks"
-#~ msgstr "ട്രാക്കുകള്‍"
-
-#~ msgid "Preferred audio language:"
-#~ msgstr "മുന്‍ഗണനയുള്ള ഓഡിയോ ഭാഷ:"
-
-#~ msgid "Password:"
-#~ msgstr "രഹസ്യവാക്ക്:"
-
-#~ msgid "Username:"
-#~ msgstr "ഉപയോക്തനാമം:"
-
-#~ msgid "Submit played tracks stats to Last.fm"
-#~ msgstr "Last.fm ലേക്ക് പ്ലേ ചെയ്ത ട്രാക്കുകളുടെ സ്ഥിതിവിവരക്കണക്കുകൾ സമർപ്പിക്കുക"
-
-#~ msgid "Codecs"
-#~ msgstr "കോഡെക്കുകള്‍"
-
-#~ msgid "x264 profile and level selection"
-#~ msgstr "x264 പ്രൊഫൈലും നില തിരഞ്ഞെടുക്കലും"
-
-#~ msgid "Hardware-accelerated decoding"
-#~ msgstr "ഹാര്‍ഡ്വെയര്‍-ആക്സിലറേറ്റഡ് ഡീക്കോഡിംഗ്"
-
-#~ msgid "Video quality post-processing level"
-#~ msgstr "വീഡിയോ ക്വാളിറ്റി പോസ്റ്റ്-പ്രോസ്സിംഗ് നില"
-
-#~ msgid "Skip H.264 in-loop deblocking filter"
-#~ msgstr "H.264 ഇന്‍-ലൂപ് ഡീബ്ലോക്കിങ്ങ് അരിപ്പയെ അവഗണിക്കുക "
-
-#~ msgid "x264 preset and tuning selection"
-#~ msgstr "x264 പ്രീസെറ്റ്, ട്യൂണിംഗ് തിരഞ്ഞെടുക്കൽ"
-
-#~ msgid "Optical drive"
-#~ msgstr "ഒപ്റ്റിക്കല്‍ ഡ്രൈവ്"
-
-#~ msgid "Default optical device"
-#~ msgstr "സഹജമായ ഒപ്റ്റിക്കല്‍ ഡിവൈസ്"
-
-#~ msgid "Damaged or incomplete AVI file"
-#~ msgstr "നശിച്ച അല്ലേല്‍ അപൂര്‍ണ്ണമായ എവിഐ ഫയല്‍"
-
-#~ msgid "HTTP proxy URL"
-#~ msgstr "എച്ച്ടിടിപി പ്രോക്സി യുആര്‍എല്‍"
-
-#~ msgid "HTTP (default)"
-#~ msgstr "എച്ച്ടിടിപി (സഹജമായ)"
-
-#~ msgid "RTP over RTSP (TCP)"
-#~ msgstr "ആര്‍ടിപി ഓവര്‍ ആര്‍ടിഎസ്പി (ടിസിപി)"
-
-#~ msgid "Live555 stream transport"
-#~ msgstr "ലൈവ്555 സ്ട്രീം ട്രാന്‍സ്പോര്‍ട്ട്"
-
-#~ msgid "Default caching policy"
-#~ msgstr "സഹജമായ കാഷിംഗ് പോളിസി"
-
-#~ msgid "Menus language:"
-#~ msgstr "മെനുകളുടെ ഭാഷ:"
-
-#~ msgid "Look and feel"
-#~ msgstr "ലുക്കും ഫീലും"
-
-#~ msgid "Use custom skin"
-#~ msgstr "കസ്റ്റം സ്കിന്‍ ഉപയോഗിക്കുക"
-
-#~ msgid "This is VLC's default interface, with a native look and feel."
-#~ msgstr "ഇത് VLCയുടെ തദ്ദേശീയ രൂപവും ആസ്വാദ്യതയും ചേര്‍ന്ന സ്വയമേവയുള്ള പൊതുപ്രതലമാണ്."
-
-#~ msgid "Use native style"
-#~ msgstr "നേറ്റീവ് ശൈലി ഉപയോഗിക്കുക"
-
-#~ msgid "Resize interface to video size"
-#~ msgstr "ഇന്റര്‍ഫേസ് വീഡിയോ വലുപ്പത്തിലേക്ക് പുനക്രമീകരിക്കുക"
-
-#~ msgid "Show controls in full screen mode"
-#~ msgstr "മുഴുവന്‍ സ്ക്രീന്‍ മോഡില്‍ നിയന്ത്രണങ്ങള്‍ കാണിക്കുക"
-
-#~ msgid "Pause playback when minimized"
-#~ msgstr "മിനിമൈസ് ചെയ്യുമ്പോള്‍ പ്ലേബാക്ക് പോസ് ചെയ്യുക"
-
-#~ msgid "Show media change popup:"
-#~ msgstr "മീഡിയ ചേഞ്ച് പോപ്പ്അപ്പ് കാണിക്കുക:"
-
-#~ msgid "Start in minimal view mode"
-#~ msgstr "മിനിമല്‍ വ്യൂ മോഡില്‍ ആരംഭിക്കുക"
-
-#~ msgid "Force window style:"
-#~ msgstr "ജാലക രീതി ഫോഴ്സ് ചെയ്യുക:"
-
-#~ msgid "Integrate video in interface"
-#~ msgstr "ഇന്റര്‍ഫേസില്‍ വീഡിയോ ഇന്റഗ്രേറ്റ് ചെയ്യുക"
-
-#~ msgid "Show systray icon"
-#~ msgstr "സിസ്ട്രേ ഐക്കണ്‍ കാണിക്കുക"
-
-#~ msgid "Auto raising the interface:"
-#~ msgstr "സമ്പർഖ മുഘം സ്വയമേവ ഉയർത്തുന്നു:"
-
-#~ msgid "Skin resource file:"
-#~ msgstr "സ്കിന്‍ റിസോഴ്സ് ഫയല്‍:"
-
-#~ msgid "Playlist and Instances"
-#~ msgstr "പ്ലേലിസ്റ്റുകളും ഇന്‍സ്റ്റന്‍സുകളും"
-
-#~ msgid "Pause on the last frame of a video"
-#~ msgstr "വീഡിയോയുടെ അവസാന ഫ്രെയിമില്‍ പോസ് ചെയ്യുക"
-
-#~ msgid "Allow only one instance"
-#~ msgstr "ഒരു ഇന്‍സ്റ്റന്‍സ് മാത്രം അനുവദിക്കുക"
-
-#~ msgid "Activate updates notifier"
-#~ msgstr "പുതുക്കലുകളുടെ നോട്ടിഫയര്‍ ആക്ടിവേറ്റ് ചെയ്യുക"
-
-#~ msgid "Every "
-#~ msgstr "എല്ലാം"
-
-#~ msgid "Save recently played items"
-#~ msgstr "അടുത്തിടെ പ്രവര്‍ത്തിപ്പിച്ച വസ്തുകളെ സേവ് ചെയ്യുക"
-
-#~ msgid "Separate words by | (without space)"
-#~ msgstr "വാക്കുകളെ | വേര്‍തിരിക്കുക (സ്പേസ് ഇല്ലാതെ)"
-
-#~ msgid "Operating System Integration"
-#~ msgstr "ഓപ്പറേറ്റിംഗ് സിസ്റ്റം ഇന്റഗ്രേഷന്‍"
-
-#~ msgid "File extensions association"
-#~ msgstr "ഫയല്‍ അനുബന്ധങ്ങളുടെ അസോസിയേഷന്‍"
-
-#~ msgid "Set up associations..."
-#~ msgstr "അസോസിയേഷനുകള്‍ സെറ്റപ്പ് ചെയ്യുക..."
-
-#~ msgid "Enable On Screen Display (OSD)"
-#~ msgstr "ഓണ്‍ സ്ക്രീന്‍ ഡിസ്പ്ലേ(ഒഎസ്ഡി) സാധ്യമാക്കുക"
-
-#~ msgid "Show media title on video start"
-#~ msgstr "വീഡിയോ ആരംഭത്തില്‍ മീഡിയ ശീര്‍ഷകം കാണിക്കുക"
-
-#~ msgid "Enable subtitles"
-#~ msgstr "ഉപശീര്‍ഷകങ്ങള്‍ സാധ്യമാക്കുക"
-
-#~ msgid "Subtitle Language"
-#~ msgstr "ഉപശീര്‍ഷക ഭാഷ"
-
-#~ msgid "Default encoding"
-#~ msgstr "ഡീഫാള്‍ട്ട് എന്‍കോഡിങ്ങ്"
-
-#~ msgid "Subtitle effects"
-#~ msgstr "ഉപശീര്‍ഷക പ്രഭാവങ്ങള്‍"
-
-#~ msgid "Add a shadow"
-#~ msgstr "നിഴല്‍ ചേര്‍ക്കുക"
-
-#~ msgid " px"
-#~ msgstr "പിഎക്സ്"
-
-#~ msgid "Add a background"
-#~ msgstr "പശ്ചാത്തലം ചേര്‍ക്കുക"
-
-#~ msgid "O&utput"
-#~ msgstr "ഔ&ട്ട്പുട്ട് "
-
-#~ msgid "DirectX"
-#~ msgstr "ഡയറക്ട്എക്സ്"
-
-#~ msgid "Accelerated video output (Overlay)"
-#~ msgstr "ആക്സിലറേറ്റഡ് വീഡിയോ ഔട്ട്പുട്ട്(ഓവര്‍ലേ)"
-
-#~ msgid "KVA"
-#~ msgstr "കെവിഎ"
-
-#~ msgid "Deinterlacing"
-#~ msgstr "ഡീഇന്റര്‍ലേസിംഗ്"
-
-#~ msgid "Force Aspect Ratio"
-#~ msgstr "ആസ്പെക്ട് റേഷ്യോ ഫോഴ്സ് ചെയ്യുക"
-
-#~ msgid "vlc-snap"
-#~ msgstr "വിഎല്‍സി-സ്നാപ്പ്"
-
-#~ msgid "Stuff"
-#~ msgstr "സ്റ്റഫ്"
-
-#~ msgid "Edit settings"
-#~ msgstr "സംവിധാനങ്ങള്‍ തിരുത്തുക"
-
-#~ msgid "Control"
-#~ msgstr "കണ്‍ട്രോള്‍"
-
-#~ msgid "Run manually"
-#~ msgstr "മാന്വലായി പ്രവര്‍ത്തിപ്പിക്കുക"
-
-#~ msgid "Setup schedule"
-#~ msgstr "ഷെഡ്യൂള്‍ സെറ്റപ്പ് ചെയ്യുക"
-
-#~ msgid "Run on schedule"
-#~ msgstr "ഷെഡ്യൂളില്‍ ഓടുക"
-
-#~ msgid "Status"
-#~ msgstr "അവസ്ഥ"
-
-#~ msgid "P/P"
-#~ msgstr "പി/പി"
-
-#~ msgid "Prev"
-#~ msgstr "മുമ്പത്തെ"
-
-#~ msgid "Add Input"
-#~ msgstr "ഇന്‍പുട്ട് ചേര്‍ക്കുക"
-
-#~ msgid "Edit Input"
-#~ msgstr "ഇന്‍പുട്ട് തിരുത്തുക"
-
-#~ msgid "Clear List"
-#~ msgstr "ക്ലിയര്‍ ലിസ്റ്റ്"
-
-#~ msgid "Check for VLC updates"
-#~ msgstr "വിഎല്‍സി പുതുക്കലുകള്‍ക്കായി പരിശോധിക്കുക"
-
-#~ msgid "Launching an update request..."
-#~ msgstr "ഒരു പുതുക്കല്‍ ആവശ്യം ലോഞ്ച് ചെയ്യുന്നു..."
-
-#~ msgid "Essential"
-#~ msgstr "ആവശ്യമായ"
-
-#~ msgid ">HHHHHH;#"
-#~ msgstr ">HHHHHH;#"
-
-#~ msgid "Negate colors"
-#~ msgstr "നിറങ്ങള്‍ നെഗേറ്റ് ചെയ്യുക"
-
-#~ msgid "Colors"
-#~ msgstr "നിറങ്ങള്‍"
-
-#~ msgid "Interactive Zoom"
-#~ msgstr "ഇന്ററാക്ടീവ് സൂം"
-
-#~ msgid "Angle"
-#~ msgstr "ആംഗിള്‍"
-
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "full"
-#~ msgstr "മുഴുവന്‍"
-
-#~ msgid "none"
-#~ msgstr "ഒന്നുമല്ല"
-
-#~ msgid "Logo erase"
-#~ msgstr "ലോഗോ ഇറേസ്"
-
-#~ msgid "Mask"
-#~ msgstr "മാസ്ക്"
-
-#~ msgid "Anaglyph 3D"
-#~ msgstr "ആനഗ്ലിഫ് 3ഡി"
-
-#~ msgid "Mirror"
-#~ msgstr "കണ്ണാടി"
-
-#~ msgid "Motion detect"
-#~ msgstr "മോഷന്‍ ഡിറ്റെക്ട്"
-
-#~ msgid "Spatial blur"
-#~ msgstr "സ്പാറ്റിയല്‍ ബ്ലര്‍"
-
-#~ msgid "Anti-Flickering"
-#~ msgstr "ആന്റി-ഫ്ലിക്കറിംഗ്"
-
-#~ msgid "Soften"
-#~ msgstr "സോഫ്ടെന്‍"
-
-#~ msgid "Denoiser"
-#~ msgstr "ഡീനോയിസര്‍"
-
-#~ msgid "Spatial luma strength"
-#~ msgstr "സ്പാറ്റിയല്‍ ലുമ സ്ട്രെംഗത്ത്"
-
-#~ msgid "Temporal luma strength"
-#~ msgstr "ടെംപറല്‍ ലുമ സ്ട്രെംഗത്ത്"
-
-#~ msgid "Spatial chroma strength"
-#~ msgstr "സ്പാറ്റിയല്‍ ക്രോമ സ്ട്രെംഗത്ത്"
-
-#~ msgid "Temporal chroma strength"
-#~ msgstr "ടെംപറല്‍ ക്രോമ സ്ട്രെംഗ്ത്ത്"
-
-#~ msgid "VLM configurator"
-#~ msgstr "വിഎല്‍എം കോണ്‍ഫിഗറേറ്റര്‍"
-
-#~ msgid "Media Manager Edition"
-#~ msgstr "മീഡിയ മാനേജര്‍ എഡിഷന്‍"
-
-#~ msgid "Name:"
-#~ msgstr "പേര്:"
-
-#~ msgid "Input:"
-#~ msgstr "ഇന്‍പുട്ട്:"
-
-#~ msgid "Select Input"
-#~ msgstr "ഇന്‍പുട്ട് തിരഞ്ഞെടുക്കുക"
-
-#~ msgid "Output:"
-#~ msgstr "ഔട്ട്പുട്ട്:"
-
-#~ msgid "Select Output"
-#~ msgstr "ഔട്ട്പുട്ട് തിരഞ്ഞെടുക്കുക"
-
-#~ msgid "Time Control"
-#~ msgstr "ടൈം കണ്‍ട്രോള്‍"
-
-#~ msgid "Mux Control"
-#~ msgstr "മക്സ് കണ്‍ട്രോള്‍"
-
-#~ msgid "Muxer:"
-#~ msgstr "മക്സര്‍:"
-
-#~ msgid "AAAA; "
-#~ msgstr "AAAA; "
-
-#~ msgid "Media Manager List"
-#~ msgstr "മീഡിയ മാനേജര്‍ ലിസ്റ്റ്"
 
 #~ msgid "QTSound"
 #~ msgstr "കയ്യു ടി സൗണ്ട് "
@@ -30910,10 +31468,6 @@ msgstr "നിങ്ങള്‍ സ്ട്രീം സൃഷ്ടിക്�
 #~ msgstr "%s (%s)ല്‍ %s കംപൈല്‍ ചെയ്തത്\n"
 
 #, fuzzy
-#~ msgid "VLC media player Help"
-#~ msgstr "വി‌എല്‍‌സി മെഡിയ പ്ലേയര്‍ സഹായം"
-
-#, fuzzy
 #~ msgid "Invalid selection"
 #~ msgstr "സാധുവല്ലാത്ത സംയോജനം"
 
@@ -30950,10 +31504,6 @@ msgstr "നിങ്ങള്‍ സ്ട്രീം സൃഷ്ടിക്�
 #, fuzzy
 #~ msgid "User name"
 #~ msgstr "ഉപയോക്തനാമം"
-
-#, fuzzy
-#~ msgid "VLC media playback"
-#~ msgstr "വിഎല്‍സി മീഡിയ പ്ലേയര്‍"
 
 #, fuzzy
 #~ msgid "No device is selected"
@@ -31098,10 +31648,6 @@ msgstr "നിങ്ങള്‍ സ്ട്രീം സൃഷ്ടിക്�
 #, fuzzy
 #~ msgid "Add Subtitles to transcoded video"
 #~ msgstr "വീഡിയോയിലെ ആവരണ സഹശീര്‍ഷകം"
-
-#, fuzzy
-#~ msgid "Additional transcode options"
-#~ msgstr "ട്രാന്‍സ്കോഡിംഗ് താല്പര്യങ്ങള്‍"
 
 #, fuzzy
 #~ msgid "Select the file to save to"

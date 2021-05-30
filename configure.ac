@@ -1,11 +1,11 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 1999-2020 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 1999-2021 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.12)
+AC_INIT(vlc, 3.0.14)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=12
+VERSION_REVISION=14
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -14,7 +14,7 @@ AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Vetinari"
-COPYRIGHT_YEARS="1996-2020"
+COPYRIGHT_YEARS="1996-2021"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -2573,7 +2573,7 @@ AM_CONDITIONAL([HAVE_AVCODEC_D3D11VA], [test "${have_avcodec_d3d11va}" = "yes"])
 dnl
 dnl DXGI debug
 dnl
-AC_CHECK_HEADERS(dxgidebug.h dxgi1_6.h)
+AC_CHECK_HEADERS(dxgidebug.h dxgi1_6.h d3d11_4.h)
 
 dnl
 dnl  avformat demuxer/muxer plugin
@@ -4016,7 +4016,7 @@ AM_CONDITIONAL([HAVE_LIRC], [test "${have_lirc}" = "yes"])
 dnl
 dnl  SRT plugin
 dnl
-PKG_ENABLE_MODULES_VLC([SRT], [access_srt access_output_srt], [srt >= 1.2.2], [SRT input/output plugin], [auto], [], [], [-DENABLE_SRT])
+PKG_ENABLE_MODULES_VLC([SRT], [access_srt access_output_srt], [srt >= 1.2.2 srt < 1.3.0], [SRT input/output plugin], [auto], [], [], [-DENABLE_SRT])
 
 EXTEND_HELP_STRING([Visualisations and Video filter plugins:])
 dnl
@@ -4200,8 +4200,11 @@ AS_IF([test "${enable_osx_notifications}" != "no"], [
       VLC_ADD_PLUGIN([osx_notifications])
       VLC_ADD_LIBS([osx_notifications], [-Wl,-framework,Growl,-framework,Foundation])
       VLC_ADD_OBJCFLAGS([osx_notifications], [-fobjc-exceptions] )
+  else
+      enable_osx_notifications="no"
   fi
 ])
+AM_CONDITIONAL(HAVE_OSX_NOTIFICATIONS, [test "$enable_osx_notifications" != "no"])
 
 dnl
 dnl Libnotify notification plugin
