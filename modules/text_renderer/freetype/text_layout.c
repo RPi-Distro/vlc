@@ -2,7 +2,7 @@
  * text_layout.c : Text shaping and layout
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 4dce1e30ba4a2de7468ae59b3c395ee3ea52898e $
+ * $Id: fc2db46e62ac89b221df4c2c4574a4bf878f48de $
  *
  * Authors: Salah-Eddin Shaban <salshaaban@gmail.com>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -1060,8 +1060,8 @@ static int LoadGlyphs( filter_t *p_filter, paragraph_t *p_paragraph,
             if( p_filter->p_sys->p_stroker && (p_style->i_style_flags & STYLE_OUTLINE) )
             {
                 p_bitmaps->p_outline = p_bitmaps->p_glyph;
-                if( FT_Glyph_StrokeBorder( &p_bitmaps->p_outline,
-                                           p_filter->p_sys->p_stroker, 0, 0 ) )
+                if( FT_Glyph_Stroke( &p_bitmaps->p_outline,
+                                      p_filter->p_sys->p_stroker, 0 ) )
                     p_bitmaps->p_outline = 0;
             }
 
