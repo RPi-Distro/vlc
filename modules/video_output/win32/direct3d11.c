@@ -92,6 +92,8 @@ struct vout_display_sys_t
 {
     vout_display_sys_win32_t sys;
 
+    int                      log_level;
+
     display_info_t           display;
 
     HINSTANCE                hdxgi_dll;        /* handle of the opened dxgi dll */
@@ -101,7 +103,6 @@ struct vout_display_sys_t
     d3d11_device_t           d3d_dev;
     d3d_quad_t               picQuad;
 
-    ID3D11Asynchronous       *prepareWait;
 #ifdef HAVE_D3D11_4_H
     ID3D11Fence              *d3dRenderFence;
     ID3D11DeviceContext4     *d3dcontext4;
@@ -1005,6 +1006,9 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
 #ifdef HAVE_D3D11_4_H
     if (sys->d3dcontext4)
     {
+        mtime_t render_start;
+        if (sys->log_level >= 4)
+            render_start = mdate();
         if (sys->renderFence == UINT64_MAX)
             sys->renderFence;
         else
@@ -1015,27 +1019,11 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
         ID3D11DeviceContext4_Signal(sys->d3dcontext4, sys->d3dRenderFence, sys->renderFence);
 
         WaitForSingleObject(sys->renderFinished, INFINITE);
+        if (sys->log_level >= 4)
+            msg_Dbg(vd, "waited %" PRId64 " ms for the render fence",
+                    (mdate() - render_start) * 1000 / CLOCK_FREQ);
     }
-    else
 #endif
-    if (sys->prepareWait)
-    {
-        ID3D11DeviceContext_End(sys->d3d_dev.d3dcontext, sys->prepareWait);
-
-        while (S_FALSE == ID3D11DeviceContext_GetData(sys->d3d_dev.d3dcontext,
-                                                      sys->prepareWait, NULL, 0, 0))
-        {
-            mtime_t sleep_duration = (picture->date - mdate()) / 4;
-            if (sleep_duration <= 2 * CLOCK_FREQ / 1000)
-            {
-                // don't wait any longer, the display will likely be late
-                // we'll finish waiting during the Display call
-                break;
-            }
-            // wait a little until the rendering is done
-            SleepEx(sleep_duration * 1000 / CLOCK_FREQ, TRUE);
-        }
-    }
 
     if (is_d3d11_opaque(picture->format.i_chroma))
         d3d11_device_unlock( &sys->d3d_dev );
@@ -1053,21 +1041,6 @@ static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
     {
         /* TODO device lost */
         msg_Err(vd, "SwapChain Present failed. (hr=0x%lX)", hr);
-    }
-
-    if (sys->prepareWait)
-    {
-        mtime_t start = 0;
-        while (S_FALSE == ID3D11DeviceContext_GetData(sys->d3d_dev.d3dcontext,
-                                                      sys->prepareWait, NULL, 0, 0))
-        {
-            if (start == 0)
-                start = mdate();
-            SleepEx(2, TRUE);
-        }
-        if (start != 0 && var_InheritInteger(vd, "verbose") >= 4)
-            msg_Dbg(vd, "rendering wasn't finished, waited extra %lld ms",
-                        (mdate() - start) * 1000 / CLOCK_FREQ);
     }
 
     d3d11_device_unlock( &sys->d3d_dev );
@@ -1373,6 +1346,8 @@ static int Direct3D11Open(vout_display_t *vd)
 
     video_format_Clean(&vd->fmt);
     vd->fmt = fmt;
+
+    sys->log_level = var_InheritInteger(vd, "verbose");
 
     return VLC_SUCCESS;
 }
@@ -1687,13 +1662,7 @@ static int Direct3D11CreateGenericResources(vout_display_t *vd)
     {
         msg_Dbg(vd, "using GPU render fence");
     }
-    else
 #endif
-    {
-        D3D11_QUERY_DESC query = { 0 };
-        query.Query = D3D11_QUERY_EVENT;
-        hr = ID3D11Device_CreateQuery(sys->d3d_dev.d3ddevice, &query, (ID3D11Query**)&sys->prepareWait);
-    }
 
     ID3D11BlendState *pSpuBlendState;
     D3D11_BLEND_DESC spuBlendDesc = { 0 };
@@ -1907,13 +1876,7 @@ static void Direct3D11DestroyResources(vout_display_t *vd)
         CloseHandle(sys->renderFinished);
         sys->renderFinished = NULL;
     }
-    else
 #endif
-    if (sys->prepareWait)
-    {
-        ID3D11Query_Release(sys->prepareWait);
-        sys->prepareWait = NULL;
-    }
 
     msg_Dbg(vd, "Direct3D11 resources destroyed");
 }

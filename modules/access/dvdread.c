@@ -2,7 +2,7 @@
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: e75bef5986e987657ff554718d43f16bab440141 $
+ * $Id: 749cbd47e00a1da57c4277187a9fcab03a217867 $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -212,7 +212,14 @@ static int Open( vlc_object_t *p_this )
     }
 
     /* Open dvdread */
+#if DVDREAD_VERSION < DVDREAD_VERSION_CODE(6, 1, 2)
+    /* In libdvdread prior to 6.1.2, UTF8 is not supported for windows and
+     * requires a prior conversion.
+     * For non win32/os2 platforms, this is just a no-op */
     const char *psz_path = ToLocale( psz_file );
+#else
+    const char *psz_path = psz_file;
+#endif
 #if DVDREAD_VERSION >= DVDREAD_VERSION_CODE(6, 1, 0)
     dvd_logger_cb cbs;
     cbs.pf_log = DvdReadLog;
@@ -220,7 +227,9 @@ static int Open( vlc_object_t *p_this )
 #else
     dvd_reader_t *p_dvdread = DVDOpen( psz_path );
 #endif
+#if DVDREAD_VERSION < DVDREAD_VERSION_CODE(6, 1, 2)
     LocaleFree( psz_path );
+#endif
     if( p_dvdread == NULL )
     {
         msg_Err( p_demux, "DVDRead cannot open source: %s", psz_file );

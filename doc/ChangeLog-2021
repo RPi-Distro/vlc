@@ -1,3 +1,281 @@
+commit d3094196acd53fe8c231cb90e067d2f99c4b7d00
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Jun 8 14:12:46 2021 +0200
+
+    Update NEWS
+
+commit d2f26a210ca7e4f193d4c2847164b72598cec1ee
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Jun 8 14:22:30 2021 +0200
+
+    CI: Target 3.0.x branch instead of the old dedicated repo
+
+commit 7516a4f4103012f98596cf251d5ee9b5ab00b421
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu May 13 11:04:50 2021 +0200
+
+    iso-639: add iw old code for hebrew for old DVDs
+    
+    Close #23602
+    
+    (cherry picked from commit e411f5f993489616229ef9f4a8803ff298c5ea26)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 02b784c0cefe6d0d36bbc3b668a7f238c7f7b3ed
+Author: Petri Hintukainen <phintuka@gmail.com>
+Date:   Tue Jun 8 09:54:47 2021 +0000
+
+    access: libdvdread 6.1.2 supports UTF-8 paths in Windows.
+    
+    (cherry picked from commit 262b546066c6fde1458beb467966bbc1972a24d8)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit e30973a45e8c4f075cf5a6094f500cd3100665f5
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue May 18 20:15:26 2021 +0200
+
+    demux: asf: fix regression with broadcasts
+    
+    some transmit empty <50 bytes data object
+    
+    (cherry picked from commit 4ae85635e5998d1b386b834ad22586e807d60969)
+
+commit 999057966390c25a3203e9980028f4a07360eebe
+Author: Brad Smith <brad@comstyle.com>
+Date:   Thu Jun 3 09:50:52 2021 +0200
+
+    sndio: fix crash when volume is adjusted while stopped
+    
+    Set volume/mute function pointers when handle is freed, to ensure
+    sio_setvol() is not called on a freed handle. Fixes crashes when volume
+    is adjusted while playback is stopped.
+    
+    Fixes #25796
+    
+    (cherry picked from commit e94b04c8f867382ce6835254d29ee54fe855c686)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 95cce99f562bf220ca70660ee0640a478dac7f02
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue Jun 1 10:40:01 2021 +0200
+
+    vlc_codecs: add missing Opus and alac waveformats
+    
+    >= Win10
+    
+    refs #25794
+    
+    (cherry picked from commit 4f7eeafa6561170d838ad23be350aa59e061e592)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit bb7022aed9b88cd519848de19d1cb6ba3795d1b2
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Tue Jun 1 17:54:45 2021 +0200
+
+    macosx: Workaround crash in PXSourceList dealloc
+    
+    [super setDataSource] crashes on macOS 10.11 until 10.13.
+    The code in question should not be needed (the recieving
+    properties are weak in new macOS frameworks).
+    Also whole deallocation of this object is not consistent.
+    Therefore remove the code in question.
+    
+    Closes videolan/vlc#21267
+
+commit db23bfe6decab6b00f3eba2f8f134169d7fbac4c
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Mon May 31 11:15:42 2021 +0200
+
+    Update NEWS
+
+commit 29e97856cde48fb8567bf5d97fe170d0a1144af3
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon May 31 14:44:55 2021 +0200
+
+    demux: mp4: fix missing intra-trun sample increment on seek
+    
+    ends up reading wrong sample size/time
+    
+    refs #25784
+    
+    (cherry picked from commit 86b1ffe50f7cb5cbe273f14e1c4e0ba2b3572f93)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit ca7adc93ee444748671ea71c35abcc6d46850028
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon May 31 14:46:30 2021 +0200
+
+    demux: mp4: report current trun sample pos in debug
+    
+    (cherry picked from commit 2028c4b9cba36a56eb54264bb47819c8b2b3b797)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 19cde3c6b3e28e1092ac5328c996a41789a9cee8
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Apr 25 21:58:21 2021 +0200
+
+    Contribs: update harfbuzz to 2.6.8
+    
+    Last of the 2.6.x series
+    
+    (cherry picked from commit c4cc73299c6531b060a758725a4668ec73aa207c)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 5216e1bd09b0f3efdff856db8088b11f63fae4ec
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Apr 25 21:28:22 2021 +0200
+
+    Contribs: update Freetype2 to 2.10.4
+    
+    CVE-2020-15999 (but we shouldn't be impacted)
+    
+    (cherry picked from commit a6fb42a20a4b8e77c5cdbd83458d489fa523dc5d)
+    Signed-off-by: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+
+commit 6835e923d5c04a4036e66f4ccb8221683be72756
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri May 28 11:10:50 2021 +0200
+
+    contrib: aom: Disable assembly for 32bits windows builds
+    
+    Fix #25745
+
+commit 66e287ea014eef76dcbd224a84322ab136c1e291
+Author: Salah-Eddin Shaban <salah@videolan.org>
+Date:   Fri May 21 18:15:07 2021 +0300
+
+    Freetype: use FT_Glyph_Stroke to create outlines
+    
+    FT_Glyph_Stroke is more tolerant of font files that do not follow
+    contour orientation conventions, like Helvetica Neue.
+    It also creates unfilled outline glyphs that can be more efficiently
+    blended.
+    
+    Fixes #21043
+    
+    (cherry picked from commit 074b4f3c4adf21b574c4a5127bac18cf7e94d821)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 9f7be9f18bb875d8261f8e28dc2baf68c5a93997
+Author: Ewout ter Hoeven <e.m.terhoeven@student.tudelft.nl>
+Date:   Tue May 18 10:10:49 2021 +0000
+
+    Contribs: update dav1d to 0.9.0
+    
+    (cherry picked from commit 722afbfe36517581d3d4618e4296411185684519) (edited)
+    edited:
+    - 3.0 was still on 0.7.1
+
+commit c6505f0f8b3090eec9688d11eb2b0165158d48bd
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri May 21 08:12:27 2021 +0200
+
+    d3d11: remove Query based rendering wait
+    
+    It is imprecise and on seek it may wait a lot of time as, while it's waiting,
+    the decoder threads will flood new frames, delaying that much longer until the
+    ID3D11DeviceContext is finished doing things. This workaround did more harm
+    than good.
+    
+    Now that we have ID3D11Fence support (any recent Win10) the query based system
+    should not be used. For older Windows using D3D11 we'll have less precise
+    estimation of the time it took to actually render, meaning the frame drop will
+    be less effective.
+    
+    (cherry picked from commit 141e07e12fd73ebd957d3d1227aa9bdbe58e3ef3) (edited)
+    edited:
+    - the 3.0 code differed from the 4.0 one
+    - date is not passed to Prepare()
+
+commit be33a34535e838fce01a86cd44f7b0eb637b4f7b
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed May 19 08:37:55 2021 +0200
+
+    direct3d11: log the time waited for the render to finish in verbose mode
+    
+    (cherry picked from commit 2550346b5f609b6c7626281a906bdaa6523ffbb7) (edited)
+    edited:
+    - the code unlock is only for D3D11 opaque
+    - mtime_t instead of vlc_tick_t
+    
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 3bc537162eae628afcc09c3cbdba4f4b7fd45be6
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed May 19 11:18:00 2021 +0200
+
+    direct3d11: don't lock the ID3D11VideoContext when waiting for the query to finish
+    
+    This leaves some time for the decoder to do things.
+    
+    This is how it was before 42011b9fb105b4b5de832fdafd097b86c8154eda.
+    
+    Fixes #25728
+    
+    (cherry picked from commit 4cb73cccce3a413263b697b88acafe172978c325) (edited)
+    edited:
+    - the display callback is in a different location
+    - the d3d_dev is not a pointer
+    
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 13efda19410b3b65fa75c70bb573438e8fa8037d
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed May 19 15:20:30 2021 +0200
+
+    direct3d11: call var_InheritInteger("verbose") less often
+    
+    (cherry picked from commit f166bc2a7c56646489da35af743895c8011be238) (edited)
+    edited:
+    - the display_sys_t has a different layout
+    - the original log is in a different location
+    
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 6a2903d3e61861664474ed0158ae770c67dc439c
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed May 19 09:58:07 2021 +0200
+
+    contrib: add d3d11 11.1 to 11.4 headers
+    
+    This is necessary to use ID3D11Fence on Windows 10.
+
+commit e786f493f0609db7d737186d6b167c30375c0265
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed May 19 09:58:33 2021 +0200
+
+    On the road to 3.0.15
+
+commit 16519beed0cfcf989e98da3aa13623601c38ad85
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed May 19 09:58:15 2021 +0200
+
+    Update NEWS
+
+commit 98a9f98e7a40abd7bfba0eef8ba6032438cc5e52
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue May 18 11:08:00 2021 +0200
+
+    contrib: gnutls: Don't use function introduced in Windows Vista
+    
+    Fix #25746
+
+commit d9b684a9249cc0243051da97d9a25065140e6eee
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon May 17 15:16:54 2021 +0200
+
+    vout: osd widgets: update colors & sizes
+    
+    (cherry picked from commit 32451a7ad9ab52fba7463a3ad3a00048412c288e)
+
+commit a840dbb6905119931e0540f4cbd842c6b37610c3
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Tue May 18 20:14:15 2021 +0200
+
+    demux: asf: have data_end match libasf broadcast dump detection
+    
+    (cherry picked from commit f7bd45a75080b81116369b9869bdf7337b97429c)
+
 commit 41878ff4f2a4b566cf0a1bd15f72037b2be98a18
 Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
 Date:   Mon May 10 15:59:58 2021 +0200

@@ -1,3 +1,26 @@
+Changes between 3.0.14 and 3.0.15:
+----------------------------------
+
+Core:
+ * Add Opus & Alac wave format mappings
+
+Access:
+ * Fix opening DVD folders with non-ascii characters
+
+Demux:
+ * Fix asf regression with broadcast streams
+ * MP4: Fix audio drop on seek
+
+Video Output:
+ * Fix seek & volume sliders overlapping with subtitles
+ * Fix delays when seeking with D3D11
+
+Text renderer:
+ * Improve freetype fonts outlining
+
+Misc:
+ * Fix GnuTLS support for Windows XP
+
 Changes between 3.0.13 and 3.0.14:
 ----------------------------------
 
