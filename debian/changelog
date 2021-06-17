@@ -1,9 +1,10 @@
-vlc (3.0.15-1) UNRELEASED; urgency=medium
+vlc (3.0.15-1) experimental; urgency=medium
 
+  [ Mateusz Łukasik ]
   * New upstream release
   * Remove patches included upstream.
 
- -- Mateusz Łukasik <mati75@linuxmint.pl>  Sun, 30 May 2021 20:31:11 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 17 Jun 2021 23:38:35 +0200
 
 vlc (3.0.12-3) unstable; urgency=medium
 
