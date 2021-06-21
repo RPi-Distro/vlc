@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.13\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2021-06-09 17:29+0200\n"
+"POT-Creation-Date: 2021-06-18 23:14+0200\n"
 "PO-Revision-Date: 2021-03-24 04:43+0100\n"
 "Last-Translator: Sidney Doria <ssdoria@gmail.com>, 2021\n"
 "Language-Team: Portuguese (Brazil) (https://www.transifex.com/yaron/"
@@ -522,12 +522,12 @@ msgstr "Transmissão..."
 msgid "Save..."
 msgstr "Salvar..."
 
-#: include/vlc_intf_strings.h:79 modules/gui/macosx/VLCCoreInteraction.m:447
+#: include/vlc_intf_strings.h:79 modules/gui/macosx/VLCCoreInteraction.m:515
 #: modules/gui/macosx/VLCMainMenu.m:399
 msgid "Repeat All"
 msgstr "Repetir Todas"
 
-#: include/vlc_intf_strings.h:80 modules/gui/macosx/VLCCoreInteraction.m:467
+#: include/vlc_intf_strings.h:80 modules/gui/macosx/VLCCoreInteraction.m:535
 #: modules/gui/macosx/VLCMainMenu.m:398
 msgid "Repeat One"
 msgstr "Repertir Um"
@@ -539,7 +539,7 @@ msgstr "Repertir Um"
 msgid "Random"
 msgstr "Aleatório"
 
-#: include/vlc_intf_strings.h:82 modules/gui/macosx/VLCCoreInteraction.m:425
+#: include/vlc_intf_strings.h:82 modules/gui/macosx/VLCCoreInteraction.m:493
 msgid "Random Off"
 msgstr "Desligar o Modo Aleatório"
 
@@ -564,7 +564,7 @@ msgid "Save Playlist to &File..."
 msgstr "Salvar Lista de &Reprodução..."
 
 #: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:194
-#: modules/gui/qt/components/preferences_widgets.cpp:1138
+#: modules/gui/qt/components/preferences_widgets.cpp:1129
 msgid "Search"
 msgstr "Pesquisar"
 
@@ -1802,7 +1802,7 @@ msgid "Stereo audio output mode"
 msgstr "Modo de saída de áudio estéreo"
 
 #: src/libvlc-module.c:195 src/misc/actions.c:112
-#: modules/gui/qt/components/preferences_widgets.cpp:1429
+#: modules/gui/qt/components/preferences_widgets.cpp:1417
 #: modules/gui/qt/util/customwidgets.cpp:330
 msgid "Unset"
 msgstr "Desmarcar"
@@ -2559,7 +2559,7 @@ msgstr ""
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
-#: modules/gui/macosx/VLCSimplePrefsController.m:661
+#: modules/gui/macosx/VLCSimplePrefsController.m:666
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
 #: modules/gui/macosx/prefs_widgets.m:1215
@@ -2922,7 +2922,7 @@ msgstr ""
 "filtros aqui e configure-os na seção de módulos \"Filtros de Sub Fontes\". "
 "Você também pode configurar muitas outras opções de sub telas."
 
-#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:302
+#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Force subtitle position"
 msgstr "Impõe a posição da legenda"
 
@@ -2952,7 +2952,7 @@ msgstr "Você pode desabilitar completamente o processamento de sub telas."
 
 #: src/libvlc-module.c:717 src/libvlc-module.c:1674 src/text/iso-639_def.h:146
 #: modules/gui/macosx/VLCSimplePrefsController.m:351
-#: modules/gui/qt/ui/sprefs_subtitles.h:287
+#: modules/gui/qt/ui/sprefs_subtitles.h:289
 msgid "On Screen Display"
 msgstr "Mostrador na Tela"
 
@@ -4128,7 +4128,7 @@ msgstr "Seleciona a tecla de atalho para parar a reprodução."
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
-#: modules/gui/qt/ui/sprefs_subtitles.h:290
+#: modules/gui/qt/ui/sprefs_subtitles.h:292
 #: modules/gui/qt/ui/video_effects.h:1276
 msgid "Position"
 msgstr "Posição"
@@ -5327,13 +5327,13 @@ msgstr "Erro ao abrir \"%s\" para gravação"
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
 #: modules/gui/macosx/VLCSimplePrefsController.m:313
 #: modules/gui/macosx/VLCSimplePrefsController.m:384
-#: modules/gui/macosx/VLCSimplePrefsController.m:827
+#: modules/gui/macosx/VLCSimplePrefsController.m:832
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:50
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:791
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
 #: modules/gui/macosx/prefs.m:189
 #: modules/gui/qt/components/open_panels.cpp:1366
-#: modules/gui/qt/components/preferences_widgets.cpp:1428
+#: modules/gui/qt/components/preferences_widgets.cpp:1416
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
 #: modules/gui/qt/dialogs/sout.cpp:92
 #: modules/stream_out/chromecast/cast.cpp:1197
@@ -6446,7 +6446,7 @@ msgstr "Caminho para o arquivo XML de Mensagem de Entrega de Chave"
 msgid "DCP"
 msgstr "DCP"
 
-#: modules/access/dcp/dcp.cpp:80
+#: modules/access/dcp/dcp.cpp:79
 msgid "Digital Cinema Package module"
 msgstr "Módulo de Pacote de Cinema Digital"
 
@@ -8498,7 +8498,7 @@ msgstr "Entrada de tela"
 #: modules/gui/macosx/VLCOpenWindowController.m:209
 #: modules/gui/macosx/VLCOpenWindowController.m:488
 #: modules/gui/macosx/VLCOpenWindowController.m:1106
-#: modules/gui/macosx/VLCSimplePrefsController.m:666
+#: modules/gui/macosx/VLCSimplePrefsController.m:671
 msgid "Screen"
 msgstr "Tela"
 
@@ -14518,7 +14518,7 @@ msgstr "Rápido"
 
 #: modules/codec/x264.c:429 modules/gui/macosx/VLCMainMenu.m:290
 #: modules/gui/macosx/VLCMainMenu.m:392
-#: modules/gui/macosx/VLCSimplePrefsController.m:703
+#: modules/gui/macosx/VLCSimplePrefsController.m:708
 #: modules/gui/qt/components/simple_preferences.cpp:695
 #: modules/misc/gnutls.c:778 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
@@ -14719,7 +14719,7 @@ msgstr "Interface de controle por movimentos do mouse"
 
 #: modules/control/globalhotkeys/win32.c:47
 #: modules/control/globalhotkeys/xcb.c:50
-#: modules/gui/qt/components/preferences_widgets.cpp:1146
+#: modules/gui/qt/components/preferences_widgets.cpp:1137
 msgid "Global Hotkeys"
 msgstr "Teclas de Atalho Globais"
 
@@ -14730,7 +14730,7 @@ msgstr "Interface de Teclas de Atalho Globais"
 
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:243
-#: modules/gui/qt/components/preferences_widgets.cpp:1145
+#: modules/gui/qt/components/preferences_widgets.cpp:1136
 #: modules/gui/qt/components/simple_preferences.cpp:249
 msgid "Hotkeys"
 msgstr "Teclas de atalho"
@@ -17350,9 +17350,9 @@ msgid "A SDP export is requested, but no URL is provided."
 msgstr "Uma exportação SDP é necessária, porém nenhuma URL foi informada."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:1060
-#: modules/gui/macosx/VLCSimplePrefsController.m:697
-#: modules/gui/macosx/VLCSimplePrefsController.m:725
-#: modules/gui/macosx/VLCSimplePrefsController.m:1258
+#: modules/gui/macosx/VLCSimplePrefsController.m:702
+#: modules/gui/macosx/VLCSimplePrefsController.m:730
+#: modules/gui/macosx/VLCSimplePrefsController.m:1263
 #: modules/gui/qt/components/simple_preferences.cpp:692
 msgid "Custom"
 msgstr "Personalizado"
@@ -17361,11 +17361,11 @@ msgstr "Personalizado"
 msgid "Remember"
 msgstr "Salvar"
 
-#: modules/gui/macosx/VLCCoreInteraction.m:417
+#: modules/gui/macosx/VLCCoreInteraction.m:485
 msgid "Random On"
 msgstr "Ligar o Modo Aleatório"
 
-#: modules/gui/macosx/VLCCoreInteraction.m:487
+#: modules/gui/macosx/VLCCoreInteraction.m:555
 msgid "Repeat Off"
 msgstr "Desligar o Modo Contínuo"
 
@@ -17421,8 +17421,8 @@ msgstr "Ajuda do Reprodutor de Mídias VLC..."
 msgid "Index"
 msgstr "Índice"
 
-#: modules/gui/macosx/VLCInputManager.m:451
-#: modules/gui/macosx/VLCInputManager.m:478
+#: modules/gui/macosx/VLCInputManager.m:467
+#: modules/gui/macosx/VLCInputManager.m:494
 #, fuzzy
 msgid "VLC media playback"
 msgstr "Reprodutor de Mídias VLC"
@@ -18153,7 +18153,7 @@ msgstr "Codificação de legenda"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:360
 #: modules/gui/macosx/VLCSimplePrefsController.m:347
-#: modules/gui/qt/ui/sprefs_subtitles.h:297
+#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Font size"
 msgstr "Tamanho da fonte"
 
@@ -18329,7 +18329,7 @@ msgid "Continue playback?"
 msgstr "Continuar a reprodução?"
 
 #: modules/gui/macosx/VLCResumeDialogController.m:49
-#: modules/gui/macosx/VLCSimplePrefsController.m:828
+#: modules/gui/macosx/VLCSimplePrefsController.m:833
 #: modules/gui/qt/dialogs/firstrun.cpp:106
 msgid "Continue"
 msgstr "Continuar"
@@ -18435,7 +18435,7 @@ msgid "Select an action to change the associated hotkey:"
 msgstr "Selecione uma ação para modificar a tecla de atalho associada:"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:290
-#: modules/gui/qt/components/preferences_widgets.cpp:1150
+#: modules/gui/qt/components/preferences_widgets.cpp:1141
 msgid "Action"
 msgstr "Ação"
 
@@ -18573,13 +18573,13 @@ msgid "Display Settings"
 msgstr "Configurações da Tela"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:346
-#: modules/gui/qt/ui/sprefs_subtitles.h:298
+#: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Font color"
 msgstr "Cor da fonte"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:348 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
-#: modules/gui/qt/ui/sprefs_subtitles.h:296
+#: modules/gui/qt/ui/sprefs_subtitles.h:298
 msgid "Font"
 msgstr "Fonte"
 
@@ -18588,7 +18588,7 @@ msgid "Subtitle languages"
 msgstr "Idiomas das legendas"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:350
-#: modules/gui/qt/ui/sprefs_subtitles.h:293
+#: modules/gui/qt/ui/sprefs_subtitles.h:295
 msgid "Preferred subtitle language"
 msgstr "Idioma preferido para a legenda"
 
@@ -18603,13 +18603,13 @@ msgstr "Impor negrito"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:355
 #: modules/text_renderer/freetype/freetype.c:110
-#: modules/gui/qt/ui/sprefs_subtitles.h:300
+#: modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Outline color"
 msgstr "Cor do esboço"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:356
 #: modules/text_renderer/freetype/freetype.c:111
-#: modules/gui/qt/ui/sprefs_subtitles.h:299
+#: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Outline thickness"
 msgstr "Espessura da linha"
 
@@ -18686,36 +18686,36 @@ msgstr ""
 "Arquivos de mídia não podem ser retomados porque a manutenção de mídias "
 "recentemente reproduzidas está desabilitadas."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:580
+#: modules/gui/macosx/VLCSimplePrefsController.m:585
 msgid "Last check on: %@"
 msgstr "Última verificação em: %@"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:582
+#: modules/gui/macosx/VLCSimplePrefsController.m:587
 msgid "No check was performed yet."
 msgstr "Nenhuma verificação foi feita ainda."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:699
+#: modules/gui/macosx/VLCSimplePrefsController.m:704
 msgid "Lowest Latency"
 msgstr "Latência Mínima"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:701
+#: modules/gui/macosx/VLCSimplePrefsController.m:706
 msgid "Low Latency"
 msgstr "Baixa Latência"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:705
+#: modules/gui/macosx/VLCSimplePrefsController.m:710
 msgid "Higher Latency"
 msgstr "Alta Latência"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:707
+#: modules/gui/macosx/VLCSimplePrefsController.m:712
 msgid "Highest Latency"
 msgstr "Latência Máxima"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:827
+#: modules/gui/macosx/VLCSimplePrefsController.m:832
 #: modules/gui/qt/dialogs/preferences.cpp:336
 msgid "Reset Preferences"
 msgstr "Restaurar Preferências"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:830
+#: modules/gui/macosx/VLCSimplePrefsController.m:835
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -18737,28 +18737,28 @@ msgstr ""
 "\n"
 "Deseja continuar?"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1100
+#: modules/gui/macosx/VLCSimplePrefsController.m:1105
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr ""
 "Esta configuração não pode ser modificada porque o modo nativo de Tela "
 "Inteira está habilitado."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1169
+#: modules/gui/macosx/VLCSimplePrefsController.m:1174
 msgid "Choose the folder to save your video snapshots to."
 msgstr "Escolhe a pasta para gravar suas capturas de vídeo."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1171
-#: modules/gui/macosx/VLCSimplePrefsController.m:1270
+#: modules/gui/macosx/VLCSimplePrefsController.m:1176
+#: modules/gui/macosx/VLCSimplePrefsController.m:1275
 msgid "Choose"
 msgstr "Escolher"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1268
+#: modules/gui/macosx/VLCSimplePrefsController.m:1273
 msgid "Choose the directory or filename where the records will be stored."
 msgstr ""
 "Escolha a pasta ou nome do arquivo onde as gravações serão armazenadas."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1381
+#: modules/gui/macosx/VLCSimplePrefsController.m:1386
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -18766,16 +18766,16 @@ msgstr ""
 "Digite novas teclas para\n"
 "\"%@\""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1454
+#: modules/gui/macosx/VLCSimplePrefsController.m:1459
 msgid "Invalid combination"
 msgstr "Combinação inválida"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1455
+#: modules/gui/macosx/VLCSimplePrefsController.m:1460
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "Lamentavelmente, estas teclas não podem ser associadas a atalhos."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1465
-#: modules/gui/macosx/VLCSimplePrefsController.m:1469
+#: modules/gui/macosx/VLCSimplePrefsController.m:1470
+#: modules/gui/macosx/VLCSimplePrefsController.m:1474
 msgid "This combination is already taken by \"%@\"."
 msgstr "Esta combinação já é usada por \"%@\"."
 
@@ -20440,7 +20440,7 @@ msgstr "PictureFlow"
 msgid "Select File"
 msgstr "Selecione arquivo"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1134
+#: modules/gui/qt/components/preferences_widgets.cpp:1125
 msgid ""
 "Select or double click an action to change the associated hotkey. Use delete "
 "key to remove hotkeys."
@@ -20448,37 +20448,37 @@ msgstr ""
 "Selecione ou clique duas vezes em uma ação para mudar a tecla associada. Use "
 "a tecla \"del\" para excluir teclas de atalho."
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1141
+#: modules/gui/qt/components/preferences_widgets.cpp:1132
 msgid "in"
 msgstr "entrada"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1143
+#: modules/gui/qt/components/preferences_widgets.cpp:1134
 msgid "Any field"
 msgstr "Qualquer campo"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1144
+#: modules/gui/qt/components/preferences_widgets.cpp:1135
 msgid "Actions"
 msgstr "Ações"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1151
+#: modules/gui/qt/components/preferences_widgets.cpp:1142
 msgid "Hotkey"
 msgstr "Tecla de atalho"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1152
+#: modules/gui/qt/components/preferences_widgets.cpp:1143
 msgid "Application level hotkey"
 msgstr "Tecla de atalho do aplicativo"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1153
-#: modules/gui/qt/components/preferences_widgets.cpp:1413
+#: modules/gui/qt/components/preferences_widgets.cpp:1144
+#: modules/gui/qt/components/preferences_widgets.cpp:1401
 msgid "Global"
 msgstr "Global"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1154
+#: modules/gui/qt/components/preferences_widgets.cpp:1145
 msgid "Desktop level hotkey"
 msgstr "Tecla de atalho da Área de Trabalho"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1237
-#: modules/gui/qt/components/preferences_widgets.cpp:1238
+#: modules/gui/qt/components/preferences_widgets.cpp:1225
+#: modules/gui/qt/components/preferences_widgets.cpp:1226
 msgid ""
 "Double click to change.\n"
 "Delete key to remove."
@@ -20486,31 +20486,31 @@ msgstr ""
 "Clique duas vezes para modificar.\n"
 "Tecle del para excluir."
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1414
+#: modules/gui/qt/components/preferences_widgets.cpp:1402
 msgid "Hotkey change"
 msgstr "Modificar tecla de atalho"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1418
+#: modules/gui/qt/components/preferences_widgets.cpp:1406
 msgid "Press the new key or combination for "
 msgstr "Pressione a nova tecla ou combinação para "
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1427
+#: modules/gui/qt/components/preferences_widgets.cpp:1415
 msgid "Assign"
 msgstr "Atribuir"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1462
+#: modules/gui/qt/components/preferences_widgets.cpp:1450
 msgid "Warning: this key or combination is already assigned to "
 msgstr "Aviso: esta tecla ou combinação já está predefinida"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1474
+#: modules/gui/qt/components/preferences_widgets.cpp:1462
 msgid "Warning: <b>%1</b> is already an application menu shortcut"
 msgstr "Aviso: <b>%1</b> já é um atalho de menu"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1497
+#: modules/gui/qt/components/preferences_widgets.cpp:1485
 msgid "Key or combination: "
 msgstr "Tecla ou combinação:"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1506
+#: modules/gui/qt/components/preferences_widgets.cpp:1494
 msgid "Key: "
 msgstr "Chave: "
 
@@ -22854,11 +22854,11 @@ msgstr "Módulo SD Lua"
 msgid "Folder meta data"
 msgstr "Pasta de metadados"
 
-#: modules/meta_engine/folder.c:73
+#: modules/meta_engine/folder.c:75
 msgid "Album art filename"
 msgstr "Nome do arquivo de capa de álbum"
 
-#: modules/meta_engine/folder.c:73
+#: modules/meta_engine/folder.c:75
 msgid "Filename to look for album art in current directory"
 msgstr "Nome de arquivo para pesquisar a capa de um álbum na pasta atual"
 
@@ -29371,7 +29371,7 @@ msgstr "Janela de Diálogo"
 #: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:406
 #: modules/gui/qt/ui/sprefs_input.h:353
 #: modules/gui/qt/ui/sprefs_interface.h:526
-#: modules/gui/qt/ui/sprefs_subtitles.h:286
+#: modules/gui/qt/ui/sprefs_subtitles.h:288
 #: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
 msgid "Form"
 msgstr "Formulário"
@@ -29942,35 +29942,35 @@ msgstr "Associações de extensões de arquivos"
 msgid "Set up associations..."
 msgstr "Configurar associações"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:288
+#: modules/gui/qt/ui/sprefs_subtitles.h:290
 msgid "Enable On Screen Display (OSD)"
 msgstr "Habilitar Mostrador na Tela (OSD)"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:289
+#: modules/gui/qt/ui/sprefs_subtitles.h:291
 msgid "Show media title on video start"
 msgstr "Exibir título da mídia quando o vídeo iniciar"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:291
+#: modules/gui/qt/ui/sprefs_subtitles.h:293
 msgid "Enable subtitles"
 msgstr "Habilitar legenda"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:292
+#: modules/gui/qt/ui/sprefs_subtitles.h:294
 msgid "Subtitle Language"
 msgstr "Idioma da Legenda"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:294
+#: modules/gui/qt/ui/sprefs_subtitles.h:296
 msgid "Default encoding"
 msgstr "Codificação padrão"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:295
+#: modules/gui/qt/ui/sprefs_subtitles.h:297
 msgid "Subtitle effects"
 msgstr "Efeitos de legendas"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:301
+#: modules/gui/qt/ui/sprefs_subtitles.h:303
 msgid "Add a shadow"
 msgstr "Adicionar uma sombra"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:303
+#: modules/gui/qt/ui/sprefs_subtitles.h:305
 #: modules/gui/qt/ui/video_effects.h:1227
 #: modules/gui/qt/ui/video_effects.h:1231
 #: modules/gui/qt/ui/video_effects.h:1234
@@ -29982,7 +29982,7 @@ msgstr "Adicionar uma sombra"
 msgid " px"
 msgstr " px"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:304
+#: modules/gui/qt/ui/sprefs_subtitles.h:306
 msgid "Add a background"
 msgstr "Adicionar plano de fundo"
 

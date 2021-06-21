@@ -2603,6 +2603,7 @@ am_libmacosx_plugin_la_OBJECTS =  \
 	gui/macosx/libmacosx_plugin_la-VLCVolumeSlider.lo \
 	gui/macosx/libmacosx_plugin_la-VLCVolumeSliderCell.lo \
 	gui/macosx/libmacosx_plugin_la-VLCWrappableTextField.lo \
+	gui/macosx/libmacosx_plugin_la-VLCRemoteControlService.lo \
 	gui/macosx/PXSourceList/libmacosx_plugin_la-PXSourceList.lo \
 	gui/macosx/PXSourceList/libmacosx_plugin_la-PXSourceListBadgeCell.lo \
 	gui/macosx/PXSourceList/libmacosx_plugin_la-PXSourceListBadgeView.lo \
@@ -5760,6 +5761,7 @@ am__depfiles_remade =  \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCPlaylistInfo.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCPlaylistView.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCPopupPanelController.Plo \
+	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRemoteControlService.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererDiscovery.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererItem.Plo \
 	gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererMenuController.Plo \
@@ -10489,7 +10491,7 @@ libmacosx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(guidir)' \
 	-Wl,-framework,WebKit -Wl,-framework,CoreAudio \
 	-Wl,-framework,SystemConfiguration \
 	-Wl,-framework,ScriptingBridge -Wl,-framework,QuartzCore \
-	$(am__append_120)
+	-Wl,-weak_framework,MediaPlayer $(am__append_120)
 
 # PXSourceList sources
 libmacosx_plugin_la_SOURCES = gui/macosx/helpers.h \
@@ -10630,6 +10632,8 @@ libmacosx_plugin_la_SOURCES = gui/macosx/helpers.h \
 	gui/macosx/VLCVolumeSliderCell.m \
 	gui/macosx/VLCWrappableTextField.h \
 	gui/macosx/VLCWrappableTextField.m \
+	gui/macosx/VLCRemoteControlService.h \
+	gui/macosx/VLCRemoteControlService.m \
 	gui/macosx/PXSourceList/PXSourceList.h \
 	gui/macosx/PXSourceList/PXSourceList.m \
 	gui/macosx/PXSourceList/PXSourceListBadgeCell.h \
@@ -16730,6 +16734,9 @@ gui/macosx/libmacosx_plugin_la-VLCVolumeSliderCell.lo:  \
 gui/macosx/libmacosx_plugin_la-VLCWrappableTextField.lo:  \
 	gui/macosx/$(am__dirstamp) \
 	gui/macosx/$(DEPDIR)/$(am__dirstamp)
+gui/macosx/libmacosx_plugin_la-VLCRemoteControlService.lo:  \
+	gui/macosx/$(am__dirstamp) \
+	gui/macosx/$(DEPDIR)/$(am__dirstamp)
 gui/macosx/PXSourceList/$(am__dirstamp):
 	@$(MKDIR_P) gui/macosx/PXSourceList
 	@: > gui/macosx/PXSourceList/$(am__dirstamp)
@@ -20517,6 +20524,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCPlaylistInfo.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCPlaylistView.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCPopupPanelController.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRemoteControlService.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererDiscovery.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererItem.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererMenuController.Plo@am__quote@ # am--include-marker
@@ -27740,6 +27748,13 @@ gui/macosx/libmacosx_plugin_la-VLCWrappableTextField.lo: gui/macosx/VLCWrappable
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-VLCWrappableTextField.lo `test -f 'gui/macosx/VLCWrappableTextField.m' || echo '$(srcdir)/'`gui/macosx/VLCWrappableTextField.m
 
+gui/macosx/libmacosx_plugin_la-VLCRemoteControlService.lo: gui/macosx/VLCRemoteControlService.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/macosx/libmacosx_plugin_la-VLCRemoteControlService.lo -MD -MP -MF gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRemoteControlService.Tpo -c -o gui/macosx/libmacosx_plugin_la-VLCRemoteControlService.lo `test -f 'gui/macosx/VLCRemoteControlService.m' || echo '$(srcdir)/'`gui/macosx/VLCRemoteControlService.m
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRemoteControlService.Tpo gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRemoteControlService.Plo
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='gui/macosx/VLCRemoteControlService.m' object='gui/macosx/libmacosx_plugin_la-VLCRemoteControlService.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o gui/macosx/libmacosx_plugin_la-VLCRemoteControlService.lo `test -f 'gui/macosx/VLCRemoteControlService.m' || echo '$(srcdir)/'`gui/macosx/VLCRemoteControlService.m
+
 gui/macosx/PXSourceList/libmacosx_plugin_la-PXSourceList.lo: gui/macosx/PXSourceList/PXSourceList.m
 @am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT gui/macosx/PXSourceList/libmacosx_plugin_la-PXSourceList.lo -MD -MP -MF gui/macosx/PXSourceList/$(DEPDIR)/libmacosx_plugin_la-PXSourceList.Tpo -c -o gui/macosx/PXSourceList/libmacosx_plugin_la-PXSourceList.lo `test -f 'gui/macosx/PXSourceList/PXSourceList.m' || echo '$(srcdir)/'`gui/macosx/PXSourceList/PXSourceList.m
 @am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) gui/macosx/PXSourceList/$(DEPDIR)/libmacosx_plugin_la-PXSourceList.Tpo gui/macosx/PXSourceList/$(DEPDIR)/libmacosx_plugin_la-PXSourceList.Plo
@@ -29329,6 +29344,7 @@ distclean: distclean-recursive
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCPlaylistInfo.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCPlaylistView.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCPopupPanelController.Plo
+	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRemoteControlService.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererDiscovery.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererItem.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererMenuController.Plo
@@ -30707,6 +30723,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCPlaylistInfo.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCPlaylistView.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCPopupPanelController.Plo
+	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRemoteControlService.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererDiscovery.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererItem.Plo
 	-rm -f gui/macosx/$(DEPDIR)/libmacosx_plugin_la-VLCRendererMenuController.Plo

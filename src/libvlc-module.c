@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 79dfb9d5aec2e864d7c69c2461edf5b825148d2c $
+ * $Id: 231a3e572ee2105314d2ae77f3575dc5955ddee9 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -1829,7 +1829,7 @@ vlc_module_begin ()
                  SOCKS_SERVER_TEXT, SOCKS_SERVER_LONGTEXT, true )
     add_string( "socks-user", NULL,
                  SOCKS_USER_TEXT, SOCKS_USER_LONGTEXT, true )
-    add_string( "socks-pwd", NULL,
+    add_password( "socks-pwd", NULL,
                  SOCKS_PASS_TEXT, SOCKS_PASS_LONGTEXT, true )
 
 

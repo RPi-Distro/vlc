@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.13\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2021-06-09 17:29+0200\n"
+"POT-Creation-Date: 2021-06-18 23:14+0200\n"
 "PO-Revision-Date: 2021-04-12 14:31+0200\n"
 "Last-Translator: Phạm Gia Hưng <hungpg7@gmail.com>, 2021\n"
 "Language-Team: Vietnamese (https://www.transifex.com/yaron/teams/16553/vi/)\n"
@@ -530,12 +530,12 @@ msgstr "Luồng dữ liệu..."
 msgid "Save..."
 msgstr "Lưu..."
 
-#: include/vlc_intf_strings.h:79 modules/gui/macosx/VLCCoreInteraction.m:447
+#: include/vlc_intf_strings.h:79 modules/gui/macosx/VLCCoreInteraction.m:515
 #: modules/gui/macosx/VLCMainMenu.m:399
 msgid "Repeat All"
 msgstr "Lặp lại tất cả"
 
-#: include/vlc_intf_strings.h:80 modules/gui/macosx/VLCCoreInteraction.m:467
+#: include/vlc_intf_strings.h:80 modules/gui/macosx/VLCCoreInteraction.m:535
 #: modules/gui/macosx/VLCMainMenu.m:398
 msgid "Repeat One"
 msgstr "Lặp lại một lần"
@@ -547,7 +547,7 @@ msgstr "Lặp lại một lần"
 msgid "Random"
 msgstr "Ngẫu nhiên"
 
-#: include/vlc_intf_strings.h:82 modules/gui/macosx/VLCCoreInteraction.m:425
+#: include/vlc_intf_strings.h:82 modules/gui/macosx/VLCCoreInteraction.m:493
 msgid "Random Off"
 msgstr "Tắt chế độ ngẫu nhiên"
 
@@ -572,7 +572,7 @@ msgid "Save Playlist to &File..."
 msgstr "Lưu Danh Sách &và Tập tin..."
 
 #: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:194
-#: modules/gui/qt/components/preferences_widgets.cpp:1138
+#: modules/gui/qt/components/preferences_widgets.cpp:1129
 msgid "Search"
 msgstr "Tìm kiếm"
 
@@ -1865,7 +1865,7 @@ msgid "Stereo audio output mode"
 msgstr "Chế độ xuất dữ liệu dành cho Stereo audio"
 
 #: src/libvlc-module.c:195 src/misc/actions.c:112
-#: modules/gui/qt/components/preferences_widgets.cpp:1429
+#: modules/gui/qt/components/preferences_widgets.cpp:1417
 #: modules/gui/qt/util/customwidgets.cpp:330
 msgid "Unset"
 msgstr "Không thiết lập"
@@ -2652,7 +2652,7 @@ msgstr ""
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
-#: modules/gui/macosx/VLCSimplePrefsController.m:661
+#: modules/gui/macosx/VLCSimplePrefsController.m:666
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
 #: modules/gui/macosx/prefs_widgets.m:1215
@@ -3021,7 +3021,7 @@ msgstr ""
 "đây và chỉnh sửa chúng trong \"bộ lọc nguồn dành cho phụ đề\" nằm trong phần "
 "module. Bạn có thể tăng hoặc giảm một hoặc nhiều các hình ảnh phụ đề."
 
-#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:302
+#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Force subtitle position"
 msgstr "Cố định vị trí phụ đề"
 
@@ -3053,7 +3053,7 @@ msgstr ""
 
 #: src/libvlc-module.c:717 src/libvlc-module.c:1674 src/text/iso-639_def.h:146
 #: modules/gui/macosx/VLCSimplePrefsController.m:351
-#: modules/gui/qt/ui/sprefs_subtitles.h:287
+#: modules/gui/qt/ui/sprefs_subtitles.h:289
 msgid "On Screen Display"
 msgstr "Hiển thị trên màn hình"
 
@@ -4248,7 +4248,7 @@ msgstr "Sử dụng phím tắt để dừng phát lại."
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
-#: modules/gui/qt/ui/sprefs_subtitles.h:290
+#: modules/gui/qt/ui/sprefs_subtitles.h:292
 #: modules/gui/qt/ui/video_effects.h:1276
 msgid "Position"
 msgstr "Vị trí"
@@ -5437,13 +5437,13 @@ msgstr "Thất bại khi mở \"%s\" để ghi dữ liệu"
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
 #: modules/gui/macosx/VLCSimplePrefsController.m:313
 #: modules/gui/macosx/VLCSimplePrefsController.m:384
-#: modules/gui/macosx/VLCSimplePrefsController.m:827
+#: modules/gui/macosx/VLCSimplePrefsController.m:832
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:50
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:791
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
 #: modules/gui/macosx/prefs.m:189
 #: modules/gui/qt/components/open_panels.cpp:1366
-#: modules/gui/qt/components/preferences_widgets.cpp:1428
+#: modules/gui/qt/components/preferences_widgets.cpp:1416
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
 #: modules/gui/qt/dialogs/sout.cpp:92
 #: modules/stream_out/chromecast/cast.cpp:1197
@@ -6539,7 +6539,7 @@ msgstr ""
 msgid "DCP"
 msgstr ""
 
-#: modules/access/dcp/dcp.cpp:80
+#: modules/access/dcp/dcp.cpp:79
 msgid "Digital Cinema Package module"
 msgstr ""
 
@@ -8573,7 +8573,7 @@ msgstr "Dữ liệu màn hình đầu vào"
 #: modules/gui/macosx/VLCOpenWindowController.m:209
 #: modules/gui/macosx/VLCOpenWindowController.m:488
 #: modules/gui/macosx/VLCOpenWindowController.m:1106
-#: modules/gui/macosx/VLCSimplePrefsController.m:666
+#: modules/gui/macosx/VLCSimplePrefsController.m:671
 msgid "Screen"
 msgstr "Màn hình"
 
@@ -14504,7 +14504,7 @@ msgstr "Nhan"
 
 #: modules/codec/x264.c:429 modules/gui/macosx/VLCMainMenu.m:290
 #: modules/gui/macosx/VLCMainMenu.m:392
-#: modules/gui/macosx/VLCSimplePrefsController.m:703
+#: modules/gui/macosx/VLCSimplePrefsController.m:708
 #: modules/gui/qt/components/simple_preferences.cpp:695
 #: modules/misc/gnutls.c:778 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
@@ -14702,7 +14702,7 @@ msgstr ""
 
 #: modules/control/globalhotkeys/win32.c:47
 #: modules/control/globalhotkeys/xcb.c:50
-#: modules/gui/qt/components/preferences_widgets.cpp:1146
+#: modules/gui/qt/components/preferences_widgets.cpp:1137
 msgid "Global Hotkeys"
 msgstr "Phím tắt chung"
 
@@ -14713,7 +14713,7 @@ msgstr "Phím tắt giao diện chung"
 
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:243
-#: modules/gui/qt/components/preferences_widgets.cpp:1145
+#: modules/gui/qt/components/preferences_widgets.cpp:1136
 #: modules/gui/qt/components/simple_preferences.cpp:249
 msgid "Hotkeys"
 msgstr "Phím tắt"
@@ -17293,9 +17293,9 @@ msgstr ""
 "chưa được cung cấp."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:1060
-#: modules/gui/macosx/VLCSimplePrefsController.m:697
-#: modules/gui/macosx/VLCSimplePrefsController.m:725
-#: modules/gui/macosx/VLCSimplePrefsController.m:1258
+#: modules/gui/macosx/VLCSimplePrefsController.m:702
+#: modules/gui/macosx/VLCSimplePrefsController.m:730
+#: modules/gui/macosx/VLCSimplePrefsController.m:1263
 #: modules/gui/qt/components/simple_preferences.cpp:692
 msgid "Custom"
 msgstr "Tự chọn"
@@ -17304,11 +17304,11 @@ msgstr "Tự chọn"
 msgid "Remember"
 msgstr ""
 
-#: modules/gui/macosx/VLCCoreInteraction.m:417
+#: modules/gui/macosx/VLCCoreInteraction.m:485
 msgid "Random On"
 msgstr "Bật chế độ ngẫu nhiên"
 
-#: modules/gui/macosx/VLCCoreInteraction.m:487
+#: modules/gui/macosx/VLCCoreInteraction.m:555
 msgid "Repeat Off"
 msgstr "Tắt lặp lại"
 
@@ -17363,8 +17363,8 @@ msgstr "Trợ giúp"
 msgid "Index"
 msgstr "Danh mục"
 
-#: modules/gui/macosx/VLCInputManager.m:451
-#: modules/gui/macosx/VLCInputManager.m:478
+#: modules/gui/macosx/VLCInputManager.m:467
+#: modules/gui/macosx/VLCInputManager.m:494
 #, fuzzy
 msgid "VLC media playback"
 msgstr "Chương trình VLC"
@@ -18084,7 +18084,7 @@ msgstr "Mã hóa phụ đề"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:360
 #: modules/gui/macosx/VLCSimplePrefsController.m:347
-#: modules/gui/qt/ui/sprefs_subtitles.h:297
+#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Font size"
 msgstr "Kích thước kiểu chữ"
 
@@ -18260,7 +18260,7 @@ msgid "Continue playback?"
 msgstr ""
 
 #: modules/gui/macosx/VLCResumeDialogController.m:49
-#: modules/gui/macosx/VLCSimplePrefsController.m:828
+#: modules/gui/macosx/VLCSimplePrefsController.m:833
 #: modules/gui/qt/dialogs/firstrun.cpp:106
 msgid "Continue"
 msgstr "Tiếp tục"
@@ -18366,7 +18366,7 @@ msgid "Select an action to change the associated hotkey:"
 msgstr "Chọn một thao tác để thay đổi các phím tắt tương ứng:"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:290
-#: modules/gui/qt/components/preferences_widgets.cpp:1150
+#: modules/gui/qt/components/preferences_widgets.cpp:1141
 msgid "Action"
 msgstr "Thao tác"
 
@@ -18504,13 +18504,13 @@ msgid "Display Settings"
 msgstr "Thiết lập hiển thị"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:346
-#: modules/gui/qt/ui/sprefs_subtitles.h:298
+#: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Font color"
 msgstr "Màu Chữ"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:348 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
-#: modules/gui/qt/ui/sprefs_subtitles.h:296
+#: modules/gui/qt/ui/sprefs_subtitles.h:298
 msgid "Font"
 msgstr "Kiểu chữ"
 
@@ -18519,7 +18519,7 @@ msgid "Subtitle languages"
 msgstr "Ngôn ngữ của phụ đề"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:350
-#: modules/gui/qt/ui/sprefs_subtitles.h:293
+#: modules/gui/qt/ui/sprefs_subtitles.h:295
 msgid "Preferred subtitle language"
 msgstr "Ngôn ngữ phụ đề ưa thích"
 
@@ -18534,13 +18534,13 @@ msgstr "Bắt buộc in đậm"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:355
 #: modules/text_renderer/freetype/freetype.c:110
-#: modules/gui/qt/ui/sprefs_subtitles.h:300
+#: modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Outline color"
 msgstr "Màu của đường nét biên"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:356
 #: modules/text_renderer/freetype/freetype.c:111
-#: modules/gui/qt/ui/sprefs_subtitles.h:299
+#: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Outline thickness"
 msgstr "Độ dày nét chữ"
 
@@ -18615,36 +18615,36 @@ msgid ""
 "Media files cannot be resumed because keeping recent media items is disabled."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:580
+#: modules/gui/macosx/VLCSimplePrefsController.m:585
 msgid "Last check on: %@"
 msgstr "Lần cuối cùng kiểm tra vào: %@"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:582
+#: modules/gui/macosx/VLCSimplePrefsController.m:587
 msgid "No check was performed yet."
 msgstr "Vẫn chưa thực hiện việc kiểm tra."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:699
+#: modules/gui/macosx/VLCSimplePrefsController.m:704
 msgid "Lowest Latency"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:701
+#: modules/gui/macosx/VLCSimplePrefsController.m:706
 msgid "Low Latency"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:705
+#: modules/gui/macosx/VLCSimplePrefsController.m:710
 msgid "Higher Latency"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:707
+#: modules/gui/macosx/VLCSimplePrefsController.m:712
 msgid "Highest Latency"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:827
+#: modules/gui/macosx/VLCSimplePrefsController.m:832
 #: modules/gui/qt/dialogs/preferences.cpp:336
 msgid "Reset Preferences"
 msgstr "Thiết lập lại toàn bộ Tùy Biến"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:830
+#: modules/gui/macosx/VLCSimplePrefsController.m:835
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -18666,25 +18666,25 @@ msgstr ""
 "\n"
 "Bạn có chắc muốn thực hiện thao tác này không?"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1100
+#: modules/gui/macosx/VLCSimplePrefsController.m:1105
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1169
+#: modules/gui/macosx/VLCSimplePrefsController.m:1174
 msgid "Choose the folder to save your video snapshots to."
 msgstr "Chọn thư mục mà bạn sẽ lưu phần ảnh chụp các cảnh của video."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1171
-#: modules/gui/macosx/VLCSimplePrefsController.m:1270
+#: modules/gui/macosx/VLCSimplePrefsController.m:1176
+#: modules/gui/macosx/VLCSimplePrefsController.m:1275
 msgid "Choose"
 msgstr "Chọn"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1268
+#: modules/gui/macosx/VLCSimplePrefsController.m:1273
 msgid "Choose the directory or filename where the records will be stored."
 msgstr "Chọn thư mục hoặc điền vào tên tập tin nhằm lưu lại phần ghi âm."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1381
+#: modules/gui/macosx/VLCSimplePrefsController.m:1386
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -18692,16 +18692,16 @@ msgstr ""
 "Ấn phím mới cho\n"
 "\"%@\""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1454
+#: modules/gui/macosx/VLCSimplePrefsController.m:1459
 msgid "Invalid combination"
 msgstr "Kết hợp không hợp lệ."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1455
+#: modules/gui/macosx/VLCSimplePrefsController.m:1460
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "Rất đáng tiếc, những phím này không thể gán thành phím tắt được."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1465
-#: modules/gui/macosx/VLCSimplePrefsController.m:1469
+#: modules/gui/macosx/VLCSimplePrefsController.m:1470
+#: modules/gui/macosx/VLCSimplePrefsController.m:1474
 msgid "This combination is already taken by \"%@\"."
 msgstr "Việc kết hợp đã được thực hiện bởi \"%@\"."
 
@@ -20364,43 +20364,43 @@ msgstr "Dạng hình ảnh"
 msgid "Select File"
 msgstr "Chọn Tập tin"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1134
+#: modules/gui/qt/components/preferences_widgets.cpp:1125
 msgid ""
 "Select or double click an action to change the associated hotkey. Use delete "
 "key to remove hotkeys."
 msgstr ""
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1141
+#: modules/gui/qt/components/preferences_widgets.cpp:1132
 msgid "in"
 msgstr "trong"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1143
+#: modules/gui/qt/components/preferences_widgets.cpp:1134
 msgid "Any field"
 msgstr "Bất kỳ khung thông tin nào"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1144
+#: modules/gui/qt/components/preferences_widgets.cpp:1135
 msgid "Actions"
 msgstr "Dựa theo thao tác xử lý"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1151
+#: modules/gui/qt/components/preferences_widgets.cpp:1142
 msgid "Hotkey"
 msgstr "Phím tắt"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1152
+#: modules/gui/qt/components/preferences_widgets.cpp:1143
 msgid "Application level hotkey"
 msgstr "Cấp độ phím tắt của ứng dụng"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1153
-#: modules/gui/qt/components/preferences_widgets.cpp:1413
+#: modules/gui/qt/components/preferences_widgets.cpp:1144
+#: modules/gui/qt/components/preferences_widgets.cpp:1401
 msgid "Global"
 msgstr "Toàn bộ"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1154
+#: modules/gui/qt/components/preferences_widgets.cpp:1145
 msgid "Desktop level hotkey"
 msgstr "Mức độ phím tắt của desktop"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1237
-#: modules/gui/qt/components/preferences_widgets.cpp:1238
+#: modules/gui/qt/components/preferences_widgets.cpp:1225
+#: modules/gui/qt/components/preferences_widgets.cpp:1226
 msgid ""
 "Double click to change.\n"
 "Delete key to remove."
@@ -20408,31 +20408,31 @@ msgstr ""
 "Click chuột hai lần để thay đổi.\n"
 "Nhấn phím Delete để xóa."
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1414
+#: modules/gui/qt/components/preferences_widgets.cpp:1402
 msgid "Hotkey change"
 msgstr "Thay đổi phím tắt"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1418
+#: modules/gui/qt/components/preferences_widgets.cpp:1406
 msgid "Press the new key or combination for "
 msgstr "Nhấn phím mới trên bàn phím hoặc tổ hợp phím cho"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1427
+#: modules/gui/qt/components/preferences_widgets.cpp:1415
 msgid "Assign"
 msgstr "Gán"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1462
+#: modules/gui/qt/components/preferences_widgets.cpp:1450
 msgid "Warning: this key or combination is already assigned to "
 msgstr "Cảnh báo: phím này hoặc tổ hợp phím này đã được gán cho"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1474
+#: modules/gui/qt/components/preferences_widgets.cpp:1462
 msgid "Warning: <b>%1</b> is already an application menu shortcut"
 msgstr "Cảnh báo: <b>%1</b> là phím tắt đến menu của ứng dụng"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1497
+#: modules/gui/qt/components/preferences_widgets.cpp:1485
 msgid "Key or combination: "
 msgstr "Phím hoặc tổ hợp phím:"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1506
+#: modules/gui/qt/components/preferences_widgets.cpp:1494
 msgid "Key: "
 msgstr "Khóa:"
 
@@ -22727,11 +22727,11 @@ msgstr "Module thẻ nhớ dạng Lua"
 msgid "Folder meta data"
 msgstr "Thư mục chứa thông tin bổ sung"
 
-#: modules/meta_engine/folder.c:73
+#: modules/meta_engine/folder.c:75
 msgid "Album art filename"
 msgstr "Tên tập tin album art"
 
-#: modules/meta_engine/folder.c:73
+#: modules/meta_engine/folder.c:75
 msgid "Filename to look for album art in current directory"
 msgstr "Tên tập tin của album art cho việc tìm kiếm trong thư mục hiện tại"
 
@@ -28904,7 +28904,7 @@ msgstr "Hộp thông báo"
 #: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:406
 #: modules/gui/qt/ui/sprefs_input.h:353
 #: modules/gui/qt/ui/sprefs_interface.h:526
-#: modules/gui/qt/ui/sprefs_subtitles.h:286
+#: modules/gui/qt/ui/sprefs_subtitles.h:288
 #: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
 msgid "Form"
 msgstr "Mẫu"
@@ -29477,35 +29477,35 @@ msgstr "Các loại tập tin được mở bởi VLC"
 msgid "Set up associations..."
 msgstr "Chỉnh sửa các loại tập tin được mở bởi VLC..."
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:288
+#: modules/gui/qt/ui/sprefs_subtitles.h:290
 msgid "Enable On Screen Display (OSD)"
 msgstr "Bật tính năng Hiển Thị Trên Màn Hình (OSD)"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:289
+#: modules/gui/qt/ui/sprefs_subtitles.h:291
 msgid "Show media title on video start"
 msgstr "Hiển thị tiêu đề của tập tin khi video được mở"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:291
+#: modules/gui/qt/ui/sprefs_subtitles.h:293
 msgid "Enable subtitles"
 msgstr "Hiển thị tiêu đề"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:292
+#: modules/gui/qt/ui/sprefs_subtitles.h:294
 msgid "Subtitle Language"
 msgstr "Ngôn ngữ phụ đề"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:294
+#: modules/gui/qt/ui/sprefs_subtitles.h:296
 msgid "Default encoding"
 msgstr "Mã hóa mặc định"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:295
+#: modules/gui/qt/ui/sprefs_subtitles.h:297
 msgid "Subtitle effects"
 msgstr "Hiệu ứng phụ đề"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:301
+#: modules/gui/qt/ui/sprefs_subtitles.h:303
 msgid "Add a shadow"
 msgstr "Thêm phần đổ bóng"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:303
+#: modules/gui/qt/ui/sprefs_subtitles.h:305
 #: modules/gui/qt/ui/video_effects.h:1227
 #: modules/gui/qt/ui/video_effects.h:1231
 #: modules/gui/qt/ui/video_effects.h:1234
@@ -29517,7 +29517,7 @@ msgstr "Thêm phần đổ bóng"
 msgid " px"
 msgstr "pixel"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:304
+#: modules/gui/qt/ui/sprefs_subtitles.h:306
 msgid "Add a background"
 msgstr "Thêm phần nền"
 

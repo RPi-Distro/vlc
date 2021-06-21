@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.13\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2021-06-09 17:29+0200\n"
+"POT-Creation-Date: 2021-06-18 23:14+0200\n"
 "PO-Revision-Date: 2020-07-04 06:08+0200\n"
 "Last-Translator: Jay Oh <theanswer.jay@gmail.com>, 2020\n"
 "Language-Team: Korean (https://www.transifex.com/yaron/teams/16553/ko/)\n"
@@ -515,12 +515,12 @@ msgstr "스트림하기..."
 msgid "Save..."
 msgstr "저장..."
 
-#: include/vlc_intf_strings.h:79 modules/gui/macosx/VLCCoreInteraction.m:447
+#: include/vlc_intf_strings.h:79 modules/gui/macosx/VLCCoreInteraction.m:515
 #: modules/gui/macosx/VLCMainMenu.m:399
 msgid "Repeat All"
 msgstr "전체 반복하기"
 
-#: include/vlc_intf_strings.h:80 modules/gui/macosx/VLCCoreInteraction.m:467
+#: include/vlc_intf_strings.h:80 modules/gui/macosx/VLCCoreInteraction.m:535
 #: modules/gui/macosx/VLCMainMenu.m:398
 msgid "Repeat One"
 msgstr "한개 반복"
@@ -532,7 +532,7 @@ msgstr "한개 반복"
 msgid "Random"
 msgstr "무작위"
 
-#: include/vlc_intf_strings.h:82 modules/gui/macosx/VLCCoreInteraction.m:425
+#: include/vlc_intf_strings.h:82 modules/gui/macosx/VLCCoreInteraction.m:493
 msgid "Random Off"
 msgstr "무작위 끄기"
 
@@ -557,7 +557,7 @@ msgid "Save Playlist to &File..."
 msgstr "재생목록을 파일로 저장(&F)..."
 
 #: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:194
-#: modules/gui/qt/components/preferences_widgets.cpp:1138
+#: modules/gui/qt/components/preferences_widgets.cpp:1129
 msgid "Search"
 msgstr "검색"
 
@@ -1781,7 +1781,7 @@ msgid "Stereo audio output mode"
 msgstr "스테레오 오디오 출력 모드"
 
 #: src/libvlc-module.c:195 src/misc/actions.c:112
-#: modules/gui/qt/components/preferences_widgets.cpp:1429
+#: modules/gui/qt/components/preferences_widgets.cpp:1417
 #: modules/gui/qt/util/customwidgets.cpp:330
 msgid "Unset"
 msgstr "설정 해제"
@@ -2512,7 +2512,7 @@ msgstr ""
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
-#: modules/gui/macosx/VLCSimplePrefsController.m:661
+#: modules/gui/macosx/VLCSimplePrefsController.m:666
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
 #: modules/gui/macosx/prefs_widgets.m:1215
@@ -2860,7 +2860,7 @@ msgstr ""
 "듈 섹션에서 사용환경을 설정하세요. 많은 여러가지 부화면 옵션도 설정할 수 있습"
 "니다."
 
-#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:302
+#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Force subtitle position"
 msgstr "자막 위치 지정하기"
 
@@ -2889,7 +2889,7 @@ msgstr "자막 처리를 완전히 비활성화할 수 있습니다."
 
 #: src/libvlc-module.c:717 src/libvlc-module.c:1674 src/text/iso-639_def.h:146
 #: modules/gui/macosx/VLCSimplePrefsController.m:351
-#: modules/gui/qt/ui/sprefs_subtitles.h:287
+#: modules/gui/qt/ui/sprefs_subtitles.h:289
 msgid "On Screen Display"
 msgstr "OSD 설정"
 
@@ -4020,7 +4020,7 @@ msgstr "재생을 정지할 단축키를 선택하세요."
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
-#: modules/gui/qt/ui/sprefs_subtitles.h:290
+#: modules/gui/qt/ui/sprefs_subtitles.h:292
 #: modules/gui/qt/ui/video_effects.h:1276
 msgid "Position"
 msgstr "위치"
@@ -5207,13 +5207,13 @@ msgstr "쓰기위해 \"%s\" 열기 실패"
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
 #: modules/gui/macosx/VLCSimplePrefsController.m:313
 #: modules/gui/macosx/VLCSimplePrefsController.m:384
-#: modules/gui/macosx/VLCSimplePrefsController.m:827
+#: modules/gui/macosx/VLCSimplePrefsController.m:832
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:50
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:791
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
 #: modules/gui/macosx/prefs.m:189
 #: modules/gui/qt/components/open_panels.cpp:1366
-#: modules/gui/qt/components/preferences_widgets.cpp:1428
+#: modules/gui/qt/components/preferences_widgets.cpp:1416
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
 #: modules/gui/qt/dialogs/sout.cpp:92
 #: modules/stream_out/chromecast/cast.cpp:1197
@@ -6314,7 +6314,7 @@ msgstr "키 배달 메시지 XML파일 경로"
 msgid "DCP"
 msgstr "DCP"
 
-#: modules/access/dcp/dcp.cpp:80
+#: modules/access/dcp/dcp.cpp:79
 msgid "Digital Cinema Package module"
 msgstr "디지털 시네마 패키지 모듈"
 
@@ -8313,7 +8313,7 @@ msgstr "스크린 입력"
 #: modules/gui/macosx/VLCOpenWindowController.m:209
 #: modules/gui/macosx/VLCOpenWindowController.m:488
 #: modules/gui/macosx/VLCOpenWindowController.m:1106
-#: modules/gui/macosx/VLCSimplePrefsController.m:666
+#: modules/gui/macosx/VLCSimplePrefsController.m:671
 msgid "Screen"
 msgstr "스크린"
 
@@ -14184,7 +14184,7 @@ msgstr "빠르게"
 
 #: modules/codec/x264.c:429 modules/gui/macosx/VLCMainMenu.m:290
 #: modules/gui/macosx/VLCMainMenu.m:392
-#: modules/gui/macosx/VLCSimplePrefsController.m:703
+#: modules/gui/macosx/VLCSimplePrefsController.m:708
 #: modules/gui/qt/components/simple_preferences.cpp:695
 #: modules/misc/gnutls.c:778 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
@@ -14385,7 +14385,7 @@ msgstr "마우스 제스처 제어 인터페이스"
 
 #: modules/control/globalhotkeys/win32.c:47
 #: modules/control/globalhotkeys/xcb.c:50
-#: modules/gui/qt/components/preferences_widgets.cpp:1146
+#: modules/gui/qt/components/preferences_widgets.cpp:1137
 msgid "Global Hotkeys"
 msgstr "전역 단축키"
 
@@ -14396,7 +14396,7 @@ msgstr "전역 단축키 인터페이스"
 
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:243
-#: modules/gui/qt/components/preferences_widgets.cpp:1145
+#: modules/gui/qt/components/preferences_widgets.cpp:1136
 #: modules/gui/qt/components/simple_preferences.cpp:249
 msgid "Hotkeys"
 msgstr "단축키"
@@ -16974,9 +16974,9 @@ msgid "A SDP export is requested, but no URL is provided."
 msgstr "SDP 내보내기가 필요합니다만 어떤 주소도 제공되지 않습니다."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:1060
-#: modules/gui/macosx/VLCSimplePrefsController.m:697
-#: modules/gui/macosx/VLCSimplePrefsController.m:725
-#: modules/gui/macosx/VLCSimplePrefsController.m:1258
+#: modules/gui/macosx/VLCSimplePrefsController.m:702
+#: modules/gui/macosx/VLCSimplePrefsController.m:730
+#: modules/gui/macosx/VLCSimplePrefsController.m:1263
 #: modules/gui/qt/components/simple_preferences.cpp:692
 msgid "Custom"
 msgstr "사용자 지정"
@@ -16985,11 +16985,11 @@ msgstr "사용자 지정"
 msgid "Remember"
 msgstr "기억하기"
 
-#: modules/gui/macosx/VLCCoreInteraction.m:417
+#: modules/gui/macosx/VLCCoreInteraction.m:485
 msgid "Random On"
 msgstr "무작위 켜기"
 
-#: modules/gui/macosx/VLCCoreInteraction.m:487
+#: modules/gui/macosx/VLCCoreInteraction.m:555
 msgid "Repeat Off"
 msgstr "반복 끄기"
 
@@ -17045,8 +17045,8 @@ msgstr "VLC 미디어 재생기 도움말..."
 msgid "Index"
 msgstr "인덱스"
 
-#: modules/gui/macosx/VLCInputManager.m:451
-#: modules/gui/macosx/VLCInputManager.m:478
+#: modules/gui/macosx/VLCInputManager.m:467
+#: modules/gui/macosx/VLCInputManager.m:494
 #, fuzzy
 msgid "VLC media playback"
 msgstr "VLC 미디어 재생기"
@@ -17768,7 +17768,7 @@ msgstr "자막 인코딩"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:360
 #: modules/gui/macosx/VLCSimplePrefsController.m:347
-#: modules/gui/qt/ui/sprefs_subtitles.h:297
+#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Font size"
 msgstr "글꼴 크기"
 
@@ -17944,7 +17944,7 @@ msgid "Continue playback?"
 msgstr "이어서 재생할까요?"
 
 #: modules/gui/macosx/VLCResumeDialogController.m:49
-#: modules/gui/macosx/VLCSimplePrefsController.m:828
+#: modules/gui/macosx/VLCSimplePrefsController.m:833
 #: modules/gui/qt/dialogs/firstrun.cpp:106
 msgid "Continue"
 msgstr "계속"
@@ -18050,7 +18050,7 @@ msgid "Select an action to change the associated hotkey:"
 msgstr "연결된 단축키를 변경할 동작 선택:"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:290
-#: modules/gui/qt/components/preferences_widgets.cpp:1150
+#: modules/gui/qt/components/preferences_widgets.cpp:1141
 msgid "Action"
 msgstr "동작"
 
@@ -18187,13 +18187,13 @@ msgid "Display Settings"
 msgstr "디스플레이 설정"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:346
-#: modules/gui/qt/ui/sprefs_subtitles.h:298
+#: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Font color"
 msgstr "글꼴색"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:348 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
-#: modules/gui/qt/ui/sprefs_subtitles.h:296
+#: modules/gui/qt/ui/sprefs_subtitles.h:298
 msgid "Font"
 msgstr "글꼴"
 
@@ -18202,7 +18202,7 @@ msgid "Subtitle languages"
 msgstr "자막 언어"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:350
-#: modules/gui/qt/ui/sprefs_subtitles.h:293
+#: modules/gui/qt/ui/sprefs_subtitles.h:295
 msgid "Preferred subtitle language"
 msgstr "선호하는 자막 언어"
 
@@ -18217,13 +18217,13 @@ msgstr "강제로 굵게 표시"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:355
 #: modules/text_renderer/freetype/freetype.c:110
-#: modules/gui/qt/ui/sprefs_subtitles.h:300
+#: modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Outline color"
 msgstr "외곽선 색상"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:356
 #: modules/text_renderer/freetype/freetype.c:111
-#: modules/gui/qt/ui/sprefs_subtitles.h:299
+#: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Outline thickness"
 msgstr "외곽선 두께"
 
@@ -18300,36 +18300,36 @@ msgstr ""
 "최근 미디어 항목 유지가 꺼져 있기 때문에 미디어 파일을 이어서 재생할 수 없습"
 "니다."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:580
+#: modules/gui/macosx/VLCSimplePrefsController.m:585
 msgid "Last check on: %@"
 msgstr "마지막 확인 시각: %@"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:582
+#: modules/gui/macosx/VLCSimplePrefsController.m:587
 msgid "No check was performed yet."
 msgstr "아직 확인하지 않았습니다."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:699
+#: modules/gui/macosx/VLCSimplePrefsController.m:704
 msgid "Lowest Latency"
 msgstr "가장 낮은 지연시간"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:701
+#: modules/gui/macosx/VLCSimplePrefsController.m:706
 msgid "Low Latency"
 msgstr "낮은 지연시간"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:705
+#: modules/gui/macosx/VLCSimplePrefsController.m:710
 msgid "Higher Latency"
 msgstr "더 높은 지연시간"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:707
+#: modules/gui/macosx/VLCSimplePrefsController.m:712
 msgid "Highest Latency"
 msgstr "가장 높은 지연시간"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:827
+#: modules/gui/macosx/VLCSimplePrefsController.m:832
 #: modules/gui/qt/dialogs/preferences.cpp:336
 msgid "Reset Preferences"
 msgstr "환경설정 초기화"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:830
+#: modules/gui/macosx/VLCSimplePrefsController.m:835
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -18350,25 +18350,25 @@ msgstr ""
 "\n"
 "계속하시겠습니까?"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1100
+#: modules/gui/macosx/VLCSimplePrefsController.m:1105
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr "이 설정은 원래의 전체화면 모드가 활성화되기 때문에 변경할 수 없습니다."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1169
+#: modules/gui/macosx/VLCSimplePrefsController.m:1174
 msgid "Choose the folder to save your video snapshots to."
 msgstr "비디오 스냅샷을 저장할 폴더를 선택하세요."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1171
-#: modules/gui/macosx/VLCSimplePrefsController.m:1270
+#: modules/gui/macosx/VLCSimplePrefsController.m:1176
+#: modules/gui/macosx/VLCSimplePrefsController.m:1275
 msgid "Choose"
 msgstr "선택"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1268
+#: modules/gui/macosx/VLCSimplePrefsController.m:1273
 msgid "Choose the directory or filename where the records will be stored."
 msgstr "녹화가 저장될 폴더나 파일명을 선택하세요"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1381
+#: modules/gui/macosx/VLCSimplePrefsController.m:1386
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -18376,16 +18376,16 @@ msgstr ""
 "다음에 대해 새 키를 누르세요\n"
 "\"%@\""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1454
+#: modules/gui/macosx/VLCSimplePrefsController.m:1459
 msgid "Invalid combination"
 msgstr "잘못된 조합"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1455
+#: modules/gui/macosx/VLCSimplePrefsController.m:1460
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "유감스럽게도, 이 키는 단축키로 등록할 수 없습니다."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1465
-#: modules/gui/macosx/VLCSimplePrefsController.m:1469
+#: modules/gui/macosx/VLCSimplePrefsController.m:1470
+#: modules/gui/macosx/VLCSimplePrefsController.m:1474
 msgid "This combination is already taken by \"%@\"."
 msgstr "이 조합은 \"%@\" 로 이미 사용중입니다."
 
@@ -20034,43 +20034,43 @@ msgstr "픽쳐플로우"
 msgid "Select File"
 msgstr "파일 선택"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1134
+#: modules/gui/qt/components/preferences_widgets.cpp:1125
 msgid ""
 "Select or double click an action to change the associated hotkey. Use delete "
 "key to remove hotkeys."
 msgstr "단축키 변경: 동작 더블 클릭/엔터, 단축키 삭제: Delete 키."
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1141
+#: modules/gui/qt/components/preferences_widgets.cpp:1132
 msgid "in"
 msgstr "->"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1143
+#: modules/gui/qt/components/preferences_widgets.cpp:1134
 msgid "Any field"
 msgstr "전체"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1144
+#: modules/gui/qt/components/preferences_widgets.cpp:1135
 msgid "Actions"
 msgstr "동작"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1151
+#: modules/gui/qt/components/preferences_widgets.cpp:1142
 msgid "Hotkey"
 msgstr "단축키"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1152
+#: modules/gui/qt/components/preferences_widgets.cpp:1143
 msgid "Application level hotkey"
 msgstr "프로그램 레벨 단축키"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1153
-#: modules/gui/qt/components/preferences_widgets.cpp:1413
+#: modules/gui/qt/components/preferences_widgets.cpp:1144
+#: modules/gui/qt/components/preferences_widgets.cpp:1401
 msgid "Global"
 msgstr "전역"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1154
+#: modules/gui/qt/components/preferences_widgets.cpp:1145
 msgid "Desktop level hotkey"
 msgstr "데스크탑 레벨 단축키"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1237
-#: modules/gui/qt/components/preferences_widgets.cpp:1238
+#: modules/gui/qt/components/preferences_widgets.cpp:1225
+#: modules/gui/qt/components/preferences_widgets.cpp:1226
 msgid ""
 "Double click to change.\n"
 "Delete key to remove."
@@ -20078,31 +20078,31 @@ msgstr ""
 "바꾸려면 더블 클릭하세요.\n"
 "삭제하려면 Delete 키를 누르세요."
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1414
+#: modules/gui/qt/components/preferences_widgets.cpp:1402
 msgid "Hotkey change"
 msgstr "단축키 변경"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1418
+#: modules/gui/qt/components/preferences_widgets.cpp:1406
 msgid "Press the new key or combination for "
 msgstr "새 키나 조합을 누르세요: "
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1427
+#: modules/gui/qt/components/preferences_widgets.cpp:1415
 msgid "Assign"
 msgstr "할당하기"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1462
+#: modules/gui/qt/components/preferences_widgets.cpp:1450
 msgid "Warning: this key or combination is already assigned to "
 msgstr "경고! 이 키나 조합이 이미 할당됨: "
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1474
+#: modules/gui/qt/components/preferences_widgets.cpp:1462
 msgid "Warning: <b>%1</b> is already an application menu shortcut"
 msgstr "경고: <b>%1</b> 이 키는 이미 프로그램 메뉴 단축키로 사용중입니다"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1497
+#: modules/gui/qt/components/preferences_widgets.cpp:1485
 msgid "Key or combination: "
 msgstr "키 또는 조합: "
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1506
+#: modules/gui/qt/components/preferences_widgets.cpp:1494
 msgid "Key: "
 msgstr "키:"
 
@@ -22410,11 +22410,11 @@ msgstr "Lua SD 모듈"
 msgid "Folder meta data"
 msgstr "폴더 메타데이터"
 
-#: modules/meta_engine/folder.c:73
+#: modules/meta_engine/folder.c:75
 msgid "Album art filename"
 msgstr "앨범 아트 파일명"
 
-#: modules/meta_engine/folder.c:73
+#: modules/meta_engine/folder.c:75
 msgid "Filename to look for album art in current directory"
 msgstr "현재 폴더에서 앨범 아트를 검색할 파일명"
 
@@ -28776,7 +28776,7 @@ msgstr "대화창"
 #: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:406
 #: modules/gui/qt/ui/sprefs_input.h:353
 #: modules/gui/qt/ui/sprefs_interface.h:526
-#: modules/gui/qt/ui/sprefs_subtitles.h:286
+#: modules/gui/qt/ui/sprefs_subtitles.h:288
 #: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
 msgid "Form"
 msgstr "형식"
@@ -29345,35 +29345,35 @@ msgstr "파일 확장자 연결"
 msgid "Set up associations..."
 msgstr "연결 설정하기..."
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:288
+#: modules/gui/qt/ui/sprefs_subtitles.h:290
 msgid "Enable On Screen Display (OSD)"
 msgstr "화면 표시 메시지 (OSD) 사용하기"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:289
+#: modules/gui/qt/ui/sprefs_subtitles.h:291
 msgid "Show media title on video start"
 msgstr "비디오 재생 시작시 미디어 제목 보이기"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:291
+#: modules/gui/qt/ui/sprefs_subtitles.h:293
 msgid "Enable subtitles"
 msgstr "자막 보이기"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:292
+#: modules/gui/qt/ui/sprefs_subtitles.h:294
 msgid "Subtitle Language"
 msgstr "자막 언어"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:294
+#: modules/gui/qt/ui/sprefs_subtitles.h:296
 msgid "Default encoding"
 msgstr "기본 인코딩"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:295
+#: modules/gui/qt/ui/sprefs_subtitles.h:297
 msgid "Subtitle effects"
 msgstr "자막 효과"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:301
+#: modules/gui/qt/ui/sprefs_subtitles.h:303
 msgid "Add a shadow"
 msgstr "그림자 추가하기"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:303
+#: modules/gui/qt/ui/sprefs_subtitles.h:305
 #: modules/gui/qt/ui/video_effects.h:1227
 #: modules/gui/qt/ui/video_effects.h:1231
 #: modules/gui/qt/ui/video_effects.h:1234
@@ -29385,7 +29385,7 @@ msgstr "그림자 추가하기"
 msgid " px"
 msgstr " px"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:304
+#: modules/gui/qt/ui/sprefs_subtitles.h:306
 msgid "Add a background"
 msgstr "배경 추가하기"
 

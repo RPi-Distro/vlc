@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.13\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2021-06-09 17:29+0200\n"
+"POT-Creation-Date: 2021-06-18 23:14+0200\n"
 "PO-Revision-Date: 2021-03-17 15:04+0100\n"
 "Last-Translator: Aefgh Threenine <aefgh3962@gmail.com>, 2021\n"
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/yaron/teams/16553/"
@@ -508,12 +508,12 @@ msgstr "串流..."
 msgid "Save..."
 msgstr "儲存..."
 
-#: include/vlc_intf_strings.h:79 modules/gui/macosx/VLCCoreInteraction.m:447
+#: include/vlc_intf_strings.h:79 modules/gui/macosx/VLCCoreInteraction.m:515
 #: modules/gui/macosx/VLCMainMenu.m:399
 msgid "Repeat All"
 msgstr "重複全部"
 
-#: include/vlc_intf_strings.h:80 modules/gui/macosx/VLCCoreInteraction.m:467
+#: include/vlc_intf_strings.h:80 modules/gui/macosx/VLCCoreInteraction.m:535
 #: modules/gui/macosx/VLCMainMenu.m:398
 msgid "Repeat One"
 msgstr "重複一首"
@@ -525,7 +525,7 @@ msgstr "重複一首"
 msgid "Random"
 msgstr "隨機"
 
-#: include/vlc_intf_strings.h:82 modules/gui/macosx/VLCCoreInteraction.m:425
+#: include/vlc_intf_strings.h:82 modules/gui/macosx/VLCCoreInteraction.m:493
 msgid "Random Off"
 msgstr "關閉隨機"
 
@@ -550,7 +550,7 @@ msgid "Save Playlist to &File..."
 msgstr "儲存播放清單至檔案(&F)..."
 
 #: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:194
-#: modules/gui/qt/components/preferences_widgets.cpp:1138
+#: modules/gui/qt/components/preferences_widgets.cpp:1129
 msgid "Search"
 msgstr "搜尋"
 
@@ -1746,7 +1746,7 @@ msgid "Stereo audio output mode"
 msgstr "立體聲輸出模式"
 
 #: src/libvlc-module.c:195 src/misc/actions.c:112
-#: modules/gui/qt/components/preferences_widgets.cpp:1429
+#: modules/gui/qt/components/preferences_widgets.cpp:1417
 #: modules/gui/qt/util/customwidgets.cpp:330
 msgid "Unset"
 msgstr "取消已設定的"
@@ -2444,7 +2444,7 @@ msgstr "你可遠端同步伺服器與用戶端的時脈。詳細設定請見進
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
-#: modules/gui/macosx/VLCSimplePrefsController.m:661
+#: modules/gui/macosx/VLCSimplePrefsController.m:666
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
 #: modules/gui/macosx/prefs_widgets.m:1215
@@ -2783,7 +2783,7 @@ msgstr ""
 "等)。在這裡啟用這些篩選器並在「子原始檔篩選器」模組區段中設定它們。您也可以設"
 "定許多其他子圖片選項。"
 
-#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:302
+#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Force subtitle position"
 msgstr "強制改變字幕位置"
 
@@ -2811,7 +2811,7 @@ msgstr "您可以完全停用圖形字幕處理。"
 
 #: src/libvlc-module.c:717 src/libvlc-module.c:1674 src/text/iso-639_def.h:146
 #: modules/gui/macosx/VLCSimplePrefsController.m:351
-#: modules/gui/qt/ui/sprefs_subtitles.h:287
+#: modules/gui/qt/ui/sprefs_subtitles.h:289
 msgid "On Screen Display"
 msgstr "螢幕顯示"
 
@@ -3882,7 +3882,7 @@ msgstr "選擇用於停止播放的熱鍵。"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
-#: modules/gui/qt/ui/sprefs_subtitles.h:290
+#: modules/gui/qt/ui/sprefs_subtitles.h:292
 #: modules/gui/qt/ui/video_effects.h:1276
 msgid "Position"
 msgstr "位置"
@@ -5060,13 +5060,13 @@ msgstr "開啟並寫入「%s」失敗"
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
 #: modules/gui/macosx/VLCSimplePrefsController.m:313
 #: modules/gui/macosx/VLCSimplePrefsController.m:384
-#: modules/gui/macosx/VLCSimplePrefsController.m:827
+#: modules/gui/macosx/VLCSimplePrefsController.m:832
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:50
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:791
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
 #: modules/gui/macosx/prefs.m:189
 #: modules/gui/qt/components/open_panels.cpp:1366
-#: modules/gui/qt/components/preferences_widgets.cpp:1428
+#: modules/gui/qt/components/preferences_widgets.cpp:1416
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
 #: modules/gui/qt/dialogs/sout.cpp:92
 #: modules/stream_out/chromecast/cast.cpp:1197
@@ -6148,7 +6148,7 @@ msgstr "金鑰傳遞訊息 XML 檔案的路徑"
 msgid "DCP"
 msgstr "DCP"
 
-#: modules/access/dcp/dcp.cpp:80
+#: modules/access/dcp/dcp.cpp:79
 msgid "Digital Cinema Package module"
 msgstr "Digital Cinema Package 模組"
 
@@ -8061,7 +8061,7 @@ msgstr "螢幕輸入"
 #: modules/gui/macosx/VLCOpenWindowController.m:209
 #: modules/gui/macosx/VLCOpenWindowController.m:488
 #: modules/gui/macosx/VLCOpenWindowController.m:1106
-#: modules/gui/macosx/VLCSimplePrefsController.m:666
+#: modules/gui/macosx/VLCSimplePrefsController.m:671
 msgid "Screen"
 msgstr "畫面"
 
@@ -13576,7 +13576,7 @@ msgstr "快速"
 
 #: modules/codec/x264.c:429 modules/gui/macosx/VLCMainMenu.m:290
 #: modules/gui/macosx/VLCMainMenu.m:392
-#: modules/gui/macosx/VLCSimplePrefsController.m:703
+#: modules/gui/macosx/VLCSimplePrefsController.m:708
 #: modules/gui/qt/components/simple_preferences.cpp:695
 #: modules/misc/gnutls.c:778 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
@@ -13773,7 +13773,7 @@ msgstr "滑鼠手勢控制介面"
 
 #: modules/control/globalhotkeys/win32.c:47
 #: modules/control/globalhotkeys/xcb.c:50
-#: modules/gui/qt/components/preferences_widgets.cpp:1146
+#: modules/gui/qt/components/preferences_widgets.cpp:1137
 msgid "Global Hotkeys"
 msgstr "全域熱鍵"
 
@@ -13784,7 +13784,7 @@ msgstr "全域熱鍵介面"
 
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:243
-#: modules/gui/qt/components/preferences_widgets.cpp:1145
+#: modules/gui/qt/components/preferences_widgets.cpp:1136
 #: modules/gui/qt/components/simple_preferences.cpp:249
 msgid "Hotkeys"
 msgstr "熱鍵"
@@ -16295,9 +16295,9 @@ msgid "A SDP export is requested, but no URL is provided."
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:1060
-#: modules/gui/macosx/VLCSimplePrefsController.m:697
-#: modules/gui/macosx/VLCSimplePrefsController.m:725
-#: modules/gui/macosx/VLCSimplePrefsController.m:1258
+#: modules/gui/macosx/VLCSimplePrefsController.m:702
+#: modules/gui/macosx/VLCSimplePrefsController.m:730
+#: modules/gui/macosx/VLCSimplePrefsController.m:1263
 #: modules/gui/qt/components/simple_preferences.cpp:692
 msgid "Custom"
 msgstr "自訂"
@@ -16306,11 +16306,11 @@ msgstr "自訂"
 msgid "Remember"
 msgstr ""
 
-#: modules/gui/macosx/VLCCoreInteraction.m:417
+#: modules/gui/macosx/VLCCoreInteraction.m:485
 msgid "Random On"
 msgstr "開啟隨機"
 
-#: modules/gui/macosx/VLCCoreInteraction.m:487
+#: modules/gui/macosx/VLCCoreInteraction.m:555
 msgid "Repeat Off"
 msgstr "關閉重複"
 
@@ -16366,8 +16366,8 @@ msgstr "VLC 媒體播放器說明文件..."
 msgid "Index"
 msgstr "索引"
 
-#: modules/gui/macosx/VLCInputManager.m:451
-#: modules/gui/macosx/VLCInputManager.m:478
+#: modules/gui/macosx/VLCInputManager.m:467
+#: modules/gui/macosx/VLCInputManager.m:494
 #, fuzzy
 msgid "VLC media playback"
 msgstr "VLC 媒體播放器"
@@ -17077,7 +17077,7 @@ msgstr "字幕編碼"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:360
 #: modules/gui/macosx/VLCSimplePrefsController.m:347
-#: modules/gui/qt/ui/sprefs_subtitles.h:297
+#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Font size"
 msgstr "字型大小"
 
@@ -17253,7 +17253,7 @@ msgid "Continue playback?"
 msgstr "繼續播放？"
 
 #: modules/gui/macosx/VLCResumeDialogController.m:49
-#: modules/gui/macosx/VLCSimplePrefsController.m:828
+#: modules/gui/macosx/VLCSimplePrefsController.m:833
 #: modules/gui/qt/dialogs/firstrun.cpp:106
 msgid "Continue"
 msgstr "繼續"
@@ -17359,7 +17359,7 @@ msgid "Select an action to change the associated hotkey:"
 msgstr "請選擇動作以變更關聯的熱鍵："
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:290
-#: modules/gui/qt/components/preferences_widgets.cpp:1150
+#: modules/gui/qt/components/preferences_widgets.cpp:1141
 msgid "Action"
 msgstr "動作"
 
@@ -17494,13 +17494,13 @@ msgid "Display Settings"
 msgstr "顯示設定"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:346
-#: modules/gui/qt/ui/sprefs_subtitles.h:298
+#: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Font color"
 msgstr "字型顏色"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:348 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
-#: modules/gui/qt/ui/sprefs_subtitles.h:296
+#: modules/gui/qt/ui/sprefs_subtitles.h:298
 msgid "Font"
 msgstr "字型"
 
@@ -17509,7 +17509,7 @@ msgid "Subtitle languages"
 msgstr "字幕語言"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:350
-#: modules/gui/qt/ui/sprefs_subtitles.h:293
+#: modules/gui/qt/ui/sprefs_subtitles.h:295
 msgid "Preferred subtitle language"
 msgstr "偏好的字幕語言"
 
@@ -17524,13 +17524,13 @@ msgstr "強制使用粗體"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:355
 #: modules/text_renderer/freetype/freetype.c:110
-#: modules/gui/qt/ui/sprefs_subtitles.h:300
+#: modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Outline color"
 msgstr "輪廓顏色"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:356
 #: modules/text_renderer/freetype/freetype.c:111
-#: modules/gui/qt/ui/sprefs_subtitles.h:299
+#: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Outline thickness"
 msgstr "輪廓厚度"
 
@@ -17605,36 +17605,36 @@ msgid ""
 "Media files cannot be resumed because keeping recent media items is disabled."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:580
+#: modules/gui/macosx/VLCSimplePrefsController.m:585
 msgid "Last check on: %@"
 msgstr "上次檢查時間："
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:582
+#: modules/gui/macosx/VLCSimplePrefsController.m:587
 msgid "No check was performed yet."
 msgstr "尚未檢查。"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:699
+#: modules/gui/macosx/VLCSimplePrefsController.m:704
 msgid "Lowest Latency"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:701
+#: modules/gui/macosx/VLCSimplePrefsController.m:706
 msgid "Low Latency"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:705
+#: modules/gui/macosx/VLCSimplePrefsController.m:710
 msgid "Higher Latency"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:707
+#: modules/gui/macosx/VLCSimplePrefsController.m:712
 msgid "Highest Latency"
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:827
+#: modules/gui/macosx/VLCSimplePrefsController.m:832
 #: modules/gui/qt/dialogs/preferences.cpp:336
 msgid "Reset Preferences"
 msgstr "重置偏好設定"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:830
+#: modules/gui/macosx/VLCSimplePrefsController.m:835
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -17655,40 +17655,40 @@ msgstr ""
 "\n"
 "您確定要繼續嗎？"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1100
+#: modules/gui/macosx/VLCSimplePrefsController.m:1105
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1169
+#: modules/gui/macosx/VLCSimplePrefsController.m:1174
 msgid "Choose the folder to save your video snapshots to."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1171
-#: modules/gui/macosx/VLCSimplePrefsController.m:1270
+#: modules/gui/macosx/VLCSimplePrefsController.m:1176
+#: modules/gui/macosx/VLCSimplePrefsController.m:1275
 msgid "Choose"
 msgstr "選擇"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1268
+#: modules/gui/macosx/VLCSimplePrefsController.m:1273
 msgid "Choose the directory or filename where the records will be stored."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1381
+#: modules/gui/macosx/VLCSimplePrefsController.m:1386
 msgid ""
 "Press new keys for\n"
 "\"%@\""
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1454
+#: modules/gui/macosx/VLCSimplePrefsController.m:1459
 msgid "Invalid combination"
 msgstr "無效的組合"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1455
+#: modules/gui/macosx/VLCSimplePrefsController.m:1460
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1465
-#: modules/gui/macosx/VLCSimplePrefsController.m:1469
+#: modules/gui/macosx/VLCSimplePrefsController.m:1470
+#: modules/gui/macosx/VLCSimplePrefsController.m:1474
 msgid "This combination is already taken by \"%@\"."
 msgstr ""
 
@@ -19300,43 +19300,43 @@ msgstr "3D圖片流"
 msgid "Select File"
 msgstr "選擇檔案"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1134
+#: modules/gui/qt/components/preferences_widgets.cpp:1125
 msgid ""
 "Select or double click an action to change the associated hotkey. Use delete "
 "key to remove hotkeys."
 msgstr "選取或在一個動作上按兩下以改變它的相關熱鍵。使用刪除鍵刪除熱鍵。"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1141
+#: modules/gui/qt/components/preferences_widgets.cpp:1132
 msgid "in"
 msgstr "在"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1143
+#: modules/gui/qt/components/preferences_widgets.cpp:1134
 msgid "Any field"
 msgstr "任何範疇"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1144
+#: modules/gui/qt/components/preferences_widgets.cpp:1135
 msgid "Actions"
 msgstr "動作"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1151
+#: modules/gui/qt/components/preferences_widgets.cpp:1142
 msgid "Hotkey"
 msgstr "熱鍵"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1152
+#: modules/gui/qt/components/preferences_widgets.cpp:1143
 msgid "Application level hotkey"
 msgstr "應用程式層級熱鍵"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1153
-#: modules/gui/qt/components/preferences_widgets.cpp:1413
+#: modules/gui/qt/components/preferences_widgets.cpp:1144
+#: modules/gui/qt/components/preferences_widgets.cpp:1401
 msgid "Global"
 msgstr "全域"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1154
+#: modules/gui/qt/components/preferences_widgets.cpp:1145
 msgid "Desktop level hotkey"
 msgstr "桌面層級熱鍵"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1237
-#: modules/gui/qt/components/preferences_widgets.cpp:1238
+#: modules/gui/qt/components/preferences_widgets.cpp:1225
+#: modules/gui/qt/components/preferences_widgets.cpp:1226
 msgid ""
 "Double click to change.\n"
 "Delete key to remove."
@@ -19344,31 +19344,31 @@ msgstr ""
 "雙擊動作以改變。\n"
 "按刪除鍵以刪除。"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1414
+#: modules/gui/qt/components/preferences_widgets.cpp:1402
 msgid "Hotkey change"
 msgstr "熱鍵變更"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1418
+#: modules/gui/qt/components/preferences_widgets.cpp:1406
 msgid "Press the new key or combination for "
 msgstr "按新的鍵或組合鍵為了"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1427
+#: modules/gui/qt/components/preferences_widgets.cpp:1415
 msgid "Assign"
 msgstr "指定"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1462
+#: modules/gui/qt/components/preferences_widgets.cpp:1450
 msgid "Warning: this key or combination is already assigned to "
 msgstr "警告：這個按鍵或組合已經指定為"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1474
+#: modules/gui/qt/components/preferences_widgets.cpp:1462
 msgid "Warning: <b>%1</b> is already an application menu shortcut"
 msgstr ""
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1497
+#: modules/gui/qt/components/preferences_widgets.cpp:1485
 msgid "Key or combination: "
 msgstr "按鍵或組合"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1506
+#: modules/gui/qt/components/preferences_widgets.cpp:1494
 msgid "Key: "
 msgstr "按鍵"
 
@@ -21597,11 +21597,11 @@ msgstr "Lua SD 模組"
 msgid "Folder meta data"
 msgstr "資料夾詮釋資料"
 
-#: modules/meta_engine/folder.c:73
+#: modules/meta_engine/folder.c:75
 msgid "Album art filename"
 msgstr "專輯封面檔案名稱"
 
-#: modules/meta_engine/folder.c:73
+#: modules/meta_engine/folder.c:75
 msgid "Filename to look for album art in current directory"
 msgstr "在所在目錄以檔名尋找專輯封面"
 
@@ -27663,7 +27663,7 @@ msgstr "對話視窗"
 #: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:406
 #: modules/gui/qt/ui/sprefs_input.h:353
 #: modules/gui/qt/ui/sprefs_interface.h:526
-#: modules/gui/qt/ui/sprefs_subtitles.h:286
+#: modules/gui/qt/ui/sprefs_subtitles.h:288
 #: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
 msgid "Form"
 msgstr "格式"
@@ -28230,35 +28230,35 @@ msgstr "副檔名關聯"
 msgid "Set up associations..."
 msgstr "設定檔案關聯..."
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:288
+#: modules/gui/qt/ui/sprefs_subtitles.h:290
 msgid "Enable On Screen Display (OSD)"
 msgstr "啟用螢幕顯示(OSD)"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:289
+#: modules/gui/qt/ui/sprefs_subtitles.h:291
 msgid "Show media title on video start"
 msgstr "視訊開始播放時顯示媒體標題"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:291
+#: modules/gui/qt/ui/sprefs_subtitles.h:293
 msgid "Enable subtitles"
 msgstr "啟用字幕"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:292
+#: modules/gui/qt/ui/sprefs_subtitles.h:294
 msgid "Subtitle Language"
 msgstr "字幕語言"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:294
+#: modules/gui/qt/ui/sprefs_subtitles.h:296
 msgid "Default encoding"
 msgstr "預設編碼"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:295
+#: modules/gui/qt/ui/sprefs_subtitles.h:297
 msgid "Subtitle effects"
 msgstr "字幕效果"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:301
+#: modules/gui/qt/ui/sprefs_subtitles.h:303
 msgid "Add a shadow"
 msgstr "加入陰影"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:303
+#: modules/gui/qt/ui/sprefs_subtitles.h:305
 #: modules/gui/qt/ui/video_effects.h:1227
 #: modules/gui/qt/ui/video_effects.h:1231
 #: modules/gui/qt/ui/video_effects.h:1234
@@ -28270,7 +28270,7 @@ msgstr "加入陰影"
 msgid " px"
 msgstr " 像素"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:304
+#: modules/gui/qt/ui/sprefs_subtitles.h:306
 msgid "Add a background"
 msgstr "加入背景"
 
