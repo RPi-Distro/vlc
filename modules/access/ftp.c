@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: 0aea13ac95979c931a6cb13676ca9681fc5da2aa $
+ * $Id: 3d79bc68a2428379914f18c708ba03727ab038a3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont - EPSV support
@@ -86,7 +86,7 @@ vlc_module_begin ()
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
     add_string( "ftp-user", NULL, USER_TEXT, USER_LONGTEXT, false )
-    add_string( "ftp-pwd", NULL, PASS_TEXT, PASS_LONGTEXT, false )
+    add_password( "ftp-pwd", NULL, PASS_TEXT, PASS_LONGTEXT, false )
     add_string( "ftp-account", "anonymous", ACCOUNT_TEXT,
                 ACCOUNT_LONGTEXT, false )
     add_shortcut( "ftp", "ftps", "ftpes" )

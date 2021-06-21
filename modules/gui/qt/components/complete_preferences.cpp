@@ -2,7 +2,7 @@
  * complete_preferences.cpp : "Normal preferences"
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: bca44457d37b1776eab196046f15fd23d41c5ffd $
+ * $Id: 5ca04b46b15406d851c50a9fc99bccca3e396302 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -680,13 +680,14 @@ AdvPrefsPanel::AdvPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
 
         if( p_item->i_type == CONFIG_SECTION )
         {
-            if( box )
+            if( box && i_boxline > 0 )
             {
                 box->setLayout( boxlayout );
                 box->show();
                 layout->addWidget( box, i_line, 0, 1, -1 );
                 i_line++;
             }
+            i_boxline = 0;
             box = new QGroupBox( qtr( p_item->psz_text ), this );
             box->hide();
             boxlayout = new QGridLayout();

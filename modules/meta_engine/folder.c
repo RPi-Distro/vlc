@@ -2,7 +2,7 @@
  * folder.c
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: aa25c8f945d11f71c503098efb9bf57b298ca748 $
+ * $Id: 7ab986d4199b8832a86a320568dbc29afd09dad9 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -69,6 +69,8 @@ static int FindMeta( vlc_object_t * );
 vlc_module_begin ()
     set_shortname( N_( "Folder" ) )
     set_description( N_("Folder meta data") )
+    set_category( CAT_PLAYLIST )
+    set_subcategory( SUBCAT_PLAYLIST_GENERAL )
     add_loadfile( "album-art-filename", NULL,
         N_("Album art filename"), N_("Filename to look for album art in current directory"), false );
     set_capability( "art finder", 90 )

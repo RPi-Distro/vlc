@@ -1,3 +1,361 @@
+commit 5e70837d8d766db6ca5052a2d4f503ad37243d9c
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Fri Jun 18 17:39:50 2021 +0200
+
+    Update NEWS
+
+commit 720d731609ec8ece50f635c43745533aff1f1e67
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 22 18:53:28 2020 +0200
+
+    httpd: do not disable timeout for RTSP
+    
+    Use the same timeout for the RTSP connection as for the RTSP session.
+    A shorter timeout is inefficient, as it requires clients to reconnect
+    to refresh the session anyway. A longer timeout is pointless as the
+    session would timeout and the RTP streams would stop regardless of the
+    connection staying alive.
+    
+    Refs #25812.
+    
+    (cherry picked from commit 38d214bc4f2ef68dfe6859383e12a20ae91e62de)
+
+commit 3f9e2d54c22ee8a911faad522b459ac56dba7f4a
+Author: Stavros Vagionitis <stavros.vagionitis@gmail.com>
+Date:   Tue Jun 15 17:42:44 2021 +0300
+
+    httpd: set timeout duration per host rather than client
+    
+    Refs #25812.
+    
+    (cherry picked from commit ce3269d4a20aba2f87fc3e512131cb31b9561b3e)
+
+commit d6db88ba4029a2f148e87577322028c74c524a83
+Author: Stavros Vagionitis <stavros.vagionitis@gmail.com>
+Date:   Tue Jun 15 17:42:22 2021 +0300
+
+    httpd: store timeout date rather than activity date
+    
+    This should not make any functional differences.
+    
+    Refs #25812.
+    
+    (cherry picked from commit 2fd2b843c4af0e42c6848bc88ab03173500cc52c)
+
+commit 08db536c9921b0b5654bc954e335051efa1130c1
+Author: Felix Paul Kühne <felix@feepk.net>
+Date:   Wed Jun 16 13:52:40 2021 +0200
+
+    macosx/prefs: always show media key control as enabled
+    
+    On macOS Sierra and higher, we will use the official API to enable
+    control of VLC, which will always be enabled as potential conflicts are
+    mitigated by the OS and it is possible to control more than one
+    application at the same time, so the option is ignored. On earlier
+    releases of macOS, SPMediaKeyTap can still be optionally disabled.
+
+commit e43321ef93adc41a67632c86182c086281ab4848
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Jun 16 09:44:50 2021 +0200
+
+    On the road to 3.0.16
+
+commit 8f4f4b19e0e67f9ac66175df5bd422af476e77ed
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Wed Jun 16 09:35:37 2021 +0200
+
+    Update NEWS
+
+commit 2d5997118d7f0078827682c3dca155235ecf1454
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Sun May 12 22:31:54 2019 +0100
+
+    afile: check equality, not starts with
+    
+    (cherry picked from commit ae6af4007e7b957052ad88dee3af8958e31ca7f0)
+
+commit c76cb856732de985a0701bcefe88037c3822a92b
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Wed May 29 05:51:17 2019 +0100
+
+    qt: (hotkeys) remove incorrect hotkey table label tooltip
+    
+    the item pointer provided to the constructor is that of a single hotkey
+    config item. using the longtext from this item in a tooltip on the label
+    for the entire hotkey table makes zero sense, so let's remove it.
+    
+     - for the table shown in the simple view, the "key-play" option was
+       arbitrarily used for this.
+     - for the table shown in the advanced view, the text from the first
+       hotkey config item encountered was used.
+    
+    (cherry picked from commit b0385e9324a0f342e51bf5b61a50904adb4d47dd)
+
+commit dba1fa4e978b5b63d7254b452c21a4a69a12f84c
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Sun Apr 21 06:51:05 2019 +0100
+
+    qt: fix subtitle tabstop ordering
+    
+    (cherry picked from commit b407307b78575f90a64c4f2fb1103140f3458f16)
+
+commit 6a1530291e08755714a2513d90004e03b0596bff
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Tue Apr 9 19:56:42 2019 +0100
+
+    qt: remove general tooltop on module checkbox group
+    
+    With module selection controls which feature a groupbox of module
+    checkboxes, if individual modules have their own longtext, that is
+    displayed in a tooltip when hovering on them; for all others, the help
+    text for the entire control (groupbox) gets displayed, which is just
+    confusing from a UX point of view.
+    
+    This removes the general groupbox tooltip, thus fixing this.
+    
+    It remains for the textbox portion of the control however, so hovering over
+    that still provides the helptext!
+    
+    (cherry picked from commit e85dd955278e08fbf309120f0a360b414f76815c)
+
+commit de17adf1f8f71ef8f38e271cea4f48bf11964564
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Sun Apr 21 05:44:20 2019 +0100
+
+    qt: hide all empty groupboxes
+    
+    if a panel only has one groupbox and it is empty, it was hidden, but
+    otherwise they were shown; this was surely a bug, and at any rate is
+    undesirably messy. all empty groupboxes are now hidden.
+    
+    an example case: this fixes the empty "Performance options" groupbox (on
+    my system) under the top-level "Advanced" tree node in the advanced
+    preferences view, which happens to be very visible as the first panel
+    shown when switching to advanced mode.
+    
+    (cherry picked from commit 9214590343c9b8d55a88efaa3ca1f3c16109d553)
+
+commit 90dc0b2e06317dad5acad2b480ce5f6d80815bea
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Sun Apr 7 13:09:51 2019 +0100
+
+    transcode: fix broken --sout-transcode-sfilter option
+    
+    the capability is "sub source" not "spu source"
+    
+    this mistake came from 1f5744e92e89d0d46a4a5b38b28564a698fe63c9.
+    
+    (cherry picked from commit afc593fbfc1569d8b4b31ef19239d974fb231952)
+
+commit faa4e1b49ef707a9791941332494b1012a826475
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Sun Apr 28 06:45:27 2019 +0100
+
+    macosx: respect hidden cat/subcat "hack"
+    
+    Certain sets of options in the core option set use a cat/subcat of -1 as
+    a "hack" to avoid those options showing up in the GUI prefs set. This is
+    the case for options like --help for instance. While the Qt GUI plugin
+    respects this, the MacOSX one was missing checks for this, and so surely
+    (I don't have a mac so I can't look and see) it was including them when
+    it shouldn't.
+    
+    (cherry picked from commit 05e2f75ad01decaf1c83c7f45e6cabbf3833d5b1)
+
+commit f07984b8a938bd242787e9d77ab70f50a7abcd66
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Fri May 7 02:23:42 2021 +0100
+
+    gnutls: fix --gnutls-dir-trust longtext
+    
+    was mistakenly using shorttext instead of the defined longtext.
+    
+    (cherry picked from commit a0a7666095c4965616bb44111685e796ab27ec64)
+
+commit 1a121dd80784840a487215f80799c73b79f5e8f6
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Thu Sep 17 20:14:07 2020 +0100
+
+    x264: fix wrong h264 option longtext
+    
+    This option should be using DEADZONE_INTER_LONGTEXT instead of
+    DEADZONE_INTRA_LONGTEXT.
+    
+    (cherry picked from commit 50e2350110042ccf2b88652418af0a953fbfca55)
+
+commit fafe8f236d1bf10d5cdc913c5ef29db2e35d9593
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Tue Apr 9 04:16:57 2019 +0100
+
+    macosx: fix use-after-free / double-free
+    
+    (cherry picked from commit 886824ab7797dd5dc7c165144251c78cc4caf0db)
+
+commit 4843e8e520c302a217bcdeacc8d28f755e7eb604
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Jun 14 08:53:33 2021 +0000
+
+    direct3d11: fix potential crash when ID3D11DeviceContext4 is not found
+    
+    If ID3D11DeviceContext4 is not found we should not release is when we call the
+    error cleanup.
+    
+    
+    (cherry picked from commit 719dd732872f1542836308ea78627164270472da)
+
+commit c3787eaecfef6f36a9d0ae945387287bea8849a7
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Sun May 12 23:15:23 2019 +0100
+
+    ftp: set password option to password type
+    
+    (cherry picked from commit 546d0210895140a83d8ffe35ac257560a05fe3f8)
+
+commit 5326fdbd8162e168af8134760103cf415447ba9f
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Mon May 13 00:23:32 2019 +0100
+
+    core: --socks-pwd is a password option
+    
+    (cherry picked from commit 8aeef92e21ab32170a0aed01e7215c5c13c1a12e)
+
+commit d9de9c3e49d3f252943b547de9f86036f2d97b0a
+Author: Felix Paul Kühne <felix@feepk.net>
+Date:   Tue Jun 15 08:32:00 2021 +0200
+
+    macosx: disable SPMediaKeyTap on macOS Sierra and later
+    
+    On later releases, we will use the public API.
+
+commit 8fd31abc5d803c00557b1ca778153ee1b696aad7
+Author: Felix Paul Kühne <felix@feepk.net>
+Date:   Sun Jun 13 16:03:43 2021 +0200
+
+    macosx: do not try to seek unseekable content
+    
+    Previously, external apps such as the Touchbar and AppleScript bindings
+    could attempt to seek non-seekable content leading to persistent silence
+    until playback was restarted.
+
+commit b5b55004e23475a8e7741996bcd585401c468766
+Author: Felix Paul Kühne <felix@feepk.net>
+Date:   Sun Jun 13 16:02:03 2021 +0200
+
+    macosx: add support for the Touch Bar in current MacBooks
+    
+    This implements playback control via touch bar and the activity widgets.
+    It also exposes related playback meta data. It is a manual backport of
+    the respective code on the master branch and fixes #25744.
+
+commit 627a60fee0325a26672e4f35c771d967ea3e8d6a
+Author: Felix Paul Kühne <felix@feepk.net>
+Date:   Sat Feb 20 14:05:55 2021 +0100
+
+    contrib/vpx: fix cross-compiling for macOS from macOS
+
+commit ade18afcc72598d95f36b4806de9797435e71e9a
+Author: Felix Paul Kühne <felix@feepk.net>
+Date:   Fri May 7 11:00:25 2021 +0200
+
+    contrib/lame: fix cross-compilation for i386 on AArch64
+
+commit 5c053b5e8d92fc498b2be537083eabba02def081
+Author: Felix Paul Kühne <felix@feepk.net>
+Date:   Tue May 18 11:26:17 2021 +0200
+
+    contrib/zvbi: remove no-longer needed hack
+
+commit afb0acef054046673a7636246da53979762cf9f1
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Mon Jun 7 07:11:10 2021 +0200
+
+    contrib: update mpg123 to 1.28.0
+    
+    Quoting mpg123.de website:
+    
+    "Fix misguided handling of part2_3_length checks in
+    III_get_scale_factors_1() and III_get_scale_factors_2() which
+    invalidated decoding of a mono source encoded as ms+i-stereo.
+    This was a regression introduced with version 1.25.7."
+    
+    Fixes #25798
+    
+    (cherry picked from commit 62bf14a8563855aeb77441083e38824cddedaf30)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit b3adcde0dc6175382b3c268f4dc329bffd751c89
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Fri Mar 22 23:22:54 2019 +0000
+
+    dcp: fix options being hidden in GUI
+    
+    options need to be specified after the cat+subcat declarations otherwise
+    they may be ignored when constructing the preferences tree in Qt (and
+    possibly others).
+    
+    (cherry picked from commit 92654192d6c912a0448016d397d87be39aa95fdb)
+
+commit 23a38bc0eb06d9a27abf7d36c9bb76bbe823eb92
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Sun Apr 7 03:00:32 2019 +0100
+
+    meta/folder: fix options being hidden in GUI
+    
+    not having a cat+subcat specified means that the options were ignored
+    when constructing the preferences tree in Qt (and possibly others).
+    
+    (cherry picked from commit bc6700f7d1f5a483dc59f74fb42a1baacea716c1)
+
+commit b988f2801498cb6ada84194fa5122f94be739030
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Fri Apr 26 02:22:43 2019 +0100
+
+    chromaprint: fix options being hidden in GUI
+    
+    not having a cat+subcat specified means that the options were ignored
+    when constructing the preferences tree in Qt (and possibly others).
+    
+    (cherry picked from commit 90e1fe40dad7317426ffe980e8a05c8590984ed7)
+
+commit 9e15d24c598c89b04fa1197be39d59081a2f529e
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Sun Apr 7 02:56:21 2019 +0100
+
+    mosaic_bridge: fix options being hidden in GUI
+    
+    not having a cat+subcat specified means that the options were ignored
+    when constructing the preferences tree in Qt (and possibly others).
+    
+    (cherry picked from commit f9b5677ada19cff818737cbc4533f31376c4b90c)
+
+commit d4d82f7758e6336a0f77b153460c2e491978c282
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Thu Apr 18 20:59:03 2019 +0100
+
+    svg: fix option categorisation
+    
+    fixes problem of option not being shown in GUI
+    
+    (cherry picked from commit 73e00de604c85b82b0fd9d5e974572300ea4fb4b)
+
+commit 8cdc61cb8fce58e57f9a934adc354b23f7ecd64f
+Author: Lyndon Brown <jnqnfe@gmail.com>
+Date:   Sat Mar 23 01:44:29 2019 +0000
+
+    daala: fix likely plugin descriptor compile issue without sout
+    
+    (cherry picked from commit 801dc62e81872a8402e451240d5b8a75273f0591)
+
+commit 98ba1351bad2927a257160af4dad01bc5211dd0b
+Author: Martin Storsjö <martin@martin.st>
+Date:   Wed Jun 2 09:52:22 2021 +0300
+
+    contrib: harfbuzz: Don't treat -Wunused as an error, fix building with Clang 13
+    
+    This fixes building with the very latest nightly of Clang.
+    
+    (cherry picked from commit 37cdeb672ed47ced022316ddf9f9e85c49f68913)
+
 commit d3094196acd53fe8c231cb90e067d2f99c4b7d00
 Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
 Date:   Tue Jun 8 14:12:46 2021 +0200

@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : Widgets for preferences displays
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 1419bac1140479bad842488d190d99f50ab19005 $
+ * $Id: 64121b6dc14594cb5c84bd5e1d0a72d913f18183 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -703,15 +703,6 @@ void ModuleListConfigControl::finish( bool bycat )
         }
     }
     module_list_free( p_list );
-
-    if( p_item->psz_longtext )
-    {
-        QString tipText = qtr(p_item->psz_longtext);
-
-        text->setToolTip( formatTooltip(tipText) );
-        assert( groupBox );
-        groupBox->setToolTip( formatTooltip(tipText) );
-   }
 }
 
 QString ModuleListConfigControl::getValue() const
@@ -1196,9 +1187,6 @@ void KeySelectorControl::buildAppHotkeysList( QWidget *rootWidget )
 
 void KeySelectorControl::finish()
 {
-    if( label && p_item->psz_longtext )
-        label->setToolTip( formatTooltip( qtr( p_item->psz_longtext ) ) );
-
     /* Fill the table */
 
     /* Get the main Module */

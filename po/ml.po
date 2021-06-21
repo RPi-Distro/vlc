@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.13\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2021-06-09 17:29+0200\n"
+"POT-Creation-Date: 2021-06-18 23:14+0200\n"
 "PO-Revision-Date: 2021-02-25 14:11+0100\n"
 "Last-Translator: Dilip Re <dilip_meet@rediffmail.com>, 2021\n"
 "Language-Team: Malayalam (https://www.transifex.com/yaron/teams/16553/ml/)\n"
@@ -519,12 +519,12 @@ msgstr "സ്ട്രീം..."
 msgid "Save..."
 msgstr "സംരക്ഷിക്കുക..."
 
-#: include/vlc_intf_strings.h:79 modules/gui/macosx/VLCCoreInteraction.m:447
+#: include/vlc_intf_strings.h:79 modules/gui/macosx/VLCCoreInteraction.m:515
 #: modules/gui/macosx/VLCMainMenu.m:399
 msgid "Repeat All"
 msgstr "എല്ലാം ആവര്‍ത്തിക്കുക"
 
-#: include/vlc_intf_strings.h:80 modules/gui/macosx/VLCCoreInteraction.m:467
+#: include/vlc_intf_strings.h:80 modules/gui/macosx/VLCCoreInteraction.m:535
 #: modules/gui/macosx/VLCMainMenu.m:398
 msgid "Repeat One"
 msgstr "ഒന്ന് ആവര്‍ത്തിക്കുക"
@@ -536,7 +536,7 @@ msgstr "ഒന്ന് ആവര്‍ത്തിക്കുക"
 msgid "Random"
 msgstr "റാന്‍ഡം"
 
-#: include/vlc_intf_strings.h:82 modules/gui/macosx/VLCCoreInteraction.m:425
+#: include/vlc_intf_strings.h:82 modules/gui/macosx/VLCCoreInteraction.m:493
 msgid "Random Off"
 msgstr "റാന്‍ഡം ഓഫ്"
 
@@ -561,7 +561,7 @@ msgid "Save Playlist to &File..."
 msgstr "ഫയലിലേക്ക് പ്ലേലിസ്റ്റ് സേവ് ചെയ്യുക(_F)..."
 
 #: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:194
-#: modules/gui/qt/components/preferences_widgets.cpp:1138
+#: modules/gui/qt/components/preferences_widgets.cpp:1129
 msgid "Search"
 msgstr "തിരയുക"
 
@@ -1764,7 +1764,7 @@ msgid "Stereo audio output mode"
 msgstr "സ്റ്റീരിയോ ഓഡിയോ ഔട്ട്പുട്ട് മോഡ്"
 
 #: src/libvlc-module.c:195 src/misc/actions.c:112
-#: modules/gui/qt/components/preferences_widgets.cpp:1429
+#: modules/gui/qt/components/preferences_widgets.cpp:1417
 #: modules/gui/qt/util/customwidgets.cpp:330
 msgid "Unset"
 msgstr "അണ്‍സെറ്റ്"
@@ -2512,7 +2512,7 @@ msgstr ""
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
-#: modules/gui/macosx/VLCSimplePrefsController.m:661
+#: modules/gui/macosx/VLCSimplePrefsController.m:666
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:54
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:388
 #: modules/gui/macosx/prefs_widgets.m:1215
@@ -2870,7 +2870,7 @@ msgstr ""
 "ഇവിടെ പ്രവര്‍ത്തനക്ഷമമാക്കി കൂടാതെ അവയെ \"ഉപഉറവിട ഫീല്‍റ്ററുകള്\" ഘടക വകുപ്പില്‍ കോണ്‍ഫിഗര്‍ "
 "ചെയ്യാം."
 
-#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:302
+#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Force subtitle position"
 msgstr "ഉപശീര്‍ഷക സ്ഥാനം ഫോഴ്സ് ചെയ്യുക"
 
@@ -2900,7 +2900,7 @@ msgstr "താങ്കള്‍ക്ക് പൂര്‍ണ്ണമായ�
 
 #: src/libvlc-module.c:717 src/libvlc-module.c:1674 src/text/iso-639_def.h:146
 #: modules/gui/macosx/VLCSimplePrefsController.m:351
-#: modules/gui/qt/ui/sprefs_subtitles.h:287
+#: modules/gui/qt/ui/sprefs_subtitles.h:289
 msgid "On Screen Display"
 msgstr "ഓണ്‍ സ്ക്രീന്‍ ഡിസ്പ്ലേ"
 
@@ -4050,7 +4050,7 @@ msgstr "പ്ലേബാക്ക് സ്റ്റോപ്പ് ചെയ�
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
-#: modules/gui/qt/ui/sprefs_subtitles.h:290
+#: modules/gui/qt/ui/sprefs_subtitles.h:292
 #: modules/gui/qt/ui/video_effects.h:1276
 msgid "Position"
 msgstr "സ്ഥാനം"
@@ -5241,13 +5241,13 @@ msgstr "റൈറ്റ് ചെയ്യാനായി  \"%s\" തുറക�
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
 #: modules/gui/macosx/VLCSimplePrefsController.m:313
 #: modules/gui/macosx/VLCSimplePrefsController.m:384
-#: modules/gui/macosx/VLCSimplePrefsController.m:827
+#: modules/gui/macosx/VLCSimplePrefsController.m:832
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:50
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:791
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
 #: modules/gui/macosx/prefs.m:189
 #: modules/gui/qt/components/open_panels.cpp:1366
-#: modules/gui/qt/components/preferences_widgets.cpp:1428
+#: modules/gui/qt/components/preferences_widgets.cpp:1416
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
 #: modules/gui/qt/dialogs/sout.cpp:92
 #: modules/stream_out/chromecast/cast.cpp:1197
@@ -6352,7 +6352,7 @@ msgstr "കീ ഡെലിവറി സന്ദേശത്തിലേക്�
 msgid "DCP"
 msgstr "ഡിസിപി"
 
-#: modules/access/dcp/dcp.cpp:80
+#: modules/access/dcp/dcp.cpp:79
 msgid "Digital Cinema Package module"
 msgstr "ഡിജിറ്റല്‍ സിനിമ പാക്കേജ് മോഡ്യൂള്‍"
 
@@ -8378,7 +8378,7 @@ msgstr "സ്ക്രീന്‍ ഇന്‍പുട്ട്"
 #: modules/gui/macosx/VLCOpenWindowController.m:209
 #: modules/gui/macosx/VLCOpenWindowController.m:488
 #: modules/gui/macosx/VLCOpenWindowController.m:1106
-#: modules/gui/macosx/VLCSimplePrefsController.m:666
+#: modules/gui/macosx/VLCSimplePrefsController.m:671
 msgid "Screen"
 msgstr "സ്ക്രീന്‍"
 
@@ -14303,7 +14303,7 @@ msgstr "വേഗം"
 
 #: modules/codec/x264.c:429 modules/gui/macosx/VLCMainMenu.m:290
 #: modules/gui/macosx/VLCMainMenu.m:392
-#: modules/gui/macosx/VLCSimplePrefsController.m:703
+#: modules/gui/macosx/VLCSimplePrefsController.m:708
 #: modules/gui/qt/components/simple_preferences.cpp:695
 #: modules/misc/gnutls.c:778 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
@@ -14504,7 +14504,7 @@ msgstr "മൌസിന്‍റെ ചലന നിയന്ത്രണ പൊ
 
 #: modules/control/globalhotkeys/win32.c:47
 #: modules/control/globalhotkeys/xcb.c:50
-#: modules/gui/qt/components/preferences_widgets.cpp:1146
+#: modules/gui/qt/components/preferences_widgets.cpp:1137
 msgid "Global Hotkeys"
 msgstr "ആഗോള ഹോട്ട്കീകള്‍"
 
@@ -14515,7 +14515,7 @@ msgstr "ആഗോള ഹോട്ട്കീസ് പൊതുപ്രതല�
 
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:243
-#: modules/gui/qt/components/preferences_widgets.cpp:1145
+#: modules/gui/qt/components/preferences_widgets.cpp:1136
 #: modules/gui/qt/components/simple_preferences.cpp:249
 msgid "Hotkeys"
 msgstr "ഹോട്ട്കീകള്‍"
@@ -17101,9 +17101,9 @@ msgid "A SDP export is requested, but no URL is provided."
 msgstr "ഒരു SDP എക്സ്പോര്‍ട്ട് അപേക്ഷിക്കപ്പെട്ടിട്ടുണ്ട്, പക്ഷേ URL ഒന്നും തന്നെ നല്‍കിയിട്ടില്ല"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:1060
-#: modules/gui/macosx/VLCSimplePrefsController.m:697
-#: modules/gui/macosx/VLCSimplePrefsController.m:725
-#: modules/gui/macosx/VLCSimplePrefsController.m:1258
+#: modules/gui/macosx/VLCSimplePrefsController.m:702
+#: modules/gui/macosx/VLCSimplePrefsController.m:730
+#: modules/gui/macosx/VLCSimplePrefsController.m:1263
 #: modules/gui/qt/components/simple_preferences.cpp:692
 msgid "Custom"
 msgstr "പതിവ്"
@@ -17112,11 +17112,11 @@ msgstr "പതിവ്"
 msgid "Remember"
 msgstr "ഓർമയിൽ സൂക്ഷിക്കുക "
 
-#: modules/gui/macosx/VLCCoreInteraction.m:417
+#: modules/gui/macosx/VLCCoreInteraction.m:485
 msgid "Random On"
 msgstr "ക്രമരഹിതമായ ഓണ്‍ ചെയ്യല്‍"
 
-#: modules/gui/macosx/VLCCoreInteraction.m:487
+#: modules/gui/macosx/VLCCoreInteraction.m:555
 msgid "Repeat Off"
 msgstr "തുടര്‍ച്ചയായ ഓഫ്"
 
@@ -17172,8 +17172,8 @@ msgstr "വി‌എല്‍‌സി മെഡിയ പ്ലേയര്‍ 
 msgid "Index"
 msgstr "സൂചിക"
 
-#: modules/gui/macosx/VLCInputManager.m:451
-#: modules/gui/macosx/VLCInputManager.m:478
+#: modules/gui/macosx/VLCInputManager.m:467
+#: modules/gui/macosx/VLCInputManager.m:494
 #, fuzzy
 msgid "VLC media playback"
 msgstr "വിഎല്‍സി മീഡിയ പ്ലേയര്‍"
@@ -17898,7 +17898,7 @@ msgstr "ഉപശീര്‍ഷക എന്‍കോഡിംഗ്"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:360
 #: modules/gui/macosx/VLCSimplePrefsController.m:347
-#: modules/gui/qt/ui/sprefs_subtitles.h:297
+#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Font size"
 msgstr "ഫോണ്ടിന്‍റെ വലിപ്പം"
 
@@ -18074,7 +18074,7 @@ msgid "Continue playback?"
 msgstr "പ്ലേബാക്ക് തുടരുക?"
 
 #: modules/gui/macosx/VLCResumeDialogController.m:49
-#: modules/gui/macosx/VLCSimplePrefsController.m:828
+#: modules/gui/macosx/VLCSimplePrefsController.m:833
 #: modules/gui/qt/dialogs/firstrun.cpp:106
 msgid "Continue"
 msgstr "തുടരുക"
@@ -18180,7 +18180,7 @@ msgid "Select an action to change the associated hotkey:"
 msgstr "ബന്ധപ്പെട്ട ഹോട്ട്കീകള്‍ മാറ്റുന്നതിന് ഒരു പ്രവൃത്തി തിരഞ്ഞെടുക്കുക:"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:290
-#: modules/gui/qt/components/preferences_widgets.cpp:1150
+#: modules/gui/qt/components/preferences_widgets.cpp:1141
 msgid "Action"
 msgstr "നടപടി"
 
@@ -18317,13 +18317,13 @@ msgid "Display Settings"
 msgstr "ഡിസ്പ്ലേ സജ്ജീകരണങ്ങള്‍"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:346
-#: modules/gui/qt/ui/sprefs_subtitles.h:298
+#: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Font color"
 msgstr "ഫോണ്ട് നിറം"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:348 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
-#: modules/gui/qt/ui/sprefs_subtitles.h:296
+#: modules/gui/qt/ui/sprefs_subtitles.h:298
 msgid "Font"
 msgstr "ഫോണ്ട്"
 
@@ -18332,7 +18332,7 @@ msgid "Subtitle languages"
 msgstr "ഉപശീര്‍ഷക ഭാഷകള്‍"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:350
-#: modules/gui/qt/ui/sprefs_subtitles.h:293
+#: modules/gui/qt/ui/sprefs_subtitles.h:295
 msgid "Preferred subtitle language"
 msgstr "മുന്‍ഗണനയുള്ള ഉപശീര്‍ഷക ഭാഷ"
 
@@ -18347,13 +18347,13 @@ msgstr "ഫോഴ്സ് ബോള്‍ഡ്"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:355
 #: modules/text_renderer/freetype/freetype.c:110
-#: modules/gui/qt/ui/sprefs_subtitles.h:300
+#: modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Outline color"
 msgstr "ഔട്ട്ലൈന്‍ നിറം"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:356
 #: modules/text_renderer/freetype/freetype.c:111
-#: modules/gui/qt/ui/sprefs_subtitles.h:299
+#: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Outline thickness"
 msgstr "ഔട്ട്ലൈന്‍ തിക്ക്നെസ്സ്"
 
@@ -18430,36 +18430,36 @@ msgstr ""
 "സമീപകാല മീഡിയ ഇനങ്ങൾ സൂക്ഷിക്കുന്നത് അപ്രാപ്തമാക്കിയതിനാൽ മീഡിയ ഫയലുകൾ പുനരാരംഭിക്കാൻ "
 "കഴിയില്ല."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:580
+#: modules/gui/macosx/VLCSimplePrefsController.m:585
 msgid "Last check on: %@"
 msgstr "%@ലെ അവസാന പരിശോധന"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:582
+#: modules/gui/macosx/VLCSimplePrefsController.m:587
 msgid "No check was performed yet."
 msgstr "ഇതുവരെ യാതൊരു പരിശോധനയും നടന്നിട്ടില്ല."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:699
+#: modules/gui/macosx/VLCSimplePrefsController.m:704
 msgid "Lowest Latency"
 msgstr "താഴ്‌ന്ന ലാറ്റന്‍സി"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:701
+#: modules/gui/macosx/VLCSimplePrefsController.m:706
 msgid "Low Latency"
 msgstr "കുറഞ്ഞ ലാറ്റന്‍സി"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:705
+#: modules/gui/macosx/VLCSimplePrefsController.m:710
 msgid "Higher Latency"
 msgstr "ഉയര്‍ന്ന ലാറ്റന്‍സി"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:707
+#: modules/gui/macosx/VLCSimplePrefsController.m:712
 msgid "Highest Latency"
 msgstr "ഏറ്റവും ഉയര്‍ന്ന ലാറ്റന്‍സി"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:827
+#: modules/gui/macosx/VLCSimplePrefsController.m:832
 #: modules/gui/qt/dialogs/preferences.cpp:336
 msgid "Reset Preferences"
 msgstr "റീസെറ്റ് മുന്‍ഗണനങ്ങള്‍"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:830
+#: modules/gui/macosx/VLCSimplePrefsController.m:835
 msgid ""
 "This will reset VLC media player's preferences.\n"
 "\n"
@@ -18481,26 +18481,26 @@ msgstr ""
 "\n"
 "തുടരുവാന്‍ നിങ്ങളാഗ്രഹിക്കുന്നു എന്നത് തീര്‍ച്ചയാണോ?"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1100
+#: modules/gui/macosx/VLCSimplePrefsController.m:1105
 msgid ""
 "This setting cannot be changed because the native fullscreen mode is enabled."
 msgstr ""
 "പ്രാദേശിക മുഴുവന്‍ പ്രതല മോഡ് പ്രവര്‍ത്തനസജ്ജമായത് കാരണം ഈ ക്രമീകരണം മാറ്റുവാന്‍ കഴിയില്ല."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1169
+#: modules/gui/macosx/VLCSimplePrefsController.m:1174
 msgid "Choose the folder to save your video snapshots to."
 msgstr "നിങ്ങളുടെ വീഡിയോ സ്നാപ്ഷോട്ട് സംരക്ഷിക്കുന്നതിന് ഫോള്‍ഡര്‍ തിരഞ്ഞെടുക്കുക."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1171
-#: modules/gui/macosx/VLCSimplePrefsController.m:1270
+#: modules/gui/macosx/VLCSimplePrefsController.m:1176
+#: modules/gui/macosx/VLCSimplePrefsController.m:1275
 msgid "Choose"
 msgstr "തിരഞ്ഞെടുക്കുക"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1268
+#: modules/gui/macosx/VLCSimplePrefsController.m:1273
 msgid "Choose the directory or filename where the records will be stored."
 msgstr "രേഖകള്‍ സംരക്ഷിക്കപ്പെടേണ്ട ഡയറക്ടറിയോ ഫയല്‍നാമമോ തിരഞ്ഞെടുക്കുക."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1381
+#: modules/gui/macosx/VLCSimplePrefsController.m:1386
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -18508,16 +18508,16 @@ msgstr ""
 "പുതിയ കീ അമര്‍ത്തുക\n"
 "\"%@\" ഇതിന് വേണ്ടി"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1454
+#: modules/gui/macosx/VLCSimplePrefsController.m:1459
 msgid "Invalid combination"
 msgstr "സാധുവല്ലാത്ത സംയോജനം"
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1455
+#: modules/gui/macosx/VLCSimplePrefsController.m:1460
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "ഖേദജനകമായത്, ഈ കീകള്‍ ഹോട്ട്കീ ഷോര്‍ട്ട്കട്ടുകളായി ക്രമീകരിക്കാന്‍ കഴിയില്ല."
 
-#: modules/gui/macosx/VLCSimplePrefsController.m:1465
-#: modules/gui/macosx/VLCSimplePrefsController.m:1469
+#: modules/gui/macosx/VLCSimplePrefsController.m:1470
+#: modules/gui/macosx/VLCSimplePrefsController.m:1474
 msgid "This combination is already taken by \"%@\"."
 msgstr "ഈ സംയോജനം നേരത്തെ തന്നെ എടുത്തിരിക്കുന്നത്  \"%@\"."
 
@@ -20176,7 +20176,7 @@ msgstr "പിക്ച്ചര്‍ഫ്ലോ"
 msgid "Select File"
 msgstr "ഫയല്‍ തിരഞ്ഞെടുക്കുക"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1134
+#: modules/gui/qt/components/preferences_widgets.cpp:1125
 msgid ""
 "Select or double click an action to change the associated hotkey. Use delete "
 "key to remove hotkeys."
@@ -20184,37 +20184,37 @@ msgstr ""
 "ബന്ധപ്പെട്ട ഹോട്ട്‌കീ മാറ്റുന്നതിന് ഒരു പ്രവർത്തനം തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ ഇരട്ട ക്ലിക്കുചെയ്യുക. "
 "ഹോട്ട്‌കീ നീക്കംചെയ്യുന്നതിന് ഇല്ലാതാക്കൽ കീ ഉപയോഗിക്കുക."
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1141
+#: modules/gui/qt/components/preferences_widgets.cpp:1132
 msgid "in"
 msgstr "ല്‍"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1143
+#: modules/gui/qt/components/preferences_widgets.cpp:1134
 msgid "Any field"
 msgstr "ഏതെങ്കിലും ഫീല്‍ഡ്"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1144
+#: modules/gui/qt/components/preferences_widgets.cpp:1135
 msgid "Actions"
 msgstr "പ്രവര്‍ത്തനങ്ങള്‍"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1151
+#: modules/gui/qt/components/preferences_widgets.cpp:1142
 msgid "Hotkey"
 msgstr "ഹോട്ട്കീ"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1152
+#: modules/gui/qt/components/preferences_widgets.cpp:1143
 msgid "Application level hotkey"
 msgstr "ആപ്ലിക്കേഷന്‍ തലത്തിലുള്ള ഹോട്ട്കീ"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1153
-#: modules/gui/qt/components/preferences_widgets.cpp:1413
+#: modules/gui/qt/components/preferences_widgets.cpp:1144
+#: modules/gui/qt/components/preferences_widgets.cpp:1401
 msgid "Global"
 msgstr "ആഗോളം"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1154
+#: modules/gui/qt/components/preferences_widgets.cpp:1145
 msgid "Desktop level hotkey"
 msgstr "ഡെസ്ക്ടോപ്പ് നില ഹോട്ട്കീ"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1237
-#: modules/gui/qt/components/preferences_widgets.cpp:1238
+#: modules/gui/qt/components/preferences_widgets.cpp:1225
+#: modules/gui/qt/components/preferences_widgets.cpp:1226
 msgid ""
 "Double click to change.\n"
 "Delete key to remove."
@@ -20222,31 +20222,31 @@ msgstr ""
 "മാറ്റുന്നതിന് രണ്ട്പ്രാവശ്യം അമര്‍ത്തുക.\n"
 "നീക്കം ചെയ്യുന്നതിന് കീ ഇല്ലാതാക്കുക"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1414
+#: modules/gui/qt/components/preferences_widgets.cpp:1402
 msgid "Hotkey change"
 msgstr "ഹോട്ട്കീ മാറ്റം"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1418
+#: modules/gui/qt/components/preferences_widgets.cpp:1406
 msgid "Press the new key or combination for "
 msgstr "പുതിയ കീ അല്ലെങ്കില്‍ സംയോജനം അമര്‍ത്തുക ഇതിന്"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1427
+#: modules/gui/qt/components/preferences_widgets.cpp:1415
 msgid "Assign"
 msgstr "അസൈന്‍"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1462
+#: modules/gui/qt/components/preferences_widgets.cpp:1450
 msgid "Warning: this key or combination is already assigned to "
 msgstr "മുന്നറിയിപ്പ്: ഈ കീ അല്ലെങ്കില്‍ സംയോജനം ഇതിനകം നിയോഗിക്കപ്പെട്ടിരിക്കുന്നത്"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1474
+#: modules/gui/qt/components/preferences_widgets.cpp:1462
 msgid "Warning: <b>%1</b> is already an application menu shortcut"
 msgstr "മുന്നറിയിപ്പ്: <b>%1</b> എന്നത് ഇതിനകം ഒരു ആപ്ലിക്കേഷന്‍ മെനു കുറുക്കുവഴിയാണ്"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1497
+#: modules/gui/qt/components/preferences_widgets.cpp:1485
 msgid "Key or combination: "
 msgstr "കീ അല്ലെങ്കില്‍ കോമ്പിനേഷന്‍"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1506
+#: modules/gui/qt/components/preferences_widgets.cpp:1494
 msgid "Key: "
 msgstr "കീ:"
 
@@ -22572,11 +22572,11 @@ msgstr "Lua SD മോഡ്യൂള്‍"
 msgid "Folder meta data"
 msgstr "ഫോള്‍ഡര്‍ മെറ്റാഡാറ്റ"
 
-#: modules/meta_engine/folder.c:73
+#: modules/meta_engine/folder.c:75
 msgid "Album art filename"
 msgstr "ആല്‍ബംആര്‍ട്ട് ഫയല്‍ നാമം"
 
-#: modules/meta_engine/folder.c:73
+#: modules/meta_engine/folder.c:75
 msgid "Filename to look for album art in current directory"
 msgstr "നിലവിലെ ഡയറക്ടറിയിലെ ആല്‍ബം ആര്‍ട്ട് നോക്കുന്നതിനുള്ള ഫയല്‍ നാമം"
 
@@ -29007,7 +29007,7 @@ msgstr "ഡയലോഗ്"
 #: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:406
 #: modules/gui/qt/ui/sprefs_input.h:353
 #: modules/gui/qt/ui/sprefs_interface.h:526
-#: modules/gui/qt/ui/sprefs_subtitles.h:286
+#: modules/gui/qt/ui/sprefs_subtitles.h:288
 #: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
 msgid "Form"
 msgstr "ഫോം"
@@ -29577,35 +29577,35 @@ msgstr "ഫയല്‍ അനുബന്ധങ്ങളുടെ അസോസ�
 msgid "Set up associations..."
 msgstr "അസോസിയേഷനുകള്‍ സെറ്റപ്പ് ചെയ്യുക..."
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:288
+#: modules/gui/qt/ui/sprefs_subtitles.h:290
 msgid "Enable On Screen Display (OSD)"
 msgstr "ഓണ്‍ സ്ക്രീന്‍ ഡിസ്പ്ലേ(ഒഎസ്ഡി) സാധ്യമാക്കുക"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:289
+#: modules/gui/qt/ui/sprefs_subtitles.h:291
 msgid "Show media title on video start"
 msgstr "വീഡിയോ ആരംഭത്തില്‍ മീഡിയ ശീര്‍ഷകം കാണിക്കുക"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:291
+#: modules/gui/qt/ui/sprefs_subtitles.h:293
 msgid "Enable subtitles"
 msgstr "ഉപശീര്‍ഷകങ്ങള്‍ സാധ്യമാക്കുക"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:292
+#: modules/gui/qt/ui/sprefs_subtitles.h:294
 msgid "Subtitle Language"
 msgstr "ഉപശീര്‍ഷക ഭാഷ"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:294
+#: modules/gui/qt/ui/sprefs_subtitles.h:296
 msgid "Default encoding"
 msgstr "ഡീഫാള്‍ട്ട് എന്‍കോഡിങ്ങ്"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:295
+#: modules/gui/qt/ui/sprefs_subtitles.h:297
 msgid "Subtitle effects"
 msgstr "ഉപശീര്‍ഷക പ്രഭാവങ്ങള്‍"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:301
+#: modules/gui/qt/ui/sprefs_subtitles.h:303
 msgid "Add a shadow"
 msgstr "നിഴല്‍ ചേര്‍ക്കുക"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:303
+#: modules/gui/qt/ui/sprefs_subtitles.h:305
 #: modules/gui/qt/ui/video_effects.h:1227
 #: modules/gui/qt/ui/video_effects.h:1231
 #: modules/gui/qt/ui/video_effects.h:1234
@@ -29617,7 +29617,7 @@ msgstr "നിഴല്‍ ചേര്‍ക്കുക"
 msgid " px"
 msgstr "പിഎക്സ്"
 
-#: modules/gui/qt/ui/sprefs_subtitles.h:304
+#: modules/gui/qt/ui/sprefs_subtitles.h:306
 msgid "Add a background"
 msgstr "പശ്ചാത്തലം ചേര്‍ക്കുക"
 

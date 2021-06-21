@@ -2,7 +2,7 @@
  * file.c : audio output which writes the samples to a file
  *****************************************************************************
  * Copyright (C) 2002 VLC authors and VideoLAN
- * $Id: fd811e9c238fc44530932e19fc05b6f581c6a7d6 $
+ * $Id: 353c2f0095b2e1c19034172b0c40998421ec3d4c $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -181,7 +181,7 @@ static int Start( audio_output_t *p_aout, audio_sample_format_t *restrict fmt )
     i_format_list_size = (int)ARRAY_SIZE(format_list);
     for (i = 0; i < i_format_list_size; i++)
     {
-        if ( !strncmp( format_list[i], psz_format, strlen(format_list[i]) ) )
+        if ( !strcmp( format_list[i], psz_format ) )
         {
             break;
         }
