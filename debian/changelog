@@ -1,7 +1,16 @@
+vlc (3.0.16-1) unstable; urgency=medium
+
+  * Upload to unstable
+  * New upstream release
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 21 Jun 2021 21:07:16 +0200
+
 vlc (3.0.15-1) experimental; urgency=medium
 
   [ Mateusz Łukasik ]
   * New upstream release
+    - Fix remote code execution through crafted playlist
+      (VideoLAN-SB-VLC-3013)
   * Remove patches included upstream.
 
  -- Sebastian Ramacher <sramacher@debian.org>  Thu, 17 Jun 2021 23:38:35 +0200
