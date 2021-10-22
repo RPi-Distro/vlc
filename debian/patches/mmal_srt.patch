@@ -1,0 +1,26 @@
+--- a/modules/access/srt.c
++++ b/modules/access/srt.c
+@@ -165,8 +165,10 @@ static bool srt_schedule_reconnect(strea
+ 
+     /* Set latency */
+     i_latency = var_InheritInteger( p_stream, "latency" );
++#ifdef SRTO_TSBPDDELAY
+     srt_setsockopt( p_sys->sock, 0, SRTO_TSBPDDELAY,
+         &i_latency, sizeof( int ) );
++#endif
+ 
+     psz_passphrase = var_InheritString( p_stream, "passphrase" );
+     if ( psz_passphrase != NULL && psz_passphrase[0] != '\0')
+--- a/modules/access_output/srt.c
++++ b/modules/access_output/srt.c
+@@ -162,8 +162,10 @@ static bool srt_schedule_reconnect(sout_
+ 
+     /* Set latency */
+     i_latency = var_InheritInteger( p_access, "latency" );
++#ifdef SRTO_TSBPDDELAY
+     srt_setsockopt( p_sys->sock, 0, SRTO_TSBPDDELAY,
+         &i_latency, sizeof( int ) );
++#endif
+ 
+     if ( psz_passphrase != NULL && psz_passphrase[0] != '\0')
+     {

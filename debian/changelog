@@ -1,3 +1,16 @@
+vlc (3.0.16-1+rpi1+rpt1) bullseye; urgency=medium
+
+  * Add MMAL patch 22
+  * Add libxrandr-dev dependency
+  * Add libdrm-dev dependency
+  * Disable libva and vdpau on ARM
+
+  [changes from Raspbian]
+  * Add extern to three functions for gcc-10 compatibility.
+  * Partially fix clean target.
+
+ -- Serge Schneider <serge@raspberrypi.com>  Fri, 22 Oct 2021 15:49:51 +0100
+
 vlc (3.0.16-1) unstable; urgency=medium
 
   * Upload to unstable

@@ -232,4 +232,5 @@ usr/lib/*/vlc/plugins/video_output/libfb_plugin.so [fb]
 usr/lib/*/vlc/plugins/video_output/libvdummy_plugin.so
 usr/lib/*/vlc/plugins/video_output/libvmem_plugin.so
 usr/lib/*/vlc/plugins/video_output/libyuv_plugin.so
+usr/lib/*/vlc/plugins/mmal/libmmal_*_plugin.so [mmal]
 EOF

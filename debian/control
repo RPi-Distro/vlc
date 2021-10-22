@@ -34,6 +34,7 @@ Build-Depends: autopoint,
                libdbus-1-dev (>= 1.6.0),
                libdc1394-dev (>= 2.1.0) [linux-any],
                libdca-dev,
+               libdrm-dev,
                libdvbpsi-dev (>= 1.2.0),
                libdvdnav-dev (>= 4.9.0),
                libdvdread-dev (>= 4.9.0),
@@ -75,6 +76,7 @@ Build-Depends: autopoint,
                libpulse-dev (>= 1.0),
                libqt5svg5-dev,
                libqt5x11extras5-dev,
+               libraspberrypi-dev,
                libraw1394-dev (>= 2.0.1) [linux-any],
                libresid-builder-dev,
                librsvg2-dev,
@@ -100,9 +102,9 @@ Build-Depends: autopoint,
                libudev-dev [linux-any],
                libupnp-dev,
                libv4l-dev [linux-any],
-               libva-dev [kfreebsd-any linux-any],
+               libva-dev [!armhf !arm64],
                libvcdinfo-dev (>= 0.7.22),
-               libvdpau-dev,
+               libvdpau-dev [!armhf !arm64],
                libvncserver-dev (>= 0.9.9),
                libvorbis-dev,
                libx11-dev,
@@ -119,6 +121,7 @@ Build-Depends: autopoint,
                libxinerama-dev,
                libxml2-dev,
                libxpm-dev,
+               libxrandr-dev,
                libzvbi-dev (>= 0.2.28),
                lua5.2,
                oss4-dev [kfreebsd-any],
@@ -289,7 +292,8 @@ Multi-Arch: same
 Depends: vlc-data (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
-         ${vlc:PluginABI}
+         ${vlc:PluginABI},
+         libraspberrypi0
 Recommends: xdg-utils
 Suggests: libdvdcss2
 Description: multimedia player and streamer (base plugins)
@@ -319,7 +323,8 @@ Architecture: any
 Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         ${vlc:PluginABI}
+         ${vlc:PluginABI},
+         libraspberrypi0
 Enhances: vlc
 Description: multimedia player and streamer (video output plugins)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG-2, MPEG-4,

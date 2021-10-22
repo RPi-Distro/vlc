@@ -239,11 +239,25 @@ removeplugins += mmx sse2
 endif
 
 # ARM specific optimizations
-ifeq (,$(filter-out armhf,$(DEB_HOST_ARCH_CPU)))
+ifeq (,$(filter-out arm,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-neon
+confflags += --enable-mmal
+confflags += --enable-mmal-avcodec
 else
 confflags += --disable-neon
+confflags += --disable-mmal
+confflags += --disable-mmal-avcodec
 removeplugins += neon
+removeplugins += mmal
+endif
+
+ifeq (,$(filter-out arm arm64,$(DEB_HOST_ARCH_CPU)))
+tmp_confflags := $(filter-out --enable-vdpau, $(confflags))
+confflags := $(filter-out --enable-libva, $(tmp_confflags))
+confflags += --disable-vdpau
+confflags += --disable-libva
+removeplugins += vdpau
+removeplugins += libva
 endif
 
 # PowerPC specific optimizations (excluding powerpcspe)
@@ -347,3 +361,8 @@ override_dh_installdeb-arch:
 override_dh_gencontrol-arch:
 	sed -n 's/^# define MODULE_SYMBOL \([0-9][_0-9a-z]*\)/-Vvlc:PluginABI=vlc-plugin-abi-\1/p' \
 		include/vlc_plugin.h | tr _ - | xargs dh_gencontrol -a --
+
+override_dh_clean:
+	find share/lua/ -name "*.luac" -delete
+	rm -f extras/analyser/_vlc
+	dh_clean
