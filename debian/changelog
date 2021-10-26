@@ -1,3 +1,10 @@
+vlc (3.0.12-0+deb10u1+rpt3) buster; urgency=medium
+
+  * Disable MMAL and neon on arm64
+  * Add dav1d dependency on all architectures
+
+ -- Serge Schneider <serge@raspberrypi.com>  Tue, 26 Oct 2021 13:54:09 +0100
+
 vlc (3.0.12-0+deb10u1+rpt2) buster; urgency=medium
 
   * Update armv6 patch

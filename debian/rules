@@ -250,6 +250,17 @@ ifeq (,$(filter-out arm,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-neon
 confflags += --enable-mmal
 confflags += --enable-mmal-avcodec
+else
+confflags += --disable-neon
+confflags += --disable-mmal
+confflags += --disable-mmal-avcodec
+removeplugins += neon
+removeplugins += mmal
+endif
+
+ifeq (,$(filter-out arm arm64,$(DEB_HOST_ARCH_CPU)))
+tmp_confflags := $(filter-out --enable-vdpau, $(confflags))
+confflags := $(filter-out --enable-libva, $(tmp_confflags))
 confflags += --disable-vdpau
 confflags += --disable-libva
 confflags += --enable-dav1d
@@ -260,8 +271,6 @@ removeplugins += aom
 else
 confflags += --enable-aom
 confflags += --enable-vdpau
-confflags += --disable-neon
-removeplugins += neon
 removeplugins += dav1d
 endif
 
