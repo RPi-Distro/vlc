@@ -11,7 +11,7 @@ elsewhere.
  2 files changed, 33 deletions(-)
 
 diff --git a/Makefile.am b/Makefile.am
-index 1b4bdb7..c01f5b4 100644
+index dd282b2..08ad316 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -163,21 +163,6 @@ endif
