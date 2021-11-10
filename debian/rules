@@ -53,6 +53,7 @@ confflags += \
 	--enable-libmpeg2 \
 	--enable-libxml2 \
 	--enable-lirc \
+	--enable-live555 \
 	--enable-mad \
 	--enable-matroska \
 	--enable-mod \
@@ -104,7 +105,6 @@ confflags += \
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
 # libtar: security issue (#737534)
-# live555: non-free code from RFC 3550 (#981439)
 # macosx*: MacOX only
 # microdns: functionality already provided by avahi
 # mfx: currently not supported on Linux
@@ -131,12 +131,11 @@ confflags += \
 	--disable-goom \
 	--disable-gst-decode \
 	--disable-libtar \
-	--disable-live555 \
 	--disable-macosx \
 	--disable-macosx-avfoundation \
 	--disable-macosx-qtkit \
-	--disable-mfx \
 	--disable-microdns \
+	--disable-mfx \
 	--disable-opencv \
 	--disable-projectm \
 	--disable-schroedinger \
