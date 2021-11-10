@@ -1,3 +1,9 @@
+vlc (3.0.16-1+rpi1+rpt2) bullseye; urgency=medium
+
+  * Re-enable live555 plugin
+
+ -- Serge Schneider <serge@raspberrypi.com>  Wed, 10 Nov 2021 15:40:45 +0000
+
 vlc (3.0.16-1+rpi1+rpt1) bullseye; urgency=medium
 
   * Add MMAL patch 22
