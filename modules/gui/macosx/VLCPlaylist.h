@@ -2,7 +2,7 @@
  * VLCPlaylist.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: c5bbb723f826115f3319df4232cbac6fb7d2b928 $
+ * $Id: 8b849be30296786a79781547eb686766f3df97b9 $
  *
  * Authors: Benjamin Pracht <bigben at videolab dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -37,6 +37,7 @@
 @property (readwrite, weak) IBOutlet NSMenuItem *recursiveExpandPlaylistMenuItem;
 @property (readwrite, weak) IBOutlet NSMenuItem *recursiveCollapsePlaylistMenuItem;
 @property (readwrite, weak) IBOutlet NSMenuItem *addFilesToPlaylistMenuItem;
+@property (readwrite, weak) IBOutlet NSMenuItem *shufflePlaylistMenuItem;
 
 @property (nonatomic, readwrite, weak) VLCPlaylistView *outlineView;
 @property (nonatomic, readwrite, weak) NSTableHeaderView *playlistHeaderView;
@@ -61,6 +62,7 @@
 - (IBAction)recursiveExpandOrCollapseNode:(id)sender;
 - (IBAction)showInfoPanel:(id)sender;
 - (IBAction)addFilesToPlaylist:(id)sender;
+- (IBAction)shufflePlaylist:(id)sender;
 
 - (NSArray *)draggedItems;
 

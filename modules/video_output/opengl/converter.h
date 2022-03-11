@@ -83,6 +83,7 @@ typedef void (APIENTRY *PFNGLFLUSHPROC)(void);
 typedef void (APIENTRY *PFNGLGENTEXTURESPROC) (GLsizei n, GLuint *textures);
 typedef GLenum (APIENTRY *PFNGLGETERRORPROC) (void);
 typedef void (APIENTRY *PFNGLGETINTEGERVPROC) (GLenum pname, GLint *data);
+typedef void (APIENTRY *PFNGLGETINTEGERIVPROC) (GLenum pname, GLuint index, GLint *data);
 typedef const GLubyte *(APIENTRY *PFNGLGETSTRINGPROC) (GLenum name);
 typedef void (APIENTRY *PFNGLGETTEXLEVELPARAMETERIVPROC) (GLenum target, GLint level, GLenum pname, GLint *params);
 typedef void (APIENTRY *PFNGLPIXELSTOREIPROC) (GLenum pname, GLint param);

@@ -32,7 +32,9 @@ namespace adaptive
             virtual ~ExtraFMTInfoInterface() = default;
     };
 
-    class CommandsQueue;
+    class AbstractCommandsQueue;
+    class CommandsFactory;
+    class AbstractFakeESOutID;
     class FakeESOutID;
 
     class AbstractFakeEsOut
@@ -42,6 +44,13 @@ namespace adaptive
             AbstractFakeEsOut();
             virtual ~AbstractFakeEsOut();
             operator es_out_t*();
+            virtual void milestoneReached() = 0;
+            /* Used by FakeES ID */
+            virtual void recycle( AbstractFakeESOutID * ) = 0;
+            virtual void createOrRecycleRealEsID( AbstractFakeESOutID * ) = 0;
+            virtual void setPriority(int) = 0;
+            virtual void sendData( AbstractFakeESOutID *, block_t * ) = 0;
+            virtual void sendMeta( int, const vlc_meta_t * ) = 0;
 
         private:
             void *esoutpriv;
@@ -67,10 +76,11 @@ namespace adaptive
                     FakeESOut *p;
                     LockedFakeEsOut(FakeESOut &q);
             };
-            FakeESOut( es_out_t *, CommandsQueue * );
+            FakeESOut( es_out_t *, AbstractCommandsQueue *, CommandsFactory * );
             virtual ~FakeESOut();
             LockedFakeEsOut WithLock();
-            CommandsQueue * commandsQueue();
+            AbstractCommandsQueue * commandsQueue();
+            CommandsFactory *commandsFactory() const;
             void setAssociatedTimestamp( mtime_t );
             void setExpectedTimestamp( mtime_t );
             void resetTimestamps();
@@ -83,12 +93,17 @@ namespace adaptive
             mtime_t fixTimestamp( mtime_t );
             void declareEs( const es_format_t * );
 
+            virtual void milestoneReached() override;
+
             /* Used by FakeES ID */
-            void recycle( FakeESOutID *id );
-            void createOrRecycleRealEsID( FakeESOutID * );
-            void setPriority(int);
+            virtual void recycle( AbstractFakeESOutID *id ) override;
+            virtual void createOrRecycleRealEsID( AbstractFakeESOutID * ) override;
+            virtual void setPriority(int) override;
+            virtual void sendData( AbstractFakeESOutID *, block_t * ) override;
+            virtual void sendMeta( int, const vlc_meta_t * ) override;
 
             /**/
+            void scheduleNecessaryMilestone();
             void schedulePCRReset();
             void scheduleAllForDeletion(); /* Queue Del commands for non Del issued ones */
             void recycleAll(); /* Cancels all commands and send fakees for recycling */
@@ -97,15 +112,16 @@ namespace adaptive
         private:
             friend class LockedFakeESOut;
             vlc_mutex_t lock;
-            virtual es_out_id_t *esOutAdd( const es_format_t * ); /* impl */
-            virtual int esOutSend( es_out_id_t *, block_t * ); /* impl */
-            virtual void esOutDel( es_out_id_t * ); /* impl */
-            virtual int esOutControl( int, va_list ); /* impl */
-            virtual void esOutDestroy(); /* impl */
+            virtual es_out_id_t *esOutAdd( const es_format_t * ) override;
+            virtual int esOutSend( es_out_id_t *, block_t * ) override;
+            virtual void esOutDel( es_out_id_t * ) override;
+            virtual int esOutControl( int, va_list ) override;
+            virtual void esOutDestroy() override;
             es_out_t *real_es_out;
             FakeESOutID * createNewID( const es_format_t * );
             ExtraFMTInfoInterface *extrainfo;
-            CommandsQueue *commandsqueue;
+            AbstractCommandsQueue *commandsqueue;
+            CommandsFactory *commandsfactory;
             struct
             {
                 mtime_t timestamp;
@@ -115,6 +131,7 @@ namespace adaptive
             mtime_t timestamp_first;
             mtime_t timestamps_offset;
             int priority;
+            bool b_in_commands_group;
             std::list<FakeESOutID *> fakeesidlist;
             std::list<FakeESOutID *> recycle_candidates;
             std::list<FakeESOutID *> declared;

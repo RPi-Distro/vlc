@@ -38,7 +38,7 @@ SegmentChunk::SegmentChunk(AbstractChunkSource *source, BaseRepresentation *rep_
     AbstractChunk(source)
 {
     rep = rep_;
-    encryptionSession = NULL;
+    encryptionSession = nullptr;
 }
 
 SegmentChunk::~SegmentChunk()
@@ -52,7 +52,7 @@ bool SegmentChunk::decrypt(block_t **pp_block)
 
     if(encryptionSession)
     {
-        bool b_last = isEmpty();
+        bool b_last = !hasMoreData();
         p_block->i_buffer = encryptionSession->decrypt(p_block->p_buffer,
                                                        p_block->i_buffer, b_last);
         if(b_last)
@@ -69,10 +69,12 @@ void SegmentChunk::onDownload(block_t **pp_block)
 
 StreamFormat SegmentChunk::getStreamFormat() const
 {
-    if(rep)
-        return rep->getStreamFormat();
-    else
-        return StreamFormat();
+    return (format == StreamFormat() && rep) ? rep->getStreamFormat() : format;
+}
+
+void SegmentChunk::setStreamFormat(const StreamFormat &f)
+{
+    format = f;
 }
 
 void SegmentChunk::setEncryptionSession(CommonEncryptionSession *s)

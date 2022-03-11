@@ -50,8 +50,8 @@ namespace adaptive
                 virtual ~BaseAdaptationSet();
 
                 virtual StreamFormat            getStreamFormat() const; /*reimpl*/
-                std::vector<BaseRepresentation *>&  getRepresentations      ();
-                BaseRepresentation *            getRepresentationByID(const ID &);
+                const std::vector<BaseRepresentation *>&  getRepresentations() const;
+                BaseRepresentation *            getRepresentationByID(const ID &) const;
                 void                            setSegmentAligned(bool);
                 bool                            isSegmentAligned() const;
                 void                            setBitswitchAble(bool);

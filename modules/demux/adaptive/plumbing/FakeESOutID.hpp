@@ -27,17 +27,36 @@ namespace adaptive
 {
     class FakeESOut;
 
-    class FakeESOutID
+    enum class EsType
+    {
+        Video,
+        Audio,
+        Other,
+    };
+
+    class AbstractFakeESOutID
+    {
+        public:
+            virtual ~AbstractFakeESOutID() = default;
+            virtual es_out_id_t * realESID() = 0;
+            virtual void create() = 0;
+            virtual void release() = 0;
+            virtual void sendData(block_t *) = 0;
+            virtual EsType esType() const = 0;
+    };
+
+    class FakeESOutID : public AbstractFakeESOutID
     {
         public:
             FakeESOutID( FakeESOut *, const es_format_t * );
-            ~FakeESOutID();
+            virtual ~FakeESOutID();
             void setRealESID( es_out_id_t * );
-            es_out_id_t * realESID();
+            virtual es_out_id_t * realESID() override;
             const es_format_t *getFmt() const;
-            void create();
-            void release();
-            void notifyData();
+            virtual void create() override;
+            virtual void release() override;
+            virtual void sendData(block_t *) override;
+            virtual EsType esType() const override;
             bool isCompatible( const FakeESOutID * ) const;
             /* Ensure we won't issue delete command twice */
             void setScheduledForDeletion();

@@ -2,7 +2,7 @@
  * controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 04368a73fc141a20649d0a94fa115f2771f358de $
+ * $Id: 9e4011d43407f2f57ff37b18317dc69d13e191c8 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -739,6 +739,11 @@ ControlsWidget::ControlsWidget( intf_thread_t *_p_i,
 
     controlLayout->addLayout( controlLayout1 );
     controlLayout->addLayout( controlLayout2 );
+}
+
+bool ControlsWidget::advancedAvailable()
+{
+    return advControls != nullptr;
 }
 
 void ControlsWidget::toggleAdvanced()

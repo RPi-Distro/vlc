@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: 3dbe5277569491bde5e9e3485934591ac5b91b56 $
+ * $Id: fc7a203ab0b8410ee5c918646d09a8b5d6441a91 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -76,6 +76,9 @@ static void Close ( vlc_object_t * );
  *          1. pid:pcr (to force the pcr pid)
  *          2. pid:stream_type
  *          3. pid:type=fourcc where type=(video|audio|spu)
+ *   Ex: Program 1 on pid 8190 with hevc on pid 289, aac on pid 305
+ *       and pcr on 305
+ *      "8190:1=289:video=hevc,305:pcr,305:audio=mp4a"
  */
 #define PMT_TEXT N_("Extra PMT")
 #define PMT_LONGTEXT N_( \
@@ -1444,7 +1447,8 @@ static void SendDataChain( demux_t *p_demux, ts_es_t *p_es, block_t *p_chain )
 /****************************************************************************
  * gathering stuff
  ****************************************************************************/
-static void ParsePESDataChain( demux_t *p_demux, ts_pid_t *pid, block_t *p_pes )
+static void ParsePESDataChain( demux_t *p_demux, ts_pid_t *pid, block_t *p_pes,
+                               int64_t i_append_pcr )
 {
     uint8_t header[34];
     unsigned i_pes_size = 0;
@@ -1603,19 +1607,20 @@ static void ParsePESDataChain( demux_t *p_demux, ts_pid_t *pid, block_t *p_pes )
                 }
 
                 /* Compute PCR/DTS offset if any */
+                int64_t i_pcrref = i_append_pcr > VLC_TS_INVALID ? i_append_pcr : p_pmt->pcr.i_first;
                 if( p_pmt->pcr.i_pcroffset == -1 && p_block->i_dts > VLC_TS_INVALID &&
-                    p_pmt->pcr.i_current > VLC_TS_INVALID &&
+                    i_pcrref > VLC_TS_INVALID &&
                    (p_es->fmt.i_cat == VIDEO_ES || p_es->fmt.i_cat == AUDIO_ES) )
                 {
                     int64_t i_dts27 = TO_SCALE(p_block->i_dts);
-                    i_dts27 = TimeStampWrapAround( p_pmt->pcr.i_first, i_dts27 );
-                    int64_t i_pcr = TimeStampWrapAround( p_pmt->pcr.i_first, p_pmt->pcr.i_current );
-                    if( i_dts27 < i_pcr )
+                    i_dts27 = TimeStampWrapAround( i_pcrref, i_dts27 );
+                    i_pcrref = TimeStampWrapAround( p_pmt->pcr.i_first, i_pcrref );
+                    if( i_dts27 + (CLOCK_FREQ/90000) < i_pcrref )
                     {
-                        p_pmt->pcr.i_pcroffset = i_pcr - i_dts27 + 80000;
+                        p_pmt->pcr.i_pcroffset = i_pcrref - i_dts27 + TO_SCALE_NZ(80000);
                         msg_Warn( p_demux, "Broken stream: pid %d sends packets with dts %"PRId64
                                            "us later than pcr, applying delay",
-                                  pid->i_pid, FROM_SCALE_NZ(p_pmt->pcr.i_pcroffset) );
+                                  pid->i_pid, FROM_SCALE_NZ(i_pcrref - i_dts27) );
                     }
                     else p_pmt->pcr.i_pcroffset = 0;
                 }
@@ -1667,7 +1672,8 @@ static void ParsePESDataChain( demux_t *p_demux, ts_pid_t *pid, block_t *p_pes )
     }
 }
 
-static bool PushPESBlock( demux_t *p_demux, ts_pid_t *pid, block_t *p_pkt, bool b_unit_start )
+static bool PushPESBlock( demux_t *p_demux, ts_pid_t *pid, block_t *p_pkt, bool b_unit_start,
+                          int64_t i_append_pcr )
 {
     bool b_ret = false;
     ts_stream_t *p_pes = pid->u.p_stream;
@@ -1680,9 +1686,12 @@ static bool PushPESBlock( demux_t *p_demux, ts_pid_t *pid, block_t *p_pkt, bool 
         p_pes->gather.i_data_size = 0;
         p_pes->gather.i_gathered = 0;
         p_pes->gather.pp_last = &p_pes->gather.p_data;
-        ParsePESDataChain( p_demux, pid, p_datachain );
+        ParsePESDataChain( p_demux, pid, p_datachain, p_pes->gather.i_append_pcr );
         b_ret = true;
     }
+
+    if( b_unit_start )
+        p_pes->gather.i_append_pcr = i_append_pcr;
 
     if( p_pkt == NULL )
         return b_ret;
@@ -1702,7 +1711,7 @@ static bool PushPESBlock( demux_t *p_demux, ts_pid_t *pid, block_t *p_pkt, bool 
     {
         /* re-enter in Flush above */
         assert(p_pes->gather.p_data);
-        return PushPESBlock( p_demux, pid, NULL, true );
+        return PushPESBlock( p_demux, pid, NULL, true, i_append_pcr );
     }
 
     return b_ret;
@@ -1766,7 +1775,8 @@ static block_t* ReadTSPacket( demux_t *p_demux )
                 }
                 i_skip++;
             }
-            msg_Dbg( p_demux, "skipping %d bytes of garbage", i_skip );
+            msg_Dbg( p_demux, "skipping %d bytes of garbage at %"PRIu64,
+                     i_skip, vlc_stream_Tell( p_sys->stream ) );
             if (vlc_stream_Read( p_sys->stream, NULL, i_skip ) != i_skip)
                 return NULL;
 
@@ -1775,6 +1785,7 @@ static block_t* ReadTSPacket( demux_t *p_demux )
                 break;
             }
         }
+        msg_Dbg( p_demux, "resynced at %" PRIu64, vlc_stream_Tell( p_sys->stream ) );
         if( !( p_pkt = vlc_stream_Block( p_sys->stream, p_sys->i_packet_size ) ) )
         {
             msg_Dbg( p_demux, "eof ?" );
@@ -1790,10 +1801,15 @@ static mtime_t GetPCR( const block_t *p_pkt )
 
     mtime_t i_pcr = -1;
 
-    if( likely(p_pkt->i_buffer > 11) &&
-        ( p[3]&0x20 ) && /* adaptation */
-        ( p[5]&0x10 ) &&
-        ( p[4] >= 7 ) )
+    if(unlikely(p_pkt->i_buffer < 12))
+        return i_pcr;
+
+    const uint8_t i_adaption = p[3] & 0x30;
+
+    if( ( ( i_adaption == 0x30 && p[4] <= 182 ) ||   /* adaptation 0b11 */
+          ( i_adaption == 0x20 && p[4] == 183 ) ) && /* adaptation 0b10 */
+        ( p[4] >= 7 )  &&
+        ( p[5] & 0x10 ) ) /* PCR carry flag */
     {
         /* PCR is 33 bits */
         i_pcr = ( (mtime_t)p[6] << 25 ) |
@@ -2290,7 +2306,7 @@ static void PCRCheckDTS( demux_t *p_demux, ts_pmt_t *p_pmt, mtime_t i_pcr)
             {
                 msg_Warn( p_demux, "send queued data for pid %d: TS %"PRId64" <= PCR %"PRId64"\n",
                           p_pid->i_pid, i_dts > VLC_TS_INVALID ? i_dts : i_pts, i_pcr);
-                PushPESBlock( p_demux, p_pid, NULL, true ); /* Flush */
+                PushPESBlock( p_demux, p_pid, NULL, true, VLC_TS_INVALID ); /* Flush */
             }
         }
     }
@@ -2624,6 +2640,8 @@ static bool GatherPESData( demux_t *p_demux, ts_pid_t *pid, block_t *p_pkt, size
     const bool b_unit_start = p_pkt->p_buffer[1]&0x40;
     bool b_ret = false;
     ts_stream_t *p_pes = pid->u.p_stream;
+    const ts_es_t *p_es = p_pes->p_es;
+    int64_t i_append_pcr = ( p_es && p_es->p_program ) ? p_es->p_program->pcr.i_current : -1;
 
     /* We have to gather it */
     p_pkt->p_buffer += i_skip;
@@ -2645,7 +2663,7 @@ static bool GatherPESData( demux_t *p_demux, ts_pid_t *pid, block_t *p_pkt, size
     if( (p_pkt->i_flags & BLOCK_FLAG_SCRAMBLED) && p_demux->p_sys->b_valid_scrambling )
     {
         block_Release( p_pkt );
-        return PushPESBlock( p_demux, pid, NULL, true );
+        return PushPESBlock( p_demux, pid, NULL, true, i_append_pcr );
     }
 
     /* Data discontinuity, we need to drop or output currently
@@ -2655,7 +2673,7 @@ static bool GatherPESData( demux_t *p_demux, ts_pid_t *pid, block_t *p_pkt, size
     {
         p_pes->gather.i_saved = 0;
         /* Flush/output current */
-        b_ret |= PushPESBlock( p_demux, pid, NULL, true );
+        b_ret |= PushPESBlock( p_demux, pid, NULL, true, i_append_pcr );
         /* Propagate to output block to notify packetizers/decoders */
         if( p_pes->p_es )
             p_pes->p_es->i_next_block_flags |= BLOCK_FLAG_DISCONTINUITY;
@@ -2726,7 +2744,7 @@ static bool GatherPESData( demux_t *p_demux, ts_pid_t *pid, block_t *p_pkt, size
                 /* Append whole block */
                 if( likely(p_pkt->i_buffer <= i_remain || b_single_payload) )
                 {
-                    b_ret |= PushPESBlock( p_demux, pid, p_pkt, p_pes->gather.p_data == NULL );
+                    b_ret |= PushPESBlock( p_demux, pid, p_pkt, p_pes->gather.p_data == NULL, i_append_pcr );
                     p_pkt = NULL;
                 }
                 else /* p_pkt->i_buffer > i_remain */
@@ -2737,7 +2755,7 @@ static bool GatherPESData( demux_t *p_demux, ts_pid_t *pid, block_t *p_pkt, size
                         block_Release( p_pkt );
                         return false;
                     }
-                    b_ret |= PushPESBlock( p_demux, pid, p_pkt, p_pes->gather.p_data == NULL );
+                    b_ret |= PushPESBlock( p_demux, pid, p_pkt, p_pes->gather.p_data == NULL, i_append_pcr );
                     p_pkt = p_split;
                     b_first_sync_done = false;
                 }
@@ -2745,7 +2763,7 @@ static bool GatherPESData( demux_t *p_demux, ts_pid_t *pid, block_t *p_pkt, size
             else /* if( p_pes->gather.i_data_size == 0 ) // see next packet */
             {
                 /* Append or finish current/start new PES depending on unit_start */
-                b_ret |= PushPESBlock( p_demux, pid, p_pkt, b_unit_start );
+                b_ret |= PushPESBlock( p_demux, pid, p_pkt, b_unit_start, i_append_pcr );
                 p_pkt = NULL;
             }
         }

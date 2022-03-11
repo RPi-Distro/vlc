@@ -26,13 +26,14 @@
 
 #include <vlc_common.h>
 
+using namespace adaptive;
 using namespace smooth::playlist;
 
 Manifest::Manifest (vlc_object_t *p_object) :
-    AbstractPlaylist(p_object), TimescaleAble()
+    BasePlaylist(p_object)
 {
     minUpdatePeriod.Set( 5 * CLOCK_FREQ );
-    setTimescale( 10000000 );
+    addAttribute(new TimescaleAttr(Timescale(10000000))); // 100ns
     b_live = false;
 }
 
@@ -44,11 +45,4 @@ Manifest::~Manifest()
 bool Manifest::isLive() const
 {
     return b_live;
-}
-
-void Manifest::debug()
-{
-    std::vector<BasePeriod *>::const_iterator i;
-    for(i = periods.begin(); i != periods.end(); ++i)
-        (*i)->debug(VLC_OBJECT(p_object));
 }

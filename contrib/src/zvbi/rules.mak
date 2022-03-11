@@ -27,9 +27,8 @@ ifdef HAVE_ANDROID
 endif
 	$(MOVE)
 
-DEPS_zvbi = pthreads png $(DEPS_png) iconv $(DEPS_iconv)
+DEPS_zvbi = png $(DEPS_png) iconv $(DEPS_iconv)
 
-ZVBI_CFLAGS := $(CFLAGS)
 ZVBICONF := \
 	--disable-dvb --disable-bktr \
 	--disable-nls --disable-proxy \
@@ -37,13 +36,13 @@ ZVBICONF := \
 	$(HOSTCONF)
 
 ifdef HAVE_WIN32
-ZVBI_CFLAGS += -DPTW32_STATIC_LIB
+DEPS_zvbi += pthreads $(DEPS_pthreads)
 endif
 
 .zvbi: zvbi
 	$(UPDATE_AUTOCONFIG)
 	$(RECONF)
-	cd $< && $(HOSTVARS) CFLAGS="$(ZVBI_CFLAGS)" ./configure $(ZVBICONF)
+	cd $< && $(HOSTVARS) ./configure $(ZVBICONF)
 	cd $< && $(MAKE) -C src install
 	cd $< && $(MAKE) SUBDIRS=. install
 	sed -i.orig -e "s/\/[^ ]*libiconv.a/-liconv/" $(PREFIX)/lib/pkgconfig/zvbi-0.2.pc

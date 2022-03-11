@@ -29,7 +29,7 @@ using namespace adaptive;
 
 FakeESOutID::FakeESOutID( FakeESOut *fakeesout, const es_format_t *p_fmt )
     : fakeesout( fakeesout )
-    , p_real_es_id( NULL )
+    , p_real_es_id( nullptr )
     , pending_delete( false )
 {
     es_format_Copy( &fmt, p_fmt );
@@ -45,9 +45,19 @@ void FakeESOutID::setRealESID( es_out_id_t *real_es_id )
    p_real_es_id = real_es_id;
 }
 
-void FakeESOutID::notifyData()
+void FakeESOutID::sendData( block_t *p_block )
 {
-    fakeesout->gc();
+    fakeesout->sendData( this, p_block );
+}
+
+EsType FakeESOutID::esType() const
+{
+    if(fmt.i_cat == VIDEO_ES)
+        return EsType::Video;
+    else if(fmt.i_cat == AUDIO_ES)
+        return EsType::Audio;
+    else
+        return EsType::Other;
 }
 
 void FakeESOutID::create()
@@ -72,11 +82,11 @@ const es_format_t *FakeESOutID::getFmt() const
 
 bool FakeESOutID::isCompatible( const FakeESOutID *p_other ) const
 {
-    if( p_other->fmt.i_cat != fmt.i_cat )
+    if( p_other->fmt.i_cat != fmt.i_cat ||
+        fmt.i_codec != p_other->fmt.i_codec ||
+        fmt.i_original_fourcc != p_other->fmt.i_original_fourcc )
         return false;
 
-    if(fmt.i_original_fourcc != p_other->fmt.i_original_fourcc)
-        return false;
     if((fmt.i_extra > 0) ^ (p_other->fmt.i_extra > 0))
         return false;
 
@@ -91,8 +101,7 @@ bool FakeESOutID::isCompatible( const FakeESOutID *p_other ) const
         case VLC_CODEC_VC1:
         case VLC_CODEC_AV1:
         {
-            if(fmt.i_codec == p_other->fmt.i_codec &&
-               fmt.i_extra && p_other->fmt.i_extra &&
+            if(fmt.i_extra && p_other->fmt.i_extra &&
                fmt.i_extra == p_other->fmt.i_extra)
             {
                return !!memcmp(fmt.p_extra, p_other->fmt.p_extra, fmt.i_extra);

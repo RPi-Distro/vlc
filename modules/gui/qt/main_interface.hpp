@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: 5f60d2f3078fb7db81f4a5ccfb5cb849ecd4dbeb $
+ * $Id: b749f7da74a8690af1ff87541c404ad7603e9cb2 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -93,6 +93,7 @@ public:
         RAISE_AUDIOVIDEO,
     };
     int getControlsVisibilityStatus();
+    bool isAdvancedWidgetAvailable();
     bool isPlDocked() { return ( b_plDocked != false ); }
     bool isInterfaceFullScreen() { return b_interfaceFullScreen; }
     bool isInterfaceAlwaysOnTop() { return b_interfaceOnTop; }

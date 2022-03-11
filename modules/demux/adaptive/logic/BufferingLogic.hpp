@@ -29,7 +29,7 @@ namespace adaptive
     namespace playlist
     {
         class BaseRepresentation;
-        class AbstractPlaylist;
+        class BasePlaylist;
     }
 
     namespace logic
@@ -43,9 +43,10 @@ namespace adaptive
                 virtual ~AbstractBufferingLogic() {}
 
                 virtual uint64_t getStartSegmentNumber(BaseRepresentation *) const = 0;
-                virtual mtime_t getMinBuffering(const AbstractPlaylist *) const = 0;
-                virtual mtime_t getMaxBuffering(const AbstractPlaylist *) const = 0;
-                virtual mtime_t getLiveDelay(const AbstractPlaylist *) const = 0;
+                virtual mtime_t getMinBuffering(const BasePlaylist *) const = 0;
+                virtual mtime_t getMaxBuffering(const BasePlaylist *) const = 0;
+                virtual mtime_t getLiveDelay(const BasePlaylist *) const = 0;
+                virtual mtime_t getStableBuffering(const BasePlaylist *) const = 0;
                 void setUserMinBuffering(mtime_t);
                 void setUserMaxBuffering(mtime_t);
                 void setUserLiveDelay(mtime_t);
@@ -67,15 +68,18 @@ namespace adaptive
             public:
                 DefaultBufferingLogic();
                 virtual ~DefaultBufferingLogic() {}
-                virtual uint64_t getStartSegmentNumber(BaseRepresentation *) const; /* impl */
-                virtual mtime_t getMinBuffering(const AbstractPlaylist *) const; /* impl */
-                virtual mtime_t getMaxBuffering(const AbstractPlaylist *) const; /* impl */
-                virtual mtime_t getLiveDelay(const AbstractPlaylist *) const; /* impl */
+                virtual uint64_t getStartSegmentNumber(BaseRepresentation *) const override;
+                virtual mtime_t getMinBuffering(const BasePlaylist *) const override;
+                virtual mtime_t getMaxBuffering(const BasePlaylist *) const override;
+                virtual mtime_t getLiveDelay(const BasePlaylist *) const override;
+                virtual mtime_t getStableBuffering(const BasePlaylist *) const override;
+                static const unsigned SAFETY_BUFFERING_EDGE_OFFSET;
+                static const unsigned SAFETY_EXPURGING_OFFSET;
 
             protected:
-                mtime_t getBufferingOffset(const AbstractPlaylist *) const;
+                mtime_t getBufferingOffset(const BasePlaylist *) const;
                 uint64_t getLiveStartSegmentNumber(BaseRepresentation *) const;
-                bool isLowLatency(const AbstractPlaylist *) const;
+                bool isLowLatency(const BasePlaylist *) const;
         };
     }
 }

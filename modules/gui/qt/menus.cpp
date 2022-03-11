@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2011 the VideoLAN team
- * $Id: f83bc232e96b9705777c6725ec4fc76de8c2d492 $
+ * $Id: 460653c93e2fb5a37bacea47b174b69a8941d7ef $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -529,6 +529,7 @@ QMenu *VLCMenuBar::ViewMenu( intf_thread_t *p_intf, QMenu *current, MainInterfac
     action->setCheckable( true );
     if( mi->getControlsVisibilityStatus() & MainInterface::CONTROLS_ADVANCED )
         action->setChecked( true );
+    action->setEnabled(mi->isAdvancedWidgetAvailable());
 
     action = menu->addAction( qtr( "Status Bar" ) );
     action->setCheckable( true );

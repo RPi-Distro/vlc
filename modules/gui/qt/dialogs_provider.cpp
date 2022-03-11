@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: b816d29ae6f8886f12b41b7e4a1c7dff39826fe6 $
+ * $Id: eaa33e1eb7a84837dac24907c844f5de3117e074 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -553,14 +553,18 @@ void DialogsProvider::openUrlDialog()
     if( url.isEmpty() )
         return;
 
+    char *uri = NULL;
     if( !url.contains( qfu( "://" ) ) )
     {
-        char *uri = vlc_path2uri( qtu( url ), NULL );
-        if( uri == NULL )
-            return;
-        url = qfu(uri);
-        free( uri );
+        uri = vlc_path2uri( qtu( url ), NULL );
+    } else {
+        uri = vlc_uri_fixup( qtu( url ) );
     }
+
+    if( uri == NULL )
+        return;
+    url = qfu(uri);
+    free( uri );
 
     Open::openMRL( p_intf, qtu(url), !oud.shouldEnqueue() );
 }

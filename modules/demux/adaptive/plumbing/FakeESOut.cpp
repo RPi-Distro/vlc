@@ -129,11 +129,13 @@ FakeESOut * FakeESOut::LockedFakeEsOut::operator ->()
     return p;
 }
 
-FakeESOut::FakeESOut( es_out_t *es, CommandsQueue *queue )
+FakeESOut::FakeESOut( es_out_t *es, AbstractCommandsQueue *queue,
+                      CommandsFactory *cf )
     : AbstractFakeEsOut()
     , real_es_out( es )
-    , extrainfo( NULL )
+    , extrainfo( nullptr )
     , commandsqueue( queue )
+    , commandsfactory( cf )
     , timestamps_offset( 0 )
 {
     associated.b_timestamp_set = false;
@@ -149,9 +151,14 @@ FakeESOut::LockedFakeEsOut FakeESOut::WithLock()
     return LockedFakeEsOut(*this);
 }
 
-CommandsQueue * FakeESOut::commandsQueue()
+AbstractCommandsQueue * FakeESOut::commandsQueue()
 {
     return commandsqueue;
+}
+
+CommandsFactory * FakeESOut::commandsFactory() const
+{
+    return commandsfactory;
 }
 
 FakeESOut::~FakeESOut()
@@ -160,6 +167,7 @@ FakeESOut::~FakeESOut()
     gc();
 
     delete commandsqueue;
+    delete commandsfactory;
     vlc_mutex_destroy(&lock);
 }
 
@@ -233,10 +241,11 @@ FakeESOutID * FakeESOut::createNewID( const es_format_t *p_fmt )
     return es_id;
 }
 
-void FakeESOut::createOrRecycleRealEsID( FakeESOutID *es_id )
+void FakeESOut::createOrRecycleRealEsID( AbstractFakeESOutID *es_id_ )
 {
+    FakeESOutID *es_id = static_cast<FakeESOutID *>(es_id_);
     std::list<FakeESOutID *>::iterator it;
-    es_out_id_t *realid = NULL;
+    es_out_id_t *realid = nullptr;
 
     /* declared ES must are temporary until real ES decl */
     recycle_candidates.insert(recycle_candidates.begin(), declared.begin(), declared.end());
@@ -250,7 +259,7 @@ void FakeESOut::createOrRecycleRealEsID( FakeESOutID *es_id )
         if ( cand->isCompatible( es_id ) )
         {
             realid = cand->realESID();
-            cand->setRealESID( NULL );
+            cand->setRealESID( nullptr );
             delete *it;
             recycle_candidates.erase( it );
             break;
@@ -276,14 +285,33 @@ void FakeESOut::createOrRecycleRealEsID( FakeESOutID *es_id )
         realid = es_out_Add( real_es_out, &fmt );
         if( b_preexisting && b_select ) /* was previously selected on other format */
             es_out_Control( real_es_out, ES_OUT_SET_ES, realid );
+        es_format_Clean( &fmt );
     }
 
     es_id->setRealESID( realid );
 }
 
-void FakeESOut::setPriority(int p)
+void FakeESOut::setPriority( int p )
 {
     priority = p;
+}
+
+void FakeESOut::sendData( AbstractFakeESOutID *id_, block_t *p_block )
+{
+    FakeESOutID *id = static_cast<FakeESOutID *>(id_);
+    /* Be sure to notify Data before Sending, because UI would still not pick new ES */
+    gc();
+    if( !id->realESID() ||
+        es_out_Send( real_es_out, id->realESID(), p_block ) != VLC_SUCCESS )
+    {
+        block_Release( p_block );
+    }
+    gc();
+}
+
+void FakeESOut::sendMeta( int group, const vlc_meta_t *p_meta )
+{
+    es_out_Control( real_es_out, ES_OUT_SET_GROUP_META, group, p_meta );
 }
 
 size_t FakeESOut::esCount() const
@@ -301,7 +329,7 @@ size_t FakeESOut::esCount() const
 
 void FakeESOut::schedulePCRReset()
 {
-    AbstractCommand *command = commandsqueue->factory()->creatEsOutControlResetPCRCommand();
+    AbstractCommand *command = commandsfactory->creatEsOutControlResetPCRCommand();
     if( likely(command) )
         commandsqueue->Schedule( command );
 }
@@ -314,7 +342,7 @@ void FakeESOut::scheduleAllForDeletion()
         FakeESOutID *es_id = *it;
         if(!es_id->scheduledForDeletion())
         {
-            AbstractCommand *command = commandsqueue->factory()->createEsOutDelCommand( es_id );
+            AbstractCommand *command = commandsfactory->createEsOutDelCommand( es_id );
             if( likely(command) )
             {
                 commandsqueue->Schedule( command );
@@ -385,10 +413,27 @@ bool FakeESOut::restarting() const
     return b;
 }
 
-void FakeESOut::recycle( FakeESOutID *id )
+void FakeESOut::recycle( AbstractFakeESOutID *id_ )
 {
+    FakeESOutID *id = static_cast<FakeESOutID *>(id_);
     fakeesidlist.remove( id );
     recycle_candidates.push_back( id );
+}
+
+void FakeESOut::milestoneReached()
+{
+    gc();
+}
+
+void FakeESOut::scheduleNecessaryMilestone()
+{
+    if( b_in_commands_group )
+    {
+        AbstractCommand *command = commandsfactory->createEsOutMilestoneCommand( this );
+         if( likely(command) )
+             commandsqueue->Schedule( command );
+         b_in_commands_group = false;
+    }
 }
 
 mtime_t FakeESOut::fixTimestamp(mtime_t ts)
@@ -458,7 +503,7 @@ es_out_id_t * FakeESOut::esOutAdd(const es_format_t *p_fmt)
     vlc_mutex_locker locker(&lock);
 
     if( p_fmt->i_cat != VIDEO_ES && p_fmt->i_cat != AUDIO_ES && p_fmt->i_cat != SPU_ES )
-        return NULL;
+        return nullptr;
 
     /* Feed the slave demux/stream_Demux with FakeESOutID struct,
      * we'll create real ES later on main demux on execution */
@@ -466,11 +511,12 @@ es_out_id_t * FakeESOut::esOutAdd(const es_format_t *p_fmt)
     if( likely(es_id) )
     {
         assert(!es_id->scheduledForDeletion());
-        AbstractCommand *command = commandsqueue->factory()->createEsOutAddCommand( es_id );
+        AbstractCommand *command = commandsfactory->createEsOutAddCommand( es_id );
         if( likely(command) )
         {
             fakeesidlist.push_back(es_id);
             commandsqueue->Schedule( command );
+            b_in_commands_group = true;
             return reinterpret_cast<es_out_id_t *>(es_id);
         }
         else
@@ -478,12 +524,14 @@ es_out_id_t * FakeESOut::esOutAdd(const es_format_t *p_fmt)
             delete es_id;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 int FakeESOut::esOutSend(es_out_id_t *p_es, block_t *p_block)
 {
     vlc_mutex_locker locker(&lock);
+
+    scheduleNecessaryMilestone();
 
     FakeESOutID *es_id = reinterpret_cast<FakeESOutID *>( p_es );
     assert(!es_id->scheduledForDeletion());
@@ -491,7 +539,7 @@ int FakeESOut::esOutSend(es_out_id_t *p_es, block_t *p_block)
     p_block->i_dts = fixTimestamp( p_block->i_dts );
     p_block->i_pts = fixTimestamp( p_block->i_pts );
 
-    AbstractCommand *command = commandsqueue->factory()->createEsOutSendCommand( es_id, p_block );
+    AbstractCommand *command = commandsfactory->createEsOutSendCommand( es_id, p_block );
     if( likely(command) )
     {
         commandsqueue->Schedule( command );
@@ -505,17 +553,20 @@ void FakeESOut::esOutDel(es_out_id_t *p_es)
     vlc_mutex_locker locker(&lock);
 
     FakeESOutID *es_id = reinterpret_cast<FakeESOutID *>( p_es );
-    AbstractCommand *command = commandsqueue->factory()->createEsOutDelCommand( es_id );
+    AbstractCommand *command = commandsfactory->createEsOutDelCommand( es_id );
     if( likely(command) )
     {
         es_id->setScheduledForDeletion();
         commandsqueue->Schedule( command );
     }
+    b_in_commands_group = true;
 }
 
 int FakeESOut::esOutControl(int i_query, va_list args)
 {
     vlc_mutex_locker locker(&lock);
+
+    scheduleNecessaryMilestone();
 
     switch( i_query )
     {
@@ -529,7 +580,7 @@ int FakeESOut::esOutControl(int i_query, va_list args)
                 i_group = 0;
             mtime_t  pcr = va_arg( args, mtime_t );
             pcr = fixTimestamp( pcr );
-            AbstractCommand *command = commandsqueue->factory()->createEsOutControlPCRCommand( i_group, pcr );
+            AbstractCommand *command = commandsfactory->createEsOutControlPCRCommand( i_group, pcr );
             if( likely(command) )
             {
                 commandsqueue->Schedule( command );
@@ -542,7 +593,7 @@ int FakeESOut::esOutControl(int i_query, va_list args)
         {
             static_cast<void>(va_arg( args, int )); /* ignore group */
             const vlc_meta_t *p_meta = va_arg( args, const vlc_meta_t * );
-            AbstractCommand *command = commandsqueue->factory()->createEsOutMetaCommand( -1, p_meta );
+            AbstractCommand *command = commandsfactory->createEsOutMetaCommand( this,-1, p_meta );
             if( likely(command) )
             {
                 commandsqueue->Schedule( command );
@@ -573,7 +624,9 @@ void FakeESOut::esOutDestroy()
 {
     vlc_mutex_locker locker(&lock);
 
-    AbstractCommand *command = commandsqueue->factory()->createEsOutDestroyCommand();
+    scheduleNecessaryMilestone();
+
+    AbstractCommand *command = commandsfactory->createEsOutDestroyCommand();
     if( likely(command) )
         commandsqueue->Schedule( command );
 }

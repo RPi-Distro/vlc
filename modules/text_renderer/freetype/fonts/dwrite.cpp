@@ -2,7 +2,7 @@
  * dwrite.cpp : DirectWrite font functions
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 7b9143432a5dfe2cfe77b3e2d213d6cdb2ca1e15 $
+ * $Id: 21711a31b853726b3b03023aa40a7c285c5a5573 $
  *
  * Authors: Salah-Eddin Shaban <salah@videolan.org>
  *
@@ -215,7 +215,7 @@ class TextSource : public IDWriteTextAnalysisSource
     IDWriteNumberSubstitution   *mp_substitution;
     wchar_t                      mpwsz_text[ 3 ];
     uint32_t                     mi_text_length;
-    ULONG                        ml_ref_count;
+    LONG                         ml_ref_count;
 
 public:
     TextSource( IDWriteFactory *p_factory, IDWriteNumberSubstitution *p_substitution,

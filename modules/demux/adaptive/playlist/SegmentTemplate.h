@@ -2,7 +2,7 @@
  * SegmentTemplate.cpp: Implement the UrlTemplate element.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 8c808c7a854b9f8ec1be337e0bc0905ab8cc8db1 $
+ * $Id: a5a7daa7b19798d7481b6c2419c44da32b400808 $
  *
  * Authors: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
  *
@@ -26,56 +26,64 @@
 
 #include "Segment.h"
 #include "../tools/Properties.hpp"
-#include "SegmentInfoCommon.h"
+#include "SegmentBaseType.hpp"
 
 namespace adaptive
 {
     namespace playlist
     {
         class ICanonicalUrl;
-        class InitSegmentTemplate;
+        class SegmentTemplateInit;
         class SegmentInformation;
-        class SegmentTimeline;
+        class SegmentTemplate;
 
-        class BaseSegmentTemplate : public Segment
+        class SegmentTemplateSegment : public Segment
         {
             public:
-                BaseSegmentTemplate( ICanonicalUrl * = NULL );
-                virtual ~BaseSegmentTemplate();
-                virtual void setSourceUrl( const std::string &url ); /* reimpl */
-        };
-
-        class MediaSegmentTemplate : public BaseSegmentTemplate,
-                                     public Initializable<InitSegmentTemplate>,
-                                     public TimescaleAble
-        {
-            public:
-                MediaSegmentTemplate( SegmentInformation * = NULL );
-                virtual ~MediaSegmentTemplate();
-                void setStartNumber( uint64_t );
-                void setSegmentTimeline( SegmentTimeline * );
-                void updateWith( MediaSegmentTemplate * );
-                virtual uint64_t getSequenceNumber() const; /* reimpl */
-                uint64_t getLiveTemplateNumber(mtime_t, bool = true) const;
-                stime_t getMinAheadScaledTime(uint64_t) const;
-                void pruneByPlaybackTime(mtime_t);
-                size_t pruneBySequenceNumber(uint64_t);
-                virtual Timescale inheritTimescale() const; /* reimpl */
-                virtual uint64_t inheritStartNumber() const;
-                stime_t inheritDuration() const;
-                SegmentTimeline * inheritSegmentTimeline() const;
-                virtual void debug(vlc_object_t *, int = 0) const; /* reimpl */
+                SegmentTemplateSegment( ICanonicalUrl * = nullptr );
+                virtual ~SegmentTemplateSegment();
+                virtual void setSourceUrl( const std::string &url ) override;
+                void setParentTemplate( SegmentTemplate * );
 
             protected:
-                uint64_t startNumber;
-                SegmentTimeline *segmentTimeline;
-                SegmentInformation *parentSegmentInformation;
+                const SegmentTemplate *templ;
         };
 
-        class InitSegmentTemplate : public BaseSegmentTemplate
+        class SegmentTemplate : public AbstractMultipleSegmentBaseType
         {
             public:
-                InitSegmentTemplate( ICanonicalUrl * = NULL );
+                SegmentTemplate( SegmentTemplateSegment *, SegmentInformation * = nullptr );
+                virtual ~SegmentTemplate();
+                void setSourceUrl( const std::string &url );
+                uint64_t getLiveTemplateNumber(mtime_t, bool = true) const;
+                void pruneByPlaybackTime(mtime_t);
+                size_t pruneBySequenceNumber(uint64_t);
+
+                virtual mtime_t getMinAheadTime(uint64_t curnum) const override;
+                virtual Segment * getMediaSegment(uint64_t number) const override;
+                virtual Segment * getNextMediaSegment(uint64_t, uint64_t *, bool *) const override;
+                virtual uint64_t getStartSegmentNumber() const override;
+
+                virtual bool getSegmentNumberByTime(mtime_t time, uint64_t *ret) const override;
+                virtual bool getPlaybackTimeDurationBySegmentNumber(uint64_t number,
+                                            mtime_t *time, mtime_t *duration) const override;
+
+                virtual void debug(vlc_object_t *, int = 0) const override;
+
+            protected:
+                SegmentInformation *parentSegmentInformation;
+                SegmentTemplateSegment *virtualsegment;
+        };
+
+        class SegmentTemplateInit : public InitSegment
+        {
+            public:
+                SegmentTemplateInit( SegmentTemplate *, ICanonicalUrl * = nullptr );
+                virtual ~SegmentTemplateInit();
+                virtual void setSourceUrl( const std::string &url ) override;
+
+            protected:
+                const SegmentTemplate *templ;
         };
     }
 }

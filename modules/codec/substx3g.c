@@ -29,6 +29,7 @@
 #include <vlc_charset.h>
 
 #include "substext.h"
+#include "../demux/mp4/minibox.h"
 
 /*****************************************************************************
  * Module descriptor.
@@ -170,9 +171,9 @@ static void SegmentDoSplit( tx3g_segment_t *p_segment, uint16_t i_start, uint16_
         p_segment_left->i_size = str8len( p_segment_left->s->psz_text );
     }
 
-    char* psz_text = str8indup( p_segment->s->psz_text, i_start, i_end - i_start + 1 );
-    p_segment_middle = tx3g_segment_New( psz_text );
-    free( psz_text );
+    char* psz_midtext = str8indup( p_segment->s->psz_text, i_start, i_end - i_start + 1 );
+    p_segment_middle = tx3g_segment_New( psz_midtext );
+    free( psz_midtext );
     if ( !p_segment_middle ) goto error;
     p_segment_middle->s->style = text_style_Duplicate( p_segment->s->style );
     p_segment_middle->i_size = str8len( p_segment_middle->s->psz_text );
@@ -243,8 +244,10 @@ static bool SegmentSplit( tx3g_segment_t *p_prev, tx3g_segment_t **pp_segment,
     else
         p_segment_middle->p_next3g = p_next3g;
 
-    text_style_Delete( p_segment_middle->s->style );
-    p_segment_middle->s->style = text_style_Duplicate( p_styles );
+    if( p_segment_middle->s->style )
+        text_style_Merge( p_segment_middle->s->style, p_styles, true );
+    else
+        p_segment_middle->s->style = text_style_Duplicate( p_styles );
 
     return true;
 }
@@ -281,20 +284,20 @@ static void ApplySegmentStyle( tx3g_segment_t **pp_segment, const uint16_t i_abs
 
 /* Do relative size conversion using default style size (from stsd),
    as the line should always be 5%. Apply to each segment specific text size */
-static void FontSizeConvert( const text_style_t *p_default_style, text_style_t *p_style )
+static void FontSizeConvert( const text_style_t *p_reference, text_style_t *p_style )
 {
     if( unlikely(!p_style) )
     {
         return;
     }
-    else if( unlikely(!p_default_style) || p_default_style->i_font_size == 0 )
+    else if( unlikely(!p_reference) || p_reference->i_font_size == 0 )
     {
         p_style->i_font_size = 0;
         p_style->f_font_relsize = 5.0;
     }
     else
     {
-        p_style->f_font_relsize = 5.0 * (float) p_style->i_font_size / p_default_style->i_font_size;
+        p_style->f_font_relsize = 5.0 * (float) p_style->i_font_size / p_reference->i_font_size;
         p_style->i_font_size = 0;
     }
 }
@@ -338,11 +341,9 @@ static int Decode( decoder_t *p_dec, block_t *p_block )
     }
     else
     {
-        psz_subtitle = malloc( i_psz_bytelength + 1 );
+        psz_subtitle = strndup( (const char*) p_pszstart, i_psz_bytelength );
         if ( !psz_subtitle )
             return VLCDEC_SUCCESS;
-        memcpy( psz_subtitle, p_pszstart, i_psz_bytelength );
-        psz_subtitle[ i_psz_bytelength ] = '\0';
     }
     p_buf += i_psz_bytelength + sizeof(uint16_t);
 
@@ -370,41 +371,47 @@ static int Decode( decoder_t *p_dec, block_t *p_block )
     }
     subpicture_updater_sys_t *p_spu_sys = p_spu->updater.p_sys;
 
+    mp4_box_iterator_t it;
+    mp4_box_iterator_Init( &it, p_buf,
+                           p_block->i_buffer - (p_buf - p_block->p_buffer) );
     /* Parse our styles */
-    while( (size_t)(p_buf - p_block->p_buffer) + 8 < p_block->i_buffer )
+    while( mp4_box_iterator_Next( &it ) )
     {
-        uint32_t i_atomsize = GetDWBE( p_buf );
-        vlc_fourcc_t i_atomtype = VLC_FOURCC(p_buf[4],p_buf[5],p_buf[6],p_buf[7]);
-        p_buf += 8;
-        switch( i_atomtype )
+        switch( it.i_type )
         {
 
         case VLC_FOURCC('s','t','y','l'):
         {
-            if ( (size_t)(p_buf - p_block->p_buffer) < 14 ) break;
-            uint16_t i_nbrecords = GetWBE(p_buf);
-            uint16_t i_cur_record = 0;
-            p_buf += 2;
-            while( i_cur_record++ < i_nbrecords )
-            {
-                if ( (size_t)(p_buf - p_block->p_buffer) < 12 ) break;
-                uint16_t i_start = __MIN( GetWBE(p_buf), i_psz_bytelength - 1 );
-                uint16_t i_end =  __MIN( GetWBE(p_buf + 2), i_psz_bytelength - 1 );
+            if( it.i_payload < 14 )
+                break;
 
-                text_style_t *p_style = text_style_Create( STYLE_NO_DEFAULTS );
-                if( p_style )
+            uint16_t i_nbrecords = GetWBE(it.p_payload);
+            uint16_t i_cur_record = 0;
+
+            it.p_payload += 2; it.i_payload -= 2;
+            while( i_cur_record++ < i_nbrecords && it.i_payload >= 12 )
+            {
+                uint16_t i_start = __MIN( GetWBE(it.p_payload), i_psz_bytelength - 1 );
+                uint16_t i_end =  GetWBE(it.p_payload + 2); /* index is past last char */
+                if( i_start < i_end )
                 {
-                    if( (p_style->i_style_flags = ConvertFlags( p_buf[6] )) )
-                        p_style->i_features |= STYLE_HAS_FLAGS;
-                    p_style->i_font_size = p_buf[7];
-                    p_style->i_font_color = GetDWBE(p_buf+8) >> 8;// RGBA -> RGB
-                    p_style->i_font_alpha = GetDWBE(p_buf+8) & 0xFF;
-                    p_style->i_features |= STYLE_HAS_FONT_COLOR | STYLE_HAS_FONT_ALPHA;
-                    ApplySegmentStyle( &p_segment3g, i_start, i_end, p_style );
-                    text_style_Delete( p_style );
+                    i_end = VLC_CLIP( i_end - 1, i_start, i_psz_bytelength - 1 );
+
+                    text_style_t *p_style = text_style_Create( STYLE_NO_DEFAULTS );
+                    if( p_style )
+                    {
+                        if( (p_style->i_style_flags = ConvertFlags( it.p_payload[6] )) )
+                            p_style->i_features |= STYLE_HAS_FLAGS;
+                        p_style->i_font_size = it.p_payload[7];
+                        p_style->i_font_color = GetDWBE(&it.p_payload[8]) >> 8;// RGBA -> RGB
+                        p_style->i_font_alpha = GetDWBE(&it.p_payload[8]) & 0xFF;
+                        p_style->i_features |= STYLE_HAS_FONT_COLOR | STYLE_HAS_FONT_ALPHA;
+                        ApplySegmentStyle( &p_segment3g, i_start, i_end, p_style );
+                        text_style_Delete( p_style );
+                    }
                 }
 
-                p_buf += 12;
+                it.p_payload += 12; it.i_payload -= 12;
             }
         }   break;
 
@@ -413,7 +420,6 @@ static int Decode( decoder_t *p_dec, block_t *p_block )
             break;
 
         }
-        p_buf += i_atomsize;
     }
 
     p_spu->i_start    = p_block->i_pts;

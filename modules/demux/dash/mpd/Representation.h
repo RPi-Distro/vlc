@@ -26,7 +26,7 @@
 #define DASHREPRESENTATION_H_
 
 #include "DASHCommonAttributesElements.h"
-#include "../../adaptive/playlist/SegmentInfoCommon.h"
+#include "../../adaptive/playlist/SegmentBaseType.hpp"
 #include "../../adaptive/playlist/BaseRepresentation.h"
 
 namespace dash
@@ -47,7 +47,7 @@ namespace dash
                 Representation( AdaptationSet * );
                 virtual ~Representation ();
 
-                virtual StreamFormat getStreamFormat() const; /* reimpl */
+                virtual StreamFormat getStreamFormat() const override;
                 int                 getQualityRanking       () const;
                 void                setQualityRanking       ( int qualityRanking );
                 const std::list<const Representation*>&     getDependencies() const;
@@ -63,7 +63,7 @@ namespace dash
 
                 /* for segment templates */
                 virtual std::string contextualize(size_t, const std::string &,
-                                                  const BaseSegmentTemplate *) const; // reimpl
+                                                  const SegmentTemplate *) const override;
 
             private:
                 int                                 qualityRanking;
@@ -71,7 +71,7 @@ namespace dash
                 TrickModeType                       *trickModeType;
 
                 /* for contextualize() */
-                mtime_t getScaledTimeBySegmentNumber(uint64_t, const MediaSegmentTemplate *) const;
+                stime_t getScaledTimeBySegmentNumber(uint64_t, const SegmentTemplate *) const;
         };
     }
 }

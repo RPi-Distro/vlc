@@ -27,7 +27,8 @@
 
 using namespace smooth::http;
 
-MemoryChunkSource::MemoryChunkSource(block_t *block)
+MemoryChunkSource::MemoryChunkSource(ChunkType t, block_t *block)
+    : AbstractChunkSource(t)
 {
     data = block;
     i_read = 0;
@@ -45,13 +46,23 @@ bool MemoryChunkSource::hasMoreData() const
     return i_read > contentLength;
 }
 
+size_t MemoryChunkSource::getBytesRead() const
+{
+    return i_read;
+}
+
+void MemoryChunkSource::recycle()
+{
+    delete this;
+}
+
 block_t * MemoryChunkSource::readBlock()
 {
-    block_t *p_block = NULL;
+    block_t *p_block = nullptr;
     if(data)
     {
         p_block = data;
-        data = NULL;
+        data = nullptr;
     }
     return p_block;
 }
@@ -59,9 +70,9 @@ block_t * MemoryChunkSource::readBlock()
 block_t * MemoryChunkSource::read(size_t toread)
 {
     if(!data)
-        return NULL;
+        return nullptr;
 
-    block_t * p_block = NULL;
+    block_t * p_block = nullptr;
 
     toread = __MIN(data->i_buffer - i_read, toread);
     if(toread > 0)

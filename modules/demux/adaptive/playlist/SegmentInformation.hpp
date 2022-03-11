@@ -21,9 +21,10 @@
 #define SEGMENTINFORMATION_HPP
 
 #include "ICanonicalUrl.hpp"
+#include "Inheritables.hpp"
+#include "Segment.h"
 #include "../tools/Properties.hpp"
 #include "../encryption/CommonEncryption.hpp"
-#include "SegmentInfoCommon.h"
 #include <vlc_common.h>
 #include <vector>
 
@@ -31,29 +32,31 @@ namespace adaptive
 {
     namespace playlist
     {
+        class AbstractSegmentBaseType;
         class SegmentBase;
         class SegmentList;
         class SegmentTimeline;
         class SegmentTemplate;
-        class MediaSegmentTemplate;
-        class AbstractPlaylist;
+        class SegmentTemplate;
+        class BasePlaylist;
         class ISegment;
 
         /* common segment elements for period/adaptset/rep 5.3.9.1,
          * with properties inheritance */
         class SegmentInformation : public ICanonicalUrl,
-                                   public TimescaleAble,
-                                   public Unique
+                                   public Unique,
+                                   public AttrsNode
         {
-            friend class MediaSegmentTemplate;
+            friend class AbstractMultipleSegmentBaseType;
+
             public:
                 SegmentInformation( SegmentInformation * = 0 );
-                explicit SegmentInformation( AbstractPlaylist * );
+                explicit SegmentInformation( BasePlaylist * );
                 virtual ~SegmentInformation();
 
                 virtual mtime_t getPeriodStart() const;
                 virtual mtime_t getPeriodDuration() const;
-                virtual AbstractPlaylist *getPlaylist() const;
+                virtual BasePlaylist *getPlaylist() const;
 
                 class SplitPoint
                 {
@@ -64,56 +67,33 @@ namespace adaptive
                 };
                 void SplitUsingIndex(std::vector<SplitPoint>&);
 
-                enum SegmentInfoType
-                {
-                    INFOTYPE_INIT = 0,
-                    INFOTYPE_MEDIA,
-                    INFOTYPE_INDEX
-                };
-                static const int InfoTypeCount = INFOTYPE_INDEX + 1;
+                virtual InitSegment * getInitSegment() const;
+                virtual IndexSegment *getIndexSegment() const;
+                virtual Segment *     getMediaSegment(uint64_t = 0) const;
+                virtual Segment *     getNextMediaSegment(uint64_t, uint64_t *, bool *) const;
 
-                ISegment * getSegment(SegmentInfoType, uint64_t = 0) const;
-                ISegment * getNextSegment(SegmentInfoType, uint64_t, uint64_t *, bool *) const;
-                bool getSegmentNumberByTime(mtime_t, uint64_t *) const;
-                bool getPlaybackTimeDurationBySegmentNumber(uint64_t, mtime_t *, mtime_t *) const;
-                bool     getMediaPlaybackRange(mtime_t *, mtime_t *, mtime_t *) const;
                 virtual void updateWith(SegmentInformation *);
-                virtual void mergeWithTimeline(SegmentTimeline *); /* ! don't use with global merge */
                 virtual void pruneBySegmentNumber(uint64_t);
                 virtual void pruneByPlaybackTime(mtime_t);
-                virtual uint64_t translateSegmentNumber(uint64_t, const SegmentInformation *) const;
                 void setEncryption(const CommonEncryption &);
                 const CommonEncryption & intheritEncryption() const;
 
             protected:
-                std::size_t getAllSegments(std::vector<ISegment *> &) const;
-                virtual std::size_t getSegments(SegmentInfoType, std::vector<ISegment *>&) const;
                 std::vector<SegmentInformation *> childs;
                 SegmentInformation * getChildByID( const ID & );
                 SegmentInformation *parent;
 
             public:
+                AbstractSegmentBaseType *getProfile() const;
                 void updateSegmentList(SegmentList *, bool = false);
-                void setSegmentBase(SegmentBase *);
-                void setSegmentTemplate(MediaSegmentTemplate *);
-                virtual Url getUrlSegment() const; /* impl */
+                void setSegmentTemplate(SegmentTemplate *);
+                virtual Url getUrlSegment() const override;
                 Property<Url *> baseUrl;
-                void setAvailabilityTimeOffset(mtime_t);
-                void setAvailabilityTimeComplete(bool);
-                SegmentBase *     inheritSegmentBase() const;
-                SegmentList *     inheritSegmentList() const;
-                MediaSegmentTemplate * inheritSegmentTemplate() const;
-                mtime_t           inheritAvailabilityTimeOffset() const;
-                bool              inheritAvailabilityTimeComplete() const;
+                const AbstractSegmentBaseType * inheritSegmentProfile() const;
 
             private:
                 void init();
-                SegmentBase     *segmentBase;
-                SegmentList     *segmentList;
-                MediaSegmentTemplate *mediaSegmentTemplate;
                 CommonEncryption commonEncryption;
-                Undef<bool>      availabilityTimeComplete;
-                Undef<mtime_t>   availabilityTimeOffset;
         };
     }
 }

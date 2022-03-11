@@ -2,7 +2,7 @@
  * SegmentTimeline.cpp: Implement the SegmentTimeline tag.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: cab205ca773394cb05cdf589f6abca52b4516d68 $
+ * $Id: e01bc1ce1cb6dbc57d0cdf28bd666cc0651372e5 $
  *
  * Authors: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
  *
@@ -25,23 +25,21 @@
 #endif
 
 #include "SegmentTimeline.h"
+#include "SegmentBaseType.hpp"
+#include "SegmentInformation.hpp"
 
 #include <algorithm>
+#include <sstream>
 #include <limits>
 
+using namespace adaptive;
 using namespace adaptive::playlist;
 
-SegmentTimeline::SegmentTimeline(TimescaleAble *parent)
-    :TimescaleAble(parent)
+SegmentTimeline::SegmentTimeline(AbstractMultipleSegmentBaseType *parent_)
+    : AttrsNode(Type::Timeline, parent_)
 {
     totalLength = 0;
-}
-
-SegmentTimeline::SegmentTimeline(uint64_t scale)
-    :TimescaleAble(NULL)
-{
-    setTimescale(scale);
-    totalLength = 0;
+    parent = parent_;
 }
 
 SegmentTimeline::~SegmentTimeline()
@@ -81,7 +79,7 @@ mtime_t SegmentTimeline::getMinAheadScaledTime(uint64_t number) const
         const Element *el = *it;
         if(number > el->number + el->r)
             break;
-        else if(number < el->number + el->r)
+        else if(number < el->number)
             totalscaledtime += (el->d * (el->r + 1));
         else /* within repeat range */
             totalscaledtime += el->d * (el->number + el->r - number);
@@ -92,7 +90,7 @@ mtime_t SegmentTimeline::getMinAheadScaledTime(uint64_t number) const
 
 uint64_t SegmentTimeline::getElementNumberByScaledPlaybackTime(stime_t scaled) const
 {
-    const Element *prevel = NULL;
+    const Element *prevel = nullptr;
     std::list<Element *>::const_iterator it;
 
     if(!elements.size())
@@ -169,6 +167,21 @@ uint64_t SegmentTimeline::minElementNumber() const
     return elements.front()->number;
 }
 
+uint64_t SegmentTimeline::getElementIndexBySequence(uint64_t number) const
+{
+    std::list<Element *>::const_iterator it;
+    for(it = elements.begin(); it != elements.end(); ++it)
+    {
+        const Element *el = *it;
+        if(number >= el->number)
+        {
+            if(number <= el->number + el->r)
+                return std::distance(elements.begin(), it);
+        }
+    }
+    return std::numeric_limits<uint64_t>::max();
+}
+
 void SegmentTimeline::pruneByPlaybackTime(mtime_t time)
 {
     const Timescale timescale = inheritTimescale();
@@ -193,6 +206,7 @@ size_t SegmentTimeline::pruneBySequenceNumber(uint64_t number)
             el->t += count * el->d;
             el->r -= count;
             prunednow += count;
+            totalLength -= count * el->d;
             break;
         }
         else
