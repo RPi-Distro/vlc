@@ -2,7 +2,7 @@
  * playlist_model.hpp : Model for a playlist tree
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: a82ec5c2c64a8c98d3a2b5702b6c6d527b7449b2 $
+ * $Id: c83cbcf40923bc1168a01bf13333afc359f2536a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jakob Leben <jleben@videolan.org>
@@ -87,6 +87,7 @@ public:
     QStringList mimeTypes() const Q_DECL_OVERRIDE;
 
     /* Sort */
+    void shuffle();
     void sort( const int column, Qt::SortOrder order = Qt::AscendingOrder ) Q_DECL_OVERRIDE;
 
     /*** VLCModelSubInterface subclassing ***/
@@ -138,6 +139,7 @@ private:
     void dropMove( const PlMimeData * data, PLItem *target, int new_pos );
 
     /* */
+    void sortInternal( QModelIndex rootIndex, int mode, int type );
     void sort( QModelIndex caller, QModelIndex rootIndex, const int column, Qt::SortOrder order );
 
     /* Lookups */

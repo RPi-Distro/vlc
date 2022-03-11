@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: a57506533d635a67ca3fff0d9be35635eec11997 $
+ * $Id: 9593b87c3073d6195b7222f217604a89801b0bc0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -1211,6 +1211,15 @@ int MainInterface::getControlsVisibilityStatus()
     if( !controls ) return 0;
     return( (controls->isVisible() ? CONTROLS_VISIBLE : CONTROLS_HIDDEN )
             + CONTROLS_ADVANCED * controls->b_advancedVisible );
+}
+
+/* Get whether the advanced buttons widget is available
+ * (if its actually present in any of the configurable locations).
+ */
+bool MainInterface::isAdvancedWidgetAvailable()
+{
+    if( !controls) return false;
+    return controls->advancedAvailable();
 }
 
 StandardPLPanel *MainInterface::getPlaylistView()

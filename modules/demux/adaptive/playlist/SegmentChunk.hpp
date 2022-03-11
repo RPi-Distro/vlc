@@ -45,12 +45,15 @@ namespace adaptive
             virtual ~SegmentChunk();
             void         setEncryptionSession(CommonEncryptionSession *);
             StreamFormat getStreamFormat() const;
+            void setStreamFormat(const StreamFormat &);
             bool discontinuity;
+            uint64_t sequence;
 
         protected:
             bool         decrypt(block_t **);
-            virtual void onDownload(block_t **); /* impl */
+            virtual void onDownload(block_t **) override;
             BaseRepresentation *rep;
+            StreamFormat format;
             CommonEncryptionSession *encryptionSession;
         };
 

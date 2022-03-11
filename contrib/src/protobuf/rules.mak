@@ -12,23 +12,20 @@ $(TARBALLS)/protobuf-$(PROTOBUF_VERSION)-cpp.tar.gz:
 
 .sum-protobuf: protobuf-$(PROTOBUF_VERSION)-cpp.tar.gz
 
-PROTOBUF_CFLAGS   := $(CFLAGS)
-PROTOBUF_CXXFLAGS := $(CXXFLAGS)
 DEPS_protobuf = zlib $(DEPS_zlib)
 ifdef HAVE_WIN32
 DEPS_protobuf += pthreads $(DEPS_pthreads)
-PROTOBUF_CFLAGS   += -DPTW32_STATIC_LIB
-PROTOBUF_CXXFLAGS += -DPTW32_STATIC_LIB
 endif
 
 protobuf: protobuf-$(PROTOBUF_VERSION)-cpp.tar.gz .sum-protobuf
 	$(UNPACK)
 	mv protobuf-$(PROTOBUF_VERSION) protobuf-$(PROTOBUF_VERSION)-cpp
 	$(APPLY) $(SRC)/protobuf/dont-build-protoc.patch
+	$(APPLY) $(SRC)/protobuf/include-algorithm.patch
 	$(MOVE)
 
 .protobuf: protobuf
 	$(RECONF)
-	cd $< && CFLAGS="$(PROTOBUF_CFLAGS)" CXXFLAGS="$(PROTOBUF_CXXFLAGS)" $(HOSTVARS) ./configure $(HOSTCONF) --with-protoc="$(PROTOC)"
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) --with-protoc="$(PROTOC)"
 	cd $< && $(MAKE) && $(MAKE) install
 	touch $@

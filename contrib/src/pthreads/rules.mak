@@ -1,46 +1,22 @@
-# POSIX threads
+# winpthreads
 
-ifndef HAVE_WIN32
-PKGS_FOUND += pthreads
-endif
-
-PTHREADS_W32_VERSION := 2-9-1
-PTHREADS_W32_URL := ftp://sources.redhat.com/pub/pthreads-win32/pthreads-w32-$(PTHREADS_W32_VERSION)-release.tar.gz
-
-$(TARBALLS)/pthreads-w32-$(PTHREADS_W32_VERSION)-release.tar.gz:
-	$(call download_pkg,$(PTHREADS_W32_URL),pthreads)
-
-.sum-pthreads: pthreads-w32-$(PTHREADS_W32_VERSION)-release.tar.gz
+WINPTHREADS_VERSION := 7.0.0
+WINPTHREADS_URL := https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/mingw-w64-v$(WINPTHREADS_VERSION).tar.bz2/download
 
 ifdef HAVE_WIN32
-pthreads: pthreads-w32-$(PTHREADS_W32_VERSION)-release.tar.gz .sum-pthreads
-	$(UNPACK)
-	sed -e 's/^CROSS.*=/CROSS ?=/' -i.orig $(UNPACK_DIR)/GNUmakefile
-ifdef HAVE_WINSTORE
-	$(APPLY) $(SRC)/pthreads/winrt.patch
+PKGS += pthreads
 endif
-	$(APPLY) $(SRC)/pthreads/implib.patch
-	$(APPLY) $(SRC)/pthreads/remove-inline.patch
-	$(APPLY) $(SRC)/pthreads/x86-inline-asm.patch
-	$(APPLY) $(SRC)/pthreads/arm64.patch
-	$(APPLY) $(SRC)/pthreads/pthreads-fix-mode_t.patch
-	$(APPLY) $(SRC)/pthreads/pthread-fix-inline.patch
-	$(APPLY) $(SRC)/pthreads/pthreads-fix-old-mingw.patch
+
+$(TARBALLS)/mingw-w64-v$(WINPTHREADS_VERSION).tar.bz2:
+	$(call download_pkg,$(WINPTHREADS_URL),winpthreads)
+
+.sum-pthreads: mingw-w64-v$(WINPTHREADS_VERSION).tar.bz2
+
+pthreads: mingw-w64-v$(WINPTHREADS_VERSION).tar.bz2 .sum-pthreads
+	$(UNPACK)
 	$(MOVE)
 
-PTHREADS_W32_CONF := LFLAGS="$(LDFLAGS)" PTW32_FLAGS="$(CFLAGS)"
-ifdef HAVE_CROSS_COMPILE
-PTHREADS_W32_CONF += CROSS="$(HOST)-"
-endif
-
 .pthreads: pthreads
-	cd $< && $(HOSTVARS) $(PTHREADS_W32_CONF) $(MAKE) MAKEFLAGS=-j1 GC-static
-	mkdir -p -- "$(PREFIX)/include"
-	cd $< && cp -v pthread.h sched.h semaphore.h "$(PREFIX)/include/"
-	sed -e 's/#if HAVE_CONFIG_H/#if 0 \&\& HAVE_CONFIG_H/' -i \
-		"$(PREFIX)/include/pthread.h"
-	mkdir -p -- "$(PREFIX)/lib"
-	cp -v $</*.a "$(PREFIX)/lib/"
-	cp -f "$(PREFIX)/lib/libpthreadGC2.a" "$(PREFIX)/lib/libpthread.a"
+	cd $</mingw-w64-libraries/winpthreads && $(HOSTVARS) ./configure $(HOSTCONF)
+	cd $< && $(MAKE) -C mingw-w64-libraries -C winpthreads install
 	touch $@
-endif

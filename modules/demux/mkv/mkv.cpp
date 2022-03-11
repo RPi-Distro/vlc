@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008, 2010 VLC authors and VideoLAN
- * $Id: 44e9fa805fa7b77eb2b8b3dd8ad68a6fe981d086 $
+ * $Id: 91ec8742a13ecf1ea3a243eb58e42dbefa51608b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -512,7 +512,8 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
         return;
     }
 
-    i_pts -= track.i_codec_delay;
+    if (i_pts != VLC_TS_INVALID)
+        i_pts += p_segment->pcr_shift - track.i_codec_delay;
 
     if ( track.fmt.i_cat != DATA_ES )
     {
@@ -778,40 +779,12 @@ static int Demux( demux_t *p_demux)
         }
     }
 
-    /* update pcr */
+    if (UpdatePCR( p_demux ) != VLC_SUCCESS)
     {
-        int64_t i_pcr = VLC_TS_INVALID;
-
-        typedef matroska_segment_c::tracks_map_t tracks_map_t;
-
-        for( tracks_map_t::const_iterator it = p_segment->tracks.begin(); it != p_segment->tracks.end(); ++it )
-        {
-            mkv_track_t &track = *it->second;
-
-            if( track.i_last_dts == VLC_TS_INVALID )
-                continue;
-
-            if( track.fmt.i_cat != VIDEO_ES && track.fmt.i_cat != AUDIO_ES )
-                continue;
-
-            if( track.i_last_dts < i_pcr || i_pcr <= VLC_TS_INVALID )
-            {
-                i_pcr = track.i_last_dts;
-            }
-        }
-
-        if( i_pcr > VLC_TS_INVALID && i_pcr > p_sys->i_pcr )
-        {
-            if( es_out_SetPCR( p_demux->out, i_pcr ) )
-            {
-                msg_Err( p_demux, "ES_OUT_SET_PCR failed, aborting." );
-                delete block;
-                delete additions;
-                return 0;
-            }
-
-            p_sys->i_pcr = i_pcr;
-        }
+        msg_Err( p_demux, "ES_OUT_SET_PCR failed, aborting." );
+        delete block;
+        delete additions;
+        return VLC_DEMUXER_EGENERIC;
     }
 
     /* set pts */

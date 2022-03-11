@@ -2,7 +2,7 @@
 * VLCSimplePrefsController.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2018 VLC authors and VideoLAN
-* $Id: 948ebef0a7e91efe7e386495b4321f59ecdcc2fc $
+* $Id: edea15ea8de669ea7aee1fd82d7942acf1430e88 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -565,12 +565,7 @@ static inline const char * __config_GetLabel(vlc_object_t *p_this, const char *p
     [self setupButton:_intf_appleremoteCheckbox forBoolValue: "macosx-appleremote"];
     [self setupButton:_intf_appleremote_sysvolCheckbox forBoolValue: "macosx-appleremote-sysvol"];
     [self setupButton:_intf_statusIconCheckbox forBoolValue: "macosx-statusicon"];
-    if (OSX_SIERRA_AND_HIGHER) {
-        _intf_mediakeysCheckbox.enabled = NO;
-        _intf_mediakeysCheckbox.intValue = YES;
-    } else {
-        [self setupButton:_intf_mediakeysCheckbox forBoolValue: "macosx-mediakeys"];
-    }
+    [self setupButton:_intf_mediakeysCheckbox forBoolValue: "macosx-mediakeys"];
 
     [self setupButton:_video_nativeFullscreenCheckbox forBoolValue: "macosx-nativefullscreenmode"];
     [self setupButton:_video_embeddedCheckbox forBoolValue: "embedded-video"];

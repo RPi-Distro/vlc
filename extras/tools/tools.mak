@@ -328,6 +328,8 @@ protobuf-$(PROTOBUF_VERSION).tar.gz:
 
 protobuf: protobuf-$(PROTOBUF_VERSION).tar.gz
 	$(UNPACK)
+	$(APPLY) $(TOOLS)/protobuf-fix-build.patch
+	$(APPLY) $(TOOLS)/protobuf-include-algorithm.patch
 	$(MOVE)
 
 .buildprotoc: protobuf
@@ -391,6 +393,7 @@ meson: meson-$(MESON_VERSION).tar.gz
 	$(MOVE)
 
 .buildmeson: meson
+	mkdir -p $(PREFIX)/bin
 	printf "#!/bin/sh\n\npython3 $(abspath .)/meson/meson.py \"\$$@\"\n" > $(PREFIX)/bin/meson
 	chmod +x $(PREFIX)/bin/meson
 	touch $@

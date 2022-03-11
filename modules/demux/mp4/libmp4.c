@@ -2008,12 +2008,17 @@ static int MP4_ReadBox_vpcC( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_READBOX_ENTER( MP4_Box_data_vpcC_t, MP4_FreeBox_vpcC );
     MP4_Box_data_vpcC_t *p_vpcC = p_box->data.p_vpcC;
 
-    if( p_box->i_size < 6 )
+    if( p_box->i_size < 9 )
         MP4_READBOX_EXIT( 0 );
 
     MP4_GET1BYTE( p_vpcC->i_version );
     if( p_vpcC->i_version > 1 )
         MP4_READBOX_EXIT( 0 );
+
+    /* Skip flags */
+    uint32_t i_flags;
+    MP4_GET3BYTES( i_flags );
+    VLC_UNUSED( i_flags );
 
     MP4_GET1BYTE( p_vpcC->i_profile );
     MP4_GET1BYTE( p_vpcC->i_level );
@@ -2552,6 +2557,20 @@ static int MP4_ReadBox_enda( stream_t *p_stream, MP4_Box_t *p_box )
     msg_Dbg( p_stream,
              "read box: \"enda\" little_endian=%d", p_enda->i_little_endian );
 #endif
+    MP4_READBOX_EXIT( 1 );
+}
+
+static int MP4_ReadBox_pcmC( stream_t *p_stream, MP4_Box_t *p_box )
+{
+    MP4_READBOX_ENTER( MP4_Box_data_pcmC_t, NULL );
+    if(i_read != 6)
+        MP4_READBOX_EXIT( 0 );
+    uint32_t temp;
+    MP4_GET4BYTES(temp);
+    if(temp != 0) /* support only v0 */
+        MP4_READBOX_EXIT( 0 );
+    MP4_GET1BYTE(p_box->data.p_pcmC->i_format_flags);
+    MP4_GET1BYTE(p_box->data.p_pcmC->i_sample_size);
     MP4_READBOX_EXIT( 1 );
 }
 
@@ -4557,6 +4576,7 @@ static const struct
     { ATOM_fiel,    MP4_ReadBox_fiel,         0 },
     { ATOM_glbl,    MP4_ReadBox_Binary,       ATOM_FFV1 },
     { ATOM_enda,    MP4_ReadBox_enda,         0 },
+    { ATOM_pcmC,    MP4_ReadBox_pcmC,         0 }, /* ISO-IEC 23003-5 */
     { ATOM_iods,    MP4_ReadBox_iods,         0 },
     { ATOM_pasp,    MP4_ReadBox_pasp,         0 },
     { ATOM_btrt,    MP4_ReadBox_btrt,         0 }, /* codecs bitrate stsd/????/btrt */

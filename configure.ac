@@ -1,11 +1,11 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 1999-2021 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 1999-2022 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.16)
+AC_INIT(vlc, 3.0.17)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=16
+VERSION_REVISION=17
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -14,7 +14,7 @@ AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Vetinari"
-COPYRIGHT_YEARS="1996-2021"
+COPYRIGHT_YEARS="1996-2022"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -1880,7 +1880,7 @@ PKG_ENABLE_MODULES_VLC([DVDREAD], [], [dvdread > 4.9.0], [dvdread input module],
 dnl
 dnl libdvdnav plugin
 dnl
-PKG_ENABLE_MODULES_VLC([DVDNAV], [], [dvdnav > 4.9.0], [DVD with navigation input module (dvdnav)], [auto])
+PKG_ENABLE_MODULES_VLC([DVDNAV], [], [dvdnav > 5.0.3], [DVD with navigation input module (dvdnav)], [auto])
 AS_IF([test "${enable_dvdnav}" != "no"], [
   AC_MSG_CHECKING(for dvdnav_stream_cb in dvdnav/dvdnav.h)
     AC_EGREP_HEADER(dvdnav_stream_cb,dvdnav/dvdnav.h,[
@@ -4016,7 +4016,7 @@ AM_CONDITIONAL([HAVE_LIRC], [test "${have_lirc}" = "yes"])
 dnl
 dnl  SRT plugin
 dnl
-PKG_ENABLE_MODULES_VLC([SRT], [access_srt access_output_srt], [srt >= 1.2.2 srt < 1.3.0], [SRT input/output plugin], [auto], [], [], [-DENABLE_SRT])
+PKG_ENABLE_MODULES_VLC([SRT], [access_srt access_output_srt], [srt >= 1.3.0], [SRT input/output plugin], [auto], [], [], [-DENABLE_SRT])
 
 EXTEND_HELP_STRING([Visualisations and Video filter plugins:])
 dnl
@@ -4324,8 +4324,14 @@ AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_REVISION)
 AC_SUBST(VERSION_EXTRA)
 AC_SUBST(COPYRIGHT_YEARS)
-AC_DEFINE_UNQUOTED(VLC_COMPILE_BY, "`whoami|sed -e 's/\\\/\\\\\\\/g'`", [user who ran configure])
-AC_DEFINE_UNQUOTED(VLC_COMPILE_HOST, "`hostname -f 2>/dev/null || hostname`", [host which ran configure])
+AS_IF([test -z "$VLC_COMPILE_BY"],[
+   VLC_COMPILE_BY=`whoami|sed -e 's/\\\/\\\\\\\/g'`
+])
+AC_DEFINE_UNQUOTED([VLC_COMPILE_BY], "$VLC_COMPILE_BY", [user who ran configure])
+AS_IF([test -z "$VLC_COMPILE_HOST"],[
+   VLC_COMPILE_HOST=`hostname -f 2>/dev/null || hostname`
+])
+AC_DEFINE_UNQUOTED([VLC_COMPILE_HOST], "$VLC_COMPILE_HOST", [host which ran configure])
 AC_DEFINE_UNQUOTED(VLC_COMPILER, "`$CC -v 2>&1 | tail -n 1 | sed -e 's/ *$//'`", [compiler])
 dnl
 dnl  Handle substvars that use $(top_srcdir)

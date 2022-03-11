@@ -1,7 +1,7 @@
 /*****************************************************************************
  * Inheritables.hpp Nodes inheritables properties
  *****************************************************************************
- * Copyright (C) 1998-2015 VLC authors and VideoLAN
+ * Copyright (C) 2016-2020 VideoLabs, VLC authors and VideoLAN
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -20,42 +20,122 @@
 #ifndef INHERITABLES_H
 #define INHERITABLES_H
 
-#include "../tools/Properties.hpp"
-#include <string>
+#include <list>
+#include <limits>
 #include <stdint.h>
-#include "../ID.hpp"
 #include "../Time.hpp"
 
 namespace adaptive
 {
     namespace playlist
     {
-        class TimescaleAble
+        class AttrsNode;
+        class SegmentTimeline;
+        class SegmentTemplate;
+        class SegmentList;
+        class SegmentBase;
+
+        class AbstractAttr
         {
             public:
-                TimescaleAble( TimescaleAble * = NULL );
-                virtual ~TimescaleAble();
-                void setParentTimescaleAble( TimescaleAble * );
-                virtual Timescale inheritTimescale() const;
-                void setTimescale( const Timescale & );
-                void setTimescale( uint64_t );
-                const Timescale & getTimescale() const;
+                enum class Type
+                {
+                    None,
+                    Playlist,
+                    SegmentInformation,
+                    SegmentList,
+                    SegmentBase,
+                    SegmentTemplate,
+                    Timescale,
+                    Timeline,
+                    Duration,
+                    StartNumber,
+                    AvailabilityTimeOffset,
+                    AvailabilityTimeComplete,
+                };
+                AbstractAttr(enum Type);
+                virtual ~AbstractAttr();
+                AbstractAttr(const AbstractAttr &) = delete;
+                AbstractAttr & operator=(const AbstractAttr &) = delete;
+                Type getType() const;
+                bool operator ==(const AbstractAttr &t) const { return type == t.getType(); }
+                bool operator !=(const AbstractAttr &t) const { return type != t.getType(); }
+                virtual bool isValid() const { return true; }
+                void setParentNode(AttrsNode *n) { parentNode = n; }
 
             protected:
-                TimescaleAble *parentTimescaleAble;
-
-            private:
-                Timescale timescale;
+                Type type;
+                AttrsNode *parentNode;
         };
 
-        class Unique
+        class AttrsNode : public AbstractAttr
         {
             public:
-                const ID & getID() const;
-                void       setID(const ID &);
+                AttrsNode( Type, AttrsNode * = nullptr );
+                ~AttrsNode();
+                AttrsNode(const AttrsNode &) = delete;
+                AttrsNode & operator=(const AttrsNode &) = delete;
+                void addAttribute( AbstractAttr * );
+                void replaceAttribute( AbstractAttr * );
+                AbstractAttr * inheritAttribute(AbstractAttr::Type);
+                AbstractAttr * inheritAttribute(AbstractAttr::Type) const;
+                /* helpers */
+                uint64_t          inheritStartNumber() const;
+                stime_t           inheritDuration() const;
+                Timescale         inheritTimescale() const;
+                mtime_t           inheritAvailabilityTimeOffset() const;
+                bool              inheritAvailabilityTimeComplete() const;
+                SegmentTimeline * inheritSegmentTimeline() const;
+                SegmentTemplate * inheritSegmentTemplate() const;
+                SegmentList *     inheritSegmentList() const;
+                SegmentBase *     inheritSegmentBase() const;
 
             protected:
-                ID id;
+                AttrsNode * matchPath(std::list<AbstractAttr::Type>&);
+                AbstractAttr * getAttribute(AbstractAttr::Type,
+                                            std::list<AbstractAttr::Type>&);
+                AbstractAttr * getAttribute(AbstractAttr::Type);
+                AbstractAttr * getAttribute(AbstractAttr::Type) const;
+                std::list<AbstractAttr *> props;
+                bool is_canonical_root;
+        };
+
+        template<enum AbstractAttr::Type e, typename T>
+        class AttrWrapper : public AbstractAttr
+        {
+            public:
+                AttrWrapper(T v) : AbstractAttr(e) { value = v; }
+                virtual ~AttrWrapper() { condDeleteValue(value); }
+                AttrWrapper(const AttrWrapper &) = delete;
+                AttrWrapper<e, T> & operator=(const AttrWrapper<e, T> &) = delete;
+                operator const T&() const { return value; }
+
+            protected:
+                void condDeleteValue(const T &) {}
+                void condDeleteValue(T* &v) { delete v; }
+                T value;
+        };
+
+        using AvailabilityTimeOffsetAttr   = AttrWrapper<AbstractAttr::Type::AvailabilityTimeOffset, mtime_t>;
+        using AvailabilityTimeCompleteAttr = AttrWrapper<AbstractAttr::Type::AvailabilityTimeComplete, bool>;
+        using StartnumberAttr              = AttrWrapper<AbstractAttr::Type::StartNumber, uint64_t>;
+
+        class TimescaleAttr:
+                public AttrWrapper<AbstractAttr::Type::Timescale, Timescale>
+        {
+            public:
+                TimescaleAttr(Timescale v) :
+                    AttrWrapper<AbstractAttr::Type::Timescale, Timescale>( v ) {}
+                virtual bool isValid() const { return value.isValid(); }
+        };
+
+        class DurationAttr:
+                public AttrWrapper<AbstractAttr::Type::Duration, stime_t>
+        {
+            public:
+                DurationAttr(stime_t v) :
+                    AttrWrapper<AbstractAttr::Type::Duration, stime_t>( v ) {}
+                virtual bool isValid() const { return value > 0; }
         };
     }
 }

@@ -24,6 +24,7 @@
 #ifndef COMMONATTRIBUTESELEMENTS_H
 #define COMMONATTRIBUTESELEMENTS_H
 
+#include "../tools/Properties.hpp"
 #include <string>
 
 namespace adaptive
@@ -33,7 +34,7 @@ namespace adaptive
         class CommonAttributesElements
         {
             public:
-                CommonAttributesElements();
+                CommonAttributesElements(CommonAttributesElements * = nullptr);
                 virtual ~CommonAttributesElements();
                 virtual const std::string&      getMimeType() const;
                 void                            setMimeType( const std::string &mimeType );
@@ -41,11 +42,23 @@ namespace adaptive
                 void                            setWidth( int width );
                 int                             getHeight() const;
                 void                            setHeight( int height );
+                const AspectRatio &             getAspectRatio() const;
+                void                            setAspectRatio(const AspectRatio &);
+                const Rate &                    getFrameRate() const;
+                void                            setFrameRate(const Rate &);
+                const Rate &                    getSampleRate() const;
+                void                            setSampleRate(const Rate &);
 
             protected:
                 std::string                         mimeType;
                 int                                 width;
                 int                                 height;
+                AspectRatio                         aspectRatio;
+                Rate                                frameRate;
+                Rate                                sampleRate;
+
+            private:
+                CommonAttributesElements           *parentCommonAttributes;
         };
     }
 }

@@ -2,7 +2,7 @@
  * ios.m: iOS OpenGL ES provider
  *****************************************************************************
  * Copyright (C) 2001-2017 VLC authors and VideoLAN
- * $Id: 26f84667ea254f4bbbb814a4b488b22bdc913849 $
+ * $Id: fe0435a57f6bb42eac8fe2611351c139b7c0fc40 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -390,7 +390,7 @@ static void GLESSwap(vlc_gl_t *gl)
 
 - (id)initWithFrame:(CGRect)frame andVD:(vout_display_t*)vd
 {
-    _appActive = ([UIApplication sharedApplication].applicationState == UIApplicationStateActive);
+    _appActive = ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground);
     if (unlikely(!_appActive))
         return nil;
 

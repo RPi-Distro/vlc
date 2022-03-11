@@ -2,7 +2,7 @@
  * tospdif.c : encapsulates A/52 and DTS frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2002, 2006-2016 VLC authors and VideoLAN
- * $Id: f228b2091dbc5a73c0fe211dd6e3b127d54367ff $
+ * $Id: 6013056518677bc12608ffe584a3f6dbe0efd383 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Stéphane Borel <stef@via.ecp.fr>
@@ -414,7 +414,8 @@ static int write_buffer_dts( filter_t *p_filter, block_t *p_in_buf )
         return SPDIF_ERROR;
     }
 
-    if( core.b_14b )
+    if( core.syncword == DTS_SYNC_CORE_14BITS_BE ||
+        core.syncword == DTS_SYNC_CORE_14BITS_LE )
     {
         if( p_in_buf->i_buffer > p_in_buf->i_nb_samples * 4 )
             return SPDIF_ERROR;
