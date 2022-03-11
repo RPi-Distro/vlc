@@ -29,8 +29,9 @@ Copyright: 1999, AT&T Laboratories Cambridge
            2007, Savoir-faire Linux
            2007, Société des arts technologiques
            2008-2015, Tòni Galhard
-           1998-2020, VideoLAN team and VLC authors
+           1998-2022, VideoLAN team and VLC authors
            2002-2004, the xine project
+           2018-2019, Haivision Systems Inc.
 License: GPL-2+
 
 Files: bin/override.c
