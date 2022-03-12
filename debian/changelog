@@ -1,3 +1,20 @@
+vlc (3.0.17-1) unstable; urgency=medium
+
+  * New upstream version 3.0.17
+    - Fix build with ffmpeg 5.0 (Closes: #1004584)
+  * debian/control:
+    - Switch to libidn-dev
+    - Bump BD on libopenmpt-modplug-dev
+    - Bump Standards-Version
+  * debian/copyright:
+    - Add missing text to BSD-2-clause
+    - Update copyright for 3.0.17
+  * debian/patches: Refresh patches
+  * debian/rules: Set VLC_COMPILE_BY and VLC_COMPILE_HOST (Closes: #990246)
+  * debian/: Update lintian override
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 12 Mar 2022 20:40:54 +0100
+
 vlc (3.0.16-1) unstable; urgency=medium
 
   * Upload to unstable
