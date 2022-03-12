@@ -6,8 +6,8 @@ include /usr/share/dpkg/architecture.mk
 include /usr/share/dpkg/pkg-info.mk
 include /usr/share/dpkg/vendor.mk
 
-export VLC_COMPILE_BY="$(DEB_VENDOR) buildd for $(DEB_DISTRIBUTION)"
-export VLC_COMPILE_HOST="$(DEB_VENDOR) $(DEB_HOST_ARCH) buildd"
+export VLC_COMPILE_BY=$(DEB_VENDOR) buildd for $(DEB_DISTRIBUTION)
+export VLC_COMPILE_HOST=$(DEB_VENDOR) $(DEB_HOST_ARCH) buildd
 
 # custom build option: debug
 # VLC enables assertions if --enable-debug is passed to the configure script. To debug issues, it
