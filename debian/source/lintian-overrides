@@ -1,5 +1,7 @@
 # unreliable tags, see lintian bug #802028
-vlc source: source-contains-prebuilt-javascript-object share/lua/http/js/common.js *
-vlc source: source-is-missing share/lua/http/js/common.js *
-vlc source: source-contains-prebuilt-javascript-object share/lua/http/js/controllers.js *
-vlc source: source-is-missing share/lua/http/js/controllers.js *
+vlc source: source-contains-prebuilt-javascript-object share/lua/http/js/common.js
+vlc source: source-is-missing share/lua/http/js/common.js
+vlc source: source-contains-prebuilt-javascript-object share/lua/http/js/controllers.js
+vlc source: source-is-missing share/lua/http/js/controllers.js
+vlc source: source-contains-prebuilt-javascript-object share/lua/http/js/jquery.jstree.js
+vlc source: source-is-missing share/lua/http/js/jquery.jstree.js
