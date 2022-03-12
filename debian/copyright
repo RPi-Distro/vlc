@@ -920,12 +920,7 @@ Copyright: 2010-2015, Benjamin Drung
            2013-2020, Sebastian Ramacher
 License: GPL-2+
 
-Files: modules/gui/macosx/PXSourceList.h
-       modules/gui/macosx/PXSourceList.m
-       modules/gui/macosx/PXSourceListDataSource.h
-       modules/gui/macosx/PXSourceListDelegate.h
-       modules/gui/macosx/SideBarItem.h
-       modules/gui/macosx/SideBarItem.m
+Files: modules/gui/macosx/PXSourceList/*
 Copyright: 2009-2010 Alex Rozanski
 License: BSD-3-clause
 Comment:
