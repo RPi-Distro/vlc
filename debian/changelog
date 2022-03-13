@@ -1,3 +1,13 @@
+vlc (3.0.17.3-1) unstable; urgency=medium
+
+  * New upstream version 3.0.17.3
+  * debian/
+    - Revert "Disable srt until the package is fixed" (Closes: #983109)
+      Thanks to Florian Ernst
+    - Move srt output plugin to vlc-plugin-access-extra
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 13 Mar 2022 12:41:41 +0100
+
 vlc (3.0.17-1) unstable; urgency=medium
 
   * New upstream version 3.0.17
