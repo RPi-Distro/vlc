@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: cfce972f7c67fb80027099d862521e8bcd149266 $
+ * $Id: 1ce43873f5dfcf93ca07b4cfa9023603b8e06f86 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -341,7 +341,7 @@ void VideoWidget::mouseReleaseEvent( QMouseEvent *event )
 
 void VideoWidget::mousePressEvent( QMouseEvent* event )
 {
-    if ( !p_window || enable_mouse_events )
+    if ( !p_window || !enable_mouse_events )
     {
         event->ignore();
         return;

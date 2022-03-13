@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 2438b440f1e5129cf6d892db1ef4ab5a1f661306 $
+ * $Id: c1527a03a58ceb48f14ab10b117669f0064f0b32 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1117,7 +1117,11 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error
 
         /* Compute the PTS */
 #if LIBAVCODEC_VERSION_CHECK(57, 24, 0, 61, 100)
+# if LIBAVCODEC_VERSION_MICRO >= 100
+        mtime_t i_pts = frame->best_effort_timestamp;
+# else
         mtime_t i_pts = frame->pts;
+# endif
 #else
         mtime_t i_pts = frame->pkt_pts;
 #endif
