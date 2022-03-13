@@ -41,7 +41,13 @@ usr/lib/*/vlc/plugins/access/libudp_plugin.so
 usr/lib/*/vlc/plugins/access/libv4l2_plugin.so [v4l2]
 usr/lib/*/vlc/plugins/access/libvcd_plugin.so [vcd]
 usr/lib/*/vlc/plugins/access/libvdr_plugin.so
-usr/lib/*/vlc/plugins/access_output
+usr/lib/*/vlc/plugins/access_output/libaccess_output_dummy_plugin.so
+usr/lib/*/vlc/plugins/access_output/libaccess_output_file_plugin.so
+usr/lib/*/vlc/plugins/access_output/libaccess_output_http_plugin.so
+usr/lib/*/vlc/plugins/access_output/libaccess_output_livehttp_plugin.so
+usr/lib/*/vlc/plugins/access_output/libaccess_output_shout_plugin.so
+usr/lib/*/vlc/plugins/access_output/libaccess_output_udp_plugin.so
+usr/lib/*/vlc/plugins/access_output/libaccess_output_rist_plugin.so
 usr/lib/*/vlc/plugins/arm_neon [neon]
 usr/lib/*/vlc/plugins/audio_filter
 usr/lib/*/vlc/plugins/audio_mixer

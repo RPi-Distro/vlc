@@ -1,3 +1,4 @@
 usr/lib/*/vlc/plugins/access/libvnc_plugin.so
 usr/lib/*/vlc/plugins/access/libxcb_screen_plugin.so
 usr/lib/*/vlc/plugins/access/libaccess_srt_plugin.so
+usr/lib/*/vlc/plugins/access_output/libaccess_output_srt_plugin.so
