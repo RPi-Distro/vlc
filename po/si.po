@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.13\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2022-03-11 20:40+0100\n"
+"POT-Creation-Date: 2022-04-19 00:23+0200\n"
 "PO-Revision-Date: 2018-12-19 22:50+0100\n"
 "Last-Translator: VideoLAN <videolan@videolan.org>, 2018\n"
 "Language-Team: Sinhala (https://www.transifex.com/yaron/teams/16553/si/)\n"
@@ -91,6 +91,7 @@ msgstr "Hotkeys සැකසුම්"
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
+#: modules/gui/qt/ui/profiles.h:719 modules/gui/qt/ui/profiles.h:750
 msgid "Audio"
 msgstr "ශ්‍රව්‍ය"
 
@@ -103,6 +104,7 @@ msgid "General audio settings"
 msgstr "ප්‍රධාන ශ්‍රව්‍ය සැකසුම්"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:81
+#: modules/gui/qt/ui/profiles.h:748 modules/gui/qt/ui/profiles.h:758
 msgid "Filters"
 msgstr "පෙරහන්"
 
@@ -154,6 +156,8 @@ msgstr "ප්‍රකීර්ණ ශ්‍රව්‍ය සැකසුම�
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
+#: modules/gui/qt/ui/profiles.h:720 modules/gui/qt/ui/profiles.h:724
+#: modules/gui/qt/ui/sprefs_video.h:323
 msgid "Video"
 msgstr "වීඩියෝ"
 
@@ -363,6 +367,7 @@ msgstr ""
 
 #: include/vlc_config_cat.h:184 src/libvlc-module.c:1862
 #: modules/gui/qt/dialogs/extended.cpp:93
+#: modules/gui/qt/ui/video_effects.h:1344
 msgid "Advanced"
 msgstr "සංකීර්ණ"
 
@@ -439,7 +444,7 @@ msgstr "&මේ ගැන"
 #: modules/gui/macosx/VLCMainMenu.m:1340 modules/gui/macosx/VLCMainMenu.m:1341
 #: modules/gui/macosx/VLCPlaylist.m:223
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:538
+#: modules/gui/qt/dialogs/vlm.cpp:538 modules/gui/qt/ui/open.h:258
 msgid "Play"
 msgstr "වයන්න"
 
@@ -531,6 +536,7 @@ msgstr "සොයන්න"
 
 #: include/vlc_intf_strings.h:99
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:282
+#: modules/gui/qt/ui/video_effects.h:1328
 msgid "Waves"
 msgstr "තරංගාකාර"
 
@@ -666,6 +672,9 @@ msgstr "ස්ටීරියෝ"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:313
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1267
+#: modules/gui/qt/ui/video_effects.h:1309
+#: modules/gui/qt/ui/video_effects.h:1319
 msgid "Left"
 msgstr "වම"
 
@@ -680,6 +689,7 @@ msgstr "වම"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:315
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1268
 msgid "Right"
 msgstr "දකුණ"
 
@@ -920,13 +930,15 @@ msgstr "මුල් හැඳුනුම"
 #: src/input/es_out.c:3132 src/input/es_out.c:3135 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
+#: modules/gui/qt/ui/profiles.h:726 modules/gui/qt/ui/profiles.h:752
+#: modules/gui/qt/ui/profiles.h:761
 msgid "Codec"
 msgstr "කොඩෙක්"
 
 #: src/input/es_out.c:3139 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:98
 #: modules/gui/macosx/VLCSimplePrefsController.m:317
-#: modules/stream_out/setid.c:49
+#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:527
 msgid "Language"
 msgstr "භාෂාව"
 
@@ -946,7 +958,7 @@ msgstr "වර්ගය"
 
 #: src/input/es_out.c:3151
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
-#: modules/gui/macosx/VLCOutput.m:98
+#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:754
 msgid "Channels"
 msgstr "නාලිකා"
 
@@ -968,6 +980,7 @@ msgstr "නියැදියකට බිටු ගණන"
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
+#: modules/gui/qt/ui/profiles.h:727 modules/gui/qt/ui/profiles.h:753
 msgid "Bitrate"
 msgstr "බිටු අනුපාතය"
 
@@ -1208,6 +1221,7 @@ msgstr "VLC හට MRL '%s' විවෘත කිරීමට නොහැක�
 #: modules/gui/qt/components/open_panels.cpp:507
 #: modules/gui/qt/components/open_panels.cpp:521
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
+#: modules/gui/qt/ui/open_disk.h:306
 msgid "Title"
 msgstr "මාතෘකාව"
 
@@ -1247,6 +1261,7 @@ msgid "Setting"
 msgstr "සිටුවම්"
 
 #: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
+#: modules/gui/qt/ui/podcast_configuration.h:100
 msgid "URL"
 msgstr "URL"
 
@@ -1314,6 +1329,7 @@ msgstr "යෙදුම්"
 #: modules/gui/macosx/VLCMainMenu.m:412
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
+#: modules/gui/qt/ui/open_disk.h:307
 msgid "Chapter"
 msgstr "පරිච්ඡේදය"
 
@@ -1542,7 +1558,7 @@ msgid "Media (player) role for operating system policy."
 msgstr ""
 
 #: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:273
-#: modules/stream_out/display.c:40
+#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:407
 msgid "Enable audio"
 msgstr "ශ්‍රව්‍ය සබල කරන්න"
 
@@ -1660,7 +1676,8 @@ msgstr ""
 #: modules/services_discovery/upnp.cpp:82
 #: modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
-#: modules/video_output/xcb/xvideo.c:821
+#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:742
+#: modules/gui/qt/ui/profiles.h:745
 msgid "Auto"
 msgstr "ස්වයං"
 
@@ -1776,7 +1793,7 @@ msgstr ""
 "ක්‍රමය ස්වයංක්‍රීයව තෝරා ගැනීමයි."
 
 #: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:359
-#: modules/stream_out/display.c:42
+#: modules/stream_out/display.c:42 modules/gui/qt/ui/sprefs_video.h:311
 msgid "Enable video"
 msgstr "වීඩියෝ සබල කරන්න"
 
@@ -1860,6 +1877,9 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:317
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1265
+#: modules/gui/qt/ui/video_effects.h:1307
+#: modules/gui/qt/ui/video_effects.h:1318
 msgid "Top"
 msgstr "උඩ"
 
@@ -1870,6 +1890,7 @@ msgstr "උඩ"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:319
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1269
 msgid "Bottom"
 msgstr "යට"
 
@@ -2050,6 +2071,7 @@ msgid "Disable the screensaver during video playback."
 msgstr "වීඩියෝව ධාවනය වන අතරතුර තිර සුරැකුම අක්‍රිය කරන්න."
 
 #: src/libvlc-module.c:374 modules/gui/macosx/VLCSimplePrefsController.m:364
+#: modules/gui/qt/ui/sprefs_video.h:314
 msgid "Window decorations"
 msgstr "කවුළු ආයිත්තම්"
 
@@ -2368,6 +2390,7 @@ msgstr "පෙරනිමි "
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
 #: modules/gui/macosx/VLCSidebarDataSource.m:209
 #: modules/gui/qt/components/extended_panels.cpp:949
+#: modules/gui/qt/ui/equalizer.h:130 modules/gui/qt/ui/vlm.h:286
 msgid "Enable"
 msgstr "සබලයි"
 
@@ -2423,7 +2446,7 @@ msgid ""
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:578
+#: src/libvlc-module.c:578 modules/gui/qt/ui/open_disk.h:309
 msgid "Audio track"
 msgstr "ශ්‍රව්‍ය පථය"
 
@@ -2431,7 +2454,7 @@ msgstr "ශ්‍රව්‍ය පථය"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "භාවිතයට ගනු ලබන ශ්‍රව්‍ය පථයේ දහරා අංකය (0 සිට n දක්වා)"
 
-#: src/libvlc-module.c:583
+#: src/libvlc-module.c:583 modules/gui/qt/ui/open_disk.h:310
 msgid "Subtitle track"
 msgstr "උපසිරැසි පථය"
 
@@ -2558,7 +2581,7 @@ msgstr "ධාවන කාලය"
 msgid "The stream will run this duration (in seconds)."
 msgstr "දහරාව මෙම කාලසීමාව තුළ ධාවනය වේවි (තත්පර වලින්)."
 
-#: src/libvlc-module.c:646
+#: src/libvlc-module.c:646 modules/gui/qt/ui/sprefs_input.h:360
 msgid "Fast seek"
 msgstr "වේගයෙන් සෙවීම"
 
@@ -2672,7 +2695,7 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:705
+#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Force subtitle position"
 msgstr "උපසිරැසි ස්ථානය බලාත්මක කරන්න"
 
@@ -2702,6 +2725,7 @@ msgstr "උප-අනුරූ සැකසීම සම්පූර්ණයෙ
 
 #: src/libvlc-module.c:717 src/libvlc-module.c:1674 src/text/iso-639_def.h:146
 #: modules/gui/macosx/VLCSimplePrefsController.m:351
+#: modules/gui/qt/ui/sprefs_subtitles.h:289
 msgid "On Screen Display"
 msgstr "තිර මත දර්ශනය"
 
@@ -3351,7 +3375,7 @@ msgstr ""
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 
-#: src/libvlc-module.c:1087
+#: src/libvlc-module.c:1087 modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Use only one instance when started from file manager"
 msgstr ""
 
@@ -3369,7 +3393,7 @@ msgid ""
 "machine."
 msgstr ""
 
-#: src/libvlc-module.c:1099
+#: src/libvlc-module.c:1099 modules/gui/qt/ui/sprefs_interface.h:550
 msgid "Enqueue items into playlist in one instance mode"
 msgstr ""
 
@@ -3413,6 +3437,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1126 modules/gui/macosx/VLCSimplePrefsController.m:334
 #: modules/gui/qt/dialogs/firstrun.cpp:95
+#: modules/gui/qt/ui/sprefs_interface.h:562
 msgid "Allow metadata network access"
 msgstr ""
 
@@ -3556,7 +3581,7 @@ msgstr ""
 "ඔබ විසින් VLC ආරම්භ කරන සෑම අවස්ථාවක දී ම මාධ්‍ය පුස්තකාලය ස්වයංක්‍රීයව සුරැකෙනු ඇත සහ නැවත "
 "ප්‍රවේශනය කරනු ඇත."
 
-#: src/libvlc-module.c:1198
+#: src/libvlc-module.c:1198 modules/gui/qt/ui/sprefs_interface.h:548
 msgid "Display playlist tree"
 msgstr "ධාවන ලැයිස්තු රුක දර්ශනය කරන්න"
 
@@ -3610,6 +3635,7 @@ msgstr ""
 #: modules/gui/macosx/VLCControlsBarCommon.m:98
 #: modules/gui/macosx/VLCMainMenu.m:432 modules/gui/macosx/VLCMainMenu.m:511
 #: modules/gui/qt/components/controller.hpp:108
+#: modules/gui/qt/ui/sprefs_video.h:315
 msgid "Fullscreen"
 msgstr "පුන් තිරය"
 
@@ -3693,6 +3719,7 @@ msgstr "සෙමින් (සියුම්ව)"
 #: modules/gui/macosx/VLCMainMenu.m:507
 #: modules/gui/qt/components/controller.hpp:112
 #: modules/gui/qt/dialogs/sout.cpp:93 modules/notify/notify.c:335
+#: modules/gui/qt/ui/streampanel.h:179
 msgid "Next"
 msgstr "ඊළඟ"
 
@@ -3718,7 +3745,7 @@ msgstr "ධාවන ලැයිස්තුවේ පෙර අයිතමය
 #: modules/gui/macosx/VLCMainMenu.m:498 modules/gui/macosx/VLCMainMenu.m:505
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:65
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:544
+#: modules/gui/qt/dialogs/vlm.cpp:544 modules/gui/qt/ui/streampanel.h:178
 msgid "Stop"
 msgstr "නවතන්න"
 
@@ -3731,6 +3758,8 @@ msgstr "ධාවනය නැවැත්වීම සඳහා භාවිත
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
+#: modules/gui/qt/ui/sprefs_subtitles.h:292
+#: modules/gui/qt/ui/video_effects.h:1315
 msgid "Position"
 msgstr "ස්ථානය"
 
@@ -4442,6 +4471,8 @@ msgstr "උප අනුරූ"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
 #: modules/gui/macosx/VLCMainMenu.m:450
 #: share/lua/http/dialogs/create_stream.html:153
+#: modules/gui/qt/ui/profiles.h:716 modules/gui/qt/ui/profiles.h:760
+#: modules/gui/qt/ui/profiles.h:763
 msgid "Subtitles"
 msgstr "උපසිරැසි"
 
@@ -4608,6 +4639,8 @@ msgstr "ගවේෂකයෙහි නවතාලීම"
 
 #: src/misc/actions.c:62 modules/gui/macosx/VLCMainMenu.m:370
 #: modules/gui/macosx/VLCPlaylist.m:224 modules/gui/qt/dialogs/bookmarks.cpp:50
+#: modules/gui/qt/ui/podcast_configuration.h:102
+#: modules/gui/qt/ui/streampanel.h:170
 msgid "Delete"
 msgstr "මකන්න"
 
@@ -5654,7 +5687,7 @@ msgstr "වීඩියෝව ස්වයං පරිමාණ කරන්න
 #: src/video_output/vout_intf.c:203 modules/gui/macosx/VLCMainMenu.m:439
 #: modules/gui/macosx/VLCMainMenu.m:440
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:193
-#: modules/video_filter/croppadd.c:87
+#: modules/video_filter/croppadd.c:87 modules/gui/qt/ui/video_effects.h:1275
 msgid "Crop"
 msgstr "ඡේදනය"
 
@@ -5832,6 +5865,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/bluray.c:103 modules/services_discovery/udev.c:603
+#: modules/gui/qt/ui/open_disk.h:296
 msgid "Blu-ray"
 msgstr "බ්ලූ-රේ"
 
@@ -5921,6 +5955,7 @@ msgid "Audio CD - Track %02i"
 msgstr "ශ්‍රව්‍ය සීඩී - පථය %02i"
 
 #: modules/access/cdda.c:1003 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "ශ්‍රව්‍ය සීඩී"
 
@@ -6961,6 +6996,7 @@ msgid "File"
 msgstr "ගොනුව"
 
 #: modules/access/fs.c:44 modules/demux/directory.c:93
+#: modules/gui/qt/ui/sprefs_video.h:328
 msgid "Directory"
 msgstr "ඩිරෙක්ටරිය"
 
@@ -7191,6 +7227,7 @@ msgstr ""
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
 #: modules/gui/qt/components/extended_panels.cpp:1318 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
+#: modules/gui/qt/ui/profiles.h:741
 msgid "Width"
 msgstr "පළල"
 
@@ -7203,6 +7240,7 @@ msgstr ""
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:168
 #: modules/spu/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
+#: modules/gui/qt/ui/profiles.h:744
 msgid "Height"
 msgstr "උස"
 
@@ -8195,6 +8233,7 @@ msgstr "පාලක පෙර නිමි අගයන්ට සකස් ක�
 
 #: modules/access/v4l2/v4l2.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
+#: modules/gui/qt/ui/video_effects.h:1253
 msgid "Brightness"
 msgstr "දීප්තිය"
 
@@ -8212,6 +8251,7 @@ msgstr "පිංතූරයේ දීප්තිය ස්වයංව සී
 
 #: modules/access/v4l2/v4l2.c:89
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:205
+#: modules/gui/qt/ui/video_effects.h:1255
 msgid "Contrast"
 msgstr "අසමතාවය (Contrast)"
 
@@ -8222,6 +8262,8 @@ msgstr ""
 #: modules/access/v4l2/v4l2.c:91
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:208
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:254
+#: modules/gui/qt/ui/video_effects.h:1256
+#: modules/gui/qt/ui/video_effects.h:1288
 msgid "Saturation"
 msgstr "සන්තෘප්තිය (Saturation)"
 
@@ -8231,6 +8273,7 @@ msgstr ""
 
 #: modules/access/v4l2/v4l2.c:93
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:204
+#: modules/gui/qt/ui/video_effects.h:1252
 msgid "Hue"
 msgstr "පැහැය (Hue)"
 
@@ -8282,6 +8325,7 @@ msgstr "නීල වර්ණ සංතුලනය."
 
 #: modules/access/v4l2/v4l2.c:111
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:209
+#: modules/gui/qt/ui/video_effects.h:1257
 msgid "Gamma"
 msgstr "ගැමා"
 
@@ -8406,7 +8450,7 @@ msgstr "කළු සහ සුදු"
 
 #: modules/access/v4l2/v4l2.c:164
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:256
-#: modules/video_filter/sepia.c:66
+#: modules/video_filter/sepia.c:66 modules/gui/qt/ui/video_effects.h:1290
 msgid "Sepia"
 msgstr ""
 
@@ -10106,7 +10150,7 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "K Audio අතුරුමුහුණත් ශ්‍රව්‍ය ප්‍රතිදානය"
 
-#: modules/audio_output/mmdevice.c:1452
+#: modules/audio_output/mmdevice.c:1452 modules/gui/qt/ui/sprefs_audio.h:416
 msgid "HDMI/SPDIF audio passthrough"
 msgstr ""
 
@@ -10735,7 +10779,7 @@ msgstr ""
 
 #: modules/codec/cc.c:51 modules/codec/zvbi.c:65
 #: modules/gui/macosx/VLCSimplePrefsController.m:353 modules/spu/marq.c:108
-#: modules/spu/rss.c:144
+#: modules/spu/rss.c:144 modules/gui/qt/ui/video_effects.h:1312
 msgid "Opacity"
 msgstr "පාරාන්ධතාවය"
 
@@ -12040,6 +12084,7 @@ msgstr ""
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
+#: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
 msgid "Mode"
 msgstr "ප්‍රකාරය"
 
@@ -13282,6 +13327,7 @@ msgid "Quiet mode"
 msgstr ""
 
 #: modules/codec/x264.c:397 modules/gui/macosx/VLCPlaylistInfo.m:65
+#: modules/gui/qt/ui/streampanel.h:168
 msgid "Statistics"
 msgstr ""
 
@@ -13461,7 +13507,7 @@ msgstr ""
 msgid "Presentation Level"
 msgstr ""
 
-#: modules/codec/zvbi.c:88
+#: modules/codec/zvbi.c:88 modules/gui/qt/ui/streampanel.h:167
 msgid "1"
 msgstr "1"
 
@@ -14572,7 +14618,7 @@ msgstr ""
 msgid "Use chapter codecs found in the segment."
 msgstr ""
 
-#: modules/demux/mkv/mkv.cpp:69
+#: modules/demux/mkv/mkv.cpp:69 modules/gui/qt/ui/sprefs_input.h:367
 msgid "Preload MKV files in the same directory"
 msgstr ""
 
@@ -15566,11 +15612,13 @@ msgid "Apply profile at next launch"
 msgstr ""
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:216
+#: modules/gui/qt/ui/equalizer.h:131
 msgid "2 Pass"
 msgstr ""
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:219
 #: modules/gui/qt/components/extended_panels.cpp:1132
+#: modules/gui/qt/ui/equalizer.h:133
 msgid "Preamp"
 msgstr "පෙරවර්ධක"
 
@@ -15659,6 +15707,7 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:792
 #: modules/gui/macosx/prefs.m:188
 #: modules/gui/qt/components/sout/profile_selector.cpp:449
+#: modules/gui/qt/ui/vlm.h:298
 msgid "Save"
 msgstr "සුරකින්න"
 
@@ -15689,6 +15738,7 @@ msgstr ""
 #: modules/gui/macosx/VLCBookmarksWindowController.m:78
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:859
+#: modules/gui/qt/ui/open_file.h:153
 msgid "Remove"
 msgstr "ඉවත් කරන්න"
 
@@ -15713,12 +15763,14 @@ msgid "Bookmarks"
 msgstr "පොත්සළකුණු"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:75
+#: modules/gui/qt/ui/podcast_configuration.h:101 modules/gui/qt/ui/sout.h:206
+#: modules/gui/qt/ui/vlm.h:296
 msgid "Add"
 msgstr "එක් කරන්න"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:76
 #: modules/gui/macosx/VLCSimplePrefsController.m:288
-#: modules/gui/qt/dialogs/bookmarks.cpp:53
+#: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:297
 msgid "Clear"
 msgstr "හිස් කරන්න"
 
@@ -15864,6 +15916,9 @@ msgstr ""
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
+#: modules/gui/qt/ui/open.h:279 modules/gui/qt/ui/open_disk.h:304
+#: modules/gui/qt/ui/open_file.h:146 modules/gui/qt/ui/sprefs_audio.h:414
+#: modules/gui/qt/ui/sprefs_input.h:365 modules/gui/qt/ui/sprefs_video.h:329
 msgid "Browse..."
 msgstr "සැරිසරන්න..."
 
@@ -15897,28 +15952,34 @@ msgid "Save as new Profile..."
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:155
+#: modules/gui/qt/ui/profiles.h:723
 msgid "Encapsulation"
 msgstr "සංක්‍ෂිප්තය"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:156
 #: share/lua/http/dialogs/create_stream.html:160
+#: modules/gui/qt/ui/profiles.h:749
 msgid "Video codec"
 msgstr "වීඩියෝ කොඩෙක් "
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:157
 #: share/lua/http/dialogs/create_stream.html:178
+#: modules/gui/qt/ui/profiles.h:759
 msgid "Audio codec"
 msgstr "ශ්‍රව්‍ය කොඩෙක්"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:161
+#: modules/gui/qt/ui/profiles.h:725
 msgid "Keep original video track"
 msgstr "ප්‍රකෘති වීඩියෝ පථය තබාගන්න"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:165
+#: modules/gui/qt/ui/profiles.h:747
 msgid "Resolution"
 msgstr "විභේදනය"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:166
+#: modules/gui/qt/ui/profiles.h:738
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
@@ -15927,15 +15988,17 @@ msgstr ""
 "අනුපාතයට අනුව ස්වයංක්‍රීයව අනෙකුත් පරාමිතීන් සම්පූර්ණ කර ගනු ඇත."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:169
-#: modules/gui/macosx/VLCOutput.m:88
+#: modules/gui/macosx/VLCOutput.m:88 modules/gui/qt/ui/profiles.h:739
 msgid "Scale"
 msgstr "පරිමාණය"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:172
+#: modules/gui/qt/ui/profiles.h:751
 msgid "Keep original audio track"
 msgstr ""
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:179
+#: modules/gui/qt/ui/profiles.h:762
 msgid "Overlay subtitles on the video"
 msgstr ""
 
@@ -16100,7 +16163,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCFSPanelController.m:140
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:80
-#: modules/gui/qt/dialogs/toolbar.cpp:477
+#: modules/gui/qt/dialogs/toolbar.cpp:477 modules/gui/qt/ui/sprefs_audio.h:408
 msgid "Volume"
 msgstr "ශබ්දය"
 
@@ -16137,6 +16200,8 @@ msgstr "VLC මාධ්‍ය වාදකය"
 
 #: modules/gui/macosx/VLCLogWindowController.m:94
 #: modules/gui/qt/dialogs/messages.cpp:80
+#: modules/gui/qt/ui/messages_panel.h:136
+#: modules/gui/qt/ui/messages_panel.h:140
 msgid "Messages"
 msgstr "පණිවුඩ"
 
@@ -16416,6 +16481,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCMainMenu.m:441 modules/gui/macosx/VLCMainMenu.m:442
 #: modules/gui/macosx/VLCSimplePrefsController.m:370
+#: modules/gui/qt/ui/sprefs_video.h:316
 msgid "Fullscreen Video Device"
 msgstr ""
 
@@ -16678,6 +16744,7 @@ msgstr "තැටිය"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:142
 #: modules/gui/macosx/VLCSimplePrefsController.m:302
+#: modules/gui/qt/ui/sprefs_input.h:368
 msgid "Network"
 msgstr "ජාලය"
 
@@ -16706,6 +16773,7 @@ msgstr "සමකාලීනව වෙනත් මාධ්‍යයක් ධ
 #: modules/gui/macosx/VLCOpenWindowController.m:152
 #: modules/gui/macosx/VLCOpenWindowController.m:348
 #: modules/gui/macosx/VLCSimplePrefsController.m:345
+#: modules/gui/qt/ui/sprefs_interface.h:545
 msgid "Choose..."
 msgstr "තෝරන්න..."
 
@@ -16844,6 +16912,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCOpenWindowController.m:360
 #: modules/gui/macosx/VLCSimplePrefsController.m:347
+#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Font size"
 msgstr "ෆොන්ට ප්‍රමාණය"
 
@@ -16877,6 +16946,7 @@ msgstr "fps"
 #: modules/gui/macosx/VLCOpenWindowController.m:582
 #: modules/gui/macosx/VLCOpenWindowController.m:668
 #: modules/gui/macosx/VLCOpenWindowController.m:1284
+#: modules/gui/qt/ui/open_file.h:141
 msgid "Open File"
 msgstr "ගොනුවක් විවෘත කරන්න"
 
@@ -17019,6 +17089,7 @@ msgid "VLC was unable to save the meta data."
 msgstr "VLC හට පාර-දත්ත සුරැකීමට නොහැකි විය."
 
 #: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:194
+#: modules/gui/qt/ui/sprefs_interface.h:551
 msgid "Continue playback?"
 msgstr ""
 
@@ -17111,6 +17182,7 @@ msgid "Keep audio level between sessions"
 msgstr "සැසි අතර ශ්‍රව්‍ය මට්ටම තබාගන්න"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:281
+#: modules/gui/qt/ui/sprefs_audio.h:410
 msgid "Always reset audio start level to:"
 msgstr "ආරම්භයේ දී සැමවිටම ශ්‍රව්‍ය මට්ටම යළි සකසන්න:"
 
@@ -17137,6 +17209,7 @@ msgid "Shortcut"
 msgstr "කෙටිමඟ"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:294
+#: modules/gui/qt/ui/sprefs_input.h:364
 msgid "Record directory or filename"
 msgstr "විරෙක්ටරිය‍ හෝ ගොනු නාමය රෙකෝඩ් කරන්න"
 
@@ -17153,6 +17226,7 @@ msgid "Default Caching Level"
 msgstr "පෙරනිමි කෑෂින් මට්ටම"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:299
+#: modules/gui/qt/ui/open.h:263
 msgid "Caching"
 msgstr ""
 
@@ -17236,6 +17310,7 @@ msgid "Control external music players"
 msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:333
+#: modules/gui/qt/ui/sprefs_interface.h:553
 msgid "Privacy / Network Interaction"
 msgstr "පෞද්ගලිකත්වය/ජාල අන්තර් ක්‍රියාකාරිත්වය"
 
@@ -17260,11 +17335,13 @@ msgid "Display Settings"
 msgstr "දසුන් සිටුවම්"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:346
+#: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Font color"
 msgstr "අක්ෂර වර්ණය"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:348 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
+#: modules/gui/qt/ui/sprefs_subtitles.h:298
 msgid "Font"
 msgstr "අකුරුවර්ගය"
 
@@ -17273,6 +17350,7 @@ msgid "Subtitle languages"
 msgstr "උපසිරැසි භාෂා"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:350
+#: modules/gui/qt/ui/sprefs_subtitles.h:295
 msgid "Preferred subtitle language"
 msgstr "අභිමත උපසිරැසි භාෂාව"
 
@@ -17287,16 +17365,18 @@ msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:355
 #: modules/text_renderer/freetype/freetype.c:110
+#: modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Outline color"
 msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:356
 #: modules/text_renderer/freetype/freetype.c:111
+#: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Outline thickness"
 msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
-#: modules/stream_out/display.c:53
+#: modules/stream_out/display.c:53 modules/gui/qt/ui/sprefs_video.h:312
 msgid "Display"
 msgstr "දසුන්"
 
@@ -17327,6 +17407,7 @@ msgid "Use the native fullscreen mode"
 msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:372
+#: modules/gui/qt/ui/sprefs_video.h:327
 msgid "Video snapshots"
 msgstr "වීඩියෝ සැණරුව"
 
@@ -17336,14 +17417,17 @@ msgid "Folder"
 msgstr "ෆෝල්ඩරය"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:375
+#: modules/gui/qt/ui/sprefs_video.h:333
 msgid "Format"
 msgstr "හැඩහුරුව"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:376
+#: modules/gui/qt/ui/sprefs_video.h:330
 msgid "Prefix"
 msgstr "උපසර්ගය"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:377
+#: modules/gui/qt/ui/sprefs_video.h:332
 msgid "Sequential numbering"
 msgstr "අනුක්‍රමික අංක යොදන්න"
 
@@ -17548,6 +17632,7 @@ msgid "Basic"
 msgstr "මූලික"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:194
+#: modules/gui/qt/ui/video_effects.h:1303
 msgid "Geometry"
 msgstr "ජ්‍යාමිතිය"
 
@@ -17556,7 +17641,9 @@ msgstr "ජ්‍යාමිතිය"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:270
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:273
 #: modules/spu/marq.c:115 modules/spu/rss.c:152
-#: modules/video_filter/colorthres.c:55
+#: modules/video_filter/colorthres.c:55 modules/gui/qt/ui/video_effects.h:1277
+#: modules/gui/qt/ui/video_effects.h:1283
+#: modules/gui/qt/ui/video_effects.h:1286
 msgid "Color"
 msgstr "වර්ණය"
 
@@ -17565,45 +17652,53 @@ msgid "Image Adjust"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:207
+#: modules/gui/qt/ui/video_effects.h:1254
 msgid "Brightness Threshold"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:211
-#: modules/video_filter/sharpen.c:69
+#: modules/video_filter/sharpen.c:69 modules/gui/qt/ui/video_effects.h:1258
 msgid "Sharpen"
 msgstr "තියුණුකම"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:212
+#: modules/gui/qt/ui/video_effects.h:1259
+#: modules/gui/qt/ui/video_effects.h:1332
 msgid "Sigma"
 msgstr "සිග්මා"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:213
+#: modules/gui/qt/ui/video_effects.h:1260
 msgid "Banding removal"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:214
-#: modules/video_filter/gradfun.c:50
+#: modules/video_filter/gradfun.c:50 modules/gui/qt/ui/video_effects.h:1261
 msgid "Radius"
 msgstr "අරය"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:215
+#: modules/gui/qt/ui/video_effects.h:1262
 msgid "Film Grain"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:216
-#: modules/video_filter/grain.c:53
+#: modules/video_filter/grain.c:53 modules/gui/qt/ui/video_effects.h:1263
 msgid "Variance"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:221
+#: modules/gui/qt/ui/video_effects.h:1271
 msgid "Synchronize top and bottom"
 msgstr "ඉහළ හා පහළ සමමුහුර්ථ කරන්න"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:222
+#: modules/gui/qt/ui/video_effects.h:1272
 msgid "Synchronize left and right"
 msgstr "වම සහ දකුණ සමමුහුර්ථ කරන්න"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:224
+#: modules/gui/qt/ui/video_effects.h:1297
 msgid "Transform"
 msgstr "පරිණාමිතය"
 
@@ -17637,51 +17732,60 @@ msgid "Magnification/Zoom"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:242
+#: modules/gui/qt/ui/video_effects.h:1300
 msgid "Puzzle game"
 msgstr "ව්‍යාකූල ක්‍රීඩා"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:243
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:248
 #: share/lua/http/dialogs/mosaic_window.html:96
+#: modules/gui/qt/ui/video_effects.h:1295
+#: modules/gui/qt/ui/video_effects.h:1301
 msgid "Rows"
 msgstr "පේළි"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:244
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:249
 #: share/lua/http/dialogs/mosaic_window.html:114
+#: modules/gui/qt/ui/video_effects.h:1296
+#: modules/gui/qt/ui/video_effects.h:1302
 msgid "Columns"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
-#: modules/video_splitter/clone.c:57
+#: modules/video_splitter/clone.c:57 modules/gui/qt/ui/video_effects.h:1342
 msgid "Clone"
 msgstr "ක්ලෝනය"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:246
-#: modules/video_splitter/clone.c:39
+#: modules/video_splitter/clone.c:39 modules/gui/qt/ui/video_effects.h:1343
 msgid "Number of clones"
 msgstr "ක්ලෝන ගණන"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:247
+#: modules/gui/qt/ui/video_effects.h:1294
 msgid "Wall"
 msgstr "බිතු"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:251
-#: modules/video_filter/colorthres.c:71
+#: modules/video_filter/colorthres.c:71 modules/gui/qt/ui/video_effects.h:1285
 msgid "Color threshold"
 msgstr "වර්ණ සීමකය"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:255
+#: modules/gui/qt/ui/video_effects.h:1289
 msgid "Similarity"
 msgstr "සමතාවය"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:257
+#: modules/gui/qt/ui/video_effects.h:1291
 msgid "Intensity"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:258
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:261
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
+#: modules/gui/qt/ui/video_effects.h:1281
 msgid "Gradient"
 msgstr "අනුක්‍රමණය"
 
@@ -17696,10 +17800,12 @@ msgid "Hough"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:271
+#: modules/gui/qt/ui/video_effects.h:1284
 msgid "Cartoon"
 msgstr "කාටූන්"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:272
+#: modules/gui/qt/ui/video_effects.h:1276
 msgid "Color extraction"
 msgstr "වර්ණ නිස්සාරණය"
 
@@ -17708,7 +17814,7 @@ msgid "Invert colors"
 msgstr "වර්ණ යටිකුරු කරන්න"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:276
-#: modules/video_filter/posterize.c:69
+#: modules/video_filter/posterize.c:69 modules/gui/qt/ui/video_effects.h:1280
 msgid "Posterize"
 msgstr ""
 
@@ -17718,11 +17824,12 @@ msgid "Posterize level"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:278
-#: modules/video_filter/motionblur.c:60
+#: modules/video_filter/motionblur.c:60 modules/gui/qt/ui/video_effects.h:1333
 msgid "Motion blur"
 msgstr "සෙලවෙන නොපැහැදිලි බව (Motion blur)"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:279
+#: modules/gui/qt/ui/video_effects.h:1334
 msgid "Factor"
 msgstr "සාධකය"
 
@@ -17732,11 +17839,13 @@ msgid "Motion Detect"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
+#: modules/gui/qt/ui/video_effects.h:1329
 msgid "Water effect"
 msgstr "ජල ආකාර ප්‍රයෝගය"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:283
 #: modules/meta_engine/ID3Genres.h:100 modules/video_filter/psychedelic.c:55
+#: modules/gui/qt/ui/video_effects.h:1327
 msgid "Psychedelic"
 msgstr "අධි චිත්තවේගී"
 
@@ -17746,19 +17855,23 @@ msgid "Anaglyph"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
+#: modules/gui/qt/ui/video_effects.h:1314
 msgid "Add text"
 msgstr "පෙළ එක් කරන්න"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:286
 #: modules/logger/file.c:193 modules/spu/marq.c:88
+#: modules/gui/qt/ui/video_effects.h:1316
 msgid "Text"
 msgstr "පෙළ"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
+#: modules/gui/qt/ui/video_effects.h:1304
 msgid "Add logo"
 msgstr "ලෝ‍ගෝවක් එකතු කරන්න"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:308
+#: modules/gui/qt/ui/video_effects.h:1305
 msgid "Logo"
 msgstr "ලෝගෝ"
 
@@ -18813,6 +18926,7 @@ msgid "File names:"
 msgstr "ගොනු නාම:"
 
 #: modules/gui/qt/components/open_panels.cpp:162
+#: modules/gui/qt/ui/sprefs_interface.h:558
 msgid "Filter:"
 msgstr "පෙරහන:"
 
@@ -19206,6 +19320,7 @@ msgid "File/Folder"
 msgstr "ගොනුව/බහාලුම"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:47
+#: modules/gui/qt/ui/sout.h:199
 msgid "Source"
 msgstr "මූලාශ්‍රය"
 
@@ -19325,7 +19440,7 @@ msgstr ""
 msgid "Destination"
 msgstr "ගමනාන්තය"
 
-#: modules/gui/qt/dialogs/convert.cpp:71
+#: modules/gui/qt/dialogs/convert.cpp:71 modules/gui/qt/ui/sprefs_audio.h:413
 msgid "Destination file:"
 msgstr "ගමනාන්ත ගොනුව:"
 
@@ -19369,7 +19484,8 @@ msgstr ""
 msgid "Program Guide"
 msgstr "ක්‍රමලේඛ මාර්ගෝපදේශ"
 
-#: modules/gui/qt/dialogs/epg.cpp:87
+#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:286
+#: modules/gui/qt/ui/about.h:287
 msgid "Update"
 msgstr "යාවත්කාලීනය"
 
@@ -19490,7 +19606,7 @@ msgstr "&ඔව්"
 msgid "&No"
 msgstr "&නැහැ"
 
-#: modules/gui/qt/dialogs/help.cpp:222
+#: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:144
 msgid "VLC media player updates"
 msgstr "VLC මාධ්‍ය ධාවකය යාවත්කාලීන"
 
@@ -19730,7 +19846,7 @@ msgstr "අනුවාදය"
 msgid "Website"
 msgstr "වෙබ්අඩවිය"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1534
+#: modules/gui/qt/dialogs/plugins.cpp:1534 modules/gui/qt/ui/sprefs_input.h:363
 msgid "Files"
 msgstr "ගොනු"
 
@@ -19790,7 +19906,7 @@ msgstr "අභිරුචි ගොනුව සුරැකීමට නොහ
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr "ඔබට VLC මාධ්‍ය ධාවකයේ අභිරුචි යළි සකස්කිරීමට අවශ්‍ය බව විශ්වාසද?"
 
-#: modules/gui/qt/dialogs/sout.cpp:45
+#: modules/gui/qt/dialogs/sout.cpp:45 modules/gui/qt/ui/sout.h:198
 msgid "Stream Output"
 msgstr "දහරා ප්‍රතිදානය"
 
@@ -19969,7 +20085,7 @@ msgstr "පුනරාවර්තනය:"
 msgid "Repeat delay:"
 msgstr "පුනරාවර්ත ප්‍රමාදය:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:111
+#: modules/gui/qt/dialogs/vlm.cpp:111 modules/gui/qt/ui/sprefs_interface.h:555
 msgid " days"
 msgstr " දින"
 
@@ -22676,6 +22792,7 @@ msgid "Podcasts"
 msgstr "පොඩ්කාස්‍ට්"
 
 #: modules/services_discovery/podcast.c:56
+#: modules/gui/qt/ui/podcast_configuration.h:99
 msgid "Podcast URLs list"
 msgstr ""
 
@@ -22778,7 +22895,7 @@ msgstr ""
 msgid "CD"
 msgstr "CD"
 
-#: modules/services_discovery/udev.c:601
+#: modules/services_discovery/udev.c:601 modules/gui/qt/ui/open_disk.h:295
 msgid "DVD"
 msgstr "DVD"
 
@@ -22924,6 +23041,7 @@ msgstr "ඩයිනමික් වීඩියෝ අතිපිහිතය"
 
 #: modules/spu/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
+#: modules/gui/qt/ui/video_effects.h:1324
 msgid "Overlay"
 msgstr "අතිපිහිතය"
 
@@ -24823,7 +24941,7 @@ msgstr ""
 msgid "Image properties filter"
 msgstr ""
 
-#: modules/video_filter/adjust.c:78
+#: modules/video_filter/adjust.c:78 modules/gui/qt/ui/video_effects.h:1251
 msgid "Image adjust"
 msgstr "අනුරූ සීරුමාරු කිරීම"
 
@@ -25849,7 +25967,7 @@ msgstr ""
 msgid "Rotate video filter"
 msgstr ""
 
-#: modules/video_filter/rotate.c:72
+#: modules/video_filter/rotate.c:72 modules/gui/qt/ui/video_effects.h:1298
 msgid "Rotate"
 msgstr "කරකවන්න"
 
@@ -26197,7 +26315,7 @@ msgstr "GLX"
 msgid "GLX extension for OpenGL"
 msgstr ""
 
-#: modules/video_output/kva.c:50
+#: modules/video_output/kva.c:50 modules/gui/qt/ui/sprefs_video.h:321
 msgid "Enable a workaround for T23"
 msgstr ""
 
@@ -26207,7 +26325,7 @@ msgid ""
 "size is equal to or smaller than the movie size."
 msgstr ""
 
-#: modules/video_output/kva.c:55
+#: modules/video_output/kva.c:55 modules/gui/qt/ui/sprefs_video.h:322
 msgid "Video mode"
 msgstr ""
 
@@ -26326,6 +26444,7 @@ msgid "Direct3D11 video output"
 msgstr ""
 
 #: modules/video_output/win32/directdraw.c:65
+#: modules/gui/qt/ui/sprefs_video.h:318
 msgid "Use hardware YUV->RGB conversions"
 msgstr "දෘඩාංග YUV->RGB පරිවර්තනය භාවිතා කරන්න"
 
@@ -27155,6 +27274,7 @@ msgid "Play List"
 msgstr "වාදන ලැයිස්තුව "
 
 #: share/lua/http/dialogs/create_stream.html:156
+#: modules/gui/qt/ui/sprefs_audio.h:411
 msgid "Output"
 msgstr "ප්‍රතිදානය"
 
@@ -27269,7 +27389,7 @@ msgstr ""
 msgid "VLM Batch Commands"
 msgstr ""
 
-#: share/lua/http/index.html:259
+#: share/lua/http/index.html:259 modules/gui/qt/ui/vlm.h:295
 msgid "Loop"
 msgstr "ලූපනය කරන්න"
 
@@ -27351,482 +27471,851 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr ""
 
-#~ msgid "Dialog"
-#~ msgstr "දෙබස්"
-
-#~ msgid "Form"
-#~ msgstr "ෆෝරමය"
-
-#~ msgid "Preset"
-#~ msgstr "පෙර සැකසූ"
-
-#~ msgid "0.00 dB"
-#~ msgstr "0.00 dB"
-
-#~ msgid "&Save as..."
-#~ msgstr "මෙසේ සු&රකින්න..."
-
-#~ msgid "Modules Tree"
-#~ msgstr "මොඩියුල රුක"
-
-#~ msgid "Show extended options"
-#~ msgstr "විස්තෘත විකල්ප පෙන්වන්න"
-
-#~ msgid "Show &more options"
-#~ msgstr "වැඩිමනත් වි&කල්ප පෙන්වන්න"
-
-#~ msgid "Change the caching for the media"
-#~ msgstr "මාධ්‍යය සඳහා කෑෂ්ගත කිරීම වෙනස් කරන්න"
-
-#~ msgid " ms"
-#~ msgstr " ms"
-
-#~ msgid "MRL"
-#~ msgstr "MRL"
-
-#~ msgid "Start Time"
-#~ msgstr "ආරම්භක කාලය"
-
-#~ msgid "Edit Options"
-#~ msgstr "විකල්ප සංස්කරණය"
-
-#~ msgid "Extra media"
-#~ msgstr "අතිරේක මාධ්‍ය"
-
-#~ msgid "Complete MRL for VLC internal"
-#~ msgstr "VLC අභ්‍යන්තරය සඳහා සම්පූර්ණ MRL "
-
-#~ msgid "Select the file"
-#~ msgstr "ගොනුව තෝරන්න"
-
-#~ msgid "Change the start time for the media"
-#~ msgstr "මාධ්‍යය සඳහා ආරම්භක වේලාව වෙනස් කරන්න"
-
-#~ msgid "HH'H':mm'm':ss's'.zzz"
-#~ msgstr "HH'H':mm'm':ss's'.zzz"
-
-#~ msgid "Play another media synchronously (extra audio file, ...)"
-#~ msgstr "සමාන්තරව වෙනත් මාධ්‍යයක් ධාවනය කරන්න (අමතර ශ්‍රව්‍ය ගොනුවක්, ...)"
-
-#~ msgid "Capture mode"
-#~ msgstr "ග්‍රහණ ප්‍රකාරය"
-
-#~ msgid "Select the capture device type"
-#~ msgstr "ග්‍රහණ ආම්පන්නයේ වර්ගය තෝරන්න"
-
-#~ msgid "Device Selection"
-#~ msgstr "උපාංග තේරීම"
-
-#~ msgid "Options"
-#~ msgstr "විකල්ප"
-
-#~ msgid "Advanced options..."
-#~ msgstr "සංකීර්ණ විකල්ප..."
-
-#~ msgid "Disc Selection"
-#~ msgstr "තැටි තේරීම"
-
-#~ msgid "SVCD/VCD"
-#~ msgstr "SVCD/VCD"
-
-#~ msgid "Disc device"
-#~ msgstr "තැටි ආම්පන්නය"
-
-#~ msgid "Starting Position"
-#~ msgstr "ආරම්භක ස්ථානය"
-
-#~ msgid "Audio and Subtitles"
-#~ msgstr "ශ්‍රව්‍ය සහ උපසිරැසි"
-
-#~ msgid "Choose one or more media file to open"
-#~ msgstr "විවෘත කිරීම සඳහා ගොනුවක් හෝ ගොනු කිහිපයක් තෝරන්න"
-
-#~ msgid "File Selection"
-#~ msgstr "ගොනු තේරීම"
-
-#~ msgid "You can select local files with the following list and buttons."
-#~ msgstr "පරිගණකයේ අඩංගු ගොනු පහත බොත්තම් හා ලැයිස්තුවෙන් තෝරන්න."
-
-#~ msgid "Add..."
-#~ msgstr "එක් කරන්න..."
-
-#~ msgid "Network Protocol"
-#~ msgstr "ජාල ප්‍රොටෝකෝලය"
-
-#~ msgid "Please enter a network URL:"
-#~ msgstr "කරුණාකර ජාලයේ URL ලබාදෙන්න:"
-
-#~ msgid "Ogg/Ogm"
-#~ msgstr "Ogg/Ogm"
-
-#~ msgid "MPEG-PS"
-#~ msgstr "MPEG-PS"
-
-#~ msgid "RAW"
-#~ msgstr "RAW"
-
-#~ msgid "WAV"
-#~ msgstr "WAV"
-
-#~ msgid "Webm"
-#~ msgstr "Webm"
-
-#~ msgid "AVI"
-#~ msgstr "AVI"
-
-#~ msgid "ASF/WMV"
-#~ msgstr "ASF/WMV"
-
-#~ msgid "Features"
-#~ msgstr "මුහුණුවර"
-
-#~ msgid "Chapters"
-#~ msgstr "පරිච්ඡේද"
-
-#~ msgid "Menus"
-#~ msgstr "මෙනු"
-
-#~ msgid "Same as source"
-#~ msgstr "මූලාශ්‍රය ලෙසම"
-
-#~ msgid " fps"
-#~ msgstr " fps"
-
-#~ msgid "Custom options"
-#~ msgstr "රිසිකළ විකල්ප"
-
-#~ msgid "Not Used"
-#~ msgstr " භාවිතා නොකළ"
-
-#~ msgid " kb/s"
-#~ msgstr " kb/s"
-
-#~ msgid "Encoding parameters"
-#~ msgstr "කේතීකරණ පරාමිතීන්"
-
-#~ msgid "Frame size"
-#~ msgstr "රාමුවේ ප්‍රමාණය"
-
-#~ msgid "px"
-#~ msgstr "px"
-
-#~ msgid "Destination Setup"
-#~ msgstr "ඉලක්ක පිහිටුම"
-
-#~ msgid "New destination"
-#~ msgstr "නව ගමනාන්තය"
-
-#~ msgid "Display locally"
-#~ msgstr "ප්‍රාදේශීයව දර්ශනය කරන්න"
-
-#~ msgid "Activate Transcoding"
-#~ msgstr "Transcoding සක්‍රිය කරන්න"
-
-#~ msgid "Option Setup"
-#~ msgstr "විකල්ප පිහිටුවීම"
-
-#~ msgid "Miscellaneous Options"
-#~ msgstr "විවිධ වූ සිටුවම්"
-
-#~ msgid " %"
-#~ msgstr " %"
-
-#~ msgid "Output module:"
-#~ msgstr "ප්‍රතිදාන මොඩියුලය:"
-
-#~ msgid "Use S/PDIF when available"
-#~ msgstr "ලබාගත හැකි විට S/PDIF භාවිතා කරන්න"
-
-#~ msgid "Effects"
-#~ msgstr "ප්‍රයෝග"
-
-#~ msgid "Visualization:"
-#~ msgstr "දෘෂ්ඨිකල්පනය:"
-
-#~ msgid "Enable Time-Stretching audio"
-#~ msgstr "ශ්‍රව්‍ය කාල-දිගැදුම් සබල කරන්න"
-
-#~ msgid "Normalize volume to:"
-#~ msgstr "පරිමාව ප්‍රමත කරන්න:"
-
-#~ msgid "Tracks"
-#~ msgstr "පථ"
-
-#~ msgid "Preferred audio language:"
-#~ msgstr "අභිමත ශ්‍රව්‍ය භාෂාව:"
-
-#~ msgid "Password:"
-#~ msgstr "රහස්පදය:"
-
-#~ msgid "Username:"
-#~ msgstr "පරිශීලක නාමය:"
-
-#~ msgid "Submit played tracks stats to Last.fm"
-#~ msgstr "ධාවනය කළ පථ වල තත්වය Last.fm වෙත යොමු කරන්න."
-
-#~ msgid "Codecs"
-#~ msgstr "කොඩෙක් "
-
-#~ msgid "Video quality post-processing level"
-#~ msgstr "වීඩියෝ තත්වයෙහි පසු-පිරිසැකසුම් මට්ටම"
-
-#~ msgid "Skip H.264 in-loop deblocking filter"
-#~ msgstr "H.264 in-loop deblocking පෙරනය මගහරින්න"
-
-#~ msgid "Optical drive"
-#~ msgstr "ප්‍රකාශ ආම්පන්නය"
-
-#~ msgid "Default optical device"
-#~ msgstr "පෙරනිමි ප්‍රකාශ ආම්පන්නය"
-
-#~ msgid "Damaged or incomplete AVI file"
-#~ msgstr "පලුදු වූ හෝ පරිපූර්ණ නොවූ AVI ගොනුවක් නම්"
-
-#~ msgid "HTTP proxy URL"
-#~ msgstr "HTTP පෙරකලාසි URL"
-
-#~ msgid "HTTP (default)"
-#~ msgstr "HTTP (පෙරනිමි)"
-
-#~ msgid "RTP over RTSP (TCP)"
-#~ msgstr "RTP මත  RTSP (TCP)"
-
-#~ msgid "Live555 stream transport"
-#~ msgstr "Live555 දහරා පරිවහනය"
-
-#~ msgid "Default caching policy"
-#~ msgstr "පෙරනිමි කෑෂින් ප්‍රතිපත්තිය"
-
-#~ msgid "Menus language:"
-#~ msgstr "මෙනු භාෂාව:"
-
-#~ msgid "Look and feel"
-#~ msgstr "පෙනුම සහ හැඟීම"
-
-#~ msgid "Use custom skin"
-#~ msgstr "අභිමත ඈඳුමක් භාවිතා කරන්න"
-
-#~ msgid "This is VLC's default interface, with a native look and feel."
-#~ msgstr "මේ VLC හි නිසඟ පෙනීම සහ හැඟීම සහිත පෙරනිමි අතුරුමුහුණතයි."
-
-#~ msgid "Use native style"
-#~ msgstr "නිසඟ මෝස්තරය භාවිතා කරන්න"
-
-#~ msgid "Resize interface to video size"
-#~ msgstr "වීඩියෝවේ ප්‍රමාණයට අතුරුමුහුණත ප්‍රතිප්‍රමාණ කරන්න"
-
-#~ msgid "Show controls in full screen mode"
-#~ msgstr "පුන්තිර ප්‍රකාරයේදී සියලු පාලක පෙන්වන්න"
-
-#~ msgid "Pause playback when minimized"
-#~ msgstr "හැකිළීමේ දී ධාවනයට විරාමයක් තබන්න"
-
-#~ msgid "Start in minimal view mode"
-#~ msgstr "අවම වූ දර්ශන ප්‍රකාරයෙන් ආරම්භ කරන්න (මෙනු රහිතව) "
-
-#~ msgid "Force window style:"
-#~ msgstr "බලාත්මක කවුළු රටාව:"
-
-#~ msgid "Integrate video in interface"
-#~ msgstr "වීඩියෝව අතුරුමුහුණතට අනුකලනය කරන්න"
-
-#~ msgid "Show systray icon"
-#~ msgstr "systray අයිකනය පෙන්වන්න"
-
-#~ msgid "Skin resource file:"
-#~ msgstr "ඈඳුම් සම්පත් ගොනුව:"
-
-#~ msgid "Allow only one instance"
-#~ msgstr "එක් ධාවන නිදර්ශනයකට පමණක් ඉඩ දෙන්න "
-
-#~ msgid "Activate updates notifier"
-#~ msgstr "යාවත්කාලීන නිවේදකය සක්‍රිය කරන්න "
-
-#~ msgid "Every "
-#~ msgstr "සෑම"
-
-#~ msgid "Save recently played items"
-#~ msgstr "මෑතක දී ධාවනය කළ අයිතමයන් සුරකින්න"
-
-#~ msgid "Separate words by | (without space)"
-#~ msgstr "වචන වෙන් කරන්න‍ මෙය මගින් | (හිස්තැන් රහිතව)"
-
-#~ msgid "Operating System Integration"
-#~ msgstr "මෙහෙයුම් පද්ධති සංකලනය"
-
-#~ msgid "File extensions association"
-#~ msgstr "ගොනු දිගු සම්බන්ධය"
-
-#~ msgid "Set up associations..."
-#~ msgstr "VLC මගින් විවෘත විය යුතු ගොනු ආකෘති තෝරන්න..."
-
-#~ msgid "Enable On Screen Display (OSD)"
-#~ msgstr "තිර මත දර්ශනය (OSD) සක්‍රිය කරන්න"
-
-#~ msgid "Show media title on video start"
-#~ msgstr "වීඩියෝව ආරම්භයේ දී මාධ්‍යයේ මාතෘකාව පෙන්වන්න"
-
-#~ msgid "Enable subtitles"
-#~ msgstr "උපසිරුසි සක්‍රිය කරන්න"
-
-#~ msgid "Subtitle Language"
-#~ msgstr "උපසිරුසි භාෂාව"
-
-#~ msgid "Default encoding"
-#~ msgstr "පෙරනිමි කේතීකරණය"
-
-#~ msgid "Add a shadow"
-#~ msgstr "සෙවණැල්ලක් එක් කරන්න"
-
-#~ msgid " px"
-#~ msgstr " px"
-
-#~ msgid "Add a background"
-#~ msgstr "පසුබිමක් එක් කරන්න"
-
-#~ msgid "DirectX"
-#~ msgstr "DirectX"
-
-#~ msgid "Accelerated video output (Overlay)"
-#~ msgstr "ත්වරිත වීඩියෝ ප්‍රතිදානය (අතිපිහිත)"
-
-#~ msgid "KVA"
-#~ msgstr "KVA"
-
-#~ msgid "Deinterlacing"
-#~ msgstr "Deinterlacing"
-
-#~ msgid "Force Aspect Ratio"
-#~ msgstr "බලාත්මක දර්ශන අනුපාතය"
-
-#~ msgid "vlc-snap"
-#~ msgstr "vlc-snap"
-
-#~ msgid "Stuff"
-#~ msgstr "අඩුවැඩිය"
-
-#~ msgid "Edit settings"
-#~ msgstr "සැකසුම් සකසන්න"
-
-#~ msgid "Control"
-#~ msgstr "පාලනය"
-
-#~ msgid "Run manually"
-#~ msgstr "හස්තීයව ධාවනය කරන්න"
-
-#~ msgid "Setup schedule"
-#~ msgstr "ලැයිස්තුව සකස් කරන්න"
-
-#~ msgid "Run on schedule"
-#~ msgstr "ලැයිස්තුවට අනුව ධාවනය කරන්න"
-
-#~ msgid "Status"
-#~ msgstr "තත්ත්වය"
-
-#~ msgid "P/P"
-#~ msgstr "P/P"
-
-#~ msgid "Prev"
-#~ msgstr "පෙර"
-
-#~ msgid "Add Input"
-#~ msgstr "ආදානයක් එක් කරන්න"
-
-#~ msgid "Edit Input"
-#~ msgstr "ආදානය සංස්කරණය කරන්න"
-
-#~ msgid "Clear List"
-#~ msgstr "ලැයිස්තුව හිස් කරන්න"
-
-#~ msgid "Check for VLC updates"
-#~ msgstr "VLC යාවත්කාලීනය සඳහා පරික්ෂා කරන්න"
-
-#~ msgid "Launching an update request..."
-#~ msgstr "යාවත්කාලීන අයදුමක් දියත් කරමින්..."
-
-#~ msgid "Do you want to download it?"
-#~ msgstr "ඔබට එය බාගැනීමට අවශ්‍යද?"
-
-#~ msgid "Essential"
-#~ msgstr "අත්‍යවශ්‍ය"
-
-#~ msgid ">HHHHHH;#"
-#~ msgstr ">HHHHHH;#"
-
-#~ msgid "Negate colors"
-#~ msgstr "විරුද්ධාර්ථ වර්ණ"
-
-#~ msgid "Colors"
-#~ msgstr "වර්ණ"
-
-#~ msgid "Interactive Zoom"
-#~ msgstr "අන්තර් ක්‍රියාකාරීත්ව විශාලනය"
-
-#~ msgid "Angle"
-#~ msgstr "කෝණය"
-
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "full"
-#~ msgstr "පූර්ණ"
-
-#~ msgid "none"
-#~ msgstr "කිසිවක් නොමැත"
-
-#~ msgid "Logo erase"
-#~ msgstr "ලෝගෝව මකන්න"
-
-#~ msgid "Mask"
-#~ msgstr "වෙස්මූණ"
-
-#~ msgid "Mirror"
-#~ msgstr "ආදර්ශය"
-
-#~ msgid "Motion detect"
-#~ msgstr "චලිත ග්‍රාහක"
-
-#~ msgid "Spatial blur"
-#~ msgstr "අවකාශ නොපැහැදිලි බව"
-
-#~ msgid "Soften"
-#~ msgstr "මෘදු කෙරූ"
-
-#~ msgid "VLM configurator"
-#~ msgstr "VLM වින්‍යාසකරු"
-
-#~ msgid "Media Manager Edition"
-#~ msgstr "මාධ්‍ය කළමනාකරු සංස්කරණය"
-
-#~ msgid "Name:"
-#~ msgstr "නම:"
-
-#~ msgid "Input:"
-#~ msgstr "ආදානය:"
-
-#~ msgid "Select Input"
-#~ msgstr "ආදානය තෝරන්න"
-
-#~ msgid "Output:"
-#~ msgstr "ප්‍රතිදානය:"
-
-#~ msgid "Select Output"
-#~ msgstr "ප්‍රතිදානය තෝරන්න"
-
-#~ msgid "Time Control"
-#~ msgstr "කාල පාලනය"
-
-#~ msgid "Mux Control"
-#~ msgstr "Mux පාලනය"
-
-#~ msgid "Muxer:"
-#~ msgstr "Muxer:"
-
-#~ msgid "AAAA; "
-#~ msgstr "AAAA; "
-
-#~ msgid "Media Manager List"
-#~ msgstr "මාධ්‍ය කළමණාකරණ ලැයිස්තුව"
+#: modules/gui/qt/ui/about.h:285 modules/gui/qt/ui/open.h:257
+#: modules/gui/qt/ui/podcast_configuration.h:98
+msgid "Dialog"
+msgstr "දෙබස්"
+
+#: modules/gui/qt/ui/equalizer.h:129 modules/gui/qt/ui/open_disk.h:293
+#: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:406
+#: modules/gui/qt/ui/sprefs_input.h:353
+#: modules/gui/qt/ui/sprefs_interface.h:526
+#: modules/gui/qt/ui/sprefs_subtitles.h:288
+#: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
+msgid "Form"
+msgstr "ෆෝරමය"
+
+#: modules/gui/qt/ui/equalizer.h:132
+msgid "Preset"
+msgstr "පෙර සැකසූ"
+
+#: modules/gui/qt/ui/equalizer.h:134
+msgid "0.00 dB"
+msgstr "0.00 dB"
+
+#: modules/gui/qt/ui/messages_panel.h:137
+msgid "&Verbosity:"
+msgstr ""
+
+#: modules/gui/qt/ui/messages_panel.h:138
+msgid "&Filter:"
+msgstr ""
+
+#: modules/gui/qt/ui/messages_panel.h:139
+msgid "&Save as..."
+msgstr "මෙසේ සු&රකින්න..."
+
+#: modules/gui/qt/ui/messages_panel.h:141
+msgid "Modules Tree"
+msgstr "මොඩියුල රුක"
+
+#: modules/gui/qt/ui/open.h:260
+msgid "Show extended options"
+msgstr "විස්තෘත විකල්ප පෙන්වන්න"
+
+#: modules/gui/qt/ui/open.h:262
+msgid "Show &more options"
+msgstr "වැඩිමනත් වි&කල්ප පෙන්වන්න"
+
+#: modules/gui/qt/ui/open.h:265
+msgid "Change the caching for the media"
+msgstr "මාධ්‍යය සඳහා කෑෂ්ගත කිරීම වෙනස් කරන්න"
+
+#: modules/gui/qt/ui/open.h:267
+msgid " ms"
+msgstr " ms"
+
+#: modules/gui/qt/ui/open.h:268
+msgid "MRL"
+msgstr "MRL"
+
+#: modules/gui/qt/ui/open.h:269
+msgid "Start Time"
+msgstr "ආරම්භක කාලය"
+
+#: modules/gui/qt/ui/open.h:270
+msgid "Stop Time"
+msgstr ""
+
+#: modules/gui/qt/ui/open.h:271
+msgid "Edit Options"
+msgstr "විකල්ප සංස්කරණය"
+
+#: modules/gui/qt/ui/open.h:272
+msgid "Extra media"
+msgstr "අතිරේක මාධ්‍ය"
+
+#: modules/gui/qt/ui/open.h:274
+msgid "Complete MRL for VLC internal"
+msgstr "VLC අභ්‍යන්තරය සඳහා සම්පූර්ණ MRL "
+
+#: modules/gui/qt/ui/open.h:277
+msgid "Select the file"
+msgstr "ගොනුව තෝරන්න"
+
+#: modules/gui/qt/ui/open.h:281
+msgid "Change the start time for the media"
+msgstr "මාධ්‍යය සඳහා ආරම්භක වේලාව වෙනස් කරන්න"
+
+#: modules/gui/qt/ui/open.h:283 modules/gui/qt/ui/open.h:287
+msgid "HH'H':mm'm':ss's'.zzz"
+msgstr "HH'H':mm'm':ss's'.zzz"
+
+#: modules/gui/qt/ui/open.h:285
+msgid "Change the stop time for the media"
+msgstr ""
+
+#: modules/gui/qt/ui/open.h:288
+msgid "Play another media synchronously (extra audio file, ...)"
+msgstr "සමාන්තරව වෙනත් මාධ්‍යයක් ධාවනය කරන්න (අමතර ශ්‍රව්‍ය ගොනුවක්, ...)"
+
+#: modules/gui/qt/ui/open_capture.h:94
+msgid "Capture mode"
+msgstr "ග්‍රහණ ප්‍රකාරය"
+
+#: modules/gui/qt/ui/open_capture.h:96
+msgid "Select the capture device type"
+msgstr "ග්‍රහණ ආම්පන්නයේ වර්ගය තෝරන්න"
+
+#: modules/gui/qt/ui/open_capture.h:98
+msgid "Device Selection"
+msgstr "උපාංග තේරීම"
+
+#: modules/gui/qt/ui/open_capture.h:99
+msgid "Options"
+msgstr "විකල්ප"
+
+#: modules/gui/qt/ui/open_capture.h:101
+msgid "Access advanced options to tweak the device"
+msgstr ""
+
+#: modules/gui/qt/ui/open_capture.h:103
+msgid "Advanced options..."
+msgstr "සංකීර්ණ විකල්ප..."
+
+#: modules/gui/qt/ui/open_disk.h:294
+msgid "Disc Selection"
+msgstr "තැටි තේරීම"
+
+#: modules/gui/qt/ui/open_disk.h:298
+msgid "SVCD/VCD"
+msgstr "SVCD/VCD"
+
+#: modules/gui/qt/ui/open_disk.h:300
+msgid "Disable Disc Menus"
+msgstr ""
+
+#: modules/gui/qt/ui/open_disk.h:302
+msgid "No disc menus"
+msgstr ""
+
+#: modules/gui/qt/ui/open_disk.h:303
+msgid "Disc device"
+msgstr "තැටි ආම්පන්නය"
+
+#: modules/gui/qt/ui/open_disk.h:305
+msgid "Starting Position"
+msgstr "ආරම්භක ස්ථානය"
+
+#: modules/gui/qt/ui/open_disk.h:308
+msgid "Audio and Subtitles"
+msgstr "ශ්‍රව්‍ය සහ උපසිරැසි"
+
+#: modules/gui/qt/ui/open_file.h:142
+msgid "Use a sub&title file"
+msgstr ""
+
+#: modules/gui/qt/ui/open_file.h:144
+msgid "Select the subtitle file"
+msgstr ""
+
+#: modules/gui/qt/ui/open_file.h:148
+msgid "Choose one or more media file to open"
+msgstr "විවෘත කිරීම සඳහා ගොනුවක් හෝ ගොනු කිහිපයක් තෝරන්න"
+
+#: modules/gui/qt/ui/open_file.h:150
+msgid "File Selection"
+msgstr "ගොනු තේරීම"
+
+#: modules/gui/qt/ui/open_file.h:151
+msgid "You can select local files with the following list and buttons."
+msgstr "පරිගණකයේ අඩංගු ගොනු පහත බොත්තම් හා ලැයිස්තුවෙන් තෝරන්න."
+
+#: modules/gui/qt/ui/open_file.h:152
+msgid "Add..."
+msgstr "එක් කරන්න..."
+
+#: modules/gui/qt/ui/open_net.h:94
+msgid "Network Protocol"
+msgstr "ජාල ප්‍රොටෝකෝලය"
+
+#: modules/gui/qt/ui/open_net.h:95
+msgid "Please enter a network URL:"
+msgstr "කරුණාකර ජාලයේ URL ලබාදෙන්න:"
+
+#: modules/gui/qt/ui/profiles.h:699
+msgid "Profile edition"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:700
+msgid "FLAC"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:701
+msgid "MP&4/MOV"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:702
+msgid "Ogg/Ogm"
+msgstr "Ogg/Ogm"
+
+#: modules/gui/qt/ui/profiles.h:703
+msgid "M&KV"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:704
+msgid "M&JPEG"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:705
+msgid "MPEG-PS"
+msgstr "MPEG-PS"
+
+#: modules/gui/qt/ui/profiles.h:706
+msgid "F&LV"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:707
+msgid "&MPEG-TS"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:708
+msgid "RAW"
+msgstr "RAW"
+
+#: modules/gui/qt/ui/profiles.h:709
+msgid "WAV"
+msgstr "WAV"
+
+#: modules/gui/qt/ui/profiles.h:710
+msgid "Webm"
+msgstr "Webm"
+
+#: modules/gui/qt/ui/profiles.h:711
+msgid "MPEG &1"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:712
+msgid "AVI"
+msgstr "AVI"
+
+#: modules/gui/qt/ui/profiles.h:713
+msgid "ASF/WMV"
+msgstr "ASF/WMV"
+
+#: modules/gui/qt/ui/profiles.h:714
+msgid "MP&3"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:715
+msgid "Features"
+msgstr "මුහුණුවර"
+
+#: modules/gui/qt/ui/profiles.h:717
+msgid "Streamable"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:718
+msgid "Chapters"
+msgstr "පරිච්ඡේද"
+
+#: modules/gui/qt/ui/profiles.h:721
+msgid "Menus"
+msgstr "මෙනු"
+
+#: modules/gui/qt/ui/profiles.h:728
+msgid "Fra&me Rate"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:729
+msgid "Same as source"
+msgstr "මූලාශ්‍රය ලෙසම"
+
+#: modules/gui/qt/ui/profiles.h:731
+msgid " fps"
+msgstr " fps"
+
+#: modules/gui/qt/ui/profiles.h:732
+msgid "Custom options"
+msgstr "රිසිකළ විකල්ප"
+
+#: modules/gui/qt/ui/profiles.h:733
+msgid "&Quality"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
+msgid "Not Used"
+msgstr " භාවිතා නොකළ"
+
+#: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:755
+msgid " kb/s"
+msgstr " kb/s"
+
+#: modules/gui/qt/ui/profiles.h:737 modules/gui/qt/ui/profiles.h:757
+msgid "Encoding parameters"
+msgstr "කේතීකරණ පරාමිතීන්"
+
+#: modules/gui/qt/ui/profiles.h:740
+msgid "Frame size"
+msgstr "රාමුවේ ප්‍රමාණය"
+
+#: modules/gui/qt/ui/profiles.h:743 modules/gui/qt/ui/profiles.h:746
+msgid "px"
+msgstr "px"
+
+#: modules/gui/qt/ui/profiles.h:756
+msgid "Sa&mple Rate"
+msgstr ""
+
+#: modules/gui/qt/ui/profiles.h:764
+msgid "Profile &Name"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:200
+msgid "Set up media sources to stream"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:202
+msgid "Destination Setup"
+msgstr "ඉලක්ක පිහිටුම"
+
+#: modules/gui/qt/ui/sout.h:203
+msgid "Select destinations to stream to"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:204
+msgid ""
+"Add destinations following the streaming methods you need. Be sure to check "
+"with transcoding that the format is compatible with the method used."
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:205
+msgid "New destination"
+msgstr "නව ගමනාන්තය"
+
+#: modules/gui/qt/ui/sout.h:207
+msgid "Display locally"
+msgstr "ප්‍රාදේශීයව දර්ශනය කරන්න"
+
+#: modules/gui/qt/ui/sout.h:209
+msgid "Transcoding Options"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:210
+msgid "Select and choose transcoding options"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:211
+msgid "Activate Transcoding"
+msgstr "Transcoding සක්‍රිය කරන්න"
+
+#: modules/gui/qt/ui/sout.h:212
+msgid "Option Setup"
+msgstr "විකල්ප පිහිටුවීම"
+
+#: modules/gui/qt/ui/sout.h:213
+msgid "Set up any additional options for streaming"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:214
+msgid "Miscellaneous Options"
+msgstr "විවිධ වූ සිටුවම්"
+
+#: modules/gui/qt/ui/sout.h:215
+msgid "Stream all elementary streams"
+msgstr ""
+
+#: modules/gui/qt/ui/sout.h:216
+msgid "Generated stream output string"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_audio.h:409
+msgid " %"
+msgstr " %"
+
+#: modules/gui/qt/ui/sprefs_audio.h:412
+msgid "Output module:"
+msgstr "ප්‍රතිදාන මොඩියුලය:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:415
+msgid "Use S/PDIF when available"
+msgstr "ලබාගත හැකි විට S/PDIF භාවිතා කරන්න"
+
+#: modules/gui/qt/ui/sprefs_audio.h:417
+msgid "Effects"
+msgstr "ප්‍රයෝග"
+
+#: modules/gui/qt/ui/sprefs_audio.h:418
+msgid "Visualization:"
+msgstr "දෘෂ්ඨිකල්පනය:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:419
+msgid "Enable Time-Stretching audio"
+msgstr "ශ්‍රව්‍ය කාල-දිගැදුම් සබල කරන්න"
+
+#: modules/gui/qt/ui/sprefs_audio.h:420
+msgid "Replay gain mode:"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_audio.h:421
+msgid "Normalize volume to:"
+msgstr "පරිමාව ප්‍රමත කරන්න:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:422
+msgid "Tracks"
+msgstr "පථ"
+
+#: modules/gui/qt/ui/sprefs_audio.h:423
+msgid "Preferred audio language:"
+msgstr "අභිමත ශ්‍රව්‍ය භාෂාව:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:424
+msgid "Password:"
+msgstr "රහස්පදය:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:425
+msgid "Username:"
+msgstr "පරිශීලක නාමය:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:426
+msgid "Submit played tracks stats to Last.fm"
+msgstr "ධාවනය කළ පථ වල තත්වය Last.fm වෙත යොමු කරන්න."
+
+#: modules/gui/qt/ui/sprefs_input.h:354
+msgid "Codecs"
+msgstr "කොඩෙක් "
+
+#: modules/gui/qt/ui/sprefs_input.h:355
+msgid "x264 profile and level selection"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_input.h:356
+msgid "Hardware-accelerated decoding"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_input.h:357
+msgid "Video quality post-processing level"
+msgstr "වීඩියෝ තත්වයෙහි පසු-පිරිසැකසුම් මට්ටම"
+
+#: modules/gui/qt/ui/sprefs_input.h:358
+msgid "Skip H.264 in-loop deblocking filter"
+msgstr "H.264 in-loop deblocking පෙරනය මගහරින්න"
+
+#: modules/gui/qt/ui/sprefs_input.h:359
+msgid "x264 preset and tuning selection"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_input.h:361
+msgid "Optical drive"
+msgstr "ප්‍රකාශ ආම්පන්නය"
+
+#: modules/gui/qt/ui/sprefs_input.h:362
+msgid "Default optical device"
+msgstr "පෙරනිමි ප්‍රකාශ ආම්පන්නය"
+
+#: modules/gui/qt/ui/sprefs_input.h:366
+msgid "Damaged or incomplete AVI file"
+msgstr "පලුදු වූ හෝ පරිපූර්ණ නොවූ AVI ගොනුවක් නම්"
+
+#: modules/gui/qt/ui/sprefs_input.h:369
+msgid "HTTP proxy URL"
+msgstr "HTTP පෙරකලාසි URL"
+
+#: modules/gui/qt/ui/sprefs_input.h:370
+msgid "HTTP (default)"
+msgstr "HTTP (පෙරනිමි)"
+
+#: modules/gui/qt/ui/sprefs_input.h:371
+msgid "RTP over RTSP (TCP)"
+msgstr "RTP මත  RTSP (TCP)"
+
+#: modules/gui/qt/ui/sprefs_input.h:372
+msgid "Live555 stream transport"
+msgstr "Live555 දහරා පරිවහනය"
+
+#: modules/gui/qt/ui/sprefs_input.h:373
+msgid "Default caching policy"
+msgstr "පෙරනිමි කෑෂින් ප්‍රතිපත්තිය"
+
+#: modules/gui/qt/ui/sprefs_interface.h:528
+msgid "Menus language:"
+msgstr "මෙනු භාෂාව:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:529
+msgid "Look and feel"
+msgstr "පෙනුම සහ හැඟීම"
+
+#: modules/gui/qt/ui/sprefs_interface.h:530
+msgid "Use custom skin"
+msgstr "අභිමත ඈඳුමක් භාවිතා කරන්න"
+
+#: modules/gui/qt/ui/sprefs_interface.h:532
+msgid "This is VLC's default interface, with a native look and feel."
+msgstr "මේ VLC හි නිසඟ පෙනීම සහ හැඟීම සහිත පෙරනිමි අතුරුමුහුණතයි."
+
+#: modules/gui/qt/ui/sprefs_interface.h:534
+msgid "Use native style"
+msgstr "නිසඟ මෝස්තරය භාවිතා කරන්න"
+
+#: modules/gui/qt/ui/sprefs_interface.h:535
+msgid "Resize interface to video size"
+msgstr "වීඩියෝවේ ප්‍රමාණයට අතුරුමුහුණත ප්‍රතිප්‍රමාණ කරන්න"
+
+#: modules/gui/qt/ui/sprefs_interface.h:536
+msgid "Show controls in full screen mode"
+msgstr "පුන්තිර ප්‍රකාරයේදී සියලු පාලක පෙන්වන්න"
+
+#: modules/gui/qt/ui/sprefs_interface.h:537
+msgid "Pause playback when minimized"
+msgstr "හැකිළීමේ දී ධාවනයට විරාමයක් තබන්න"
+
+#: modules/gui/qt/ui/sprefs_interface.h:538
+msgid "Show media change popup:"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_interface.h:539
+msgid "Start in minimal view mode"
+msgstr "අවම වූ දර්ශන ප්‍රකාරයෙන් ආරම්භ කරන්න (මෙනු රහිතව) "
+
+#: modules/gui/qt/ui/sprefs_interface.h:540
+msgid "Force window style:"
+msgstr "බලාත්මක කවුළු රටාව:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:541
+msgid "Integrate video in interface"
+msgstr "වීඩියෝව අතුරුමුහුණතට අනුකලනය කරන්න"
+
+#: modules/gui/qt/ui/sprefs_interface.h:542
+msgid "Show systray icon"
+msgstr "systray අයිකනය පෙන්වන්න"
+
+#: modules/gui/qt/ui/sprefs_interface.h:543
+msgid "Auto raising the interface:"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_interface.h:544
+msgid "Skin resource file:"
+msgstr "ඈඳුම් සම්පත් ගොනුව:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:546
+msgid "Playlist and Instances"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_interface.h:549
+msgid "Pause on the last frame of a video"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_interface.h:552
+msgid "Allow only one instance"
+msgstr "එක් ධාවන නිදර්ශනයකට පමණක් ඉඩ දෙන්න "
+
+#: modules/gui/qt/ui/sprefs_interface.h:554
+msgid "Activate updates notifier"
+msgstr "යාවත්කාලීන නිවේදකය සක්‍රිය කරන්න "
+
+#: modules/gui/qt/ui/sprefs_interface.h:556
+msgid "Every "
+msgstr "සෑම"
+
+#: modules/gui/qt/ui/sprefs_interface.h:557
+msgid "Save recently played items"
+msgstr "මෑතක දී ධාවනය කළ අයිතමයන් සුරකින්න"
+
+#: modules/gui/qt/ui/sprefs_interface.h:560
+msgid "Separate words by | (without space)"
+msgstr "වචන වෙන් කරන්න‍ මෙය මගින් | (හිස්තැන් රහිතව)"
+
+#: modules/gui/qt/ui/sprefs_interface.h:563
+msgid "Operating System Integration"
+msgstr "මෙහෙයුම් පද්ධති සංකලනය"
+
+#: modules/gui/qt/ui/sprefs_interface.h:564
+msgid "File extensions association"
+msgstr "ගොනු දිගු සම්බන්ධය"
+
+#: modules/gui/qt/ui/sprefs_interface.h:565
+msgid "Set up associations..."
+msgstr "VLC මගින් විවෘත විය යුතු ගොනු ආකෘති තෝරන්න..."
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:290
+msgid "Enable On Screen Display (OSD)"
+msgstr "තිර මත දර්ශනය (OSD) සක්‍රිය කරන්න"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:291
+msgid "Show media title on video start"
+msgstr "වීඩියෝව ආරම්භයේ දී මාධ්‍යයේ මාතෘකාව පෙන්වන්න"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:293
+msgid "Enable subtitles"
+msgstr "උපසිරුසි සක්‍රිය කරන්න"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:294
+msgid "Subtitle Language"
+msgstr "උපසිරුසි භාෂාව"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:296
+msgid "Default encoding"
+msgstr "පෙරනිමි කේතීකරණය"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:297
+msgid "Subtitle effects"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:303
+msgid "Add a shadow"
+msgstr "සෙවණැල්ලක් එක් කරන්න"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:305
+#: modules/gui/qt/ui/video_effects.h:1266
+#: modules/gui/qt/ui/video_effects.h:1270
+#: modules/gui/qt/ui/video_effects.h:1273
+#: modules/gui/qt/ui/video_effects.h:1274
+#: modules/gui/qt/ui/video_effects.h:1308
+#: modules/gui/qt/ui/video_effects.h:1310
+#: modules/gui/qt/ui/video_effects.h:1320
+#: modules/gui/qt/ui/video_effects.h:1321
+msgid " px"
+msgstr " px"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:306
+msgid "Add a background"
+msgstr "පසුබිමක් එක් කරන්න"
+
+#: modules/gui/qt/ui/sprefs_video.h:313
+msgid "O&utput"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_video.h:317
+msgid "DirectX"
+msgstr "DirectX"
+
+#: modules/gui/qt/ui/sprefs_video.h:319
+msgid "Accelerated video output (Overlay)"
+msgstr "ත්වරිත වීඩියෝ ප්‍රතිදානය (අතිපිහිත)"
+
+#: modules/gui/qt/ui/sprefs_video.h:320
+msgid "KVA"
+msgstr "KVA"
+
+#: modules/gui/qt/ui/sprefs_video.h:324
+msgid "Deinterlacing"
+msgstr "Deinterlacing"
+
+#: modules/gui/qt/ui/sprefs_video.h:326
+msgid "Force Aspect Ratio"
+msgstr "බලාත්මක දර්ශන අනුපාතය"
+
+#: modules/gui/qt/ui/sprefs_video.h:331
+msgid "vlc-snap"
+msgstr "vlc-snap"
+
+#: modules/gui/qt/ui/streampanel.h:169
+msgid "Stuff"
+msgstr "අඩුවැඩිය"
+
+#: modules/gui/qt/ui/streampanel.h:171
+msgid "Edit settings"
+msgstr "සැකසුම් සකසන්න"
+
+#: modules/gui/qt/ui/streampanel.h:172
+msgid "Control"
+msgstr "පාලනය"
+
+#: modules/gui/qt/ui/streampanel.h:173
+msgid "Run manually"
+msgstr "හස්තීයව ධාවනය කරන්න"
+
+#: modules/gui/qt/ui/streampanel.h:174
+msgid "Setup schedule"
+msgstr "ලැයිස්තුව සකස් කරන්න"
+
+#: modules/gui/qt/ui/streampanel.h:175
+msgid "Run on schedule"
+msgstr "ලැයිස්තුවට අනුව ධාවනය කරන්න"
+
+#: modules/gui/qt/ui/streampanel.h:176
+msgid "Status"
+msgstr "තත්ත්වය"
+
+#: modules/gui/qt/ui/streampanel.h:177
+msgid "P/P"
+msgstr "P/P"
+
+#: modules/gui/qt/ui/streampanel.h:180
+msgid "Prev"
+msgstr "පෙර"
+
+#: modules/gui/qt/ui/streampanel.h:181
+msgid "Add Input"
+msgstr "ආදානයක් එක් කරන්න"
+
+#: modules/gui/qt/ui/streampanel.h:182
+msgid "Edit Input"
+msgstr "ආදානය සංස්කරණය කරන්න"
+
+#: modules/gui/qt/ui/streampanel.h:183
+msgid "Clear List"
+msgstr "ලැයිස්තුව හිස් කරන්න"
+
+#: modules/gui/qt/ui/update.h:145
+msgid "Check for VLC updates"
+msgstr "VLC යාවත්කාලීනය සඳහා පරික්ෂා කරන්න"
+
+#: modules/gui/qt/ui/update.h:146
+msgid "Launching an update request..."
+msgstr "යාවත්කාලීන අයදුමක් දියත් කරමින්..."
+
+#: modules/gui/qt/ui/update.h:147
+msgid "Do you want to download it?"
+msgstr "ඔබට එය බාගැනීමට අවශ්‍යද?"
+
+#: modules/gui/qt/ui/video_effects.h:1264
+msgid "Essential"
+msgstr "අත්‍යවශ්‍ය"
+
+#: modules/gui/qt/ui/video_effects.h:1278
+#: modules/gui/qt/ui/video_effects.h:1287
+msgid ">HHHHHH;#"
+msgstr ">HHHHHH;#"
+
+#: modules/gui/qt/ui/video_effects.h:1279
+msgid "Negate colors"
+msgstr "විරුද්ධාර්ථ වර්ණ"
+
+#: modules/gui/qt/ui/video_effects.h:1292
+msgid "Colors"
+msgstr "වර්ණ"
+
+#: modules/gui/qt/ui/video_effects.h:1293
+msgid "Interactive Zoom"
+msgstr "අන්තර් ක්‍රියාකාරීත්ව විශාලනය"
+
+#: modules/gui/qt/ui/video_effects.h:1299
+msgid "Angle"
+msgstr "කෝණය"
+
+#: modules/gui/qt/ui/video_effects.h:1306
+#: modules/gui/qt/ui/video_effects.h:1323
+msgid "..."
+msgstr "..."
+
+#: modules/gui/qt/ui/video_effects.h:1311
+msgid "full"
+msgstr "පූර්ණ"
+
+#: modules/gui/qt/ui/video_effects.h:1313
+msgid "none"
+msgstr "කිසිවක් නොමැත"
+
+#: modules/gui/qt/ui/video_effects.h:1317
+msgid "Logo erase"
+msgstr "ලෝගෝව මකන්න"
+
+#: modules/gui/qt/ui/video_effects.h:1322
+msgid "Mask"
+msgstr "වෙස්මූණ"
+
+#: modules/gui/qt/ui/video_effects.h:1325
+msgid "Anaglyph 3D"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1326
+msgid "Mirror"
+msgstr "ආදර්ශය"
+
+#: modules/gui/qt/ui/video_effects.h:1330
+msgid "Motion detect"
+msgstr "චලිත ග්‍රාහක"
+
+#: modules/gui/qt/ui/video_effects.h:1331
+msgid "Spatial blur"
+msgstr "අවකාශ නොපැහැදිලි බව"
+
+#: modules/gui/qt/ui/video_effects.h:1335
+msgid "Anti-Flickering"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1336
+msgid "Soften"
+msgstr "මෘදු කෙරූ"
+
+#: modules/gui/qt/ui/video_effects.h:1337
+msgid "Denoiser"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1338
+msgid "Spatial luma strength"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1339
+msgid "Temporal luma strength"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1340
+msgid "Spatial chroma strength"
+msgstr ""
+
+#: modules/gui/qt/ui/video_effects.h:1341
+msgid "Temporal chroma strength"
+msgstr ""
+
+#: modules/gui/qt/ui/vlm.h:283
+msgid "VLM configurator"
+msgstr "VLM වින්‍යාසකරු"
+
+#: modules/gui/qt/ui/vlm.h:284
+msgid "Media Manager Edition"
+msgstr "මාධ්‍ය කළමනාකරු සංස්කරණය"
+
+#: modules/gui/qt/ui/vlm.h:285
+msgid "Name:"
+msgstr "නම:"
+
+#: modules/gui/qt/ui/vlm.h:287
+msgid "Input:"
+msgstr "ආදානය:"
+
+#: modules/gui/qt/ui/vlm.h:288
+msgid "Select Input"
+msgstr "ආදානය තෝරන්න"
+
+#: modules/gui/qt/ui/vlm.h:289
+msgid "Output:"
+msgstr "ප්‍රතිදානය:"
+
+#: modules/gui/qt/ui/vlm.h:290
+msgid "Select Output"
+msgstr "ප්‍රතිදානය තෝරන්න"
+
+#: modules/gui/qt/ui/vlm.h:291
+msgid "Time Control"
+msgstr "කාල පාලනය"
+
+#: modules/gui/qt/ui/vlm.h:292
+msgid "Mux Control"
+msgstr "Mux පාලනය"
+
+#: modules/gui/qt/ui/vlm.h:293
+msgid "Muxer:"
+msgstr "Muxer:"
+
+#: modules/gui/qt/ui/vlm.h:294
+msgid "AAAA; "
+msgstr "AAAA; "
+
+#: modules/gui/qt/ui/vlm.h:299
+msgid "Media Manager List"
+msgstr "මාධ්‍ය කළමණාකරණ ලැයිස්තුව"
 
 #~ msgid "Debug logging"
 #~ msgstr "දෝෂහරණ ලොගනය"

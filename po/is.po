@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.13\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2022-03-11 20:40+0100\n"
+"POT-Creation-Date: 2022-04-19 00:23+0200\n"
 "PO-Revision-Date: 2021-03-02 09:27+0100\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>, 2021\n"
 "Language-Team: Icelandic (https://www.transifex.com/yaron/teams/16553/is/)\n"
@@ -90,6 +90,7 @@ msgstr "Stilingar flýtilykla"
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
+#: modules/gui/qt/ui/profiles.h:719 modules/gui/qt/ui/profiles.h:750
 msgid "Audio"
 msgstr "Hljóð"
 
@@ -102,6 +103,7 @@ msgid "General audio settings"
 msgstr "Almennar hljóðstillingar"
 
 #: include/vlc_config_cat.h:58 include/vlc_config_cat.h:81
+#: modules/gui/qt/ui/profiles.h:748 modules/gui/qt/ui/profiles.h:758
 msgid "Filters"
 msgstr "Síur"
 
@@ -153,6 +155,8 @@ msgstr "Ýmsar hljóðstillingar og einingar"
 #: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
+#: modules/gui/qt/ui/profiles.h:720 modules/gui/qt/ui/profiles.h:724
+#: modules/gui/qt/ui/sprefs_video.h:323
 msgid "Video"
 msgstr "Myndmerki"
 
@@ -388,6 +392,7 @@ msgstr ""
 
 #: include/vlc_config_cat.h:184 src/libvlc-module.c:1862
 #: modules/gui/qt/dialogs/extended.cpp:93
+#: modules/gui/qt/ui/video_effects.h:1344
 msgid "Advanced"
 msgstr "Ítarlegt"
 
@@ -464,7 +469,7 @@ msgstr "&Um forritið"
 #: modules/gui/macosx/VLCMainMenu.m:1340 modules/gui/macosx/VLCMainMenu.m:1341
 #: modules/gui/macosx/VLCPlaylist.m:223
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:538
+#: modules/gui/qt/dialogs/vlm.cpp:538 modules/gui/qt/ui/open.h:258
 msgid "Play"
 msgstr "Spila"
 
@@ -556,6 +561,7 @@ msgstr "Leita"
 
 #: include/vlc_intf_strings.h:99
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:282
+#: modules/gui/qt/ui/video_effects.h:1328
 msgid "Waves"
 msgstr "Bylgjur"
 
@@ -693,6 +699,9 @@ msgstr "Víðóma"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:313
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1267
+#: modules/gui/qt/ui/video_effects.h:1309
+#: modules/gui/qt/ui/video_effects.h:1319
 msgid "Left"
 msgstr "Vinstri"
 
@@ -707,6 +716,7 @@ msgstr "Vinstri"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:315
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1268
 msgid "Right"
 msgstr "Hægri"
 
@@ -951,13 +961,15 @@ msgstr "Upprunalegt auðkenni (ID)"
 #: src/input/es_out.c:3132 src/input/es_out.c:3135 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
+#: modules/gui/qt/ui/profiles.h:726 modules/gui/qt/ui/profiles.h:752
+#: modules/gui/qt/ui/profiles.h:761
 msgid "Codec"
 msgstr "Kóðunarlykill (codec)"
 
 #: src/input/es_out.c:3139 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:98
 #: modules/gui/macosx/VLCSimplePrefsController.m:317
-#: modules/stream_out/setid.c:49
+#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:527
 msgid "Language"
 msgstr "Tungumál"
 
@@ -977,7 +989,7 @@ msgstr "Tegund"
 
 #: src/input/es_out.c:3151
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
-#: modules/gui/macosx/VLCOutput.m:98
+#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:754
 msgid "Channels"
 msgstr "Rásir"
 
@@ -999,6 +1011,7 @@ msgstr "Bitar í sýni"
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
+#: modules/gui/qt/ui/profiles.h:727 modules/gui/qt/ui/profiles.h:753
 msgid "Bitrate"
 msgstr "Bitahraði"
 
@@ -1240,6 +1253,7 @@ msgstr ""
 #: modules/gui/qt/components/open_panels.cpp:507
 #: modules/gui/qt/components/open_panels.cpp:521
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
+#: modules/gui/qt/ui/open_disk.h:306
 msgid "Title"
 msgstr "Titill"
 
@@ -1279,6 +1293,7 @@ msgid "Setting"
 msgstr "Stilling"
 
 #: src/input/meta.c:65 modules/gui/macosx/VLCOpenWindowController.m:188
+#: modules/gui/qt/ui/podcast_configuration.h:100
 msgid "URL"
 msgstr "Vefslóð"
 
@@ -1346,6 +1361,7 @@ msgstr "Forrit"
 #: modules/gui/macosx/VLCMainMenu.m:412
 #: modules/gui/macosx/VLCOpenWindowController.m:179
 #: modules/gui/macosx/VLCOpenWindowController.m:181
+#: modules/gui/qt/ui/open_disk.h:307
 msgid "Chapter"
 msgstr "Kafli"
 
@@ -1579,7 +1595,7 @@ msgid "Media (player) role for operating system policy."
 msgstr "Hlutverk margmiðlunar (spilara) fyrir öryggisstefnu stýrikerfis."
 
 #: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:273
-#: modules/stream_out/display.c:40
+#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:407
 msgid "Enable audio"
 msgstr "Virkja hljóð"
 
@@ -1699,7 +1715,8 @@ msgstr ""
 #: modules/services_discovery/upnp.cpp:82
 #: modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
-#: modules/video_output/xcb/xvideo.c:821
+#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:742
+#: modules/gui/qt/ui/profiles.h:745
 msgid "Auto"
 msgstr "Sjálfvirkt"
 
@@ -1815,7 +1832,7 @@ msgstr ""
 "velja sjálfkrafa bestu tiltæku aðferðina."
 
 #: src/libvlc-module.c:258 modules/gui/macosx/VLCSimplePrefsController.m:359
-#: modules/stream_out/display.c:42
+#: modules/stream_out/display.c:42 modules/gui/qt/ui/sprefs_video.h:311
 msgid "Enable video"
 msgstr "Virkja myndmerki"
 
@@ -1899,6 +1916,9 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:317
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1265
+#: modules/gui/qt/ui/video_effects.h:1307
+#: modules/gui/qt/ui/video_effects.h:1318
 msgid "Top"
 msgstr "Efst"
 
@@ -1909,6 +1929,7 @@ msgstr "Efst"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:319
 #: modules/spu/audiobargraph_v.c:65 modules/spu/logo.c:80
 #: modules/spu/marq.c:129 modules/spu/mosaic.c:170 modules/spu/rss.c:171
+#: modules/gui/qt/ui/video_effects.h:1269
 msgid "Bottom"
 msgstr "Neðst"
 
@@ -2093,6 +2114,7 @@ msgid "Disable the screensaver during video playback."
 msgstr "Afvirkja skjáhvílu á meðan myndskeið er í spilun."
 
 #: src/libvlc-module.c:374 modules/gui/macosx/VLCSimplePrefsController.m:364
+#: modules/gui/qt/ui/sprefs_video.h:314
 msgid "Window decorations"
 msgstr "Skreyta glugga"
 
@@ -2414,6 +2436,7 @@ msgstr "Sjálfgefið"
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
 #: modules/gui/macosx/VLCSidebarDataSource.m:209
 #: modules/gui/qt/components/extended_panels.cpp:949
+#: modules/gui/qt/ui/equalizer.h:130 modules/gui/qt/ui/vlm.h:286
 msgid "Enable"
 msgstr "Virkja"
 
@@ -2471,7 +2494,7 @@ msgid ""
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:578
+#: src/libvlc-module.c:578 modules/gui/qt/ui/open_disk.h:309
 msgid "Audio track"
 msgstr "Hljóðspor"
 
@@ -2479,7 +2502,7 @@ msgstr "Hljóðspor"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Streymisnúmer hljóðrásar sem á að nota (frá 0 til n)."
 
-#: src/libvlc-module.c:583
+#: src/libvlc-module.c:583 modules/gui/qt/ui/open_disk.h:310
 msgid "Subtitle track"
 msgstr "Skjátextaspor"
 
@@ -2617,7 +2640,7 @@ msgstr "Lengd"
 msgid "The stream will run this duration (in seconds)."
 msgstr "Streymið mun keyra þetta lengi (í sekúndum)."
 
-#: src/libvlc-module.c:646
+#: src/libvlc-module.c:646 modules/gui/qt/ui/sprefs_input.h:360
 msgid "Fast seek"
 msgstr "Hraðleit"
 
@@ -2727,7 +2750,7 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:705
+#: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Force subtitle position"
 msgstr "Þvinga staðsetningu skjátexta"
 
@@ -2755,6 +2778,7 @@ msgstr "Þú getur gert vinnslu undirmynda algerlega óvirka."
 
 #: src/libvlc-module.c:717 src/libvlc-module.c:1674 src/text/iso-639_def.h:146
 #: modules/gui/macosx/VLCSimplePrefsController.m:351
+#: modules/gui/qt/ui/sprefs_subtitles.h:289
 msgid "On Screen Display"
 msgstr "OSD-stjórntextar"
 
@@ -3408,7 +3432,7 @@ msgstr "VLC er ræst með tengslum við skráaendingar"
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 
-#: src/libvlc-module.c:1087
+#: src/libvlc-module.c:1087 modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Use only one instance when started from file manager"
 msgstr "Nota aðeins eitt tilvik þegar ræst er úr skráastjóra"
 
@@ -3426,7 +3450,7 @@ msgid ""
 "machine."
 msgstr ""
 
-#: src/libvlc-module.c:1099
+#: src/libvlc-module.c:1099 modules/gui/qt/ui/sprefs_interface.h:550
 msgid "Enqueue items into playlist in one instance mode"
 msgstr ""
 "Setja skrár í biðröð yfir í spilunarlista þegar verið er í ham með einu "
@@ -3474,6 +3498,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1126 modules/gui/macosx/VLCSimplePrefsController.m:334
 #: modules/gui/qt/dialogs/firstrun.cpp:95
+#: modules/gui/qt/ui/sprefs_interface.h:562
 msgid "Allow metadata network access"
 msgstr "Leyfa aðgang að lýsigögnum á neti"
 
@@ -3611,7 +3636,7 @@ msgid ""
 "VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1198
+#: src/libvlc-module.c:1198 modules/gui/qt/ui/sprefs_interface.h:548
 msgid "Display playlist tree"
 msgstr "Birta greinar á spilunarlista"
 
@@ -3667,6 +3692,7 @@ msgstr ""
 #: modules/gui/macosx/VLCControlsBarCommon.m:98
 #: modules/gui/macosx/VLCMainMenu.m:432 modules/gui/macosx/VLCMainMenu.m:511
 #: modules/gui/qt/components/controller.hpp:108
+#: modules/gui/qt/ui/sprefs_video.h:315
 msgid "Fullscreen"
 msgstr "Heilskjár"
 
@@ -3754,6 +3780,7 @@ msgstr "Hægar (fínt)"
 #: modules/gui/macosx/VLCMainMenu.m:507
 #: modules/gui/qt/components/controller.hpp:112
 #: modules/gui/qt/dialogs/sout.cpp:93 modules/notify/notify.c:335
+#: modules/gui/qt/ui/streampanel.h:179
 msgid "Next"
 msgstr "Áfram"
 
@@ -3783,7 +3810,7 @@ msgstr ""
 #: modules/gui/macosx/VLCMainMenu.m:498 modules/gui/macosx/VLCMainMenu.m:505
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:65
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:544
+#: modules/gui/qt/dialogs/vlm.cpp:544 modules/gui/qt/ui/streampanel.h:178
 msgid "Stop"
 msgstr "Stoppa"
 
@@ -3796,6 +3823,8 @@ msgstr "Veldu flýtilyklasamsetninguna sem nota skal til að stöðva afspilun."
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:287
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:309
 #: modules/spu/marq.c:151 modules/spu/rss.c:198
+#: modules/gui/qt/ui/sprefs_subtitles.h:292
+#: modules/gui/qt/ui/video_effects.h:1315
 msgid "Position"
 msgstr "Staðsetning"
 
@@ -4517,6 +4546,8 @@ msgstr "Undirmyndir"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
 #: modules/gui/macosx/VLCMainMenu.m:450
 #: share/lua/http/dialogs/create_stream.html:153
+#: modules/gui/qt/ui/profiles.h:716 modules/gui/qt/ui/profiles.h:760
+#: modules/gui/qt/ui/profiles.h:763
 msgid "Subtitles"
 msgstr "Textar"
 
@@ -4690,6 +4721,8 @@ msgstr "Vafri stöðva"
 
 #: src/misc/actions.c:62 modules/gui/macosx/VLCMainMenu.m:370
 #: modules/gui/macosx/VLCPlaylist.m:224 modules/gui/qt/dialogs/bookmarks.cpp:50
+#: modules/gui/qt/ui/podcast_configuration.h:102
+#: modules/gui/qt/ui/streampanel.h:170
 msgid "Delete"
 msgstr "Eyða / Del"
 
@@ -5735,7 +5768,7 @@ msgstr "Kvarða myndskeið sjálfvirkt"
 #: src/video_output/vout_intf.c:203 modules/gui/macosx/VLCMainMenu.m:439
 #: modules/gui/macosx/VLCMainMenu.m:440
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:193
-#: modules/video_filter/croppadd.c:87
+#: modules/video_filter/croppadd.c:87 modules/gui/qt/ui/video_effects.h:1275
 msgid "Crop"
 msgstr "Utansníða"
 
@@ -5918,6 +5951,7 @@ msgstr ""
 "Svæðiskóði Blu-ray. Suma diska er aðeins hægt að spila með réttum svæðiskóða."
 
 #: modules/access/bluray.c:103 modules/services_discovery/udev.c:603
+#: modules/gui/qt/ui/open_disk.h:296
 msgid "Blu-ray"
 msgstr "Blu-ray"
 
@@ -6011,6 +6045,7 @@ msgid "Audio CD - Track %02i"
 msgstr "CD-hljómdiskur - Lag %02i"
 
 #: modules/access/cdda.c:1003 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "CD-hljómdiskur"
 
@@ -7058,6 +7093,7 @@ msgid "File"
 msgstr "Skrá"
 
 #: modules/access/fs.c:44 modules/demux/directory.c:93
+#: modules/gui/qt/ui/sprefs_video.h:328
 msgid "Directory"
 msgstr "Mappa"
 
@@ -7288,6 +7324,7 @@ msgstr "Fjöldi rása í hljóðgagnastraumi"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
 #: modules/gui/qt/components/extended_panels.cpp:1318 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
+#: modules/gui/qt/ui/profiles.h:741
 msgid "Width"
 msgstr "Breidd"
 
@@ -7300,6 +7337,7 @@ msgstr "Breidd gagnastrauma fyrir mynd eða textavarp"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:168
 #: modules/spu/mosaic.c:92 modules/video_output/vmem.c:45
 #: share/lua/http/dialogs/mosaic_window.html:126
+#: modules/gui/qt/ui/profiles.h:744
 msgid "Height"
 msgstr "Hæð"
 
@@ -8293,6 +8331,7 @@ msgstr "Frumstilla stýringar á sjálfgefin gildi."
 
 #: modules/access/v4l2/v4l2.c:84
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:206
+#: modules/gui/qt/ui/video_effects.h:1253
 msgid "Brightness"
 msgstr "Birtustig"
 
@@ -8310,6 +8349,7 @@ msgstr "Aðlaga birtustig myndmerkis sjálfvirkt."
 
 #: modules/access/v4l2/v4l2.c:89
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:205
+#: modules/gui/qt/ui/video_effects.h:1255
 msgid "Contrast"
 msgstr "Birtuskil"
 
@@ -8320,6 +8360,8 @@ msgstr ""
 #: modules/access/v4l2/v4l2.c:91
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:208
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:254
+#: modules/gui/qt/ui/video_effects.h:1256
+#: modules/gui/qt/ui/video_effects.h:1288
 msgid "Saturation"
 msgstr "Mettun"
 
@@ -8329,6 +8371,7 @@ msgstr "Litmettun myndar eða mögnun litgildis."
 
 #: modules/access/v4l2/v4l2.c:93
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:204
+#: modules/gui/qt/ui/video_effects.h:1252
 msgid "Hue"
 msgstr "Litblær"
 
@@ -8382,6 +8425,7 @@ msgstr "Vægi blás litgildis."
 
 #: modules/access/v4l2/v4l2.c:111
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:209
+#: modules/gui/qt/ui/video_effects.h:1257
 msgid "Gamma"
 msgstr "Litróf (gamma)"
 
@@ -8508,7 +8552,7 @@ msgstr "Svarthvítt"
 
 #: modules/access/v4l2/v4l2.c:164
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:256
-#: modules/video_filter/sepia.c:66
+#: modules/video_filter/sepia.c:66 modules/gui/qt/ui/video_effects.h:1290
 msgid "Sepia"
 msgstr "Sepía"
 
@@ -10216,7 +10260,7 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "KAudioInterface hljóðúttak"
 
-#: modules/audio_output/mmdevice.c:1452
+#: modules/audio_output/mmdevice.c:1452 modules/gui/qt/ui/sprefs_audio.h:416
 msgid "HDMI/SPDIF audio passthrough"
 msgstr ""
 
@@ -10848,7 +10892,7 @@ msgstr "BPG myndafkóðari"
 
 #: modules/codec/cc.c:51 modules/codec/zvbi.c:65
 #: modules/gui/macosx/VLCSimplePrefsController.m:353 modules/spu/marq.c:108
-#: modules/spu/rss.c:144
+#: modules/spu/rss.c:144 modules/gui/qt/ui/video_effects.h:1312
 msgid "Opacity"
 msgstr "Ógagnsæi"
 
@@ -12155,6 +12199,7 @@ msgstr ""
 #: modules/codec/speex.c:59 modules/codec/speex.c:907
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
+#: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
 msgid "Mode"
 msgstr "Hamur"
 
@@ -13399,6 +13444,7 @@ msgid "Quiet mode"
 msgstr "Hljóðlátur hamur"
 
 #: modules/codec/x264.c:397 modules/gui/macosx/VLCPlaylistInfo.m:65
+#: modules/gui/qt/ui/streampanel.h:168
 msgid "Statistics"
 msgstr "Tölfræði"
 
@@ -13578,7 +13624,7 @@ msgstr "Setja textavarpstexta út sem texta í stað RGBA."
 msgid "Presentation Level"
 msgstr ""
 
-#: modules/codec/zvbi.c:88
+#: modules/codec/zvbi.c:88 modules/gui/qt/ui/streampanel.h:167
 msgid "1"
 msgstr "1"
 
@@ -14695,7 +14741,7 @@ msgstr "Kóðunarlyklar kafla"
 msgid "Use chapter codecs found in the segment."
 msgstr "Nota kóðunarlykla kafla sem finnast í bútnum."
 
-#: modules/demux/mkv/mkv.cpp:69
+#: modules/demux/mkv/mkv.cpp:69 modules/gui/qt/ui/sprefs_input.h:367
 msgid "Preload MKV files in the same directory"
 msgstr "Forhlaða MKV-skrám í sömu möppu"
 
@@ -15695,11 +15741,13 @@ msgid "Apply profile at next launch"
 msgstr ""
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:216
+#: modules/gui/qt/ui/equalizer.h:131
 msgid "2 Pass"
 msgstr "2. Yfirferðir"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:219
 #: modules/gui/qt/components/extended_panels.cpp:1132
+#: modules/gui/qt/ui/equalizer.h:133
 msgid "Preamp"
 msgstr "Formögnun"
 
@@ -15788,6 +15836,7 @@ msgstr ""
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:792
 #: modules/gui/macosx/prefs.m:188
 #: modules/gui/qt/components/sout/profile_selector.cpp:449
+#: modules/gui/qt/ui/vlm.h:298
 msgid "Save"
 msgstr "Vista"
 
@@ -15818,6 +15867,7 @@ msgstr ""
 #: modules/gui/macosx/VLCBookmarksWindowController.m:78
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:338
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:859
+#: modules/gui/qt/ui/open_file.h:153
 msgid "Remove"
 msgstr "Fjarlægja"
 
@@ -15842,12 +15892,14 @@ msgid "Bookmarks"
 msgstr "Bókamerki"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:75
+#: modules/gui/qt/ui/podcast_configuration.h:101 modules/gui/qt/ui/sout.h:206
+#: modules/gui/qt/ui/vlm.h:296
 msgid "Add"
 msgstr "Bæta við"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:76
 #: modules/gui/macosx/VLCSimplePrefsController.m:288
-#: modules/gui/qt/dialogs/bookmarks.cpp:53
+#: modules/gui/qt/dialogs/bookmarks.cpp:53 modules/gui/qt/ui/vlm.h:297
 msgid "Clear"
 msgstr "Hreinsa"
 
@@ -15995,6 +16047,9 @@ msgstr "Veldu áfangastað fyrir úttak"
 #: modules/gui/qt/components/preferences_widgets.cpp:264
 #: modules/gui/qt/components/simple_preferences.cpp:463
 #: modules/gui/qt/components/sout/sout_widgets.cpp:135
+#: modules/gui/qt/ui/open.h:279 modules/gui/qt/ui/open_disk.h:304
+#: modules/gui/qt/ui/open_file.h:146 modules/gui/qt/ui/sprefs_audio.h:414
+#: modules/gui/qt/ui/sprefs_input.h:365 modules/gui/qt/ui/sprefs_video.h:329
 msgid "Browse..."
 msgstr "Flakka..."
 
@@ -16028,28 +16083,34 @@ msgid "Save as new Profile..."
 msgstr "Vista sem nýtt snið..."
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:155
+#: modules/gui/qt/ui/profiles.h:723
 msgid "Encapsulation"
 msgstr "Hjúpun"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:156
 #: share/lua/http/dialogs/create_stream.html:160
+#: modules/gui/qt/ui/profiles.h:749
 msgid "Video codec"
 msgstr "Myndkóðunarlykill"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:157
 #: share/lua/http/dialogs/create_stream.html:178
+#: modules/gui/qt/ui/profiles.h:759
 msgid "Audio codec"
 msgstr "Hljóðkóðunarlykill"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:161
+#: modules/gui/qt/ui/profiles.h:725
 msgid "Keep original video track"
 msgstr "Halda upprunalegu myndspori"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:165
+#: modules/gui/qt/ui/profiles.h:747
 msgid "Resolution"
 msgstr "Upplausn"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:166
+#: modules/gui/qt/ui/profiles.h:738
 msgid ""
 "You just need to fill one of the three following parameters, VLC will "
 "autodetect the other using the original aspect ratio"
@@ -16058,15 +16119,17 @@ msgstr ""
 "finna hinar sjálfvirkt út frá upprunalegum stærðarhlutföllum"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:169
-#: modules/gui/macosx/VLCOutput.m:88
+#: modules/gui/macosx/VLCOutput.m:88 modules/gui/qt/ui/profiles.h:739
 msgid "Scale"
 msgstr "Kvarði"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:172
+#: modules/gui/qt/ui/profiles.h:751
 msgid "Keep original audio track"
 msgstr "Halda upprunalegu hljóðspori"
 
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:179
+#: modules/gui/qt/ui/profiles.h:762
 msgid "Overlay subtitles on the video"
 msgstr "Þekja skjátexta yfir myndmerki"
 
@@ -16231,7 +16294,7 @@ msgstr "Fara úr skjáfylliham"
 
 #: modules/gui/macosx/VLCFSPanelController.m:140
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:80
-#: modules/gui/qt/dialogs/toolbar.cpp:477
+#: modules/gui/qt/dialogs/toolbar.cpp:477 modules/gui/qt/ui/sprefs_audio.h:408
 msgid "Volume"
 msgstr "Hljóðstyrkur"
 
@@ -16268,6 +16331,8 @@ msgstr "VLC margmiðlunarspilarinn"
 
 #: modules/gui/macosx/VLCLogWindowController.m:94
 #: modules/gui/qt/dialogs/messages.cpp:80
+#: modules/gui/qt/ui/messages_panel.h:136
+#: modules/gui/qt/ui/messages_panel.h:140
 msgid "Messages"
 msgstr "Skilaboð"
 
@@ -16547,6 +16612,7 @@ msgstr "Fljóta efst"
 
 #: modules/gui/macosx/VLCMainMenu.m:441 modules/gui/macosx/VLCMainMenu.m:442
 #: modules/gui/macosx/VLCSimplePrefsController.m:370
+#: modules/gui/qt/ui/sprefs_video.h:316
 msgid "Fullscreen Video Device"
 msgstr "Heilskjástæki"
 
@@ -16809,6 +16875,7 @@ msgstr "Diskur"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:142
 #: modules/gui/macosx/VLCSimplePrefsController.m:302
+#: modules/gui/qt/ui/sprefs_input.h:368
 msgid "Network"
 msgstr "Netkerfi"
 
@@ -16837,6 +16904,7 @@ msgstr "Spila annan miðil samhliða"
 #: modules/gui/macosx/VLCOpenWindowController.m:152
 #: modules/gui/macosx/VLCOpenWindowController.m:348
 #: modules/gui/macosx/VLCSimplePrefsController.m:345
+#: modules/gui/qt/ui/sprefs_interface.h:545
 msgid "Choose..."
 msgstr "Velja..."
 
@@ -16966,6 +17034,7 @@ msgstr "Stafatafla skjátexta"
 
 #: modules/gui/macosx/VLCOpenWindowController.m:360
 #: modules/gui/macosx/VLCSimplePrefsController.m:347
+#: modules/gui/qt/ui/sprefs_subtitles.h:299
 msgid "Font size"
 msgstr "Leturstærð"
 
@@ -16999,6 +17068,7 @@ msgstr "r/sek"
 #: modules/gui/macosx/VLCOpenWindowController.m:582
 #: modules/gui/macosx/VLCOpenWindowController.m:668
 #: modules/gui/macosx/VLCOpenWindowController.m:1284
+#: modules/gui/qt/ui/open_file.h:141
 msgid "Open File"
 msgstr "Opna skrá"
 
@@ -17141,6 +17211,7 @@ msgid "VLC was unable to save the meta data."
 msgstr "VLC tókst ekki að vista lýsigögnin."
 
 #: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:194
+#: modules/gui/qt/ui/sprefs_interface.h:551
 msgid "Continue playback?"
 msgstr "Halda afspilun áfram?"
 
@@ -17233,6 +17304,7 @@ msgid "Keep audio level between sessions"
 msgstr "Halda sama hljóðstyrk og í síðustu setu"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:281
+#: modules/gui/qt/ui/sprefs_audio.h:410
 msgid "Always reset audio start level to:"
 msgstr "Ávalt endurjafna hljóðstyrk í:"
 
@@ -17259,6 +17331,7 @@ msgid "Shortcut"
 msgstr "Fýtileið"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:294
+#: modules/gui/qt/ui/sprefs_input.h:364
 msgid "Record directory or filename"
 msgstr "Slóð á upptökur eða skráarheiti"
 
@@ -17275,6 +17348,7 @@ msgid "Default Caching Level"
 msgstr "Sjálfgefið stig biðminnis"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:299
+#: modules/gui/qt/ui/open.h:263
 msgid "Caching"
 msgstr "Notkun skyndiminnis"
 
@@ -17358,6 +17432,7 @@ msgid "Control external music players"
 msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:333
+#: modules/gui/qt/ui/sprefs_interface.h:553
 msgid "Privacy / Network Interaction"
 msgstr "Friðhelgi / Netvirkni"
 
@@ -17382,11 +17457,13 @@ msgid "Display Settings"
 msgstr "Stillingar skjás"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:346
+#: modules/gui/qt/ui/sprefs_subtitles.h:300
 msgid "Font color"
 msgstr "Litur á letri"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:348 modules/spu/marq.c:157
 #: modules/spu/rss.c:204 modules/text_renderer/freetype/freetype.c:80
+#: modules/gui/qt/ui/sprefs_subtitles.h:298
 msgid "Font"
 msgstr "Letur"
 
@@ -17395,6 +17472,7 @@ msgid "Subtitle languages"
 msgstr "Tungumál skjátexta"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:350
+#: modules/gui/qt/ui/sprefs_subtitles.h:295
 msgid "Preferred subtitle language"
 msgstr "Umbeðið tungumál skjátexta"
 
@@ -17409,16 +17487,18 @@ msgstr "Þvinga feitletrað"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:355
 #: modules/text_renderer/freetype/freetype.c:110
+#: modules/gui/qt/ui/sprefs_subtitles.h:302
 msgid "Outline color"
 msgstr "Litur útlína"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:356
 #: modules/text_renderer/freetype/freetype.c:111
+#: modules/gui/qt/ui/sprefs_subtitles.h:301
 msgid "Outline thickness"
 msgstr "Breidd útlína"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:360
-#: modules/stream_out/display.c:53
+#: modules/stream_out/display.c:53 modules/gui/qt/ui/sprefs_video.h:312
 msgid "Display"
 msgstr "Sýna"
 
@@ -17449,6 +17529,7 @@ msgid "Use the native fullscreen mode"
 msgstr "Nota innbyggðan skjáfylliham"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:372
+#: modules/gui/qt/ui/sprefs_video.h:327
 msgid "Video snapshots"
 msgstr "Skjámyndir úr myndskeiðum"
 
@@ -17458,14 +17539,17 @@ msgid "Folder"
 msgstr "Mappa"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:375
+#: modules/gui/qt/ui/sprefs_video.h:333
 msgid "Format"
 msgstr "Snið"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:376
+#: modules/gui/qt/ui/sprefs_video.h:330
 msgid "Prefix"
 msgstr "Forskeyti"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:377
+#: modules/gui/qt/ui/sprefs_video.h:332
 msgid "Sequential numbering"
 msgstr "Númeraröð"
 
@@ -17670,6 +17754,7 @@ msgid "Basic"
 msgstr "Grunnur"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:194
+#: modules/gui/qt/ui/video_effects.h:1303
 msgid "Geometry"
 msgstr "Rúmfræði"
 
@@ -17678,7 +17763,9 @@ msgstr "Rúmfræði"
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:270
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:273
 #: modules/spu/marq.c:115 modules/spu/rss.c:152
-#: modules/video_filter/colorthres.c:55
+#: modules/video_filter/colorthres.c:55 modules/gui/qt/ui/video_effects.h:1277
+#: modules/gui/qt/ui/video_effects.h:1283
+#: modules/gui/qt/ui/video_effects.h:1286
 msgid "Color"
 msgstr "Litur"
 
@@ -17687,45 +17774,53 @@ msgid "Image Adjust"
 msgstr "Fínstilla mynd"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:207
+#: modules/gui/qt/ui/video_effects.h:1254
 msgid "Brightness Threshold"
 msgstr "Birtustigsmörk"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:211
-#: modules/video_filter/sharpen.c:69
+#: modules/video_filter/sharpen.c:69 modules/gui/qt/ui/video_effects.h:1258
 msgid "Sharpen"
 msgstr "Skerpa"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:212
+#: modules/gui/qt/ui/video_effects.h:1259
+#: modules/gui/qt/ui/video_effects.h:1332
 msgid "Sigma"
 msgstr "Sigma"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:213
+#: modules/gui/qt/ui/video_effects.h:1260
 msgid "Banding removal"
 msgstr "Fjarlægja rendur"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:214
-#: modules/video_filter/gradfun.c:50
+#: modules/video_filter/gradfun.c:50 modules/gui/qt/ui/video_effects.h:1261
 msgid "Radius"
 msgstr "Radíus"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:215
+#: modules/gui/qt/ui/video_effects.h:1262
 msgid "Film Grain"
 msgstr "Filmukorn"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:216
-#: modules/video_filter/grain.c:53
+#: modules/video_filter/grain.c:53 modules/gui/qt/ui/video_effects.h:1263
 msgid "Variance"
 msgstr "Breytileiki"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:221
+#: modules/gui/qt/ui/video_effects.h:1271
 msgid "Synchronize top and bottom"
 msgstr "Samstilla efst og neðst"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:222
+#: modules/gui/qt/ui/video_effects.h:1272
 msgid "Synchronize left and right"
 msgstr "Samstilla vinstri og hægri"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:224
+#: modules/gui/qt/ui/video_effects.h:1297
 msgid "Transform"
 msgstr "Ummynda"
 
@@ -17759,51 +17854,60 @@ msgid "Magnification/Zoom"
 msgstr "Stækkun/Aðdráttur"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:242
+#: modules/gui/qt/ui/video_effects.h:1300
 msgid "Puzzle game"
 msgstr "Púsluspil"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:243
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:248
 #: share/lua/http/dialogs/mosaic_window.html:96
+#: modules/gui/qt/ui/video_effects.h:1295
+#: modules/gui/qt/ui/video_effects.h:1301
 msgid "Rows"
 msgstr "Raðir"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:244
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:249
 #: share/lua/http/dialogs/mosaic_window.html:114
+#: modules/gui/qt/ui/video_effects.h:1296
+#: modules/gui/qt/ui/video_effects.h:1302
 msgid "Columns"
 msgstr "Dálkar"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:245
-#: modules/video_splitter/clone.c:57
+#: modules/video_splitter/clone.c:57 modules/gui/qt/ui/video_effects.h:1342
 msgid "Clone"
 msgstr "Kóna"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:246
-#: modules/video_splitter/clone.c:39
+#: modules/video_splitter/clone.c:39 modules/gui/qt/ui/video_effects.h:1343
 msgid "Number of clones"
 msgstr "Fjöldi klóna"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:247
+#: modules/gui/qt/ui/video_effects.h:1294
 msgid "Wall"
 msgstr "Veggur"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:251
-#: modules/video_filter/colorthres.c:71
+#: modules/video_filter/colorthres.c:71 modules/gui/qt/ui/video_effects.h:1285
 msgid "Color threshold"
 msgstr "Litamörk"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:255
+#: modules/gui/qt/ui/video_effects.h:1289
 msgid "Similarity"
 msgstr "Einslögun"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:257
+#: modules/gui/qt/ui/video_effects.h:1291
 msgid "Intensity"
 msgstr "Styrkur"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:258
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:261
 #: modules/video_filter/gradient.c:76 modules/video_filter/gradient.c:82
+#: modules/gui/qt/ui/video_effects.h:1281
 msgid "Gradient"
 msgstr "Stig af stigi"
 
@@ -17818,10 +17922,12 @@ msgid "Hough"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:271
+#: modules/gui/qt/ui/video_effects.h:1284
 msgid "Cartoon"
 msgstr "Teiknimynd"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:272
+#: modules/gui/qt/ui/video_effects.h:1276
 msgid "Color extraction"
 msgstr "Draga út lit"
 
@@ -17830,7 +17936,7 @@ msgid "Invert colors"
 msgstr "Umsnúa litum"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:276
-#: modules/video_filter/posterize.c:69
+#: modules/video_filter/posterize.c:69 modules/gui/qt/ui/video_effects.h:1280
 msgid "Posterize"
 msgstr "Þrykk"
 
@@ -17840,11 +17946,12 @@ msgid "Posterize level"
 msgstr "Styrkur þrykkingar"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:278
-#: modules/video_filter/motionblur.c:60
+#: modules/video_filter/motionblur.c:60 modules/gui/qt/ui/video_effects.h:1333
 msgid "Motion blur"
 msgstr "Hreyfingarafskerping"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:279
+#: modules/gui/qt/ui/video_effects.h:1334
 msgid "Factor"
 msgstr "Stuðull"
 
@@ -17854,11 +17961,13 @@ msgid "Motion Detect"
 msgstr "Hreyfiskynjun"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:281
+#: modules/gui/qt/ui/video_effects.h:1329
 msgid "Water effect"
 msgstr "Vatnsáhrif"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:283
 #: modules/meta_engine/ID3Genres.h:100 modules/video_filter/psychedelic.c:55
+#: modules/gui/qt/ui/video_effects.h:1327
 msgid "Psychedelic"
 msgstr "Hugvíkkandi"
 
@@ -17868,19 +17977,23 @@ msgid "Anaglyph"
 msgstr ""
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:285
+#: modules/gui/qt/ui/video_effects.h:1314
 msgid "Add text"
 msgstr "Bæta við texta"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:286
 #: modules/logger/file.c:193 modules/spu/marq.c:88
+#: modules/gui/qt/ui/video_effects.h:1316
 msgid "Text"
 msgstr "Texti"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:307
+#: modules/gui/qt/ui/video_effects.h:1304
 msgid "Add logo"
 msgstr "Bæta við merki"
 
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:308
+#: modules/gui/qt/ui/video_effects.h:1305
 msgid "Logo"
 msgstr "Merki"
 
@@ -18943,6 +19056,7 @@ msgid "File names:"
 msgstr "Skráanöfn:"
 
 #: modules/gui/qt/components/open_panels.cpp:162
+#: modules/gui/qt/ui/sprefs_interface.h:558
 msgid "Filter:"
 msgstr "Sía:"
 
@@ -19346,6 +19460,7 @@ msgid "File/Folder"
 msgstr "Skrá/Mappa"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:47
+#: modules/gui/qt/ui/sout.h:199
 msgid "Source"
 msgstr "Uppruni"
 
@@ -19468,7 +19583,7 @@ msgstr "Margar skrár valdar."
 msgid "Destination"
 msgstr "Áfangastaður"
 
-#: modules/gui/qt/dialogs/convert.cpp:71
+#: modules/gui/qt/dialogs/convert.cpp:71 modules/gui/qt/ui/sprefs_audio.h:413
 msgid "Destination file:"
 msgstr "Úttaksskrá:"
 
@@ -19512,7 +19627,8 @@ msgstr "Gámar"
 msgid "Program Guide"
 msgstr "Sjónvarpsdagskrá"
 
-#: modules/gui/qt/dialogs/epg.cpp:87
+#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:286
+#: modules/gui/qt/ui/about.h:287
 msgid "Update"
 msgstr "Uppfæra"
 
@@ -19646,7 +19762,7 @@ msgstr "&Já"
 msgid "&No"
 msgstr "&Nei"
 
-#: modules/gui/qt/dialogs/help.cpp:222
+#: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:144
 msgid "VLC media player updates"
 msgstr "Uppfærslur fyrir VLC"
 
@@ -19892,7 +20008,7 @@ msgstr "Útgáfa"
 msgid "Website"
 msgstr "Heimasíða"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1534
+#: modules/gui/qt/dialogs/plugins.cpp:1534 modules/gui/qt/ui/sprefs_input.h:363
 msgid "Files"
 msgstr "Skrár"
 
@@ -19953,7 +20069,7 @@ msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr ""
 "Ertu viss að þú viljir núllstilla kjörstillingar VLC margmiðlunarspilarans?"
 
-#: modules/gui/qt/dialogs/sout.cpp:45
+#: modules/gui/qt/dialogs/sout.cpp:45 modules/gui/qt/ui/sout.h:198
 msgid "Stream Output"
 msgstr "Streymisúttak"
 
@@ -20136,7 +20252,7 @@ msgstr "Endurtaka:"
 msgid "Repeat delay:"
 msgstr "Endurtaka töf:"
 
-#: modules/gui/qt/dialogs/vlm.cpp:111
+#: modules/gui/qt/dialogs/vlm.cpp:111 modules/gui/qt/ui/sprefs_interface.h:555
 msgid " days"
 msgstr " dagar"
 
@@ -22860,6 +22976,7 @@ msgid "Podcasts"
 msgstr "Hlaðvörp (podcasts)"
 
 #: modules/services_discovery/podcast.c:56
+#: modules/gui/qt/ui/podcast_configuration.h:99
 msgid "Podcast URLs list"
 msgstr "URL-slóðalisti fyrir hlaðvörp"
 
@@ -22962,7 +23079,7 @@ msgstr "Hljóðupptaka (ALSA)"
 msgid "CD"
 msgstr "CD"
 
-#: modules/services_discovery/udev.c:601
+#: modules/services_discovery/udev.c:601 modules/gui/qt/ui/open_disk.h:295
 msgid "DVD"
 msgstr "DVD"
 
@@ -23106,6 +23223,7 @@ msgstr ""
 
 #: modules/spu/dynamicoverlay/dynamicoverlay.c:68
 #: share/lua/http/dialogs/create_stream.html:245
+#: modules/gui/qt/ui/video_effects.h:1324
 msgid "Overlay"
 msgstr "Yfirlag"
 
@@ -24999,7 +25117,7 @@ msgstr "Stilla litblæ myndar, milli -180 og 180. Sjálfgefið á 0."
 msgid "Image properties filter"
 msgstr ""
 
-#: modules/video_filter/adjust.c:78
+#: modules/video_filter/adjust.c:78 modules/gui/qt/ui/video_effects.h:1251
 msgid "Image adjust"
 msgstr "Fínstilla mynd"
 
@@ -26025,7 +26143,7 @@ msgstr "Nota hreyfiskynjara"
 msgid "Rotate video filter"
 msgstr "Snúa myndsíu"
 
-#: modules/video_filter/rotate.c:72
+#: modules/video_filter/rotate.c:72 modules/gui/qt/ui/video_effects.h:1298
 msgid "Rotate"
 msgstr "Snúa"
 
@@ -26372,7 +26490,7 @@ msgstr "GLX"
 msgid "GLX extension for OpenGL"
 msgstr "GLX forritsauki fyrir OpenGL"
 
-#: modules/video_output/kva.c:50
+#: modules/video_output/kva.c:50 modules/gui/qt/ui/sprefs_video.h:321
 msgid "Enable a workaround for T23"
 msgstr "Virkja hjáleið fyrir T23"
 
@@ -26382,7 +26500,7 @@ msgid ""
 "size is equal to or smaller than the movie size."
 msgstr ""
 
-#: modules/video_output/kva.c:55
+#: modules/video_output/kva.c:55 modules/gui/qt/ui/sprefs_video.h:322
 msgid "Video mode"
 msgstr "Skjáhamur"
 
@@ -26502,6 +26620,7 @@ msgid "Direct3D11 video output"
 msgstr "Direct3D11 myndmerkisúttak"
 
 #: modules/video_output/win32/directdraw.c:65
+#: modules/gui/qt/ui/sprefs_video.h:318
 msgid "Use hardware YUV->RGB conversions"
 msgstr "Nota vélbúnaðar YUV-> RGB yfirfærslu"
 
@@ -27328,6 +27447,7 @@ msgid "Play List"
 msgstr "Spilunarlisti"
 
 #: share/lua/http/dialogs/create_stream.html:156
+#: modules/gui/qt/ui/sprefs_audio.h:411
 msgid "Output"
 msgstr "Úttak"
 
@@ -27442,7 +27562,7 @@ msgstr "Samstilling spora"
 msgid "VLM Batch Commands"
 msgstr "VLM magnvinnsluskipanir"
 
-#: share/lua/http/index.html:259
+#: share/lua/http/index.html:259 modules/gui/qt/ui/vlm.h:295
 msgid "Loop"
 msgstr "Lykkja"
 
@@ -27535,634 +27655,857 @@ msgstr ""
 msgid "Are you sure you wish to create the stream?"
 msgstr "Ertu viss um að þú viljir búa til streymið?"
 
+#: modules/gui/qt/ui/about.h:285 modules/gui/qt/ui/open.h:257
+#: modules/gui/qt/ui/podcast_configuration.h:98
+msgid "Dialog"
+msgstr "Samskiptagluggi"
+
+#: modules/gui/qt/ui/equalizer.h:129 modules/gui/qt/ui/open_disk.h:293
+#: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:406
+#: modules/gui/qt/ui/sprefs_input.h:353
+#: modules/gui/qt/ui/sprefs_interface.h:526
+#: modules/gui/qt/ui/sprefs_subtitles.h:288
+#: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
+msgid "Form"
+msgstr "Snið"
+
+#: modules/gui/qt/ui/equalizer.h:132
+msgid "Preset"
+msgstr "Forgildi"
+
+#: modules/gui/qt/ui/equalizer.h:134
+msgid "0.00 dB"
+msgstr "0.00 dB"
+
+#: modules/gui/qt/ui/messages_panel.h:137
+msgid "&Verbosity:"
+msgstr "&Upplýsingamagn:"
+
+#: modules/gui/qt/ui/messages_panel.h:138
+msgid "&Filter:"
+msgstr "&Sía:"
+
+#: modules/gui/qt/ui/messages_panel.h:139
+msgid "&Save as..."
+msgstr "&Vista sem..."
+
+#: modules/gui/qt/ui/messages_panel.h:141
+msgid "Modules Tree"
+msgstr "Uppbygging eininga í greinar"
+
+#: modules/gui/qt/ui/open.h:260
+msgid "Show extended options"
+msgstr "Sýna fleiri valmöguleika"
+
+#: modules/gui/qt/ui/open.h:262
+msgid "Show &more options"
+msgstr "Sýna &fleiri valmöguleika"
+
+#: modules/gui/qt/ui/open.h:265
+msgid "Change the caching for the media"
+msgstr "Breyta skyndiminni fyrir miðilinn"
+
+#: modules/gui/qt/ui/open.h:267
+msgid " ms"
+msgstr " msek"
+
+#: modules/gui/qt/ui/open.h:268
+msgid "MRL"
+msgstr "MRL"
+
+#: modules/gui/qt/ui/open.h:269
+msgid "Start Time"
+msgstr "Byrjunartími"
+
+#: modules/gui/qt/ui/open.h:270
+msgid "Stop Time"
+msgstr "Lokatími"
+
+#: modules/gui/qt/ui/open.h:271
+msgid "Edit Options"
+msgstr "Breytingamöguleikar"
+
+#: modules/gui/qt/ui/open.h:272
+msgid "Extra media"
+msgstr "Aukamiðill"
+
+#: modules/gui/qt/ui/open.h:274
+msgid "Complete MRL for VLC internal"
+msgstr "Klára MRL innan VLC"
+
+#: modules/gui/qt/ui/open.h:277
+msgid "Select the file"
+msgstr "Veldu skrána"
+
+#: modules/gui/qt/ui/open.h:281
+msgid "Change the start time for the media"
+msgstr "Breyta byrjunartíma miðils"
+
+#: modules/gui/qt/ui/open.h:283 modules/gui/qt/ui/open.h:287
+msgid "HH'H':mm'm':ss's'.zzz"
+msgstr "HH'H':mm'm':ss's'.zzz"
+
+#: modules/gui/qt/ui/open.h:285
+msgid "Change the stop time for the media"
+msgstr "Breyta lokatíma miðils"
+
+#: modules/gui/qt/ui/open.h:288
+msgid "Play another media synchronously (extra audio file, ...)"
+msgstr "Spila annan miðil samhliða (t.d. aukahljóðskrá, ...)"
+
+#: modules/gui/qt/ui/open_capture.h:94
+msgid "Capture mode"
+msgstr "Upptökuhamur"
+
+#: modules/gui/qt/ui/open_capture.h:96
+msgid "Select the capture device type"
+msgstr "Veldu tegund upptökutækis"
+
+#: modules/gui/qt/ui/open_capture.h:98
+msgid "Device Selection"
+msgstr "Val á tæki"
+
+#: modules/gui/qt/ui/open_capture.h:99
+msgid "Options"
+msgstr "Valkostir"
+
+#: modules/gui/qt/ui/open_capture.h:101
+msgid "Access advanced options to tweak the device"
+msgstr "Opna ítarlegri stillingar til að breyta tækinu"
+
+#: modules/gui/qt/ui/open_capture.h:103
+msgid "Advanced options..."
+msgstr "Ítarlegri valkostir..."
+
+#: modules/gui/qt/ui/open_disk.h:294
+msgid "Disc Selection"
+msgstr "Val diska"
+
+#: modules/gui/qt/ui/open_disk.h:298
+msgid "SVCD/VCD"
+msgstr "SVCD/VCD"
+
+#: modules/gui/qt/ui/open_disk.h:300
+msgid "Disable Disc Menus"
+msgstr "Gera valmyndir á diski óvirkar"
+
+#: modules/gui/qt/ui/open_disk.h:302
+msgid "No disc menus"
+msgstr "Engar diskvalmyndir"
+
+#: modules/gui/qt/ui/open_disk.h:303
+msgid "Disc device"
+msgstr "Disktæki"
+
+#: modules/gui/qt/ui/open_disk.h:305
+msgid "Starting Position"
+msgstr "Byrjunarstaðsetning"
+
+#: modules/gui/qt/ui/open_disk.h:308
+msgid "Audio and Subtitles"
+msgstr "Hjóð og skjátextar"
+
+#: modules/gui/qt/ui/open_file.h:142
+msgid "Use a sub&title file"
+msgstr "Nota skjá&textaskrá"
+
+#: modules/gui/qt/ui/open_file.h:144
+msgid "Select the subtitle file"
+msgstr "Veldu skjátextaskrána"
+
+#: modules/gui/qt/ui/open_file.h:148
+msgid "Choose one or more media file to open"
+msgstr "Veldu eina eða fleiri margmiðlunarskrár til að opna"
+
+#: modules/gui/qt/ui/open_file.h:150
+msgid "File Selection"
+msgstr "Skráaval"
+
+#: modules/gui/qt/ui/open_file.h:151
+msgid "You can select local files with the following list and buttons."
+msgstr "Þú getur valið staðværar skrár með eftirfarandi lista og hnöppum."
+
+#: modules/gui/qt/ui/open_file.h:152
+msgid "Add..."
+msgstr "Bæta við..."
+
+#: modules/gui/qt/ui/open_net.h:94
+msgid "Network Protocol"
+msgstr "Samskiptamáti um net (protocol)"
+
+#: modules/gui/qt/ui/open_net.h:95
+msgid "Please enter a network URL:"
+msgstr "Vinsamlegast skráðu inn gilda slóð (URL):"
+
+#: modules/gui/qt/ui/profiles.h:699
+msgid "Profile edition"
+msgstr "Breyting á sniði"
+
+#: modules/gui/qt/ui/profiles.h:700
+msgid "FLAC"
+msgstr "FLAC"
+
+#: modules/gui/qt/ui/profiles.h:701
+msgid "MP&4/MOV"
+msgstr "MP&4/MOV"
+
+#: modules/gui/qt/ui/profiles.h:702
+msgid "Ogg/Ogm"
+msgstr "Ogg/Ogm"
+
+#: modules/gui/qt/ui/profiles.h:703
+msgid "M&KV"
+msgstr "M&KV"
+
+#: modules/gui/qt/ui/profiles.h:704
+msgid "M&JPEG"
+msgstr "M&JPEG"
+
+#: modules/gui/qt/ui/profiles.h:705
+msgid "MPEG-PS"
+msgstr "MPEG-PS"
+
+#: modules/gui/qt/ui/profiles.h:706
+msgid "F&LV"
+msgstr "F&LV"
+
+#: modules/gui/qt/ui/profiles.h:707
+msgid "&MPEG-TS"
+msgstr "&MPEG-TS"
+
+#: modules/gui/qt/ui/profiles.h:708
+msgid "RAW"
+msgstr "RAW"
+
+#: modules/gui/qt/ui/profiles.h:709
+msgid "WAV"
+msgstr "WAV"
+
+#: modules/gui/qt/ui/profiles.h:710
+msgid "Webm"
+msgstr "Webm"
+
+#: modules/gui/qt/ui/profiles.h:711
+msgid "MPEG &1"
+msgstr "MPEG &1"
+
+#: modules/gui/qt/ui/profiles.h:712
+msgid "AVI"
+msgstr "AVI"
+
+#: modules/gui/qt/ui/profiles.h:713
+msgid "ASF/WMV"
+msgstr "ASF/WMV"
+
+#: modules/gui/qt/ui/profiles.h:714
+msgid "MP&3"
+msgstr "MP&3"
+
+#: modules/gui/qt/ui/profiles.h:715
+msgid "Features"
+msgstr "Eiginleikar"
+
+#: modules/gui/qt/ui/profiles.h:717
+msgid "Streamable"
+msgstr "Streymanlegt"
+
+#: modules/gui/qt/ui/profiles.h:718
+msgid "Chapters"
+msgstr "Kaflar"
+
+#: modules/gui/qt/ui/profiles.h:721
+msgid "Menus"
+msgstr "Valmyndir"
+
+#: modules/gui/qt/ui/profiles.h:728
+msgid "Fra&me Rate"
+msgstr "Ra&mmatíðni"
+
+#: modules/gui/qt/ui/profiles.h:729
+msgid "Same as source"
+msgstr "Sama og upprunalegt"
+
+#: modules/gui/qt/ui/profiles.h:731
+msgid " fps"
+msgstr " r/sek"
+
+#: modules/gui/qt/ui/profiles.h:732
+msgid "Custom options"
+msgstr "Sérsniðnir valkostir"
+
+#: modules/gui/qt/ui/profiles.h:733
+msgid "&Quality"
+msgstr "&Gæði"
+
+#: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
+msgid "Not Used"
+msgstr "Ekki notað"
+
+#: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:755
+msgid " kb/s"
+msgstr " kb/s"
+
+#: modules/gui/qt/ui/profiles.h:737 modules/gui/qt/ui/profiles.h:757
+msgid "Encoding parameters"
+msgstr "Viðföng afkóðunar"
+
+#: modules/gui/qt/ui/profiles.h:740
+msgid "Frame size"
+msgstr "Rammastærð"
+
+#: modules/gui/qt/ui/profiles.h:743 modules/gui/qt/ui/profiles.h:746
+msgid "px"
+msgstr "px"
+
+#: modules/gui/qt/ui/profiles.h:756
+msgid "Sa&mple Rate"
+msgstr "Sa&fntíðni"
+
+#: modules/gui/qt/ui/profiles.h:764
+msgid "Profile &Name"
+msgstr "Heiti s&niðs"
+
+#: modules/gui/qt/ui/sout.h:200
+msgid "Set up media sources to stream"
+msgstr "Setja upp gagnamiðla til að streyma"
+
+#: modules/gui/qt/ui/sout.h:202
+msgid "Destination Setup"
+msgstr "Uppsetning áfangastaðar"
+
+#: modules/gui/qt/ui/sout.h:203
+msgid "Select destinations to stream to"
+msgstr "Veldu áfangastaði til að streyma til"
+
+#: modules/gui/qt/ui/sout.h:204
+msgid ""
+"Add destinations following the streaming methods you need. Be sure to check "
+"with transcoding that the format is compatible with the method used."
+msgstr ""
+"Bættu við áfangastöðum í samræmi við streymiaðferðirnar sem þú þarft. "
+"Athugaðu hvort umkóðun leyfir snið sem sé samrýmanlegt aðferðinni sem yrði "
+"notuð."
+
+#: modules/gui/qt/ui/sout.h:205
+msgid "New destination"
+msgstr "Nýr áfangastaður"
+
+#: modules/gui/qt/ui/sout.h:207
+msgid "Display locally"
+msgstr "Birta staðvært"
+
+#: modules/gui/qt/ui/sout.h:209
+msgid "Transcoding Options"
+msgstr "Valkostir umkóðunar"
+
+#: modules/gui/qt/ui/sout.h:210
+msgid "Select and choose transcoding options"
+msgstr "Velja stillingar fyrir umkóðun (transcode)"
+
+#: modules/gui/qt/ui/sout.h:211
+msgid "Activate Transcoding"
+msgstr "Virkja umkóðun"
+
+#: modules/gui/qt/ui/sout.h:212
+msgid "Option Setup"
+msgstr "Uppsetning valmöguleika"
+
+#: modules/gui/qt/ui/sout.h:213
+msgid "Set up any additional options for streaming"
+msgstr "Stilla allar aukastillingar fyrir streymi"
+
+#: modules/gui/qt/ui/sout.h:214
+msgid "Miscellaneous Options"
+msgstr "Ýmsir valkostir"
+
+#: modules/gui/qt/ui/sout.h:215
+msgid "Stream all elementary streams"
+msgstr "Streyma alla gagnastrauma"
+
+#: modules/gui/qt/ui/sout.h:216
+msgid "Generated stream output string"
+msgstr "Tilbúinn úttaksstrengur fyrir straum"
+
+#: modules/gui/qt/ui/sprefs_audio.h:409
+msgid " %"
+msgstr " %"
+
+#: modules/gui/qt/ui/sprefs_audio.h:412
+msgid "Output module:"
+msgstr "Úttakseining:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:415
+msgid "Use S/PDIF when available"
+msgstr "Nota S/PDIF þegar það er tiltækt"
+
+#: modules/gui/qt/ui/sprefs_audio.h:417
+msgid "Effects"
+msgstr "Áhrif"
+
+#: modules/gui/qt/ui/sprefs_audio.h:418
+msgid "Visualization:"
+msgstr "Sjónbrellur:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:419
+msgid "Enable Time-Stretching audio"
+msgstr "Virkja tímaaðlögun hljóðs (time streching)"
+
+#: modules/gui/qt/ui/sprefs_audio.h:420
+msgid "Replay gain mode:"
+msgstr "Mögnun endurspilunar:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:421
+msgid "Normalize volume to:"
+msgstr "Jafna hljóðstyrk í:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:422
+msgid "Tracks"
+msgstr "Spor"
+
+#: modules/gui/qt/ui/sprefs_audio.h:423
+msgid "Preferred audio language:"
+msgstr "Kjörstilling hljóðtungumáls:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:424
+msgid "Password:"
+msgstr "Lykilorð:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:425
+msgid "Username:"
+msgstr "Notandanafn:"
+
+#: modules/gui/qt/ui/sprefs_audio.h:426
+msgid "Submit played tracks stats to Last.fm"
+msgstr "Senda upplýsingar um spiluð lög til Last.fm"
+
+#: modules/gui/qt/ui/sprefs_input.h:354
+msgid "Codecs"
+msgstr "Kóðunarlyklar (codecs)"
+
+#: modules/gui/qt/ui/sprefs_input.h:355
+msgid "x264 profile and level selection"
+msgstr "Val á x264 sniði og stigi"
+
+#: modules/gui/qt/ui/sprefs_input.h:356
+msgid "Hardware-accelerated decoding"
+msgstr "Vélbúnaðarhröðun afkóðunar"
+
+#: modules/gui/qt/ui/sprefs_input.h:357
+msgid "Video quality post-processing level"
+msgstr "Gæði eftirmeðhöndlunar á myndmerki"
+
+#: modules/gui/qt/ui/sprefs_input.h:358
+msgid "Skip H.264 in-loop deblocking filter"
+msgstr "Sleppa H.264 in-loop afblokkunarsíu"
+
+#: modules/gui/qt/ui/sprefs_input.h:359
+msgid "x264 preset and tuning selection"
+msgstr "Val á x264 forstillingum og fínstillingum"
+
+#: modules/gui/qt/ui/sprefs_input.h:361
+msgid "Optical drive"
+msgstr "Geisladrif"
+
+#: modules/gui/qt/ui/sprefs_input.h:362
+msgid "Default optical device"
+msgstr "Sjálfgefið geisladrif"
+
+#: modules/gui/qt/ui/sprefs_input.h:366
+msgid "Damaged or incomplete AVI file"
+msgstr "Skemmd eða ókláruð AVI-skrá"
+
+#: modules/gui/qt/ui/sprefs_input.h:369
+msgid "HTTP proxy URL"
+msgstr "Slóð HTTP milliþjóns"
+
+#: modules/gui/qt/ui/sprefs_input.h:370
+msgid "HTTP (default)"
+msgstr "HTTP (sjálfgefið)"
+
+#: modules/gui/qt/ui/sprefs_input.h:371
+msgid "RTP over RTSP (TCP)"
+msgstr "RTP yfir RTSP (TCP)"
+
+#: modules/gui/qt/ui/sprefs_input.h:372
+msgid "Live555 stream transport"
+msgstr "Live555 streymisflutningur"
+
+#: modules/gui/qt/ui/sprefs_input.h:373
+msgid "Default caching policy"
+msgstr "Sjálfgefin regla fyrir skyndiminni"
+
+#: modules/gui/qt/ui/sprefs_interface.h:528
+msgid "Menus language:"
+msgstr "Tungumál valmynda:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:529
+msgid "Look and feel"
+msgstr "Útlit og viðkoma"
+
+#: modules/gui/qt/ui/sprefs_interface.h:530
+msgid "Use custom skin"
+msgstr "Nota sérsniðið skinn"
+
+#: modules/gui/qt/ui/sprefs_interface.h:532
+msgid "This is VLC's default interface, with a native look and feel."
+msgstr "Þetta er staðlaða viðmót VLC, með innfæddu útliti og viðkomu"
+
+#: modules/gui/qt/ui/sprefs_interface.h:534
+msgid "Use native style"
+msgstr "Nota venjulegt skinn"
+
+#: modules/gui/qt/ui/sprefs_interface.h:535
+msgid "Resize interface to video size"
+msgstr "Aðlaga stærð viðmóts að stærð myndar"
+
+#: modules/gui/qt/ui/sprefs_interface.h:536
+msgid "Show controls in full screen mode"
+msgstr "Sýna stjórntæki í heilskjásham"
+
+#: modules/gui/qt/ui/sprefs_interface.h:537
+msgid "Pause playback when minimized"
+msgstr "Setja afspilun í bið þegar smækkað"
+
+#: modules/gui/qt/ui/sprefs_interface.h:538
+msgid "Show media change popup:"
+msgstr "Birta sprettglugga við breytingar á miðlum:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:539
+msgid "Start in minimal view mode"
+msgstr "Ræsa í lágmarksham"
+
+#: modules/gui/qt/ui/sprefs_interface.h:540
+msgid "Force window style:"
+msgstr "Þvinga gluggastíl:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:541
+msgid "Integrate video in interface"
+msgstr "Fella mynd inn í viðmót"
+
+#: modules/gui/qt/ui/sprefs_interface.h:542
+msgid "Show systray icon"
+msgstr "Birta táknmynd í kerfisbakka"
+
+#: modules/gui/qt/ui/sprefs_interface.h:543
+msgid "Auto raising the interface:"
+msgstr "Lyfta viðmótinu sjálfvirkt:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:544
+msgid "Skin resource file:"
+msgstr "Skinnskrá:"
+
+#: modules/gui/qt/ui/sprefs_interface.h:546
+msgid "Playlist and Instances"
+msgstr "Spilunarlistar og aukaeintök forrits"
+
+#: modules/gui/qt/ui/sprefs_interface.h:549
+msgid "Pause on the last frame of a video"
+msgstr "Bíða á síðasta ramma myndskeiðs"
+
+#: modules/gui/qt/ui/sprefs_interface.h:552
+msgid "Allow only one instance"
+msgstr "Leyfa aðeins eitt tilvik"
+
+#: modules/gui/qt/ui/sprefs_interface.h:554
+msgid "Activate updates notifier"
+msgstr "Virkja uppfærslutilkynningu"
+
+#: modules/gui/qt/ui/sprefs_interface.h:556
+msgid "Every "
+msgstr "Hvern"
+
+#: modules/gui/qt/ui/sprefs_interface.h:557
+msgid "Save recently played items"
+msgstr "Vista nýlega spilaða hluti"
+
+#: modules/gui/qt/ui/sprefs_interface.h:560
+msgid "Separate words by | (without space)"
+msgstr "Aðgreina orð með | (án bils)"
+
+#: modules/gui/qt/ui/sprefs_interface.h:563
+msgid "Operating System Integration"
+msgstr "Aðlögun að stýrikerfi"
+
+#: modules/gui/qt/ui/sprefs_interface.h:564
+msgid "File extensions association"
+msgstr "Tengsl skráaendinga"
+
+#: modules/gui/qt/ui/sprefs_interface.h:565
+msgid "Set up associations..."
+msgstr "Stilla skráartengsl..."
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:290
+msgid "Enable On Screen Display (OSD)"
+msgstr "Virkja stjórntexta á skjá (OSD)"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:291
+msgid "Show media title on video start"
+msgstr "Birta titil miðils við upphaf afspilunar"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:293
+msgid "Enable subtitles"
+msgstr "Virkja skjátexta"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:294
+msgid "Subtitle Language"
+msgstr "Tungumál skjátexta"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:296
+msgid "Default encoding"
+msgstr "Sjálfgefin kóðun"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:297
+msgid "Subtitle effects"
+msgstr "Sjónhverfing skjátexta"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:303
+msgid "Add a shadow"
+msgstr "Bæta við skugga"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:305
+#: modules/gui/qt/ui/video_effects.h:1266
+#: modules/gui/qt/ui/video_effects.h:1270
+#: modules/gui/qt/ui/video_effects.h:1273
+#: modules/gui/qt/ui/video_effects.h:1274
+#: modules/gui/qt/ui/video_effects.h:1308
+#: modules/gui/qt/ui/video_effects.h:1310
+#: modules/gui/qt/ui/video_effects.h:1320
+#: modules/gui/qt/ui/video_effects.h:1321
+msgid " px"
+msgstr " px"
+
+#: modules/gui/qt/ui/sprefs_subtitles.h:306
+msgid "Add a background"
+msgstr "Bæta við bakgrunni"
+
+#: modules/gui/qt/ui/sprefs_video.h:313
+msgid "O&utput"
+msgstr "Útta&k"
+
+#: modules/gui/qt/ui/sprefs_video.h:317
+msgid "DirectX"
+msgstr "DirectX"
+
+#: modules/gui/qt/ui/sprefs_video.h:319
+msgid "Accelerated video output (Overlay)"
+msgstr "Hraðað myndgerðarúttak (þekjun)"
+
+#: modules/gui/qt/ui/sprefs_video.h:320
+msgid "KVA"
+msgstr "KVA"
+
+#: modules/gui/qt/ui/sprefs_video.h:324
+msgid "Deinterlacing"
+msgstr "Affléttun"
+
+#: modules/gui/qt/ui/sprefs_video.h:326
+msgid "Force Aspect Ratio"
+msgstr "Þvinga stærðarhlutföll"
+
+#: modules/gui/qt/ui/sprefs_video.h:331
+msgid "vlc-snap"
+msgstr "vlc-grip"
+
+#: modules/gui/qt/ui/streampanel.h:169
+msgid "Stuff"
+msgstr "Dót"
+
+#: modules/gui/qt/ui/streampanel.h:171
+msgid "Edit settings"
+msgstr "Breyta stillingum"
+
+#: modules/gui/qt/ui/streampanel.h:172
+msgid "Control"
+msgstr "Stýring"
+
+#: modules/gui/qt/ui/streampanel.h:173
+msgid "Run manually"
+msgstr "Keyra handvirkt"
+
+#: modules/gui/qt/ui/streampanel.h:174
+msgid "Setup schedule"
+msgstr "Setja upp tímaáætlun"
+
+#: modules/gui/qt/ui/streampanel.h:175
+msgid "Run on schedule"
+msgstr "Keyra eftir tímaáætlun"
+
+#: modules/gui/qt/ui/streampanel.h:176
+msgid "Status"
+msgstr "Staða"
+
+#: modules/gui/qt/ui/streampanel.h:177
+msgid "P/P"
+msgstr "P/P"
+
+#: modules/gui/qt/ui/streampanel.h:180
+msgid "Prev"
+msgstr "Fyrri"
+
+#: modules/gui/qt/ui/streampanel.h:181
+msgid "Add Input"
+msgstr "Bæta við inntaki"
+
+#: modules/gui/qt/ui/streampanel.h:182
+msgid "Edit Input"
+msgstr "Breyta inntaki"
+
+#: modules/gui/qt/ui/streampanel.h:183
+msgid "Clear List"
+msgstr "Hreinsa lista"
+
+#: modules/gui/qt/ui/update.h:145
+msgid "Check for VLC updates"
+msgstr "Athuga með uppfærslur á VLC"
+
+#: modules/gui/qt/ui/update.h:146
+msgid "Launching an update request..."
+msgstr "Sendi uppfærslubeiðni..."
+
+#: modules/gui/qt/ui/update.h:147
+msgid "Do you want to download it?"
+msgstr "Viltu ná í þetta ?"
+
+#: modules/gui/qt/ui/video_effects.h:1264
+msgid "Essential"
+msgstr "Nauðsynlegt"
+
+#: modules/gui/qt/ui/video_effects.h:1278
+#: modules/gui/qt/ui/video_effects.h:1287
+msgid ">HHHHHH;#"
+msgstr ">HHHHHH;#"
+
+#: modules/gui/qt/ui/video_effects.h:1279
+msgid "Negate colors"
+msgstr "Umsnúa litum"
+
+#: modules/gui/qt/ui/video_effects.h:1292
+msgid "Colors"
+msgstr "Litir"
+
+#: modules/gui/qt/ui/video_effects.h:1293
+msgid "Interactive Zoom"
+msgstr "Gagnvirkur aðdráttur"
+
+#: modules/gui/qt/ui/video_effects.h:1299
+msgid "Angle"
+msgstr "Horn"
+
+#: modules/gui/qt/ui/video_effects.h:1306
+#: modules/gui/qt/ui/video_effects.h:1323
+msgid "..."
+msgstr "..."
+
+#: modules/gui/qt/ui/video_effects.h:1311
+msgid "full"
+msgstr "fullt"
+
+#: modules/gui/qt/ui/video_effects.h:1313
+msgid "none"
+msgstr "ekkert"
+
+#: modules/gui/qt/ui/video_effects.h:1317
+msgid "Logo erase"
+msgstr "Merkjaeyðing"
+
+#: modules/gui/qt/ui/video_effects.h:1322
+msgid "Mask"
+msgstr "Maski"
+
+#: modules/gui/qt/ui/video_effects.h:1325
+msgid "Anaglyph 3D"
+msgstr "Anaglyph 3D"
+
+#: modules/gui/qt/ui/video_effects.h:1326
+msgid "Mirror"
+msgstr "Spegla"
+
+#: modules/gui/qt/ui/video_effects.h:1330
+msgid "Motion detect"
+msgstr "Hreyfiskynjun"
+
+#: modules/gui/qt/ui/video_effects.h:1331
+msgid "Spatial blur"
+msgstr "Rýmisafskerping"
+
+#: modules/gui/qt/ui/video_effects.h:1335
+msgid "Anti-Flickering"
+msgstr "Flöktsíun"
+
+#: modules/gui/qt/ui/video_effects.h:1336
+msgid "Soften"
+msgstr "Mýkja"
+
+#: modules/gui/qt/ui/video_effects.h:1337
+msgid "Denoiser"
+msgstr "Afsuðari"
+
+#: modules/gui/qt/ui/video_effects.h:1338
+msgid "Spatial luma strength"
+msgstr "Rýmisstyrkur ljómastiguls (luma)"
+
+#: modules/gui/qt/ui/video_effects.h:1339
+msgid "Temporal luma strength"
+msgstr "Tímabundinn styrkur ljómastiguls (luma)"
+
+#: modules/gui/qt/ui/video_effects.h:1340
+msgid "Spatial chroma strength"
+msgstr "Rýmisstyrkur litgildis (chroma)"
+
+#: modules/gui/qt/ui/video_effects.h:1341
+msgid "Temporal chroma strength"
+msgstr "Tímabundinn styrkur litgildis"
+
+#: modules/gui/qt/ui/vlm.h:283
+msgid "VLM configurator"
+msgstr "VLM stillingaritill"
+
+#: modules/gui/qt/ui/vlm.h:284
+msgid "Media Manager Edition"
+msgstr "Útgáfa miðlastjórnunar"
+
+#: modules/gui/qt/ui/vlm.h:285
+msgid "Name:"
+msgstr "Heiti:"
+
+#: modules/gui/qt/ui/vlm.h:287
+msgid "Input:"
+msgstr "Inntak:"
+
+#: modules/gui/qt/ui/vlm.h:288
+msgid "Select Input"
+msgstr "Veldu inntak"
+
+#: modules/gui/qt/ui/vlm.h:289
+msgid "Output:"
+msgstr "Úttak:"
+
+#: modules/gui/qt/ui/vlm.h:290
+msgid "Select Output"
+msgstr "Veldu úttak"
+
+#: modules/gui/qt/ui/vlm.h:291
+msgid "Time Control"
+msgstr "Tímastillingar"
+
+#: modules/gui/qt/ui/vlm.h:292
+msgid "Mux Control"
+msgstr "Mux-stýring"
+
+#: modules/gui/qt/ui/vlm.h:293
+msgid "Muxer:"
+msgstr "Fléttari:"
+
+#: modules/gui/qt/ui/vlm.h:294
+msgid "AAAA; "
+msgstr "AAAA; "
+
+#: modules/gui/qt/ui/vlm.h:299
+msgid "Media Manager List"
+msgstr "Listi fyrir miðlastjórnun"
+
 #~ msgid "Crypto key length in bytes"
 #~ msgstr "Lengd dulritunarlykils í bætum"
-
-#~ msgid "Dialog"
-#~ msgstr "Samskiptagluggi"
-
-#~ msgid "Form"
-#~ msgstr "Snið"
-
-#~ msgid "Preset"
-#~ msgstr "Forgildi"
-
-#~ msgid "0.00 dB"
-#~ msgstr "0.00 dB"
-
-#~ msgid "&Verbosity:"
-#~ msgstr "&Upplýsingamagn:"
-
-#~ msgid "&Filter:"
-#~ msgstr "&Sía:"
-
-#~ msgid "&Save as..."
-#~ msgstr "&Vista sem..."
-
-#~ msgid "Modules Tree"
-#~ msgstr "Uppbygging eininga í greinar"
-
-#~ msgid "Show extended options"
-#~ msgstr "Sýna fleiri valmöguleika"
-
-#~ msgid "Show &more options"
-#~ msgstr "Sýna &fleiri valmöguleika"
-
-#~ msgid "Change the caching for the media"
-#~ msgstr "Breyta skyndiminni fyrir miðilinn"
-
-#~ msgid " ms"
-#~ msgstr " msek"
-
-#~ msgid "MRL"
-#~ msgstr "MRL"
-
-#~ msgid "Start Time"
-#~ msgstr "Byrjunartími"
-
-#~ msgid "Stop Time"
-#~ msgstr "Lokatími"
-
-#~ msgid "Edit Options"
-#~ msgstr "Breytingamöguleikar"
-
-#~ msgid "Extra media"
-#~ msgstr "Aukamiðill"
-
-#~ msgid "Complete MRL for VLC internal"
-#~ msgstr "Klára MRL innan VLC"
-
-#~ msgid "Select the file"
-#~ msgstr "Veldu skrána"
-
-#~ msgid "Change the start time for the media"
-#~ msgstr "Breyta byrjunartíma miðils"
-
-#~ msgid "HH'H':mm'm':ss's'.zzz"
-#~ msgstr "HH'H':mm'm':ss's'.zzz"
-
-#~ msgid "Change the stop time for the media"
-#~ msgstr "Breyta lokatíma miðils"
-
-#~ msgid "Play another media synchronously (extra audio file, ...)"
-#~ msgstr "Spila annan miðil samhliða (t.d. aukahljóðskrá, ...)"
-
-#~ msgid "Capture mode"
-#~ msgstr "Upptökuhamur"
-
-#~ msgid "Select the capture device type"
-#~ msgstr "Veldu tegund upptökutækis"
-
-#~ msgid "Device Selection"
-#~ msgstr "Val á tæki"
-
-#~ msgid "Options"
-#~ msgstr "Valkostir"
-
-#~ msgid "Access advanced options to tweak the device"
-#~ msgstr "Opna ítarlegri stillingar til að breyta tækinu"
-
-#~ msgid "Advanced options..."
-#~ msgstr "Ítarlegri valkostir..."
-
-#~ msgid "Disc Selection"
-#~ msgstr "Val diska"
-
-#~ msgid "SVCD/VCD"
-#~ msgstr "SVCD/VCD"
-
-#~ msgid "Disable Disc Menus"
-#~ msgstr "Gera valmyndir á diski óvirkar"
-
-#~ msgid "No disc menus"
-#~ msgstr "Engar diskvalmyndir"
-
-#~ msgid "Disc device"
-#~ msgstr "Disktæki"
-
-#~ msgid "Starting Position"
-#~ msgstr "Byrjunarstaðsetning"
-
-#~ msgid "Audio and Subtitles"
-#~ msgstr "Hjóð og skjátextar"
-
-#~ msgid "Use a sub&title file"
-#~ msgstr "Nota skjá&textaskrá"
-
-#~ msgid "Select the subtitle file"
-#~ msgstr "Veldu skjátextaskrána"
-
-#~ msgid "Choose one or more media file to open"
-#~ msgstr "Veldu eina eða fleiri margmiðlunarskrár til að opna"
-
-#~ msgid "File Selection"
-#~ msgstr "Skráaval"
-
-#~ msgid "You can select local files with the following list and buttons."
-#~ msgstr "Þú getur valið staðværar skrár með eftirfarandi lista og hnöppum."
-
-#~ msgid "Add..."
-#~ msgstr "Bæta við..."
-
-#~ msgid "Network Protocol"
-#~ msgstr "Samskiptamáti um net (protocol)"
-
-#~ msgid "Please enter a network URL:"
-#~ msgstr "Vinsamlegast skráðu inn gilda slóð (URL):"
-
-#~ msgid "Profile edition"
-#~ msgstr "Breyting á sniði"
-
-#~ msgid "FLAC"
-#~ msgstr "FLAC"
-
-#~ msgid "MP&4/MOV"
-#~ msgstr "MP&4/MOV"
-
-#~ msgid "Ogg/Ogm"
-#~ msgstr "Ogg/Ogm"
-
-#~ msgid "M&KV"
-#~ msgstr "M&KV"
-
-#~ msgid "M&JPEG"
-#~ msgstr "M&JPEG"
-
-#~ msgid "MPEG-PS"
-#~ msgstr "MPEG-PS"
-
-#~ msgid "F&LV"
-#~ msgstr "F&LV"
-
-#~ msgid "&MPEG-TS"
-#~ msgstr "&MPEG-TS"
-
-#~ msgid "RAW"
-#~ msgstr "RAW"
-
-#~ msgid "WAV"
-#~ msgstr "WAV"
-
-#~ msgid "Webm"
-#~ msgstr "Webm"
-
-#~ msgid "MPEG &1"
-#~ msgstr "MPEG &1"
-
-#~ msgid "AVI"
-#~ msgstr "AVI"
-
-#~ msgid "ASF/WMV"
-#~ msgstr "ASF/WMV"
-
-#~ msgid "MP&3"
-#~ msgstr "MP&3"
-
-#~ msgid "Features"
-#~ msgstr "Eiginleikar"
-
-#~ msgid "Streamable"
-#~ msgstr "Streymanlegt"
-
-#~ msgid "Chapters"
-#~ msgstr "Kaflar"
-
-#~ msgid "Menus"
-#~ msgstr "Valmyndir"
-
-#~ msgid "Fra&me Rate"
-#~ msgstr "Ra&mmatíðni"
-
-#~ msgid "Same as source"
-#~ msgstr "Sama og upprunalegt"
-
-#~ msgid " fps"
-#~ msgstr " r/sek"
-
-#~ msgid "Custom options"
-#~ msgstr "Sérsniðnir valkostir"
-
-#~ msgid "&Quality"
-#~ msgstr "&Gæði"
-
-#~ msgid "Not Used"
-#~ msgstr "Ekki notað"
-
-#~ msgid " kb/s"
-#~ msgstr " kb/s"
-
-#~ msgid "Encoding parameters"
-#~ msgstr "Viðföng afkóðunar"
-
-#~ msgid "Frame size"
-#~ msgstr "Rammastærð"
-
-#~ msgid "px"
-#~ msgstr "px"
-
-#~ msgid "Sa&mple Rate"
-#~ msgstr "Sa&fntíðni"
-
-#~ msgid "Profile &Name"
-#~ msgstr "Heiti s&niðs"
-
-#~ msgid "Set up media sources to stream"
-#~ msgstr "Setja upp gagnamiðla til að streyma"
-
-#~ msgid "Destination Setup"
-#~ msgstr "Uppsetning áfangastaðar"
-
-#~ msgid "Select destinations to stream to"
-#~ msgstr "Veldu áfangastaði til að streyma til"
-
-#~ msgid ""
-#~ "Add destinations following the streaming methods you need. Be sure to "
-#~ "check with transcoding that the format is compatible with the method used."
-#~ msgstr ""
-#~ "Bættu við áfangastöðum í samræmi við streymiaðferðirnar sem þú þarft. "
-#~ "Athugaðu hvort umkóðun leyfir snið sem sé samrýmanlegt aðferðinni sem "
-#~ "yrði notuð."
-
-#~ msgid "New destination"
-#~ msgstr "Nýr áfangastaður"
-
-#~ msgid "Display locally"
-#~ msgstr "Birta staðvært"
-
-#~ msgid "Transcoding Options"
-#~ msgstr "Valkostir umkóðunar"
-
-#~ msgid "Select and choose transcoding options"
-#~ msgstr "Velja stillingar fyrir umkóðun (transcode)"
-
-#~ msgid "Activate Transcoding"
-#~ msgstr "Virkja umkóðun"
-
-#~ msgid "Option Setup"
-#~ msgstr "Uppsetning valmöguleika"
-
-#~ msgid "Set up any additional options for streaming"
-#~ msgstr "Stilla allar aukastillingar fyrir streymi"
-
-#~ msgid "Miscellaneous Options"
-#~ msgstr "Ýmsir valkostir"
-
-#~ msgid "Stream all elementary streams"
-#~ msgstr "Streyma alla gagnastrauma"
-
-#~ msgid "Generated stream output string"
-#~ msgstr "Tilbúinn úttaksstrengur fyrir straum"
-
-#~ msgid " %"
-#~ msgstr " %"
-
-#~ msgid "Output module:"
-#~ msgstr "Úttakseining:"
-
-#~ msgid "Use S/PDIF when available"
-#~ msgstr "Nota S/PDIF þegar það er tiltækt"
-
-#~ msgid "Effects"
-#~ msgstr "Áhrif"
-
-#~ msgid "Visualization:"
-#~ msgstr "Sjónbrellur:"
-
-#~ msgid "Enable Time-Stretching audio"
-#~ msgstr "Virkja tímaaðlögun hljóðs (time streching)"
-
-#~ msgid "Replay gain mode:"
-#~ msgstr "Mögnun endurspilunar:"
-
-#~ msgid "Normalize volume to:"
-#~ msgstr "Jafna hljóðstyrk í:"
-
-#~ msgid "Tracks"
-#~ msgstr "Spor"
-
-#~ msgid "Preferred audio language:"
-#~ msgstr "Kjörstilling hljóðtungumáls:"
-
-#~ msgid "Password:"
-#~ msgstr "Lykilorð:"
-
-#~ msgid "Username:"
-#~ msgstr "Notandanafn:"
-
-#~ msgid "Submit played tracks stats to Last.fm"
-#~ msgstr "Senda upplýsingar um spiluð lög til Last.fm"
-
-#~ msgid "Codecs"
-#~ msgstr "Kóðunarlyklar (codecs)"
-
-#~ msgid "x264 profile and level selection"
-#~ msgstr "Val á x264 sniði og stigi"
-
-#~ msgid "Hardware-accelerated decoding"
-#~ msgstr "Vélbúnaðarhröðun afkóðunar"
-
-#~ msgid "Video quality post-processing level"
-#~ msgstr "Gæði eftirmeðhöndlunar á myndmerki"
-
-#~ msgid "Skip H.264 in-loop deblocking filter"
-#~ msgstr "Sleppa H.264 in-loop afblokkunarsíu"
-
-#~ msgid "x264 preset and tuning selection"
-#~ msgstr "Val á x264 forstillingum og fínstillingum"
-
-#~ msgid "Optical drive"
-#~ msgstr "Geisladrif"
-
-#~ msgid "Default optical device"
-#~ msgstr "Sjálfgefið geisladrif"
-
-#~ msgid "Damaged or incomplete AVI file"
-#~ msgstr "Skemmd eða ókláruð AVI-skrá"
-
-#~ msgid "HTTP proxy URL"
-#~ msgstr "Slóð HTTP milliþjóns"
-
-#~ msgid "HTTP (default)"
-#~ msgstr "HTTP (sjálfgefið)"
-
-#~ msgid "RTP over RTSP (TCP)"
-#~ msgstr "RTP yfir RTSP (TCP)"
-
-#~ msgid "Live555 stream transport"
-#~ msgstr "Live555 streymisflutningur"
-
-#~ msgid "Default caching policy"
-#~ msgstr "Sjálfgefin regla fyrir skyndiminni"
-
-#~ msgid "Menus language:"
-#~ msgstr "Tungumál valmynda:"
-
-#~ msgid "Look and feel"
-#~ msgstr "Útlit og viðkoma"
-
-#~ msgid "Use custom skin"
-#~ msgstr "Nota sérsniðið skinn"
-
-#~ msgid "This is VLC's default interface, with a native look and feel."
-#~ msgstr "Þetta er staðlaða viðmót VLC, með innfæddu útliti og viðkomu"
-
-#~ msgid "Use native style"
-#~ msgstr "Nota venjulegt skinn"
-
-#~ msgid "Resize interface to video size"
-#~ msgstr "Aðlaga stærð viðmóts að stærð myndar"
-
-#~ msgid "Show controls in full screen mode"
-#~ msgstr "Sýna stjórntæki í heilskjásham"
-
-#~ msgid "Pause playback when minimized"
-#~ msgstr "Setja afspilun í bið þegar smækkað"
-
-#~ msgid "Show media change popup:"
-#~ msgstr "Birta sprettglugga við breytingar á miðlum:"
-
-#~ msgid "Start in minimal view mode"
-#~ msgstr "Ræsa í lágmarksham"
-
-#~ msgid "Force window style:"
-#~ msgstr "Þvinga gluggastíl:"
-
-#~ msgid "Integrate video in interface"
-#~ msgstr "Fella mynd inn í viðmót"
-
-#~ msgid "Show systray icon"
-#~ msgstr "Birta táknmynd í kerfisbakka"
-
-#~ msgid "Auto raising the interface:"
-#~ msgstr "Lyfta viðmótinu sjálfvirkt:"
-
-#~ msgid "Skin resource file:"
-#~ msgstr "Skinnskrá:"
-
-#~ msgid "Playlist and Instances"
-#~ msgstr "Spilunarlistar og aukaeintök forrits"
-
-#~ msgid "Pause on the last frame of a video"
-#~ msgstr "Bíða á síðasta ramma myndskeiðs"
-
-#~ msgid "Allow only one instance"
-#~ msgstr "Leyfa aðeins eitt tilvik"
-
-#~ msgid "Activate updates notifier"
-#~ msgstr "Virkja uppfærslutilkynningu"
-
-#~ msgid "Every "
-#~ msgstr "Hvern"
-
-#~ msgid "Save recently played items"
-#~ msgstr "Vista nýlega spilaða hluti"
-
-#~ msgid "Separate words by | (without space)"
-#~ msgstr "Aðgreina orð með | (án bils)"
-
-#~ msgid "Operating System Integration"
-#~ msgstr "Aðlögun að stýrikerfi"
-
-#~ msgid "File extensions association"
-#~ msgstr "Tengsl skráaendinga"
-
-#~ msgid "Set up associations..."
-#~ msgstr "Stilla skráartengsl..."
-
-#~ msgid "Enable On Screen Display (OSD)"
-#~ msgstr "Virkja stjórntexta á skjá (OSD)"
-
-#~ msgid "Show media title on video start"
-#~ msgstr "Birta titil miðils við upphaf afspilunar"
-
-#~ msgid "Enable subtitles"
-#~ msgstr "Virkja skjátexta"
-
-#~ msgid "Subtitle Language"
-#~ msgstr "Tungumál skjátexta"
-
-#~ msgid "Default encoding"
-#~ msgstr "Sjálfgefin kóðun"
-
-#~ msgid "Subtitle effects"
-#~ msgstr "Sjónhverfing skjátexta"
-
-#~ msgid "Add a shadow"
-#~ msgstr "Bæta við skugga"
-
-#~ msgid " px"
-#~ msgstr " px"
-
-#~ msgid "Add a background"
-#~ msgstr "Bæta við bakgrunni"
-
-#~ msgid "O&utput"
-#~ msgstr "Útta&k"
-
-#~ msgid "DirectX"
-#~ msgstr "DirectX"
-
-#~ msgid "Accelerated video output (Overlay)"
-#~ msgstr "Hraðað myndgerðarúttak (þekjun)"
-
-#~ msgid "KVA"
-#~ msgstr "KVA"
-
-#~ msgid "Deinterlacing"
-#~ msgstr "Affléttun"
-
-#~ msgid "Force Aspect Ratio"
-#~ msgstr "Þvinga stærðarhlutföll"
-
-#~ msgid "vlc-snap"
-#~ msgstr "vlc-grip"
-
-#~ msgid "Stuff"
-#~ msgstr "Dót"
-
-#~ msgid "Edit settings"
-#~ msgstr "Breyta stillingum"
-
-#~ msgid "Control"
-#~ msgstr "Stýring"
-
-#~ msgid "Run manually"
-#~ msgstr "Keyra handvirkt"
-
-#~ msgid "Setup schedule"
-#~ msgstr "Setja upp tímaáætlun"
-
-#~ msgid "Run on schedule"
-#~ msgstr "Keyra eftir tímaáætlun"
-
-#~ msgid "Status"
-#~ msgstr "Staða"
-
-#~ msgid "P/P"
-#~ msgstr "P/P"
-
-#~ msgid "Prev"
-#~ msgstr "Fyrri"
-
-#~ msgid "Add Input"
-#~ msgstr "Bæta við inntaki"
-
-#~ msgid "Edit Input"
-#~ msgstr "Breyta inntaki"
-
-#~ msgid "Clear List"
-#~ msgstr "Hreinsa lista"
-
-#~ msgid "Check for VLC updates"
-#~ msgstr "Athuga með uppfærslur á VLC"
-
-#~ msgid "Launching an update request..."
-#~ msgstr "Sendi uppfærslubeiðni..."
-
-#~ msgid "Do you want to download it?"
-#~ msgstr "Viltu ná í þetta ?"
-
-#~ msgid "Essential"
-#~ msgstr "Nauðsynlegt"
-
-#~ msgid ">HHHHHH;#"
-#~ msgstr ">HHHHHH;#"
-
-#~ msgid "Negate colors"
-#~ msgstr "Umsnúa litum"
-
-#~ msgid "Colors"
-#~ msgstr "Litir"
-
-#~ msgid "Interactive Zoom"
-#~ msgstr "Gagnvirkur aðdráttur"
-
-#~ msgid "Angle"
-#~ msgstr "Horn"
-
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "full"
-#~ msgstr "fullt"
-
-#~ msgid "none"
-#~ msgstr "ekkert"
-
-#~ msgid "Logo erase"
-#~ msgstr "Merkjaeyðing"
-
-#~ msgid "Mask"
-#~ msgstr "Maski"
-
-#~ msgid "Anaglyph 3D"
-#~ msgstr "Anaglyph 3D"
-
-#~ msgid "Mirror"
-#~ msgstr "Spegla"
-
-#~ msgid "Motion detect"
-#~ msgstr "Hreyfiskynjun"
-
-#~ msgid "Spatial blur"
-#~ msgstr "Rýmisafskerping"
-
-#~ msgid "Anti-Flickering"
-#~ msgstr "Flöktsíun"
-
-#~ msgid "Soften"
-#~ msgstr "Mýkja"
-
-#~ msgid "Denoiser"
-#~ msgstr "Afsuðari"
-
-#~ msgid "Spatial luma strength"
-#~ msgstr "Rýmisstyrkur ljómastiguls (luma)"
-
-#~ msgid "Temporal luma strength"
-#~ msgstr "Tímabundinn styrkur ljómastiguls (luma)"
-
-#~ msgid "Spatial chroma strength"
-#~ msgstr "Rýmisstyrkur litgildis (chroma)"
-
-#~ msgid "Temporal chroma strength"
-#~ msgstr "Tímabundinn styrkur litgildis"
-
-#~ msgid "VLM configurator"
-#~ msgstr "VLM stillingaritill"
-
-#~ msgid "Media Manager Edition"
-#~ msgstr "Útgáfa miðlastjórnunar"
-
-#~ msgid "Name:"
-#~ msgstr "Heiti:"
-
-#~ msgid "Input:"
-#~ msgstr "Inntak:"
-
-#~ msgid "Select Input"
-#~ msgstr "Veldu inntak"
-
-#~ msgid "Output:"
-#~ msgstr "Úttak:"
-
-#~ msgid "Select Output"
-#~ msgstr "Veldu úttak"
-
-#~ msgid "Time Control"
-#~ msgstr "Tímastillingar"
-
-#~ msgid "Mux Control"
-#~ msgstr "Mux-stýring"
-
-#~ msgid "Muxer:"
-#~ msgstr "Fléttari:"
-
-#~ msgid "AAAA; "
-#~ msgstr "AAAA; "
-
-#~ msgid "Media Manager List"
-#~ msgstr "Listi fyrir miðlastjórnun"
 
 #~ msgid "QTSound"
 #~ msgstr "QTSound"
