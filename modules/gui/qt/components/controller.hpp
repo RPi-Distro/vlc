@@ -2,7 +2,7 @@
  * controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 25d4f4b00cf5ab1dfb7a29dff41875cc1e5f34af $
+ * $Id: dc8bacce688ba82f47448f6e2892d0c701b726f1 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -217,6 +217,7 @@ public:
 protected:
     friend class MainInterface;
 
+    bool advancedAvailable();
     bool b_advancedVisible;
 
 private:

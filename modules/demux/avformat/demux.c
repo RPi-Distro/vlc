@@ -2,7 +2,7 @@
  * demux.c: demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 867b4fe0374b9efd7488d031f826faa7e6dbd2a9 $
+ * $Id: 25baebb623abbca135de8a66ccd8b85a69de797b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -52,6 +52,13 @@
 
 # define HAVE_AVUTIL_CODEC_ATTACHMENT 1
 
+#if LIBAVFORMAT_VERSION_MICRO >= 100 && \
+    LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(59, 0, 100)
+# define AVF_MAYBE_CONST const
+#else
+# define AVF_MAYBE_CONST
+#endif
+
 struct avformat_track_s
 {
     es_out_id_t *p_es;
@@ -63,7 +70,7 @@ struct avformat_track_s
  *****************************************************************************/
 struct demux_sys_t
 {
-    AVInputFormat  *fmt;
+    AVF_MAYBE_CONST AVInputFormat  *fmt;
     AVFormatContext *ic;
 
     struct avformat_track_s *tracks;
@@ -154,7 +161,7 @@ int avformat_OpenDemux( vlc_object_t *p_this )
     demux_t       *p_demux = (demux_t*)p_this;
     demux_sys_t   *p_sys;
     AVProbeData   pd = { };
-    AVInputFormat *fmt = NULL;
+    AVF_MAYBE_CONST AVInputFormat *fmt = NULL;
     int64_t       i_start_time = -1;
     bool          b_can_seek;
     char         *psz_url;
@@ -1185,9 +1192,9 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 static int IORead( void *opaque, uint8_t *buf, int buf_size )
 {
     demux_t *p_demux = opaque;
-    if( buf_size < 0 ) return -1;
+    if( buf_size < 0 ) return AVERROR_EOF;
     int i_ret = vlc_stream_Read( p_demux->s, buf, buf_size );
-    return i_ret >= 0 ? i_ret : -1;
+    return i_ret > 0 ? i_ret : AVERROR_EOF;
 }
 
 static int64_t IOSeek( void *opaque, int64_t offset, int whence )

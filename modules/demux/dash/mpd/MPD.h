@@ -25,7 +25,7 @@
 #ifndef MPD_H_
 #define MPD_H_
 
-#include "../../adaptive/playlist/AbstractPlaylist.hpp"
+#include "../../adaptive/playlist/BasePlaylist.hpp"
 #include "../../adaptive/StreamFormat.hpp"
 #include "Profile.hpp"
 
@@ -38,7 +38,7 @@ namespace dash
 
         class ProgramInformation;
 
-        class MPD : public AbstractPlaylist
+        class MPD : public BasePlaylist
         {
             friend class IsoffMainParser;
 
@@ -47,10 +47,10 @@ namespace dash
                 virtual ~MPD();
 
                 Profile                         getProfile() const;
-                virtual bool                    isLive() const;
-                virtual bool                    isLowLatency() const;
+                virtual bool                    isLive() const override;
+                virtual bool                    isLowLatency() const override;
                 void                            setLowLatency(bool);
-                virtual void                    debug();
+                virtual void                    debug() const override;
 
                 Property<ProgramInformation *>      programInfo;
 

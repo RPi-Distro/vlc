@@ -29,6 +29,7 @@
 #include <list>
 
 #include "CommonAttributesElements.h"
+#include "CodecDescription.hpp"
 #include "SegmentInformation.hpp"
 #include "../StreamFormat.hpp"
 
@@ -39,8 +40,8 @@ namespace adaptive
     namespace playlist
     {
         class BaseAdaptationSet;
-        class AbstractPlaylist;
-        class BaseSegmentTemplate;
+        class BasePlaylist;
+        class SegmentTemplateSegment;
 
         class BaseRepresentation : public CommonAttributesElements,
                                    public SegmentInformation
@@ -61,11 +62,13 @@ namespace adaptive
                 void                setBandwidth            ( uint64_t bandwidth );
                 const std::list<std::string> & getCodecs    () const;
                 void                addCodecs               (const std::string &);
+                void                getCodecsDesc           (CodecDescriptionList *) const;
                 bool                consistentSegmentNumber () const;
-                virtual void        pruneByPlaybackTime     (mtime_t);
+                virtual void        pruneByPlaybackTime     (mtime_t) override;
 
                 virtual mtime_t     getMinAheadTime         (uint64_t) const;
                 virtual bool        needsUpdate             (uint64_t) const;
+                virtual bool        needsIndex              () const;
                 virtual bool        runLocalUpdates         (SharedResources *);
                 virtual void        scheduleNextUpdate      (uint64_t, bool);
 
@@ -73,11 +76,19 @@ namespace adaptive
 
                 /* for segment templates */
                 virtual std::string contextualize(size_t, const std::string &,
-                                                  const BaseSegmentTemplate *) const;
+                                                  const SegmentTemplate *) const;
 
                 static bool         bwCompare(const BaseRepresentation *a,
                                               const BaseRepresentation *b);
+
+                virtual uint64_t translateSegmentNumber(uint64_t, const BaseRepresentation *) const;
+                bool getSegmentNumberByTime(mtime_t, uint64_t *) const;
+                bool getPlaybackTimeDurationBySegmentNumber(uint64_t, mtime_t *, mtime_t *) const;
+                bool getMediaPlaybackRange(mtime_t *rangeBegin,
+                                                               mtime_t *rangeEnd,
+                                                               mtime_t *rangeLength) const;
             protected:
+                virtual CodecDescription * makeCodecDescription(const std::string &) const;
                 virtual bool        validateCodec(const std::string &) const;
                 BaseAdaptationSet                  *adaptationSet;
                 uint64_t                            bandwidth;

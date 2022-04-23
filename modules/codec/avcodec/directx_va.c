@@ -4,7 +4,7 @@
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
  * Copyright (C) 2015 Steve Lhomme
- * $Id: 3c46bb960f57071e3c5e0fe27d7c65130ba4b126 $
+ * $Id: fc98a48060a5dc610b836b151591b5cb40516199 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -365,13 +365,13 @@ static bool profile_supported(const directx_va_mode_t *mode, const es_format_t *
     if (!is_supported)
     {
         int profile = fmt->i_profile >= 0 ? fmt->i_profile : avctx->profile;
-        if (mode->codec == AV_CODEC_ID_H264)
+        if (mode->codec == AV_CODEC_ID_H264 && profile == -1)
         {
             uint8_t h264_profile;
             if ( h264_get_profile_level(fmt, &h264_profile, NULL, NULL) )
                 profile = h264_profile;
         }
-        if (mode->codec == AV_CODEC_ID_HEVC)
+        if (mode->codec == AV_CODEC_ID_HEVC && profile == -1)
         {
             uint8_t hevc_profile;
             if (hevc_get_profile_level(fmt, &hevc_profile, NULL, NULL) )

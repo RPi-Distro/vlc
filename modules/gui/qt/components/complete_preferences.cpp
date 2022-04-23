@@ -2,7 +2,7 @@
  * complete_preferences.cpp : "Normal preferences"
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 5ca04b46b15406d851c50a9fc99bccca3e396302 $
+ * $Id: 84c89303208e03c92bf113b36a063d983772b713 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -495,7 +495,7 @@ bool PrefsItemData::contains( const QString &text, Qt::CaseSensitivity cs )
     if( this->i_type == TYPE_CATEGORY )
         return false;
     else if( this->i_type == TYPE_MODULE )
-        p_module = module_find( this->psz_shortcut );
+        p_module = this->p_module;
     else
     {
         p_module = module_get_main();

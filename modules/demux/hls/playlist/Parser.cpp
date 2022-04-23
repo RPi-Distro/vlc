@@ -23,7 +23,7 @@
 
 #include "Parser.hpp"
 #include "HLSSegment.hpp"
-#include "Representation.hpp"
+#include "HLSRepresentation.hpp"
 #include "../../adaptive/SharedResources.hpp"
 #include "../../adaptive/playlist/BasePeriod.h"
 #include "../../adaptive/playlist/BaseAdaptationSet.h"
@@ -77,7 +77,7 @@ static Tag * getTagFromList(std::list<Tag *> &list, int tag)
         if( (*it)->getType() == tag )
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 static void releaseTagsList(std::list<Tag *> &list)
@@ -88,13 +88,13 @@ static void releaseTagsList(std::list<Tag *> &list)
     list.clear();
 }
 
-Representation * M3U8Parser::createRepresentation(BaseAdaptationSet *adaptSet, const AttributesTag * tag)
+HLSRepresentation * M3U8Parser::createRepresentation(BaseAdaptationSet *adaptSet, const AttributesTag * tag)
 {
     const Attribute *uriAttr = tag->getAttributeByName("URI");
     const Attribute *bwAttr = tag->getAttributeByName("BANDWIDTH");
     const Attribute *resAttr = tag->getAttributeByName("RESOLUTION");
 
-    Representation *rep = new (std::nothrow) Representation(adaptSet);
+    HLSRepresentation *rep = new (std::nothrow) HLSRepresentation(adaptSet);
     if(rep)
     {
         if(uriAttr)
@@ -133,6 +133,14 @@ Representation * M3U8Parser::createRepresentation(BaseAdaptationSet *adaptSet, c
                 rep->setHeight(res.second);
             }
         }
+
+        const Attribute *rateAttr = tag->getAttributeByName("FRAME-RATE");
+        if(rateAttr)
+        {
+            unsigned num, den;
+            vlc_ureduce(&num, &den, rateAttr->floatingPoint() * 1000, 1000, 0);
+            rep->setFrameRate(Rate(num, den));
+        }
     }
 
     return rep;
@@ -142,7 +150,7 @@ void M3U8Parser::createAndFillRepresentation(vlc_object_t *p_obj, BaseAdaptation
                                              const AttributesTag *tag,
                                              const std::list<Tag *> &tagslist)
 {
-    Representation *rep  = createRepresentation(adaptSet, tag);
+    HLSRepresentation *rep  = createRepresentation(adaptSet, tag);
     if(rep)
     {
         parseSegments(p_obj, rep, tagslist);
@@ -150,9 +158,9 @@ void M3U8Parser::createAndFillRepresentation(vlc_object_t *p_obj, BaseAdaptation
     }
 }
 
-bool M3U8Parser::appendSegmentsFromPlaylistURI(vlc_object_t *p_obj, Representation *rep)
+bool M3U8Parser::appendSegmentsFromPlaylistURI(vlc_object_t *p_obj, HLSRepresentation *rep)
 {
-    block_t *p_block = Retrieve::HTTP(resources, rep->getPlaylistUrl().toString());
+    block_t *p_block = Retrieve::HTTP(resources, ChunkType::Playlist, rep->getPlaylistUrl().toString());
     if(p_block)
     {
         stream_t *substream = vlc_stream_MemoryNew(p_obj, p_block->p_buffer, p_block->i_buffer, true);
@@ -199,18 +207,19 @@ static bool parseEncryption(const AttributesTag *keytag, const Url &playlistUrl,
     else
     {
         /* unsupported or invalid */
-        encryption.method = CommonEncryption::Method::NONE;
+        encryption.method = CommonEncryption::Method::None;
         encryption.uri.clear();
         encryption.iv.clear();
         return false;
     }
 }
 
-void M3U8Parser::parseSegments(vlc_object_t *, Representation *rep, const std::list<Tag *> &tagslist)
+void M3U8Parser::parseSegments(vlc_object_t *, HLSRepresentation *rep, const std::list<Tag *> &tagslist)
 {
     SegmentList *segmentList = new (std::nothrow) SegmentList(rep);
 
-    rep->setTimescale(100);
+    Timescale timescale(1000000);
+    rep->addAttribute(new TimescaleAttr(timescale));
     rep->b_loaded = true;
 
     mtime_t totalduration = 0;
@@ -219,9 +228,11 @@ void M3U8Parser::parseSegments(vlc_object_t *, Representation *rep, const std::l
     uint64_t sequenceNumber = 0;
     bool discontinuity = false;
     std::size_t prevbyterangeoffset = 0;
-    const SingleValueTag *ctx_byterange = NULL;
+    const SingleValueTag *ctx_byterange = nullptr;
     CommonEncryption encryption;
-    const ValuesListTag *ctx_extinf = NULL;
+    const ValuesListTag *ctx_extinf = nullptr;
+
+    std::list<HLSSegment *> segmentstoappend;
 
     std::list<Tag *>::const_iterator it;
     for(it = tagslist.begin(); it != tagslist.end(); ++it)
@@ -247,8 +258,8 @@ void M3U8Parser::parseSegments(vlc_object_t *, Representation *rep, const std::l
                 const SingleValueTag *uritag = static_cast<const SingleValueTag *>(tag);
                 if(uritag->getValue().value.empty())
                 {
-                    ctx_extinf = NULL;
-                    ctx_byterange = NULL;
+                    ctx_extinf = nullptr;
+                    ctx_byterange = nullptr;
                     break;
                 }
 
@@ -265,19 +276,19 @@ void M3U8Parser::parseSegments(vlc_object_t *, Representation *rep, const std::l
                     const Attribute *durAttribute = ctx_extinf->getAttributeByName("DURATION");
                     if(durAttribute)
                         nzDuration = CLOCK_FREQ * durAttribute->floatingPoint();
-                    ctx_extinf = NULL;
+                    ctx_extinf = nullptr;
                 }
-                segment->duration.Set(rep->getTimescale().ToScaled(nzDuration));
-                segment->startTime.Set(rep->getTimescale().ToScaled(nzStartTime));
+                segment->duration.Set(timescale.ToScaled(nzDuration));
+                segment->startTime.Set(timescale.ToScaled(nzStartTime));
                 nzStartTime += nzDuration;
                 totalduration += nzDuration;
                 if(absReferenceTime > VLC_TS_INVALID)
                 {
-                    segment->utcTime = absReferenceTime;
+                    segment->setDisplayTime(absReferenceTime);
                     absReferenceTime += nzDuration;
                 }
 
-                segmentList->addSegment(segment);
+                segmentstoappend.push_back(segment);
 
                 if(ctx_byterange)
                 {
@@ -286,7 +297,7 @@ void M3U8Parser::parseSegments(vlc_object_t *, Representation *rep, const std::l
                         range.first = prevbyterangeoffset;
                     prevbyterangeoffset = range.first + range.second;
                     segment->setByteRange(range.first, prevbyterangeoffset - 1);
-                    ctx_byterange = NULL;
+                    ctx_byterange = nullptr;
                 }
 
                 if(discontinuity)
@@ -295,7 +306,7 @@ void M3U8Parser::parseSegments(vlc_object_t *, Representation *rep, const std::l
                     discontinuity = false;
                 }
 
-                if(encryption.method != CommonEncryption::Method::NONE)
+                if(encryption.method != CommonEncryption::Method::None)
                     segment->setEncryption(encryption);
             }
             break;
@@ -316,6 +327,20 @@ void M3U8Parser::parseSegments(vlc_object_t *, Representation *rep, const std::l
                 rep->b_consistent = false;
                 absReferenceTime = VLC_TS_0 +
                         UTCTime(static_cast<const SingleValueTag *>(tag)->getValue().value).mtime();
+                /* Reverse apply UTC timespec from first discont */
+                if(segmentstoappend.size() && segmentstoappend.back()->getDisplayTime() == VLC_TS_INVALID)
+                {
+                    mtime_t tempTime = absReferenceTime;
+                    for(auto it = segmentstoappend.crbegin(); it != segmentstoappend.crend(); ++it)
+                    {
+                        mtime_t duration = timescale.ToTime((*it)->duration.Get());
+                        if( duration < tempTime - VLC_TS_0 )
+                            tempTime -= duration;
+                        else
+                            tempTime = VLC_TS_0;
+                        (*it)->setDisplayTime(tempTime);
+                    }
+                }
                 break;
 
             case AttributesTag::EXTXKEY:
@@ -356,6 +381,10 @@ void M3U8Parser::parseSegments(vlc_object_t *, Representation *rep, const std::l
         }
     }
 
+    for(HLSSegment *seg : segmentstoappend)
+        segmentList->addSegment(seg);
+    segmentstoappend.clear();
+
     if(rep->isLive())
     {
         rep->getPlaylist()->duration.Set(0);
@@ -374,13 +403,13 @@ M3U8 * M3U8Parser::parse(vlc_object_t *p_object, stream_t *p_stream, const std::
        (psz_line[7] && !std::isspace(psz_line[7])))
     {
         free(psz_line);
-        return NULL;
+        return nullptr;
     }
     free(psz_line);
 
     M3U8 *playlist = new (std::nothrow) M3U8(p_object);
     if(!playlist)
-        return NULL;
+        return nullptr;
 
     if(!playlisturl.empty())
         playlist->setPlaylistUrl( Helper::getDirectoryPath(playlisturl).append("/") );
@@ -436,7 +465,7 @@ M3U8 * M3U8Parser::parse(vlc_object_t *p_object, stream_t *p_stream, const std::
                     if(groupsmap.find(tag->getAttributeByName("URI")->value) == groupsmap.end())
                     {
                         /* not a group, belong to default adaptation set */
-                        Representation *rep  = createRepresentation(adaptSet, tag);
+                        HLSRepresentation *rep  = createRepresentation(adaptSet, tag);
                         if(rep)
                         {
                             adaptSet->addRepresentation(rep);
@@ -462,7 +491,7 @@ M3U8 * M3U8Parser::parse(vlc_object_t *p_object, stream_t *p_stream, const std::
             BaseAdaptationSet *altAdaptSet = new (std::nothrow) BaseAdaptationSet(period);
             if(altAdaptSet)
             {
-                Representation *rep  = createRepresentation(altAdaptSet, pair.second);
+                HLSRepresentation *rep  = createRepresentation(altAdaptSet, pair.second);
                 if(rep)
                 {
                     altAdaptSet->addRepresentation(rep);
@@ -491,27 +520,27 @@ M3U8 * M3U8Parser::parse(vlc_object_t *p_object, stream_t *p_stream, const std::
                 if(pair.second->getAttributeByName("DEFAULT"))
                 {
                     if(pair.second->getAttributeByName("DEFAULT")->value == "YES")
-                        altAdaptSet->setRole(Role(Role::ROLE_MAIN));
+                        altAdaptSet->setRole(Role(Role::Value::Main));
                     else
-                        altAdaptSet->setRole(Role(Role::ROLE_ALTERNATE));
+                        altAdaptSet->setRole(Role(Role::Value::Alternate));
                 }
 
                 if(pair.second->getAttributeByName("AUTOSELECT"))
                 {
                     if(pair.second->getAttributeByName("AUTOSELECT")->value == "NO" &&
                        !pair.second->getAttributeByName("DEFAULT"))
-                        altAdaptSet->setRole(Role(Role::ROLE_SUPPLEMENTARY));
+                        altAdaptSet->setRole(Role(Role::Value::Supplementary));
                 }
 
                 /* Subtitles unsupported for now */
                 const Attribute *typeattr = pair.second->getAttributeByName("TYPE");
                 if(typeattr->value == "SUBTITLES")
                 {
-                    altAdaptSet->setRole(Role(Role::ROLE_SUBTITLE));
+                    altAdaptSet->setRole(Role(Role::Value::Subtitle));
                 }
                 else if(typeattr->value != "AUDIO" && typeattr->value != "VIDEO")
                 {
-                    rep->streamFormat = StreamFormat(StreamFormat::UNSUPPORTED);
+                    rep->streamFormat = StreamFormat(StreamFormat::Type::Unsupported);
                 }
 
                 if(pair.second->getAttributeByName("LANGUAGE"))
@@ -555,8 +584,11 @@ M3U8 * M3U8Parser::parse(vlc_object_t *p_object, stream_t *p_stream, const std::
         if(xstartTag->getAttributeByName("TIME-OFFSET"))
         {
             float offset = xstartTag->getAttributeByName("TIME-OFFSET")->floatingPoint();
-            if(offset > 0)
-                playlist->suggestedPresentationDelay.Set(CLOCK_FREQ * offset);
+            if(offset > 0 && (offset * CLOCK_FREQ) <= playlist->duration.Get())
+                playlist->presentationStartOffset.Set(CLOCK_FREQ * offset);
+            else if(offset < 0 && (-offset * CLOCK_FREQ) <= playlist->duration.Get())
+                playlist->presentationStartOffset.Set(playlist->duration.Get() +
+                                                      CLOCK_FREQ * offset);
         }
     }
 
@@ -569,7 +601,7 @@ M3U8 * M3U8Parser::parse(vlc_object_t *p_object, stream_t *p_stream, const std::
 std::list<Tag *> M3U8Parser::parseEntries(stream_t *stream)
 {
     std::list<Tag *> entrieslist;
-    Tag *lastTag = NULL;
+    Tag *lastTag = nullptr;
     char *psz_line;
 
     while((psz_line = vlc_stream_ReadLine(stream)))
@@ -617,11 +649,11 @@ std::list<Tag *> M3U8Parser::parseEntries(stream_t *stream)
                 if(tag)
                     entrieslist.push_back(tag);
             }
-            lastTag = NULL;
+            lastTag = nullptr;
         }
         else // drop
         {
-            lastTag = NULL;
+            lastTag = nullptr;
         }
 
         free(psz_line);

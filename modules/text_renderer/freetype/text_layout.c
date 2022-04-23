@@ -2,7 +2,7 @@
  * text_layout.c : Text shaping and layout
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: fc2db46e62ac89b221df4c2c4574a4bf878f48de $
+ * $Id: 986525d972bcd72fec3d044e093c141ebbd2ab92 $
  *
  * Authors: Salah-Eddin Shaban <salshaaban@gmail.com>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -735,17 +735,10 @@ static int ShapeParagraphHarfBuzz( filter_t *p_filter,
 
         hb_buffer_set_direction( p_run->p_buffer, p_run->direction );
         hb_buffer_set_script( p_run->p_buffer, p_run->script );
-#ifdef __OS2__
-        hb_buffer_add_utf16( p_run->p_buffer,
-                             p_paragraph->p_code_points + p_run->i_start_offset,
-                             p_run->i_end_offset - p_run->i_start_offset, 0,
-                             p_run->i_end_offset - p_run->i_start_offset );
-#else
         hb_buffer_add_utf32( p_run->p_buffer,
                              p_paragraph->p_code_points + p_run->i_start_offset,
                              p_run->i_end_offset - p_run->i_start_offset, 0,
                              p_run->i_end_offset - p_run->i_start_offset );
-#endif
         hb_shape( p_run->p_hb_font, p_run->p_buffer, 0, 0 );
         p_run->p_glyph_infos =
             hb_buffer_get_glyph_infos( p_run->p_buffer, &p_run->i_glyph_count );

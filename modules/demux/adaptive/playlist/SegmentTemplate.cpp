@@ -2,7 +2,7 @@
  * SegmentTemplate.cpp: Implement the UrlTemplate element.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: b13f85a494e379247b4055818200f059097d05e8 $
+ * $Id: 1864120541843e5171779c4674b60b4cc60c6bf2 $
  *
  * Authors: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
  *
@@ -27,132 +27,70 @@
 #include "SegmentTemplate.h"
 #include "SegmentTimeline.h"
 #include "SegmentInformation.hpp"
-#include "AbstractPlaylist.hpp"
+#include "BasePlaylist.hpp"
 #include <limits>
 
 using namespace adaptive::playlist;
 
-BaseSegmentTemplate::BaseSegmentTemplate( ICanonicalUrl *parent ) :
+SegmentTemplateSegment::SegmentTemplateSegment( ICanonicalUrl *parent ) :
     Segment( parent )
 {
-}
-
-BaseSegmentTemplate::~BaseSegmentTemplate()
-{
-
-}
-
-void BaseSegmentTemplate::setSourceUrl(const std::string &url)
-{
-    sourceUrl = Url(Url::Component(url, this));
-}
-
-MediaSegmentTemplate::MediaSegmentTemplate( SegmentInformation *parent ) :
-    BaseSegmentTemplate( parent ),
-    TimescaleAble( NULL ) /* we don't want auto inherit */
-{
-    debugName = "SegmentTemplate";
-    classId = Segment::CLASSID_SEGMENT;
-    startNumber = std::numeric_limits<uint64_t>::max();
-    segmentTimeline = NULL;
-    initialisationSegment.Set( NULL );
+    debugName = "SegmentTemplateSegment";
     templated = true;
+    templ = nullptr;
+}
+
+SegmentTemplateSegment::~SegmentTemplateSegment()
+{
+
+}
+
+void SegmentTemplateSegment::setSourceUrl(const std::string &url)
+{
+    sourceUrl = Url(Url::Component(url, templ));
+}
+
+void SegmentTemplateSegment::setParentTemplate( SegmentTemplate *templ_ )
+{
+    templ = templ_;
+}
+
+SegmentTemplate::SegmentTemplate( SegmentTemplateSegment *seg, SegmentInformation *parent ) :
+    AbstractMultipleSegmentBaseType( parent, AbstractAttr::Type::SegmentTemplate )
+{
+    initialisationSegment.Set( nullptr );
     parentSegmentInformation = parent;
+    virtualsegment = seg;
+    virtualsegment->setParent( parentSegmentInformation );
+    virtualsegment->setParentTemplate( this );
 }
 
-MediaSegmentTemplate::~MediaSegmentTemplate()
+SegmentTemplate::~SegmentTemplate()
 {
-    delete segmentTimeline;
+    delete virtualsegment;
 }
 
-void MediaSegmentTemplate::updateWith(MediaSegmentTemplate *updated)
+void SegmentTemplate::setSourceUrl( const std::string &url )
 {
-    SegmentTimeline *timeline = segmentTimeline;
-    if(timeline && updated->segmentTimeline)
-    {
-        timeline->updateWith(*updated->segmentTimeline);
-        /*if(prunebarrier)
-        {
-            const Timescale timescale = timeline->inheritTimescale();
-            const uint64_t number =
-                    timeline->getElementNumberByScaledPlaybackTime(timescale.ToScaled(prunebarrier));
-            timeline->pruneBySequenceNumber(number);
-        }*/
-    }
+    virtualsegment->setSourceUrl(url);
 }
 
-void MediaSegmentTemplate::pruneByPlaybackTime(mtime_t time)
+void SegmentTemplate::pruneByPlaybackTime(mtime_t time)
 {
-    if(segmentTimeline)
-        return segmentTimeline->pruneByPlaybackTime(time);
+    AbstractAttr *p = getAttribute(Type::Timeline);
+    if(p)
+        return static_cast<SegmentTimeline *> (p)->pruneByPlaybackTime(time);
 }
 
-size_t MediaSegmentTemplate::pruneBySequenceNumber(uint64_t number)
+size_t SegmentTemplate::pruneBySequenceNumber(uint64_t number)
 {
-    if(segmentTimeline)
-        return segmentTimeline->pruneBySequenceNumber(number);
+    AbstractAttr *p = getAttribute(Type::Timeline);
+    if(p)
+        return static_cast<SegmentTimeline *> (p)->pruneBySequenceNumber(number);
     return 0;
 }
 
-uint64_t MediaSegmentTemplate::inheritStartNumber() const
-{
-    if( startNumber != std::numeric_limits<uint64_t>::max() )
-        return startNumber;
-
-    const SegmentInformation *ulevel = parentSegmentInformation ? parentSegmentInformation
-                                                                : NULL;
-    for( ; ulevel ; ulevel = ulevel->parent )
-    {
-        if( ulevel->mediaSegmentTemplate &&
-            ulevel->mediaSegmentTemplate->startNumber !=
-                std::numeric_limits<uint64_t>::max() )
-            return ulevel->mediaSegmentTemplate->startNumber;
-    }
-    return 1;
-}
-
-Timescale MediaSegmentTemplate::inheritTimescale() const
-{
-    const SegmentInformation *ulevel = parentSegmentInformation ? parentSegmentInformation
-                                                                : NULL;
-    for( ; ulevel ; ulevel = ulevel->parent )
-    {
-        if( ulevel->mediaSegmentTemplate &&
-            ulevel->mediaSegmentTemplate->getTimescale().isValid() )
-            return ulevel->mediaSegmentTemplate->getTimescale();
-        if( ulevel->getTimescale().isValid() )
-            return ulevel->getTimescale();
-    }
-    return Timescale(1);
-}
-
-stime_t MediaSegmentTemplate::inheritDuration() const
-{
-    const SegmentInformation *ulevel = parentSegmentInformation ? parentSegmentInformation
-                                                                : NULL;
-    for( ; ulevel ; ulevel = ulevel->parent )
-    {
-        if( ulevel->mediaSegmentTemplate &&
-            ulevel->mediaSegmentTemplate->duration.Get() > 0 )
-            return ulevel->mediaSegmentTemplate->duration.Get();
-    }
-    return 0;
-}
-
-SegmentTimeline * MediaSegmentTemplate::inheritSegmentTimeline() const
-{
-    const SegmentInformation *ulevel = parentSegmentInformation ? parentSegmentInformation
-                                                          : NULL;
-    for( ; ulevel ; ulevel = ulevel->parent )
-    {
-        if( ulevel->mediaSegmentTemplate &&
-            ulevel->mediaSegmentTemplate->segmentTimeline )
-            return ulevel->mediaSegmentTemplate->segmentTimeline;
-    }
-    return NULL;
-}
-
-uint64_t MediaSegmentTemplate::getLiveTemplateNumber(mtime_t playbacktime, bool abs) const
+uint64_t SegmentTemplate::getLiveTemplateNumber(mtime_t playbacktime, bool abs) const
 {
     uint64_t number = inheritStartNumber();
     /* live streams / templated */
@@ -177,41 +115,176 @@ uint64_t MediaSegmentTemplate::getLiveTemplateNumber(mtime_t playbacktime, bool 
     return number;
 }
 
-stime_t MediaSegmentTemplate::getMinAheadScaledTime(uint64_t number) const
+void SegmentTemplate::debug(vlc_object_t *obj, int indent) const
 {
-    if( segmentTimeline )
-        return segmentTimeline->getMinAheadScaledTime(number);
-
-    uint64_t current = getLiveTemplateNumber(CLOCK_FREQ * time(NULL));
-    return (current - number) * inheritDuration();
+    AbstractSegmentBaseType::debug(obj, indent);
+    if(virtualsegment)
+        virtualsegment->debug(obj, indent);
+    const AbstractAttr *p = getAttribute(Type::Timeline);
+    if(p)
+        static_cast<const SegmentTimeline *> (p)->debug(obj, indent + 1);
 }
 
-uint64_t MediaSegmentTemplate::getSequenceNumber() const
+mtime_t SegmentTemplate::getMinAheadTime(uint64_t number) const
 {
-    return inheritStartNumber();
+    SegmentTimeline *timeline = inheritSegmentTimeline();
+    if( timeline )
+    {
+        const Timescale timescale = timeline->inheritTimescale();
+        return timescale.ToTime(timeline->getMinAheadScaledTime(number));
+    }
+    else
+    {
+        const Timescale timescale = inheritTimescale();
+        uint64_t current = getLiveTemplateNumber(CLOCK_FREQ * time(nullptr));
+        stime_t i_length = (current - number) * inheritDuration();
+        return timescale.ToTime(i_length);
+    }
 }
 
-void MediaSegmentTemplate::setStartNumber( uint64_t v )
+Segment * SegmentTemplate::getMediaSegment(uint64_t number) const
 {
-    startNumber = v;
+    const SegmentTimeline *tl = inheritSegmentTimeline();
+    if(tl == nullptr || (tl->maxElementNumber() >= number && tl->minElementNumber() <= number))
+        return virtualsegment;
+    return nullptr;
 }
 
-void MediaSegmentTemplate::setSegmentTimeline( SegmentTimeline *v )
+Segment *  SegmentTemplate::getNextMediaSegment(uint64_t i_pos,uint64_t *pi_newpos,
+                                                     bool *pb_gap) const
 {
-    delete segmentTimeline;
-    segmentTimeline = v;
+    *pb_gap = false;
+    *pi_newpos = i_pos;
+    /* Check if we don't exceed timeline */
+    const SegmentTimeline *timeline = inheritSegmentTimeline();
+    if(timeline)
+    {
+        *pi_newpos = std::max(timeline->minElementNumber(), i_pos);
+        if (timeline->maxElementNumber() < i_pos)
+            return nullptr;
+    }
+    else
+    {
+        /* check template upper bound */
+        const BasePlaylist *playlist = parentSegmentInformation->getPlaylist();
+        if(!playlist->isLive())
+        {
+            const Timescale timescale = inheritTimescale();
+            const stime_t segmentduration = inheritDuration();
+            mtime_t totalduration = parentSegmentInformation->getPeriodDuration();
+            if(totalduration == 0)
+                totalduration = playlist->duration.Get();
+            if(totalduration && segmentduration)
+            {
+                uint64_t endnum = inheritStartNumber() +
+                        (timescale.ToScaled(totalduration) + segmentduration - 1) / segmentduration;
+                if(i_pos >= endnum)
+                {
+                    *pi_newpos = i_pos;
+                    return nullptr;
+                }
+            }
+        }
+        *pi_newpos = i_pos;
+        /* start number */
+        *pi_newpos = std::max(inheritStartNumber(), i_pos);
+    }
+    return virtualsegment;
 }
 
-void MediaSegmentTemplate::debug(vlc_object_t *obj, int indent) const
+uint64_t SegmentTemplate::getStartSegmentNumber() const
 {
-    Segment::debug(obj, indent);
-    if(segmentTimeline)
-        segmentTimeline->debug(obj, indent + 1);
+    const SegmentTimeline *timeline = inheritSegmentTimeline();
+    return timeline ? timeline->minElementNumber() : inheritStartNumber();
 }
 
-InitSegmentTemplate::InitSegmentTemplate( ICanonicalUrl *parent ) :
-    BaseSegmentTemplate(parent)
+bool SegmentTemplate::getSegmentNumberByTime(mtime_t time, uint64_t *ret) const
+{
+    const SegmentTimeline *timeline = inheritSegmentTimeline();
+    if(timeline)
+    {
+        const Timescale timescale = timeline->inheritTimescale();
+        stime_t st = timescale.ToScaled(time);
+        *ret = timeline->getElementNumberByScaledPlaybackTime(st);
+        return true;
+    }
+
+    const stime_t duration = inheritDuration();
+    if( duration && parent )
+    {
+        BasePlaylist *playlist = parent->getPlaylist();
+        if( playlist->isLive() )
+        {
+            mtime_t now = CLOCK_FREQ * ::time(nullptr);
+            if(playlist->availabilityStartTime.Get())
+            {
+                if(time >= playlist->availabilityStartTime.Get() && time < now)
+                    *ret = getLiveTemplateNumber(time, true);
+                else if(now - playlist->availabilityStartTime.Get() > time)
+                    *ret = getLiveTemplateNumber(time, false);
+            }
+            else return false;
+        }
+        else
+        {
+            const Timescale timescale = inheritTimescale();
+            *ret = inheritStartNumber();
+            *ret += timescale.ToScaled(time) / duration;
+        }
+        return true;
+    }
+
+    return false;
+}
+
+
+bool SegmentTemplate::getPlaybackTimeDurationBySegmentNumber(uint64_t number,
+                                                             mtime_t *time,
+                                                             mtime_t *duration) const
+{
+    if(number == std::numeric_limits<uint64_t>::max())
+        return false;
+
+    Timescale timescale;
+    stime_t stime, sduration;
+
+    const SegmentTimeline * timeline = inheritSegmentTimeline();
+    if(timeline)
+    {
+        timescale = timeline->inheritTimescale();
+        if(!timeline->getScaledPlaybackTimeDurationBySegmentNumber(number, &stime, &sduration))
+            return false;
+    }
+    else
+    {
+        timescale = inheritTimescale();
+        uint64_t startNumber = inheritStartNumber();
+        if(number < startNumber)
+            return false;
+        sduration = inheritDuration();
+        stime = (number - startNumber) * sduration;
+    }
+
+    *time = timescale.ToTime(stime);
+    *duration = timescale.ToTime(sduration);
+    return true;
+
+}
+
+SegmentTemplateInit::SegmentTemplateInit( SegmentTemplate *templ_,
+                                          ICanonicalUrl *parent ) :
+    InitSegment(parent)
 {
     debugName = "InitSegmentTemplate";
-    classId = InitSegment::CLASSID_INITSEGMENT;
+    templ = templ_;
+}
+
+SegmentTemplateInit::~SegmentTemplateInit()
+{
+
+}
+
+void SegmentTemplateInit::setSourceUrl(const std::string &url)
+{
+    sourceUrl = Url(Url::Component(url, templ));
 }

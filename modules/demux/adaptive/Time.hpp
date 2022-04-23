@@ -22,8 +22,11 @@
 
 #include <vlc_common.h>
 
+namespace adaptive
+{
+
 /* Scaled time */
-typedef int64_t stime_t;
+using stime_t = int64_t;
 
 class Timescale
 {
@@ -51,6 +54,8 @@ class Timescale
     private:
         uint64_t scale;
 };
+
+}
 
 #endif // TIME_HPP
 

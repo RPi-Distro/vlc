@@ -2,7 +2,7 @@
  * dts_header.c: parse DTS audio headers info
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: cdf9053ee515f2d05391166bbacd238b1059df66 $
+ * $Id: 9459221affb3955b3c297e62365c7575e9cd7b7e $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar
@@ -27,15 +27,28 @@
 #define PROFILE_DTS_INVALID -1
 #define PROFILE_DTS 0
 #define PROFILE_DTS_HD 1
+#define PROFILE_DTS_EXPRESS 2
+
+enum vlc_dts_syncword_e
+{
+    DTS_SYNC_NONE = 0,
+    DTS_SYNC_CORE_BE,
+    DTS_SYNC_CORE_LE,
+    DTS_SYNC_CORE_14BITS_BE,
+    DTS_SYNC_CORE_14BITS_LE,
+    DTS_SYNC_SUBSTREAM,
+    /* Substreams internal syncs */
+    DTS_SYNC_SUBSTREAM_LBR,
+};
 
 typedef struct
 {
-    bool            b_substream;
-    bool            b_14b;
+    enum vlc_dts_syncword_e syncword;
     unsigned int    i_rate;
     unsigned int    i_bitrate;
     unsigned int    i_frame_size;
     unsigned int    i_frame_length;
+    uint32_t        i_substream_header_size;
     uint16_t        i_physical_channels;
     uint16_t        i_chan_mode;
 } vlc_dts_header_t;

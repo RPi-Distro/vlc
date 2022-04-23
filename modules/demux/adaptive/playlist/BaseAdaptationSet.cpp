@@ -61,20 +61,19 @@ StreamFormat BaseAdaptationSet::getStreamFormat() const
         return StreamFormat();
 }
 
-std::vector<BaseRepresentation*>& BaseAdaptationSet::getRepresentations()
+const std::vector<BaseRepresentation*>& BaseAdaptationSet::getRepresentations() const
 {
     return representations;
 }
 
-BaseRepresentation * BaseAdaptationSet::getRepresentationByID(const ID &id)
+BaseRepresentation * BaseAdaptationSet::getRepresentationByID(const ID &id) const
 {
-    std::vector<BaseRepresentation *>::const_iterator it;
-    for(it = representations.begin(); it != representations.end(); ++it)
+    for(auto it = representations.cbegin(); it != representations.cend(); ++it)
     {
         if((*it)->getID() == id)
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 void BaseAdaptationSet::addRepresentation(BaseRepresentation *rep)
@@ -137,6 +136,9 @@ void BaseAdaptationSet::debug(vlc_object_t *obj, int indent) const
     text.append("BaseAdaptationSet ");
     text.append(id.str());
     msg_Dbg(obj, "%s", text.c_str());
+    const AbstractSegmentBaseType *profile = getProfile();
+    if(profile)
+        profile->debug(obj, indent + 1);
     std::vector<BaseRepresentation *>::const_iterator k;
     for(k = representations.begin(); k != representations.end(); ++k)
         (*k)->debug(obj, indent + 1);

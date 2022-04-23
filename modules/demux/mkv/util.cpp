@@ -2,7 +2,7 @@
  * util.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 8afed9df72676d073bb401d9a9b53d659eb0445f $
+ * $Id: e4a1c4d414090119f2c6bef6a84060133b54d597 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -310,6 +310,44 @@ error:
     return NULL;
 }
 
+int UpdatePCR( demux_t * p_demux )
+{
+    demux_sys_t *p_sys = (demux_sys_t *)p_demux->p_sys;
+    matroska_segment_c *p_segment = p_sys->p_current_vsegment->CurrentSegment();
+
+    int64_t i_pcr = VLC_TS_INVALID;
+
+    typedef matroska_segment_c::tracks_map_t tracks_map_t;
+
+    for( tracks_map_t::const_iterator it = p_segment->tracks.begin(); it != p_segment->tracks.end(); ++it )
+    {
+        mkv_track_t &track = *it->second;
+
+        if( track.i_last_dts == VLC_TS_INVALID )
+            continue;
+
+        if( track.fmt.i_cat != VIDEO_ES && track.fmt.i_cat != AUDIO_ES )
+            continue;
+
+        if( track.i_last_dts < i_pcr || i_pcr <= VLC_TS_INVALID )
+        {
+            i_pcr = track.i_last_dts;
+        }
+    }
+
+    if( i_pcr > VLC_TS_INVALID && i_pcr > p_sys->i_pcr )
+    {
+        if( es_out_SetPCR( p_demux->out, i_pcr ) )
+        {
+            return VLC_EGENERIC;
+        }
+
+        p_sys->i_pcr = i_pcr;
+    }
+
+    return VLC_SUCCESS;
+}
+
 void send_Block( demux_t * p_demux, mkv_track_t * p_tk, block_t * p_block, unsigned int i_number_frames, mtime_t i_duration )
 {
     demux_sys_t        *p_sys = p_demux->p_sys;
@@ -339,6 +377,9 @@ void send_Block( demux_t * p_demux, mkv_track_t * p_tk, block_t * p_block, unsig
         p_block->i_flags |= BLOCK_FLAG_DISCONTINUITY;
         p_tk->b_discontinuity = false;
     }
+
+    if ( p_sys->i_pcr == VLC_TS_INVALID )
+        UpdatePCR( p_demux );
 
     es_out_Send( p_demux->out, p_tk->p_es, p_block);
 }

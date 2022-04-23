@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright © 2000-2010 VideoLAN
- * $Id: 6e7ba66cca4e356d62246e046bc1cc08e47ff92b $
+ * $Id: 226914f54176730b07a246dcbda7aa5c7596cefa $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -267,6 +267,11 @@ bool StandardPLPanel::popup( const QPoint &point )
             action->setData( QVariant::fromValue( container ) );
         }
         menu.addMenu( sortingMenu );
+    }
+    if ( model->isSupportedAction( VLCModelSubInterface::ACTION_SHUFFLE, index ) )
+    {
+        ADD_MENU_ENTRY( QIcon(), qtr("Shuffle playlist"),
+                    VLCModelSubInterface::ACTION_SHUFFLE );
     }
 
     /* Zoom */

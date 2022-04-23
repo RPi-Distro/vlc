@@ -160,6 +160,9 @@ static const staticentry_t p_list_video[] = {
         E("QMP4", "QNAP Systems MPEG-4"),
         E("qMP4", "QNAP Systems MPEG-4"),
         E("wMP4", "QNAP Systems MPEG-4"),
+        E("G264", "GeoVision MPEG-4"),
+        E("GM40", "GeoVision MPEG-4"),
+        E("GMP4", "GeoVision MPEG-4"),
         /* 3ivx delta 3.5 Unsupported
          * putting it here gives extreme distorted images */
         //E("3IV1", "3ivx delta 3.5 MPEG-4 Video"),
@@ -234,6 +237,7 @@ static const staticentry_t p_list_video[] = {
         A("hvc1"),
         A("HM10"),
         E("dvhe", "Dolby Vision HEVC (H.265)"),
+        E("GHEC", "GeoVision HEVC"),
         /* E("dvh1", "Dolby Vision HEVC (H.265)"), Collides with DV */
 
     /* h264 */
@@ -516,6 +520,7 @@ static const staticentry_t p_list_video[] = {
 
     B(VLC_CODEC_AV1, "AOMedia's AV1 Video"),
         A("av10"),
+        A("AV01"),
 
     /* Xiph.org theora */
     B(VLC_CODEC_THEORA, "Xiph.org's Theora Video"),
@@ -1006,6 +1011,9 @@ static const staticentry_t p_list_video[] = {
         A("LJ2C"),
         A("LJ2K"),
 
+    B(VLC_CODEC_WEBP, "WebP Image"),
+        A("WEBP"),
+
     B(VLC_CODEC_LAGARITH, "Lagarith Lossless"),
         A("LAGS"),
 
@@ -1226,7 +1234,7 @@ static const staticentry_t p_list_audio[] = {
         A("ms\x20\x00"),
 
     B(VLC_CODEC_EAC3, "A/52 B Audio (aka E-AC3)"),
-        A("eac3"),
+        A("ec-3"),
 
     /* DTS Audio */
     B(VLC_CODEC_DTS, "DTS Audio"),

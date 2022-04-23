@@ -29,20 +29,33 @@
 #include "../http/Chunk.h"
 #include "../SharedResources.hpp"
 
+#include <vlc_block.h>
+
 using namespace adaptive;
 using namespace adaptive::http;
 
-block_t * Retrieve::HTTP(SharedResources *resources, const std::string &uri)
+block_t * Retrieve::HTTP(SharedResources *resources, ChunkType type,
+                         const std::string &uri)
 {
     HTTPChunk *datachunk;
     try
     {
-        datachunk = new HTTPChunk(uri, resources->getConnManager(), ID(), true);
+        datachunk = new HTTPChunk(uri, resources->getConnManager(),
+                                  ID(), type, BytesRange());
     } catch (...) {
-        return NULL;
+        return nullptr;
     }
 
-    block_t *block = datachunk->read(1<<25);
+    block_t *p_head = nullptr;
+    block_t **pp_tail = &p_head;
+    for(;;)
+    {
+        block_t *p_block = datachunk->readBlock();
+        if(!p_block)
+            break;
+        block_ChainLastAppend(&pp_tail, p_block);
+    }
     delete datachunk;
-    return block;
+
+    return p_head ? block_ChainGather(p_head) : nullptr;
 }

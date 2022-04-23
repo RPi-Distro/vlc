@@ -2,7 +2,7 @@
  * subtitle.c: subtitle decoder using libavcodec library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 5cac6339d60e736270ae08725e58fe22c894ac82 $
+ * $Id: d3afe4270bec1e80cf21bca33304320cdbdc4199 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -90,7 +90,9 @@ int InitSubtitleDec(vlc_object_t *obj)
     context->extradata_size = 0;
     context->extradata = NULL;
 
-#if LIBAVFORMAT_VERSION_MICRO >= 100
+#if LIBAVFORMAT_VERSION_MAJOR >= 59
+    context->pkt_timebase=AV_TIME_BASE_Q;
+#elif LIBAVFORMAT_VERSION_MICRO >= 100
     av_codec_set_pkt_timebase(context, AV_TIME_BASE_Q);
 #endif
 
@@ -186,16 +188,21 @@ static subpicture_t *DecodeBlock(decoder_t *dec, block_t **block_ptr)
     AVSubtitle subtitle;
     memset(&subtitle, 0, sizeof(subtitle));
 
-    AVPacket pkt;
-    av_init_packet(&pkt);
-    pkt.data = block->p_buffer;
-    pkt.size = block->i_buffer;
-    pkt.pts  = block->i_pts;
+    AVPacket *pkt = av_packet_alloc();
+    if(!pkt)
+    {
+        block_Release(block);
+        return NULL;
+    }
+    pkt->data = block->p_buffer;
+    pkt->size = block->i_buffer;
+    pkt->pts  = block->i_pts;
 
     int has_subtitle = 0;
     int used = avcodec_decode_subtitle2(sys->p_context,
-                                        &subtitle, &has_subtitle, &pkt);
+                                        &subtitle, &has_subtitle, pkt);
 
+    av_packet_free(&pkt);
     if (used < 0) {
         msg_Warn(dec, "cannot decode one subtitle (%zu bytes)",
                  block->i_buffer);

@@ -2,7 +2,7 @@
  * audio.c: audio decoder using libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2003 VLC authors and VideoLAN
- * $Id: eec255ae0bd4e6a1f424d5bedd6895882a1ff461 $
+ * $Id: 8c3fa7a2179eec3b0313d40d3f2bc46b0ce35c9c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -363,11 +363,13 @@ static int DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         /* Feed in the loop as buffer could have been full on first iterations */
         if( p_block )
         {
-            AVPacket pkt;
-            av_init_packet( &pkt );
-            pkt.data = p_block->p_buffer;
-            pkt.size = p_block->i_buffer;
-            ret = avcodec_send_packet( ctx, &pkt );
+            AVPacket *pkt = av_packet_alloc();
+            if( !pkt )
+                goto end;
+            pkt->data = p_block->p_buffer;
+            pkt->size = p_block->i_buffer;
+            ret = avcodec_send_packet( ctx, pkt );
+            av_packet_free(&pkt);
             if( ret == 0 ) /* Block has been consumed */
             {
                 /* Only set new pts from input block if it has been used,

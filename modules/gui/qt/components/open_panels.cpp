@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 92b3522cc00a03e6c75a30b6dbdc469ce7fd2cce $
+ * $Id: a57c972e04107ebc1cb14024e27bafcdf6b143e3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -724,7 +724,19 @@ void NetOpenPanel::updateMRL()
     emit methodChanged( qfu( "network-caching" ) );
 
     QStringList qsl;
-    if( !url.isEmpty() ) qsl << url;
+    if( url.isEmpty() )
+        return;
+
+    if( url.contains( QLatin1String( "://" ) ) )
+    {
+        char *uri = vlc_uri_fixup( qtu( url ) );
+        if( uri == NULL )
+            return;
+        url = qfu(uri);
+        free( uri );
+    }
+
+    qsl << url;
     emit mrlUpdated( qsl, "" );
 }
 

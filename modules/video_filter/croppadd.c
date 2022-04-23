@@ -2,7 +2,7 @@
  * croppadd.c: Crop/Padd image filter
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: f0145bb07598c43d8c829a59ab4c1bb63197c231 $
+ * $Id: f850b2bb56ca217c996940f56d3b0f6aa49c9926 $
  *
  * Authors: Antoine Cellerier <dionoea @t videolan dot org>
  *
@@ -123,6 +123,29 @@ struct filter_sys_t
     int i_paddright;
 };
 
+#define IDX_TOP 0
+#define IDX_LEFT 1
+#define IDX_BOTTOM 2
+#define IDX_RIGHT 3
+
+struct transform {
+    unsigned idx_top;
+    unsigned idx_left;
+    /* idx_bottom is idx_top XOR 2
+       idx_right is idx_left XOR 2 */
+};
+
+static const struct transform transforms[8] = {
+    [ORIENT_TOP_LEFT]     = { IDX_TOP,    IDX_LEFT },
+    [ORIENT_TOP_RIGHT]    = { IDX_TOP,    IDX_RIGHT },
+    [ORIENT_BOTTOM_LEFT]  = { IDX_BOTTOM, IDX_LEFT },
+    [ORIENT_BOTTOM_RIGHT] = { IDX_BOTTOM, IDX_RIGHT },
+    [ORIENT_LEFT_TOP]     = { IDX_LEFT,   IDX_TOP },
+    [ORIENT_LEFT_BOTTOM]  = { IDX_LEFT,   IDX_BOTTOM },
+    [ORIENT_RIGHT_TOP]    = { IDX_RIGHT,  IDX_TOP },
+    [ORIENT_RIGHT_BOTTOM] = { IDX_RIGHT,  IDX_BOTTOM },
+};
+
 /*****************************************************************************
  * OpenFilter: probe the filter and return score
  *****************************************************************************/
@@ -173,6 +196,23 @@ static int OpenFilter( vlc_object_t *p_this )
     GET_OPTION( paddbottom )
     GET_OPTION( paddleft )
     GET_OPTION( paddright )
+
+    video_format_t *fmt = &p_filter->fmt_in.video;
+    video_orientation_t orientation = fmt->orientation;
+    const struct transform *tx = &transforms[orientation];
+    /* In the same order as IDX_ constants values */
+    unsigned crop[] = { p_sys->i_croptop, p_sys->i_cropleft, p_sys->i_cropbottom, p_sys->i_cropright };
+    unsigned padd[] = { p_sys->i_paddtop, p_sys->i_paddleft, p_sys->i_paddbottom, p_sys->i_paddright };
+
+    p_sys->i_croptop = crop[tx->idx_top];
+    p_sys->i_cropleft = crop[tx->idx_left];
+    p_sys->i_cropbottom = crop[tx->idx_top ^ 2];
+    p_sys->i_cropright = crop[tx->idx_left ^ 2];
+
+    p_sys->i_paddtop = padd[tx->idx_top];
+    p_sys->i_paddleft = padd[tx->idx_left];
+    p_sys->i_paddbottom = padd[tx->idx_top ^ 2];
+    p_sys->i_paddright = padd[tx->idx_left ^ 2];
 
     p_filter->fmt_out.video.i_height =
     p_filter->fmt_out.video.i_visible_height =
