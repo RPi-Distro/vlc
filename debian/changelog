@@ -1,3 +1,9 @@
+vlc (3.0.17.4-1) unstable; urgency=medium
+
+  * New upstream version 3.0.17.4
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 23 Apr 2022 15:37:39 +0200
+
 vlc (3.0.17.3-1) unstable; urgency=medium
 
   * New upstream version 3.0.17.3
