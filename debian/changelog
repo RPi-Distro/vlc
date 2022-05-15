@@ -1,3 +1,10 @@
+vlc (3.0.17.4-2) unstable; urgency=medium
+
+  * debian/patches: Apply upstream patches to fix build with dav1d 1.0.0
+    (Closes: #1008609)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 15 May 2022 12:58:35 +0200
+
 vlc (3.0.17.4-1) unstable; urgency=medium
 
   * New upstream version 3.0.17.4
