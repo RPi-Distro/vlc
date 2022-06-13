@@ -145,6 +145,7 @@ confflags += \
 	--disable-vpx \
 	--disable-vsxu \
 	--disable-wasapi \
+	--disable-mmal-avcodec \
 	$(NULL)
 
 # Linux specific flags
@@ -241,11 +242,9 @@ endif
 ifeq (,$(filter-out arm,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-neon
 confflags += --enable-mmal
-confflags += --enable-mmal-avcodec
 else
 confflags += --disable-neon
 confflags += --disable-mmal
-confflags += --disable-mmal-avcodec
 removeplugins += neon
 removeplugins += mmal
 endif

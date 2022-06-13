@@ -233,5 +233,13 @@ usr/lib/*/vlc/plugins/video_output/libfb_plugin.so [fb]
 usr/lib/*/vlc/plugins/video_output/libvdummy_plugin.so
 usr/lib/*/vlc/plugins/video_output/libvmem_plugin.so
 usr/lib/*/vlc/plugins/video_output/libyuv_plugin.so
-usr/lib/*/vlc/plugins/mmal/libmmal_*_plugin.so [mmal]
+usr/lib/*/vlc/plugins/mmal/libmmal_codec_plugin.so [mmal]
+usr/lib/*/vlc/plugins/mmal/libmmal_converter_plugin.so [mmal]
+usr/lib/*/vlc/plugins/mmal/libmmal_deinterlace_plugin.so [mmal]
+usr/lib/*/vlc/plugins/mmal/libmmal_vout_plugin.so [mmal]
+usr/lib/*/vlc/plugins/mmal/libmmal_xsplitter_plugin.so
+usr/lib/*/vlc/plugins/drm/libdrm_avcodec_plugin.so
+usr/lib/*/vlc/plugins/drm/libdrm_conv_sand30_plugin.so
+usr/lib/*/vlc/plugins/drm/libdrm_gl_conv_plugin.so
+usr/lib/*/vlc/plugins/video_output/libdrm_vout_plugin.so
 EOF

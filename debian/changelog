@@ -1,3 +1,17 @@
+vlc (3.0.16-1+rpi1+rpt3) bullseye; urgency=medium
+
+  * Add MMAL patch 26
+  * Refresh patches
+  * Disable mmal-avcodec
+  * Install new plugins:
+    - libdrm_avcodec_plugin.so
+    - libdrm_conv_sand30_plugin.so
+    - libdrm_gl_conv_plugin.so
+    - libdrm_vout_plugin.so
+  * Ship libmmal_xsplitter_plugin.so regardless of mmal flag
+
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 13 Jun 2022 15:34:14 +0100
+
 vlc (3.0.16-1+rpi1+rpt2) bullseye; urgency=medium
 
   * Re-enable live555 plugin
