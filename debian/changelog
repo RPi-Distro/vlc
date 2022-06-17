@@ -1,3 +1,12 @@
+vlc (3.0.17.4-3) unstable; urgency=medium
+
+  * debian/control: Move vlc-plugin-pipewire to Suggests
+    The pipewire plugin fails to recognize some configurations where pipewire
+    is available but not used as sound server.
+  * debian/patches: Fix build with caca 0.99.beta20
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 17 Jun 2022 19:37:03 +0200
+
 vlc (3.0.17.4-2) unstable; urgency=medium
 
   * debian/patches: Apply upstream patches to fix build with dav1d 1.0.0
