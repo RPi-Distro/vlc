@@ -153,6 +153,7 @@ Recommends: vlc-l10n (= ${source:Version}),
             vlc-plugin-visualization (= ${binary:Version})
 Suggests: vlc-plugin-fluidsynth (= ${source:Version}),
           vlc-plugin-jack (= ${source:Version}),
+          vlc-plugin-pipewire [linux-any],
           vlc-plugin-svg (= ${source:Version})
 Provides: mp3-decoder
 Description: multimedia player and streamer
