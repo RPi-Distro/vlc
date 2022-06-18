@@ -1,3 +1,12 @@
+vlc (3.0.17.4-0+deb11u1) bullseye-security; urgency=medium
+
+  * New upstream version 3.0.17.4
+    - Fix an infinite loop in MP4
+    - Fix crashes with VP9 streams
+  * debian/gbp.conf: Work in bullseye branch
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 18 Jun 2022 15:42:34 +0200
+
 vlc (3.0.16-1) unstable; urgency=medium
 
   * Upload to unstable
