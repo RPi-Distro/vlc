@@ -22,14 +22,14 @@
 #endif
 
 #include "M3U8.hpp"
-#include "Representation.hpp"
+#include "HLSRepresentation.hpp"
 #include "../../adaptive/playlist/BasePeriod.h"
 #include "../../adaptive/playlist/BaseAdaptationSet.h"
 
 using namespace hls::playlist;
 
 M3U8::M3U8 (vlc_object_t *p_object) :
-    AbstractPlaylist(p_object)
+    BasePlaylist(p_object)
 {
     minUpdatePeriod.Set( 5 * CLOCK_FREQ );
 }
@@ -45,14 +45,14 @@ bool M3U8::isLive() const
     for(itp = periods.begin(); itp != periods.end(); ++itp)
     {
         const BasePeriod *period = *itp;
-        std::vector<BaseAdaptationSet *>::const_iterator ita;
-        for(ita = period->getAdaptationSets().begin(); ita != period->getAdaptationSets().end(); ++ita)
+        const std::vector<BaseAdaptationSet *> &sets = period->getAdaptationSets();
+        for(auto ita = sets.cbegin(); ita != sets.cend(); ++ita)
         {
             BaseAdaptationSet *adaptSet = *ita;
-            std::vector<BaseRepresentation *>::iterator itr;
-            for(itr = adaptSet->getRepresentations().begin(); itr != adaptSet->getRepresentations().end(); ++itr)
+            const std::vector<BaseRepresentation *> &reps = adaptSet->getRepresentations();
+            for(auto itr = reps.cbegin(); itr != reps.cend(); ++itr)
             {
-                const Representation *rep = dynamic_cast<const Representation *>(*itr);
+                const HLSRepresentation *rep = dynamic_cast<const HLSRepresentation *>(*itr);
                 if(rep->initialized())
                 {
                     if(rep->isLive())
@@ -65,12 +65,5 @@ bool M3U8::isLive() const
     }
 
     return b_live;
-}
-
-void M3U8::debug()
-{
-    std::vector<BasePeriod *>::const_iterator i;
-    for(i = periods.begin(); i != periods.end(); ++i)
-        (*i)->debug(VLC_OBJECT(p_object));
 }
 

@@ -32,11 +32,11 @@ namespace adaptive
     class AbstractDemuxer
     {
         public:
-            enum Status
+            enum class Status
             {
-                STATUS_SUCCESS,
-                STATUS_ERROR,
-                STATUS_END_OF_FILE,
+                Success,
+                Error,
+                Eof,
             };
             AbstractDemuxer();
             virtual ~AbstractDemuxer();
@@ -59,34 +59,15 @@ namespace adaptive
             bool b_candetectswitches;
     };
 
-    class MimeDemuxer : public AbstractDemuxer
-    {
-        public:
-            MimeDemuxer(vlc_object_t *, const DemuxerFactoryInterface *,
-                        es_out_t *, AbstractSourceStream *);
-            virtual ~MimeDemuxer();
-            virtual Status demux(mtime_t); /* impl */
-            virtual void drain(); /* impl */
-            virtual bool create(); /* impl */
-            virtual void destroy(); /* impl */
-
-        protected:
-            AbstractSourceStream *sourcestream;
-            vlc_object_t *p_obj;
-            AbstractDemuxer *demuxer;
-            const DemuxerFactoryInterface *factory;
-            es_out_t *p_es_out;
-    };
-
     class Demuxer : public AbstractDemuxer
     {
         public:
             Demuxer(vlc_object_t *, const std::string &, es_out_t *, AbstractSourceStream *);
             virtual ~Demuxer();
-            virtual Status demux(mtime_t); /* impl */
-            virtual void drain(); /* impl */
-            virtual bool create(); /* impl */
-            virtual void destroy(); /* impl */
+            virtual Status demux(mtime_t) override;
+            virtual void drain() override;
+            virtual bool create() override;
+            virtual void destroy() override;
 
         protected:
             AbstractSourceStream *sourcestream;
@@ -102,8 +83,8 @@ namespace adaptive
         public:
             SlaveDemuxer(vlc_object_t *, const std::string &, es_out_t *, AbstractSourceStream *);
             virtual ~SlaveDemuxer();
-            virtual bool create(); /* reimpl */
-            virtual Status demux(mtime_t); /* reimpl */
+            virtual bool create() override;
+            virtual Status demux(mtime_t) override;
 
         private:
             mtime_t length;

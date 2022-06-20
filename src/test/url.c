@@ -2,7 +2,7 @@
  * url.c: Test for url encoding/decoding stuff
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: ab02571ac77b83acc765e05f0c9ee5452f5dfc8b $
+ * $Id: bf89ec8f7b535c64d3cd5cf8460ebc46b29a99b7 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -287,6 +287,8 @@ int main (void)
                    "www.example.com", 0, "/caf%C3%A9/", NULL);
     test_url_parse("p://h/white%20spaced", "p", NULL, NULL, "h", 0,
                    "/white%20spaced", NULL);
+    test_url_parse("p://h/[hello:world]", "p", NULL, NULL, "h", 0,
+                   "/[hello:world]", NULL);
     /* Relative URIs */
     test_url_parse("//example.com", NULL, NULL, NULL, "example.com", 0,
                    NULL, NULL);

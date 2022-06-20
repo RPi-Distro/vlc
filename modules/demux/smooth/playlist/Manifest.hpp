@@ -20,9 +20,7 @@
 #ifndef MANIFEST_HPP
 #define MANIFEST_HPP
 
-#include "../../adaptive/playlist/AbstractPlaylist.hpp"
-#include "../../adaptive/playlist/Inheritables.hpp"
-#include "../../adaptive/Time.hpp"
+#include "../../adaptive/playlist/BasePlaylist.hpp"
 
 namespace smooth
 {
@@ -30,8 +28,7 @@ namespace smooth
     {
         using namespace adaptive::playlist;
 
-        class Manifest : public AbstractPlaylist,
-                         public TimescaleAble
+        class Manifest : public BasePlaylist
         {
             friend class ManifestParser;
 
@@ -39,8 +36,7 @@ namespace smooth
                 Manifest(vlc_object_t *);
                 virtual ~Manifest();
 
-                virtual bool                    isLive() const;
-                virtual void                    debug();
+                virtual bool                    isLive() const override;
 
             private:
                 bool b_live;

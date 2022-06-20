@@ -21,7 +21,6 @@
 #define FORGEDINITSEGMENT_HPP
 
 #include "../../adaptive/playlist/Segment.h"
-#include "../../adaptive/playlist/Inheritables.hpp"
 
 #include <vlc_es.h>
 #include <vlc_codecs.h>
@@ -34,15 +33,14 @@ namespace smooth
         using namespace adaptive::playlist;
         using namespace adaptive::http;
 
-        class ForgedInitSegment : public InitSegment,
-                                  public TimescaleAble
+        class ForgedInitSegment : public InitSegment
         {
             public:
                 ForgedInitSegment(ICanonicalUrl *parent, const std::string &,
                                   uint64_t, uint64_t);
                 virtual ~ForgedInitSegment();
                 virtual SegmentChunk* toChunk(SharedResources *, AbstractConnectionManager *,
-                                              size_t, BaseRepresentation *); /* reimpl */
+                                              size_t, BaseRepresentation *) override;
                 void setWaveFormatEx(const std::string &);
                 void setCodecPrivateData(const std::string &);
                 void setChannels(uint16_t);
@@ -69,6 +67,7 @@ namespace smooth
                 vlc_fourcc_t fourcc;
                 enum es_format_category_e es_type;
                 unsigned track_id;
+                Timescale timescale;
         };
     }
 }

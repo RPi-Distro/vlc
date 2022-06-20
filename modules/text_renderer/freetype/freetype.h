@@ -2,7 +2,7 @@
  * freetype.h : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: b0ef9cf178a2ab378f041848d36bec8301bf164e $
+ * $Id: 65d7201985895a1a8858390b8e1d6449a366b39d $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -54,16 +54,11 @@
 # define FT_MulFix(v, s) (((v)*(s))>>16)
 #endif
 
-#ifdef __OS2__
-typedef uint16_t uni_char_t;
-# define FREETYPE_TO_UCS    "UCS-2LE"
-#else
 typedef uint32_t uni_char_t;
-# if defined(WORDS_BIGENDIAN)
-#  define FREETYPE_TO_UCS   "UCS-4BE"
-# else
-#  define FREETYPE_TO_UCS   "UCS-4LE"
-# endif
+#if defined(WORDS_BIGENDIAN)
+# define FREETYPE_TO_UCS   "UCS-4BE"
+#else
+# define FREETYPE_TO_UCS   "UCS-4LE"
 #endif
 
 /*****************************************************************************

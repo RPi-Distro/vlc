@@ -43,13 +43,15 @@ namespace adaptive
             private:
                 static void * downloaderThread(void *);
                 void Run();
-                void DownloadSource(HTTPChunkBufferedSource *);
                 vlc_thread_t thread_handle;
                 vlc_mutex_t  lock;
                 vlc_cond_t   waitcond;
+                vlc_cond_t   updatedcond;
                 bool         thread_handle_valid;
                 bool         killed;
+                bool         cancel_current;
                 std::list<HTTPChunkBufferedSource *> chunks;
+                HTTPChunkBufferedSource *current;
         };
 
     }

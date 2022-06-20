@@ -2,7 +2,7 @@
  * playlist_model.cpp : Manage playlist model
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 99e4c8f942db79ad8f043d33a26b4927cc96397f $
+ * $Id: a6bdd1f8e40f6fcb2c5839f418a2341d53dd6fe3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakkka <ileoo (at) videolan dot org>
@@ -804,6 +804,14 @@ void PLModel::recurseDelete( QList<AbstractPLItem*> children, QModelIndexList *f
 }
 
 /******* Volume III: Sorting and searching ********/
+void PLModel::shuffle()
+{
+    msg_Dbg( p_intf, "Shuffling playlist items");
+
+    sortInternal( indexByPLID( rootItem->id(), 0 ),
+                  SORT_RANDOM, ORDER_NORMAL );
+}
+
 void PLModel::sort( const int column, Qt::SortOrder order )
 {
     sort( QModelIndex(), indexByPLID( rootItem->id(), 0 ) , column, order );
@@ -816,13 +824,30 @@ void PLModel::sort( QModelIndex caller, QModelIndex rootIndex, const int column,
     int meta = columnToMeta( column );
     if( meta == COLUMN_END || meta == COLUMN_COVER ) return;
 
-    PLItem *item = ( rootIndex.isValid() ) ? getItem( rootIndex )
-                                           : rootItem;
-    if( !item ) return;
-
     input_item_t* p_caller_item = caller.isValid()
         ? static_cast<AbstractPLItem*>( caller.internalPointer() )->inputItem()
         : NULL;
+
+    sortInternal( rootIndex, i_column_sorting( meta ),
+                  order == Qt::AscendingOrder ?
+                      ORDER_NORMAL : ORDER_REVERSE );
+
+    /* if we have popup item, try to make sure that you keep that item visible */
+    if( p_caller_item )
+    {
+        QModelIndex idx = indexByInputItem( p_caller_item, 0 );
+
+        emit currentIndexChanged( idx );
+    }
+    else if( currentIndex().isValid() )
+        emit currentIndexChanged( currentIndex() );
+}
+
+void PLModel::sortInternal( QModelIndex rootIndex, int mode, int type )
+{
+    PLItem *item = ( rootIndex.isValid() ) ? getItem( rootIndex )
+                                           : rootItem;
+    if( !item ) return;
 
     int i_root_id = item->id();
 
@@ -842,10 +867,7 @@ void PLModel::sort( QModelIndex caller, QModelIndex rootIndex, const int column,
                                                         i_root_id );
         if( p_root )
         {
-            playlist_RecursiveNodeSort( p_playlist, p_root,
-                                        i_column_sorting( meta ),
-                                        order == Qt::AscendingOrder ?
-                                            ORDER_NORMAL : ORDER_REVERSE );
+            playlist_RecursiveNodeSort( p_playlist, p_root, mode, type );
         }
 
         if( count )
@@ -855,16 +877,6 @@ void PLModel::sort( QModelIndex caller, QModelIndex rootIndex, const int column,
             endInsertRows( );
         }
     }
-
-    /* if we have popup item, try to make sure that you keep that item visible */
-    if( p_caller_item )
-    {
-        QModelIndex idx = indexByInputItem( p_caller_item, 0 );
-
-        emit currentIndexChanged( idx );
-    }
-    else if( currentIndex().isValid() )
-        emit currentIndexChanged( currentIndex() );
 }
 
 void PLModel::filter( const QString& search_text, const QModelIndex & idx, bool b_recursive )
@@ -986,6 +998,10 @@ bool PLModel::action( QAction *action, const QModelIndexList &indexes )
         doDelete( indexes );
         return true;
 
+    case ACTION_SHUFFLE:
+        shuffle();
+        return true;
+
     case ACTION_SORT:
         if ( !indexes.empty() )
             index = indexes.first();
@@ -1037,6 +1053,7 @@ bool PLModel::isSupportedAction( actions action, const QModelIndex &index ) cons
         /* Only if we are not already in Current Playing */
         return getPLRootType() != ROOTTYPE_CURRENT_PLAYING;
     case ACTION_SORT:
+    case ACTION_SHUFFLE:
         return rowCount();
     case ACTION_PLAY:
     {

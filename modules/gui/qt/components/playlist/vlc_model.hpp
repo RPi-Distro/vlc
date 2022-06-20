@@ -2,7 +2,7 @@
  * vlc_model.hpp : base for playlist and ml model
  ****************************************************************************
  * Copyright (C) 2010 the VideoLAN team and AUTHORS
- * $Id: d0d3a2821b1be820fd9915e802deb3943efdafab $
+ * $Id: 6e926181ae56ae4b1f951d6df7515c1d89f8e30c $
  *
  * Authors: Srikanth Raju <srikiraju#gmail#com>
  *
@@ -95,7 +95,8 @@ public:
         ACTION_ENQUEUEFILE,
         ACTION_ENQUEUEDIR,
         ACTION_ENQUEUEGENERIC,
-        ACTION_SAVETOPLAYLIST
+        ACTION_SAVETOPLAYLIST,
+        ACTION_SHUFFLE
     };
     struct actionsContainerType
     {

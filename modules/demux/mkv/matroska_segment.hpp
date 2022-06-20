@@ -2,7 +2,7 @@
  * matroska_segment.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 8a7454a1cd39530a9988cd08c46838cb9659f4e3 $
+ * $Id: cf6486574263709a3f60f937f797c09f739a83ce $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -96,6 +96,7 @@ public:
     /* all tracks */
     tracks_map_t tracks;
     SegmentSeeker::track_ids_t priority_tracks;
+    mtime_t                  pcr_shift = 0;
 
     /* from seekhead */
     int                     i_seekhead_count;

@@ -2,7 +2,7 @@
  * VLCPlaylist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 07413d05a5471d7c99459ddb1f232b244249590c $
+ * $Id: f04ef0b447dc88379fa1957295ad7755a51d9c9d $
  *
  * Authors: Derk-Jan Hartman <hartman at videola/n dot org>
  *          Benjamin Pracht <bigben at videolan dot org>
@@ -228,6 +228,7 @@
     [_infoPlaylistMenuItem setTitle: _NS("Media Information...")];
     [_revealInFinderPlaylistMenuItem setTitle: _NS("Reveal in Finder")];
     [_addFilesToPlaylistMenuItem setTitle: _NS("Add File...")];
+    [_shufflePlaylistMenuItem setTitle: _NS("Shuffle playlist")];
 }
 
 - (void)playlistUpdated
@@ -451,6 +452,10 @@
         return [_outlineView numberOfSelectedRows] > 0;
     } else if ([item action] == @selector(showInfoPanel:)) {
         return [_outlineView numberOfSelectedRows] > 0;
+    } else if ([item action] == @selector(shufflePlaylist:)) {
+        return ([_outlineView numberOfRows] > 0 &&
+                [[self model] currentRootType] != ROOT_TYPE_MEDIALIBRARY &&
+                _model.editAllowed);
     }
 
     return YES;
@@ -679,6 +684,14 @@
         selectedRows = [_outlineView selectedRowIndexes];
         [selectedRows getIndexes:indexes maxCount:count inIndexRange:nil];
     }
+}
+
+- (IBAction)shufflePlaylist:(id)sender
+{
+    if ([[self model] currentRootType] == ROOT_TYPE_MEDIALIBRARY)
+        return;
+
+    [[self model] sortPlaylistBy:SORT_RANDOM withOrder:ORDER_NORMAL];
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)o_event

@@ -1,7 +1,6 @@
 # aom
-AOM_HASH := add4b15580e410c00c927ee366fa65545045a5d9
-AOM_VERSION := v1.0.0.errata.1
-AOM_GITURL := https://aomedia.googlesource.com/aom/+archive/$(AOM_HASH).tar.gz
+AOM_VERSION := v3.1.1
+AOM_GITURL := https://aomedia.googlesource.com/aom/+archive/$(AOM_VERSION).tar.gz
 
 PKGS += aom
 ifeq ($(call need_pkg,"aom"),)
@@ -9,17 +8,16 @@ PKGS_FOUND += aom
 endif
 
 $(TARBALLS)/aom-$(AOM_VERSION).tar.gz:
-	$(call download,$(AOM_GITURL))
+	$(call download_pkg,$(AOM_GITURL),aom)
 
 .sum-aom: aom-$(AOM_VERSION).tar.gz
 	$(warning $@ not implemented)
 	touch $@
 
 aom: aom-$(AOM_VERSION).tar.gz .sum-aom
-	rm -Rf $@-$(AOM_VERSION) $@
-	mkdir -p $@-$(AOM_VERSION)
-	tar xvzfo "$<" -C $@-$(AOM_VERSION)
-	$(APPLY) $(SRC)/aom/aom-target-cpu.patch
+	rm -Rf $(UNPACK_DIR) $@
+	mkdir -p $(UNPACK_DIR)
+	tar xvzfo "$<" -C $(UNPACK_DIR)
 ifdef HAVE_ANDROID
 	$(APPLY) $(SRC)/aom/aom-android-pthreads.patch
 	$(APPLY) $(SRC)/aom/aom-android-cpufeatures.patch
@@ -29,13 +27,9 @@ ifdef HAVE_ANDROID
 	cp $(ANDROID_NDK)/sources/android/cpufeatures/cpu-features.c $(ANDROID_NDK)/sources/android/cpufeatures/cpu-features.h aom/aom_ports/
 endif
 
-AOM_CFLAGS   := $(CFLAGS)
-AOM_CXXFLAGS := $(CXXFLAGS)
 DEPS_aom =
 ifdef HAVE_WIN32
 DEPS_aom += pthreads $(DEPS_pthreads)
-AOM_CFLAGS   += -DPTW32_STATIC_LIB
-AOM_CXXFLAGS += -DPTW32_STATIC_LIB
 endif
 
 AOM_LDFLAGS := $(LDFLAGS)
@@ -96,8 +90,10 @@ endif
 
 # libaom doesn't allow in-tree builds
 .aom: aom toolchain.cmake
+	rm -rf $(PREFIX)/include/aom
+	cd $< && rm -rf aom_build && mkdir -p aom_build
 	cd $< && mkdir -p aom_build
-	cd $</aom_build && LDFLAGS="$(AOM_LDFLAGS)" $(HOSTVARS) CFLAGS="$(AOM_CFLAGS)" CXXFLAGS="$(AOM_CXXFLAGS)" $(CMAKE) ../ $(AOM_CONF)
+	cd $</aom_build && LDFLAGS="$(AOM_LDFLAGS)" $(HOSTVARS) $(CMAKE) ../ $(AOM_CONF)
 	cd $< && $(CMAKEBUILD) aom_build
 	$(call pkg_static,"aom_build/aom.pc")
 	cd $</aom_build && $(CMAKEBUILD) . --target install

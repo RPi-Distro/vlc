@@ -1,5 +1,5 @@
 /*****************************************************************************
- * srt.c: SRT (Secure Reliable Transport) input module
+ * srt.c: SRT (Secure Reliable Transport) access module
  *****************************************************************************
  * Copyright (C) 2017-2018, Collabora Ltd.
  * Copyright (C) 2018, Haivision Systems Inc.
@@ -21,42 +21,19 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+#include "srt_common.h"
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_interrupt.h>
 #include <vlc_fs.h>
 #include <vlc_plugin.h>
 #include <vlc_access.h>
+#include <vlc_interrupt.h>
 
 #include <vlc_network.h>
 #include <vlc_url.h>
 
-#include <srt/srt.h>
 
-/* libsrt defines default packet size as 1316 internally
- * so srt module takes same value. */
-#define SRT_DEFAULT_CHUNK_SIZE 1316
-/* The default timeout is -1 (infinite) */
-#define SRT_DEFAULT_POLL_TIMEOUT -1
-/* The default latency is 125
- * which uses srt library internally */
-#define SRT_DEFAULT_LATENCY 125
-/* Crypto key length in bytes. */
-#define SRT_KEY_LENGTH_TEXT "Crypto key length in bytes"
-#define SRT_DEFAULT_KEY_LENGTH 16
-static const int srt_key_lengths[] = {
-    16, 24, 32,
-};
 
-static const char *const srt_key_length_names[] = {
-    "16 bytes", "24 bytes", "32 bytes",
-};
-
-struct stream_sys_t
+typedef struct stream_sys_t
 {
     SRTSOCKET   sock;
     int         i_poll_id;
@@ -64,7 +41,10 @@ struct stream_sys_t
     bool        b_interrupted;
     char       *psz_host;
     int         i_port;
-};
+    int         i_chunks; /* Number of chunks to allocate in the next read */
+} stream_sys_t;
+
+
 
 static void srt_wait_interrupted(void *p_data)
 {
@@ -111,10 +91,15 @@ static int Control(stream_t *p_stream, int i_query, va_list args)
 
 static bool srt_schedule_reconnect(stream_t *p_stream)
 {
-    int         i_latency;
-    int         stat;
-    char        *psz_passphrase = NULL;
-
+    vlc_object_t *strm_obj = (vlc_object_t *) p_stream;
+    int i_latency=var_InheritInteger( p_stream, SRT_PARAM_LATENCY );
+    int stat;
+    char *psz_passphrase = var_InheritString( p_stream, SRT_PARAM_PASSPHRASE );
+    bool passphrase_needs_free = true;
+    char *psz_streamid = var_InheritString( p_stream, SRT_PARAM_STREAMID );
+    bool streamid_needs_free = true;
+    char *url = NULL;
+    srt_params_t params;
     struct addrinfo hints = {
         .ai_socktype = SOCK_DGRAM,
     }, *res = NULL;
@@ -149,6 +134,24 @@ static bool srt_schedule_reconnect(stream_t *p_stream)
         goto out;
     }
 
+    if (p_stream->psz_url) {
+        url = strdup( p_stream->psz_url );
+        if (srt_parse_url( url, &params )) {
+            if (params.latency != -1)
+                i_latency = params.latency;
+            if (params.passphrase != NULL) {
+                free( psz_passphrase );
+                passphrase_needs_free = false;
+                psz_passphrase = (char *) params.passphrase;
+            }
+	    if (params.streamid != NULL ) {
+		free( psz_streamid );
+		streamid_needs_free = false;
+		psz_streamid = (char *) params.streamid;
+	    }
+        }
+    }
+
     /* Make SRT non-blocking */
     srt_setsockopt( p_sys->sock, 0, SRTO_SNDSYN,
         &(bool) { false }, sizeof( bool ) );
@@ -164,18 +167,24 @@ static bool srt_schedule_reconnect(stream_t *p_stream)
         &(int) { 0 }, sizeof( int ) );
 
     /* Set latency */
-    i_latency = var_InheritInteger( p_stream, "latency" );
-    srt_setsockopt( p_sys->sock, 0, SRTO_TSBPDDELAY,
-        &i_latency, sizeof( int ) );
+    srt_set_socket_option( strm_obj, SRT_PARAM_LATENCY, p_sys->sock,
+            SRTO_LATENCY, &i_latency, sizeof(i_latency) );
 
-    psz_passphrase = var_InheritString( p_stream, "passphrase" );
-    if ( psz_passphrase != NULL && psz_passphrase[0] != '\0')
-    {
-        int i_key_length = var_InheritInteger( p_stream, "key-length" );
-        srt_setsockopt( p_sys->sock, 0, SRTO_PASSPHRASE,
-            psz_passphrase, strlen( psz_passphrase ) );
-        srt_setsockopt( p_sys->sock, 0, SRTO_PBKEYLEN,
-            &i_key_length, sizeof( int ) );
+    /* set passphrase */
+    if (psz_passphrase != NULL && psz_passphrase[0] != '\0') {
+        int i_key_length = var_InheritInteger( p_stream, SRT_PARAM_KEY_LENGTH );
+
+        srt_set_socket_option( strm_obj, SRT_PARAM_KEY_LENGTH, p_sys->sock,
+                SRTO_PBKEYLEN, &i_key_length, sizeof(i_key_length) );
+
+        srt_set_socket_option( strm_obj, SRT_PARAM_PASSPHRASE, p_sys->sock,
+                SRTO_PASSPHRASE, psz_passphrase, strlen(psz_passphrase) );
+    }
+
+    /* set stream id */
+    if (psz_streamid != NULL && psz_streamid[0] != '\0') {
+        srt_set_socket_option( strm_obj, SRT_PARAM_STREAMID, p_sys->sock,
+                SRTO_STREAMID, psz_streamid, strlen(psz_streamid) );
     }
 
     srt_epoll_add_usock( p_sys->i_poll_id, p_sys->sock,
@@ -185,13 +194,17 @@ static bool srt_schedule_reconnect(stream_t *p_stream)
     msg_Dbg( p_stream, "Schedule SRT connect (dest addresss: %s, port: %d).",
         p_sys->psz_host, p_sys->i_port);
 
-    stat = srt_connect( p_sys->sock, res->ai_addr, res->ai_addrlen);
-    if ( stat == SRT_ERROR )
-    {
+    stat = srt_connect( p_sys->sock, res->ai_addr, res->ai_addrlen );
+    if (stat == SRT_ERROR) {
         msg_Err( p_stream, "Failed to connect to server (reason: %s)",
-                 srt_getlasterror_str() );
+                srt_getlasterror_str() );
         failed = true;
     }
+
+    /* Reset the number of chunks to allocate as the bitrate of
+     * the stream may have changed.
+     */
+    p_sys->i_chunks = SRT_MIN_CHUNKS_TRYREAD;
 
 out:
     if (failed && p_sys->sock != SRT_INVALID_SOCK)
@@ -201,8 +214,12 @@ out:
         p_sys->sock = SRT_INVALID_SOCK;
     }
 
+    if (passphrase_needs_free)
+        free( psz_passphrase );
+    if (streamid_needs_free)
+	free( psz_streamid );
     freeaddrinfo( res );
-    free( psz_passphrase );
+    free( url );
 
     return !failed;
 }
@@ -210,8 +227,9 @@ out:
 static block_t *BlockSRT(stream_t *p_stream, bool *restrict eof)
 {
     stream_sys_t *p_sys = p_stream->p_sys;
-    int i_chunk_size = var_InheritInteger( p_stream, "chunk-size" );
-    int i_poll_timeout = var_InheritInteger( p_stream, "poll-timeout" );
+    int i_poll_timeout = var_InheritInteger( p_stream, SRT_PARAM_POLL_TIMEOUT );
+    /* SRT doesn't have a concept of EOF for live streams. */
+    VLC_UNUSED(eof);
 
     if ( vlc_killed() )
     {
@@ -219,7 +237,12 @@ static block_t *BlockSRT(stream_t *p_stream, bool *restrict eof)
         return NULL;
     }
 
-    block_t *pkt = block_Alloc( i_chunk_size );
+    if ( p_sys->i_chunks == 0 )
+        p_sys->i_chunks = SRT_MIN_CHUNKS_TRYREAD;
+
+    const size_t i_chunk_size = SRT_LIVE_MAX_PLSIZE;
+    const size_t bufsize = i_chunk_size * p_sys->i_chunks;
+    block_t *pkt = block_Alloc( bufsize );
     if ( unlikely( pkt == NULL ) )
     {
         return NULL;
@@ -257,29 +280,59 @@ static block_t *BlockSRT(stream_t *p_stream, bool *restrict eof)
                 continue;
         }
 
-        int stat = srt_recvmsg( p_sys->sock,
-            (char *)pkt->p_buffer, i_chunk_size );
-        if ( stat > 0 )
+        /* Try to get as much data as possible out of the lib, if there
+         * is still some left, increase the number of chunks to read so that
+         * it will read faster on the next iteration. This way the buffer will
+         * grow until it reads fast enough to keep the library empty after
+         * each iteration.
+         */
+        pkt->i_buffer = 0;
+        while ( ( bufsize - pkt->i_buffer ) >= i_chunk_size )
         {
-            pkt->i_buffer = stat;
-            goto out;
+            int stat = srt_recvmsg( p_sys->sock,
+                (char *)( pkt->p_buffer + pkt->i_buffer ),
+                bufsize - pkt->i_buffer );
+            if ( stat <= 0 )
+            {
+                break;
+            }
+            pkt->i_buffer += (size_t)stat;
         }
 
-        msg_Err( p_stream, "failed to receive packet, set EOS (reason: %s)",
-            srt_getlasterror_str() );
-        *eof = true;
-        break;
+#if 0
+        msg_Dbg ( p_stream, "Read %zu bytes out of a max of %zu"
+            " (%d chunks of %zu bytes)", pkt->i_buffer,
+            p_sys->i_chunks * i_chunk_size, p_sys->i_chunks,
+                i_chunk_size );
+#endif
+
+        /* Gradually adjust number of chunks we read at a time
+        * up to a predefined maximum. The actual number we might
+        * settle on depends on stream's bit rate.
+        */
+        size_t rem = bufsize - pkt->i_buffer;
+        if ( rem < i_chunk_size )
+        {
+            if ( p_sys->i_chunks < SRT_MAX_CHUNKS_TRYREAD )
+            {
+                p_sys->i_chunks++;
+            }
+        }
+
+        goto out;
     }
 
-    /* if the poll reports errors for any reason at all
-     * including a timeout, or there is a read error,
-     * we skip the turn.
+    /* if the poll reports errors for any reason at all,
+     * including a timeout, we skip the turn.
      */
-
-    block_Release(pkt);
-    pkt = NULL;
+    pkt->i_buffer = 0;
 
 out:
+    if (pkt->i_buffer == 0) {
+      block_Release(pkt);
+      pkt = NULL;
+    }
+
     vlc_interrupt_unregister();
 
     /* Re-add the socket to the poll if we were interrupted */
@@ -329,6 +382,7 @@ static int Open(vlc_object_t *p_this)
         msg_Err( p_stream, "Failed to create poll id for SRT socket." );
         goto failed;
     }
+    p_sys->sock = SRT_INVALID_SOCK;
 
     if ( !srt_schedule_reconnect( p_stream ) )
     {
@@ -345,16 +399,11 @@ static int Open(vlc_object_t *p_this)
 failed:
     vlc_mutex_destroy( &p_sys->lock );
 
-    if ( p_sys != NULL )
-    {
-        if ( p_sys->sock != -1 ) srt_close( p_sys->sock );
-        if ( p_sys->i_poll_id != -1 ) srt_epoll_release( p_sys->i_poll_id );
+    if ( p_sys->sock != SRT_INVALID_SOCK ) srt_close( p_sys->sock );
+    if ( p_sys->i_poll_id != -1 ) srt_epoll_release( p_sys->i_poll_id );
+    srt_cleanup();
 
-        free( p_sys->psz_host );
-
-        vlc_obj_free( p_this, p_sys );
-        p_stream->p_sys = NULL;
-    }
+    free( p_sys->psz_host );
 
     return VLC_EGENERIC;
 }
@@ -364,42 +413,41 @@ static void Close(vlc_object_t *p_this)
     stream_t     *p_stream = (stream_t*)p_this;
     stream_sys_t *p_sys = p_stream->p_sys;
 
-    if ( p_sys )
-    {
-        vlc_mutex_destroy( &p_sys->lock );
+    vlc_mutex_destroy( &p_sys->lock );
 
-        srt_epoll_remove_usock( p_sys->i_poll_id, p_sys->sock );
-        srt_close( p_sys->sock );
-        srt_epoll_release( p_sys->i_poll_id );
+    srt_epoll_remove_usock( p_sys->i_poll_id, p_sys->sock );
+    srt_close( p_sys->sock );
+    srt_epoll_release( p_sys->i_poll_id );
 
-        free( p_sys->psz_host );
-
-        vlc_obj_free( p_this, p_sys );
-        p_stream->p_sys = NULL;
-    }
-
+    free( p_sys->psz_host );
     srt_cleanup();
 }
 
 /* Module descriptor */
 vlc_module_begin ()
-    set_shortname( N_("SRT") )
-    set_description( N_("SRT input") )
+    set_shortname( N_( "SRT" ) )
+    set_description( N_( "SRT input" ) )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_ACCESS )
 
-    add_integer( "chunk-size", SRT_DEFAULT_CHUNK_SIZE,
-            N_("SRT chunk size (bytes)"), NULL, true )
-    add_integer( "poll-timeout", SRT_DEFAULT_POLL_TIMEOUT,
-            N_("Return poll wait after timeout milliseconds (-1 = infinite)"), NULL, true )
-    add_integer( "latency", SRT_DEFAULT_LATENCY, N_("SRT latency (ms)"), NULL, true )
-    add_password( "passphrase", "", "Password for stream encryption", NULL, false )
-    add_integer( "key-length", SRT_DEFAULT_KEY_LENGTH,
+    add_obsolete_integer( SRT_PARAM_CHUNK_SIZE )
+    add_integer( SRT_PARAM_POLL_TIMEOUT, SRT_DEFAULT_POLL_TIMEOUT,
+            N_( "Return poll wait after timeout milliseconds (-1 = infinite)" ),
+            NULL, true )
+    add_integer( SRT_PARAM_LATENCY, SRT_DEFAULT_LATENCY,
+            N_( "SRT latency (ms)" ), NULL, true )
+    add_password( SRT_PARAM_PASSPHRASE, "",
+            N_( "Password for stream encryption" ), NULL, false )
+    add_obsolete_integer( SRT_PARAM_PAYLOAD_SIZE )
+    add_integer( SRT_PARAM_KEY_LENGTH, SRT_DEFAULT_KEY_LENGTH,
             SRT_KEY_LENGTH_TEXT, SRT_KEY_LENGTH_TEXT, false )
-        change_integer_list( srt_key_lengths, srt_key_length_names )
+    change_integer_list( srt_key_lengths, srt_key_length_names )
+    add_string(SRT_PARAM_STREAMID, "",
+            N_(" SRT Stream ID"), NULL, false)
+    change_safe()
 
-    set_capability( "access", 0 )
-    add_shortcut( "srt" )
+    set_capability("access", 0)
+    add_shortcut("srt")
 
-    set_callbacks( Open, Close )
+    set_callbacks(Open, Close)
 vlc_module_end ()

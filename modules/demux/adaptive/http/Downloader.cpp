@@ -32,8 +32,11 @@ Downloader::Downloader()
 {
     vlc_mutex_init(&lock);
     vlc_cond_init(&waitcond);
+    vlc_cond_init(&updatedcond);
     killed = false;
     thread_handle_valid = false;
+    current = nullptr;
+    cancel_current = false;
 }
 
 bool Downloader::start()
@@ -56,7 +59,7 @@ Downloader::~Downloader()
     vlc_mutex_unlock( &lock );
 
     if(thread_handle_valid)
-        vlc_join(thread_handle, NULL);
+        vlc_join(thread_handle, nullptr);
     vlc_mutex_destroy(&lock);
     vlc_cond_destroy(&waitcond);
 }
@@ -72,24 +75,25 @@ void Downloader::schedule(HTTPChunkBufferedSource *source)
 void Downloader::cancel(HTTPChunkBufferedSource *source)
 {
     vlc_mutex_lock(&lock);
-    source->release();
-    chunks.remove(source);
+    while (current == source)
+    {
+        cancel_current = true;
+        vlc_cond_wait(&updatedcond, &lock);
+    }
+
+    if(!source->isDone())
+    {
+        chunks.remove(source);
+        source->release();
+    }
     vlc_mutex_unlock(&lock);
 }
 
 void * Downloader::downloaderThread(void *opaque)
 {
     Downloader *instance = static_cast<Downloader *>(opaque);
-    int canc = vlc_savecancel();
     instance->Run();
-    vlc_restorecancel( canc );
-    return NULL;
-}
-
-void Downloader::DownloadSource(HTTPChunkBufferedSource *source)
-{
-    if(!source->isDone())
-        source->bufferize(HTTPChunkSource::CHUNK_SIZE);
+    return nullptr;
 }
 
 void Downloader::Run()
@@ -103,16 +107,18 @@ void Downloader::Run()
         if(killed)
             break;
 
-        if(!chunks.empty())
+        current = chunks.front();
+        vlc_mutex_unlock(&lock);
+        current->bufferize(HTTPChunkSource::CHUNK_SIZE);
+        vlc_mutex_lock(&lock);
+        if(current->isDone() || cancel_current)
         {
-            HTTPChunkBufferedSource *source = chunks.front();
-            DownloadSource(source);
-            if(source->isDone())
-            {
-                chunks.pop_front();
-                source->release();
-            }
+            chunks.pop_front();
+            current->release();
         }
+        cancel_current = false;
+        current = nullptr;
+        vlc_cond_signal(&updatedcond);
     }
     vlc_mutex_unlock(&lock);
 }

@@ -20,10 +20,11 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
-#include "../../adaptive/playlist/SegmentInfoCommon.h"
+#include "../../adaptive/playlist/SegmentBaseType.hpp"
 
 #include <cstdlib>
 #include <sstream>
+#include <list>
 
 #include <vlc_common.h>
 
@@ -34,7 +35,7 @@ namespace adaptive
     namespace playlist
     {
         class SegmentInformation;
-        class MediaSegmentTemplate;
+        class SegmentTemplate;
         class BasePeriod;
         class BaseAdaptationSet;
     }
@@ -49,7 +50,7 @@ namespace hls
         class M3U8;
         class AttributesTag;
         class Tag;
-        class Representation;
+        class HLSRepresentation;
 
         class M3U8Parser
         {
@@ -58,13 +59,13 @@ namespace hls
                 virtual ~M3U8Parser    ();
 
                 M3U8 *             parse  (vlc_object_t *p_obj, stream_t *p_stream, const std::string &);
-                bool appendSegmentsFromPlaylistURI(vlc_object_t *, Representation *);
+                bool appendSegmentsFromPlaylistURI(vlc_object_t *, HLSRepresentation *);
 
             private:
-                Representation * createRepresentation(BaseAdaptationSet *, const AttributesTag *);
+                HLSRepresentation * createRepresentation(BaseAdaptationSet *, const AttributesTag *);
                 void createAndFillRepresentation(vlc_object_t *, BaseAdaptationSet *,
                                                  const AttributesTag *, const std::list<Tag *>&);
-                void parseSegments(vlc_object_t *, Representation *, const std::list<Tag *>&);
+                void parseSegments(vlc_object_t *, HLSRepresentation *, const std::list<Tag *>&);
                 std::list<Tag *> parseEntries(stream_t *);
                 adaptive::SharedResources *resources;
         };

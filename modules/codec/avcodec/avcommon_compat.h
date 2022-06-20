@@ -2,7 +2,7 @@
  * avcodec.h: decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: 8f9c12081cf8524424d4611822a69a3a16cf1f05 $
+ * $Id: 9d16b3dc47d934e1d02e0016c1d2e589df3e661a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -93,6 +93,16 @@
 
 #if !LIBAVUTIL_VERSION_CHECK( 52, 11, 0, 32, 100 )
 #   define AV_PIX_FMT_FLAG_HWACCEL  PIX_FMT_HWACCEL
+#endif
+
+/*
+ * AV_PIX_FMT_VAAPI is not introduced in the same major version in libav and FFmpeg:
+ *  - libav:  lavu 55.8.0:    libav/d264c720f7b74286840719e506daba39f83b438b
+ *  - ffmpeg: lavu 54.31.100: ffmpeg/9f8e57efe4400ca86352277873792792279c3b15
+ */
+#if ( (LIBAVUTIL_VERSION_MICRO <  100 && LIBAVUTIL_VERSION_INT < AV_VERSION_INT( 55, 8, 0 ) ) || \
+      (LIBAVUTIL_VERSION_MICRO >= 100 && LIBAVUTIL_VERSION_INT < AV_VERSION_INT( 54, 31, 100 ) ) )
+#   define AV_PIX_FMT_VAAPI AV_PIX_FMT_VAAPI_VLD
 #endif
 
 #endif /* HAVE_LIBAVUTIL_AVUTIL_H */

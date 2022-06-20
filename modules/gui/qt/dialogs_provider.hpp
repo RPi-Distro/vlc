@@ -2,7 +2,7 @@
  * dialogs_provider.hpp : Dialogs provider
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 6476dbe124ff690b0d6e72d76be963ec85136452 $
+ * $Id: 5ac9d72a5863fbe48970c3a38d8bea55fecf1879 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -139,7 +139,7 @@ public slots:
     void vlmDialog();
 #endif
     void helpDialog();
-#ifdef UPDATE_CHECK
+#if defined(UPDATE_CHECK)
     void updateDialog();
 #endif
     void aboutDialog();

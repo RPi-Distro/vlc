@@ -309,7 +309,7 @@ static void fill_metas_with_results( fingerprint_request_t *p_r, acoustid_finger
         acoustid_result_t *p_result = & p_f->results.p_results[ i ];
         for ( unsigned int j=0 ; j < p_result->recordings.count; j++ )
         {
-            musicbrainz_recording_t *p_record = & p_result->recordings.p_recordings[ j ];
+            acoustid_mb_result_t *p_record = & p_result->recordings.p_recordings[ j ];
             vlc_meta_t *p_meta = vlc_meta_New();
             if ( p_meta )
             {
@@ -362,11 +362,13 @@ static void *Run( void *opaque )
                 DoFingerprint( p_fingerprinter, &acoustid_print, psz_uri );
                 free( psz_uri );
 
-                DoAcoustIdWebRequest( VLC_OBJECT(p_fingerprinter), &acoustid_print );
+                acoustid_config_t cfg = { .p_obj = VLC_OBJECT(p_fingerprinter),
+                                          .psz_server = NULL, .psz_apikey = NULL };
+                acoustid_lookup_fingerprint( &cfg, &acoustid_print );
                 fill_metas_with_results( p_data, &acoustid_print );
 
                 for( unsigned j = 0; j < acoustid_print.results.count; j++ )
-                     free_acoustid_result_t( &acoustid_print.results.p_results[j] );
+                     acoustid_result_release( &acoustid_print.results.p_results[j] );
                 if( acoustid_print.results.count )
                     free( acoustid_print.results.p_results );
                 free( acoustid_print.psz_fingerprint );

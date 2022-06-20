@@ -2,7 +2,7 @@
  * smb.c: SMB input module
  *****************************************************************************
  * Copyright (C) 2001-2015 VLC authors and VideoLAN
- * $Id: 3a299d2c6508792753934baf1838c0b7c93c11b1 $
+ * $Id: 5fe56f0c9dfe8acffc08407e1352641e2e2c601b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -322,6 +322,16 @@ static ssize_t Read( stream_t *p_access, void *p_buffer, size_t i_len )
 {
     access_sys_t *p_sys = p_access->p_sys;
     int i_read;
+
+    /* cf. DEFAULT_SMB2_MAX_READ (= 8MB) from the samba project. Reading more
+     * than this limit will likely result on a ECONNABORTED
+     * (STATUS_CONNECTION_ABORTED) error. Since this value can be lowered by
+     * the server, let decrease this limit (/8) to have more chance to get a
+     * working limit on our side.
+     * XXX: There is no way to retrieve this value when using the old smbc_*
+     * interface. */
+    if( i_len > (1024 << 10) ) /* 8MB / 8 = 1MB */
+        i_len = 1024 << 10;
 
     i_read = smbc_read( p_sys->i_smb, p_buffer, i_len );
     if( i_read < 0 )

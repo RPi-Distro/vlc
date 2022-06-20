@@ -2,7 +2,7 @@
  * VLCOpenWindowController.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: b93faeb5c409e13436e13005eab4ba6327c18fdf $
+ * $Id: 28b2377c5b74b3eab1a5ddfaaa7ed0070e3514c8 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -1040,8 +1040,19 @@ static NSString *kCaptureTabViewId  = @"capture";
                 [mrlString stringByAppendingFormat: @":%i", iPort];
             }
         }
-    } else
+    } else {
         mrlString = [_netHTTPURLTextField stringValue];
+
+        // Fixup the user-provided URI
+        const char *orig_uri = [mrlString UTF8String];
+        if (orig_uri == NULL)
+            return;
+        char *fixed_uri = vlc_uri_fixup(orig_uri);
+        if (fixed_uri) {
+            mrlString = [[NSString alloc] initWithUTF8String:fixed_uri];
+            free(fixed_uri);
+        }
+    }
 
     [self setMRL: mrlString];
 }
