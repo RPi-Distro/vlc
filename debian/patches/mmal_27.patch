@@ -107,7 +107,7 @@
  include keystore/Makefile.am
 --- a/modules/codec/Makefile.am
 +++ b/modules/codec/Makefile.am
-@@ -376,6 +376,7 @@ libavcodec_plugin_la_SOURCES = \
+@@ -373,6 +373,7 @@ libavcodec_plugin_la_SOURCES = \
  	codec/avcodec/subtitle.c \
  	codec/avcodec/audio.c \
  	codec/avcodec/va.c codec/avcodec/va.h \
@@ -300,7 +300,7 @@
      vlc_fourcc_t fourcc = FindVlcChroma(frame->format);
      if (!fourcc)
      {
-@@ -1173,9 +1182,10 @@ static picture_t *DecodeBlock( decoder_t
+@@ -1183,9 +1192,10 @@ static picture_t *DecodeBlock( decoder_t
          {   /* When direct rendering is not used, get_format() and get_buffer()
               * might not be called. The output video format must be set here
               * then picture buffer can be allocated. */
@@ -313,7 +313,7 @@
                  p_pic = decoder_NewPicture(p_dec);
  
              if( !p_pic )
-@@ -1608,6 +1618,7 @@ no_reuse:
+@@ -1618,6 +1628,7 @@ no_reuse:
  
      static const enum PixelFormat hwfmts[] =
      {
@@ -22897,7 +22897,7 @@
  
 --- a/src/input/decoder.c
 +++ b/src/input/decoder.c
-@@ -1995,6 +1995,7 @@ void input_DecoderDelete( decoder_t *p_d
+@@ -1998,6 +1998,7 @@ void input_DecoderDelete( decoder_t *p_d
      vlc_mutex_lock( &p_owner->lock );
      p_owner->b_waiting = false;
      vlc_cond_signal( &p_owner->wait_request );
@@ -22905,7 +22905,7 @@
  
      /* If the video output is paused or slow, or if the picture pool size was
       * under-estimated (e.g. greedy video filter, buggy decoder...), the
-@@ -2005,7 +2006,6 @@ void input_DecoderDelete( decoder_t *p_d
+@@ -2008,7 +2009,6 @@ void input_DecoderDelete( decoder_t *p_d
       * worker threads (if any) and the decoder thread to terminate. */
      if( p_owner->p_vout != NULL )
          vout_Cancel( p_owner->p_vout, true );

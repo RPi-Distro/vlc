@@ -1,35 +1,37 @@
-vlc (3.0.16-1+rpi1+rpt3) bullseye; urgency=medium
+vlc (3.0.17.4-0+deb11u1+rpi1+rpt1) bullseye; urgency=medium
 
-  * Add MMAL patch 26
-  * Refresh patches
+  * Add MMAL patch 27
+  * Disable libva and vdpau on ARM
   * Disable mmal-avcodec
+  * Add libxrandr-dev dependency
+  * Add libdrm-dev dependency
   * Install new plugins:
     - libdrm_avcodec_plugin.so
     - libdrm_conv_sand30_plugin.so
     - libdrm_gl_conv_plugin.so
     - libdrm_vout_plugin.so
   * Ship libmmal_xsplitter_plugin.so regardless of mmal flag
-
- -- Serge Schneider <serge@raspberrypi.com>  Mon, 13 Jun 2022 15:34:14 +0100
-
-vlc (3.0.16-1+rpi1+rpt2) bullseye; urgency=medium
-
   * Re-enable live555 plugin
+  * Re-enable srt plugin
 
- -- Serge Schneider <serge@raspberrypi.com>  Wed, 10 Nov 2021 15:40:45 +0000
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 20 Jun 2022 16:16:50 +0100
 
-vlc (3.0.16-1+rpi1+rpt1) bullseye; urgency=medium
+vlc (3.0.17.4-0+deb11u1+rpi1) bullseye-staging; urgency=medium
 
-  * Add MMAL patch 22
-  * Add libxrandr-dev dependency
-  * Add libdrm-dev dependency
-  * Disable libva and vdpau on ARM
-
-  [changes from Raspbian]
+  [changes brought forward from 3.0.11.1-1+rpi1 by Peter Michael Green <plugwash@raspbian.org> at Sun, 30 Aug 2020 00:37:35 +0000]
   * Add extern to three functions for gcc-10 compatibility.
   * Partially fix clean target.
 
- -- Serge Schneider <serge@raspberrypi.com>  Fri, 22 Oct 2021 15:49:51 +0100
+ -- Raspbian forward porter <root@raspbian.org>  Tue, 21 Jun 2022 08:12:23 +0000
+
+vlc (3.0.17.4-0+deb11u1) bullseye-security; urgency=medium
+
+  * New upstream version 3.0.17.4
+    - Fix an infinite loop in MP4
+    - Fix crashes with VP9 streams
+  * debian/gbp.conf: Work in bullseye branch
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 18 Jun 2022 15:42:34 +0200
 
 vlc (3.0.16-1) unstable; urgency=medium
 
