@@ -1,45 +1,33 @@
-vlc (3.0.12-0+deb10u1+rpt3) buster; urgency=medium
+vlc (3.0.17.4-0+deb10u1+rpt1) buster; urgency=medium
 
+  * Add MMAL patch 20
   * Disable MMAL and neon on arm64
   * Add dav1d dependency on all architectures
+  * debian/vlc-plugin-base.install: Install RIST plugins
+  * Add libxrandr-dev dependency
+  * Add libdrm-dev dependency
+  * Disable vdpau, libva, aom
+  * Enable dav1d
 
- -- Serge Schneider <serge@raspberrypi.com>  Tue, 26 Oct 2021 13:54:09 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Wed, 22 Jun 2022 11:02:16 +0100
 
-vlc (3.0.12-0+deb10u1+rpt2) buster; urgency=medium
+vlc (3.0.17.4-0+deb10u1) buster-security; urgency=medium
 
-  * Update armv6 patch
+  * New upstream version 3.0.17.4
+    - Fix remote code execution through crafted playlist
+      (VideoLAN-SB-VLC-3013)
+    - Fix an infinite loop in MP4
+    - Fix crashes with VP9 streams
 
- -- Serge Schneider <serge@raspberrypi.com>  Fri, 14 May 2021 13:10:30 +0100
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 18 Jun 2022 15:59:48 +0200
 
-vlc (3.0.12-0+deb10u1+rpt1) buster-security; urgency=medium
+vlc (3.0.12-0+deb10u1) buster-security; urgency=medium
 
   * New upstream release
     - mkv: Fix heap-based buffer overflow (CVE-2020-26664) (Closes: #979676)
   * debian/vlc-plugin-base.install: Install RIST plugins
 
  -- Sebastian Ramacher <sramacher@debian.org>  Mon, 18 Jan 2021 17:35:27 +0100
-
-vlc (3.0.11-0+deb10u1+rpt3) buster; urgency=medium
-
-  * Add MMAL patch 20
-
- -- Serge Schneider <serge@raspberrypi.com>  Wed, 02 Sep 2020 10:47:49 +0100
-
-vlc (3.0.11-0+deb10u1+rpt2) buster; urgency=medium
-
-  * Add MMAL patch 19
-
- -- Serge Schneider <serge@raspberrypi.com>  Wed, 29 Jul 2020 14:28:28 +0100
-
-vlc (3.0.11-0+deb10u1+rpt1) buster; urgency=high
-
-  * Add MMAL patch 18
-  * Add libxrandr-dev dependency
-  * Add libdrm-dev dependency
-  * Disable vdpau, libva, aom
-  * Enable dav1d
-
- -- Serge Schneider <serge@raspberrypi.com>  Wed, 17 Jun 2020 10:30:58 +0100
 
 vlc (3.0.11-0+deb10u1) buster-security; urgency=high
 
