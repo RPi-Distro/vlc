@@ -2,7 +2,7 @@
  * packetizer_helper.h: Packetizer helpers
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 39747ef9307baa47877fa3e323280d7b60776d1b $
+ * $Id: 1ea66ebc63156841aab7344a0d5ca01aabadc952 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -33,7 +33,8 @@ enum
     STATE_HEADER,
     STATE_NEXT_SYNC,
     STATE_GET_DATA,
-    STATE_SEND_DATA
+    STATE_SEND_DATA,
+    STATE_CUSTOM_FIRST,
 };
 
 typedef void (*packetizer_reset_t)( void *p_private, bool b_broken );

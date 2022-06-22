@@ -50,7 +50,7 @@ AUTOMAKE_OPTIONS = \
 ChangeLog: Makefile.am
 	rm -f -- "$@"
 	cd doc && $(MAKE) $(AM_MAKEFLAGS) changelogs
-	$(LN_S) -f doc/ChangeLog-2015 "$@"
+	$(LN_S) -f doc/ChangeLog-2021 "$@"
 
 
 ###############################################################################
@@ -171,6 +171,7 @@ install-exec-hook:
 	if test "$(build)" = "$(host)"; then \
 		PATH="$(DESTDIR)$(bindir):$$PATH" \
 		LD_LIBRARY_PATH="$(DESTDIR)$(libdir):$$LD_LIBRARY_PATH" \
+		DYLD_LIBRARY_PATH="$(DESTDIR)$(libdir):$$DYLD_LIBRARY_PATH" \
 		"$(DESTDIR)$(vlclibdir)/vlc-cache-gen$(EXEEXT)" \
 			 "$(DESTDIR)$(vlclibdir)/plugins" ; \
 	else \

@@ -2,7 +2,7 @@
  * es_out_timeshift.c: Es Out timeshift.
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: e30f9239587ff44a51907c43367372c1e8eb434b $
+ * $Id: bfa9697e95e8a7df8aa247ab05b852a735873ab2 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org>
  *
@@ -913,7 +913,7 @@ static bool TsHasCmd( ts_thread_t *p_ts )
     bool b_cmd;
 
     vlc_mutex_lock( &p_ts->lock );
-    b_cmd =  TsStorageIsEmpty( p_ts->p_storage_r );
+    b_cmd = !TsStorageIsEmpty( p_ts->p_storage_r );
     vlc_mutex_unlock( &p_ts->lock );
 
     return b_cmd;

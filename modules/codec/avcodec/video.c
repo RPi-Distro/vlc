@@ -2,7 +2,7 @@
  * video.c: video decoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: b99eb56e4a7f8d3e0ad893eca210c3e23c7032eb $
+ * $Id: c1527a03a58ceb48f14ab10b117669f0064f0b32 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -573,7 +573,9 @@ int InitVideoDec( vlc_object_t *obj )
     i_thread_count = __MIN( i_thread_count, p_codec->id == AV_CODEC_ID_HEVC ? 32 : 16 );
     msg_Dbg( p_dec, "allowing %d thread(s) for decoding", i_thread_count );
     p_context->thread_count = i_thread_count;
+#if LIBAVCODEC_VERSION_MAJOR < 60
     p_context->thread_safe_callbacks = true;
+#endif
 
     switch( p_codec->id )
     {
@@ -1015,14 +1017,18 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error
 
         if( b_has_data || b_start_drain )
         {
-            AVPacket pkt;
-            av_init_packet( &pkt );
+            AVPacket *pkt = av_packet_alloc();
+            if(!pkt)
+            {
+                *error = true;
+                break;
+            }
             if( b_has_data )
             {
-                pkt.data = p_block->p_buffer;
-                pkt.size = p_block->i_buffer;
-                pkt.pts = p_block->i_pts > VLC_TS_INVALID ? p_block->i_pts : AV_NOPTS_VALUE;
-                pkt.dts = p_block->i_dts > VLC_TS_INVALID ? p_block->i_dts : AV_NOPTS_VALUE;
+                pkt->data = p_block->p_buffer;
+                pkt->size = p_block->i_buffer;
+                pkt->pts = p_block->i_pts > VLC_TS_INVALID ? p_block->i_pts : AV_NOPTS_VALUE;
+                pkt->dts = p_block->i_dts > VLC_TS_INVALID ? p_block->i_dts : AV_NOPTS_VALUE;
 
                 /* Make sure we don't reuse the same timestamps twice */
                 p_block->i_pts =
@@ -1031,21 +1037,21 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error
             else /* start drain */
             {
                 /* Return delayed frames if codec has CODEC_CAP_DELAY */
-                pkt.data = NULL;
-                pkt.size = 0;
+                pkt->data = NULL;
+                pkt->size = 0;
                 p_sys->b_draining = true;
             }
 
             if( !p_sys->palette_sent )
             {
-                uint8_t *pal = av_packet_new_side_data(&pkt, AV_PKT_DATA_PALETTE, AVPALETTE_SIZE);
+                uint8_t *pal = av_packet_new_side_data(pkt, AV_PKT_DATA_PALETTE, AVPALETTE_SIZE);
                 if (pal) {
                     memcpy(pal, p_dec->fmt_in.video.p_palette->palette, AVPALETTE_SIZE);
                     p_sys->palette_sent = true;
                 }
             }
 
-            ret = avcodec_send_packet(p_context, &pkt);
+            ret = avcodec_send_packet(p_context, pkt);
             if( ret != 0 && ret != AVERROR(EAGAIN) )
             {
                 if (ret == AVERROR(ENOMEM) || ret == AVERROR(EINVAL))
@@ -1053,11 +1059,11 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error
                     msg_Err(p_dec, "avcodec_send_packet critical error");
                     *error = true;
                 }
-                av_packet_unref( &pkt );
+                av_packet_free( &pkt );
                 break;
             }
-            i_used = ret != AVERROR(EAGAIN) ? pkt.size : 0;
-            av_packet_unref( &pkt );
+            i_used = ret != AVERROR(EAGAIN) ? pkt->size : 0;
+            av_packet_free( &pkt );
         }
 
         AVFrame *frame = av_frame_alloc();
@@ -1110,8 +1116,12 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error
         }
 
         /* Compute the PTS */
-#ifdef FF_API_PKT_PTS
+#if LIBAVCODEC_VERSION_CHECK(57, 24, 0, 61, 100)
+# if LIBAVCODEC_VERSION_MICRO >= 100
+        mtime_t i_pts = frame->best_effort_timestamp;
+# else
         mtime_t i_pts = frame->pts;
+# endif
 #else
         mtime_t i_pts = frame->pkt_pts;
 #endif
@@ -1614,7 +1624,7 @@ no_reuse:
 #endif
         AV_PIX_FMT_DXVA2_VLD,
 #endif
-        AV_PIX_FMT_VAAPI_VLD,
+        AV_PIX_FMT_VAAPI,
 #if (LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(52, 4, 0))
         AV_PIX_FMT_VDPAU,
 #endif

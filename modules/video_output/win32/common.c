@@ -2,7 +2,7 @@
  * common.c: Windows video output common code
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: ca7c5401e6563da40ac8501869b19413aa98a69c $
+ * $Id: 8b91a612a6b2e2db81785c7936d575de0e03a7c0 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Martell Malone <martellmalone@gmail.com>
@@ -368,6 +368,7 @@ void CommonClean(vout_display_t *vd)
             HRESULT hr = pf_DXGIGetDebugInterface(&IID_IDXGIDebug, (void**)&pDXGIDebug);
             if (SUCCEEDED(hr) && pDXGIDebug) {
                 hr = IDXGIDebug_ReportLiveObjects(pDXGIDebug, DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+                IDXGIDebug_Release(pDXGIDebug);
             }
         }
         FreeLibrary(sys->dxgidebug_dll);

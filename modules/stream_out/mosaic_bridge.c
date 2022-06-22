@@ -2,7 +2,7 @@
  * mosaic_bridge.c:
  *****************************************************************************
  * Copyright (C) 2004-2007 VLC authors and VideoLAN
- * $Id: e0f9ff4c8fee5a0bac93fb2ece6471d7a914dcbf $
+ * $Id: bffe28738bc4b02c96f269c068b65f1acd34e38b $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -140,6 +140,9 @@ vlc_module_begin ()
     set_description(N_("Mosaic bridge stream output") )
     set_capability( "sout stream", 0 )
     add_shortcut( "mosaic-bridge" )
+
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_STREAM )
 
     add_string( CFG_PREFIX "id", "Id", ID_TEXT, ID_LONGTEXT,
                 false )

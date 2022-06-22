@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: c2be5ad52ab23f6507e7795202606e3c2e53d76b $
+ * $Id: 13421339d8834d2cad9fe6b9d7fdf3149a37e68e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -965,6 +965,12 @@ void matroska_segment_c::ParseTracks( KaxTracks *tracks )
     };
 
     TrackHandlers::Dispatcher().iterate( tracks->begin(), tracks->end(), &payload );
+
+    auto t = matroska_segment_c::tracks.begin();
+    for (t; t != matroska_segment_c::tracks.end(); ++t)
+    {
+        pcr_shift = std::max(pcr_shift, t->second->i_codec_delay);
+    }
 }
 
 /*****************************************************************************

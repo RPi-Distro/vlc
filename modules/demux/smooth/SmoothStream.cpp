@@ -34,8 +34,8 @@ SmoothStream::SmoothStream(demux_t *demux)
 AbstractDemuxer *SmoothStream::newDemux(vlc_object_t *p_obj, const StreamFormat &format,
                                         es_out_t *out, AbstractSourceStream *source) const
 {
-    if((unsigned)format != StreamFormat::MP4)
-        return NULL;
+    if(format != StreamFormat::Type::MP4)
+        return nullptr;
     return AbstractStream::newDemux(p_obj, format, out, source);
 }
 
@@ -51,7 +51,7 @@ AbstractStream * SmoothStreamFactory::create(demux_t *realdemux, const StreamFor
     if(stream && !stream->init(format,tracker, manager))
     {
         delete stream;
-        return NULL;
+        return nullptr;
     }
     return stream;
 }

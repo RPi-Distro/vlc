@@ -20,6 +20,7 @@ lame: lame-$(LAME_VERSION).tar.gz .sum-lame
 ifdef HAVE_VISUALSTUDIO
 	$(APPLY) $(SRC)/lame/struct-float-copy.patch
 endif
+	$(APPLY) $(SRC)/lame/lame-fix-i386-on-aarch64.patch
 	# Avoid relying on iconv.m4 from gettext, when reconfiguring.
 	# This is only used by the frontend which we disable.
 	cd $(UNPACK_DIR) && sed -i.orig 's/^AM_ICONV/#&/' configure.in

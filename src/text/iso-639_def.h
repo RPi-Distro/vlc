@@ -2,7 +2,7 @@
  * iso-639_def.h: languages codes and abbreviations
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: ca199ee519d00d176dd12ba37f85b38f2ef980fe $
+ * $Id: 87b08fdf5db07d10019044abac0c0d5c049ccf28 $
  *
  * This is used in iso_lang.cpp and is taken from the GNU glibc 2.2.5
  * tarball. It has been partially completed with native language names.
@@ -99,6 +99,7 @@ static const iso639_lang_t p_languages[] =
     { N_( "Indonesian" ),                     "id", "ind", "ind" },
     { N_( "Inupiaq" ),                        "ik", "ipk", "ipk" },
     { N_( "Italian" ),                        "it", "ita", "ita" },
+    { N_( "Hebrew" ),                         "iw", "heb", "heb" },
     { N_( "Javanese" ),                       "jv", "jaw", "jav" },
     { N_( "Japanese" ),                       "ja", "jpn", "jpn" },
     { N_( "Greenlandic, Kalaallisut" ),       "kl", "kal", "kal" },

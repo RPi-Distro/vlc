@@ -1645,6 +1645,7 @@ static void FragTrunSeekToTime( mp4_track_t *p_track, stime_t i_target_time )
 
             i_time += dur;
             i_pos += len;
+            i_sample++;
         }
     }
 
@@ -4312,9 +4313,6 @@ static int FragDemuxTrack( demux_t *p_demux, mp4_track_t *p_track,
     const MP4_Box_data_trun_t *p_trun =
             p_track->context.runs.p_array[p_track->context.runs.i_current].p_trun->data.p_trun;
 
-    if( p_track->context.i_trun_sample >= p_trun->i_sample_count )
-        return VLC_DEMUXER_EOS;
-
     uint32_t dur = p_track->context.i_default_sample_duration,
              len = p_track->context.i_default_sample_size;
 
@@ -4375,7 +4373,7 @@ static int FragDemuxTrack( demux_t *p_demux, mp4_track_t *p_track,
         msg_Dbg( p_demux, "tk(%i)=%"PRId64" mv=%"PRId64" pos=%"PRIu64, p_track->i_track_ID,
                  VLC_TS_0 + MP4_rescale( i_dts, p_track->i_timescale, CLOCK_FREQ ),
                  VLC_TS_0 + MP4_rescale( i_pts, p_track->i_timescale, CLOCK_FREQ ),
-                 p_track->context.i_trun_sample_pos );
+                 p_track->context.i_trun_sample_pos - i_read );
 #endif
         if ( p_track->p_es )
         {
@@ -4432,7 +4430,7 @@ static int DemuxMoof( demux_t *p_demux )
             mp4_track_t *tk_tmp = &p_sys->track[i];
 
             if( !tk_tmp->b_ok || tk_tmp->b_chapters_source ||
-               (!tk_tmp->b_selected && !p_sys->b_seekable) ||
+               (!tk_tmp->b_selected && p_sys->b_seekable) ||
                 tk_tmp->context.runs.i_current >= tk_tmp->context.runs.i_count ||
                 tk_tmp->context.i_temp != VLC_DEMUXER_SUCCESS )
                 continue;
@@ -4457,8 +4455,9 @@ static int DemuxMoof( demux_t *p_demux )
                 mp4_track_t *tk_tmp = &p_sys->track[i];
                 if( tk_tmp == tk ||
                     !tk_tmp->b_ok || tk_tmp->b_chapters_source ||
-                   (!tk_tmp->b_selected && !p_sys->b_seekable) ||
-                    tk_tmp->context.runs.i_current >= tk_tmp->context.runs.i_count )
+                   (!tk_tmp->b_selected && p_sys->b_seekable) ||
+                    tk_tmp->context.runs.i_current >= tk_tmp->context.runs.i_count ||
+                    tk_tmp->context.i_temp != VLC_DEMUXER_SUCCESS )
                     continue;
 
                 mtime_t i_nzdts = MP4_rescale( tk_tmp->i_time, tk_tmp->i_timescale, CLOCK_FREQ );

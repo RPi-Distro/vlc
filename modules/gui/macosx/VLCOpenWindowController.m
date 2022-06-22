@@ -2,7 +2,7 @@
  * VLCOpenWindowController.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 57920bc09dd7abbac33afaac4740a55c91eff863 $
+ * $Id: 28b2377c5b74b3eab1a5ddfaaa7ed0070e3514c8 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -1040,8 +1040,19 @@ static NSString *kCaptureTabViewId  = @"capture";
                 [mrlString stringByAppendingFormat: @":%i", iPort];
             }
         }
-    } else
+    } else {
         mrlString = [_netHTTPURLTextField stringValue];
+
+        // Fixup the user-provided URI
+        const char *orig_uri = [mrlString UTF8String];
+        if (orig_uri == NULL)
+            return;
+        char *fixed_uri = vlc_uri_fixup(orig_uri);
+        if (fixed_uri) {
+            mrlString = [[NSString alloc] initWithUTF8String:fixed_uri];
+            free(fixed_uri);
+        }
+    }
 
     [self setMRL: mrlString];
 }
@@ -1156,15 +1167,8 @@ static NSString *kCaptureTabViewId  = @"capture";
     else if ([[[_captureModePopup selectedItem] title] isEqualToString: _NS("Input Devices")]) {
         [_captureTabView selectTabViewItemAtIndex:0];
 
-        [self qtkChanged:nil];
-        [self qtkAudioChanged:nil];
-
         [self setMRL: @""];
-
-        if ([_qtkVideoCheckbox state] && _avCurrentDeviceUID)
-            [self setMRL:[NSString stringWithFormat:@"avcapture://%@", _avCurrentDeviceUID]];
-        else if ([_qtkAudioCheckbox state] && _avCurrentAudioDeviceUID)
-            [self setMRL:[NSString stringWithFormat:@"avaudiocapture://%@", _avCurrentAudioDeviceUID]];
+        [self qtkToggleUIElements: nil];
     }
 }
 
@@ -1199,6 +1203,17 @@ static NSString *kCaptureTabViewId  = @"capture";
 }
 
 // QTKit Recording actions
+
+- (void)updateInputDevicesUrl
+{
+    if ([_qtkVideoCheckbox state] && _avCurrentDeviceUID)
+        [self setMRL:[NSString stringWithFormat:@"avcapture://%@", _avCurrentDeviceUID]];
+    else if ([_qtkAudioCheckbox state] && _avCurrentAudioDeviceUID)
+        [self setMRL:[NSString stringWithFormat:@"avaudiocapture://%@", _avCurrentAudioDeviceUID]];
+    else
+        [self setMRL:@""];
+}
+
 - (IBAction)qtkChanged:(id)sender
 {
     NSInteger selectedDevice = [_qtkVideoDevicePopup indexOfSelectedItem];
@@ -1206,6 +1221,7 @@ static NSString *kCaptureTabViewId  = @"capture";
         return;
 
     _avCurrentDeviceUID = [[(AVCaptureDevice *)[_avvideoDevices objectAtIndex:selectedDevice] uniqueID] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    [self updateInputDevicesUrl];
 }
 
 - (IBAction)qtkAudioChanged:(id)sender
@@ -1215,16 +1231,16 @@ static NSString *kCaptureTabViewId  = @"capture";
         return;
 
     _avCurrentAudioDeviceUID = [[(AVCaptureDevice *)[_avaudioDevices objectAtIndex:selectedDevice] uniqueID] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    [self updateInputDevicesUrl];
 }
 
 - (IBAction)qtkToggleUIElements:(id)sender
 {
     [_qtkAudioDevicePopup setEnabled:[_qtkAudioCheckbox state]];
-    BOOL b_state = [_qtkVideoCheckbox state];
-    [_qtkVideoDevicePopup setEnabled:b_state];
+    [_qtkVideoDevicePopup setEnabled:[_qtkVideoCheckbox state]];
+
     [self qtkAudioChanged:sender];
     [self qtkChanged:sender];
-    [self openCaptureModeChanged:sender];
 }
 
 #pragma mark -

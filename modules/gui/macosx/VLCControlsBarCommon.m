@@ -2,7 +2,7 @@
  * VLCControlsBarCommon.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2018 VLC authors and VideoLAN
- * $Id: 46f70262446bb42dad3abd6405f5c45c18d3267a $
+ * $Id: 046824322fe1272f5d129678c42bff3f46639426 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -319,14 +319,14 @@
     p_input = pl_CurrentInput(getIntf());
     if (p_input != NULL) {
         vlc_value_t pos;
-        NSString * o_time;
 
         pos.f_float = f_updated / 10000.;
         var_Set(p_input, "position", pos);
         [self.timeSlider setFloatValue: f_updated];
 
-        o_time = [[VLCStringUtility sharedInstance] getCurrentTimeAsString: p_input negative:[self.timeField timeRemaining]];
-        [self.timeField setStringValue: o_time];
+        NSString *time = [[VLCStringUtility sharedInstance] getCurrentTimeAsString:p_input negative:NO];
+        NSString *remainingTime = [[VLCStringUtility sharedInstance] getCurrentTimeAsString:p_input negative:YES];
+        [self.timeField setTime:time withRemainingTime:remainingTime];
         vlc_object_release(p_input);
     }
 }
@@ -372,9 +372,9 @@
         [self.timeSlider setIndefinite:buffering];
     }
 
-    NSString *time = [[VLCStringUtility sharedInstance] getCurrentTimeAsString:p_input
-                                                                      negative:[self.timeField timeRemaining]];
-    [self.timeField setStringValue:time];
+    NSString *time = [[VLCStringUtility sharedInstance] getCurrentTimeAsString:p_input negative:NO];
+    NSString *remainingTime = [[VLCStringUtility sharedInstance] getCurrentTimeAsString:p_input negative:YES];
+    [self.timeField setTime:time withRemainingTime:remainingTime];
     [self.timeField setNeedsDisplay:YES];
 
     vlc_object_release(p_input);

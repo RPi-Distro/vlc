@@ -27,24 +27,18 @@
 // Define to enable app list debug output
 // #define DEBUG_SPMEDIAKEY_APPLIST 1
 
-NSString *kIgnoreMediaKeysDefaultsKey = @"SPIgnoreMediaKeys";
-
 @interface SPMediaKeyTap () {
     CFMachPortRef _eventPort;
     CFRunLoopSourceRef _eventPortSource;
-    CFRunLoopRef _tapThreadRL;
-    NSThread *_tapThread;
-    BOOL _shouldInterceptMediaKeyEvents;
-    id _delegate;
+    __weak id<SPMediaKeyTapDelegate> _delegate;
     // The app that is frontmost in this list owns media keys
     NSMutableArray<NSRunningApplication *> *_mediaKeyAppList;
 }
 
-- (BOOL)shouldInterceptMediaKeyEvents;
 - (void)setShouldInterceptMediaKeyEvents:(BOOL)newSetting;
 - (void)startWatchingAppSwitching;
 - (void)stopWatchingAppSwitching;
-- (void)eventTapThread;
+- (void)handleAndReleaseMediaKeyEvent:(NSEvent *)event;
 @end
 
 static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon);
@@ -57,10 +51,12 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 #pragma mark -
 #pragma mark Setup and teardown
 
-- (id)initWithDelegate:(id)delegate
+- (id)initWithDelegate:(id<SPMediaKeyTapDelegate>)delegate
 {
     self = [super init];
     if (self) {
+        NSAssert([delegate conformsToProtocol:@protocol(SPMediaKeyTapDelegate)],
+            @"SPMediaKeyTap delegate must conform to the SPMediaKeyTapDelegate protocol!");
         _delegate = delegate;
         [self startWatchingAppSwitching];
         _mediaKeyAppList = [NSMutableArray new];
@@ -98,6 +94,9 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 
 - (BOOL)startWatchingMediaKeys
 {
+    NSAssert([NSThread isMainThread],
+        @"startWatchingMediaKeys must be called on the main thread!");
+
     // Prevent having multiple mediaKeys threads
     [self stopWatchingMediaKeys];
 
@@ -121,32 +120,30 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
     if (_eventPortSource == NULL)
         return NO;
 
-    // Let's do this in a separate thread so that a slow app doesn't lag the event tap
-    _tapThread = [[NSThread alloc] initWithTarget:self
-                                         selector:@selector(eventTapThread)
-                                           object:nil];
-    [_tapThread start];
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), _eventPortSource, kCFRunLoopCommonModes);
 
     return YES;
 }
 
 - (void)stopWatchingMediaKeys
 {
-    // Shut down tap thread
-    if(_tapThreadRL){
-        CFRunLoopStop(_tapThreadRL);
-        _tapThreadRL = nil;
+    NSAssert([NSThread isMainThread],
+        @"stopWatchingMediaKeys must be called on the main thread!");
+
+    // Remove runloop source
+    if (_eventPortSource) {
+        CFRunLoopRemoveSource(CFRunLoopGetCurrent(), _eventPortSource, kCFRunLoopCommonModes);
     }
 
     // Remove tap port
-    if(_eventPort){
+    if (_eventPort) {
         CFMachPortInvalidate(_eventPort);
         CFRelease(_eventPort);
         _eventPort = nil;
     }
 
     // Remove tap source
-    if(_eventPortSource){
+    if (_eventPortSource) {
         CFRelease(_eventPortSource);
         _eventPortSource = nil;
     }
@@ -154,19 +151,6 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 
 #pragma mark -
 #pragma mark Accessors
-
-+ (BOOL)usesGlobalMediaKeyTap
-{
-#ifdef _DEBUG
-    // breaking in gdb with a key tap inserted sometimes locks up all mouse and keyboard input forever, forcing reboot
-    return NO;
-#else
-    // XXX(nevyn): MediaKey event tap doesn't work on 10.4, feel free to figure out why if you have the energy.
-    return
-        ![[NSUserDefaults standardUserDefaults] boolForKey:kIgnoreMediaKeysDefaultsKey]
-        && floor(NSAppKitVersionNumber) >= 949/*NSAppKitVersionNumber10_5*/;
-#endif
-}
 
 + (NSArray*)mediaKeyUserBundleIdentifiers
 {
@@ -212,98 +196,76 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
     return bundleIdentifiers;
 }
 
-
-- (BOOL)shouldInterceptMediaKeyEvents
-{
-    BOOL shouldIntercept = NO;
-    @synchronized(self) {
-        shouldIntercept = _shouldInterceptMediaKeyEvents;
-    }
-    return shouldIntercept;
-}
-
-- (void)pauseTapOnTapThread:(NSNumber *)yeahno
-{
-    CGEventTapEnable(self->_eventPort, [yeahno boolValue]);
-}
-
 - (void)setShouldInterceptMediaKeyEvents:(BOOL)newSetting
 {
-    BOOL oldSetting;
-    @synchronized(self) {
-        oldSetting = _shouldInterceptMediaKeyEvents;
-        _shouldInterceptMediaKeyEvents = newSetting;
-    }
-    if(_tapThreadRL && oldSetting != newSetting) {
-        [self performSelector:@selector(pauseTapOnTapThread:)
-                     onThread:_tapThread
-                   withObject:@(newSetting)
-                waitUntilDone:NO];
+    if (_eventPort == NULL)
+        return;
 
-    }
+    CGEventTapEnable(_eventPort, newSetting);
 }
 
 
 #pragma mark -
 #pragma mark Event tap callbacks
 
-// Note: method called on background thread
-
-static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
-{
-    SPMediaKeyTap *self = (__bridge SPMediaKeyTap *)refcon;
-
-    if(type == kCGEventTapDisabledByTimeout) {
-        NSLog(@"Media key event tap was disabled by timeout");
-        CGEventTapEnable(self->_eventPort, TRUE);
-        return event;
-    } else if(type == kCGEventTapDisabledByUserInput) {
-        // Was disabled manually by -[pauseTapOnTapThread]
-        return event;
-    }
-    NSEvent *nsEvent = nil;
-    @try {
-        nsEvent = [NSEvent eventWithCGEvent:event];
-    }
-    @catch (NSException * e) {
-        NSLog(@"Strange CGEventType: %d: %@", type, e);
-        assert(0);
-        return event;
-    }
-
-    if (type != NX_SYSDEFINED || [nsEvent subtype] != SPSystemDefinedEventMediaKeys)
-        return event;
-
-    int keyCode = (([nsEvent data1] & 0xFFFF0000) >> 16);
-    if (keyCode != NX_KEYTYPE_PLAY && keyCode != NX_KEYTYPE_FAST && keyCode != NX_KEYTYPE_REWIND && keyCode != NX_KEYTYPE_PREVIOUS && keyCode != NX_KEYTYPE_NEXT)
-        return event;
-
-    if (![self shouldInterceptMediaKeyEvents])
-        return event;
-
-    [self performSelectorOnMainThread:@selector(handleAndReleaseMediaKeyEvent:) withObject:nsEvent waitUntilDone:NO];
-
-    return NULL;
-}
-
 static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
 {
     @autoreleasepool {
-        CGEventRef ret = tapEventCallback2(proxy, type, event, refcon);
-        return ret;
+        SPMediaKeyTap *self = (__bridge SPMediaKeyTap *)refcon;
+
+        if (type == kCGEventTapDisabledByTimeout) {
+            NSLog(@"VLC SPMediaKeyTap: Media key event tap was disabled by timeout");
+            CGEventTapEnable(self->_eventPort, TRUE);
+            return event;
+        } else if (type == kCGEventTapDisabledByUserInput) {
+            // Was disabled manually by -setShouldInterceptMediaKeyEvents:
+            return event;
+        } else if (type != NX_SYSDEFINED) {
+            // If not a system defined event, do nothing.
+            return event;
+        }
+
+        NSEvent *nsEvent = nil;
+        @try {
+            nsEvent = [NSEvent eventWithCGEvent:event];
+        }
+        @catch (NSException * e) {
+            NSLog(@"VLC SPMediaKeyTap: Strange CGEventType: %d: %@", type, e);
+            assert(0);
+            return event;
+        }
+
+        if ([nsEvent subtype] != NX_SUBTYPE_AUX_CONTROL_BUTTONS)
+            return event;
+
+        int keyCode = (([nsEvent data1] & 0xFFFF0000) >> 16);
+        if (keyCode != NX_KEYTYPE_PLAY &&
+            keyCode != NX_KEYTYPE_FAST &&
+            keyCode != NX_KEYTYPE_REWIND &&
+            keyCode != NX_KEYTYPE_PREVIOUS &&
+            keyCode != NX_KEYTYPE_NEXT)
+            return event;
+
+        [self performSelectorOnMainThread:@selector(handleAndReleaseMediaKeyEvent:) withObject:nsEvent waitUntilDone:NO];
+
+        return NULL;
     }
 }
 
 - (void)handleAndReleaseMediaKeyEvent:(NSEvent *)event
 {
-    [_delegate mediaKeyTap:self receivedMediaKeyEvent:event];
-}
+    uint32_t eventData  = [event data1];
 
-- (void)eventTapThread
-{
-    _tapThreadRL = CFRunLoopGetCurrent();
-    CFRunLoopAddSource(_tapThreadRL, _eventPortSource, kCFRunLoopCommonModes);
-    CFRunLoopRun();
+    SPKeyCode keyCode   = ((eventData & 0xFFFF0000) >> 16);
+    uint16_t eventFlags = ((eventData & 0x0000FFFF));
+
+    SPKeyState keyState = ((eventFlags & 0xFF00) >> 8);
+    BOOL keyRepeat      =  (eventFlags & 0x1);
+
+    [_delegate mediaKeyTap:self
+          receivedMediaKey:keyCode
+                     state:keyState
+                    repeat:keyRepeat];
 }
 
 
@@ -312,11 +274,14 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 
 - (void)mediaKeyAppListChanged
 {
+    NSAssert([NSThread isMainThread],
+        @"mediaKeyAppListChanged must be called on the main thread!");
+
     #ifdef DEBUG_SPMEDIAKEY_APPLIST
     [self debugPrintAppList];
     #endif
 
-    if([_mediaKeyAppList count] == 0)
+    if ([_mediaKeyAppList count] == 0)
         return;
 
     NSRunningApplication *thisApp = [NSRunningApplication currentApplication];

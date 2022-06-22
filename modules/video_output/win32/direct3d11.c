@@ -45,6 +45,9 @@
 #else
 # include <dxgi1_5.h>
 #endif
+#ifdef HAVE_D3D11_4_H
+#include <d3d11_4.h>
+#endif
 
 /* avoided until we can pass ISwapchainPanel without c++/cx mode
 # include <windows.ui.xaml.media.dxinterop.h> */
@@ -89,6 +92,8 @@ struct vout_display_sys_t
 {
     vout_display_sys_win32_t sys;
 
+    int                      log_level;
+
     display_info_t           display;
 
     HINSTANCE                hdxgi_dll;        /* handle of the opened dxgi dll */
@@ -98,7 +103,12 @@ struct vout_display_sys_t
     d3d11_device_t           d3d_dev;
     d3d_quad_t               picQuad;
 
-    ID3D11Asynchronous       *prepareWait;
+#ifdef HAVE_D3D11_4_H
+    ID3D11Fence              *d3dRenderFence;
+    ID3D11DeviceContext4     *d3dcontext4;
+    UINT64                   renderFence;
+    HANDLE                   renderFinished;
+#endif
 
     picture_sys_t            stagingSys;
 
@@ -404,9 +414,17 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned pool_size)
                 goto error;
 
             for (unsigned plane = 0; plane < D3D11_MAX_SHADER_VIEW; plane++)
-                picsys->texture[plane] = textures[picture_count * D3D11_MAX_SHADER_VIEW + plane];
+            {
+                if (picture_count < slices)
+                    picsys->texture[plane] =textures[picture_count * D3D11_MAX_SHADER_VIEW + plane];
+                else if (textures[plane])
+                {
+                    picsys->texture[plane] = textures[plane];
+                    ID3D11Texture2D_AddRef(picsys->texture[plane]);
+                }
+            }
 
-            picsys->slice_index = picture_count;
+            picsys->slice_index = picture_count < slices ? picture_count : 0;
             picsys->formatTexture = sys->picQuad.formatInfo->formatTexture;
             picsys->context = sys->d3d_dev.d3dcontext;
 
@@ -432,7 +450,7 @@ static picture_pool_t *Pool(vout_display_t *vd, unsigned pool_size)
 #endif
         {
             sys->picQuad.resourceCount = DxgiResourceCount(sys->picQuad.formatInfo);
-            for (picture_count = 0; picture_count < pool_size; picture_count++) {
+            for (picture_count = 0; picture_count < slices; picture_count++) {
                 if (!pictures[picture_count]->p_sys->texture[0])
                     continue;
                 if (D3D11_AllocateShaderView(vd, sys->d3d_dev.d3ddevice, sys->picQuad.formatInfo,
@@ -993,20 +1011,27 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
         }
     }
 
-    if (sys->prepareWait)
+#ifdef HAVE_D3D11_4_H
+    if (sys->d3dcontext4)
     {
-        ID3D11DeviceContext_End(sys->d3d_dev.d3dcontext, sys->prepareWait);
+        mtime_t render_start;
+        if (sys->log_level >= 4)
+            render_start = mdate();
+        if (sys->renderFence == UINT64_MAX)
+            sys->renderFence;
+        else
+            sys->renderFence++;
 
-        while (S_FALSE == ID3D11DeviceContext_GetData(sys->d3d_dev.d3dcontext,
-                                                      sys->prepareWait, NULL, 0, 0))
-        {
-            if (is_d3d11_opaque(picture->format.i_chroma))
-                d3d11_device_unlock( &sys->d3d_dev );
-            SleepEx(2, TRUE);
-            if (is_d3d11_opaque(picture->format.i_chroma))
-                d3d11_device_lock( &sys->d3d_dev );
-        }
+        ResetEvent(sys->renderFinished);
+        ID3D11Fence_SetEventOnCompletion(sys->d3dRenderFence, sys->renderFence, sys->renderFinished);
+        ID3D11DeviceContext4_Signal(sys->d3dcontext4, sys->d3dRenderFence, sys->renderFence);
+
+        WaitForSingleObject(sys->renderFinished, INFINITE);
+        if (sys->log_level >= 4)
+            msg_Dbg(vd, "waited %" PRId64 " ms for the render fence",
+                    (mdate() - render_start) * 1000 / CLOCK_FREQ);
     }
+#endif
 
     if (is_d3d11_opaque(picture->format.i_chroma))
         d3d11_device_unlock( &sys->d3d_dev );
@@ -1025,6 +1050,7 @@ static void Display(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
         /* TODO device lost */
         msg_Err(vd, "SwapChain Present failed. (hr=0x%lX)", hr);
     }
+
     d3d11_device_unlock( &sys->d3d_dev );
 
     picture_Release(picture);
@@ -1329,6 +1355,8 @@ static int Direct3D11Open(vout_display_t *vd)
     video_format_Clean(&vd->fmt);
     vd->fmt = fmt;
 
+    sys->log_level = var_InheritInteger(vd, "verbose");
+
     return VLC_SUCCESS;
 }
 
@@ -1597,14 +1625,55 @@ static int Direct3D11CreateFormatResources(vout_display_t *vd, const video_forma
     return VLC_SUCCESS;
 }
 
+#ifdef HAVE_D3D11_4_H
+static HRESULT InitRenderFence(vout_display_sys_t *sys)
+{
+    HRESULT hr;
+    sys->renderFinished = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (unlikely(sys->renderFinished == NULL))
+        return S_FALSE;
+    ID3D11Device5 *d3ddev5 = NULL;
+    hr = ID3D11DeviceContext_QueryInterface(sys->d3d_dev.d3dcontext, &IID_ID3D11DeviceContext4, (void**)&sys->d3dcontext4);
+    if (FAILED(hr))
+        goto error;
+    hr = ID3D11Device_QueryInterface(sys->d3d_dev.d3ddevice, &IID_ID3D11Device5, (void**)&d3ddev5);
+    if (FAILED(hr))
+        goto error;
+    hr = ID3D11Device5_CreateFence(d3ddev5, sys->renderFence, D3D11_FENCE_FLAG_NONE, &IID_ID3D11Fence, (void**)&sys->d3dRenderFence);
+    if (FAILED(hr))
+        goto error;
+    ID3D11Device5_Release(d3ddev5);
+    return hr;
+error:
+    if (d3ddev5)
+        ID3D11Device5_Release(d3ddev5);
+    if (sys->d3dRenderFence)
+    {
+        ID3D11Fence_Release(sys->d3dRenderFence);
+        sys->d3dRenderFence = NULL;
+    }
+    if (sys->d3dcontext4)
+    {
+        ID3D11DeviceContext4_Release(sys->d3dcontext4);
+        sys->d3dcontext4 = NULL;
+    }
+    CloseHandle(sys->renderFinished);
+    return hr;
+}
+#endif // HAVE_D3D11_4_H
+
 static int Direct3D11CreateGenericResources(vout_display_t *vd)
 {
     vout_display_sys_t *sys = vd->sys;
     HRESULT hr;
 
-    D3D11_QUERY_DESC query = { 0 };
-    query.Query = D3D11_QUERY_EVENT;
-    hr = ID3D11Device_CreateQuery(sys->d3d_dev.d3ddevice, &query, (ID3D11Query**)&sys->prepareWait);
+#ifdef HAVE_D3D11_4_H
+    hr = InitRenderFence(sys);
+    if (SUCCEEDED(hr))
+    {
+        msg_Dbg(vd, "using GPU render fence");
+    }
+#endif
 
     ID3D11BlendState *pSpuBlendState;
     D3D11_BLEND_DESC spuBlendDesc = { 0 };
@@ -1808,11 +1877,17 @@ static void Direct3D11DestroyResources(vout_display_t *vd)
         ID3D11PixelShader_Release(sys->picQuad.d3dpixelShader);
         sys->picQuad.d3dpixelShader = NULL;
     }
-    if (sys->prepareWait)
+#ifdef HAVE_D3D11_4_H
+    if (sys->d3dcontext4)
     {
-        ID3D11Query_Release(sys->prepareWait);
-        sys->prepareWait = NULL;
+        ID3D11Fence_Release(sys->d3dRenderFence);
+        sys->d3dRenderFence = NULL;
+        ID3D11DeviceContext4_Release(sys->d3dcontext4);
+        sys->d3dcontext4 = NULL;
+        CloseHandle(sys->renderFinished);
+        sys->renderFinished = NULL;
     }
+#endif
 
     msg_Dbg(vd, "Direct3D11 resources destroyed");
 }

@@ -226,7 +226,18 @@ static int Decode(decoder_t *dec, block_t *block)
             if (res < 0 && res != DAV1D_ERR(EAGAIN))
             {
                 msg_Err(dec, "Decoder feed error %d!", res);
-                i_ret = VLC_EGENERIC;
+                /* bitstream decoding errors (typically DAV1D_ERR(EINVAL), are assumed
+                 * to be recoverable. Other errors returned from this function are either
+                 * unexpected within the VLC configuration, or considered critical failures:
+                 * - EAGAIN is handled above.
+                 * - ENOMEM means out-of-memory and is unrecoverable.
+                 * - ENOPROTOOPT is a build or configuration error (invalid demuxer/muxer or unsupported bitdepth) and is unrecoverable.
+                 * - ERANGE means frame size limits exceeded. VLC doesn't use this so we can ignore this, but unless size changes, it would be unrecoverable.
+                 * - EINVAL is any other bitstream error which is basically what this is about.
+                 * - EIO means file count not be opened and is unrecoverable.
+                 * - ENOENT  is actually only returned by dav1d_parse_sequence_header(), which is outside this context (I think?).
+                 * - read() can return other values but it's OK to consider these critical for now. */
+                i_ret = res == DAV1D_ERR(EINVAL) ? VLCDEC_SUCCESS : VLCDEC_ECRITICAL;
                 break;
             }
         }
@@ -273,6 +284,7 @@ static int Decode(decoder_t *dec, block_t *block)
 static int OpenDecoder(vlc_object_t *p_this)
 {
     decoder_t *dec = (decoder_t *)p_this;
+    unsigned i_core_count = vlc_GetCPUCount();
 
     if (dec->fmt_in.i_codec != VLC_CODEC_AV1)
         return VLC_EGENERIC;
@@ -284,10 +296,13 @@ static int OpenDecoder(vlc_object_t *p_this)
     dav1d_default_settings(&p_sys->s);
     p_sys->s.n_tile_threads = var_InheritInteger(p_this, "dav1d-thread-tiles");
     if (p_sys->s.n_tile_threads == 0)
-        p_sys->s.n_tile_threads = VLC_CLIP(vlc_GetCPUCount(), 1, 4);
+        p_sys->s.n_tile_threads =
+            (i_core_count > 4) ? 4 :
+            (i_core_count > 1) ? i_core_count :
+            1;
     p_sys->s.n_frame_threads = var_InheritInteger(p_this, "dav1d-thread-frames");
     if (p_sys->s.n_frame_threads == 0)
-        p_sys->s.n_frame_threads = __MAX(1, vlc_GetCPUCount());
+        p_sys->s.n_frame_threads = (i_core_count < 16) ? i_core_count : 16;
     p_sys->s.allocator.cookie = dec;
     p_sys->s.allocator.alloc_picture_callback = NewPicture;
     p_sys->s.allocator.release_picture_callback = FreePicture;

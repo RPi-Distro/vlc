@@ -2,7 +2,7 @@
  * svg.c : Put SVG on the video
  *****************************************************************************
  * Copyright (C) 2002, 2003 VLC authors and VideoLAN
- * $Id: 71fe7e54579ef886ba554ea000958b8737b21737 $
+ * $Id: b1247af0ca26090f1e067065bf0adf3ca1086b05 $
  *
  * Authors: Olivier Aubert <oaubert@lisi.univ-lyon1.fr>
  *
@@ -73,7 +73,7 @@ struct filter_sys_t
 
 vlc_module_begin ()
     set_category( CAT_INPUT )
-    set_category( SUBCAT_INPUT_SCODEC )
+    set_subcategory( SUBCAT_INPUT_SCODEC )
     set_capability( "text renderer", 99 )
     add_shortcut( "svg" )
     add_string( "svg-template-file", "", TEMPLATE_TEXT, TEMPLATE_LONGTEXT, true )

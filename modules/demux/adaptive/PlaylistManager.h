@@ -30,7 +30,7 @@ namespace adaptive
 {
     namespace playlist
     {
-        class AbstractPlaylist;
+        class BasePlaylist;
         class BasePeriod;
     }
 
@@ -47,19 +47,19 @@ namespace adaptive
         public:
             PlaylistManager( demux_t *,
                              SharedResources *,
-                             AbstractPlaylist *,
+                             BasePlaylist *,
                              AbstractStreamFactory *,
                              AbstractAdaptationLogic::LogicType type );
             virtual ~PlaylistManager    ();
 
-            bool    init();
+            bool    init(bool = false);
             bool    start();
             bool    started() const;
             void    stop();
 
-            AbstractStream::buffering_status bufferize(mtime_t, unsigned, unsigned);
-            AbstractStream::status dequeue(mtime_t, mtime_t *);
-            void drain();
+            AbstractStream::BufferingStatus bufferize(mtime_t, mtime_t,
+                                                      mtime_t, mtime_t);
+            AbstractStream::Status dequeue(mtime_t, mtime_t *);
 
             virtual bool needsUpdate() const;
             virtual bool updatePlaylist();
@@ -74,12 +74,14 @@ namespace adaptive
             virtual int doControl(int, va_list);
             virtual int doDemux(int64_t);
 
+            void    setLivePause(bool);
             virtual bool    setPosition(mtime_t);
-            mtime_t getPCR() const;
+            mtime_t getResumeTime() const;
             mtime_t getFirstDTS() const;
+            unsigned getActiveStreamsCount() const;
 
-            virtual mtime_t getFirstPlaybackTime() const;
             mtime_t getCurrentDemuxTime() const;
+            mtime_t getMinAheadTime() const;
 
             virtual bool reactivateStream(AbstractStream *);
             bool setupPeriod();
@@ -96,15 +98,22 @@ namespace adaptive
             AbstractAdaptationLogic::LogicType  logicType;
             AbstractAdaptationLogic             *logic;
             AbstractBufferingLogic              *bufferingLogic;
-            AbstractPlaylist                    *playlist;
+            BasePlaylist                    *playlist;
             AbstractStreamFactory               *streamFactory;
             demux_t                             *p_demux;
             std::vector<AbstractStream *>        streams;
             BasePeriod                          *currentPeriod;
 
+            enum class TimestampSynchronizationPoint
+            {
+                RandomAccess,
+                Discontinuity,
+            };
+
             /* shared with demux/buffering */
             struct
             {
+                TimestampSynchronizationPoint pcr_syncpoint;
                 mtime_t     i_nzpcr;
                 mtime_t     i_firstpcr;
                 vlc_mutex_t lock;
@@ -138,6 +147,8 @@ namespace adaptive
             vlc_cond_t   waitcond;
             bool         b_buffering;
             bool         b_canceled;
+            mtime_t      pause_start;
+            bool         b_preparsing;
     };
 
 }

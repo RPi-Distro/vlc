@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 59c54840f068afeabfc1a53666919780d0b63d9c $
+ * $Id: d0d8d14c1b8badba4dccbea2adc2b6c280ce9693 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -831,7 +831,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 return VLC_EGENERIC;
 
             *ppp_attach = vlc_alloc( p_sys->i_attachments, sizeof(input_attachment_t*) );
-            if (!**ppp_attach)
+            if (!*ppp_attach)
                 return VLC_ENOMEM;
             *pi_int = p_sys->i_attachments;
             for( int i = 0; i < p_sys->i_attachments; i++ )

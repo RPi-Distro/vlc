@@ -2,7 +2,7 @@
  * prefs.m: MacOS X module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2018 VLC authors and VideoLAN
- * $Id: ddb91f69662d11dddf078461b7e0a4abec823419 $
+ * $Id: de47c488977b3912c647a1d5e4d1e335b4554d4f $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -317,7 +317,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"%@: name: %@, number of children %li", NSStringFromClass([self class]), [self name], [self numberOfChildren]];
+    return [NSString stringWithFormat:@"%@: name: %@, number of children %i", NSStringFromClass([self class]), [self name], [self numberOfChildren]];
 }
 
 - (VLCTreeItem *)childAtIndex:(NSInteger)i_index
@@ -508,6 +508,10 @@
         for (unsigned int j = 0; j < confsize; j++) {
             int configType = p_configs[j].i_type;
             if (configType == CONFIG_CATEGORY) {
+                if( p_configs[j].value.i == -1 ) {
+                    categoryItem = nil;
+                    continue;
+                }
                 categoryItem = [self itemRepresentingCategory:p_configs[j].value.i];
                 if (!categoryItem) {
                     categoryItem = [VLCTreeCategoryItem categoryTreeItemWithCategory:p_configs[j].value.i];
@@ -517,6 +521,10 @@
             }
             else if (configType == CONFIG_SUBCATEGORY) {
                 lastsubcat = p_configs[j].value.i;
+                if( lastsubcat == -1 ) {
+                    subCategoryItem = nil;
+                    continue;
+                }
                 if (categoryItem && ![self isSubCategoryGeneral:lastsubcat]) {
                     subCategoryItem = [categoryItem itemRepresentingSubCategory:lastsubcat];
                     if (!subCategoryItem) {

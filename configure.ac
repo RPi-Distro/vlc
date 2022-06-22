@@ -1,12 +1,12 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 1999-2020 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 1999-2022 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.12)
+AC_INIT(vlc, 3.0.17.4)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=12
-VERSION_EXTRA=0
+VERSION_REVISION=17
+VERSION_EXTRA=4
 VERSION_DEV=
 
 PKGDIR="vlc"
@@ -14,7 +14,7 @@ AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Vetinari"
-COPYRIGHT_YEARS="1996-2020"
+COPYRIGHT_YEARS="1996-2022"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -1880,7 +1880,7 @@ PKG_ENABLE_MODULES_VLC([DVDREAD], [], [dvdread > 4.9.0], [dvdread input module],
 dnl
 dnl libdvdnav plugin
 dnl
-PKG_ENABLE_MODULES_VLC([DVDNAV], [], [dvdnav > 4.9.0], [DVD with navigation input module (dvdnav)], [auto])
+PKG_ENABLE_MODULES_VLC([DVDNAV], [], [dvdnav > 5.0.3], [DVD with navigation input module (dvdnav)], [auto])
 AS_IF([test "${enable_dvdnav}" != "no"], [
   AC_MSG_CHECKING(for dvdnav_stream_cb in dvdnav/dvdnav.h)
     AC_EGREP_HEADER(dvdnav_stream_cb,dvdnav/dvdnav.h,[
@@ -2573,7 +2573,7 @@ AM_CONDITIONAL([HAVE_AVCODEC_D3D11VA], [test "${have_avcodec_d3d11va}" = "yes"])
 dnl
 dnl DXGI debug
 dnl
-AC_CHECK_HEADERS(dxgidebug.h dxgi1_6.h)
+AC_CHECK_HEADERS(dxgidebug.h dxgi1_6.h d3d11_4.h)
 
 dnl
 dnl  avformat demuxer/muxer plugin
@@ -4016,7 +4016,7 @@ AM_CONDITIONAL([HAVE_LIRC], [test "${have_lirc}" = "yes"])
 dnl
 dnl  SRT plugin
 dnl
-PKG_ENABLE_MODULES_VLC([SRT], [access_srt access_output_srt], [srt >= 1.2.2], [SRT input/output plugin], [auto], [], [], [-DENABLE_SRT])
+PKG_ENABLE_MODULES_VLC([SRT], [access_srt access_output_srt], [srt >= 1.3.0], [SRT input/output plugin], [auto], [], [], [-DENABLE_SRT])
 
 EXTEND_HELP_STRING([Visualisations and Video filter plugins:])
 dnl
@@ -4200,8 +4200,11 @@ AS_IF([test "${enable_osx_notifications}" != "no"], [
       VLC_ADD_PLUGIN([osx_notifications])
       VLC_ADD_LIBS([osx_notifications], [-Wl,-framework,Growl,-framework,Foundation])
       VLC_ADD_OBJCFLAGS([osx_notifications], [-fobjc-exceptions] )
+  else
+      enable_osx_notifications="no"
   fi
 ])
+AM_CONDITIONAL(HAVE_OSX_NOTIFICATIONS, [test "$enable_osx_notifications" != "no"])
 
 dnl
 dnl Libnotify notification plugin
@@ -4321,8 +4324,14 @@ AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_REVISION)
 AC_SUBST(VERSION_EXTRA)
 AC_SUBST(COPYRIGHT_YEARS)
-AC_DEFINE_UNQUOTED(VLC_COMPILE_BY, "`whoami|sed -e 's/\\\/\\\\\\\/g'`", [user who ran configure])
-AC_DEFINE_UNQUOTED(VLC_COMPILE_HOST, "`hostname -f 2>/dev/null || hostname`", [host which ran configure])
+AS_IF([test -z "$VLC_COMPILE_BY"],[
+   VLC_COMPILE_BY=`whoami|sed -e 's/\\\/\\\\\\\/g'`
+])
+AC_DEFINE_UNQUOTED([VLC_COMPILE_BY], "$VLC_COMPILE_BY", [user who ran configure])
+AS_IF([test -z "$VLC_COMPILE_HOST"],[
+   VLC_COMPILE_HOST=`hostname -f 2>/dev/null || hostname`
+])
+AC_DEFINE_UNQUOTED([VLC_COMPILE_HOST], "$VLC_COMPILE_HOST", [host which ran configure])
 AC_DEFINE_UNQUOTED(VLC_COMPILER, "`$CC -v 2>&1 | tail -n 1 | sed -e 's/ *$//'`", [compiler])
 dnl
 dnl  Handle substvars that use $(top_srcdir)

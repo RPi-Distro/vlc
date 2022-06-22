@@ -1,6 +1,6 @@
 # LIBBLURAY
 
-BLURAY_VERSION := 1.2.1
+BLURAY_VERSION := 1.3.0
 BLURAY_URL := $(VIDEOLAN)/libbluray/$(BLURAY_VERSION)/libbluray-$(BLURAY_VERSION).tar.bz2
 
 ifdef BUILD_DISCS
@@ -39,14 +39,6 @@ endif
 
 ifndef WITH_OPTIMIZATION
 BLURAY_CONF += --disable-optimizations
-endif
-
-ifdef HAVE_MACOSX
-ifeq ($(ARCH),aarch64)
-# There is no Java yet for this OS/arch,
-# so let's disable it for now
-BLURAY_CONF += --disable-bdjava-jar
-endif
 endif
 
 $(TARBALLS)/libbluray-$(BLURAY_VERSION).tar.bz2:

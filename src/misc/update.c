@@ -2,7 +2,7 @@
  * update.c: VLC update checking and downloading
  *****************************************************************************
  * Copyright © 2005-2008 VLC authors and VideoLAN
- * $Id: 6c5a231bce0219224e1359dff5d639bb26885680 $
+ * $Id: b7e1420dfacf7365ea5ef0a2bb5d93693c4045b8 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rémi Duraffort <ivoire at via.ecp.fr>
@@ -728,7 +728,7 @@ static void* update_DownloadReal( void *obj )
                                            psz_msg );
     if(answer == 1)
     {
-#ifndef VLC_WINSTORE_APP
+#if !VLC_WINSTORE_APP
         wchar_t psz_wdestfile[MAX_PATH];
         MultiByteToWideChar( CP_UTF8, 0, psz_destfile, -1, psz_wdestfile, MAX_PATH );
         answer = (int)ShellExecuteW( NULL, L"open", psz_wdestfile, NULL, NULL, SW_SHOW);

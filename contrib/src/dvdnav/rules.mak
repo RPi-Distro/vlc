@@ -1,6 +1,6 @@
 # DVDNAV
 
-LIBDVDNAV_VERSION := 6.1.0
+LIBDVDNAV_VERSION := 6.1.1
 LIBDVDNAV_URL := $(VIDEOLAN)/libdvdnav/$(LIBDVDNAV_VERSION)/libdvdnav-$(LIBDVDNAV_VERSION).tar.bz2
 
 ifdef BUILD_DISCS
@@ -8,7 +8,7 @@ ifdef GPL
 PKGS += dvdnav
 endif
 endif
-ifeq ($(call need_pkg,"dvdnav >= 5.0.3"),)
+ifeq ($(call need_pkg,"dvdnav > 5.0.3"),)
 PKGS_FOUND += dvdnav
 endif
 

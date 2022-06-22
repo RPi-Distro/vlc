@@ -2,7 +2,7 @@
  * VLCInputManager.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 5938c3921ebd55b4cc3c7c1b5624c04802cb8835 $
+ * $Id: d0756e30d39e4cc273bfd402b6e0b8b47f4af70f $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,12 @@
 #import "VLCResumeDialogController.h"
 #import "VLCTrackSynchronizationWindowController.h"
 #import "VLCVoutView.h"
+#import "VLCRemoteControlService.h"
 
 #import "iTunes.h"
 #import "Spotify.h"
+
+NSString *VLCPlayerRateChanged = @"VLCPlayerRateChanged";
 
 @interface VLCInputManager()
 - (void)updateMainMenu;
@@ -72,6 +75,7 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
                 break;
             case INPUT_EVENT_RATE:
                 [[[VLCMain sharedInstance] mainMenu] performSelectorOnMainThread:@selector(updatePlaybackRate) withObject: nil waitUntilDone:NO];
+                [[NSNotificationCenter defaultCenter] postNotificationName:VLCPlayerRateChanged object:nil];
                 break;
             case INPUT_EVENT_POSITION:
 
@@ -164,6 +168,8 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
     BOOL b_has_spotify_paused;
 
     NSTimer *hasEndedTimer;
+
+    VLCRemoteControlService *_remoteControlService;
 }
 @end
 
@@ -182,14 +188,26 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
 - (id)initWithMain:(VLCMain *)o_mainObj
 {
     self = [super init];
-    if(self) {
-        msg_Dbg(getIntf(), "Initializing input manager");
+    if (self) {
+        intf_thread_t *p_intf = getIntf();
+        msg_Dbg(p_intf, "Initializing input manager");
 
         o_main = o_mainObj;
-        var_AddCallback(pl_Get(getIntf()), "input-current", InputThreadChanged, (__bridge void *)self);
+        var_AddCallback(pl_Get(p_intf), "input-current", InputThreadChanged, (__bridge void *)self);
 
         informInputChangedQueue = dispatch_queue_create("org.videolan.vlc.inputChangedQueue", DISPATCH_QUEUE_SERIAL);
 
+        if (@available(macOS 10.12.2, *)) {
+            BOOL b_mediaKeySupport = var_InheritBool(p_intf, "macosx-mediakeys");
+            if (b_mediaKeySupport) {
+                _remoteControlService = [[VLCRemoteControlService alloc] init];
+                [_remoteControlService subscribeToRemoteCommands];
+            }
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(coreChangedMediaKeySupportSetting:)
+                                                         name:VLCMediaKeySupportSettingChangedNotification
+                                                       object:nil];
+        }
     }
     return self;
 }
@@ -204,6 +222,9 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
 - (void)deinit
 {
     msg_Dbg(getIntf(), "Deinitializing input manager");
+
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+
     if (p_current_input) {
         /* continue playback where you left off */
         [self storePlaybackPositionForItem:p_current_input];
@@ -211,6 +232,10 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
         var_DelCallback(p_current_input, "intf-event", InputEvent, (__bridge void *)self);
         vlc_object_release(p_current_input);
         p_current_input = NULL;
+    }
+
+    if (@available(macOS 10.12.2, *)) {
+        [_remoteControlService unsubscribeFromRemoteCommands];
     }
 
     var_DelCallback(pl_Get(getIntf()), "input-current", InputThreadChanged, (__bridge void *)self);
@@ -281,6 +306,7 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
 {
     [[[VLCMain sharedInstance] mainWindow] updateTimeSlider];
     [[[VLCMain sharedInstance] statusBarIcon] updateProgress];
+    [_remoteControlService playbackPositionUpdated];
 }
 
 - (void)playbackStatusUpdated
@@ -338,6 +364,7 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
 
     [self updateMainWindow];
     [self sendDistributedNotificationWithUpdatedPlaybackStatus];
+    [_remoteControlService playbackStateChangedTo:state];
 }
 
 // Called when playback has ended and likely no subsequent media will start playing
@@ -514,6 +541,7 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
 {
     if (!p_current_input) {
         [[[VLCMain sharedInstance] currentMediaInfoPanel] updatePanelWithItem:nil];
+        [_remoteControlService metaDataChangedForCurrentMediaItem:NULL];
         return;
     }
 
@@ -521,6 +549,7 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
 
     [[[o_main playlist] model] updateItem:p_input_item];
     [[[VLCMain sharedInstance] currentMediaInfoPanel] updatePanelWithItem:p_input_item];
+    [_remoteControlService metaDataChangedForCurrentMediaItem:p_input_item];
 }
 
 - (void)updateMainWindow
@@ -551,6 +580,23 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
                                                                    object:nil
                                                                  userInfo:nil
                                                        deliverImmediately:YES];
+}
+
+- (void)coreChangedMediaKeySupportSetting: (NSNotification *)o_notification
+{
+    intf_thread_t *p_intf = getIntf();
+    if (!p_intf)
+        return;
+
+    BOOL b_mediaKeySupport = var_InheritBool(p_intf, "macosx-mediakeys");
+    if (b_mediaKeySupport) {
+        if (!_remoteControlService) {
+            _remoteControlService = [[VLCRemoteControlService alloc] init];
+        }
+        [_remoteControlService subscribeToRemoteCommands];
+    } else {
+        [_remoteControlService unsubscribeFromRemoteCommands];
+    }
 }
 
 - (BOOL)hasInput

@@ -39,6 +39,7 @@ namespace adaptive
     namespace http
     {
         class AbstractConnectionManager;
+        class ChunkInterface;
     }
 
     namespace playlist
@@ -61,7 +62,6 @@ namespace adaptive
 
         void setLanguage(const std::string &);
         void setDescription(const std::string &);
-        mtime_t getPCR() const;
         mtime_t getMinAheadTime() const;
         mtime_t getFirstDTS() const;
         int esCount() const;
@@ -69,23 +69,25 @@ namespace adaptive
         virtual bool reactivate(mtime_t);
         bool isDisabled() const;
         bool isValid() const;
-        typedef enum {
-            status_eof = 0, /* prioritized */
-            status_discontinuity,
-            status_demuxed,
-            status_buffering,
-        } status;
-        typedef enum {
-            buffering_end = 0, /* prioritized */
-            buffering_suspended,
-            buffering_full,
-            buffering_ongoing,
-            buffering_lessthanmin,
-        } buffering_status;
-        buffering_status bufferize(mtime_t, unsigned, unsigned);
-        buffering_status getLastBufferStatus() const;
+        void setLivePause(bool);
+        enum class Status {
+            Eof = 0, /* prioritized */
+            Discontinuity,
+            Demuxed,
+            Buffering,
+        };
+        enum class BufferingStatus {
+            End = 0, /* prioritized */
+            Suspended,
+            Full,
+            Ongoing,
+            Lessthanmin,
+        };
+        BufferingStatus bufferize(mtime_t, mtime_t, mtime_t,
+                                  mtime_t, bool = false);
+        BufferingStatus getLastBufferStatus() const;
         mtime_t getDemuxedAmount(mtime_t) const;
-        status dequeue(mtime_t, mtime_t *);
+        Status dequeue(mtime_t, mtime_t *);
         bool decodersDrained();
         virtual bool setPosition(mtime_t, bool);
         bool getMediaPlaybackTimes(mtime_t *, mtime_t *, mtime_t *,
@@ -93,12 +95,11 @@ namespace adaptive
         void runUpdates();
 
         /* Used by demuxers fake streams */
-        virtual std::string getContentType(); /* impl */
-        virtual block_t *readNextBlock(); /* impl */
+        virtual block_t *readNextBlock() override;
 
         /**/
-        virtual void fillExtraFMTInfo( es_format_t * ) const; /* impl */
-        virtual void trackerEvent(const SegmentTrackerEvent &); /* impl */
+        virtual void fillExtraFMTInfo( es_format_t * ) const  override;
+        virtual void trackerEvent(const TrackerEvent &)  override;
 
     protected:
         bool seekAble() const;
@@ -106,11 +107,12 @@ namespace adaptive
         virtual block_t *checkBlock(block_t *, bool) = 0;
         AbstractDemuxer * createDemux(const StreamFormat &);
         virtual AbstractDemuxer * newDemux(vlc_object_t *, const StreamFormat &,
-                                           es_out_t *, AbstractSourceStream *) const; /* impl */
+                                           es_out_t *, AbstractSourceStream *) const  override;
         virtual bool startDemux();
         virtual bool restartDemux();
 
         virtual void prepareRestart(bool = true);
+        bool resetForNewPosition(mtime_t);
 
         bool discontinuity;
         bool needrestart;
@@ -123,7 +125,8 @@ namespace adaptive
         AbstractConnectionManager *connManager; /* not owned */
         SegmentTracker *segmentTracker;
 
-        SegmentChunk *currentChunk;
+        ChunkInterface * getNextChunk() const;
+        ChunkInterface *currentChunk;
         bool eof;
         std::string language;
         std::string description;
@@ -137,8 +140,9 @@ namespace adaptive
 
     private:
         void declaredCodecs();
-        buffering_status doBufferize(mtime_t, mtime_t, mtime_t);
-        buffering_status last_buffer_status;
+        BufferingStatus doBufferize(mtime_t, mtime_t, mtime_t,
+                                    mtime_t, bool);
+        BufferingStatus last_buffer_status;
         bool valid;
         bool disabled;
         unsigned notfound_sequence;

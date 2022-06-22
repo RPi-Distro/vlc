@@ -1,5 +1,5 @@
 # SMB2
-SMB2_VERSION := 4a842524407b0c0b87b1f62fe792d569d92cd34d
+SMB2_VERSION := 08c1682f44b00fa694836703ed16ec74987f77d2
 SMB2_URL := https://github.com/sahlberg/libsmb2/archive/$(SMB2_VERSION).tar.gz
 
 ifeq ($(call need_pkg,"smb2"),)

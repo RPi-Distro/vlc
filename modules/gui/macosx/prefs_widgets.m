@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 5f2bb1bfceac66ffe909e2cfb1d8d46c1b6768b9 $
+ * $Id: 3c31ecd5ff72eaadb7b9f5a51427a0dede5d2e3b $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -1264,8 +1264,8 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
                     break;
                 }
             }
-            module_config_free(p_config);
         }
+        module_config_free(p_config);
     }
     module_list_free(p_list);
 

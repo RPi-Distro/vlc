@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright © 2000-2010 VideoLAN
- * $Id: 3d6fe6e6a8b9b5d55e720d348fda47a42495247a $
+ * $Id: 226914f54176730b07a246dcbda7aa5c7596cefa $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -268,6 +268,11 @@ bool StandardPLPanel::popup( const QPoint &point )
         }
         menu.addMenu( sortingMenu );
     }
+    if ( model->isSupportedAction( VLCModelSubInterface::ACTION_SHUFFLE, index ) )
+    {
+        ADD_MENU_ENTRY( QIcon(), qtr("Shuffle playlist"),
+                    VLCModelSubInterface::ACTION_SHUFFLE );
+    }
 
     /* Zoom */
     QMenu *zoomMenu = new QMenu( qtr( "Display size" ), &menu );
@@ -322,8 +327,10 @@ void StandardPLPanel::popupAction( QAction *action )
         temp = model->getURI( index );
         if( ! temp.isEmpty() ) path = vlc_uri2path( temp.toLatin1().constData() );
         if( path == NULL ) return;
+        temp = QFileInfo( qfu( path ) ).absolutePath();
+        if( !QFileInfo( temp ).isDir() ) return;
         QDesktopServices::openUrl(
-                    QUrl::fromLocalFile( QFileInfo( qfu( path ) ).absolutePath() ) );
+                    QUrl::fromLocalFile( temp ) );
         free( path );
         break;
 

@@ -2,7 +2,7 @@
  * VLCTimeField.h: NSTextField subclass for playback time fields
  *****************************************************************************
  * Copyright (C) 2003-2017 VLC authors and VideoLAN
- * $Id: c6d81e6d6ae2622ff3d85cd9010b0770a23b1175 $
+ * $Id: ebb64ae62bd14a2504b7400607038875b2dfbd80 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -33,8 +33,7 @@
 
 @interface VLCTimeField : NSTextField
 
-@property (readonly) BOOL timeRemaining;
-
-- (void)setRemainingIdentifier:(NSString *)o_string;
+- (void)setRemainingIdentifier:(NSString *)identifier;
+- (void)setTime:(NSString *)time withRemainingTime:(NSString *)remainingTime;
 
 @end

@@ -1,5 +1,5 @@
 # mpg123
-MPG123_VERSION := 1.26.2
+MPG123_VERSION := 1.29.3
 MPG123_URL := $(SF)/mpg123/mpg123/$(MPG123_VERSION)/mpg123-$(MPG123_VERSION).tar.bz2
 
 PKGS += mpg123
@@ -37,8 +37,6 @@ $(TARBALLS)/mpg123-$(MPG123_VERSION).tar.bz2:
 
 mpg123: mpg123-$(MPG123_VERSION).tar.bz2 .sum-mpg123
 	$(UNPACK)
-	# remove generated file from the source package
-	cd $(UNPACK_DIR) && rm -rf src/libsyn123/syn123.h
 	$(APPLY) $(SRC)/mpg123/no-programs.patch
 	$(call pkg_static,"libmpg123.pc.in")
 	$(MOVE)

@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 772a6b7232fcefb07d15015abb84ab53c183570b $
+ * $Id: 95d81932ce76863f9058abf9ed56fa3871a37337 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -84,6 +84,8 @@ private:
 
     QWidget *stable;
     QLayout *layout;
+
+    bool enable_mouse_events;
 
     void reportSize();
 

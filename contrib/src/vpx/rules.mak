@@ -33,7 +33,6 @@ DEPS_vpx =
 
 ifdef HAVE_WIN32
 DEPS_vpx += pthreads $(DEPS_pthreads)
-VPX_HOSTVARS = $(HOSTVARS) CFLAGS="$(CFLAGS) -DPTW32_STATIC_LIB" CXXFLAGS="$(CXXFLAGS) -DPTW32_STATIC_LIB"
 endif
 
 ifdef HAVE_CROSS_COMPILE
@@ -136,6 +135,9 @@ VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -mtvos-version-min=9.0
 else
 VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -miphoneos-version-min=8.4
 endif
+endif
+ifdef HAVE_MACOSX
+VPX_LDFLAGS := -L$(MACOSX_SDK)/usr/lib -isysroot $(MACOSX_SDK) -mmacosx-version-min=10.7
 endif
 VPX_LDFLAGS += -arch $(PLATFORM_SHORT_ARCH)
 endif

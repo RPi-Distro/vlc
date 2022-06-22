@@ -2,7 +2,7 @@
  * help.hpp : Help and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 3357922c1652e1d1c91b07270fcf132b13974dcf $
+ * $Id: 1293be4e1fbe450ed6b8521f7ffb5ac671a2f1e8 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -73,7 +73,7 @@ private slots:
     void showCredit();
 };
 
-#ifdef UPDATE_CHECK
+#if defined(UPDATE_CHECK)
 
 class UpdateDialog : public QVLCFrame, public Singleton<UpdateDialog>
 {

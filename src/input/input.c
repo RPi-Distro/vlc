@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: c139964f62d634471e8b3f9433f3d7c95fe644c3 $
+ * $Id: 04e5b3bb7270369763bd67f8aacd2659683c4fc6 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -1029,6 +1029,30 @@ static void SetSubtitlesOptions( input_thread_t *p_input )
         var_SetInteger( p_input, "spu-delay", (mtime_t)i_delay * 100000 );
 }
 
+static enum slave_type DeduceSlaveType( input_thread_t *p_input,
+                                        const char *psz_uri )
+{
+    vlc_url_t parsed_uri;
+    if( vlc_UrlParse( &parsed_uri, psz_uri ) != VLC_SUCCESS ||
+        parsed_uri.psz_path == NULL )
+    {
+        goto fail;
+    }
+
+    enum slave_type i_type;
+    if( !input_item_slave_GetType( parsed_uri.psz_path, &i_type ) )
+        goto fail;
+
+    vlc_UrlClean( &parsed_uri );
+    return i_type;
+
+fail:
+    msg_Dbg( p_input, "Can't deduce slave type of \"%s\" with file extension.",
+             psz_uri );
+    vlc_UrlClean( &parsed_uri );
+    return SLAVE_TYPE_AUDIO;
+}
+
 static void GetVarSlaves( input_thread_t *p_input,
                           input_item_slave_t ***ppp_slaves, int *p_slaves )
 {
@@ -1058,8 +1082,9 @@ static void GetVarSlaves( input_thread_t *p_input,
         if( uri == NULL )
             continue;
 
+        const enum slave_type i_type = DeduceSlaveType( p_input, uri );
         input_item_slave_t *p_slave =
-            input_item_slave_New( uri, SLAVE_TYPE_AUDIO, SLAVE_PRIORITY_USER );
+            input_item_slave_New( uri, i_type, SLAVE_PRIORITY_USER );
         free( uri );
 
         if( unlikely( p_slave == NULL ) )
@@ -1128,6 +1153,9 @@ static void LoadSlaves( input_thread_t *p_input )
         free( psz_autopath );
     }
 
+    /* Add slaves from the "input-slave" option */
+    GetVarSlaves( p_input, &pp_slaves, &i_slaves );
+
     /* Add slaves found by the directory demuxer or via libvlc */
     input_item_t *p_item = input_priv(p_input)->p_item;
     vlc_mutex_lock( &p_item->lock );
@@ -1144,9 +1172,6 @@ static void LoadSlaves( input_thread_t *p_input )
     /* Slaves that are successfully loaded will be added back to the item */
     TAB_CLEAN( p_item->i_slaves, p_item->pp_slaves );
     vlc_mutex_unlock( &p_item->lock );
-
-    /* Add slaves from the "input-slave" option */
-    GetVarSlaves( p_input, &pp_slaves, &i_slaves );
 
     if( i_slaves > 0 )
         qsort( pp_slaves, i_slaves, sizeof (input_item_slave_t*),

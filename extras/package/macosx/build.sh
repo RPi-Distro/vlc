@@ -204,6 +204,8 @@ export ac_cv_func_fdopendir=no
 export ac_cv_func_openat=no
 export ac_cv_func_fstatat=no
 export ac_cv_func_readlinkat=no
+export ac_cv_func_linkat=no
+export ac_cv_func_unlinkat=no
 
 # Added symbols between 10.7 and 10.9
 export ac_cv_func_memset_s=no
@@ -263,7 +265,13 @@ if [ "$CONTRIBFROMSOURCE" = "yes" ]; then
 
 else
 if [ ! -e "../$HOST_TRIPLET" ]; then
-    make prebuilt > $out
+    if [ -n "$VLC_PREBUILT_CONTRIBS_URL" ]; then
+        make prebuilt PREBUILT_URL="$VLC_PREBUILT_CONTRIBS_URL"
+        make .luac
+    else
+        make prebuilt
+        make .luac
+    fi
 fi
 fi
 spopd

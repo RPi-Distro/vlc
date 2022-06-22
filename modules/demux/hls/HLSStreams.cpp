@@ -97,25 +97,24 @@ int HLSStream::ID3TAG_Parse_Handler(uint32_t i_tag, const uint8_t *p_payload, si
 
 block_t * HLSStream::checkBlock(block_t *p_block, bool b_first)
 {
-    if(b_first && p_block &&
-       p_block->i_buffer >= 10 && ID3TAG_IsTag(p_block->p_buffer, false))
+    if(b_first && p_block)
     {
-        while( p_block->i_buffer )
+        while(p_block->i_buffer >= 10 && ID3TAG_IsTag(p_block->p_buffer, false))
         {
             size_t i_size = ID3TAG_Parse( p_block->p_buffer, p_block->i_buffer,
                                           ID3TAG_Parse_Handler, static_cast<void *>(this) );
+            if(i_size >= p_block->i_buffer || i_size == 0)
+                break;
             /* Skip ID3 for demuxer */
             p_block->p_buffer += i_size;
             p_block->i_buffer -= i_size;
-            if( i_size == 0 )
-                break;
         }
     }
 
     if( b_meta_updated )
     {
         b_meta_updated = false;
-        AbstractCommand *command = fakeEsOut()->commandsQueue()->factory()->createEsOutMetaCommand( -1, p_meta );
+        AbstractCommand *command = fakeEsOut()->commandsFactory()->createEsOutMetaCommand( fakeesout, -1, p_meta );
         if( command )
             fakeEsOut()->commandsQueue()->Schedule( command );
     }
@@ -126,37 +125,44 @@ block_t * HLSStream::checkBlock(block_t *p_block, bool b_first)
 AbstractDemuxer *HLSStream::newDemux(vlc_object_t *p_obj, const StreamFormat &format,
                                      es_out_t *out, AbstractSourceStream *source) const
 {
-    AbstractDemuxer *ret = NULL;
-    switch((unsigned)format)
+    AbstractDemuxer *ret = nullptr;
+    switch(format)
     {
-        case StreamFormat::PACKEDAAC:
+        case StreamFormat::Type::PackedAAC:
             ret = new Demuxer(p_obj, "aac", out, source);
             break;
+        case StreamFormat::Type::PackedMP3:
+            ret = new Demuxer(p_obj, "mp3", out, source);
+            break;
+        case StreamFormat::Type::PackedAC3:
+            ret = new Demuxer(p_obj, "ac3", out, source);
+            break;
 
-        case StreamFormat::MPEG2TS:
+        case StreamFormat::Type::MPEG2TS:
             ret = new Demuxer(p_obj, "ts", out, source);
             if(ret)
                 ret->setBitstreamSwitchCompatible(false); /* HLS and unique PAT/PMT versions */
             break;
 
-        case StreamFormat::MP4:
+        case StreamFormat::Type::MP4:
             ret = AbstractStream::newDemux(p_obj, format, out, source);
             break;
 
+        case StreamFormat::Type::Ogg:
+            ret = new Demuxer(p_obj, "ogg", out, source);
+            break;
+
 /* Disabled until we can handle empty segments/cue and absolute time
-        case StreamFormat::WEBVTT:
+        case StreamFormat::Type::WebVTT:
             ret = new Demuxer(p_obj, "webvttstream", out, source);
             if(ret)
                 ret->setRestartsOnEachSegment(true);
             break;
 */
 
-        case StreamFormat::UNKNOWN:
-            ret = new MimeDemuxer(p_obj, this, out, source);
-            break;
-
         default:
-        case StreamFormat::UNSUPPORTED:
+        case StreamFormat::Type::Unknown:
+        case StreamFormat::Type::Unsupported:
             break;
     }
     return ret;
@@ -169,7 +175,7 @@ AbstractStream * HLSStreamFactory::create(demux_t *realdemux, const StreamFormat
     if(stream && !stream->init(format, tracker, manager))
     {
         delete stream;
-        return NULL;
+        return nullptr;
     }
     return stream;
 }

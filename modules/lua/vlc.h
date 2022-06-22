@@ -2,7 +2,7 @@
  * vlc.h: VLC specific lua library functions.
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 71f381d334a07f5f9461a301b84c292a90ef844d $
+ * $Id: 8791ba57f930d70bc4c1941920667cd4bbdf69d1 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -38,6 +38,7 @@
 #include <vlc_stream.h>
 #include <vlc_demux.h>
 
+#define LUA_COMPAT_APIINTCASTS /* luaL_checkint / luaL_optlong */
 #define LUA_COMPAT_MODULE
 #include <lua.h>        /* Low level lua C API */
 #include <lauxlib.h>    /* Higher level C API */

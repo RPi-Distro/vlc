@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 78dbc2f9c3562e481f980d5751031740aaf22b07 $
+ * $Id: 1ce43873f5dfcf93ca07b4cfa9023603b8e06f86 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -35,6 +35,7 @@
 
 #include "menus.hpp"             /* Popup menu on bgWidget */
 
+#include <QDate>
 #include <QLabel>
 #include <QToolButton>
 #include <QPalette>
@@ -185,6 +186,8 @@ bool VideoWidget::request( struct vout_window_t *p_wnd )
         default:
             vlc_assert_unreachable();
     }
+
+    enable_mouse_events = var_InheritBool(p_window, "mouse-events");
     return true;
 }
 
@@ -227,13 +230,16 @@ QSize VideoWidget::physicalSize() const
     return current_size;
 }
 
+void WindowResized(vout_window_t *, const QSize&);
+void WindowReleased(vout_window_t *);
+
 void VideoWidget::reportSize()
 {
     if( !p_window )
         return;
 
     QSize size = physicalSize();
-    vout_window_ReportSize( p_window, size.width(), size.height() );
+    WindowResized(p_window, size);
 }
 
 /* Set the Widget to the correct Size */
@@ -316,31 +322,50 @@ int VideoWidget::qtMouseButton2VLC( Qt::MouseButton qtButton )
 
 void VideoWidget::mouseReleaseEvent( QMouseEvent *event )
 {
+    if ( !p_window || !enable_mouse_events )
+    {
+        event->ignore();
+        return;
+    }
+
     int vlc_button = qtMouseButton2VLC( event->button() );
     if( vlc_button >= 0 )
     {
         vout_window_ReportMouseReleased( p_window, vlc_button );
         event->accept();
+        return;
     }
-    else
-        event->ignore();
+
+    event->ignore();
 }
 
 void VideoWidget::mousePressEvent( QMouseEvent* event )
 {
+    if ( !p_window || !enable_mouse_events )
+    {
+        event->ignore();
+        return;
+    }
+
     int vlc_button = qtMouseButton2VLC( event->button() );
     if( vlc_button >= 0 )
     {
         vout_window_ReportMousePressed( p_window, vlc_button );
         event->accept();
+        return;
     }
-    else
-        event->ignore();
+
+    event->ignore();
 }
 
 void VideoWidget::mouseMoveEvent( QMouseEvent *event )
 {
-    if( p_window != NULL )
+    if ( !p_window || !enable_mouse_events )
+    {
+        event->ignore();
+        return;
+    }
+
     {
         QPointF current_pos = event->localPos();
 
@@ -351,21 +376,29 @@ void VideoWidget::mouseMoveEvent( QMouseEvent *event )
 #endif
         vout_window_ReportMouseMoved( p_window, current_pos.x(), current_pos.y() );
         event->accept();
+        return;
     }
-    else
-        event->ignore();
+
+    event->ignore();
 }
 
 void VideoWidget::mouseDoubleClickEvent( QMouseEvent *event )
 {
+    if ( !p_window || !enable_mouse_events )
+    {
+        event->ignore();
+        return;
+    }
+
     int vlc_button = qtMouseButton2VLC( event->button() );
     if( vlc_button >= 0 )
     {
         vout_window_ReportMouseDoubleClick( p_window, vlc_button );
         event->accept();
+        return;
     }
-    else
-        event->ignore();
+
+    event->ignore();
 }
 
 
@@ -375,6 +408,7 @@ void VideoWidget::release( void )
 
     if( stable )
     {
+        WindowReleased(p_window);
         layout->removeWidget( stable );
         stable->deleteLater();
         stable = NULL;
@@ -445,6 +479,8 @@ void BackgroundWidget::titleUpdated( const QString& title )
             i_pos + 5 == title.indexOf( "Bi" /* directional */ "ll",
                                        i_pos, Qt::CaseInsensitive ) )
                 updateDefaultArt( ":/logo/vlc128-kb.png" );
+        else if( QDate::currentDate().dayOfYear() >= QT_XMAS_JOKE_DAY )
+                updateDefaultArt( ":/logo/vlc128-xmas.png" );
         else
                 updateDefaultArt( ":/logo/vlc128.png" );
     }
