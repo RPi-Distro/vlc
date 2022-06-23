@@ -108,6 +108,7 @@ confflags += \
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
 # libtar: security issue (#737534)
+# libva: incompatible with ffmpeg 5.0
 # live555: non-free code from RFC 3550 (#981439)
 # macosx*: MacOX only
 # microdns: functionality already provided by avahi
@@ -134,6 +135,7 @@ confflags += \
 	--disable-goom \
 	--disable-gst-decode \
 	--disable-libtar \
+	--disable-libva \
 	--disable-live555 \
 	--disable-macosx \
 	--disable-macosx-avfoundation \
@@ -149,6 +151,8 @@ confflags += \
 	--disable-vsxu \
 	--disable-wasapi \
 	$(NULL)
+
+removeplugins = libva
 
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
@@ -195,19 +199,16 @@ endif
 # Linux and kFreeBSD specific flags (disabled on Hurd)
 ifeq (,$(filter-out linux kfreebsd,$(DEB_HOST_ARCH_OS)))
 confflags += \
-	--enable-libva \
 	--enable-vcd \
 	--enable-smbclient \
 	$(NULL)
 else
 confflags += \
-	--disable-libva \
 	--disable-vcd \
 	--disable-smbclient \
 	$(NULL)
 removeplugins += \
 	cdda \
-	libva \
 	smbclient \
 	vcd \
 	$(NULL)
