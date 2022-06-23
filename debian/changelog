@@ -1,3 +1,11 @@
+vlc (3.0.17.4-4) unstable; urgency=medium
+
+  * debian/control: Bump Standards-Version
+  * debian/: Disable libva support
+    vlc's libva support and ffmpeg 5.0 are not compatible.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 23 Jun 2022 10:39:09 +0200
+
 vlc (3.0.17.4-3) unstable; urgency=medium
 
   * debian/control: Move vlc-plugin-pipewire to Suggests
