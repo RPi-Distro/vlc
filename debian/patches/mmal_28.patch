@@ -117,25 +117,99 @@
  libavcodec_plugin_la_SOURCES += codec/avcodec/encoder.c
 --- a/modules/codec/avcodec/avcodec.c
 +++ b/modules/codec/avcodec/avcodec.c
-@@ -279,6 +279,15 @@ AVCodecContext *ffmpeg_AllocContext( dec
+@@ -247,28 +247,51 @@ vlc_module_begin ()
+ #endif
+ vlc_module_end ()
+ 
+-AVCodecContext *ffmpeg_AllocContext( decoder_t *p_dec,
+-                                     const AVCodec **restrict codecp )
++static const char *
++hw_v4l2m2m_dec_str(const unsigned i_codec_id)
++{
++    switch( i_codec_id )
++    {
++        case AV_CODEC_ID_MPEG2VIDEO:
++            return "mpeg2_v4l2m2m";
++        case AV_CODEC_ID_H264:
++            return "h264_v4l2m2m";
++        default:
++            break;
++    }
++    return NULL;
++}
++
++AVCodecContext *ffmpeg_AllocContextHw( decoder_t *p_dec,
++                                     const AVCodec **restrict codecp, const int hw )
+ {
+     unsigned i_codec_id;
+     const char *psz_namecodec;
+     const AVCodec *p_codec = NULL;
++    const char * hw_dec_name = NULL;
++    const char * const psz_decoder = var_InheritString( p_dec, "avcodec-codec" );
++
++    // If named decoder do not attempt hw override - wait for non-hw pass
++    if( hw != 0 && psz_decoder != NULL )
++        return NULL;
+ 
+     /* *** determine codec type *** */
+     if( !GetFfmpegCodec( p_dec->fmt_in.i_cat, p_dec->fmt_in.i_codec,
+                          &i_codec_id, &psz_namecodec ) )
+          return NULL;
+ 
++    if( hw != 0 && (hw_dec_name = hw_v4l2m2m_dec_str(i_codec_id)) == NULL )
++        return NULL;
++
+     msg_Dbg( p_dec, "using %s %s", AVPROVIDER(LIBAVCODEC), LIBAVCODEC_IDENT );
+ 
+     /* Initialization must be done before avcodec_find_decoder() */
+     vlc_init_avcodec(VLC_OBJECT(p_dec));
+ 
+     /* *** ask ffmpeg for a decoder *** */
+-    char *psz_decoder = var_InheritString( p_dec, "avcodec-codec" );
+     if( psz_decoder != NULL )
+     {
+-        p_codec = avcodec_find_decoder_by_name( psz_decoder );
++        p_codec = avcodec_find_decoder_by_name(psz_decoder);
+         if( !p_codec )
+             msg_Err( p_dec, "Decoder `%s' not found", psz_decoder );
+         else if( p_codec->id != i_codec_id )
+@@ -279,7 +302,9 @@ AVCodecContext *ffmpeg_AllocContext( dec
          }
          free( psz_decoder );
      }
-+    if( i_codec_id == AV_CODEC_ID_H264 )
-+        p_codec = avcodec_find_decoder_by_name("h264_v4l2m2m");
-+    if( !p_codec )
-+        p_codec = avcodec_find_decoder( i_codec_id );
-+    if( !p_codec )
-+    {
-+        msg_Dbg( p_dec, "codec not found (%s)", psz_namecodec );
-+        return NULL;
-+    }
-     if( !p_codec )
+-    if( !p_codec )
++    if( hw_dec_name != NULL )
++        p_codec = avcodec_find_decoder_by_name(hw_dec_name);
++    else if( !p_codec )
          p_codec = avcodec_find_decoder( i_codec_id );
      if( !p_codec )
+     {
+@@ -299,6 +324,12 @@ AVCodecContext *ffmpeg_AllocContext( dec
+     return avctx;
+ }
+ 
++AVCodecContext *ffmpeg_AllocContext( decoder_t *p_dec,
++                                     const AVCodec **restrict codecp )
++{
++    return ffmpeg_AllocContextHw(p_dec, codecp, 0);
++}
++
+ /*****************************************************************************
+  * ffmpeg_OpenCodec:
+  *****************************************************************************/
+--- a/modules/codec/avcodec/avcodec.h
++++ b/modules/codec/avcodec/avcodec.h
+@@ -47,6 +47,7 @@ int InitSubtitleDec( vlc_object_t * );
+ void EndSubtitleDec( vlc_object_t * );
+ 
+ /* Initialize decoder */
++AVCodecContext *ffmpeg_AllocContextHw( decoder_t *p_dec, const AVCodec **restrict codecp, const int hw );
+ AVCodecContext *ffmpeg_AllocContext( decoder_t *, const AVCodec ** );
+ int ffmpeg_OpenCodec( decoder_t *p_dec, AVCodecContext *, const AVCodec * );
+ 
 --- /dev/null
 +++ b/modules/codec/avcodec/drm_pic.c
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,62 @@
 +#ifdef HAVE_CONFIG_H
 +# include "config.h"
 +#endif
@@ -183,14 +257,12 @@
 +
 +    pctx->buf = av_buffer_ref(buf);
 +    pctx->desc = data;
-+    pctx->hw_frames_ctx = av_buffer_ref(hw_frames_ctx);
++    pctx->hw_frames_ctx = !hw_frames_ctx ? NULL : av_buffer_ref(hw_frames_ctx);
 +    return &pctx->cmn;
 +}
 +
-+int drm_prime_attach_buf_to_pic(struct decoder_t *dec, picture_t *pic, AVFrame *frame)
++int drm_prime_attach_buf_to_pic(picture_t *pic, AVFrame *frame)
 +{
-+
-+    VLC_UNUSED(dec);
 +    if (pic->context)
 +        return VLC_EGENERIC;
 +
@@ -202,7 +274,7 @@
 +
 --- /dev/null
 +++ b/modules/codec/avcodec/drm_pic.h
-@@ -0,0 +1,47 @@
+@@ -0,0 +1,46 @@
 +#include <vlc_fourcc.h>
 +#include <vlc_picture.h>
 +
@@ -210,7 +282,6 @@
 +struct AVFrame;
 +struct AVBufferRef;
 +struct AVDRMFrameDescriptor;
-+struct decoder_t;
 +
 +typedef struct drm_prime_video_sys_s {
 +    picture_context_t cmn;  // PARENT: Common els at start
@@ -248,7 +319,7 @@
 +#define fourcc2str(fcc) \
 +    str_fourcc((char[5]){0}, fcc)
 +
-+int drm_prime_attach_buf_to_pic(struct decoder_t *dec, struct picture_t *pic, struct AVFrame *frame);
++int drm_prime_attach_buf_to_pic(struct picture_t *pic, struct AVFrame *frame);
 +
 --- a/modules/codec/avcodec/va.c
 +++ b/modules/codec/avcodec/va.c
@@ -294,13 +365,41 @@
 +    // To copy out just attach the buf to the pic
 +    if (frame->format == AV_PIX_FMT_DRM_PRIME)
 +    {
-+        return drm_prime_attach_buf_to_pic(dec, pic, frame);
++        return drm_prime_attach_buf_to_pic(pic, frame);
 +    }
 +
      vlc_fourcc_t fourcc = FindVlcChroma(frame->format);
      if (!fourcc)
      {
-@@ -1183,9 +1192,10 @@ static picture_t *DecodeBlock( decoder_t
+@@ -464,11 +473,11 @@ static int OpenVideoCodec( decoder_t *p_
+  * the ffmpeg codec will be opened, some memory allocated. The vout is not yet
+  * opened (done after the first decoded frame).
+  *****************************************************************************/
+-int InitVideoDec( vlc_object_t *obj )
++static int InitVideoDec2( vlc_object_t *obj, const int hw )
+ {
+     decoder_t *p_dec = (decoder_t *)obj;
+     const AVCodec *p_codec;
+-    AVCodecContext *p_context = ffmpeg_AllocContext( p_dec, &p_codec );
++    AVCodecContext *p_context = ffmpeg_AllocContextHw( p_dec, &p_codec, hw );
+     if( p_context == NULL )
+         return VLC_EGENERIC;
+ 
+@@ -649,6 +658,13 @@ int InitVideoDec( vlc_object_t *obj )
+     return VLC_SUCCESS;
+ }
+ 
++int InitVideoDec( vlc_object_t *obj )
++{
++    if (InitVideoDec2(obj, 1) == 0)
++        return 0;
++    return InitVideoDec2(obj, 0);
++}
++
+ /*****************************************************************************
+  * Flush:
+  *****************************************************************************/
+@@ -1183,9 +1199,10 @@ static picture_t *DecodeBlock( decoder_t
          {   /* When direct rendering is not used, get_format() and get_buffer()
               * might not be called. The output video format must be set here
               * then picture buffer can be allocated. */
@@ -313,14 +412,23 @@
                  p_pic = decoder_NewPicture(p_dec);
  
              if( !p_pic )
-@@ -1618,6 +1628,7 @@ no_reuse:
+@@ -1618,6 +1635,8 @@ no_reuse:
  
      static const enum PixelFormat hwfmts[] =
      {
 +        AV_PIX_FMT_DRM_PRIME,
++#if 0  // RPI - ignore stuff we know isn't going to work
  #ifdef _WIN32
  #if LIBAVUTIL_VERSION_CHECK(54, 13, 1, 24, 100)
          AV_PIX_FMT_D3D11VA_VLD,
+@@ -1628,6 +1647,7 @@ no_reuse:
+ #if (LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(52, 4, 0))
+         AV_PIX_FMT_VDPAU,
+ #endif
++#endif
+         AV_PIX_FMT_NONE,
+     };
+ 
 --- a/modules/gui/qt/qt.cpp
 +++ b/modules/gui/qt/qt.cpp
 @@ -31,6 +31,7 @@
@@ -356,7 +464,7 @@
  
 --- /dev/null
 +++ b/modules/hw/drm/Makefile.am
-@@ -0,0 +1,19 @@
+@@ -0,0 +1,26 @@
 +drmdir = $(pluginsdir)/drm
 +
 +libdrm_avcodec_plugin_la_SOURCES = hw/drm/drm_avcodec.c
@@ -370,8 +478,15 @@
 +libdrm_conv_sand30_plugin_la_CFLAGS = $(AM_CFLAGS) $(AVCODEC_CFLAGS)
 +libdrm_conv_sand30_plugin_la_LIBADD = $(AVCODEC_LIBS)
 +
++libdrm_av_deinterlace_plugin_la_SOURCES = hw/drm/drm_av_deinterlace.c \
++	codec/avcodec/drm_pic.c codec/avcodec/drm_pic.h
++libdrm_av_deinterlace_plugin_la_CFLAGS = $(AM_CFLAGS) $(AVCODEC_CFLAGS)
++libdrm_av_deinterlace_plugin_la_LDFLAGS = $(AM_LDFLAGS) $(AVCODEC_LDFLAGS) -lavfilter
++libdrm_av_deinterlace_plugin_la_LIBADD = $(AVCODEC_LIBS)
++
 +if HAVE_DRM
 +drm_LTLIBRARIES = \
++ libdrm_av_deinterlace_plugin.la \
 + libdrm_avcodec_plugin.la \
 + libdrm_conv_sand30_plugin.la \
 + libdrm_gl_conv_plugin.la
@@ -579,6 +694,282 @@
 +vlc_module_end()
 +
 --- /dev/null
++++ b/modules/hw/drm/drm_av_deinterlace.c
+@@ -0,0 +1,273 @@
++#ifdef HAVE_CONFIG_H
++# include "config.h"
++#endif
++
++#include <vlc_common.h>
++#include <vlc_filter.h>
++#include <vlc_picture.h>
++#include <vlc_plugin.h>
++
++#include "../../codec/avcodec/drm_pic.h"
++
++#include <libavcodec/avcodec.h>
++#include <libavfilter/buffersink.h>
++#include <libavfilter/buffersrc.h>
++#include <libavformat/avformat.h>
++#include <libavutil/opt.h>
++#include <libavutil/pixdesc.h>
++#include <libavutil/hwcontext.h>
++
++#define TRACE_ALL 1
++
++typedef struct filter_sys_t {
++    AVFilterGraph *filter_graph;
++    AVFilterContext *buffersink_ctx;  // Allocated within graph - no explicit free
++    AVFilterContext *buffersrc_ctx;   // Allocated within graph - no explicit free
++    bool has_out;
++    AVFrame *out_frame;
++} filter_sys_t;
++
++static void drmp_av_flush(filter_t * filter)
++{
++    // Nothing to do
++    VLC_UNUSED(filter);
++
++#if TRACE_ALL
++    msg_Dbg(filter, "<<< %s", __func__);
++#endif
++}
++
++static picture_t * drmp_av_deinterlace(filter_t * filter, picture_t * in_pic)
++{
++    filter_sys_t *const sys = filter->p_sys;
++    AVFrame * frame = av_frame_alloc();
++    drm_prime_video_sys_t * const pctx = (drm_prime_video_sys_t *)in_pic->context;
++    picture_t * out_pic = NULL;
++    picture_t ** pp_pic = &out_pic;
++    int ret;
++
++#if TRACE_ALL
++    msg_Dbg(filter, "<<< %s", __func__);
++#endif
++
++    if (!frame) {
++        msg_Err(filter, "Frame alloc failure");
++        goto fail;
++    }
++
++    frame->format      = AV_PIX_FMT_DRM_PRIME;
++    frame->buf[0]      = av_buffer_ref(pctx->buf);
++    frame->data[0]     = (uint8_t *)pctx->desc;
++    frame->hw_frames_ctx = av_buffer_ref(pctx->hw_frames_ctx);
++    frame->width       = in_pic->format.i_width;
++    frame->height      = in_pic->format.i_height;
++    frame->crop_left   = in_pic->format.i_x_offset;
++    frame->crop_top    = in_pic->format.i_y_offset;
++    frame->crop_right  = frame->width -  in_pic->format.i_visible_width -  frame->crop_left;
++    frame->crop_bottom = frame->height - in_pic->format.i_visible_height - frame->crop_top;
++    frame->interlaced_frame = !in_pic->b_progressive;
++    frame->top_field_first  = in_pic->b_top_field_first;
++    frame->pts         = (in_pic->date == VLC_TS_INVALID) ? AV_NOPTS_VALUE : in_pic->date;
++
++    picture_Release(in_pic);
++    in_pic = NULL;
++
++    if ((ret = av_buffersrc_add_frame_flags(sys->buffersrc_ctx, frame, AV_BUFFERSRC_FLAG_KEEP_REF)) < 0) {
++        msg_Err(filter, "Failed to feed filtergraph: %s", av_err2str(ret));
++        goto fail;
++    }
++    av_frame_unref(frame);
++
++    while (sys->has_out || (ret = av_buffersink_get_frame(sys->buffersink_ctx, sys->out_frame)) == 0) {
++        picture_t *const pic = filter_NewPicture(filter);
++        sys->has_out = true;
++        // Failure to get an output pic happens quite often, just keep the
++        // frame for next time
++        if (!pic)
++            break;
++
++        if (drm_prime_attach_buf_to_pic(pic, sys->out_frame) != VLC_SUCCESS) {
++            msg_Err(filter, "Failed to attach frame to out pic");
++            picture_Release(pic);
++            goto fail;
++        }
++        pic->date =  sys->out_frame->pts == AV_NOPTS_VALUE ? VLC_TS_INVALID : sys->out_frame->pts;
++        av_frame_unref(sys->out_frame);
++        sys->has_out = false;
++
++        *pp_pic = pic;
++        pp_pic = &pic->p_next;
++    }
++
++    if (ret < 0 && ret != AVERROR_EOF && ret != AVERROR(EAGAIN)) {
++        msg_Err(filter, "Failed to get frame: %s", av_err2str(ret));
++        goto fail;
++    }
++
++    // Even if we get an error we may have processed some pics and we need to return them
++fail:
++    if (in_pic)
++        picture_Release(in_pic);
++    av_frame_free(&frame);
++
++#if TRACE_ALL
++    msg_Dbg(filter, ">>> %s: %p", __func__, out_pic);
++#endif
++
++    return out_pic;
++}
++
++static void CloseDrmpAvDeinterlace(filter_t *filter)
++{
++    filter_sys_t * const sys = filter->p_sys;
++
++#if TRACE_ALL
++    msg_Dbg(filter, "<<< %s", __func__);
++#endif
++
++    if (sys == NULL)
++        return;
++
++    av_frame_free(&sys->out_frame);
++    avfilter_graph_free(&sys->filter_graph);
++    free(sys);
++}
++
++
++// Copied almost directly from ffmpeg filtering_video.c example
++static int init_filters(filter_t * const filter,
++                        const char * const filters_descr)
++{
++    filter_sys_t *const sys = filter->p_sys;
++    const video_format_t * const fmt = &filter->fmt_in.video;
++    char args[512];
++    int ret = 0;
++    const AVFilter *buffersrc  = avfilter_get_by_name("buffer");
++    const AVFilter *buffersink = avfilter_get_by_name("buffersink");
++    AVFilterInOut *outputs = avfilter_inout_alloc();
++    AVFilterInOut *inputs  = avfilter_inout_alloc();
++    enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_DRM_PRIME, AV_PIX_FMT_NONE };
++
++    sys->out_frame = av_frame_alloc();
++    sys->filter_graph = avfilter_graph_alloc();
++    if (!outputs || !inputs || !sys->filter_graph || !sys->out_frame) {
++        ret = AVERROR(ENOMEM);
++        goto end;
++    }
++
++    /* buffer video source: the decoded frames from the decoder will be inserted here. */
++    snprintf(args, sizeof(args),
++            "video_size=%dx%d:pix_fmt=%d:time_base=%d/%d:pixel_aspect=%d/%d",
++             fmt->i_visible_width, fmt->i_visible_height, AV_PIX_FMT_DRM_PRIME,
++             1, (int)CLOCK_FREQ,
++             fmt->i_sar_num, fmt->i_sar_den);
++
++    ret = avfilter_graph_create_filter(&sys->buffersrc_ctx, buffersrc, "in",
++                                       args, NULL, sys->filter_graph);
++    if (ret < 0) {
++        msg_Err(filter, "Cannot create buffer source");
++        goto end;
++    }
++
++    /* buffer video sink: to terminate the filter chain. */
++    ret = avfilter_graph_create_filter(&sys->buffersink_ctx, buffersink, "out",
++                                       NULL, NULL, sys->filter_graph);
++    if (ret < 0) {
++        msg_Err(filter, "Cannot create buffer sink");
++        goto end;
++    }
++
++    ret = av_opt_set_int_list(sys->buffersink_ctx, "pix_fmts", pix_fmts,
++                              AV_PIX_FMT_NONE, AV_OPT_SEARCH_CHILDREN);
++    if (ret < 0) {
++        msg_Err(filter, "Cannot set output pixel format");
++        goto end;
++    }
++
++    /*
++     * Set the endpoints for the filter graph. The filter_graph will
++     * be linked to the graph described by filters_descr.
++     */
++
++    /*
++     * The buffer source output must be connected to the input pad of
++     * the first filter described by filters_descr; since the first
++     * filter input label is not specified, it is set to "in" by
++     * default.
++     */
++    outputs->name       = av_strdup("in");
++    outputs->filter_ctx = sys->buffersrc_ctx;
++    outputs->pad_idx    = 0;
++    outputs->next       = NULL;
++
++    /*
++     * The buffer sink input must be connected to the output pad of
++     * the last filter described by filters_descr; since the last
++     * filter output label is not specified, it is set to "out" by
++     * default.
++     */
++    inputs->name       = av_strdup("out");
++    inputs->filter_ctx = sys->buffersink_ctx;
++    inputs->pad_idx    = 0;
++    inputs->next       = NULL;
++
++    if ((ret = avfilter_graph_parse_ptr(sys->filter_graph, filters_descr,
++                                    &inputs, &outputs, NULL)) < 0)
++        goto end;
++
++    if ((ret = avfilter_graph_config(sys->filter_graph, NULL)) < 0)
++        goto end;
++
++end:
++    avfilter_inout_free(&inputs);
++    avfilter_inout_free(&outputs);
++
++    return ret == 0 ? VLC_SUCCESS : ret == AVERROR(ENOMEM) ? VLC_ENOMEM : VLC_EGENERIC;
++}
++
++static bool is_fmt_valid_in(const vlc_fourcc_t fmt)
++{
++    return fmt == VLC_CODEC_DRM_PRIME_I420 ||
++            fmt == VLC_CODEC_DRM_PRIME_NV12 ||
++            fmt == VLC_CODEC_DRM_PRIME_SAND8;
++}
++
++static int OpenDrmpAvDeinterlace(filter_t *filter)
++{
++    filter_sys_t *sys;
++    int ret;
++
++    msg_Dbg(filter, "<<< %s", __func__);
++
++    if (!is_fmt_valid_in(filter->fmt_in.video.i_chroma) ||
++        filter->fmt_out.video.i_chroma != filter->fmt_in.video.i_chroma)
++        return VLC_EGENERIC;
++
++    sys = calloc(1, sizeof(filter_sys_t));
++    if (!sys)
++        return VLC_ENOMEM;
++    filter->p_sys = sys;
++
++    if ((ret = init_filters(filter, "deinterlace_v4l2m2m")) != 0)
++        goto fail;
++
++    filter->pf_video_filter = drmp_av_deinterlace;
++    filter->pf_flush = drmp_av_flush;
++
++    return VLC_SUCCESS;
++
++fail:
++    CloseDrmpAvDeinterlace(filter);
++    return VLC_EGENERIC;
++}
++
++vlc_module_begin()
++    set_shortname(N_("DRM PRIME deinterlace"))
++    set_description(N_("libav-based DRM_PRIME deinterlace filter plugin"))
++    set_capability("video filter", 902)
++    set_category(CAT_VIDEO)
++    set_subcategory(SUBCAT_VIDEO_VFILTER)
++    set_callbacks(OpenDrmpAvDeinterlace, CloseDrmpAvDeinterlace)
++    add_shortcut("deinterlace")
++vlc_module_end()
++
+--- /dev/null
 +++ b/modules/hw/drm/drm_avcodec.c
 @@ -0,0 +1,94 @@
 +/*****************************************************************************
@@ -740,7 +1131,7 @@
 +                picture_t *pic, const size_t *plane_offset)
 +{
 +    drm_gl_converter_t * const sys = tc->priv;
-+#if TRACE_ALL || 1
++#if TRACE_ALL
 +    {
 +        char cbuf[5];
 +        msg_Dbg(tc, "%s: %s %d*%dx%d : %d*%dx%d", __func__,
@@ -1446,7 +1837,7 @@
 +
 --- a/modules/hw/mmal/codec.c
 +++ b/modules/hw/mmal/codec.c
-@@ -26,267 +26,444 @@
+@@ -26,267 +26,448 @@
  #include "config.h"
  #endif
  
@@ -1513,6 +1904,10 @@
 +#define MMAL_ISP_NAME "mmal-isp"
 +#define MMAL_ISP_TEXT N_("Use mmal isp rather than hvs.")
 +#define MMAL_ISP_LONGTEXT N_("Use mmal isp rather than hvs. This may be faster but has no blend.")
++
++#define MMAL_DECODE_ENABLE_NAME "mmal-decode-enable"
++#define MMAL_DECODE_ENABLE_TEXT N_("Enable mmal decode even if normally disabled")
++#define MMAL_DECODE_ENABLE_LONGTEXT N_("Enable mmal decode even if normally disabled. MMAL decode is normally disabled on Pi4 or later.")
  
 -struct decoder_sys_t {
 -    bool opaque;
@@ -2063,7 +2458,7 @@
      if (atomic_load(&sys->started)) {
          mmal_format_full_copy(sys->output->format, sys->output_format);
          status = mmal_port_format_commit(sys->output);
-@@ -300,7 +477,9 @@ static int change_output_format(decoder_
+@@ -300,7 +481,9 @@ static int change_output_format(decoder_
      }
  
  port_reset:
@@ -2073,7 +2468,7 @@
      status = mmal_port_disable(sys->output);
      if (status != MMAL_SUCCESS) {
          msg_Err(dec, "Failed to disable output port (status=%"PRIx32" %s)",
-@@ -310,6 +489,7 @@ port_reset:
+@@ -310,6 +493,7 @@ port_reset:
      }
  
      mmal_format_full_copy(sys->output->format, sys->output_format);
@@ -2081,7 +2476,7 @@
      status = mmal_port_format_commit(sys->output);
      if (status != MMAL_SUCCESS) {
          msg_Err(dec, "Failed to commit output format (status=%"PRIx32" %s)",
-@@ -318,18 +498,10 @@ port_reset:
+@@ -318,18 +502,10 @@ port_reset:
          goto out;
      }
  
@@ -2102,7 +2497,7 @@
      if (status != MMAL_SUCCESS) {
          msg_Err(dec, "Failed to enable output port (status=%"PRIx32" %s)",
                  status, mmal_status_to_string(status));
-@@ -338,25 +510,14 @@ port_reset:
+@@ -338,25 +514,14 @@ port_reset:
      }
  
      if (!atomic_load(&sys->started)) {
@@ -2131,7 +2526,7 @@
      }
  
  apply_fmt:
-@@ -366,8 +527,8 @@ apply_fmt:
+@@ -366,8 +531,8 @@ apply_fmt:
      dec->fmt_out.video.i_y_offset = sys->output->format->es->video.crop.y;
      dec->fmt_out.video.i_visible_width = sys->output->format->es->video.crop.width;
      dec->fmt_out.video.i_visible_height = sys->output->format->es->video.crop.height;
@@ -2142,7 +2537,7 @@
      dec->fmt_out.video.i_frame_rate = sys->output->format->es->video.frame_rate.num;
      dec->fmt_out.video.i_frame_rate_base = sys->output->format->es->video.frame_rate.den;
  
-@@ -382,12 +543,19 @@ apply_fmt:
+@@ -382,12 +547,19 @@ apply_fmt:
          sys->b_progressive = (interlace_type.eMode == MMAL_InterlaceProgressive);
          sys->b_top_field_first = sys->b_progressive ? true :
              (interlace_type.eMode == MMAL_InterlaceFieldsInterleavedUpperFirst);
@@ -2162,7 +2557,7 @@
  out:
      mmal_format_free(sys->output_format);
      sys->output_format = NULL;
-@@ -395,144 +563,85 @@ out:
+@@ -395,144 +567,85 @@ out:
      return ret;
  }
  
@@ -2361,7 +2756,7 @@
      /*
       * Configure output port if necessary
       */
-@@ -541,18 +650,50 @@ static int decode(decoder_t *dec, block_
+@@ -541,18 +654,50 @@ static int decode(decoder_t *dec, block_
              msg_Err(dec, "Failed to change output port format");
      }
  
@@ -2415,7 +2810,7 @@
      if (atomic_load(&sys->started))
          fill_output_port(dec);
  
-@@ -563,18 +704,21 @@ static int decode(decoder_t *dec, block_
+@@ -563,18 +708,21 @@ static int decode(decoder_t *dec, block_
      if (block->i_flags & BLOCK_FLAG_CORRUPTED)
          flags |= MMAL_BUFFER_HEADER_FLAG_CORRUPTED;
  
@@ -2442,7 +2837,7 @@
  
          len = block->i_buffer;
          if (len > buffer->alloc_size)
-@@ -585,94 +729,1818 @@ static int decode(decoder_t *dec, block_
+@@ -585,94 +733,1835 @@ static int decode(decoder_t *dec, block_
          block->i_buffer -= len;
          buffer->length = len;
          if (block->i_buffer == 0) {
@@ -2536,6 +2931,21 @@
 +    decoder_sys_t *sys;
      MMAL_STATUS_T status;
 +    const MMAL_FOURCC_T in_fcc = vlc_to_mmal_es_fourcc(dec->fmt_in.i_codec);
++    static bool is_kms = false;
++    static bool kms_checked = false;
++
++    if (!kms_checked) {
++        // This is true for Pi3 and earlier
++        // On Pi4 and later it is almost certainly better to be using V4L2
++        is_kms = !rpi_use_qpu_deinterlace();
++        kms_checked = true;
++    }
++    if (is_kms && !var_InheritBool(dec, MMAL_DECODE_ENABLE_NAME)) {
++#if TRACE_ALL
++        msg_Dbg(dec, "%s: <<< Disabled: Is KMS", __func__);
++#endif
++        return VLC_EGENERIC;
++    }
 +
 +#if TRACE_ALL || 1
 +    {
@@ -2939,9 +3349,7 @@
 -        fmt = mmal_event_format_changed_get(buffer);
 +    filter_t * const p_filter = (filter_t *)port->userdata;
 +    filter_sys_t * const sys = p_filter->p_sys;
- 
--        format = mmal_format_alloc();
--        mmal_format_full_copy(format, fmt->format);
++
 +#if TRACE_ALL
 +    msg_Dbg(p_filter, "<<< %s: cmd=%d, flags=%#x, pic=%p, data=%p, len=%d/%d, pts=%lld/%lld", __func__,
 +            buf->cmd, buf->flags, buf->user_data, buf->data, buf->length, buf->alloc_size,
@@ -2950,8 +3358,8 @@
 +    if (buf->cmd == 0) {
 +        picture_t * const pic = (picture_t *)buf->user_data;
  
--        if (sys->opaque)
--            format->encoding = MMAL_ENCODING_OPAQUE;
+-        format = mmal_format_alloc();
+-        mmal_format_full_copy(format, fmt->format);
 +        if (pic == NULL) {
 +            msg_Err(p_filter, "%s: Buffer has no attached picture", __func__);
 +        }
@@ -2964,7 +3372,9 @@
 +        else
 +        {
 +            buf_to_pic_copy_props(pic, buf);
-+
+ 
+-        if (sys->opaque)
+-            format->encoding = MMAL_ENCODING_OPAQUE;
 +            // Set pic data pointers from buf aux info now it has it
 +            if (sys->is_cma) {
 +                if (cma_pic_set_data(pic, sys->output->format, buf) != VLC_SUCCESS)
@@ -3587,19 +3997,19 @@
 +    p_filter->p_sys = NULL;
 +    free(sys);
 +}
-+
-+
+ 
+-        sys->output_format = format;
+ 
+-        mmal_buffer_header_release(buffer);
 +static inline MMAL_FOURCC_T filter_enc_in(const video_format_t * const fmt)
 +{
 +    if (hw_mmal_chroma_is_mmal(fmt->i_chroma))
 +        return vlc_to_mmal_video_fourcc(fmt);
- 
--        sys->output_format = format;
++
 +    if (fmt->i_chroma == VLC_CODEC_I420 ||
 +        fmt->i_chroma == VLC_CODEC_I420_10L)
 +        return MMAL_ENCODING_I420;
- 
--        mmal_buffer_header_release(buffer);
++
 +    return 0;
 +}
 +
@@ -3726,7 +4136,7 @@
 +        sys->is_sliced = false;  // Copy directly into filter picture
 +        sys->component_name = MMAL_COMPONENT_HVS;
 +        sys->out_port_cb_fn = conv_output_port_cb;
-+    }
+     }
 +    sys->is_cma = is_cma_buf_pic_chroma(p_filter->fmt_out.video.i_chroma);
 +
 +    status = mmal_component_create(sys->component_name, &sys->component);
@@ -3750,7 +4160,7 @@
 +        msg_Err(p_filter, "Failed to enable control port %s (status=%"PRIx32" %s)",
 +                sys->component->control->name, status, mmal_status_to_string(status));
 +        goto fail;
-     }
++    }
 +
 +    if (sys->needs_copy_in &&
 +        (sys->cma_in_pool = cma_buf_pool_new(2, 2, true, "conv-copy-in")) == NULL)
@@ -3913,12 +4323,12 @@
 +fail0:
 +    picture_Release(in_pic);
 +    return NULL;
-+}
+ }
 +
 +static void to_zc_flush(filter_t * p_filter)
 +{
 +    VLC_UNUSED(p_filter);
- }
++}
 +
 +static void CloseConverterToZc(vlc_object_t * obj)
 +{
@@ -4047,7 +4457,8 @@
 +    {
 +        // cast away src const so we can ref it
 +        MMAL_BUFFER_HEADER_T *buf = hw_mmal_vzc_buf_from_pic(sys->vzc, (picture_t *)src,
-+                                                             vis_mmal_rect(&dst->format),
++                                                             &p_filter->fmt_in.video,
++                                                             vis_mmal_rect(&p_filter->fmt_out.video),
 +                                                             x_offset, y_offset,
 +                                                             alpha,
 +                                                             dst != sys->last_dst || !hw_mmal_pic_has_sub_bufs(dst));
@@ -4140,39 +4551,39 @@
 +{
 +    const uint8_t * s_data;
 +    uint8_t * d_data;
-+    int width = src_pic->format.i_visible_width;
-+    int height = src_pic->format.i_visible_height;
++    const video_format_t *const src_fmt = &p_filter->fmt_in.video;  // Format here has different visible params to pic
++    const video_format_t *const dst_fmt = &p_filter->fmt_out.video;
++    int width = src_fmt->i_visible_width;
++    int height = src_fmt->i_visible_height;
 +    blend_neon_fn *const blend_fn = (blend_neon_fn * )p_filter->p_sys;
 +
 +#if TRACE_ALL
-+    msg_Dbg(p_filter, "%s (%d,%d:%d) pic=%p, pts=%lld, force=%d", __func__, x_offset, y_offset, alpha, src_pic, src_pic->date, src_pic->b_force);
++    msg_Dbg(p_filter, "%s (%d,%d:%d) pic=%p (%dx%d/%dx%d), pts=%lld, force=%d, filter in %dx%d/%dx%d", __func__, x_offset, y_offset, alpha,
++            src_pic, src_pic->format.i_width, src_pic->format.i_height, src_pic->format.i_visible_width, src_pic->format.i_visible_height,
++            src_pic->date, src_pic->b_force,
++            src_fmt->i_width, src_fmt->i_height, src_fmt->i_visible_width, src_fmt->i_visible_height);
 +#endif
 +
-+    if (alpha == 0 ||
-+        src_pic->format.i_visible_height == 0 ||
-+        src_pic->format.i_visible_width == 0)
-+    {
++    if (alpha == 0)
 +        return;
-+    }
 +
-+    x_offset += dst_pic->format.i_x_offset;
-+    y_offset += dst_pic->format.i_y_offset;
++    x_offset += dst_fmt->i_x_offset;
++    y_offset += dst_fmt->i_y_offset;
 +
 +    // Deal with R/B overrun
-+    if (x_offset + width >= (int)(dst_pic->format.i_x_offset + dst_pic->format.i_visible_width))
-+        width = dst_pic->format.i_x_offset + dst_pic->format.i_visible_width - x_offset;
-+    if (y_offset + height >= (int)(dst_pic->format.i_y_offset + dst_pic->format.i_visible_height))
-+        height = dst_pic->format.i_y_offset + dst_pic->format.i_visible_height - y_offset;
++    if (x_offset + width >= (int)(dst_fmt->i_x_offset + dst_fmt->i_visible_width))
++        width = dst_fmt->i_x_offset + dst_fmt->i_visible_width - x_offset;
++    if (y_offset + height >= (int)(dst_fmt->i_y_offset + dst_fmt->i_visible_height))
++        height = dst_fmt->i_y_offset + dst_fmt->i_visible_height - y_offset;
 +
-+    if (width <= 0 || height <= 0) {
++    if (width <= 0 || height <= 0)
 +        return;
-+    }
 +
 +    // *** L/U overrun
 +
 +    s_data = src_pic->p[0].p_pixels +
-+        src_pic->p[0].i_pixel_pitch * src_pic->format.i_x_offset +
-+        src_pic->p[0].i_pitch * src_pic->format.i_y_offset;
++        src_pic->p[0].i_pixel_pitch * src_fmt->i_x_offset +
++        src_pic->p[0].i_pitch * src_fmt->i_y_offset;
 +    d_data = dst_pic->p[0].p_pixels +
 +        dst_pic->p[0].i_pixel_pitch * x_offset +
 +        dst_pic->p[0].i_pitch * y_offset;
@@ -4262,6 +4673,7 @@
 +    set_capability("video decoder", 90)
 +    add_shortcut("mmal_decoder")
 +    add_bool(MMAL_OPAQUE_NAME, true, MMAL_OPAQUE_TEXT, MMAL_OPAQUE_LONGTEXT, false)
++    add_bool(MMAL_DECODE_ENABLE_NAME, false, MMAL_DECODE_ENABLE_TEXT, MMAL_DECODE_ENABLE_LONGTEXT, true)
 +    set_callbacks(OpenDecoder, CloseDecoder)
 +
 +    add_submodule()
@@ -9360,7 +9772,7 @@
 +
 --- a/modules/hw/mmal/mmal_picture.c
 +++ b/modules/hw/mmal/mmal_picture.c
-@@ -21,25 +21,1573 @@
+@@ -21,25 +21,1574 @@
   * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
   *****************************************************************************/
  
@@ -10491,6 +10903,7 @@
 +
 +MMAL_BUFFER_HEADER_T * hw_mmal_vzc_buf_from_pic(vzc_pool_ctl_t * const pc,
 +                                                picture_t * const pic,
++                                                const video_format_t * src_fmt,
 +                                                const MMAL_RECT_T dst_pic_rect,
 +                                                const int x_offset, const int y_offset,
 +                                                const unsigned int alpha,
@@ -10587,10 +11000,10 @@
 +//        printf("+++ bpp:%d, vis:%dx%d wxh:%dx%d, d:%dx%d\n", bpp, fmt->i_visible_width, fmt->i_visible_height, fmt->i_width, fmt->i_height, dst_stride, dst_lines);
 +
 +        sb->dreg.src_rect = (MMAL_RECT_T){
-+            .x      = (fmt->i_x_offset - xl),
-+            .y      = 0,
-+            .width  = fmt->i_visible_width,
-+            .height = fmt->i_visible_height
++            .x      = (fmt->i_x_offset - xl) + src_fmt->i_x_offset,
++            .y      = src_fmt->i_y_offset,
++            .width  = src_fmt->i_visible_width,
++            .height = src_fmt->i_visible_height
 +        };
 +
 +        sb->pic_rect = dst_pic_rect;
@@ -10598,8 +11011,8 @@
 +        sb->orig_dest_rect = (MMAL_RECT_T){
 +            .x      = x_offset,
 +            .y      = y_offset,
-+            .width  = fmt->i_visible_width,
-+            .height = fmt->i_visible_height
++            .width  = src_fmt->i_visible_width,
++            .height = src_fmt->i_visible_height
 +        };
 +
 +        if (needs_copy)
@@ -10945,7 +11358,7 @@
 +
 --- a/modules/hw/mmal/mmal_picture.h
 +++ b/modules/hw/mmal/mmal_picture.h
-@@ -24,19 +24,277 @@
+@@ -24,19 +24,278 @@
  #ifndef VLC_MMAL_MMAL_PICTURE_H_
  #define VLC_MMAL_MMAL_PICTURE_H_
  
@@ -11169,6 +11582,7 @@
 +void hw_mmal_vzc_buf_get_wh(MMAL_BUFFER_HEADER_T * const buf, int * const pW, int * const pH);
 +unsigned int hw_mmal_vzc_buf_seq(MMAL_BUFFER_HEADER_T * const buf);
 +MMAL_BUFFER_HEADER_T * hw_mmal_vzc_buf_from_pic(vzc_pool_ctl_t * const pc, picture_t * const pic,
++                                                const video_format_t * src_fmt,
 +                                                const MMAL_RECT_T dst_pic_rect,
 +                                                const int x_offset, const int y_offset,
 +                                                const unsigned int alpha, const bool is_first);
@@ -13469,7 +13883,7 @@
          default:
              msg_Warn(vd, "Unknown control query %d", query);
              break;
-@@ -653,79 +971,207 @@ static int vd_control(vout_display_t *vd
+@@ -653,79 +971,208 @@ static int vd_control(vout_display_t *vd
      return ret;
  }
  
@@ -13563,6 +13977,7 @@
 +            // coord space of the placed rectangle in the cfg display space
 +            if ((sys->subpic_bufs[n] = hw_mmal_vzc_buf_from_pic(sys->vzc,
 +                src,
++                &sreg->fmt,
 +                (MMAL_RECT_T){.width = sys->spu_rect.width, .height=sys->spu_rect.height},
 +                sreg->i_x, sreg->i_y,
 +                sreg->i_alpha,
@@ -13722,7 +14137,7 @@
  }
  
  static void tvservice_cb(void *callback_data, uint32_t reason, uint32_t param1, uint32_t param2)
-@@ -777,12 +1223,12 @@ static void adjust_refresh_rate(vout_dis
+@@ -777,12 +1224,12 @@ static void adjust_refresh_rate(vout_dis
      int num_modes;
      double frame_rate = (double)fmt->i_frame_rate / fmt->i_frame_rate_base;
      int best_id = -1;
@@ -13738,7 +14153,7 @@
                          supported_modes, VC_TV_MAX_MODE_IDS, NULL, NULL);
  
          for (i = 0; i < num_modes; ++i) {
-@@ -810,7 +1256,7 @@ static void adjust_refresh_rate(vout_dis
+@@ -810,7 +1257,7 @@ static void adjust_refresh_rate(vout_dis
          if((best_id >= 0) && (display_state.display.hdmi.mode != supported_modes[best_id].code)) {
              msg_Info(vd, "Setting HDMI refresh rate to %"PRIu32,
                              supported_modes[best_id].frame_rate);
@@ -13747,7 +14162,7 @@
                              supported_modes[best_id].group,
                              supported_modes[best_id].code);
          }
-@@ -828,148 +1274,12 @@ static void adjust_refresh_rate(vout_dis
+@@ -828,148 +1275,12 @@ static void adjust_refresh_rate(vout_dis
      }
  }
  
@@ -13897,7 +14312,7 @@
          ((double)vd->sys->i_frame_rate /
          vd->sys->i_frame_rate_base);
      vout_display_sys_t *sys = vd->sys;
-@@ -1012,32 +1322,441 @@ static void maintain_phase_sync(vout_dis
+@@ -1012,32 +1323,441 @@ static void maintain_phase_sync(vout_dis
      }
  }
  
@@ -15044,7 +15459,7 @@
  libwl_shm_plugin_la_SOURCES = video_output/wayland/shm.c
 --- /dev/null
 +++ b/modules/video_output/drmu/drm_vout.c
-@@ -0,0 +1,621 @@
+@@ -0,0 +1,877 @@
 +/*****************************************************************************
 + * mmal.c: MMAL-based vout plugin for Raspberry Pi
 + *****************************************************************************
@@ -15126,7 +15541,7 @@
 +    drmu_rect_t pos;
 +    drmu_rect_t space;  // display space of pos
 +    picture_t * pic;
-+    int alpha;
++    unsigned int alpha; // out of 0xff * 0xff
 +} subpic_ent_t;
 +
 +typedef struct vout_display_sys_t {
@@ -15140,6 +15555,16 @@
 +    vlc_fourcc_t * subpic_chromas;
 +
 +    drmu_atomic_t * display_set;
++
++    vout_display_place_t req_win;
++    vout_display_place_t spu_rect;
++    vout_display_place_t dest_rect;
++    vout_display_place_t win_rect;
++    vout_display_place_t display_rect;
++
++    video_transform_t display_transform;
++    video_transform_t video_transform;
++    video_transform_t dest_transform;
 +
 +    uint32_t con_id;
 +    int mode_id;
@@ -15172,6 +15597,216 @@
 +    }
 +
 +    return fb;
++}
++
++
++// MMAL headers comment these (getting 2 a bit wrong) but do not give
++// defines
++#define VXF_H_SHIFT 0  // Hflip
++#define VXF_V_SHIFT 1  // Vflip
++#define VXF_T_SHIFT 2  // Transpose
++#define VXF_H_BIT   (1 << VXF_H_SHIFT)
++#define VXF_V_BIT   (1 << VXF_V_SHIFT)
++#define VXF_T_BIT   (1 << VXF_T_SHIFT)
++
++static inline bool
++is_vxf_transpose(const video_transform_t t)
++{
++    return ((unsigned int)t & VXF_T_BIT) != 0;
++}
++
++static inline bool
++is_vxf_hflip(const video_transform_t t)
++{
++    return ((unsigned int)t & VXF_H_BIT) != 0;
++}
++
++static inline bool
++is_vxf_vflip(const video_transform_t t)
++{
++    return ((unsigned int)t & VXF_V_BIT) != 0;
++}
++
++static inline video_transform_t
++swap_vxf_hv(const video_transform_t x)
++{
++    return (((x >> VXF_H_SHIFT) & 1) << VXF_V_SHIFT) |
++           (((x >> VXF_V_SHIFT) & 1) << VXF_H_SHIFT) |
++           (x & VXF_T_BIT);
++}
++
++static inline video_transform_t
++vxf_inverse(const video_transform_t x)
++{
++    return is_vxf_transpose(x) ? swap_vxf_hv(x) : x;
++}
++
++// Transform generated by A then B
++// All ops are self inverse so can simply be XORed on their own
++// H & V flips after a transpose need to be swapped
++static inline video_transform_t
++combine_vxf(const video_transform_t a, const video_transform_t b)
++{
++    return a ^ (is_vxf_transpose(a) ? swap_vxf_hv(b) : b);
++}
++
++static inline vout_display_place_t
++vplace_transpose(const vout_display_place_t s)
++{
++    return (vout_display_place_t){
++        .x      = s.y,
++        .y      = s.x,
++        .width  = s.height,
++        .height = s.width
++    };
++}
++
++// hflip s in c
++static inline vout_display_place_t vplace_hflip(const vout_display_place_t s, const vout_display_place_t c)
++{
++    return (vout_display_place_t){
++        .x = c.x + (c.x + c.width) - (s.x + s.width),
++        .y = s.y,
++        .width = s.width,
++        .height = s.height
++    };
++}
++
++// vflip s in c
++static inline vout_display_place_t vplace_vflip(const vout_display_place_t s, const vout_display_place_t c)
++{
++    return (vout_display_place_t){
++        .x = s.x,
++        .y = (c.y + c.height) - (s.y - c.y) - s.height,
++        .width = s.width,
++        .height = s.height
++    };
++}
++
++static vout_display_place_t
++place_out(const vout_display_cfg_t * cfg,
++          const video_format_t * fmt,
++          const vout_display_place_t r)
++{
++    video_format_t tfmt;
++    vout_display_cfg_t tcfg;
++    vout_display_place_t place;
++
++    // Fix SAR if unknown
++    if (fmt->i_sar_den == 0 || fmt->i_sar_num == 0) {
++        tfmt = *fmt;
++        tfmt.i_sar_den = 1;
++        tfmt.i_sar_num = 1;
++        fmt = &tfmt;
++    }
++
++    // Override what VLC thinks might be going on with display size
++    // if we know better
++    if (r.width != 0 && r.height != 0)
++    {
++        tcfg = *cfg;
++        tcfg.display.width = r.width;
++        tcfg.display.height = r.height;
++        cfg = &tcfg;
++    }
++
++    vout_display_PlacePicture(&place, fmt, cfg, false);
++
++    place.x += r.x;
++    place.y += r.y;
++
++    return place;
++}
++
++static vout_display_place_t
++rect_transform(vout_display_place_t s, const vout_display_place_t c, const video_transform_t t)
++{
++    if (is_vxf_transpose(t))
++        s = vplace_transpose(s);
++    if (is_vxf_hflip(t))
++        s = vplace_hflip(s, c);
++    if (is_vxf_vflip(t) != 0)
++        s = vplace_vflip(s, c);
++    return s;
++}
++
++static void
++place_dest_rect(vout_display_t * const vd,
++          const vout_display_cfg_t * const cfg,
++          const video_format_t * fmt)
++{
++    vout_display_sys_t * const sys = vd->sys;
++    sys->dest_rect = rect_transform(place_out(cfg, fmt, sys->win_rect),
++                                    sys->display_rect, sys->dest_transform);
++}
++
++static void
++place_spu_rect(vout_display_t * const vd,
++          const vout_display_cfg_t * const cfg,
++          const video_format_t * fmt)
++{
++    vout_display_sys_t * const sys = vd->sys;
++    static const vout_display_place_t r0 = {0};
++
++    sys->spu_rect = place_out(cfg, fmt, r0);
++    sys->spu_rect.x = 0;
++    sys->spu_rect.y = 0;
++
++    // Copy place override logic for spu pos from video_output.c
++    // This info doesn't appear to reside anywhere natively
++
++    if (fmt->i_width * fmt->i_height >= (unsigned int)(sys->spu_rect.width * sys->spu_rect.height)) {
++        sys->spu_rect.width  = fmt->i_visible_width;
++        sys->spu_rect.height = fmt->i_visible_height;
++    }
++
++    if (ORIENT_IS_SWAP(fmt->orientation))
++        sys->spu_rect = vplace_transpose(sys->spu_rect);
++}
++
++static void
++place_rects(vout_display_t * const vd,
++          const vout_display_cfg_t * const cfg,
++          const video_format_t * fmt)
++{
++    place_dest_rect(vd, cfg, fmt);
++    place_spu_rect(vd, cfg, fmt);
++}
++
++static int configure_display(vout_display_t *vd, const vout_display_cfg_t *cfg,
++                const video_format_t *fmt)
++{
++    vout_display_sys_t * const sys = vd->sys;
++
++    if (!cfg && !fmt)
++    {
++        msg_Err(vd, "%s: Missing cfg & fmt", __func__);
++        return -EINVAL;
++    }
++
++    if (!fmt)
++        fmt = &vd->source;
++
++    if (!cfg)
++        cfg = vd->cfg;
++
++    sys->video_transform = combine_vxf((video_transform_t)fmt->orientation, sys->display_transform);
++
++    place_rects(vd, cfg, fmt);
++    return 0;
++}
++
++static void set_display_windows(vout_display_t *const vd, vout_display_sys_t *const sys)
++{
++    const drmu_mode_simple_params_t * const mode = drmu_output_mode_simple_params(sys->dout);
++    VLC_UNUSED(vd);
++
++    sys->display_rect = (vout_display_place_t) {0, 0, mode->width, mode->height};
++
++    sys->win_rect = (sys->req_win.width != 0) ?
++            sys->req_win :
++         is_vxf_transpose(sys->display_transform) ?
++            vplace_transpose(sys->display_rect) : sys->display_rect;
 +}
 +
 +static void vd_drm_prepare(vout_display_t *vd, picture_t *pic,
@@ -15207,7 +15842,7 @@
 +                goto subpics_done;
 +
 +            // If the same picture then assume the same contents
-+            // We keep a ref to the previous pic to ensure that teh same picture
++            // We keep a ref to the previous pic to ensure that the same picture
 +            // structure doesn't get reused and confuse us.
 +            if (src != dst->pic) {
 +                drmu_fb_unref(&dst->fb);
@@ -15223,18 +15858,21 @@
 +
 +                dst->pic = picture_Hold(src);
 +            }
++            drmu_fb_crop_frac_set(dst->fb, drmu_rect_shl16(drmu_rect_vlc_format_crop(&sreg->fmt)));
 +
 +            // *** More transform required
 +            dst->pos = (drmu_rect_t){
 +                .x = sreg->i_x,
 +                .y = sreg->i_y,
-+                .w = src->format.i_visible_width,
-+                .h = src->format.i_visible_height,
++                .w = sreg->fmt.i_visible_width,
++                .h = sreg->fmt.i_visible_height,
 +            };
-+            dst->alpha = spic->i_alpha;
++            dst->alpha = spic->i_alpha * sreg->i_alpha;
 +
-+//            msg_Info(vd, "Orig: %dx%d", spic->i_original_picture_width, spic->i_original_picture_height);
-+            dst->space = drmu_rect_wh(spic->i_original_picture_width, spic->i_original_picture_height);
++//            msg_Info(vd, "Orig: %dx%d, (%d,%d) %dx%d; offset %d,%d", spic->i_original_picture_width, spic->i_original_picture_height,
++//                     sreg->i_x, sreg->i_y, src->format.i_visible_width, src->format.i_visible_height,
++//                     sreg->fmt.i_x_offset, sreg->fmt.i_y_offset);
++            dst->space = drmu_rect_vlc_place(&sys->spu_rect);
 +
 +            if (++n == SUBPICS_MAX)
 +                goto subpics_done;
@@ -15251,7 +15889,7 @@
 +        }
 +        drmu_fb_unref(&dst->fb);
 +    }
-+
++#if 0
 +    {
 +        vout_display_place_t place;
 +        vout_display_cfg_t cfg = *vd->cfg;
@@ -15282,6 +15920,8 @@
 +        }
 +#endif
 +    }
++#endif
++    r = drmu_rect_vlc_place(&sys->dest_rect);
 +
 +#if HAS_ZC_CMA
 +    if (drmu_format_vlc_to_drm_cma(pic->format.i_chroma) != 0) {
@@ -15329,7 +15969,7 @@
 +                                  drmu_rect_rescale(spe->pos, r, spe->space))) != 0) {
 +                 msg_Err(vd, "drmModeSetPlane for subplane %d failed: %s", i, strerror(-ret));
 +            }
-+            drmu_atomic_add_plane_alpha(da, sys->subplanes[i], (spe->alpha * DRMU_PLANE_ALPHA_OPAQUE) / 0xff);
++            drmu_atomic_add_plane_alpha(da, sys->subplanes[i], (spe->alpha * DRMU_PLANE_ALPHA_OPAQUE) / (0xff * 0xff));
 +        }
 +    }
 +
@@ -15361,18 +16001,58 @@
 +    return;
 +}
 +
++static void kill_pool(vout_display_sys_t * const sys)
++{
++    if (sys->vlc_pic_pool != NULL) {
++        picture_pool_Release(sys->vlc_pic_pool);
++        sys->vlc_pic_pool = NULL;
++    }
++}
++
++// Actual picture pool for MMAL opaques is just a set of trivial containers
++static picture_pool_t *vd_drm_pool(vout_display_t *vd, unsigned count)
++{
++    vout_display_sys_t * const sys = vd->sys;
++
++#if TRACE_ALL
++    msg_Dbg(vd, "%s: fmt:%dx%d,sar:%d/%d; source:%dx%d", __func__,
++            vd->fmt.i_width, vd->fmt.i_height, vd->fmt.i_sar_num, vd->fmt.i_sar_den, vd->source.i_width, vd->source.i_height);
++#endif
++
++    if (sys->vlc_pic_pool == NULL) {
++        sys->vlc_pic_pool = picture_pool_NewFromFormat(&vd->fmt, count);
++    }
++    return sys->vlc_pic_pool;
++}
++
 +static int vd_drm_control(vout_display_t *vd, int query, va_list args)
 +{
++    vout_display_sys_t * const sys = vd->sys;
 +    int ret = VLC_EGENERIC;
-+    VLC_UNUSED(args);
 +
 +    switch (query) {
-+        case VOUT_DISPLAY_CHANGE_DISPLAY_SIZE:
-+        case VOUT_DISPLAY_CHANGE_DISPLAY_FILLED:
 +        case VOUT_DISPLAY_CHANGE_SOURCE_ASPECT:
 +        case VOUT_DISPLAY_CHANGE_SOURCE_CROP:
++            if (configure_display(vd, vd->cfg, &vd->source) >= 0)
++                ret = VLC_SUCCESS;
++            break;
++
 +        case VOUT_DISPLAY_CHANGE_ZOOM:
-+            msg_Warn(vd, "Unsupported control query %d", query);
++        case VOUT_DISPLAY_CHANGE_DISPLAY_SIZE:
++        case VOUT_DISPLAY_CHANGE_DISPLAY_FILLED:
++        {
++            const vout_display_cfg_t * const cfg = va_arg(args, const vout_display_cfg_t *);
++
++            if (configure_display(vd, cfg, &vd->source) >= 0)
++                ret = VLC_SUCCESS;
++            break;
++        }
++
++        case VOUT_DISPLAY_RESET_PICTURES:
++            msg_Warn(vd, "Reset Pictures");
++            kill_pool(sys);
++            vd->fmt = vd->source; // Take (nearly) whatever source wants to give us
++//            vd->fmt.i_chroma = req_chroma(vd);  // Adjust chroma to something we can actaully deal with
 +            ret = VLC_SUCCESS;
 +            break;
 +
@@ -15384,20 +16064,6 @@
 +    return ret;
 +}
 +
-+// Actual picture pool for MMAL opaques is just a set of trivial containers
-+static picture_pool_t *vd_drm_pool(vout_display_t *vd, unsigned count)
-+{
-+    vout_display_sys_t * const sys = vd->sys;
-+
-+    msg_Dbg(vd, "%s: fmt:%dx%d,sar:%d/%d; source:%dx%d", __func__,
-+            vd->fmt.i_width, vd->fmt.i_height, vd->fmt.i_sar_num, vd->fmt.i_sar_den, vd->source.i_width, vd->source.i_height);
-+
-+    if (sys->vlc_pic_pool == NULL) {
-+        sys->vlc_pic_pool = picture_pool_NewFromFormat(&vd->fmt, count);
-+    }
-+    return sys->vlc_pic_pool;
-+}
-+
 +static void CloseDrmVout(vout_display_t *vd)
 +{
 +    vout_display_sys_t *const sys = vd->sys;
@@ -15406,6 +16072,7 @@
 +    msg_Dbg(vd, "<<< %s", __func__);
 +
 +    drmu_pool_delete(&sys->sub_fb_pool);
++    drmu_pool_delete(&sys->pic_pool);
 +
 +    for (i = 0; i != SUBPICS_MAX; ++i)
 +        drmu_plane_unref(sys->subplanes + i);
@@ -15417,7 +16084,7 @@
 +
 +    drmu_plane_unref(&sys->dp);
 +    drmu_output_unref(&sys->dout);
-+    drmu_env_delete(&sys->du);
++    drmu_env_unref(&sys->du);
 +
 +    free(sys->subpic_chromas);
 +    vd->info.subpicture_chromas = NULL;
@@ -15643,6 +16310,10 @@
 +//    vout_display_SetSizeAndSar(vd, drmu_crtc_width(sys->dc), drmu_crtc_height(sys->dc),
 +//                               drmu_ufrac_vlc_to_rational(drmu_crtc_sar(sys->dc)));
 +
++    set_display_windows(vd, sys);
++
++    configure_display(vd, vd->cfg, &vd->source);
++
 +    return VLC_SUCCESS;
 +
 +fail:
@@ -15668,7 +16339,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu.c
-@@ -0,0 +1,3871 @@
+@@ -0,0 +1,3891 @@
 +#include "drmu.h"
 +#include "drmu_log.h"
 +
@@ -16910,8 +17581,8 @@
 +        return -EINVAL;
 +
 +    dfb->crop = (drmu_rect_t){
-+        .x = crop_frac.x + (dfb->active.x << 16),
-+        .y = crop_frac.y + (dfb->active.y << 16),
++        .x = crop_frac.x,
++        .y = crop_frac.y,
 +        .w = crop_frac.w,
 +        .h = crop_frac.h
 +    };
@@ -19038,6 +19709,7 @@
 +// Env fns
 +
 +typedef struct drmu_env_s {
++    atomic_int ref_count;  // 0 == 1 ref for ease of init
 +    int fd;
 +    uint32_t plane_count;
 +    uint32_t conn_count;
@@ -19238,14 +19910,11 @@
 +}
 +
 +
-+void
-+drmu_env_delete(drmu_env_t ** const ppdu)
++static void
++env_free(drmu_env_t * const du)
 +{
-+    drmu_env_t * const du = *ppdu;
-+
 +    if (!du)
 +        return;
-+    *ppdu = NULL;
 +
 +    atomic_q_flush(&du->aq);
 +
@@ -19279,6 +19948,28 @@
 +
 +    close(du->fd);
 +    free(du);
++}
++
++void
++drmu_env_unref(drmu_env_t ** const ppdu)
++{
++    drmu_env_t * const du = *ppdu;
++    if (!du)
++        return;
++    *ppdu = NULL;
++
++    if (atomic_fetch_sub(&du->ref_count, 1) != 0)
++        return;
++
++    env_free(du);
++}
++
++drmu_env_t *
++drmu_env_ref(drmu_env_t * const du)
++{
++    if (du)
++        atomic_fetch_add(&du->ref_count, 1);
++    return du;
 +}
 +
 +static int
@@ -19383,7 +20074,7 @@
 +drmu_env_t *
 +drmu_env_new_fd(const int fd, const struct drmu_log_env_s * const log)
 +{
-+    drmu_env_t * du = calloc(1, sizeof(*du));
++    drmu_env_t * const du = calloc(1, sizeof(*du));
 +    int rv;
 +    uint32_t * conn_ids = NULL;
 +    uint32_t * crtc_ids = NULL;
@@ -19491,7 +20182,7 @@
 +    return du;
 +
 +fail1:
-+    drmu_env_delete(&du);
++    env_free(du);
 +    free(conn_ids);
 +    free(crtc_ids);
 +    free(plane_ids);
@@ -19542,7 +20233,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu.h
-@@ -0,0 +1,554 @@
+@@ -0,0 +1,577 @@
 +#ifndef _DRMU_DRMU_H
 +#define _DRMU_DRMU_H
 +
@@ -19630,20 +20321,31 @@
 +
 +drmu_ufrac_t drmu_ufrac_reduce(drmu_ufrac_t x);
 +
-+static inline int
-+drmu_rect_rescale_1(int x, int mul, int div)
++static inline int_fast32_t
++drmu_rect_rescale_1s(int_fast32_t x, uint_fast32_t mul, uint_fast32_t div)
 +{
-+    return div == 0 ? x * mul : (x * mul + div/2) / div;
++    const int_fast64_t m = x * (int_fast64_t)mul;
++    const uint_fast32_t d2 = div/2;
++    return div == 0 ? (int_fast32_t)m :
++        m >= 0 ? (int_fast32_t)(((uint_fast64_t)m + d2) / div) :
++            -(int_fast32_t)(((uint_fast64_t)(-m) + d2) / div);
++}
++
++static inline uint_fast32_t
++drmu_rect_rescale_1u(uint_fast32_t x, uint_fast32_t mul, uint_fast32_t div)
++{
++    const uint_fast64_t m = x * (uint_fast64_t)mul;
++    return (uint_fast32_t)(div == 0 ? m : (m + div/2) / div);
 +}
 +
 +static inline drmu_rect_t
 +drmu_rect_rescale(const drmu_rect_t s, const drmu_rect_t mul, const drmu_rect_t div)
 +{
 +    return (drmu_rect_t){
-+        .x = drmu_rect_rescale_1(s.x - div.x, mul.w, div.w) + mul.x,
-+        .y = drmu_rect_rescale_1(s.y - div.y, mul.h, div.h) + mul.y,
-+        .w = drmu_rect_rescale_1(s.w,         mul.w, div.w),
-+        .h = drmu_rect_rescale_1(s.h,         mul.h, div.h)
++        .x = drmu_rect_rescale_1s(s.x - div.x, mul.w, div.w) + mul.x,
++        .y = drmu_rect_rescale_1s(s.y - div.y, mul.h, div.h) + mul.y,
++        .w = drmu_rect_rescale_1u(s.w,         mul.w, div.w),
++        .h = drmu_rect_rescale_1u(s.h,         mul.h, div.h)
 +    };
 +}
 +
@@ -19664,6 +20366,17 @@
 +    return (drmu_rect_t){
 +        .w = w,
 +        .h = h
++    };
++}
++
++static inline drmu_rect_t
++drmu_rect_shl16(const drmu_rect_t a)
++{
++    return (drmu_rect_t){
++        .x = a.x << 16,
++        .y = a.y << 16,
++        .w = a.w << 16,
++        .h = a.h << 16
 +    };
 +}
 +
@@ -19844,10 +20557,10 @@
 +drmu_crtc_t * drmu_env_crtc_find_id(drmu_env_t * const du, const uint32_t crtc_id);
 +drmu_crtc_t * drmu_env_crtc_find_n(drmu_env_t * const du, const unsigned int n);
 +
-+typedef struct drmu_mode_pick_simple_params_s {
++typedef struct drmu_mode_simple_params_s {
 +    unsigned int width;
 +    unsigned int height;
-+    unsigned int hz_x_1000;  // Refresh rate * 1000 i.e. 50Hz = 50000
++    unsigned int hz_x_1000;  // Frame rate * 1000 i.e. 50Hz = 50000 (N.B. frame not field rate if interlaced)
 +    drmu_ufrac_t par;  // Picture Aspect Ratio (0:0 if unknown)
 +    drmu_ufrac_t sar;  // Sample Aspect Ratio
 +    uint32_t type;
@@ -20006,7 +20719,8 @@
 +int drmu_ioctl(const drmu_env_t * const du, unsigned long req, void * arg);
 +int drmu_fd(const drmu_env_t * const du);
 +const struct drmu_log_env_s * drmu_env_log(const drmu_env_t * const du);
-+void drmu_env_delete(drmu_env_t ** const ppdu);
++void drmu_env_unref(drmu_env_t ** const ppdu);
++drmu_env_t * drmu_env_ref(drmu_env_t * const du);
 +// Restore state on env close
 +int drmu_env_restore_enable(drmu_env_t * const du);
 +bool drmu_env_restore_is_enabled(const drmu_env_t * const du);
@@ -20989,7 +21703,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_output.c
-@@ -0,0 +1,529 @@
+@@ -0,0 +1,570 @@
 +#include "drmu_output.h"
 +#include "drmu_log.h"
 +
@@ -21011,6 +21725,7 @@
 +    unsigned int conn_n;
 +    unsigned int conn_size;
 +    drmu_conn_t ** dns;
++    bool has_max_bpc;
 +    bool max_bpc_allow;
 +    bool modeset_allow;
 +    int mode_id;
@@ -21126,37 +21841,44 @@
 +    return &dout->mode_params;
 +}
 +
++static int
++score_freq(const drmu_mode_simple_params_t * const mode, const drmu_mode_simple_params_t * const p)
++{
++    const int pref = (mode->type & DRM_MODE_TYPE_PREFERRED) != 0;
++    const unsigned int r_m = (mode->flags & DRM_MODE_FLAG_INTERLACE) != 0 ?
++        mode->hz_x_1000 * 2: mode->hz_x_1000;
++    const unsigned int r_f = (p->flags & DRM_MODE_FLAG_INTERLACE) != 0 ?
++        p->hz_x_1000 * 2 : p->hz_x_1000;
++
++    // If we haven't been given any hz then pick pref or fastest
++    // Max out at 300Hz (=300,0000)
++    if (r_f == 0)
++        return pref ? 83000000 : 80000000 + (r_m >= 2999999 ? 2999999 : r_m);
++    // Prefer a good match to 29.97 / 30 but allow the other
++    else if ((r_m + 10 >= r_f && r_m <= r_f + 10))
++        return 100000000;
++    else if ((r_m + 100 >= r_f && r_m <= r_f + 100))
++        return 95000000;
++    // Double isn't bad
++    else if ((r_m + 10 >= r_f * 2 && r_m <= r_f * 2 + 10))
++        return 90000000;
++    else if ((r_m + 100 >= r_f * 2 && r_m <= r_f * 2 + 100))
++        return 85000000;
++    return -1;
++}
++
++// Avoid interlace no matter what our source
 +int
 +drmu_mode_pick_simple_cb(void * v, const drmu_mode_simple_params_t * mode)
 +{
 +    const drmu_mode_simple_params_t * const p = v;
-+
 +    const int pref = (mode->type & DRM_MODE_TYPE_PREFERRED) != 0;
-+    const unsigned int r_m = mode->hz_x_1000;
-+    const unsigned int r_f = p->hz_x_1000;
 +    int score = -1;
 +
-+    // We don't understand interlace
-+    if ((mode->flags & DRM_MODE_FLAG_INTERLACE) != 0)
-+        return -1;
++    if (p->width == mode->width && p->height == mode->height &&
++        (mode->flags & DRM_MODE_FLAG_INTERLACE) == 0)
++        score = score_freq(mode, p);
 +
-+    if (p->width == mode->width && p->height == mode->height)
-+    {
-+        // If we haven't been given any hz then pick pref or fastest
-+        // Max out at 300Hz (=300,0000)
-+        if (r_f == 0)
-+            score = pref ? 83000000 : 80000000 + (r_m >= 2999999 ? 2999999 : r_m);
-+        // Prefer a good match to 29.97 / 30 but allow the other
-+        else if ((r_m + 10 >= r_f && r_m <= r_f + 10))
-+            score = 100000000;
-+        else if ((r_m + 100 >= r_f && r_m <= r_f + 100))
-+            score = 95000000;
-+        // Double isn't bad
-+        else if ((r_m + 10 >= r_f * 2 && r_m <= r_f * 2 + 10))
-+            score = 90000000;
-+        else if ((r_m + 100 >= r_f * 2 && r_m <= r_f * 2 + 100))
-+            score = 85000000;
-+    }
 +    if (score > 0 && (p->width != mode->width || p->height != mode->height))
 +        score -= 30000000;
 +
@@ -21165,6 +21887,30 @@
 +
 +    return score;
 +}
++
++// Try to match interlace as well as everything else
++int
++drmu_mode_pick_simple_interlace_cb(void * v, const drmu_mode_simple_params_t * mode)
++{
++    const drmu_mode_simple_params_t * const p = v;
++
++    const int pref = (mode->type & DRM_MODE_TYPE_PREFERRED) != 0;
++    int score = -1;
++
++    if (p->width == mode->width && p->height == mode->height)
++        score = score_freq(mode, p);
++
++    if (score > 0 && (p->width != mode->width || p->height != mode->height))
++        score -= 30000000;
++    if (((mode->flags ^ p->flags) & DRM_MODE_FLAG_INTERLACE) != 0)
++        score -= 20000000;
++
++    if (score <= 0 && pref)
++        score = 10000000;
++
++    return score;
++}
++
 +
 +int
 +drmu_output_mode_pick_simple(drmu_output_t * const dout, drmu_mode_score_fn * const score_fn, void * const score_v)
@@ -21193,8 +21939,8 @@
 +int
 +drmu_output_max_bpc_allow(drmu_output_t * const dout, const bool allow)
 +{
-+    dout->max_bpc_allow = allow;
-+    return 0;
++    dout->max_bpc_allow = allow && dout->has_max_bpc;
++    return allow && !dout->has_max_bpc ? -ENOENT : 0;
 +}
 +
 +int
@@ -21283,6 +22029,15 @@
 +        drmu_debug(du, "Conn already claimed");
 +        drmu_crtc_unref(&dc_t);
 +        goto retry;
++    }
++
++    // Test features
++    {
++        drmu_atomic_t * da = drmu_atomic_new(du);
++        if (!da)
++            return -ENOMEM;
++        dout->has_max_bpc = (drmu_atomic_conn_hi_bpc_set(da, dn, true) == 0);
++        drmu_atomic_unref(&da);
 +    }
 +
 +    dout->dns[dout->conn_n++] = dn;
@@ -21521,7 +22276,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_output.h
-@@ -0,0 +1,70 @@
+@@ -0,0 +1,72 @@
 +#ifndef _DRMU_DRMU_OUTPUT_H
 +#define _DRMU_DRMU_OUTPUT_H
 +
@@ -21556,6 +22311,8 @@
 +// Simple mode picker cb - looks for width / height and then refresh
 +// If nothing "plausible" defaults to EDID preferred mode
 +drmu_mode_score_fn drmu_mode_pick_simple_cb;
++// As above but may choose an interlaced mode
++drmu_mode_score_fn drmu_mode_pick_simple_interlace_cb;
 +
 +// Allow fb max_bpc info to set the output mode (default false)
 +int drmu_output_max_bpc_allow(drmu_output_t * const dout, const bool allow);
@@ -21594,26 +22351,83 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_util.c
-@@ -0,0 +1,35 @@
+@@ -0,0 +1,125 @@
++#include "drmu.h"
 +#include "drmu_util.h"
++
 +#include <ctype.h>
 +#include <error.h>
++#include <stdio.h>
 +#include <stdlib.h>
++#include <string.h>
++
++#include <libdrm/drm_mode.h>
++
++static unsigned long
++h_to_w(const unsigned long h)
++{
++    switch (h) {
++        case 480:
++        case 576:
++            return 720;
++        case 720:
++            return 1280;
++        case 1080:
++            return 1920;
++        case 2160:
++            return 3840;
++        default:
++            break;
++    }
++    return 0;
++}
 +
 +char *
-+drmu_util_parse_mode(const char * s, unsigned int * pw, unsigned int * ph, unsigned int * phz)
++drmu_util_parse_mode_simple_params(const char * s, drmu_mode_simple_params_t * const p)
 +{
 +    unsigned long w = 0, h = 0, hz = 0;
++    bool il = false;
++    bool drmhz = false;
++
++    memset(p , 0, sizeof(*p));
 +
 +    if (isdigit(*s)) {
-+        w = strtoul(s, (char **)&s, 10);
-+        if (*s != 'x')
++        h = strtoul(s, (char **)&s, 10);
++
++        if (*s == 'p' || *s == 'i') {
++            w = h_to_w(h);
++        }
++        else if (*s == 'x') {
++            w = h;
++            h = strtoul(s + 1, (char **)&s, 10);
++        }
++        else {
 +            return (char *)s;
-+        h = strtoul(s + 1, (char **)&s, 10);
++        }
 +    }
 +
++    // Consume 'i' or 'p'
++    // Can still have (now) optional hz separator after
++    if (*s == 'p') {
++        ++s;
++    }
++    else if (*s == 'i') {
++        il = true;
++        ++s;
++    }
++
++    // I've used '@' in the past to separate size from hz
++    // DRM uses '-' in modetest so accept that
 +    if (*s == '@') {
-+        hz = strtoul(s + 1, (char **)&s, 10) * 1000;
++        ++s;
++    }
++    else if (*s == '-') {
++        drmhz = true;
++        ++s;
++    }
++
++    if (isdigit(*s)) {
++        hz = strtoul(s, (char **)&s, 10) * 1000;
 +
 +        if (*s == '.') {
 +            unsigned int m = 100;
@@ -21624,15 +22438,48 @@
 +        }
 +    }
 +
-+    *pw = (unsigned int)w;
-+    *ph = (unsigned int)h;
-+    *phz = (unsigned int)hz;
++    // DRM thinks in frame rate, rest of the world specifies as field rate
++    if (il && !drmhz)
++        hz /= 2;
++
++    p->width  = (unsigned int)w;
++    p->height = (unsigned int)h;
++    p->hz_x_1000 = (unsigned int)hz;
++    p->flags = !il ? 0 : DRM_MODE_FLAG_INTERLACE;
++
 +    return (char *)s;
 +}
 +
++char *
++drmu_util_simple_param_to_mode_str(char * buf, size_t buflen, const drmu_mode_simple_params_t * const p)
++{
++    int hz = p->hz_x_1000;
++
++    if ((p->flags & DRM_MODE_FLAG_INTERLACE))
++        hz *= 2;
++
++    snprintf(buf, buflen, "%dx%d%c%d.%03d",
++             p->width, p->height,
++             (p->flags & DRM_MODE_FLAG_INTERLACE) ? 'i' : 'p',
++             hz / 1000, hz % 1000);
++    return buf;
++}
++
++char *
++drmu_util_parse_mode(const char * s, unsigned int * pw, unsigned int * ph, unsigned int * phz)
++{
++    drmu_mode_simple_params_t p;
++    char * r = drmu_util_parse_mode_simple_params(s, &p);
++    *pw = p.width;
++    *ph = p.height;
++    *phz = p.hz_x_1000;
++    return r;
++}
++
++
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_util.h
-@@ -0,0 +1,19 @@
+@@ -0,0 +1,30 @@
 +#ifndef _DRMU_DRMU_UTIL_H
 +#define _DRMU_DRMU_UTIL_H
 +
@@ -21640,11 +22487,22 @@
 +extern "C" {
 +#endif
 +
-+// Parse a string of the form [<w>x<h>][@<hz>[.<mHz>]]
++struct drmu_mode_simple_params_s;
++
++// Parse a string of the form [<w>x<h>][i][@<hz>[.<mHz>]]
 +// Returns pointer to terminating char
 +// Missing fields are zero
 +char * drmu_util_parse_mode(const char * s, unsigned int * pw, unsigned int * ph, unsigned int * pHzx1000);
 +
++// As above but place results into a simple params structure
++// (Unused fields zeroed)
++// Also copes with interlace
++char * drmu_util_parse_mode_simple_params(const char * s, struct drmu_mode_simple_params_s * const p);
++
++// Simple params to mode string
++char * drmu_util_simple_param_to_mode_str(char * buf, size_t buflen, const drmu_mode_simple_params_t * const p);
++
++#define drmu_util_simple_mode(p) drmu_util_simple_param_to_mode_str((char[64]){0}, 64, (p))
 +
 +#ifdef __cplusplus
 +}
@@ -21654,7 +22512,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_vlc.c
-@@ -0,0 +1,531 @@
+@@ -0,0 +1,527 @@
 +#include "drmu_vlc.h"
 +#include "drmu_log.h"
 +
@@ -21836,7 +22694,7 @@
 +}
 +
 +typedef struct fb_aux_pic_s {
-+    picture_t * pic;
++    picture_context_t * pic_ctx;
 +} fb_aux_pic_t;
 +
 +static void
@@ -21845,7 +22703,7 @@
 +    fb_aux_pic_t * const aux = v;
 +    VLC_UNUSED(dfb);
 +
-+    picture_Release(aux->pic);
++    aux->pic_ctx->destroy(aux->pic_ctx);
 +    free(aux);
 +}
 +
@@ -21994,11 +22852,7 @@
 +                             desc->layers[0].format,
 +                             pic->format.i_width,
 +                             pic->format.i_height,
-+                             (drmu_rect_t){
-+                                 .x = pic->format.i_x_offset,
-+                                 .y = pic->format.i_y_offset,
-+                                 .w = pic->format.i_visible_width,
-+                                 .h = pic->format.i_visible_height});
++                             drmu_rect_vlc_pic_crop(pic));
 +
 +    drmu_fb_int_color_set(dfb,
 +                          fb_vlc_color_encoding(&pic->format),
@@ -22013,7 +22867,7 @@
 +        drmu_err(du, "%s: Aux alloc failure", __func__);
 +        goto fail;
 +    }
-+    aux->pic = picture_Hold(pic);
++    aux->pic_ctx = pic->context->copy(pic->context);
 +    drmu_fb_int_on_delete_set(dfb, pic_fb_delete_cb, aux);
 +
 +    for (i = 0; i < desc->nb_objects; ++i)
@@ -22101,7 +22955,7 @@
 +        drmu_err(du, "%s: Aux alloc failure", __func__);
 +        goto fail;
 +    }
-+    aux->pic = picture_Hold(pic);
++    aux->pic_ctx = pic->context->copy(pic->context);
 +    drmu_fb_int_on_delete_set(dfb, pic_fb_delete_cb, aux);
 +
 +    {
@@ -22999,6 +23853,20 @@
  
      assert( p_dst->context == NULL );
  
+--- a/src/video_output/display.c
++++ b/src/video_output/display.c
+@@ -226,9 +226,9 @@ void vout_display_PlacePicture(vout_disp
+     const unsigned width  = source->i_visible_width;
+     const unsigned height = source->i_visible_height;
+     /* Compute the height if we use the width to fill up display_width */
+-    const int64_t scaled_height = (int64_t)height * display_width  * cfg->display.sar.num * source->i_sar_den / (width  * source->i_sar_num * cfg->display.sar.den);
++    const int64_t scaled_height = ((int64_t)height * display_width  * cfg->display.sar.num * source->i_sar_den + (width  * source->i_sar_num * cfg->display.sar.den)/2) / (width  * source->i_sar_num * cfg->display.sar.den);
+     /* And the same but switching width/height */
+-    const int64_t scaled_width  = (int64_t)width  * display_height * cfg->display.sar.den * source->i_sar_num / (height * source->i_sar_den * cfg->display.sar.num);
++    const int64_t scaled_width  = ((int64_t)width  * display_height * cfg->display.sar.den * source->i_sar_num + (height * source->i_sar_den * cfg->display.sar.num)/2) / (height * source->i_sar_den * cfg->display.sar.num);
+ 
+     if (source->projection_mode == PROJECTION_MODE_RECTANGULAR) {
+         /* We keep the solution that avoid filling outside the display */
 --- a/src/video_output/video_output.c
 +++ b/src/video_output/video_output.c
 @@ -964,6 +964,17 @@ static picture_t *ConvertRGB32AndBlend(v

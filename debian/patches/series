@@ -2,7 +2,7 @@
 0002-Revert-configure-Require-libmodplug-0.8.9.patch
 0003-Do-not-generate-cache-during-build.patch
 add-extern-qualifiers.patch
-mmal_27.patch
+mmal_28.patch
 mmal_exit_fix.patch
 mmal_chain.patch
 mmal_caca.patch

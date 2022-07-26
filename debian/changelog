@@ -1,3 +1,11 @@
+vlc (3.0.17.4-0+deb11u1+rpi1+rpt2) bullseye; urgency=medium
+
+  * Update to MMAL patch 28
+  * Add libavfilter-dev dependency
+  * Install libdrm_av_deinterlace_plugin.so
+
+ -- Serge Schneider <serge@raspberrypi.com>  Tue, 26 Jul 2022 12:23:03 +0100
+
 vlc (3.0.17.4-0+deb11u1+rpi1+rpt1) bullseye; urgency=medium
 
   * Add MMAL patch 27
