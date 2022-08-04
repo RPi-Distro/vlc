@@ -348,7 +348,7 @@
          case AV_PIX_FMT_D3D11VA_VLD:
 --- a/modules/codec/avcodec/video.c
 +++ b/modules/codec/avcodec/video.c
-@@ -46,6 +46,8 @@
+@@ -46,11 +46,20 @@
  #include "avcodec.h"
  #include "va.h"
  
@@ -357,7 +357,19 @@
  #include "../codec/cc.h"
  
  /*****************************************************************************
-@@ -356,6 +358,13 @@ static int lavc_CopyPicture(decoder_t *d
+  * decoder_sys_t : decoder descriptor
+  *****************************************************************************/
++
++struct hw_setup_params_s {
++    uint32_t i_codec;
++    unsigned int width;
++    unsigned int height;
++};
++
+ struct decoder_sys_t
+ {
+     AVCodecContext *p_context;
+@@ -356,6 +365,13 @@ static int lavc_CopyPicture(decoder_t *d
  {
      decoder_sys_t *sys = dec->p_sys;
  
@@ -371,7 +383,33 @@
      vlc_fourcc_t fourcc = FindVlcChroma(frame->format);
      if (!fourcc)
      {
-@@ -464,11 +473,11 @@ static int OpenVideoCodec( decoder_t *p_
+@@ -458,17 +474,37 @@ static int OpenVideoCodec( decoder_t *p_
+     return 0;
+ }
+ 
++static es_format_t hw_fail;
++
++static bool
++hw_check_bad(const es_format_t * const fmt)
++{
++    if (hw_fail.i_codec == fmt->i_codec &&
++        hw_fail.video.i_width  == fmt->video.i_width &&
++        hw_fail.video.i_height == fmt->video.i_height)
++        return true;
++
++    return false;
++}
++
++static void
++hw_set_bad(const es_format_t * const fmt)
++{
++    if (fmt->video.i_width != 0 && fmt->video.i_height != 0)
++        hw_fail = *fmt;
++}
++
+ /*****************************************************************************
+  * InitVideo: initialize the video decoder
+  *****************************************************************************
   * the ffmpeg codec will be opened, some memory allocated. The vout is not yet
   * opened (done after the first decoded frame).
   *****************************************************************************/
@@ -385,21 +423,35 @@
      if( p_context == NULL )
          return VLC_EGENERIC;
  
-@@ -649,6 +658,13 @@ int InitVideoDec( vlc_object_t *obj )
+@@ -649,6 +685,27 @@ int InitVideoDec( vlc_object_t *obj )
      return VLC_SUCCESS;
  }
  
 +int InitVideoDec( vlc_object_t *obj )
 +{
-+    if (InitVideoDec2(obj, 1) == 0)
-+        return 0;
++    decoder_t * const p_dec = (decoder_t *)obj;
++
++    // Don't retry something we know failed
++    if (!hw_check_bad(&p_dec->fmt_in))
++    {
++        if (InitVideoDec2(obj, 1) == 0)
++            return 0;
++
++        hw_set_bad(&p_dec->fmt_in);
++        msg_Dbg(p_dec, "Set hw fail for %4.4s %dx%d", (char *)&p_dec->fmt_in.i_codec, p_dec->fmt_in.video.i_width, p_dec->fmt_in.video.i_height);
++    }
++    else
++    {
++        msg_Dbg(p_dec, "Avoid trying hw decoder for %4.4s %dx%d", (char *)&p_dec->fmt_in.i_codec, p_dec->fmt_in.video.i_width, p_dec->fmt_in.video.i_height);
++    }
++
 +    return InitVideoDec2(obj, 0);
 +}
 +
  /*****************************************************************************
   * Flush:
   *****************************************************************************/
-@@ -1183,9 +1199,10 @@ static picture_t *DecodeBlock( decoder_t
+@@ -1183,9 +1240,10 @@ static picture_t *DecodeBlock( decoder_t
          {   /* When direct rendering is not used, get_format() and get_buffer()
               * might not be called. The output video format must be set here
               * then picture buffer can be allocated. */
@@ -412,7 +464,7 @@
                  p_pic = decoder_NewPicture(p_dec);
  
              if( !p_pic )
-@@ -1618,6 +1635,8 @@ no_reuse:
+@@ -1618,6 +1676,8 @@ no_reuse:
  
      static const enum PixelFormat hwfmts[] =
      {
@@ -421,7 +473,7 @@
  #ifdef _WIN32
  #if LIBAVUTIL_VERSION_CHECK(54, 13, 1, 24, 100)
          AV_PIX_FMT_D3D11VA_VLD,
-@@ -1628,6 +1647,7 @@ no_reuse:
+@@ -1628,6 +1688,7 @@ no_reuse:
  #if (LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(52, 4, 0))
          AV_PIX_FMT_VDPAU,
  #endif
@@ -14782,7 +14834,7 @@
 +
 --- /dev/null
 +++ b/modules/hw/mmal/xsplitter.c
-@@ -0,0 +1,645 @@
+@@ -0,0 +1,649 @@
 +#ifdef HAVE_CONFIG_H
 +#include "config.h"
 +#endif
@@ -15241,14 +15293,17 @@
 +            }
 +
 +            if (swap_vout) {
-+                x_desc->on_swap_away(vd, sys, x_desc);
 +                vout_display_SendEventPicturesInvalid(vd);
++                x_desc->on_swap_away(vd, sys, x_desc);
 +            }
 +
 +            rv = vout_display_Control(new_desc, ctl, cfg);
 +            if (rv == VLC_SUCCESS) {
 +                vd->fmt       = new_desc->vout->fmt;
 +                sys->cur_desc = new_desc;
++                // Strictly this is illegal but subpic chromas are consulted
++                // on every render so it is in fact safe.
++                vd->info.subpicture_chromas = sys->cur_desc->vout->info.subpicture_chromas;
 +            }
 +
 +            break;
@@ -15265,6 +15320,7 @@
 +            }
 +            rv = reset_pictures(vd, &sys->x_desc);
 +            rv = up_rv(rv, reset_pictures(vd, &sys->mmal_desc));
++            rv = up_rv(rv, reset_pictures(vd, &sys->drm_desc));
 +
 +            vd->fmt = x_desc->vout->fmt;
 +            break;
@@ -15459,7 +15515,7 @@
  libwl_shm_plugin_la_SOURCES = video_output/wayland/shm.c
 --- /dev/null
 +++ b/modules/video_output/drmu/drm_vout.c
-@@ -0,0 +1,877 @@
+@@ -0,0 +1,889 @@
 +/*****************************************************************************
 + * mmal.c: MMAL-based vout plugin for Raspberry Pi
 + *****************************************************************************
@@ -15595,6 +15651,8 @@
 +        dst_plane = drmu_fb_vlc_plane(fb, i);
 +        plane_CopyPixels(&dst_plane, src->p + i);
 +    }
++
++    drmu_fb_vlc_pic_set_metadata(fb, src);
 +
 +    return fb;
 +}
@@ -16001,8 +16059,22 @@
 +    return;
 +}
 +
++static void subpic_cache_flush(vout_display_sys_t * const sys)
++{
++    for (unsigned int i = 0; i != SUBPICS_MAX; ++i) {
++        if (sys->subpics[i].pic != NULL) {
++            picture_Release(sys->subpics[i].pic);
++            sys->subpics[i].pic = NULL;
++        }
++        drmu_fb_unref(&sys->subpics[i].fb);
++    }
++}
++
 +static void kill_pool(vout_display_sys_t * const sys)
 +{
++    // Drop all cached subpics
++    subpic_cache_flush(sys);
++
 +    if (sys->vlc_pic_pool != NULL) {
 +        picture_pool_Release(sys->vlc_pic_pool);
 +        sys->vlc_pic_pool = NULL;
@@ -16076,11 +16148,7 @@
 +
 +    for (i = 0; i != SUBPICS_MAX; ++i)
 +        drmu_plane_unref(sys->subplanes + i);
-+    for (i = 0; i != SUBPICS_MAX; ++i) {
-+        if (sys->subpics[i].pic != NULL)
-+            picture_Release(sys->subpics[i].pic);
-+        drmu_fb_unref(&sys->subpics[i].fb);
-+    }
++    subpic_cache_flush(sys);
 +
 +    drmu_plane_unref(&sys->dp);
 +    drmu_output_unref(&sys->dout);
@@ -17378,10 +17446,10 @@
 +
 +    drmu_bo_t * bo_list[4];
 +
-+    const char * color_encoding; // Assumed to be constant strings that don't need freeing
-+    const char * color_range;
++    drmu_color_encoding_t color_encoding; // Assumed to be constant strings that don't need freeing
++    drmu_color_range_t    color_range;
++    drmu_colorspace_t     colorspace;
 +    const char * pixel_blend_mode;
-+    const char * colorspace;
 +    drmu_chroma_siting_t chroma_siting;
 +    drmu_isset_t hdr_metadata_isset;
 +    struct hdr_output_metadata hdr_metadata;
@@ -17616,7 +17684,7 @@
 +}
 +
 +void
-+drmu_fb_int_color_set(drmu_fb_t *const dfb, const char * const enc, const char * const range, const char * const space)
++drmu_fb_int_color_set(drmu_fb_t *const dfb, const drmu_color_encoding_t enc, const drmu_color_range_t range, const drmu_colorspace_t space)
 +{
 +    dfb->color_encoding = enc;
 +    dfb->color_range    = range;
@@ -17696,25 +17764,25 @@
 +    return dfb->hdr_metadata_isset == DRMU_ISSET_SET ? &dfb->hdr_metadata : NULL;
 +}
 +
-+const char *
++drmu_colorspace_t
 +drmu_fb_colorspace_get(const drmu_fb_t * const dfb)
 +{
 +    return dfb->colorspace;
 +}
 +
 +const char *
-+drmu_color_range_to_broadcast_rgb(const char * const range)
++drmu_color_range_to_broadcast_rgb(const drmu_color_range_t range)
 +{
-+    if (range == NULL)
-+        return NULL;
-+    else if (strcmp(range, "YCbCr full range") == 0)
++    if (!drmu_color_range_is_set(range))
++        return DRMU_BROADCAST_RGB_UNSET;
++    else if (strcmp(range, DRMU_COLOR_RANGE_YCBCR_FULL_RANGE) == 0)
 +        return DRMU_BROADCAST_RGB_FULL;
-+    else if (strcmp(range, "YCbCr limited range") == 0)
++    else if (strcmp(range, DRMU_COLOR_RANGE_YCBCR_LIMITED_RANGE) == 0)
 +        return DRMU_BROADCAST_RGB_LIMITED_16_235;
 +    return NULL;
 +}
 +
-+const char *
++drmu_color_range_t
 +drmu_fb_color_range_get(const drmu_fb_t * const dfb)
 +{
 +    return dfb->color_range;
@@ -18668,7 +18736,7 @@
 +}
 +
 +int
-+drmu_atomic_conn_colorspace_set(drmu_atomic_t * const da, drmu_conn_t * const dn, const char * colorspace)
++drmu_atomic_conn_colorspace_set(drmu_atomic_t * const da, drmu_conn_t * const dn, const drmu_colorspace_t colorspace)
 +{
 +    if (!dn->pid.colorspace)
 +        return 0;
@@ -18677,7 +18745,7 @@
 +}
 +
 +int
-+drmu_atomic_conn_broadcast_rgb_set(drmu_atomic_t * const da, drmu_conn_t * const dn, const char * bcrgb)
++drmu_atomic_conn_broadcast_rgb_set(drmu_atomic_t * const da, drmu_conn_t * const dn, const drmu_broadcast_rgb_t bcrgb)
 +{
 +    if (!dn->pid.broadcast_rgb)
 +        return 0;
@@ -20233,7 +20301,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu.h
-@@ -0,0 +1,577 @@
+@@ -0,0 +1,594 @@
 +#ifndef _DRMU_DRMU_H
 +#define _DRMU_DRMU_H
 +
@@ -20497,7 +20565,30 @@
 +// crop will be set to the whole active area
 +void drmu_fb_int_fmt_size_set(drmu_fb_t *const dfb, uint32_t fmt, uint32_t w, uint32_t h, const drmu_rect_t active);
 +// All assumed to be const strings that do not need freed
-+void drmu_fb_int_color_set(drmu_fb_t *const dfb, const char * const enc, const char * const range, const char * const space);
++typedef const char * drmu_color_encoding_t;
++#define DRMU_COLOR_ENCODING_UNSET               NULL
++#define DRMU_COLOR_ENCODING_BT2020              "ITU-R BT.2020 YCbCr"
++#define DRMU_COLOR_ENCODING_BT709               "ITU-R BT.709 YCbCr"
++#define DRMU_COLOR_ENCODING_BT601               "ITU-R BT.601 YCbCr"
++static inline bool drmu_color_encoding_is_set(const drmu_color_encoding_t x) {return x != NULL;}
++// Note: Color range only applies to YCbCr planes - ignored for RGB
++typedef const char * drmu_color_range_t;
++#define DRMU_COLOR_RANGE_UNSET                  NULL
++#define DRMU_COLOR_RANGE_YCBCR_FULL_RANGE       "YCbCr full range"
++#define DRMU_COLOR_RANGE_YCBCR_LIMITED_RANGE    "YCbCr limited range"
++static inline bool drmu_color_range_is_set(const drmu_color_range_t x) {return x != NULL;}
++typedef const char * drmu_colorspace_t;
++#define DRMU_COLORSPACE_UNSET                   NULL
++#define DRMU_COLORSPACE_DEFAULT                 "Default"
++#define DRMU_COLORSPACE_BT2020_RGB              "BT2020_RGB"
++static inline bool drmu_colorspace_is_set(const drmu_colorspace_t x) {return x != NULL;}
++typedef const char * drmu_broadcast_rgb_t;
++#define DRMU_BROADCAST_RGB_UNSET                NULL
++#define DRMU_BROADCAST_RGB_AUTOMATIC            "Automatic"
++#define DRMU_BROADCAST_RGB_FULL                 "Full"
++#define DRMU_BROADCAST_RGB_LIMITED_16_235       "Limited 16:235"
++static inline bool drmu_broadcast_rgb_is_set(const drmu_broadcast_rgb_t x) {return x != NULL;}
++void drmu_fb_int_color_set(drmu_fb_t *const dfb, const drmu_color_encoding_t enc, const drmu_color_range_t range, const drmu_colorspace_t space);
 +void drmu_fb_int_chroma_siting_set(drmu_fb_t *const dfb, const drmu_chroma_siting_t siting);
 +void drmu_fb_int_on_delete_set(drmu_fb_t *const dfb, drmu_fb_on_delete_fn fn, void * v);
 +void drmu_fb_int_bo_set(drmu_fb_t *const dfb, unsigned int i, drmu_bo_t * const bo);
@@ -20505,9 +20596,9 @@
 +void drmu_fb_int_layer_mod_set(drmu_fb_t *const dfb, unsigned int i, unsigned int obj_idx, uint32_t pitch, uint32_t offset, uint64_t modifier);
 +drmu_isset_t drmu_fb_hdr_metadata_isset(const drmu_fb_t *const dfb);
 +const struct hdr_output_metadata * drmu_fb_hdr_metadata_get(const drmu_fb_t *const dfb);
-+const char * drmu_color_range_to_broadcast_rgb(const char * const range);
-+const char * drmu_fb_colorspace_get(const drmu_fb_t * const dfb);
-+const char * drmu_fb_color_range_get(const drmu_fb_t * const dfb);
++drmu_broadcast_rgb_t drmu_color_range_to_broadcast_rgb(const drmu_color_range_t range);
++drmu_colorspace_t drmu_fb_colorspace_get(const drmu_fb_t * const dfb);
++drmu_color_range_t drmu_fb_color_range_get(const drmu_fb_t * const dfb);
 +const struct drmu_format_info_s * drmu_fb_format_info_get(const drmu_fb_t * const dfb);
 +void drmu_fb_hdr_metadata_set(drmu_fb_t *const dfb, const struct hdr_output_metadata * meta);
 +int drmu_fb_int_make(drmu_fb_t *const dfb);
@@ -20588,12 +20679,8 @@
 +// False set max_bpc to 8, true max value
 +int drmu_atomic_conn_hi_bpc_set(struct drmu_atomic_s * const da, drmu_conn_t * const dn, bool hi_bpc);
 +
-+#define DRMU_COLORSPACE_DEFAULT            "Default"
-+int drmu_atomic_conn_colorspace_set(struct drmu_atomic_s * const da, drmu_conn_t * const dn, const char * colorspace);
-+#define DRMU_BROADCAST_RGB_AUTOMATIC       "Automatic"
-+#define DRMU_BROADCAST_RGB_FULL            "Full"
-+#define DRMU_BROADCAST_RGB_LIMITED_16_235  "Limited 16:235"
-+int drmu_atomic_conn_broadcast_rgb_set(struct drmu_atomic_s * const da, drmu_conn_t * const dn, const char * bcrgb);
++int drmu_atomic_conn_colorspace_set(struct drmu_atomic_s * const da, drmu_conn_t * const dn, const drmu_colorspace_t colorspace);
++int drmu_atomic_conn_broadcast_rgb_set(struct drmu_atomic_s * const da, drmu_conn_t * const dn, const drmu_broadcast_rgb_t bcrgb);
 +
 +// Add crtc id
 +int drmu_atomic_conn_add_crtc(struct drmu_atomic_s * const da, drmu_conn_t * const dn, drmu_crtc_t * const dc);
@@ -20653,7 +20740,7 @@
 +#define DRMU_PLANE_ROTATION_180_TRANSPOSE       7  // Rotate 180 & transpose
 +int drmu_atomic_add_plane_rotation(struct drmu_atomic_s * const da, const drmu_plane_t * const dp, const int rot);
 +
-+// Init constants - C winges if the struct is specified in a cfeonst init (which seems like a silly error)
++// Init constants - C winges if the struct is specified in a const init (which seems like a silly error)
 +#define drmu_chroma_siting_float_i(_x, _y) {.x = (int32_t)((double)(_x) * 65536 + .5), .y = (int32_t)((double)(_y) * 65536 + .5)}
 +#define DRMU_CHROMA_SITING_BOTTOM_I             drmu_chroma_siting_float_i(0.5, 1.0)
 +#define DRMU_CHROMA_SITING_BOTTOM_LEFT_I        drmu_chroma_siting_float_i(0.0, 1.0)
@@ -20673,8 +20760,6 @@
 +#define DRMU_CHROMA_SITING_UNSPECIFIED          (drmu_chroma_siting_t){INT32_MIN, INT32_MIN}
 +int drmu_atomic_plane_add_chroma_siting(struct drmu_atomic_s * const da, const drmu_plane_t * const dp, const drmu_chroma_siting_t siting);
 +
-+#define DRMU_PLANE_RANGE_FULL                   "YCbCr full range"
-+#define DRMU_PLANE_RANGE_LIMITED                "YCbCr limited range"
 +int drmu_atomic_plane_fb_set(struct drmu_atomic_s * const da, drmu_plane_t * const dp, drmu_fb_t * const dfb, const drmu_rect_t pos);
 +
 +// Unref a plane
@@ -21703,7 +21788,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_output.c
-@@ -0,0 +1,570 @@
+@@ -0,0 +1,582 @@
 +#include "drmu_output.h"
 +#include "drmu_log.h"
 +
@@ -21733,8 +21818,8 @@
 +
 +    // These are expected to be static consts so no copy / no free
 +    const drmu_format_info_t * fmt_info;
-+    const char * colorspace;
-+    const char * broadcast_rgb;
++    drmu_colorspace_t colorspace;
++    drmu_broadcast_rgb_t broadcast_rgb;
 +
 +    // HDR metadata
 +    drmu_isset_t hdr_metadata_isset;
@@ -21779,9 +21864,9 @@
 +
 +        if (dout->fmt_info && dout->max_bpc_allow)
 +            rv = rvup(rv, drmu_atomic_conn_hi_bpc_set(da, dn, (drmu_format_info_bit_depth(dout->fmt_info) > 8)));
-+        if (dout->colorspace)
++        if (drmu_colorspace_is_set(dout->colorspace))
 +            rv = rvup(rv, drmu_atomic_conn_colorspace_set(da, dn, dout->colorspace));
-+        if (dout->broadcast_rgb)
++        if (drmu_broadcast_rgb_is_set(dout->broadcast_rgb))
 +            rv = rvup(rv, drmu_atomic_conn_broadcast_rgb_set(da, dn, dout->broadcast_rgb));
 +        if (dout->hdr_metadata_isset != DRMU_ISSET_UNSET)
 +            rv = rvup(rv, drmu_atomic_conn_hdr_metadata_set(da, dn,
@@ -21794,19 +21879,22 @@
 +// Set all the fb info props that might apply to a crtc on the crtc
 +// (e.g. hdr_metadata, colorspace) but do not set the mode (resolution
 +// and refresh)
++//
++// N.B. Only changes those props that are set in the fb. If unset in the fb
++// then their value is unchanged.
 +int
 +drmu_output_fb_info_set(drmu_output_t * const dout, const drmu_fb_t * const fb)
 +{
-+    drmu_isset_t hdr_isset = drmu_fb_hdr_metadata_isset(fb);
++    const drmu_isset_t hdr_isset = drmu_fb_hdr_metadata_isset(fb);
 +    const drmu_format_info_t * fmt_info = drmu_fb_format_info_get(fb);
-+    const char * colorspace             = drmu_fb_colorspace_get(fb);
-+    const char * broadcast_rgb          = drmu_color_range_to_broadcast_rgb(drmu_fb_color_range_get(fb));
++    const drmu_colorspace_t colorspace  = drmu_fb_colorspace_get(fb);
++    const drmu_broadcast_rgb_t broadcast_rgb = drmu_color_range_to_broadcast_rgb(drmu_fb_color_range_get(fb));
 +
 +    if (fmt_info)
 +        dout->fmt_info = fmt_info;
-+    if (colorspace)
++    if (drmu_colorspace_is_set(colorspace))
 +        dout->colorspace = colorspace;
-+    if (broadcast_rgb)
++    if (drmu_broadcast_rgb_is_set(broadcast_rgb))
 +        dout->broadcast_rgb = broadcast_rgb;
 +
 +    if (hdr_isset != DRMU_ISSET_UNSET) {
@@ -21816,6 +21904,15 @@
 +    }
 +
 +    return 0;
++}
++
++void
++drmu_output_fb_info_unset(drmu_output_t * const dout)
++{
++    dout->fmt_info = NULL;
++    dout->colorspace = DRMU_COLORSPACE_UNSET;
++    dout->broadcast_rgb = DRMU_BROADCAST_RGB_UNSET;
++    dout->hdr_metadata_isset = DRMU_ISSET_UNSET;
 +}
 +
 +
@@ -22276,7 +22373,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_output.h
-@@ -0,0 +1,72 @@
+@@ -0,0 +1,76 @@
 +#ifndef _DRMU_DRMU_OUTPUT_H
 +#define _DRMU_DRMU_OUTPUT_H
 +
@@ -22296,7 +22393,11 @@
 +int drmu_atomic_add_output_props(drmu_atomic_t * const da, drmu_output_t * const dout);
 +
 +// Set FB info (bit-depth, HDR metadata etc.)
++// Only sets properties that are set in the fb - retains previous value otherwise
 +int drmu_output_fb_info_set(drmu_output_t * const dout, const drmu_fb_t * const fb);
++// Unset all FB info
++// (set only sets stuff that is set in the fb, so will never clear anything)
++void drmu_output_fb_info_unset(drmu_output_t * const dout);
 +
 +// Set output mode
 +int drmu_output_mode_id_set(drmu_output_t * const dout, const int mode_id);
@@ -22512,7 +22613,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_vlc.c
-@@ -0,0 +1,527 @@
+@@ -0,0 +1,519 @@
 +#include "drmu_vlc.h"
 +#include "drmu_log.h"
 +
@@ -22746,35 +22847,35 @@
 +    return 0;
 +}
 +
-+static const char *
++static drmu_color_encoding_t
 +fb_vlc_color_encoding(const video_format_t * const fmt)
 +{
 +    switch (fmt->space)
 +    {
 +        case COLOR_SPACE_BT2020:
-+            return "ITU-R BT.2020 YCbCr";
++            return DRMU_COLOR_ENCODING_BT2020;
 +        case COLOR_SPACE_BT601:
-+            return "ITU-R BT.601 YCbCr";
++            return DRMU_COLOR_ENCODING_BT601;
 +        case COLOR_SPACE_BT709:
-+            return "ITU-R BT.709 YCbCr";
++            return DRMU_COLOR_ENCODING_BT709;
 +        case COLOR_SPACE_UNDEF:
 +        default:
 +            break;
 +    }
 +
 +    return (fmt->i_visible_width > 1024 || fmt->i_visible_height > 600) ?
-+        "ITU-R BT.709 YCbCr" :
-+        "ITU-R BT.601 YCbCr";
++        DRMU_COLOR_ENCODING_BT709 :
++        DRMU_COLOR_ENCODING_BT601;
 +}
 +
-+static const char *
++static drmu_color_range_t
 +fb_vlc_color_range(const video_format_t * const fmt)
 +{
 +#if HAS_VLC4
 +    switch (fmt->color_range)
 +    {
 +        case COLOR_RANGE_FULL:
-+            return "YCbCr full range";
++            return DRMU_COLOR_RANGE_YCBCR_FULL_RANGE;
 +        case COLOR_RANGE_UNDEF:
 +        case COLOR_RANGE_LIMITED:
 +        default:
@@ -22782,9 +22883,9 @@
 +    }
 +#else
 +    if (fmt->b_color_range_full)
-+        return "YCbCr full range";
++        return DRMU_COLOR_RANGE_YCBCR_FULL_RANGE;
 +#endif
-+    return "YCbCr limited range";
++    return DRMU_COLOR_RANGE_YCBCR_LIMITED_RANGE;
 +}
 +
 +
@@ -22793,11 +22894,11 @@
 +{
 +    switch (fmt->space) {
 +        case COLOR_SPACE_BT2020:
-+            return "BT2020_RGB";
++            return DRMU_COLORSPACE_BT2020_RGB;
 +        default:
 +            break;
 +    }
-+    return "Default";
++    return DRMU_COLORSPACE_DEFAULT;
 +}
 +
 +static drmu_chroma_siting_t
@@ -22821,6 +22922,21 @@
 +            break;
 +    }
 +    return DRMU_CHROMA_SITING_UNSPECIFIED;
++}
++
++void
++drmu_fb_vlc_pic_set_metadata(drmu_fb_t * const dfb, const picture_t * const pic)
++{
++    struct hdr_output_metadata meta;
++
++    drmu_fb_int_color_set(dfb,
++                          fb_vlc_color_encoding(&pic->format),
++                          fb_vlc_color_range(&pic->format),
++                          fb_vlc_colorspace(&pic->format));
++
++    drmu_fb_int_chroma_siting_set(dfb, fb_vlc_chroma_siting(&pic->format));
++
++    drmu_fb_hdr_metadata_set(dfb, pic_hdr_metadata(&meta, &pic->format) == 0 ? &meta : NULL);
 +}
 +
 +#if HAS_DRMPRIME
@@ -22854,12 +22970,6 @@
 +                             pic->format.i_height,
 +                             drmu_rect_vlc_pic_crop(pic));
 +
-+    drmu_fb_int_color_set(dfb,
-+                          fb_vlc_color_encoding(&pic->format),
-+                          fb_vlc_color_range(&pic->format),
-+                          fb_vlc_colorspace(&pic->format));
-+
-+    drmu_fb_int_chroma_siting_set(dfb, fb_vlc_chroma_siting(&pic->format));
 +
 +    // Set delete callback & hold this pic
 +    // Aux attached to dfb immediately so no fail cleanup required
@@ -22890,10 +23000,7 @@
 +        }
 +    }
 +
-+    {
-+        struct hdr_output_metadata meta;
-+        drmu_fb_hdr_metadata_set(dfb, pic_hdr_metadata(&meta, &pic->format) == 0 ? &meta : NULL);
-+    }
++    drmu_fb_vlc_pic_set_metadata(dfb, pic);
 +
 +    if (drmu_fb_int_make(dfb) != 0)
 +        goto fail;
@@ -22936,18 +23043,7 @@
 +                             fmt,
 +                             pic->format.i_width,
 +                             pic->format.i_height,
-+                             (drmu_rect_t){
-+                                 .x = pic->format.i_x_offset,
-+                                 .y = pic->format.i_y_offset,
-+                                 .w = pic->format.i_visible_width,
-+                                 .h = pic->format.i_visible_height});
-+
-+    drmu_fb_int_color_set(dfb,
-+                          fb_vlc_color_encoding(&pic->format),
-+                          fb_vlc_color_range(&pic->format),
-+                          fb_vlc_colorspace(&pic->format));
-+
-+    drmu_fb_int_chroma_siting_set(dfb, fb_vlc_chroma_siting(&pic->format));
++                             drmu_rect_vlc_pic_crop(pic));
 +
 +    // Set delete callback & hold this pic
 +    // Aux attached to dfb immediately so no fail cleanup required
@@ -22976,10 +23072,7 @@
 +        }
 +    }
 +
-+    {
-+        struct hdr_output_metadata meta;
-+        drmu_fb_hdr_metadata_set(dfb, pic_hdr_metadata(&meta, &pic->format) == 0 ? NULL : &meta);
-+    }
++    drmu_fb_vlc_pic_set_metadata(dfb, pic);
 +
 +    if (drmu_fb_int_make(dfb) != 0)
 +        goto fail;
@@ -23042,7 +23135,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_vlc.h
-@@ -0,0 +1,86 @@
+@@ -0,0 +1,89 @@
 +#ifndef _DRMU_DRMU_VLC_H
 +#define _DRMU_DRMU_VLC_H
 +
@@ -23119,6 +23212,9 @@
 +uint32_t drmu_format_vlc_to_drm_cma(const vlc_fourcc_t chroma_in);
 +drmu_fb_t * drmu_fb_vlc_new_pic_cma_attach(drmu_env_t * const du, picture_t * const pic);
 +#endif
++
++// Copy properties like colour_space, hdr_metadata into the fb
++void drmu_fb_vlc_pic_set_metadata(drmu_fb_t * const dfb, const picture_t * const pic);
 +
 +// Logging function callback for VLC
 +enum drmu_log_level_e;
@@ -23788,15 +23884,23 @@
      NULL,
  };
  
-@@ -537,6 +542,7 @@ static const vlc_fourcc_t p_list_YUV[] =
+@@ -537,6 +542,15 @@ static const vlc_fourcc_t p_list_YUV[] =
      VLC_CODEC_D3D9_OPAQUE_10B,
      VLC_CODEC_D3D11_OPAQUE,
      VLC_CODEC_D3D11_OPAQUE_10B,
++    VLC_CODEC_MMAL_OPAQUE,
++    VLC_CODEC_MMAL_ZC_SAND8,
++    VLC_CODEC_MMAL_ZC_SAND10,
++    VLC_CODEC_MMAL_ZC_SAND30,
++    VLC_CODEC_MMAL_ZC_I420,
++    VLC_CODEC_DRM_PRIME_I420,
++    VLC_CODEC_DRM_PRIME_NV12,
++    VLC_CODEC_DRM_PRIME_SAND8,
 +    VLC_CODEC_DRM_PRIME_SAND30,
      0,
  };
  
-@@ -755,11 +761,19 @@ static const struct
+@@ -755,11 +769,19 @@ static const struct
      { { VLC_CODEC_VDPAU_VIDEO_420, VLC_CODEC_VDPAU_VIDEO_422,
          VLC_CODEC_VDPAU_VIDEO_444, VLC_CODEC_VDPAU_OUTPUT },
                                                 FAKE_FMT() },
