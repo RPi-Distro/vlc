@@ -2,7 +2,7 @@
 exec python3 $(dirname $0)/filter-plugin.py <<EOF
 usr/lib/*/vlc/libvlc_vdpau.so*
 usr/lib/*/vlc/libvlc_xcb_events.so*
-usr/lib/*/vlc/plugins/vaapi/libvaapi_filters_plugin.so [libva]
+usr/lib/*/vlc/plugins/vaapi/libvaapi_filters_plugin.so
 usr/lib/*/vlc/plugins/vdpau
 usr/lib/*/vlc/plugins/video_output/libaa_plugin.so
 usr/lib/*/vlc/plugins/video_output/libcaca_plugin.so
@@ -10,9 +10,9 @@ usr/lib/*/vlc/plugins/video_output/libegl_wl_plugin.so [wayland]
 usr/lib/*/vlc/plugins/video_output/libegl_x11_plugin.so
 usr/lib/*/vlc/plugins/video_output/libflaschen_plugin.so
 usr/lib/*/vlc/plugins/video_output/libgl_plugin.so
-usr/lib/*/vlc/plugins/video_output/libglconv_vaapi_drm_plugin.so [libva]
-usr/lib/*/vlc/plugins/video_output/libglconv_vaapi_wl_plugin.so [libva,wayland]
-usr/lib/*/vlc/plugins/video_output/libglconv_vaapi_x11_plugin.so [libva]
+usr/lib/*/vlc/plugins/video_output/libglconv_vaapi_drm_plugin.so
+usr/lib/*/vlc/plugins/video_output/libglconv_vaapi_wl_plugin.so [wayland]
+usr/lib/*/vlc/plugins/video_output/libglconv_vaapi_x11_plugin.so
 usr/lib/*/vlc/plugins/video_output/libglconv_vdpau_plugin.so
 usr/lib/*/vlc/plugins/video_output/libgles2_plugin.so
 usr/lib/*/vlc/plugins/video_output/libglx_plugin.so

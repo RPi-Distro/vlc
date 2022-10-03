@@ -150,6 +150,8 @@ confflags += \
 	--disable-wasapi \
 	$(NULL)
 
+removeplugins += libva
+
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
 # V4L2 is disabled on kFreeBSD due to a build failure.
@@ -195,7 +197,6 @@ endif
 # Linux and kFreeBSD specific flags (disabled on Hurd)
 ifeq (,$(filter-out linux kfreebsd,$(DEB_HOST_ARCH_OS)))
 confflags += \
-	--enable-libva \
 	--enable-vcd \
 	--enable-smbclient \
 	$(NULL)
