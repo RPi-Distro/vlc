@@ -1,3 +1,11 @@
+vlc (3.0.17.4-5) unstable; urgency=medium
+
+  * debian/rules:
+    - Revert "Disable libva support"
+    - Do not pass any libva flags (Closes: #1021032) (LP: #1991457)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 03 Oct 2022 22:07:16 +0200
+
 vlc (3.0.17.4-4) unstable; urgency=medium
 
   * debian/control: Bump Standards-Version
