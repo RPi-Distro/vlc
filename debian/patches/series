@@ -1,5 +1,2 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
 0002-Do-not-generate-cache-during-build.patch
-0003-dav1d-fix-compilation-with-upcoming-dav1d-1.0.patch
-0004-dav1d-limit-the-number-of-extra-frames-needed-by-the.patch
-0005-caca-fix-to-newer-version.patch
