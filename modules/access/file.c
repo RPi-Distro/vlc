@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: 502b1f4aa483db41ac4a07ba6c238b1faf5c2f56 $
+ * $Id: 0bb9045acd33b178f9af4303bc58b65d8f848176 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont
@@ -74,7 +74,19 @@ struct access_sys_t
 #if !defined (_WIN32) && !defined (__OS2__)
 static bool IsRemote (int fd)
 {
-#if defined (HAVE_FSTATVFS) && defined (MNT_LOCAL)
+#if defined(__APPLE__)
+    /* This has to preceed the general fstatvfs implmentation below,
+     * as even though Darwin has fstatvfs, it does not expose the
+     * MNT_LOCAL in the statvfs.f_flag field.
+     */
+    struct statfs sfs;
+
+    if (fstatfs (fd, &sfs))
+        return false;
+
+    return !((sfs.f_flags & MNT_LOCAL) == MNT_LOCAL);
+
+#elif defined (HAVE_FSTATVFS) && defined (MNT_LOCAL)
     struct statvfs stf;
 
     if (fstatvfs (fd, &stf))

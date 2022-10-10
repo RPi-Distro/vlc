@@ -100,6 +100,7 @@ MPD * IsoffMainParser::parse()
         parseProgramInformation(DOMHelper::getFirstChildElementByName(root, "ProgramInformation"), mpd);
         parseMPDBaseUrl(mpd, root);
         parsePeriods(mpd, root);
+        mpd->addAttribute(new StartnumberAttr(1));
         mpd->debug();
     }
     return mpd;
@@ -436,7 +437,12 @@ size_t IsoffMainParser::parseSegmentList(MPD *mpd, Node * segListNode, SegmentIn
 
             parseAvailability<SegmentInformation>(mpd, segListNode, info);
 
-            uint64_t nzStartTime = 0;
+            uint64_t sequenceNumber = info->inheritStartNumber();
+            if(sequenceNumber == std::numeric_limits<uint64_t>::max())
+                sequenceNumber = 0;
+
+            const stime_t duration = list->inheritDuration();
+            stime_t nzStartTime = sequenceNumber * duration;
             std::vector<Node *>::const_iterator it;
             for(it = segments.begin(); it != segments.end(); ++it)
             {
@@ -457,20 +463,16 @@ size_t IsoffMainParser::parseSegmentList(MPD *mpd, Node * segListNode, SegmentIn
                     seg->setByteRange(atoi(range.substr(0, pos).c_str()), atoi(range.substr(pos + 1, range.size()).c_str()));
                 }
 
-                stime_t duration = list->inheritDuration();
-                if(duration)
-                {
-                    seg->startTime.Set(nzStartTime);
-                    seg->duration.Set(duration);
-                    nzStartTime += duration;
-                }
+                seg->startTime.Set(nzStartTime);
+                seg->duration.Set(duration);
+                nzStartTime += duration;
 
-                seg->setSequenceNumber(total);
+                seg->setSequenceNumber(sequenceNumber++);
 
                 list->addSegment(seg);
-                total++;
             }
 
+            total = list->getSegments().size();
             info->updateSegmentList(list, true);
         }
     }
@@ -505,6 +507,8 @@ void IsoffMainParser::parseTimeline(Node *node, AbstractMultipleSegmentBaseType 
         number = Integer<uint64_t>(node->getAttributeValue("startNumber"));
     else if(base->inheritStartNumber())
         number = base->inheritStartNumber();
+    if(number == std::numeric_limits<uint64_t>::max())
+        number = 1;
 
     SegmentTimeline *timeline = new (std::nothrow) SegmentTimeline(base);
     if(timeline)

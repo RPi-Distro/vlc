@@ -2,7 +2,7 @@
  * modules.c : Builtin and plugin modules management functions
  *****************************************************************************
  * Copyright (C) 2001-2011 VLC authors and VideoLAN
- * $Id: 3ad50fb39153f3257304f1bad35c172e4b6526a5 $
+ * $Id: 7d29370e4aea1f56b4c88a67cf4c82d054243db0 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -235,6 +235,7 @@ module_t *vlc_module_load(vlc_object_t *obj, const char *capability,
              capability, name, total);
     if (total <= 0)
     {
+        free(var);
         module_list_free (mods);
         msg_Dbg (obj, "no %s modules", capability);
         return NULL;

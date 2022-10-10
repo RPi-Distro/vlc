@@ -2,7 +2,7 @@
  * omxil.c: Video decoder module making use of OpenMAX IL components.
  *****************************************************************************
  * Copyright (C) 2010 VLC authors and VideoLAN
- * $Id: 663a61acc9466a5b2f71f81fe2de560f3291a51c $
+ * $Id: 0547beb2e10f766692978459048af9861580153f $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -34,9 +34,9 @@ extern OMX_ERRORTYPE (*pf_component_enum)(OMX_STRING, OMX_U32, OMX_U32);
 extern OMX_ERRORTYPE (*pf_get_roles_of_component)(OMX_STRING, OMX_U32 *, OMX_U8 **);
 
 /* Extra IOMX android functions. Can be NULL if we don't link with libiomx */
-OMX_ERRORTYPE (*pf_enable_graphic_buffers)(OMX_HANDLETYPE, OMX_U32, OMX_BOOL);
-OMX_ERRORTYPE (*pf_get_graphic_buffer_usage)(OMX_HANDLETYPE, OMX_U32, OMX_U32*);
-OMX_ERRORTYPE (*pf_get_hal_format) (const char *, int *);
+extern OMX_ERRORTYPE (*pf_enable_graphic_buffers)(OMX_HANDLETYPE, OMX_U32, OMX_BOOL);
+extern OMX_ERRORTYPE (*pf_get_graphic_buffer_usage)(OMX_HANDLETYPE, OMX_U32, OMX_U32*);
+extern OMX_ERRORTYPE (*pf_get_hal_format) (const char *, int *);
 
 int InitOmxCore(vlc_object_t *p_this);
 void DeinitOmxCore(void);

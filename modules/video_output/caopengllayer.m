@@ -2,7 +2,7 @@
  * caopengllayer.m: CAOpenGLLayer (Mac OS X) video output
  *****************************************************************************
  * Copyright (C) 2014-2017 VLC authors and VideoLAN
- * $Id: aef7b538f77fab601998bc0aaeda247cf000a04e $
+ * $Id: 71fc07e1d4fbd7ea9d7f762dfdf42dc4e40ddcd0 $
  *
  * Authors: David Fuhrmann <david dot fuhrmann at googlemail dot com>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -77,7 +77,6 @@ static int Control          (vout_display_t *vd, int query, va_list ap);
 }
 
 - (instancetype)initWithVoutDisplay:(vout_display_t *)vd;
-- (void)placePictureWithConfig:(const vout_display_cfg_t *)cfg;
 - (void)displayFromVout;
 - (void)reportCurrentLayerSize;
 - (void)reportCurrentLayerSizeWithScale:(CGFloat)scale;
@@ -117,6 +116,7 @@ struct vout_display_sys_t {
     vout_display_opengl_t *vgl;
 
     vout_display_place_t place;
+    vout_display_cfg_t cfg;
 
     atomic_bool is_ready;
 };
@@ -335,6 +335,13 @@ static int Open(vlc_object_t *this)
         var_SetAddress(vd->obj.parent, "macosx-glcontext", cgl_ctx);
 
         dispatch_sync(dispatch_get_main_queue(), ^{
+            // Reverse vertical alignment as the GL tex are Y inverted
+           sys->cfg = *vd->cfg;
+           if (sys->cfg.align.vertical == VOUT_DISPLAY_ALIGN_TOP)
+               sys->cfg.align.vertical = VOUT_DISPLAY_ALIGN_BOTTOM;
+           else if (sys->cfg.align.vertical == VOUT_DISPLAY_ALIGN_BOTTOM)
+               sys->cfg.align.vertical = VOUT_DISPLAY_ALIGN_TOP;
+
             // Create video view
             sys->videoView = [[VLCVideoLayerView alloc] initWithVoutDisplay:vd];
             sys->videoLayer = (VLCCAOpenGLLayer*)[[sys->videoView layer] retain];
@@ -352,6 +359,8 @@ static int Open(vlc_object_t *this)
                 sys->videoView = nil;
                 sys->videoLayer = nil;
             }
+
+            vout_display_PlacePicture(&sys->place, &vd->source, &sys->cfg, false);
         });
 
         if (sys->videoView == nil) {
@@ -487,21 +496,36 @@ static int Control(vout_display_t *vd, int query, va_list ap)
     switch (query)
     {
         case VOUT_DISPLAY_CHANGE_DISPLAY_SIZE:
+            return VLC_SUCCESS;
+
         case VOUT_DISPLAY_CHANGE_DISPLAY_FILLED:
         case VOUT_DISPLAY_CHANGE_ZOOM:
         case VOUT_DISPLAY_CHANGE_SOURCE_ASPECT:
         case VOUT_DISPLAY_CHANGE_SOURCE_CROP:
         {
-            const vout_display_cfg_t *cfg;
+            @synchronized(sys->videoLayer)
+            {
+                vout_display_cfg_t cfg;
 
-            if (query == VOUT_DISPLAY_CHANGE_SOURCE_ASPECT ||
-                query == VOUT_DISPLAY_CHANGE_SOURCE_CROP) {
-                cfg = vd->cfg;
-            } else {
-                cfg = (const vout_display_cfg_t*)va_arg (ap, const vout_display_cfg_t *);
+                if (query == VOUT_DISPLAY_CHANGE_SOURCE_ASPECT ||
+                    query == VOUT_DISPLAY_CHANGE_SOURCE_CROP) {
+                    cfg = *vd->cfg;
+                } else {
+                    cfg = *(const vout_display_cfg_t*)va_arg (ap, const vout_display_cfg_t *);
+                }
+
+                cfg.display.width = sys->cfg.display.width;
+                cfg.display.height = sys->cfg.display.height;
+
+                // Reverse vertical alignment as the GL tex are Y inverted
+                if (cfg.align.vertical == VOUT_DISPLAY_ALIGN_TOP)
+                    cfg.align.vertical = VOUT_DISPLAY_ALIGN_BOTTOM;
+                else if (cfg.align.vertical == VOUT_DISPLAY_ALIGN_BOTTOM)
+                    cfg.align.vertical = VOUT_DISPLAY_ALIGN_TOP;
+                sys->cfg = cfg;
+
+                vout_display_PlacePicture(&sys->place, &vd->source, &cfg, false);
             }
-
-            [sys->videoLayer placePictureWithConfig:cfg];
 
             // Note!
             // No viewport or aspect ratio is set here, as that needs to be set
@@ -784,25 +808,6 @@ shouldInheritContentsScale:(CGFloat)newScale
     [super dealloc];
 }
 
-- (void)placePictureWithConfig:(const vout_display_cfg_t *)cfg
-{
-    vout_display_sys_t *sys = _voutDisplay->sys;
-    vout_display_cfg_t tmp_cfg = *cfg;
-
-    // Reverse vertical alignment as the GL tex are Y inverted
-    if (tmp_cfg.align.vertical == VOUT_DISPLAY_ALIGN_TOP)
-        tmp_cfg.align.vertical = VOUT_DISPLAY_ALIGN_BOTTOM;
-    else if (tmp_cfg.align.vertical == VOUT_DISPLAY_ALIGN_BOTTOM)
-        tmp_cfg.align.vertical = VOUT_DISPLAY_ALIGN_TOP;
-
-    // Synchronization not for _voutDisplay but for sys->place
-    // as this method can be called either from the Control()
-    // function or the layer draw method.
-    @synchronized(self) {
-        vout_display_PlacePicture(&sys->place, &_voutDisplay->source, &tmp_cfg, false);
-    }
-}
-
 - (void)layoutSublayers
 {
     [super layoutSublayers];
@@ -831,8 +836,11 @@ shouldInheritContentsScale:(CGFloat)newScale
         if (!_voutDisplay)
             return;
 
-        vout_display_SendEventDisplaySize(_voutDisplay,
-                                          newSize.width, newSize.height);
+        vout_display_sys_t *sys = _voutDisplay->sys;
+        @synchronized(sys->videoLayer) {
+            sys->cfg.display.width = newSize.width;
+            sys->cfg.display.height = newSize.height;
+        }
     }
 }
 
@@ -894,24 +902,23 @@ shouldInheritContentsScale:(CGFloat)newScale
         if (vlc_gl_MakeCurrent(sys->gl))
             return;
 
-        if (self.asynchronous) {
-            GLint dims[4] = { 0, 0, 0, 0 };
-            glGetIntegerv(GL_VIEWPORT, dims);
-            NSSize newSize = NSMakeSize(dims[2], dims[3]);
+        GLint dims[4] = { 0, 0, 0, 0 };
+        glGetIntegerv(GL_VIEWPORT, dims);
+        NSSize newSize = NSMakeSize(dims[2], dims[3]);
 
-            if (NSEqualSizes(newSize, NSZeroSize)) {
-                newSize = self.bounds.size;
-                CGFloat scale = self.contentsScale;
-                newSize.width *= scale;
-                newSize.height *= scale;
-            }
+        if (NSEqualSizes(newSize, NSZeroSize)) {
+            newSize = self.bounds.size;
+            CGFloat scale = self.contentsScale;
+            newSize.width *= scale;
+            newSize.height *= scale;
+        }
 
-            vout_display_cfg_t cfg = *_voutDisplay->cfg;
+        @synchronized(sys->videoView)
+        {
+            sys->cfg.display.width = newSize.width;
+            sys->cfg.display.height = newSize.height;
 
-            cfg.display.width = newSize.width;
-            cfg.display.height = newSize.height;
-
-            [self placePictureWithConfig:&cfg];
+            vout_display_PlacePicture(&sys->place, &_voutDisplay->source, &sys->cfg, false);
         }
 
         // Ensure viewport and aspect ratio is correct

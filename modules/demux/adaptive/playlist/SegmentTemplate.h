@@ -2,7 +2,7 @@
  * SegmentTemplate.cpp: Implement the UrlTemplate element.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: a5a7daa7b19798d7481b6c2419c44da32b400808 $
+ * $Id: 2ebdf1fe3a0cbf529303ac46ecd3b1dde2305f95 $
  *
  * Authors: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
  *
@@ -71,6 +71,10 @@ namespace adaptive
                 virtual void debug(vlc_object_t *, int = 0) const override;
 
             protected:
+                bool getScaledPlaybackTimeDurationBySegmentNumber(uint64_t, stime_t *,
+                                                                  stime_t *, Timescale *) const;
+                void setVirtualSegmentTime(uint64_t pos,
+                                           SegmentTemplateSegment *virtualsegment) const;
                 SegmentInformation *parentSegmentInformation;
                 SegmentTemplateSegment *virtualsegment;
         };

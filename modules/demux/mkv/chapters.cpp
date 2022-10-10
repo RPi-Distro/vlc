@@ -2,7 +2,7 @@
  * chapters.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 1242908941cd71639fc0bc8e217720e47df1d9cf $
+ * $Id: adb7b88877881353b8d15c05ae116b7335f36f4b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -146,13 +146,14 @@ bool chapter_item_c::EnterLeaveHelper_ ( bool do_subs,
     bool f_result = false;
 
     f_result |= std::count_if ( codecs.begin (), codecs.end (),
-      std::mem_fun (co_cb)
+      std::mem_fn (co_cb)
     );
 
     if ( do_subs )
     {
+        using std::placeholders::_1;
         f_result |= count_if ( sub_chapters.begin (), sub_chapters.end (),
-          std::bind2nd( std::mem_fun( ch_cb ), true )
+          std::bind( std::mem_fn( ch_cb ), _1, true )
         );
     }
 

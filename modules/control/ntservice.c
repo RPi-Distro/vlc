@@ -2,7 +2,7 @@
  * ntservice.c: Windows NT/2K/XP service interface
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 7b20bd579746db75899234016c5de1d2308c6f16 $
+ * $Id: d8a992bf269d7dfc2aa21fca0a9309c1caae11f9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -142,7 +142,7 @@ static void *Run( void *data )
     intf_thread_t *p_intf = data;
     SERVICE_TABLE_ENTRY dispatchTable[] =
     {
-        { TEXT(VLCSERVICENAME), &ServiceDispatch },
+        { (WCHAR*) TEXT(VLCSERVICENAME), (LPSERVICE_MAIN_FUNCTION) &ServiceDispatch },
         { NULL, NULL }
     };
 

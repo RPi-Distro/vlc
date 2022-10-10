@@ -78,10 +78,8 @@ vlc_module_begin ()
 
     add_bool("direct3d11-hw-blending", true, HW_BLENDING_TEXT, HW_BLENDING_LONGTEXT, true)
 
-#if VLC_WINSTORE_APP
     add_integer("winrt-d3dcontext",    0x0, NULL, NULL, true) /* ID3D11DeviceContext* */
     add_integer("winrt-swapchain",     0x0, NULL, NULL, true) /* IDXGISwapChain1*     */
-#endif
 
     set_capability("vout display", 300)
     add_shortcut("direct3d11")
@@ -141,7 +139,7 @@ static void Display(vout_display_t *, picture_t *, subpicture_t *subpicture);
 
 static void Direct3D11Destroy(vout_display_t *);
 
-static int  Direct3D11Open (vout_display_t *);
+static int  Direct3D11Open (vout_display_t *, bool external_device);
 static void Direct3D11Close(vout_display_t *);
 
 static int SetupOutputFormat(vout_display_t *, video_format_t *);
@@ -192,46 +190,6 @@ static void Direct3D11UnmapPoolTexture(picture_t *picture)
     ID3D11DeviceContext_Unmap(p_sys->context, p_sys->resource[KNOWN_DXGI_INDEX], 0);
 }
 
-#if !VLC_WINSTORE_APP
-static int OpenHwnd(vout_display_t *vd)
-{
-    vout_display_sys_t *sys = vd->sys = calloc(1, sizeof(vout_display_sys_t));
-    if (!sys)
-        return VLC_ENOMEM;
-
-    return D3D11_Create(vd, &sys->hd3d, true);
-}
-#else
-static int OpenCoreW(vout_display_t *vd)
-{
-    IDXGISwapChain1* dxgiswapChain  = var_InheritInteger(vd, "winrt-swapchain");
-    if (!dxgiswapChain)
-        return VLC_EGENERIC;
-    ID3D11DeviceContext* d3dcontext = var_InheritInteger(vd, "winrt-d3dcontext");
-    if (!d3dcontext)
-        return VLC_EGENERIC;
-    ID3D11Device* d3ddevice = NULL;
-    ID3D11DeviceContext_GetDevice(d3dcontext, &d3ddevice);
-    if (!d3ddevice)
-        return VLC_EGENERIC;
-
-    vout_display_sys_t *sys = vd->sys = calloc(1, sizeof(vout_display_sys_t));
-    if (!sys)
-        return VLC_ENOMEM;
-
-    sys->dxgiswapChain = dxgiswapChain;
-    sys->d3d_dev.d3ddevice     = d3ddevice;
-    sys->d3d_dev.d3dcontext    = d3dcontext;
-    sys->d3d_dev.feature_level = ID3D11Device_GetFeatureLevel(sys->d3d_dev.d3ddevice );
-    IDXGISwapChain_AddRef     (sys->dxgiswapChain);
-    ID3D11Device_AddRef       (sys->d3d_dev.d3ddevice);
-    ID3D11DeviceContext_AddRef(sys->d3d_dev.d3dcontext);
-
-    return VLC_SUCCESS;
-}
-#endif
-
-#if VLC_WINSTORE_APP
 static bool GetRect(const vout_display_sys_win32_t *p_sys, RECT *out)
 {
     const vout_display_sys_t *sys = (const vout_display_sys_t *)p_sys;
@@ -253,7 +211,33 @@ static bool GetRect(const vout_display_sys_win32_t *p_sys, RECT *out)
     out->bottom = i_height;
     return true;
 }
-#endif
+
+static int OpenCoreW(vout_display_t *vd)
+{
+    IDXGISwapChain1* dxgiswapChain  = (void*)var_InheritInteger(vd, "winrt-swapchain");
+    if (!dxgiswapChain)
+        return VLC_EGENERIC;
+    ID3D11DeviceContext* d3dcontext = (void*)var_InheritInteger(vd, "winrt-d3dcontext");
+    if (!d3dcontext)
+        return VLC_EGENERIC;
+    ID3D11Device* d3ddevice = NULL;
+    ID3D11DeviceContext_GetDevice(d3dcontext, &d3ddevice);
+    if (!d3ddevice)
+        return VLC_EGENERIC;
+
+    vout_display_sys_t *sys = vd->sys;
+    sys->dxgiswapChain = dxgiswapChain;
+    sys->d3d_dev.d3ddevice     = d3ddevice;
+    sys->d3d_dev.d3dcontext    = d3dcontext;
+    sys->d3d_dev.feature_level = ID3D11Device_GetFeatureLevel(sys->d3d_dev.d3ddevice );
+    IDXGISwapChain_AddRef     (sys->dxgiswapChain);
+    ID3D11Device_AddRef       (sys->d3d_dev.d3ddevice);
+    ID3D11DeviceContext_AddRef(sys->d3d_dev.d3dcontext);
+
+    sys->sys.pf_GetRect = GetRect;
+
+    return VLC_SUCCESS;
+}
 
 static unsigned int GetPictureWidth(const vout_display_t *vd)
 {
@@ -282,31 +266,34 @@ static int Open(vlc_object_t *object)
     }
 #endif
 
-#if !VLC_WINSTORE_APP
-    int ret = OpenHwnd(vd);
-#else
-    int ret = OpenCoreW(vd);
-#endif
-
-    if (ret != VLC_SUCCESS)
-        return ret;
-
-    if (CommonInit(vd))
+    vout_display_sys_t *sys = vd->sys = calloc(1, sizeof(vout_display_sys_t));
+    if (unlikely(sys == NULL))
+        return VLC_ENOMEM;
+    int ret = D3D11_Create(vd, &sys->hd3d, true);
+    if (unlikely(ret != VLC_SUCCESS))
         goto error;
 
+    ret = OpenCoreW(vd);
+    bool external_device = ret == VLC_SUCCESS;
 #if VLC_WINSTORE_APP
-    vd->sys->sys.pf_GetRect = GetRect;
+    if (!external_device)
+        return ret;
 #endif
+
+    if (!external_device && CommonInit(vd) != VLC_SUCCESS)
+        goto error;
+
     vd->sys->sys.pf_GetPictureWidth  = GetPictureWidth;
     vd->sys->sys.pf_GetPictureHeight = GetPictureHeight;
 
-    if (Direct3D11Open(vd)) {
+    if (Direct3D11Open(vd, external_device)) {
         msg_Err(vd, "Direct3D11 could not be opened");
         goto error;
     }
 
 #if !VLC_WINSTORE_APP
-    EventThreadUpdateTitle(vd->sys->sys.event, VOUT_TITLE " (Direct3D11 output)");
+    if (!external_device)
+        EventThreadUpdateTitle(vd->sys->sys.event, VOUT_TITLE " (Direct3D11 output)");
 #endif
     msg_Dbg(vd, "Direct3D11 device adapter successfully initialized");
 
@@ -554,9 +541,7 @@ static HRESULT UpdateBackBuffer(vout_display_t *vd)
     ID3D11Texture2D* pDepthStencil;
     ID3D11Texture2D* pBackBuffer;
     RECT rect;
-#if VLC_WINSTORE_APP
-    if (!GetRect(&sys->sys, &rect))
-#endif
+    if (sys->sys.pf_GetRect != GetRect || !sys->sys.pf_GetRect(&sys->sys, &rect))
         rect = sys->sys.rect_dest_clipped;
     uint32_t i_width = RECTWidth(rect);
     uint32_t i_height = RECTHeight(rect);
@@ -1268,53 +1253,56 @@ static const d3d_format_t *GetBlendableFormat(vout_display_t *vd, vlc_fourcc_t i
     return FindD3D11Format( vd, &vd->sys->d3d_dev, i_src_chroma, false, 0, 0, 0, false, supportFlags );
 }
 
-static int Direct3D11Open(vout_display_t *vd)
+static int Direct3D11Open(vout_display_t *vd, bool external_device)
 {
     vout_display_sys_t *sys = vd->sys;
     IDXGIFactory2 *dxgifactory;
 
-#if !VLC_WINSTORE_APP
-    HRESULT hr = S_OK;
-
-    DXGI_SWAP_CHAIN_DESC1 scd;
-    FillSwapChainDesc(vd, &scd);
-
-    hr = D3D11_CreateDevice(vd, &sys->hd3d,
-                            is_d3d11_opaque(vd->source.i_chroma),
-                            &sys->d3d_dev);
-    if (FAILED(hr)) {
-       msg_Err(vd, "Could not Create the D3D11 device. (hr=0x%lX)", hr);
-       return VLC_EGENERIC;
-    }
-
-    IDXGIAdapter *dxgiadapter = D3D11DeviceAdapter(sys->d3d_dev.d3ddevice);
-    if (unlikely(dxgiadapter==NULL)) {
-       msg_Err(vd, "Could not get the DXGI Adapter");
-       return VLC_EGENERIC;
-    }
-
-    hr = IDXGIAdapter_GetParent(dxgiadapter, &IID_IDXGIFactory2, (void **)&dxgifactory);
-    IDXGIAdapter_Release(dxgiadapter);
-    if (FAILED(hr)) {
-       msg_Err(vd, "Could not get the DXGI Factory. (hr=0x%lX)", hr);
-       return VLC_EGENERIC;
-    }
-
-    hr = IDXGIFactory2_CreateSwapChainForHwnd(dxgifactory, (IUnknown *)sys->d3d_dev.d3ddevice,
-                                              sys->sys.hvideownd, &scd, NULL, NULL, &sys->dxgiswapChain);
-    if (hr == DXGI_ERROR_INVALID_CALL && scd.Format == DXGI_FORMAT_R10G10B10A2_UNORM)
+    if (!external_device)
     {
-        msg_Warn(vd, "10 bits swapchain failed, try 8 bits");
-        scd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+#if !VLC_WINSTORE_APP
+        HRESULT hr = S_OK;
+
+        DXGI_SWAP_CHAIN_DESC1 scd;
+        FillSwapChainDesc(vd, &scd);
+
+        hr = D3D11_CreateDevice(vd, &sys->hd3d,
+                                is_d3d11_opaque(vd->source.i_chroma),
+                                &sys->d3d_dev);
+        if (FAILED(hr)) {
+        msg_Err(vd, "Could not Create the D3D11 device. (hr=0x%lX)", hr);
+        return VLC_EGENERIC;
+        }
+
+        IDXGIAdapter *dxgiadapter = D3D11DeviceAdapter(sys->d3d_dev.d3ddevice);
+        if (unlikely(dxgiadapter==NULL)) {
+        msg_Err(vd, "Could not get the DXGI Adapter");
+        return VLC_EGENERIC;
+        }
+
+        hr = IDXGIAdapter_GetParent(dxgiadapter, &IID_IDXGIFactory2, (void **)&dxgifactory);
+        IDXGIAdapter_Release(dxgiadapter);
+        if (FAILED(hr)) {
+        msg_Err(vd, "Could not get the DXGI Factory. (hr=0x%lX)", hr);
+        return VLC_EGENERIC;
+        }
+
         hr = IDXGIFactory2_CreateSwapChainForHwnd(dxgifactory, (IUnknown *)sys->d3d_dev.d3ddevice,
-                                                  sys->sys.hvideownd, &scd, NULL, NULL, &sys->dxgiswapChain);
-    }
-    IDXGIFactory2_Release(dxgifactory);
-    if (FAILED(hr)) {
-       msg_Err(vd, "Could not create the SwapChain. (hr=0x%lX)", hr);
-       return VLC_EGENERIC;
-    }
+                                                sys->sys.hvideownd, &scd, NULL, NULL, &sys->dxgiswapChain);
+        if (hr == DXGI_ERROR_INVALID_CALL && scd.Format == DXGI_FORMAT_R10G10B10A2_UNORM)
+        {
+            msg_Warn(vd, "10 bits swapchain failed, try 8 bits");
+            scd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+            hr = IDXGIFactory2_CreateSwapChainForHwnd(dxgifactory, (IUnknown *)sys->d3d_dev.d3ddevice,
+                                                    sys->sys.hvideownd, &scd, NULL, NULL, &sys->dxgiswapChain);
+        }
+        IDXGIFactory2_Release(dxgifactory);
+        if (FAILED(hr)) {
+        msg_Err(vd, "Could not create the SwapChain. (hr=0x%lX)", hr);
+        return VLC_EGENERIC;
+        }
 #endif
+    }
 
     IDXGISwapChain_QueryInterface( sys->dxgiswapChain, &IID_IDXGISwapChain4, (void **)&sys->dxgiswapChain4);
 

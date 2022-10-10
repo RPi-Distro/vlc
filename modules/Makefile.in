@@ -421,86 +421,87 @@ TESTS = hpack_test$(EXEEXT) hpackenc_test$(EXEEXT) \
 @HAVE_NEON_TRUE@am__append_205 = -DCAN_COMPILE_ARM
 @HAVE_ARM64_TRUE@am__append_206 = video_filter/deinterlace/merge_arm64.S
 @HAVE_ARM64_TRUE@am__append_207 = -DCAN_COMPILE_ARM64
-@HAVE_WIN32_DESKTOP_TRUE@am__append_208 = libpanoramix_plugin.la
-@HAVE_WIN32_DESKTOP_FALSE@@HAVE_XCB_RANDR_TRUE@am__append_209 = $(XCB_RANDR_CFLAGS) $(XCB_CFLAGS)
-@HAVE_WIN32_DESKTOP_FALSE@@HAVE_XCB_RANDR_TRUE@am__append_210 = $(XCB_RANDR_LIBS) $(XCB_LIBS)
-@HAVE_WIN32_DESKTOP_FALSE@@HAVE_XCB_RANDR_TRUE@am__append_211 = libpanoramix_plugin.la
-@HAVE_DECKLINK_TRUE@am__append_212 = libdecklinkoutput_plugin.la
-@HAVE_OSX_TRUE@am__append_213 = codec/vt_utils.c codec/vt_utils.h
-@HAVE_OSX_TRUE@am__append_214 = -Wl,-framework,IOSurface \
+@HAVE_ALTIVEC_TRUE@am__append_208 = -DCAN_COMPILE_C_ALTIVEC
+@HAVE_WIN32_DESKTOP_TRUE@am__append_209 = libpanoramix_plugin.la
+@HAVE_WIN32_DESKTOP_FALSE@@HAVE_XCB_RANDR_TRUE@am__append_210 = $(XCB_RANDR_CFLAGS) $(XCB_CFLAGS)
+@HAVE_WIN32_DESKTOP_FALSE@@HAVE_XCB_RANDR_TRUE@am__append_211 = $(XCB_RANDR_LIBS) $(XCB_LIBS)
+@HAVE_WIN32_DESKTOP_FALSE@@HAVE_XCB_RANDR_TRUE@am__append_212 = libpanoramix_plugin.la
+@HAVE_DECKLINK_TRUE@am__append_213 = libdecklinkoutput_plugin.la
+@HAVE_OSX_TRUE@am__append_214 = codec/vt_utils.c codec/vt_utils.h
+@HAVE_OSX_TRUE@am__append_215 = -Wl,-framework,IOSurface \
 @HAVE_OSX_TRUE@	-Wl,-framework,Foundation,-framework,CoreVideo,-framework,OpenGL
 
-@HAVE_OSX_TRUE@am__append_215 = libvout_macosx_plugin.la libcaopengllayer_plugin.la \
+@HAVE_OSX_TRUE@am__append_216 = libvout_macosx_plugin.la libcaopengllayer_plugin.la \
 @HAVE_OSX_TRUE@	libglconv_cvpx_plugin.la
 
-@HAVE_IOS_TRUE@am__append_216 = libvout_ios_plugin.la libglconv_cvpx_plugin.la
-@HAVE_TVOS_TRUE@am__append_217 = libvout_ios_plugin.la libglconv_cvpx_plugin.la
-@HAVE_WIN32_TRUE@am__append_218 = -DHAVE_GL_CORE_SYMBOLS
-@HAVE_WIN32_TRUE@am__append_219 = $(GL_LIBS)
-@HAVE_GL_TRUE@am__append_220 = libgl_plugin.la
-@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_TRUE@@HAVE_VAAPI_WL_TRUE@@HAVE_WAYLAND_EGL_TRUE@am__append_221 = libglconv_vaapi_wl_plugin.la
-@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_TRUE@@HAVE_VAAPI_X11_TRUE@@HAVE_XCB_TRUE@am__append_222 = libglconv_vaapi_x11_plugin.la
-@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_DRM_TRUE@@HAVE_VAAPI_TRUE@am__append_223 = libglconv_vaapi_drm_plugin.la
-@HAVE_GL_TRUE@@HAVE_VDPAU_TRUE@am__append_224 = libglconv_vdpau_plugin.la
-@HAVE_XCB_TRUE@am__append_225 = libvlc_xcb_events.la
-@HAVE_XCB_TRUE@am__append_226 = libxcb_x11_plugin.la libxcb_window_plugin.la
-@HAVE_XCB_KEYSYMS_TRUE@@HAVE_XCB_TRUE@am__append_227 = -DHAVE_XCB_KEYSYMS
-@HAVE_XCB_TRUE@@HAVE_XCB_XVIDEO_TRUE@am__append_228 = libxcb_xv_plugin.la
-@HAVE_EGL_TRUE@@HAVE_XCB_TRUE@am__append_229 = libegl_x11_plugin.la
-@HAVE_GL_TRUE@@HAVE_XCB_TRUE@am__append_230 = libglx_plugin.la
-@HAVE_WAYLAND_TRUE@am__append_231 =  \
+@HAVE_IOS_TRUE@am__append_217 = libvout_ios_plugin.la libglconv_cvpx_plugin.la
+@HAVE_TVOS_TRUE@am__append_218 = libvout_ios_plugin.la libglconv_cvpx_plugin.la
+@HAVE_WIN32_TRUE@am__append_219 = -DHAVE_GL_CORE_SYMBOLS
+@HAVE_WIN32_TRUE@am__append_220 = $(GL_LIBS)
+@HAVE_GL_TRUE@am__append_221 = libgl_plugin.la
+@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_TRUE@@HAVE_VAAPI_WL_TRUE@@HAVE_WAYLAND_EGL_TRUE@am__append_222 = libglconv_vaapi_wl_plugin.la
+@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_TRUE@@HAVE_VAAPI_X11_TRUE@@HAVE_XCB_TRUE@am__append_223 = libglconv_vaapi_x11_plugin.la
+@HAVE_EGL_TRUE@@HAVE_GL_TRUE@@HAVE_VAAPI_DRM_TRUE@@HAVE_VAAPI_TRUE@am__append_224 = libglconv_vaapi_drm_plugin.la
+@HAVE_GL_TRUE@@HAVE_VDPAU_TRUE@am__append_225 = libglconv_vdpau_plugin.la
+@HAVE_XCB_TRUE@am__append_226 = libvlc_xcb_events.la
+@HAVE_XCB_TRUE@am__append_227 = libxcb_x11_plugin.la libxcb_window_plugin.la
+@HAVE_XCB_KEYSYMS_TRUE@@HAVE_XCB_TRUE@am__append_228 = -DHAVE_XCB_KEYSYMS
+@HAVE_XCB_TRUE@@HAVE_XCB_XVIDEO_TRUE@am__append_229 = libxcb_xv_plugin.la
+@HAVE_EGL_TRUE@@HAVE_XCB_TRUE@am__append_230 = libegl_x11_plugin.la
+@HAVE_GL_TRUE@@HAVE_XCB_TRUE@am__append_231 = libglx_plugin.la
+@HAVE_WAYLAND_TRUE@am__append_232 =  \
 @HAVE_WAYLAND_TRUE@	$(nodist_libwl_shm_plugin_la_SOURCES) \
 @HAVE_WAYLAND_TRUE@	$(nodist_libxdg_shell_plugin_la_SOURCES)
-@HAVE_WAYLAND_TRUE@am__append_232 = libwl_shm_plugin.la \
+@HAVE_WAYLAND_TRUE@am__append_233 = libwl_shm_plugin.la \
 @HAVE_WAYLAND_TRUE@	libwl_shell_plugin.la \
 @HAVE_WAYLAND_TRUE@	libxdg_shell_plugin.la
-@HAVE_EGL_TRUE@@HAVE_WAYLAND_EGL_TRUE@@HAVE_WAYLAND_TRUE@am__append_233 = libegl_wl_plugin.la
-@HAVE_WIN32_DESKTOP_TRUE@am__append_234 = $(LTLIBdirect3d9)
-@HAVE_WIN32_DESKTOP_TRUE@am__append_235 = libdirect3d9_plugin.la
-@HAVE_WINSTORE_FALSE@am__append_236 = video_output/win32/events.c \
+@HAVE_EGL_TRUE@@HAVE_WAYLAND_EGL_TRUE@@HAVE_WAYLAND_TRUE@am__append_234 = libegl_wl_plugin.la
+@HAVE_WIN32_DESKTOP_TRUE@am__append_235 = $(LTLIBdirect3d9)
+@HAVE_WIN32_DESKTOP_TRUE@am__append_236 = libdirect3d9_plugin.la
+@HAVE_WINSTORE_FALSE@am__append_237 = video_output/win32/events.c \
 @HAVE_WINSTORE_FALSE@ video_output/win32/events.h \
 @HAVE_WINSTORE_FALSE@ video_output/win32/sensors.cpp \
 @HAVE_WINSTORE_FALSE@ video_output/win32/win32touch.c video_output/win32/win32touch.h
 
-@HAVE_WINSTORE_FALSE@am__append_237 = -lgdi32
-@HAVE_WINSTORE_TRUE@am__append_238 = -ld3d11 -ld3dcompiler_47
-@HAVE_WIN32_DESKTOP_TRUE@am__append_239 = $(LTLIBdirectdraw) \
+@HAVE_WINSTORE_FALSE@am__append_238 = -lgdi32
+@HAVE_WINSTORE_TRUE@am__append_239 = -ld3d11 -ld3dcompiler_47
+@HAVE_WIN32_DESKTOP_TRUE@am__append_240 = $(LTLIBdirectdraw) \
 @HAVE_WIN32_DESKTOP_TRUE@	$(LTLIBglwin32) $(LTLIBwgl) \
 @HAVE_WIN32_DESKTOP_TRUE@	libwingdi_plugin.la \
 @HAVE_WIN32_DESKTOP_TRUE@	libwinhibit_plugin.la
-@HAVE_WIN32_DESKTOP_TRUE@am__append_240 = libdirectdraw_plugin.la \
+@HAVE_WIN32_DESKTOP_TRUE@am__append_241 = libdirectdraw_plugin.la \
 @HAVE_WIN32_DESKTOP_TRUE@	libglwin32_plugin.la libwgl_plugin.la
-@HAVE_EGL_TRUE@@HAVE_WIN32_TRUE@am__append_241 = libegl_win32_plugin.la
-@HAVE_WIN32_TRUE@am__append_242 = libdrawable_plugin.la
+@HAVE_EGL_TRUE@@HAVE_WIN32_TRUE@am__append_242 = libegl_win32_plugin.la
+@HAVE_WIN32_TRUE@am__append_243 = libdrawable_plugin.la
 
 ### OS/2 ###
-@HAVE_OS2_TRUE@am__append_243 = libdrawable_plugin.la
-@HAVE_KVA_TRUE@am__append_244 = libkva_plugin.la
-@HAVE_ANDROID_TRUE@am__append_245 = libandroid_window_plugin.la libandroid_display_plugin.la
-@HAVE_ANDROID_TRUE@@HAVE_EGL_TRUE@am__append_246 = libegl_android_plugin.la libglconv_android_plugin.la
-@HAVE_WIN32_FALSE@am__append_247 = $(X_LIBS) $(X_PRE_LIBS) -lX11
-@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__append_248 = $(X_LIBS) $(X_PRE_LIBS) -lX11
-@HAVE_EVAS_TRUE@am__append_249 = libevas_plugin.la
-@HAVE_GL_TRUE@am__append_250 = libglspectrum_plugin.la
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_251 = libaccess_output_livehttp_plugin.la
-@ENABLE_SOUT_TRUE@am__append_252 = libaccess_output_shout_plugin.la \
+@HAVE_OS2_TRUE@am__append_244 = libdrawable_plugin.la
+@HAVE_KVA_TRUE@am__append_245 = libkva_plugin.la
+@HAVE_ANDROID_TRUE@am__append_246 = libandroid_window_plugin.la libandroid_display_plugin.la
+@HAVE_ANDROID_TRUE@@HAVE_EGL_TRUE@am__append_247 = libegl_android_plugin.la libglconv_android_plugin.la
+@HAVE_WIN32_FALSE@am__append_248 = $(X_LIBS) $(X_PRE_LIBS) -lX11
+@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__append_249 = $(X_LIBS) $(X_PRE_LIBS) -lX11
+@HAVE_EVAS_TRUE@am__append_250 = libevas_plugin.la
+@HAVE_GL_TRUE@am__append_251 = libglspectrum_plugin.la
+@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_252 = libaccess_output_livehttp_plugin.la
+@ENABLE_SOUT_TRUE@am__append_253 = libaccess_output_shout_plugin.la \
 @ENABLE_SOUT_TRUE@	libaccess_output_srt_plugin.la \
 @ENABLE_SOUT_TRUE@	libmux_ogg_plugin.la \
 @ENABLE_SOUT_TRUE@	libstream_out_chromaprint_plugin.la
-@ENABLE_SOUT_TRUE@@HAVE_DVBPSI_TRUE@am__append_253 = libmux_ts_plugin.la
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_254 = -DHAVE_SRTP $(SRTP_CFLAGS) \
+@ENABLE_SOUT_TRUE@@HAVE_DVBPSI_TRUE@am__append_254 = libmux_ts_plugin.la
+@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_255 = -DHAVE_SRTP $(SRTP_CFLAGS) \
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@	$(GCRYPT_CFLAGS)
 
-@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_255 = $(SRTP_LIBS) $(GCRYPT_LIBS)
+@ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@am__append_256 = $(SRTP_LIBS) $(GCRYPT_LIBS)
 
 # Chromecast plugin
-@ENABLE_SOUT_TRUE@am__append_256 = .proto .pb.cc
-@ENABLE_SOUT_TRUE@am__append_257 = $(nodist_libstream_out_chromecast_plugin_la_SOURCES)
-@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_258 = stream_out/chromecast/cast_channel.pb.h
-@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_259 = libstream_out_chromecast_plugin.la
-@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_260 = libdemux_chromecast_plugin.la
-@HAVE_WIN32_TRUE@am__append_261 = module.rc.lo
-@HAVE_WIN32_TRUE@am__append_262 = module.rc
+@ENABLE_SOUT_TRUE@am__append_257 = .proto .pb.cc
+@ENABLE_SOUT_TRUE@am__append_258 = $(nodist_libstream_out_chromecast_plugin_la_SOURCES)
+@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_259 = stream_out/chromecast/cast_channel.pb.h
+@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_260 = libstream_out_chromecast_plugin.la
+@BUILD_CHROMECAST_TRUE@@ENABLE_SOUT_TRUE@am__append_261 = libdemux_chromecast_plugin.la
+@HAVE_WIN32_TRUE@am__append_262 = module.rc.lo
+@HAVE_WIN32_TRUE@am__append_263 = module.rc
 subdir = modules
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_append_compile_flags.m4 \
@@ -2178,10 +2179,6 @@ am_libi420_yuy2_altivec_plugin_la_OBJECTS =  \
 	video_chroma/libi420_yuy2_altivec_plugin_la-i420_yuy2.lo
 libi420_yuy2_altivec_plugin_la_OBJECTS =  \
 	$(am_libi420_yuy2_altivec_plugin_la_OBJECTS)
-libi420_yuy2_altivec_plugin_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(libi420_yuy2_altivec_plugin_la_CFLAGS) $(CFLAGS) \
-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 @HAVE_ALTIVEC_TRUE@am_libi420_yuy2_altivec_plugin_la_rpath = -rpath \
 @HAVE_ALTIVEC_TRUE@	$(chromadir)
 libi420_yuy2_mmx_plugin_la_LIBADD =
@@ -2828,7 +2825,8 @@ libnuv_plugin_la_LIBADD =
 am_libnuv_plugin_la_OBJECTS = demux/nuv.lo
 libnuv_plugin_la_OBJECTS = $(am_libnuv_plugin_la_OBJECTS)
 libogg_plugin_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) libxiph_metadata.la
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	libxiph_metadata.la
 am_libogg_plugin_la_OBJECTS = demux/libogg_plugin_la-ogg.lo \
 	demux/libogg_plugin_la-oggseek.lo
 libogg_plugin_la_OBJECTS = $(am_libogg_plugin_la_OBJECTS)
@@ -5168,6 +5166,8 @@ am_adaptive_test_OBJECTS =  \
 	demux/adaptive/test/playlist/SegmentTimeline.$(OBJEXT) \
 	demux/adaptive/test/playlist/TemplatedUri.$(OBJEXT) \
 	demux/adaptive/test/plumbing/CommandsQueue.$(OBJEXT) \
+	demux/adaptive/test/plumbing/FakeEsOut.$(OBJEXT) \
+	demux/adaptive/test/SegmentTracker.$(OBJEXT) \
 	demux/adaptive/test/test.$(OBJEXT)
 adaptive_test_OBJECTS = $(am_adaptive_test_OBJECTS)
 adaptive_test_DEPENDENCIES = libvlc_adaptive.la
@@ -5647,6 +5647,7 @@ am__depfiles_remade =  \
 	demux/adaptive/plumbing/$(DEPDIR)/libvlc_adaptive_la-FakeESOut.Plo \
 	demux/adaptive/plumbing/$(DEPDIR)/libvlc_adaptive_la-FakeESOutID.Plo \
 	demux/adaptive/plumbing/$(DEPDIR)/libvlc_adaptive_la-SourceStream.Plo \
+	demux/adaptive/test/$(DEPDIR)/SegmentTracker.Po \
 	demux/adaptive/test/$(DEPDIR)/test.Po \
 	demux/adaptive/test/logic/$(DEPDIR)/BufferingLogic.Po \
 	demux/adaptive/test/playlist/$(DEPDIR)/Inheritables.Po \
@@ -5657,6 +5658,7 @@ am__depfiles_remade =  \
 	demux/adaptive/test/playlist/$(DEPDIR)/SegmentTimeline.Po \
 	demux/adaptive/test/playlist/$(DEPDIR)/TemplatedUri.Po \
 	demux/adaptive/test/plumbing/$(DEPDIR)/CommandsQueue.Po \
+	demux/adaptive/test/plumbing/$(DEPDIR)/FakeEsOut.Po \
 	demux/adaptive/test/tools/$(DEPDIR)/Conversions.Po \
 	demux/adaptive/tools/$(DEPDIR)/libvlc_adaptive_la-Conversions.Plo \
 	demux/adaptive/tools/$(DEPDIR)/libvlc_adaptive_la-FormatNamespace.Plo \
@@ -8198,7 +8200,6 @@ ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
 ALSA_CFLAGS = @ALSA_CFLAGS@
 ALSA_LIBS = @ALSA_LIBS@
-ALTIVEC_CFLAGS = @ALTIVEC_CFLAGS@
 AMTAR = @AMTAR@
 AM_CPPFLAGS = -DMODULE_STRING=\"$(MODULE_NAME)\" $(am__append_2) \
 	$(am__append_3) -I$(srcdir)/access -I$(srcdir)/codec
@@ -8256,7 +8257,6 @@ CFLAGS_daala = @CFLAGS_daala@
 CFLAGS_dav1d = @CFLAGS_dav1d@
 CFLAGS_dc1394 = @CFLAGS_dc1394@
 CFLAGS_dca = @CFLAGS_dca@
-CFLAGS_deinterlace = @CFLAGS_deinterlace@
 CFLAGS_dsm = @CFLAGS_dsm@
 CFLAGS_dv1394 = @CFLAGS_dv1394@
 CFLAGS_dvdnav = @CFLAGS_dvdnav@
@@ -8265,11 +8265,11 @@ CFLAGS_fdkaac = @CFLAGS_fdkaac@
 CFLAGS_flac = @CFLAGS_flac@
 CFLAGS_fluidsynth = @CFLAGS_fluidsynth@
 CFLAGS_gles2 = @CFLAGS_gles2@
+CFLAGS_gme = @CFLAGS_gme@
 CFLAGS_goom = @CFLAGS_goom@
 CFLAGS_kate = @CFLAGS_kate@
 CFLAGS_libbluray = @CFLAGS_libbluray@
 CFLAGS_libmpeg2 = @CFLAGS_libmpeg2@
-CFLAGS_libvlccore = @CFLAGS_libvlccore@
 CFLAGS_microdns = @CFLAGS_microdns@
 CFLAGS_mkv = @CFLAGS_mkv@
 CFLAGS_mmal = @CFLAGS_mmal@
@@ -8345,6 +8345,7 @@ CPPFLAGS_fdkaac = @CPPFLAGS_fdkaac@
 CPPFLAGS_flac = @CPPFLAGS_flac@
 CPPFLAGS_fluidsynth = @CPPFLAGS_fluidsynth@
 CPPFLAGS_gles2 = @CPPFLAGS_gles2@
+CPPFLAGS_gme = @CPPFLAGS_gme@
 CPPFLAGS_goom = @CPPFLAGS_goom@
 CPPFLAGS_kate = @CPPFLAGS_kate@
 CPPFLAGS_libass = @CPPFLAGS_libass@
@@ -8438,6 +8439,7 @@ EXEEXT = @EXEEXT@
 FDKAAC_CFLAGS = @FDKAAC_CFLAGS@
 FDKAAC_LIBS = @FDKAAC_LIBS@
 FGREP = @FGREP@
+FILECMD = @FILECMD@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
 FLAC_CFLAGS = @FLAC_CFLAGS@
@@ -8461,6 +8463,8 @@ GLES2_CFLAGS = @GLES2_CFLAGS@
 GLES2_LIBS = @GLES2_LIBS@
 GL_CFLAGS = @GL_CFLAGS@
 GL_LIBS = @GL_LIBS@
+GME_CFLAGS = @GME_CFLAGS@
+GME_LIBS = @GME_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUGETOPT_LIBS = @GNUGETOPT_LIBS@
@@ -9018,7 +9022,7 @@ noinst_LTLIBRARIES = $(am__append_34) libvlc_http.la $(am__append_43) \
 	libevent_thread.la
 check_LTLIBRARIES = libaccesstweaks_plugin.la
 pkglib_LTLIBRARIES = $(am__append_58) $(am__append_147) \
-	$(am__append_225)
+	$(am__append_226)
 
 ### OpenMAX ###
 noinst_HEADERS = codec/omxil/OMX_Broadcom.h \
@@ -9169,18 +9173,18 @@ EXTRA_LTLIBRARIES = libdc1394_plugin.la libdv1394_plugin.la \
 	libchroma_omx_plugin.la libcvpx_plugin.la \
 	libopencv_wrapper_plugin.la libpostproc_plugin.la \
 	libopencv_example_plugin.la libgles2_plugin.la \
-	$(am__append_235) libdirect3d11_plugin.la $(am__append_240) \
+	$(am__append_236) libdirect3d11_plugin.la $(am__append_241) \
 	libfb_plugin.la libaa_plugin.la libcaca_plugin.la \
 	libgoom_plugin.la libprojectm_plugin.la libvsxu_plugin.la \
-	$(am__append_252)
+	$(am__append_253)
 AUTOMAKE_OPTIONS = subdir-objects
 NULL = 
 pluginsdir = $(vlclibdir)/plugins
 BUILT_SOURCES = $(am__append_77) $(am__append_124) $(am__append_140) \
-	$(am__append_231) $(am__append_258) dummy.cpp \
-	$(am__append_261)
+	$(am__append_232) $(am__append_259) dummy.cpp \
+	$(am__append_262)
 CLEANFILES = $(BUILT_SOURCES) $(nodist_libwl_shm_plugin_la_SOURCES) \
-	$(am__append_257) $(am__append_262)
+	$(am__append_258) $(am__append_263)
 LTLIBVLCCORE = $(top_builddir)/src/libvlccore.la
 
 # Module name from object or executable file name.
@@ -9195,7 +9199,7 @@ AM_LDFLAGS = -avoid-version -module -export-symbols-regex ^vlc_entry \
 AM_YFLAGS = -d
 
 # Wayland
-SUFFIXES = .l .y .xib .ui .h .hpp .moc.cpp $(am__append_256) \
+SUFFIXES = .l .y .xib .ui .h .hpp .moc.cpp $(am__append_257) \
 	-client-protocol.h -protocol.c .xml
 accessdir = $(pluginsdir)/access
 
@@ -10183,7 +10187,7 @@ demux_LTLIBRARIES = libflacsys_plugin.la $(LTLIBogg) \
 	libdirectory_demux_plugin.la libes_plugin.la libh26x_plugin.la \
 	$(LTLIBmkv) libmp4_plugin.la libmpgv_plugin.la \
 	libplaylist_plugin.la $(am__append_116) libadaptive_plugin.la \
-	libnoseek_plugin.la $(am__append_260)
+	libnoseek_plugin.la $(am__append_261)
 libxiph_metadata_la_SOURCES = demux/xiph_metadata.h demux/xiph_metadata.c
 libxiph_metadata_la_LDFLAGS = -static
 libflacsys_plugin_la_SOURCES = demux/flac.c packetizer/flac.h
@@ -10194,7 +10198,7 @@ libogg_plugin_la_SOURCES = demux/ogg.c demux/ogg.h demux/oggseek.c demux/oggseek
 
 libogg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(LIBVORBIS_CFLAGS) $(OGG_CFLAGS)
 libogg_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(demuxdir)'
-libogg_plugin_la_LIBADD = $(LIBVORBIS_LIBS) $(OGG_LIBS) libxiph_metadata.la
+libogg_plugin_la_LIBADD = $(LIBVORBIS_LIBS) $(OGG_LIBS) $(LIBM) libxiph_metadata.la
 libdemuxdump_plugin_la_SOURCES = demux/demuxdump.c
 librawdv_plugin_la_SOURCES = demux/rawdv.c demux/rawdv.h
 librawvid_plugin_la_SOURCES = demux/rawvid.c
@@ -10534,6 +10538,8 @@ adaptive_test_SOURCES = \
     demux/adaptive/test/playlist/SegmentTimeline.cpp \
     demux/adaptive/test/playlist/TemplatedUri.cpp \
     demux/adaptive/test/plumbing/CommandsQueue.cpp \
+    demux/adaptive/test/plumbing/FakeEsOut.cpp \
+    demux/adaptive/test/SegmentTracker.cpp \
     demux/adaptive/test/test.cpp \
     demux/adaptive/test/test.hpp
 
@@ -12229,7 +12235,6 @@ libi420_yuy2_altivec_plugin_la_SOURCES = video_chroma/i420_yuy2.c video_chroma/i
 libi420_yuy2_altivec_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
 	-DMODULE_NAME_IS_i420_yuy2_altivec
 
-libi420_yuy2_altivec_plugin_la_CFLAGS = $(AM_CFLAGS) $(ALTIVEC_CFLAGS)
 
 # MMX
 libi420_rgb_mmx_plugin_la_SOURCES = video_chroma/i420_rgb.c video_chroma/i420_rgb.h \
@@ -12387,7 +12392,7 @@ libdeinterlace_plugin_la_SOURCES =  \
 	$(am__append_206)
 # inline ASM doesn't build with -O0
 libdeinterlace_plugin_la_CFLAGS = $(AM_CFLAGS) -O2 $(am__append_205) \
-	$(am__append_207)
+	$(am__append_207) $(am__append_208)
 libdeinterlace_plugin_la_LIBADD = libdeinterlace_common.la
 libopencv_wrapper_plugin_la_SOURCES = video_filter/opencv_wrapper.c
 libopencv_wrapper_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(OPENCV_CFLAGS)
@@ -12406,23 +12411,23 @@ libopencv_example_plugin_la_LIBADD = $(OPENCV_LIBS)
 libopencv_example_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(video_filterdir)'
 splitterdir = $(pluginsdir)/video_splitter
 splitter_LTLIBRARIES = libclone_plugin.la libwall_plugin.la \
-	$(am__append_208) $(am__append_211)
+	$(am__append_209) $(am__append_212)
 libclone_plugin_la_SOURCES = video_splitter/clone.c
 libwall_plugin_la_SOURCES = video_splitter/wall.c
 libpanoramix_plugin_la_SOURCES = video_splitter/panoramix.c
-libpanoramix_plugin_la_CFLAGS = $(AM_CFLAGS) $(am__append_209)
-libpanoramix_plugin_la_LIBADD = $(LIBM) $(am__append_210)
+libpanoramix_plugin_la_CFLAGS = $(AM_CFLAGS) $(am__append_210)
+libpanoramix_plugin_la_LIBADD = $(LIBM) $(am__append_211)
 voutdir = $(pluginsdir)/video_output
-vout_LTLIBRARIES = $(am__append_212) $(am__append_215) \
-	$(am__append_216) $(am__append_217) $(LTLIBgles2) \
-	$(am__append_220) $(am__append_221) $(am__append_222) \
-	$(am__append_223) $(am__append_224) $(am__append_226) \
-	$(am__append_228) $(am__append_229) $(am__append_230) \
-	$(am__append_232) $(am__append_233) $(am__append_234) \
-	$(LTLIBdirect3d11) $(am__append_239) $(am__append_241) \
-	$(am__append_242) $(am__append_243) $(am__append_244) \
-	$(am__append_245) $(am__append_246) $(LTLIBfb) $(LTLIBaa) \
-	$(LTLIBcaca) $(am__append_249) libflaschen_plugin.la \
+vout_LTLIBRARIES = $(am__append_213) $(am__append_216) \
+	$(am__append_217) $(am__append_218) $(LTLIBgles2) \
+	$(am__append_221) $(am__append_222) $(am__append_223) \
+	$(am__append_224) $(am__append_225) $(am__append_227) \
+	$(am__append_229) $(am__append_230) $(am__append_231) \
+	$(am__append_233) $(am__append_234) $(am__append_235) \
+	$(LTLIBdirect3d11) $(am__append_240) $(am__append_242) \
+	$(am__append_243) $(am__append_244) $(am__append_245) \
+	$(am__append_246) $(am__append_247) $(LTLIBfb) $(LTLIBaa) \
+	$(LTLIBcaca) $(am__append_250) libflaschen_plugin.la \
 	libvdummy_plugin.la libvmem_plugin.la libyuv_plugin.la
 OPENGL_COMMONSOURCES = video_output/opengl/vout_helper.c \
 	video_output/opengl/vout_helper.h video_output/opengl/converter.h \
@@ -12436,9 +12441,9 @@ OPENGL_COMMONLIBS = $(LIBPLACEBO_LIBS)
 @HAVE_DECKLINK_TRUE@libdecklinkoutput_plugin_la_LIBADD = $(LIBS_decklink) $(LIBDL) -lpthread
 libglconv_cvpx_plugin_la_SOURCES =  \
 	video_output/opengl/converter_cvpx.c \
-	video_output/opengl/converter.h $(am__append_213)
+	video_output/opengl/converter.h $(am__append_214)
 libglconv_cvpx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
-	$(am__append_214)
+	$(am__append_215)
 @HAVE_OSX_TRUE@libvout_macosx_plugin_la_SOURCES = video_output/macosx.m $(OPENGL_COMMONSOURCES)
 @HAVE_OSX_TRUE@libvout_macosx_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS) -DHAVE_GL_CORE_SYMBOLS
 @HAVE_OSX_TRUE@libvout_macosx_plugin_la_LIBADD = $(OPENGL_COMMONLIBS)
@@ -12466,9 +12471,9 @@ libgles2_plugin_la_LIBADD = $(GLES2_LIBS) $(LIBM) $(OPENGL_COMMONLIBS)
 libgles2_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 libgl_plugin_la_SOURCES = $(OPENGL_COMMONSOURCES) video_output/opengl/display.c
 libgl_plugin_la_CFLAGS = $(AM_CFLAGS) $(GL_CFLAGS) \
-	$(OPENGL_COMMONCLFAGS) $(am__append_218)
+	$(OPENGL_COMMONCLFAGS) $(am__append_219)
 libgl_plugin_la_LIBADD = $(LIBM) $(OPENGL_COMMONLIBS) \
-	$(am__append_219)
+	$(am__append_220)
 libglconv_vaapi_wl_plugin_la_SOURCES = video_output/opengl/converter_vaapi.c \
 	video_output/opengl/converter.h \
 	hw/vaapi/vlc_vaapi.c hw/vaapi/vlc_vaapi.h
@@ -12531,7 +12536,7 @@ libxcb_window_plugin_la_SOURCES = \
 
 libxcb_window_plugin_la_CFLAGS = $(AM_CFLAGS) $(CFLAGS_xcb_window) \
 	$(XPROTO_CFLAGS) $(XCB_CFLAGS) $(XCB_KEYSYMS_CFLAGS) \
-	$(am__append_227)
+	$(am__append_228)
 libxcb_window_plugin_la_LIBADD = $(XPROTO_LIBS) $(XCB_LIBS) $(XCB_KEYSYMS_LIBS)
 libegl_x11_plugin_la_SOURCES = video_output/opengl/egl.c
 libegl_x11_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) -DUSE_PLATFORM_X11=1
@@ -12590,12 +12595,12 @@ libdirect3d11_plugin_la_SOURCES = video_output/win32/direct3d11.c \
 	video_output/win32/d3d11_quad.h \
 	video_output/win32/d3d11_shaders.c \
 	video_output/win32/d3d11_shaders.h video_output/win32/common.c \
-	video_output/win32/common.h $(am__append_236)
+	video_output/win32/common.h $(am__append_237)
 libdirect3d11_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
  -DMODULE_NAME_IS_direct3d11
 
 libdirect3d11_plugin_la_LIBADD = libchroma_copy.la libd3d11_common.la \
-	$(LIBCOM) -luuid $(am__append_237) $(am__append_238)
+	$(LIBCOM) -luuid $(am__append_238) $(am__append_239)
 libdirect3d11_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 libdirectdraw_plugin_la_SOURCES = video_output/win32/directdraw.c \
 	video_output/win32/common.c video_output/win32/common.h \
@@ -12667,14 +12672,14 @@ libfb_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 
 ### ASCII Art ###
 libaa_plugin_la_SOURCES = video_output/aa.c
-libaa_plugin_la_LIBADD = libevent_thread.la -laa $(am__append_247)
+libaa_plugin_la_LIBADD = libevent_thread.la -laa $(am__append_248)
 libaa_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 
 ### Coloured ASCII art ###
 libcaca_plugin_la_SOURCES = video_output/caca.c
 libcaca_plugin_la_CFLAGS = $(AM_CFLAGS) $(CACA_CFLAGS)
 libcaca_plugin_la_LIBADD = libevent_thread.la $(CACA_LIBS) \
-	$(am__append_248)
+	$(am__append_249)
 libcaca_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
 
 ### EFL Evas video output ###
@@ -12694,7 +12699,7 @@ libevent_thread_la_SOURCES = \
 
 libevent_thread_la_LDFLAGS = -static
 visudir = $(pluginsdir)/visualization
-visu_LTLIBRARIES = $(am__append_250) $(LTLIBgoom) $(LTLIBprojectm) \
+visu_LTLIBRARIES = $(am__append_251) $(LTLIBgoom) $(LTLIBprojectm) \
 	libvisual_plugin.la $(LTLIBvsxu)
 libglspectrum_plugin_la_SOURCES = \
 	visualization/glspectrum.c \
@@ -12708,7 +12713,7 @@ libgoom_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(GOOM_CFLAGS)
 libgoom_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(visudir)'
 libgoom_plugin_la_LIBADD = $(GOOM_LIBS) $(LIBM)
 libprojectm_plugin_la_SOURCES = visualization/projectm.cpp
-libprojectm_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(PROJECTM_CFLAGS)
+libprojectm_plugin_la_CXXFLAGS = $(AM_CXXFLAGS) $(PROJECTM_CFLAGS) -std=gnu++14
 libprojectm_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(visudir)'
 libprojectm_plugin_la_LIBADD = $(PROJECTM_LIBS) $(LIBPTHREAD)
 libvisual_plugin_la_SOURCES = \
@@ -12735,7 +12740,7 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@	libaccess_output_file_plugin.la \
 @ENABLE_SOUT_TRUE@	libaccess_output_http_plugin.la \
 @ENABLE_SOUT_TRUE@	libaccess_output_udp_plugin.la \
-@ENABLE_SOUT_TRUE@	$(am__append_251) \
+@ENABLE_SOUT_TRUE@	$(am__append_252) \
 @ENABLE_SOUT_TRUE@	$(LTLIBaccess_output_shout) \
 @ENABLE_SOUT_TRUE@	$(LTLIBaccess_output_srt) \
 @ENABLE_SOUT_TRUE@	libaccess_output_rist_plugin.la
@@ -12779,7 +12784,7 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@	libmux_asf_plugin.la libmux_avi_plugin.la \
 @ENABLE_SOUT_TRUE@	libmux_mp4_plugin.la libmux_mpjpeg_plugin.la \
 @ENABLE_SOUT_TRUE@	libmux_ps_plugin.la libmux_wav_plugin.la \
-@ENABLE_SOUT_TRUE@	$(LTLIBmux_ogg) $(am__append_253)
+@ENABLE_SOUT_TRUE@	$(LTLIBmux_ogg) $(am__append_254)
 @ENABLE_SOUT_TRUE@libmux_ogg_plugin_la_SOURCES = mux/ogg.c
 @ENABLE_SOUT_TRUE@libmux_ogg_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) $(OGG_CFLAGS)
 @ENABLE_SOUT_TRUE@libmux_ogg_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(muxdir)'
@@ -12842,15 +12847,15 @@ libvsxu_plugin_la_LIBADD = $(VSXU_LIBS) $(LIBM)
 @ENABLE_SOUT_TRUE@	libstream_out_transcode_plugin.la \
 @ENABLE_SOUT_TRUE@	libstream_out_rtp_plugin.la \
 @ENABLE_SOUT_TRUE@	$(LTLIBstream_out_chromaprint) \
-@ENABLE_SOUT_TRUE@	$(am__append_259)
+@ENABLE_SOUT_TRUE@	$(am__append_260)
 @ENABLE_SOUT_TRUE@libstream_out_rtp_plugin_la_SOURCES = \
 @ENABLE_SOUT_TRUE@	stream_out/rtp.c stream_out/rtp.h stream_out/rtpfmt.c \
 @ENABLE_SOUT_TRUE@	stream_out/rtcp.c stream_out/rtsp.c stream_out/vod.c
 
 @ENABLE_SOUT_TRUE@libstream_out_rtp_plugin_la_CFLAGS = $(AM_CFLAGS) \
-@ENABLE_SOUT_TRUE@	$(am__append_254)
+@ENABLE_SOUT_TRUE@	$(am__append_255)
 @ENABLE_SOUT_TRUE@libstream_out_rtp_plugin_la_LIBADD = $(SOCKET_LIBS) \
-@ENABLE_SOUT_TRUE@	$(LIBPTHREAD) $(am__append_255)
+@ENABLE_SOUT_TRUE@	$(LIBPTHREAD) $(am__append_256)
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@SRTP_CFLAGS = -I$(srcdir)/access/rtp
 @ENABLE_SOUT_TRUE@@HAVE_GCRYPT_TRUE@SRTP_LIBS = libvlc_srtp.la
 
@@ -15914,7 +15919,7 @@ video_chroma/libi420_yuy2_altivec_plugin_la-i420_yuy2.lo:  \
 	video_chroma/$(DEPDIR)/$(am__dirstamp)
 
 libi420_yuy2_altivec_plugin.la: $(libi420_yuy2_altivec_plugin_la_OBJECTS) $(libi420_yuy2_altivec_plugin_la_DEPENDENCIES) $(EXTRA_libi420_yuy2_altivec_plugin_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(libi420_yuy2_altivec_plugin_la_LINK) $(am_libi420_yuy2_altivec_plugin_la_rpath) $(libi420_yuy2_altivec_plugin_la_OBJECTS) $(libi420_yuy2_altivec_plugin_la_LIBADD) $(LIBS)
+	$(AM_V_CCLD)$(LINK) $(am_libi420_yuy2_altivec_plugin_la_rpath) $(libi420_yuy2_altivec_plugin_la_OBJECTS) $(libi420_yuy2_altivec_plugin_la_LIBADD) $(LIBS)
 video_chroma/libi420_yuy2_mmx_plugin_la-i420_yuy2.lo:  \
 	video_chroma/$(am__dirstamp) \
 	video_chroma/$(DEPDIR)/$(am__dirstamp)
@@ -19701,12 +19706,18 @@ demux/adaptive/test/plumbing/$(DEPDIR)/$(am__dirstamp):
 demux/adaptive/test/plumbing/CommandsQueue.$(OBJEXT):  \
 	demux/adaptive/test/plumbing/$(am__dirstamp) \
 	demux/adaptive/test/plumbing/$(DEPDIR)/$(am__dirstamp)
+demux/adaptive/test/plumbing/FakeEsOut.$(OBJEXT):  \
+	demux/adaptive/test/plumbing/$(am__dirstamp) \
+	demux/adaptive/test/plumbing/$(DEPDIR)/$(am__dirstamp)
 demux/adaptive/test/$(am__dirstamp):
 	@$(MKDIR_P) demux/adaptive/test
 	@: > demux/adaptive/test/$(am__dirstamp)
 demux/adaptive/test/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) demux/adaptive/test/$(DEPDIR)
 	@: > demux/adaptive/test/$(DEPDIR)/$(am__dirstamp)
+demux/adaptive/test/SegmentTracker.$(OBJEXT):  \
+	demux/adaptive/test/$(am__dirstamp) \
+	demux/adaptive/test/$(DEPDIR)/$(am__dirstamp)
 demux/adaptive/test/test.$(OBJEXT):  \
 	demux/adaptive/test/$(am__dirstamp) \
 	demux/adaptive/test/$(DEPDIR)/$(am__dirstamp)
@@ -20533,6 +20544,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/plumbing/$(DEPDIR)/libvlc_adaptive_la-FakeESOut.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/plumbing/$(DEPDIR)/libvlc_adaptive_la-FakeESOutID.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/plumbing/$(DEPDIR)/libvlc_adaptive_la-SourceStream.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/test/$(DEPDIR)/SegmentTracker.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/test/$(DEPDIR)/test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/test/logic/$(DEPDIR)/BufferingLogic.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/test/playlist/$(DEPDIR)/Inheritables.Po@am__quote@ # am--include-marker
@@ -20543,6 +20555,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/test/playlist/$(DEPDIR)/SegmentTimeline.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/test/playlist/$(DEPDIR)/TemplatedUri.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/test/plumbing/$(DEPDIR)/CommandsQueue.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/test/plumbing/$(DEPDIR)/FakeEsOut.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/test/tools/$(DEPDIR)/Conversions.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/tools/$(DEPDIR)/libvlc_adaptive_la-Conversions.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@demux/adaptive/tools/$(DEPDIR)/libvlc_adaptive_la-FormatNamespace.Plo@am__quote@ # am--include-marker
@@ -22709,11 +22722,11 @@ video_chroma/libi420_rgb_sse2_plugin_la-i420_rgb16_x86.lo: video_chroma/i420_rgb
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libi420_rgb_sse2_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_chroma/libi420_rgb_sse2_plugin_la-i420_rgb16_x86.lo `test -f 'video_chroma/i420_rgb16_x86.c' || echo '$(srcdir)/'`video_chroma/i420_rgb16_x86.c
 
 video_chroma/libi420_yuy2_altivec_plugin_la-i420_yuy2.lo: video_chroma/i420_yuy2.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libi420_yuy2_altivec_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libi420_yuy2_altivec_plugin_la_CFLAGS) $(CFLAGS) -MT video_chroma/libi420_yuy2_altivec_plugin_la-i420_yuy2.lo -MD -MP -MF video_chroma/$(DEPDIR)/libi420_yuy2_altivec_plugin_la-i420_yuy2.Tpo -c -o video_chroma/libi420_yuy2_altivec_plugin_la-i420_yuy2.lo `test -f 'video_chroma/i420_yuy2.c' || echo '$(srcdir)/'`video_chroma/i420_yuy2.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libi420_yuy2_altivec_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_chroma/libi420_yuy2_altivec_plugin_la-i420_yuy2.lo -MD -MP -MF video_chroma/$(DEPDIR)/libi420_yuy2_altivec_plugin_la-i420_yuy2.Tpo -c -o video_chroma/libi420_yuy2_altivec_plugin_la-i420_yuy2.lo `test -f 'video_chroma/i420_yuy2.c' || echo '$(srcdir)/'`video_chroma/i420_yuy2.c
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) video_chroma/$(DEPDIR)/libi420_yuy2_altivec_plugin_la-i420_yuy2.Tpo video_chroma/$(DEPDIR)/libi420_yuy2_altivec_plugin_la-i420_yuy2.Plo
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='video_chroma/i420_yuy2.c' object='video_chroma/libi420_yuy2_altivec_plugin_la-i420_yuy2.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libi420_yuy2_altivec_plugin_la_CPPFLAGS) $(CPPFLAGS) $(libi420_yuy2_altivec_plugin_la_CFLAGS) $(CFLAGS) -c -o video_chroma/libi420_yuy2_altivec_plugin_la-i420_yuy2.lo `test -f 'video_chroma/i420_yuy2.c' || echo '$(srcdir)/'`video_chroma/i420_yuy2.c
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libi420_yuy2_altivec_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o video_chroma/libi420_yuy2_altivec_plugin_la-i420_yuy2.lo `test -f 'video_chroma/i420_yuy2.c' || echo '$(srcdir)/'`video_chroma/i420_yuy2.c
 
 video_chroma/libi420_yuy2_mmx_plugin_la-i420_yuy2.lo: video_chroma/i420_yuy2.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libi420_yuy2_mmx_plugin_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT video_chroma/libi420_yuy2_mmx_plugin_la-i420_yuy2.lo -MD -MP -MF video_chroma/$(DEPDIR)/libi420_yuy2_mmx_plugin_la-i420_yuy2.Tpo -c -o video_chroma/libi420_yuy2_mmx_plugin_la-i420_yuy2.lo `test -f 'video_chroma/i420_yuy2.c' || echo '$(srcdir)/'`video_chroma/i420_yuy2.c
@@ -29437,6 +29450,7 @@ distclean: distclean-recursive
 	-rm -f demux/adaptive/plumbing/$(DEPDIR)/libvlc_adaptive_la-FakeESOut.Plo
 	-rm -f demux/adaptive/plumbing/$(DEPDIR)/libvlc_adaptive_la-FakeESOutID.Plo
 	-rm -f demux/adaptive/plumbing/$(DEPDIR)/libvlc_adaptive_la-SourceStream.Plo
+	-rm -f demux/adaptive/test/$(DEPDIR)/SegmentTracker.Po
 	-rm -f demux/adaptive/test/$(DEPDIR)/test.Po
 	-rm -f demux/adaptive/test/logic/$(DEPDIR)/BufferingLogic.Po
 	-rm -f demux/adaptive/test/playlist/$(DEPDIR)/Inheritables.Po
@@ -29447,6 +29461,7 @@ distclean: distclean-recursive
 	-rm -f demux/adaptive/test/playlist/$(DEPDIR)/SegmentTimeline.Po
 	-rm -f demux/adaptive/test/playlist/$(DEPDIR)/TemplatedUri.Po
 	-rm -f demux/adaptive/test/plumbing/$(DEPDIR)/CommandsQueue.Po
+	-rm -f demux/adaptive/test/plumbing/$(DEPDIR)/FakeEsOut.Po
 	-rm -f demux/adaptive/test/tools/$(DEPDIR)/Conversions.Po
 	-rm -f demux/adaptive/tools/$(DEPDIR)/libvlc_adaptive_la-Conversions.Plo
 	-rm -f demux/adaptive/tools/$(DEPDIR)/libvlc_adaptive_la-FormatNamespace.Plo
@@ -30835,6 +30850,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f demux/adaptive/plumbing/$(DEPDIR)/libvlc_adaptive_la-FakeESOut.Plo
 	-rm -f demux/adaptive/plumbing/$(DEPDIR)/libvlc_adaptive_la-FakeESOutID.Plo
 	-rm -f demux/adaptive/plumbing/$(DEPDIR)/libvlc_adaptive_la-SourceStream.Plo
+	-rm -f demux/adaptive/test/$(DEPDIR)/SegmentTracker.Po
 	-rm -f demux/adaptive/test/$(DEPDIR)/test.Po
 	-rm -f demux/adaptive/test/logic/$(DEPDIR)/BufferingLogic.Po
 	-rm -f demux/adaptive/test/playlist/$(DEPDIR)/Inheritables.Po
@@ -30845,6 +30861,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f demux/adaptive/test/playlist/$(DEPDIR)/SegmentTimeline.Po
 	-rm -f demux/adaptive/test/playlist/$(DEPDIR)/TemplatedUri.Po
 	-rm -f demux/adaptive/test/plumbing/$(DEPDIR)/CommandsQueue.Po
+	-rm -f demux/adaptive/test/plumbing/$(DEPDIR)/FakeEsOut.Po
 	-rm -f demux/adaptive/test/tools/$(DEPDIR)/Conversions.Po
 	-rm -f demux/adaptive/tools/$(DEPDIR)/libvlc_adaptive_la-Conversions.Plo
 	-rm -f demux/adaptive/tools/$(DEPDIR)/libvlc_adaptive_la-FormatNamespace.Plo

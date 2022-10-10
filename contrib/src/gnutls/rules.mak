@@ -1,6 +1,6 @@
 # GnuTLS
 
-GNUTLS_VERSION := 3.6.15
+GNUTLS_VERSION := 3.6.16
 GNUTLS_URL := https://www.gnupg.org/ftp/gcrypt/gnutls/v3.6/gnutls-$(GNUTLS_VERSION).tar.xz
 
 ifdef BUILD_NETWORK
@@ -41,6 +41,14 @@ gnutls: gnutls-$(GNUTLS_VERSION).tar.xz .sum-gnutls
 	$(APPLY) $(SRC)/gnutls/0001-fix-mingw64-detection.patch
 
 	$(call pkg_static,"lib/gnutls.pc.in")
+
+	# fix AArch64 builds for Apple OS by removing unsupported compiler flag (gnutls#1347, gnutls#1317)
+ifdef HAVE_DARWIN_OS
+	$(APPLY) $(SRC)/gnutls/gnutls-fix-aarch64-compilation-appleos.patch
+endif
+
+	$(APPLY) $(SRC)/gnutls/0001-windows-Avoid-Wint-conversion-errors.patch
+
 	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
 

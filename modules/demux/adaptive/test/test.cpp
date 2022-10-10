@@ -37,6 +37,7 @@ extern const char vlc_module_name[] = "foobar";
 int main()
 {
     return
+    TEST(FakeEsOut) ||
     TEST(Inheritables) ||
     TEST(SegmentBase) ||
     TEST(SegmentList) ||
@@ -47,5 +48,7 @@ int main()
     TEST(BufferingLogic) ||
     TEST(CommandsQueue) ||
     TEST(M3U8MasterPlaylist) ||
-    TEST(M3U8Playlist);
+    TEST(M3U8Playlist) ||
+    TEST(SegmentTracker)
+    ;
 }

@@ -2,7 +2,7 @@
  * SegmentTemplate.cpp: Implement the UrlTemplate element.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 1864120541843e5171779c4674b60b4cc60c6bf2 $
+ * $Id: 685b335da25f5bf5491292a7d00ab12c3d576b16 $
  *
  * Authors: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
  *
@@ -142,11 +142,27 @@ mtime_t SegmentTemplate::getMinAheadTime(uint64_t number) const
     }
 }
 
+void SegmentTemplate::setVirtualSegmentTime(uint64_t pos,
+                                            SegmentTemplateSegment *virtualsegment) const
+{
+    stime_t startTime, duration;
+    Timescale timescale;
+    if(getScaledPlaybackTimeDurationBySegmentNumber(pos, &startTime,
+                                                    &duration, &timescale))
+    {
+        virtualsegment->startTime.Set(startTime);
+        virtualsegment->duration.Set(duration);
+    }
+}
+
 Segment * SegmentTemplate::getMediaSegment(uint64_t number) const
 {
     const SegmentTimeline *tl = inheritSegmentTimeline();
     if(tl == nullptr || (tl->maxElementNumber() >= number && tl->minElementNumber() <= number))
+    {
+        setVirtualSegmentTime(number, virtualsegment);
         return virtualsegment;
+    }
     return nullptr;
 }
 
@@ -189,6 +205,7 @@ Segment *  SegmentTemplate::getNextMediaSegment(uint64_t i_pos,uint64_t *pi_newp
         /* start number */
         *pi_newpos = std::max(inheritStartNumber(), i_pos);
     }
+    setVirtualSegmentTime(*pi_newpos, virtualsegment);
     return virtualsegment;
 }
 
@@ -216,13 +233,10 @@ bool SegmentTemplate::getSegmentNumberByTime(mtime_t time, uint64_t *ret) const
         if( playlist->isLive() )
         {
             mtime_t now = CLOCK_FREQ * ::time(nullptr);
-            if(playlist->availabilityStartTime.Get())
-            {
-                if(time >= playlist->availabilityStartTime.Get() && time < now)
-                    *ret = getLiveTemplateNumber(time, true);
-                else if(now - playlist->availabilityStartTime.Get() > time)
-                    *ret = getLiveTemplateNumber(time, false);
-            }
+            if(time >= playlist->availabilityStartTime.Get() && time < now)
+                *ret = getLiveTemplateNumber(time, true);
+            else if(now - playlist->availabilityStartTime.Get() > time)
+                *ret = getLiveTemplateNumber(time, false);
             else return false;
         }
         else
@@ -248,27 +262,41 @@ bool SegmentTemplate::getPlaybackTimeDurationBySegmentNumber(uint64_t number,
     Timescale timescale;
     stime_t stime, sduration;
 
+    if(!getScaledPlaybackTimeDurationBySegmentNumber(number, &stime, &sduration, &timescale))
+        return false;
+
+    *time = timescale.ToTime(stime);
+    *duration = timescale.ToTime(sduration);
+
+    return true;
+}
+
+bool SegmentTemplate::getScaledPlaybackTimeDurationBySegmentNumber(uint64_t number,
+                                                                   stime_t *stime,
+                                                                   stime_t *sduration,
+                                                                   Timescale *timescale) const
+{
+    if(number == std::numeric_limits<uint64_t>::max())
+        return false;
+
     const SegmentTimeline * timeline = inheritSegmentTimeline();
     if(timeline)
     {
-        timescale = timeline->inheritTimescale();
-        if(!timeline->getScaledPlaybackTimeDurationBySegmentNumber(number, &stime, &sduration))
+        *timescale = timeline->inheritTimescale();
+        if(!timeline->getScaledPlaybackTimeDurationBySegmentNumber(number, stime, sduration))
             return false;
     }
     else
     {
-        timescale = inheritTimescale();
+        *timescale = inheritTimescale();
         uint64_t startNumber = inheritStartNumber();
         if(number < startNumber)
             return false;
-        sduration = inheritDuration();
-        stime = (number - startNumber) * sduration;
+        *sduration = inheritDuration();
+        *stime = (number - startNumber) * *sduration;
     }
 
-    *time = timescale.ToTime(stime);
-    *duration = timescale.ToTime(sduration);
     return true;
-
 }
 
 SegmentTemplateInit::SegmentTemplateInit( SegmentTemplate *templ_,

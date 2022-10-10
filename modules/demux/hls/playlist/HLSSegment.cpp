@@ -31,7 +31,6 @@ HLSSegment::HLSSegment( ICanonicalUrl *parent, uint64_t seq ) :
     Segment( parent )
 {
     setSequenceNumber(seq);
-    utcTime = 0;
 }
 
 HLSSegment::~HLSSegment()
@@ -55,24 +54,4 @@ bool HLSSegment::prepareChunk(SharedResources *res, SegmentChunk *chunk, BaseRep
     }
 
     return Segment::prepareChunk(res, chunk, rep);
-}
-
-mtime_t HLSSegment::getUTCTime() const
-{
-    return utcTime;
-}
-
-int HLSSegment::compare(ISegment *segment) const
-{
-    HLSSegment *hlssegment = dynamic_cast<HLSSegment *>(segment);
-    if(hlssegment)
-    {
-        if (getSequenceNumber() > hlssegment->getSequenceNumber())
-            return 1;
-        else if(getSequenceNumber() < hlssegment->getSequenceNumber())
-            return -1;
-        else
-            return 0;
-    }
-    else return ISegment::compare(segment);
 }

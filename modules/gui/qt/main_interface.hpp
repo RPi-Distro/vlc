@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2010 VideoLAN and AUTHORS
- * $Id: b749f7da74a8690af1ff87541c404ad7603e9cb2 $
+ * $Id: e73a6b5ce6b7471b43ac0ba364d55162f6ab66b3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -217,7 +217,7 @@ public slots:
     /* Manage the Video Functions from the vout threads */
     void getVideoSlot( struct vout_window_t *,
                        unsigned i_width, unsigned i_height, bool, bool * );
-    void releaseVideoSlot( void );
+    void releaseVideoSlot( bool forced );
 
     void emitBoss();
     void emitRaise();
@@ -270,7 +270,7 @@ protected slots:
 signals:
     void askGetVideo( struct vout_window_t *, unsigned, unsigned, bool,
                       bool * );
-    void askReleaseVideo( );
+    void askReleaseVideo( bool );
     void askVideoToResize( unsigned int, unsigned int );
     void askVideoSetFullScreen( bool );
     void askHideMouse( bool );

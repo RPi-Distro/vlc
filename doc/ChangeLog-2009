@@ -22654,7 +22654,7 @@ Date:   Thu Jul 23 21:52:15 2009 +0200
     Fixed flicker with overlapped subtitles in ssa.
 
 commit 108053ff0921f359fd01c1c6988ce4fa0dc49f3f
-Merge: 82633df33d ccfb6c20d6
+Merge: 82633df33d7 ccfb6c20d6d
 Author: JP Dinger <jpd@videolan.org>
 Date:   Fri Jul 24 17:24:46 2009 +0200
 
@@ -22803,7 +22803,7 @@ Date:   Fri Jul 24 13:11:18 2009 +0200
     Use VLC_VAR_CLASS when applicable.
 
 commit bf8d85d77b6fc8c47704a0b787aca8ee8d72bb47
-Merge: 8baae61a21 aae7dd03ae
+Merge: 8baae61a21c aae7dd03aee
 Author: JP Dinger <jpd@videolan.org>
 Date:   Fri Jul 24 13:38:22 2009 +0200
 
@@ -28789,7 +28789,7 @@ Date:   Sun May 31 22:32:31 2009 +0300
     changes made to 7079b91c24f7c8032025576407f1386350cae58f.
 
 commit 3eeab0d3a064349bbd0f65b9a890a3cfc82f6283
-Merge: 7079b91c24 4b44912ce0
+Merge: 7079b91c24f 4b44912ce08
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sun May 31 22:32:09 2009 +0300
 
@@ -28804,7 +28804,7 @@ Date:   Sun May 31 22:32:02 2009 +0300
     This reverts commit 8d812e0a8417d97334ad008185cd9ece30294ab3.
 
 commit 4b44912ce0888ed40d35aa5d782cd17cbf7e9c6b
-Merge: 8d812e0a84 6520db28dd
+Merge: 8d812e0a841 6520db28ddf
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sun May 31 22:30:31 2009 +0300
 
@@ -29263,7 +29263,7 @@ Date:   Wed May 27 21:36:22 2009 +0200
     Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
 
 commit 55c960749e8f91763e720ac610d5dd56f90fcde1
-Merge: b74ce937e0 8e4c60f63e
+Merge: b74ce937e05 8e4c60f63eb
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Wed May 27 18:50:03 2009 +0300
 
@@ -29432,7 +29432,7 @@ Date:   Tue May 26 19:23:56 2009 +0200
     Fix compilation on Windows
 
 commit ad77d955a5dc051976d94d6e08ee0f717ec3a938
-Merge: 3bc0ec0777 4db7858c80
+Merge: 3bc0ec07775 4db7858c806
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Tue May 26 19:37:54 2009 +0300
 
@@ -29498,7 +29498,7 @@ Date:   Tue May 26 16:15:13 2009 +0200
     macosx: fixed regressions from merges with the 1.0-bugfix branch
 
 commit 74e5a0727b83ea8bd5ee87dbce7596b990ef14c1
-Merge: c5c06b64c8 8d5c75701a
+Merge: c5c06b64c80 8d5c75701a7
 Author: Derk-Jan Hartman <hartman@videolan.org>
 Date:   Tue May 26 16:10:57 2009 +0200
 
@@ -29513,7 +29513,7 @@ Date:   Tue May 26 15:54:17 2009 +0200
     This was broken in [3d5ff7dc53d5ac154fd56faca23a3b6364037aa2]
 
 commit c5c06b64c806052086e5772d64e540a8db7e4a9b
-Merge: ca07b0f932 622c64a18a
+Merge: ca07b0f9329 622c64a18a8
 Author: Rémi Duraffort <ivoire@videolan.org>
 Date:   Tue May 26 15:50:52 2009 +0200
 
@@ -29591,7 +29591,7 @@ Date:   Tue May 26 09:53:50 2009 +1000
     Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
 
 commit 14f37b2101842fa6e427f962f689db74eff6faba
-Merge: c65eebb30a 46a33c34dc
+Merge: c65eebb30a7 46a33c34dcc
 Author: Rémi Duraffort <ivoire@videolan.org>
 Date:   Tue May 26 12:58:18 2009 +0200
 
@@ -29646,7 +29646,7 @@ Date:   Tue May 26 02:12:44 2009 +0200
     Small fix in NEWS.
 
 commit 658686029ee756fbf4beb8e0cdcc4b0bc5dd18ed
-Merge: 13a41fa0f3 aeb955d83e
+Merge: 13a41fa0f38 aeb955d83e1
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Tue May 26 01:57:08 2009 +0200
 
@@ -29687,7 +29687,7 @@ Date:   Tue May 26 01:16:47 2009 +0200
     Fix conflicts.
 
 commit 66bd92014e5d721d8fe74bfd69f601bfd228012a
-Merge: 1319c5c570 f02742c79f
+Merge: 1319c5c5700 f02742c79fc
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Tue May 26 00:51:06 2009 +0200
 
@@ -30023,7 +30023,7 @@ Date:   Sun May 24 01:31:52 2009 +0200
     This fix all the dialogs (Fix AVI, HTTP login) that didn't show in skins interface.
 
 commit 9d5e75a7a5643a2144dc561fc246a7a3ca7e5fb0
-Merge: b13a8009cc f56161ec9f
+Merge: b13a8009cc2 f56161ec9f0
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sat May 23 22:39:20 2009 +0300
 
@@ -30154,7 +30154,7 @@ Date:   Sat May 23 17:04:11 2009 +0300
     Remove dummy debug
 
 commit 152b1687c0ec112f3ab1360006d048d6b9cf7258
-Merge: 4d4f701e03 0577234ca3
+Merge: 4d4f701e03e 0577234ca3d
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sat May 23 17:01:32 2009 +0300
 
@@ -30221,7 +30221,7 @@ Date:   Sat May 23 13:15:41 2009 +0300
     Missing space
 
 commit 52c18c4dec68158eedd655e0502820b7d7b6128f
-Merge: 49d534e020 deb3a85153
+Merge: 49d534e0209 deb3a851530
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sat May 23 12:43:00 2009 +0300
 
@@ -30451,7 +30451,7 @@ Date:   Thu May 21 18:56:34 2009 +0300
     Fix mouse key strings
 
 commit 51bbf793131496c6f31f70953ff434f17be80d63
-Merge: 0f2826187d 83116c1c92
+Merge: 0f2826187da 83116c1c926
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Thu May 21 18:30:26 2009 +0300
 
@@ -30640,7 +30640,7 @@ Date:   Wed May 20 22:06:07 2009 +0200
     Factorization.
 
 commit 78d87996ccb92d1dc91c9987685f976ed3be08a6
-Merge: a4bcd514cc b36b614a14
+Merge: a4bcd514cc7 b36b614a146
 Author: Rémi Duraffort <ivoire@videolan.org>
 Date:   Wed May 20 21:53:35 2009 +0200
 
@@ -30690,7 +30690,7 @@ Date:   Wed May 20 19:07:27 2009 +0200
     Remove unwanted "\v".
 
 commit 7f12470415d98e9e0ac725f2bb96b5fa74ef27f1
-Merge: a516ab36c1 63980c43dd
+Merge: a516ab36c18 63980c43dd7
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Wed May 20 19:46:41 2009 +0300
 
@@ -31408,7 +31408,7 @@ Date:   Sat May 16 23:15:12 2009 +0200
     (and add ftp and smb to the list)
 
 commit 24cddfa0efa80557f538d6dbf08f9b0b4b4d52a4
-Merge: d1d3d7b413 6dce48f670
+Merge: d1d3d7b413a 6dce48f670a
 Author: Laurent Aimar <fenrir@videolan.org>
 Date:   Sat May 16 23:26:19 2009 +0200
 
@@ -31591,7 +31591,7 @@ Date:   Sat May 16 18:42:48 2009 +0300
     Qt4: remove dead code
 
 commit 174f75debc6ff4b0b3a7037bc21e7b77bfe2a9d8
-Merge: cc321882c2 0bbc1eeee3
+Merge: cc321882c23 0bbc1eeee3f
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sat May 16 20:07:46 2009 +0300
 
@@ -31701,7 +31701,7 @@ Date:   Sat May 16 11:31:55 2009 +0200
     doSomehting() is not a good function name.
 
 commit 89b6530d8abd99b96b9f33af022022241fe97ee2
-Merge: e169fa3a37 da62e6d3fd
+Merge: e169fa3a378 da62e6d3fd7
 Author: Laurent Aimar <fenrir@videolan.org>
 Date:   Sat May 16 01:09:40 2009 +0200
 
@@ -31874,7 +31874,7 @@ Date:   Tue May 12 13:22:11 2009 +0200
     Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
 
 commit ec6a7b8ec1fc9f070d1d5242836b1d643f9f2dd8
-Merge: 97ada6d92f e936fbd617
+Merge: 97ada6d92f4 e936fbd6171
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Thu May 14 23:20:40 2009 +0200
 
@@ -32050,7 +32050,7 @@ Date:   Thu May 14 19:31:27 2009 +0300
     Well, only those that VLC knows anyway.
 
 commit fd7f8f854a13f7b65cb2b8622755aa47ee932919
-Merge: 8e1f14148b 0dec2f724e
+Merge: 8e1f14148bf 0dec2f724e0
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Thu May 14 18:54:17 2009 +0300
 
@@ -32160,7 +32160,7 @@ Date:   Wed May 13 23:16:37 2009 +0300
     Require XCB so we always have a window provider (fixes #2736)
 
 commit 2151d6fe01a3b730b6d241b561ce18f5cc424faf
-Merge: 43087f360f 548f78df2e
+Merge: 43087f360f4 548f78df2e9
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Wed May 13 23:32:57 2009 +0300
 
@@ -32347,7 +32347,7 @@ Date:   Tue Mar 17 23:01:27 2009 +0100
     Don't hesitate if you have any comments.
 
 commit c6d2ba8aa42a6b2fdb3e10db38c3ef053f65b19d
-Merge: 9c1f8ba149 2d4241a1f7
+Merge: 9c1f8ba1495 2d4241a1f7a
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Wed May 13 21:57:34 2009 +0300
 
@@ -32383,7 +32383,7 @@ Date:   Wed May 13 21:38:56 2009 +0300
     Use input_GetVout() instead of vlc_object_find()
 
 commit 9c1f8ba149532713c7912eb233409b283c150155
-Merge: 03b85ce331 42043990d3
+Merge: 03b85ce331b 42043990d34
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Wed May 13 21:08:54 2009 +0300
 
@@ -32453,7 +32453,7 @@ Date:   Wed May 13 16:47:19 2009 +0200
     fbosd: fix compilation with the changes of text_style_*
 
 commit b65308f0b9f038e8f56aebbee784d128be7b0f7e
-Merge: 44f031cb1d 9a1855005d
+Merge: 44f031cb1db 9a1855005d5
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Wed May 13 18:52:30 2009 +0300
 
@@ -32511,7 +32511,7 @@ Date:   Tue May 12 19:59:42 2009 +0300
     and sues internal types
 
 commit 272817e4e8be36e209ea64e5de1784f951bc8ebb
-Merge: 1403f3a061 9b9051c4c1
+Merge: 1403f3a061c 9b9051c4c1a
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Tue May 12 19:13:38 2009 +0300
 
@@ -32524,7 +32524,7 @@ Date:   Tue May 12 19:12:44 2009 +0300
     Syntax error
 
 commit 1403f3a061c3c1eaff53e2e077d46d84bab30201
-Merge: 224e96f2ae a11122ee5f
+Merge: 224e96f2aef a11122ee5f8
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Tue May 12 18:46:25 2009 +0300
 
@@ -32679,7 +32679,7 @@ Date:   Tue Mar 17 22:19:38 2009 +0100
     Removed dead code.
 
 commit 1ac10ca36325552f134fdc0d93512bbc35b808a7
-Merge: 7692ffe0ad 8766feda41
+Merge: 7692ffe0ad8 8766feda419
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Mon May 11 22:22:52 2009 +0300
 
@@ -32712,7 +32712,7 @@ Date:   Mon May 11 20:12:27 2009 +0300
     qt4: remove double check of isFullScreen
 
 commit 33d7f71f6907172c063d9383102de00abc6a3b30
-Merge: e83df29b1f 109900f90d
+Merge: e83df29b1f3 109900f90d2
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Mon May 11 19:30:53 2009 +0300
 
@@ -32748,7 +32748,7 @@ Date:   Sun May 10 18:59:56 2009 +0200
     Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
 
 commit 0036da65250f7f6b785da2be9f68af0bb9275600
-Merge: c48ac54880 2b4e12cdbe
+Merge: c48ac54880b 2b4e12cdbe7
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sun May 10 18:40:42 2009 +0300
 
@@ -32791,7 +32791,7 @@ Date:   Sun May 10 16:44:36 2009 +0300
     HTTP: use DIR_SEP(_CHAR)
 
 commit c48ac54880b101834b5106bca116024999067db2
-Merge: 600d029594 7a0efcc709
+Merge: 600d029594f 7a0efcc7090
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sun May 10 15:32:30 2009 +0300
 
@@ -32834,7 +32834,7 @@ Date:   Sun May 10 13:16:04 2009 +0300
     Remove static prototypes from header file
 
 commit 600d029594f32258567f27a875e4b956e0949a46
-Merge: d93246d2d3 b8f23ea716
+Merge: d93246d2d33 b8f23ea7166
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sun May 10 12:41:17 2009 +0300
 
@@ -34819,7 +34819,7 @@ Date:   Fri Apr 24 18:30:06 2009 +0200
     Libass: set more debug messages.
 
 commit 6907b236982ed549573879d2590c5cb7e565ac9a
-Merge: fcae9e71e8 a67c1100d0
+Merge: fcae9e71e8c a67c1100d0b
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Fri Apr 24 18:22:14 2009 +0200
 
@@ -35687,7 +35687,7 @@ Date:   Wed Apr 15 23:43:18 2009 +0300
     Compile fix
 
 commit 6511df53b2ea6320b5cf36a539ea6cffa99dffb9
-Merge: 665ba71427 e503012189
+Merge: 665ba714270 e5030121893
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Wed Apr 15 23:27:33 2009 +0300
 
@@ -36225,7 +36225,7 @@ Date:   Fri Apr 10 21:05:58 2009 +0200
     mkv: remove unmatche #endif introduced [b870bc9ddf45f01d24adb398b5f442ddc87a00ae]
 
 commit d3c449f26a72761b20dc8cb8334fdd5622acd1f2
-Merge: 8186391531 5c30d75fcc
+Merge: 81863915310 5c30d75fcc2
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Fri Apr 10 22:19:20 2009 +0300
 
@@ -37786,7 +37786,7 @@ Date:   Wed Mar 18 16:18:27 2009 +0100
     Signed-off-by: Laurent Aimar <fenrir@videolan.org>
 
 commit 1c56e0ed3e363aa8c581c7e2880ac3e9bc51c674
-Merge: 0d358ba08a 5b963efaee
+Merge: 0d358ba08ae 5b963efaee9
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Sun Mar 29 19:23:14 2009 +0200
 
@@ -41861,7 +41861,7 @@ Date:   Tue Feb 24 11:18:43 2009 +0100
     Qt: use the new lock icon.
 
 commit 4362a469b5203cc57a17d4acb9354e8d03925478
-Merge: 10f1c32dbd 36ed9b0799
+Merge: 10f1c32dbd8 36ed9b07993
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Tue Feb 24 11:15:50 2009 +0100
 
@@ -43181,7 +43181,7 @@ Date:   Sun Feb 15 19:49:55 2009 +0200
     Stay polite
 
 commit 31a51c3e45d72159defca0aaf95a5b599fc7cc5d
-Merge: 1a11a808f3 0f594de02d
+Merge: 1a11a808f3b 0f594de02d5
 Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
 Date:   Sun Feb 15 19:26:12 2009 +0200
 
@@ -46128,7 +46128,7 @@ Date:   Sun Jan 25 21:01:33 2009 +0200
     Missing vlc_savecancel()
 
 commit ff283ead4a3ec930becc2b382a175df13dee8cb9
-Merge: 72218fb9b9 3e97bc6eaf
+Merge: 72218fb9b9b 3e97bc6eafb
 Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
 Date:   Sun Jan 25 20:31:21 2009 +0200
 
