@@ -38,11 +38,6 @@ namespace adaptive
 {
     class SharedResources;
 
-    namespace http
-    {
-        class AbstractConnectionManager;
-    }
-
     namespace playlist
     {
         class BaseRepresentation;
@@ -63,17 +58,17 @@ namespace adaptive
                  *          That is basically true when using an Url, and false
                  *          when using an UrlTemplate
                  */
-                virtual SegmentChunk*                   toChunk         (SharedResources *, AbstractConnectionManager *,
-                                                                         size_t, BaseRepresentation *);
+                virtual SegmentChunk*                   toChunk         (SharedResources *, size_t, BaseRepresentation *);
                 virtual SegmentChunk*                   createChunk     (AbstractChunkSource *, BaseRepresentation *) = 0;
                 virtual void                            setByteRange    (size_t start, size_t end);
                 virtual void                            setSequenceNumber(uint64_t);
                 virtual uint64_t                        getSequenceNumber() const;
+                virtual void                            setDiscontinuitySequenceNumber(uint64_t);
+                virtual uint64_t                        getDiscontinuitySequenceNumber() const;
                 virtual bool                            isTemplate      () const;
                 virtual size_t                          getOffset       () const;
                 virtual void                            debug           (vlc_object_t *,int = 0) const;
                 virtual bool                            contains        (size_t byte) const;
-                virtual int                             compare         (ISegment *) const;
                 void                                    setEncryption   (CommonEncryption &);
                 void                                    setDisplayTime  (mtime_t);
                 mtime_t                                 getDisplayTime  () const;
@@ -91,7 +86,8 @@ namespace adaptive
                 std::string             debugName;
                 bool                    templated;
                 uint64_t                sequence;
-                mtime_t                displayTime;
+                uint64_t                discontinuitySequenceNumber;
+                mtime_t                 displayTime;
         };
 
         class Segment : public ISegment

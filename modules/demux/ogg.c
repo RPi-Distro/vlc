@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: d0d8d14c1b8badba4dccbea2adc2b6c280ce9693 $
+ * $Id: fc4fe78af30eac31298d3499182b38e632bf2d11 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -229,7 +229,7 @@ static int Open( vlc_object_t * p_this )
     if( !p_sys )
         return VLC_ENOMEM;
 
-    p_sys->i_length = -1;
+    p_sys->i_length = 0;
     p_sys->b_preparsing_done = false;
 
     vlc_stream_Control( p_demux->s, STREAM_GET_PTS_DELAY,
@@ -843,8 +843,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             pf = va_arg( args, double * );
             if( p_sys->i_length > 0 && p_sys->i_pcr > VLC_TS_INVALID )
             {
-                *pf =  (double) p_sys->i_pcr /
-                       (double) ( p_sys->i_length * (mtime_t)1000000 );
+                *pf =  (double) p_sys->i_pcr / (double) p_sys->i_length;
             }
             else if( stream_Size( p_demux->s ) > 0 )
             {
@@ -882,9 +881,9 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             }
 
             assert( p_sys->i_length > 0 );
-            i64 = CLOCK_FREQ * p_sys->i_length * f;
+            i64 = p_sys->i_length * f;
             Ogg_ResetStreamsHelper( p_sys );
-            if ( Oggseek_SeektoAbsolutetime( p_demux, p_stream, i64 ) >= 0 )
+            if ( Oggseek_SeektoAbsolutetime( p_demux, p_stream, VLC_TS_0 + i64 ) >= 0 )
             {
                 if( acc )
                     es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME,
@@ -898,8 +897,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             if ( p_sys->i_length < 0 )
                 return demux_vaControlHelper( p_demux->s, 0, -1, p_sys->i_bitrate,
                                               1, i_query, args );
-            pi64 = va_arg( args, int64_t * );
-            *pi64 = p_sys->i_length * 1000000;
+            *va_arg( args, int64_t * ) = p_sys->i_length;
             return VLC_SUCCESS;
 
         case DEMUX_GET_TITLE_INFO:
@@ -989,6 +987,8 @@ static int Ogg_ReadPage( demux_t *p_demux, ogg_page *p_oggpage )
     while( ogg_sync_pageout( &p_ogg->oy, p_oggpage ) != 1 )
     {
         p_buffer = ogg_sync_buffer( &p_ogg->oy, OGGSEEK_BYTES_TO_READ );
+        if( !p_buffer )
+            return VLC_EGENERIC;
 
         i_read = vlc_stream_Read( p_demux->s, p_buffer, OGGSEEK_BYTES_TO_READ );
         if( i_read <= 0 )
@@ -1580,8 +1580,8 @@ static int Ogg_FindLogicalStreams( demux_t *p_demux )
     demux_sys_t *p_ogg = p_demux->p_sys  ;
     ogg_packet oggpacket;
 
-    p_ogg->i_total_length = stream_Size ( p_demux->s );
-    msg_Dbg( p_demux, "File length is %"PRId64" bytes", p_ogg->i_total_length );
+    p_ogg->i_total_bytes = stream_Size ( p_demux->s );
+    msg_Dbg( p_demux, "File length is %"PRId64" bytes", p_ogg->i_total_bytes );
 
 
     while( Ogg_ReadPage( p_demux, &p_ogg->current_page ) == VLC_SUCCESS )

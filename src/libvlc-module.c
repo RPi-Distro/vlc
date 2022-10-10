@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 231a3e572ee2105314d2ae77f3575dc5955ddee9 $
+ * $Id: 56342523f397e237d600ed7099a6b16655e8598d $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -190,12 +190,12 @@ static const char *const ppsz_force_dolby_descriptions[] = {
 static const int pi_stereo_mode_values[] = { AOUT_VAR_CHAN_UNSET,
     AOUT_VAR_CHAN_STEREO, AOUT_VAR_CHAN_RSTEREO,
     AOUT_VAR_CHAN_LEFT, AOUT_VAR_CHAN_RIGHT, AOUT_VAR_CHAN_DOLBYS,
-    AOUT_VAR_CHAN_HEADPHONES,
+    AOUT_VAR_CHAN_HEADPHONES, AOUT_VAR_CHAN_MONO,
 };
 static const char *const ppsz_stereo_mode_texts[] = { N_("Unset"),
     N_("Stereo"), N_("Reverse stereo"),
     N_("Left"), N_("Right"), N_("Dolby Surround"),
-    N_("Headphones"),
+    N_("Headphones"), N_("Mono"),
 };
 
 #define AUDIO_FILTER_TEXT N_("Audio filters")

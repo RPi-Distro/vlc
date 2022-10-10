@@ -48,7 +48,6 @@ BaseRepresentation::BaseRepresentation( BaseAdaptationSet *set ) :
                 adaptationSet   ( set ),
                 bandwidth       (0)
 {
-    b_consistent = true;
 }
 
 BaseRepresentation::~BaseRepresentation ()
@@ -112,6 +111,8 @@ void BaseRepresentation::getCodecsDesc(CodecDescriptionList *desc) const
         CodecDescription *dsc = makeCodecDescription(*it);
         dsc->setDescription(adaptationSet->description.Get());
         dsc->setLanguage(adaptationSet->getLang());
+        if(getWidth() > 0 && getHeight() > 0)
+            dsc->setDimensions(getWidth(), getHeight());
         desc->push_back(dsc);
     }
 }
@@ -142,9 +143,9 @@ void BaseRepresentation::scheduleNextUpdate(uint64_t, bool)
 
 }
 
-bool BaseRepresentation::consistentSegmentNumber() const
+bool BaseRepresentation::canNoLongerUpdate() const
 {
-    return b_consistent;
+    return false;
 }
 
 void BaseRepresentation::pruneByPlaybackTime(mtime_t time)
@@ -201,11 +202,8 @@ bool BaseRepresentation::validateCodec(const std::string &) const
     return true;
 }
 
-uint64_t BaseRepresentation::translateSegmentNumber(uint64_t num, const BaseRepresentation *from) const
+uint64_t BaseRepresentation::translateSegmentNumber(uint64_t num, const BaseRepresentation *) const
 {
-    mtime_t time, duration;
-    if( from->getPlaybackTimeDurationBySegmentNumber(num, &time, &duration) )
-        getSegmentNumberByTime(time, &num);
     return num;
 }
 

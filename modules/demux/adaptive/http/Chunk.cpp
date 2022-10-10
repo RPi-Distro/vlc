@@ -67,6 +67,11 @@ RequestStatus AbstractChunkSource::getRequestStatus() const
     return requeststatus;
 }
 
+const StorageID & AbstractChunkSource::getStorageID() const
+{
+    return storeid;
+}
+
 ChunkType AbstractChunkSource::getChunkType() const
 {
     return type;
@@ -152,6 +157,7 @@ HTTPChunkSource::HTTPChunkSource(const std::string& url, AbstractConnectionManag
     eof = false;
     sourceid = id;
     setUseAccess(access);
+    setIdentifier(url, range);
     if(!init(url))
         eof = true;
 }
@@ -253,6 +259,11 @@ void HTTPChunkSource::recycle()
     connManager->recycleSource(this);
 }
 
+StorageID HTTPChunkSource::makeStorageID(const std::string &s, const BytesRange &r)
+{
+    return std::to_string(r.getStartByte())+ std::to_string(r.getEndByte()) + '@' + s;
+}
+
 std::string HTTPChunkSource::getContentType() const
 {
     vlc_mutex_locker locker(&lock);
@@ -260,6 +271,11 @@ std::string HTTPChunkSource::getContentType() const
         return connection->getContentType();
     else
         return std::string();
+}
+
+void HTTPChunkSource::setIdentifier(const std::string &s, const BytesRange &r)
+{
+    storeid =  makeStorageID(s, r);
 }
 
 bool HTTPChunkSource::prepare()
@@ -327,6 +343,8 @@ HTTPChunkBufferedSource::HTTPChunkBufferedSource(const std::string& url, Abstrac
     done = false;
     eof = false;
     held = false;
+    p_read = nullptr;
+    inblockreadoffset = 0;
 }
 
 HTTPChunkBufferedSource::~HTTPChunkBufferedSource()
@@ -343,6 +361,7 @@ HTTPChunkBufferedSource::~HTTPChunkBufferedSource()
     {
         block_ChainRelease(p_head);
         p_head = nullptr;
+        p_read = nullptr;
         pp_tail = &p_head;
     }
     buffered = 0;
@@ -412,7 +431,7 @@ void HTTPChunkBufferedSource::bufferize(size_t readsize)
         vlc_mutex_locker locker( &lock );
         done = true;
         downloadEndTime = mdate();
-        rate.size = buffered + consumed;
+        rate.size = buffered;
         rate.time = downloadEndTime - requestStartTime;
         rate.latency = responseTime - requestStartTime;
     }
@@ -422,11 +441,16 @@ void HTTPChunkBufferedSource::bufferize(size_t readsize)
         vlc_mutex_locker locker( &lock );
         buffered += p_block->i_buffer;
         block_ChainLastAppend(&pp_tail, p_block);
+        if(p_read == nullptr)
+        {
+            p_read = p_block;
+            inblockreadoffset = 0;
+        }
         if((size_t) ret < readsize)
         {
             done = true;
             downloadEndTime = mdate();
-            rate.size = buffered + consumed;
+            rate.size = buffered;
             rate.time = downloadEndTime - requestStartTime;
             rate.latency = responseTime - requestStartTime;
         }
@@ -447,16 +471,24 @@ bool HTTPChunkBufferedSource::hasMoreData() const
     return !eof;
 }
 
+void HTTPChunkBufferedSource::recycle()
+{
+    p_read = p_head;
+    inblockreadoffset = 0;
+    consumed = 0;
+    HTTPChunkSource::recycle();
+}
+
 block_t * HTTPChunkBufferedSource::readBlock()
 {
     block_t *p_block = nullptr;
 
     vlc_mutex_locker locker(&lock);
 
-    while(!p_head && !done)
+    while(!p_read && !done)
         vlc_cond_wait(&avail, &lock);
 
-    if(!p_head && done)
+    if(!p_read && done)
     {
         if(!eof)
             p_block = block_Alloc(0);
@@ -465,18 +497,12 @@ block_t * HTTPChunkBufferedSource::readBlock()
     }
 
     /* dequeue */
-    p_block = p_head;
-    p_head = p_head->p_next;
-    if(p_head == nullptr)
-    {
-        pp_tail = &p_head;
-        if(done)
-            eof = true;
-    }
-    p_block->p_next = nullptr;
-
+    p_block = block_Duplicate(const_cast<block_t *>(p_read));
     consumed += p_block->i_buffer;
-    buffered -= p_block->i_buffer;
+    p_read = p_read->p_next;
+    inblockreadoffset = 0;
+    if(p_read == nullptr && done)
+        eof = true;
 
     return p_block;
 }
@@ -485,34 +511,28 @@ block_t * HTTPChunkBufferedSource::read(size_t readsize)
 {
     vlc_mutex_locker locker(&lock);
 
-    while(readsize > buffered && !done)
+    while(readsize > (buffered - consumed) && !done)
         vlc_cond_wait(&avail, &lock);
 
     block_t *p_block = nullptr;
-    if(!readsize || !buffered || !(p_block = block_Alloc(readsize)) )
+    if(!readsize || (buffered == consumed) || !(p_block = block_Alloc(readsize)) )
     {
         eof = true;
         return nullptr;
     }
 
     size_t copied = 0;
-    while(buffered && readsize)
+    while(buffered && readsize && p_read)
     {
-        const size_t toconsume = std::min(p_head->i_buffer, readsize);
-        memcpy(&p_block->p_buffer[copied], p_head->p_buffer, toconsume);
+        const size_t toconsume = std::min(p_read->i_buffer - inblockreadoffset, readsize);
+        memcpy(&p_block->p_buffer[copied], &p_read->p_buffer[inblockreadoffset], toconsume);
         copied += toconsume;
         readsize -= toconsume;
-        buffered -= toconsume;
-        p_head->i_buffer -= toconsume;
-        p_head->p_buffer += toconsume;
-        if(p_head->i_buffer == 0)
+        inblockreadoffset += toconsume;
+        if(inblockreadoffset >= p_head->i_buffer)
         {
-            block_t *next = p_head->p_next;
-            p_head->p_next = nullptr;
-            block_Release(p_head);
-            p_head = next;
-            if(next == nullptr)
-                pp_tail = &p_head;
+            p_read = p_read->p_next;
+            inblockreadoffset = 0;
         }
     }
 

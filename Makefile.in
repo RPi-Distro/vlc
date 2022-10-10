@@ -460,7 +460,6 @@ ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
 ALSA_CFLAGS = @ALSA_CFLAGS@
 ALSA_LIBS = @ALSA_LIBS@
-ALTIVEC_CFLAGS = @ALTIVEC_CFLAGS@
 AMTAR = @AMTAR@
 AM_CPPFLAGS = @AM_CPPFLAGS@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
@@ -517,7 +516,6 @@ CFLAGS_daala = @CFLAGS_daala@
 CFLAGS_dav1d = @CFLAGS_dav1d@
 CFLAGS_dc1394 = @CFLAGS_dc1394@
 CFLAGS_dca = @CFLAGS_dca@
-CFLAGS_deinterlace = @CFLAGS_deinterlace@
 CFLAGS_dsm = @CFLAGS_dsm@
 CFLAGS_dv1394 = @CFLAGS_dv1394@
 CFLAGS_dvdnav = @CFLAGS_dvdnav@
@@ -526,11 +524,11 @@ CFLAGS_fdkaac = @CFLAGS_fdkaac@
 CFLAGS_flac = @CFLAGS_flac@
 CFLAGS_fluidsynth = @CFLAGS_fluidsynth@
 CFLAGS_gles2 = @CFLAGS_gles2@
+CFLAGS_gme = @CFLAGS_gme@
 CFLAGS_goom = @CFLAGS_goom@
 CFLAGS_kate = @CFLAGS_kate@
 CFLAGS_libbluray = @CFLAGS_libbluray@
 CFLAGS_libmpeg2 = @CFLAGS_libmpeg2@
-CFLAGS_libvlccore = @CFLAGS_libvlccore@
 CFLAGS_microdns = @CFLAGS_microdns@
 CFLAGS_mkv = @CFLAGS_mkv@
 CFLAGS_mmal = @CFLAGS_mmal@
@@ -606,6 +604,7 @@ CPPFLAGS_fdkaac = @CPPFLAGS_fdkaac@
 CPPFLAGS_flac = @CPPFLAGS_flac@
 CPPFLAGS_fluidsynth = @CPPFLAGS_fluidsynth@
 CPPFLAGS_gles2 = @CPPFLAGS_gles2@
+CPPFLAGS_gme = @CPPFLAGS_gme@
 CPPFLAGS_goom = @CPPFLAGS_goom@
 CPPFLAGS_kate = @CPPFLAGS_kate@
 CPPFLAGS_libass = @CPPFLAGS_libass@
@@ -699,6 +698,7 @@ EXEEXT = @EXEEXT@
 FDKAAC_CFLAGS = @FDKAAC_CFLAGS@
 FDKAAC_LIBS = @FDKAAC_LIBS@
 FGREP = @FGREP@
+FILECMD = @FILECMD@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
 FLAC_CFLAGS = @FLAC_CFLAGS@
@@ -722,6 +722,8 @@ GLES2_CFLAGS = @GLES2_CFLAGS@
 GLES2_LIBS = @GLES2_LIBS@
 GL_CFLAGS = @GL_CFLAGS@
 GL_LIBS = @GL_LIBS@
+GME_CFLAGS = @GME_CFLAGS@
+GME_LIBS = @GME_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
 GNUGETOPT_LIBS = @GNUGETOPT_LIBS@
@@ -2293,7 +2295,7 @@ VLC.app: install
 	mkdir -p $@/Contents/MacOS/lib
 	find $(prefix)/lib -name 'libvlc*.dylib' -maxdepth 1 -exec cp -a {} $@/Contents/MacOS/lib \;
 	mkdir -p $@/Contents/MacOS/plugins
-	find $(prefix)/lib/vlc/plugins -name 'lib*_plugin.dylib' -maxdepth 2 -exec cp -a {} $@/Contents/MacOS/plugins \;
+	find $(prefix)/lib/vlc/plugins -name 'lib*_plugin.dylib' -maxdepth 3 -exec cp -a {} $@/Contents/MacOS/plugins \;
 	find "$(CONTRIB_DIR)/share/java/" -name 'libbluray*.jar' -maxdepth 1 -exec cp -a {} $@/Contents/MacOS/plugins \; || true
 	cp $(prefix)/bin/vlc $@/Contents/MacOS/VLC
 	if test "$(build)" = "$(host)"; then \

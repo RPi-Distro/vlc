@@ -2,7 +2,7 @@
  * VLCUIWidgets.m: Widgets for VLC's extensions dialogs for Mac OS X
  *****************************************************************************
  * Copyright (C) 2009-2015 the VideoLAN team and authors
- * $Id: 2cddcb40eb0648e0bceba1aee6850de495a7f411 $
+ * $Id: bbfb0d5d32068541ce33d3f3f7f96831e83f4c5b $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan dot>,
  *          Brendon Justin <brendonjustin@gmail.com>
@@ -41,6 +41,17 @@
 
 @end
 
+
+@implementation VLCDialogSecureTextField
+
+@end
+
+
+@implementation VLCDialogLabel
+- (void)resetCursorRects {
+    [self addCursorRect:[self bounds] cursor:[NSCursor arrowCursor]];
+}
+@end
 
 @implementation VLCDialogWindow
 

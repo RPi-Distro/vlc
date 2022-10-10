@@ -2,12 +2,12 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 1999-2022 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.17.4)
+AC_INIT(vlc, 3.0.18-rc2)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=17
-VERSION_EXTRA=4
-VERSION_DEV=
+VERSION_REVISION=18
+VERSION_EXTRA=0
+VERSION_DEV=rc2
 
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -1578,7 +1578,6 @@ AC_ARG_ENABLE(altivec,
         [enable_altivec=yes], [enable_altivec=no])
 ])
 have_altivec="no"
-ALTIVEC_CFLAGS=""
 AS_IF([test "${enable_altivec}" = "yes"], [
   ARCH="${ARCH} altivec";
   VLC_SAVE_FLAGS
@@ -1595,11 +1594,6 @@ AS_IF([test "${enable_altivec}" = "yes"], [
   AS_IF([test "${ac_cv_altivec_inline}" != "no"], [
     AC_DEFINE(CAN_COMPILE_ALTIVEC, 1,
               [Define to 1 if AltiVec inline assembly is available.])
-    AS_IF([test "${ac_cv_altivec_inline}" != "yes"], [
-      ALTIVEC_CFLAGS="${ac_cv_altivec_inline}"
-      VLC_ADD_CFLAGS([libvlccore],[${ac_cv_altivec_inline}])
-    ])
-    have_altivec="yes"
   ])
 
   VLC_SAVE_FLAGS
@@ -1616,11 +1610,6 @@ AS_IF([test "${enable_altivec}" = "yes"], [
   ])
   VLC_RESTORE_FLAGS
   AS_IF([test "${ac_cv_c_altivec}" != "no"], [
-    CPPFLAGS="${CPPFLAGS} ${ac_cv_c_altivec}"
-    AC_DEFINE(CAN_COMPILE_C_ALTIVEC, 1, [Define to 1 if C AltiVec extensions are available.])
-    VLC_ADD_CFLAGS([libvlccore],[${ac_cv_c_altivec}])
-    ALTIVEC_CFLAGS="$ALTIVEC_CFLAGS ${ac_cv_c_altivec}"
-    VLC_ADD_CFLAGS([deinterlace],[${ac_cv_c_altivec}])
     have_altivec="yes"
   ])
   AC_CHECK_HEADERS(altivec.h)
@@ -1635,7 +1624,6 @@ AS_IF([test "${enable_altivec}" = "yes"], [
     VLC_ADD_LIBS([libvlccore],[-Wl,-framework,vecLib])
   ])
 ])
-AC_SUBST(ALTIVEC_CFLAGS)
 AM_CONDITIONAL([HAVE_ALTIVEC], [test "$have_altivec" = "yes"])
 
 dnl
@@ -1880,7 +1868,7 @@ PKG_ENABLE_MODULES_VLC([DVDREAD], [], [dvdread > 4.9.0], [dvdread input module],
 dnl
 dnl libdvdnav plugin
 dnl
-PKG_ENABLE_MODULES_VLC([DVDNAV], [], [dvdnav > 5.0.3], [DVD with navigation input module (dvdnav)], [auto])
+PKG_ENABLE_MODULES_VLC([DVDNAV], [], [dvdnav > 4.9.0], [DVD with navigation input module (dvdnav)], [auto])
 AS_IF([test "${enable_dvdnav}" != "no"], [
   AC_MSG_CHECKING(for dvdnav_stream_cb in dvdnav/dvdnav.h)
     AC_EGREP_HEADER(dvdnav_stream_cb,dvdnav/dvdnav.h,[
@@ -2128,26 +2116,7 @@ AM_CONDITIONAL(HAVE_DVBPSI, [test "${have_dvbpsi}" = "yes"])
 dnl
 dnl  GME demux plugin
 dnl
-AC_ARG_ENABLE(gme,
-  [AS_HELP_STRING([--enable-gme],
-    [use Game Music Emu (default auto)])])
-AS_IF([test "${enable_gme}" != "no"], [
-  AC_CHECK_HEADER([gme/gme.h], [
-    AC_CHECK_LIB([gme], [gme_identify_header], [
-      VLC_ADD_PLUGIN([gme])
-    ], [
-      AC_CHECK_LIB([gme], [gme_identify_extension], [
-         VLC_ADD_LIBS([gme], [-lstdc++ $LIBM])
-         VLC_ADD_PLUGIN([gme])
-      ],, [-lstdc++ $LIBM])
-    ])
-    VLC_ADD_LIBS([gme], [-lgme])
-  ], [
-    AS_IF([test "x${enable_gme}" != "x"], [
-      AC_MSG_ERROR([GME cannot be found. Please install the development files.])
-    ])
-  ])
-])
+PKG_ENABLE_MODULES_VLC([GME], [], [libgme], [Game Music Emu support (default auto)], [auto])
 
 
 dnl

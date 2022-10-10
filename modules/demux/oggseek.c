@@ -35,7 +35,7 @@
 
 #include <ogg/ogg.h>
 #include <limits.h>
-
+#include <math.h>
 #include <assert.h>
 
 #include "ogg.h"
@@ -48,6 +48,7 @@
 #define SEGMENT_NOT_FOUND -1
 
 #define MAX_PAGE_SIZE 65307
+#define MIN_PAGE_SIZE 27
 typedef struct packetStartCoordinates
 {
     int64_t i_pos;
@@ -84,12 +85,18 @@ void oggseek_index_entries_free ( demux_index_entry_t *idx )
 
 /* internal function to create a new list member */
 
-static demux_index_entry_t *index_entry_new( void )
+static demux_index_entry_t *index_entry_new( int64_t i_timestamp, int64_t i_pagepos )
 {
-    demux_index_entry_t *idx = xmalloc( sizeof( demux_index_entry_t ) );
-    if ( !idx ) return NULL;
-    idx->p_next = idx->p_prev = NULL;
-    idx->i_pagepos_end = -1;
+    if ( i_timestamp == VLC_TS_INVALID || i_pagepos < 1 )
+        return NULL;
+
+    demux_index_entry_t *idx = malloc( sizeof(*idx) );
+    if ( idx )
+    {
+        idx->i_value = i_timestamp;
+        idx->i_pagepos = i_pagepos;
+        idx->p_next = NULL;
+    }
     return idx;
 }
 
@@ -99,60 +106,31 @@ const demux_index_entry_t *OggSeek_IndexAdd ( logical_stream_t *p_stream,
                                              int64_t i_timestamp,
                                              int64_t i_pagepos )
 {
-    demux_index_entry_t *idx;
-    demux_index_entry_t *last_idx = NULL;
-
-    if ( p_stream == NULL ) return NULL;
-
-    idx = p_stream->idx;
-
-    if ( i_timestamp < 1 || i_pagepos < 1 ) return NULL;
-
-    if ( idx == NULL )
+    demux_index_entry_t **pp_next = &p_stream->idx;
+    for( ; *pp_next; )
     {
-        demux_index_entry_t *ie = index_entry_new();
-        if ( !ie ) return NULL;
-        ie->i_value = i_timestamp;
-        ie->i_pagepos = i_pagepos;
-        p_stream->idx = ie;
-        return ie;
+        if( (*pp_next)->i_pagepos >= i_pagepos )
+        {
+            if( (*pp_next)->i_pagepos == i_pagepos )
+                return NULL;
+            break;
+        }
+        pp_next = &((*pp_next)->p_next);
     }
 
-    while ( idx != NULL )
+    demux_index_entry_t *ie = index_entry_new( i_timestamp, i_pagepos );
+    if ( ie )
     {
-        if ( idx->i_pagepos > i_pagepos ) break;
-        last_idx = idx;
-        idx = idx->p_next;
+        ie->p_next = *pp_next;
+        *pp_next = ie;
     }
 
-    /* new entry; insert after last_idx */
-    idx = index_entry_new();
-    if ( !idx ) return NULL;
-    if ( last_idx != NULL )
-    {
-        idx->p_next = last_idx->p_next;
-        last_idx->p_next = idx;
-        idx->p_prev = last_idx;
-    }
-    else
-    {
-        idx->p_next = p_stream->idx;
-        p_stream->idx = idx;
-    }
-
-    if ( idx->p_next != NULL )
-    {
-        idx->p_next->p_prev = idx;
-    }
-
-    idx->i_value = i_timestamp;
-    idx->i_pagepos = i_pagepos;
-
-    return idx;
+    return ie;
 }
 
 static bool OggSeekIndexFind ( logical_stream_t *p_stream, int64_t i_timestamp,
-                               int64_t *pi_pos_lower, int64_t *pi_pos_upper )
+                               int64_t *pi_pos_lower, int64_t *pi_pos_upper,
+                               int64_t *pi_lower_timestamp )
 {
     demux_index_entry_t *idx = p_stream->idx;
 
@@ -163,11 +141,13 @@ static bool OggSeekIndexFind ( logical_stream_t *p_stream, int64_t i_timestamp,
             if ( !idx->p_next ) /* found on last index */
             {
                 *pi_pos_lower = idx->i_pagepos;
+                *pi_lower_timestamp = idx->i_value;
                 return true;
             }
             if ( idx->p_next->i_value > i_timestamp )
             {
                 *pi_pos_lower = idx->i_pagepos;
+                *pi_lower_timestamp = idx->i_value;
                 *pi_pos_upper = idx->p_next->i_pagepos;
                 return true;
             }
@@ -208,11 +188,11 @@ static int64_t get_data( demux_t *p_demux, int64_t i_bytes_to_read )
     char *buf;
     int64_t i_result;
 
-    if ( p_sys->i_total_length > 0 )
+    if ( p_sys->i_total_bytes > 0 )
     {
-        if ( p_sys->i_input_position + i_bytes_to_read > p_sys->i_total_length )
+        if ( p_sys->i_input_position + i_bytes_to_read > p_sys->i_total_bytes )
         {
-            i_bytes_to_read = p_sys->i_total_length - p_sys->i_input_position;
+            i_bytes_to_read = p_sys->i_total_bytes - p_sys->i_input_position;
             if ( i_bytes_to_read <= 0 ) {
                 return 0;
             }
@@ -224,6 +204,8 @@ static int64_t get_data( demux_t *p_demux, int64_t i_bytes_to_read )
     seek_byte ( p_demux, p_sys->i_input_position );
 
     buf = ogg_sync_buffer( &p_sys->oy, i_bytes_to_read );
+    if( !buf )
+        return 0;
 
     i_result = vlc_stream_Read( p_demux->s, buf, i_bytes_to_read );
 
@@ -290,7 +272,7 @@ void Oggseek_ProbeEnd( demux_t *p_demux )
                         continue;
 
                     i_length = Oggseek_GranuleToAbsTimestamp( p_sys->pp_stream[i], i_granule, false );
-                    p_sys->i_length = __MAX( p_sys->i_length, i_length / 1000000 );
+                    p_sys->i_length = __MAX( p_sys->i_length, i_length );
                     break;
                 }
             }
@@ -340,9 +322,6 @@ static int64_t find_first_page_granule( demux_t *p_demux,
     ogg_packet op;
 
     seek_byte( p_demux, i_pos1 );
-
-    if ( i_pos1 == p_stream->i_data_start )
-        return p_sys->i_input_position;
 
     if ( i_bytes_to_read > OGGSEEK_BYTES_TO_READ ) i_bytes_to_read = OGGSEEK_BYTES_TO_READ;
 
@@ -751,7 +730,7 @@ int64_t Oggseek_GranuleToAbsTimestamp( logical_stream_t *p_stream,
 
 /* returns pos */
 static int64_t OggBisectSearchByTime( demux_t *p_demux, logical_stream_t *p_stream,
-            int64_t i_targettime, int64_t i_pos_lower, int64_t i_pos_upper)
+            int64_t i_targettime, int64_t i_pos_lower, int64_t i_pos_upper, int64_t *pi_seek_time)
 {
     int64_t i_start_pos;
     int64_t i_end_pos;
@@ -769,8 +748,8 @@ static int64_t OggBisectSearchByTime( demux_t *p_demux, logical_stream_t *p_stre
     demux_sys_t *p_sys  = p_demux->p_sys;
 
     i_pos_lower = __MAX( i_pos_lower, p_stream->i_data_start );
-    i_pos_upper = __MIN( i_pos_upper, p_sys->i_total_length );
-    if ( i_pos_upper < 0 ) i_pos_upper = p_sys->i_total_length;
+    i_pos_upper = __MIN( i_pos_upper, p_sys->i_total_bytes );
+    if ( i_pos_upper < 0 ) i_pos_upper = p_sys->i_total_bytes;
 
     i_start_pos = i_pos_lower;
     i_end_pos = i_pos_upper;
@@ -780,6 +759,21 @@ static int64_t OggBisectSearchByTime( demux_t *p_demux, logical_stream_t *p_stre
 
     OggDebug( msg_Dbg(p_demux, "Bisecting for time=%"PRId64" between %"PRId64" and %"PRId64,
             i_targettime, i_pos_lower, i_pos_upper ) );
+
+    /* Check lowest possible bound that will never be checked in bisection */
+    current.i_pos = find_first_page_granule( p_demux,
+                                             i_pos_lower,
+                                             __MIN(i_start_pos + PAGE_HEADER_BYTES, i_end_pos),
+                                             p_stream,
+                                             &current.i_granule );
+    if( current.i_granule != -1 )
+    {
+        current.i_timestamp = Oggseek_GranuleToAbsTimestamp( p_stream, current.i_granule, false );
+        if( current.i_timestamp <= i_targettime )
+            bestlower = current;
+        else
+            lowestupper = current;
+    }
 
     do
     {
@@ -849,7 +843,7 @@ static int64_t OggBisectSearchByTime( demux_t *p_demux, logical_stream_t *p_stre
         i_segsize = ( i_end_pos - i_start_pos + 1 ) >> 1;
         i_start_pos += i_segsize;
 
-    } while ( i_segsize > 64 );
+    } while ( i_segsize > PAGE_HEADER_BYTES );
 
     if ( bestlower.i_granule == -1 )
     {
@@ -865,6 +859,7 @@ static int64_t OggBisectSearchByTime( demux_t *p_demux, logical_stream_t *p_stre
                 __MAX ( bestlower.i_pos - OGGSEEK_BYTES_TO_READ, p_stream->i_data_start ),
                 bestlower.i_pos,
                 p_stream, bestlower.i_granule /* unused */ );
+        *pi_seek_time = bestlower.i_timestamp;
         return a;
     }
     /* If not each packet is usable as keyframe, query the codec for keyframe */
@@ -883,9 +878,11 @@ static int64_t OggBisectSearchByTime( demux_t *p_demux, logical_stream_t *p_stre
         int64_t a = OggBackwardSeekToFrame( p_demux,
             __MAX ( bestlower.i_pos - OGGSEEK_BYTES_TO_READ, p_stream->i_data_start ),
             stream_Size( p_demux->s ), p_stream, i_keyframegranule );
+       *pi_seek_time = Oggseek_GranuleToAbsTimestamp(p_stream, i_keyframegranule, false);
         return a;
     }
 
+    *pi_seek_time = bestlower.i_timestamp;
     return bestlower.i_pos;
 }
 
@@ -907,7 +904,8 @@ int Oggseek_BlindSeektoAbsoluteTime( demux_t *p_demux, logical_stream_t *p_strea
     if ( i_lowerpos != -1 ) b_found = true;
 
     /* And also search in our own index */
-    if ( !b_found && OggSeekIndexFind( p_stream, i_time, &i_lowerpos, &i_upperpos ) )
+    int64_t foo;
+    if ( !b_found && OggSeekIndexFind( p_stream, i_time, &i_lowerpos, &i_upperpos, &foo ) )
     {
         b_found = true;
     }
@@ -925,14 +923,16 @@ int Oggseek_BlindSeektoAbsoluteTime( demux_t *p_demux, logical_stream_t *p_strea
     /* or search */
     if ( !b_found && b_fastseek )
     {
+        int64_t i_sync_time;
         i_lowerpos = OggBisectSearchByTime( p_demux, p_stream, i_time,
-                                            p_stream->i_data_start, p_sys->i_total_length );
+                                            p_stream->i_data_start, p_sys->i_total_bytes,
+                                            &i_sync_time );
         b_found = ( i_lowerpos != -1 );
     }
 
     if ( !b_found ) return -1;
 
-    if ( i_lowerpos < p_stream->i_data_start || i_upperpos > p_sys->i_total_length )
+    if ( i_lowerpos < p_stream->i_data_start || i_upperpos > p_sys->i_total_bytes )
         return -1;
 
     /* And really do seek */
@@ -973,14 +973,14 @@ int Oggseek_BlindSeektoPosition( demux_t *p_demux, logical_stream_t *p_stream,
          * final seek time */
         i_pagepos = OggBackwardSeekToFrame( p_demux,
                 __MAX ( i_size - MAX_PAGE_SIZE, p_stream->i_data_start ),
-                __MIN ( i_size + MAX_PAGE_SIZE, p_demux->p_sys->i_total_length ),
+                __MIN ( i_size + MAX_PAGE_SIZE, p_demux->p_sys->i_total_bytes ),
                 p_stream, i_granule );
     }
     else
     {
         /* Otherwise, we just sync to the next keyframe we meet */
         i_pagepos = OggForwardSeekToFrame( p_demux,
-                __MAX ( i_size - MAX_PAGE_SIZE, p_stream->i_data_start ),
+                __MAX ( i_size - MIN_PAGE_SIZE, p_stream->i_data_start ),
                 stream_Size( p_demux->s ),
                 p_stream, i_granule, false );
     }
@@ -1010,15 +1010,17 @@ int Oggseek_SeektoAbsolutetime( demux_t *p_demux, logical_stream_t *p_stream,
     }
     OggDebug( msg_Dbg( p_demux, "Search bounds set to %"PRId64" %"PRId64" using skeleton index", i_offset_lower, i_offset_upper ) );
 
-    OggNoDebug(
-        OggSeekIndexFind( p_stream, i_time, &i_offset_lower, &i_offset_upper )
-    );
+
+    int64_t i_lower_index;
+    if(!OggSeekIndexFind( p_stream, i_time, &i_offset_lower, &i_offset_upper, &i_lower_index ))
+        i_lower_index = 0;
 
     i_offset_lower = __MAX( i_offset_lower, p_stream->i_data_start );
-    i_offset_upper = __MIN( i_offset_upper, p_sys->i_total_length );
+    i_offset_upper = __MIN( i_offset_upper, p_sys->i_total_bytes );
 
+    int64_t i_sync_time;
     int64_t i_pagepos = OggBisectSearchByTime( p_demux, p_stream, i_time,
-                                       i_offset_lower, i_offset_upper);
+                                       i_offset_lower, i_offset_upper, &i_sync_time );
     if ( i_pagepos >= 0 )
     {
         /* be sure to clear any state or read+pagein() will fail on same # */
@@ -1026,11 +1028,13 @@ int Oggseek_SeektoAbsolutetime( demux_t *p_demux, logical_stream_t *p_stream,
         p_sys->i_input_position = i_pagepos;
         seek_byte( p_demux, p_sys->i_input_position );
     }
+
     /* Insert keyframe position into index */
-    OggNoDebug(
-    if ( i_pagepos >= p_stream->i_data_start )
-        OggSeek_IndexAdd( p_stream, i_time, i_pagepos )
-    );
+    int64_t index_interval = p_sys->i_length
+              ? CLOCK_FREQ * ceil( sqrt( p_sys->i_length / CLOCK_FREQ ) / 2 )
+              : CLOCK_FREQ * 5;
+    if ( i_pagepos >= p_stream->i_data_start && ( i_sync_time - i_lower_index >= index_interval ) )
+        OggSeek_IndexAdd( p_stream, i_sync_time, i_pagepos );
 
     OggDebug( msg_Dbg( p_demux, "=================== Seeked To %"PRId64" time %"PRId64, i_pagepos, i_time ) );
     return i_pagepos;
@@ -1091,6 +1095,8 @@ int64_t oggseek_read_page( demux_t *p_demux )
     ogg_sync_reset( &p_ogg->oy );
 
     buf = ogg_sync_buffer( &p_ogg->oy, i_page_size );
+    if( !buf )
+        return 0;
 
     memcpy( buf, header, PAGE_HEADER_BYTES + i_nsegs );
 

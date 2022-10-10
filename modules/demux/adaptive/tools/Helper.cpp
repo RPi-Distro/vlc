@@ -27,6 +27,8 @@
 
 #include "Helper.h"
 #include <algorithm>
+#include <sstream>
+
 using namespace adaptive;
 
 std::string Helper::combinePaths        (const std::string &path1, const std::string &path2)
@@ -99,4 +101,49 @@ std::list<std::string> Helper::tokenize(const std::string &str, char c)
 
     ret.push_back(str.substr(prev));
     return ret;
+}
+
+std::string & Helper::rtrim(std::string &s, const std::string &l)
+{
+    std::size_t p = s.find_last_not_of(l);
+    if(p != std::string::npos)
+        s.erase(p + 1);
+    else
+        s.clear();
+    return s;
+}
+
+std::string & Helper::ltrim(std::string &s, const std::string &l)
+{
+    std::size_t p = s.find_first_not_of(l);
+    if(p != std::string::npos)
+        s.erase(0, p);
+    else
+        s.clear();
+    return s;
+}
+
+std::string & Helper::trim(std::string &s, const std::string &l)
+{
+    return ltrim(rtrim(s, l), l);
+}
+
+std::string Helper::unescape(const std::string &s)
+{
+    std::istringstream is(s);
+    std::ostringstream os;
+
+    char c;
+    while(is.get(c))
+    {
+        if(c == '\\')
+        {
+            if(!is.get(c))
+                break;
+        }
+
+        os << c;
+    }
+
+    return os.str();
 }

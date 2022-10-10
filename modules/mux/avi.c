@@ -2,7 +2,7 @@
  * avi.c
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: b4a55a2a756b3a4ee4ef051c8d5e86d3355ed5b6 $
+ * $Id: 1367dac8065b19aceba49c669ff69700d711de19 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -904,7 +904,7 @@ static block_t *avi_HeaderCreateRIFF( sout_mux_t *p_mux )
 
     /* Now set hdrl size */
     bo_set_32le( &bo, offsets.i_hdrllistsize,
-                 bo.b->i_buffer - offsets.i_hdrldatastart );
+                 bo.b->i_buffer + 4 - offsets.i_hdrldatastart );
 
     avi_HeaderAdd_INFO( p_mux, &bo );
 

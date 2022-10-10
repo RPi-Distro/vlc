@@ -21,6 +21,7 @@
 #define TIME_HPP
 
 #include <vlc_common.h>
+#include <list>
 
 namespace adaptive
 {
@@ -53,6 +54,97 @@ class Timescale
 
     private:
         uint64_t scale;
+};
+
+class SegmentTimes
+{
+    public:
+        SegmentTimes()
+        {
+            demux = VLC_TS_INVALID;
+            media = VLC_TS_INVALID;
+            display = VLC_TS_INVALID;
+        }
+        SegmentTimes(mtime_t a, mtime_t b, mtime_t c = VLC_TS_INVALID)
+        {
+            demux = a;
+            media = b;
+            display = c;
+        }
+        void offsetBy(mtime_t v)
+        {
+            if(v == 0)
+                return;
+            if(demux != VLC_TS_INVALID)
+                demux += v;
+            if(media != VLC_TS_INVALID)
+                media += v;
+            if(display != VLC_TS_INVALID)
+                display += v;
+        }
+        mtime_t demux;
+        mtime_t media;
+        mtime_t display;
+};
+
+class Times
+{
+    public:
+        Times()
+        {
+            continuous = VLC_TS_INVALID;
+        }
+        Times(const SegmentTimes &s, mtime_t a)
+        {
+            segment = s;
+            continuous = a;
+        }
+        void offsetBy(mtime_t v)
+        {
+            if(continuous != VLC_TS_INVALID)
+                continuous += v;
+            segment.offsetBy(v);
+        }
+        mtime_t continuous;
+        SegmentTimes segment;
+};
+
+using SynchronizationReference = std::pair<uint64_t, Times>;
+
+class SynchronizationReferences
+{
+    public:
+        SynchronizationReferences() = default;
+        void addReference(uint64_t seq, const Times &t)
+        {
+            for(auto &r : refs)
+                if(r.first == seq)
+                {
+                    /* update reference when the timestamps are really old to prevent false roll */
+                    constexpr mtime_t quarterroll = (INT64_C(0x1FFFFFFFF) * 100 / 9) >> 2;
+                    if(t.continuous - r.second.continuous > quarterroll)
+                        r.second = t;
+                    return;
+                }
+            while(refs.size() > 10)
+                refs.pop_back();
+            refs.push_front(SynchronizationReference(seq, t));
+        }
+        bool getReference(uint64_t seq, mtime_t,
+                          SynchronizationReference &ref) const
+        {
+            for(auto t : refs)
+            {
+                if(t.first != seq)
+                    continue;
+                ref = t;
+                return true;
+            }
+            return false;
+        }
+
+    private:
+        std::list<SynchronizationReference> refs;
 };
 
 }

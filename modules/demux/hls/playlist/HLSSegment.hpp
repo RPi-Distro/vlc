@@ -38,11 +38,8 @@ namespace hls
             public:
                 HLSSegment( ICanonicalUrl *parent, uint64_t sequence );
                 virtual ~HLSSegment();
-                mtime_t getUTCTime() const;
-                virtual int compare(ISegment *) const override;
 
             protected:
-                mtime_t utcTime;
                 virtual bool prepareChunk(SharedResources *, SegmentChunk *,
                                           BaseRepresentation *) override;
         };

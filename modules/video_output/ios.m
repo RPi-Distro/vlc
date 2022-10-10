@@ -2,7 +2,7 @@
  * ios.m: iOS OpenGL ES provider
  *****************************************************************************
  * Copyright (C) 2001-2017 VLC authors and VideoLAN
- * $Id: fe0435a57f6bb42eac8fe2611351c139b7c0fc40 $
+ * $Id: 957b312f454f8ea7d2a4d5f2c8511c01bcaf9064 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -493,6 +493,9 @@ static void GLESSwap(vlc_gl_t *gl)
         [_viewContainer addSubview:self];
 
         /* add tap gesture recognizer for DVD menus and stuff */
+        if (var_InheritBool( _voutDisplay, "mouse-events" ) == false) {
+            return YES;
+        }
         _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                  action:@selector(tapRecognized:)];
         if (_viewContainer.window

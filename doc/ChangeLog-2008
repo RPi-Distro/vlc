@@ -8482,7 +8482,7 @@ Date:   Tue Sep 30 13:28:03 2008 +0200
     WinCE: more missing functions fixes
 
 commit 07faebaf35bfa682913ac99f11562ecd8b974021
-Merge: b973e326f2 938c3c464f
+Merge: b973e326f27 938c3c464fd
 Author: Geoffroy Couprie <geo.couprie@gmail.com>
 Date:   Tue Sep 30 12:08:41 2008 +0200
 
@@ -16931,7 +16931,7 @@ Date:   Fri Aug 22 14:50:07 2008 -0700
     Use FIND_CHILD when possible to look for the vout as suggested by dionoea and nefrir
 
 commit b38e99dd1389bc6b9a7579dd3fa872fdc59e88c1
-Merge: e40db6d8bb 2d5437cec8
+Merge: e40db6d8bb7 2d5437cec89
 Author: Loïc Minier <lool@dooz.org>
 Date:   Fri Aug 22 23:50:02 2008 +0200
 
@@ -18250,7 +18250,7 @@ Date:   Thu Aug 14 19:50:23 2008 +0200
     mkv: bool spacing cleanup
 
 commit 75348facc56350e53eb336252c496876a5d04c09
-Merge: 0b301104d4 7b3f256f61
+Merge: 0b301104d48 7b3f256f61c
 Author: Pierre d'Herbemont <pdherbemont@videolan.org>
 Date:   Fri Aug 15 00:59:10 2008 +0200
 
@@ -19674,7 +19674,7 @@ Date:   Sun Aug 3 17:26:38 2008 +0200
     Signed-off-by: Rémi Denis-Courmont <rdenis@simphalempin.com>
 
 commit 6ebae83db81a80cdc3cead264455074702223ac0
-Merge: 626d109e73 684179744f
+Merge: 626d109e739 684179744fa
 Author: Derk-Jan Hartman <hartman@videolan.org>
 Date:   Sat Aug 9 02:07:55 2008 +0200
 
@@ -21297,7 +21297,7 @@ Date:   Fri Aug 1 00:46:52 2008 +0200
     pda gui: Set prio to 0, so it is not eligible for automatic selection. This is bad since it's a GTK module, and with our Qt switch and demise of wxGTK module, this module might be selected more often. It is not for the average user, and 0 tested under 0.9.0. Relates to #1798
 
 commit 35824733e305214dfada18dd6362cfa02a86dcd3
-Merge: ec6ed81c26 7ca75b8a23
+Merge: ec6ed81c26a 7ca75b8a239
 Author: Derk-Jan Hartman <hartman@videolan.org>
 Date:   Fri Aug 1 00:41:33 2008 +0200
 
@@ -23154,7 +23154,7 @@ Date:   Mon Jul 21 09:13:45 2008 +0200
     Use pl_Locked and pl_Unlocked.
 
 commit cd4c4f1dadf2a9b595948da6d70ac2eaad93c990
-Merge: 344b1df555 9525c2bdc4
+Merge: 344b1df5552 9525c2bdc42
 Author: Derk-Jan Hartman <hartman@videolan.org>
 Date:   Mon Jul 21 02:35:21 2008 +0200
 
@@ -27181,7 +27181,7 @@ Date:   Thu Jun 26 18:38:55 2008 +0300
     Remove dummy $Id$
 
 commit e2a614c82b502ea6c3cdee7d0fc39cbb9627041e
-Merge: 51f898a0eb c617646c2e
+Merge: 51f898a0eb6 c617646c2e1
 Author: Ilkka Ollakka <ileoo@videolan.org>
 Date:   Thu Jun 26 10:38:53 2008 +0300
 
@@ -27249,7 +27249,7 @@ Date:   Wed Jun 25 12:53:43 2008 -0700
     If you are unpleased about that, fix the core (threading and networking).
 
 commit 84e0f97a07c049c9c7082032699d54f9b4e5708a
-Merge: 2f53d49924 12b188309d
+Merge: 2f53d49924d 12b188309df
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Wed Jun 25 12:49:51 2008 -0700
 
@@ -32726,7 +32726,7 @@ Date:   Wed May 28 18:21:48 2008 +0200
     Fix [95e3bb2eaf22929dac3e2c37a26a23e9a0619333]
 
 commit 975a356c965b7f84586b929b14ea8a70c6535beb
-Merge: b4fdd335a4 e41bccdf88
+Merge: b4fdd335a49 e41bccdf881
 Author: Jean-Paul Saman <jpsaman@videolan.org>
 Date:   Wed May 28 18:12:49 2008 +0200
 
@@ -32764,7 +32764,7 @@ Date:   Wed May 28 17:41:51 2008 +0200
     This case is already handled in vlc_object_find()
 
 commit dd61f37b57429f10db99ffef010ec1c4e2fa0498
-Merge: e1629c217e c807dafe39
+Merge: e1629c217e6 c807dafe39e
 Author: Jean-Paul Saman <jpsaman@videolan.org>
 Date:   Wed May 28 17:33:49 2008 +0200
 
@@ -38442,7 +38442,7 @@ Date:   Mon Apr 14 16:13:21 2008 +0200
     Signed-off-by: Meuuh the cow
 
 commit df61d33b06e2b3cbbe746b2f5a9bea5b370c24ff
-Merge: cb23a8236a 0311983688
+Merge: cb23a8236a2 0311983688a
 Author: Jean-Paul Saman <jpsaman@videolan.org>
 Date:   Mon Apr 14 15:44:31 2008 +0200
 
@@ -38789,7 +38789,7 @@ Date:   Fri Apr 11 13:20:51 2008 +0200
     Compile fix.
 
 commit dff434365d951b38be69859dc8c3b210c82e019f
-Merge: c72f2f9dcd 87db766dfd
+Merge: c72f2f9dcdc 87db766dfd9
 Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
 Date:   Fri Apr 11 10:53:45 2008 +0200
 
@@ -38903,7 +38903,7 @@ Date:   Wed Apr 9 21:09:05 2008 +0200
     more VLM tests
 
 commit 1ac8441a1c11c1c242a4c5ad7ed9918fbf14da37
-Merge: 665cd9209c 569f294d6a
+Merge: 665cd9209c6 569f294d6aa
 Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
 Date:   Wed Apr 9 12:45:24 2008 +0200
 
@@ -41840,7 +41840,7 @@ Date:   Sun Mar 23 23:00:27 2008 +0000
     Do not allocate arbitrary length on the stack
 
 commit c8e6c21dc43999ad81e6801011c57553a07e85ab
-Merge: 05278162c6 e5189c41aa
+Merge: 05278162c64 e5189c41aa4
 Author: Rafaël Carré <funman@videolan.org>
 Date:   Sun Mar 23 22:28:03 2008 +0000
 
@@ -42249,7 +42249,7 @@ Date:   Thu Mar 20 17:43:48 2008 +0000
     missing \param and \return tags (though a lot remains to be done).
 
 commit 4e0e4d6d4a3421ccf21715b0705b582826b0d62e
-Merge: cfc98288ba 3b0534ea2c
+Merge: cfc98288bab 3b0534ea2cd
 Author: Sam Hocevar <sam@zoy.org>
 Date:   Thu Mar 20 17:38:00 2008 +0000
 
@@ -44963,7 +44963,7 @@ Date:   Sun Mar 2 20:02:34 2008 +0200
     Signed-off-by: Rémi Denis-Courmont <rem@videolan.org>
 
 commit 132bf65db16a3496f2b14bb219b90695bdec3b86
-Merge: 79223aaeaf bd9f77136f
+Merge: 79223aaeafe bd9f77136ff
 Author: André Weber <WeberAndre@gmx.de>
 Date:   Sun Mar 2 18:37:32 2008 +0100
 

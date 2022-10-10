@@ -2,7 +2,7 @@
  * wall.c : Wall video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2009 VLC authors and VideoLAN
- * $Id: 6ec29a0778302d6851d769153dc0230cfeab4c94 $
+ * $Id: 8a6851e6965fdd4a92fcbf090519bb8c7b37fff3 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -416,7 +416,7 @@ static int Filter( video_splitter_t *p_splitter, picture_t *pp_dst[], picture_t 
                 const int i_y = p_output->i_top  * p->i_visible_pitch / p0->i_visible_pitch;
                 const int i_x = p_output->i_left * p->i_visible_lines / p0->i_visible_lines;
 
-                p->p_pixels += i_y * p->i_pitch + ( i_x - (i_x % p->i_pixel_pitch));
+                p->p_pixels += i_y * p->i_pitch + i_x * p->i_pixel_pitch;
             }
             picture_Copy( p_dst, &tmp );
         }

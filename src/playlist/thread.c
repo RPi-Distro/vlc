@@ -2,7 +2,7 @@
  * thread.c : Playlist management functions
  *****************************************************************************
  * Copyright © 1999-2008 VLC authors and VideoLAN
- * $Id: b78f31a7eacde94f150b245a80b029bacafc6a05 $
+ * $Id: ca6adbac07a5eec2b2fcea5aae841c3b1cc7d9f4 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -498,19 +498,31 @@ static void *Thread ( void *data )
         /* Playlist in running state */
         while( !p_sys->killed && Next( p_playlist ) )
         {
-            bool ok = LoopInput( p_playlist );
-            if (ok)
-                p_sys->i_consecutive_errors = 0;
-            else
+            LoopInput( p_playlist );
+            if (p_sys->last_eos)
             {
-                if (p_sys->i_consecutive_errors < 6)
-                    p_sys->i_consecutive_errors++;
+#define MAX_EOS_BURST 4
+                mtime_t diff = mdate() - p_sys->last_eos;
+                if (diff < VLC_PLAYLIST_EOS_BURST_THRESHOLD)
+                {
+                    if (p_sys->eos_burst_count < MAX_EOS_BURST + 6)
+                        ++p_sys->eos_burst_count;
 
-                int slowdown = 1 << (p_sys->i_consecutive_errors - 1);
-                /* 100ms, 200ms, 400ms, 800ms, 1.6s, 3.2s */
-                mtime_t deadline = mdate() + slowdown * 100000L; /* usecs */
-                vlc_cond_timedwait(&p_sys->signal, &p_sys->lock, deadline);
+                    if (p_sys->eos_burst_count > MAX_EOS_BURST)
+                    {
+                        unsigned pow = p_sys->eos_burst_count - MAX_EOS_BURST;
+                        unsigned slowdown = 1 << (pow - 1);
+                        /* 100ms, 200ms, 400ms, 800ms, 1.6s, 3.2s */
+                        mtime_t deadline = mdate() + slowdown * 100000L; /* usecs */
+                        vlc_cond_timedwait(&p_sys->signal, &p_sys->lock, deadline);
+                    }
+
+                }
+                else
+                    p_sys->eos_burst_count = 0;
             }
+
+            p_sys->last_eos = mdate();
             played = true;
         }
 
