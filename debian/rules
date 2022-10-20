@@ -75,7 +75,6 @@ confflags += \
 	--enable-shine \
 	--enable-shout \
 	--enable-skins2 \
-	--enable-sndio \
 	--enable-soxr \
 	--enable-spatialaudio \
 	--enable-speex \
@@ -110,11 +109,12 @@ confflags += \
 # libtar: security issue (#737534)
 # live555: non-free code from RFC 3550 (#981439)
 # macosx*: MacOX only
-# microdns: functionality already provided by avahi
 # mfx: currently not supported on Linux
+# microdns: functionality already provided by avahi
 # opencv: developer plugin not required by end users
 # projectm: broken
 # schroedinger: removed from Debian (#845037)
+# sndio: NMU maintained key package
 # sparkle: MacOS X only
 # telx: incompatible with zvbi
 # vpx: not needed when having libavcodec
@@ -143,6 +143,7 @@ confflags += \
 	--disable-opencv \
 	--disable-projectm \
 	--disable-schroedinger \
+	--disable-sndio \
 	--disable-sparkle \
 	--disable-telx \
 	--disable-vpx \

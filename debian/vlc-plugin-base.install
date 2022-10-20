@@ -57,7 +57,6 @@ usr/lib/*/vlc/plugins/audio_output/libalsa_plugin.so [alsa]
 usr/lib/*/vlc/plugins/audio_output/libamem_plugin.so
 usr/lib/*/vlc/plugins/audio_output/liboss_plugin.so [oss]
 usr/lib/*/vlc/plugins/audio_output/libpulse_plugin.so
-usr/lib/*/vlc/plugins/audio_output/libsndio_plugin.so
 usr/lib/*/vlc/plugins/codec/liba52_plugin.so
 usr/lib/*/vlc/plugins/codec/libadpcm_plugin.so
 usr/lib/*/vlc/plugins/codec/libaes3_plugin.so
