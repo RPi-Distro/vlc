@@ -1562,40 +1562,6 @@ done:
 #include <SystemConfiguration/SystemConfiguration.h>
 #include "vlc_charset.h"
 
-inline char *FromCFString(const CFStringRef cfString,
-                          const CFStringEncoding cfStringEncoding)
-{
-    // Try the quick way to obtain the buffer
-    const char *tmpBuffer = CFStringGetCStringPtr(cfString, cfStringEncoding);
-    if (tmpBuffer != NULL) {
-        return strdup(tmpBuffer);
-    }
-
-    // The quick way did not work, try the long way
-    CFIndex length = CFStringGetLength(cfString);
-    CFIndex maxSize = CFStringGetMaximumSizeForEncoding(length, cfStringEncoding);
-
-    // If result would exceed LONG_MAX, kCFNotFound is returned
-    if (unlikely(maxSize == kCFNotFound)) {
-        return NULL;
-    }
-
-    // Account for the null terminator
-    maxSize++;
-
-    char *buffer = (char *)malloc(maxSize);
-    if (unlikely(buffer == NULL)) {
-        return NULL;
-    }
-
-    // Copy CFString in requested encoding to buffer
-    Boolean success = CFStringGetCString(cfString, buffer, maxSize, cfStringEncoding);
-
-    if (!success)
-        FREENULL(buffer);
-    return buffer;
-}
-
 inline char *getPreferedAdapter()
 {
     SCDynamicStoreRef session = SCDynamicStoreCreate(NULL, CFSTR("session"), NULL, NULL);
