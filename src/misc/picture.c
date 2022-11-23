@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: e03f9d592366c88f6156c742e2f110cc081a9869 $
+ * $Id: 0338076fd80e9e17291859f4a43bb951bde87d8f $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -178,7 +178,7 @@ int picture_Setup( picture_t *p_picture, const video_format_t *restrict fmt )
     unsigned int i_ratio_h  = 1;
     for( unsigned i = 0; i < p_dsc->plane_count; i++ )
     {
-        i_modulo_w = LCM( i_modulo_w, 16 * p_dsc->p[i].w.den );
+        i_modulo_w = LCM( i_modulo_w, 64 * p_dsc->p[i].w.den );
         i_modulo_h = LCM( i_modulo_h, 16 * p_dsc->p[i].h.den );
         if( i_ratio_h < p_dsc->p[i].h.den )
             i_ratio_h = p_dsc->p[i].h.den;
@@ -198,7 +198,7 @@ int picture_Setup( picture_t *p_picture, const video_format_t *restrict fmt )
         p->i_visible_pitch = (fmt->i_visible_width + (p_dsc->p[i].w.den - 1)) / p_dsc->p[i].w.den * p_dsc->p[i].w.num * p_dsc->pixel_size;
         p->i_pixel_pitch   = p_dsc->pixel_size;
 
-        assert( (p->i_pitch % 16) == 0 );
+        assert( (p->i_pitch % 64) == 0 );
     }
     p_picture->i_planes  = p_dsc->plane_count;
 
