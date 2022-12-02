@@ -2,7 +2,7 @@
  * VLCUIWidgets.h: Widgets for VLC's extensions dialogs for Mac OS X
  *****************************************************************************
  * Copyright (C) 2009-2015 the VideoLAN team and authors
- * $Id: 3bb11ade79c215223e0dfb26e5e08d07962f5bda $
+ * $Id: d084cf980a5985710f5173d61cb50e6b65aec3bd $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan dot>,
  *          Brendon Justin <brendonjustin@gmail.com>
@@ -35,7 +35,14 @@
 @property (readwrite) extension_widget_t *widget;
 @end
 
+@interface VLCDialogLabel : NSTextField
+@end
+
 @interface VLCDialogTextField : NSTextField
+@property (readwrite) extension_widget_t *widget;
+@end
+
+@interface VLCDialogSecureTextField : NSSecureTextField
 @property (readwrite) extension_widget_t *widget;
 @end
 

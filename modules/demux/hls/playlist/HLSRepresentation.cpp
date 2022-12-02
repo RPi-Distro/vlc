@@ -44,7 +44,7 @@ HLSRepresentation::HLSRepresentation  ( BaseAdaptationSet *set ) :
 {
     b_live = true;
     b_loaded = false;
-    b_failed = false;
+    updateFailureCount = 0;
     lastUpdateTime = 0;
     targetDuration = 0;
     streamFormat = StreamFormat::Type::Unknown;
@@ -127,7 +127,7 @@ void HLSRepresentation::scheduleNextUpdate(uint64_t, bool b_updated)
 
 bool HLSRepresentation::needsUpdate(uint64_t number) const
 {
-    if(b_failed)
+    if(updateFailureCount > MAX_UPDATE_FAILED_UPDATE_COUNT)
         return false;
     if(!b_loaded)
         return true;
@@ -135,17 +135,19 @@ bool HLSRepresentation::needsUpdate(uint64_t number) const
     {
         const mtime_t now = mdate();
         const mtime_t elapsed = now - lastUpdateTime;
-        const mtime_t duration = targetDuration
-                                  ? CLOCK_FREQ * targetDuration
-                                  : CLOCK_FREQ * 2;
+        mtime_t duration = targetDuration
+                         ? CLOCK_FREQ * targetDuration
+                         : CLOCK_FREQ * 2;
+        if(updateFailureCount)
+            duration /= 2;
         if(elapsed < duration)
             return false;
 
-        if(number != std::numeric_limits<uint64_t>::max())
-        {
-            mtime_t minbuffer = getMinAheadTime(number);
-            return ( minbuffer < duration );
-        }
+        if(number == std::numeric_limits<uint64_t>::max())
+            return true;
+
+        mtime_t minbuffer = getMinAheadTime(number);
+        return ( minbuffer < duration );
     }
     return false;
 }
@@ -155,38 +157,88 @@ bool HLSRepresentation::runLocalUpdates(SharedResources *res)
     BasePlaylist *playlist = getPlaylist();
     M3U8Parser parser(res);
     if(!parser.appendSegmentsFromPlaylistURI(playlist->getVLCObject(), this))
-        b_failed = true;
+    {
+        msg_Warn(playlist->getVLCObject(), "Failed to update %u/%u playlist ID %s",
+                 updateFailureCount, MAX_UPDATE_FAILED_UPDATE_COUNT,
+                 getID().str().c_str());
+        updateFailureCount++;
+        lastUpdateTime = mdate();
+        return false;
+    }
     else
+    {
+        updateFailureCount = 0;
         b_loaded = true;
-    return true;
+        return true;
+    }
+}
+
+bool HLSRepresentation::canNoLongerUpdate() const
+{
+    return updateFailureCount > MAX_UPDATE_FAILED_UPDATE_COUNT;
 }
 
 uint64_t HLSRepresentation::translateSegmentNumber(uint64_t num, const BaseRepresentation *from) const
 {
-    if(consistentSegmentNumber())
+    if(targetDuration == static_cast<const HLSRepresentation *>(from)->targetDuration)
         return num;
+
     ISegment *fromSeg = from->getMediaSegment(num);
-    HLSSegment *fromHlsSeg = dynamic_cast<HLSSegment *>(fromSeg);
-    if(!fromHlsSeg)
-        return 1;
+    const SegmentList *segmentList = inheritSegmentList();
+    if(!fromSeg || !segmentList)
+        return std::numeric_limits<uint64_t>::max();
 
-    const Timescale timescale = inheritTimescale();
-    const mtime_t utcTime = fromHlsSeg->getDisplayTime() +
-                               timescale.ToTime(fromHlsSeg->duration.Get()) / 2;
+    const uint64_t discontinuitySequence = fromSeg->getDiscontinuitySequenceNumber();
 
-    const std::vector<Segment *> &list = inheritSegmentList()->getSegments();
-    std::vector<Segment *>::const_iterator it;
-    for(it=list.begin(); it != list.end(); ++it)
+    if(!segmentList->hasRelativeMediaTimes())
     {
-        const HLSSegment *hlsSeg = dynamic_cast<HLSSegment *>(*it);
-        if(hlsSeg)
+        const stime_t wantedTimeIn = fromSeg->startTime.Get();
+        const stime_t wantedTimeOut = wantedTimeIn + fromSeg->duration.Get();
+
+        const std::vector<Segment *> &list = segmentList->getSegments();
+        std::vector<Segment *>::const_iterator it;
+        for(it=list.begin(); it != list.end(); ++it)
         {
-            if (hlsSeg->getDisplayTime() <= utcTime || it == list.begin())
-                num = hlsSeg->getSequenceNumber();
-            else
-                return num;
+            const ISegment *seg = *it;
+            /* Must be in the same sequence */
+            if(seg->getDiscontinuitySequenceNumber() < discontinuitySequence)
+                continue;
+            const stime_t segTimeIn = seg->startTime.Get();
+            const stime_t segTimeOut = segTimeIn + seg->duration.Get();
+            if(wantedTimeIn >= segTimeIn && wantedTimeIn < segTimeOut)
+                return seg->getSequenceNumber();
+            /* approx / gap */
+            if(wantedTimeOut >= segTimeIn && wantedTimeOut < segTimeOut)
+                return seg->getSequenceNumber();
+        }
+    }
+    else if(segmentList->getTotalLength())
+    {
+        const SegmentList *fromList = inheritSegmentList();
+        if(fromList)
+        {
+            stime_t length = fromList->getTotalLength();
+            stime_t first = fromList->getSegments().front()->startTime.Get();
+            stime_t now = fromSeg->startTime.Get();
+            double relpos = ((double)(now - first)) / length;
+
+            const std::vector<Segment *> &list = segmentList->getSegments();
+            stime_t lookup = list.front()->startTime.Get() +
+                             segmentList->getTotalLength() * relpos;
+            std::vector<Segment *>::const_iterator it;
+            for(it=list.begin(); it != list.end(); ++it)
+            {
+                const ISegment *seg = *it;
+                /* Must be in the same sequence */
+                if(seg->getDiscontinuitySequenceNumber() < discontinuitySequence)
+                    continue;
+                const stime_t segTimeIn = seg->startTime.Get();
+                const stime_t segTimeOut = segTimeIn + seg->duration.Get();
+                if(lookup >= segTimeIn && lookup < segTimeOut)
+                    return seg->getSequenceNumber();
+            }
         }
     }
 
-    return 1;
+    return std::numeric_limits<uint64_t>::max();
 }

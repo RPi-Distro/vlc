@@ -28355,9 +28355,3 @@ Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Wed Jan 1 17:57:26 2014 +0200
 
     Remove stray comment
-
-commit 33d54e40ebfc58ecffe482a25f817c0b550c63b9
-Author: Jean-Baptiste Kempf <jb@videolan.org>
-Date:   Wed Jan 1 11:31:17 2014 +0100
-
-    Happy New Year 2014!

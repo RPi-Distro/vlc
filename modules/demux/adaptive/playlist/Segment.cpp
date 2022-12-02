@@ -31,6 +31,7 @@
 #include "BaseRepresentation.h"
 #include "BasePlaylist.hpp"
 #include "SegmentChunk.hpp"
+#include "../SharedResources.hpp"
 #include "../http/BytesRange.hpp"
 #include "../http/HTTPConnectionManager.h"
 #include "../http/Downloader.hpp"
@@ -48,6 +49,7 @@ ISegment::ISegment(const ICanonicalUrl *parent):
     startTime.Set(0);
     duration.Set(0);
     sequence = 0;
+    discontinuitySequenceNumber = std::numeric_limits<uint64_t>::max();
     templated = false;
     discontinuity = false;
     displayTime = VLC_TS_INVALID;
@@ -75,8 +77,7 @@ bool ISegment::prepareChunk(SharedResources *res, SegmentChunk *chunk, BaseRepre
     return true;
 }
 
-SegmentChunk* ISegment::toChunk(SharedResources *res, AbstractConnectionManager *connManager,
-                                size_t index, BaseRepresentation *rep)
+SegmentChunk* ISegment::toChunk(SharedResources *res, size_t index, BaseRepresentation *rep)
 {
     const std::string url = getUrlSegment().toString(index, rep);
     BytesRange range;
@@ -89,7 +90,7 @@ SegmentChunk* ISegment::toChunk(SharedResources *res, AbstractConnectionManager 
         chunkType = ChunkType::Index;
     else
         chunkType = ChunkType::Segment;
-    AbstractChunkSource *source = connManager->makeSource(url,
+    AbstractChunkSource *source = res->getConnManager()->makeSource(url,
                                                           rep->getAdaptationSet()->getID(),
                                                           chunkType,
                                                           range);
@@ -100,17 +101,18 @@ SegmentChunk* ISegment::toChunk(SharedResources *res, AbstractConnectionManager 
         {
             chunk->sequence = index;
             chunk->discontinuity = discontinuity;
+            chunk->discontinuitySequenceNumber = getDiscontinuitySequenceNumber();
             if(!prepareChunk(res, chunk, rep))
             {
                 delete chunk;
                 return nullptr;
             }
-            connManager->start(source);
+            res->getConnManager()->start(source);
             return chunk;
         }
         else
         {
-            connManager->recycleSource(source);
+            res->getConnManager()->recycleSource(source);
         }
     }
     return nullptr;
@@ -137,6 +139,16 @@ uint64_t ISegment::getSequenceNumber() const
     return sequence;
 }
 
+void ISegment::setDiscontinuitySequenceNumber(uint64_t seq)
+{
+    discontinuitySequenceNumber = seq;
+}
+
+uint64_t ISegment::getDiscontinuitySequenceNumber() const
+{
+    return discontinuitySequenceNumber;
+}
+
 size_t ISegment::getOffset() const
 {
     return startByte;
@@ -153,6 +165,12 @@ void ISegment::debug(vlc_object_t *obj, int indent) const
     if(startTime.Get() > 0)
     	 ss << " stime " << startTime.Get();
     ss << " duration " << duration.Get();
+    if(discontinuity)
+    {
+        ss << " dty";
+        if(discontinuitySequenceNumber != std::numeric_limits<uint64_t>::max())
+            ss << "#" << discontinuitySequenceNumber;
+    }
     msg_Dbg(obj, "%s", ss.str().c_str());
 }
 
@@ -162,29 +180,6 @@ bool ISegment::contains(size_t byte) const
         return false;
     return (byte >= startByte &&
             (!endByte || byte <= endByte) );
-}
-
-int ISegment::compare(ISegment *other) const
-{
-    if(duration.Get())
-    {
-        if(startTime.Get() > other->startTime.Get())
-            return 1;
-        else if(startTime.Get() < other->startTime.Get())
-            return -1;
-    }
-
-    if(startByte > other->startByte)
-        return 1;
-    else if(startByte < other->startByte)
-        return -1;
-
-    if(endByte > other->endByte)
-        return 1;
-    else if(endByte < other->endByte)
-        return -1;
-
-    return 0;
 }
 
 void ISegment::setEncryption(CommonEncryption &e)

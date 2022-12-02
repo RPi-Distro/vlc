@@ -11389,7 +11389,7 @@ Date:   Wed Jul 21 20:25:59 2010 +0300
     Disable swscale if avcodec is disabled
 
 commit 1c6ac615a82aa1d8bab6295c828238e126ad201a
-Merge: c1cf203b27 a81518d6c9
+Merge: c1cf203b272 a81518d6c9f
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Wed Jul 21 18:16:32 2010 +0200
 
@@ -25249,7 +25249,7 @@ Date:   Wed Mar 3 20:51:49 2010 +0200
     kilobit is kb, not kB
 
 commit 778a6f0719a6bf547917ff9f2ef7fd84769fd901
-Merge: 8d76c39a23 f8aeca6aea
+Merge: 8d76c39a239 f8aeca6aea3
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Wed Mar 3 20:09:49 2010 +0200
 
@@ -31900,7 +31900,7 @@ Date:   Mon Feb 1 01:56:02 2010 +0100
     macosx/framework: Get rid of VLCMediaListAspect, and remove a bunch of exception.
 
 commit cb9e605beef6ce4134bec22a90aa54746444e667
-Merge: 0afbf87808 58b047635b
+Merge: 0afbf878082 58b047635b7
 Author: JP Dinger <jpd@videolan.org>
 Date:   Mon Feb 1 01:57:41 2010 +0100
 

@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 69abe50c8c08955114c2baae4ed1ccd453db5887 $
+ * $Id: 965011f26a11810409132fd0708305cca9ce1411 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -66,6 +66,11 @@ dvdnav_status_t dvdnav_jump_to_sector_by_time(dvdnav_t *, uint64_t, int32_t);
 #include "../demux/mpeg/ps.h"
 
 #include "disc_helper.h"
+
+#ifndef DVDREAD_VERSION_CODE /* defined de facto in 6.0 */
+# define DVDREAD_VERSION_CODE(major, minor, micro) (((major) * 10000) + ((minor) * 100) +  ((micro) * 1))
+# define DVDREAD_VERSION DVDREAD_VERSION_CODE(5,0,3)
+#endif
 
 /*****************************************************************************
  * Module descriptor

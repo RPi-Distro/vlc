@@ -2,7 +2,7 @@
  * subsdelay.c : Subsdelay plugin for vlc
  *****************************************************************************
  * Copyright © 2011 VideoLAN
- * $Id: 5f05cf0fc28164afebbfc9b294da4196f5410dea $
+ * $Id: db810bbdb976618f9006725aeb1a78948bb1bf0a $
  *
  * Authors: Yuval Tze <yuvaltze@gmail.com>
  *
@@ -1337,7 +1337,7 @@ static bool SubsdelayIsTextEmpty( const text_segment_t *p_segment )
 {
     while ( p_segment )
     {
-        if ( strlen( p_segment->psz_text ) > 0 )
+        if ( p_segment->psz_text && strlen( p_segment->psz_text ) > 0 )
         {
             size_t offset = strspn( p_segment->psz_text, " " );
             if ( p_segment->psz_text[offset] )

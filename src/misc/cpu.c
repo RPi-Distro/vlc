@@ -2,7 +2,7 @@
  * cpu.c: CPU detection code
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: 1b271edd799ac60ea5542699feb7b36273a96cc3 $
+ * $Id: 3aec22ce881c8e4509642d6b02cf4dd30966447c $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -106,7 +106,7 @@ VLC_MMX static void ThreeD_Now_test (void)
 #endif
 
 #if defined (CAN_COMPILE_ALTIVEC)
-static void Altivec_test (void)
+VLC_ALTIVEC static void Altivec_test (void)
 {
     asm volatile ("mtspr 256, %0\n" "vand %%v0, %%v0, %%v0\n" : : "r" (-1));
 }

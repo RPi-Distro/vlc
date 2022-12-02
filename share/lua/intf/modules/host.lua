@@ -2,7 +2,6 @@
  host.lua: VLC Lua interface command line host module
 --[==========================================================================[
  Copyright (C) 2007-2012 the VideoLAN team
- $Id$
 
  Authors: Antoine Cellerier <dionoea at videolan dot org>
 
@@ -24,7 +23,7 @@
 --[==========================================================================[
 Example use:
 
-    require "host"
+    local host = require "host"
     h = host.host()
 
     -- Bypass any authentication
@@ -61,8 +60,6 @@ Example use:
 
 For complete examples see existing VLC Lua interface modules (ie cli.lua)
 --]==========================================================================]
-
-module("host",package.seeall)
 
 status = { init = 0, read = 1, write = 2, password = 3 }
 client_type = { net = 1, stdio = 2, fifo = 3, telnet = 4 }
@@ -366,3 +363,13 @@ function host()
               })
     return h
 end
+
+local hostfuncs = {
+    host = host,
+    status = status,
+    client_type = client_type,
+    is_flag_set = is_flag_set,
+}
+
+_G.host = hostfuncs
+return hostfuncs

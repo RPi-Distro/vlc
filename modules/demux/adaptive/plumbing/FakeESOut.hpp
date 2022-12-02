@@ -22,6 +22,7 @@
 
 #include <vlc_common.h>
 #include <list>
+#include "../Time.hpp"
 
 namespace adaptive
 {
@@ -82,15 +83,16 @@ namespace adaptive
             AbstractCommandsQueue * commandsQueue();
             CommandsFactory *commandsFactory() const;
             void setAssociatedTimestamp( mtime_t );
+            void setAssociatedTimestamp( mtime_t, mtime_t );
             void setExpectedTimestamp( mtime_t );
             void resetTimestamps();
-            bool getStartTimestamps( mtime_t *, mtime_t * );
             size_t esCount() const;
             bool hasSelectedEs() const;
             bool decodersDrained();
             bool restarting() const;
             void setExtraInfoProvider( ExtraFMTInfoInterface * );
-            mtime_t fixTimestamp( mtime_t );
+            mtime_t fixTimestamp(mtime_t);
+            mtime_t applyTimestampContinuity(mtime_t);
             void declareEs( const es_format_t * );
 
             virtual void milestoneReached() override;
@@ -104,6 +106,11 @@ namespace adaptive
 
             /**/
             void scheduleNecessaryMilestone();
+            bool hasSegmentStartTimes() const;
+            void setSegmentStartTimes(const SegmentTimes &);
+            void setSegmentProgressTimes(const SegmentTimes &);
+            bool hasSynchronizationReference() const;
+            void setSynchronizationReference(const SynchronizationReference &);
             void schedulePCRReset();
             void scheduleAllForDeletion(); /* Queue Del commands for non Del issued ones */
             void recycleAll(); /* Cancels all commands and send fakees for recycling */
@@ -128,13 +135,14 @@ namespace adaptive
                 bool b_timestamp_set;
                 bool b_offset_calculated;
             } associated, expected;
-            mtime_t timestamp_first;
             mtime_t timestamps_offset;
             int priority;
             bool b_in_commands_group;
             std::list<FakeESOutID *> fakeesidlist;
             std::list<FakeESOutID *> recycle_candidates;
             std::list<FakeESOutID *> declared;
+            SegmentTimes startTimes;
+            SynchronizationReference synchronizationReference;
     };
 
 }

@@ -352,7 +352,7 @@ bool MediaServerList::addServer( MediaServerDesc* desc )
     } else {
         char* psz_mrl;
         // We might already have some options specified in the location.
-        char opt_delim = desc->location.find( '?' ) == 0 ? '?' : '&';
+        char opt_delim = desc->location.find( '?' ) == std::string::npos ? '?' : '&';
         if( asprintf( &psz_mrl, "upnp://%s%cObjectID=0", desc->location.c_str(), opt_delim ) < 0 )
             return false;
 
@@ -1437,8 +1437,6 @@ static IP_ADAPTER_ADDRESSES* ListAdapters()
     return addresses;
 }
 
-#ifdef UPNP_ENABLE_IPV6
-
 static char* getPreferedAdapter()
 {
     IP_ADAPTER_ADDRESSES *p_adapter, *addresses;
@@ -1467,8 +1465,6 @@ static char* getPreferedAdapter()
     free(addresses);
     return NULL;
 }
-
-#else
 
 static char *getIpv4ForMulticast()
 {
@@ -1556,10 +1552,7 @@ done:
     free(addresses);
     return NULL;
 }
-#endif /* UPNP_ENABLE_IPV6 */
 #else /* _WIN32 */
-
-#ifdef UPNP_ENABLE_IPV6
 
 #ifdef __APPLE__
 #include <TargetConditionals.h>
@@ -1568,40 +1561,6 @@ done:
 #include <CoreFoundation/CoreFoundation.h>
 #include <SystemConfiguration/SystemConfiguration.h>
 #include "vlc_charset.h"
-
-inline char *FromCFString(const CFStringRef cfString,
-                          const CFStringEncoding cfStringEncoding)
-{
-    // Try the quick way to obtain the buffer
-    const char *tmpBuffer = CFStringGetCStringPtr(cfString, cfStringEncoding);
-    if (tmpBuffer != NULL) {
-        return strdup(tmpBuffer);
-    }
-
-    // The quick way did not work, try the long way
-    CFIndex length = CFStringGetLength(cfString);
-    CFIndex maxSize = CFStringGetMaximumSizeForEncoding(length, cfStringEncoding);
-
-    // If result would exceed LONG_MAX, kCFNotFound is returned
-    if (unlikely(maxSize == kCFNotFound)) {
-        return NULL;
-    }
-
-    // Account for the null terminator
-    maxSize++;
-
-    char *buffer = (char *)malloc(maxSize);
-    if (unlikely(buffer == NULL)) {
-        return NULL;
-    }
-
-    // Copy CFString in requested encoding to buffer
-    Boolean success = CFStringGetCString(cfString, buffer, maxSize, cfStringEncoding);
-
-    if (!success)
-        FREENULL(buffer);
-    return buffer;
-}
 
 inline char *getPreferedAdapter()
 {
@@ -1671,14 +1630,11 @@ inline char *getPreferedAdapter()
 }
 
 #endif
-#else
 
 static char *getIpv4ForMulticast()
 {
     return NULL;
 }
-
-#endif
 
 #endif /* _WIN32 */
 
@@ -1705,7 +1661,9 @@ UpnpInstanceWrapper *UpnpInstanceWrapper::get(vlc_object_t *p_obj, services_disc
             return NULL;
         }
 
-    #ifdef UPNP_ENABLE_IPV6
+        /* libupnp 1.8.3 deprecate `UpnpInit` and introduce `UpnpInit2` as a replacement.
+           libupnp <1.8.3 provides `UpnpInit2` only if built with IPv6. */
+    #if UPNP_VERSION >= 10803 || defined( UPNP_ENABLE_IPV6 )
         char* psz_miface = var_InheritString( p_obj, "miface" );
         if (psz_miface == NULL)
             psz_miface = getPreferedAdapter();
@@ -1713,11 +1671,11 @@ UpnpInstanceWrapper *UpnpInstanceWrapper::get(vlc_object_t *p_obj, services_disc
         int i_res = UpnpInit2( psz_miface, 0 );
         free( psz_miface );
     #else
-        /* If UpnpInit2 isnt available, initialize on first IPv4-capable interface */
+        /* If UpnpInit2 isn't available, initialize on first IPv4-capable interface */
         char *psz_hostip = getIpv4ForMulticast();
         int i_res = UpnpInit( psz_hostip, 0 );
         free(psz_hostip);
-    #endif /* UPNP_ENABLE_IPV6 */
+    #endif /* UPNP_VERSION >= 10803 || defined( UPNP_ENABLE_IPV6 ) */
         if( i_res != UPNP_E_SUCCESS )
         {
             msg_Err( p_obj, "Initialization failed: %s", UpnpGetErrorMessage( i_res ) );

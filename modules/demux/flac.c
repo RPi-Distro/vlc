@@ -2,7 +2,7 @@
  * flac.c : FLAC demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: a22e51c17daf44b12eba6bd6c1a709aa8c50bae9 $
+ * $Id: e521d48c39cafb7e9d79bcd17ff98d18f3e5b0e1 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -38,6 +38,7 @@
 #include <vlc_charset.h>              /* EnsureUTF8 */
 
 #include <assert.h>
+#include <limits.h>
 #include "xiph_metadata.h"            /* vorbis comments */
 #include "../packetizer/flac.h"
 
@@ -224,10 +225,11 @@ static block_t *GetPacketizedBlock( decoder_t *p_packetizer,
     block_t *p_block = p_packetizer->pf_packetize( p_packetizer, pp_current_block );
     if( p_block )
     {
-        if( p_block->i_buffer >= FLAC_HEADER_SIZE_MAX )
+        if( p_block->i_buffer >= FLAC_HEADER_SIZE_MIN && p_block->i_buffer < INT_MAX )
         {
-            struct flac_header_info headerinfo;
-            int i_ret = FLAC_ParseSyncInfo( p_block->p_buffer, streaminfo, NULL, &headerinfo );
+            struct flac_header_info headerinfo = { .i_pts = VLC_TS_INVALID };
+            int i_ret = FLAC_ParseSyncInfo( p_block->p_buffer, p_block->i_buffer,
+                                            streaminfo, NULL, &headerinfo );
             assert( i_ret != 0 ); /* Same as packetizer */
             /* Use Frame PTS, not the interpolated one */
             p_block->i_dts = p_block->i_pts = headerinfo.i_pts;
@@ -360,14 +362,12 @@ static int Demux( demux_t *p_demux )
     demux_sys_t *p_sys = p_demux->p_sys;
     block_t *p_block_out;
 
-    bool b_eof = false;
     if( p_sys->p_current_block == NULL )
-    {
         p_sys->p_current_block = vlc_stream_Block( p_demux->s, FLAC_PACKET_SIZE );
-        b_eof = (p_sys->p_current_block == NULL);
-    }
 
-    if ( p_sys->p_current_block )
+    bool b_eof = (p_sys->p_current_block == NULL);
+
+    if ( !b_eof )
     {
         p_sys->p_current_block->i_flags = p_sys->i_next_block_flags;
         p_sys->i_next_block_flags = 0;

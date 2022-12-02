@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 1ce43873f5dfcf93ca07b4cfa9023603b8e06f86 $
+ * $Id: 4a0a0dae12e53386df8c7caa1b57daf4b2ac5ac7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -231,7 +231,7 @@ QSize VideoWidget::physicalSize() const
 }
 
 void WindowResized(vout_window_t *, const QSize&);
-void WindowReleased(vout_window_t *);
+void WindowOrphaned(vout_window_t *);
 
 void VideoWidget::reportSize()
 {
@@ -402,13 +402,14 @@ void VideoWidget::mouseDoubleClickEvent( QMouseEvent *event )
 }
 
 
-void VideoWidget::release( void )
+void VideoWidget::release( bool forced )
 {
-    msg_Dbg( p_intf, "Video is not needed anymore" );
+    msg_Dbg( p_intf, "video widget is %s", forced ? "orphaned" : "released" );
 
     if( stable )
     {
-        WindowReleased(p_window);
+        if( forced )
+            WindowOrphaned(p_window);
         layout->removeWidget( stable );
         stable->deleteLater();
         stable = NULL;

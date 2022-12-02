@@ -18,9 +18,6 @@
 /* Define to 1 if AltiVec inline assembly is available. */
 #undef CAN_COMPILE_ALTIVEC
 
-/* Define to 1 if C AltiVec extensions are available. */
-#undef CAN_COMPILE_C_ALTIVEC
-
 /* Define to 1 inline MMX assembly is available. */
 #undef CAN_COMPILE_MMX
 

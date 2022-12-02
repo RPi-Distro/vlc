@@ -2,7 +2,6 @@
  cli.lua: CLI module for VLC
 --[==========================================================================[
  Copyright (C) 2007-2011 the VideoLAN team
- $Id$
 
  Authors: Antoine Cellerier <dionoea at videolan dot org>
           Pierre Ynard
@@ -58,7 +57,9 @@ description=
     * flatplaylist: 0 to disable, 1 to enable.
 ]============================================================================]
 
-require("common")
+local common = require("common")
+local host = require("host")
+
 skip = common.skip
 skip2 = function(foo) return skip(skip(foo)) end
 setarg = common.setarg
@@ -794,7 +795,6 @@ function on_write( client )
 end
 
 --[[ Setup host ]]
-require("host")
 h = host.host()
 
 h.status_callbacks[host.status.password] = on_password

@@ -2,7 +2,7 @@
  * i420_yuy2.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 VLC authors and VideoLAN
- * $Id: b1a0359fc9b237cd1ce7d6ba87e155396348afdd $
+ * $Id: 1cf294e8028bbd2174a957aa6ad893d59041aa3a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damien@videolan.org>
@@ -55,7 +55,7 @@
 #    define VLC_TARGET VLC_SSE
 #elif defined (MODULE_NAME_IS_i420_yuy2_altivec)
 #    define DEST_FOURCC "YUY2,YUNV,YVYU,UYVY,UYNV,Y422"
-#    define VLC_TARGET
+#    define VLC_TARGET VLC_ALTIVEC
 #endif
 
 /*****************************************************************************

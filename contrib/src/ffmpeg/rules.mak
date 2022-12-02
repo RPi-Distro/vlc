@@ -5,7 +5,7 @@
 #USE_FFMPEG ?= 1
 
 ifndef USE_LIBAV
-FFMPEG_HASH=dc91b913b6260e85e1304c74ff7bb3c22a8c9fb1
+FFMPEG_HASH=ec47a3b95f88fc3f820b900038ac439e4eb3fede
 FFMPEG_BRANCH=release/4.4
 FFMPEG_SNAPURL := http://git.videolan.org/?p=ffmpeg.git;a=snapshot;h=$(FFMPEG_HASH);sf=tgz
 FFMPEG_GITURL := http://git.videolan.org/git/ffmpeg.git
@@ -120,6 +120,11 @@ FFMPEGCONF += --arch=mips
 endif
 ifeq ($(ARCH),mips64el)
 FFMPEGCONF += --arch=mips64
+endif
+
+# RISC-V stuff
+ifneq ($(findstring $(ARCH),riscv32 riscv64),)
+FFMPEGCONF += --arch=riscv
 endif
 
 # x86 stuff
@@ -240,6 +245,7 @@ ifdef USE_FFMPEG
 	$(APPLY) $(SRC)/ffmpeg/0001-fix-MediaFoundation-compilation-if-WINVER-was-forced.patch
 	$(APPLY) $(SRC)/ffmpeg/0001-bring-back-XP-support.patch
 	$(APPLY) $(SRC)/ffmpeg/0001-avcodec-vp9-Do-not-destroy-uninitialized-mutexes-con.patch
+	$(APPLY) $(SRC)/ffmpeg/0001-dxva2_hevc-don-t-use-frames-as-reference-if-they-are.patch
 endif
 ifdef USE_LIBAV
 	$(APPLY) $(SRC)/ffmpeg/libav_gsm.patch

@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: a57c972e04107ebc1cb14024e27bafcdf6b143e3 $
+ * $Id: ec39edde0e6563fd03a0f6e56cc552f50df2896f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -679,6 +679,9 @@ NetOpenPanel::NetOpenPanel( QWidget *_parent, intf_thread_t *_p_intf ) :
 
     /* Use a simple validator for URLs */
     ui.urlComboBox->setValidator( new UrlValidator( this ) );
+
+    /* QComboBox is by default case insensitive when editable */
+    ui.urlComboBox->completer()->setCaseSensitivity( Qt::CaseSensitive );
     ui.urlComboBox->setFocus();
 }
 

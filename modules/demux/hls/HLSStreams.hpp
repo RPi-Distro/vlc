@@ -36,13 +36,15 @@ namespace hls
             virtual block_t *checkBlock(block_t *, bool) override;
             virtual AbstractDemuxer * newDemux(vlc_object_t *, const StreamFormat &,
                                                es_out_t *, AbstractSourceStream *) const override;
-            virtual bool setPosition(mtime_t, bool) override;
+            virtual bool setPosition(const StreamPosition &, bool) override;
+            virtual void trackerEvent(const TrackerEvent &)  override;
 
         private:
             static int ID3TAG_Parse_Handler(uint32_t, const uint8_t *, size_t, void *);
             int ParseID3Tag(uint32_t, const uint8_t *, size_t);
             int ParseID3PrivTag(const uint8_t *, size_t);
             void setMetadataTimeOffset(mtime_t);
+            void setMetadataTimeMapping(mtime_t, mtime_t);
             bool b_id3_timestamps_offset_set;
             vlc_meta_t *p_meta;
             bool b_meta_updated;
@@ -52,7 +54,7 @@ namespace hls
     {
         public:
             virtual AbstractStream *create(demux_t *, const StreamFormat &,
-                                   SegmentTracker *, AbstractConnectionManager *) const override;
+                                   SegmentTracker *) const override;
     };
 
 }

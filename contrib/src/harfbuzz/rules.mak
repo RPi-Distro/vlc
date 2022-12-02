@@ -1,6 +1,6 @@
 # HARFBUZZ
 
-HARFBUZZ_VERSION := 2.6.8
+HARFBUZZ_VERSION := 3.4.0
 HARFBUZZ_URL := https://github.com/harfbuzz/harfbuzz/releases/download/$(HARFBUZZ_VERSION)/harfbuzz-$(HARFBUZZ_VERSION).tar.xz
 PKGS += harfbuzz
 ifeq ($(call need_pkg,"harfbuzz"),)
@@ -14,23 +14,23 @@ $(TARBALLS)/harfbuzz-$(HARFBUZZ_VERSION).tar.xz:
 
 harfbuzz: harfbuzz-$(HARFBUZZ_VERSION).tar.xz .sum-harfbuzz
 	$(UNPACK)
-	$(APPLY) $(SRC)/harfbuzz/0001-fix-OSAtomic-calls-for-AArch64.patch
-	$(APPLY) $(SRC)/harfbuzz/0002-Update-the-bundled-ax_pthread.m4.patch
-	$(APPLY) $(SRC)/harfbuzz/0003-Fix-winstore-app-detection-with-mingw64.patch
-	$(APPLY) $(SRC)/harfbuzz/0004-Don-t-treat-Wunused-as-an-error.patch
+	$(APPLY) $(SRC)/harfbuzz/0001-meson-Enable-big-objects-support-when-building-for-w.patch
 	$(MOVE)
 
 DEPS_harfbuzz = freetype2 $(DEPS_freetype2)
 
-HARFBUZZ_CONF := --with-freetype \
-	--without-glib
+HARFBUZZ_CONF := -Dfreetype=enabled \
+	-Dglib=disabled \
+	-Dgobject=disabled \
+	-Ddocs=disabled \
+	-Dtests=disabled
 
 ifdef HAVE_DARWIN_OS
-HARFBUZZ_CONF += --with-coretext
+HARFBUZZ_CONF += -Dcoretext=enabled
 endif
 
-.harfbuzz: harfbuzz
-	$(RECONF)
-	cd $< && $(HOSTVARS_PIC) ./configure $(HOSTCONF) $(HARFBUZZ_CONF) ICU_CONFIG=false
-	cd $< && $(MAKE) install
+.harfbuzz: harfbuzz crossfile.meson
+	cd $< && rm -rf ./build
+	cd $< && $(HOSTVARS_MESON) $(MESON) $(HARFBUZZ_CONF) build
+	cd $< && cd build && ninja install
 	touch $@
