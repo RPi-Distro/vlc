@@ -1,3 +1,12 @@
+vlc (3.0.18-0+deb11u1) bullseye-security; urgency=medium
+
+  * New upstream version 3.0.18
+    - Fix buffer overflow in the vnc module (CVE-2022-41325)
+  * debian/: Remove sndio module
+    The sndio version in bullseye is no longer detected.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 02 Dec 2022 22:08:18 +0100
+
 vlc (3.0.17.4-0+deb11u1) bullseye-security; urgency=medium
 
   * New upstream version 3.0.17.4
