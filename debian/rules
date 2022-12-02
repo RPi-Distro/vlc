@@ -72,7 +72,6 @@ confflags += \
 	--enable-shine \
 	--enable-shout \
 	--enable-skins2 \
-	--enable-sndio \
 	--enable-soxr \
 	--enable-spatialaudio \
 	--enable-speex \
