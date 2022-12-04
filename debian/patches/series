@@ -1,2 +1,3 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
 0002-Do-not-generate-cache-during-build.patch
+0003-packetizer-flac-fix-CRC-from-emulated-sync.patch
