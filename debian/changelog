@@ -1,3 +1,9 @@
+vlc (3.0.18-2) unstable; urgency=medium
+
+  * debian/patches: Apply upstream patch for flac playback issues
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 04 Dec 2022 22:11:55 +0100
+
 vlc (3.0.18-1) unstable; urgency=medium
 
   * New upstream version 3.0.18
