@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3112,6 +3112,21 @@ dnl OpenGL ES 2: depends on EGL 1.1
+@@ -3081,6 +3081,21 @@ dnl OpenGL ES 2: depends on EGL 1.1
  PKG_ENABLE_MODULES_VLC([GLES2], [], [glesv2], [OpenGL ES v2 support], [disabled])
  
  dnl
@@ -22,7 +22,7 @@
  dnl  Xlib
  dnl
  
-@@ -3475,20 +3490,24 @@ AM_CONDITIONAL([HAVE_KVA], [test "${have
+@@ -3444,20 +3459,24 @@ AM_CONDITIONAL([HAVE_KVA], [test "${have
  dnl
  dnl MMAL plugin
  dnl
@@ -50,7 +50,7 @@
            AS_IF([test "${enable_mmal}" = "yes"],
              [ AC_MSG_ERROR([Cannot find bcm library...]) ],
              [ AC_MSG_WARN([Cannot find bcm library...]) ])
-@@ -3500,6 +3519,7 @@ if test "${enable_mmal}" != "no"; then
+@@ -3469,6 +3488,7 @@ if test "${enable_mmal}" != "no"; then
    VLC_RESTORE_FLAGS
  fi
  AM_CONDITIONAL([HAVE_MMAL], [test "${have_mmal}" = "yes"])
@@ -60,7 +60,7 @@
  dnl evas plugin
 --- a/include/vlc_fourcc.h
 +++ b/include/vlc_fourcc.h
-@@ -365,6 +365,11 @@
+@@ -374,6 +374,11 @@
  
  /* Broadcom MMAL opaque buffer type */
  #define VLC_CODEC_MMAL_OPAQUE     VLC_FOURCC('M','M','A','L')
@@ -72,7 +72,7 @@
  
  /* DXVA2 opaque video surface for use with D3D9 */
  #define VLC_CODEC_D3D9_OPAQUE     VLC_FOURCC('D','X','A','9') /* 4:2:0  8 bpc */
-@@ -374,6 +379,12 @@
+@@ -383,6 +388,12 @@
  #define VLC_CODEC_D3D11_OPAQUE          VLC_FOURCC('D','X','1','1') /* 4:2:0  8 bpc */
  #define VLC_CODEC_D3D11_OPAQUE_10B      VLC_FOURCC('D','X','1','0') /* 4:2:0 10 bpc */
  
@@ -24023,7 +24023,7 @@
  typedef struct vlc_gl_sys_t
  {
      EGLDisplay display;
-@@ -355,6 +357,14 @@ static int Open (vlc_object_t *obj, cons
+@@ -371,6 +373,14 @@ static int Open (vlc_object_t *obj, cons
          goto error;
      }
  
@@ -24038,7 +24038,7 @@
      const EGLint conf_attr[] = {
          EGL_RED_SIZE, 5,
          EGL_GREEN_SIZE, 5,
-@@ -447,7 +457,7 @@ vlc_module_begin ()
+@@ -463,7 +473,7 @@ vlc_module_begin ()
      add_shortcut ("egl")
  
      add_submodule ()
@@ -24049,7 +24049,7 @@
  
 --- a/src/input/decoder.c
 +++ b/src/input/decoder.c
-@@ -1998,6 +1998,7 @@ void input_DecoderDelete( decoder_t *p_d
+@@ -2000,6 +2000,7 @@ void input_DecoderDelete( decoder_t *p_d
      vlc_mutex_lock( &p_owner->lock );
      p_owner->b_waiting = false;
      vlc_cond_signal( &p_owner->wait_request );
@@ -24057,7 +24057,7 @@
  
      /* If the video output is paused or slow, or if the picture pool size was
       * under-estimated (e.g. greedy video filter, buggy decoder...), the
-@@ -2008,7 +2009,6 @@ void input_DecoderDelete( decoder_t *p_d
+@@ -2010,7 +2011,6 @@ void input_DecoderDelete( decoder_t *p_d
       * worker threads (if any) and the decoder thread to terminate. */
      if( p_owner->p_vout != NULL )
          vout_Cancel( p_owner->p_vout, true );
@@ -24102,7 +24102,7 @@
      0,
  };
  
-@@ -755,11 +769,19 @@ static const struct
+@@ -762,11 +776,19 @@ static const struct
      { { VLC_CODEC_VDPAU_VIDEO_420, VLC_CODEC_VDPAU_VIDEO_422,
          VLC_CODEC_VDPAU_VIDEO_444, VLC_CODEC_VDPAU_OUTPUT },
                                                 FAKE_FMT() },
