@@ -1,4 +1,4 @@
-vlc (3.0.17.4-0+deb10u1+rpt1) buster; urgency=medium
+vlc (3.0.17.4-0+deb10u2+rpt1) buster; urgency=medium
 
   * Add MMAL patch 20
   * Disable MMAL and neon on arm64
@@ -9,7 +9,14 @@ vlc (3.0.17.4-0+deb10u1+rpt1) buster; urgency=medium
   * Disable vdpau, libva, aom
   * Enable dav1d
 
- -- Serge Schneider <serge@raspberrypi.com>  Wed, 22 Jun 2022 11:02:16 +0100
+ -- Serge Schneider <serge@raspberrypi.com>  Wed, 07 Dec 2022 23:06:22 +0000
+
+vlc (3.0.17.4-0+deb10u2) buster-security; urgency=high
+
+  * Non-maintainer upload by the LTS team.
+  * Add patch to fix possible buffer overflow. (Fixes: CVE-2022-41325)
+
+ -- Utkarsh Gupta <utkarsh@debian.org>  Sat, 03 Dec 2022 01:48:03 +0530
 
 vlc (3.0.17.4-0+deb10u1) buster-security; urgency=medium
 
