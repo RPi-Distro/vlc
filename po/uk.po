@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.13\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2022-04-19 00:23+0200\n"
+"POT-Creation-Date: 2022-10-13 20:54+0200\n"
 "PO-Revision-Date: 2021-02-24 22:19+0100\n"
 "Last-Translator: Андрій Бандура <andriykopanytsia@gmail.com>, 2021\n"
 "Language-Team: Ukrainian (https://www.transifex.com/yaron/teams/16553/uk/)\n"
@@ -675,8 +675,8 @@ msgstr "Автонормалізація гучності звуку"
 msgid "Stereo audio mode"
 msgstr "Стереорежим"
 
-#: src/audio_output/output.c:419 modules/access/v4l2/v4l2.c:267
-#: modules/audio_output/alsa.c:76
+#: src/audio_output/output.c:419 src/libvlc-module.c:198
+#: modules/access/v4l2/v4l2.c:267 modules/audio_output/alsa.c:76
 msgid "Mono"
 msgstr "Моно"
 
@@ -740,7 +740,7 @@ msgstr "Навушники"
 #: modules/access/dtv/access.c:108 modules/access/dtv/access.c:117
 #: modules/access/dtv/access.c:125 modules/access/dtv/access.c:134
 #: modules/access/dtv/access.c:142 modules/access/dtv/access.c:164
-#: modules/access/v4l2/v4l2.c:137 modules/gui/qt/components/open_panels.cpp:988
+#: modules/access/v4l2/v4l2.c:137 modules/gui/qt/components/open_panels.cpp:991
 #: modules/gui/qt/components/simple_preferences.cpp:386
 msgid "Automatic"
 msgstr "Автоматично"
@@ -910,47 +910,47 @@ msgstr "Невідома помилка"
 msgid "Bookmark %i"
 msgstr "Закладка %i"
 
-#: src/input/decoder.c:1893
+#: src/input/decoder.c:1895
 msgid "No description for this codec"
 msgstr "Немає опису для цього кодеку"
 
-#: src/input/decoder.c:1895
+#: src/input/decoder.c:1897
 msgid "Codec not supported"
 msgstr "Кодек не підтримується"
 
-#: src/input/decoder.c:1896
+#: src/input/decoder.c:1898
 #, c-format
 msgid "VLC could not decode the format \"%4.4s\" (%s)"
 msgstr "VLC не здатна декодувати формат \"%4.4s\" (%s)"
 
-#: src/input/decoder.c:1900
+#: src/input/decoder.c:1902
 msgid "Unidentified codec"
 msgstr "Неопізнаний кодек"
 
-#: src/input/decoder.c:1901
+#: src/input/decoder.c:1903
 msgid "VLC could not identify the audio or video codec"
 msgstr "VLC не спроможна визначити аудіо чи відеокодек"
 
-#: src/input/decoder.c:1912
+#: src/input/decoder.c:1914
 msgid "packetizer"
 msgstr "пакетувальник"
 
-#: src/input/decoder.c:1912
+#: src/input/decoder.c:1914
 msgid "decoder"
 msgstr "декодер"
 
-#: src/input/decoder.c:1920 src/input/decoder.c:2203
+#: src/input/decoder.c:1922 src/input/decoder.c:2205
 #: modules/codec/avcodec/encoder.c:378 modules/codec/avcodec/encoder.c:912
 #: modules/stream_out/es.c:349 modules/stream_out/es.c:362
 msgid "Streaming / Transcoding failed"
 msgstr "Помилка потокового виводу або перекодування"
 
-#: src/input/decoder.c:1921
+#: src/input/decoder.c:1923
 #, c-format
 msgid "VLC could not open the %s module."
 msgstr "VLC не вдалося відкрити модуль %s."
 
-#: src/input/decoder.c:2204
+#: src/input/decoder.c:2206
 msgid "VLC could not open the decoder module."
 msgstr "VLC не вдалося відкрити модуль декодера."
 
@@ -1085,7 +1085,7 @@ msgstr "Розміри буферу"
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
-#: modules/access/vdr.c:78 modules/access/vnc.c:59 modules/demux/image.c:66
+#: modules/access/vdr.c:78 modules/access/vnc.c:60 modules/demux/image.c:66
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:164
 #: modules/video_filter/fps.c:42
 msgid "Frame rate"
@@ -1778,7 +1778,7 @@ msgstr ""
 #: modules/services_discovery/upnp.cpp:82
 #: modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
-#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:742
+#: modules/video_output/xcb/xvideo.c:824 modules/gui/qt/ui/profiles.h:742
 #: modules/gui/qt/ui/profiles.h:745
 msgid "Auto"
 msgstr "Автоматично"
@@ -5316,7 +5316,7 @@ msgstr "Не вдалося відкрити „%s“ для записуван�
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:791
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
 #: modules/gui/macosx/prefs.m:189
-#: modules/gui/qt/components/open_panels.cpp:1378
+#: modules/gui/qt/components/open_panels.cpp:1381
 #: modules/gui/qt/components/preferences_widgets.cpp:1416
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
 #: modules/gui/qt/dialogs/sout.cpp:92
@@ -6604,7 +6604,7 @@ msgid "DSS"
 msgstr "DSS"
 
 #: modules/access/dshow/dshow.cpp:130
-#: modules/gui/qt/components/open_panels.cpp:835
+#: modules/gui/qt/components/open_panels.cpp:838
 msgid "Video device name"
 msgstr "Назва відеопристрою"
 
@@ -6617,8 +6617,8 @@ msgstr ""
 "нічого не вказати, використовуватиметься стандартний пристрій."
 
 #: modules/access/dshow/dshow.cpp:135
-#: modules/gui/qt/components/open_panels.cpp:843
-#: modules/gui/qt/components/open_panels.cpp:1064
+#: modules/gui/qt/components/open_panels.cpp:846
+#: modules/gui/qt/components/open_panels.cpp:1067
 msgid "Audio device name"
 msgstr "Назва звукового пристрою"
 
@@ -6631,7 +6631,7 @@ msgstr ""
 "Якщо нічого не вказати, використовуватиметься стандартний пристрій."
 
 #: modules/access/dshow/dshow.cpp:140
-#: modules/gui/qt/components/open_panels.cpp:810
+#: modules/gui/qt/components/open_panels.cpp:813
 msgid "Video size"
 msgstr "Розмір відео"
 
@@ -6716,8 +6716,8 @@ msgstr ""
 "герцах."
 
 #: modules/access/dshow/dshow.cpp:168
-#: modules/gui/qt/components/open_panels.cpp:863
-#: modules/gui/qt/components/open_panels.cpp:1084
+#: modules/gui/qt/components/open_panels.cpp:866
+#: modules/gui/qt/components/open_panels.cpp:1087
 msgid "Video standard"
 msgstr "Стандарт відео"
 
@@ -6937,7 +6937,7 @@ msgstr ""
 "ТБ-канали групуються за транспондером (так званий „мультиплекс“) на "
 "визначеній частоті. Це потрібно для налаштування приймача."
 
-#: modules/access/dtv/access.c:63 modules/gui/qt/components/open_panels.cpp:984
+#: modules/access/dtv/access.c:63 modules/gui/qt/components/open_panels.cpp:987
 msgid "Modulation / Constellation"
 msgstr "Модуляція / Сигнальне сузір’я"
 
@@ -7401,19 +7401,19 @@ msgstr ""
 msgid "Scanning DVB"
 msgstr "Сканування DVB"
 
-#: modules/access/dvdnav.c:73 modules/access/dvdread.c:76
+#: modules/access/dvdnav.c:78 modules/access/dvdread.c:76
 msgid "DVD angle"
 msgstr "Версія сцени DVD"
 
-#: modules/access/dvdnav.c:75 modules/access/dvdread.c:78
+#: modules/access/dvdnav.c:80 modules/access/dvdread.c:78
 msgid "Default DVD angle."
 msgstr "Стандартна версія сцени DVD."
 
-#: modules/access/dvdnav.c:77
+#: modules/access/dvdnav.c:82
 msgid "Start directly in menu"
 msgstr "Починати безпосередньо з меню"
 
-#: modules/access/dvdnav.c:79
+#: modules/access/dvdnav.c:84
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -7421,25 +7421,25 @@ msgstr ""
 "Починати відтворення DVD безпосередньо з головного меню. Якщо цю опцію "
 "ввімкнено, всі несуттєві попередження на початку буде пропущено."
 
-#: modules/access/dvdnav.c:93
+#: modules/access/dvdnav.c:98
 msgid "DVD with menus"
 msgstr "DVD з меню"
 
-#: modules/access/dvdnav.c:94
+#: modules/access/dvdnav.c:99
 msgid "DVDnav Input"
 msgstr "Введення DVDnav"
 
-#: modules/access/dvdnav.c:106
+#: modules/access/dvdnav.c:111
 msgid "DVDnav demuxer"
 msgstr "Демультиплексор DVDnav"
 
-#: modules/access/dvdnav.c:284 modules/access/dvdread.c:236
+#: modules/access/dvdnav.c:289 modules/access/dvdread.c:236
 #: modules/access/dvdread.c:252 modules/access/dvdread.c:511
 #: modules/access/dvdread.c:576
 msgid "Playback failure"
 msgstr "Сталася помилка відтворення"
 
-#: modules/access/dvdnav.c:285
+#: modules/access/dvdnav.c:290
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -7502,9 +7502,9 @@ msgstr "Список спеціальних файлів"
 msgid "Include devices and pipes when listing directories"
 msgstr "Включити пристрої та канали, коли  перераховуються каталоги"
 
-#: modules/access/ftp.c:68 modules/access/live555.cpp:85
+#: modules/access/ftp.c:69 modules/access/live555.cpp:85
 #: modules/access/rdp.c:65 modules/access/sftp.c:55
-#: modules/access/smb_common.h:21 modules/access/vnc.c:46
+#: modules/access/smb_common.h:21 modules/access/vnc.c:47
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
 #: modules/gui/macosx/VLCSimplePrefsController.m:278
@@ -7513,7 +7513,7 @@ msgstr "Включити пристрої та канали, коли  пере�
 msgid "Username"
 msgstr "Ім’я користувача"
 
-#: modules/access/ftp.c:69 modules/access/rdp.c:66 modules/access/sftp.c:56
+#: modules/access/ftp.c:70 modules/access/rdp.c:66 modules/access/sftp.c:56
 #: modules/access/smb_common.h:22
 msgid ""
 "Username that will be used for the connection, if no username is set in the "
@@ -7522,9 +7522,9 @@ msgstr ""
 "Ім'я користувача, яке буде використане для з'єднання, коли жодне ім'я не "
 "вказане у URL."
 
-#: modules/access/ftp.c:71 modules/access/live555.cpp:88
+#: modules/access/ftp.c:72 modules/access/live555.cpp:88
 #: modules/access/rdp.c:68 modules/access/sftp.c:58
-#: modules/access/smb_common.h:24 modules/access/vnc.c:47
+#: modules/access/smb_common.h:24 modules/access/vnc.c:48
 #: modules/access_output/http.c:55
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
 #: modules/gui/macosx/VLCSimplePrefsController.m:277
@@ -7535,7 +7535,7 @@ msgstr ""
 msgid "Password"
 msgstr "Пароль"
 
-#: modules/access/ftp.c:72 modules/access/rdp.c:69 modules/access/sftp.c:59
+#: modules/access/ftp.c:73 modules/access/rdp.c:69 modules/access/sftp.c:59
 #: modules/access/smb_common.h:25
 msgid ""
 "Password that will be used for the connection, if no username or password "
@@ -7544,44 +7544,44 @@ msgstr ""
 "Пароль, який буде використаний для з'єднання, коли жодне ім'я або пароль не "
 "вказані у URL."
 
-#: modules/access/ftp.c:74
+#: modules/access/ftp.c:75
 msgid "FTP account"
 msgstr "Обліковий запис FTP"
 
-#: modules/access/ftp.c:75
+#: modules/access/ftp.c:76
 msgid "Account that will be used for the connection."
 msgstr "Обліковий запис, використовуваний для з’єднання."
 
-#: modules/access/ftp.c:78
+#: modules/access/ftp.c:79
 msgid "FTP authentication"
 msgstr "Аутентифікація FTP"
 
-#: modules/access/ftp.c:79
+#: modules/access/ftp.c:80
 #, c-format
 msgid "Please enter a valid login and password for the ftp connexion to %s"
 msgstr "Введіть дійсні ім'я користувача та пароль для з'єднання ftp із %s"
 
-#: modules/access/ftp.c:84
+#: modules/access/ftp.c:85
 msgid "FTP input"
 msgstr "Введення з FTP"
 
-#: modules/access/ftp.c:98
+#: modules/access/ftp.c:99
 msgid "FTP upload output"
 msgstr "Виведення через вивантаження на FTP"
 
-#: modules/access/ftp.c:369 modules/access/ftp.c:385 modules/access/ftp.c:537
+#: modules/access/ftp.c:370 modules/access/ftp.c:386 modules/access/ftp.c:538
 msgid "Network interaction failed"
 msgstr "Сталася помилка під мережевої взаємодії"
 
-#: modules/access/ftp.c:370
+#: modules/access/ftp.c:371
 msgid "VLC could not connect with the given server."
 msgstr "VLC не вдалося з’єднатися із цим сервером."
 
-#: modules/access/ftp.c:386
+#: modules/access/ftp.c:387
 msgid "VLC's connection to the given server was rejected."
 msgstr "У підключенні VLC до цього сервера було відмовлено."
 
-#: modules/access/ftp.c:538
+#: modules/access/ftp.c:539
 msgid "Your account was rejected."
 msgstr "Обліковий запис відхилено."
 
@@ -7825,7 +7825,7 @@ msgstr "Швидкість"
 msgid "Read the audio stream at VLC pace rather than Jack pace."
 msgstr "Читати звуковий потік на швидкості VLC, а не на швидкості Jack."
 
-#: modules/access/jack.c:62 modules/gui/qt/components/open_panels.cpp:915
+#: modules/access/jack.c:62 modules/gui/qt/components/open_panels.cpp:918
 msgid "Auto connection"
 msgstr "Автоматичне з’єднання"
 
@@ -8387,7 +8387,7 @@ msgid "SAT>IP Receiver Plugin"
 msgstr "Модуль SAT>IP приймач"
 
 #: modules/access/screen/screen.c:45
-#: modules/gui/qt/components/open_panels.cpp:1121
+#: modules/gui/qt/components/open_panels.cpp:1124
 msgid "Desired frame rate for the capture."
 msgstr "Бажана частота кадрів захоплення."
 
@@ -8479,7 +8479,7 @@ msgid "Screen"
 msgstr "Екран"
 
 #: modules/access/screen/xcb.c:41 modules/access/shm.c:44
-#: modules/access/vnc.c:60
+#: modules/access/vnc.c:61
 msgid "How many times the screen content should be refreshed per second."
 msgstr "Скільки разів на секунду вміст екрана повинен перемальовуватися."
 
@@ -8525,7 +8525,7 @@ msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr ""
 "Введіть правильне ім'я користувача і пароль для з’єднання із сервером SFTP %s"
 
-#: modules/access/shm.c:46 modules/access/vnc.c:57
+#: modules/access/shm.c:46 modules/access/vnc.c:58
 msgid "Frame buffer depth"
 msgstr "Глибина буфера кадрів"
 
@@ -8573,7 +8573,7 @@ msgstr "Шлях до відображеного в пам'яті файлу б�
 msgid "XWD file (autodetect)"
 msgstr "Файл XWD (автовиявлення)"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:68
+#: modules/access/shm.c:76 modules/access/vnc.c:69
 msgid "8 bits"
 msgstr "8-бітний"
 
@@ -8581,15 +8581,15 @@ msgstr "8-бітний"
 msgid "15 bits"
 msgstr "15-бітний"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:68
+#: modules/access/shm.c:76 modules/access/vnc.c:69
 msgid "16 bits"
 msgstr "16-бітний"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:68
+#: modules/access/shm.c:76 modules/access/vnc.c:69
 msgid "24 bits"
 msgstr "24-бітний"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:68
+#: modules/access/shm.c:76 modules/access/vnc.c:69
 msgid "32 bits"
 msgstr "32-бітний"
 
@@ -8773,7 +8773,7 @@ msgstr "Радіопристрій"
 msgid "Radio tuner device node."
 msgstr "Вузол пристрою радіотюнера."
 
-#: modules/access/v4l2/v4l2.c:75 modules/gui/qt/components/open_panels.cpp:1091
+#: modules/access/v4l2/v4l2.c:75 modules/gui/qt/components/open_panels.cpp:1094
 msgid "Frequency"
 msgstr "Частота"
 
@@ -9053,7 +9053,7 @@ msgstr "Відбілювання шкіри"
 msgid "Vivid"
 msgstr "Яскраве зображення"
 
-#: modules/access/v4l2/v4l2.c:169 modules/audio_output/auhal.c:42
+#: modules/access/v4l2/v4l2.c:169 modules/audio_output/auhal.c:43
 #: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1469
 #: modules/audio_output/waveout.c:145
 msgid "Audio volume"
@@ -9247,63 +9247,63 @@ msgstr "Маркери вирізання VDR"
 msgid "Start"
 msgstr "Початок"
 
-#: modules/access/vnc.c:48
+#: modules/access/vnc.c:49
 msgid "X.509 Certificate Authority"
 msgstr "Джерело сертифікату X.509"
 
-#: modules/access/vnc.c:49
+#: modules/access/vnc.c:50
 msgid "Certificate of the Authority to verify server's against"
 msgstr "Центр сертифікації, який засвідчує справжність сервера"
 
-#: modules/access/vnc.c:50
+#: modules/access/vnc.c:51
 msgid "X.509 Certificate Revocation List"
 msgstr "Список відкликаних сертифікатів X.509"
 
-#: modules/access/vnc.c:51
+#: modules/access/vnc.c:52
 msgid "List of revoked servers certificates"
 msgstr "Список відкликаних серверних сертифікатів"
 
-#: modules/access/vnc.c:52
+#: modules/access/vnc.c:53
 msgid "X.509 Client certificate"
 msgstr "Сертифікат клієнта X.509"
 
-#: modules/access/vnc.c:53
+#: modules/access/vnc.c:54
 msgid "Certificate for client authentication"
 msgstr "Сертифікат для перевірки автентичності клієнта"
 
-#: modules/access/vnc.c:54
+#: modules/access/vnc.c:55
 msgid "X.509 Client private key"
 msgstr "Приватний ключ клієнта X.509"
 
-#: modules/access/vnc.c:55
+#: modules/access/vnc.c:56
 msgid "Private key for authentication by certificate"
 msgstr "Закритий ключ для перевірки достовірності за сертифікатом"
 
-#: modules/access/vnc.c:58
+#: modules/access/vnc.c:59
 msgid "RGB chroma (RV32, RV24, RV16, RGB2)"
 msgstr "Насиченість кольору RGB (RV32, RV24, RV16, RGB2)"
 
-#: modules/access/vnc.c:61
+#: modules/access/vnc.c:62
 msgid "Compression level"
 msgstr "Рівень стиснення"
 
-#: modules/access/vnc.c:62
+#: modules/access/vnc.c:63
 msgid "Transfer compression level from 0 (none) to 9 (max)"
 msgstr "Передача рівня стиснення від 0 (немає) to 9 (макс)"
 
-#: modules/access/vnc.c:63
+#: modules/access/vnc.c:64
 msgid "Image quality"
 msgstr "Якість зображення"
 
-#: modules/access/vnc.c:64
+#: modules/access/vnc.c:65
 msgid "Image quality 1 to 9 (max)"
 msgstr "Якість зображення від 1 до 9 (макс)"
 
-#: modules/access/vnc.c:78
+#: modules/access/vnc.c:79
 msgid "VNC"
 msgstr "VNC"
 
-#: modules/access/vnc.c:82
+#: modules/access/vnc.c:83
 msgid "VNC client access"
 msgstr "Клієнт доступу VNC"
 
@@ -10170,7 +10170,7 @@ msgstr "10-смуговий еквалайзер"
 
 #: modules/audio_filter/equalizer.c:81
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:271
-#: modules/gui/qt/dialogs/extended.cpp:67 share/lua/http/index.html:238
+#: modules/gui/qt/dialogs/extended.cpp:67 share/lua/http/index.html:237
 msgid "Equalizer"
 msgstr "Еквалайзер"
 
@@ -10640,7 +10640,7 @@ msgstr "Оточення 7.1"
 msgid "ALSA audio output"
 msgstr "Виведення звуку через ALSA"
 
-#: modules/audio_output/alsa.c:393 modules/audio_output/auhal.c:1185
+#: modules/audio_output/alsa.c:393 modules/audio_output/auhal.c:1177
 msgid "Audio output failed"
 msgstr "Помилка виводу звуку"
 
@@ -10665,28 +10665,28 @@ msgstr "Виведення звукової пам’яті"
 msgid "Sample format"
 msgstr "Формат фрагмента"
 
-#: modules/audio_output/auhal.c:45
+#: modules/audio_output/auhal.c:46
 msgid "Last audio device"
 msgstr "Останній звуковий пристрій"
 
-#: modules/audio_output/auhal.c:53
+#: modules/audio_output/auhal.c:54
 msgid "HAL AudioUnit output"
 msgstr "Вивід звуку через HAL AudioUnit"
 
-#: modules/audio_output/auhal.c:463
+#: modules/audio_output/auhal.c:464
 msgid "System Sound Output Device"
 msgstr "Системний пристрій виведення звуку"
 
-#: modules/audio_output/auhal.c:543
+#: modules/audio_output/auhal.c:535
 #, c-format
 msgid "%s (Encoded Output)"
 msgstr "%s (Закодований вивід)"
 
-#: modules/audio_output/auhal.c:1041
+#: modules/audio_output/auhal.c:1033
 msgid "Audio device is not configured"
 msgstr "Звуковий пристрій не сконфігуровано"
 
-#: modules/audio_output/auhal.c:1042
+#: modules/audio_output/auhal.c:1034
 msgid ""
 "You should configure your speaker layout with \"Audio Midi Setup\" in /"
 "Applications/Utilities. VLC will output Stereo only."
@@ -10694,7 +10694,7 @@ msgstr ""
 "Ви маєте налаштувати ваш звуковий шар за допомогою утиліти „Параметри звуку "
 "Midi“ в /Програмах/Утилітах. Зараз використовується стереорежим."
 
-#: modules/audio_output/auhal.c:1186
+#: modules/audio_output/auhal.c:1178
 msgid ""
 "The selected audio output device is exclusively in use by another program."
 msgstr ""
@@ -15563,7 +15563,7 @@ msgstr "Виправити, коли необхідно"
 msgid "AVI demuxer"
 msgstr "Демультиплексор AVI"
 
-#: modules/demux/avi/avi.c:878 modules/demux/mp4/mp4.c:4256
+#: modules/demux/avi/avi.c:878 modules/demux/mp4/mp4.c:4306
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15591,7 +15591,7 @@ msgstr "Побудувати індекс, а потім відтворити"
 msgid "Play as is"
 msgstr "Відтворити як є"
 
-#: modules/demux/avi/avi.c:889 modules/demux/mp4/mp4.c:4267
+#: modules/demux/avi/avi.c:889 modules/demux/mp4/mp4.c:4317
 msgid "Broken or missing Index"
 msgstr "Пошкоджений індекс або його немає"
 
@@ -15651,7 +15651,7 @@ msgstr "Каталог для імпорту"
 msgid "Seek prevention demux filter"
 msgstr "Пошук фільтра демультиплексора попередження"
 
-#: modules/demux/flac.c:51
+#: modules/demux/flac.c:52
 msgid "FLAC demuxer"
 msgstr "Демультиплексор FLAC"
 
@@ -16039,11 +16039,11 @@ msgstr "Демультиплексор потоку MP4"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4264
+#: modules/demux/mp4/mp4.c:4314
 msgid "Do not seek"
 msgstr "Не шукати"
 
-#: modules/demux/mp4/mp4.c:4265
+#: modules/demux/mp4/mp4.c:4315
 msgid "Build index"
 msgstr "Побудувати індекс"
 
@@ -16981,7 +16981,7 @@ msgstr "Час"
 #: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:337
 #: modules/gui/macosx/VLCSimplePrefsController.m:287
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
-#: modules/gui/qt/components/open_panels.cpp:1377
+#: modules/gui/qt/components/open_panels.cpp:1380
 #: modules/stream_out/chromecast/cast.cpp:1197
 msgid "OK"
 msgstr "Гаразд"
@@ -17879,7 +17879,7 @@ msgid "Show/Hide Playlist"
 msgstr "Показати/приховати список відтворення"
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:71
-#: modules/gui/qt/dialogs/vlm.cpp:548 share/lua/http/index.html:260
+#: modules/gui/qt/dialogs/vlm.cpp:548 share/lua/http/index.html:259
 msgid "Repeat"
 msgstr "Повторювати"
 
@@ -17890,7 +17890,7 @@ msgstr ""
 "без повторень."
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:75
-#: share/lua/http/index.html:258
+#: share/lua/http/index.html:257
 msgid "Shuffle"
 msgstr "Перемішати"
 
@@ -20133,7 +20133,7 @@ msgstr "Останні 60 секунд"
 msgid "Overall"
 msgstr "Повний"
 
-#: modules/gui/qt/components/interface_widgets.cpp:675
+#: modules/gui/qt/components/interface_widgets.cpp:676
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
@@ -20141,45 +20141,45 @@ msgstr ""
 "Швидкість поточного відтворення: %1\n"
 "Клацніть для налаштування"
 
-#: modules/gui/qt/components/interface_widgets.cpp:748
+#: modules/gui/qt/components/interface_widgets.cpp:749
 msgid "Revert to normal play speed"
 msgstr "Повернути нормальну швидкість відтворення"
 
-#: modules/gui/qt/components/interface_widgets.cpp:855
+#: modules/gui/qt/components/interface_widgets.cpp:856
 msgid "Download cover art"
 msgstr "Завантажити обкладинку альбому"
 
-#: modules/gui/qt/components/interface_widgets.cpp:859
+#: modules/gui/qt/components/interface_widgets.cpp:860
 msgid "Add cover art from file"
 msgstr "Додати обкладинку альбому з файлу"
 
-#: modules/gui/qt/components/interface_widgets.cpp:925
+#: modules/gui/qt/components/interface_widgets.cpp:926
 msgid "Choose Cover Art"
 msgstr "Вибрати обкладинку альбому"
 
-#: modules/gui/qt/components/interface_widgets.cpp:926
+#: modules/gui/qt/components/interface_widgets.cpp:927
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "Файли зображень (*.gif *.jpg *.jpeg *.png)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:953
+#: modules/gui/qt/components/interface_widgets.cpp:954
 #: modules/gui/qt/dialogs/toolbar.cpp:573
 msgid "Elapsed time"
 msgstr "Час, що минув"
 
-#: modules/gui/qt/components/interface_widgets.cpp:957
+#: modules/gui/qt/components/interface_widgets.cpp:958
 #: modules/gui/qt/dialogs/toolbar.cpp:577
 msgid "Total/Remaining time"
 msgstr "Загальний час/час, що залишився"
 
-#: modules/gui/qt/components/interface_widgets.cpp:959
+#: modules/gui/qt/components/interface_widgets.cpp:960
 msgid "Click to toggle between total and remaining time"
 msgstr "Натисніть для перемикання між загальним часом і часом, що лишився"
 
-#: modules/gui/qt/components/interface_widgets.cpp:965
+#: modules/gui/qt/components/interface_widgets.cpp:966
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "Натисніть для перемикання між часом відтворення та часом, що лишився"
 
-#: modules/gui/qt/components/interface_widgets.cpp:967
+#: modules/gui/qt/components/interface_widgets.cpp:968
 msgid "Double click to jump to a chosen time position"
 msgstr "Двічі клацніть для переходу на обрану часову позицію"
 
@@ -20213,65 +20213,65 @@ msgstr "Витягнути диск"
 msgid "Entry"
 msgstr "Запис"
 
-#: modules/gui/qt/components/open_panels.cpp:890
+#: modules/gui/qt/components/open_panels.cpp:893
 msgid "Channels:"
 msgstr "Канали:"
 
-#: modules/gui/qt/components/open_panels.cpp:901
+#: modules/gui/qt/components/open_panels.cpp:904
 msgid "Selected ports:"
 msgstr "Обрані порти:"
 
-#: modules/gui/qt/components/open_panels.cpp:904
+#: modules/gui/qt/components/open_panels.cpp:907
 msgid ".*"
 msgstr ".*"
 
-#: modules/gui/qt/components/open_panels.cpp:911
+#: modules/gui/qt/components/open_panels.cpp:914
 msgid "Use VLC pace"
 msgstr "Використовувати темп VLC"
 
-#: modules/gui/qt/components/open_panels.cpp:931
+#: modules/gui/qt/components/open_panels.cpp:934
 msgid "TV - digital"
 msgstr "ТБ - цифрове"
 
-#: modules/gui/qt/components/open_panels.cpp:934
+#: modules/gui/qt/components/open_panels.cpp:937
 msgid "Tuner card"
 msgstr "Картка тюнера"
 
-#: modules/gui/qt/components/open_panels.cpp:935
+#: modules/gui/qt/components/open_panels.cpp:938
 msgid "Delivery system"
 msgstr "Система доставки"
 
-#: modules/gui/qt/components/open_panels.cpp:965
+#: modules/gui/qt/components/open_panels.cpp:968
 msgid "Transponder/multiplex frequency"
 msgstr "Частота транспондера/мультиплекса"
 
-#: modules/gui/qt/components/open_panels.cpp:975
+#: modules/gui/qt/components/open_panels.cpp:978
 msgid "Transponder symbol rate"
 msgstr "Символьна швидкість трансподера"
 
-#: modules/gui/qt/components/open_panels.cpp:1008
+#: modules/gui/qt/components/open_panels.cpp:1011
 msgid "Bandwidth"
 msgstr "Ширина смуги частот"
 
-#: modules/gui/qt/components/open_panels.cpp:1052
+#: modules/gui/qt/components/open_panels.cpp:1055
 msgid "TV - analog"
 msgstr "ТБ - аналогове"
 
-#: modules/gui/qt/components/open_panels.cpp:1055
+#: modules/gui/qt/components/open_panels.cpp:1058
 msgid "Device name"
 msgstr "Ім'я пристрою"
 
-#: modules/gui/qt/components/open_panels.cpp:1115
+#: modules/gui/qt/components/open_panels.cpp:1118
 msgid "Your display will be opened and played in order to stream or save it."
 msgstr ""
 "Ваш дисплей буде відкрито та відтворено, аби передати його чи зберегти."
 
 #. xgettext: frames per second
-#: modules/gui/qt/components/open_panels.cpp:1129
+#: modules/gui/qt/components/open_panels.cpp:1132
 msgid " f/s"
 msgstr " ф/с"
 
-#: modules/gui/qt/components/open_panels.cpp:1344
+#: modules/gui/qt/components/open_panels.cpp:1347
 msgid "Advanced Options"
 msgstr "Додаткові параметри"
 
@@ -24190,13 +24190,13 @@ msgstr "Послуги Zeroconf"
 msgid "Avahi Renderer Discovery"
 msgstr "Виявлення відтворювача Avahi"
 
-#: modules/services_discovery/bonjour.m:44
-#: modules/services_discovery/bonjour.m:62
-#: modules/services_discovery/bonjour.m:412
+#: modules/services_discovery/bonjour.m:45
+#: modules/services_discovery/bonjour.m:63
+#: modules/services_discovery/bonjour.m:455
 msgid "Bonjour Network Discovery"
 msgstr "Виявлення мережі Bonjour"
 
-#: modules/services_discovery/bonjour.m:70
+#: modules/services_discovery/bonjour.m:71
 msgid "Bonjour Renderer Discovery"
 msgstr "Виявлення відтворювача Bonjour"
 
@@ -24427,7 +24427,7 @@ msgid "Applications"
 msgstr "Програми"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:342
+#: modules/video_output/win32/direct3d9.c:355
 msgid "Desktop"
 msgstr "Робочий стіл"
 
@@ -26873,17 +26873,17 @@ msgstr "Полотно"
 msgid "Canvas video filter"
 msgstr "Відеофільтр полотна"
 
-#: modules/video_filter/ci_filters.m:755
+#: modules/video_filter/ci_filters.m:756
 msgid "Use a specific Core Image Filter"
 msgstr "Використовувати особливий фільтр основних зображень"
 
-#: modules/video_filter/ci_filters.m:757
+#: modules/video_filter/ci_filters.m:758
 msgid ""
 "Example: 'CICrystallize', 'CIBumpDistortion', 'CIThermal', 'CIComicEffect'"
 msgstr ""
 "Приклад: 'CICrystallize', 'CIBumpDistortion', 'CIThermal', 'CIComicEffect'"
 
-#: modules/video_filter/ci_filters.m:763
+#: modules/video_filter/ci_filters.m:764
 msgid "Mac OS X hardware video filters"
 msgstr "Апаратні відеофільтри Mac OS X"
 
@@ -27838,7 +27838,7 @@ msgstr "Власне вікно ОС Андроїд"
 msgid "Color ASCII art video output"
 msgstr "Вивід відео через кольорове ASCII"
 
-#: modules/video_output/caopengllayer.m:946
+#: modules/video_output/caopengllayer.m:953
 msgid "Core Animation OpenGL Layer (Mac OS X)"
 msgstr "Шар базової анімації OpenGL (Mac OS X)"
 
@@ -28026,11 +28026,11 @@ msgstr ""
 msgid "GNU/Linux framebuffer video output"
 msgstr "Вивід відео через буфер кадрів GNU/Linux"
 
-#: modules/video_output/glx.c:271
+#: modules/video_output/glx.c:288
 msgid "GLX"
 msgstr "GLX"
 
-#: modules/video_output/glx.c:272
+#: modules/video_output/glx.c:289
 msgid "GLX extension for OpenGL"
 msgstr "Розширення GLX для OpenGL"
 
@@ -28108,11 +28108,11 @@ msgstr "OpenGL"
 msgid "OpenGL video output"
 msgstr "Вивід відео OpenGL"
 
-#: modules/video_output/opengl/egl.c:441
+#: modules/video_output/opengl/egl.c:457
 msgid "EGL"
 msgstr "EGL"
 
-#: modules/video_output/opengl/egl.c:442
+#: modules/video_output/opengl/egl.c:458
 msgid "EGL extension for OpenGL"
 msgstr "Розширення EGL для OpenGL"
 
@@ -29031,7 +29031,7 @@ msgid "#separate commands with a new line or a semi-colon"
 msgstr "#відокремте команди новим рядком або двокрапкою"
 
 #: share/lua/http/dialogs/browse_window.html:41
-#: share/lua/http/mobile_browse.html:49
+#: share/lua/http/mobile_browse.html:48
 msgid "Play List"
 msgstr "Список відтворення"
 
@@ -29090,7 +29090,7 @@ msgid "File name"
 msgstr "Назва файлу"
 
 #: share/lua/http/dialogs/equalizer_window.html:49
-#: share/lua/http/mobile_equalizer.html:63
+#: share/lua/http/mobile_equalizer.html:62
 msgid "Preamp:"
 msgstr "Попереднє підсилення:"
 
@@ -29126,60 +29126,60 @@ msgstr "Затримка субтитрів"
 msgid "Time:"
 msgstr "Час:"
 
-#: share/lua/http/index.html:26 share/lua/http/mobile_browse.html:25
-#: share/lua/http/mobile_equalizer.html:25 share/lua/http/mobile_view.html:25
+#: share/lua/http/index.html:25 share/lua/http/mobile_browse.html:24
+#: share/lua/http/mobile_equalizer.html:24 share/lua/http/mobile_view.html:24
 msgid "VLC media player - Web Interface"
 msgstr "Медіапрогравач VLC — веб-інтерфейс"
 
-#: share/lua/http/index.html:234
+#: share/lua/http/index.html:233
 msgid "Hide / Show Library"
 msgstr "Приховати/показати Бібліотеку"
 
-#: share/lua/http/index.html:235
+#: share/lua/http/index.html:234
 msgid "Hide / Show Viewer"
 msgstr "Приховати/показати переглядач"
 
-#: share/lua/http/index.html:236
+#: share/lua/http/index.html:235
 msgid "Manage Streams"
 msgstr "Управління потоками"
 
-#: share/lua/http/index.html:237
+#: share/lua/http/index.html:236
 msgid "Track Synchronisation"
 msgstr "Синхронізація доріжки"
 
-#: share/lua/http/index.html:239
+#: share/lua/http/index.html:238
 msgid "VLM Batch Commands"
 msgstr "Пакетні команди VLM"
 
-#: share/lua/http/index.html:259 modules/gui/qt/ui/vlm.h:295
+#: share/lua/http/index.html:258 modules/gui/qt/ui/vlm.h:295
 msgid "Loop"
 msgstr "Цикл"
 
-#: share/lua/http/index.html:261
+#: share/lua/http/index.html:260
 msgid "Empty Playlist"
 msgstr "Порожній список відтворення"
 
-#: share/lua/http/index.html:262
+#: share/lua/http/index.html:261
 msgid "Queue Selected"
 msgstr "Вибране у чергу"
 
-#: share/lua/http/index.html:263
+#: share/lua/http/index.html:262
 msgid "Play Selected"
 msgstr "Вибране відтворити"
 
-#: share/lua/http/index.html:264
+#: share/lua/http/index.html:263
 msgid "Refresh List"
 msgstr "Оновити Список"
 
-#: share/lua/http/index.html:271
+#: share/lua/http/index.html:270
 msgid "Loading flowplayer..."
 msgstr "Завантажується програвач потоку…"
 
-#: share/lua/http/index.html:271
+#: share/lua/http/index.html:270
 msgid "If nothing appears, check your internet connection."
 msgstr "Якщо нічого не з’явилося, то перевірте інтернет-під’єднання."
 
-#: share/lua/http/index.html:282
+#: share/lua/http/index.html:281
 msgid ""
 "VLC can display a QR code linking to the mobile version of the web "
 "interface; the web address of the web interface of your VLC media player "
@@ -29191,11 +29191,11 @@ msgstr ""
 "передана через Інтернет до веб-служби Google Image Charts для створення "
 "цього QR-коду."
 
-#: share/lua/http/index.html:285
+#: share/lua/http/index.html:284
 msgid "Do you want to go ahead with this?"
 msgstr "Ви хочете продовжити це?"
 
-#: share/lua/http/index.html:290
+#: share/lua/http/index.html:289
 msgid ""
 "By creating a stream, the <i>Main Controls</i> will operate the stream "
 "instead of the main interface."
@@ -29203,7 +29203,7 @@ msgstr ""
 "Після створення потоку <i>Головні елементи керування</i> керуватимуть "
 "потоком замість головного інтерфейсу."
 
-#: share/lua/http/index.html:291
+#: share/lua/http/index.html:290
 msgid ""
 "The stream will be created using default settings, for more advanced "
 "configuration, or to modify the default settings, select the button to the "
@@ -29213,20 +29213,20 @@ msgstr ""
 "експертне регулювання або для зміни стандартних параметрів клацніть кнопку "
 "справа: <i>Керування потоками</i>"
 
-#: share/lua/http/index.html:295
+#: share/lua/http/index.html:294
 msgid ""
 "Once the stream is created, the <i>Media Viewer</i> window will display the "
 "stream."
 msgstr "Після створення потоку вікно <i>Переглядач медіа</i> відобразить його."
 
-#: share/lua/http/index.html:296
+#: share/lua/http/index.html:295
 msgid ""
 "Volume will be controlled by the player, and not the <i>Main Controls</i>."
 msgstr ""
 "Гучність керуватиметься програвачем, а не <i>Головними елементами керування</"
 "i>."
 
-#: share/lua/http/index.html:299
+#: share/lua/http/index.html:298
 msgid ""
 "The current playing item will be streamed. If there is no currently playing "
 "item, the first selected item from the <i>Library</i> will be the subject of "
@@ -29235,7 +29235,7 @@ msgstr ""
 "Вестиметься мовлення поточного елемента. Якщо поточного елемента немає, "
 "виконуватиметься мовлення першого вибраного елемента з <i>Бібліотеки</i>."
 
-#: share/lua/http/index.html:302
+#: share/lua/http/index.html:301
 msgid ""
 "To stop the stream and resume normal controls, click the <i>Open Stream</i> "
 "button again."
@@ -29243,7 +29243,7 @@ msgstr ""
 "Щоб зупинити потік і відновити звичайні елементи керування, клацніть знову "
 "кнопку <i>Відкрити потік</i>."
 
-#: share/lua/http/index.html:305
+#: share/lua/http/index.html:304
 msgid "Are you sure you wish to create the stream?"
 msgstr "Справді створити потік?"
 

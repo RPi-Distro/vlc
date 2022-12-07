@@ -2,7 +2,7 @@
  * merge.c : Merge (line blending) routines for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2011 VLC authors and VideoLAN
- * $Id: 94cdd775ac70a548f23b3efbca65d6259d77ca39 $
+ * $Id: cfe1064dceebb89e1ff3f583509f07da4080ff28 $
  *
  * Author: Sam Hocevar <sam@zoy.org>                      (generic C routine)
  *         Sigmund Augdal Helberg <sigmunau@videolan.org> (MMXEXT, 3DNow, SSE2)
@@ -179,6 +179,7 @@ void Merge16BitSSE2( void *_p_dest, const void *_p_s1, const void *_p_s2,
 #endif
 
 #ifdef CAN_COMPILE_C_ALTIVEC
+VLC_ALTIVEC
 void MergeAltivec( void *_p_dest, const void *_p_s1,
                    const void *_p_s2, size_t i_bytes )
 {

@@ -1,47 +1,35 @@
-vlc (3.0.17.4-0+deb11u1+rpi1+rpt4) bullseye; urgency=medium
+vlc (3.0.18-0+rpt1+deb11u1) bullseye; urgency=medium
 
   * Update to MMAL patch 30
-
- -- Serge Schneider <serge@raspberrypi.com>  Mon, 31 Oct 2022 12:02:05 +0000
-
-vlc (3.0.17.4-0+deb11u1+rpi1+rpt3) bullseye; urgency=medium
-
-  * Update to MMAL patch 29
-
- -- Serge Schneider <serge@raspberrypi.com>  Thu, 04 Aug 2022 13:00:51 +0100
-
-vlc (3.0.17.4-0+deb11u1+rpi1+rpt2) bullseye; urgency=medium
-
-  * Add libavfilter-dev dependency
-  * Install libdrm_av_deinterlace_plugin.so
-
- -- Serge Schneider <serge@raspberrypi.com>  Tue, 26 Jul 2022 12:23:03 +0100
-
-vlc (3.0.17.4-0+deb11u1+rpi1+rpt1) bullseye; urgency=medium
-
-  * Add MMAL patch 27
   * Disable libva and vdpau on ARM
   * Disable mmal-avcodec
-  * Add libxrandr-dev dependency
-  * Add libdrm-dev dependency
+  * Add new dependencies
+    - libxrandr-dev dependency
+	- libdrm-dev dependency
+	- libavfilter-dev dependency
   * Install new plugins:
     - libdrm_avcodec_plugin.so
     - libdrm_conv_sand30_plugin.so
     - libdrm_gl_conv_plugin.so
     - libdrm_vout_plugin.so
+    - libdrm_av_deinterlace_plugin.so
   * Ship libmmal_xsplitter_plugin.so regardless of mmal flag
   * Re-enable live555 plugin
   * Re-enable srt plugin
-
- -- Serge Schneider <serge@raspberrypi.com>  Mon, 20 Jun 2022 16:16:50 +0100
-
-vlc (3.0.17.4-0+deb11u1+rpi1) bullseye-staging; urgency=medium
-
   [changes brought forward from 3.0.11.1-1+rpi1 by Peter Michael Green <plugwash@raspbian.org> at Sun, 30 Aug 2020 00:37:35 +0000]
   * Add extern to three functions for gcc-10 compatibility.
   * Partially fix clean target.
 
- -- Raspbian forward porter <root@raspbian.org>  Tue, 21 Jun 2022 08:12:23 +0000
+ -- Serge Schneider <serge@raspberrypi.com>  Wed, 07 Dec 2022 14:27:41 +0000
+
+vlc (3.0.18-0+deb11u1) bullseye-security; urgency=medium
+
+  * New upstream version 3.0.18
+    - Fix buffer overflow in the vnc module (CVE-2022-41325)
+  * debian/: Remove sndio module
+    The sndio version in bullseye is no longer detected.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 02 Dec 2022 22:08:18 +0100
 
 vlc (3.0.17.4-0+deb11u1) bullseye-security; urgency=medium
 

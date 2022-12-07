@@ -64,6 +64,8 @@ namespace adaptive
                 virtual size_t      getBytesRead    () const = 0;
         };
 
+        using StorageID = std::string;
+
         class AbstractChunkSource : public ChunkInterface
         {
             friend class AbstractConnectionManager;
@@ -71,6 +73,7 @@ namespace adaptive
             public:
                 const BytesRange &  getBytesRange   () const;
                 ChunkType           getChunkType    () const;
+                const StorageID &   getStorageID    () const;
                 virtual std::string getContentType  () const override;
                 virtual RequestStatus getRequestStatus() const override;
                 virtual void        recycle() = 0;
@@ -78,6 +81,7 @@ namespace adaptive
             protected:
                 AbstractChunkSource(ChunkType, const BytesRange & = BytesRange());
                 virtual ~AbstractChunkSource();
+                StorageID           storeid;
                 ChunkType           type;
                 RequestStatus       requeststatus;
                 size_t              contentLength;
@@ -124,6 +128,7 @@ namespace adaptive
                 virtual void        recycle() override;
 
                 static const size_t CHUNK_SIZE = 32768;
+                static StorageID makeStorageID(const std::string &, const BytesRange &);
 
             protected:
                 HTTPChunkSource(const std::string &url, AbstractConnectionManager *,
@@ -131,6 +136,7 @@ namespace adaptive
                                 bool = false);
 
                 virtual bool        prepare();
+                void                setIdentifier(const std::string &, const BytesRange &);
                 AbstractConnection    *connection;
                 AbstractConnectionManager *connManager;
                 mutable vlc_mutex_t lock;
@@ -157,6 +163,7 @@ namespace adaptive
                 virtual block_t *  readBlock       ()  override;
                 virtual block_t *  read            (size_t)  override;
                 virtual bool       hasMoreData     () const  override;
+                virtual void        recycle() override;
 
             protected:
                 HTTPChunkBufferedSource(const std::string &url, AbstractConnectionManager *,
@@ -170,6 +177,8 @@ namespace adaptive
             private:
                 block_t            *p_head; /* read cache buffer */
                 block_t           **pp_tail;
+                const block_t      *p_read;
+                size_t              inblockreadoffset;
                 size_t              buffered; /* read cache size */
                 bool                done;
                 bool                eof;

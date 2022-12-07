@@ -205,8 +205,8 @@ tc_yuv_base_init(opengl_tex_converter_t *tc, GLenum tex_target,
         }
         else
         {
-            swizzle_per_tex[0] = NULL;
-            swizzle_per_tex[1] = "xa";
+            swizzle_per_tex[0] = "x";
+            swizzle_per_tex[1] = "xw";
         }
     }
     else if (desc->plane_count == 1)

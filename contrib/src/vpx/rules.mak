@@ -1,6 +1,6 @@
 # libvpx
 
-VPX_VERSION := 1.9.0
+VPX_VERSION := 1.12.0
 VPX_URL := http://github.com/webmproject/libvpx/archive/v${VPX_VERSION}.tar.gz
 
 PKGS += vpx
@@ -130,21 +130,12 @@ ifdef HAVE_DARWIN_OS
 VPX_CONF += --enable-vp8-decoder --disable-tools
 VPX_CONF += --extra-cflags="$(CFLAGS) $(EXTRA_CFLAGS)"
 ifdef HAVE_IOS
-ifdef HAVE_TVOS
-VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -mtvos-version-min=9.0
-else
-VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) -miphoneos-version-min=8.4
-endif
+VPX_LDFLAGS := -L$(IOS_SDK)/usr/lib -isysroot $(IOS_SDK) $(LDFLAGS)
 endif
 ifdef HAVE_MACOSX
 VPX_LDFLAGS := -L$(MACOSX_SDK)/usr/lib -isysroot $(MACOSX_SDK) -mmacosx-version-min=10.7
 endif
 VPX_LDFLAGS += -arch $(PLATFORM_SHORT_ARCH)
-endif
-
-ifneq ($(filter i386 x86_64,$(ARCH)),)
-# broken text relocations or invalid register for .seh_savexmm with gcc8
-VPX_CONF += --disable-mmx
 endif
 
 ifndef WITH_OPTIMIZATION

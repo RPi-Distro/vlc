@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.13\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2022-04-19 00:23+0200\n"
+"POT-Creation-Date: 2022-10-13 20:54+0200\n"
 "PO-Revision-Date: 2018-12-19 22:50+0100\n"
 "Last-Translator: VideoLAN <videolan@videolan.org>, 2018\n"
 "Language-Team: Kannada (https://www.transifex.com/yaron/teams/16553/kn/)\n"
@@ -683,8 +683,8 @@ msgstr "ಗಳಿಕೆಯನ್ನು ಮತ್ತೊಮ್ಮೆ ಪ್ಲ�
 msgid "Stereo audio mode"
 msgstr "ಸ್ಟೀರಿಯೋ ಧ್ವನಿ ಕ್ರಮ"
 
-#: src/audio_output/output.c:419 modules/access/v4l2/v4l2.c:267
-#: modules/audio_output/alsa.c:76
+#: src/audio_output/output.c:419 src/libvlc-module.c:198
+#: modules/access/v4l2/v4l2.c:267 modules/audio_output/alsa.c:76
 msgid "Mono"
 msgstr "ಮೊನೊ"
 
@@ -748,7 +748,7 @@ msgstr "ಹೆಡ್ಫೋನ್ ಗಳು"
 #: modules/access/dtv/access.c:108 modules/access/dtv/access.c:117
 #: modules/access/dtv/access.c:125 modules/access/dtv/access.c:134
 #: modules/access/dtv/access.c:142 modules/access/dtv/access.c:164
-#: modules/access/v4l2/v4l2.c:137 modules/gui/qt/components/open_panels.cpp:988
+#: modules/access/v4l2/v4l2.c:137 modules/gui/qt/components/open_panels.cpp:991
 #: modules/gui/qt/components/simple_preferences.cpp:386
 msgid "Automatic"
 msgstr "ಸ್ವಯಂಚಾಲಿತ"
@@ -919,47 +919,47 @@ msgstr "ಗೊತ್ತಿರದ ದೋಷ"
 msgid "Bookmark %i"
 msgstr "ಅಚ್ಚುಮೆಚ್ಚು %i"
 
-#: src/input/decoder.c:1893
+#: src/input/decoder.c:1895
 msgid "No description for this codec"
 msgstr "ಈ ಕೋಡೆಕ್ ಗೆ ಯಾವುದೇ ವಿವರಣೆ ಇಲ್ಲ "
 
-#: src/input/decoder.c:1895
+#: src/input/decoder.c:1897
 msgid "Codec not supported"
 msgstr "ಕೋಡೆಕ್ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ"
 
-#: src/input/decoder.c:1896
+#: src/input/decoder.c:1898
 #, c-format
 msgid "VLC could not decode the format \"%4.4s\" (%s)"
 msgstr "VLC ಈ ಫಾರ್ಮ್ಯಾಟ್ ಡಿಕೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ \"%4.4s\" (%s)"
 
-#: src/input/decoder.c:1900
+#: src/input/decoder.c:1902
 msgid "Unidentified codec"
 msgstr "ಗುರುತಿಸಲಾಗದ ಕೊಡೆಕ್"
 
-#: src/input/decoder.c:1901
+#: src/input/decoder.c:1903
 msgid "VLC could not identify the audio or video codec"
 msgstr "VLC ಗೆ ಆಡಿಯೋ ಅಥವಾ ವಿಡಿಯೋ ಕೊಡೆಕ್ ಅನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ"
 
-#: src/input/decoder.c:1912
+#: src/input/decoder.c:1914
 msgid "packetizer"
 msgstr "ವಿಭಜಕಗ"
 
-#: src/input/decoder.c:1912
+#: src/input/decoder.c:1914
 msgid "decoder"
 msgstr "ವಿಸಂಕೇತಕ"
 
-#: src/input/decoder.c:1920 src/input/decoder.c:2203
+#: src/input/decoder.c:1922 src/input/decoder.c:2205
 #: modules/codec/avcodec/encoder.c:378 modules/codec/avcodec/encoder.c:912
 #: modules/stream_out/es.c:349 modules/stream_out/es.c:362
 msgid "Streaming / Transcoding failed"
 msgstr "ಸ್ಟ್ರೀಮಿಂಗ್ / ಕ್ರಮವ್ಯವಸ್ಥೆ ವಿಫಲವಾಗಿದೆ"
 
-#: src/input/decoder.c:1921
+#: src/input/decoder.c:1923
 #, c-format
 msgid "VLC could not open the %s module."
 msgstr "VLC ಗೆ %s ಘಟಕವನ್ನು ತೆರೆಯಲಾಗಲಿಲ್ಲ. "
 
-#: src/input/decoder.c:2204
+#: src/input/decoder.c:2206
 msgid "VLC could not open the decoder module."
 msgstr "VLC ಗೆ ವಿಸಂಕೇತಕ ಘಟಕವನ್ನು ತೆರೆಯಲಾಗಲಿಲ್ಲ."
 
@@ -1094,7 +1094,7 @@ msgstr ""
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
-#: modules/access/vdr.c:78 modules/access/vnc.c:59 modules/demux/image.c:66
+#: modules/access/vdr.c:78 modules/access/vnc.c:60 modules/demux/image.c:66
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:164
 #: modules/video_filter/fps.c:42
 msgid "Frame rate"
@@ -1780,7 +1780,7 @@ msgstr ""
 #: modules/services_discovery/upnp.cpp:82
 #: modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
-#: modules/video_output/xcb/xvideo.c:821 modules/gui/qt/ui/profiles.h:742
+#: modules/video_output/xcb/xvideo.c:824 modules/gui/qt/ui/profiles.h:742
 #: modules/gui/qt/ui/profiles.h:745
 msgid "Auto"
 msgstr "ಸ್ವಯಂ"
@@ -5281,7 +5281,7 @@ msgstr "\"% s \" ಅನ್ನು ಬರೆಯುವುದಕ್ಕೆ ತೆರ�
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:791
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
 #: modules/gui/macosx/prefs.m:189
-#: modules/gui/qt/components/open_panels.cpp:1378
+#: modules/gui/qt/components/open_panels.cpp:1381
 #: modules/gui/qt/components/preferences_widgets.cpp:1416
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
 #: modules/gui/qt/dialogs/sout.cpp:92
@@ -6553,7 +6553,7 @@ msgid "DSS"
 msgstr "DSS"
 
 #: modules/access/dshow/dshow.cpp:130
-#: modules/gui/qt/components/open_panels.cpp:835
+#: modules/gui/qt/components/open_panels.cpp:838
 msgid "Video device name"
 msgstr "ವೀಡಿಯೊ ಸಾಧನದ ಹೆಸರು"
 
@@ -6566,8 +6566,8 @@ msgstr ""
 "don't specify anything, the default device will be used."
 
 #: modules/access/dshow/dshow.cpp:135
-#: modules/gui/qt/components/open_panels.cpp:843
-#: modules/gui/qt/components/open_panels.cpp:1064
+#: modules/gui/qt/components/open_panels.cpp:846
+#: modules/gui/qt/components/open_panels.cpp:1067
 msgid "Audio device name"
 msgstr "ಧ್ವನಿ ಸಾಧನದ ಹೆಸರು"
 
@@ -6578,7 +6578,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/dshow/dshow.cpp:140
-#: modules/gui/qt/components/open_panels.cpp:810
+#: modules/gui/qt/components/open_panels.cpp:813
 msgid "Video size"
 msgstr "ವೀಡಿಯೊದ ಗಾತ್ರ"
 
@@ -6663,8 +6663,8 @@ msgid "This overrides the channel. Measured in Hz."
 msgstr "ಇದು ಚಾನೆಲ್ ಅನ್ನು ಬದಿಗೊತ್ತುತದೆ. Hz ನಲ್ಲಿ ಅಳೆಯಲಾಗುತ್ತದೆ."
 
 #: modules/access/dshow/dshow.cpp:168
-#: modules/gui/qt/components/open_panels.cpp:863
-#: modules/gui/qt/components/open_panels.cpp:1084
+#: modules/gui/qt/components/open_panels.cpp:866
+#: modules/gui/qt/components/open_panels.cpp:1087
 msgid "Video standard"
 msgstr "ವಿಡಿಯೋ ಗುಣಮಟ್ಟ"
 
@@ -6879,7 +6879,7 @@ msgstr ""
 "ಟಿವಿ ಚ್ಯಾನಲ್ಗಳನ್ನು ಒಂದು ನೀಡಲ್ಪಟ್ಟ ಆವರ್ತನದ ಮೇಲೆ ಪ್ರೇಷಕ (ಅಥವಾ muiltiplex) ಮೂಲಕ "
 "ವರ್ಗೀಕರಿಸಲಾಗಿದೆ.ಇದು ರಿಸೀವರ್ ಅನ್ನು ಟ್ಯೂನ್ ಮಾಡಲು ಅಗತ್ಯವಿದೆ."
 
-#: modules/access/dtv/access.c:63 modules/gui/qt/components/open_panels.cpp:984
+#: modules/access/dtv/access.c:63 modules/gui/qt/components/open_panels.cpp:987
 msgid "Modulation / Constellation"
 msgstr "ತರಂಗಾಂತರತೆ/ಪುಂಜ"
 
@@ -7335,19 +7335,19 @@ msgstr ""
 msgid "Scanning DVB"
 msgstr ""
 
-#: modules/access/dvdnav.c:73 modules/access/dvdread.c:76
+#: modules/access/dvdnav.c:78 modules/access/dvdread.c:76
 msgid "DVD angle"
 msgstr "DVD ಯ ಕೋನ"
 
-#: modules/access/dvdnav.c:75 modules/access/dvdread.c:78
+#: modules/access/dvdnav.c:80 modules/access/dvdread.c:78
 msgid "Default DVD angle."
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಡಿವಿಡಿ ಕೋನ."
 
-#: modules/access/dvdnav.c:77
+#: modules/access/dvdnav.c:82
 msgid "Start directly in menu"
 msgstr "ಮೆನುವಿನಲ್ಲಿ ನೇರವಾಗಿ ಪ್ರಾರಂಭಿಸಿ"
 
-#: modules/access/dvdnav.c:79
+#: modules/access/dvdnav.c:84
 msgid ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
@@ -7355,25 +7355,25 @@ msgstr ""
 "Start the DVD directly in the main menu. This will try to skip all the "
 "useless warning introductions."
 
-#: modules/access/dvdnav.c:93
+#: modules/access/dvdnav.c:98
 msgid "DVD with menus"
 msgstr "ಮೆನುಗಳನ್ನು ಹೊಂದಿರುವ ಡಿವಿಡಿ"
 
-#: modules/access/dvdnav.c:94
+#: modules/access/dvdnav.c:99
 msgid "DVDnav Input"
 msgstr "DVDnav Input"
 
-#: modules/access/dvdnav.c:106
+#: modules/access/dvdnav.c:111
 msgid "DVDnav demuxer"
 msgstr ""
 
-#: modules/access/dvdnav.c:284 modules/access/dvdread.c:236
+#: modules/access/dvdnav.c:289 modules/access/dvdread.c:236
 #: modules/access/dvdread.c:252 modules/access/dvdread.c:511
 #: modules/access/dvdread.c:576
 msgid "Playback failure"
 msgstr "ಪ್ಲೇ ಮಾಡಲು ಸೋತಿದೆ"
 
-#: modules/access/dvdnav.c:285
+#: modules/access/dvdnav.c:290
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -7436,9 +7436,9 @@ msgstr ""
 msgid "Include devices and pipes when listing directories"
 msgstr ""
 
-#: modules/access/ftp.c:68 modules/access/live555.cpp:85
+#: modules/access/ftp.c:69 modules/access/live555.cpp:85
 #: modules/access/rdp.c:65 modules/access/sftp.c:55
-#: modules/access/smb_common.h:21 modules/access/vnc.c:46
+#: modules/access/smb_common.h:21 modules/access/vnc.c:47
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
 #: modules/gui/macosx/VLCSimplePrefsController.m:278
@@ -7447,16 +7447,16 @@ msgstr ""
 msgid "Username"
 msgstr "ಬಳಕೆದಾರರ ಹೆಸರು"
 
-#: modules/access/ftp.c:69 modules/access/rdp.c:66 modules/access/sftp.c:56
+#: modules/access/ftp.c:70 modules/access/rdp.c:66 modules/access/sftp.c:56
 #: modules/access/smb_common.h:22
 msgid ""
 "Username that will be used for the connection, if no username is set in the "
 "URL."
 msgstr ""
 
-#: modules/access/ftp.c:71 modules/access/live555.cpp:88
+#: modules/access/ftp.c:72 modules/access/live555.cpp:88
 #: modules/access/rdp.c:68 modules/access/sftp.c:58
-#: modules/access/smb_common.h:24 modules/access/vnc.c:47
+#: modules/access/smb_common.h:24 modules/access/vnc.c:48
 #: modules/access_output/http.c:55
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
 #: modules/gui/macosx/VLCSimplePrefsController.m:277
@@ -7467,51 +7467,51 @@ msgstr ""
 msgid "Password"
 msgstr "ಗುಪ್ತಪದ"
 
-#: modules/access/ftp.c:72 modules/access/rdp.c:69 modules/access/sftp.c:59
+#: modules/access/ftp.c:73 modules/access/rdp.c:69 modules/access/sftp.c:59
 #: modules/access/smb_common.h:25
 msgid ""
 "Password that will be used for the connection, if no username or password "
 "are set in URL."
 msgstr ""
 
-#: modules/access/ftp.c:74
+#: modules/access/ftp.c:75
 msgid "FTP account"
 msgstr "FTP ಖಾತೆ"
 
-#: modules/access/ftp.c:75
+#: modules/access/ftp.c:76
 msgid "Account that will be used for the connection."
 msgstr "ಸಂಪರ್ಕಕಕ್ಕೆ ಬಳಸಲಾಗುವ ಖಾತೆ."
 
-#: modules/access/ftp.c:78
+#: modules/access/ftp.c:79
 msgid "FTP authentication"
 msgstr ""
 
-#: modules/access/ftp.c:79
+#: modules/access/ftp.c:80
 #, c-format
 msgid "Please enter a valid login and password for the ftp connexion to %s"
 msgstr ""
 
-#: modules/access/ftp.c:84
+#: modules/access/ftp.c:85
 msgid "FTP input"
 msgstr "FTP input"
 
-#: modules/access/ftp.c:98
+#: modules/access/ftp.c:99
 msgid "FTP upload output"
 msgstr "FTP upload output"
 
-#: modules/access/ftp.c:369 modules/access/ftp.c:385 modules/access/ftp.c:537
+#: modules/access/ftp.c:370 modules/access/ftp.c:386 modules/access/ftp.c:538
 msgid "Network interaction failed"
 msgstr "ಜಾಲಬಂಧದ ಸಂವಾದ ವಿಫಲವಾಗಿದೆ"
 
-#: modules/access/ftp.c:370
+#: modules/access/ftp.c:371
 msgid "VLC could not connect with the given server."
 msgstr "VLC ಯು ನೀವು ನೀಡಿದ ಸರ್ವರ್ನೊಂದಿಗೆ ಸಂಪರ್ಕ ಹೊಂದಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ."
 
-#: modules/access/ftp.c:386
+#: modules/access/ftp.c:387
 msgid "VLC's connection to the given server was rejected."
 msgstr "VLC ಯು ನೀವು ನೀಡಿದ ಸರ್ವರ್ನೊಂದಿಗೆ ಸಂಪರ್ಕವನ್ನು ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
 
-#: modules/access/ftp.c:538
+#: modules/access/ftp.c:539
 msgid "Your account was rejected."
 msgstr "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ತಿರಸ್ಕರಿಸಲಾಗಿದೆ."
 
@@ -7751,7 +7751,7 @@ msgstr "ವೇಗ"
 msgid "Read the audio stream at VLC pace rather than Jack pace."
 msgstr "Read the audio stream at VLC pace rather than Jack pace."
 
-#: modules/access/jack.c:62 modules/gui/qt/components/open_panels.cpp:915
+#: modules/access/jack.c:62 modules/gui/qt/components/open_panels.cpp:918
 msgid "Auto connection"
 msgstr "ಸ್ವಯಂಚಾಲಿತ ಸಂಪರ್ಕ"
 
@@ -8312,7 +8312,7 @@ msgid "SAT>IP Receiver Plugin"
 msgstr ""
 
 #: modules/access/screen/screen.c:45
-#: modules/gui/qt/components/open_panels.cpp:1121
+#: modules/gui/qt/components/open_panels.cpp:1124
 msgid "Desired frame rate for the capture."
 msgstr "ಸೆರೆಹಿಡಿಯುವುದಕ್ಕೆ ನೀವು ಬಯಸುವ ಚೌಕಟ್ಟಿನ ದರ."
 
@@ -8401,7 +8401,7 @@ msgid "Screen"
 msgstr "ಪರದೆ"
 
 #: modules/access/screen/xcb.c:41 modules/access/shm.c:44
-#: modules/access/vnc.c:60
+#: modules/access/vnc.c:61
 msgid "How many times the screen content should be refreshed per second."
 msgstr "How many times the screen content should be refreshed per second."
 
@@ -8448,7 +8448,7 @@ msgstr ""
 "%s ಗೆ SFTP ಸಂಪರ್ಕ ಒದಗಿಸುವುದಕ್ಕೆ ಸಂಬಂಧಿಸಿದಂತೆ ಮಾನ್ಯವಾದ ಲಾಗಿನ್ ಮತ್ತು ಗುಪ್ತಪದವನ್ನು "
 "ನಮೂದಿಸಿ"
 
-#: modules/access/shm.c:46 modules/access/vnc.c:57
+#: modules/access/shm.c:46 modules/access/vnc.c:58
 msgid "Frame buffer depth"
 msgstr "ಚೌಕಟ್ಟಿನ ತಾತ್ಕಾಲಿಕ ಸಂಗ್ರಹದ ಆಳ"
 
@@ -8496,7 +8496,7 @@ msgstr "ಸ್ಮರಣೆ ಮ್ಯಾಪ್ ಮಾಡಲಾಗಿರುವ ಚ
 msgid "XWD file (autodetect)"
 msgstr "XWD ಕಡತ (ಸ್ವಯಂಪತ್ತೆ)"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:68
+#: modules/access/shm.c:76 modules/access/vnc.c:69
 msgid "8 bits"
 msgstr "8 ಬಿಟ್ಗಳು"
 
@@ -8504,15 +8504,15 @@ msgstr "8 ಬಿಟ್ಗಳು"
 msgid "15 bits"
 msgstr "15 ಬಿಟ್ಗಳು"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:68
+#: modules/access/shm.c:76 modules/access/vnc.c:69
 msgid "16 bits"
 msgstr "16 ಬಿಟ್ಗಳು"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:68
+#: modules/access/shm.c:76 modules/access/vnc.c:69
 msgid "24 bits"
 msgstr "24 ಬಿಟ್ಗಳು"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:68
+#: modules/access/shm.c:76 modules/access/vnc.c:69
 msgid "32 bits"
 msgstr "24 ಬಿಟ್ಗಳು"
 
@@ -8687,7 +8687,7 @@ msgstr "ರೇಡಿಯೋ ಸಾಧನ"
 msgid "Radio tuner device node."
 msgstr "ರೇಡಿಯೋ ಸ್ವರಸಂಯೋಜಕ ಸಾಧನದ ಸಂಪಾತ"
 
-#: modules/access/v4l2/v4l2.c:75 modules/gui/qt/components/open_panels.cpp:1091
+#: modules/access/v4l2/v4l2.c:75 modules/gui/qt/components/open_panels.cpp:1094
 msgid "Frequency"
 msgstr "ಆವರ್ತನ"
 
@@ -8967,7 +8967,7 @@ msgstr "ಚರ್ಮ ಬಿಳಿಯಾಗಿಸು"
 msgid "Vivid"
 msgstr "ಉಜ್ವಲ"
 
-#: modules/access/v4l2/v4l2.c:169 modules/audio_output/auhal.c:42
+#: modules/access/v4l2/v4l2.c:169 modules/audio_output/auhal.c:43
 #: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1469
 #: modules/audio_output/waveout.c:145
 msgid "Audio volume"
@@ -9157,63 +9157,63 @@ msgstr "ವಿಡಿಆರ್ ಕತ್ತರಿ ಗೆರೆಗಳು"
 msgid "Start"
 msgstr "ಪ್ರಾರಂಭ"
 
-#: modules/access/vnc.c:48
+#: modules/access/vnc.c:49
 msgid "X.509 Certificate Authority"
 msgstr "X.509 ಪ್ರಮಾಣಪತ್ರ ಪ್ರಾಧಿಕಾರ"
 
-#: modules/access/vnc.c:49
+#: modules/access/vnc.c:50
 msgid "Certificate of the Authority to verify server's against"
 msgstr "Certificate of the Authority to verify server's against"
 
-#: modules/access/vnc.c:50
+#: modules/access/vnc.c:51
 msgid "X.509 Certificate Revocation List"
 msgstr "X.509 ಪ್ರಮಾಣಪತ್ರ ವಾಪಾಸಾತಿ ಪಟ್ಟಿ"
 
-#: modules/access/vnc.c:51
+#: modules/access/vnc.c:52
 msgid "List of revoked servers certificates"
 msgstr "ಹಿಂಪಡೆಯಲಾಗಿದೆ ಸರ್ವರ್ ಪ್ರಮಾಣಪತ್ರಗಳ ಪಟ್ಟಿ"
 
-#: modules/access/vnc.c:52
+#: modules/access/vnc.c:53
 msgid "X.509 Client certificate"
 msgstr "X.509 ಗ್ರಾಹಕ ಪ್ರಮಾಣಪತ್ರ"
 
-#: modules/access/vnc.c:53
+#: modules/access/vnc.c:54
 msgid "Certificate for client authentication"
 msgstr ""
 
-#: modules/access/vnc.c:54
+#: modules/access/vnc.c:55
 msgid "X.509 Client private key"
 msgstr "X.509 ಗ್ರಾಹಕರ ಖಾಸಗಿ ಕೀಲಿ"
 
-#: modules/access/vnc.c:55
+#: modules/access/vnc.c:56
 msgid "Private key for authentication by certificate"
 msgstr ""
 
-#: modules/access/vnc.c:58
+#: modules/access/vnc.c:59
 msgid "RGB chroma (RV32, RV24, RV16, RGB2)"
 msgstr "RGB ವರ್ಣಶುದ್ಧತೆ (RV32, RV24, RV16, RGB2)"
 
-#: modules/access/vnc.c:61
+#: modules/access/vnc.c:62
 msgid "Compression level"
 msgstr "ಸಂಕೋಚನ ಮಟ್ಟ"
 
-#: modules/access/vnc.c:62
+#: modules/access/vnc.c:63
 msgid "Transfer compression level from 0 (none) to 9 (max)"
 msgstr "ಒತ್ತಡಕ ವರ್ಗಾವಣೆ ಮಟ್ಟ  0 (ಯಾವುದೂ ಇಲ್ಲ) ರಿಂದ 9 (ಗರಿಷ್ಠ)"
 
-#: modules/access/vnc.c:63
+#: modules/access/vnc.c:64
 msgid "Image quality"
 msgstr "ಚಿತ್ರದ ಗುಣಮಟ್ಟ"
 
-#: modules/access/vnc.c:64
+#: modules/access/vnc.c:65
 msgid "Image quality 1 to 9 (max)"
 msgstr "ಚಿತ್ರದ ಗುಣಮಟ್ಟ 1 ರಿಂದ 9 (ಗರಿಷ್ಠ)"
 
-#: modules/access/vnc.c:78
+#: modules/access/vnc.c:79
 msgid "VNC"
 msgstr "VDR"
 
-#: modules/access/vnc.c:82
+#: modules/access/vnc.c:83
 msgid "VNC client access"
 msgstr "VNC ಯ ಗ್ರಾಹಕರ ಪ್ರವೇಶ"
 
@@ -10066,7 +10066,7 @@ msgstr "10 ಬ್ಯಾಂಡ್ಗಳ ಸಮಾನಕಾರಿ"
 
 #: modules/audio_filter/equalizer.c:81
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:271
-#: modules/gui/qt/dialogs/extended.cpp:67 share/lua/http/index.html:238
+#: modules/gui/qt/dialogs/extended.cpp:67 share/lua/http/index.html:237
 msgid "Equalizer"
 msgstr "ಸಮಾನಕಾರಿ"
 
@@ -10537,7 +10537,7 @@ msgstr "ಸುತ್ತುವರೆಯುವ 7.1"
 msgid "ALSA audio output"
 msgstr "ALSA ಧ್ವನಿ ಉತ್ಪಾದನೆ"
 
-#: modules/audio_output/alsa.c:393 modules/audio_output/auhal.c:1185
+#: modules/audio_output/alsa.c:393 modules/audio_output/auhal.c:1177
 msgid "Audio output failed"
 msgstr " ಧ್ವನಿ ಉತ್ಪಾದನೆ ವಿಫಲವಾಗಿದೆ"
 
@@ -10562,28 +10562,28 @@ msgstr "ಧ್ವನಿ ಸ್ಮರಣೆ ಉತ್ಪಾದನೆ"
 msgid "Sample format"
 msgstr "ಮಾದರಿ ರೂಪ"
 
-#: modules/audio_output/auhal.c:45
+#: modules/audio_output/auhal.c:46
 msgid "Last audio device"
 msgstr "ಕೊನೆಯ ಶ್ರವ್ಯ ಸಾಧನ"
 
-#: modules/audio_output/auhal.c:53
+#: modules/audio_output/auhal.c:54
 msgid "HAL AudioUnit output"
 msgstr "HAL ಗೆ AudioUnit ಉತ್ಪಾದನೆ"
 
-#: modules/audio_output/auhal.c:463
+#: modules/audio_output/auhal.c:464
 msgid "System Sound Output Device"
 msgstr "ಸಿಸ್ಟಮ್ ಧ್ವನಿ ಉತ್ಪಾದನೆ ಸಾಧನ"
 
-#: modules/audio_output/auhal.c:543
+#: modules/audio_output/auhal.c:535
 #, c-format
 msgid "%s (Encoded Output)"
 msgstr "%s (ಸಂಕೇತಗೊಳಿಸಿದ ಉತ್ಪಾದನೆ)"
 
-#: modules/audio_output/auhal.c:1041
+#: modules/audio_output/auhal.c:1033
 msgid "Audio device is not configured"
 msgstr "ಶ್ರವ್ಯ ಸಾಧನವು ಸಂರಚಿತವಾಗಿಲ್ಲ"
 
-#: modules/audio_output/auhal.c:1042
+#: modules/audio_output/auhal.c:1034
 msgid ""
 "You should configure your speaker layout with \"Audio Midi Setup\" in /"
 "Applications/Utilities. VLC will output Stereo only."
@@ -10591,7 +10591,7 @@ msgstr ""
 "You should configure your speaker layout with \"Audio Midi Setup\" in /"
 "Applications/Utilities. VLC will output Stereo only."
 
-#: modules/audio_output/auhal.c:1186
+#: modules/audio_output/auhal.c:1178
 msgid ""
 "The selected audio output device is exclusively in use by another program."
 msgstr ""
@@ -15290,7 +15290,7 @@ msgstr "ಅವಶ್ಯಕವಾಗಿದ್ದಾಗ ಸರಿಪಡಿಸಿ"
 msgid "AVI demuxer"
 msgstr "AVI demuxer"
 
-#: modules/demux/avi/avi.c:878 modules/demux/mp4/mp4.c:4256
+#: modules/demux/avi/avi.c:878 modules/demux/mp4/mp4.c:4306
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15312,7 +15312,7 @@ msgstr "ಸೂಚ್ಯಂಕ ನಿರ್ಮಿಸಿ ನಂತರ ಪ್ಲೆ
 msgid "Play as is"
 msgstr "ಇದ್ದ ಹಾಗೆ ಪ್ಲೇ ಮಾಡಿ"
 
-#: modules/demux/avi/avi.c:889 modules/demux/mp4/mp4.c:4267
+#: modules/demux/avi/avi.c:889 modules/demux/mp4/mp4.c:4317
 msgid "Broken or missing Index"
 msgstr ""
 
@@ -15372,7 +15372,7 @@ msgstr ""
 msgid "Seek prevention demux filter"
 msgstr ""
 
-#: modules/demux/flac.c:51
+#: modules/demux/flac.c:52
 msgid "FLAC demuxer"
 msgstr "FLAC demuxer"
 
@@ -15756,11 +15756,11 @@ msgstr "MP4 ಸ್ಟ್ರೀಮ್ demuxer"
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4264
+#: modules/demux/mp4/mp4.c:4314
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4265
+#: modules/demux/mp4/mp4.c:4315
 msgid "Build index"
 msgstr ""
 
@@ -16678,7 +16678,7 @@ msgstr "ಸಮಯ"
 #: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:337
 #: modules/gui/macosx/VLCSimplePrefsController.m:287
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
-#: modules/gui/qt/components/open_panels.cpp:1377
+#: modules/gui/qt/components/open_panels.cpp:1380
 #: modules/stream_out/chromecast/cast.cpp:1197
 msgid "OK"
 msgstr "ಸರಿ"
@@ -17573,7 +17573,7 @@ msgid "Show/Hide Playlist"
 msgstr "ಪ್ಲೇಪಟ್ಟಿಯನ್ನು ತೋರಿಸು/ಮರೆಮಾಡು"
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:71
-#: modules/gui/qt/dialogs/vlm.cpp:548 share/lua/http/index.html:260
+#: modules/gui/qt/dialogs/vlm.cpp:548 share/lua/http/index.html:259
 msgid "Repeat"
 msgstr "ಪುನರಾವರ್ತಿಸಿ"
 
@@ -17582,7 +17582,7 @@ msgid "Change repeat mode. Modes: repeat one, repeat all and no repeat."
 msgstr ""
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:75
-#: share/lua/http/index.html:258
+#: share/lua/http/index.html:257
 msgid "Shuffle"
 msgstr "ಮಿಶ್ರಣ ಮಾಡಿ"
 
@@ -19802,7 +19802,7 @@ msgstr "ಕೊನೆಯ 60 ಸೆಕೆಂಡುಗಳು"
 msgid "Overall"
 msgstr "ಸಮಗ್ರ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:675
+#: modules/gui/qt/components/interface_widgets.cpp:676
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
@@ -19810,45 +19810,45 @@ msgstr ""
 "ಪ್ರಸ್ತುತ ಪ್ಲೇಬ್ಯಾಕ್ ವೇಗ:%1\n"
 "ಸರಿಹೊಂದಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:748
+#: modules/gui/qt/components/interface_widgets.cpp:749
 msgid "Revert to normal play speed"
 msgstr "ಸಾಮಾನ್ಯ ಪ್ಲೇ ವೇಗಕ್ಕೆ ಹಿಂತಿರುಗಿಸಿ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:855
+#: modules/gui/qt/components/interface_widgets.cpp:856
 msgid "Download cover art"
 msgstr "ಮುಖಪುಟದ ಕಲೆಯನ್ನು ಡೌನ್ಲೋಡ್ ಮಾಡಿ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:859
+#: modules/gui/qt/components/interface_widgets.cpp:860
 msgid "Add cover art from file"
 msgstr "ಕಡತದಿಂದ ಚ್ ಸೇರಿಸಿ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:925
+#: modules/gui/qt/components/interface_widgets.cpp:926
 msgid "Choose Cover Art"
 msgstr "ಮುಖಪುಟದ ಕಲೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:926
+#: modules/gui/qt/components/interface_widgets.cpp:927
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "ಚಿತ್ರಿಕಾ ಕಡತ (*.gif ,*.jpg,*.jpeg,*.png)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:953
+#: modules/gui/qt/components/interface_widgets.cpp:954
 #: modules/gui/qt/dialogs/toolbar.cpp:573
 msgid "Elapsed time"
 msgstr "ಕಳೆದ ಸಮಯ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:957
+#: modules/gui/qt/components/interface_widgets.cpp:958
 #: modules/gui/qt/dialogs/toolbar.cpp:577
 msgid "Total/Remaining time"
 msgstr "ಒಟ್ಟು / ಉಳಿದಿರುವ ಸಮಯ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:959
+#: modules/gui/qt/components/interface_widgets.cpp:960
 msgid "Click to toggle between total and remaining time"
 msgstr "ಒಟ್ಟು ಮತ್ತು ಉಳಿದ ಸಮಯದಲ್ಲಿ ನಡುವೆ ಅದಲುಬದಲು ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:965
+#: modules/gui/qt/components/interface_widgets.cpp:966
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "ಕಳೆದ ಮತ್ತು ಉಳಿದ ಸಮಯದಲ್ಲಿ ನಡುವೆ ಅದಲುಬದಲು ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:967
+#: modules/gui/qt/components/interface_widgets.cpp:968
 msgid "Double click to jump to a chosen time position"
 msgstr "ಒಂದು ಆಯ್ಕೆಯ ಸಮಯದ ಸ್ಥಾನಕ್ಕೆ ನೆಗೆಯುವುದಕ್ಕೆ ಡಬಲ್ ಕ್ಲಿಕ್ ಮಾಡಿ"
 
@@ -19882,64 +19882,64 @@ msgstr "ಡಿಸ್ಕ್‍ಅನ್ನು ಹೊರ ತೆಗೆಯಿರ�
 msgid "Entry"
 msgstr "ಪ್ರವೇಶ"
 
-#: modules/gui/qt/components/open_panels.cpp:890
+#: modules/gui/qt/components/open_panels.cpp:893
 msgid "Channels:"
 msgstr "ಚಾನಲ್ಗಳು:"
 
-#: modules/gui/qt/components/open_panels.cpp:901
+#: modules/gui/qt/components/open_panels.cpp:904
 msgid "Selected ports:"
 msgstr "ಆಯ್ದ ಸಂಪರ್ಕಸ್ಥಾನಗಳು:"
 
-#: modules/gui/qt/components/open_panels.cpp:904
+#: modules/gui/qt/components/open_panels.cpp:907
 msgid ".*"
 msgstr ".*"
 
-#: modules/gui/qt/components/open_panels.cpp:911
+#: modules/gui/qt/components/open_panels.cpp:914
 msgid "Use VLC pace"
 msgstr "VLC ಗತಿಯನ್ನು ಬಳಸಿ"
 
-#: modules/gui/qt/components/open_panels.cpp:931
+#: modules/gui/qt/components/open_panels.cpp:934
 msgid "TV - digital"
 msgstr "ಟಿವಿ-ಡಿಜಿಟಲ್"
 
-#: modules/gui/qt/components/open_panels.cpp:934
+#: modules/gui/qt/components/open_panels.cpp:937
 msgid "Tuner card"
 msgstr "ಟ್ಯೂನರ್ ಕಾರ್ಡ್"
 
-#: modules/gui/qt/components/open_panels.cpp:935
+#: modules/gui/qt/components/open_panels.cpp:938
 msgid "Delivery system"
 msgstr "ವಿತರಣಾ ವ್ಯವಸ್ಥೆ"
 
-#: modules/gui/qt/components/open_panels.cpp:965
+#: modules/gui/qt/components/open_panels.cpp:968
 msgid "Transponder/multiplex frequency"
 msgstr "Transponder/multiplex frequency"
 
-#: modules/gui/qt/components/open_panels.cpp:975
+#: modules/gui/qt/components/open_panels.cpp:978
 msgid "Transponder symbol rate"
 msgstr "ಪ್ರೇಷಕದ ಸಂಕೇತ ದರ"
 
-#: modules/gui/qt/components/open_panels.cpp:1008
+#: modules/gui/qt/components/open_panels.cpp:1011
 msgid "Bandwidth"
 msgstr "ಆವರ್ತನ ಶ್ರೇಣಿ"
 
-#: modules/gui/qt/components/open_panels.cpp:1052
+#: modules/gui/qt/components/open_panels.cpp:1055
 msgid "TV - analog"
 msgstr "ಟಿವಿ -ಅನಾಲಾಗ್"
 
-#: modules/gui/qt/components/open_panels.cpp:1055
+#: modules/gui/qt/components/open_panels.cpp:1058
 msgid "Device name"
 msgstr "ಸಾಧನದ ಹೆಸರು"
 
-#: modules/gui/qt/components/open_panels.cpp:1115
+#: modules/gui/qt/components/open_panels.cpp:1118
 msgid "Your display will be opened and played in order to stream or save it."
 msgstr "Your display will be opened and played in order to stream or save it."
 
 #. xgettext: frames per second
-#: modules/gui/qt/components/open_panels.cpp:1129
+#: modules/gui/qt/components/open_panels.cpp:1132
 msgid " f/s"
 msgstr " f/s"
 
-#: modules/gui/qt/components/open_panels.cpp:1344
+#: modules/gui/qt/components/open_panels.cpp:1347
 msgid "Advanced Options"
 msgstr "ಸುಧಾರಿತ ಆಯ್ಕೆಗಳು"
 
@@ -23784,13 +23784,13 @@ msgstr ""
 msgid "Avahi Renderer Discovery"
 msgstr ""
 
-#: modules/services_discovery/bonjour.m:44
-#: modules/services_discovery/bonjour.m:62
-#: modules/services_discovery/bonjour.m:412
+#: modules/services_discovery/bonjour.m:45
+#: modules/services_discovery/bonjour.m:63
+#: modules/services_discovery/bonjour.m:455
 msgid "Bonjour Network Discovery"
 msgstr ""
 
-#: modules/services_discovery/bonjour.m:70
+#: modules/services_discovery/bonjour.m:71
 msgid "Bonjour Renderer Discovery"
 msgstr ""
 
@@ -24020,7 +24020,7 @@ msgid "Applications"
 msgstr "ಅಪ್ಲಿಕೇಶನ್‍ಗಳು"
 
 #: modules/services_discovery/xcb_apps.c:361
-#: modules/video_output/win32/direct3d9.c:342
+#: modules/video_output/win32/direct3d9.c:355
 msgid "Desktop"
 msgstr "ಡೆಸ್ಕ್ಟಾಪ್"
 
@@ -26433,16 +26433,16 @@ msgstr "ಕ್ಯಾನ್ವಾಸ್"
 msgid "Canvas video filter"
 msgstr "ಕ್ಯಾನ್ವಾಸ್ ವೀಡಿಯೊ ಶೋದಕ"
 
-#: modules/video_filter/ci_filters.m:755
+#: modules/video_filter/ci_filters.m:756
 msgid "Use a specific Core Image Filter"
 msgstr ""
 
-#: modules/video_filter/ci_filters.m:757
+#: modules/video_filter/ci_filters.m:758
 msgid ""
 "Example: 'CICrystallize', 'CIBumpDistortion', 'CIThermal', 'CIComicEffect'"
 msgstr ""
 
-#: modules/video_filter/ci_filters.m:763
+#: modules/video_filter/ci_filters.m:764
 msgid "Mac OS X hardware video filters"
 msgstr ""
 
@@ -27385,7 +27385,7 @@ msgstr ""
 msgid "Color ASCII art video output"
 msgstr "ಬಣ್ಣದ ASCII ಕಲೆಯ ವೀಡಿಯೊ ಉತ್ಪಾದನೆ"
 
-#: modules/video_output/caopengllayer.m:946
+#: modules/video_output/caopengllayer.m:953
 msgid "Core Animation OpenGL Layer (Mac OS X)"
 msgstr ""
 
@@ -27570,11 +27570,11 @@ msgstr ""
 msgid "GNU/Linux framebuffer video output"
 msgstr "GNU/Linux ಫ್ರೇಮ್‍ಬಫರ್ ವೀಡಿಯೊ ಉತ್ಪಾದನೆ"
 
-#: modules/video_output/glx.c:271
+#: modules/video_output/glx.c:288
 msgid "GLX"
 msgstr "GLX"
 
-#: modules/video_output/glx.c:272
+#: modules/video_output/glx.c:289
 msgid "GLX extension for OpenGL"
 msgstr "OpenGL ಗೆ GLX ವಿಸ್ತರಣೆ"
 
@@ -27650,11 +27650,11 @@ msgstr "OpenGL"
 msgid "OpenGL video output"
 msgstr "OpenGL ವಿಡಿಯೋ output"
 
-#: modules/video_output/opengl/egl.c:441
+#: modules/video_output/opengl/egl.c:457
 msgid "EGL"
 msgstr "EGL"
 
-#: modules/video_output/opengl/egl.c:442
+#: modules/video_output/opengl/egl.c:458
 msgid "EGL extension for OpenGL"
 msgstr "OpenGL ಗೆ ​​EGL ವಿಸ್ತರಣೆ"
 
@@ -28566,7 +28566,7 @@ msgid "#separate commands with a new line or a semi-colon"
 msgstr "# ಆಜ್ಞೆಗಳನ್ನು ಹೊಸ ಸಾಲಿನಿಂದ ಅಥವಾ ಅರ್ಧ ವಿರಾಮ ಚಿಹ್ನೆಯ ಜೊತೆ ಪ್ರತ್ಯೇಕಿಸಿ "
 
 #: share/lua/http/dialogs/browse_window.html:41
-#: share/lua/http/mobile_browse.html:49
+#: share/lua/http/mobile_browse.html:48
 msgid "Play List"
 msgstr "ಹಾಡುಗಳ ಪಟ್ಟಿ"
 
@@ -28625,7 +28625,7 @@ msgid "File name"
 msgstr "ಕಡತದ ಹೆಸರು"
 
 #: share/lua/http/dialogs/equalizer_window.html:49
-#: share/lua/http/mobile_equalizer.html:63
+#: share/lua/http/mobile_equalizer.html:62
 msgid "Preamp:"
 msgstr "ಪೂರ್ವ ವರ್ಧನೆ:"
 
@@ -28661,60 +28661,60 @@ msgstr "ಉಪಶೀರ್ಷಿಕೆಯ ವಿಳಂಬ"
 msgid "Time:"
 msgstr "ಸಮಯ:"
 
-#: share/lua/http/index.html:26 share/lua/http/mobile_browse.html:25
-#: share/lua/http/mobile_equalizer.html:25 share/lua/http/mobile_view.html:25
+#: share/lua/http/index.html:25 share/lua/http/mobile_browse.html:24
+#: share/lua/http/mobile_equalizer.html:24 share/lua/http/mobile_view.html:24
 msgid "VLC media player - Web Interface"
 msgstr "VLC ಮೀಡಿಯಾ ಪ್ಲೇಯರ್ - ಅಂತರ್ಜಾಲ ಮೇಲ್ಮೈ"
 
-#: share/lua/http/index.html:234
+#: share/lua/http/index.html:233
 msgid "Hide / Show Library"
 msgstr "ಗ್ರಂಥಾಲಯವನ್ನು ತೋರಿಸಿ / ಮರೆಮಾಡಿ"
 
-#: share/lua/http/index.html:235
+#: share/lua/http/index.html:234
 msgid "Hide / Show Viewer"
 msgstr "ವೀಕ್ಷಕವನ್ನು ತೋರಿಸಿ/ಮರೆಮಾಡಿ"
 
-#: share/lua/http/index.html:236
+#: share/lua/http/index.html:235
 msgid "Manage Streams"
 msgstr "ಸ್ಟ್ರೀಮ್ಸ್ ಗಳನ್ನು ನಿರ್ವಹಿಸಿ"
 
-#: share/lua/http/index.html:237
+#: share/lua/http/index.html:236
 msgid "Track Synchronisation"
 msgstr "ಹಾಡುಗಳ ಹೊಂದಾಣಿಕೆ"
 
-#: share/lua/http/index.html:239
+#: share/lua/http/index.html:238
 msgid "VLM Batch Commands"
 msgstr "VLM ಬ್ಯಾಚ್ ಆಜ್ಞೆಗಳು"
 
-#: share/lua/http/index.html:259 modules/gui/qt/ui/vlm.h:295
+#: share/lua/http/index.html:258 modules/gui/qt/ui/vlm.h:295
 msgid "Loop"
 msgstr "ಸುತ್ತು ಹಾಕು"
 
-#: share/lua/http/index.html:261
+#: share/lua/http/index.html:260
 msgid "Empty Playlist"
 msgstr "ಖಾಲಿ ಇರುವ ಹಾಡುಗಳ ಪಟ್ಟಿ"
 
-#: share/lua/http/index.html:262
+#: share/lua/http/index.html:261
 msgid "Queue Selected"
 msgstr "ಆಯ್ಕೆ ಮಾಡಿದ್ದನ್ನು ಸಾಲಿನಲ್ಲಿ ಹಾಕಿ"
 
-#: share/lua/http/index.html:263
+#: share/lua/http/index.html:262
 msgid "Play Selected"
 msgstr "ಆಯ್ಕೆ ಮಾಡಿದ್ದನ್ನು ಪ್ಲೇ ಮಾಡಿ"
 
-#: share/lua/http/index.html:264
+#: share/lua/http/index.html:263
 msgid "Refresh List"
 msgstr "ಪಟ್ಟಿಯನ್ನು ತಾಜಾ ಗೊಳಿಸು"
 
-#: share/lua/http/index.html:271
+#: share/lua/http/index.html:270
 msgid "Loading flowplayer..."
 msgstr "Flowplayer ಅನ್ನುಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ ..."
 
-#: share/lua/http/index.html:271
+#: share/lua/http/index.html:270
 msgid "If nothing appears, check your internet connection."
 msgstr "ಏನೂ ಗೋಚರಿಸದಿದ್ದರೆ, ನಿಮ್ಮ ಅಂತರ್ಜಾಲ ಸಂಪರ್ಕವನ್ನು ಪರೀಕ್ಷಿಸಿ."
 
-#: share/lua/http/index.html:282
+#: share/lua/http/index.html:281
 msgid ""
 "VLC can display a QR code linking to the mobile version of the web "
 "interface; the web address of the web interface of your VLC media player "
@@ -28722,12 +28722,12 @@ msgid ""
 "web service to generate this QR code."
 msgstr ""
 
-#: share/lua/http/index.html:285
+#: share/lua/http/index.html:284
 #, fuzzy
 msgid "Do you want to go ahead with this?"
 msgstr "ನೀವು ಇದನ್ನು ಡೌನ್ಲೋಡ್ ಮಾಡಲು ಬಯಸುತ್ತೀರಾ?"
 
-#: share/lua/http/index.html:290
+#: share/lua/http/index.html:289
 msgid ""
 "By creating a stream, the <i>Main Controls</i> will operate the stream "
 "instead of the main interface."
@@ -28735,7 +28735,7 @@ msgstr ""
 "By creating a stream, the &lt;i&gt;Main Controls&lt;/i&gt; will operate the "
 "stream instead of the main interface."
 
-#: share/lua/http/index.html:291
+#: share/lua/http/index.html:290
 msgid ""
 "The stream will be created using default settings, for more advanced "
 "configuration, or to modify the default settings, select the button to the "
@@ -28745,7 +28745,7 @@ msgstr ""
 "configuration, or to modify the default settings, select the button to the "
 "right: &lt;i&gt;Manage Streams&lt;/i&gt;"
 
-#: share/lua/http/index.html:295
+#: share/lua/http/index.html:294
 msgid ""
 "Once the stream is created, the <i>Media Viewer</i> window will display the "
 "stream."
@@ -28753,14 +28753,14 @@ msgstr ""
 "Once the stream is created, the &lt;i&gt;Media Viewer&lt;/i&gt; window will "
 "display the stream."
 
-#: share/lua/http/index.html:296
+#: share/lua/http/index.html:295
 msgid ""
 "Volume will be controlled by the player, and not the <i>Main Controls</i>."
 msgstr ""
 "Volume will be controlled by the player, and not the &lt;i&gt;Main "
 "Controls&lt;/i&gt;."
 
-#: share/lua/http/index.html:299
+#: share/lua/http/index.html:298
 msgid ""
 "The current playing item will be streamed. If there is no currently playing "
 "item, the first selected item from the <i>Library</i> will be the subject of "
@@ -28770,7 +28770,7 @@ msgstr ""
 "item, the first selected item from the &lt;i&gt;Library&lt;/i&gt; will be "
 "the subject of the stream."
 
-#: share/lua/http/index.html:302
+#: share/lua/http/index.html:301
 msgid ""
 "To stop the stream and resume normal controls, click the <i>Open Stream</i> "
 "button again."
@@ -28778,7 +28778,7 @@ msgstr ""
 "To stop the stream and resume normal controls, click the &lt;i&gt;Open "
 "Stream&lt;/i&gt; button again."
 
-#: share/lua/http/index.html:305
+#: share/lua/http/index.html:304
 msgid "Are you sure you wish to create the stream?"
 msgstr "ನೀವು ಸ್ಟ್ರೀಮ್ ರಚಿಸಲು ಖಚಿತವಾಗಿರುವಿರಾ?"
 

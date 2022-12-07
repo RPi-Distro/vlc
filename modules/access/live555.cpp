@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: b9f2e35f1598af55358c93ca7daa4042060773df $
+ * $Id: 97b580e8d7613c0fae4f9360d15438bbf4eda6b6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -853,7 +853,13 @@ static int SessionsSetup( demux_t *p_demux )
             if( !p_sys->b_multicast )
             {
                 /* We need different rollover behaviour for multicast */
-                p_sys->b_multicast = IsMulticastAddress( sub->connectionEndpointAddress() );
+#if LIVEMEDIA_LIBRARY_VERSION_INT <= 1607558400 // 2020.12.10
+                netAddressBits addr = sub->connectionEndpointAddress();
+#else
+                struct sockaddr_storage addr;
+                sub->getConnectionEndpointAddress(addr);
+#endif
+                p_sys->b_multicast = IsMulticastAddress( addr );
             }
 
             tk = (live_track_t*)malloc( sizeof( live_track_t ) );

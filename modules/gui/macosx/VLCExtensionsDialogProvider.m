@@ -2,7 +2,7 @@
  * VLCExtensionsDialogProvider.m: Mac OS X Extensions Dialogs
  *****************************************************************************
  * Copyright (C) 2010-2015 VLC authors and VideoLAN
- * $Id: f9c66f51be380738bb3aa6f7a85171a2700f6899 $
+ * $Id: a1a34744774c4b4951ac8f26dc432b74ae30c86b $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan org>
  *          Brendon Justin <brendonjustin@gmail.com>,
@@ -55,10 +55,12 @@ static NSView *createControlFromWidget(extension_widget_t *widget, id self)
             }
             case EXTENSION_WIDGET_LABEL:
             {
-                NSTextField *field = [[NSTextField alloc] init];
+                VLCDialogLabel *field = [[VLCDialogLabel alloc] init];
                 [field setEditable:NO];
                 [field setBordered:NO];
                 [field setDrawsBackground:NO];
+                [field setAllowsEditingTextAttributes:YES];
+                [field setSelectable:YES];
                 [field setFont:[NSFont systemFontOfSize:0]];
                 [[field cell] setControlSize:NSRegularControlSize];
                 [field setAutoresizingMask:NSViewNotSizable];
@@ -74,6 +76,17 @@ static NSView *createControlFromWidget(extension_widget_t *widget, id self)
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncTextField:)  name:NSControlTextDidChangeNotification object:field];
                 return field;
             }
+            case EXTENSION_WIDGET_PASSWORD:
+            {
+                VLCDialogSecureTextField *field = [[VLCDialogSecureTextField alloc] init];
+                [field setWidget:widget];
+                [field setAutoresizingMask:NSViewWidthSizable];
+                [field setFont:[NSFont systemFontOfSize:0]];
+                [[field cell] setControlSize:NSRegularControlSize];
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(syncTextField:)  name:NSControlTextDidChangeNotification object:field];
+                return field;
+            }
+
             case EXTENSION_WIDGET_CHECK_BOX:
             {
                 VLCDialogButton *button = [[VLCDialogButton alloc] init];
@@ -81,6 +94,7 @@ static NSView *createControlFromWidget(extension_widget_t *widget, id self)
                 [button setWidget:widget];
                 [button setAction:@selector(triggerClick:)];
                 [button setTarget:self];
+                [button setFont:[NSFont systemFontOfSize:0.0]];
                 [[button cell] setControlSize:NSRegularControlSize];
                 [button setAutoresizingMask:NSViewWidthSizable];
                 return button;
@@ -92,6 +106,7 @@ static NSView *createControlFromWidget(extension_widget_t *widget, id self)
                 [button setWidget:widget];
                 [button setAction:@selector(triggerClick:)];
                 [button setTarget:self];
+                [button setFont:[NSFont systemFontOfSize:0.0]];
                 [[button cell] setControlSize:NSRegularControlSize];
                 [button setAutoresizingMask:NSViewNotSizable];
                 return button;
@@ -149,13 +164,16 @@ static NSView *createControlFromWidget(extension_widget_t *widget, id self)
 static void updateControlFromWidget(NSView *control, extension_widget_t *widget, id self)
 {
     @autoreleasepool {
+        NSString * const defaultStyleCSS = @"<style>*{ font-family: \
+            -apple-system-body, -apple-system, \
+            HelveticaNeue, Arial, sans-serif; }</style>";
         switch (widget->type) {
             case EXTENSION_WIDGET_HTML:
             {
                 // Get the web view
                 assert([control isKindOfClass:[WebView class]]);
                 WebView *webView = (WebView *)control;
-                NSString *string = toNSStr(widget->psz_text);
+                NSString *string = [defaultStyleCSS stringByAppendingString:toNSStr(widget->psz_text)];
                 [[webView mainFrame] loadHTMLString:string baseURL:[NSURL URLWithString:@""]];
                 [webView setNeedsDisplay:YES];
                 break;
@@ -168,7 +186,7 @@ static void updateControlFromWidget(NSView *control, extension_widget_t *widget,
                     break;
                 assert([control isKindOfClass:[NSControl class]]);
                 NSControl *field = (NSControl *)control;
-                NSString *string = toNSStr(widget->psz_text);
+                NSString *string = [defaultStyleCSS stringByAppendingString:toNSStr(widget->psz_text)];
                 NSAttributedString *attrString = [[NSAttributedString alloc] initWithHTML:[string dataUsingEncoding: NSISOLatin1StringEncoding] documentAttributes:NULL];
                 [field setAttributedStringValue:attrString];
                 break;
@@ -308,9 +326,17 @@ static void extensionDialogCallback(extension_dialog_t *p_ext_dialog,
 - (void)syncTextField:(NSNotification *)notifcation
 {
     id sender = [notifcation object];
-    assert([sender isKindOfClass:[VLCDialogTextField class]]);
-    VLCDialogTextField *field = sender;
-    extension_widget_t *widget = [field widget];
+    assert([sender isKindOfClass:[VLCDialogTextField class]] ||
+        [sender isKindOfClass:[VLCDialogSecureTextField class]]);
+    NSTextField *field = sender;
+    extension_widget_t *widget;
+
+    if ([sender isKindOfClass:[VLCDialogTextField class]])
+        widget = [(VLCDialogTextField*)field widget];
+    else if ([sender isKindOfClass:[VLCDialogSecureTextField class]])
+        widget = [(VLCDialogSecureTextField*)field widget];
+    else
+        return;
 
     vlc_mutex_lock(&widget->p_dialog->lock);
     free(widget->psz_text);

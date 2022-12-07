@@ -2,7 +2,7 @@
  * qt.cpp : Qt interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: eda27528978e4a357c515d49fd00824790ce97f4 $
+ * $Id: cefc75830f3c67f56d70b858f524128cbfd6f9bd $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -714,7 +714,6 @@ typedef struct {
 #ifdef QT5_HAS_X11
     Display *dpy;
 #endif
-    bool orphaned;
     QMutex lock;
 } vout_window_qt_t;
 
@@ -750,7 +749,6 @@ static int WindowOpen( vout_window_t *p_wnd, const vout_window_cfg_t *cfg )
     vout_window_qt_t *sys = new vout_window_qt_t;
 
     sys->mi = p_intf->p_sys->p_mi;
-    sys->orphaned = false;
     p_wnd->sys = (vout_window_sys_t *)sys;
     msg_Dbg( p_wnd, "requesting video window..." );
 
@@ -809,7 +807,6 @@ void WindowResized(vout_window_t *wnd, const QSize& size)
     if (QX11Info::isPlatformX11())
     {
         XResizeWindow(sys->dpy, wnd->handle.xid, size.width(), size.height());
-        XClearWindow(sys->dpy, wnd->handle.xid);
         XSync(sys->dpy, True);
     }
 #endif
@@ -829,19 +826,19 @@ static int WindowControl( vout_window_t *p_wnd, int i_query, va_list args )
     return sys->mi->controlVideo(i_query, args);
 }
 
-void WindowReleased(vout_window_t *wnd)
+void WindowOrphaned(vout_window_t *wnd)
 {
     vout_window_qt_t *sys = (vout_window_qt_t *)wnd->sys;
     QMutexLocker locker(&sys->lock);
 
     msg_Warn(wnd, "orphaned video window");
-    sys->orphaned = true;
 #if defined (QT5_HAS_X11)
     if (QX11Info::isPlatformX11())
     {   /* In the unlikely event that WindowOpen() has not yet reparented the
          * window, WindowOpen() will skip reparenting. Then this call will be
          * a no-op.
          */
+        XUnmapWindow (sys->dpy, wnd->handle.xid);
         XReparentWindow(sys->dpy, wnd->handle.xid,
                         RootWindow(sys->dpy, DefaultScreen(sys->dpy)), 0, 0);
         XSync(sys->dpy, True);

@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: e0e197c63c8607334aca46cbad6f35d5fe9cf6f6 $
+ * $Id: df061f98cacb365330f460c3afed9d599381a375 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -405,6 +405,8 @@ static int aout_update_format( decoder_t *p_dec )
 
         p_dec->fmt_out.audio.i_bytes_per_frame =
             p_owner->fmt.audio.i_bytes_per_frame;
+        p_dec->fmt_out.audio.i_bitspersample =
+            p_owner->fmt.audio.i_bitspersample;
         p_dec->fmt_out.audio.i_frame_length =
             p_owner->fmt.audio.i_frame_length;
     }
@@ -511,7 +513,7 @@ static int vout_update_format( decoder_t *p_dec )
             dpb_size = 18;
             break;
         case VLC_CODEC_AV1:
-            dpb_size = 10;
+            dpb_size = 8; /* NUM_REF_FRAMES from the AV1 spec */
             break;
         case VLC_CODEC_VP5:
         case VLC_CODEC_VP6:

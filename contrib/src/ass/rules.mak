@@ -1,5 +1,5 @@
 # ASS
-ASS_VERSION := 0.15.2
+ASS_VERSION := 0.16.0
 ASS_URL := https://github.com/libass/libass/releases/download/$(ASS_VERSION)/libass-$(ASS_VERSION).tar.gz
 
 PKGS += ass
@@ -41,9 +41,6 @@ $(TARBALLS)/libass-$(ASS_VERSION).tar.gz:
 
 libass: libass-$(ASS_VERSION).tar.gz .sum-ass
 	$(UNPACK)
-	$(APPLY) $(SRC)/ass/ass-macosx.patch
-	$(APPLY) $(SRC)/ass/0001-configure-add-Core-Text-and-DirectWrite-to-Libs.priv.patch
-	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
 
 DEPS_ass = freetype2 $(DEPS_freetype2) fribidi iconv $(DEPS_iconv)
@@ -54,7 +51,7 @@ else
 ASS_CONF += --disable-fontconfig --disable-require-system-font-provider
 endif
 
-ifneq ($(WITH_DWRITE), 0)
+ifeq ($(WITH_DWRITE), 1)
 ASS_CONF += --enable-directwrite
 endif
 
@@ -75,7 +72,6 @@ ASS_CFLAGS += -g
 endif
 
 .ass: libass
-	$(RECONF)
 	cd $< && $(HOSTVARS) CFLAGS="$(CFLAGS) $(ASS_CFLAGS)" ./configure $(HOSTCONF) $(ASS_CONF)
 	cd $< && $(MAKE)
 	$(call pkg_static,"libass.pc")

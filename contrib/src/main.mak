@@ -142,9 +142,12 @@ endif
 
 LN_S = ln -s
 ifdef HAVE_WIN32
-ifneq ($(shell $(CC) $(CFLAGS) -E -dM -include _mingw.h - < /dev/null | grep -E __MINGW64_VERSION_MAJOR),)
+MINGW_W64_VERSION := $(shell echo "__MINGW64_VERSION_MAJOR" | $(CC) $(CFLAGS) -E -include _mingw.h - | tail -n 1)
+ifneq ($(MINGW_W64_VERSION),)
 HAVE_MINGW_W64 := 1
+mingw_at_least = $(shell [ $(MINGW_W64_VERSION) -gt $(1) ] && echo true)
 endif
+HAVE_WINPTHREAD := $(shell $(CC) $(CFLAGS) -E -dM -include pthread.h - < /dev/null >/dev/null 2>&1 || echo FAIL)
 ifndef HAVE_CROSS_COMPILE
 LN_S = cp -R
 endif
@@ -183,6 +186,10 @@ ifneq ($(call cppcheck, __VFP_FP__)),)
 ifeq ($(call cppcheck, __SOFTFP__),)
 HAVE_FPU = 1
 endif
+endif
+else ifneq ($(filter riscv%, $(ARCH)),)
+ifneq ($(call cppcheck, __riscv_flen),)
+HAVE_FPU = 1
 endif
 else ifneq ($(call cppcheck, __mips_hard_float),)
 HAVE_FPU = 1
@@ -381,7 +388,8 @@ RECONF = mkdir -p -- $(PREFIX)/share/aclocal && \
 CMAKEBUILD := cmake --build
 CMAKE = cmake . -DCMAKE_TOOLCHAIN_FILE=$(abspath toolchain.cmake) \
 		-DCMAKE_INSTALL_PREFIX:STRING=$(PREFIX) \
-		-DBUILD_SHARED_LIBS:BOOL=OFF
+		-DBUILD_SHARED_LIBS:BOOL=OFF \
+		-DCMAKE_INSTALL_LIBDIR:STRING=lib
 ifdef HAVE_WIN32
 CMAKE += -DCMAKE_DEBUG_POSTFIX:STRING=
 endif

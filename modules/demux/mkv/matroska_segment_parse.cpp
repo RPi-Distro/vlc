@@ -2,7 +2,7 @@
  * matroska_segment_parse.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 13421339d8834d2cad9fe6b9d7fdf3149a37e68e $
+ * $Id: 5c6d8f5f2cff5932ed388eb4ab56df2d0b9edaaf $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -2124,6 +2124,18 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
                     free( psz_buf );
                 }
             }
+        }
+        S_CASE("S_DVBSUB")
+        {
+            vars.p_fmt->i_codec = VLC_CODEC_DVBS;
+
+            if( vars.p_tk->i_extra_data < 4 )
+                throw std::runtime_error( "not enough codec data for S_DVBSUB" );
+
+            uint16_t page_id = GetWBE( &vars.p_tk->p_extra_data[0] );
+            uint16_t ancillary_id = GetWBE( &vars.p_tk->p_extra_data[2] );
+
+            vars.p_fmt->subs.dvb.i_id = ( ancillary_id << 16 ) | page_id;
         }
         S_CASE("S_HDMV/PGS") {
             vars.p_fmt->i_codec = VLC_CODEC_BD_PG;

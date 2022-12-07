@@ -1,5 +1,4 @@
 --[[
- $Id$
 
  Copyright © 2007-2022 the VideoLAN team
 
@@ -371,7 +370,7 @@ function n_descramble( nparam, js )
     -- as such into a table.
     local data = {}
     datac = datac..","
-    while datac ~= "" do
+    while datac and datac ~= "" do
         local el = nil
         -- Transformation functions
         if string.match( datac, "^function%(" ) then
@@ -397,6 +396,7 @@ function n_descramble( nparam, js )
                el == trans.compound1.func or
                el == trans.compound2.func then
                 datac = string.match( datac, '^.-},e%.split%(""%)%)},(.*)$' )
+                        or string.match( datac, "^.-},(.*)$" )
             else
                 datac = string.match( datac, "^.-},(.*)$" )
             end
@@ -460,6 +460,10 @@ function n_descramble( nparam, js )
     -- as a second argument. We parse and emulate those calls to follow
     -- the descrambling script.
     -- c[40](c[14],c[2]),c[25](c[48]),c[14](c[1],c[24],c[42]()), [...]
+    if not string.match( script, "c%[(%d+)%]%(c%[(%d+)%]([^)]-)%)" ) then
+        vlc.msg.dbg( "Couldn't parse and execute YouTube video throttling parameter descrambling rules" )
+        return nil
+    end
     for ifunc, itab, args in string.gmatch( script, "c%[(%d+)%]%(c%[(%d+)%]([^)]-)%)" ) do
         local iarg1 = string.match( args, "^,c%[(%d+)%]" )
         local iarg2 = string.match( args, "^,[^,]-,c%[(%d+)%]" )
@@ -704,8 +708,8 @@ function pick_stream( stream_map, js_url )
         if dn then
             url = string.gsub( url, "([?&])n=[^&]+", "%1n="..vlc.strings.encode_uri_component( dn ), 1 )
         else
-            vlc.msg.dbg( "Couldn't descramble YouTube throttling URL parameter: data transfer will get throttled" )
-            vlc.msg.err( "Couldn't process youtube video URL, please check for updates to this script" )
+            vlc.msg.err( "Couldn't descramble YouTube throttling URL parameter: data transfer will get throttled" )
+            --vlc.msg.err( "Couldn't process youtube video URL, please check for updates to this script" )
         end
     end
 

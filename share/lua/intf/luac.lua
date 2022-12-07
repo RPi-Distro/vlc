@@ -2,7 +2,6 @@
  luac.lua: lua compilation module for VLC (duplicates luac)
 --[==========================================================================[
  Copyright (C) 2010 Antoine Cellerier
- $Id$
 
  Authors: Antoine Cellerier <dionoea at videolan dot org>
 
@@ -24,13 +23,10 @@
 usage = 
 [[
 To compile a lua script to bytecode (luac) run:
-  vlc -I luaintf --lua-intf --lua-config 'luac={input="file.lua",output="file.luac"}'
+  vlc -I luaintf --lua-intf luac --lua-config 'luac={input="file.lua",output="file.luac"}'
 Output will be similar to that of the luac command line tool provided with lua with the following arguments:
   luac -o file.luac file.lua
 ]]
-
-require "string"
-require "io"
 
 function compile()
     vlc.msg.info("About to compile lua file")
