@@ -1,7 +1,7 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
 0002-Revert-configure-Require-libmodplug-0.8.9.patch
 0003-Do-not-generate-cache-during-build.patch
-mmal_30.patch
+mmal_31.patch
 mmal_exit_fix.patch
 mmal_chain.patch
 mmal_caca.patch
