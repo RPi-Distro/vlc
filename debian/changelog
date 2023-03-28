@@ -1,3 +1,23 @@
+vlc (3.0.18-2+rpt1) bookworm; urgency=medium
+
+  * MMAL patch 31
+  * Add Build-Depends
+    - libavfilter-dev
+  * Disable mmal-avcodec
+  * Disable libva and vdpau on ARM
+  * Re-add libva tags to install files
+  * Re-enable live555 plugin
+  * Install new plugins:
+    - access/liblive555_plugin.so
+    - drm/libdrm_avcodec_plugin.so
+    - drm/libdrm_av_deinterlace_plugin.so
+    - drm/libdrm_conv_sand30_plugin.so
+    - drm/libdrm_gl_conv_plugin.so
+    - mmal/libmmal_xsplitter_plugin.so
+    - video_output/libdrm_vout_plugin.so
+
+ -- Serge Schneider <serge@raspberrypi.com>  Tue, 07 Feb 2023 09:48:24 +0000
+
 vlc (3.0.18-2) unstable; urgency=medium
 
   * debian/patches: Apply upstream patch for flac playback issues

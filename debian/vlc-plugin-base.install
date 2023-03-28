@@ -27,6 +27,7 @@ usr/lib/*/vlc/plugins/access/libimem_plugin.so
 usr/lib/*/vlc/plugins/access/liblibbluray_plugin.so
 usr/lib/*/vlc/plugins/access/liblinsys_hdsdi_plugin.so [linsys]
 usr/lib/*/vlc/plugins/access/liblinsys_sdi_plugin.so [linsys]
+usr/lib/*/vlc/plugins/access/liblive555_plugin.so
 usr/lib/*/vlc/plugins/access/libnfs_plugin.so [nfs]
 usr/lib/*/vlc/plugins/access/libpulsesrc_plugin.so
 usr/lib/*/vlc/plugins/access/librist_plugin.so
@@ -125,6 +126,10 @@ usr/lib/*/vlc/plugins/control/libnetsync_plugin.so
 usr/lib/*/vlc/plugins/control/liboldrc_plugin.so
 usr/lib/*/vlc/plugins/control/libxcb_hotkeys_plugin.so
 usr/lib/*/vlc/plugins/demux
+usr/lib/*/vlc/plugins/drm/libdrm_avcodec_plugin.so
+usr/lib/*/vlc/plugins/drm/libdrm_av_deinterlace_plugin.so
+usr/lib/*/vlc/plugins/drm/libdrm_conv_sand30_plugin.so
+usr/lib/*/vlc/plugins/drm/libdrm_gl_conv_plugin.so
 usr/lib/*/vlc/plugins/gui/libncurses_plugin.so
 usr/lib/*/vlc/plugins/keystore/libfile_keystore_plugin.so
 usr/lib/*/vlc/plugins/keystore/libkwallet_plugin.so
@@ -148,6 +153,7 @@ usr/lib/*/vlc/plugins/misc/libstats_plugin.so
 usr/lib/*/vlc/plugins/misc/libvod_rtsp_plugin.so
 usr/lib/*/vlc/plugins/misc/libxdg_screensaver_plugin.so
 usr/lib/*/vlc/plugins/misc/libxml_plugin.so
+usr/lib/*/vlc/plugins/mmal/libmmal_xsplitter_plugin.so
 usr/lib/*/vlc/plugins/mux
 usr/lib/*/vlc/plugins/packetizer
 usr/lib/*/vlc/plugins/services_discovery/libavahi_plugin.so
@@ -233,6 +239,7 @@ usr/lib/*/vlc/plugins/video_filter/libsharpen_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libtransform_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libvhs_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libwave_plugin.so
+usr/lib/*/vlc/plugins/video_output/libdrm_vout_plugin.so
 usr/lib/*/vlc/plugins/video_output/libfb_plugin.so [fb]
 usr/lib/*/vlc/plugins/video_output/libvdummy_plugin.so
 usr/lib/*/vlc/plugins/video_output/libvmem_plugin.so

@@ -56,6 +56,7 @@ confflags += \
 	--enable-libmpeg2 \
 	--enable-libxml2 \
 	--enable-lirc \
+	--enable-live555 \
 	--enable-mad \
 	--enable-matroska \
 	--enable-mod \
@@ -107,7 +108,6 @@ confflags += \
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
 # libtar: security issue (#737534)
-# live555: non-free code from RFC 3550 (#981439)
 # macosx*: MacOX only
 # mfx: currently not supported on Linux
 # microdns: functionality already provided by avahi
@@ -134,12 +134,13 @@ confflags += \
 	--disable-goom \
 	--disable-gst-decode \
 	--disable-libtar \
-	--disable-live555 \
 	--disable-macosx \
 	--disable-macosx-avfoundation \
 	--disable-macosx-qtkit \
 	--disable-mfx \
 	--disable-microdns \
+	--disable-mmal \
+	--disable-mmal-avcodec \
 	--disable-opencv \
 	--disable-projectm \
 	--disable-schroedinger \
@@ -151,7 +152,7 @@ confflags += \
 	--disable-wasapi \
 	$(NULL)
 
-removeplugins += libva
+removeplugins += libva mmal
 
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
@@ -243,11 +244,20 @@ removeplugins += mmx sse2
 endif
 
 # ARM specific optimizations
-ifeq (,$(filter-out armhf,$(DEB_HOST_ARCH_CPU)))
+ifeq (,$(filter-out arm,$(DEB_HOST_ARCH_CPU)))
 confflags += --enable-neon
 else
 confflags += --disable-neon
 removeplugins += neon
+endif
+
+ifeq (,$(filter-out arm arm64,$(DEB_HOST_ARCH_CPU)))
+confflags := $(filter-out --enable-vdpau, $(confflags))
+confflags := $(filter-out --enable-libva, $(confflags))
+confflags += --disable-vdpau
+confflags += --disable-libva
+removeplugins += vdpau
+removeplugins += libva
 endif
 
 # PowerPC specific optimizations (excluding powerpcspe)
