@@ -1,3 +1,9 @@
+vlc (3.0.18-2+rpt2) bookworm; urgency=medium
+
+  * Update to MMAL patch 32
+
+ -- Serge Schneider <serge@raspberrypi.com>  Tue, 28 Mar 2023 17:37:03 +0100
+
 vlc (3.0.18-2+rpt1) bookworm; urgency=medium
 
   * MMAL patch 31
