@@ -1,3 +1,9 @@
+vlc (3.0.18-0+rpt3+deb11u1) bullseye; urgency=medium
+
+  * Update to MMAL patch 32
+
+ -- Serge Schneider <serge@raspberrypi.com>  Tue, 28 Mar 2023 17:09:43 +0100
+
 vlc (3.0.18-0+rpt2+deb11u1) bullseye; urgency=medium
 
   * Update to MMAL patch 31
