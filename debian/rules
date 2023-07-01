@@ -70,7 +70,6 @@ confflags += \
 	--enable-qt \
 	--enable-realrtsp \
 	--enable-samplerate \
-	--enable-sdl-image \
 	--enable-sftp \
 	--enable-shine \
 	--enable-shout \
@@ -114,6 +113,7 @@ confflags += \
 # opencv: developer plugin not required by end users
 # projectm: broken
 # schroedinger: removed from Debian (#845037)
+# sdl-image: SDL 1.2 is deprecated (#1038590)
 # sndio: NMU maintained key package
 # sparkle: MacOS X only
 # telx: incompatible with zvbi
@@ -143,6 +143,7 @@ confflags += \
 	--disable-opencv \
 	--disable-projectm \
 	--disable-schroedinger \
+	--disable-sdl-image \
 	--disable-sndio \
 	--disable-sparkle \
 	--disable-telx \

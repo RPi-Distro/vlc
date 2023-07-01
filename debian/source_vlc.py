@@ -16,8 +16,6 @@ def add_info(report):
             "libnotify1-gtk2.10",
             "libqt5core5a",
             "libqt5gui5",
-            "libsdl-image1.2",
-            "libsdl1.2debian",
             "libx11-6",
             "libxcb-keysyms1",
             "libxcb1",
