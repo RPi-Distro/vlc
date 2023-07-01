@@ -1,3 +1,10 @@
+vlc (3.0.18-3) unstable; urgency=medium
+
+  * debian/control: Bump Standards-Version
+  * debian/: Disable SDL support (Closes: #1038590)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 01 Jul 2023 19:24:56 +0200
+
 vlc (3.0.18-2) unstable; urgency=medium
 
   * debian/patches: Apply upstream patch for flac playback issues
