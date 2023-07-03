@@ -6,3 +6,4 @@ mmal_exit_fix.patch
 mmal_chain.patch
 mmal_caca.patch
 mmal_wayland.patch
+firstrundlg.patch
