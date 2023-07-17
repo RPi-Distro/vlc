@@ -1,3 +1,13 @@
+vlc (1:3.0.18-0+rpt5+deb11u1) bullseye; urgency=medium
+
+  * Update to HW acceleration patch 35
+    - Fixes firmware accelerated playback of some AVI files with missing PTSs
+    - Downgrades the xsplitter errors about failure to initialise mmal to
+      debug (used to be unexpected - now normal)
+    - Disable privacy prompt on first run - does not work correctly with Wayland
+
+ -- Serge Schneider <serge@raspberrypi.com>  Mon, 17 Jul 2023 09:06:03 +0100
+
 vlc (1:3.0.18-0+rpt4+deb11u1) bullseye; urgency=medium
 
   * Update to HW acceleration patch 33
