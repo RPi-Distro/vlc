@@ -152,8 +152,6 @@ confflags += \
 	--disable-wasapi \
 	$(NULL)
 
-removeplugins += libva
-
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
 # V4L2 is disabled on kFreeBSD due to a build failure.
