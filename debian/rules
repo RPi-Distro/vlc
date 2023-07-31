@@ -105,6 +105,7 @@ confflags += \
 # freerdp: removed from Debian (#888323)
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
+# libplacebo: is too new
 # libtar: security issue (#737534)
 # live555: non-free code from RFC 3550 (#981439)
 # macosx*: MacOX only
@@ -133,6 +134,7 @@ confflags += \
 	--disable-freerdp \
 	--disable-goom \
 	--disable-gst-decode \
+	--disable-libplacebo \
 	--disable-libtar \
 	--disable-live555 \
 	--disable-macosx \
@@ -159,7 +161,6 @@ confflags += \
 	--enable-alsa \
 	--enable-dc1394 \
 	--enable-dv1394 \
-	--enable-libplacebo \
 	--enable-linsys \
 	--enable-nfs \
 	--enable-udev \
@@ -171,7 +172,6 @@ confflags += \
 	--disable-alsa \
 	--disable-dc1394 \
 	--disable-dv1394 \
-	--disable-libplacebo \
 	--disable-linsys \
 	--disable-nfs \
 	--disable-udev \
