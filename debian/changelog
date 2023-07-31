@@ -1,3 +1,15 @@
+vlc (3.0.18-4) unstable; urgency=medium
+
+  [ Pino Toscano ]
+  * d/vlc-plugin-base.install: drop non-existing files
+  * d/rules: drop "libva" from "removeplugins" for all the archs
+  * d/vlc-plugin-video-output: mark vaapi plugins as "libva"
+
+  [ Sebastian Ramacher ]
+  * debian/: Disable libplacebo. libplacebo 6 is too new for vlc.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Mon, 31 Jul 2023 23:47:01 +0200
+
 vlc (3.0.18-3) unstable; urgency=medium
 
   * debian/control: Bump Standards-Version
