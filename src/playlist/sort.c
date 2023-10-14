@@ -2,7 +2,7 @@
  * sort.c : Playlist sorting functions
  *****************************************************************************
  * Copyright (C) 1999-2009 VLC authors and VideoLAN
- * $Id: c0982cd1330fa4522f1406b5dfe4cbe3c257a7e3 $
+ * $Id: 841c9ae7e47bc03a667ea34e3ce04318e50a8d2e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -267,8 +267,8 @@ SORTFN( SORT_DESCRIPTION, first, second )
 
 SORTFN( SORT_DURATION, first, second )
 {
-    mtime_t time1 = input_item_GetDuration( first->p_input );
-    mtime_t time2 = input_item_GetDuration( second->p_input );
+    vlc_tick_t time1 = input_item_GetDuration( first->p_input );
+    vlc_tick_t time2 = input_item_GetDuration( second->p_input );
     int i_ret = time1 > time2 ? 1 :
                     ( time1 == time2 ? 0 : -1 );
     return i_ret;

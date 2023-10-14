@@ -2,7 +2,7 @@
  * omxil_utils.h: helper functions
  *****************************************************************************
  * Copyright (C) 2010 VLC authors and VideoLAN
- * $Id: db0a381d4b558f5c60d4e4b4569218e3eac5b901 $
+ * $Id: 58c9e99b6ef5d375cc9ce6308c7de9eab6cf3e46 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -108,7 +108,7 @@ static inline OMX_TICKS ToOmxTicks(int64_t value)
 
 #define OMX_FIFO_GET_TIMEOUT(p_fifo, p_buffer, timeout) \
     do { vlc_mutex_lock( &(p_fifo)->lock ); \
-         mtime_t end = mdate() + timeout; \
+         vlc_tick_t end = mdate() + timeout; \
          if( !(p_fifo)->p_first ) \
              vlc_cond_timedwait( &(p_fifo)->wait, &(p_fifo)->lock, end ); \
          p_buffer = (p_fifo)->p_first; \

@@ -2,7 +2,7 @@
  * dshow.cpp : DirectShow access and access_demux module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2004, 2006, 2008, 2010 the VideoLAN team
- * $Id: f22571e183456dcfdd859ff7f53e149067a17cb0 $
+ * $Id: 8fd2c95ed623a78651b2d929f5b6922236403630 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *         Damien Fouilleul <damienf@videolan.org>
@@ -962,7 +962,7 @@ static bool ConnectFilters( vlc_object_t *p_this, access_sys_t *p_sys,
 }
 
 /*
- * get fourcc priority from arbritary preference, the higher the better
+ * get fourcc priority from arbitrary preference, the higher the better
  */
 static int GetFourCCPriority( int i_fourcc )
 {
@@ -1075,7 +1075,7 @@ static int OpenDevice( vlc_object_t *p_this, access_sys_t *p_sys,
         }
     }
 
-    // Retreive acceptable media types supported by device
+    // Retrieve acceptable media types supported by device
     AM_MEDIA_TYPE media_types[MAX_MEDIA_TYPES];
     size_t media_count =
         EnumDeviceCaps( p_this, p_device_filter.Get(), b_audio ? 0 : p_sys->i_chroma,
@@ -1222,7 +1222,7 @@ static int OpenDevice( vlc_object_t *p_this, access_sys_t *p_sys,
 /* FindCaptureDevices:: This Function had two purposes :
     Returns the list of capture devices when p_listdevices != NULL
     Creates an IBaseFilter when p_devicename corresponds to an existing devname
-   These actions *may* be requested whith a single call.
+   These actions *may* be requested with a single call.
 */
 static ComPtr<IBaseFilter>
 FindCaptureDevice( vlc_object_t *p_this, std::string *p_devicename,
@@ -1299,7 +1299,7 @@ FindCaptureDevice( vlc_object_t *p_this, std::string *p_devicename,
                 {
                     if( 0 == (*iter).compare( devname ) )
                     { /* devname is on the list. Try another name with sequence
-                         number apended and then rescan until a unique entry is found*/
+                         number appended and then rescan until a unique entry is found*/
                          char seq[16];
                          snprintf(seq, 16, " #%d", ++dup);
                          devname = ordevname + seq;
@@ -1883,13 +1883,13 @@ static int Demux( demux_t *p_demux )
                     p_stream->b_pts = true;
                 }
                 else
-                    i_pts = VLC_TS_INVALID;
+                    i_pts = VLC_TICK_INVALID;
             }
 
-            if( i_pts > VLC_TS_INVALID ) {
+            if( i_pts > VLC_TICK_INVALID ) {
                 i_pts += (i_pts >= 0) ? +5 : -4;
                 i_pts /= 10; /* 100-ns to µs conversion */
-                i_pts += VLC_TS_0;
+                i_pts += VLC_TICK_0;
             }
 #if 0
             msg_Dbg( p_demux, "Read() stream: %i, size: %i, PTS: %" PRId64,
@@ -1900,7 +1900,7 @@ static int Demux( demux_t *p_demux )
             memcpy( p_block->p_buffer, p_data, i_data_size );
             p_block->i_pts = p_block->i_dts = i_pts;
 
-            if( i_pts > VLC_TS_INVALID )
+            if( i_pts > VLC_TICK_INVALID )
                 es_out_SetPCR( p_demux->out, i_pts );
             es_out_Send( p_demux->out, p_stream->p_es, p_block );
 

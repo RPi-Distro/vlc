@@ -2,7 +2,7 @@
  * virtual_segment.cpp : virtual segment implementation in the MKV demuxer
  *****************************************************************************
  * Copyright © 2003-2011 VideoLAN and VLC authors
- * $Id: c643350ee22de1d6bbd491aed7924682039210d8 $
+ * $Id: ca31d3340b6670845ee7ad67549db8d43bc0796c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -227,7 +227,7 @@ virtual_edition_c::~virtual_edition_c()
 
 void virtual_edition_c::retimeSubChapters( virtual_chapter_c * p_vchap )
 {
-    mtime_t i_mk_stop_time = p_vchap->i_mk_virtual_stop_time;
+    vlc_tick_t i_mk_stop_time = p_vchap->i_mk_virtual_stop_time;
     for( size_t i = p_vchap->sub_vchapters.size(); i-- > 0; )
     {
         virtual_chapter_c * p_vsubchap = p_vchap->sub_vchapters[i];
@@ -437,18 +437,18 @@ bool virtual_segment_c::UpdateCurrentToChapter( demux_t & demux )
             return true;
     }
 
-    if ( sys.i_pts != VLC_TS_INVALID )
+    if ( sys.i_pts != VLC_TICK_INVALID )
     {
-        if ( p_current_vchapter != NULL && p_current_vchapter->ContainsTimestamp( sys.i_pts - VLC_TS_0 ))
+        if ( p_current_vchapter != NULL && p_current_vchapter->ContainsTimestamp( sys.i_pts - VLC_TICK_0 ))
             p_cur_vchapter = p_current_vchapter;
         else if (p_cur_vedition != NULL)
-            p_cur_vchapter = p_cur_vedition->getChapterbyTimecode( sys.i_pts - VLC_TS_0 );
+            p_cur_vchapter = p_cur_vedition->getChapterbyTimecode( sys.i_pts - VLC_TICK_0 );
     }
 
     /* we have moved to a new chapter */
     if ( p_cur_vchapter != NULL && p_current_vchapter != p_cur_vchapter )
         {
-            msg_Dbg( &demux, "New Chapter %" PRId64 " uid=%" PRIu64, sys.i_pts - VLC_TS_0,
+            msg_Dbg( &demux, "New Chapter %" PRId64 " uid=%" PRIu64, sys.i_pts - VLC_TICK_0,
                      p_cur_vchapter->p_chapter ? p_cur_vchapter->p_chapter->i_uid : 0 );
             if ( p_cur_vedition->b_ordered )
             {
@@ -467,9 +467,9 @@ bool virtual_segment_c::UpdateCurrentToChapter( demux_t & demux )
                         Seek( demux, p_cur_vchapter->i_mk_virtual_start_time, p_cur_vchapter );
                         return true;
                     }
-                    sys.i_start_pts = p_cur_vchapter->i_mk_virtual_start_time + VLC_TS_0;
+                    sys.i_start_pts = p_cur_vchapter->i_mk_virtual_start_time + VLC_TICK_0;
                 }
-                sys.i_mk_chapter_time = p_cur_vchapter->i_mk_virtual_start_time - p_cur_vchapter->segment.i_mk_start_time - ( ( p_cur_vchapter->p_chapter )? p_cur_vchapter->p_chapter->i_start_time : 0 ) /* + VLC_TS_0 */;
+                sys.i_mk_chapter_time = p_cur_vchapter->i_mk_virtual_start_time - p_cur_vchapter->segment.i_mk_start_time - ( ( p_cur_vchapter->p_chapter )? p_cur_vchapter->p_chapter->i_start_time : 0 ) /* + VLC_TICK_0 */;
             }
 
             p_current_vchapter = p_cur_vchapter;
@@ -516,7 +516,7 @@ bool virtual_chapter_c::EnterAndLeave( virtual_chapter_c *p_leaving_vchapter, bo
     return p_chapter->EnterAndLeave( p_leaving_vchapter->p_chapter, b_enter );
 }
 
-bool virtual_segment_c::Seek( demux_t & demuxer, mtime_t i_mk_date,
+bool virtual_segment_c::Seek( demux_t & demuxer, vlc_tick_t i_mk_date,
                               virtual_chapter_c *p_vchapter, bool b_precise )
 {
     demux_sys_t *p_sys = demuxer.p_sys;
@@ -529,9 +529,9 @@ bool virtual_segment_c::Seek( demux_t & demuxer, mtime_t i_mk_date,
 
     if ( p_vchapter != NULL )
     {
-        mtime_t i_mk_time_offset = p_vchapter->i_mk_virtual_start_time - ( ( p_vchapter->p_chapter )? p_vchapter->p_chapter->i_start_time : 0 );
+        vlc_tick_t i_mk_time_offset = p_vchapter->i_mk_virtual_start_time - ( ( p_vchapter->p_chapter )? p_vchapter->p_chapter->i_start_time : 0 );
         if (CurrentEdition()->b_ordered)
-            p_sys->i_mk_chapter_time = p_vchapter->i_mk_virtual_start_time - p_vchapter->segment.i_mk_start_time - ( ( p_vchapter->p_chapter )? p_vchapter->p_chapter->i_start_time : 0 ) /* + VLC_TS_0 */;
+            p_sys->i_mk_chapter_time = p_vchapter->i_mk_virtual_start_time - p_vchapter->segment.i_mk_start_time - ( ( p_vchapter->p_chapter )? p_vchapter->p_chapter->i_start_time : 0 ) /* + VLC_TICK_0 */;
         if ( p_vchapter->p_chapter && p_vchapter->i_seekpoint_num > 0 )
         {
             demuxer.info.i_update |= INPUT_UPDATE_TITLE | INPUT_UPDATE_SEEKPOINT;

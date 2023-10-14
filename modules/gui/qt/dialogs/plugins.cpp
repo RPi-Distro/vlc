@@ -2,7 +2,7 @@
  * plugins.cpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008-2010 the VideoLAN team
- * $Id: e05ec0594ad6deb2f2d41673ea18bfde1d8f5644 $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *          Jean-Philippe André <jpeg (at) videolan.org>
@@ -218,6 +218,13 @@ bool PluginTreeItem::operator< ( const QTreeWidgetItem & other ) const
     return text( col ) < other.text( col );
 }
 
+void ExtensionTab::reloadExtensions()
+{
+    extList->clearSelection();
+    ExtensionsManager *EM = ExtensionsManager::getInstance( p_intf );
+    EM->reloadExtensions();
+}
+
 /* Extensions tab */
 ExtensionTab::ExtensionTab( intf_thread_t *p_intf_ )
         : QVLCFrame( p_intf_ )
@@ -259,7 +266,7 @@ ExtensionTab::ExtensionTab( intf_thread_t *p_intf_ )
     QPushButton *reload = new QPushButton( QIcon( ":/update.svg" ),
                                            qtr( "Reload extensions" ),
                                            this );
-    CONNECT( reload, clicked(), EM, reloadExtensions() );
+    CONNECT( reload, clicked(), this, reloadExtensions() );
     CONNECT( reload, clicked(), this, updateButtons() );
     CONNECT( extList->selectionModel(),
              selectionChanged( const QItemSelection &, const QItemSelection & ),

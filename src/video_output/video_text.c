@@ -2,7 +2,7 @@
  * video_text.c : OSD text manipulation functions
  *****************************************************************************
  * Copyright (C) 1999-2010 VLC authors and VideoLAN
- * $Id: 58566b4ec60c9a6f6493205136008092739d97b9 $
+ * $Id: 4240161ad561410855c57669d6e40a641dcac574 $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *         Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -39,7 +39,7 @@ struct subpicture_updater_sys_t {
 static int OSDTextValidate(subpicture_t *subpic,
                            bool has_src_changed, const video_format_t *fmt_src,
                            bool has_dst_changed, const video_format_t *fmt_dst,
-                           mtime_t ts)
+                           vlc_tick_t ts)
 {
     VLC_UNUSED(subpic); VLC_UNUSED(ts);
     VLC_UNUSED(fmt_src); VLC_UNUSED(has_src_changed);
@@ -53,7 +53,7 @@ static int OSDTextValidate(subpicture_t *subpic,
 static void OSDTextUpdate(subpicture_t *subpic,
                           const video_format_t *fmt_src,
                           const video_format_t *fmt_dst,
-                          mtime_t ts)
+                          vlc_tick_t ts)
 {
     subpicture_updater_sys_t *sys = subpic->updater.p_sys;
     VLC_UNUSED(fmt_src); VLC_UNUSED(ts);
@@ -104,7 +104,7 @@ static void OSDTextDestroy(subpicture_t *subpic)
 }
 
 void vout_OSDText(vout_thread_t *vout, int channel,
-                   int position, mtime_t duration, const char *text)
+                   int position, vlc_tick_t duration, const char *text)
 {
     assert( (position & ~SUBPICTURE_ALIGN_MASK) == 0);
     if (!var_InheritBool(vout, "osd") || duration <= 0)

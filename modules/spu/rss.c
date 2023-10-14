@@ -2,7 +2,7 @@
  * rss.c : rss/atom feed display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 VLC authors and VideoLAN
- * $Id: 8fbefd05fff54587cc9a771644a77f4e982d91bc $
+ * $Id: 1cef811174de68ce61c88c276b7196893150179e $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rémi Duraffort <ivoire -at- videolan -dot- org>
@@ -52,7 +52,7 @@
  *****************************************************************************/
 static int  CreateFilter ( vlc_object_t * );
 static void DestroyFilter( vlc_object_t * );
-static subpicture_t *Filter( filter_t *, mtime_t );
+static subpicture_t *Filter( filter_t *, vlc_tick_t );
 
 static struct rss_feed_t *FetchRSS( filter_t * );
 static void FreeRSS( struct rss_feed_t *, int );
@@ -111,7 +111,7 @@ struct filter_sys_t
 
     text_style_t *p_style; /* font control */
 
-    mtime_t last_date;
+    vlc_tick_t last_date;
 
     int i_feeds;
     rss_feed_t *p_feeds;
@@ -305,7 +305,7 @@ static int CreateFilter( vlc_object_t *p_this )
     /* Misc init */
     vlc_mutex_init( &p_sys->lock );
     p_filter->pf_sub_source = Filter;
-    p_sys->last_date = (mtime_t)0;
+    p_sys->last_date = (vlc_tick_t)0;
     p_sys->b_fetched = false;
 
     /* Create and arm the timer */
@@ -315,7 +315,7 @@ static int CreateFilter( vlc_object_t *p_this )
         goto error;
     }
     vlc_timer_schedule( p_sys->timer, false, 1,
-                        (mtime_t)(i_ttl)*1000000 );
+                        (vlc_tick_t)(i_ttl)*1000000 );
 
     free( psz_urls );
     return VLC_SUCCESS;
@@ -350,7 +350,7 @@ static void DestroyFilter( vlc_object_t *p_this )
  ****************************************************************************
  * This function outputs subpictures at regular time intervals.
  ****************************************************************************/
-static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
+static subpicture_t *Filter( filter_t *p_filter, vlc_tick_t date )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
     subpicture_t *p_spu;
@@ -597,7 +597,7 @@ static picture_t *LoadImage( filter_t *p_filter, const char *psz_url )
 }
 
 /****************************************************************************
- * remove all ' ' '\t' '\n' '\r' characters from the begining and end of the
+ * remove all ' ' '\t' '\n' '\r' characters from the beginning and end of the
  * string.
  ***************************************************************************/
 static char *removeWhiteChars( const char *psz_src )
@@ -939,7 +939,7 @@ static rss_feed_t* FetchRSS( filter_t *p_filter )
         if( !ParseFeed( p_filter, p_xml_reader, p_feed ) )
             goto error;
 
-        /* If we have a image: load it if requiere */
+        /* If we have a image: load it if required */
         if( b_images && p_feed->psz_image && !p_feed->p_pic )
         {
             p_feed->p_pic = LoadImage( p_filter, p_feed->psz_image );

@@ -74,7 +74,7 @@ static void aom_err_msg(vlc_object_t *this, aom_codec_ctx_t *ctx,
  *****************************************************************************/
 struct frame_priv_s
 {
-    mtime_t pts;
+    vlc_tick_t pts;
 };
 
 struct decoder_sys_t
@@ -150,7 +150,7 @@ static int PushFrame(decoder_t *dec, block_t *block)
     {
         p_buffer = block->p_buffer;
         i_buffer = block->i_buffer;
-        p_sys->frame_priv[priv_index].pts = (block->i_pts != VLC_TS_INVALID) ? block->i_pts : block->i_dts;
+        p_sys->frame_priv[priv_index].pts = (block->i_pts != VLC_TICK_INVALID) ? block->i_pts : block->i_dts;
     }
     else
     {

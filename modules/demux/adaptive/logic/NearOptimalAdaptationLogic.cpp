@@ -66,11 +66,11 @@ NearOptimalAdaptationLogic::~NearOptimalAdaptationLogic()
 
 BaseRepresentation *
 NearOptimalAdaptationLogic::getNextQualityIndex( BaseAdaptationSet *adaptSet, RepresentationSelector &selector,
-                                                 float gammaP, mtime_t VD, mtime_t Q )
+                                                 float gammaP, vlc_tick_t VD, vlc_tick_t Q )
 {
     BaseRepresentation *ret = nullptr;
     BaseRepresentation *prev = nullptr;
-    float argmax;
+    float argmax = 0;
     for(BaseRepresentation *rep = selector.lowest(adaptSet);
                             rep && rep != prev; rep = selector.higher(adaptSet, rep))
     {
@@ -194,7 +194,7 @@ unsigned NearOptimalAdaptationLogic::getMaxCurrentBw() const
 }
 
 void NearOptimalAdaptationLogic::updateDownloadRate(const ID &id, size_t dlsize,
-                                                    mtime_t time, mtime_t)
+                                                    vlc_tick_t time, mtime_t)
 {
     vlc_mutex_lock(&lock);
     std::map<ID, NearOptimalContext>::iterator it = streams.find(id);

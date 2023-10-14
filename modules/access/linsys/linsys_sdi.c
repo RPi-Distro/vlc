@@ -157,7 +157,7 @@ struct demux_sys_t
 
     /* SDI sync */
     int              i_state;
-    mtime_t          i_last_state_change;
+    vlc_tick_t       i_last_state_change;
     unsigned int     i_anc_size, i_active_size, i_picture_size;
     unsigned int     i_line_offset, i_nb_lines;
 
@@ -178,7 +178,7 @@ struct demux_sys_t
     char             *psz_telx, *psz_telx_lang;
     bool             b_hd, b_vbi;
     vbi_raw_decoder  rd_wss, rd_telx;
-    mtime_t          i_next_date;
+    vlc_tick_t       i_next_date;
     int              i_incr;
 
     /* ES stuff */
@@ -934,7 +934,7 @@ static int DecodeAudio( demux_t *p_demux, sdi_audio_t *p_audio )
     if( unlikely( !p_block ) )
         return VLC_ENOMEM;
     p_block->i_dts = p_block->i_pts = p_sys->i_next_date
-        + (mtime_t)p_audio->i_delay * INT64_C(1000000) / p_audio->i_rate;
+        + (vlc_tick_t)p_audio->i_delay * INT64_C(1000000) / p_audio->i_rate;
     p_output = (int16_t *)p_block->p_buffer;
 
     if ( p_audio->i_left_samples == p_audio->i_nb_samples &&
@@ -1290,7 +1290,7 @@ static void HandleAudioConfig( demux_t *p_demux, const uint16_t *p_anc,
                         p_audio->i_delay = i_tmp;
                 }
                 if ( p_anc[13] & 0x1 )
-                    msg_Warn( p_demux, "asymetric audio is not supported" );
+                    msg_Warn( p_demux, "asymmetric audio is not supported" );
             }
             else
             {
@@ -1306,7 +1306,7 @@ static void HandleAudioConfig( demux_t *p_demux, const uint16_t *p_anc,
                         p_audio->i_delay = i_tmp;
                 }
                 if ( p_anc[10] & 0x1 )
-                    msg_Warn( p_demux, "asymetric audio is not supported" );
+                    msg_Warn( p_demux, "asymmetric audio is not supported" );
             }
 
             switch ( i_rate )

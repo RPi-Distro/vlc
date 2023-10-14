@@ -2,7 +2,7 @@
  * ctrl_generic.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 045c542b00379cdb9ad58dbadcf5178dfbeb98c7 $
+ * $Id: 349f77fb4c0785d08a06849e0dbaeda52c9ebb78 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -100,7 +100,7 @@ protected:
      * rectangle to repaint and its offset.
      * Use the default values to repaint the whole window
      */
-    virtual void notifyLayout( int witdh = -1, int height = -1,
+    virtual void notifyLayout( int width = -1, int height = -1,
                                int xOffSet = 0, int yOffSet = 0 );
 
     /**

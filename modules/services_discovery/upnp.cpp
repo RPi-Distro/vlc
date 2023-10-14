@@ -186,7 +186,7 @@ IXML_Document* parseBrowseResult( IXML_Document* p_doc )
     IXML_Document* p_result_doc = ixmlParseBuffer( psz_raw_didl );
     if( !p_result_doc ) {
         /* Missing namespaces confuse the ixml parser. This is a very ugly
-         * hack but it is needeed until devices start sending valid XML.
+         * hack but it is needed until devices start sending valid XML.
          *
          * It works that way:
          *
@@ -932,7 +932,7 @@ namespace
 
         input_item_t *createNewItem(IXML_Element *p_resource)
         {
-            mtime_t i_duration = -1;
+            vlc_tick_t i_duration = -1;
             const char* psz_resource_url = xml_getChildElementValue( p_resource, "res" );
             if( !psz_resource_url )
                 return NULL;

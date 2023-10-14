@@ -2,7 +2,7 @@
  * SSA/ASS subtitle decoder using libass.
  *****************************************************************************
  * Copyright (C) 2008-2009 VLC authors and VideoLAN
- * $Id: 03005b43406169aa4c332530f338a24a65fd976b $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -39,6 +39,7 @@
 #include <vlc_codec.h>
 #include <vlc_input.h>
 #include <vlc_dialog.h>
+#include <vlc_stream.h>
 
 #include <ass/ass.h>
 
@@ -77,7 +78,7 @@ static void Flush( decoder_t * );
 /* */
 struct decoder_sys_t
 {
-    mtime_t        i_max_stop;
+    vlc_tick_t     i_max_stop;
 
     /* The following fields of decoder_sys_t are shared between decoder and spu units */
     vlc_mutex_t    lock;
@@ -98,11 +99,11 @@ static void DecSysHold( decoder_sys_t *p_sys );
 static int SubpictureValidate( subpicture_t *,
                                bool, const video_format_t *,
                                bool, const video_format_t *,
-                               mtime_t );
+                               vlc_tick_t );
 static void SubpictureUpdate( subpicture_t *,
                               const video_format_t *,
                               const video_format_t *,
-                              mtime_t );
+                              vlc_tick_t );
 static void SubpictureDestroy( subpicture_t * );
 
 struct subpicture_updater_sys_t
@@ -110,7 +111,7 @@ struct subpicture_updater_sys_t
     decoder_sys_t *p_dec_sys;
     void          *p_subs_data;
     int           i_subs_len;
-    mtime_t       i_pts;
+    vlc_tick_t    i_pts;
 
     ASS_Image     *p_img;
 };
@@ -125,6 +126,7 @@ typedef struct
 
 static int BuildRegions( rectangle_t *p_region, int i_max_region, ASS_Image *p_img_list, int i_width, int i_height );
 static void RegionDraw( subpicture_region_t *p_region, ASS_Image *p_img );
+static void OldEngineClunkyRollInfoPatch( decoder_t *p_dec, ASS_Track * );
 
 //#define DEBUG_REGION
 
@@ -150,7 +152,7 @@ static int Create( vlc_object_t *p_this )
     vlc_mutex_init( &p_sys->lock );
     p_sys->i_refcount = 1;
     memset( &p_sys->fmt, 0, sizeof(p_sys->fmt) );
-    p_sys->i_max_stop = VLC_TS_INVALID;
+    p_sys->i_max_stop = VLC_TICK_INVALID;
     p_sys->p_library  = NULL;
     p_sys->p_renderer = NULL;
     p_sys->p_track    = NULL;
@@ -281,6 +283,7 @@ static int Create( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
     ass_process_codec_private( p_track, p_dec->fmt_in.p_extra, p_dec->fmt_in.i_extra );
+    OldEngineClunkyRollInfoPatch( p_dec, p_track );
 
     p_dec->fmt_out.i_codec = VLC_CODEC_RGBA;
 
@@ -333,7 +336,7 @@ static void Flush( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    p_sys->i_max_stop = VLC_TS_INVALID;
+    p_sys->i_max_stop = VLC_TICK_INVALID;
 }
 
 /****************************************************************************
@@ -426,7 +429,7 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
 static int SubpictureValidate( subpicture_t *p_subpic,
                                bool b_fmt_src, const video_format_t *p_fmt_src,
                                bool b_fmt_dst, const video_format_t *p_fmt_dst,
-                               mtime_t i_ts )
+                               vlc_tick_t i_ts )
 {
     decoder_sys_t *p_sys = p_subpic->updater.p_sys->p_dec_sys;
 
@@ -450,7 +453,7 @@ static int SubpictureValidate( subpicture_t *p_subpic,
     }
 
     /* */
-    const mtime_t i_stream_date = p_subpic->updater.p_sys->i_pts + (i_ts - p_subpic->i_start);
+    const vlc_tick_t i_stream_date = p_subpic->updater.p_sys->i_pts + (i_ts - p_subpic->i_start);
     int i_changed;
     ASS_Image *p_img = ass_render_frame( p_sys->p_renderer, p_sys->p_track,
                                          i_stream_date/1000, &i_changed );
@@ -470,7 +473,7 @@ static int SubpictureValidate( subpicture_t *p_subpic,
 static void SubpictureUpdate( subpicture_t *p_subpic,
                               const video_format_t *p_fmt_src,
                               const video_format_t *p_fmt_dst,
-                              mtime_t i_ts )
+                              vlc_tick_t i_ts )
 {
     VLC_UNUSED( p_fmt_src ); VLC_UNUSED( p_fmt_dst ); VLC_UNUSED( i_ts );
 
@@ -759,3 +762,61 @@ static void RegionDraw( subpicture_region_t *p_region, ASS_Image *p_img )
 #endif
 }
 
+/* Patch [Script Info] aiming old and custom rendering engine
+ * See #27771 */
+static void OldEngineClunkyRollInfoPatch( decoder_t *p_dec, ASS_Track *p_track )
+{
+    if( !p_dec->fmt_in.i_extra )
+        return;
+
+    stream_t *p_memstream = vlc_stream_MemoryNew( p_dec, p_dec->fmt_in.p_extra,
+                                                  p_dec->fmt_in.i_extra, true );
+    char *s = vlc_stream_ReadLine( p_memstream );
+    unsigned playres[2] = {0, 0};
+    bool b_hotfix = false;
+    if( s && !strncmp( s, "[Script Info]", 13 ) )
+    {
+        free( s );
+        for( ;; )
+        {
+            s = vlc_stream_ReadLine( p_memstream );
+            if( !s || *s == '[' /* Next section */ )
+            {
+                break;
+            }
+            else if( !strncmp( s, "PlayResX: ", 10 ) ||
+                     !strncmp( s, "PlayResY: ", 10 ) )
+            {
+                playres['Y' - s[7]] = atoi( &s[9] );
+            }
+            else if( !strncmp( s, "Original Script: ", 17 ) )
+            {
+                b_hotfix = !!strstr( s, "[http://www.crunchyroll.com/user/" );
+                if( !b_hotfix )
+                    break;
+            }
+            else if( !strncmp( s, "LayoutRes", 9 ) ||
+                     !strncmp( s, "ScaledBorderAndShadow:", 22  ) )
+            {
+                /* They can still have fixed their mess in the future. Tell me, Marty. */
+                b_hotfix = false;
+                break;
+            }
+        }
+    }
+    free( s );
+    vlc_stream_Delete( p_memstream );
+    if( b_hotfix && playres[0] && playres[1] )
+    {
+	msg_Dbg( p_dec,"patching script info for custom rendering engine "
+                       "(built against libass 0x%X)", LIBASS_VERSION );
+        /* Only modify struct _before_ any ass_process_chunk calls
+           (see ass_types.h documentation for when modifications are allowed) */
+        p_track->ScaledBorderAndShadow = 1;
+        p_track->YCbCrMatrix = YCBCR_NONE;
+#if LIBASS_VERSION >= 0x01600020
+        p_track->LayoutResX = playres[0];
+        p_track->LayoutResY = playres[1];
+#endif
+    }
+}

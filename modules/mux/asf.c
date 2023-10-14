@@ -2,7 +2,7 @@
  * asf.c: asf muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2003-2004, 2006 VLC authors and VideoLAN
- * $Id: d7bed245e61ff24c757116ea5aee26ff28124017 $
+ * $Id: 95c841fd61baf4c1efb381a18f6998729b487eef $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -135,9 +135,9 @@ struct sout_mux_sys_t
     guid_t          fid;    /* file id */
     int             i_packet_size;
     int64_t         i_packet_count;
-    mtime_t         i_dts_first;
-    mtime_t         i_dts_last;
-    mtime_t         i_preroll_time;
+    vlc_tick_t      i_dts_first;
+    vlc_tick_t      i_dts_last;
+    vlc_tick_t      i_preroll_time;
     int64_t         i_bitrate;
     int64_t         i_bitrate_override;
 
@@ -148,7 +148,7 @@ struct sout_mux_sys_t
     block_t         *pk;
     int             i_pk_used;
     int             i_pk_frame;
-    mtime_t         i_pk_dts;
+    vlc_tick_t      i_pk_dts;
 
     bool      b_asf_http;
     int             i_seq;
@@ -211,7 +211,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_pk_used    = 0;
     p_sys->i_pk_frame   = 0;
     p_sys->i_dts_first  =
-    p_sys->i_dts_last   = VLC_TS_INVALID;
+    p_sys->i_dts_last   = VLC_TICK_INVALID;
     p_sys->i_preroll_time = 2000;
     p_sys->i_bitrate    = 0;
     p_sys->i_bitrate_override = 0;
@@ -693,7 +693,7 @@ static int Mux( sout_mux_t *p_mux )
     {
         sout_input_t  *p_input;
         asf_track_t   *tk;
-        mtime_t       i_dts;
+        vlc_tick_t    i_dts;
         block_t *data;
         block_t *pk;
 
@@ -704,7 +704,7 @@ static int Mux( sout_mux_t *p_mux )
             return VLC_SUCCESS;
         }
 
-        if( p_sys->i_dts_first <= VLC_TS_INVALID )
+        if( p_sys->i_dts_first <= VLC_TICK_INVALID )
         {
             p_sys->i_dts_first = i_dts;
         }
@@ -845,7 +845,7 @@ static block_t *asf_header_create( sout_mux_t *p_mux, bool b_broadcast )
 {
     sout_mux_sys_t *p_sys = p_mux->p_sys;
     asf_track_t    *tk;
-    mtime_t i_duration = 0;
+    vlc_tick_t i_duration = 0;
     int i_size, i_header_ext_size;
     int i_ci_size, i_cm_size = 0, i_cd_size = 0;
     block_t *out;
@@ -854,7 +854,7 @@ static block_t *asf_header_create( sout_mux_t *p_mux, bool b_broadcast )
 
     msg_Dbg( p_mux, "Asf muxer creating header" );
 
-    if( p_sys->i_dts_first > VLC_TS_INVALID )
+    if( p_sys->i_dts_first > VLC_TICK_INVALID )
     {
         i_duration = p_sys->i_dts_last - p_sys->i_dts_first;
         if( i_duration < 0 ) i_duration = 0;
@@ -947,7 +947,7 @@ static block_t *asf_header_create( sout_mux_t *p_mux, bool b_broadcast )
     bo_addle_u32( &bo, p_sys->i_packet_size );  /* packet size min */
     bo_addle_u32( &bo, p_sys->i_packet_size );  /* packet size max */
     /* NOTE: According to p6-9 of the ASF specification the bitrate cannot be 0,
-     * therefor apply this workaround to make sure it is not 0. If the bitrate is
+     * therefore apply this workaround to make sure it is not 0. If the bitrate is
      * 0 the file will play in WMP11, but not in Sliverlight and WMP12 */
     bo_addle_u32( &bo, p_sys->i_bitrate > 0 ? p_sys->i_bitrate : 1 ); /* maxbitrate */
 
@@ -1088,7 +1088,7 @@ static block_t *asf_header_create( sout_mux_t *p_mux, bool b_broadcast )
         {
             bo_add_u8( &bo, 0x1 ); /* span */
             bo_addle_u16( &bo, tk->i_blockalign );  /* virtual packet length */
-            bo_addle_u16( &bo, tk->i_blockalign );  /* virtual chunck length */
+            bo_addle_u16( &bo, tk->i_blockalign );  /* virtual chunk length */
             bo_addle_u16( &bo, 1 );  /* silence length */
             bo_add_u8( &bo, 0x0 ); /* data */
         }
@@ -1203,7 +1203,7 @@ static block_t *asf_packet_create( sout_mux_t *p_mux,
 
         if( tk->b_audio_correction && p_sys->i_pk_frame && i_payload < i_data )
         {
-            /* Don't know why yet but WMP doesn't like splitted WMA packets */
+            /* Don't know why yet but WMP doesn't like split WMA packets */
             *last = asf_packet_flush( p_mux );
             last  = &(*last)->p_next;
             continue;

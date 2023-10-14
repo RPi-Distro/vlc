@@ -20,7 +20,10 @@ endif
 
 libglconv_cvpx_plugin_la_SOURCES = video_output/opengl/converter_cvpx.c \
 	video_output/opengl/converter.h
+libglconv_cvpx_plugin_la_SOURCES += codec/vt_utils.c codec/vt_utils.h
 libglconv_cvpx_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
+libglconv_cvpx_plugin_la_LDFLAGS += -Wl,-framework,IOSurface \
+	-Wl,-framework,Foundation,-framework,CoreVideo
 
 if HAVE_OSX
 libvout_macosx_plugin_la_SOURCES = video_output/macosx.m $(OPENGL_COMMONSOURCES)
@@ -35,21 +38,23 @@ libcaopengllayer_plugin_la_LIBADD = $(OPENGL_COMMONLIBS)
 libcaopengllayer_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
 	-Wl,-framework,OpenGL,-framework,Cocoa,-framework,QuartzCore
 
-libglconv_cvpx_plugin_la_SOURCES += codec/vt_utils.c codec/vt_utils.h
-libglconv_cvpx_plugin_la_LDFLAGS += -Wl,-framework,IOSurface \
-	-Wl,-framework,Foundation,-framework,CoreVideo,-framework,OpenGL
 vout_LTLIBRARIES += libvout_macosx_plugin.la libcaopengllayer_plugin.la \
 	libglconv_cvpx_plugin.la
 endif
-if HAVE_IOS
+if HAVE_OSX
+libglconv_cvpx_plugin_la_CFLAGS = $(AM_CFLAGS)
+libglconv_cvpx_plugin_la_LDFLAGS += -Wl,-framework,OpenGL
+else
 libglconv_cvpx_plugin_la_CFLAGS = $(AM_CFLAGS) -DUSE_OPENGL_ES2
+libglconv_cvpx_plugin_la_LDFLAGS += -Wl,-framework,OpenGLES
 endif
 
 libvout_ios_plugin_la_SOURCES = video_output/ios.m $(OPENGL_COMMONSOURCES)
 libvout_ios_plugin_la_CFLAGS = $(AM_CFLAGS) $(OPENGL_COMMONCLFAGS) -DUSE_OPENGL_ES2
 libvout_ios_plugin_la_LIBADD = $(OPENGL_COMMONLIBS)
 libvout_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)' \
-	-Wl,-framework,OpenGLES,-framework,QuartzCore,-framework,UIKit
+	-Wl,-framework,OpenGLES,-framework,QuartzCore,-framework,UIKit \
+	-Wl,-framework,Foundation
 if HAVE_IOS
 vout_LTLIBRARIES += libvout_ios_plugin.la libglconv_cvpx_plugin.la
 endif
@@ -261,15 +266,25 @@ libdirect3d9_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
 	-DMODULE_NAME_IS_direct3d9
 libdirect3d9_plugin_la_LIBADD = libchroma_copy.la libd3d9_common.la -lgdi32 $(LIBCOM) -luuid
 libdirect3d9_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(voutdir)'
+
+libglinterop_dxva2_plugin_la_SOURCES = video_output/opengl/interop_dxva2.c \
+	video_output/opengl/converter.h
+libglinterop_dxva2_plugin_la_CFLAGS = $(AM_CFLAGS) $(GL_CFLAGS)
+libglinterop_dxva2_plugin_la_LIBADD = libchroma_copy.la libd3d9_common.la
+
 if HAVE_WIN32_DESKTOP
 vout_LTLIBRARIES += $(LTLIBdirect3d9)
 EXTRA_LTLIBRARIES += libdirect3d9_plugin.la
+if HAVE_GL
+vout_LTLIBRARIES += libglinterop_dxva2_plugin.la
+endif
 endif
 
 libdirect3d11_plugin_la_SOURCES = video_output/win32/direct3d11.c \
  video_output/win32/d3d11_quad.c video_output/win32/d3d11_quad.h \
  video_output/win32/d3d11_shaders.c video_output/win32/d3d11_shaders.h \
- video_output/win32/common.c video_output/win32/common.h
+ video_output/win32/common.c video_output/win32/common.h \
+ video_output/win32/d3d11_scaler.cpp video_output/win32/d3d11_scaler.h
 libdirect3d11_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
  -DMODULE_NAME_IS_direct3d11
 libdirect3d11_plugin_la_LIBADD = libchroma_copy.la libd3d11_common.la $(LIBCOM) -luuid

@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 23f0c3d60b903872d69ca6c331b9cc1f2e47ccd0 $
+ * $Id: 6fb61c9d2c398c3ed1ca52a08a49c7b57b8af196 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -481,7 +481,7 @@ static block_t *ProcessPacket( decoder_t *p_dec, ogg_packet *p_oggpacket,
     }
 
     /* Date management */
-    if( p_block->i_pts > VLC_TS_INVALID &&
+    if( p_block->i_pts > VLC_TICK_INVALID &&
         p_block->i_pts != date_Get( &p_sys->end_date ) )
     {
         date_Set( &p_sys->end_date, p_block->i_pts );
@@ -894,12 +894,12 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
     block_t *p_block, *p_chain = NULL;
     float **buffer;
 
-    /* Packets are already flushed, see bellow. */
+    /* Packets are already flushed, see below. */
     if( unlikely( !p_aout_buf ) ) return NULL;
 
-    mtime_t i_pts = p_aout_buf->i_pts -
-                (mtime_t)1000000 * (mtime_t)p_sys->i_samples_delay /
-                (mtime_t)p_enc->fmt_in.audio.i_rate;
+    vlc_tick_t i_pts = p_aout_buf->i_pts -
+                (vlc_tick_t)1000000 * (vlc_tick_t)p_sys->i_samples_delay /
+                (vlc_tick_t)p_enc->fmt_in.audio.i_rate;
 
     p_sys->i_samples_delay += p_aout_buf->i_nb_samples;
 
@@ -937,8 +937,8 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
             i_samples = ( p_sys->i_last_block_size + i_block_size ) >> 2;
             p_sys->i_last_block_size = i_block_size;
 
-            p_block->i_length = (mtime_t)1000000 *
-                (mtime_t)i_samples / (mtime_t)p_enc->fmt_in.audio.i_rate;
+            p_block->i_length = (vlc_tick_t)1000000 *
+                (vlc_tick_t)i_samples / (vlc_tick_t)p_enc->fmt_in.audio.i_rate;
 
             p_block->i_dts = p_block->i_pts = i_pts;
 

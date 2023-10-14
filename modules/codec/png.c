@@ -2,7 +2,7 @@
  * png.c: png decoder module making use of libpng.
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 5ef76f0a07753ebc9f382434ba5fbd1a7a114dd2 $
+ * $Id: 973c038ad05511632774670f8bf79bd1565ee4bc $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -307,7 +307,7 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
     png_destroy_read_struct( &p_png, &p_info, &p_end_info );
     free( p_row_pointers );
 
-    p_pic->date = p_block->i_pts > VLC_TS_INVALID ? p_block->i_pts : p_block->i_dts;
+    p_pic->date = p_block->i_pts > VLC_TICK_INVALID ? p_block->i_pts : p_block->i_dts;
 
     block_Release( p_block );
     decoder_QueueVideo( p_dec, p_pic );

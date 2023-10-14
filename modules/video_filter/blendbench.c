@@ -2,7 +2,7 @@
  * blendbench.c : blending benchmark plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: d33fc3cb871631e3ac951eb8cd06c394bdf9faa6 $
+ * $Id: f223b9133c9de69789a3d5eda6c74774667b6731 $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *
@@ -251,7 +251,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         return NULL;
     }
 
-    mtime_t time = mdate();
+    vlc_tick_t time = mdate();
     for( int i_iter = 0; i_iter < p_sys->i_loops; ++i_iter )
     {
         p_blend->pf_video_blend( p_blend,

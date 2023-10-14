@@ -2,7 +2,7 @@
  * dirac.c : Dirac Video demuxer
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: c6eb7180ce1bdb6774f37e718cfb6fef3e3d2911 $
+ * $Id: ec63e42192019c7e4da38ec01c044dbfc3c76378 $
  *
  * Authors: David Flynn <davidf@rd.bbc.co.uk>
  * Based on vc1.c by: Laurent Aimar <fenrir@via.ecp.fr>
@@ -64,9 +64,9 @@ vlc_module_end();
  *****************************************************************************/
 struct demux_sys_t
 {
-    mtime_t i_dts;
-    mtime_t i_dtsoffset;
-    mtime_t i_pts_offset_lowtide;
+    vlc_tick_t i_dts;
+    vlc_tick_t i_dtsoffset;
+    vlc_tick_t i_pts_offset_lowtide;
     es_out_id_t *p_es;
 
     enum {
@@ -179,7 +179,7 @@ static int Demux( demux_t *p_demux)
             p_sys->i_state++;
             /* by default, timestamps are invalid.
              * Except when we need an anchor point */
-            p_block_in->i_dts = VLC_TS_0;
+            p_block_in->i_dts = VLC_TICK_0;
         }
     }
 
@@ -199,7 +199,7 @@ static int Demux( demux_t *p_demux)
 
             /* track low watermark for pts_offset -- can be used to show
              * when it is too large */
-            mtime_t i_delay = p_block_out->i_pts - p_block_out->i_dts;
+            vlc_tick_t i_delay = p_block_out->i_pts - p_block_out->i_dts;
             if( p_sys->i_pts_offset_lowtide > i_delay )
             {
                 p_sys->i_pts_offset_lowtide = i_delay;

@@ -1,7 +1,7 @@
 # fluidlite
 
-FLUID_GITURL := https://github.com/divideconcept/FluidLite.git
-FLUID_HASH := a95c0303a40deb335dd3e51a8a783bb99a403c31
+FLUID_GITURL := $(GITHUB)/divideconcept/FluidLite.git
+FLUID_HASH := 238997654efb20e736512847f3f5f6d618de9423
 
 ifdef HAVE_WIN32
 PKGS += fluidlite
@@ -24,8 +24,10 @@ fluidlite: fluidlite-$(FLUID_HASH).tar.xz .sum-fluidlite
 	$(UNPACK)
 	$(MOVE)
 
+FLUIDLITE_CONF := -DFLUIDLITE_BUILD_SHARED=OFF
+
 .fluidlite: fluidlite toolchain.cmake
 	cd $< && rm -f CMakeCache.txt
-	cd $< && $(HOSTVARS) $(CMAKE)
+	cd $< && $(HOSTVARS) $(CMAKE) $(FLUIDLITE_CONF)
 	cd $< && $(CMAKEBUILD) . --target install
 	touch $@

@@ -2,7 +2,7 @@
  * oggspots.c: OggSpots decoder module.
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 4683b4c9b9c0e63f2ecf2b120c6ffe12935c52e8 $
+ * $Id: c5b7d67b1f18957f0b74ca0b428b8b54dc89c83b $
  *
  * Authors: Michael Taenzer <neo@nhng.de>
  *
@@ -57,7 +57,7 @@ struct decoder_sys_t
     /*
      * Common properties
      */
-    mtime_t i_pts;
+    vlc_tick_t i_pts;
 };
 
 /*****************************************************************************
@@ -115,7 +115,7 @@ static int OpenDecoder(vlc_object_t* p_this)
     p_dec->p_sys = p_sys;
     p_sys->b_packetizer = false;
     p_sys->b_has_headers = false;
-    p_sys->i_pts = VLC_TS_INVALID;
+    p_sys->i_pts = VLC_TICK_INVALID;
 
     /* Initialize image handler */
     p_sys->p_image = image_HandlerCreate(p_dec);
@@ -288,7 +288,7 @@ static void Flush(decoder_t* p_dec)
 {
     decoder_sys_t* p_sys = p_dec->p_sys;
 
-    p_sys->i_pts = VLC_TS_INVALID;
+    p_sys->i_pts = VLC_TICK_INVALID;
 }
 
 /*****************************************************************************
@@ -309,7 +309,7 @@ static void* ProcessPacket(decoder_t* p_dec, block_t* p_block)
     }
 
     /* Date management */
-    if (p_block->i_pts > VLC_TS_INVALID && p_block->i_pts != p_sys->i_pts) {
+    if (p_block->i_pts > VLC_TICK_INVALID && p_block->i_pts != p_sys->i_pts) {
         p_sys->i_pts = p_block->i_pts;
     }
 

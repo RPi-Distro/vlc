@@ -2,7 +2,7 @@
  * mod.c: MOD file demuxer (using libmodplug)
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 368a63ccd2f8fe30e064d21323eec591a2fd301f $
+ * $Id: 370f7654f9b564348f9264fbdc301adabc17c331 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  * Konstanty Bialkowski <konstanty@ieee.org>
@@ -279,7 +279,7 @@ static int Demux( demux_t *p_demux )
     }
     p_frame->i_buffer = i_read;
     p_frame->i_dts =
-    p_frame->i_pts = VLC_TS_0 + date_Get( &p_sys->pts );
+    p_frame->i_pts = VLC_TICK_0 + date_Get( &p_sys->pts );
 
     /* Set PCR */
     es_out_SetPCR( p_demux->out, p_frame->i_pts );

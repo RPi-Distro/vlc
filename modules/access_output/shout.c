@@ -2,7 +2,7 @@
  * shout.c: This module forwards vorbis streams to an icecast server
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: fbc81a0ddd91281584373aaa062001a12b4d35b1 $
+ * $Id: 0ec0c3355aa0cb4d7e0563f41eaa17776bce7dc8 $
  *
  * Authors: Daniel Fischer <dan at subsignal dot org>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -462,7 +462,7 @@ static ssize_t Write( sout_access_out_t *p_access, block_t *p_buffer )
 
             /* The most common cause seems to be a server disconnect, resulting in a
                Socket Error which can only be fixed by closing and reconnecting.
-               Since we already began with a working connection, the most feasable
+               Since we already began with a working connection, the most feasible
                approach to get out of this error status is a (timed) reconnect approach. */
             shout_close( p_sys->p_shout );
             msg_Warn( p_access, "server unavailable? trying to reconnect..." );

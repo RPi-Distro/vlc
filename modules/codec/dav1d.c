@@ -89,27 +89,35 @@ static const struct
     vlc_fourcc_t          i_chroma;
     enum Dav1dPixelLayout i_chroma_id;
     uint8_t               i_bitdepth;
+    enum Dav1dTransferCharacteristics transfer_characteristics;
 } chroma_table[] =
 {
-    {VLC_CODEC_GREY, DAV1D_PIXEL_LAYOUT_I400, 8},
-    {VLC_CODEC_I420, DAV1D_PIXEL_LAYOUT_I420, 8},
-    {VLC_CODEC_I422, DAV1D_PIXEL_LAYOUT_I422, 8},
-    {VLC_CODEC_I444, DAV1D_PIXEL_LAYOUT_I444, 8},
+    /* Transfer characteristic-dependent mappings must come first */
+    {VLC_CODEC_GBR_PLANAR, DAV1D_PIXEL_LAYOUT_I444, 8, DAV1D_TRC_SRGB},
+    {VLC_CODEC_GBR_PLANAR_10L, DAV1D_PIXEL_LAYOUT_I444, 10, DAV1D_TRC_SRGB},
 
-    {VLC_CODEC_I420_10L, DAV1D_PIXEL_LAYOUT_I420, 10},
-    {VLC_CODEC_I422_10L, DAV1D_PIXEL_LAYOUT_I422, 10},
-    {VLC_CODEC_I444_10L, DAV1D_PIXEL_LAYOUT_I444, 10},
+    {VLC_CODEC_GREY, DAV1D_PIXEL_LAYOUT_I400, 8, DAV1D_TRC_UNKNOWN},
+    {VLC_CODEC_I420, DAV1D_PIXEL_LAYOUT_I420, 8, DAV1D_TRC_UNKNOWN},
+    {VLC_CODEC_I422, DAV1D_PIXEL_LAYOUT_I422, 8, DAV1D_TRC_UNKNOWN},
+    {VLC_CODEC_I444, DAV1D_PIXEL_LAYOUT_I444, 8, DAV1D_TRC_UNKNOWN},
 
-    {VLC_CODEC_I420_12L, DAV1D_PIXEL_LAYOUT_I420, 12},
-    {VLC_CODEC_I422_12L, DAV1D_PIXEL_LAYOUT_I422, 12},
-    {VLC_CODEC_I444_12L, DAV1D_PIXEL_LAYOUT_I444, 12},
+    {VLC_CODEC_I420_10L, DAV1D_PIXEL_LAYOUT_I420, 10, DAV1D_TRC_UNKNOWN},
+    {VLC_CODEC_I422_10L, DAV1D_PIXEL_LAYOUT_I422, 10, DAV1D_TRC_UNKNOWN},
+    {VLC_CODEC_I444_10L, DAV1D_PIXEL_LAYOUT_I444, 10, DAV1D_TRC_UNKNOWN},
+
+    {VLC_CODEC_I420_12L, DAV1D_PIXEL_LAYOUT_I420, 12, DAV1D_TRC_UNKNOWN},
+    {VLC_CODEC_I422_12L, DAV1D_PIXEL_LAYOUT_I422, 12, DAV1D_TRC_UNKNOWN},
+    {VLC_CODEC_I444_12L, DAV1D_PIXEL_LAYOUT_I444, 12, DAV1D_TRC_UNKNOWN},
 };
 
 static vlc_fourcc_t FindVlcChroma(const Dav1dPicture *img)
 {
+
     for (unsigned int i = 0; i < ARRAY_SIZE(chroma_table); i++)
         if (chroma_table[i].i_chroma_id == img->p.layout &&
-            chroma_table[i].i_bitdepth == img->p.bpc)
+            chroma_table[i].i_bitdepth == img->p.bpc &&
+            (chroma_table[i].transfer_characteristics == DAV1D_TRC_UNKNOWN ||
+             chroma_table[i].transfer_characteristics == img->seq_hdr->trc))
             return chroma_table[i].i_chroma;
 
     return 0;
@@ -121,10 +129,10 @@ static int NewPicture(Dav1dPicture *img, void *cookie)
 
     video_format_t *v = &dec->fmt_out.video;
 
-    v->i_visible_width  = img->p.w;
-    v->i_visible_height = img->p.h;
-    v->i_width  = (img->p.w + 0x7F) & ~0x7F;
-    v->i_height = (img->p.h + 0x7F) & ~0x7F;
+    v->i_visible_width  = img->seq_hdr->max_width;
+    v->i_visible_height = img->seq_hdr->max_height;
+    v->i_width  = (img->seq_hdr->max_width + 0x7F) & ~0x7F;
+    v->i_height = (img->seq_hdr->max_height + 0x7F) & ~0x7F;
 
     if( !v->i_sar_num || !v->i_sar_den )
     {
@@ -138,6 +146,33 @@ static int NewPicture(Dav1dPicture *img, void *cookie)
         v->transfer = iso_23001_8_tc_to_vlc_xfer(img->seq_hdr->trc);
         v->space = iso_23001_8_mc_to_vlc_coeffs(img->seq_hdr->mtrx);
         v->b_color_range_full = img->seq_hdr->color_range;
+    }
+
+    const Dav1dMasteringDisplay *md = img->mastering_display;
+    if( dec->fmt_in.video.mastering.max_luminance == 0 && md )
+    {
+        const uint8_t RGB2GBR[3] = {2,0,1};
+        for( size_t i=0;i<6; i++ )
+        {
+            v->mastering.primaries[i] =
+                    50000 * (double) md->primaries[RGB2GBR[i >> 1]][i % 2]
+                          / (double)(1 << 16);
+        }
+        v->mastering.min_luminance = 10000 * (double)md->min_luminance
+                                           / (double) (1<<14);
+        v->mastering.max_luminance = 10000 * (double) md->max_luminance
+                                           / (double) (1<<8);
+        v->mastering.white_point[0] = 50000 * (double)md->white_point[0]
+                                            / (double) (1<<16);
+        v->mastering.white_point[1] = 50000 * (double)md->white_point[1]
+                                            / (double) (1<<16);
+    }
+
+    const Dav1dContentLightLevel *cll = img->content_light;
+    if( dec->fmt_in.video.lighting.MaxCLL == 0 && cll )
+    {
+        v->lighting.MaxCLL = cll->max_content_light_level;
+        v->lighting.MaxFALL = cll->max_frame_average_light_level;
     }
 
     v->projection_mode = dec->fmt_in.video.projection_mode;
@@ -215,7 +250,7 @@ static int Decode(decoder_t *dec, block_t *block)
             block_Release(block);
             return VLCDEC_ECRITICAL;
         }
-        mtime_t pts = block->i_pts == VLC_TS_INVALID ? block->i_dts : block->i_pts;
+        vlc_tick_t pts = block->i_pts == VLC_TICK_INVALID ? block->i_dts : block->i_pts;
         p_data->m.timestamp = pts;
         b_eos = (block->i_flags & BLOCK_FLAG_END_OF_SEQUENCE);
     }
@@ -261,7 +296,6 @@ static int Decode(decoder_t *dec, block_t *block)
             }
             pic->b_progressive = true; /* codec does not support interlacing */
             pic->date = img.m.timestamp;
-            /* TODO udpate the color primaries and such */
             decoder_QueueVideo(dec, pic);
             dav1d_picture_unref(&img);
         }
@@ -374,6 +408,8 @@ static int OpenDecoder(vlc_object_t *p_this)
     dec->fmt_out.video.transfer    = dec->fmt_in.video.transfer;
     dec->fmt_out.video.space       = dec->fmt_in.video.space;
     dec->fmt_out.video.b_color_range_full = dec->fmt_in.video.b_color_range_full;
+    dec->fmt_out.video.mastering   = dec->fmt_in.video.mastering;
+    dec->fmt_out.video.lighting    = dec->fmt_in.video.lighting;
 
     return VLC_SUCCESS;
 }

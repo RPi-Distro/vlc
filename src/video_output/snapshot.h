@@ -2,7 +2,7 @@
  * snapshot.h : vout internal snapshot
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 3085d5038b04e5a4a601b25676157976dbd2898b $
+ * $Id: 9b928d6cf022b72c767b666fd9bb9f33ebcac919 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -43,7 +43,7 @@ void vout_snapshot_Clean(vout_snapshot_t *);
 void vout_snapshot_End(vout_snapshot_t *);
 
 /* */
-picture_t *vout_snapshot_Get(vout_snapshot_t *, mtime_t timeout);
+picture_t *vout_snapshot_Get(vout_snapshot_t *, vlc_tick_t timeout);
 
 /**
  * It tells if they are pending snapshot request

@@ -2,7 +2,7 @@
  * cvdsub.c : CVD Subtitle decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 VLC authors and VideoLAN
- * $Id: 3905bec032760307b541620f0d3951f6a6ebc477 $
+ * $Id: dd6db458ad55e445d6e9643bed1000e484c3d2c4 $
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -91,7 +91,7 @@ struct decoder_sys_t
   size_t metadata_offset;          /* offset to data describing the image */
   size_t metadata_length;          /* length of metadata */
 
-  mtime_t i_duration;   /* how long to display the image, 0 stands
+  vlc_tick_t i_duration;   /* how long to display the image, 0 stands
                            for "until next subtitle" */
 
   uint16_t i_x_start, i_y_start; /* position of top leftmost pixel of
@@ -236,7 +236,7 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
      * to detect the first packet in a subtitle.  The first packet
      * seems to have a valid PTS while later packets for the same
      * image don't. */
-    if( p_sys->i_state == SUBTITLE_BLOCK_EMPTY && p_block->i_pts <= VLC_TS_INVALID )
+    if( p_sys->i_state == SUBTITLE_BLOCK_EMPTY && p_block->i_pts <= VLC_TICK_INVALID )
     {
         msg_Warn( p_dec, "first packet expected but no PTS present");
         return NULL;

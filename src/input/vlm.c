@@ -2,7 +2,7 @@
  * vlm.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 VLC authors and VideoLAN
- * $Id: 67b2fc1b3458464cb0951598c807d792599bf3c0 $
+ * $Id: 36f2ba773cb077d4a046d28fbbd0468abf04880e $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -1031,7 +1031,7 @@ static int vlm_ControlMediaInstanceStart( vlm_t *p_vlm, int64_t id, const char *
             {
                 int slowdown = 1 << (p_vlm->i_consecutive_errors - 1);
                 /* 100ms, 200ms, 400ms, 800ms, 1.6s, 3.2s */
-                mtime_t deadline = mdate() + slowdown * 100000L; /* usecs */
+                vlc_tick_t deadline = mdate() + slowdown * 100000L; /* usecs */
 
                 /* like a sleep, but interrupted on deletion */
                 vlc_mutex_lock(&p_vlm->lock_delete);

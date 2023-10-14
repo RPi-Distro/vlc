@@ -2,7 +2,7 @@
  * anim_bitmap.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 6825544cf054e1d13c727badfb6a5fafdc4ceb70 $
+ * $Id: 13865ed9bc894f31c049a499e781c9f410a733cd $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -72,7 +72,7 @@ private:
     int m_frameRate;
     /// Number of Loops
     int m_nbLoops;
-    /// Curent frame
+    /// Current frame
     int m_curFrame;
     /// Current loop
     int m_curLoop;

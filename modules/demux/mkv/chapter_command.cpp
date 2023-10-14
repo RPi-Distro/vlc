@@ -2,7 +2,7 @@
  * chapter_command.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 94a591f2d4f070c6157bda22f6f1924350b197ef $
+ * $Id: c2a9a3dd10b90b076d07b18db9fe5ccc3620f01d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -743,7 +743,7 @@ bool matroska_script_codec_c::Enter()
         if ( (*index)->GetSize() )
         {
             msg_Dbg( &sys.demuxer, "Matroska Script enter command" );
-            f_result |= interpretor.Interpret( (*index)->GetBuffer(), (*index)->GetSize() );
+            f_result |= interpreter.Interpret( (*index)->GetBuffer(), (*index)->GetSize() );
         }
         ++index;
     }
@@ -759,7 +759,7 @@ bool matroska_script_codec_c::Leave()
         if ( (*index)->GetSize() )
         {
             msg_Dbg( &sys.demuxer, "Matroska Script leave command" );
-            f_result |= interpretor.Interpret( (*index)->GetBuffer(), (*index)->GetSize() );
+            f_result |= interpreter.Interpret( (*index)->GetBuffer(), (*index)->GetSize() );
         }
         ++index;
     }

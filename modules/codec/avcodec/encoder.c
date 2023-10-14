@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 6138c641c0cd241407a4eddb34283d9a9b2bd063 $
+ * $Id: 2b1c3604713d97875d572030b51909ec1281a8d0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -113,9 +113,9 @@ struct encoder_sys_t
     /*
      * Video properties
      */
-    mtime_t i_last_ref_pts;
-    mtime_t i_buggy_pts_detect;
-    mtime_t i_last_pts;
+    vlc_tick_t i_last_ref_pts;
+    vlc_tick_t i_buggy_pts_detect;
+    vlc_tick_t i_last_pts;
     bool    b_inited;
 
     /*
@@ -126,7 +126,7 @@ struct encoder_sys_t
     size_t i_samples_delay; //How much samples in delay buffer
     bool b_planar;
     bool b_variable;    //Encoder can be fed with any size frames not just frame_size
-    mtime_t i_pts;
+    vlc_tick_t i_pts;
     date_t  buffer_date;
 
     /* Multichannel (>2) channel reordering */
@@ -244,7 +244,7 @@ static const int DEFAULT_ALIGN = 0;
 static void probe_video_frame_rate( encoder_t *p_enc, AVCodecContext *p_context, AVC_MAYBE_CONST AVCodec *p_codec )
 {
     /* if we don't have i_frame_rate_base, we are probing and just checking if we can find codec
-     * so set fps to requested fps if asked by user or input fps is availabled */
+     * so set fps to requested fps if asked by user or input fps is available */
     p_context->time_base.num = p_enc->fmt_in.video.i_frame_rate_base ? p_enc->fmt_in.video.i_frame_rate_base : 1;
 
     // MP4V doesn't like CLOCK_FREQ denominator in time_base, so use 1/25 as default for that
@@ -1079,7 +1079,7 @@ static void vlc_av_packet_Release(block_t *block)
     free(b);
 }
 
-static block_t *vlc_av_packet_Wrap(AVPacket *packet, mtime_t i_length, AVCodecContext *context )
+static block_t *vlc_av_packet_Wrap(AVPacket *packet, vlc_tick_t i_length, AVCodecContext *context )
 {
     if ( packet->data == NULL &&
          packet->flags == 0 &&
@@ -1136,7 +1136,7 @@ static block_t *vlc_av_packet_Wrap(AVPacket *packet, mtime_t i_length, AVCodecCo
 
 static void check_hurry_up( encoder_sys_t *p_sys, AVFrame *frame, encoder_t *p_enc )
 {
-    mtime_t current_date = mdate();
+    vlc_tick_t current_date = mdate();
 
     if ( current_date + HURRY_UP_GUARD3 > frame->pts )
     {
@@ -1231,7 +1231,7 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict )
         /* Set the pts of the frame being encoded
          * avcodec likes pts to be in time_base units
          * frame number */
-        if( likely( p_pict->date > VLC_TS_INVALID ) )
+        if( likely( p_pict->date > VLC_TICK_INVALID ) )
             frame->pts = p_pict->date * p_sys->p_context->time_base.den /
                           CLOCK_FREQ / p_sys->p_context->time_base.num;
         else
@@ -1240,7 +1240,7 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict )
         if ( p_sys->b_hurry_up && frame->pts != AV_NOPTS_VALUE )
             check_hurry_up( p_sys, frame, p_enc );
 
-        if ( ( frame->pts != AV_NOPTS_VALUE ) && ( frame->pts != VLC_TS_INVALID ) )
+        if ( ( frame->pts != AV_NOPTS_VALUE ) && ( frame->pts != VLC_TICK_INVALID ) )
         {
             if ( p_sys->i_last_pts == frame->pts )
             {
@@ -1349,7 +1349,7 @@ static block_t *EncodeAudio( encoder_t *p_enc, block_t *p_aout_buf )
     //Calculate how many bytes we would need from current buffer to fill frame
     size_t leftover_samples = __MAX(0,__MIN((ssize_t)i_samples_left, (ssize_t)(p_sys->i_frame_size - p_sys->i_samples_delay)));
 
-    if( p_aout_buf && ( p_aout_buf->i_pts > VLC_TS_INVALID ) )
+    if( p_aout_buf && ( p_aout_buf->i_pts > VLC_TICK_INVALID ) )
     {
         date_Set( &p_sys->buffer_date, p_aout_buf->i_pts );
         /* take back amount we have leftover from previous buffer*/

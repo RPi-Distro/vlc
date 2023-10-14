@@ -2,7 +2,7 @@
  * pva.c: PVA demuxer
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 7b52249a21b3c377ba9b58f6f1d82c9a4d6979db $
+ * $Id: 5b517c44b4d0f14d2ee5c0e2c722ab9479ae8d88 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -215,7 +215,7 @@ static int Demux( demux_t *p_demux )
                 if( ( p_frame = p_sys->p_es ) )
                 {
 
-                    if( p_frame->i_pts > VLC_TS_INVALID && !p_sys->b_pcr_audio )
+                    if( p_frame->i_pts > VLC_TICK_INVALID && !p_sys->b_pcr_audio )
                     {
                         es_out_SetPCR( p_demux->out, p_frame->i_pts);
                     }
@@ -234,7 +234,7 @@ static int Demux( demux_t *p_demux )
                 p_frame->p_buffer += i_skip;
                 p_frame->i_buffer -= i_skip;
                 if( i_pts >= 0 )
-                    p_frame->i_pts = VLC_TS_0 + i_pts * 100 / 9;
+                    p_frame->i_pts = VLC_TICK_0 + i_pts * 100 / 9;
                 block_ChainAppend( &p_sys->p_es, p_frame );
             }
             break;
@@ -393,8 +393,8 @@ static void ParsePES( demux_t *p_demux )
     uint8_t     hdr[30];
 
     unsigned    i_skip;
-    mtime_t     i_dts = -1;
-    mtime_t     i_pts = -1;
+    vlc_tick_t  i_dts = -1;
+    vlc_tick_t  i_pts = -1;
 
     p_sys->p_pes = NULL;
 
@@ -416,19 +416,19 @@ static void ParsePES( demux_t *p_demux )
     i_skip = hdr[8] + 9;
     if( hdr[7]&0x80 )    /* has pts */
     {
-        i_pts = ((mtime_t)(hdr[ 9]&0x0e ) << 29)|
-                 (mtime_t)(hdr[10] << 22)|
-                ((mtime_t)(hdr[11]&0xfe) << 14)|
-                 (mtime_t)(hdr[12] << 7)|
-                 (mtime_t)(hdr[12] >> 1);
+        i_pts = ((vlc_tick_t)(hdr[ 9]&0x0e ) << 29)|
+                 (vlc_tick_t)(hdr[10] << 22)|
+                ((vlc_tick_t)(hdr[11]&0xfe) << 14)|
+                 (vlc_tick_t)(hdr[12] << 7)|
+                 (vlc_tick_t)(hdr[12] >> 1);
 
         if( hdr[7]&0x40 )    /* has dts */
         {
-             i_dts = ((mtime_t)(hdr[14]&0x0e ) << 29)|
-                     (mtime_t)(hdr[15] << 22)|
-                    ((mtime_t)(hdr[16]&0xfe) << 14)|
-                     (mtime_t)(hdr[17] << 7)|
-                     (mtime_t)(hdr[18] >> 1);
+             i_dts = ((vlc_tick_t)(hdr[14]&0x0e ) << 29)|
+                     (vlc_tick_t)(hdr[15] << 22)|
+                    ((vlc_tick_t)(hdr[16]&0xfe) << 14)|
+                     (vlc_tick_t)(hdr[17] << 7)|
+                     (vlc_tick_t)(hdr[18] >> 1);
         }
     }
 
@@ -445,9 +445,9 @@ static void ParsePES( demux_t *p_demux )
     p_pes->p_buffer += i_skip;
 
     if( i_dts >= 0 )
-        p_pes->i_dts = VLC_TS_0 + i_dts * 100 / 9;
+        p_pes->i_dts = VLC_TICK_0 + i_dts * 100 / 9;
     if( i_pts >= 0 )
-        p_pes->i_pts = VLC_TS_0 + i_pts * 100 / 9;
+        p_pes->i_pts = VLC_TICK_0 + i_pts * 100 / 9;
 
     /* Set PCR */
     if( p_pes->i_pts > 0 )

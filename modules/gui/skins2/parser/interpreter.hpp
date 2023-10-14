@@ -2,7 +2,7 @@
  * interpreter.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9e7fc133dbcc8a1f5e4110d561f55887be9cdb4e $
+ * $Id: e232a999dbad6329dbf387f8c79ac5cb693891b0 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -46,7 +46,7 @@ public:
     static void destroy( intf_thread_t *pIntf );
 
     /// Parse an action tag and returns a pointer on a command
-    /// (the intepreter takes care of deleting it, don't do it
+    /// (the interpreter takes care of deleting it, don't do it
     ///  yourself !)
     CmdGeneric *parseAction( const std::string &rAction, Theme *pTheme );
 

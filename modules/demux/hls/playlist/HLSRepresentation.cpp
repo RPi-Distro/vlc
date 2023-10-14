@@ -48,6 +48,7 @@ HLSRepresentation::HLSRepresentation  ( BaseAdaptationSet *set ) :
     lastUpdateTime = 0;
     targetDuration = 0;
     streamFormat = StreamFormat::Type::Unknown;
+    channels = 0;
 }
 
 HLSRepresentation::~HLSRepresentation ()
@@ -113,7 +114,7 @@ void HLSRepresentation::scheduleNextUpdate(uint64_t, bool b_updated)
         return;
     }
 
-    const mtime_t now = mdate();
+    const vlc_tick_t now = mdate();
     const BasePlaylist *playlist = getPlaylist();
 
     msg_Dbg(playlist->getVLCObject(), "Updated playlist ID %s, after %" PRId64 "s",
@@ -133,9 +134,9 @@ bool HLSRepresentation::needsUpdate(uint64_t number) const
         return true;
     if(isLive())
     {
-        const mtime_t now = mdate();
-        const mtime_t elapsed = now - lastUpdateTime;
-        mtime_t duration = targetDuration
+        const vlc_tick_t now = mdate();
+        const vlc_tick_t elapsed = now - lastUpdateTime;
+        vlc_tick_t duration = targetDuration
                          ? CLOCK_FREQ * targetDuration
                          : CLOCK_FREQ * 2;
         if(updateFailureCount)
@@ -146,7 +147,7 @@ bool HLSRepresentation::needsUpdate(uint64_t number) const
         if(number == std::numeric_limits<uint64_t>::max())
             return true;
 
-        mtime_t minbuffer = getMinAheadTime(number);
+        vlc_tick_t minbuffer = getMinAheadTime(number);
         return ( minbuffer < duration );
     }
     return false;
@@ -176,6 +177,21 @@ bool HLSRepresentation::runLocalUpdates(SharedResources *res)
 bool HLSRepresentation::canNoLongerUpdate() const
 {
     return updateFailureCount > MAX_UPDATE_FAILED_UPDATE_COUNT;
+}
+
+void HLSRepresentation::setChannelsCount(unsigned c)
+{
+    channels = c;
+}
+
+CodecDescription * HLSRepresentation::makeCodecDescription(const std::string &s) const
+{
+    CodecDescription *desc = BaseRepresentation::makeCodecDescription(s);
+    if(desc)
+    {
+        desc->setChannelsCount(channels);
+    }
+    return desc;
 }
 
 uint64_t HLSRepresentation::translateSegmentNumber(uint64_t num, const BaseRepresentation *from) const

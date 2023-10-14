@@ -32,6 +32,7 @@
 #include "../../adaptive/tools/Retrieve.hpp"
 #include "../../adaptive/tools/Helper.h"
 #include "../../adaptive/tools/Conversions.hpp"
+#include "../../adaptive/tools/FormatNamespace.hpp"
 #include "M3U8.hpp"
 #include "Tags.hpp"
 
@@ -39,7 +40,8 @@
 #include <vlc_stream.h>
 #include <cstdio>
 #include <sstream>
-#include <map>
+#include <array>
+#include <unordered_map>
 #include <cctype>
 #include <algorithm>
 #include <limits>
@@ -91,12 +93,16 @@ static void releaseTagsList(std::list<Tag *> &list)
 HLSRepresentation * M3U8Parser::createRepresentation(BaseAdaptationSet *adaptSet, const AttributesTag * tag)
 {
     const Attribute *uriAttr = tag->getAttributeByName("URI");
-    const Attribute *bwAttr = tag->getAttributeByName("BANDWIDTH");
+    const Attribute *bwAttr = tag->getAttributeByName("AVERAGE-BANDWIDTH");
+    if(!bwAttr)
+        bwAttr = tag->getAttributeByName("BANDWIDTH");
     const Attribute *resAttr = tag->getAttributeByName("RESOLUTION");
 
     HLSRepresentation *rep = new (std::nothrow) HLSRepresentation(adaptSet);
     if(rep)
     {
+        rep->addAttribute(new TimescaleAttr(Timescale(CLOCK_FREQ)));
+
         if(uriAttr)
         {
             std::string uri;
@@ -120,9 +126,6 @@ HLSRepresentation * M3U8Parser::createRepresentation(BaseAdaptationSet *adaptSet
 
         if(bwAttr)
             rep->setBandwidth(bwAttr->decimal());
-
-        if(tag->getAttributeByName("CODECS"))
-            rep->addCodecs(tag->getAttributeByName("CODECS")->quotedString());
 
         if(resAttr)
         {
@@ -153,9 +156,70 @@ void M3U8Parser::createAndFillRepresentation(vlc_object_t *p_obj, BaseAdaptation
     HLSRepresentation *rep  = createRepresentation(adaptSet, tag);
     if(rep)
     {
-        rep->addAttribute(new TimescaleAttr(Timescale(1000000)));
         parseSegments(p_obj, rep, tagslist);
         adaptSet->addRepresentation(rep);
+    }
+}
+
+void M3U8Parser::fillRepresentationFromMediainfo(const AttributesTag *mediatag,
+                                                 const std::string &type,
+                                                 HLSRepresentation *rep)
+{
+    if(type == "AUDIO")
+    {
+        const Attribute *channelsAttr = mediatag->getAttributeByName("CHANNELS");
+        if(channelsAttr)
+            rep->setChannelsCount(std::atoi(channelsAttr->quotedString().c_str()));
+    }
+
+    if(type != "AUDIO" && type != "VIDEO" && type != "SUBTITLES")
+    {
+        rep->streamFormat = StreamFormat(StreamFormat::Type::Unsupported);
+    }
+}
+
+void M3U8Parser::fillAdaptsetFromMediainfo(const AttributesTag *mediatag,
+                                           const std::string &type,
+                                           const std::string &group,
+                                           BaseAdaptationSet *altAdaptSet)
+{
+    if(mediatag->getAttributeByName("DEFAULT"))
+    {
+        if(mediatag->getAttributeByName("DEFAULT")->value == "YES")
+            altAdaptSet->setRole(Role(Role::Value::Main));
+        else
+            altAdaptSet->setRole(Role(Role::Value::Alternate));
+    }
+
+    if(mediatag->getAttributeByName("AUTOSELECT"))
+    {
+        if(mediatag->getAttributeByName("AUTOSELECT")->value == "NO" &&
+           !mediatag->getAttributeByName("DEFAULT"))
+            altAdaptSet->setRole(Role(Role::Value::Supplementary));
+    }
+
+    /* Subtitles unsupported for now */
+    if(type == "SUBTITLES")
+    {
+        altAdaptSet->setRole(Role(Role::Value::Subtitle));
+    }
+
+    if(mediatag->getAttributeByName("LANGUAGE"))
+        altAdaptSet->setLang(mediatag->getAttributeByName("LANGUAGE")->quotedString());
+
+    std::string desc = group;
+    const Attribute *nameAttr = mediatag->getAttributeByName("NAME");
+    if(nameAttr)
+    {
+        if(!desc.empty())
+            desc += " ";
+        desc += nameAttr->quotedString();
+    }
+
+    if(!desc.empty())
+    {
+        altAdaptSet->description.Set(desc);
+        altAdaptSet->setID(ID(desc));
     }
 }
 
@@ -227,9 +291,9 @@ void M3U8Parser::parseSegments(vlc_object_t *, HLSRepresentation *rep, const std
     rep->b_loaded = true;
     rep->b_live = !b_vod;
 
-    mtime_t totalduration = 0;
-    mtime_t nzStartTime = 0;
-    mtime_t absReferenceTime = VLC_TS_INVALID;
+    vlc_tick_t totalduration = 0;
+    vlc_tick_t nzStartTime = 0;
+    vlc_tick_t absReferenceTime = VLC_TICK_INVALID;
     uint64_t sequenceNumber = 0;
     uint64_t discontinuitySequence = 0;
     bool discontinuity = false;
@@ -276,7 +340,7 @@ void M3U8Parser::parseSegments(vlc_object_t *, HLSRepresentation *rep, const std
                 segment->setSourceUrl(uritag->getValue().value);
 
                 /* Need to use EXTXTARGETDURATION as default as some can't properly set segment one */
-                mtime_t nzDuration = CLOCK_FREQ * rep->targetDuration;
+                vlc_tick_t nzDuration = CLOCK_FREQ * rep->targetDuration;
                 if(ctx_extinf)
                 {
                     const Attribute *durAttribute = ctx_extinf->getAttributeByName("DURATION");
@@ -288,7 +352,7 @@ void M3U8Parser::parseSegments(vlc_object_t *, HLSRepresentation *rep, const std
                 segment->startTime.Set(timescale.ToScaled(nzStartTime));
                 nzStartTime += nzDuration;
                 totalduration += nzDuration;
-                if(absReferenceTime > VLC_TS_INVALID)
+                if(absReferenceTime > VLC_TICK_INVALID)
                 {
                     segment->setDisplayTime(absReferenceTime);
                     absReferenceTime += nzDuration;
@@ -327,19 +391,19 @@ void M3U8Parser::parseSegments(vlc_object_t *, HLSRepresentation *rep, const std
                 break;
 
             case SingleValueTag::EXTXPROGRAMDATETIME:
-                absReferenceTime = VLC_TS_0 +
+                absReferenceTime = VLC_TICK_0 +
                         UTCTime(static_cast<const SingleValueTag *>(tag)->getValue().value).mtime();
                 /* Reverse apply UTC timespec from first discont */
-                if(segmentstoappend.size() && segmentstoappend.back()->getDisplayTime() == VLC_TS_INVALID)
+                if(segmentstoappend.size() && segmentstoappend.back()->getDisplayTime() == VLC_TICK_INVALID)
                 {
-                    mtime_t tempTime = absReferenceTime;
+                    vlc_tick_t tempTime = absReferenceTime;
                     for(auto it = segmentstoappend.crbegin(); it != segmentstoappend.crend(); ++it)
                     {
-                        mtime_t duration = timescale.ToTime((*it)->duration.Get());
-                        if( duration < tempTime - VLC_TS_0 )
+                        vlc_tick_t duration = timescale.ToTime((*it)->duration.Get());
+                        if( duration < tempTime - VLC_TICK_0 )
                             tempTime -= duration;
                         else
-                            tempTime = VLC_TS_0;
+                            tempTime = VLC_TICK_0;
                         (*it)->setDisplayTime(tempTime);
                     }
                 }
@@ -425,11 +489,12 @@ M3U8 * M3U8Parser::parse(vlc_object_t *p_object, stream_t *p_stream, const std::
         return playlist;
 
     std::list<Tag *> tagslist = parseEntries(p_stream);
-    bool b_masterplaylist = !getTagsFromList(tagslist, AttributesTag::EXTXSTREAMINF).empty();
+    std::list<Tag *> streaminfotags = getTagsFromList(tagslist, AttributesTag::EXTXSTREAMINF);
+    bool b_masterplaylist = !streaminfotags.empty();
     if(b_masterplaylist)
     {
         std::list<Tag *>::const_iterator it;
-        std::map<std::string, AttributesTag *> groupsmap;
+        std::list<BaseAdaptationSet *> setstoadd;
 
         /* Preload Session Key */
         Tag *sessionKey = getTagFromList(tagslist, AttributesTag::EXTXSESSIONKEY);
@@ -446,119 +511,255 @@ M3U8 * M3U8Parser::parse(vlc_object_t *p_object, stream_t *p_stream, const std::
 
         /* We'll need to create an adaptation set for each media group / alternative rendering
          * we create a list of playlist being and alternative/group */
+        struct typecat_s
+        {
+            const char *type;
+            es_format_category_e cat;
+        };
+        std::array<struct typecat_s, 3> const typescats =
+        {{
+            { "AUDIO",      AUDIO_ES },
+            { "VIDEO",      VIDEO_ES },
+            { "SUBTITLES",  SPU_ES },
+        }};
+
+        struct StreamCodec
+        {
+            std::string codec;
+            es_format_category_e cat;
+        };
+
+        struct StreamInfos
+        {
+            const AttributesTag *tag;
+            std::string uri;
+            HLSRepresentation *rep;
+            std::list<struct StreamCodec> codecs;
+        };
+        std::list<struct StreamInfos> streaminfolist;
+
+        struct MediaInfos
+        {
+            const AttributesTag *tag;
+            std::string uri;
+            std::string group;
+        };
+
+        using CodecStats = std::unordered_map<std::string, unsigned>;
+
+        std::unordered_map<std::string, CodecStats> groupsmap;
+        std::list<struct MediaInfos> mediainfos;
+
+        /* create group info */
         std::list<Tag *> mediainfotags = getTagsFromList(tagslist, AttributesTag::EXTXMEDIA);
         for(it = mediainfotags.begin(); it != mediainfotags.end(); ++it)
         {
             AttributesTag *tag = dynamic_cast<AttributesTag *>(*it);
-            if(tag && tag->getAttributeByName("URI"))
-            {
-                std::pair<std::string, AttributesTag *> pair(tag->getAttributeByName("URI")->quotedString(), tag);
-                groupsmap.insert(pair);
-            }
+            if(!tag)
+                continue;
+            const Attribute *groupid = tag->getAttributeByName("GROUP-ID");
+            if(!groupid) /* invalid */
+                continue;
+            const Attribute *uri = tag->getAttributeByName("URI");
+            MediaInfos entry;
+            entry.tag = tag;
+            entry.uri = uri ? uri->quotedString() : std::string();
+            entry.group = groupid->quotedString();
+            groupsmap.insert(std::pair<std::string, CodecStats>(entry.group, CodecStats()));
+            mediainfos.push_back(entry);
         }
 
-        /* Then we parse all playlists uri and add them, except when alternative */
+        /* Gather info from EXT-X-STREAMINF */
+        for(it = streaminfotags.begin(); it != streaminfotags.end(); ++it)
+        {
+            AttributesTag *tag = dynamic_cast<AttributesTag *>(*it);
+            if(!tag)
+                continue;
+
+            const Attribute *uri = tag->getAttributeByName("URI");
+            if(!uri)
+                continue;
+
+            StreamInfos entry;
+            entry.tag = tag;
+            entry.uri = uri->quotedString();
+            entry.rep = nullptr;
+
+            const Attribute *codecsAttr = tag->getAttributeByName("CODECS");
+            if(codecsAttr)
+            {
+                auto codecs = Helper::tokenize(codecsAttr->quotedString(), ',');
+                for(auto codec : codecs)
+                {
+                    FormatNamespace fns(codec);
+                    struct StreamCodec s;
+                    s.cat = fns.getFmt()->i_cat;
+                    s.codec = codec;
+                    entry.codecs.push_front(s);
+                }
+
+                /* create codec reference count info per group */
+                std::list<std::string> mediasCodecs;
+                for(auto typecat : typescats)
+                {
+                    if(tag->getAttributeByName(typecat.type))
+                    {
+                        for(auto codec : entry.codecs)
+                        {
+                            if(codec.cat == typecat.cat)
+                            {
+                                auto mit = groupsmap.find(tag->getAttributeByName(typecat.type)->quotedString());
+                                if(mit != groupsmap.cend())
+                                {
+                                    auto eit = (*mit).second.find(codec.codec);
+                                    if(eit != (*mit).second.end())
+                                        ++(*eit).second;
+                                    else
+                                        (*mit).second.insert(std::pair<std::string, unsigned>(codec.codec, 0));
+                                    mediasCodecs.push_front(codec.codec);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                /* remove most frequent group codecs from streaminfo */
+                for(auto codec : mediasCodecs)
+                    entry.codecs.remove_if([codec, entry](struct StreamCodec &v)
+                                        { return v.codec == codec && entry.codecs.size() > 1; });
+
+                /* deduplicate codecs by category as variants can have different profile */
+                entry.codecs.sort([](const struct StreamCodec &a, const struct StreamCodec &b)
+                    { return a.cat < b.cat ; });
+                entry.codecs.unique([](const struct StreamCodec &a, const struct StreamCodec &b)
+                    { return a.cat == b.cat ; });
+            }
+
+            streaminfolist.push_back(entry);
+        }
+
+        /* process all EXT-X-STREAMINF and add them */
         BaseAdaptationSet *adaptSet = new (std::nothrow) BaseAdaptationSet(period);
         if(adaptSet)
         {
             /* adaptSet->setSegmentAligned(true); FIXME: based on streamformat */
-            std::list<Tag *> streaminfotags = getTagsFromList(tagslist, AttributesTag::EXTXSTREAMINF);
-            for(it = streaminfotags.begin(); it != streaminfotags.end(); ++it)
+            for(auto &info : streaminfolist)
             {
-                AttributesTag *tag = dynamic_cast<AttributesTag *>(*it);
-                if(tag && tag->getAttributeByName("URI"))
+                if(info.uri.empty())
+                    continue;
+
+                HLSRepresentation *rep  = createRepresentation(adaptSet, info.tag);
+                if(!rep)
+                    continue;
+
+                for(auto codec: info.codecs)
+                    rep->addCodecs(codec.codec);
+
+                if(adaptSet->description.Get().empty() &&
+                   info.tag->getAttributeByName("NAME"))
                 {
-                    if(groupsmap.find(tag->getAttributeByName("URI")->value) == groupsmap.end())
+                    adaptSet->description.Set(info.tag->getAttributeByName("NAME")->quotedString());
+                }
+
+                adaptSet->addRepresentation(rep);
+                info.rep = rep;
+            }
+
+            if(adaptSet->getRepresentations().empty())
+            {
+                delete adaptSet;
+                adaptSet = nullptr;
+            }
+            else setstoadd.push_front(adaptSet);
+        }
+
+        /* Finally add all EXT-X-MEDIA or propagate their attributes */
+        for(auto mediainfo : mediainfos)
+        {
+            const Attribute *typeattr = mediainfo.tag->getAttributeByName("TYPE");
+            if(!typeattr)
+                continue;
+            const std::string &mediatype = typeattr->value;
+
+            const StreamInfos *matchedstreaminf = nullptr;
+            if(!mediainfo.uri.empty())
+            {
+                auto sit = std::find_if(streaminfolist.begin(), streaminfolist.end(),
+                                    [mediainfo] (StreamInfos &si)
+                                   { return si.uri == mediainfo.uri; });
+                if(sit != streaminfolist.end())
+                    matchedstreaminf = & (*sit);
+            };
+
+            if(mediainfo.uri.empty() || matchedstreaminf) /* Attributes do apply to group STREAMINF members */
+            {
+                if(mediatype == "AUDIO" || mediatype == "VIDEO")
+                for(StreamInfos &si : streaminfolist)
+                {
+                    if(matchedstreaminf && matchedstreaminf != &si)
+                        continue;
+                    const Attribute *groupattr = si.tag->getAttributeByName(mediatype.c_str());
+                    if(groupattr && groupattr->quotedString() == mediainfo.group)
                     {
-                        /* not a group, belong to default adaptation set */
-                        HLSRepresentation *rep  = createRepresentation(adaptSet, tag);
-                        if(rep)
+                        if(si.rep)
                         {
-                            adaptSet->addRepresentation(rep);
+                            fillAdaptsetFromMediainfo(mediainfo.tag, typeattr->value,
+                                                      mediainfo.group, si.rep->getAdaptationSet());
+                            if(!matchedstreaminf || matchedstreaminf == &si)
+                                fillRepresentationFromMediainfo(mediainfo.tag, typeattr->value, si.rep);
                         }
                     }
                 }
             }
-            if(!adaptSet->getRepresentations().empty())
-                period->addAdaptationSet(adaptSet);
-            else
-                delete adaptSet;
-        }
-
-        /* Finally add all groups */
-        unsigned set_id = 1;
-        std::map<std::string, AttributesTag *>::const_iterator groupsit;
-        for(groupsit = groupsmap.begin(); groupsit != groupsmap.end(); ++groupsit)
-        {
-            std::pair<std::string, AttributesTag *> pair = *groupsit;
-            if(!pair.second->getAttributeByName("TYPE"))
-                continue;
-
-            BaseAdaptationSet *altAdaptSet = new (std::nothrow) BaseAdaptationSet(period);
-            if(altAdaptSet)
+            else /* This is an alternative in the group */
             {
-                HLSRepresentation *rep  = createRepresentation(altAdaptSet, pair.second);
-                if(rep)
+                BaseAdaptationSet *altAdaptSet = new (std::nothrow) BaseAdaptationSet(period);
+                if(altAdaptSet)
                 {
+                    fillAdaptsetFromMediainfo(mediainfo.tag, typeattr->value, mediainfo.group, altAdaptSet);
+
+                    HLSRepresentation *rep  = createRepresentation(altAdaptSet, mediainfo.tag);
+                    if(!rep)
+                    {
+                        delete altAdaptSet;
+                        continue;
+                    }
+
+                    fillRepresentationFromMediainfo(mediainfo.tag, typeattr->value, rep);
+
+                    /* assign group codecs to adaptset */
+                    auto groupmapit = groupsmap.find(mediainfo.group);
+                    if(groupmapit != groupsmap.end())
+                    {
+                        for(auto p : (*groupmapit).second)
+                        {
+                            FormatNamespace fns(p.first);
+                            for(auto typecat : typescats)
+                            {
+                                if((fns.getFmt()->i_cat == typecat.cat && typeattr->value == typecat.type))
+                                {
+                                    rep->addCodecs(p.first);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                     altAdaptSet->addRepresentation(rep);
-                }
-
-                std::string desc;
-                if(pair.second->getAttributeByName("GROUP-ID"))
-                    desc = pair.second->getAttributeByName("GROUP-ID")->quotedString();
-                if(pair.second->getAttributeByName("NAME"))
-                {
-                    if(!desc.empty())
-                        desc += " ";
-                    desc += pair.second->getAttributeByName("NAME")->quotedString();
-                }
-
-                if(pair.second->getAttributeByName("CODECS"))
-                    rep->addCodecs(pair.second->getAttributeByName("CODECS")->quotedString());
-
-                if(!desc.empty())
-                {
-                    altAdaptSet->description.Set(desc);
-                    altAdaptSet->setID(ID(desc));
-                }
-                else altAdaptSet->setID(ID(set_id++));
-
-                if(pair.second->getAttributeByName("DEFAULT"))
-                {
-                    if(pair.second->getAttributeByName("DEFAULT")->value == "YES")
-                        altAdaptSet->setRole(Role(Role::Value::Main));
-                    else
-                        altAdaptSet->setRole(Role(Role::Value::Alternate));
-                }
-
-                if(pair.second->getAttributeByName("AUTOSELECT"))
-                {
-                    if(pair.second->getAttributeByName("AUTOSELECT")->value == "NO" &&
-                       !pair.second->getAttributeByName("DEFAULT"))
-                        altAdaptSet->setRole(Role(Role::Value::Supplementary));
-                }
-
-                /* Subtitles unsupported for now */
-                const Attribute *typeattr = pair.second->getAttributeByName("TYPE");
-                if(typeattr->value == "SUBTITLES")
-                {
-                    altAdaptSet->setRole(Role(Role::Value::Subtitle));
-                }
-                else if(typeattr->value != "AUDIO" && typeattr->value != "VIDEO")
-                {
-                    rep->streamFormat = StreamFormat(StreamFormat::Type::Unsupported);
-                }
-
-                if(pair.second->getAttributeByName("LANGUAGE"))
-                    altAdaptSet->setLang(pair.second->getAttributeByName("LANGUAGE")->quotedString());
-
-                if(!altAdaptSet->getRepresentations().empty())
-                    period->addAdaptationSet(altAdaptSet);
-                else
-                    delete altAdaptSet;
+                    setstoadd.push_front(altAdaptSet);
+	}
             }
         }
 
+        /* late add to keep it ordered */
+        unsigned set_id = 1;
+        for(auto set : setstoadd)
+        {
+            if(!set->getID().isValid())
+                set->setID(ID(set_id++));
+            period->addAdaptationSet(set);
+        }
     }
     else /* Non master playlist (opened directly subplaylist or HLS v1) */
     {

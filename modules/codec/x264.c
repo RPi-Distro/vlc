@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2010 the VideoLAN team
- * $Id: 66ad2419744500d1fb9e49b9760db3741f03f9fe $
+ * $Id: b21382835b87f7992840fe240678902ac9c62c83 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Ilkka Ollakka <ileoo (at)videolan org>
@@ -762,7 +762,7 @@ struct encoder_sys_t
     x264_t          *h;
     x264_param_t    param;
 
-    mtime_t         i_initial_delay;
+    vlc_tick_t      i_initial_delay;
 
     char            *psz_stat_name;
     int             i_sei_size;

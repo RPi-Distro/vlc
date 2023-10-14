@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: e053fb44d9c296f0ed07dab3e4d258dc87ee0223 $
+ * $Id: 5048aee4ce92e1969510f27cc2a485ce2752919f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -31,10 +31,10 @@ block_t *block_zlib_decompress( vlc_object_t *p_this, block_t *p_in_block );
 #endif
 
 block_t *MemToBlock( uint8_t *p_mem, size_t i_mem, size_t offset);
-void handle_real_audio(demux_t * p_demux, mkv_track_t * p_tk, block_t * p_blk, mtime_t i_pts);
+void handle_real_audio(demux_t * p_demux, mkv_track_t * p_tk, block_t * p_blk, vlc_tick_t i_pts);
 block_t *WEBVTT_Repack_Sample(block_t *p_block, bool b_webm = false,
                               const uint8_t * = NULL, size_t = 0);
-void send_Block( demux_t * p_demux, mkv_track_t * p_tk, block_t * p_block, unsigned int i_number_frames, mtime_t i_duration );
+void send_Block( demux_t * p_demux, mkv_track_t * p_tk, block_t * p_block, unsigned int i_number_frames, vlc_tick_t i_duration );
 int UpdatePCR( demux_t * p_demux );
 
 
