@@ -1,3 +1,10 @@
+vlc (3.0.19-1) unstable; urgency=medium
+
+  * New upstream version 3.0.19
+  * debian/patches: Drop patches from upstream
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 14 Oct 2023 19:52:05 +0200
+
 vlc (3.0.18-4) unstable; urgency=medium
 
   [ Pino Toscano ]
