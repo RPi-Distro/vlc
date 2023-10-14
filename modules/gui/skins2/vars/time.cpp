@@ -2,7 +2,7 @@
  * time.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 0089a6e036e5e88422b1561e8150d98d95069285 $
+ * $Id: 8ca8c4a21317af18745bf6c1508c903a40b48376 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -77,7 +77,7 @@ std::string StreamTime::getAsStringCurrTime( bool bShortFormat ) const
     if( !havePosition() )
         return "-:--:--";
 
-    mtime_t time = var_GetInteger( getIntf()->p_sys->p_input, "time" );
+    vlc_tick_t time = var_GetInteger( getIntf()->p_sys->p_input, "time" );
     return formatTime( time / CLOCK_FREQ, bShortFormat );
 }
 
@@ -87,7 +87,7 @@ std::string StreamTime::getAsStringTimeLeft( bool bShortFormat ) const
     if( !havePosition() )
         return "-:--:--";
 
-    mtime_t time = var_GetInteger( getIntf()->p_sys->p_input, "time" ),
+    vlc_tick_t time = var_GetInteger( getIntf()->p_sys->p_input, "time" ),
         duration = var_GetInteger( getIntf()->p_sys->p_input, "length" );
 
     return formatTime( (duration - time) / CLOCK_FREQ, bShortFormat );
@@ -99,6 +99,6 @@ std::string StreamTime::getAsStringDuration( bool bShortFormat ) const
     if( !havePosition() )
         return "-:--:--";
 
-    mtime_t time = var_GetInteger( getIntf()->p_sys->p_input, "length" );
+    vlc_tick_t time = var_GetInteger( getIntf()->p_sys->p_input, "length" );
     return formatTime( time / CLOCK_FREQ, bShortFormat );
 }

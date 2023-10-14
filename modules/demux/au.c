@@ -2,7 +2,7 @@
  * au.c : au file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 0cda4bf73e504bd793b2ebf9231f0132d1524434 $
+ * $Id: d2cc2d50fb322f1ea2a8e5bd430d82ef6d066889 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -86,10 +86,10 @@ struct demux_sys_t
     es_format_t     fmt;
     es_out_id_t     *es;
 
-    mtime_t         i_time;
+    vlc_tick_t      i_time;
 
     int             i_frame_size;
-    mtime_t         i_frame_length;
+    vlc_tick_t      i_frame_length;
 
     uint32_t        i_header_size;
 };
@@ -288,9 +288,9 @@ static int Open( vlc_object_t *p_this )
             p_sys->i_frame_size += p_sys->fmt.audio.i_blockalign - mod;
         }
     }
-    p_sys->i_frame_length = (mtime_t)1000000 *
-                            (mtime_t)i_samples /
-                            (mtime_t)p_sys->fmt.audio.i_rate;
+    p_sys->i_frame_length = (vlc_tick_t)1000000 *
+                            (vlc_tick_t)i_samples /
+                            (vlc_tick_t)p_sys->fmt.audio.i_rate;
 
     p_demux->p_sys = p_sys;
     p_demux->pf_demux = Demux;
@@ -312,7 +312,7 @@ static int Demux( demux_t *p_demux )
     block_t     *p_block;
 
     /* set PCR */
-    es_out_SetPCR( p_demux->out, VLC_TS_0 + p_sys->i_time );
+    es_out_SetPCR( p_demux->out, VLC_TICK_0 + p_sys->i_time );
 
     p_block = vlc_stream_Block( p_demux->s, p_sys->i_frame_size );
     if( p_block == NULL )
@@ -322,7 +322,7 @@ static int Demux( demux_t *p_demux )
     }
 
     p_block->i_dts =
-    p_block->i_pts = VLC_TS_0 + p_sys->i_time;
+    p_block->i_pts = VLC_TICK_0 + p_sys->i_time;
 
     es_out_Send( p_demux->out, p_sys->es, p_block );
 

@@ -2,7 +2,7 @@
  * subsdelay.c : Subsdelay plugin for vlc
  *****************************************************************************
  * Copyright © 2011 VideoLAN
- * $Id: db810bbdb976618f9006725aeb1a78948bb1bf0a $
+ * $Id: 8e4a9c1011e4420f4cbd5190b648edd807d634f7 $
  *
  * Authors: Yuval Tze <yuvaltze@gmail.com>
  *
@@ -134,7 +134,7 @@ struct subpicture_updater_sys_t
 
     bool b_check_empty; /* subtitle content should be checked */
 
-    mtime_t i_new_stop; /* new stop value */
+    vlc_tick_t i_new_stop; /* new stop value */
 
     /* last region data*/
 
@@ -223,14 +223,14 @@ static bool SubsdelayIsTextEmpty( const text_segment_t* p_segment );
  *****************************************************************************/
 
 static int SubpicValidateWrapper( subpicture_t *p_subpic, bool has_src_changed, const video_format_t *p_fmt_src,
-                                  bool has_dst_changed, const video_format_t *p_fmt_dst, mtime_t i_ts );
+                                  bool has_dst_changed, const video_format_t *p_fmt_dst, vlc_tick_t i_ts );
 
 static void SubpicUpdateWrapper( subpicture_t *p_subpic, const video_format_t *p_fmt_src,
-                                  const video_format_t *p_fmt_dst, mtime_t i_ts );
+                                  const video_format_t *p_fmt_dst, vlc_tick_t i_ts );
 
 static void SubpicDestroyWrapper( subpicture_t *p_subpic );
 
-static void SubpicLocalUpdate( subpicture_t* p_subpic, mtime_t i_ts );
+static void SubpicLocalUpdate( subpicture_t* p_subpic, vlc_tick_t i_ts );
 
 static bool SubpicIsEmpty( subpicture_t* p_subpic );
 
@@ -262,7 +262,7 @@ static void SubsdelayEntryDestroy( subsdelay_heap_entry_t *p_entry );
 
 /* heap / entries special functionality */
 
-static int SubsdelayHeapCountOverlap( subsdelay_heap_t *p_heap, subsdelay_heap_entry_t *p_entry, mtime_t i_date );
+static int SubsdelayHeapCountOverlap( subsdelay_heap_t *p_heap, subsdelay_heap_entry_t *p_entry, vlc_tick_t i_date );
 
 static void SubsdelayEntryNewStopValueUpdated( subsdelay_heap_entry_t *p_entry );
 
@@ -433,7 +433,7 @@ static subpicture_t * SubsdelayFilter( filter_t *p_filter, subpicture_t* p_subpi
 
     if( p_subpic->b_ephemer )
     {
-        /* set a relativly long delay in hope that the next subtitle
+        /* set a relatively long delay in hope that the next subtitle
            will arrive in this time and the real delay could be determined */
 
         p_subpic->i_stop = p_subpic->i_start + 20000000; /* start + 20 sec */
@@ -728,7 +728,7 @@ static void SubsdelayEntryDestroy( subsdelay_heap_entry_t *p_entry )
 /*****************************************************************************
  * SubsdelayHeapCountOverlap: Count overlapping subtitles at a given time
  *****************************************************************************/
-static int SubsdelayHeapCountOverlap( subsdelay_heap_t *p_heap, subsdelay_heap_entry_t *p_entry, mtime_t i_date )
+static int SubsdelayHeapCountOverlap( subsdelay_heap_t *p_heap, subsdelay_heap_entry_t *p_entry, vlc_tick_t i_date )
 {
     int i_overlaps;
 
@@ -924,10 +924,10 @@ static void SubsdelayRecalculateDelays( filter_t *p_filter )
  * SubpicValidateWrapper: Subpicture validate callback wrapper
  *****************************************************************************/
 static int SubpicValidateWrapper( subpicture_t *p_subpic, bool has_src_changed, const video_format_t *p_fmt_src,
-                                  bool has_dst_changed, const video_format_t *p_fmt_dst, mtime_t i_ts )
+                                  bool has_dst_changed, const video_format_t *p_fmt_dst, vlc_tick_t i_ts )
 {
     subsdelay_heap_entry_t *p_entry;
-    mtime_t i_new_ts;
+    vlc_tick_t i_new_ts;
     int i_result = VLC_SUCCESS;
 
     p_entry = p_subpic->updater.p_sys;
@@ -973,10 +973,10 @@ static int SubpicValidateWrapper( subpicture_t *p_subpic, bool has_src_changed, 
  * SubpicUpdateWrapper: Subpicture update callback wrapper
  *****************************************************************************/
 static void SubpicUpdateWrapper( subpicture_t *p_subpic, const video_format_t *p_fmt_src,
-                                  const video_format_t *p_fmt_dst, mtime_t i_ts )
+                                  const video_format_t *p_fmt_dst, vlc_tick_t i_ts )
 {
     subsdelay_heap_entry_t *p_entry;
-    mtime_t i_new_ts;
+    vlc_tick_t i_new_ts;
 
     p_entry = p_subpic->updater.p_sys;
     if( !p_entry )
@@ -1031,7 +1031,7 @@ static void SubpicDestroyWrapper( subpicture_t *p_subpic )
 /*****************************************************************************
  * SubpicLocalUpdate: rewrite some of the subpicture parameters
  *****************************************************************************/
-static void SubpicLocalUpdate( subpicture_t* p_subpic, mtime_t i_ts )
+static void SubpicLocalUpdate( subpicture_t* p_subpic, vlc_tick_t i_ts )
 {
     subsdelay_heap_entry_t *p_entry;
     subsdelay_heap_t *p_heap;

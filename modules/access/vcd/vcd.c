@@ -2,7 +2,7 @@
  * vcd.c : VCD input module for vlc
  *****************************************************************************
  * Copyright © 2000-2011 VLC authors and VideoLAN
- * $Id: 7b302e49059484c4da9d5f3065fd29c6891a87dc $
+ * $Id: 817fc96dd2ea2357d6fe620f75d9f0b83d70b5af $
  *
  * Author: Johan Bilien <jobi@via.ecp.fr>
  *
@@ -38,7 +38,7 @@
 #include "cdrom.h"
 
 /*****************************************************************************
- * Module descriptior
+ * Module descriptor
  *****************************************************************************/
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );

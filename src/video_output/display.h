@@ -2,7 +2,7 @@
  * display.h: "vout display" management
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 34c39a35a891bea3797ef66b90a4789e6142cd4c $
+ * $Id: 6ba0612e4bc38fd4e5f2f46e1cdf3173202d538d $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -28,8 +28,8 @@ vout_display_t *vout_NewSplitter(vout_thread_t *vout,
                                  const vout_display_state_t *state,
                                  const char *module,
                                  const char *splitter_module,
-                                 mtime_t double_click_timeout,
-                                 mtime_t hide_timeout);
+                                 vlc_tick_t double_click_timeout,
+                                 vlc_tick_t hide_timeout);
 
 /* FIXME should not be there */
 void vout_SendDisplayEventMouse(vout_thread_t *, const vlc_mouse_t *);

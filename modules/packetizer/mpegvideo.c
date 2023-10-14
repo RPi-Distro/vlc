@@ -2,7 +2,7 @@
  * mpegvideo.c: parse and packetize an MPEG1/2 video stream
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: f4f3be9a8317e3ff594aea2e9f7827a0c69d3cc5 $
+ * $Id: 00b292a8361f91ea9deb74524bad58e7daef755e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -129,8 +129,8 @@ struct decoder_sys_t
     block_t    **pp_last;
 
     bool b_frame_slice;
-    mtime_t i_pts;
-    mtime_t i_dts;
+    vlc_tick_t i_pts;
+    vlc_tick_t i_dts;
 
     date_t  dts;
     date_t  prev_iframe_dts;
@@ -152,9 +152,9 @@ struct decoder_sys_t
     int i_repeat_first_field;
     int i_progressive_frame;
 
-    mtime_t i_last_ref_pts;
+    vlc_tick_t i_last_ref_pts;
 
-    mtime_t i_last_frame_pts;
+    vlc_tick_t i_last_frame_pts;
     uint16_t i_last_frame_refid;
 
     bool b_second_field;
@@ -170,8 +170,8 @@ struct decoder_sys_t
     /* */
     bool b_cc_reset;
     uint32_t i_cc_flags;
-    mtime_t i_cc_pts;
-    mtime_t i_cc_dts;
+    vlc_tick_t i_cc_pts;
+    vlc_tick_t i_cc_dts;
     cc_data_t cc;
 };
 
@@ -221,11 +221,11 @@ static int Open( vlc_object_t *p_this )
     p_sys->b_frame_slice = false;
 
     p_sys->i_dts =
-    p_sys->i_pts = VLC_TS_INVALID;
+    p_sys->i_pts = VLC_TICK_INVALID;
     date_Init( &p_sys->dts, 30000, 1001 );
-    date_Set( &p_sys->dts, VLC_TS_INVALID );
+    date_Set( &p_sys->dts, VLC_TICK_INVALID );
     date_Init( &p_sys->prev_iframe_dts, 30000, 1001 );
-    date_Set( &p_sys->prev_iframe_dts, VLC_TS_INVALID );
+    date_Set( &p_sys->prev_iframe_dts, VLC_TICK_INVALID );
 
     p_sys->i_frame_rate = 2 * 30000;
     p_sys->i_frame_rate_base = 1001;
@@ -242,7 +242,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_progressive_frame = 0;
     p_sys->b_inited = 0;
 
-    p_sys->i_last_ref_pts = VLC_TS_INVALID;
+    p_sys->i_last_ref_pts = VLC_TICK_INVALID;
     p_sys->b_second_field = 0;
 
     p_sys->i_next_block_flags = 0;
@@ -326,7 +326,7 @@ static block_t *GetCc( decoder_t *p_dec, decoder_cc_desc_t *p_desc )
     if( p_cc )
     {
         memcpy( p_cc->p_buffer, p_sys->cc.p_data, p_sys->cc.i_data );
-        p_cc->i_dts = 
+        p_cc->i_dts =
         p_cc->i_pts = p_sys->cc.b_reorder ? p_sys->i_cc_pts : p_sys->i_cc_dts;
         p_cc->i_flags = p_sys->i_cc_flags & BLOCK_FLAG_TYPE_MASK;
 
@@ -427,17 +427,17 @@ static block_t *OutputFrame( decoder_t *p_dec )
 
         if( ( p_pic->i_flags & BLOCK_FLAG_TYPE_I ) && b_first_xmited )
         {
-            if( date_Get( &p_sys->prev_iframe_dts ) == VLC_TS_INVALID )
+            if( date_Get( &p_sys->prev_iframe_dts ) == VLC_TICK_INVALID )
             {
-                if( p_sys->i_dts != VLC_TS_INVALID )
+                if( p_sys->i_dts != VLC_TICK_INVALID )
                 {
                     date_Set( &p_sys->dts, p_sys->i_dts );
                 }
                 else
                 {
-                    if( date_Get( &p_sys->dts ) == VLC_TS_INVALID )
+                    if( date_Get( &p_sys->dts ) == VLC_TICK_INVALID )
                     {
-                        date_Set( &p_sys->dts, VLC_TS_0 );
+                        date_Set( &p_sys->dts, VLC_TICK_0 );
                     }
                 }
             }
@@ -463,7 +463,7 @@ static block_t *OutputFrame( decoder_t *p_dec )
 
         p_pic->i_pts = date_Get( &datepts );
 
-        if( date_Get( &p_sys->dts ) != VLC_TS_INVALID )
+        if( date_Get( &p_sys->dts ) != VLC_TICK_INVALID )
         {
             date_Increment( &p_sys->dts,  i_num_fields );
 
@@ -477,17 +477,17 @@ static block_t *OutputFrame( decoder_t *p_dec )
         {
             /* Trivial case (DTS == PTS) */
             /* Correct interpolated dts when we receive a new pts/dts */
-            if( p_sys->i_pts != VLC_TS_INVALID )
+            if( p_sys->i_pts != VLC_TICK_INVALID )
                 date_Set( &p_sys->dts, p_sys->i_pts );
-            if( p_sys->i_dts != VLC_TS_INVALID )
+            if( p_sys->i_dts != VLC_TICK_INVALID )
                 date_Set( &p_sys->dts, p_sys->i_dts );
         }
         else
         {
             /* Correct interpolated dts when we receive a new pts/dts */
-            if(p_sys->i_last_ref_pts != VLC_TS_INVALID && !p_sys->b_second_field)
+            if(p_sys->i_last_ref_pts != VLC_TICK_INVALID && !p_sys->b_second_field)
                 date_Set( &p_sys->dts, p_sys->i_last_ref_pts );
-            if( p_sys->i_dts != VLC_TS_INVALID )
+            if( p_sys->i_dts != VLC_TICK_INVALID )
                 date_Set( &p_sys->dts, p_sys->i_dts );
 
             if( !p_sys->b_second_field )
@@ -497,7 +497,7 @@ static block_t *OutputFrame( decoder_t *p_dec )
         p_pic->i_dts = date_Get( &p_sys->dts );
 
         /* Set PTS only if we have a B frame or if it comes from the stream */
-        if( p_sys->i_pts != VLC_TS_INVALID )
+        if( p_sys->i_pts != VLC_TICK_INVALID )
         {
             p_pic->i_pts = p_sys->i_pts;
         }
@@ -507,10 +507,10 @@ static block_t *OutputFrame( decoder_t *p_dec )
         }
         else
         {
-            p_pic->i_pts = VLC_TS_INVALID;
+            p_pic->i_pts = VLC_TICK_INVALID;
         }
 
-        if( date_Get( &p_sys->dts ) != VLC_TS_INVALID )
+        if( date_Get( &p_sys->dts ) != VLC_TICK_INVALID )
         {
             date_Increment( &p_sys->dts,  i_num_fields );
 
@@ -522,7 +522,7 @@ static block_t *OutputFrame( decoder_t *p_dec )
     msg_Dbg( p_dec, "pic: type=%d ref=%d nf=%d tff=%d dts=%"PRId64" ptsdiff=%"PRId64" len=%"PRId64,
              p_sys->i_picture_structure, p_sys->i_temporal_ref, i_num_fields,
              p_sys->i_top_field_first,
-             p_pic->i_dts , (p_pic->i_pts != VLC_TS_INVALID) ? p_pic->i_pts - p_pic->i_dts : 0, p_pic->i_length );
+             p_pic->i_dts , (p_pic->i_pts != VLC_TICK_INVALID) ? p_pic->i_pts - p_pic->i_dts : 0, p_pic->i_length );
 #endif
 
 
@@ -566,11 +566,11 @@ static void PacketizeReset( void *p_private, bool b_broken )
         p_sys->pp_last = &p_sys->p_frame;
         p_sys->b_frame_slice = false;
     }
-    date_Set( &p_sys->dts, VLC_TS_INVALID );
-    date_Set( &p_sys->prev_iframe_dts, VLC_TS_INVALID );
+    date_Set( &p_sys->dts, VLC_TICK_INVALID );
+    date_Set( &p_sys->prev_iframe_dts, VLC_TICK_INVALID );
     p_sys->i_dts =
     p_sys->i_pts =
-    p_sys->i_last_ref_pts = VLC_TS_INVALID;
+    p_sys->i_last_ref_pts = VLC_TICK_INVALID;
     p_sys->b_waiting_iframe = p_sys->b_sync_on_intra_frame;
     p_sys->i_prev_temporal_ref = 2048;
 }
@@ -628,16 +628,16 @@ static int PacketizeValidate( void *p_private, block_t *p_au )
 
     /* We've just started the stream, wait for the first PTS.
      * We discard here so we can still get the sequence header. */
-    if( unlikely( p_sys->i_dts <= VLC_TS_INVALID && p_sys->i_pts <= VLC_TS_INVALID &&
-        date_Get( &p_sys->dts ) <= VLC_TS_INVALID ))
+    if( unlikely( p_sys->i_dts <= VLC_TICK_INVALID && p_sys->i_pts <= VLC_TICK_INVALID &&
+        date_Get( &p_sys->dts ) <= VLC_TICK_INVALID ))
     {
         msg_Dbg( p_dec, "need a starting pts/dts" );
         return VLC_EGENERIC;
     }
 
     /* When starting the stream we can have the first frame with
-     * an invalid DTS (i_interpolated_pts is initialized to VLC_TS_INVALID) */
-    if( unlikely( p_au->i_dts <= VLC_TS_INVALID ) )
+     * an invalid DTS (i_interpolated_pts is initialized to VLC_TICK_INVALID) */
+    if( unlikely( p_au->i_dts <= VLC_TICK_INVALID ) )
         p_au->i_dts = p_au->i_pts;
 
     return VLC_SUCCESS;

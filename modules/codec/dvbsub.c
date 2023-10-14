@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2003 ANEVIA
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 2040b90c77ceb62164ec2fbdde2b0449e753b68b $
+ * $Id: beb8e26d5a62fd2d20397b0badab4cfe2e0e8d6e $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien LUCAS <damien.lucas@anevia.com>
@@ -256,7 +256,7 @@ struct decoder_sys_t
     /* Decoder internal data */
     int                i_id;
     int                i_ancillary_id;
-    mtime_t            i_pts;
+    vlc_tick_t         i_pts;
 
     bool               b_absolute;
     int                i_spu_position;
@@ -340,7 +340,7 @@ static int Open( vlc_object_t *p_this )
     if( !p_sys )
         return VLC_ENOMEM;
 
-    p_sys->i_pts          = VLC_TS_INVALID;
+    p_sys->i_pts          = VLC_TICK_INVALID;
     p_sys->i_id           = p_dec->fmt_in.subs.dvb.i_id & 0xFFFF;
     p_sys->i_ancillary_id = p_dec->fmt_in.subs.dvb.i_id >> 16;
 
@@ -397,7 +397,7 @@ static void Flush( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    p_sys->i_pts = VLC_TS_INVALID;
+    p_sys->i_pts = VLC_TICK_INVALID;
 }
 
 /*****************************************************************************
@@ -426,7 +426,7 @@ static int Decode( decoder_t *p_dec, block_t *p_block )
         default_dds_init( p_dec );
 
     p_sys->i_pts = p_block->i_pts;
-    if( p_sys->i_pts <= VLC_TS_INVALID )
+    if( p_sys->i_pts <= VLC_TICK_INVALID )
     {
 #ifdef DEBUG_DVBSUB
         /* Some DVB channels send stuffing segments in non-dated packets so
@@ -1503,10 +1503,10 @@ static subpicture_t *render( decoder_t *p_dec )
     p_spu->b_absolute = p_sys->b_absolute;
     /* Set the pf_render callback */
     p_spu->i_start = p_sys->i_pts;
-    //p_spu->i_stop = (mtime_t) 0;
+    //p_spu->i_stop = (vlc_tick_t) 0;
     p_spu->b_ephemer = true;
     //p_spu->b_fade = true;
-    //p_spu->i_stop = p_spu->i_start + (mtime_t) (i_timeout * 1000000);
+    //p_spu->i_stop = p_spu->i_start + (vlc_tick_t) (i_timeout * 1000000);
     p_spu->b_subtitle = true;
 
     /* Correct positioning of SPU */
@@ -1691,7 +1691,7 @@ struct encoder_sys_t
     int i_regions;
     encoder_region_t *p_regions;
 
-    mtime_t i_pts;
+    vlc_tick_t i_pts;
 
     /* subpicture positioning */
     int i_offset_x;

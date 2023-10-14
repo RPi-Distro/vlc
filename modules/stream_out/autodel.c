@@ -2,7 +2,7 @@
  * autodel.c: monitor mux inputs and automatically add/delete streams
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 91f95e3bb819a52fac610b2fe0dc3e303753dccd $
+ * $Id: 9a04fd320f2055b06b0c623dd5de78a9e220c83e $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -62,7 +62,7 @@ struct sout_stream_id_sys_t
 {
     sout_stream_id_sys_t *id;
     es_format_t fmt;
-    mtime_t i_last;
+    vlc_tick_t i_last;
     bool b_error;
 };
 
@@ -122,7 +122,7 @@ static sout_stream_id_sys_t * Add( sout_stream_t *p_stream,
     es_format_Copy( &p_es->fmt, p_fmt );
 
     p_es->id = NULL;
-    p_es->i_last = VLC_TS_INVALID;
+    p_es->i_last = VLC_TICK_INVALID;
     p_es->b_error = false;
     TAB_APPEND( p_sys->i_es_num, p_sys->pp_es, p_es );
 
@@ -145,7 +145,7 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *p_es,
                  block_t *p_buffer )
 {
     sout_stream_sys_t *p_sys = (sout_stream_sys_t *)p_stream->p_sys;
-    mtime_t i_current = mdate();
+    vlc_tick_t i_current = mdate();
     int i;
 
     p_es->i_last = p_buffer->i_dts;

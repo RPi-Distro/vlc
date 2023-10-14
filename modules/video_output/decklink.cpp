@@ -206,7 +206,7 @@ typedef struct decklink_sys_t
     BMDTimeValue frameduration;
 
     /* XXX: workaround card clock drift */
-    mtime_t offset;
+    vlc_tick_t offset;
 
     /* !With LOCK */
 
@@ -658,7 +658,7 @@ static int OpenDecklink(vout_display_t *vd, decklink_sys_t *sys)
                                           &vd->fmt, wanted_mode_id);
     if(p_display_mode == NULL)
     {
-        msg_Err(vd, "Could not negociate a compatible display mode");
+        msg_Err(vd, "Could not negotiate a compatible display mode");
         goto error;
     }
     else
@@ -908,7 +908,7 @@ static void send_AFD(uint8_t afdcode, uint8_t ar, uint8_t *buf)
 static void PrepareVideo(vout_display_t *vd, picture_t *picture, subpicture_t *)
 {
     decklink_sys_t *sys = (decklink_sys_t *) vd->sys;
-    mtime_t now = mdate();
+    vlc_tick_t now = mdate();
 
     if (!picture)
         return;

@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 3c31ecd5ff72eaadb7b9f5a51427a0dede5d2e3b $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -340,7 +340,7 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
     NSRect s_rc = superFrame;                                               \
     s_rc.origin.x = x_offset;                                               \
     s_rc.origin.y = my_y_offset;                                            \
-    s_rc.size.height = 23;                                                  \
+    s_rc.size.height = 24;                                                  \
     s_rc.size.width = 23;                                                   \
     o_stepper = [[NSStepper alloc] initWithFrame: s_rc];                    \
     [o_stepper setFont:[NSFont systemFontOfSize:0]];                        \
@@ -351,6 +351,7 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
     [o_stepper setAction: @selector(stepperChanged:)];                      \
     [o_stepper sendActionOn:NSLeftMouseUpMask | NSLeftMouseDownMask |       \
         NSLeftMouseDraggedMask];                                            \
+    [o_stepper sizeToFit];                                                  \
 }
 
 #define ADD_SLIDER(o_slider, superFrame, x_offset, my_y_offset, my_width,   \
@@ -366,6 +367,9 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
     [o_slider setToolTip: tooltip];                                         \
     [o_slider setMaxValue: higher];                                         \
     [o_slider setMinValue: lower];                                          \
+    if (@available(macOS 10.10, *)) {                                       \
+        [o_slider setControlSize: NSControlSizeSmall];                      \
+    }                                                                       \
 }
 
 #define ADD_CHECKBOX(o_checkbox, superFrame, x_offset, my_y_offset, label,  \
@@ -1323,7 +1327,7 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
 {
     NSRect mainFrame = [parentView frame];
     NSString *labelString, *toolTip;
-    mainFrame.size.height = 23;
+    mainFrame.size.height = 24;
     mainFrame.size.width = mainFrame.size.width - LEFTMARGIN - RIGHTMARGIN + 1;
     mainFrame.origin.x = LEFTMARGIN;
     mainFrame.origin.y = 0;
@@ -1348,7 +1352,7 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
 
         ADD_TEXTFIELD(o_textfield, mainFrame, mainFrame.size.width - 19 - 52,
                       1, 49, toolTip, @"")
-        [o_textfield setIntValue: p_item->value.i];
+        [o_textfield setStringValue: @(p_item->value.i).stringValue];
         [o_textfield setDelegate: self];
         [[NSNotificationCenter defaultCenter] addObserver: self
                                                  selector: @selector(textfieldChanged:)
@@ -1378,12 +1382,12 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
 
 - (IBAction)stepperChanged:(id)sender
 {
-    [o_textfield setIntValue: [o_stepper intValue]];
+    [o_textfield takeStringValueFrom:sender];
 }
 
 - (void)textfieldChanged:(NSNotification *)o_notification
 {
-    [o_stepper setIntValue: [o_textfield intValue]];
+    [o_stepper takeStringValueFrom:o_textfield];
 }
 
 - (int)intValue
@@ -1579,12 +1583,12 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
 
 - (IBAction)sliderChanged:(id)sender
 {
-    [o_textfield setIntValue: [o_slider intValue]];
+    [o_textfield takeStringValueFrom:o_slider];
 }
 
 - (void)textfieldChanged:(NSNotification *)o_notification
 {
-    [o_slider setIntValue: [o_textfield intValue]];
+    [o_slider takeStringValueFrom:o_textfield];
 }
 
 - (int)intValue
@@ -1614,7 +1618,7 @@ o_textfield = [[NSSecureTextField alloc] initWithFrame: s_rc];              \
 {
     NSRect mainFrame = [parentView frame];
     NSString *labelString, *toolTip;
-    mainFrame.size.height = 23;
+    mainFrame.size.height = 24;
     mainFrame.size.width = mainFrame.size.width - LEFTMARGIN - RIGHTMARGIN + 1;
     mainFrame.origin.x = LEFTMARGIN;
     mainFrame.origin.y = 0;

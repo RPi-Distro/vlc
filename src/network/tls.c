@@ -2,7 +2,7 @@
  * tls.c
  *****************************************************************************
  * Copyright © 2004-2016 Rémi Denis-Courmont
- * $Id: e054f3f59ff0452ef7569542324b3eb9834bfb90 $
+ * $Id: d464cb315f6026c5608b2b2f1a28b7ffe957a61e $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -178,7 +178,7 @@ vlc_tls_t *vlc_tls_ClientSessionCreate(vlc_tls_creds_t *crd, vlc_tls_t *sock,
         return NULL;
 
     int canc = vlc_savecancel();
-    mtime_t deadline = mdate ();
+    vlc_tick_t deadline = mdate ();
     deadline += var_InheritInteger (crd, "ipv4-timeout") * 1000;
 
     struct pollfd ufd[1];
@@ -197,7 +197,7 @@ error:
             break;
         }
 
-        mtime_t now = mdate ();
+        vlc_tick_t now = mdate ();
         if (now > deadline)
            now = deadline;
 

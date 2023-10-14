@@ -2,7 +2,7 @@
  * dmo.c : DirectMedia Object decoder module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 VLC authors and VideoLAN
- * $Id: 5ab1a11c54f7d705363534448223022269e60d23 $
+ * $Id: 49a6476dd9d4cd4afd5ac241ec3447daf9d7c83a $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -838,11 +838,11 @@ static int DecBlock( decoder_t *p_dec, block_t **pp_block )
     p_block = *pp_block;
 
     /* Won't work with streams with B-frames, but do we have any ? */
-    if( p_block && p_block->i_pts <= VLC_TS_INVALID )
+    if( p_block && p_block->i_pts <= VLC_TICK_INVALID )
         p_block->i_pts = p_block->i_dts;
 
     /* Date management */
-    if( p_block && p_block->i_pts > VLC_TS_INVALID &&
+    if( p_block && p_block->i_pts > VLC_TICK_INVALID &&
         p_block->i_pts != date_Get( &p_sys->end_date ) )
     {
         date_Set( &p_sys->end_date, p_block->i_pts );
@@ -1475,7 +1475,7 @@ static block_t *EncodeBlock( encoder_t *p_enc, void *p_data )
     block_t *p_block_in;
     uint32_t i_status;
     int i_result;
-    mtime_t i_pts;
+    vlc_tick_t i_pts;
 
     if( !p_data ) return NULL;
 

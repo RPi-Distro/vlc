@@ -2,7 +2,7 @@
  * event.h: Input event functions
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 156b992059b7b39f904fecadc9de0edd5eb49989 $
+ * $Id: 0be2fd0e2212741d2b1d2b5c99825fb1d13c517a $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ fr>
  *
@@ -30,12 +30,12 @@
  * Event for input.c
  *****************************************************************************/
 void input_SendEventDead( input_thread_t *p_input );
-void input_SendEventPosition( input_thread_t *p_input, double f_position, mtime_t i_time );
-void input_SendEventLength( input_thread_t *p_input, mtime_t i_length );
+void input_SendEventPosition( input_thread_t *p_input, double f_position, vlc_tick_t i_time );
+void input_SendEventLength( input_thread_t *p_input, vlc_tick_t i_length );
 void input_SendEventStatistics( input_thread_t *p_input );
 void input_SendEventRate( input_thread_t *p_input, int i_rate );
-void input_SendEventAudioDelay( input_thread_t *p_input, mtime_t i_delay );
-void input_SendEventSubtitleDelay( input_thread_t *p_input, mtime_t i_delay );
+void input_SendEventAudioDelay( input_thread_t *p_input, vlc_tick_t i_delay );
+void input_SendEventSubtitleDelay( input_thread_t *p_input, vlc_tick_t i_delay );
 void input_SendEventRecord( input_thread_t *p_input, bool b_recording );
 void input_SendEventTitle( input_thread_t *p_input, int i_title );
 void input_SendEventSeekpoint( input_thread_t *p_input, int i_title, int i_seekpoint );

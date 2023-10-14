@@ -2,7 +2,7 @@
  * xa.c : xa file demux module for vlc
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: 0df8abcb9248bc688219a41b73a8daa25556582b $
+ * $Id: 6400895fd9ac23740cc6eb44a9e0d67227b56f14 $
  *
  * Authors: Rémi Denis-Courmont
  *
@@ -151,7 +151,7 @@ static int Open( vlc_object_t * p_this )
     p_sys->p_es = es_out_Add( p_demux->out, &fmt );
 
     date_Init( &p_sys->pts, fmt.audio.i_rate, 1 );
-    date_Set( &p_sys->pts, VLC_TS_0 );
+    date_Set( &p_sys->pts, VLC_TICK_0 );
 
     p_demux->pf_demux   = Demux;
     p_demux->pf_control = Control;

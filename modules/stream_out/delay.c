@@ -2,7 +2,7 @@
  * delay.c: delay a stream
  *****************************************************************************
  * Copyright © 2009-2011 VLC authors and VideoLAN
- * $Id: 602810e5b7ff8491bd5ce61d25f21b338d60adce $
+ * $Id: d126f379d6a2c78e8118d56dccca98bf2b730ae8 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -80,7 +80,7 @@ struct sout_stream_sys_t
 {
     sout_stream_id_sys_t *id;
     int i_id;
-    mtime_t i_delay;
+    vlc_tick_t i_delay;
 };
 
 /*****************************************************************************
@@ -163,9 +163,9 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_sys_t *id,
         block_t *p_block = p_buffer;
         while ( p_block != NULL )
         {
-            if ( p_block->i_pts != VLC_TS_INVALID )
+            if ( p_block->i_pts != VLC_TICK_INVALID )
                 p_block->i_pts += p_sys->i_delay;
-            if ( p_block->i_dts != VLC_TS_INVALID )
+            if ( p_block->i_dts != VLC_TICK_INVALID )
                 p_block->i_dts += p_sys->i_delay;
             p_block = p_block->p_next;
         }

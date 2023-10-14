@@ -2,7 +2,7 @@
  * stats.c: Statistics handling
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: d7ee85a6e1fbd9210a38ef75237b57cd3d807a65 $
+ * $Id: 1ef93366f737871bb361976ffd9df8fd962a048d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -165,7 +165,7 @@ void stats_Update( counter_t *p_counter, uint64_t val, uint64_t *new_val )
     case STATS_DERIVATIVE:
     {
         counter_sample_t *p_new, *p_old;
-        mtime_t now = mdate();
+        vlc_tick_t now = mdate();
         if( now - p_counter->last_update < CLOCK_FREQ )
             return;
         p_counter->last_update = now;

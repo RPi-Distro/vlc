@@ -162,7 +162,7 @@ class demux_sys_t
     uint8_t pi_chan_table[AOUT_CHAN_MAX];
     uint8_t i_channels;
 
-    mtime_t i_pts;
+    vlc_tick_t i_pts;
 
     demux_sys_t():
         PictureEssType ( ESS_UNKNOWN ),
@@ -609,7 +609,7 @@ static int Demux( demux_t *p_demux )
     PCM::FrameBuffer   AudioFrameBuff( p_sys->i_audio_buffer);
     AESDecContext video_aes_ctx, audio_aes_ctx;
 
-    /* swaping video reels */
+    /* swapping video reels */
     if  ( p_sys->frame_no == p_sys->p_dcp->video_reels[p_sys->i_video_reel].i_absolute_end )
     {
         if ( p_sys->i_video_reel + 1 == p_sys->v_videoReader.size() )
@@ -622,7 +622,7 @@ static int Demux( demux_t *p_demux )
         }
     }
 
-    /* swaping audio reels */
+    /* swapping audio reels */
     if  ( !p_sys->p_dcp->audio_reels.empty() && p_sys->frame_no == p_sys->p_dcp->audio_reels[p_sys->i_audio_reel].i_absolute_end )
      {
          if ( p_sys->i_audio_reel + 1 == p_sys->v_audioReader.size() )
@@ -826,7 +826,7 @@ static int Control( demux_t *p_demux, int query, va_list args )
             p_sys->frame_no = i64 * p_sys->frame_rate_num / ( CLOCK_FREQ * p_sys->frame_rate_denom );
             p_sys->i_pts= i64;
             es_out_SetPCR(p_demux->out, p_sys->i_pts);
-            es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME, ( mtime_t ) i64 );
+            es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME, ( vlc_tick_t ) i64 );
             break;
         case DEMUX_GET_PTS_DELAY:
             pi64 = va_arg( args, int64_t * );

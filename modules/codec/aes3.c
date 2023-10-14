@@ -2,7 +2,7 @@
  * aes3.c: aes3 decoder/packetizer module
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: cf27aed84566dc97eef343c23411bf6cf6f30805 $
+ * $Id: cd6548be541b7b9959730e549d9f27336b06339d $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -340,7 +340,7 @@ static block_t * Parse( decoder_t *p_dec, int *pi_frame_length, int *pi_bits,
     }
 
     /* Date management */
-    if( p_block->i_pts > VLC_TS_INVALID &&
+    if( p_block->i_pts > VLC_TICK_INVALID &&
         p_block->i_pts != date_Get( &p_sys->end_date ) )
     {
         date_Set( &p_sys->end_date, p_block->i_pts );

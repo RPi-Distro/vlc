@@ -2,7 +2,7 @@
  * dynamicoverlay.c : dynamic overlay plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 817ff80d5f577f086c57fd5de7da545cc49caf31 $
+ * $Id: 4628eae7e703c3afac4529bf771afead32e4aaec $
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *
@@ -47,7 +47,7 @@
  *****************************************************************************/
 static int Create( vlc_object_t * );
 static void Destroy( vlc_object_t * );
-static subpicture_t *Filter( filter_t *, mtime_t );
+static subpicture_t *Filter( filter_t *, vlc_tick_t );
 
 static int AdjustCallback( vlc_object_t *p_this, char const *psz_var,
                            vlc_value_t oldval, vlc_value_t newval,
@@ -164,7 +164,7 @@ static void Destroy( vlc_object_t *p_this )
  * waits until it is displayed and switch the two rendering buffers, preparing
  * next frame.
  *****************************************************************************/
-static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
+static subpicture_t *Filter( filter_t *p_filter, vlc_tick_t date )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
 

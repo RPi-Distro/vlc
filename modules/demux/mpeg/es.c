@@ -2,7 +2,7 @@
  * es.c : Generic audio ES input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: 5d646ac2c4d1c41d3c98a18d795220e7293b80f4 $
+ * $Id: 06d8b778cefc84a8df10bb650b1ada087f1fd218 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -102,7 +102,7 @@ typedef struct
 
 typedef struct
 {
-    mtime_t i_time;
+    vlc_tick_t i_time;
     uint64_t i_pos;
     bs_t br;
 } sync_table_ctx_t;
@@ -130,8 +130,8 @@ struct demux_sys_t
     decoder_t   *p_packetizer;
     block_t     *p_packetized_data;
 
-    mtime_t     i_pts;
-    mtime_t     i_time_offset;
+    vlc_tick_t  i_pts;
+    vlc_tick_t  i_time_offset;
     int64_t     i_bytes;
 
     bool        b_big_endian;
@@ -181,7 +181,7 @@ static int ThdProbe( demux_t *p_demux, int64_t *pi_offset );
 static int MlpInit( demux_t *p_demux );
 
 static bool Parse( demux_t *p_demux, block_t **pp_output );
-static uint64_t SeekByMlltTable( demux_t *p_demux, mtime_t *pi_time );
+static uint64_t SeekByMlltTable( demux_t *p_demux, vlc_tick_t *pi_time );
 
 static const codec_t p_codecs[] = {
     { VLC_CODEC_MP4A, false, "mp4 audio",  AacProbe,  AacInit },
@@ -329,22 +329,22 @@ static int Demux( demux_t *p_demux )
         /* Correct timestamp */
         if( p_sys->p_packetizer->fmt_out.i_cat == VIDEO_ES )
         {
-            if( p_block_out->i_pts <= VLC_TS_INVALID &&
-                p_block_out->i_dts <= VLC_TS_INVALID )
-                p_block_out->i_dts = VLC_TS_0 + p_sys->i_pts + 1000000 / p_sys->f_fps;
-            if( p_block_out->i_dts > VLC_TS_INVALID )
-                p_sys->i_pts = p_block_out->i_dts - VLC_TS_0;
+            if( p_block_out->i_pts <= VLC_TICK_INVALID &&
+                p_block_out->i_dts <= VLC_TICK_INVALID )
+                p_block_out->i_dts = VLC_TICK_0 + p_sys->i_pts + 1000000 / p_sys->f_fps;
+            if( p_block_out->i_dts > VLC_TICK_INVALID )
+                p_sys->i_pts = p_block_out->i_dts - VLC_TICK_0;
         }
         else
         {
-            p_sys->i_pts = p_block_out->i_pts - VLC_TS_0;
+            p_sys->i_pts = p_block_out->i_pts - VLC_TICK_0;
         }
 
-        if( p_block_out->i_pts > VLC_TS_INVALID )
+        if( p_block_out->i_pts > VLC_TICK_INVALID )
         {
             p_block_out->i_pts += p_sys->i_time_offset;
         }
-        if( p_block_out->i_dts > VLC_TS_INVALID )
+        if( p_block_out->i_dts > VLC_TICK_INVALID )
         {
             p_block_out->i_dts += p_sys->i_time_offset;
             es_out_SetPCR( p_demux->out, p_block_out->i_dts );
@@ -502,7 +502,7 @@ static bool Parse( demux_t *p_demux, block_t **pp_output )
             swab( p_block_in->p_buffer, p_block_in->p_buffer, p_block_in->i_buffer );
         }
 
-        p_block_in->i_pts = p_block_in->i_dts = p_sys->b_start || p_sys->b_initial_sync_failed ? VLC_TS_0 : VLC_TS_INVALID;
+        p_block_in->i_pts = p_block_in->i_dts = p_sys->b_start || p_sys->b_initial_sync_failed ? VLC_TICK_0 : VLC_TICK_INVALID;
     }
     p_sys->b_initial_sync_failed = p_sys->b_start; /* Only try to resync once */
 
@@ -660,8 +660,8 @@ static int GenericProbe( demux_t *p_demux, int64_t *pi_offset,
     }
     const bool b_wav = i_skip > 0;
 
-    /* peek the begining
-     * It is common that wav files have some sort of garbage at the begining
+    /* peek the beginning
+     * It is common that wav files have some sort of garbage at the beginning
      * We will accept probing 0.5s of data in this case.
      */
     const int i_probe = i_skip + i_check_size + 8000 + ( b_wav ? (44000/2*2*2) : 0);
@@ -731,7 +731,7 @@ static int MpgaCheckSync( const uint8_t *p_peek )
         || (((h >> 19)&0x03) == 1 )         /* valid version ID ? */
         || (((h >> 17)&0x03) == 0 )         /* valid layer ?*/
         || (((h >> 12)&0x0F) == 0x0F )      /* valid bitrate ?*/
-        || (((h >> 10) & 0x03) == 0x03 )    /* valide sampling freq ? */
+        || (((h >> 10) & 0x03) == 0x03 )    /* valid sampling freq ? */
         || ((h & 0x03) == 0x02 ))           /* valid emphasis ? */
     {
         return false;
@@ -855,7 +855,7 @@ static double MpgaXingLameConvertPeak( uint32_t x )
     return x / 8388608.0; /* pow(2, 23) */
 }
 
-static uint64_t SeekByMlltTable( demux_t *p_demux, mtime_t *pi_time )
+static uint64_t SeekByMlltTable( demux_t *p_demux, vlc_tick_t *pi_time )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     sync_table_ctx_t *p_cur = &p_sys->mllt.current;
@@ -872,7 +872,7 @@ static uint64_t SeekByMlltTable( demux_t *p_demux, mtime_t *pi_time )
     {
         const uint32_t i_bytesdev = bs_read(&p_cur->br, p_sys->mllt.i_bits_per_bytes_dev);
         const uint32_t i_msdev = bs_read(&p_cur->br, p_sys->mllt.i_bits_per_ms_dev);
-        const mtime_t i_deltatime = (p_sys->mllt.i_ms_btw_refs + i_msdev) * INT64_C(1000);
+        const vlc_tick_t i_deltatime = (p_sys->mllt.i_ms_btw_refs + i_msdev) * INT64_C(1000);
         if( p_cur->i_time + i_deltatime > *pi_time )
             break;
         p_cur->i_time += i_deltatime;
@@ -1078,7 +1078,7 @@ static int AacProbe( demux_t *p_demux, int64_t *pi_offset )
 
     i_offset = vlc_stream_Tell( p_demux->s );
 
-    /* peek the begining (10 is for adts header) */
+    /* peek the beginning (10 is for adts header) */
     if( vlc_stream_Peek( p_demux->s, &p_peek, 10 ) < 10 )
     {
         msg_Dbg( p_demux, "cannot peek" );
@@ -1167,7 +1167,7 @@ static int A52Init( demux_t *p_demux )
 
     const uint8_t *p_peek;
 
-    /* peek the begining */
+    /* peek the beginning */
     if( vlc_stream_Peek( p_demux->s, &p_peek, VLC_A52_HEADER_SIZE ) >= VLC_A52_HEADER_SIZE )
     {
         A52CheckSync( p_peek, &p_sys->b_big_endian, NULL, true );

@@ -4,7 +4,7 @@
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
  * Copyright (C) 2015 Steve Lhomme
- * $Id: 6b66979e0195651bc55afd94578b1843cb58f663 $
+ * $Id$
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -74,13 +74,14 @@ typedef struct
      * Find a suitable decoder configuration for the input and set the
      * internal state to use that output
      */
-    int (*pf_setup_output)(vlc_va_t *, const GUID *input, const video_format_t *fmt);
+    int (*pf_setup_output)(vlc_va_t *, const GUID *input, int surface_width, int surface_height);
 
 } directx_sys_t;
 
 int directx_va_Open(vlc_va_t *, directx_sys_t *);
 void directx_va_Close(vlc_va_t *, directx_sys_t *);
-int directx_va_Setup(vlc_va_t *, directx_sys_t *, const AVCodecContext *avctx, const es_format_t *, int flag_xbox);
+int directx_va_Setup(vlc_va_t *, directx_sys_t *, const AVCodecContext *, const AVPixFmtDescriptor *,
+                     const es_format_t *, int flag_xbox);
 char *directx_va_GetDecoderName(const GUID *guid);
 bool directx_va_canUseDecoder(vlc_va_t *, UINT VendorId, UINT DeviceId, const GUID *pCodec, UINT driverBuild);
 

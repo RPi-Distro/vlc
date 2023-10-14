@@ -2,7 +2,7 @@
  * oss.c : OSS input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: d50a23cdb030354acd30a7329fc08a462006431b $
+ * $Id: c857fa3e8a79d2fadc203cf684076cb156e4f92b $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
@@ -54,7 +54,7 @@
 #include <poll.h>
 
 /*****************************************************************************
- * Module descriptior
+ * Module descriptor
  *****************************************************************************/
 
 static int  DemuxOpen ( vlc_object_t * );
@@ -321,7 +321,7 @@ static block_t* GrabAudio( demux_t *p_demux )
 
     /* Timestamp */
     p_block->i_pts = p_block->i_dts =
-        mdate() - INT64_C(1000000) * (mtime_t)i_correct /
+        mdate() - INT64_C(1000000) * (vlc_tick_t)i_correct /
         2 / ( p_sys->b_stereo ? 2 : 1) / p_sys->i_sample_rate;
 
     return p_block;

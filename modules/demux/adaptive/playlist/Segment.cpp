@@ -52,7 +52,7 @@ ISegment::ISegment(const ICanonicalUrl *parent):
     discontinuitySequenceNumber = std::numeric_limits<uint64_t>::max();
     templated = false;
     discontinuity = false;
-    displayTime = VLC_TS_INVALID;
+    displayTime = VLC_TICK_INVALID;
 }
 
 ISegment::~ISegment()
@@ -187,12 +187,12 @@ void ISegment::setEncryption(CommonEncryption &e)
     encryption = e;
 }
 
-void ISegment::setDisplayTime(mtime_t t)
+void ISegment::setDisplayTime(vlc_tick_t t)
 {
     displayTime = t;
 }
 
-mtime_t ISegment::getDisplayTime() const
+vlc_tick_t ISegment::getDisplayTime() const
 {
     return displayTime;
 }

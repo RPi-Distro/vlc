@@ -2,7 +2,7 @@
  * mlp.c: packetize MLP/TrueHD audio
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 60e02ca615c92aef5cb4654bc357429e1f8b037f $
+ * $Id: 4b5b84e575ca7fdd357ec03d02ce65f567636643 $
  *
  * Authors: Laurent Aimar < fenrir _AT videolan _DOT_ org >
  *
@@ -85,7 +85,7 @@ struct decoder_sys_t
     date_t  end_date;
     bool    b_discontinuity;
 
-    mtime_t i_pts;
+    vlc_tick_t i_pts;
     int i_frame_size;
 
     bool         b_mlp;
@@ -289,7 +289,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
             }
         }
 
-        if( !date_Get( &p_sys->end_date ) && p_block->i_pts <= VLC_TS_INVALID )
+        if( !date_Get( &p_sys->end_date ) && p_block->i_pts <= VLC_TICK_INVALID )
         {
             /* We've just started the stream, wait for the first PTS. */
             msg_Dbg( p_dec, "waiting for PTS" );
@@ -331,7 +331,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
         case STATE_SYNC:
             /* New frame, set the Presentation Time Stamp */
             p_sys->i_pts = p_sys->bytestream.p_block->i_pts;
-            if( p_sys->i_pts > VLC_TS_INVALID &&
+            if( p_sys->i_pts > VLC_TICK_INVALID &&
                 p_sys->i_pts != date_Get( &p_sys->end_date ) )
             {
                 date_Set( &p_sys->end_date, p_sys->i_pts );
@@ -427,7 +427,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
 
                 if( p_sys->mlp.i_rate > 0 )
                 {
-                    const mtime_t i_end_date = date_Get( &p_sys->end_date );
+                    const vlc_tick_t i_end_date = date_Get( &p_sys->end_date );
                     date_Init( &p_sys->end_date, p_sys->mlp.i_rate, 1 );
                     date_Set( &p_sys->end_date, i_end_date );
                 }
@@ -447,7 +447,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
 
             /* Make sure we don't reuse the same pts twice */
             if( p_sys->i_pts == p_sys->bytestream.p_block->i_pts )
-                p_sys->i_pts = p_sys->bytestream.p_block->i_pts = VLC_TS_INVALID;
+                p_sys->i_pts = p_sys->bytestream.p_block->i_pts = VLC_TICK_INVALID;
 
             if( p_sys->b_discontinuity )
             {

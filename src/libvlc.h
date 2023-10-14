@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: d30c7a6784525de1c0b8a9fe9bb48418d9311a06 $
+ * $Id: 248ab523f4ee8884929352e24849a38131ea1752 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -228,7 +228,7 @@ enum
 typedef struct counter_sample_t
 {
     uint64_t value;
-    mtime_t  date;
+    vlc_tick_t  date;
 } counter_sample_t;
 
 typedef struct counter_t
@@ -237,7 +237,7 @@ typedef struct counter_t
     int                 i_samples;
     counter_sample_t ** pp_samples;
 
-    mtime_t             last_update;
+    vlc_tick_t          last_update;
 } counter_t;
 
 enum

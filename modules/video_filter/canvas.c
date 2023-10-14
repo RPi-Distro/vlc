@@ -2,7 +2,7 @@
  * canvas.c : automatically resize and padd a video to fit in canvas
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: 41fe4766ac9841097e5c122edfe027f301170b69 $
+ * $Id: 6db3a0ade45157aa5fc374b2e2aa6c59a13b9d20 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -47,7 +47,7 @@ static picture_t *Filter( filter_t *, picture_t * );
  *  - The outer picture is called the canvas.
  *  - The innter picture is callsed the subpicture.
  *
- * NB, all of the following operatons take into account aspect ratio
+ * NB, all of the following operations take into account aspect ratio
  *
  * A canvas is of canvas_{width,height}.
  * In Pad mode:

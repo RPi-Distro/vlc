@@ -2,7 +2,7 @@
  * caopengllayer.m: CAOpenGLLayer (Mac OS X) video output
  *****************************************************************************
  * Copyright (C) 2014-2017 VLC authors and VideoLAN
- * $Id: 71fc07e1d4fbd7ea9d7f762dfdf42dc4e40ddcd0 $
+ * $Id$
  *
  * Authors: David Fuhrmann <david dot fuhrmann at googlemail dot com>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -841,6 +841,10 @@ shouldInheritContentsScale:(CGFloat)newScale
             sys->cfg.display.width = newSize.width;
             sys->cfg.display.height = newSize.height;
         }
+
+        /* Workaround: there's no window module, so signal the correct size to the core. */
+        vout_display_SendEventDisplaySize (_voutDisplay,
+            newSize.width, newSize.height);
     }
 }
 

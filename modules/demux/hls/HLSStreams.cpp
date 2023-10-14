@@ -49,7 +49,7 @@ HLSStream::~HLSStream()
         vlc_meta_Delete(p_meta);
 }
 
-void HLSStream::setMetadataTimeOffset(mtime_t i_offset)
+void HLSStream::setMetadataTimeOffset(vlc_tick_t i_offset)
 {
     if(i_offset >= 0)
     {
@@ -64,7 +64,7 @@ void HLSStream::setMetadataTimeOffset(mtime_t i_offset)
     }
 }
 
-void HLSStream::setMetadataTimeMapping(mtime_t mpegts, mtime_t muxed)
+void HLSStream::setMetadataTimeMapping(vlc_tick_t mpegts, vlc_tick_t muxed)
 {
     fakeEsOut()->setAssociatedTimestamp(mpegts, muxed);
 }
@@ -150,7 +150,7 @@ block_t * HLSStream::checkBlock(block_t *p_block, bool b_first)
             if(eol)
             {
                 uint64_t mpegts = std::numeric_limits<uint64_t>::max();
-                mtime_t local = std::numeric_limits<mtime_t>::max();
+                vlc_tick_t local = std::numeric_limits<mtime_t>::max();
                 std::string str(p + 16, eol - p - 16);
 
                 std::string::size_type pos = str.find("LOCAL:");
@@ -168,7 +168,7 @@ block_t * HLSStream::checkBlock(block_t *p_block, bool b_first)
                 if(mpegts != std::numeric_limits<uint64_t>::max() &&
                    local != std::numeric_limits<mtime_t>::max())
                 {
-                    setMetadataTimeMapping(VLC_TS_0 + mpegts * 100/9, VLC_TS_0 + local);
+                    setMetadataTimeMapping(VLC_TICK_0 + mpegts * 100/9, VLC_TICK_0 + local);
                 }
             }
         }
@@ -192,13 +192,11 @@ AbstractDemuxer *HLSStream::newDemux(vlc_object_t *p_obj, const StreamFormat &fo
     switch(format)
     {
         case StreamFormat::Type::PackedAAC:
-            ret = new Demuxer(p_obj, "aac", out, source);
+            ret = new Demuxer(p_obj, "aac", out, source); /* "es" demuxer cannot probe AAC, need to force */
             break;
-        case StreamFormat::Type::PackedMP3:
-            ret = new Demuxer(p_obj, "mp3", out, source);
-            break;
-        case StreamFormat::Type::PackedAC3:
-            ret = new Demuxer(p_obj, "ac3", out, source);
+        case StreamFormat::Type::PackedMP3: /* MPGA / MP3, needs "es" to probe: do not force */
+        case StreamFormat::Type::PackedAC3: /* AC3 / E-AC3, needs "es" to probe: do not force */
+            ret = new Demuxer(p_obj, "es", out, source);
             break;
 
         case StreamFormat::Type::MPEG2TS:

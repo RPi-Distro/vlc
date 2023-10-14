@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2010 the VideoLAN team
- * $Id: 78ba18ec6f30d919942e7ba2d7082965214d75b6 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -76,6 +76,7 @@ static struct {
     { "bn",    "বাংলা" },
     { "pt_BR", "Português Brasileiro" },
     { "en_GB", "British English" },
+    { "my",    "မြန်မာစာ" },
     { "el",    "Νέα Ελληνικά" },
     { "bg",    "български език" },
     { "ca",    "Català" },
@@ -86,6 +87,7 @@ static struct {
     { "da",    "Dansk" },
     { "nl",    "Nederlands" },
     { "fi",    "Suomi" },
+    { "eo",    "Esperanto" },
     { "et",    "eesti keel" },
     { "eu",    "Euskara" },
     { "fr",    "Français" },
@@ -103,9 +105,12 @@ static struct {
     { "is",    "íslenska" },
     { "id",    "Bahasa Indonesia" },
     { "it",    "Italiano" },
+    { "ie",    "Interlingue" },
     { "ja",    "日本語" },
     { "ko",    "한국어" },
     { "lt",    "lietuvių" },
+    { "lo",    "ລາວ" },
+    { "mk",    "македонски" },
     { "ms",    "Melayu" },
     { "nb",    "Bokmål" },
     { "nn",    "Nynorsk" },
@@ -113,12 +118,14 @@ static struct {
     { "km",    "ភាសាខ្មែរ" },
     { "ne",    "नेपाली" },
     { "oc",    "Occitan" },
+    { "or_IN", "ଓଡ଼ିଆ" },
     { "pl",    "Polski" },
     { "pt_PT", "Português" },
     { "pa",    "ਪੰਜਾਬੀ" },
     { "ro",    "Română" },
     { "ru",    "Русский" },
     { "zh_CN", "简体中文" },
+    { "sm",    "Gagana Sāmoa" },
     { "si",    "සිංහල" },
     { "sr",    "српски" },
     { "sk",    "Slovensky" },
@@ -126,6 +133,7 @@ static struct {
     { "es",    "Español" },
     { "es_MX", "Español Mexicano" },
     { "sv",    "Svenska" },
+    { "sw",    "كِسوَحِيلِ" },
     { "th",    "ภาษาไทย" },
     { "tr",    "Türkçe" },
     { "uk",    "украї́нська мо́ва" },

@@ -2,7 +2,7 @@
  * win32_popup.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 97380e3aa1aaadea39a5dcedc49f89612800661e $
+ * $Id: d79eb9b0d3d2e98678fe0b50aa13bc7cb08ef1ba $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -36,7 +36,7 @@ public:
 
     virtual ~Win32Popup();
 
-    /// Show the popup menu at the given (absolute) corrdinates
+    /// Show the popup menu at the given (absolute) coordinates
     virtual void show( int xPos, int yPos );
 
     /// Hide the popup menu

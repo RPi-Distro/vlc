@@ -2,7 +2,7 @@
  * vobsub.c: Demux vobsub files.
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 98cdf07ae504e5a0656230f8c1fd98929df8e564 $
+ * $Id: c1e78e0e2290410cca6fd59c3c2bfed0724a41ce $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -411,7 +411,7 @@ static int Demux( demux_t *p_demux )
             p_block->i_buffer = i_read;
 
             /* pts */
-            p_block->i_pts = VLC_TS_0 + tk.p_subtitles[tk.i_current_subtitle].i_start;
+            p_block->i_pts = VLC_TICK_0 + tk.p_subtitles[tk.i_current_subtitle].i_start;
 
             /* demux this block */
             DemuxVobSub( p_demux, p_block );
@@ -711,7 +711,7 @@ static int DemuxVobSub( demux_t *p_demux, block_t *p_bk )
             if( p_tk->p_es && p_tk->i_track_id == i_spu )
             {
                 es_out_Send( p_demux->out, p_tk->p_es, p_pkt );
-                p_bk->i_pts = VLC_TS_INVALID;     /*only first packet has a pts */
+                p_bk->i_pts = VLC_TICK_INVALID;     /*only first packet has a pts */
                 break;
             }
         }

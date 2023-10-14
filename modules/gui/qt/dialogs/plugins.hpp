@@ -2,7 +2,7 @@
  * plugins.hpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: f4cf5adf2882fda8f376c43e0f05c95f7e03a49a $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -118,6 +118,7 @@ private:
 private slots:
     void moreInformation();
     void updateButtons();
+    void reloadExtensions();
 
 private:
     QListView *extList;

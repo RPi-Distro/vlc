@@ -2,7 +2,7 @@
  * mmstu.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 186f8f1a4baad9f15aac493c3285ea417c1caf0b $
+ * $Id: 4cd7dc8c50fac7760bc2046bdef24a85e77395f1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -67,7 +67,7 @@ struct access_sys_t
     int         i_packet_seq_num;
 
     uint8_t     *p_cmd;     /* latest command read */
-    size_t      i_cmd;      /* allocated at the begining */
+    size_t      i_cmd;      /* allocated at the beginning */
 
     uint8_t     *p_header;  /* allocated by mms_ReadPacket */
     size_t      i_header;

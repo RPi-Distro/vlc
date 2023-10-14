@@ -2,7 +2,7 @@
  * mpc.c : MPC stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: f8648b7b85b5fa40bf343475d813ceb90a562848 $
+ * $Id: 75c149442286a6a9a3eea7750dbba9d914c17c41 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr.com>
  *
@@ -293,7 +293,7 @@ static int Demux( demux_t *p_demux )
     /* */
     p_data->i_buffer = i_ret * sizeof(MPC_SAMPLE_FORMAT) * p_sys->info.channels;
     p_data->i_dts = p_data->i_pts =
-            VLC_TS_0 + CLOCK_FREQ * p_sys->i_position / p_sys->info.sample_freq;
+            VLC_TICK_0 + CLOCK_FREQ * p_sys->i_position / p_sys->info.sample_freq;
 
     es_out_SetPCR( p_demux->out, p_data->i_dts );
 

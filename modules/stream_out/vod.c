@@ -2,7 +2,7 @@
  * vod.c: rtsp VoD server module
  *****************************************************************************
  * Copyright (C) 2003-2006, 2010 VLC authors and VideoLAN
- * $Id: 9db3d709f071534e5fde94f7a149df0cba2f77cc $
+ * $Id: 60e5c512e321aea1c6319fc73959fe49c86260a9 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -73,7 +73,7 @@ struct vod_media_t
     const char *psz_mux;
 
     /* Infos */
-    mtime_t i_length;
+    vlc_tick_t i_length;
 };
 
 struct vod_sys_t

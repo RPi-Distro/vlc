@@ -2,7 +2,7 @@
  * x11_graphics.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 2a96041f0d64426dc6858bc09759139979bed1e6 $
+ * $Id: 30cdd6f92ae8cad42341cc1cd0a9bb21349906a0 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -58,11 +58,11 @@ public:
                              int width = -1, int height = -1,
                              bool blend = false );
 
-    /// Draw a filled rectangle on the grahics (color is #RRGGBB)
+    /// Draw a filled rectangle on the graphics (color is #RRGGBB)
     virtual void fillRect( int left, int top, int width, int height,
                            uint32_t color );
 
-    /// Draw an empty rectangle on the grahics (color is #RRGGBB)
+    /// Draw an empty rectangle on the graphics (color is #RRGGBB)
     virtual void drawRect( int left, int top, int width, int height,
                            uint32_t color );
 

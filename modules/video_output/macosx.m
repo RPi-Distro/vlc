@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: da9c955f85a6de4faa06905738dd58634edb6998 $
+ * $Id: 904c36a311fc8407ad1226a04756633ca2be2ece $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>
@@ -567,7 +567,7 @@ static void OpenglSwap (vlc_gl_t *gl)
 }
 
 /**
- * Gets called when the vout will aquire the lock and flush.
+ * Gets called when the vout will acquire the lock and flush.
  * (Non main thread).
  */
 - (void)setVoutFlushing:(BOOL)flushing

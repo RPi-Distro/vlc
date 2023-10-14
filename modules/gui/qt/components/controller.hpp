@@ -2,7 +2,7 @@
  * controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: dc8bacce688ba82f47448f6e2892d0c701b726f1 $
+ * $Id: ab7b29f194a52ae7369eba02801f7be020c17ec4 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -282,6 +282,8 @@ protected:
     void keyPressEvent( QKeyEvent *event ) Q_DECL_OVERRIDE;
 
     void customEvent( QEvent *event ) Q_DECL_OVERRIDE;
+
+    bool eventFilter( QObject *watched, QEvent *event ) Q_DECL_OVERRIDE;
 
 private slots:
     void showFSC();

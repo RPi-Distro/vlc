@@ -2,7 +2,7 @@
  * copy.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: 073a663ed87af48f616e628fc5474dcfefc55603 $
+ * $Id: d451fb12162e67c9ff774b55f8f8e70618030166 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -170,12 +170,12 @@ static block_t *Packetize ( decoder_t *p_dec, block_t **pp_block )
     p_block = *pp_block;
     *pp_block = NULL;
 
-    if( p_block->i_dts <= VLC_TS_INVALID )
+    if( p_block->i_dts <= VLC_TICK_INVALID )
     {
         p_block->i_dts = p_block->i_pts;
     }
 
-    if( p_block->i_dts <= VLC_TS_INVALID )
+    if( p_block->i_dts <= VLC_TICK_INVALID )
     {
         msg_Dbg( p_dec, "need valid dts" );
         block_Release( p_block );
@@ -212,12 +212,12 @@ static block_t *PacketizeSub( decoder_t *p_dec, block_t **pp_block )
     p_block = *pp_block;
     *pp_block = NULL;
 
-    if( p_block->i_dts <= VLC_TS_INVALID )
+    if( p_block->i_dts <= VLC_TICK_INVALID )
     {
         p_block->i_dts = p_block->i_pts;
     }
 
-    if( p_block->i_dts <= VLC_TS_INVALID )
+    if( p_block->i_dts <= VLC_TICK_INVALID )
     {
         msg_Dbg( p_dec, "need valid dts" );
         block_Release( p_block );

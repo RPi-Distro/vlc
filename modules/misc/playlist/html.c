@@ -2,7 +2,7 @@
  * html.c : HTML playlist export module
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: 1aa6dce457b6a631ecf73c6ea2c14ab71aeed820 $
+ * $Id: d416651aab28c3160c3aaf6c56ac918bc4fa4224 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *
@@ -70,7 +70,7 @@ static void DoChildren( playlist_export_t *p_export, playlist_item_t *p_root )
                 psz_artist = vlc_xml_encode( psz_tmp );
             free( psz_tmp );
 
-            mtime_t i_duration = input_item_GetDuration( p_current->p_input );
+            vlc_tick_t i_duration = input_item_GetDuration( p_current->p_input );
             int min = ( i_duration / 1000000 ) / 60;
             int sec = ( i_duration / 1000000 ) - min * 60;
 

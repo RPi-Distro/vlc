@@ -2,7 +2,7 @@
  * xspf.c : XSPF playlist export functions
  ******************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 885563a5e90673e3beb510a2ea9ac06fd72bc424 $
+ * $Id: d115e4ce66137863f995d03afad23183733bb77e $
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>
@@ -75,7 +75,7 @@ static void xspf_export_item( playlist_item_t *p_item, FILE *p_file,
 
     input_item_t *p_input = p_item->p_input;
     char *psz;
-    mtime_t i_duration;
+    vlc_tick_t i_duration;
 
     /* leaves can be written directly */
     fputs( "\t\t<track>\n", p_file );

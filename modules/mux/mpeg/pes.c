@@ -2,7 +2,7 @@
  * pes.c: PES packetizer used by the MPEG multiplexers
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: b299241d852506aa97b883ca99dafb358d86d4c5 $
+ * $Id: 66ec262dbb7293db7e97bf184fcef2014add9d5f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -50,7 +50,7 @@
  * \param i_header_size length of padding data to insert into PES packet
  *                      header in bytes.
  */
-static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
+static inline int PESHeader( uint8_t *p_hdr, vlc_tick_t i_pts, vlc_tick_t i_dts,
                              int i_es_size, const es_format_t *p_fmt,
                              int i_stream_id, bool b_mpeg2,
                              bool b_data_alignment, int i_header_size )
@@ -112,7 +112,7 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
                     ( i_pts != i_dts || ( p_fmt->i_cat == VIDEO_ES &&
                       p_fmt->i_codec != VLC_CODEC_MPGV &&
                       p_fmt->i_codec != VLC_CODEC_MP2V &&
-                      p_fmt->i_codec != VLC_CODEC_MP1V 
+                      p_fmt->i_codec != VLC_CODEC_MP1V
                       ) ) )
                 {
                     i_pts_dts = 0x03;
@@ -150,7 +150,7 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
                 bits_write( &bits, 2, 0x02 ); // mpeg2 id
                 bits_write( &bits, 2, 0x00 ); // pes scrambling control
                 bits_write( &bits, 1, 0x00 ); // pes priority
-                bits_write( &bits, 1, b_data_alignment ); // data alignement indicator
+                bits_write( &bits, 1, b_data_alignment ); // data alignment indicator
                 bits_write( &bits, 1, 0x00 ); // copyright
                 bits_write( &bits, 1, 0x00 ); // original or copy
 
@@ -319,7 +319,7 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
 void EStoPES ( block_t **pp_pes,
                    const es_format_t *p_fmt, int i_stream_id,
                    int b_mpeg2, int b_data_alignment, int i_header_size,
-                   int i_max_pes_size, mtime_t ts_offset )
+                   int i_max_pes_size, vlc_tick_t ts_offset )
 {
     block_t *p_es = *pp_pes;
     block_t *p_pes = NULL;
@@ -382,11 +382,11 @@ void EStoPES ( block_t **pp_pes,
 
     }
 
-    mtime_t i_dts = 0;
-    mtime_t i_pts = 0;
-    if (p_es->i_pts > VLC_TS_INVALID)
+    vlc_tick_t i_dts = 0;
+    vlc_tick_t i_pts = 0;
+    if (p_es->i_pts > VLC_TICK_INVALID)
         i_pts = (p_es->i_pts - ts_offset) * 9 / 100;
-    if (p_es->i_dts > VLC_TS_INVALID)
+    if (p_es->i_dts > VLC_TICK_INVALID)
         i_dts = (p_es->i_dts - ts_offset) * 9 / 100;
 
     i_size = p_es->i_buffer;
@@ -438,7 +438,7 @@ void EStoPES ( block_t **pp_pes,
     /* Now redate all pes */
     p_pes = *pp_pes;
     i_dts    = p_pes->i_dts;
-    mtime_t i_length = p_pes->i_length / i_pes_count;
+    vlc_tick_t i_length = p_pes->i_length / i_pes_count;
     while( p_pes )
     {
         p_pes->i_dts = i_dts;

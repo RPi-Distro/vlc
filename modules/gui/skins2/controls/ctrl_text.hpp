@@ -2,7 +2,7 @@
  * ctrl_text.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ecc9ee065545ada46eb4c08582757dd9a0a35088 $
+ * $Id: ae25ecdd4834d051fea8e9d5ebf25e83318c1299 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -77,7 +77,7 @@ public:
     virtual void draw( OSGraphics &rImage, int xDest, int yDest, int w, int h );
 
     /// Set the text of the control, with an optional color
-    /// This takes effect immediatly
+    /// This takes effect immediately
     void setText( const UString &rText, uint32_t color = 0xFFFFFFFF );
 
     /// Get the type of control (custom RTTI)
@@ -129,7 +129,7 @@ private:
     /// Method called when visibility is updated
     virtual void onUpdate( Subject<VarBool> &rVariable , void* );
 
-    /// Intialize the set of pictures
+    /// Initialize the set of pictures
     void setPictures( const UString &rText );
 
     /// Update object according to current context

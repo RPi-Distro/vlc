@@ -2,7 +2,7 @@
  * wav.c : wav file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: fd1a3b4325b884c4baecc46eb5b6866e702e77f7 $
+ * $Id: ca06d98b224521e3be47358388bcf2733647fdc8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -474,7 +474,7 @@ static int Demux( demux_t *p_demux )
     }
 
     p_block->i_dts =
-    p_block->i_pts = VLC_TS_0 + date_Get( &p_sys->pts );
+    p_block->i_pts = VLC_TICK_0 + date_Get( &p_sys->pts );
 
     /* set PCR */
     es_out_SetPCR( p_demux->out, p_block->i_pts );

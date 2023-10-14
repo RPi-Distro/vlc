@@ -28,6 +28,15 @@
 
 #include "dxgi_fmt.h"
 
+#ifdef __cplusplus
+extern "C" {
+
+#ifndef IID_GRAPHICS_PPV_ARGS
+#define IID_GRAPHICS_PPV_ARGS(ppType) IID_PPV_ARGS(ppType)
+#endif
+
+#endif
+
 DEFINE_GUID(GUID_CONTEXT_MUTEX, 0x472e8835, 0x3f8e, 0x4f93, 0xa0, 0xcb, 0x25, 0x79, 0x77, 0x6c, 0xed, 0x86);
 
 /* see https://msdn.microsoft.com/windows/hardware/commercialize/design/compatibility/device-graphics */
@@ -44,6 +53,7 @@ typedef struct
     HANDLE                   context_mutex;
     struct wddm_version      WDDM;
     D3D_FEATURE_LEVEL        feature_level;
+    DXGI_ADAPTER_DESC        adapterDesc;
 } d3d11_device_t;
 
 typedef struct
@@ -54,6 +64,7 @@ typedef struct
     pD3DCompile               OurD3DCompile;
 #if !defined(NDEBUG) && defined(HAVE_DXGIDEBUG_H)
     HINSTANCE                 dxgidebug_dll;
+    HRESULT (WINAPI * pf_DXGIGetDebugInterface)(const GUID *riid, void **ppDebug);
 #endif
 #endif
 } d3d11_handle_t;
@@ -109,23 +120,17 @@ int D3D11_Create(vlc_object_t *, d3d11_handle_t *, bool with_shaders);
 #define D3D11_Create(a,b,c) D3D11_Create( VLC_OBJECT(a), b, c )
 
 void D3D11_Destroy(d3d11_handle_t *);
+void D3D11_LogResources(d3d11_handle_t *);
 
-bool isXboxHardware(ID3D11Device *d3ddev);
+bool isXboxHardware(const d3d11_device_t *);
 bool CanUseVoutPool(d3d11_device_t *, UINT slices);
 IDXGIAdapter *D3D11DeviceAdapter(ID3D11Device *d3ddev);
-int D3D11CheckDriverVersion(d3d11_device_t *, UINT vendorId,
+int D3D11CheckDriverVersion(const d3d11_device_t *, UINT vendorId,
                             const struct wddm_version *min_ver);
 void D3D11_GetDriverVersion(vlc_object_t *, d3d11_device_t *);
 #define D3D11_GetDriverVersion(a,b) D3D11_GetDriverVersion(VLC_OBJECT(a),b)
 
-static inline bool DeviceSupportsFormat(ID3D11Device *d3ddevice,
-                                        DXGI_FORMAT format, UINT supportFlags)
-{
-    UINT i_formatSupport;
-    return SUCCEEDED( ID3D11Device_CheckFormatSupport(d3ddevice, format,
-                                                      &i_formatSupport) )
-            && ( i_formatSupport & supportFlags ) == supportFlags;
-}
+bool DeviceSupportsFormat(ID3D11Device *d3ddevice, DXGI_FORMAT format, UINT supportFlags);
 
 const d3d_format_t *FindD3D11Format(vlc_object_t *,
                                     d3d11_device_t*,
@@ -159,5 +164,9 @@ static inline void d3d11_device_unlock(d3d11_device_t *d3d_dev)
     if( d3d_dev->context_mutex  != INVALID_HANDLE_VALUE )
         ReleaseMutex( d3d_dev->context_mutex );
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* include-guard */

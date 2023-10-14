@@ -2,7 +2,7 @@
  * playlist_internal.h : Playlist internals
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 248e872fba39b5f5bf5ed13f692e44281c4cd784 $
+ * $Id: 3194aaab1388debcbd8272fcc44529da8dc4f21b $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -94,7 +94,7 @@ typedef struct playlist_private_t
      * several EOS are received too quickly.
      */
 #define VLC_PLAYLIST_EOS_BURST_THRESHOLD (CLOCK_FREQ / 4) /* 250 ms */
-    mtime_t  last_eos;
+    vlc_tick_t  last_eos;
     unsigned eos_burst_count;
 
     bool     b_tree; /**< Display as a tree */

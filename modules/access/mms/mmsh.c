@@ -2,7 +2,7 @@
  * mmsh.c:
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: d2f497dd947509e9a5cfe7e7c3aa7849ecb377d8 $
+ * $Id: b032b4c5bb871f7f8246dc5d682f75095c625dd4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -450,7 +450,7 @@ static int Reset( stream_t *p_access )
                        var_InheritBool( p_access, "audio" ),
                        var_InheritBool( p_access, "video" ) );
 
-    /* Check we have comptible asfh */
+    /* Check we have compatible asfh */
     for( i = 1; i < 128; i++ )
     {
         asf_stream_t *p_old = &old_asfh.stream[i];

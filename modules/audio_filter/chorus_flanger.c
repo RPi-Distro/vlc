@@ -2,7 +2,7 @@
  * chorus_flanger: Basic chorus/flanger/delay audio filter
  *****************************************************************************
  * Copyright (C) 2009-12 VLC authors and VideoLAN
- * $Id: 0fe19c208f9b25753dd2994052892da74a5bf768 $
+ * $Id: 776f9361359b626b512582b67e762b343d2c2aa6 $
  *
  * Authors: Srikanth Raju < srikiraju at gmail dot com >
  *          Sukrit Sangwan < sukritsangwan at gmail dot com >
@@ -393,7 +393,7 @@ static int reallocate_buffer( filter_t *p_filter,  filter_sys_t *p_sys )
     float *temp = realloc( p_sys->p_delayLineStart, p_sys->i_bufferLength );
     if( unlikely( !temp ) )
     {
-        msg_Err( p_filter, "Couldnt reallocate buffer for new delay." );
+        msg_Err( p_filter, "Couldn't reallocate buffer for new delay." );
         return 0;
     }
     p_sys->p_delayLineStart = temp;

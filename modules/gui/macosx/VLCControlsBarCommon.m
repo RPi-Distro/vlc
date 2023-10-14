@@ -2,7 +2,7 @@
  * VLCControlsBarCommon.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2018 VLC authors and VideoLAN
- * $Id: 046824322fe1272f5d129678c42bff3f46639426 $
+ * $Id: 9d4ff147c0d2df6ea75c3a959c30a50ac1348ead $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>
@@ -63,7 +63,7 @@
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    
+
     _darkInterface = var_InheritBool(getIntf(), "macosx-interfacestyle");
     if (@available(macOS 10_14, *)) {
         NSApplication *app = [NSApplication sharedApplication];
@@ -362,7 +362,7 @@
     var_Get(p_input, "position", &pos);
     [self.timeSlider setFloatValue:(10000. * pos.f_float)];
 
-    mtime_t dur = input_item_GetDuration(input_GetItem(p_input));
+    vlc_tick_t dur = input_item_GetDuration(input_GetItem(p_input));
     if (dur == -1) {
         // No duration, disable slider
         [self.timeSlider setEnabled:NO];

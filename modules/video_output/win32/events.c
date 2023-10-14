@@ -2,7 +2,7 @@
  * events.c: Windows video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: cea69d95e8dfece2651ac1dfb31bec48e8f5f537 $
+ * $Id: 476a710529cfb5b0ecf2f2f1077715d373582ed0 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Martell Malone <martellmalone@gmail.com>
@@ -71,8 +71,8 @@ struct event_thread_t
     HCURSOR cursor_arrow;
     HCURSOR cursor_empty;
     unsigned button_pressed;
-    mtime_t hide_timeout;
-    mtime_t last_moved;
+    vlc_tick_t hide_timeout;
+    vlc_tick_t last_moved;
 
     /* Gestures */
     win32_gesture_sys_t *p_gesture;

@@ -2,7 +2,7 @@
  * vsxu.cpp: visualization module wrapper for Vovoid VSXu
  *****************************************************************************
  * Copyright © 2009-2012 the VideoLAN team, Vovoid Media Technologies
- * $Id: 8be523e6faad114aef2291a0f696c61cfef55747 $
+ * $Id: 86a8db8400ee2afb7f163b638b38559b75495372 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *          Laurent Aimar
@@ -165,7 +165,7 @@ static void Close( vlc_object_t *p_this )
 
     vlc_join( p_sys->thread, NULL );
 
-    /* Free the ressources */
+    /* Free the resources */
     vlc_gl_surface_Destroy( p_sys->gl );
     vlc_mutex_destroy( &p_sys->cyclic_block_mutex );
     vlc_mutex_destroy( &p_sys->lock );

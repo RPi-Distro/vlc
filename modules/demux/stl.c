@@ -2,7 +2,7 @@
  * stl.c: EBU STL demuxer
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 238b515cc66f481b889d219a14b1e871e7440aff $
+ * $Id: f0664c2bf8bb1971189362ea25caa3aceef27b6f $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -52,8 +52,8 @@ vlc_module_end()
  * Local definitions/prototypes
  *****************************************************************************/
 typedef struct {
-    mtime_t start;
-    mtime_t stop;
+    vlc_tick_t start;
+    vlc_tick_t stop;
     size_t  blocknumber;
     size_t  count;
 } stl_entry_t;
@@ -183,7 +183,7 @@ static int Demux(demux_t *demux)
 
         if (!sys->b_slave && sys->b_first_time)
         {
-            es_out_SetPCR(demux->out, VLC_TS_0 + i_barrier);
+            es_out_SetPCR(demux->out, VLC_TICK_0 + i_barrier);
             sys->b_first_time = false;
         }
 
@@ -197,7 +197,7 @@ static int Demux(demux_t *demux)
         if (b && b->i_buffer == 128)
         {
             b->i_dts =
-            b->i_pts = VLC_TS_0 + s->start;
+            b->i_pts = VLC_TICK_0 + s->start;
             if (s->stop > s->start)
                 b->i_length = s->stop - s->start;
             es_out_Send(demux->out, sys->es, b);
@@ -213,7 +213,7 @@ static int Demux(demux_t *demux)
 
     if (!sys->b_slave)
     {
-        es_out_SetPCR(demux->out, VLC_TS_0 + i_barrier);
+        es_out_SetPCR(demux->out, VLC_TICK_0 + i_barrier);
         sys->next_date += CLOCK_FREQ / 8;
     }
 
@@ -240,7 +240,7 @@ static int Open(vlc_object_t *object)
         return VLC_EGENERIC;
     }
     const int cct = ParseInteger(&header[12], 2);
-    const mtime_t program_start = ParseTextTimeCode(&header[256], fps);
+    const vlc_tick_t program_start = ParseTextTimeCode(&header[256], fps);
     const size_t tti_count = ParseInteger(&header[238], 5);
     if (!tti_count)
         return VLC_EGENERIC;

@@ -2,7 +2,7 @@
  * stream_io_callback.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004, 2010 VLC authors and VideoLAN
- * $Id: 570229e2627593adf3005ad6778afe48533284c5 $
+ * $Id: af9c2eab460f400e6ec8d09b45af8207335a27c8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -28,7 +28,7 @@
 #include "demux.hpp"
 
 /*****************************************************************************
- * Stream managment
+ * Stream management
  *****************************************************************************/
 vlc_stream_io_callback::vlc_stream_io_callback( stream_t *s_, bool b_owner_ )
                        : s( s_), b_owner( b_owner_ )

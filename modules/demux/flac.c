@@ -2,7 +2,7 @@
  * flac.c : FLAC demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: e521d48c39cafb7e9d79bcd17ff98d18f3e5b0e1 $
+ * $Id: cb6c0e6e0c9d3de460d87f33abe1095fa649b4dd $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -67,7 +67,7 @@ static int  ParseHeaders( demux_t *, es_format_t * );
 
 typedef struct
 {
-    mtime_t  i_time_offset;
+    vlc_tick_t  i_time_offset;
     uint64_t i_byte_offset;
 } flac_seekpoint_t;
 
@@ -145,7 +145,7 @@ static int Open( vlc_object_t * p_this )
     p_sys->p_packetizer = NULL;
     p_sys->p_meta = NULL;
     p_sys->i_length = 0;
-    p_sys->i_pts = VLC_TS_INVALID;
+    p_sys->i_pts = VLC_TICK_INVALID;
     p_sys->b_stream_info = false;
     p_sys->p_es = NULL;
     p_sys->p_current_block = NULL;
@@ -227,7 +227,7 @@ static block_t *GetPacketizedBlock( decoder_t *p_packetizer,
     {
         if( p_block->i_buffer >= FLAC_HEADER_SIZE_MIN && p_block->i_buffer < INT_MAX )
         {
-            struct flac_header_info headerinfo = { .i_pts = VLC_TS_INVALID };
+            struct flac_header_info headerinfo = { .i_pts = VLC_TICK_INVALID };
             int i_ret = FLAC_ParseSyncInfo( p_block->p_buffer, p_block->i_buffer,
                                             streaminfo, NULL, &headerinfo );
             assert( i_ret != 0 ); /* Same as packetizer */
@@ -252,7 +252,7 @@ static void FlushPacketizer( decoder_t *p_packetizer )
 
 static void Reset( demux_sys_t *p_sys )
 {
-    p_sys->i_pts = VLC_TS_INVALID;
+    p_sys->i_pts = VLC_TICK_INVALID;
 
     FlushPacketizer( p_sys->p_packetizer );
     if( p_sys->p_current_block )
@@ -262,7 +262,7 @@ static void Reset( demux_sys_t *p_sys )
     }
 }
 
-static int RefineSeek( demux_t *p_demux, mtime_t i_time, double i_bytemicrorate,
+static int RefineSeek( demux_t *p_demux, vlc_tick_t i_time, double i_bytemicrorate,
                        uint64_t i_lowpos, uint64_t i_highpos )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
@@ -310,7 +310,7 @@ static int RefineSeek( demux_t *p_demux, mtime_t i_time, double i_bytemicrorate,
         /* If we are further than wanted block */
         if( p_block_out->i_dts >= i_time )
         {
-            mtime_t i_diff = p_block_out->i_dts - i_time;
+            vlc_tick_t i_diff = p_block_out->i_dts - i_time;
             /* Not in acceptable approximation range */
             if( i_diff > CLOCK_FREQ / 10 && i_diff / i_bytemicrorate > i_frame_size )
             {
@@ -322,7 +322,7 @@ static int RefineSeek( demux_t *p_demux, mtime_t i_time, double i_bytemicrorate,
         }
         else if( p_block_out->i_dts < i_time )
         {
-            mtime_t i_diff = i_time - p_block_out->i_dts;
+            vlc_tick_t i_diff = i_time - p_block_out->i_dts;
             /* Not in acceptable NEXT_TIME demux range */
             if( i_diff >= ((b_canfastseek) ? FLAC_MAX_PREROLL : FLAC_MAX_SLOW_PREROLL) &&
                 i_diff / i_bytemicrorate > i_frame_size )
@@ -372,7 +372,7 @@ static int Demux( demux_t *p_demux )
         p_sys->p_current_block->i_flags = p_sys->i_next_block_flags;
         p_sys->i_next_block_flags = 0;
         p_sys->p_current_block->i_pts =
-        p_sys->p_current_block->i_dts = p_sys->b_start ? VLC_TS_0 : VLC_TS_INVALID;
+        p_sys->p_current_block->i_dts = p_sys->b_start ? VLC_TICK_0 : VLC_TICK_INVALID;
     }
 
     while( (p_block_out = GetPacketizedBlock( p_sys->p_packetizer,
@@ -388,8 +388,8 @@ static int Demux( demux_t *p_demux )
             p_block_out->p_next = NULL;
 
             /* set PCR */
-            if( unlikely(p_sys->i_pts == VLC_TS_INVALID) )
-                es_out_SetPCR( p_demux->out, __MAX(p_block_out->i_dts - 1, VLC_TS_0) );
+            if( unlikely(p_sys->i_pts == VLC_TICK_INVALID) )
+                es_out_SetPCR( p_demux->out, __MAX(p_block_out->i_dts - 1, VLC_TICK_0) );
 
             p_sys->i_pts = p_block_out->i_dts;
 
@@ -451,7 +451,7 @@ static int ControlSetTime( demux_t *p_demux, int64_t i_time )
     if( !b_seekable )
         return VLC_EGENERIC;
 
-    const mtime_t i_length = ControlGetLength( p_demux );
+    const vlc_tick_t i_length = ControlGetLength( p_demux );
     if( i_length <= 0 )
         return VLC_EGENERIC;
 

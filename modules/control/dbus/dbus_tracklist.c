@@ -5,7 +5,7 @@
  * Copyright © 2007-2011 Mirsal Ennaime
  * Copyright © 2009-2011 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: 4a8254dc9c123aad02a7cb20567099d7c673b701 $
+ * $Id: b28669bc7e4266585aa0eba004d0f2972773676e $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
@@ -38,6 +38,69 @@
 
 #include "dbus_tracklist.h"
 #include "dbus_common.h"
+
+
+tracklist_append_event_t *tracklist_append_event_create(size_t index, playlist_item_t *const items[], size_t count) {
+    tracklist_append_event_t* result = malloc(sizeof(tracklist_append_event_t) + sizeof(playlist_item_t[count]));
+    if (!result)
+        return result;
+
+    *result = (tracklist_append_event_t) { .change_ev = { .index = index, .count = count } };
+    for (size_t i = 0; i < count; ++i) {
+        // We can't hold a playlist_item_t, so we copy it and hold onto its input
+        result->items[i] = *items[i];
+        input_item_Hold(items[i]->p_input);
+    }
+    return result;
+}
+
+tracklist_remove_event_t *tracklist_remove_event_create(size_t index, size_t count) {
+    tracklist_remove_event_t* result = malloc(sizeof(tracklist_remove_event_t));
+    if (!result)
+        return result;
+
+    *result = (tracklist_remove_event_t) { .change_ev = { .index = index, .count = count } };
+    return result;
+}
+
+void tracklist_append_event_destroy(tracklist_append_event_t *event) {
+    if (!event)
+        return;
+    for (size_t i = 0; i < event->change_ev.count; ++i) {
+        // Release referenced input
+        input_item_Release(event->items[i].p_input);
+    }
+    free(event);
+}
+
+void tracklist_remove_event_destroy(tracklist_remove_event_t *event) {
+    free(event);
+}
+
+static DBusHandlerResult InvalidTrackId(DBusConnection *p_conn,
+                                        DBusMessage *p_from,
+                                        const char *trackId,
+                                        void *p_this) {
+  msg_Err((vlc_object_t *)p_this, "Invalid track id: %s", trackId);
+
+  DBusMessage *p_msg = dbus_message_new_error_printf(
+      p_from, DBUS_ERROR_UNKNOWN_OBJECT, "Invalid track id: %s", trackId);
+  if (!p_msg)
+    return DBUS_HANDLER_RESULT_NEED_MEMORY;
+  REPLY_SEND;
+}
+
+static DBusHandlerResult InvalidArguments(DBusConnection *p_conn,
+                                          DBusMessage *p_from,
+                                          void *p_this) {
+  msg_Err((vlc_object_t *)p_this, "Invalid arguments");
+
+  DBusMessage *p_msg = dbus_message_new_error(p_from, DBUS_ERROR_INVALID_ARGS,
+                                              "Invalid arguments");
+  if (!p_msg)
+    return DBUS_HANDLER_RESULT_NEED_MEMORY;
+  REPLY_SEND;
+}
 
 DBUS_METHOD( AddTrack )
 {
@@ -135,39 +198,46 @@ DBUS_METHOD( GetTracksMetadata )
 
     if( DBUS_TYPE_ARRAY != dbus_message_iter_get_arg_type( &in_args ) )
     {
-        msg_Err( (vlc_object_t*) p_this, "Invalid arguments" );
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+        return InvalidArguments(p_conn, p_from, p_this);
     }
 
     dbus_message_iter_recurse( &in_args, &track_ids );
     dbus_message_iter_open_container( &args, DBUS_TYPE_ARRAY, "a{sv}", &meta );
 
-    while( DBUS_TYPE_OBJECT_PATH ==
-           dbus_message_iter_get_arg_type( &track_ids ) )
+    bool id_valid = true;
+    while( DBUS_TYPE_OBJECT_PATH == dbus_message_iter_get_arg_type( &track_ids ) )
     {
         dbus_message_iter_get_basic( &track_ids, &psz_track_id );
 
         if( 1 != sscanf( psz_track_id, MPRIS_TRACKID_FORMAT, &i_track_id ) )
         {
-            msg_Err( (vlc_object_t*) p_this, "Invalid track id: %s",
-                                             psz_track_id );
-            continue;
+            id_valid = false;
+            break;
         }
 
-        PL_LOCK;
-        for( int i = 0; i < p_playlist->current.i_size; i++ )
+        playlist_item_t *item = NULL;
+        playlist_Lock(p_playlist);
+        item = playlist_ItemGetById(p_playlist, i_track_id);
+        if (item)
         {
-            playlist_item_t *item = p_playlist->current.p_elems[i];
-
-            if( item->i_id == i_track_id )
-            {
-                GetInputMeta( item, &meta );
-                break;
-            }
+            GetInputMeta(item, &meta);
         }
-        PL_UNLOCK;
+        playlist_Unlock(p_playlist);
+
+        if (!item)
+        {
+            id_valid = false;
+            break;
+        }
 
         dbus_message_iter_next( &track_ids );
+    }
+
+    if( !id_valid )
+    {
+        dbus_message_iter_abandon_container( &args, &meta );
+        dbus_message_unref(p_msg);
+        return InvalidTrackId(p_conn, p_from, psz_track_id, p_this);
     }
 
     dbus_message_iter_close_container( &args, &meta );
@@ -198,26 +268,21 @@ DBUS_METHOD( GoTo )
     }
 
     if( 1 != sscanf( psz_track_id, MPRIS_TRACKID_FORMAT, &i_track_id ) )
-    {
-        msg_Err( (vlc_object_t*) p_this, "Invalid track id %s", psz_track_id );
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-    }
+        goto invalid_track_id;
 
     PL_LOCK;
-
-    for( int i = 0; i < p_playlist->current.i_size; i++ )
-    {
-        playlist_item_t *item = p_playlist->current.p_elems[i];
-
-        if( item->i_id == i_track_id )
-        {
-            playlist_ViewPlay( p_playlist, item->p_parent, item );
-            break;
-        }
-    }
-
+    playlist_item_t *item = playlist_ItemGetById( p_playlist, i_track_id );
+    if( item )
+        playlist_ViewPlay( p_playlist, item->p_parent, item );
     PL_UNLOCK;
+
+    if( !item )
+        goto invalid_track_id;
+
     REPLY_SEND;
+
+invalid_track_id:
+    return InvalidTrackId(p_conn, p_from, psz_track_id, p_this);
 }
 
 DBUS_METHOD( RemoveTrack )
@@ -244,60 +309,66 @@ DBUS_METHOD( RemoveTrack )
     }
 
     if( 1 != sscanf( psz_id, MPRIS_TRACKID_FORMAT, &i_id ) )
-    {
-        msg_Err( (vlc_object_t*) p_this, "Invalid track id: %s", psz_id );
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-    }
+        goto invalid_track_id;
 
     PL_LOCK;
-
-    for( int i = 0; i < p_playlist->current.i_size; i++ )
-    {
-        playlist_item_t *item = p_playlist->current.p_elems[i];
-
-        if( item->i_id == i_id )
-        {
-            playlist_NodeDelete( p_playlist, item );
-            break;
-        }
-    }
-
+    playlist_item_t *item = playlist_ItemGetById( p_playlist, i_id );
+    if( item )
+        playlist_NodeDelete( p_playlist, item );
     PL_UNLOCK;
+
+    if( !item )
+        goto invalid_track_id;
+
     REPLY_SEND;
+
+invalid_track_id:
+    return InvalidTrackId(p_conn, p_from, psz_id, p_this);
+}
+
+static int MarshalTrack( DBusMessageIter *iter, int id )
+{
+    char *psz_track_id = NULL;
+    int ret = VLC_SUCCESS;
+
+    if (asprintf(&psz_track_id, MPRIS_TRACKID_FORMAT, id) == -1)
+        ret = VLC_ENOMEM;
+
+    if (ret == VLC_SUCCESS &&
+        !dbus_message_iter_append_basic( iter,
+                                         DBUS_TYPE_OBJECT_PATH,
+                                         &psz_track_id ) )
+    {
+       ret = VLC_ENOMEM;
+    }
+    free( psz_track_id );
+    return ret;
 }
 
 static int
 MarshalTracks( intf_thread_t *p_intf, DBusMessageIter *container )
 {
     DBusMessageIter tracks;
-    char         *psz_track_id = NULL;
-    playlist_t   *p_playlist   = p_intf->p_sys->p_playlist;
+    playlist_t *p_playlist = p_intf->p_sys->p_playlist;
 
     dbus_message_iter_open_container( container, DBUS_TYPE_ARRAY, "o",
                                       &tracks );
 
-    PL_LOCK;
+    playlist_Lock(p_playlist);
 
     for( int i = 0; i < p_playlist->current.i_size; i++ )
     {
         playlist_item_t *item = p_playlist->current.p_elems[i];
-
-        if( ( -1 == asprintf( &psz_track_id,
-                              MPRIS_TRACKID_FORMAT,
-                              item->i_id ) ) ||
-            !dbus_message_iter_append_basic( &tracks,
-                                             DBUS_TYPE_OBJECT_PATH,
-                                             &psz_track_id ) )
+        int err = MarshalTrack( &tracks, item->i_id );
+        if (err !=  VLC_SUCCESS)
         {
-            PL_UNLOCK;
+            playlist_Unlock(p_playlist);
             dbus_message_iter_abandon_container( container, &tracks );
-            return VLC_ENOMEM;
+            return err;
         }
-
-        free( psz_track_id );
     }
 
-    PL_UNLOCK;
+    playlist_Unlock(p_playlist);
 
     if( !dbus_message_iter_close_container( container, &tracks ) )
         return VLC_ENOMEM;
@@ -499,8 +570,66 @@ PropertiesChangedSignal( intf_thread_t    *p_intf,
 }
 
 /**
- * TrackListPropertiesChangedEmit: Emits the
- * org.freedesktop.DBus.Properties.PropertiesChanged signal
+ * TrackAddedSignal: synthetizes and sends the
+ * org.mpris.MediaPlayer2.TrackList.TrackAdded signal
+ */
+static DBusHandlerResult
+TrackAddedSignal( intf_thread_t    *p_intf,
+                  size_t index,
+                  playlist_item_t *item )
+{
+    (void) index; // unused
+
+    DBusConnection  *p_conn = p_intf->p_sys->p_conn;
+    DBusMessageIter meta;
+
+    SIGNAL_INIT( "MediaPlayer2.TrackList",
+                 DBUS_MPRIS_OBJECT_PATH,
+                 "TrackAdded" );
+
+    OUT_ARGUMENTS;
+
+    if( unlikely(!dbus_message_iter_open_container( &args,
+                                                    DBUS_TYPE_ARRAY, "a{sv}",
+                                                    &meta )) )
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
+
+    GetInputMeta(item, &meta);
+
+    if( unlikely(!dbus_message_iter_close_container( &args,
+                                                     &meta )) )
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
+
+    if ( MarshalTrack( &args, item->i_id ) !=  VLC_SUCCESS )
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
+
+    SIGNAL_SEND;
+}
+
+/**
+ * TrackRemovedSignal: synthetizes and sends the
+ * org.mpris.MediaPlayer2.TrackList.TrackRemoved signal
+ */
+static DBusHandlerResult
+TrackRemovedSignal( intf_thread_t *p_intf, size_t index )
+{
+    DBusConnection  *p_conn = p_intf->p_sys->p_conn;
+
+    SIGNAL_INIT( "MediaPlayer2.TrackList",
+                 DBUS_MPRIS_OBJECT_PATH,
+                 "TrackRemoved" );
+
+    OUT_ARGUMENTS;
+
+    if ( MarshalTrack( &args, index ) !=  VLC_SUCCESS )
+        return DBUS_HANDLER_RESULT_NEED_MEMORY;
+
+    SIGNAL_SEND;
+}
+/**
+ * TrackListPropertiesChangedEmit: Emits the following signals:
+ * - org.freedesktop.DBus.Properties.PropertiesChanged
+ * - org.mpris.MediaPlayer2.TrackList.TrackAdded
  */
 int TrackListPropertiesChangedEmit( intf_thread_t    * p_intf,
                                     vlc_dictionary_t * p_changed_properties )
@@ -509,5 +638,35 @@ int TrackListPropertiesChangedEmit( intf_thread_t    * p_intf,
         return VLC_SUCCESS;
 
     PropertiesChangedSignal( p_intf, p_changed_properties );
+
+    if( vlc_dictionary_has_key( p_changed_properties, "TrackAdded" ) ) {
+        tracklist_append_event_t *added_tracks =
+            vlc_dictionary_value_for_key( p_changed_properties, "TrackAdded" );
+
+        while (added_tracks) {
+            for (size_t i = 0; i < added_tracks->change_ev.count; ++i) {
+                TrackAddedSignal( p_intf,
+                        added_tracks->change_ev.index + i,
+                        &added_tracks->items[i] );
+            }
+            added_tracks = tracklist_append_event_next(added_tracks);
+        }
+        tracklist_append_event_destroy( added_tracks );
+    }
+
+    if( vlc_dictionary_has_key( p_changed_properties, "TrackRemoved" ) ) {
+        tracklist_remove_event_t *removed_tracks =
+            vlc_dictionary_value_for_key( p_changed_properties, "TrackRemoved" );
+
+        while (removed_tracks) {
+            for (size_t i = 0; i < removed_tracks->change_ev.count; ++i) {
+                TrackRemovedSignal( p_intf, removed_tracks->change_ev.index + i );
+            }
+            removed_tracks = tracklist_remove_event_next(removed_tracks);
+        }
+
+        tracklist_remove_event_destroy( removed_tracks );
+    }
+
     return VLC_SUCCESS;
 }

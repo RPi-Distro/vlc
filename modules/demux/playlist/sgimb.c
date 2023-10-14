@@ -2,7 +2,7 @@
  * sgimb.c: a meta demux to parse sgimb referrer files
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 529c9bff2541a61882b6a7b34c1354761ce5b6ff $
+ * $Id: f45e4c90b2b0a3a9b4dc9a21c80d3ff5f858efe0 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -40,7 +40,7 @@
  *     Not present with Live streams
  * sgiLiveFeed=True|False
  *     Denounces if the stream is live or from assets (Canned?)
- *     Live appears as a little sattelite dish in the web interface of Kasenna
+ *     Live appears as a little satellite dish in the web interface of Kasenna
  * sgiFormatName=PARTNER_41_MPEG-4
  *     The type of stream. One of:
  *       PARTNER_41_MPEG-4 (RTSP MPEG-4 fully compliant)
@@ -122,7 +122,7 @@ struct demux_sys_t
     char        *psz_mcast_ip;  /* sgiMulticastAddress= */
     int         i_mcast_port;   /* sgiMulticastPort= */
     int         i_packet_size;  /* sgiPacketSize= */
-    mtime_t     i_duration;     /* sgiDuration= */
+    vlc_tick_t  i_duration;     /* sgiDuration= */
     int         i_port;         /* sgiRtspPort= */
     int         i_sid;          /* sgiSid= */
     bool  b_concert;      /* DeliveryService=cds */
@@ -294,7 +294,7 @@ static int ParseLine ( stream_t *p_demux, char *psz_line )
     else if( !strncasecmp( psz_bol, "sgiDuration=", sizeof("sgiDuration=") - 1 ) )
     {
         psz_bol += sizeof("sgiDuration=") - 1;
-        p_sys->i_duration = (mtime_t) strtol( psz_bol, NULL, 0 );
+        p_sys->i_duration = (vlc_tick_t) strtol( psz_bol, NULL, 0 );
     }
     else if( !strncasecmp( psz_bol, "sgiRtspPort=", sizeof("sgiRtspPort=") - 1 ) )
     {
@@ -332,7 +332,7 @@ static int ReadDir( stream_t *p_demux, input_item_node_t *node )
 
     if( p_sys->psz_mcast_ip )
     {
-        /* Definetly schedules multicast session */
+        /* Definitely schedules multicast session */
         /* We don't care if it's live or not */
         free( p_sys->psz_uri );
         if( asprintf( &p_sys->psz_uri, "udp://@" "%s:%i", p_sys->psz_mcast_ip, p_sys->i_mcast_port ) == -1 )
@@ -357,7 +357,7 @@ static int ReadDir( stream_t *p_demux, input_item_node_t *node )
 
     if( p_sys->b_concert )
     {
-        /* It's definetly a simulcasted scheduled stream */
+        /* It's definitely a simulcasted scheduled stream */
         /* We don't care if it's live or not */
         if( p_sys->psz_uri == NULL )
         {

@@ -2,7 +2,7 @@
  * image.c: Image demuxer
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: a4a30f782cc2b4e6187e090276b85579e4732d9f $
+ * $Id: 239f5d473dbee59370f3c3722304e2ace6470ca9 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -102,10 +102,10 @@ struct demux_sys_t
 {
     block_t     *data;
     es_out_id_t *es;
-    mtime_t     duration;
+    vlc_tick_t  duration;
     bool        is_realtime;
-    mtime_t     pts_origin;
-    mtime_t     pts_next;
+    vlc_tick_t  pts_origin;
+    vlc_tick_t  pts_next;
     date_t        pts;
 };
 
@@ -190,13 +190,13 @@ static int Demux(demux_t *demux)
     if (!sys->data)
         return 0;
 
-    mtime_t deadline;
-    const mtime_t pts_first = sys->pts_origin + date_Get(&sys->pts);
-    if (sys->pts_next > VLC_TS_INVALID) {
+    vlc_tick_t deadline;
+    const vlc_tick_t pts_first = sys->pts_origin + date_Get(&sys->pts);
+    if (sys->pts_next > VLC_TICK_INVALID) {
         deadline = sys->pts_next;
     } else if (sys->is_realtime) {
         deadline = mdate();
-        const mtime_t max_wait = CLOCK_FREQ / 50;
+        const vlc_tick_t max_wait = CLOCK_FREQ / 50;
         if (deadline + max_wait < pts_first) {
             es_out_SetPCR(demux->out, deadline);
             /* That's ugly, but not yet easily fixable */
@@ -208,7 +208,7 @@ static int Demux(demux_t *demux)
     }
 
     for (;;) {
-        const mtime_t pts = sys->pts_origin + date_Get(&sys->pts);
+        const vlc_tick_t pts = sys->pts_origin + date_Get(&sys->pts);
         if (sys->duration >= 0 && pts >= sys->pts_origin + sys->duration)
             return 0;
 
@@ -220,7 +220,7 @@ static int Demux(demux_t *demux)
             return -1;
 
         data->i_dts =
-        data->i_pts = VLC_TS_0 + pts;
+        data->i_pts = VLC_TICK_0 + pts;
         es_out_SetPCR(demux->out, data->i_pts);
         es_out_Send(demux->out, sys->es, data);
 
@@ -264,8 +264,8 @@ static int Control(demux_t *demux, int query, va_list args)
         return VLC_SUCCESS;
     }
     case DEMUX_SET_NEXT_DEMUX_TIME: {
-        int64_t pts_next = VLC_TS_0 + va_arg(args, int64_t);
-        if (sys->pts_next <= VLC_TS_INVALID)
+        int64_t pts_next = VLC_TICK_0 + va_arg(args, int64_t);
+        if (sys->pts_next <= VLC_TICK_INVALID)
             sys->pts_origin = pts_next;
         sys->pts_next = pts_next;
         return VLC_SUCCESS;
@@ -377,9 +377,9 @@ static bool IsPnm(stream_t *s)
     return true;
 }
 
-static uint8_t FindJpegMarker(int *position, const uint8_t *data, int size)
+static uint8_t FindJpegMarker(size_t *position, const uint8_t *data, size_t size)
 {
-    for (int i = *position; i + 1 < size; i++) {
+    for (size_t i = *position; i + 1 < size; i++) {
         if (data[i + 0] != 0xff || data[i + 1] == 0x00)
             return 0xff;
         if (data[i + 1] != 0xff) {
@@ -392,8 +392,11 @@ static uint8_t FindJpegMarker(int *position, const uint8_t *data, int size)
 static bool IsJfif(stream_t *s)
 {
     const uint8_t *header;
-    int size = vlc_stream_Peek(s, &header, 256);
-    int position = 0;
+    ssize_t peek = vlc_stream_Peek(s, &header, 256);
+    if(peek < 256)
+        return false;
+    size_t size = (size_t) peek;
+    size_t position = 0;
 
     if (FindJpegMarker(&position, header, size) != 0xd8)
         return false;
@@ -435,24 +438,29 @@ static bool IsSpiff(stream_t *s)
     return true;
 }
 
-static bool IsExif(stream_t *s)
+#define EXIF_STRING "Exif" /* includes \0 */
+#define EXIF_XMP_STRING "http://ns.adobe.com/xap/1.0/" /* includes \0 */
+static bool IsExifXMP(stream_t *s)
 {
     const uint8_t *header;
-    ssize_t size = vlc_stream_Peek(s, &header, 256);
-    if (size == -1)
+    ssize_t peek = vlc_stream_Peek(s, &header, 256);
+    if (peek < 256)
         return false;
-    int position = 0;
+    size_t size = (size_t) peek;
+    size_t position = 0;
 
     if (FindJpegMarker(&position, header, size) != 0xd8)
         return false;
     if (FindJpegMarker(&position, header, size) != 0xe1)
         return false;
     position += 2;  /* Skip size */
-    if (position + 5 > size)
-        return false;
-    if (memcmp(&header[position], "Exif\0", 5))
-        return false;
-    return true;
+    if (position + sizeof(EXIF_STRING) <= size &&
+        !memcmp(&header[position], EXIF_STRING, sizeof(EXIF_STRING)))
+        return true;
+    if (position + sizeof(EXIF_XMP_STRING) <= size &&
+        !memcmp(&header[position], EXIF_XMP_STRING, sizeof(EXIF_XMP_STRING)))
+        return true;
+    return false;
 }
 
 static bool FindSVGmarker(int *position, const uint8_t *data, const int size, const char *marker)
@@ -620,7 +628,7 @@ static const image_format_t formats[] = {
       .detect = IsSpiff,
     },
     { .codec = VLC_CODEC_JPEG,
-      .detect = IsExif,
+      .detect = IsExifXMP,
     },
     { .codec = VLC_CODEC_WEBP,
       .detect = IsWebP,
@@ -722,7 +730,7 @@ static int Open(vlc_object_t *object)
     sys->duration    = CLOCK_FREQ * var_InheritFloat(demux, "image-duration");
     sys->is_realtime = var_InheritBool(demux, "image-realtime");
     sys->pts_origin  = sys->is_realtime ? mdate() : 0;
-    sys->pts_next    = VLC_TS_INVALID;
+    sys->pts_next    = VLC_TICK_INVALID;
     date_Init(&sys->pts, fmt.video.i_frame_rate, fmt.video.i_frame_rate_base);
     date_Set(&sys->pts, 0);
 

@@ -2,7 +2,7 @@
  * event.c: Events
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 201c5c6fe374bb8f3d4a1afd8cc5c57906bf21a5 $
+ * $Id: 7eb4b598a3a002a2ff701edf29b2be18bfbb7a1f $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org>
  *
@@ -54,7 +54,7 @@ void input_SendEventDead( input_thread_t *p_input )
     Trigger( p_input, INPUT_EVENT_DEAD );
 }
 
-void input_SendEventPosition( input_thread_t *p_input, double f_position, mtime_t i_time )
+void input_SendEventPosition( input_thread_t *p_input, double f_position, vlc_tick_t i_time )
 {
     vlc_value_t val;
 
@@ -68,7 +68,7 @@ void input_SendEventPosition( input_thread_t *p_input, double f_position, mtime_
 
     Trigger( p_input, INPUT_EVENT_POSITION );
 }
-void input_SendEventLength( input_thread_t *p_input, mtime_t i_length )
+void input_SendEventLength( input_thread_t *p_input, vlc_tick_t i_length )
 {
     vlc_value_t val;
 
@@ -96,7 +96,7 @@ void input_SendEventRate( input_thread_t *p_input, int i_rate )
 
     Trigger( p_input, INPUT_EVENT_RATE );
 }
-void input_SendEventAudioDelay( input_thread_t *p_input, mtime_t i_delay )
+void input_SendEventAudioDelay( input_thread_t *p_input, vlc_tick_t i_delay )
 {
     vlc_value_t val;
 
@@ -106,7 +106,7 @@ void input_SendEventAudioDelay( input_thread_t *p_input, mtime_t i_delay )
     Trigger( p_input, INPUT_EVENT_AUDIO_DELAY );
 }
 
-void input_SendEventSubtitleDelay( input_thread_t *p_input, mtime_t i_delay )
+void input_SendEventSubtitleDelay( input_thread_t *p_input, vlc_tick_t i_delay )
 {
     vlc_value_t val;
 

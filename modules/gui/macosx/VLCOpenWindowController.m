@@ -2,7 +2,7 @@
  * VLCOpenWindowController.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 28b2377c5b74b3eab1a5ddfaaa7ed0070e3514c8 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -323,7 +323,8 @@ static NSString *kCaptureTabViewId  = @"capture";
     if (!newMRL)
         newMRL = @"";
 
-    _MRL = newMRL;
+    NSString * const trimmedMRL = [newMRL stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+    _MRL = trimmedMRL;
     [self.mrlTextField performSelectorOnMainThread:@selector(setStringValue:) withObject:_MRL waitUntilDone:NO];
     if ([_MRL length] > 0)
         [_okButton setEnabled: YES];
@@ -1041,7 +1042,7 @@ static NSString *kCaptureTabViewId  = @"capture";
             }
         }
     } else {
-        mrlString = [_netHTTPURLTextField stringValue];
+        mrlString = [_netHTTPURLTextField.stringValue stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
 
         // Fixup the user-provided URI
         const char *orig_uri = [mrlString UTF8String];

@@ -2,7 +2,7 @@
  * ctrl_checkbox.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 8e2ae6c69ee48cb14ebf79d696fd6d5bed47ccce $
+ * $Id: 7fbd221efde7009e67041595fb87596ac88bae50 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -87,7 +87,7 @@ private:
     AnimBitmap m_imgUp2, m_imgOver2, m_imgDown2;
     /// Current set of images (pointing to 1 or 2)
     /// In fact, we consider here that a checkbox acts like 2 buttons, in a
-    /// symetric way; this is a small trick to avoid multiplicating the
+    /// symmetric way; this is a small trick to avoid multiplicating the
     /// callbacks (and it could be extended easily to support 3 buttons or
     /// more...)
     AnimBitmap *m_pImgUp, *m_pImgOver, *m_pImgDown;

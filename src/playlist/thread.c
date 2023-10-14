@@ -2,7 +2,7 @@
  * thread.c : Playlist management functions
  *****************************************************************************
  * Copyright © 1999-2008 VLC authors and VideoLAN
- * $Id: ca6adbac07a5eec2b2fcea5aae841c3b1cc7d9f4 $
+ * $Id: 04c19603c56d090756a96042a87d7e3d1f8106b3 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -502,7 +502,7 @@ static void *Thread ( void *data )
             if (p_sys->last_eos)
             {
 #define MAX_EOS_BURST 4
-                mtime_t diff = mdate() - p_sys->last_eos;
+                vlc_tick_t diff = mdate() - p_sys->last_eos;
                 if (diff < VLC_PLAYLIST_EOS_BURST_THRESHOLD)
                 {
                     if (p_sys->eos_burst_count < MAX_EOS_BURST + 6)
@@ -513,7 +513,7 @@ static void *Thread ( void *data )
                         unsigned pow = p_sys->eos_burst_count - MAX_EOS_BURST;
                         unsigned slowdown = 1 << (pow - 1);
                         /* 100ms, 200ms, 400ms, 800ms, 1.6s, 3.2s */
-                        mtime_t deadline = mdate() + slowdown * 100000L; /* usecs */
+                        vlc_tick_t deadline = mdate() + slowdown * 100000L; /* usecs */
                         vlc_cond_timedwait(&p_sys->signal, &p_sys->lock, deadline);
                     }
 

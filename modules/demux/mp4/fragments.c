@@ -66,9 +66,9 @@ stime_t MP4_Fragment_Index_GetTrackStartTime( mp4_fragments_index_t *p_index,
     return 0;
 }
 
-stime_t MP4_Fragment_Index_GetTrackDuration( mp4_fragments_index_t *p_index, unsigned i )
+stime_t MP4_Fragment_Index_GetTracksDuration( const mp4_fragments_index_t *p_index )
 {
-    return p_index->p_times[(size_t)(p_index->i_entries - 1) * p_index->i_tracks + i];
+    return p_index->i_last_time;
 }
 
 bool MP4_Fragments_Index_Lookup( mp4_fragments_index_t *p_index, stime_t *pi_time,
@@ -101,7 +101,7 @@ void MP4_Fragments_Index_Dump( vlc_object_t *p_obj, const mp4_fragments_index_t 
     {
         char *psz_starts = NULL;
 
-        mtime_t i_end;
+        vlc_tick_t i_end;
         if( i + 1 == p_index->i_entries )
             i_end = p_index->i_last_time;
         else

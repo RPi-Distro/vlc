@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: d5af76ffadf4b7afe511f74174ce44b872ed2672 $
+ * $Id: b58e8e60ec4a29b9fe8654b84ef9bbf03e715e9a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -124,12 +124,12 @@ struct decoder_sys_t
     h264_poc_context_t pocctx;
     struct
     {
-        mtime_t pts;
+        vlc_tick_t pts;
         int num;
     } prevdatedpoc;
 
-    mtime_t i_frame_pts;
-    mtime_t i_frame_dts;
+    vlc_tick_t i_frame_pts;
+    vlc_tick_t i_frame_dts;
 
     date_t dts;
 
@@ -381,16 +381,16 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_next_block_flags = 0;
     p_sys->b_recovered = false;
     p_sys->i_recoveryfnum = UINT_MAX;
-    p_sys->i_frame_dts = VLC_TS_INVALID;
-    p_sys->i_frame_pts = VLC_TS_INVALID;
+    p_sys->i_frame_dts = VLC_TICK_INVALID;
+    p_sys->i_frame_pts = VLC_TICK_INVALID;
     p_sys->i_dpb_output_delay = 0;
 
     /* POC */
     h264_poc_context_init( &p_sys->pocctx );
-    p_sys->prevdatedpoc.pts = VLC_TS_INVALID;
+    p_sys->prevdatedpoc.pts = VLC_TICK_INVALID;
 
     date_Init( &p_sys->dts, 30000 * 2, 1001 );
-    date_Set( &p_sys->dts, VLC_TS_INVALID );
+    date_Set( &p_sys->dts, VLC_TICK_INVALID );
 
     /* Setup properties */
     es_format_Copy( &p_dec->fmt_out, &p_dec->fmt_in );
@@ -547,8 +547,8 @@ static block_t *GetCc( decoder_t *p_dec, decoder_cc_desc_t *p_desc )
  ****************************************************************************/
 static void ResetOutputVariables( decoder_sys_t *p_sys )
 {
-    p_sys->i_frame_dts = VLC_TS_INVALID;
-    p_sys->i_frame_pts = VLC_TS_INVALID;
+    p_sys->i_frame_dts = VLC_TICK_INVALID;
+    p_sys->i_frame_pts = VLC_TICK_INVALID;
     p_sys->slice.type = H264_SLICE_TYPE_UNKNOWN;
     p_sys->b_new_sps = false;
     p_sys->b_new_pps = false;
@@ -572,12 +572,12 @@ static void PacketizeReset( void *p_private, bool b_broken )
         p_sys->p_active_sps = NULL;
         /* POC */
         h264_poc_context_init( &p_sys->pocctx );
-        p_sys->prevdatedpoc.pts = VLC_TS_INVALID;
+        p_sys->prevdatedpoc.pts = VLC_TICK_INVALID;
     }
     p_sys->i_next_block_flags = BLOCK_FLAG_DISCONTINUITY;
     p_sys->b_recovered = false;
     p_sys->i_recoveryfnum = UINT_MAX;
-    date_Set( &p_sys->dts, VLC_TS_INVALID );
+    date_Set( &p_sys->dts, VLC_TICK_INVALID );
 }
 static block_t *PacketizeParse( void *p_private, bool *pb_ts_used, block_t *p_block )
 {
@@ -624,8 +624,8 @@ static block_t *ParseNALBlock( decoder_t *p_dec, bool *pb_ts_used, block_t *p_fr
     block_t *p_pic = NULL;
 
     const int i_nal_type = p_frag->p_buffer[4]&0x1f;
-    const mtime_t i_frag_dts = p_frag->i_dts;
-    const mtime_t i_frag_pts = p_frag->i_pts;
+    const vlc_tick_t i_frag_dts = p_frag->i_dts;
+    const vlc_tick_t i_frag_pts = p_frag->i_pts;
 
     if( p_sys->b_slice && (!p_sys->p_active_pps || !p_sys->p_active_sps) )
     {
@@ -773,13 +773,13 @@ static block_t *ParseNALBlock( decoder_t *p_dec, bool *pb_ts_used, block_t *p_fr
     }
 
     *pb_ts_used = false;
-    if( p_sys->i_frame_dts <= VLC_TS_INVALID &&
-        p_sys->i_frame_pts <= VLC_TS_INVALID )
+    if( p_sys->i_frame_dts <= VLC_TICK_INVALID &&
+        p_sys->i_frame_pts <= VLC_TICK_INVALID )
     {
         p_sys->i_frame_dts = i_frag_dts;
         p_sys->i_frame_pts = i_frag_pts;
         *pb_ts_used = true;
-        if( i_frag_dts > VLC_TS_INVALID )
+        if( i_frag_dts > VLC_TICK_INVALID )
             date_Set( &p_sys->dts, i_frag_dts );
     }
 
@@ -965,16 +965,16 @@ static block_t *OutputPicture( decoder_t *p_dec )
     p_pic->i_pts = p_sys->i_frame_pts;
 
     /* Fixup missing timestamps after split (multiple AU/block)*/
-    if( p_pic->i_dts <= VLC_TS_INVALID )
+    if( p_pic->i_dts <= VLC_TICK_INVALID )
         p_pic->i_dts = date_Get( &p_sys->dts );
 
     if( p_sys->slice.type == H264_SLICE_TYPE_I )
-        p_sys->prevdatedpoc.pts = VLC_TS_INVALID;
+        p_sys->prevdatedpoc.pts = VLC_TICK_INVALID;
 
-    if( p_pic->i_pts == VLC_TS_INVALID )
+    if( p_pic->i_pts == VLC_TICK_INVALID )
     {
-        if( p_sys->prevdatedpoc.pts > VLC_TS_INVALID &&
-            date_Get( &p_sys->dts ) != VLC_TS_INVALID )
+        if( p_sys->prevdatedpoc.pts > VLC_TICK_INVALID &&
+            date_Get( &p_sys->dts ) != VLC_TICK_INVALID )
         {
             date_t pts = p_sys->dts;
             date_Set( &pts, p_sys->prevdatedpoc.pts );
@@ -996,7 +996,7 @@ static block_t *OutputPicture( decoder_t *p_dec )
             p_pic->i_pts = p_pic->i_dts;
         }
         else if( p_sys->slice.type == H264_SLICE_TYPE_I &&
-                 date_Get( &p_sys->dts ) != VLC_TS_INVALID )
+                 date_Get( &p_sys->dts ) != VLC_TICK_INVALID )
         {
             /* Hell no PTS on IDR. We're totally blind */
             date_t pts = p_sys->dts;
@@ -1004,15 +1004,15 @@ static block_t *OutputPicture( decoder_t *p_dec )
             p_pic->i_pts = date_Get( &pts );
         }
     }
-    else if( p_pic->i_dts == VLC_TS_INVALID &&
+    else if( p_pic->i_dts == VLC_TICK_INVALID &&
              CanSwapPTSwithDTS( &p_sys->slice, p_sps ) )
     {
         p_pic->i_dts = p_pic->i_pts;
-        if( date_Get( &p_sys->dts ) == VLC_TS_INVALID )
+        if( date_Get( &p_sys->dts ) == VLC_TICK_INVALID )
             date_Set( &p_sys->dts, p_pic->i_pts );
     }
 
-    if( p_pic->i_pts > VLC_TS_INVALID )
+    if( p_pic->i_pts > VLC_TICK_INVALID )
     {
         p_sys->prevdatedpoc.pts = p_pic->i_pts;
         p_sys->prevdatedpoc.num = PictureOrderCount;
@@ -1034,10 +1034,10 @@ static block_t *OutputPicture( decoder_t *p_dec )
 #endif
 
     /* save for next pic fixups */
-    if( date_Get( &p_sys->dts ) != VLC_TS_INVALID )
+    if( date_Get( &p_sys->dts ) != VLC_TICK_INVALID )
     {
         if( p_sys->i_next_block_flags & BLOCK_FLAG_DISCONTINUITY )
-            date_Set( &p_sys->dts, VLC_TS_INVALID );
+            date_Set( &p_sys->dts, VLC_TICK_INVALID );
         else
             date_Increment( &p_sys->dts, i_num_clock_ts );
     }

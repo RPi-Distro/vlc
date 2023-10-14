@@ -2,7 +2,7 @@
  * stream_io_callback.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: d2c72a4214ebbe3d3b9009a4a61acd2d22fcec9f $
+ * $Id: ea81b2d1b4bad0209cf41c789c52e6d8bbdb02b8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -24,7 +24,7 @@
 #include "mkv.hpp"
 
 /*****************************************************************************
- * Stream managment
+ * Stream management
  *****************************************************************************/
 class vlc_stream_io_callback: public IOCallback
 {

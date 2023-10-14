@@ -187,6 +187,7 @@ host_triplet = @host@
 @HAVE_OS2_TRUE@am__append_25 = -avoid-version
 @HAVE_DBUS_TRUE@am__append_26 = $(DBUS_LIBS)
 @HAVE_DARWIN_TRUE@am__append_27 = -Xlinker -install_name -Xlinker @rpath/libvlccore.dylib
+@HAVE_DARWIN_TRUE@@HAVE_OSX_FALSE@am__append_28 = -Wl,-framework,CFNetwork
 check_PROGRAMS = test_block$(EXEEXT) test_dictionary$(EXEEXT) \
 	test_i18n_atof$(EXEEXT) test_interrupt$(EXEEXT) \
 	test_md5$(EXEEXT) test_picture_pool$(EXEEXT) \
@@ -1873,7 +1874,8 @@ libvlccore_la_LIBADD = $(LIBS_libvlccore) ../compat/libcompat.la \
 	$(am__append_22) $(am__append_26)
 libvlccore_la_LDFLAGS = $(LDFLAGS_libvlccore) -no-undefined \
 	-export-symbols $(srcdir)/libvlccore.sym -version-info 9:1:0 \
-	$(am__append_24) $(am__append_25) $(am__append_27)
+	$(am__append_24) $(am__append_25) $(am__append_27) \
+	$(am__append_28)
 libvlccore_la_DEPENDENCIES = libvlccore.sym $(am__append_23)
 MOSTLYCLEANFILES = fourcc_gen$(BUILDEXEEXT)
 TESTS = $(check_PROGRAMS) check_symbols

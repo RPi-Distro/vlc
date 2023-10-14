@@ -179,10 +179,10 @@ struct sout_access_out_sys_t
     char *psz_indexPath;
     char *psz_indexUrl;
     char *psz_keyfile;
-    mtime_t i_keyfile_modification;
-    mtime_t i_opendts;
-    mtime_t i_dts_offset;
-    mtime_t  i_seglenm;
+    vlc_tick_t i_keyfile_modification;
+    vlc_tick_t i_opendts;
+    vlc_tick_t i_dts_offset;
+    vlc_tick_t  i_seglenm;
     uint32_t i_segment;
     size_t  i_seglen;
     float   f_seglen;
@@ -254,7 +254,7 @@ static int Open( vlc_object_t *p_this )
     vlc_array_init( &p_sys->segments_t );
 
     p_sys->stuffing_size = 0;
-    p_sys->i_opendts = VLC_TS_INVALID;
+    p_sys->i_opendts = VLC_TICK_INVALID;
     p_sys->i_dts_offset  = 0;
 
     p_sys->psz_indexPath = NULL;
@@ -340,7 +340,7 @@ static int CryptSetup( sout_access_out_t *p_access, char *key_file )
                                          GCRY_CIPHER_MODE_CBC, 0 );
     if( err )
     {
-        msg_Err( p_access, "Openin AES Cipher failed: %s", gpg_strerror(err));
+        msg_Err( p_access, "Opening AES Cipher failed: %s", gpg_strerror(err));
         free( keyfile );
         return VLC_EGENERIC;
     }
@@ -514,7 +514,7 @@ static void destroySegment( output_segment_t *segment )
 }
 
 /************************************************************************
- * segmentAmountNeeded: check that playlist has atleast 3*p_sys->i_seglength of segments
+ * segmentAmountNeeded: check that playlist has at least 3*p_sys->i_seglength of segments
  * return how many segments are needed for that (max of p_sys->i_segment )
  ************************************************************************/
 static uint32_t segmentAmountNeeded( sout_access_out_sys_t *p_sys )
@@ -947,7 +947,7 @@ static ssize_t writeSegment( sout_access_out_t *p_access )
     msg_Dbg( p_access, "Writing all full segments" );
 
     block_t *output = p_sys->full_segments;
-    mtime_t output_last_length = 0;
+    vlc_tick_t output_last_length = 0;
     if( output )
         output_last_length = output->i_length;
     if( *p_sys->full_segments_end )
@@ -956,10 +956,10 @@ static ssize_t writeSegment( sout_access_out_t *p_access )
     p_sys->full_segments_end = &p_sys->full_segments;
 
     ssize_t i_write=0;
-    bool crypted = false;
+    bool encrypted = false;
     while( output )
     {
-        if( p_sys->key_uri && !crypted )
+        if( p_sys->key_uri && !encrypted )
         {
             if( p_sys->stuffing_size )
             {
@@ -986,7 +986,7 @@ static ssize_t writeSegment( sout_access_out_t *p_access )
                 msg_Err( p_access, "Encryption failure: %s ", gpg_strerror(err) );
                 return -1;
             }
-            crypted=true;
+            encrypted=true;
 
         }
 
@@ -1007,7 +1007,7 @@ static ssize_t writeSegment( sout_access_out_t *p_access )
            block_t *p_next = output->p_next;
            block_Release (output);
            output = p_next;
-           crypted=false;
+           encrypted=false;
         }
         else
         {

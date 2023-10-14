@@ -2,7 +2,7 @@
  * VLCStatusBarIcon.m: Status bar icon controller/delegate
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 936b1301b36fe5a25ffec7c978e3e4dcc57ac292 $
+ * $Id: c108627a1c974501c6e8f7ced9d08f0e36aa3968 $
  *
  * Authors: Goran Dokic <vlc at 8hz dot com>
  *
@@ -108,7 +108,7 @@
 
     [randButton.cell accessibilitySetOverrideValue:_NS("Toggle random order playback")
                                       forAttribute:NSAccessibilityDescriptionAttribute];
-    
+
 
     // Populate menu items with localized strings
     [showMainWindowItem setTitle:_NS("Show Main Window")];
@@ -120,7 +120,7 @@
     // Set our selves up as delegate, to receive menuNeedsUpdate messages, so
     // we can update our menu as needed/before it's drawn
     [_vlcStatusBarIconMenu setDelegate:self];
-    
+
     // Register notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateNowPlayingInfo)
@@ -258,7 +258,7 @@
         remainingTime = [[VLCStringUtility sharedInstance] getCurrentTimeAsString:input negative:YES];
 
         /* Check item duration */
-        mtime_t dur = input_item_GetDuration(input_GetItem(input));
+        vlc_tick_t dur = input_item_GetDuration(input_GetItem(input));
 
         if (dur == -1) {
             /* Unknown duration, possibly due to buffering */

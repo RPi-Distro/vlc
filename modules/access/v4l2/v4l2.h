@@ -18,7 +18,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <linux/videodev2.h>
+#if defined(HAVE_LINUX_VIDEODEV2_H)
+#   include <linux/videodev2.h>
+#elif defined(HAVE_SYS_VIDEOIO_H)
+#   include <sys/ioccom.h>
+#   include <sys/videoio.h>
+#endif
 
 /* libv4l2 functions */
 extern int (*v4l2_fd_open) (int, int);
@@ -55,7 +60,7 @@ int StartUserPtr (vlc_object_t *, int);
 struct buffer_t *StartMmap (vlc_object_t *, int, uint32_t *);
 void StopMmap (int, struct buffer_t *, uint32_t);
 
-mtime_t GetBufferPTS (const struct v4l2_buffer *);
+vlc_tick_t GetBufferPTS (const struct v4l2_buffer *);
 block_t* GrabVideo (vlc_object_t *, int, const struct buffer_t *);
 
 #ifdef ZVBI_COMPILED

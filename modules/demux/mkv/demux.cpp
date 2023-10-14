@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: c32ef28f0f6826720eb27f0461c97df7f5a6065c $
+ * $Id: 154deb00528efef889bba8c5ddb0dcfbd7dc5859 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -720,7 +720,7 @@ bool demux_sys_t::FreeUnused()
     return !streams.empty() && !opened_segments.empty();
 }
 
-bool demux_sys_t::PreparePlayback( virtual_segment_c & new_vsegment, mtime_t i_mk_date )
+bool demux_sys_t::PreparePlayback( virtual_segment_c & new_vsegment, vlc_tick_t i_mk_date )
 {
     if ( p_current_vsegment != &new_vsegment )
     {

@@ -2,7 +2,7 @@
  * dirac.c
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: fc4a0ded8e6b9676c572072220820a18be9805fb $
+ * $Id: 60f62c61930a639d0c1d54f5e22383c176263b72 $
  *
  * Authors: David Flynn <davidf@rd.bbc.co.uk>
  *
@@ -102,25 +102,25 @@ struct decoder_sys_t
     /* recovered timestamp from bytesteram for use
      * by synchroniser: should only get reset by the
      * synchronizer upon a discontinuity sentinel */
-    mtime_t i_sync_pts;
-    mtime_t i_sync_dts;
+    vlc_tick_t i_sync_pts;
+    vlc_tick_t i_sync_dts;
 
     /* build encapsulation unit state */
     block_t *p_eu; /*< Current encapsulation unit being built */
     block_t **pp_eu_last;
     uint32_t u_eu_last_npo; /* last next_parse_offset at input to encapsulation */
-    mtime_t i_eu_pts;
-    mtime_t i_eu_dts;
+    vlc_tick_t i_eu_pts;
+    vlc_tick_t i_eu_dts;
 
     /* timestamp generator state */
     date_t dts; /*< timegen decode clock, increments at picture rate */
     bool b_dts; /*< timegen decode clock valid */
 
     bool b_pts; /*< timegen presentation time valid */
-    mtime_t i_pts; /*< timegen presentation time of picture u_pts_picnum */
+    vlc_tick_t i_pts; /*< timegen presentation time of picture u_pts_picnum */
     uint32_t u_pts_picnum; /*< picture number of timegen presentation time */
 
-    mtime_t i_pts_offset; /*< maximum time between pts and dts */
+    vlc_tick_t i_pts_offset; /*< maximum time between pts and dts */
 
     /* p_outqueue is the list of encapsulation units that have been
      * fed to the timegenerator.  the timegenerator stamps them in
@@ -143,8 +143,8 @@ struct decoder_sys_t
     } reorder_buf; /*< reorder buffer, used by timegenerator */
 
     /* packetizer state */
-    mtime_t i_pts_last_out; /*< last output [from packetizer] pts */
-    mtime_t i_dts_last_out; /*< last output [from packetizer] dts */
+    vlc_tick_t i_pts_last_out; /*< last output [from packetizer] pts */
+    vlc_tick_t i_dts_last_out; /*< last output [from packetizer] dts */
 
     struct seq_hdr_t {
         uint32_t u_width;
@@ -313,7 +313,7 @@ static void dirac_RecoverTimestamps ( decoder_t *p_dec, size_t i_length )
     i_offset += i_length;
     for(; p_block != NULL; p_block = p_block->p_next )
     {
-        if( p_sys->i_sync_pts <= VLC_TS_INVALID && p_sys->i_sync_dts <= VLC_TS_INVALID )
+        if( p_sys->i_sync_pts <= VLC_TICK_INVALID && p_sys->i_sync_dts <= VLC_TICK_INVALID )
         {
             /* oldest timestamp wins */
             p_sys->i_sync_pts = p_block->i_pts;
@@ -321,7 +321,7 @@ static void dirac_RecoverTimestamps ( decoder_t *p_dec, size_t i_length )
         }
         /* clear timestamps -- more than one data unit can come from a block */
         p_block->i_flags = 0;
-        p_block->i_pts = p_block->i_dts = VLC_TS_INVALID;
+        p_block->i_pts = p_block->i_dts = VLC_TICK_INVALID;
         if( i_offset < p_block->i_buffer )
             break;
         i_offset -= p_block->i_buffer;
@@ -340,7 +340,7 @@ static void dirac_BackdateDTS( block_t *p_block, block_t *p_last, date_t *p_dts 
     {
         if( pp_array[n]->i_flags & DIRAC_NON_DATED )
             continue;
-        if( pp_array[n]->i_dts <= VLC_TS_INVALID )
+        if( pp_array[n]->i_dts <= VLC_TICK_INVALID )
             pp_array[n]->i_dts = date_Decrement( p_dts, 1 );
     }
     free( pp_array );
@@ -358,7 +358,7 @@ static void dirac_BackdatePTS( block_t *p_block, block_t *p_last, date_t *p_pts,
     {
         if( pp_array[n]->i_flags & DIRAC_NON_DATED )
             continue;
-        if( pp_array[n]->i_dts > VLC_TS_INVALID )
+        if( pp_array[n]->i_dts > VLC_TICK_INVALID )
             continue;
         dirac_block_encap_t *dbe = dirac_GetBlockEncap( pp_array[n] );
         int32_t u_pic_num = dbe ? dbe->u_picture_number : 0;
@@ -800,7 +800,7 @@ sync_fail:
 
     p_block->i_pts = p_sys->i_sync_pts;
     p_block->i_dts = p_sys->i_sync_dts;
-    p_sys->i_sync_pts = p_sys->i_sync_dts = VLC_TS_INVALID;
+    p_sys->i_sync_pts = p_sys->i_sync_dts = VLC_TICK_INVALID;
 
     /* recover any new timestamps from the data that is about to be consumed */
     dirac_RecoverTimestamps( p_dec, p_sys->i_offset );
@@ -861,7 +861,7 @@ static int dirac_InspectDataUnit( decoder_t *p_dec, block_t **pp_block, block_t 
         /* timestamps apply to pictures only */
         p_eu->i_dts = p_sys->i_eu_dts;
         p_eu->i_pts = p_sys->i_eu_pts;
-        p_sys->i_eu_dts = p_sys->i_eu_pts = VLC_TS_INVALID;
+        p_sys->i_eu_dts = p_sys->i_eu_pts = VLC_TICK_INVALID;
 
         if( !p_sys->b_seen_seq_hdr )
         {
@@ -959,12 +959,12 @@ static block_t *dirac_BuildEncapsulationUnit( decoder_t *p_dec, block_t *p_block
 
     assert(p_block->i_buffer >= 13 && 0x42424344 == GetDWBE( p_block->p_buffer ));
 
-    if( p_sys->i_eu_pts <= VLC_TS_INVALID && p_sys->i_eu_dts <= VLC_TS_INVALID )
+    if( p_sys->i_eu_pts <= VLC_TICK_INVALID && p_sys->i_eu_dts <= VLC_TICK_INVALID )
     {
         /* earliest block with pts/dts gets to set the pts/dts for the dated
          * encapsulation unit as a whole */
         /* NB, the 'earliest block' criteria is aribtary */
-        if( p_block->i_pts > VLC_TS_INVALID || p_block->i_dts > VLC_TS_INVALID )
+        if( p_block->i_pts > VLC_TICK_INVALID || p_block->i_dts > VLC_TICK_INVALID )
         {
             p_sys->i_eu_pts = p_block->i_pts;
             p_sys->i_eu_dts = p_block->i_dts;
@@ -1081,7 +1081,7 @@ static int dirac_TimeGenPush( decoder_t *p_dec, block_t *p_block_in )
      * Stage 1, sync to input timestamps, backdate timestamps for old
      * EUs that are in the outqueue with missing dates
      */
-    if( p_block_in->i_dts > VLC_TS_INVALID )
+    if( p_block_in->i_dts > VLC_TICK_INVALID )
     do {
         /* if timestamps exist, sync to them */
         if( p_sys->b_dts )
@@ -1092,7 +1092,7 @@ static int dirac_TimeGenPush( decoder_t *p_dec, block_t *p_block_in )
         dirac_BackdateDTS( p_sys->p_outqueue, p_block_in, &dts );
     } while( 0 );
 
-    if( p_block_in->i_pts > VLC_TS_INVALID )
+    if( p_block_in->i_pts > VLC_TICK_INVALID )
     do {
         /* if timestamps exist, sync to them */
         p_sys->u_pts_picnum = u_picnum;
@@ -1118,13 +1118,13 @@ static int dirac_TimeGenPush( decoder_t *p_dec, block_t *p_block_in )
     /*
      * Stage 3, for block_in, interpolate any missing timestamps
      */
-    if( p_sys->b_dts && p_block_in->i_dts <= VLC_TS_INVALID )
+    if( p_sys->b_dts && p_block_in->i_dts <= VLC_TICK_INVALID )
     {
         /* dts has previously been seen, but not this time, interpolate */
         p_block_in->i_dts = date_Increment( &p_sys->dts, 1 );
     }
 
-    if( p_sys->b_pts && p_block_in->i_pts <= VLC_TS_INVALID )
+    if( p_sys->b_pts && p_block_in->i_pts <= VLC_TICK_INVALID )
     {
         /* pts has previously been seen, but not this time, interpolate */
         date_t pts = p_sys->dts;
@@ -1299,8 +1299,8 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
             p_block->i_dts = p_sys->i_dts_last_out;
             p_block->i_pts = p_sys->i_pts_last_out;
         }
-        else if( p_block->i_pts <= VLC_TS_INVALID ) break;
-        else if( p_block->i_dts <= VLC_TS_INVALID ) break;
+        else if( p_block->i_pts <= VLC_TICK_INVALID ) break;
+        else if( p_block->i_dts <= VLC_TICK_INVALID ) break;
 
         p_sys->i_dts_last_out = p_block->i_dts;
         p_sys->i_pts_last_out = p_block->i_pts;
@@ -1311,14 +1311,14 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
         p_block->i_flags &= ~BLOCK_FLAG_PRIVATE_MASK;
         block_ChainLastAppend( &pp_output, p_block );
 
-        mtime_t i_delay = p_block->i_pts - p_block->i_dts;
+        vlc_tick_t i_delay = p_block->i_pts - p_block->i_dts;
         if( i_delay < 0 )
             msg_Err( p_dec, "pts - dts is negative(%"PRId64"): incorrect RoB size", i_delay );
     }
 
     if( i_flushing )
     {
-        p_sys->i_eu_dts = p_sys->i_eu_pts = VLC_TS_INVALID;
+        p_sys->i_eu_dts = p_sys->i_eu_pts = VLC_TICK_INVALID;
 
         /* reset timegen state (except synchronizer) */
         p_sys->b_seen_seq_hdr = false;
@@ -1348,7 +1348,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
         while( p_block )
         {
             block_t *p_block_next = p_block->p_next;
-            if( p_block->i_pts > VLC_TS_INVALID && p_block->i_dts > VLC_TS_INVALID )
+            if( p_block->i_pts > VLC_TICK_INVALID && p_block->i_dts > VLC_TICK_INVALID )
                 break;
             dirac_ReorderDequeueAndReleaseBlock( p_dec, p_block );
             p_sys->p_outqueue = p_block = p_block_next;
@@ -1383,9 +1383,9 @@ static int Open( vlc_object_t *p_this )
     if( !p_sys )
         return VLC_ENOMEM;
 
-    p_sys->i_eu_pts = p_sys->i_eu_dts = VLC_TS_INVALID;
-    p_sys->i_sync_pts = p_sys->i_sync_dts = VLC_TS_INVALID;
-    p_sys->i_dts_last_out = p_sys->i_pts_last_out = VLC_TS_INVALID;
+    p_sys->i_eu_pts = p_sys->i_eu_dts = VLC_TICK_INVALID;
+    p_sys->i_sync_pts = p_sys->i_sync_dts = VLC_TICK_INVALID;
+    p_sys->i_dts_last_out = p_sys->i_pts_last_out = VLC_TICK_INVALID;
 
     p_sys->i_state = NOT_SYNCED;
     block_BytestreamInit( &p_sys->bytestream );

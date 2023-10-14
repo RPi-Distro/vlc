@@ -2,7 +2,7 @@
  * spudec.c : SPU decoder thread
  *****************************************************************************
  * Copyright (C) 2000-2001, 2006 VLC authors and VideoLAN
- * $Id: f487c94c9ab6d7abb7c35e8aa72c28e9b802637e $
+ * $Id: 0f5c9d5869c3d90b6c3f4a3bf9fd394893f88d53 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -216,7 +216,7 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
     }
 
     if( p_sys->i_spu_size <= 0 &&
-        ( p_block->i_pts <= VLC_TS_INVALID || p_block->i_buffer < 4 ) )
+        ( p_block->i_pts <= VLC_TICK_INVALID || p_block->i_buffer < 4 ) )
     {
         msg_Dbg( p_dec, "invalid starting packet (size < 4 or pts <=0)" );
         msg_Dbg( p_dec, "spu size: %d, i_pts: %"PRId64" i_buffer: %zu",

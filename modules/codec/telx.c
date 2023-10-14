@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2007 Vincent Penne
  * Some code converted from ProjectX java dvb decoder (c) 2001-2005 by dvb.matt
- * $Id: b0a4e773f2742f71ac735ddc74f510fa7531279a $
+ * $Id: ffbaae513268c2d11e836c5437eff10c5ece04d4 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -94,7 +94,7 @@ struct decoder_sys_t
   bool        b_is_subtitle[9];
   char        ppsz_lines[32][128];
   char        psz_prev_text[512];
-  mtime_t     prev_pts;
+  vlc_tick_t  prev_pts;
   int         i_page[9];
   bool        b_erase[9];
   const uint16_t *  pi_active_national_set[9];

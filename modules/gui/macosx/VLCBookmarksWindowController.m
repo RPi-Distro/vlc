@@ -2,7 +2,7 @@
  * VLCBookmarksWindowController.m: MacOS X Bookmarks window
  *****************************************************************************
  * Copyright (C) 2005 - 2015 VLC authors and VideoLAN
- * $Id: e80f2dbf69a883b1fd723e94822979a60555d95b $
+ * $Id: 6785121314405919d23c1b1b53c3f8a3b2cdd79f $
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *
@@ -289,7 +289,7 @@
 {
     assert(bookmark != NULL);
 
-    mtime_t total = bookmark->i_time_offset;
+    vlc_tick_t total = bookmark->i_time_offset;
     uint64_t hour = ( total / ( CLOCK_FREQ * 3600 ) );
     uint64_t min = ( total % ( CLOCK_FREQ * 3600 ) ) / ( CLOCK_FREQ * 60 );
     float    sec = ( total % ( CLOCK_FREQ * 60 ) ) / ( CLOCK_FREQ * 1. );

@@ -2,7 +2,7 @@
  * video_widgets.c : OSD widgets manipulation functions
  *****************************************************************************
  * Copyright (C) 2004-2010 VLC authors and VideoLAN
- * $Id: d4735e591a0724cc5585dc686f4ffd9d0e6fe415 $
+ * $Id: 7d52f751ef4c179819ef39fd8a800f8845fcf106 $
  *
  * Author: Yoann Peronneau <yoann@videolan.org>
  *         Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -257,7 +257,7 @@ struct subpicture_updater_sys_t {
 static int OSDWidgetValidate(subpicture_t *subpic,
                            bool has_src_changed, const video_format_t *fmt_src,
                            bool has_dst_changed, const video_format_t *fmt_dst,
-                           mtime_t ts)
+                           vlc_tick_t ts)
 {
     VLC_UNUSED(subpic); VLC_UNUSED(ts);
     VLC_UNUSED(fmt_src); VLC_UNUSED(has_src_changed);
@@ -271,7 +271,7 @@ static int OSDWidgetValidate(subpicture_t *subpic,
 static void OSDWidgetUpdate(subpicture_t *subpic,
                           const video_format_t *fmt_src,
                           const video_format_t *fmt_dst,
-                          mtime_t ts)
+                          vlc_tick_t ts)
 {
     subpicture_updater_sys_t *sys = subpic->updater.p_sys;
     VLC_UNUSED(fmt_src); VLC_UNUSED(ts);

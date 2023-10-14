@@ -2,7 +2,7 @@
  * jack.c : JACK audio output module
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 5710fed72d0c4872b106961190e4ee35dfe1f7d2 $
+ * $Id: da134dc6f4c54937dd349f8d96c90a42d436c1a7 $
  *
  * Authors: Cyril Deguet <asmax _at_ videolan.org>
  *          Jon Griffiths <jon_p_griffiths _At_ yahoo _DOT_ com>
@@ -62,7 +62,7 @@ struct aout_sys_t
     jack_nframes_t latency;
     float soft_gain;
     bool soft_mute;
-    mtime_t paused; /**< Time when (last) paused */
+    vlc_tick_t paused; /**< Time when (last) paused */
 };
 
 /*****************************************************************************
@@ -71,9 +71,9 @@ struct aout_sys_t
 static int  Open         ( vlc_object_t * );
 static void Close        ( vlc_object_t * );
 static void Play         ( audio_output_t * p_aout, block_t * p_block );
-static void Pause        ( audio_output_t *aout, bool paused, mtime_t date );
+static void Pause        ( audio_output_t *aout, bool paused, vlc_tick_t date );
 static void Flush        ( audio_output_t *p_aout, bool wait );
-static int  TimeGet      ( audio_output_t *, mtime_t * );
+static int  TimeGet      ( audio_output_t *, vlc_tick_t * );
 static int  Process      ( jack_nframes_t i_frames, void *p_arg );
 static int  GraphChange  ( void *p_arg );
 
@@ -125,7 +125,7 @@ static int Start( audio_output_t *p_aout, audio_sample_format_t *restrict fmt )
         return VLC_EGENERIC;
 
     p_sys->latency = 0;
-    p_sys->paused = VLC_TS_INVALID;
+    p_sys->paused = VLC_TICK_INVALID;
 
     /* Connect to the JACK server */
     psz_name = var_InheritString( p_aout, "jack-name" );
@@ -315,7 +315,7 @@ static void Play (audio_output_t * p_aout, block_t * p_block)
 /**
  * Pause or unpause playback
  */
-static void Pause(audio_output_t *aout, bool paused, mtime_t date)
+static void Pause(audio_output_t *aout, bool paused, vlc_tick_t date)
 {
     aout_sys_t *sys = aout->sys;
 
@@ -324,7 +324,7 @@ static void Pause(audio_output_t *aout, bool paused, mtime_t date)
     } else {
         date -= sys->paused;
         msg_Dbg(aout, "resuming after %"PRId64" us", date);
-        sys->paused = VLC_TS_INVALID;
+        sys->paused = VLC_TICK_INVALID;
     }
 }
 
@@ -336,7 +336,7 @@ static void Flush(audio_output_t *p_aout, bool wait)
     /* Sleep if wait was requested */
     if( wait )
     {
-        mtime_t delay;
+        vlc_tick_t delay;
         if (!TimeGet(p_aout, &delay))
             msleep(delay);
     }
@@ -345,7 +345,7 @@ static void Flush(audio_output_t *p_aout, bool wait)
     jack_ringbuffer_reset(rb);
 }
 
-static int TimeGet(audio_output_t *p_aout, mtime_t *delay)
+static int TimeGet(audio_output_t *p_aout, vlc_tick_t *delay)
 {
     struct aout_sys_t * p_sys = p_aout->sys;
     jack_ringbuffer_t *rb = p_sys->p_jack_ringbuffer;
@@ -371,7 +371,7 @@ int Process( jack_nframes_t i_frames, void *p_arg )
 
     /* Get the next audio data buffer unless paused */
 
-    if( p_sys->paused == VLC_TS_INVALID )
+    if( p_sys->paused == VLC_TICK_INVALID )
         frames_from_rb = i_frames;
 
     /* Get the JACK buffers to write to */

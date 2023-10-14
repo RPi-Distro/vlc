@@ -2,7 +2,7 @@
  * rtsp.c: rtsp VoD server module
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: 74091f07180ec9542953149e2ee55622066d5099 $
+ * $Id: 51ea2f8f8d6f917a3dd36afb1b5a983bf7fc3d70 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -159,7 +159,7 @@ struct vod_media_t
     rtsp_client_t **rtsp;
 
     /* Infos */
-    mtime_t i_length;
+    vlc_tick_t i_length;
 };
 
 struct vod_sys_t

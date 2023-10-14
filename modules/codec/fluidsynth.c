@@ -2,7 +2,7 @@
  * fluidsynth.c: Software MIDI synthesizer using libfluidsynth
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 1212603281abf50bdfc3d5c9eded42eeb4f9dbdd $
+ * $Id: c68c222f99feb5f00200716561caa710dae2d631 $
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -201,7 +201,7 @@ static void Flush (decoder_t *p_dec)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    date_Set (&p_sys->end_date, VLC_TS_INVALID);
+    date_Set (&p_sys->end_date, VLC_TICK_INVALID);
     //fluid_synth_system_reset (p_sys->synth);
     fluid_synth_program_reset (p_sys->synth);
     for (unsigned channel = 0; channel < 16; channel++)
@@ -227,7 +227,7 @@ static int DecodeBlock (decoder_t *p_dec, block_t *p_block)
         }
     }
 
-    if (p_block->i_pts > VLC_TS_INVALID && !date_Get (&p_sys->end_date))
+    if (p_block->i_pts > VLC_TICK_INVALID && !date_Get (&p_sys->end_date))
         date_Set (&p_sys->end_date, p_block->i_pts);
     else
     if (p_block->i_pts < date_Get (&p_sys->end_date))

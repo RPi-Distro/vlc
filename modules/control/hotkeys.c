@@ -2,7 +2,7 @@
  * hotkeys.c: Hotkey handling for vlc
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 91ebde82c1a9018b5f73257024bada7a12328118 $
+ * $Id: a699d4fc12a1c4b6528917f7eecb90a8333a40cd $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -942,7 +942,7 @@ static int PutAction( intf_thread_t *p_intf, input_thread_t *p_input,
                     break;
             }
 
-            mtime_t it = var_InheritInteger( p_input, varname );
+            vlc_tick_t it = var_InheritInteger( p_input, varname );
             if( it < 0 )
                 break;
             var_SetInteger( p_input, "time-offset", it * sign * CLOCK_FREQ );

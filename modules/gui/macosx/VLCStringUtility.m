@@ -2,7 +2,7 @@
  * VLCStringUtility.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: 2a5c6761115311de2fd5f18269a2416a80541020 $
+ * $Id: a4755d7a8a907852a800b674db292af978d1e735 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -109,9 +109,9 @@ NSString *const kVLCMediaUnknown = @"Unknown";
     char psz_time[MSTRTIME_MAX_SIZE];
     int64_t t = var_GetInteger(p_input, "time");
 
-    mtime_t dur = input_item_GetDuration(input_GetItem(p_input));
+    vlc_tick_t dur = input_item_GetDuration(input_GetItem(p_input));
     if (b_negative && dur > 0) {
-        mtime_t remaining = 0;
+        vlc_tick_t remaining = 0;
         if (dur > t)
             remaining = dur - t;
         return [NSString stringWithFormat: @"-%s", secstotimestr(psz_time, (remaining / 1000000))];

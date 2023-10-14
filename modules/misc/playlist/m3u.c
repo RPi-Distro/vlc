@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist export module
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 6a31f1463d1bb3147c113307178bc8ca0514c00d $
+ * $Id: f74045c81ebb1370a8f91800242cc2263a0ed3dc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -84,7 +84,7 @@ static void DoChildren( playlist_export_t *p_export, playlist_item_t *p_root,
         {
             char *psz_artist = input_item_GetArtist( p_current->p_input );
             if( psz_artist == NULL ) psz_artist = strdup( "" );
-            mtime_t i_duration = input_item_GetDuration( p_current->p_input );
+            vlc_tick_t i_duration = input_item_GetDuration( p_current->p_input );
             if( psz_artist && *psz_artist )
             {
                 /* write EXTINF with artist */

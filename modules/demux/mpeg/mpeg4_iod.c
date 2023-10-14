@@ -563,7 +563,7 @@ sl_header_data DecodeSLHeader( unsigned i_data, const uint8_t *p_data,
         struct
         {
             bool *p_b;
-            mtime_t *p_t;
+            vlc_tick_t *p_t;
         } const timestamps[2] = { { &b_has_dts, &ret.i_dts }, { &b_has_cts, &ret.i_pts } };
 
         bs_read( &s, sl->i_packet_seqnum_length );
@@ -602,7 +602,7 @@ sl_header_data DecodeSLHeader( unsigned i_data, const uint8_t *p_data,
                     i_read |= bs_read( &s, i_bits );
                 }
                 if( sl->i_timestamp_resolution )
-                    *(timestamps[i].p_t) = VLC_TS_0 + CLOCK_FREQ * i_read / sl->i_timestamp_resolution;
+                    *(timestamps[i].p_t) = VLC_TICK_0 + CLOCK_FREQ * i_read / sl->i_timestamp_resolution;
             }
 
             bs_read( &s, sl->i_AU_length );

@@ -2,7 +2,7 @@
  * x11_loop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 0aa682e0a32a57fce5429a0ebd5ea01fb5f9ba36 $
+ * $Id: 7318af1600a3bcad735dcfb9ccd1dabe0a2a0ef4 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -254,7 +254,7 @@ void X11Loop::handleX11Event()
             if( event.type == ButtonPress &&
                 event.xbutton.button == 1 )
             {
-                mtime_t time = mdate();
+                vlc_tick_t time = mdate();
                 int x, y;
                 pOsFactory->getMousePos( x, y );
                 if( time - m_lastClickTime < m_dblClickDelay &&

@@ -2,7 +2,7 @@
  * kate.c : a decoder for the kate bitstream format
  *****************************************************************************
  * Copyright (C) 2000-2008 VLC authors and VideoLAN
- * $Id: cbcb0090c44de7bf44125f22b1bf75a763ee2134 $
+ * $Id: e65daba61c19790ded07d9188f1d05a3f345e2b0 $
  *
  * Authors: Vincent Penquerc'h <ogg.k.ogg.k@googlemail.com>
  *
@@ -86,8 +86,8 @@ struct decoder_sys_t
     /*
      * Common properties
      */
-    mtime_t i_pts;
-    mtime_t i_max_stop;
+    vlc_tick_t i_pts;
+    vlc_tick_t i_max_stop;
 
     /* decoder_sys_t is shared between decoder and spu units */
     vlc_mutex_t lock;
@@ -118,7 +118,7 @@ struct decoder_sys_t
 struct subpicture_updater_sys_t
 {
     decoder_sys_t *p_dec_sys;
-    mtime_t        i_start;
+    vlc_tick_t     i_start;
 };
 
 
@@ -365,7 +365,7 @@ static int OpenDecoder( vlc_object_t *p_this )
 #endif
     p_sys->b_ready = false;
     p_sys->i_pts =
-    p_sys->i_max_stop = VLC_TS_INVALID;
+    p_sys->i_max_stop = VLC_TICK_INVALID;
 
     kate_comment_init( &p_sys->kc );
     kate_info_init( &p_sys->ki );
@@ -462,7 +462,7 @@ static void Flush( decoder_t *p_dec )
     tiger_renderer_seek( p_sys->p_tr, 0 );
     vlc_mutex_unlock( &p_sys->lock );
 #endif
-    p_sys->i_max_stop = VLC_TS_INVALID;
+    p_sys->i_max_stop = VLC_TICK_INVALID;
 }
 
 /****************************************************************************
@@ -488,7 +488,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t *p_block )
 #endif
         if( p_block->i_flags & BLOCK_FLAG_CORRUPTED )
         {
-            p_sys->i_max_stop = VLC_TS_INVALID;
+            p_sys->i_max_stop = VLC_TICK_INVALID;
             block_Release( p_block );
             return NULL;
         }
@@ -625,7 +625,7 @@ static void *ProcessPacket( decoder_t *p_dec, kate_packet *p_kp,
     decoder_sys_t *p_sys = p_dec->p_sys;
 
     /* Date management */
-    if( p_block->i_pts > VLC_TS_INVALID && p_block->i_pts != p_sys->i_pts )
+    if( p_block->i_pts > VLC_TICK_INVALID && p_block->i_pts != p_sys->i_pts )
     {
         p_sys->i_pts = p_block->i_pts;
     }
@@ -811,7 +811,7 @@ static void PostprocessTigerImage( plane_t *p_plane, unsigned int i_width )
 static int TigerValidateSubpicture( subpicture_t *p_subpic,
                                     bool b_fmt_src, const video_format_t *p_fmt_src,
                                     bool b_fmt_dst, const video_format_t *p_fmt_dst,
-                                    mtime_t ts )
+                                    vlc_tick_t ts )
 {
     VLC_UNUSED(p_fmt_src); VLC_UNUSED(p_fmt_dst);
 
@@ -854,7 +854,7 @@ exit:
 static void TigerUpdateSubpicture( subpicture_t *p_subpic,
                                    const video_format_t *p_fmt_src,
                                    const video_format_t *p_fmt_dst,
-                                   mtime_t ts )
+                                   vlc_tick_t ts )
 {
     decoder_sys_t *p_sys = p_subpic->updater.p_sys->p_dec_sys;
     plane_t *p_plane;

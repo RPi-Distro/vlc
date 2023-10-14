@@ -2,7 +2,7 @@
  * input_internal.h: Internal input structures
  *****************************************************************************
  * Copyright (C) 1998-2006 VLC authors and VideoLAN
- * $Id: af9b35967d147c03017ac0eace19695c56aa8e5f $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -97,6 +97,7 @@ typedef struct input_thread_private_t
     bool        is_running;
     bool        is_stopped;
     bool        b_recording;
+    bool        b_next_frame;
     int         i_rate;
 
     /* Playtime configuration and state */

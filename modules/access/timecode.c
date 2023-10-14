@@ -55,13 +55,13 @@ struct demux_sys_t
 {
     es_out_id_t *es;
     date_t date;
-    mtime_t next_time;
+    vlc_tick_t next_time;
 };
 
 static int DemuxOnce (demux_t *demux, bool master)
 {
     demux_sys_t *sys = demux->p_sys;
-    mtime_t pts = date_Get (&sys->date);
+    vlc_tick_t pts = date_Get (&sys->date);
     lldiv_t d;
     unsigned h, m, s, f;
 
@@ -97,7 +97,7 @@ static int Demux (demux_t *demux)
 {
     demux_sys_t *sys = demux->p_sys;
 
-    if (sys->next_time == VLC_TS_INVALID) /* Master mode */
+    if (sys->next_time == VLC_TICK_INVALID) /* Master mode */
         return DemuxOnce (demux, true);
 
     /* Slave mode */
@@ -134,9 +134,9 @@ static int Control (demux_t *demux, int query, va_list args)
 
         case DEMUX_SET_NEXT_DEMUX_TIME:
         {
-            const mtime_t pts = va_arg (args, int64_t );
+            const vlc_tick_t pts = va_arg (args, int64_t );
 
-            if (sys->next_time == VLC_TS_INVALID) /* first invocation? */
+            if (sys->next_time == VLC_TICK_INVALID) /* first invocation? */
             {
                 date_Set (&sys->date, pts);
                 date_Decrement (&sys->date, 1);
@@ -185,8 +185,8 @@ static int Open (vlc_object_t *obj)
     }
 
     date_Init (&sys->date, num, den);
-    date_Set (&sys->date, VLC_TS_0);
-    sys->next_time = VLC_TS_INVALID;
+    date_Set (&sys->date, VLC_TICK_0);
+    sys->next_time = VLC_TICK_INVALID;
 
     demux->p_sys = sys;
     demux->pf_demux   = Demux;

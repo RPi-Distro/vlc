@@ -2,7 +2,7 @@
  * ctrl_slider.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 5f42bb14066e0ece36f0c829601281ba4ab7966a $
+ * $Id: 204fe21a1ac75e2db8496f261f09d040b248f42f $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -72,7 +72,7 @@ public:
     virtual void onResize();
 
     /// Method called to notify are to be updated
-    virtual void notifyLayout( int witdh = -1, int height = -1,
+    virtual void notifyLayout( int width = -1, int height = -1,
                                int xOffSet = 0, int yOffSet = 0 );
 
     /// Get the text of the tooltip
@@ -158,7 +158,7 @@ public:
     virtual void onResize();
 
     /// Method called to notify are to be updated
-    virtual void notifyLayout( int witdh = -1, int height = -1,
+    virtual void notifyLayout( int width = -1, int height = -1,
                                int xOffSet = 0, int yOffSet = 0 );
 
     /// Get the type of control (custom RTTI)

@@ -2,7 +2,7 @@
  * vdummy.c: Dummy video output display method for testing purposes
  *****************************************************************************
  * Copyright (C) 2000-2009 VLC authors and VideoLAN
- * $Id: f8535ca5360d01a9df95ded454e46384b07f35f7 $
+ * $Id: 58e708604420f5e49ec679b49f4f01a21f5539b3 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -147,9 +147,9 @@ static void DisplayStat(vout_display_t *vd, picture_t *picture, subpicture_t *su
 {
     VLC_UNUSED(vd);
     VLC_UNUSED(subpicture);
-    if ( vd->fmt.i_width*vd->fmt.i_height >= sizeof(mtime_t) &&
-         (picture->p->i_pitch * picture->p->i_lines) >= sizeof(mtime_t) ) {
-        mtime_t date;
+    if ( vd->fmt.i_width*vd->fmt.i_height >= sizeof(vlc_tick_t) &&
+         (picture->p->i_pitch * picture->p->i_lines) >= sizeof(vlc_tick_t) ) {
+        vlc_tick_t date;
         memcpy(&date, picture->p->p_pixels, sizeof(date));
         msg_Dbg(vd, "VOUT got %"PRIu64" ms offset",
                 (mdate() - date) / 1000 );

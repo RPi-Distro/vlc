@@ -2,7 +2,7 @@
  * flac.c: flac decoder/encoder module making use of libflac
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: b6fcac1481a29d04c5b24c9f0b4d27a973887409 $
+ * $Id: fbffc2c40b94b4436c8f7fdd9f000c35e9fcb8c9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -247,7 +247,7 @@ DecoderWriteCallback( const FLAC__StreamDecoder *decoder,
     if( decoder_UpdateAudioFormat( p_dec ) )
         return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
 
-    if( date_Get( &p_sys->end_date ) <= VLC_TS_INVALID )
+    if( date_Get( &p_sys->end_date ) <= VLC_TICK_INVALID )
         return FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE;
 
     p_sys->p_aout_buffer =
@@ -326,7 +326,7 @@ static void DecoderMetadataCallback( const FLAC__StreamDecoder *decoder,
             p_sys->stream_info = metadata->data.stream_info;
 
             date_Init( &p_sys->end_date, p_dec->fmt_out.audio.i_rate, 1 );
-            date_Set( &p_sys->end_date, VLC_TS_INVALID );
+            date_Set( &p_sys->end_date, VLC_TICK_INVALID );
             break;
 
         case FLAC__METADATA_TYPE_VORBIS_COMMENT:
@@ -661,7 +661,7 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
 
     p_sys->p_block = p_block;
 
-    if( p_sys->p_block->i_pts > VLC_TS_INVALID &&
+    if( p_sys->p_block->i_pts > VLC_TICK_INVALID &&
         p_sys->p_block->i_pts != date_Get( &p_sys->end_date ) )
         date_Set( &p_sys->end_date, p_sys->p_block->i_pts );
 
@@ -724,7 +724,7 @@ struct encoder_sys_t
     /*
      * Common properties
      */
-    mtime_t i_pts;
+    vlc_tick_t i_pts;
 };
 
 #define STREAMINFO_SIZE 34
@@ -770,8 +770,8 @@ EncoderWriteCallback( const FLAC__StreamEncoder *encoder,
 
     p_sys->i_samples_delay -= samples;
 
-    p_block->i_length = (mtime_t)1000000 *
-        (mtime_t)samples / (mtime_t)p_enc->fmt_in.audio.i_rate;
+    p_block->i_length = (vlc_tick_t)1000000 *
+        (vlc_tick_t)samples / (vlc_tick_t)p_enc->fmt_in.audio.i_rate;
 
     /* Update pts */
     p_sys->i_pts += p_block->i_length;
@@ -880,8 +880,8 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
     if( unlikely( !p_aout_buf ) ) return NULL;
 
     p_sys->i_pts = p_aout_buf->i_pts -
-                (mtime_t)1000000 * (mtime_t)p_sys->i_samples_delay /
-                (mtime_t)p_enc->fmt_in.audio.i_rate;
+                (vlc_tick_t)1000000 * (vlc_tick_t)p_sys->i_samples_delay /
+                (vlc_tick_t)p_enc->fmt_in.audio.i_rate;
 
     p_sys->i_samples_delay += p_aout_buf->i_nb_samples;
 

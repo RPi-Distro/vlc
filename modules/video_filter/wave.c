@@ -2,7 +2,7 @@
  * wave.c : Wave video effect plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2008 VLC authors and VideoLAN
- * $Id: c3ba3921b1e4a26c74bdfa161bac37f70aa9fc64 $
+ * $Id: 8e9b390514616dad1df05c2ba7670999710efa06 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -69,7 +69,7 @@ vlc_module_end ()
 struct filter_sys_t
 {
     double  f_angle;
-    mtime_t last_date;
+    vlc_tick_t last_date;
 };
 
 /*****************************************************************************
@@ -121,7 +121,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 {
     picture_t *p_outpic;
     double f_angle;
-    mtime_t new_date = mdate();
+    vlc_tick_t new_date = mdate();
 
     if( !p_pic ) return NULL;
 
@@ -157,7 +157,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
                                                                             : 0x200;
                 break;
             CASE_PACKED_YUV_422
-                // Quick hack to fix u/v inversion occuring with 2 byte pixel pitch
+                // Quick hack to fix u/v inversion occurring with 2 byte pixel pitch
                 i_pixel_pitch *= 2;
                 /* fallthrough */
             CASE_PLANAR_YUV

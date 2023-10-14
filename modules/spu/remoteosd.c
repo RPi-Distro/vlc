@@ -2,7 +2,7 @@
  * remoteosd.c: remote osd over vnc filter module
  *****************************************************************************
  * Copyright (C) 2007-2008 Matthias Bauer
- * $Id: d01812c4b1e0e11f1256eaba81e85cfdbf6a8706 $
+ * $Id: 9aaa4d06a4fedfe6ce4ae9ff4248bf6041745424 $
  *
  * Authors: Matthias Bauer <matthias dot bauer #_at_# gmx dot ch>
  *
@@ -149,7 +149,7 @@ vlc_module_end ()
 #define MAX_VNC_SERVER_NAME_LENGTH 255
 
 /* subsource functions */
-static subpicture_t *Filter( filter_t *, mtime_t );
+static subpicture_t *Filter( filter_t *, vlc_tick_t );
 
 static int MouseEvent( filter_t *,
                        const vlc_mouse_t *,
@@ -698,7 +698,7 @@ static void* update_request_thread( void *obj )
 {
     filter_t* p_filter = (filter_t*)obj;
     int canc = vlc_savecancel();
-    mtime_t interval = var_InheritInteger( p_filter, RMTOSD_CFG "update" );
+    vlc_tick_t interval = var_InheritInteger( p_filter, RMTOSD_CFG "update" );
     vlc_restorecancel(canc);
 
     if( interval < 100 )
@@ -970,7 +970,7 @@ static bool process_server_message ( filter_t *p_filter,
  ****************************************************************************
  * This function outputs subpictures at regular time intervals.
  ****************************************************************************/
-static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
+static subpicture_t *Filter( filter_t *p_filter, vlc_tick_t date )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
     subpicture_t *p_spu;

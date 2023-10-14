@@ -2,7 +2,7 @@
  * lpcm.c: lpcm decoder/packetizer module
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 69e27270ac8008889ae269667b457b37467ace57 $
+ * $Id: 46b08e4d1ac6beb22ecf15b6694237a30ee6b07d $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Henri Fallon <henri@videolan.org>
@@ -349,7 +349,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
     }
 
     /* Date management */
-    if( p_block->i_pts > VLC_TS_INVALID &&
+    if( p_block->i_pts > VLC_TICK_INVALID &&
         p_block->i_pts != date_Get( &p_sys->end_date ) )
     {
         date_Set( &p_sys->end_date, p_block->i_pts );
@@ -659,9 +659,9 @@ static block_t *EncodeFrames( encoder_t *p_enc, block_t *p_aout_buf )
         i_bytes_consumed += i_consume_bytes;
 
         /* We need to find i_length by means of next_pts due to possible roundoff errors. */
-        mtime_t this_pts = p_aout_buf->i_pts +
+        vlc_tick_t this_pts = p_aout_buf->i_pts +
             (i * p_sys->i_frame_samples + i_start_offset) * CLOCK_FREQ / p_sys->i_rate;
-        mtime_t next_pts = p_aout_buf->i_pts +
+        vlc_tick_t next_pts = p_aout_buf->i_pts +
             ((i + 1) * p_sys->i_frame_samples + i_start_offset) * CLOCK_FREQ / p_sys->i_rate;
 
         p_block->i_pts = p_block->i_dts = this_pts;
@@ -1038,7 +1038,7 @@ static int BdHeader( decoder_sys_t *p_sys,
     default:
         return -1;
     }
-    switch( (h >> 8) & 0x0f ) 
+    switch( (h >> 8) & 0x0f )
     {
     case 1:
         *pi_rate = 48000;

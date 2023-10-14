@@ -2,7 +2,7 @@
  * cdg.c: CDG decoder module
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: 084fc3b61b22e7f76a85c5837da5d965efe6faf3 $
+ * $Id: 4ede0c97ade1e8823ba35f90881b5f3c9002fb91 $
  *
  * Authors: Laurent Aimar <fenrir # via.ecp.fr>
  *
@@ -177,7 +177,7 @@ static int Decode( decoder_t *p_dec, block_t *p_block )
             goto exit;
 
         Render( p_sys, p_pic );
-        p_pic->date = p_block->i_pts > VLC_TS_INVALID ? p_block->i_pts : p_block->i_dts;
+        p_pic->date = p_block->i_pts > VLC_TICK_INVALID ? p_block->i_pts : p_block->i_dts;
     }
 
 exit:

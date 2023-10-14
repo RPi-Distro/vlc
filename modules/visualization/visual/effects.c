@@ -2,7 +2,7 @@
  * effects.c : Effects for the visualization system
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 10e0130bb6e89b9fe4d9db8d3e0d0ff32a32ec46 $
+ * $Id: 8cb8c1385eca32b695e851a8381be6091cf0d244 $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *          Adrien Maglo <magsoft@videolan.org>
@@ -965,7 +965,7 @@ static int vuMeter_Run(visual_effect_t * p_effect, vlc_object_t *p_aout,
     i_value_l = fabsf(i_value_l);
     i_value_r = fabsf(i_value_r);
 
-    /* Stay under maximum value admited */
+    /* Stay under maximum value admitted */
     if ( i_value_l > 200 * M_PI_2 )
         i_value_l = 200 * M_PI_2;
     if ( i_value_r > 200 * M_PI_2 )

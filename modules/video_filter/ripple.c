@@ -2,7 +2,7 @@
  * ripple.c : Ripple video effect plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: d676e72ec81100a8c24d7bf9b89ca1b951fda133 $
+ * $Id: 5ad3b5bb3d6d8f150c2ab4ceaa455679201a053a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -69,7 +69,7 @@ vlc_module_end ()
 struct filter_sys_t
 {
     double  f_angle;
-    mtime_t last_date;
+    vlc_tick_t last_date;
 };
 
 /*****************************************************************************
@@ -121,7 +121,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 {
     picture_t *p_outpic;
     double f_angle;
-    mtime_t new_date = mdate();
+    vlc_tick_t new_date = mdate();
 
     if( !p_pic ) return NULL;
 
@@ -156,7 +156,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
                                                                             : 0x200;
                 break;
             CASE_PACKED_YUV_422
-                // Quick hack to fix u/v inversion occuring with 2 byte pixel pitch
+                // Quick hack to fix u/v inversion occurring with 2 byte pixel pitch
                 i_pixel_pitch *= 2;
                 /* fallthrough */
             CASE_PLANAR_YUV

@@ -2,7 +2,7 @@
  * cdg.c : cdg file demux module for vlc
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: c36bac34887a05f67f56e5d0bbf23873075a2fdb $
+ * $Id: a750396067882f13fdf749ff7490fa355b6583c8 $
  *
  * Authors: Laurent Aimar <fenrir # via.ecp.fr>
  *
@@ -119,8 +119,8 @@ static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     block_t     *p_block;
-    mtime_t     i_date;
-    mtime_t     i_delta;
+    vlc_tick_t  i_date;
+    vlc_tick_t  i_delta;
 
     i_delta = INT64_C(1000000) / CDG_FRAME_RATE;
 

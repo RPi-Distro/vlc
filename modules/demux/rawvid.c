@@ -2,7 +2,7 @@
  * rawvid.c : raw video input module for vlc
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 6f40c48afdc79706ca534df86b24daccd244e504 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan d.t org>
@@ -356,10 +356,10 @@ valid:
     p_sys->frame_size = 0;
     for (unsigned i=0; i<dsc->plane_count; i++)
     {
-        unsigned pitch = (i_width + (dsc->p[i].w.den - 1))
-                         * dsc->p[i].w.num / dsc->p[i].w.den * dsc->pixel_size;
-        unsigned lines = (i_height + (dsc->p[i].h.den - 1))
-                         * dsc->p[i].h.num / dsc->p[i].h.den;
+        unsigned pitch = ((i_width + (dsc->p[i].w.den - 1)) / dsc->p[i].w.den)
+                          * dsc->p[i].w.num * dsc->pixel_size;
+        unsigned lines = ((i_height + (dsc->p[i].h.den - 1)) / dsc->p[i].h.den)
+                         * dsc->p[i].h.num;
         p_sys->frame_size += pitch * lines;
     }
     p_sys->p_es_video = es_out_Add( p_demux->out, &p_sys->fmt_video );
@@ -392,10 +392,10 @@ static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys  = p_demux->p_sys;
     block_t     *p_block;
-    mtime_t i_pcr = date_Get( &p_sys->pcr );
+    vlc_tick_t i_pcr = date_Get( &p_sys->pcr );
 
     /* Call the pace control */
-    es_out_SetPCR( p_demux->out, VLC_TS_0 + i_pcr );
+    es_out_SetPCR( p_demux->out, VLC_TICK_0 + i_pcr );
 
     if( p_sys->b_y4m )
     {
@@ -421,7 +421,7 @@ static int Demux( demux_t *p_demux )
         return 0;
     }
 
-    p_block->i_dts = p_block->i_pts = VLC_TS_0 + i_pcr;
+    p_block->i_dts = p_block->i_pts = VLC_TICK_0 + i_pcr;
     es_out_Send( p_demux->out, p_sys->p_es_video, p_block );
 
     date_Increment( &p_sys->pcr, 1 );

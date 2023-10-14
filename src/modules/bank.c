@@ -49,6 +49,10 @@
 #include "config/configuration.h"
 #include "modules/modules.h"
 
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#endif
+
 typedef struct vlc_modcap
 {
     char *name;
@@ -314,6 +318,56 @@ static int AllocatePluginFile (module_bank_t *bank, const char *abspath,
     return  0;
 }
 
+#ifdef __APPLE__
+/* Apple specific framework library browsing */
+
+static int AllocatePluginFramework (module_bank_t *bank, const char *file,
+                                    const char *relpath, const char *abspath)
+{
+    int i_ret = VLC_EGENERIC;
+    size_t len_name = strlen (file);
+
+    /* Skip frameworks not matching plugins naming conventions. */
+    if (len_name < strlen("_plugin.framework")
+      || strncmp(file + len_name - strlen("_plugin.framework"),
+                 "_plugin", strlen("_plugin")) != 0)
+    {
+        /* The framework doesn't contain plugins, there's no need to
+         * browse the rest of the framework folder. */
+        return VLC_EGENERIC;
+    }
+
+    /* The framework is a plugin, extract the dylib from it. */
+    int filename_len = len_name - strlen(".framework");
+
+    char *framework_relpath = NULL, *framework_abspath = NULL;
+    /* Compute absolute path */
+    if (asprintf (&framework_abspath, "%s"DIR_SEP"%.*s",
+                  abspath, filename_len, file) == -1)
+    {
+        framework_abspath = NULL;
+        goto end;
+    }
+
+    struct stat framework_st;
+    if (vlc_stat (framework_abspath, &framework_st) == -1
+     || !S_ISREG (framework_st.st_mode))
+        goto end;
+
+    if (asprintf (&framework_relpath, "%s"DIR_SEP"%.*s",
+                  relpath, filename_len, file) == -1)
+        framework_relpath = NULL;
+
+    i_ret = AllocatePluginFile (bank, framework_abspath, framework_relpath, &framework_st);
+
+end:
+    free(framework_relpath);
+    free(framework_abspath);
+    return i_ret;
+}
+#endif
+
+
 /**
  * Recursively browses a directory to look for plug-ins.
  */
@@ -382,8 +436,24 @@ static void AllocatePluginDir (module_bank_t *bank, unsigned maxdepth,
                 AllocatePluginFile (bank, abspath, relpath, &st);
         }
         else if (S_ISDIR (st.st_mode))
+        {
+#ifdef __APPLE__
+            size_t len_name = strlen (file);
+            const char *framework_extension =
+                file + len_name - strlen(".framework");
+
+            if (len_name > strlen(".framework")
+             && strcmp(framework_extension, ".framework") == 0)
+            {
+                AllocatePluginFramework (bank, file, relpath, abspath);
+                /* Don't browse framework directories. */
+                goto skip;
+            }
+#endif
+
             /* Recurse into another directory */
             AllocatePluginDir (bank, maxdepth, abspath, relpath);
+        }
     skip:
         free (relpath);
         free (abspath);
@@ -459,6 +529,11 @@ static void AllocateAllPlugins (vlc_object_t *p_this)
 #if VLC_WINSTORE_APP
     /* Windows Store Apps can not load external plugins with absolute paths. */
     AllocatePluginPath (p_this, "plugins", mode);
+#elif defined(__APPLE__) && defined(HAVE_DYNAMIC_PLUGINS) && TARGET_OS_IPHONE
+    /* Redirect to the application folder, plugins/ is flattened. */
+    char *vlcpath = config_GetLibDir ();
+    AllocatePluginPath (p_this, vlcpath, mode);
+    free(vlcpath);
 #else
     /* Contruct the special search path for system that have a relocatable
      * executable. Set it to <vlc path>/plugins. */

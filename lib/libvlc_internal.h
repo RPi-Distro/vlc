@@ -3,7 +3,7 @@
  * Also contains some internal utility functions
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: d1cc28486cda2cbe750663123eabe6bdc50df02e $
+ * $Id: a6ba458d54dba19f6798d99ffc5d5b62ae3bf053 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -99,12 +99,12 @@ void libvlc_event_send(
         libvlc_event_manager_t * p_em,
         libvlc_event_t * p_event );
 
-static inline libvlc_time_t from_mtime(mtime_t time)
+static inline libvlc_time_t from_mtime(vlc_tick_t time)
 {
     return (time + 500ULL)/ 1000ULL;
 }
 
-static inline mtime_t to_mtime(libvlc_time_t time)
+static inline vlc_tick_t to_mtime(libvlc_time_t time)
 {
     return time * 1000ULL;
 }

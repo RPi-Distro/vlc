@@ -2,7 +2,7 @@
  * araw.c: Pseudo audio decoder; for raw pcm data
  *****************************************************************************
  * Copyright (C) 2001, 2003 VLC authors and VideoLAN
- * $Id: 8c56acf5a853a2b141f4fd958288606fdb1d5ac0 $
+ * $Id: 5d43b6f4aaada633ad2b336034c04dc5927d052c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -336,7 +336,7 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
             goto skip;
     }
 
-    if( p_block->i_pts > VLC_TS_INVALID &&
+    if( p_block->i_pts > VLC_TICK_INVALID &&
         p_block->i_pts != date_Get( &p_sys->end_date ) )
     {
         date_Set( &p_sys->end_date, p_block->i_pts );

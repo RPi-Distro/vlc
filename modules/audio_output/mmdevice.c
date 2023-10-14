@@ -80,6 +80,12 @@ static void LeaveMTA(void)
 static wchar_t default_device[1] = L"";
 static char default_device_b[1] = "";
 
+enum initialisation_status_t {
+    INITIALISATION_PENDING,
+    INITIALISATION_FAILED,
+    INITIALISATION_SUCCEEDED,
+};
+
 struct aout_sys_t
 {
     aout_stream_t *stream; /**< Underlying audio output stream */
@@ -104,6 +110,7 @@ struct aout_sys_t
     CRITICAL_SECTION lock;
     CONDITION_VARIABLE work;
     CONDITION_VARIABLE ready;
+    enum initialisation_status_t initialisation_status;
     vlc_thread_t thread; /**< Thread for audio session control */
 };
 
@@ -130,7 +137,7 @@ static int vlc_FromHR(audio_output_t *aout, HRESULT hr)
 }
 
 /*** VLC audio output callbacks ***/
-static int TimeGet(audio_output_t *aout, mtime_t *restrict delay)
+static int TimeGet(audio_output_t *aout, vlc_tick_t *restrict delay)
 {
     aout_sys_t *sys = aout->sys;
     HRESULT hr;
@@ -154,7 +161,7 @@ static void Play(audio_output_t *aout, block_t *block)
     vlc_FromHR(aout, hr);
 }
 
-static void Pause(audio_output_t *aout, bool paused, mtime_t date)
+static void Pause(audio_output_t *aout, bool paused, vlc_tick_t date)
 {
     aout_sys_t *sys = aout->sys;
     HRESULT hr;
@@ -858,6 +865,7 @@ static HRESULT MMSession(audio_output_t *aout, IMMDeviceEnumerator *it)
     }
 
     sys->requested_device = NULL;
+    sys->initialisation_status = INITIALISATION_SUCCEEDED;
     WakeConditionVariable(&sys->ready);
 
     if (SUCCEEDED(hr))
@@ -1064,12 +1072,27 @@ static void *MMThread(void *data)
 {
     audio_output_t *aout = data;
     aout_sys_t *sys = aout->sys;
-    IMMDeviceEnumerator *it = sys->it;
 
-    EnterMTA();
+    /* Initialize MMDevice API */
+    if (TryEnterMTA(aout))
+        goto error;
+
+    void *pv;
+    HRESULT hr = CoCreateInstance(&CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL,
+                                  &IID_IMMDeviceEnumerator, &pv);
+    if (FAILED(hr))
+    {
+        msg_Dbg(aout, "cannot create device enumerator (error 0x%lX)", hr);
+        LeaveMTA();
+        goto error;
+    }
+
+    IMMDeviceEnumerator *it = pv;
+    sys->it = it;
+
     IMMDeviceEnumerator_RegisterEndpointNotificationCallback(it,
                                                           &sys->device_events);
-    HRESULT hr = DevicesEnum(it, MMThread_DevicesEnum_Added, aout);
+    hr = DevicesEnum(it, MMThread_DevicesEnum_Added, aout);
     if (FAILED(hr))
         msg_Warn(aout, "cannot enumerate audio endpoints (error 0x%lx)", hr);
 
@@ -1086,6 +1109,13 @@ static void *MMThread(void *data)
                                                           &sys->device_events);
     IMMDeviceEnumerator_Release(it);
     LeaveMTA();
+    return NULL;
+
+error:
+    EnterCriticalSection(&sys->lock);
+    sys->initialisation_status = INITIALISATION_FAILED;
+    WakeConditionVariable(&sys->ready);
+    LeaveCriticalSection(&sys->lock);
     return NULL;
 }
 
@@ -1139,7 +1169,7 @@ static int Start(audio_output_t *aout, audio_sample_format_t *restrict fmt)
                     return -1;
                 else if (fmt->i_format == VLC_CODEC_DTS)
                     var_SetBool(aout, "dtshd", false );
-                /* falltrough */
+                /* fallthrough */
             case MM_PASSTHROUGH_ENABLED_HD:
                 break;
         }
@@ -1300,33 +1330,23 @@ static int Open(vlc_object_t *obj)
         sys->requested_device = default_device;
     }
 
-    /* Initialize MMDevice API */
-    if (TryEnterMTA(aout))
-        goto error;
-
-    void *pv;
-    HRESULT hr = CoCreateInstance(&CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL,
-                                  &IID_IMMDeviceEnumerator, &pv);
-    if (FAILED(hr))
-    {
-        LeaveMTA();
-        msg_Dbg(aout, "cannot create device enumerator (error 0x%lx)", hr);
-        goto error;
-    }
-    sys->it = pv;
-
+    sys->initialisation_status = INITIALISATION_PENDING;
     if (vlc_clone(&sys->thread, MMThread, aout, VLC_THREAD_PRIORITY_LOW))
     {
         IMMDeviceEnumerator_Release(sys->it);
-        LeaveMTA();
         goto error;
     }
 
     EnterCriticalSection(&sys->lock);
-    while (sys->requested_device != NULL)
+    while (sys->initialisation_status == INITIALISATION_PENDING)
         SleepConditionVariableCS(&sys->ready, &sys->lock, INFINITE);
     LeaveCriticalSection(&sys->lock);
-    LeaveMTA(); /* Leave MTA after thread has entered MTA */
+
+    if (sys->initialisation_status == INITIALISATION_FAILED)
+    {
+        vlc_join(sys->thread, NULL);
+        goto error;
+    }
 
     aout->start = Start;
     aout->stop = Stop;

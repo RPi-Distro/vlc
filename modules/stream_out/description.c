@@ -2,7 +2,7 @@
  * description.c: description stream output module (gathers ES info)
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: bf77ba3a335f99626f9bebf55737b8b8b611920c $
+ * $Id: af82e85315302c907912941b4cd4246965b83f66 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -60,7 +60,7 @@ vlc_module_end ()
 struct sout_stream_sys_t
 {
     sout_description_data_t *data;
-    mtime_t i_stream_start;
+    vlc_tick_t i_stream_start;
 };
 
 /*****************************************************************************

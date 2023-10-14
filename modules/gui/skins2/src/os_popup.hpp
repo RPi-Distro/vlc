@@ -2,7 +2,7 @@
  * os_popup.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 217a2c7c5bd4491915e774de6a2f7704953cd079 $
+ * $Id: ce02aadf520276c2dd21b06941258433cad8c760 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -37,7 +37,7 @@ class OSPopup: public SkinObject
 public:
     virtual ~OSPopup() { }
 
-    /// Show the popup menu at the given (absolute) corrdinates
+    /// Show the popup menu at the given (absolute) coordinates
     virtual void show( int xPos, int yPos ) = 0;
 
     /// Hide the popup menu

@@ -5,7 +5,7 @@
  * Copyright © 2007-2011 Mirsal Ennaime
  * Copyright © 2009-2011 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: 15680ec26de48b99d5fdcbe57936743e1910e0c7 $
+ * $Id: 1b8a556ca479a37844e18331dc3bd542bad281a8 $
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>
@@ -129,7 +129,7 @@ DBUS_METHOD( Seek )
     input_thread_t *p_input = pl_CurrentInput( p_this );
     if( p_input && var_GetBool( p_input, "can-seek" ) )
     {
-        mtime_t i_pos = var_GetInteger( p_input, "time" ) + i_step;
+        vlc_tick_t i_pos = var_GetInteger( p_input, "time" ) + i_step;
         var_SetInteger( p_input, "time", (i_pos >= 0) ? i_pos : 0 );
     }
 
@@ -514,6 +514,7 @@ MarshalMetadata( intf_thread_t *p_intf, DBusMessageIter *container )
     item = playlist_CurrentPlayingItem( playlist );
 
     if( item != NULL )
+        // TODO: vlc_object_hold this
         result = GetInputMeta( item, container );
     else
     {   // avoid breaking the type marshalling

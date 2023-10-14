@@ -2,7 +2,7 @@
  * win32_graphics.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 83f575a40a8333804ae54e5e92fa2fce2b7efcc2 $
+ * $Id: 90d6f2c6a3655fabf8e1cc939356fa688c754cd9 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -53,12 +53,12 @@ public:
                                int ySrc = 0, int xDest = 0, int yDest = 0,
                                int width = -1, int height = -1 );
 
-    /// Draw an empty rectangle on the grahics (color is #RRGGBB)
+    /// Draw an empty rectangle on the graphics (color is #RRGGBB)
     virtual void drawRect( int left, int top, int width, int height,
                            uint32_t color );
 
 
-    /// Draw a filled rectangle on the grahics (color is #RRGGBB)
+    /// Draw a filled rectangle on the graphics (color is #RRGGBB)
     virtual void fillRect( int left, int top, int width, int height,
                            uint32_t color );
 

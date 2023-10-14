@@ -2,7 +2,7 @@
  * complete_preferences.cpp : "Normal preferences"
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 84c89303208e03c92bf113b36a063d983772b713 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -651,6 +651,7 @@ AdvPrefsPanel::AdvPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
 
     QLabel *helpLabel = new QLabel( help, this );
     helpLabel->setWordWrap( true );
+    helpLabel->setOpenExternalLinks( true );
 
     global_layout->addWidget( titleLabel );
     global_layout->addWidget( title_line );

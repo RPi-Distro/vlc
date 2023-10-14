@@ -2,7 +2,7 @@
  * scte27.c : SCTE-27 subtitles decoder
  *****************************************************************************
  * Copyright (C) Laurent Aimar
- * $Id: 797af40715742b3dc2c4cf402949928897ffff70 $
+ * $Id: aa621272e906d0349c10f3470dfc795952942ada $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -54,7 +54,7 @@ struct decoder_sys_t {
     int     segment_id;
     int     segment_size;
     uint8_t *segment_buffer;
-    mtime_t segment_date;
+    vlc_tick_t segment_date;
 };
 
 typedef struct {
@@ -304,7 +304,7 @@ static subpicture_region_t *DecodeSimpleBitmap(decoder_t *dec,
             }
         }
     } else if (outline_style == 2) {
-        /* Draw a shadow by drawing the character shifted by shaddow right/bottom */
+        /* Draw a shadow by drawing the character shifted by shadow right/bottom */
         for (int by = 0; by < bitmap_v; by++) {
             for (int bx = 0; bx < bitmap_h; bx++) {
                 if (bitmap[by * bitmap_h + bx])
@@ -330,7 +330,7 @@ static subpicture_region_t *DecodeSimpleBitmap(decoder_t *dec,
 
 static subpicture_t *DecodeSubtitleMessage(decoder_t *dec,
                                            const uint8_t *data, int size,
-                                           mtime_t date)
+                                           vlc_tick_t date)
 {
     if (size < 12)
         goto error;
@@ -446,7 +446,7 @@ static int Decode(decoder_t *dec, block_t *b)
             if (index == 0) {
                 sys->segment_id = id;
                 sys->segment_size = 0;
-                sys->segment_date = b->i_pts > VLC_TS_INVALID ? b->i_pts : b->i_dts;
+                sys->segment_date = b->i_pts > VLC_TICK_INVALID ? b->i_pts : b->i_dts;
             } else {
                 if (sys->segment_id != id || sys->segment_size <= 0) {
                     sys->segment_id = -1;
@@ -473,7 +473,7 @@ static int Decode(decoder_t *dec, block_t *b)
             sub = DecodeSubtitleMessage(dec,
                                         &b->p_buffer[4],
                                         section_length - 1 - 4,
-                                        b->i_pts > VLC_TS_INVALID ? b->i_pts : b->i_dts);
+                                        b->i_pts > VLC_TICK_INVALID ? b->i_pts : b->i_dts);
         }
         if (sub != NULL)
             decoder_QueueSub(dec, sub);

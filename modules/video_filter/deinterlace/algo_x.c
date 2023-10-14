@@ -2,7 +2,7 @@
  * algo_x.c : "X" algorithm for vlc deinterlacer
  *****************************************************************************
  * Copyright (C) 2000-2011 VLC authors and VideoLAN
- * $Id: 164dc3e8224ccbe26499ccc1add8fd359cb13aa1 $
+ * $Id: ad54efd841ef5e2292bf9b2b5bc98ac5cd4f1e58 $
  *
  * Author: Laurent Aimar <fenrir@videolan.org>
  *
@@ -346,7 +346,7 @@ static inline void XDeint8x8FieldMMXEXT( uint8_t *dst, int i_dst,
 }
 #endif
 
-/* NxN arbitray size (and then only use pixel in the NxN block)
+/* NxN arbitrary size (and then only use pixel in the NxN block)
  */
 static inline int XDeintNxNDetect( uint8_t *src, int i_src,
                                    int i_height, int i_width )

@@ -2,7 +2,7 @@
  * speex.c: speex decoder/packetizer/encoder module making use of libspeex.
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 2e5ee26674781159e60143d38d66e232f59273cf $
+ * $Id: 32ac4a888199138cae95dd317ca3c6495425dfab $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -466,7 +466,7 @@ static int ProcessHeaders( decoder_t *p_dec )
 }
 
 /*****************************************************************************
- * ProcessInitialHeader: processes the inital Speex header packet.
+ * ProcessInitialHeader: processes the initial Speex header packet.
  *****************************************************************************/
 static int ProcessInitialHeader( decoder_t *p_dec, ogg_packet *p_oggpacket )
 {
@@ -577,7 +577,7 @@ static block_t *ProcessPacket( decoder_t *p_dec, ogg_packet *p_oggpacket,
     block_t *p_block = *pp_block;
 
     /* Date management */
-    if( p_block && p_block->i_pts > VLC_TS_INVALID &&
+    if( p_block && p_block->i_pts > VLC_TICK_INVALID &&
         p_block->i_pts != date_Get( &p_sys->end_date ) )
     {
         date_Set( &p_sys->end_date, p_block->i_pts );
@@ -680,7 +680,7 @@ static int DecodeRtpSpeexPacket( decoder_t *p_dec, block_t *p_speex_bit_block )
     int i_decode_ret;
     unsigned int i_speex_frame_size;
 
-    if ( !p_speex_bit_block || p_speex_bit_block->i_pts <= VLC_TS_INVALID )
+    if ( !p_speex_bit_block || p_speex_bit_block->i_pts <= VLC_TICK_INVALID )
         return VLCDEC_SUCCESS;
 
     /*
@@ -1103,9 +1103,9 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
     unsigned i_samples = p_aout_buf->i_nb_samples;
     int i_samples_delay = p_sys->i_samples_delay;
 
-    mtime_t i_pts = p_aout_buf->i_pts -
-                (mtime_t)1000000 * (mtime_t)p_sys->i_samples_delay /
-                (mtime_t)p_enc->fmt_in.audio.i_rate;
+    vlc_tick_t i_pts = p_aout_buf->i_pts -
+                (vlc_tick_t)1000000 * (vlc_tick_t)p_sys->i_samples_delay /
+                (vlc_tick_t)p_enc->fmt_in.audio.i_rate;
 
     p_sys->i_samples_delay += i_samples;
 
@@ -1163,9 +1163,9 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
         p_block = block_Alloc( i_out );
         memcpy( p_block->p_buffer, p_sys->p_buffer_out, i_out );
 
-        p_block->i_length = (mtime_t)1000000 *
-            (mtime_t)p_sys->i_frame_length * p_sys->header.frames_per_packet /
-            (mtime_t)p_enc->fmt_in.audio.i_rate;
+        p_block->i_length = (vlc_tick_t)1000000 *
+            (vlc_tick_t)p_sys->i_frame_length * p_sys->header.frames_per_packet /
+            (vlc_tick_t)p_enc->fmt_in.audio.i_rate;
 
         p_block->i_dts = p_block->i_pts = i_pts;
 

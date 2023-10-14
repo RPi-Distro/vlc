@@ -43,7 +43,7 @@ struct background_worker {
         bool probe_request; /**< true if a probe is requested */
         vlc_cond_t wait; /**< wait for update in terms of head */
         vlc_cond_t worker_wait; /**< wait for probe request or cancelation */
-        mtime_t deadline; /**< deadline of the current task */
+        vlc_tick_t deadline; /**< deadline of the current task */
         void* id; /**< id of the current task */
         bool active; /**< true if there is an active thread */
     } head;
@@ -74,7 +74,7 @@ static void* Thread( void* data )
                 vlc_array_remove( &worker->tail.data, 0 );
             }
 
-            if( worker->head.deadline == VLC_TS_0 && item == NULL )
+            if( worker->head.deadline == VLC_TICK_0 && item == NULL )
                 worker->head.active = false;
             worker->head.id = item ? item->id : NULL;
             vlc_cond_broadcast( &worker->head.wait );
@@ -86,17 +86,17 @@ static void* Thread( void* data )
                 else
                     worker->head.deadline = INT64_MAX;
             }
-            else if( worker->head.deadline != VLC_TS_0 )
+            else if( worker->head.deadline != VLC_TICK_0 )
             {
                 /* Wait 1 seconds for new inputs before terminating */
-                mtime_t deadline = mdate() + INT64_C(1000000);
+                vlc_tick_t deadline = mdate() + INT64_C(1000000);
                 int ret = vlc_cond_timedwait( &worker->tail.wait,
                                               &worker->lock, deadline );
                 if( ret != 0 )
                 {
                     /* Timeout: if there is still no items, the thread will be
                      * terminated at next loop iteration (active = false). */
-                    worker->head.deadline = VLC_TS_0;
+                    worker->head.deadline = VLC_TICK_0;
                 }
                 continue;
             }
@@ -173,7 +173,7 @@ static void BackgroundWorkerCancel( struct background_worker* worker, void* id)
     while( ( id == NULL && worker->head.active )
         || ( id != NULL && worker->head.id == id ) )
     {
-        worker->head.deadline = VLC_TS_0;
+        worker->head.deadline = VLC_TICK_0;
         vlc_cond_signal( &worker->head.worker_wait );
         vlc_cond_signal( &worker->tail.wait );
         vlc_cond_wait( &worker->head.wait, &worker->lock );
@@ -193,7 +193,7 @@ struct background_worker* background_worker_New( void* owner,
     worker->owner = owner;
     worker->head.id = NULL;
     worker->head.active = false;
-    worker->head.deadline = VLC_TS_INVALID;
+    worker->head.deadline = VLC_TICK_INVALID;
 
     vlc_mutex_init( &worker->lock );
     vlc_cond_init( &worker->head.wait );

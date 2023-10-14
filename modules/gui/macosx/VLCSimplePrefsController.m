@@ -2,7 +2,7 @@
 * VLCSimplePrefsController.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2018 VLC authors and VideoLAN
-* $Id: edea15ea8de669ea7aee1fd82d7942acf1430e88 $
+* $Id$
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -62,6 +62,7 @@ static struct {
     { "bn",    "বাংলা",                   NO },
     { "pt_BR", "Português Brasileiro",  NO },
     { "en_GB", "British English",       NO },
+    { "my",    "မြန်မာစာ",                NO },
     { "el",    "Νέα Ελληνικά",          NO },
     { "bg",    "български език",        NO },
     { "ca",    "Català",                NO },
@@ -72,6 +73,7 @@ static struct {
     { "da",    "Dansk",                 NO },
     { "nl",    "Nederlands",            NO },
     { "fi",    "Suomi",                 NO },
+    { "eo",    "Esperanto",             NO },
     { "et",    "eesti keel",            NO },
     { "eu",    "Euskara",               NO },
     { "fr",    "Français",              NO },
@@ -89,9 +91,12 @@ static struct {
     { "is",    "íslenska",              NO },
     { "id",    "Bahasa Indonesia",      NO },
     { "it",    "Italiano",              NO },
+    { "ie",    "Interlingue",           NO },
     { "ja",    "日本語",                 NO },
     { "ko",    "한국어",                  NO },
     { "lt",    "lietuvių",              NO },
+    { "lo",    "ລາວ",                   NO },
+    { "mk",    "македонски",            NO },
     { "ms",    "Melayu",                NO },
     { "nb",    "Bokmål",                NO },
     { "nn",    "Nynorsk",               NO },
@@ -99,12 +104,14 @@ static struct {
     { "km",    "ភាសាខ្មែរ",                NO },
     { "ne",    "नेपाली",                  NO },
     { "oc",    "Occitan",               NO },
+    { "or_IN", "ଓଡ଼ିଆ",                  NO },
     { "pl",    "Polski",                NO },
     { "pt_PT", "Português",             NO },
     { "pa",    "ਪੰਜਾਬੀ",                  NO },
     { "ro",    "Română",                NO },
     { "ru",    "Русский",               NO },
     { "zh_CN", "简体中文",                NO },
+    { "sm",    "Gagana Sāmoa",          NO },
     { "si",    "සිංහල",                   NO },
     { "sr",    "српски",                NO },
     { "sk",    "Slovensky",             NO },
@@ -112,6 +119,7 @@ static struct {
     { "es",    "Español",               NO },
     { "es_MX", "Español Mexicano",      NO },
     { "sv",    "Svenska",               NO },
+    { "sw",    "كِسوَحِيلِ",                YES },
     { "th",    "ภาษาไทย",               NO },
     { "tr",    "Türkçe",                NO },
     { "uk",    "украї́нська мо́ва",       NO },

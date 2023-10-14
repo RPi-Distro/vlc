@@ -2,7 +2,7 @@
  * ustring.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 5360aec5af38298e9446f14ce39b795a39d97de5 $
+ * $Id: 96580e8f608b6f2bb141a958ff4b401f4e2d0a87 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -66,7 +66,7 @@ public:
     const UString operator +( const char *pString ) const;
 
 
-    /// Search for the first occurance of the substring specified by str
+    /// Search for the first occurrence of the substring specified by str
     /// in this string, starting at position. If found, it returns the
     /// index of the first character of the matching substring. If not
     /// found, it returns npos

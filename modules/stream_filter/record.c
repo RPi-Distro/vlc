@@ -2,7 +2,7 @@
  * record.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 5185d12d899d8ab11222671903e37fa309a86ad8 $
+ * $Id: 67ac7bd41b37734ef8fe1422b4c42ec21e87859f $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -168,7 +168,7 @@ static int Start( stream_t *s, const char *psz_extension )
     if( !psz_extension )
         psz_extension = "dat";
 
-    /* Retreive path */
+    /* Retrieve path */
     char *psz_path = var_CreateGetNonEmptyString( s, "input-record-path" );
     if( !psz_path )
         psz_path = config_GetUserDir( VLC_DOWNLOAD_DIR );

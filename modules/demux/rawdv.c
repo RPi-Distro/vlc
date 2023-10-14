@@ -2,7 +2,7 @@
  * rawdv.c : raw DV input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: c081982f698454df7ba25b80170008927b9bfb5a $
+ * $Id: 4cf2e5d0bb3523bb83a8f0da6867ff8c19e2519c $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Paul Corke <paul dot corke at datatote dot co dot uk>
@@ -108,7 +108,7 @@ struct demux_sys_t
     int    i_bitrate;
 
     /* program clock reference (in units of 90kHz) */
-    mtime_t i_pcr;
+    vlc_tick_t i_pcr;
     bool b_hurry_up;
 };
 
@@ -263,7 +263,7 @@ static int Demux( demux_t *p_demux )
     }
 
     /* Call the pace control */
-    es_out_SetPCR( p_demux->out, VLC_TS_0 + p_sys->i_pcr );
+    es_out_SetPCR( p_demux->out, VLC_TICK_0 + p_sys->i_pcr );
     p_block = vlc_stream_Block( p_demux->s, p_sys->frame_size );
     if( p_block == NULL )
     {
@@ -278,7 +278,7 @@ static int Demux( demux_t *p_demux )
     }
 
     p_block->i_dts =
-    p_block->i_pts = VLC_TS_0 + p_sys->i_pcr;
+    p_block->i_pts = VLC_TICK_0 + p_sys->i_pcr;
 
     if( b_audio )
     {

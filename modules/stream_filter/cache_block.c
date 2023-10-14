@@ -2,7 +2,7 @@
  * cache_block.c
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 85c10203e13490bf937051deb9d69effafb6f8ec $
+ * $Id: df99115cc8a4d2d512bc52709e6deaed70b1fb28 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -41,7 +41,7 @@
  *  - ...
  */
 
-/* 
+/*
  * One linked list of data read
  */
 
@@ -110,7 +110,7 @@ static int AStreamRefillBlock(stream_t *s)
     }
 
     /* Now read a new block */
-    const mtime_t start = mdate();
+    const vlc_tick_t start = mdate();
     block_t *b;
 
     for (;;)
@@ -149,7 +149,7 @@ static int AStreamRefillBlock(stream_t *s)
 static void AStreamPrebufferBlock(stream_t *s)
 {
     stream_sys_t *sys = s->p_sys;
-    mtime_t start = mdate();
+    vlc_tick_t start = mdate();
     bool first = true;
 
     msg_Dbg(s, "starting pre-buffering");

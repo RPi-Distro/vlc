@@ -2,7 +2,7 @@
  * snapshot.c : vout internal snapshot
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: f9bc106d73645774a1d5e2b0e5a59a344277b922 $
+ * $Id: 7cdaa5dd049d7868b6b81aaa598ac72a4bb36938 $
  *
  * Authors: Gildas Bazin <gbazin _AT_ videolan _DOT_ org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -75,9 +75,9 @@ void vout_snapshot_End(vout_snapshot_t *snap)
 }
 
 /* */
-picture_t *vout_snapshot_Get(vout_snapshot_t *snap, mtime_t timeout)
+picture_t *vout_snapshot_Get(vout_snapshot_t *snap, vlc_tick_t timeout)
 {
-    const mtime_t deadline = mdate() + timeout;
+    const vlc_tick_t deadline = mdate() + timeout;
 
     vlc_mutex_lock(&snap->lock);
 

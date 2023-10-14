@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: 84bd4acd59285ec2cae5bf027cf96c253d6dfe10 $
+ * $Id: 0f7d8242c88fbc7092b874d9f262440437c26034 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -816,14 +816,14 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             f = va_arg( args, double );
             if( p_sys->subtitles.i_count && p_sys->i_length )
             {
-                i64 = VLC_TS_0 + f * p_sys->i_length;
+                i64 = VLC_TICK_0 + f * p_sys->i_length;
                 return demux_Control( p_demux, DEMUX_SET_TIME, i64 );
             }
             break;
 
         case DEMUX_SET_NEXT_DEMUX_TIME:
             p_sys->b_slave = true;
-            p_sys->i_next_demux_date = va_arg( args, int64_t ) - VLC_TS_0;
+            p_sys->i_next_demux_date = va_arg( args, int64_t ) - VLC_TICK_0;
             return VLC_SUCCESS;
 
         case DEMUX_GET_PTS_DELAY:
@@ -858,7 +858,7 @@ static int Demux( demux_t *p_demux )
 
         if ( !p_sys->b_slave && p_sys->b_first_time )
         {
-            es_out_SetPCR( p_demux->out, VLC_TS_0 + i_barrier );
+            es_out_SetPCR( p_demux->out, VLC_TICK_0 + i_barrier );
             p_sys->b_first_time = false;
         }
 
@@ -868,7 +868,7 @@ static int Demux( demux_t *p_demux )
             if( p_block )
             {
                 p_block->i_dts =
-                p_block->i_pts = VLC_TS_0 + p_subtitle->i_start;
+                p_block->i_pts = VLC_TICK_0 + p_subtitle->i_start;
                 if( p_subtitle->i_stop >= 0 && p_subtitle->i_stop >= p_subtitle->i_start )
                     p_block->i_length = p_subtitle->i_stop - p_subtitle->i_start;
 
@@ -881,7 +881,7 @@ static int Demux( demux_t *p_demux )
 
     if ( !p_sys->b_slave )
     {
-        es_out_SetPCR( p_demux->out, VLC_TS_0 + i_barrier );
+        es_out_SetPCR( p_demux->out, VLC_TICK_0 + i_barrier );
         p_sys->i_next_demux_date += CLOCK_FREQ / 8;
     }
 
@@ -1236,7 +1236,7 @@ static int  ParseSSA( vlc_object_t *p_obj, subs_properties_t *p_props,
          * Format: Marked, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
          * Dialogue: Marked=0,0:02:40.65,0:02:41.79,Wolf main,Cher,0000,0000,0000,,Et les enregistrements de ses ondes delta ?
          *
-         * SSA-1 is similar but only has 8 commas up untill the subtitle text. Probably the Effect field is no present, but not 100 % sure.
+         * SSA-1 is similar but only has 8 commas up until the subtitle text. Probably the Effect field is no present, but not 100 % sure.
          */
 
         /* For ASS:
@@ -1910,7 +1910,7 @@ static int ParseJSS( vlc_object_t *p_obj, subs_properties_t *p_props,
             continue;
         }
         else
-            /* Unkown type line, probably a comment */
+            /* Unknown type line, probably a comment */
         {
             free( psz_orig );
             continue;
@@ -2125,7 +2125,7 @@ static int ParseRealText( vlc_object_t *p_obj, subs_properties_t *p_props,
         if( !psz_text )
             return VLC_ENOMEM;
 
-        /* Find the good begining. This removes extra spaces at the beginning
+        /* Find the good beginning. This removes extra spaces at the beginning
            of the line.*/
         char *psz_temp = strcasestr( s, "<time");
         if( psz_temp != NULL )
@@ -2418,7 +2418,7 @@ static int ParseSCC( vlc_object_t *p_obj, subs_properties_t *p_props,
             continue;
 
         /* convert everything to seconds */
-        mtime_t i_frames = h * 3600 + m * 60 + s;
+        vlc_tick_t i_frames = h * 3600 + m * 60 + s;
 
         if( c == ';' && p_rate->b_drop_allowed ) /* dropframe */
         {
@@ -2433,7 +2433,7 @@ static int ParseSCC( vlc_object_t *p_obj, subs_properties_t *p_props,
             /* convert to frame # at 29.97 */
             i_frames = i_frames * framerates[3].rate.num / framerates[3].rate.den + f;
         }
-        p_subtitle->i_start = VLC_TS_0 + i_frames * CLOCK_FREQ *
+        p_subtitle->i_start = VLC_TICK_0 + i_frames * CLOCK_FREQ *
                                          p_rate->rate.den / p_rate->rate.num;
         p_subtitle->i_stop = -1;
 

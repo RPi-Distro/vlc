@@ -2,7 +2,7 @@
  * x11_graphics.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b6a34f2bdb3b0ba766a710eed37db5b96bc6a249 $
+ * $Id: fa582be803ecf5c43ac66111026d9322a4354a91 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -40,7 +40,7 @@ X11Graphics::X11Graphics( intf_thread_t *pIntf, X11Display &rDisplay,
     OSGraphics( pIntf ), m_rDisplay( rDisplay ), m_width( width ),
     m_height( height )
 {
-    // Get the display paramaters
+    // Get the display parameters
     int screen = DefaultScreen( XDISPLAY );
     int depth = DefaultDepth( XDISPLAY, screen );
 

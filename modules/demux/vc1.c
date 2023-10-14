@@ -2,7 +2,7 @@
  * vc1.c : VC1 Video demuxer
  *****************************************************************************
  * Copyright (C) 2002-2004 VLC authors and VideoLAN
- * $Id: 41d23669216376d0d16cf81e874122d47ac49618 $
+ * $Id: d43239b32e1baf0f198aa6e431330522952f4539 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -59,7 +59,7 @@ vlc_module_end ()
  *****************************************************************************/
 struct demux_sys_t
 {
-    mtime_t     i_dts;
+    vlc_tick_t  i_dts;
     es_out_id_t *p_es;
 
     float       f_fps;
@@ -151,8 +151,8 @@ static int Demux( demux_t *p_demux)
     else
     {
         /*  */
-        p_block_in->i_dts = VLC_TS_0;
-        p_block_in->i_pts = VLC_TS_0;
+        p_block_in->i_dts = VLC_TICK_0;
+        p_block_in->i_pts = VLC_TICK_0;
     }
 
     while( (p_block_out = p_sys->p_packetizer->pf_packetize( p_sys->p_packetizer,
@@ -170,9 +170,9 @@ static int Demux( demux_t *p_demux)
                 p_sys->p_es = es_out_Add( p_demux->out, &p_sys->p_packetizer->fmt_out);
             }
 
-            es_out_SetPCR( p_demux->out, VLC_TS_0 + p_sys->i_dts );
-            p_block_out->i_dts = VLC_TS_0 + p_sys->i_dts;
-            p_block_out->i_pts = VLC_TS_0 + p_sys->i_dts;
+            es_out_SetPCR( p_demux->out, VLC_TICK_0 + p_sys->i_dts );
+            p_block_out->i_dts = VLC_TICK_0 + p_sys->i_dts;
+            p_block_out->i_pts = VLC_TICK_0 + p_sys->i_dts;
 
             es_out_Send( p_demux->out, p_sys->p_es, p_block_out );
 

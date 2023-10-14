@@ -25,7 +25,7 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-/* The EIA 608 decoder part has been initialy based on ccextractor (GPL)
+/* The EIA 608 decoder part has been initially based on ccextractor (GPL)
  * and rewritten */
 
 #ifdef HAVE_CONFIG_H
@@ -231,7 +231,7 @@ struct decoder_sys_t
 static int Decode( decoder_t *, block_t * );
 static void Flush( decoder_t * );
 
-static void DTVCC_ServiceData_Handler( void *priv, uint8_t i_sid, mtime_t i_time,
+static void DTVCC_ServiceData_Handler( void *priv, uint8_t i_sid, vlc_tick_t i_time,
                                        const uint8_t *p_data, size_t i_data )
 {
     decoder_t *p_dec = priv;
@@ -340,7 +340,7 @@ static void Flush( decoder_t *p_dec )
  ****************************************************************************/
 static void     Push( decoder_t *, block_t * );
 static block_t *Pop( decoder_t *, bool );
-static void     Convert( decoder_t *, mtime_t, const uint8_t *, size_t );
+static void     Convert( decoder_t *, vlc_tick_t, const uint8_t *, size_t );
 
 static bool DoDecode( decoder_t *p_dec, bool b_drain )
 {
@@ -440,7 +440,7 @@ static void Push( decoder_t *p_dec, block_t *p_block )
     /* find insertion point */
     for( pp_block = &p_sys->p_queue; *pp_block ; pp_block = &((*pp_block)->p_next) )
     {
-        if( p_block->i_pts == VLC_TS_INVALID || (*pp_block)->i_pts == VLC_TS_INVALID )
+        if( p_block->i_pts == VLC_TICK_INVALID || (*pp_block)->i_pts == VLC_TICK_INVALID )
             continue;
         if( p_block->i_pts < (*pp_block)->i_pts )
         {
@@ -482,13 +482,13 @@ static block_t *Pop( decoder_t *p_dec, bool b_forced )
     return p_block;
 }
 
-static subpicture_t *Subtitle( decoder_t *p_dec, eia608_t *h, mtime_t i_pts )
+static subpicture_t *Subtitle( decoder_t *p_dec, eia608_t *h, vlc_tick_t i_pts )
 {
     //decoder_sys_t *p_sys = p_dec->p_sys;
     subpicture_t *p_spu = NULL;
 
     /* We cannot display a subpicture with no date */
-    if( i_pts <= VLC_TS_INVALID )
+    if( i_pts <= VLC_TICK_INVALID )
         return NULL;
 
     /* Create the subpicture unit */
@@ -530,7 +530,7 @@ static subpicture_t *Subtitle( decoder_t *p_dec, eia608_t *h, mtime_t i_pts )
     return p_spu;
 }
 
-static void Convert( decoder_t *p_dec, mtime_t i_pts,
+static void Convert( decoder_t *p_dec, vlc_tick_t i_pts,
                      const uint8_t *p_buffer, size_t i_buffer )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
@@ -540,7 +540,7 @@ static void Convert( decoder_t *p_dec, mtime_t i_pts,
     {
         if( (p_buffer[0] & 0x04) /* Valid bit */ )
         {
-            const mtime_t i_spupts = i_pts + i_ticks * CLOCK_FREQ / (1200/3);
+            const vlc_tick_t i_spupts = i_pts + i_ticks * CLOCK_FREQ / (1200/3);
             /* Mask off the specific i_field bit, else some sequences can be lost. */
             if ( p_sys->p_eia608 &&
                 (p_buffer[0] & 0x03) == p_sys->i_field )
@@ -777,7 +777,7 @@ static eia608_status_t Eia608ParseSingle( eia608_t *h, const uint8_t dx )
 static eia608_status_t Eia608ParseDouble( eia608_t *h, uint8_t d2 )
 {
     assert( d2 >= 0x30 && d2 <= 0x3f );
-    Eia608Write( h, d2 + 0x50 ); /* We use charaters 0x80...0x8f */
+    Eia608Write( h, d2 + 0x50 ); /* We use characters 0x80...0x8f */
     return EIA608_STATUS_CHANGED;
 }
 static eia608_status_t Eia608ParseExtended( eia608_t *h, uint8_t d1, uint8_t d2 )
@@ -785,9 +785,9 @@ static eia608_status_t Eia608ParseExtended( eia608_t *h, uint8_t d1, uint8_t d2 
     assert( d2 >= 0x20 && d2 <= 0x3f );
     assert( d1 == 0x12 || d1 == 0x13 );
     if( d1 == 0x12 )
-        d2 += 0x70; /* We use charaters 0x90-0xaf */
+        d2 += 0x70; /* We use characters 0x90-0xaf */
     else
-        d2 += 0x90; /* We use charaters 0xb0-0xcf */
+        d2 += 0x90; /* We use characters 0xb0-0xcf */
 
     /* The extended characters replace the previous one with a more
      * advanced one */
@@ -958,7 +958,7 @@ static eia608_status_t Eia608ParseData( eia608_t *h, uint8_t d1, uint8_t d2 )
             i_status |= Eia608ParseSingle( h, d2 );
     }
 
-    /* Ignore changes occuring to doublebuffer */
+    /* Ignore changes occurring to doublebuffer */
     if( h->mode == EIA608_MODE_POPUP && i_status == EIA608_STATUS_CHANGED )
         i_status = EIA608_STATUS_DEFAULT;
 
@@ -1008,7 +1008,7 @@ static void Eia608TextUtf8( char *psz_utf8, uint8_t c ) // Returns number of byt
         E2( 0x91, 0xc3,0x89), // capital letter E with acute
         E2( 0x92, 0xc3,0x93), // capital letter O with acute
         E2( 0x93, 0xc3,0x9a), // capital letter U with acute
-        E2( 0x94, 0xc3,0x9c), // capital letter U with diaresis
+        E2( 0x94, 0xc3,0x9c), // capital letter U with diaeresis
         E2( 0x95, 0xc3,0xbc), // lowercase letter U with diaeresis
         E1( 0x96, 0x27), // apostrophe
         E2( 0x97, 0xc2,0xa1), // inverted exclamation mark
@@ -1025,11 +1025,11 @@ static void Eia608TextUtf8( char *psz_utf8, uint8_t c ) // Returns number of byt
         E2( 0xa2, 0xc3,0x87), // uppercase C with cedilla
         E2( 0xa3, 0xc3,0x88), // uppercase E, grave accent
         E2( 0xa4, 0xc3,0x8a), // uppercase E, circumflex
-        E2( 0xa5, 0xc3,0x8b), // capital letter E with diaresis
-        E2( 0xa6, 0xc3,0xab), // lowercase letter e with diaresis
+        E2( 0xa5, 0xc3,0x8b), // capital letter E with diaeresis
+        E2( 0xa6, 0xc3,0xab), // lowercase letter e with diaeresis
         E2( 0xa7, 0xc3,0x8e), // uppercase I, circumflex
-        E2( 0xa8, 0xc3,0x8f), // uppercase I, with diaresis
-        E2( 0xa9, 0xc3,0xaf), // lowercase i, with diaresis
+        E2( 0xa8, 0xc3,0x8f), // uppercase I, with diaeresis
+        E2( 0xa9, 0xc3,0xaf), // lowercase i, with diaeresis
         E2( 0xaa, 0xc3,0x94), // uppercase O, circumflex
         E2( 0xab, 0xc3,0x99), // uppercase U, grave accent
         E2( 0xac, 0xc3,0xb9), // lowercase u, grave accent

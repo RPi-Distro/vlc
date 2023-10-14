@@ -2,7 +2,7 @@
  * vlc_timestamp_helper.h : timestamp handling helpers
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: 90840fbcf7a5197f235ab6160a2cc2708a87c54d $
+ * $Id: a13bee1e8448c47e35c45211724b3adceb47fcb0 $
  *
  * Authors: Felix Abecassis <felix.abecassis@gmail.com>
  *
@@ -90,7 +90,7 @@ static inline void timestamp_FifoPut(timestamp_fifo_t *fifo, int64_t ts)
 static inline int64_t timestamp_FifoGet(timestamp_fifo_t *fifo)
 {
     if (timestamp_FifoIsEmpty(fifo))
-        return VLC_TS_INVALID;
+        return VLC_TICK_INVALID;
 
     int64_t result = fifo->buffer[fifo->begin];
     fifo->begin = (fifo->begin + 1) % fifo->capacity;

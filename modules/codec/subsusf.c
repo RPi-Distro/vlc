@@ -2,7 +2,7 @@
  * subsusf.c : USF subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: 1e6a64fcd15235d6e07b6d6dcbee416c2e5d6e85 $
+ * $Id: 147f45f2648749a35f7e3309d3bc1d924f0dbc76 $
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *
@@ -221,7 +221,7 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
         return NULL;
 
     /* We cannot display a subpicture with no date */
-    if( p_block->i_pts <= VLC_TS_INVALID )
+    if( p_block->i_pts <= VLC_TICK_INVALID )
     {
         msg_Warn( p_dec, "subtitle without a date" );
         return NULL;

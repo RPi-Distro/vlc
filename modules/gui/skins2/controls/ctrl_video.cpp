@@ -2,7 +2,7 @@
  * ctrl_video.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 48270497d27f7f202589ca68946711f35531280c $
+ * $Id: 913baae6a5125b04a8afd65eca34a8379d0f64ac $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -118,7 +118,7 @@ void CtrlVideo::setLayout( GenericLayout *pLayout,
     // register Video Control
     VoutManager::instance( getIntf() )->registerCtrlVideo( this );
 
-    msg_Dbg( getIntf(),"New VideoControl detected(%p), useability=%s",
+    msg_Dbg( getIntf(),"New VideoControl detected(%p), usability=%s",
                            (void *)this, isUseable() ? "true" : "false" );
 }
 

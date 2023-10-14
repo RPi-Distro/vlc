@@ -2,7 +2,7 @@
  * cdrom.c: cdrom tools
  *****************************************************************************
  * Copyright (C) 1998-2001 VLC authors and VideoLAN
- * $Id: 4d9f4f1f9657438ab4f66f3c6bceb10cb95fe801 $
+ * $Id: 8b719ec53272dffd4ecefcd4739224783aa478a6 $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -428,7 +428,7 @@ vcddev_toc_t * ioctl_GetTOC( vlc_object_t *p_this, const vcddev_t *p_vcddev,
             int i;
 
             p_toc->p_sectors = calloc( p_toc->i_tracks + 1, sizeof(*p_toc->p_sectors) );
-            if( *p_toc->p_sectors == NULL )
+            if( p_toc->p_sectors == NULL )
             {
                 vcddev_toc_Free( p_toc );
                 return NULL;

@@ -2,7 +2,7 @@
  * vlc_vout_wrapper.h: definitions for vout wrappers (temporary)
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 7c115473f8500ec32e487006ac68c26424886eaf $
+ * $Id: 96b954a0a044640ce2cf73c979e3a2ac60c3e4f0 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -73,7 +73,7 @@ typedef struct {
  */
 vout_display_t *vout_NewDisplay( vout_thread_t *, const video_format_t *,
     const vout_display_state_t *, const char *module,
-    mtime_t double_click_timeout, mtime_t hide_timeout );
+    vlc_tick_t double_click_timeout, vlc_tick_t hide_timeout );
 /**
  * It destroy a vout managed display.
  */
