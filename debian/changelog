@@ -1,3 +1,11 @@
+vlc (3.0.19-1) unstable; urgency=medium
+
+  * New upstream version 3.0.19
+    - Improve muxing timestamps in a few formats (Closes: #1054528)
+  * debian/gbp.conf: Work in bookworm branch
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 29 Oct 2023 21:14:38 +0100
+
 vlc (3.0.18-2) unstable; urgency=medium
 
   * debian/patches: Apply upstream patch for flac playback issues
