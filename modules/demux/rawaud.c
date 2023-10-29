@@ -2,7 +2,7 @@
  * rawaud.c : raw audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2009 VLC authors and VideoLAN
- * $Id: 375bdb12444cbf50677c665692e81986182029e2 $
+ * $Id: 48ef94615bcc3d38c4f73427e0be5e7b5d22b68c $
  *
  * Authors: Jarmo Torvinen <jarmo.torvinen@jutel.fi>
  *
@@ -251,7 +251,7 @@ static int Demux( demux_t *p_demux )
         return 0;
     }
 
-    p_block->i_dts = p_block->i_pts = VLC_TS_0 + date_Get( &p_sys->pts );
+    p_block->i_dts = p_block->i_pts = VLC_TICK_0 + date_Get( &p_sys->pts );
 
     es_out_SetPCR( p_demux->out, p_block->i_pts );
     es_out_Send( p_demux->out, p_sys->p_es, p_block );

@@ -2,7 +2,7 @@
  * selector.cpp : Playlist source selector
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: bb654d41893810a93bea7a8766df9c191693af73 $
+ * $Id: 308e245ca3672d3aac5628664644636c84363413 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf
@@ -200,7 +200,7 @@ void PLSelector::updateTotalDuration( PLSelItem* item, const char* prefix )
 
     /* Get the duration of the playlist item */
     playlist_Lock( THEPL );
-    mtime_t mt_duration = playlist_GetNodeDuration( node );
+    vlc_tick_t mt_duration = playlist_GetNodeDuration( node );
     playlist_Unlock( THEPL );
 
     /* Formatting time */

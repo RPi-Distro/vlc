@@ -2,7 +2,7 @@
  * control.h : vout internal control
  *****************************************************************************
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: 04a66e9fb47d26ba40374fc39ca890f5c93b82e1 $
+ * $Id: dbe7793a2b66f26b4a472c64c46eb65a8cc4064d $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -70,8 +70,8 @@ typedef struct {
 
     union {
         bool    boolean;
-        mtime_t time;
-        mtime_t *time_ptr;
+        vlc_tick_t time;
+        vlc_tick_t *time_ptr;
         char    *string;
         int     integer;
         struct {
@@ -80,7 +80,7 @@ typedef struct {
         } pair;
         struct {
             bool is_on;
-            mtime_t date;
+            vlc_tick_t date;
         } pause;
         struct {
             int channel;
@@ -131,14 +131,14 @@ void vout_control_Push(vout_control_t *, vout_control_cmd_t *);
 void vout_control_PushVoid(vout_control_t *, int type);
 void vout_control_PushBool(vout_control_t *, int type, bool boolean);
 void vout_control_PushInteger(vout_control_t *, int type, int integer);
-void vout_control_PushTime(vout_control_t *, int type, mtime_t time);
+void vout_control_PushTime(vout_control_t *, int type, vlc_tick_t time);
 void vout_control_PushMessage(vout_control_t *, int type, int channel, const char *string);
 void vout_control_PushPair(vout_control_t *, int type, int a, int b);
 void vout_control_PushString(vout_control_t *, int type, const char *string);
 void vout_control_Wake(vout_control_t *);
 
 /* control inside of the vout thread */
-int vout_control_Pop(vout_control_t *, vout_control_cmd_t *, mtime_t deadline);
+int vout_control_Pop(vout_control_t *, vout_control_cmd_t *, vlc_tick_t deadline);
 void vout_control_Dead(vout_control_t *);
 
 #endif

@@ -2,7 +2,7 @@
  * x11_popup.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c20488c86a212ba374cc84601ba764709799dc55 $
+ * $Id: 5e4db7da12af376a7d3547738d617dc3370bdd1f $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -36,7 +36,7 @@ public:
 
     virtual ~X11Popup();
 
-    /// Show the popup menu at the given (absolute) corrdinates
+    /// Show the popup menu at the given (absolute) coordinates
     virtual void show( int xPos, int yPos );
 
     /// Hide the popup menu

@@ -2,7 +2,7 @@
  * stl.c: EBU STL decoder
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 9c6ddc9663cb040bf563c4af784152fc4ffefd92 $
+ * $Id: d9b97bc49b8dfe5e2724116ab2e18f35667b7991 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -413,8 +413,8 @@ static int Decode(decoder_t *p_dec, block_t *p_block)
 
                 if(p_group->i_end && p_group->i_start >= p_block->i_dts)
                 {
-                    p_sub->i_start = VLC_TS_0 + p_group->i_start;
-                    p_sub->i_stop =  VLC_TS_0 + p_group->i_end;
+                    p_sub->i_start = VLC_TICK_0 + p_group->i_start;
+                    p_sub->i_stop =  VLC_TICK_0 + p_group->i_end;
                 }
                 else
                 {

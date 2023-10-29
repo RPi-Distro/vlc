@@ -2,7 +2,7 @@
  * VLCInputManager.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: d0756e30d39e4cc273bfd402b6e0b8b47f4af70f $
+ * $Id: bba1d93d6572cb6e46dcde4be4bcdacec136e3d7 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -672,7 +672,7 @@ static int InputEvent(vlc_object_t *p_this, const char *psz_var,
         if (result == RESUME_RESTART)
             return;
 
-        mtime_t lastPos = (mtime_t)lastPosition.intValue * 1000000;
+        vlc_tick_t lastPos = (vlc_tick_t)lastPosition.intValue * 1000000;
         msg_Dbg(getIntf(), "continuing playback at %lld", lastPos);
         var_SetInteger(p_input_thread, "time", lastPos);
     };
@@ -736,8 +736,8 @@ BOOL ShouldStorePlaybackPosition(float position, int64_t duration)
     NSMutableDictionary *mutDict = [[NSMutableDictionary alloc] initWithDictionary:[defaults objectForKey:@"recentlyPlayedMedia"]];
 
     float relativePos = var_GetFloat(p_input_thread, "position");
-    mtime_t pos = var_GetInteger(p_input_thread, "time") / CLOCK_FREQ;
-    mtime_t dur = input_item_GetDuration(p_item) / 1000000;
+    vlc_tick_t pos = var_GetInteger(p_input_thread, "time") / CLOCK_FREQ;
+    vlc_tick_t dur = input_item_GetDuration(p_item) / 1000000;
 
     NSMutableArray *mediaList = [[defaults objectForKey:@"recentlyPlayedMediaList"] mutableCopy];
 

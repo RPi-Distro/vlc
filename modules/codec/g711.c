@@ -2,7 +2,7 @@
  * g711.c: G.711 µ-law and A-law codec
  *****************************************************************************
  * Copyright (C) 2001, 2003 VLC authors and VideoLAN
- * $Id: 911e4e248f02a62e8dc570286f1bf32d25c57bc9 $
+ * $Id: 71242c37b5c9500cf5e012f40e700088cd7b73a6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -231,7 +231,7 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
         }
     }
 
-    if( p_block->i_pts > VLC_TS_INVALID &&
+    if( p_block->i_pts > VLC_TICK_INVALID &&
         p_block->i_pts != date_Get( &p_sys->end_date ) )
     {
         date_Set( &p_sys->end_date, p_block->i_pts );
@@ -244,7 +244,7 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
     }
 
     /* Don't re-use the same pts twice */
-    p_block->i_pts = VLC_TS_INVALID;
+    p_block->i_pts = VLC_TICK_INVALID;
 
     unsigned samples = p_block->i_buffer / p_dec->fmt_in.audio.i_channels;
     if( samples == 0 )

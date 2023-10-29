@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 VLC authors and VideoLAN
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: f5df06ccf669ed3de386771c323c74d4cd90ec5c $
+ * $Id: 426df084f3b8c193f77b7545dfe038a2236f459b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont
@@ -147,7 +147,7 @@ struct httpd_client_t
     bool    b_stream_mode;
     uint8_t i_state;
 
-    mtime_t i_timeout_date;
+    vlc_tick_t i_timeout_date;
 
     /* buffer for reading header */
     int     i_buffer_size;
@@ -1713,7 +1713,7 @@ static void httpdLoop(httpd_host_t *host)
         vlc_cleanup_pop();
     }
 
-    mtime_t now = mdate();
+    vlc_tick_t now = mdate();
     int delay = -1;
     int canc = vlc_savecancel();
     for (int i_client = 0; i_client < host->i_client; i_client++) {

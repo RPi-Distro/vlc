@@ -2,7 +2,7 @@
  * vout_manager.hpp
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 4cf3522b40d5af6a8fa5b6ded943ddc277ed649f $
+ * $Id: 879cfca1b4d4e11ad228d2427c82060c8636be6c $
  *
  * Authors: Erwan Tulou < brezhoneg1 at yahoo.fr r>
  *
@@ -138,7 +138,7 @@ public:
     void discardVout( CtrlVideo* pCtrlVideo );
     void requestVout( CtrlVideo* pCtrlVideo );
 
-    // get a useable video Control
+    // get a usable video Control
     CtrlVideo* getBestCtrlVideo( );
 
     // get the VoutMainWindow

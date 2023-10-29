@@ -2,7 +2,7 @@
  * subtitle.c: subtitle decoder using libavcodec library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: d3afe4270bec1e80cf21bca33304320cdbdc4199 $
+ * $Id: ecfe35a60012b6c49464a52c1c4ce834dd7dd46f $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -44,7 +44,7 @@ struct decoder_sys_t {
     bool b_need_ephemer; /* Does the format need the ephemer flag (no end time set) */
 };
 
-static subpicture_t *ConvertSubtitle(decoder_t *, AVSubtitle *, mtime_t pts,
+static subpicture_t *ConvertSubtitle(decoder_t *, AVSubtitle *, vlc_tick_t pts,
                                      AVCodecContext *avctx);
 static int  DecodeSubtitle(decoder_t *, block_t *);
 static void Flush(decoder_t *);
@@ -288,7 +288,7 @@ static subpicture_region_t *ConvertRegionRGBA(AVSubtitleRect *ffregion)
 /**
  * Convert a libavcodec subtitle to our format.
  */
-static subpicture_t *ConvertSubtitle(decoder_t *dec, AVSubtitle *ffsub, mtime_t pts,
+static subpicture_t *ConvertSubtitle(decoder_t *dec, AVSubtitle *ffsub, vlc_tick_t pts,
                                      AVCodecContext *avctx)
 {
     subpicture_t *spu = decoder_NewSubpicture(dec, NULL);

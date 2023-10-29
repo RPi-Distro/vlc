@@ -62,7 +62,10 @@ endif
 
 libaudiotoolboxmidi_plugin_la_SOURCES = codec/audiotoolbox_midi.c
 libaudiotoolboxmidi_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)'
-libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-framework,AudioUnit,-framework,AudioToolbox
+libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-framework,AudioToolbox
+if HAVE_OSX
+libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,AudioUnit
+endif
 EXTRA_LTLIBRARIES += libaudiotoolboxmidi_plugin.la
 codec_LTLIBRARIES += $(LTLIBaudiotoolboxmidi)
 
@@ -347,17 +350,19 @@ libvideotoolbox_plugin_la_SOURCES = \
 	packetizer/h264_slice.c packetizer/h264_slice.h \
 	packetizer/h264_nal.c packetizer/h264_nal.h \
 	packetizer/hevc_nal.c packetizer/hevc_nal.h
+libvideotoolbox_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)' -Wl,-framework,Foundation -Wl,-framework,VideoToolbox -Wl,-framework,CoreMedia -Wl,-framework,CoreVideo
 if HAVE_OSX
 libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -mmacosx-version-min=10.8
 endif
 if HAVE_IOS
 libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -miphoneos-version-min=8.0
+libvideotoolbox_plugin_la_LDFLAGS += -Wl,-framework,UIKit
 endif
 if HAVE_TVOS
 libvideotoolbox_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS) -mtvos-version-min=10.2
+libvideotoolbox_plugin_la_LDFLAGS += -Wl,-framework,UIKit
 endif
 libvideotoolbox_plugin_la_LIBADD = libchroma_copy.la
-libvideotoolbox_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(codecdir)' -Wl,-framework,Foundation -Wl,-framework,VideoToolbox -Wl,-framework,CoreMedia -Wl,-framework,CoreVideo
 EXTRA_LTLIBRARIES += libvideotoolbox_plugin.la
 codec_LTLIBRARIES += $(LTLIBvideotoolbox)
 
@@ -373,7 +378,8 @@ libavcodec_plugin_la_SOURCES = \
 	codec/avcodec/subtitle.c \
 	codec/avcodec/audio.c \
 	codec/avcodec/va.c codec/avcodec/va.h \
-	codec/avcodec/avcodec.c codec/avcodec/avcodec.h
+	codec/avcodec/avcodec.c codec/avcodec/avcodec.h \
+	packetizer/av1_obu.c packetizer/av1_obu.h packetizer/av1.h
 if ENABLE_SOUT
 libavcodec_plugin_la_SOURCES += codec/avcodec/encoder.c
 endif
@@ -431,7 +437,7 @@ libdxva2_plugin_la_SOURCES = \
 	packetizer/h264_nal.c packetizer/h264_nal.h \
 	packetizer/hevc_nal.c packetizer/hevc_nal.h \
 	codec/avcodec/dxva_blacklist.c
-libdxva2_plugin_la_LIBADD = libd3d9_common.la $(LIBCOM) -lshlwapi -luuid
+libdxva2_plugin_la_LIBADD = libd3d9_common.la libchroma_copy.la $(LIBCOM) -lshlwapi -luuid
 if HAVE_AVCODEC_DXVA2
 codec_LTLIBRARIES += libdxva2_plugin.la
 endif
@@ -503,7 +509,7 @@ libmediacodec_plugin_la_SOURCES = codec/omxil/mediacodec.c codec/omxil/mediacode
 	packetizer/hxxx_nal.h packetizer/hxxx_nal.c \
 	packetizer/h264_nal.c packetizer/h264_nal.h \
 	packetizer/hevc_nal.c packetizer/hevc_nal.h
-libmediacodec_plugin_la_LIBADD = libchroma_copy.la 
+libmediacodec_plugin_la_LIBADD = libchroma_copy.la
 codec_LTLIBRARIES += $(LTLIBomxil) $(LTLIBomxil_vout)
 EXTRA_LTLIBRARIES += libomxil_plugin.la libomxil_vout_plugin.la
 if HAVE_ANDROID

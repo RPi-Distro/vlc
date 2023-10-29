@@ -2,7 +2,7 @@
  * matroska_segment.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2010 VLC authors and VideoLAN
- * $Id: 7e2bd8a0aea85a4f3fa9ade2ffda05852a032fed $
+ * $Id: 6997cc56c8a494a45ab65112807f1dd9db2f10f5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -107,7 +107,7 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
         if( MKV_IS_ID( el, KaxCuePoint ) )
         {
             uint64_t cue_position = -1;
-            mtime_t  cue_mk_time = -1;
+            vlc_tick_t  cue_mk_time = -1;
 
             unsigned int track_id = 0;
             bool b_invalid_cue = false;
@@ -803,13 +803,13 @@ bool matroska_segment_c::LoadSeekHeadItem( const EbmlCallbacks & ClassInfos, int
     return true;
 }
 
-bool matroska_segment_c::Seek( demux_t &demuxer, mtime_t i_absolute_mk_date, mtime_t i_mk_time_offset, bool b_accurate )
+bool matroska_segment_c::Seek( demux_t &demuxer, vlc_tick_t i_absolute_mk_date, vlc_tick_t i_mk_time_offset, bool b_accurate )
 {
     SegmentSeeker::tracks_seekpoint_t seekpoints;
 
     SegmentSeeker::fptr_t i_seek_position = std::numeric_limits<SegmentSeeker::fptr_t>::max();
-    mtime_t i_mk_seek_time = -1;
-    mtime_t i_mk_date = i_absolute_mk_date - i_mk_time_offset;
+    vlc_tick_t i_mk_seek_time = -1;
+    vlc_tick_t i_mk_date = i_absolute_mk_date - i_mk_time_offset;
     SegmentSeeker::track_ids_t selected_tracks;
     SegmentSeeker::track_ids_t priority;
 
@@ -820,9 +820,9 @@ bool matroska_segment_c::Seek( demux_t &demuxer, mtime_t i_absolute_mk_date, mti
         mkv_track_t &track = *it->second;
 
         track.i_skip_until_fpos = std::numeric_limits<uint64_t>::max();
-        if( track.i_last_dts > VLC_TS_INVALID )
+        if( track.i_last_dts > VLC_TICK_INVALID )
             track.b_discontinuity = true;
-        track.i_last_dts        = VLC_TS_INVALID;
+        track.i_last_dts        = VLC_TICK_INVALID;
 
         bool selected;
         if (track.p_es == NULL)
@@ -886,12 +886,12 @@ bool matroska_segment_c::Seek( demux_t &demuxer, mtime_t i_absolute_mk_date, mti
     if ( i_seek_position == std::numeric_limits<SegmentSeeker::fptr_t>::max() )
         return false;
 
-    // propogate seek information //
+    // propagate seek information //
 
-    sys.i_pcr           = VLC_TS_INVALID;
-    sys.i_pts           = VLC_TS_0 + i_mk_seek_time + i_mk_time_offset;
+    sys.i_pcr           = VLC_TICK_INVALID;
+    sys.i_pts           = VLC_TICK_0 + i_mk_seek_time + i_mk_time_offset;
     if (b_accurate)
-        sys.i_start_pts = VLC_TS_0 + i_absolute_mk_date;
+        sys.i_start_pts = VLC_TICK_0 + i_absolute_mk_date;
     else
         sys.i_start_pts = sys.i_pts;
 
@@ -1355,7 +1355,7 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
 
         if( pp_simpleblock != NULL || ((el = ep.Get()) == NULL && pp_block != NULL) )
         {
-            /* Check blocks validity to protect againts broken files */
+            /* Check blocks validity to protect against broken files */
             const mkv_track_t *p_track = FindTrackByBlock( pp_block , pp_simpleblock );
             if( p_track == NULL )
             {
@@ -1405,7 +1405,7 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
         }
 
         /* Verify that we are still inside our cluster
-         * It can happens whith broken files and when seeking
+         * It can happens with broken files and when seeking
          * without index */
         if( i_level > 1 )
         {

@@ -162,6 +162,8 @@ struct av1_color_config_s
     obu_u1_t subsampling_y;
     obu_u2_t chroma_sample_position;
     obu_u1_t separate_uv_delta_q;
+
+    vlc_fourcc_t i_chroma;
 };
 
 static bool av1_parse_color_config(bs_t *p_bs,
@@ -169,13 +171,10 @@ static bool av1_parse_color_config(bs_t *p_bs,
                                    obu_u3_t seq_profile)
 {
     p_cc->high_bitdepth = bs_read1(p_bs);
-    if(seq_profile <= 2)
-    {
-        if(p_cc->high_bitdepth)
-            p_cc->twelve_bit = bs_read1(p_bs);
-        if(seq_profile != 1)
-            p_cc->mono_chrome = bs_read1(p_bs);
-    }
+    if (seq_profile == 2 && p_cc->high_bitdepth)
+        p_cc->twelve_bit = bs_read1(p_bs);
+    if (seq_profile != 1)
+        p_cc->mono_chrome = bs_read1(p_bs);
     const uint8_t BitDepth = p_cc->twelve_bit ? 12 : ((p_cc->high_bitdepth) ? 10 : 8);
 
     p_cc->color_description_present_flag = bs_read1(p_bs);
@@ -195,12 +194,18 @@ static bool av1_parse_color_config(bs_t *p_bs,
     if(p_cc->mono_chrome)
     {
         p_cc->color_range = bs_read1(p_bs);
+        p_cc->i_chroma = VLC_CODEC_GREY;
+        p_cc->subsampling_x = 1;
+        p_cc->subsampling_y = 1;
     }
     else if( p_cc->color_primaries == 1 &&
              p_cc->transfer_characteristics == 13 &&
              p_cc->matrix_coefficients == 0 )
     {
         p_cc->color_range = 1;
+        p_cc->i_chroma = VLC_CODEC_I444;
+        p_cc->subsampling_x = 0;
+        p_cc->subsampling_y = 0;
     }
     else
     {
@@ -210,14 +215,31 @@ static bool av1_parse_color_config(bs_t *p_bs,
             if(BitDepth == 12)
             {
                 p_cc->subsampling_x = bs_read1(p_bs);
-                if(p_cc->subsampling_x)
-                    p_cc->subsampling_y = bs_read1(p_bs);
+                p_cc->subsampling_y = p_cc->subsampling_x ? bs_read1(p_bs) : 0;
             }
             else
             {
                 p_cc->subsampling_x = 1;
+                p_cc->subsampling_y = 0;
             }
+            p_cc->i_chroma = p_cc->subsampling_x ?
+                             p_cc->subsampling_y ? VLC_CODEC_I420 :
+                                                   VLC_CODEC_I422 :
+                                                   VLC_CODEC_I444;
         }
+        else if(seq_profile == 1)
+        {
+            p_cc->i_chroma = VLC_CODEC_I444;
+            p_cc->subsampling_x = 0;
+            p_cc->subsampling_y = 0;
+        }
+        else
+        {
+            p_cc->i_chroma = VLC_CODEC_I420;
+            p_cc->subsampling_x = 1;
+            p_cc->subsampling_y = 1;
+        }
+
         if(p_cc->subsampling_x && p_cc->subsampling_y)
             p_cc->chroma_sample_position = bs_read(p_bs, 2);
     }
@@ -546,6 +568,54 @@ bool AV1_get_colorimetry(const av1_OBU_sequence_header_t *p_seq,
     return true;
 }
 
+vlc_fourcc_t AV1_get_chroma(const av1_OBU_sequence_header_t *p_seq)
+{
+    switch (p_seq->color_config.i_chroma)
+    {
+        case VLC_CODEC_GREY:
+            switch (p_seq->color_config.high_bitdepth + p_seq->color_config.twelve_bit)
+            {
+                case 0: return VLC_CODEC_GREY;
+                case 1: return VLC_CODEC_GREY_10L;
+                case 2: return VLC_CODEC_GREY_12L;
+                default:
+                    vlc_assert_unreachable();
+            }
+            break;
+        case VLC_CODEC_I420:
+            switch (p_seq->color_config.high_bitdepth + p_seq->color_config.twelve_bit)
+            {
+                case 0: return VLC_CODEC_I420;
+                case 1: return VLC_CODEC_I420_10L;
+                case 2: return VLC_CODEC_I420_12L;
+                default:
+                    vlc_assert_unreachable();
+            }
+            break;
+        case VLC_CODEC_I422:
+            switch (p_seq->color_config.high_bitdepth + p_seq->color_config.twelve_bit)
+            {
+                case 0: return VLC_CODEC_I422;
+                case 1: return VLC_CODEC_I422_10L;
+                case 2: return VLC_CODEC_I422_12L;
+                default:
+                    vlc_assert_unreachable();
+            }
+            break;
+        case VLC_CODEC_I444:
+            switch (p_seq->color_config.high_bitdepth + p_seq->color_config.twelve_bit)
+            {
+                case 0: return VLC_CODEC_I444;
+                case 1: return VLC_CODEC_I444_10L;
+                case 2: return VLC_CODEC_I444_12L;
+                default:
+                    vlc_assert_unreachable();
+            }
+        default:
+            vlc_assert_unreachable();
+    }
+}
+
 size_t AV1_create_DecoderConfigurationRecord(uint8_t **pp_buffer,
                                              const av1_OBU_sequence_header_t *p_seq,
                                              size_t i_obu, const uint8_t *p_obus[],
@@ -585,4 +655,89 @@ size_t AV1_create_DecoderConfigurationRecord(uint8_t **pp_buffer,
 
     *pp_buffer = p_buffer;
     return i_buffer;
+}
+
+bool AV1_sequence_header_equal(const av1_OBU_sequence_header_t *seq1,const av1_OBU_sequence_header_t *seq2)
+{
+#define DIFF(field) \
+        seq1->field != seq2->field ||
+
+    if (
+        DIFF(obu_header.obu_type)
+        DIFF(obu_header.temporal_id)
+        DIFF(obu_header.spatial_id)
+        DIFF(seq_profile)
+        DIFF(still_picture)
+        DIFF(reduced_still_picture_header)
+        DIFF(timing_info_present_flag)
+        DIFF(timing_info.num_units_in_display_tick)
+        DIFF(timing_info.time_scale)
+        DIFF(timing_info.equal_picture_interval)
+        DIFF(timing_info.num_ticks_per_picture_minus_1)
+        DIFF(decoder_model_info_present_flag)
+        DIFF(decoder_model_info.buffer_delay_length_minus_1)
+        DIFF(decoder_model_info.num_units_in_decoding_tick)
+        DIFF(decoder_model_info.buffer_removal_time_length_minus_1)
+        DIFF(decoder_model_info.frame_presentation_time_length_minus_1)
+        DIFF(initial_display_delay_present_flag)
+        DIFF(operating_points_cnt_minus_1)
+        DIFF(max_frame_width_minus_1)
+        DIFF(max_frame_height_minus_1)
+        DIFF(frame_id_numbers_present_flag)
+        DIFF(delta_frame_id_length_minus_2)
+        DIFF(additional_frame_id_length_minus_1)
+        DIFF(use_128x128_superblock)
+        DIFF(enable_filter_intra)
+        DIFF(enable_intra_edge_filter)
+
+        DIFF(enable_interintra_compound)
+        DIFF(enable_masked_compound)
+        DIFF(enable_warped_motion)
+        DIFF(enable_dual_filter)
+        DIFF(enable_order_hint)
+        DIFF(enable_jnt_comp)
+        DIFF(enable_ref_frame_mvs)
+        DIFF(seq_force_screen_content_tools)
+        DIFF(seq_force_integer_mv)
+        DIFF(order_hint_bits_minus_1)
+
+        DIFF(enable_superres)
+        DIFF(enable_cdef)
+        DIFF(enable_restoration)
+        DIFF(color_config.high_bitdepth)
+        DIFF(color_config.twelve_bit)
+        DIFF(color_config.mono_chrome)
+        DIFF(color_config.color_description_present_flag)
+        DIFF(color_config.color_primaries)
+        DIFF(color_config.transfer_characteristics)
+        DIFF(color_config.matrix_coefficients)
+        DIFF(color_config.color_range)
+        DIFF(color_config.subsampling_x)
+        DIFF(color_config.subsampling_y)
+        DIFF(color_config.chroma_sample_position)
+        DIFF(color_config.separate_uv_delta_q)
+        DIFF(color_config.i_chroma)
+        DIFF(film_grain_params_present)
+        false
+    )
+        return false;
+
+    for (size_t i=0; i<ARRAY_SIZE(seq1->operating_points); i++)
+    {
+        if (
+            DIFF(operating_points[i].operating_point_idc)
+            DIFF(operating_points[i].seq_level_idx)
+            DIFF(operating_points[i].seq_tier)
+            DIFF(operating_points[i].decoder_model_present_for_this_op)
+            DIFF(operating_points[i].operating_parameters_info.decoder_buffer_delay)
+            DIFF(operating_points[i].operating_parameters_info.encoder_buffer_delay)
+            DIFF(operating_points[i].operating_parameters_info.low_delay_mode_flag)
+            DIFF(operating_points[i].initial_display_delay_present_for_this_op)
+            DIFF(operating_points[i].initial_display_delay_minus_1)
+            false
+        )
+            return false;
+    }
+
+    return true;
 }

@@ -62,7 +62,7 @@ struct subpicture_updater_sys_t {
     /* styling */
     text_style_t *p_default_style; /* decoder (full or partial) defaults */
     float margin_ratio;
-    mtime_t i_next_update;
+    vlc_tick_t i_next_update;
     bool b_blink_even;
 };
 
@@ -98,13 +98,13 @@ static inline void SubpictureUpdaterSysRegionAdd(subpicture_updater_sys_region_t
 static int SubpictureTextValidate(subpicture_t *subpic,
                                   bool has_src_changed, const video_format_t *fmt_src,
                                   bool has_dst_changed, const video_format_t *fmt_dst,
-                                  mtime_t ts)
+                                  vlc_tick_t ts)
 {
     subpicture_updater_sys_t *sys = subpic->updater.p_sys;
     VLC_UNUSED(fmt_src); VLC_UNUSED(fmt_dst);
 
     if (!has_src_changed && !has_dst_changed &&
-        (sys->i_next_update == VLC_TS_INVALID || sys->i_next_update > ts))
+        (sys->i_next_update == VLC_TICK_INVALID || sys->i_next_update > ts))
         return VLC_SUCCESS;
 
     subpicture_updater_sys_region_t *p_updtregion = &sys->region;
@@ -129,7 +129,7 @@ static int SubpictureTextValidate(subpicture_t *subpic,
 static void SubpictureTextUpdate(subpicture_t *subpic,
                                  const video_format_t *fmt_src,
                                  const video_format_t *fmt_dst,
-                                 mtime_t ts)
+                                 vlc_tick_t ts)
 {
     subpicture_updater_sys_t *sys = subpic->updater.p_sys;
     VLC_UNUSED(fmt_src);
@@ -259,7 +259,7 @@ static void SubpictureTextUpdate(subpicture_t *subpic,
     }
 
     if( b_schedule_blink_update &&
-        (sys->i_next_update == VLC_TS_INVALID || sys->i_next_update < ts) )
+        (sys->i_next_update == VLC_TICK_INVALID || sys->i_next_update < ts) )
     {
         sys->i_next_update = ts + CLOCK_FREQ;
         sys->b_blink_even = !sys->b_blink_even;

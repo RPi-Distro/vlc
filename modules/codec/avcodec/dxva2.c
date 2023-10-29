@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2009 Geoffroy Couprie
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 6116fa3e21b812caff8b3c65e5f2a1c4cadacc4d $
+ * $Id: 26cb48dc887acd90eba53d9a30d60a3cbed212d9 $
  *
  * Authors: Geoffroy Couprie <geal@videolan.org>
  *          Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
@@ -43,7 +43,7 @@
 #define D3D_DecoderSurface  IDirect3DSurface9
 #include "directx_va.h"
 
-static int Open(vlc_va_t *, AVCodecContext *, enum PixelFormat,
+static int Open(vlc_va_t *, AVCodecContext *, const AVPixFmtDescriptor *, enum PixelFormat,
                 const es_format_t *, picture_sys_t *p_sys);
 static void Close(vlc_va_t *, void **);
 
@@ -82,13 +82,7 @@ DEFINE_GUID(DXVA2_NoEncrypt,                        0x1b81bed0, 0xa0c7, 0x11d3, 
 DEFINE_GUID(DXVA_Intel_H264_NoFGT_ClearVideo,       0x604F8E68, 0x4951, 0x4c54, 0x88, 0xFE, 0xAB, 0xD2, 0x5C, 0x15, 0xB3, 0xD6);
 
 
-/* */
-typedef struct {
-    const char   *name;
-    D3DFORMAT    format;
-    vlc_fourcc_t codec;
-} d3d9_format_t;
-/* XXX Prefered format must come first */
+/* XXX Preferred format must come first */
 static const d3d9_format_t d3d_formats[] = {
     { "YV12",   MAKEFOURCC('Y','V','1','2'),    VLC_CODEC_YV12 },
     { "NV12",   MAKEFOURCC('N','V','1','2'),    VLC_CODEC_NV12 },
@@ -144,7 +138,7 @@ static void D3dDestroyDeviceManager(vlc_va_t *);
 static int DxCreateVideoService(vlc_va_t *);
 static void DxDestroyVideoService(vlc_va_t *);
 static int DxGetInputList(vlc_va_t *, input_list_t *);
-static int DxSetupOutput(vlc_va_t *, const GUID *, const video_format_t *);
+static int DxSetupOutput(vlc_va_t *, const GUID *, int surface_width, int surface_height);
 
 static int DxCreateVideoDecoder(vlc_va_t *, int codec_id,
                                 const video_format_t *, unsigned surface_count);
@@ -254,7 +248,8 @@ static void Close(vlc_va_t *va, void **ctx)
     free(sys);
 }
 
-static int Open(vlc_va_t *va, AVCodecContext *ctx, enum PixelFormat pix_fmt,
+static int Open(vlc_va_t *va, AVCodecContext *ctx, const AVPixFmtDescriptor *desc,
+                enum PixelFormat pix_fmt,
                 const es_format_t *fmt, picture_sys_t *p_sys)
 {
     int err = VLC_EGENERIC;
@@ -315,7 +310,7 @@ static int Open(vlc_va_t *va, AVCodecContext *ctx, enum PixelFormat pix_fmt,
     if (err!=VLC_SUCCESS)
         goto error;
 
-    err = directx_va_Setup(va, &sys->dx_sys, ctx, fmt, 0);
+    err = directx_va_Setup(va, &sys->dx_sys, ctx, desc, fmt, 0);
     if (err != VLC_SUCCESS)
         goto error;
 
@@ -495,23 +490,19 @@ static int DxGetInputList(vlc_va_t *va, input_list_t *p_list)
     return VLC_SUCCESS;
 }
 
-static int DxSetupOutput(vlc_va_t *va, const GUID *input, const video_format_t *fmt)
+static int DxSetupOutput(vlc_va_t *va, const GUID *input, int surface_width, int surface_height)
 {
-    VLC_UNUSED(fmt);
+    VLC_UNUSED(surface_width); VLC_UNUSED(surface_height);
     vlc_va_sys_t *sys = va->sys;
 
-    D3DADAPTER_IDENTIFIER9 identifier;
-    HRESULT hr = IDirect3D9_GetAdapterIdentifier(sys->hd3d.obj, sys->d3d_dev.adapterId, 0, &identifier);
-    if (FAILED(hr))
-        return VLC_EGENERIC;
-
-    UINT driverBuild = identifier.DriverVersion.LowPart & 0xFFFF;
-    if (identifier.VendorId == GPU_MANUFACTURER_INTEL && (identifier.DriverVersion.LowPart >> 16) >= 100)
+    const D3DADAPTER_IDENTIFIER9 *identifier = &sys->d3d_dev.identifier;
+    UINT driverBuild = identifier->DriverVersion.LowPart & 0xFFFF;
+    if (identifier->VendorId == GPU_MANUFACTURER_INTEL && (identifier->DriverVersion.LowPart >> 16) >= 100)
     {
         /* new Intel driver format */
-        driverBuild += ((identifier.DriverVersion.LowPart >> 16) - 100) * 1000;
+        driverBuild += ((identifier->DriverVersion.LowPart >> 16) - 100) * 1000;
     }
-    if (!directx_va_canUseDecoder(va, identifier.VendorId, identifier.DeviceId,
+    if (!directx_va_canUseDecoder(va, identifier->VendorId, identifier->DeviceId,
                                   input, driverBuild))
     {
         char* psz_decoder_name = directx_va_GetDecoderName(input);

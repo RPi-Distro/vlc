@@ -2,7 +2,7 @@
  * tospdif.c : encapsulates A/52 and DTS frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2002, 2006-2016 VLC authors and VideoLAN
- * $Id: 6013056518677bc12608ffe584a3f6dbe0efd383 $
+ * $Id: 0c725d99e73333e71f56b63995e5802073be0946 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Stéphane Borel <stef@via.ecp.fr>
@@ -223,7 +223,7 @@ static int write_buffer_ac3( filter_t *p_filter, block_t *p_in_buf )
      || p_in_buf->i_nb_samples != A52_FRAME_NB ) )
     {
         /* Input is not correctly packetizer. Try to parse the buffer in order
-         * to get the mandatory informations to play AC3 over S/PDIF */
+         * to get the mandatory information to play AC3 over S/PDIF */
         vlc_a52_header_t a52;
         if( vlc_a52_header_Parse( &a52, p_in_buf->p_buffer, p_in_buf->i_buffer )
             != VLC_SUCCESS || a52.b_eac3 || a52.i_size > p_in_buf->i_buffer )

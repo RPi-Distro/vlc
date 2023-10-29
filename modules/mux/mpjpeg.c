@@ -2,7 +2,7 @@
  * mpjpeg.c: mime multipart jpeg  muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: 503cb73f3c4cbb08e555aef97f7a59fd148bada7 $
+ * $Id: 97d74f2f68c87606840018c1900959cb1798cb97 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -89,7 +89,7 @@ static int Open( vlc_object_t *p_this )
 static void Close( vlc_object_t * p_this )
 {
     /* TODO: send the ending boundary ("\r\n--"BOUNDARY"--\r\n"),
-     * but is the access_output still useable?? */
+     * but is the access_output still usable?? */
     msg_Dbg( p_this, "Multipart jpeg muxer closed" );
 }
 

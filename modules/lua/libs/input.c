@@ -2,7 +2,7 @@
  * input.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 7490cd5d2688ae9fab8680291e93ad7f9edd3530 $
+ * $Id: 3f1453f2f49fb9951caf361f87c66e28a6b9a31c $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -346,7 +346,7 @@ static int vlclua_input_item_name( lua_State *L )
 
 static int vlclua_input_item_duration( lua_State *L )
 {
-    mtime_t duration = input_item_GetDuration( vlclua_input_item_get_internal( L ) );
+    vlc_tick_t duration = input_item_GetDuration( vlclua_input_item_get_internal( L ) );
     lua_pushnumber( L, ((double)duration)/1000000. );
     return 1;
 }

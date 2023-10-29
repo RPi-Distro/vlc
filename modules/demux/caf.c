@@ -2,7 +2,7 @@
  * caf.c: Core Audio File Format demuxer
  *****************************************************************************
  * Copyright (C) 2013 VLC authors and VideoLAN
- * $Id: fb75f67e61655b8e4c0a4c98b1bc08b0758c27d9 $
+ * $Id: 14fc4c0d08b918464b5761fadfee23ca73294375 $
  *
  * Authors: Matthias Keiser <matthias@tristan-inc.com>
  *
@@ -330,12 +330,12 @@ static int FrameSpanAddDescription( demux_t *p_demux, uint64_t i_desc_offset, fr
 
 /* FrameSpanGetTime returns the time span represented by the frame span. */
 
-static inline mtime_t FrameSpanGetTime( frame_span_t *span, uint32_t i_sample_rate )
+static inline vlc_tick_t FrameSpanGetTime( frame_span_t *span, uint32_t i_sample_rate )
 {
     if( !i_sample_rate )
-        return VLC_TS_INVALID;
+        return VLC_TICK_INVALID;
 
-    return ( span->i_samples * CLOCK_FREQ ) / i_sample_rate + VLC_TS_0;
+    return ( span->i_samples * CLOCK_FREQ ) / i_sample_rate + VLC_TICK_0;
 }
 
 /* SetSpanWithSample returns the span from the beginning of the file up to and
@@ -412,7 +412,7 @@ static int NextChunk( demux_t *p_demux, vlc_fourcc_t *p_fcc, uint64_t *pi_size )
     *p_fcc = ReadFOURCC( p_read );
     uint64_t i_size = GetQWBE( p_read + 4 );
 
-    /* We accept no negativ sizes for chunks, except -1 for the data chunk. */
+    /* We accept no negative sizes for chunks, except -1 for the data chunk. */
 
     if( i_size > INT64_MAX )
     {
@@ -527,7 +527,7 @@ static int ReadDescChunk( demux_t *p_demux )
     return VLC_SUCCESS;
 }
 
-/*  This is lifted from cafdec.c in libavformat (function read_kuki_chunk). Appearantly the
+/*  This is lifted from cafdec.c in libavformat (function read_kuki_chunk). Apparently the
     alac library expects the cookie to be of length 36, but current alac files
     have a cookie length of 24.
  */
@@ -632,7 +632,7 @@ static int ProcessAACCookie( demux_t *p_demux, const uint8_t *p, uint64_t i_size
         if( i_flags&0x80 )
         {
             if( !AACCookieChkLen( 2, i_size, i_offset )) goto aac_kuki_finish;
-            i_offset += 2; /* don't care (dependance) */
+            i_offset += 2; /* don't care (dependence) */
         }
         if( i_flags&0x40 )
         {

@@ -2,7 +2,7 @@
  * zvbi.c : VBI and Teletext PES demux and decoder using libzvbi
  *****************************************************************************
  * Copyright (C) 2007, M2X
- * $Id: e90443a56ae2bdd3cd9ddc34c6c1348aca698897 $
+ * $Id: b951fbfc441ae696673e32e10e21e043073abbd3 $
  *
  * Authors: Derk-Jan Hartman <djhartman at m2x dot nl>
  *          Jean-Paul Saman <jpsaman at m2x dot nl>
@@ -179,7 +179,7 @@ static int Decode( decoder_t *, block_t * );
 static subpicture_t *Subpicture( decoder_t *p_dec, video_format_t *p_fmt,
                                  bool b_text,
                                  int i_columns, int i_rows,
-                                 int i_align, mtime_t i_pts );
+                                 int i_align, vlc_tick_t i_pts );
 
 static void EventHandler( vbi_event *ev, void *user_data );
 static int OpaquePage( picture_t *p_src, const vbi_page *p_page,
@@ -484,7 +484,7 @@ static int Decode( decoder_t *p_dec, block_t *p_block )
         /* ZVBI is stupid enough to assume pitch == width */
         p_pic->p->i_pitch = 4 * fmt.i_width;
 
-        /* Maintain subtitle postion */
+        /* Maintain subtitle position */
         p_spu->p_region->i_y = i_first_row*10;
         p_spu->i_original_picture_width = p_page.columns*12;
         p_spu->i_original_picture_height = p_page.rows*10;
@@ -517,7 +517,7 @@ error:
 static subpicture_t *Subpicture( decoder_t *p_dec, video_format_t *p_fmt,
                                  bool b_text,
                                  int i_columns, int i_rows, int i_align,
-                                 mtime_t i_pts )
+                                 vlc_tick_t i_pts )
 {
     video_format_t fmt;
     subpicture_t *p_spu=NULL;

@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 0b7151f8e692863ddac07ea996655137fe060cff $
+ * $Id: fd370eee37dbffe8a689dd0811d231f4f0485134 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -218,7 +218,7 @@ static int ReadDir( stream_t *p_demux, input_item_node_t *p_subitems )
     char       *psz_artist = NULL;
     char       *psz_album_art = NULL;
     int        i_parsed_duration = 0;
-    mtime_t    i_duration = -1;
+    vlc_tick_t i_duration = -1;
     const char**ppsz_options = NULL;
     char *    (*pf_dup) (const char *) = p_demux->p_sys;
     int        i_options = 0;

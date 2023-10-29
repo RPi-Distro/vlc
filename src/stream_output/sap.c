@@ -2,7 +2,7 @@
  * sap.c : SAP announce handler
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: c645dfac2c4988d2525fde3c3c736bad080ecf53 $
+ * $Id: efef8da6b8ca0e81ab46a8d43c32c6a8cd373c47 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont
@@ -142,7 +142,7 @@ noreturn static void *RunThread (void *self)
     for (;;)
     {
         session_descriptor_t *p_session;
-        mtime_t deadline;
+        vlc_tick_t deadline;
 
         while (addr->first == NULL)
             vlc_cond_wait (&addr->wait, &addr->lock);

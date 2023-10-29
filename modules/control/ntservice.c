@@ -2,7 +2,7 @@
  * ntservice.c: Windows NT/2K/XP service interface
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: d8a992bf269d7dfc2aa21fca0a9309c1caae11f9 $
+ * $Id: c304e056bfde61b6bf353ab88f7e64a48bdfeb8d $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -251,7 +251,7 @@ static int NTServiceInstall( intf_thread_t *p_intf )
     }
     else
     {
-        msg_Warn( p_intf, "service successfuly created" );
+        msg_Warn( p_intf, "service successfully created" );
     }
 
     free( path_stream.ptr );
@@ -291,7 +291,7 @@ static int NTServiceUninstall( intf_thread_t *p_intf )
     }
     else
     {
-        msg_Dbg( p_intf, "service deleted successfuly" );
+        msg_Dbg( p_intf, "service deleted successfully" );
     }
 
     CloseServiceHandle( service );

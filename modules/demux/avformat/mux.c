@@ -2,7 +2,7 @@
  * mux.c: muxer using libavformat
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 6069a8326e5b1f2653ef9324f2dee2491e8e5f97 $
+ * $Id: c708276954ce930d5c8e4858efa4d13c80193f0a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -462,7 +462,7 @@ static int Mux( sout_mux_t *p_mux )
 
     for( ;; )
     {
-        mtime_t i_dts;
+        vlc_tick_t i_dts;
 
         int i_stream = sout_MuxGetStream( p_mux, 1, &i_dts );
         if( i_stream < 0 )

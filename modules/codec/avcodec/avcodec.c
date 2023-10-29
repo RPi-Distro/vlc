@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 9325b1fb0efafdaef0efd1e952cabfbb920fdfb8 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -84,6 +84,11 @@ vlc_module_begin ()
     add_shortcut("ffmpeg")
     set_capability("video decoder", 70)
     set_callbacks(InitVideoDec, EndVideoDec)
+
+    add_submodule()
+    add_shortcut("ffmpeghw")
+    set_capability("video decoder", 10001)
+    set_callbacks(InitVideoHwDec, EndVideoDec)
 
     add_submodule()
     add_shortcut("ffmpeg")

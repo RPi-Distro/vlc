@@ -2,7 +2,7 @@
  * chapter_command.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: f206e35b4bcb32c8483d2a5c67ee719bebe04e2f $
+ * $Id: 56eff6a48d1a8da4cf60557c5f6f96275d916a61 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -286,14 +286,14 @@ class matroska_script_codec_c : public chapter_codec_cmds_c
 public:
     matroska_script_codec_c( demux_sys_t & sys )
     :chapter_codec_cmds_c( sys, 0 )
-    ,interpretor( sys )
+    ,interpreter( sys )
     {}
 
     bool Enter();
     bool Leave();
 
 protected:
-    matroska_script_interpretor_c interpretor;
+    matroska_script_interpretor_c interpreter;
 };
 
 

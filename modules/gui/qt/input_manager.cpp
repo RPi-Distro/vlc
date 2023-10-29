@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 5aee413ff4a4f1f4f206ef66a97e47d1007b5056 $
+ * $Id: 4a3f689f5379a9d75b0371201f0b683d1599a7b1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -928,7 +928,7 @@ void InputManager::jumpFwd()
     int i_interval = var_InheritInteger( p_input, "short-jump-size" );
     if( i_interval > 0 && hasInput() )
     {
-        mtime_t val = CLOCK_FREQ * i_interval;
+        vlc_tick_t val = CLOCK_FREQ * i_interval;
         var_SetInteger( p_input, "time-offset", val );
     }
 }
@@ -938,7 +938,7 @@ void InputManager::jumpBwd()
     int i_interval = var_InheritInteger( p_input, "short-jump-size" );
     if( i_interval > 0 && hasInput() )
     {
-        mtime_t val = -CLOCK_FREQ * i_interval;
+        vlc_tick_t val = -CLOCK_FREQ * i_interval;
         var_SetInteger( p_input, "time-offset", val );
     }
 }

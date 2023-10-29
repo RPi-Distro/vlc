@@ -2,7 +2,7 @@
  * i420_rgb16.c : YUV to bitmap RGB conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000 VLC authors and VideoLAN
- * $Id: acf7a04f9ec24d52979680ec2e383c98a6bfadd8 $
+ * $Id: 6d07ede029f55fa5a83ab7f7642acc4a35c7c19b $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -125,7 +125,7 @@ void I420_RGB16( filter_t *p_filter, picture_t *p_src, picture_t *p_dest )
     int         i_uval, i_vval;                           /* U and V samples */
     int         i_red, i_green, i_blue;          /* U and V modified samples */
     uint16_t *  p_yuv = p_filter->p_sys->p_rgb16;
-    uint16_t *  p_ybase;                     /* Y dependant conversion table */
+    uint16_t *  p_ybase;                     /* Y dependent conversion table */
 
     /* Conversion buffer pointer */
     uint16_t *  p_buffer_start = (uint16_t*)p_filter->p_sys->p_buffer;
@@ -230,7 +230,7 @@ void I420_RGB32( filter_t *p_filter, picture_t *p_src, picture_t *p_dest )
     int         i_uval, i_vval;                           /* U and V samples */
     int         i_red, i_green, i_blue;          /* U and V modified samples */
     uint32_t *  p_yuv = p_filter->p_sys->p_rgb32;
-    uint32_t *  p_ybase;                     /* Y dependant conversion table */
+    uint32_t *  p_ybase;                     /* Y dependent conversion table */
 
     /* Conversion buffer pointer */
     uint32_t *  p_buffer_start = (uint32_t*)p_filter->p_sys->p_buffer;

@@ -2,7 +2,7 @@
  * VLCMainWindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2018 VLC authors and VideoLAN
- * $Id: 36f0748516924207296cce5f7268d0bbc068fb48 $
+ * $Id: 2acd616f70fa6a3712857a8b1c77b4144e223b4a $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>
@@ -806,7 +806,7 @@ static const float f_min_window_height = 307.;
     playlist_t * p_playlist = pl_Get(getIntf());
     PL_ASSERT_LOCKED;
 
-    mtime_t mt_duration = playlist_GetNodeDuration( node );
+    vlc_tick_t mt_duration = playlist_GetNodeDuration( node );
 
     if (mt_duration < 1)
         return @"";

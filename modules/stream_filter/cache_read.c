@@ -2,7 +2,7 @@
  * cache_read.c
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: ed967760764b7d5388fecf6f460b63e98eeb4285 $
+ * $Id: c862e5e1b057d94b7d7b2d9c86b569ddeafc487f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -37,7 +37,7 @@
 // #define STREAM_DEBUG 1
 
 /*
- * Complex scheme using mutliple track to avoid seeking
+ * Complex scheme using multiple track to avoid seeking
  */
 
 /* How many tracks we have, currently only used for stream mode */
@@ -74,7 +74,7 @@
 
 typedef struct
 {
-    mtime_t date;
+    vlc_tick_t date;
 
     uint64_t i_start;
     uint64_t i_end;
@@ -124,7 +124,7 @@ static int AStreamRefillStream(stream_t *s)
                  sys->i_used, i_toread);
 #endif
 
-    mtime_t start = mdate();
+    vlc_tick_t start = mdate();
     while (i_toread > 0)
     {
         int i_off = tk->i_end % STREAM_CACHE_TRACK_SIZE;
@@ -170,14 +170,14 @@ static int AStreamRefillStream(stream_t *s)
 static void AStreamPrebufferStream(stream_t *s)
 {
     stream_sys_t *sys = s->p_sys;
-    mtime_t start = mdate();
+    vlc_tick_t start = mdate();
     bool first = true;
 
     msg_Dbg(s, "starting pre-buffering");
     for (;;)
     {
         stream_track_t *tk = &sys->tk[sys->i_tk];
-        mtime_t now = mdate();
+        vlc_tick_t now = mdate();
 
         int i_read;
         int i_buffered = tk->i_end - tk->i_start;

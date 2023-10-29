@@ -2,7 +2,7 @@
  * cdda.c : CD digital audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003-2006, 2008-2009 VLC authors and VideoLAN
- * $Id: b8839c0839512bc9396e683ca2a024ba1249853c $
+ * $Id: 794c550e5a341bb002ecf58285b90ed8371f2ff8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -171,11 +171,11 @@ static int Demux(demux_t *demux)
     sys->position += count;
 
     block->i_nb_samples = block->i_buffer / 4;
-    block->i_dts = block->i_pts = VLC_TS_0 + date_Get(&sys->pts);
+    block->i_dts = block->i_pts = VLC_TICK_0 + date_Get(&sys->pts);
     date_Increment(&sys->pts, block->i_nb_samples);
 
     es_out_Send(demux->out, sys->es, block);
-    es_out_SetPCR(demux->out, VLC_TS_0 + date_Get(&sys->pts));
+    es_out_SetPCR(demux->out, VLC_TICK_0 + date_Get(&sys->pts));
     return VLC_DEMUXER_SUCCESS;
 }
 
@@ -212,10 +212,10 @@ static int DemuxControl(demux_t *demux, int query, va_list args)
             break;
 
         case DEMUX_GET_LENGTH:
-            *va_arg(args, mtime_t *) = (INT64_C(40000) * sys->length) / 3;
+            *va_arg(args, vlc_tick_t *) = (INT64_C(40000) * sys->length) / 3;
             break;
         case DEMUX_GET_TIME:
-            *va_arg(args, mtime_t *) = (INT64_C(40000) * sys->position) / 3;
+            *va_arg(args, vlc_tick_t *) = (INT64_C(40000) * sys->position) / 3;
             break;
         case DEMUX_SET_TIME:
             sys->position = (va_arg(args, mtime_t) * 3) / INT64_C(40000);
@@ -724,8 +724,8 @@ static int ReadDir(stream_t *access, input_item_node_t *node)
            p_toc->i_last_track > sys->i_cdda_last)
             i_last_sector -= CD_ROM_XA_INTERVAL;
 
-        const mtime_t duration =
-            (mtime_t)(i_last_sector - i_first_sector)
+        const vlc_tick_t duration =
+            (vlc_tick_t)(i_last_sector - i_first_sector)
             * CDDA_DATA_SIZE * CLOCK_FREQ / 44100 / 2 / 2;
 
         input_item_t *item = input_item_NewDisc(access->psz_url,
@@ -979,7 +979,7 @@ static void AccessClose(vlc_object_t *obj)
 }
 
 /*****************************************************************************
- * Module descriptior
+ * Module descriptor
  *****************************************************************************/
 #define CDAUDIO_DEV_TEXT N_("Audio CD device")
 #if defined( _WIN32 ) || defined( __OS2__ )

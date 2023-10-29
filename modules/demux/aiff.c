@@ -2,7 +2,7 @@
  * aiff.c: Audio Interchange File Format demuxer
  *****************************************************************************
  * Copyright (C) 2004-2007 VLC authors and VideoLAN
- * $Id: e87d2160982e46a316e554092a2b97d432ef3831 $
+ * $Id: 067f6cb275adc1b69d5d9ff2d80128952f20b8ac $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -247,7 +247,7 @@ static int Demux( demux_t *p_demux )
     }
 
     /* Set PCR */
-    es_out_SetPCR( p_demux->out, VLC_TS_0 + p_sys->i_time);
+    es_out_SetPCR( p_demux->out, VLC_TICK_0 + p_sys->i_time);
 
     /* we will read 100ms at once */
     i_read = p_sys->i_ssnd_fsize * ( p_sys->fmt.audio.i_rate / 10 );
@@ -261,7 +261,7 @@ static int Demux( demux_t *p_demux )
     }
 
     p_block->i_dts =
-    p_block->i_pts = VLC_TS_0 + p_sys->i_time;
+    p_block->i_pts = VLC_TICK_0 + p_sys->i_time;
 
     p_sys->i_time += (int64_t)1000000 *
                      p_block->i_buffer /

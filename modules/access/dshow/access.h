@@ -3,7 +3,7 @@
  * access_sys_t definition
  *****************************************************************************
  * Copyright (C) 2002, 2004, 2010-2011 VLC authors and VideoLAN
- * $Id: 0527423c6b9de54b5edf0b5e3750b96ac509c535 $
+ * $Id: fc425eb18bb956fd7f59d277f2625568dbc4ec66 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -75,6 +75,6 @@ struct access_sys_t
     int            i_width;
     int            i_height;
     int            i_chroma;
-    mtime_t        i_start;
+    vlc_tick_t     i_start;
 };
 

@@ -2,7 +2,7 @@
  * projectm.cpp: visualization module based on libprojectM
  *****************************************************************************
  * Copyright © 2009-2011 VLC authors and VideoLAN
- * $Id: 9f99e8bb0287e557168b955fbb2450983037ce37 $
+ * $Id: 208fa22a2eb84deef841ba0a3a2858a1610bfac7 $
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *          Laurent Aimar
@@ -226,7 +226,7 @@ static void Close( vlc_object_t *p_this )
 
     vlc_join( p_sys->thread, NULL );
 
-    /* Free the ressources */
+    /* Free the resources */
     vlc_gl_surface_Destroy( p_sys->gl );
     vlc_mutex_destroy( &p_sys->lock );
     free( p_sys->p_buffer );
@@ -351,7 +351,7 @@ static void *Thread( void *p_data )
     /* */
     for( ;; )
     {
-        const mtime_t i_deadline = mdate() + CLOCK_FREQ / 50; /* 50 fps max */
+        const vlc_tick_t i_deadline = mdate() + CLOCK_FREQ / 50; /* 50 fps max */
 
         /* Manage the events */
         unsigned width, height;

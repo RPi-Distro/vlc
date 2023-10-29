@@ -2,7 +2,7 @@
  * stream_output.c : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: 046ea2071fb45b3a61d62ed36042d80bf53d7402 $
+ * $Id: 35a51f4f3c35e08c1bdd9a06c5d2e0d4fd60aa38 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -523,12 +523,12 @@ void sout_MuxDeleteStream( sout_mux_t *p_mux, sout_input_t *p_input )
 int sout_MuxSendBuffer( sout_mux_t *p_mux, sout_input_t *p_input,
                          block_t *p_buffer )
 {
-    mtime_t i_dts = p_buffer->i_dts;
+    vlc_tick_t i_dts = p_buffer->i_dts;
     block_FifoPut( p_input->p_fifo, p_buffer );
 
     if( p_mux->p_sout->i_out_pace_nocontrol )
     {
-        mtime_t current_date = mdate();
+        vlc_tick_t current_date = mdate();
         if ( current_date > i_dts )
             msg_Warn( p_mux, "late buffer for mux input (%"PRId64")",
                       current_date - i_dts );
@@ -559,9 +559,9 @@ void sout_MuxFlush( sout_mux_t *p_mux, sout_input_t *p_input )
 /*****************************************************************************
  * sout_MuxGetStream: find stream to be muxed
  *****************************************************************************/
-int sout_MuxGetStream( sout_mux_t *p_mux, unsigned i_blocks, mtime_t *pi_dts )
+int sout_MuxGetStream( sout_mux_t *p_mux, unsigned i_blocks, vlc_tick_t *pi_dts )
 {
-    mtime_t i_dts = 0;
+    vlc_tick_t i_dts = 0;
     int     i_stream = -1;
 
     assert( i_blocks > 0 );

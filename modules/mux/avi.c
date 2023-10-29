@@ -2,7 +2,7 @@
  * avi.c
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 1367dac8065b19aceba49c669ff69700d711de19 $
+ * $Id: 1a44f8a301affdae572c25fd5b4f9e8f8f752474 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -93,7 +93,7 @@ typedef struct avi_stream_s
 
     char fcc[4];
 
-    mtime_t i_duration;       // in µs
+    vlc_tick_t i_duration;       // in µs
 
     int     i_frames;        // total frame count
     int64_t i_totalsize;    // total stream size
@@ -703,7 +703,7 @@ static int avi_HeaderAdd_strh( bo_t *p_bo, avi_stream_t *p_stream )
                 bo_add_32be( p_bo, p_stream->p_bih->biCompression );
                 bo_add_32le( p_bo, 0 );   /* flags */
                 bo_add_16le(  p_bo, 0 );   /* priority */
-                bo_add_16le(  p_bo, 0 );   /* langage */
+                bo_add_16le(  p_bo, 0 );   /* language */
                 bo_add_32le( p_bo, 0 );   /* initial frame */
                 bo_add_32le( p_bo, 1000 );/* scale */
                 bo_add_32le( p_bo, (uint32_t)( 1000 * p_stream->f_fps ));
@@ -738,7 +738,7 @@ static int avi_HeaderAdd_strh( bo_t *p_bo, avi_stream_t *p_stream )
                 bo_add_32le( p_bo, 0 );   /* tag */
                 bo_add_32le( p_bo, 0 );   /* flags */
                 bo_add_16le(  p_bo, 0 );   /* priority */
-                bo_add_16le(  p_bo, 0 );   /* langage */
+                bo_add_16le(  p_bo, 0 );   /* language */
                 bo_add_32le( p_bo, 0 );   /* initial frame */
                 bo_add_32le( p_bo, i_scale );/* scale */
                 bo_add_32le( p_bo, i_rate );

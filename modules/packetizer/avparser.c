@@ -2,7 +2,7 @@
  * avparser.c
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 272f494b212440a05d2a90426d289274df8c2741 $
+ * $Id: 6fbd8a227124d9bcb4f39e28b87817586c2eab45 $
  *
  * Authors: Denis Charmet <typx@videolan.org>
  *
@@ -204,7 +204,7 @@ static block_t *Packetize ( decoder_t *p_dec, block_t **pp_block )
         memcpy( p_ret->p_buffer, p_outdata, i_outlen );
         p_ret->i_pts = p_block->i_pts;
         p_ret->i_dts = p_block->i_dts;
-        p_block->i_pts = p_block->i_dts = VLC_TS_INVALID;
+        p_block->i_pts = p_block->i_dts = VLC_TICK_INVALID;
     }
     else /* as-is block is now used */
     {

@@ -2,7 +2,7 @@
  * tta.c : The Lossless True Audio parser
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 2da7460cc9e6e330c72743baa9ab934e4aea84ff $
+ * $Id: a25f7e459df7a95a129e8a563b8d466ddcdcd337 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -207,7 +207,7 @@ static int Demux( demux_t *p_demux )
     p_data = vlc_stream_Block( p_demux->s,
                                p_sys->pi_seektable[p_sys->i_currentframe] );
     if( p_data == NULL ) return 0;
-    p_data->i_dts = p_data->i_pts = VLC_TS_0 + (int64_t)(INT64_C(1000000) * p_sys->i_currentframe) * TTA_FRAMETIME;
+    p_data->i_dts = p_data->i_pts = VLC_TICK_0 + (int64_t)(INT64_C(1000000) * p_sys->i_currentframe) * TTA_FRAMETIME;
 
     p_sys->i_currentframe++;
 

@@ -2,7 +2,7 @@
  * audio.c: transcoding stream output module (audio)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: d2c9f5f40a5c46273fe6033d0437bc30a336e1c9 $
+ * $Id: 57cdbed16aa3f3259edfa2c832d8a298954c1891 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -205,7 +205,7 @@ static int transcode_audio_new( sout_stream_t *p_stream,
     /* The decoder fmt_out can be uninitialized here (since it can initialized
      * asynchronously). Fix audio_dec_out with default values in that case.
      * This should be enough to initialize the encoder for the first time (it
-     * will be reloaded when all informations from the decoder are available).
+     * will be reloaded when all information from the decoder are available).
      * */
     id->audio_dec_out = id->p_decoder->fmt_out.audio;
     id->audio_dec_out.i_format = id->p_decoder->fmt_out.i_codec;
@@ -342,10 +342,10 @@ int transcode_audio_process( sout_stream_t *p_stream,
 
         if( p_sys->b_master_sync )
         {
-            mtime_t i_pts = date_Get( &id->next_input_pts );
-            mtime_t i_drift = 0;
+            vlc_tick_t i_pts = date_Get( &id->next_input_pts );
+            vlc_tick_t i_drift = 0;
 
-            if( likely( p_audio_buf->i_pts != VLC_TS_INVALID ) )
+            if( likely( p_audio_buf->i_pts != VLC_TICK_INVALID ) )
                 i_drift = p_audio_buf->i_pts - i_pts;
 
             if ( unlikely(i_drift > MASTER_SYNC_MAX_DRIFT
@@ -356,7 +356,7 @@ int transcode_audio_process( sout_stream_t *p_stream,
                     i_drift );
                 date_Set( &id->next_input_pts, p_audio_buf->i_pts );
                 i_pts = date_Get( &id->next_input_pts );
-                if( likely(p_audio_buf->i_pts != VLC_TS_INVALID ) )
+                if( likely(p_audio_buf->i_pts != VLC_TICK_INVALID ) )
                     i_drift = p_audio_buf->i_pts - i_pts;
             }
             p_sys->i_master_drift = i_drift;
