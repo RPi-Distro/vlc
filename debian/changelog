@@ -1,7 +1,8 @@
-vlc (3.0.19-0+deb12u1) bookworm-security; urgency=medium
+vlc (3.0.20-0+deb12u1) bookworm-security; urgency=medium
 
-  * New upstream version 3.0.19
+  * New upstream version 3.0.20
     - Improve muxing timestamps in a few formats (Closes: #1054528)
+    - Fix potential security issue (OOB Write) on MMS://
   * debian/gbp.conf: Work in bookworm branch
   * debian/patches: Drop patches included upstream
 
