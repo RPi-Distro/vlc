@@ -2,7 +2,7 @@
  * events.c: Windows video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 476a710529cfb5b0ecf2f2f1077715d373582ed0 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Martell Malone <martellmalone@gmail.com>
@@ -277,12 +277,18 @@ static void *EventThread( void *p_this )
         case WM_MBUTTONUP:
             MouseReleased( p_event, MOUSE_BUTTON_CENTER );
             break;
+        case WM_MBUTTONDBLCLK:
+            MousePressed( p_event, msg.hwnd, MOUSE_BUTTON_CENTER );
+            break;
 
         case WM_RBUTTONDOWN:
             MousePressed( p_event, msg.hwnd, MOUSE_BUTTON_RIGHT );
             break;
         case WM_RBUTTONUP:
             MouseReleased( p_event, MOUSE_BUTTON_RIGHT );
+            break;
+        case WM_RBUTTONDBLCLK:
+            MousePressed( p_event, msg.hwnd, MOUSE_BUTTON_RIGHT );
             break;
 
         case WM_KEYDOWN:
