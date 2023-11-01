@@ -122,6 +122,7 @@ struct vout_display_sys_t
     d3d11_handle_t           hd3d;
     IDXGISwapChain1          *dxgiswapChain;   /* DXGI 1.2 swap chain */
     IDXGISwapChain4          *dxgiswapChain4;  /* DXGI 1.5 for HDR */
+    DXGI_HDR_METADATA_HDR10  hdr10;
     d3d11_device_t           d3d_dev;
     d3d_quad_t               picQuad;
     video_format_t           quad_fmt;
@@ -1103,7 +1104,11 @@ static void Prepare(vout_display_t *vd, picture_t *picture, subpicture_t *subpic
             hdr10.MaxMasteringLuminance = picture->format.mastering.max_luminance;
             hdr10.MaxContentLightLevel = picture->format.lighting.MaxCLL;
             hdr10.MaxFrameAverageLightLevel = picture->format.lighting.MaxFALL;
-            IDXGISwapChain4_SetHDRMetaData(sys->dxgiswapChain4, DXGI_HDR_METADATA_TYPE_HDR10, sizeof(hdr10), &hdr10);
+            if (memcmp(&sys->hdr10, &hdr10, sizeof(hdr10)))
+            {
+                memcpy(&sys->hdr10, &hdr10, sizeof(hdr10));
+                IDXGISwapChain4_SetHDRMetaData(sys->dxgiswapChain4, DXGI_HDR_METADATA_TYPE_HDR10, sizeof(hdr10), &hdr10);
+            }
         }
     }
 
@@ -1570,16 +1575,6 @@ static int Direct3D11Open(vout_display_t *vd, bool external_device)
 
     video_format_Copy(&sys->pool_fmt, &fmt);
 
-    sys->legacy_shader = sys->d3d_dev.feature_level < D3D_FEATURE_LEVEL_10_0 ||
-            (sys->scaleProc == NULL && !CanUseTextureArray(vd)) ||
-            BogusZeroCopy(vd);
-
-    if (!sys->legacy_shader && is_d3d11_opaque(sys->pool_fmt.i_chroma))
-    {
-        sys->pool_fmt.i_width  = (sys->pool_fmt.i_width  + 0x7F) & ~0x7F;
-        sys->pool_fmt.i_height = (sys->pool_fmt.i_height + 0x7F) & ~0x7F;
-    }
-    else
     if ( sys->picQuad.formatInfo->formatTexture != DXGI_FORMAT_R8G8B8A8_UNORM &&
          sys->picQuad.formatInfo->formatTexture != DXGI_FORMAT_B5G6R5_UNORM )
     {
@@ -1688,6 +1683,10 @@ static int SetupOutputFormat(vout_display_t *vd, video_format_t *fmt)
         sys->d3dregion_format = GetBlendableFormat(vd, VLC_CODEC_BGRA);
 
     InitScaleProcessor(vd);
+
+    sys->legacy_shader = sys->d3d_dev.feature_level < D3D_FEATURE_LEVEL_10_0 ||
+            (sys->scaleProc == NULL && !CanUseTextureArray(vd)) ||
+            BogusZeroCopy(vd);
 
     if (Direct3D11CreateFormatResources(vd, fmt)) {
         msg_Err(vd, "Failed to allocate format resources");
