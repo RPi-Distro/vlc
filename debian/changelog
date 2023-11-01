@@ -1,3 +1,9 @@
+vlc (3.0.20-1) UNRELEASED; urgency=medium
+
+  * New upstream version 3.0.20.
+
+ -- Mateusz Łukasik <mati75@linuxmint.pl>  Wed, 01 Nov 2023 14:22:42 +0100
+
 vlc (3.0.19-1) unstable; urgency=medium
 
   * New upstream version 3.0.19
