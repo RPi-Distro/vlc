@@ -92,7 +92,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = $(am__EXEEXT_3)
+noinst_PROGRAMS = $(am__EXEEXT_3) $(am__EXEEXT_4)
 check_PROGRAMS = test_libvlc_core$(EXEEXT) \
 	test_libvlc_equalizer$(EXEEXT) test_libvlc_media$(EXEEXT) \
 	test_libvlc_media_list$(EXEEXT) \
@@ -187,6 +187,7 @@ EXTRA_PROGRAMS = test_libvlc_meta$(EXEEXT) \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libsubstx3g_plugin.la
 
 @HAVE_LIBFUZZER_TRUE@am__append_8 = vlc-demux-libfuzzer vlc-demux-dec-libfuzzer vlc-demux-run vlc-demux-dec-run
+@HAVE_DARWIN_TRUE@@HAVE_OSX_FALSE@am__append_9 = vlccoreios
 subdir = test
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_append_compile_flags.m4 \
@@ -217,6 +218,7 @@ CONFIG_CLEAN_VPATH_FILES =
 @HAVE_LIBFUZZER_TRUE@	vlc-demux-dec-libfuzzer$(EXEEXT) \
 @HAVE_LIBFUZZER_TRUE@	vlc-demux-run$(EXEEXT) \
 @HAVE_LIBFUZZER_TRUE@	vlc-demux-dec-run$(EXEEXT)
+@HAVE_DARWIN_TRUE@@HAVE_OSX_FALSE@am__EXEEXT_4 = vlccoreios$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 @HAVE_DYNAMIC_PLUGINS_FALSE@am__DEPENDENCIES_1 =  \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libxml_plugin.la \
@@ -417,6 +419,12 @@ vlc_demux_run_DEPENDENCIES = libvlc_demux_run.la
 vlc_demux_run_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(vlc_demux_run_LDFLAGS) $(LDFLAGS) -o $@
+am_vlccoreios_OBJECTS = vlccoreios-iosvlc.$(OBJEXT)
+vlccoreios_OBJECTS = $(am_vlccoreios_OBJECTS)
+vlccoreios_DEPENDENCIES = ../lib/libvlc.la ../src/libvlccore.la
+vlccoreios_LINK = $(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(OBJCLD) $(vlccoreios_OBJCFLAGS) \
+	$(OBJCFLAGS) $(vlccoreios_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -433,9 +441,9 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/autotools/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/vlc-demux-libfuzzer.Po \
-	./$(DEPDIR)/vlc-demux-run.Po libvlc/$(DEPDIR)/core.Po \
-	libvlc/$(DEPDIR)/equalizer.Po libvlc/$(DEPDIR)/media.Po \
-	libvlc/$(DEPDIR)/media_discoverer.Po \
+	./$(DEPDIR)/vlc-demux-run.Po ./$(DEPDIR)/vlccoreios-iosvlc.Po \
+	libvlc/$(DEPDIR)/core.Po libvlc/$(DEPDIR)/equalizer.Po \
+	libvlc/$(DEPDIR)/media.Po libvlc/$(DEPDIR)/media_discoverer.Po \
 	libvlc/$(DEPDIR)/media_list.Po \
 	libvlc/$(DEPDIR)/media_list_player.Po \
 	libvlc/$(DEPDIR)/media_player.Po libvlc/$(DEPDIR)/meta.Po \
@@ -470,6 +478,24 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
+OBJCCOMPILE = $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_OBJCFLAGS) $(OBJCFLAGS)
+LTOBJCCOMPILE = $(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_OBJCFLAGS) $(OBJCFLAGS)
+AM_V_OBJC = $(am__v_OBJC_@AM_V@)
+am__v_OBJC_ = $(am__v_OBJC_@AM_DEFAULT_V@)
+am__v_OBJC_0 = @echo "  OBJC    " $@;
+am__v_OBJC_1 = 
+OBJCLD = $(OBJC)
+OBJCLINK = $(LIBTOOL) $(AM_V_lt) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(OBJCLD) $(AM_OBJCFLAGS) $(OBJCFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_OBJCLD = $(am__v_OBJCLD_@AM_V@)
+am__v_OBJCLD_ = $(am__v_OBJCLD_@AM_DEFAULT_V@)
+am__v_OBJCLD_0 = @echo "  OBJCLD  " $@;
+am__v_OBJCLD_1 = 
 SOURCES = $(libvlc_demux_dec_run_la_SOURCES) \
 	$(libvlc_demux_run_la_SOURCES) $(test_libvlc_core_SOURCES) \
 	$(test_libvlc_equalizer_SOURCES) $(test_libvlc_media_SOURCES) \
@@ -492,7 +518,7 @@ SOURCES = $(libvlc_demux_dec_run_la_SOURCES) \
 	$(test_src_misc_variables_SOURCES) \
 	$(vlc_demux_dec_libfuzzer_SOURCES) \
 	$(vlc_demux_dec_run_SOURCES) vlc-demux-libfuzzer.c \
-	vlc-demux-run.c
+	vlc-demux-run.c $(vlccoreios_SOURCES)
 DIST_SOURCES = $(libvlc_demux_dec_run_la_SOURCES) \
 	$(libvlc_demux_run_la_SOURCES) $(test_libvlc_core_SOURCES) \
 	$(test_libvlc_equalizer_SOURCES) $(test_libvlc_media_SOURCES) \
@@ -515,7 +541,7 @@ DIST_SOURCES = $(libvlc_demux_dec_run_la_SOURCES) \
 	$(test_src_misc_variables_SOURCES) \
 	$(vlc_demux_dec_libfuzzer_SOURCES) \
 	$(vlc_demux_dec_run_SOURCES) vlc-demux-libfuzzer.c \
-	vlc-demux-run.c
+	vlc-demux-run.c $(vlccoreios_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -1672,10 +1698,16 @@ vlc_demux_dec_run_LDADD = libvlc_demux_dec_run.la
 vlc_demux_libfuzzer_LDADD = libvlc_demux_run.la
 vlc_demux_dec_libfuzzer_SOURCES = vlc-demux-libfuzzer.c
 vlc_demux_dec_libfuzzer_LDADD = libvlc_demux_dec_run.la
+vlccoreios_SOURCES = iosvlc.m
+vlccoreios_LDFLAGS = $(LDFLAGS_vlc) \
+	-Wl,-framework,Foundation,-framework,UIKit -Xlinker -rpath \
+	-Xlinker "@executable_path/Frameworks/"
+vlccoreios_OBJCFLAGS = -fobjc-arc
+vlccoreios_LDADD = ../lib/libvlc.la ../src/libvlccore.la
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .lo .log .o .obj .test .test$(EXEEXT) .trs
+.SUFFIXES: .c .lo .log .m .o .obj .test .test$(EXEEXT) .trs
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -1948,6 +1980,10 @@ vlc-demux-run$(EXEEXT): $(vlc_demux_run_OBJECTS) $(vlc_demux_run_DEPENDENCIES) $
 	@rm -f vlc-demux-run$(EXEEXT)
 	$(AM_V_CCLD)$(vlc_demux_run_LINK) $(vlc_demux_run_OBJECTS) $(vlc_demux_run_LDADD) $(LIBS)
 
+vlccoreios$(EXEEXT): $(vlccoreios_OBJECTS) $(vlccoreios_DEPENDENCIES) $(EXTRA_vlccoreios_DEPENDENCIES) 
+	@rm -f vlccoreios$(EXEEXT)
+	$(AM_V_OBJCLD)$(vlccoreios_LINK) $(vlccoreios_OBJECTS) $(vlccoreios_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f libvlc/*.$(OBJEXT)
@@ -1966,6 +2002,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc-demux-libfuzzer.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc-demux-run.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlccoreios-iosvlc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/core.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/equalizer.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/media.Po@am__quote@ # am--include-marker
@@ -2073,6 +2110,44 @@ src/input/test_src_input_stream_net-stream.obj: src/input/stream.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='src/input/stream.c' object='src/input/test_src_input_stream_net-stream.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_src_input_stream_net_CFLAGS) $(CFLAGS) -c -o src/input/test_src_input_stream_net-stream.obj `if test -f 'src/input/stream.c'; then $(CYGPATH_W) 'src/input/stream.c'; else $(CYGPATH_W) '$(srcdir)/src/input/stream.c'; fi`
+
+.m.o:
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepOBJC_TRUE@	$(OBJCCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepOBJC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(OBJCCOMPILE) -c -o $@ $<
+
+.m.obj:
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepOBJC_TRUE@	$(OBJCCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepOBJC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(OBJCCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+.m.lo:
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.lo$$||'`;\
+@am__fastdepOBJC_TRUE@	$(LTOBJCCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepOBJC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(LTOBJCCOMPILE) -c -o $@ $<
+
+vlccoreios-iosvlc.o: iosvlc.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlccoreios_OBJCFLAGS) $(OBJCFLAGS) -MT vlccoreios-iosvlc.o -MD -MP -MF $(DEPDIR)/vlccoreios-iosvlc.Tpo -c -o vlccoreios-iosvlc.o `test -f 'iosvlc.m' || echo '$(srcdir)/'`iosvlc.m
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vlccoreios-iosvlc.Tpo $(DEPDIR)/vlccoreios-iosvlc.Po
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='iosvlc.m' object='vlccoreios-iosvlc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlccoreios_OBJCFLAGS) $(OBJCFLAGS) -c -o vlccoreios-iosvlc.o `test -f 'iosvlc.m' || echo '$(srcdir)/'`iosvlc.m
+
+vlccoreios-iosvlc.obj: iosvlc.m
+@am__fastdepOBJC_TRUE@	$(AM_V_OBJC)$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlccoreios_OBJCFLAGS) $(OBJCFLAGS) -MT vlccoreios-iosvlc.obj -MD -MP -MF $(DEPDIR)/vlccoreios-iosvlc.Tpo -c -o vlccoreios-iosvlc.obj `if test -f 'iosvlc.m'; then $(CYGPATH_W) 'iosvlc.m'; else $(CYGPATH_W) '$(srcdir)/iosvlc.m'; fi`
+@am__fastdepOBJC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/vlccoreios-iosvlc.Tpo $(DEPDIR)/vlccoreios-iosvlc.Po
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(AM_V_OBJC)source='iosvlc.m' object='vlccoreios-iosvlc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(AM_V_OBJC@am__nodep@)$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(vlccoreios_OBJCFLAGS) $(OBJCFLAGS) -c -o vlccoreios-iosvlc.obj `if test -f 'iosvlc.m'; then $(CYGPATH_W) 'iosvlc.m'; else $(CYGPATH_W) '$(srcdir)/iosvlc.m'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -2535,6 +2610,7 @@ clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
 distclean: distclean-am
 		-rm -f ./$(DEPDIR)/vlc-demux-libfuzzer.Po
 	-rm -f ./$(DEPDIR)/vlc-demux-run.Po
+	-rm -f ./$(DEPDIR)/vlccoreios-iosvlc.Po
 	-rm -f libvlc/$(DEPDIR)/core.Po
 	-rm -f libvlc/$(DEPDIR)/equalizer.Po
 	-rm -f libvlc/$(DEPDIR)/media.Po
@@ -2610,6 +2686,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 		-rm -f ./$(DEPDIR)/vlc-demux-libfuzzer.Po
 	-rm -f ./$(DEPDIR)/vlc-demux-run.Po
+	-rm -f ./$(DEPDIR)/vlccoreios-iosvlc.Po
 	-rm -f libvlc/$(DEPDIR)/core.Po
 	-rm -f libvlc/$(DEPDIR)/equalizer.Po
 	-rm -f libvlc/$(DEPDIR)/media.Po

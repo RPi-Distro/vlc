@@ -2,7 +2,7 @@
  * audiobargraph_a.c : audiobargraph audio plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: bdccf32f38b5a67c5fb88eb671ed4e0783633dfc $
+ * $Id: 1f787d5b78d0922421d529fbd7b07b8f461a57db $
  *
  * Authors: Clement CHESNIN <clement.chesnin@gmail.com>
  *          Philippe COENT <philippe.coent@tdf.fr>
@@ -88,7 +88,7 @@ vlc_module_end ()
 
 typedef struct ValueDate_t {
     float value;
-    mtime_t date;
+    vlc_tick_t date;
     struct ValueDate_t* next;
 } ValueDate_t;
 
@@ -104,7 +104,7 @@ struct filter_sys_t
     ValueDate_t*    first;
     ValueDate_t*    last;
     int             started;
-    mtime_t         lastAlarm;
+    vlc_tick_t      lastAlarm;
 };
 
 /*****************************************************************************

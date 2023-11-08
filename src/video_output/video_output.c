@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: d552160befaaf888f6cb1af70a39bb34e87bacb8 $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -311,7 +311,7 @@ void vout_Cancel(vout_thread_t *vout, bool canceled)
     vout_control_WaitEmpty(&vout->p->control);
 }
 
-void vout_ChangePause(vout_thread_t *vout, bool is_paused, mtime_t date)
+void vout_ChangePause(vout_thread_t *vout, bool is_paused, vlc_tick_t date)
 {
     vout_control_cmd_t cmd;
     vout_control_cmd_Init(&cmd, VOUT_CONTROL_PAUSE);
@@ -328,7 +328,7 @@ void vout_GetResetStatistic(vout_thread_t *vout, unsigned *restrict displayed,
     vout_statistic_GetReset( &vout->p->statistic, displayed, lost );
 }
 
-void vout_Flush(vout_thread_t *vout, mtime_t date)
+void vout_Flush(vout_thread_t *vout, vlc_tick_t date)
 {
     vout_control_PushTime(&vout->p->control, VOUT_CONTROL_FLUSH, date);
     vout_control_WaitEmpty(&vout->p->control);
@@ -343,7 +343,7 @@ bool vout_IsEmpty(vout_thread_t *vout)
     return !picture;
 }
 
-void vout_NextPicture(vout_thread_t *vout, mtime_t *duration)
+void vout_NextPicture(vout_thread_t *vout, vlc_tick_t *duration)
 {
     vout_control_cmd_t cmd;
     vout_control_cmd_Init(&cmd, VOUT_CONTROL_STEP);
@@ -444,7 +444,7 @@ void vout_PutPicture(vout_thread_t *vout, picture_t *picture)
 int vout_GetSnapshot(vout_thread_t *vout,
                      block_t **image_dst, picture_t **picture_dst,
                      video_format_t *fmt,
-                     const char *type, mtime_t timeout)
+                     const char *type, vlc_tick_t timeout)
 {
     picture_t *picture = vout_snapshot_Get(&vout->p->snapshot, timeout);
     if (!picture) {
@@ -862,13 +862,13 @@ static int ThreadDisplayPreparePicture(vout_thread_t *vout, bool reuse, bool fra
             decoded = picture_fifo_Pop(vout->p->decoder_fifo);
             if (decoded) {
                 if (is_late_dropped && !decoded->b_force) {
-                    mtime_t late_threshold;
+                    vlc_tick_t late_threshold;
                     if (decoded->format.i_frame_rate && decoded->format.i_frame_rate_base)
                         late_threshold = ((CLOCK_FREQ/2) * decoded->format.i_frame_rate_base) / decoded->format.i_frame_rate;
                     else
                         late_threshold = VOUT_DISPLAY_LATE_THRESHOLD;
-                    const mtime_t predicted = mdate() + 0; /* TODO improve */
-                    const mtime_t late = predicted - decoded->date;
+                    const vlc_tick_t predicted = mdate() + 0; /* TODO improve */
+                    const vlc_tick_t late = predicted - decoded->date;
                     if (late > late_threshold) {
                         msg_Warn(vout, "picture is too late to be displayed (missing %"PRId64" ms)", late/1000);
                         picture_Release(decoded);
@@ -987,12 +987,12 @@ static int ThreadDisplayRenderPicture(vout_thread_t *vout, bool is_forced)
      * Get the subpicture to be displayed
      */
     const bool do_snapshot = vout_snapshot_IsRequested(&vout->p->snapshot);
-    mtime_t render_subtitle_date;
+    vlc_tick_t render_subtitle_date;
     if (vout->p->pause.is_on)
         render_subtitle_date = vout->p->pause.date;
     else
         render_subtitle_date = filtered->date > 1 ? filtered->date : mdate();
-    mtime_t render_osd_date = mdate(); /* FIXME wrong */
+    vlc_tick_t render_osd_date = mdate(); /* FIXME wrong */
 
     /*
      * Get the subpicture to be displayed
@@ -1166,7 +1166,7 @@ static int ThreadDisplayRenderPicture(vout_thread_t *vout, bool is_forced)
 
     /* Wait the real date (for rendering jitter) */
 #if 0
-    mtime_t delay = todisplay->date - mdate();
+    vlc_tick_t delay = todisplay->date - mdate();
     if (delay < 1000)
         msg_Warn(vout, "picture is late (%lld ms)", delay / 1000);
 #endif
@@ -1182,7 +1182,7 @@ static int ThreadDisplayRenderPicture(vout_thread_t *vout, bool is_forced)
     return VLC_SUCCESS;
 }
 
-static int ThreadDisplayPicture(vout_thread_t *vout, mtime_t *deadline)
+static int ThreadDisplayPicture(vout_thread_t *vout, vlc_tick_t *deadline)
 {
     bool frame_by_frame = !deadline;
     bool paused = vout->p->pause.is_on;
@@ -1196,11 +1196,11 @@ static int ThreadDisplayPicture(vout_thread_t *vout, mtime_t *deadline)
         while (!vout->p->displayed.next && !ThreadDisplayPreparePicture(vout, false, frame_by_frame))
             ;
 
-    const mtime_t date = mdate();
-    const mtime_t render_delay = vout_chrono_GetHigh(&vout->p->render) + VOUT_MWAIT_TOLERANCE;
+    const vlc_tick_t date = mdate();
+    const vlc_tick_t render_delay = vout_chrono_GetHigh(&vout->p->render) + VOUT_MWAIT_TOLERANCE;
 
     bool drop_next_frame = frame_by_frame;
-    mtime_t date_next = VLC_TS_INVALID;
+    vlc_tick_t date_next = VLC_TICK_INVALID;
     if (!paused && vout->p->displayed.next) {
         date_next = vout->p->displayed.next->date - render_delay;
         if (date_next /* + 0 FIXME */ <= date)
@@ -1218,17 +1218,17 @@ static int ThreadDisplayPicture(vout_thread_t *vout, mtime_t *deadline)
      */
     bool refresh = false;
 
-    mtime_t date_refresh = VLC_TS_INVALID;
-    if (vout->p->displayed.date > VLC_TS_INVALID) {
+    vlc_tick_t date_refresh = VLC_TICK_INVALID;
+    if (vout->p->displayed.date > VLC_TICK_INVALID) {
         date_refresh = vout->p->displayed.date + VOUT_REDISPLAY_DELAY - render_delay;
         refresh = date_refresh <= date;
     }
     bool force_refresh = !drop_next_frame && refresh;
 
     if (!frame_by_frame) {
-        if (date_refresh != VLC_TS_INVALID)
+        if (date_refresh != VLC_TICK_INVALID)
             *deadline = date_refresh;
-        if (date_next != VLC_TS_INVALID && date_next < *deadline)
+        if (date_next != VLC_TICK_INVALID && date_next < *deadline)
             *deadline = date_next;
     }
 
@@ -1287,16 +1287,16 @@ static void ThreadChangeSubMargin(vout_thread_t *vout, int margin)
     spu_ChangeMargin(vout->p->spu, margin);
 }
 
-static void ThreadChangePause(vout_thread_t *vout, bool is_paused, mtime_t date)
+static void ThreadChangePause(vout_thread_t *vout, bool is_paused, vlc_tick_t date)
 {
     assert(!vout->p->pause.is_on || !is_paused);
 
     if (vout->p->pause.is_on) {
-        const mtime_t duration = date - vout->p->pause.date;
+        const vlc_tick_t duration = date - vout->p->pause.date;
 
-        if (vout->p->step.timestamp > VLC_TS_INVALID)
+        if (vout->p->step.timestamp > VLC_TICK_INVALID)
             vout->p->step.timestamp += duration;
-        if (vout->p->step.last > VLC_TS_INVALID)
+        if (vout->p->step.last > VLC_TICK_INVALID)
             vout->p->step.last += duration;
         picture_fifo_OffsetDate(vout->p->decoder_fifo, duration);
         if (vout->p->displayed.decoded)
@@ -1305,8 +1305,8 @@ static void ThreadChangePause(vout_thread_t *vout, bool is_paused, mtime_t date)
 
         ThreadFilterFlush(vout, false);
     } else {
-        vout->p->step.timestamp = VLC_TS_INVALID;
-        vout->p->step.last      = VLC_TS_INVALID;
+        vout->p->step.timestamp = VLC_TICK_INVALID;
+        vout->p->step.last      = VLC_TICK_INVALID;
     }
     vout->p->pause.is_on = is_paused;
     vout->p->pause.date  = date;
@@ -1316,10 +1316,10 @@ static void ThreadChangePause(vout_thread_t *vout, bool is_paused, mtime_t date)
         vout_window_SetInhibition(window, !is_paused);
 }
 
-static void ThreadFlush(vout_thread_t *vout, bool below, mtime_t date)
+static void ThreadFlush(vout_thread_t *vout, bool below, vlc_tick_t date)
 {
-    vout->p->step.timestamp = VLC_TS_INVALID;
-    vout->p->step.last      = VLC_TS_INVALID;
+    vout->p->step.timestamp = VLC_TICK_INVALID;
+    vout->p->step.last      = VLC_TICK_INVALID;
 
     ThreadFilterFlush(vout, false); /* FIXME too much */
 
@@ -1330,8 +1330,8 @@ static void ThreadFlush(vout_thread_t *vout, bool below, mtime_t date)
             picture_Release(last);
 
             vout->p->displayed.decoded   = NULL;
-            vout->p->displayed.date      = VLC_TS_INVALID;
-            vout->p->displayed.timestamp = VLC_TS_INVALID;
+            vout->p->displayed.date      = VLC_TICK_INVALID;
+            vout->p->displayed.timestamp = VLC_TICK_INVALID;
         }
     }
 
@@ -1339,11 +1339,11 @@ static void ThreadFlush(vout_thread_t *vout, bool below, mtime_t date)
     vout_FilterFlush(vout->p->display.vd);
 }
 
-static void ThreadStep(vout_thread_t *vout, mtime_t *duration)
+static void ThreadStep(vout_thread_t *vout, vlc_tick_t *duration)
 {
     *duration = 0;
 
-    if (vout->p->step.last <= VLC_TS_INVALID)
+    if (vout->p->step.last <= VLC_TICK_INVALID)
         vout->p->step.last = vout->p->displayed.timestamp;
 
     if (ThreadDisplayPicture(vout, NULL))
@@ -1351,7 +1351,7 @@ static void ThreadStep(vout_thread_t *vout, mtime_t *duration)
 
     vout->p->step.timestamp = vout->p->displayed.timestamp;
 
-    if (vout->p->step.last > VLC_TS_INVALID &&
+    if (vout->p->step.last > VLC_TICK_INVALID &&
         vout->p->step.timestamp > vout->p->step.last) {
         *duration = vout->p->step.timestamp - vout->p->step.last;
         vout->p->step.last = vout->p->step.timestamp;
@@ -1427,6 +1427,8 @@ static void ThreadChangeWindowMouse(vout_thread_t *vout,
         case VOUT_WINDOW_MOUSE_DOUBLE_CLICK:
             if (mouse->button_mask == 0)
                 vout_display_SendEventMouseDoubleClick(vd);
+            else
+                vout_display_SendEventMousePressed(vd, mouse->button_mask);
             break;
         default: vlc_assert_unreachable();
             break;
@@ -1540,12 +1542,12 @@ static int ThreadStart(vout_thread_t *vout, vout_display_state_t *state)
     vout->p->displayed.current       = NULL;
     vout->p->displayed.next          = NULL;
     vout->p->displayed.decoded       = NULL;
-    vout->p->displayed.date          = VLC_TS_INVALID;
-    vout->p->displayed.timestamp     = VLC_TS_INVALID;
+    vout->p->displayed.date          = VLC_TICK_INVALID;
+    vout->p->displayed.timestamp     = VLC_TICK_INVALID;
     vout->p->displayed.is_interlaced = false;
 
-    vout->p->step.last               = VLC_TS_INVALID;
-    vout->p->step.timestamp          = VLC_TS_INVALID;
+    vout->p->step.last               = VLC_TICK_INVALID;
+    vout->p->step.timestamp          = VLC_TICK_INVALID;
 
     vout->p->spu_blend_chroma        = 0;
     vout->p->spu_blend               = NULL;
@@ -1597,7 +1599,7 @@ static void ThreadInit(vout_thread_t *vout)
     vout->p->dead            = false;
     vout->p->is_late_dropped = var_InheritBool(vout, "drop-late-frames");
     vout->p->pause.is_on     = false;
-    vout->p->pause.date      = VLC_TS_INVALID;
+    vout->p->pause.date      = VLC_TICK_INVALID;
 
     vout_chrono_Init(&vout->p->render, 5, 10000); /* Arbitrary initial time */
 }
@@ -1615,7 +1617,7 @@ static int ThreadReinit(vout_thread_t *vout,
     video_format_t original;
 
     vout->p->pause.is_on = false;
-    vout->p->pause.date  = VLC_TS_INVALID;
+    vout->p->pause.date  = VLC_TICK_INVALID;
 
     if (VoutValidateFormat(&original, cfg->fmt)) {
         ThreadStop(vout, NULL);
@@ -1791,23 +1793,23 @@ static void *Thread(void *object)
     vout_thread_t *vout = object;
     vout_thread_sys_t *sys = vout->p;
 
-    mtime_t deadline = VLC_TS_INVALID;
+    vlc_tick_t deadline = VLC_TICK_INVALID;
     bool wait = false;
     for (;;) {
         vout_control_cmd_t cmd;
 
         if (wait)
         {
-            const mtime_t max_deadline = mdate() + 100000;
-            deadline = deadline <= VLC_TS_INVALID ? max_deadline : __MIN(deadline, max_deadline);
+            const vlc_tick_t max_deadline = mdate() + 100000;
+            deadline = deadline <= VLC_TICK_INVALID ? max_deadline : __MIN(deadline, max_deadline);
         } else {
-            deadline = VLC_TS_INVALID;
+            deadline = VLC_TICK_INVALID;
         }
         while (!vout_control_Pop(&sys->control, &cmd, deadline))
             if (ThreadControl(vout, cmd))
                 return NULL;
 
-        deadline = VLC_TS_INVALID;
+        deadline = VLC_TICK_INVALID;
         wait = ThreadDisplayPicture(vout, &deadline) != VLC_SUCCESS;
 
         const bool picture_interlaced = sys->displayed.is_interlaced;

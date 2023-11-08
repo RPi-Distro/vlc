@@ -2,7 +2,7 @@
  * spudec.h : sub picture unit decoder thread interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2006 VLC authors and VideoLAN
- * $Id: 76bd9c14229e39919248268040eaf9feae969924 $
+ * $Id: abeeaf06c3b409a4de30b2b75cd7e151d86a0825 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *
@@ -28,7 +28,7 @@ struct decoder_sys_t
     bool b_packetizer;
     bool b_disabletrans;
 
-    mtime_t i_pts;
+    vlc_tick_t i_pts;
     unsigned int i_spu_size;
     unsigned int i_rle_size;
     unsigned int i_spu;

@@ -2,7 +2,7 @@
  * algo_ivtc.h : IVTC (inverse telecine) algorithm for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2010-2011 VLC authors and VideoLAN
- * $Id: c12dc60abf7d4b557e0d0ce98bc2425f46262387 $
+ * $Id: 414b55b57ff1dc4d51414cbbcb0b3430748c5f45 $
  *
  * Author: Juha Jeronen <juha.jeronen@jyu.fi>
  *
@@ -175,7 +175,7 @@ void IVTCClearState( filter_t *p_filter );
  * The output will run at 4/5 of the original framerate with no loss of
  * information. Interlacing artifacts are removed, and motion becomes
  * as smooth as it was on the original film. For soft-telecined material,
- * on the other hand, the progressive frames alredy exist, so only the
+ * on the other hand, the progressive frames already exist, so only the
  * timings are changed such that the output becomes smooth 24fps (or would,
  * if the output device had an infinite framerate).
  *
@@ -318,7 +318,7 @@ void IVTCClearState( filter_t *p_filter );
  * http://www.animemusicvideos.org/guides/avtech/videogetb2a.html
  * In these cases, the additional fields are a (probably 50%) blend of the
  * frames between which they have been inserted. Which one of the two
- * possibilites is the extra field then becomes important.
+ * possibilities is the extra field then becomes important.
  * This filter does NOT support "full field blended" material.
  *
  * To summarize, the 3:2 pulldown sequence produces a group of ten fields

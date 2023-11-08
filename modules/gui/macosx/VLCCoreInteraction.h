@@ -2,7 +2,7 @@
  * CoreInteraction.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2021 Felix Paul Kühne
- * $Id: ef1aaff621723d16660dac94d5b8b97d924af44f $
+ * $Id: e849c7fc0ee8d3fa1068add23e7bf0910b21b916 $
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *
@@ -59,7 +59,7 @@
 - (void)backwardMedium;
 - (void)forwardLong;
 - (void)backwardLong;
-- (BOOL)seekToTime:(mtime_t)time;
+- (BOOL)seekToTime:(vlc_tick_t)time;
 
 - (void)repeatOne;
 - (void)repeatAll;

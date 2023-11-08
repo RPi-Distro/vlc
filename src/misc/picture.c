@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2000-2010 VLC authors and VideoLAN
  * Copyright (C) 2009-2010 Laurent Aimar
- * $Id: 0338076fd80e9e17291859f4a43bb951bde87d8f $
+ * $Id: 892d5b7dac3bc26b817f1a0c6a2ff0275f2e6cba $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -129,7 +129,7 @@ static void picture_Destroy( picture_t *p_picture )
 void picture_Reset( picture_t *p_picture )
 {
     /* */
-    p_picture->date = VLC_TS_INVALID;
+    p_picture->date = VLC_TICK_INVALID;
     p_picture->b_force = false;
     p_picture->b_progressive = false;
     p_picture->i_nb_fields = 2;

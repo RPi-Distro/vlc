@@ -2,7 +2,7 @@
  * grain.c: add film grain
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: fc8c7fbdcb3baccc43a8c51f1380b41eb124f2f8 $
+ * $Id: fc41958ee853a8d6b83f25859cafb2191991024d $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -334,7 +334,7 @@ static int Generate(int16_t *bank, int h_min, int h_max, int v_min, int v_max)
         }
     }
 
-    //mtime_t tmul_0 = mdate();
+    //vlc_tick_t tmul_0 = mdate();
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             double v = 0.0;
@@ -357,7 +357,7 @@ static int Generate(int16_t *bank, int h_min, int h_max, int v_min, int v_max)
             bank[i * N + j] = VLC_CLIP(vq, INT16_MIN, INT16_MAX);
         }
     }
-    //mtime_t mul_duration = mdate() - tmul_0;
+    //vlc_tick_t mul_duration = mdate() - tmul_0;
     //fprintf(stderr, "IDCT took %d ms\n", (int)(mul_duration / 1000));
 
     free(workspace);

@@ -2,7 +2,7 @@
  * itml.c : iTunes Music Library import functions
  *******************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: ebeb0eec113d990ca15dade30c62800dcda6827c $
+ * $Id: 6f2517b924f4b8f0fdfe0bb8c68a0185f4fe2bad $
  *
  * Authors: Yoann Peronneau <yoann@videolan.org>
  *
@@ -389,7 +389,7 @@ static bool save_data( track_elem_t *p_track, const char *psz_name,
     else if( !strcmp( psz_name, "Total Time" ) )
     {
         long i_num = atol( psz_value );
-        p_track->duration = (mtime_t) i_num*1000;
+        p_track->duration = (vlc_tick_t) i_num*1000;
     }
 #undef SAVE_INFO
     return true;

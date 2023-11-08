@@ -2,7 +2,7 @@
  * os_graphics.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c8cf28f998fd506da6ddeb03411b8a614b955b3c $
+ * $Id: 22f7543f13139536ca861cc352f3d12e31988535 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -54,11 +54,11 @@ public:
                              int width = -1, int height = -1,
                              bool blend = false) = 0;
 
-    /// Draw a filled rectangle on the grahics (color is #RRGGBB)
+    /// Draw a filled rectangle on the graphics (color is #RRGGBB)
     virtual void fillRect( int left, int top, int width, int height,
                            uint32_t color ) = 0;
 
-    /// Draw an empty rectangle on the grahics (color is #RRGGBB)
+    /// Draw an empty rectangle on the graphics (color is #RRGGBB)
     virtual void drawRect( int left, int top, int width, int height,
                            uint32_t color ) = 0;
 

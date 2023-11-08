@@ -2,7 +2,7 @@
  * theora.c: theora decoder module making use of libtheora.
  *****************************************************************************
  * Copyright (C) 1999-2012 VLC authors and VideoLAN
- * $Id: 4d2d55cb7ed6823a9f308ec9f01c605adbc8b515 $
+ * $Id: 171f6b317aac970a9b83d2c64661d683bd80d684 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -72,7 +72,7 @@ struct decoder_sys_t
     /*
      * Common properties
      */
-    mtime_t i_pts;
+    vlc_tick_t i_pts;
 };
 
 /*****************************************************************************
@@ -161,7 +161,7 @@ static int OpenDecoder( vlc_object_t *p_this )
         return VLC_ENOMEM;
     p_dec->p_sys->b_packetizer = false;
     p_sys->b_has_headers = false;
-    p_sys->i_pts = VLC_TS_INVALID;
+    p_sys->i_pts = VLC_TICK_INVALID;
     p_sys->b_decoded_first_keyframe = false;
     p_sys->tcx = NULL;
 
@@ -444,7 +444,7 @@ static void Flush( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    p_sys->i_pts = VLC_TS_INVALID;
+    p_sys->i_pts = VLC_TICK_INVALID;
 }
 
 /*****************************************************************************
@@ -470,7 +470,7 @@ static void *ProcessPacket( decoder_t *p_dec, ogg_packet *p_oggpacket,
     }
 
     /* Date management */
-    if( p_block->i_pts > VLC_TS_INVALID && p_block->i_pts != p_sys->i_pts )
+    if( p_block->i_pts > VLC_TICK_INVALID && p_block->i_pts != p_sys->i_pts )
     {
         p_sys->i_pts = p_block->i_pts;
     }

@@ -2,7 +2,7 @@
  * libmpeg2.c: mpeg2 video decoder module making use of libmpeg2.
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: f58972ad18816deac48bf194858daa8a3d760c8e $
+ * $Id: 8266f0b728309cf02271b3701031d2ec4bbc0fb2 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -71,10 +71,10 @@ struct decoder_sys_t
     /*
      * Input properties
      */
-    mtime_t          i_previous_pts;
-    mtime_t          i_current_pts;
-    mtime_t          i_previous_dts;
-    mtime_t          i_current_dts;
+    vlc_tick_t       i_previous_pts;
+    vlc_tick_t       i_current_pts;
+    vlc_tick_t       i_previous_dts;
+    vlc_tick_t       i_current_dts;
     bool             b_garbage_pic;
     bool             b_after_sequence_header; /* is it the next frame after
                                                * the sequence header ?    */
@@ -92,12 +92,12 @@ struct decoder_sys_t
     decoder_synchro_t *p_synchro;
     int             i_sar_num;
     int             i_sar_den;
-    mtime_t         i_last_frame_pts;
+    vlc_tick_t      i_last_frame_pts;
 
     /* Closed captioning support */
     uint32_t        i_cc_flags;
-    mtime_t         i_cc_pts;
-    mtime_t         i_cc_dts;
+    vlc_tick_t      i_cc_pts;
+    vlc_tick_t      i_cc_dts;
 #if MPEG2_RELEASE >= MPEG2_VERSION (0, 5, 0)
     cc_data_t       cc;
 #endif
@@ -154,7 +154,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     if( p_dec->fmt_in.i_codec != VLC_CODEC_MPGV )
         return VLC_EGENERIC;
 
-    /* Select onl recognized original format (standard mpeg video) */
+    /* Select only recognized original format (standard mpeg video) */
     switch( p_dec->fmt_in.i_original_fourcc )
     {
     case VLC_FOURCC('m','p','g','1'):
@@ -324,7 +324,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             const mpeg2_info_t *p_info = p_sys->p_info;
             const mpeg2_picture_t *p_current = p_info->current_picture;
 
-            mtime_t i_pts, i_dts;
+            vlc_tick_t i_pts, i_dts;
 
             if( p_sys->b_after_sequence_header &&
                 (p_current->flags &
@@ -792,7 +792,7 @@ static void PutPicture( decoder_t *p_dec, picture_t *p_picture )
         pp_buf[j] = p_picture ? p_picture->p[j].p_pixels : NULL;
     mpeg2_set_buf( p_sys->p_mpeg2dec, pp_buf, p_picture );
 
-    /* Completly broken API, why the hell does it suppose
+    /* Completely broken API, why the hell does it suppose
      * the stride of the chroma planes ! */
     if( p_picture )
         mpeg2_stride( p_sys->p_mpeg2dec, p_picture->p[Y_PLANE].i_pitch );
@@ -831,7 +831,7 @@ static void DpbClean( decoder_t *p_dec )
     }
 }
 /**
- * Retreive a picture and reserve a place in the DPB
+ * Retrieve a picture and reserve a place in the DPB
  */
 static picture_t *DpbNewPicture( decoder_t *p_dec )
 {

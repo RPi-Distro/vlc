@@ -2,7 +2,7 @@
  * waveout.c : Windows waveOut plugin for vlc
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 028d0833226ce69aac68509baf2cd73518c7b240 $
+ * $Id: ec3a2284973cfe10f40c03354717cf0bdf8511f6 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          André Weber
@@ -77,7 +77,7 @@ static void WaveOutClearBuffer( HWAVEOUT, WAVEHDR *);
 static int ReloadWaveoutDevices( vlc_object_t *, const char *,
                                  char ***, char *** );
 static uint32_t findDeviceID(char *);
-static int WaveOutTimeGet(audio_output_t * , mtime_t *);
+static int WaveOutTimeGet(audio_output_t * , vlc_tick_t *);
 static void WaveOutFlush( audio_output_t *, bool);
 static void WaveOutPause( audio_output_t *, bool, mtime_t);
 static int WaveoutVolumeSet(audio_output_t * p_aout, float volume);
@@ -120,7 +120,7 @@ struct aout_sys_t
     uint8_t chan_table[AOUT_CHAN_MAX];
     vlc_fourcc_t format;
 
-    mtime_t i_played_length;
+    vlc_tick_t i_played_length;
 
     struct lkwavehdr * p_free_list;
 
@@ -363,7 +363,7 @@ static void Play( audio_output_t *p_aout, block_t *block )
                         p_aout->sys->b_spdif ) != VLC_SUCCESS )
 
     {
-        msg_Warn( p_aout, "Couln't write frame... sleeping");
+        msg_Warn( p_aout, "Couldn't write frame... sleeping");
         msleep( block->i_length );
     }
 
@@ -840,7 +840,7 @@ static void Close(vlc_object_t *obj)
     free(sys);
 }
 
-static int WaveOutTimeGet(audio_output_t * p_aout, mtime_t *delay)
+static int WaveOutTimeGet(audio_output_t * p_aout, vlc_tick_t *delay)
 {
     MMTIME mmtime;
     mmtime.wType = TIME_SAMPLES;
@@ -855,7 +855,7 @@ static int WaveOutTimeGet(audio_output_t * p_aout, mtime_t *delay)
         return -1;
     }
 
-    mtime_t i_pos = (mtime_t) mmtime.u.sample * CLOCK_FREQ / p_aout->sys->i_rate;
+    vlc_tick_t i_pos = (vlc_tick_t) mmtime.u.sample * CLOCK_FREQ / p_aout->sys->i_rate;
     *delay = p_aout->sys->i_played_length - i_pos;
     return 0;
 }
@@ -881,7 +881,7 @@ static void WaveOutFlush( audio_output_t *p_aout, bool wait)
     }
 }
 
-static void WaveOutPause( audio_output_t * p_aout, bool pause, mtime_t date)
+static void WaveOutPause( audio_output_t * p_aout, bool pause, vlc_tick_t date)
 {
     MMRESULT res;
     (void) date;

@@ -2,7 +2,7 @@
  * dec.c : audio output API towards decoders
  *****************************************************************************
  * Copyright (C) 2002-2007 VLC authors and VideoLAN
- * $Id: c25f249fbf4ac8b69c11bd003d1ac72da8cddf55 $
+ * $Id: 7eca0de2fdf298b9b1555fb3bc9d1ce2aa271a36 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -107,7 +107,7 @@ error:
     }
 
 
-    owner->sync.end = VLC_TS_INVALID;
+    owner->sync.end = VLC_TICK_INVALID;
     owner->sync.resamp_type = AOUT_RESAMPLING_NONE;
     owner->sync.discontinuity = true;
     aout_OutputUnlock (p_aout);
@@ -168,7 +168,7 @@ static int aout_CheckReady (audio_output_t *aout)
         }
 
         msg_Dbg (aout, "restarting filters...");
-        owner->sync.end = VLC_TS_INVALID;
+        owner->sync.end = VLC_TICK_INVALID;
         owner->sync.resamp_type = AOUT_RESAMPLING_NONE;
 
         if (owner->mixer_format.i_format)
@@ -213,7 +213,7 @@ static void aout_StopResampling (audio_output_t *aout)
     aout_FiltersAdjustResampling (owner->filters, 0);
 }
 
-static void aout_DecSilence (audio_output_t *aout, mtime_t length, mtime_t pts)
+static void aout_DecSilence (audio_output_t *aout, vlc_tick_t length, vlc_tick_t pts)
 {
     aout_owner_t *owner = aout_owner (aout);
     const audio_sample_format_t *fmt = &owner->mixer_format;
@@ -233,11 +233,11 @@ static void aout_DecSilence (audio_output_t *aout, mtime_t length, mtime_t pts)
     aout_OutputPlay (aout, block);
 }
 
-static void aout_DecSynchronize (audio_output_t *aout, mtime_t dec_pts,
+static void aout_DecSynchronize (audio_output_t *aout, vlc_tick_t dec_pts,
                                  int input_rate)
 {
     aout_owner_t *owner = aout_owner (aout);
-    mtime_t drift;
+    vlc_tick_t drift;
 
     /**
      * Depending on the drift between the actual and intended playback times,
@@ -277,7 +277,7 @@ static void aout_DecSynchronize (audio_output_t *aout, mtime_t dec_pts,
         aout_OutputFlush (aout, false);
 
         aout_StopResampling (aout);
-        owner->sync.end = VLC_TS_INVALID;
+        owner->sync.end = VLC_TICK_INVALID;
         owner->sync.discontinuity = true;
 
         /* Now the output might be too early... Recheck. */
@@ -360,7 +360,7 @@ int aout_DecPlay (audio_output_t *aout, block_t *block, int input_rate)
 
     assert (input_rate >= INPUT_RATE_DEFAULT / AOUT_MAX_INPUT_RATE);
     assert (input_rate <= INPUT_RATE_DEFAULT * AOUT_MAX_INPUT_RATE);
-    assert (block->i_pts >= VLC_TS_0);
+    assert (block->i_pts >= VLC_TICK_0);
 
     block->i_length = CLOCK_FREQ * block->i_nb_samples
                                  / owner->input_format.i_rate;
@@ -370,7 +370,7 @@ int aout_DecPlay (audio_output_t *aout, block_t *block, int input_rate)
     if (unlikely(ret == AOUT_DEC_FAILED))
         goto drop; /* Pipeline is unrecoverably broken :-( */
 
-    const mtime_t now = mdate (), advance = block->i_pts - now;
+    const vlc_tick_t now = mdate (), advance = block->i_pts - now;
     if (advance < -AOUT_MAX_PTS_DELAY)
     {   /* Late buffer can be caused by bugs in the decoder, by scheduling
          * latency spikes (excessive load, SIGSTOP, etc.) or if buffering is
@@ -429,12 +429,12 @@ void aout_DecGetResetStats(audio_output_t *aout, unsigned *restrict lost,
     *played = atomic_exchange(&owner->buffers_played, 0);
 }
 
-void aout_DecChangePause (audio_output_t *aout, bool paused, mtime_t date)
+void aout_DecChangePause (audio_output_t *aout, bool paused, vlc_tick_t date)
 {
     aout_owner_t *owner = aout_owner (aout);
 
     aout_OutputLock (aout);
-    if (owner->sync.end != VLC_TS_INVALID)
+    if (owner->sync.end != VLC_TICK_INVALID)
     {
         if (paused)
             owner->sync.end -= date;
@@ -451,7 +451,7 @@ void aout_DecFlush (audio_output_t *aout, bool wait)
     aout_owner_t *owner = aout_owner (aout);
 
     aout_OutputLock (aout);
-    owner->sync.end = VLC_TS_INVALID;
+    owner->sync.end = VLC_TICK_INVALID;
     if (owner->mixer_format.i_format)
     {
         if (wait)

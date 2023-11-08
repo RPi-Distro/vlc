@@ -2,7 +2,7 @@
  * algo_ivtc.c : IVTC (inverse telecine) algorithm for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2010-2011 the VideoLAN team
- * $Id: 145f981334523db5d6d2e64c8a6366d83e464de0 $
+ * $Id: f75783f52544c20fb34facda469bf060008e5164 $
  *
  * Author: Juha Jeronen <juha.jeronen@jyu.fi>
  *
@@ -1216,7 +1216,7 @@ static bool IVTCOutputOrDropFrame( filter_t *p_filter, picture_t *p_dst )
 
     filter_sys_t *p_sys = p_filter->p_sys;
     ivtc_sys_t *p_ivtc  = &p_sys->ivtc;
-    mtime_t t_final = VLC_TS_INVALID; /* for custom timestamp mangling */
+    vlc_tick_t t_final = VLC_TICK_INVALID; /* for custom timestamp mangling */
 
     picture_t *p_curr = p_sys->context.pp_history[1];
     picture_t *p_next = p_sys->context.pp_history[2];
@@ -1412,7 +1412,7 @@ static bool IVTCOutputOrDropFrame( filter_t *p_filter, picture_t *p_dst )
         {
             /* Approximate field duration from the PTS difference. */
             /* FIXME: use field length as measured by Deinterlace()? */
-            mtime_t i_half_field_dur = ( (p_next->date - p_curr->date)/3 ) / 2;
+            vlc_tick_t i_half_field_dur = ( (p_next->date - p_curr->date)/3 ) / 2;
             t_final = p_curr->date + i_half_field_dur;
         }
         else /* Otherwise, use original PTS of the outgoing frame. */
@@ -1458,7 +1458,7 @@ static bool IVTCOutputOrDropFrame( filter_t *p_filter, picture_t *p_dst )
     /* Note that picture_Copy() copies the PTS, too. Apply timestamp mangling
        now, if any was needed.
     */
-    if( t_final > VLC_TS_INVALID )
+    if( t_final > VLC_TICK_INVALID )
         p_dst->date = t_final;
 
     return true;

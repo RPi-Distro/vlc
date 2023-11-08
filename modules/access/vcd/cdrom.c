@@ -2,7 +2,7 @@
  * cdrom.c: cdrom tools
  *****************************************************************************
  * Copyright (C) 1998-2001 VLC authors and VideoLAN
- * $Id: 4d9f4f1f9657438ab4f66f3c6bceb10cb95fe801 $
+ * $Id$
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -428,7 +428,7 @@ vcddev_toc_t * ioctl_GetTOC( vlc_object_t *p_this, const vcddev_t *p_vcddev,
             int i;
 
             p_toc->p_sectors = calloc( p_toc->i_tracks + 1, sizeof(*p_toc->p_sectors) );
-            if( *p_toc->p_sectors == NULL )
+            if( p_toc->p_sectors == NULL )
             {
                 vcddev_toc_Free( p_toc );
                 return NULL;
@@ -856,7 +856,7 @@ static int OpenVCDImage( vlc_object_t * p_this, const char *psz_dev,
     p_vcddev->i_vcdimage_handle = vlc_open( psz_vcdfile,
                                     O_RDONLY | O_NONBLOCK | O_BINARY );
 
-    while( fgets( line, 1024, cuefile ) && !b_found )
+    while( !b_found && fgets( line, 1024, cuefile ) )
     {
         /* We have a cue file, but no valid vcd file yet */
         char filename[1024];

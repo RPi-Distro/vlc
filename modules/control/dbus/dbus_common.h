@@ -5,7 +5,7 @@
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: 58780d0847cc9a44b9ad8718d4eb2464ed861128 $
+ * $Id: cce16efefd500d9ff34ba08ccf4f68964ed234af $
  *
  * Authors:    Mirsal Ennaime <mirsal dot ennaime at gmailcom>
  *             Rafaël Carré <funman at videolanorg>
@@ -105,8 +105,8 @@ struct intf_sys_t
     vlc_thread_t    thread;
     input_thread_t *p_input;
 
-    mtime_t         i_last_input_pos; /* Only access from input thread */
-    mtime_t         i_last_input_pos_event; /* Same as above */
+    vlc_tick_t      i_last_input_pos; /* Only access from input thread */
+    vlc_tick_t      i_last_input_pos_event; /* Same as above */
 };
 
 enum

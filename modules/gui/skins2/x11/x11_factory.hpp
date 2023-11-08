@@ -2,7 +2,7 @@
  * x11_factory.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c8f2ce00ac30930089866be032cc8c249a623d51 $
+ * $Id: ae30021b3107435d3647caa57ed240567ba4f451 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -37,7 +37,7 @@ class X11DragDrop;
 class X11TimerLoop;
 
 
-/// Class used to instanciate X11 specific objects
+/// Class used to instantiate X11 specific objects
 class X11Factory: public OSFactory
 {
 private:

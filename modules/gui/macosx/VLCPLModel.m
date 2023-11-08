@@ -3,7 +3,7 @@
  * VLCPLItem.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: deeade7336700c1e425cf6a0c01b59493243f321 $
+ * $Id: 9e274e52c5e1b48877c074f4dc78a5b612eb0a8e $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -530,7 +530,7 @@ static int VolumeUpdated(vlc_object_t *p_this, const char *psz_var,
 
     } else if ([o_identifier isEqualToString:DURATION_COLUMN]) {
         char psz_duration[MSTRTIME_MAX_SIZE];
-        mtime_t dur = input_item_GetDuration(p_input);
+        vlc_tick_t dur = input_item_GetDuration(p_input);
         if (dur != -1) {
             secstotimestr(psz_duration, dur/1000000);
             o_value = toNSStr(psz_duration);

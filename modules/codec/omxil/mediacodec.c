@@ -356,7 +356,7 @@ static int ParseVideoExtraVc1(decoder_t *p_dec, uint8_t *p_extra, int i_extra)
         return VLC_EGENERIC;
 
     /* Initialisation data starts with : 0x00 0x00 0x01 0x0f */
-    /* Skipping unecessary data */
+    /* Skipping unnecessary data */
     static const uint8_t vc1_start_code[4] = {0x00, 0x00, 0x01, 0x0f};
     for (; offset < i_extra - 4 ; ++offset)
     {
@@ -505,7 +505,7 @@ static int StartMediaCodec(decoder_t *p_dec)
     }
     else
     {
-        date_Set(&p_sys->audio.i_end_date, VLC_TS_INVALID);
+        date_Set(&p_sys->audio.i_end_date, VLC_TICK_INVALID);
 
         args.audio.i_sample_rate    = p_dec->fmt_in.audio.i_rate;
         args.audio.i_channel_count  = p_dec->p_sys->audio.i_channels;
@@ -867,7 +867,7 @@ static void ReleasePicture(decoder_t *p_dec, unsigned i_index, bool b_render)
     p_sys->api.release_out(&p_sys->api, i_index, b_render);
 }
 
-static void ReleasePictureTs(decoder_t *p_dec, unsigned i_index, mtime_t i_ts)
+static void ReleasePictureTs(decoder_t *p_dec, unsigned i_index, vlc_tick_t i_ts)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     assert(p_sys->api.release_out_ts);
@@ -951,7 +951,7 @@ static int Video_ProcessOutput(decoder_t *p_dec, mc_api_out *p_out,
             return p_sys->api.release_out(&p_sys->api, p_out->buf.i_index, false);
         }
 
-        if (forced_ts == VLC_TS_INVALID)
+        if (forced_ts == VLC_TICK_INVALID)
             p_pic->date = p_out->buf.i_ts;
         else
             p_pic->date = forced_ts;
@@ -1342,7 +1342,7 @@ static int QueueBlockLocked(decoder_t *p_dec, block_t *p_in_block,
             return VLC_EGENERIC;
 
         bool b_config = false;
-        mtime_t i_ts = 0;
+        vlc_tick_t i_ts = 0;
         p_sys->b_input_dequeued = true;
         const void *p_buf = NULL;
         size_t i_size = 0;
@@ -1424,7 +1424,7 @@ static int QueueBlockLocked(decoder_t *p_dec, block_t *p_in_block,
         /* Wait for the OutThread to stop (and process all remaining output
          * frames. Use a timeout here since we can't know if all decoders will
          * behave correctly. */
-        mtime_t deadline = mdate() + INT64_C(3000000);
+        vlc_tick_t deadline = mdate() + INT64_C(3000000);
         while (!p_sys->b_aborted && !p_sys->b_drained
             && vlc_cond_timedwait(&p_sys->dec_cond, &p_sys->lock, deadline) == 0);
 
@@ -1561,7 +1561,7 @@ static int Video_OnNewBlock(decoder_t *p_dec, block_t **pp_block)
     block_t *p_block = *pp_block;
 
     timestamp_FifoPut(p_sys->video.timestamp_fifo,
-                      p_block->i_pts ? VLC_TS_INVALID : p_block->i_dts);
+                      p_block->i_pts ? VLC_TICK_INVALID : p_block->i_dts);
 
     return 1;
 }
@@ -1683,7 +1683,7 @@ static int Audio_OnNewBlock(decoder_t *p_dec, block_t **pp_block)
     /* We've just started the stream, wait for the first PTS. */
     if (!date_Get(&p_sys->audio.i_end_date))
     {
-        if (p_block->i_pts <= VLC_TS_INVALID)
+        if (p_block->i_pts <= VLC_TICK_INVALID)
             return 0;
         date_Set(&p_sys->audio.i_end_date, p_block->i_pts);
     }
@@ -1695,5 +1695,5 @@ static void Audio_OnFlush(decoder_t *p_dec)
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    date_Set(&p_sys->audio.i_end_date, VLC_TS_INVALID);
+    date_Set(&p_sys->audio.i_end_date, VLC_TICK_INVALID);
 }

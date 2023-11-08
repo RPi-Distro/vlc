@@ -2,7 +2,7 @@
  * uleaddvaudio.c
  *****************************************************************************
  * Copyright (C) 2012 Laurent Aimar
- * $Id: b90f0125e4b48b3fa055a7a6b49a248479369cf1 $
+ * $Id: e1c07d7196f1ac21cbed8fdc09614329b21ece71 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -78,10 +78,10 @@ static block_t *DecodeBlock(decoder_t *dec, block_t **block_ptr)
         }
     }
 
-    if (block->i_pts > VLC_TS_INVALID &&
+    if (block->i_pts > VLC_TICK_INVALID &&
         block->i_pts != date_Get(&sys->end_date))
         date_Set(&sys->end_date, block->i_pts);
-    block->i_pts = VLC_TS_INVALID;
+    block->i_pts = VLC_TICK_INVALID;
     if (!date_Get(&sys->end_date)) {
         /* We've just started the stream, wait for the first PTS. */
         block_Release(block);

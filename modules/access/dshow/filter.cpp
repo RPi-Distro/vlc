@@ -2,7 +2,7 @@
  * filter.cpp : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2010 VLC authors and VideoLAN
- * $Id: 40620b9c644bc9b3fd0c07a695a97bb1f150bc3f $
+ * $Id: bf33cc79db1f795ccadc69de44d5f7d3f9e0d491 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -253,7 +253,7 @@ HRESULT CapturePin::CustomGetSamples( std::deque<VLCMediaSample> &external_queue
  * Returns a sample from its sample queue. Proper locking must be done prior
  * to this call. Current dshow code protects the access to any sample queue
  * (audio and video) with the p_sys->lock
- * @param vlc_sample [out] Address of a sample if sucessfull. Undefined
+ * @param vlc_sample [out] Address of a sample if successful. Undefined
  * otherwise.
  * @return S_OK if a sample was available, S_FALSE if no sample was
  * available
@@ -638,7 +638,7 @@ STDMETHODIMP CapturePin::Receive( IMediaSample *pSample )
     msg_Dbg( p_input, "CapturePin::Receive" );
 #endif
 
-    mtime_t i_timestamp = mdate() * 10;
+    vlc_tick_t i_timestamp = mdate() * 10;
     VLCMediaSample vlc_sample = {pSample, i_timestamp};
 
     vlc_mutex_lock( &p_sys->lock );

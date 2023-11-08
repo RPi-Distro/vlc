@@ -2,7 +2,7 @@
  * nuv.c:
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
- * $Id: 16aa90f7d40948e42716c47fe7073b36a99026a6 $
+ * $Id: aff2eefcc0ff2adb40141049ffb95efd54e660a5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gertjan Van Droogenbroeck <gertjanvd _PLUS_ vlc _AT_ gmail _DOT_ com>
@@ -266,7 +266,7 @@ static int Open( vlc_object_t * p_this )
         }
     }
 
-    /* Check and load extented */
+    /* Check and load extended */
     if( vlc_stream_Peek( p_demux->s, &p_peek, 1 ) != 1 )
         goto error;
     if( p_peek[0] == 'X' )
@@ -388,20 +388,20 @@ static int Demux( demux_t *p_demux )
     if( ( p_data = vlc_stream_Block( p_demux->s, fh.i_length ) ) == NULL )
         return VLC_DEMUXER_EOF;
 
-    p_data->i_dts = VLC_TS_0 + (int64_t)fh.i_timecode * 1000;
-    p_data->i_pts = (fh.i_type == 'V') ? VLC_TS_INVALID : p_data->i_dts;
+    p_data->i_dts = VLC_TICK_0 + (int64_t)fh.i_timecode * 1000;
+    p_data->i_pts = (fh.i_type == 'V') ? VLC_TICK_INVALID : p_data->i_dts;
 
     /* only add keyframes to index */
     if( !fh.i_keyframe && !p_sys->b_index )
         demux_IndexAppend( &p_sys->idx,
-                           p_data->i_dts - VLC_TS_0,
+                           p_data->i_dts - VLC_TICK_0,
                            vlc_stream_Tell(p_demux->s) - NUV_FH_SIZE );
 
     /* */
-    if( p_sys->i_pcr < 0 || p_sys->i_pcr < p_data->i_dts - VLC_TS_0 )
+    if( p_sys->i_pcr < 0 || p_sys->i_pcr < p_data->i_dts - VLC_TICK_0 )
     {
-        p_sys->i_pcr = p_data->i_dts - VLC_TS_0;
-        es_out_SetPCR( p_demux->out, VLC_TS_0 + p_sys->i_pcr );
+        p_sys->i_pcr = p_data->i_dts - VLC_TICK_0;
+        es_out_SetPCR( p_demux->out, VLC_TICK_0 + p_sys->i_pcr );
     }
 
     if( fh.i_type == 'A' && p_sys->p_es_audio )

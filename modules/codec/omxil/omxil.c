@@ -2,7 +2,7 @@
  * omxil.c: Video decoder module making use of OpenMAX IL components.
  *****************************************************************************
  * Copyright (C) 2010 VLC authors and VideoLAN
- * $Id: 619e90a28051bfdcc9e8fb2f4fba847b6d185fa9 $
+ * $Id: 3ff8ffc698e7f2ef20dbef69fdaa05aafe0d0da7 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -1631,7 +1631,7 @@ static int DecodeVideo( decoder_t *p_dec, block_t *p_block )
             if( !decoder_UpdateVideoFormat(p_dec))
                 invalid_picture = decoder_NewPicture(p_dec);
             if (invalid_picture) {
-                invalid_picture->date = VLC_TS_INVALID;
+                invalid_picture->date = VLC_TICK_INVALID;
                 picture_sys_t *p_picsys = invalid_picture->p_sys;
                 p_picsys->hw.p_dec = NULL;
                 p_picsys->hw.i_index = -1;

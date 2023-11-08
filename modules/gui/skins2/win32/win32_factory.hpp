@@ -2,7 +2,7 @@
  * win32_factory.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c5bf1b08decba27a19e1c97501000697de4b3dee $
+ * $Id: 62cd20a5f1db7c8b38603219db0f231ed9f80cf7 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -38,7 +38,7 @@
 #include <map>
 
 
-/// Class used to instanciate Win32 specific objects
+/// Class used to instantiate Win32 specific objects
 class Win32Factory: public OSFactory
 {
 public:

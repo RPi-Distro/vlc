@@ -2,7 +2,7 @@
  * text_style.c
  *****************************************************************************
  * Copyright (C) 1999-2010 VLC authors and VideoLAN
- * $Id: 90de47a912415dec4c6620296f3379de10904531 $
+ * $Id$
  *
  * Author: basOS G <noxelia 4t gmail , com>
  *
@@ -242,9 +242,7 @@ unsigned int vlc_html_color( const char *psz_value, bool* ok )
 
     const char *psz_hex = (*psz_value == '#') ? psz_value + 1 : psz_value;
 
-    if( psz_hex != psz_value ||
-        (*psz_hex >= '0' && *psz_hex <= '9') ||
-        (*psz_hex >= 'A' && *psz_hex <= 'F') )
+    if( psz_hex != psz_value || isxdigit(*psz_hex) )
     {
         uint32_t i_value = strtol( psz_hex, &psz_end, 16 );
         if( *psz_end == 0 || isspace( *psz_end ) )

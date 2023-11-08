@@ -2,7 +2,7 @@
  * chain.c : chain multiple video filter modules as a last resort solution
  *****************************************************************************
  * Copyright (C) 2007-2017 VLC authors and VideoLAN
- * $Id: 885676f5344b3d4dbcbfcf829b77845dd77f22b7 $
+ * $Id: 270942525504a3da1562b770864fbf6a00e6d5b8 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -304,7 +304,7 @@ static int BuildChromaResize( filter_t *p_filter )
     if( i_ret == VLC_SUCCESS )
         return VLC_SUCCESS;
 
-    /* Lets try it the other way arround (chroma and then resize) */
+    /* Lets try it the other way around (chroma and then resize) */
     msg_Dbg( p_filter, "Trying to build chroma+resize" );
     EsFormatMergeSize( &fmt_mid, &p_filter->fmt_out, &p_filter->fmt_in );
     i_ret = CreateChain( p_filter, &fmt_mid );

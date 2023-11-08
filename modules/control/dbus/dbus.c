@@ -5,7 +5,7 @@
  * Copyright © 2007-2012 Mirsal Ennaime
  * Copyright © 2009-2012 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: 77923daa02753ab6427c96d744e17d3f96003c32 $
+ * $Id: 4ec0f677d5519dff31634d7475ceace8b1f39a4e $
  *
  * Authors:    Rafaël Carré <funman at videolanorg>
  *             Mirsal Ennaime <mirsal at mirsal fr>
@@ -92,6 +92,10 @@ static const DBusObjectPathVTable dbus_mpris_vtable = {
 typedef struct
 {
     int signal;
+    union {
+        tracklist_append_event_t *items_appended;
+        tracklist_remove_event_t *items_removed;
+    };
 } callback_info_t;
 
 enum
@@ -336,7 +340,7 @@ static dbus_bool_t add_timeout(DBusTimeout *to, void *data)
     intf_thread_t *intf = data;
     intf_sys_t *sys = intf->p_sys;
 
-    mtime_t *expiry = malloc(sizeof (*expiry));
+    vlc_tick_t *expiry = malloc(sizeof (*expiry));
     if (unlikely(expiry == NULL))
         return FALSE;
 
@@ -365,7 +369,7 @@ static void toggle_timeout(DBusTimeout *to, void *data)
 {
     intf_thread_t *intf = data;
     intf_sys_t *sys = intf->p_sys;
-    mtime_t *expiry = dbus_timeout_get_data(to);
+    vlc_tick_t *expiry = dbus_timeout_get_data(to);
 
     vlc_mutex_lock(&sys->lock);
     if (dbus_timeout_get_enabled(to))
@@ -384,7 +388,7 @@ static void toggle_timeout(DBusTimeout *to, void *data)
 static int next_timeout(intf_thread_t *intf)
 {
     intf_sys_t *sys = intf->p_sys;
-    mtime_t next_timeout = LAST_MDATE;
+    vlc_tick_t next_timeout = LAST_MDATE;
     unsigned count = vlc_array_count(&sys->timeouts);
 
     for (unsigned i = 0; i < count; i++)
@@ -394,7 +398,7 @@ static int next_timeout(intf_thread_t *intf)
         if (!dbus_timeout_get_enabled(to))
             continue;
 
-        mtime_t *expiry = dbus_timeout_get_data(to);
+        vlc_tick_t *expiry = dbus_timeout_get_data(to);
 
         if (next_timeout > *expiry)
             next_timeout = *expiry;
@@ -427,7 +431,7 @@ static void process_timeouts(intf_thread_t *intf)
         if (!dbus_timeout_get_enabled(to))
             continue;
 
-        mtime_t *expiry = dbus_timeout_get_data(to);
+        vlc_tick_t *expiry = dbus_timeout_get_data(to);
         if (*expiry > mdate())
             continue;
 
@@ -518,6 +522,34 @@ static int GetPollFds( intf_thread_t *p_intf, struct pollfd *p_fds )
     return i_fds;
 }
 
+
+/**
+ * ProcessPlaylistChanged() reacts to tracks being either inserted or removed from the playlist
+ *
+ * This function must be called by ProcessEvents only
+ *
+ * @param intf_thread_t *p_intf This interface thread state
+ * @param callback_info_t *p_events the list of events to process
+ */
+static void ProcessPlaylistChanged( intf_thread_t *p_intf,
+                                    vlc_dictionary_t *player_properties,
+                                    vlc_dictionary_t *tracklist_properties )
+{
+    playlist_t *playlist = p_intf->p_sys->p_playlist;
+    playlist_Lock(playlist);
+    bool b_can_play = !playlist_IsEmpty(playlist);
+    playlist_Unlock(playlist);
+
+    if( b_can_play != p_intf->p_sys->b_can_play )
+    {
+        p_intf->p_sys->b_can_play = b_can_play;
+        vlc_dictionary_insert( player_properties, "CanPlay", NULL );
+    }
+
+    if( !vlc_dictionary_has_key( tracklist_properties, "Tracks" ) )
+        vlc_dictionary_insert( tracklist_properties, "Tracks", NULL );
+}
+
 /**
  * ProcessEvents() reacts to a list of events originating from other VLC threads
  *
@@ -529,19 +561,56 @@ static int GetPollFds( intf_thread_t *p_intf, struct pollfd *p_fds )
 static void ProcessEvents( intf_thread_t *p_intf,
                            callback_info_t **p_events, int i_events )
 {
-    bool b_can_play = p_intf->p_sys->b_can_play;
-
     vlc_dictionary_t player_properties, tracklist_properties, root_properties;
     vlc_dictionary_init( &player_properties,    0 );
     vlc_dictionary_init( &tracklist_properties, 0 );
     vlc_dictionary_init( &root_properties,      0 );
+
+    // In case multiple *_ITEM_APPEND or *_ITEM_DELETED events appear on the
+    // list, the elements in their respective map values will be linked in
+    // order.
+    // We keep the tail of the list in order to append the elements to the end
+    // of each list.
+    tracklist_append_event_t *last_append = NULL;
+    tracklist_remove_event_t *last_remove = NULL;
 
     for( int i = 0; i < i_events; i++ )
     {
         switch( p_events[i]->signal )
         {
         case SIGNAL_ITEM_CURRENT:
+        {
             TrackChange( p_intf );
+
+            // Update status when new item starts playing
+            // Just relying on the variables change callbacks is not enough
+            // as by the time the callbacks are attached, we might already
+            // have missed a change, so we need to query and set the initial
+            // values reliably here.
+            vlc_dictionary_insert( &player_properties, "PlaybackStatus", NULL );
+            input_thread_t *p_input = pl_CurrentInput( p_intf );
+            if( p_input )
+            {
+                if ( var_GetBool( p_input, "can-pause" ) )
+                    vlc_dictionary_insert( &player_properties, "CanPause", NULL );
+                if ( var_GetBool( p_input, "can-seek" ) )
+                    vlc_dictionary_insert( &player_properties, "CanSeek", NULL );
+
+                // If VLC is started from a file (double-clicking or specifying on CLI)
+                // there is a chance that we miss the initial SIGNAL_PLAYLIST_ITEM_APPEND
+                // event, resulting in CanPlay never being signalled.
+                // However it is not enough to check once this module is loaded, as
+                // when items from the non-main playlist (like Lua discoveries) are
+                // played, CanPlay would incorrectly be false too, even though we
+                // have a current item that can be resumed.
+                if ( !p_intf->p_sys->b_can_play )
+                {
+                    p_intf->p_sys->b_can_play = 1;
+                    vlc_dictionary_insert( &player_properties, "CanPlay", NULL );
+                }
+
+                vlc_object_release( p_input );
+            }
 
             // rate depends on current item
             if( !vlc_dictionary_has_key( &player_properties, "Rate" ) )
@@ -549,24 +618,31 @@ static void ProcessEvents( intf_thread_t *p_intf,
 
             vlc_dictionary_insert( &player_properties, "Metadata", NULL );
             break;
-        case SIGNAL_PLAYLIST_ITEM_APPEND:
-        case SIGNAL_PLAYLIST_ITEM_DELETED:
-        {
-            playlist_t *p_playlist = p_intf->p_sys->p_playlist;
-            PL_LOCK;
-            b_can_play = playlist_CurrentSize( p_playlist ) > 0;
-            PL_UNLOCK;
-
-            if( b_can_play != p_intf->p_sys->b_can_play )
-            {
-                p_intf->p_sys->b_can_play = b_can_play;
-                vlc_dictionary_insert( &player_properties, "CanPlay", NULL );
-            }
-
-            if( !vlc_dictionary_has_key( &tracklist_properties, "Tracks" ) )
-                vlc_dictionary_insert( &tracklist_properties, "Tracks", NULL );
-            break;
         }
+        case SIGNAL_PLAYLIST_ITEM_APPEND:
+            if( !last_append ) {
+                assert (!vlc_dictionary_has_key( &tracklist_properties, "TrackAdded" ) );
+                vlc_dictionary_insert( &tracklist_properties, "TrackAdded", p_events[i]->items_appended );
+
+                last_append = p_events[i]->items_appended;
+            } else {
+                last_append->change_ev.next = &p_events[i]->items_appended->change_ev;
+                last_append = p_events[i]->items_appended;
+            }
+            ProcessPlaylistChanged( p_intf, &player_properties, &tracklist_properties );
+            break;
+        case SIGNAL_PLAYLIST_ITEM_DELETED:
+            if( !last_remove ) {
+                assert (!vlc_dictionary_has_key( &tracklist_properties, "TrackRemoved" ) );
+                vlc_dictionary_insert( &tracklist_properties, "TrackRemoved", p_events[i]->items_removed );
+
+                last_remove = p_events[i]->items_removed;
+            } else {
+                last_remove->change_ev.next = &p_events[i]->items_removed->change_ev;
+                last_remove = p_events[i]->items_removed;
+            }
+            ProcessPlaylistChanged( p_intf, &player_properties, &tracklist_properties );
+            break;
         case SIGNAL_VOLUME_MUTED:
         case SIGNAL_VOLUME_CHANGE:
             vlc_dictionary_insert( &player_properties, "Volume", NULL );
@@ -769,7 +845,7 @@ static void *Run( void *data )
 
     int canc = vlc_savecancel();
 
-    mtime_t events_last_date = VLC_TS_INVALID;
+    vlc_tick_t events_last_date = VLC_TICK_INVALID;
     int events_poll_timeout = -1;
     for( ;; )
     {
@@ -831,7 +907,7 @@ static void *Run( void *data )
 
         if( i_events > 0 )
         {
-            mtime_t now = mdate();
+            vlc_tick_t now = mdate();
             if( now - events_last_date > EVENTS_DELAY )
             {
                 /* Send events every EVENTS_DELAY */
@@ -952,7 +1028,7 @@ static int InputCallback( vlc_object_t *p_this, const char *psz_var,
             break;
         case INPUT_EVENT_POSITION:
         {
-            mtime_t i_now = mdate(), i_pos, i_projected_pos, i_interval;
+            vlc_tick_t i_now = mdate(), i_pos, i_projected_pos, i_interval;
             float f_current_rate;
 
             /* Detect seeks
@@ -1026,9 +1102,21 @@ static int AllCallback( vlc_object_t *p_this, const char *psz_var,
             info.signal = SIGNAL_VOLUME_MUTED;
     }
     else if( !strcmp( "playlist-item-append", psz_var ) )
-        info.signal = SIGNAL_PLAYLIST_ITEM_APPEND;
+    {
+        playlist_item_t *items[] = {newval.p_address};
+        info = (callback_info_t){
+            .signal = SIGNAL_PLAYLIST_ITEM_APPEND,
+            .items_appended = tracklist_append_event_create(items[0]->i_id, items, 1)
+        };
+    }
     else if( !strcmp( "playlist-item-deleted", psz_var ) )
-        info.signal = SIGNAL_PLAYLIST_ITEM_DELETED;
+    {
+        playlist_item_t *item = newval.p_address;
+        info = (callback_info_t){
+            .signal = SIGNAL_PLAYLIST_ITEM_DELETED,
+            .items_removed = tracklist_remove_event_create(item->i_id, 1)
+        };
+    }
     else if( !strcmp( "random", psz_var ) )
         info.signal = SIGNAL_RANDOM;
     else if( !strcmp( "fullscreen", psz_var ) )

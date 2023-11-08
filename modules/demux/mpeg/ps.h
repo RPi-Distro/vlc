@@ -2,7 +2,7 @@
  * ps.h: Program Stream demuxer helper
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: c4aa75df4efb34fe365cc6bb30c0d8e7dc30c332 $
+ * $Id: 985b279b938dd20f7e8390936b0987254e646c11 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -62,8 +62,8 @@ typedef struct
     int         i_next_block_flags;
     es_out_id_t *es;
     es_format_t fmt;
-    mtime_t     i_first_pts;
-    mtime_t     i_last_pts;
+    vlc_tick_t  i_first_pts;
+    vlc_tick_t  i_last_pts;
 
 } ps_track_t;
 
@@ -255,7 +255,7 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm,
                 es_format_Change( &tk->fmt, VIDEO_ES, VLC_CODEC_HEVC );
             }
             else if( i_id == 0xe2 || /* Primary H.264 in evob */
-                     i_id == 0xe3 )  /* Seconday H.264 in evob */
+                     i_id == 0xe3 )  /* Secondary H.264 in evob */
             {
                 es_format_Change( &tk->fmt, VIDEO_ES, VLC_CODEC_H264 );
             }
@@ -460,7 +460,7 @@ static inline int ps_pkt_parse_system( block_t *p_pkt, ps_psm_t *p_psm,
 {
     uint8_t *p = &p_pkt->p_buffer[6 + 3 + 1 + 1 + 1];
 
-    /* System header is not useable if it references private streams (0xBD)
+    /* System header is not usable if it references private streams (0xBD)
      * or 'all audio streams' (0xB8) or 'all video streams' (0xB9) */
     while( p < &p_pkt->p_buffer[p_pkt->i_buffer] && (p[0] & 0x80) )
     {
@@ -494,8 +494,8 @@ static inline int ps_pkt_parse_system( block_t *p_pkt, ps_psm_t *p_psm,
 static inline int ps_pkt_parse_pes( vlc_object_t *p_object, block_t *p_pes, int i_skip_extra )
 {
     unsigned int i_skip  = 0;
-    mtime_t i_pts = -1;
-    mtime_t i_dts = -1;
+    vlc_tick_t i_pts = -1;
+    vlc_tick_t i_dts = -1;
     uint8_t i_stream_id = 0;
     bool b_pes_scrambling = false;
 

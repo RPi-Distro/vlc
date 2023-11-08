@@ -146,21 +146,32 @@ int D3D11_AllocateShaderView(vlc_object_t *obj, ID3D11Device *d3ddevice,
 #if !VLC_WINSTORE_APP
 static HKEY GetAdapterRegistry(vlc_object_t *obj, DXGI_ADAPTER_DESC *adapterDesc)
 {
-    HKEY hKey;
+    HKEY hDisplayKey, hKey;
     CHAR key[128];
     CHAR szData[256], lookup[256];
     DWORD len = 256;
     LSTATUS ret;
 
-    _snprintf(lookup, 256, "pci\\ven_%04x&dev_%04x", adapterDesc->VendorId, adapterDesc->DeviceId);
-    for (int i=0;;i++)
+    ret = RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}", 0, KEY_READ, &hDisplayKey);
+    if ( ret != ERROR_SUCCESS )
     {
-        _snprintf(key, 128, "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\%04d", i);
-        ret = RegOpenKeyExA(HKEY_LOCAL_MACHINE, key, 0, KEY_READ, &hKey);
+        msg_Warn(obj, "failed to read the Display Adapter registry key (%ld)", ret);
+        return NULL;
+    }
+
+    char DisplayNum[16];
+    _snprintf(lookup, 256, "pci\\ven_%04x&dev_%04x", adapterDesc->VendorId, adapterDesc->DeviceId);
+    for (DWORD k=0;; k++)
+    {
+        ret = RegEnumKeyA(hDisplayKey, k, DisplayNum, ARRAY_SIZE(DisplayNum));
+        if (ret != ERROR_SUCCESS)
+            break;
+
+        ret = RegOpenKeyExA(hDisplayKey, DisplayNum, 0, KEY_READ, &hKey);
         if ( ret != ERROR_SUCCESS )
         {
-            msg_Warn(obj, "failed to read the %d Display Adapter registry key (%ld)", i, ret);
-            return NULL;
+            msg_Warn(obj, "failed to read the %s Display Adapter registry key (%ld)", DisplayNum, ret);
+            continue;
         }
 
         len = sizeof(szData);
@@ -168,13 +179,15 @@ static HKEY GetAdapterRegistry(vlc_object_t *obj, DXGI_ADAPTER_DESC *adapterDesc
         if ( ret == ERROR_SUCCESS ) {
             if (_strnicmp(lookup, szData, strlen(lookup)) == 0)
                 return hKey;
-            msg_Dbg(obj, "different %d device %s vs %s", i, lookup, szData);
+            msg_Dbg(obj, "different %s device %s vs %s", DisplayNum, lookup, szData);
         }
         else
-            msg_Warn(obj, "failed to get the %d MatchingDeviceId (%ld)", i, ret);
+            msg_Warn(obj, "failed to get the %s MatchingDeviceId (%ld)", DisplayNum, ret);
 
         RegCloseKey(hKey);
     }
+    RegCloseKey(hDisplayKey);
+
     return NULL;
 }
 
@@ -182,26 +195,10 @@ void D3D11_GetDriverVersion(vlc_object_t *obj, d3d11_device_t *d3d_dev)
 {
     memset(&d3d_dev->WDDM, 0, sizeof(d3d_dev->WDDM));
 
-    IDXGIAdapter *pAdapter = D3D11DeviceAdapter(d3d_dev->d3ddevice);
-    if (unlikely(!pAdapter))
-    {
-        msg_Warn(obj, "can't get adapter from device %p", (void*)d3d_dev->d3ddevice);
-        return;
-    }
-
-    DXGI_ADAPTER_DESC adapterDesc;
-    HRESULT hr = IDXGIAdapter_GetDesc(pAdapter, &adapterDesc);
-    IDXGIAdapter_Release(pAdapter);
-    if (FAILED(hr))
-    {
-        msg_Warn(obj, "can't get adapter description");
-        return;
-    }
-
     LONG err = ERROR_ACCESS_DENIED;
     CHAR szData[256];
     DWORD len = 256;
-    HKEY hKey = GetAdapterRegistry(obj, &adapterDesc);
+    HKEY hKey = GetAdapterRegistry(obj, &d3d_dev->adapterDesc);
     if (hKey == NULL)
     {
         msg_Warn(obj, "can't find adapter in registry");
@@ -228,8 +225,8 @@ void D3D11_GetDriverVersion(vlc_object_t *obj, d3d11_device_t *d3d_dev)
     d3d_dev->WDDM.d3d_features = d3d_features;
     d3d_dev->WDDM.revision     = revision;
     d3d_dev->WDDM.build        = build;
-    msg_Dbg(obj, "%s WDDM driver %d.%d.%d.%d", DxgiVendorStr(adapterDesc.VendorId), wddm, d3d_features, revision, build);
-    if (adapterDesc.VendorId == GPU_MANUFACTURER_INTEL && revision >= 100)
+    msg_Dbg(obj, "%s WDDM driver %d.%d.%d.%d", DxgiVendorStr(d3d_dev->adapterDesc.VendorId), wddm, d3d_features, revision, build);
+    if (d3d_dev->adapterDesc.VendorId == GPU_MANUFACTURER_INTEL && revision >= 100)
     {
         /* new Intel driver format */
         d3d_dev->WDDM.build += (revision - 100) * 1000;
@@ -320,6 +317,19 @@ HRESULT D3D11_CreateDevice(vlc_object_t *obj, d3d11_handle_t *hd3d,
         if (SUCCEEDED(hr)) {
             msg_Dbg(obj, "Created the D3D11 device type %d level %x.",
                     driverAttempts[driver], out->feature_level);
+            {
+                IDXGIAdapter *adap = D3D11DeviceAdapter(out->d3ddevice);
+                if (adap == NULL)
+                    hr = E_FAIL;
+                else
+                {
+                    hr = IDXGIAdapter_GetDesc(adap, &out->adapterDesc);
+                    IDXGIAdapter_Release(adap);
+                }
+            }
+            if (hr)
+                msg_Warn(obj, "can't get adapter description");
+
             D3D11_GetDriverVersion( obj, out );
             /* we can work with legacy levels but only if forced */
             if ( obj->obj.force || out->feature_level >= D3D_FEATURE_LEVEL_11_0 )
@@ -364,22 +374,15 @@ IDXGIAdapter *D3D11DeviceAdapter(ID3D11Device *d3ddev)
     return p_adapter;
 }
 
-bool isXboxHardware(ID3D11Device *d3ddev)
+bool isXboxHardware(const d3d11_device_t *d3ddev)
 {
-    IDXGIAdapter *p_adapter = D3D11DeviceAdapter(d3ddev);
-    if (!p_adapter)
-        return NULL;
-
     bool result = false;
-    DXGI_ADAPTER_DESC adapterDesc;
-    if (SUCCEEDED(IDXGIAdapter_GetDesc(p_adapter, &adapterDesc))) {
-        if (adapterDesc.VendorId == 0 &&
-            adapterDesc.DeviceId == 0 &&
-            !wcscmp(L"ROOT\\SraKmd\\0000", adapterDesc.Description))
-            result = true;
-    }
 
-    IDXGIAdapter_Release(p_adapter);
+    if (d3ddev->adapterDesc.VendorId == 0 &&
+        d3ddev->adapterDesc.DeviceId == 0 &&
+        !wcscmp(L"ROOT\\SraKmd\\0000", d3ddev->adapterDesc.Description))
+        result = true;
+
     return result;
 }
 
@@ -410,19 +413,9 @@ bool CanUseVoutPool(d3d11_device_t *d3d_dev, UINT slices)
 #endif
 }
 
-int D3D11CheckDriverVersion(d3d11_device_t *d3d_dev, UINT vendorId, const struct wddm_version *min_ver)
+int D3D11CheckDriverVersion(const d3d11_device_t *d3d_dev, UINT vendorId, const struct wddm_version *min_ver)
 {
-    IDXGIAdapter *pAdapter = D3D11DeviceAdapter(d3d_dev->d3ddevice);
-    if (!pAdapter)
-        return VLC_EGENERIC;
-
-    DXGI_ADAPTER_DESC adapterDesc;
-    HRESULT hr = IDXGIAdapter_GetDesc(pAdapter, &adapterDesc);
-    IDXGIAdapter_Release(pAdapter);
-    if (FAILED(hr))
-        return VLC_EGENERIC;
-
-    if (vendorId && adapterDesc.VendorId != vendorId)
+    if (vendorId && d3d_dev->adapterDesc.VendorId != vendorId)
         return VLC_SUCCESS;
 
     if (min_ver->wddm)
@@ -521,6 +514,14 @@ done:
     ID3D11Texture2D_Release(texture);
 
     return result;
+}
+
+bool DeviceSupportsFormat(ID3D11Device *d3ddevice, DXGI_FORMAT format, UINT supportFlags)
+{
+    UINT i_formatSupport;
+    return SUCCEEDED( ID3D11Device_CheckFormatSupport(d3ddevice, format,
+                                                      &i_formatSupport) )
+            && ( i_formatSupport & supportFlags ) == supportFlags;
 }
 
 #undef FindD3D11Format
@@ -711,31 +712,49 @@ int D3D11_Create(vlc_object_t *obj, d3d11_handle_t *hd3d, bool with_shaders)
             return VLC_EGENERIC;
         }
     }
+# if !defined(NDEBUG) && defined(HAVE_DXGIDEBUG_H)
+    hd3d->dxgidebug_dll = NULL;
+    hd3d->pf_DXGIGetDebugInterface = NULL;
+    if (IsDebuggerPresent())
+    {
+        hd3d->dxgidebug_dll = LoadLibrary(TEXT("DXGIDEBUG.DLL"));
+        if (hd3d->dxgidebug_dll)
+        {
+            hd3d->pf_DXGIGetDebugInterface =
+                    (void *)GetProcAddress(hd3d->dxgidebug_dll, "DXGIGetDebugInterface");
+            if (unlikely(!hd3d->pf_DXGIGetDebugInterface))
+            {
+                FreeLibrary(hd3d->dxgidebug_dll);
+                hd3d->dxgidebug_dll = NULL;
+            }
+        }
+    }
+# endif // !NDEBUG && HAVE_DXGIDEBUG_H
 #endif
     return VLC_SUCCESS;
 }
 
-void D3D11_Destroy(d3d11_handle_t *hd3d)
+void D3D11_LogResources(d3d11_handle_t *hd3d)
 {
 #if !VLC_WINSTORE_APP
 # if !defined(NDEBUG) && defined(HAVE_DXGIDEBUG_H)
-    if (IsDebuggerPresent())
+    if (hd3d->pf_DXGIGetDebugInterface)
     {
-        hd3d->dxgidebug_dll = LoadLibrary(TEXT("DXGIDEBUG.DLL"));
-        HRESULT (WINAPI * pf_DXGIGetDebugInterface)(const GUID *riid, void **ppDebug) = NULL;
-        if (hd3d->dxgidebug_dll)
-            pf_DXGIGetDebugInterface =
-                    (void *)GetProcAddress(hd3d->dxgidebug_dll, "DXGIGetDebugInterface");
-        if (pf_DXGIGetDebugInterface) {
-            IDXGIDebug *pDXGIDebug;
-            if (SUCCEEDED(pf_DXGIGetDebugInterface(&IID_IDXGIDebug, (void**)&pDXGIDebug)))
-            {
-                IDXGIDebug_ReportLiveObjects(pDXGIDebug, DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
-                IDXGIDebug_Release(pDXGIDebug);
-            }
+        IDXGIDebug *pDXGIDebug;
+        if (SUCCEEDED(hd3d->pf_DXGIGetDebugInterface(&IID_IDXGIDebug, (void**)&pDXGIDebug)))
+        {
+            IDXGIDebug_ReportLiveObjects(pDXGIDebug, DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+            IDXGIDebug_Release(pDXGIDebug);
         }
     }
 # endif
+#endif
+}
+
+void D3D11_Destroy(d3d11_handle_t *hd3d)
+{
+    D3D11_LogResources(hd3d);
+#if !VLC_WINSTORE_APP
     if (hd3d->hdll)
         FreeLibrary(hd3d->hdll);
 

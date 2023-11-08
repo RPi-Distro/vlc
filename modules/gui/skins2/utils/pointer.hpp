@@ -2,7 +2,7 @@
  * pointer.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 5c7fb9223f31ea959092fd0db9ded9cc34733cc4 $
+ * $Id: 6c66f8d63fdb186f079b1dea850ed4bf2e8f7c11 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -26,7 +26,7 @@
 #define POINTER_HPP
 
 
-/// Reference couting pointer
+/// Reference counting pointer
 template <class T> class CountedPtr
 {
 public:

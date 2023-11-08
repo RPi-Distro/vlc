@@ -2,7 +2,7 @@
  * podcast.c : podcast playlist imports
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
- * $Id: a0d74a232de59a21aacb0664ec8b84fee0e899a5 $
+ * $Id: f9432a2767e92b3f8853f942ee9ffd16e70f90dc $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -39,7 +39,7 @@
  * Local prototypes
  *****************************************************************************/
 static int ReadDir( stream_t *, input_item_node_t * );
-static mtime_t strTimeToMTime( const char *psz );
+static vlc_tick_t strTimeToMTime( const char *psz );
 
 /*****************************************************************************
  * Import_podcast: main import function
@@ -376,15 +376,15 @@ error:
     return VLC_EGENERIC;
 }
 
-static mtime_t strTimeToMTime( const char *psz )
+static vlc_tick_t strTimeToMTime( const char *psz )
 {
     int h, m, s;
     switch( sscanf( psz, "%u:%u:%u", &h, &m, &s ) )
     {
     case 3:
-        return (mtime_t)( ( h*60 + m )*60 + s ) * 1000000;
+        return (vlc_tick_t)( ( h*60 + m )*60 + s ) * 1000000;
     case 2:
-        return (mtime_t)( h*60 + m ) * 1000000;
+        return (vlc_tick_t)( h*60 + m ) * 1000000;
     default:
         return -1;
     }

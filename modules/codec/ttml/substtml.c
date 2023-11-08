@@ -109,7 +109,7 @@ enum
 /*
  * TTML Parsing and inheritance order:
  * Each time a text node is found and belongs to out time interval,
- * we backward merge attributes dictionnary up to root.
+ * we backward merge attributes dictionary up to root.
  * Then we convert attributes, merging with style by id or region
  * style, and sets from parent node.
  */
@@ -1038,7 +1038,7 @@ static int ParseBlock( decoder_t *p_dec, const block_t *p_block )
         return VLCDEC_SUCCESS;
 
     /* We cannot display a subpicture with no date */
-    if( p_block->i_pts <= VLC_TS_INVALID )
+    if( p_block->i_pts <= VLC_TICK_INVALID )
     {
         msg_Warn( p_dec, "subtitle without a date" );
         return VLCDEC_SUCCESS;
@@ -1060,18 +1060,18 @@ static int ParseBlock( decoder_t *p_dec, const block_t *p_block )
     for( size_t i=0; i+1 < i_timings_count; i++ )
     {
         /* We Only support absolute timings (2) */
-        if( tt_time_Convert( &p_timings_array[i] ) + VLC_TS_0 < p_block->i_dts )
+        if( tt_time_Convert( &p_timings_array[i] ) + VLC_TICK_0 < p_block->i_dts )
             continue;
 
-        if( tt_time_Convert( &p_timings_array[i] ) + VLC_TS_0 > p_block->i_dts + p_block->i_length )
+        if( tt_time_Convert( &p_timings_array[i] ) + VLC_TICK_0 > p_block->i_dts + p_block->i_length )
             break;
 
         subpicture_t *p_spu = NULL;
         ttml_region_t *p_regions = GenerateRegions( p_rootnode, p_timings_array[i] );
         if( p_regions && ( p_spu = decoder_NewSubpictureText( p_dec ) ) )
         {
-            p_spu->i_start    = VLC_TS_0 + tt_time_Convert( &p_timings_array[i] );
-            p_spu->i_stop     = VLC_TS_0 + tt_time_Convert( &p_timings_array[i+1] ) - 1;
+            p_spu->i_start    = VLC_TICK_0 + tt_time_Convert( &p_timings_array[i] );
+            p_spu->i_stop     = VLC_TICK_0 + tt_time_Convert( &p_timings_array[i+1] ) - 1;
             p_spu->b_ephemer  = true;
             p_spu->b_absolute = true;
 

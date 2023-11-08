@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: 2d579005e7a44845cba99871abc5452d4c3212a6 $
+ * $Id: c7a41bcad8b0c2b170ccee9c871623f6ba713a3c $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Rémi Denis-Courmont
@@ -114,7 +114,7 @@ void date_Change( date_t *p_date, uint32_t i_divider_n, uint32_t i_divider_d )
  * \param date to set
  * \param date value
  */
-void date_Set( date_t *p_date, mtime_t i_new_date )
+void date_Set( date_t *p_date, vlc_tick_t i_new_date )
 {
     p_date->date = i_new_date;
     p_date->i_remainder = 0;
@@ -126,7 +126,7 @@ void date_Set( date_t *p_date, mtime_t i_new_date )
  * \param date to get
  * \return date value
  */
-mtime_t date_Get( const date_t *p_date )
+vlc_tick_t date_Get( const date_t *p_date )
 {
     return p_date->date;
 }
@@ -137,7 +137,7 @@ mtime_t date_Get( const date_t *p_date )
  * \param date to move
  * \param difference value
  */
-void date_Move( date_t *p_date, mtime_t i_difference )
+void date_Move( date_t *p_date, vlc_tick_t i_difference )
 {
     p_date->date += i_difference;
 }
@@ -150,10 +150,10 @@ void date_Move( date_t *p_date, mtime_t i_difference )
  * \param incrementation in number of samples
  * \return date value
  */
-mtime_t date_Increment( date_t *p_date, uint32_t i_nb_samples )
+vlc_tick_t date_Increment( date_t *p_date, uint32_t i_nb_samples )
 {
     assert( p_date->i_divider_num != 0 );
-    mtime_t i_dividend = i_nb_samples * CLOCK_FREQ * p_date->i_divider_den;
+    vlc_tick_t i_dividend = i_nb_samples * CLOCK_FREQ * p_date->i_divider_den;
     lldiv_t d = lldiv( i_dividend, p_date->i_divider_num );
 
     p_date->date += d.quot;
@@ -178,9 +178,9 @@ mtime_t date_Increment( date_t *p_date, uint32_t i_nb_samples )
  * \param decrementation in number of samples
  * \return date value
  */
-mtime_t date_Decrement( date_t *p_date, uint32_t i_nb_samples )
+vlc_tick_t date_Decrement( date_t *p_date, uint32_t i_nb_samples )
 {
-    mtime_t i_dividend = (mtime_t)i_nb_samples * CLOCK_FREQ * p_date->i_divider_den;
+    vlc_tick_t i_dividend = (vlc_tick_t)i_nb_samples * CLOCK_FREQ * p_date->i_divider_den;
     p_date->date -= i_dividend / p_date->i_divider_num;
     unsigned i_rem_adjust = i_dividend % p_date->i_divider_num;
 
