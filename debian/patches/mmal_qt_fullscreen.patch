@@ -1,0 +1,56 @@
+--- a/modules/gui/qt/components/controller.cpp
++++ b/modules/gui/qt/components/controller.cpp
+@@ -812,6 +812,17 @@ FullscreenControllerWidget::FullscreenCo
+ 
+     vout.clear();
+ 
++#ifdef QT5_HAS_WAYLAND
++    if( b_hasWayland )
++    {
++        // Popup is less than perfect in that it seems impossible to make it non-modal
++        // and you can't get it to fade but at least it goes where it is asked to and
++        // does less confusing things with other popups
++        setWindowFlags( Qt::Popup | Qt::FramelessWindowHint);
++        setWindowModality( Qt::NonModal );
++    }
++    else
++#endif
+     setWindowFlags( Qt::Tool | Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint );
+     setAttribute( Qt::WA_ShowWithoutActivating );
+     setMinimumWidth( FSC_WIDTH );
+@@ -879,8 +890,11 @@ FullscreenControllerWidget::~FullscreenC
+ 
+ void FullscreenControllerWidget::restoreFSC()
+ {
++    msg_Info(p_intf, "%s", __func__);
+     if( !isWideFSC )
+     {
++        msg_Info(p_intf, "%s: 1", __func__);
++
+         /* Restore half-bar and re-centre if needed */
+         setMinimumWidth( FSC_WIDTH );
+         adjustSize();
+@@ -903,6 +917,7 @@ void FullscreenControllerWidget::restore
+         if( currentRes == screenRes &&
+             currentRes.contains( previousPosition, true ) )
+         {
++            msg_Info(p_intf, "%s: prev: %d, %d", __func__, previousPosition.x(), previousPosition.y());
+             /* Restore to the last known position */
+             move( previousPosition );
+         }
+@@ -917,6 +932,7 @@ void FullscreenControllerWidget::restore
+     }
+     else
+     {
++        msg_Info(p_intf, "%s: 1", __func__);
+         /* Dock at the bottom of the screen */
+         updateFullwidthGeometry( targetScreen() );
+     }
+@@ -929,6 +945,7 @@ void FullscreenControllerWidget::centerF
+     /* screen has changed, calculate new position */
+     QPoint pos = QPoint( currentRes.x() + (currentRes.width() / 2) - (width() / 2),
+             currentRes.y() + currentRes.height() - height());
++    msg_Info(p_intf, "%s: move to %d, %d", __func__, pos.x(), pos.y());
+     move( pos );
+ }
+ 

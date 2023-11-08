@@ -1,10 +1,13 @@
 --- a/modules/gui/qt/components/interface_widgets.cpp
 +++ b/modules/gui/qt/components/interface_widgets.cpp
-@@ -108,6 +108,36 @@ void VideoWidget::sync( void )
-     if( QX11Info::isPlatformX11() )
-         XSync( QX11Info::display(), False );
+@@ -110,6 +110,44 @@ void VideoWidget::sync( void )
  #endif
-+    refreshHandles();
+ }
+ 
++static inline void incnz(unsigned int * px)
++{
++    if ( ++*px == 0 )
++        *px = 1;
 +}
 +
 +/**
@@ -12,14 +15,11 @@
 + * seems to happen sometimes on resize
 + * In Qt it looks like this happens if the window is hidden
 + **/
-+void VideoWidget::refreshHandles()
++void VideoWidget::refreshHandle()
 +{
 +#ifdef QT5_HAS_WAYLAND
 +    if (!p_window || p_window->type != VOUT_WINDOW_TYPE_WAYLAND)
 +        return;
-+
-+    /* Ensure only the video widget is native (needed for Wayland) */
-+    stable->setAttribute( Qt::WA_DontCreateNativeAncestors, true);
 +
 +    QWindow *window = stable->windowHandle();
 +    assert(window != NULL);
@@ -28,45 +28,84 @@
 +    QPlatformNativeInterface *qni = qApp->platformNativeInterface();
 +    assert(qni != NULL);
 +
-+    p_window->handle.wl = static_cast<wl_surface*>(
++    struct wl_surface * const new_surface = static_cast<wl_surface*>(
 +        qni->nativeResourceForWindow(QByteArrayLiteral("surface"),
 +                                     window));
-+    p_window->display.wl = static_cast<wl_display*>(
-+        qni->nativeResourceForIntegration(QByteArrayLiteral("wl_display")));
++
++    if ( p_window->handle.wl != new_surface )
++    {
++        vlc_mutex_lock(&p_window->handle_lock);
++        p_window->handle.wl = new_surface;
++        incnz(&p_window->handle_seq);
++        vlc_mutex_unlock(&p_window->handle_lock);
++    }
 +#endif
- }
- 
++}
++
  /**
-@@ -165,21 +195,7 @@ bool VideoWidget::request( struct vout_w
- #ifdef QT5_HAS_WAYLAND
-         case VOUT_WINDOW_TYPE_WAYLAND:
-         {
--            /* Ensure only the video widget is native (needed for Wayland) */
--            stable->setAttribute( Qt::WA_DontCreateNativeAncestors, true);
--
--            QWindow *window = stable->windowHandle();
--            assert(window != NULL);
--            window->create();
--
--            QPlatformNativeInterface *qni = qApp->platformNativeInterface();
--            assert(qni != NULL);
--
--            p_wnd->handle.wl = static_cast<wl_surface*>(
--                qni->nativeResourceForWindow(QByteArrayLiteral("surface"),
--                                             window));
--            p_wnd->display.wl = static_cast<wl_display*>(
--                qni->nativeResourceForIntegration(QByteArrayLiteral("wl_display")));
-+            refreshHandles();
+  * Request the video to avoid the conflicts
+  **/
+@@ -180,6 +218,7 @@ bool VideoWidget::request( struct vout_w
+                                              window));
+             p_wnd->display.wl = static_cast<wl_display*>(
+                 qni->nativeResourceForIntegration(QByteArrayLiteral("wl_display")));
++            p_wnd->handle_seq = 1;
              break;
          }
  #endif
+@@ -238,6 +277,8 @@ void VideoWidget::reportSize()
+     if( !p_window )
+         return;
+ 
++    refreshHandle();
++
+     QSize size = physicalSize();
+     WindowResized(p_window, size);
+ }
+@@ -293,6 +334,27 @@ bool VideoWidget::nativeEvent( const QBy
+     return false;
+ }
+ 
++void VideoWidget::showEvent(QShowEvent *event)
++{
++    QFrame::showEvent(event);
++
++    if (p_window && p_window->type == VOUT_WINDOW_TYPE_WAYLAND && p_window->handle.wl == NULL)
++        refreshHandle();
++}
++
++void VideoWidget::hideEvent(QHideEvent *event)
++{
++    if (p_window && p_window->type == VOUT_WINDOW_TYPE_WAYLAND && p_window->handle.wl != NULL)
++    {
++        vlc_mutex_lock(&p_window->handle_lock);
++        p_window->handle.wl = NULL;
++        incnz(&p_window->handle_seq);
++        vlc_mutex_unlock(&p_window->handle_lock);
++    }
++
++    QFrame::hideEvent(event);
++}
++
+ void VideoWidget::resizeEvent( QResizeEvent *event )
+ {
+     QWidget::resizeEvent( event );
 --- a/modules/gui/qt/components/interface_widgets.hpp
 +++ b/modules/gui/qt/components/interface_widgets.hpp
-@@ -88,6 +88,7 @@ private:
+@@ -69,6 +69,8 @@ protected:
+         return NULL;
+     }
+ 
++    void hideEvent(QHideEvent *event) Q_DECL_OVERRIDE;
++    void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
+     bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
+     virtual void resizeEvent(QResizeEvent *) Q_DECL_OVERRIDE;
+     void mousePressEvent(QMouseEvent *) Q_DECL_OVERRIDE;
+@@ -88,6 +90,7 @@ private:
      bool enable_mouse_events;
  
      void reportSize();
-+    void refreshHandles();
++    void refreshHandle();
  
  signals:
      void sizeChanged( int, int );

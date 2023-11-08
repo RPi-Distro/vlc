@@ -1,7 +1,8 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
 0002-Do-not-generate-cache-during-build.patch
-mmal_37.patch
+hwaccel_40.patch
 mmal_exit_fix.patch
 mmal_chain.patch
 mmal_caca.patch
 mmal_wayland.patch
+mmal_qt_fullscreen.patch
