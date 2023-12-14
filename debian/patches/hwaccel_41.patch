@@ -1032,7 +1032,17 @@
  }
  
  static int ffmpeg_OpenVa(decoder_t *p_dec, AVCodecContext *p_context,
-@@ -686,6 +759,10 @@ static int ffmpeg_OpenVa(decoder_t *p_de
+@@ -652,7 +725,8 @@ static int ffmpeg_OpenVa(decoder_t *p_de
+         return VLC_EGENERIC;
+     }
+     const AVPixFmtDescriptor *dsc = av_pix_fmt_desc_get(hwfmt);
+-    msg_Dbg(p_dec, "trying format %s", dsc ? dsc->name : "unknown");
++    const AVPixFmtDescriptor *dsc_sw = av_pix_fmt_desc_get(swfmt);
++    msg_Dbg(p_dec, "trying format %s:%s", dsc ? dsc->name : "unknown", dsc_sw ? dsc_sw->name : "unknown");
+     if (lavc_UpdateVideoFormat(p_dec, p_context, hwfmt, swfmt))
+         return VLC_EGENERIC; /* Unsupported brand of hardware acceleration */
+ 
+@@ -686,6 +760,10 @@ static int ffmpeg_OpenVa(decoder_t *p_de
  
  static const enum PixelFormat hwfmts[] =
  {
@@ -1043,7 +1053,7 @@
  #ifdef _WIN32
  #if LIBAVUTIL_VERSION_CHECK(54, 13, 1, 24, 100)
      AV_PIX_FMT_D3D11VA_VLD,
-@@ -696,6 +773,7 @@ static const enum PixelFormat hwfmts[] =
+@@ -696,6 +774,7 @@ static const enum PixelFormat hwfmts[] =
  #if (LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(52, 4, 0))
      AV_PIX_FMT_VDPAU,
  #endif
@@ -1051,7 +1061,7 @@
      AV_PIX_FMT_NONE,
  };
  
-@@ -813,11 +891,11 @@ failed:
+@@ -813,11 +892,11 @@ failed:
   * the ffmpeg codec will be opened, some memory allocated. The vout is not yet
   * opened (done after the first decoded frame).
   *****************************************************************************/
@@ -1065,7 +1075,7 @@
      if( p_context == NULL )
          return VLC_EGENERIC;
  
-@@ -839,6 +917,27 @@ int InitVideoDec( vlc_object_t *obj )
+@@ -839,6 +918,27 @@ int InitVideoDec( vlc_object_t *obj )
      return InitVideoDecCommon( p_dec );
  }
  
@@ -1093,7 +1103,7 @@
  /*****************************************************************************
   * Flush:
   *****************************************************************************/
-@@ -848,6 +947,8 @@ static void Flush( decoder_t *p_dec )
+@@ -848,6 +948,8 @@ static void Flush( decoder_t *p_dec )
      AVCodecContext *p_context = p_sys->p_context;
  
      date_Set(&p_sys->pts, VLC_TICK_INVALID); /* To make sure we recover properly */
@@ -1102,7 +1112,7 @@
      p_sys->i_late_frames = 0;
      p_sys->b_draining = false;
      cc_Flush( &p_sys->cc );
-@@ -875,6 +976,8 @@ static bool check_block_validity( decode
+@@ -875,6 +977,8 @@ static bool check_block_validity( decode
      if( block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
      {
          date_Set( &p_sys->pts, VLC_TICK_INVALID ); /* To make sure we recover properly */
@@ -1111,7 +1121,7 @@
          cc_Flush( &p_sys->cc );
  
          p_sys->i_late_frames = 0;
-@@ -1215,6 +1318,10 @@ static picture_t *DecodeBlock( decoder_t
+@@ -1215,6 +1319,10 @@ static picture_t *DecodeBlock( decoder_t
              }
              if( b_has_data )
              {
@@ -1122,7 +1132,7 @@
                  pkt->data = p_block->p_buffer;
                  pkt->size = p_block->i_buffer;
                  pkt->pts = p_block->i_pts > VLC_TICK_INVALID ? p_block->i_pts : AV_NOPTS_VALUE;
-@@ -1321,6 +1428,17 @@ static picture_t *DecodeBlock( decoder_t
+@@ -1321,6 +1429,17 @@ static picture_t *DecodeBlock( decoder_t
          if( i_pts == AV_NOPTS_VALUE )
              i_pts = date_Get( &p_sys->pts );
  
@@ -1140,7 +1150,7 @@
          /* Interpolate the next PTS */
          if( i_pts > VLC_TICK_INVALID )
              date_Set( &p_sys->pts, i_pts );
-@@ -1373,9 +1491,10 @@ static picture_t *DecodeBlock( decoder_t
+@@ -1373,9 +1492,10 @@ static picture_t *DecodeBlock( decoder_t
          {   /* When direct rendering is not used, get_format() and get_buffer()
               * might not be called. The output video format must be set here
               * then picture buffer can be allocated. */
@@ -1153,7 +1163,7 @@
                  p_pic = decoder_NewPicture(p_dec);
  
              if( !p_pic )
-@@ -1768,6 +1887,7 @@ static enum PixelFormat ffmpeg_GetFormat
+@@ -1768,6 +1888,7 @@ static enum PixelFormat ffmpeg_GetFormat
          }
          swfmt = defaultfmt;
      }
@@ -1161,7 +1171,7 @@
  
      if (p_sys->pix_fmt == AV_PIX_FMT_NONE)
          goto no_reuse;
-@@ -1821,7 +1941,10 @@ no_reuse:
+@@ -1821,7 +1942,10 @@ no_reuse:
      p_sys->level = p_context->level;
  
      if (!can_hwaccel)
@@ -1172,6 +1182,31 @@
  
  #if (LIBAVCODEC_VERSION_MICRO >= 100) \
    && (LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 83, 101))
+@@ -1840,11 +1964,23 @@ no_reuse:
+     for( size_t i = 0; hwfmts[i] != AV_PIX_FMT_NONE; i++ )
+     {
+         enum PixelFormat hwfmt = AV_PIX_FMT_NONE;
++        enum PixelFormat defsw = swfmt;
++
+         for( size_t j = 0; hwfmt == AV_PIX_FMT_NONE && pi_fmt[j] != AV_PIX_FMT_NONE; j++ )
+             if( hwfmts[i] == pi_fmt[j] )
+                 hwfmt = hwfmts[i];
+ 
+-        if (ffmpeg_OpenVa(p_dec, p_context, hwfmt, swfmt, src_desc, &p_sys->sem_mt) != VLC_SUCCESS)
++#if OPT_RPI
++        if (hwfmt == AV_PIX_FMT_DRM_PRIME && p_context->codec_id == AV_CODEC_ID_HEVC)
++        {
++            if (swfmt == AV_PIX_FMT_P010)
++                defsw = AV_PIX_FMT_RPI4_10;
++            if (swfmt == AV_PIX_FMT_YUV420P)
++                defsw = AV_PIX_FMT_RPI4_8;
++        }
++#endif
++
++        if (ffmpeg_OpenVa(p_dec, p_context, hwfmt, defsw, src_desc, &p_sys->sem_mt) != VLC_SUCCESS)
+             continue;
+ 
+         post_mt(p_sys);
 --- a/modules/gui/qt/qt.cpp
 +++ b/modules/gui/qt/qt.cpp
 @@ -31,6 +31,7 @@
@@ -17420,7 +17455,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu.c
-@@ -0,0 +1,3924 @@
+@@ -0,0 +1,3929 @@
 +// Needed to ensure we get a 64-bit offset to mmap when mapping BOs
 +#undef _FILE_OFFSET_BITS
 +#define _FILE_OFFSET_BITS 64
@@ -20996,16 +21031,19 @@
 +
 +    atomic_q_flush(&du->aq);
 +
-+    pollqueue_unref(&du->pq);
 +    polltask_delete(&du->pt);
++    pollqueue_finish(&du->pq);
 +
-+    atomic_q_uninit(&du->aq);
-+
++    // Restore previous values after shutting down the polltask but
++    // before uniniting the Q commits
++    //
++    // The Q uninit stands a plausible chance of causing BOs or dmabufs that
++    // are in use to be reclaimed so restoring the old FBs before that is a
++    // good idea (prevents visible artifacts in VLC).
 +    if (du->da_restore) {
 +        int rv;
-+        if ((rv = drmu_atomic_commit(du->da_restore, DRM_MODE_ATOMIC_ALLOW_MODESET)) != 0) {
-+            drmu_atomic_t * bad = drmu_atomic_new(du);
-+            drmu_atomic_commit_test(du->da_restore, DRM_MODE_ATOMIC_TEST_ONLY | DRM_MODE_ATOMIC_ALLOW_MODESET, bad);
++        drmu_atomic_t * bad = drmu_atomic_new(du);
++        if ((rv = drmu_atomic_commit_test(du->da_restore, DRM_MODE_ATOMIC_ALLOW_MODESET, bad)) != 0) {
 +            drmu_atomic_sub(du->da_restore, bad);
 +            if ((rv = drmu_atomic_commit(du->da_restore, DRM_MODE_ATOMIC_ALLOW_MODESET)) != 0)
 +                drmu_err(du, "Failed to restore old mode on exit: %s", strerror(-rv));
@@ -21014,10 +21052,12 @@
 +
 +            if (drmu_env_log(du)->max_level >= DRMU_LOG_LEVEL_DEBUG)
 +                drmu_atomic_dump(bad);
-+            drmu_atomic_unref(&bad);
 +        }
++        drmu_atomic_unref(&bad);
 +        drmu_atomic_unref(&du->da_restore);
 +    }
++
++    atomic_q_uninit(&du->aq);
 +
 +    env_free_planes(du);
 +    env_free_conns(du);
@@ -24473,7 +24513,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_vlc_fmts.c
-@@ -0,0 +1,237 @@
+@@ -0,0 +1,245 @@
 +#include "drmu_vlc_fmts.h"
 +
 +#include <vlc_picture.h>
@@ -24530,17 +24570,17 @@
 +    I2(VLC_CODEC_I444, DRM_FORMAT_YUV444),
 +    { VLC_CODEC_J444, DRM_FORMAT_YUV444, 0, 0, 0, DRM_FORMAT_MOD_LINEAR, DRMU_VLC_FMTS_FLAG_FULL_RANGE },
 +#if HAS_DRMPRIME
-+    { VLC_CODEC_DRM_PRIME_I420,   DRM_FORMAT_YUV420,   0, 0, 0, DRM_FORMAT_MOD_LINEAR,                         DRMU_VLC_FMTS_FLAG_DRMP },
-+    { VLC_CODEC_DRM_PRIME_NV12,   DRM_FORMAT_NV12,     0, 0, 0, DRM_FORMAT_MOD_LINEAR,                         DRMU_VLC_FMTS_FLAG_DRMP },
-+    { VLC_CODEC_DRM_PRIME_SAND8,  DRM_FORMAT_NV12,     0, 0, 0, DRM_FORMAT_MOD_BROADCOM_SAND128_COL_HEIGHT(0), DRMU_VLC_FMTS_FLAG_DRMP },
-+    { VLC_CODEC_DRM_PRIME_SAND30, DRM_FORMAT_P030,     0, 0, 0, DRM_FORMAT_MOD_BROADCOM_SAND128_COL_HEIGHT(0), DRMU_VLC_FMTS_FLAG_DRMP },
-+    { VLC_CODEC_DRM_PRIME_RGB32,  DRM_FORMAT_XRGB8888, 0, 0, 0, DRM_FORMAT_MOD_LINEAR,                         DRMU_VLC_FMTS_FLAG_DRMP },
++    { VLC_CODEC_DRM_PRIME_I420,   DRM_FORMAT_YUV420,   0, 0, 0, DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_DRMP },
++    { VLC_CODEC_DRM_PRIME_NV12,   DRM_FORMAT_NV12,     0, 0, 0, DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_DRMP },
++    { VLC_CODEC_DRM_PRIME_SAND8,  DRM_FORMAT_NV12,     0, 0, 0, DRM_FORMAT_MOD_BROADCOM_SAND128, DRMU_VLC_FMTS_FLAG_DRMP },
++    { VLC_CODEC_DRM_PRIME_SAND30, DRM_FORMAT_P030,     0, 0, 0, DRM_FORMAT_MOD_BROADCOM_SAND128, DRMU_VLC_FMTS_FLAG_DRMP },
++    { VLC_CODEC_DRM_PRIME_RGB32,  DRM_FORMAT_XRGB8888, 0, 0, 0, DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_DRMP },
 +#endif
 +#if HAS_ZC_CMA
-+    { VLC_CODEC_MMAL_ZC_I420,     DRM_FORMAT_YUV420,   0, 0, 0, DRM_FORMAT_MOD_LINEAR,                         DRMU_VLC_FMTS_FLAG_ZC },
-+    { VLC_CODEC_MMAL_ZC_SAND8,    DRM_FORMAT_NV12,     0, 0, 0, DRM_FORMAT_MOD_BROADCOM_SAND128_COL_HEIGHT(0), DRMU_VLC_FMTS_FLAG_ZC },
-+    { VLC_CODEC_MMAL_ZC_SAND30,   DRM_FORMAT_P030,     0, 0, 0, DRM_FORMAT_MOD_BROADCOM_SAND128_COL_HEIGHT(0), DRMU_VLC_FMTS_FLAG_ZC },
-+    { VLC_CODEC_MMAL_ZC_RGB32,    DRM_FORMAT_RGBX8888, 0, 0, 0, DRM_FORMAT_MOD_LINEAR,                         DRMU_VLC_FMTS_FLAG_ZC },
++    { VLC_CODEC_MMAL_ZC_I420,     DRM_FORMAT_YUV420,   0, 0, 0, DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_ZC },
++    { VLC_CODEC_MMAL_ZC_SAND8,    DRM_FORMAT_NV12,     0, 0, 0, DRM_FORMAT_MOD_BROADCOM_SAND128, DRMU_VLC_FMTS_FLAG_ZC },
++    { VLC_CODEC_MMAL_ZC_SAND30,   DRM_FORMAT_P030,     0, 0, 0, DRM_FORMAT_MOD_BROADCOM_SAND128, DRMU_VLC_FMTS_FLAG_ZC },
++    { VLC_CODEC_MMAL_ZC_RGB32,    DRM_FORMAT_RGBX8888, 0, 0, 0, DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_ZC },
 +#endif
 +
 +    RM(VLC_CODEC_RGB32, DRM_FORMAT_XRGB8888, 0xff0000, 0xff00, 0xff),
@@ -24583,14 +24623,22 @@
 +    return drmu_vlc_fmt_info_find_vlc_next(vf_vlc, NULL);
 +}
 +
++// Remove any params from a modifier
++static inline uint64_t canon_mod(const uint64_t m)
++{
++    return fourcc_mod_is_vendor(m, BROADCOM) ? fourcc_mod_broadcom_mod(m) : m;
++}
++
 +const drmu_vlc_fmt_info_t *
 +drmu_vlc_fmt_info_find_drm_next(const uint32_t pixelformat, const uint64_t modifier, const drmu_vlc_fmt_info_t * f)
 +{
++    const uint64_t cmod = canon_mod(modifier);
++
 +    f = (f == NULL) ? fmt_table : f + 1;
 +
 +    for (; f->vlc_chroma != 0; ++f)
 +    {
-+        if (f->drm_pixelformat != pixelformat || f->drm_modifier != modifier)
++        if (f->drm_pixelformat != pixelformat || f->drm_modifier != cmod)
 +            continue;
 +        // Only return the "base" version
 +        if (f->flags != 0)
@@ -24919,7 +24967,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/pollqueue.c
-@@ -0,0 +1,500 @@
+@@ -0,0 +1,523 @@
 +#include "pollqueue.h"
 +
 +#include <assert.h>
@@ -24983,6 +25031,7 @@
 +    } prepost;
 +
 +    bool kill;
++    bool join_req;  // On thread exit do not detach
 +    bool no_prod;
 +
 +    bool sig_seq; // Signal cond when seq incremented
@@ -25285,11 +25334,13 @@
 +                pt->fn(pt->v, r);
 +
 +                pthread_mutex_lock(&pq->lock);
-+                if (pt->state == POLLTASK_RUNNING)
-+                    pt->state = POLLTASK_UNQUEUED;
-+                if (pt->state == POLLTASK_RUN_KILL ||
++                if (pt->state == POLLTASK_Q_KILL)
++                    polltask_dead(pt);
++                else if (pt->state == POLLTASK_RUN_KILL ||
 +                    (pt->flags & POLLTASK_FLAG_ONCE) != 0)
 +                    polltask_kill(pt);
++                else if (pt->state == POLLTASK_RUNNING)
++                    pt->state = POLLTASK_UNQUEUED;
 +            }
 +        }
 +        pq->no_prod = false;
@@ -25303,6 +25354,8 @@
 +    pthread_cond_destroy(&pq->cond);
 +    pthread_mutex_destroy(&pq->lock);
 +    close(pq->prod_fd);
++    if (!pq->join_req)
++        pthread_detach(pthread_self());
 +    free(pq);
 +
 +    return NULL;
@@ -25361,16 +25414,18 @@
 +
 +    if (pthread_equal(worker, pthread_self())) {
 +        pq->kill = true;
-+        pollqueue_prod(pq);
-+        pthread_detach(worker);
++        if (!pq->no_prod)
++            pollqueue_prod(pq);
 +    }
 +    else
 +    {
 +        pthread_mutex_lock(&pq->lock);
 +        pq->kill = true;
-+        pollqueue_prod(pq);
++        // Must prod inside lock here as otherwise there is a potential race
++        // where the worker terminates and pq is freed before the prod
++        if (!pq->no_prod)
++            pollqueue_prod(pq);
 +        pthread_mutex_unlock(&pq->lock);
-+        pthread_join(worker, NULL);
 +    }
 +}
 +
@@ -25392,6 +25447,22 @@
 +        return;
 +
 +    pollqueue_free(pq);
++}
++
++void pollqueue_finish(struct pollqueue **const ppq)
++{
++    struct pollqueue * const pq = *ppq;
++    pthread_t worker;
++
++    if (!pq)
++        return;
++
++    pq->join_req = true;
++    worker = pq->worker;
++
++    pollqueue_unref(ppq);
++
++    pthread_join(worker, NULL);
 +}
 +
 +void pollqueue_set_pre_post(struct pollqueue *const pq,
@@ -25422,7 +25493,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/pollqueue.h
-@@ -0,0 +1,78 @@
+@@ -0,0 +1,81 @@
 +#ifndef POLLQUEUE_H_
 +#define POLLQUEUE_H_
 +
@@ -25480,10 +25551,13 @@
 +
 +// Unref a pollqueue
 +// Will be deleted once all polltasks (Qed or otherwise) are deleted too
-+// If called from outside the polltask thread and this causes the pollqueue
-+// to be deleted then it will wait for the polltask thread to terminate
-+// before returning.
++// Will not wait for polltask termination whether or not this is the last
++// ref.
 +void pollqueue_unref(struct pollqueue **const ppq);
++
++// Unrefs a pollqueue and then waits for the polltask thread to terminate
++// before returning.
++void pollqueue_finish(struct pollqueue **const ppq);
 +
 +// Add a reference to a pollqueue
 +struct pollqueue * pollqueue_ref(struct pollqueue *const pq);
@@ -27026,7 +27100,7 @@
  vlc_module_end()
 --- /dev/null
 +++ b/modules/video_output/wayland/wl_dmabuf.c
-@@ -0,0 +1,2295 @@
+@@ -0,0 +1,2426 @@
 +/**
 + * @file shm.c
 + * @brief Wayland shared memory video output module for VLC media player
@@ -27094,11 +27168,10 @@
 +#include <libavutil/hwcontext_drm.h>
 +
 +#define TRACE_ALL 0
++#define CHECK_VDRE_COUNTS 0
 +
 +#define MAX_PICTURES 4
 +#define MAX_SUBPICS  6
-+
-+#define VIDEO_ON_SUBSURFACE 1
 +
 +#define WL_DMABUF_DISABLE_NAME "wl-dmabuf-disable"
 +#define WL_DMABUF_DISABLE_TEXT N_("Disable wl-dmabuf")
@@ -27111,6 +27184,11 @@
 +#define WL_DMABUF_CHEQUERBOARD_NAME "wl-dmabuf-chequerboard"
 +#define WL_DMABUF_CHEQUERBOARD_TEXT N_("Chequerboard background")
 +#define WL_DMABUF_CHEQUERBOARD_LONGTEXT N_("Fill unused window area with chequerboard rather than black")
++
++#define WL_DMABUF_STATS_NAME "wl-dmabuf-stats"
++#define WL_DMABUF_STATS_TEXT N_("Display some display stats")
++#define WL_DMABUF_STATS_LONGTEXT N_("When display is closed report frames displayed/discarded and avg fps. "\
++    "N.B. Unfortunately current implementation cannot track frames discarded by Wayland before display")
 +
 +typedef struct fmt_ent_s {
 +    uint32_t fmt;
@@ -27142,6 +27220,9 @@
 +    unsigned int rel_count;
 +    unsigned int pt_count;
 +    struct polltask * pt[AV_DRM_MAX_PLANES];
++#if CHECK_VDRE_COUNTS
++    atomic_int * vdre_check;
++#endif
 +} video_dmabuf_release_env_t;
 +
 +typedef struct subpic_ent_s {
@@ -27150,11 +27231,11 @@
 +    video_dmabuf_release_env_t * vdre;
 +    picture_t * pic;
 +    int alpha;
-+    vout_display_place_t dst_rect;
++    enum wl_output_transform trans;
 +    vout_display_place_t src_rect;
-+    bool rect_update;
++    vout_display_place_t dst_rect;
++    vout_display_place_t orig_rect;
 +
-+    bool update;
 +    atomic_int ready;
 +
 +    struct polltask * pt;
@@ -27166,6 +27247,14 @@
 +    struct wl_surface * surface;
 +    struct wl_subsurface * subsurface;
 +    struct wp_viewport * viewport;
++
++    bool buffer_attached;
++    bool commit_req;
++    int commit_parent;
++
++    enum wl_output_transform trans;
++    vout_display_place_t src_rect;
++    vout_display_place_t dst_rect;
 +
 +    subpic_ent_t * spe_cur;
 +    subpic_ent_t * spe_next;
@@ -27183,17 +27272,15 @@
 +#endif
 +} w_bound_t;
 +
-+#define COMMIT_BKG 0
-+#define COMMIT_VID 1
-+#define COMMIT_SUB 2
++#define PLANE_BKG 0
++#define PLANE_VID 1
++#define PLANE_SUB 2
 +
 +struct vout_display_sys_t
 +{
 +    vout_window_t *embed; /* VLC window */
 +
 +    w_bound_t bound;
-+
-+    struct wp_viewport *viewport;
 +
 +    picture_pool_t *vlc_pic_pool; /* picture pool */
 +
@@ -27202,25 +27289,23 @@
 +
 +    int x;
 +    int y;
-+    bool video_attached;
-+    bool viewport_set;
 +    bool use_shm;
 +    bool chequerboard;
-+
-+    vout_display_place_t dst_rect;  // Window in the display size that holds the video
-+
-+    video_format_t curr_aspect;
-+
-+#if VIDEO_ON_SUBSURFACE
-+    struct wl_surface * video_surface;
-+    // Beware: calls using this need a bkg_surface commit to take effect
-+    struct wl_subsurface * video_subsurface;
++    bool want_stats;
 +
 +    struct wp_viewport * bkg_viewport;
 +    // Current size of background viewport if we have one
 +    // If not created yet then the size that the viewport should be created
 +    unsigned int bkg_w;
 +    unsigned int bkg_h;
++
++    enum wl_output_transform video_trans;
++    vout_display_place_t video_src_rect;
++    vout_display_place_t video_dst_rect;
++
++#if CHECK_VDRE_COUNTS
++    atomic_int vdre_check_bkg;
++    atomic_int vdre_check_fg;
 +#endif
 +
 +    eq_env_t * eq;
@@ -27229,18 +27314,41 @@
 +    struct pollqueue * speq;
 +
 +    picpool_ctl_t * subpic_pool;
-+    subplane_t subplanes[MAX_SUBPICS];
-+    bool commit_req[MAX_SUBPICS + 2];
-+    subpic_ent_t piccpy;
++    subplane_t planes[MAX_SUBPICS + 2];
++    subpic_ent_t * video_spe_prep;
++    struct wl_callback * video_frame_callback;
 +    vlc_fourcc_t * subpic_chromas;
++
++    struct wl_region * region_none;
++    struct wl_region * region_all;
 +
 +    fmt_list_t dmabuf_fmts;
 +    fmt_list_t shm_fmts;
++
++    struct display_stats_s {
++        unsigned int frame_n;
++        unsigned int frame_frame;
++        unsigned int frame_display;
++        unsigned int frame_discard;
++        vlc_tick_t time_frame0;
++        vlc_tick_t time_frameN;
++    } stats;
 +};
 +
 +
 +static struct wl_surface * bkg_surface_get_lock(vout_display_t * const vd, vout_display_sys_t * const sys);
 +static void bkg_surface_unlock(vout_display_t * const vd, vout_display_sys_t * const sys);
++
++static void
++msg_stats(vout_display_t * const vd, const struct display_stats_s * const s)
++{
++    unsigned int tframes = (s->frame_n + s->frame_discard);
++    unsigned int frx1000 = tframes < 2 ? 0 :
++            (unsigned int)((uint64_t)(tframes - 1) * 1000000000ULL / (s->time_frameN - s->time_frame0));
++    msg_Info(vd, "Frames: Total: %d, Discarded %d, Display %d FpS(total):%d.%03d",
++             tframes, s->frame_discard, s->frame_display,
++             frx1000 / 1000, frx1000 % 1000);
++}
 +
 +
 +static inline struct wl_display *
@@ -27252,11 +27360,7 @@
 +static inline struct wl_surface *
 +video_surface(const vout_display_sys_t * const sys)
 +{
-+#if VIDEO_ON_SUBSURFACE
-+    return sys->video_surface;
-+#else
-+    return sys->embed->handle.wl;
-+#endif
++    return sys->planes[PLANE_VID].surface;
 +}
 +
 +static inline struct wl_compositor *
@@ -27273,6 +27377,15 @@
 +        return;
 +    *ppbuffer = NULL;
 +    wl_buffer_destroy(buffer);
++}
++
++static void
++region_destroy(struct wl_region ** const ppregion)
++{
++    if (*ppregion == NULL)
++        return;
++    wl_region_destroy(*ppregion);
++    *ppregion = NULL;
 +}
 +
 +static void
@@ -27330,10 +27443,33 @@
 +    };
 +}
 +
++static inline vout_display_place_t
++place_zoffset(const vout_display_place_t s)
++{
++    return (vout_display_place_t){
++        .x      = 0,
++        .y      = 0,
++        .width  = s.width,
++        .height = s.height
++    };
++}
++
++static inline bool
++place_xy_eq(const vout_display_place_t a, const vout_display_place_t b)
++{
++    return a.x == b.x && a.y == b.y;
++}
++
++static inline bool
++place_wh_eq(const vout_display_place_t a, const vout_display_place_t b)
++{
++    return a.width == b.width && a.height == b.height;
++}
++
 +static inline bool
 +place_eq(const vout_display_place_t a, const vout_display_place_t b)
 +{
-+    return a.x == b.x && a.y == b.y && a.width == b.width && a.height == b.height;
++    return place_xy_eq(a, b) && place_wh_eq(a, b);
 +}
 +
 +
@@ -27419,52 +27555,6 @@
 +        .height = s.height
 +    };
 +}
-+
-+#if 0
-+static vout_display_place_t
-+rect_transform(vout_display_place_t s, const vout_display_place_t c, const video_transform_t t)
-+{
-+    if (is_vxf_transpose(t))
-+        s = vplace_transpose(s);
-+    if (is_vxf_hflip(t))
-+        s = vplace_hflip(s, c);
-+    if (is_vxf_vflip(t) != 0)
-+        s = vplace_vflip(s, c);
-+    return s;
-+}
-+
-+static void
-+place_dest_rect(vout_display_t * const vd,
-+          const vout_display_cfg_t * const cfg,
-+          const video_format_t * fmt)
-+{
-+    vout_display_sys_t * const sys = vd->sys;
-+    sys->dest_rect = rect_transform(place_out(cfg, fmt, sys->win_rect),
-+                                    sys->display_rect, sys->dest_transform);
-+}
-+#endif
-+
-+static void
-+place_rects(vout_display_t * const vd,
-+          const vout_display_cfg_t * const cfg)
-+{
-+    vout_display_sys_t * const sys = vd->sys;
-+
-+#if !VIDEO_ON_SUBSURFACE
-+    vout_display_place_t place;
-+
-+    vout_display_PlacePicture(&place, &sys->curr_aspect, vd->cfg, false);
-+    sys->x += place.width / 2;
-+    sys->y += place.height / 2;
-+
-+    vout_display_PlacePicture(&sys->dst_rect, &vd->source, cfg, false);
-+    sys->x -= sys->dst_rect.width / 2;
-+    sys->y -= sys->dst_rect.height / 2;
-+#else
-+    vout_display_PlacePicture(&sys->dst_rect, &vd->source, cfg, true);
-+#endif
-+}
-+
 +
 +static int
 +fmt_list_add(fmt_list_t * const fl, uint32_t fmt, uint64_t mod, int32_t pri)
@@ -27768,6 +27858,10 @@
 +    for (i = 0; i != vdre->pt_count; ++i)
 +        polltask_delete(vdre->pt + i);
 +    eq_unref(&vdre->eq);
++#if CHECK_VDRE_COUNTS
++    if (vdre->vdre_check != NULL)
++        atomic_fetch_sub(vdre->vdre_check, 1);
++#endif
 +    free(vdre);
 +}
 +
@@ -27811,7 +27905,7 @@
 +}
 +
 +static void
-+w_ctx_release(void * v, short revents)
++vdre_polltask_cb(void * v, short revents)
 +{
 +    video_dmabuf_release_env_t * const vdre = v;
 +    VLC_UNUSED(revents);
@@ -27829,11 +27923,20 @@
 +    eq_ref(vdre->eq);
 +}
 +
++#if CHECK_VDRE_COUNTS
++static void
++vdre_add_check(video_dmabuf_release_env_t * const vdre, atomic_int * const pa)
++{
++    vdre->vdre_check = pa;
++    atomic_fetch_add(pa, 1);
++}
++#endif
++
 +static void
 +vdre_add_pt(video_dmabuf_release_env_t * const vdre, struct pollqueue * pq, int fd)
 +{
 +    assert(vdre->pt_count < AV_DRM_MAX_PLANES);
-+    vdre->pt[vdre->pt_count++] = polltask_new(pq, fd, POLLOUT, w_ctx_release, vdre);
++    vdre->pt[vdre->pt_count++] = polltask_new(pq, fd, POLLOUT, vdre_polltask_cb, vdre);
 +}
 +
 +static void
@@ -27859,7 +27962,7 @@
 +// Avoid use of vd here as there's a possibility this will be called after
 +// it has gone
 +static void
-+w_buffer_release(void *data, struct wl_buffer *wl_buffer)
++vdre_buffer_release_cb(void *data, struct wl_buffer *wl_buffer)
 +{
 +    video_dmabuf_release_env_t * const vdre = data;
 +    unsigned int i = vdre->pt_count;
@@ -27881,8 +27984,8 @@
 +    }
 +}
 +
-+static const struct wl_buffer_listener w_buffer_listener = {
-+    .release = w_buffer_release,
++static const struct wl_buffer_listener vdre_buffer_listener = {
++    .release = vdre_buffer_release_cb,
 +};
 +
 +// ----------------------------------------------------------------------------
@@ -27899,6 +28002,66 @@
 +           (drm_fmt == DRM_FORMAT_XRGB8888) ? WL_SHM_FORMAT_XRGB8888 : drm_fmt;
 +}
 +
++static struct wl_buffer *
++dfd_make_buffer(vout_display_t * const vd, vout_display_sys_t * const sys,
++                const bool use_shm,
++                const AVDRMFrameDescriptor * const desc,
++                const unsigned int width, const unsigned int height,
++                const uint32_t flags)
++{
++    struct wl_buffer * w_buffer;
++
++    if (!sys->bound.linux_dmabuf_v1 || use_shm)
++    {
++        const AVDRMPlaneDescriptor *const p = desc->layers[0].planes + 0;
++        struct wl_shm_pool *pool = wl_shm_create_pool(sys->bound.shm, desc->objects[0].fd, desc->objects[0].size);
++        const uint32_t w_fmt = drm_fmt_to_wl_shm(desc->layers[0].format);
++
++        if (pool == NULL)
++        {
++            msg_Err(vd, "Failed to create pool from dmabuf");
++            return NULL;
++        }
++        w_buffer = wl_shm_pool_create_buffer(pool, p->offset, width, height, p->pitch, w_fmt);
++        wl_shm_pool_destroy(pool);
++        if (w_buffer == NULL)
++            msg_Err(vd, "Failed to create buffer from pool");
++    }
++    else
++    {
++        /* Creation and configuration of planes  */
++        int i;
++        unsigned int n = 0;
++        struct zwp_linux_buffer_params_v1 * const params = zwp_linux_dmabuf_v1_create_params(sys->bound.linux_dmabuf_v1);
++
++        if (!params)
++        {
++            msg_Err(vd, "zwp_linux_dmabuf_v1_create_params FAILED");
++            return NULL;
++        }
++
++        for (i = 0; i < desc->nb_layers; ++i)
++        {
++            int j;
++            for (j = 0; j < desc->layers[i].nb_planes; ++j)
++            {
++                const AVDRMPlaneDescriptor *const p = desc->layers[i].planes + j;
++                const AVDRMObjectDescriptor *const obj = desc->objects + p->object_index;
++
++                zwp_linux_buffer_params_v1_add(params, obj->fd, n++, p->offset, p->pitch,
++                                   (unsigned int)(obj->format_modifier >> 32),
++                                   (unsigned int)(obj->format_modifier & 0xFFFFFFFF));
++            }
++        }
++
++        /* Request buffer creation */
++        if ((w_buffer = zwp_linux_buffer_params_v1_create_immed(params, width, height, desc->layers[0].format, flags)) == NULL)
++            msg_Err(vd, "zwp_linux_buffer_params_v1_create_immed FAILED");
++        zwp_linux_buffer_params_v1_destroy(params);
++    }
++    return w_buffer;
++}
++
 +static int
 +copy_subpic_to_w_buffer(vout_display_t *vd, vout_display_sys_t * const sys, picture_t * const src,
 +                        int alpha,
@@ -27906,25 +28069,42 @@
 +{
 +    unsigned int w = src->format.i_width;
 +    unsigned int h = src->format.i_height;
-+    struct zwp_linux_buffer_params_v1 *params = NULL;
 +    uint64_t mod;
 +    const uint32_t drm_fmt = drmu_format_vlc_to_drm(&src->format, &mod);
-+    size_t total_size = 0;
-+    size_t offset = 0;
 +    struct dmabuf_h * dh = NULL;
 +    int i;
++    AVDRMFrameDescriptor dfd = {
++        .nb_objects = 1,
++        .objects = {{
++            .fd = -1,
++            .size = 0,
++            .format_modifier = mod
++        }},
++        .nb_layers = 1,
++        .layers = {{
++            .format = drm_fmt,
++            .nb_planes = src->i_planes,
++        }}
++    };
 +
 +    for (i = 0; i != src->i_planes; ++i)
-+        total_size += cpypic_plane_alloc_size(src->p + i);
++    {
++        dfd.layers[0].planes[i].object_index = 0;
++        dfd.layers[0].planes[i].offset = dfd.objects[0].size;
++        dfd.layers[0].planes[i].pitch = src->p[i].i_pitch;
++        dfd.objects[0].size += cpypic_plane_alloc_size(src->p + i);
++    }
 +
 +    *pW_buffer = NULL;
 +    *pVdre = NULL;
 +
-+    if ((dh = picpool_get(sys->subpic_pool, total_size)) == NULL)
++    if ((dh = picpool_get(sys->subpic_pool, dfd.objects[0].size)) == NULL)
 +    {
 +        msg_Warn(vd, "Failed to alloc dmabuf for subpic");
 +        goto error;
 +    }
++    dfd.objects[0].fd = dmabuf_fd(dh);
++
 +    if ((*pVdre = vdre_new_dh(dh, sys->pollq)) == NULL)
 +    {
 +        msg_Warn(vd, "Failed to alloc vdre for subpic");
@@ -27932,76 +28112,33 @@
 +        goto error;
 +    }
 +
-+    if (dmabuf_is_fake(dh) || !sys->bound.linux_dmabuf_v1)
++    // Copy to dh
++    dmabuf_write_start(dh);
++    for (i = 0; i != dfd.layers[0].nb_planes; ++i)
 +    {
-+        struct wl_shm_pool *pool = wl_shm_create_pool(sys->bound.shm, dmabuf_fd(dh), dmabuf_size(dh));
-+        const uint32_t w_fmt = drm_fmt_to_wl_shm(drm_fmt);
-+        const size_t stride = src->p[0].i_pitch;
-+        const size_t size = cpypic_plane_alloc_size(src->p + 0);
-+
-+        assert(src->i_planes == 1);
-+
-+        if (pool == NULL)
-+        {
-+            msg_Err(vd, "Failed to create pool from dmabuf");
-+            goto error;
-+        }
-+        *pW_buffer = wl_shm_pool_create_buffer(pool, 0, w, h, stride, w_fmt);
-+        wl_shm_pool_destroy(pool);
-+
-+        if (*pW_buffer == NULL)
-+        {
-+            msg_Err(vd, "Failed to create buffer from pool");
-+            goto error;
-+        }
++        const size_t stride = dfd.layers[0].planes[i].pitch;
++        const size_t offset = dfd.layers[0].planes[i].offset;
++        void * const dst_data = (char *)dmabuf_map(dh) + offset;
 +
 +        if (src->format.i_chroma == VLC_CODEC_RGBA ||
 +            src->format.i_chroma == VLC_CODEC_BGRA)
-+            copy_frame_xxxa_with_premul(dmabuf_map(dh), stride, src->p[0].p_pixels, stride, w, h, alpha);
++            copy_frame_xxxa_with_premul(dst_data, stride, src->p[i].p_pixels, stride, w, h, alpha);
 +        else
-+            memcpy((char *)dmabuf_map(dh) + offset, src->p[0].p_pixels, size);
++            memcpy(dst_data, src->p[i].p_pixels, cpypic_plane_alloc_size(src->p + i));
 +    }
-+    else
-+    {
-+        if ((params = zwp_linux_dmabuf_v1_create_params(sys->bound.linux_dmabuf_v1)) == NULL)
-+        {
-+            msg_Err(vd, "zwp_linux_dmabuf_v1_create_params FAILED");
-+            goto error;
-+        }
++    dmabuf_write_end(dh);
 +
-+        dmabuf_write_start(dh);
-+        for (i = 0; i != src->i_planes; ++i)
-+        {
-+            const size_t stride = src->p[i].i_pitch;
-+            const size_t size = cpypic_plane_alloc_size(src->p + i);
++    *pW_buffer = dfd_make_buffer(vd, sys, dmabuf_is_fake(dh), &dfd, w, h, 0);
++    if (*pW_buffer == NULL)
++        goto error;
 +
-+            if (src->format.i_chroma == VLC_CODEC_RGBA ||
-+                src->format.i_chroma == VLC_CODEC_BGRA)
-+                copy_frame_xxxa_with_premul(dmabuf_map(dh), stride, src->p[i].p_pixels, stride, w, h, alpha);
-+            else
-+                memcpy((char *)dmabuf_map(dh) + offset, src->p[i].p_pixels, size);
-+
-+            zwp_linux_buffer_params_v1_add(params, dmabuf_fd(dh), i, offset, stride, 0, 0);
-+
-+            offset += size;
-+        }
-+        dmabuf_write_end(dh);
-+
-+        if ((*pW_buffer = zwp_linux_buffer_params_v1_create_immed(params, w, h, drm_fmt, 0)) == NULL)
-+        {
-+            msg_Err(vd, "zwp_linux_buffer_params_v1_create_immed FAILED");
-+            goto error;
-+        }
-+
-+        zwp_linux_buffer_params_v1_destroy(params);
-+    }
-+    wl_buffer_add_listener(*pW_buffer, &w_buffer_listener, *pVdre);
++#if CHECK_VDRE_COUNTS
++    vdre_add_check(*pVdre, &sys->vdre_check_fg);
++#endif
 +
 +    return VLC_SUCCESS;
 +
 +error:
-+    if (params)
-+        zwp_linux_buffer_params_v1_destroy(params);
 +    vdre_delete(pVdre);
 +    return VLC_EGENERIC;
 +}
@@ -28034,15 +28171,11 @@
 +do_display_dmabuf(vout_display_t * const vd, vout_display_sys_t * const sys, picture_t * const pic,
 +                  video_dmabuf_release_env_t ** const pVdre, struct wl_buffer ** const pWbuffer)
 +{
-+    struct zwp_linux_buffer_params_v1 *params = NULL;
 +    const AVDRMFrameDescriptor * const desc = drm_prime_get_desc(pic);
-+    const uint32_t format = desc->layers[0].format;
 +    const unsigned int width = pic->format.i_width;
 +    const unsigned int height = pic->format.i_height;
-+    unsigned int n = 0;
 +    unsigned int flags = 0;
 +    int i;
-+    struct wl_buffer * w_buffer;
 +    video_dmabuf_release_env_t * const vdre = vdre_new_ctx(pic->context);
 +
 +    assert(*pWbuffer == NULL);
@@ -28056,77 +28189,21 @@
 +    for (i = 0; i != desc->nb_objects; ++i)
 +        vdre_add_pt(vdre, sys->pollq, desc->objects[i].fd);
 +
-+    if (!sys->bound.linux_dmabuf_v1)
++    if (!pic->b_progressive)
 +    {
-+        const AVDRMPlaneDescriptor *const p = desc->layers[0].planes + 0;
-+        struct wl_shm_pool *pool = wl_shm_create_pool(sys->bound.shm, desc->objects[0].fd, desc->objects[0].size);
-+        const uint32_t w_fmt = format == DRM_FORMAT_ARGB8888 ? 0 :
-+            format == DRM_FORMAT_XRGB8888 ? 1 : format;
-+
-+        if (pool == NULL)
-+        {
-+            msg_Err(vd, "Failed to create pool from dmabuf");
-+            goto error;
-+        }
-+        w_buffer = wl_shm_pool_create_buffer(pool, p->offset, width, height, p->pitch, w_fmt);
-+        wl_shm_pool_destroy(pool);
-+        if (w_buffer == NULL)
-+        {
-+            msg_Err(vd, "Failed to create buffer from pool");
-+            goto error;
-+        }
-+    }
-+    else
-+    {
-+        /* Creation and configuration of planes  */
-+        params = zwp_linux_dmabuf_v1_create_params(sys->bound.linux_dmabuf_v1);
-+        if (!params)
-+        {
-+            msg_Err(vd, "zwp_linux_dmabuf_v1_create_params FAILED");
-+            goto error;
-+        }
-+
-+        for (i = 0; i < desc->nb_layers; ++i)
-+        {
-+            int j;
-+            for (j = 0; j < desc->layers[i].nb_planes; ++j)
-+            {
-+                const AVDRMPlaneDescriptor *const p = desc->layers[i].planes + j;
-+                const AVDRMObjectDescriptor *const obj = desc->objects + p->object_index;
-+
-+                zwp_linux_buffer_params_v1_add(params, obj->fd, n++, p->offset, p->pitch,
-+                                   (unsigned int)(obj->format_modifier >> 32),
-+                                   (unsigned int)(obj->format_modifier & 0xFFFFFFFF));
-+            }
-+        }
-+
-+        if (!pic->b_progressive)
-+        {
-+            flags |= ZWP_LINUX_BUFFER_PARAMS_V1_FLAGS_INTERLACED;
-+            if (!pic->b_top_field_first)
-+                flags |= ZWP_LINUX_BUFFER_PARAMS_V1_FLAGS_BOTTOM_FIRST;
-+        }
-+
-+        /* Request buffer creation */
-+        if ((w_buffer = zwp_linux_buffer_params_v1_create_immed(params, width, height, format, flags)) == NULL)
-+        {
-+            msg_Err(vd, "zwp_linux_buffer_params_v1_create_immed FAILED");
-+            goto error;
-+        }
-+
-+        zwp_linux_buffer_params_v1_destroy(params);
-+        params = NULL;
++        flags |= ZWP_LINUX_BUFFER_PARAMS_V1_FLAGS_INTERLACED;
++        if (!pic->b_top_field_first)
++            flags |= ZWP_LINUX_BUFFER_PARAMS_V1_FLAGS_BOTTOM_FIRST;
 +    }
 +
-+    wl_buffer_add_listener(w_buffer, &w_buffer_listener, vdre);
++    *pWbuffer = dfd_make_buffer(vd, sys, false, desc, width, height, flags);
++    if (*pWbuffer == NULL)
++        goto error;
 +
 +    *pVdre = vdre;
-+    *pWbuffer = w_buffer;
 +    return VLC_SUCCESS;
 +
 +error:
-+    if (params)
-+        zwp_linux_buffer_params_v1_destroy(params);
 +    vdre_free(vdre);
 +    return VLC_EGENERIC;
 +}
@@ -28143,16 +28220,32 @@
 +    dmabuf_unref(&spe->dh);
 +}
 +
-+static bool
-+subpic_ent_attach(struct wl_surface * const surface, subpic_ent_t * const spe, eq_env_t * eq)
++static void
++subpic_ent_attach(subplane_t * const plane, subpic_ent_t * const spe, eq_env_t * const eq)
 +{
-+    const bool has_pic = (spe->wb != NULL);
-+    vdre_eq_ref(spe->vdre, eq);
-+    wl_surface_attach(surface, spe->wb, 0, 0);
-+    spe->vdre = NULL;
-+    spe->wb = NULL;
-+    wl_surface_damage(surface, 0, 0, INT32_MAX, INT32_MAX);
-+    return has_pic;
++    struct wl_surface *const surface = plane->surface;
++
++    if (spe->wb == NULL)
++    {
++        vdre_delete(&spe->vdre);
++        if (plane->buffer_attached)
++        {
++            wl_surface_attach(surface, NULL, 0, 0);
++            plane->buffer_attached = false;
++            plane->commit_req = true;
++        }
++    }
++    else
++    {
++        vdre_eq_ref(spe->vdre, eq);
++        wl_buffer_add_listener(spe->wb, &vdre_buffer_listener, spe->vdre);
++        wl_surface_attach(surface, spe->wb, 0, 0);
++        spe->vdre = NULL;
++        spe->wb = NULL;
++        wl_surface_damage(surface, 0, 0, INT32_MAX, INT32_MAX);
++        plane->buffer_attached = true;
++        plane->commit_req = true;
++    }
 +}
 +
 +static void
@@ -28165,61 +28258,49 @@
 +    atomic_store(&spe->ready, 1);
 +}
 +
++static inline bool
++spe_no_pic(const subpic_ent_t * const spe)
++{
++    return spe == NULL || spe->pic == NULL;
++}
++
 +static bool
 +spe_changed(const subpic_ent_t * const spe, const subpicture_region_t * const sreg)
 +{
 +    const bool no_pic = (sreg == NULL || sreg->i_alpha == 0);
-+    if (spe == NULL)
-+        return true;  // spe missing matches nothing
-+    if (no_pic && spe->pic == NULL)
++    if (no_pic && spe_no_pic(spe))
 +        return false;
-+    return no_pic || spe->pic != sreg->p_picture || spe->alpha != sreg->i_alpha;
++    return no_pic || spe_no_pic(spe) || spe->pic != sreg->p_picture || spe->alpha != sreg->i_alpha;
 +}
 +
-+static bool
-+spe_update_rect(subpic_ent_t * const spe, vout_display_sys_t * const sys,
++static void
++spe_update_rect(subpic_ent_t * const spe,
 +                const subpicture_t * const spic,
 +                const subpicture_region_t * const sreg)
 +{
-+    const vout_display_place_t src = (vout_display_place_t) {
++    spe->src_rect = (vout_display_place_t) {
 +        .x = sreg->fmt.i_x_offset,
 +        .y = sreg->fmt.i_y_offset,
 +        .width = sreg->fmt.i_visible_width,
 +        .height = sreg->fmt.i_visible_height,
 +    };
-+    const vout_display_place_t dst = place_rescale(
-+        (vout_display_place_t) {
-+            .x = sreg->i_x,
-+            .y = sreg->i_y,
-+            .width = sreg->fmt.i_visible_width,
-+            .height = sreg->fmt.i_visible_height,
-+        },
-+        (vout_display_place_t) {
-+            .x = 0,
-+            .y = 0,
-+            .width  = sys->dst_rect.width,
-+            .height = sys->dst_rect.height,
-+        },
-+        (vout_display_place_t) {
-+            .x = 0,
-+            .y = 0,
-+            .width  = spic->i_original_picture_width,
-+            .height = spic->i_original_picture_height,
-+        });
-+
-+    if (place_eq(spe->src_rect, src) && place_eq(spe->dst_rect, dst))
-+        return false;
-+
-+    spe->src_rect = src;
-+    spe->dst_rect = dst;
-+    spe->rect_update = true;
-+    return true;
++    spe->dst_rect = (vout_display_place_t) {
++        .x = sreg->i_x,
++        .y = sreg->i_y,
++        .width = sreg->fmt.i_visible_width,
++        .height = sreg->fmt.i_visible_height,
++    };
++    spe->orig_rect = (vout_display_place_t) {
++        .x = 0,
++        .y = 0,
++        .width  = spic->i_original_picture_width,
++        .height = spic->i_original_picture_height,
++    };
 +}
 +
 +static subpic_ent_t *
-+spe_new(vout_display_t * const vd, vout_display_sys_t * const sys,
-+        const subpicture_t * const spic,
-+        const subpicture_region_t * const sreg)
++spe_new_pic(vout_display_t * const vd, vout_display_sys_t * const sys,
++            picture_t * const pic)
 +{
 +    subpic_ent_t * const spe = calloc(1, sizeof(*spe));
 +
@@ -28230,16 +28311,32 @@
 +    spe->vd = vd;
 +    spe->sys = sys;
 +
-+    if (sreg == NULL || sreg->i_alpha == 0)
++    if (pic == NULL)
 +    {
 +        atomic_init(&spe->ready, 1);
 +        return spe;
 +    }
 +
-+    spe->pic = picture_Hold(sreg->p_picture);
++    spe->pic = picture_Hold(pic);
++    spe->alpha = 0xff;
++    return spe;
++}
++
++
++static subpic_ent_t *
++spe_new(vout_display_t * const vd, vout_display_sys_t * const sys,
++        const subpicture_t * const spic,
++        const subpicture_region_t * const sreg)
++{
++    subpic_ent_t * const spe = spe_new_pic(vd, sys,
++        (sreg == NULL || sreg->i_alpha == 0) ? NULL : sreg->p_picture);
++
++    if (spe_no_pic(spe))
++        return spe;
++
 +    spe->alpha = sreg->i_alpha;
 +
-+    spe_update_rect(spe, sys, spic, sreg);
++    spe_update_rect(spe, spic, sreg);
 +
 +    spe->pt = polltask_new_timer(sys->speq, spe_convert_cb, spe);
 +
@@ -28271,7 +28368,7 @@
 +static void
 +commit_req(vout_display_sys_t * const sys, const unsigned int layer)
 +{
-+    sys->commit_req[layer] = true;
++    sys->planes[layer].commit_req = true;
 +}
 +
 +static void
@@ -28280,53 +28377,32 @@
 +    int i;
 +    bool flush_req = false;
 +
-+    for (i = MAX_SUBPICS - 1; i >= 0; --i)
++    for (i = MAX_SUBPICS + PLANE_SUB - 1; i >= PLANE_VID; --i)
 +    {
-+        if (sys->commit_req[i + COMMIT_SUB])
++        if (sys->planes[i].commit_req)
 +        {
-+            sys->commit_req[i + COMMIT_SUB] = false;
-+            wl_surface_commit(sys->subplanes[i].surface);
++            sys->planes[i].commit_req = false;
++            wl_surface_commit(sys->planes[i].surface);
 +            flush_req = true;
 +        }
 +    }
-+    if (sys->commit_req[COMMIT_VID])
-+    {
-+        sys->commit_req[COMMIT_VID] = false;
-+        wl_surface_commit(video_surface(sys));
-+        flush_req = true;
-+    }
-+    if (sys->commit_req[COMMIT_BKG])
++    if (sys->planes[PLANE_BKG].commit_req)
 +    {
 +        struct wl_surface * const bkg_surface = bkg_surface_get_lock(vd, sys);
 +        if (bkg_surface != NULL)
 +        {
-+            wp_viewport_set_destination(sys->bkg_viewport, sys->bkg_w, sys->bkg_h);
-+            wl_surface_commit(bkg_surface);
++            if (sys->bkg_viewport)
++            {
++                wp_viewport_set_destination(sys->bkg_viewport, sys->bkg_w, sys->bkg_h);
++                wl_surface_commit(bkg_surface);
++            }
 +            bkg_surface_unlock(vd, sys);
 +            flush_req = true;
 +        }
-+        sys->commit_req[COMMIT_BKG] = false;
++        sys->planes[PLANE_BKG].commit_req = false;
 +    }
 +    if (flush_req)
 +        wl_display_flush(video_display(sys));
-+}
-+
-+static void
-+mark_surface_no_input(struct wl_compositor * compositor, struct wl_surface * surface)
-+{
-+    struct wl_region * region_none = wl_compositor_create_region(compositor);
-+    wl_region_add(region_none, 0, 0, 0, 0);
-+    wl_surface_set_input_region(surface, region_none);
-+    wl_region_destroy(region_none);
-+}
-+
-+static void
-+mark_all_surface_opaque(struct wl_compositor * compositor, struct wl_surface * surface)
-+{
-+    struct wl_region * region_all = wl_compositor_create_region(compositor);
-+    wl_region_add(region_all, 0, 0, INT32_MAX, INT32_MAX);
-+    wl_surface_set_opaque_region(surface, region_all);
-+    wl_region_destroy(region_all);
 +}
 +
 +static void
@@ -28339,25 +28415,57 @@
 +}
 +
 +static void
++plane_clear(subplane_t * const plane)
++{
++    spe_delete(&plane->spe_next);
++    spe_delete(&plane->spe_cur);
++    plane->buffer_attached = false;
++    clear_surface_buffer(plane->surface);
++}
++
++static void
 +clear_all_buffers(vout_display_sys_t * const sys, const bool bkg_valid)
 +{
-+    for (unsigned int i = 0; i != MAX_SUBPICS; ++i)
-+    {
-+        subplane_t *const plane = sys->subplanes + i;
-+        spe_delete(&plane->spe_next);
-+        spe_delete(&plane->spe_cur);
-+        clear_surface_buffer(plane->surface);
-+    }
++    for (unsigned int i = MAX_SUBPICS + PLANE_SUB - 1; i >= PLANE_VID; --i)
++        plane_clear(sys->planes + i);
++    spe_delete(&sys->video_spe_prep);
 +
-+    clear_surface_buffer(video_surface(sys));
-+    sys->video_attached = false;
-+
-+#if VIDEO_ON_SUBSURFACE
 +    if (bkg_valid)
 +        clear_surface_buffer(sys->last_embed_surface);
-+#endif
++}
 +
-+    subpic_ent_flush(&sys->piccpy);
++static void
++plane_destroy(subplane_t * const spl)
++{
++    viewport_destroy(&spl->viewport);
++    subsurface_destroy(&spl->subsurface);
++    surface_destroy(&spl->surface);
++    // Zap all tracking vars
++    spl->buffer_attached = false;
++    spl->trans = 0;
++    memset(&spl->src_rect, 0, sizeof(spl->src_rect));
++    memset(&spl->dst_rect, 0, sizeof(spl->dst_rect));
++}
++
++static int
++plane_create(vout_display_sys_t * const sys, subplane_t * const plane,
++             struct wl_surface * const parent,
++             const int commit_parent,
++             struct wl_surface * const above,
++             const bool sync)
++{
++    plane->commit_parent = commit_parent;
++    if ((plane->surface = wl_compositor_create_surface(video_compositor(sys))) == NULL ||
++        (plane->subsurface = wl_subcompositor_get_subsurface(sys->bound.subcompositor, plane->surface, parent)) == NULL ||
++        (plane->viewport = wp_viewporter_get_viewport(sys->bound.viewporter, plane->surface)) == NULL)
++        return VLC_EGENERIC;
++    wl_subsurface_place_above(plane->subsurface, above);
++    if (sync)
++        wl_subsurface_set_sync(plane->subsurface);
++    else
++        wl_subsurface_set_desync(plane->subsurface);
++    wl_surface_set_input_region(plane->surface, sys->region_none);
++    return 0;
 +}
 +
 +static void
@@ -28366,23 +28474,10 @@
 +    clear_all_buffers(sys, bkg_valid);
 +
 +    // Free subpic resources
-+    for (unsigned int i = 0; i != MAX_SUBPICS; ++i)
-+    {
-+        subplane_t * const spl = sys->subplanes + i;
-+
-+        viewport_destroy(&spl->viewport);
-+        subsurface_destroy(&spl->subsurface);
-+        surface_destroy(&spl->surface);
-+    }
-+
-+    viewport_destroy(&sys->viewport);
-+
-+#if VIDEO_ON_SUBSURFACE
-+    subsurface_destroy(&sys->video_subsurface);
-+    surface_destroy(&sys->video_surface);
++    for (unsigned int i = MAX_SUBPICS + PLANE_SUB - 1; i >= PLANE_VID; --i)
++        plane_destroy(sys->planes + i);
 +
 +    viewport_destroy(&sys->bkg_viewport);
-+#endif
 +}
 +
 +static struct wl_surface *
@@ -28419,76 +28514,37 @@
 +    vlc_mutex_unlock(&sys->embed->handle_lock);
 +}
 +
-+
-+static int
-+make_video_surface(vout_display_t * const vd, vout_display_sys_t * const sys)
-+{
-+    VLC_UNUSED(vd);
-+
-+    if (sys->viewport)
-+        return VLC_SUCCESS;
-+
-+    struct wl_surface * const surface = video_surface(sys);
-+
-+    // Video is opaque but doesn't take input
-+    mark_all_surface_opaque(video_compositor(sys), surface);
-+    mark_surface_no_input(video_compositor(sys), surface);
-+
-+    sys->viewport = wp_viewporter_get_viewport(sys->bound.viewporter, surface);
-+
-+    /* Determine our pixel format */
-+    static const enum wl_output_transform transforms[8] = {
-+        [ORIENT_TOP_LEFT] = WL_OUTPUT_TRANSFORM_NORMAL,
-+        [ORIENT_TOP_RIGHT] = WL_OUTPUT_TRANSFORM_FLIPPED,
-+        [ORIENT_BOTTOM_LEFT] = WL_OUTPUT_TRANSFORM_FLIPPED_180,
-+        [ORIENT_BOTTOM_RIGHT] = WL_OUTPUT_TRANSFORM_180,
-+        [ORIENT_LEFT_TOP] = WL_OUTPUT_TRANSFORM_FLIPPED_270,
-+        [ORIENT_LEFT_BOTTOM] = WL_OUTPUT_TRANSFORM_90,
-+        [ORIENT_RIGHT_TOP] = WL_OUTPUT_TRANSFORM_270,
-+        [ORIENT_RIGHT_BOTTOM] = WL_OUTPUT_TRANSFORM_FLIPPED_90,
-+    };
-+
-+    wl_surface_set_buffer_transform(surface, transforms[vd->fmt.orientation]);
-+    return VLC_SUCCESS;
-+}
-+
 +static int
 +make_subpic_surfaces(vout_display_t * const vd, vout_display_sys_t * const sys)
 +{
 +    unsigned int i;
++    subplane_t * const subplanes = sys->planes + PLANE_SUB;
 +    struct wl_surface * const surface = video_surface(sys);
 +    struct wl_surface * below = surface;
-+    VLC_UNUSED(vd);
++    int rv;
 +
-+    if (sys->subplanes[0].surface)
++    if (subplanes[0].surface)
 +        return VLC_SUCCESS;
 +
 +    for (i = 0; i != MAX_SUBPICS; ++i)
 +    {
-+        subplane_t *plane = sys->subplanes + i;
-+        plane->surface = wl_compositor_create_surface(video_compositor(sys));
-+        plane->subsurface = wl_subcompositor_get_subsurface(sys->bound.subcompositor, plane->surface, surface);
-+        wl_subsurface_place_above(plane->subsurface, below);
++        subplane_t * const plane = subplanes + i;
++        if ((rv = plane_create(sys, plane, surface, PLANE_VID, below, true)) != 0)
++        {
++            msg_Err(vd, "%s: Failed to create subpic plane %d", __func__, i);
++            return rv;
++        }
 +        below = plane->surface;
-+        wl_subsurface_set_sync(plane->subsurface);
-+        plane->viewport = wp_viewporter_get_viewport(sys->bound.viewporter, plane->surface);
-+        mark_surface_no_input(video_compositor(sys), plane->surface);
 +    }
 +    return VLC_SUCCESS;
 +}
 +
 +static int
-+make_background(vout_display_t * const vd, vout_display_sys_t * const sys)
++make_background_and_video(vout_display_t * const vd, vout_display_sys_t * const sys)
 +{
-+#if !VIDEO_ON_SUBSURFACE
-+    VLC_UNUSED(vd);
-+    VLC_UNUSED(sys);
-+    return VLC_SUCCESS;
-+#else
 +    // Build a background
 +    // Use single_pixel_surface extension if we have it & want a simple
 +    // single colour (black) patch
-+    struct dmabuf_h * dh = NULL;
 +    video_dmabuf_release_env_t * vdre = NULL;
 +    struct wl_buffer * w_buffer = NULL;
 +    struct wl_surface * bkg_surface = NULL;
@@ -28511,12 +28567,27 @@
 +        const unsigned int width = sys->chequerboard ? 640 : 32;
 +        const unsigned int height = sys->chequerboard ? 480 : 32;
 +        const unsigned int stride = width * 4;
++        struct dmabuf_h * const dh = picpool_get(sys->subpic_pool, stride * height);
++        const AVDRMFrameDescriptor dfd = {
++            .nb_objects = 1,
++            .objects = {{
++                .fd = dmabuf_fd(dh),
++                .size = dmabuf_size(dh)}},
++            .nb_layers = 1,
++            .layers = {{
++                .format = DRM_FORMAT_XRGB8888,
++                .nb_planes = 1,
++                .planes = {{.pitch = stride}}
++            }}
++        };
 +
-+        if ((dh = picpool_get(sys->subpic_pool, stride * height)) == NULL)
++        if (dh == NULL)
 +        {
 +            msg_Err(vd, "Failed to get DmaBuf for background");
 +            goto error;
 +        }
++
++        vdre = vdre_new_dh(dh, sys->pollq);
 +
 +        dmabuf_write_start(dh);
 +        if (sys->chequerboard)
@@ -28525,32 +28596,7 @@
 +            fill_uniform(dmabuf_map(dh), stride, width, height, 0xff000000);
 +        dmabuf_write_end(dh);
 +
-+        if (sys->use_shm)
-+        {
-+            struct wl_shm_pool *pool = wl_shm_create_pool(sys->bound.shm, dmabuf_fd(dh), dmabuf_size(dh));
-+            if (pool == NULL)
-+            {
-+                msg_Err(vd, "Failed to create pool from dmabuf");
-+                goto error;
-+            }
-+            w_buffer = wl_shm_pool_create_buffer(pool, 0, width, height, stride, WL_SHM_FORMAT_XRGB8888);
-+            wl_shm_pool_destroy(pool);
-+        }
-+        else
-+        {
-+            struct zwp_linux_buffer_params_v1 *params;
-+            params = zwp_linux_dmabuf_v1_create_params(sys->bound.linux_dmabuf_v1);
-+            if (!params) {
-+                msg_Err(vd, "zwp_linux_dmabuf_v1_create_params FAILED");
-+                goto error;
-+            }
-+            zwp_linux_buffer_params_v1_add(params, dmabuf_fd(dh), 0, 0, stride, 0, 0);
-+            w_buffer = zwp_linux_buffer_params_v1_create_immed(params, width, height, DRM_FORMAT_XRGB8888, 0);
-+            zwp_linux_buffer_params_v1_destroy(params);
-+        }
-+
-+        vdre = vdre_new_dh(dh, sys->pollq);
-+        dh = NULL;
++        w_buffer = dfd_make_buffer(vd, sys, dmabuf_is_fake(dh), &dfd, width, height, 0);
 +    }
 +    if (!w_buffer || !vdre)
 +    {
@@ -28564,30 +28610,33 @@
 +    sys->bkg_viewport = wp_viewporter_get_viewport(sys->bound.viewporter, bkg_surface);
 +    if (sys->bkg_viewport == NULL)
 +    {
-+        msg_Err(vd, "Failed to create get viewport");
++        msg_Err(vd, "Failed to create background viewport");
 +        goto err_unlock;
 +    }
 +
++#if CHECK_VDRE_COUNTS
++    vdre_add_check(vdre, &sys->vdre_check_bkg);
++#endif
 +    vdre_eq_ref(vdre, sys->eq);
-+    wl_buffer_add_listener(w_buffer, &w_buffer_listener, vdre);
++    wl_buffer_add_listener(w_buffer, &vdre_buffer_listener, vdre);
 +    wl_surface_attach(bkg_surface, w_buffer, 0, 0);
 +    vdre = NULL;
 +    w_buffer = NULL;
 +
 +    wp_viewport_set_destination(sys->bkg_viewport, sys->bkg_w, sys->bkg_h);
-+    mark_all_surface_opaque(sys->bound.compositor, bkg_surface);
++    wl_surface_set_opaque_region(bkg_surface, sys->region_all);
 +
 +    wl_surface_damage(bkg_surface, 0, 0, INT32_MAX, INT32_MAX);
 +
-+    // Make a new subsurface to use for video
-+    assert(sys->video_surface == NULL);
-+    assert(sys->video_subsurface == NULL);
-+    sys->video_surface = wl_compositor_create_surface(video_compositor(sys));
-+    sys->video_subsurface = wl_subcompositor_get_subsurface(sys->bound.subcompositor, sys->video_surface, bkg_surface);
-+    wl_subsurface_place_above(sys->video_subsurface, bkg_surface);
-+    wl_subsurface_set_desync(sys->video_subsurface);  // Video update can be desync from main window
++    if (plane_create(sys, sys->planes + PLANE_VID, bkg_surface, PLANE_BKG, bkg_surface, false) != 0)
++    {
++        msg_Err(vd, "Failed to create video plane");
++        goto err_unlock;
++    }
 +
-+    wl_surface_commit(bkg_surface);
++    wl_surface_set_opaque_region(video_surface(sys), sys->region_all);
++
++    commit_req(sys, PLANE_BKG);
 +
 +    bkg_surface_unlock(vd, sys);
 +
@@ -28598,34 +28647,132 @@
 +error:
 +    buffer_destroy(&w_buffer);
 +    vdre_delete(&vdre);
-+    dmabuf_unref(&dh);
 +    return VLC_ENOMEM;
-+#endif
++}
++
++// Get tranform & adjusted source coords for orientation
++static enum wl_output_transform
++transform_from_fmt(const video_format_t * const fmt, vout_display_place_t * const s)
++{
++    const int rx_offset = fmt->i_width - (fmt->i_visible_width + fmt->i_x_offset);
++    const int by_offset = fmt->i_height - (fmt->i_visible_height + fmt->i_y_offset);
++
++    switch (fmt->orientation)
++    {
++        case ORIENT_ROTATED_90:  // ORIENT_RIGHT_TOP,
++            *s = (vout_display_place_t){
++                .x      = by_offset,
++                .y      = fmt->i_x_offset,
++                .width  = fmt->i_visible_height,
++                .height = fmt->i_visible_width};
++            return WL_OUTPUT_TRANSFORM_90;
++
++        case ORIENT_ROTATED_180: // ORIENT_BOTTOM_RIGHT,
++            *s = (vout_display_place_t){
++                .x      = by_offset,
++                .y      = rx_offset,
++                .width  = fmt->i_visible_width,
++                .height = fmt->i_visible_height};
++            return WL_OUTPUT_TRANSFORM_180;
++
++        case ORIENT_ROTATED_270: // ORIENT_LEFT_BOTTOM,
++            *s = (vout_display_place_t){
++                .x      = fmt->i_y_offset,
++                .y      = rx_offset,
++                .width  = fmt->i_visible_height,
++                .height = fmt->i_visible_width};
++            return WL_OUTPUT_TRANSFORM_270;
++
++        case ORIENT_HFLIPPED:    // ORIENT_TOP_RIGHT,
++            *s = (vout_display_place_t){
++                .x      = rx_offset,
++                .y      = fmt->i_y_offset,
++                .width  = fmt->i_visible_width,
++                .height = fmt->i_visible_height};
++            return WL_OUTPUT_TRANSFORM_FLIPPED;
++
++        case ORIENT_VFLIPPED:    // ORIENT_BOTTOM_LEFT,
++            *s = (vout_display_place_t){
++                .x      = fmt->i_x_offset,
++                .y      = by_offset,
++                .width  = fmt->i_visible_width,
++                .height = fmt->i_visible_height};
++            return WL_OUTPUT_TRANSFORM_FLIPPED_180;
++
++        case ORIENT_TRANSPOSED:  // ORIENT_LEFT_TOP,
++            *s = (vout_display_place_t){
++                .x      = fmt->i_y_offset,
++                .y      = fmt->i_x_offset,
++                .width  = fmt->i_visible_height,
++                .height = fmt->i_visible_width};
++            return WL_OUTPUT_TRANSFORM_FLIPPED_90;
++
++        case ORIENT_ANTI_TRANSPOSED: // ORIENT_RIGHT_BOTTOM,
++            *s = (vout_display_place_t){
++                .x      = rx_offset,
++                .y      = by_offset,
++                .width  = fmt->i_visible_height,
++                .height = fmt->i_visible_width};
++            return WL_OUTPUT_TRANSFORM_FLIPPED_270;
++
++        case ORIENT_NORMAL:      // ORIENT_TOP_LEFT,
++        default:
++            *s = (vout_display_place_t){
++                .x      = fmt->i_x_offset,
++                .y      = fmt->i_y_offset,
++                .width  = fmt->i_visible_width,
++                .height = fmt->i_visible_height};
++            return WL_OUTPUT_TRANSFORM_NORMAL;
++    }
 +}
 +
 +static void
-+set_video_viewport(vout_display_t * const vd, vout_display_sys_t * const sys)
++place_rects(vout_display_t * const vd,
++          const vout_display_cfg_t * const cfg)
 +{
-+    video_format_t fmt;
++    vout_display_sys_t * const sys = vd->sys;
 +
-+    if (!sys->video_attached || sys->viewport_set)
++    vout_display_PlacePicture(&sys->video_dst_rect, &vd->source, cfg, true);
++    sys->video_trans = transform_from_fmt(&vd->fmt, &sys->video_src_rect);
++}
++
++static void
++plane_set_rect(vout_display_sys_t * const sys, subplane_t * const plane, const subpic_ent_t * const spe)
++{
++    // Always called after the attach
++    if (!plane->buffer_attached || spe == NULL)
 +        return;
 +
-+    sys->viewport_set = true;
++    const vout_display_place_t dst_rect = place_rescale(spe->dst_rect,
++                                                        plane->commit_parent == PLANE_VID ? place_zoffset(sys->video_dst_rect) : sys->video_dst_rect,
++                                                        spe->orig_rect);
 +
-+    video_format_ApplyRotation(&fmt, &vd->source);
-+    wp_viewport_set_source(sys->viewport,
-+                    wl_fixed_from_int(fmt.i_x_offset),
-+                    wl_fixed_from_int(fmt.i_y_offset),
-+                    wl_fixed_from_int(fmt.i_visible_width),
-+                    wl_fixed_from_int(fmt.i_visible_height));
-+    wp_viewport_set_destination(sys->viewport,
-+                    sys->dst_rect.width, sys->dst_rect.height);
-+    commit_req(sys, COMMIT_VID);
-+#if VIDEO_ON_SUBSURFACE
-+    wl_subsurface_set_position(sys->video_subsurface, sys->dst_rect.x, sys->dst_rect.y);
-+    commit_req(sys, COMMIT_BKG);
-+#endif
++    if (spe->trans != plane->trans)
++    {
++        wl_surface_set_buffer_transform(plane->surface, spe->trans);
++        plane->commit_req = true;
++    }
++    if (!place_eq(spe->src_rect, plane->src_rect))
++    {
++        wp_viewport_set_source(plane->viewport,
++                               wl_fixed_from_int(spe->src_rect.x), wl_fixed_from_int(spe->src_rect.y),
++                               wl_fixed_from_int(spe->src_rect.width), wl_fixed_from_int(spe->src_rect.height));
++        plane->commit_req = true;
++    }
++    if (!place_xy_eq(dst_rect, plane->dst_rect))
++    {
++        wl_subsurface_set_position(plane->subsurface, dst_rect.x, dst_rect.y);
++        plane->commit_req = true;
++    }
++    if (!place_wh_eq(dst_rect, plane->dst_rect))
++    {
++        wp_viewport_set_destination(plane->viewport, dst_rect.width, dst_rect.height);
++        commit_req(sys, plane->commit_parent); // Subsurface pos needs parent commit (video)
++    }
++
++    plane->trans = spe->trans;
++    plane->src_rect = spe->src_rect;
++    plane->dst_rect = dst_rect;
 +}
 +
 +static void Prepare(vout_display_t *vd, picture_t *pic, subpicture_t *subpic)
@@ -28637,30 +28784,51 @@
 +    msg_Dbg(vd, "<<< %s: Surface: %p", __func__, sys->embed->handle.wl);
 +#endif
 +
-+    subpic_ent_flush(&sys->piccpy); // If somehow we have a buffer here - avoid leaking
-+    if (drmu_format_vlc_to_drm_prime(&pic->format, NULL) == 0)
-+        copy_subpic_to_w_buffer(vd, sys, pic, 0xff, &sys->piccpy.vdre, &sys->piccpy.wb);
-+    else
-+        do_display_dmabuf(vd, sys, pic, &sys->piccpy.vdre, &sys->piccpy.wb);
-+    wl_display_flush(video_display(sys)); // Kick off any work required by Wayland
++    {
++        subpic_ent_t * const spe = spe_new_pic(vd, sys, pic);
++        if (spe == NULL)
++        {
++            msg_Err(vd, "Failed to create new video spe");
++            return;
++        }
++        spe->trans = sys->video_trans;
++        spe->src_rect = sys->video_src_rect;
++        spe->dst_rect = sys->video_dst_rect;
++        spe->orig_rect = spe->dst_rect;
++
++        if (sys->video_spe_prep)
++        {
++            msg_Err(vd, "Spe prep != NULL");
++            spe_delete(&sys->video_spe_prep);
++            ++sys->stats.frame_discard;
++        }
++        sys->video_spe_prep = spe;
++
++        if (drmu_format_vlc_to_drm_prime(&pic->format, NULL) == 0)
++            copy_subpic_to_w_buffer(vd, sys, pic, 0xff, &spe->vdre, &spe->wb);
++        else
++            do_display_dmabuf(vd, sys, pic, &spe->vdre, &spe->wb);
++        atomic_store(&spe->ready, 1);
++        wl_display_flush(video_display(sys)); // Kick off any work required by Wayland
++    }
 +
 +    // Attempt to import the subpics
 +    for (const subpicture_t * spic = subpic; spic != NULL; spic = spic->p_next)
 +    {
 +        for (const subpicture_region_t *sreg = spic->p_region; sreg != NULL; sreg = sreg->p_next)
 +        {
-+            subplane_t * const plane = sys->subplanes + n;
++            subplane_t * const plane = sys->planes + n + PLANE_SUB;
 +
 +            if (plane->spe_next != NULL)
 +            {
 +                if (!spe_changed(plane->spe_next, sreg))
-+                    spe_update_rect(plane->spe_next, sys, spic, sreg);
++                    spe_update_rect(plane->spe_next, spic, sreg);
 +                // else if changed ignore as we are already doing stuff
 +            }
 +            else
 +            {
 +                if (!spe_changed(plane->spe_cur, sreg))
-+                    spe_update_rect(plane->spe_cur, sys, spic, sreg);
++                    spe_update_rect(plane->spe_cur, spic, sreg);
 +                else
 +                {
 +                    plane->spe_next = spe_new(vd, sys, spic, sreg);
@@ -28676,7 +28844,7 @@
 +
 +    // Clear any other entries
 +    for (; n != MAX_SUBPICS; ++n) {
-+        subplane_t * const plane = sys->subplanes + n;
++        subplane_t * const plane = sys->planes + n + PLANE_SUB;
 +        if (plane->spe_next == NULL && spe_changed(plane->spe_cur, NULL))
 +            plane->spe_next = spe_new(vd, sys, NULL, NULL);
 +    }
@@ -28686,11 +28854,77 @@
 +#endif
 +}
 +
++static void
++do_resize(vout_display_t * const vd, vout_display_sys_t * const sys)
++{
++    if (!sys->bkg_viewport)
++        return;
++
++    for (unsigned int i = PLANE_VID; i != PLANE_SUB + MAX_SUBPICS; ++i)
++    {
++        subplane_t * const plane = sys->planes + i;
++        subpic_ent_t * spe = plane->spe_cur;
++
++        plane_set_rect(sys, plane, spe);
++    }
++
++    if (sys->bkg_viewport != NULL && (vd->cfg->display.width != sys->bkg_w || vd->cfg->display.height != sys->bkg_h))
++    {
++        msg_Dbg(vd, "Resize background: %dx%d", vd->cfg->display.width, vd->cfg->display.height);
++        commit_req(sys, PLANE_BKG);
++    }
++    sys->bkg_w = vd->cfg->display.width;
++    sys->bkg_h = vd->cfg->display.height;
++}
++
++static void
++do_display(vout_display_t * const vd, vout_display_sys_t * const sys)
++{
++//    msg_Info(vd, "<<< %s: Surface: %p", __func__, sys->embed->handle.wl);
++
++    sys->stats.time_frameN = mdate();
++    if (!sys->stats.time_frame0)
++        sys->stats.time_frame0 = sys->stats.time_frameN;
++    ++sys->stats.frame_n;
++
++    if (spe_no_pic(sys->planes[PLANE_VID].spe_next))
++    {
++        msg_Warn(vd, "%s: No current pic", __func__);
++        return;
++    }
++
++    if (make_background_and_video(vd, sys) != 0)
++    {
++        msg_Warn(vd, "%s: Make background fail", __func__);
++        return;
++    }
++    make_subpic_surfaces(vd, sys);
++
++    for (unsigned int i = PLANE_VID; i != PLANE_SUB + MAX_SUBPICS; ++i)
++    {
++        subplane_t * const plane = sys->planes + i;
++        subpic_ent_t * spe = plane->spe_cur;
++
++        if (plane->spe_next && atomic_load(&plane->spe_next->ready))
++        {
++            spe_delete(&plane->spe_cur);
++            spe = plane->spe_cur = plane->spe_next;
++            plane->spe_next = NULL;
++            subpic_ent_attach(plane, spe, sys->eq);
++        }
++    }
++
++    do_resize(vd, sys);
++
++    commit_do(vd, sys);
++    return;
++}
++
 +static void Display(vout_display_t *vd, picture_t *pic, subpicture_t *subpic)
 +{
 +    vout_display_sys_t * const sys = vd->sys;
 +
-+#if TRACE_ALL
++#if TRACE_ALL || 1
 +    msg_Dbg(vd, "<<< %s: Surface: %p", __func__, sys->embed->handle.wl);
 +#endif
 +
@@ -28702,55 +28936,23 @@
 +    }
 +    bkg_surface_unlock(vd, sys);
 +
-+    if (make_background(vd, sys) != 0)
++    if (!sys->video_spe_prep)
 +    {
-+        msg_Warn(vd, "%s: Make background fail", __func__);
++        msg_Warn(vd, "No prepared video spe");
 +        goto done;
 +    }
-+    make_video_surface(vd, sys);
-+    make_subpic_surfaces(vd, sys);
 +
-+    for (unsigned int i = 0; i != MAX_SUBPICS; ++i)
++    if (sys->planes[PLANE_VID].spe_next)
 +    {
-+        subplane_t * const plane = sys->subplanes + i;
-+        subpic_ent_t * spe = plane->spe_cur;
-+
-+        if (plane->spe_next && atomic_load(&plane->spe_next->ready))
-+        {
-+            spe_delete(&plane->spe_cur);
-+            spe = plane->spe_cur = plane->spe_next;
-+            plane->spe_next = NULL;
-+            subpic_ent_attach(plane->surface, spe, sys->eq);
-+            commit_req(sys, COMMIT_SUB + i);
-+        }
-+
-+        if (spe != NULL && spe->rect_update)
-+        {
-+            wl_subsurface_set_position(plane->subsurface, spe->dst_rect.x, spe->dst_rect.y);
-+            wp_viewport_set_source(plane->viewport,
-+                                   wl_fixed_from_int(spe->src_rect.x), wl_fixed_from_int(spe->src_rect.y),
-+                                   wl_fixed_from_int(spe->src_rect.width), wl_fixed_from_int(spe->src_rect.height));
-+            wp_viewport_set_destination(plane->viewport, spe->dst_rect.width, spe->dst_rect.height);
-+            spe->rect_update = false;
-+            commit_req(sys, COMMIT_SUB + i);
-+            commit_req(sys, COMMIT_SUB + i - 1); // Subsurface pos needs parent commit (sub 0 needs video)
-+        }
++        msg_Warn(vd, "Current video spe discarded");
++        spe_delete(&sys->planes[PLANE_VID].spe_next);
++        ++sys->stats.frame_discard;
 +    }
++    sys->planes[PLANE_VID].spe_next = sys->video_spe_prep;
++    sys->video_spe_prep = NULL;
 +
-+    if (!sys->piccpy.wb)
-+    {
-+        msg_Warn(vd, "Display called but no prepared pic buffer");
-+    }
-+    else
-+    {
-+        subpic_ent_attach(video_surface(sys), &sys->piccpy, sys->eq);
-+        sys->video_attached = true;
-+        commit_req(sys, COMMIT_VID);
-+    }
-+
-+    set_video_viewport(vd, sys);
-+
-+    commit_do(vd, sys);
++    ++sys->stats.frame_display;
++    do_display(vd, sys);
 +
 +done:
 +    if (subpic)
@@ -28792,7 +28994,7 @@
 +            vout_display_place_t place;
 +            video_format_t src;
 +
-+            assert(sys->viewport == NULL);
++            assert(sys->planes[PLANE_VID].viewport == NULL);
 +
 +            vout_display_PlacePicture(&place, &vd->source, vd->cfg, false);
 +            video_format_ApplyRotation(&src, &vd->source);
@@ -28808,7 +29010,6 @@
 +            vd->fmt.i_y_offset = src.i_y_offset * place.height
 +                                                / src.i_visible_height;
 +            ResetPictures(vd);
-+            sys->curr_aspect = vd->source;
 +            break;
 +        }
 +
@@ -28831,24 +29032,8 @@
 +            }
 +
 +            place_rects(vd, cfg);
-+
-+            sys->viewport_set = false;
-+
-+            if (sys->viewport)
-+                set_video_viewport(vd, sys);
-+
-+#if VIDEO_ON_SUBSURFACE
-+            if (sys->bkg_viewport != NULL && (cfg->display.width != sys->bkg_w || cfg->display.height != sys->bkg_h))
-+            {
-+                msg_Dbg(vd, "Resize background: %dx%d", cfg->display.width, cfg->display.height);
-+                commit_req(sys, COMMIT_BKG);
-+            }
-+            sys->bkg_w = cfg->display.width;
-+            sys->bkg_h = cfg->display.height;
-+#endif
++            do_resize(vd, sys);
 +            commit_do(vd, sys);
-+
-+            sys->curr_aspect = vd->source;
 +            break;
 +        }
 +        default:
@@ -29099,13 +29284,19 @@
 +    if (sys->embed == NULL)
 +        goto no_window;
 +
++    if (sys->want_stats)
++        msg_stats(vd, &sys->stats);
++
 +    if (bkg_surface_get_lock(vd, sys) != NULL)
 +    {
 +        unmap_all(sys, true);
 +        bkg_surface_unlock(vd, sys);
 +    }
 +
-+    pollqueue_unref(&sys->speq);
++    region_destroy(&sys->region_all);
++    region_destroy(&sys->region_none);
++
++    pollqueue_finish(&sys->speq);
 +
 +    w_bound_destroy(&sys->bound);
 +
@@ -29114,6 +29305,9 @@
 +    if (eq_finish(&sys->eq) != 0)
 +        msg_Err(vd, "Failed to reclaim all buffers on close");
 +
++    // There is a risk of deadlock here if we wait for the pq to die as some
++    // wl buffers may only be relased after close returns so just unref and the
++    // pq will clean up after itself once the last buffer has been released.
 +    pollqueue_unref(&sys->pollq);
 +
 +    vout_display_DeleteWindow(vd, sys->embed);
@@ -29127,6 +29321,12 @@
 +no_window:
 +    fmt_list_uninit(&sys->dmabuf_fmts);
 +    fmt_list_uninit(&sys->shm_fmts);
++
++#if CHECK_VDRE_COUNTS
++    msg_Info(vd, "%s: vdre_check_bkg: %d", __func__, atomic_load(&sys->vdre_check_bkg));
++    msg_Info(vd, "%s: vdre_check_fg: %d", __func__, atomic_load(&sys->vdre_check_fg));
++#endif
++
 +    free(sys);
 +
 +    msg_Dbg(vd, ">>> %s", __func__);
@@ -29280,16 +29480,20 @@
 +        }
 +    }
 +
-+    sys->curr_aspect = vd->source;
-+#if VIDEO_ON_SUBSURFACE
 +    sys->bkg_w = vd->cfg->display.width;
 +    sys->bkg_h = vd->cfg->display.height;
-+#endif
++
++    sys->region_all = wl_compositor_create_region(video_compositor(sys));
++    wl_region_add(sys->region_all, 0, 0, INT32_MAX, INT32_MAX);
++    sys->region_none = wl_compositor_create_region(video_compositor(sys));
++    wl_region_add(sys->region_all, 0, 0, 0, 0);
 +
 +    vd->fmt.i_chroma = drmu_vlc_fmt_info_vlc_chroma(pic_fmti);
 +    drmu_vlc_fmt_info_vlc_rgb_masks(pic_fmti, &vd->fmt.i_rmask, &vd->fmt.i_gmask, &vd->fmt.i_bmask);
 +
 +    place_rects(vd, vd->cfg);
++
++    sys->want_stats = var_InheritBool(vd, WL_DMABUF_STATS_NAME);
 +
 +    vd->info.has_pictures_invalid = false;
 +    vd->info.subpicture_chromas = sys->subpic_chromas;
@@ -29321,6 +29525,7 @@
 +    add_bool(WL_DMABUF_DISABLE_NAME, false, WL_DMABUF_DISABLE_TEXT, WL_DMABUF_DISABLE_LONGTEXT, false)
 +    add_bool(WL_DMABUF_USE_SHM_NAME, false, WL_DMABUF_USE_SHM_TEXT, WL_DMABUF_USE_SHM_LONGTEXT, false)
 +    add_bool(WL_DMABUF_CHEQUERBOARD_NAME, false, WL_DMABUF_CHEQUERBOARD_TEXT, WL_DMABUF_CHEQUERBOARD_LONGTEXT, false)
++    add_bool(WL_DMABUF_STATS_NAME, false, WL_DMABUF_STATS_TEXT, WL_DMABUF_STATS_LONGTEXT, false)
 +vlc_module_end()
 --- a/src/audio_output/dec.c
 +++ b/src/audio_output/dec.c
