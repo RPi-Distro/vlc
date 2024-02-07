@@ -16299,7 +16299,7 @@
 +
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -187,6 +187,29 @@ vout_LTLIBRARIES += libglx_plugin.la
+@@ -187,6 +187,30 @@ vout_LTLIBRARIES += libglx_plugin.la
  endif
  endif
  
@@ -16314,6 +16314,7 @@
 +	video_output/drmu/drmu_xlease.c video_output/drmu/drmu_atomic.c \
 +	video_output/drmu/drmu_util.c video_output/drmu/drmu_util.h \
 +	video_output/drmu/drmu_output.c video_output/drmu/drmu_output.h \
++	video_output/drmu/drmu_scan.c video_output/drmu/drmu_scan.h \
 +	video_output/drmu/drmu.h\
 +	video_output/drmu/pollqueue.c video_output/drmu/pollqueue.h
 +libdrm_vout_plugin_la_CFLAGS = $(AM_CFLAGS) -pthread -I/usr/include/libdrm
@@ -16329,7 +16330,7 @@
  
  ### Wayland ###
  libwl_shm_plugin_la_SOURCES = video_output/wayland/shm.c
-@@ -205,7 +228,52 @@ video_output/wayland/viewporter-client-p
+@@ -205,7 +229,52 @@ video_output/wayland/viewporter-client-p
  
  video_output/wayland/viewporter-protocol.c: \
  		$(WAYLAND_PROTOCOLS)/stable/viewporter/viewporter.xml
@@ -16383,7 +16384,7 @@
  
  libwl_shell_plugin_la_SOURCES = video_output/wayland/shell.c
  libwl_shell_plugin_la_CFLAGS = $(WAYLAND_CLIENT_CFLAGS)
-@@ -244,6 +312,8 @@ libegl_wl_plugin_la_LIBADD = $(EGL_LIBS)
+@@ -244,6 +313,8 @@ libegl_wl_plugin_la_LIBADD = $(EGL_LIBS)
  if HAVE_WAYLAND
  BUILT_SOURCES += $(nodist_libwl_shm_plugin_la_SOURCES)
  vout_LTLIBRARIES += libwl_shm_plugin.la
@@ -16394,7 +16395,7 @@
  vout_LTLIBRARIES += libxdg_shell_plugin.la
 --- /dev/null
 +++ b/modules/video_output/drmu/drm_vout.c
-@@ -0,0 +1,1058 @@
+@@ -0,0 +1,1229 @@
 +/*****************************************************************************
 + * drm_vout.c: DRM based output device
 + *****************************************************************************
@@ -16427,8 +16428,10 @@
 +#include <pthread.h>
 +
 +#include "drmu.h"
++#include "drmu_fmts.h"
 +#include "drmu_log.h"
 +#include "drmu_output.h"
++#include "drmu_scan.h"
 +#include "drmu_util.h"
 +#include "drmu_vlc.h"
 +
@@ -16517,6 +16520,7 @@
 +    video_transform_t video_transform;
 +    video_transform_t dest_transform;
 +
++    bool output_simple;
 +    uint32_t con_id;
 +    int mode_id;
 +
@@ -16524,7 +16528,7 @@
 +} vout_display_sys_t;
 +
 +static drmu_fb_t *
-+copy_pic_to_fb(vout_display_t *vd, drmu_pool_t * const pool, picture_t * const src)
++copy_pic_to_fb(vout_display_t *const vd, drmu_pool_t *const pool, picture_t *const src)
 +{
 +    uint64_t mod;
 +    const uint32_t drm_fmt = drmu_format_vlc_to_drm(&src->format, &mod);
@@ -16547,6 +16551,82 @@
 +        dst_plane = drmu_fb_vlc_plane(fb, i);
 +        plane_CopyPixels(&dst_plane, src->p + i);
 +    }
++
++    drmu_fb_vlc_pic_set_metadata(fb, src);
++
++    return fb;
++}
++
++static void
++create_box(drmu_fb_t * const fb, const unsigned int layer_no)
++{
++    const drmu_fmt_info_t *const f = drmu_fb_format_info_get(fb);
++    unsigned int hdiv = drmu_fmt_info_hdiv(f, layer_no);
++    unsigned int wdiv = drmu_fmt_info_wdiv(f, layer_no);
++    const unsigned int pby = (drmu_fmt_info_pixel_bits(f) + 7) >> 8;
++    const uint32_t pitch_n = drmu_fb_pitch(fb, layer_no);
++    const drmu_rect_t crop = drmu_rect_shr16_rnd(drmu_fb_crop_frac(fb));
++    const drmu_rect_t active = drmu_fb_active(fb);
++
++    uint8_t * const p0 = drmu_fb_data(fb, layer_no);
++    uint8_t * p1 = p0;
++    uint8_t * p2;
++
++    // Assumes RGB as currently no better idea (and it is RGB in the case we expect)
++    const unsigned int c = 0;
++
++    // Top
++    p2 = p1 + pitch_n * (crop.y / hdiv) + (crop.x / wdiv) * pby;
++    if (p1 != p2)
++        memset(p1, c, p2 - p1);
++    if (active.w == crop.w) {
++        p1 = p2 + (crop.h / hdiv) * pitch_n; // We expect crop.x == 0
++    }
++    else {
++        unsigned int i;
++        for (i = 1; i < (crop.h / hdiv); ++i) {
++            p1 = p2 + (crop.w / wdiv) * pby;
++            p2 = p2 + pitch_n;
++            memset(p1, c, p2 - p1);
++        }
++    }
++    p2 = p0 + pitch_n * (active.h / hdiv);
++    if (p1 != p2)
++        memset(p1, c, p2 - p1);
++}
++
++static drmu_fb_t *
++copy_pic_to_fixed_fb(vout_display_t * const vd, vout_display_sys_t * const sys,
++                     drmu_pool_t *const pool, picture_t *const src)
++{
++    uint64_t mod;
++    const uint32_t drm_fmt = drmu_format_vlc_to_drm(&src->format, &mod);
++    drmu_fb_t * fb;
++    int i;
++
++    if (drm_fmt == 0 || mod != DRM_FORMAT_MOD_LINEAR) {
++        msg_Warn(vd, "Failed vlc->drm format for copy_pic: %s", drmu_log_fourcc(src->format.i_chroma));
++        return NULL;
++    }
++
++    fb = drmu_pool_fb_new_dumb(pool, sys->display_rect.width, sys->display_rect.height, drm_fmt);
++    if (fb == NULL) {
++        msg_Warn(vd, "Failed alloc for copy_pic_fixed: %dx%d", sys->display_rect.width, sys->display_rect.height);
++        return NULL;
++    }
++
++    drmu_fb_crop_frac_set(fb, drmu_rect_shl16(drmu_rect_vlc_place(&sys->dest_rect)));
++
++    for (i = 0; i != src->i_planes; ++i) {
++        plane_t dst_plane;
++        dst_plane = drmu_fb_vlc_plane(fb, i);
++        // *** Offset src for src cropping maybe
++        plane_CopyPixels(&dst_plane, src->p + i);
++        create_box(fb, i);
++    }
++
++    // Reset crop for display after we've used it for copy
++    drmu_fb_crop_frac_set(fb, drmu_rect_shl16(drmu_fb_active(fb)));
 +
 +    drmu_fb_vlc_pic_set_metadata(fb, src);
 +
@@ -16871,7 +16951,7 @@
 +        drmu_fb_unref(&dst->fb);
 +    }
 +
-+    r = drmu_rect_vlc_place(&sys->dest_rect);
++    r = sys->output_simple ? drmu_rect_vlc_place(&sys->display_rect): drmu_rect_vlc_place(&sys->dest_rect);
 +
 +#if 0
 +    {
@@ -16910,7 +16990,10 @@
 +    }
 +    else
 +#endif
-+    {
++    if (sys->output_simple) {
++        dfb = copy_pic_to_fixed_fb(vd, sys, sys->pic_pool, pic);
++    }
++    else {
 +        dfb = copy_pic_to_fb(vd, sys->pic_pool, pic);
 +    }
 +
@@ -16929,7 +17012,8 @@
 +            drmu_rect_shl16(drmu_rect_wh(vd->fmt.i_width, vd->fmt.i_height)),
 +            drmu_rect_wh(vd->source.i_width, vd->source.i_height)));
 +#else
-+    drmu_fb_crop_frac_set(dfb, drmu_rect_shl16(drmu_rect_vlc_format_crop(&vd->source)));
++    if (!sys->output_simple)
++        drmu_fb_crop_frac_set(dfb, drmu_rect_shl16(drmu_rect_vlc_format_crop(&vd->source)));
 +#endif
 +    drmu_output_fb_info_set(sys->dout, dfb);
 +
@@ -17028,12 +17112,33 @@
 +    return sys->vlc_pic_pool;
 +}
 +
++static const drmu_vlc_fmt_info_t *
++find_fmt_fallback(vout_display_t * const vd, vout_display_sys_t * const sys, const vlc_fourcc_t * fallback)
++{
++    VLC_UNUSED(vd);
++
++    for (; *fallback; ++fallback) {
++        const video_frame_format_t vf = {.i_chroma = *fallback};
++        const drmu_vlc_fmt_info_t * fi;
++
++        for (fi = drmu_vlc_fmt_info_find_vlc(&vf);
++             fi != NULL;
++             fi = drmu_vlc_fmt_info_find_vlc_next(&vf, fi))
++        {
++            if (drmu_plane_format_check(sys->dp, drmu_vlc_fmt_info_drm_pixelformat(fi), drmu_vlc_fmt_info_drm_modifier(fi)))
++                return fi;
++        }
++    }
++    return NULL;
++}
++
++
 +// Copy format from *fmtp into vd->fmt and make any necessary adjustments to
 +// ensure display (tweak chroma)
-+static void
++static int
 +set_format(vout_display_t * const vd, vout_display_sys_t * const sys, const video_format_t *const fmtp)
 +{
-+    const drmu_vlc_fmt_info_t * const fi = drmu_vlc_fmt_info_find_vlc(fmtp);
++    const drmu_vlc_fmt_info_t * fi = drmu_vlc_fmt_info_find_vlc(fmtp);
 +    const uint64_t drm_mod = drmu_vlc_fmt_info_drm_modifier(fi);
 +    const uint32_t drm_fmt = drmu_vlc_fmt_info_drm_pixelformat(fi);
 +
@@ -17057,16 +17162,26 @@
 +        const vlc_fourcc_t *fallback = vlc_fourcc_IsYUV(fmtp->i_chroma) ?
 +            vlc_fourcc_GetYUVFallback(fmtp->i_chroma) :
 +            vlc_fourcc_GetRGBFallback(fmtp->i_chroma);
++        static const vlc_fourcc_t fallback2[] = {
++            VLC_CODEC_I420,
++            VLC_CODEC_RGB32,
++            0
++        };
 +
-+        // *** How should we check RGB fallbacks given we need masks too?
-+        for (; *fallback; ++fallback) {
-+            if (drmu_plane_format_check(sys->dp, drmu_format_vlc_chroma_to_drm(*fallback), 0))
-+                break;
-+        }
++        if ((fi = find_fmt_fallback(vd, sys, fallback)) == NULL &&
++            (fi = find_fmt_fallback(vd, sys, fallback2)) == NULL)
++            return -1;
 +
-+        // no conversion - ask for something we know we can deal with
-+        vd->fmt.i_chroma = *fallback ? *fallback : VLC_CODEC_I420;
++        vd->fmt.i_chroma = drmu_vlc_fmt_info_vlc_chroma(fi);
++        drmu_vlc_fmt_info_vlc_rgb_masks(fi, &vd->fmt.i_rmask, &vd->fmt.i_gmask, &vd->fmt.i_bmask);
++
++        msg_Dbg(vd, "%s: Fallback %s/%x/%x/%x -> %s %"PRIx64, __func__,
++                drmu_log_fourcc(vd->fmt.i_chroma),
++                vd->fmt.i_rmask, vd->fmt.i_gmask, vd->fmt.i_bmask,
++                drmu_log_fourcc(drmu_vlc_fmt_info_drm_pixelformat(fi)),
++                drmu_vlc_fmt_info_drm_modifier(fi));
 +    }
++    return 0;
 +}
 +
 +
@@ -17074,6 +17189,9 @@
 +{
 +    vout_display_sys_t * const sys = vd->sys;
 +    int ret = VLC_EGENERIC;
++#if TRACE_ALL
++    msg_Dbg(vd, "<<< %s: query=%d", __func__, query);
++#endif
 +
 +    switch (query) {
 +        case VOUT_DISPLAY_CHANGE_SOURCE_ASPECT:
@@ -17195,23 +17313,33 @@
 +}
 +
 +static int
-+test_simple_plane_set(vout_display_t * const vd, vout_display_sys_t * const sys)
++test_simple_plane_set(vout_display_t * const vd, vout_display_sys_t * const sys,
++                      unsigned int w, unsigned int h,
++                      const drmu_rect_t dst_rect)
 +{
 +    drmu_atomic_t *da = drmu_atomic_new(sys->du);
 +    drmu_fb_t *fb;
 +    int rv = -ENOMEM;
++    const drmu_vlc_fmt_info_t * const fi = drmu_vlc_fmt_info_find_vlc(&vd->fmt);
++
++    if (fi == NULL) {
++        msg_Err(vd, "Can't find chroma format");
++        goto fail;
++    }
 +
 +    if (da == NULL) {
 +        msg_Warn(vd, "Failed to alloc test atomic");
 +        goto fail;
 +    }
 +
-+    if ((fb = drmu_pool_fb_new_dumb(sys->sub_fb_pool, 128, 128, drmu_format_vlc_chroma_to_drm(sys->subpic_chromas[0]))) == NULL) {
++    if ((fb = drmu_pool_fb_new_dumb_mod(sys->sub_fb_pool, w, h,
++                                    drmu_vlc_fmt_info_drm_pixelformat(fi),
++                                    drmu_vlc_fmt_info_drm_modifier(fi))) == NULL) {
 +        msg_Warn(vd, "Failed to alloc test FB");
 +        goto fail;
 +    }
 +
-+    if ((rv = drmu_atomic_plane_add_fb(da, sys->subplanes[0], fb, drmu_rect_wh(128, 128))) != 0) {
++    if ((rv = drmu_atomic_plane_add_fb(da, sys->dp, fb, dst_rect)) != 0) {
 +        msg_Warn(vd, "Failed to add test FB to atomic");
 +        goto fail;
 +    }
@@ -17234,6 +17362,7 @@
 +    const video_format_t *const fmtp = &vd->source;
 +    const uint32_t src_chroma = fmtp->i_chroma;
 +    vout_display_sys_t *sys;
++    char * display_name = NULL;
 +    int ret = VLC_EGENERIC;
 +    int rv;
 +    msg_Info(vd, "<<< %s: Fmt=%4.4s", __func__, (const char *)&fmtp->i_chroma);
@@ -17250,38 +17379,17 @@
 +
 +    sys->mode_id = -1;
 +
++    display_name = var_InheritString(vd, DRM_VOUT_DISPLAY_NAME);
++
 +    {
++        int qt_num = var_InheritInteger(vd, "qt-fullscreen-screennumber");
++        const char * conn_name = qt_num == 0 ? "HDMI-A-1" :  qt_num == 1 ? "HDMI-A-2" : NULL;
++        const char * dname;
 +        const drmu_log_env_t log = {
 +            .fn = drmu_log_vlc_cb,
 +            .v = vd,
 +            .max_level = DRMU_LOG_LEVEL_ALL
 +        };
-+
-+        sys->du = drmu_env_new_xlease(&log);
-+        if (sys->du == NULL) {
-+            char * module_name = var_InheritString(vd, DRM_VOUT_MODULE_NAME);
-+            sys->du = drmu_env_new_open(module_name, &log);
-+            free(module_name);
-+            if (sys->du == NULL)
-+                goto fail;
-+        }
-+    }
-+
-+    drmu_env_restore_enable(sys->du);
-+
-+    if ((sys->dout = drmu_output_new(sys->du)) == NULL) {
-+        msg_Err(vd, "Failed to allocate new drmu output");
-+        goto fail;
-+    }
-+
-+    drmu_output_modeset_allow(sys->dout, !var_InheritBool(vd, DRM_VOUT_NO_MODESET_NAME));
-+    drmu_output_max_bpc_allow(sys->dout, !var_InheritBool(vd, DRM_VOUT_NO_MAX_BPC));
-+
-+    {
-+        char * const display_name = var_InheritString(vd, DRM_VOUT_DISPLAY_NAME);
-+        int qt_num = var_InheritInteger(vd, "qt-fullscreen-screennumber");
-+        const char * conn_name = qt_num == 0 ? "HDMI-A-1" :  qt_num == 1 ? "HDMI-A-2" : NULL;
-+        const char * dname;
 +
 +        if (display_name && strcasecmp(display_name, "auto") != 0) {
 +            if (strcasecmp(display_name, "hdmi-1") == 0)
@@ -17294,16 +17402,43 @@
 +
 +        dname = conn_name != NULL ? conn_name : "<auto>";
 +
-+        if ((rv = drmu_output_add_output(sys->dout, conn_name)) != 0)
-+            msg_Err(vd, "Failed to find output %s: %s", dname, strerror(-rv));
-+        else
-+            msg_Dbg(vd, "Using conn %s", dname);
++        sys->du = drmu_env_new_xlease(&log);
 +
-+        free(display_name);
++        if (sys->du == NULL) {
++            if (drmu_scan_output(conn_name, &log, &sys->du, &sys->dout) == 0)
++                msg_Dbg(vd, "Using conn %s", dname);
++        }
 +
-+        if (rv != 0)
-+            goto fail;
++        if (sys->du == NULL) {
++            char * module_name = var_InheritString(vd, DRM_VOUT_MODULE_NAME);
++            if (module_name != NULL) {
++                sys->du = drmu_env_new_open(module_name, &log);
++                free(module_name);
++                if (sys->du == NULL)
++                    goto fail;
++            }
++        }
++
++        if (sys->dout == NULL) {
++            if ((sys->dout = drmu_output_new(sys->du)) == NULL) {
++                msg_Err(vd, "Failed to allocate new drmu output");
++                goto fail;
++            }
++
++            if ((rv = drmu_output_add_output(sys->dout, conn_name)) != 0)
++                msg_Err(vd, "Failed to find output %s: %s", dname, strerror(-rv));
++            else
++                msg_Dbg(vd, "Using conn %s", dname);
++
++            if (rv != 0)
++                goto fail;
++        }
 +    }
++
++    drmu_env_restore_enable(sys->du);
++
++    drmu_output_modeset_allow(sys->dout, !var_InheritBool(vd, DRM_VOUT_NO_MODESET_NAME));
++    drmu_output_max_bpc_allow(sys->dout, !var_InheritBool(vd, DRM_VOUT_NO_MAX_BPC));
 +
 +    if ((sys->sub_fb_pool = drmu_pool_new(sys->du, 10)) == NULL)
 +        goto fail;
@@ -17326,8 +17461,8 @@
 +        }
 +    }
 +
-+    if (test_simple_plane_set(vd, sys) != 0) {
-+        msg_Warn(vd, "Failed simple pic test");
++    if (set_format(vd, sys, fmtp)) {
++        msg_Warn(vd, "Failed to find compatible output format");
 +        goto fail;
 +    }
 +
@@ -17397,11 +17532,6 @@
 +    }
 +    free(mode_name);
 +
-+    set_format(vd, sys, fmtp);
-+
-+//    vout_display_SetSizeAndSar(vd, drmu_crtc_width(sys->dc), drmu_crtc_height(sys->dc),
-+//                               drmu_ufrac_vlc_to_rational(drmu_crtc_sar(sys->dc)));
-+
 +    {
 +        char * const window_str = var_InheritString(vd, DRM_VOUT_WINDOW_NAME);
 +        if (strcmp(window_str, "fullscreen") == 0) {
@@ -17425,12 +17555,54 @@
 +
 +    set_display_windows(vd, sys);
 +
++    {
++        const unsigned int w = sys->display_rect.width;
++        const unsigned int h = sys->display_rect.height;
++        const drmu_rect_t sr = {.x = w / 5, .y = h / 5, .w = w / 3, .h = h / 3};
++        if (test_simple_plane_set(vd, sys, w, h, drmu_rect_wh(w, h)) != 0) {
++            msg_Warn(vd, "Failed simple pic test for mode %dx%d", w, h);
++            goto fail;
++        }
++        else {
++            msg_Dbg(vd, "OK simple pic test for mode %dx%d", w, h);
++        }
++
++        // Test for full scale & position capability - the incoming stream
++        // might not need it but if anything changes it is better to be sure we
++        // can cope with it
++        if (test_simple_plane_set(vd, sys, vd->source.i_visible_width, vd->source.i_visible_height, sr) != 0) {
++            msg_Warn(vd, "Failed scale pic test for %dx%d->%dx%d", vd->source.i_visible_width, vd->source.i_visible_height, sr.w, sr.h);
++            sys->output_simple = true;
++        }
++        else {
++            msg_Dbg(vd, "OK source pic test for %dx%d->%dx%d", vd->source.i_visible_width, vd->source.i_visible_height, sr.w, sr.h);
++        }
++    }
++
 +    configure_display(vd, vd->cfg, &vd->source);
 +
++    if (sys->output_simple) {
++        vd->fmt.i_height = sys->dest_rect.height;
++        vd->fmt.i_width = sys->dest_rect.width;
++        vd->fmt.i_visible_height = vd->fmt.i_height;
++        vd->fmt.i_visible_width = vd->fmt.i_width;
++        vd->fmt.i_x_offset = 0;
++        vd->fmt.i_y_offset = 0;
++    }
++
++    {
++        const drmu_mode_simple_params_t * const mode = drmu_output_mode_simple_params(sys->dout);
++        if (vd->cfg->display.width != mode->width || vd->cfg->display.height != mode->height)
++            vout_display_SendEventDisplaySize(vd, mode->width, mode->height);
++    }
++
++    free(display_name);
++    msg_Dbg(vd, ">>> %s", __func__);
 +    return VLC_SUCCESS;
 +
 +fail:
 +    CloseDrmVout(vd);
++    free(display_name);
 +    return ret;
 +}
 +
@@ -17455,7 +17627,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu.c
-@@ -0,0 +1,3929 @@
+@@ -0,0 +1,3999 @@
 +// Needed to ensure we get a 64-bit offset to mmap when mapping BOs
 +#undef _FILE_OFFSET_BITS
 +#define _FILE_OFFSET_BITS 64
@@ -18735,7 +18907,8 @@
 +    drmu_env_t * du = dfb->du;
 +    int rv;
 +
-+    dfb->fb.flags = (dfb->fb.modifier[0] == DRM_FORMAT_MOD_INVALID || dfb->fb.modifier[0] == 0) ? 0 : DRM_MODE_FB_MODIFIERS;
++    dfb->fb.flags = (dfb->fb.modifier[0] == DRM_FORMAT_MOD_INVALID ||
++                     dfb->fb.modifier[0] == DRM_FORMAT_MOD_LINEAR) ? 0 : DRM_MODE_FB_MODIFIERS;
 +
 +    if ((rv = drmu_ioctl(du, DRM_IOCTL_MODE_ADDFB2, &dfb->fb)) != 0)
 +        drmu_err(du, "AddFB2 failed: %s", strerror(-rv));
@@ -18979,31 +19152,37 @@
 +drmu_fb_t *
 +drmu_fb_new_dumb(drmu_env_t * const du, uint32_t w, uint32_t h, const uint32_t format)
 +{
-+    return drmu_fb_new_dumb_mod(du, w, h, format, DRM_FORMAT_MOD_INVALID);
++    return drmu_fb_new_dumb_mod(du, w, h, format, DRM_FORMAT_MOD_LINEAR);
 +}
 +
-+static int
-+fb_try_reuse(drmu_fb_t * dfb, uint32_t w, uint32_t h, const uint32_t format)
++static bool
++fb_try_reuse(drmu_fb_t * dfb, uint32_t w, uint32_t h, const uint32_t format, const uint64_t mod)
 +{
-+    if (w > dfb->fb.width || h > dfb->fb.height || format != dfb->fb.pixel_format)
-+        return 0;
++    if (w > dfb->fb.width || h > dfb->fb.height || format != dfb->fb.pixel_format || mod != dfb->fb.modifier[0])
++        return false;
 +
 +    dfb->active = drmu_rect_wh(w, h);
 +    dfb->crop   = drmu_rect_shl16(dfb->active);
-+    return 1;
++    return true;
++}
++
++drmu_fb_t *
++drmu_fb_realloc_dumb_mod(drmu_env_t * const du, drmu_fb_t * dfb, uint32_t w, uint32_t h, const uint32_t format, const uint64_t mod)
++{
++    if (dfb == NULL)
++        return drmu_fb_new_dumb_mod(du, w, h, format, mod);
++
++    if (fb_try_reuse(dfb, w, h, format, mod))
++        return dfb;
++
++    drmu_fb_unref(&dfb);
++    return drmu_fb_new_dumb_mod(du, w, h, format, mod);
 +}
 +
 +drmu_fb_t *
 +drmu_fb_realloc_dumb(drmu_env_t * const du, drmu_fb_t * dfb, uint32_t w, uint32_t h, const uint32_t format)
 +{
-+    if (dfb == NULL)
-+        return drmu_fb_new_dumb(du, w, h, format);
-+
-+    if (fb_try_reuse(dfb, w, h, format))
-+        return dfb;
-+
-+    drmu_fb_unref(&dfb);
-+    return drmu_fb_new_dumb(du, w, h, format);
++    return drmu_fb_realloc_dumb_mod(du, dfb, w, h, format, DRM_FORMAT_MOD_LINEAR);
 +}
 +
 +static void
@@ -19644,6 +19823,17 @@
 +    return dc;
 +}
 +
++static int
++crtc_state_save(drmu_env_t * const du, drmu_crtc_t * const dc)
++{
++    int rv = 0;
++    // 1st time through save state
++    if (!dc->saved &&
++        (rv = env_object_state_save(du, dc->crtc.crtc_id, DRM_MODE_OBJECT_CRTC)) == 0)
++        dc->saved = true;
++    return rv;
++}
++
 +// A Conn should be claimed before any op that might change its state
 +int
 +drmu_crtc_claim_ref(drmu_crtc_t * const dc)
@@ -19654,8 +19844,7 @@
 +        return -EBUSY;
 +
 +    // 1st time through save state
-+    if (!dc->saved && env_object_state_save(du, dc->crtc.crtc_id, DRM_MODE_OBJECT_CRTC) == 0)
-+        dc->saved = true;
++    crtc_state_save(du, dc);
 +
 +    return 0;
 +}
@@ -19997,6 +20186,17 @@
 +    return dn;
 +}
 +
++static int
++conn_state_save(drmu_env_t * const du, drmu_conn_t * const dn)
++{
++    int rv = 0;
++    // 1st time through save state
++    if (!dn->saved &&
++        (rv = env_object_state_save(du, dn->conn.connector_id, DRM_MODE_OBJECT_CONNECTOR)) == 0)
++        dn->saved = true;
++    return rv;
++}
++
 +// A Conn should be claimed before any op that might change its state
 +int
 +drmu_conn_claim_ref(drmu_conn_t * const dn)
@@ -20007,8 +20207,7 @@
 +        return -EBUSY;
 +
 +    // 1st time through save state
-+    if (!dn->saved && env_object_state_save(du, dn->conn.connector_id, DRM_MODE_OBJECT_CONNECTOR) == 0)
-+        dn->saved = true;
++    conn_state_save(du, dn);
 +
 +    return 0;
 +}
@@ -20386,7 +20585,7 @@
 +}
 +
 +drmu_fb_t *
-+drmu_pool_fb_new_dumb(drmu_pool_t * const pool, uint32_t w, uint32_t h, const uint32_t format)
++drmu_pool_fb_new_dumb_mod(drmu_pool_t * const pool, uint32_t w, uint32_t h, const uint32_t format, const uint64_t mod)
 +{
 +    drmu_env_t * const du = pool->du;
 +    drmu_fb_t * dfb;
@@ -20395,7 +20594,7 @@
 +
 +    dfb = fb_list_peek_head(&pool->free_fbs);
 +    while (dfb != NULL) {
-+        if (fb_try_reuse(dfb, w, h, format)) {
++        if (fb_try_reuse(dfb, w, h, format, mod)) {
 +            fb_list_extract(&pool->free_fbs, dfb);
 +            break;
 +        }
@@ -20411,7 +20610,7 @@
 +        pthread_mutex_unlock(&pool->lock);
 +
 +        drmu_fb_unref(&dfb);  // Will free the dfb as pre-delete CB will be unset
-+        if ((dfb = drmu_fb_realloc_dumb(du, NULL, w, h, format)) == NULL) {
++        if ((dfb = drmu_fb_realloc_dumb_mod(du, NULL, w, h, format, mod)) == NULL) {
 +            --pool->fb_count;  // ??? lock
 +            return NULL;
 +        }
@@ -20423,6 +20622,12 @@
 +    drmu_fb_pre_delete_set(dfb, pool_fb_pre_delete_cb, pool);
 +    drmu_pool_ref(pool);
 +    return dfb;
++}
++
++drmu_fb_t *
++drmu_pool_fb_new_dumb(drmu_pool_t * const pool, uint32_t w, uint32_t h, const uint32_t format)
++{
++    return drmu_pool_fb_new_dumb_mod(pool, w, h, format, DRM_FORMAT_MOD_LINEAR);
 +}
 +
 +// Mark pool as dead (i.e. no new allocs) and unref it
@@ -20468,12 +20673,12 @@
 +    struct {
 +        uint32_t crtc_id;
 +        uint32_t fb_id;
-+        uint32_t crtc_h;
-+        uint32_t crtc_w;
++        drmu_prop_range_t * crtc_h;
++        drmu_prop_range_t * crtc_w;
 +        uint32_t crtc_x;
 +        uint32_t crtc_y;
-+        uint32_t src_h;
-+        uint32_t src_w;
++        drmu_prop_range_t * src_h;
++        drmu_prop_range_t * src_w;
 +        uint32_t src_x;
 +        uint32_t src_y;
 +        drmu_prop_range_t * alpha;
@@ -20503,12 +20708,12 @@
 +    drmu_atomic_add_prop_fb(da, plid, dp->pid.fb_id, dfb);
 +    drmu_atomic_add_prop_value(da, plid, dp->pid.crtc_x, crtc_x);
 +    drmu_atomic_add_prop_value(da, plid, dp->pid.crtc_y, crtc_y);
-+    drmu_atomic_add_prop_value(da, plid, dp->pid.crtc_w, crtc_w);
-+    drmu_atomic_add_prop_value(da, plid, dp->pid.crtc_h, crtc_h);
++    drmu_atomic_add_prop_range(da, plid, dp->pid.crtc_w, crtc_w);
++    drmu_atomic_add_prop_range(da, plid, dp->pid.crtc_h, crtc_h);
 +    drmu_atomic_add_prop_value(da, plid, dp->pid.src_x,  src_x);
 +    drmu_atomic_add_prop_value(da, plid, dp->pid.src_y,  src_y);
-+    drmu_atomic_add_prop_value(da, plid, dp->pid.src_w,  src_w);
-+    drmu_atomic_add_prop_value(da, plid, dp->pid.src_h,  src_h);
++    drmu_atomic_add_prop_range(da, plid, dp->pid.src_w,  src_w);
++    drmu_atomic_add_prop_range(da, plid, dp->pid.src_h,  src_h);
 +    return 0;
 +}
 +
@@ -20633,6 +20838,12 @@
 +    return false;
 +}
 +
++bool
++drmu_plane_is_claimed(drmu_plane_t * const dp)
++{
++    return atomic_load(&dp->ref_count) != 0;
++}
++
 +void
 +drmu_plane_unref(drmu_plane_t ** const ppdp)
 +{
@@ -20656,6 +20867,18 @@
 +    return dp;
 +}
 +
++static int
++plane_state_save(drmu_env_t * const du, drmu_plane_t * const dp)
++{
++    int rv = 0;
++
++    // 1st time through save state
++    if (!dp->saved &&
++        (rv = env_object_state_save(du, drmu_plane_id(dp), DRM_MODE_OBJECT_PLANE)) == 0)
++        dp->saved = true;
++    return rv;
++}
++
 +// Associate a plane with a crtc and ref it
 +// Returns -EBUSY if plane already associated
 +int
@@ -20668,9 +20891,8 @@
 +        return -EBUSY;
 +    dp->dc = dc;
 +
-+    // 1st time through save state
-+    if (!dp->saved && env_object_state_save(du, drmu_plane_id(dp), DRM_MODE_OBJECT_PLANE) == 0)
-+        dp->saved = true;
++    // 1st time through save state if required - ignore fail
++    plane_state_save(du, dp);
 +
 +    return 0;
 +}
@@ -20720,6 +20942,10 @@
 +static void
 +plane_uninit(drmu_plane_t * const dp)
 +{
++    drmu_prop_range_delete(&dp->pid.crtc_h);
++    drmu_prop_range_delete(&dp->pid.crtc_w);
++    drmu_prop_range_delete(&dp->pid.src_h);
++    drmu_prop_range_delete(&dp->pid.src_w);
 +    drmu_prop_range_delete(&dp->pid.alpha);
 +    drmu_prop_range_delete(&dp->pid.chroma_siting_h);
 +    drmu_prop_range_delete(&dp->pid.chroma_siting_v);
@@ -20758,12 +20984,12 @@
 +
 +    if ((dp->pid.crtc_id = props_name_to_id(props, "CRTC_ID")) == 0 ||
 +        (dp->pid.fb_id  = props_name_to_id(props, "FB_ID")) == 0 ||
-+        (dp->pid.crtc_h = props_name_to_id(props, "CRTC_H")) == 0 ||
-+        (dp->pid.crtc_w = props_name_to_id(props, "CRTC_W")) == 0 ||
++        (dp->pid.crtc_h = drmu_prop_range_new(du, props_name_to_id(props, "CRTC_H"))) == NULL ||
++        (dp->pid.crtc_w = drmu_prop_range_new(du, props_name_to_id(props, "CRTC_W"))) == NULL ||
 +        (dp->pid.crtc_x = props_name_to_id(props, "CRTC_X")) == 0 ||
 +        (dp->pid.crtc_y = props_name_to_id(props, "CRTC_Y")) == 0 ||
-+        (dp->pid.src_h  = props_name_to_id(props, "SRC_H")) == 0 ||
-+        (dp->pid.src_w  = props_name_to_id(props, "SRC_W")) == 0 ||
++        (dp->pid.src_h  = drmu_prop_range_new(du, props_name_to_id(props, "SRC_H"))) == NULL ||
++        (dp->pid.src_w  = drmu_prop_range_new(du, props_name_to_id(props, "SRC_W"))) == NULL ||
 +        (dp->pid.src_x  = props_name_to_id(props, "SRC_X")) == 0 ||
 +        (dp->pid.src_y  = props_name_to_id(props, "SRC_Y")) == 0 ||
 +        props_name_get_blob(props, "IN_FORMATS", &dp->formats_in, &dp->formats_in_len) != 0)
@@ -21123,10 +21349,26 @@
 +int
 +drmu_env_restore_enable(drmu_env_t * const du)
 +{
++    uint32_t i;
++
 +    if (du->da_restore)
 +        return 0;
 +    if ((du->da_restore = drmu_atomic_new(du)) == NULL)
 +        return -ENOMEM;
++
++    // Save state of anything already claimed
++    // Cannot rewind time but this allows us to be a bit lax with the
++    // precise ordering of calls on setup (which is handy for scan)
++    for (i = 0; i != du->conn_count; ++i)
++        if (drmu_conn_is_claimed(du->conns + i))
++            conn_state_save(du, du->conns + i);
++    for (i = 0; i != du->crtc_count; ++i)
++        if (drmu_crtc_is_claimed(du->crtcs + i))
++            crtc_state_save(du, du->crtcs + i);
++    for (i = 0; i != du->plane_count; ++i)
++        if (drmu_plane_is_claimed(du->planes + i))
++            plane_state_save(du, du->planes + i);
++
 +    return 0;
 +}
 +
@@ -21163,7 +21405,7 @@
 +static int
 +evt_read(drmu_env_t * const du)
 +{
-+    uint8_t buf[128];
++    uint8_t buf[256] __attribute__((aligned(__BIGGEST_ALIGNMENT__)));
 +    const ssize_t rlen = read(drmu_fd(du), buf, sizeof(buf));
 +    size_t i;
 +
@@ -21387,7 +21629,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu.h
-@@ -0,0 +1,576 @@
+@@ -0,0 +1,614 @@
 +#ifndef _DRMU_DRMU_H
 +#define _DRMU_DRMU_H
 +
@@ -21532,6 +21774,37 @@
 +    };
 +}
 +
++static inline drmu_rect_t
++drmu_rect_shr16(const drmu_rect_t a)
++{
++    return (drmu_rect_t){
++        .x = a.x >> 16,
++        .y = a.y >> 16,
++        .w = a.w >> 16,
++        .h = a.h >> 16
++    };
++}
++
++static inline drmu_rect_t
++drmu_rect_shr_rnd(const drmu_rect_t a, unsigned int n)
++{
++    if (n == 0)
++        return a;
++    --n;
++    return (drmu_rect_t) {
++        .x = ((a.x >> n) + 1) >> 1,
++        .y = ((a.y >> n) + 1) >> 1,
++        .w = ((a.w >> n) + 1) >> 1,
++        .h = ((a.h >> n) + 1) >> 1
++    };
++}
++
++static inline drmu_rect_t
++drmu_rect_shr16_rnd(const drmu_rect_t a)
++{
++    return drmu_rect_shr_rnd(a, 16);
++}
++
 +// Blob
 +
 +void drmu_blob_unref(drmu_blob_t ** const ppBlob);
@@ -21612,6 +21885,7 @@
 +drmu_fb_t * drmu_fb_new_dumb(drmu_env_t * const du, uint32_t w, uint32_t h, const uint32_t format);
 +drmu_fb_t * drmu_fb_new_dumb_mod(drmu_env_t * const du, uint32_t w, uint32_t h, const uint32_t format, const uint64_t mod);
 +drmu_fb_t * drmu_fb_realloc_dumb(drmu_env_t * const du, drmu_fb_t * dfb, uint32_t w, uint32_t h, const uint32_t format);
++drmu_fb_t * drmu_fb_realloc_dumb_mod(drmu_env_t * const du, drmu_fb_t * dfb, uint32_t w, uint32_t h, const uint32_t format, const uint64_t mod);
 +void drmu_fb_unref(drmu_fb_t ** const ppdfb);
 +drmu_fb_t * drmu_fb_ref(drmu_fb_t * const dfb);
 +
@@ -21705,6 +21979,7 @@
 +drmu_pool_t * drmu_pool_ref(drmu_pool_t * const pool);
 +drmu_pool_t * drmu_pool_new(drmu_env_t * const du, unsigned int total_fbs_max);
 +drmu_fb_t * drmu_pool_fb_new_dumb(drmu_pool_t * const pool, uint32_t w, uint32_t h, const uint32_t format);
++drmu_fb_t * drmu_pool_fb_new_dumb_mod(drmu_pool_t * const pool, uint32_t w, uint32_t h, const uint32_t format, const uint64_t mod);
 +void drmu_pool_delete(drmu_pool_t ** const pppool);
 +
 +// Object Id
@@ -21844,6 +22119,9 @@
 +// pos is dest rect on the plane in full pixels (not frac)
 +int drmu_atomic_plane_add_fb(struct drmu_atomic_s * const da, drmu_plane_t * const dp, drmu_fb_t * const dfb, const drmu_rect_t pos);
 +
++// Is this plane reffed?
++bool drmu_plane_is_claimed(drmu_plane_t * const dp);
++
 +// Unref a plane
 +void drmu_plane_unref(drmu_plane_t ** const ppdp);
 +
@@ -21896,7 +22174,9 @@
 +int drmu_atomic_env_restore_add_snapshot(struct drmu_atomic_s ** const ppda);
 +
 +// Open a drmu environment with the drm fd
-+// Takes a logging structure so early errors can be reported.
++// Takes a logging structure so early errors can be reported. The logging
++// environment is copied so does not have to be valid for greater than the
++// duration of the call.
 +// If log = NULL logging is disabled (set to drmu_log_env_none).
 +drmu_env_t * drmu_env_new_fd(const int fd, const struct drmu_log_env_s * const log);
 +drmu_env_t * drmu_env_new_open(const char * name, const struct drmu_log_env_s * const log);
@@ -23912,6 +24192,92 @@
 +
 +
 --- /dev/null
++++ b/modules/video_output/drmu/drmu_scan.c
+@@ -0,0 +1,60 @@
++#include "drmu_scan.h"
++
++#include <errno.h>
++#include <fcntl.h>
++#include <stdio.h>
++
++#include "drmu.h"
++#include "drmu_log.h"
++#include "drmu_output.h"
++
++#define CARD_MAX 16
++
++
++int
++drmu_scan_output(const char * const cname, const drmu_log_env_t * const dlog,
++                 drmu_env_t ** const pDu, drmu_output_t ** const pDoutput)
++{
++    static const char * card_prefix = "/dev/dri/card";
++    unsigned int i;
++
++    *pDu = NULL;
++    *pDoutput = NULL;
++
++    for (i = 0; i != CARD_MAX; ++i) {
++        drmu_env_t * du;
++        drmu_output_t * dout = NULL;
++        char fname[32];
++        int fd;
++
++        drmu_debug_log(dlog, "Try card %d", i);
++
++        sprintf(fname, "%s%d", card_prefix, i);
++        while ((fd = open(fname, O_RDWR | O_CLOEXEC)) == -1 && errno == EINTR)
++            /* Loop */;
++        if (fd == -1) {
++            if (errno == ENOENT)
++                break;
++            continue;
++        }
++
++        // Have FD
++        if ((du = drmu_env_new_fd(fd, dlog)) == NULL)
++            continue;
++
++        if ((dout = drmu_output_new(du)) == NULL)
++            goto loop1;
++
++        if (drmu_output_add_output(dout, cname) == 0) {
++            *pDu = du;
++            *pDoutput = dout;
++            return 0;
++        }
++
++        drmu_output_unref(&dout);
++loop1:
++        drmu_env_unref(&du);
++    }
++    return -ENOENT;
++}
++
+--- /dev/null
++++ b/modules/video_output/drmu/drmu_scan.h
+@@ -0,0 +1,20 @@
++#ifndef _DRMU_DRMU_SCAN_H
++#define _DRMU_DRMU_SCAN_H
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++struct drmu_log_env_s;
++struct drmu_env_s;
++struct drmu_output_s;
++
++int
++drmu_scan_output(const char * const cname, const struct drmu_log_env_s * const dlog,
++                 struct drmu_env_s ** const pDu, struct drmu_output_s ** const pDoutput);
++
++#ifdef __cplusplus
++}
++#endif
++#endif
++
+--- /dev/null
 +++ b/modules/video_output/drmu/drmu_util.c
 @@ -0,0 +1,125 @@
 +#include "drmu.h"
@@ -24074,7 +24440,7 @@
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_vlc.c
-@@ -0,0 +1,352 @@
+@@ -0,0 +1,353 @@
 +#include "drmu_vlc.h"
 +#include "drmu_fmts.h"
 +#include "drmu_log.h"
@@ -24389,21 +24755,22 @@
 +    const drmu_fmt_info_t *const f = drmu_fb_format_info_get(dfb);
 +    unsigned int hdiv = drmu_fmt_info_hdiv(f, plane_n);
 +    unsigned int wdiv = drmu_fmt_info_wdiv(f, plane_n);
-+    const unsigned int bpp = drmu_fmt_info_pixel_bits(f);
++    const unsigned int bypp = (drmu_fmt_info_pixel_bits(f) + 7) / 8;
 +    const uint32_t pitch_n = drmu_fb_pitch(dfb, plane_n);
-+    const drmu_rect_t crop = drmu_fb_crop_frac(dfb);
++    const drmu_rect_t crop = drmu_rect_shr16_rnd(drmu_fb_crop_frac(dfb));
 +
 +    if (pitch_n == 0) {
 +        return (plane_t) {.p_pixels = NULL };
 +    }
 +
 +    return (plane_t){
-+        .p_pixels = drmu_fb_data(dfb, plane_n),
++        .p_pixels = (uint8_t *)drmu_fb_data(dfb, plane_n) +
++            pitch_n * (crop.y / hdiv) + (crop.x / wdiv) * bypp,
 +        .i_lines = drmu_fb_height(dfb) / hdiv,
 +        .i_pitch = pitch_n,
-+        .i_pixel_pitch = bpp / 8,
-+        .i_visible_lines = (crop.h >> 16) / hdiv,
-+        .i_visible_pitch = ((crop.w >> 16) * bpp / 8) / wdiv
++        .i_pixel_pitch = bypp,
++        .i_visible_lines = crop.h / hdiv,
++        .i_visible_pitch = (crop.w / wdiv) * bypp
 +    };
 +}
 +

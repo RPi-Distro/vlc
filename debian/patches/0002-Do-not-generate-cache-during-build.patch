@@ -10,8 +10,6 @@ elsewhere.
  bin/Makefile.am | 18 ------------------
  2 files changed, 34 deletions(-)
 
-diff --git a/Makefile.am b/Makefile.am
-index 5179198..08ad316 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -163,22 +163,6 @@ endif
@@ -37,8 +35,6 @@ index 5179198..08ad316 100644
  uninstall-hook:
  	rm -f -- "$(DESTDIR)$(vlclibdir)/plugins/plugins.dat"
  
-diff --git a/bin/Makefile.am b/bin/Makefile.am
-index 4de299d..a2acc3c 100644
 --- a/bin/Makefile.am
 +++ b/bin/Makefile.am
 @@ -124,14 +124,6 @@ vlc_cache_gen_LDFLAGS = -Wc,-static
