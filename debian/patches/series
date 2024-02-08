@@ -1,9 +1,9 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
 0002-Do-not-generate-cache-during-build.patch
-hwaccel_42.patch
-mmal_exit_fix.patch
-mmal_chain.patch
-mmal_caca.patch
-mmal_wayland.patch
-mmal_qt_fullscreen.patch
-http-port-fix.patch
+001-rpi.patch
+002-chain.patch
+003-vlc.patch
+004-caca.patch
+005-qt-wayland.patch
+006-qt-fullscreen.patch
+007-http-port-fix.patch
