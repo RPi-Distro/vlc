@@ -1,3 +1,9 @@
+vlc (3.0.20-2) unstable; urgency=medium
+
+  * debian/patches: Bump module ABI for time_t transition
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 28 Feb 2024 23:55:54 +0100
+
 vlc (3.0.20-1) unstable; urgency=medium
 
   * New upstream version 3.0.20.
