@@ -1,3 +1,9 @@
+vlc (3.0.20-3) unstable; urgency=medium
+
+  * debian/control: Add missing dpkg-dev BD for time_t
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 02 Mar 2024 10:55:19 +0100
+
 vlc (3.0.20-2) unstable; urgency=medium
 
   * debian/patches: Bump module ABI for time_t transition
