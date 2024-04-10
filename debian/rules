@@ -156,7 +156,6 @@ confflags += \
 
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
-# V4L2 is disabled on kFreeBSD due to a build failure.
 confflags += \
 	--enable-alsa \
 	--enable-dc1394 \
@@ -168,6 +167,7 @@ confflags += \
 	--enable-wayland \
 	$(NULL)
 else
+# V4L2 is disabled on Hurd due to a build failure.
 confflags += \
 	--disable-alsa \
 	--disable-dc1394 \
@@ -194,8 +194,8 @@ removeplugins += \
 	$(NULL)
 endif
 
-# Linux and kFreeBSD specific flags (disabled on Hurd)
-ifeq (,$(filter-out linux kfreebsd,$(DEB_HOST_ARCH_OS)))
+# Linux specific flags (disabled on Hurd)
+ifeq (,$(filter-out linux,$(DEB_HOST_ARCH_OS)))
 confflags += \
 	--enable-vcd \
 	--enable-smbclient \
@@ -214,14 +214,9 @@ removeplugins += \
 	$(NULL)
 endif
 
-# kFreeBSD specific flags
-ifeq (,$(filter-out kfreebsd,$(DEB_HOST_ARCH_OS)))
-confflags += --enable-oss
-else
-# Note: Use PulseAudio/ALSA on Linux instead of OSS.
+# Note: Use PulseAudio/ALSA instead of OSS.
 confflags += --disable-oss
 removeplugins += oss
-endif
 
 ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 confflags += \

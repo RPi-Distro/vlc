@@ -97,7 +97,7 @@ Build-Depends: autopoint,
                libudev-dev [linux-any],
                libupnp-dev,
                libv4l-dev [linux-any],
-               libva-dev [kfreebsd-any linux-any],
+               libva-dev [linux-any],
                libvcdinfo-dev (>= 0.7.22),
                libvdpau-dev,
                libvncserver-dev (>= 0.9.9),
@@ -118,7 +118,6 @@ Build-Depends: autopoint,
                libxpm-dev,
                libzvbi-dev (>= 0.2.28),
                lua5.2,
-               oss4-dev [kfreebsd-any],
                pkg-config,
                protobuf-compiler,
                python3:native,
@@ -143,7 +142,7 @@ Depends: vlc-bin (= ${binary:Version}),
 Recommends: vlc-l10n (= ${source:Version}),
             vlc-plugin-access-extra (= ${binary:Version}),
             vlc-plugin-notify (= ${binary:Version}),
-            vlc-plugin-samba (= ${binary:Version}) [linux-any kfreebsd-any],
+            vlc-plugin-samba (= ${binary:Version}) [linux-any],
             vlc-plugin-skins2 (= ${binary:Version}),
             vlc-plugin-video-splitter (= ${binary:Version}),
             vlc-plugin-visualization (= ${binary:Version})
@@ -451,7 +450,7 @@ Description: SVG plugin for VLC
  specified by the svg-template-file option.
 
 Package: vlc-plugin-samba
-Architecture: kfreebsd-any linux-any
+Architecture: linux-any
 Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends},
