@@ -1,3 +1,17 @@
+vlc (3.0.20-4) unstable; urgency=medium
+
+  [ Bastian Germann ]
+  * Drop OMX support (see #1065623)
+  * Drop kFreeBSD support
+
+  [ Sebastian Ramacher ]
+  * debian/:
+    - Complete omxil removal
+    - Complete kfreebsd support removal
+  * debian/control: Bump Standards-Version
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 11 Apr 2024 22:16:25 +0200
+
 vlc (3.0.20-3) unstable; urgency=medium
 
   * debian/control: Add missing dpkg-dev BD for time_t
