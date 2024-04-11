@@ -121,6 +121,7 @@ confflags += \
 # vpx: not needed when having libavcodec
 # vsxu: not in Debian
 # wasapi: Windows only
+# omxil: removed from Debian (#1065623)
 confflags += \
 	--disable-aom \
 	--disable-crystalhd \
@@ -143,6 +144,7 @@ confflags += \
 	--disable-mfx \
 	--disable-microdns \
 	--disable-opencv \
+	--disable-omxil \
 	--disable-projectm \
 	--disable-schroedinger \
 	--disable-sdl-image \
@@ -257,14 +259,6 @@ ifeq (,$(filter-out powerpcspe,$(DEB_HOST_ARCH)))
 DEB_CFLAGS_MAINT_APPEND += -mtune=8548
 DEB_CXXFLAGS_MAINT_APPEND += -mtune=8548
 endif
-endif
-
-# Raspbian specifc flags
-ifeq ($(shell dpkg-vendor --derives-from Raspbian && echo yes),yes)
-confflags += --enable-omxil --enable-omxil-vout --enable-rpi-omxil
-else
-confflags += --disable-omxil
-removeplugins += omxil
 endif
 
 export DEB_BUILD_MAINT_OPTIONS
