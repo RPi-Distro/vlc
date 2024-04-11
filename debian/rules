@@ -111,7 +111,9 @@ confflags += \
 # macosx*: MacOX only
 # mfx: currently not supported on Linux
 # microdns: functionality already provided by avahi
+# omxil: removed from Debian (#1065623)
 # opencv: developer plugin not required by end users
+# oss: use PulseAudio instead of oss
 # projectm: broken
 # schroedinger: removed from Debian (#845037)
 # sdl-image: SDL 1.2 is deprecated (#1038590)
@@ -121,7 +123,6 @@ confflags += \
 # vpx: not needed when having libavcodec
 # vsxu: not in Debian
 # wasapi: Windows only
-# omxil: removed from Debian (#1065623)
 confflags += \
 	--disable-aom \
 	--disable-crystalhd \
@@ -143,8 +144,9 @@ confflags += \
 	--disable-macosx-qtkit \
 	--disable-mfx \
 	--disable-microdns \
-	--disable-opencv \
 	--disable-omxil \
+	--disable-opencv \
+	--disable-oss \
 	--disable-projectm \
 	--disable-schroedinger \
 	--disable-sdl-image \
@@ -215,10 +217,6 @@ removeplugins += \
 	vcd \
 	$(NULL)
 endif
-
-# Note: Use PulseAudio/ALSA instead of OSS.
-confflags += --disable-oss
-removeplugins += oss
 
 ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 confflags += \
