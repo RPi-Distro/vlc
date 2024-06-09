@@ -2,8 +2,9 @@ vlc (3.0.21-1) unstable; urgency=medium
 
   * New upstream version 3.0.21
   * debian/patches: Refresh patches
+  * debian/control: Replace obsolete packages with their new versions
 
- -- Sebastian Ramacher <sramacher@debian.org>  Sun, 09 Jun 2024 11:26:24 +0200
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 09 Jun 2024 18:01:08 +0200
 
 vlc (3.0.20-4) unstable; urgency=medium
 
