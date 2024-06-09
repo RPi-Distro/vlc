@@ -2,7 +2,7 @@
  * cmd_quit.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 691b61399e1f7833ae0f71adb2c2736639caf308 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

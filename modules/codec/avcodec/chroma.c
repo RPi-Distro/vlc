@@ -2,7 +2,7 @@
  * chroma.c: libavutil <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: cb9634db59707a43fe54c2bdf12a183cce1a3799 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

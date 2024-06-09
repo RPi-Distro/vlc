@@ -2,7 +2,7 @@
  * hqdn3d.c : high-quality denoise 3D ported from MPlayer
  *****************************************************************************
  * Copyright (C) 2011 VLC authors and VideoLAN
- * $Id: c9b9bafab5a2023234bd23b3a1388632b21369ba $
+ * $Id$
  *
  * Authors: Cheng Sun <chengsun9@gmail.com>
  *

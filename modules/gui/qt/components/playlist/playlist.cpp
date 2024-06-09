@@ -2,7 +2,7 @@
  * playlist.cpp : Custom widgets for the playlist
  ****************************************************************************
  * Copyright © 2007-2010 the VideoLAN team
- * $Id: d2849a252b321dbd0da8bdd4eaf88f95b5b4084f $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

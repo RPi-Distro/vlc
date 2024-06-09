@@ -2,7 +2,7 @@
  * output.c : internal management of output streams for the audio output
  *****************************************************************************
  * Copyright (C) 2002-2004 VLC authors and VideoLAN
- * $Id: bb8e4c3c9ec28faea2d0050b51591136b3565538 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

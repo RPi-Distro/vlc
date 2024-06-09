@@ -1307,10 +1307,9 @@ EXTRA_DIST = extras/package/macosx/package.mak \
 	extras/tools/bison-macOS-7df04f9.patch \
 	extras/tools/bison-macOS-c41f233c.patch \
 	extras/tools/cmake-enable-ALPN-support-on-macOS-10.14.patch \
-	extras/tools/libtool-2.4.6-bitcode.patch \
-	extras/tools/libtool-2.4.6-clang-libs.patch \
-	extras/tools/libtool-2.4.6-response-files.patch \
-	extras/tools/libtool-2.4.6-san.patch \
+	extras/tools/libtool-2.4.7-bitcode.patch \
+	extras/tools/libtool-2.4.7-clang-libs.patch \
+	extras/tools/libtool-2.4.7-response-files.patch \
 	extras/tools/ragel-6.8-javacodegen.patch \
 	extras/analyser/zsh_completion.sh extras/analyser/zsh.cpp \
 	extras/analyser/emacs.init extras/analyser/vlc.vim \

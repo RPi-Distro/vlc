@@ -2,7 +2,7 @@
  * meta.c : Metadata handling
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: 241b926079ff186952b18c3ff7dedab377ea6705 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org

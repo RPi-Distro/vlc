@@ -2,7 +2,7 @@
  * qt.hpp : Qt interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: e59583ab712116f8590fa6465206e6505c0b51fc $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

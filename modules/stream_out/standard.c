@@ -2,7 +2,7 @@
  * standard.c: standard stream output module
  *****************************************************************************
  * Copyright (C) 2003-2011 VLC authors and VideoLAN
- * $Id: 29f80b58651b63d7c563341bd7b8bf9330274fba $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * video.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 258e0d21cddb49abe3a459ea716862a92d276fd6 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *

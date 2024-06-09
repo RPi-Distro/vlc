@@ -2,7 +2,7 @@
  * input.h
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 903134a66a2df8fc2a95e3535ce683da65ce3943 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *

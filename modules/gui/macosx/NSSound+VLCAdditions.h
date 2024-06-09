@@ -2,7 +2,7 @@
  * NSSound+VLCAdditions.h: Category that adds system volume control
  *****************************************************************************
  * Copyright (C) 2003-2014 VLC authors and VideoLAN
- * $Id: 290b343058cf6eb19417e74c750e6cee03cf9cbf $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

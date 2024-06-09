@@ -2,7 +2,7 @@
  * mmsh.h:
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 27f77bacf23a001f1edc4de5a11192c626e9d919 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

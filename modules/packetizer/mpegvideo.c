@@ -2,7 +2,7 @@
  * mpegvideo.c: parse and packetize an MPEG1/2 video stream
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: 00b292a8361f91ea9deb74524bad58e7daef755e $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

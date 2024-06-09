@@ -4,7 +4,7 @@
  *   (http://liba52.sf.net/).
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 4e221286d744b3bdf3d68ad373fa7a1c2630ab52 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>

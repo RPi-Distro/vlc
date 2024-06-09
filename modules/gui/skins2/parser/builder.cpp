@@ -2,7 +2,7 @@
  * builder.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: eef3e1c29c9696c6ee782bd141f72a146da7057d $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

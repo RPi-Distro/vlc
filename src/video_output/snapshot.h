@@ -2,7 +2,7 @@
  * snapshot.h : vout internal snapshot
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 9b928d6cf022b72c767b666fd9bb9f33ebcac919 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

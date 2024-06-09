@@ -2,7 +2,7 @@
  * meta.c: Get meta/artwork using lua scripts
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: be672f2a2331e3d981c1b157447581b375836466 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>

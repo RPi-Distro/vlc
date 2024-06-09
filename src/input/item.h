@@ -2,7 +2,7 @@
  * item.h
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: f4b89a411fd07b6b3082161a749d44094e73dc29 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

@@ -2,7 +2,7 @@
  * art.h:
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: da13e7956a71da45be25a7018465f4ccb502dfc5 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>

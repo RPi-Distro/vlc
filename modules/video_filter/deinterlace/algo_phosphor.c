@@ -2,7 +2,7 @@
  * algo_phosphor.c : Phosphor algorithm for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2011 VLC authors and VideoLAN
- * $Id: cd954c631df0df5accdf224033a4c96cc1649e51 $
+ * $Id$
  *
  * Author: Juha Jeronen <juha.jeronen@jyu.fi>
  *

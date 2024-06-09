@@ -2,7 +2,7 @@
  * VLCTintedImageButtonCell.m
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: e440ecc871fd543c1337e1c37382e19df4980314 $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *

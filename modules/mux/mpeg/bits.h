@@ -2,7 +2,7 @@
  * bits.h
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 4f0e6002c57e0e34eada5bb0e40bf9810652a171 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

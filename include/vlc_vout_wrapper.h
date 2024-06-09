@@ -2,7 +2,7 @@
  * vlc_vout_wrapper.h: definitions for vout wrappers (temporary)
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 96b954a0a044640ce2cf73c979e3a2ac60c3e4f0 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

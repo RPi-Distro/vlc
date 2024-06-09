@@ -2,7 +2,7 @@
  * menus.hpp : Menus handling
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 99ea6579868f4323da9eacea8f5d46d268e778fc $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

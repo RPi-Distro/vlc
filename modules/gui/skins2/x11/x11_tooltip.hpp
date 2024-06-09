@@ -2,7 +2,7 @@
  * x11_tooltip.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b7a4bb8f63ffd0c10fbea486f3e9ca4b983a9885 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

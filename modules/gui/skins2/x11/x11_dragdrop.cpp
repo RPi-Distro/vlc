@@ -2,7 +2,7 @@
  * x11_dragdrop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9244a2532e9c167023384abeba9489e187e83f1f $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * dynamicoverlay_commands.c : dynamic overlay plugin commands
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: a93462925e8ae42ba7b6af5c810d1a0b581cb4d2 $
+ * $Id$
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>
@@ -234,8 +234,12 @@ static int parser_SetTextAlpha( char *psz_command, char *psz_end,
     skip_space( &psz_command );
     if( isdigit( (unsigned char)*psz_command ) )
     {
-        if( parse_digit( &psz_command, &p_params->fontstyle.i_font_alpha ) == VLC_EGENERIC )
+        int32_t value;
+
+        if( parse_digit( &psz_command, &value ) == VLC_EGENERIC )
             return VLC_EGENERIC;
+
+        p_params->fontstyle.i_font_alpha = value;
     }
     return VLC_SUCCESS;
 }
@@ -899,12 +903,11 @@ static const commanddesc_static_t p_commands[] =
 void RegisterCommand( filter_t *p_filter )
 {
     filter_sys_t *p_sys = (filter_sys_t*) p_filter->p_sys;
-    size_t i_index = 0;
 
     p_sys->i_commands = ARRAY_SIZE(p_commands);
     p_sys->pp_commands = (commanddesc_t **) calloc( p_sys->i_commands, sizeof(commanddesc_t*) );
     if( !p_sys->pp_commands ) return;
-    for( i_index = 0; i_index < p_sys->i_commands; i_index ++ )
+    for( size_t i_index = 0; i_index < p_sys->i_commands; i_index ++ )
     {
         p_sys->pp_commands[i_index] = (commanddesc_t *) malloc( sizeof(commanddesc_t) );
         if( !p_sys->pp_commands[i_index] ) return;

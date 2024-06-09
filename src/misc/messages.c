@@ -4,7 +4,7 @@
  * modules, especially intf modules. See vlc_config.h for output configuration.
  *****************************************************************************
  * Copyright (C) 1998-2005 VLC authors and VideoLAN
- * $Id: b8316b1fe72dc257c1dce929c94fe034240c84f4 $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

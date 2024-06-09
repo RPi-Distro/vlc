@@ -2,7 +2,7 @@
  * parse.c: SPU parser
  *****************************************************************************
  * Copyright (C) 2000-2001, 2005, 2006 VLC authors and VideoLAN
- * $Id: ee09b31cdb36067e0dd599e9259289bdb380bc3b $
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>

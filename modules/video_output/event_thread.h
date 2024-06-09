@@ -2,7 +2,7 @@
  * event_thread.h: event thread for legacy video output display plugins
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 8dd9ff1b9951822a381124e15fae71e495082c2d $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

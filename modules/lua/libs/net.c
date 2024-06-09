@@ -2,7 +2,7 @@
  * net.c: Network related functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 5e10ee4860557a98c42cb04e961622c8c37ccb79 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *

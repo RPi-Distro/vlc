@@ -2,7 +2,7 @@
  * avformat.h: muxer and demuxer using libavformat
  *****************************************************************************
  * Copyright (C) 2001-2008 VLC authors and VideoLAN
- * $Id: c7cc3e83a4bf1d4c7a21710c75c5579e1fc9531f $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

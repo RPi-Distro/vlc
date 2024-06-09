@@ -2,7 +2,7 @@
  * window_manager.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ede1f878ac8296eb85065c3a107d8bb8043b9904 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

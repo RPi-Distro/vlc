@@ -2,7 +2,7 @@
  * faad.c: AAC decoder using libfaad2
  *****************************************************************************
  * Copyright (C) 2001, 2003 VLC authors and VideoLAN
- * $Id: 000595f436a827933abee4f4d0c8a7389c5d5046 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

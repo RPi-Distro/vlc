@@ -3,7 +3,7 @@
  * Interface used to send events.
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: 4cca73e784d68444833a6c80c33adcd24845155a $
+ * $Id$
  *
  * Authors: Pierre d'Herbemont
  *

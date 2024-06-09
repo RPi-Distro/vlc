@@ -2,7 +2,7 @@
  * interpreter.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e232a999dbad6329dbf387f8c79ac5cb693891b0 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

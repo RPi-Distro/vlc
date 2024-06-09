@@ -2,7 +2,7 @@
  * VLCScrollingClipView.m: NSClipView subclass that automatically scrolls
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: c55141aa6fd16a60a2672f24bc8fe0a50cb5328d $
+ * $Id$
  *
  * Author: Marvin Scholz <epirat07@gmail.com>
  *

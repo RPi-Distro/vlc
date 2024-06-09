@@ -2,7 +2,7 @@
  * nsspeechsynthesizer.m: Simple text to Speech renderer for Mac OS X
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 32d2512321093d09b7ffc1a67af78ffea80626df $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne # videolan # org>
  *

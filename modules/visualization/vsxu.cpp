@@ -2,7 +2,7 @@
  * vsxu.cpp: visualization module wrapper for Vovoid VSXu
  *****************************************************************************
  * Copyright © 2009-2012 the VideoLAN team, Vovoid Media Technologies
- * $Id: 86a8db8400ee2afb7f163b638b38559b75495372 $
+ * $Id$
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *          Laurent Aimar

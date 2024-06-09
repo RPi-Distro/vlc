@@ -2,7 +2,7 @@
  * VLCBottomBarView.m
  *****************************************************************************
  * Copyright (C) 2017-2018 VLC authors and VideoLAN
- * $Id: f0d97f7cfb21ca30d9300f67b10c425515920086 $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

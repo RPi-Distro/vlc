@@ -2,7 +2,7 @@
  * chain.c : chain multiple video filter modules as a last resort solution
  *****************************************************************************
  * Copyright (C) 2007-2017 VLC authors and VideoLAN
- * $Id: 270942525504a3da1562b770864fbf6a00e6d5b8 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *

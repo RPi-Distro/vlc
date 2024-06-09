@@ -2,7 +2,7 @@
  * applescript.h: MacOS X AppleScript support
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: aee356bfaeedd9b03f1ab1a0b2544577cc5fc7f3 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *

@@ -2,7 +2,7 @@
  * VLCAboutWindowController.h
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: ff0ed5f6a116911da4b53a0bfd3901ee41deeb74 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>

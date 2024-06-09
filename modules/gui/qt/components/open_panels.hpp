@@ -4,7 +4,7 @@
  * Copyright (C) 2006-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: 48044383a53bb0026863bdeafcb012a0b0c75bdf $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

@@ -2,7 +2,7 @@
  * extension.h: Lua Extensions (meta data, web information, ...)
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 2897991297609f4a3edbab58dce3fdc9c741ab2d $
+ * $Id$
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *

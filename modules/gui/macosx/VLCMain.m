@@ -2,7 +2,7 @@
  * VLCMain.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2020 VLC authors and VideoLAN
- * $Id: 7f10c3978a3b3b2fa9ff2926577734bf137d93e1 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

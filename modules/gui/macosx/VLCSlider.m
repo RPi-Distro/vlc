@@ -2,7 +2,7 @@
  * VLCSlider.m
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: 8597cf98ef1213506ea2023eaafbf75c28403f90 $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *

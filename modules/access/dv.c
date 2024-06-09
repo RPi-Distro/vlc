@@ -2,7 +2,7 @@
  * dv.c: Digital video/Firewire input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id: b15b22f49080fecd841e153b6cf13cb8080170dc $
+ * $Id$
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *

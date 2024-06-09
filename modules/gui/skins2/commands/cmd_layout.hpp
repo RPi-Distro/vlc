@@ -2,7 +2,7 @@
  * cmd_layout.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: dec56d13a2c0a66db91882a80ead0502d184bf74 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

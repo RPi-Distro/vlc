@@ -2,7 +2,7 @@
  * vlm.cpp : VLM Management
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: e88cc63caa50b52e75579fa37d7fa0840379a6ea $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Jean-François Massol <jf.massol -at- gmail.com>

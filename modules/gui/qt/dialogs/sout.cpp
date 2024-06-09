@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  *
- * $Id: 1a6213bf35085f002096cfced0a7830a267aab40 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

@@ -2,7 +2,7 @@
  * cvdsub.c : CVD Subtitle decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 VLC authors and VideoLAN
- * $Id: dd6db458ad55e445d6e9643bed1000e484c3d2c4 $
+ * $Id$
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>

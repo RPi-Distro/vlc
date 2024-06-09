@@ -2,7 +2,7 @@
  * generic_layout.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e5f29030a6f8dff6fc185c557c72005f2a54adff $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

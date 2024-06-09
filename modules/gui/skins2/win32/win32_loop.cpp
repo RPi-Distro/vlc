@@ -2,7 +2,7 @@
  * win32_loop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: bbae954d8be14c32d7c2fe9a364540ba67139332 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

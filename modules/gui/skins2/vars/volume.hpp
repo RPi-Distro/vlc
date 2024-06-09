@@ -2,7 +2,7 @@
  * volume.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 8d2bfee72dd3410a7295e211aec8a852803df2ee $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

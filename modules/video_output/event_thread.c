@@ -2,7 +2,7 @@
  * event.c: event thread for broken old video output display plugins
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 817de309a8a8cdc47e11f52c0cb66f1061a0077f $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

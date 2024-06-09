@@ -2,7 +2,7 @@
  * libvlc.c: libvlc instances creation and deletion, interfaces handling
  *****************************************************************************
  * Copyright (C) 1998-2008 VLC authors and VideoLAN
- * $Id: 25f7c7d6d2e83d70b576e07e2fd501997dea5c47 $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

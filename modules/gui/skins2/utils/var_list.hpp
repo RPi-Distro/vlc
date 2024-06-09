@@ -2,7 +2,7 @@
  * var_list.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9ece48c7c3e6b75f8d07dacaed8a8a86b6697f0e $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

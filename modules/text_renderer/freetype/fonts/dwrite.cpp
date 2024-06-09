@@ -2,7 +2,7 @@
  * dwrite.cpp : DirectWrite font functions
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 21711a31b853726b3b03023aa40a7c285c5a5573 $
+ * $Id$
  *
  * Authors: Salah-Eddin Shaban <salah@videolan.org>
  *

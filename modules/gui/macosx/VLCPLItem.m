@@ -2,7 +2,7 @@
  * VLCPLItem.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: c23f18d1432679a0d744739d259cee4d197b8fcd $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

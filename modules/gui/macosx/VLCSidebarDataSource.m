@@ -2,7 +2,7 @@
 * VLCSidebarDataSource.m: MacOS X interface module
 *****************************************************************************
 * Copyright (C) 2021 VLC authors and VideoLAN
-* $Id: 136c3064a78333a15106627a44e876b618a250dc $
+* $Id$
 *
 * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
 *          Jon Lech Johansen <jon-vl@nanocrew.net>

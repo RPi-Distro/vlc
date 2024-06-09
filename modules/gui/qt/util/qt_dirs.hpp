@@ -2,7 +2,7 @@
  * qt_dirs.hpp : String Directory helpers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: a10cc0d186e8caa5b7621909dda1d26a3069d2c3 $
+ * $Id$
  *
  * Authors:       Jean-Baptiste Kempf <jb@videolan.org>
  *

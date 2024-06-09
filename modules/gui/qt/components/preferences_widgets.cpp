@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : Widgets for preferences displays
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: 64121b6dc14594cb5c84bd5e1d0a72d913f18183 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>

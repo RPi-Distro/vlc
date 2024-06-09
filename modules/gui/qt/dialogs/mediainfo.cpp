@@ -2,7 +2,7 @@
  * mediainfo.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: ff658b9ac5578b5f734944ad4cff9d063265a50c $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

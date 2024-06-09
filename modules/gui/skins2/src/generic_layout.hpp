@@ -2,7 +2,7 @@
  * generic_layout.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 8c4d4652de85a674d4b86346d796765c8a677842 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

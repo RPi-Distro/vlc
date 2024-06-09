@@ -2,7 +2,7 @@
  * qsv.c: mpeg4-part10/mpeg2 video encoder using Intel Media SDK
  *****************************************************************************
  * Copyright (C) 2013 VideoLabs
- * $Id: 9c0841c87d7e8076761ba40485b461fc44d37586 $
+ * $Id$
  *
  * Authors: Julien 'Lta' BALLET <contact@lta.io>
  *

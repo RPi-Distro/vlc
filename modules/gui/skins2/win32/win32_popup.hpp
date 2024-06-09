@@ -2,7 +2,7 @@
  * win32_popup.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d79eb9b0d3d2e98678fe0b50aa13bc7cb08ef1ba $
+ * $Id$
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *

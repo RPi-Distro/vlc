@@ -2,7 +2,7 @@
  * macosx.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: 904c36a311fc8407ad1226a04756633ca2be2ece $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Eric Petit <titer@m0k.org>

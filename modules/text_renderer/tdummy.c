@@ -2,7 +2,7 @@
  * tdummy.c : dummy text rendering functions
  *****************************************************************************
  * Copyright (C) 2000, 2001 VLC authors and VideoLAN
- * $Id: 38c1b807580da9e0da70aa55e8778fc6c522433a $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

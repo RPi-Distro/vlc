@@ -2,7 +2,7 @@
  * VLCSourceListBadgeButton.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2018 VLC authors and VideoLAN
- * $Id: edc6a2cc14efcbe472ace4966227e0f4bcd667d1 $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *

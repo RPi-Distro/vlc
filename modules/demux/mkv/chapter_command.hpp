@@ -2,7 +2,7 @@
  * chapter_command.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 56eff6a48d1a8da4cf60557c5f6f96275d916a61 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>

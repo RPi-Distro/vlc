@@ -2,7 +2,7 @@
  * lpcm.c: lpcm decoder/packetizer module
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 46b08e4d1ac6beb22ecf15b6694237a30ee6b07d $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Henri Fallon <henri@videolan.org>

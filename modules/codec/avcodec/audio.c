@@ -2,7 +2,7 @@
  * audio.c: audio decoder using libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2003 VLC authors and VideoLAN
- * $Id: 50a76c7a18e1b0d57c87153e5ea85fca7a7c8047 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

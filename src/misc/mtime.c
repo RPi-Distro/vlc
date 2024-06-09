@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: c7a41bcad8b0c2b170ccee9c871623f6ba713a3c $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Rémi Denis-Courmont

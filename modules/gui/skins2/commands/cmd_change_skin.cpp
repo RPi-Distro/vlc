@@ -2,7 +2,7 @@
  * cmd_change_skin.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: da59ec89eafe9a55618f072a809633d976d5bda2 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

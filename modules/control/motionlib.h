@@ -2,7 +2,7 @@
  * motion.h: laptop built-in motion sensors
  *****************************************************************************
  * Copyright (C) 2012 the VideoLAN team
- * $Id: 6292b698297076ebeeb1e932026d85141779a87a $
+ * $Id$
  *
  * Author: Pierre Ynard
  *

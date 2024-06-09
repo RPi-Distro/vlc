@@ -2,7 +2,7 @@
  * VLCPlaylistView.m: OutlineView subclass for the playlist
  *****************************************************************************
 * Copyright (C) 2003-2015 VLC authors and VideoLAN
- * $Id: 32aa821cb87ccbcda16067cfa9bcb9d842ec92ea $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videola/n dot org>
  *          Benjamin Pracht <bigben at videolab dot org>

@@ -2,7 +2,7 @@
  * var.c: object variables for input thread
  *****************************************************************************
  * Copyright (C) 2004-2007 VLC authors and VideoLAN
- * $Id: 631b571c19136a9aded81153190972cd92613619 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

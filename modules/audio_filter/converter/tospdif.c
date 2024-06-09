@@ -2,7 +2,7 @@
  * tospdif.c : encapsulates A/52 and DTS frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2002, 2006-2016 VLC authors and VideoLAN
- * $Id: 0c725d99e73333e71f56b63995e5802073be0946 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Stéphane Borel <stef@via.ecp.fr>

@@ -2,7 +2,7 @@
  *MainMenu.h: MacOS X interface module
  *****************************************************************************
  *Copyright (C) 2011-2018 Felix Paul Kühne
- *$Id: 24d559ba7e6dbe3259975da48df576e19538d706 $
+ *$Id$
  *
  *Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *

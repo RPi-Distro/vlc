@@ -2,7 +2,7 @@
  * os_graphics.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 22f7543f13139536ca861cc352f3d12e31988535 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

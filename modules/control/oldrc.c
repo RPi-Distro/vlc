@@ -2,7 +2,7 @@
  * oldrc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 1b56da681c58fa8b41e1958f9d01a2932904116d $
+ * $Id$
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -310,6 +310,7 @@ static int Activate( vlc_object_t *p_this )
             if( asprintf( &psz_backward_compat_host, "//%s", psz_host ) < 0 )
             {
                 free( psz_host );
+                free( psz_unix_path );
                 return VLC_EGENERIC;
             }
             free( psz_host );
@@ -326,6 +327,7 @@ static int Activate( vlc_object_t *p_this )
                       url.psz_host, url.i_port );
             vlc_UrlClean( &url );
             free( psz_host );
+            free( psz_unix_path );
             return VLC_EGENERIC;
         }
 

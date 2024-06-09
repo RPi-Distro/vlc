@@ -2,7 +2,7 @@
  * cdg.c : cdg file demux module for vlc
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: a750396067882f13fdf749ff7490fa355b6583c8 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir # via.ecp.fr>
  *

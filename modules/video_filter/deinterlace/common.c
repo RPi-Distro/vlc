@@ -2,7 +2,7 @@
  * common.c : Common helper function for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2000-2017 VLC authors and VideoLAN
- * $Id: 89155f4a4c4bac841c79410f50255d65549b7166 $
+ * $Id$
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Christophe Massiot <massiot@via.ecp.fr>

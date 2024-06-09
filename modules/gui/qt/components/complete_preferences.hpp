@@ -2,7 +2,7 @@
  * complete_preferences.hpp : Tree of modules for preferences
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: dae75bff5216048a0684ec42ed05f291bc170336 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

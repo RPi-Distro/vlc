@@ -2,7 +2,7 @@
  * VLCImageButton.m
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: d891b25ad53d41d99d155888d067bf0d89938ff5 $
+ * $Id$
  *
  * Authors: Cameron Mozie <camsw0rld14@gmail.com>
  *          Marvin Scholz <epirat07 at gmail dot com>

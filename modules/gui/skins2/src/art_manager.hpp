@@ -2,7 +2,7 @@
  * art_manager.hpp
  *****************************************************************************
  * Copyright (C) 2010 the VideoLAN team
- * $Id: 2d845c2ae225c2859e0156649bfb44bcd09f760c $
+ * $Id$
  *
  * Author: Erwan Tulou      <erwan10@vidoelan.org>
  *

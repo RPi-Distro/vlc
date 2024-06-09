@@ -2,7 +2,7 @@
  * cmd_layout.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 19214cb1afe39e7694c16b6d0dc51d0dd904a5ad $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

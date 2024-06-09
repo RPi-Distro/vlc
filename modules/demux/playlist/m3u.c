@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: fd370eee37dbffe8a689dd0811d231f4f0485134 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>

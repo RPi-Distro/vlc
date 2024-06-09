@@ -2,7 +2,7 @@
  * decoder_synchro.c : frame dropping routines
  *****************************************************************************
  * Copyright (C) 1999-2005 VLC authors and VideoLAN
- * $Id: 3abef0ecd7459958a5f4431c7b8a3b5d64b0818c $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>

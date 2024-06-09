@@ -2,7 +2,7 @@
  * dirac.c
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: 60f62c61930a639d0c1d54f5e22383c176263b72 $
+ * $Id$
  *
  * Authors: David Flynn <davidf@rd.bbc.co.uk>
  *

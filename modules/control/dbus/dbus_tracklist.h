@@ -4,7 +4,7 @@
  * Copyright © 2006-2008 Rafaël Carré
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
- * $Id: 894018bba3c94cd7c2cba0872f7a470101036fd5 $
+ * $Id$
  *
  * Authors:    Mirsal Ennaime <mirsal at mirsal fr>
  *             Rafaël Carré <funman at videolanorg>

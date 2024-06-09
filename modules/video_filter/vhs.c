@@ -2,7 +2,7 @@
  * vhs.c : VHS effect video filter
  *****************************************************************************
  * Copyright (C) 2013      Vianney Boyer
- * $Id: 2011da471d415328449a3dbf96bd91e48061ef10 $
+ * $Id$
  *
  * Authors: Vianney Boyer <vlcvboyer -at- gmail -dot- com>
  *

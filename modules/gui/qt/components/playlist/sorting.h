@@ -2,7 +2,7 @@
  * sorting.h : commun sorting & column display code
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team and AUTHORS
- * $Id: 6c1e93514af4ca1fd820ea81c20c3a1293409a8f $
+ * $Id$
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *

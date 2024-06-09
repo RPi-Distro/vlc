@@ -2,7 +2,7 @@
  * item.c: input_item management
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: 9257e8df42e58625da2a51855f72a9c7eda06e52 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

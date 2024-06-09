@@ -2,7 +2,7 @@
  *MainMenu.m: MacOS X interface module
  *****************************************************************************
  *Copyright (C) 2011-2018 Felix Paul Kühne
- *$Id: 736dd27b492cc7dc5f11bb393a2f8c5445a7d4c7 $
+ *$Id$
  *
  *Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *

@@ -2,7 +2,7 @@
  * window_manager.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7941cd5c6ea3999ce1c6c92a5209e0e8aa6030fe $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

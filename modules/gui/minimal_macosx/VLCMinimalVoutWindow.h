@@ -2,7 +2,7 @@
  * VLCMinimalVoutWindow.h: macOS minimal vout window
  *****************************************************************************
  * Copyright (C) 2007-2017 VLC authors and VideoLAN
- * $Id: 85957fb3b90d4923909531584d34c72102c65b7d $
+ * $Id$
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

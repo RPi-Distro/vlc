@@ -2,7 +2,7 @@
  * cmd_dvd.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9e9c5f80c506a48b380ac41a66e323e5ca0303a0 $
+ * $Id$
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *

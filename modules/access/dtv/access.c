@@ -32,6 +32,11 @@
 #ifdef HAVE_SEARCH_H
 #include <search.h>
 #endif
+#if defined(_WIN32)
+/* the Win32 prototype of lfind() expects an unsigned* for 'nelp' */
+# define lfind(a,b,c,d,e) \
+         lfind((a),(b), &(unsigned){ (*(c) > UINT_MAX) ? UINT_MAX : *(c) }, (d),(e))
+#endif
 
 #include "dtv/dtv.h"
 
@@ -687,7 +692,9 @@ static const char *var_InheritModulation (vlc_object_t *obj, const char *var)
         case 64:  str = "64QAM";  break;
         case 128: str = "128QAM"; break;
         case 256: str = "256QAM"; break;
-        default:  return "";
+        default:
+            free (mod);
+            return "";
     }
 
     msg_Warn (obj, "\"modulation=%s\" option is obsolete. "

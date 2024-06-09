@@ -2,7 +2,7 @@
  * vc1.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: 8f70154d8a605fe47883c2a817d72ed27a14078b $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

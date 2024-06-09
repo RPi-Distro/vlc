@@ -4,7 +4,7 @@
  * interface, such as command line.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 6155d5ab7c403055e5c01c5973a6a0192a22e816 $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *

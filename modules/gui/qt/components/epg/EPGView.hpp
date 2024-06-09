@@ -2,7 +2,7 @@
  * EPGView.hpp : EPGView
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: 2f04effb99b8381376e9d6eeb756100d4082af8c $
+ * $Id$
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *

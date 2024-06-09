@@ -2,7 +2,7 @@
  * os_tooltip.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 0e7fe5e2878b74f0d1c60cc6cacf3adbfa50a101 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

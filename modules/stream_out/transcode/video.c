@@ -2,7 +2,7 @@
  * video.c: transcoding stream output module (video)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 9070babb2d33cdc6bdf26acfa41a10d8abd94480 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

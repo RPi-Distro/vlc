@@ -2,7 +2,7 @@
  * mpeg4audio.c: parse and packetize an MPEG 4 audio stream
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 VLC authors and VideoLAN
- * $Id: 443800ccdf302848d86b2ce3fd26d84bedf81dc7 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>

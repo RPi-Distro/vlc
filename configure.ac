@@ -1,11 +1,11 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 1999-2023 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 1999-2024 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.20)
+AC_INIT(vlc, 3.0.21)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=20
+VERSION_REVISION=21
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -14,7 +14,7 @@ AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Vetinari"
-COPYRIGHT_YEARS="1996-2023"
+COPYRIGHT_YEARS="1996-2024"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -1824,7 +1824,7 @@ You can get an updated one from http://www.live555.com/liveMedia .])
         other_libs="$other_libs -lws2_32"
       ])
 
-      dnl We need to check for pic because live555 don't provide shared libs
+      dnl We need to check for pic because live555 do not provide shared libs
       dnl and we want to build a plugins so we need -fPIC on some arch.
       VLC_ADD_CXXFLAGS([live555], [${CPPFLAGS_live555}])
       VLC_ADD_LDFLAGS([live555], [${LDFLAGS_live555}])
@@ -1940,6 +1940,31 @@ AS_IF([test "$enable_v4l2" != "no"], [
   ])
 ])
 AM_CONDITIONAL(HAVE_V4L2, [test "${have_v4l2}" != "no"])
+
+dnl
+dnl  AMD Advanced Media Framework API
+dnl
+AC_ARG_ENABLE([amf-scaler], AS_HELP_STRING([--disable-amf-scaler],
+  [disable AMD Scaler API (default auto)]))
+have_amf_scaler="no"
+AS_IF([test "$enable_amf_scaler" != "no"], [
+  AC_CHECK_HEADERS([AMF/core/PropertyStorage.h AMF/components/HQScaler.h], [
+    have_amf_scaler="yes"
+    AC_DEFINE(HAVE_AMF_SCALER, 1, AMD HQScaler supported)
+  ])
+])
+AM_CONDITIONAL([HAVE_AMF_SCALER], [test "${have_amf_scaler}" != "no"])
+
+AC_ARG_ENABLE([amf-enhancer], AS_HELP_STRING([--disable-amf-enhancer],
+  [disable AMD Enhancer API (default auto)]))
+have_amf_enhancer="no"
+AS_IF([test "$enable_amf_enhancer" != "no"], [
+  AC_CHECK_HEADERS([AMF/core/PropertyStorage.h AMF/components/VQEnhancer.h], [
+    have_amf_enhancer="yes"
+    AC_DEFINE(HAVE_AMF_ENHANCER, 1, AMD VQ Enhancer supported)
+  ])
+])
+AM_CONDITIONAL([HAVE_AMF_ENHANCER], [test "${have_amf_enhancer}" != "no"])
 
 dnl
 dnl special access module for Blackmagic SDI cards
@@ -3370,6 +3395,7 @@ AS_IF([test "${enable_directx}" != "no"], [
 
   dnl Direct3D11
   AC_CHECK_HEADERS(d3d11.h, [
+    AC_CHECK_TYPES([D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS],,,[#include <d3d11.h>])
     VLC_ADD_PLUGIN([direct3d11 direct3d11_filters])
   ])
 
@@ -4196,7 +4222,7 @@ AC_ARG_ENABLE(libplacebo,
       [disable libplacebo support (default auto)])])
 
 AS_IF([test "$enable_libplacebo" != "no"], [
-  PKG_CHECK_MODULES([LIBPLACEBO], [libplacebo >= 0.2.1], [
+  PKG_CHECK_MODULES([LIBPLACEBO], [libplacebo >= 0.2.1 libplacebo < 6], [
     AC_DEFINE([HAVE_LIBPLACEBO], [1], [Define to 1 if libplacebo is enabled.])
   ], [
     AS_IF([test -n "${enable_libplacebo}"], [

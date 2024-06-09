@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: f6091530aa205b21f41121c436f6e5ca2b5e8807 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.

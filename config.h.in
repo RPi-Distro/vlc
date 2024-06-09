@@ -94,6 +94,21 @@
 /* Define to 1 if you have the <altivec.h> header file. */
 #undef HAVE_ALTIVEC_H
 
+/* Define to 1 if you have the <AMF/components/HQScaler.h> header file. */
+#undef HAVE_AMF_COMPONENTS_HQSCALER_H
+
+/* Define to 1 if you have the <AMF/components/VQEnhancer.h> header file. */
+#undef HAVE_AMF_COMPONENTS_VQENHANCER_H
+
+/* Define to 1 if you have the <AMF/core/PropertyStorage.h> header file. */
+#undef HAVE_AMF_CORE_PROPERTYSTORAGE_H
+
+/* AMD VQ Enhancer supported */
+#undef HAVE_AMF_ENHANCER
+
+/* AMD HQScaler supported */
+#undef HAVE_AMF_SCALER
+
 /* Define to 1 if you have the <ApplicationServices/ApplicationServices.h>
    header file. */
 #undef HAVE_APPLICATIONSERVICES_APPLICATIONSERVICES_H
@@ -150,6 +165,10 @@
 
 /* Define to 1 if you have the <d3d11.h> header file. */
 #undef HAVE_D3D11_H
+
+/* Define to 1 if the system has the type
+   `D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS'. */
+#undef HAVE_D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS
 
 /* Define to 1 if you have the <d3d9.h> header file. */
 #undef HAVE_D3D9_H

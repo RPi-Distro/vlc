@@ -5,7 +5,7 @@
  * Copyright © 2007-2010 Mirsal Ennaime
  * Copyright © 2009-2010 The VideoLAN team
  * Copyright © 2013      Alex Merry
- * $Id: cce16efefd500d9ff34ba08ccf4f68964ed234af $
+ * $Id$
  *
  * Authors:    Mirsal Ennaime <mirsal dot ennaime at gmailcom>
  *             Rafaël Carré <funman at videolanorg>

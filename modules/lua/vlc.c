@@ -2,7 +2,7 @@
  * vlc.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 4855ce862623ba74721521ad0aaae6bc6bb73b74 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 6232df132930c130e47957071613debf088631a1 $
+ * $Id$
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *

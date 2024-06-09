@@ -2,7 +2,7 @@
  * netconf.c : Network configuration
  *****************************************************************************
  * Copyright (C) 2013 VLC authors and VideoLAN
- * $Id: 6ab9044319325b7463e5a94f395b57f69c7541ad $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne # videolan org>
  *

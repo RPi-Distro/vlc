@@ -2,7 +2,7 @@
  * intf.c: interface configuration handling
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 7d7ac5029d3b5be18d526707551d18e9c7481208 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

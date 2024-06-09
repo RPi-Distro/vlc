@@ -2,7 +2,7 @@
  * mkv.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008 VLC authors and VideoLAN
- * $Id: 27a1566c4301c24a69dcaca84bff4097ee9855c2 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>

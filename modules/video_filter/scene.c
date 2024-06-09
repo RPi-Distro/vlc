@@ -2,7 +2,7 @@
  * scene.c : scene video filter (based on modules/video_output/image.c)
  *****************************************************************************
  * Copyright (C) 2004-2008 VLC authors and VideoLAN
- * $Id: 6ed0bfe62217a7eb0976ff4838518fbad1ae5cbd $
+ * $Id$
  *
  * Authors: Jean-Paul Saman <jpsaman@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>

@@ -3,7 +3,7 @@
  * EbmlParser for the matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 4a9325bf2382c06d92b20f023e225e5f94c7b4c4 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>

@@ -2,7 +2,7 @@
  * os_popup.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ce02aadf520276c2dd21b06941258433cad8c760 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

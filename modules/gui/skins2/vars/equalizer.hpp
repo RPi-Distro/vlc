@@ -2,7 +2,7 @@
  * equalizer.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1ed4d2c3ae073bb00b75434670792869b6bdb62c $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

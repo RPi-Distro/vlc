@@ -2,7 +2,7 @@
  * core.c management of the modules configuration
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: fe6abb6e98133c080aac231e242864397ae98d99 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

@@ -2,7 +2,7 @@
  * convert.cpp : Convertion dialogs
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 8a87518fa9429a57bc6d07ff1986cda14ab20f96 $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *

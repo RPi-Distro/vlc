@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2005 VLC authors and VideoLAN
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 5b946cf0eae402bc791f2700f7463d17484881f5 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

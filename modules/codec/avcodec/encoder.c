@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the libavcodec library
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 2b1c3604713d97875d572030b51909ec1281a8d0 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -588,8 +588,14 @@ int InitVideoEnc( vlc_object_t *p_this )
 
         if ( p_sys->b_mpeg4_matrix )
         {
-            p_context->intra_matrix = mpeg4_default_intra_matrix;
-            p_context->inter_matrix = mpeg4_default_non_intra_matrix;
+            p_context->intra_matrix = av_malloc( sizeof(mpeg4_default_intra_matrix) );
+            if ( p_context->intra_matrix )
+                memcpy( p_context->intra_matrix, mpeg4_default_intra_matrix,
+                        sizeof(mpeg4_default_intra_matrix));
+            p_context->inter_matrix = av_malloc( sizeof(mpeg4_default_non_intra_matrix) );
+            if ( p_context->inter_matrix )
+                memcpy( p_context->inter_matrix, mpeg4_default_non_intra_matrix,
+                        sizeof(mpeg4_default_non_intra_matrix));
         }
 
         if ( p_sys->b_pre_me )

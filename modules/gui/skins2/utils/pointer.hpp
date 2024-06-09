@@ -2,7 +2,7 @@
  * pointer.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 6c66f8d63fdb186f079b1dea850ed4bf2e8f7c11 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

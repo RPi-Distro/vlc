@@ -2,7 +2,7 @@
  * pva.c: PVA demuxer
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 5b517c44b4d0f14d2ee5c0e2c722ab9479ae8d88 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

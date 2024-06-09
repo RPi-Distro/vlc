@@ -2,7 +2,7 @@
  * vlc_sout.h : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2008 VLC authors and VideoLAN
- * $Id: 938315e8ce18dc40319e53bb235aab9b260c70cf $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>

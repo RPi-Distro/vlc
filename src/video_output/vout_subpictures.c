@@ -2,7 +2,7 @@
  * vout_subpictures.c : subpicture management functions
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: 68dde84113122a806104329c333905cd2e5e9748 $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

@@ -2,7 +2,7 @@
  * mpeg4video.c: mpeg 4 video packetizer
  *****************************************************************************
  * Copyright (C) 2001-2006 VLC authors and VideoLAN
- * $Id: c5a81e6f3a2fbd181a07d8bd1457f82a2d6ea52c $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>

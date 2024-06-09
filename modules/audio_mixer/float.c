@@ -2,7 +2,7 @@
  * float32.c : precise float32 audio volume implementation
  *****************************************************************************
  * Copyright (C) 2002 VLC authors and VideoLAN
- * $Id: 227069e696e063f017419d58b84612987b40627c $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

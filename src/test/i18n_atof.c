@@ -2,7 +2,7 @@
  * i18n_atof.c: Test for us_atof
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: f6c6e39797cf643b7adcbc6fc2df12d174d09720 $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by

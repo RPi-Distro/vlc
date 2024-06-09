@@ -2,7 +2,7 @@
  * playlist_item.hpp : Item for a playlist tree
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: b88314b1ffca7d34547186b84581198758c13a3e $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

@@ -2,7 +2,7 @@
  * CoreInteraction.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2021 Felix Paul Kühne
- * $Id: 88617267fe6903abdf4601a93a866722abe9114a $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *

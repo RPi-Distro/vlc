@@ -2,7 +2,7 @@
  * libvlc-module.c: Options for the core (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2009 VLC authors and VideoLAN
- * $Id: 56342523f397e237d600ed7099a6b16655e8598d $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

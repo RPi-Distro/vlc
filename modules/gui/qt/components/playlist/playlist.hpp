@@ -2,7 +2,7 @@
  * playlist.hpp : Playlist Widgets
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 64e7cc112b406d6e055e8729a9f8a55b5ba747d6 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

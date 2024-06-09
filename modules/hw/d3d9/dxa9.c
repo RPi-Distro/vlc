@@ -2,7 +2,7 @@
  * dxa9.c : DXVA2 GPU surface conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2015 VLC authors, VideoLAN and VideoLabs
- * $Id: eb6d31438d6614714c0dd3611615104d26d0755a $
+ * $Id$
  *
  * Authors: Steve Lhomme <robux4@gmail.com>
  *

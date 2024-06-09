@@ -2,7 +2,7 @@
  * vlc_subpicture.h: subpicture definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2009 VLC authors and VideoLAN
- * $Id: 6fd872d8cde8b15f9499746ae88ee113692b471f $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>

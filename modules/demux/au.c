@@ -2,7 +2,7 @@
  * au.c : au file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: d2cc2d50fb322f1ea2a8e5bd430d82ef6d066889 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

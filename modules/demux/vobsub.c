@@ -2,7 +2,7 @@
  * vobsub.c: Demux vobsub files.
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: c1e78e0e2290410cca6fd59c3c2bfed0724a41ce $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>

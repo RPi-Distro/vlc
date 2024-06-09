@@ -2,7 +2,7 @@
  * item.c : Playlist item creation/deletion/add/removal functions
  *****************************************************************************
  * Copyright (C) 1999-2007 VLC authors and VideoLAN
- * $Id: bcdacec43478245fe204c16575fa8345b4a96d8c $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>

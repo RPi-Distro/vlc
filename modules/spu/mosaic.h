@@ -2,7 +2,7 @@
  * mosaic.h:
  *****************************************************************************
  * Copyright (C) 2004-2008 VLC authors and VideoLAN
- * $Id: cc7533b3538bffcfc524fc1171586fd6d6a8bbe7 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>

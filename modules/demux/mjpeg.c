@@ -2,7 +2,7 @@
  * mjpeg.c : demuxes mjpeg webcam http streams
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: 2773d6bfea2bf75aa6f5b94fd1b88b6f6a2e5134 $
+ * $Id$
  *
  * Authors: Henry Jen (slowhog) <henryjen@ztune.net>
  *          Derk-Jan Hartman (thedj)

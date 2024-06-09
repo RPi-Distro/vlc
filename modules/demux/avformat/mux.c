@@ -2,7 +2,7 @@
  * mux.c: muxer using libavformat
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: c708276954ce930d5c8e4858efa4d13c80193f0a $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

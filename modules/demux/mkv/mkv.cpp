@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2005, 2008, 2010 VLC authors and VideoLAN
- * $Id: cce9e3400270c52cde7eb0478c7e45d4315bc90d $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>

@@ -2,7 +2,7 @@
  * stream_io_callback.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004, 2010 VLC authors and VideoLAN
- * $Id: af9c2eab460f400e6ec8d09b45af8207335a27c8 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>

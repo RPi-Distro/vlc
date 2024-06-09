@@ -139,6 +139,7 @@ vlc_module_begin()
         set_subcategory( SUBCAT_INPUT_ACCESS )
         set_callbacks( Access::Open, Access::Close )
         set_capability( "access", 0 )
+        add_shortcut( "upnp", "upnps" )
 
     VLC_SD_PROBE_SUBMODULE
 vlc_module_end()
@@ -350,17 +351,31 @@ bool MediaServerList::addServer( MediaServerDesc* desc )
             free( psz_playlist_option );
         }
     } else {
-        char* psz_mrl;
-        // We might already have some options specified in the location.
-        char opt_delim = desc->location.find( '?' ) == std::string::npos ? '?' : '&';
-        if( asprintf( &psz_mrl, "upnp://%s%cObjectID=0", desc->location.c_str(), opt_delim ) < 0 )
-            return false;
+        const auto loc_starts_with = [desc](const char *s) {
+            return desc->location.compare(0, strlen(s), s) == 0;
+        };
 
-        p_input_item = input_item_NewDirectory( psz_mrl,
+        if ( !loc_starts_with("http://") && !loc_starts_with("https://") )
+        {
+            msg_Warn( m_sd, "Unexpected underlying protocol, the UPNP module "
+                      "fully supports HTTP and has partial support for HTTPS" );
+            return false;
+        } 
+
+        std::string mrl = desc->location;
+
+        // Replace the scheme to trigger the directory access.
+        mrl.replace( 0, 4, "upnp" );
+
+        // Forge a root object ID in the MRL, this is used in the dir access.
+        if ( desc->location.find( '?' ) == std::string::npos )
+            mrl += "?ObjectID=0";
+        else 
+            mrl += "&ObjectID=0";
+
+        p_input_item = input_item_NewDirectory( mrl.c_str(),
                                                 desc->friendlyName.c_str(),
                                                 ITEM_NET );
-        free( psz_mrl );
-
         if ( !p_input_item )
             return false;
 
@@ -953,8 +968,17 @@ namespace
             if ( objectID == NULL || title == NULL )
                 return NULL;
 
+            char *encoded_id = vlc_uri_encode( objectID );
+            if ( unlikely(encoded_id == NULL) )
+                return NULL;
+
+            const char opt_delim = strrchr( psz_root, '?' ) == NULL ? '?' : '&';
+
             char* psz_url;
-            if( asprintf( &psz_url, "upnp://%s?ObjectID=%s", psz_root, objectID ) < 0 )
+            const int ret = asprintf( &psz_url, "%s%cObjectID=%s", psz_root,
+                                      opt_delim, encoded_id );
+            free( encoded_id );
+            if( ret < 0 )
                 return NULL;
 
             input_item_t* p_item = input_item_NewDirectory( psz_url, title, ITEM_NET );
@@ -1024,15 +1048,17 @@ MediaServer::MediaServer( stream_t *p_access, input_item_node_t *node )
     , m_node( node )
 
 {
-    m_psz_root = strdup( p_access->psz_location );
+    m_psz_root = strdup( p_access->psz_url );
     char* psz_objectid = strstr( m_psz_root, "ObjectID=" );
     if ( psz_objectid != NULL )
     {
         // Remove this parameter from the URL, since it might cause some servers to fail
         // Keep in mind that we added a '&' or a '?' to the URL, so remove it as well
         *( psz_objectid - 1) = 0;
-        m_psz_objectId = &psz_objectid[strlen( "ObjectID=" )];
+        m_psz_objectId = vlc_uri_decode( &psz_objectid[strlen("ObjectID=")] );
     }
+
+    m_original_url = std::string( m_psz_root ).replace(0, 4, "http");
 }
 
 MediaServer::~MediaServer()
@@ -1224,7 +1250,7 @@ IXML_Document* MediaServer::_browseAction( const char* psz_object_id_,
      * interrupted by vlc_interrupt_kill */
     i11eCb = new Upnp_i11e_cb( sendActionCb, &p_response );
     i_res = UpnpSendActionAsync( sys->p_upnp->handle(),
-              m_psz_root,
+              m_original_url.c_str(),
               CONTENT_DIRECTORY_SERVICE_TYPE,
               NULL, /* ignored in SDK, must be NULL */
               p_action,

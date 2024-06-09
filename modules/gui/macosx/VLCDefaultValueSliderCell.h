@@ -2,7 +2,7 @@
  * VLCDefaultValueSliderCell.h: SliderCell subclass for VLCDefaultValueSlider
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: a907faabfb1759e841b3450a3fdb199b2be0f8ea $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 -at- gmail -dot- com>
  *

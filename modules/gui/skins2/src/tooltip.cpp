@@ -2,7 +2,7 @@
  * tooltip.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 20888c8d2532f41119623f5c4011ec9e20777ec9 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

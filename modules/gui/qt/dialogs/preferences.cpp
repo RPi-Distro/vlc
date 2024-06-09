@@ -2,7 +2,7 @@
  * preferences.cpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 110c60d1b6832d97aa7ed4e1f73e4fc9af4023d3 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

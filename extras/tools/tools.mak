@@ -9,14 +9,14 @@ TARBALLS := $(TOOLS)
 # common rules
 #
 
-ifeq ($(shell curl --version >/dev/null 2>&1 || echo FAIL),)
+ifeq ($(shell command -v curl >/dev/null 2>&1 || echo FAIL),)
 download = curl -f -L -- "$(1)" > "$@.tmp" && touch $@.tmp && mv $@.tmp $@
-else ifeq ($(shell wget --version >/dev/null 2>&1 || echo FAIL),)
+else ifeq ($(shell command -v wget >/dev/null 2>&1 || echo FAIL),)
 download = rm -f $@.tmp && \
 	wget --passive -c -p -O $@.tmp "$(1)" && \
 	touch $@.tmp && \
 	mv $@.tmp $@
-else ifeq ($(which fetch >/dev/null 2>&1 || echo FAIL),)
+else ifeq ($(shell command -v fetch >/dev/null 2>&1 || echo FAIL),)
 download = rm -f $@.tmp && \
 	fetch -p -o $@.tmp "$(1)" && \
 	touch $@.tmp && \
@@ -25,11 +25,11 @@ else
 download = $(error Neither curl nor wget found!)
 endif
 
-ifeq ($(shell sha512sum --version >/dev/null 2>&1 || echo FAIL),)
-SHA512SUM = sha512sum --check
-else ifeq ($(shell shasum --version >/dev/null 2>&1 || echo FAIL),)
+ifeq ($(shell command -v sha512sum >/dev/null 2>&1 || echo FAIL),)
+SHA512SUM = sha512sum -c
+else ifeq ($(shell command -v shasum >/dev/null 2>&1 || echo FAIL),)
 SHA512SUM = shasum -a 512 --check
-else ifeq ($(shell openssl version >/dev/null 2>&1 || echo FAIL),)
+else ifeq ($(shell command -v openssl >/dev/null 2>&1 || echo FAIL),)
 SHA512SUM = openssl dgst -sha512
 else
 SHA512SUM = $(error SHA-512 checksumming not found!)
@@ -127,10 +127,11 @@ libtool-$(LIBTOOL_VERSION).tar.gz:
 libtool: libtool-$(LIBTOOL_VERSION).tar.gz
 	$(UNPACK)
 	(cd $(UNPACK_DIR) && chmod u+w build-aux/ltmain.sh)
-	$(APPLY) $(TOOLS)/libtool-2.4.6-bitcode.patch
-	$(APPLY) $(TOOLS)/libtool-2.4.6-san.patch
-	$(APPLY) $(TOOLS)/libtool-2.4.6-clang-libs.patch
-	$(APPLY) $(TOOLS)/libtool-2.4.6-response-files.patch
+	$(APPLY) $(TOOLS)/libtool-2.4.7-bitcode.patch
+	$(APPLY) $(TOOLS)/libtool-2.4.7-clang-libs.patch
+	$(APPLY) $(TOOLS)/libtool-2.4.7-response-files.patch
+	$(APPLY) $(TOOLS)/libtool-2.4.7-lpthread.patch
+	$(APPLY) $(TOOLS)/libtool-2.4.7-embed-bitcode.patch
 	$(MOVE)
 
 .buildlibtool: libtool .automake .help2man
@@ -220,8 +221,6 @@ m4-$(M4_VERSION).tar.gz:
 
 m4: m4-$(M4_VERSION).tar.gz
 	$(UNPACK)
-	$(APPLY) $(TOOLS)/bison-macOS-c41f233c.patch
-	$(APPLY) $(TOOLS)/bison-macOS-7df04f9.patch
 	$(MOVE)
 
 .buildm4: m4

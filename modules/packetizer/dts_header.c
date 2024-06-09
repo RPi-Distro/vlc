@@ -2,7 +2,7 @@
  * dts_header.c: parse DTS audio headers info
  *****************************************************************************
  * Copyright (C) 2004-2009 VLC authors and VideoLAN
- * $Id: 53249dd63765d769c791fa40e028a49d092bbfcd $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar

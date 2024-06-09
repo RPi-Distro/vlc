@@ -2,7 +2,7 @@
  * virtual_segment.hpp : virtual segment implementation in the MKV demuxer
  *****************************************************************************
  * Copyright © 2003-2011 VideoLAN and VLC authors
- * $Id: c9a37cbf87f55897bd7045a5269e674c629a8210 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>

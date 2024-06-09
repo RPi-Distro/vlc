@@ -2,7 +2,7 @@
  * edummy.c: dummy encoder plugin for vlc.
  *****************************************************************************
  * Copyright (C) 2002 VLC authors and VideoLAN
- * $Id: 46b280d809827b9aa15179c3a9b989489f867ab0 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

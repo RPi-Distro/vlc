@@ -2,7 +2,7 @@
  * vlc_timestamp_helper.h : timestamp handling helpers
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: a13bee1e8448c47e35c45211724b3adceb47fcb0 $
+ * $Id$
  *
  * Authors: Felix Abecassis <felix.abecassis@gmail.com>
  *

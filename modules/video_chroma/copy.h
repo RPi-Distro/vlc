@@ -2,7 +2,7 @@
  * copy.h: Fast YV12/NV12 copy
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 6c438378ef5152f0dff00cc450a22ba4e6cd625a $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir_AT_ videolan _DOT_ org>
  *

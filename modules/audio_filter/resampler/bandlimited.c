@@ -2,7 +2,7 @@
  * bandlimited.c : band-limited interpolation resampler
  *****************************************************************************
  * Copyright (C) 2002, 2006 VLC authors and VideoLAN
- * $Id: abd8a5016143701d2c8e9ed88eefe62348dd715c $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

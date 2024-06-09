@@ -2,7 +2,7 @@
  * asx.c : ASX playlist format import
  *****************************************************************************
  * Copyright (C) 2005-2013 VLC authors and VideoLAN
- * $Id: 00463079e01dbd03ac8e4337db56a3f608d644c7 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *

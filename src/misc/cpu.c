@@ -2,7 +2,7 @@
  * cpu.c: CPU detection code
  *****************************************************************************
  * Copyright (C) 1998-2004 VLC authors and VideoLAN
- * $Id: 3aec22ce881c8e4509642d6b02cf4dd30966447c $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Christophe Massiot <massiot@via.ecp.fr>

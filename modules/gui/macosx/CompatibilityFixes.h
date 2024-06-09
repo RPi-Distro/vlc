@@ -2,7 +2,7 @@
  * CompatibilityFixes.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2020 VLC authors and VideoLAN
- * $Id: 479646abb60a0f5f892e1e11e2c445264bdc574a $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Marvin Scholz <epirat07 -at- gmail -dot- com>

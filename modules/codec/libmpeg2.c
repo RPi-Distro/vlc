@@ -2,7 +2,7 @@
  * libmpeg2.c: mpeg2 video decoder module making use of libmpeg2.
  *****************************************************************************
  * Copyright (C) 1999-2001 VLC authors and VideoLAN
- * $Id: 8266f0b728309cf02271b3701031d2ec4bbc0fb2 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>

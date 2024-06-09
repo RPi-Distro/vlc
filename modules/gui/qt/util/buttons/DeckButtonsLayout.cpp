@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011 VideoLAN
- * $Id: b236a61fe30bfd625ecfa1633b91c9c4cbab6c37 $
+ * $Id$
  *
  * Authors: Filipe Azevedo, aka PasNox
  *

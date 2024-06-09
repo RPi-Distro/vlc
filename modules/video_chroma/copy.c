@@ -2,7 +2,7 @@
  * copy.c: Fast YV12/NV12 copy
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 08f41f164b3f805750c6aa4281c4ed7271b0a0c4 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *          Victorien Le Couviour--Tuffet <victorien.lecouviour.tuffet@gmail.com>

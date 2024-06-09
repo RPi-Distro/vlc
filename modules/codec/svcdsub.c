@@ -2,7 +2,7 @@
  * svcdsub.c : Overlay Graphics Text (SVCD subtitles) decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 VLC authors and VideoLAN
- * $Id: a4cbe27cd65e32cfd71922dca5ec9ab659cdfbb5 $
+ * $Id$
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>

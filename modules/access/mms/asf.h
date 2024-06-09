@@ -2,7 +2,7 @@
  * asf.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001-2004 VLC authors and VideoLAN
- * $Id: 66401eb1772a2511d52ecada140c643578af5b5e $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

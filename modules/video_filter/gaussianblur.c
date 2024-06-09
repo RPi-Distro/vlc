@@ -2,7 +2,7 @@
  * gaussianblur.c : gaussian blur video filter
  *****************************************************************************
  * Copyright (C) 2000-2007 VLC authors and VideoLAN
- * $Id: de3bcf4c69512ff10b66dd2a816ffd38ff4c9cdd $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *

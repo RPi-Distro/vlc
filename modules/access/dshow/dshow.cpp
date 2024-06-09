@@ -2,7 +2,7 @@
  * dshow.cpp : DirectShow access and access_demux module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2004, 2006, 2008, 2010 the VideoLAN team
- * $Id: 8fd2c95ed623a78651b2d929f5b6922236403630 $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *         Damien Fouilleul <damienf@videolan.org>

@@ -2,7 +2,7 @@
  * configuration.c: Generic lua<->vlc config interface
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: bbb200527c0f20a71b5ef704fd363d8890d8403d $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *

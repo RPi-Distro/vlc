@@ -2,7 +2,7 @@
  * cmd_snapshot.cpp
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 33107c5690f24548ce56354c75456bff63237221 $
+ * $Id$
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *

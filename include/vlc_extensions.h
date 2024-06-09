@@ -2,7 +2,7 @@
  * vlc_extensions.h: Extensions (meta data, web information, ...)
  *****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 8523fe6c4ce8a644a68db95520bf16f4c00ddb75 $
+ * $Id$
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *

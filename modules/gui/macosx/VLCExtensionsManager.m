@@ -2,7 +2,7 @@
  * VLCExtensionsManager.m: Extensions manager for Cocoa
  ****************************************************************************
  * Copyright (C) 2009-2012 VideoLAN and authors
- * $Id: 30564517b994a2160657b283a4099d2b7f1f846d $
+ * $Id$
  *
  * Authors: Brendon Justin <brendonjustin@gmail.com>,
  *          Jean-Philippe André < jpeg # videolan.org >

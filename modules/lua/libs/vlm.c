@@ -2,7 +2,7 @@
  * vlm.c: Generic lua VLM wrapper
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 7b2b7083062516e0406b2fa4a88e44eb1f1e98c7 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *

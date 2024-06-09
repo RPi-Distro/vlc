@@ -2,7 +2,7 @@
  * ntservice.c: Windows NT/2K/XP service interface
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: c304e056bfde61b6bf353ab88f7e64a48bdfeb8d $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -154,12 +154,14 @@ static void *Run( void *data )
     if( var_InheritBool( p_intf, "ntservice-install" ) )
     {
         NTServiceInstall( p_intf );
+        free( p_intf->p_sys->psz_service );
         return NULL;
     }
 
     if( var_InheritBool( p_intf, "ntservice-uninstall" ) )
     {
         NTServiceUninstall( p_intf );
+        free( p_intf->p_sys->psz_service );
         return NULL;
     }
 

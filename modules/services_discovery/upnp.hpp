@@ -2,7 +2,7 @@
  * upnp.hpp :  UPnP discovery module (libupnp) header
  *****************************************************************************
  * Copyright (C) 2004-2016 VLC authors and VideoLAN
- * $Id: 682ac96879144dcf905cf4c64236c74dbd5e0a20 $
+ * $Id$
  *
  * Authors: Rémi Denis-Courmont (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -164,6 +164,7 @@ private:
 private:
     char* m_psz_root;
     char* m_psz_objectId;
+    std::string m_original_url;
     stream_t* m_access;
     input_item_node_t* m_node;
 };

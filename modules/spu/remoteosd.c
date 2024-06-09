@@ -2,7 +2,7 @@
  * remoteosd.c: remote osd over vnc filter module
  *****************************************************************************
  * Copyright (C) 2007-2008 Matthias Bauer
- * $Id: 9aaa4d06a4fedfe6ce4ae9ff4248bf6041745424 $
+ * $Id$
  *
  * Authors: Matthias Bauer <matthias dot bauer #_at_# gmx dot ch>
  *

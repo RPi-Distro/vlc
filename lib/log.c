@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005 VLC authors and VideoLAN
  *
- * $Id: f3a769a9ba21ee635c172afbeb8fe51074975c4a $
+ * $Id$
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *

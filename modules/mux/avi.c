@@ -2,7 +2,7 @@
  * avi.c
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 1a44f8a301affdae572c25fd5b4f9e8f8f752474 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

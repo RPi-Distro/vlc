@@ -2,7 +2,7 @@
  * var_bool.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: dfd21851de99617aa4f96a11e43caf28eb9ca8e1 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

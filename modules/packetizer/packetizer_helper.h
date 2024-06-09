@@ -2,7 +2,7 @@
  * packetizer_helper.h: Packetizer helpers
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 42b881bcd068fc092c86da01f8feb850cd689b35 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

@@ -2,7 +2,7 @@
  * mpegaudio.c: parse MPEG audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2016 VLC authors and VideoLAN
- * $Id: 99b9a0220e7fae6ecb19d67c97c61364b3f69d7d $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

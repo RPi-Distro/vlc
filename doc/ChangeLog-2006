@@ -25126,9 +25126,3 @@ Date:   Mon Jan 2 09:01:27 2006 +0000
 
       * src/misc/image.c: don't forget to free the temporary pictures or we'll
         rapidly leak gigabytes of memory.
-
-commit 11435ffa1b22abb7ec126edd5042b1d558d439e4
-Author: Clément Stenac <zorglub@videolan.org>
-Date:   Sun Jan 1 13:39:21 2006 +0000
-
-    Improve output

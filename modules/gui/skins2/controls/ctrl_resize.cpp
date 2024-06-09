@@ -2,7 +2,7 @@
  * ctrl_resize.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7992d4b0fef4b983f731c09962b182da87fe4d14 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * dynamicoverlay_buffer.c : dynamic overlay buffer
  *****************************************************************************
  * Copyright (C) 2008-2009 VLC authors and VideoLAN
- * $Id: 9d0fc34cd5409e4c311e6eb2f3d1b727cd8b7b38 $
+ * $Id$
  *
  * Author: Søren Bøg <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>

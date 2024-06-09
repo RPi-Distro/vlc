@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2003 ANEVIA
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: beb8e26d5a62fd2d20397b0badab4cfe2e0e8d6e $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien LUCAS <damien.lucas@anevia.com>

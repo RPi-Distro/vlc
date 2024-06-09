@@ -2,7 +2,7 @@
  * aa.c: "vout display" module using aalib
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: e9146d082c781d6a63aacbe52ee4fc5a6e1eafff $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

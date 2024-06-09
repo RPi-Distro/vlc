@@ -2,7 +2,7 @@
  * libvlc_audio.c: New libvlc audio control API
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 877666473a15ad8687070fe064243b3049d874bf $
+ * $Id$
  *
  * Authors: Filippo Carone <filippo@carone.org>
  *          Jean-Paul Saman <jpsaman _at_ m2x _dot_ nl>

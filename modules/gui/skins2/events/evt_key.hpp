@@ -2,7 +2,7 @@
  * evt_key.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 8206ae551b2eb01a756e71f7edad888d06eb002d $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

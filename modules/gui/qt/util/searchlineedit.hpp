@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: fde9c16b0c5fa2af22b259e58c77e971fc2b45ef $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin

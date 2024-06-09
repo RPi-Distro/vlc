@@ -2,7 +2,7 @@
  * cache.c: Plugins cache
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: a9ce8efa9fc06ac1a333a10af9a5f00571afbaca $
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>

@@ -2,7 +2,7 @@
  * playlist_internal.h : Playlist internals
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 3194aaab1388debcbd8272fcc44529da8dc4f21b $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>

@@ -2,7 +2,7 @@
  * VLCPopupPanelController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012 Felix Paul Kühne
- * $Id: 37b67c6e73c21bfdd38a39cad150bbf2b4f0a4b3 $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *

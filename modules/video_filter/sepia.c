@@ -2,7 +2,7 @@
  * sepia.c : Sepia video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2010 VLC authors and VideoLAN
- * $Id: 2a00130fbfe19beefd163fd8c86ca584ac0d561c $
+ * $Id$
  *
  * Authors: Branko Kokanovic <branko.kokanovic@gmail.com>
  *

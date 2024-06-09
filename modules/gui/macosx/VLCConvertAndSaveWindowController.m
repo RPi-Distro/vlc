@@ -2,7 +2,7 @@
  * VLCConvertAndSaveWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012 Felix Paul Kühne
- * $Id: e78c7cc962054a5ac18a35869430b33c382e6348 $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *

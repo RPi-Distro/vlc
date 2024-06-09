@@ -2,7 +2,7 @@
  * vlc_picture.h: picture definitions
  *****************************************************************************
  * Copyright (C) 1999 - 2009 VLC authors and VideoLAN
- * $Id: 5d849f1fcbf9e0a9c8458e75b9cc373a474555f3 $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>

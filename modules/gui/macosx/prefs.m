@@ -2,7 +2,7 @@
  * prefs.m: MacOS X module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2018 VLC authors and VideoLAN
- * $Id: de47c488977b3912c647a1d5e4d1e335b4554d4f $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>

@@ -2,7 +2,7 @@
  * interlacing.c
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: f07ef8ef5a016521bd4732f90185027cb5dda9ed $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

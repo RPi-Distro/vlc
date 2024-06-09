@@ -2,7 +2,7 @@
  * cmd_generic.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 3180492d9619c21b551e3a8db78c384459fe49a2 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

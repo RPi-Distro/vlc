@@ -2,7 +2,7 @@
  * skin_parser.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: a284b35d58a096760feeb10c8d51a449b5b6aac0 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

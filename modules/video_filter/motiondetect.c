@@ -2,7 +2,7 @@
  * motiondetect.c : Second version of a motion detection plugin.
  *****************************************************************************
  * Copyright (C) 2000-2008 VLC authors and VideoLAN
- * $Id: 6a61101a6500b6ba1100f59cc09ee51079956df8 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *

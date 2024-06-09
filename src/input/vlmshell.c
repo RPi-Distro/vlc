@@ -2,7 +2,7 @@
  * vlmshell.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 VLC authors and VideoLAN
- * $Id: 51e6a123254a9224c59f7ef3b139860ab5da862a $
+ * $Id$
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>

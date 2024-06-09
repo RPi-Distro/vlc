@@ -2,7 +2,7 @@
  * buffer.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 6c0c1478d683294d1359fddea901db7b803c19c3 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

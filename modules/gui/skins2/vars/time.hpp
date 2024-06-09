@@ -2,7 +2,7 @@
  * time.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7a85703f8650e5f4ec39055df5cb7754d791d06e $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

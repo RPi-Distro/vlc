@@ -2,7 +2,7 @@
  * event.c: Events
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 7eb4b598a3a002a2ff701edf29b2be18bfbb7a1f $
+ * $Id$
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org>
  *

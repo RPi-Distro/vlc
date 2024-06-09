@@ -2,7 +2,7 @@
  * info_panels.cpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 161f593942d9fe6de079130c732513920c6ac224 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

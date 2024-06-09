@@ -28349,15 +28349,3 @@ Date:   Wed Jan 1 18:38:19 2014 +0200
     libvlc: remove "evil" daemon global variable and clean up
     
     (The unlikely corner case of ENOMEM remains unhandled/unfixed.)
-
-commit ec44ae90ab3beb3f06371d506fd3e2ad104f9796
-Author: Rémi Denis-Courmont <remi@remlab.net>
-Date:   Wed Jan 1 17:57:26 2014 +0200
-
-    Remove stray comment
-
-commit 33d54e40ebfc58ecffe482a25f817c0b550c63b9
-Author: Jean-Baptiste Kempf <jb@videolan.org>
-Date:   Wed Jan 1 11:31:17 2014 +0100
-
-    Happy New Year 2014!

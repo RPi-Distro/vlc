@@ -2,7 +2,7 @@
  * file.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: ef4f2d18d1c8997cf1f217e7198e8f1c70504d62 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

@@ -2,7 +2,7 @@
  * mms.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 37e5b728a70bc9be1de581e055bb5cf0b5354aab $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

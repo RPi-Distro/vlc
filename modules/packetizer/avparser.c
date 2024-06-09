@@ -2,7 +2,7 @@
  * avparser.c
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 6fbd8a227124d9bcb4f39e28b87817586c2eab45 $
+ * $Id$
  *
  * Authors: Denis Charmet <typx@videolan.org>
  *

@@ -2,7 +2,7 @@
  * access.c
  *****************************************************************************
  * Copyright (C) 1999-2008 VLC authors and VideoLAN
- * $Id: 2e7c1aea1da5cdcb2ea22daf3e08ce3cee6844e7 $
+ * $Id$
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

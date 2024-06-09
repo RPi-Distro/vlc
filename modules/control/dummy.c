@@ -2,7 +2,7 @@
  * intf_dummy.c: dummy interface plugin
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 4e0406dd5a6daa5fa744bb6a7c7d34f680d996f7 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

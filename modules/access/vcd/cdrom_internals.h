@@ -2,7 +2,7 @@
  * cdrom_internals.h: cdrom tools private header
  *****************************************************************************
  * Copyright (C) 1998-2001 VLC authors and VideoLAN
- * $Id: a9a1f69da1d8be9f890d8b0c5d3faac95fdb0313 $
+ * $Id$
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>

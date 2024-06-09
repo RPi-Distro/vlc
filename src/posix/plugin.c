@@ -2,7 +2,7 @@
  * plugin.c : Low-level dynamic library handling
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 4f30da184e335b0f7a96d078191097aa0b3a762c $
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>

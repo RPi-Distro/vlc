@@ -2,7 +2,7 @@
  * vlc_media_library.h: SQL-based media library
  *****************************************************************************
  * Copyright (C) 2008-2010 the VideoLAN Team and AUTHORS
- * $Id: 640c7191582154036750ceed3898da0d4e184764 $
+ * $Id$
  *
  * Authors: Antoine Lejeune <phytos@videolan.org>
  *          Jean-Philippe André <jpeg@videolan.org>

@@ -2,7 +2,7 @@
  * ctrl_tree.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 15284a429e402d312164e47f888a3a9485cf5009 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>

@@ -2,7 +2,7 @@
  * help.hpp : Help and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 1293be4e1fbe450ed6b8521f7ffb5ac671a2f1e8 $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *

@@ -2,7 +2,7 @@
  * archive.c: libarchive based stream filter
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: af69a29094c5c07eb42945959d4fd36669954937 $
+ * $Id$
  *
  * Authors: Filip Roséen <filip@atch.se>
  *

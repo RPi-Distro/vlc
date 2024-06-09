@@ -2,7 +2,7 @@
  * normvol.c: volume normalizer
  *****************************************************************************
  * Copyright (C) 2001, 2006 VLC authors and VideoLAN
- * $Id: 428529f146f5d1aa88cc40fc167d8a77eec49ef9 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

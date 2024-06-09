@@ -2,7 +2,7 @@
  * sd.c: Services discovery related functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: e0e3f91f8a84326fc997eacdc5778d5cf8096445 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Fabio Ritrovato <sephiroth87 at videolan dot org>

@@ -2,7 +2,7 @@
  * playlist.c
  *****************************************************************************
  * Copyright (C) 2007-2011 the VideoLAN team
- * $Id: 5cf879ea7aa5b04114c6d4c8690c2bf56cc74809 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *

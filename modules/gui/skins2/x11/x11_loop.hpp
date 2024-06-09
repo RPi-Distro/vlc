@@ -2,7 +2,7 @@
  * x11_loop.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a858a33d22d8229f29e4300065355a132e7eca5a $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

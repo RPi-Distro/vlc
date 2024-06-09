@@ -2,7 +2,7 @@
  * VLCTimeField.m: NSTextField subclass for playback time fields
  *****************************************************************************
  * Copyright (C) 2003-2017 VLC authors and VideoLAN
- * $Id: ed482d7ab00a5549cf40aff8cc1bf61612d1a0a0 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

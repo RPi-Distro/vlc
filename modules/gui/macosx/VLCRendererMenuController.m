@@ -2,7 +2,7 @@
  * VLCRendererMenuController.m: Controller class for the renderer menu
  *****************************************************************************
  * Copyright (C) 2016-2018 VLC authors and VideoLAN
- * $Id: 725275bf8183a311086886f8404c1dea0da4d340 $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *          Felix Paul Kühne <fkuehne -at- videolan -dot- org>

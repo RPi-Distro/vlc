@@ -2,7 +2,7 @@
  * gradfun.c: wrapper for the gradfun filter from libav
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 8ebb95d0aa0aa6210ba4a2a9a3a5de5ab6a3d8ec $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

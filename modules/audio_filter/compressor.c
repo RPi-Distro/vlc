@@ -2,7 +2,7 @@
  * compressor.c: dynamic range compressor, ported from plugins from LADSPA SWH
  *****************************************************************************
  * Copyright (C) 2010 Ronald Wright
- * $Id: 6a7f726f793c40511f1d1574334e56b47baa559a $
+ * $Id$
  *
  * Author: Ronald Wright <logiconcepts819@gmail.com>
  * Original author: Steve Harris <steve@plugin.org.uk>

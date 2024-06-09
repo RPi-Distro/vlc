@@ -2,7 +2,7 @@
  * html.c : HTML playlist export module
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: d416651aab28c3160c3aaf6c56ac918bc4fa4224 $
+ * $Id$
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *

@@ -2,7 +2,7 @@
  * error.c: error handling routine
  *****************************************************************************
  * Copyright (C) 2002-2004 VLC authors and VideoLAN
- * $Id: 7cd911483937e8f30d10d3e4e092b4cd441f642c $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

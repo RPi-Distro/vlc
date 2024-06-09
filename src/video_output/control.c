@@ -2,7 +2,7 @@
  * control.c : vout internal control
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: 6390f480c840a047aa223dee3dca6b15a799f1af $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

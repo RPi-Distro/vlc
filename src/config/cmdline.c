@@ -2,7 +2,7 @@
  * cmdline.c: command line parsing
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: 535306cc1c6a683f2d6f4fb062ceff9734cabab7 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

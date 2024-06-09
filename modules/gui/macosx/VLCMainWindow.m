@@ -2,7 +2,7 @@
  * VLCMainWindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2018 VLC authors and VideoLAN
- * $Id: 2acd616f70fa6a3712857a8b1c77b4144e223b4a $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jon Lech Johansen <jon-vl@nanocrew.net>

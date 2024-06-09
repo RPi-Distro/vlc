@@ -2,7 +2,7 @@
  * qvlcapp.hpp : A few helpers
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 45b9e59e98c917a0e98a1c19cf52b594bcc8eab8 $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *

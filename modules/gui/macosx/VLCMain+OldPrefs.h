@@ -2,7 +2,7 @@
  * intf-prefs.h
  *****************************************************************************
  * Copyright (C) 2001-2015 VLC authors and VideoLAN
- * $Id: 281e2af453de03db0d7aad0efe4a9709d64db8c1 $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *

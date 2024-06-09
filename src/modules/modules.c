@@ -2,7 +2,7 @@
  * modules.c : Builtin and plugin modules management functions
  *****************************************************************************
  * Copyright (C) 2001-2011 VLC authors and VideoLAN
- * $Id: 7d29370e4aea1f56b4c88a67cf4c82d054243db0 $
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>

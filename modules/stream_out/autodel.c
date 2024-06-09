@@ -2,7 +2,7 @@
  * autodel.c: monitor mux inputs and automatically add/delete streams
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 9a04fd320f2055b06b0c623dd5de78a9e220c83e $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

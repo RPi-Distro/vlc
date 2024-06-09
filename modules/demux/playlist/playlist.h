@@ -2,7 +2,7 @@
  * playlist.h:  Playlist import module common functions
  *****************************************************************************
  * Copyright (C) 2004 VLC authors and VideoLAN
- * $Id: d9a6d7c478c0f4842bcd4c96c16c88bcebf81678 $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

@@ -2,7 +2,7 @@
  * algo_basic.c : Basic algorithms for the VLC deinterlacer
  *****************************************************************************
  * Copyright (C) 2000-2011 VLC authors and VideoLAN
- * $Id: 6ad9b06e0cb4d37bd7042f2b81b74abe08fa29b4 $
+ * $Id$
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Damien Lucas <nitrox@videolan.org>  (Bob, Blend)

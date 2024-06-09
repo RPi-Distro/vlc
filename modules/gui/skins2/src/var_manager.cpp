@@ -2,7 +2,7 @@
  * var_manager.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: fc91159ce19eda6c8247db23c329cf20012e94c1 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

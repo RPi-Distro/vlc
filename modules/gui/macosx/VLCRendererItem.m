@@ -2,7 +2,7 @@
  * VLCRendererItem.m: Wrapper class for vlc_renderer_item_t
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: fedce3593383b9e88d2391b52b2dd76f6ebe1522 $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *

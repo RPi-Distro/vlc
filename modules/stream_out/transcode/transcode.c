@@ -2,7 +2,7 @@
  * transcode.c: transcoding stream output module
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 0c3fe91b9a54f6a27dac03fbd7699a52ce3e66a9 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

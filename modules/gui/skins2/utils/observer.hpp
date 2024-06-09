@@ -2,7 +2,7 @@
  * observer.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 54f1755420abd8eb943c570b57ea8cc77253e5f2 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

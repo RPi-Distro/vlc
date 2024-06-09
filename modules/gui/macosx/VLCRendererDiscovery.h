@@ -2,7 +2,7 @@
  * VLCRendererDiscovery.h: Wrapper class for vlc_renderer_discovery_t
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: f7cb86067b51db4c11aadcd106ff54b52b0449d3 $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *

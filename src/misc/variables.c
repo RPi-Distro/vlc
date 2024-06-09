@@ -2,7 +2,7 @@
  * variables.c: routines for object variables handling
  *****************************************************************************
  * Copyright (C) 2002-2009 VLC authors and VideoLAN
- * $Id: 810c8ffc819365cce4c6889885055315d9fcb337 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

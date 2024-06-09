@@ -2,7 +2,7 @@
  * VLCLogMessage.m: Log message class
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: 60c575353eede8a5f6ff9cdc0678783c55bab635 $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *

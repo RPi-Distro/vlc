@@ -2,7 +2,7 @@
  * xmlparser.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: e19b34b76dc31806bf2bd594f5c0ea0e9e5a8c5f $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

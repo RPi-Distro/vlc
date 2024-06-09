@@ -2,7 +2,7 @@
  * input_slider.hpp : VolumeSlider and SeekSlider
  ****************************************************************************
  * Copyright (C) 2006-2011 the VideoLAN team
- * $Id: aad65ce4d49878da9f14b958e837e747d1970436 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

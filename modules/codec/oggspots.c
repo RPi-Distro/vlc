@@ -2,7 +2,7 @@
  * oggspots.c: OggSpots decoder module.
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: c5b7d67b1f18957f0b74ca0b428b8b54dc89c83b $
+ * $Id$
  *
  * Authors: Michael Taenzer <neo@nhng.de>
  *

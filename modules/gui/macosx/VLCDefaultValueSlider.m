@@ -2,7 +2,7 @@
  * VLCDefaultValueSlider.m: Custom NSSlider which allows a defaultValue
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 8e6ae1c7a912f926786b9e31c1df1fc80113b18a $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 -at- gmail -dot- com>
  *

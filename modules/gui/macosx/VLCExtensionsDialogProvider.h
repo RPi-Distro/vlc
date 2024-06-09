@@ -2,7 +2,7 @@
  * VLCExtensionsDialogProvider.h: Mac OS X Extensions Dialogs
  *****************************************************************************
  * Copyright (C) 2005-2012 VLC authors and VideoLAN
- * $Id: 4c5e583582528afdc7c9665cbb77b9433052fc3f $
+ * $Id$
  *
  * Authors: Brendon Justin <brendonjustin@gmail.com>,
  *          Derk-Jan Hartman <hartman@videolan dot org>,

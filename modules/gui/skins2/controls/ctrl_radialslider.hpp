@@ -2,7 +2,7 @@
  * ctrl_radialslider.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 8bb0b3ad10b5024ffaa014c1eebe1993262b7375 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

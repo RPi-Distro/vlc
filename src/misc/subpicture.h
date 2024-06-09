@@ -2,7 +2,7 @@
  * subpicture.h: Private subpicture definitions
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
- * $Id: 96150302fbaad3b64123a3313f57537c837b92a8 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

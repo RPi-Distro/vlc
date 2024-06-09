@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access_browser plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 5011424edda726761a823915c3ce52808b28e8a9 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Rémi Denis-Courmont

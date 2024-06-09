@@ -2,7 +2,7 @@
  * theme_repository.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 9d02b310ae97ff57afcc10adb15269847141f0f9 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

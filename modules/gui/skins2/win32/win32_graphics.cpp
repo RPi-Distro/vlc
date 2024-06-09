@@ -2,7 +2,7 @@
  * win32_graphics.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 71b49719ca714b9ec8c36b3134bb6fd2410d3008 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

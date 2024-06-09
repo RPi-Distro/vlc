@@ -2,7 +2,7 @@
  * os_loop.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 44ef940b544ee7c36a3a7d96d602fa506553a80d $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * QMenuView
  ****************************************************************************
  * Copyright © 2011 VLC authors and VideoLAN
- * $Id: b075b5ebb14045337851df2123eada582e015397 $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *

@@ -2,7 +2,7 @@
  * update_crypto.c: OpenPGP related functions used for updating
  *****************************************************************************
  * Copyright © 2008-2009 VLC authors and VideoLAN
- * $Id: 09479468c00337ddadd44f27e6cbee6428a28ed5 $
+ * $Id$
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *

@@ -2,7 +2,7 @@
  * VLCHexNumberFormatter.m
  *****************************************************************************
  * Copyright (C) 2017 VLC authors and VideoLAN
- * $Id: c99887b7bab6276eea182d0e068b9ef86e3898fd $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *

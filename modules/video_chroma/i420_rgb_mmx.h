@@ -2,7 +2,7 @@
  * i420_rgb_mmx.h: MMX YUV transformation assembly
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 54913292724cbf9f2566b9174fb41fd7741ea1f4 $
+ * $Id$
  *
  * Authors: Olie Lho <ollie@sis.com.tw>
  *          Gaël Hendryckx <jimmy@via.ecp.fr>

@@ -2,7 +2,7 @@
  * osd.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 07c1d6be43a6495107ded7407300640abfeb3503 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *

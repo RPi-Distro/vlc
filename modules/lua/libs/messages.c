@@ -2,7 +2,7 @@
  * messages.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 6122878b8582a0cbc4af3c8b0deb8cdd68d53185 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>

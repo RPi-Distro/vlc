@@ -2,7 +2,7 @@
  * generic_font.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cffcef5a1e70bde7a4d798a4404ef886cfb1d5a2 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

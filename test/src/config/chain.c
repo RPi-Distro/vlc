@@ -2,7 +2,7 @@
  * chain.c: test configuration chains
  *****************************************************************************
  * Copyright (C) 2010 VideoLAN and authors
- * $Id: 27f39d01ca4903649535f88e370fec0f408d8c4e $
+ * $Id$
  *
  * Authors: Rémi Duraffort <ivoire@videolan.org>
  *

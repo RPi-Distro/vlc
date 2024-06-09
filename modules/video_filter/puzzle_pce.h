@@ -2,7 +2,7 @@
  * puzzle_pce.h : Puzzle game filter - pieces functions
  *****************************************************************************
  * Copyright (C) 2013 Vianney Boyer
- * $Id: 61a8b41b8badf53805f36f0663f9b72114665eea $
+ * $Id$
  *
  * Author:  Vianney Boyer <vlcvboyer -at- gmail -dot- com>
  *

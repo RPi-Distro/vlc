@@ -2,7 +2,7 @@
  * cmd_quit.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f3bd03f5893f0c18d44ef27274a32aa5798351e5 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

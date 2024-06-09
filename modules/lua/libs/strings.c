@@ -2,7 +2,7 @@
  * strings.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 66fb754c8fb326974d98eae73ce763e644b6dfd4 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>

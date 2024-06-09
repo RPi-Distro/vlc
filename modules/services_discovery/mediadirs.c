@@ -2,7 +2,7 @@
  * mediadirs.c:  Picture/Music/Video user directories as service discoveries
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 3b681c96617bbee821b79ad592bc4aef9b5785f0 $
+ * $Id$
  *
  * Authors: Erwan Tulou <erwan10 aT videolan DoT org>
  *

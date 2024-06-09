@@ -2,7 +2,7 @@
  * control.c
  *****************************************************************************
  * Copyright (C) 1999-2015 VLC authors and VideoLAN
- * $Id: 0b37545a00d257dc6d46e9116ef04608e1694e4c $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

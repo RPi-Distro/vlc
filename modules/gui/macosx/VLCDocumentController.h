@@ -2,7 +2,7 @@
  * VLCDocumentController.h
  *****************************************************************************
  * Copyright (C) 2016 VLC authors and VideoLAN
- * $Id: 5756f17ba3fac7778f1698d2674d883370e3bd90 $
+ * $Id$
  *
  * Authors: David Fuhrmann <david dot fuhrmann at googlemail dot com>
  *

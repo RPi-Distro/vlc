@@ -2,7 +2,7 @@
  * mmal.c: MMAL-based vout plugin for Raspberry Pi
  *****************************************************************************
  * Copyright © 2014 jusst technologies GmbH
- * $Id: 76188a457cb57c2f1cadb9612fc25c993d2effaa $
+ * $Id$
  *
  * Authors: Dennis Hamester <dennis.hamester@gmail.com>
  *          Julian Scheel <julian@jusst.de>

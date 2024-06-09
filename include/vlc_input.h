@@ -2,7 +2,7 @@
  * vlc_input.h: Core input structures
  *****************************************************************************
  * Copyright (C) 1999-2015 VLC authors and VideoLAN
- * $Id: 0687836b1c287ef7b8c05ff7650bc2a3e1bf3fb8 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>

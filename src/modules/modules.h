@@ -2,7 +2,7 @@
  * modules.h : Module management functions.
  *****************************************************************************
  * Copyright (C) 2001-2016 VLC authors and VideoLAN
- * $Id: 60a36e7d4909412e41cda62952283663d3331fed $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

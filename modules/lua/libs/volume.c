@@ -2,7 +2,7 @@
  * volume.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 81a6156c2aeadc70466ad3e3cc2334c4bf47177c $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>

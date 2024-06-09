@@ -1,0 +1,1320 @@
+commit dd8bfdbabe8ae3974ca3864ad3125879f523e3a2
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Jun 5 17:44:26 2024 +0200
+
+    Update NEWS for 3.0.21
+
+commit e7f98f3632d793c3921bfe72595721af191e670e
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Jan 9 06:58:39 2024 +0100
+
+    mms: fix potential integer overflow
+    
+    That could lead to a heap buffer overflow.
+    
+    Thanks Andreas Fobian for the security report.
+    
+    (cherry picked from commit 467b24dd0f9b0b3d8ba11dd813b393892f7f1ed2)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6a9e214d5d24b6c7bf6c8fb493aedc231279428d
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Jan 9 06:46:37 2024 +0100
+
+    mms: return -1 in case of error
+    
+    The function calling mms_ParsePacket() is expecting -1 (for error) or a
+    valid positive integer for success.
+    
+    (cherry picked from commit f1e521b494bc87a254c6a6a47d27a528e35b5ca0)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6835f6d12840931adf90d915fd84552f60d04909
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Jan 9 06:44:06 2024 +0100
+
+    mms: decrease i_packet_length in only one place
+    
+    (cherry picked from commit 67b2b79534d3f6a48a4fc363615a4221993ccc95)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f26a1f5d16cb731d8b6f1f01b5bfaa7053bdfd3c
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Jan 9 06:34:09 2024 +0100
+
+    mms: use const in mms_ParsePacket()
+    
+    (cherry picked from commit da84f3830856256d64073c31675cba7f6905919f)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 52afb0c6d080833dc2d60979ec9fc20a6119f358
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Jun 5 17:43:50 2024 +0200
+
+    Update PO
+
+commit b28482b96b44559371c41107bd260d737682536a
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Jun 3 16:50:06 2024 +0200
+
+    NEWS: update for 3.0.21
+
+commit 5cf1564d338024e9b901e276a7fc7e4f63644419
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Thu May 30 16:08:43 2024 -0400
+
+    contrib: vpx: update to 1.14.1
+    
+     This release includes enhancements and bug fixes.
+    
+      - Upgrading:
+        This release is ABI compatible with the previous release.
+    
+      - Enhancement:
+        Improved the detection of compiler support for AArch64 extensions,
+        particularly SVE.
+    
+        Added vpx_codec_get_global_headers() support for VP9.
+    
+      - Bug fixes:
+    
+        Added buffer bounds checks to vpx_writer and vpx_write_bit_buffer.
+        Fix to GetSegmentationData() crash in aq_mode=0 for RTC rate control.
+        Fix to alloc for row_base_thresh_freq_fac.
+        Free row mt memory before freeing cpi->tile_data.
+        Fix to buffer alloc for vp9_bitstream_worker_data.
+        Fix to VP8 race issue for multi-thread with pnsr_calc.
+        Fix to uv width/height in vp9_scale_and_extend_frame_ssse3.
+        Fix to integer division by zero and overflow in calc_pframe_target_size().
+        Fix to integer overflow in vpx_img_alloc() & vpx_img_wrap()(CVE-2024-5197).
+        Fix to UBSan error in vp9_rc_update_framerate().
+        Fix to UBSan errors in vp8_new_framerate().
+        Fix to integer overflow in vp8 encodeframe.c.
+        Handle EINTR from sem_wait().
+    
+    (cherry picked from commit f7a2b4691b98238b219d5771d7633e4728fb079d)
+    (cherry picked from commit 3d230a44e93804a71bff8d60f5b67ee095cc96b5)
+
+commit c1b0be7cd46ac5955e08b457822c50b8a47a76ac
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Jun 4 15:38:56 2024 +0200
+
+    direct3d11: fix CPU staging texture format
+    
+    After b6a3a8b19e5d4cb6a9ec79c08984e0db927dd98c we need to use the pool format.
+
+commit 71d2433822747246f32a2bf5c4543882ba34cac2
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Thu May 30 16:47:18 2024 -0400
+
+    contrib: dav1d: update to 1.4.2
+    
+    Changes for 1.4.2 'Road Runner':
+    --------------------------------
+    
+    1.4.2 is a small release of dav1d, improving notably ARM, AVX-512 and PowerPC
+     - AVX2 optimizations for 8-tap and new variants for 6-tap
+     - AVX-512 optimizations for 8-tap and new variants for 6-tap
+     - Improve entropy decoding on ARM64
+     - New ARM64 optimizations for convolutions based on DotProd extension
+     - New ARM64 optimizations for convolutions based on i8mm extension
+     - New ARM64 optimizations for subpel and prep filters for i8mm
+    
+    (cherry picked from commit 918e9a33fa2f9b828743efb9ab2f67257728a5f0)
+
+commit 56fec04c968571db9d57103da1ba828af2c898f4
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Fri Mar 15 13:19:50 2024 -0400
+
+    contrib: dav1d: update to 1.4.1
+    
+    1.4.1 is a small release of dav1d, improving notably ARM and RISC-V speed
+    
+    - Optimizations for 6tap filters for NEON (ARM)
+    - More RISC-V optimizations for itx (4x8, 8x4, 4x16, 16x4, 8x16, 16x8)
+    - Reduction of binary size on ARM64, ARM32 and RISC-V
+    - Fix out-of-bounds read in 8bpc SSE2/SSSE3 wiener_filter
+    - Msac optimizations
+    
+    (cherry picked from commit 1d89e101ce8899035635f39c60d617965e39dc0e)
+
+commit 0229706f3f6f7686ea6701a769abc50f58e6516b
+Author: Alaric Senat <dev.asenat@posteo.net>
+Date:   Mon May 27 14:26:16 2024 +0200
+
+    upnp: fix exposed directory URLs schemes
+    
+    Previous implementation generated input item directories with URLs not
+    compliant with *RFC 3986* in an attempt to keep the original URL while
+    triggering the UPNP directory acces properly. Here's an exemple of a
+    previous upnp directory url:
+    
+    > upnp://http://192.168.1.109:32469/cds?ObjectID=0
+    
+    The stacking of schemes (`upnp://http://`) is problematic and leads to
+    most of the validators failing on those generated URLs (see the
+    referenced issue).
+    
+    This patch fix the issue by simply replacing the original `http://`
+    scheme by `upnp://` instead of stacking both. To avoid any potential
+    regression with some obscure usage forcing https, a shortcut of the
+    directory access is introduced for https specificaly.
+    
+    The example above would then be fixed like that:
+    
+    > upnp://192.168.1.109:32469/cds?ObjectID=0
+    
+    Potential use-cases with https would instead generate the following:
+    
+    > upnps://192.168.1.109:32469/cds?ObjectID=0
+    
+    Refs VLCKit#728
+    
+    (cherry picked from commit 241fed315be92f4a12ced2afdffd79f5fd638ff4)
+
+commit 237ab1001e52b91cb107e3bd42f981ecb43cec8b
+Author: Alaric Senat <dev.asenat@posteo.net>
+Date:   Mon May 27 13:55:44 2024 +0200
+
+    upnp: enforce HTTP(S) as the only supported protocols
+    
+    In preparation for the next commit, explicitly refuse any protocols
+    that are not supported by libpupnp. It's unclear if it's needed and
+    pupnp probably already perform this check, but the next commit rely
+    heavily on the scheme matching "http" or "https" only.
+    
+    (cherry picked from commit 44de051a61475a899f1bd71a3db0e737a481b41f)
+
+commit a5e97d74af10713d9436fb169c3f17f6172d88ff
+Author: Alaric Senat <dev.asenat@posteo.net>
+Date:   Mon May 27 14:15:42 2024 +0200
+
+    upnp: implement root MRL forging with std::string
+    
+    Switching to std::string simplifies the next patch changing the URL
+    scheme.
+    
+    (cherry picked from commit bc1d58c065d1a359863f3bc4216351b54c60e51d)
+
+commit dc82b76d30a0d23ed222d49f1dcc98168f7b247d
+Author: Alaric Senat <dev.asenat@posteo.net>
+Date:   Fri May 24 18:34:34 2024 +0200
+
+    upnp: avoid double URL query start values
+    
+    This patch completes ac99cee9f34fa17e0595d8b31a2dd1ff723c0719.
+    It avoids corrupting URLs with an already present query list.
+    
+    (cherry picked from commit 0cba1475ba9c2d89b19c4e81a928e4305e6e97ad)
+
+commit 9b4bd07633651c4c7c33b4d4146eb3c91fe82bfd
+Author: Alaric Senat <dev.asenat@posteo.net>
+Date:   Fri May 24 18:25:08 2024 +0200
+
+    upnp: encode the object ID in the exposed URL
+    
+    Object ID is not supposed to be URI-encoded by default and can be pretty
+    much any valid string. Since we add it to a valid encoded URL, we need
+    to encode it to preserve the URL validity.
+    
+    (cherry picked from commit 5d5ccbc0fa309d2aa07ca840ab66e9403fd15b03)
+
+commit b351ccccc41b5807b93579614b0eb1d9ad86ce6e
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon May 27 11:12:39 2024 +0200
+
+    video_filter: add AMD VQ Enhancer filter
+    
+    (cherry picked from commit 4125ad5a96a48af7007439df74aec158ad8ad73b)
+
+commit 2ab7be5df0f5c4130ddb8dac72759e94d300e96f
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon May 27 10:10:40 2024 +0200
+
+    configure: detect AMD VQEnhancer.h
+    
+    (cherry picked from commit 9815b7eb436aa59772e59ef63c40bb5e81590883)
+
+commit 0b65cc7f394b5985f214932ce4c64552bce83c63
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon May 27 14:29:36 2024 +0200
+
+    amf_helper: share DXGIToAMF()
+    
+    (cherry picked from commit 957db11f12c04a2c7b2b459f71b56b4878009d5c)
+
+commit bfb2084a66ff89d37779047677c45e63fcfac495
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon May 27 14:29:16 2024 +0200
+
+    amf_helper: add a macro to add namespace when using C++
+    
+    (cherry picked from commit 7bde5ce851f21b2a3223afe46f6692a07800f66c)
+
+commit 6ceb56b8306e5e2eec58414e22b3589afdc093d8
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Fri Jan 27 16:28:01 2023 +0100
+
+    extras/tools: bump m4 to 1.4.19
+
+commit 488b7787bc8d759088d3006acdc7464d1913fba9
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Thu May 4 11:19:09 2023 +0200
+
+    extras/tools: m4: remove bison patches
+
+commit b35a465302ae48e2238cdfc515f1809155a94ba8
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Fri Jan 27 16:26:52 2023 +0100
+
+    extras/tools: bump automake to 1.16.5
+
+commit 67c1f73919cc43aba7d3ccfa7f7781b7a9b4e91c
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Fri Jan 27 16:26:29 2023 +0100
+
+    extras/tools: bump autoconf to 2.71
+
+commit c10210343c96ee8c34db4b8ea07af36351234f79
+Author: Khalid Masum <khalid.masum.92@gmail.com>
+Date:   Fri Apr 21 19:46:07 2023 +0600
+
+    extras/tools: broden support for sha512sum
+    
+    sha512sum uses --check, which is not supported by many other
+    implementations of sha512sum such as  busybox. Using -c instead
+    will let this script usable in more distros and OSes.
+
+commit 7148e1da72bba7c3a01afed033f7d7c44c30da16
+Author: Khalid Masum <khalid.masum.92@gmail.com>
+Date:   Fri Apr 21 19:44:44 2023 +0600
+
+    extras/tools: use 'command -v' to assert commands
+    
+    Currently we are using commandname --version to check wheather a
+    command exists. Hence if a command is not shipped with --version the
+    check fails. For example busybox implementation of sha512sum fails
+    to get detected via this method.
+    
+    Use command -v to check whether a command exists to fix this limitation.
+
+commit e15c22adf8718ec804b6c6da20bba08b2331e711
+Author: Johannes Kauffmann <johanneskauffmann@hotmail.com>
+Date:   Mon Jan 9 15:06:23 2023 +0000
+
+    tools: remove duplicate libtool entry
+
+commit 7dc8814826d480434c070b5b0ff0d7dd40edfe9d
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Wed Apr 20 18:10:17 2022 +0200
+
+    extras/tools: libtool: rename/cleanup patches
+    
+    libtool-2.4.6-san.patch is not used anymore, and other libtool patches
+    have been rebased on top of libtool-2.4.7.
+
+commit af78cd1f8dc34dbeaacbaef5212cb126c035d27d
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Tue Apr 19 09:38:09 2022 +0200
+
+    extras/tools: bump libtool to 2.4.7
+    
+    The -fsanitize support has been added upstream in the commit
+    a5c6466528c060cc4660ad0319c00740db0e42ba which is shipped into 2.4.7.
+
+commit b7d57c6cba4d6bd2a2853d766e015d9604e0f3fd
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Tue Apr 19 09:55:29 2022 +0200
+
+    tools: bootstrap: remove non-digits from minor version
+    
+    libtool is notoriously known to have been patched over the time and was
+    provided as 2.4.7-dirty on archlinux, which makes the integer comparison
+    test fail since 7-dirty is not an integer.
+
+commit 035afac36937e14d3edb1693dffc066c31c16a4c
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Tue Apr 19 09:53:05 2022 +0200
+
+    tools: bootstrap: use shell || instead of test -o
+    
+    shell || nicely handles the commands on the other lines without escaping
+    the end of line, which provides better error message in case of error.
+    In addition, priority of operators is much more obvious since the []
+    test syntax provides a visible scope-like feeling.
+
+commit 9970f4c7f515bc97aa14dae87f23561fe95147dc
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Mon May 31 10:33:38 2021 +0200
+
+    extras/tools: libtool: fix support for bitcode
+    
+    When building with bitcode enabled (*FLAGS+=-fembed-bitcode), the
+    following happens:
+    
+     - with LDFLAGS += -fembed-bitcode, the vanilla libtool version will
+       remove the -fembed-bitcode flag, being an unknown flag, so bitcode
+       won't actually be enabled, and final link steps might complain that
+       the dylibs (libvlccore.dylib for instance) doesn't actually have
+       bitcode embedded.
+    
+     - once fixed (either by this patch or by using -Wl,-fembed-bitcode),
+       the plugins will be compiled with -module, which default to using
+       MH_BUNDLE on iOS/tvOS/MacOSX instead of MH_DYLIB. Indeed, dylibs can
+       be dlopened only since MacOSX 10.3/10.4, and can be dlclosed only
+       since MacOSX 10.5, so MH_BUNDLE was the primary target for libtool
+       module support. However, MH_BUNDLE is not compatible with the bitcode
+       support from Clang.
+    
+    Since we support MacOSX 10.11 as minimum, we can default to using
+    MH_DYLIB for plugins to have the bitcode support.
+    
+    This new libtool patch add the explicit support for -fembed-bitcode in
+    libtool --mode=link flags, and change the flags used when using -module
+    in libtool to switch to dylibs.
+
+commit 9dcc5504d6584438251292726e508975a458d826
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Aug 3 13:42:47 2021 +0200
+
+    extras: tools: Patch libtool to force -lpthread when using -nostdlib
+
+commit be3566e42be8a1ad793d807b59e624e6f0badd85
+Author: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
+Date:   Tue Aug 3 15:03:32 2021 +0200
+
+    extras: tools: Only patch libtool's ltmain.in
+    
+    Instead of ltmain.sh, in order to ensure all changes will used.
+    If ltmain.sh gets modified as well, there is no way to guarantee that
+    all changes to the .in file will trigger a regenetation since both file
+    will likely have the same modification timestamps
+    
+    Refs !182
+    
+    An updated version of our current libtool patchset has been pushed to
+    https://github.com/chouquette/libtool/tree/vlc_patches
+
+commit ebb15e320995afa9ea5620b81f8d958eb21a7289
+Author: Martin Storsjö <martin@martin.st>
+Date:   Mon May 6 13:39:26 2024 +0300
+
+    contrib: asdcplib: Apply a patch to fix compilation with latest Clang
+    
+    The asdcplib code contains a C++ template which refers to member
+    variables that doesn't exist. Earlier, this hasn't been an issue,
+    as the C++ template never is instantiated, but current Clang
+    versions (the upcoming 19.x version) diagnoses such issues already
+    before the class is instantiated, leading to compilation errors
+    on the asdcplib code.
+    
+    This applies https://github.com/cinecert/asdcplib/pull/137 (which
+    hasn't yet received any attention), fixing
+    https://github.com/cinecert/asdcplib/issues/136.
+    
+    (cherry picked from commit c481befc9796ed57606d5fd7cba18449702d4cc2)
+
+commit 5a6996ed26fc5e6c33813469b68cf9846ce43ce7
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed May 15 15:56:01 2024 +0200
+
+    contrib: gme: backport assert patch
+    
+    assert() may be disabled and you don't want to abort a whole process in
+    case of a parsing issue. So check the offset from samples_avail(), that
+    will return 0 (EOF) in case of a out of bounds read.
+    
+    Patch already upstream.
+    
+    (cherry picked from commit 8205482c3ad8436c244f04b7a09e94b7acf9c66e)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit d9b0f2b638fa78cec95ab5f39e855ab65dc3e83b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri May 3 22:40:12 2024 +0300
+
+    http: allow short response byte range
+    
+    RFC9110 specifies that a client must handle a shorter response range
+    than requested in all circumstanges. Previously, RFC7233 only required
+    that behaviour for multipart ranges, which VLC did not use.
+    
+    This matches the newer specification: VLC will try to resume from the
+    last received offset not only on unexpected error, but also on short
+    response.
+    
+    Fixes #28627.
+    
+    (cherry picked from commit 90dc0a023f6ceee591f6464367efae65f2ccf6e7)
+
+commit 0d09617ac88e492a6ced8971f3a6b3d6d5af3c02
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue May 7 11:50:56 2024 +0200
+
+    direct3d11: do the SDR->HDR conversion after upscaling
+    
+    The Super Resolution filter doesn't handle RGB10A2.
+
+commit 267ba645b82feff6bb7e7ae77b6cd5f8e32c33a1
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue May 7 14:29:27 2024 +0200
+
+    d3d11_tonemapper: factorize the texture creation
+
+commit ae050157ac35ecf881b2d2169b69e8e637379e55
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue May 7 11:48:39 2024 +0200
+
+    d3d11_tonemap: handle output resolution changes
+
+commit 52be95be55668d960dc262d24b5a4ef66a4d5d45
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue May 7 11:45:26 2024 +0200
+
+    direct3d11: use D3D11_UpscalerGetOutput to get the final picture_sys_t
+
+commit 71471002831e1dcf1b93154146a637f47d0af158
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue May 7 11:35:17 2024 +0200
+
+    d3d11_scaler: provide a picture_sys_t
+    
+    Like d3d11_tonemapper does. It provides more flexibility.
+
+commit fce580a4d5326304bb9aa0abd5510a93684219bb
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue May 7 11:51:56 2024 +0200
+
+    direct3d11: simplify the D3D11_RenderQuad call
+    
+    Only the ID3D11ShaderResourceView source may change.
+
+commit 6f813f37e989d43da625fcdf8e63a28b06ca5bdb
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Mon Dec 4 15:07:05 2023 +0100
+
+    macosx: use VLC as CFBundleName
+    
+    Fix #28432
+    
+    (cherry picked from commit 63d44f046a59f0090954022a9b44903f114152b0)
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+
+commit 6c95204716d9fa9c79e7b200821c2d5863f384ef
+Author: Jiepeng Huang <apeng@apst.dev>
+Date:   Mon May 6 02:09:10 2024 +0200
+
+    text_renderer: change -1 to kCFNotFound
+    
+    (cherry picked from commit 6497bee48a9d7844532a715759b0b65a1bae7363)
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+
+commit a072f541fd356473cde2cb99f85ba4b272e6ad34
+Author: Jiepeng Huang <apeng@apst.dev>
+Date:   Mon May 6 02:08:42 2024 +0200
+
+    text_renderer: improve code style in darwin.c
+    
+    (cherry picked from commit 96ae876dc8523939a1092bfdbb31138eb8f99e69)
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+
+commit f6f11faf08fc5cd763a0686351461ef264b848bd
+Author: Jiepeng Huang <apeng@apst.dev>
+Date:   Sun Apr 21 19:32:07 2024 +0800
+
+    freetype: darwin: ignore case whe comparing
+    
+    The `psz_lcname` is lowercase, so we need to use `strcasecmp`
+    instead.
+    
+    (cherry picked from commit c52066f20458165436ff9c8831869fa783d12a30)
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+
+commit 2a2eaf62d6e3007425b02e2ec80cd3f26d79542b
+Author: Jiepeng Huang <apeng@apst.dev>
+Date:   Sun Apr 21 18:23:39 2024 +0800
+
+    freetype: darwin: fix font index issue
+    
+    In macOS/iOS/tvOS, font collection file contains multiple fonts.
+    The 0 index should not be used by default, but the corresponding
+    index should be used. This will fix some font rendering bugs and
+    fallback font bugs.
+    
+    (manual cherry picked from commit 2e3c0fb6bc38fdad5f894611b3b9eaa0ace2c746)
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+
+commit 46c24f3a3b25ae0e39724087e1d9ed12226739c7
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Fri May 3 01:43:13 2024 +0200
+
+    package: apple: fix env.build.sh
+    
+    The script is supposed to be usable stand-alone but makes use of
+    ACTUAL_HOST_ARCH which is never set before.
+    
+    Fix this by properly initialising ACTUAL_HOST_ARCH.
+
+commit 374ce3b5e1cdbdc94a2a8ea9714e9dfdbc1d2f9f
+Author: David Rosca <nowrep@gmail.com>
+Date:   Thu Apr 25 13:21:57 2024 +0200
+
+    vaapi: chroma: Implement vaPutImage upload fallback
+    
+    (cherry picked from commit ac178ac8e3132b40330c1344fe3700b38ad0b552)
+
+commit ea9463607f71fe4d094b99b8d0a6181452688228
+Author: David Rosca <nowrep@gmail.com>
+Date:   Thu Mar 14 08:17:38 2024 +0100
+
+    converter_vaapi: Don't use DeriveImage with ExportSurfaceHandle
+    
+    DeriveImage is only needed when AcquireBufferHandle is used with old libva.
+    
+    (cherry picked from commit b1e5a91d616190d931b999f223c8206bc94bc6c5)
+
+commit 5b557e89a2354c2018f16868e814e1dd2ff9af18
+Author: François Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Mar 29 14:46:16 2024 +0100
+
+    demux: hls: do not track explicit time offset at stream level
+    
+    refs #28579
+    
+    Did not update on switch and is applied once at ESOut level
+    
+    cherry-picked from fb836a939545b1390df0a552703384e099a485c3
+
+commit 8160b84a3892b7127b8fb9a638b459f222d39389
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Apr 5 12:50:42 2024 +0200
+
+    direct3d11: allow passing through the upscaler after the tonemapper
+
+commit 91c6420acabaac0c6cd6b7457cdabe29e49fbff6
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Apr 5 11:14:01 2024 +0200
+
+    direct3d11: log the output format of the scaler
+
+commit 6142a908b86676170f75cc131126e60bc8fcd14f
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Mar 20 13:19:43 2024 +0100
+
+    d3d11_scaler: fix deadlock on NVIDIA detection errors
+    
+    (cherry picked from commit b7fa0712fbaa2bf4f00994ffeefc565d59533dee)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit d625e97a7936c0a167c25213740987c89cc53682
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Mar 20 16:02:26 2024 +0100
+
+    d3d11_scaler: fix Intel Super Resolution enabling
+    
+    The wrong API was used to set kIntelVpeFnScaling.
+    
+    (cherry picked from commit 6d8d4e0ff7a34705c0fff4ee0d5f3a409b991dce)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 49a3e1f3e74cdb7f8a8c72432e9022d5ea7229c5
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Mar 20 13:19:13 2024 +0100
+
+    d3d11_scaler: mark Intel Super Resolution detection as not possible
+    
+    (cherry picked from commit 40ac7778b994337a0a55c8a5d507f6284933b4cf)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 020d1d443dcdb00348442580a87f7e53b918130f
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Mar 19 09:29:05 2024 +0100
+
+    direct3d11: disable forced HDR on SDR screens
+    
+    The VideoProcessor will output RGB10 tonemapped but it will not look right on our SDR screen.
+
+commit 6d82c5af389e623c53ef8e9386f9008c1407cea3
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Thu Mar 14 14:06:17 2024 +0100
+
+    NEWS: add D3D11 forced HDR/SDR option
+
+commit 1465e4a9ab3663d5da8c7c9b9a01867ba145bc1e
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Mar 13 08:21:58 2024 +0100
+
+    direct3d11: add an option to force HDR output from SDR source
+
+commit 2fca4284d8974c2c091be152b644a38313cef7d0
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Mar 13 08:36:55 2024 +0100
+
+    d3d11: add a VideoProcessor to handle tone mapping
+
+commit 4d32cafff47146ef56745d7577556024baf0fcb6
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Mar 13 09:00:05 2024 +0100
+
+    d3d11_fmt: add a helper to find a hardware/software based d3d_format_t
+    
+    (cherry picked from commit 230fdf54a20e95a93ba61b7448c256977eb3c42b) (edited)
+    edited:
+    - not located in the same place in 3.0
+
+commit b6a3a8b19e5d4cb6a9ec79c08984e0db927dd98c
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Thu Mar 14 11:35:29 2024 +0100
+
+    direct3d11: allow setting the quad_fmt differently than the decoder format
+
+commit b4f9d49b130e4e4f6da9398c01fd9bc5dd153a88
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Thu Mar 14 10:00:19 2024 +0100
+
+    direct3d11: fill the pool format directly
+    
+    No need for an intermediate format that we need to copy.
+
+commit 6da53f389ef106275d62e3032706ed26284b8247
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Mar 13 11:45:04 2024 +0100
+
+    direct3d11: add an option to select the HDR output mode
+
+commit 2192dfbfd659b21d4a0bd9042a682caa1fe3f357
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Mar 13 11:38:42 2024 +0100
+
+    direct3d11: use a function to select the closets output format
+    
+    When decoder ones can't be used.
+
+commit 8c2c4db1d7761b43c0bef3dc4d951f0967bf3940
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Mar 13 08:52:03 2024 +0100
+
+    direct3d11: use a function to select the output format
+    
+    This avoids a bit of indentation and makes it clearer what the goal of the code block is.
+
+commit 10e2808347d49a1862cd7a76d629c2b5d65909e8
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Mar 5 09:27:30 2024 +0100
+
+    demux/mkv: use a better name for unused elements
+    
+    Unless it's an EbmlDummy the element is not unknown if it has a known class.
+    
+    Rather than displaying a decorated C++ class name, show the actual element name in libmatroska.
+    No need for Runtime Type Indentification (RTTI) for that.
+    
+    The EBML_NAME() has been around since at least libebml 0.8: https://github.com/Matroska-Org/libebml/commit/cd378f23ff5c8bd477fe066fccca532bf00f974b
+    
+    (cherry picked from commit dba5d5969af029cc475e6cd124a2d4845339fb19) (edited)
+    
+    edited:
+    - in 3.0 the tag loading is different
+    
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit b7843ec8915ef2f37e712dd23a3324c00dd2a4a9
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Tue Feb 20 17:04:59 2024 +0100
+
+    caopengllayer: fix using layer outside of main thread
+    
+    When stopping the playback, vout_display_t destructor will call the
+    [VideoView vlcClose] which references the backing CALayer through [self
+    layer]. This function is not thread-safe and should only be called from
+    the main thread, leading to reports and crashes when using the main
+    thread checker.
+    
+    Instead, since we allocate the layer and references it from the
+    vout_display_t implementation, just send the vlcClose message on the
+    stored layer directly. Since it's only used to pass from the vd from the
+    view to the layer, and it's initialized from a dispatch_sync() in the
+    Open() function, there won't be race de-initializing them in a
+    non-synchronized fashion like done in this commit.
+    
+    Fixes #27513
+    
+    (cherry picked from commit 79e1535af5937901636529930a52e70546c6fec5)
+
+commit f3d178c2f0788da6c6cc2352d39c5f66f8e75d25
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Feb 20 08:48:20 2024 +0100
+
+    d3d11_scaler: detect if NVIDIA upscaler is available
+    
+    We only need to check is super resolution is used.
+    
+    (cherry picked from commit 2ccd91d9b296e435dcb1b20759071bfdaacca04d)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 3caa45bc771a5ec6077eb724f6a60ea1c6bb3a68
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Feb 20 08:31:23 2024 +0100
+
+    d3d11_scaler: select the output format with D3D11_FORMAT_SUPPORT_VIDEO_PROCESSOR_OUTPUT
+    
+    The selected format is used for output, not input.
+    
+    (cherry picked from commit 6e47593b22bee9ffc2535e90741561dbe31c5124) (rebased)
+    rebased:
+    - the FindD3D11Format call is different on 3.0
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 81ed74ad51d1f3c80818d9553c60021dada95afb
+Author: Tung Huynh <tung75605@gmail.com>
+Date:   Sat Dec 9 20:27:41 2023 -0800
+
+    direct3d11: fix subpicture placement with external rendering
+
+commit 9acdb3addb3bee1994d14960fef5c22021baa65d
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Feb 20 11:25:14 2024 +0100
+
+    contrib: AMF: improve sparse checkout
+    
+    git sparse-checkout was only added in 2.25 (2020) [1]. Older git (1.7+) can
+    handle a sparse checkout setting the .git/info/sparse-checkout data.
+    
+    We also clone with --filter=blob:none --no-checkout which downloads less from the host.
+    
+    [1] https://stackoverflow.com/a/13738951
+    
+    (cherry picked from commit f787acf2587de1e8b5968f8b68b931ab659e9f01) (edited)
+    edited:
+    - remove --fitler as it's not supported in git 2.11.0 used by 3.0 Dockers
+
+commit 066d5b724ee34bcc367f51bfd14b27424854b00d
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 13:28:57 2024 +0100
+
+    NEWS: add AMD Super Resolution support in 3.0.21
+
+commit d468ec7fcca0b4adf90742e948c9b77e9b520fc6
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 13:02:09 2024 +0100
+
+    d3d11_scaler: ensure the AMF input/output textures matches the scaler sizes
+    
+    (cherry picked from commit ef640c8b63b4ffb224faf2161dd23e40bdc0fd3b)
+
+commit 32e0f4e825b04ff7c302e0d48d2d242f5c37be45
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 13:17:41 2024 +0100
+
+    d3d11_scaler: just reinit AMF when the scaler was already initialized
+    
+    (cherry picked from commit 21f2fb900ec6d0899035dea57625c56ae99d4bdf)
+
+commit 41a946064c2c82270d227cfc2bbd3b2a8afdce00
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 11:59:30 2024 +0100
+
+    d3d11_scaler: only (re)init the HQ Scaler when the output size changes
+    
+    D3D11_UpscalerUpdate() is mostly called in those cases, but it's cleaner.
+    
+    (cherry picked from commit 43c44f303e9a1335688e89a0b13ddf2b13fba6d5)
+
+commit bb20e550207eed74e1d7d255cbb71c57731623f7
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 13:18:44 2024 +0100
+
+    d3d11_scaler: report AMF errors
+    
+    (cherry picked from commit e17246c5c0c9502f1d01f621d3892bcda9ce9170)
+
+commit 4e65d6f5611735ada6ed47de2e3f3f173322b0d0
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 12:14:01 2024 +0100
+
+    d3d11_scaler: allocate the HQ Scaler input texture with AMF API
+    
+    No need to manage an extra variable, and that makes the code more generic.
+    
+    (cherry picked from commit 27391019a86f2152608ff8897ff4969a1caf9702)
+
+commit 5f716112ba2910af764efc859f68563ac814b1be
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 12:05:35 2024 +0100
+
+    d3d11_scaler: only recreate the HQ Scaler texture
+    
+    (cherry picked from commit 2841b79dfb63a7c9b1be38cabfa56baf9f96c03f)
+
+commit 9b1ba53a15e05de759d17018c936d860d95a3c09
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 11:25:47 2024 +0100
+
+    d3d11_quad: reset the ShaderResources as soon as drawing with it is done
+    
+    This may help with performance and avoid an issue when the render target is
+    also an input texture for another pipeline.
+    
+    (cherry picked from commit cf5e665e47762bc793b87088e7edc235d4b228d2) (edited)
+    edited:
+    - on 3.0 we don't render multiple planes in this call
+
+commit a3595dc6ca4ac57a0d62b41d3db7e8f58108270f
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 10:00:49 2024 +0100
+
+    d3d11_scaler: add AMD HQScaler support
+    
+    (cherry picked from commit ffd3f0e70a1b61d9d919387fa14558c1d4bf7881) (edited)
+    edited:
+    - 3.0 doesn't have nvdec support in D3D11
+    - 3.0 use D3D11_MAX_SHADER_VIEW rather than DXGI_MAX_SHADER_VIEW
+    - 3.0 needs assert.h
+
+commit f6e0f7f0d7d20e96640b8735951bdda036eb6bdd
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 10:24:44 2024 +0100
+
+    dxgi_fmt: allow include from C++
+    
+    Part of 6b7a6d86ae30109bed34fec0b5ffc1f013ca4a81 on 4.0.
+
+commit 0e88576b9e3e4bb5003b932ce4a15bec0a9cab2c
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 09:58:13 2024 +0100
+
+    hw/amf: add a helper to create an AMFContext
+    
+    (cherry picked from commit 6f1ec768063bb8f93aeb14f23d26a4ce206c5daf) (edited)
+    edited:
+    - 3.0 doesn't have VLC_ENOTSUP
+
+commit edc77c8b090eeda7fe466c316d6f51390537150e
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 09:57:51 2024 +0100
+
+    configure: detect AMD HQScaler
+    
+    (cherry picked from commit 803499c569ae8292bd924588f73f85c7cdf62fc1)
+
+commit ebce27ec8b0773b690d4d73e7df0c1c9fd395312
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 09:57:37 2024 +0100
+
+    contrib: amf: fix compilation errors and warnings
+    
+    Patchsets sent upstream:
+    
+    - https://github.com/GPUOpen-LibrariesAndSDKs/AMF/pull/448
+    - https://github.com/GPUOpen-LibrariesAndSDKs/AMF/pull/449
+    - https://github.com/GPUOpen-LibrariesAndSDKs/AMF/pull/450
+    - https://github.com/GPUOpen-LibrariesAndSDKs/AMF/pull/451
+    - https://github.com/GPUOpen-LibrariesAndSDKs/AMF/pull/452
+    
+    (cherry picked from commit d0c4704681541f205a38fc4a72ce01a0c61a982a)
+
+commit 02bc0cf48c6962c0feaabeb32786a723f5b30709
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 09:57:27 2024 +0100
+
+    contrib: amf: update to 1.4.33
+    
+    It contains the HQScaler
+    
+    (cherry picked from commit 86c2cf55a55904917225df465075634e0482690e)
+
+commit ac42dea9914b82cf82ef806a10c3e08459de7983
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 08:48:16 2024 +0100
+
+    contrib/amf: ensure to touch .sum-amf when the git hash check is successful
+    
+    (cherry picked from commit cba3cbaa764887b2a68dc359ae82a0261a2d8240)
+
+commit d35919ddfb72bfc985e99e4d6aade3288a9d6664
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 08:48:03 2024 +0100
+
+    contrib: amf: update to 1.4.30 using git
+    
+    It's faster to get the files from git and compress than downloading
+    the 400 MB+ package.
+    
+    We don't use download_git which downloads the whole git history of the
+    given branch. We use git clone and a sparse checkout to only get the
+    folder we want for the giant repository.
+    
+    (cherry picked from commit 7cfdd439b9ba299606456a62de15b144201176c9)
+
+commit 33071b3a7aa49328f78e4077e1d4f5dfd25c2a96
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 08:47:41 2024 +0100
+
+    contrib: update AMF package to v1.4.29
+    
+    (cherry picked from commit 47b62224d5847841a5651bac7ff8eee1b717b7c9)
+
+commit 81aa273a1568bfd27a338ccd7300a89d150f734e
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 08:47:24 2024 +0100
+
+    contrib: add AMF package to enable AMF encoder in FFMPEG
+    
+    (cherry picked from commit f1a2665f609d9d5bd7e662a8a2519018e1d3f61c)
+
+commit 512e6710013e3ff85fd584a789425691bdac91ed
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 19 16:46:00 2024 +0100
+
+    d3d11_scaler: favor BGRA for upscaling
+    
+    Fixes Super Resolution not working on NVIDIA.
+
+commit 7a3acd41e6ff555237a31411123e0b06c93c3861
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Fri Apr 8 16:45:27 2022 +0200
+
+    doc/libvlc: add appkit_player demo code
+    
+    The sample code demonstrate how to bind an NSView to a media player to
+    integrate video playback in a Cocoa application.
+    
+    Signed-off-by: Alexandre Janniaux <ajanni@videolabs.io>
+    
+    Cherry-picked from commit 60fcef78eee709f1746e62d7ccb8da76ba6d7401.
+
+commit c6883f9365a1c1bcb93482e53d8a92adcba4bd87
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Jun 8 14:12:05 2018 +0200
+
+    demux:mp4: use a special timestamp rescaler to convert explicitly from vlc_tick_t
+    
+    (cherry picked from commit ddfb4f086701bcdf2988402ec144ef7dfdd3c23d) (rebased)
+    rebased:
+    * the i_traf_start_time processing is different in 3.0 with i_moof_time involved
+    * the frag seek time doesn't use b_iframesync
+    * the code around the changes was slightly different
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 091f734ed9cab11fcdc4b0797e9a1b51864a5e07
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Jun 8 14:07:26 2018 +0200
+
+    demux:mp4: use a special timestamp rescaler to convert explicitly to vlc_tick_t
+    
+    (cherry picked from commit 3b84ba41218c7d4f03f0abeb569067ace77ad25e) (edited)
+    edited:
+    * MP4_TrackTimeApplyELST was merged in 3.0
+    * the code around changes is slightly different
+    * DEMUX_GET_PTS_DELAY expects a int64_t, not a mtime_t
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 7d59dda78e4d81dc1ac62163ffcb7a71ccecd27b
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Jun 8 15:30:33 2018 +0200
+
+    demux:mp4: separate stime_t & vlc_tick_t duration in MP4_GetInterleaving()
+    
+    Thus max_continuity is effectively an vlc_tick_t which compares correctly to
+    DEMUX_TRACK_MAX_PRELOAD
+    
+    (cherry picked from commit f2be7ebbed9b475e91ca3bfe842fb8a451f016ed)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 9229409a365969a9db13deb8d76e88e6d3dff5fa
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Jun 8 14:25:42 2018 +0200
+
+    demux:mp4: the i_start in TrackTimeToSampleChunk() is a vlc_tick_t
+    
+    That's the kind of data it is given
+    
+    (cherry picked from commit 09f5070644fad4a9f101ae039c897702bbb63306)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit fc759ab80e8cb758b106293128c7550017662454
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Jun 8 15:19:10 2018 +0200
+
+    demux:mp4: simplify value check
+    
+    No need to due the subtraction, the value is overwritten right after.
+    
+    (cherry picked from commit 878df3f879ad8c87a1a5b35dd904bf7d52d31a34)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 539fc944e8951704a9bc336147de7a5d36791d97
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Jun 8 13:39:23 2018 +0200
+
+    demux:mp4: the result of MP4_TrackGetDTS() is always used as a vlc_tick_t
+    
+    Also for the value returned by MP4_TrackGetPTSDelta()
+    
+    (cherry picked from commit 2060b8b3e2aee1e080889766c802b978ee9ffe92) (edited)
+    edited:
+    - vlc_tick was merged in 3.0
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 5eaa84f946176e346b0a750446bcec09845f8572
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Jun 8 12:45:36 2018 +0200
+
+    demux:mp4: i_nztime is an vlc_tick_t as the comment suggests
+    
+    (cherry picked from commit 52f365152813cf692956ba37ff700ef3c5c7e1a5)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 3e324f65f449ef15e31782788a38c882b91e305d
+Author: François Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Jan 4 19:40:31 2018 +0100
+
+    demux: mp4: set samples duration
+    
+    (cherry picked from commit 096500ddebd4d621ea8ce96cdd93baa2ce05a2a8) (rebased)
+    rebased:
+    - vlc_tick_t is merged in 3.0
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit be426a636a356e16a4b2f22790624748c338987a
+Author: Craig Huggins <craighuggins@hotmail.com>
+Date:   Tue Feb 13 04:59:12 2024 +0000
+
+    Use requested win32 dvb-adapter parameter
+    
+    (cherry picked from commit 81ce022fae048e4d5a17a08f7d15cea68d68adeb)
+
+commit 89a4a9cf13199ead7559f83ad210194d776dc121
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Fri Feb 16 15:24:40 2024 -0500
+
+    contrib: dav1d: update to 1.4.0
+    
+    (cherry picked from commit b1c03211337301bfa23d947af948ed4ecb1a435e)
+
+commit 6905dfa3cf005f271109800f13bf3644d0ba4e4f
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Feb 4 20:24:36 2021 +0100
+
+    demux: mp4: compute cts_shift when missing
+    
+    (cherry picked from commit a1ad08a051f85a645c0353116c930806cdda6128)
+
+commit b12d1d4b9d1889625c260dba97143373e9c8661f
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Feb 9 13:20:32 2024 +0100
+
+    NEWS: mention the set_hwnd new requirement
+
+commit 1eef18c45831810b25d36206f9ecfa68a4d4d66b
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 5 10:04:03 2024 +0100
+
+    vout/win32: don't force WS_CLIPCHILDREN internally
+    
+    It's potentially locking. It should be set in the calling code.
+    
+    (cherry picked from commit dc3d6b67a75418051667b0f9e597604a4074826e) (edited)
+    edited:
+    - the location of the call is different in 3.0 and didn't include assert.h
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit cf7a7d34be37ad460ae026803add54ed8a2b8318
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 5 10:03:12 2024 +0100
+
+    doc: document that WS_CLIPCHILDREN must be set with set_hwnd()
+    
+    So we don't have to do it internally in a potentially locking call.
+    
+    (cherry picked from commit 102e4791528b3d11328fc701bda1dabd10aaf285)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 60019609744d4bd041a086a610d270e1fb78f2a4
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 5 10:02:06 2024 +0100
+
+    doc/wx_player: set WS_CLIPCHILDREN on our window
+    
+    So the display module doesn't have to do it in its own thread.
+    
+    (cherry picked from commit 1ce31601a4234ae6bcd76e88ea93f814eb2356fd)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit a5d5e6bcaec50fdeecd2d9d33ecf99ca8ac0b592
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 5 09:56:22 2024 +0100
+
+    doc/QtPlayer: set WS_CLIPCHILDREN on our window
+    
+    So the display module doesn't have to do it in its own thread.
+    It doesn't seem to be on by default in Qt and there's no direct API to set this.
+    
+    (cherry picked from commit b29e2911fdbf4a1e53012794ed4a1b5a6cd8a5c0)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 5c990a100c0a122bed333d4f65190425aecc6916
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Feb 5 08:47:10 2024 +0100
+
+    doc/win_player: set WS_CLIPCHILDREN on our window
+    
+    So the display module doesn't have to do it in its own thread.
+    
+    (cherry picked from commit 70535e54021563f851417a7aefc5d2e2e52afb6e)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 50acae2b5ba9ca47269f0fc228383a645d72242e
+Author: Johannes Kauffmann <johanneskauffmann@hotmail.com>
+Date:   Sat Jan 6 17:51:17 2024 +0100
+
+    opencv_wrapper: fix psz_inner_name leak
+    
+    (cherry picked from commit 24163ce0f43a21cdde08711a4a56ae37c8154ccf)
+    
+    edited: use p_filter->p_sys instead of p_sys
+
+commit 8436f79c7a9587c8b05e467ee5d82926a3de98a6
+Author: Johannes Kauffmann <johanneskauffmann@hotmail.com>
+Date:   Sat Jan 6 16:43:35 2024 +0100
+
+    ntservice: fix psz_service leak
+    
+    (cherry picked from commit 56837c1adcfcad8505d24ce90f9f365b9026b639)
+
+commit f1f12386cf404702def6779f34627208e0776d9f
+Author: Johannes Kauffmann <johanneskauffmann@hotmail.com>
+Date:   Sat Jan 6 00:36:23 2024 +0100
+
+    d3d11_deinterlace: fix psz_mode leak
+    
+    (cherry picked from commit 1ced6b100005511284f754932bf9a5dc32bf9abe)
+
+commit ae50254b147893e3b6a7df22f165faee80fdeee5
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Thu Oct 22 14:44:57 2020 +0200
+
+    d3d11_deinterlace: log the filter that actually failed
+    
+    Not the "auto" name.
+    
+    (cherry picked from commit f00c62a88b74449d3983751b3ae3b7fddb51e7e7)
+    
+    note: this commit was picked to allow picking the next commit, without
+    this one the next would cause a use-after-free.
+
+commit e49f8f31ce972adddfe75984a7e7bee0df9b7c49
+Author: Johannes Kauffmann <johanneskauffmann@hotmail.com>
+Date:   Tue Jan 2 17:42:39 2024 +0100
+
+    dxva2_deinterlace: fix psz_mode leak
+    
+    (cherry picked from commit ca51bd21b3a3935b74105a97fb09462ed0b7b91f)
+
+commit 03d1ab0175389fd70cad8a6c3044e539c8954f31
+Author: Johannes Kauffmann <johanneskauffmann@hotmail.com>
+Date:   Thu Jan 4 23:44:04 2024 +0100
+
+    cli: fix two psz_unix_path leaks
+    
+    This would be a cherry-pick of 5b79e0f9d0febc9be4a34966f920a4d0f6634dfe,
+    but on 3.0.x, unlike master, psz_unix_path doesn't leak in the error
+    condition before psz_unix_path is copied to struct addr, but in two
+    error conditions that occur when when listening to "rc-host" fails.
+
+commit 5ff213d593c8d4a37e334eb85fbdaad2620a2779
+Author: Johannes Kauffmann <johanneskauffmann@hotmail.com>
+Date:   Thu Jan 4 22:51:02 2024 +0100
+
+    aout: file: fix psz_name leak
+    
+    (cherry picked from commit 02d87cc92b9ad32966a2f68c9e1c84c9ea451bba)
+
+commit 5a817a90af36a5ca0de21fb096bee89e8acf20e2
+Author: Johannes Kauffmann <johanneskauffmann@hotmail.com>
+Date:   Thu Jan 4 22:48:18 2024 +0100
+
+    aout: file: remove free(NULL)
+    
+    There used to be a test for a NULL char as well, but it was removed in
+    b1c459e9502282ad3bc94016e532a372f9c6955c.
+    
+    (cherry picked from commit c3c9840bc78c80d24faf5bfa8f7610f51153568e)
+
+commit 072a9d8cc656d1fa6c943154baa1f4f98de94709
+Author: Johannes Kauffmann <johanneskauffmann@hotmail.com>
+Date:   Tue Jan 2 21:54:20 2024 +0100
+
+    access/dtv: fix mod leak
+    
+    (cherry picked from commit b945194f173247b5b812d6c99911dadc220a741e)
+
+commit 9134e2079b5a14ce852ceaf84515c8e4ae35580f
+Author: Niklas Haas <git@haasn.dev>
+Date:   Wed Jul 19 15:21:23 2023 +0200
+
+    configure: add upper version constraint on libplacebo
+    
+    Libplacebo v6 substantially reworks the public API related to color
+    spaces, tone mapping, and more - and also requires GLSL 130 as a minimum
+    version, as well as access to OpenGL-backed textures to do any
+    nontrivial form of color mapping.
+    
+    Not only does this result in compilation failures, but it also totally
+    prevents basic operation. These problems can be addressed on VLC v4, but
+    backporting all of that to VLC v3 would be prohitively costly. As such,
+    simply prevent VLC v3 from being combined with libplacebo v6,
+    intentionallly or otherwise.
+
+commit cd525eb4bc8c1c1addcbd65d22e393bc21ec0264
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Thu Dec 21 20:56:36 2023 +0100
+
+    On the road to 3.0.21
+
+commit a77727ffe2663c96c43628bc1acb03bb414f6c90
+Author: Sean McGovern <gseanmcg@gmail.com>
+Date:   Mon Jan 1 20:05:50 2024 -0500
+
+    welcome to 2024
+    
+    (cherry picked from commit 3a174676a3526236f964bec7f635c71076d77c3f)
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+
+commit 81d9c4c7027df1fdd937da64c9f969265f300fd1
+Author: Johannes Kauffmann <johanneskauffmann@hotmail.com>
+Date:   Sat Dec 9 23:01:07 2023 +0100
+
+    d3d11_deinterlace: conditionally define d3d11 enum
+    
+    Newer d3d11.h already defines the enum, resulting in the following error:
+    
+        ../../modules/hw/d3d11/d3d11_deinterlace.c:43:14: error: redefinition of typedef ‘D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS’ with different type
+           43 | typedef UINT D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS;
+              |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        In file included from ../../modules/hw/d3d11/d3d11_deinterlace.c:36:
+        /usr/share/mingw-w64/include/d3d11.h:954:3: note: previous declaration of ‘D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS’ with type ‘D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS’
+          954 | } D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS;
+              |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS is available since MinGW-W64 6.0.0:
+    https://github.com/mirror/mingw-w64/commit/474a85ab51aadbe24a03081684d9cd17dcc3b353
+    
+    Contribs d3d11.h doesn't have it, but distro-provided d3d11.h does, so
+    check if the type is available.
+
+commit 01b9288de1576131c830f4e9f4c6a4dbbd95fb0c
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Jan 24 13:40:53 2022 +0100
+
+    codec: opus: add support for projection decoder
+    
+    (cherry picked from commit d717dae8fd1d15c131d8606957918771bd882942)
+
+commit 18a1c0b1c3176694b61fa24e9623170dce3ae744
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Jan 24 13:49:29 2022 +0100
+
+    codec: opus_header: read & store decoding matrix
+    
+    (cherry picked from commit f582f5c5e58b37654a695ccdaed4d002390158d8)

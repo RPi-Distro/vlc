@@ -2,7 +2,7 @@
  * VLCLogWindowController.h: Log message window controller
  *****************************************************************************
  * Copyright (C) 2004-2013 VLC authors and VideoLAN
- * $Id: 72ac66566147a4fcedd968b2aeeeb882d3394d74 $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          Pierre d'Herbemont <pdherbemont # videolan org>

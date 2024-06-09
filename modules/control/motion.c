@@ -2,7 +2,7 @@
  * motion.c: control VLC with laptop built-in motion sensors
  *****************************************************************************
  * Copyright (C) 2006 - 2007 the VideoLAN team
- * $Id: 7491cadb9c81992272a044ae23357ccba52665c9 $
+ * $Id$
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Jérôme Decoodt <djc@videolan.org> (unimotion integration)

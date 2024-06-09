@@ -2,7 +2,7 @@
  * ControlsBar.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2018 VLC authors and VideoLAN
- * $Id: 1266df136627d5658cde1a9f6d543d0697fbf5fd $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>

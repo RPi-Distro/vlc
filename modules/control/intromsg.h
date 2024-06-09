@@ -2,7 +2,7 @@
  * intromsg.h
  *****************************************************************************
  * Copyright (C) 1999-2015 VLC authors and VideoLAN
- * $Id: a0f85dce92270e3e79858984a7889e678bf3bfad $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by

@@ -2,7 +2,7 @@
  * xiph.h: Xiph helpers
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 06600484d515cb0e6ed9581c8ccce0f87d44e5ac $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

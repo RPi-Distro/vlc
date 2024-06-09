@@ -1,7 +1,7 @@
 /*****************************************************************************
  * fft.h: Headers for iterative implementation of a FFT
  *****************************************************************************
- * $Id: f4c8a6bf5f0c5f2b2407277cc408eed3ef02ace5 $
+ * $Id$
  *
  * Mainly taken from XMMS's code
  *

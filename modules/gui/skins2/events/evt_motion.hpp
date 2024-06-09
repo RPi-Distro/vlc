@@ -2,7 +2,7 @@
  * evt_motion.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b9501c48474ea72aca0d0e11fc6df8e2948e00f9 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * VLCSimplePrefsWindow.m: Simple Preferences Window subclass for Mac OS X
  *****************************************************************************
  * Copyright (C) 2008-2014 VLC authors and VideoLAN
- * $Id: 1e315fec74c4568936c78e8f1ca55ff963c66622 $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *

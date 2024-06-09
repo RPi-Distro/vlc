@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright © 2011-2012 VideoLAN
- * $Id: 8cfdab3206bb2fafab98f3fba87c921da11d0d6a $
+ * $Id$
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *

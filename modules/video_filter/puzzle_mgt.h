@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005-2009 VLC authors and VideoLAN
  * Copyright (C) 2013      Vianney Boyer
- * $Id: 87006a787cb70165a36659a7dfa541340813894b $
+ * $Id$
  *
  * Authors: Vianney Boyer <vlcvboyer -at- gmail -dot- com>
  *

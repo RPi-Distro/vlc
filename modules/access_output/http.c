@@ -2,7 +2,7 @@
  * http.c
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 38d633a0ed6b90de37eb24b24e1f4a7bbc752a3b $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Remi Denis-Courmont

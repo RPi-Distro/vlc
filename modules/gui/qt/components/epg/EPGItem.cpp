@@ -2,7 +2,7 @@
  * EPGItem.cpp: EPGItem
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: fbdca4183eb4dfdac818f511733a609fc01da359 $
+ * $Id$
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *

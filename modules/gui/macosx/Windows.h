@@ -2,7 +2,7 @@
  * Windows.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2014 VLC authors and VideoLAN
- * $Id: e228188765f48ac414a51b9d4e002a2a98832cd8 $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>

@@ -2,7 +2,7 @@
  * preparser.c
  *****************************************************************************
  * Copyright © 2017-2017 VLC authors and VideoLAN
- * $Id: 661b2122e14a10340eefbb054dabfebd4fc7cc9b $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by

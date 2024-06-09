@@ -2,7 +2,7 @@
  * file.c : audio output which writes the samples to a file
  *****************************************************************************
  * Copyright (C) 2002 VLC authors and VideoLAN
- * $Id: 353c2f0095b2e1c19034172b0c40998421ec3d4c $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -142,14 +142,16 @@ static int Start( audio_output_t *p_aout, audio_sample_format_t *restrict fmt )
     if( !psz_name )
     {
         msg_Err( p_aout, "you need to specify an output file name" );
-        free( psz_name );
         return VLC_EGENERIC;
     }
 
     /* Allocate structure */
     p_aout->sys = malloc( sizeof( aout_sys_t ) );
     if( p_aout->sys == NULL )
+    {
+        free( psz_name );
         return VLC_ENOMEM;
+    }
 
     if( !strcmp( psz_name, "-" ) )
         p_aout->sys->p_file = stdout;

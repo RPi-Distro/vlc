@@ -2,7 +2,7 @@
  * md5.c: test md5
  *****************************************************************************
  * Copyright (C) 2011 VideoLAN
- * $Id: a7a987096dfd8f8f6c7d40b258e6005bc07475bd $
+ * $Id$
  *
  * Authors: Jean-Bapstiste Kempf <jb@videolan.org>
  *

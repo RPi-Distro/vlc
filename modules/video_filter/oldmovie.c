@@ -2,7 +2,7 @@
  * oldmovie.c : Old movie effect video filter
  *****************************************************************************
  * Copyright (C) 2013      Vianney Boyer
- * $Id: ce6921d056138ae1b872d2e1b75397d8e759385d $
+ * $Id$
  *
  * Authors: Vianney Boyer <vlcvboyer -at- gmail -dot- com>
  *

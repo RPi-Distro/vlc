@@ -2,7 +2,7 @@
  * subsusf.c : USF subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 VLC authors and VideoLAN
- * $Id: 147f45f2648749a35f7e3309d3bc1d924f0dbc76 $
+ * $Id$
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *

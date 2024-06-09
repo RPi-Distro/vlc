@@ -2,7 +2,7 @@
  * HelpWindowController.h
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: 965a3ba22a1dabebd192a250ac3b917f67471f17 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>

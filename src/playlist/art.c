@@ -2,7 +2,7 @@
  * art.c : Art metadata handling
  *****************************************************************************
  * Copyright (C) 1998-2008 VLC authors and VideoLAN
- * $Id: 53133e5598f632d1f6c4fd325f3529b9728eb39e $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org

@@ -2,7 +2,7 @@
  * EPGWidget.hpp : EPGWidget
  ****************************************************************************
  * Copyright © 2009-2010 VideoLAN
- * $Id: ba5f497a0cea934b0220b6b7043923bd6d307e40 $
+ * $Id$
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *

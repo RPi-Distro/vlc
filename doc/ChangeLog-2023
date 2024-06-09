@@ -1,3 +1,579 @@
+commit 93b72818633520c794fcb8a73a22d1044266b875
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Tue May 22 18:57:19 2018 +0200
+
+    opus: support third order ambisonic with family 2 mapping
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 2b6ac91e95c0c59b2d575f720fe22ca65bc0827e)
+
+commit 590a0f52d4623682313c6f39e3ce259cbd98a4af
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon May 23 20:47:23 2022 +0200
+
+    codec: opus: rewrite extradata handling
+    
+    (cherry picked from commit c9cd7454e0c71cdd44f105cff232d4b3624c90b2)
+
+commit 5e3fe0c2a754ad6670480729937d640c7cc18e56
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon May 23 19:49:46 2022 +0200
+
+    codec: opus: header fix needs valid defaults
+    
+    (cherry picked from commit 0d0df433920d3510068890b0473a8bb4c505eea3)
+
+commit b82e70e55df70fffc009c7782fd45256517f3350
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Jan 24 14:06:58 2022 +0100
+
+    codec: opus_header: add init/clean cycle methods
+    
+    (cherry picked from commit f083c0ff7e02ff15d95cff77fbd898fc239cd675)
+
+commit 45a3f94a6782366a2e94312f810025bb6ba208df
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Jan 24 15:43:26 2022 +0100
+
+    codec: opus: simplify dummy header code
+    
+    (cherry picked from commit 7c411c9c97f9bcb4c09d255737461b9f08ec6a7f)
+
+commit 0cb962765f889be53139b43114c68350d5320057
+Author: Zhao Zhili <quinkblack@foxmail.com>
+Date:   Tue Dec 28 19:13:29 2021 +0800
+
+    demux: mp4: read one sample each time for opus
+    
+    (cherry picked from commit 0a8da3bb9c7b54629b3aa33a4a7b3cd00ed39fbc)
+
+commit 795b1bc62be58ee1636c1fac28330d02bc0e08e0
+Author: François Cartegnie <fcvlcdev@free.fr>
+Date:   Thu Dec 7 17:03:09 2023 +0100
+
+    codec: libass: fix inverted patch ratio
+    
+    refs #27771
+    
+    (cherry picked from commit b658d2887d645c8c7101c4106b9764bc6162dd97)
+
+commit fc72e317d63dc80a90e14959ab4107ea5704dfec
+Author: Tung Huynh <tung75605@gmail.com>
+Date:   Thu Dec 7 01:03:30 2023 -0800
+
+    direct3d11: fix uninitialized sys->src_fmt when render with external device
+
+commit 08c7a66780740679ba1b0abe9e30e73afc6bc271
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Dec 6 07:48:29 2023 +0100
+
+    win32/modules: use cast with GetProcAddress function pointers
+
+commit 5ae924bf212dce64a6424561d92426dbcc2cf3a0
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Dec 6 14:45:46 2023 +0100
+
+    dxva2: add missing mask initializers
+
+commit 55be3ce60795a09d13861c5637c1fe7aebc5ce8b
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Thu Dec 7 14:18:22 2023 +0100
+
+    smb: fix potential string to wide string copy
+    
+    The type of net_resource depends on the UNICODE define.
+
+commit b758e19479a80604e3feb470b197e4a13a203a85
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Jul 10 08:23:45 2019 +0200
+
+    avcodec: encoder: fix MPEG4 matrix passed as const
+    
+    lavc expects a pointer that it will free in avcodec_free_context().
+    
+    (cherry picked from commit d86c4c87aa78130a4fd00294e25df865d0e2b327)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 5a9ca37a95b6e85e6beaaefba9aa4a886a45411c
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Jul 15 12:41:29 2019 +0200
+
+    vlc_common: fix swab() calls on win32 that don't use const on source pointer
+    
+    (cherry picked from commit a9e0b1124e19225b903a2926951781e84002c410)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 27e584d7b9add8dbbb82b7227228e1ec1e25a089
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Jan 3 13:23:00 2023 +0100
+
+    access/dtv: move the lfind() Windows hack in the module
+    
+    So that we don't have to include search.h each time vlc_fixups.h is used.
+    
+    The Win32 prototype of lfind() expects an unsigned* for 'nelp', not a size_t*.
+    
+    (cherry picked from commit 7c43bcba27b6fe256456d93a9d32e10648f08da8)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 3391108f9709f0d77d9297c94371cf9cd30f2cbe
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Thu Dec 7 15:43:04 2023 +0100
+
+    netsync: use char for temporary local buffer
+    
+    On Windows recvfrom/revc/sendto expects a char*.
+
+commit 6179d6b843f2a93af6a3d51c4244766e3eba9e77
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Apr 14 09:41:38 2019 +0300
+
+    win32: wrap {g,s}etsockopt()
+    
+    char * can alias anything, and Winsock relies on that. Unfortunately,
+    the compiler still issues warnings. This works around that.
+    
+    (cherry picked from commit 36715d9b79f34824e126c2bc3aee2f1c1c16af46)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 770789f265761fc7ab2de69ca105fec4ad93d9e2
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Feb 26 20:36:29 2018 +0200
+
+    chromaprint: missing cast
+    
+    (cherry picked from commit 7bd5bab3e43ae187f7219db61ed85d06d2ba0547)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 4a20ef61d027f5a1c0c1eed3231fde296f2ce623
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Nov 28 13:37:56 2023 +0100
+
+    breakpad: fix potential char used with _snwprintf()
+    
+    The whole Breakpad API on Windows uses wstring.
+    
+    (cherry picked from commit 1040e9a7ffe78b31a6ffed3ebb3c087ef347c876)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 6b6036cbb207dabcde1a8ef0c17c0e964fa3d6c2
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Dec 4 08:24:04 2023 +0100
+
+    winvlc: don't keep the crash path forever in memory
+    
+    It's copied internally by breakpad.
+    
+    (cherry picked from commit 3e3292a58d4d67f26140b606cf1e1497f04f15db)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit d96742d1192f42151a425840048e920d2d5a6a8f
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Dec 4 08:21:01 2023 +0100
+
+    winvlc: don't attempt to send crash dumps if the path can't be found
+    
+    (cherry picked from commit 520c9e92911e354bfc96406a71e891de116fe67c)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 337d8d55d3bf6290b75bf7697f6412a3de039f11
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Dec 4 07:31:26 2023 +0100
+
+    winvlc: fix potential buffer overflow in crashdump path
+    
+    (cherry picked from commit 787eba6fa35702429e2d2b643290419558c6be9d)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 05de88f6ae52950df03047d924b5e5297c2957de
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Fri Mar 27 12:04:33 2020 +0100
+
+    winvlc: silence unused warnings
+    
+    If breakpad is not used, the crash_handling variable is not used too,
+    but as it's used otherwise this should be silenced.
+    
+    (cherry picked from commit 81c60915f764b638bb3b18a08abe9b955ab9df01)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 28b191f30b3ed4f34f21678c6f41e90fb325f509
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Thu Mar 15 18:09:31 2018 +0100
+
+    winvlc: Move breakpad init completely in HAVE_BREAKPAD
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit a7611f68e6da7e564adec3628749d3267a800927)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit fda14fc7c013eb75291df10cc8b88336c51328ad
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Feb 26 20:43:03 2018 +0200
+
+    dynamicoverlay: fix memory corruption
+    
+    Font alpha is 8-bits, not 32-bits.
+    
+    (cherry picked from commit 6f14081af7325d334a53126c4eea52bc30fc08a0)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 4431076ad4a21fdcabd3f7ef1d61c45891689b0c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Mar 3 17:20:04 2019 +0200
+
+    dynamicoverlay: fix variable shadowing
+    
+    (cherry picked from commit d42e05d6b2c061ae352c131d5aebf8c8d8aa6d35)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 45198e5328ff2b2f4eb2fb76add0789fec26270f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Mar 3 09:59:10 2019 +0200
+
+    swscale: avoid invalid pointer conversion
+    
+    (cherry picked from commit ab00e6c59d42e05ab08893091783d8b5febc0058)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit adcf4e66e2ce2c382bb97957c91bfde040f4f3ca
+Author: Zhao Zhili <quinkblack@foxmail.com>
+Date:   Thu Mar 1 14:25:59 2018 +0800
+
+    yadif: fix variable type
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+    (cherry picked from commit 77b86f4452be4dbe0d56a9cd1b66da61b116da60)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 1e2918115ca2f5c4ffde00dc02ad89525714f6c2
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Tue Dec 5 09:23:35 2023 +0100
+
+    input: fix incompatible-pointer-types assignment
+    
+    Fixes #28441
+
+commit 5d465814936c29a935bacb29810e6355d444d4b7
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Fri Nov 17 16:41:17 2023 +0100
+
+    coreaudio: fix stack overflow in MapOutputLayout()
+    
+    When outlayout->mNumberChannelDescriptions is bigger than AOUT_CHAN_MAX.
+    
+    Fixes #28424
+    
+    (cherry picked from commit 5225251ce1c774f2aace2fc4de6ded85e00a9225)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 94eafa60094b137f362d5341cd635e15e6436fa0
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Nov 23 08:57:57 2023 +0100
+
+    contrib: ffmpeg: upgrade to 4.4.4
+    
+    No major changes, bugfixes only.
+
+commit ab4f2bc2ec72c69fe0220d4f519b67cc5b7fc22f
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Nov 8 08:09:23 2023 +0100
+
+    libvlc: fix API compatibility when using libvlc from MSVC
+    
+    MSVC doesn't have ssize_t but it has SSIZE_T which should be similar.
+    
+    clang-cl doesn't have any ssize_t in its header and defines _MSC_VER so it
+    should work as well.
+    
+    Co-authored-by: Martin Finkel <martin@videolabs.io>
+
+commit 4a887879b381fa4ee3b849c5c73d2dc977823ec0
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Thu Nov 2 07:29:22 2023 +0100
+
+    d3d11_fmt: fix registry enum key leak on success
+    
+    Fixes #28413
+
+commit 2617de71b6f2dee26d06ea358a9b10224359f761
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Oct 30 10:17:54 2023 +0100
+
+    Update POs
+
+commit 6f0d0ab126b1bed52897598867d0e19ca2cc6202
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Oct 30 08:25:53 2023 +0100
+
+    News for 3.0.20
+
+commit d3832e1cdcce175a723246ff26a0a820748eb55e
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Oct 27 08:38:08 2023 +0200
+
+    direct3d11: only send the HDR metadata when they change
+    
+    Newer Windows issue this warning if we send metadata with each picture:
+    
+    DXGI WARNING: IDXGISwapChain4::SetHDRMetaData: Redundant invocation on unchanged
+    metadata could result in presentation performance inefficiency. [ MISCELLANEOUS WARNING #295: ]
+    
+    Similar code as done in 269540817f0fc882076238ddb0ce904d00ac90f2 for VLC 4.0.
+
+commit e5bba91139dd32cfeef9dcb9d2dd2a922373aa7d
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Oct 25 11:35:36 2023 +0200
+
+    direct3d11: remove padding in the pool picture
+    
+    On 3.0 the pool video format doesn't have to match the decoder actual
+    padding. The quad handling to place the picture will take care of this
+    with the actual texture size.
+    
+    We still need to fix the semiplanar dimensions although it's unlikely
+    the quad will use anything else than an RGB output.
+    
+    Fixes green line seen in fullscreen.
+
+commit 132e617a311e1f1515ffeacf631156f4a263f2dc
+Author: Maxim Biro <nurupo.contributions@gmail.com>
+Date:   Fri Oct 20 11:52:29 2023 -0400
+
+    vout: pass non-left-mouse-button double-clicks on Windows too
+    
+    Follow-up to ed22580d6f312bfb13a3fcf1cfd01206c7159f2b, which did this on
+    Linux.
+
+commit 27840cb5b20bc4651ba6af01d0a7ae6da17297ef
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Thu Oct 19 07:06:15 2023 +0200
+
+    mmsh: check user size bounds
+    
+    (cherry picked from commit f7f346e686405638342721dd1c980d63e542dbe0)
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 585aee4fad69dc5b6b4fa6ddfc0c50b52a1be273
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Oct 20 14:27:33 2023 +0200
+
+    avcodec: fix crash when AV1 hardware decoder fails
+    
+    If InitVideoDecCommon() fails, it's already cleaning the decoder,
+    release the context and freeing p_sys.
+    
+    We must not do anything and just return the error.
+    
+    
+    (cherry picked from commit fecebe158883b832076fb396ad671255865f61a4)
+
+commit 2b24e96a3a54505ef87798fbe83a05fbabe05d1c
+Author: Pierre Lamot <pierre@videolabs.io>
+Date:   Fri Oct 20 15:20:10 2023 +0200
+
+    qt: fix fullscreen controlbar disappearing on interaction on windows
+    
+    It looks like windows doesn't consider which window is active the same way X11 does
+    
+    fix: #28399
+
+commit abf5e6172163bb430350b08acc641a301b391f75
+Author: KO Myung-Hun <komh@chollian.net>
+Date:   Tue Feb 28 23:43:27 2023 +0900
+
+    vlc_fixups: include sys/socket.h on OS/2 LIBCn
+    
+    LIBCn is a fork of kLIBC, and it has socklen_t in sys/socket.h.
+    
+    (cherry picked from commit 4baa00c9d71c416b97e3fe8a8f64372665eb54a1)
+
+commit 24ac561248d3cd098030157c57949f20f5f5eb58
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Sep 6 13:16:02 2021 +0200
+
+    cdrom: don't eat the next line after we read the cue file mode
+    
+    (cherry picked from commit d18fd89b00d986cdf91c57b20d525742b036c1d1)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit ed22580d6f312bfb13a3fcf1cfd01206c7159f2b
+Author: Maxim Biro <nurupo.contributions@gmail.com>
+Date:   Fri Sep 22 00:10:59 2023 -0400
+
+    vout: pass non-left-mouse-button double-clicks
+    
+    This fixes #28377 -- the issue when double-clicking on
+    MOUSE_BUTTON_CENTER (mouse wheel) would result in plugins receiving
+    mouse events only for the first click, as VLC was filtering out all
+    non-left-mouse-button double-clicks.
+    
+    The non-left-mouse-button double-click events, instead of being entirely
+    filtered out, are now being passed as regular mouse button presses
+    without any indication that they are double-clicks. While it would be
+    more proper to pass them as double-clicks with the corresponding mouse
+    button being pressed, that might break some 3rd party plugins that rely
+    on (vlc_mouse_t.b_double_click == true) to mean that the left mouse
+    button was double-clicked, without checking if the left mouse button was
+    actually pressed. Still, even with b_double_click not being set on
+    non-left-mouse-button double-clicks, passing such double-clicks as
+    regular press+release events does fix the issue of VLC "eating up" the
+    second click of a MOUSE_BUTTON_CENTER, so this is a good change.
+
+commit e031a5cc893d00c1bc5c990bb100684703c1699c
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Oct 13 13:35:56 2023 +0200
+
+    direct3d11: settle legacy_shader before it's being used
+    
+    It's used in Direct3D11CreateFormatResources(). We can update it every time
+    Direct3D11Open() is called.
+
+commit 380dee8053ef69220707aed10b57113b64e0a925
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Oct 13 13:08:00 2023 +0200
+
+    d3d11_fmt: check all the Display driver items
+    
+    There might be holes in the index list but we need to check each of them
+    to find our driver.
+
+commit 05dd1fe652de9af906a9e44519926cbc02dfb5a2
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Wed Oct 4 15:51:20 2023 -0400
+
+    contrib: dav1d: update to 1.3.0
+    
+    > 1.3.0 is a medium release reducing memory footprint, increasing again
+    > the speed on x86 and ARM and extending the API functions.
+    
+    https://code.videolan.org/videolan/dav1d/-/tags/1.3.0
+    (cherry picked from commit cf283cb75765903ac70507a0663dab3d36fef941)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 32b50de2a28418ca9e843e91383dd09b4cd1c529
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Sep 30 11:45:12 2023 +0200
+
+    Update NEWS
+
+commit 235747f2c5f2e4af8fe8512c5027b0d11e6ea55e
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sat Sep 30 10:08:43 2023 +0200
+
+    Contribs: update libvpx to 1.13.1
+    
+    CVE-2023-5217
+    https://crbug.com/1486441 (CVE-2023-5217)
+    
+    (cherry picked from commit ab520205aecb04ff837066a67d4505fcb79672c3)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 236b3184d75a3eeb4a56340b5eeab746c407157f
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Sep 26 13:34:25 2023 +0200
+
+    nsis: always use the regsvr32.exe from the system
+    
+    We should not use whatever is in the PATH. Especially as the current directory
+    is set the a temporary directory during uninstallation.
+    
+    (cherry picked from commit d13608f8867b66dec2e8079b4d07d1b8567ffa0a)
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+
+commit 56529098b08432fb506e29cde42d987c2b355e03
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed May 17 08:40:22 2023 +0200
+
+    lib: media_list_player: fix leaks
+    
+    Signed-off-by: Felix Paul Kühne <felix@feepk.net>
+
+commit 4e4e389c0119d8c98e8923c15179db5c405dd0d4
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed May 17 08:39:59 2023 +0200
+
+    lib: media_list_player: check set_current_playing_item() return
+    
+    This will allow to fix a leak by only checking the return code instead
+    of fetching the media (and forgetting to release it...)
+    
+    Signed-off-by: Felix Paul Kühne <felix@feepk.net>
+
+commit dc2242c0ead0a6847532e556053b5b2249d865e4
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed May 17 08:37:34 2023 +0200
+
+    lib: media_list: fix leak
+    
+    Signed-off-by: Felix Paul Kühne <felix@feepk.net>
+
+commit 95f79c82d6621165cbb8606726adfc37cd306852
+Author: Felix Paul Kühne <felix@feepk.net>
+Date:   Wed Aug 30 12:49:28 2023 +0200
+
+    lib:media_list_player: add missing nullability checks
+
+commit f1ed769f555d083c876b5338ed41b64f57e0d48a
+Author: Felix Paul Kühne <felix@feepk.net>
+Date:   Tue Sep 5 18:14:21 2023 +0200
+
+    NEWS: mention new translations
+
+commit e96e6c6d7877cc42f5fa7b56925251fc5462db62
+Author: VideoLAN <videolan@videolan.org>
+Date:   Tue Sep 5 18:12:18 2023 +0200
+
+    po: add initial translation to Swahili
+
+commit 943d3c3b25a4f6bc4eff80221c41bc70f94bc45f
+Author: VideoLAN <videolan@videolan.org>
+Date:   Tue Sep 5 18:09:42 2023 +0200
+
+    po: add initial translation to Samoan
+
+commit 54401b01c33a094705567d7090ca7438a5312bc5
+Author: VideoLAN <videolan@videolan.org>
+Date:   Tue Sep 5 18:07:22 2023 +0200
+
+    po: add initial translation to Odia
+
+commit 5953ed5119a957bd845111e4438b87af90b8dd3a
+Author: VideoLAN <videolan@videolan.org>
+Date:   Tue Sep 5 18:04:14 2023 +0200
+
+    po: add initial translation to Burmese
+
+commit 82f8de5c762fb2ff3f56a7e404b8c51fb9e592c1
+Author: VideoLAN <videolan@videolan.org>
+Date:   Tue Sep 5 18:01:49 2023 +0200
+
+    po: add initial translation to Macedonian
+
+commit b75e7040d8d8e859c3ff2555b7f141aab5bca906
+Author: VideoLAN <videolan@videolan.org>
+Date:   Tue Sep 5 17:58:52 2023 +0200
+
+    po: add initial translation to Lao
+
+commit 9249ec99eb1c3f612865c1772cfde59f533965da
+Author: VideoLAN <videolan@videolan.org>
+Date:   Tue Sep 5 17:54:14 2023 +0200
+
+    po: add initial translation to Interlingue
+
+commit 78ed9cd267121f71cc179549d587be941e366240
+Author: VideoLAN <videolan@videolan.org>
+Date:   Tue Sep 5 17:50:57 2023 +0200
+
+    po: add initial translation to Esperanto
+
+commit 8dd5dd1520258930275d4b4d6458fdff9b28d773
+Author: VideoLAN <videolan@videolan.org>
+Date:   Tue Sep 5 16:57:44 2023 +0200
+
+    Update translations for release
+
 commit 4733d1cced9c51ca40bc04d578550c6b917fe2fe
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Tue Aug 15 11:12:19 2023 +0200
@@ -2098,16 +2674,3 @@ Date:   Thu Dec 1 16:35:01 2022 +0100
     
     (cherry picked from commit 27009027ab57ea827b871ca73ee9636b383292c3)
     Signed-off-by: Thomas Guillem <thomas@gllm.fr>
-
-commit 65ea8d19d91ac1599a29e8411485a72fe89c45e2
-Author: Niklas Haas <git@haasn.xyz>
-Date:   Wed Dec 28 17:58:47 2022 +0100
-
-    vout_opengl: add compatibility alias for libplacebo v5
-    
-    This fixes compilation for now, albeit with many deprecation warnings.
-    It will probably break again whenever libplacebo v6 drops these
-    deprecated fields as well, but hopefully VLC v4 will be released by
-    then.
-    
-    Fixes: #27624

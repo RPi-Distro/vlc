@@ -2,7 +2,7 @@
  * avcodec.h: decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 2001-2013 VLC authors and VideoLAN
- * $Id: 9d16b3dc47d934e1d02e0016c1d2e589df3e661a $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Baptiste Kempf <jb@videolan.org>

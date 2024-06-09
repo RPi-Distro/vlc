@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: b219147b0928068427085da19fb03c9dcbb49a52 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -1043,11 +1043,13 @@ static int SessionsSetup( demux_t *p_demux )
                     unsigned char *p_extra;
                     tk->fmt.i_codec = VLC_CODEC_OPUS;
                     OpusHeader header;
+                    opus_header_init(&header);
                     // "The RTP clock rate in "a=rtpmap" MUST be 48000 and the number of channels MUST be 2."
                     // See: https://datatracker.ietf.org/doc/html/draft-ietf-payload-rtp-opus-11#section-7
                     opus_prepare_header( 2, 48000, &header );
                     if( opus_write_header( &p_extra, &i_extra, &header, NULL ) )
                         return VLC_ENOMEM;
+                    opus_header_clean(&header);
                     tk->fmt.i_extra = i_extra;
                     tk->fmt.p_extra = p_extra;
                 }

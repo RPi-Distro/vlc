@@ -2,7 +2,7 @@
  * VLCOutput.m: MacOS X Output Dialog
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 81d6ad2d6de8b232da1b952b4754ef168bb780c1 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>

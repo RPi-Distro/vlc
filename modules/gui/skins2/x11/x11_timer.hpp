@@ -2,7 +2,7 @@
  * x11_timer.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 03882d0cb9fa22cad44f8c5ac72aa4bc40984930 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

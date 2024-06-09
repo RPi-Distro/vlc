@@ -2,7 +2,7 @@
  * Ebml_dispatcher.hpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2016 VLC authors, VideoLAN, Videolabs SAS
- * $Id: c58e5801ce20e111014fdfcafecfe4aec85c4c0a $
+ * $Id$
  *
  * Authors: Filip Roseen <filip@videolabs.io>
  *

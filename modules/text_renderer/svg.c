@@ -2,7 +2,7 @@
  * svg.c : Put SVG on the video
  *****************************************************************************
  * Copyright (C) 2002, 2003 VLC authors and VideoLAN
- * $Id: b1247af0ca26090f1e067065bf0adf3ca1086b05 $
+ * $Id$
  *
  * Authors: Olivier Aubert <oaubert@lisi.univ-lyon1.fr>
  *

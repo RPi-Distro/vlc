@@ -2,7 +2,7 @@
  * udp.c
  *****************************************************************************
  * Copyright (C) 2001-2007 VLC authors and VideoLAN
- * $Id: ea953eff349d376835ce02ee8f5d2aeec1042ef2 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

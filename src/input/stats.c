@@ -2,7 +2,7 @@
  * stats.c: Statistics handling
  *****************************************************************************
  * Copyright (C) 2006 VLC authors and VideoLAN
- * $Id: 1ef93366f737871bb361976ffd9df8fd962a048d $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

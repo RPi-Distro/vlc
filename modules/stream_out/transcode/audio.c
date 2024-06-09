@@ -2,7 +2,7 @@
  * audio.c: transcoding stream output module (audio)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 57cdbed16aa3f3259edfa2c832d8a298954c1891 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

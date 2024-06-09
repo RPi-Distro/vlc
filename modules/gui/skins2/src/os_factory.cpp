@@ -2,7 +2,7 @@
  * os_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b00be30b685c7212c09ddcff58031ebe7e210960 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * stl.c: EBU STL demuxer
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: f0664c2bf8bb1971189362ea25caa3aceef27b6f $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

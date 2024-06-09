@@ -2,7 +2,7 @@
  * cmd_add_item.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a2c47f4bd9d89191c8ea97bddb9858cde0f82357 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

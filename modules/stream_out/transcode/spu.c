@@ -2,7 +2,7 @@
  * spu.c: transcoding stream output module (spu)
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 913272624d67b83353e35d89b02e6cfcba18917d $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

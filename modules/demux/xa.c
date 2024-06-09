@@ -2,7 +2,7 @@
  * xa.c : xa file demux module for vlc
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: 6400895fd9ac23740cc6eb44a9e0d67227b56f14 $
+ * $Id$
  *
  * Authors: Rémi Denis-Courmont
  *

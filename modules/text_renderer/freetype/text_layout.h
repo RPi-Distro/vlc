@@ -2,7 +2,7 @@
  * text_layout.h : Text shaping and layout
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: 16ca48ef1e02fbabbcc829545166d3632cafd4e1 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>

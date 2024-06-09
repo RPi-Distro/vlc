@@ -2,7 +2,7 @@
  * VLCVoutWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012-2014 VLC authors and VideoLAN
- * $Id: 5e2a756fd3781fa746b58fd4bd570b6d5748e86f $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>

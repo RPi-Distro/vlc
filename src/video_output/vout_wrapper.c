@@ -2,7 +2,7 @@
  * vout_wrapper.c: "vout display" -> "video output" wrapper
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: dd8de6ff8bf85cfa3ee26b8e966d312fe8a5e505 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

@@ -2,7 +2,7 @@
  * ts.c: MPEG-II TS Muxer
  *****************************************************************************
  * Copyright (C) 2001-2005 VLC authors and VideoLAN
- * $Id: f2984c205c5555ff14a6a4b79fb4e1452caff633 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

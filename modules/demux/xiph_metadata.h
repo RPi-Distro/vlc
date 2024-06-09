@@ -2,7 +2,7 @@
  * xiph_metadata.h: Vorbis Comment parser
  *****************************************************************************
  * Copyright © 2008-2013 VLC authors and VideoLAN
- * $Id: f465243b3eb101e633927be0e42bf5e53dadfcb1 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

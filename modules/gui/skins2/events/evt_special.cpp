@@ -2,7 +2,7 @@
  * evt_special.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: afa1d1f87334adf30bdb4ef194974f71b54e40e5 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

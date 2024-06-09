@@ -2,7 +2,7 @@
  * screen.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004-2008 VLC authors and VideoLAN
- * $Id: 927d9c8c6bea4a4c170c14df9cd84f5c39f2d82a $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>

@@ -2,7 +2,7 @@
  * ios.m: iOS OpenGL ES provider
  *****************************************************************************
  * Copyright (C) 2001-2017 VLC authors and VideoLAN
- * $Id: 957b312f454f8ea7d2a4d5f2c8511c01bcaf9064 $
+ * $Id$
  *
  * Authors: Pierre d'Herbemont <pdherbemont at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

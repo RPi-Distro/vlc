@@ -2,7 +2,7 @@
  * interpreter.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ee11cc052fb8a1f5cb485db03d5aaf8433eb8644 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

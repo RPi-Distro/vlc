@@ -2,7 +2,7 @@
  * iTunes.h
  *****************************************************************************
  * Copyright (C) 2013-2014 VLC authors and VideoLAN
- * $Id: e408988e7835bdd18da224a5cf93b1f5838e72fb $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

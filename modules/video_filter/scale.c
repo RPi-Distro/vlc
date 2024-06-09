@@ -3,7 +3,7 @@
  *  Uses the low quality "nearest neighbour" algorithm.
  *****************************************************************************
  * Copyright (C) 2003-2007 VLC authors and VideoLAN
- * $Id: 003369effe64f373ea17623d3f4f3934bf993794 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea @t videolan dot org>

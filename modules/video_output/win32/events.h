@@ -2,7 +2,7 @@
  * events.h: Windows video output header file
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: 635f75c46ddaaaba4adbb9603abe34fa09e12f04 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien Fouilleul <damienf@videolan.org>

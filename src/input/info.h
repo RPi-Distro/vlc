@@ -2,7 +2,7 @@
  * info.h
  *****************************************************************************
  * Copyright (C) 2010 Laurent Aimar
- * $Id: 2752c5bad43f10dbb2aed7c248c86a10aa71358a $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

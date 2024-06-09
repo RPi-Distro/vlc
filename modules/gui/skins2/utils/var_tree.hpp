@@ -2,7 +2,7 @@
  * var_tree.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 982f0a1edc7ec56ca6f1264dcfb6d7a04479e2bb $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>

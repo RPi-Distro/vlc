@@ -2,7 +2,7 @@
  * vlcproc.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 76ebe1a0c5a976a11b85c7e8cb182df29789cdc0 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

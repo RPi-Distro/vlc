@@ -2,7 +2,7 @@
  * cache_block.c
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: df99115cc8a4d2d512bc52709e6deaed70b1fb28 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * x11_display.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: dea86e2a8909daf5913fe7793a20045e0c1f0e06 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

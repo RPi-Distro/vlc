@@ -2,7 +2,7 @@
  * VLCCoreDialogProvider.h: Mac OS X Core Dialogs
  *****************************************************************************
  * Copyright (C) 2005-2016 VLC authors and VideoLAN
- * $Id: 211b4eee21d536c9acc900e14a34246251cd29a2 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

@@ -2,7 +2,7 @@
  * puzzle_pce.c : Puzzle game filter - pieces functions
  *****************************************************************************
  * Copyright (C) 2013 Vianney Boyer
- * $Id: 9427cf3c24ed195c42851ca221fef16b1f76bc82 $
+ * $Id$
  *
  * Author:  Vianney Boyer <vlcvboyer -at- gmail -dot- com>
  *

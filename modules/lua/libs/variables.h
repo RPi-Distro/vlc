@@ -2,7 +2,7 @@
  * variables.h: Generic lua<->vlc variables interface
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: cbc60d84a45a1467203fbdd8552e5214d54257b1 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>

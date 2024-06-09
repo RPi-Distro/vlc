@@ -2,7 +2,7 @@
  * spudec.c : SPU decoder thread
  *****************************************************************************
  * Copyright (C) 2000-2001, 2006 VLC authors and VideoLAN
- * $Id: 0f5c9d5869c3d90b6c3f4a3bf9fd394893f88d53 $
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>

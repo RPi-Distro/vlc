@@ -2,7 +2,7 @@
  * macosx.m: Mac OS X module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2014 VLC authors and VideoLAN
- * $Id: 3c93acfcfb5595ad7ca85b56a908444811a19927 $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          David Fuhrmann <david dot fuhrmann at googlemail dot com>

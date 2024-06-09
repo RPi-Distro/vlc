@@ -2,7 +2,7 @@
  * VLCVideoEffectsWindowController.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2015 Felix Paul Kühne
- * $Id: e5904eb81cc903cc3c800ba3ebd0ce1cece192b3 $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *

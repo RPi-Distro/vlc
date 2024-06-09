@@ -2,7 +2,7 @@
  * yuvp.c: YUVP to YUVA/RGBA chroma converter
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: ea702f5cc8feb471bf92da9613c443291d68bb52 $
+ * $Id$
  *
  * Authors: Laurent Aimar < fenrir @ videolan.org >
  *

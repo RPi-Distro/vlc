@@ -2,7 +2,7 @@
  * subtitle.c: subtitle decoder using libavcodec library
  *****************************************************************************
  * Copyright (C) 2009 Laurent Aimar
- * $Id: ecfe35a60012b6c49464a52c1c4ce834dd7dd46f $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

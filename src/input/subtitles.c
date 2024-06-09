@@ -2,7 +2,7 @@
  * subtitles.c : subtitles detection
  *****************************************************************************
  * Copyright (C) 2003-2009 VLC authors and VideoLAN
- * $Id: 8b0952c1a022d2df434734ba9048b3914086b471 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  * This is adapted code from the GPL'ed MPlayer (http://mplayerhq.hu)

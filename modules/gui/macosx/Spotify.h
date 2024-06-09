@@ -2,7 +2,7 @@
  * Spotify.h
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
- * $Id: dc7e7ecd9ac921c5007d27229b8909731338b224 $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

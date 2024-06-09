@@ -2,7 +2,7 @@
  * SegmentTemplate.cpp: Implement the UrlTemplate element.
  *****************************************************************************
  * Copyright (C) 1998-2007 VLC authors and VideoLAN
- * $Id: 79d27a30b774e1e377071098f5d52371640ca811 $
+ * $Id$
  *
  * Authors: Hugo Beauzée-Luyssen <hugo@beauzee.fr>
  *

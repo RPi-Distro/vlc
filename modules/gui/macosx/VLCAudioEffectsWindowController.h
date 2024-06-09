@@ -2,7 +2,7 @@
  * VLCAudioEffectsWindowController.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2017 VLC authors and VideoLAN
- * $Id: 3a715b5dd701d6122b4e30c142e6292ab785709c $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *          Jérôme Decoodt <djc@videolan.org>

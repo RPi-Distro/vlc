@@ -2,7 +2,7 @@
  * NSScreen+VLCAdditions.h: Category with some additions to NSScreen
  *****************************************************************************
  * Copyright (C) 2003-2014 VLC authors and VideoLAN
- * $Id: 1f7038fae1d408d1a4b159ebfa97fd8b37146a61 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

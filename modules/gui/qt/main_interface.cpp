@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2011 VideoLAN and AUTHORS
- * $Id: 095c7659323de86c0bb0fe64b20cad79ceeee812 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

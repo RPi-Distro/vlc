@@ -2,7 +2,7 @@
  * cmd_dummy.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d908eb87fa7efb93e51e4bf0b68482735ca0245b $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

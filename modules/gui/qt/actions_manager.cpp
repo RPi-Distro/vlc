@@ -2,7 +2,7 @@
  * actions_manager.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright © 2009-2014 VideoLAN and VLC authors
- * $Id: efa3044df50d487f158003d9993be43aa1a6a2ad $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *

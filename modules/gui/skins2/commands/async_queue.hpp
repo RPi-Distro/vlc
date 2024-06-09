@@ -2,7 +2,7 @@
  * async_queue.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9288465e485c472e5f6269a655a9e3f1dd03ed83 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * win32_timer.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9a9311ad7ee9354d242085c6270fa58e1b8acaf0 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

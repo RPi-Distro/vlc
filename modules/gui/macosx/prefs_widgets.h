@@ -2,7 +2,7 @@
  * prefs_widgets.h: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2012 VLC authors and VideoLAN
- * $Id: 5ded29529a41abcc8818a3ee177a3676a0cdc3d4 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan.org>

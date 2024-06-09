@@ -2,7 +2,7 @@
  * gather.c: gathering stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 VLC authors and VideoLAN
- * $Id: 2adfbab332933fc93c72bef2a5f8ed0496079e77 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

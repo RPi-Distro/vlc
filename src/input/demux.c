@@ -2,7 +2,7 @@
  * demux.c
  *****************************************************************************
  * Copyright (C) 1999-2004 VLC authors and VideoLAN
- * $Id: 838ebe85911153ec4363d2466d84563b90bdf43c $
+ * $Id$
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *

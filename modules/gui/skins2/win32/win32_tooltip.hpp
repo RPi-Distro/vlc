@@ -2,7 +2,7 @@
  * win32_tooltip.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f26dfa43db51ef2f6352c0836686592943dd7e2b $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

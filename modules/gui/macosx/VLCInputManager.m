@@ -2,7 +2,7 @@
  * VLCInputManager.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2015 VLC authors and VideoLAN
- * $Id: bba1d93d6572cb6e46dcde4be4bcdacec136e3d7 $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

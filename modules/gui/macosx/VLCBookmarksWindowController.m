@@ -2,7 +2,7 @@
  * VLCBookmarksWindowController.m: MacOS X Bookmarks window
  *****************************************************************************
  * Copyright (C) 2005 - 2015 VLC authors and VideoLAN
- * $Id: 6785121314405919d23c1b1b53c3f8a3b2cdd79f $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *

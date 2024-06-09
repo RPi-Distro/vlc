@@ -3,7 +3,7 @@
  * Create a tree of the 'tags' of a media_list's medias.
  *****************************************************************************
  * Copyright (C) 2007 VLC authors and VideoLAN
- * $Id: f2bf77a77fced2e1c1fb75ae60a1bd06f57781ea $
+ * $Id$
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *

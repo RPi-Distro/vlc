@@ -2,7 +2,7 @@
  * extensions_manager.hpp: Extensions manager for Qt
  ****************************************************************************
  * Copyright (C) 2009-2010 VideoLAN and authors
- * $Id: 72a8153393ced8873162eb8d218bba343b362619 $
+ * $Id$
  *
  * Authors: Jean-Philippe André < jpeg # videolan.org >
  *

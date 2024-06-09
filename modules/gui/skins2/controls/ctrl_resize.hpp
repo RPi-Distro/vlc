@@ -2,7 +2,7 @@
  * ctrl_resize.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9a4b224d3fe9f8ed13a0a240ac65b7981760fb6d $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * directdraw.c: Windows DirectDraw video output
  *****************************************************************************
  * Copyright (C) 2001-2009 VLC authors and VideoLAN
- * $Id: be583127f9fd7b2a9a55de3ab980eeec1b9ad63c $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

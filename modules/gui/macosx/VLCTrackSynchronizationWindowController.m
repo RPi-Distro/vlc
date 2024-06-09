@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2011-2014 VLC authors and VideoLAN
  * Copyright (C) 2011-2015 Felix Paul Kühne
- * $Id: 85d6d7f33d94cb4657a282aa774b4497b9da9092 $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *

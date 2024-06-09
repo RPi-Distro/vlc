@@ -2,7 +2,7 @@
  * win32_dragdrop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: bb936ac6f91c57c1656e776cbe7982b1939537fd $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

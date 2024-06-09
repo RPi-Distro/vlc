@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: ec39edde0e6563fd03a0f6e56cc552f50df2896f $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

@@ -2,7 +2,7 @@
  * generic_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 30c7ea92ab73882eab109edccb52c141284c7f76 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

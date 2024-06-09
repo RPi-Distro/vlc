@@ -2,7 +2,7 @@
  * canvas.c : automatically resize and padd a video to fit in canvas
  *****************************************************************************
  * Copyright (C) 2008 VLC authors and VideoLAN
- * $Id: 6db3a0ade45157aa5fc374b2e2aa6c59a13b9d20 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *

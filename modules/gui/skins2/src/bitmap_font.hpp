@@ -2,7 +2,7 @@
  * bitmap_font.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 6f98480dd5fb3e0eae01099e71c56b317893136d $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * VLCApplication.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2016 VLC authors and VideoLAN
- * $Id: d22936f34661bd0cadfc93c6a5dcb47fa3fd447c $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

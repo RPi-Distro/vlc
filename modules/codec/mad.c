@@ -3,7 +3,7 @@
  * using MAD (MPEG Audio Decoder)
  *****************************************************************************
  * Copyright (C) 2001-2016 VLC authors and VideoLAN
- * $Id: 194182961dc8e31da069a6186a48d29886f474ad $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>

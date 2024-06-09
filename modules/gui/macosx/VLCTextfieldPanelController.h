@@ -2,7 +2,7 @@
  * VLCTextfieldPanelController.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2012 Felix Paul Kühne
- * $Id: 9175439442c5ddcbe140d49b9922f46e4e65bbea $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *

@@ -2,7 +2,7 @@
  * VLCFSPanelController.h: macOS fullscreen controls window controller
  *****************************************************************************
  * Copyright (C) 2006-2016 VLC authors and VideoLAN
- * $Id: 5b86759b0bdf0cafd6770c018432577d966f426b $
+ * $Id$
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

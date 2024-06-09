@@ -2,7 +2,7 @@
  * toolbar.hpp : ToolbarEdit dialogs
  ****************************************************************************
  * Copyright (C) 2008-2011 the VideoLAN team
- * $Id: 520d760557696e4c4e24b06c8eac46f01e7e526d $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *

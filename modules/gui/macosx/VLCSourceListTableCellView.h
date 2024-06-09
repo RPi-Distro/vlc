@@ -2,7 +2,7 @@
  * VLCSourceListTableCellView.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2018 VLC authors and VideoLAN
- * $Id: ce186ae1af1fc29fc1e55f31cb04167c527ee850 $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *

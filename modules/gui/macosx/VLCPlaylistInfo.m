@@ -2,7 +2,7 @@
  * VLCPlaylistInfo.m: Controller for the codec info panel
  *****************************************************************************
  * Copyright (C) 2002-2015 VLC authors and VideoLAN
- * $Id: 53b05221edd4d1ac582045e69d093802b0663098 $
+ * $Id$
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

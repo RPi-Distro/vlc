@@ -2,7 +2,7 @@
  * VLCStringUtility.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2014 VLC authors and VideoLAN
- * $Id: a4755d7a8a907852a800b674db292af978d1e735 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>

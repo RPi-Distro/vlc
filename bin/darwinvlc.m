@@ -2,7 +2,7 @@
  * darwinvlc.m: OS X specific main executable for VLC media player
  *****************************************************************************
  * Copyright (C) 2013-2015 VLC authors and VideoLAN
- * $Id: 2972d36d4405830fc6449146d2968807bbf2e093 $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
  *          David Fuhrmann <dfuhrmann at videolan dot org>

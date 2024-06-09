@@ -2,7 +2,7 @@
  * MainWindowTitle.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2011-2012 Felix Paul Kühne
- * $Id: 817a131faecc90722fdf0ba04497f1118e8ce730 $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne -at- videolan -dot- org>
  *

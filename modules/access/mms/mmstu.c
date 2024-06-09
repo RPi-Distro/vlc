@@ -2,7 +2,7 @@
  * mmstu.c: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 16c99d160923805359819f0ed864553cdd37d273 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1253,7 +1253,7 @@ static int  mms_ParseCommand( stream_t *p_access,
 }
 
 static int  mms_ParsePacket( stream_t *p_access,
-                             uint8_t *p_data, size_t i_data,
+                             const uint8_t *p_data, size_t i_data,
                              size_t *pi_used )
 {
     access_sys_t        *p_sys = p_access->p_sys;
@@ -1313,21 +1313,24 @@ static int  mms_ParsePacket( stream_t *p_access,
 #endif
     }
     p_sys->i_packet_seq_num = i_packet_seq_num + 1;
+    i_packet_length -= 8; // don't bother with preheader
 
     if( i_packet_id == p_sys->i_header_packet_id_type )
     {
-        uint8_t *p_reaced = realloc( p_sys->p_header,
-                                     p_sys->i_header + i_packet_length - 8 );
+        size_t new_header_size;
+        if( add_overflow( p_sys->i_header, i_packet_length, &new_header_size ) )
+            return -1;
+        uint8_t *p_reaced = realloc( p_sys->p_header, new_header_size );
         if( !p_reaced )
-            return VLC_ENOMEM;
+            return -1;
 
-        memcpy( &p_reaced[p_sys->i_header], p_data + 8, i_packet_length - 8 );
+        memcpy( &p_reaced[p_sys->i_header], p_data + 8, i_packet_length );
         p_sys->p_header = p_reaced;
-        p_sys->i_header += i_packet_length - 8;
+        p_sys->i_header = new_header_size;
 
 /*        msg_Dbg( p_access,
                  "receive header packet (%d bytes)",
-                 i_packet_length - 8 ); */
+                 i_packet_length ); */
 
         return MMS_PACKET_HEADER;
     }
@@ -1337,15 +1340,15 @@ static int  mms_ParsePacket( stream_t *p_access,
         p_sys->i_media = 0;
         p_sys->i_media_used = 0;
 
-        p_sys->p_media = malloc( i_packet_length - 8 ); // don't bother with preheader
+        p_sys->p_media = malloc( i_packet_length );
         if( !p_sys->p_media )
-            return VLC_ENOMEM;
+            return -1;
 
-        p_sys->i_media = i_packet_length - 8;
+        p_sys->i_media = i_packet_length;
         memcpy( p_sys->p_media, p_data + 8, p_sys->i_media );
 /*        msg_Dbg( p_access,
                  "receive media packet (%d bytes)",
-                 i_packet_length - 8 ); */
+                 i_packet_length ); */
 
         return MMS_PACKET_MEDIA;
     }

@@ -2,7 +2,7 @@
  * pes.h
  *****************************************************************************
  * Copyright (C) 2001, 2002 VLC authors and VideoLAN
- * $Id: 297bc82352a2c6bb2e8b35be104458b6f278d6e0 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

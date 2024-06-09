@@ -2,7 +2,7 @@
  * aout_internal.h : internal defines for audio output
  *****************************************************************************
  * Copyright (C) 2002 VLC authors and VideoLAN
- * $Id: ee40a338a81930ac4ae2682e53f32f44cf32024a $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

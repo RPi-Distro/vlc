@@ -2,7 +2,7 @@
  * vlc_iso_lang.h: function to decode language code (in dvd or a52 for instance).
  *****************************************************************************
  * Copyright (C) 1998-2001 VLC authors and VideoLAN
- * $Id: f27fb665f3db2754e137610a74f14d157bb647e9 $
+ * $Id$
  *
  * Author: Stéphane Borel <stef@via.ecp.fr>
  *         Arnaud de Bossoreille de Ribou <bozo@via.ecp.fr>

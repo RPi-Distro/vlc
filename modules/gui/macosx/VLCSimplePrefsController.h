@@ -2,7 +2,7 @@
 * VLCSimplePrefsController.h: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2014 VLC authors and VideoLAN
-* $Id: ba4c5db67040274e6279418049ce0c867b009a4e $
+* $Id$
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *

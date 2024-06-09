@@ -25778,23 +25778,3 @@ Author: Rafaël Carré <funman@videolan.org>
 Date:   Tue Jan 1 18:04:54 2013 +0100
 
     oldrc: fix segfault
-
-commit d750f80cdbdb70723d3dba4cd7ce747c70f5f457
-Author: Nil Geiswiller <ngeiswei@googlemail.com>
-Date:   Sat Dec 29 00:13:40 2012 +0100
-
-    Add Mute shortcut to nvlc
-    
-    I added the shortcut 'm' in nvlc for toggle mute. The volume status is
-    replaced my 'Mute' when enabled.
-    
-    I also remapped the shortcut of metadata box from 'm' to 'M', I think
-    it follows the principle of least surprise.
-    
-    Signed-off-by: Rafaël Carré <funman@videolan.org>
-
-commit 7939c3e5258149392e14f410497a2d437f21a26b
-Author: Francois Cartegnie <fcvlcdev@free.fr>
-Date:   Tue Jan 1 15:16:27 2013 +0100
-
-    Qt: Compressor/Spatializer: missing signal routing

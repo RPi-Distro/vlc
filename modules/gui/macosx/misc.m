@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2015 VLC authors and VideoLAN
- * $Id: acffad80bb2e5804d906a91227806f709a151783 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

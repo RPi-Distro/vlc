@@ -2,7 +2,7 @@
  * VLCSourceListItem.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2018 VLC authors and VideoLAN
- * $Id: dace2562aa10020045e3c5f898940aed047e2a0b $
+ * $Id$
  *
  * Authors: Marvin Scholz <epirat07 at gmail dot com>
  *
