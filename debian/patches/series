@@ -1,3 +1,13 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
 0002-Do-not-generate-cache-during-build.patch
 0003-Bump-module-ABI-for-time_t-transition.patch
+0004-avcodec-avoid-signedness-mismatch-warning.patch
+0005-avcodec-use-p_dec-fmt_out-instead-of-context-channel.patch
+0006-avcodec-audio-decoder-to-use-ch_layout.patch
+0007-avcodec-use-p_enc-audio-channels-instead-of-context-.patch
+0008-codec-avcodec-map-AYUV-as-RAWVIDEO-with-ffmpeg-6.0.patch
+0009-avcodec-encoder-fix-channel_layout-conditionals.patch
+0010-demux-mux-avformat-use-ch_layout-from-ffmpeg-5.1.patch
+0011-avcodec-add-handling-of-new-ch_layout-in-audio-encod.patch
+0012-avcodec-use-ch_layout-for-channel-layout-in-audio-en.patch
+0013-mux-avformat-fix-avio-callbacks-signature-with-ffmpe.patch
