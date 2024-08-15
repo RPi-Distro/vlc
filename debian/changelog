@@ -1,3 +1,10 @@
+vlc (3.0.21-2) unstable; urgency=medium
+
+  * debian/patches: Apply WIP patches for ffmpeg 7.0 support (Closes:
+    #1072456)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Thu, 15 Aug 2024 12:11:01 +0200
+
 vlc (3.0.21-1) unstable; urgency=medium
 
   * New upstream version 3.0.21
