@@ -4,3 +4,11 @@ debian/libvlc-bin.postinst
 debian/libvlc-bin.postrm
 debian/libvlc-bin.triggers
 debian/shlibs.local
+share/lua/extensions/*.luac
+share/lua/intf/*.luac
+share/lua/intf/modules/*.luac
+share/lua/meta/art/*.luac
+share/lua/meta/reader/filename.luac
+share/lua/modules/*.luac
+share/lua/playlist/*.luac
+share/lua/sd/*.luac
