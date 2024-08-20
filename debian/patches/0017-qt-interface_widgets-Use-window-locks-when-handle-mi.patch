@@ -1,3 +1,20 @@
+From 0b928fa265f42fab0afd2a39a929603e793f8b5c Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Tue, 11 Jun 2024 17:05:36 +0100
+Subject: [PATCH 17/35] qt/interface_widgets: Use window locks when handle
+ might change
+
+Qt/Wayland changes its surface when the window is hidden and then shown.
+Hidden includes being resized to a zero dimension which seems to happen
+shortly after window creation when playing video.
+
+Use the new window handle locks to signal this to the player to avoid it
+trying to use stale handles which will crash VLC.
+---
+ .../gui/qt/components/interface_widgets.cpp   | 62 +++++++++++++++++++
+ .../gui/qt/components/interface_widgets.hpp   |  3 +
+ 2 files changed, 65 insertions(+)
+
 --- a/modules/gui/qt/components/interface_widgets.cpp
 +++ b/modules/gui/qt/components/interface_widgets.cpp
 @@ -110,6 +110,44 @@ void VideoWidget::sync( void )
