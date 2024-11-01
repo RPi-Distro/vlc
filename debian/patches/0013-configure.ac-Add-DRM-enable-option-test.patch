@@ -1,0 +1,33 @@
+From ae7189c4ab22b7c33245cc334ddf07dcf00974f2 Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Tue, 11 Jun 2024 16:57:33 +0100
+Subject: [PATCH 13/39] configure.ac: Add DRM enable option & test
+
+---
+ configure.ac | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -3109,6 +3109,21 @@ dnl OpenGL ES 2: depends on EGL 1.1
+ PKG_ENABLE_MODULES_VLC([GLES2], [], [glesv2], [OpenGL ES v2 support], [disabled])
+ 
+ dnl
++dnl DRM
++dnl
++AC_ARG_ENABLE(drm,
++  [  --enable-drm            DRM output support (default enabled)],, [
++    enable_drm="yes"
++])
++
++have_drm="no"
++AS_IF([test "${enable_drm}" != "no"], [
++  PKG_CHECK_MODULES(DRM, [libdrm])
++  have_drm="yes"
++])
++AM_CONDITIONAL([HAVE_DRM], [test "${have_drm}" = "yes"])
++
++dnl
+ dnl  Xlib
+ dnl
+ 

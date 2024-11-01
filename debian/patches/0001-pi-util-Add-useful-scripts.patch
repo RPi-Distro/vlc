@@ -1,7 +1,7 @@
 From 020b55f0f31d84a7c3aff4db07283dd037e2776c Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Mon, 19 Aug 2024 17:42:02 +0100
-Subject: [PATCH 01/35] pi-util: Add useful scripts
+Subject: [PATCH 01/39] pi-util: Add useful scripts
 
 ---
  pi-util/conf_native.sh     | 124 +++++++++++++++++++++++++++++++++++++

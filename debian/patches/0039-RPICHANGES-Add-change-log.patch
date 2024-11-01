@@ -1,0 +1,25 @@
+From 7e9cbfd0e5ddccdec2d8566591a2ec393ff30927 Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Tue, 22 Oct 2024 15:59:50 +0100
+Subject: [PATCH 39/39] RPICHANGES: Add change log
+
+As codebase is now arranged to squash fixes into existing patches
+add a changelog so we know what deltas have occured
+---
+ RPICHANGES | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+ create mode 100644 RPICHANGES
+
+--- /dev/null
++++ b/RPICHANGES
+@@ -0,0 +1,10 @@
++3.0.21/rpi_4
++------------
++Improve wl_xdg_shell so it is actually usable
++Change --wl-dmabuf-disable to --no-wl-dmabuf
++Set a malloc mmap threshold of 128k. This helps avoid bad memory fragmentation
++Add ability for video output to tell when output is scaled to enable correct
++use of native surfaces.
++Fix crash when playing video on a scaled Wayland output
++Fix output scaling on a scaled Wayland output
++
