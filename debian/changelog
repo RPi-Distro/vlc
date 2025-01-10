@@ -1,3 +1,10 @@
+vlc (3.0.21-4~exp1) experimental; urgency=medium
+
+  * Team upload.
+  * Force rebuild with taglib 2.x.
+
+ -- Boyuan Yang <byang@debian.org>  Fri, 10 Jan 2025 11:21:32 -0500
+
 vlc (3.0.21-3) unstable; urgency=medium
 
   * Team upload.
