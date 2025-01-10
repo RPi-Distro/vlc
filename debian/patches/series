@@ -11,3 +11,4 @@
 0011-avcodec-add-handling-of-new-ch_layout-in-audio-encod.patch
 0012-avcodec-use-ch_layout-for-channel-layout-in-audio-en.patch
 0013-mux-avformat-fix-avio-callbacks-signature-with-ffmpe.patch
+0014-Taglib-1.x-and-2.x-compat-fix.patch
