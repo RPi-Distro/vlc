@@ -4,39 +4,17 @@ Subject: Taglib 1.x and 2.x compat fix
 
 Make the source code compatible to both taglib 1.x and 2.x.
 
-Partially cherry-picked from upstream commit
-https://code.videolan.org/videolan/vlc/-/commit/ec29dfca1e59530dd412d779e0b045079b72ffb6
-and Arch Linux patch
+Partially cherry-picked from Arch Linux patch
 https://gitlab.archlinux.org/archlinux/packaging/packages/vlc/-/commit/40b8a8a1fc24f594a0b828fbde521c644964efaf
-
-Forwarded: not-needed
 ---
- modules/meta_engine/taglib.cpp | 59 +++++++++++++++++++++++++++++++++++-------
- 1 file changed, 50 insertions(+), 9 deletions(-)
+ modules/meta_engine/taglib.cpp | 37 +++++++++++++++++++++++++++++++++++--
+ 1 file changed, 35 insertions(+), 2 deletions(-)
 
 diff --git a/modules/meta_engine/taglib.cpp b/modules/meta_engine/taglib.cpp
-index 84b401c..79b0758 100644
+index 9909a50..96822c8 100644
 --- a/modules/meta_engine/taglib.cpp
 +++ b/modules/meta_engine/taglib.cpp
-@@ -125,7 +125,11 @@ VLCTagLib::ExtResolver<T>::ExtResolver(const std::string & ext) : FileTypeResolv
- template <class T>
- File *VLCTagLib::ExtResolver<T>::createFile(FileName fileName, bool, AudioProperties::ReadStyle) const
- {
-+#if defined(_WIN32) && TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
-+    std::string filename = fileName.toString().to8Bit(true);
-+#else
-     std::string filename = std::string(fileName);
-+#endif
-     std::size_t namesize = filename.size();
- 
-     if (namesize > ext.length())
-@@ -180,12 +184,16 @@ public:
-         return m_stream->psz_location;
-     }
- 
--    ByteVector readBlock(ulong length)
-+    ByteVector readBlock(size_t length)
-     {
+@@ -193,7 +193,11 @@ public:
          ByteVector res(length, 0);
          ssize_t i_read = vlc_stream_Read( m_stream, res.data(), length);
          if (i_read < 0)
@@ -48,54 +26,7 @@ index 84b401c..79b0758 100644
          else if ((size_t)i_read != length)
              res.resize(i_read);
          return res;
-@@ -196,11 +204,11 @@ public:
-         // Let's stay Read-Only for now
-     }
- 
--    void insert(const ByteVector&, ulong, ulong)
-+    void insert(const ByteVector&, offset_t, size_t)
-     {
-     }
- 
--    void removeBlock(ulong, ulong)
-+    void removeBlock(offset_t, size_t)
-     {
-     }
- 
-@@ -214,7 +222,7 @@ public:
-         return true;
-     }
- 
--    void seek(long offset, Position p)
-+    void seek(offset_t offset, Position p)
-     {
-         uint64_t pos = 0;
-         switch (p)
-@@ -237,12 +245,12 @@ public:
-         return;
-     }
- 
--    long tell() const
-+    offset_t tell() const
-     {
-         return m_previousPos;
-     }
- 
--    long length()
-+    offset_t length()
-     {
-         uint64_t i_size;
-         if (vlc_stream_GetSize( m_stream, &i_size ) != VLC_SUCCESS)
-@@ -250,7 +258,7 @@ public:
-         return i_size;
-     }
- 
--    void truncate(long)
-+    void truncate(offset_t)
-     {
-     }
- 
-@@ -464,9 +472,15 @@ static void ReadMetaFromASF( ASF::Tag* tag, demux_meta_t* p_demux_meta, vlc_meta
+@@ -496,9 +500,15 @@ static void ReadMetaFromASF( ASF::Tag* tag, demux_meta_t* p_demux_meta, vlc_meta
  
  static void ReadMetaFromBasicTag(const Tag* tag, vlc_meta_t *dest)
  {
@@ -111,12 +42,13 @@ index 84b401c..79b0758 100644
  #define SETINT( accessor, meta )                                               \
      if( tag->accessor() )                                                      \
      {                                                                          \
-@@ -805,18 +819,33 @@ static void ReadMetaFromXiph( Ogg::XiphComment* tag, demux_meta_t* p_demux_meta,
+@@ -837,18 +847,33 @@ static void ReadMetaFromXiph( Ogg::XiphComment* tag, demux_meta_t* p_demux_meta,
  static void ReadMetaFromMP4( MP4::Tag* tag, demux_meta_t *p_demux_meta, vlc_meta_t* p_meta )
  {
      MP4::Item list;
 +#if TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
-+#define SET( keyName, metaName )                                                             \
+ #define SET( keyName, metaName )                                                             \
+-    if( tag->itemListMap().contains(keyName) )                                               \
 +    if( tag->itemMap().contains(keyName) )                                               \
 +    {                                                                                        \
 +        list = tag->itemMap()[keyName];                                                  \
@@ -129,8 +61,7 @@ index 84b401c..79b0758 100644
 +        vlc_meta_AddExtra( p_meta, metaName, list.toStringList().front().toCString( true ) ); \
 +    }
 +#else
- #define SET( keyName, metaName )                                                             \
--    if( tag->itemListMap().contains(keyName) )                                               \
++#define SET( keyName, metaName )                                                             \
 +    if( tag->itemMap().contains(keyName) )                                               \
      {                                                                                        \
          list = tag->itemListMap()[keyName];                                                  \
@@ -147,7 +78,7 @@ index 84b401c..79b0758 100644
  
      SET("----:com.apple.iTunes:MusicBrainz Track Id", TrackID );
      SET_EXTRA("----:com.apple.iTunes:MusicBrainz Album Id", VLC_META_EXTRA_MB_ALBUMID );
-@@ -824,9 +853,17 @@ static void ReadMetaFromMP4( MP4::Tag* tag, demux_meta_t *p_demux_meta, vlc_meta
+@@ -856,9 +881,17 @@ static void ReadMetaFromMP4( MP4::Tag* tag, demux_meta_t *p_demux_meta, vlc_meta
  #undef SET
  #undef SET_EXTRA
  
@@ -165,15 +96,3 @@ index 84b401c..79b0758 100644
          const char *psz_format = list[0].format() == MP4::CoverArt::PNG ? "image/png" : "image/jpeg";
  
          msg_Dbg( p_demux_meta, "Found embedded art (%s) is %i bytes",
-@@ -1337,7 +1374,11 @@ static int WriteMeta( vlc_object_t *p_this )
-         if( RIFF::AIFF::File* riff_aiff = dynamic_cast<RIFF::AIFF::File*>(f.file()) )
-             WriteMetaToId3v2( riff_aiff->tag(), p_item );
-         else if( RIFF::WAV::File* riff_wav = dynamic_cast<RIFF::WAV::File*>(f.file()) )
-+#if TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
-+            WriteMetaToId3v2( riff_wav->ID3v2Tag(), p_item );
-+#else
-             WriteMetaToId3v2( riff_wav->tag(), p_item );
-+#endif
-     }
-     else if( TrueAudio::File* trueaudio = dynamic_cast<TrueAudio::File*>(f.file()) )
-     {
