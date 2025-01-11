@@ -11,11 +11,11 @@ https://gitlab.archlinux.org/archlinux/packaging/packages/vlc/-/commit/40b8a8a1f
 
 Forwarded: not-needed
 ---
- modules/meta_engine/taglib.cpp | 45 ++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 43 insertions(+), 2 deletions(-)
+ modules/meta_engine/taglib.cpp | 59 +++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 50 insertions(+), 9 deletions(-)
 
 diff --git a/modules/meta_engine/taglib.cpp b/modules/meta_engine/taglib.cpp
-index 84b401c..a5a06eb 100644
+index 84b401c..79b0758 100644
 --- a/modules/meta_engine/taglib.cpp
 +++ b/modules/meta_engine/taglib.cpp
 @@ -125,7 +125,11 @@ VLCTagLib::ExtResolver<T>::ExtResolver(const std::string & ext) : FileTypeResolv
@@ -30,7 +30,13 @@ index 84b401c..a5a06eb 100644
      std::size_t namesize = filename.size();
  
      if (namesize > ext.length())
-@@ -185,7 +189,11 @@ public:
+@@ -180,12 +184,16 @@ public:
+         return m_stream->psz_location;
+     }
+ 
+-    ByteVector readBlock(ulong length)
++    ByteVector readBlock(size_t length)
+     {
          ByteVector res(length, 0);
          ssize_t i_read = vlc_stream_Read( m_stream, res.data(), length);
          if (i_read < 0)
@@ -42,6 +48,53 @@ index 84b401c..a5a06eb 100644
          else if ((size_t)i_read != length)
              res.resize(i_read);
          return res;
+@@ -196,11 +204,11 @@ public:
+         // Let's stay Read-Only for now
+     }
+ 
+-    void insert(const ByteVector&, ulong, ulong)
++    void insert(const ByteVector&, offset_t, size_t)
+     {
+     }
+ 
+-    void removeBlock(ulong, ulong)
++    void removeBlock(offset_t, size_t)
+     {
+     }
+ 
+@@ -214,7 +222,7 @@ public:
+         return true;
+     }
+ 
+-    void seek(long offset, Position p)
++    void seek(offset_t offset, Position p)
+     {
+         uint64_t pos = 0;
+         switch (p)
+@@ -237,12 +245,12 @@ public:
+         return;
+     }
+ 
+-    long tell() const
++    offset_t tell() const
+     {
+         return m_previousPos;
+     }
+ 
+-    long length()
++    offset_t length()
+     {
+         uint64_t i_size;
+         if (vlc_stream_GetSize( m_stream, &i_size ) != VLC_SUCCESS)
+@@ -250,7 +258,7 @@ public:
+         return i_size;
+     }
+ 
+-    void truncate(long)
++    void truncate(offset_t)
+     {
+     }
+ 
 @@ -464,9 +472,15 @@ static void ReadMetaFromASF( ASF::Tag* tag, demux_meta_t* p_demux_meta, vlc_meta
  
  static void ReadMetaFromBasicTag(const Tag* tag, vlc_meta_t *dest)

@@ -1,3 +1,14 @@
+vlc (3.0.21-4) unstable; urgency=medium
+
+  * Team upload.
+  * Upload to unstable.
+  * debian/patches/0014-Taglib-1.x-and-2.x-compat-fix.patch:
+    Update patch to fix FTBFS on ARM architectures.
+  * debian/control: Update build-dependency package name:
+    + libtag1-dev => libtag-dev.
+
+ -- Boyuan Yang <byang@debian.org>  Fri, 10 Jan 2025 22:33:36 -0500
+
 vlc (3.0.21-4~exp1) experimental; urgency=medium
 
   * Team upload.

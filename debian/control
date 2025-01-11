@@ -93,7 +93,7 @@ Build-Depends:
  libssh2-1-dev,
  libswscale-dev (>= 7:3.0),
  libsystemd-dev [linux-any],
- libtag1-dev (>= 2.0),
+ libtag-dev (>= 2.0),
  libtheora-dev (>= 1.0),
  libtwolame-dev (>= 0.3.8),
  libudev-dev [linux-any],
