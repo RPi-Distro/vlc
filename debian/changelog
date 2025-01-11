@@ -1,3 +1,10 @@
+vlc (3.0.21-5) unstable; urgency=medium
+
+  * Fix changelog of 3.0.21-3
+  * debian/patches: Split patches into upstream and Arch patch
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 11 Jan 2025 10:55:36 +0100
+
 vlc (3.0.21-4) unstable; urgency=medium
 
   * Team upload.
