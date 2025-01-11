@@ -19,6 +19,11 @@ vlc (3.0.21-4~exp1) experimental; urgency=medium
 vlc (3.0.21-3) unstable; urgency=medium
 
   * Team upload.
+
+  [ Sebastian Ramacher ]
+  * debian/clean: Clean luac files (Closes: #1047601)
+
+  [ Boyuan Yang ]
   * debian/patches/0014-Taglib-1.x-and-2.x-compat-fix.patch:
     Add patch to fix compatibility with both Taglib 1.x and 2.x.
 
