@@ -1,3 +1,12 @@
+vlc (3.0.21-6) unstable; urgency=medium
+
+  * debian/patches: Update to 3.0.21-1-385-g7b58309ae7
+    * Ignore win32 and compat changes
+    * Replace taglib 2.x patches with upstream changes
+  * debian/: Re-enable VAAPI support (Closes: #1021601, #1013898)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 14 Jan 2025 23:09:47 +0100
+
 vlc (3.0.21-5) unstable; urgency=medium
 
   * Fix changelog of 3.0.21-3
