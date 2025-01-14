@@ -1,0 +1,26 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Wed, 18 Dec 2024 11:57:05 +0100
+Subject: qt: use QString::setNum() rather than QString::sprintf()
+
+It's deprecated and one of the replacement suggested in the doc [^1].
+QString::asprint() might be the more logical choice, but it's also not recommended [^2].
+
+[^1] https://doc.qt.io/qt-5/qstring-obsolete.html#sprintf
+[^2] https://doc.qt.io/qt-5/qstring.html#asprintf
+---
+ modules/gui/qt/menus.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/gui/qt/menus.cpp b/modules/gui/qt/menus.cpp
+index 70a475f..a689b4c 100644
+--- a/modules/gui/qt/menus.cpp
++++ b/modules/gui/qt/menus.cpp
+@@ -1438,7 +1438,7 @@ int VLCMenuBar::CreateChoicesMenu( QMenu *submenu, const char *psz_var,
+             case VLC_VAR_FLOAT:
+                 var_Get( p_object, psz_var, &val );
+                 if( CURTEXT ) menutext = qfue( CURTEXT );
+-                else menutext.sprintf( "%.2f", CURVAL.f_float );
++                else menutext.setNum(CURVAL.f_float, 'f', 2);
+                 CreateAndConnect( submenu, psz_var, menutext, "", RADIO_OR_COMMAND,
+                         p_object, CURVAL, i_type,
+                         CURVAL.f_float == val.f_float );

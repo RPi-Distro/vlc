@@ -1,0 +1,25 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Fri, 29 Nov 2024 11:27:50 +0100
+Subject: demux/mkv: force the packetizer to fill AV1 extradata without
+ optional OBUs
+
+The hardware decoders need it and the packetizer can fill it for us.
+
+(cherry picked from commit f05f3388d32bfff5c20de710f79a87a914dcd166)
+---
+ modules/demux/mkv/matroska_segment_parse.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/modules/demux/mkv/matroska_segment_parse.cpp b/modules/demux/mkv/matroska_segment_parse.cpp
+index 1568031..428e781 100644
+--- a/modules/demux/mkv/matroska_segment_parse.cpp
++++ b/modules/demux/mkv/matroska_segment_parse.cpp
+@@ -1621,6 +1621,8 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
+             vars.p_tk->b_pts_only = true;
+ 
+             fill_extra_data( vars.p_tk, 0 );
++            if (vars.p_fmt->i_extra <= 4)
++                vars.p_fmt->b_packetized = false; // force full extradata by the packetizer
+         }
+         S_CASE("V_MPEG4/MS/V3") {
+             vars.p_fmt->i_codec = VLC_CODEC_DIV3;

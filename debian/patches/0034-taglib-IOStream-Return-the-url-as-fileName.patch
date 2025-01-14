@@ -1,0 +1,27 @@
+From: =?utf-8?q?Hugo_Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Mon, 18 Mar 2019 15:09:39 +0100
+Subject: taglib: IOStream: Return the url as fileName
+
+Since the only part that matters to taglib is the filename, and more
+specifically the extension part.
+
+(cherry picked from commit 026a76066efa78f1934ab2c177669a2e6a519cff)
+---
+ modules/meta_engine/taglib.cpp | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/modules/meta_engine/taglib.cpp b/modules/meta_engine/taglib.cpp
+index 8770d0c..bec6838 100644
+--- a/modules/meta_engine/taglib.cpp
++++ b/modules/meta_engine/taglib.cpp
+@@ -176,7 +176,9 @@ public:
+ 
+     FileName name() const
+     {
+-        return m_stream->psz_location;
++        // Taglib only cares about the file name part, so it doesn't matter
++        // whether we include the mrl scheme or not
++        return m_stream->psz_url;
+     }
+ 
+     ByteVector readBlock(ulong length)

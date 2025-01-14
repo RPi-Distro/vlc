@@ -1,0 +1,22 @@
+From: =?utf-8?q?Hugo_Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Wed, 9 Feb 2022 14:18:11 +0100
+Subject: taglib: Use nullptr instead of 0 for pointers
+
+(cherry picked from commit 89e20ea0d87f414f763ce38ff5579aec61f71b42)
+---
+ modules/meta_engine/taglib.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/meta_engine/taglib.cpp b/modules/meta_engine/taglib.cpp
+index e3e80cc..e50f559 100644
+--- a/modules/meta_engine/taglib.cpp
++++ b/modules/meta_engine/taglib.cpp
+@@ -149,7 +149,7 @@ File *VLCTagLib::ExtResolver<T>::createFile(FileName fileName, bool, AudioProper
+             return new T(fileName, false, AudioProperties::Fast);
+     }
+ 
+-    return 0;
++    return nullptr;
+ }
+ 
+ #ifdef USE_IOSTREAM_RESOLVER

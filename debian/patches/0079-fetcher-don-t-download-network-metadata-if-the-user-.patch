@@ -1,0 +1,29 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Mon, 14 Oct 2024 11:11:36 +0200
+Subject: fetcher: don't download network metadata if the user doesn't want to
+
+The option is defined as "Allow metadata network access". If it's false (default but query during the first run) that means the
+user doesn't want to check metadata from the network.
+So we should not start a network job when there's a possibility to do it.
+
+This is a regression from ea88b8d68e252445bcc305fd7a3dd45ef3ce0126.
+Before that we only used FETCHER_SCOPE_LOCAL if the option wasn't set.
+
+(cherry picked from commit 1a85d6793948c88afe35692d8c17a82089a58f33)
+---
+ src/playlist/fetcher.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/playlist/fetcher.c b/src/playlist/fetcher.c
+index 44c13a5..f11b420 100644
+--- a/src/playlist/fetcher.c
++++ b/src/playlist/fetcher.c
+@@ -294,7 +294,7 @@ static void SearchLocal( playlist_fetcher_t* fetcher, struct fetcher_request* re
+     if( SearchByScope( fetcher, req, FETCHER_SCOPE_LOCAL ) == VLC_SUCCESS )
+         return; /* done */
+ 
+-    if( var_InheritBool( fetcher->owner, "metadata-network-access" ) ||
++    if( var_InheritBool( fetcher->owner, "metadata-network-access" ) &&
+         req->options & META_REQUEST_OPTION_SCOPE_NETWORK )
+     {
+         if( background_worker_Push( fetcher->network, req, NULL, 0 ) )

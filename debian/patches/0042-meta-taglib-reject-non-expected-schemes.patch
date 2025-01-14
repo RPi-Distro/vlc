@@ -1,0 +1,54 @@
+From: =?utf-8?q?Fran=C3=A7ois_Cartegnie?= <fcvlcdev@free.fr>
+Date: Wed, 2 Sep 2020 16:53:13 +0200
+Subject: meta: taglib: reject non expected schemes
+
+refs #25035
+
+(cherry picked from commit 8191ac5727a3525a6bee99e1674167a7894f9ccb) (rebased)
+rebased:
+- 3.0 already has a26e2ba370d898dda04c718176af7d2e329dab7a above
+---
+ modules/meta_engine/taglib.cpp | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/modules/meta_engine/taglib.cpp b/modules/meta_engine/taglib.cpp
+index 0b7b582..ced4f56 100644
+--- a/modules/meta_engine/taglib.cpp
++++ b/modules/meta_engine/taglib.cpp
+@@ -910,6 +910,23 @@ static int ReadWAVMeta( const RIFF::WAV::File *wav, demux_meta_t *demux_meta )
+     return VLC_SUCCESS;
+ }
+ 
++static bool isSchemeCompatible( const char *psz_uri )
++{
++    const char *p = strstr( psz_uri, "://" );
++    if( p == NULL )
++        return false;
++
++    size_t i_len = p - psz_uri;
++    const char * compatibleschemes[] =
++    {
++        "file", "smb",
++    };
++    for( size_t i=0; i<ARRAY_SIZE(compatibleschemes); i++ )
++        if( !strncasecmp( psz_uri, compatibleschemes[i], i_len ) )
++            return true;
++    return false;
++}
++
+ /**
+  * Get the tags from the file using TagLib
+  * @param p_this: the demux object
+@@ -928,6 +945,12 @@ static int ReadMeta( vlc_object_t* p_this)
+     if( unlikely(psz_uri == NULL) )
+         return VLC_ENOMEM;
+ 
++    if( !isSchemeCompatible( psz_uri ) )
++    {
++        free( psz_uri );
++        return VLC_EGENERIC;
++    }
++
+     if( !b_extensions_registered )
+     {
+ #if TAGLIB_VERSION >= TAGLIB_VERSION_1_11

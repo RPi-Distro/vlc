@@ -1,0 +1,25 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Wed, 25 Sep 2024 11:37:02 +0200
+Subject: hw/amf: let the AMF system know what version was used to compile
+
+With future drivers and old binaries it may trigger different code
+pathes than the latest version.
+
+(cherry picked from commit e1c9c361849e6042185d123ab559d14fa7d7e8e3)
+---
+ modules/hw/amf/amf_helper.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/hw/amf/amf_helper.c b/modules/hw/amf/amf_helper.c
+index f0f6eae..50f66b6 100644
+--- a/modules/hw/amf/amf_helper.c
++++ b/modules/hw/amf/amf_helper.c
+@@ -34,7 +34,7 @@ int vlc_AMFCreateContext(struct vlc_amf_context *c)
+     c->Context = NULL;
+ 
+     AMFInit_Fn init = (AMFInit_Fn)GetProcAddress(hLib, AMF_INIT_FUNCTION_NAME);
+-    res = init(c->Version, &c->pFactory); // use the highest possible value for that DLL
++    res = init(AMF_FULL_VERSION, &c->pFactory);
+     if (unlikely(res != AMF_OK))
+         goto error;
+ 

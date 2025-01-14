@@ -1,0 +1,24 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Sat, 9 Nov 2024 13:41:37 +0100
+Subject: demux: mkv: use the internal QDMC FourCC value
+
+Rather than a local FourCC.
+
+(cherry picked from commit 71c2622ab992a4bb4485e5e151f3019e60543d35)
+---
+ modules/demux/mkv/matroska_segment_parse.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/demux/mkv/matroska_segment_parse.cpp b/modules/demux/mkv/matroska_segment_parse.cpp
+index 7a5f5fb..1568031 100644
+--- a/modules/demux/mkv/matroska_segment_parse.cpp
++++ b/modules/demux/mkv/matroska_segment_parse.cpp
+@@ -2034,7 +2034,7 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
+         }
+         S_CASE("A_QUICKTIME/QDMC") {
+             vars.p_fmt->i_cat   = AUDIO_ES;
+-            vars.p_fmt->i_codec = VLC_FOURCC('Q','D','M','C');
++            vars.p_fmt->i_codec = VLC_CODEC_QDMC;
+ 
+             fill_extra_data( vars.p_tk, 0 );
+         }

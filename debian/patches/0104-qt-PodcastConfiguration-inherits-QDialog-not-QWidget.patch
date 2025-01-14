@@ -1,0 +1,24 @@
+From: KO Myung-Hun <komh@chollian.net>
+Date: Tue, 28 Feb 2023 23:47:47 +0900
+Subject: qt: PodcastConfiguration inherits QDialog not QWidget
+
+Especially, accept() and reject() slots are in QDialog.
+
+(cherry picked from commit 183acaecc1fafdfe57a3c4981702ec00561c31e0)
+Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+---
+ modules/gui/qt/ui/podcast_configuration.ui | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/gui/qt/ui/podcast_configuration.ui b/modules/gui/qt/ui/podcast_configuration.ui
+index 046bef5..f213963 100644
+--- a/modules/gui/qt/ui/podcast_configuration.ui
++++ b/modules/gui/qt/ui/podcast_configuration.ui
+@@ -1,6 +1,6 @@
+ <ui version="4.0" >
+  <class>PodcastConfiguration</class>
+- <widget class="QWidget" name="PodcastConfiguration" >
++ <widget class="QDialog" name="PodcastConfiguration" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>

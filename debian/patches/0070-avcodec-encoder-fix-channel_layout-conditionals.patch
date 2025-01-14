@@ -1,4 +1,4 @@
-From: Francois Cartegnie <fcvlcdev@free.fr>
+From: =?utf-8?q?Fran=C3=A7ois_Cartegnie?= <fcvlcdev@free.fr>
 Date: Thu, 13 Jun 2024 12:21:58 +0700
 Subject: avcodec: encoder: fix channel_layout conditionals
 

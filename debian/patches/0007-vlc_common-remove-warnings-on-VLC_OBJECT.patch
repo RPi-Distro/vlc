@@ -1,0 +1,33 @@
+From: Alexandre Janniaux <ajanni@videolabs.io>
+Date: Fri, 21 Jun 2024 16:11:28 +0200
+Subject: vlc_common: remove warnings on VLC_OBJECT
+
+Fix an infinite amount of warnings on Darwin:
+
+    ../../include/vlc_variables.h:563:5: warning: due to lvalue conversion of the controlling expression, association of type 'const struct vlc_common_members' will never be selected because it is qualified [-Wunreachable-code-generic-assoc]
+        var_Create( p_obj, psz_name, VLC_VAR_STRING | VLC_VAR_DOINHERIT
+        ^
+    ../../include/vlc_variables.h:122:39: note: expanded from macro 'var_Create'
+    #define var_Create(a,b,c) var_Create( VLC_OBJECT(a), b, c )
+                                          ^
+    ../../include/vlc_common.h:481:15: note: expanded from macro 'VLC_OBJECT'
+            const struct vlc_common_members: (const vlc_object_t *)(&(x)->obj) \
+---
+ include/vlc_common.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/vlc_common.h b/include/vlc_common.h
+index 0898785..bc689c4 100644
+--- a/include/vlc_common.h
++++ b/include/vlc_common.h
+@@ -477,8 +477,8 @@ struct vlc_common_members
+ #if !defined(__cplusplus)
+ # define VLC_OBJECT(x) \
+     _Generic((x)->obj, \
+-        struct vlc_common_members: (vlc_object_t *)(&(x)->obj), \
+-        const struct vlc_common_members: (const vlc_object_t *)(&(x)->obj) \
++        vlc_object_t: (vlc_object_t *)(&(x)->obj), \
++        struct vlc_common_members: (vlc_object_t *)(x) \
+     )
+ #else
+ # define VLC_OBJECT( x ) ((vlc_object_t *)&(x)->obj)

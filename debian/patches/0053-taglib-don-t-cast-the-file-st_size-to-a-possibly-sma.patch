@@ -1,0 +1,24 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Wed, 4 Jan 2023 15:24:47 +0100
+Subject: taglib: don't cast the file st_size to a possibly smaller type
+
+We can just use auto and always get the proper type.
+
+(cherry picked from commit 7413126744e0b494856ba9acc5ae3c27ce4af625)
+---
+ modules/meta_engine/taglib.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/meta_engine/taglib.cpp b/modules/meta_engine/taglib.cpp
+index 9586510..2891e06 100644
+--- a/modules/meta_engine/taglib.cpp
++++ b/modules/meta_engine/taglib.cpp
+@@ -1233,7 +1233,7 @@ static void WriteMetaToId3v2( ID3v2::Tag* tag, input_item_t* p_item )
+         fclose( p_file );
+         return;
+     }
+-    off_t file_size = st.st_size;
++    auto file_size = st.st_size;
+ 
+     free( psz_path );
+ 

@@ -1,0 +1,31 @@
+From: Tristan Matthews <tmatth@videolan.org>
+Date: Wed, 16 Oct 2024 15:29:35 -0400
+Subject: hds: fix crash if bootstrap data or URL are missing
+
+(cherry picked from commit 01934b339cf5f467c9c2e3a7fb61c7458347684c)
+---
+ modules/stream_filter/hds/hds.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/modules/stream_filter/hds/hds.c b/modules/stream_filter/hds/hds.c
+index 631691f..4d55538 100644
+--- a/modules/stream_filter/hds/hds.c
++++ b/modules/stream_filter/hds/hds.c
+@@ -1557,7 +1557,7 @@ static int parse_Manifest( stream_t *s, manifest_t *m )
+                     new_stream->metadata_len = medias[i].metadata_len;
+                 }
+ 
+-                if( ! sys->live )
++                if( ! sys->live && bootstraps[j].data )
+                 {
+                     parse_BootstrapData( (vlc_object_t*)s,
+                                          new_stream,
+@@ -1579,7 +1579,7 @@ static int parse_Manifest( stream_t *s, manifest_t *m )
+                             total_duration += chunk->duration;
+                     }
+                 }
+-                else
++                else if( bootstraps[j].url )
+                 {
+                     if( !(new_stream->abst_url = strdup( bootstraps[j].url ) ) )
+                     {

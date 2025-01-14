@@ -1,0 +1,116 @@
+From: =?utf-8?q?Fran=C3=A7ois_Cartegnie?= <fcvlcdev@free.fr>
+Date: Thu, 27 Jun 2024 18:25:07 +0700
+Subject: packetizer: hxxx: pass opaque to callbacks instead of decoder
+
+(cherry picked from commit 09655dea51c0d383cc86c0f5020e3bea160c69bf)
+---
+ modules/packetizer/h264.c        | 9 +++++++--
+ modules/packetizer/hevc.c        | 9 +++++++--
+ modules/packetizer/hxxx_common.c | 8 ++++----
+ modules/packetizer/hxxx_common.h | 6 ++++--
+ 4 files changed, 22 insertions(+), 10 deletions(-)
+
+diff --git a/modules/packetizer/h264.c b/modules/packetizer/h264.c
+index b58e8e6..b015079 100644
+--- a/modules/packetizer/h264.c
++++ b/modules/packetizer/h264.c
+@@ -152,6 +152,10 @@ static int PacketizeValidate( void *p_private, block_t * );
+ static block_t * PacketizeDrain( void *p_private );
+ 
+ static block_t *ParseNALBlock( decoder_t *, bool *pb_ts_used, block_t * );
++static inline block_t *ParseNALBlockW( void *opaque, bool *pb_ts_used, block_t *p_frag )
++{
++    return ParseNALBlock( (decoder_t *) opaque, pb_ts_used, p_frag );
++}
+ 
+ static block_t *OutputPicture( decoder_t *p_dec );
+ static void PutSPS( decoder_t *p_dec, block_t *p_frag );
+@@ -530,8 +534,9 @@ static block_t *PacketizeAVC1( decoder_t *p_dec, block_t **pp_block )
+ {
+     decoder_sys_t *p_sys = p_dec->p_sys;
+ 
+-    return PacketizeXXC1( p_dec, p_sys->i_avcC_length_size,
+-                          pp_block, ParseNALBlock );
++    return PacketizeXXC1( p_dec, VLC_OBJECT(p_dec),
++                          p_sys->i_avcC_length_size, pp_block,
++                          ParseNALBlockW );
+ }
+ 
+ /*****************************************************************************
+diff --git a/modules/packetizer/hevc.c b/modules/packetizer/hevc.c
+index 990cc03..dc8877a 100644
+--- a/modules/packetizer/hevc.c
++++ b/modules/packetizer/hevc.c
+@@ -69,6 +69,10 @@ static void PacketizeFlush( decoder_t * );
+ static void PacketizeReset(void *p_private, bool b_broken);
+ static block_t *PacketizeParse(void *p_private, bool *pb_ts_used, block_t *);
+ static block_t *ParseNALBlock(decoder_t *, bool *pb_ts_used, block_t *);
++static inline block_t *ParseNALBlockW( void *opaque, bool *pb_ts_used, block_t *p_frag )
++{
++    return ParseNALBlock( (decoder_t *) opaque, pb_ts_used, p_frag );
++}
+ static int PacketizeValidate(void *p_private, block_t *);
+ static block_t * PacketizeDrain(void *);
+ static bool ParseSEICallback( const hxxx_sei_data_t *, void * );
+@@ -297,8 +301,9 @@ static block_t *PacketizeHVC1(decoder_t *p_dec, block_t **pp_block)
+ {
+     decoder_sys_t *p_sys = p_dec->p_sys;
+ 
+-    return PacketizeXXC1( p_dec, p_sys->i_nal_length_size,
+-                          pp_block, ParseNALBlock );
++    return PacketizeXXC1( p_dec, VLC_OBJECT(p_dec),
++                          p_sys->i_nal_length_size, pp_block,
++                          ParseNALBlockW );
+ }
+ 
+ static block_t *PacketizeAnnexB(decoder_t *p_dec, block_t **pp_block)
+diff --git a/modules/packetizer/hxxx_common.c b/modules/packetizer/hxxx_common.c
+index a6cacfd..043dc38 100644
+--- a/modules/packetizer/hxxx_common.c
++++ b/modules/packetizer/hxxx_common.c
+@@ -110,8 +110,8 @@ block_t * cc_storage_get_current( cc_storage_t *p_ccs, decoder_cc_desc_t *p_desc
+  * Will always use 4 byte 0 0 0 1 startcodes
+  * Will prepend a SPS and PPS before each keyframe
+  ****************************************************************************/
+-block_t *PacketizeXXC1( decoder_t *p_dec, uint8_t i_nal_length_size,
+-                        block_t **pp_block,
++block_t *PacketizeXXC1( void *p_private, vlc_object_t *p_obj,
++                        uint8_t i_nal_length_size, block_t **pp_block,
+                         pf_annexb_nal_parse pf_nal_parser )
+ {
+     block_t       *p_block;
+@@ -146,7 +146,7 @@ block_t *PacketizeXXC1( decoder_t *p_dec, uint8_t i_nal_length_size,
+         if( i_size <= 0 ||
+             i_size > ( p_block->p_buffer + p_block->i_buffer - p ) )
+         {
+-            msg_Err( p_dec, "Broken frame : size %d is too big", i_size );
++            msg_Err( p_obj, "Broken frame : size %d is too big", i_size );
+             break;
+         }
+ 
+@@ -185,7 +185,7 @@ block_t *PacketizeXXC1( decoder_t *p_dec, uint8_t i_nal_length_size,
+ 
+         /* Parse the NAL */
+         block_t *p_pic;
+-        if( ( p_pic = pf_nal_parser( p_dec, &b_dummy, p_nal ) ) )
++        if( ( p_pic = pf_nal_parser( p_private, &b_dummy, p_nal ) ) )
+         {
+             block_ChainAppend( &p_ret, p_pic );
+         }
+diff --git a/modules/packetizer/hxxx_common.h b/modules/packetizer/hxxx_common.h
+index 93b33c4..c2a6df0 100644
+--- a/modules/packetizer/hxxx_common.h
++++ b/modules/packetizer/hxxx_common.h
+@@ -37,8 +37,10 @@ block_t * cc_storage_get_current( cc_storage_t *p_ccs, decoder_cc_desc_t * );
+ 
+ /* */
+ 
+-typedef block_t * (*pf_annexb_nal_parse)(decoder_t *, bool *, block_t *);
+-block_t *PacketizeXXC1( decoder_t *, uint8_t, block_t **, pf_annexb_nal_parse );
++typedef block_t * (*pf_annexb_nal_parse)(void *, bool *, block_t *);
++block_t *PacketizeXXC1( void *, vlc_object_t *obj,
++                       uint8_t, block_t **,
++                       pf_annexb_nal_parse );
+ 
+ #endif // HXXX_COMMON_H
+ 

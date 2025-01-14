@@ -1,0 +1,28 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Tue, 10 Dec 2024 15:37:46 +0100
+Subject: qt: remove deprecated QPainter::HighQualityAntialiasing usage
+
+It's deprecated in Qt 5.15 [^1], since 5.14 [^2], and removed in Qt 6.
+
+The commit log of [^2] even mentions its deprecated for all Qt5 but was not
+marked as such yet.
+
+[^1] https://doc.qt.io/qt-5/qpainter.html#RenderHint-enum
+[^2] https://github.com/qt/qtbase/commit/1e4e006c3f6e8cbd0092fe882bc23a2280352a91
+---
+ modules/gui/qt/util/timetooltip.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/gui/qt/util/timetooltip.cpp b/modules/gui/qt/util/timetooltip.cpp
+index 8cfdab3..6de5cf1 100644
+--- a/modules/gui/qt/util/timetooltip.cpp
++++ b/modules/gui/qt/util/timetooltip.cpp
+@@ -142,7 +142,7 @@ void TimeTooltip::show()
+ void TimeTooltip::paintEvent( QPaintEvent * )
+ {
+     QPainter p( this );
+-    p.setRenderHints( QPainter::HighQualityAntialiasing | QPainter::TextAntialiasing );
++    p.setRenderHints( QPainter::TextAntialiasing );
+ 
+     p.setPen( Qt::black );
+     p.setBrush( qApp->palette().base() );

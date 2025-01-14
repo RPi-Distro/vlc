@@ -1,0 +1,24 @@
+From: =?utf-8?q?Hugo_Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Fri, 26 Nov 2021 18:19:41 +0100
+Subject: taglib: Remove use of deprecated String::isNull
+
+(cherry picked from commit c404fdb24183031a419667639846edddca3401f8) (edited)
+edited:
+- 294cbdbaee0209bc88ca7bec9164da8da4ac44ef was merged before this patch
+---
+ modules/meta_engine/taglib.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/meta_engine/taglib.cpp b/modules/meta_engine/taglib.cpp
+index d0ced96..0c0cebd 100644
+--- a/modules/meta_engine/taglib.cpp
++++ b/modules/meta_engine/taglib.cpp
+@@ -602,7 +602,7 @@ static void ProcessAPICListFromId3v2( const ID3v2::FrameList &list,
+ static void ReadMetaFromBasicTag(const Tag* tag, vlc_meta_t *dest)
+ {
+ #define SET( accessor, meta )                                                  \
+-    if( !tag->accessor().isNull() && !tag->accessor().isEmpty() )              \
++    if( !tag->accessor().isEmpty() )                                           \
+         vlc_meta_Set##meta( dest, tag->accessor().toCString(true) )
+ #define SETINT( accessor, meta )                                               \
+     if( tag->accessor() )                                                      \

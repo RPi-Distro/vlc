@@ -1,0 +1,22 @@
+From: Marvin Scholz <epirat07@gmail.com>
+Date: Mon, 11 Apr 2022 23:21:25 +0200
+Subject: meta: taglib: use std::min
+
+(cherry picked from commit 584fd17a9445d8d5f7d692b7416eec09b9240b0e)
+---
+ modules/meta_engine/taglib.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/meta_engine/taglib.cpp b/modules/meta_engine/taglib.cpp
+index 810ad2c..9586510 100644
+--- a/modules/meta_engine/taglib.cpp
++++ b/modules/meta_engine/taglib.cpp
+@@ -679,7 +679,7 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_meta_t* p_demux_meta, vlc_
+              * but in our case it will be a '\0'
+              * terminated string */
+             char psz_ufid[64];
+-            int max_size = __MIN( p_ufid->identifier().size(), 63);
++            int max_size = std::min<unsigned>( p_ufid->identifier().size(), 63);
+             strncpy( psz_ufid, p_ufid->identifier().data(), max_size );
+             psz_ufid[max_size] = '\0';
+             vlc_meta_SetTrackID( p_meta, psz_ufid );

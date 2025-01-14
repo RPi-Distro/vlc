@@ -1,0 +1,31 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Fri, 29 Nov 2024 11:57:36 +0100
+Subject: packetizer/av1: fill the full extradata if it doesn't have the
+ optional OBU
+
+The optional part needed by the decoders.
+This will restart the decoders if needed, but they should have received no frames yet
+or the hardware decoder may be usable again or not (after a sequence header change).
+
+(cherry picked from commit a95213e20de69d584324f6d0c9f37c7a7cdfe3e3) (edited)
+edited:
+- fmt_in was not a pointer in 3.0
+---
+ modules/packetizer/av1.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/modules/packetizer/av1.c b/modules/packetizer/av1.c
+index dc970dc..964c0f7 100644
+--- a/modules/packetizer/av1.c
++++ b/modules/packetizer/av1.c
+@@ -158,8 +158,9 @@ static void UpdateDecoderFormat(decoder_t *p_dec)
+         p_dec->fmt_out.i_extra = 0;
+     }
+ 
+-    if(!p_dec->fmt_in.i_extra && !p_dec->fmt_out.i_extra)
++    if(p_dec->fmt_out.i_extra <= 4)
+     {
++        free(p_dec->fmt_out.p_extra);
+         p_dec->fmt_out.i_extra =
+                 AV1_create_DecoderConfigurationRecord((uint8_t **)&p_dec->fmt_out.p_extra,
+                                                       p_sys->p_sequence_header,

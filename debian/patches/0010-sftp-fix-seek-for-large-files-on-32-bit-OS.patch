@@ -1,0 +1,22 @@
+From: Aleksey Vasenev <margtu-fivt@ya.ru>
+Date: Sun, 23 Jun 2024 22:41:39 +0300
+Subject: sftp: fix seek for large files on 32-bit OS
+
+(cherry picked from commit 4698e0336447de8dc6f7214743082cc55b6ebd77)
+---
+ modules/access/sftp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/access/sftp.c b/modules/access/sftp.c
+index 6ea5865..edf41fb 100644
+--- a/modules/access/sftp.c
++++ b/modules/access/sftp.c
+@@ -547,7 +547,7 @@ static int Seek( stream_t* p_access, uint64_t i_pos )
+ {
+     access_sys_t *sys = p_access->p_sys;
+ 
+-    libssh2_sftp_seek( sys->file, i_pos );
++    libssh2_sftp_seek64( sys->file, i_pos );
+     return VLC_SUCCESS;
+ }
+ 

@@ -1,0 +1,33 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Mon, 5 Aug 2024 10:58:29 +0200
+Subject: demux: mkv: fix link to ALAC documentation
+
+The 36 is the 12 bytes we write plus 24 bytes from ALACSpecificConfig.
+
+Also avoid subtracting 12 from a variable were we added 12 (our header).
+
+(cherry picked from commit d71ed1c6f081fba9e6e7ec4339734fc270ba0d64)
+---
+ modules/demux/mkv/matroska_segment_parse.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/modules/demux/mkv/matroska_segment_parse.cpp b/modules/demux/mkv/matroska_segment_parse.cpp
+index 37a650d..2b93674 100644
+--- a/modules/demux/mkv/matroska_segment_parse.cpp
++++ b/modules/demux/mkv/matroska_segment_parse.cpp
+@@ -56,12 +56,12 @@ static inline void fill_extra_data_alac( mkv_track_t *p_tk )
+     if( unlikely( !p_tk->fmt.p_extra ) ) return;
+     p_tk->fmt.i_extra = p_tk->i_extra_data + 12;
+     uint8_t *p_extra = static_cast<uint8_t*>( p_tk->fmt.p_extra );
+-    /* See "ALAC Specific Info (36 bytes) (required)" from
+-       alac.macosforge.org/trac/browser/trunk/ALACMagicCookieDescription.txt */
++    /* 12 bytes + "ALAC Specific Info (24 bytes) (required)" from
++       https://github.com/macosforge/alac/blob/master/ALACMagicCookieDescription.txt */
+     SetDWBE( p_extra, p_tk->fmt.i_extra );
+     memcpy( p_extra + 4, "alac", 4 );
+     SetDWBE( p_extra + 8, 0 );
+-    memcpy( p_extra + 12, p_tk->p_extra_data, p_tk->fmt.i_extra - 12 );
++    memcpy( p_extra + 12, p_tk->p_extra_data, p_tk->i_extra_data );
+ }
+ 
+ static inline void fill_extra_data( mkv_track_t *p_tk, unsigned int offset )

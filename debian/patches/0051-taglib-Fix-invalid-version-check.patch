@@ -1,0 +1,22 @@
+From: =?utf-8?q?Hugo_Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Fri, 18 Feb 2022 08:26:41 +0100
+Subject: taglib: Fix invalid version check
+
+(cherry picked from commit 53260ca5ae906f1e35791d14e4b588d25c04e51b)
+---
+ modules/meta_engine/taglib.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/meta_engine/taglib.cpp b/modules/meta_engine/taglib.cpp
+index e50f559..810ad2c 100644
+--- a/modules/meta_engine/taglib.cpp
++++ b/modules/meta_engine/taglib.cpp
+@@ -102,7 +102,7 @@ using namespace TagLib;
+ #include <limits>
+ 
+ #if defined(VLC_PATCHED_TAGLIB_IOSTREAM_RESOLVERS) || \
+-    TAGLIB_VERSION >= VERSION_INT(1, 12, 0)
++    TAGLIB_VERSION >= VERSION_INT(1, 13, 0)
+ #define USE_IOSTREAM_RESOLVER 1
+ #endif
+ 

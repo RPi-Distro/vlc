@@ -1,0 +1,26 @@
+From: =?utf-8?q?Hugo_Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Tue, 8 Oct 2019 17:21:20 +0200
+Subject: taglib: Enable prefetch/cache on the IOStream
+
+We can't do it through vlc_stream_NewURL as it will include the
+skiptags filter
+
+(cherry picked from commit 976cd219465a72daa02d22e60c9ac4c704c0b18b)
+---
+ modules/meta_engine/taglib.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/modules/meta_engine/taglib.cpp b/modules/meta_engine/taglib.cpp
+index adf3a24..31ab839 100644
+--- a/modules/meta_engine/taglib.cpp
++++ b/modules/meta_engine/taglib.cpp
+@@ -904,6 +904,9 @@ static int ReadMeta( vlc_object_t* p_this)
+     free( psz_uri );
+     if( p_stream == NULL )
+         return VLC_EGENERIC;
++    stream_t* p_filter = vlc_stream_FilterNew( p_stream, "prefetch,cache" );
++    if( p_filter )
++        p_stream = p_filter;
+ 
+     VlcIostream s( p_stream );
+     f = FileRef( &s );

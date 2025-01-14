@@ -1,0 +1,42 @@
+From: Alaric Senat <alaric@videolabs.io>
+Date: Mon, 24 Jun 2024 18:11:23 +0200
+Subject: transcode: fix destructive assignment after drain
+
+The drain checks are done after the first encoder output fetch. At this
+point, `out` is already filled with some frames gotten from the encoder
+some lines above:
+
+```
+// ...
+    if( p_sys->i_threads >= 1 )
+    {
+        /* Pick up any return data the encoder thread wants to output. */
+        vlc_mutex_lock( &p_sys->lock_out );
+        *out = p_sys->p_buffers;
+        p_sys->p_buffers = NULL;
+        vlc_mutex_unlock( &p_sys->lock_out );
+    }
+
+// ...
+```
+
+This assignment currently leaks all previously gathered frames to
+replace them by the drained output. This patch appends the drained
+frames to the existing output instead.
+---
+ modules/stream_out/transcode/video.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/stream_out/transcode/video.c b/modules/stream_out/transcode/video.c
+index 9070bab..e2065af 100644
+--- a/modules/stream_out/transcode/video.c
++++ b/modules/stream_out/transcode/video.c
+@@ -906,7 +906,7 @@ end:
+ 
+             vlc_join( p_stream->p_sys->thread, NULL );
+             vlc_mutex_lock( &p_sys->lock_out );
+-            *out = p_sys->p_buffers;
++            block_ChainAppend(out, p_sys->p_buffers);
+             p_sys->p_buffers = NULL;
+             vlc_mutex_unlock( &p_sys->lock_out );
+ 

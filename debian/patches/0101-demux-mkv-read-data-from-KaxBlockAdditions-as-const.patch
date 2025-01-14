@@ -1,0 +1,53 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Sun, 10 Nov 2024 10:32:44 +0100
+Subject: demux: mkv: read data from KaxBlockAdditions as const
+
+We should not be able to modify what we read.
+
+(cherry picked from commit c03249a02c2d1aa529c7c9a6de7545305b567860) (edited)
+edited:
+- 3.0 doesn't support VPx alpha
+---
+ modules/demux/mkv/mkv.cpp | 6 +++---
+ modules/demux/mkv/mkv.hpp | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/modules/demux/mkv/mkv.cpp b/modules/demux/mkv/mkv.cpp
+index cce9e34..c55af78 100644
+--- a/modules/demux/mkv/mkv.cpp
++++ b/modules/demux/mkv/mkv.cpp
+@@ -488,7 +488,7 @@ static int Seek( demux_t *p_demux, vlc_tick_t i_mk_date, double f_percent, virtu
+ 
+ /* Needed by matroska_segment::Seek() and Seek */
+ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock,
+-                  KaxBlockAdditions *additions,
++                  const KaxBlockAdditions *additions,
+                   vlc_tick_t i_pts, int64_t i_duration, bool b_key_picture,
+                   bool b_discardable_picture )
+ {
+@@ -613,10 +613,10 @@ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock
+                 size_t i_addition = 0;
+                 if(additions)
+                 {
+-                    KaxBlockMore *blockmore = FindChild<KaxBlockMore>(*additions);
++                    auto blockmore = FindChild<const KaxBlockMore>(*additions);
+                     if(blockmore)
+                     {
+-                        KaxBlockAdditional *addition = FindChild<KaxBlockAdditional>(*blockmore);
++                        auto addition = FindChild<const KaxBlockAdditional>(*blockmore);
+                         if(addition)
+                         {
+                             i_addition = static_cast<std::string::size_type>(addition->GetSize());
+diff --git a/modules/demux/mkv/mkv.hpp b/modules/demux/mkv/mkv.hpp
+index 2ea8035..2a8ad5e 100644
+--- a/modules/demux/mkv/mkv.hpp
++++ b/modules/demux/mkv/mkv.hpp
+@@ -134,7 +134,7 @@ Type * FindNextChild(const EbmlMaster & Master, const Type & PastElt)
+ using namespace LIBMATROSKA_NAMESPACE;
+ 
+ void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock,
+-                  KaxBlockAdditions *additions,
++                  const KaxBlockAdditions *additions,
+                   vlc_tick_t i_pts, vlc_tick_t i_duration, bool b_key_picture,
+                   bool b_discardable_picture );
+ 

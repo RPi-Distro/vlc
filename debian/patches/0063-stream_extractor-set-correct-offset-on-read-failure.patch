@@ -1,0 +1,51 @@
+From: Francois Cartegnie <fcvlcdev@free.fr>
+Date: Thu, 1 Jun 2023 17:44:52 +0700
+Subject: stream_extractor: set correct offset on read failure
+
+(cherry picked from commit 9f160402e3ea835f1d242e8ca5af89c57a3a2583)
+---
+ modules/stream_extractor/archive.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/modules/stream_extractor/archive.c b/modules/stream_extractor/archive.c
+index c69c9f2..446d711 100644
+--- a/modules/stream_extractor/archive.c
++++ b/modules/stream_extractor/archive.c
+@@ -609,16 +609,16 @@ eof:
+     return 0;
+ }
+ 
+-static int archive_skip_decompressed( stream_extractor_t* p_extractor, uint64_t i_skip )
++static int archive_skip_decompressed( stream_extractor_t* p_extractor, uint64_t *pi_skip )
+ {
+-    while( i_skip )
++    while( *pi_skip )
+     {
+-        ssize_t i_read = Read( p_extractor, NULL, i_skip );
++        ssize_t i_read = Read( p_extractor, NULL, *pi_skip );
+ 
+         if( i_read < 1 )
+             return VLC_EGENERIC;
+ 
+-        i_skip -= i_read;
++        *pi_skip -= i_read;
+     }
+ 
+     return VLC_SUCCESS;
+@@ -663,9 +663,13 @@ static int Seek( stream_extractor_t* p_extractor, uint64_t i_req )
+             i_skip = i_req;
+             i_offset = 0;
+         }
+-
+-        if( archive_skip_decompressed( p_extractor, i_skip ) )
+-            msg_Dbg( p_extractor, "failed to skip to seek position" );
++        if( archive_skip_decompressed( p_extractor, &i_skip ) )
++        {
++            msg_Warn( p_extractor, "failed to skip to seek position %" PRIu64 "/%" PRId64,
++                      i_req, archive_entry_size( p_sys->p_entry ) );
++            p_sys->i_offset += i_skip;
++            return VLC_EGENERIC;
++        }
+     }
+ 
+     p_sys->i_offset = i_req;

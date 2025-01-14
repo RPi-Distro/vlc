@@ -1,0 +1,52 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Tue, 3 Sep 2024 09:07:14 +0200
+Subject: hw/amf: keep the AMF version in the context
+
+For FRC we may need to disable it before 1.4.34.
+
+(cherry picked from commit de748458776f58f150edc06a4b9cac8c961dac20)
+---
+ modules/hw/amf/amf_helper.c | 6 +++---
+ modules/hw/amf/amf_helper.h | 1 +
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/modules/hw/amf/amf_helper.c b/modules/hw/amf/amf_helper.c
+index d83bef8..f0f6eae 100644
+--- a/modules/hw/amf/amf_helper.c
++++ b/modules/hw/amf/amf_helper.c
+@@ -21,12 +21,12 @@ int vlc_AMFCreateContext(struct vlc_amf_context *c)
+     if (hLib == NULL)
+         return (-ENOTSUP);
+ 
+-    amf_uint64 version = 0;
++    c->Version = 0;
+     AMF_RESULT res;
+     AMFQueryVersion_Fn queryVersion = (AMFQueryVersion_Fn)GetProcAddress(hLib, AMF_QUERY_VERSION_FUNCTION_NAME);
+     if (unlikely(queryVersion == NULL))
+         goto error;
+-    res = queryVersion(&version);
++    res = queryVersion(&c->Version);
+     if (unlikely(res != AMF_OK))
+         goto error;
+ 
+@@ -34,7 +34,7 @@ int vlc_AMFCreateContext(struct vlc_amf_context *c)
+     c->Context = NULL;
+ 
+     AMFInit_Fn init = (AMFInit_Fn)GetProcAddress(hLib, AMF_INIT_FUNCTION_NAME);
+-    res = init(version, &c->pFactory);
++    res = init(c->Version, &c->pFactory); // use the highest possible value for that DLL
+     if (unlikely(res != AMF_OK))
+         goto error;
+ 
+diff --git a/modules/hw/amf/amf_helper.h b/modules/hw/amf/amf_helper.h
+index ff8487a..6befb49 100644
+--- a/modules/hw/amf/amf_helper.h
++++ b/modules/hw/amf/amf_helper.h
+@@ -29,6 +29,7 @@ struct vlc_amf_context
+ {
+     AMT_TYPE(AMFFactory) *pFactory;
+     AMT_TYPE(AMFContext) *Context;
++    amf_uint64           Version;
+     void            *Private;
+ };
+ 

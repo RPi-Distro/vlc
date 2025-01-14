@@ -1,0 +1,35 @@
+From: =?utf-8?q?Hugo_Beauz=C3=A9e-Luyssen?= <hugo@beauzee.fr>
+Date: Mon, 13 Sep 2021 12:08:53 +0200
+Subject: taglib: Don't convert base64 strings to UTF8
+
+The convertion will incur a cost which we don't want to pay since the
+art needs to be encoded in base64, which doesn't include anything
+outside of ASCII
+
+(cherry picked from commit 65dfe0cdc97bbb98ad34a690989636d40f326e32)
+---
+ modules/meta_engine/taglib.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/modules/meta_engine/taglib.cpp b/modules/meta_engine/taglib.cpp
+index a48e102..256e8e4 100644
+--- a/modules/meta_engine/taglib.cpp
++++ b/modules/meta_engine/taglib.cpp
+@@ -800,7 +800,7 @@ static void ReadMetaFromXiph( Ogg::XiphComment* tag, demux_meta_t* p_demux_meta,
+         const char* psz_description = "cover";
+ 
+         uint8_t *p_data;
+-        int i_data = vlc_b64_decode_binary( &p_data, art_list[0].toCString(true) );
++        int i_data = vlc_b64_decode_binary( &p_data, art_list[0].toCString(false) );
+ 
+         msg_Dbg( p_demux_meta, "Found embedded art: %s (%s) is %i bytes",
+                 psz_name, psz_mime, i_data );
+@@ -818,7 +818,7 @@ static void ReadMetaFromXiph( Ogg::XiphComment* tag, demux_meta_t* p_demux_meta,
+         uint8_t *p_data;
+         int i_cover_score;
+         int i_cover_idx;
+-        int i_data = vlc_b64_decode_binary( &p_data, block_picture_list[0].toCString(true) );
++        int i_data = vlc_b64_decode_binary( &p_data, block_picture_list[0].toCString(false) );
+         i_cover_score = i_cover_idx = 0;
+         /* TODO: Use i_cover_score / i_cover_idx to select the picture. */
+         p_attachment = ParseFlacPicture( p_data, i_data, 0,

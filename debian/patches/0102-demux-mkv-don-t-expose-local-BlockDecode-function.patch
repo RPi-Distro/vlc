@@ -1,0 +1,41 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Sun, 10 Nov 2024 10:41:00 +0100
+Subject: demux: mkv: don't expose local BlockDecode function
+
+(cherry picked from commit e3adf1736cf32bba3db208cc5d0d18b23a7c17a5) (rebased)
+rebased:
+- the code around is different
+---
+ modules/demux/mkv/mkv.cpp | 2 +-
+ modules/demux/mkv/mkv.hpp | 5 -----
+ 2 files changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/modules/demux/mkv/mkv.cpp b/modules/demux/mkv/mkv.cpp
+index c55af78..2a252a1 100644
+--- a/modules/demux/mkv/mkv.cpp
++++ b/modules/demux/mkv/mkv.cpp
+@@ -487,7 +487,7 @@ static int Seek( demux_t *p_demux, vlc_tick_t i_mk_date, double f_percent, virtu
+ }
+ 
+ /* Needed by matroska_segment::Seek() and Seek */
+-void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock,
++static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock,
+                   const KaxBlockAdditions *additions,
+                   vlc_tick_t i_pts, int64_t i_duration, bool b_key_picture,
+                   bool b_discardable_picture )
+diff --git a/modules/demux/mkv/mkv.hpp b/modules/demux/mkv/mkv.hpp
+index 2a8ad5e..8497d08 100644
+--- a/modules/demux/mkv/mkv.hpp
++++ b/modules/demux/mkv/mkv.hpp
+@@ -133,11 +133,6 @@ Type * FindNextChild(const EbmlMaster & Master, const Type & PastElt)
+ 
+ using namespace LIBMATROSKA_NAMESPACE;
+ 
+-void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock,
+-                  const KaxBlockAdditions *additions,
+-                  vlc_tick_t i_pts, vlc_tick_t i_duration, bool b_key_picture,
+-                  bool b_discardable_picture );
+-
+ class attachment_c
+ {
+ public:

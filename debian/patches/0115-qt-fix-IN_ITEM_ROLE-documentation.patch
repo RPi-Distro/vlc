@@ -1,0 +1,21 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Tue, 10 Dec 2024 14:51:58 +0100
+Subject: qt: fix IN_ITEM_ROLE documentation
+
+---
+ modules/gui/qt/components/playlist/selector.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/gui/qt/components/playlist/selector.hpp b/modules/gui/qt/components/playlist/selector.hpp
+index b7d629a..2e333a3 100644
+--- a/modules/gui/qt/components/playlist/selector.hpp
++++ b/modules/gui/qt/components/playlist/selector.hpp
+@@ -58,7 +58,7 @@ enum {
+     LONGNAME_ROLE,       //QString
+     PL_ITEM_ROLE,        //playlist_item_t*
+     PL_ITEM_ID_ROLE,     //playlist_item_t->i_id
+-    IN_ITEM_ROLE,        //input_item_t->i_id
++    IN_ITEM_ROLE,        //input_item_t*
+     SPECIAL_ROLE,        //SpecialData
+     CAP_SEARCH_ROLE,
+     SD_CATEGORY_ROLE,

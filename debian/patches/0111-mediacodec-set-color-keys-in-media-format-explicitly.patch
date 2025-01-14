@@ -1,0 +1,149 @@
+From: Mangal Kushwah <mangalk2324@gmail.com>
+Date: Thu, 12 Sep 2024 12:03:58 +0530
+Subject: mediacodec: set color keys in media format explicitly
+
+Fixes issues where by default mediacodec sets wrong keys for video.
+See #26948
+
+(cherry picked from commit 55e0779f98b71ab135a4c0c78c2cb91b16a72547)
+---
+ modules/codec/omxil/mediacodec.c     | 44 ++++++++++++++++++++++++++++++++++++
+ modules/codec/omxil/mediacodec.h     | 30 ++++++++++++++++++++++++
+ modules/codec/omxil/mediacodec_jni.c |  4 ++++
+ modules/codec/omxil/mediacodec_ndk.c |  5 ++++
+ 4 files changed, 83 insertions(+)
+
+diff --git a/modules/codec/omxil/mediacodec.c b/modules/codec/omxil/mediacodec.c
+index 1a2c97a..46d9807 100644
+--- a/modules/codec/omxil/mediacodec.c
++++ b/modules/codec/omxil/mediacodec.c
+@@ -497,6 +497,50 @@ static int StartMediaCodec(decoder_t *p_dec)
+ 
+         args.video.p_surface = p_sys->video.p_surface;
+         args.video.p_jsurface = p_sys->video.p_jsurface;
++
++        if (p_dec->fmt_out.video.b_color_range_full)
++            args.video.color_range = MC_COLOR_RANGE_FULL;
++        else
++            args.video.color_range = MC_COLOR_RANGE_LIMITED;
++
++        switch (p_dec->fmt_out.video.primaries)
++        {
++            case COLOR_PRIMARIES_BT601_525:
++                args.video.color_standard = MC_COLOR_STANDARD_BT601_NTSC;
++                break;
++            case COLOR_PRIMARIES_BT601_625:
++                args.video.color_standard = MC_COLOR_STANDARD_BT601_PAL;
++                break;
++            case COLOR_PRIMARIES_BT709:
++                args.video.color_standard = MC_COLOR_STANDARD_BT709;
++                break;
++            case COLOR_PRIMARIES_BT2020:
++                args.video.color_standard = MC_COLOR_STANDARD_BT2020;
++                break;
++            default:
++                args.video.color_standard = MC_COLOR_STANDARD_UNSPECIFIED;
++                break;
++        }
++
++        switch (p_dec->fmt_out.video.transfer)
++        {
++            case TRANSFER_FUNC_LINEAR:
++                args.video.color_transfer = MC_COLOR_TRANSFER_LINEAR;
++                break;
++            case TRANSFER_FUNC_SMPTE_ST2084:
++                args.video.color_transfer = MC_COLOR_TRANSFER_ST2084;
++                break;
++            case TRANSFER_FUNC_HLG:
++                args.video.color_transfer = MC_COLOR_TRANSFER_HLG;
++                break;
++            case TRANSFER_FUNC_BT709:
++                args.video.color_transfer = MC_COLOR_TRANSFER_SDR_VIDEO;
++                break;
++            default:
++                args.video.color_transfer = MC_COLOR_TRANSFER_UNSPECIFIED;
++                break;
++        }
++
+         args.video.b_tunneled_playback = args.video.p_surface ?
+                 var_InheritBool(p_dec, CFG_PREFIX "tunneled-playback") : false;
+         if (p_sys->b_adaptive)
+diff --git a/modules/codec/omxil/mediacodec.h b/modules/codec/omxil/mediacodec.h
+index 6a7fd96..8fc1fca 100644
+--- a/modules/codec/omxil/mediacodec.h
++++ b/modules/codec/omxil/mediacodec.h
+@@ -49,6 +49,33 @@ int MediaCodecNdk_Init(mc_api*);
+ #define MC_API_VIDEO_QUIRKS_ADAPTIVE 0x1000
+ #define MC_API_VIDEO_QUIRKS_IGNORE_SIZE 0x2000
+ 
++/* cf. https://github.com/FFmpeg/FFmpeg/blob/00f5a34c9a5f0adee28aca11971918d6aca48745/libavcodec/mediacodec_wrapper.h#L348
++ * cf. https://developer.android.com/reference/android/media/MediaFormat#constants_1*/
++enum mc_media_format_color_range_t
++{
++    MC_COLOR_RANGE_UNSPECIFIED = 0x0,
++    MC_COLOR_RANGE_FULL        = 0x1,
++    MC_COLOR_RANGE_LIMITED     = 0x2,
++};
++
++enum mc_media_format_color_standard_t
++{
++    MC_COLOR_STANDARD_UNSPECIFIED  = 0x0,
++    MC_COLOR_STANDARD_BT709        = 0x1,
++    MC_COLOR_STANDARD_BT601_PAL    = 0x2,
++    MC_COLOR_STANDARD_BT601_NTSC   = 0x4,
++    MC_COLOR_STANDARD_BT2020       = 0x6,
++};
++
++enum mc_media_format_color_transfer_t
++{
++    MC_COLOR_TRANSFER_UNSPECIFIED = 0x0,
++    MC_COLOR_TRANSFER_LINEAR      = 0x1,
++    MC_COLOR_TRANSFER_SDR_VIDEO   = 0x3,
++    MC_COLOR_TRANSFER_ST2084      = 0x6,
++    MC_COLOR_TRANSFER_HLG         = 0x7,
++};
++
+ struct mc_api_out
+ {
+     enum {
+@@ -99,6 +126,9 @@ union mc_api_args
+         int i_angle;
+         bool b_tunneled_playback;
+         bool b_adaptive_playback;
++        enum mc_media_format_color_transfer_t color_transfer;
++        enum mc_media_format_color_range_t color_range;
++        enum mc_media_format_color_standard_t color_standard;
+     } video;
+     struct
+     {
+diff --git a/modules/codec/omxil/mediacodec_jni.c b/modules/codec/omxil/mediacodec_jni.c
+index 8c9041e..a9721c1 100644
+--- a/modules/codec/omxil/mediacodec_jni.c
++++ b/modules/codec/omxil/mediacodec_jni.c
+@@ -638,6 +638,10 @@ static int Start(mc_api *api, union mc_api_args *p_args)
+         if (p_args->video.i_angle != 0)
+             SET_INTEGER(jformat, "rotation-degrees", p_args->video.i_angle);
+ 
++        SET_INTEGER(jformat, "color-range", p_args->video.color_range);
++        SET_INTEGER(jformat, "color-standard", p_args->video.color_standard);
++        SET_INTEGER(jformat, "color-transfer", p_args->video.color_transfer);
++
+         if (b_direct_rendering)
+         {
+             /* feature-tunneled-playback available since API 21 */
+diff --git a/modules/codec/omxil/mediacodec_ndk.c b/modules/codec/omxil/mediacodec_ndk.c
+index c84d81e..c861e81 100644
+--- a/modules/codec/omxil/mediacodec_ndk.c
++++ b/modules/codec/omxil/mediacodec_ndk.c
+@@ -356,6 +356,11 @@ static int Start(mc_api *api, union mc_api_args *p_args)
+         syms.AMediaFormat.setInt32(p_sys->p_format, "width", p_args->video.i_width);
+         syms.AMediaFormat.setInt32(p_sys->p_format, "height", p_args->video.i_height);
+         syms.AMediaFormat.setInt32(p_sys->p_format, "rotation-degrees", p_args->video.i_angle);
++
++        syms.AMediaFormat.setInt32(p_sys->p_format, "color-range", p_args->video.color_range);
++        syms.AMediaFormat.setInt32(p_sys->p_format, "color-standard", p_args->video.color_standard);
++        syms.AMediaFormat.setInt32(p_sys->p_format, "color-transfer", p_args->video.color_transfer);
++
+         if (p_args->video.p_surface)
+         {
+             p_anw = p_args->video.p_surface;

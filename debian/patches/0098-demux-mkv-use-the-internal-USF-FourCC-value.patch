@@ -1,0 +1,24 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Sat, 9 Nov 2024 13:35:06 +0100
+Subject: demux: mkv: use the internal USF FourCC value
+
+Rather than a local FourCC.
+
+(cherry picked from commit 447116d324f8493120ce84544aed0cfc290aafb2)
+---
+ modules/demux/mkv/matroska_segment_parse.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/demux/mkv/matroska_segment_parse.cpp b/modules/demux/mkv/matroska_segment_parse.cpp
+index b9a2d27..7a5f5fb 100644
+--- a/modules/demux/mkv/matroska_segment_parse.cpp
++++ b/modules/demux/mkv/matroska_segment_parse.cpp
+@@ -2066,7 +2066,7 @@ bool matroska_segment_c::TrackInit( mkv_track_t * p_tk )
+         }
+         S_CASE("S_TEXT/USF") {
+             ONLY_FMT(SPU);
+-            vars.p_tk->fmt.i_codec = VLC_FOURCC( 'u', 's', 'f', ' ' );
++            vars.p_tk->fmt.i_codec = VLC_CODEC_USF;
+             vars.p_tk->fmt.subs.psz_encoding = strdup( "UTF-8" );
+             fill_extra_data( vars.p_tk, 0 );
+         }

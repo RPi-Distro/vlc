@@ -1,0 +1,27 @@
+From: Steve Lhomme <robux4@ycbcr.xyz>
+Date: Fri, 29 Nov 2024 11:28:46 +0100
+Subject: demux/mp4: force the packetizer to fill AV1 extradata without
+ optional OBUs
+
+The hardware decoders need it and the packetizer can fill it for us.
+
+(cherry picked from commit fe8b4bf937ad08d17d69de07ae21e9f326e2bd96) (edited)
+edited:
+- the extradata handling is missing many backports, adapting the to 3.0 code
+---
+ modules/demux/mp4/essetup.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/modules/demux/mp4/essetup.c b/modules/demux/mp4/essetup.c
+index 81d6550..5ac7af6 100644
+--- a/modules/demux/mp4/essetup.c
++++ b/modules/demux/mp4/essetup.c
+@@ -545,6 +545,8 @@ int SetupVideoES( demux_t *p_demux, mp4_track_t *p_track, MP4_Box_t *p_sample )
+                                 BOXDATA(p_av1C)->i_av1C );
+                         p_track->fmt.i_extra = BOXDATA(p_av1C)->i_av1C;
+                     }
++                    if (p_track->fmt.i_extra <= 4)
++                        p_track->fmt.b_packetized = false; // force full extradata by the packetizer
+                 }
+             }
+             break;
