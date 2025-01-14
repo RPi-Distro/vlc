@@ -13,3 +13,4 @@
 0013-mux-avformat-fix-avio-callbacks-signature-with-ffmpe.patch
 0014-Taglib-Use-ID3v2Tag-instead-of-tag-for-RIFF-WAV-File.patch
 0015-Taglib-1.x-and-2.x-compat-fix.patch
+0016-avcodec-vaapi-Support-VAAPI-with-latest-FFmpeg.patch

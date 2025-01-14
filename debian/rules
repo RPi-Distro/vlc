@@ -201,6 +201,7 @@ endif
 # Linux specific flags (disabled on Hurd)
 ifeq (,$(filter-out linux,$(DEB_HOST_ARCH_OS)))
 confflags += \
+	--enable-libva \
 	--enable-vcd \
 	--enable-smbclient \
 	$(NULL)
