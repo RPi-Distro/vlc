@@ -122,3 +122,4 @@
 0122-qt-use-QString-arg-rather-than-QString-sprintf.patch
 0123-qt-use-std-sort-instead-of-deprecated-qSort.patch
 0124-avcodec-vaapi-Support-VAAPI-with-latest-FFmpeg.patch
+0125-x265-fix-API-signature-with-x265-4.1.patch
