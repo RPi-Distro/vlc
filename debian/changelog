@@ -1,3 +1,9 @@
+vlc (3.0.21-7) unstable; urgency=medium
+
+  * debian/patches: Fix build with x265 4.1
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Tue, 21 Jan 2025 19:02:47 +0100
+
 vlc (3.0.21-6) unstable; urgency=medium
 
   * debian/patches: Update to 3.0.21-1-385-g7b58309ae7
