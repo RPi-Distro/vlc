@@ -1,3 +1,11 @@
+vlc (3.0.21-9) unstable; urgency=medium
+
+  * Revert "Bump to lua5.4"
+    The vlc script ecosystem expects certain versions of lua and lua5.4 is not
+    one of them.
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Fri, 07 Mar 2025 07:31:22 +0100
+
 vlc (3.0.21-8) unstable; urgency=medium
 
   * Team upload
