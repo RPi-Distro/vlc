@@ -1,3 +1,10 @@
+vlc (3.0.21-8) unstable; urgency=medium
+
+  * Team upload
+  * Bump to lua5.4
+
+ -- Bastian Germann <bage@debian.org>  Fri, 07 Mar 2025 01:01:48 +0100
+
 vlc (3.0.21-7) unstable; urgency=medium
 
   * debian/patches: Fix build with x265 4.1
