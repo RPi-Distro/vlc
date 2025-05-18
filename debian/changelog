@@ -1,3 +1,12 @@
+vlc (3.0.21-10) unstable; urgency=medium
+
+  * debian/: Disable plugins that are no longer supported upstream
+    - a52
+    - dca
+    - libmpeg2
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sun, 18 May 2025 22:30:46 +0200
+
 vlc (3.0.21-9) unstable; urgency=medium
 
   * Revert "Bump to lua5.4"
