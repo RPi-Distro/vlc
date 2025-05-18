@@ -29,7 +29,6 @@ confflags += \
 	$(NULL)
 # configure features
 confflags += \
-	--enable-a52 \
 	--enable-aa \
 	--enable-aribsub \
 	--enable-avahi \
@@ -39,7 +38,6 @@ confflags += \
 	--enable-chromecast \
 	--enable-dav1d \
 	--enable-dbus \
-	--enable-dca \
 	--enable-dvbpsi \
 	--enable-dvdnav \
 	--enable-faad \
@@ -53,7 +51,6 @@ confflags += \
 	--enable-jack \
 	--enable-kate \
 	--enable-libass \
-	--enable-libmpeg2 \
 	--enable-libxml2 \
 	--enable-lirc \
 	--enable-mad \
@@ -93,9 +90,11 @@ confflags += \
 	--with-kde-solid=/usr/share/solid/actions/ \
 	$(NULL)
 # Reasons for disabling features:
+# a52: no longer supported upstream
 # aom: dav1d support enabled
 # crystalhd: unusble without firmware (#934242)
 # d3d11va: Windows only
+# dca: no longer supported upstream
 # decklink: not in Debian
 # directx: Windows only
 # dsm: not in Debian
@@ -105,6 +104,7 @@ confflags += \
 # freerdp: removed from Debian (#888323)
 # goom: not in Debian
 # gst-decode: not needed when having libavcodec
+# libmpeg2: no longer supported upstream
 # libplacebo: is too new
 # libtar: security issue (#737534)
 # live555: non-free code from RFC 3550 (#981439)
@@ -124,9 +124,11 @@ confflags += \
 # vsxu: not in Debian
 # wasapi: Windows only
 confflags += \
+	--disable-a52 \
 	--disable-aom \
 	--disable-crystalhd \
 	--disable-d3d11va \
+	--disable-dca \
 	--disable-decklink \
 	--disable-directx \
 	--disable-dsm \
@@ -136,6 +138,7 @@ confflags += \
 	--disable-freerdp \
 	--disable-goom \
 	--disable-gst-decode \
+	--disable-libmpeg2 \
 	--disable-libplacebo \
 	--disable-libtar \
 	--disable-live555 \
