@@ -39,3 +39,4 @@
 0037-xdg-shell-Rename-old-xdg-shall-include-files.patch
 0038-wl_xdg_shell-Create-an-updated-version-of-xdg-shell.patch
 0039-RPICHANGES-Add-change-log.patch
+live555-fix-build-with-newer-versions.patch
