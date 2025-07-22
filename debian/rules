@@ -53,6 +53,7 @@ confflags += \
 	--enable-libass \
 	--enable-libxml2 \
 	--enable-lirc \
+	--enable-live555 \
 	--enable-mad \
 	--enable-matroska \
 	--enable-mod \
@@ -107,7 +108,6 @@ confflags += \
 # libmpeg2: no longer supported upstream
 # libplacebo: is too new
 # libtar: security issue (#737534)
-# live555: non-free code from RFC 3550 (#981439)
 # macosx*: MacOX only
 # mfx: currently not supported on Linux
 # microdns: functionality already provided by avahi
@@ -141,7 +141,6 @@ confflags += \
 	--disable-libmpeg2 \
 	--disable-libplacebo \
 	--disable-libtar \
-	--disable-live555 \
 	--disable-macosx \
 	--disable-macosx-avfoundation \
 	--disable-macosx-qtkit \

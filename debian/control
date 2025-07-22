@@ -56,6 +56,7 @@ Build-Depends:
  libjack-jackd2-dev | libjack-dev,
  libkate-dev (>= 0.3.0),
  liblirc-dev,
+ liblivemedia-dev,
  liblua5.2-dev,
  libmad0-dev,
  libmatroska-dev (>= 1.0.0),
