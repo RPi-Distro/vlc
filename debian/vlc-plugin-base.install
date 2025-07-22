@@ -118,6 +118,10 @@ usr/lib/*/vlc/plugins/control/libnetsync_plugin.so
 usr/lib/*/vlc/plugins/control/liboldrc_plugin.so
 usr/lib/*/vlc/plugins/control/libxcb_hotkeys_plugin.so
 usr/lib/*/vlc/plugins/demux
+usr/lib/*/vlc/plugins/drm/libdrm_avcodec_plugin.so
+usr/lib/*/vlc/plugins/drm/libdrm_av_deinterlace_plugin.so
+usr/lib/*/vlc/plugins/drm/libdrm_conv_sand30_plugin.so
+usr/lib/*/vlc/plugins/drm/libdrm_gl_conv_plugin.so
 usr/lib/*/vlc/plugins/gui/libncurses_plugin.so
 usr/lib/*/vlc/plugins/keystore/libfile_keystore_plugin.so
 usr/lib/*/vlc/plugins/keystore/libkwallet_plugin.so
@@ -226,6 +230,7 @@ usr/lib/*/vlc/plugins/video_filter/libsharpen_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libtransform_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libvhs_plugin.so
 usr/lib/*/vlc/plugins/video_filter/libwave_plugin.so
+usr/lib/*/vlc/plugins/video_output/libdrm_vout_plugin.so
 usr/lib/*/vlc/plugins/video_output/libfb_plugin.so [fb]
 usr/lib/*/vlc/plugins/video_output/libvdummy_plugin.so
 usr/lib/*/vlc/plugins/video_output/libvmem_plugin.so
