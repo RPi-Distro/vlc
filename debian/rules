@@ -247,6 +247,15 @@ confflags += --disable-neon
 removeplugins += neon
 endif
 
+ifeq (,$(filter-out arm arm64,$(DEB_HOST_ARCH_CPU)))
+confflags := $(filter-out --enable-vdpau, $(confflags))
+confflags := $(filter-out --enable-libva, $(confflags))
+confflags += --disable-vdpau
+confflags += --disable-libva
+removeplugins += vdpau
+removeplugins += libva
+endif
+
 # PowerPC specific optimizations (excluding powerpcspe)
 ifeq (,$(filter-out powerpc,$(DEB_HOST_ARCH_CPU))$(filter powerpcspe,$(DEB_HOST_ARCH)))
 confflags += --enable-altivec
