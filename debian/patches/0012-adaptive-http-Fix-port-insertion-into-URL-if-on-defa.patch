@@ -1,0 +1,32 @@
+From 9ea13907093da7cc7cd898660d03ac40b9ff6821 Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Tue, 9 Jan 2024 16:36:54 +0000
+Subject: [PATCH 12/39] adaptive/http: Fix port insertion into URL if on
+ default port
+
+Fix the URL generation code to avoid adding an explicit port if the
+port is the default for the scheme. This is fairly clearly what the
+code was originally intended to do.
+
+This fixes the playback of some HLS streams where including the
+port number in the Host: field causes the segment fetch to fail
+with 404.
+
+Signed-off-by: John Cox <jc@kynesim.co.uk>
+---
+ modules/demux/adaptive/http/ConnectionParams.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/modules/demux/adaptive/http/ConnectionParams.cpp
++++ b/modules/demux/adaptive/http/ConnectionParams.cpp
+@@ -70,8 +70,8 @@ void ConnectionParams::setPath(const std
+     if(!hostname.empty())
+     {
+         os << hostname;
+-        if( (port != 80 && scheme != "http") ||
+-            (port != 443 && scheme != "https") )
++        if( (port != 80 && scheme == "http") ||
++            (port != 443 && scheme == "https") )
+             os << ":" << port;
+     }
+     os << path;
