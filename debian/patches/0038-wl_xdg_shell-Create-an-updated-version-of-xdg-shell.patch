@@ -1,7 +1,7 @@
-From b94d2ac0ea996f914e1d01e0eb893e8a0b4d0708 Mon Sep 17 00:00:00 2001
+From bce180037c10671fa94b6dd420dda9cd99da1cc2 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Mon, 19 Aug 2024 17:34:18 +0100
-Subject: [PATCH 38/39] wl_xdg_shell: Create an updated version of xdg-shell
+Subject: [PATCH 38/41] wl_xdg_shell: Create an updated version of xdg-shell
 
 xdg-shell has moved on since the previous version was written and
 current exported interfaces from labwc do not include the unstable xdg
@@ -17,7 +17,7 @@ shell. This updates the calls and bindings to work again.
 
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3223,6 +3223,10 @@ AC_ARG_ENABLE(wayland,
+@@ -3224,6 +3224,10 @@ AC_ARG_ENABLE(wayland,
  have_wayland="no"
  have_wayland_egl="no"
  have_wayland_single_pixel_buffer="no"
@@ -28,7 +28,7 @@ shell. This updates the calls and bindings to work again.
  
  AS_IF([test "${enable_wayland}" = "yes"], [
    PKG_CHECK_MODULES([WAYLAND_CLIENT], [wayland-client >= 1.5.91], [
-@@ -3237,6 +3241,18 @@ AS_IF([test "${enable_wayland}" = "yes"]
+@@ -3238,6 +3242,18 @@ AS_IF([test "${enable_wayland}" = "yes"]
        ], [
           AC_MSG_RESULT([no])
        ])
@@ -47,7 +47,7 @@ shell. This updates the calls and bindings to work again.
      ], [
        AC_MSG_RESULT([not found])
        AC_MSG_ERROR([$(${PKG_CONFIG} --print-errors 'wayland-protocols >= 1.4')])
-@@ -3271,6 +3287,8 @@ AC_SUBST([WAYLAND_SCANNER])
+@@ -3272,6 +3288,8 @@ AC_SUBST([WAYLAND_SCANNER])
  AM_CONDITIONAL([HAVE_WAYLAND], [test "${have_wayland}" = "yes"])
  AM_CONDITIONAL([HAVE_WAYLAND_EGL], [test "${have_wayland_egl}" = "yes"])
  AM_CONDITIONAL([HAVE_WAYLAND_SINGLE_PIXEL_BUFFER], [test "${have_wayland_single_pixel_buffer}" = "yes"])
@@ -58,7 +58,7 @@ shell. This updates the calls and bindings to work again.
  dnl
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -247,6 +247,14 @@ video_output/wayland/single-pixel-buffer
+@@ -255,6 +255,14 @@ video_output/wayland/single-pixel-buffer
  		$(WAYLAND_PROTOCOLS)/staging/single-pixel-buffer/single-pixel-buffer-v1.xml
  	$(AM_V_GEN)$(WAYLAND_SCANNER) client-header $< $@
  
@@ -73,7 +73,7 @@ shell. This updates the calls and bindings to work again.
  libwl_dmabuf_plugin_la_SOURCES = video_output/wayland/wl_dmabuf.c\
  	video_output/wayland/picpool.c video_output/wayland/picpool.h\
  	video_output/wayland/dmabuf_alloc.c video_output/wayland/dmabuf_alloc.h\
-@@ -302,6 +310,57 @@ video_output/wayland/xdg-shell-unstable-
+@@ -312,6 +320,57 @@ video_output/wayland/xdg-shell-unstable-
  		$(WAYLAND_PROTOCOLS)/unstable/xdg-shell/xdg-shell-unstable-v5.xml
  	$(AM_V_GEN)$(WAYLAND_SCANNER) private-code $< $@
  
@@ -131,7 +131,7 @@ shell. This updates the calls and bindings to work again.
  video_output/wayland/server-decoration-client-protocol.h: \
  		video_output/wayland/server-decoration.xml
  video_output/wayland/server-decoration-protocol.c: \
-@@ -321,6 +380,10 @@ vout_LTLIBRARIES += libwl_dmabuf_plugin.
+@@ -331,6 +390,10 @@ vout_LTLIBRARIES += libwl_dmabuf_plugin.
  vout_LTLIBRARIES += libwl_shell_plugin.la
  BUILT_SOURCES += $(nodist_libxdg_shell_plugin_la_SOURCES)
  vout_LTLIBRARIES += libxdg_shell_plugin.la

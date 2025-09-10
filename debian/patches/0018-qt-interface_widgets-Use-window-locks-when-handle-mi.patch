@@ -1,7 +1,7 @@
-From c6dfc209f90679d6ad52d1ce418ceb3a4eb69cc3 Mon Sep 17 00:00:00 2001
+From f0d5a040bab76ea7d63725b02564bcde1f2e231c Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:05:36 +0100
-Subject: [PATCH 18/39] qt/interface_widgets: Use window locks when handle
+Subject: [PATCH 18/41] qt/interface_widgets: Use window locks when handle
  might change
 
 Qt/Wayland changes its surface when the window is hidden and then shown.

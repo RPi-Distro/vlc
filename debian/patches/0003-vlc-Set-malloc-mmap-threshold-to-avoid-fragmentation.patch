@@ -1,7 +1,7 @@
-From 27eda661dc19b85f6a9004be1c971176240b1eaa Mon Sep 17 00:00:00 2001
+From 0ca0a4175566e5f50c1b9e6bf29f382ce90bd530 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Mon, 30 Sep 2024 17:30:09 +0100
-Subject: [PATCH 03/39] vlc: Set malloc mmap threshold to avoid fragmentation
+Subject: [PATCH 03/41] vlc: Set malloc mmap threshold to avoid fragmentation
 
 We can end up with unfortunate memory fragmentation that ends up using
 a lot more memory than required when buffer allocations get partially

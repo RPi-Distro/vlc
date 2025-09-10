@@ -1,7 +1,7 @@
-From 8f2b2adc4f6b4c5a9f143d116e077bffeab13630 Mon Sep 17 00:00:00 2001
+From 378eda710e732bf8490ae32d8440ece3b70078aa Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:48:19 +0100
-Subject: [PATCH 32/39] egl: Add avcodec DRM_PRIME decode path
+Subject: [PATCH 32/41] egl: Add avcodec DRM_PRIME decode path
 
 Also includes drm_prime based deinterlace and sand30 conversion
 functions.

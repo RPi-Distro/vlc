@@ -1,7 +1,7 @@
-From ffacf3f81bcbe4785eddb5c8863cde30b02a6971 Mon Sep 17 00:00:00 2001
+From ec744379d3a83bcc04b8f61f6bdab5d8c4f750a1 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 18:43:19 +0100
-Subject: [PATCH 28/39] qt: Disable HiDPIScaling if ratio is implausible
+Subject: [PATCH 28/41] qt: Disable HiDPIScaling if ratio is implausible
 
 ---
  modules/gui/qt/qt.cpp | 17 +++++++++++++++++

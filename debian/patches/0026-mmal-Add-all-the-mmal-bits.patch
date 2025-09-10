@@ -1,7 +1,7 @@
-From 2fbfbea9d148e45c318ccb5da989b7adcb2fba35 Mon Sep 17 00:00:00 2001
+From 07939997b292f01ab0b42b5c35bdb2fb4aa88daf Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 18:09:17 +0100
-Subject: [PATCH 26/39] mmal: Add all the mmal bits
+Subject: [PATCH 26/41] mmal: Add all the mmal bits
 
 ---
  modules/Makefile.am                 |    2 -

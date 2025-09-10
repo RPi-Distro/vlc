@@ -1,5 +1,7 @@
 0001-configure-fix-linking-on-RISC-V-ISA.patch
 0002-Do-not-generate-cache-during-build.patch
+
+# Raspberry Pi patchset 50
 0001-pi-util-Add-useful-scripts.patch
 0002-vlc-Upgrade-exit-timeout-to-exit-rather-than-signal.patch
 0003-vlc-Set-malloc-mmap-threshold-to-avoid-fragmentation.patch
@@ -38,5 +40,6 @@
 0036-wayland-shm-Set-priority-to-0-to-use-wl-dmabuf-inste.patch
 0037-xdg-shell-Rename-old-xdg-shall-include-files.patch
 0038-wl_xdg_shell-Create-an-updated-version-of-xdg-shell.patch
-0039-RPICHANGES-Add-change-log.patch
-live555-fix-build-with-newer-versions.patch
+0039-live555-Fix-compile-error.patch
+0040-RPICHANGES-Add-change-log.patch
+0041-avcodec-Add-J420-formats-as-equivalent-to-YUV420-for.patch

@@ -1,12 +1,12 @@
-From 75a8f3200eeb625767e7646ac0bb2be536375a9a Mon Sep 17 00:00:00 2001
+From 5b77fb334e0290dcc60b9403759a440b90d2192b Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:59:10 +0100
-Subject: [PATCH 35/39] video_output/wayland: Add dmabuf output
+Subject: [PATCH 35/41] video_output/wayland: Add dmabuf output
 
 Previously all output was via shm which can be inefficient.
 Depends on some files from drmu for DRM format info.
 ---
- modules/video_output/Makefile.am              |   49 +-
+ modules/video_output/Makefile.am              |   59 +-
  modules/video_output/wayland/dmabuf_alloc.c   |  516 ++++
  modules/video_output/wayland/dmabuf_alloc.h   |   59 +
  modules/video_output/wayland/picpool.c        |  369 +++
@@ -15,8 +15,8 @@ Depends on some files from drmu for DRM format info.
  modules/video_output/wayland/rgba_premul.h    |   18 +
  .../wayland/rgba_premul_aarch64.S             |  170 ++
  .../wayland/rgba_premul_aarch64.h             |    9 +
- modules/video_output/wayland/wl_dmabuf.c      | 2448 +++++++++++++++++
- 10 files changed, 3904 insertions(+), 1 deletion(-)
+ modules/video_output/wayland/wl_dmabuf.c      | 2658 +++++++++++++++++
+ 10 files changed, 4124 insertions(+), 1 deletion(-)
  create mode 100644 modules/video_output/wayland/dmabuf_alloc.c
  create mode 100644 modules/video_output/wayland/dmabuf_alloc.h
  create mode 100644 modules/video_output/wayland/picpool.c
@@ -29,11 +29,19 @@ Depends on some files from drmu for DRM format info.
 
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -233,7 +233,52 @@ video_output/wayland/viewporter-client-p
+@@ -233,7 +233,62 @@ video_output/wayland/viewporter-client-p
  
  video_output/wayland/viewporter-protocol.c: \
  		$(WAYLAND_PROTOCOLS)/stable/viewporter/viewporter.xml
 -	$(AM_V_GEN)$(WAYLAND_SCANNER) code $< $@
++	$(AM_V_GEN)$(WAYLAND_SCANNER) private-code $< $@
++
++video_output/wayland/presentation-time-client-protocol.h: \
++		$(WAYLAND_PROTOCOLS)/stable/presentation-time/presentation-time.xml
++	$(AM_V_GEN)$(WAYLAND_SCANNER) client-header $< $@
++
++video_output/wayland/presentation-time-protocol.c: \
++		$(WAYLAND_PROTOCOLS)/stable/presentation-time/presentation-time.xml
 +	$(AM_V_GEN)$(WAYLAND_SCANNER) private-code $< $@
 +
 +video_output/wayland/linux-dmabuf-unstable-v1-client-protocol.h: \
@@ -57,6 +65,8 @@ Depends on some files from drmu for DRM format info.
 +nodist_libwl_dmabuf_plugin_la_SOURCES = \
 +	video_output/wayland/viewporter-client-protocol.h \
 +	video_output/wayland/viewporter-protocol.c \
++	video_output/wayland/presentation-time-client-protocol.h \
++	video_output/wayland/presentation-time-protocol.c \
 +	video_output/wayland/linux-dmabuf-unstable-v1-client-protocol.h \
 +	video_output/wayland/linux-dmabuf-unstable-v1-protocol.c
 +
@@ -83,7 +93,7 @@ Depends on some files from drmu for DRM format info.
  
  libwl_shell_plugin_la_SOURCES = video_output/wayland/shell.c
  libwl_shell_plugin_la_CFLAGS = $(WAYLAND_CLIENT_CFLAGS)
-@@ -272,6 +317,8 @@ libegl_wl_plugin_la_LIBADD = $(EGL_LIBS)
+@@ -272,6 +327,8 @@ libegl_wl_plugin_la_LIBADD = $(EGL_LIBS)
  if HAVE_WAYLAND
  BUILT_SOURCES += $(nodist_libwl_shm_plugin_la_SOURCES)
  vout_LTLIBRARIES += libwl_shm_plugin.la
@@ -1526,7 +1536,7 @@ Depends on some files from drmu for DRM format info.
 +#endif
 --- /dev/null
 +++ b/modules/video_output/wayland/wl_dmabuf.c
-@@ -0,0 +1,2448 @@
+@@ -0,0 +1,2658 @@
 +/**
 + * @file shm.c
 + * @brief Wayland shared memory video output module for VLC media player
@@ -1574,6 +1584,7 @@ Depends on some files from drmu for DRM format info.
 +#endif
 +#include "viewporter-client-protocol.h"
 +#include "linux-dmabuf-unstable-v1-client-protocol.h"
++#include "presentation-time-client-protocol.h"
 +
 +#include <vlc_common.h>
 +#include <vlc_plugin.h>
@@ -1630,7 +1641,6 @@ Depends on some files from drmu for DRM format info.
 +
 +typedef struct eq_env_ss {
 +    atomic_int eq_count;
-+    sem_t sem;
 +
 +    struct wl_display *display;
 +    struct pollqueue *pq;
@@ -1686,6 +1696,21 @@ Depends on some files from drmu for DRM format info.
 +    subpic_ent_t * spe_next;
 +} subplane_t;
 +
++typedef struct pres_stats_env_ss {
++    int ref_count;  // Protected by lock so not atomic
++    vlc_mutex_t lock;
++    vlc_cond_t cond;
++    eq_env_t * eq;
++
++    unsigned int w_display;
++    unsigned int w_discard;
++} pres_stats_env_t;
++
++typedef struct pres_cb_env_ss {
++    pres_stats_env_t * pse;
++    uint64_t pts;
++} pres_cb_env_t;
++
 +typedef struct w_bound_ss
 +{
 +    struct wp_viewporter *viewporter;
@@ -1693,6 +1718,7 @@ Depends on some files from drmu for DRM format info.
 +    struct wl_compositor *compositor;
 +    struct wl_subcompositor *subcompositor;
 +    struct wl_shm *shm;
++    struct wp_presentation *presentation;
 +#if HAVE_WAYLAND_SINGLE_PIXEL_BUFFER
 +    struct wp_single_pixel_buffer_manager_v1 *single_pixel_buffer_manager_v1;
 +#endif
@@ -1752,11 +1778,15 @@ Depends on some files from drmu for DRM format info.
 +    fmt_list_t dmabuf_fmts;
 +    fmt_list_t shm_fmts;
 +
++    unsigned int presentation_clock_id;
++    pres_stats_env_t * pse;
 +    struct display_stats_s {
 +        unsigned int frame_n;
 +        unsigned int frame_frame;
 +        unsigned int frame_display;
 +        unsigned int frame_discard;
++        unsigned int w_display;
++        unsigned int w_discard;
 +        vlc_tick_t time_frame0;
 +        vlc_tick_t time_frameN;
 +    } stats;
@@ -1772,8 +1802,9 @@ Depends on some files from drmu for DRM format info.
 +    unsigned int tframes = (s->frame_n + s->frame_discard);
 +    unsigned int frx1000 = tframes < 2 ? 0 :
 +            (unsigned int)((uint64_t)(tframes - 1) * 1000000000ULL / (s->time_frameN - s->time_frame0));
-+    msg_Info(vd, "Frames: Total: %d, Discarded %d, Display %d FpS(total):%d.%03d",
++    msg_Info(vd, "Frames: Total: %d, Discarded %d, Display %d: Presented %d, Dropped %d, FpS(total):%d.%03d",
 +             tframes, s->frame_discard, s->frame_display,
++             s->w_display, s->w_discard,
 +             frx1000 / 1000, frx1000 % 1000);
 +}
 +
@@ -2083,12 +2114,13 @@ Depends on some files from drmu for DRM format info.
 +    return eq->wrapped_display;
 +}
 +
-+static void
++static eq_env_t *
 +eq_ref(eq_env_t * const eq)
 +{
 +    const int n = atomic_fetch_add(&eq->eq_count, 1);
 +    (void)n;
 +//    fprintf(stderr, "Ref: count=%d\n", n + 1);
++    return eq;
 +}
 +
 +static void
@@ -2100,7 +2132,6 @@ Depends on some files from drmu for DRM format info.
 +        int n;
 +        *ppeq = NULL;
 +        n = atomic_fetch_sub(&eq->eq_count, 1);
-+//        fprintf(stderr, "Unref: Buffer count=%d\n", n);
 +        if (n == 0)
 +        {
 +            pollqueue_set_pre_post(eq->pq, 0, 0, NULL);
@@ -2109,23 +2140,9 @@ Depends on some files from drmu for DRM format info.
 +            wl_proxy_wrapper_destroy(eq->wrapped_display);
 +            wl_event_queue_destroy(eq->q);
 +
-+            sem_destroy(&eq->sem);
 +            free(eq);
-+//            fprintf(stderr, "Eq closed\n");
 +        }
 +    }
-+}
-+
-+static int
-+eq_finish(eq_env_t ** const ppeq)
-+{
-+    eq_env_t * const eq = *ppeq;
-+
-+    if (eq == NULL)
-+        return 0;
-+
-+    eq_unref(ppeq);
-+    return 0;
 +}
 +
 +static void
@@ -2187,7 +2204,6 @@ Depends on some files from drmu for DRM format info.
 +        return NULL;
 +
 +    atomic_init(&eq->eq_count, 0);
-+    sem_init(&eq->sem, 0, 0);
 +
 +#if WAYLAND_VERSION_MAJOR > 1 ||\
 +    (WAYLAND_VERSION_MAJOR == 1 && WAYLAND_VERSION_MINOR >= 23)
@@ -2256,6 +2272,86 @@ Depends on some files from drmu for DRM format info.
 +        /* Loop */;
 +    sem_destroy(&eqs.sem);
 +    return rv;
++}
++
++// ----------------------------------------------------------------------------
++
++static void
++pres_stats_free(pres_stats_env_t * const pse)
++{
++    eq_unref(&pse->eq);
++    vlc_cond_destroy(&pse->cond);
++    vlc_mutex_destroy(&pse->lock);
++    free(pse);
++}
++
++static void
++pres_stats_unref(pres_stats_env_t ** const pppse)
++{
++    pres_stats_env_t * const pse = *pppse;
++    int n;
++    if (pse == NULL)
++        return;
++    *pppse = NULL;
++
++    vlc_mutex_lock(&pse->lock);
++    n = --pse->ref_count;
++    if (n == 0)
++        vlc_cond_broadcast(&pse->cond);
++    vlc_mutex_unlock(&pse->lock);
++
++    if (n >= 0)
++        return;
++
++    pres_stats_free(pse);
++}
++
++static pres_stats_env_t *
++pres_stats_ref(pres_stats_env_t * const pse)
++{
++    if (pse == NULL)
++        return NULL;
++
++    vlc_mutex_lock(&pse->lock);
++    ++pse->ref_count;
++    vlc_mutex_unlock(&pse->lock);
++    return pse;
++}
++
++// Wait for all other refs to pse to go away before freeing and returning
++static int
++pres_stats_finish(pres_stats_env_t ** const pppse, struct display_stats_s * const dstats)
++{
++    pres_stats_env_t * const pse = *pppse;
++    int rv = 0;
++    if (pse == NULL)
++        return 0;
++    *pppse = NULL;
++
++    vlc_mutex_lock(&pse->lock);
++    while (pse->ref_count != 0)
++        vlc_cond_wait(&pse->cond, &pse->lock);
++    vlc_mutex_unlock(&pse->lock);
++
++    if (dstats != NULL)
++    {
++        dstats->w_display += pse->w_display;
++        dstats->w_discard += pse->w_discard;
++    }
++    pres_stats_free(pse);
++    return rv;
++}
++
++static pres_stats_env_t *
++pres_stats_new(eq_env_t * const eq)
++{
++    pres_stats_env_t * const pse = calloc(1, sizeof(*pse));
++    if (pse == NULL)
++        return NULL;
++    vlc_mutex_init(&pse->lock);
++    vlc_cond_init(&pse->cond);
++    pse->eq = eq_ref(eq);
++    return pse;
 +}
 +
 +// ----------------------------------------------------------------------------
@@ -2360,8 +2456,7 @@ Depends on some files from drmu for DRM format info.
 +{
 +    if (vdre == NULL)
 +        return;
-+    vdre->eq = eq;
-+    eq_ref(vdre->eq);
++    vdre->eq = eq_ref(eq);
 +}
 +
 +#if CHECK_VDRE_COUNTS
@@ -2914,6 +3009,8 @@ Depends on some files from drmu for DRM format info.
 +{
 +    clear_all_buffers(sys, bkg_valid);
 +
++    pres_stats_finish(&sys->pse, &sys->stats);
++
 +    // Free subpic resources
 +    for (unsigned int i = MAX_SUBPICS + PLANE_SUB - 1; i >= PLANE_VID; --i)
 +        plane_destroy(sys->planes + i);
@@ -3410,6 +3507,82 @@ Depends on some files from drmu for DRM format info.
 +    sys->bkg_h = vd->cfg->display.height;
 +}
 +
++static pres_cb_env_t *
++pce_new(pres_stats_env_t * const pse, const uint64_t pts)
++{
++    pres_cb_env_t * pce = malloc(sizeof(*pce));
++    if (pce == NULL)
++        return NULL;
++    pce->pse = pres_stats_ref(pse);
++    pce->pts = pts;
++    return pce;
++}
++
++static void
++pce_free(pres_cb_env_t * const pce)
++{
++    pres_stats_unref(&pce->pse);
++    free(pce);
++}
++
++static void
++presentation_sync_output_cb(void *data,
++            struct wp_presentation_feedback *wp_presentation_feedback,
++            struct wl_output *output)
++{
++    (void)data;
++    (void)wp_presentation_feedback;
++    (void)output;
++}
++
++// Presented/Discarded can occur after close has finished so need to
++static void
++presentation_presented_cb(void *data,
++          struct wp_presentation_feedback *wp_presentation_feedback,
++          uint32_t tv_sec_hi,
++          uint32_t tv_sec_lo,
++          uint32_t tv_nsec,
++          uint32_t refresh,
++          uint32_t seq_hi,
++          uint32_t seq_lo,
++          uint32_t flags)
++{
++    pres_cb_env_t * const pce = data;
++    pres_stats_env_t * const pse = pce->pse;
++    (void)tv_sec_hi;
++    (void)tv_sec_lo;
++    (void)tv_nsec;
++    (void)refresh;
++    (void)seq_hi;
++    (void)seq_lo;
++    (void)flags;
++
++    wp_presentation_feedback_destroy(wp_presentation_feedback);
++
++    ++pse->w_display;
++    pce_free(pce);
++}
++
++static void
++presentation_discarded_cb(void *data,
++          struct wp_presentation_feedback *wp_presentation_feedback)
++{
++    // feedback object implicitly destroyed
++    pres_cb_env_t * const pce = data;
++    pres_stats_env_t * const pse = pce->pse;
++
++    wp_presentation_feedback_destroy(wp_presentation_feedback);
++
++    ++pse->w_discard;
++    pce_free(pce);
++}
++
++static const struct wp_presentation_feedback_listener presentation_feedback_listener = {
++    .sync_output = presentation_sync_output_cb,
++    .presented = presentation_presented_cb,
++    .discarded = presentation_discarded_cb,
++};
++
 +static void
 +do_display(vout_display_t * const vd, vout_display_sys_t * const sys)
 +{
@@ -3444,6 +3617,14 @@ Depends on some files from drmu for DRM format info.
 +            spe = plane->spe_cur = plane->spe_next;
 +            plane->spe_next = NULL;
 +            subpic_ent_attach(plane, spe, sys->eq);
++
++            if (i == PLANE_VID && sys->pse != NULL)
++            {
++                struct wp_presentation_feedback * feedback = wp_presentation_feedback(sys->bound.presentation, plane->surface);
++                wp_presentation_feedback_add_listener(feedback, &presentation_feedback_listener, pce_new(sys->pse, 0));
++                // * We unconditionally do a commit after this - if this is ever
++                // not the case we will need cleanup code for eq & feedback
++            }
 +        }
 +    }
 +
@@ -3603,6 +3784,21 @@ Depends on some files from drmu for DRM format info.
 +    .format = shm_listener_format,
 +};
 +
++static void
++presentation_clock_id(void *data,
++                      struct wp_presentation * presentation,
++                      uint32_t clock_id)
++{
++    vout_display_t * const vd = data;
++    vout_display_sys_t * const sys = vd->sys;
++    (void)presentation;
++    sys->presentation_clock_id = clock_id;
++}
++
++static const struct wp_presentation_listener presentation_listener = {
++    .clock_id = presentation_clock_id,
++};
++
 +
 +static void w_bound_add(vout_display_t * const vd, w_bound_t * const b,
 +                        struct wl_registry * const registry,
@@ -3641,6 +3837,12 @@ Depends on some files from drmu for DRM format info.
 +        else
 +            msg_Warn(vd, "Interface %s wanted v 3 got v %d", zwp_linux_dmabuf_v1_interface.name, vers);
 +    }
++    else
++    if (vd->sys->want_stats && strcmp(iface, wp_presentation_interface.name) == 0)
++    {
++        b->presentation = wl_registry_bind(registry, name, &wp_presentation_interface, 1);
++        wp_presentation_add_listener(b->presentation, &presentation_listener, vd);
++    }
 +#if HAVE_WAYLAND_SINGLE_PIXEL_BUFFER
 +    else
 +    if (strcmp(iface, wp_single_pixel_buffer_manager_v1_interface.name) == 0)
@@ -3660,6 +3862,8 @@ Depends on some files from drmu for DRM format info.
 +        wl_compositor_destroy(b->compositor);
 +    if (b->shm != NULL)
 +        wl_shm_destroy(b->shm);
++    if (b->presentation != NULL)
++        wp_presentation_destroy(b->presentation);
 +#if HAVE_WAYLAND_SINGLE_PIXEL_BUFFER
 +    if (b->single_pixel_buffer_manager_v1)
 +        wp_single_pixel_buffer_manager_v1_destroy(b->single_pixel_buffer_manager_v1);
@@ -3746,14 +3950,15 @@ Depends on some files from drmu for DRM format info.
 +    if (sys->embed == NULL)
 +        goto no_window;
 +
-+    if (sys->want_stats)
-+        msg_stats(vd, &sys->stats);
-+
 +    if (bkg_surface_get_lock(vd, sys) != NULL)
 +    {
 +        unmap_all(sys, true);
 +        bkg_surface_unlock(vd, sys);
 +    }
++
++    // w_display/w_discard updated in unmap_all
++    if (sys->want_stats)
++        msg_stats(vd, &sys->stats);
 +
 +    region_destroy(&sys->region_all);
 +    region_destroy(&sys->region_none);
@@ -3764,13 +3969,19 @@ Depends on some files from drmu for DRM format info.
 +
 +    eventq_sync(sys->eq);
 +
-+    if (eq_finish(&sys->eq) != 0)
-+        msg_Err(vd, "Failed to reclaim all buffers on close");
++    eq_unref(&sys->eq);
 +
-+    // There is a risk of deadlock here if we wait for the pq to die as some
-+    // wl buffers may only be relased after close returns so just unref and the
-+    // pq will clean up after itself once the last buffer has been released.
-+    pollqueue_unref(&sys->pollq);
++    // There is no guarantee that the compositor will release all buffers in
++    // a timely fashion or indeed at all before this function returns; having
++    // said that current compositors do seenm to be well behaved and return
++    // the buffer in a frame time or two.
++    // So finish the pollqueue with a shortish timeout, and if we do timeout
++    // just unref and hope that we will get the release sometime.
++    if (pollqueue_finish_timeout(&sys->pollq, 500) != 0)
++    {
++        msg_Warn(vd, "Not all buffers returned by exit time");
++        pollqueue_unref(&sys->pollq);
++    }
 +
 +    vout_display_DeleteWindow(vd, sys->embed);
 +    sys->embed = NULL;
@@ -3873,6 +4084,15 @@ Depends on some files from drmu for DRM format info.
 +    if (!sys->use_shm && sys->bound.linux_dmabuf_v1 == NULL) {
 +        msg_Warn(vd, "Interface %s missing", zwp_linux_dmabuf_v1_interface.name);
 +        goto error;
++    }
++
++    if (sys->bound.presentation == NULL)
++    {
++        msg_Warn(vd, "Interface %s missing - presentation stats not availible", wp_presentation_interface.name);
++    }
++    else
++    {
++        sys->pse = pres_stats_new(sys->eq);
 +    }
 +
 +    fmt_list_sort(&sys->dmabuf_fmts);

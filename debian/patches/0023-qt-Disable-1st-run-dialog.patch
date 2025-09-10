@@ -1,7 +1,7 @@
-From 179640ce3358c8cc6994f5c3c008a8411431f68b Mon Sep 17 00:00:00 2001
+From e60cbd5675906392ca1d68a25e191ce419d4588f Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:53:42 +0100
-Subject: [PATCH 23/39] qt: Disable 1st run dialog
+Subject: [PATCH 23/41] qt: Disable 1st run dialog
 
 Confuses Wayland so unset the default
 ---

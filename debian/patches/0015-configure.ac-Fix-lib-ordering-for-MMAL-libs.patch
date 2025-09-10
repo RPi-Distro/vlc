@@ -1,7 +1,7 @@
-From 363c7eeda2ed95ddce9f15baa50538490a6b6138 Mon Sep 17 00:00:00 2001
+From 531d04b2b7d5b648dbc207dc0744d2972828934c Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:01:17 +0100
-Subject: [PATCH 15/39] configure.ac: Fix lib ordering for MMAL libs
+Subject: [PATCH 15/41] configure.ac: Fix lib ordering for MMAL libs
 
 ---
  configure.ac | 7 ++++---
@@ -9,7 +9,7 @@ Subject: [PATCH 15/39] configure.ac: Fix lib ordering for MMAL libs
 
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3497,20 +3497,21 @@ AM_CONDITIONAL([HAVE_KVA], [test "${have
+@@ -3498,20 +3498,21 @@ AM_CONDITIONAL([HAVE_KVA], [test "${have
  dnl
  dnl MMAL plugin
  dnl

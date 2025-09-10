@@ -1,7 +1,7 @@
-From e709884402ffeec286c377e3a9dc0127723b6894 Mon Sep 17 00:00:00 2001
+From 9dc6328205c57c47d87cb4cc95b854c25d2be018 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:54:53 +0100
-Subject: [PATCH 34/39] video_output/drmu: Add DRM video output
+Subject: [PATCH 34/41] video_output/drmu: Add DRM video output
 
 Heavily based on my somewhat independent drmu project
 Can do HDR setup and mode matching
@@ -34,9 +34,9 @@ Can do HDR setup and mode matching
  modules/video_output/drmu/drmu_vlc_fmts.c |  258 ++
  modules/video_output/drmu/drmu_vlc_fmts.h |   57 +
  modules/video_output/drmu/drmu_xlease.c   |  143 +
- modules/video_output/drmu/pollqueue.c     |  539 +++
- modules/video_output/drmu/pollqueue.h     |   83 +
- 30 files changed, 10831 insertions(+)
+ modules/video_output/drmu/pollqueue.c     |  716 ++++
+ modules/video_output/drmu/pollqueue.h     |  101 +
+ 30 files changed, 11026 insertions(+)
  create mode 100644 modules/video_output/drmu/drm_vout.c
  create mode 100644 modules/video_output/drmu/drmu.c
  create mode 100644 modules/video_output/drmu/drmu.h
@@ -10368,7 +10368,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/pollqueue.c
-@@ -0,0 +1,539 @@
+@@ -0,0 +1,716 @@
 +#include "pollqueue.h"
 +
 +#include <assert.h>
@@ -10397,9 +10397,16 @@ Can do HDR setup and mode matching
 +    POLLTASK_Q_KILL,
 +    POLLTASK_Q_DEAD,
 +    POLLTASK_RUN_KILL,
++    POLLTASK_EXIT,
 +};
 +
-+#define POLLTASK_FLAG_ONCE 1
++// Run this task once and auto delete it once run
++#define POLLTASK_FLAG_ONCE      1
++// This polltask does not keep a ref to its Q
++// This means that it does not block queue deletion and will run on thread
++// exit with revents = -1. Caller is reponsible for ensuring that the queue
++// is valid for the duration of the tasks existence.
++#define POLLTASK_FLAG_NO_REF    2
 +
 +struct polltask {
 +    struct polltask *next;
@@ -10431,8 +10438,15 @@ Can do HDR setup and mode matching
 +        void *v;
 +    } prepost;
 +
++    void (* exit_fn)(void * v);
++    void * exit_v;
++
++    // On thread exit do not detach - counted value allows us to cope with
++    // multiple simultainious finish calls. Only poked from poll_thread so
++    // no need to lock.
++    int join_req;
++
 +    bool kill;
-+    bool join_req;  // On thread exit do not detach
 +    bool no_prod;
 +
 +    bool sig_seq; // Signal cond when seq incremented
@@ -10462,7 +10476,7 @@ Can do HDR setup and mode matching
 +    *pt = (struct polltask){
 +        .next = NULL,
 +        .prev = NULL,
-+        .q = pollqueue_ref(pq),
++        .q = (flags & POLLTASK_FLAG_NO_REF) != 0 ? pq : pollqueue_ref(pq),
 +        .fd = fd,
 +        .events = events,
 +        .flags = flags,
@@ -10489,16 +10503,24 @@ Can do HDR setup and mode matching
 +    return polltask_new(pq, -1, 0, fn, v);
 +}
 +
++int pollqueue_timer_once(struct pollqueue *const pq,
++                         void (*const fn)(void *v, short revents),
++                         void *const v,
++                         const int timeout_ms)
++{
++    struct polltask * const pt = polltask_new2(pq, -1, 0, fn, v, POLLTASK_FLAG_ONCE);
++    if (pt == NULL)
++        return -EINVAL;
++    pollqueue_add_task(pt, timeout_ms);
++    return 0;
++}
++
 +int
 +pollqueue_callback_once(struct pollqueue *const pq,
 +                        void (*const fn)(void *v, short revents),
 +                        void *const v)
 +{
-+    struct polltask * const pt = polltask_new2(pq, -1, 0, fn, v, POLLTASK_FLAG_ONCE);
-+    if (pt == NULL)
-+        return -EINVAL;
-+    pollqueue_add_task(pt, 0);
-+    return 0;
++    return pollqueue_timer_once(pq, fn, v, 0);
 +}
 +
 +static void pollqueue_rem_task(struct pollqueue *const pq, struct polltask *const pt)
@@ -10522,7 +10544,7 @@ Can do HDR setup and mode matching
 +
 +static void polltask_kill(struct polltask * const pt)
 +{
-+    struct pollqueue * pq = pt->q;
++    struct pollqueue * pq = (pt->flags & POLLTASK_FLAG_NO_REF) != 0 ? NULL : pt->q;
 +    polltask_free(pt);
 +    pollqueue_unref(&pq);
 +}
@@ -10543,6 +10565,11 @@ Can do HDR setup and mode matching
 +    }
 +}
 +
++static bool am_in_thread(const struct pollqueue * const pq)
++{
++    return pthread_equal(pthread_self(), pq->worker);
++}
++
 +void polltask_delete(struct polltask **const ppt)
 +{
 +    struct polltask *const pt = *ppt;
@@ -10555,7 +10582,7 @@ Can do HDR setup and mode matching
 +        return;
 +
 +    pq = pt->q;
-+    inthread = pthread_equal(pthread_self(), pq->worker);
++    inthread = am_in_thread(pq);
 +
 +    pthread_mutex_lock(&pq->lock);
 +    state = pt->state;
@@ -10697,6 +10724,10 @@ Can do HDR setup and mode matching
 +            rv = poll(a, npoll + (a[npoll].fd != -1), timeout);
 +        } while (rv == -1 && errno == EINTR);
 +
++        // Only do timeouts if nothing polled
++        if (rv > 0)
++            timeout0 = 0;
++
 +        if (prepost.post)
 +            prepost.post(prepost.v, a[npoll].revents);
 +
@@ -10755,16 +10786,33 @@ Can do HDR setup and mode matching
 +
 +    } while (!pq->kill);
 +
++    {
++        struct polltask * pt;
++        for (pt = pq->head; pt != NULL; pt = pt->next)
++            pt->state = POLLTASK_EXIT;
++    }
 +    pthread_mutex_unlock(&pq->lock);
 +fail_unlocked:
 +
-+    polltask_free(pq->prod_pt);
-+    pthread_cond_destroy(&pq->cond);
-+    pthread_mutex_destroy(&pq->lock);
-+    close(pq->prod_fd);
-+    if (!pq->join_req)
-+        pthread_detach(pthread_self());
-+    free(pq);
++    {
++        struct polltask *pt = pq->head;
++
++        pthread_cond_destroy(&pq->cond);
++        pthread_mutex_destroy(&pq->lock);
++        close(pq->prod_fd);
++        if (!pq->join_req != 0)
++            pthread_detach(pthread_self());
++        free(pq);
++
++        // **** Think harder about freeing non-single use PTs
++        // prod may be special?
++        while (pt != NULL) {
++            struct polltask * const next = pt->next;
++            pt->fn(pt->v, -1);
++            polltask_free(pt);
++            pt = next;
++        }
++    }
 +
 +    return NULL;
 +}
@@ -10773,15 +10821,16 @@ Can do HDR setup and mode matching
 +{
 +    struct pollqueue *const pq = v;
 +    char buf[8];
-+    if (revents) {
++    if (revents == -1)
++        return;
++    if (revents != 0) {
 +        int rv;
 +        while ((rv = read(pq->prod_fd, buf, 8)) != 8) {
 +            if (!(rv == -1 && errno == EINTR))
 +                break;
 +        }
 +    }
-+    if (!pq->kill)
-+        pollqueue_add_task(pq->prod_pt, -1);
++    pollqueue_add_task(pq->prod_pt, -1);
 +}
 +
 +struct pollqueue * pollqueue_new(void)
@@ -10802,14 +10851,12 @@ Can do HDR setup and mode matching
 +    pq->prod_fd = eventfd(0, EFD_NONBLOCK);
 +    if (pq->prod_fd == -1)
 +        goto fail1;
-+    pq->prod_pt = polltask_new(pq, pq->prod_fd, POLLIN, prod_fn, pq);
++    pq->prod_pt = polltask_new2(pq, pq->prod_fd, POLLIN, prod_fn, pq, POLLTASK_FLAG_NO_REF);
 +    if (!pq->prod_pt)
 +        goto fail2;
 +    pollqueue_add_task(pq->prod_pt, -1);
 +    if (pthread_create(&pq->worker, NULL, poll_thread, pq))
 +        goto fail3;
-+    // Reset ref count which will have been inced by the add_task
-+    atomic_store(&pq->ref_count, 0);
 +    return pq;
 +
 +fail3:
@@ -10823,9 +10870,7 @@ Can do HDR setup and mode matching
 +
 +static void pollqueue_free(struct pollqueue *const pq)
 +{
-+    const pthread_t worker = pq->worker;
-+
-+    if (pthread_equal(worker, pthread_self())) {
++    if (am_in_thread(pq)) {
 +        pq->kill = true;
 +        if (!pq->no_prod)
 +            pollqueue_prod(pq);
@@ -10862,40 +10907,131 @@ Can do HDR setup and mode matching
 +    pollqueue_free(pq);
 +}
 +
-+void pollqueue_finish(struct pollqueue **const ppq)
++//----------------------------------------------------------------------------
++//
++// Finish code.
++// Most of the complexity is in ensuring that timeouts are raceless
++// Try to keep everything that might error in the calling thread so
++// the error can be signalled easily
++
++struct finish_timeout_ss {
++    bool timed_out;
++    int timeout_ms;
++    struct pollqueue * pq;
++    struct polltask * pt;
++    sem_t sem;
++};
++
++// Inc ref_count iff it hasn't gone -ve i.e. _free has not been called
++// If we inc from -ve then there is always a race that might end up with
++// freeing twice
++static bool
++unfinish(struct pollqueue * const pq)
++{
++    int n = atomic_load(&pq->ref_count);
++    while (n >= 0 && !atomic_compare_exchange_weak(&pq->ref_count, &n, n + 1))
++        /* loop */;
++    return n >= 0;
++}
++
++static void
++finish_timeout_cb2(void *v, short revents)
++{
++    struct finish_timeout_ss * const ft = v;
++    struct pollqueue * const pq = ft->pq;
++
++    if (revents != -1 && unfinish(pq))
++    {
++        --pq->join_req;
++        ft->timed_out = true;
++    }
++
++    sem_post(&ft->sem);
++}
++
++static void
++finish_timeout_cb1(void *v, short revents)
++{
++    struct finish_timeout_ss * const ft = v;
++    struct pollqueue * pq = ft->pq;
++    (void)revents;
++
++    ++pq->join_req;
++    pollqueue_add_task(ft->pt, ft->timeout_ms);
++    pollqueue_unref(&pq);
++}
++
++int
++pollqueue_finish_timeout(struct pollqueue **const ppq, int timeout_ms)
 +{
 +    struct pollqueue * pq = *ppq;
 +    pthread_t worker;
++    struct finish_timeout_ss ft;
++    int rv;
 +
 +    if (!pq)
-+        return;
++        return 0;
 +
-+    pq->join_req = true;
++    ft.timed_out = false;
++    ft.timeout_ms = timeout_ms;
++    ft.pq = pq;
++    ft.pt = polltask_new2(pq, -1, 0, finish_timeout_cb2, &ft,
++                          POLLTASK_FLAG_ONCE | POLLTASK_FLAG_NO_REF);
++    if (ft.pt == NULL)
++        return -ENOMEM;
++
++    sem_init(&ft.sem, 0, 0);
++
 +    worker = pq->worker;
 +
-+    pollqueue_unref(&pq);
++    // Kick execution into poll thread as otherwise there are races
++    // between the execution of _cb2 and the unref
++    if ((rv = pollqueue_callback_once(pq, finish_timeout_cb1, &ft)) != 0)
++    {
++        polltask_delete(&ft.pt);
++        sem_destroy(&ft.sem);
++        return rv;
++    }
++
++    while (sem_wait(&ft.sem) == -1 && errno == EINTR)
++        /* loop */;
++    sem_destroy(&ft.sem);
++
++    if (ft.timed_out)
++        return 1;
 +
 +    pthread_join(worker, NULL);
 +
 +    // Delay zapping the ref until after the join as it is legit for the
 +    // remaining active polltasks to use it.
 +    *ppq = NULL;
++    return 0;
 +}
++
++void
++pollqueue_finish(struct pollqueue **const ppq)
++{
++    // Whilst it is possible to write a simpler non-timeout version
++    // of the finish code it is a better idea to keep the code common
++    // given that performance is not important.
++    pollqueue_finish_timeout(ppq, -1);
++}
++
++//----------------------------------------------------------------------------
 +
 +void pollqueue_set_pre_post(struct pollqueue *const pq,
 +                            void (*fn_pre)(void *v, struct pollfd *pfd),
 +                            void (*fn_post)(void *v, short revents),
 +                            void *v)
 +{
-+    bool no_prod;
++    const bool in_thread = am_in_thread(pq);
 +
 +    pthread_mutex_lock(&pq->lock);
 +    pq->prepost.pre = fn_pre;
 +    pq->prepost.post = fn_post;
 +    pq->prepost.v = v;
-+    no_prod = pq->no_prod;
 +
-+    if (!no_prod) {
++    if (!pq->no_prod && !in_thread) {
 +        const uint32_t seq = pq->seq;
 +        int rv = 0;
 +
@@ -10908,9 +11044,50 @@ Can do HDR setup and mode matching
 +    pthread_mutex_unlock(&pq->lock);
 +}
 +
++//----------------------------------------------------------------------------
++//
++// On exit fn
++// Would have been simpler if it took a standard callback
++
++struct exit_env_ss {
++    void (* fn)(void * v);
++    void * v;
++};
++
++static void exit_cb(void * v, short revents)
++{
++    struct exit_env_ss * ee = v;
++    assert(revents == -1);
++
++    ee->fn(ee->v);
++    free(ee);
++}
++
++void pollqueue_set_exit(struct pollqueue *const pq,
++                        void (* const exit_fn)(void * v), void * v)
++{
++    struct exit_env_ss * ee = malloc(sizeof(*ee));
++    struct polltask * pt;
++
++    if (ee == NULL)
++        return;
++
++    ee->fn = exit_fn;
++    ee->v = v;
++
++    pt = polltask_new2(pq, -1, 0, exit_cb, ee, POLLTASK_FLAG_ONCE | POLLTASK_FLAG_NO_REF);
++    if (pt == NULL)
++        goto fail;
++
++    pollqueue_add_task(pt, -1);
++    return;
++
++fail:
++    free(ee);
++}
 --- /dev/null
 +++ b/modules/video_output/drmu/pollqueue.h
-@@ -0,0 +1,83 @@
+@@ -0,0 +1,101 @@
 +#ifndef POLLQUEUE_H_
 +#define POLLQUEUE_H_
 +
@@ -10962,6 +11139,12 @@ Can do HDR setup and mode matching
 +                            void (*const fn)(void *v, short revents),
 +                            void *const v);
 +
++// Run a timer once on the poll thread
++int pollqueue_timer_once(struct pollqueue *const pq,
++                         void (*const fn)(void *v, short revents),
++                         void *const v,
++                         const int timeout_ms);
++
 +// Create a pollqueue
 +// Generates a new thread to do the polltask callbacks
 +struct pollqueue * pollqueue_new(void);
@@ -10978,6 +11161,14 @@ Can do HDR setup and mode matching
 +// creating other tasks that need to complete before finishing.)
 +void pollqueue_finish(struct pollqueue **const ppq);
 +
++// As pollqueue_finish but with timeout
++// Returns:
++//  -ve Error
++//   0  Pollqueue finished within timeout. As pollqueue_finish
++//   1  Timeout. *ppq is left unchanged is still a reference to the Q
++//      i.e. another _unref or _finish call is required to shutdown
++int pollqueue_finish_timeout(struct pollqueue **const ppq, int timeout_ms);
++
 +// Add a reference to a pollqueue
 +struct pollqueue * pollqueue_ref(struct pollqueue *const pq);
 +
@@ -10992,5 +11183,9 @@ Can do HDR setup and mode matching
 +                            void (*fn_pre)(void *v, struct pollfd *pfd),
 +                            void (*fn_post)(void *v, short revents),
 +                            void *v);
++
++// Set callback to execture on the poll thread when it exits
++void pollqueue_set_exit(struct pollqueue *const pq,
++                        void (* const exit_fn)(void * v), void * v);
 +
 +#endif /* POLLQUEUE_H_ */

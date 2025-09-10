@@ -1,7 +1,7 @@
-From 212019e25acc4e55eaf1c7aab65b030c32d015b9 Mon Sep 17 00:00:00 2001
+From e03913fe13f8c9a2ed1c27f18d86836b08f67ef5 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:13:54 +0100
-Subject: [PATCH 05/39] tospdif: Fix DTS rate calculation when we have 8*192000
+Subject: [PATCH 05/41] tospdif: Fix DTS rate calculation when we have 8*192000
 
 ---
  modules/audio_filter/converter/tospdif.c | 1 +

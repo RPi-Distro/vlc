@@ -1,13 +1,13 @@
-From 020b55f0f31d84a7c3aff4db07283dd037e2776c Mon Sep 17 00:00:00 2001
+From 3d04b9bc7c777725938b8b3100797bf15b8500f7 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Mon, 19 Aug 2024 17:42:02 +0100
-Subject: [PATCH 01/39] pi-util: Add useful scripts
+Subject: [PATCH 01/41] pi-util: Add useful scripts
 
 ---
  pi-util/conf_native.sh     | 124 +++++++++++++++++++++++++++++++++++++
- pi-util/genpatch.sh        |  47 ++++++++++++++
+ pi-util/genpatch.sh        |  60 ++++++++++++++++++
  pi-util/rebase_liblinks.py |  37 +++++++++++
- 3 files changed, 208 insertions(+)
+ 3 files changed, 221 insertions(+)
  create mode 100755 pi-util/conf_native.sh
  create mode 100755 pi-util/genpatch.sh
  create mode 100755 pi-util/rebase_liblinks.py
@@ -141,7 +141,7 @@ Subject: [PATCH 01/39] pi-util: Add useful scripts
 +
 --- /dev/null
 +++ b/pi-util/genpatch.sh
-@@ -0,0 +1,47 @@
+@@ -0,0 +1,60 @@
 +set -e
 +
 +NOTAG=
@@ -150,18 +150,31 @@ Subject: [PATCH 01/39] pi-util: Add useful scripts
 +  NOTAG=1
 +fi
 +
-+if [ "$1" == "" ]; then
++if [ "$1" == "" ] || [ "$2" != "" ]; then
 +  echo Usage: $0 [--notag] \<patch_tag\>
 +  echo e.g.: $0 mmal_4
 +  exit 1
 +fi
 +REF=$1
 +
-+VERSION=`awk '/AC_INIT/{match($0,/[0-9]+(\.[0-9]+)+/);print substr($0,RSTART,RLENGTH)}' configure.ac`
-+if [ "$VERSION" == "" ]; then
-+  echo Can\'t find version in configure.ac
++CONFIG_VERSION=`awk '/AC_INIT/{match($0,/[0-9]+(\.[0-9]+)+/);print substr($0,RSTART,RLENGTH)}' configure.ac`
++if [ "$CONFIG_VERSION" == "" ]; then
++  echo Config version not found
 +  exit 1
 +fi
++
++# Config substitution here really should have escaped '.'s but it isn't
++# really worth it. There is little chance they will cause false +ves
++BRANCH=$(git branch --show-current)
++BRANCH_VERSION=$(echo $BRANCH | awk "{match(\$0, /test\\/(${CONFIG_VERSION}.+)\\/.+/, a); print a[1];}")
++
++if [ "$BRANCH_VERSION" == "" ]; then
++  echo Branch $BRANCH not expected format \(test/${CONFIG_VERSION}*/*\)
++  exit 1
++fi
++
++VERSION=$BRANCH_VERSION
++echo VERSION=$VERSION
 +
 +if [ $NOTAG ]; then
 +  echo Not tagged

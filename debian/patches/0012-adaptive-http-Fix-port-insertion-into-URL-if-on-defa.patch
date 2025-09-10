@@ -1,7 +1,7 @@
-From 9ea13907093da7cc7cd898660d03ac40b9ff6821 Mon Sep 17 00:00:00 2001
+From 1646ddd49689e376acc8df5be190c37f8bc8b55a Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 9 Jan 2024 16:36:54 +0000
-Subject: [PATCH 12/39] adaptive/http: Fix port insertion into URL if on
+Subject: [PATCH 12/41] adaptive/http: Fix port insertion into URL if on
  default port
 
 Fix the URL generation code to avoid adding an explicit port if the

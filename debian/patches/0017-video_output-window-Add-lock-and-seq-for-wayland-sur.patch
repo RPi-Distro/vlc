@@ -1,7 +1,7 @@
-From 0bdf4459758d351d03235fbe093c2189f416cc45 Mon Sep 17 00:00:00 2001
+From e7ed4b929377bf28cd3fbf5ebe7f308ac7514c72 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 1 Nov 2023 10:42:57 +0000
-Subject: [PATCH 17/39] video_output/window: Add lock and seq for wayland
+Subject: [PATCH 17/41] video_output/window: Add lock and seq for wayland
  surface handle sync
 
 Qt + Wayland can sometimes change the surface handle. Provide a lock
