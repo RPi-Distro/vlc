@@ -144,6 +144,7 @@ Depends: vlc-bin (= ${binary:Version}),
          vlc-plugin-base (= ${binary:Version}),
          vlc-plugin-qt (= ${binary:Version}),
          vlc-plugin-video-output (= ${binary:Version}),
+         qtwayland5,
          ${misc:Depends}
 Recommends: vlc-l10n (= ${source:Version}),
             vlc-plugin-access-extra (= ${binary:Version}),
