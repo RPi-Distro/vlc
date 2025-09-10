@@ -1,7 +1,7 @@
-From fee9e2bd312c61f1e0cb3cf8a2ee47f5aa6bbb3a Mon Sep 17 00:00:00 2001
+From 0adc90cc5747c2c057ee63a6435d590c3d046c07 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:09:44 +0100
-Subject: [PATCH 04/39] alsa: Add HDMI passthrough for TrueHD, DTS etc.
+Subject: [PATCH 04/41] alsa: Add HDMI passthrough for TrueHD, DTS etc.
 
 ---
  modules/audio_output/alsa.c | 268 ++++++++++++++++++++++++++++++++----
@@ -171,7 +171,7 @@ Subject: [PATCH 04/39] alsa: Add HDMI passthrough for TrueHD, DTS etc.
      switch (fmt->i_format)
      {
          case VLC_CODEC_FL64:
-@@ -308,36 +416,88 @@ static int Start (audio_output_t *aout,
+@@ -308,36 +416,86 @@ static int Start (audio_output_t *aout,
              pcm_format = SND_PCM_FORMAT_U8;
              break;
          default:
@@ -215,18 +215,16 @@ Subject: [PATCH 04/39] alsa: Add HDMI passthrough for TrueHD, DTS etc.
 +                    case VLC_CODEC_MLP:
 +                    case VLC_CODEC_TRUEHD:
 +                        sys->pause_bytes = 4 * 4;
-+                        req_rate   = fmt->i_rate * 4;
++                        req_rate   = fmt->i_rate % 44100 == 0 ? 176400 : 192000;
 +                        channels   = 8;
 +                        break;
 +
 +                    case VLC_CODEC_DTS:
-+                    {
 +                        if (passthrough == PASSTHROUGH_SPDIF)
 +                            break;
 +                        req_rate   = 192000;
 +                        channels   = 8;
 +                        break;
-+                    }
 +
 +                    case VLC_CODEC_EAC3:
 +                        sys->pause_bytes = 4 * 4;
@@ -268,6 +266,15 @@ Subject: [PATCH 04/39] alsa: Add HDMI passthrough for TrueHD, DTS etc.
  
          if (!strncmp (device, "iec958", 6))
              opt = device + 6;
+@@ -357,6 +515,8 @@ static int Start (audio_output_t *aout,
+     {
+         unsigned aes3;
+ 
++        // Use fmt->i_rate rather than req_rate as the number we want
++        // for aes3 is the decoded sample rate not the transmission rate
+         switch (fmt->i_rate)
+         {
+ #define FS(freq) \
 @@ -364,8 +524,12 @@ static int Start (audio_output_t *aout,
              FS( 44100) /* def. */ FS( 48000) FS( 32000)
              FS( 22050)            FS( 24000)

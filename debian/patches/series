@@ -123,6 +123,8 @@
 0123-qt-use-std-sort-instead-of-deprecated-qSort.patch
 0124-avcodec-vaapi-Support-VAAPI-with-latest-FFmpeg.patch
 0125-x265-fix-API-signature-with-x265-4.1.patch
+
+# Raspberry Pi patchset 50
 0001-pi-util-Add-useful-scripts.patch
 0002-vlc-Upgrade-exit-timeout-to-exit-rather-than-signal.patch
 0003-vlc-Set-malloc-mmap-threshold-to-avoid-fragmentation.patch
@@ -161,5 +163,6 @@
 0036-wayland-shm-Set-priority-to-0-to-use-wl-dmabuf-inste.patch
 0037-xdg-shell-Rename-old-xdg-shall-include-files.patch
 0038-wl_xdg_shell-Create-an-updated-version-of-xdg-shell.patch
-0039-RPICHANGES-Add-change-log.patch
-live555-fix-build-with-newer-versions.patch
+0039-live555-Fix-compile-error.patch
+0040-RPICHANGES-Add-change-log.patch
+0041-avcodec-Add-J420-formats-as-equivalent-to-YUV420-for.patch

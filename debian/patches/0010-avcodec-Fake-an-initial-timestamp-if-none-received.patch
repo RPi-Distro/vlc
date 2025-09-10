@@ -1,7 +1,7 @@
-From 09d6f0d8afd91b5f3c4bbb76816ff144fb438439 Mon Sep 17 00:00:00 2001
+From 493ff51f454f847962cacb0e92cb3d65b908e189 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Sun, 11 Jun 2023 14:13:24 +0000
-Subject: [PATCH 10/39] avcodec: Fake an initial timestamp if none received
+Subject: [PATCH 10/41] avcodec: Fake an initial timestamp if none received
 
 This fixes playback of some .avi files that are missing PTSs
 ---

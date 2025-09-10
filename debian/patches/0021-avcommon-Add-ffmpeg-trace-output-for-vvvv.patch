@@ -1,7 +1,7 @@
-From 5fb9fbdf103eabee34372f74caada3e0be395391 Mon Sep 17 00:00:00 2001
+From 7156035ae564e4c72aa4b35fe558398d16b11327 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:10:30 +0100
-Subject: [PATCH 21/39] avcommon: Add ffmpeg trace output for -vvvv
+Subject: [PATCH 21/41] avcommon: Add ffmpeg trace output for -vvvv
 
 ---
  modules/codec/avcodec/avcommon.h | 3 +++

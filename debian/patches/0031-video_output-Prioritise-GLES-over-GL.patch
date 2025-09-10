@@ -1,7 +1,7 @@
-From 55013be8894a827a310c2c228f6fcac7525ebfa9 Mon Sep 17 00:00:00 2001
+From e2b6c269db3d33ca4a72eec77aaa227ee03df998 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:16:27 +0100
-Subject: [PATCH 31/39] video_output: Prioritise GLES over GL
+Subject: [PATCH 31/41] video_output: Prioritise GLES over GL
 
 ---
  modules/video_output/opengl/display.c | 2 +-

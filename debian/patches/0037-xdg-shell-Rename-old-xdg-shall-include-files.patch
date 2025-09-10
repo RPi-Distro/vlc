@@ -1,7 +1,7 @@
-From 1a8a4464609a36aafe60733bac23a213ac43098a Mon Sep 17 00:00:00 2001
+From 29fc1f0666704d154837337c9090b6625e11af59 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Thu, 8 Aug 2024 18:42:59 +0100
-Subject: [PATCH 37/39] xdg-shell: Rename old xdg-shall include files
+Subject: [PATCH 37/41] xdg-shell: Rename old xdg-shall include files
 
 Rename the xdg-shell header files to xdg-shell-unstable-v5 to match
 the name of the XML file they are derived from. This frees up xdg-shell
@@ -13,7 +13,7 @@ for use with the stable version.
 
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -286,8 +286,8 @@ libwl_shell_plugin_la_LIBADD = $(WAYLAND
+@@ -296,8 +296,8 @@ libwl_shell_plugin_la_LIBADD = $(WAYLAND
  
  libxdg_shell_plugin_la_SOURCES = video_output/wayland/xdg-shell.c
  nodist_libxdg_shell_plugin_la_SOURCES = \
@@ -24,7 +24,7 @@ for use with the stable version.
  	video_output/wayland/server-decoration-client-protocol.h \
  	video_output/wayland/server-decoration-protocol.c
  libxdg_shell_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
-@@ -295,13 +295,12 @@ libxdg_shell_plugin_la_CPPFLAGS = $(AM_C
+@@ -305,13 +305,12 @@ libxdg_shell_plugin_la_CPPFLAGS = $(AM_C
  libxdg_shell_plugin_la_CFLAGS = $(WAYLAND_CLIENT_CFLAGS)
  libxdg_shell_plugin_la_LIBADD = $(WAYLAND_CLIENT_LIBS) $(LIBPTHREAD)
  

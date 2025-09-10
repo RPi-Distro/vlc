@@ -1,7 +1,7 @@
-From 1352a91cf602b7b007157912075a4e334a917991 Mon Sep 17 00:00:00 2001
+From 52a5dfaebf90f220d9e556a40b2652512cfda60c Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:32:50 +0100
-Subject: [PATCH 09/39] avcodec/va: Add DRM_PRIME+swfmt->VLC format cases
+Subject: [PATCH 09/41] avcodec/va: Add DRM_PRIME+swfmt->VLC format cases
 
 ---
  modules/codec/avcodec/va.c | 18 ++++++++++++++++++

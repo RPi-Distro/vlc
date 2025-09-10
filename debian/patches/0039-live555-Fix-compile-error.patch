@@ -1,0 +1,22 @@
+From 6d9e032a1a0ae5170a16f3e9f29bbf6b8f44f96f Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Mon, 28 Jul 2025 18:23:39 +0100
+Subject: [PATCH 39/41] live555: Fix compile error
+
+---
+ modules/access/live555.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/modules/access/live555.cpp
++++ b/modules/access/live555.cpp
+@@ -236,8 +236,8 @@ struct demux_sys_t
+     bool             b_no_data;     /* if we never received any data */
+     int              i_no_data_ti;  /* consecutive number of TaskInterrupt */
+ 
+-    char             event_rtsp;
+-    char             event_data;
++    EventLoopWatchVariable event_rtsp;
++    EventLoopWatchVariable event_data;
+ 
+     bool             b_get_param;   /* Does the server support GET_PARAMETER */
+     bool             b_paused;      /* Are we paused? */

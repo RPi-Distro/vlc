@@ -1,7 +1,7 @@
-From 4fa65568ecc1acfb68801de9aa9979db133a35d1 Mon Sep 17 00:00:00 2001
+From 21e0b2990ebb6d8290a08946f309c170d60cb294 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 22 Oct 2024 15:42:27 +0100
-Subject: [PATCH 19/39] vlc_vout_window: Add a scaling fraction from VLC to
+Subject: [PATCH 19/41] vlc_vout_window: Add a scaling fraction from VLC to
  native
 
 Add members to vout_window_t to hold the scale factor between

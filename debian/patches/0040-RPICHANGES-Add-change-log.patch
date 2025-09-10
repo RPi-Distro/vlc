@@ -1,0 +1,34 @@
+From c8b0f85d0cfbf24901375afa6475c43f2e347232 Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Tue, 22 Oct 2024 15:59:50 +0100
+Subject: [PATCH 40/41] RPICHANGES: Add change log
+
+As codebase is now arranged to squash fixes into existing patches
+add a changelog so we know what deltas have occured
+---
+ RPICHANGES | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+ create mode 100644 RPICHANGES
+
+--- /dev/null
++++ b/RPICHANGES
+@@ -0,0 +1,19 @@
++pi/3.0.21/rpi_48
++----------------
++Improve wl_xdg_shell so it is actually usable
++Change --wl-dmabuf-disable to --no-wl-dmabuf
++Set a malloc mmap threshold of 128k. This helps avoid bad memory fragmentation
++Add ability for video output to tell when output is scaled to enable correct
++use of native surfaces.
++Fix crash when playing video on a scaled Wayland output
++Fix output scaling on a scaled Wayland output
++
++pi/3.0.21-trixie/rpi_49
++-----------------------
++Rebase onto the point that debian trixie has picked. This doesn't appear to
++affect any of our patches, but it does compile a lot better.
++Fix a live555 compile error in trixie
++Fix Alsa TRUEHD passthrough rates when the notional sample rate is > 48k
++Add a --wl-dmabuf-stats option that collects data on frames presented and
++frames droped by wayland.
++Fix a segfault on VLC exit when using wl-dmabuf in fullscreen

@@ -1,7 +1,7 @@
-From ae7189c4ab22b7c33245cc334ddf07dcf00974f2 Mon Sep 17 00:00:00 2001
+From cd1cf8395cdbc94c61e89a6892292b5a6fefc10b Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:57:33 +0100
-Subject: [PATCH 13/39] configure.ac: Add DRM enable option & test
+Subject: [PATCH 13/41] configure.ac: Add DRM enable option & test
 
 ---
  configure.ac | 15 +++++++++++++++

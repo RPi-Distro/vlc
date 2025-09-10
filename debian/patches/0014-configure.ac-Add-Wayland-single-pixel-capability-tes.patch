@@ -1,7 +1,7 @@
-From af0eb2be1ffd6f5eaa10fbe638e09ecdb498e41e Mon Sep 17 00:00:00 2001
+From bb788ea39d9a13d849d90a53841b8ff4254099e7 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:58:24 +0100
-Subject: [PATCH 14/39] configure.ac: Add Wayland single-pixel capability test
+Subject: [PATCH 14/41] configure.ac: Add Wayland single-pixel capability test
 
 ---
  configure.ac | 9 +++++++++

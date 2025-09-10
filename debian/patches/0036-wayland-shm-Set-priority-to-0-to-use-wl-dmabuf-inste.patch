@@ -1,7 +1,7 @@
-From fd50adc245bdb94ba71920c445d57dacd470df66 Mon Sep 17 00:00:00 2001
+From bec8cdfc9403888a1c460db423c5c4b29a337937 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 11:03:52 +0100
-Subject: [PATCH 36/39] wayland/shm: Set priority to 0 to use wl-dmabuf instead
+Subject: [PATCH 36/41] wayland/shm: Set priority to 0 to use wl-dmabuf instead
 
 ---
  modules/video_output/wayland/shm.c | 2 +-

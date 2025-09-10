@@ -1,7 +1,7 @@
-From 3a8e5d556dfd594df5ab274463e556de83b4897c Mon Sep 17 00:00:00 2001
+From 6ad663eafd54bdcc60317c1868537aa87c28a3f2 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Fri, 10 Jun 2022 15:32:40 +0000
-Subject: [PATCH 27/39] caca: Set driver to ncurses avoiding segfault
+Subject: [PATCH 27/41] caca: Set driver to ncurses avoiding segfault
 
 For some reason it unloads GL module on error without telling anything
 else and this creates a later segfault. Forcing ncurses stops this.

@@ -1,7 +1,7 @@
-From 3c95366d630c1b7f82506df502e825cfe996d02c Mon Sep 17 00:00:00 2001
+From e3cdb4f22ecc480179a6d501dbbe6c82fed3fcdf Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:25:24 +0100
-Subject: [PATCH 06/39] avcodec: Add AllocContextHw to try v4l2m2 decoders
+Subject: [PATCH 06/41] avcodec: Add AllocContextHw to try v4l2m2 decoders
  automatically
 
 ---
