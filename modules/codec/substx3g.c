@@ -1,5 +1,5 @@
 /*****************************************************************************
- * substx3gsub.c : MP4 tx3g subtitles decoder
+ * substx3g.c : MP4 tx3g subtitles decoder
  *****************************************************************************
  * Copyright (C) 2014 VLC authors and VideoLAN
  *
@@ -334,20 +334,19 @@ static int Decode( decoder_t *p_dec, block_t *p_block )
     if ( i_psz_bytelength > 2 &&
          ( !memcmp( p_pszstart, "\xFE\xFF", 2 ) || !memcmp( p_pszstart, "\xFF\xFE", 2 ) )
        )
-    {
         psz_subtitle = FromCharset( "UTF-16", p_pszstart, i_psz_bytelength );
-        if ( !psz_subtitle )
-            return VLCDEC_SUCCESS;
-    }
     else
-    {
         psz_subtitle = strndup( (const char*) p_pszstart, i_psz_bytelength );
-        if ( !psz_subtitle )
-            return VLCDEC_SUCCESS;
+
+    if ( !psz_subtitle )
+    {
+        block_Release( p_block );
+        return VLCDEC_SUCCESS;
     }
+
     p_buf += i_psz_bytelength + sizeof(uint16_t);
 
-    for( uint16_t i=0; i < i_psz_bytelength; i++ )
+    for( size_t i=0; psz_subtitle[i] != '\0'; i++ )
      if ( psz_subtitle[i] == '\r' ) psz_subtitle[i] = '\n';
 
     tx3g_segment_t *p_segment3g = tx3g_segment_New( psz_subtitle );
@@ -358,6 +357,7 @@ static int Decode( decoder_t *p_dec, block_t *p_block )
     {
         text_segment_Delete( p_segment3g->s );
         free( p_segment3g );
+        block_Release( p_block );
         return VLCDEC_SUCCESS;
     }
 
@@ -367,6 +367,7 @@ static int Decode( decoder_t *p_dec, block_t *p_block )
     {
         text_segment_Delete( p_segment3g->s );
         free( p_segment3g );
+        block_Release( p_block );
         return VLCDEC_SUCCESS;
     }
     subpicture_updater_sys_t *p_spu_sys = p_spu->updater.p_sys;

@@ -1,0 +1,466 @@
+stages:
+    - build
+
+default:
+    before_script:
+        - set -x
+        - export VLC_CONTRIB_SHA="$(extras/ci/get-contrib-sha.sh)"
+        - export VLC_PREBUILT_CONTRIBS_URL="https://artifacts.videolan.org/vlc-3.0/${CI_JOB_NAME##nightly-}/vlc-contrib-${TRIPLET}-${VLC_CONTRIB_SHA}.tar.bz2"
+        - if ! extras/ci/check-url.sh "$VLC_PREBUILT_CONTRIBS_URL"; then unset VLC_PREBUILT_CONTRIBS_URL; fi
+    after_script:
+        - export VLC_CONTRIB_SHA="$(extras/ci/get-contrib-sha.sh)"
+        - mv contrib/vlc-contrib-*.tar.bz2 contrib/vlc-contrib-${TRIPLET}-${VLC_CONTRIB_SHA}.tar.bz2 2>/dev/null || true
+    interruptible: true
+
+variables:
+    VLC_WIN32_IMAGE: registry.videolan.org/vlc-debian-win32:20221023191128
+    VLC_WIN64_IMAGE: registry.videolan.org/vlc-debian-win64:20221023193231
+    VLC_UWP_LLVM_IMAGE: registry.videolan.org/vlc-debian-llvm-uwp:20211020111246
+    VLC_WIN_LLVM_UCRT_IMAGE: registry.videolan.org/vlc-debian-llvm-ucrt:20250903131032
+    VLC_DEBIAN_IMAGE: registry.videolan.org/vlc-debian-unstable:20200229201904
+    VLC_ANDROID_IMAGE: registry.videolan.org/vlc-debian-android-3.0:20250626142950
+    VLC_ANDROID4_IMAGE: registry.videolan.org/vlc-debian-android:20250626142950
+    VLC_SNAP_IMAGE: registry.videolan.org/vlc-ubuntu-bionic:20250904134924
+
+.variables-debian: &variables-debian
+        HOST_ARCH: x86_64
+        TRIPLET: $HOST_ARCH-linux-gnu
+
+.variables-snap: &variables-snap
+        HOST_ARCH: x86_64
+        TRIPLET: $HOST_ARCH-linux-gnu
+
+.variables-win32: &variables-win32
+        SHORTARCH: win32
+        VLCARCH: win32
+        HOST_ARCH: i686
+        TRIPLET: $HOST_ARCH-w64-mingw32
+
+.variables-win64: &variables-win64
+        SHORTARCH: win64
+        VLCARCH: win64
+        HOST_ARCH: x86_64
+        TRIPLET: $HOST_ARCH-w64-mingw32
+
+.variables-win64-arm: &variables-win64-arm
+        SHORTARCH: arm64
+        VLCARCH: winarm64-ucrt
+        HOST_ARCH: aarch64
+        TRIPLET: $HOST_ARCH-w64-mingw32
+        UWP_EXTRA_BUILD_FLAGS: -u -x -S 0x0A000006
+
+.variables-macos-x86_64: &variables-macos-x86_64
+        VLC_PATH: /Users/videolanci/sandbox/bin
+        VLC_FORCE_KERNELVERSION: 18
+        VLC_SDK_PATH: /Applications/Xcode9.2.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.13.sdk
+        HOST_ARCH: x86_64
+        SHORTARCH: intel64
+        TRIPLET: $HOST_ARCH-apple-darwin$VLC_FORCE_KERNELVERSION
+
+.variables-macos-arm64: &variables-macos-arm64
+        VLC_PATH: /Users/videolanci/sandbox/bin
+        VLC_FORCE_KERNELVERSION: 19
+        VLC_SDK_PATH: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+        HOST_ARCH: aarch64
+        SHORTARCH: arm64
+        TRIPLET: $HOST_ARCH-apple-darwin$VLC_FORCE_KERNELVERSION
+
+.variables-android-arm: &variables-android-arm
+        ANDROID_ARCH: arm
+        TRIPLET: arm-linux-androideabi
+
+.variables-android-arm64: &variables-android-arm64
+        ANDROID_ARCH: arm64
+        TRIPLET: aarch64-linux-android
+
+.variables-android-x86: &variables-android-x86
+        ANDROID_ARCH: x86
+        TRIPLET: i686-linux-android
+
+.variables-android-x86_64: &variables-android-x86_64
+        ANDROID_ARCH: x86_64
+        TRIPLET: x86_64-linux-android
+
+# Common rules
+.base-template:
+    stage: build
+    only:
+        refs:
+            - merge_requests
+            - 3.0.x@videolan/vlc
+    except:
+        - schedules
+    artifacts:
+        paths:
+            - contrib/vlc-contrib-${TRIPLET}-*.tar.bz2
+
+# Common rules for jobs using docker
+.docker-template:
+    extends: .base-template
+    tags:
+        - docker
+        - amd64
+
+#
+# Windows
+#
+.win-common:
+    extends: .docker-template
+    script: |
+        if [ "${CI_JOB_NAME:0:8}" = "nightly-" ]; then
+            NIGHTLY_EXTRA_BUILD_FLAGS="-i n -l"
+        fi
+        if [ -n "$VLC_PREBUILT_CONTRIBS_URL" ]; then
+            echo "Building using prebuilt contribs at $VLC_PREBUILT_CONTRIBS_URL"
+            extras/package/win32/build.sh -p -a $HOST_ARCH $NIGHTLY_EXTRA_BUILD_FLAGS $LIBVLC_EXTRA_BUILD_FLAGS $UWP_EXTRA_BUILD_FLAGS
+        else
+            extras/package/win32/build.sh -c -a $HOST_ARCH $NIGHTLY_EXTRA_BUILD_FLAGS $LIBVLC_EXTRA_BUILD_FLAGS $UWP_EXTRA_BUILD_FLAGS
+        fi
+
+win32:
+    extends: .win-common
+    image:
+        name: $VLC_WIN32_IMAGE
+    variables: *variables-win32
+
+win64:
+    extends: .win-common
+    image:
+        name: $VLC_WIN64_IMAGE
+    variables: *variables-win64
+
+win64-arm-llvm:
+    extends: .win-common
+    image:
+        name: $VLC_WIN_LLVM_UCRT_IMAGE
+    variables:
+        <<: *variables-win64-arm
+
+uwp32-libvlc-llvm:
+    extends: .win-common
+    image:
+        name: $VLC_UWP_LLVM_IMAGE
+    variables:
+        <<: *variables-win32
+        VLCARCH: win32-uwp
+        LIBVLC_EXTRA_BUILD_FLAGS: -z
+        UWP_EXTRA_BUILD_FLAGS: -u -w
+
+.nightly-win-common:
+    extends: .win-common
+    only:
+        - schedules
+    except:
+    after_script:
+        - mkdir nightlies
+        - for ext in 7z;             do mv ${VLCARCH}/vlc-*-debug.${ext} nightlies/$(basename ${VLCARCH}/vlc-*-debug.${ext} | sed "s/\.${ext}/-${CI_COMMIT_SHORT_SHA}\.${ext}/"); done
+        - for ext in exe msi 7z zip; do mv ${VLCARCH}/vlc-*.${ext}       nightlies/$(basename ${VLCARCH}/vlc-*.${ext}       | sed "s/\.${ext}/-${CI_COMMIT_SHORT_SHA}\.${ext}/"); done
+        - cd nightlies && find . -maxdepth 1 -type f -not -name SHA512SUM | xargs shasum -a 512 | tee SHA512SUM
+    artifacts:
+        paths:
+            - nightlies/*
+
+nightly-win32:
+    extends: .nightly-win-common
+    image:
+        name: $VLC_WIN32_IMAGE
+    variables: *variables-win32
+
+nightly-win64:
+    extends: .nightly-win-common
+    image:
+        name: $VLC_WIN64_IMAGE
+    variables: *variables-win64
+
+nightly-win64-arm-llvm:
+    extends: .nightly-win-common
+    image:
+        name: $VLC_WIN_LLVM_UCRT_IMAGE
+    variables:
+        <<: *variables-win64-arm
+        TRIPLET: $HOST_ARCH-ucrt-w64-mingw32
+        LIBVLC_EXTRA_BUILD_FLAGS: -D /
+
+.release-win-common:
+    # We don't use any of the .win-common template so just use .docker-template
+    extends: .docker-template
+    only:
+      - tags
+    tags:
+        - release
+        - amd64
+    before_script:
+      # We usually can use $CI_COMMIT_TAG, but this lets us do fixup tags
+      # such as 3.0.123-1
+      # This is done in a before_script because we want to bypass the
+      # prebuilt contrib logic but can't have an empty before_script
+      - export RELEASE_TAG=$(echo $CI_COMMIT_TAG | cut -f 1 -d -)
+    script:
+      - export PATH=/opt/breakpad/bin:$PATH
+      - ./extras/package/win32/build.sh -r -l -i u -a $HOST_ARCH -b https://win.crashes.videolan.org $UWP_EXTRA_BUILD_FLAGS
+      - python3 -m venv upload_symbols
+      - ./upload_symbols/bin/pip install -r ./extras/breakpad/requirements.txt
+      - echo "RELEASE_TAG=$RELEASE_TAG"
+      - >
+        ./upload_symbols/bin/python
+        ./extras/breakpad/symb_upload.py
+        --upload-url $CRASH_DRAGON_SUBMIT_URL
+        -p win --version $RELEASE_TAG
+        --prod VLC --log INFO
+        --strip-path $CI_PROJECT_DIR $CI_PROJECT_DIR/${VLCARCH}/symbols-$RELEASE_TAG
+      - rm -rf upload_symbols
+    artifacts:
+      paths:
+        - $CI_PROJECT_DIR/${VLCARCH}/vlc-*-*-release.7z
+        - $CI_PROJECT_DIR/${VLCARCH}/vlc-*-*.exe
+        - $CI_PROJECT_DIR/${VLCARCH}/vlc-*-*.msi
+
+release-debian:
+    extends: .docker-template
+    only:
+      - tags
+    tags:
+        - release
+        - amd64
+    image:
+        name: $VLC_DEBIAN_IMAGE
+    script: |
+        export NCPU=$(getconf _NPROCESSORS_ONLN)
+
+        # Build tools
+        ( cd extras/tools && ./bootstrap && make -j$NCPU --output-sync=recurse )
+        export PATH="$(pwd)/extras/tools/build/bin:$PATH"
+
+        # Build contribs
+        mkdir -p contrib/contrib-$TRIPLET && cd contrib/contrib-$TRIPLET
+        ../bootstrap
+        make list
+        make -j$NCPU --output-sync=recurse fetch
+        make -j$NCPU --output-sync=recurse
+        cd ../../
+
+        # Include Qt UI files in po files
+        sed -i 's,#modules/,modules/,g' po/POTFILES.in
+
+        # Build VLC
+        ./bootstrap
+        ./configure
+        make -j$NCPU
+
+        ./test/check_POTFILES.sh
+        make -j$NCPU dist
+    artifacts:
+      paths:
+        - $CI_PROJECT_DIR/vlc-*.tar.xz
+    variables: *variables-debian
+
+release-win32:
+    extends: .release-win-common
+    image:
+        name: $VLC_WIN32_IMAGE
+    variables: *variables-win32
+
+release-win64:
+    extends: .release-win-common
+    image:
+        name: $VLC_WIN64_IMAGE
+    variables: *variables-win64
+
+release-win64-arm:
+    extends: .release-win-common
+    image:
+        name: $VLC_WIN_LLVM_UCRT_IMAGE
+    variables: *variables-win64-arm
+
+#
+# Debian
+#
+debian:
+    extends: .docker-template
+    image:
+        name: $VLC_DEBIAN_IMAGE
+    script: |
+        export NCPU=$(getconf _NPROCESSORS_ONLN)
+
+        # Build tools
+        ( cd extras/tools && ./bootstrap && make -j$NCPU --output-sync=recurse )
+        export PATH="$(pwd)/extras/tools/build/bin:$PATH"
+
+        # Build contribs
+        mkdir -p contrib/contrib-$TRIPLET && cd contrib/contrib-$TRIPLET
+        ../bootstrap
+        if [ -n "$VLC_PREBUILT_CONTRIBS_URL" ]; then
+            echo "Building using prebuilt contribs at $VLC_PREBUILT_CONTRIBS_URL"
+            make prebuilt PREBUILT_URL="${VLC_PREBUILT_CONTRIBS_URL}"
+        else
+            make -j$NCPU --output-sync=recurse fetch
+            make -j$NCPU --output-sync=recurse
+            make package
+        fi
+        cd ../../
+
+        # Build VLC
+        ./bootstrap
+        ./configure
+        make -j$NCPU
+
+        # Run tests
+        VLC_TEST_TIMEOUT=60 sh -x ./test/make_check_wrapper.sh -j4
+        if [ "${CI_JOB_NAME:0:8}" = "nightly-" ]; then
+            export XZ_OPT="-T 0"
+            make -j$NCPU distcheck
+        fi
+    variables: *variables-debian
+
+nightly-debian:
+    extends: debian
+    only:
+        - schedules
+    except:
+    after_script:
+    artifacts:
+
+#
+# Snap builds
+#
+.snap-common:
+    extends: .docker-template
+    image:
+        name: $VLC_SNAP_IMAGE
+    script: |
+            cd extras/package/snap
+            make -f package.mak snap
+    after_script:
+        - export VLC_CONTRIB_SHA="$(extras/ci/get-contrib-sha.sh)"
+        - mv extras/package/snap/parts/vlc/build/contrib/vlc-contrib-*.tar.bz2 contrib/vlc-contrib-${TRIPLET}-${VLC_CONTRIB_SHA}.tar.bz2 2>/dev/null || true
+    allow_failure: true
+    variables: *variables-snap
+
+snap:
+    extends: .snap-common
+
+nightly-snap:
+    extends: .snap-common
+    only:
+        - schedules
+    except:
+    after_script:
+        - if [ "$CI_PROJECT_NAMESPACE" = "videolan" ]; then /bin/true; else exit 0; fi
+        - mkdir nightlies
+        - mv extras/package/snap/vlc_*.snap nightlies/
+        - echo $SNAP_LOGIN | base64 --decode | snapcraft login --with -
+        - snapcraft push nightlies/vlc_*.snap --release beta
+        - snapcraft logout
+        - cd nightlies && find . -maxdepth 1 -type f -not -name SHA512SUM | xargs shasum -a 512 | tee SHA512SUM
+    artifacts:
+        paths:
+           - nightlies/*
+
+#
+# macOS
+#
+.macos-common:
+    extends: .base-template
+    script: |
+        if [ "${CI_JOB_NAME:0:8}" = "nightly-" ]; then
+            NIGHTLY_EXTRA_BUILD_FLAGS="-i n"
+        fi
+        if [ -n "$VLC_PREBUILT_CONTRIBS_URL" ]; then
+            echo "Building using prebuilt contribs at $VLC_PREBUILT_CONTRIBS_URL"
+        else
+            EXTRA_BUILD_FLAGS="-c -p"
+        fi
+        mkdir build && cd build
+        ../extras/package/macosx/build.sh $EXTRA_BUILD_FLAGS -a $HOST_ARCH -k $VLC_SDK_PATH $NIGHTLY_EXTRA_BUILD_FLAGS
+
+macos-x86_64:
+    extends: .macos-common
+    tags:
+        - old-macmini
+    variables: *variables-macos-x86_64
+
+macos-arm64:
+    extends: .macos-common
+    tags:
+        - monterey
+    variables: *variables-macos-arm64
+
+.nightly-macos-common:
+    extends: .macos-common
+    only:
+        - schedules
+    except:
+    after_script:
+        - mkdir nightlies
+        - mv build/vlc-*.dmg nightlies/$(basename build/vlc-*.dmg | sed "s/\.dmg/-${SHORTARCH}-${CI_COMMIT_SHORT_SHA}\.dmg/")
+        - cd nightlies && find . -maxdepth 1 -type f -not -name SHA512SUM | xargs shasum -a 512 | tee SHA512SUM
+    artifacts:
+        paths:
+            - nightlies/*
+
+nightly-macos-x86_64:
+    extends: .nightly-macos-common
+    tags:
+        - old-macmini
+    variables: *variables-macos-x86_64
+
+nightly-macos-arm64:
+    extends: .nightly-macos-common
+    tags:
+        - monterey
+    variables: *variables-macos-arm64
+
+#
+# Android
+#
+.android-common:
+    extends: .docker-template
+    image:
+        name: $VLC_ANDROID_IMAGE
+    script: |
+        git clone https://code.videolan.org/videolan/libvlcjni.git
+        (cd libvlcjni && git checkout a3613013538860adc74eb1783473bc9405cd5028)
+        if [ -n "$VLC_PREBUILT_CONTRIBS_URL" ]; then
+            /bin/sh ./libvlcjni/buildsystem/compile-libvlc.sh --no-jni -a $ANDROID_ARCH --with-prebuilt-contribs
+        else
+            /bin/sh ./libvlcjni/buildsystem/compile-libvlc.sh --no-jni -a $ANDROID_ARCH --package-contribs
+        fi
+
+android-arm:
+    extends: .android-common
+    variables: *variables-android-arm
+
+android-arm64:
+    extends: .android-common
+    image:
+        name: $VLC_ANDROID4_IMAGE
+    variables: *variables-android-arm64
+
+android-x86:
+    extends: .android-common
+    variables: *variables-android-x86
+
+android-x86_64:
+    extends: .android-common
+    image:
+        name: $VLC_ANDROID4_IMAGE
+    variables: *variables-android-x86_64
+
+#
+# VLC Documentation
+#
+pages:
+    extends: .docker-template
+    image:
+        name: $VLC_DEBIAN_IMAGE
+    script:
+        - ./bootstrap
+        - ./configure
+        - make doc
+        - mv doc/doxygen/html public
+    artifacts:
+        paths:
+            - public
+    only:
+        - schedules
+    except:

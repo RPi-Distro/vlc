@@ -73,11 +73,11 @@ endif
 	$(MOVE)
 
 .lua: lua
-	cd $< && $(HOSTVARS_PIC) $(MAKE) $(LUA_TARGET)
+	$(HOSTVARS_PIC) $(MAKE) -C $< $(LUA_TARGET)
 ifdef HAVE_WIN32
-	cd $< && $(HOSTVARS) $(MAKE) -C src liblua.a
+	$(HOSTVARS) $(MAKE) -C $< -C src liblua.a
 endif
-	cd $< && $(HOSTVARS) $(MAKE) install INSTALL_TOP="$(PREFIX)"
+	$(HOSTVARS) $(MAKE) -C $< install INSTALL_TOP="$(PREFIX)"
 ifdef HAVE_WIN32
 	cd $< && $(RANLIB) "$(PREFIX)/lib/liblua.a"
 endif
@@ -94,16 +94,16 @@ LUACVARS=CPPFLAGS="-DLUA_DL_DLL"
 endif
 endif
 
+# DO NOT use the same intermediate directory as the lua target
+luac: UNPACK_DIR=luac-$(LUA_VERSION)
 luac: lua-$(LUA_VERSION).tar.gz .sum-luac
-	# DO NOT use the same intermediate directory as the lua target
-	rm -Rf -- $@-$(LUA_VERSION) $@
-	mkdir -- $@-$(LUA_VERSION)
-	tar -x -v -z -o -C $@-$(LUA_VERSION) --strip-components=1 -f $<
-	(cd luac-$(LUA_VERSION) && patch -p1) < $(SRC)/lua/luac-32bits.patch
-	mv luac-$(LUA_VERSION) luac
+	$(RM) -Rf $@ $(UNPACK_DIR) && mkdir -p $(UNPACK_DIR)
+	tar $(TAR_VERBOSE)xzfo $< -C $(UNPACK_DIR) --strip-components=1
+	$(APPLY) $(SRC)/lua/luac-32bits.patch
+	$(MOVE)
 
 .luac: luac
-	cd $< && $(LUACVARS) $(MAKE) generic
+	$(LUACVARS) $(MAKE) -C $< generic
 	mkdir -p -- $(BUILDBINDIR)
 	install -m 0755 -s -- $</src/luac $(BUILDBINDIR)/$(HOST)-luac
 	touch $@

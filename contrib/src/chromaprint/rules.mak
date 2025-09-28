@@ -15,12 +15,15 @@ $(TARBALLS)/chromaprint-$(CHROMAPRINT_VERSION).tar.gz:
 
 chromaprint: chromaprint-$(CHROMAPRINT_VERSION).tar.gz .sum-chromaprint
 	$(UNPACK)
-	$(APPLY) $(SRC)/chromaprint/linklibs.patch
+	$(APPLY) $(SRC)/chromaprint/0001-contribs-chromaprint-more-fixes-for-.pc-file.patch
+	$(APPLY) $(SRC)/chromaprint/0002-add-the-C-runtime-to-the-packages-to-link-to.patch
 	$(MOVE)
 
 DEPS_chromaprint = ffmpeg $(DEPS_ffmpeg)
 
-.chromaprint: chromaprint .ffmpeg toolchain.cmake
-	cd $< && $(HOSTVARS_PIC) $(CMAKE)
-	cd $< && $(CMAKEBUILD) . --target install
+.chromaprint: chromaprint toolchain.cmake
+	$(CMAKECLEAN)
+	$(HOSTVARS) $(CMAKE)
+	+$(CMAKEBUILD)
+	$(CMAKEINSTALL)
 	touch $@

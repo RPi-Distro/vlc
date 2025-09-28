@@ -1,0 +1,8 @@
+Makefile
+build/
+.*
+*/
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.zip

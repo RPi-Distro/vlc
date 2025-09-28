@@ -20,7 +20,7 @@ libmodplug: libmodplug-$(MODPLUG_VERSION).tar.gz .sum-modplug
 	$(APPLY) $(SRC)/modplug/modplug-win32-static.patch
 	$(APPLY) $(SRC)/modplug/macosx-do-not-force-min-version.patch
 	$(APPLY) $(SRC)/modplug/fix-endianness-check.diff
-ifdef HAVE_MACOSX
+ifdef HAVE_CLANG
 	$(APPLY) $(SRC)/modplug/mac-use-c-stdlib.patch
 endif
 	$(call pkg_static,"libmodplug.pc.in")
@@ -28,6 +28,6 @@ endif
 
 .modplug: libmodplug
 	$(RECONF)
-	cd $< && $(HOSTVARS) CXXFLAGS="$(MODPLUG_CXXFLAGS)" ./configure $(HOSTCONF)
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) CXXFLAGS="$(MODPLUG_CXXFLAGS)"
+	$(MAKE) -C $< install
 	touch $@

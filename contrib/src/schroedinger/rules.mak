@@ -15,14 +15,19 @@ $(TARBALLS)/schroedinger-$(SCHROEDINGER_VERSION).tar.gz:
 
 schroedinger: schroedinger-$(SCHROEDINGER_VERSION).tar.gz .sum-schroedinger
 	$(UNPACK)
+	$(UPDATE_AUTOCONFIG)
 	$(APPLY) $(SRC)/schroedinger/schroedinger-notests.patch
+	# disable orc compilation, the old compiler matches what was used to precompile
+	$(APPLY) $(SRC)/schroedinger/schroedinger-disable-orcc.patch
 	$(call pkg_static,"schroedinger.pc.in")
 	$(MOVE)
 
 DEPS_schroedinger = orc $(DEPS_orc)
 
+SCHRODINGER_CONF := --with-thread=none --disable-gtk-doc
+
 .schroedinger: schroedinger
 	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure --with-thread=none --disable-gtk-doc $(HOSTCONF)
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(SCHRODINGER_CONF)
+	$(MAKE) -C $< install
 	touch $@

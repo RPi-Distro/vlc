@@ -1,16 +1,10 @@
 # ZLIB
-ZLIB_VERSION := 1.2.13
+ZLIB_VERSION := 1.3.1
 ZLIB_URL := $(GITHUB)/madler/zlib/releases/download/v$(ZLIB_VERSION)/zlib-$(ZLIB_VERSION).tar.xz
 
 PKGS += zlib
 ifeq ($(call need_pkg,"zlib"),)
 PKGS_FOUND += zlib
-endif
-
-ifeq ($(shell uname),Darwin) # zlib tries to use libtool on Darwin
-ifdef HAVE_CROSS_COMPILE
-ZLIB_CONFIG_VARS=CHOST=$(HOST)
-endif
 endif
 
 $(TARBALLS)/zlib-$(ZLIB_VERSION).tar.xz:
@@ -20,14 +14,28 @@ $(TARBALLS)/zlib-$(ZLIB_VERSION).tar.xz:
 
 zlib: zlib-$(ZLIB_VERSION).tar.xz .sum-zlib
 	$(UNPACK)
-	$(APPLY) $(SRC)/zlib/no-shared.patch
+	$(APPLY) $(SRC)/zlib/0001-CMakeList.txt-force-static-library-name-to-z.patch
+	# disable the installation of the dynamic library since there's no option
+	sed -e 's,install(TARGETS zlib zlibstatic,install(TARGETS zlibstatic,' -i.orig $(UNPACK_DIR)/CMakeLists.txt
+	# only use the proper libz name for the static library
+	sed -e 's,set_target_properties(zlib zlibstatic ,set_target_properties(zlibstatic ,' -i.orig $(UNPACK_DIR)/CMakeLists.txt
+	# don't use --version-script on static libraries
+	sed -e 's,if(NOT APPLE AND NOT(CMAKE_SYSTEM_NAME STREQUAL AIX)),if(BUILD_SHARED_LIBS AND (NOT APPLE AND NOT(CMAKE_SYSTEM_NAME STREQUAL AIX))),' -i.orig $(UNPACK_DIR)/CMakeLists.txt
 	$(MOVE)
 
-.zlib: zlib
-ifdef HAVE_WIN32
-	cd $< && $(HOSTVARS) $(MAKE) -fwin32/Makefile.gcc install $(HOSTVARS) $(ZLIB_CONFIG_VARS) LD="$(CC)" prefix="$(PREFIX)" INCLUDE_PATH="$(PREFIX)/include" LIBRARY_PATH="$(PREFIX)/lib" BINARY_PATH="$(PREFIX)/bin"
-else
-	cd $< && $(HOSTVARS_PIC) $(ZLIB_CONFIG_VARS) ./configure --prefix=$(PREFIX) --static
-	cd $< && $(MAKE) install
-endif
+ZLIB_CONF = -DINSTALL_PKGCONFIG_DIR:STRING=$(PREFIX)/lib/pkgconfig -DZLIB_BUILD_EXAMPLES=OFF
+
+# ASM is disabled as the necessary source files are not in the tarball nor the git
+# ifeq ($(ARCH),i386)
+# ZLIB_CONF += -DASM686=ON
+# endif
+# ifeq ($(ARCH),x86_64)
+# ZLIB_CONF += -DAMD64=ON
+# endif
+
+.zlib: zlib toolchain.cmake
+	$(CMAKECLEAN)
+	$(HOSTVARS) $(CMAKE) $(ZLIB_CONF)
+	+$(CMAKEBUILD)
+	+$(CMAKEBUILD) --target install
 	touch $@

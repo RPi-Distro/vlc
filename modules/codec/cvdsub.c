@@ -110,6 +110,9 @@ static int DecoderOpen( vlc_object_t *p_this )
     decoder_t     *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
+    if( p_dec->fmt_in.i_cat != SPU_ES )
+        return VLC_EGENERIC;
+
     if( p_dec->fmt_in.i_codec != VLC_CODEC_CVD )
         return VLC_EGENERIC;
 
@@ -239,6 +242,7 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
     if( p_sys->i_state == SUBTITLE_BLOCK_EMPTY && p_block->i_pts <= VLC_TICK_INVALID )
     {
         msg_Warn( p_dec, "first packet expected but no PTS present");
+        block_Release( p_block );
         return NULL;
     }
 
@@ -344,7 +348,7 @@ static void ParseMetaInfo( decoder_t *p_dec, block_t *p_spu  )
     uint8_t       *p     = p_spu->p_buffer + p_sys->metadata_offset;
     uint8_t       *p_end = p + p_sys->metadata_length;
 
-    for( ; p < p_end; p += 4 )
+    for( ; &p[3] < p_end; p += 4 )
     {
         switch( p[0] )
         {

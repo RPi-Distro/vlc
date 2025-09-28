@@ -1,0 +1,67 @@
+Small Hacking file for the Qt Interface
+
+If you ever code for Qt interface, please read this before.
+
+** Code Conventions **
+
+Please respect VLC code conventions here:
+ - NO trailing spaces
+ - NO tab
+ - Indentation is 4 spaces
+ - Braces ARE indented
+ - Space before and after operators
+ - Case labels are on the same column as the switch
+
+Refer to http://wiki.videolan.org/Code_Conventions it should be up to date
+
+** Include order **
+
+- VLC include/*.h includes
+- Other VLC .h includes (gruiking :D)
+- Qt module includes
+- Qt includes
+
+** Naming **
+This naming is stupid and inconsistent :D
+
+Try to prefix with psz_, i_, b_, ui_ for the normal basic C/C++ styles.
+
+If you have spare time, prefix QString with qs_.
+
+Use aPointerName over a_pointer_name for long names.
+
+** QVLCFrame vs QVLCDialog **
+
+A QVLCFrame is just a QWidget, without any parent and used as a Qt::Windows
+A QVLCDialog is a QDialog.
+
+This mean that the QVLCDialog is centered on the parent and ABOVE it, will be destroyed by the parent automatically.
+This also mean that you have to destroy the QVLCFrame and to save its position/size.
+
+So if your dialog is a dialog you are used to keep during a playing of a video, then use a QVLCFrame, else use a QVLCDialog, if this is something you do over anything else.
+
+QVLCFrame: extended panel, messages...
+QVLCDialog: preferences, open...
+
+** virtual vs Q_DECL_OVERRIDE **
+Only mark functions with the virtual keyword if this is the initial virtual
+declaration. Functions that override a virtual function should have the
+Q_DECL_OVERRIDE macro appended (which expands to the override identifier
+when compiled with Qt5 and C++11). This is a visual indicator to distinguish
+virtual declarations from overriding implementations and will include a
+compile-time check in C++11 language mode.
+
+** HIG for Qt **
+We tend to use GNOME/KDE specs over Vista ones for capitalizations:
+We use Header for:
+ - Menu
+ - Menu items
+ - GroupBox Titles
+ - Windows and dialog Titles
+We use Sentence for:
+ - CheckBoxes
+ - ComboBox list
+ - ComboBox labels
+ - Tooltips
+
+We use "..." after a menu item if it opens another dialog.

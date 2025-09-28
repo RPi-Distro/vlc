@@ -27,7 +27,7 @@
 #include "qt.hpp"
 #include <vlc_extensions.h>
 
-#include "assert.h"
+#include <cassert>
 
 #include <QDialog>
 class QObject;
@@ -105,8 +105,8 @@ private:
     void DestroyWidget( extension_widget_t *p_widget, bool b_cond = true );
 
 protected:
-    void closeEvent( QCloseEvent* ) Q_DECL_OVERRIDE;
-    void keyPressEvent( QKeyEvent* ) Q_DECL_OVERRIDE;
+    void closeEvent( QCloseEvent* ) override;
+    void keyPressEvent( QKeyEvent* ) override;
 
 private slots:
     int TriggerClick( QObject *object );

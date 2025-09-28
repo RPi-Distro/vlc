@@ -39,20 +39,17 @@
 #include <vlc_intf_strings.h>
 #include <vlc_modules.h>
 #include <vlc_plugin.h>
-#ifdef _WIN32
-  #include <vlc_charset.h> /* FromWide for Win32 */
-#endif
 
 #include <QFileDialog>
 #include <QDialogButtonBox>
 #include <QLineEdit>
 #include <QStackedLayout>
 #include <QCompleter>
-#include <QDirModel>
 #include <QScrollArea>
 #include <QUrl>
 #include <QMimeData>
 #include <QDropEvent>
+#include <QRegularExpression>
 
 #define I_DEVICE_TOOLTIP \
     I_DIR_OR_FOLDER( N_("Select a device or a VIDEO_TS directory"), \
@@ -68,7 +65,7 @@
         targetCombo ## StringList << QString( ppsz_devlist[ i ] ); \
     targetCombo->addItems( QDir( "/dev/" )\
         .entryList( targetCombo ## StringList, QDir::System )\
-        .replaceInStrings( QRegExp("^"), "/dev/" ) \
+        .replaceInStrings( QRegularExpression("^"), "/dev/" ) \
     );
 
 static const char psz_devModule[][8] = { "v4l2", "pvr", "dtv",
@@ -85,21 +82,6 @@ FileOpenPanel::FileOpenPanel( QWidget *_parent, intf_thread_t *_p_intf ) :
 
     setAcceptDrops( true );
 
-    /* Set Filters for file selection */
-/*    QString fileTypes = "";
-    ADD_FILTER_MEDIA( fileTypes );
-    ADD_FILTER_VIDEO( fileTypes );
-    ADD_FILTER_AUDIO( fileTypes );
-    ADD_FILTER_PLAYLIST( fileTypes );
-    ADD_FILTER_ALL( fileTypes );
-    fileTypes.replace( QString(";*"), QString(" *")); */
-
-
-/*    lineFileEdit = ui.fileEdit;
-    //TODO later: fill the fileCompleteList with previous items played.
-    QCompleter *fileCompleter = new QCompleter( fileCompleteList, this );
-    fileCompleter->setModel( new QDirModel( fileCompleter ) );
-    lineFileEdit->setCompleter( fileCompleter );*/
     if( var_InheritBool( p_intf, "qt-embedded-open" ) )
     {
         ui.tempWidget->hide();
@@ -161,7 +143,7 @@ inline void FileOpenPanel::BuildOldPanel()
     /* Change the text that was uncool in the usual box */
     listLabel[2]->setText( qtr( "Filter:" ) );
 
-    dialogBox->layout()->setMargin( 0 );
+    dialogBox->layout()->setContentsMargins(0, 0, 0, 0);
     dialogBox->layout()->setSizeConstraint( QLayout::SetNoConstraint );
 
     /** END of QFileDialog tweaking **/
@@ -351,7 +333,7 @@ DiscOpenPanel::DiscOpenPanel( QWidget *_parent, intf_thread_t *_p_intf ) :
     QComboBox *discCombo = ui.deviceCombo; /* avoid namespacing in macro */
     POPULATE_WITH_DEVS( ppsz_discdevices, discCombo );
     char *psz_config = config_GetPsz( p_intf, "dvd" );
-    int temp = ui.deviceCombo->findData( psz_config, Qt::UserRole, Qt::MatchStartsWith );
+    int temp = ui.deviceCombo->findData( { const_cast<const char *>( psz_config ) }, Qt::UserRole, Qt::MatchStartsWith );
     free( psz_config );
     if( temp != -1 )
         ui.deviceCombo->setCurrentIndex( temp );
@@ -396,16 +378,14 @@ void DiscOpenPanel::onFocus()
                 wchar_t psz_name[512] = L"";
                 GetVolumeInformationW( drive, psz_name, 511, NULL, NULL, NULL, NULL, 0 );
 
-                char *psz_drive = FromWide( drive );
+                QString psz_drive = QString::fromWCharArray( drive );
                 QString displayName = psz_drive;
-                char *psz_title = FromWide( psz_name );
-                if( !EMPTY_STR(psz_title)) {
+                QString psz_title = QString::fromWCharArray( psz_name );
+                if( !psz_title.isEmpty()) {
                     displayName = displayName + " - "  + psz_title;
                 }
 
                 ui.deviceCombo->addItem( displayName, psz_drive );
-                free( psz_drive );
-                free( psz_title );
             }
 
             /* go to next drive */
@@ -415,7 +395,7 @@ void DiscOpenPanel::onFocus()
     }
 
     char *psz_config = config_GetPsz( p_intf, "dvd" );
-    int temp = ui.deviceCombo->findData( psz_config, Qt::UserRole, Qt::MatchStartsWith );
+    int temp = ui.deviceCombo->findData( qfu(psz_config), Qt::UserRole, Qt::MatchStartsWith );
     free( psz_config );
     if( temp != -1 )
         ui.deviceCombo->setCurrentIndex( temp );
@@ -854,9 +834,9 @@ void CaptureOpenPanel::initialize()
 
         QStringList nodes = QDir( "/dev/snd" ).entryList( patterns,
                                                           QDir::System );
-        QStringList names = nodes.replaceInStrings( QRegExp("^pcmC"), "hw:" )
-                                 .replaceInStrings( QRegExp("c$"), "" )
-                                 .replaceInStrings( QRegExp("D"), "," );
+        QStringList names = nodes.replaceInStrings( QRegularExpression("^pcmC"), "hw:" )
+                                 .replaceInStrings( QRegularExpression("c$"), "" )
+                                 .replaceInStrings( QRegularExpression("D"), "," );
         v4l2AudioDevice->addItems( names );
     }
     v4l2AudioDevice->clearEditText();
@@ -1075,9 +1055,9 @@ void CaptureOpenPanel::initialize()
 
         QStringList nodes = QDir( "/dev/snd" ).entryList( patterns,
                                                           QDir::System );
-        QStringList names = nodes.replaceInStrings( QRegExp("^pcmC"), "hw:" )
-                                 .replaceInStrings( QRegExp("c$"), "" )
-                                 .replaceInStrings( QRegExp("D"), "," );
+        QStringList names = nodes.replaceInStrings( QRegularExpression("^pcmC"), "hw:" )
+                                 .replaceInStrings( QRegularExpression("c$"), "" )
+                                 .replaceInStrings( QRegularExpression("D"), "," );
         pvrAudioDevice->addItems( names );
     }
     pvrAudioDevice->clearEditText();

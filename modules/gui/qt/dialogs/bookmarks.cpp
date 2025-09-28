@@ -146,7 +146,7 @@ void BookmarksDialog::update()
         QStringList row;
         row << QString( qfu( pp_bookmarks[i]->psz_name ) );
         row << qfu("-");
-        row << QString().sprintf( "%02u:%02u:%06.3f", hours, minutes, seconds );
+        row << QString( "%1:%2:%3" ).arg( hours, 2, 10, QChar('0')).arg( minutes, 2, 10, QChar('0')).arg(seconds, 10, 'f', 3, QChar('0'));
 
         QTreeWidgetItem *item = new QTreeWidgetItem( bookmarksList, row );
         item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable |
@@ -186,7 +186,7 @@ void BookmarksDialog::del()
         b_ignore_updates = true;
         /* Sort needed to make sure that selected elements are deleted in descending
            order, otherwise the indexes might change and wrong bookmarks are deleted. */
-        qSort( selected.begin(), selected.end() );
+        std::sort( selected.begin(), selected.end() );
         QModelIndexList::Iterator it = selected.end();
         for( --it; it != selected.begin(); it-- )
         {
@@ -242,7 +242,13 @@ void BookmarksDialog::edit( QTreeWidgetItem *item, int column )
     }
     else if( column == 2 )
     {
-        fields = item->text( column ).split( ":", QString::SkipEmptyParts );
+        fields = item->text( column ).split( ":",
+                                      #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                                        Qt::SkipEmptyParts
+                                      #else
+                                        QString::SkipEmptyParts
+                                      #endif
+                                    );
         if( fields.count() == 1 )
             p_seekpoint->i_time_offset = 1000000 * ( fields[0].toFloat() );
         else if( fields.count() == 2 )

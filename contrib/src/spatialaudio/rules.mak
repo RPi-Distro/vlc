@@ -20,8 +20,11 @@ spatialaudio: spatialaudio-$(SPATIALAUDIO_VERSION).tar.bz2 .sum-spatialaudio
 	$(UNPACK)
 	$(MOVE)
 
+SPATIALAUDIO_CONF := -DMYSOFA_ROOT_DIR=$(PREFIX) -DHAVE_MIT_HRTF=OFF
+
 .spatialaudio: spatialaudio toolchain.cmake
-	cd $< && rm -f CMakeCache.txt
-	cd $< && $(HOSTVARS) $(CMAKE) -DMYSOFA_ROOT_DIR=$(PREFIX) -DHAVE_MIT_HRTF=OFF
-	cd $< && $(CMAKEBUILD) . --target install
+	$(CMAKECLEAN)
+	$(HOSTVARS) $(CMAKE) $(SPATIALAUDIO_CONF)
+	+$(CMAKEBUILD)
+	$(CMAKEINSTALL)
 	touch $@

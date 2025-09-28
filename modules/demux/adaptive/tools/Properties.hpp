@@ -20,43 +20,6 @@
 #ifndef PROPERTIES_HPP
 #define PROPERTIES_HPP
 
-template <typename T> class Property
-{
-    public:
-        Property() {}
-
-        T & Set(const T &i)
-        {
-            return value = i;
-        }
-
-        T const & Get() const
-        {
-            return value;
-        }
-
-    private:
-        T value;
-};
-
-template <typename T> class Undef
-{
-    public:
-        Undef() { undef = true; }
-
-        bool isSet() const
-        {
-            return !undef;
-        }
-
-        void operator =(const T &v) { val = v; undef = false; }
-        const T& value() const { return val; }
-
-    private:
-        bool undef;
-        T val;
-};
-
 template <typename T> class Ratio
 {
     public:

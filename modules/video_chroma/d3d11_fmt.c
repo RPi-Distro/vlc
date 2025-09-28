@@ -147,7 +147,6 @@ int D3D11_AllocateShaderView(vlc_object_t *obj, ID3D11Device *d3ddevice,
 static HKEY GetAdapterRegistry(vlc_object_t *obj, DXGI_ADAPTER_DESC *adapterDesc)
 {
     HKEY hDisplayKey, hKey;
-    CHAR key[128];
     CHAR szData[256], lookup[256];
     DWORD len = 256;
     LSTATUS ret;
@@ -194,7 +193,7 @@ static HKEY GetAdapterRegistry(vlc_object_t *obj, DXGI_ADAPTER_DESC *adapterDesc
     return NULL;
 }
 
-void D3D11_GetDriverVersion(vlc_object_t *obj, d3d11_device_t *d3d_dev)
+static void D3D11_GetSystemDriver(vlc_object_t *obj, d3d11_device_t *d3d_dev)
 {
     memset(&d3d_dev->WDDM, 0, sizeof(d3d_dev->WDDM));
 
@@ -236,13 +235,43 @@ void D3D11_GetDriverVersion(vlc_object_t *obj, d3d11_device_t *d3d_dev)
     }
 }
 #else /* VLC_WINSTORE_APP */
-void D3D11_GetDriverVersion(vlc_object_t *obj, d3d11_device_t *d3d_dev)
+static void D3D11_GetSystemDriver(vlc_object_t *obj, d3d11_device_t *d3d_dev)
 {
     VLC_UNUSED(obj);
     VLC_UNUSED(d3d_dev);
     return;
 }
 #endif /* VLC_WINSTORE_APP */
+
+void D3D11_GetDriverVersion(vlc_object_t *obj, d3d11_device_t *d3d_dev)
+{
+    memset(&d3d_dev->WDDM, 0, sizeof(d3d_dev->WDDM));
+
+    LARGE_INTEGER driver = { 0 };
+    HRESULT hr;
+    IDXGIAdapter *pAdapter = D3D11DeviceAdapter(d3d_dev->d3ddevice);
+    hr = IDXGIAdapter_CheckInterfaceSupport(pAdapter, &IID_IDXGIDevice, &driver);
+
+    if (FAILED(hr))
+    {
+        msg_Dbg(obj, "failed to get interface version. (hr=0x%lX)", hr);
+        D3D11_GetSystemDriver(obj, d3d_dev);
+    }
+    else if (HIWORD(driver.HighPart) < 23)
+    // starting with WDDM 2.3 driver versions must be coherent
+    // https://learn.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiadapter-checkinterfacesupport#parameters
+    {
+        msg_Dbg(obj, "unsupported interface version %" PRIx64, driver.QuadPart);
+        D3D11_GetSystemDriver(obj, d3d_dev);
+    }
+    else
+    {
+        d3d_dev->WDDM.wddm         = HIWORD(driver.HighPart);
+        d3d_dev->WDDM.d3d_features = LOWORD(driver.LowPart);
+        d3d_dev->WDDM.revision     = HIWORD(driver.LowPart);
+        d3d_dev->WDDM.build        = LOWORD(driver.LowPart);
+    }
+}
 
 void D3D11_ReleaseDevice(d3d11_device_t *d3d_dev)
 {
@@ -571,6 +600,7 @@ const d3d_format_t *FindD3D11Format(vlc_object_t *o,
 #undef AllocateTextures
 int AllocateTextures( vlc_object_t *obj, d3d11_device_t *d3d_dev,
                       const d3d_format_t *cfg, const video_format_t *fmt,
+                      bool for_decoder, bool shared,
                       unsigned pool_size, ID3D11Texture2D *textures[] )
 {
     plane_t planes[PICTURE_PLANE_MAX];
@@ -584,7 +614,8 @@ int AllocateTextures( vlc_object_t *obj, d3d11_device_t *d3d_dev,
     texDesc.MiscFlags = 0; //D3D11_RESOURCE_MISC_SHARED;
     texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
     if (is_d3d11_opaque(fmt->i_chroma)) {
-        texDesc.BindFlags |= D3D11_BIND_DECODER;
+        if (for_decoder)
+            texDesc.BindFlags |= D3D11_BIND_DECODER;
         texDesc.Usage = D3D11_USAGE_DEFAULT;
         texDesc.CPUAccessFlags = 0;
     } else {
@@ -592,6 +623,8 @@ int AllocateTextures( vlc_object_t *obj, d3d11_device_t *d3d_dev,
         texDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     }
     texDesc.ArraySize = pool_size;
+    if (shared)
+        texDesc.MiscFlags |= D3D11_RESOURCE_MISC_SHARED | D3D11_RESOURCE_MISC_SHARED_NTHANDLE;
 
     const vlc_chroma_description_t *p_chroma_desc = vlc_fourcc_GetChromaDescription( fmt->i_chroma );
     if( !p_chroma_desc )

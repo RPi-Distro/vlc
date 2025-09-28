@@ -1,7 +1,7 @@
 # speex
 
 SPEEX_VERSION := 1.2.1
-SPEEX_URL := http://downloads.us.xiph.org/releases/speex/speex-$(SPEEX_VERSION).tar.gz
+SPEEX_URL := $(XIPH)/speex/speex-$(SPEEX_VERSION).tar.gz
 
 PKGS += speex
 ifeq ($(call need_pkg,"speex >= 1.0.5"),)
@@ -24,13 +24,10 @@ ifeq ($(ARCH),arm)
 SPEEX_CONF += --enable-arm5e-asm
 endif
 endif
-ifeq ($(ARCH),aarch64)
-SPEEX_CONF += --disable-neon
-endif
 
 .speex: speex
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(SPEEX_CONF)
-	cd $< && $(MAKE)
+	$(MAKE) -C $<
 	$(call pkg_static,"speex.pc")
-	cd $< && $(MAKE) install
+	$(MAKE) -C $< install
 	touch $@

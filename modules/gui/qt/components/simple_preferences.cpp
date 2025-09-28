@@ -27,6 +27,7 @@
 # include "config.h"
 #endif
 
+#include "qt.hpp"
 #include "components/simple_preferences.hpp"
 #include "components/preferences_widgets.hpp"
 
@@ -47,7 +48,7 @@
 #include <QScreen>
 #include <QtAlgorithms>
 #include <QDir>
-#include <assert.h>
+#include <cassert>
 #include <math.h>
 
 #define ICON_HEIGHT 48
@@ -260,7 +261,7 @@ SPrefsCatList::SPrefsCatList( intf_thread_t *_p_intf, QWidget *_parent ) :
 #undef ADD_CATEGORY
 
     SPrefsInterface->setChecked( true );
-    layout->setMargin( 0 );
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing( 1 );
 
     setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Preferred);
@@ -355,7 +356,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
 
     QVBoxLayout *panel_layout = new QVBoxLayout();
     QWidget *panel = new QWidget();
-    panel_layout->setMargin( 3 );
+    panel_layout->setContentsMargins(3, 3, 3, 3);
 
     // Title Label
     QLabel *panel_label = new QLabel;
@@ -612,7 +613,14 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                      setEnabled( bool ) );
 
             char* psz = config_GetPsz( p_intf, "audio-filter" );
-            qs_filter = qfu( psz ).split( ':', QString::SkipEmptyParts );
+            qs_filter = qfu( psz ).split( ':',
+                                          #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                                              Qt::SkipEmptyParts
+                                          #else
+                                              QString::SkipEmptyParts
+                                          #endif
+                                        );
+
             free( psz );
 
             bool b_enabled = ( qs_filter.contains( "normvol" ) );
@@ -634,18 +642,21 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                          "for DVD, VCD, and CDDA are set.\n"
                          "You can define a unique one or configure them \n"
                          "individually in the advanced preferences." ) );
-                char *psz_dvddiscpath = config_GetPsz( p_intf, "dvd" );
-                char *psz_vcddiscpath = config_GetPsz( p_intf, "vcd" );
-                char *psz_cddadiscpath = config_GetPsz( p_intf, "cd-audio" );
-                if( psz_dvddiscpath && psz_vcddiscpath && psz_cddadiscpath )
-                if( !strcmp( psz_cddadiscpath, psz_dvddiscpath ) &&
-                    !strcmp( psz_dvddiscpath, psz_vcddiscpath ) )
+                bool have_cdda = module_exists( "cdda" );
+                char *dvd_discpath = config_GetPsz( p_intf, "dvd" );
+                char *vcd_discpath = config_GetPsz( p_intf, "vcd" );
+                char *cdda_discpath = have_cdda ? config_GetPsz( p_intf, "cd-audio" ) : nullptr;
+                if( dvd_discpath && vcd_discpath && ( !have_cdda || cdda_discpath ) )
                 {
-                    ui.DVDDeviceComboBox->setEditText( qfu( psz_dvddiscpath ) );
+                    if( !strcmp( dvd_discpath, vcd_discpath ) &&
+                        ( !have_cdda || !strcmp( cdda_discpath, dvd_discpath ) ) )
+                    {
+                        ui.DVDDeviceComboBox->setEditText( qfu( dvd_discpath ) );
+                    }
                 }
-                free( psz_cddadiscpath );
-                free( psz_dvddiscpath );
-                free( psz_vcddiscpath );
+                free( cdda_discpath );
+                free( dvd_discpath );
+                free( vcd_discpath );
             }
 #ifndef _WIN32
             QStringList DVDDeviceComboBoxStringList = QStringList();
@@ -653,7 +664,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                     << "dvd*" << "scd*" << "sr*" << "sg*" << "cd*";
             ui.DVDDeviceComboBox->addItems( QDir( "/dev/" )
                     .entryList( DVDDeviceComboBoxStringList, QDir::System )
-                    .replaceInStrings( QRegExp("^"), "/dev/" )
+                    .replaceInStrings( QRegularExpression("^"), "/dev/" )
             );
 #endif
             CONFIG_GENERIC( "dvd", String, ui.DVDLabel,
@@ -742,7 +753,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                 DWORD len = 256;
                 if( RegQueryValueEx( h_key, TEXT("Lang"), NULL, NULL, (LPBYTE) &szData, &len ) == ERROR_SUCCESS ) {
                     langReg = FromWide( szData );
-                    ui.langCombo->setCurrentIndex( ui.langCombo->findData(langReg) );
+                    ui.langCombo->setCurrentIndex( ui.langCombo->findData(qfu(langReg)) );
                 }
             }
             free( langReg);
@@ -771,11 +782,15 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                 /* defaults to qt */
                 ui.qt->setChecked( true );
             }
+
+            if ( var_InheritBool( p_intf, "qt-dark-palette" ) )
+                ui.qtdark->setChecked( true ); /*dark palette*/
+
             free( psz_intf );
 
             optionWidgets["skinRB"] = ui.skins;
             optionWidgets["qtRB"] = ui.qt;
-#if !defined( _WIN32)
+
             ui.stylesCombo->addItem( qtr("System's default") );
             ui.stylesCombo->addItems( QStyleFactory::keys() );
             ui.stylesCombo->setCurrentIndex( ui.stylesCombo->findText(
@@ -786,16 +801,27 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
 
             CONNECT( ui.stylesCombo, currentIndexChanged( QString ), this, changeStyle( QString ) );
             optionWidgets["styleCB"] = ui.stylesCombo;
-#else
-            ui.stylesCombo->hide();
-            ui.stylesLabel->hide();
-#endif
+
             radioGroup = new QButtonGroup(this);
             radioGroup->addButton( ui.qt, 0 );
             radioGroup->addButton( ui.skins, 1 );
             CONNECT( radioGroup, buttonClicked( int ),
                      ui.styleStackedWidget, setCurrentIndex( int ) );
             ui.styleStackedWidget->setCurrentIndex( radioGroup->checkedId() );
+
+			CONFIG_BOOL( "qt-dark-palette", qtdark );
+			// Connecting the stateChanged signal of the checkbox
+			connect(ui.qtdark, &QCheckBox::stateChanged, ui.stylesCombo, [combobox = ui.stylesCombo](const int state) {
+				if (state == Qt::CheckState::Checked) {
+					// Set the current style to "Fusion"
+					combobox->setCurrentText(QStringLiteral("Fusion"));
+					// Apply the dark palette
+					applyDarkPalette();
+				} else {
+					// Remove the custom palette and revert to the default
+					QApplication::setPalette(QApplication::style()->standardPalette());
+				}
+			});
 
             CONNECT( ui.minimalviewBox, toggled( bool ),
                      ui.mainPreview, setNormalPreview( bool ) );
@@ -1069,9 +1095,10 @@ void SPrefsPanel::apply()
             qobject_cast<QComboBox *>(optionWidgets["inputLE"])->currentText().toUtf8();
         if( devicepath.size() > 0 )
         {
-            config_PutPsz( p_intf, "dvd", devicepath );
-            config_PutPsz( p_intf, "vcd", devicepath );
-            config_PutPsz( p_intf, "cd-audio", devicepath );
+            config_PutPsz( p_intf, "dvd", devicepath.constData() );
+            config_PutPsz( p_intf, "vcd", devicepath.constData() );
+            if( module_exists( "cdda" ) )
+                config_PutPsz( p_intf, "cd-audio", devicepath.constData() );
         }
 
 #define CaC( name, factor ) config_PutInt( p_intf, name, i_comboValue * factor )

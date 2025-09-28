@@ -21,6 +21,7 @@ $(TARBALLS)/libxcb-$(XCB_VERSION).tar.bz2:
 
 libxcb: libxcb-$(XCB_VERSION).tar.bz2 .sum-xcb
 	$(UNPACK)
+	$(UPDATE_AUTOCONFIG) && cd $(UNPACK_DIR) && mv config.guess config.sub build-aux
 	$(call pkg_static,"xcb.pc.in")
 	$(MOVE)
 
@@ -47,12 +48,11 @@ XCBCONF := \
 	--disable-xtest \
 	--enable-xv \
 	--disable-xvmc \
-	--without-doxygen \
-	$(HOSTCONF)
+	--without-doxygen
 
 DEPS_xcb = xau $(DEPS_xau) xcb-proto $(DEPS_xcb-proto)
 
 .xcb: libxcb
-	cd $< && $(HOSTVARS) ./configure $(XCBCONF)
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(XCBCONF)
+	$(MAKE) -C $< install
 	touch $@

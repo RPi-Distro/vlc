@@ -1,10 +1,21 @@
 # srt
 
-SRT_VERSION := 1.4.4
+SRT_VERSION := 1.5.3
 SRT_URL := $(GITHUB)/Haivision/srt/archive/v$(SRT_VERSION).tar.gz
 
+# gnutls (nettle/gmp) can't be used with the LGPLv2 license
+ifdef GPL
+SRT_PKG=1
+else
+ifdef GNUV3
+SRT_PKG=1
+endif
+endif
+
 ifdef BUILD_NETWORK
+ifdef SRT_PKG
 PKGS += srt
+endif
 endif
 
 ifeq ($(call need_pkg,"srt >= 1.3.1"),)
@@ -23,12 +34,15 @@ $(TARBALLS)/srt-$(SRT_VERSION).tar.gz:
 
 srt: srt-$(SRT_VERSION).tar.gz .sum-srt
 	$(UNPACK)
-	$(APPLY) $(SRC)/srt/0001-core-ifdef-MSG_TRUNC-nixes-fix.patch
+	$(APPLY) $(SRC)/srt/0001-build-fix-implicit-libraries-set-using-Wl-l-libname..patch
 	$(call pkg_static,"scripts/srt.pc.in")
-	mv srt-$(SRT_VERSION) $@ && touch $@
+	$(MOVE)
+
+SRT_CONF := -DENABLE_SHARED=OFF -DUSE_ENCLIB=gnutls -DENABLE_CXX11=OFF
 
 .srt: srt toolchain.cmake
-	cd $< && $(HOSTVARS_PIC) $(CMAKE) \
-		-DENABLE_SHARED=OFF -DUSE_GNUTLS=ON -DENABLE_CXX11=OFF -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_BINDIR=bin -DCMAKE_INSTALL_INCLUDEDIR=include
-	cd $< && $(CMAKEBUILD) . --target install
+	$(CMAKECLEAN)
+	$(HOSTVARS) $(CMAKE) $(SRT_CONF)
+	+$(CMAKEBUILD)
+	$(CMAKEINSTALL)
 	touch $@

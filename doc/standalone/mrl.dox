@@ -1,0 +1,133 @@
+/**
+ * \defgroup mrl Media Resource Locator (MRL)
+ *
+ * The \em MRL-specification is a VLC intrinsic extension to <a
+ * href="https://tools.ietf.org/html/rfc3986">RFC3986</a>, providing means to
+ * associate extra media-related information within the \em resource-identifier.
+ *
+ * \note \em MRLs are only used when an item is to be played by \em VLC,
+ *       through a direct (or indirect) call to \ref input_Create and \ref
+ *       input_CreatePreparser, which means that they are not handled by
+ *       functions such as \ref vlc_UrlParse and \ref vlc_stream_NewURL (as
+ *       implied by their names).
+ *
+ * \section mrl_introduction Introduction
+ *
+ * As an example, with the use of an \em MRL one can specify that a certain \ref
+ * demux is to be unconditionally used for a specific resource, such as in the
+ * below (forcing usage of \em demuxdump).
+ *
+ * \verbatim http/demuxdump://example.com/path/to/media\endverbatim
+ *
+ * There is also the possibility of specifying attributes related to the
+ * playback behavior of the referred to resource, such as what range of titles
+ * and chapters that are to be played.
+ *
+ * \verbatim http://example.com/media.mkv#0:1-1:5\endverbatim
+ *
+ * \section mrl_technical Technical Information
+ *
+ * The overall specification in <a
+ * href="https://tools.ietf.org/html/rfc3986">RFC3986</a> are inherited by \em
+ * MRLs, though some entities have been redefined in order to provide support
+ * for additional \em media-related \em information, other entities (treated as
+ * arbitrary data in a \em URI) is explicitly defined to have special meaning
+ * within an \em MRL.
+ *
+ * \subsection mrl_technical_scheme 3.1. Scheme
+ *
+ * In an \em MRL, what <a href="https://tools.ietf.org/html/rfc3986">RFC3986</a>
+ * refers to as `scheme` is allowed to contain a \em forward-slash, and if such
+ * is present, the data prior to the slash denotes the \em scheme (as originally
+ * defined by \em RFC3986), whereas the data that follows specifies a list of
+ * \link demux demultiplexers\endlink to probe when dealing with the resource.
+ *
+ *     mrl-scheme   = *( %x20-7E )
+ *     mrl-demux    = *( %x20-2B / %x2D-7E )
+ *     scheme       =/ ( mrl-scheme [ "/" mrl-demux ] )
+ *
+ *  - If the specified \ref demux specified in `mrl-demuxer` can't
+ *    handle the resource, the media shall fail to open.
+ *
+ * \subsection mrl_technical_fragment 3.5. Fragment
+ *
+ * \em MRL extends the <a
+ * href="https://tools.ietf.org/html/rfc5234">ABNF</a> for \em fragment-data as
+ * specified by <a href="https://tools.ietf.org/html/rfc3986">RFC3986</a> so
+ * that individual pieces can be identified within the payload.
+ *
+ * \verbatim
+mrlfrag-query     = query
+mrlfrag-subdelims = "$" / "&" / "'" / "(" / ")" / "*" / "+" /
+                    "," / ";" / "=" / pct-encoded
+mrlfrag-entity    = "!/" *( mrlfrag-subdelims )
+fragment          =/ ( *( mrlfrag-entity ) [ "?" mrlfrag-query ] ) /
+                    mrlfrag-query / mrl-section
+\endverbatim
+ *
+ * <h4>Generating `fragment` </h4>
+ *
+ * 1. Start with an empty payload
+ * 2. For each subentry (from top to bottom)
+ *   - append `"!/"` to the payload
+ *   - url-encode characters not matching `mrlfrag-subdelims`
+ *   - append the url-encoded data
+ * 3. If the payload is not empty, and there is a `mrlfrag-query`
+ *   - append "?" to the payload
+ * 4. append the `mrlfrag-query` to the payload
+ *
+ * <h4>Parsing `fragment`</h4>
+ *
+ * 1. If the payload begins with `"!/"`
+ *   - skip the initial two characters
+ *   - extract data up until the first occurance of either `?` or `!`
+ *   - url-decode the extracted data
+ *   - the decoded data is a `mrlfrag-entity`
+ *   - goto step `1` with the data following the extracted data
+ * 2. If the payload begins with `"?"`
+ *   - skip the initial character
+ * 3. the payload contains the `mrlfrag-query`
+ *
+ * \subsubsection mrl_technical_fragment_query Fragment Query
+ *
+ * Data within `fragment`, as defined by the previous section, can have special
+ * meaning if it matches the entities listed below (priority in order of
+ * appearance).
+ *
+ * - \parblock
+ *  <h4>`mrl-section`</h4>
+ *  \verbatim
+mrl-title   = DIGIT *DIGIT
+mrl-chapter = DIGIT *DIGIT
+mrl-section = mrl-title [ ":" mrl-chapter ] [ "-" mrl-title [ ":" mrl-chapter ] ]
+\endverbatim
+ *  If the data contained in the `fragmentof` an \em MRL matches
+ *  `mrl-section`, the data denotes the offset to start, and conditionally stop
+ *  (if present), the resource during playback,
+ *
+ *  `mrl-title` and `mrl-chapter` refers to the index of the \em title and \em
+ *  chapter, respectively. Data before the optional hyphen denotes the starting
+ *  position, and data following it, if any, denotes where to stop.
+ *
+ *  The range is specified as `[start,stop)`, meaning that playback will
+ *  continue until \em stop has been reached, it does not include the contents
+ *  of the entity referred to by \em stop.
+ *
+ *  \endparblock
+ *
+ * - \parblock
+ *  <h4>`mrlfrag-query`</h4>
+ *
+ *  The data within the `mrlfrag-query` shall be `key=value` pairs, each
+ *  delimited by an ampersand (this means that an ampersand in either \em key
+     *  or \em value must be URL-encoded). \em key-value pairs not specified in
+ *  the table below are ignored.
+ *
+ *  <table>
+ *    <tr> <td></td>  <th>Value</th> <th>Description</th> </tr>
+ *    <tr> <th>t</th> <td>Integer</td> <td>specifies where to start playback (in seconds)</td> </tr>
+ *    <tr> <th>s</th> <td>Integer</td> <td>specifies where to stop playback (in seconds)</td> </tr>
+ *  </table>
+ *
+ *  \endparblock
+ **/

@@ -1,0 +1,245 @@
+name: vlc
+version-script: cat $SNAPCRAFT_STAGE/version
+version: "daily"
+grade: stable
+base: core18
+summary: Read, capture, broadcast your multimedia streams
+description: |
+  VLC is a free and open source cross-platform multimedia player and
+  framework that plays most multimedia files as well as DVDs, Audio CDs,
+  VCDs, and various streaming protocols.
+  NOTE. This snap contains an untested daily build of VLC
+confinement: strict
+
+apps:
+  vlc:
+    desktop: usr/share/applications/vlc.desktop
+    command: desktop-launch $SNAP/bin/vlc-snap-wrapper.sh
+    common-id: org.videolan.vlc
+    plugs:
+      - unity7
+      - network
+      - network-bind
+      - home
+      - opengl
+      - pulseaudio
+      - mount-observe
+      - optical-drive
+      - camera
+      - removable-media
+      - screen-inhibit-control
+      - x11
+      - desktop
+      - desktop-legacy
+      - dvb
+      - audio-playback
+      - audio-record
+      - jack1
+      - avahi-control
+    slots:
+      - mpris
+
+parts:
+  desktop-qt5-vlc:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-commit: 622e2aa7a840b3a7dbb6ea4d432d687d5cc2e8ef
+    source-subdir: qt/
+    plugin: make
+    make-parameters: ["FLAVOR=qt5"]
+    build-packages:
+      - qtbase5-dev
+      - dpkg-dev
+    stage-packages:
+      - libxkbcommon0
+      - ttf-ubuntu-font-family
+      - dmz-cursor-theme
+      - light-themes
+      - shared-mime-info
+      - libqt5gui5
+      - libgdk-pixbuf2.0-0
+      - libqt5svg5
+      - locales-all
+  vlc:
+    after: [desktop-qt5-vlc]
+    source: ../../../
+    source-type: git
+    plugin: autotools
+    override-build: |
+      sed -i 's|0\.19\.8|0\.19\.7|'  configure.ac
+      cd extras/tools
+      NEEDED="ninja" ./bootstrap
+      make -j $(getconf _NPROCESSORS_ONLN)
+      cd ../../
+      export PATH=$PWD/extras/tools/build/bin:$PATH
+      cd contrib && mkdir linux && cd linux
+      ../bootstrap \
+          --host=$TRIPLET \
+          --enable-libdsm \
+          --enable-dvdcss \
+          --disable-chromaprint
+      if [ -n "$VLC_PREBUILT_CONTRIBS_URL" ]; then
+          make prebuilt PREBUILT_URL="$VLC_PREBUILT_CONTRIBS_URL"
+      else
+          make list
+          make -j $(getconf _NPROCESSORS_ONLN) fetch
+          make -j $(getconf _NPROCESSORS_ONLN) -k install || make -j1
+          make package
+      fi
+      cd ../../
+      export NOCONFIGURE=1
+      autoreconf -fi
+      ./configure \
+          --prefix=$SNAPCRAFT_PART_INSTALL/usr \
+          --disable-wayland \
+          --enable-merge-ffmpeg
+      make -j $(getconf _NPROCESSORS_ONLN)
+      echo $(git describe --always HEAD) > $SNAPCRAFT_STAGE/version
+      make install
+      sed -i 's|Icon=vlc|Icon=/usr/share/icons/hicolor/256x256/apps/vlc\.png|' $SNAPCRAFT_PART_INSTALL/usr/share/applications/vlc.desktop
+      sed -i 's|TryExec=.*|TryExec=/snap/bin/vlc|' $SNAPCRAFT_PART_INSTALL/usr/share/applications/vlc.desktop
+    build-packages:
+      - ant
+      - git
+      - g++
+      - make
+      - yasm
+      - autoconf
+      - libtool
+      - libtool-bin
+      - cmake
+      - automake
+      - build-essential
+      - libxcb-xfixes0-dev
+      - libqt5svg5-dev
+      - libasound2-dev
+      - libavahi-client-dev
+      - libcdio-dev
+      - libdbus-1-dev
+      - libdirectfb-dev
+      - libegl1-mesa-dev
+      - libfreerdp-dev
+      - libfreetype6-dev
+      - libfribidi-dev
+      - libgles2-mesa-dev
+      - libgnutls28-dev
+      - libgtk2.0-dev
+      - libidn11-dev
+      - libjack-dev
+      - liblircclient-dev
+      - liblua5.2-dev
+      - libmtp-dev
+      - libncursesw5-dev
+      - libpng-dev
+      - libpulse-dev
+      - libqt5x11extras5-dev
+      - qtbase5-private-dev
+      - librsvg2-dev
+      - libsecret-1-dev
+      - libudev-dev
+      - libv4l-dev
+      - libva-dev
+      - libvdpau-dev
+      - libx11-dev
+      - libxcb-composite0-dev
+      - libxcb-keysyms1-dev
+      - libxcb-randr0-dev
+      - libxcb-shm0-dev
+      - libxcb-xv0-dev
+      - libxcb1-dev
+      - libxext-dev
+      - libxi-dev
+      - libxinerama-dev
+      - libxkbcommon-x11-dev
+      - libxml2-dev
+      - libxpm-dev
+      - libzvbi-dev
+      - lua5.2
+      - pkg-config
+      - qtbase5-dev
+      - xz-utils
+      - zlib1g-dev
+      - bison
+      - flex
+      - libvulkan-dev
+    stage-packages:
+      - fonts-freefont-ttf
+      - dbus-x11
+      - libegl1-mesa
+      - libfreerdp-client1.1
+      - libfreerdp-core1.1
+      - libfreerdp-gdi1.1
+      - libfreetype6
+      - libfribidi0
+      - libdb5.3
+      - libgcc1
+      - libgl1-mesa-glx
+      - libgles2-mesa
+      - libglib2.0-0
+      - libpulse0
+      - libqt5core5a
+      - libqt5gui5
+      - librsvg2-2
+      - libsecret-1-0
+      - libva-drm2
+      - libva-x11-2
+      - libva2
+      - libvdpau1
+      - libx11-6
+      - libxcb-composite0
+      - libxcb-keysyms1
+      - libxcb-randr0
+      - libxcb-shm0
+      - libxcb-xv0
+      - libxcb1
+      - libxext6
+      - libxi6
+      - libxinerama1
+      - libxkbcommon-x11-0
+      - libxpm4
+      - vdpau-va-driver
+      - i965-va-driver
+      - mesa-utils
+      - mesa-vdpau-drivers
+      - zlib1g
+      - kde-style-breeze
+      - breeze-icon-theme
+      - frameworkintegration
+      - plasma-integration
+      - phonon4qt5-backend-null
+      - libjack0
+      - libasound2
+      - libgtk-3-0
+      - liblua5.2-0
+      - libmtp9
+      - libzvbi0
+      - libnotify4
+      - libvulkan1
+      - libaacs0
+      - mesa-vulkan-drivers
+      - libvulkan-dev
+      - openjdk-8-jdk
+    filesets:
+      exclusion:
+      - "-usr/lib/*/cmake/*"
+      - "-usr/include/*"
+      - "-usr/share/ECM/*"
+      - "-usr/share/doc/*"
+      - "-usr/share/man/*"
+      - "-usr/bin/X11"
+      - "-usr/lib/gcc/x86_64-linux-gnu/6.0.0"
+      - "-usr/lib/aspell/*"
+    prime:
+      - "$exclusion"
+
+  wrapper:
+    plugin: dump
+    after: [vlc]
+    source: .
+    organize:
+      vlc-snap-wrapper.sh: bin/vlc-snap-wrapper.sh
+
+  fixup-vulkan-icd-paths:
+    plugin: nil
+    after: [wrapper]
+    override-build: |
+      sed -i -E 's,(^.+"library_path": ")/.*/,\1,' $SNAPCRAFT_STAGE/usr/share/vulkan/icd.d/*.json

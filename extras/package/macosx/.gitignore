@@ -1,0 +1,7 @@
+!Delete_Preferences.app
+*.mode*
+*.pbxuser
+build
+Info.plist
+*.xcworkspace
+xcuserdata

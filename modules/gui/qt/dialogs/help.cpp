@@ -38,15 +38,13 @@
 #endif
 
 #include <QTextBrowser>
-#include <QTabWidget>
-#include <QLabel>
 #include <QString>
 #include <QDialogButtonBox>
 #include <QEvent>
 #include <QDate>
 #include <QPushButton>
 
-#include <assert.h>
+#include <cassert>
 
 HelpDialog::HelpDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
 
@@ -87,12 +85,23 @@ AboutDialog::AboutDialog( intf_thread_t *_p_intf)
     setWindowRole( "vlc-about" );
     setWindowModality( Qt::WindowModal );
 
-    ui.version->setText(qfu( " " VERSION_MESSAGE ) );
-    ui.title->setText("<html><head/><body><p><span style=\" font-size:26pt; color:#353535;\"> " + qtr( "VLC media player" ) + " </span></p></body></html>");
+    QString linkColor;
+    if ( var_InheritBool( p_intf, "qt-dark-palette" ) ) {
+        ui.horizontalFrame->setStyleSheet("background-color: rgb(10, 10, 10);");
+        ui.footer->setStyleSheet("background-color: rgb(25, 25, 25);");
+        linkColor = "#ffa851";
+    } else {
+        ui.horizontalFrame->setStyleSheet("background-color: rgb(230, 230, 230);");
+        ui.footer->setStyleSheet("background-color: rgb(245, 245, 245);");
+        linkColor = "#0057ae";
+    }
 
-    ui.MainBlabla->setText("<html><head/><body>" +
-    qtr( "<p>VLC media player is a free and open source media player, encoder, and streamer made by the volunteers of the <a href=\"http://www.videolan.org/\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</span></a> community.</p><p>VLC uses its internal codecs, works on essentially every popular platform, and can read almost all files, CDs, DVDs, network streams, capture cards and other media formats!</p><p><a href=\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: underline; color:#0057ae;\">Help and join us!</span></a>" ) +
-    "</p></body> </html>");
+    ui.version->setText(qfu( " " VERSION_MESSAGE ) );
+    ui.title->setText("<html><head/><body><p><span style=\" font-size:26pt;\"> " + qtr( "VLC media player" ) + " </span></p></body></html>");
+    QString translatedString = qtr( "<p>VLC media player is a free and open source media player, encoder, and streamer made by the volunteers of the <a href=\"http://www.videolan.org/\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</span></a> community.</p><p>VLC uses its internal codecs, works on essentially every popular platform, and can read almost all files, CDs, DVDs, network streams, capture cards and other media formats!</p><p><a href=\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: underline; color:#0057ae;\">Help and join us!</span></a>" );
+    if ( var_InheritBool( p_intf, "qt-dark-palette" ) )
+        translatedString.remove(QLatin1String("#0057ae"));
+    ui.MainBlabla->setText("<html><head/><body>" + translatedString + "</p></body> </html>");
 
 #if 0
     if( QDate::currentDate().dayOfYear() >= QT_XMAS_JOKE_DAY && var_InheritBool( p_intf, "qt-icon-change" ) )
@@ -116,15 +125,17 @@ AboutDialog::AboutDialog( intf_thread_t *_p_intf)
     /* People who wrote the software */
     ui.authorsPage->setText( qfu( psz_authors ) );
 
-    ui.licenseButton->setText( "<html><head/><body><p><span style=\" text-decoration: underline; color:#0057ae;\">"+qtr( "License" )+"</span></p></body></html>");
-    ui.licenseButton->installEventFilter( this );
+    ui.licenseButton->setText(QString("<html><head/><body><p><span style=\" text-decoration: underline; color:%1;\">%2</span></p></body></html>")
+                           .arg(linkColor, qtr("License")));
+	ui.licenseButton->installEventFilter(this);
 
-    ui.authorsButton->setText( "<html><head/><body><p><span style=\" text-decoration: underline; color:#0057ae;\">"+qtr( "Authors" )+"</span></p></body></html>");
-    ui.authorsButton->installEventFilter( this );
+	ui.authorsButton->setText(QString("<html><head/><body><p><span style=\" text-decoration: underline; color:%1;\">%2</span></p></body></html>")
+							   .arg(linkColor, qtr("Authors")));
+	ui.authorsButton->installEventFilter(this);
 
-    ui.creditsButton->setText( "<html><head/><body><p><span style=\" text-decoration: underline; color:#0057ae;\">"+qtr( "Credits" )+"</span></p></body></html>");
-    ui.creditsButton->installEventFilter( this );
-
+	ui.creditsButton->setText(QString("<html><head/><body><p><span style=\" text-decoration: underline; color:%1;\">%2</span></p></body></html>")
+							   .arg(linkColor, qtr("Credits")));
+	ui.creditsButton->installEventFilter(this);
     ui.version->installEventFilter( this );
 }
 
@@ -295,7 +306,7 @@ void UpdateDialog::updateNotify( bool b_result )
                 .arg( QString::number( p_release->i_major ) )
                 .arg( QString::number( p_release->i_minor ) )
                 .arg( QString::number( p_release->i_revision ) )
-                .arg( p_release->i_extra == 0 ? "" : "." + QString::number( p_release->i_extra ) );
+                .arg( p_release->i_extra == 0 ? QStringLiteral("") : QStringLiteral(".") + QString::number( p_release->i_extra ) );
 
             ui.updateNotifyLabel->setText( message );
             message = qfu( p_release->psz_desc ).replace( "\n", "<br/>" );

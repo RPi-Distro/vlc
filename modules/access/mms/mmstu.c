@@ -42,6 +42,7 @@
 #   include <poll.h>
 #endif
 
+#include <vlc_charset.h>
 #include <vlc_network.h>
 #include <vlc_url.h>
 #include <vlc_interrupt.h>
@@ -484,8 +485,8 @@ static int MMSOpen( stream_t  *p_access, vlc_url_t *p_url, int  i_proto )
 
     var_buffer_t buffer;
     char         *tmp;
-    const uint16_t *p;
-    const uint8_t  *p_cmdend;
+    const uint8_t *p;
+    const uint8_t *p_cmdend;
     uint32_t     i_server_version;
     uint32_t     i_tool_version;
     uint32_t     i_update_player_url;
@@ -590,38 +591,32 @@ static int MMSOpen( stream_t  *p_access, vlc_url_t *p_url, int  i_proto )
     i_tool_version = GetDWLE( p_sys->p_cmd + MMS_CMD_HEADERSIZE + 36 );
     i_update_player_url = GetDWLE( p_sys->p_cmd + MMS_CMD_HEADERSIZE + 40 );
     i_encryption_type = GetDWLE( p_sys->p_cmd + MMS_CMD_HEADERSIZE + 44 );
-    p = (uint16_t*)( p_sys->p_cmd + MMS_CMD_HEADERSIZE + 48 );
+    p = p_sys->p_cmd + MMS_CMD_HEADERSIZE + 48;
     p_cmdend = &p_sys->p_cmd[p_sys->i_cmd];
 
-#define GETUTF16( psz, size ) \
-    if( (UINT32_MAX == size) || \
-        ((uintptr_t) p / sizeof(uint16_t) < size) || \
-       ((UINTPTR_MAX - (uintptr_t) p_cmdend) / sizeof(uint16_t)) < size )\
+#define GETUTF16( fmt, size ) \
+do \
+{ \
+    if( (p_cmdend - p) / 2u < (size) ) \
     {\
         var_buffer_free( &buffer );\
         MMSClose( p_access );\
         return VLC_EBADVAR;\
     }\
-    if( (psz = malloc(size + 1)) )\
-    {\
-        for( size_t i = 0; i < size; i++ ) \
-        { \
-            psz[i] = p[i]; \
-        } \
-        psz[size] = '\0'; \
-        p += ( size ); \
-    }
-    GETUTF16( p_sys->psz_server_version, i_server_version );
-    GETUTF16( p_sys->psz_tool_version, i_tool_version );
-    GETUTF16( p_sys->psz_update_player_url, i_update_player_url );
-    GETUTF16( p_sys->psz_encryption_type, i_encryption_type );
+    char *str = FromCharset( "UTF-16LE", p, (size) * 2 ); \
+    p += (size) * 2; \
+    if( str != NULL ) \
+    { \
+        msg_Dbg( p_access, fmt " %s", str ); \
+        free( str ); \
+    } \
+} while (0)
+
+    GETUTF16( "server version:   ", i_server_version );
+    GETUTF16( "tool version:     ", i_tool_version );
+    GETUTF16( "update player URL:", i_update_player_url );
+    GETUTF16( "encryption type:  ", i_encryption_type );
 #undef GETUTF16
-    msg_Dbg( p_access,
-             "0x01 --> server_version:\"%s\" tool_version:\"%s\" update_player_url:\"%s\" encryption_type:\"%s\"",
-             p_sys->psz_server_version,
-             p_sys->psz_tool_version,
-             p_sys->psz_update_player_url,
-             p_sys->psz_encryption_type );
 
     /* *** should make an 18 command to make data timing *** */
 
@@ -998,11 +993,6 @@ static void MMSClose( stream_t  *p_access )
     FREENULL( p_sys->p_media );
     FREENULL( p_sys->p_header );
     p_sys->i_header = 0;
-
-    FREENULL( p_sys->psz_server_version );
-    FREENULL( p_sys->psz_tool_version );
-    FREENULL( p_sys->psz_update_player_url );
-    FREENULL( p_sys->psz_encryption_type );
 }
 
 /****************************************************************************
@@ -1142,14 +1132,14 @@ static int NetFillBuffer( stream_t *p_access )
         i_tcp_read =
             recv( p_sys->i_handle_tcp,
                   p_sys->buffer_tcp + p_sys->i_buffer_tcp,
-                  i_tcp + MMS_BUFFER_SIZE/2, 0 );
+                  MMS_BUFFER_SIZE - p_sys->i_buffer_tcp, 0 );
     }
 
     if( i_udp > 0 && ufd[i_tcp > 0].revents )
     {
         i_udp_read = recv( p_sys->i_handle_udp,
                            p_sys->buffer_udp + p_sys->i_buffer_udp,
-                           i_udp + MMS_BUFFER_SIZE/2, 0 );
+                           MMS_BUFFER_SIZE - p_sys->i_buffer_udp, 0 );
     }
 
 #ifdef MMS_DEBUG
@@ -1187,23 +1177,13 @@ static int  mms_ParseCommand( stream_t *p_access,
     uint32_t    i_id;
 
     free( p_sys->p_cmd );
-    if( (p_sys->p_cmd = malloc( i_data )) )
-    {
-        p_sys->i_cmd = i_data;
-        memcpy( p_sys->p_cmd, p_data, i_data );
-        *pi_used = i_data; /* by default */
-    }
-    else
-    {
-        *pi_used = p_sys->i_cmd = 0;
-        p_sys->i_command = 0;
-        return -1;
-    }
-
+    p_sys->p_cmd = NULL;
+    p_sys->i_cmd = 0;
+    p_sys->i_command = 0;
+    *pi_used = 0;
     if( i_data < MMS_CMD_HEADERSIZE )
     {
         msg_Warn( p_access, "truncated command (header incomplete)" );
-        p_sys->i_command = 0;
         return -1;
     }
     i_id =  GetDWLE( p_data + 4 );
@@ -1213,23 +1193,27 @@ static int  mms_ParseCommand( stream_t *p_access,
     {
         msg_Err( p_access,
                  "incorrect command header (0x%"PRIx32")", i_id );
-        p_sys->i_command = 0;
         return -1;
     }
 
-    if( i_length > p_sys->i_cmd )
+    if( i_length > i_data )
     {
         msg_Warn( p_access,
                   "truncated command (missing %zu bytes)",
                    (size_t)i_length - i_data  );
-        p_sys->i_command = 0;
         return -1;
     }
-    else if( i_length < p_sys->i_cmd )
+
+    if( (p_sys->p_cmd = malloc( i_length )) )
     {
-        p_sys->i_cmd = i_length;
-        *pi_used = i_length;
+        memcpy( p_sys->p_cmd, p_data, i_length );
     }
+    else
+    {
+        return -1;
+    }
+    p_sys->i_cmd = i_length;
+    *pi_used = i_length;
 
     msg_Dbg( p_access,
              "recv command start_sequence:0x%8.8x command_id:0x%8.8x length:%d len8:%d sequence 0x%8.8x len8_II:%d dir_comm:0x%8.8x",

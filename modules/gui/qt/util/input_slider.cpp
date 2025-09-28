@@ -281,7 +281,7 @@ void SeekSlider::processReleasedButton()
 
 void SeekSlider::mouseReleaseEvent( QMouseEvent *event )
 {
-    if ( event->button() != Qt::LeftButton && event->button() != Qt::MidButton )
+    if ( event->button() != Qt::LeftButton && event->button() != Qt::MiddleButton )
     {
         QSlider::mouseReleaseEvent( event );
         return;
@@ -294,7 +294,7 @@ void SeekSlider::mousePressEvent( QMouseEvent* event )
 {
     /* Right-click */
     if ( !isEnabled() ||
-         ( event->button() != Qt::LeftButton && event->button() != Qt::MidButton )
+         ( event->button() != Qt::LeftButton && event->button() != Qt::MiddleButton )
        )
     {
         QSlider::mousePressEvent( event );
@@ -348,7 +348,7 @@ void SeekSlider::mousePressEvent( QMouseEvent* event )
 
 void SeekSlider::mouseMoveEvent( QMouseEvent *event )
 {
-    if ( ! ( event->buttons() & ( Qt::LeftButton | Qt::MidButton ) ) )
+    if ( ! ( event->buttons() & ( Qt::LeftButton | Qt::MiddleButton ) ) )
     {
         /* Handle button release when mouserelease has been hijacked by popup */
         processReleasedButton();
@@ -386,7 +386,12 @@ void SeekSlider::mouseMoveEvent( QMouseEvent *event )
             }
         }
 
-        QPoint target( event->globalX() - ( event->x() - posX ),
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        const auto pos = event->globalPosition();
+#else
+        const auto pos = event->globalPos();
+#endif
+        QPoint target( pos.x() - ( event->x() - posX ),
                 QWidget::mapToGlobal( QPoint( 0, 0 ) ).y() );
         if( likely( size().width() > handleLength() ) ) {
             secstotimestr( psz_length, getValuePercentageFromXPos( event->x() ) * inputLength );
@@ -403,7 +408,7 @@ void SeekSlider::wheelEvent( QWheelEvent *event )
     {
         vlc_tick_t i_size = var_InheritInteger( p_intf->obj.libvlc, "short-jump-size" );
         int i_mode = var_InheritInteger( p_intf->obj.libvlc, "hotkeys-x-wheel-mode" );
-        if ( ( event->delta() < 0 && i_mode != 3 ) || ( event->delta() > 0 && i_mode == 3 ) )
+        if ( ( event->angleDelta().x() < 0 && i_mode != 3 ) || ( event->angleDelta().x() > 0 && i_mode == 3 ) )
             i_size = - i_size;
         float posOffset = static_cast<float>( i_size ) / static_cast<float>( inputLength );
         setValue( value() + posOffset * maximum() );
@@ -412,7 +417,11 @@ void SeekSlider::wheelEvent( QWheelEvent *event )
     event->accept();
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+void SeekSlider::enterEvent( QEnterEvent * )
+#else
 void SeekSlider::enterEvent( QEvent * )
+#endif
 {
     /* Cancel the fade-out timer */
     hideHandleTimer->stop();
@@ -674,7 +683,7 @@ SoundSlider::SoundSlider( QWidget *_parent, float _i_step,
 
 void SoundSlider::wheelEvent( QWheelEvent *event )
 {
-    int newvalue = value() + event->delta() / ( 8 * 15 ) * f_step;
+    int newvalue = value() + event->angleDelta().y() / QWheelEvent::DefaultDeltasPerStep * f_step;
     setValue( __MIN( __MAX( minimum(), newvalue ), maximum() ) );
 
     emit sliderReleased();

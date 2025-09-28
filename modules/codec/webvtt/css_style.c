@@ -31,6 +31,9 @@ static void Color( vlc_css_term_t term,
                    int *color, uint8_t *alpha,
                    uint16_t *feat, int cflag, int aflag )
 {
+    if( unlikely( term.psz == NULL ) )
+        return;
+
     if( term.type == TYPE_FUNCTION )
     {
         if( term.function ) /* func( expr ) */
@@ -103,7 +106,7 @@ void webvtt_FillStyleFromCssDeclaration( const vlc_css_declaration_t *p_decl, te
         return;
 
     /* Only support simple expressions for now */
-    if( p_decl->expr->i_count < 1 )
+    if( !p_decl->expr || p_decl->expr->i_count < 1 )
         return;
 
     vlc_css_term_t term0 = p_decl->expr->seq[0].term;

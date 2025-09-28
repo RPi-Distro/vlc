@@ -34,22 +34,16 @@
 #include "util/qt_dirs.hpp"
 
 #include <QString>
-#include <QComboBox>
 #include <QVBoxLayout>
-#include <QStackedWidget>
 #include <QLabel>
 #include <QWidget>
 #include <QGridLayout>
-#include <QLineEdit>
-#include <QCheckBox>
 #include <QToolButton>
 #include <QGroupBox>
 #include <QPushButton>
-#include <QHBoxLayout>
 #include <QDateTimeEdit>
 #include <QDateTime>
 #include <QSpinBox>
-#include <QScrollArea>
 #include <QFileDialog>
 
 
@@ -692,7 +686,14 @@ void VLMWrapper::EditBroadcast( const QString& name, const QString& input,
         vlm_ExecuteCommand( p_vlm, qtu( command ), &message );
         vlm_MessageDelete( message );
 
-        QStringList options = inputOptions.split( " :", QString::SkipEmptyParts );
+        QStringList options = inputOptions.split( " :",
+                                                  #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                                                      Qt::SkipEmptyParts
+                                                  #else
+                                                      QString::SkipEmptyParts
+                                                  #endif
+                                                );
+
         for( int i = 0; i < options.count(); i++ )
         {
             command = "setup \"" + name + "\" option \"" + options[i].trimmed() + "\"";
@@ -779,7 +780,13 @@ void VLMWrapper::EditVod( const QString& name, const QString& input,
         vlm_ExecuteCommand( p_vlm, qtu( command ), &message );
         vlm_MessageDelete( message );
 
-        QStringList options = inputOptions.split( " :", QString::SkipEmptyParts );
+        QStringList options = inputOptions.split( " :",
+                                                  #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                                                      Qt::SkipEmptyParts
+                                                  #else
+                                                      QString::SkipEmptyParts
+                                                  #endif
+                                    );
         for( int i = 0; i < options.count(); i++ )
         {
             command = "setup \"" + name + "\" option \"" + options[i].trimmed() + "\"";
@@ -838,7 +845,13 @@ void VLMWrapper::EditSchedule( const QString& name, const QString& input,
         vlm_ExecuteCommand( p_vlm, qtu( command ), &message );
         vlm_MessageDelete( message );
 
-        QStringList options = inputOptions.split( " :", QString::SkipEmptyParts );
+        QStringList options = inputOptions.split( " :",
+                                                  #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                                                      Qt::SkipEmptyParts
+                                                  #else
+                                                      QString::SkipEmptyParts
+                                                  #endif
+                                                );
         for( int i = 0; i < options.count(); i++ )
         {
             command = "setup \"" + name + "\" option \"" + options[i].trimmed() + "\"";
@@ -876,14 +889,14 @@ void VLMWrapper::EditSchedule( const QString& name, const QString& input,
 
     if( _scherepeatnumber > 0 )
     {
-       command = "setup \"" + name + "\" repeat \"" + _scherepeatnumber + "\"";
+       command = "setup \"" + name + "\" repeat \"" + QString::number(_scherepeatnumber) + "\"";
        vlm_ExecuteCommand( p_vlm, qtu( command ), &message );
        vlm_MessageDelete( message );
     }
 
     if( _repeatDays > 0 )
     {
-       command = "setup \"" + name + "\" period \"" + _repeatDays + "\"";
+       command = "setup \"" + name + "\" period \"" + QString::number(_repeatDays) + "\"";
        vlm_ExecuteCommand( p_vlm, qtu( command ), &message );
        vlm_MessageDelete( message );
     }

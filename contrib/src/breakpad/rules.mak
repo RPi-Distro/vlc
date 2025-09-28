@@ -16,8 +16,11 @@ $(TARBALLS)/breakpad-$(BREAKPAD_VERSION).tar.gz:
 breakpad: breakpad-$(BREAKPAD_VERSION).tar.gz .sum-breakpad
 	$(UNPACK)
 	$(APPLY) $(SRC)/breakpad/0001-mac-client-Upgrade-Breakpad.xib-to-new-format.patch
+	$(APPLY) $(SRC)/breakpad/windows-arm64.patch
 	sed -i.orig -e "s/GCC_TREAT_WARNINGS_AS_ERRORS = YES/GCC_TREAT_WARNINGS_AS_ERRORS = NO/" "$(UNPACK_DIR)/src/common/mac/Breakpad.xcconfig"
 	$(MOVE)
+
+BREAKPAD_CONF := --disable-processor
 
 .breakpad: breakpad
 	# Framework
@@ -34,7 +37,7 @@ ifdef HAVE_MACOSX
 		install build/Release/dump_syms "$(PREFIX)/bin"
 else
 	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) --disable-processor
-	cd $< && Configuration=Release $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(BREAKPAD_CONF)
+	Configuration=Release $(MAKE) -C $< install
 endif
 	touch $@
