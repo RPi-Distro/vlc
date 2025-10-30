@@ -1,4 +1,4 @@
-From e9cd33d5b9d82f582299301138bedee64bb0cf28 Mon Sep 17 00:00:00 2001
+From d34f564c2a765f59ff1da1753e236623a2402c43 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 22 Oct 2024 15:48:45 +0100
 Subject: [PATCH 20/41] qt/interface: Set scale factor in vout_window

@@ -1,4 +1,4 @@
-From 6d9e032a1a0ae5170a16f3e9f29bbf6b8f44f96f Mon Sep 17 00:00:00 2001
+From 6ecec0cbb4f881cd46cb1e6074605672173367be Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Mon, 28 Jul 2025 18:23:39 +0100
 Subject: [PATCH 39/41] live555: Fix compile error

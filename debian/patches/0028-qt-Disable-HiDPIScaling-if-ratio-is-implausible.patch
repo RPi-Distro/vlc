@@ -1,4 +1,4 @@
-From ec744379d3a83bcc04b8f61f6bdab5d8c4f750a1 Mon Sep 17 00:00:00 2001
+From f3e2e48bf0fad5327c74e383affc026576bb0b7d Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 18:43:19 +0100
 Subject: [PATCH 28/41] qt: Disable HiDPIScaling if ratio is implausible

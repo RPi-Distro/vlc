@@ -1,4 +1,4 @@
-From e60cbd5675906392ca1d68a25e191ce419d4588f Mon Sep 17 00:00:00 2001
+From bbd1d9b3474266b73eadf0e24214e25aceb87056 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:53:42 +0100
 Subject: [PATCH 23/41] qt: Disable 1st run dialog

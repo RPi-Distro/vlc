@@ -1,4 +1,4 @@
-From 5b77fb334e0290dcc60b9403759a440b90d2192b Mon Sep 17 00:00:00 2001
+From dccb02593a433ee8b2c44359ec1f2897b624a5d7 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:59:10 +0100
 Subject: [PATCH 35/41] video_output/wayland: Add dmabuf output
@@ -6,17 +6,18 @@ Subject: [PATCH 35/41] video_output/wayland: Add dmabuf output
 Previously all output was via shm which can be inefficient.
 Depends on some files from drmu for DRM format info.
 ---
- modules/video_output/Makefile.am              |   59 +-
- modules/video_output/wayland/dmabuf_alloc.c   |  516 ++++
+ configure.ac                                  |    9 +
+ modules/video_output/Makefile.am              |   73 +-
+ modules/video_output/wayland/dmabuf_alloc.c   |  516 +++
  modules/video_output/wayland/dmabuf_alloc.h   |   59 +
  modules/video_output/wayland/picpool.c        |  369 +++
  modules/video_output/wayland/picpool.h        |   24 +
  modules/video_output/wayland/rgba_premul.c    |  243 ++
  modules/video_output/wayland/rgba_premul.h    |   18 +
- .../wayland/rgba_premul_aarch64.S             |  170 ++
+ .../wayland/rgba_premul_aarch64.S             |  170 +
  .../wayland/rgba_premul_aarch64.h             |    9 +
- modules/video_output/wayland/wl_dmabuf.c      | 2658 +++++++++++++++++
- 10 files changed, 4124 insertions(+), 1 deletion(-)
+ modules/video_output/wayland/wl_dmabuf.c      | 2885 +++++++++++++++++
+ 11 files changed, 4374 insertions(+), 1 deletion(-)
  create mode 100644 modules/video_output/wayland/dmabuf_alloc.c
  create mode 100644 modules/video_output/wayland/dmabuf_alloc.h
  create mode 100644 modules/video_output/wayland/picpool.c
@@ -27,9 +28,41 @@ Depends on some files from drmu for DRM format info.
  create mode 100644 modules/video_output/wayland/rgba_premul_aarch64.h
  create mode 100644 modules/video_output/wayland/wl_dmabuf.c
 
+--- a/configure.ac
++++ b/configure.ac
+@@ -3206,6 +3206,7 @@ AC_ARG_ENABLE(wayland,
+ have_wayland="no"
+ have_wayland_egl="no"
+ have_wayland_single_pixel_buffer="no"
++have_wayland_color_representation="no"
+ 
+ AS_IF([test "${enable_wayland}" = "yes"], [
+   PKG_CHECK_MODULES([WAYLAND_CLIENT], [wayland-client >= 1.5.91], [
+@@ -3220,6 +3221,13 @@ AS_IF([test "${enable_wayland}" = "yes"]
+       ], [
+          AC_MSG_RESULT([no])
+       ])
++      AC_MSG_CHECKING([for Wayland protocols color representation])
++      PKG_CHECK_EXISTS([wayland-protocols >= 1.44], [
++         AC_MSG_RESULT([yes])
++         have_wayland_color_representation="yes"
++      ], [
++         AC_MSG_RESULT([no])
++      ])
+     ], [
+       AC_MSG_RESULT([not found])
+       AC_MSG_ERROR([$(${PKG_CONFIG} --print-errors 'wayland-protocols >= 1.4')])
+@@ -3254,6 +3262,7 @@ AC_SUBST([WAYLAND_SCANNER])
+ AM_CONDITIONAL([HAVE_WAYLAND], [test "${have_wayland}" = "yes"])
+ AM_CONDITIONAL([HAVE_WAYLAND_EGL], [test "${have_wayland_egl}" = "yes"])
+ AM_CONDITIONAL([HAVE_WAYLAND_SINGLE_PIXEL_BUFFER], [test "${have_wayland_single_pixel_buffer}" = "yes"])
++AM_CONDITIONAL([HAVE_WAYLAND_COLOR_REPRESENTATION], [test "${have_wayland_color_representation}" = "yes"])
+ 
+ 
+ dnl
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -233,7 +233,62 @@ video_output/wayland/viewporter-client-p
+@@ -234,7 +234,76 @@ video_output/wayland/viewporter-client-p
  
  video_output/wayland/viewporter-protocol.c: \
  		$(WAYLAND_PROTOCOLS)/stable/viewporter/viewporter.xml
@@ -54,6 +87,10 @@ Depends on some files from drmu for DRM format info.
 +
 +video_output/wayland/single-pixel-buffer-v1-client-protocol.h: \
 +		$(WAYLAND_PROTOCOLS)/staging/single-pixel-buffer/single-pixel-buffer-v1.xml
++	$(AM_V_GEN)$(WAYLAND_SCANNER) client-header $< $@
++
++video_output/wayland/color-representation-v1-client-protocol.h: \
++		$(WAYLAND_PROTOCOLS)/staging/color-representation/color-representation-v1.xml
 +	$(AM_V_GEN)$(WAYLAND_SCANNER) client-header $< $@
 +
 +libwl_dmabuf_plugin_la_SOURCES = video_output/wayland/wl_dmabuf.c\
@@ -89,11 +126,21 @@ Depends on some files from drmu for DRM format info.
 +	video_output/wayland/single-pixel-buffer-v1-protocol.c
 +libwl_dmabuf_plugin_la_CFLAGS += -DHAVE_WAYLAND_SINGLE_PIXEL_BUFFER=1
 +endif
++if HAVE_WAYLAND_COLOR_REPRESENTATION
++video_output/wayland/color-representation-v1-protocol.c: \
++		$(WAYLAND_PROTOCOLS)/staging/color-representation/color-representation-v1.xml
++	$(AM_V_GEN)$(WAYLAND_SCANNER) private-code $< $@
++nodist_libwl_dmabuf_plugin_la_SOURCES +=\
++	video_output/wayland/color-representation-v1-client-protocol.h \
++	video_output/wayland/color-representation-v1-protocol.c
++libwl_dmabuf_plugin_la_CFLAGS += -DHAVE_WAYLAND_COLOR_REPRESENTATION=1
++endif
++
 +CLEANFILES += $(nodist_libwl_dmabuf_plugin_la_SOURCES)
  
  libwl_shell_plugin_la_SOURCES = video_output/wayland/shell.c
  libwl_shell_plugin_la_CFLAGS = $(WAYLAND_CLIENT_CFLAGS)
-@@ -272,6 +327,8 @@ libegl_wl_plugin_la_LIBADD = $(EGL_LIBS)
+@@ -273,6 +342,8 @@ libegl_wl_plugin_la_LIBADD = $(EGL_LIBS)
  if HAVE_WAYLAND
  BUILT_SOURCES += $(nodist_libwl_shm_plugin_la_SOURCES)
  vout_LTLIBRARIES += libwl_shm_plugin.la
@@ -1536,7 +1583,7 @@ Depends on some files from drmu for DRM format info.
 +#endif
 --- /dev/null
 +++ b/modules/video_output/wayland/wl_dmabuf.c
-@@ -0,0 +1,2658 @@
+@@ -0,0 +1,2885 @@
 +/**
 + * @file shm.c
 + * @brief Wayland shared memory video output module for VLC media player
@@ -1565,6 +1612,9 @@ Depends on some files from drmu for DRM format info.
 +#ifndef HAVE_WAYLAND_SINGLE_PIXEL_BUFFER
 +#define HAVE_WAYLAND_SINGLE_PIXEL_BUFFER 0
 +#endif
++#ifndef HAVE_WAYLAND_COLOR_REPRESENTATION
++#define HAVE_WAYLAND_COLOR_REPRESENTATION 0
++#endif
 +
 +#include <assert.h>
 +#include <stdatomic.h>
@@ -1581,6 +1631,9 @@ Depends on some files from drmu for DRM format info.
 +#include <wayland-client.h>
 +#if HAVE_WAYLAND_SINGLE_PIXEL_BUFFER
 +#include "single-pixel-buffer-v1-client-protocol.h"
++#endif
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++#include "color-representation-v1-client-protocol.h"
 +#endif
 +#include "viewporter-client-protocol.h"
 +#include "linux-dmabuf-unstable-v1-client-protocol.h"
@@ -1672,6 +1725,14 @@ Depends on some files from drmu for DRM format info.
 +    vout_display_place_t dst_rect;
 +    vout_display_place_t orig_rect;
 +
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++    // 0 invalid for all of these
++    enum wp_color_representation_surface_v1_chroma_location chroma_loc;
++    enum wp_color_representation_surface_v1_coefficients coefficients;
++    enum wp_color_representation_surface_v1_range range;
++    enum wp_color_representation_surface_v1_alpha_mode alpha_mode;
++#endif
++
 +    atomic_int ready;
 +
 +    struct polltask * pt;
@@ -1683,6 +1744,9 @@ Depends on some files from drmu for DRM format info.
 +    struct wl_surface * surface;
 +    struct wl_subsurface * subsurface;
 +    struct wp_viewport * viewport;
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++    struct wp_color_representation_surface_v1 * color_rep;
++#endif
 +
 +    bool buffer_attached;
 +    bool commit_req;
@@ -1691,6 +1755,14 @@ Depends on some files from drmu for DRM format info.
 +    enum wl_output_transform trans;
 +    vout_display_place_t src_rect;
 +    vout_display_place_t dst_rect;
++
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++    // 0 invalid for all of these
++    enum wp_color_representation_surface_v1_chroma_location chroma_loc;
++    enum wp_color_representation_surface_v1_coefficients coefficients;
++    enum wp_color_representation_surface_v1_range range;
++    enum wp_color_representation_surface_v1_alpha_mode alpha_mode;
++#endif
 +
 +    subpic_ent_t * spe_cur;
 +    subpic_ent_t * spe_next;
@@ -1722,7 +1794,16 @@ Depends on some files from drmu for DRM format info.
 +#if HAVE_WAYLAND_SINGLE_PIXEL_BUFFER
 +    struct wp_single_pixel_buffer_manager_v1 *single_pixel_buffer_manager_v1;
 +#endif
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++    struct wp_color_representation_manager_v1 *color_representation_manager_v1;
++#endif
 +} w_bound_t;
++
++struct coeff_and_range
++{
++    unsigned int coeff;
++    bool full_range;
++};
 +
 +#define PLANE_BKG 0
 +#define PLANE_VID 1
@@ -1777,6 +1858,14 @@ Depends on some files from drmu for DRM format info.
 +
 +    fmt_list_t dmabuf_fmts;
 +    fmt_list_t shm_fmts;
++
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++    bool has_straight_alpha;
++    struct {
++        enum wp_color_representation_surface_v1_coefficients coefficients;
++        unsigned int ranges; // b0 = full, b1 = restricted
++    }  primary_map[COLOR_PRIMARIES_MAX + 1];
++#endif
 +
 +    unsigned int presentation_clock_id;
 +    pres_stats_env_t * pse;
@@ -1872,6 +1961,17 @@ Depends on some files from drmu for DRM format info.
 +    wp_viewport_destroy(*ppviewport);
 +    *ppviewport = NULL;
 +}
++
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++static void
++color_representation_destroy(struct wp_color_representation_surface_v1 ** const ppcolor_rep)
++{
++    if (*ppcolor_rep == NULL)
++        return;
++    wp_color_representation_surface_v1_destroy(*ppcolor_rep);
++    *ppcolor_rep = NULL;
++}
++#endif
 +
 +static inline int
 +scale_dst(const vout_display_sys_t * const sys, int x)
@@ -2833,6 +2933,39 @@ Depends on some files from drmu for DRM format info.
 +    };
 +}
 +
++static void
++spe_set_color_info(const vout_display_sys_t * const sys, subpic_ent_t * const spe, const video_format_t * const fmt)
++{
++#if !HAVE_WAYLAND_COLOR_REPRESENTATION
++    VLC_UNUSED(spe);
++    VLC_UNUSED(fmt);
++#else
++    static const enum wp_color_representation_surface_v1_chroma_location location_map[CHROMA_LOCATION_MAX + 1] = {
++        [CHROMA_LOCATION_LEFT] = WP_COLOR_REPRESENTATION_SURFACE_V1_CHROMA_LOCATION_TYPE_1,
++        [CHROMA_LOCATION_CENTER] = WP_COLOR_REPRESENTATION_SURFACE_V1_CHROMA_LOCATION_TYPE_2,
++        [CHROMA_LOCATION_TOP_LEFT] = WP_COLOR_REPRESENTATION_SURFACE_V1_CHROMA_LOCATION_TYPE_0,
++        [CHROMA_LOCATION_TOP_CENTER] = WP_COLOR_REPRESENTATION_SURFACE_V1_CHROMA_LOCATION_TYPE_3,
++        [CHROMA_LOCATION_BOTTOM_LEFT] = WP_COLOR_REPRESENTATION_SURFACE_V1_CHROMA_LOCATION_TYPE_4,
++        [CHROMA_LOCATION_BOTTOM_CENTER] = WP_COLOR_REPRESENTATION_SURFACE_V1_CHROMA_LOCATION_TYPE_5,
++    };
++
++    if (sys->bound.color_representation_manager_v1 == NULL)
++        return;
++
++    spe->coefficients = fmt->primaries < 0 || fmt->primaries >= ARRAY_SIZE(sys->primary_map) ? 0 :
++        sys->primary_map[fmt->primaries].coefficients;
++    spe->range = sys->primary_map[fmt->primaries].ranges == 1 ?
++            WP_COLOR_REPRESENTATION_SURFACE_V1_RANGE_FULL :
++        sys->primary_map[fmt->primaries].ranges == 2 ?
++            WP_COLOR_REPRESENTATION_SURFACE_V1_RANGE_LIMITED :
++        fmt->b_color_range_full ?
++            WP_COLOR_REPRESENTATION_SURFACE_V1_RANGE_FULL :
++            WP_COLOR_REPRESENTATION_SURFACE_V1_RANGE_LIMITED;
++    spe->chroma_loc = fmt->chroma_location < 0 || fmt->chroma_location >= ARRAY_SIZE(location_map) ? 0 :
++            location_map[fmt->chroma_location];
++#endif
++}
++
 +static subpic_ent_t *
 +spe_new_pic(vout_display_t * const vd, vout_display_sys_t * const sys,
 +            picture_t * const pic)
@@ -2973,6 +3106,9 @@ Depends on some files from drmu for DRM format info.
 +static void
 +plane_destroy(subplane_t * const spl)
 +{
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++    color_representation_destroy(&spl->color_rep);
++#endif
 +    viewport_destroy(&spl->viewport);
 +    subsurface_destroy(&spl->subsurface);
 +    surface_destroy(&spl->surface);
@@ -2995,6 +3131,10 @@ Depends on some files from drmu for DRM format info.
 +        (plane->subsurface = wl_subcompositor_get_subsurface(sys->bound.subcompositor, plane->surface, parent)) == NULL ||
 +        (plane->viewport = wp_viewporter_get_viewport(sys->bound.viewporter, plane->surface)) == NULL)
 +        return VLC_EGENERIC;
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++    if (sys->bound.color_representation_manager_v1 != NULL)
++        plane->color_rep = wp_color_representation_manager_v1_get_surface(sys->bound.color_representation_manager_v1, plane->surface);
++#endif
 +    wl_subsurface_place_above(plane->subsurface, above);
 +    if (sync)
 +        wl_subsurface_set_sync(plane->subsurface);
@@ -3399,6 +3539,31 @@ Depends on some files from drmu for DRM format info.
 +        commit_req(sys, plane->commit_parent); // Subsurface pos needs parent commit (video)
 +    }
 +
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++    if (plane->color_rep != NULL)
++    {
++        if (spe->alpha_mode && spe->alpha_mode != plane->alpha_mode)
++        {
++            wp_color_representation_surface_v1_set_alpha_mode(plane->color_rep, spe->alpha_mode);
++            plane->alpha_mode = spe->alpha_mode;
++            plane->commit_req = true;
++        }
++        if (spe->chroma_loc && spe->chroma_loc != plane->chroma_loc)
++        {
++            wp_color_representation_surface_v1_set_chroma_location(plane->color_rep, spe->chroma_loc);
++            plane->chroma_loc = spe->chroma_loc;
++            plane->commit_req = true;
++        }
++        if (spe->coefficients && (spe->coefficients != plane->coefficients || spe->range != plane->range))
++        {
++            wp_color_representation_surface_v1_set_coefficients_and_range(plane->color_rep, spe->coefficients, spe->range);
++            plane->coefficients = spe->coefficients;
++            plane->range = spe->range;
++            plane->commit_req = true;
++        }
++    }
++#endif
++
 +    plane->trans = spe->trans;
 +    plane->src_rect = spe->src_rect;
 +    plane->dst_rect = dst_rect;
@@ -3424,6 +3589,8 @@ Depends on some files from drmu for DRM format info.
 +        spe->src_rect = sys->video_src_rect;
 +        spe->dst_rect = sys->video_dst_rect;
 +        spe->orig_rect = spe->dst_rect;
++
++        spe_set_color_info(sys, spe, &pic->format);
 +
 +        if (sys->video_spe_prep)
 +        {
@@ -3800,6 +3967,97 @@ Depends on some files from drmu for DRM format info.
 +};
 +
 +
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++
++/**
++ * supported alpha modes
++ *
++ * When this object is created, it shall immediately send this
++ * event once for each alpha mode the compositor supports.
++ *
++ * For the definition of the supported values, see the
++ * wp_color_representation_surface_v1::alpha_mode enum.
++ * @param alpha_mode supported alpha mode
++ */
++static void color_representation_manager_supported_alpha_mode(void *data,
++                 struct wp_color_representation_manager_v1 *wp_color_representation_manager_v1,
++                 uint32_t alpha_mode)
++{
++    vout_display_t * const vd = data;
++    vout_display_sys_t * const sys = vd->sys;
++    VLC_UNUSED(wp_color_representation_manager_v1);
++
++    if (alpha_mode == WP_COLOR_REPRESENTATION_SURFACE_V1_ALPHA_MODE_STRAIGHT)
++        sys->has_straight_alpha = true;
++}
++
++/**
++ * supported matrix coefficients and ranges
++ *
++ * When this object is created, it shall immediately send this
++ * event once for each matrix coefficient and color range
++ * combination the compositor supports.
++ *
++ * For the definition of the supported values, see the
++ * wp_color_representation_surface_v1::coefficients and
++ * wp_color_representation_surface_v1::range enums.
++ * @param coefficients supported matrix coefficients
++ * @param range full range flag
++ */
++static void color_representation_manager_supported_coefficients_and_ranges(void *data,
++                      struct wp_color_representation_manager_v1 *wp_color_representation_manager_v1,
++                      uint32_t coefficients,
++                      uint32_t range)
++{
++    vout_display_t * const vd = data;
++    vout_display_sys_t * const sys = vd->sys;
++    VLC_UNUSED(wp_color_representation_manager_v1);
++    const unsigned int rmask = (range != WP_COLOR_REPRESENTATION_SURFACE_V1_RANGE_LIMITED) ? 1 : 2;
++
++    switch (coefficients)
++    {
++        case WP_COLOR_REPRESENTATION_SURFACE_V1_COEFFICIENTS_BT601:
++            sys->primary_map[COLOR_PRIMARIES_BT601_525].coefficients = coefficients;
++            sys->primary_map[COLOR_PRIMARIES_BT601_525].ranges |= rmask;
++            sys->primary_map[COLOR_PRIMARIES_BT601_625].coefficients = coefficients;
++            sys->primary_map[COLOR_PRIMARIES_BT601_625].ranges |= rmask;
++            break;
++        case WP_COLOR_REPRESENTATION_SURFACE_V1_COEFFICIENTS_BT709:
++            sys->primary_map[COLOR_PRIMARIES_BT709].coefficients = coefficients;
++            sys->primary_map[COLOR_PRIMARIES_BT709].ranges |= rmask;
++            break;
++        case WP_COLOR_REPRESENTATION_SURFACE_V1_COEFFICIENTS_BT2020:
++            sys->primary_map[COLOR_PRIMARIES_BT2020].coefficients = coefficients;
++            sys->primary_map[COLOR_PRIMARIES_BT2020].ranges |= rmask;
++            break;
++        case WP_COLOR_REPRESENTATION_SURFACE_V1_COEFFICIENTS_FCC:
++            sys->primary_map[COLOR_PRIMARIES_FCC1953].coefficients = coefficients;
++            sys->primary_map[COLOR_PRIMARIES_FCC1953].ranges |= rmask;
++            break;
++        default:
++            break;
++    }
++}
++
++/**
++ * all features have been sent
++ *
++ * This event is sent when all supported features have been sent.
++ */
++static void color_representation_manager_done(void *data,
++         struct wp_color_representation_manager_v1 *wp_color_representation_manager_v1)
++{
++    VLC_UNUSED(data);
++    VLC_UNUSED(wp_color_representation_manager_v1);
++}
++
++static const struct wp_color_representation_manager_v1_listener color_representation_manager_v1_listener = {
++    .supported_alpha_mode = color_representation_manager_supported_alpha_mode,
++    .supported_coefficients_and_ranges = color_representation_manager_supported_coefficients_and_ranges,
++    .done = color_representation_manager_done,
++};
++#endif
++
 +static void w_bound_add(vout_display_t * const vd, w_bound_t * const b,
 +                        struct wl_registry * const registry,
 +                        const uint32_t name, const char *const iface, const uint32_t vers)
@@ -3848,10 +4106,22 @@ Depends on some files from drmu for DRM format info.
 +    if (strcmp(iface, wp_single_pixel_buffer_manager_v1_interface.name) == 0)
 +        b->single_pixel_buffer_manager_v1 = wl_registry_bind(registry, name, &wp_single_pixel_buffer_manager_v1_interface, 1);
 +#endif
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++    else
++    if (strcmp(iface, wp_color_representation_manager_v1_interface.name) == 0)
++    {
++        b->color_representation_manager_v1 = wl_registry_bind(registry, name, &wp_color_representation_manager_v1_interface, 1);
++        wp_color_representation_manager_v1_add_listener(b->color_representation_manager_v1, &color_representation_manager_v1_listener, vd);
++    }
++#endif
 +}
 +
 +static void w_bound_destroy(w_bound_t * const b)
 +{
++#if HAVE_WAYLAND_COLOR_REPRESENTATION
++    if (b->color_representation_manager_v1 != NULL)
++        wp_color_representation_manager_v1_destroy(b->color_representation_manager_v1);
++#endif
 +    if (b->viewporter != NULL)
 +        wp_viewporter_destroy(b->viewporter);
 +    if (b->linux_dmabuf_v1 != NULL)
@@ -3954,6 +4224,10 @@ Depends on some files from drmu for DRM format info.
 +    {
 +        unmap_all(sys, true);
 +        bkg_surface_unlock(vd, sys);
++    }
++    else
++    {
++        unmap_all(sys, false);
 +    }
 +
 +    // w_display/w_discard updated in unmap_all

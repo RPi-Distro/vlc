@@ -1,4 +1,4 @@
-From 4a48ee7d6d0d89bc697fa06ece7ac1009ad7dff5 Mon Sep 17 00:00:00 2001
+From bd490952530b0a564455a71fe9b2ef1e0378467c Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:45:14 +0100
 Subject: [PATCH 22/41] qt/controller: Make fullscreen controller a popup under

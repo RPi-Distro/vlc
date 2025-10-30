@@ -1,4 +1,4 @@
-From e2b6c269db3d33ca4a72eec77aaa227ee03df998 Mon Sep 17 00:00:00 2001
+From 4b518647d092a985e8e70ea9388d0a8dbe25d43d Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:16:27 +0100
 Subject: [PATCH 31/41] video_output: Prioritise GLES over GL

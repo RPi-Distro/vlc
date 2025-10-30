@@ -1,4 +1,4 @@
-From f0d5a040bab76ea7d63725b02564bcde1f2e231c Mon Sep 17 00:00:00 2001
+From e2f1ea3c9ee450c9c6c6af0ac6ca505cbbe10968 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:05:36 +0100
 Subject: [PATCH 18/41] qt/interface_widgets: Use window locks when handle
@@ -11,9 +11,9 @@ shortly after window creation when playing video.
 Use the new window handle locks to signal this to the player to avoid it
 trying to use stale handles which will crash VLC.
 ---
- .../gui/qt/components/interface_widgets.cpp   | 70 ++++++++++++++++++-
- .../gui/qt/components/interface_widgets.hpp   |  4 ++
- 2 files changed, 73 insertions(+), 1 deletion(-)
+ .../gui/qt/components/interface_widgets.cpp   | 79 ++++++++++++++++++-
+ .../gui/qt/components/interface_widgets.hpp   |  4 +
+ 2 files changed, 82 insertions(+), 1 deletion(-)
 
 --- a/modules/gui/qt/components/interface_widgets.cpp
 +++ b/modules/gui/qt/components/interface_widgets.cpp
@@ -122,6 +122,22 @@ trying to use stale handles which will crash VLC.
  void VideoWidget::resizeEvent( QResizeEvent *event )
  {
      QWidget::resizeEvent( event );
+@@ -413,6 +481,15 @@ void VideoWidget::release( bool forced )
+         layout->removeWidget( stable );
+         stable->deleteLater();
+         stable = NULL;
++
++#ifdef QT5_HAS_WAYLAND
++        vlc_mutex_lock(&p_window->handle_lock);
++        msg_Dbg( p_intf, "video widget handle zap" );
++        p_window->handle.wl = NULL;
++        incnz(&p_window->handle_seq);
++        vlc_mutex_unlock(&p_window->handle_lock);
++#endif
++
+         p_window = NULL;
+     }
+ 
 --- a/modules/gui/qt/components/interface_widgets.hpp
 +++ b/modules/gui/qt/components/interface_widgets.hpp
 @@ -69,6 +69,8 @@ protected:

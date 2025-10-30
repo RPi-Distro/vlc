@@ -1,4 +1,4 @@
-From 9dc6328205c57c47d87cb4cc95b854c25d2be018 Mon Sep 17 00:00:00 2001
+From 7dc565ecb6e84c5ba03e6eeec88b0cdc50e28aa5 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:54:53 +0100
 Subject: [PATCH 34/41] video_output/drmu: Add DRM video output
@@ -6,37 +6,39 @@ Subject: [PATCH 34/41] video_output/drmu: Add DRM video output
 Heavily based on my somewhat independent drmu project
 Can do HDR setup and mode matching
 ---
- modules/video_output/Makefile.am          |   28 +
- modules/video_output/drmu/drm_vout.c      | 1433 ++++++++
- modules/video_output/drmu/drmu.c          | 3646 +++++++++++++++++++++
- modules/video_output/drmu/drmu.h          |  585 ++++
- modules/video_output/drmu/drmu_atomic.c   |  946 ++++++
- modules/video_output/drmu/drmu_chroma.h   |   47 +
- modules/video_output/drmu/drmu_dmabuf.c   |  206 ++
- modules/video_output/drmu/drmu_dmabuf.h   |   47 +
- modules/video_output/drmu/drmu_fmts.c     |  253 ++
- modules/video_output/drmu/drmu_fmts.h     |   31 +
- modules/video_output/drmu/drmu_log.h      |   81 +
- modules/video_output/drmu/drmu_math.c     |   43 +
- modules/video_output/drmu/drmu_math.h     |  127 +
- modules/video_output/drmu/drmu_output.c   |  667 ++++
- modules/video_output/drmu/drmu_output.h   |   98 +
- modules/video_output/drmu/drmu_poll.c     |  387 +++
- modules/video_output/drmu/drmu_poll.h     |   27 +
- modules/video_output/drmu/drmu_pool.c     |  306 ++
- modules/video_output/drmu/drmu_pool.h     |   58 +
- modules/video_output/drmu/drmu_scan.c     |   60 +
- modules/video_output/drmu/drmu_scan.h     |   20 +
- modules/video_output/drmu/drmu_util.c     |  163 +
- modules/video_output/drmu/drmu_util.h     |   58 +
- modules/video_output/drmu/drmu_vlc.c      |  353 ++
- modules/video_output/drmu/drmu_vlc.h      |   81 +
- modules/video_output/drmu/drmu_vlc_fmts.c |  258 ++
- modules/video_output/drmu/drmu_vlc_fmts.h |   57 +
- modules/video_output/drmu/drmu_xlease.c   |  143 +
- modules/video_output/drmu/pollqueue.c     |  716 ++++
- modules/video_output/drmu/pollqueue.h     |  101 +
- 30 files changed, 11026 insertions(+)
+ modules/video_output/Makefile.am           |   29 +
+ modules/video_output/drmu/drm_vout.c       | 1503 ++++++++
+ modules/video_output/drmu/drmu.c           | 3922 ++++++++++++++++++++
+ modules/video_output/drmu/drmu.h           |  703 ++++
+ modules/video_output/drmu/drmu_atomic.c    |  992 +++++
+ modules/video_output/drmu/drmu_chroma.h    |   47 +
+ modules/video_output/drmu/drmu_dmabuf.c    |  206 +
+ modules/video_output/drmu/drmu_dmabuf.h    |   47 +
+ modules/video_output/drmu/drmu_fmts.c      |  253 ++
+ modules/video_output/drmu/drmu_fmts.h      |   31 +
+ modules/video_output/drmu/drmu_log.h       |   81 +
+ modules/video_output/drmu/drmu_math.c      |   43 +
+ modules/video_output/drmu/drmu_math.h      |  149 +
+ modules/video_output/drmu/drmu_output.c    |  589 +++
+ modules/video_output/drmu/drmu_output.h    |  114 +
+ modules/video_output/drmu/drmu_poll.c      |  549 +++
+ modules/video_output/drmu/drmu_poll.h      |   80 +
+ modules/video_output/drmu/drmu_pool.c      |  307 ++
+ modules/video_output/drmu/drmu_pool.h      |   60 +
+ modules/video_output/drmu/drmu_scan.c      |   60 +
+ modules/video_output/drmu/drmu_scan.h      |   20 +
+ modules/video_output/drmu/drmu_util.c      |  199 +
+ modules/video_output/drmu/drmu_util.h      |   64 +
+ modules/video_output/drmu/drmu_vlc.c       |  381 ++
+ modules/video_output/drmu/drmu_vlc.h       |   81 +
+ modules/video_output/drmu/drmu_vlc_fmts.c  |  258 ++
+ modules/video_output/drmu/drmu_vlc_fmts.h  |   57 +
+ modules/video_output/drmu/drmu_writeback.c |  429 +++
+ modules/video_output/drmu/drmu_writeback.h |   64 +
+ modules/video_output/drmu/drmu_xlease.c    |  143 +
+ modules/video_output/drmu/pollqueue.c      |  716 ++++
+ modules/video_output/drmu/pollqueue.h      |  101 +
+ 32 files changed, 12278 insertions(+)
  create mode 100644 modules/video_output/drmu/drm_vout.c
  create mode 100644 modules/video_output/drmu/drmu.c
  create mode 100644 modules/video_output/drmu/drmu.h
@@ -63,13 +65,15 @@ Can do HDR setup and mode matching
  create mode 100644 modules/video_output/drmu/drmu_vlc.h
  create mode 100644 modules/video_output/drmu/drmu_vlc_fmts.c
  create mode 100644 modules/video_output/drmu/drmu_vlc_fmts.h
+ create mode 100644 modules/video_output/drmu/drmu_writeback.c
+ create mode 100644 modules/video_output/drmu/drmu_writeback.h
  create mode 100644 modules/video_output/drmu/drmu_xlease.c
  create mode 100644 modules/video_output/drmu/pollqueue.c
  create mode 100644 modules/video_output/drmu/pollqueue.h
 
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -187,6 +187,34 @@ vout_LTLIBRARIES += libglx_plugin.la
+@@ -187,6 +187,35 @@ vout_LTLIBRARIES += libglx_plugin.la
  endif
  endif
  
@@ -80,6 +84,7 @@ Can do HDR setup and mode matching
 +	video_output/drmu/drmu_vlc_fmts.c video_output/drmu/drmu_vlc_fmts.h \
 +	video_output/drmu/drmu_fmts.c video_output/drmu/drmu_fmts.h \
 +	video_output/drmu/drmu_chroma.h \
++	video_output/drmu/drmu_writeback.h video_output/drmu/drmu_writeback.c \
 +	video_output/drmu/drmu_poll.h video_output/drmu/drmu_poll.c \
 +	video_output/drmu/drmu_log.h video_output/drmu/drmu.c \
 +	video_output/drmu/drmu_xlease.c video_output/drmu/drmu_atomic.c \
@@ -106,7 +111,7 @@ Can do HDR setup and mode matching
  libwl_shm_plugin_la_SOURCES = video_output/wayland/shm.c
 --- /dev/null
 +++ b/modules/video_output/drmu/drm_vout.c
-@@ -0,0 +1,1433 @@
+@@ -0,0 +1,1503 @@
 +/*****************************************************************************
 + * drm_vout.c: DRM based output device
 + *****************************************************************************
@@ -147,6 +152,7 @@ Can do HDR setup and mode matching
 +#include "drmu_scan.h"
 +#include "drmu_util.h"
 +#include "drmu_vlc.h"
++#include "drmu_writeback.h"
 +
 +#include <vlc_common.h>
 +
@@ -216,12 +222,25 @@ Can do HDR setup and mode matching
 +    unsigned int alpha; // out of 0xff * 0xff
 +} subpic_ent_t;
 +
++typedef struct wb_display_env_s {
++    drmu_atomic_t * da;
++    drmu_rect_t display_rect;
++    drmu_plane_t * dp;
++} wb_display_env_t;
++
 +typedef struct vout_display_sys_t {
 +    drmu_env_t * du;
 +    drmu_output_t * dout;
 +    drmu_plane_t * dp;
 +    drmu_pool_t * pic_pool;
 +    drmu_pool_t * sub_fb_pool;
++
++    unsigned int display_orientation;
++    drmu_writeback_env_t * wbe;
++    drmu_writeback_fb_t * pic_wbq;
++    wb_display_env_t * wde;
++    drmu_fb_t * wb_fb;
++
 +    drmu_plane_t * subplanes[SUBPICS_MAX];
 +    subpic_ent_t subpics[SUBPICS_MAX];
 +    vlc_fourcc_t * subpic_chromas;
@@ -610,6 +629,19 @@ Can do HDR setup and mode matching
 +            vplace_transpose(sys->display_rect) : sys->display_rect;
 +}
 +
++static void
++wb_display_done_cb(void * v, drmu_fb_t * fb)
++{
++    wb_display_env_t * const wde = v;
++    if (fb != NULL) {
++        drmu_atomic_plane_add_fb(wde->da, wde->dp, fb, wde->display_rect);
++        drmu_atomic_queue(&wde->da);
++    }
++    drmu_atomic_unref(&wde->da);
++    drmu_plane_unref(&wde->dp);
++    free(wde);
++}
++
 +static void vd_drm_prepare(vout_display_t *vd, picture_t *pic,
 +                       subpicture_t *subpicture)
 +{
@@ -761,7 +793,28 @@ Can do HDR setup and mode matching
 +#endif
 +    drmu_output_fb_info_set(sys->dout, dfb);
 +
-+    ret = drmu_atomic_plane_add_fb(da, sys->dp, dfb, r);
++    {
++        unsigned int pic_rot = drmu_fb_rotation(dfb, sys->display_orientation);
++        if (!drmu_plane_rotation_valid(sys->dp, pic_rot)) {
++
++            if (sys->wbe == NULL) {
++                sys->wbe = drmu_writeback_env_new(sys->du);
++                sys->pic_wbq = drmu_writeback_fb_new(sys->wbe, sys->pic_pool);
++            }
++
++            sys->wde = calloc(1, sizeof(*sys->wde));
++            sys->wde->display_rect = r;
++            sys->wde->dp = drmu_plane_ref(sys->dp);
++            sys->wde->da = drmu_atomic_ref(da); // Just a ref - not a copy so later adds apply
++            sys->wb_fb = drmu_fb_ref(dfb);
++            ret = 0;
++        }
++        else {
++            ret = drmu_atomic_plane_add_fb(da, sys->dp, dfb, r);
++            drmu_atomic_plane_add_rotation(da, sys->dp, pic_rot);
++        }
++    }
++
 +    drmu_atomic_output_add_props(da, sys->dout);
 +    drmu_fb_unref(&dfb);
 +
@@ -810,7 +863,22 @@ Can do HDR setup and mode matching
 +    msg_Dbg(vd, "<<< %s", __func__);
 +#endif
 +
-+    drmu_atomic_queue(&sys->display_set);
++    if (sys->wde) {
++        // Pick the smallest of display and source as writeback buffer size
++        drmu_rect_t wb_rect = drmu_rect_shr16(drmu_fb_crop_frac(sys->wb_fb));
++        if (sys->wde->display_rect.w < wb_rect.w)
++            wb_rect.w = sys->wde->display_rect.w;
++        if (sys->wde->display_rect.h < wb_rect.h)
++            wb_rect.h = sys->wde->display_rect.h;
++
++        drmu_atomic_unref(&sys->display_set);
++        drmu_writeback_fb_queue(sys->pic_wbq, wb_rect, sys->display_orientation, DRM_FORMAT_XRGB8888, wb_display_done_cb, sys->wde, sys->wb_fb);
++        sys->wde = NULL;
++        drmu_fb_unref(&sys->wb_fb);
++    }
++    else {
++        drmu_atomic_queue(&sys->display_set);
++    }
 +
 +    if (subpicture)
 +        subpicture_Delete(subpicture);
@@ -1128,6 +1196,13 @@ Can do HDR setup and mode matching
 +
 +    msg_Dbg(vd, "<<< %s", __func__);
 +
++    if (sys->wde != NULL)
++        wb_display_done_cb(sys->wde, NULL);
++    drmu_fb_unref(&sys->wb_fb);
++
++    drmu_writeback_fb_unref(&sys->pic_wbq);
++    drmu_writeback_env_finish(&sys->wbe);
++
 +    drmu_pool_kill(&sys->sub_fb_pool);
 +    drmu_pool_kill(&sys->pic_pool);
 +
@@ -1263,14 +1338,14 @@ Can do HDR setup and mode matching
 +    int ret = VLC_EGENERIC;
 +    int rv;
 +
-+    msg_Info(vd, "<<< %s: %s %dx%d(%dx%d @ %d,%d %d/%d), cfg.display: %dx%d, source: %dx%d(%dx%d @ %d,%d %d/%d)", __func__,
++    msg_Info(vd, "<<< %s: %s %dx%d(%dx%d @ %d,%d %d/%d) or %d, cfg.display: %dx%d, source: %dx%d(%dx%d @ %d,%d %d/%d) or %d", __func__,
 +             drmu_log_fourcc(vd->fmt.i_chroma), vd->fmt.i_width, vd->fmt.i_height,
 +             vd->fmt.i_visible_width, vd->fmt.i_visible_height, vd->fmt.i_x_offset, vd->fmt.i_y_offset,
-+             vd->fmt.i_sar_num, vd->fmt.i_sar_den,
++             vd->fmt.i_sar_num, vd->fmt.i_sar_den, vd->fmt.orientation,
 +             vd->cfg->display.width, vd->cfg->display.height,
 +             vd->source.i_width, vd->source.i_height,
 +             vd->source.i_visible_width, vd->source.i_visible_height, vd->source.i_x_offset, vd->source.i_y_offset,
-+             vd->source.i_sar_num, vd->source.i_sar_den);
++             vd->source.i_sar_num, vd->source.i_sar_den, vd->source.orientation);
 +
 +//    if (!var_InheritBool(vd, "fullscreen")) {
 +//        msg_Dbg(vd, ">>> %s: Not fullscreen", __func__);
@@ -1542,7 +1617,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu.c
-@@ -0,0 +1,3646 @@
+@@ -0,0 +1,3922 @@
 +// Needed to ensure we get a 64-bit offset to mmap when mapping BOs
 +#undef _FILE_OFFSET_BITS
 +#define _FILE_OFFSET_BITS 64
@@ -2350,6 +2425,39 @@ Can do HDR setup and mode matching
 +    free(bo);
 +}
 +
++void *
++drmu_bo_mmap(const drmu_bo_t * const bo, const size_t length, const int prot, const int flags)
++{
++    void * map_ptr = NULL;
++
++    if (bo != NULL) {
++        struct drm_mode_map_dumb map_dumb = { .handle = bo->handle };
++        drmu_env_t * const du = bo->du;
++        int rv;
++
++        if ((rv = drmu_ioctl(du, DRM_IOCTL_MODE_MAP_DUMB, &map_dumb)) != 0)
++        {
++            drmu_err(du, "%s: map dumb failed: %s", __func__, strerror(-rv));
++            return NULL;
++        }
++
++        // Avoid having to test for MAP_FAILED when testing for mapped/unmapped
++        if ((map_ptr = mmap(NULL, length, prot, flags,
++                            drmu_fd(du), map_dumb.offset)) == MAP_FAILED) {
++            drmu_err(du, "%s: mmap failed (size=%#zx, fd=%d, off=%#"PRIx64"): %s", __func__,
++                     length, drmu_fd(du), map_dumb.offset, strerror(errno));
++            return NULL;
++        }
++    }
++
++    return map_ptr;
++}
++
++uint32_t
++drmu_bo_handle(const drmu_bo_t * const bo)
++{
++    return bo == NULL ? 0 : bo->handle;
++}
 +
 +void
 +drmu_bo_unref(drmu_bo_t ** const ppbo)
@@ -2534,14 +2642,19 @@ Can do HDR setup and mode matching
 +    drmu_rect_t active;     // Area that was asked for inside the buffer; pixels
 +    drmu_rect_t crop;       // Cropping inside that; fractional pels (16.16, 16.16)
 +
-+    int buf_fd;
++    struct {
++        int fd;
 +
-+    void * map_ptr;
-+    size_t map_size;
-+    size_t map_pitch;
++        drmu_bo_t * bo;
 +
-+    drmu_bo_t * bo_list[4];
++        void * map_ptr;
++        size_t map_size;
++        size_t map_pitch;
++    } objects[4];
 +
++    int8_t layer_obj[4];
++
++    unsigned int orientation;  // Orientation of FB i.e. inverse of rot to 0
 +    drmu_color_encoding_t color_encoding; // Assumed to be constant strings that don't need freeing
 +    drmu_color_range_t    color_range;
 +    drmu_colorspace_t     colorspace;
@@ -2591,16 +2704,21 @@ Can do HDR setup and mode matching
 +    return rv;
 +}
 +
++int
++drmu_fb_out_fence_take_fd(drmu_fb_t * const fb)
++{
++    int fd = fb->fence_fd;
++    fb->fence_fd = -1;
++    return fd;
++}
++
 +void
 +drmu_fb_int_free(drmu_fb_t * const dfb)
 +{
 +    drmu_env_t * const du = dfb->du;
 +    unsigned int i;
 +
-+    if (dfb->pre_delete_fn && dfb->pre_delete_fn(dfb, dfb->pre_delete_v) != 0)
-+        return;
-+
-+    // * If we implement callbacks this logic will want revision
++    // Assume pre_delete is used for pool - kill stuff we don't want in pool
 +    if (dfb->fence_fd != -1) {
 +        drmu_warn(du, "Out fence still set on FB on delete");
 +        if (drmu_fb_out_fence_wait(dfb, 500) == 0) {
@@ -2609,17 +2727,21 @@ Can do HDR setup and mode matching
 +        }
 +    }
 +
++    // Pre delete
++    if (dfb->pre_delete_fn && dfb->pre_delete_fn(dfb, dfb->pre_delete_v) != 0)
++        return;
++
 +    if (dfb->fb.fb_id != 0)
 +        drmu_ioctl(du, DRM_IOCTL_MODE_RMFB, &dfb->fb.fb_id);
 +
-+    if (dfb->map_ptr != NULL && dfb->map_ptr != MAP_FAILED)
-+        munmap(dfb->map_ptr, dfb->map_size);
++    for (i = 0; i != 4; ++i) {
++        if (dfb->objects[i].map_ptr != NULL)
++            munmap(dfb->objects[i].map_ptr, dfb->objects[i].map_size);
++        drmu_bo_unref(&dfb->objects[i].bo);
++        if (dfb->objects[i].fd != -1)
++            close(dfb->objects[i].fd);
++    }
 +
-+    for (i = 0; i != 4; ++i)
-+        drmu_bo_unref(dfb->bo_list + i);
-+
-+    if (dfb->buf_fd != -1)
-+        close(dfb->buf_fd);
 +
 +    // Call on_delete last so we have stopped using anything that might be
 +    // freed by it
@@ -2649,25 +2771,12 @@ Can do HDR setup and mode matching
 +    drmu_fb_int_free(dfb);
 +}
 +
-+static void
-+atomic_prop_fb_unref_cb(void * v)
-+{
-+    drmu_fb_t * dfb = v;
-+    drmu_fb_unref(&dfb);
-+}
-+
 +drmu_fb_t *
 +drmu_fb_ref(drmu_fb_t * const dfb)
 +{
 +    if (dfb != NULL)
 +        atomic_fetch_add(&dfb->ref_count, 1);
 +    return dfb;
-+}
-+
-+static void
-+atomic_prop_fb_ref_cb(void * v)
-+{
-+    drmu_fb_ref(v);
 +}
 +
 +// Beware: used by pool fns
@@ -2705,6 +2814,9 @@ Can do HDR setup and mode matching
 +        const uint64_t m = dfb->fb.modifier[layer];
 +        const uint64_t s2 = fourcc_mod_broadcom_param(m);
 +
++        if (m == DRM_FORMAT_MOD_BROADCOM_SAND128_COL_HEIGHT(0))
++            return layer == 0 ? dfb->fb.height : dfb->fb.height / 2;
++
 +        // No good masks to check modifier so check if we convert back it matches
 +        if (m != 0 && m != DRM_FORMAT_MOD_INVALID &&
 +            DRM_FORMAT_MOD_BROADCOM_SAND128_COL_HEIGHT(s2) == m)
@@ -2716,13 +2828,26 @@ Can do HDR setup and mode matching
 +void *
 +drmu_fb_data(const drmu_fb_t *const dfb, const unsigned int layer)
 +{
-+    return (layer >= 4 || dfb->map_ptr == NULL) ? NULL : (uint8_t * )dfb->map_ptr + dfb->fb.offsets[layer];
++    int obj_idx;
++    if (layer >= 4)
++        return NULL;
++    obj_idx = dfb->layer_obj[layer];
++    if (obj_idx < 0)
++        return NULL;
++    return (dfb->objects[obj_idx].map_ptr == NULL) ? NULL :
++        (uint8_t * )dfb->objects[obj_idx].map_ptr + dfb->fb.offsets[layer];
 +}
 +
 +drmu_bo_t *
 +drmu_fb_bo(const drmu_fb_t * const dfb, const unsigned int layer)
 +{
-+    return (layer >= 4) ? NULL : dfb->bo_list[layer];
++    int obj_idx;
++    if (layer >= 4)
++        return NULL;
++    obj_idx = dfb->layer_obj[layer];
++    if (obj_idx < 0)
++        return NULL;
++    return dfb->objects[obj_idx].bo;
 +}
 +
 +uint32_t
@@ -2795,6 +2920,27 @@ Can do HDR setup and mode matching
 +    dfb->chroma_siting   = siting;
 +}
 +
++int
++drmu_fb_orientation_set(drmu_fb_t *const dfb, const unsigned int orientation)
++{
++    if (!drmu_rotation_is_valid(orientation))
++        return -EINVAL;
++    dfb->orientation = orientation;
++    return 0;
++}
++
++unsigned int
++drmu_fb_orientation_get(const drmu_fb_t *const dfb)
++{
++    return dfb->orientation;
++}
++
++unsigned int
++drmu_fb_rotation(const drmu_fb_t *const dfb, const unsigned int dest_rot)
++{
++    return drmu_rotation_subb(dest_rot, dfb->orientation);
++}
++
 +void
 +drmu_fb_int_on_delete_set(drmu_fb_t *const dfb, drmu_fb_on_delete_fn fn, void * v)
 +{
@@ -2803,29 +2949,30 @@ Can do HDR setup and mode matching
 +}
 +
 +void
-+drmu_fb_int_bo_set(drmu_fb_t *const dfb, unsigned int i, drmu_bo_t * const bo)
++drmu_fb_int_bo_set(drmu_fb_t *const dfb, const unsigned int obj_idx, drmu_bo_t * const bo)
 +{
-+    dfb->bo_list[i] = bo;
++    dfb->objects[obj_idx].bo = bo;
 +}
 +
 +void
-+drmu_fb_int_fd_set(drmu_fb_t *const dfb, const int fd)
++drmu_fb_int_fd_set(drmu_fb_t *const dfb, const unsigned int obj_idx, const int fd)
 +{
-+    dfb->buf_fd = fd;
++    dfb->objects[obj_idx].fd = fd;
 +}
 +
 +void
-+drmu_fb_int_mmap_set(drmu_fb_t *const dfb, void * const buf, const size_t size, const size_t pitch)
++drmu_fb_int_mmap_set(drmu_fb_t *const dfb, const unsigned int obj_idx, void * const buf, const size_t size, const size_t pitch)
 +{
-+    dfb->map_ptr = buf;
-+    dfb->map_size = size;
-+    dfb->map_pitch = pitch;
++    dfb->objects[obj_idx].map_ptr = buf;
++    dfb->objects[obj_idx].map_size = size;
++    dfb->objects[obj_idx].map_pitch = pitch;
 +}
 +
 +void
 +drmu_fb_int_layer_mod_set(drmu_fb_t *const dfb, unsigned int i, unsigned int obj_idx, uint32_t pitch, uint32_t offset, uint64_t modifier)
 +{
-+    dfb->fb.handles[i] = dfb->bo_list[obj_idx]->handle;
++    dfb->layer_obj[i] = obj_idx;
++    dfb->fb.handles[i] = drmu_bo_handle(dfb->objects[obj_idx].bo);
 +    dfb->fb.pitches[i] = pitch;
 +    dfb->fb.offsets[i] = offset;
 +    // We should be able to have "invalid" modifiers and not set the flag
@@ -2916,7 +3063,10 @@ Can do HDR setup and mode matching
 +
 +    dfb->du = du;
 +    dfb->chroma_siting = DRMU_CHROMA_SITING_UNSPECIFIED;
-+    dfb->buf_fd = -1;
++    for (unsigned int i = 0; i != 4; ++i)
++        dfb->objects[i].fd = -1;
++    for (unsigned int i = 0; i != 4; ++i)
++        dfb->layer_obj[i] = -1;
 +    dfb->fence_fd = -1;
 +    return dfb;
 +}
@@ -2943,17 +3093,20 @@ Can do HDR setup and mode matching
 +static int
 +fb_sync(drmu_fb_t * const dfb, unsigned int flags)
 +{
-+    struct dma_buf_sync sync = {
-+        .flags = flags
-+    };
-+    if (dfb->buf_fd == -1 || dfb->map_ptr == NULL)
-+        return 0;
-+    while (ioctl(dfb->buf_fd, DMA_BUF_IOCTL_SYNC, &sync) == -1) {
-+        const int err = errno;
-+        if (errno == EINTR)
-+            continue;
-+        drmu_debug(dfb->du, "%s: ioctl failed: flags=%#x\n", __func__, flags);
-+        return -err;
++    unsigned int i;
++    for (i = 0; i != 4; ++i) {
++        if (dfb->objects[i].fd != -1 && dfb->objects[i].map_ptr != NULL) {
++            struct dma_buf_sync sync = {
++                .flags = flags
++            };
++            while (ioctl(dfb->objects[i].fd, DMA_BUF_IOCTL_SYNC, &sync) == -1) {
++                const int err = errno;
++                if (errno == EINTR)
++                    continue;
++                drmu_debug(dfb->du, "%s: ioctl failed: flags=%#x\n", __func__, flags);
++                return -err;
++            }
++        }
 +    }
 +    return 0;
 +}
@@ -2978,25 +3131,91 @@ Can do HDR setup and mode matching
 +    return fb_sync(dfb, DMA_BUF_SYNC_END | DMA_BUF_SYNC_READ);
 +}
 +
++typedef struct fb_fence_cb_env_s {
++    atomic_int ref_count;
++    drmu_fb_t * dfb;
++    drmu_fb_fence_fd_fn * fn;
++    void * v;
++} fb_fence_cb_env_t;
++
++static void
++fb_fence_cb_env_free(fb_fence_cb_env_t * const ffce)
++{
++    ffce->fn(ffce->v, -1, NULL);
++    drmu_fb_unref(&ffce->dfb);
++    free(ffce);
++}
++
++static fb_fence_cb_env_t *
++fb_fence_cb_env_new(drmu_fb_t * dfb, drmu_fb_fence_fd_fn * fn, void * v)
++{
++    fb_fence_cb_env_t * const ffce = malloc(sizeof(*ffce));
++    if (ffce == NULL)
++        return NULL;
++    atomic_init(&ffce->ref_count, 0);
++    ffce->dfb = drmu_fb_ref(dfb);
++    ffce->fn = fn;
++    ffce->v = v;
++    return ffce;
++}
++
++static void
++atomic_prop_fb_out_fence_unref_cb(void * v)
++{
++    fb_fence_cb_env_t * const ffce = v;
++    if (atomic_fetch_sub(&ffce->ref_count, 1) != 0)
++        return;
++    fb_fence_cb_env_free(ffce);
++}
++
++static void
++atomic_prop_fb_out_fence_ref_cb(void * v)
++{
++    fb_fence_cb_env_t * const ffce = v;
++    atomic_fetch_add(&ffce->ref_count, 1);
++}
++
++static void
++atomic_prop_fb_out_fence_commit_cb(void * v, uint64_t value)
++{
++    fb_fence_cb_env_t * const ffce = v;
++    assert(*(int*)(intptr_t)(value) != -1);
++    assert(*(int*)(intptr_t)(value) == ffce->dfb->fence_fd);
++    ffce->fn(ffce->v, *(int*)(intptr_t)(value), ffce->dfb);
++}
++
 +// Writeback fence
 +// Must be unset before set again
 +// (This is as a handy hint that you must wait for the previous fence
 +// to go ready before you set a new one)
 +static int
-+atomic_fb_add_out_fence(drmu_atomic_t * const da, const uint32_t obj_id, const uint32_t prop_id, drmu_fb_t * const dfb)
++atomic_fb_add_out_fence(drmu_atomic_t * const da, const uint32_t obj_id, const uint32_t prop_id, drmu_fb_t * const dfb,
++                        drmu_fb_fence_fd_fn * fn, void * v)
 +{
-+    static const drmu_atomic_prop_fns_t fns = {
-+        .ref    = atomic_prop_fb_ref_cb,
-+        .unref  = atomic_prop_fb_unref_cb,
-+        .commit = drmu_prop_fn_null_commit,
++    int rv;
++    fb_fence_cb_env_t * const ffce = fb_fence_cb_env_new(dfb, fn, v);
++
++    static const drmu_atomic_prop_fns_t fence_fns = {
++        .ref    = atomic_prop_fb_out_fence_ref_cb,
++        .unref  = atomic_prop_fb_out_fence_unref_cb,
++        .commit = atomic_prop_fb_out_fence_commit_cb
 +    };
 +
-+    if (!dfb)
-+        return -EINVAL;
-+    if (dfb->fence_fd != -1)
-+        return -EBUSY;
++    if (ffce == NULL) {
++        fn(v, -1, NULL);
++        return -ENOMEM;
++    }
 +
-+    return drmu_atomic_add_prop_generic(da, obj_id, prop_id, (uintptr_t)&dfb->fence_fd, &fns, dfb);
++    if (!dfb)
++        rv = -EINVAL;
++    else if (dfb->fence_fd != -1)
++        rv = -EBUSY;
++    else
++        rv = drmu_atomic_add_prop_generic(da, obj_id, prop_id, (uintptr_t)&dfb->fence_fd, &fence_fns, ffce);
++
++    // ref will be taken by add_prop_generic if it succeeds
++    atomic_prop_fb_out_fence_unref_cb(ffce);
++    return rv;
 +}
 +
 +// For allocation purposes given fb_pixel bits how tall
@@ -3016,41 +3235,16 @@ Can do HDR setup and mode matching
 +    return t;
 +}
 +
-+static void
-+fb_pitches_set_mod(drmu_fb_t * const dfb, uint64_t mod)
-+{
-+    const drmu_fmt_info_t *const f = dfb->fmt_info;
-+    const uint32_t pitch0 = dfb->map_pitch * drmu_fmt_info_wdiv(f, 0);
-+    const uint32_t h = drmu_fb_height(dfb);
-+    const unsigned int c = drmu_fmt_info_plane_count(f);
-+    uint32_t t = 0;
-+    unsigned int i;
-+
-+    // This should be true for anything we've allocated
-+    if (mod == DRM_FORMAT_MOD_BROADCOM_SAND128_COL_HEIGHT(0)) {
-+        // Cope with the joy that is sand
-+        mod = DRM_FORMAT_MOD_BROADCOM_SAND128_COL_HEIGHT(h * 3/2);
-+        drmu_fb_int_layer_mod_set(dfb, 0, 0, dfb->map_pitch, 0, mod);
-+        drmu_fb_int_layer_mod_set(dfb, 1, 0, dfb->map_pitch, h * 128, mod);
-+        return;
-+    }
-+
-+    for (i = 0; i != c; ++i) {
-+        const unsigned int wdiv = drmu_fmt_info_wdiv(f, i);
-+        drmu_fb_int_layer_mod_set(dfb, i, 0, pitch0 / wdiv, t, mod);
-+        t += (pitch0 * h) / (drmu_fmt_info_hdiv(f, i) * wdiv);
-+    }
-+}
-+
 +drmu_fb_t *
-+drmu_fb_new_dumb_mod(drmu_env_t * const du, uint32_t w, uint32_t h,
-+                     const uint32_t format, const uint64_t mod)
++drmu_fb_new_dumb_multi(drmu_env_t * const du, uint32_t w, uint32_t h,
++                     const uint32_t format, const uint64_t mod, const bool multi)
 +{
 +    drmu_fb_t * const dfb = drmu_fb_int_alloc(du);
 +    uint32_t bpp;
-+    int rv;
 +    uint32_t w2;
 +    const uint32_t s30_cw = 128 / 4 * 3;
++    unsigned int plane_count;
++    const drmu_fmt_info_t * f;
 +
 +    if (dfb == NULL) {
 +        drmu_err(du, "%s: Alloc failure", __func__);
@@ -3076,53 +3270,65 @@ Can do HDR setup and mode matching
 +        goto fail;
 +    }
 +
-+    {
-+        struct drm_mode_create_dumb dumb = {
-+            .height = fb_total_height(dfb, (h + 1) & ~1),
-+            .width = ((w2 + 31) & ~31) / drmu_fmt_info_wdiv(dfb->fmt_info, 0),
-+            .bpp = bpp
-+        };
++    f = drmu_fb_format_info_get(dfb);
++    plane_count = !multi ? 1 : drmu_fmt_info_plane_count(f);
 +
-+        drmu_bo_t * bo = drmu_bo_new_dumb(du, &dumb);
-+        if (bo == NULL)
-+            goto fail;
-+        drmu_fb_int_bo_set(dfb, 0, bo);
-+
-+        dfb->map_pitch = dumb.pitch;
-+        dfb->map_size = (size_t)dumb.size;
-+    }
-+
-+    {
-+        struct drm_mode_map_dumb map_dumb = {
-+            .handle = dfb->bo_list[0]->handle
-+        };
++    for (unsigned int i = 0; i != plane_count; ++i) {
++        const unsigned int wdiv = drmu_fmt_info_wdiv(f, i);
++        const unsigned int hdiv = drmu_fmt_info_hdiv(f, i);
++        drmu_bo_t * bo;
 +        void * map_ptr;
 +
-+        if ((rv = drmu_ioctl(du, DRM_IOCTL_MODE_MAP_DUMB, &map_dumb)) != 0)
-+        {
-+            drmu_err(du, "%s: map dumb failed: %s", __func__, strerror(-rv));
-+            goto fail;
++        struct drm_mode_create_dumb dumb = {
++            .bpp = bpp,
++        };
++
++        if (!multi) {
++            dumb.height = fb_total_height(dfb, (h + 1) & ~1);
++            dumb.width = ((w2 + 31) & ~31) / wdiv;
++        }
++        else {
++            dumb.height = (h + hdiv - 1) / hdiv;
++            dumb.width = (w + wdiv - 1) / wdiv;
 +        }
 +
-+        // Avoid having to test for MAP_FAILED when testing for mapped/unmapped
-+        if ((map_ptr = mmap(NULL, dfb->map_size,
-+                            PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE,
-+                            drmu_fd(du), map_dumb.offset)) == MAP_FAILED) {
-+            drmu_err(du, "%s: mmap failed (size=%zd, fd=%d, off=%#"PRIx64"): %s", __func__,
-+                     dfb->map_size, drmu_fd(du), map_dumb.offset, strerror(errno));
++        if ((bo = drmu_bo_new_dumb(du, &dumb)) == NULL)
 +            goto fail;
-+        }
++        drmu_fb_int_bo_set(dfb, i, bo);
 +
-+        dfb->map_ptr = map_ptr;
++        if ((map_ptr = drmu_bo_mmap(bo, (size_t)dumb.size,
++                               PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE)) == NULL)
++            goto fail;
++        drmu_fb_int_mmap_set(dfb, i, map_ptr, (size_t)dumb.size, dumb.pitch);
++
++        if (multi) {
++            drmu_fb_int_layer_mod_set(dfb, i, i, dumb.pitch, 0, mod);
++        }
++        else if (mod == DRM_FORMAT_MOD_BROADCOM_SAND128_COL_HEIGHT(0)) {
++            // Cope with the joy that is legacy sand
++            const uint64_t sand1_mod = DRM_FORMAT_MOD_BROADCOM_SAND128_COL_HEIGHT(h * 3/2);
++            drmu_fb_int_layer_mod_set(dfb, 0, 0, dumb.pitch, 0, sand1_mod);
++            drmu_fb_int_layer_mod_set(dfb, 1, 0, dumb.pitch, h * 128, sand1_mod);
++        }
++        else {
++            const uint32_t pitch0 = dumb.pitch * wdiv;
++            const unsigned int c = drmu_fmt_info_plane_count(f);
++            uint32_t t = 0;
++
++            // This should be true for anything we've allocated
++            for (unsigned int layer = 0; layer != c; ++layer) {
++                const unsigned int wdiv2 = drmu_fmt_info_wdiv(f, layer);
++                drmu_fb_int_layer_mod_set(dfb, layer, 0, pitch0 / wdiv2, t, mod);
++                t += (pitch0 * h) / (drmu_fmt_info_hdiv(f, layer) * wdiv2);
++            }
++        }
 +    }
-+
-+    fb_pitches_set_mod(dfb, mod);
 +
 +    if (drmu_fb_int_make(dfb))
 +        goto fail;
 +
-+    drmu_debug(du, "Create dumb %p %s %dx%d / %dx%d size: %zd", dfb,
-+               drmu_log_fourcc(format), dfb->fb.width, dfb->fb.height, dfb->active.w, dfb->active.h, dfb->map_size);
++//    drmu_debug(du, "Create dumb %p %s %dx%d / %dx%d size: %zd", dfb,
++//               drmu_log_fourcc(format), dfb->fb.width, dfb->fb.height, dfb->active.w, dfb->active.h, dfb->map_size);
 +    return dfb;
 +
 +fail:
@@ -3131,9 +3337,16 @@ Can do HDR setup and mode matching
 +}
 +
 +drmu_fb_t *
++drmu_fb_new_dumb_mod(drmu_env_t * const du, uint32_t w, uint32_t h,
++                     const uint32_t format, const uint64_t mod)
++{
++    return drmu_fb_new_dumb_multi(du, w, h, format, mod, false);
++}
++
++drmu_fb_t *
 +drmu_fb_new_dumb(drmu_env_t * const du, uint32_t w, uint32_t h, const uint32_t format)
 +{
-+    return drmu_fb_new_dumb_mod(du, w, h, format, DRM_FORMAT_MOD_LINEAR);
++    return drmu_fb_new_dumb_multi(du, w, h, format, DRM_FORMAT_MOD_LINEAR, false);
 +}
 +
 +bool
@@ -3354,7 +3567,7 @@ Can do HDR setup and mode matching
 +    int rv;
 +
 +    for (;;) {
-+        if ((rv = drmu_ioctl(du, DRM_IOCTL_MODE_OBJ_GETPROPERTIES, &obj_props)) != 0) {
++        if ((rv = drmu_ioctl(du, DRM_IOCTL_MODE_OBJ_GETPROPERTIES, &obj_props)) < 0) {
 +            drmu_err(du, "drmModeObjectGetProperties failed: %s", strerror(-rv));
 +            goto fail;
 +        }
@@ -3415,7 +3628,7 @@ Can do HDR setup and mode matching
 +        drmu_propinfo_t * const inf = props->info + i;
 +
 +        props->by_name[i] = inf;
-+        if ((rv = propinfo_fill(du, inf, propids[i], values[i])) != 0)
++        if (propinfo_fill(du, inf, propids[i], values[i]) != 0)
 +            goto fail;
 +    }
 +
@@ -3519,6 +3732,45 @@ Can do HDR setup and mode matching
 +            return rv;
 +    }
 +    return 0;
++}
++
++//----------------------------------------------------------------------------
++//
++// Rotation util
++
++static unsigned int
++rotation_make_array(drmu_prop_bitmask_t * const pid, uint64_t values[8])
++{
++    uint64_t r0;
++    unsigned int i;
++    unsigned int mask = 0;
++
++    memset(values, 0, sizeof(values[0]) * 8);
++    if (pid == NULL)
++        return (1 << DRMU_ROTATION_0);
++
++    r0 = drmu_prop_bitmask_value(pid, "rotate-0");
++    if (r0 != 0) {
++        values[DRMU_ROTATION_0] = r0;
++        // Flips MUST be combined with a rotate
++        if ((values[DRMU_ROTATION_H_FLIP] = drmu_prop_bitmask_value(pid, "reflect-x")) != 0)
++            values[DRMU_ROTATION_H_FLIP] |= r0;
++        if ((values[DRMU_ROTATION_V_FLIP] = drmu_prop_bitmask_value(pid, "reflect-y")) != 0)
++            values[DRMU_ROTATION_V_FLIP] |= r0;
++        // Transpose counts as a Flip
++        if ((values[DRMU_ROTATION_TRANSPOSE] = drmu_prop_bitmask_value(pid, "transpose")) != 0)
++            values[DRMU_ROTATION_TRANSPOSE] |= r0;
++    }
++    values[DRMU_ROTATION_180] = drmu_prop_bitmask_value(pid, "rotate-180");
++    if (!values[DRMU_ROTATION_180] && values[DRMU_ROTATION_H_FLIP] && values[DRMU_ROTATION_V_FLIP])
++        values[DRMU_ROTATION_180] = values[DRMU_ROTATION_H_FLIP] | values[DRMU_ROTATION_V_FLIP];
++    values[DRMU_ROTATION_90] = drmu_prop_bitmask_value(pid, "rotate-90");
++    values[DRMU_ROTATION_270] = drmu_prop_bitmask_value(pid, "rotate-270");
++
++    for (i = 0; i != 8; ++i)
++        if (values[i] != 0)
++            mask |= (1 << i);
++    return mask;
 +}
 +
 +//----------------------------------------------------------------------------
@@ -3881,13 +4133,18 @@ Can do HDR setup and mode matching
 +        drmu_prop_range_t * max_bpc;
 +        drmu_prop_enum_t * colorspace;
 +        drmu_prop_enum_t * broadcast_rgb;
++        drmu_prop_bitmask_t * rotation;
 +        uint32_t hdr_output_metadata;
 +        uint32_t writeback_out_fence_ptr;
 +        uint32_t writeback_fb_id;
-+        uint32_t writeback_pixel_formats;
 +    } pid;
 +
++    unsigned int rot_mask;
++    uint64_t rot_vals[8];
 +    drmu_blob_t * hdr_metadata_blob;
++
++    uint32_t * writeback_fmts;
++    size_t writeback_fmts_count;
 +
 +    char name[32];
 +};
@@ -3953,18 +4210,53 @@ Can do HDR setup and mode matching
 +    return drmu_atomic_add_prop_object(da, dn->pid.crtc_id, drmu_crtc_id(dc));
 +}
 +
++bool
++drmu_conn_has_rotation(const drmu_conn_t * const dn, const unsigned int rotation)
++{
++    return rotation < 8 && dn != NULL &&
++        (dn->rot_vals[rotation] != 0 ||
++            (!dn->pid.rotation && rotation == DRMU_ROTATION_0));
++}
++
++unsigned int
++drmu_conn_rotation_mask(const drmu_conn_t * const dn)
++{
++    return dn->rot_mask;
++}
++
++int
++drmu_atomic_conn_add_rotation(drmu_atomic_t * const da, drmu_conn_t * const dn, const unsigned int rotation)
++{
++    return !drmu_conn_has_rotation(dn, rotation) ? -EINVAL :
++        !dn->pid.rotation ? 0 : // Must be rotation_0 here
++            drmu_atomic_add_prop_bitmask(da, dn->conn.connector_id, dn->pid.rotation, dn->rot_vals[rotation]);
++}
++
++static void
++fb_fence_cb_null_cb(void * v, int fd, drmu_fb_t * dfb)
++{
++    (void)v;
++    (void)fd;
++    (void)dfb;
++}
++
 +int
 +drmu_atomic_conn_add_writeback_fb(drmu_atomic_t * const da_out, drmu_conn_t * const dn,
-+                                  drmu_fb_t * const dfb)
++                                  drmu_fb_t * const dfb,
++                                  drmu_fb_fence_fd_fn * const fn_req, void * const v)
 +{
++    drmu_fb_fence_fd_fn * const fn = (fn_req != NULL) ? fn_req : fb_fence_cb_null_cb;
++
 +    // Add both or neither, so build a temp atomic to store the intermediate result
 +    drmu_atomic_t * da = drmu_atomic_new(drmu_atomic_env(da_out));
 +    int rv;
 +
-+    if (!da)
++    if (!da) {
++        fn(v, -1, NULL);
 +        return -ENOMEM;
++    }
 +
-+    if ((rv = atomic_fb_add_out_fence(da, dn->conn.connector_id, dn->pid.writeback_out_fence_ptr, dfb)) != 0)
++    if ((rv = atomic_fb_add_out_fence(da, dn->conn.connector_id, dn->pid.writeback_out_fence_ptr, dfb, fn, v)) != 0)
 +        goto fail;
 +
 +    if ((rv = drmu_atomic_add_prop_fb(da, dn->conn.connector_id, dn->pid.writeback_fb_id, dfb)) != 0)
@@ -3975,6 +4267,13 @@ Can do HDR setup and mode matching
 +fail:
 +    drmu_atomic_unref(&da);
 +    return rv;
++}
++
++const uint32_t *
++drmu_conn_writeback_formats(drmu_conn_t * const dn, size_t * const ppcount)
++{
++    *ppcount = dn->writeback_fmts_count;
++    return dn->writeback_fmts;
 +}
 +
 +const struct drm_mode_modeinfo *
@@ -4033,15 +4332,19 @@ Can do HDR setup and mode matching
 +    drmu_prop_range_delete(&dn->pid.max_bpc);
 +    drmu_prop_enum_delete(&dn->pid.colorspace);
 +    drmu_prop_enum_delete(&dn->pid.broadcast_rgb);
++    drmu_prop_bitmask_delete(&dn->pid.rotation);
 +
 +    drmu_blob_unref(&dn->hdr_metadata_blob);
 +
 +    free(dn->modes);
 +    free(dn->enc_ids);
++    free(dn->writeback_fmts);
 +    dn->modes = NULL;
 +    dn->enc_ids = NULL;
++    dn->writeback_fmts = NULL;
 +    dn->modes_size = 0;
 +    dn->enc_ids_size = 0;
++    dn->writeback_fmts_count = 0;
 +}
 +
 +// Assumes zeroed before entry
@@ -4115,6 +4418,9 @@ Can do HDR setup and mode matching
 +    }
 +
 +    if (props != NULL) {
++        void * wb_blob_data;
++        size_t wb_blob_len;
++
 +#if TRACE_PROP_NEW
 +        drmu_info(du, "Connector id=%d, type=%d.%d (%s), crtc_mask=%#x:",
 +                  dn->conn.connector_id, dn->conn.connector_type, dn->conn.connector_type_id, drmu_conn_name(dn),
@@ -4125,12 +4431,17 @@ Can do HDR setup and mode matching
 +        dn->pid.max_bpc             = drmu_prop_range_new(du, props_name_to_id(props, "max bpc"));
 +        dn->pid.colorspace          = drmu_prop_enum_new(du, props_name_to_id(props, "Colorspace"));
 +        dn->pid.broadcast_rgb       = drmu_prop_enum_new(du, props_name_to_id(props, "Broadcast RGB"));
++        dn->pid.rotation            = drmu_prop_bitmask_new(du, props_name_to_id(props, "rotation"));
 +        dn->pid.hdr_output_metadata = props_name_to_id(props, "HDR_OUTPUT_METADATA");
 +        dn->pid.writeback_fb_id     = props_name_to_id(props, "WRITEBACK_FB_ID");
 +        dn->pid.writeback_out_fence_ptr = props_name_to_id(props, "WRITEBACK_OUT_FENCE_PTR");
-+        dn->pid.writeback_pixel_formats = props_name_to_id(props, "WRITEBACK_PIXEL_FORMATS");  // Blob of fourccs (no modifier info)
 +
++        props_name_get_blob(props, "WRITEBACK_PIXEL_FORMATS", &wb_blob_data, &wb_blob_len);
 +        props_free(props);
++        dn->writeback_fmts = wb_blob_data;
++        dn->writeback_fmts_count = wb_blob_len / sizeof(*dn->writeback_fmts);
++
++        dn->rot_mask = rotation_make_array(dn->pid.rotation, dn->rot_vals);
 +    }
 +
 +    return 0;
@@ -4202,6 +4513,30 @@ Can do HDR setup and mode matching
 +
 +//----------------------------------------------------------------------------
 +//
++// Rotation functions
++
++unsigned int
++drmu_rotation_find(const unsigned int req_rot, const unsigned int mask_a, const unsigned int mask_b)
++{
++    unsigned int i;
++    unsigned int b;
++
++    for (i = 0, b = mask_b & 0xff; b != 0; ++i, b >>= 1) {
++        unsigned int r;
++
++        if ((b & 1) == 0)
++            continue;
++
++        r = drmu_rotation_suba(req_rot, i);
++        if (((mask_a >> r) & 1) != 0)
++            return r;
++    }
++    return DRMU_ROTATION_INVALID;
++}
++
++
++//----------------------------------------------------------------------------
++//
 +// Plane fns
 +
 +typedef struct drmu_plane_s {
@@ -4240,8 +4575,9 @@ Can do HDR setup and mode matching
 +        drmu_prop_range_t * chroma_siting_v;
 +        drmu_prop_range_t * zpos;
 +    } pid;
-+    uint64_t rot_vals[8];
 +
++    unsigned int rot_mask;
++    uint64_t rot_vals[8];
 +} drmu_plane_t;
 +
 +static int
@@ -4285,7 +4621,7 @@ Can do HDR setup and mode matching
 +drmu_atomic_plane_add_rotation(struct drmu_atomic_s * const da, const drmu_plane_t * const dp, const int rot)
 +{
 +    if (!dp->pid.rotation)
-+        return rot == DRMU_PLANE_ROTATION_0 ? 0 : -EINVAL;
++        return rot == DRMU_ROTATION_0 ? 0 : -EINVAL;
 +    if (rot < 0 || rot >= 8 || !dp->rot_vals[rot])
 +        return -EINVAL;
 +    return drmu_atomic_add_prop_bitmask(da, dp->plane.plane_id, dp->pid.rotation, dp->rot_vals[rot]);
@@ -4356,6 +4692,18 @@ Can do HDR setup and mode matching
 +{
 +    *pCount = dp->fmts_hdr->count_formats;
 +    return (const uint32_t *)((const uint8_t *)dp->formats_in + dp->fmts_hdr->formats_offset);
++}
++
++unsigned int
++drmu_plane_rotation_mask(const drmu_plane_t * const dp)
++{
++    return dp->rot_mask;
++}
++
++bool
++drmu_plane_rotation_valid(const drmu_plane_t * const dp, const unsigned int rot)
++{
++    return drmu_rotation_is_valid(rot) && ((dp->rot_mask >> rot) & 1) != 0;
 +}
 +
 +bool
@@ -4531,7 +4879,8 @@ Can do HDR setup and mode matching
 +        return -EINVAL;
 +
 +#if TRACE_PROP_NEW
-+    drmu_info(du, "Plane id %d:", plane_id);
++    drmu_info(du, "Plane id %d: (CRTC %#x, FB %#x, Possible CRTCs %#x)",
++              plane_id, dp->plane.crtc_id, dp->plane.fb_id, dp->plane.possible_crtcs);
 +    props_dump(props);
 +#endif
 +
@@ -4562,17 +4911,7 @@ Can do HDR setup and mode matching
 +    dp->pid.chroma_siting_v  = drmu_prop_range_new(du, props_name_to_id(props, "CHROMA_SITING_V"));
 +    dp->pid.zpos             = drmu_prop_range_new(du, props_name_to_id(props, "zpos"));
 +
-+    dp->rot_vals[DRMU_PLANE_ROTATION_0] = drmu_prop_bitmask_value(dp->pid.rotation, "rotate-0");
-+    if (dp->rot_vals[DRMU_PLANE_ROTATION_0]) {
-+        // Flips MUST be combined with a rotate
-+        if ((dp->rot_vals[DRMU_PLANE_ROTATION_X_FLIP] = drmu_prop_bitmask_value(dp->pid.rotation, "reflect-x")) != 0)
-+            dp->rot_vals[DRMU_PLANE_ROTATION_X_FLIP] |= dp->rot_vals[DRMU_PLANE_ROTATION_0];
-+        if ((dp->rot_vals[DRMU_PLANE_ROTATION_Y_FLIP] = drmu_prop_bitmask_value(dp->pid.rotation, "reflect-y")) != 0)
-+            dp->rot_vals[DRMU_PLANE_ROTATION_Y_FLIP] |= dp->rot_vals[DRMU_PLANE_ROTATION_0];
-+    }
-+    dp->rot_vals[DRMU_PLANE_ROTATION_180] = drmu_prop_bitmask_value(dp->pid.rotation, "rotate-180");
-+    if (!dp->rot_vals[DRMU_PLANE_ROTATION_180] && dp->rot_vals[DRMU_PLANE_ROTATION_X_FLIP] && dp->rot_vals[DRMU_PLANE_ROTATION_Y_FLIP])
-+        dp->rot_vals[DRMU_PLANE_ROTATION_180] = dp->rot_vals[DRMU_PLANE_ROTATION_X_FLIP] | dp->rot_vals[DRMU_PLANE_ROTATION_Y_FLIP];
++    dp->rot_mask = rotation_make_array(dp->pid.rotation, dp->rot_vals);
 +
 +    {
 +        const drmu_propinfo_t * const pinfo = props_name_to_propinfo(props, "type");
@@ -4620,7 +4959,7 @@ Can do HDR setup and mode matching
 +    // global atomic for restore op
 +    drmu_atomic_t * da_restore;
 +
-+    struct drmu_poll_env_s * poll_env;
++    struct drmu_queue_s * poll_env;
 +    drmu_poll_destroy_fn poll_destroy;
 +
 +    drmu_env_post_delete_fn post_delete_fn;
@@ -4798,7 +5137,7 @@ Can do HDR setup and mode matching
 +{
 +    int rv;
 +    drmu_atomic_t * bad = drmu_atomic_new(du);
-+    if ((rv = drmu_atomic_commit_test(du->da_restore, DRM_MODE_ATOMIC_ALLOW_MODESET, bad)) != 0) {
++    if (drmu_atomic_commit_test(du->da_restore, DRM_MODE_ATOMIC_ALLOW_MODESET, bad) != 0) {
 +        drmu_atomic_sub(du->da_restore, bad);
 +        if ((rv = drmu_atomic_commit(du->da_restore, DRM_MODE_ATOMIC_ALLOW_MODESET)) != 0)
 +            drmu_err(du, "Failed to restore old mode on exit: %s", strerror(-rv));
@@ -4865,20 +5204,29 @@ Can do HDR setup and mode matching
 +drmu_env_kill(drmu_env_t ** const ppdu)
 +{
 +    drmu_env_t * du = *ppdu;
++    struct drmu_queue_s * pe;
++    bool old_kill;
 +
 +    if (!du)
 +        return;
 +    *ppdu = NULL;
 +
 +    pthread_mutex_lock(&du->lock);
++    old_kill = du->kill;
++    pe = du->poll_env;
 +    du->kill = true;
-+    if (du->poll_env)
-+        du->poll_destroy(&du->poll_env, du);
++    du->poll_env = NULL;
 +    pthread_mutex_unlock(&du->lock);
 +
-+    // If we had a poll env this should have already been done, if it has
-+    // already been done this is a noop
-+    drmu_env_int_restore(du);
++    if (!old_kill) {
++        // Only do these once and only outside env lock
++        if (pe != NULL)
++            du->poll_destroy(&pe, du);
++
++         // If we had a poll env this should have already been done, if it has
++         // already been done this is a noop
++         drmu_env_int_restore(du);
++    }
 +
 +    drmu_env_unref(&du);
 +}
@@ -4989,9 +5337,12 @@ Can do HDR setup and mode matching
 +int
 +drmu_env_int_poll_set(drmu_env_t * const du,
 +                  const drmu_poll_new_fn new_fn, const drmu_poll_destroy_fn destroy_fn,
-+                  struct drmu_poll_env_s ** const ppPe)
++                  struct drmu_queue_s ** const ppPe)
 +{
 +    int rv = 0;
++
++    if (du == NULL)
++        return -EINVAL;
 +
 +    pthread_mutex_lock(&du->lock);
 +    if (du->kill) {
@@ -5011,10 +5362,10 @@ Can do HDR setup and mode matching
 +    return rv;
 +}
 +
-+struct drmu_poll_env_s *
++struct drmu_queue_s *
 +drmu_env_int_poll_get(drmu_env_t * const du)
 +{
-+    struct drmu_poll_env_s * pe;
++    struct drmu_queue_s * pe;
 +    pthread_mutex_lock(&du->lock);
 +    pe = du->poll_env;
 +    pthread_mutex_unlock(&du->lock);
@@ -5047,18 +5398,18 @@ Can do HDR setup and mode matching
 +    drmu_bo_env_init(&du->boe);
 +
 +    // We need atomic for almost everything we do
-+    if ((rv = env_set_client_cap(du, DRM_CLIENT_CAP_ATOMIC, 1)) != 0) {
++    if (env_set_client_cap(du, DRM_CLIENT_CAP_ATOMIC, 1) != 0) {
 +        drmu_err(du, "Failed to set atomic cap");
 +        goto fail1;
 +    }
 +    // We want the primary plane for video
-+    if ((rv = env_set_client_cap(du, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1)) != 0)
++    if (env_set_client_cap(du, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1) != 0)
 +        drmu_debug(du, "Failed to set universal planes cap");
 +    // We can understand AR info
-+    if ((rv = env_set_client_cap(du, DRM_CLIENT_CAP_ASPECT_RATIO, 1)) != 0)
++    if (env_set_client_cap(du, DRM_CLIENT_CAP_ASPECT_RATIO, 1) != 0)
 +        drmu_debug(du, "Failed to set AR cap");
 +    // We would like to see writeback connectors
-+    if ((rv = env_set_client_cap(du, DRM_CLIENT_CAP_WRITEBACK_CONNECTORS, 1)) != 0)
++    if (env_set_client_cap(du, DRM_CLIENT_CAP_WRITEBACK_CONNECTORS, 1) != 0)
 +        drmu_debug(du, "Failed to set writeback cap");
 +
 +    {
@@ -5191,7 +5542,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu.h
-@@ -0,0 +1,585 @@
+@@ -0,0 +1,703 @@
 +#ifndef _DRMU_DRMU_H
 +#define _DRMU_DRMU_H
 +
@@ -5323,6 +5674,15 @@ Can do HDR setup and mode matching
 +// if flags are 0 then RDWR | CLOEXEC will be used
 +int drmu_bo_export_fd(drmu_bo_t * bo, uint32_t flags);
 +
++// Map a BO.
++// Size isn't saved in the BO so must be given here
++// Returns NULL on failure unlike system mmap
++// Mapping isn't held by the BO, must be umapped by user
++void * drmu_bo_mmap(const drmu_bo_t * const bo, const size_t length, const int prot, const int flags);
++
++// Get BO handle
++uint32_t drmu_bo_handle(const drmu_bo_t * const bo);
++
 +void drmu_bo_unref(drmu_bo_t ** const ppbo);
 +drmu_bo_t * drmu_bo_ref(drmu_bo_t * const bo);
 +drmu_bo_t * drmu_bo_new_fd(drmu_env_t *const du, const int fd);
@@ -5351,6 +5711,8 @@ Can do HDR setup and mode matching
 +uint64_t drmu_fb_modifier(const drmu_fb_t * const dfb, const unsigned int plane);
 +drmu_fb_t * drmu_fb_new_dumb(drmu_env_t * const du, uint32_t w, uint32_t h, const uint32_t format);
 +drmu_fb_t * drmu_fb_new_dumb_mod(drmu_env_t * const du, uint32_t w, uint32_t h, const uint32_t format, const uint64_t mod);
++drmu_fb_t * drmu_fb_new_dumb_multi(drmu_env_t * const du, uint32_t w, uint32_t h,
++                     const uint32_t format, const uint64_t mod, const bool multi);
 +drmu_fb_t * drmu_fb_realloc_dumb(drmu_env_t * const du, drmu_fb_t * dfb, uint32_t w, uint32_t h, const uint32_t format);
 +drmu_fb_t * drmu_fb_realloc_dumb_mod(drmu_env_t * const du, drmu_fb_t * dfb, uint32_t w, uint32_t h, const uint32_t format, const uint64_t mod);
 +// Try to reset geometry to these values
@@ -5426,11 +5788,11 @@ Can do HDR setup and mode matching
 +void drmu_fb_color_set(drmu_fb_t *const dfb, const drmu_color_encoding_t enc, const drmu_color_range_t range, const drmu_colorspace_t space);
 +void drmu_fb_chroma_siting_set(drmu_fb_t *const dfb, const drmu_chroma_siting_t siting);
 +void drmu_fb_int_on_delete_set(drmu_fb_t *const dfb, drmu_fb_on_delete_fn fn, void * v);
-+void drmu_fb_int_bo_set(drmu_fb_t *const dfb, unsigned int i, drmu_bo_t * const bo);
++void drmu_fb_int_bo_set(drmu_fb_t *const dfb, const unsigned int obj_idx, drmu_bo_t * const bo);
 +void drmu_fb_int_layer_set(drmu_fb_t *const dfb, unsigned int i, unsigned int obj_idx, uint32_t pitch, uint32_t offset);
 +void drmu_fb_int_layer_mod_set(drmu_fb_t *const dfb, unsigned int i, unsigned int obj_idx, uint32_t pitch, uint32_t offset, uint64_t modifier);
-+void drmu_fb_int_fd_set(drmu_fb_t *const dfb, const int fd);
-+void drmu_fb_int_mmap_set(drmu_fb_t *const dfb, void * const buf, const size_t size, const size_t pitch);
++void drmu_fb_int_fd_set(drmu_fb_t *const dfb, const unsigned int obj_idx, const int fd);
++void drmu_fb_int_mmap_set(drmu_fb_t *const dfb, const unsigned int obj_idx, void * const buf, const size_t size, const size_t pitch);
 +drmu_isset_t drmu_fb_hdr_metadata_isset(const drmu_fb_t *const dfb);
 +const struct hdr_output_metadata * drmu_fb_hdr_metadata_get(const drmu_fb_t *const dfb);
 +drmu_broadcast_rgb_t drmu_color_range_to_broadcast_rgb(const drmu_color_range_t range);
@@ -5440,11 +5802,31 @@ Can do HDR setup and mode matching
 +void drmu_fb_hdr_metadata_set(drmu_fb_t *const dfb, const struct hdr_output_metadata * meta);
 +int drmu_fb_int_make(drmu_fb_t *const dfb);
 +
++// Set FB orientation.
++// Orienation is the orintatin of the FB i.e. the inverse of the rotation
++// required to display on an unrotated display
++int drmu_fb_orientation_set(drmu_fb_t *const dfb, const unsigned int orientation);
++// Get orientation
++unsigned int drmu_fb_orientation_get(const drmu_fb_t *const dfb);
++// Get rotation required on this fb for a display rotated dest_rot
++// helper fn - equivalent to _subb(dest_rot, orientation)
++unsigned int drmu_fb_rotation(const drmu_fb_t *const dfb, const unsigned int dest_rot);
++
 +// Cached fb sync ops
 +int drmu_fb_write_start(drmu_fb_t * const dfb);
 +int drmu_fb_write_end(drmu_fb_t * const dfb);
 +int drmu_fb_read_start(drmu_fb_t * const dfb);
 +int drmu_fb_read_end(drmu_fb_t * const dfb);
++
++// Called after commit succeeded and/or when atomic deleted
++//
++// On commit (with dfb != NULL, fd != -1) may possibly be called > once if
++// atomic copied or reused
++//
++// On delete (with dfb == NULL, fd == -1) will be called once after any commit
++// callbacks. If atomic deleted before commit or commit has error then commit
++// may never be called.
++typedef void drmu_fb_fence_fd_fn(void * v, int fd, drmu_fb_t * dfb);
 +
 +// Wait for data to become ready when fb used as destination of writeback
 +// Returns:
@@ -5452,6 +5834,9 @@ Can do HDR setup and mode matching
 +//  0     timeout
 +//  1     ready
 +int drmu_fb_out_fence_wait(drmu_fb_t * const fb, const int timeout_ms);
++
++// Take the fence fd. Resets fb fence fd. User is now responsible for closing it.
++int drmu_fb_out_fence_take_fd(drmu_fb_t * const fb);
 +
 +// Object Id
 +
@@ -5522,10 +5907,26 @@ Can do HDR setup and mode matching
 +// Add crtc id
 +int drmu_atomic_conn_add_crtc(struct drmu_atomic_s * const da, drmu_conn_t * const dn, drmu_crtc_t * const dc);
 +
-+// Add writeback fb & fence
++// Add writeback fb & fence with callback
 +// Neither makes sense without the other so do together
-+int drmu_atomic_conn_add_writeback_fb(struct drmu_atomic_s * const da, drmu_conn_t * const dn, drmu_fb_t * const dfb);
++// If fn is null then no callback, user must wait
++int drmu_atomic_conn_add_writeback_fb(struct drmu_atomic_s * const da_out, drmu_conn_t * const dn,
++                                      drmu_fb_t * const dfb,
++                                      drmu_fb_fence_fd_fn * const fn, void * const v);
 +
++// List of supported writeback formats - no modifiers supported
++// *ppcount receives the count
++const uint32_t * drmu_conn_writeback_formats(drmu_conn_t * const dn, size_t * const ppcount);
++
++// Connector might support some rotations - true if given rotation supported
++bool drmu_conn_has_rotation(const drmu_conn_t * const dn, const unsigned int rotation);
++
++// Get mask of rotations supported by this conn
++// Will return a mask with only _ROTATION_0 set if the property isn't supported
++unsigned int drmu_conn_rotation_mask(const drmu_conn_t * const dn);
++
++// Add rotation to connector
++int drmu_atomic_conn_add_rotation(struct drmu_atomic_s * const da, drmu_conn_t * const dn, const unsigned int rotation);
 +
 +const struct drm_mode_modeinfo * drmu_conn_modeinfo(const drmu_conn_t * const dn, const int mode_id);
 +drmu_mode_simple_params_t drmu_conn_mode_simple_params(const drmu_conn_t * const dn, const int mode_id);
@@ -5566,6 +5967,12 @@ Can do HDR setup and mode matching
 +const uint32_t * drmu_plane_formats(const drmu_plane_t * const dp, unsigned int * const pCount);
 +bool drmu_plane_format_check(const drmu_plane_t * const dp, const uint32_t format, const uint64_t modifier);
 +
++// Get mask of rotations supported by this plane
++// Will return a mask with only _ROTATION_0 set if the property isn't supported
++unsigned int drmu_plane_rotation_mask(const drmu_plane_t * const dp);
++// Is rot a valid rotation for this plane?
++bool drmu_plane_rotation_valid(const drmu_plane_t * const dp, const unsigned int rot);
++
 +// Alpha: -1 = no not set, 0 = transparent, 0xffff = opaque
 +#define DRMU_PLANE_ALPHA_UNSET                  (-1)
 +#define DRMU_PLANE_ALPHA_TRANSPARENT            0
@@ -5575,15 +5982,71 @@ Can do HDR setup and mode matching
 +int drmu_atomic_plane_add_zpos(struct drmu_atomic_s * const da, const drmu_plane_t * const dp, const int zpos);
 +
 +// X, Y & TRANSPOSE can be ORed to get all others
-+#define DRMU_PLANE_ROTATION_0                   0
-+#define DRMU_PLANE_ROTATION_X_FLIP              1
-+#define DRMU_PLANE_ROTATION_Y_FLIP              2
-+#define DRMU_PLANE_ROTATION_180                 3
++#define DRMU_ROTATION_0                   0
++#define DRMU_ROTATION_H_FLIP              1  // Horizontal flip (x -> -x)
++#define DRMU_ROTATION_V_FLIP              2  // Vertical flip (y -> -y)
++#define DRMU_ROTATION_180                 3
 +// *** These don't exist on Pi - no inherent transpose
-+#define DRMU_PLANE_ROTATION_TRANSPOSE           4
-+#define DRMU_PLANE_ROTATION_90                  5  // Rotate 90 clockwise
-+#define DRMU_PLANE_ROTATION_270                 6  // Rotate 90 anti-cockwise
-+#define DRMU_PLANE_ROTATION_180_TRANSPOSE       7  // Rotate 180 & transpose
++#define DRMU_ROTATION_TRANSPOSE           4
++#define DRMU_ROTATION_270                 5  // Rotate 90 anti-cockwise
++#define DRMU_ROTATION_90                  6  // Rotate 90 clockwise
++#define DRMU_ROTATION_180_TRANSPOSE       7  // Rotate 180 & transpose
++
++// Aliases that mirror (IMHO confusing) DRM naming
++#define DRMU_ROTATION_REFLECT_X           DRMU_ROTATION_H_FLIP
++#define DRMU_ROTATION_REFLECT_Y           DRMU_ROTATION_V_FLIP
++
++#define DRMU_ROTATION_INVALID             ~0U
++
++static inline bool drmu_rotation_is_transposed(const unsigned int r)
++{
++    return (r & 4) != 0;
++}
++
++static inline bool drmu_rotation_is_valid(const unsigned int r)
++{
++    return (r & ~7) == 0;
++}
++
++// Transpose r if c is transposed.
++// Probably not a useful user fn but used in +/-
++static inline unsigned int
++drmu_rotation_ctranspose(const unsigned int r, const unsigned int c)
++{
++    const unsigned int s = (c & 4) >> 2;
++    return (r & 4) | ((r & 2) >> s) | ((r & 1) << s);
++}
++
++// a then b
++// Beware a + b != b + a
++static inline unsigned int
++drmu_rotation_add(const unsigned int a, const unsigned int b)
++{
++    return ((a | b) & ~7) != 0 ? DRMU_ROTATION_INVALID : drmu_rotation_ctranspose(a, b) ^ b;
++}
++
++// Returns value that if b is added to gets a
++// i.e. suba(a, b) + b = a
++static inline unsigned int
++drmu_rotation_suba(const unsigned int a, const unsigned int b)
++{
++    return ((a | b) & ~7) != 0 ? DRMU_ROTATION_INVALID : drmu_rotation_ctranspose(a ^ b, b);
++}
++
++// Returns value that would need to be added to a to get b
++// i.e. a + subb(b, a) = b
++static inline unsigned int
++drmu_rotation_subb(const unsigned int b, const unsigned int a)
++{
++    return ((a | b) & ~7) != 0 ? DRMU_ROTATION_INVALID : drmu_rotation_ctranspose(a, a ^ b) ^ b;
++}
++
++// Find a rotation that exists in mask_a which when combined with a rotation
++// in mask_b gives req_rot. If req_rot exists in mask_a then the return value
++// will be req_rot. If no such value exists _INVALID will be returned
++// Use _subb(return_value, req_rot) to get rotation required in b
++unsigned int drmu_rotation_find(const unsigned int req_rot, const unsigned int mask_a, const unsigned int mask_b);
++
 +int drmu_atomic_plane_add_rotation(struct drmu_atomic_s * const da, const drmu_plane_t * const dp, const int rot);
 +
 +int drmu_atomic_plane_add_chroma_siting(struct drmu_atomic_s * const da, const drmu_plane_t * const dp, const drmu_chroma_siting_t siting);
@@ -5628,9 +6091,9 @@ Can do HDR setup and mode matching
 +// Poll environment maintenance functions used by drmu_poll.c
 +// Could be use to set up custom polling functions. struct drmu_poll_env_s is
 +// opaque to drmu.c
-+struct drmu_poll_env_s;
-+typedef struct drmu_poll_env_s * (* drmu_poll_new_fn)(drmu_env_t * du);
-+typedef void (* drmu_poll_destroy_fn)(struct drmu_poll_env_s ** ppPoll_env, drmu_env_t * du);
++struct drmu_queue_s;
++typedef struct drmu_queue_s * (* drmu_poll_new_fn)(drmu_env_t * du);
++typedef void (* drmu_poll_destroy_fn)(struct drmu_queue_s ** ppPoll_env, drmu_env_t * du);
 +// Get/set poll environment. Value returned in *ppPe
 +// If du killed then *ppPe = NULL and rv = -EBUSY
 +// If already set then value returned and rv == 0
@@ -5638,9 +6101,9 @@ Can do HDR setup and mode matching
 +// destroy_fn called when du killed
 +int drmu_env_int_poll_set(drmu_env_t * const du,
 +                  const drmu_poll_new_fn new_fn, const drmu_poll_destroy_fn destroy_fn,
-+                  struct drmu_poll_env_s ** const ppPe);
++                  struct drmu_queue_s ** const ppPe);
 +// Return poll env. NULL if unset
-+struct drmu_poll_env_s * drmu_env_int_poll_get(drmu_env_t * const du);
++struct drmu_queue_s * drmu_env_int_poll_get(drmu_env_t * const du);
 +
 +// Do ioctl - returns -errno on error, 0 on success
 +// deals with recalling the ioctl when required
@@ -5723,6 +6186,9 @@ Can do HDR setup and mode matching
 +// b may be sorted (if not already) but is otherwise unchanged
 +void drmu_atomic_sub(drmu_atomic_t * const a, drmu_atomic_t * const b);
 +
++// Is da NULL or has no properties set?
++bool drmu_atomic_is_empty(const drmu_atomic_t * const da);
++
 +// flags are DRM_MODE_ATOMIC_xxx (e.g. DRM_MODE_ATOMIC_TEST_ONLY) and DRM_MODE_PAGE_FLIP_xxx
 +int drmu_atomic_commit(const drmu_atomic_t * const da, uint32_t flags);
 +// Attempt commit - if it fails add failing members to da_fail
@@ -5739,6 +6205,9 @@ Can do HDR setup and mode matching
 +void drmu_atomic_clear_commit_callbacks(drmu_atomic_t * const da);
 +// Run all commit callbacks on this atomic. Callbacks are not cleared.
 +void drmu_atomic_run_commit_callbacks(const drmu_atomic_t * const da);
++
++// Run the property commit callbacks - only call on a successful commit
++void drmu_atomic_run_prop_commit_callbacks(const drmu_atomic_t * const da);
 +
 +typedef void drmu_prop_unref_fn(void * v);
 +typedef void drmu_prop_ref_fn(void * v);
@@ -5779,7 +6248,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_atomic.c
-@@ -0,0 +1,946 @@
+@@ -0,0 +1,992 @@
 +#include "drmu.h"
 +#include "drmu_log.h"
 +
@@ -5863,6 +6332,12 @@ Can do HDR setup and mode matching
 +aprop_prop_ref(aprop_prop_t * const pp)
 +{
 +    pp->fns->ref(pp->v);
++}
++
++static void
++aprop_prop_committed(aprop_prop_t * const pp)
++{
++    pp->fns->commit(pp->v, pp->value);
 +}
 +
 +static void
@@ -6088,6 +6563,14 @@ Can do HDR setup and mode matching
 +}
 +
 +static void
++aprop_obj_committed(const aprop_obj_t * const po)
++{
++    unsigned int i;
++    for (i = 0; i != po->n; ++i)
++        aprop_prop_committed(po->props + i);
++}
++
++static void
 +aprop_hdr_dump(drmu_env_t * const du,
 +               const drmu_log_env_t * const log, const enum drmu_log_level_e lvl,
 +               const aprop_hdr_t * const ph)
@@ -6096,6 +6579,14 @@ Can do HDR setup and mode matching
 +    drmu_log_lvl(log, lvl, "Header: size %d n %d", ph->size, ph->n);
 +    for (i = 0; i != ph->n; ++i)
 +        aprop_obj_dump(du, log, lvl, ph->objs + i);
++}
++
++static void
++aprop_hdr_committed(const aprop_hdr_t * const ph)
++{
++    unsigned int i;
++    for (i = 0; i != ph->n; ++i)
++        aprop_obj_committed(ph->objs + i);
 +}
 +
 +static aprop_obj_t *
@@ -6319,6 +6810,18 @@ Can do HDR setup and mode matching
 +    return n;
 +}
 +
++// Total props
++static bool
++aprop_hdr_props_is_empty(const aprop_hdr_t * const ph)
++{
++    unsigned int i;
++
++    for (i = 0; i != ph->n; ++i)
++        if (ph->objs[i].n != 0)
++            return false;
++    return true;
++}
++
 +static unsigned int
 +aprop_hdr_objs_count(const aprop_hdr_t * const ph)
 +{
@@ -6390,6 +6893,14 @@ Can do HDR setup and mode matching
 +        free(p);
 +        p = next;
 +    }
++}
++
++void
++drmu_atomic_run_prop_commit_callbacks(const drmu_atomic_t * const da)
++{
++    if (da == NULL)
++        return;
++    aprop_hdr_committed(&da->props);
 +}
 +
 +void
@@ -6646,19 +7157,17 @@ Can do HDR setup and mode matching
 +    while (a + 1 < b) {
 +        struct drm_mode_atomic at = *atomic;
 +        unsigned int n = (a + b) / 2;
-+        int rv;
 +        uint32_t * undo_p = NULL;
 +        uint32_t undo_v = 0;
 +
 +        at.flags = DRM_MODE_ATOMIC_TEST_ONLY | (DRM_MODE_ATOMIC_ALLOW_MODESET & atomic->flags);
 +        atomic_props_crop(&at, n, &undo_p, &undo_v);
++        assert(undo_p != NULL);
 +
-+        if ((rv = drmu_ioctl(du, DRM_IOCTL_MODE_ATOMIC, &at)) == 0) {
++        if (drmu_ioctl(du, DRM_IOCTL_MODE_ATOMIC, &at) == 0)
 +            a = n;
-+        }
-+        else {
++        else
 +            b = n;
-+        }
 +
 +        *undo_p = undo_v;  // Should always be set
 +    }
@@ -6693,7 +7202,8 @@ Can do HDR setup and mode matching
 +        aprop_hdr_atomic_fill(&da->props, obj_ids, prop_counts, prop_ids, prop_values);
 +
 +        rv = drmu_ioctl(du, DRM_IOCTL_MODE_ATOMIC, &atomic);
-+
++        if (rv == 0)
++            drmu_atomic_run_prop_commit_callbacks(da);
 +        drmu_atomic_run_commit_callbacks(da);
 +
 +        if (rv  == 0 || !da_fail)
@@ -6725,6 +7235,11 @@ Can do HDR setup and mode matching
 +    return drmu_atomic_commit_test(da, flags, NULL);
 +}
 +
++bool
++drmu_atomic_is_empty(const drmu_atomic_t * const da)
++{
++    return da == NULL || aprop_hdr_props_is_empty(&da->props);
++}
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_chroma.h
@@ -6859,7 +7374,7 @@ Can do HDR setup and mode matching
 +            goto fail;
 +        }
 +
-+        drmu_fb_int_fd_set(fb, data.fd);
++        drmu_fb_int_fd_set(fb, 0, data.fd);
 +
 +        if ((bo = drmu_bo_new_fd(du, data.fd)) == NULL) {
 +            drmu_err(du, "%s: Failed to allocate BO", __func__);
@@ -6876,7 +7391,7 @@ Can do HDR setup and mode matching
 +            goto fail;
 +        }
 +
-+        drmu_fb_int_mmap_set(fb, map_ptr, (size_t)data.len, w2 * bypp);
++        drmu_fb_int_mmap_set(fb, 0, map_ptr, (size_t)data.len, w2 * bypp);
 +    }
 +
 +    for (offset = 0, i = 0; i != layers; ++i) {
@@ -6949,7 +7464,7 @@ Can do HDR setup and mode matching
 +    };
 +    const char * const * pfname;
 +
-+    for (pfname = names; pfname != NULL; ++pfname) {
++    for (pfname = names; *pfname != NULL; ++pfname) {
 +        const int fd = open(*pfname, O_RDWR | O_CLOEXEC);
 +        drmu_dmabuf_env_t * const dde = drmu_dmabuf_env_new_fd(du, fd);
 +        if (dde != NULL)
@@ -7457,7 +7972,7 @@ Can do HDR setup and mode matching
 +}
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_math.h
-@@ -0,0 +1,127 @@
+@@ -0,0 +1,149 @@
 +#ifndef _DRMU_DRMU_MATH_H
 +#define _DRMU_DRMU_MATH_H
 +
@@ -7479,21 +7994,30 @@ Can do HDR setup and mode matching
 +
 +drmu_ufrac_t drmu_ufrac_reduce(drmu_ufrac_t x);
 +
-+static inline int_fast32_t
++static inline drmu_ufrac_t
++drmu_ufrac_invert(const drmu_ufrac_t x)
++{
++    return (drmu_ufrac_t){
++        .num = x.den,
++        .den = x.num
++    };
++}
++
++static inline int32_t
 +drmu_rect_rescale_1s(int_fast32_t x, uint_fast32_t mul, uint_fast32_t div)
 +{
 +    const int_fast64_t m = x * (int_fast64_t)mul;
 +    const uint_fast32_t d2 = div/2;
-+    return div == 0 ? (int_fast32_t)m :
-+        m >= 0 ? (int_fast32_t)(((uint_fast64_t)m + d2) / div) :
-+            -(int_fast32_t)(((uint_fast64_t)(-m) + d2) / div);
++    return div == 0 ? (int32_t)m :
++        m >= 0 ? (int32_t)(((uint_fast64_t)m + d2) / div) :
++            -(int32_t)(((uint_fast64_t)(-m) + d2) / div);
 +}
 +
-+static inline uint_fast32_t
++static inline uint32_t
 +drmu_rect_rescale_1u(uint_fast32_t x, uint_fast32_t mul, uint_fast32_t div)
 +{
 +    const uint_fast64_t m = x * (uint_fast64_t)mul;
-+    return (uint_fast32_t)(div == 0 ? m : (m + div/2) / div);
++    return (uint32_t)(div == 0 ? m : (m + div/2) / div);
 +}
 +
 +static inline drmu_rect_t
@@ -7522,6 +8046,8 @@ Can do HDR setup and mode matching
 +drmu_rect_wh(const unsigned int w, const unsigned int h)
 +{
 +    return (drmu_rect_t){
++        .x = 0,
++        .y = 0,
 +        .w = w,
 +        .h = h
 +    };
@@ -7580,6 +8106,17 @@ Can do HDR setup and mode matching
 +    };
 +}
 +
++static inline  drmu_rect_t
++drmu_rect_transpose(const drmu_rect_t a)
++{
++    return (drmu_rect_t){
++        .x = a.y,
++        .y = a.x,
++        .w = a.h,
++        .h = a.w
++    };
++}
++
 +#ifdef __cplusplus
 +}
 +#endif
@@ -7587,7 +8124,7 @@ Can do HDR setup and mode matching
 +#endif
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_output.c
-@@ -0,0 +1,667 @@
+@@ -0,0 +1,589 @@
 +#include "drmu_output.h"
 +
 +#include "drmu_fmts.h"
@@ -7908,6 +8445,26 @@ Can do HDR setup and mode matching
 +}
 +
 +// Experimental, more flexible version of _add_output
++
++static drmu_crtc_t *
++output_add_find_crtc(drmu_env_t * const du, drmu_conn_t * const dn)
++{
++    uint32_t possible_crtcs = drmu_conn_possible_crtcs(dn);
++    drmu_crtc_t * dc;
++
++    for (unsigned int i = 0; possible_crtcs != 0; ++i, possible_crtcs >>= 1) {
++        if ((possible_crtcs & 1) == 0)
++            continue;
++        if ((dc = drmu_env_crtc_find_n(du, i)) == NULL)
++            continue;
++        if (drmu_crtc_is_claimed(dc))
++            continue;
++
++        return dc;
++    }
++    return NULL;
++}
++
 +int
 +drmu_output_add_output2(drmu_output_t * const dout, const char * const conn_name, const unsigned int flags)
 +{
@@ -7916,82 +8473,73 @@ Can do HDR setup and mode matching
 +    drmu_env_t * const du = dout->du;
 +    drmu_conn_t * dn;
 +    drmu_conn_t * dn_t;
-+    drmu_crtc_t * dc_t;
-+    uint32_t crtc_id;
++    drmu_crtc_t * dc;
 +    int rv;
++    const bool wants_writeback = ((flags & DRMU_OUTPUT_FLAG_ADD_WRITEBACK) != 0);
++    const bool try_connected = (flags & DRMU_OUTPUT_FLAG_ADD_DISCONNECTED_ONLY) == 0;
++    const bool try_disconnected = (flags & DRMU_OUTPUT_FLAG_ADD_DISCONNECTED_ONLY) != 0 ||
++        (flags & DRMU_OUTPUT_FLAG_ADD_ANY) != 0 ||
++        (flags & DRMU_OUTPUT_FLAG_ADD_DISCONNECTED) != 0;
 +
-+    // *****
-+    // This logic fatally flawed for anything other than adding a single
-+    // conn already attached to a single crtc
++    if (wants_writeback && !dout->modeset_allow) {
++        drmu_debug(du, "modeset_allow required for writeback");
++        return -EINVAL;
++    }
 +
-+retry:
++    retry:
 +    if (++retries > 16) {
 +        drmu_err(du, "Retry count exceeded");
 +        return -EBUSY;
 +    }
 +    dn = NULL;
-+    dc_t = NULL;
++    dc = NULL;
 +
 +    for (unsigned int i = 0; (dn_t = drmu_env_conn_find_n(du, i)) != NULL; ++i) {
-+        if (!drmu_conn_is_output(dn_t) || drmu_conn_is_claimed(dn_t))
++        drmu_crtc_t * dc_t;
++        uint32_t crtc_id;
++
++        if ((wants_writeback && !drmu_conn_is_writeback(dn_t)) ||
++            (!wants_writeback && !drmu_conn_is_output(dn_t)))
 +            continue;
++        if (drmu_conn_is_claimed(dn_t))
++            continue;
++
 +        if (nlen && strncmp(conn_name, drmu_conn_name(dn_t), nlen) != 0)
 +            continue;
-+        // This prefers conns that are already attached to crtcs
-+        if ((crtc_id = drmu_conn_crtc_id_get(dn_t)) == 0 ||
-+            (dc_t = drmu_env_crtc_find_id(du, crtc_id)) == NULL) {
++
++        crtc_id = drmu_conn_crtc_id_get(dn_t);
++        if (crtc_id != 0 && try_connected) {
++            dc_t = drmu_env_crtc_find_id(du, crtc_id);
++            if (dc_t == NULL || drmu_crtc_is_claimed(dc_t))
++                continue;
 +            dn = dn_t;
-+            continue;
++            dc = dc_t;
++            break;
 +        }
-+        if (drmu_crtc_is_claimed(dc_t)) {
-+            dc_t = NULL;
-+            continue;
++        else if (crtc_id == 0 && try_disconnected) {
++            dc_t = output_add_find_crtc(du, dn_t);
++            if (dc_t == NULL || drmu_crtc_is_claimed(dc_t))
++                continue;
++            dn = dn_t;
++            dc = dc_t;
++            if ((flags & DRMU_OUTPUT_FLAG_ADD_ANY) != 0 || !try_connected)
++                break;
 +        }
-+        dn = dn_t;
-+        break;
 +    }
 +
 +    if (!dn)
 +        return -ENOENT;
 +
-+    if (!dc_t && (flags & DRMU_OUTPUT_FLAG_ADD_DISCONNECTED) == 0) {
-+        drmu_warn(du, "Adding unattached conns NIF");
-+        return -EINVAL;
-+    }
-+
-+    if (!dc_t) {
-+        uint32_t possible_crtcs = drmu_conn_possible_crtcs(dn);
-+        drmu_warn(du, "Adding unattached conn: CRTCs=%#x", possible_crtcs);
-+
-+        for (unsigned int i = 0; possible_crtcs != 0; ++i, possible_crtcs >>= 1) {
-+            if ((possible_crtcs & 1) == 0)
-+                continue;
-+
-+            drmu_info(du, "try Crtc %d", i);
-+
-+            if ((dc_t = drmu_env_crtc_find_n(du, i)) == NULL) {
-+                break; // Can only happen if i is too big
-+            }
-+
-+            // ** Maybe some more tests for viability here
-+        }
-+    }
-+
-+    if (!dc_t) {
-+        drmu_warn(du, "No CRTC found for Conn");
-+        return -ENOENT;
-+    }
-+
 +    if ((rv = check_conns_size(dout)) != 0)
 +        return rv;
 +
-+    if (drmu_crtc_claim_ref(dc_t)) {
++    if (drmu_crtc_claim_ref(dc)) {
 +        drmu_debug(du, "Crtc already claimed");
 +        goto retry;
 +    }
 +    if (drmu_conn_claim_ref(dn)) {
 +        drmu_debug(du, "Conn already claimed");
-+        drmu_crtc_unref(&dc_t);
++        drmu_crtc_unref(&dc);
 +        goto retry;
 +    }
 +
@@ -7999,7 +8547,7 @@ Can do HDR setup and mode matching
 +    dout->has_max_bpc = drmu_conn_has_hi_bpc(dn);
 +
 +    dout->dns[dout->conn_n++] = dn;
-+    dout->dc = dc_t;
++    dout->dc = dc;
 +
 +    dout->mode_params = drmu_crtc_mode_simple_params(dout->dc);
 +
@@ -8010,6 +8558,12 @@ Can do HDR setup and mode matching
 +drmu_output_add_output(drmu_output_t * const dout, const char * const conn_name)
 +{
 +    return drmu_output_add_output2(dout, conn_name, 0);
++}
++
++int
++drmu_output_add_writeback(drmu_output_t * const dout)
++{
++    return drmu_output_add_output2(dout, NULL, DRMU_OUTPUT_FLAG_ADD_WRITEBACK | DRMU_OUTPUT_FLAG_ADD_ANY);
 +}
 +
 +static struct drm_mode_modeinfo
@@ -8034,80 +8588,31 @@ Can do HDR setup and mode matching
 +    };
 +}
 +
-+static int
-+try_conn_crtc(drmu_env_t * du, drmu_conn_t * dn, drmu_crtc_t * dc)
-+{
-+    int rv;
-+
-+#if 1
-+    const struct drm_mode_modeinfo test_mode = modeinfo_fake(128,128);
-+#else
-+    // A real mode for testing
-+    static const struct drm_mode_modeinfo test_mode = {
-+        .clock = 25175,
-+        .hdisplay = 640,
-+        .hsync_start = 656,
-+        .hsync_end = 752,
-+        .htotal = 800,
-+        .hskew = 0,
-+        .vdisplay = 480,
-+        .vsync_start = 490,
-+        .vsync_end = 492,
-+        .vtotal = 525,
-+        .vscan = 0,
-+        .vrefresh = 60,
-+        .flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+        .name = {"640x480-60"},
-+    };
-+#endif
-+
-+    drmu_atomic_t * da = drmu_atomic_new(du);
-+
-+    if (!da)
-+        return -ENOMEM;
-+
-+    if ((rv = drmu_atomic_conn_add_crtc(da, dn, dc)) != 0) {
-+        drmu_warn(du, "Failed to add writeback connector to crtc: %s", strerror(-rv));
-+        goto fail;
-+    }
-+    if ((rv = drmu_atomic_crtc_add_modeinfo(da, dc, &test_mode)) != 0) {
-+        drmu_warn(du, "Failed to add modeinfo: %s", strerror(-rv));
-+        goto fail;
-+    }
-+
-+    if ((rv = drmu_atomic_crtc_add_active(da, dc, 1)) != 0) {
-+        drmu_warn(du, "Failed to add active to crtc: %s", strerror(-rv));
-+        goto fail;
-+    }
-+
-+    if ((rv = drmu_atomic_commit(da, DRM_MODE_ATOMIC_TEST_ONLY | DRM_MODE_ATOMIC_ALLOW_MODESET)) != 0) {
-+        drmu_warn(du, "Failed test commit of writeback connector to crtc: %s", strerror(-rv));
-+        goto fail;
-+    }
-+
-+    drmu_atomic_unref(&da);
-+    return 0;
-+
-+fail:
-+    drmu_atomic_unref(&da);
-+    return rv;
-+}
-+
 +int
-+drmu_atomic_output_add_writeback_fb(drmu_atomic_t * const da_out, drmu_output_t * const dout,
-+                                    drmu_fb_t * const dfb)
++drmu_atomic_output_add_writeback_fb_callback(drmu_atomic_t * const da_out, drmu_output_t * const dout,
++                                    drmu_fb_t * const dfb, const unsigned int rot,
++                                    drmu_fb_fence_fd_fn * const fn, void * const v)
 +{
 +    drmu_env_t * const du = dout->du;
 +    drmu_atomic_t * da = drmu_atomic_new(drmu_atomic_env(da_out));
-+    int rv = -ENOMEM;
-+    struct drm_mode_modeinfo mode = modeinfo_fake(drmu_fb_width(dfb), drmu_fb_height(dfb));
++    int rv;
++    struct drm_mode_modeinfo mode = !drmu_rotation_is_transposed(rot) ?
++        modeinfo_fake(drmu_fb_width(dfb), drmu_fb_height(dfb)) :
++        modeinfo_fake(drmu_fb_height(dfb), drmu_fb_width(dfb));
 +    drmu_conn_t * const dn = dout->dns[0];
 +
-+    if (da == NULL)
++    if (da == NULL) {
++        if (fn)
++            fn(v, -1, NULL);
 +        return -ENOMEM;
++    }
 +
-+    if ((rv = drmu_atomic_conn_add_writeback_fb(da, dn, dfb)) != 0) {
++    if ((rv = drmu_atomic_conn_add_writeback_fb(da, dn, dfb, fn, v)) != 0) {
 +        drmu_err(du, "Failed to add FB to conn");
++        goto fail;
++    }
++    if ((rv = drmu_atomic_conn_add_rotation(da, dn, rot)) != 0) {
++        drmu_err(du, "Failed to add rotation to conn");
 +        goto fail;
 +    }
 +    if ((rv = drmu_atomic_crtc_add_modeinfo(da, dout->dc, &mode)) != 0) {
@@ -8131,63 +8636,17 @@ Can do HDR setup and mode matching
 +}
 +
 +int
-+drmu_output_add_writeback(drmu_output_t * const dout)
++drmu_atomic_output_add_writeback_fb_rotate(drmu_atomic_t * const da_out, drmu_output_t * const dout,
++                                    drmu_fb_t * const dfb, const unsigned int rot)
 +{
-+    drmu_env_t * const du = dout->du;
-+    drmu_conn_t * dn = NULL;
-+    drmu_crtc_t * dc = NULL;
-+    drmu_conn_t * dn_t;
-+    int rv;
-+    uint32_t possible_crtcs;
++    return drmu_atomic_output_add_writeback_fb_callback(da_out, dout, dfb, rot, NULL, NULL);
++}
 +
-+    if (!dout->modeset_allow) {
-+        drmu_debug(du, "modeset_allow required for writeback");
-+        return -EINVAL;
-+    }
-+
-+    for (unsigned int i = 0; (dn_t = drmu_env_conn_find_n(du, i)) != NULL; ++i) {
-+        drmu_info(du, "%d: try %s", i, drmu_conn_name(dn_t));
-+        if (!drmu_conn_is_writeback(dn_t))
-+            continue;
-+        dn = dn_t;
-+        break;
-+    }
-+
-+    if (!dn) {
-+        drmu_err(du, "no writeback conn found");
-+        return -ENOENT;
-+    }
-+
-+    possible_crtcs = drmu_conn_possible_crtcs(dn);
-+
-+    for (unsigned int i = 0; possible_crtcs != 0; ++i, possible_crtcs >>= 1) {
-+        drmu_crtc_t *dc_t;
-+
-+        if ((possible_crtcs & 1) == 0)
-+            continue;
-+
-+        drmu_info(du, "try Crtc %d", i);
-+
-+        if ((dc_t = drmu_env_crtc_find_n(du, i)) == NULL)
-+            break;
-+
-+        if (try_conn_crtc(du, dn, dc_t) == 0) {
-+            dc = dc_t;
-+            break;
-+        }
-+    }
-+
-+    if (!dc) {
-+        drmu_err(du, "No crtc for writeback found");
-+        return -ENOENT;
-+    }
-+
-+    if ((rv = check_conns_size(dout)) != 0)
-+        return rv;
-+
-+    dout->dns[dout->conn_n++] = dn;
-+    dout->dc = dc;
-+    return 0;
++int
++drmu_atomic_output_add_writeback_fb(drmu_atomic_t * const da_out, drmu_output_t * const dout,
++                                    drmu_fb_t * const dfb)
++{
++    return drmu_atomic_output_add_writeback_fb_rotate(da_out, dout, dfb, DRMU_ROTATION_0);
 +}
 +
 +drmu_crtc_t *
@@ -8257,7 +8716,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_output.h
-@@ -0,0 +1,98 @@
+@@ -0,0 +1,114 @@
 +#ifndef _DRMU_DRMU_OUTPUT_H
 +#define _DRMU_DRMU_OUTPUT_H
 +
@@ -8293,7 +8752,7 @@ Can do HDR setup and mode matching
 +// Set output mode
 +int drmu_output_mode_id_set(drmu_output_t * const dout, const int mode_id);
 +
-+// Width/height of the currebnt mode
++// Width/height of the current mode
 +const drmu_mode_simple_params_t * drmu_output_mode_simple_params(const drmu_output_t * const dout);
 +
 +typedef int drmu_mode_score_fn(void * v, const drmu_mode_simple_params_t * mode);
@@ -8321,14 +8780,30 @@ Can do HDR setup and mode matching
 +
 +// Allow _add_output2 to add a disconnected connect & asign a compatible CRTC
 +// Mode select and active will have to happen later
-+#define DRMU_OUTPUT_FLAG_ADD_DISCONNECTED 1
++
++// Search disconnected conns too; but prefer connected
++#define DRMU_OUTPUT_FLAG_ADD_DISCONNECTED       1
++// Pick the first one we find; connected or disconnected
++#define DRMU_OUTPUT_FLAG_ADD_ANY                2
++// Only search disconnected
++#define DRMU_OUTPUT_FLAG_ADD_DISCONNECTED_ONLY  4
++// Only search writeback connectors; otherwise only search output connectors
++#define DRMU_OUTPUT_FLAG_ADD_WRITEBACK          8
 +
 +// Experimental, more flexible version of _add_output
 +int drmu_output_add_output2(drmu_output_t * const dout, const char * const conn_name, const unsigned int flags);
 +
-+// Set writeback fb on output
++// Set writeback fb on output - rotation 0
 +int drmu_atomic_output_add_writeback_fb(drmu_atomic_t * const da_req, drmu_output_t * const dout,
 +                                    drmu_fb_t * const dfb);
++
++// Set writeback fb on output - also set rotation on conn
++int drmu_atomic_output_add_writeback_fb_rotate(drmu_atomic_t * const da_out, drmu_output_t * const dout,
++                                    drmu_fb_t * const dfb, const unsigned int rot);
++
++int drmu_atomic_output_add_writeback_fb_callback(drmu_atomic_t * const da_out, drmu_output_t * const dout,
++                                    drmu_fb_t * const dfb, const unsigned int rot,
++                                    drmu_fb_fence_fd_fn * const fn, void * const v);
 +
 +// Add a writeback connector & find a crtc for it
 +int drmu_output_add_writeback(drmu_output_t * const dout);
@@ -8358,7 +8833,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_poll.c
-@@ -0,0 +1,387 @@
+@@ -0,0 +1,549 @@
 +// Functions to merge commits onto the next vsync without blocking
 +// Keeps references to everything that is in use
 +//
@@ -8373,8 +8848,11 @@ Can do HDR setup and mode matching
 +#include "drmu_log.h"
 +#include "pollqueue.h"
 +
++#include <assert.h>
 +#include <errno.h>
 +#include <pthread.h>
++#include <semaphore.h>
++#include <stdatomic.h>
 +#include <string.h>
 +#include <time.h>
 +#include <unistd.h>
@@ -8385,244 +8863,282 @@ Can do HDR setup and mode matching
 +//
 +// Atomic Q fns (internal)
 +
-+typedef struct drmu_atomic_q_s {
-+    pthread_mutex_t lock;
-+    pthread_cond_t cond;
-+    drmu_atomic_t * next_flip;
-+    drmu_atomic_t * cur_flip;
-+    drmu_atomic_t * last_flip;
-+    unsigned int retry_count;
-+    struct polltask * retry_task;
-+} drmu_atomic_q_t;
++typedef struct flips_ent_s {
++    drmu_atomic_t * da;
++    unsigned int tag;
++} flip_ent_t;
 +
-+// Needs locked
-+static int
-+atomic_q_attempt_commit_next(drmu_atomic_q_t * const aq)
++typedef struct next_flips_s {
++    flip_ent_t * flips;
++    unsigned int len;
++    unsigned int size;
++    unsigned int n;
++} next_flips_t;
++
++static bool
++next_flip_is_empty(const next_flips_t * const nf)
 +{
-+    drmu_env_t * const du = drmu_atomic_env(aq->next_flip);
-+    uint32_t flags = DRM_MODE_ATOMIC_NONBLOCK | DRM_MODE_PAGE_FLIP_EVENT | DRM_MODE_ATOMIC_ALLOW_MODESET;
-+    int rv;
++    return nf->len == 0;
++}
 +
-+    if ((rv = drmu_atomic_commit(aq->next_flip, flags)) == 0) {
-+        if (aq->retry_count != 0)
-+            drmu_warn(du, "%s: Atomic commit OK", __func__);
-+        aq->cur_flip = aq->next_flip;
-+        aq->next_flip = NULL;
-+        aq->retry_count = 0;
++static drmu_atomic_t *
++next_flip_head(const next_flips_t * const nf)
++{
++    return next_flip_is_empty(nf) ? NULL : nf->flips[nf->n].da;
++}
++
++static drmu_atomic_t **
++next_flip_find_tag(const next_flips_t * const nf, const unsigned int tag)
++{
++    unsigned int n;
++    unsigned int i;
++
++    n = nf->n + nf->len - 1 < nf->size ?
++        nf->n + nf->len - 1 :
++        nf->n + nf->len - 1 - nf->size;
++
++    for (i = 0; i != nf->len; ++i) {
++        if (nf->flips[n].tag == tag)
++            return &nf->flips[n].da;
++        n = (n == 0) ? nf->size - 1 : n - 1;
 +    }
-+    else if (rv == -EBUSY && ++aq->retry_count < 16 && aq->retry_task != NULL) {
-+        // This really shouldn't happen but we observe that the 1st commit after
-+        // a modeset often fails with BUSY.  It seems to be fine on a 10ms retry
-+        // but allow some more in case ww need a bit longer in some cases
-+        drmu_warn(du, "%s: Atomic commit BUSY", __func__);
-+        pollqueue_add_task(aq->retry_task, 20);
-+        rv = 0;
++    return NULL;
++}
++
++static drmu_atomic_t *
++next_flip_pop_head(next_flips_t * const nf)
++{
++    drmu_atomic_t * flip;
++
++    if (next_flip_is_empty(nf))
++        return NULL;
++    flip = nf->flips[nf->n].da;
++    nf->n = nf->n + 1 >= nf->size ? 0 : nf->n + 1;
++    --nf->len;
++    return flip;
++}
++
++static drmu_atomic_t **
++next_flip_add_tail(next_flips_t * const nf, unsigned int tag)
++{
++    const unsigned int oldlen = nf->len;
++
++    if (oldlen < nf->size) {
++        unsigned int n = nf->n + oldlen;
++        if (n >= nf->size)
++            n -= nf->size;
++        nf->flips[n].da = NULL;
++        nf->flips[n].tag = tag;
++        ++nf->len;
++        return &nf->flips[n].da;
 +    }
 +    else {
-+        drmu_err(du, "%s: Atomic commit failed: %s", __func__, strerror(-rv));
-+        drmu_atomic_dump(aq->next_flip);
-+        drmu_atomic_unref(&aq->next_flip);
-+        aq->retry_count = 0;
-+    }
++        // Given the circular buffer can't just realloc, must alloc & rebuild
++        const unsigned int newsize = (oldlen < 8) ? 8 : oldlen * 2;
++        flip_ent_t * newflips = malloc(sizeof(*nf->flips) * newsize);
++        if (newflips == NULL)
++            return NULL;
 +
-+    return rv;
++        assert(oldlen == nf->size);
++        memcpy(newflips, nf->flips + nf->n, (nf->size - nf->n) * sizeof(*nf->flips));
++        memcpy(newflips + (nf->size - nf->n), nf->flips, nf->n * sizeof(*nf->flips));
++        newflips[oldlen].da = NULL;
++        newflips[oldlen].tag = tag;
++        free(nf->flips);
++
++        nf->flips = newflips;
++        nf->size = newsize;
++        nf->len = oldlen + 1;
++        nf->n = 0;
++
++        return &newflips[oldlen].da;
++    }
++}
++
++static bool
++next_flip_discard_head(next_flips_t * const nf)
++{
++    drmu_atomic_t * da = next_flip_pop_head(nf);
++    if (da == NULL)
++        return false;
++    drmu_atomic_unref(&da);
++    return true;
 +}
 +
 +static void
-+atomic_q_retry_cb(void * v, short revents)
++next_flip_init(next_flips_t * const nf)
 +{
-+    drmu_atomic_q_t * const aq = v;
++    memset(nf, 0, sizeof(*nf));
++}
++
++// Zap next flip q - leaves in a state that a new add will work
++static void
++next_flip_uninit(next_flips_t * const nf)
++{
++    while (!next_flip_is_empty(nf)) {
++        drmu_atomic_run_commit_callbacks(next_flip_head(nf));
++        next_flip_discard_head(nf);
++    }
++    free(nf->flips);
++    memset(nf, 0, sizeof(*nf));
++}
++
++//-----------------------------------------------------------------------------
++
++struct drmu_queue_s {
++    atomic_int ref_count;
++
++    drmu_env_t * du;
++
++    bool discard_last;
++    bool lock_on_commit;
++    bool locked;
++    unsigned int retry_count;
++    unsigned int qno; // Handy for debug
++
++    pthread_mutex_t lock;
++    pthread_cond_t cond;
++    next_flips_t next;
++    drmu_atomic_t * cur_flip;
++    drmu_atomic_t * last_flip;
++
++    bool wants_prod;
++    struct pollqueue * pq;
++    struct polltask * prod_pt;
++
++    // Finish vars
++    bool env_restore_req;
++    sem_t * finish_sem;
++};
++
++static void
++queue_prod_cb(void * v, short revents)
++{
++    drmu_queue_t * const aq = v;
++    drmu_env_t * const du = aq->du;
 +    (void)revents;
++    uint32_t flags = DRM_MODE_ATOMIC_ALLOW_MODESET;
++    unsigned int prod_time = 0;
++    int rv;
++
++    // cur_flip, last_flip only used here so can be used outside lock
 +
 +    pthread_mutex_lock(&aq->lock);
 +
-+    // If we need a retry then next != NULL && cur == NULL
-+    // if not that then we've fixed ourselves elsewhere
-+
-+    if (aq->next_flip != NULL && aq->cur_flip == NULL)
-+        atomic_q_attempt_commit_next(aq);
-+
-+    pthread_mutex_unlock(&aq->lock);
-+}
-+
-+// Called after an atomic commit has completed
-+// not called on every vsync, so if we haven't committed anything this won't be called
-+static void
-+drmu_atomic_page_flip_cb(drmu_env_t * const du, drmu_atomic_q_t * const aq, void *user_data)
-+{
-+    drmu_atomic_t * const da = user_data;
-+
-+    // At this point:
-+    //  next   The atomic we are about to commit
-+    //  cur    The last atomic we committed, now in use (must be != NULL)
-+    //  last   The atomic that has just become obsolete
-+
-+    pthread_mutex_lock(&aq->lock);
-+
-+    if (da != aq->cur_flip) {
-+        drmu_err(du, "%s: User data el (%p) != cur (%p)", __func__, da, aq->cur_flip);
-+    }
-+
-+    // Must merge cur into last rather than just replace last as there may
-+    // still be things on screen not updated by the current commit
-+    drmu_atomic_move_merge(&aq->last_flip, &aq->cur_flip);
-+
-+    if (aq->next_flip != NULL)
-+        atomic_q_attempt_commit_next(aq);
-+
-+    pthread_cond_broadcast(&aq->cond);
-+    pthread_mutex_unlock(&aq->lock);
-+}
-+
-+static int
-+atomic_q_kill(drmu_atomic_q_t * const aq)
-+{
-+    struct timespec ts;
-+    int rv = 0;
-+
-+    pthread_mutex_lock(&aq->lock);
-+
-+    clock_gettime(CLOCK_MONOTONIC, &ts);
-+    ts.tv_sec += 1;  // We should never timeout if all is well - 1 sec is plenty
-+
-+    // Can flush next safely - but call commit cbs
-+    drmu_atomic_run_commit_callbacks(aq->next_flip);
-+    drmu_atomic_unref(&aq->next_flip);
-+    polltask_delete(&aq->retry_task); // If we've got here then retry would not succeed
-+
-+    // Wait for cur to finish - seems to confuse the world otherwise
-+    while (aq->cur_flip != NULL) {
-+        if ((rv = pthread_cond_timedwait(&aq->cond, &aq->lock, &ts)) != 0)
-+            break;
++    if (!aq->locked) {
++        if (aq->cur_flip == NULL)
++            aq->cur_flip = next_flip_pop_head(&aq->next);
++        if (aq->cur_flip != NULL)
++            aq->locked = aq->lock_on_commit;
++        else {
++            aq->wants_prod = true;
++            pthread_cond_broadcast(&aq->cond);
++        }
 +    }
 +
 +    pthread_mutex_unlock(&aq->lock);
-+    return rv;
++
++    if (aq->cur_flip == NULL)
++        return;
++
++    rv = drmu_atomic_commit(aq->cur_flip, flags);
++
++    if (rv == 0) {
++        if (aq->retry_count != 0)
++            drmu_warn(du, "[%d]: Atomic commit OK", aq->qno);
++        aq->retry_count = 0;
++
++        // This is the only place last_flip is written when not shutting down
++        // so we don't need the lock
++        if (aq->discard_last) {
++            pthread_mutex_lock(&aq->lock);
++            if (aq->locked) {
++                assert(aq->last_flip == NULL);
++                aq->last_flip = aq->cur_flip;
++                aq->cur_flip = NULL;
++            }
++            pthread_mutex_unlock(&aq->lock);
++
++            // Writeback doesn't need to keep the source once done
++            drmu_atomic_unref(&aq->cur_flip);
++        }
++        else {
++            // Must merge cur into last rather than just replace last as there may
++            // still be things on screen not updated by the current commit
++            drmu_atomic_move_merge(&aq->last_flip, &aq->cur_flip);
++        }
++    }
++    else if (rv == -EBUSY && ++aq->retry_count < 16) {
++        // This really shouldn't happen but we observe that the 1st commit after
++        // a modeset often fails with BUSY.  It seems to be fine on a 10ms retry
++        // but allow some more in case we need a bit longer in some cases
++        // *** This may never happen now with blocking commits
++        drmu_warn(du, "[%d]: Atomic commit BUSY", aq->qno);
++        prod_time = 20;
++    }
++    else {
++        drmu_err(du, "[%d]: Atomic commit failed: %s", aq->qno, strerror(-rv));
++        drmu_atomic_dump(aq->cur_flip);
++        drmu_atomic_unref(&aq->cur_flip);
++        aq->retry_count = 0;
++        // We haven't had a good commit so _unlock must not be called so no
++        // mutex required
++        aq->locked = false;
++    }
++
++    pollqueue_add_task(aq->prod_pt, prod_time);
 +}
 +
 +static void
-+atomic_q_clear_flips(drmu_atomic_q_t * const aq)
++queue_free(drmu_queue_t * const aq)
 +{
-+    drmu_atomic_unref(&aq->next_flip);
++    sem_t * const finish_sem = aq->finish_sem;
++
++    // Delete will wait for a running polltask to finish
++    polltask_delete(&aq->prod_pt);
++
++    next_flip_uninit(&aq->next);
 +    drmu_atomic_unref(&aq->cur_flip);
-+    drmu_atomic_unref(&aq->last_flip);
-+}
 +
-+static void
-+atomic_q_uninit(drmu_atomic_q_t * const aq)
-+{
-+    polltask_delete(&aq->retry_task);
-+    atomic_q_clear_flips(aq);
++    if (aq->env_restore_req)
++        drmu_env_int_restore(aq->du);
++
++    drmu_atomic_unref(&aq->last_flip);
++
++    pollqueue_finish(&aq->pq);
++
 +    pthread_cond_destroy(&aq->cond);
 +    pthread_mutex_destroy(&aq->lock);
-+}
 +
-+static int
-+atomic_q_set_retry(drmu_atomic_q_t * const aq, struct pollqueue * pq)
-+{
-+    aq->retry_task = polltask_new_timer(pq, atomic_q_retry_cb, aq);
-+    return aq->retry_task == NULL ? -ENOMEM : 0;
++    drmu_env_unref(&aq->du);
++    free(aq);
++
++    // If we are waiting for this to die - signal it
++    if (finish_sem != NULL)
++        sem_post(finish_sem);
 +}
 +
 +static void
-+atomic_q_init(drmu_atomic_q_t * const aq)
++queue_finish(drmu_queue_t ** const ppAq, const bool wants_restore)
 +{
-+    pthread_condattr_t condattr;
++    sem_t sem;
 +
-+    aq->next_flip = NULL;
-+    aq->cur_flip = NULL;
-+    aq->last_flip = NULL;
-+    pthread_mutex_init(&aq->lock, NULL);
++    if (*ppAq == NULL)
++        return;
 +
-+    pthread_condattr_init(&condattr);
-+    pthread_condattr_setclock(&condattr, CLOCK_MONOTONIC);
-+    pthread_cond_init(&aq->cond, &condattr);
-+    pthread_condattr_destroy(&condattr);
++    sem_init(&sem, 0, 0);
++    (*ppAq)->env_restore_req = wants_restore;
++    (*ppAq)->finish_sem = &sem;
++    drmu_queue_unref(ppAq);
++
++    while (sem_wait(&sem) != 0 && errno == EINTR)
++        /* loop */;
++    sem_destroy(&sem);
 +}
 +
 +//-----------------------------------------------------------------------------
 +//
-+// Event polling functions
-+
-+typedef struct drmu_poll_env_s {
-+    drmu_env_t * du;
-+
-+    struct pollqueue * pq;
-+    struct polltask * pt;
-+
-+    // global env for atomic flip
-+    drmu_atomic_q_t aq;
-+
-+} drmu_poll_env_t;
-+
-+#define EVT(p) ((const struct drm_event *)(p))
-+static int
-+evt_read(drmu_poll_env_t * const pe)
-+{
-+    drmu_env_t * const du = pe->du;
-+    uint8_t buf[256] __attribute__((aligned(__BIGGEST_ALIGNMENT__)));
-+    const ssize_t rlen = read(drmu_fd(du), buf, sizeof(buf));
-+    size_t i;
-+
-+    if (rlen < 0) {
-+        const int err = errno;
-+        drmu_err(du, "Event read failure: %s", strerror(err));
-+        return -err;
-+    }
-+
-+    for (i = 0;
-+         i + sizeof(struct drm_event) <= (size_t)rlen && EVT(buf + i)->length <= (size_t)rlen - i;
-+         i += EVT(buf + i)->length) {
-+        switch (EVT(buf + i)->type) {
-+            case DRM_EVENT_FLIP_COMPLETE:
-+            {
-+                const struct drm_event_vblank * const vb = (struct drm_event_vblank*)(buf + i);
-+                if (EVT(buf + i)->length < sizeof(*vb))
-+                    break;
-+
-+                drmu_atomic_page_flip_cb(du, &pe->aq, (void *)(uintptr_t)vb->user_data);
-+                break;
-+            }
-+            default:
-+                drmu_warn(du, "Unexpected DRM event #%x", EVT(buf + i)->type);
-+                break;
-+        }
-+    }
-+
-+    if (i != (size_t)rlen)
-+        drmu_warn(du, "Partial event received: len=%zd, processed=%zd", rlen, i);
-+
-+    return 0;
-+}
-+#undef EVT
-+
-+static void
-+evt_polltask_cb(void * v, short revents)
-+{
-+    drmu_poll_env_t * const pe = v;
-+
-+    if (revents == 0) {
-+        drmu_debug(pe->du, "%s: Timeout", __func__);
-+    }
-+    else {
-+        evt_read(pe);
-+    }
-+
-+    pollqueue_add_task(pe->pt, 1000);
-+}
-+
-+static void
-+poll_free(drmu_poll_env_t * const pe)
-+{
-+    // pt & pq should already be free by now but may not be in some error cleanup
-+    // situations.
-+
-+    polltask_delete(&pe->pt);
-+    atomic_q_uninit(&pe->aq);
-+    pollqueue_finish(&pe->pq);
-+
-+    free(pe);
-+}
++// Default Q setup & destroy functions
 +
 +// Kill the Q
 +// Ordering goes:
@@ -8632,57 +9148,16 @@ Can do HDR setup and mode matching
 +// Must be done in that order or we end up destroying buffers that are
 +// still in use
 +static void
-+poll_destroy(drmu_poll_env_t ** ppPe, drmu_env_t * du)
++poll_destroy(drmu_queue_t ** ppAq, drmu_env_t * du)
 +{
-+    drmu_poll_env_t * const pe = *ppPe;
-+
-+    if (pe == NULL)
-+        return;
-+    *ppPe = NULL;
-+
-+    atomic_q_kill(&pe->aq);
-+
-+    polltask_delete(&pe->pt);
-+    // All polltasks must be dead before calling _finish (including the aq
-+    // retry task) or it will hang
-+    pollqueue_finish(&pe->pq);
-+
-+    drmu_env_int_restore(du);
-+
-+    atomic_q_clear_flips(&pe->aq);
-+
-+    poll_free(pe);
++    (void)du;
++    queue_finish(ppAq, true);
 +}
 +
-+static drmu_poll_env_t *
++static drmu_queue_t *
 +poll_new(drmu_env_t * du)
 +{
-+    drmu_poll_env_t * const pe = calloc(1, sizeof(*pe));
-+
-+    pe->du = du;
-+    atomic_q_init(&pe->aq);
-+
-+    if ((pe->pq = pollqueue_new()) == NULL) {
-+        drmu_err(du, "Failed to create pollqueue");
-+        goto fail;
-+    }
-+    if ((pe->pt = polltask_new(pe->pq, drmu_fd(du), POLLIN | POLLPRI, evt_polltask_cb, pe)) == NULL) {
-+        drmu_err(du, "Failed to create polltask");
-+        goto fail;
-+    }
-+
-+    if (atomic_q_set_retry(&pe->aq, pe->pq) != 0) {
-+        drmu_err(du, "Failed to create retry polltask");
-+        goto fail;
-+    }
-+
-+    pollqueue_add_task(pe->pt, 1000);
-+
-+    return pe;
-+
-+fail:
-+    poll_free(pe);
-+    return NULL;
++    return drmu_queue_new(du);
 +}
 +
 +//-----------------------------------------------------------------------------
@@ -8690,72 +9165,257 @@ Can do HDR setup and mode matching
 +// External functions
 +// Somewhat broken naming scheme for historic reasons
 +
-+int
-+drmu_atomic_queue(drmu_atomic_t ** ppda)
++drmu_queue_t *
++drmu_queue_new(struct drmu_env_s * const du)
 +{
-+    int rv;
++    drmu_queue_t * const aq = calloc(1, sizeof(*aq));
++    pthread_condattr_t condattr;
++    static atomic_int qcount = ATOMIC_VAR_INIT(0);
++
++    if (aq == NULL)
++        return NULL;
++
++    aq->du = drmu_env_ref(du);
++    next_flip_init(&aq->next);
++    aq->cur_flip = NULL;
++    aq->last_flip = NULL;
++    aq->qno = atomic_fetch_add(&qcount, 1);
++    aq->wants_prod = true;
++
++    pthread_mutex_init(&aq->lock, NULL);
++
++    pthread_condattr_init(&condattr);
++    pthread_condattr_setclock(&condattr, CLOCK_MONOTONIC);
++    pthread_cond_init(&aq->cond, &condattr);
++    pthread_condattr_destroy(&condattr);
++
++    if ((aq->pq = pollqueue_new()) == NULL)
++        goto fail;
++    if ((aq->prod_pt = polltask_new(aq->pq, -1, 0, queue_prod_cb, aq)) == NULL)
++        goto fail;
++    return aq;
++
++fail:
++    queue_free(aq);
++    return aq;
++}
++
++drmu_queue_t *
++drmu_queue_ref(drmu_queue_t * const dq)
++{
++    atomic_fetch_add(&dq->ref_count, 1);
++    return dq;
++}
++
++void
++drmu_queue_unref(drmu_queue_t ** const ppdq)
++{
++    drmu_queue_t * const dq = *ppdq;
++    int n;
++
++    if (dq == NULL)
++        return;
++    *ppdq = NULL;
++
++    n = atomic_fetch_sub(&dq->ref_count, 1);
++    if (n != 0)
++        return;
++
++    queue_free(dq);
++}
++
++void
++drmu_queue_finish(drmu_queue_t ** const ppdq)
++{
++    queue_finish(ppdq, false);
++}
++
++int
++drmu_queue_queue_tagged(drmu_queue_t * const aq,
++                        const unsigned int tag, const drmu_queue_merge_t qmerge,
++                        struct drmu_atomic_s ** ppda)
++{
++    int rv = 0;
 +    drmu_env_t * const du = drmu_atomic_env(*ppda);
-+    drmu_poll_env_t * pe;
-+    drmu_atomic_q_t * aq;
++    drmu_atomic_t ** ppna = NULL;
++    drmu_atomic_t * discard_da = NULL;
++    bool wants_prod = false;
 +
-+    if (du == NULL)
-+        return 0;
-+
-+    if ((rv = drmu_env_int_poll_set(du, poll_new, poll_destroy, &pe)) != 0) {
-+        drmu_atomic_unref(ppda);
-+        return rv;
++    if (aq == NULL) {
++        rv = -EINVAL;
++        goto fail_unref;
 +    }
 +
-+    aq = &pe->aq;
++    if (drmu_atomic_is_empty(*ppda))
++        goto fail_unref;  // rv = 0 so not an error really
 +
 +    pthread_mutex_lock(&aq->lock);
 +
-+    rv = drmu_atomic_move_merge(&aq->next_flip, ppda);
++    if (qmerge != DRMU_QUEUE_MERGE_QUEUE)
++        ppna = next_flip_find_tag(&aq->next, tag);
++
++    if (ppna == NULL) {
++        if ((ppna = next_flip_add_tail(&aq->next, tag)) == NULL) {
++            rv = -ENOMEM;
++            goto fail_unlock;
++        }
++    }
++
++    switch (qmerge) {
++        case DRMU_QUEUE_MERGE_MERGE:
++            if ((rv = drmu_atomic_move_merge(ppna, ppda)) != 0)
++                goto fail_unlock;
++            break;
++        case DRMU_QUEUE_MERGE_QUEUE:
++        case DRMU_QUEUE_MERGE_DROP:
++            if (*ppna == NULL)
++                *ppna = drmu_atomic_move(ppda);
++            break;
++        case DRMU_QUEUE_MERGE_REPLACE:
++            discard_da = *ppna; // Unref can take a short while - move outside lock
++            *ppna = drmu_atomic_move(ppda);
++            break;
++        default:
++            drmu_err(du, "Bad qmerge value");
++            rv = -EINVAL;
++            goto fail_unlock;
++    }
 +
 +    // No pending commit?
-+    if (rv == 0 && aq->cur_flip == NULL)
-+        rv = atomic_q_attempt_commit_next(aq);
++    if (aq->wants_prod) {
++        aq->wants_prod = false;
++        wants_prod = true;
++    }
++
++    rv = 0;
++
++fail_unlock:
++    pthread_mutex_unlock(&aq->lock);
++
++    // Do outside lock to avoid possible unneeded lock conflict
++    if (wants_prod)
++        pollqueue_add_task(aq->prod_pt, 0);
++
++    drmu_atomic_unref(&discard_da);
++fail_unref:
++    drmu_atomic_unref(ppda);
++    return rv;
++}
++
++int
++drmu_atomic_queue(drmu_atomic_t ** ppda)
++{
++    drmu_queue_t * const aq = drmu_env_queue_default(drmu_atomic_env(*ppda));
++    return drmu_queue_queue_tagged(aq, 0, DRMU_QUEUE_MERGE_MERGE, ppda);
++}
++
++drmu_queue_t *
++drmu_env_queue_default(drmu_env_t * const du)
++{
++    drmu_queue_t * aq;
++    if (drmu_env_int_poll_set(du, poll_new, poll_destroy, &aq) != 0)
++        return NULL;
++    return aq;
++}
++
++int
++drmu_queue_wait(drmu_queue_t * const aq)
++{
++    int rv = 0;
++    struct timespec ts;
++
++    if (aq == NULL)
++        return 0;
++
++    pthread_mutex_lock(&aq->lock);
++    clock_gettime(CLOCK_MONOTONIC, &ts);
++    ts.tv_sec += 1;  // We should never timeout if all is well - 1 sec is plenty
++
++    // wants_prod will be true once Q empty and commit finished
++    while (!aq->wants_prod)
++        if ((rv = pthread_cond_timedwait(&aq->cond, &aq->lock, &ts)) != 0)
++            break;
 +
 +    pthread_mutex_unlock(&aq->lock);
 +    return rv;
 +}
 +
++void
++drmu_queue_keep_last_set(drmu_queue_t * const aq, const bool keep_last)
++{
++    aq->discard_last = !keep_last;
++}
++
++void
++drmu_queue_lock_on_commit_set(drmu_queue_t * const aq, const bool lock)
++{
++    aq->lock_on_commit = lock;
++}
++
++int
++drmu_queue_unlock(drmu_queue_t * const aq)
++{
++    bool wants_prod = false;
++    drmu_atomic_t * da = NULL;
++
++    pthread_mutex_lock(&aq->lock);
++    if (aq->locked) {
++        aq->locked = false;
++        wants_prod = true;
++
++        if (aq->discard_last) {
++            da = aq->last_flip;
++            aq->last_flip = NULL;
++        }
++    }
++    pthread_mutex_unlock(&aq->lock);
++
++    if (wants_prod)
++        pollqueue_add_task(aq->prod_pt, 0);
++
++    drmu_atomic_unref(&da);
++    return 0;
++}
++
 +int
 +drmu_env_queue_wait(drmu_env_t * const du)
 +{
-+    drmu_poll_env_t *const pe = drmu_env_int_poll_get(du);
-+    int rv = 0;
-+
-+    if (pe != NULL) {
-+        drmu_atomic_q_t *const aq = &pe->aq;
-+        struct timespec ts;
-+
-+        pthread_mutex_lock(&aq->lock);
-+        clock_gettime(CLOCK_MONOTONIC, &ts);
-+        ts.tv_sec += 1;  // We should never timeout if all is well - 1 sec is plenty
-+
-+        // Next should clear quickly
-+        while (aq->next_flip != NULL) {
-+            if ((rv = pthread_cond_timedwait(&aq->cond, &aq->lock, &ts)) != 0)
-+                break;
-+        }
-+
-+        pthread_mutex_unlock(&aq->lock);
-+    }
-+    return rv;
++    return drmu_queue_wait(drmu_env_queue_default(du));
 +}
-+
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_poll.h
-@@ -0,0 +1,27 @@
+@@ -0,0 +1,80 @@
 +#ifndef _DRMU_DRMU_POLL_H
 +#define _DRMU_DRMU_POLL_H
++
++#include <stdbool.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
 +
 +struct drmu_env_s;
 +struct drmu_atomic_s;
 +
-+// Q the atomic on its associated env
++struct drmu_queue_s;
++typedef struct drmu_queue_s drmu_queue_t;
++
++drmu_queue_t * drmu_queue_new(struct drmu_env_s * const du);
++drmu_queue_t * drmu_queue_ref(drmu_queue_t * const dq);
++void drmu_queue_unref(drmu_queue_t ** const ppdq);
++
++// Unref and wait for all other unrefs to occur
++void drmu_queue_finish(drmu_queue_t ** const ppdq);
++
++typedef enum drmu_queue_merge_e {
++    DRMU_QUEUE_MERGE_MERGE,   // Merge with last existing (default)
++    DRMU_QUEUE_MERGE_DROP,    // Drop new request
++    DRMU_QUEUE_MERGE_REPLACE, // Replace previous request
++    DRMU_QUEUE_MERGE_QUEUE,   // Queue both
++} drmu_queue_merge_t;
++
++// Q the atomic on its associated env in the given q
 +//
 +// in-progress = The commit has been done but no ack yet
 +// pending     = Commit Qed to be done when the in-progress commit has
@@ -8766,10 +9426,40 @@ Can do HDR setup and mode matching
 +// If there is a pending commit this atomic will be merged with it
 +// Commits are done with the PAGE_FLIP flag set so we expect the ack
 +// on the next page flip.
++int drmu_queue_queue_tagged(drmu_queue_t * const aq,
++                            const unsigned int tag, const drmu_queue_merge_t qmerge,
++                            struct drmu_atomic_s ** ppda);
++static inline int
++drmu_queue_queue(drmu_queue_t * const aq, struct drmu_atomic_s ** const ppda)
++{
++    return drmu_queue_queue_tagged(aq, 0, DRMU_QUEUE_MERGE_MERGE, ppda);
++}
++
++// Default Q
++drmu_queue_t * drmu_env_queue_default(struct drmu_env_s * const du);
++
++// drmu_atomic_queue_qno(ppda, 0)
 +int drmu_atomic_queue(struct drmu_atomic_s ** ppda);
++
 +// Wait for there to be no pending commit (there may be a commit in
 +// progress)
++int drmu_queue_wait(drmu_queue_t * const aq);
++
++// Wait on default q
 +int drmu_env_queue_wait(struct drmu_env_s * const du);
++
++// Keep a ref on the previous atomics until overwren by new atomics
++// Needed for most displays, not needed for writeback
++// Default queue keep_last state is true
++void drmu_queue_keep_last_set(drmu_queue_t * const aq, const bool keep_last);
++
++// Set a lock on this queue after a successful commit, next commit will not
++// proceed until _queue_unlock is called.
++// If _keep_last_set is false it also postpones the atomic unref until the
++// unlock.
++// This is primarily for use with writeback fences
++void drmu_queue_lock_on_commit_set(drmu_queue_t * const aq, const bool lock);
++int drmu_queue_unlock(drmu_queue_t * const aq);
 +
 +#ifdef __cplusplus
 +}
@@ -8778,7 +9468,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_pool.c
-@@ -0,0 +1,306 @@
+@@ -0,0 +1,307 @@
 +#include "drmu_pool.h"
 +
 +#include <assert.h>
@@ -8921,7 +9611,8 @@ Can do HDR setup and mode matching
 +drmu_pool_t *
 +drmu_pool_ref(drmu_pool_t * const pool)
 +{
-+    atomic_fetch_add(&pool->ref_count, 1);
++    if (pool != NULL)
++        atomic_fetch_add(&pool->ref_count, 1);
 +    return pool;
 +}
 +
@@ -9087,7 +9778,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_pool.h
-@@ -0,0 +1,58 @@
+@@ -0,0 +1,60 @@
 +#ifndef _DRMU_DRMU_POOL_H
 +#define _DRMU_DRMU_POOL_H
 +
@@ -9127,19 +9818,21 @@ Can do HDR setup and mode matching
 +drmu_pool_t * drmu_pool_new_alloc(struct drmu_env_s * const du, const unsigned int total_fbs_max,
 +                                  const drmu_pool_callback_fns_t * const cb_fns,
 +                                  void * const v);
-+// Create a new pool of fb allocated from dumb objects
-+// N.B. BOs are alloced from uncached memory so may be slow to do anything other
-+// than copy into. (See drmu_dmabuf_ if you want cached data)
-+struct drmu_fb_s * drmu_pool_fb_new(drmu_pool_t * const pool, uint32_t w, uint32_t h, const uint32_t format, const uint64_t mod);
++
 +// Marks the pool as dead & unrefs this reference
 +//   No allocs will succeed after this
 +//   All free fbs are unrefed
 +void drmu_pool_kill(drmu_pool_t ** const pppool);
 +
++// Create a new pool of fb allocated from dumb objects
++// N.B. BOs are alloced from uncached memory so may be slow to do anything other
++// than copy into. (See drmu_dmabuf_ if you want cached data)
 +drmu_pool_t * drmu_pool_new_dumb(struct drmu_env_s * const du, unsigned int total_fbs_max);
++
 +// Allocate a fb from the pool
 +// Allocations need not be all of the same size but no guarantees are made about
 +// efficient memory use if this is the case
++struct drmu_fb_s * drmu_pool_fb_new(drmu_pool_t * const pool, uint32_t w, uint32_t h, const uint32_t format, const uint64_t mod);
 +
 +#ifdef __cplusplus
 +}
@@ -9234,7 +9927,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_util.c
-@@ -0,0 +1,163 @@
+@@ -0,0 +1,199 @@
 +#include "drmu_util.h"
 +
 +#include "drmu.h"
@@ -9360,6 +10053,42 @@ Can do HDR setup and mode matching
 +    return r;
 +}
 +
++unsigned int
++drmu_util_str_to_rotation(const char * s, char ** peos)
++{
++    static const struct {
++        const char * str;
++        unsigned int rot;
++    } str_to_rot[] = {
++        {"0", DRMU_ROTATION_0},
++        {"H_FLIP", DRMU_ROTATION_H_FLIP},
++        {"H", DRMU_ROTATION_H_FLIP},
++        {"V_FLIP", DRMU_ROTATION_V_FLIP},
++        {"V", DRMU_ROTATION_V_FLIP},
++        {"180T", DRMU_ROTATION_180_TRANSPOSE},
++        {"180_TRANSPOSE", DRMU_ROTATION_180_TRANSPOSE},
++        {"180", DRMU_ROTATION_180},
++        {"TRANSPOSE", DRMU_ROTATION_TRANSPOSE},
++        {"T", DRMU_ROTATION_TRANSPOSE},
++        {"90", DRMU_ROTATION_90},
++        {"270", DRMU_ROTATION_270},
++        {NULL, 0},
++    };
++    unsigned int i;
++
++    for (i = 0; str_to_rot[i].str != NULL; ++i) {
++        size_t n = strlen(str_to_rot[i].str);
++        if (strncasecmp(s, str_to_rot[i].str, n) == 0) {
++            if (peos != NULL)
++                *peos = (char*)(s + n);
++            return str_to_rot[i].rot;
++        }
++    }
++    if (peos != NULL)
++        *peos = (char*)s;
++    return DRMU_ROTATION_0;
++}
++
 +drmu_ufrac_t
 +drmu_util_guess_par(const unsigned int w, const unsigned int h)
 +{
@@ -9400,7 +10129,7 @@ Can do HDR setup and mode matching
 +}
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_util.h
-@@ -0,0 +1,58 @@
+@@ -0,0 +1,64 @@
 +#ifndef _DRMU_DRMU_UTIL_H
 +#define _DRMU_DRMU_UTIL_H
 +
@@ -9428,6 +10157,12 @@ Can do HDR setup and mode matching
 +char * drmu_util_simple_param_to_mode_str(char * buf, size_t buflen, const struct drmu_mode_simple_params_s * const p);
 +
 +#define drmu_util_simple_mode(p) drmu_util_simple_param_to_mode_str((char[64]){0}, 64, (p))
++
++// Take a string and return a drmu rotation value (DRMU_ROTATION_xxx)
++// Returns pointer to char after parsed string in *peos (c.f. strtol)
++// peos may be NULL if not required
++// N.B. There is no invalid return, rubbish will return ROTATION_0, *peos = s
++unsigned int drmu_util_str_to_rotation(const char * s, char ** peos);
 +
 +// Given width & height guess par. Spots Likely SD and returns 4:3 otherwise reduced w:h
 +drmu_ufrac_t drmu_util_guess_par(const unsigned int w, const unsigned int h);
@@ -9461,7 +10196,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_vlc.c
-@@ -0,0 +1,353 @@
+@@ -0,0 +1,381 @@
 +#include "drmu_vlc.h"
 +#include "drmu_fmts.h"
 +#include "drmu_log.h"
@@ -9609,6 +10344,32 @@ Can do HDR setup and mode matching
 +    return DRMU_CHROMA_SITING_UNSPECIFIED;
 +}
 +
++static unsigned int
++fb_vlc_orientation(const video_format_t * const fmt)
++{
++    switch (fmt->orientation) {
++        case ORIENT_NORMAL:
++            return DRMU_ROTATION_0;
++        case ORIENT_HFLIPPED:
++            return DRMU_ROTATION_H_FLIP;
++        case ORIENT_VFLIPPED:
++            return DRMU_ROTATION_V_FLIP;
++        case ORIENT_ROTATED_180:
++            return DRMU_ROTATION_180;
++        case ORIENT_TRANSPOSED:
++            return DRMU_ROTATION_TRANSPOSE;
++        case ORIENT_ROTATED_270:
++            return DRMU_ROTATION_270;
++        case ORIENT_ROTATED_90:
++            return DRMU_ROTATION_90;
++        case ORIENT_ANTI_TRANSPOSED:
++            return DRMU_ROTATION_180_TRANSPOSE;
++        default:
++            break;
++    }
++    return DRMU_ROTATION_INVALID;
++}
++
 +void
 +drmu_fb_vlc_pic_set_metadata(drmu_fb_t * const dfb, const picture_t * const pic)
 +{
@@ -9622,6 +10383,8 @@ Can do HDR setup and mode matching
 +    drmu_fb_chroma_siting_set(dfb, fb_vlc_chroma_siting(&pic->format));
 +
 +    drmu_fb_hdr_metadata_set(dfb, pic_hdr_metadata(&meta, &pic->format) == 0 ? &meta : NULL);
++
++    drmu_fb_orientation_set(dfb, fb_vlc_orientation(&pic->format));
 +}
 +
 +#if HAS_DRMPRIME
@@ -10219,6 +10982,505 @@ Can do HDR setup and mode matching
 +#ifdef __cplusplus
 +}
 +#endif
++#endif
+--- /dev/null
++++ b/modules/video_output/drmu/drmu_writeback.c
+@@ -0,0 +1,429 @@
++#include "drmu_writeback.h"
++
++#include <drm_fourcc.h>
++#include <errno.h>
++#include <semaphore.h>
++#include <stdatomic.h>
++#include <stdint.h>
++#include <unistd.h>
++
++#include "drmu.h"
++#include "drmu_log.h"
++#include "drmu_output.h"
++#include "drmu_pool.h"
++#include "pollqueue.h"
++
++#include <assert.h>
++
++struct drmu_writeback_env_s {
++    atomic_int ref_count;
++
++    drmu_env_t * du;
++    drmu_output_t * dout;
++    drmu_queue_t * dq;
++    struct pollqueue * pq;
++
++    // Find the primary plane for use with writeback_fb
++    // We will want something more complex/comprehensive for general render ops
++    drmu_plane_t * plane_pri;
++
++    atomic_int tag_n;
++
++    sem_t * finish_sem;
++};
++
++static void
++writeback_env_free(drmu_writeback_env_t * const wbe)
++{
++    sem_t * const finish_sem = wbe->finish_sem;
++
++    drmu_queue_finish(&wbe->dq);
++    pollqueue_finish(&wbe->pq);
++    drmu_plane_unref(&wbe->plane_pri);
++    drmu_output_unref(&wbe->dout);
++    drmu_env_unref(&wbe->du);
++    free(wbe);
++
++    if (finish_sem != NULL)
++        sem_post(finish_sem);
++}
++
++// Get a "unique" non-zero tag no
++static unsigned int
++writeback_env_tag_new(drmu_writeback_env_t * const wbe)
++{
++    unsigned int n;
++    while ((n = atomic_fetch_add(&wbe->tag_n, 1)) == 0)
++        /* Loop */;
++    return n;
++}
++
++drmu_writeback_env_t *
++drmu_writeback_env_new(struct drmu_env_s * const du)
++{
++    drmu_writeback_env_t * wbe = calloc(1, sizeof(*wbe));
++
++    if (wbe == NULL)
++        return NULL;
++
++    wbe->du = drmu_env_ref(du);
++
++    if ((wbe->dq = drmu_queue_new(du)) == NULL) {
++        drmu_err(du, "Cannot allocate queue");
++        goto fail;
++    }
++    drmu_queue_keep_last_set(wbe->dq, false);
++    drmu_queue_lock_on_commit_set(wbe->dq, true);
++
++    if ((wbe->dout = drmu_output_new(du)) == NULL) {
++        drmu_err(du, "Cannot allocate output");
++        goto fail;
++    }
++
++    if (drmu_output_modeset_allow(wbe->dout, true) != 0) {
++        drmu_err(du, "Failed to allow modeset");
++        goto fail;
++    }
++
++    if (drmu_output_add_writeback(wbe->dout) != 0) {
++        drmu_err(du, "Failed to add writeback");
++        goto fail;
++    }
++
++    if ((wbe->plane_pri = drmu_output_plane_ref_primary(wbe->dout)) == NULL) {
++        drmu_err(du, "Failed to find prmary plane");
++        goto fail;
++    }
++
++    if ((wbe->pq = pollqueue_new()) == NULL) {
++        drmu_err(du, "Failed to get pollqueue");
++        goto fail;
++    }
++
++    return wbe;
++
++fail:
++    writeback_env_free(wbe);
++    return NULL;
++}
++
++drmu_writeback_env_t *
++drmu_writeback_env_ref(drmu_writeback_env_t * const wbe)
++{
++    if (wbe != NULL)
++        atomic_fetch_add(&wbe->ref_count, 1);
++    return wbe;
++}
++
++void
++drmu_writeback_env_unref(drmu_writeback_env_t ** const ppwbe)
++{
++    drmu_writeback_env_t * const wbe = *ppwbe;
++    int n;
++
++    if (wbe == NULL)
++        return;
++    n = atomic_fetch_sub(&wbe->ref_count, 1);
++    if (n != 0)
++        return;
++
++    writeback_env_free(wbe);
++}
++
++void
++drmu_writeback_env_finish(drmu_writeback_env_t ** const ppwbe)
++{
++    sem_t sem;
++
++    if (*ppwbe == NULL)
++        return;
++
++    sem_init(&sem, 0, 0);
++    (*ppwbe)->finish_sem = &sem;
++    drmu_writeback_env_unref(ppwbe);
++    while (sem_wait(&sem) != 0 && errno == EINTR)
++        /* Loop */;
++    sem_destroy(&sem);
++}
++
++struct drmu_output_s *
++drmu_writeback_env_output(const drmu_writeback_env_t * const wbe)
++{
++    return wbe == NULL ? NULL : wbe->dout;
++}
++
++drmu_plane_t *
++drmu_writeback_env_fmt_plane(drmu_writeback_env_t * const wbe,
++                             drmu_output_t * const dest_dout, const unsigned int types,
++                             uint32_t * const pFmt)
++{
++    size_t fmt_count = 1;
++    const uint32_t * fmts = drmu_conn_writeback_formats(drmu_output_conn(wbe->dout, 0), &fmt_count);
++
++    // This is a simple & stupid search.
++    // We expect the 1st format we try to be both "good enough" and compatible with the dest dout
++    for (size_t i = 0; i != fmt_count; ++i) {
++        const uint32_t fmt = fmts[i];
++
++        // *** Kludge for Pi not supporting rotation on this
++        if (fmt == DRM_FORMAT_BGR888 || fmt == DRM_FORMAT_RGB888)
++            continue;
++
++        drmu_plane_t * const dp = drmu_output_plane_ref_format(dest_dout, types, fmt, 0);
++
++        if (dp != NULL) {
++            *pFmt = fmts[i];
++            return dp;
++        }
++    }
++    *pFmt = 0;
++    return NULL;
++}
++
++//-----------------------------------------------------------------------------
++
++typedef struct wbq_ent_s {
++    atomic_int ref_count;
++
++    drmu_fb_t * fb;
++    bool done;
++    struct pollqueue * pq;
++    struct polltask * pt;
++    drmu_writeback_fb_done_fn * done_fn;
++    void * done_v;
++    drmu_queue_t * dqueue;
++} wbq_ent_t;
++
++static void
++wbq_ent_free(wbq_ent_t * const ent)
++{
++    if (ent == NULL)
++        return;
++
++    if (!ent->done)
++        ent->done_fn(ent->done_v, NULL);
++
++    drmu_fb_unref(&ent->fb);
++    // In normal useg these two should already be unreffed
++    polltask_delete(&ent->pt);
++    pollqueue_unref(&ent->pq);
++    drmu_queue_unref(&ent->dqueue);
++    free(ent);
++}
++
++static wbq_ent_t *
++wbq_ent_ref(wbq_ent_t * const ent)
++{
++    if (ent == NULL)
++        return NULL;
++    atomic_fetch_add(&ent->ref_count, 1);
++    return ent;
++}
++
++static void
++wbq_ent_unref(wbq_ent_t ** const ppent)
++{
++    wbq_ent_t * const ent = *ppent;
++    int n;
++
++    if (ent == NULL)
++        return;
++    *ppent = NULL;
++
++    n = atomic_fetch_sub(&ent->ref_count, 1);
++    if (n != 0)
++        return;
++
++    wbq_ent_free(ent);
++}
++
++static void
++writeback_fb_ent_polltask_done(void * v, short revents)
++{
++    wbq_ent_t * ent = v;
++
++    drmu_queue_unlock(ent->dqueue);
++
++    close(drmu_fb_out_fence_take_fd(ent->fb));
++    if (revents != 0) {
++        ent->done_fn(ent->done_v, ent->fb);
++        ent->done = true;
++    }
++    polltask_delete(&ent->pt);
++    drmu_fb_unref(&ent->fb);
++    wbq_ent_unref(&ent);
++}
++
++static void
++writeback_fb_ent_commit_cb(void * v, int fd, drmu_fb_t * dfb)
++{
++    wbq_ent_t * ent = v;
++
++    if (fd != -1 && dfb != NULL) {
++        ent->pt = polltask_new(ent->pq, fd, POLLIN, writeback_fb_ent_polltask_done, wbq_ent_ref(ent));
++        pollqueue_add_task(ent->pt, 1000);
++        pollqueue_unref(&ent->pq);
++    }
++    else {
++        wbq_ent_unref(&ent);
++    }
++}
++
++struct drmu_writeback_fb_s {
++    atomic_int ref_count;
++
++    drmu_writeback_env_t * wbe;
++    drmu_pool_t * pool;
++
++    unsigned int q_tag;
++    drmu_queue_merge_t q_merge;
++};
++
++static void
++writeback_fb_free(drmu_writeback_fb_t * const wbq)
++{
++    drmu_writeback_env_unref(&wbq->wbe);
++    drmu_pool_unref(&wbq->pool);
++    free(wbq);
++}
++
++drmu_writeback_fb_t *
++drmu_writeback_fb_new(drmu_writeback_env_t * const wbe, drmu_pool_t * const fb_pool)
++{
++    drmu_writeback_fb_t * const wbq = calloc(1, sizeof(*wbq));
++
++    if (wbq == NULL)
++        return NULL;
++
++    wbq->wbe = drmu_writeback_env_ref(wbe);
++    wbq->pool = drmu_pool_ref(fb_pool);
++    wbq->q_tag = writeback_env_tag_new(wbe);
++    wbq->q_merge = DRMU_QUEUE_MERGE_REPLACE;
++
++    return wbq;
++}
++
++drmu_writeback_fb_t *
++drmu_writeback_fb_ref(drmu_writeback_fb_t * const wbq)
++{
++    if (wbq == NULL)
++        return NULL;
++    atomic_fetch_add(&wbq->ref_count, 1);
++    return wbq;
++}
++
++void
++drmu_writeback_fb_unref(drmu_writeback_fb_t ** const ppwbq)
++{
++    drmu_writeback_fb_t * const wbq = *ppwbq;
++    int n;
++
++    if (wbq == NULL)
++        return;
++    *ppwbq = NULL;
++
++    n = atomic_fetch_sub(&wbq->ref_count, 1);
++    if (n != 0)
++        return;
++
++    writeback_fb_free(wbq);
++}
++
++static drmu_rect_t
++limit_rect(const drmu_rect_t dest_rect, const unsigned int rot_conn)
++{
++    drmu_rect_t r = dest_rect;
++
++    // Pi has a max input width -> output height if transposed
++    if (r.h > 1920 && drmu_rotation_is_transposed(rot_conn))
++        r.h = 1920;
++
++    r.x = 0;
++    r.y = 0;
++    return r;
++}
++
++
++int
++drmu_writeback_fb_queue(drmu_writeback_fb_t * wbq,
++                        const drmu_rect_t dest_rect, const unsigned int dest_rot, const uint32_t fmt,
++                        drmu_writeback_fb_done_fn * const done_fn, void * const v,
++                        drmu_fb_t * const fb)
++{
++    wbq_ent_t * ent = calloc(1, sizeof(*ent));
++    drmu_writeback_env_t * const wbe = wbq->wbe;
++    drmu_env_t * const du = wbe->du;
++    drmu_atomic_t * da = drmu_atomic_new(du);
++    unsigned int rot_total;
++    unsigned int rot_plane;
++    unsigned int rot_conn;
++    drmu_rect_t r;
++    int rv;
++
++    if (ent == NULL) {
++        done_fn(v, NULL);
++        rv = -ENOMEM;
++        goto fail;
++    }
++
++    ent->done_fn = done_fn;
++    ent->done_v = v;
++    ent->pq = pollqueue_ref(wbe->pq);
++    ent->dqueue = drmu_queue_ref(wbe->dq);
++
++    if (da == NULL) {
++        rv = -ENOMEM;
++        goto fail;
++    }
++
++    rot_total = drmu_fb_rotation(fb, dest_rot);
++
++    rot_plane = drmu_rotation_find(rot_total, drmu_plane_rotation_mask(wbe->plane_pri),
++                                   drmu_conn_rotation_mask(drmu_output_conn(wbe->dout, 0)));
++    if (rot_plane == DRMU_ROTATION_INVALID) {
++        drmu_err(du, "Cannot find combination of rotations for %d", rot_total);
++        rv = -EINVAL;
++        goto fail;
++    }
++    rot_conn = drmu_rotation_subb(rot_plane, rot_total);
++
++    r = limit_rect(dest_rect, rot_conn);
++
++    if ((rv = drmu_atomic_plane_add_fb(da, wbe->plane_pri, fb,
++                                 drmu_rotation_is_transposed(rot_conn) ? drmu_rect_transpose(r) : r)) != 0)
++    {
++        drmu_err(du, "Failed atomic add fb");
++        goto fail;
++    }
++    drmu_atomic_plane_add_rotation(da, wbe->plane_pri, rot_plane);
++
++    ent->fb = (wbq->pool == NULL) ?
++        drmu_fb_new_dumb(du, r.w, r.h, fmt) :
++        drmu_pool_fb_new(wbq->pool, r.w, r.h, fmt, 0);
++
++    if (ent->fb == NULL) {
++        drmu_err(du, "Failed to create fb");
++        rv = -ENOMEM;
++        goto fail;
++    }
++
++    rv = drmu_atomic_output_add_writeback_fb_callback(da, wbe->dout, ent->fb, rot_conn, writeback_fb_ent_commit_cb, ent);
++    ent = NULL; // Ownership taken by call
++    if (rv != 0) {
++        drmu_err(du, "Failed to add writeback fb\n");
++        goto fail;
++    }
++
++    if ((rv = drmu_queue_queue_tagged(wbe->dq, wbq->q_tag, wbq->q_merge, &da)) != 0) {
++        drmu_err(du, "Failed merge");
++        goto fail;
++    }
++
++    return 0;
++
++fail:
++    drmu_atomic_unref(&da);
++    wbq_ent_unref(&ent);
++    return rv;
++}
++
+--- /dev/null
++++ b/modules/video_output/drmu/drmu_writeback.h
+@@ -0,0 +1,64 @@
++#ifndef _DRMU_WRITEBACK_H
++#define _DRMU_WRITEBACK_H
++
++#include <stdint.h>
++
++#include "drmu_math.h"
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++struct drmu_env_s;
++struct drmu_fb_s;
++struct drmu_output_s;
++struct drmu_plane_s;
++struct drmu_pool_s;
++
++struct drmu_writeback_env_s;
++typedef struct drmu_writeback_env_s drmu_writeback_env_t;
++
++drmu_writeback_env_t * drmu_writeback_env_new(struct drmu_env_s * const du);
++drmu_writeback_env_t * drmu_writeback_env_ref(drmu_writeback_env_t * const wbe);
++void drmu_writeback_env_unref(drmu_writeback_env_t ** const ppwbe);
++
++void drmu_writeback_env_finish(drmu_writeback_env_t ** const ppwbe);
++
++// Output associated with Q (and therefore conn & crtc)
++struct drmu_output_s * drmu_writeback_env_output(const drmu_writeback_env_t * const wbe);
++
++// Find and ref a plane in dest_dout that is compatible with a format that the
++// writeback connector can produce. The format is returned in *pFmt
++// Types is a bit field of acceptable plane types (DRMU_PLANE_TYPE_xxx), 0 => any
++// cf. drmu_output_plane_ref_format
++// Returns NULL if nothing compatible found
++struct drmu_plane_s * drmu_writeback_env_fmt_plane(drmu_writeback_env_t * const wbe,
++                                                   struct drmu_output_s * const dest_dout, const unsigned int types,
++                                                   uint32_t * const pFmt);
++
++struct drmu_writeback_fb_s;
++typedef struct drmu_writeback_fb_s drmu_writeback_fb_t;
++
++// fb_pool is the pool to alloc wb fbs from
++drmu_writeback_fb_t * drmu_writeback_fb_new(drmu_writeback_env_t * const wbe, struct drmu_pool_s * const fb_pool);
++drmu_writeback_fb_t * drmu_writeback_fb_ref(drmu_writeback_fb_t * const wbq);
++void drmu_writeback_fb_unref(drmu_writeback_fb_t ** const ppwbq);
++
++// dfb NULL if writeback failed or abandoned
++// BEWARE: As it stands this is called inside a Q lock so any queue operations
++// to the same (writeback) Q from here will deadlock. Queue ops to another Q
++// (say display) are fine.
++// * It would be good to fix this
++typedef void drmu_writeback_fb_done_fn(void * v, struct drmu_fb_s * dfb);
++
++int drmu_writeback_fb_queue(drmu_writeback_fb_t * wbq,
++                            const drmu_rect_t dest_rect, const unsigned int rot, const uint32_t fmt,
++                            drmu_writeback_fb_done_fn * const done_fn, void * const v,
++                            struct drmu_fb_s * const fb);
++
++
++#ifdef __cplusplus
++}
++#endif
++
 +#endif
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_xlease.c

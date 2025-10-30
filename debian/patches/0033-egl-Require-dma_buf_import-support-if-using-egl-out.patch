@@ -1,4 +1,4 @@
-From 9f948254d42edd56053e467e3339df7f543bb46b Mon Sep 17 00:00:00 2001
+From fd6b9b6e1a883c5088f1daa5fb7b26989a76bbde Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:51:42 +0100
 Subject: [PATCH 33/41] egl: Require dma_buf_import support if using egl out

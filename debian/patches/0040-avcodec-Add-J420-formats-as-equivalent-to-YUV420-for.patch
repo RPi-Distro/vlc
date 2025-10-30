@@ -1,7 +1,7 @@
-From b85b33d4380b1456a768d591ba4a766546598da6 Mon Sep 17 00:00:00 2001
+From ca780ff30f8b6efa9ab35d1dc30445074335a30b Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Mon, 8 Sep 2025 13:58:45 +0100
-Subject: [PATCH 41/41] avcodec: Add J420 formats as equivalent to YUV420 for
+Subject: [PATCH 40/41] avcodec: Add J420 formats as equivalent to YUV420 for
  rpi h/w
 
 ---
