@@ -10,7 +10,7 @@ TARBALLS := $(TOOLS)
 #
 
 ifeq ($(shell command -v curl >/dev/null 2>&1 || echo FAIL),)
-download = curl -f -L -- "$(1)" > "$@.tmp" && touch $@.tmp && mv $@.tmp $@
+download = curl -f -L --retry 3 --output "$@" -- "$(1)"
 else ifeq ($(shell command -v wget >/dev/null 2>&1 || echo FAIL),)
 download = rm -f $@.tmp && \
 	wget --passive -c -p -O $@.tmp "$(1)" && \
@@ -442,6 +442,20 @@ CLEAN_FILE += .buildninja
 # GNU gettext
 #
 
+GETTEXT_CONF = \
+	--disable-relocatable \
+	--disable-java \
+	--disable-native-java \
+	--disable-csharp \
+	--disable-d \
+	--disable-go \
+	--disable-modula2 \
+	--disable-openmp \
+	--without-emacs \
+	--without-included-libxml \
+	--without-git \
+	--without-cvs
+
 gettext-$(GETTEXT_VERSION).tar.gz:
 	$(call download_pkg,$(GETTEXT_URL),gettext)
 
@@ -450,14 +464,14 @@ gettext: gettext-$(GETTEXT_VERSION).tar.gz
 	$(MOVE)
 
 .buildgettext: gettext
-	cd $<; ./configure --prefix=$(PREFIX)
-	+$(MAKE) -C $<
-	+$(MAKE) -C $< install
+	cd $<; ./configure --prefix=$(PREFIX) $(GETTEXT_CONF)
+	+$(MAKE) -C $< EXAMPLESFILES= EXAMPLESDIRS= TESTS=
+	+$(MAKE) -C $< EXAMPLESFILES= EXAMPLESDIRS= TESTS= install
 	touch $@
 
 CLEAN_PKG += gettext
 DISTCLEAN_PKG += gettext-$(GETTEXT_VERSION).tar.gz
-CLEAN_FILE += .gettext
+CLEAN_FILE += .buildgettext
 
 
 #

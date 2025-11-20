@@ -2,12 +2,12 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 1999-2025 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.22-rc1)
+AC_INIT(vlc, 3.0.22-rc2)
 VERSION_MAJOR=3
 VERSION_MINOR=0
 VERSION_REVISION=22
 VERSION_EXTRA=0
-VERSION_DEV=rc1
+VERSION_DEV=rc2
 
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -203,6 +203,7 @@ case "${host_os}" in
         CC="${CC} -isysroot ${with_macosx_sdk}"
         CXX="${CXX} -isysroot ${with_macosx_sdk}"
         OBJC="${OBJC} -isysroot ${with_macosx_sdk}"
+        CCAS="${CCAS} -isysroot ${with_macosx_sdk}"
         LD="${LD} -syslibroot ${with_macosx_sdk}"
     fi
     AC_ARG_WITH(macosx-version-min,
@@ -213,6 +214,7 @@ case "${host_os}" in
         CC="${CC} -mmacosx-version-min=${with_macosx_version_min}"
         CXX="${CXX} -mmacosx-version-min=${with_macosx_version_min}"
         OBJC="${OBJC} -mmacosx-version-min=${with_macosx_version_min}"
+        CCAS="${CCAS} -mmacosx-version-min=${with_macosx_version_min}"
         LD="${LD} -mmacosx_version_min=${with_macosx_version_min}"
     fi
     ;;
@@ -4445,7 +4447,7 @@ AC_CONFIG_FILES([
   bin/Makefile
   test/Makefile
   modules/hw/mmal/Makefile
-  share/vlc.appdata.xml.in
+  share/org.videolan.vlc.appdata.xml.in
 ])
 
 AM_COND_IF([HAVE_WIN32], [

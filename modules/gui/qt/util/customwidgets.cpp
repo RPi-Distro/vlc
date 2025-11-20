@@ -109,7 +109,7 @@ void VLCQDial::paintEvent( QPaintEvent *event )
 /***************************************************************************
  * Hotkeys converters
  ***************************************************************************/
-int qtKeyModifiersToVLC( QInputEvent* e )
+int qtKeyModifiersToVLC( const QInputEvent* e )
 {
     int i_keyModifiers = 0;
     if( e->modifiers() & Qt::ShiftModifier ) i_keyModifiers |= KEY_MODIFIER_SHIFT;
@@ -265,7 +265,7 @@ static int keycmp( const void *a, const void *b )
     return *q - m->qt;
 }
 
-int qtEventToVLCKey( QKeyEvent *e )
+int qtEventToVLCKey( const QKeyEvent *e )
 {
     int qtk = e->key();
     uint32_t i_vlck = 0;
@@ -294,7 +294,7 @@ int qtEventToVLCKey( QKeyEvent *e )
     return i_vlck;
 }
 
-int qtWheelEventToVLCKey( QWheelEvent *e )
+int qtWheelEventToVLCKey( const QWheelEvent *e )
 {
     const qreal v_cos_deadzone = 0.45; // ~63 degrees
     const qreal h_cos_deadzone = 0.95; // ~15 degrees
@@ -417,7 +417,8 @@ void QToolButtonExt::clickedSlot()
 YesNoCheckBox::YesNoCheckBox( QWidget *parent ) : QCheckBox( parent )
 {
     setEnabled( false );
-    setStyleSheet("\
+    auto updateStyle = [this]() {
+        setStyleSheet("\
                   QCheckBox::indicator:unchecked:hover,\
                   QCheckBox::indicator:unchecked {\
                       image: url(:/toolbar/clear.svg);\
@@ -427,4 +428,105 @@ YesNoCheckBox::YesNoCheckBox( QWidget *parent ) : QCheckBox( parent )
                       image: url(:/valid.svg);\
                   }\
         ");
+    };
+    updateStyle();
+//same as Qt::AA_UseStyleSheetPropagationInWidgetStyles
+#if !HAS_QT57
+    connect(qApp, &QApplication::paletteChanged, this, [this, updateStyle](){
+        updateStyle();
+    });
+#endif
+}
+
+Qt::Orientations WheelToVLCConverter::getWheelOrientation(int x, int y)
+{
+    const qreal v_cos_deadzone = 0.45; // ~63 degrees
+    const qreal h_cos_deadzone = 0.95; // ~15 degrees
+
+    if (x == 0 && y == 0)
+        return Qt::Orientations{};
+
+    qreal cos = qFabs(x)/qSqrt(x*x + y*y);
+    if (cos < v_cos_deadzone)
+        return Qt::Vertical;
+    else if (cos > h_cos_deadzone)
+        return Qt::Horizontal;
+    return Qt::Orientations{};
+}
+
+void WheelToVLCConverter::wheelEvent( const QWheelEvent* e )
+{
+    if (!e)
+        return;
+
+    const int deltaPerStep = QWheelEvent::DefaultDeltasPerStep;
+
+    if (e->modifiers() != m_modifiers)
+    {
+        m_scrollAmount = {};
+        m_modifiers = e->modifiers();
+    }
+    if (e->buttons() != m_buttons)
+    {
+        m_scrollAmount = {};
+        m_buttons = e->buttons();
+    }
+
+    QPoint p = e->angleDelta();
+#if HAS_QT57
+    if (e->inverted())
+    {
+        const Qt::Orientations preliminaryOrientation = getWheelOrientation(p.x(), p.y());
+        if (preliminaryOrientation == Qt::Vertical)
+            p.setY(-p.y());
+        else if (preliminaryOrientation == Qt::Horizontal)
+            p.setX(-p.x());
+    }
+#endif
+    p += m_scrollAmount;
+
+    if (p.isNull())
+        return;
+
+    int i_vlck = qtKeyModifiersToVLC(e);  // Handle modifiers
+    Qt::Orientations orientation = getWheelOrientation(p.x(), p.y());
+    if (orientation == Qt::Vertical && qAbs(p.y()) >= deltaPerStep)
+    {
+        if (p.y() > 0)
+            i_vlck |= KEY_MOUSEWHEELUP;
+        else
+            i_vlck |= KEY_MOUSEWHEELDOWN;
+
+        const int steps = p.y() / deltaPerStep;
+
+        emit wheelUpDown(steps, e->modifiers());
+        //in practice this will emit once
+        for (int i = 0; i < qAbs(steps); i++)
+            emit vlcWheelKey(i_vlck);
+
+        m_scrollAmount.setX(0);
+        m_scrollAmount.setY(p.y() % deltaPerStep);
+
+    }
+    else if (orientation == Qt::Horizontal && qAbs(p.x()) >= deltaPerStep)
+    {
+        if (p.x() > 0)
+            i_vlck |= KEY_MOUSEWHEELLEFT;
+        else
+            i_vlck |= KEY_MOUSEWHEELRIGHT;
+
+        const int steps = p.x() / deltaPerStep;
+
+        emit wheelLeftRight(steps, e->modifiers());
+        //in practice this will emit once
+        for (int i = 0; i < qAbs(steps); i++)
+            emit vlcWheelKey(i_vlck);
+
+        m_scrollAmount.setY(0);
+        m_scrollAmount.setX(p.x() % deltaPerStep);
+    }
+    else
+    {
+        m_scrollAmount = p;
+    }
 }

@@ -117,6 +117,18 @@ CXX := clang++
 endif
 endif
 
+get_version2_num =$(shell echo $(1) | awk -F. '{ printf("%d%02d\n", $$1,$$2); }')
+ifdef HAVE_DARWIN_OS
+# the CI currently has 14.5 (macos-xcode15), 12.3 (monterey), 10.13/10.15 (old-macmini)
+darwin_sdk_at_most  = $(shell [ $(call get_version2_num, $(shell xcrun --sdk $(SDKROOT) -show-sdk-version)) -le $(call get_version2_num, $(1)) ] && echo true)
+
+ifdef VLC_DEPLOYMENT_TARGET
+darwin_min_os_at_least  = $(shell [ $(call get_version2_num, $(VLC_DEPLOYMENT_TARGET)) -ge $(call get_version2_num, $(1)) ] && echo true)
+else
+darwin_min_os_at_least  = $(shell echo false)
+endif
+endif
+
 # -fno-stack-check is a workaround for a possible
 # bug in Xcode 11 or macOS 10.15+
 ifdef HAVE_DARWIN_OS
@@ -242,7 +254,7 @@ endif
 SVN ?= $(error subversion client (svn) not found!)
 
 ifeq ($(shell curl --version >/dev/null 2>&1 || echo FAIL),)
-download = curl -f -L -- "$(1)" > "$@"
+download = curl -f -L --retry 3 --output "$@" -- "$(1)"
 else ifeq ($(shell wget --version >/dev/null 2>&1 || echo FAIL),)
 download = (rm -f $@.tmp && \
 	wget --passive -c -p -O $@.tmp "$(1)" && \
@@ -365,6 +377,8 @@ check_githash = \
 
 ifeq ($(V),1)
 TAR_VERBOSE := v
+else
+ZIP_QUIET := -q
 endif
 
 checksum = \
@@ -378,7 +392,7 @@ UNPACK = $(RM) -R $@ \
 	$(foreach f,$(filter %.tar.gz %.tgz,$^), && tar $(TAR_VERBOSE)xzfo $(f)) \
 	$(foreach f,$(filter %.tar.bz2,$^), && tar $(TAR_VERBOSE)xjfo $(f)) \
 	$(foreach f,$(filter %.tar.xz,$^), && tar $(TAR_VERBOSE)xJfo $(f)) \
-	$(foreach f,$(filter %.zip,$^), && unzip $(f) $(UNZIP_PARAMS))
+	$(foreach f,$(filter %.zip,$^), && unzip $(ZIP_QUIET) $(f) $(UNZIP_PARAMS))
 UNPACK_DIR = $(patsubst %.tar,%,$(basename $(notdir $<)))
 APPLY = (cd $(UNPACK_DIR) && patch -fp1) <
 pkg_static = (cd $(UNPACK_DIR) && $(SRC_BUILT)/pkg-static.sh $(1))
@@ -455,6 +469,11 @@ ifdef HAVE_DARWIN_OS
 MESONFLAGS += -Dobjc_args="$(CFLAGS)" -Dobjc_link_args="$(LDFLAGS)" -Dobjcpp_args="$(CXXFLAGS)" -Dobjcpp_link_args="$(LDFLAGS)"
 endif
 
+MESONCOMPILEFLAGS =
+ifeq ($(V),1)
+MESONCOMPILEFLAGS += -v
+endif
+
 ifdef HAVE_CROSS_COMPILE
 # When cross-compiling meson uses the env vars like
 # CC, CXX, etc. and CFLAGS, CXXFLAGS, etc. for the
@@ -476,7 +495,7 @@ else
 MESON = $(HOSTTOOLS) meson setup $(MESONFLAGS)
 endif
 MESONCLEAN = rm -rf $</build
-MESONBUILD = meson compile -C $</build $(MESON_BUILD) && meson install -C $</build
+MESONBUILD = meson compile -C $</build $(MESON_BUILD) $(MESONCOMPILEFLAGS) && meson install -C $</build
 
 ifeq ($(V),1)
 CMAKE += -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON

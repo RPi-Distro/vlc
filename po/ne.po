@@ -27,9 +27,9 @@
 # Kabin Bhandari, 2022
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.13\n"
+"Project-Id-Version: vlc 3.0.22-rc1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-09-08 12:03+0200\n"
+"POT-Creation-Date: 2025-09-17 13:40+0200\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Kabin Bhandari, 2022\n"
 "Language-Team: Nepali (https://app.transifex.com/yaron/teams/16553/ne/)\n"
@@ -583,21 +583,21 @@ msgid ""
 "charset=utf-8\" /></head><body><h2>Welcome to VLC media player Help</"
 "h2><h3>Documentation</h3><p>You can find VLC documentation on VideoLAN's <a "
 "href=\"http://wiki.videolan.org\">wiki</a> website.</p><p>If you are a "
-"newcomer to VLC media player, please read the<br><a href=\"http://"
-"wiki.videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC "
-"media player</em></a>.</p><p>You will find some information on how to use "
-"the player in the <br>\"<a href=\"http://wiki.videolan.org/"
-"Documentation:Play_HowTo\"><em>How to play files with VLC media player</em></"
-"a>\" document.</p><p>For all the saving, converting, transcoding, encoding, "
-"muxing and streaming tasks, you should find useful information in the <a "
-"href=\"http://wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming "
-"Documentation</a>.</p><p>If you are unsure about terminology, please consult "
-"the <a href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
+"newcomer to VLC media player, please read the<br><a href=\"http://wiki."
+"videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC media "
+"player</em></a>.</p><p>You will find some information on how to use the "
+"player in the <br>\"<a href=\"http://wiki.videolan.org/Documentation:"
+"Play_HowTo\"><em>How to play files with VLC media player</em></a>\" document."
+"</p><p>For all the saving, converting, transcoding, encoding, muxing and "
+"streaming tasks, you should find useful information in the <a href=\"http://"
+"wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming Documentation</"
+"a>.</p><p>If you are unsure about terminology, please consult the <a "
+"href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
 "p><p>To understand the main keyboard shortcuts, read the <a href=\"http://"
 "wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before "
-"asking any question, please refer yourself to the <a href=\"http://"
-"www.videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and "
-"give) help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
+"asking any question, please refer yourself to the <a href=\"http://www."
+"videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and give) "
+"help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
 "href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC "
 "channel (<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the "
 "project</h3><p>You can help the VideoLAN project giving some of your time to "
@@ -609,21 +609,21 @@ msgstr ""
 "charset=utf-8\" /></head><body><h2>Welcome to VLC media player Help</"
 "h2><h3>Documentation</h3><p>You can find VLC documentation on VideoLAN's <a "
 "href=\"http://wiki.videolan.org\">wiki</a> website.</p><p>If you are a "
-"newcomer to VLC media player, please read the<br><a href=\"http://"
-"wiki.videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC "
-"media player</em></a>.</p><p>You will find some information on how to use "
-"the player in the <br>\"<a href=\"http://wiki.videolan.org/"
-"Documentation:Play_HowTo\"><em>How to play files with VLC media player</em></"
-"a>\" document.</p><p>For all the saving, converting, transcoding, encoding, "
-"muxing and streaming tasks, you should find useful information in the <a "
-"href=\"http://wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming "
-"Documentation</a>.</p><p>If you are unsure about terminology, please consult "
-"the <a href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
+"newcomer to VLC media player, please read the<br><a href=\"http://wiki."
+"videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC media "
+"player</em></a>.</p><p>You will find some information on how to use the "
+"player in the <br>\"<a href=\"http://wiki.videolan.org/Documentation:"
+"Play_HowTo\"><em>How to play files with VLC media player</em></a>\" document."
+"</p><p>For all the saving, converting, transcoding, encoding, muxing and "
+"streaming tasks, you should find useful information in the <a href=\"http://"
+"wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming Documentation</"
+"a>.</p><p>If you are unsure about terminology, please consult the <a "
+"href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
 "p><p>To understand the main keyboard shortcuts, read the <a href=\"http://"
 "wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before "
-"asking any question, please refer yourself to the <a href=\"http://"
-"www.videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and "
-"give) help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
+"asking any question, please refer yourself to the <a href=\"http://www."
+"videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and give) "
+"help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
 "href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC "
 "channel (<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the "
 "project</h3><p>You can help the VideoLAN project giving some of your time to "
@@ -2294,8 +2294,8 @@ msgstr "स्रोत आकार अनुपात"
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
 "16:9 while they are actually 4:3. This can also be used as a hint for VLC "
-"when a movie does not have aspect ratio information. Accepted formats are "
-"x:y (4:3, 16:9, etc.) expressing the global image aspect, or a float value "
+"when a movie does not have aspect ratio information. Accepted formats are x:"
+"y (4:3, 16:9, etc.) expressing the global image aspect, or a float value "
 "(1.25, 1.3333, etc.) expressing pixel squareness."
 msgstr ""
 "यसले स्रोत आकार अनुपात बल गर्दछ । दृष्टान्तका लागि, तिनिहरू वास्तविक रूपमा ४:३ भएको "
@@ -3147,9 +3147,8 @@ msgstr "HTTP प्रोक्सी"
 
 #: src/libvlc-module.c:849
 msgid ""
-"HTTP proxy to be used It must be of the form http://"
-"[user@]myproxy.mydomain:myport/ ; if empty, the http_proxy environment "
-"variable will be tried."
+"HTTP proxy to be used It must be of the form http://[user@]myproxy.mydomain:"
+"myport/ ; if empty, the http_proxy environment variable will be tried."
 msgstr ""
 
 #: src/libvlc-module.c:853
@@ -5174,7 +5173,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr ""
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2843
+#: modules/demux/avi/avi.c:2878
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
@@ -6042,8 +6041,8 @@ msgstr "कुनै अडियो इनपुट उपकरण फेल�
 
 #: modules/access/avaudiocapture.m:213
 msgid ""
-"Your Mac does not seem to be equipped with a suitable audio input "
-"device.Please check your connectors and drivers."
+"Your Mac does not seem to be equipped with a suitable audio input device."
+"Please check your connectors and drivers."
 msgstr ""
 "तपाईंको MAC आफ्नो अडियोसंग सुसज्जित भएको जस्तो देखिँदैन। .कृपया  आफ्नो कनेक्टर  र चालक "
 "जाँच यन्त्र जाँच गर्नुहोस् "
@@ -6243,9 +6242,8 @@ msgid "Musicbrainz Server"
 msgstr ""
 
 #: modules/access/cdda.c:1023
-#, fuzzy
 msgid "Address of the musicbrainz server to use."
-msgstr "प्रयोग गर्नलई CDDB सर्भरको ठेगाना"
+msgstr ""
 
 #: modules/access/cdda.c:1025
 msgid "CDDB Server"
@@ -6416,7 +6414,7 @@ msgstr ""
 msgid "10 bits"
 msgstr "10 बिट्स"
 
-#: modules/access/decklink.cpp:358 modules/demux/ty.c:770
+#: modules/access/decklink.cpp:358 modules/demux/ty.c:783
 msgid "Closed captions 1"
 msgstr ""
 
@@ -7759,19 +7757,19 @@ msgstr "HTTP टनेल पोर्ट"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "HTTP माथि RTSP/RTP टनेलिङका लागि प्रयोग गर्ने पोर्ट"
 
-#: modules/access/live555.cpp:673
+#: modules/access/live555.cpp:677
 msgid "RTSP authentication"
 msgstr ""
 
-#: modules/access/live555.cpp:674
+#: modules/access/live555.cpp:678
 msgid "Please enter a valid login name and a password."
 msgstr ""
 
-#: modules/access/live555.cpp:699
+#: modules/access/live555.cpp:703
 msgid "RTSP connection failed"
 msgstr ""
 
-#: modules/access/live555.cpp:700
+#: modules/access/live555.cpp:704
 msgid "Access to the stream is denied by the server configuration."
 msgstr ""
 
@@ -8344,8 +8342,8 @@ msgstr ""
 #, c-format
 msgid ""
 "The computer (%s) you are trying to connect to requires authentication.\n"
-"Please provide a username (ideally a domain name using the format "
-"DOMAIN;username) and a password."
+"Please provide a username (ideally a domain name using the format DOMAIN;"
+"username) and a password."
 msgstr ""
 
 #: modules/access/srt.c:428 modules/access_output/srt.c:457
@@ -8369,9 +8367,8 @@ msgid "Password for stream encryption"
 msgstr ""
 
 #: modules/access/srt.c:446 modules/access_output/srt.c:480
-#, fuzzy
 msgid " SRT Stream ID"
-msgstr "प्रवाह %d"
+msgstr ""
 
 #: modules/access/srt_common.c:26
 msgid "16 bytes"
@@ -8807,9 +8804,9 @@ msgstr ""
 #: modules/access/v4l2/v4l2.c:190
 msgid ""
 "Set the v4l2 driver controls to the values specified using a comma separated "
-"list optionally encapsulated by curly braces (e.g.: "
-"{video_bitrate=6000000,audio_crc=0,stream_type=3} ). To list available "
-"controls, increase verbosity (-vv) or use the v4l2-ctl application."
+"list optionally encapsulated by curly braces (e.g.: {video_bitrate=6000000,"
+"audio_crc=0,stream_type=3} ). To list available controls, increase verbosity "
+"(-vv) or use the v4l2-ctl application."
 msgstr ""
 
 #: modules/access/v4l2/v4l2.c:242 modules/codec/avcodec/avcodec.c:50
@@ -11207,9 +11204,8 @@ msgid "Max number of threads used for tile decoding, default 0=auto"
 msgstr ""
 
 #: modules/codec/dav1d.c:56
-#, fuzzy
 msgid "All Layers"
-msgstr "सबै फाइलहरू"
+msgstr ""
 
 #: modules/codec/dav1d.c:57
 msgid "Whether or not to display all spatial layers, default false"
@@ -11278,8 +11274,8 @@ msgstr "सहायक तस्विर स्थान"
 #: modules/codec/dvbsub.c:91
 msgid ""
 "You can enforce the subpicture position on the video (0=center, 1=left, "
-"2=right, 4=top, 8=bottom, you can also use combinations of these values, "
-"e.g. 6=top-right)."
+"2=right, 4=top, 8=bottom, you can also use combinations of these values, e."
+"g. 6=top-right)."
 msgstr ""
 "तपाईँले भिडियोमा सहायक तस्विरको स्थानला बल गर्न सक्नुहुन्छ (०=केन्द्र, १=बायाँ, २=दायाँ, "
 "४=माथि, ८=तल, तपाईँले ति मानहरूको संयोजन पनि प्रयोग गर्न सक्नुहुन्छ, उदाहरण ६=माथि-"
@@ -11965,10 +11961,10 @@ msgstr ""
 
 #: modules/codec/qsv.c:128
 msgid ""
-"Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. "
-"(e.g. 10 with a bitrate of 800  kbps means the encoder tries not to  go "
-"above 880 kbps and under  730 kbps. The targeted accuracy is only reached "
-"after a certained  convergence period. See the convergence parameter"
+"Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
+"g. 10 with a bitrate of 800  kbps means the encoder tries not to  go above "
+"880 kbps and under  730 kbps. The targeted accuracy is only reached after a "
+"certained  convergence period. See the convergence parameter"
 msgstr ""
 
 #: modules/codec/qsv.c:134
@@ -12430,7 +12426,7 @@ msgstr ""
 msgid "S/PDIF pass-through decoder"
 msgstr ""
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:907
+#: modules/codec/speex.c:59 modules/codec/speex.c:910
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
 #: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
@@ -12756,7 +12752,7 @@ msgstr ""
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:292 modules/demux/avi/avi.c:98
+#: modules/codec/subsdec.c:292 modules/demux/avi/avi.c:99
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr ""
@@ -13168,7 +13164,6 @@ msgid "CABAC"
 msgstr "CABAC"
 
 #: modules/codec/x264.c:133
-#, fuzzy, c-format
 msgid ""
 "CABAC (Context-Adaptive Binary Arithmetic Coding). Slightly slows down "
 "encoding and decoding, but should save 10 to 15% bitrate."
@@ -14763,7 +14758,7 @@ msgstr "AIFF डुमुक्सर"
 msgid "ASF/WMV demuxer"
 msgstr ""
 
-#: modules/demux/asf/asf.c:285 modules/demux/asf/asf.c:834
+#: modules/demux/asf/asf.c:285 modules/demux/asf/asf.c:836
 msgid "Could not demux ASF stream"
 msgstr ""
 
@@ -14811,15 +14806,15 @@ msgstr ""
 msgid "Internal libavcodec format name"
 msgstr ""
 
-#: modules/demux/avi/avi.c:55
+#: modules/demux/avi/avi.c:56
 msgid "Force interleaved method"
 msgstr "इन्टरलिभ गरिएको विधि बल गर्नुहोस्"
 
-#: modules/demux/avi/avi.c:57
+#: modules/demux/avi/avi.c:58
 msgid "Force index creation"
 msgstr "अनुक्रमणिका सिर्जना बल गर्नुहोस्"
 
-#: modules/demux/avi/avi.c:59
+#: modules/demux/avi/avi.c:60
 msgid ""
 "Recreate a index for the AVI file. Use this if your AVI file is damaged or "
 "incomplete (not seekable)."
@@ -14827,27 +14822,27 @@ msgstr ""
 "AVI फाइलका लागि अनुक्रमणिका पुन: सिर्जना गर्नुहोस् । यदि तपाईँको AVI फाइल बिग्रेको वा "
 "अपूर्ण छ भने यसको प्रयोग गर्नुहोस् ।"
 
-#: modules/demux/avi/avi.c:67
+#: modules/demux/avi/avi.c:68
 msgid "Ask for action"
 msgstr ""
 
-#: modules/demux/avi/avi.c:68
+#: modules/demux/avi/avi.c:69
 msgid "Always fix"
 msgstr "सधै स्थिर"
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:70
 msgid "Never fix"
 msgstr "स्थिर नगर्नुहोस्"
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:71
 msgid "Fix when necessary"
 msgstr ""
 
-#: modules/demux/avi/avi.c:74
+#: modules/demux/avi/avi.c:75
 msgid "AVI demuxer"
 msgstr "AVI डुमुक्सर"
 
-#: modules/demux/avi/avi.c:904 modules/demux/mp4/mp4.c:4370
+#: modules/demux/avi/avi.c:910 modules/demux/mp4/mp4.c:4374
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14857,27 +14852,27 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:912
+#: modules/demux/avi/avi.c:918
 msgid "Do not play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:913
+#: modules/demux/avi/avi.c:919
 msgid "Build index then play"
 msgstr ""
 
-#: modules/demux/avi/avi.c:914
+#: modules/demux/avi/avi.c:920
 msgid "Play as is"
 msgstr ""
 
-#: modules/demux/avi/avi.c:915 modules/demux/mp4/mp4.c:4381
+#: modules/demux/avi/avi.c:921 modules/demux/mp4/mp4.c:4385
 msgid "Broken or missing Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2844
+#: modules/demux/avi/avi.c:2879
 msgid "Broken or missing AVI Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2845
+#: modules/demux/avi/avi.c:2880
 msgid "Fixing AVI Index..."
 msgstr ""
 
@@ -15286,27 +15281,27 @@ msgstr ""
 msgid "Clean"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:50
+#: modules/demux/mp4/mp4.c:51
 msgid "M4A audio only"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:51
+#: modules/demux/mp4/mp4.c:52
 msgid "Ignore non audio tracks from iTunes audio files"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:56
+#: modules/demux/mp4/mp4.c:57
 msgid "MP4 stream demuxer"
 msgstr "MP4 प्रवाह डुमुक्सर"
 
-#: modules/demux/mp4/mp4.c:57
+#: modules/demux/mp4/mp4.c:58
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4378
+#: modules/demux/mp4/mp4.c:4382
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4379
+#: modules/demux/mp4/mp4.c:4383
 msgid "Build index"
 msgstr ""
 
@@ -15377,8 +15372,8 @@ msgstr "अतिरिक्त PMT"
 #: modules/demux/mpeg/ts.c:86
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr ""
-"प्रयोगकर्तालाई अतिरिक्त pmt निर्दिष्ट गर्न अनुमति दिन्छ "
-"(pmt_pid=pid:stream_type[,...])"
+"प्रयोगकर्तालाई अतिरिक्त pmt निर्दिष्ट गर्न अनुमति दिन्छ (pmt_pid=pid:"
+"stream_type[,...])"
 
 #: modules/demux/mpeg/ts.c:88
 msgid "Set id of ES to PID"
@@ -15811,23 +15806,23 @@ msgstr ""
 msgid "TTA demuxer"
 msgstr "TTA डेमुक्सर"
 
-#: modules/demux/ty.c:60
+#: modules/demux/ty.c:62
 msgid "TY"
 msgstr ""
 
-#: modules/demux/ty.c:61
+#: modules/demux/ty.c:63
 msgid "TY Stream audio/video demux"
 msgstr "TY प्रवाह अडियो/भिडियो डुमुक्सर"
 
-#: modules/demux/ty.c:771
+#: modules/demux/ty.c:784
 msgid "Closed captions 2"
 msgstr ""
 
-#: modules/demux/ty.c:772
+#: modules/demux/ty.c:785
 msgid "Closed captions 3"
 msgstr ""
 
-#: modules/demux/ty.c:773
+#: modules/demux/ty.c:786
 msgid "Closed captions 4"
 msgstr ""
 
@@ -17409,9 +17404,8 @@ msgstr "सबैलाई संक्षिप्त गर्नुहोस�
 
 #: modules/gui/macosx/VLCPlaylist.m:231
 #: modules/gui/qt/components/playlist/standardpanel.cpp:274
-#, fuzzy
 msgid "Shuffle playlist"
-msgstr "बजाउने सूची बचत गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/macosx/VLCPlaylistInfo.m:54
 #: modules/gui/qt/dialogs/mediainfo.cpp:54
@@ -20963,11 +20957,11 @@ msgid "Show unimportant error and warnings dialogs"
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:124
-msgid "Applies a dark palette to the style."
+msgid "Enable Dark Mode"
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:125
-msgid "Applies a dark palette to the style. Works best with Fusion style."
+msgid "Applies a dark theme to the style."
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:127
@@ -21282,22 +21276,13 @@ msgstr "०.०१ र १० बिचमा छवि गामा सेट �
 msgid "AMD VQ Enhancer"
 msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:682
-msgid "amf_vqenhancer"
-msgstr ""
-
 #: modules/hw/d3d11/d3d11_filters.c:687
 msgid "AMD Frame Rate Doubler"
 msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:688
-msgid "amf_frc"
-msgstr ""
-
 #: modules/hw/d3d11/d3d11_filters.c:690
-#, fuzzy
 msgid "Show indicator"
-msgstr "मुख्य विन्डो  देखाउनुहोस्"
+msgstr ""
 
 #: modules/hw/d3d9/d3d9_filters.c:454
 msgid "Direct3D9 adjust filter"
@@ -23081,7 +23066,7 @@ msgstr "A/52 अडियो प्याकेटाइजर"
 msgid "avparser packetizer"
 msgstr ""
 
-#: modules/packetizer/av1.c:582
+#: modules/packetizer/av1.c:585
 msgid "AV1 video packetizer"
 msgstr ""
 
@@ -26897,39 +26882,32 @@ msgid "Recommended video output for Windows 8 and later versions"
 msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:74
-#, fuzzy
 msgid "Video Upscaling Mode"
-msgstr "भिडियो मापन"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:75
-#, fuzzy
 msgid "Select the upscaling mode for video."
-msgstr "रिप्ले वृद्धि ढाँचाः चुन्नुहोस्"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Linear Sampler"
-msgstr "प्रति नमूना बिट"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Point Sampler"
-msgstr "स्माम्पलरेट"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Video Processor"
-msgstr "भिडियो कोडेक"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Super Resolution"
-msgstr "रिज्योलुसन"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:82
-#, fuzzy
 msgid "HDR Output Mode"
-msgstr "आउटपुट मोड्युल"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:83
 msgid "Use HDR output even if the source is SDR."
@@ -26940,9 +26918,8 @@ msgid "Never out HDR"
 msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:88
-#, fuzzy
 msgid "Always output HDR"
-msgstr "सधै माथितिर"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:88
 msgid "Generate HDR from SDR"
@@ -27992,9 +27969,8 @@ msgstr ""
 
 #: modules/gui/qt/ui/about.h:282 modules/gui/qt/ui/open.h:255
 #: modules/gui/qt/ui/podcast_configuration.h:98
-#, fuzzy
 msgid "Dialog"
-msgstr "एनालॉग"
+msgstr ""
 
 #: modules/gui/qt/ui/equalizer.h:129 modules/gui/qt/ui/open_disk.h:293
 #: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:407
@@ -28002,23 +27978,20 @@ msgstr "एनालॉग"
 #: modules/gui/qt/ui/sprefs_interface.h:532
 #: modules/gui/qt/ui/sprefs_subtitles.h:288
 #: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
-#, fuzzy
 msgid "Form"
-msgstr "ढाँचा"
+msgstr ""
 
 #: modules/gui/qt/ui/equalizer.h:132
-#, fuzzy
 msgid "Preset"
-msgstr "रिसेट गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/equalizer.h:134
 msgid "0.00 dB"
 msgstr ""
 
 #: modules/gui/qt/ui/fingerprintdialog.h:147
-#, fuzzy
 msgid "Audio Fingerprinting"
-msgstr "अडियो आगत पिन"
+msgstr ""
 
 #: modules/gui/qt/ui/fingerprintdialog.h:148
 msgid "Select a matching identity"
@@ -28033,38 +28006,32 @@ msgid "Fingerprinting track..."
 msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:137
-#, fuzzy
 msgid "&Verbosity:"
-msgstr "भर्बोसिटि (0,1,2)"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:138
-#, fuzzy
 msgid "&Filter:"
-msgstr "फिल्टर"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:139
-#, fuzzy
 msgid "&Save as..."
-msgstr "बाचात गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:141
 msgid "Modules Tree"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:258
-#, fuzzy
 msgid "Show extended options"
-msgstr "उन्नत विकल्प देखाउनुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:260
-#, fuzzy
 msgid "Show &more options"
-msgstr "उन्नत विकल्प देखाउनुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:263
-#, fuzzy
 msgid "Change the caching for the media"
-msgstr "हालको मिडिया अनुसार शीर्षक परिवर्तन गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:265
 msgid " ms"
@@ -28075,65 +28042,56 @@ msgid "MRL"
 msgstr "MRL"
 
 #: modules/gui/qt/ui/open.h:267
-#, fuzzy
 msgid "Start Time"
-msgstr "सुरु समय"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:268
-#, fuzzy
 msgid "Stop Time"
-msgstr "रोक्ने समय"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:269
-#, fuzzy
 msgid "Edit Options"
-msgstr "विकल्पहरू"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:270
-#, fuzzy
 msgid "Extra media"
-msgstr "अतिरिक्त PMT"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:272
 msgid "Complete MRL for VLC internal"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:275
-#, fuzzy
 msgid "Select the file"
-msgstr "फाइल चयन गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:279
-#, fuzzy
 msgid "Change the start time for the media"
-msgstr "सेवाको प्रर्दशन नाम परिवर्तन गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:281 modules/gui/qt/ui/open.h:285
 msgid "HH'H':mm'm':ss's'.zzz"
 msgstr ""
 
 #: modules/gui/qt/ui/open.h:283
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "सेवाको प्रर्दशन नाम परिवर्तन गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:286
 msgid "Play another media synchronously (extra audio file, ...)"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:94
-#, fuzzy
 msgid "Capture mode"
-msgstr "आवाज कैद "
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:96
 msgid "Select the capture device type"
 msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:98
-#, fuzzy
 msgid "Device Selection"
-msgstr "फाइल चयन"
+msgstr ""
 
 #: modules/gui/qt/ui/open_capture.h:99
 msgid "Options"
@@ -28148,52 +28106,44 @@ msgid "Advanced options..."
 msgstr "उन्नत विकल्प..."
 
 #: modules/gui/qt/ui/open_disk.h:294
-#, fuzzy
 msgid "Disc Selection"
-msgstr "फाइल चयन"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:298
 msgid "SVCD/VCD"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:300
-#, fuzzy
 msgid "Disable Disc Menus"
-msgstr "स्क्रिनसेभर असक्षम पार्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:302
 msgid "No disc menus"
 msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:303
-#, fuzzy
 msgid "Disc device"
-msgstr "DVD यन्त्र"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:305
-#, fuzzy
 msgid "Starting Position"
-msgstr "स्थान"
+msgstr ""
 
 #: modules/gui/qt/ui/open_disk.h:308
-#, fuzzy
 msgid "Audio and Subtitles"
-msgstr "मीडिया उपशीर्षक"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:142
-#, fuzzy
 msgid "Use a sub&title file"
-msgstr "उपशीर्षक फाइल प्रयोग गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:144
-#, fuzzy
 msgid "Select the subtitle file"
-msgstr "उपशीर्षक फाईल चयन गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:148
-#, fuzzy
 msgid "Choose one or more media file to open"
-msgstr "एउटा या धेरै फाइल खोल्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/open_file.h:150
 msgid "File Selection"
@@ -28208,32 +28158,28 @@ msgid "Add..."
 msgstr "जोड"
 
 #: modules/gui/qt/ui/open_net.h:94
-#, fuzzy
 msgid "Network Protocol"
-msgstr "प्रोटोकल"
+msgstr ""
 
 #: modules/gui/qt/ui/open_net.h:95
 msgid "Please enter a network URL:"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:699
-#, fuzzy
 msgid "Profile edition"
-msgstr "हल्ला घटाइ"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:700
 msgid "FLAC"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "MP&4/MOV"
-msgstr "MP4/MOV मुक्सर"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
-#, fuzzy
 msgid "Ogg/Ogm"
-msgstr "Ogg/OGM मुक्सर"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:703
 msgid "M&KV"
@@ -28244,9 +28190,8 @@ msgid "M&JPEG"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:705
-#, fuzzy
 msgid "MPEG-PS"
-msgstr "MPEG-PS डुमुक्सर"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:706
 msgid "F&LV"
@@ -28261,9 +28206,8 @@ msgid "RAW"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:709
-#, fuzzy
 msgid "WAV"
-msgstr "AVI"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:710
 msgid "Webm"
@@ -28290,19 +28234,16 @@ msgid "Features"
 msgstr "विशेषताहरू"
 
 #: modules/gui/qt/ui/profiles.h:717
-#, fuzzy
 msgid "Streamable"
-msgstr "प्रवाह नाम"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:718
-#, fuzzy
 msgid "Chapters"
-msgstr "अध्याय"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:721
-#, fuzzy
 msgid "Menus"
-msgstr "विकल्पसूची"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:728
 msgid "Fra&me Rate"
@@ -28321,23 +28262,20 @@ msgid "Custom options"
 msgstr "कस्टम विकल्प"
 
 #: modules/gui/qt/ui/profiles.h:733
-#, fuzzy
 msgid "&Quality"
-msgstr "गुणस्तर"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
 msgid "Not Used"
 msgstr "प्रयोग नभएको"
 
 #: modules/gui/qt/ui/profiles.h:736 modules/gui/qt/ui/profiles.h:755
-#, fuzzy
 msgid " kb/s"
-msgstr "%u kb/s"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:737 modules/gui/qt/ui/profiles.h:757
-#, fuzzy
 msgid "Encoding parameters"
-msgstr "सङ्केतन X समन्वय"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:740
 msgid "Frame size"
@@ -28350,9 +28288,8 @@ msgid "px"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:756
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "नमूना दर"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:764
 msgid "Profile &Name"
@@ -28367,9 +28304,8 @@ msgid "Destination Setup"
 msgstr "गन्तव्य सेटअप"
 
 #: modules/gui/qt/ui/sout.h:203
-#, fuzzy
 msgid "Select destinations to stream to"
-msgstr "सबै विकल्पहरू हेर्न \"उन्नत विकल्पहरू\" छान्नुहोस् "
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:204
 msgid ""
@@ -28410,14 +28346,12 @@ msgid "Miscellaneous Options"
 msgstr "विविध विकल्प"
 
 #: modules/gui/qt/ui/sout.h:215
-#, fuzzy
 msgid "Stream all elementary streams"
-msgstr "सबै तत्व प्रवाह (भिडियो, अडियो र उपशीर्षक) लाई प्रवाहित गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:216
-#, fuzzy
 msgid "Generated stream output string"
-msgstr "साधारण प्रवाह निर्गत सेटिङ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:410
 msgid " %"
@@ -28440,14 +28374,12 @@ msgid "Visualization:"
 msgstr "दृश्यावलोकन"
 
 #: modules/gui/qt/ui/sprefs_audio.h:420
-#, fuzzy
 msgid "Enable Time-Stretching audio"
-msgstr "अडियो समय  विस्तार गर्न सक्षम "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:421
-#, fuzzy
 msgid "Replay gain mode:"
-msgstr "रिप्ले वृद्धि ढाँचाः"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_audio.h:422
 msgid "Normalize volume to:"
@@ -28530,37 +28462,32 @@ msgid "Default caching policy"
 msgstr "पूर्वनिर्धारित क्यचिंग नीति"
 
 #: modules/gui/qt/ui/sprefs_interface.h:534
-#, fuzzy
 msgid "Menus language:"
-msgstr "मेनु भाषा"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:535
 msgid "Look and feel"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:536
-#, fuzzy
 msgid "Use custom skin"
-msgstr "स्किन चयन गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:538
 msgid "This is VLC's default interface, with a native look and feel."
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:540
-#, fuzzy
 msgid "Use native style"
-msgstr "उपशीर्षक फाइल प्रयोग गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:541
-#, fuzzy
 msgid "Resize interface to video size"
-msgstr "डिइन्टरलेस भिडियो"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:542
-#, fuzzy
 msgid "Show controls in full screen mode"
-msgstr "पूर्ण स्क्रिनमा नियन्त्रक देखाउनुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:543
 msgid "Pause playback when minimized"
@@ -28587,9 +28514,8 @@ msgid "Show systray icon"
 msgstr "सिसट्रे चिह्न देखाउनुहोस्"
 
 #: modules/gui/qt/ui/sprefs_interface.h:549
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "Ncurses इन्टरफेस"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:550
 msgid "Use a dark palette"
@@ -28648,24 +28574,20 @@ msgid "Show media title on video start"
 msgstr "भिडियो शुरू  मीडिया शीर्षकमा भिडियो  देखाउनुहोस्"
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:293
-#, fuzzy
 msgid "Enable subtitles"
-msgstr "सहायक तस्विर सक्षम पार्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:294
-#, fuzzy
 msgid "Subtitle Language"
-msgstr "उपशीर्षक भाषा"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:296
-#, fuzzy
 msgid "Default encoding"
-msgstr "उपशीर्षक इन्कोडिङ"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:297
-#, fuzzy
 msgid "Subtitle effects"
-msgstr "उपशीर्षक कोडेक"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:303
 msgid "Add a shadow"
@@ -28684,19 +28606,16 @@ msgid " px"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_subtitles.h:306
-#, fuzzy
 msgid "Add a background"
-msgstr "पृष्ठभूमि"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:313
-#, fuzzy
 msgid "O&utput"
-msgstr "उत्पादन"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:317
-#, fuzzy
 msgid "DirectX"
-msgstr "निर्देशक"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:319
 msgid "Accelerated video output (Overlay)"
@@ -28707,14 +28626,12 @@ msgid "KVA"
 msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:324
-#, fuzzy
 msgid "Deinterlacing"
-msgstr "डिइन्टरलेस"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:326
-#, fuzzy
 msgid "Force Aspect Ratio"
-msgstr "स्रोत आकार अनुपात"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:331
 msgid "vlc-snap"
@@ -28725,14 +28642,12 @@ msgid "Stuff"
 msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:171
-#, fuzzy
 msgid "Edit settings"
-msgstr "अडियो सेटिङहरू"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:172
-#, fuzzy
 msgid "Control"
-msgstr "मक्स नियन्त्रण"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:173
 msgid "Run manually"
@@ -28759,24 +28674,20 @@ msgid "Prev"
 msgstr "अघिल्लो"
 
 #: modules/gui/qt/ui/streampanel.h:181
-#, fuzzy
 msgid "Add Input"
-msgstr "आगत"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:182
-#, fuzzy
 msgid "Edit Input"
-msgstr "आगत"
+msgstr ""
 
 #: modules/gui/qt/ui/streampanel.h:183
-#, fuzzy
 msgid "Clear List"
-msgstr "खाली गर्नुहोस्"
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:145
-#, fuzzy
 msgid "Check for VLC updates"
-msgstr "अद्यावधिकका लागि जाँच गर्नुहोस्..."
+msgstr ""
 
 #: modules/gui/qt/ui/update.h:146
 msgid "Launching an update request..."
@@ -28796,30 +28707,25 @@ msgid ">HHHHHH;#"
 msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1279
-#, fuzzy
 msgid "Negate colors"
-msgstr "आउटलाइन रंग"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1292
-#, fuzzy
 msgid "Colors"
-msgstr "रङ"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1293
-#, fuzzy
 msgid "Interactive Zoom"
-msgstr "इन्टरलेस गरिएको मोड"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1299
-#, fuzzy
 msgid "Angle"
-msgstr "जङ्गल"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1306
 #: modules/gui/qt/ui/video_effects.h:1323
-#, fuzzy
 msgid "..."
-msgstr "जोड"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1311
 msgid "full"
@@ -28830,9 +28736,8 @@ msgid "none"
 msgstr "कुनै होइन"
 
 #: modules/gui/qt/ui/video_effects.h:1317
-#, fuzzy
 msgid "Logo erase"
-msgstr "लोगो ओभरले"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1322
 msgid "Mask"
@@ -28851,9 +28756,8 @@ msgid "Motion detect"
 msgstr "चाल पत्ता"
 
 #: modules/gui/qt/ui/video_effects.h:1331
-#, fuzzy
 msgid "Spatial blur"
-msgstr "स्थानिय luma शक्ति"
+msgstr ""
 
 #: modules/gui/qt/ui/video_effects.h:1335
 msgid "Anti-Flickering"

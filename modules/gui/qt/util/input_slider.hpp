@@ -31,6 +31,7 @@
 #endif
 
 #include "styles/seekstyle.hpp"
+#include "customwidgets.hpp"
 
 #include <QSlider>
 #include <QPainter>
@@ -121,6 +122,8 @@ private:
     QTimer *hideHandleTimer;
     QTimer *startAnimLoadingTimer;
 
+    WheelToVLCConverter wheelEventConverter;
+
 public slots:
     void setPosition( float, int64_t, int );
     void setSeekable( bool b ) { b_seekable = b ; }
@@ -174,6 +177,8 @@ private:
     QColor foreground;
     QFont textfont;
     QRect textrect;
+
+    WheelToVLCConverter wheelEventConverter;
 
     void changeValue( int x ); /* Function to modify the value from pixel x() */
 };

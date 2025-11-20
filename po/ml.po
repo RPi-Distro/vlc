@@ -13,9 +13,9 @@
 # Dilip Re, 2021
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.13\n"
+"Project-Id-Version: vlc 3.0.22-rc1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-09-08 12:03+0200\n"
+"POT-Creation-Date: 2025-09-17 13:40+0200\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Dilip Re, 2021\n"
 "Language-Team: Malayalam (https://app.transifex.com/yaron/teams/16553/ml/)\n"
@@ -578,21 +578,21 @@ msgid ""
 "charset=utf-8\" /></head><body><h2>Welcome to VLC media player Help</"
 "h2><h3>Documentation</h3><p>You can find VLC documentation on VideoLAN's <a "
 "href=\"http://wiki.videolan.org\">wiki</a> website.</p><p>If you are a "
-"newcomer to VLC media player, please read the<br><a href=\"http://"
-"wiki.videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC "
-"media player</em></a>.</p><p>You will find some information on how to use "
-"the player in the <br>\"<a href=\"http://wiki.videolan.org/"
-"Documentation:Play_HowTo\"><em>How to play files with VLC media player</em></"
-"a>\" document.</p><p>For all the saving, converting, transcoding, encoding, "
-"muxing and streaming tasks, you should find useful information in the <a "
-"href=\"http://wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming "
-"Documentation</a>.</p><p>If you are unsure about terminology, please consult "
-"the <a href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
+"newcomer to VLC media player, please read the<br><a href=\"http://wiki."
+"videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC media "
+"player</em></a>.</p><p>You will find some information on how to use the "
+"player in the <br>\"<a href=\"http://wiki.videolan.org/Documentation:"
+"Play_HowTo\"><em>How to play files with VLC media player</em></a>\" document."
+"</p><p>For all the saving, converting, transcoding, encoding, muxing and "
+"streaming tasks, you should find useful information in the <a href=\"http://"
+"wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming Documentation</"
+"a>.</p><p>If you are unsure about terminology, please consult the <a "
+"href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
 "p><p>To understand the main keyboard shortcuts, read the <a href=\"http://"
 "wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before "
-"asking any question, please refer yourself to the <a href=\"http://"
-"www.videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and "
-"give) help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
+"asking any question, please refer yourself to the <a href=\"http://www."
+"videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and give) "
+"help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
 "href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC "
 "channel (<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the "
 "project</h3><p>You can help the VideoLAN project giving some of your time to "
@@ -604,28 +604,28 @@ msgstr ""
 "charset=utf-8\" /></head><body><h2>വി‌എല്‍‌സി മാധ്യമ പ്ലെയര്‍ സഹായിയിലേക്ക് സ്വാഗതം</"
 "h2><h3>പ്രമാണീകരണം</h3><p>വി‌എല്‍‌സിയുടെ പ്രമാണീകരണം നിങ്ങള്‍ക്ക് വീഡിയോലാന്റെ  <a "
 "href=\"http://wiki.videolan.org\">wiki</a> വെബ്സൈറ്റില്‍ കാണാം.</p><p> നിങ്ങള്‍ "
-"വി‌എല്‍‌സി മാധ്യമ പ്ലെയറിലേക്ക് ഒരു നവാഗതനാണെങ്കില്‍ ദയവായി <br><a href=\"http://"
-"wiki.videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC "
-"media player</em></a> വായിക്കുക..</p><p>പ്ലേയര്‍ എങ്ങനെ ഉപയോഗിക്കണം എന്നതിനെ കുറിച്ചുള്ള "
-"ചില വിവരങ്ങള്‍ നിങ്ങള്‍ക്ക് <br>\"<a href=\"http://wiki.videolan.org/"
-"Documentation:Play_HowTo\"><em>How to play files with VLC media player</em></"
-"a> പ്രമാണത്തില്‍ കാണാം.</p><p> എല്ലാ പരിപാലിക്കാനും മാറ്റം വരുത്താനും ട്രാന്‍സ്കോട് ചെയ്യാനും "
-"എന്‍കോഡ് ചെയ്യാനും മക്സ് ചെയ്യാനും കൂടാതെ സ്ട്രീമിങ് കര്‍ത്തവ്യത്തിനും ആവ്ശ്യമായ വിവരങ്ങള്‍ നിങ്ങള്‍ക്ക് "
-"ഈ <a href=\"http://wiki.videolan.org/"
-"Documentation:Streaming_HowTo\">Streaming Documentation</a> കാണാം.</p><p> "
-"നിങ്ങള്‍ക്ക് സങ്കേതഭാഷയെപറ്റി സംശയം ഉണ്ടെങ്കില്‍ ദയവായി  <a href=\"http://"
-"wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</p><p>പ്രധാന കീബോര്‍ഡ് "
-"കുറുക്കുവഴി മനസിലാക്കാന്‍ <a href=\"http://wiki.videolan.org/Hotkeys\">shortcuts</"
-"a> പേജ് വായിക്കുക.</p><h3>സഹായം</h3><p>ഏത് ചോദ്യം ചോദിക്കുന്നതിന് മുമ്പും നിങ്ങള്‍ സ്വയം <a "
-"href=\"http://www.videolan.org/support/faq.html\">FAQ</a> അന്വേഷിക്കുക.</"
-"p><p><a href=\"http://forum.videolan.org\">Forums</a>, <a href=\"http://"
-"www.videolan.org/vlc/lists.html\">mailing-lists</a> അല്ലെങ്കില്‍ ഞങ്ങളുടെ ഐ‌ആര്‍‌സി "
-"ചാനലില്‍  (irc.freenode.net ലുള്ള <em>#videolan</em>) നിങ്ങള്‍ക്ക് സഹായം ലഭിക്കാം "
-"(കൂടാതെ കൊടുക്കാം).</p><h3>പദ്ധതിയിലേക്ക് സംഭാവന ചെയ്യുക</h3><p>സമൂഹത്തെ സഹായിക്കാനും, "
-"സ്കിന്‍ രൂപകല്‍പ്പന ചെയ്യാനും, പ്രമാണങ്ങള്‍ പരിഭാഷപ്പെടുത്താനും, പരീക്ഷണത്തിനും കൂടാതെ കോഡ് "
-"ചെയ്യാനും നിങ്ങളുടെ കുറച്ചു സമയം കൊടുത്തു നിങ്ങള്‍ക്ക് വീഡിയോലാന്‍ പദ്ധതിയെ സഹായിക്കാം. ഞങ്ങളെ "
-"സഹായിക്കാന്‍ നിങ്ങള്‍ക്ക് സംഭവനകളും സാമഗ്രികളും തരാം.  കൂടാതെ തീര്‍ച്ചയായും നിങ്ങള്‍ക്ക് വി‌എല്‍‌സി "
-"മാധ്യമ പ്ലെയറിനെ <b>പ്രചരിപ്പിക്കാം</b>.</p></body></html>"
+"വി‌എല്‍‌സി മാധ്യമ പ്ലെയറിലേക്ക് ഒരു നവാഗതനാണെങ്കില്‍ ദയവായി <br><a href=\"http://wiki."
+"videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC media "
+"player</em></a> വായിക്കുക..</p><p>പ്ലേയര്‍ എങ്ങനെ ഉപയോഗിക്കണം എന്നതിനെ കുറിച്ചുള്ള ചില "
+"വിവരങ്ങള്‍ നിങ്ങള്‍ക്ക് <br>\"<a href=\"http://wiki.videolan.org/Documentation:"
+"Play_HowTo\"><em>How to play files with VLC media player</em></a> പ്രമാണത്തില്‍ "
+"കാണാം.</p><p> എല്ലാ പരിപാലിക്കാനും മാറ്റം വരുത്താനും ട്രാന്‍സ്കോട് ചെയ്യാനും എന്‍കോഡ് ചെയ്യാനും "
+"മക്സ് ചെയ്യാനും കൂടാതെ സ്ട്രീമിങ് കര്‍ത്തവ്യത്തിനും ആവ്ശ്യമായ വിവരങ്ങള്‍ നിങ്ങള്‍ക്ക് ഈ <a "
+"href=\"http://wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming "
+"Documentation</a> കാണാം.</p><p> നിങ്ങള്‍ക്ക് സങ്കേതഭാഷയെപറ്റി സംശയം ഉണ്ടെങ്കില്‍ "
+"ദയവായി  <a href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</"
+"a>.</p><p>പ്രധാന കീബോര്‍ഡ് കുറുക്കുവഴി മനസിലാക്കാന്‍ <a href=\"http://wiki.videolan.org/"
+"Hotkeys\">shortcuts</a> പേജ് വായിക്കുക.</p><h3>സഹായം</h3><p>ഏത് ചോദ്യം "
+"ചോദിക്കുന്നതിന് മുമ്പും നിങ്ങള്‍ സ്വയം <a href=\"http://www.videolan.org/support/faq."
+"html\">FAQ</a> അന്വേഷിക്കുക.</p><p><a href=\"http://forum.videolan."
+"org\">Forums</a>, <a href=\"http://www.videolan.org/vlc/lists.html\">mailing-"
+"lists</a> അല്ലെങ്കില്‍ ഞങ്ങളുടെ ഐ‌ആര്‍‌സി ചാനലില്‍  (irc.freenode.net ലുള്ള <em>#videolan</"
+"em>) നിങ്ങള്‍ക്ക് സഹായം ലഭിക്കാം (കൂടാതെ കൊടുക്കാം).</p><h3>പദ്ധതിയിലേക്ക് സംഭാവന ചെയ്യുക</"
+"h3><p>സമൂഹത്തെ സഹായിക്കാനും, സ്കിന്‍ രൂപകല്‍പ്പന ചെയ്യാനും, പ്രമാണങ്ങള്‍ പരിഭാഷപ്പെടുത്താനും, "
+"പരീക്ഷണത്തിനും കൂടാതെ കോഡ് ചെയ്യാനും നിങ്ങളുടെ കുറച്ചു സമയം കൊടുത്തു നിങ്ങള്‍ക്ക് വീഡിയോലാന്‍ "
+"പദ്ധതിയെ സഹായിക്കാം. ഞങ്ങളെ സഹായിക്കാന്‍ നിങ്ങള്‍ക്ക് സംഭവനകളും സാമഗ്രികളും തരാം.  കൂടാതെ "
+"തീര്‍ച്ചയായും നിങ്ങള്‍ക്ക് വി‌എല്‍‌സി മാധ്യമ പ്ലെയറിനെ <b>പ്രചരിപ്പിക്കാം</b>.</p></body></"
+"html>"
 
 #: src/audio_output/filters.c:267
 msgid "Audio filtering failed"
@@ -2279,8 +2279,8 @@ msgstr "സ്രോതസ്സ് ആസ്പെക്ട് റേഷ്യ�
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
 "16:9 while they are actually 4:3. This can also be used as a hint for VLC "
-"when a movie does not have aspect ratio information. Accepted formats are "
-"x:y (4:3, 16:9, etc.) expressing the global image aspect, or a float value "
+"when a movie does not have aspect ratio information. Accepted formats are x:"
+"y (4:3, 16:9, etc.) expressing the global image aspect, or a float value "
 "(1.25, 1.3333, etc.) expressing pixel squareness."
 msgstr ""
 "ഉറവിട വീഡിയോയുടെ ഭാവ അനുപാതത്തെ ഇത് നിര്‍ബന്ധിക്കും. ഉദാഹരണത്തിന് ചില ഡി‌വി‌ഡികള്‍ "
@@ -3166,13 +3166,12 @@ msgstr "എച്ച്ടിടിപി പ്രോക്സി"
 
 #: src/libvlc-module.c:849
 msgid ""
-"HTTP proxy to be used It must be of the form http://"
-"[user@]myproxy.mydomain:myport/ ; if empty, the http_proxy environment "
-"variable will be tried."
+"HTTP proxy to be used It must be of the form http://[user@]myproxy.mydomain:"
+"myport/ ; if empty, the http_proxy environment variable will be tried."
 msgstr ""
-"ഉപയോഗിക്കേണ്ട എച്ച്‌ടി‌ടി‌പി പ്രോക്സി അത് ഈ ആകാരത്തില്‍ ആയിരിക്കണം http://"
-"[user@]myproxy.mydomain:myport/; ശൂന്യമാണെങ്കില്‍ എച്ച്‌ടി‌ടി‌പി_പ്രോക്സി പരിസ്ഥിതി "
-"പരിവര്‍ത്തിതവസ്‌തു ശ്രമിക്കപ്പെടും."
+"ഉപയോഗിക്കേണ്ട എച്ച്‌ടി‌ടി‌പി പ്രോക്സി അത് ഈ ആകാരത്തില്‍ ആയിരിക്കണം http://[user@]myproxy."
+"mydomain:myport/; ശൂന്യമാണെങ്കില്‍ എച്ച്‌ടി‌ടി‌പി_പ്രോക്സി പരിസ്ഥിതി പരിവര്‍ത്തിതവസ്‌തു "
+"ശ്രമിക്കപ്പെടും."
 
 #: src/libvlc-module.c:853
 msgid "HTTP proxy password"
@@ -5225,7 +5224,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "റൈറ്റ് ചെയ്യാനായി  \"%s\" തുറക്കുന്നതില്‍ പരാജയപ്പെട്ടു"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2843
+#: modules/demux/avi/avi.c:2878
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
@@ -6099,8 +6098,8 @@ msgstr "ഓഡിയോ ഇൻപുട്ട് ഉപകരണങ്ങളൊ�
 
 #: modules/access/avaudiocapture.m:213
 msgid ""
-"Your Mac does not seem to be equipped with a suitable audio input "
-"device.Please check your connectors and drivers."
+"Your Mac does not seem to be equipped with a suitable audio input device."
+"Please check your connectors and drivers."
 msgstr ""
 "നിങ്ങളുടെ മാക്കിൽ അനുയോജ്യമായ ഓഡിയോ ഇൻപുട്ട് ഉപകരണം ഉള്ളതായി തോന്നുന്നില്ല. ദയവായി "
 "നിങ്ങളുടെ കണക്റ്ററുകളും ഡ്രൈവറുകളും പരിശോധിക്കുക."
@@ -6309,9 +6308,8 @@ msgid "Musicbrainz Server"
 msgstr ""
 
 #: modules/access/cdda.c:1023
-#, fuzzy
 msgid "Address of the musicbrainz server to use."
-msgstr "ഉപയോഗിക്കേണ്ട സിഡിഡിബി സര്‍വ്വറിന്റെ വിലാസം."
+msgstr ""
 
 #: modules/access/cdda.c:1025
 msgid "CDDB Server"
@@ -6439,9 +6437,9 @@ msgid ""
 "Video connection to use for DeckLink captures. Valid choices: sdi, hdmi, "
 "opticalsdi, component, composite, svideo. Leave blank for card default."
 msgstr ""
-"ഡെക്ക്ലിങ്ക് പിടിച്ചെടുക്കലുകള്‍ക്ക് വേണ്ടി ഉപയോഗിക്കുന്ന ദൃശ്യ ബന്ധം. സാധുവായ ഐച്ഛികങ്ങള്‍: "
-"എസ്‌ഡി‌ഐ,എച്ച്‌ഡി‌എം‌ഐ,ഒപ്ടികല്‍എസ്‌ഡി‌ഐ, കംപോണന്‍റ്,കോംപോസിറ്റ്, എസ്വീഡിയോ. സ്വയമേവയുള്ള കാര്‍ഡിന്  "
-"ശൂന്യമായി ഉപേക്ഷിക്കുക"
+"ഡെക്ക്ലിങ്ക് പിടിച്ചെടുക്കലുകള്‍ക്ക് വേണ്ടി ഉപയോഗിക്കുന്ന ദൃശ്യ ബന്ധം. സാധുവായ ഐച്ഛികങ്ങള്‍: എസ്‌ഡി‌ഐ,"
+"എച്ച്‌ഡി‌എം‌ഐ,ഒപ്ടികല്‍എസ്‌ഡി‌ഐ, കംപോണന്‍റ്,കോംപോസിറ്റ്, എസ്വീഡിയോ. സ്വയമേവയുള്ള കാര്‍ഡിന്  ശൂന്യമായി "
+"ഉപേക്ഷിക്കുക"
 
 #: modules/access/decklink.cpp:87 modules/access/linsys/linsys_sdi.c:94
 msgid "SDI"
@@ -6495,7 +6493,7 @@ msgstr "ബ്ലാക്ക്മാജിക്ക് ഡെക്ക്ല�
 msgid "10 bits"
 msgstr "10 ബിറ്റുകള്‍"
 
-#: modules/access/decklink.cpp:358 modules/demux/ty.c:770
+#: modules/access/decklink.cpp:358 modules/demux/ty.c:783
 msgid "Closed captions 1"
 msgstr "അടച്ച ശീര്‍ഷകങ്ങള്‍ 1"
 
@@ -6505,8 +6503,8 @@ msgid ""
 "Preferences\" -> \"Security & Privacy\" and allow VLC to access your "
 "external media in \"Files and Folders\" section."
 msgstr ""
-"നിങ്ങളുടെ ഡിസ്കിലേക്കുള്ള ആക്സസ് മാക് ഓഎസ് തടയാൻ സാധ്യതയുണ്ട്. ദയവായി \"സിസ്റ്റം മുൻ‌ഗണനകൾ\" "
-"-> \"സുരക്ഷയും സ്വകാര്യതയും\" തുറന്ന് \"ഫയലുകളും ഫോൾഡറുകളും\" വിഭാഗത്തിൽ നിങ്ങളുടെ ബാഹ്യ "
+"നിങ്ങളുടെ ഡിസ്കിലേക്കുള്ള ആക്സസ് മാക് ഓഎസ് തടയാൻ സാധ്യതയുണ്ട്. ദയവായി \"സിസ്റ്റം മുൻ‌ഗണനകൾ\" -"
+"> \"സുരക്ഷയും സ്വകാര്യതയും\" തുറന്ന് \"ഫയലുകളും ഫോൾഡറുകളും\" വിഭാഗത്തിൽ നിങ്ങളുടെ ബാഹ്യ "
 "മീഡിയയിലേക്ക് പ്രവേശിക്കാൻ വി‌എൽ‌സിയെ അനുവദിക്കുക."
 
 #: modules/access/dshow/dshow.cpp:92
@@ -7923,19 +7921,19 @@ msgstr "എച്ച്ടിടിപി ടണല്‍ പോര്‍ട്�
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "എച്ച്‌ടി‌ടി‌പിയുടെ പുറത്തു ആര്‍‌ടി‌എസ്‌പി/ആര്‍‌ടി‌പി ടണലിങ്ങിന് വേണ്ടി ഉപയോഗിയ്ക്കുന്ന പോര്‍ട്ട്"
 
-#: modules/access/live555.cpp:673
+#: modules/access/live555.cpp:677
 msgid "RTSP authentication"
 msgstr "ആര്‍ടിഎസ്പി ഓതന്റിക്കേഷന്‍"
 
-#: modules/access/live555.cpp:674
+#: modules/access/live555.cpp:678
 msgid "Please enter a valid login name and a password."
 msgstr "സാധുതയുള്ള ലോഗിന്‍ നാമവും പാസ്വേര്‍ഡും നല്‍കുക."
 
-#: modules/access/live555.cpp:699
+#: modules/access/live555.cpp:703
 msgid "RTSP connection failed"
 msgstr "ആര്‍ടിഎസ്പി ബന്ധം പരാജയപ്പെട്ടു"
 
-#: modules/access/live555.cpp:700
+#: modules/access/live555.cpp:704
 msgid "Access to the stream is denied by the server configuration."
 msgstr "സ്ട്രീമിലേക്കുള്ള പ്രവേശനം സെര്‍വര്‍ കോണ്‍ഫിഗറേഷനാല്‍ നിഷേധിക്കപ്പെട്ടു."
 
@@ -8539,8 +8537,8 @@ msgstr "എസ് എം ബി പ്രാമാണീകരണം ആവശ�
 #, c-format
 msgid ""
 "The computer (%s) you are trying to connect to requires authentication.\n"
-"Please provide a username (ideally a domain name using the format "
-"DOMAIN;username) and a password."
+"Please provide a username (ideally a domain name using the format DOMAIN;"
+"username) and a password."
 msgstr ""
 "നിങ്ങൾ കണക്റ്റുചെയ്യാൻ ശ്രമിക്കുന്ന കമ്പ്യൂട്ടറിന് (%s) പ്രാമാണീകരണം ആവശ്യമാണ്.\n"
 "ദയവായി ഒരു ഉപയോക്തൃനാമവും (DOMAIN; username ഫോർമാറ്റ് ഉപയോഗിക്കുന്ന ഒരു ഡൊമെയ്ൻ നാമം) "
@@ -8567,9 +8565,8 @@ msgid "Password for stream encryption"
 msgstr "സ്ട്രീം എൻ‌ക്രിപ്ഷനുള്ള പാസ്‌വേഡ്"
 
 #: modules/access/srt.c:446 modules/access_output/srt.c:480
-#, fuzzy
 msgid " SRT Stream ID"
-msgstr "എസ് ആർ ടി സ്ട്രീം ഔട്ട് പുട്ട് "
+msgstr ""
 
 #: modules/access/srt_common.c:26
 msgid "16 bytes"
@@ -9017,9 +9014,9 @@ msgstr "v4l2 ഡ്രൈവര്‍ കണ്‍ട്രോളുകള്‍
 #: modules/access/v4l2/v4l2.c:190
 msgid ""
 "Set the v4l2 driver controls to the values specified using a comma separated "
-"list optionally encapsulated by curly braces (e.g.: "
-"{video_bitrate=6000000,audio_crc=0,stream_type=3} ). To list available "
-"controls, increase verbosity (-vv) or use the v4l2-ctl application."
+"list optionally encapsulated by curly braces (e.g.: {video_bitrate=6000000,"
+"audio_crc=0,stream_type=3} ). To list available controls, increase verbosity "
+"(-vv) or use the v4l2-ctl application."
 msgstr ""
 "കോമയാൽ വേർതിരിച്ച ലിസ്റ്റ് ഉപയോഗിച്ച് വ്യക്തമാക്കിയ മൂല്യങ്ങളിലേക്ക് v4l2 ഡ്രൈവർ നിയന്ത്രണങ്ങൾ "
 "സജ്ജമാക്കുക (ഉദാ .: {video_bitrate = 6000000, audio_crc = 0, stream_type = 3}). "
@@ -9585,14 +9582,12 @@ msgid "SRT stream output"
 msgstr "എസ് ആർ ടി സ്ട്രീം ഔട്ട് പുട്ട് "
 
 #: modules/access_output/srt.c:471
-#, fuzzy
 msgid "SRT maximum payload size (bytes)"
-msgstr "ആർഐഎസ് ടി പരമാവധി പാക്കറ്റ് വലിപ്പം (ബൈറ്റ്സ് )"
+msgstr ""
 
 #: modules/access_output/srt.c:475
-#, fuzzy
 msgid "SRT maximum bandwidth ceiling (bytes)"
-msgstr "ആർഐഎസ് ടി പരമാവധി പാക്കറ്റ് വലിപ്പം (ബൈറ്റ്സ് )"
+msgstr ""
 
 #: modules/access_output/udp.c:62 modules/stream_out/rtp.c:135
 msgid "Caching value (ms)"
@@ -11532,9 +11527,8 @@ msgstr ""
 "ടൈൽ ഡീകോഡിംഗിനായി ഉപയോഗിക്കുന്ന പരമാവധി ത്രെഡുകളുടെ എണ്ണം, സ്ഥിരസ്ഥിതി 0 = യാന്ത്രികം"
 
 #: modules/codec/dav1d.c:56
-#, fuzzy
 msgid "All Layers"
-msgstr "എല്ലാ ഫയലുകളും"
+msgstr ""
 
 #: modules/codec/dav1d.c:57
 msgid "Whether or not to display all spatial layers, default false"
@@ -11603,8 +11597,8 @@ msgstr "ഉപചിത്ര സ്ഥാനം"
 #: modules/codec/dvbsub.c:91
 msgid ""
 "You can enforce the subpicture position on the video (0=center, 1=left, "
-"2=right, 4=top, 8=bottom, you can also use combinations of these values, "
-"e.g. 6=top-right)."
+"2=right, 4=top, 8=bottom, you can also use combinations of these values, e."
+"g. 6=top-right)."
 msgstr ""
 "ഉപദൃശ്യരൂപത്തിന്‍റെ വീഡിയോയിലുള്ള സ്ഥാനം നിങ്ങള്‍ക്ക് നിര്‍ബന്ധമാറ്റം വരുത്താം (0=നടുക്ക്, 1=ഇടത്തു, "
 "2=വലത്തു, 3=മുകളില്‍, 4=ചുവട്ടില്‍, നിങ്ങള്‍ക്ക് ഈ മൂല്യങ്ങളുടെ സംയോഗവും ഉപയോഗിക്കാം, ഉദാ. "
@@ -12227,8 +12221,8 @@ msgid ""
 "'4.2' for mpeg4-part10 or 'low' for mpeg2"
 msgstr ""
 "കോഡിക് ലെവല്‍ സ്പഷ്ടമായി പ്രസ്താവിക്കുക. നിങ്ങള്‍ അങ്ങനെ ചെയ്തില്ല എങ്കില്‍ കോഡിക് മറ്റ് "
-"ഉറവിടങ്ങളില്‍ നിന്ന്‍ ശരിയായ പ്രൊഫൈല്‍ തീരുമാനിക്കും,റസല്യൂഷന്‍,ബിറ്റ്റേറ്റ് എന്നിവയെപ്പോലെ, "
-"ഉദാ:mpeg4-part10 ന് '4.2' അല്ലെങ്കില്‍ mpeg2 ന് 'കുറഞ്ഞത്'"
+"ഉറവിടങ്ങളില്‍ നിന്ന്‍ ശരിയായ പ്രൊഫൈല്‍ തീരുമാനിക്കും,റസല്യൂഷന്‍,ബിറ്റ്റേറ്റ് എന്നിവയെപ്പോലെ, ഉദാ:"
+"mpeg4-part10 ന് '4.2' അല്ലെങ്കില്‍ mpeg2 ന് 'കുറഞ്ഞത്'"
 
 #: modules/codec/qsv.c:73
 msgid "Group of Picture size"
@@ -12373,10 +12367,10 @@ msgstr "റേറ്റ്കണ്ട്രോള്‍ ആക്വറസി"
 
 #: modules/codec/qsv.c:128
 msgid ""
-"Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. "
-"(e.g. 10 with a bitrate of 800  kbps means the encoder tries not to  go "
-"above 880 kbps and under  730 kbps. The targeted accuracy is only reached "
-"after a certained  convergence period. See the convergence parameter"
+"Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
+"g. 10 with a bitrate of 800  kbps means the encoder tries not to  go above "
+"880 kbps and under  730 kbps. The targeted accuracy is only reached after a "
+"certained  convergence period. See the convergence parameter"
 msgstr ""
 "'avbr' (ശരാശരി വേരിയബിൾ ബിറ്റ്റേറ്റ്) രീതിയുടെ ശതമാനത്തിലെ സഹിഷ്ണുത. (ഉദാ. 10 "
 "ബി‌ബി‌ട്രേറ്റ് 800 കെ‌ബി‌പി‌എസ് ഉള്ളത് അർത്ഥമാക്കുന്നത് എൻ‌കോഡർ 880 കെ‌ബി‌പി‌എസിന് മുകളിലേക്കും 730 "
@@ -12859,7 +12853,7 @@ msgstr "എംപി3 ഫിക്സഡ് പോയിന്റ് ഓഡി�
 msgid "S/PDIF pass-through decoder"
 msgstr "S / PDIF പാസ്-ത്രൂ ഡീകോഡർ"
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:907
+#: modules/codec/speex.c:59 modules/codec/speex.c:910
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
 #: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
@@ -13188,7 +13182,7 @@ msgstr "ടെക്സ്റ്റ് ഉപശീര്‍ഷക ഡീക്�
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:292 modules/demux/avi/avi.c:98
+#: modules/codec/subsdec.c:292 modules/demux/avi/avi.c:99
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr "CP1252"
@@ -13627,7 +13621,6 @@ msgid "CABAC"
 msgstr "സിഎബിഎസി"
 
 #: modules/codec/x264.c:133
-#, fuzzy, c-format
 msgid ""
 "CABAC (Context-Adaptive Binary Arithmetic Coding). Slightly slows down "
 "encoding and decoding, but should save 10 to 15% bitrate."
@@ -15313,7 +15306,7 @@ msgstr "എഐഎഫ്എഫഅ ഡീമക്സര്‍"
 msgid "ASF/WMV demuxer"
 msgstr "എഎസ്എഫ്/ഡബ്ല്യുഎംവി ഡീമക്സര്‍"
 
-#: modules/demux/asf/asf.c:285 modules/demux/asf/asf.c:834
+#: modules/demux/asf/asf.c:285 modules/demux/asf/asf.c:836
 msgid "Could not demux ASF stream"
 msgstr "എ‌എസ്‌എഫ് സ്ട്രീം ഡിമക്സ് ചെയ്യാന്‍ കഴിഞ്ഞില്ല"
 
@@ -15361,15 +15354,15 @@ msgstr "ഫോര്‍മാറ്റ് നാമം"
 msgid "Internal libavcodec format name"
 msgstr "അകത്തുള്ള ലിബ്എ‌വികൊഡെക് ഘടന പേര്"
 
-#: modules/demux/avi/avi.c:55
+#: modules/demux/avi/avi.c:56
 msgid "Force interleaved method"
 msgstr "ഇടപ്പിഴഞ്ഞ വഴി നിര്‍ബന്ധിക്കുക"
 
-#: modules/demux/avi/avi.c:57
+#: modules/demux/avi/avi.c:58
 msgid "Force index creation"
 msgstr "സൂചിക നിര്‍മ്മിക്കുന്നത് നിര്‍ബന്ധിക്കുക"
 
-#: modules/demux/avi/avi.c:59
+#: modules/demux/avi/avi.c:60
 msgid ""
 "Recreate a index for the AVI file. Use this if your AVI file is damaged or "
 "incomplete (not seekable)."
@@ -15377,27 +15370,27 @@ msgstr ""
 "എ‌വി‌ഐ ഫയലുകള്‍ക്ക് വേണ്ടി ഒരു സൂചിക വീണ്ടും നിര്‍മ്മിക്കുക. നിങ്ങളുടെ എ‌വി‌ഐ ഫയല്‍ കേടായതോ "
 "അല്ലെങ്കില്‍ പൂര്‍ണ്ണമല്ലെങ്കില്‍ ഇത് ഉപയോഗിക്കുക (തിരഞ്ഞെടുക്കാന്‍ കഴിയാത്തത്)"
 
-#: modules/demux/avi/avi.c:67
+#: modules/demux/avi/avi.c:68
 msgid "Ask for action"
 msgstr "നടപടി ആവശ്യപ്പെടുക"
 
-#: modules/demux/avi/avi.c:68
+#: modules/demux/avi/avi.c:69
 msgid "Always fix"
 msgstr "എപ്പോഴും ഫിക്സ് ചെയ്യുക"
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:70
 msgid "Never fix"
 msgstr "ഫിക്സ് ചെയ്യരുത്"
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:71
 msgid "Fix when necessary"
 msgstr "ആവശ്യമുള്ളപ്പോള്‍ ഫിക്സ് ചെയ്യുക"
 
-#: modules/demux/avi/avi.c:74
+#: modules/demux/avi/avi.c:75
 msgid "AVI demuxer"
 msgstr "എവിഐ ഡീമക്സര്‍"
 
-#: modules/demux/avi/avi.c:904 modules/demux/mp4/mp4.c:4370
+#: modules/demux/avi/avi.c:910 modules/demux/mp4/mp4.c:4374
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15412,27 +15405,27 @@ msgstr ""
 "ഈ ഘട്ടത്തിൽ വലിയ ഫയൽ നിർമിക്കലും സമയനഷ്ടവും സംഭവിച്ചേക്കാം \n"
 "നിങ്ങൾ എന്താണ് ചെയ്യാൻ ഉദേശിക്കുന്നത്?"
 
-#: modules/demux/avi/avi.c:912
+#: modules/demux/avi/avi.c:918
 msgid "Do not play"
 msgstr "പ്ലേ ചെയ്യരുത്"
 
-#: modules/demux/avi/avi.c:913
+#: modules/demux/avi/avi.c:919
 msgid "Build index then play"
 msgstr "സൂചിക നിര്‍മ്മിച്ചതിന്‍ശേഷം പ്ലേ ചെയ്യുക"
 
-#: modules/demux/avi/avi.c:914
+#: modules/demux/avi/avi.c:920
 msgid "Play as is"
 msgstr "ഉള്ളതുപോലേ പ്ലേ ചെയ്യുക"
 
-#: modules/demux/avi/avi.c:915 modules/demux/mp4/mp4.c:4381
+#: modules/demux/avi/avi.c:921 modules/demux/mp4/mp4.c:4385
 msgid "Broken or missing Index"
 msgstr "സൂചിക കേടാണ് അല്ലെങ്കിൽ കാണുന്നില്ല"
 
-#: modules/demux/avi/avi.c:2844
+#: modules/demux/avi/avi.c:2879
 msgid "Broken or missing AVI Index"
 msgstr "പൊട്ടിപ്പോയ അല്ലെങ്കില്‍ നഷ്ട്ടപ്പെട്ട എ‌വി‌ഐ സൂചിക"
 
-#: modules/demux/avi/avi.c:2845
+#: modules/demux/avi/avi.c:2880
 msgid "Fixing AVI Index..."
 msgstr "എവിഐ ഇന്‍ഡെക്സ് ഫിക്സ് ചെയ്യുന്നു..."
 
@@ -15852,27 +15845,27 @@ msgstr "സ്പഷ്ടമായത്"
 msgid "Clean"
 msgstr "വൃത്തിയാക്കുക"
 
-#: modules/demux/mp4/mp4.c:50
+#: modules/demux/mp4/mp4.c:51
 msgid "M4A audio only"
 msgstr "M4A ശബ്ദം മാത്രം"
 
-#: modules/demux/mp4/mp4.c:51
+#: modules/demux/mp4/mp4.c:52
 msgid "Ignore non audio tracks from iTunes audio files"
 msgstr "ഐട്യൂൺസ് ഓഡിയോ ഫയലുകളിൽ നിന്ന് നോൺ ഓഡിയോ ട്രാക്കുകൾ അവഗണിക്കുക"
 
-#: modules/demux/mp4/mp4.c:56
+#: modules/demux/mp4/mp4.c:57
 msgid "MP4 stream demuxer"
 msgstr "എം‌പി4 സ്ട്രീം ടിമക്സര്‍"
 
-#: modules/demux/mp4/mp4.c:57
+#: modules/demux/mp4/mp4.c:58
 msgid "MP4"
 msgstr "എം‌പി4"
 
-#: modules/demux/mp4/mp4.c:4378
+#: modules/demux/mp4/mp4.c:4382
 msgid "Do not seek"
 msgstr "തേടരുത് "
 
-#: modules/demux/mp4/mp4.c:4379
+#: modules/demux/mp4/mp4.c:4383
 msgid "Build index"
 msgstr "സൂചിക നിർമ്മിക്കുക"
 
@@ -15945,8 +15938,8 @@ msgstr "അധിക പിഎംടി"
 #: modules/demux/mpeg/ts.c:86
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr ""
-"ഒരു അധിക പി‌എം‌ടി നിര്‍ദ്ദേശിക്കാന്‍ ഉപയോക്താവിനെ അവിവദിക്കുന്നു "
-"(പി‌എം‌ടി_പി‌ഐ‌ഡി=പി‌ഐ‌ഡി:Sട്രീമ്_ഇനം[,...])."
+"ഒരു അധിക പി‌എം‌ടി നിര്‍ദ്ദേശിക്കാന്‍ ഉപയോക്താവിനെ അവിവദിക്കുന്നു (പി‌എം‌ടി_പി‌ഐ‌ഡി=പി‌ഐ‌ഡി:"
+"Sട്രീമ്_ഇനം[,...])."
 
 #: modules/demux/mpeg/ts.c:88
 msgid "Set id of ES to PID"
@@ -16398,23 +16391,23 @@ msgstr "ഉപശീര്‍ഷക വിവരണം"
 msgid "TTA demuxer"
 msgstr "ടിടിഎ ഡീമക്സര്‍"
 
-#: modules/demux/ty.c:60
+#: modules/demux/ty.c:62
 msgid "TY"
 msgstr "ടിവൈ"
 
-#: modules/demux/ty.c:61
+#: modules/demux/ty.c:63
 msgid "TY Stream audio/video demux"
 msgstr "ടി‌വി സ്ട്രീം ഓഡിയോ/വീഡിയോ ടിമാക്സ്"
 
-#: modules/demux/ty.c:771
+#: modules/demux/ty.c:784
 msgid "Closed captions 2"
 msgstr "അടച്ച ശീര്‍ഷകങ്ങള്‍ 2"
 
-#: modules/demux/ty.c:772
+#: modules/demux/ty.c:785
 msgid "Closed captions 3"
 msgstr "അടച്ച ശീര്‍ഷകങ്ങള്‍ 3"
 
-#: modules/demux/ty.c:773
+#: modules/demux/ty.c:786
 msgid "Closed captions 4"
 msgstr "അടച്ച ശീര്‍ഷകങ്ങള്‍ 4"
 
@@ -18026,9 +18019,8 @@ msgstr "എല്ലാം സങ്കോചിപ്പിക്കുക"
 
 #: modules/gui/macosx/VLCPlaylist.m:231
 #: modules/gui/qt/components/playlist/standardpanel.cpp:274
-#, fuzzy
 msgid "Shuffle playlist"
-msgstr "പ്ലേലിസ്റ്റ് സേവ് ചെയ്യുക"
+msgstr ""
 
 #: modules/gui/macosx/VLCPlaylistInfo.m:54
 #: modules/gui/qt/dialogs/mediainfo.cpp:54
@@ -20698,9 +20690,9 @@ msgstr ""
 "color:#0057ae;\">വീഡിയോലാന്‍</span></a> കമ്മ്യൂണിറ്റികളിലെ വോളണ്ടിയര്‍മാര്‍ ഉണ്ടാക്കുന്നത്.</"
 "p><p>വിഎല്‍സി അവരുടെ അകേമയുള്ള കോഡെക്കുകള്‍ ഉപയോഗിക്കുന്നു, അവ എല്ലാവിധ പ്ലാറ്റ്ഫോമിലും "
 "പ്രവര്‍ത്തിക്കുന്നു എല്ലാത്തരം ഫയലുകള്‍, സിഡി, ഡിവിഡി, നെറ്റ്വര്‍ക്ക് സ്ട്രീമുകള്‍, ക്യാപ്ച്ചര്‍ കോര്‍ഡുകള്‍ "
-"മീഡിയ ഫോര്‍മാറ്റുകള്‍ എന്നിവയെ റീഡ് ചെയ്യുന്നു. !</p><p><a href=\"http://"
-"www.videolan.org/contribute/\"><span style=\" text-decoration: underline; "
-"color:#0057ae;\"> സഹായിക്കുക നമ്മളിലൊന്നാവുക!</span></a>"
+"മീഡിയ ഫോര്‍മാറ്റുകള്‍ എന്നിവയെ റീഡ് ചെയ്യുന്നു. !</p><p><a href=\"http://www.videolan."
+"org/contribute/\"><span style=\" text-decoration: underline; color:#0057ae;"
+"\"> സഹായിക്കുക നമ്മളിലൊന്നാവുക!</span></a>"
 
 #: modules/gui/qt/dialogs/help.cpp:225
 msgid "&Recheck version"
@@ -21722,11 +21714,11 @@ msgid "Show unimportant error and warnings dialogs"
 msgstr "അപ്രധാന പിശകും മുന്നറിയിപ്പ് ഡയലോഗുകളും കാണിക്കുക"
 
 #: modules/gui/qt/qt.cpp:124
-msgid "Applies a dark palette to the style."
+msgid "Enable Dark Mode"
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:125
-msgid "Applies a dark palette to the style. Works best with Fusion style."
+msgid "Applies a dark theme to the style."
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:127
@@ -22063,27 +22055,16 @@ msgid "Set the image gamma, between 0.01 and 10. Defaults to 1."
 msgstr "ചിത്ര ഗാമ 0.01 നും 10 നും ഇടയ്ക്ക് ക്രമീകരിക്കുക. സ്വമേധയാലുള്ളത് 1."
 
 #: modules/hw/d3d11/d3d11_filters.c:681
-#, fuzzy
 msgid "AMD VQ Enhancer"
-msgstr "സ്റ്റീരിയോ എന്‍ഹാന്‍സര്‍"
-
-#: modules/hw/d3d11/d3d11_filters.c:682
-msgid "amf_vqenhancer"
 msgstr ""
 
 #: modules/hw/d3d11/d3d11_filters.c:687
-#, fuzzy
 msgid "AMD Frame Rate Doubler"
-msgstr "Fra&me Rate"
-
-#: modules/hw/d3d11/d3d11_filters.c:688
-msgid "amf_frc"
 msgstr ""
 
 #: modules/hw/d3d11/d3d11_filters.c:690
-#, fuzzy
 msgid "Show indicator"
-msgstr "സൈഡ്ബാര്‍ കാണിക്കുക"
+msgstr ""
 
 #: modules/hw/d3d9/d3d9_filters.c:454
 msgid "Direct3D9 adjust filter"
@@ -23945,7 +23926,7 @@ msgstr "A/52 ഓഡിയോ പാക്കറ്റൈസര്‍"
 msgid "avparser packetizer"
 msgstr "എവിപാര്‍സര്‍ പാക്കറ്റൈസര്‍"
 
-#: modules/packetizer/av1.c:582
+#: modules/packetizer/av1.c:585
 msgid "AV1 video packetizer"
 msgstr "AV1 വീഡിയോ പാക്കറ്റൈസർ"
 
@@ -27956,39 +27937,32 @@ msgid "Recommended video output for Windows 8 and later versions"
 msgstr "വിൻഡോസ് 8 നും അതിനുശേഷമുള്ള പതിപ്പുകൾക്കുമായി ശുപാർശ ചെയ്യുന്ന വീഡിയോ ഔട്ട്പുട്ട് "
 
 #: modules/video_output/win32/direct3d11.c:74
-#, fuzzy
 msgid "Video Upscaling Mode"
-msgstr "വീഡിയോ സ്കെയിലിംഗ്"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:75
-#, fuzzy
 msgid "Select the upscaling mode for video."
-msgstr "വീഡിയോയിലെ ഒരു നിറം തിരഞ്ഞടുക്കുക"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Linear Sampler"
-msgstr "പ്രതി സാമ്പിള്‍ ബിറ്റുകള്‍"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Point Sampler"
-msgstr "SoX റീസാംപ്ലർ "
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Video Processor"
-msgstr "വീഡിയോ കോഡെക്കുകള്‍"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Super Resolution"
-msgstr "റസല്യൂഷന്‍"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:82
-#, fuzzy
 msgid "HDR Output Mode"
-msgstr "ഔട്ട്പുട്ട് മോഡ്യൂളുകള്‍"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:83
 msgid "Use HDR output even if the source is SDR."
@@ -27999,9 +27973,8 @@ msgid "Never out HDR"
 msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:88
-#, fuzzy
 msgid "Always output HDR"
-msgstr "എപ്പോഴും മുകളില്‍"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:88
 msgid "Generate HDR from SDR"
@@ -29118,24 +29091,20 @@ msgid "0.00 dB"
 msgstr "0.00 dB"
 
 #: modules/gui/qt/ui/fingerprintdialog.h:147
-#, fuzzy
 msgid "Audio Fingerprinting"
-msgstr "&വിരലടയാളം"
+msgstr ""
 
 #: modules/gui/qt/ui/fingerprintdialog.h:148
-#, fuzzy
 msgid "Select a matching identity"
-msgstr "സ്ട്രീമിംഗ് രീതി തിരഞ്ഞെടുക്കുക"
+msgstr ""
 
 #: modules/gui/qt/ui/fingerprintdialog.h:149
-#, fuzzy
 msgid "No fingerprint has been found"
-msgstr "ഫിംഗർപ്രിന്റർ ട്രാക്ക് ചെയ്യക (Acoustid അടിസ്ഥാനമാക്കി)"
+msgstr ""
 
 #: modules/gui/qt/ui/fingerprintdialog.h:150
-#, fuzzy
 msgid "Fingerprinting track..."
-msgstr "&വിരലടയാളം"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:137
 msgid "&Verbosity:"
@@ -29379,9 +29348,8 @@ msgid "Menus"
 msgstr "മെനുകള്‍"
 
 #: modules/gui/qt/ui/profiles.h:728
-#, fuzzy
 msgid "Fra&me Rate"
-msgstr "Sa&mple Rate"
+msgstr "Fra&me Rate"
 
 #: modules/gui/qt/ui/profiles.h:729
 msgid "Same as source"
@@ -29652,9 +29620,8 @@ msgid "Auto raising the interface:"
 msgstr "സമ്പർഖ മുഘം സ്വയമേവ ഉയർത്തുന്നു:"
 
 #: modules/gui/qt/ui/sprefs_interface.h:550
-#, fuzzy
 msgid "Use a dark palette"
-msgstr "ഒരു സ്കിന്ന് ചെയ്യപ്പെട്ട പ്ലേലിസ്റ്റ് ഉപയോഗിക്കുക"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:551
 msgid "Skin resource file:"
@@ -29969,21 +29936,3 @@ msgstr "AAAA; "
 #: modules/gui/qt/ui/vlm.h:299
 msgid "Media Manager List"
 msgstr "മീഡിയ മാനേജര്‍ ലിസ്റ്റ്"
-
-#~ msgid "SAT>IP channel list"
-#~ msgstr "SAT>IP ചാനൽ പട്ടിക"
-
-#~ msgid "Master List"
-#~ msgstr "മാസ്റ്റർ പട്ടിക"
-
-#~ msgid "Server List"
-#~ msgstr "സെർവർ പട്ടിക"
-
-#~ msgid "Custom List"
-#~ msgstr "ഇഷ്‌ടാനുസൃത പട്ടിക "
-
-#~ msgid "SRT chunk size (bytes)"
-#~ msgstr "എസ് ആർ ടി ചങ്ക് വലുപ്പം (ബൈറ്റുകൾ)"
-
-#~ msgid "Crypto key length in bytes"
-#~ msgstr "ക്രിപ്‌റ്റോ കീ ദൈർഘ്യം ബൈറ്റുകളിൽ"

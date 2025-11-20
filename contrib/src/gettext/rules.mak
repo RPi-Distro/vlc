@@ -69,30 +69,15 @@ ifdef HAVE_MACOSX
 # using headers (which would make them unavailable with
 # -Werror=partial-availability), so we need to manually mark them unavailable.
 # These are unavailable in macOS 10.7.
-GETTEXT_CONF += \
-    ac_cv_func_clock_gettime=no \
-    ac_cv_func_faccessat=no \
-    ac_cv_func_fdopendir=no \
-    ac_cv_func_futimens=no \
-    ac_cv_func_memset_s=no \
-    ac_cv_func_openat=no \
-    ac_cv_func_utimensat=no
+
+# macOS 10.10
+GETTEXT_CONF += ac_cv_func_faccessat=no
+
 endif
 
 .gettext: gettext
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(GETTEXT_CONF)
-	$(MAKE) -C $< -C gettext-runtime
-ifndef HAVE_ANDROID
-	# build libgettextpo first so we can use its textstyle.h and unistd.h (fsync)
-	$(MAKE) -C $< -C gettext-tools -C libgettextpo
-	cd $< && cp gettext-tools/libgettextpo/textstyle.h gettext-tools/src/textstyle.h
-	cd $< && cp gettext-tools/libgettextpo/unistd.h    gettext-tools/src/unistd.h
-	$(MAKE) -C $< -C gettext-tools
-	$(MAKE) -C $< -C gettext-tools install
-else
-	# Android 32bits does not have localeconv
-	$(MAKE) -C $< -C gettext-tools/misc install
-	$(MAKE) -C $< -C gettext-tools/m4 install
-endif
-	cd $< && $(MAKE) -C gettext-runtime install
+	$(MAKEBUILDDIR)
+	$(MAKECONFIGURE) $(GETTEXT_CONF)
+	+$(MAKEBUILD) -C gettext-runtime bin_PROGRAMS=
+	+$(MAKEBUILD) -C gettext-runtime bin_PROGRAMS= install
 	touch $@

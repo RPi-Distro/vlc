@@ -6,9 +6,9 @@
 # Chandrakant Dhutadmal <chandrakantd@cdac.in>
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.13\n"
+"Project-Id-Version: vlc 3.0.22-rc1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-09-08 12:03+0200\n"
+"POT-Creation-Date: 2025-09-17 13:40+0200\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2019\n"
 "Language-Team: Kashmiri (India) (https://app.transifex.com/yaron/teams/16553/"
@@ -571,21 +571,21 @@ msgid ""
 "charset=utf-8\" /></head><body><h2>Welcome to VLC media player Help</"
 "h2><h3>Documentation</h3><p>You can find VLC documentation on VideoLAN's <a "
 "href=\"http://wiki.videolan.org\">wiki</a> website.</p><p>If you are a "
-"newcomer to VLC media player, please read the<br><a href=\"http://"
-"wiki.videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC "
-"media player</em></a>.</p><p>You will find some information on how to use "
-"the player in the <br>\"<a href=\"http://wiki.videolan.org/"
-"Documentation:Play_HowTo\"><em>How to play files with VLC media player</em></"
-"a>\" document.</p><p>For all the saving, converting, transcoding, encoding, "
-"muxing and streaming tasks, you should find useful information in the <a "
-"href=\"http://wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming "
-"Documentation</a>.</p><p>If you are unsure about terminology, please consult "
-"the <a href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
+"newcomer to VLC media player, please read the<br><a href=\"http://wiki."
+"videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC media "
+"player</em></a>.</p><p>You will find some information on how to use the "
+"player in the <br>\"<a href=\"http://wiki.videolan.org/Documentation:"
+"Play_HowTo\"><em>How to play files with VLC media player</em></a>\" document."
+"</p><p>For all the saving, converting, transcoding, encoding, muxing and "
+"streaming tasks, you should find useful information in the <a href=\"http://"
+"wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming Documentation</"
+"a>.</p><p>If you are unsure about terminology, please consult the <a "
+"href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
 "p><p>To understand the main keyboard shortcuts, read the <a href=\"http://"
 "wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before "
-"asking any question, please refer yourself to the <a href=\"http://"
-"www.videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and "
-"give) help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
+"asking any question, please refer yourself to the <a href=\"http://www."
+"videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and give) "
+"help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
 "href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC "
 "channel (<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the "
 "project</h3><p>You can help the VideoLAN project giving some of your time to "
@@ -600,19 +600,19 @@ msgstr ""
 "توہیہ اکھ نیو کمر چھیو وی ایل سی میڈیا پْلییرس کُن، مہربأنی کْرتھ پْریو<br><a "
 "href=\"http://wiki.videolan.org/Documentation:VLC_for_dummies\"><em>تعارف وی "
 "ایل سی میڈیا پْلییرس کُن</em></a>.</p><p>توہیہ لْبیو انفارمیشن ذِ کِتھ کْنئ چُھ "
-"استعمال کرُن پْلیر <br>\"<a href=\"http://wiki.videolan.org/"
-"Documentation:Play_HowTo\"><em>وی ایل سی میڈیا پْلییر سْیت کِتھ کْنئ چھ فایلْہ "
-"پْلے کرنِہ</em></a>\" دستاویزس منز۔</p><p>تمام محفوظ کرُن، تبدیل کرُن، ٹرانسکوڈ "
-"کرُن، اینکوڈ کرُن، مکسینگ تْہ سِٹریمینگ ٹاسکْہ باپت لْبیو توہیہ جانکأری <a "
-"href=\"http://wiki.videolan.org/Documentation:Streaming_HowTo\">سٹریمینگ "
-"ڈاکیمینٹیشنس منز۔</a>.</p><p>اگر نْہ توہیہ ٹْرمینالجی پورْ پتاہ چھ، مہربأنی "
-"کْرتھ کْریو کنسلٹْہ <a href=\"http://wiki.videolan.org/Knowledge_Base\">نالیج "
-"بیس/a>.</p><p>مین کی بورڈ شاٹ کٹ سمجھنْہ باپت، پْریو <a href=\"http://"
-"wiki.videolan.org/Hotkeys\">شاٹ کٹ</a> پیج۔.</p><h3>مدد</h3><p>کانہہ تِہ سوال "
-"کرنْہ برونہہ کْریو پنُن پان ریفر مہربأنی کْرتھ <a href=\"http://www.videolan.org/"
-"support/faq.html\"> کُنFAQ</a>.</p><p>توہیہ ہیکیو پتْہ حأصل کْرتھ  (یا دِتھ) مدد "
-"<a href=\"http://forum.videolan.org\">فورمن پیٹھ</a>,یہ <a href=\"http://"
-"www.videolan.org/vlc/lists.html\">mailing-lists</a>یا سأنئ  آی آر سی چنل  "
+"استعمال کرُن پْلیر <br>\"<a href=\"http://wiki.videolan.org/Documentation:"
+"Play_HowTo\"><em>وی ایل سی میڈیا پْلییر سْیت کِتھ کْنئ چھ فایلْہ پْلے کرنِہ</em></"
+"a>\" دستاویزس منز۔</p><p>تمام محفوظ کرُن، تبدیل کرُن، ٹرانسکوڈ کرُن، اینکوڈ "
+"کرُن، مکسینگ تْہ سِٹریمینگ ٹاسکْہ باپت لْبیو توہیہ جانکأری <a href=\"http://wiki."
+"videolan.org/Documentation:Streaming_HowTo\">سٹریمینگ ڈاکیمینٹیشنس منز۔</a>."
+"</p><p>اگر نْہ توہیہ ٹْرمینالجی پورْ پتاہ چھ، مہربأنی کْرتھ کْریو کنسلٹْہ <a "
+"href=\"http://wiki.videolan.org/Knowledge_Base\">نالیج بیس/a>.</p><p>مین کی "
+"بورڈ شاٹ کٹ سمجھنْہ باپت، پْریو <a href=\"http://wiki.videolan.org/"
+"Hotkeys\">شاٹ کٹ</a> پیج۔.</p><h3>مدد</h3><p>کانہہ تِہ سوال کرنْہ برونہہ کْریو "
+"پنُن پان ریفر مہربأنی کْرتھ <a href=\"http://www.videolan.org/support/faq."
+"html\"> کُنFAQ</a>.</p><p>توہیہ ہیکیو پتْہ حأصل کْرتھ  (یا دِتھ) مدد <a "
+"href=\"http://forum.videolan.org\">فورمن پیٹھ</a>,یہ <a href=\"http://www."
+"videolan.org/vlc/lists.html\">mailing-lists</a>یا سأنئ  آی آر سی چنل  "
 "(<em>#videolan</em> on irc.freenode.net).</p><h3>چھ شمولیت کران یتھ پروجکٹس "
 "منز</h3><p>توہیہ ہیکیو مدد دِتھ ویڈیو لین پروجکٹس پنُن کینہ ٹایم دِتھ کومنیٹی "
 "مدد کرنْہ باپت، سیکِن ڈیزایِن کرنْہ باپت، ڈاکیمینٹیشن ترجُم کرنْہ باپت، ٹیسٹْہ تْہ "
@@ -2289,8 +2289,8 @@ msgstr "سورس آسپیکٹْہ ریشیو "
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
 "16:9 while they are actually 4:3. This can also be used as a hint for VLC "
-"when a movie does not have aspect ratio information. Accepted formats are "
-"x:y (4:3, 16:9, etc.) expressing the global image aspect, or a float value "
+"when a movie does not have aspect ratio information. Accepted formats are x:"
+"y (4:3, 16:9, etc.) expressing the global image aspect, or a float value "
 "(1.25, 1.3333, etc.) expressing pixel squareness."
 msgstr ""
 "یہ چُھ لاگو کران سورس آسپیکٹْہ ریشیو۔ مثلن، کینہہ ڈی وی ڈی چھ دعوا کران ۱۶:۹ "
@@ -3085,8 +3085,8 @@ msgid ""
 "address (e.g. ::1 or 127.0.0.1) or a host name (e.g. localhost) to restrict "
 "them to a specific network interface."
 msgstr ""
-"ڈیفالٹْہ ذریعہ، سْرور بوزِ کونِہ تِہ لوکل آی پی ایڈرسس پیٹھ۔ اکھ آی پی ایڈرس "
-"(e.g. ::1 or 127.0.0.1) کْریو مخصوص یا اکھ ہوسٹْہ ناو ( مثلن۔ لوکل ہوسٹْہ) تِم "
+"ڈیفالٹْہ ذریعہ، سْرور بوزِ کونِہ تِہ لوکل آی پی ایڈرسس پیٹھ۔ اکھ آی پی ایڈرس (e."
+"g. ::1 or 127.0.0.1) کْریو مخصوص یا اکھ ہوسٹْہ ناو ( مثلن۔ لوکل ہوسٹْہ) تِم "
 "محدود تھاونْہ باپت أکس خاص نیٹوْرک اِنٹرفیسس کُن۔"
 
 #: src/libvlc-module.c:809
@@ -3177,9 +3177,8 @@ msgstr "پراکزی   HTTP"
 
 #: src/libvlc-module.c:849
 msgid ""
-"HTTP proxy to be used It must be of the form http://"
-"[user@]myproxy.mydomain:myport/ ; if empty, the http_proxy environment "
-"variable will be tried."
+"HTTP proxy to be used It must be of the form http://[user@]myproxy.mydomain:"
+"myport/ ; if empty, the http_proxy environment variable will be tried."
 msgstr ""
 "ایچ ٹی ٹی پی پراکزی یوس استعمال کرْنئ چھ اتھ گژھ ضرور فارم آسْنئ http://"
 "[user@]myproxy.mydomain:myport/   ؛ اگر ایمپٹی آسِہ، یہ ایچ ٹی ٹی پی۔پراکزی "
@@ -5232,7 +5231,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "گو ناکام \"%s\"  اوپْن کرنس رایٹینگ باپت"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2843
+#: modules/demux/avi/avi.c:2878
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
@@ -6104,8 +6103,8 @@ msgstr ""
 
 #: modules/access/avaudiocapture.m:213
 msgid ""
-"Your Mac does not seem to be equipped with a suitable audio input "
-"device.Please check your connectors and drivers."
+"Your Mac does not seem to be equipped with a suitable audio input device."
+"Please check your connectors and drivers."
 msgstr ""
 
 #: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:434
@@ -6305,9 +6304,8 @@ msgid "Musicbrainz Server"
 msgstr ""
 
 #: modules/access/cdda.c:1023
-#, fuzzy
 msgid "Address of the musicbrainz server to use."
-msgstr "سْرورُک پتاہ یوس استعمال کرُن چُھ CDDB"
+msgstr ""
 
 #: modules/access/cdda.c:1025
 msgid "CDDB Server"
@@ -6491,7 +6489,7 @@ msgstr "بُلیک میجِک ڈیک لینک ایس ڈی آی اِنپُٹ"
 msgid "10 bits"
 msgstr "۱۰ بِٹ "
 
-#: modules/access/decklink.cpp:358 modules/demux/ty.c:770
+#: modules/access/decklink.cpp:358 modules/demux/ty.c:783
 msgid "Closed captions 1"
 msgstr "بند کرنْہ آمْت کیپشن ۱"
 
@@ -7769,8 +7767,8 @@ msgstr "آڈیو کنفیگریشن"
 #: modules/access/linsys/linsys_sdi.c:79
 msgid "Allows you to set audio configuration (id=group,pair:id=group,pair...)."
 msgstr ""
-"چُھ توہیہ اجازت دوان سیٹ کرنس منز آڈیو کنفیگریشن  "
-"(id=group,pair:id=group,pair...)۔ "
+"چُھ توہیہ اجازت دوان سیٹ کرنس منز آڈیو کنفیگریشن  (id=group,pair:id=group,"
+"pair...)۔ "
 
 #: modules/access/linsys/linsys_hdsdi.c:89
 msgid "HD-SDI Input"
@@ -7901,19 +7899,19 @@ msgstr ""
 "پورٹ یوس استعمال کرُن چُھ ٹنلینگ باپت آر ٹی ایس پی یا آر ٹی پی  پیٹھ ایچ ٹی ٹی "
 "پی۔ "
 
-#: modules/access/live555.cpp:673
+#: modules/access/live555.cpp:677
 msgid "RTSP authentication"
 msgstr "آر ٹی ایس پی تصدیو"
 
-#: modules/access/live555.cpp:674
+#: modules/access/live555.cpp:678
 msgid "Please enter a valid login name and a password."
 msgstr "مہربأنی کْرتھ کْریو اینٹر اکھ لایق لاگ اِن ناو تْہ پاس وأرڈ۔"
 
-#: modules/access/live555.cpp:699
+#: modules/access/live555.cpp:703
 msgid "RTSP connection failed"
 msgstr "آر ٹی ایس پی کنیکشن گو ناکام"
 
-#: modules/access/live555.cpp:700
+#: modules/access/live555.cpp:704
 msgid "Access to the stream is denied by the server configuration."
 msgstr "سَٹریم کُن ایسیس چُھ رُکاونْہ آمُت سْرور کنفیگریشن ذریعہ۔"
 
@@ -8515,8 +8513,8 @@ msgstr ""
 #, c-format
 msgid ""
 "The computer (%s) you are trying to connect to requires authentication.\n"
-"Please provide a username (ideally a domain name using the format "
-"DOMAIN;username) and a password."
+"Please provide a username (ideally a domain name using the format DOMAIN;"
+"username) and a password."
 msgstr ""
 
 #: modules/access/srt.c:428 modules/access_output/srt.c:457
@@ -8540,9 +8538,8 @@ msgid "Password for stream encryption"
 msgstr ""
 
 #: modules/access/srt.c:446 modules/access_output/srt.c:480
-#, fuzzy
 msgid " SRT Stream ID"
-msgstr "سٹریم %d "
+msgstr ""
 
 #: modules/access/srt_common.c:26
 msgid "16 bytes"
@@ -8986,9 +8983,9 @@ msgstr "v4l2 ڈرایور کنٹرول "
 #: modules/access/v4l2/v4l2.c:190
 msgid ""
 "Set the v4l2 driver controls to the values specified using a comma separated "
-"list optionally encapsulated by curly braces (e.g.: "
-"{video_bitrate=6000000,audio_crc=0,stream_type=3} ). To list available "
-"controls, increase verbosity (-vv) or use the v4l2-ctl application."
+"list optionally encapsulated by curly braces (e.g.: {video_bitrate=6000000,"
+"audio_crc=0,stream_type=3} ). To list available controls, increase verbosity "
+"(-vv) or use the v4l2-ctl application."
 msgstr ""
 
 #: modules/access/v4l2/v4l2.c:242 modules/codec/avcodec/avcodec.c:50
@@ -11482,9 +11479,8 @@ msgid "Max number of threads used for tile decoding, default 0=auto"
 msgstr ""
 
 #: modules/codec/dav1d.c:56
-#, fuzzy
 msgid "All Layers"
-msgstr "تمام فایلْہ "
+msgstr ""
 
 #: modules/codec/dav1d.c:57
 msgid "Whether or not to display all spatial layers, default false"
@@ -11553,8 +11549,8 @@ msgstr "سب  پیکچر جاے "
 #: modules/codec/dvbsub.c:91
 msgid ""
 "You can enforce the subpicture position on the video (0=center, 1=left, "
-"2=right, 4=top, 8=bottom, you can also use combinations of these values, "
-"e.g. 6=top-right)."
+"2=right, 4=top, 8=bottom, you can also use combinations of these values, e."
+"g. 6=top-right)."
 msgstr ""
 "توہیہ ہیکیو لاگو کْرتھ  سب پیکچر جاے ویڈیوہس پیٹھ    (0=مرکز, 1=کھوفُر , "
 "2=دوچُھن, 4=ٹاپ, 8=باٹم, توہیہ ہیکیو بْیِہ استعمال کْرتھ یمن ویلیوہن ہْنز "
@@ -12295,10 +12291,10 @@ msgstr "ریٹ کنٹرولْچ ایکوریسی "
 
 #: modules/codec/qsv.c:128
 msgid ""
-"Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. "
-"(e.g. 10 with a bitrate of 800  kbps means the encoder tries not to  go "
-"above 880 kbps and under  730 kbps. The targeted accuracy is only reached "
-"after a certained  convergence period. See the convergence parameter"
+"Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
+"g. 10 with a bitrate of 800  kbps means the encoder tries not to  go above "
+"880 kbps and under  730 kbps. The targeted accuracy is only reached after a "
+"certained  convergence period. See the convergence parameter"
 msgstr ""
 
 #: modules/codec/qsv.c:134
@@ -12777,7 +12773,7 @@ msgstr "ایم پی ۳ فیکسْڈ پویِنٹ آڈیو اینکوڈر "
 msgid "S/PDIF pass-through decoder"
 msgstr ""
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:907
+#: modules/codec/speex.c:59 modules/codec/speex.c:910
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
 #: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
@@ -13110,7 +13106,7 @@ msgstr "متن سب ٹایٹل ڈیکوڈر "
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:292 modules/demux/avi/avi.c:98
+#: modules/codec/subsdec.c:292 modules/demux/avi/avi.c:99
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr "CP1252"
@@ -13542,7 +13538,6 @@ msgid "CABAC"
 msgstr "CABAC"
 
 #: modules/codec/x264.c:133
-#, fuzzy, c-format
 msgid ""
 "CABAC (Context-Adaptive Binary Arithmetic Coding). Slightly slows down "
 "encoding and decoding, but should save 10 to 15% bitrate."
@@ -15209,7 +15204,7 @@ msgstr "AIFF ڈیمکسر"
 msgid "ASF/WMV demuxer"
 msgstr "ASF/WMV ڈیمکسر"
 
-#: modules/demux/asf/asf.c:285 modules/demux/asf/asf.c:834
+#: modules/demux/asf/asf.c:285 modules/demux/asf/asf.c:836
 msgid "Could not demux ASF stream"
 msgstr "ہیوک نْہ ڈیمکْس کْرتھ اے ایس ایف سِٹریم"
 
@@ -15257,15 +15252,15 @@ msgstr "فارمیٹ ناو"
 msgid "Internal libavcodec format name"
 msgstr "اِنٹرنل لِب اے وی کوڈیک فارمیٹ ناو"
 
-#: modules/demux/avi/avi.c:55
+#: modules/demux/avi/avi.c:56
 msgid "Force interleaved method"
 msgstr "لاگو کریو اِنٹرلیوْڈ میتھڈ "
 
-#: modules/demux/avi/avi.c:57
+#: modules/demux/avi/avi.c:58
 msgid "Force index creation"
 msgstr "لاگو کْریو اِنڈیکْس بناون "
 
-#: modules/demux/avi/avi.c:59
+#: modules/demux/avi/avi.c:60
 msgid ""
 "Recreate a index for the AVI file. Use this if your AVI file is damaged or "
 "incomplete (not seekable)."
@@ -15273,27 +15268,27 @@ msgstr ""
 "دوبار کْریو پیدْ اکھ اِنڈیکْس  اے وی آی فایلہ باپت۔ یہ کْریو استعمال اگر ذن تُہنز "
 "اے وی آی فایل ڈمیجْڈ آسِہ  یا نامُکمل آسِہ ( ژھانڈنس لایق چھ نْہ)۔"
 
-#: modules/demux/avi/avi.c:67
+#: modules/demux/avi/avi.c:68
 msgid "Ask for action"
 msgstr "ایکشن باپت پریژھیو "
 
-#: modules/demux/avi/avi.c:68
+#: modules/demux/avi/avi.c:69
 msgid "Always fix"
 msgstr "ہمیشہ کْریو ٹھیک "
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:70
 msgid "Never fix"
 msgstr "زانہہ مْہ کْریو ٹھیک "
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:71
 msgid "Fix when necessary"
 msgstr "ٹھیک کْریو ییلہ ضرورت آسِہ "
 
-#: modules/demux/avi/avi.c:74
+#: modules/demux/avi/avi.c:75
 msgid "AVI demuxer"
 msgstr "اے وی آی ڈیمکسر "
 
-#: modules/demux/avi/avi.c:904 modules/demux/mp4/mp4.c:4370
+#: modules/demux/avi/avi.c:910 modules/demux/mp4/mp4.c:4374
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15303,27 +15298,27 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:912
+#: modules/demux/avi/avi.c:918
 msgid "Do not play"
 msgstr "پْلے مْہ کْریو"
 
-#: modules/demux/avi/avi.c:913
+#: modules/demux/avi/avi.c:919
 msgid "Build index then play"
 msgstr "اِنڈیکْس کْریو بِلڈْ تْہ پتْہ کْریو پْلے"
 
-#: modules/demux/avi/avi.c:914
+#: modules/demux/avi/avi.c:920
 msgid "Play as is"
 msgstr "پْلے کْریو بطور چُھ"
 
-#: modules/demux/avi/avi.c:915 modules/demux/mp4/mp4.c:4381
+#: modules/demux/avi/avi.c:921 modules/demux/mp4/mp4.c:4385
 msgid "Broken or missing Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2844
+#: modules/demux/avi/avi.c:2879
 msgid "Broken or missing AVI Index"
 msgstr "بروکْن یا میسینگ اے وی آی اِنڈیکْس "
 
-#: modules/demux/avi/avi.c:2845
+#: modules/demux/avi/avi.c:2880
 msgid "Fixing AVI Index..."
 msgstr "ٹھیک کران اے وی آی اِنڈیکْس ۔  ۔ ۔"
 
@@ -15743,27 +15738,27 @@ msgstr ""
 msgid "Clean"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:50
+#: modules/demux/mp4/mp4.c:51
 msgid "M4A audio only"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:51
+#: modules/demux/mp4/mp4.c:52
 msgid "Ignore non audio tracks from iTunes audio files"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:56
+#: modules/demux/mp4/mp4.c:57
 msgid "MP4 stream demuxer"
 msgstr "ایم پی ۴ سِٹریم ڈیمکسر "
 
-#: modules/demux/mp4/mp4.c:57
+#: modules/demux/mp4/mp4.c:58
 msgid "MP4"
 msgstr "ایم پی ۴ "
 
-#: modules/demux/mp4/mp4.c:4378
+#: modules/demux/mp4/mp4.c:4382
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4379
+#: modules/demux/mp4/mp4.c:4383
 msgid "Build index"
 msgstr ""
 
@@ -15836,8 +15831,8 @@ msgstr "ایکْسٹرا پی ایم ٹی "
 #: modules/demux/mpeg/ts.c:86
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr ""
-"چُھ اجازت دِوان أکس یوزرس مخصوص کرنْہ باپت اکھ اضأفی پی ایم ٹی    "
-"(pmt_pid=pid:stream_type[,...]) ۔ "
+"چُھ اجازت دِوان أکس یوزرس مخصوص کرنْہ باپت اکھ اضأفی پی ایم ٹی    (pmt_pid=pid:"
+"stream_type[,...]) ۔ "
 
 #: modules/demux/mpeg/ts.c:88
 msgid "Set id of ES to PID"
@@ -16283,23 +16278,23 @@ msgstr "سب ٹایٹل وضاحت "
 msgid "TTA demuxer"
 msgstr "ٹی ٹی اے ڈیمکسر "
 
-#: modules/demux/ty.c:60
+#: modules/demux/ty.c:62
 msgid "TY"
 msgstr "TY"
 
-#: modules/demux/ty.c:61
+#: modules/demux/ty.c:63
 msgid "TY Stream audio/video demux"
 msgstr "ٹی واے سٹریم آڈیو یا ویڈیو ڈیمکْس "
 
-#: modules/demux/ty.c:771
+#: modules/demux/ty.c:784
 msgid "Closed captions 2"
 msgstr "بند کرنْہ آمْتئ کیپشن ۲ "
 
-#: modules/demux/ty.c:772
+#: modules/demux/ty.c:785
 msgid "Closed captions 3"
 msgstr "بند کرنْہ آمْتئ کیپشن ۳  "
 
-#: modules/demux/ty.c:773
+#: modules/demux/ty.c:786
 msgid "Closed captions 4"
 msgstr "بند کرنْہ آمْتئ کیپشن۴"
 
@@ -16413,8 +16408,8 @@ msgid ""
 "decoration: underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>وی ایل سی میڈیا پْلییر چُھ اکھ فری تْہ اوپْْن سورس میڈیا پْلییر، اینکوڈر تْہ "
-"سٹریمر یوس ذن بنومُت چُھ والینٹیرو یم ذن تعلق تھاوان چھ <a href=\"https://"
-"www.videolan.org/\"><span style=\" text-decoration: underline; color:#0057ae;"
+"سٹریمر یوس ذن بنومُت چُھ والینٹیرو یم ذن تعلق تھاوان چھ <a href=\"https://www."
+"videolan.org/\"><span style=\" text-decoration: underline; color:#0057ae;"
 "\">ویڈیو لین</span></a> کومنیٹی سْیت۔</p><p>وی ایل سی چُھ استعمال کران پنْنئ "
 "اِنٹرنل کوڈیک، چُھ کأم کران تقریبن تمام مشہور پلیٹ فارمن پیتھ، تْہ چُھ ہیکان "
 "پْرَتھ تمام فایلْہ، سی ڈی، ڈی وی ڈی، نیٹوْرک سٹریم، کیپچر کارڈ تْہ باقی میڈیا "
@@ -17913,9 +17908,8 @@ msgstr ""
 
 #: modules/gui/macosx/VLCPlaylist.m:231
 #: modules/gui/qt/components/playlist/standardpanel.cpp:274
-#, fuzzy
 msgid "Shuffle playlist"
-msgstr "پْلے لِسٹْہ کْریو محفوظ "
+msgstr ""
 
 #: modules/gui/macosx/VLCPlaylistInfo.m:54
 #: modules/gui/qt/dialogs/mediainfo.cpp:54
@@ -20563,8 +20557,8 @@ msgid ""
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>وی ایل سی میڈیا پْلییر چُھ اکھ فری تْہ اوپْْن سورس میڈیا پْلییر، اینکوڈر تْہ "
-"سٹریمر یوس ذن بنومُت چُھ والینٹیرو یم ذن تعلق تھاوان چھ <a href=\"http://"
-"www.videolan.org/\"><span style=\" text-decoration: underline; color:#0057ae;"
+"سٹریمر یوس ذن بنومُت چُھ والینٹیرو یم ذن تعلق تھاوان چھ <a href=\"http://www."
+"videolan.org/\"><span style=\" text-decoration: underline; color:#0057ae;"
 "\">ویڈیو لین</span></a> کومنیٹی سْیت۔</p><p>وی ایل سی چُھ استعمال کران پنْنئ "
 "اِنٹرنل کوڈیک، چُھ کأم کران تقریبن تمام مشہور پلیٹ فارمن پیتھ، تْہ چُھ ہیکان "
 "پْرَتھ تمام فایلْہ، سی ڈی، ڈی وی ڈی، نیٹوْرک سٹریم، کیپچر کارڈ تْہ باقی میڈیا "
@@ -21594,11 +21588,11 @@ msgid "Show unimportant error and warnings dialogs"
 msgstr "ہأیو غیر ضروری ایرر تْہ آگأہی ڈایلاگ "
 
 #: modules/gui/qt/qt.cpp:124
-msgid "Applies a dark palette to the style."
+msgid "Enable Dark Mode"
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:125
-msgid "Applies a dark palette to the style. Works best with Fusion style."
+msgid "Applies a dark theme to the style."
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:127
@@ -21926,26 +21920,16 @@ msgid "Set the image gamma, between 0.01 and 10. Defaults to 1."
 msgstr "سیٹ کْریو امیج گاما، درمیان ۰۔۰۱ تْہ ۱۰۔ ڈیفالٹْہ چُھ ۱ کُن۔"
 
 #: modules/hw/d3d11/d3d11_filters.c:681
-#, fuzzy
 msgid "AMD VQ Enhancer"
-msgstr "سیٹیریو اینہینسر "
-
-#: modules/hw/d3d11/d3d11_filters.c:682
-msgid "amf_vqenhancer"
 msgstr ""
 
 #: modules/hw/d3d11/d3d11_filters.c:687
 msgid "AMD Frame Rate Doubler"
 msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:688
-msgid "amf_frc"
-msgstr ""
-
 #: modules/hw/d3d11/d3d11_filters.c:690
-#, fuzzy
 msgid "Show indicator"
-msgstr "سایڈ بار ہأیو "
+msgstr ""
 
 #: modules/hw/d3d9/d3d9_filters.c:454
 msgid "Direct3D9 adjust filter"
@@ -22415,8 +22399,8 @@ msgid ""
 msgstr ""
 "ییمہ سورسْہ پیٹھ کْریو کمانڈ قبول۔ سی ایل آی چُھ ڈیفالٹْہ گژھان  (\"*console\") "
 "کُن، مگر ہیکہ بایِنڈ گْژھیتھ أکس سادْ ٹی سی پی ساکیٹس کُن    "
-"(\"localhost:4212\")  یا ہیکہ استعمال کْرتھ ٹیل نیٹ پروٹوکال(\"telnet://"
-"0.0.0.0:4212\")"
+"(\"localhost:4212\")  یا ہیکہ استعمال کْرتھ ٹیل نیٹ "
+"پروٹوکال(\"telnet://0.0.0.0:4212\")"
 
 #: modules/lua/vlc.c:85
 msgid "Lua"
@@ -23787,7 +23771,7 @@ msgstr "آڈیو پیکیٹایزر A/52"
 msgid "avparser packetizer"
 msgstr "اے وی پارسر پیکیٹایزر "
 
-#: modules/packetizer/av1.c:582
+#: modules/packetizer/av1.c:585
 msgid "AV1 video packetizer"
 msgstr ""
 
@@ -27336,8 +27320,8 @@ msgid ""
 "Prefix of the output images filenames. Output filenames will have the "
 "\"prefixNUMBER.format\" form if replace is not true."
 msgstr ""
-"پریفیکْس آوٹ پُٹ امیج فایل ناون ہُند۔ آوٹ پُٹ فایل ناون آسہ   "
-"\"prefixNUMBER.format\"  فارم اگر ذن نْہ بدلاو ٹرو آسِہ۔"
+"پریفیکْس آوٹ پُٹ امیج فایل ناون ہُند۔ آوٹ پُٹ فایل ناون آسہ   \"prefixNUMBER."
+"format\"  فارم اگر ذن نْہ بدلاو ٹرو آسِہ۔"
 
 #: modules/video_filter/scene.c:81
 msgid "Directory path prefix"
@@ -27793,39 +27777,32 @@ msgid "Recommended video output for Windows 8 and later versions"
 msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:74
-#, fuzzy
 msgid "Video Upscaling Mode"
-msgstr "ویڈیو سیکیلینگ "
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:75
-#, fuzzy
 msgid "Select the upscaling mode for video."
-msgstr "اکھ رنگ ژأریو ویڈیوہس منز "
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Linear Sampler"
-msgstr "بِٹْہ پریتھ سیمپلس منز"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Point Sampler"
-msgstr "سیمپیلیریٹ "
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Video Processor"
-msgstr "ویڈیو کوڈیک"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Super Resolution"
-msgstr "ریزولوشن"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:82
-#, fuzzy
 msgid "HDR Output Mode"
-msgstr "آوٹ پُٹ ماڈیول"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:83
 msgid "Use HDR output even if the source is SDR."
@@ -27836,9 +27813,8 @@ msgid "Never out HDR"
 msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:88
-#, fuzzy
 msgid "Always output HDR"
-msgstr "پریتھ وِز ٹاپس پیٹھ"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:88
 msgid "Generate HDR from SDR"
@@ -28939,9 +28915,8 @@ msgid "0.00 dB"
 msgstr "0.00 dB"
 
 #: modules/gui/qt/ui/fingerprintdialog.h:147
-#, fuzzy
 msgid "Audio Fingerprinting"
-msgstr "&فنگر پرینٹ  "
+msgstr ""
 
 #: modules/gui/qt/ui/fingerprintdialog.h:148
 msgid "Select a matching identity"
@@ -28952,9 +28927,8 @@ msgid "No fingerprint has been found"
 msgstr ""
 
 #: modules/gui/qt/ui/fingerprintdialog.h:150
-#, fuzzy
 msgid "Fingerprinting track..."
-msgstr "&فنگر پرینٹ  "
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:137
 msgid "&Verbosity:"
@@ -28997,9 +28971,8 @@ msgid "Start Time"
 msgstr "شروع ٹایم"
 
 #: modules/gui/qt/ui/open.h:268
-#, fuzzy
 msgid "Stop Time"
-msgstr "رُکنُک ٹایم"
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:269
 msgid "Edit Options"
@@ -29026,9 +28999,8 @@ msgid "HH'H':mm'm':ss's'.zzz"
 msgstr "HH'H':mm'm':ss's'.zzz"
 
 #: modules/gui/qt/ui/open.h:283
-#, fuzzy
 msgid "Change the stop time for the media"
-msgstr "میڈیاہس باپت کْریو تبدیل شروع ٹایم "
+msgstr ""
 
 #: modules/gui/qt/ui/open.h:286
 msgid "Play another media synchronously (extra audio file, ...)"
@@ -29127,9 +29099,8 @@ msgid "FLAC"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:701
-#, fuzzy
 msgid "MP&4/MOV"
-msgstr " مکزر MP4/MOV "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:702
 msgid "Ogg/Ogm"
@@ -29152,9 +29123,8 @@ msgid "F&LV"
 msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:707
-#, fuzzy
 msgid "&MPEG-TS"
-msgstr "MPEG-PS"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:708
 msgid "RAW"
@@ -29217,9 +29187,8 @@ msgid "Custom options"
 msgstr "کسٹم اوپشن "
 
 #: modules/gui/qt/ui/profiles.h:733
-#, fuzzy
 msgid "&Quality"
-msgstr "وی بی آر کالٹی "
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:734 modules/gui/qt/ui/profiles.h:735
 msgid "Not Used"
@@ -29242,14 +29211,12 @@ msgid "px"
 msgstr "px "
 
 #: modules/gui/qt/ui/profiles.h:756
-#, fuzzy
 msgid "Sa&mple Rate"
-msgstr "سیمپْل ریٹْہ"
+msgstr ""
 
 #: modules/gui/qt/ui/profiles.h:764
-#, fuzzy
 msgid "Profile &Name"
-msgstr "پروفایل ناو "
+msgstr ""
 
 #: modules/gui/qt/ui/sout.h:200
 msgid "Set up media sources to stream"
@@ -29384,9 +29351,8 @@ msgid "Skip H.264 in-loop deblocking filter"
 msgstr "سیکیپ کْریو ایچ ڈاٹ ۲۶۴ اِن۔لوپ ڈی بُلاکینگ فلٹر "
 
 #: modules/gui/qt/ui/sprefs_input.h:359
-#, fuzzy
 msgid "x264 preset and tuning selection"
-msgstr "پروفایل تْہ لیول ژأر x264"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_input.h:361
 msgid "Optical drive"
@@ -29473,14 +29439,12 @@ msgid "Show systray icon"
 msgstr "ہأیو سسٹرے آیکن "
 
 #: modules/gui/qt/ui/sprefs_interface.h:549
-#, fuzzy
 msgid "Auto raising the interface:"
-msgstr "این کْرسیز اِنٹرفیس "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:550
-#, fuzzy
 msgid "Use a dark palette"
-msgstr "اکھ سیکین دار پْلے لِسٹْہ کْریو استعمال "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:551
 msgid "Skin resource file:"
@@ -29571,9 +29535,8 @@ msgid "Add a background"
 msgstr "اکھ بیک گراوُنڈ کْریو جمع "
 
 #: modules/gui/qt/ui/sprefs_video.h:313
-#, fuzzy
 msgid "O&utput"
-msgstr "آوٹ پُٹ "
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_video.h:317
 msgid "DirectX"

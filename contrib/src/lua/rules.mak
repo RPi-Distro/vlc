@@ -1,6 +1,6 @@
 # Lua 5.1
 
-LUA_VERSION := 5.1.4
+LUA_VERSION := 5.1.5
 LUA_URL := http://www.lua.org/ftp/lua-$(LUA_VERSION).tar.gz
 
 # Reverse priority order
@@ -41,6 +41,7 @@ $(TARBALLS)/lua-$(LUA_VERSION).tar.gz:
 
 lua: lua-$(LUA_VERSION).tar.gz .sum-lua
 	$(UNPACK)
+	$(APPLY) $(SRC)/lua/0004-Fix-stack-overflow-in-vararg-functions.patch
 	$(APPLY) $(SRC)/lua/lua-noreadline.patch
 	$(APPLY) $(SRC)/lua/no-dylibs.patch
 	$(APPLY) $(SRC)/lua/luac-32bits.patch

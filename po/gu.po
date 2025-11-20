@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.13\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-09-08 12:03+0200\n"
+"POT-Creation-Date: 2025-09-17 13:40+0200\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Gujarati (India) (https://app.transifex.com/yaron/teams/16553/"
@@ -571,21 +571,21 @@ msgid ""
 "charset=utf-8\" /></head><body><h2>Welcome to VLC media player Help</"
 "h2><h3>Documentation</h3><p>You can find VLC documentation on VideoLAN's <a "
 "href=\"http://wiki.videolan.org\">wiki</a> website.</p><p>If you are a "
-"newcomer to VLC media player, please read the<br><a href=\"http://"
-"wiki.videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC "
-"media player</em></a>.</p><p>You will find some information on how to use "
-"the player in the <br>\"<a href=\"http://wiki.videolan.org/"
-"Documentation:Play_HowTo\"><em>How to play files with VLC media player</em></"
-"a>\" document.</p><p>For all the saving, converting, transcoding, encoding, "
-"muxing and streaming tasks, you should find useful information in the <a "
-"href=\"http://wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming "
-"Documentation</a>.</p><p>If you are unsure about terminology, please consult "
-"the <a href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
+"newcomer to VLC media player, please read the<br><a href=\"http://wiki."
+"videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC media "
+"player</em></a>.</p><p>You will find some information on how to use the "
+"player in the <br>\"<a href=\"http://wiki.videolan.org/Documentation:"
+"Play_HowTo\"><em>How to play files with VLC media player</em></a>\" document."
+"</p><p>For all the saving, converting, transcoding, encoding, muxing and "
+"streaming tasks, you should find useful information in the <a href=\"http://"
+"wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming Documentation</"
+"a>.</p><p>If you are unsure about terminology, please consult the <a "
+"href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
 "p><p>To understand the main keyboard shortcuts, read the <a href=\"http://"
 "wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before "
-"asking any question, please refer yourself to the <a href=\"http://"
-"www.videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and "
-"give) help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
+"asking any question, please refer yourself to the <a href=\"http://www."
+"videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and give) "
+"help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
 "href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC "
 "channel (<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the "
 "project</h3><p>You can help the VideoLAN project giving some of your time to "
@@ -602,21 +602,20 @@ msgstr ""
 "p><p>કેવી રીતે પ્લેયર ને વાપરવું તે <br>\"<a href=\"http://wiki.videolan.org/"
 "Documentation:Play_HowTo\"><em>કેવી રીતે VLC મીડિયા પ્લેયર સાથે ફાઈલોને વગાડવી</"
 "em></a>\" દસ્તાવેજીકરણમાં અમુક જાણકારી શોધશો.</p><p>બધા સંગ્રહ, રૂપાંતરણ, "
-"ટ્રાન્સકોડીંગ, એનકોડીંગ, મક્ષિન્ગ અને સ્ટ્રીમીંગ કાર્યો માટે, તમે <a href=\"http://"
-"wiki.videolan.org/Documentation:Streaming_HowTo\"> સ્ટ્રીમીંગ દસ્તાવેજીકરણમાં "
-"ઉપયોગી જાણકારીને શોધવી જોઇએ</a>.</p><p>જો તમે ટર્મિલોજી વિષે છોકાસ ના હોય તો, "
-"મહેરબાની કરીને <a href=\"http://wiki.videolan.org/Knowledge_Base\">નોલેજ આધારનો "
-"સંપર્ક કરો</a>.</p><p>મુખ્ય કીબોર્ડને સમજવા માટે, <a href=\"http://"
-"wiki.videolan.org/Hotkeys\">ટૂંકાણ</a> પાનાને વાપરો.</p><h3>Help</h3><p>કોઈપણ "
-"પ્રશ્નને પૂછતાં પહેલા, મહેરબાની કરીને <a href=\"http://www.videolan.org/support/"
-"faq.html\">FAQ</a> માં તમારી જાતને પુનઃતાજું કરો.</p><p>તમે <a href=\"http://"
-"forum.videolan.org\">ફોરમ</a> પર મદદ મેળવી અને આપી શકો છો , <a href=\"http://"
-"www.videolan.org/vlc/lists.html\"મેઈલીંગ-યાદીઓ</a> અથવા અમારું IRC ચેનલ "
-"(<em>#videolan</em> on irc.freenode.net).</p><h3>પ્રોજેક્ટમાં ફાળો આપો</h3><p>તમે "
-"સમુદાય ને મદદ માટે તમારો સમય આપીને VideoLAN પ્રોજેક્ટને મદદ કરી શકો છો, આવરણ ની રચના "
-"કરવા માટે, દસ્તાવેજનો અનુવાદ કરવા માટે, કોડને ચાકાસવા માટે. તમે અમને મદદ કરવા માટે "
-"ભંડોળ અને સામગ્રી પણ આપી શકો છો. અવશ્ય, તમે VLC મીડિયા પ્લેયરને <b>પ્રોત્સાહિત</b> કરી "
-"શકો છો.</p></body></html>"
+"ટ્રાન્સકોડીંગ, એનકોડીંગ, મક્ષિન્ગ અને સ્ટ્રીમીંગ કાર્યો માટે, તમે <a href=\"http://wiki."
+"videolan.org/Documentation:Streaming_HowTo\"> સ્ટ્રીમીંગ દસ્તાવેજીકરણમાં ઉપયોગી "
+"જાણકારીને શોધવી જોઇએ</a>.</p><p>જો તમે ટર્મિલોજી વિષે છોકાસ ના હોય તો, મહેરબાની "
+"કરીને <a href=\"http://wiki.videolan.org/Knowledge_Base\">નોલેજ આધારનો સંપર્ક "
+"કરો</a>.</p><p>મુખ્ય કીબોર્ડને સમજવા માટે, <a href=\"http://wiki.videolan.org/"
+"Hotkeys\">ટૂંકાણ</a> પાનાને વાપરો.</p><h3>Help</h3><p>કોઈપણ પ્રશ્નને પૂછતાં પહેલા, "
+"મહેરબાની કરીને <a href=\"http://www.videolan.org/support/faq.html\">FAQ</a> માં "
+"તમારી જાતને પુનઃતાજું કરો.</p><p>તમે <a href=\"http://forum.videolan.org\">ફોરમ</"
+"a> પર મદદ મેળવી અને આપી શકો છો , <a href=\"http://www.videolan.org/vlc/lists."
+"html\"મેઈલીંગ-યાદીઓ</a> અથવા અમારું IRC ચેનલ (<em>#videolan</em> on irc.freenode."
+"net).</p><h3>પ્રોજેક્ટમાં ફાળો આપો</h3><p>તમે સમુદાય ને મદદ માટે તમારો સમય આપીને "
+"VideoLAN પ્રોજેક્ટને મદદ કરી શકો છો, આવરણ ની રચના કરવા માટે, દસ્તાવેજનો અનુવાદ કરવા "
+"માટે, કોડને ચાકાસવા માટે. તમે અમને મદદ કરવા માટે ભંડોળ અને સામગ્રી પણ આપી શકો છો. "
+"અવશ્ય, તમે VLC મીડિયા પ્લેયરને <b>પ્રોત્સાહિત</b> કરી શકો છો.</p></body></html>"
 
 #: src/audio_output/filters.c:267
 msgid "Audio filtering failed"
@@ -2276,8 +2275,8 @@ msgstr "સ્ત્રોત આસ્પેકટ રેશીઓ"
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
 "16:9 while they are actually 4:3. This can also be used as a hint for VLC "
-"when a movie does not have aspect ratio information. Accepted formats are "
-"x:y (4:3, 16:9, etc.) expressing the global image aspect, or a float value "
+"when a movie does not have aspect ratio information. Accepted formats are x:"
+"y (4:3, 16:9, etc.) expressing the global image aspect, or a float value "
 "(1.25, 1.3333, etc.) expressing pixel squareness."
 msgstr ""
 "આ સ્ત્રોત આસ્પેકટ રેશીઓ થોપે છે. દાખલા તરીકે, અમુક DVD 16:9 હોવાનો દાવો કરે છે પરંતુ તેઓ "
@@ -3140,9 +3139,8 @@ msgstr "HTTP પ્રોક્સી"
 
 #: src/libvlc-module.c:849
 msgid ""
-"HTTP proxy to be used It must be of the form http://"
-"[user@]myproxy.mydomain:myport/ ; if empty, the http_proxy environment "
-"variable will be tried."
+"HTTP proxy to be used It must be of the form http://[user@]myproxy.mydomain:"
+"myport/ ; if empty, the http_proxy environment variable will be tried."
 msgstr ""
 "વાપરવા માટે HTTP પ્રોક્સી તે http://[user@]myproxy.mydomain:myport/ નાં રૂપમાં હોવી "
 "જ જોઇએ ; જો ખાલી હોય તો, http_proxy પર્યાવરણ ચલનો પ્રયત્ન થયેલ હશે."
@@ -5162,7 +5160,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "લખવા માટે \"%s\" ને ખોલવાનું નિષ્ફળ"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2843
+#: modules/demux/avi/avi.c:2878
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
@@ -6034,8 +6032,8 @@ msgstr ""
 
 #: modules/access/avaudiocapture.m:213
 msgid ""
-"Your Mac does not seem to be equipped with a suitable audio input "
-"device.Please check your connectors and drivers."
+"Your Mac does not seem to be equipped with a suitable audio input device."
+"Please check your connectors and drivers."
 msgstr ""
 
 #: modules/access/avaudiocapture.m:236 modules/access/avcapture.m:434
@@ -6411,7 +6409,7 @@ msgstr "બ્લેકમેજીક ડેકલીંક SDI ઇનપુટ
 msgid "10 bits"
 msgstr "10 બીટ"
 
-#: modules/access/decklink.cpp:358 modules/demux/ty.c:770
+#: modules/access/decklink.cpp:358 modules/demux/ty.c:783
 msgid "Closed captions 1"
 msgstr "બંધ કૅપ્શન 1"
 
@@ -7678,8 +7676,8 @@ msgstr "ઓડિયો રૂપરેખાંકન"
 #: modules/access/linsys/linsys_sdi.c:79
 msgid "Allows you to set audio configuration (id=group,pair:id=group,pair...)."
 msgstr ""
-"ઓડિયો રૂપરેખાંકનને સુયોજિત કરવા માટે તમને પરવાનગી આપે છે "
-"(id=group,pair:id=group,pair...)."
+"ઓડિયો રૂપરેખાંકનને સુયોજિત કરવા માટે તમને પરવાનગી આપે છે (id=group,pair:id=group,"
+"pair...)."
 
 #: modules/access/linsys/linsys_hdsdi.c:89
 msgid "HD-SDI Input"
@@ -7805,19 +7803,19 @@ msgstr "HTTP ટનલ પોર્ટ"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "HTTP પર RTSP/RTP નું ટનલીંગ માટે વાપરવા માટે પોર્ટ."
 
-#: modules/access/live555.cpp:673
+#: modules/access/live555.cpp:677
 msgid "RTSP authentication"
 msgstr "RTSP સત્તાધિકરણ"
 
-#: modules/access/live555.cpp:674
+#: modules/access/live555.cpp:678
 msgid "Please enter a valid login name and a password."
 msgstr "મહેરબાની કરીને યોગ્ય પ્રવેશ નામ અને પાસવર્ડને દાખલ કરો."
 
-#: modules/access/live555.cpp:699
+#: modules/access/live555.cpp:703
 msgid "RTSP connection failed"
 msgstr "RTSP જોડાણ નિષ્ફળ"
 
-#: modules/access/live555.cpp:700
+#: modules/access/live555.cpp:704
 msgid "Access to the stream is denied by the server configuration."
 msgstr "સ્ટ્રીમનો વપરાશ એ સર્વર રૂપરેખાંકન દ્દારા નામંજૂર થયેલ છે."
 
@@ -8410,8 +8408,8 @@ msgstr ""
 #, c-format
 msgid ""
 "The computer (%s) you are trying to connect to requires authentication.\n"
-"Please provide a username (ideally a domain name using the format "
-"DOMAIN;username) and a password."
+"Please provide a username (ideally a domain name using the format DOMAIN;"
+"username) and a password."
 msgstr ""
 
 #: modules/access/srt.c:428 modules/access_output/srt.c:457
@@ -8878,9 +8876,9 @@ msgstr "v4l2 ડ્રાઇવર નિયંત્રણો"
 #: modules/access/v4l2/v4l2.c:190
 msgid ""
 "Set the v4l2 driver controls to the values specified using a comma separated "
-"list optionally encapsulated by curly braces (e.g.: "
-"{video_bitrate=6000000,audio_crc=0,stream_type=3} ). To list available "
-"controls, increase verbosity (-vv) or use the v4l2-ctl application."
+"list optionally encapsulated by curly braces (e.g.: {video_bitrate=6000000,"
+"audio_crc=0,stream_type=3} ). To list available controls, increase verbosity "
+"(-vv) or use the v4l2-ctl application."
 msgstr ""
 
 #: modules/access/v4l2/v4l2.c:242 modules/codec/avcodec/avcodec.c:50
@@ -10453,8 +10451,8 @@ msgid ""
 "Select speaker configuration you want to use. This option doesn't upmix! So "
 "NO e.g. Stereo -> 5.1 conversion."
 msgstr ""
-"સ્પીકર રૂપરેખાંકન પસંદ કરો જે તમે વાપરવા માંગો છો. આ વિકલ્પનું મિશ્રણ કરતુ નથી! તેથી ના "
-"દા.ત. સ્ટીરીઓ -> 5.1 રૂપાંતરણ."
+"સ્પીકર રૂપરેખાંકન પસંદ કરો જે તમે વાપરવા માંગો છો. આ વિકલ્પનું મિશ્રણ કરતુ નથી! તેથી ના દા."
+"ત. સ્ટીરીઓ -> 5.1 રૂપાંતરણ."
 
 #: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1490
 msgid "Audio volume in hundredths of decibels (dB)."
@@ -11399,8 +11397,8 @@ msgstr "ઉપચિત્ર સ્થાન"
 #: modules/codec/dvbsub.c:91
 msgid ""
 "You can enforce the subpicture position on the video (0=center, 1=left, "
-"2=right, 4=top, 8=bottom, you can also use combinations of these values, "
-"e.g. 6=top-right)."
+"2=right, 4=top, 8=bottom, you can also use combinations of these values, e."
+"g. 6=top-right)."
 msgstr ""
 "વિડિઓ પર ઉપચિત્ર સ્થાન પર દબાણ કરી શકો છો (0=મધ્ય, 1=ડાબું, 2=જમણું, 4=ઉપર, 8=નીચે, "
 "તમે આ કિમંતોના સંયોજનને પણ વાપરી શકો છો, દા.ત. 6 = ઉપર-જમણે)."
@@ -12127,10 +12125,10 @@ msgstr "રેટકંન્ટ્રોલ ની ચોક્કસતા"
 
 #: modules/codec/qsv.c:128
 msgid ""
-"Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. "
-"(e.g. 10 with a bitrate of 800  kbps means the encoder tries not to  go "
-"above 880 kbps and under  730 kbps. The targeted accuracy is only reached "
-"after a certained  convergence period. See the convergence parameter"
+"Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
+"g. 10 with a bitrate of 800  kbps means the encoder tries not to  go above "
+"880 kbps and under  730 kbps. The targeted accuracy is only reached after a "
+"certained  convergence period. See the convergence parameter"
 msgstr ""
 
 #: modules/codec/qsv.c:134
@@ -12598,7 +12596,7 @@ msgstr "MP3 સુધારેલ પોઈન્ટ ઓડિયો એનક�
 msgid "S/PDIF pass-through decoder"
 msgstr ""
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:907
+#: modules/codec/speex.c:59 modules/codec/speex.c:910
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
 #: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
@@ -12926,7 +12924,7 @@ msgstr "લખાણ ઉપશીર્ષક ડિકોડર"
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:292 modules/demux/avi/avi.c:98
+#: modules/codec/subsdec.c:292 modules/demux/avi/avi.c:99
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr ""
@@ -13345,7 +13343,7 @@ msgid "CABAC"
 msgstr "CABAC"
 
 #: modules/codec/x264.c:133
-#, fuzzy, c-format
+#, fuzzy
 msgid ""
 "CABAC (Context-Adaptive Binary Arithmetic Coding). Slightly slows down "
 "encoding and decoding, but should save 10 to 15% bitrate."
@@ -14981,7 +14979,7 @@ msgstr "AIFF ડિમક્સર"
 msgid "ASF/WMV demuxer"
 msgstr "ASF/WMV ડિમક્સર"
 
-#: modules/demux/asf/asf.c:285 modules/demux/asf/asf.c:834
+#: modules/demux/asf/asf.c:285 modules/demux/asf/asf.c:836
 msgid "Could not demux ASF stream"
 msgstr "ASF સ્ટ્રીમને ડિમક્ષ કરી શક્યા નહિં"
 
@@ -15029,15 +15027,15 @@ msgstr "બંધારણ નામ"
 msgid "Internal libavcodec format name"
 msgstr "આંતરિક libavcodec બંધારણ નામ"
 
-#: modules/demux/avi/avi.c:55
+#: modules/demux/avi/avi.c:56
 msgid "Force interleaved method"
 msgstr "ઇન્ટરલીવ પદ્ધતિ પર દબાણ કરો"
 
-#: modules/demux/avi/avi.c:57
+#: modules/demux/avi/avi.c:58
 msgid "Force index creation"
 msgstr "અનુક્રમણિકા નિર્માણ પર દબાણ કરો"
 
-#: modules/demux/avi/avi.c:59
+#: modules/demux/avi/avi.c:60
 msgid ""
 "Recreate a index for the AVI file. Use this if your AVI file is damaged or "
 "incomplete (not seekable)."
@@ -15045,27 +15043,27 @@ msgstr ""
 "AVI  ફાઈલ માટે અનુક્રમણિકાને ફરી બનાવો. આને વાપરો જો તમારી ફાઈલ ભાંગેલ અથવા અપૂરતી "
 "હોય તો (શોધી શકાય તેવું નથી)."
 
-#: modules/demux/avi/avi.c:67
+#: modules/demux/avi/avi.c:68
 msgid "Ask for action"
 msgstr "ક્રિયા માટે પૂછો"
 
-#: modules/demux/avi/avi.c:68
+#: modules/demux/avi/avi.c:69
 msgid "Always fix"
 msgstr "હંમેશા સુધારો"
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:70
 msgid "Never fix"
 msgstr "કદી સુધારો નહિં"
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:71
 msgid "Fix when necessary"
 msgstr "સુધારો જ્યારે જરૂરી હોય"
 
-#: modules/demux/avi/avi.c:74
+#: modules/demux/avi/avi.c:75
 msgid "AVI demuxer"
 msgstr "AVI ડિમક્સર"
 
-#: modules/demux/avi/avi.c:904 modules/demux/mp4/mp4.c:4370
+#: modules/demux/avi/avi.c:910 modules/demux/mp4/mp4.c:4374
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15075,27 +15073,27 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:912
+#: modules/demux/avi/avi.c:918
 msgid "Do not play"
 msgstr "વગાડો નહિં"
 
-#: modules/demux/avi/avi.c:913
+#: modules/demux/avi/avi.c:919
 msgid "Build index then play"
 msgstr "અનુક્રમણિકાને બનાવો પછી વગાડો"
 
-#: modules/demux/avi/avi.c:914
+#: modules/demux/avi/avi.c:920
 msgid "Play as is"
 msgstr "આ રીતે વગાડો"
 
-#: modules/demux/avi/avi.c:915 modules/demux/mp4/mp4.c:4381
+#: modules/demux/avi/avi.c:921 modules/demux/mp4/mp4.c:4385
 msgid "Broken or missing Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2844
+#: modules/demux/avi/avi.c:2879
 msgid "Broken or missing AVI Index"
 msgstr "તુટેલ અથવા ગુમ થયેલ AVI અનુક્રમણિકા"
 
-#: modules/demux/avi/avi.c:2845
+#: modules/demux/avi/avi.c:2880
 msgid "Fixing AVI Index..."
 msgstr "AVI અનુક્રમણિકાને સુધારી રહ્યા છે..."
 
@@ -15512,27 +15510,27 @@ msgstr ""
 msgid "Clean"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:50
+#: modules/demux/mp4/mp4.c:51
 msgid "M4A audio only"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:51
+#: modules/demux/mp4/mp4.c:52
 msgid "Ignore non audio tracks from iTunes audio files"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:56
+#: modules/demux/mp4/mp4.c:57
 msgid "MP4 stream demuxer"
 msgstr "MP4 સ્ટ્રીમ ડિમક્સર"
 
-#: modules/demux/mp4/mp4.c:57
+#: modules/demux/mp4/mp4.c:58
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4378
+#: modules/demux/mp4/mp4.c:4382
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4379
+#: modules/demux/mp4/mp4.c:4383
 msgid "Build index"
 msgstr ""
 
@@ -15604,8 +15602,8 @@ msgstr "વધારાનું PMT"
 #: modules/demux/mpeg/ts.c:86
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr ""
-"વધારાના pmt  ને સ્પષ્ટ કરવા માટે વપરાશકર્તા ને પરવાનગી આપો "
-"(pmt_pid=pid:stream_type[,...])."
+"વધારાના pmt  ને સ્પષ્ટ કરવા માટે વપરાશકર્તા ને પરવાનગી આપો (pmt_pid=pid:"
+"stream_type[,...])."
 
 #: modules/demux/mpeg/ts.c:88
 msgid "Set id of ES to PID"
@@ -16047,23 +16045,23 @@ msgstr "ઉપશીર્ષક વર્ણન"
 msgid "TTA demuxer"
 msgstr "TTA ડિમક્સર"
 
-#: modules/demux/ty.c:60
+#: modules/demux/ty.c:62
 msgid "TY"
 msgstr "TY"
 
-#: modules/demux/ty.c:61
+#: modules/demux/ty.c:63
 msgid "TY Stream audio/video demux"
 msgstr "TY સ્ટ્રીમ ઓડિયો/વિડિઓ ડિમક્ષ"
 
-#: modules/demux/ty.c:771
+#: modules/demux/ty.c:784
 msgid "Closed captions 2"
 msgstr "બંધ કૅપ્શન 2"
 
-#: modules/demux/ty.c:772
+#: modules/demux/ty.c:785
 msgid "Closed captions 3"
 msgstr "બંધ કૅપ્શન 3"
 
-#: modules/demux/ty.c:773
+#: modules/demux/ty.c:786
 msgid "Closed captions 4"
 msgstr "બંધ કૅપ્શન 4"
 
@@ -21324,11 +21322,12 @@ msgid "Show unimportant error and warnings dialogs"
 msgstr "મહત્વ ન હોય તેવી ભૂલો અને ચેતવણીઓ સંવાદને બતાવો"
 
 #: modules/gui/qt/qt.cpp:124
-msgid "Applies a dark palette to the style."
-msgstr ""
+#, fuzzy
+msgid "Enable Dark Mode"
+msgstr "સોફ્ટવેર સ્થિતિને સક્રિય કરો"
 
 #: modules/gui/qt/qt.cpp:125
-msgid "Applies a dark palette to the style. Works best with Fusion style."
+msgid "Applies a dark theme to the style."
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:127
@@ -21656,16 +21655,8 @@ msgstr "છબી ગામાને સુયોજિત કરો, 0.01 અ�
 msgid "AMD VQ Enhancer"
 msgstr "સ્ટીરીઓ સુધારનાર"
 
-#: modules/hw/d3d11/d3d11_filters.c:682
-msgid "amf_vqenhancer"
-msgstr ""
-
 #: modules/hw/d3d11/d3d11_filters.c:687
 msgid "AMD Frame Rate Doubler"
-msgstr ""
-
-#: modules/hw/d3d11/d3d11_filters.c:688
-msgid "amf_frc"
 msgstr ""
 
 #: modules/hw/d3d11/d3d11_filters.c:690
@@ -23500,7 +23491,7 @@ msgstr "A/52 ઓડિયો પેકેટસાઇઝર"
 msgid "avparser packetizer"
 msgstr "avparser પેકેટસાઈઝર"
 
-#: modules/packetizer/av1.c:582
+#: modules/packetizer/av1.c:585
 msgid "AV1 video packetizer"
 msgstr ""
 
@@ -26983,8 +26974,8 @@ msgid ""
 "Prefix of the output images filenames. Output filenames will have the "
 "\"prefixNUMBER.format\" form if replace is not true."
 msgstr ""
-"આઉટપુટ ચિત્રોના  ફાઈલના નામોનું ઉપસર્ગ. આઉટપુટ ફાઈલોના નામો "
-"\"prefixNUMBER.format\" પ્રકારના હશે જો બદલવાનું ખરું નહિ હોય તો."
+"આઉટપુટ ચિત્રોના  ફાઈલના નામોનું ઉપસર્ગ. આઉટપુટ ફાઈલોના નામો \"prefixNUMBER."
+"format\" પ્રકારના હશે જો બદલવાનું ખરું નહિ હોય તો."
 
 #: modules/video_filter/scene.c:81
 msgid "Directory path prefix"
@@ -28825,8 +28816,9 @@ msgid "Menus"
 msgstr "મેનુ"
 
 #: modules/gui/qt/ui/profiles.h:728
+#, fuzzy
 msgid "Fra&me Rate"
-msgstr ""
+msgstr "નમૂના દર"
 
 #: modules/gui/qt/ui/profiles.h:729
 msgid "Same as source"

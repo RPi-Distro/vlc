@@ -20,11 +20,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.13\n"
+"Project-Id-Version: vlc 3.0.22-rc1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-09-08 12:03+0200\n"
+"POT-Creation-Date: 2025-09-17 13:40+0200\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
-"Last-Translator: Angelos Chraniotis, 2023\n"
+"Last-Translator: Angelos Chraniotis, 2025\n"
 "Language-Team: Greek (https://app.transifex.com/yaron/teams/16553/el/)\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
@@ -608,21 +608,21 @@ msgid ""
 "charset=utf-8\" /></head><body><h2>Welcome to VLC media player Help</"
 "h2><h3>Documentation</h3><p>You can find VLC documentation on VideoLAN's <a "
 "href=\"http://wiki.videolan.org\">wiki</a> website.</p><p>If you are a "
-"newcomer to VLC media player, please read the<br><a href=\"http://"
-"wiki.videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC "
-"media player</em></a>.</p><p>You will find some information on how to use "
-"the player in the <br>\"<a href=\"http://wiki.videolan.org/"
-"Documentation:Play_HowTo\"><em>How to play files with VLC media player</em></"
-"a>\" document.</p><p>For all the saving, converting, transcoding, encoding, "
-"muxing and streaming tasks, you should find useful information in the <a "
-"href=\"http://wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming "
-"Documentation</a>.</p><p>If you are unsure about terminology, please consult "
-"the <a href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
+"newcomer to VLC media player, please read the<br><a href=\"http://wiki."
+"videolan.org/Documentation:VLC_for_dummies\"><em>Introduction to VLC media "
+"player</em></a>.</p><p>You will find some information on how to use the "
+"player in the <br>\"<a href=\"http://wiki.videolan.org/Documentation:"
+"Play_HowTo\"><em>How to play files with VLC media player</em></a>\" document."
+"</p><p>For all the saving, converting, transcoding, encoding, muxing and "
+"streaming tasks, you should find useful information in the <a href=\"http://"
+"wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming Documentation</"
+"a>.</p><p>If you are unsure about terminology, please consult the <a "
+"href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
 "p><p>To understand the main keyboard shortcuts, read the <a href=\"http://"
 "wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before "
-"asking any question, please refer yourself to the <a href=\"http://"
-"www.videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and "
-"give) help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
+"asking any question, please refer yourself to the <a href=\"http://www."
+"videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and give) "
+"help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
 "href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC "
 "channel (<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the "
 "project</h3><p>You can help the VideoLAN project giving some of your time to "
@@ -635,22 +635,22 @@ msgstr ""
 "πολυμέσων VLC</h2><h3>Τεκμηρίωση</h3><p>Μπορείτε να βρείτε την τεκμηρίωση "
 "για τον VLC στην ιστοσελίδα <a href=\"http://wiki.videolan.org\">wiki</a> "
 "της VideoLAN.</p><p>Εάν είστε νέος στον αναπαραγωγό πολυμέσων VLC, παρακαλώ "
-"διαβάστε την<br><a href=\"http://wiki.videolan.org/"
-"Documentation:VLC_for_dummies\"><em>Εισαγωγή στον αναπαραγωγό πολυμέσων VLC</"
-"em></a>.</p><p>Θα βρείτε ορισμένες πληροφορίες για το πώς να χρησιμοποιήσετε "
-"τον αναπαραγωγό στο έγγραφο <br>\"<a href=\"http://wiki.videolan.org/"
+"διαβάστε την<br><a href=\"http://wiki.videolan.org/Documentation:"
+"VLC_for_dummies\"><em>Εισαγωγή στον αναπαραγωγό πολυμέσων VLC</em></a>.</"
+"p><p>Θα βρείτε ορισμένες πληροφορίες για το πώς να χρησιμοποιήσετε τον "
+"αναπαραγωγό στο έγγραφο <br>\"<a href=\"http://wiki.videolan.org/"
 "Documentation:Play_HowTo\"><em>Πώς να αναπαραγάγετε αρχεία με τον "
 "αναπαραγωγό πολυμέσων VLC</em></a>\".</p><p>Για όλες τις ενέργειες "
 "αποθήκευσης, μετατροπής, ανακωδικοποίησης, κωδικοποίησης, πολυπλεξίας και "
-"μετάδοσης, μπορείτε να βρείτε χρήσιμες πληροφορίες στο <a href=\"http://"
-"wiki.videolan.org/Documentation:Streaming_HowTo\">Τεκμηρίωση για τη συνεχή "
-"ροή δεδομένων</a>.</p><p>Εάν δεν είστε σίγουροι για την ορολογία, παρακαλώ "
+"μετάδοσης, μπορείτε να βρείτε χρήσιμες πληροφορίες στο <a href=\"http://wiki."
+"videolan.org/Documentation:Streaming_HowTo\">Τεκμηρίωση για τη συνεχή ροή "
+"δεδομένων</a>.</p><p>Εάν δεν είστε σίγουροι για την ορολογία, παρακαλώ "
 "συμβουλευτείτε τη <a href=\"http://wiki.videolan.org/Knowledge_Base\">βάση "
 "γνώσεων</a>.</p><p>Για να κατανοήσετε τις κύριες συντομεύσεις πληκτρολογίου, "
 "διαβάστε τη σελίδα <a href=\"http://wiki.videolan.org/Hotkeys\"> των "
 "συντομεύσεων</a>.</p><h3>Βοήθεια</h3><p>Προτού θέσετε οποιαδήποτε ερώτηση, "
-"παρακαλώ ανατρέξτε στις <a href=\"http://www.videolan.org/support/"
-"faq.html\">Συχνές ερωτήσεις</a>.</p><p>Έπειτα θα μπορείτε να λάβετε (και να "
+"παρακαλώ ανατρέξτε στις <a href=\"http://www.videolan.org/support/faq."
+"html\">Συχνές ερωτήσεις</a>.</p><p>Έπειτα θα μπορείτε να λάβετε (και να "
 "δώσετε) βοήθεια στα <a href=\"http://forum.videolan.org\">Φόρουμ</a>, τις <a "
 "href=\"http://www.videolan.org/vlc/lists.html\">λίστες e-mail</a> ή το "
 "κανάλι σας στο IRC (<em>#videolan</em> στο irc.freenode.net).</"
@@ -847,8 +847,8 @@ msgstr ""
 "            και η οποία παρακάμπτει τις προηγούμενες επιλογές.\n"
 "\n"
 "Σύνταξη του MRL της μετάδοσης:\n"
-"  [[πρόσβαση][/αποπολυπλεξία]://]URL[#[τίτλος][:κεφάλαιο][-[τίτλος]"
-"[:κεφάλαιο]]]\n"
+"  [[πρόσβαση][/αποπολυπλεξία]://]URL[#[τίτλος][:κεφάλαιο][-[τίτλος][:"
+"κεφάλαιο]]]\n"
 "  [:επιλογή=τιμή ...]\n"
 "\n"
 "  Πολλές από τις καθολικές --επιλογές μπορούν επίσης να χρησιμοποιηθούν και "
@@ -2376,8 +2376,8 @@ msgstr "Αναλογία διαστάσεων της πηγής"
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
 "16:9 while they are actually 4:3. This can also be used as a hint for VLC "
-"when a movie does not have aspect ratio information. Accepted formats are "
-"x:y (4:3, 16:9, etc.) expressing the global image aspect, or a float value "
+"when a movie does not have aspect ratio information. Accepted formats are x:"
+"y (4:3, 16:9, etc.) expressing the global image aspect, or a float value "
 "(1.25, 1.3333, etc.) expressing pixel squareness."
 msgstr ""
 "Αυτό επιβάλλει την αναλογία διαστάσεων της πηγής. Για παράδειγμα, ορισμένα "
@@ -2842,7 +2842,7 @@ msgstr "Χρόνος έναρξης"
 
 #: src/libvlc-module.c:636
 msgid "The stream will start at this position (in seconds)."
-msgstr "Η μετάδοση θα ξεκινήσει από αυτή τη θέση (σε δευτερόλεπτα)."
+msgstr "Η μετάδοση θα ξεκινήσει από αυτό το χρονικό σημείο (σε δευτερόλεπτα)."
 
 #: src/libvlc-module.c:638 modules/gui/macosx/VLCOpenWindowController.m:161
 msgid "Stop time"
@@ -2850,7 +2850,7 @@ msgstr "Χρόνος διακοπής"
 
 #: src/libvlc-module.c:640
 msgid "The stream will stop at this position (in seconds)."
-msgstr "Η μετάδοση θα σταματήσει σε αυτή τη θέση (σε δευτερόλεπτα)."
+msgstr "Η μετάδοση θα σταματήσει σε αυτό το χρονικό σημείο (σε δευτερόλεπτα)."
 
 #: src/libvlc-module.c:642
 msgid "Run time"
@@ -2862,11 +2862,11 @@ msgstr "Η μετάδοση θα έχει αυτή τη διάρκεια (σε �
 
 #: src/libvlc-module.c:646 modules/gui/qt/ui/sprefs_input.h:360
 msgid "Fast seek"
-msgstr "Γρήγορη ανίχνευση"
+msgstr "Γρήγορη μετάθεση"
 
 #: src/libvlc-module.c:648
 msgid "Favor speed over precision while seeking"
-msgstr "Να ευνοείται η ταχύτητα έναντι της ακρίβειας κατά την ανίχνευση"
+msgstr "Να ευνοείται η ταχύτητα έναντι της ακρίβειας κατά την μετάθεση"
 
 #: src/libvlc-module.c:650
 msgid "Playback speed"
@@ -2914,8 +2914,8 @@ msgid ""
 "{...}\""
 msgstr ""
 "Μπορείτε να δώσετε χειροκίνητα μία λίστα σελιδοδεικτών για μία μετάδοση, της "
-"μορφής \"{name=όνομα-σελιδοδείκτη,time=προαιρετική-απόκλιση-"
-"χρόνου,bytes=προαιρετική-απόκλιση-byte},{...}\""
+"μορφής \"{name=όνομα-σελιδοδείκτη,time=προαιρετική-απόκλιση-χρόνου,"
+"bytes=προαιρετική-απόκλιση-byte},{...}\""
 
 #: src/libvlc-module.c:671
 msgid "Record directory"
@@ -3292,9 +3292,8 @@ msgstr "Διαμεσολαβητής HTTP"
 
 #: src/libvlc-module.c:849
 msgid ""
-"HTTP proxy to be used It must be of the form http://"
-"[user@]myproxy.mydomain:myport/ ; if empty, the http_proxy environment "
-"variable will be tried."
+"HTTP proxy to be used It must be of the form http://[user@]myproxy.mydomain:"
+"myport/ ; if empty, the http_proxy environment variable will be tried."
 msgstr ""
 "Ο διαμεσολαβητής HTTP που θα χρησιμοποιηθεί. Πρέπει να είναι της μορφής "
 "http://[όνομα χρήστη@]myproxy.mydomain:myport/ Εάν παραμείνει άδειο, θα "
@@ -4253,7 +4252,7 @@ msgstr "Επιλογή του πλήκτρου συντόμευσης για τ�
 #: modules/gui/qt/ui/sprefs_subtitles.h:292
 #: modules/gui/qt/ui/video_effects.h:1315
 msgid "Position"
-msgstr "Θέση"
+msgstr "Χρονικό σημείο"
 
 #: src/libvlc-module.c:1253
 msgid "Select the hotkey to display the position."
@@ -5438,7 +5437,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "Αποτυχία ανοίγματος του \"%s\" για εγγραφή"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2843
+#: modules/demux/avi/avi.c:2878
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
@@ -6314,8 +6313,8 @@ msgstr "Δε βρέθηκε συσκευή εισόδου ήχου"
 
 #: modules/access/avaudiocapture.m:213
 msgid ""
-"Your Mac does not seem to be equipped with a suitable audio input "
-"device.Please check your connectors and drivers."
+"Your Mac does not seem to be equipped with a suitable audio input device."
+"Please check your connectors and drivers."
 msgstr ""
 "Ο Mac υπολογιστής σας δε φαίνεται να είναι εξοπλισμένος με κατάλληλη συσκευή "
 "εισόδου ήχου. Παρακαλούμε ελέγξτε τους συνδέσμους και τους οδηγούς της "
@@ -6533,9 +6532,8 @@ msgid "Musicbrainz Server"
 msgstr ""
 
 #: modules/access/cdda.c:1023
-#, fuzzy
 msgid "Address of the musicbrainz server to use."
-msgstr "Διεύθυνση του διακομιστή CDDB που θα χρησιμοποιηθεί."
+msgstr ""
 
 #: modules/access/cdda.c:1025
 msgid "CDDB Server"
@@ -6721,7 +6719,7 @@ msgstr "Είσοδος Blackmagic DeckLink SDI"
 msgid "10 bits"
 msgstr "10 bits"
 
-#: modules/access/decklink.cpp:358 modules/demux/ty.c:770
+#: modules/access/decklink.cpp:358 modules/demux/ty.c:783
 msgid "Closed captions 1"
 msgstr "Ενσωματωμένες λεζάντες 1"
 
@@ -8179,19 +8177,19 @@ msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr ""
 "Θύρα που θα χρησιμοποιηθεί για τη διοχέτευση του RTSP/RTP αντί για HTTP."
 
-#: modules/access/live555.cpp:673
+#: modules/access/live555.cpp:677
 msgid "RTSP authentication"
 msgstr "Ταυτοποίηση RTSP"
 
-#: modules/access/live555.cpp:674
+#: modules/access/live555.cpp:678
 msgid "Please enter a valid login name and a password."
 msgstr "Παρακαλούμε εισάγετε ένα έγκυρο όνομα και συνθηματικό χρήστη."
 
-#: modules/access/live555.cpp:699
+#: modules/access/live555.cpp:703
 msgid "RTSP connection failed"
 msgstr "Η  σύνδεση RTSP απέτυχε"
 
-#: modules/access/live555.cpp:700
+#: modules/access/live555.cpp:704
 msgid "Access to the stream is denied by the server configuration."
 msgstr "Η πρόσβαση στη μετάδοση απορρίφθηκε από τις ρυθμίσεις του διακομιστή."
 
@@ -8816,8 +8814,8 @@ msgstr "Απαιτείται ταυτοποίηση SMB"
 #, c-format
 msgid ""
 "The computer (%s) you are trying to connect to requires authentication.\n"
-"Please provide a username (ideally a domain name using the format "
-"DOMAIN;username) and a password."
+"Please provide a username (ideally a domain name using the format DOMAIN;"
+"username) and a password."
 msgstr ""
 "Ο υπολογιστής (%s) με τον οποίο προσπαθείτε να συνδεθείτε απαιτεί "
 "ταυτοποίηση.\n"
@@ -8847,9 +8845,8 @@ msgid "Password for stream encryption"
 msgstr "Συνθηματικό για την κρυπτογράφηση μετάδοσης"
 
 #: modules/access/srt.c:446 modules/access_output/srt.c:480
-#, fuzzy
 msgid " SRT Stream ID"
-msgstr "Έξοδος μετάδοσης SRT"
+msgstr ""
 
 #: modules/access/srt_common.c:26
 msgid "16 bytes"
@@ -9300,9 +9297,9 @@ msgstr "Στοιχεία ελέγχου οδηγού υλικού v4l2"
 #: modules/access/v4l2/v4l2.c:190
 msgid ""
 "Set the v4l2 driver controls to the values specified using a comma separated "
-"list optionally encapsulated by curly braces (e.g.: "
-"{video_bitrate=6000000,audio_crc=0,stream_type=3} ). To list available "
-"controls, increase verbosity (-vv) or use the v4l2-ctl application."
+"list optionally encapsulated by curly braces (e.g.: {video_bitrate=6000000,"
+"audio_crc=0,stream_type=3} ). To list available controls, increase verbosity "
+"(-vv) or use the v4l2-ctl application."
 msgstr ""
 "Ορισμός των στοιχείων ελέγχου οδηγού v4l2 στις καθορισμένες τιμές "
 "χρησιμοποιώντας μία λίστα χωρισμένη με κόμματα, προαιρετικά ενθυλακωμένη με "
@@ -9888,14 +9885,12 @@ msgid "SRT stream output"
 msgstr "Έξοδος μετάδοσης SRT"
 
 #: modules/access_output/srt.c:471
-#, fuzzy
 msgid "SRT maximum payload size (bytes)"
-msgstr "Μέγιστο μέγεθος πακέτου RIST (bytes)"
+msgstr ""
 
 #: modules/access_output/srt.c:475
-#, fuzzy
 msgid "SRT maximum bandwidth ceiling (bytes)"
-msgstr "Μέγιστο μέγεθος πακέτου RIST (bytes)"
+msgstr ""
 
 #: modules/access_output/udp.c:62 modules/stream_out/rtp.c:135
 msgid "Caching value (ms)"
@@ -11876,9 +11871,8 @@ msgstr ""
 "προεπιλογή 0=αυτόματα"
 
 #: modules/codec/dav1d.c:56
-#, fuzzy
 msgid "All Layers"
-msgstr "Όλα τα αρχεία"
+msgstr ""
 
 #: modules/codec/dav1d.c:57
 msgid "Whether or not to display all spatial layers, default false"
@@ -11947,8 +11941,8 @@ msgstr "Θέση υποεικόνας"
 #: modules/codec/dvbsub.c:91
 msgid ""
 "You can enforce the subpicture position on the video (0=center, 1=left, "
-"2=right, 4=top, 8=bottom, you can also use combinations of these values, "
-"e.g. 6=top-right)."
+"2=right, 4=top, 8=bottom, you can also use combinations of these values, e."
+"g. 6=top-right)."
 msgstr ""
 "Μπορείτε να επιβάλλετε τη θέση της υποεικόνας στο βίντεο (0=κέντρο, "
 "1=αριστερά, 2=δεξιά, 4=επάνω, 8=κάτω, καθώς επίσης να χρησιμοποιήσετε και "
@@ -12732,16 +12726,16 @@ msgstr "Ακρίβεια ελέγχου ρυθμού"
 
 #: modules/codec/qsv.c:128
 msgid ""
-"Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. "
-"(e.g. 10 with a bitrate of 800  kbps means the encoder tries not to  go "
-"above 880 kbps and under  730 kbps. The targeted accuracy is only reached "
-"after a certained  convergence period. See the convergence parameter"
+"Tolerance in percentage of the 'avbr'  (Average Variable BitRate) method. (e."
+"g. 10 with a bitrate of 800  kbps means the encoder tries not to  go above "
+"880 kbps and under  730 kbps. The targeted accuracy is only reached after a "
+"certained  convergence period. See the convergence parameter"
 msgstr ""
-"Ανοχή ως ποσοστό της μεθόδου 'avbr' (μέσος μεταβλητός ρυθμός δεδομένων). "
-"(π.χ. 10 σε ρυθμό μετάδοσης δεδομένων 800 kbps θα σήμαινε ότι ο "
-"κωδικοποιητής προσπαθεί να μη φτάσει πάνω από τα 880 kbps και κάτω από τα "
-"730 kbps. Η επιθυμητή ακρίβεια επιτυγχάνεται μόνο μετά από μια περίοδο "
-"σύγκλισης. Δείτε την παράμετρο σύγκλισης"
+"Ανοχή ως ποσοστό της μεθόδου 'avbr' (μέσος μεταβλητός ρυθμός δεδομένων). (π."
+"χ. 10 σε ρυθμό μετάδοσης δεδομένων 800 kbps θα σήμαινε ότι ο κωδικοποιητής "
+"προσπαθεί να μη φτάσει πάνω από τα 880 kbps και κάτω από τα 730 kbps. Η "
+"επιθυμητή ακρίβεια επιτυγχάνεται μόνο μετά από μια περίοδο σύγκλισης. Δείτε "
+"την παράμετρο σύγκλισης"
 
 #: modules/codec/qsv.c:134
 msgid "Convergence time of 'avbr' RateControl"
@@ -13250,7 +13244,7 @@ msgstr "Κωδικοποιητής ήχου MP3 σταθερού σημείου 
 msgid "S/PDIF pass-through decoder"
 msgstr "Αποκωδικοποιητής S/PDIF pass-through"
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:907
+#: modules/codec/speex.c:59 modules/codec/speex.c:910
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
 #: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
@@ -13583,7 +13577,7 @@ msgstr "Αποκωδικοποιητής υπότιτλων κειμένου"
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:292 modules/demux/avi/avi.c:98
+#: modules/codec/subsdec.c:292 modules/demux/avi/avi.c:99
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr "CP1253"
@@ -13888,7 +13882,7 @@ msgid ""
 msgstr ""
 "Ορίζει το μέγιστο διάστημα μεταξύ των καρέ IDR. Μεγαλύτερες τιμές "
 "εξοικονομούν bits, βελτιώνοντας την ποιότητα με έναν καθορισμένο ρυθμό "
-"μετάδοσης δεδομένων, με αντίτιμο την ακρίβεια ανίχνευσης. Χρησιμοποιήστε -1 "
+"μετάδοσης δεδομένων, με αντίτιμο την ακρίβεια μετάθεσης. Χρησιμοποιήστε -1 "
 "για άπειρο."
 
 #: modules/codec/x264.c:76
@@ -13910,8 +13904,8 @@ msgstr ""
 "συνδέουν απαραίτητα μία κλειστή συστοιχία εικόνων (GOP), επειδή σε ένα καρέ "
 "P επιτρέπεται να προβλέπεται από περισσότερα καρέ απ ότι από μόνο ένα καρέ "
 "πριν από αυτό (δείτε επίσης την επιλογή καρέ αναφοράς). Επομένως, τα καρέ I "
-"δεν είναι απαραίτητα ανιχνεύσιμα. Τα καρέ IDR περιορίζουν τα διαδοχικά καρέ "
-"P από το να αναφέρονται σε οποιοδήποτε καρέ πριν από το καρέ IDR. \n"
+"δεν είναι απαραίτητα μεταθέσιμα. Τα καρέ IDR περιορίζουν τα διαδοχικά καρέ P "
+"από το να αναφέρονται σε οποιοδήποτε καρέ πριν από το καρέ IDR. \n"
 "Εάν σε αυτό το διάστημα εμφανίζονται αποκόμματα σκηνών, εξακολουθούν να "
 "κωδικοποιούνται ως καρέ I, αλλά δεν ξεκινούν μία νέα GOP."
 
@@ -14033,7 +14027,6 @@ msgid "CABAC"
 msgstr "CABAC"
 
 #: modules/codec/x264.c:133
-#, fuzzy, c-format
 msgid ""
 "CABAC (Context-Adaptive Binary Arithmetic Coding). Slightly slows down "
 "encoding and decoding, but should save 10 to 15% bitrate."
@@ -15460,7 +15453,7 @@ msgstr "| chapter_p . . . . προηγούμενο κεφάλαιο στο τρ�
 
 #: modules/control/oldrc.c:809
 msgid "| seek X . . . seek in seconds, for instance `seek 12'"
-msgstr "| seek X . . . ανίχνευση σε δευτερόλεπτα, για παράδειγμα `seek 12'"
+msgstr "| seek X . . . μετάθεση σε δευτερόλεπτα, για παράδειγμα `seek 12'"
 
 #: modules/control/oldrc.c:810
 msgid "| pause  . . . . . . . . . . . . . . . .  toggle pause"
@@ -15781,7 +15774,7 @@ msgstr "Αποπολυπλέκτης AIFF"
 msgid "ASF/WMV demuxer"
 msgstr "Αποπολυπλέκτης ASF/WMV"
 
-#: modules/demux/asf/asf.c:285 modules/demux/asf/asf.c:834
+#: modules/demux/asf/asf.c:285 modules/demux/asf/asf.c:836
 msgid "Could not demux ASF stream"
 msgstr "Αδυναμία αποπολυπλεξίας της μετάδοσης ASF"
 
@@ -15829,43 +15822,43 @@ msgstr "Όνομα μορφής"
 msgid "Internal libavcodec format name"
 msgstr "Όνομα μορφής του εσωτερικού libavcodec"
 
-#: modules/demux/avi/avi.c:55
+#: modules/demux/avi/avi.c:56
 msgid "Force interleaved method"
 msgstr "Επιβολή μεθόδου διεμπλοκής"
 
-#: modules/demux/avi/avi.c:57
+#: modules/demux/avi/avi.c:58
 msgid "Force index creation"
 msgstr "Επιβολή δημιουργίας ευρετηρίου"
 
-#: modules/demux/avi/avi.c:59
+#: modules/demux/avi/avi.c:60
 msgid ""
 "Recreate a index for the AVI file. Use this if your AVI file is damaged or "
 "incomplete (not seekable)."
 msgstr ""
 "Αναδημιουργία ενός ευρετηρίου για το αρχείο AVI. Χρησιμοποιήστε το εάν το "
-"αρχείο AVI σας είναι κατεστραμμένο ή ατελές (χωρίς δυνατότητα ανίχνευσης)."
+"αρχείο AVI σας είναι κατεστραμμένο ή ατελές (χωρίς δυνατότητα μετάθεσης)."
 
-#: modules/demux/avi/avi.c:67
+#: modules/demux/avi/avi.c:68
 msgid "Ask for action"
 msgstr "Ερώτηση για ενέργεια"
 
-#: modules/demux/avi/avi.c:68
+#: modules/demux/avi/avi.c:69
 msgid "Always fix"
 msgstr "Να γίνεται πάντοτε επιδιόρθωση"
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:70
 msgid "Never fix"
 msgstr "Να μη γίνεται ποτέ επιδιόρθωση"
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:71
 msgid "Fix when necessary"
 msgstr "Επιδιόρθωση όταν χρειαστεί"
 
-#: modules/demux/avi/avi.c:74
+#: modules/demux/avi/avi.c:75
 msgid "AVI demuxer"
 msgstr "Αποπολυπλέκτης AVI"
 
-#: modules/demux/avi/avi.c:904 modules/demux/mp4/mp4.c:4370
+#: modules/demux/avi/avi.c:910 modules/demux/mp4/mp4.c:4374
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15875,33 +15868,33 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 "Επειδή το ευρετήριο αυτού του αρχείου είναι κατεστραμμένο ή λείπει, η "
-"ανίχνευση δε θα λειτουργήσει σωστά.\n"
+"μετάθεση δε θα λειτουργήσει σωστά.\n"
 "Ο VLC δε θα επιδιορθώσει το αρχείο σας αλλά μπορεί προσωρινά να διορθώσει "
 "αυτό το πρόβλημα δημιουργώντας ένα ευρετήριο στη μνήμη.\n"
 "Αυτό το βήμα ίσως διαρκέσει αρκετά για ένα μεγάλο αρχείο.\n"
 "Τι θέλετε να γίνει;"
 
-#: modules/demux/avi/avi.c:912
+#: modules/demux/avi/avi.c:918
 msgid "Do not play"
 msgstr "Να μην γίνει αναπαραγωγή"
 
-#: modules/demux/avi/avi.c:913
+#: modules/demux/avi/avi.c:919
 msgid "Build index then play"
 msgstr "Δημιουργία ευρετηρίου και μετά αναπαραγωγή"
 
-#: modules/demux/avi/avi.c:914
+#: modules/demux/avi/avi.c:920
 msgid "Play as is"
 msgstr "Αναπαραγωγή ως έχει"
 
-#: modules/demux/avi/avi.c:915 modules/demux/mp4/mp4.c:4381
+#: modules/demux/avi/avi.c:921 modules/demux/mp4/mp4.c:4385
 msgid "Broken or missing Index"
 msgstr "Το ευρετήριο λείπει ή είναι κατεστραμμένο"
 
-#: modules/demux/avi/avi.c:2844
+#: modules/demux/avi/avi.c:2879
 msgid "Broken or missing AVI Index"
 msgstr "Το ευρετήριο AVI λείπει ή είναι κατεστραμμένο"
 
-#: modules/demux/avi/avi.c:2845
+#: modules/demux/avi/avi.c:2880
 msgid "Fixing AVI Index..."
 msgstr "Επιδιόρθωση ευρετηρίου AVI..."
 
@@ -15951,7 +15944,7 @@ msgstr "Εισαγωγή καταλόγου"
 
 #: modules/demux/filter/noseek.c:79
 msgid "Seek prevention demux filter"
-msgstr "Φίλτρο αποπολυπλεξίας αποτροπής ανίχνευσης"
+msgstr "Φίλτρο αποπολυπλεξίας αποτροπής μετάθεσης"
 
 #: modules/demux/flac.c:52
 msgid "FLAC demuxer"
@@ -16071,11 +16064,11 @@ msgstr ""
 
 #: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:113
 msgid "Seek based on percent not time"
-msgstr "Ανίχνευση βάσει ποσοστού, όχι χρόνου"
+msgstr "Μετάθεση βάσει ποσοστού, όχι χρόνου"
 
 #: modules/demux/mkv/mkv.cpp:74
 msgid "Seek based on percent not time."
-msgstr "Ανίχνευση βάσει ποσοστού και όχι βάσει χρόνου."
+msgstr "Μετάθεση βάσει ποσοστού και όχι βάσει χρόνου."
 
 #: modules/demux/mkv/mkv.cpp:77
 msgid "Dummy Elements"
@@ -16330,27 +16323,27 @@ msgstr "Αποκλειστικό"
 msgid "Clean"
 msgstr "Καθαρό"
 
-#: modules/demux/mp4/mp4.c:50
+#: modules/demux/mp4/mp4.c:51
 msgid "M4A audio only"
 msgstr "M4A μόνο ήχος"
 
-#: modules/demux/mp4/mp4.c:51
+#: modules/demux/mp4/mp4.c:52
 msgid "Ignore non audio tracks from iTunes audio files"
 msgstr "Αγνόηση μη ηχητικών κομματιών από τα αρχεία ήχου του iTunes"
 
-#: modules/demux/mp4/mp4.c:56
+#: modules/demux/mp4/mp4.c:57
 msgid "MP4 stream demuxer"
 msgstr "Αποπολυπλέκτης μετάδοσης MP4"
 
-#: modules/demux/mp4/mp4.c:57
+#: modules/demux/mp4/mp4.c:58
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4378
+#: modules/demux/mp4/mp4.c:4382
 msgid "Do not seek"
-msgstr "Χωρίς ανίχνευση"
+msgstr "Χωρίς μετάθεση"
 
-#: modules/demux/mp4/mp4.c:4379
+#: modules/demux/mp4/mp4.c:4383
 msgid "Build index"
 msgstr "Δημιουργία ευρετηρίου"
 
@@ -16424,8 +16417,8 @@ msgstr "Επιπρόσθετο PMT"
 #: modules/demux/mpeg/ts.c:86
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr ""
-"Επιτρέπει σε ένα χρήστη να ορίσει ένα επιπρόσθετο pmt "
-"(pmt_pid=pid:stream_type[,...])."
+"Επιτρέπει σε ένα χρήστη να ορίσει ένα επιπρόσθετο pmt (pmt_pid=pid:"
+"stream_type[,...])."
 
 #: modules/demux/mpeg/ts.c:88
 msgid "Set id of ES to PID"
@@ -16495,8 +16488,8 @@ msgid ""
 "Seek and position based on a percent byte position, not a PCR generated time "
 "position. If seeking doesn't work property, turn on this option."
 msgstr ""
-"Ανίχνευση και θέση βασισμένη σε επί τοις εκατό θέση byte, όχι μία χρονική "
-"θέση δημιουργημένη από PCR. Εάν η ανίχνευση δεν λειτουργεί σωστά, "
+"Μετάθεση και θέση βασισμένη σε επί τοις εκατό θέση byte, όχι μία χρονική "
+"θέση δημιουργημένη από PCR. Εάν η μετάθεση δεν λειτουργεί σωστά, "
 "ενεργοποιήστε αυτή την επιλογή."
 
 #: modules/demux/mpeg/ts.c:126
@@ -16891,23 +16884,23 @@ msgstr "Περιγραφή υπότιτλου"
 msgid "TTA demuxer"
 msgstr "Αποπολυπλέκτης TTA"
 
-#: modules/demux/ty.c:60
+#: modules/demux/ty.c:62
 msgid "TY"
 msgstr "TY"
 
-#: modules/demux/ty.c:61
+#: modules/demux/ty.c:63
 msgid "TY Stream audio/video demux"
 msgstr "Αποπολυπλεξία ήχου/βίντεο μετάδοσης TY"
 
-#: modules/demux/ty.c:771
+#: modules/demux/ty.c:784
 msgid "Closed captions 2"
 msgstr "Ενσωματωμένες λεζάντες 2"
 
-#: modules/demux/ty.c:772
+#: modules/demux/ty.c:785
 msgid "Closed captions 3"
 msgstr "Ενσωματωμένες λεζάντες 3"
 
-#: modules/demux/ty.c:773
+#: modules/demux/ty.c:786
 msgid "Closed captions 4"
 msgstr "Ενσωματωμένες λεζάντες 4"
 
@@ -17346,7 +17339,7 @@ msgstr "Πίσω"
 #: modules/gui/macosx/VLCControlsBarCommon.m:183
 #: modules/gui/macosx/VLCFSPanelController.m:135
 msgid "Seek backward"
-msgstr "Ανίχνευση πίσω"
+msgstr "Μετάθεση πίσω"
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:88
 #: modules/gui/macosx/VLCControlsBarCommon.m:185
@@ -17358,11 +17351,11 @@ msgstr "Μπροστά"
 #: modules/gui/macosx/VLCControlsBarCommon.m:186
 #: modules/gui/macosx/VLCFSPanelController.m:132
 msgid "Seek forward"
-msgstr "Ανίχνευση μπροστά"
+msgstr "Μετάθεση μπροστά"
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:93
 msgid "Playback position"
-msgstr "Θέση αναπαραγωγής"
+msgstr "Χρονικό σημείο αναπαραγωγής"
 
 #: modules/gui/macosx/VLCControlsBarCommon.m:113
 msgid "Playback time"
@@ -18532,9 +18525,8 @@ msgstr "Σύμπτυξη όλων"
 
 #: modules/gui/macosx/VLCPlaylist.m:231
 #: modules/gui/qt/components/playlist/standardpanel.cpp:274
-#, fuzzy
 msgid "Shuffle playlist"
-msgstr "Αποθήκευση λίστας αναπαραγωγής"
+msgstr ""
 
 #: modules/gui/macosx/VLCPlaylistInfo.m:54
 #: modules/gui/qt/dialogs/mediainfo.cpp:54
@@ -18920,7 +18912,7 @@ msgstr "Εκκίνηση σε πλήρη οθόνη"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:376
 msgid "Black screens in Fullscreen mode"
-msgstr "Μαύρες οθόνες στη λειτουργία πλήρους οθόνης"
+msgstr "Μαύρα πλαίσια στη λειτουργία πλήρους οθόνης"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:377
 #: modules/gui/macosx/macosx.m:95
@@ -19460,13 +19452,13 @@ msgstr ""
 
 #: modules/gui/macosx/macosx.m:60
 msgid "Black screens in fullscreen"
-msgstr "Μαύρες περιοχές στην πλήρη οθόνη"
+msgstr "Μαύρα πλαίσια στην πλήρη οθόνη"
 
 #: modules/gui/macosx/macosx.m:61
 msgid "In fullscreen mode, keep screen where there is no video displayed black"
 msgstr ""
-"Στην λειτουργία πλήρους οθόνης, η οθόνη να εξακολουθεί να εμφανίζεται μαύρη "
-"όπου δεν υπάρχει βίντεο"
+"Στην λειτουργία πλήρους οθόνης, η οθόνη περιέχει μαύρα πλαίσια όπου δεν "
+"υπάρχει βίντεο"
 
 #: modules/gui/macosx/macosx.m:64
 msgid "Show Fullscreen controller"
@@ -22278,11 +22270,11 @@ msgid "Show unimportant error and warnings dialogs"
 msgstr "Προβολή μη σημαντικών διαλόγων σφαλμάτων και προειδοποιήσεων"
 
 #: modules/gui/qt/qt.cpp:124
-msgid "Applies a dark palette to the style."
+msgid "Enable Dark Mode"
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:125
-msgid "Applies a dark palette to the style. Works best with Fusion style."
+msgid "Applies a dark theme to the style."
 msgstr ""
 
 #: modules/gui/qt/qt.cpp:127
@@ -22490,8 +22482,8 @@ msgstr "Αποθήκευση λίστας αναπαραγωγής"
 #: modules/gui/skins2/src/dialogs.cpp:230
 msgid "XSPF playlist |*.xspf|M3U file |*.m3u|HTML playlist |*.html"
 msgstr ""
-"XSPF λίστα αναπαραγωγής |*.xspf|M3U αρχείο |*.m3u|HTML λίστα αναπαραγωγής |"
-"*.html"
+"XSPF λίστα αναπαραγωγής |*.xspf|M3U αρχείο |*.m3u|HTML λίστα αναπαραγωγής |*."
+"html"
 
 #: modules/gui/skins2/src/skin_main.cpp:494
 msgid "Skin to use"
@@ -22633,27 +22625,16 @@ msgid "Set the image gamma, between 0.01 and 10. Defaults to 1."
 msgstr "Ορίστε το γάμμα της εικόνας, μεταξύ 0,01 και 10. Η προεπιλογή είναι 1."
 
 #: modules/hw/d3d11/d3d11_filters.c:681
-#, fuzzy
 msgid "AMD VQ Enhancer"
-msgstr "Stereo Enhancer"
-
-#: modules/hw/d3d11/d3d11_filters.c:682
-msgid "amf_vqenhancer"
 msgstr ""
 
 #: modules/hw/d3d11/d3d11_filters.c:687
-#, fuzzy
 msgid "AMD Frame Rate Doubler"
-msgstr "Ρυθμός &καρέ"
-
-#: modules/hw/d3d11/d3d11_filters.c:688
-msgid "amf_frc"
 msgstr ""
 
 #: modules/hw/d3d11/d3d11_filters.c:690
-#, fuzzy
 msgid "Show indicator"
-msgstr "Προβολή πλευρικής στήλης"
+msgstr ""
 
 #: modules/hw/d3d9/d3d9_filters.c:454
 msgid "Direct3D9 adjust filter"
@@ -23144,8 +23125,8 @@ msgid ""
 msgstr ""
 "Αποδοχή εντολών από αυτή την πηγή. Το CLI προεπιλέγει το stdin "
 "(\"*κονσόλα\"), αλλά μπορεί να συνδεθεί και σε ένα απλό socket TCP "
-"(\"localhost:4212\") ή να κάνει χρήση του πρωτοκόλλου telnet (\"telnet://"
-"0.0.0.0:4212\")"
+"(\"localhost:4212\") ή να κάνει χρήση του πρωτοκόλλου telnet "
+"(\"telnet://0.0.0.0:4212\")"
 
 #: modules/lua/vlc.c:85
 msgid "Lua"
@@ -24546,7 +24527,7 @@ msgstr "Πακετοποιητής ήχου A/52"
 msgid "avparser packetizer"
 msgstr "πακετοποιητής avparser "
 
-#: modules/packetizer/av1.c:582
+#: modules/packetizer/av1.c:585
 msgid "AV1 video packetizer"
 msgstr "Πακετοποιητής βίντεο AV1"
 
@@ -28693,39 +28674,32 @@ msgid "Recommended video output for Windows 8 and later versions"
 msgstr "Συνιστώμενη έξοδος βίντεο για Windows 8 και νεότερες εκδόσεις"
 
 #: modules/video_output/win32/direct3d11.c:74
-#, fuzzy
 msgid "Video Upscaling Mode"
-msgstr "Κλίμακα βίντεο"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:75
-#, fuzzy
 msgid "Select the upscaling mode for video."
-msgstr "Επιλέξτε ένα χρώμα στο βίντεο"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Linear Sampler"
-msgstr "Bits ανά δείγμα"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Point Sampler"
-msgstr "Αναδειγματοληψία SoX"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Video Processor"
-msgstr "Κωδικοποιητές βίντεο"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Super Resolution"
-msgstr "Ανάλυση"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:82
-#, fuzzy
 msgid "HDR Output Mode"
-msgstr "Μονάδες εξόδου"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:83
 msgid "Use HDR output even if the source is SDR."
@@ -28736,9 +28710,8 @@ msgid "Never out HDR"
 msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:88
-#, fuzzy
 msgid "Always output HDR"
-msgstr "Πάντα στην κορυφή"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:88
 msgid "Generate HDR from SDR"
@@ -29890,24 +29863,20 @@ msgid "0.00 dB"
 msgstr "0.00 dB"
 
 #: modules/gui/qt/ui/fingerprintdialog.h:147
-#, fuzzy
 msgid "Audio Fingerprinting"
-msgstr "&Αποτύπωμα"
+msgstr ""
 
 #: modules/gui/qt/ui/fingerprintdialog.h:148
-#, fuzzy
 msgid "Select a matching identity"
-msgstr "Επιλέξτε μέθοδο μετάδοσης"
+msgstr ""
 
 #: modules/gui/qt/ui/fingerprintdialog.h:149
-#, fuzzy
 msgid "No fingerprint has been found"
-msgstr "Ιχνηλάτηση κομματιού (βασισμένο στο Acoustid)"
+msgstr ""
 
 #: modules/gui/qt/ui/fingerprintdialog.h:150
-#, fuzzy
 msgid "Fingerprinting track..."
-msgstr "&Αποτύπωμα"
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:137
 msgid "&Verbosity:"
@@ -30033,7 +30002,7 @@ msgstr "Συσκευή δίσκου"
 
 #: modules/gui/qt/ui/open_disk.h:305
 msgid "Starting Position"
-msgstr "Θέση έναρξης"
+msgstr "Σημείο έναρξης"
 
 #: modules/gui/qt/ui/open_disk.h:308
 msgid "Audio and Subtitles"
@@ -30153,9 +30122,8 @@ msgid "Menus"
 msgstr "Μενού"
 
 #: modules/gui/qt/ui/profiles.h:728
-#, fuzzy
 msgid "Fra&me Rate"
-msgstr "Ρυθμός &δειγματοληψίας"
+msgstr "Ρυθμός &καρέ"
 
 #: modules/gui/qt/ui/profiles.h:729
 msgid "Same as source"
@@ -30429,9 +30397,8 @@ msgid "Auto raising the interface:"
 msgstr "Αυτόματη εμφάνιση της διεπαφής:"
 
 #: modules/gui/qt/ui/sprefs_interface.h:550
-#, fuzzy
 msgid "Use a dark palette"
-msgstr "Χρήση λίστας αναπαραγωγής με πρόσοψη"
+msgstr ""
 
 #: modules/gui/qt/ui/sprefs_interface.h:551
 msgid "Skin resource file:"
@@ -30746,21 +30713,3 @@ msgstr "AAAA;"
 #: modules/gui/qt/ui/vlm.h:299
 msgid "Media Manager List"
 msgstr "Λίστα διαχειριστή πολυμέσων"
-
-#~ msgid "SAT>IP channel list"
-#~ msgstr "Λίστα καναλιών SAT>IP"
-
-#~ msgid "Master List"
-#~ msgstr "Κύρια λίστα"
-
-#~ msgid "Server List"
-#~ msgstr "Λίστα διακομιστή"
-
-#~ msgid "Custom List"
-#~ msgstr "Εξατομικευμένη λίστα"
-
-#~ msgid "SRT chunk size (bytes)"
-#~ msgstr "Μέγεθος τμήματος SRT (bytes)"
-
-#~ msgid "Crypto key length in bytes"
-#~ msgstr "Μήκος κλειδιού κρυπτογράφησης σε bytes"
