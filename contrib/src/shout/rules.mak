@@ -1,7 +1,7 @@
 # shout
 
 SHOUT_VERSION := 2.4.1
-SHOUT_URL := http://downloads.us.xiph.org/releases/libshout/libshout-$(SHOUT_VERSION).tar.gz
+SHOUT_URL := $(XIPH)/libshout/libshout-$(SHOUT_VERSION).tar.gz
 
 ifdef BUILD_ENCODERS
 ifdef BUILD_NETWORK
@@ -37,17 +37,17 @@ libshout: libshout-$(SHOUT_VERSION).tar.gz .sum-shout
 DEPS_shout = ogg $(DEPS_ogg) theora $(DEPS_theora) speex $(DEPS_speex)
 DEPS_shout += vorbis $(DEPS_vorbis)
 
-SHOUT_CONF :=
+SHOUT_CONF := --disable-examples --disable-tools --without-openssl
 
 ifdef HAVE_WIN32
-SHOUT_CONF += "--disable-thread"
+SHOUT_CONF += --disable-thread
 endif
 ifdef HAVE_ANDROID
-SHOUT_CONF += "--disable-thread"
+SHOUT_CONF += --disable-thread
 endif
 
 .shout: libshout
 	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure --without-openssl $(SHOUT_CONF) $(HOSTCONF)
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(SHOUT_CONF)
+	$(MAKE) -C $< install
 	touch $@

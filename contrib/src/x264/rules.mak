@@ -1,8 +1,8 @@
 # x264
 
-X264_GITURL := git://git.videolan.org/x264.git
-X264_SNAPURL := http://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-20180324-2245.tar.bz2
-X262_GITURL := git://git.videolan.org/x262.git
+X264_HASH := e067ab0b530395f90b578f6d05ab0a225e2efdf9
+X264_VERSION := $(X264_HASH)
+X264_GITURL := https://code.videolan.org/videolan/x264.git
 
 ifdef BUILD_ENCODERS
 ifdef GPL
@@ -18,14 +18,9 @@ ifeq ($(call need_pkg,"x264 >= 0.153"),)
 PKGS_FOUND += x26410b
 endif
 
-#ifeq ($(call need_pkg,"x262"),)
-#PKGS_FOUND += x262
-#endif
-
 PKGS_ALL += x26410b
 
-X264CONF = --prefix="$(PREFIX)" --host="$(HOST)" \
-	--enable-static \
+X264CONF = \
 	--disable-avs \
 	--disable-lavf \
 	--disable-cli \
@@ -39,90 +34,56 @@ X264CONF += --enable-win32thread
 else
 X264CONF += --disable-win32thread
 endif
-ifeq ($(ARCH), arm)
-X264_AS = AS="./tools/gas-preprocessor.pl -arch arm -as-type clang -force-thumb -- $(CC) -mimplicit-it=always"
-endif
-ifeq ($(ARCH),aarch64)
-# Configure defaults to gas-preprocessor + armasm64 for this target,
-# unless overridden.
-X264_AS = AS="$(CC)"
-endif
 endif
 ifdef HAVE_CROSS_COMPILE
 ifndef HAVE_DARWIN_OS
+ifdef HAVE_ANDROID
+X264CONF += --cross-prefix="$(subst ld,,$(LD))"
+else
 X264CONF += --cross-prefix="$(HOST)-"
+endif
 endif
 ifdef HAVE_ANDROID
 # broken text relocations
 ifeq ($(ANDROID_ABI), x86)
 X264CONF += --disable-asm
 endif
-ifeq ($(ANDROID_ABI), x86_64)
-X264CONF += --disable-asm
-endif
-endif
-endif
-ifdef HAVE_DARWIN_OS
-ifeq ($(ARCH),aarch64)
-X264CONF += --extra-asflags="-arch $(PLATFORM_SHORT_ARCH)"
 endif
 endif
 
-$(TARBALLS)/x262-git.tar.xz:
-	$(call download_git,$(X262_GITURL))
+ifneq ($(filter arm aarch64, $(ARCH)),)
+ifndef HAVE_WIN32
+X264_ASM_USES_CC:=1
+endif
+endif
 
-$(TARBALLS)/x262-git.tar.gz:
-	$(call download,$(X262_SNAPURL))
+ifdef X264_ASM_USES_CC
+X264CONF += --extra-asflags="$(EXTRA_CFLAGS)"
+endif
 
-$(TARBALLS)/x264-git.tar.xz:
-	$(call download_git,$(X264_GITURL))
-
-$(TARBALLS)/x264-git.tar.bz2:
-	$(call download,$(X264_SNAPURL))
-
-.sum-x262: x262-git.tar.gz
-	$(warning $@ not implemented)
-	touch $@
+$(TARBALLS)/x264-$(X264_VERSION).tar.xz:
+	$(call download_git,$(X264_GITURL),,$(X264_HASH))
 
 .sum-x26410b: .sum-x264
 	touch $@
 
-.sum-x264: x264-git.tar.bz2
-	$(warning $@ not implemented)
+.sum-x264: x264-$(X264_VERSION).tar.xz
+	$(call check_githash,$(X264_VERSION))
 	touch $@
 
-x264 x26410b: %: x264-git.tar.bz2 .sum-%
-	rm -Rf $*-git
-	mkdir -p $*-git
-	tar xvjfo "$<" --strip-components=1 -C $*-git
+x264 x26410b: %: x264-$(X264_VERSION).tar.xz .sum-%
+	$(UNPACK)
 	$(UPDATE_AUTOCONFIG)
-	mv $*-git $*
-
-x262: x262-git.tar.gz .sum-x262
-	rm -Rf $@-git
-	mkdir -p $@-git
-	tar xvzfo "$<" --strip-components=1 -C $@-git
-	$(UPDATE_AUTOCONFIG)
+	$(APPLY) $(SRC)/x264/x264-winstore.patch
+	$(APPLY) $(SRC)/x264/0001-osdep-use-direct-path-to-internal-x264.h.patch
+	$(APPLY) $(SRC)/x264/0001-configure-set-_FILE_OFFSET_BITS-to-detect-fseeko.patch
 	$(MOVE)
-
 
 .x264: x264
 	$(REQUIRE_GPL)
-	cd $< && $(HOSTVARS) $(X264_AS) ./configure $(X264CONF)
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(X264CONF)
+	$(MAKE) -C $< install
 	touch $@
 
 .x26410b: .x264
-	touch $@
-
-.x262: x262
-	$(REQUIRE_GPL)
-	cd $< && sed -i -e 's/x264/x262/g' configure
-	cd $< && sed -i -e 's/x264_config/x262_config/g' *.h Makefile *.c
-	cd $< && $(HOSTVARS) ./configure $(X264CONF)
-	cd $< && sed -i -e 's/x264.pc/x262.pc/g' Makefile
-	cd $< && sed -i -e 's/x264.h/x262.h/g' Makefile
-	cd $< && $(MAKE)
-	cd $< && cp x264.h x262.h
-	cd $< && $(MAKE) install
 	touch $@

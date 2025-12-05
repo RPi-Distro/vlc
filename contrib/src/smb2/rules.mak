@@ -13,10 +13,13 @@ $(TARBALLS)/libsmb2-$(SMB2_VERSION).tar.gz:
 
 smb2: libsmb2-$(SMB2_VERSION).tar.gz .sum-smb2
 	$(UNPACK)
+	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
+
+SMB2_CONF := --disable-examples --disable-werror --without-libkrb5
 
 .smb2: smb2
 	cd $< && ./bootstrap
-	cd $< && $(HOSTVARS) ./configure --disable-examples --disable-werror --without-libkrb5 $(HOSTCONF)
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(SMB2_CONF)
+	$(MAKE) -C $< install
 	touch $@

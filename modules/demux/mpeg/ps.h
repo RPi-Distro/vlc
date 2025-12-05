@@ -35,18 +35,32 @@
 #define PS_STREAM_ID_EXTENDED         0xFD
 #define PS_STREAM_ID_DIRECTORY        0xFF
 
-/* 256-0xC0 for normal stream, 256 for 0xbd stream, 256 for 0xfd stream, 8 for 0xa0 AOB stream */
+#define PS_PACKET_ID_MASK_VOB        0xBD00
+#define PS_PACKET_ID_MASK_AOB        0xA000
+#define PS_PACKET_ID_MASK_EXTENDED   0xFD00
+
+#define PS_AOB_PACKET_ID_LPCM        (PS_PACKET_ID_MASK_AOB | 0x00)
+#define PS_AOB_PACKET_ID_MLP         (PS_PACKET_ID_MASK_AOB | 0x01)
+#define PS_VOB_PACKET_ID_MLP         (PS_PACKET_ID_MASK_VOB | 0xA1)
+
+enum ps_source {
+    PS_SOURCE_UNKNOWN, // any PS/PES source
+    PS_SOURCE_VOB,     // when reading a DVD-Video
+    PS_SOURCE_AOB,     // when reading a DVD-Audio
+};
+
+/* 256-0xC0 for normal stream, 256 for VOB stream, 256 for EVOB stream, 8 for AOB stream */
 #define PS_TK_COUNT (256+256+256+8 - 0xc0)
 static inline int ps_id_to_tk( unsigned i_id )
 {
     if( i_id <= 0xff )
         return i_id - 0xc0;
-    else if( (i_id & 0xff00) == 0xbd00 )
+    if( (i_id & 0xff00) == PS_PACKET_ID_MASK_VOB )
         return 256-0xC0 + (i_id & 0xff);
-    else if( (i_id & 0xff00) == 0xfd00 )
+    if( (i_id & 0xff00) == PS_PACKET_ID_MASK_EXTENDED )
         return 512-0xc0 + (i_id & 0xff);
-    else
-        return 768-0xc0 + (i_id & 0x07);
+    assert( (i_id & 0xff00) == PS_PACKET_ID_MASK_AOB );
+    return 768-0xc0 + (i_id & 0x07);
 }
 
 typedef struct ps_psm_t ps_psm_t;
@@ -125,7 +139,7 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm,
     tk->i_skip = 0;
     tk->i_id = i_id;
 
-    if( ( i_id&0xff00 ) == 0xbd00 ) /* 0xBD00 -> 0xBDFF, Private Stream 1 */
+    if( ( i_id&0xff00 ) == PS_PACKET_ID_MASK_VOB ) /* 0xBD00 -> 0xBDFF, VOB Private Stream 1 */
     {
         if( ( i_id&0xf8 ) == 0x88 || /* 0x88 -> 0x8f - Can be DTS-HD primary audio in evob */
             ( i_id&0xf8 ) == 0x98 )  /* 0x98 -> 0x9f - Can be DTS-HD secondary audio in evob */
@@ -192,7 +206,7 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm,
             return VLC_EGENERIC;
         }
     }
-    else if( (i_id&0xff00) == 0xfd00 ) /* 0xFD00 -> 0xFDFF */
+    else if( (i_id&0xff00) == PS_PACKET_ID_MASK_EXTENDED ) /* EVOB: 0xFD00 -> 0xFDFF */
     {
         uint8_t i_sub_id = i_id & 0xff;
         if( ( i_sub_id >= 0x55 && i_sub_id <= 0x5f ) || /* Can be primary VC-1 in evob */
@@ -206,7 +220,7 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm,
             return VLC_EGENERIC;
         }
     }
-    else if( (i_id&0xff00) == 0xa000 ) /* 0xA000 -> 0xA0FF */
+    else if( (i_id&0xff00) == PS_PACKET_ID_MASK_AOB ) /* AOB: 0xA000 -> 0xA0FF */
     {
         uint8_t i_sub_id = i_id & 0x07;
         if( i_sub_id == 0 )
@@ -316,9 +330,9 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm,
 }
 
 /* return the id of a PES (should be valid) */
-static inline int ps_pkt_id( block_t *p_pkt )
+static inline int ps_pkt_id( block_t *p_pkt, enum ps_source source )
 {
-    if( p_pkt->p_buffer[3] == 0xbd )
+    if( p_pkt->p_buffer[3] == PS_STREAM_ID_PRIVATE_STREAM1 )
     {
         uint8_t i_sub_id = 0;
         if( p_pkt->i_buffer >= 9 &&
@@ -327,22 +341,26 @@ static inline int ps_pkt_id( block_t *p_pkt )
             const unsigned i_start = 9 + p_pkt->p_buffer[8];
             i_sub_id = p_pkt->p_buffer[i_start];
 
-            if( (i_sub_id & 0xfe) == 0xa0 &&
+            if( i_sub_id == 0xa0 &&
                 p_pkt->i_buffer >= i_start + 7 &&
-                ( p_pkt->p_buffer[i_start + 5] >=  0xc0 ||
-                p_pkt->p_buffer[i_start + 6] != 0x80 ) )
+                p_pkt->p_buffer[i_start + 6] != 0x80 )
             {
-                /* AOB LPCM/MLP extension
-                * XXX for MLP I think that the !=0x80 test is not good and
-                * will fail for some valid files */
-                return 0xa000 | (i_sub_id & 0x01);
+                /* AOB LPCM extension */
+                return PS_PACKET_ID_MASK_AOB | (i_sub_id & 0x01);
+            }
+
+            if( i_sub_id == 0xa1 &&
+                source == PS_SOURCE_AOB )
+            {
+                /* AOB MLP extension */
+                return PS_PACKET_ID_MASK_AOB | (i_sub_id & 0x01);
             }
         }
 
         /* VOB extension */
-        return 0xbd00 | i_sub_id;
+        return PS_PACKET_ID_MASK_VOB | i_sub_id;
     }
-    else if( p_pkt->p_buffer[3] == 0xfd &&
+    if( p_pkt->p_buffer[3] == PS_STREAM_ID_EXTENDED &&
              p_pkt->i_buffer >= 9 &&
              (p_pkt->p_buffer[6]&0xC0) == 0x80 &&   /* mpeg2 */
              (p_pkt->p_buffer[7]&0x01) == 0x01 )    /* extension_flag */
@@ -391,7 +409,7 @@ static inline int ps_pkt_id( block_t *p_pkt )
                 {
                     int i_stream_id_extension_flag = (p_pkt->p_buffer[i_skip+1] >> 7)&0x1;
                     if( i_stream_id_extension_flag == 0 )
-                        return 0xfd00 | (p_pkt->p_buffer[i_skip+1]&0x7f);
+                        return PS_PACKET_ID_MASK_EXTENDED | (p_pkt->p_buffer[i_skip+1]&0x7f);
                 }
             }
         }
@@ -415,7 +433,7 @@ static inline int ps_pkt_size( const uint8_t *p, int i_peek )
             {
                 if( i_peek >= 14 && (p[4] >> 6) == 0x01 )
                     return 14 + (p[13]&0x07);
-                else if( i_peek >= 12 && (p[4] >> 4) == 0x02 )
+                if( i_peek >= 12 && (p[4] >> 4) == 0x02 )
                     return 12;
             }
             break;
@@ -442,9 +460,10 @@ static inline int ps_pkt_parse_pack( block_t *p_pkt, int64_t *pi_scr,
     }
     else if( p_pkt->i_buffer >= 12 && (p[4] >> 4) == 0x02 ) /* MPEG-1 Pack SCR, same bits as PES/PTS */
     {
-        if(!ExtractPESTimestamp( &p[4], 0x02, pi_scr ))
+        ts_90khz_t i_scr;
+        if(!ExtractPESTimestamp( &p[4], 0x02, &i_scr ))
             return VLC_EGENERIC;
-        *pi_scr = FROM_SCALE_NZ( *pi_scr );
+        *pi_scr = FROM_SCALE_NZ( i_scr );
         *pi_mux_rate = ( ( p[9]&0x7f )<< 15 )|( p[10] << 7 )|( p[11] >> 1);
     }
     else
@@ -494,8 +513,8 @@ static inline int ps_pkt_parse_system( block_t *p_pkt, ps_psm_t *p_psm,
 static inline int ps_pkt_parse_pes( vlc_object_t *p_object, block_t *p_pes, int i_skip_extra )
 {
     unsigned int i_skip  = 0;
-    vlc_tick_t i_pts = -1;
-    vlc_tick_t i_dts = -1;
+    ts_90khz_t i_pts = TS_90KHZ_INVALID;
+    ts_90khz_t i_dts = TS_90KHZ_INVALID;
     uint8_t i_stream_id = 0;
     bool b_pes_scrambling = false;
 
@@ -509,7 +528,8 @@ static inline int ps_pkt_parse_pes( vlc_object_t *p_object, block_t *p_pes, int 
     if( i_skip_extra >= 0 )
         i_skip += i_skip_extra;
     else if( p_pes->i_buffer > i_skip + 3 &&
-             ( ps_pkt_id( p_pes ) == 0xa001 || ps_pkt_id( p_pes ) == 0xbda1 ) )
+             ( ps_pkt_id( p_pes, PS_SOURCE_AOB ) == PS_AOB_PACKET_ID_MLP ||
+               ps_pkt_id( p_pes, PS_SOURCE_VOB ) == PS_VOB_PACKET_ID_MLP ) )
         i_skip += 4 + p_pes->p_buffer[i_skip+3];
 
     if( p_pes->i_buffer <= i_skip )
@@ -521,12 +541,12 @@ static inline int ps_pkt_parse_pes( vlc_object_t *p_object, block_t *p_pes, int 
     p_pes->i_buffer -= i_skip;
 
     /* ISO/IEC 13818-1 2.7.5: if no pts and no dts, then dts == pts */
-    if( i_pts >= 0 && i_dts < 0 )
+    if( i_pts != TS_90KHZ_INVALID && i_dts == TS_90KHZ_INVALID )
         i_dts = i_pts;
 
-    if( i_dts >= 0 )
+    if( i_dts != TS_90KHZ_INVALID )
         p_pes->i_dts = FROM_SCALE( i_dts );
-    if( i_pts >= 0 )
+    if( i_pts != TS_90KHZ_INVALID )
         p_pes->i_pts = FROM_SCALE( i_pts );
 
     return VLC_SUCCESS;

@@ -36,6 +36,13 @@
 
 #include <x265.h>
 
+#ifndef X265_MAX_FRAME_THREADS
+# define X265_MAX_FRAME_THREADS 16
+#endif
+#if X265_BUILD > 210 && X265_BUILD <= 214
+#define X265_OUTPUT_ARRAY 1
+#endif
+
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
@@ -70,6 +77,11 @@ static block_t *Encode(encoder_t *p_enc, picture_t *p_pict)
     x265_picture pic;
 
     x265_picture_init(&p_sys->param, &pic);
+#ifdef X265_OUTPUT_ARRAY
+    /* Handle API changes for scalable layers output in x265 4.0 */
+    x265_picture *pics[MAX_SCALABLE_LAYERS] = {NULL};
+    pics[0] = &pic;
+#endif
 
     if (likely(p_pict)) {
         pic.pts = p_pict->date;
@@ -88,8 +100,13 @@ static block_t *Encode(encoder_t *p_enc, picture_t *p_pict)
 
     x265_nal *nal;
     uint32_t i_nal = 0;
+#ifdef X265_OUTPUT_ARRAY
+    x265_encoder_encode(p_sys->h, &nal, &i_nal,
+                        likely(p_pict) ? &pic : NULL, pics);
+#else
     x265_encoder_encode(p_sys->h, &nal, &i_nal,
             likely(p_pict) ? &pic : NULL, &pic);
+#endif
 
     if (!i_nal)
         return NULL;
@@ -156,6 +173,8 @@ static int  Open (vlc_object_t *p_this)
     x265_param_default(param);
 
     param->frameNumThreads = vlc_GetCPUCount();
+    if(param->frameNumThreads > X265_MAX_FRAME_THREADS)
+        param->frameNumThreads = X265_MAX_FRAME_THREADS;
     param->bEnableWavefront = 0; // buggy in x265, use frame threading for now
     param->maxCUSize = 16; /* use smaller macroblock */
 

@@ -38,10 +38,11 @@
 
 #include "sorting.h"
 
-#include <assert.h>
+#include <cassert>
 #include <QFont>
 #include <QAction>
 #include <QStack>
+#include <QBrush>
 
 /*************************************************************************
  * Playlist model implementation
@@ -126,7 +127,7 @@ QMimeData *PLModel::mimeData( const QModelIndexList &indexes ) const
             list.append(index);
     }
 
-    qSort(list.begin(), list.end(), modelIndexLessThen);
+    std::sort(list.begin(), list.end(), modelIndexLessThen);
 
     AbstractPLItem *item = NULL;
     foreach( const QModelIndex &index, list ) {

@@ -83,7 +83,7 @@ QPixmap VLCModel::getArtPixmap( const QModelIndex & index, const QSize & size )
 
     QString key = artUrl + QString("%1%2").arg(size.width()).arg(size.height());
 
-    if( !QPixmapCache::find( key, artPix ))
+    if( !QPixmapCache::find( key, &artPix ))
     {
         if( artUrl.isEmpty() == false )
         {
@@ -97,7 +97,7 @@ QPixmap VLCModel::getArtPixmap( const QModelIndex & index, const QSize & size )
             }
         }
         key = QString("noart%1%2").arg(size.width()).arg(size.height());
-        if( !QPixmapCache::find( key, artPix ) )
+        if( !QPixmapCache::find( key, &artPix ) )
         {
             artPix = QPixmap( ":/noart" ).scaled( size,
                                           Qt::KeepAspectRatio,
@@ -206,7 +206,7 @@ void VLCModel::ensureArtRequested( const QModelIndex &index )
         QModelIndex child;
         for( int row = 0 ; row < nbnodes ; row++ )
         {
-            child = index.child( row, COLUMN_COVER );
+            child = index.model()->index( row, COLUMN_COVER );
             if ( child.isValid() && child.data().toString().isEmpty() )
                 THEMIM->getIM()->requestArtUpdate( getInputItem( child ), false );
         }

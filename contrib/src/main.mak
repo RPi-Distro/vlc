@@ -18,11 +18,13 @@ DATE := $(shell date +%Y%m%d)
 VPATH := $(TARBALLS)
 
 # Common download locations
-GNU ?= http://ftp.gnu.org/gnu
+GNU ?= http://ftpmirror.gnu.org/gnu
 SF := https://netcologne.dl.sourceforge.net/
 VIDEOLAN := http://downloads.videolan.org/pub/videolan
 CONTRIB_VIDEOLAN := http://downloads.videolan.org/pub/contrib
 GITHUB := https://github.com/
+GNUGPG := https://www.gnupg.org/ftp/gcrypt
+XIPH := https://ftp.osuosl.org/pub/xiph/releases
 
 #
 # Machine-dependent variables
@@ -115,6 +117,18 @@ CXX := clang++
 endif
 endif
 
+get_version2_num =$(shell echo $(1) | awk -F. '{ printf("%d%02d\n", $$1,$$2); }')
+ifdef HAVE_DARWIN_OS
+# the CI currently has 14.5 (macos-xcode15), 12.3 (monterey), 10.13/10.15 (old-macmini)
+darwin_sdk_at_most  = $(shell [ $(call get_version2_num, $(shell xcrun --sdk $(SDKROOT) -show-sdk-version)) -le $(call get_version2_num, $(1)) ] && echo true)
+
+ifdef VLC_DEPLOYMENT_TARGET
+darwin_min_os_at_least  = $(shell [ $(call get_version2_num, $(VLC_DEPLOYMENT_TARGET)) -ge $(call get_version2_num, $(1)) ] && echo true)
+else
+darwin_min_os_at_least  = $(shell echo false)
+endif
+endif
+
 # -fno-stack-check is a workaround for a possible
 # bug in Xcode 11 or macOS 10.15+
 ifdef HAVE_DARWIN_OS
@@ -163,8 +177,17 @@ EXTRA_LDFLAGS += -m32
 endif
 endif
 
+ifdef HAVE_WINSTORE
+EXTRA_CFLAGS += -DWINSTORECOMPAT
+EXTRA_LDFLAGS += -lwinstorecompat
+endif
+
 ifneq ($(findstring clang, $(shell $(CC) --version)),)
 HAVE_CLANG := 1
+CLANG_VERSION := $(shell $(CC) --version | head -1 | grep -o '[0-9]\+\.' | head -1 | cut -d '.' -f 1)
+clang_at_least = $(shell [ $(CLANG_VERSION) -ge $(1) ] && echo true)
+else
+clang_at_least = $(shell echo false)
 endif
 
 cppcheck = $(shell $(CC) $(CFLAGS) -E -dM - < /dev/null | grep -E $(1))
@@ -231,7 +254,7 @@ endif
 SVN ?= $(error subversion client (svn) not found!)
 
 ifeq ($(shell curl --version >/dev/null 2>&1 || echo FAIL),)
-download = curl -f -L -- "$(1)" > "$@"
+download = curl -f -L --retry 3 --output "$@" -- "$(1)"
 else ifeq ($(shell wget --version >/dev/null 2>&1 || echo FAIL),)
 download = (rm -f $@.tmp && \
 	wget --passive -c -p -O $@.tmp "$(1)" && \
@@ -296,12 +319,6 @@ HOSTTOOLS := \
 	PATH="$(PREFIX)/bin:$(PATH)" \
 	PKG_CONFIG="$(PKG_CONFIG)"
 
-HOSTVARS_MESON := $(HOSTTOOLS) \
-	CPPFLAGS="$(CPPFLAGS)" \
-	CFLAGS="$(CFLAGS)" \
-	CXXFLAGS="$(CXXFLAGS)" \
-	LDFLAGS="$(LDFLAGS)"
-
 # Add these flags after Meson consumed the CFLAGS/CXXFLAGS
 # as when setting those for Meson, it would apply to tests
 # and cause the check if symbols have underscore prefix to
@@ -312,6 +329,11 @@ CXXFLAGS := $(CXXFLAGS) -g -O0
 else
 CFLAGS := $(CFLAGS) -g -O2
 CXXFLAGS := $(CXXFLAGS) -g -O2
+endif
+
+ifdef HAVE_BITCODE_ENABLED
+CFLAGS := $(CFLAGS) -fembed-bitcode
+CXXFLAGS := $(CXXFLAGS) -fembed-bitcode
 endif
 
 ifdef ENABLE_PDB
@@ -353,6 +375,12 @@ check_githash = \
 		< "$(<:.tar.xz=.githash)"` && \
 	test "$$h" = "$1"
 
+ifeq ($(V),1)
+TAR_VERBOSE := v
+else
+ZIP_QUIET := -q
+endif
+
 checksum = \
 	$(foreach f,$(filter $(TARBALLS)/%,$^), \
 		grep -- " $(f:$(TARBALLS)/%=%)$$" \
@@ -361,10 +389,10 @@ checksum = \
 		"$(SRC)/$(patsubst .sum-%,%,$@)/$(2)SUMS"
 CHECK_SHA512 = $(call checksum,$(SHA512SUM),SHA512)
 UNPACK = $(RM) -R $@ \
-	$(foreach f,$(filter %.tar.gz %.tgz,$^), && tar xvzfo $(f)) \
-	$(foreach f,$(filter %.tar.bz2,$^), && tar xvjfo $(f)) \
-	$(foreach f,$(filter %.tar.xz,$^), && tar xvJfo $(f)) \
-	$(foreach f,$(filter %.zip,$^), && unzip $(f))
+	$(foreach f,$(filter %.tar.gz %.tgz,$^), && tar $(TAR_VERBOSE)xzfo $(f)) \
+	$(foreach f,$(filter %.tar.bz2,$^), && tar $(TAR_VERBOSE)xjfo $(f)) \
+	$(foreach f,$(filter %.tar.xz,$^), && tar $(TAR_VERBOSE)xJfo $(f)) \
+	$(foreach f,$(filter %.zip,$^), && unzip $(ZIP_QUIET) $(f) $(UNZIP_PARAMS))
 UNPACK_DIR = $(patsubst %.tar,%,$(basename $(notdir $<)))
 APPLY = (cd $(UNPACK_DIR) && patch -fp1) <
 pkg_static = (cd $(UNPACK_DIR) && $(SRC_BUILT)/pkg-static.sh $(1))
@@ -385,24 +413,65 @@ AUTORECONF = GTKDOCIZE=true autoreconf
 endif
 RECONF = mkdir -p -- $(PREFIX)/share/aclocal && \
 	cd $< && $(AUTORECONF) -fiv $(ACLOCAL_AMFLAGS)
-CMAKEBUILD := cmake --build
-CMAKE = cmake . -DCMAKE_TOOLCHAIN_FILE=$(abspath toolchain.cmake) \
+
+BUILD_DIR = $</_build
+BUILD_SRC := ..
+# build directory relative to UNPACK_DIR
+BUILD_DIRUNPACK = _build
+
+
+MAKEBUILDDIR = mkdir -p $(BUILD_DIR) && rm -f $(BUILD_DIR)/config.status
+MAKEBUILD = $(MAKE) -C $(BUILD_DIR)
+MAKECONFDIR = cd $(BUILD_DIR) && $(HOSTVARS) $(BUILD_SRC)
+MAKECONFIGURE = $(MAKECONFDIR)/configure $(HOSTCONF)
+
+# Work around for https://lists.nongnu.org/archive/html/bug-gnulib/2020-05/msg00237.html
+# When using a single command, make might take a shortcut and fork/exec
+# itself instead of relying on a shell, but a bug in gnulib ends up
+# trying to execute a cmake folder when one is found in the PATH
+CMAKEBUILD = env cmake --build $(BUILD_DIR)
+CMAKEINSTALL = env cmake --install $(BUILD_DIR) --prefix $(PREFIX)
+CMAKECLEAN = rm -f $(BUILD_DIR)/CMakeCache.txt
+CMAKE = cmake -S $< -DCMAKE_TOOLCHAIN_FILE=$(abspath toolchain.cmake) \
+		-B $(BUILD_DIR) \
+		-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 		-DCMAKE_INSTALL_PREFIX:STRING=$(PREFIX) \
 		-DBUILD_SHARED_LIBS:BOOL=OFF \
-		-DCMAKE_INSTALL_LIBDIR:STRING=lib
+		-DCMAKE_INSTALL_LIBDIR:STRING=lib \
+		-DBUILD_TESTING:BOOL=OFF
+ifndef WITH_OPTIMIZATION
+CMAKE += -DCMAKE_BUILD_TYPE=Debug
+else
+CMAKE += -DCMAKE_BUILD_TYPE=RelWithDebInfo
+endif
 ifdef HAVE_WIN32
 CMAKE += -DCMAKE_DEBUG_POSTFIX:STRING=
+endif
+ifdef HAVE_ANDROID
+CMAKE += -DANDROID:BOOL=ON
 endif
 ifeq ($(findstring mingw32,$(BUILD)),mingw32)
 CMAKE += -DCMAKE_LINK_LIBRARY_SUFFIX:STRING=.a
 endif
 
-MESONFLAGS = --default-library static --prefix "$(PREFIX)" --backend ninja \
-	-Dlibdir=lib
+MESONFLAGS = $</build $< --default-library static --prefix "$(PREFIX)" \
+	--backend ninja -Dlibdir=lib
 ifndef WITH_OPTIMIZATION
 MESONFLAGS += --buildtype debug
 else
 MESONFLAGS += --buildtype debugoptimized
+endif
+ifdef HAVE_BITCODE_ENABLED
+MESONFLAGS += -Db_bitcode=true
+endif
+MESONFLAGS += -Dc_args="$(CFLAGS)" -Dc_link_args="$(LDFLAGS)" -Dcpp_args="$(CXXFLAGS)" -Dcpp_link_args="$(LDFLAGS)"
+ifdef HAVE_DARWIN_OS
+MESONFLAGS += -Dobjc_args="$(CFLAGS)" -Dobjc_link_args="$(LDFLAGS)" -Dobjcpp_args="$(CXXFLAGS)" -Dobjcpp_link_args="$(LDFLAGS)"
+endif
+
+MESONCOMPILEFLAGS =
+ifeq ($(V),1)
+MESONCOMPILEFLAGS += -v
 endif
 
 ifdef HAVE_CROSS_COMPILE
@@ -418,10 +487,20 @@ ifdef HAVE_CROSS_COMPILE
 # expected.
 MESONFLAGS += --cross-file $(abspath crossfile.meson)
 MESON = env -i PATH="$(PREFIX)/bin:$(PATH)" PKG_CONFIG_LIBDIR="$(PKG_CONFIG_LIBDIR)" \
-	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)" meson $(MESONFLAGS)
+	PKG_CONFIG_PATH="$(PKG_CONFIG_PATH)" \
+	meson -Dpkg_config_path="$(PKG_CONFIG_PATH)" \
+	$(MESONFLAGS)
+
 else
-MESON = meson $(MESONFLAGS)
+MESON = $(HOSTTOOLS) meson setup $(MESONFLAGS)
 endif
+MESONCLEAN = rm -rf $</build
+MESONBUILD = meson compile -C $</build $(MESON_BUILD) $(MESONCOMPILEFLAGS) && meson install -C $</build
+
+ifeq ($(V),1)
+CMAKE += -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+endif
+
 
 ifdef GPL
 REQUIRE_GPL =
@@ -529,7 +608,22 @@ help:
 
 .PHONY: all fetch fetch-all install mostlyclean clean distclean package list help prebuilt
 
+CMAKE_HOST_ARCH=$(ARCH)
+ifeq ($(ARCH),i386)
+CMAKE_HOST_ARCH=i686
+else ifeq ($(ARCH),arm)
+CMAKE_HOST_ARCH=armv7-a
+endif
+
 CMAKE_SYSTEM_NAME =
+ifdef HAVE_CROSS_COMPILE
+CMAKE_SYSTEM_NAME = $(error CMAKE_SYSTEM_NAME required for cross-compilation)
+endif
+ifdef HAVE_ANDROID
+CMAKE_SYSTEM_NAME = Android
+else
+CMAKE_SYSTEM_NAME = Linux
+endif
 ifdef HAVE_WIN32
 CMAKE_SYSTEM_NAME = Windows
 ifdef HAVE_VISUALSTUDIO
@@ -548,12 +642,7 @@ endif
 # CMake toolchain
 toolchain.cmake:
 	$(RM) $@
-ifndef WITH_OPTIMIZATION
-	echo "set(CMAKE_BUILD_TYPE Debug)" >> $@
-else
-	echo "set(CMAKE_BUILD_TYPE RelWithDebInfo)" >> $@
-endif
-	echo "set(CMAKE_SYSTEM_PROCESSOR $(ARCH))" >> $@
+	echo "set(CMAKE_SYSTEM_PROCESSOR $(CMAKE_HOST_ARCH))" >> $@
 	if test -n "$(CMAKE_SYSTEM_NAME)"; then \
 		echo "set(CMAKE_SYSTEM_NAME $(CMAKE_SYSTEM_NAME))" >> $@; \
 	fi;
@@ -582,6 +671,10 @@ ifdef HAVE_ANDROID
 # Set it to "" right away to short-circuit this behaviour
 	echo "set(CMAKE_CXX_SYSROOT_FLAG \"\")" >> $@
 	echo "set(CMAKE_C_SYSROOT_FLAG \"\")" >> $@
+	echo "set(ANDROID_NDK $(ANDROID_NDK))" >> $@
+	echo "set(ANDROID_ABI $(ANDROID_ABI))" >> $@
+	echo "set(ANDROID_PLATFORM $(ANDROID_API))" >> $@
+	echo "include($(ANDROID_NDK)/build/cmake/android.toolchain.cmake)" >> $@
 endif
 endif
 	echo "set(CMAKE_C_COMPILER $(CC))" >> $@
@@ -619,7 +712,7 @@ endif
 
 
 crossfile.meson: $(SRC)/gen-meson-crossfile.py
-	$(HOSTVARS_MESON) \
+	$(HOSTTOOLS) \
 	WINDRES="$(WINDRES)" \
 	PKG_CONFIG="$(PKG_CONFIG)" \
 	HOST_SYSTEM="$(MESON_SYSTEM_NAME)" \

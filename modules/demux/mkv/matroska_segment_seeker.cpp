@@ -366,7 +366,11 @@ SegmentSeeker::index_unsearched_range( matroska_segment_c& ms, Range search_area
 
         if( ms.BlockGet( block, simpleblock, additions,
                          &b_key_picture, &b_discardable_picture, &i_block_duration ) )
+        {
+            delete additions;
             break;
+        }
+        delete additions;
 
         if( simpleblock ) {
             block_pos = simpleblock->GetElementPosition();
@@ -482,11 +486,16 @@ SegmentSeeker::mkv_jump_to( matroska_segment_c& ms, fptr_t fpos )
     while( ms.cluster == NULL || (
           ms.cluster->IsFiniteSize() && ms.cluster->GetEndPosition() < fpos ) )
     {
-        if( !( ms.cluster = static_cast<KaxCluster*>( ms.ep.Get() ) ) )
+        EbmlElement *el = ms.ep.Get();
+        if( el == nullptr )
         {
             msg_Err( &ms.sys.demuxer, "unable to read KaxCluster during seek, giving up" );
             return;
         }
+        if (!MKV_IS_ID( el, KaxCluster ))
+        continue; // look for the next element
+
+        ms.cluster = static_cast<KaxCluster*>( el );
 
         i_cluster_pos = ms.cluster->GetElementPosition();
 
@@ -501,16 +510,22 @@ SegmentSeeker::mkv_jump_to( matroska_segment_c& ms, fptr_t fpos )
 
     while( EbmlElement * el = ms.ep.Get() )
     {
-        if( MKV_CHECKED_PTR_DECL( p_tc, KaxClusterTimecode, el ) )
-        {
-            p_tc->ReadData( ms.es.I_O(), SCOPE_ALL_DATA );
-            ms.cluster->InitTimecode( static_cast<uint64>( *p_tc ), ms.i_timescale );
-            add_cluster(ms.cluster);
-            break;
+        try {
+            if( MKV_CHECKED_PTR_DECL( p_tc, KaxClusterTimecode, el ) )
+            {
+                p_tc->ReadData( ms.es.I_O(), SCOPE_ALL_DATA );
+                ms.cluster->InitTimecode( static_cast<uint64>( *p_tc ), ms.i_timescale );
+                add_cluster(ms.cluster);
+                break;
+            }
+            else if( MKV_CHECKED_PTR_DECL( p_tc, EbmlCrc32, el ) )
+            {
+                p_tc->ReadData( ms.es.I_O(), SCOPE_ALL_DATA ); /* avoid a skip that may fail */
+            }
         }
-        else if( MKV_CHECKED_PTR_DECL( p_tc, EbmlCrc32, el ) )
+        catch(...)
         {
-            p_tc->ReadData( ms.es.I_O(), SCOPE_ALL_DATA ); /* avoid a skip that may fail */
+            msg_Err( &ms.sys.demuxer,"Error while reading %s",  EBML_NAME(el) );
         }
     }
 

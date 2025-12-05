@@ -3224,8 +3224,6 @@ static int MP4_ReadBox_stss( stream_t *p_stream, MP4_Box_t *p_box )
     for( uint32_t i = 0; i < count; i++ )
     {
         MP4_GET4BYTES( p_box->data.p_stss->i_sample_number[i] );
-        /* XXX in libmp4 sample begin at 0 */
-        p_box->data.p_stss->i_sample_number[i]--;
     }
 
 #ifdef MP4_VERBOSE
@@ -3288,7 +3286,7 @@ static int MP4_ReadBox_stdp( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_GETVERSIONFLAGS( p_box->data.p_stdp );
 
     p_box->data.p_stdp->i_priority =
-        calloc( i_read / 2, sizeof(uint16_t) );
+        calloc( i_read / 2, sizeof(*p_box->data.p_stdp->i_priority) );
 
     if( unlikely( !p_box->data.p_stdp->i_priority ) )
         MP4_READBOX_EXIT( 0 );
@@ -4280,9 +4278,9 @@ static int MP4_ReadBox_tfra( stream_t *p_stream, MP4_Box_t *p_box )
     p_tfra->i_length_size_of_trun_num = ( i_lengths & 0x0c ) >> 2;
     p_tfra->i_length_size_of_sample_num = i_lengths & 0x03;
 
-    size_t size = 4 + 4*p_tfra->i_version; /* size in {4, 8} */
-    p_tfra->p_time = calloc( i_number_of_entries, size );
-    p_tfra->p_moof_offset = calloc( i_number_of_entries, size );
+    size_t size;
+    p_tfra->p_time = calloc( i_number_of_entries, sizeof(*p_tfra->p_time) );
+    p_tfra->p_moof_offset = calloc( i_number_of_entries, sizeof(*p_tfra->p_moof_offset) );
 
     size = 1 + p_tfra->i_length_size_of_traf_num; /* size in [|1, 4|] */
     if ( size == 3 ) size++;
@@ -4310,8 +4308,8 @@ static int MP4_ReadBox_tfra( stream_t *p_stream, MP4_Box_t *p_box )
         {
             if ( i_read < i_fields_length + 16 )
                 break;
-            MP4_GET8BYTES( *((uint64_t *)&p_tfra->p_time[i*2]) );
-            MP4_GET8BYTES( *((uint64_t *)&p_tfra->p_moof_offset[i*2]) );
+            MP4_GET8BYTES( p_tfra->p_time[i] );
+            MP4_GET8BYTES( p_tfra->p_moof_offset[i] );
         }
         else
         {
@@ -4335,22 +4333,11 @@ static int MP4_ReadBox_tfra( stream_t *p_stream, MP4_Box_t *p_box )
 #ifdef MP4_ULTRA_VERBOSE
     for( i = 0; i < i_number_of_entries; i++ )
     {
-        if( p_tfra->i_version == 0 )
-        {
-            msg_Dbg( p_stream, "tfra[%"PRIu32"] time[%"PRIu32"]: %"PRIu32", "
-                               "moof_offset[%"PRIu32"]: %"PRIu32"",
-                     p_tfra->i_track_ID,
-                     i, p_tfra->p_time[i],
-                     i, p_tfra->p_moof_offset[i] );
-        }
-        else
-        {
-            msg_Dbg( p_stream, "tfra[%"PRIu32"] time[%"PRIu32"]: %"PRIu64", "
-                               "moof_offset[%"PRIu32"]: %"PRIu64"",
-                     p_tfra->i_track_ID,
-                     i, ((uint64_t *)(p_tfra->p_time))[i],
-                     i, ((uint64_t *)(p_tfra->p_moof_offset))[i] );
-        }
+        msg_Dbg( p_stream, "tfra[%"PRIu32"] time[%"PRIu32"]: %"PRIu64", "
+                            "moof_offset[%"PRIu32"]: %"PRIu64"",
+                    p_tfra->i_track_ID,
+                    i, p_tfra->p_time[i],
+                    i, p_tfra->p_moof_offset[i] );
     }
 #endif
 #ifdef MP4_VERBOSE
@@ -5176,7 +5163,7 @@ void MP4_BoxDumpStructure( stream_t *s, const MP4_Box_t *p_box )
  **
  *****************************************************************************
  *****************************************************************************/
-static bool get_token( char **ppsz_path, char **ppsz_token, int *pi_number )
+static bool get_token( const char **ppsz_path, char **ppsz_token, int *pi_number )
 {
     size_t i_len ;
     if( !*ppsz_path[0] )
@@ -5224,11 +5211,9 @@ static bool get_token( char **ppsz_path, char **ppsz_token, int *pi_number )
     return true;
 }
 
-static void MP4_BoxGet_Internal( const MP4_Box_t **pp_result, const MP4_Box_t *p_box,
-                                 const char *psz_fmt, va_list args)
+static void MP4_BoxGet_Path( const MP4_Box_t **pp_result, const MP4_Box_t *p_box,
+                             const char *psz_path)
 {
-    char *psz_dup;
-    char *psz_path;
     char *psz_token = NULL;
 
     if( !p_box )
@@ -5237,18 +5222,9 @@ static void MP4_BoxGet_Internal( const MP4_Box_t **pp_result, const MP4_Box_t *p
         return;
     }
 
-    if( vasprintf( &psz_path, psz_fmt, args ) == -1 )
-        psz_path = NULL;
-
-    if( !psz_path || !psz_path[0] )
-    {
-        free( psz_path );
-        *pp_result = NULL;
-        return;
-    }
+    assert( psz_path && psz_path[0] );
 
 //    fprintf( stderr, "path:'%s'\n", psz_path );
-    psz_dup = psz_path; /* keep this pointer, as it need to be unallocated */
     for( ; ; )
     {
         int i_number;
@@ -5259,7 +5235,6 @@ static void MP4_BoxGet_Internal( const MP4_Box_t **pp_result, const MP4_Box_t *p
 //                 psz_path,psz_token,i_number );
         if( !psz_token )
         {
-            free( psz_dup );
             *pp_result = p_box;
             return;
         }
@@ -5345,9 +5320,34 @@ static void MP4_BoxGet_Internal( const MP4_Box_t **pp_result, const MP4_Box_t *p
 
 error_box:
     free( psz_token );
-    free( psz_dup );
     *pp_result = NULL;
     return;
+}
+
+static void MP4_BoxGet_Internal( const MP4_Box_t **pp_result, const MP4_Box_t *p_box,
+                                 const char *psz_fmt, va_list args)
+{
+    char *psz_path;
+
+    if( !p_box )
+    {
+        *pp_result = NULL;
+        return;
+    }
+
+    if( vasprintf( &psz_path, psz_fmt, args ) == -1 )
+        psz_path = NULL;
+
+    if( !psz_path || !psz_path[0] )
+    {
+        free( psz_path );
+        *pp_result = NULL;
+        return;
+    }
+
+    MP4_BoxGet_Path( pp_result, p_box, psz_path );
+
+    free( psz_path );
 }
 
 /*****************************************************************************
@@ -5359,7 +5359,7 @@ error_box:
  * ex: /moov/trak[12]
  *     ../mdia
  *****************************************************************************/
-MP4_Box_t *MP4_BoxGet( const MP4_Box_t *p_box, const char *psz_fmt, ... )
+MP4_Box_t *MP4_BoxGetVa( const MP4_Box_t *p_box, const char *psz_fmt, ... )
 {
     va_list args;
     const MP4_Box_t *p_result;
@@ -5367,6 +5367,15 @@ MP4_Box_t *MP4_BoxGet( const MP4_Box_t *p_box, const char *psz_fmt, ... )
     va_start( args, psz_fmt );
     MP4_BoxGet_Internal( &p_result, p_box, psz_fmt, args );
     va_end( args );
+
+    return( (MP4_Box_t *) p_result );
+}
+
+MP4_Box_t *MP4_BoxGet( const MP4_Box_t *p_box, const char *psz_fmt )
+{
+    const MP4_Box_t *p_result;
+
+    MP4_BoxGet_Path( &p_result, p_box, psz_fmt );
 
     return( (MP4_Box_t *) p_result );
 }
@@ -5380,7 +5389,7 @@ MP4_Box_t *MP4_BoxGet( const MP4_Box_t *p_box, const char *psz_fmt, ... )
  * ex: /moov/trak[12]
  *     ../mdia
  *****************************************************************************/
-unsigned MP4_BoxCount( const MP4_Box_t *p_box, const char *psz_fmt, ... )
+unsigned MP4_BoxCountVa( const MP4_Box_t *p_box, const char *psz_fmt, ... )
 {
     va_list args;
     unsigned i_count;
@@ -5389,6 +5398,28 @@ unsigned MP4_BoxCount( const MP4_Box_t *p_box, const char *psz_fmt, ... )
     va_start( args, psz_fmt );
     MP4_BoxGet_Internal( &p_result, p_box, psz_fmt, args );
     va_end( args );
+    if( !p_result )
+    {
+        return( 0 );
+    }
+
+    i_count = 1;
+    for( p_next = p_result->p_next; p_next != NULL; p_next = p_next->p_next)
+    {
+        if( p_next->i_type == p_result->i_type)
+        {
+            i_count++;
+        }
+    }
+    return( i_count );
+}
+
+unsigned MP4_BoxCount( const MP4_Box_t *p_box, const char *psz_fmt )
+{
+    unsigned i_count;
+    const MP4_Box_t *p_result, *p_next;
+
+    MP4_BoxGet_Path( &p_result, p_box, psz_fmt );
     if( !p_result )
     {
         return( 0 );

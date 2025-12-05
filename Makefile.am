@@ -21,21 +21,19 @@ BUILT_SOURCES_distclean =
 
 BUILT_SOURCES = $(BUILT_SOURCES_distclean)
 
-SUFFIXES = 
+SUFFIXES =
 
 DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-fast-install \
-	--disable-a52 \
 	--disable-alsa \
 	--disable-avcodec --disable-avformat \
 	--disable-postproc --disable-swscale \
 	--disable-dbus \
-	--disable-mad --disable-libmpeg2 \
+	--disable-mad \
 	--disable-faad --disable-skins2 \
 	--disable-live555 \
 	--disable-lua \
 	--disable-fribidi \
-	--disable-mkv \
 	--with-kde-solid='$${datadir}/kde4/apps'
 
 ACLOCAL_AMFLAGS = -I m4
@@ -62,13 +60,10 @@ EXTRA_DIST += \
 	extras/tools/tools.mak \
 	extras/tools/SHA512SUMS \
 	extras/tools/automake-clang.patch \
-	extras/tools/bison-macOS-7df04f9.patch \
-	extras/tools/bison-macOS-c41f233c.patch \
 	extras/tools/cmake-enable-ALPN-support-on-macOS-10.14.patch \
 	extras/tools/libtool-2.4.7-bitcode.patch \
 	extras/tools/libtool-2.4.7-clang-libs.patch \
-	extras/tools/libtool-2.4.7-response-files.patch \
-	extras/tools/ragel-6.8-javacodegen.patch
+	extras/tools/libtool-2.4.7-response-files.patch
 
 ###############################################################################
 # Various utilities ( editor syntax files, D-Bus controller ... )

@@ -18,11 +18,13 @@ $(TARBALLS)/libcddb-$(CDDB_VERSION).tar.bz2:
 
 cddb: libcddb-$(CDDB_VERSION).tar.bz2 .sum-cddb
 	$(UNPACK)
+	$(UPDATE_AUTOCONFIG)
 	$(APPLY) $(SRC)/cddb/cross.patch
 	$(APPLY) $(SRC)/cddb/getenv-crash.patch
 	$(APPLY) $(SRC)/cddb/cddb-no-alarm.patch
 	$(APPLY) $(SRC)/cddb/fix-header-guards.patch
 	$(APPLY) $(SRC)/cddb/no-gettext.patch
+	$(APPLY) $(SRC)/cddb/cddb-gcc14-getsockoptfix.patch
 ifdef HAVE_WIN32
 	$(APPLY) $(SRC)/cddb/win32-pkg.patch
 endif
@@ -30,8 +32,10 @@ endif
 
 DEPS_cddb = regex $(DEPS_regex)
 
+CDDB_CONF := --without-iconv
+
 .cddb: cddb
 	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) --without-iconv CFLAGS="$(CFLAGS) -D_BSD_SOCKLEN_T_=int -DWIN32_LEAN_AND_MEAN"
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) CFLAGS="$(CFLAGS) -D_BSD_SOCKLEN_T_=int -DWIN32_LEAN_AND_MEAN" $(CDDB_CONF)
+	$(MAKE) -C $< install
 	touch $@

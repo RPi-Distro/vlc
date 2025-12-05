@@ -70,6 +70,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QFont>
+#include <QActionGroup>
 
 #include <assert.h>
 
@@ -89,7 +90,7 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
                   p_selector( _p_selector )
 {
     viewStack = new QStackedLayout( this );
-    viewStack->setSpacing( 0 ); viewStack->setMargin( 0 );
+    viewStack->setSpacing( 0 ); viewStack->setContentsMargins( 0, 0, 0, 0 );
     setMinimumWidth( 300 );
 
     iconView    = NULL;
@@ -537,7 +538,7 @@ void StandardPLPanel::browseInto()
 void StandardPLPanel::wheelEvent( QWheelEvent *e )
 {
     if( e->modifiers() & Qt::ControlModifier ) {
-        int numSteps = e->delta() / 8 / 15;
+        int numSteps = e->angleDelta().y() / QWheelEvent::DefaultDeltasPerStep;
         if( numSteps > 0)
             increaseZoom();
         else if( numSteps < 0)

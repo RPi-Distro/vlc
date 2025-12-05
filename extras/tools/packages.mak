@@ -1,16 +1,16 @@
-GNU=http://ftp.gnu.org/gnu
-APACHE=http://mir2.ovh.net/ftp.apache.org/dist
-SF= http://downloads.sourceforge.net/project
-VIDEOLAN=http://downloads.videolan.org/pub/contrib
+GNU=https://ftpmirror.gnu.org/gnu
+APACHE=https://downloads.apache.org/
+SF=https://downloads.sourceforge.net/project
+VIDEOLAN=https://downloads.videolan.org/pub/contrib
 
 YASM_VERSION=1.3.0
 YASM_URL=http://www.tortall.net/projects/yasm/releases/yasm-$(YASM_VERSION).tar.gz
 
 NASM_VERSION=2.14
-NASM_URL=http://www.nasm.us/pub/nasm/releasebuilds/$(NASM_VERSION)/nasm-$(NASM_VERSION).tar.gz
+NASM_URL=https://www.nasm.us/pub/nasm/releasebuilds/$(NASM_VERSION)/nasm-$(NASM_VERSION).tar.gz
 
 CMAKE_VERSION=3.17.0
-CMAKE_URL=http://www.cmake.org/files/v3.17/cmake-$(CMAKE_VERSION).tar.gz
+CMAKE_URL=https://www.cmake.org/files/v3.17/cmake-$(CMAKE_VERSION).tar.gz
 
 LIBTOOL_VERSION=2.4.7
 LIBTOOL_URL=$(GNU)/libtool/libtool-$(LIBTOOL_VERSION).tar.gz
@@ -31,13 +31,10 @@ TAR_VERSION=1.26
 TAR_URL=$(GNU)/tar/tar-$(TAR_VERSION).tar.bz2
 
 XZ_VERSION=5.2.2
-XZ_URL=http://tukaani.org/xz/xz-$(XZ_VERSION).tar.bz2
+XZ_URL=https://tukaani.org/xz/xz-$(XZ_VERSION).tar.bz2
 
 GAS_VERSION=72887b9
 GAS_URL=http://git.libav.org/?p=gas-preprocessor.git;a=snapshot;h=$(GAS_VERSION);sf=tgz
-
-RAGEL_VERSION=6.10
-RAGEL_URL=http://www.colm.net/files/ragel/ragel-$(RAGEL_VERSION).tar.gz
 
 SED_VERSION=4.2.2
 SED_URL=$(GNU)/sed/sed-$(SED_VERSION).tar.bz2
@@ -48,17 +45,21 @@ ANT_URL=$(APACHE)/ant/binaries/apache-ant-$(ANT_VERSION)-bin.tar.bz2
 PROTOBUF_VERSION := 3.1.0
 PROTOBUF_URL := https://github.com/google/protobuf/releases/download/v$(PROTOBUF_VERSION)/protobuf-cpp-$(PROTOBUF_VERSION).tar.gz
 
-BISON_VERSION=3.0.4
+BISON_VERSION=3.8.2
 BISON_URL=$(GNU)/bison/bison-$(BISON_VERSION).tar.xz
 
 FLEX_VERSION=2.6.4
 FLEX_URL=https://github.com/westes/flex/releases/download/v$(FLEX_VERSION)/flex-$(FLEX_VERSION).tar.gz
 
+GETTEXT_VERSION=0.22
+GETTEXT_URL=$(GNU)/gettext/gettext-$(GETTEXT_VERSION).tar.gz
+
 HELP2MAN_VERSION=1.47.6
 HELP2MAN_URL=$(GNU)/help2man/help2man-$(HELP2MAN_VERSION).tar.xz
 
-MESON_VERSION=0.56.2
+MESON_VERSION=0.63.0
 MESON_URL=https://github.com/mesonbuild/meson/releases/download/$(MESON_VERSION)/meson-$(MESON_VERSION).tar.gz
 
-NINJA_VERSION=1.8.2
-NINJA_URL=https://github.com/ninja-build/ninja/archive/v$(NINJA_VERSION).tar.gz
+NINJA_VERSION=1.11.1
+NINJA_BUILD_NAME=$(NINJA_VERSION).g95dee.kitware.jobserver-1
+NINJA_URL=https://github.com/Kitware/ninja/archive/refs/tags/v$(NINJA_BUILD_NAME).tar.gz

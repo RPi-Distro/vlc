@@ -112,7 +112,9 @@
 #ifdef __GNUC__
 # define likely(p)     __builtin_expect(!!(p), 1)
 # define unlikely(p)   __builtin_expect(!!(p), 0)
-# define unreachable() __builtin_unreachable()
+# if !defined(unreachable)
+#  define unreachable() __builtin_unreachable()
+# endif
 #else
 # define likely(p)     (!!(p))
 # define unlikely(p)   (!!(p))
@@ -477,8 +479,8 @@ struct vlc_common_members
 #if !defined(__cplusplus)
 # define VLC_OBJECT(x) \
     _Generic((x)->obj, \
-        struct vlc_common_members: (vlc_object_t *)(&(x)->obj), \
-        const struct vlc_common_members: (const vlc_object_t *)(&(x)->obj) \
+        vlc_object_t: (vlc_object_t *)(&(x)->obj), \
+        struct vlc_common_members: (vlc_object_t *)(x) \
     )
 #else
 # define VLC_OBJECT( x ) ((vlc_object_t *)&(x)->obj)

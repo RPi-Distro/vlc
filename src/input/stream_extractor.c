@@ -85,13 +85,14 @@ struct stream_extractor_private {
  * within \ref base, see \ref mrl_helpers for further information.
  **/
 
-static char*
+VLC_MALLOC static char*
 StreamExtractorCreateMRL( char const* base, char const* subentry )
 {
     struct vlc_memstream buffer;
     char* escaped;
 
-    if( mrl_EscapeFragmentIdentifier( &escaped, subentry ) )
+    escaped = mrl_EscapeFragmentIdentifier( subentry );
+    if ( escaped == NULL )
         return NULL;
 
     if( vlc_memstream_open( &buffer ) )

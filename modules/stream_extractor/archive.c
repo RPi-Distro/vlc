@@ -131,7 +131,7 @@ static int libarchive_jump_cb( libarchive_t* p_arc, void* p_obj_current,
 
 
 static la_int64_t libarchive_skip_cb( libarchive_t* p_arc, void* p_obj,
-  off_t i_request )
+                                      la_int64_t i_request )
 {
     VLC_UNUSED( p_arc );
 
@@ -454,7 +454,10 @@ static int probe( stream_t* source )
     } const magicbytes[] = {
         /* keep heaviest at top */
         { 257, 5, "ustar" },              //TAR
-        { 0,   7, "Rar!\x1A\x07" },       //RAR
+#if ARCHIVE_VERSION_NUMBER >= 3004000
+        { 0,   8, "Rar!\x1A\x07\x01" },   //RAR5.0
+#endif
+        { 0,   7, "Rar!\x1A\x07" },       //RAR4.x
         { 0,   6, "7z\xBC\xAF\x27\x1C" }, //7z
         { 0,   4, "xar!" },               //XAR
         { 0,   4, "PK\x03\x04" },         //ZIP
@@ -606,16 +609,16 @@ eof:
     return 0;
 }
 
-static int archive_skip_decompressed( stream_extractor_t* p_extractor, uint64_t i_skip )
+static int archive_skip_decompressed( stream_extractor_t* p_extractor, uint64_t *pi_skip )
 {
-    while( i_skip )
+    while( *pi_skip )
     {
-        ssize_t i_read = Read( p_extractor, NULL, i_skip );
+        ssize_t i_read = Read( p_extractor, NULL, *pi_skip );
 
         if( i_read < 1 )
             return VLC_EGENERIC;
 
-        i_skip -= i_read;
+        *pi_skip -= i_read;
     }
 
     return VLC_SUCCESS;
@@ -660,9 +663,13 @@ static int Seek( stream_extractor_t* p_extractor, uint64_t i_req )
             i_skip = i_req;
             i_offset = 0;
         }
-
-        if( archive_skip_decompressed( p_extractor, i_skip ) )
-            msg_Dbg( p_extractor, "failed to skip to seek position" );
+        if( archive_skip_decompressed( p_extractor, &i_skip ) )
+        {
+            msg_Warn( p_extractor, "failed to skip to seek position %" PRIu64 "/%" PRId64,
+                      i_req, archive_entry_size( p_sys->p_entry ) );
+            p_sys->i_offset += i_skip;
+            return VLC_EGENERIC;
+        }
     }
 
     p_sys->i_offset = i_req;

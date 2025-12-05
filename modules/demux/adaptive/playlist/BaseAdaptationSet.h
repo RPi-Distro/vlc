@@ -62,14 +62,14 @@ namespace adaptive
                 const std::string&              getLang() const;
                 void                            setLang( const std::string &lang );
                 void                            debug(vlc_object_t *,int = 0) const;
-                Property<std::string>           description;
+                std::string                     description;
 
             protected:
                 Role                            role;
                 std::vector<BaseRepresentation *>   representations;
                 std::string                     lang;
-                Undef<bool>                     segmentAligned;
-                Undef<bool>                     bitswitchAble;
+                optional<bool>                  segmentAligned;
+                optional<bool>                  bitswitchAble;
         };
     }
 }

@@ -29,9 +29,7 @@
 #include "EPGView.hpp"
 
 #include <QPainter>
-#include <QFont>
 #include <QPaintEvent>
-#include <QtAlgorithms>
 
 EPGChannels::EPGChannels( QWidget *parent, EPGView *m_epgView )
     : QWidget( parent ), m_epgView( m_epgView ), m_offset( 0 )
@@ -50,7 +48,7 @@ void EPGChannels::addProgram( const EPGProgram *program )
     if ( !programsList.contains( program ) )
     {
         programsList << program;
-        qSort(programsList.begin(), programsList.end(), EPGProgram::lessThan);
+        std::sort(programsList.begin(), programsList.end(), EPGProgram::lessThan);
         update();
     }
 }
@@ -82,7 +80,11 @@ void EPGChannels::paintEvent( QPaintEvent *event )
         p.drawText( 0, - m_offset + ( i++ + 0.5 ) * TRACKS_HEIGHT - 4,
                     width(), height(), Qt::AlignLeft, text );
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+        int i_width = fontMetrics().horizontalAdvance( text );
+#else
         int i_width = fontMetrics().width( text );
+#endif
         if( width() < i_width )
             setMinimumWidth( i_width );
     }

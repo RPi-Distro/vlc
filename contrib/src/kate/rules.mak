@@ -15,15 +15,14 @@ $(TARBALLS)/libkate-$(KATE_VERSION).tar.gz:
 
 libkate: libkate-$(KATE_VERSION).tar.gz .sum-kate
 	$(UNPACK)
-	$(UPDATE_AUTOCONFIG)
+	$(UPDATE_AUTOCONFIG) && cd $(UNPACK_DIR) && mv config.guess config.sub misc/autotools
 	$(MOVE)
-	mv libkate/config.sub libkate/config.guess libkate/misc/autotools
 
 DEPS_kate = ogg $(DEPS_ogg)
 
+KATE_CONF := --disable-valgrind --disable-doc
+
 .kate: libkate
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) \
-		--disable-valgrind \
-		--disable-doc
-	cd $< && $(MAKE) SUBDIRS=. install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(KATE_CONF)
+	$(MAKE) -C $< SUBDIRS=. install
 	touch $@

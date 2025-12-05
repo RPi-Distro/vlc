@@ -2,7 +2,7 @@
 
 LIVE555_VERSION := 2016.11.28
 LIVE555_FILE := live.$(LIVE555_VERSION).tar.gz
-LIVEDOTCOM_URL := http://live555.com/liveMedia/public/$(LIVE555_FILE)
+LIVEDOTCOM_URL := $(CONTRIB_VIDEOLAN)/live555/$(LIVE555_FILE)
 
 ifdef BUILD_NETWORK
 ifdef GNUV3
@@ -19,7 +19,7 @@ $(TARBALLS)/$(LIVE555_FILE):
 
 .sum-live555: $(LIVE555_FILE)
 
-LIVE_EXTRA_CFLAGS := $(EXTRA_CFLAGS) -fexceptions $(CFLAGS)
+LIVE_EXTRA_CFLAGS := $(EXTRA_CFLAGS) -fexceptions -DNO_OPENSSL=1 $(CFLAGS)
 
 LIVE_TARGET = $(error live555 target not defined!)
 ifdef HAVE_LINUX
@@ -109,5 +109,5 @@ SUBDIRS=groupsock liveMedia UsageEnvironment BasicUsageEnvironment
 	cd $< && ./genMakefiles $(LIVE_TARGET)
 	cd $< && for subdir in $(SUBDIRS); do $(MAKE) $(HOSTVARS) -C $$subdir; done
 	cd $< && for subdir in $(SUBDIRS); do $(MAKE) $(HOSTVARS) -C $$subdir install; done
-	cd $< && $(MAKE) install_shared_libraries
+	$(MAKE) -C $< install_shared_libraries
 	touch $@

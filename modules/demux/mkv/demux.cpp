@@ -458,20 +458,28 @@ bool demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, matroska_stream_c *
 
     /* verify the EBML Header... it shouldn't be bigger than 1kB */
     p_l0 = p_stream1->estream.FindNextID(EBML_INFO(EbmlHead), 1024);
-    if (p_l0 == NULL)
+    if (p_l0 == nullptr || p_l0->IsDummy())
     {
         msg_Err( p_demux, "No EBML header found" );
+        delete p_l0;
         return false;
     }
 
     /* verify we can read this Segment */
     try
     {
-        p_l0->Read( p_stream1->estream, EBML_CLASS_CONTEXT(EbmlHead), i_upper_lvl, p_l0, true);
+        EbmlElement *el = nullptr;
+        p_l0->Read( p_stream1->estream, EBML_CLASS_CONTEXT(EbmlHead), i_upper_lvl, el, true);
+        if (i_upper_lvl != 0)
+        {
+            assert(el != nullptr);
+            delete el;
+        }
     }
     catch(...)
     {
         msg_Err(p_demux, "EBML Header Read failed");
+        delete p_l0;
         return false;
     }
 
@@ -479,6 +487,7 @@ bool demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, matroska_stream_c *
     if (std::string(doc_type) != "matroska" && std::string(doc_type) != "webm" )
     {
         msg_Err( p_demux, "Not a Matroska file : DocType = %s ", std::string(doc_type).c_str());
+        delete p_l0;
         return false;
     }
 
@@ -486,6 +495,7 @@ bool demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, matroska_stream_c *
     if (uint64(doc_read_version) > 5)
     {
         msg_Err( p_demux, "matroska file needs version %" PRId64 " but only versions 1 to 4 supported", uint64(doc_read_version));
+        delete p_l0;
         return false;
     }
 
@@ -494,13 +504,14 @@ bool demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, matroska_stream_c *
 
     // find all segments in this file
     p_l0 = p_stream1->estream.FindNextID(EBML_INFO(KaxSegment), UINT64_MAX);
-    if (p_l0 == NULL)
+    if (p_l0 == nullptr || p_l0->IsDummy())
     {
         msg_Err( p_demux, "No segment found" );
+        delete p_l0;
         return false;
     }
 
-    while (p_l0 != 0)
+    while (p_l0 != nullptr)
     {
         bool b_l0_handled = false;
 
@@ -535,10 +546,15 @@ bool demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, matroska_stream_c *
         {
             p_l0->SkipData(p_stream1->estream, KaxMatroska_Context);
             p_l0 = p_stream1->estream.FindNextID(EBML_INFO(KaxSegment), UINT64_MAX);
+            if (p_l0 != nullptr && p_l0->IsDummy())
+            {
+                delete p_l0;
+                p_l0 = nullptr;
+            }
         }
         else
         {
-            p_l0 = NULL;
+            p_l0 = nullptr;
         }
 
         if( b_l0_handled == false )
@@ -722,6 +738,9 @@ bool demux_sys_t::FreeUnused()
 
 bool demux_sys_t::PreparePlayback( virtual_segment_c & new_vsegment, vlc_tick_t i_mk_date )
 {
+    if ( !new_vsegment.CurrentSegment() )
+        return false;
+
     if ( p_current_vsegment != &new_vsegment )
     {
         if ( p_current_vsegment->CurrentSegment() != NULL )

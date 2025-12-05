@@ -713,10 +713,11 @@ bool matroska_segment_c::LoadSeekHeadItem( const EbmlCallbacks & ClassInfos, int
     es.I_O().setFilePointer( i_element_position, seek_beginning );
     el = es.FindNextID( ClassInfos, 0xFFFFFFFFL);
 
-    if( el == NULL )
+    if( el == nullptr || el->IsDummy() )
     {
         msg_Err( &sys.demuxer, "cannot load some cues/chapters/tags etc. (broken seekhead or file)" );
         es.I_O().setFilePointer( i_sav_position, seek_beginning );
+        delete el;
         return false;
     }
 
@@ -1258,8 +1259,16 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
                 return;
             }
 
+            filepos_t read = 0;
+            try {
+                read = ksblock.ReadData( vars.obj->es.I_O() );
+            } catch(...) {
+            }
+            if (read == 0 && ksblock.GetSize() != 0) {
+                msg_Err( vars.p_demuxer,"Error while reading %s",  EBML_NAME(&ksblock) );
+                return;
+            }
             vars.simpleblock = &ksblock;
-            vars.simpleblock->ReadData( vars.obj->es.I_O() );
             vars.simpleblock->SetParent( *vars.obj->cluster );
 
             if( ksblock.IsKeyframe() )
@@ -1278,8 +1287,16 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
 
         E_CASE( KaxBlock, kblock )
         {
+            filepos_t read = 0;
+            try {
+                read = kblock.ReadData( vars.obj->es.I_O() );
+            } catch(...) {
+            }
+            if (unlikely(read == 0) && kblock.GetSize() != 0) {
+                msg_Err( vars.p_demuxer,"Error while reading %s",  EBML_NAME(&kblock) );
+                return;
+            }
             vars.block = &kblock;
-            vars.block->ReadData( vars.obj->es.I_O() );
             vars.block->SetParent( *vars.obj->cluster );
 
             const mkv_track_t *p_track = vars.obj->FindTrackByBlock( &kblock, NULL );
@@ -1293,14 +1310,11 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
         }
         E_CASE( KaxBlockAdditions, kadditions )
         {
-            EbmlElement *el;
-            int i_upper_level = 0;
-            try
+            if ( vars.obj->ReadMaster( kadditions ) )
             {
-                kadditions.Read( vars.obj->es, EBML_CONTEXT(&kadditions), i_upper_level, el, false );
                 vars.additions = &kadditions;
                 vars.ep->Keep ();
-            } catch (...) {}
+            }
         }
         E_CASE( KaxBlockDuration, kduration )
         {
@@ -1464,4 +1478,31 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
             pp_block = NULL;
         }
     }
+}
+
+bool matroska_segment_c::ReadMaster(EbmlMaster & m, ScopeMode scope)
+{
+    if( unlikely( m.IsFiniteSize() && m.GetSize() >= SIZE_MAX ) )
+    {
+        msg_Err( VLC_OBJECT(&sys.demuxer), "%s too big, aborting", EBML_NAME(&m) );
+        return false;
+    }
+    try
+    {
+        EbmlElement *el;
+        int i_upper_level = 0;
+        m.Read( es, EBML_CONTEXT(&m), i_upper_level, el, true, scope );
+        if (i_upper_level != 0)
+        {
+            assert(el != nullptr);
+            delete el;
+        }
+    }
+    catch(...)
+    {
+        msg_Err( VLC_OBJECT(&sys.demuxer), "Couldn't read %s", EBML_NAME(&m) );
+        return false;
+    }
+
+    return true;
 }

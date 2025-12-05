@@ -86,6 +86,9 @@ int avparser_OpenPacketizer( vlc_object_t *p_this )
     decoder_t     *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
+    if( p_dec->fmt_in.i_cat != VIDEO_ES )
+        return VLC_EGENERIC;
+
     /* Restrict to VP9 for now */
     if( p_dec->fmt_in.i_codec != VLC_CODEC_VP9 )
         return VLC_EGENERIC;
@@ -104,7 +107,7 @@ int avparser_OpenPacketizer( vlc_object_t *p_this )
     if( !p_ctx )
         return VLC_EGENERIC;
 
-    AVCodec * p_codec = avcodec_find_decoder( i_avcodec_id );
+    const AVCodec * p_codec = avcodec_find_decoder( i_avcodec_id );
     if( unlikely( !p_codec ) )
     {
         av_parser_close( p_ctx );
