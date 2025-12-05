@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.22-rc1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-09-17 13:40+0200\n"
+"POT-Creation-Date: 2025-11-24 23:15+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Sam A. T. <qamnott@gmail.com>, 2021\n"
 "Language-Team: Khmer (https://app.transifex.com/yaron/teams/16553/km/)\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: include/vlc_common.h:1053
+#: include/vlc_common.h:1055
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -573,19 +573,19 @@ msgid ""
 "</p><p>For all the saving, converting, transcoding, encoding, muxing and "
 "streaming tasks, you should find useful information in the <a href=\"http://"
 "wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming Documentation</"
-"a>.</p><p>If you are unsure about terminology, please consult the <a "
-"href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
-"p><p>To understand the main keyboard shortcuts, read the <a href=\"http://"
-"wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before "
-"asking any question, please refer yourself to the <a href=\"http://www."
-"videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and give) "
-"help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
-"href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC "
-"channel (<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the "
-"project</h3><p>You can help the VideoLAN project giving some of your time to "
-"help the community, to design skins, to translate the documentation, to test "
-"and to code. You can also give funds and material to help us. And of course, "
-"you can <b>promote</b> VLC media player.</p></body></html>"
+"a>.</p><p>If you are unsure about terminology, please consult the <a href="
+"\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</p><p>To "
+"understand the main keyboard shortcuts, read the <a href=\"http://wiki."
+"videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before asking "
+"any question, please refer yourself to the <a href=\"http://www.videolan.org/"
+"support/faq.html\">FAQ</a>.</p><p>You might then get (and give) help on the "
+"<a href=\"http://forum.videolan.org\">Forums</a>, the <a href=\"http://www."
+"videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC channel "
+"(<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the project</"
+"h3><p>You can help the VideoLAN project giving some of your time to help the "
+"community, to design skins, to translate the documentation, to test and to "
+"code. You can also give funds and material to help us. And of course, you "
+"can <b>promote</b> VLC media player.</p></body></html>"
 msgstr ""
 "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; "
 "charset=utf-8\" /></head><body><h2>សូម​ស្វាគមន៍​មកកាន់​ជំនួយ​កម្មវិធី​ចាក់​មេឌៀ VLC​</"
@@ -600,16 +600,16 @@ msgstr ""
 "Documentation:Streaming_HowTo\">ឯកសារ​ការ​ស្ទ្រីម</a> ។</p><p>បើ​អ្នក​មិន​ច្បាស់​ជាមួយ​ប្រជុំ​"
 "សព្ទ​បច្ចេកទេស​សូម​ចូល​មើល <a href=\"http://wiki.videolan.org/Knowledge_Base\">មូលដ្ឋាន​"
 "ចំណេះដឹង</a> ។</p><p>ដើម្បី​ស្វែងយល់​អំពី​ផ្លូវកាត់​គ្រាប់ចុច​មេ សូម​អាន​ទំព័រ <a href=\"http://wiki."
-"videolan.org/Hotkeys\">ផ្លូវកាត់</a> ។</p><h3>ជំនួយ</h3><p> សូម​មើល <a "
-"href=\"http://wiki.videolan.org/Frequently_Asked_Questions\">FAQ (សំណួរ​ដែល​សួរ​"
-"រឿយៗ)</a> មុន​នឹង​សួរ​សំណួរ​ណាមួយ។</p><p>អ្នក​អាច​ទទួល​បាន (និង​ផ្ដល់) ជំនួយ​តាម​រយៈ <a "
-"href=\"http://forum.videolan.org\">វេទិកា</a> <a href=\"http://www.videolan."
-"org/vlc/lists.html\">បញ្ជី​សំបុត្រ​រួម</a> ឬ​ឆានែល IRC ( <a href=\"http://www."
-"videolan.org/webirc/\"><em>#videolan</em></a> irc.freenode.net ) ។</p><h3>ការ​"
-"ចូលរួម​​គម្រោង គឺ</h3><p>អ្នក​អាច​ជួយ​គម្រោង VideoLAN បាន ដោយ​ចំណាយ​ពេលវេលា​ដើម្បី​ជួយ​សហគមន៍ ក្នុង​"
-"ការរចនា​រូបរាង ការ​បកប្រែ​ឯកសារ ការ​ធ្វើ​តេស្ដ និង​ការ​សរសេរ​កូដ​ជា​ដើម។ ឬ​អ្នក​អាច​ផ្ដល់​ជា​ថវិកា និង​"
-"សម្ភារៈ​ដើម្បី​ជួយ​ដល់​ពួក​យើង​ក៏បាន។ ហើយ​ជា​ការ​ពិត​អ្នក​ក៏​អាច​<b>ផ្សព្វផ្សាយ</b>​កម្មវិធី​ចាក់ VLC បាន​ផង​"
-"ដែរ។</p></body></html>"
+"videolan.org/Hotkeys\">ផ្លូវកាត់</a> ។</p><h3>ជំនួយ</h3><p> សូម​មើល <a href="
+"\"http://wiki.videolan.org/Frequently_Asked_Questions\">FAQ (សំណួរ​ដែល​សួរ​រឿយៗ)</"
+"a> មុន​នឹង​សួរ​សំណួរ​ណាមួយ។</p><p>អ្នក​អាច​ទទួល​បាន (និង​ផ្ដល់) ជំនួយ​តាម​រយៈ <a href=\"http://"
+"forum.videolan.org\">វេទិកា</a> <a href=\"http://www.videolan.org/vlc/lists."
+"html\">បញ្ជី​សំបុត្រ​រួម</a> ឬ​ឆានែល IRC ( <a href=\"http://www.videolan.org/webirc/"
+"\"><em>#videolan</em></a> irc.freenode.net ) ។</p><h3>ការ​ចូលរួម​​គម្រោង គឺ</"
+"h3><p>អ្នក​អាច​ជួយ​គម្រោង VideoLAN បាន ដោយ​ចំណាយ​ពេលវេលា​ដើម្បី​ជួយ​សហគមន៍ ក្នុង​ការរចនា​រូបរាង "
+"ការ​បកប្រែ​ឯកសារ ការ​ធ្វើ​តេស្ដ និង​ការ​សរសេរ​កូដ​ជា​ដើម។ ឬ​អ្នក​អាច​ផ្ដល់​ជា​ថវិកា និង​សម្ភារៈ​ដើម្បី​ជួយ​ដល់​"
+"ពួក​យើង​ក៏បាន។ ហើយ​ជា​ការ​ពិត​អ្នក​ក៏​អាច​<b>ផ្សព្វផ្សាយ</b>​កម្មវិធី​ចាក់ VLC បាន​ផង​ដែរ។</p></"
+"body></html>"
 
 #: src/audio_output/filters.c:267
 msgid "Audio filtering failed"
@@ -1516,8 +1516,8 @@ msgstr "ម៉ូឌុល​ចំណុច​ប្រទាក់​បន្
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
 "the background in addition to the default interface. Use a colon separated "
-"list of interface modules. (common values are \"rc\" (remote control), "
-"\"http\", \"gestures\" ...)"
+"list of interface modules. (common values are \"rc\" (remote control), \"http"
+"\", \"gestures\" ...)"
 msgstr ""
 "អ្នក​អាច​ជ្រើស​ \"ចំណុច​ប្រទាក់​បន្ថែម\" សម្រាប់ VLC បាន ។ ពួក​វា​នឹង​ត្រូវ​បាន​ចាប់ផ្ដើម​នៅ​ក្នុង​"
 "ផ្ទៃខាងក្រោយ ដើម្បី​បន្ថែម​ទៅកាន់​ចំណុច​ប្រទាក់​លំនាំដើម ។ ប្រើ​បញ្ជី​​ម៉ូឌុល​ចំណុច​ប្រទាក់​ដែល​បំបែក​ដោយ​សញ្ញា​ចុច​"
@@ -2793,10 +2793,10 @@ msgstr "ផ្លាស់ប្ដូរ​ចំណងជើង​ផ្អែ
 
 #: src/libvlc-module.c:690
 msgid ""
-"This option allows you to set the title according to what's being "
-"played<br>$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: "
-"Genre<br>$n: Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: "
-"\"Now playing\" (Fall back on Title - Artist)"
+"This option allows you to set the title according to what's being played<br>"
+"$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: Genre<br>$n: "
+"Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: \"Now playing"
+"\" (Fall back on Title - Artist)"
 msgstr ""
 "ជម្រើស​នេះ​អនុញ្ញាត​ឲ្យ​អ្នក​កំណត់​ចំណងជើង​ដោយ​ផ្អែកលើ​អ្វី​ដែល​វា​កំពុង​ចាក់<br>$a ៖ សិល្បករ<br>$b ៖ "
 "អាល់ប៊ុម<br>$c ៖ រក្សាសិទ្ធិ<br>$t ៖ ចំណងជើង<br>$g ៖ ចង្វាក់<br>$n ៖ លេខ​បទ<br>$p ៖ កំពុង​"
@@ -2815,8 +2815,8 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 "ជម្រើស​នេះ​អនុញ្ញាត​ឲ្យ​អ្នក​ ត្រូវ​កែប្រែ​ឥរិយាបថ​ប្រព័ន្ធ​រង​របស់​រូបភាព​រង។ ឧទាហរណ៍ អ្នក​អាច​បើក​ប្រភព​"
-"រូបភាព​រង (រូប​សញ្ញា។ល។) ។ បើក​តម្រង​ទាំងនេះ​នៅ​ទី​នេះ ហើយ​កំណត់​រចនាសម្ព័ន្ធ​វា​នៅ​ក្នុង \"តម្រង​ប្រភព​"
-"រង\" ជម្រើស​ម៉ូឌុល។ អ្នក​អាច​កំណត់​ជម្រើស​​រូបភាព​រង​ផ្សេងៗទៀត​ជា​ច្រើន។"
+"រូបភាព​រង (រូប​សញ្ញា។ល។) ។ បើក​តម្រង​ទាំងនេះ​នៅ​ទី​នេះ ហើយ​កំណត់​រចនាសម្ព័ន្ធ​វា​នៅ​ក្នុង \"តម្រង​ប្រភព​រង"
+"\" ជម្រើស​ម៉ូឌុល។ អ្នក​អាច​កំណត់​ជម្រើស​​រូបភាព​រង​ផ្សេងៗទៀត​ជា​ច្រើន។"
 
 #: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Force subtitle position"
@@ -9171,9 +9171,9 @@ msgstr "ឯកសារ​ដែល vlc អាន key-uri និង keyfile-loca
 
 #: modules/access_output/livehttp.c:98
 msgid ""
-"File is read when segment starts and is assumed to be in format: key-"
-"uri\\nkey-file. File is read on the segment opening and values are used on "
-"that segment."
+"File is read when segment starts and is assumed to be in format: key-uri"
+"\\nkey-file. File is read on the segment opening and values are used on that "
+"segment."
 msgstr ""
 
 #: modules/access_output/livehttp.c:102
@@ -14057,14 +14057,14 @@ msgstr "ចំណុច​ប្រទាក់​ឧបករណ៍​បញ្
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
-#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1292
-#: modules/gui/qt/main_interface.cpp:1296
-#: modules/gui/qt/main_interface.cpp:1333
-#: modules/gui/qt/main_interface.cpp:1335
-#: modules/gui/qt/main_interface.cpp:1443
-#: modules/gui/qt/main_interface.cpp:1460
-#: modules/gui/qt/main_interface.cpp:1468
-#: modules/gui/qt/main_interface.cpp:1491 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
+#: modules/gui/qt/main_interface.cpp:1306
+#: modules/gui/qt/main_interface.cpp:1343
+#: modules/gui/qt/main_interface.cpp:1345
+#: modules/gui/qt/main_interface.cpp:1453
+#: modules/gui/qt/main_interface.cpp:1470
+#: modules/gui/qt/main_interface.cpp:1478
+#: modules/gui/qt/main_interface.cpp:1501 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -15515,8 +15515,8 @@ msgid ""
 "'#duplicate{..., select=\"es=<pid>\"}'."
 msgstr ""
 "កំណត់​លេខ​សម្គាល់​ខាង​ក្នុង​របស់​ស្ទ្រីម​ចម្បង​នីមួយៗ ដែល​បាន​គ្រប់គ្រង​ដោយ VLC ទៅកាន់​តម្លៃ​ដូចគ្នា​នឹង PID នៅ​"
-"ក្នុង​ស្ទ្រីម TS ជំនួស​ឲ្យ ១ ២ ៣ ។ល។ ទង្វើ​មាន​ប្រយោជន៍ '#duplicate{..., "
-"select=\"es=<pid>\"}' ។"
+"ក្នុង​ស្ទ្រីម TS ជំនួស​ឲ្យ ១ ២ ៣ ។ល។ ទង្វើ​មាន​ប្រយោជន៍ '#duplicate{..., select=\"es=<pid>"
+"\"}' ។"
 
 #: modules/demux/mpeg/ts.c:94 modules/mux/mpeg/ts.c:173
 msgid "CSA Key"
@@ -16064,9 +16064,9 @@ msgid ""
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
-"DVDs, network streams, capture cards and other media formats!</p><p><a "
-"href=\"https://www.videolan.org/contribute/\"><span style=\" text-"
-"decoration: underline; color:#0057ae;\">Help and join us!</span></a>"
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"https://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>កម្មវិធី​ចាក់​មេឌៀ VLC គឺជា​កម្មវិធី​ស្ទ្រីម កម្មវិធី​ដាក់​លេខ​កូដ និង​ជា​កម្មវិធី​ចាក់​មេឌៀ​កូដ​ចំហ​ឥត​បង់​ថ្លៃ "
 "ដែល​បាន​បង្កើត​ដោយ​អ្នក​ស្ម័គ្រចិត្ត​របស់​សហគមន៍ <a href=\"https://www.videolan.org/\"><span "
@@ -16371,8 +16371,8 @@ msgstr "បាន​ផ្លាស់ប្ដូរ​ព័ត៌មាន​
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:213
 msgid ""
-"Input has changed, unable to save bookmark. Suspending playback with "
-"\"Pause\" while editing bookmarks to ensure to keep the same input."
+"Input has changed, unable to save bookmark. Suspending playback with \"Pause"
+"\" while editing bookmarks to ensure to keep the same input."
 msgstr ""
 "ព័ត៌មាន​បញ្ចូល​បាន​ផ្លាស់ប្ដូរ មិន​អាច​រក្សាទុក​ចំណាំបានទេ ។ ផ្អាក​ការ​ចាក់​ឡើងវិញ​ជាមួយ \"ផ្អាក\" នៅ​ពេល​"
 "កំពុង​កែសម្រួល​ចំណាំ ដើម្បី​ប្រាកដ​ថា​បាន​រក្សាទុក​ព័ត៌មាន​បញ្ចូល​ដូចគ្នា ។"
@@ -17175,13 +17175,13 @@ msgstr ""
 
 #: modules/gui/macosx/VLCMainWindow.m:220
 #: modules/gui/macosx/VLCMainWindow.m:226
-#: modules/gui/qt/components/playlist/selector.cpp:580
+#: modules/gui/qt/components/playlist/selector.cpp:593
 msgid "Subscribe"
 msgstr "ជាវ"
 
 #: modules/gui/macosx/VLCMainWindow.m:221
 #: modules/gui/macosx/VLCMainWindow.m:232
-#: modules/gui/qt/components/playlist/selector.cpp:597
+#: modules/gui/qt/components/playlist/selector.cpp:610
 msgid "Unsubscribe"
 msgstr "ឈប់ជាវ"
 
@@ -17191,7 +17191,7 @@ msgid "Subscribe to a podcast"
 msgstr "ជាវ​ទៅ​ផតខាស"
 
 #: modules/gui/macosx/VLCMainWindow.m:225
-#: modules/gui/qt/components/playlist/selector.cpp:581
+#: modules/gui/qt/components/playlist/selector.cpp:594
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr "បញ្ចូល URL របស់​ផតខាស​ដែល​ត្រូវ​ជាវ​ទៅ ៖"
 
@@ -19604,11 +19604,11 @@ msgstr "បណ្ដាញ​មូលដ្ឋាន"
 msgid "Internet"
 msgstr "អ៊ីនធឺណិត"
 
-#: modules/gui/qt/components/playlist/selector.cpp:443
+#: modules/gui/qt/components/playlist/selector.cpp:456
 msgid "Remove this podcast subscription"
 msgstr "យក​ការ​ជាវ​ផតខាស​នេះ​ចេញ"
 
-#: modules/gui/qt/components/playlist/selector.cpp:594
+#: modules/gui/qt/components/playlist/selector.cpp:607
 msgid "Do you really want to unsubscribe from %1?"
 msgstr "តើ​អ្នក​ពិតជា​ចង់​ឈប់​​ជាវ​ពី %1 មែន​ឬ ?"
 
@@ -20167,8 +20167,8 @@ msgid ""
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
-"DVDs, network streams, capture cards and other media formats!</p><p><a "
-"href=\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>កម្មវិធី​ចាក់​មេឌៀ VLC គឺជា​កម្មវិធី​ស្ទ្រីម កម្មវិធី​ដាក់​លេខ​កូដ និង​ជា​កម្មវិធី​ចាក់​មេឌៀ​កូដ​ចំហ​ឥត​បង់​ថ្លៃ "
@@ -20507,8 +20507,8 @@ msgid ""
 msgstr ""
 "អ្នកជំនួយការ​នេះ​នឹង​អនុញ្ញាត​ឲ្យ​អ្នក​ស្ទ្រីម ឬ​បម្លែង​មេឌៀ​របស់​អ្នក​សម្រាប់​ប្រើ​ក្នុង​មូលដ្ឋាន លើ​បណ្ដាញ​ឯកជន​"
 "របស់​អ្នក ឬ​នៅ​លើ​អ៊ីនធឺណិត។\n"
-"អ្នក​គួរតែ​ចាប់ផ្ដើម​ដោយ​ពិនិត្យមើល​ថា​ប្រភព​នោះ​ផ្គូផ្គង​ជាមួយ​អ្វី​ដែល​អ្នក​បញ្ចូល​ដែរ​ឬទេ រួច​ចុច​ប៊ូតុង "
-"\"បន្ទាប់\" ដើម្បី​បន្ត។\n"
+"អ្នក​គួរតែ​ចាប់ផ្ដើម​ដោយ​ពិនិត្យមើល​ថា​ប្រភព​នោះ​ផ្គូផ្គង​ជាមួយ​អ្វី​ដែល​អ្នក​បញ្ចូល​ដែរ​ឬទេ រួច​ចុច​ប៊ូតុង \"បន្ទាប់"
+"\" ដើម្បី​បន្ត។\n"
 
 #: modules/gui/qt/dialogs/sout.cpp:56
 msgid ""
@@ -20778,11 +20778,11 @@ msgstr ""
 msgid "&Continue"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:1444
+#: modules/gui/qt/main_interface.cpp:1454
 msgid "Control menu for the player"
 msgstr "ម៉ឺនុយ​បញ្ជា​សម្រាប់​កម្មវិធី​ចាក់"
 
-#: modules/gui/qt/main_interface.cpp:1488
+#: modules/gui/qt/main_interface.cpp:1498
 msgid "Paused"
 msgstr "បាន​ផ្អាក"
 
@@ -21351,7 +21351,7 @@ msgstr "ការ​ព្រមាន"
 msgid "debug"
 msgstr "បំបាត់កំហុស"
 
-#: modules/gui/qt/util/searchlineedit.cpp:49
+#: modules/gui/qt/util/searchlineedit.cpp:50
 msgctxt "Tooltip|Clear"
 msgid "Clear"
 msgstr ""
@@ -21941,8 +21941,8 @@ msgstr "ការ​កំណត់​រចនា​សម្ព័ន្ធ​
 
 #: modules/lua/vlc.c:53
 msgid ""
-"Lua interface configuration string. Format is: '[\"<interface module "
-"name>\"] = { <option> = <value>, ...}, ...'."
+"Lua interface configuration string. Format is: '[\"<interface module name>"
+"\"] = { <option> = <value>, ...}, ...'."
 msgstr ""
 "តួអក្សរ​​ការ​កំណត់​រចនា​សម្ព័ន្ធ​ចំណុចប្រទាក់ Lua ។ ទ្រង់ទ្រាយ ៖ '[\"<ឈ្មោះ​ម៉ូឌុល​ចំណុច​ប្រទាក់>\"] = "
 "{ <option> = <value>, ...}, ...' ។"

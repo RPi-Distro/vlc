@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.22-rc1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-09-17 13:40+0200\n"
+"POT-Creation-Date: 2025-11-24 23:15+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Mindaugas <opensuse.lietuviu.kalba@gmail.com>, 2020\n"
 "Language-Team: Lithuanian (https://app.transifex.com/yaron/teams/16553/lt/)\n"
@@ -23,7 +23,7 @@ msgstr ""
 "11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? "
 "1 : n % 1 != 0 ? 2: 3);\n"
 
-#: include/vlc_common.h:1053
+#: include/vlc_common.h:1055
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -587,24 +587,24 @@ msgid ""
 "</p><p>For all the saving, converting, transcoding, encoding, muxing and "
 "streaming tasks, you should find useful information in the <a href=\"http://"
 "wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming Documentation</"
-"a>.</p><p>If you are unsure about terminology, please consult the <a "
-"href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
-"p><p>To understand the main keyboard shortcuts, read the <a href=\"http://"
-"wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before "
-"asking any question, please refer yourself to the <a href=\"http://www."
-"videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and give) "
-"help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
-"href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC "
-"channel (<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the "
-"project</h3><p>You can help the VideoLAN project giving some of your time to "
-"help the community, to design skins, to translate the documentation, to test "
-"and to code. You can also give funds and material to help us. And of course, "
-"you can <b>promote</b> VLC media player.</p></body></html>"
+"a>.</p><p>If you are unsure about terminology, please consult the <a href="
+"\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</p><p>To "
+"understand the main keyboard shortcuts, read the <a href=\"http://wiki."
+"videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before asking "
+"any question, please refer yourself to the <a href=\"http://www.videolan.org/"
+"support/faq.html\">FAQ</a>.</p><p>You might then get (and give) help on the "
+"<a href=\"http://forum.videolan.org\">Forums</a>, the <a href=\"http://www."
+"videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC channel "
+"(<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the project</"
+"h3><p>You can help the VideoLAN project giving some of your time to help the "
+"community, to design skins, to translate the documentation, to test and to "
+"code. You can also give funds and material to help us. And of course, you "
+"can <b>promote</b> VLC media player.</p></body></html>"
 msgstr ""
 "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; "
 "charset=utf-8\" /></head><body><h2>Jus sveikina VLC leistuvės žinynas </"
-"h2><h3>Dokumentacija</h3><p>VLC dokumentaciją galite rasti VideoLAN <a "
-"href=\"http://wiki.videolan.org\">wiki</a> svetainėje.</p><p>Jei esate pirmą "
+"h2><h3>Dokumentacija</h3><p>VLC dokumentaciją galite rasti VideoLAN <a href="
+"\"http://wiki.videolan.org\">wiki</a> svetainėje.</p><p>Jei esate pirmą "
 "kartą naudojatės VLC leistuve, perskaitykite<br><a href=\"http://wiki."
 "videolan.org/Documentation:VLC_for_dummies\"><em>VLC leistuvės "
 "pradžiamokslį</em></a>.</p> <p>Šiek tiek informacijos, kaip naudotis "
@@ -613,16 +613,16 @@ msgstr ""
 "leistuve</em></a>.</p><p>Naudingos informacijos apie įrašymą, konvertavimą, "
 "perkodavimą, kodavimą, srauto tankinimą ir transliavimą turėtumėte rasti <a "
 "href=\"http://wiki.videolan.org/Documentation:Streaming_HowTo\">transliavimo "
-"žinyne</a>.</p><p>Jei abejojate dėl terminologijos, žiūrėkite <a "
-"href=\"http://wiki.videolan.org/Knowledge_Base\">pagrindinių žinių puslapį</"
-"a>.</p><p> Norėdami suprasti pagrindinius sparčiuosius klavišus, skaitykite "
-"<a href=\"http://wiki.videolan.org/Hotkeys\">klavišų susiejimų</a> puslapį.</"
+"žinyne</a>.</p><p>Jei abejojate dėl terminologijos, žiūrėkite <a href="
+"\"http://wiki.videolan.org/Knowledge_Base\">pagrindinių žinių puslapį</a>.</"
+"p><p> Norėdami suprasti pagrindinius sparčiuosius klavišus, skaitykite <a "
+"href=\"http://wiki.videolan.org/Hotkeys\">klavišų susiejimų</a> puslapį.</"
 "p><h3>Pagalba</h3><p>Prieš užduodami bet kokį klausimą, pirmiausia ieškokite "
 "atsakymo <a href=\"http://www.videolan.org/support/faq.html\">dažniausiai "
-"užduodamų klausimų puslapyje</a>.</p><p>Pagalbos taip pat rasite <a "
-"href=\"http://forum.videolan.org\">forumuose</a>, <a href=\"http://www."
-"videolan.org/vlc/lists.html\">elektroninio pašto grupėje</a> ar mūsų IRC "
-"kanale (<em>#videolan</em> adresu irc.freenode.net).</p><h3>Prisidėkite prie "
+"užduodamų klausimų puslapyje</a>.</p><p>Pagalbos taip pat rasite <a href="
+"\"http://forum.videolan.org\">forumuose</a>, <a href=\"http://www.videolan."
+"org/vlc/lists.html\">elektroninio pašto grupėje</a> ar mūsų IRC kanale "
+"(<em>#videolan</em> adresu irc.freenode.net).</p><h3>Prisidėkite prie "
 "projekto </h3><p>Jūs galite prisidėti prie VideoLAN projekto padėdami VLC "
 "bendruomenei, kurdami apipavidalinimus, versdami dokumentaciją, išbandydami "
 "ir programuodami. Taip pat galite suteikti piniginę ir materialinę paramą. "
@@ -1544,8 +1544,8 @@ msgstr "Ypatingi sąsajos moduliai"
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
 "the background in addition to the default interface. Use a colon separated "
-"list of interface modules. (common values are \"rc\" (remote control), "
-"\"http\", \"gestures\" ...)"
+"list of interface modules. (common values are \"rc\" (remote control), \"http"
+"\", \"gestures\" ...)"
 msgstr ""
 "Jūs galite pasirinkti „papildomas sąsajas“ VLC leistuvei. Jos bus "
 "paleidžiamos pagrindinės sąsajos fone. Sudarykite dvitaškiais atskirtų "
@@ -2863,10 +2863,10 @@ msgstr "Antraštę keisti priklausomai nuo kūrinio"
 
 #: src/libvlc-module.c:690
 msgid ""
-"This option allows you to set the title according to what's being "
-"played<br>$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: "
-"Genre<br>$n: Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: "
-"\"Now playing\" (Fall back on Title - Artist)"
+"This option allows you to set the title according to what's being played<br>"
+"$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: Genre<br>$n: "
+"Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: \"Now playing"
+"\" (Fall back on Title - Artist)"
 msgstr ""
 
 #: src/libvlc-module.c:695
@@ -9197,9 +9197,9 @@ msgstr ""
 
 #: modules/access_output/livehttp.c:98
 msgid ""
-"File is read when segment starts and is assumed to be in format: key-"
-"uri\\nkey-file. File is read on the segment opening and values are used on "
-"that segment."
+"File is read when segment starts and is assumed to be in format: key-uri"
+"\\nkey-file. File is read on the segment opening and values are used on that "
+"segment."
 msgstr ""
 
 #: modules/access_output/livehttp.c:102
@@ -13888,14 +13888,14 @@ msgstr "D-Bus valdymo sąsaja"
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
-#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1292
-#: modules/gui/qt/main_interface.cpp:1296
-#: modules/gui/qt/main_interface.cpp:1333
-#: modules/gui/qt/main_interface.cpp:1335
-#: modules/gui/qt/main_interface.cpp:1443
-#: modules/gui/qt/main_interface.cpp:1460
-#: modules/gui/qt/main_interface.cpp:1468
-#: modules/gui/qt/main_interface.cpp:1491 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
+#: modules/gui/qt/main_interface.cpp:1306
+#: modules/gui/qt/main_interface.cpp:1343
+#: modules/gui/qt/main_interface.cpp:1345
+#: modules/gui/qt/main_interface.cpp:1453
+#: modules/gui/qt/main_interface.cpp:1470
+#: modules/gui/qt/main_interface.cpp:1478
+#: modules/gui/qt/main_interface.cpp:1501 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -15881,9 +15881,9 @@ msgid ""
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
-"DVDs, network streams, capture cards and other media formats!</p><p><a "
-"href=\"https://www.videolan.org/contribute/\"><span style=\" text-"
-"decoration: underline; color:#0057ae;\">Help and join us!</span></a>"
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"https://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>VLC leistuvė yra <a href=\"https://www.videolan.org/\"><span style=\" "
 "text-decoration: underline; color:#0057ae;\">VideoLAN</span></a> "
@@ -16193,8 +16193,8 @@ msgstr "Įvestis pakeista"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:213
 msgid ""
-"Input has changed, unable to save bookmark. Suspending playback with "
-"\"Pause\" while editing bookmarks to ensure to keep the same input."
+"Input has changed, unable to save bookmark. Suspending playback with \"Pause"
+"\" while editing bookmarks to ensure to keep the same input."
 msgstr ""
 "Įvestis buvo pakeista, negalima įrašyti žymelės. Norėdami išlaikyti tą pačią "
 "įvestį, pristabdykite grojimą naudodamiesi „pristabdyti“ tuo metu, kai "
@@ -16997,13 +16997,13 @@ msgstr ""
 
 #: modules/gui/macosx/VLCMainWindow.m:220
 #: modules/gui/macosx/VLCMainWindow.m:226
-#: modules/gui/qt/components/playlist/selector.cpp:580
+#: modules/gui/qt/components/playlist/selector.cpp:593
 msgid "Subscribe"
 msgstr "Prenumeruoti"
 
 #: modules/gui/macosx/VLCMainWindow.m:221
 #: modules/gui/macosx/VLCMainWindow.m:232
-#: modules/gui/qt/components/playlist/selector.cpp:597
+#: modules/gui/qt/components/playlist/selector.cpp:610
 msgid "Unsubscribe"
 msgstr "Nebeprenumeruoti"
 
@@ -17013,7 +17013,7 @@ msgid "Subscribe to a podcast"
 msgstr "Prenumeruoti laidas"
 
 #: modules/gui/macosx/VLCMainWindow.m:225
-#: modules/gui/qt/components/playlist/selector.cpp:581
+#: modules/gui/qt/components/playlist/selector.cpp:594
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr "Įveskite norimos prenumeruoti tinklalaidės URL:"
 
@@ -19414,11 +19414,11 @@ msgstr "Vietinis tinklas"
 msgid "Internet"
 msgstr "Internetas"
 
-#: modules/gui/qt/components/playlist/selector.cpp:443
+#: modules/gui/qt/components/playlist/selector.cpp:456
 msgid "Remove this podcast subscription"
 msgstr "Atsisakyti šios prenumeratos"
 
-#: modules/gui/qt/components/playlist/selector.cpp:594
+#: modules/gui/qt/components/playlist/selector.cpp:607
 msgid "Do you really want to unsubscribe from %1?"
 msgstr "Tikrai atsisakyti %1 prenumeratos?"
 
@@ -19972,8 +19972,8 @@ msgid ""
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
-"DVDs, network streams, capture cards and other media formats!</p><p><a "
-"href=\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>VLC leistuvė yra <a href=\"http://www.videolan.org/\"><span style=\" text-"
@@ -19982,8 +19982,8 @@ msgstr ""
 "rodyti, perkoduoti ir transliuoti įvairialypės terpės kūrinius.</p><p>VLC "
 "naudoja nuosavas kodavimo priemones, veikia kiekvienoje populiaresnėje "
 "platformoje ir nuskaito praktiškų visų formatų kūrinius, taip pat "
-"kompaktinius diskus, tinklo srautus, nuskaito kortas ir pan.!</p><p><a "
-"href=\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"kompaktinius diskus, tinklo srautus, nuskaito kortas ir pan.!</p><p><a href="
+"\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
 "underline; color:#0057ae;\">Prisidėkite prie mūsų veiklos!</span></a>"
 
 #: modules/gui/qt/dialogs/help.cpp:225
@@ -20581,11 +20581,11 @@ msgstr ""
 msgid "&Continue"
 msgstr "&Tęsti"
 
-#: modules/gui/qt/main_interface.cpp:1444
+#: modules/gui/qt/main_interface.cpp:1454
 msgid "Control menu for the player"
 msgstr "Leistuvės valdymo meniu"
 
-#: modules/gui/qt/main_interface.cpp:1488
+#: modules/gui/qt/main_interface.cpp:1498
 msgid "Paused"
 msgstr "Pristabdyta"
 
@@ -21155,7 +21155,7 @@ msgstr "įspėjimai"
 msgid "debug"
 msgstr "derinimas"
 
-#: modules/gui/qt/util/searchlineedit.cpp:49
+#: modules/gui/qt/util/searchlineedit.cpp:50
 msgctxt "Tooltip|Clear"
 msgid "Clear"
 msgstr ""
@@ -21738,11 +21738,11 @@ msgstr "Lua sąsajos konfigūracija"
 
 #: modules/lua/vlc.c:53
 msgid ""
-"Lua interface configuration string. Format is: '[\"<interface module "
-"name>\"] = { <option> = <value>, ...}, ...'."
+"Lua interface configuration string. Format is: '[\"<interface module name>"
+"\"] = { <option> = <value>, ...}, ...'."
 msgstr ""
-"Lua sąsajos konfigūracijos kodas formatu: „[\"<sąsajos modulio "
-"pavadinimas>\"] = { <parinktis> = <vertė>, ...}, ...“."
+"Lua sąsajos konfigūracijos kodas formatu: „[\"<sąsajos modulio pavadinimas>"
+"\"] = { <parinktis> = <vertė>, ...}, ...“."
 
 #: modules/lua/vlc.c:55 modules/lua/vlc.c:71
 msgid "A single password restricts access to this interface."

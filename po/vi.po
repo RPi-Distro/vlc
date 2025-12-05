@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.22-rc1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-09-17 13:40+0200\n"
+"POT-Creation-Date: 2025-11-24 23:15+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Phi Huynh <huynhkhaphi2806@socson.org>, 2024\n"
 "Language-Team: Vietnamese (https://app.transifex.com/yaron/teams/16553/vi/)\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: include/vlc_common.h:1053
+#: include/vlc_common.h:1055
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -594,19 +594,19 @@ msgid ""
 "</p><p>For all the saving, converting, transcoding, encoding, muxing and "
 "streaming tasks, you should find useful information in the <a href=\"http://"
 "wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming Documentation</"
-"a>.</p><p>If you are unsure about terminology, please consult the <a "
-"href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
-"p><p>To understand the main keyboard shortcuts, read the <a href=\"http://"
-"wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before "
-"asking any question, please refer yourself to the <a href=\"http://www."
-"videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and give) "
-"help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
-"href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC "
-"channel (<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the "
-"project</h3><p>You can help the VideoLAN project giving some of your time to "
-"help the community, to design skins, to translate the documentation, to test "
-"and to code. You can also give funds and material to help us. And of course, "
-"you can <b>promote</b> VLC media player.</p></body></html>"
+"a>.</p><p>If you are unsure about terminology, please consult the <a href="
+"\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</p><p>To "
+"understand the main keyboard shortcuts, read the <a href=\"http://wiki."
+"videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before asking "
+"any question, please refer yourself to the <a href=\"http://www.videolan.org/"
+"support/faq.html\">FAQ</a>.</p><p>You might then get (and give) help on the "
+"<a href=\"http://forum.videolan.org\">Forums</a>, the <a href=\"http://www."
+"videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC channel "
+"(<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the project</"
+"h3><p>You can help the VideoLAN project giving some of your time to help the "
+"community, to design skins, to translate the documentation, to test and to "
+"code. You can also give funds and material to help us. And of course, you "
+"can <b>promote</b> VLC media player.</p></body></html>"
 msgstr ""
 "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; "
 "charset=utf-8\" /></head><body><h2>Chào mừng bạn đến phần trợ giúp của VLC</"
@@ -625,45 +625,45 @@ msgstr ""
 "dễ dàng tiếp cận bởi nhiều người Việt hơn nữa.</p><p>Việc Việt Hóa chương "
 "trình hiện đã được đơn giản hóa theo cách trực diện với phong cách Cloud "
 "Computing - phong cách \"đám mây\" hiện đang là xu hướng chung trong lĩnh "
-"vực hợp tác về dịch thuật cho các phần mềm. Chỉ cần bạn truy cập vào <a "
-"href=\"https://www.transifex.com/projects/p/vlc-trans/language/vi/\">đường "
-"dẫn này</a> sau khi đã đăng ký làm thành viên của website transifex, và nhấn "
-"vào nút \"Join Team\" và chờ trong vòng 24h là bạn đã có thể tham gia vào "
-"việc Việt Hóa chương trình VLC.</p><p>Nếu bạn còn phân vân về việc các thuật "
-"ngữ được sử dụng trong VLC sẽ gây khó khăn cho bạn thì bạn sẽ không phải lo "
-"về vấn đề đó, vì các phần thuật ngữ được sử dụng từ các người dịch khác sẽ "
-"hiển thị trong phần Suggestion hoặc Glossary và bạn có thể tự tạo một "
-"Glossary - danh sách từ vựng - theo ý bạn ngay chính phần bạn dịch, hỗ trợ "
-"bạn dịch tốt hơn và đồng bộ hơn với các dịch giả khác. Ngoài ra, còn có chức "
-"năng nhận xét về phần dịch mà bạn có thể đăng khi cảm thấy phần dịch nào "
-"chưa phù hợp hoặc cần chỉnh sửa.</p><p>Nếu một phần dịch nào đó đã được dịch "
-"bởi một dịch giả khác, bạn vẫn có thể tham gia vào công tác chỉnh sửa để "
-"hoàn thiện phần dịch đó hơn nữa. Việc quyết định sử dụng phần dịch từ dịch "
-"giả nào sẽ được quyết định thông qua lựa chọn đa số và các quyết định này sẽ "
-"được vote trong ngay chính trang transifex, tức trang hỗ trợ dịch cho VLC.</"
-"p><p>Nếu bạn là thành viên từ diễn đàn chuyên về Audio và lập trình thì mong "
-"các bạn dành chút thời gian đóng góp cho dự án VLC trong việc dịch thuật và "
-"chuẩn hóa các phiên bản Việt Ngữ thêm nữa.</p><h3>Hướng dẫn người dùng</"
-"h3><p>Giao diện chính của VLC hiện đã được chuyển ngữ, tuy nhiên, đa số các "
-"trang về Documentation vẫn hiện còn bỏ ngỏ. Nếu bạn có hứng thú, hãy thử tìm "
-"đọc và góp phần Việt Hóa nếu bạn thích.</p><p>Bạn có thể tìm thấy các phần "
-"mà bạn thắc mắc tại trang web <a href=\"http://wiki.videolan.org\">wiki</a>."
-"</p><p>Nếu bạn lần đầu tiên sử dụng VLC, hãy đọc phần<br><a href=\"http://"
-"wiki.videolan.org/Documentation:VLC_for_dummies\"><em>Giới thiệu chương "
-"trình VLC</em></a>.</p><p>Bạn sẽ được hướng dẫn về việc sử dụng chương trình "
-"tại<br>\"<a href=\"http://wiki.videolan.org/Documentation:"
-"Play_HowTo\"><em>tài liệu cách mở một file với VLC </em></a>\" .</p><p>Về "
-"phần lưu trữ,chuyển đổi định dạng file, chuyển mã, mã hóa, dồn kênh và phân "
-"luồng âm thanh, bạn sẽ tìm thấy các thông tin hữu ích tại <a href=\"http://"
-"wiki.videolan.org/Documentation:Streaming_HowTo\">Tài liệu phân luồng</a>.</"
+"vực hợp tác về dịch thuật cho các phần mềm. Chỉ cần bạn truy cập vào <a href="
+"\"https://www.transifex.com/projects/p/vlc-trans/language/vi/\">đường dẫn "
+"này</a> sau khi đã đăng ký làm thành viên của website transifex, và nhấn vào "
+"nút \"Join Team\" và chờ trong vòng 24h là bạn đã có thể tham gia vào việc "
+"Việt Hóa chương trình VLC.</p><p>Nếu bạn còn phân vân về việc các thuật ngữ "
+"được sử dụng trong VLC sẽ gây khó khăn cho bạn thì bạn sẽ không phải lo về "
+"vấn đề đó, vì các phần thuật ngữ được sử dụng từ các người dịch khác sẽ hiển "
+"thị trong phần Suggestion hoặc Glossary và bạn có thể tự tạo một Glossary - "
+"danh sách từ vựng - theo ý bạn ngay chính phần bạn dịch, hỗ trợ bạn dịch tốt "
+"hơn và đồng bộ hơn với các dịch giả khác. Ngoài ra, còn có chức năng nhận "
+"xét về phần dịch mà bạn có thể đăng khi cảm thấy phần dịch nào chưa phù hợp "
+"hoặc cần chỉnh sửa.</p><p>Nếu một phần dịch nào đó đã được dịch bởi một dịch "
+"giả khác, bạn vẫn có thể tham gia vào công tác chỉnh sửa để hoàn thiện phần "
+"dịch đó hơn nữa. Việc quyết định sử dụng phần dịch từ dịch giả nào sẽ được "
+"quyết định thông qua lựa chọn đa số và các quyết định này sẽ được vote trong "
+"ngay chính trang transifex, tức trang hỗ trợ dịch cho VLC.</p><p>Nếu bạn là "
+"thành viên từ diễn đàn chuyên về Audio và lập trình thì mong các bạn dành "
+"chút thời gian đóng góp cho dự án VLC trong việc dịch thuật và chuẩn hóa các "
+"phiên bản Việt Ngữ thêm nữa.</p><h3>Hướng dẫn người dùng</h3><p>Giao diện "
+"chính của VLC hiện đã được chuyển ngữ, tuy nhiên, đa số các trang về "
+"Documentation vẫn hiện còn bỏ ngỏ. Nếu bạn có hứng thú, hãy thử tìm đọc và "
+"góp phần Việt Hóa nếu bạn thích.</p><p>Bạn có thể tìm thấy các phần mà bạn "
+"thắc mắc tại trang web <a href=\"http://wiki.videolan.org\">wiki</a>.</"
+"p><p>Nếu bạn lần đầu tiên sử dụng VLC, hãy đọc phần<br><a href=\"http://wiki."
+"videolan.org/Documentation:VLC_for_dummies\"><em>Giới thiệu chương trình "
+"VLC</em></a>.</p><p>Bạn sẽ được hướng dẫn về việc sử dụng chương trình "
+"tại<br>\"<a href=\"http://wiki.videolan.org/Documentation:Play_HowTo"
+"\"><em>tài liệu cách mở một file với VLC </em></a>\" .</p><p>Về phần lưu trữ,"
+"chuyển đổi định dạng file, chuyển mã, mã hóa, dồn kênh và phân luồng âm "
+"thanh, bạn sẽ tìm thấy các thông tin hữu ích tại <a href=\"http://wiki."
+"videolan.org/Documentation:Streaming_HowTo\">Tài liệu phân luồng</a>.</"
 "p><p>Nếu bạn thấy bổi rối với các thuật ngữ trong chương trình, hãy truy cập "
 "vào trang <a href=\"http://wiki.videolan.org/Knowledge_Base\">Kiến Thức Cơ "
-"Bản</a>.</p><p>Để có thể thao tác với các phím tắt, bạn hãy đọc phần <a "
-"href=\"http://wiki.videolan.org/Hotkeys\">Phím Tắt</a> .</p><h3>Trợ giúp "
-"trực tuyến</h3><p>Trước khi có câu hỏi nào, bạn hãy dành chút thời gian xem "
-"qua <a href=\"http://www.videolan.org/support/faq.html\">Các Câu Hỏi Thường "
-"Gặp</a>.</p><p>Sau đó bạn có thể đăng thắc mắc (trợ giúp) của mình lên phần "
-"<a href=\"http://forum.videolan.org\">Diễn đan VLC</a>, hay <a href=\"http://"
+"Bản</a>.</p><p>Để có thể thao tác với các phím tắt, bạn hãy đọc phần <a href="
+"\"http://wiki.videolan.org/Hotkeys\">Phím Tắt</a> .</p><h3>Trợ giúp trực "
+"tuyến</h3><p>Trước khi có câu hỏi nào, bạn hãy dành chút thời gian xem qua "
+"<a href=\"http://www.videolan.org/support/faq.html\">Các Câu Hỏi Thường Gặp</"
+"a>.</p><p>Sau đó bạn có thể đăng thắc mắc (trợ giúp) của mình lên phần <a "
+"href=\"http://forum.videolan.org\">Diễn đan VLC</a>, hay <a href=\"http://"
 "www.videolan.org/vlc/lists.html\">email cho chúng tôi</a> hoặc chat trực "
 "tiếp với chúng tôi bằng IRCl (<em>#videolan</em> trên irc.freenode.net).</"
 "p><h3>Đóng góp cho VLC</h3><p>Bạn có thể trợ giúp chúng tôi bằng cách dành "
@@ -1586,8 +1586,8 @@ msgstr "Module Giao Diện bổ sung"
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
 "the background in addition to the default interface. Use a colon separated "
-"list of interface modules. (common values are \"rc\" (remote control), "
-"\"http\", \"gestures\" ...)"
+"list of interface modules. (common values are \"rc\" (remote control), \"http"
+"\", \"gestures\" ...)"
 msgstr ""
 "Bạn có thể chọn \"giao diện bổ sung\" cho VLC. Những giao diện này sẽ được "
 "chạy ở khung màn hình chính cũng như sử dụng làm giao diện mặc định. Sử dụng "
@@ -2976,15 +2976,15 @@ msgstr "Thay đổi tiêu đề dựa theo tập tin hiện tại"
 
 #: src/libvlc-module.c:690
 msgid ""
-"This option allows you to set the title according to what's being "
-"played<br>$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: "
-"Genre<br>$n: Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: "
-"\"Now playing\" (Fall back on Title - Artist)"
+"This option allows you to set the title according to what's being played<br>"
+"$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: Genre<br>$n: "
+"Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: \"Now playing"
+"\" (Fall back on Title - Artist)"
 msgstr ""
-"Tùy chọn này cho phép đặt tên cho tiêu đề của phần ghi âm đang được "
-"phát<br>$a: Nghệ sĩ<br>$b: Album<br>$c: Bản quyền<br>$t: Tiêu đề<br>$g: Thể "
-"loại<br>$n: Số thứ tự track<br>$p: Đang phát<br>$A: Ngày tháng<br>$D: Độ "
-"dài<br>$Z: \"Đang phát\" (Fall back on Title - Artist)"
+"Tùy chọn này cho phép đặt tên cho tiêu đề của phần ghi âm đang được phát<br>"
+"$a: Nghệ sĩ<br>$b: Album<br>$c: Bản quyền<br>$t: Tiêu đề<br>$g: Thể loại<br>"
+"$n: Số thứ tự track<br>$p: Đang phát<br>$A: Ngày tháng<br>$D: Độ dài<br>$Z: "
+"\"Đang phát\" (Fall back on Title - Artist)"
 
 #: src/libvlc-module.c:695
 msgid "Disable all lua plugins"
@@ -9640,9 +9640,9 @@ msgstr "Tập tin được vlc đọc khóa ure và địa điểm khóa tập t
 
 #: modules/access_output/livehttp.c:98
 msgid ""
-"File is read when segment starts and is assumed to be in format: key-"
-"uri\\nkey-file. File is read on the segment opening and values are used on "
-"that segment."
+"File is read when segment starts and is assumed to be in format: key-uri"
+"\\nkey-file. File is read on the segment opening and values are used on that "
+"segment."
 msgstr ""
 "Tệp được đọc khi phân đoạn bắt đầu và được giả sử ở định dạng: key-uri\\nkey-"
 "file. Tệp được đọc khi mở phân đoạn và các giá trị được sử dụng trên phân "
@@ -14810,14 +14810,14 @@ msgstr "Giao diện điều khiển D-Bus"
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
-#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1292
-#: modules/gui/qt/main_interface.cpp:1296
-#: modules/gui/qt/main_interface.cpp:1333
-#: modules/gui/qt/main_interface.cpp:1335
-#: modules/gui/qt/main_interface.cpp:1443
-#: modules/gui/qt/main_interface.cpp:1460
-#: modules/gui/qt/main_interface.cpp:1468
-#: modules/gui/qt/main_interface.cpp:1491 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
+#: modules/gui/qt/main_interface.cpp:1306
+#: modules/gui/qt/main_interface.cpp:1343
+#: modules/gui/qt/main_interface.cpp:1345
+#: modules/gui/qt/main_interface.cpp:1453
+#: modules/gui/qt/main_interface.cpp:1470
+#: modules/gui/qt/main_interface.cpp:1478
+#: modules/gui/qt/main_interface.cpp:1501 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -16877,9 +16877,9 @@ msgid ""
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
-"DVDs, network streams, capture cards and other media formats!</p><p><a "
-"href=\"https://www.videolan.org/contribute/\"><span style=\" text-"
-"decoration: underline; color:#0057ae;\">Help and join us!</span></a>"
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"https://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>Chương trình VLC hoàn toàn miễn phí và là chương trình thuộc dạng mã "
 "nguồn mở, các tiến trình giải mã và phân luồng được biên soạn và lập trình "
@@ -17192,8 +17192,8 @@ msgstr "Nhập dữ liệu đã thay đổi"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:213
 msgid ""
-"Input has changed, unable to save bookmark. Suspending playback with "
-"\"Pause\" while editing bookmarks to ensure to keep the same input."
+"Input has changed, unable to save bookmark. Suspending playback with \"Pause"
+"\" while editing bookmarks to ensure to keep the same input."
 msgstr ""
 "Nhập dữ liệu đã thay đổi, không thể lưu phần đánh dấu. Ngừng việc phát lại "
 "với\"Tạm Dừng\" trong khi đang chỉnh sửa phần đánh dấu để chắc rằng dữ liệu "
@@ -18004,13 +18004,13 @@ msgstr "Mở hộp thoại để chọn phương tiện để phát"
 
 #: modules/gui/macosx/VLCMainWindow.m:220
 #: modules/gui/macosx/VLCMainWindow.m:226
-#: modules/gui/qt/components/playlist/selector.cpp:580
+#: modules/gui/qt/components/playlist/selector.cpp:593
 msgid "Subscribe"
 msgstr "Đăng ký theo dõi"
 
 #: modules/gui/macosx/VLCMainWindow.m:221
 #: modules/gui/macosx/VLCMainWindow.m:232
-#: modules/gui/qt/components/playlist/selector.cpp:597
+#: modules/gui/qt/components/playlist/selector.cpp:610
 msgid "Unsubscribe"
 msgstr "Bỏ đăng ký theo dõi"
 
@@ -18020,7 +18020,7 @@ msgid "Subscribe to a podcast"
 msgstr "Đăng ký theo dõi một Podcast"
 
 #: modules/gui/macosx/VLCMainWindow.m:225
-#: modules/gui/qt/components/playlist/selector.cpp:581
+#: modules/gui/qt/components/playlist/selector.cpp:594
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr "Điền vào đường dẫn của podcast muốn đăng ký theo dõi:"
 
@@ -20483,11 +20483,11 @@ msgstr "Mạng offline"
 msgid "Internet"
 msgstr "Internet"
 
-#: modules/gui/qt/components/playlist/selector.cpp:443
+#: modules/gui/qt/components/playlist/selector.cpp:456
 msgid "Remove this podcast subscription"
 msgstr "Loại bỏ phần đăng ký theo dõi podcast này"
 
-#: modules/gui/qt/components/playlist/selector.cpp:594
+#: modules/gui/qt/components/playlist/selector.cpp:607
 msgid "Do you really want to unsubscribe from %1?"
 msgstr "Bạn có thực sự muốn bỏ đăng ký theo dõi từ %1?"
 
@@ -21065,8 +21065,8 @@ msgid ""
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
-"DVDs, network streams, capture cards and other media formats!</p><p><a "
-"href=\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>Chương trình VLC hoàn toàn miễn phí và là chương trình thuộc dạng mã "
@@ -21696,11 +21696,11 @@ msgstr "Bạn có muốn bắt đầu lại quá trình phát lại ở nơi đ�
 msgid "&Continue"
 msgstr "&Tiếp tục"
 
-#: modules/gui/qt/main_interface.cpp:1444
+#: modules/gui/qt/main_interface.cpp:1454
 msgid "Control menu for the player"
 msgstr "Bảng chọn điều khiển của VLC"
 
-#: modules/gui/qt/main_interface.cpp:1488
+#: modules/gui/qt/main_interface.cpp:1498
 msgid "Paused"
 msgstr "Tạm dừng"
 
@@ -22285,7 +22285,7 @@ msgstr "cảnh báo"
 msgid "debug"
 msgstr "gở rối"
 
-#: modules/gui/qt/util/searchlineedit.cpp:49
+#: modules/gui/qt/util/searchlineedit.cpp:50
 msgctxt "Tooltip|Clear"
 msgid "Clear"
 msgstr "Xóa"
@@ -22891,8 +22891,8 @@ msgstr "Chỉnh sửa giao diện Lua"
 
 #: modules/lua/vlc.c:53
 msgid ""
-"Lua interface configuration string. Format is: '[\"<interface module "
-"name>\"] = { <option> = <value>, ...}, ...'."
+"Lua interface configuration string. Format is: '[\"<interface module name>"
+"\"] = { <option> = <value>, ...}, ...'."
 msgstr ""
 "Chỉnh sửa các chuỗi ký tự trong giao diện Lua. Định dạng là '[\"<tên module "
 "giao diện>\"] = { <tùy chọn> = <giá trị>, ...}, ...'."
@@ -24487,8 +24487,8 @@ msgstr "Danh sách đường dẫn Podcast dạng URL"
 #: modules/services_discovery/podcast.c:57
 msgid "Enter the list of podcasts to retrieve, separated by '|' (pipe)."
 msgstr ""
-"Điền vào danh sách các podcast để nhận dữ liệu, cách biệt bởi dấu ' | ' "
-"(ống)."
+"Điền vào danh sách các podcast để nhận dữ liệu, cách biệt bởi dấu ' | "
+"' (ống)."
 
 #: modules/services_discovery/pulse.c:41 modules/services_discovery/pulse.c:44
 #: modules/services_discovery/pulse.c:84 modules/services_discovery/udev.c:67
@@ -24536,8 +24536,8 @@ msgid ""
 "all announcements are parsed by the \"live555\" (RTP/RTSP) module."
 msgstr ""
 "Điều này cho phép mô-đun SAP phân tích cú pháp thực tế các thông báo. Nếu "
-"không, tất cả thông báo sẽ được phân tích cú pháp bằng mô-đun \"live555\" "
-"(RTP/RTSP)."
+"không, tất cả thông báo sẽ được phân tích cú pháp bằng mô-đun "
+"\"live555\" (RTP/RTSP)."
 
 #: modules/services_discovery/sap.c:95
 msgid "SAP Strict mode"
@@ -25490,8 +25490,8 @@ msgid ""
 "Integer identifier for this elementary stream. This will be used to \"find\" "
 "this stream later."
 msgstr ""
-"Mã định danh số nguyên cho dòng cơ sở này. Điều này sẽ được sử dụng để "
-"\"tìm\" luồng này sau này."
+"Mã định danh số nguyên cho dòng cơ sở này. Điều này sẽ được sử dụng để \"tìm"
+"\" luồng này sau này."
 
 #: modules/stream_out/bridge.c:46
 msgid "Destination bridge-in name"

@@ -1,7 +1,0 @@
-*.gmo
-*.header
-*.sed
-*.sin
-POTFILES
-Rules-quot
-Makevars.template

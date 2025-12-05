@@ -38,7 +38,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.22-rc1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-09-17 13:40+0200\n"
+"POT-Creation-Date: 2025-11-24 23:15+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Lars Lyngby <larslyngby@hotmail.com>, 2022\n"
 "Language-Team: Danish (https://app.transifex.com/yaron/teams/16553/da/)\n"
@@ -48,7 +48,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: include/vlc_common.h:1053
+#: include/vlc_common.h:1055
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -612,19 +612,19 @@ msgid ""
 "</p><p>For all the saving, converting, transcoding, encoding, muxing and "
 "streaming tasks, you should find useful information in the <a href=\"http://"
 "wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming Documentation</"
-"a>.</p><p>If you are unsure about terminology, please consult the <a "
-"href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
-"p><p>To understand the main keyboard shortcuts, read the <a href=\"http://"
-"wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before "
-"asking any question, please refer yourself to the <a href=\"http://www."
-"videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and give) "
-"help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
-"href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC "
-"channel (<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the "
-"project</h3><p>You can help the VideoLAN project giving some of your time to "
-"help the community, to design skins, to translate the documentation, to test "
-"and to code. You can also give funds and material to help us. And of course, "
-"you can <b>promote</b> VLC media player.</p></body></html>"
+"a>.</p><p>If you are unsure about terminology, please consult the <a href="
+"\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</p><p>To "
+"understand the main keyboard shortcuts, read the <a href=\"http://wiki."
+"videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before asking "
+"any question, please refer yourself to the <a href=\"http://www.videolan.org/"
+"support/faq.html\">FAQ</a>.</p><p>You might then get (and give) help on the "
+"<a href=\"http://forum.videolan.org\">Forums</a>, the <a href=\"http://www."
+"videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC channel "
+"(<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the project</"
+"h3><p>You can help the VideoLAN project giving some of your time to help the "
+"community, to design skins, to translate the documentation, to test and to "
+"code. You can also give funds and material to help us. And of course, you "
+"can <b>promote</b> VLC media player.</p></body></html>"
 msgstr ""
 "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; "
 "charset=utf-8\" /></head><body><h2>Velkommen til VLC medieafspiller-hjælp</"
@@ -632,25 +632,24 @@ msgstr ""
 "wiki.videolan.org\">VideoLAN's wiki-websted</a>.</p><p>Hvis du er ny bruger "
 "af VLC medieafspiller, så læs <br><a href=\"http://wiki.videolan.org/"
 "Documentation:VLC_for_dummies\"><em>Introduktion til VLC medieafspiller</"
-"em></a>.</p><p>Du kan finde oplysninger til at bruge medieafspilleren i "
-"<br>\"<a href=\"http://wiki.videolan.org/Documentation:"
-"Play_HowTo\"><em>Afspilning af filer med VLC medieafspiller</em></a>\".</"
-"p><p>Du kan finde nyttige oplysninger til at gemme, konvertere, omkode, "
-"kode, muxe og streame i <a href=\"http://wiki.videolan.org/Documentation:"
-"Streaming_HowTo\">Streaming-dokumentation</a>.</p><p>Kender du ikke "
-"betegnelserne, så kig i <a href=\"http://wiki.videolan.org/"
-"Knowledge_Base\">knowledge base</a>.</p><p>Læs <a href=\"http://wiki."
-"videolan.org/Hotkeys\">shortcuts</a> for at lære de primære tastaturgenveje."
-"</p><h3>Hjælp</h3><p>Inden du stiller spørgsmål, så kig først i <a "
-"href=\"http://www.videolan.org/support/faq.html\">FAQ</a>.</p><p>Herefter "
-"kan du få (og yde) hjælp i <a href=\"http://forum.videolan.org\">forummerne</"
-"a>, på <a href=\"http://www.videolan.org/vlc/lists.html\">mailinglisterne</"
-"a> eller på vores IRC-kanal (<em>#videolan</em> på irc.freenode.net).</"
-"p><h3>Bidrag til projektet</h3><p>Du kan hjælpe VideoLAN-projektet ved at "
-"bruge tid på at hjælpe fællesskabet, designe skins, oversætte manualen, "
-"teste og programmere. Du kan også hjælpe ved at donere penge og materialer "
-"til os. Og så kan du selvfølgelig <b>udbrede kendskabet</b> til VLC "
-"medieafspiller.</p></body></html>"
+"em></a>.</p><p>Du kan finde oplysninger til at bruge medieafspilleren i <br>"
+"\"<a href=\"http://wiki.videolan.org/Documentation:Play_HowTo"
+"\"><em>Afspilning af filer med VLC medieafspiller</em></a>\".</p><p>Du kan "
+"finde nyttige oplysninger til at gemme, konvertere, omkode, kode, muxe og "
+"streame i <a href=\"http://wiki.videolan.org/Documentation:Streaming_HowTo"
+"\">Streaming-dokumentation</a>.</p><p>Kender du ikke betegnelserne, så kig i "
+"<a href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
+"p><p>Læs <a href=\"http://wiki.videolan.org/Hotkeys\">shortcuts</a> for at "
+"lære de primære tastaturgenveje.</p><h3>Hjælp</h3><p>Inden du stiller "
+"spørgsmål, så kig først i <a href=\"http://www.videolan.org/support/faq.html"
+"\">FAQ</a>.</p><p>Herefter kan du få (og yde) hjælp i <a href=\"http://forum."
+"videolan.org\">forummerne</a>, på <a href=\"http://www.videolan.org/vlc/"
+"lists.html\">mailinglisterne</a> eller på vores IRC-kanal (<em>#videolan</"
+"em> på irc.freenode.net).</p><h3>Bidrag til projektet</h3><p>Du kan hjælpe "
+"VideoLAN-projektet ved at bruge tid på at hjælpe fællesskabet, designe "
+"skins, oversætte manualen, teste og programmere. Du kan også hjælpe ved at "
+"donere penge og materialer til os. Og så kan du selvfølgelig <b>udbrede "
+"kendskabet</b> til VLC medieafspiller.</p></body></html>"
 
 #: src/audio_output/filters.c:267
 msgid "Audio filtering failed"
@@ -1566,8 +1565,8 @@ msgstr "Ekstra grænseflademoduler"
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
 "the background in addition to the default interface. Use a colon separated "
-"list of interface modules. (common values are \"rc\" (remote control), "
-"\"http\", \"gestures\" ...)"
+"list of interface modules. (common values are \"rc\" (remote control), \"http"
+"\", \"gestures\" ...)"
 msgstr ""
 "Du kan vælge \"yderligere grænseflader\" for VLC. De startes i baggrunden "
 "sammen med standardgrænsefladen. Brug en komma-separeret liste af "
@@ -2903,16 +2902,16 @@ msgstr "Tilpas titel i forhold til nuværende medie"
 
 #: src/libvlc-module.c:690
 msgid ""
-"This option allows you to set the title according to what's being "
-"played<br>$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: "
-"Genre<br>$n: Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: "
-"\"Now playing\" (Fall back on Title - Artist)"
+"This option allows you to set the title according to what's being played<br>"
+"$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: Genre<br>$n: "
+"Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: \"Now playing"
+"\" (Fall back on Title - Artist)"
 msgstr ""
 "Denne indstilling giver dig mulighed for at angive titlen i forhold henhold "
 "til hvad, der bliver afspillet<br>$a: Kunstner<br>$b: Album<br>$c: "
-"Ophavsret<br>$t: Titel<br>$g: Genre<br>$n: Spornummer<br>$p: Afspiller "
-"nu<br>$A: Dato<br>$D: Varighed<br>$Z: \"Afspilles nu\" (Fald tilbage på "
-"Titel - Kunstner)"
+"Ophavsret<br>$t: Titel<br>$g: Genre<br>$n: Spornummer<br>$p: Afspiller nu<br>"
+"$A: Dato<br>$D: Varighed<br>$Z: \"Afspilles nu\" (Fald tilbage på Titel - "
+"Kunstner)"
 
 #: src/libvlc-module.c:695
 msgid "Disable all lua plugins"
@@ -9496,9 +9495,9 @@ msgstr "Fil hvorfra vls læser nøgle-uri og placering af nøglefil"
 
 #: modules/access_output/livehttp.c:98
 msgid ""
-"File is read when segment starts and is assumed to be in format: key-"
-"uri\\nkey-file. File is read on the segment opening and values are used on "
-"that segment."
+"File is read when segment starts and is assumed to be in format: key-uri"
+"\\nkey-file. File is read on the segment opening and values are used on that "
+"segment."
 msgstr ""
 "Fil læses, når segment starter, og antages at være i format: key-uri\\nkey-"
 "fil. Filen læses ved åbning af segmentet, og værdier bruges på dette segment."
@@ -14594,14 +14593,14 @@ msgstr "D-Bus-kontrolgrænseflade"
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
-#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1292
-#: modules/gui/qt/main_interface.cpp:1296
-#: modules/gui/qt/main_interface.cpp:1333
-#: modules/gui/qt/main_interface.cpp:1335
-#: modules/gui/qt/main_interface.cpp:1443
-#: modules/gui/qt/main_interface.cpp:1460
-#: modules/gui/qt/main_interface.cpp:1468
-#: modules/gui/qt/main_interface.cpp:1491 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
+#: modules/gui/qt/main_interface.cpp:1306
+#: modules/gui/qt/main_interface.cpp:1343
+#: modules/gui/qt/main_interface.cpp:1345
+#: modules/gui/qt/main_interface.cpp:1453
+#: modules/gui/qt/main_interface.cpp:1470
+#: modules/gui/qt/main_interface.cpp:1478
+#: modules/gui/qt/main_interface.cpp:1501 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -16649,9 +16648,9 @@ msgid ""
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
-"DVDs, network streams, capture cards and other media formats!</p><p><a "
-"href=\"https://www.videolan.org/contribute/\"><span style=\" text-"
-"decoration: underline; color:#0057ae;\">Help and join us!</span></a>"
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"https://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>VLC medieafspiller er en fri og open source medieafspiller, koder og "
 "streamer lavet af frivillige fra <a href=\"https://www.videolan.org/\"><span "
@@ -16959,8 +16958,8 @@ msgstr "Input har ændret sig"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:213
 msgid ""
-"Input has changed, unable to save bookmark. Suspending playback with "
-"\"Pause\" while editing bookmarks to ensure to keep the same input."
+"Input has changed, unable to save bookmark. Suspending playback with \"Pause"
+"\" while editing bookmarks to ensure to keep the same input."
 msgstr ""
 "Input har ændret sig - kan ikke gemme bogmærke. Suspenderer afspilningen med "
 "\"Pause\", mens bogmærkerne redigeres, for at sikre at det samme input "
@@ -17768,13 +17767,13 @@ msgstr "Åbner en dialog for at vælge afspilningsmedie"
 
 #: modules/gui/macosx/VLCMainWindow.m:220
 #: modules/gui/macosx/VLCMainWindow.m:226
-#: modules/gui/qt/components/playlist/selector.cpp:580
+#: modules/gui/qt/components/playlist/selector.cpp:593
 msgid "Subscribe"
 msgstr "Abonner"
 
 #: modules/gui/macosx/VLCMainWindow.m:221
 #: modules/gui/macosx/VLCMainWindow.m:232
-#: modules/gui/qt/components/playlist/selector.cpp:597
+#: modules/gui/qt/components/playlist/selector.cpp:610
 msgid "Unsubscribe"
 msgstr "Afmeld abonnement"
 
@@ -17784,7 +17783,7 @@ msgid "Subscribe to a podcast"
 msgstr "Abonner på en podcast"
 
 #: modules/gui/macosx/VLCMainWindow.m:225
-#: modules/gui/qt/components/playlist/selector.cpp:581
+#: modules/gui/qt/components/playlist/selector.cpp:594
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr "Indtast URL på den podcast der skal tilmeldes:"
 
@@ -20232,11 +20231,11 @@ msgstr "Lokalt netværk"
 msgid "Internet"
 msgstr "Internet"
 
-#: modules/gui/qt/components/playlist/selector.cpp:443
+#: modules/gui/qt/components/playlist/selector.cpp:456
 msgid "Remove this podcast subscription"
 msgstr "Fjern dette podcast-abonnement"
 
-#: modules/gui/qt/components/playlist/selector.cpp:594
+#: modules/gui/qt/components/playlist/selector.cpp:607
 msgid "Do you really want to unsubscribe from %1?"
 msgstr "Sikker på at du vil afmelde dig fra %1?"
 
@@ -20820,8 +20819,8 @@ msgid ""
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
-"DVDs, network streams, capture cards and other media formats!</p><p><a "
-"href=\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>VLC medieafspiller er en fri og open source medieafspiller, koder og "
@@ -21441,11 +21440,11 @@ msgstr "Vil du genoptage afspilningen hvor den sidst blev afbrudt?"
 msgid "&Continue"
 msgstr "&Fortsæt"
 
-#: modules/gui/qt/main_interface.cpp:1444
+#: modules/gui/qt/main_interface.cpp:1454
 msgid "Control menu for the player"
 msgstr "Kontrolmenu for afspilleren"
 
-#: modules/gui/qt/main_interface.cpp:1488
+#: modules/gui/qt/main_interface.cpp:1498
 msgid "Paused"
 msgstr "Sat på pause"
 
@@ -22026,7 +22025,7 @@ msgstr "advarsler"
 msgid "debug"
 msgstr "fejlsøg"
 
-#: modules/gui/qt/util/searchlineedit.cpp:49
+#: modules/gui/qt/util/searchlineedit.cpp:50
 msgctxt "Tooltip|Clear"
 msgid "Clear"
 msgstr "Ryd"
@@ -22631,8 +22630,8 @@ msgstr "Lua-grænsefladeopsætning"
 
 #: modules/lua/vlc.c:53
 msgid ""
-"Lua interface configuration string. Format is: '[\"<interface module "
-"name>\"] = { <option> = <value>, ...}, ...'."
+"Lua interface configuration string. Format is: '[\"<interface module name>"
+"\"] = { <option> = <value>, ...}, ...'."
 msgstr ""
 "Opsætningstreng til Lua-grænseflade. Formatet er: '[\"\"] = { <valg> "
 "= , ...}, ...'."
@@ -22681,10 +22680,9 @@ msgid ""
 "but can also bind to a plain TCP socket (\"localhost:4212\") or use the "
 "telnet protocol (\"telnet://0.0.0.0:4212\")"
 msgstr ""
-"Accepter kommandoer fra denne kilde. CLI'ens standard er stdin "
-"(\"*konsol\"), men kan også bindes til en almindelig TCP-socket "
-"(\"localhost:4212\") eller bruge telnet-protokollen "
-"(\"telnet://0.0.0.0:4212\")"
+"Accepter kommandoer fra denne kilde. CLI'ens standard er stdin (\"*konsol"
+"\"), men kan også bindes til en almindelig TCP-socket (\"localhost:4212\") "
+"eller bruge telnet-protokollen (\"telnet://0.0.0.0:4212\")"
 
 #: modules/lua/vlc.c:85
 msgid "Lua"
@@ -23833,8 +23831,8 @@ msgid ""
 "Assign a program number to each PMT. This requires \"Set PID to ID of ES\" "
 "to be enabled."
 msgstr ""
-"Tildel et programnummer til hver PMT. Forudsætter at \"Sæt PID til ID af "
-"ES\" er slået til."
+"Tildel et programnummer til hver PMT. Forudsætter at \"Sæt PID til ID af ES"
+"\" er slået til."
 
 #: modules/mux/mpeg/ts.c:120
 msgid "Mux PMT (requires --sout-ts-es-id-pid)"
@@ -24751,8 +24749,8 @@ msgid ""
 "Number of image rows in the mosaic (only used if positioning method is set "
 "to \"fixed\")."
 msgstr ""
-"Antal billedrækker i mosaikken (bruges kun hvis placering er sat til "
-"\"fixed\")."
+"Antal billedrækker i mosaikken (bruges kun hvis placering er sat til \"fixed"
+"\")."
 
 #: modules/spu/mosaic.c:129 modules/video_splitter/panoramix.c:60
 #: modules/video_splitter/wall.c:46

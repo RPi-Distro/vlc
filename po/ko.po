@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.22-rc1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-09-17 13:40+0200\n"
+"POT-Creation-Date: 2025-11-24 23:15+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Junghee Lee <daemul72@gmail.com>, 2025\n"
 "Language-Team: Korean (https://app.transifex.com/yaron/teams/16553/ko/)\n"
@@ -27,7 +27,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: include/vlc_common.h:1053
+#: include/vlc_common.h:1055
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -583,19 +583,19 @@ msgid ""
 "</p><p>For all the saving, converting, transcoding, encoding, muxing and "
 "streaming tasks, you should find useful information in the <a href=\"http://"
 "wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming Documentation</"
-"a>.</p><p>If you are unsure about terminology, please consult the <a "
-"href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
-"p><p>To understand the main keyboard shortcuts, read the <a href=\"http://"
-"wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before "
-"asking any question, please refer yourself to the <a href=\"http://www."
-"videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and give) "
-"help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
-"href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC "
-"channel (<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the "
-"project</h3><p>You can help the VideoLAN project giving some of your time to "
-"help the community, to design skins, to translate the documentation, to test "
-"and to code. You can also give funds and material to help us. And of course, "
-"you can <b>promote</b> VLC media player.</p></body></html>"
+"a>.</p><p>If you are unsure about terminology, please consult the <a href="
+"\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</p><p>To "
+"understand the main keyboard shortcuts, read the <a href=\"http://wiki."
+"videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before asking "
+"any question, please refer yourself to the <a href=\"http://www.videolan.org/"
+"support/faq.html\">FAQ</a>.</p><p>You might then get (and give) help on the "
+"<a href=\"http://forum.videolan.org\">Forums</a>, the <a href=\"http://www."
+"videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC channel "
+"(<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the project</"
+"h3><p>You can help the VideoLAN project giving some of your time to help the "
+"community, to design skins, to translate the documentation, to test and to "
+"code. You can also give funds and material to help us. And of course, you "
+"can <b>promote</b> VLC media player.</p></body></html>"
 msgstr ""
 "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; "
 "charset=utf-8\" /></head><body><h2>VLC 미디어 재생기 도움말에 오신 것을 환영"
@@ -614,15 +614,15 @@ msgstr ""
 "단축키</a> 페이지가 도움이 될 것입니다.</p><h3>도움말</h3><p>모르는 내용을 질"
 "문하기 전에, 먼저 <a href=\"http://wiki.videolan.org/"
 "Frequently_Asked_Questions\">FAQ</a>를 참조해 주시기 바랍니다.</p><p>다른 VLC"
-"에 대한 도움말은 <a href=\"http://forum.videolan.org\">포럼</a>, <a "
-"href=\"http://www.videolan.org/vlc/lists.html\">메일링 리스트</a> 혹은 IRC 채"
-"널 ( <a href=\"http://www.videolan.org/webirc/\"><em>#videolan</em></a> on "
-"irc.freenode.net ) 에서 얻을 수 있을 것입니다.</p><h3>프로젝트에 공헌하기</"
-"h3><p>여러분의 시간을 약간 투자하여 스킨을 제작하거나, 설명서를 번역하거나, "
-"프로그램을 테스트하거나, 작성하는 방식으로 커뮤니티를 도와서 VideoLan 프로젝"
-"트에 공헌할 수 있습니다.혹은 기부금 혹은 장비를 제공하여 도울 수도 있습니다. "
-"아니면 VLC 미디어 재생기를 <b>사람들에게 알리는 일</b>도 큰 도움이 됩니다.</"
-"body></html>"
+"에 대한 도움말은 <a href=\"http://forum.videolan.org\">포럼</a>, <a href="
+"\"http://www.videolan.org/vlc/lists.html\">메일링 리스트</a> 혹은 IRC 채널 "
+"( <a href=\"http://www.videolan.org/webirc/\"><em>#videolan</em></a> on irc."
+"freenode.net ) 에서 얻을 수 있을 것입니다.</p><h3>프로젝트에 공헌하기</h3><p>"
+"여러분의 시간을 약간 투자하여 스킨을 제작하거나, 설명서를 번역하거나, 프로그"
+"램을 테스트하거나, 작성하는 방식으로 커뮤니티를 도와서 VideoLan 프로젝트에 공"
+"헌할 수 있습니다.혹은 기부금 혹은 장비를 제공하여 도울 수도 있습니다. 아니면 "
+"VLC 미디어 재생기를 <b>사람들에게 알리는 일</b>도 큰 도움이 됩니다.</body></"
+"html>"
 
 #: src/audio_output/filters.c:267
 msgid "Audio filtering failed"
@@ -1533,8 +1533,8 @@ msgstr "추가 인터페이스 모듈"
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
 "the background in addition to the default interface. Use a colon separated "
-"list of interface modules. (common values are \"rc\" (remote control), "
-"\"http\", \"gestures\" ...)"
+"list of interface modules. (common values are \"rc\" (remote control), \"http"
+"\", \"gestures\" ...)"
 msgstr ""
 "VLC의 \"부가적인 인터페이스\"를 선택할 수 있습니다. 기본 인터페이스에 더하여 "
 "백그라운드로 실행이 될 것입니다. 인터페이스 모듈의 목록을 콜론(:)으로 구분하"
@@ -2838,15 +2838,15 @@ msgstr "현재 미디어에 따라 제목 변경하기"
 
 #: src/libvlc-module.c:690
 msgid ""
-"This option allows you to set the title according to what's being "
-"played<br>$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: "
-"Genre<br>$n: Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: "
-"\"Now playing\" (Fall back on Title - Artist)"
+"This option allows you to set the title according to what's being played<br>"
+"$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: Genre<br>$n: "
+"Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: \"Now playing"
+"\" (Fall back on Title - Artist)"
 msgstr ""
-"현재 재생하는 것에 따라서 제목을 정할 수 있게 해 줍니다.<br>$a: 아티스트"
-"<br>$b: 앨범<br>$c: 저작권<br>$t: 제목<br>$g: 장르<br>$n: 트랙번호<br>$p: 지"
-"금 재생 중<br>$A: 날짜<br>$D: 재생시간<br>$Z: \"지금 재생 중\" (제목 - 아티스"
-"트로 돌아가기)"
+"현재 재생하는 것에 따라서 제목을 정할 수 있게 해 줍니다.<br>$a: 아티스트<br>"
+"$b: 앨범<br>$c: 저작권<br>$t: 제목<br>$g: 장르<br>$n: 트랙번호<br>$p: 지금 재"
+"생 중<br>$A: 날짜<br>$D: 재생시간<br>$Z: \"지금 재생 중\" (제목 - 아티스트로 "
+"돌아가기)"
 
 #: src/libvlc-module.c:695
 msgid "Disable all lua plugins"
@@ -9330,13 +9330,13 @@ msgstr "VLC가 키-uri와 키파일-위치를 읽는 파일"
 
 #: modules/access_output/livehttp.c:98
 msgid ""
-"File is read when segment starts and is assumed to be in format: key-"
-"uri\\nkey-file. File is read on the segment opening and values are used on "
-"that segment."
+"File is read when segment starts and is assumed to be in format: key-uri"
+"\\nkey-file. File is read on the segment opening and values are used on that "
+"segment."
 msgstr ""
-"세그먼트가 시작될 때 다음 파일을 읽고 다음 형식으로 간주합니다: key-"
-"uri\\nkey-file. 세그먼트를 열 때 파일을 읽고, 그 세그먼트에서 해당 값을 사용"
-"합니다."
+"세그먼트가 시작될 때 다음 파일을 읽고 다음 형식으로 간주합니다: key-uri"
+"\\nkey-file. 세그먼트를 열 때 파일을 읽고, 그 세그먼트에서 해당 값을 사용합니"
+"다."
 
 #: modules/access_output/livehttp.c:102
 msgid "Use randomized IV for encryption"
@@ -14345,14 +14345,14 @@ msgstr "D-Bus 제어 인터페이스"
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
-#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1292
-#: modules/gui/qt/main_interface.cpp:1296
-#: modules/gui/qt/main_interface.cpp:1333
-#: modules/gui/qt/main_interface.cpp:1335
-#: modules/gui/qt/main_interface.cpp:1443
-#: modules/gui/qt/main_interface.cpp:1460
-#: modules/gui/qt/main_interface.cpp:1468
-#: modules/gui/qt/main_interface.cpp:1491 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
+#: modules/gui/qt/main_interface.cpp:1306
+#: modules/gui/qt/main_interface.cpp:1343
+#: modules/gui/qt/main_interface.cpp:1345
+#: modules/gui/qt/main_interface.cpp:1453
+#: modules/gui/qt/main_interface.cpp:1470
+#: modules/gui/qt/main_interface.cpp:1478
+#: modules/gui/qt/main_interface.cpp:1501 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -16380,9 +16380,9 @@ msgid ""
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
-"DVDs, network streams, capture cards and other media formats!</p><p><a "
-"href=\"https://www.videolan.org/contribute/\"><span style=\" text-"
-"decoration: underline; color:#0057ae;\">Help and join us!</span></a>"
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"https://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>VLC 미디어 재생기는 <a href=\"http://www.videolan.org/\"><span style=\" "
 "text-decoration: underline; color:#0057ae;\">VideoLAN</span></a> 커뮤니티</p>"
@@ -16690,8 +16690,8 @@ msgstr "입력이 변경됨"
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:213
 msgid ""
-"Input has changed, unable to save bookmark. Suspending playback with "
-"\"Pause\" while editing bookmarks to ensure to keep the same input."
+"Input has changed, unable to save bookmark. Suspending playback with \"Pause"
+"\" while editing bookmarks to ensure to keep the same input."
 msgstr ""
 "입력이 변경되서, 바로찾기를 저장할 수 없습니다. 동일한 입력을 확실히 유지하"
 "기 위해 바로찾기를 편집하는 동안에 \"일시정지\" 상태를 유지하세요."
@@ -17497,13 +17497,13 @@ msgstr "재생할 미디어 선택 대화상자를 엽니다"
 
 #: modules/gui/macosx/VLCMainWindow.m:220
 #: modules/gui/macosx/VLCMainWindow.m:226
-#: modules/gui/qt/components/playlist/selector.cpp:580
+#: modules/gui/qt/components/playlist/selector.cpp:593
 msgid "Subscribe"
 msgstr "구독하기"
 
 #: modules/gui/macosx/VLCMainWindow.m:221
 #: modules/gui/macosx/VLCMainWindow.m:232
-#: modules/gui/qt/components/playlist/selector.cpp:597
+#: modules/gui/qt/components/playlist/selector.cpp:610
 msgid "Unsubscribe"
 msgstr "구독 중단하기"
 
@@ -17513,7 +17513,7 @@ msgid "Subscribe to a podcast"
 msgstr "팟캐스트 구독하기"
 
 #: modules/gui/macosx/VLCMainWindow.m:225
-#: modules/gui/qt/components/playlist/selector.cpp:581
+#: modules/gui/qt/components/playlist/selector.cpp:594
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr "구독할 팟캐스트 주소 입력:"
 
@@ -19949,11 +19949,11 @@ msgstr "로컬 네트워크"
 msgid "Internet"
 msgstr "인터넷"
 
-#: modules/gui/qt/components/playlist/selector.cpp:443
+#: modules/gui/qt/components/playlist/selector.cpp:456
 msgid "Remove this podcast subscription"
 msgstr "이 팟캐스트 구독을 제거하기"
 
-#: modules/gui/qt/components/playlist/selector.cpp:594
+#: modules/gui/qt/components/playlist/selector.cpp:607
 msgid "Do you really want to unsubscribe from %1?"
 msgstr "%1 의 구독을 정말로 중단할까요?"
 
@@ -20523,8 +20523,8 @@ msgid ""
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
-"DVDs, network streams, capture cards and other media formats!</p><p><a "
-"href=\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>VLC 미디어 재생기는 <a href=\"http://www.videolan.org/\"><span style=\" "
@@ -21141,11 +21141,11 @@ msgstr "마지막 위치에서 이어서 재생할까요?"
 msgid "&Continue"
 msgstr "계속(&C)"
 
-#: modules/gui/qt/main_interface.cpp:1444
+#: modules/gui/qt/main_interface.cpp:1454
 msgid "Control menu for the player"
 msgstr "재생기 제어 메뉴"
 
-#: modules/gui/qt/main_interface.cpp:1488
+#: modules/gui/qt/main_interface.cpp:1498
 msgid "Paused"
 msgstr "일시정지"
 
@@ -21724,7 +21724,7 @@ msgstr "경고"
 msgid "debug"
 msgstr "디버그"
 
-#: modules/gui/qt/util/searchlineedit.cpp:49
+#: modules/gui/qt/util/searchlineedit.cpp:50
 msgctxt "Tooltip|Clear"
 msgid "Clear"
 msgstr "비우기"
@@ -22326,8 +22326,8 @@ msgstr "Lua 인터페이스 구성"
 
 #: modules/lua/vlc.c:53
 msgid ""
-"Lua interface configuration string. Format is: '[\"<interface module "
-"name>\"] = { <option> = <value>, ...}, ...'."
+"Lua interface configuration string. Format is: '[\"<interface module name>"
+"\"] = { <option> = <value>, ...}, ...'."
 msgstr ""
 "Lua 인터페이스 구성 문자열. 형식: '[\"<인터페이스 모듈 이름>\"] = { <옵션> = "
 "<값>, ...}, ...'."
