@@ -71,24 +71,46 @@ static wchar_t *widen_path (const char *path)
 
 int vlc_open (const char *filename, int flags, ...)
 {
-    int mode = 0;
-    va_list ap;
+    DWORD dwDesiredAccess, dwCreationDisposition, dwFlagsAndAttributes;
 
     flags |= O_NOINHERIT; /* O_CLOEXEC */
     /* Defaults to binary mode */
     if ((flags & O_TEXT) == 0)
         flags |= O_BINARY;
 
-    va_start (ap, flags);
+    if (flags & O_WRONLY)
+    {
+        dwDesiredAccess = GENERIC_WRITE;
+    }
+    else if (flags & O_RDWR)
+    {
+        dwDesiredAccess = GENERIC_READ | GENERIC_WRITE;
+    }
+    else // if (flags & O_RDONLY)
+    {
+        dwDesiredAccess = GENERIC_READ;
+    }
+
     if (flags & O_CREAT)
     {
-        int unixmode = va_arg(ap, int);
-        if (unixmode & 0444)
-            mode |= _S_IREAD;
-        if (unixmode & 0222)
-            mode |= _S_IWRITE;
+        if (flags & O_EXCL)
+            dwCreationDisposition = CREATE_NEW;
+        else
+            dwCreationDisposition = CREATE_ALWAYS;
     }
-    va_end (ap);
+    else if (flags & O_TRUNC)
+    {
+        dwCreationDisposition = TRUNCATE_EXISTING;
+    }
+    else
+    {
+        dwCreationDisposition = OPEN_EXISTING;
+    }
+
+    dwFlagsAndAttributes = FILE_FLAG_RANDOM_ACCESS | SECURITY_SQOS_PRESENT | SECURITY_IDENTIFICATION;
+
+    // if (flags & O_NONBLOCK)
+    //     dwFlagsAndAttributes |= FILE_FLAG_OVERLAPPED;
 
     /*
      * open() cannot open files with non-“ANSI” characters on Windows.
@@ -98,8 +120,31 @@ int vlc_open (const char *filename, int flags, ...)
     if (wpath == NULL)
         return -1;
 
-    int fd = _wopen (wpath, flags, mode);
+    HANDLE h;
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+    h = CreateFileW(wpath, dwDesiredAccess,
+        FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+        NULL, dwCreationDisposition,
+        dwFlagsAndAttributes, NULL);
+#else
+    CREATEFILE2_EXTENDED_PARAMETERS params = { 0 };
+    params.dwSize = sizeof(params);
+    params.dwFileAttributes = dwFlagsAndAttributes & 0xFFFF;
+    params.dwFileFlags = dwFlagsAndAttributes & ~(0xFFFF | SECURITY_VALID_SQOS_FLAGS);
+    params.dwSecurityQosFlags = dwFlagsAndAttributes & SECURITY_VALID_SQOS_FLAGS;
+    h = CreateFile2(wpath, dwDesiredAccess,
+        FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+        dwCreationDisposition,
+        &params);
+#endif
     free (wpath);
+    if (h == INVALID_HANDLE_VALUE)
+        return -1;
+    int fd = _open_osfhandle((intptr_t)h, flags);
+    if (unlikely(fd == -1))
+    {
+        CloseHandle(h);
+    }
     return fd;
 }
 
@@ -356,43 +401,3 @@ int vlc_accept (int lfd, struct sockaddr *addr, socklen_t *alen, bool nonblock)
         ioctlsocket (fd, FIONBIO, &(unsigned long){ 1 });
     return fd;
 }
-
-#if !VLC_WINSTORE_APP
-FILE *vlc_win32_tmpfile(void)
-{
-    TCHAR tmp_path[MAX_PATH-14];
-    int i_ret = GetTempPath (MAX_PATH-14, tmp_path);
-    if (i_ret == 0)
-        return NULL;
-
-    TCHAR tmp_name[MAX_PATH];
-    i_ret = GetTempFileName(tmp_path, TEXT("VLC"), 0, tmp_name);
-    if (i_ret == 0)
-        return NULL;
-
-    HANDLE hFile = CreateFile(tmp_name,
-            GENERIC_READ | GENERIC_WRITE | DELETE, 0, NULL, CREATE_ALWAYS,
-            FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL);
-    if (hFile == INVALID_HANDLE_VALUE)
-        return NULL;
-
-    int fd = _open_osfhandle((intptr_t)hFile, 0);
-    if (fd == -1) {
-        CloseHandle(hFile);
-        return NULL;
-    }
-
-    FILE *stream = _fdopen(fd, "w+b");
-    if (stream == NULL) {
-        _close(fd);
-        return NULL;
-    }
-    return stream;
-}
-#else
-FILE *vlc_win32_tmpfile(void)
-{
-    return NULL;
-}
-#endif
-

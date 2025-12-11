@@ -307,7 +307,7 @@ static picture_t *NewOutputPicture( filter_t *p_filter )
             fmt.i_width  = dstDesc.Width;
             fmt.i_height = dstDesc.Height;
             if (AllocateTextures(p_filter, &p_filter->p_sys->d3d_dev, cfg,
-                                 &fmt, 1, pic->p_sys->texture) != VLC_SUCCESS)
+                                 &fmt, false, false, 1, pic->p_sys->texture) != VLC_SUCCESS)
             {
                 free(pic->p_sys);
                 return NULL;
@@ -368,9 +368,6 @@ int D3D11OpenDeinterlace(vlc_object_t *obj)
         free(sys);
         return VLC_ENOOBJ;
     }
-
-    if (D3D11_Create(filter, &sys->hd3d, false) != VLC_SUCCESS)
-        goto error;
 
     hr = ID3D11Device_QueryInterface(sys->d3d_dev.d3ddevice, &IID_ID3D11VideoDevice, (void **)&sys->d3dviddev);
     if (FAILED(hr)) {

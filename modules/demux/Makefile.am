@@ -1,7 +1,8 @@
 demuxdir = $(pluginsdir)/demux
 demux_LTLIBRARIES =
 
-libxiph_metadata_la_SOURCES = demux/xiph_metadata.h demux/xiph_metadata.c
+libxiph_metadata_la_SOURCES = demux/xiph_metadata.h demux/xiph_metadata.c \
+			      meta_engine/ID3Pictures.h
 libxiph_metadata_la_LDFLAGS = -static
 noinst_LTLIBRARIES += libxiph_metadata.la
 
@@ -103,6 +104,9 @@ demux_LTLIBRARIES += libdemux_cdg_plugin.la
 
 libsmf_plugin_la_SOURCES = demux/smf.c
 demux_LTLIBRARIES += libsmf_plugin.la
+
+libdmxmus_plugin_la_SOURCES = demux/dmxmus.c
+demux_LTLIBRARIES += libdmxmus_plugin.la
 
 libgme_plugin_la_SOURCES = demux/gme.c
 libgme_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(demuxdir)'
@@ -260,6 +264,7 @@ libts_plugin_la_SOURCES = demux/mpeg/ts.c demux/mpeg/ts.h \
         demux/mpeg/ts_metadata.c demux/mpeg/ts_metadata.h \
         demux/mpeg/ts_hotfixes.c demux/mpeg/ts_hotfixes.h \
         demux/mpeg/ts_strings.h demux/mpeg/ts_streams_private.h \
+        demux/mpeg/ts_pes.c demux/mpeg/ts_pes.h \
         demux/mpeg/pes.h \
         demux/mpeg/timestamps.h \
         demux/dvb-text.h \
@@ -381,6 +386,7 @@ libvlc_adaptive_la_SOURCES = \
     demux/adaptive/Streams.cpp \
     demux/adaptive/Streams.hpp \
     demux/adaptive/Time.hpp \
+    demux/adaptive/tools/Compatibility.hpp \
     demux/adaptive/tools/Conversions.hpp \
     demux/adaptive/tools/Conversions.cpp \
     demux/adaptive/tools/Debug.hpp \

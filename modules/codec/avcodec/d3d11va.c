@@ -55,6 +55,10 @@
 #define D3D_DecoderSurface  ID3D11VideoDecoderOutputView
 #include "directx_va.h"
 
+#ifndef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
+# define FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO 2 // moved to libavcodec/dxva2_internal.h :/
+#endif
+
 static int Open(vlc_va_t *, AVCodecContext *, const AVPixFmtDescriptor *, enum PixelFormat,
                 const es_format_t *, picture_sys_t *p_sys);
 static void Close(vlc_va_t *, void **);
@@ -72,7 +76,7 @@ vlc_module_end()
  * So we get the surfaces from the decoder pool when needed. We don't need to
  * extract the decoded surface into the decoder picture anymore.
  */
-#define D3D11_DIRECT_DECODE  LIBAVCODEC_VERSION_CHECK( 57, 30, 3, 72, 101 )
+#define D3D11_DIRECT_DECODE  LIBAV_CODEC_VERSION_CHECK( 57, 30, 3, 72, 101 )
 
 #include <initguid.h> /* must be last included to not redefine existing GUIDs */
 
@@ -760,7 +764,7 @@ static int DxCreateDecoderSurfaces(vlc_va_t *va, int codec_id,
             assert(texDesc.Format == sys->render);
             assert(texDesc.BindFlags & D3D11_BIND_DECODER);
 
-#if !LIBAVCODEC_VERSION_CHECK( 57, 27, 2, 61, 102 )
+#if !LIBAV_CODEC_VERSION_CHECK( 57, 27, 2, 61, 102 )
             if (pic->p_sys->slice_index != surface_idx)
             {
                 msg_Warn(va, "d3d11va requires decoding slices to be the first in the texture (%d/%d)",

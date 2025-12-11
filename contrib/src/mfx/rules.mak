@@ -29,6 +29,7 @@ $(TARBALLS)/mfx-$(MFX_GITHASH).tar.xz:
 
 mfx: mfx-$(MFX_GITHASH).tar.xz .sum-mfx
 	$(UNPACK)
+	$(UPDATE_AUTOCONFIG)
 	$(APPLY) $(SRC)/mfx/0001-detect-winstore-builds-with-a-regular-mingw32-toolch.patch
 	$(APPLY) $(SRC)/mfx/0002-Fix-linking-statically-with-intel_gfx_api-x86.dll.patch
 	$(APPLY) $(SRC)/mfx/0003-Don-t-change-the-calling-convention-of-x86-gfx-api.patch
@@ -36,6 +37,6 @@ mfx: mfx-$(MFX_GITHASH).tar.xz .sum-mfx
 	$(MOVE)
 
 .mfx: mfx
-	cd $< && $(HOSTVARS) CFLAGS="$(MFX_CFLAGS)" CXXFLAGS="$(MFX_CXXFLAGS)" ./configure $(HOSTCONF)
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) CFLAGS="$(MFX_CFLAGS)" CXXFLAGS="$(MFX_CXXFLAGS)"
+	$(MAKE) -C $< install
 	touch $@

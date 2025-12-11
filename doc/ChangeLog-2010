@@ -11389,7 +11389,7 @@ Date:   Wed Jul 21 20:25:59 2010 +0300
     Disable swscale if avcodec is disabled
 
 commit 1c6ac615a82aa1d8bab6295c828238e126ad201a
-Merge: c1cf203b272 a81518d6c9f
+Merge: c1cf203b27 a81518d6c9
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Wed Jul 21 18:16:32 2010 +0200
 
@@ -25249,7 +25249,7 @@ Date:   Wed Mar 3 20:51:49 2010 +0200
     kilobit is kb, not kB
 
 commit 778a6f0719a6bf547917ff9f2ef7fd84769fd901
-Merge: 8d76c39a239 f8aeca6aea3
+Merge: 8d76c39a23 f8aeca6aea
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Wed Mar 3 20:09:49 2010 +0200
 
@@ -31900,7 +31900,7 @@ Date:   Mon Feb 1 01:56:02 2010 +0100
     macosx/framework: Get rid of VLCMediaListAspect, and remove a bunch of exception.
 
 commit cb9e605beef6ce4134bec22a90aa54746444e667
-Merge: 0afbf878082 58b047635b7
+Merge: 0afbf87808 58b047635b
 Author: JP Dinger <jpd@videolan.org>
 Date:   Mon Feb 1 01:57:41 2010 +0100
 
@@ -38564,52 +38564,3 @@ Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sat Jan 2 22:53:24 2010 +0200
 
     Win32: using a static mutex with a condition is not implemented yet
-
-commit bc8ee31f30c51821529af6403e7929f2df2f5487
-Author: Jean-Baptiste Kempf <jb@videolan.org>
-Date:   Sat Jan 2 00:04:08 2010 +0100
-
-    Qt: Fix audio options in SPrefs
-    
-    SPDIF and directx device
-
-commit 2d6fe3ddb119ad9da87a6bdcae0f4f578e692332
-Author: Jean-Baptiste Kempf <jb@videolan.org>
-Date:   Fri Jan 1 23:56:53 2010 +0100
-
-    Qt: update audio panel to newest DirectSound changes
-    
-    Close #3218
-
-commit bd5c1734c30588ba439ae11d345ac7b3252bb84c
-Author: Jean-Baptiste Kempf <jb@videolan.org>
-Date:   Fri Jan 1 23:55:10 2010 +0100
-
-    Win32: Be sure to strip axvlc.dll and npvlc.dll
-
-commit f40ec470c9a04e91c9102c764db5b92828ad1849
-Author: Pierre d'Herbemont <pdherbemont@free.fr>
-Date:   Fri Jan 1 18:42:30 2010 +0100
-
-    macosx/framework: contrib are fat now.
-
-commit 5a20b90e8c6920a79d7d7b7ca56fb011b97dfc73
-Author: Pierre d'Herbemont <pdherbemont@free.fr>
-Date:   Thu Dec 31 20:36:00 2009 +0100
-
-    macosx/framework: Support multiple architectures.
-    
-    Warning, building fat are not supported by automake if dependency-tracking is enabled.
-    That's why this fat build is disabled by default.
-
-commit 65ed93af7b623248bae389f656698248fe52bf8f
-Author: Pierre d'Herbemont <pdherbemont@free.fr>
-Date:   Thu Dec 31 19:33:06 2009 +0100
-
-    configure: Detect fat contribs.
-
-commit 2e024847e1bbfad3ddf4aa9fcb01c90c0e41c854
-Author: Pierre d'Herbemont <pdherbemont@free.fr>
-Date:   Thu Dec 31 19:30:49 2009 +0100
-
-    contrib: Build fat binary using binary contrib on Mac OS X.

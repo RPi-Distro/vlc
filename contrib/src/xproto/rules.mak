@@ -17,8 +17,10 @@ xproto: xproto-$(XPROTO_VERSION).tar.bz2 .sum-xproto
 
 DEPS_xproto = xorg-macros $(DEPS_xorg-macros)
 
+XPROTO_CONF := --enable-xthreads
+
 .xproto: xproto
 	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) --enable-xthreads
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(XPROTO_CONF)
+	$(MAKE) -C $< install
 	touch $@

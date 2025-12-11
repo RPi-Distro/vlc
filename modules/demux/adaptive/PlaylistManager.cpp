@@ -90,8 +90,8 @@ PlaylistManager::~PlaylistManager   ()
     delete streamFactory;
     unsetPeriod();
     delete playlist;
-    delete logic;
     delete resources;
+    delete logic;
     delete bufferingLogic;
     vlc_cond_destroy(&waitcond);
     vlc_mutex_destroy(&lock);
@@ -144,8 +144,8 @@ bool PlaylistManager::setupPeriod()
             if(!set->getLang().empty())
                 st->setLanguage(set->getLang());
 
-            if(!set->description.Get().empty())
-                st->setDescription(set->description.Get());
+            if(!set->description.empty())
+                st->setDescription(set->description);
         }
     }
     return true;
@@ -158,8 +158,8 @@ bool PlaylistManager::init(bool b_preparsing)
     if(!setupPeriod())
         return false;
 
-    playlist->playbackStart.Set(time(nullptr));
-    nextPlaylistupdate = playlist->playbackStart.Get();
+    playlist->playbackStart = time(nullptr);
+    nextPlaylistupdate = playlist->playbackStart;
 
     if(b_preparsing)
         preparsePlaylist();
@@ -644,7 +644,7 @@ int PlaylistManager::doControl(int i_query, va_list args)
             bool accurate = va_arg(args, int);
             vlc_tick_t seekTime = cached.playlistStart + cached.playlistLength * pos;
 
-            SeekDebug(msg_Dbg(p_demux, "Seek %f to %ld plstart %ld duration %ld",
+            SeekDebug(msg_Dbg(p_demux, "Seek %f to %" PRId64 " plstart %" PRId64 " duration %" PRId64,
                    pos, seekTime, cached.playlistEnd, cached.playlistLength));
 
             if(!setPosition(seekTime, pos, accurate))
@@ -800,8 +800,8 @@ void PlaylistManager::updateControlsPosition()
     Times currentTimes = getTimes();
     cached.b_live = playlist->isLive();
 
-    SeekDebug(msg_Dbg(p_demux, "playlist Start/End %ld/%ld len %ld"
-                               "rap pl/demux (%ld/%ld)",
+    SeekDebug(msg_Dbg(p_demux, "playlist Start/End %" PRId64 "/%" PRId64 " len %" PRId64
+                               "rap pl/demux (%" PRId64 "/%" PRId64 ")",
                       cached.playlistStart, cached.playlistEnd, cached.playlistEnd,
                       startTimes.segment.media, startTimes.segment.demux));
 
@@ -832,8 +832,8 @@ void PlaylistManager::updateControlsPosition()
     }
     else
     {
-        if(playlist->duration.Get() > cached.playlistLength)
-            cached.playlistLength = playlist->duration.Get();
+        if(playlist->duration > cached.playlistLength)
+            cached.playlistLength = playlist->duration;
 
         if(cached.playlistLength && currentTimes.segment.media != VLC_TICK_INVALID)
         {
@@ -846,7 +846,7 @@ void PlaylistManager::updateControlsPosition()
         }
     }
 
-    SeekDebug(msg_Dbg(p_demux, "cached.i_time (%ld) cur %ld rap start (pl %ld/dmx %ld) pos %f",
+    SeekDebug(msg_Dbg(p_demux, "cached.i_time (%" PRId64 ") cur %" PRId64 " rap start (pl %" PRId64 "/dmx %" PRId64 ") pos %f",
                       cached.i_time, currentTimes.continuous, startTimes.segment.media,
                             startTimes.segment.demux, cached.f_position));
 }

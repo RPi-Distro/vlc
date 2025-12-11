@@ -18,16 +18,19 @@ $(TARBALLS)/sidplay-libs-$(SID_VERSION).tar.gz:
 
 sidplay-libs: sidplay-libs-$(SID_VERSION).tar.gz .sum-sidplay2
 	$(UNPACK)
+	$(UPDATE_AUTOCONFIG)
 	$(APPLY) $(SRC)/sidplay2/sidplay2-openmode.patch
 	$(APPLY) $(SRC)/sidplay2/sidplay2-endian.patch
 	$(APPLY) $(SRC)/sidplay2/sidplay2-smartprt.patch
 	$(APPLY) $(SRC)/sidplay2/sidplay2-noutils.patch
 	$(APPLY) $(SRC)/sidplay2/sidplay2-string.patch
 	$(APPLY) $(SRC)/sidplay2/sidplay2-fix-overflow.patch
+	$(APPLY) $(SRC)/sidplay2/sidplay2-cxxtest.patch
 	$(MOVE)
 
 .sidplay2: sidplay-libs
 	$(REQUIRE_GPL)
+	#export ac_cv_sizeof_int=4
 	for d in . libsidplay builders resid builders/resid-builder \
 			builders/hardsid-builder libsidutils ; \
 	do \
@@ -39,6 +42,6 @@ sidplay-libs: sidplay-libs-$(SID_VERSION).tar.gz .sum-sidplay2
 		(cd $</$$d && $(AUTORECONF) -fiv -I unix $(ACLOCAL_AMFLAGS)) || exit $$? ; \
 	done
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF)
-	cd $< && $(MAKE) install
+	$(MAKE) -C $< install
 	cp -- $(PREFIX)/lib/sidplay/builders/* "$(PREFIX)/lib/"
 	touch $@

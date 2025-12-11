@@ -7,7 +7,7 @@
 ifndef USE_LIBAV
 FFMPEG_HASH=71fb6132637a2a430375c24afc381fff8b854fe7
 FFMPEG_MAJVERSION := 4.4
-FFMPEG_REVISION := 4
+FFMPEG_REVISION := 5
 FFMPEG_VERSION := $(FFMPEG_MAJVERSION).$(FFMPEG_REVISION)
 FFMPEG_BRANCH=release/$(FFMPEG_MAJVERSION)
 FFMPEG_URL := https://ffmpeg.org/releases/ffmpeg-$(FFMPEG_VERSION).tar.xz
@@ -76,6 +76,13 @@ FFMPEGCONF += --enable-libmp3lame
 DEPS_ffmpeg += lame $(DEPS_lame)
 else
 FFMPEGCONF += --disable-encoders --disable-muxers
+endif
+
+# Postproc
+MAYBE_POSTPROC =
+ifdef GPL
+FFMPEGCONF += --enable-gpl --enable-postproc
+MAYBE_POSTPROC = libpostproc
 endif
 
 # Small size
@@ -220,7 +227,7 @@ endif
 
 # Build
 PKGS += ffmpeg
-ifeq ($(call need_pkg,"libavcodec >= $(FFMPEG_LAVC_MIN) libavformat >= 53.21.0 libswscale"),)
+ifeq ($(call need_pkg,"libavcodec >= $(FFMPEG_LAVC_MIN) libavformat >= 53.21.0 libswscale $(MAYBE_POSTPROC)"),)
 PKGS_FOUND += ffmpeg
 endif
 
@@ -239,9 +246,7 @@ $(TARBALLS)/ffmpeg-$(FFMPEG_VERSION).tar.xz:
 .sum-ffmpeg: ffmpeg-$(FFMPEG_VERSION).tar.xz
 
 ffmpeg: ffmpeg-$(FFMPEG_VERSION).tar.xz .sum-ffmpeg
-	rm -Rf $@ $@-$(FFMPEG_VERSION)
-	mkdir -p $@-$(FFMPEG_VERSION)
-	tar xvJfo "$<" --strip-components=1 -C $@-$(FFMPEG_VERSION)
+	$(UNPACK)
 ifdef USE_FFMPEG
 	$(APPLY) $(SRC)/ffmpeg/armv7_fixup.patch
 	$(APPLY) $(SRC)/ffmpeg/dxva_vc1_crash.patch
@@ -255,6 +260,8 @@ ifdef USE_FFMPEG
 	$(APPLY) $(SRC)/ffmpeg/0001-bring-back-XP-support.patch
 	$(APPLY) $(SRC)/ffmpeg/0001-avcodec-vp9-Do-not-destroy-uninitialized-mutexes-con.patch
 	$(APPLY) $(SRC)/ffmpeg/0001-dxva2_hevc-don-t-use-frames-as-reference-if-they-are.patch
+	$(APPLY) $(SRC)/ffmpeg/0001-Replace-all-occurences-of-av_mallocz_array-by-av_cal.patch
+	$(APPLY) $(SRC)/ffmpeg/0002-compat-w32dlfcn.h-Remove-MAX_PATH-limit-and-replace-.patch
 endif
 ifdef USE_LIBAV
 	$(APPLY) $(SRC)/ffmpeg/libav_gsm.patch
@@ -265,5 +272,5 @@ endif
 	cd $< && $(HOSTVARS) ./configure \
 		--extra-ldflags="$(LDFLAGS)" $(FFMPEGCONF) \
 		--prefix="$(PREFIX)" --enable-static --disable-shared
-	cd $< && $(MAKE) install-libs install-headers
+	$(MAKE) -C $< install-libs install-headers
 	touch $@

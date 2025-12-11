@@ -152,6 +152,10 @@ static int PacketizeValidate( void *p_private, block_t * );
 static block_t * PacketizeDrain( void *p_private );
 
 static block_t *ParseNALBlock( decoder_t *, bool *pb_ts_used, block_t * );
+static inline block_t *ParseNALBlockW( void *opaque, bool *pb_ts_used, block_t *p_frag )
+{
+    return ParseNALBlock( (decoder_t *) opaque, pb_ts_used, p_frag );
+}
 
 static block_t *OutputPicture( decoder_t *p_dec );
 static void PutSPS( decoder_t *p_dec, block_t *p_frag );
@@ -325,6 +329,9 @@ static int Open( vlc_object_t *p_this )
     decoder_t     *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
     int i;
+
+    if( p_dec->fmt_in.i_cat != VIDEO_ES )
+        return VLC_EGENERIC;
 
     const bool b_avc = (p_dec->fmt_in.i_original_fourcc == VLC_FOURCC( 'a', 'v', 'c', '1' ));
 
@@ -530,8 +537,9 @@ static block_t *PacketizeAVC1( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    return PacketizeXXC1( p_dec, p_sys->i_avcC_length_size,
-                          pp_block, ParseNALBlock );
+    return PacketizeXXC1( p_dec, VLC_OBJECT(p_dec),
+                          p_sys->i_avcC_length_size, pp_block,
+                          ParseNALBlockW, PacketizeDrain );
 }
 
 /*****************************************************************************

@@ -7,8 +7,7 @@ if !HAVE_WIN32
 if !HAVE_DARWIN
 desktop_DATA = vlc.desktop
 appdatadir = $(datarootdir)/metainfo
-appdata_DATA = $(appdata_in_files:.xml.in=.xml)
-appdata_in_files = vlc.appdata.xml.in
+appdata_DATA = org.videolan.vlc.appdata.xml
 endif
 endif
 
@@ -16,14 +15,14 @@ EXTRA_DIST += vlc.desktop.in vlc.desktop.mimetypes
 CLEANFILES += $(desktop_DATA) $(appdata_DATA)
 
 vlc.desktop: vlc.desktop.in $(top_builddir)/config.status
-	$(AM_V_GEN)mimetypes="$$(sed 's/\s*#.*$$//g' $(srcdir)/vlc.desktop.mimetypes | egrep -v '^$$' | tr "\n" ';')"; \
+	$(AM_V_GEN)mimetypes="$$(sed 's/\s*#.*$$//g' $(srcdir)/vlc.desktop.mimetypes | $(EGREP) -v '^$$' | tr "\n" ';')"; \
 	sed \
 		-e 's,\@bindir\@,$(bindir),g' \
 		 -e "s,\@MIMETYPES\@,$$mimetypes,g" < "$<" > tmp-$@
 	$(AM_V_at)$(DESKTOP_FILE_VALIDATE) tmp-$@
 	$(AM_V_at)mv -f tmp-$@ $@
 
-vlc.appdata.xml: vlc.appdata.xml.in
+org.videolan.vlc.appdata.xml: org.videolan.vlc.appdata.xml.in
 	$(AM_V_GEN)$(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@ || cp $< $@
 
 iconsdatadir = $(datadir)/icons/hicolor
@@ -90,7 +89,7 @@ skins2_default_vlt_FILES = \
 	skins2/default/subX/vol_slider.png
 
 skins2/default.vlt: $(skins2_default_vlt_FILES)
-	$(AM_V_at)mkdir -p skins2
+	$(AM_V_at)$(MKDIR_P) "skins2"
 	$(AM_V_at)rm -f -- skins2/default.vlt.tmp
 	$(AM_V_GEN)tarsort= ; \
 	tar --help|grep -q sort=ORDER && tarsort=--sort=name ; \
@@ -117,7 +116,7 @@ luac_verbose_0 = @echo "  LUAC   $@";
 	done; \
 	echo "Attempt to byte-compile unknown file: $(<)!"; \
 	exit 1
-	$(AM_V_at)mkdir -p "$$(dirname '$@')"
+	$(AM_V_at)$(MKDIR_P) "$$(dirname '$@')"
 	$(luac_verbose)$(LUAC) -o $@ $<
 
 if BUILD_LUA

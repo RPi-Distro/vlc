@@ -1443,7 +1443,7 @@ static int DemuxBlock( demux_t *p_demux, const uint8_t *p, int len )
         }
         default:
         {
-            int i_id = ps_pkt_id( p_pkt );
+            int i_id = ps_pkt_id( p_pkt, PS_SOURCE_VOB );
             if( i_id >= 0xc0 )
             {
                 ps_track_t *tk = &p_sys->tk[ps_id_to_tk(i_id)];
@@ -1518,7 +1518,7 @@ static void ESNew( demux_t *p_demux, int i_id )
 
     if( tk->b_configured ) return;
 
-    if( ps_track_fill( tk, 0, i_id, NULL, true ) )
+    if( ps_track_fill( tk, NULL, i_id, NULL, true ) )
     {
         msg_Warn( p_demux, "unknown codec for id=0x%x", i_id );
         return;

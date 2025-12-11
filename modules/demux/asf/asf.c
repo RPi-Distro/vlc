@@ -214,8 +214,8 @@ static int Demux( demux_t *p_demux )
     }
 
     while( !p_sys->b_eos && ( p_sys->i_sendtime - p_sys->i_time - CHUNK < 0 ||
-                            ( p_sys->i_sendtime - p_sys->i_time - CHUNK ) /
-                              UINT64_C( 1000 ) < p_sys->p_fp->i_preroll ) )
+                            ( p_sys->i_sendtime - p_sys->i_time - CHUNK ) <
+                                                     p_sys->p_fp->i_preroll ) )
     {
         /* Read and demux a packet */
         if( DemuxASFPacket( &p_sys->packet_sys,
@@ -236,7 +236,15 @@ static int Demux( demux_t *p_demux )
                     msg_Warn( p_demux, "found a new ASF header" );
             }
             else
+            {
                 p_sys->b_eof = true;
+                for ( int i=0; i<MAX_ASF_TRACKS; i++ )
+                {
+                    asf_track_t *tk = p_sys->track[i];
+                    if ( tk && tk->info.p_frame )
+                        Packet_Enqueue( &p_sys->packet_sys, i, &tk->info.p_frame );
+                }
+            }
         }
 
         if ( p_sys->i_time == VLC_TICK_INVALID )
@@ -244,8 +252,8 @@ static int Demux( demux_t *p_demux )
     }
 
     if( p_sys->b_eos || ( p_sys->i_sendtime - p_sys->i_time - CHUNK >= 0 &&
-                        ( p_sys->i_sendtime - p_sys->i_time - CHUNK ) /
-                          UINT64_C( 1000 ) >= p_sys->p_fp->i_preroll ) )
+                        ( p_sys->i_sendtime - p_sys->i_time - CHUNK ) >=
+                                                     p_sys->p_fp->i_preroll ) )
     {
         bool b_data = Block_Dequeue( p_demux, p_sys->i_time + CHUNK );
 
@@ -371,7 +379,7 @@ static int SeekIndex( demux_t *p_demux, vlc_tick_t i_date, float f_pos )
     if( i_date < 0 )
         i_date = p_sys->i_length * f_pos;
 
-    p_sys->i_preroll_start = i_date - (int64_t) p_sys->p_fp->i_preroll;
+    p_sys->i_preroll_start = i_date - p_sys->p_fp->i_preroll;
     if ( p_sys->i_preroll_start < 0 ) p_sys->i_preroll_start = 0;
 
     p_index = ASF_FindObject( p_sys->p_root, &asf_object_simple_index_guid, 0 );
@@ -723,11 +731,7 @@ static void ASF_fillup_es_priorities_ex( demux_sys_t *p_sys, void *p_hdr,
             ASF_FindObject( p_hdr, &asf_object_advanced_mutual_exclusion, 0 );
     if (! p_mutex ) return;
 
-#if ( UINT_MAX > SIZE_MAX / 2 )
-    if ( p_sys->i_track > (size_t)SIZE_MAX / sizeof(uint16_t) )
-        return;
-#endif
-    p_prios->pi_stream_numbers = vlc_alloc( p_sys->i_track, sizeof(uint16_t) );
+    p_prios->pi_stream_numbers = vlc_alloc( p_sys->i_track, sizeof(*p_prios->pi_stream_numbers) );
     if ( !p_prios->pi_stream_numbers ) return;
 
     if ( p_mutex->i_stream_number_count )
@@ -750,11 +754,7 @@ static void ASF_fillup_es_bitrate_priorities_ex( demux_sys_t *p_sys, void *p_hdr
             ASF_FindObject( p_hdr, &asf_object_bitrate_mutual_exclusion_guid, 0 );
     if (! p_bitrate_mutex ) return;
 
-#if ( UINT_MAX > SIZE_MAX / 2 )
-    if ( p_sys->i_track > (size_t)SIZE_MAX / sizeof(uint16_t) )
-        return;
-#endif
-    p_prios->pi_stream_numbers = vlc_alloc( p_sys->i_track, sizeof( uint16_t ) );
+    p_prios->pi_stream_numbers = vlc_alloc( p_sys->i_track, sizeof(*p_prios->pi_stream_numbers) );
     if ( !p_prios->pi_stream_numbers ) return;
 
     if ( p_bitrate_mutex->i_stream_number_count )
@@ -784,6 +784,8 @@ static void ASF_fillup_es_bitrate_priorities_ex( demux_sys_t *p_sys, void *p_hdr
 static int DemuxInit( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
+    asf_es_priorities_t fmt_priorities_ex = { NULL, 0 };
+    asf_es_priorities_t fmt_priorities_bitrate_ex = { NULL, 0 };
 
     /* init context */
     p_sys->i_time   = VLC_TICK_INVALID;
@@ -855,8 +857,6 @@ static int DemuxInit( demux_t *p_demux )
                                               &asf_object_header_extension_guid, 0 );
 
     asf_object_language_list_t *p_languages = NULL;
-    asf_es_priorities_t fmt_priorities_ex = { NULL, 0 };
-    asf_es_priorities_t fmt_priorities_bitrate_ex = { NULL, 0 };
 
     if( p_hdr_ext )
     {
@@ -1214,9 +1214,6 @@ static int DemuxInit( demux_t *p_demux )
         es_format_Clean( &fmt );
     }
 
-    free( fmt_priorities_ex.pi_stream_numbers );
-    free( fmt_priorities_bitrate_ex.pi_stream_numbers );
-
     p_sys->i_data_begin = p_sys->p_root->p_data->i_object_pos + 50;
     if( p_sys->p_root->p_data->i_object_size > 50 ) /* see libasf ASF_OBJECT_DATA <= 50 handling */
     { /* local file */
@@ -1251,7 +1248,7 @@ static int DemuxInit( demux_t *p_demux )
         /* calculate the time duration in micro-s */
         p_sys->i_length = (vlc_tick_t)p_sys->p_fp->i_play_duration / 10 *
                    (vlc_tick_t)i_count /
-                   (vlc_tick_t)p_sys->p_fp->i_data_packets_count - p_sys->p_fp->i_preroll * 1000;
+                   (vlc_tick_t)p_sys->p_fp->i_data_packets_count - p_sys->p_fp->i_preroll;
         if( p_sys->i_length < 0 )
             p_sys->i_length = 0;
 
@@ -1349,6 +1346,8 @@ static int DemuxInit( demux_t *p_demux )
         }
     }
 #endif
+    free( fmt_priorities_ex.pi_stream_numbers );
+    free( fmt_priorities_bitrate_ex.pi_stream_numbers );
 
     p_sys->packet_sys.pi_preroll = &p_sys->p_fp->i_preroll;
     p_sys->packet_sys.pi_preroll_start = &p_sys->i_preroll_start;
@@ -1356,6 +1355,8 @@ static int DemuxInit( demux_t *p_demux )
     return VLC_SUCCESS;
 
 error:
+    free( fmt_priorities_ex.pi_stream_numbers );
+    free( fmt_priorities_bitrate_ex.pi_stream_numbers );
     DemuxEnd( p_demux );
     return VLC_EGENERIC;
 }
@@ -1431,4 +1432,3 @@ static void DemuxEnd( demux_t *p_demux )
         p_sys->track[i] = 0;
     }
 }
-

@@ -35,6 +35,8 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QPushButton>
+#include <QVBoxLayout>
+#include <QGridLayout>
 
 DialogHandler::DialogHandler (intf_thread_t *p_intf, QObject *_parent)
     : QObject( _parent ), p_intf (p_intf)
@@ -190,7 +192,7 @@ void DialogHandler::displayLogin(vlc_dialog_id *p_id, const QString &title,
     dialog->setWindowTitle (title);
     dialog->setWindowRole ("vlc-login");
     dialog->setModal(true);
-    layout->setMargin (2);
+    layout->setContentsMargins( 2, 2, 2, 2 );
 
     /* Username and password fields */
     QWidget *panel = new QWidget (dialog);

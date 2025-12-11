@@ -110,14 +110,19 @@ block_t * cc_storage_get_current( cc_storage_t *p_ccs, decoder_cc_desc_t *p_desc
  * Will always use 4 byte 0 0 0 1 startcodes
  * Will prepend a SPS and PPS before each keyframe
  ****************************************************************************/
-block_t *PacketizeXXC1( decoder_t *p_dec, uint8_t i_nal_length_size,
-                        block_t **pp_block, pf_annexb_nal_packetizer pf_nal_parser )
+block_t *PacketizeXXC1( void *p_private, vlc_object_t *p_obj,
+                        uint8_t i_nal_length_size, block_t **pp_block,
+                        pf_annexb_nal_parse pf_nal_parser,
+                        pf_annexb_nal_drain pf_nal_drain )
 {
     block_t       *p_block;
     block_t       *p_ret = NULL;
     uint8_t       *p;
 
-    if( !pp_block || !*pp_block )
+    if( !pp_block )
+        return pf_nal_drain ? pf_nal_drain( p_private ) : NULL;
+
+    if( !*pp_block )
         return NULL;
     if( (*pp_block)->i_flags&(BLOCK_FLAG_CORRUPTED) )
     {
@@ -145,7 +150,7 @@ block_t *PacketizeXXC1( decoder_t *p_dec, uint8_t i_nal_length_size,
         if( i_size <= 0 ||
             i_size > ( p_block->p_buffer + p_block->i_buffer - p ) )
         {
-            msg_Err( p_dec, "Broken frame : size %d is too big", i_size );
+            msg_Err( p_obj, "Broken frame : size %d is too big", i_size );
             break;
         }
 
@@ -184,7 +189,7 @@ block_t *PacketizeXXC1( decoder_t *p_dec, uint8_t i_nal_length_size,
 
         /* Parse the NAL */
         block_t *p_pic;
-        if( ( p_pic = pf_nal_parser( p_dec, &b_dummy, p_nal ) ) )
+        if( ( p_pic = pf_nal_parser( p_private, &b_dummy, p_nal ) ) )
         {
             block_ChainAppend( &p_ret, p_pic );
         }

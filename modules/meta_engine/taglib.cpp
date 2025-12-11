@@ -35,6 +35,7 @@
 #include <vlc_url.h>                /* vlc_uri2path */
 #include <vlc_mime.h>               /* mime type */
 #include <vlc_fs.h>
+#include <vlc_charset.h>
 
 #include <sys/stat.h>
 
@@ -75,13 +76,14 @@
 #include <asffile.h>
 #include <apetag.h>
 #include <flacfile.h>
+#include <flacpicture.h>
 #include <mpcfile.h>
 #include <mpegfile.h>
 #include <mp4file.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
 #include <opusfile.h>
-#include "../demux/xiph_metadata.h"
+#include "ID3Pictures.h"
 
 #include <aifffile.h>
 #include <wavfile.h>
@@ -99,16 +101,28 @@ using namespace TagLib;
 
 
 #include <algorithm>
+#include <limits>
+
+#if TAGLIB_VERSION >= VERSION_INT(1, 13, 0)
+#define USE_IOSTREAM_RESOLVER 1
+#endif
 
 namespace VLCTagLib
 {
     template <class T>
+#ifdef USE_IOSTREAM_RESOLVER
+    class ExtResolver : public FileRef::StreamTypeResolver
+#else
     class ExtResolver : public FileRef::FileTypeResolver
+#endif
     {
         public:
             ExtResolver(const std::string &);
             ~ExtResolver() {}
             virtual File *createFile(FileName, bool, AudioProperties::ReadStyle) const;
+#ifdef USE_IOSTREAM_RESOLVER
+            virtual File *createFileFromStream(IOStream*, bool, AudioProperties::ReadStyle) const;
+#endif
 
         protected:
             std::string ext;
@@ -116,7 +130,7 @@ namespace VLCTagLib
 }
 
 template <class T>
-VLCTagLib::ExtResolver<T>::ExtResolver(const std::string & ext) : FileTypeResolver()
+VLCTagLib::ExtResolver<T>::ExtResolver(const std::string & ext)
 {
     this->ext = ext;
     std::transform(this->ext.begin(), this->ext.end(), this->ext.begin(), ::toupper);
@@ -125,7 +139,11 @@ VLCTagLib::ExtResolver<T>::ExtResolver(const std::string & ext) : FileTypeResolv
 template <class T>
 File *VLCTagLib::ExtResolver<T>::createFile(FileName fileName, bool, AudioProperties::ReadStyle) const
 {
+#if defined(_WIN32) && TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
+    std::string filename = fileName.toString().to8Bit(true);
+#else
     std::string filename = std::string(fileName);
+#endif
     std::size_t namesize = filename.size();
 
     if (namesize > ext.length())
@@ -136,13 +154,35 @@ File *VLCTagLib::ExtResolver<T>::createFile(FileName fileName, bool, AudioProper
             return new T(fileName, false, AudioProperties::Fast);
     }
 
-    return 0;
+    return nullptr;
 }
+
+#ifdef USE_IOSTREAM_RESOLVER
+template<class T>
+File* VLCTagLib::ExtResolver<T>::createFileFromStream(IOStream* s, bool, AudioProperties::ReadStyle) const
+{
+#if defined(_WIN32) && TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
+    std::string filename = s->name().toString().to8Bit(true);
+#else
+    std::string filename = std::string(s->name());
+#endif
+    std::size_t namesize = filename.size();
+
+    if (namesize > ext.length())
+    {
+        std::string fext = filename.substr(namesize - ext.length(), ext.length());
+        std::transform(fext.begin(), fext.end(), fext.begin(), ::toupper);
+        if(fext == ext)
+            return new T(s, ID3v2::FrameFactory::instance(), false, AudioProperties::Fast);
+    }
+
+    return nullptr;
+}
+#endif
 
 #if TAGLIB_VERSION >= TAGLIB_VERSION_1_11
 static VLCTagLib::ExtResolver<MPEG::File> aacresolver(".aac");
 #endif
-static VLCTagLib::ExtResolver<MP4::File> m4vresolver(".m4v");
 static bool b_extensions_registered = false;
 
 // taglib is not thread safe
@@ -167,6 +207,9 @@ public:
     VlcIostream(stream_t* p_stream)
         : m_stream( p_stream )
         , m_previousPos( 0 )
+        , m_borked( false )
+        , m_seqReadLength( 0 )
+        , m_seqReadLimit( std::numeric_limits<long>::max() )
     {
     }
 
@@ -177,17 +220,27 @@ public:
 
     FileName name() const
     {
-        return m_stream->psz_location;
+        // Taglib only cares about the file name part, so it doesn't matter
+        // whether we include the mrl scheme or not
+        return m_stream->psz_url;
     }
 
+#if TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
+    ByteVector readBlock(size_t length)
+#else
     ByteVector readBlock(ulong length)
+#endif
     {
+        if(m_borked || m_seqReadLength >= m_seqReadLimit)
+            return {};
         ByteVector res(length, 0);
         ssize_t i_read = vlc_stream_Read( m_stream, res.data(), length);
         if (i_read < 0)
-            return ByteVector::null;
+            return {};
         else if ((size_t)i_read != length)
             res.resize(i_read);
+        m_previousPos += i_read;
+        m_seqReadLength += i_read;
         return res;
     }
 
@@ -196,11 +249,19 @@ public:
         // Let's stay Read-Only for now
     }
 
+#if TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
+    void insert(const ByteVector&, offset_t, size_t)
+#else
     void insert(const ByteVector&, ulong, ulong)
+#endif
     {
     }
 
+#if TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
+    void removeBlock(offset_t, size_t)
+#else
     void removeBlock(ulong, ulong)
+#endif
     {
     }
 
@@ -214,22 +275,43 @@ public:
         return true;
     }
 
+    void setMaxSequentialRead(long s)
+    {
+        m_seqReadLimit = s;
+    }
+
+#if TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
+    void seek(offset_t offset, Position p)
+#else
     void seek(long offset, Position p)
+#endif
     {
         uint64_t pos = 0;
+        long len;
         switch (p)
         {
             case Current:
                 pos = m_previousPos;
                 break;
             case End:
-                pos = length();
+                len = length();
+                if(len > -1)
+                {
+                    pos = len;
+                }
+                else
+                {
+                    m_borked = true;
+                    return;
+                }
                 break;
             default:
                 break;
         }
-        if (vlc_stream_Seek( m_stream, pos + offset ) == 0)
+        m_borked = (vlc_stream_Seek( m_stream, pos + offset ) != 0);
+        if(!m_borked)
             m_previousPos = pos + offset;
+        m_seqReadLength = 0;
     }
 
     void clear()
@@ -237,12 +319,20 @@ public:
         return;
     }
 
+#if TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
+    offset_t tell() const
+#else
     long tell() const
+#endif
     {
         return m_previousPos;
     }
 
+#if TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
+    offset_t length()
+#else
     long length()
+#endif
     {
         uint64_t i_size;
         if (vlc_stream_GetSize( m_stream, &i_size ) != VLC_SUCCESS)
@@ -250,13 +340,20 @@ public:
         return i_size;
     }
 
+#if TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
+    void truncate(offset_t)
+#else
     void truncate(long)
+#endif
     {
     }
 
 private:
     stream_t* m_stream;
     int64_t m_previousPos;
+    bool m_borked;
+    long m_seqReadLength;
+    long m_seqReadLimit;
 };
 #endif /* TAGLIB_VERSION_1_11 */
 
@@ -461,11 +558,127 @@ static void ReadMetaFromASF( ASF::Tag* tag, demux_meta_t* p_demux_meta, vlc_meta
     }
 }
 
+static void AddAPICToAttachments( demux_meta_t* p_demux_meta,
+                                  vlc_meta_t* p_meta,
+                                  const String &mimeType,
+                                  const String &description,
+                                  const char *p_data,
+                                  size_t i_data,
+                                  bool b_default = false )
+{
+    char *psz_name;
+    if( asprintf( &psz_name, "%i", p_demux_meta->i_attachments ) == -1 )
+        return;
+
+    input_attachment_t *p_attachment =
+        vlc_input_attachment_New( psz_name,
+                                  mimeType.toCString(),
+                                  description.toCString(),
+                                  p_data, i_data );
+    free( psz_name );
+    if( !p_attachment )
+        return;
+
+    msg_Dbg( p_demux_meta, "Found embedded art: %s (%zu bytes)",
+             p_attachment->psz_mime, p_attachment->i_data );
+
+    TAB_APPEND_CAST( (input_attachment_t**),
+                     p_demux_meta->i_attachments, p_demux_meta->attachments,
+                     p_attachment );
+
+    if( b_default )
+    {
+        char *psz_url;
+        if( asprintf( &psz_url, "attachment://%s",
+                      p_attachment->psz_name ) == -1 )
+            return;
+        vlc_meta_SetArtURL( p_meta, psz_url );
+        free( psz_url );
+    }
+}
+
+/**
+ * Fills attachments list from ID3 APIC tags
+ * @param tag: the APIC tags list
+ * @param p_demux_meta: the demuxer meta
+ * @param p_meta: the meta
+ */
+
+template<class T, class L>
+    const T * getDefaultPic(const L &list)
+{
+    const T *defaultPic = nullptr;
+    int bestscore = 0;
+    for( auto iter = list.begin(); iter != list.end(); ++iter )
+    {
+        const T* p = static_cast<const T*>(*iter);
+        if( !p )
+            continue;
+        int score = p->type() >= ARRAY_SIZE(ID3v2_cover_scores) ? 0 : ID3v2_cover_scores[p->type()];
+        if(defaultPic == nullptr || score > bestscore)
+        {
+            defaultPic = p;
+            bestscore = score;
+        }
+    }
+    return defaultPic;
+}
+
+static void ProcessAPICListFromId3v2( const ID3v2::FrameList &list,
+                                      demux_meta_t* p_demux_meta, vlc_meta_t* p_meta )
+{
+    const ID3v2::AttachedPictureFrame *defaultPic =
+        getDefaultPic<ID3v2::AttachedPictureFrame, ID3v2::FrameList>(list);
+
+    for( auto iter = list.begin(); iter != list.end(); ++iter )
+    {
+        const ID3v2::AttachedPictureFrame* p =
+                dynamic_cast<const ID3v2::AttachedPictureFrame*>(*iter);
+        if( !p )
+            continue;
+        // Get the mime and description of the image.
+        String description = p->description();
+        String mimeType = p->mimeType();
+
+        /* some old iTunes version not only sets incorrectly the mime type
+         * or the description of the image,
+         * but also embeds incorrectly the image.
+         * Recent versions seem to behave correctly */
+        if( mimeType == "PNG" || description == "\xC2\x89PNG" )
+        {
+            msg_Warn( p_demux_meta, "Invalid picture embedded by broken iTunes version" );
+            continue;
+        }
+
+        AddAPICToAttachments( p_demux_meta, p_meta,
+                              mimeType, description,
+                              p->picture().data(), p->picture().size(),
+                              p == defaultPic );
+    }
+}
+
+static void ProcessAPICListFromFLAC( const List< FLAC::Picture * > &list,
+                                     demux_meta_t* p_demux_meta, vlc_meta_t* p_meta )
+{
+    const FLAC::Picture *defaultPic =
+        getDefaultPic<FLAC::Picture, List< FLAC::Picture * >>(list);
+
+    for( auto iter = list.begin(); iter != list.end(); ++iter )
+    {
+        const FLAC::Picture* p = static_cast<const FLAC::Picture*>(*iter);
+        if( !p )
+            continue;
+        AddAPICToAttachments( p_demux_meta, p_meta,
+                              p->mimeType(), p->description(),
+                              p->data().data(), p->data().size(),
+                              p == defaultPic );
+    }
+}
 
 static void ReadMetaFromBasicTag(const Tag* tag, vlc_meta_t *dest)
 {
 #define SET( accessor, meta )                                                  \
-    if( !tag->accessor().isNull() && !tag->accessor().isEmpty() )              \
+    if( !tag->accessor().isEmpty() )                                           \
         vlc_meta_Set##meta( dest, tag->accessor().toCString(true) )
 #define SETINT( accessor, meta )                                               \
     if( tag->accessor() )                                                      \
@@ -511,7 +724,7 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_meta_t* p_demux_meta, vlc_
              * but in our case it will be a '\0'
              * terminated string */
             char psz_ufid[64];
-            int max_size = __MIN( p_ufid->identifier().size(), 63);
+            int max_size = std::min<unsigned>( p_ufid->identifier().size(), 63);
             strncpy( psz_ufid, p_ufid->identifier().data(), max_size );
             psz_ufid[max_size] = '\0';
             vlc_meta_SetTrackID( p_meta, psz_ufid );
@@ -580,114 +793,11 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_meta_t* p_demux_meta, vlc_
                 vlc_meta_DiscNumber, vlc_meta_DiscTotal );
     }
 
-    /* Preferred type of image
-     * The 21 types are defined in id3v2 standard:
-     * http://www.id3.org/id3v2.4.0-frames */
-    static const int pi_cover_score[] = {
-        0,  /* Other */
-        5,  /* 32x32 PNG image that should be used as the file icon */
-        4,  /* File icon of a different size or format. */
-        20, /* Front cover image of the album. */
-        19, /* Back cover image of the album. */
-        13, /* Inside leaflet page of the album. */
-        18, /* Image from the album itself. */
-        17, /* Picture of the lead artist or soloist. */
-        16, /* Picture of the artist or performer. */
-        14, /* Picture of the conductor. */
-        15, /* Picture of the band or orchestra. */
-        9,  /* Picture of the composer. */
-        8,  /* Picture of the lyricist or text writer. */
-        7,  /* Picture of the recording location or studio. */
-        10, /* Picture of the artists during recording. */
-        11, /* Picture of the artists during performance. */
-        6,  /* Picture from a movie or video related to the track. */
-        1,  /* Picture of a large, coloured fish. */
-        12, /* Illustration related to the track. */
-        3,  /* Logo of the band or performer. */
-        2   /* Logo of the publisher (record company). */
-    };
-    #define PI_COVER_SCORE_SIZE (sizeof (pi_cover_score) / sizeof (pi_cover_score[0]))
-    int i_score = -1;
-
     // Try now to get embedded art
     list = tag->frameListMap()[ "APIC" ];
-    if( list.isEmpty() )
-        return;
-
-    for( iter = list.begin(); iter != list.end(); iter++ )
-    {
-        ID3v2::AttachedPictureFrame* p_apic =
-            dynamic_cast<ID3v2::AttachedPictureFrame*>(*iter);
-        if( !p_apic )
-            continue;
-        input_attachment_t *p_attachment;
-
-        const char *psz_mime;
-        char *psz_name, *psz_description;
-
-        // Get the mime and description of the image.
-        // If the description is empty, take the type as a description
-        psz_mime = p_apic->mimeType().toCString( true );
-        if( p_apic->description().size() > 0 )
-            psz_description = strdup( p_apic->description().toCString( true ) );
-        else
-        {
-            if( asprintf( &psz_description, "%i", p_apic->type() ) == -1 )
-                psz_description = NULL;
-        }
-
-        if( !psz_description )
-            continue;
-        psz_name = psz_description;
-
-        /* some old iTunes version not only sets incorrectly the mime type
-         * or the description of the image,
-         * but also embeds incorrectly the image.
-         * Recent versions seem to behave correctly */
-        if( !strncmp( psz_mime, "PNG", 3 ) ||
-            !strncmp( psz_name, "\xC2\x89PNG", 5 ) )
-        {
-            msg_Warn( p_demux_meta, "Invalid picture embedded by broken iTunes version" );
-            free( psz_description );
-            continue;
-        }
-
-        const ByteVector picture = p_apic->picture();
-        const char *p_data = picture.data();
-        const unsigned i_data = picture.size();
-
-        msg_Dbg( p_demux_meta, "Found embedded art: %s (%s) is %u bytes",
-                 psz_name, psz_mime, i_data );
-
-        p_attachment = vlc_input_attachment_New( psz_name, psz_mime,
-                                psz_description, p_data, i_data );
-        if( !p_attachment )
-        {
-            free( psz_description );
-            continue;
-        }
-        TAB_APPEND_CAST( (input_attachment_t**),
-                         p_demux_meta->i_attachments, p_demux_meta->attachments,
-                         p_attachment );
-        free( psz_description );
-
-        unsigned i_pic_type = p_apic->type();
-        if( i_pic_type >= PI_COVER_SCORE_SIZE )
-            i_pic_type = 0; // Defaults to "Other"
-
-        if( pi_cover_score[i_pic_type] > i_score )
-        {
-            i_score = pi_cover_score[i_pic_type];
-            char *psz_url;
-            if( asprintf( &psz_url, "attachment://%s",
-                          p_attachment->psz_name ) == -1 )
-                continue;
-            vlc_meta_SetArtURL( p_meta, psz_url );
-            free( psz_url );
-        }
-    }
+    if( !list.isEmpty() )
+        ProcessAPICListFromId3v2( list, p_demux_meta, p_meta );
 }
-
 
 /**
  * Read the meta information from XiphComments
@@ -697,17 +807,20 @@ static void ReadMetaFromId3v2( ID3v2::Tag* tag, demux_meta_t* p_demux_meta, vlc_
  */
 static void ReadMetaFromXiph( Ogg::XiphComment* tag, demux_meta_t* p_demux_meta, vlc_meta_t* p_meta )
 {
-    StringList list;
     bool hasTrackTotal = false;
-#define SET( keyName, metaName )                                               \
-    list = tag->fieldListMap()[keyName];                                       \
-    if( !list.isEmpty() )                                                      \
-        vlc_meta_Set##metaName( p_meta, (*list.begin()).toCString( true ) );
+#define SET( keyName, metaName ) \
+    { \
+        StringList tmp_list { tag->fieldListMap()[keyName] }; \
+        if( !tmp_list.isEmpty() ) \
+            vlc_meta_Set##metaName( p_meta, (*tmp_list.begin()).toCString( true ) ); \
+    }
 
 #define SET_EXTRA( keyName, metaName ) \
-    list = tag->fieldListMap()[keyName]; \
-    if( !list.isEmpty() ) \
-        vlc_meta_AddExtra( p_meta, keyName, (*list.begin()).toCString( true ) );
+    { \
+        StringList tmp_list = tag->fieldListMap()[keyName]; \
+        if( !tmp_list.isEmpty() ) \
+            vlc_meta_AddExtra( p_meta, keyName, (*tmp_list.begin()).toCString( true ) ); \
+    }
 
     SET( "COPYRIGHT", Copyright );
     SET( "ORGANIZATION", Publisher );
@@ -723,77 +836,30 @@ static void ReadMetaFromXiph( Ogg::XiphComment* tag, demux_meta_t* p_demux_meta,
 #undef SET
 #undef SET_EXTRA
 
-    list = tag->fieldListMap()["TRACKNUMBER"];
-    if( !list.isEmpty() )
+    StringList track_number_list = tag->fieldListMap()["TRACKNUMBER"];
+    if( !track_number_list.isEmpty() )
     {
-        int i_values = ExtractCoupleNumberValues( p_meta, (*list.begin()).toCString( true ),
+        int i_values = ExtractCoupleNumberValues( p_meta, (*track_number_list.begin()).toCString( true ),
                  vlc_meta_TrackNumber, vlc_meta_TrackTotal );
         hasTrackTotal = i_values == 2;
     }
     if( !hasTrackTotal )
     {
-        list = tag->fieldListMap()["TRACKTOTAL"];
-        if( list.isEmpty() )
-            list = tag->fieldListMap()["TOTALTRACKS"];
-        if( !list.isEmpty() )
-            vlc_meta_SetTrackTotal( p_meta, (*list.begin()).toCString( true ) );
-    }
-
-    // Try now to get embedded art
-    StringList mime_list = tag->fieldListMap()[ "COVERARTMIME" ];
-    StringList art_list = tag->fieldListMap()[ "COVERART" ];
-
-    input_attachment_t *p_attachment;
-
-    if( mime_list.size() != 0 && art_list.size() != 0 )
-    {
-        // We get only the first cover art
-        if( mime_list.size() > 1 || art_list.size() > 1 )
-            msg_Warn( p_demux_meta, "Found %i embedded arts, so using only the first one",
-                    art_list.size() );
-
-        const char* psz_name = "cover";
-        const char* psz_mime = mime_list[0].toCString(true);
-        const char* psz_description = "cover";
-
-        uint8_t *p_data;
-        int i_data = vlc_b64_decode_binary( &p_data, art_list[0].toCString(true) );
-
-        msg_Dbg( p_demux_meta, "Found embedded art: %s (%s) is %i bytes",
-                psz_name, psz_mime, i_data );
-
-        p_attachment = vlc_input_attachment_New( psz_name, psz_mime,
-                psz_description, p_data, i_data );
-        free( p_data );
-    }
-    else
-    {
-        art_list = tag->fieldListMap()[ "METADATA_BLOCK_PICTURE" ];
-        if( art_list.size() == 0 )
-            return;
-
-        uint8_t *p_data;
-        int i_cover_score;
-        int i_cover_idx;
-        int i_data = vlc_b64_decode_binary( &p_data, art_list[0].toCString(true) );
-        i_cover_score = i_cover_idx = 0;
-        /* TODO: Use i_cover_score / i_cover_idx to select the picture. */
-        p_attachment = ParseFlacPicture( p_data, i_data, 0,
-            &i_cover_score, &i_cover_idx );
-        free( p_data );
-    }
-
-    if (p_attachment) {
-        TAB_APPEND_CAST( (input_attachment_t**),
-                p_demux_meta->i_attachments, p_demux_meta->attachments,
-                p_attachment );
-
-        char *psz_url;
-        if( asprintf( &psz_url, "attachment://%s", p_attachment->psz_name ) != -1 ) {
-            vlc_meta_SetArtURL( p_meta, psz_url );
-            free( psz_url );
+        StringList track_total_list { tag->fieldListMap()["TRACKTOTAL"] };
+        if( track_total_list.isEmpty() )
+        {
+            StringList total_tracks_list { tag->fieldListMap()["TOTALTRACKS"] };
+            if( !total_tracks_list.isEmpty() )
+                vlc_meta_SetTrackTotal( p_meta, (*total_tracks_list.begin()).toCString( true ) );
+        }
+        else
+        {
+            vlc_meta_SetTrackTotal( p_meta, (*track_total_list.begin()).toCString( true ) );
         }
     }
+
+    // Taglib extracts if(key == "METADATA_BLOCK_PICTURE" || key == "COVERART")
+    ProcessAPICListFromFLAC( tag->pictureList(), p_demux_meta, p_meta );
 }
 
 /**
@@ -806,15 +872,15 @@ static void ReadMetaFromMP4( MP4::Tag* tag, demux_meta_t *p_demux_meta, vlc_meta
 {
     MP4::Item list;
 #define SET( keyName, metaName )                                                             \
-    if( tag->itemListMap().contains(keyName) )                                               \
+    if( tag->contains(keyName) )                                                             \
     {                                                                                        \
-        list = tag->itemListMap()[keyName];                                                  \
+        list = tag->item(keyName);                                                           \
         vlc_meta_Set##metaName( p_meta, list.toStringList().front().toCString( true ) );     \
     }
 #define SET_EXTRA( keyName, metaName )                                                   \
-    if( tag->itemListMap().contains(keyName) )                                  \
-    {                                                                                \
-        list = tag->itemListMap()[keyName];                                     \
+    if( tag->contains(keyName) )                                                         \
+    {                                                                                    \
+        list = tag->item(keyName);                                                       \
         vlc_meta_AddExtra( p_meta, metaName, list.toStringList().front().toCString( true ) ); \
     }
 
@@ -824,17 +890,17 @@ static void ReadMetaFromMP4( MP4::Tag* tag, demux_meta_t *p_demux_meta, vlc_meta
 #undef SET
 #undef SET_EXTRA
 
-    if( tag->itemListMap().contains("covr") )
+    if( tag->contains("covr") )
     {
-        MP4::CoverArtList list = tag->itemListMap()["covr"].toCoverArtList();
-        const char *psz_format = list[0].format() == MP4::CoverArt::PNG ? "image/png" : "image/jpeg";
+        MP4::CoverArtList cover_list = tag->item("covr").toCoverArtList();
+        const char *psz_format = cover_list[0].format() == MP4::CoverArt::PNG ? "image/png" : "image/jpeg";
 
         msg_Dbg( p_demux_meta, "Found embedded art (%s) is %i bytes",
-                 psz_format, list[0].data().size() );
+                 psz_format, cover_list[0].data().size() );
 
         input_attachment_t *p_attachment =
                 vlc_input_attachment_New( "cover", psz_format, "cover",
-                                          list[0].data().data(), list[0].data().size() );
+                                          cover_list[0].data().data(), cover_list[0].data().size() );
         if( p_attachment )
         {
             TAB_APPEND_CAST( (input_attachment_t**),
@@ -867,6 +933,23 @@ static int ReadWAVMeta( const RIFF::WAV::File *wav, demux_meta_t *demux_meta )
     return VLC_SUCCESS;
 }
 
+static bool isSchemeCompatible( const char *psz_uri )
+{
+    const char *p = strstr( psz_uri, "://" );
+    if( p == NULL )
+        return false;
+
+    size_t i_len = p - psz_uri;
+    const char * compatibleschemes[] =
+    {
+        "file", "smb",
+    };
+    for( size_t i=0; i<ARRAY_SIZE(compatibleschemes); i++ )
+        if( !strncasecmp( psz_uri, compatibleschemes[i], i_len ) )
+            return true;
+    return false;
+}
+
 /**
  * Get the tags from the file using TagLib
  * @param p_this: the demux object
@@ -885,35 +968,43 @@ static int ReadMeta( vlc_object_t* p_this)
     if( unlikely(psz_uri == NULL) )
         return VLC_ENOMEM;
 
-    char *psz_path = vlc_uri2path( psz_uri );
-#if VLC_WINSTORE_APP && TAGLIB_VERSION >= TAGLIB_VERSION_1_11
-    if( psz_path == NULL )
+    if( !isSchemeCompatible( psz_uri ) )
     {
         free( psz_uri );
         return VLC_EGENERIC;
     }
-    free( psz_path );
-
-    stream_t *p_stream = vlc_access_NewMRL( p_this, psz_uri );
-    free( psz_uri );
-    if( p_stream == NULL )
-        return VLC_EGENERIC;
-
-    VlcIostream s( p_stream );
-    f = FileRef( &s );
-#else /* VLC_WINSTORE_APP */
-    free( psz_uri );
-    if( psz_path == NULL )
-        return VLC_EGENERIC;
 
     if( !b_extensions_registered )
     {
 #if TAGLIB_VERSION >= TAGLIB_VERSION_1_11
         FileRef::addFileTypeResolver( &aacresolver );
 #endif
-        FileRef::addFileTypeResolver( &m4vresolver );
         b_extensions_registered = true;
     }
+
+#if TAGLIB_VERSION >= TAGLIB_VERSION_1_11
+    stream_t *p_stream = vlc_access_NewMRL( p_this, psz_uri );
+    free( psz_uri );
+    if( p_stream == NULL )
+        return VLC_EGENERIC;
+    stream_t* p_filter = vlc_stream_FilterNew( p_stream, "prefetch,cache" );
+    if( p_filter )
+        p_stream = p_filter;
+
+    VlcIostream s( p_stream );
+#ifndef VLC_PATCHED_TAGLIB_ID3V2_READSTYLE
+    uint64_t dummy;
+    if( vlc_stream_GetSize( p_stream, &dummy ) != VLC_SUCCESS )
+        s.setMaxSequentialRead( 2048 );
+    else
+        s.setMaxSequentialRead( 1024 * 2048 );
+#endif
+    f = FileRef( &s, false, AudioProperties::ReadStyle::Fast );
+#else // !TAGLIB_VERSION_1_11
+    char *psz_path = vlc_uri2path( psz_uri );
+    free( psz_uri );
+    if( psz_path == NULL )
+        return VLC_EGENERIC;
 
 #if defined(_WIN32)
     wchar_t *wpath = ToWide( psz_path );
@@ -922,23 +1013,13 @@ static int ReadMeta( vlc_object_t* p_this)
         free( psz_path );
         return VLC_EGENERIC;
     }
-#if TAGLIB_VERSION >= TAGLIB_VERSION_1_11
-    FileStream stream( wpath, true );
-    f = FileRef( &stream );
-#else /* TAGLIB_VERSION */
     f = FileRef( wpath );
-#endif /* TAGLIB_VERSION */
     free( wpath );
 #else /* _WIN32 */
-#if TAGLIB_VERSION >= TAGLIB_VERSION_1_11
-    FileStream stream( psz_path, true );
-    f = FileRef( &stream );
-#else /* TAGLIB_VERSION */
     f = FileRef( psz_path );
-#endif /* TAGLIB_VERSION */
 #endif /* _WIN32 */
     free( psz_path );
-#endif /* VLC_WINSTORE_APP */
+#endif // !TAGLIB_VERSION_1_11
 
     if( f.isNull() )
         return VLC_EGENERIC;
@@ -980,6 +1061,7 @@ static int ReadMeta( vlc_object_t* p_this)
             ReadMetaFromId3v2( flac->ID3v2Tag(), p_demux_meta, p_meta );
         else if( flac->xiphComment() )
             ReadMetaFromXiph( flac->xiphComment(), p_demux_meta, p_meta );
+        ProcessAPICListFromFLAC( flac->pictureList(), p_demux_meta, p_meta );
     }
     else if( MP4::File *mp4 = dynamic_cast<MP4::File*>(f.file()) )
     {
@@ -1144,7 +1226,7 @@ static void WriteMetaToId3v2( ID3v2::Tag* tag, input_item_t* p_item )
         fclose( p_file );
         return;
     }
-    off_t file_size = st.st_size;
+    auto file_size = st.st_size;
 
     free( psz_path );
 
@@ -1337,7 +1419,11 @@ static int WriteMeta( vlc_object_t *p_this )
         if( RIFF::AIFF::File* riff_aiff = dynamic_cast<RIFF::AIFF::File*>(f.file()) )
             WriteMetaToId3v2( riff_aiff->tag(), p_item );
         else if( RIFF::WAV::File* riff_wav = dynamic_cast<RIFF::WAV::File*>(f.file()) )
+#if TAGLIB_VERSION >= VERSION_INT(2, 0, 0)
+            WriteMetaToId3v2( riff_wav->ID3v2Tag(), p_item );
+#else
             WriteMetaToId3v2( riff_wav->tag(), p_item );
+#endif
     }
     else if( TrueAudio::File* trueaudio = dynamic_cast<TrueAudio::File*>(f.file()) )
     {

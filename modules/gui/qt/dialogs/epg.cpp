@@ -31,7 +31,6 @@
 #include <vlc_playlist.h>
 
 #include <QVBoxLayout>
-#include <QSplitter>
 #include <QScrollBar>
 #include <QLabel>
 #include <QGroupBox>
@@ -40,6 +39,7 @@
 #include <QDialogButtonBox>
 #include <QTimer>
 #include <QDateTime>
+#include <QLocale>
 
 #include "qt.hpp"
 #include "input_manager.hpp"
@@ -49,7 +49,7 @@ EpgDialog::EpgDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
     setWindowTitle( qtr( "Program Guide" ) );
 
     QVBoxLayout *layout = new QVBoxLayout( this );
-    layout->setMargin( 0 );
+    layout->setContentsMargins(0, 0, 0, 0);
     epg = new EPGWidget( this );
 
     QGroupBox *descBox = new QGroupBox( qtr( "Description" ), this );
@@ -146,8 +146,9 @@ void EpgDialog::displayEvent( EPGItem *epgItem )
     QDateTime enddate = epgItem->start().addSecs( epgItem->duration() );
 
     QString start, end;
+    QLocale locale;
     if( epgItem->start().daysTo(now) != 0 )
-        start = epgItem->start().toString( Qt::SystemLocaleLongDate );
+        start = locale.toString(epgItem->start());
     else
         start = epgItem->start().time().toString( "hh:mm" );
 

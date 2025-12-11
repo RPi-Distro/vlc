@@ -132,7 +132,7 @@ PrefsTree::PrefsTree( intf_thread_t *_p_intf, QWidget *_parent,
             current_item->setIcon( 0 , icon );
             //current_item->setSizeHint( 0, QSize( -1, ITEM_HEIGHT ) );
             current_item->setData( 0, Qt::UserRole,
-                                   qVariantFromValue( data ) );
+                                   QVariant::fromValue( data ) );
             addTopLevelItem( current_item );
             expandItem( current_item );
             break;
@@ -182,7 +182,7 @@ PrefsTree::PrefsTree( intf_thread_t *_p_intf, QWidget *_parent,
             QTreeWidgetItem *subcat_item = new QTreeWidgetItem();
             subcat_item->setText( 0, data_sub->name );
             subcat_item->setData( 0, Qt::UserRole,
-                                  qVariantFromValue( data_sub ) );
+                                  QVariant::fromValue( data_sub ) );
             //subcat_item->setSizeHint( 0, QSize( -1, ITEM_HEIGHT ) );
 
             /* Add it to the parent */
@@ -622,7 +622,7 @@ AdvPrefsPanel::AdvPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
 
     /* Widgets now */
     global_layout = new QVBoxLayout();
-    global_layout->setMargin( 2 );
+    global_layout->setContentsMargins( 2, 2, 2, 2 );
     QString head;
     QString help;
 

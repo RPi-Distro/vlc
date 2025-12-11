@@ -1406,7 +1406,7 @@ static const flex_int16_t yy_chk[3982] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "../../modules/codec/webvtt/CSSLexer.l"
+#line 1 "codec/webvtt/CSSLexer.l"
 /*****************************************************************************
  * CSSLexer.l : lexer for simplified CSS, based on W3C spec
  *****************************************************************************
@@ -1427,7 +1427,7 @@ static const flex_int16_t yy_chk[3982] =
  * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 #define YY_NO_INPUT 1
-#line 30 "../../modules/codec/webvtt/CSSLexer.l"
+#line 30 "codec/webvtt/CSSLexer.l"
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -1710,7 +1710,7 @@ YY_DECL
 		}
 
 	{
-#line 59 "../../modules/codec/webvtt/CSSLexer.l"
+#line 59 "codec/webvtt/CSSLexer.l"
 
 
 #line 1717 "codec/webvtt/CSSLexer.c"
@@ -1769,196 +1769,196 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 61 "../../modules/codec/webvtt/CSSLexer.l"
+#line 61 "codec/webvtt/CSSLexer.l"
 {return WHITESPACE;}
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 63 "../../modules/codec/webvtt/CSSLexer.l"
+#line 63 "codec/webvtt/CSSLexer.l"
 /* ignore comments */
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 65 "../../modules/codec/webvtt/CSSLexer.l"
+#line 65 "codec/webvtt/CSSLexer.l"
 {return CDO;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 66 "../../modules/codec/webvtt/CSSLexer.l"
+#line 66 "codec/webvtt/CSSLexer.l"
 {return CDC;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 67 "../../modules/codec/webvtt/CSSLexer.l"
+#line 67 "codec/webvtt/CSSLexer.l"
 {return INCLUDES;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 68 "../../modules/codec/webvtt/CSSLexer.l"
+#line 68 "codec/webvtt/CSSLexer.l"
 {return DASHMATCH;}
 	YY_BREAK
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 70 "../../modules/codec/webvtt/CSSLexer.l"
+#line 70 "codec/webvtt/CSSLexer.l"
 { yylval->string = vlc_css_unquotedunescaped(yytext); return STRING;}
 	YY_BREAK
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 72 "../../modules/codec/webvtt/CSSLexer.l"
+#line 72 "codec/webvtt/CSSLexer.l"
 { yylval->string = vlc_css_unescaped(yytext); return IDENT;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 74 "../../modules/codec/webvtt/CSSLexer.l"
+#line 74 "codec/webvtt/CSSLexer.l"
 {return FONT_FACE_SYM;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 76 "../../modules/codec/webvtt/CSSLexer.l"
+#line 76 "codec/webvtt/CSSLexer.l"
 {return IMPORTANT_SYM;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 78 "../../modules/codec/webvtt/CSSLexer.l"
+#line 78 "codec/webvtt/CSSLexer.l"
 { VAL( us_strtof(yytext, &d), EMS ); return LENGTH;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 79 "../../modules/codec/webvtt/CSSLexer.l"
+#line 79 "codec/webvtt/CSSLexer.l"
 { VAL( atoi(yytext), EXS ); return LENGTH;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 80 "../../modules/codec/webvtt/CSSLexer.l"
+#line 80 "codec/webvtt/CSSLexer.l"
 { VAL( atoi(yytext), PIXELS ); return LENGTH;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 81 "../../modules/codec/webvtt/CSSLexer.l"
+#line 81 "codec/webvtt/CSSLexer.l"
 { VAL( us_strtof(yytext, &d) * 10, MILLIMETERS ); return LENGTH;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 82 "../../modules/codec/webvtt/CSSLexer.l"
+#line 82 "codec/webvtt/CSSLexer.l"
 { VAL( atoi(yytext), MILLIMETERS ); return LENGTH;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 83 "../../modules/codec/webvtt/CSSLexer.l"
+#line 83 "codec/webvtt/CSSLexer.l"
 { VAL( us_strtof(yytext, &d) * 25.4, MILLIMETERS ); return LENGTH;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 84 "../../modules/codec/webvtt/CSSLexer.l"
+#line 84 "codec/webvtt/CSSLexer.l"
 { VAL( us_strtof(yytext, &d), POINTS ); return LENGTH;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 85 "../../modules/codec/webvtt/CSSLexer.l"
+#line 85 "codec/webvtt/CSSLexer.l"
 { VAL( us_strtof(yytext, &d), POINTS ); return LENGTH;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 86 "../../modules/codec/webvtt/CSSLexer.l"
+#line 86 "codec/webvtt/CSSLexer.l"
 { VAL( us_strtof(yytext, &d), DEGREES ); return ANGLE;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 87 "../../modules/codec/webvtt/CSSLexer.l"
+#line 87 "codec/webvtt/CSSLexer.l"
 { VAL( us_strtof(yytext, &d) * 0.0174533, DEGREES ); return ANGLE;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 88 "../../modules/codec/webvtt/CSSLexer.l"
+#line 88 "codec/webvtt/CSSLexer.l"
 { VAL( us_strtof(yytext, &d) * 1.1111111, DEGREES ); return ANGLE;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 89 "../../modules/codec/webvtt/CSSLexer.l"
+#line 89 "codec/webvtt/CSSLexer.l"
 { VAL( atoi(yytext), MILLISECONDS ); return TIME;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 90 "../../modules/codec/webvtt/CSSLexer.l"
+#line 90 "codec/webvtt/CSSLexer.l"
 { VAL( atoi(yytext) * 1000, MILLISECONDS ); return TIME;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 91 "../../modules/codec/webvtt/CSSLexer.l"
+#line 91 "codec/webvtt/CSSLexer.l"
 { VAL( atoi(yytext), HERTZ ); return FREQ;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 92 "../../modules/codec/webvtt/CSSLexer.l"
+#line 92 "codec/webvtt/CSSLexer.l"
 { VAL( atoi(yytext) * 1000, HERTZ ); return FREQ;}
 	YY_BREAK
 case 26:
 /* rule 26 can match eol */
 YY_RULE_SETUP
-#line 93 "../../modules/codec/webvtt/CSSLexer.l"
+#line 93 "codec/webvtt/CSSLexer.l"
 { VAL( 0, DIMENSION ); return DIMEN;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 94 "../../modules/codec/webvtt/CSSLexer.l"
+#line 94 "codec/webvtt/CSSLexer.l"
 { VAL( atoi(yytext), PERCENT ); return PERCENTAGE;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 95 "../../modules/codec/webvtt/CSSLexer.l"
+#line 95 "codec/webvtt/CSSLexer.l"
 { VAL( us_strtof(yytext, &d), NONE ); return NUMBER;}
 	YY_BREAK
 case 29:
 /* rule 29 can match eol */
 YY_RULE_SETUP
-#line 97 "../../modules/codec/webvtt/CSSLexer.l"
+#line 97 "codec/webvtt/CSSLexer.l"
 { yylval->string = vlc_css_unquotedunescaped(yytext); return URI;}
 	YY_BREAK
 case 30:
 /* rule 30 can match eol */
 YY_RULE_SETUP
-#line 98 "../../modules/codec/webvtt/CSSLexer.l"
+#line 98 "codec/webvtt/CSSLexer.l"
 { yylval->string = vlc_css_unquotedunescaped(yytext); return URI;}
 	YY_BREAK
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 99 "../../modules/codec/webvtt/CSSLexer.l"
+#line 99 "codec/webvtt/CSSLexer.l"
 { yylval->string = vlc_css_unescaped(yytext); return FUNCTION;}
 	YY_BREAK
 case 32:
 /* rule 32 can match eol */
 YY_RULE_SETUP
-#line 100 "../../modules/codec/webvtt/CSSLexer.l"
+#line 100 "codec/webvtt/CSSLexer.l"
 {yylval->string = vlc_css_unescaped(yytext); return IDSEL;}
 	YY_BREAK
 case 33:
 /* rule 33 can match eol */
 YY_RULE_SETUP
-#line 101 "../../modules/codec/webvtt/CSSLexer.l"
+#line 101 "codec/webvtt/CSSLexer.l"
 {yylval->string = vlc_css_unescaped(yytext); return HASH;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 103 "../../modules/codec/webvtt/CSSLexer.l"
+#line 103 "codec/webvtt/CSSLexer.l"
 { yylval->string = strdup(yytext); return UNICODERANGE;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 104 "../../modules/codec/webvtt/CSSLexer.l"
+#line 104 "codec/webvtt/CSSLexer.l"
 { yylval->string = strdup(yytext); return UNICODERANGE;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 106 "../../modules/codec/webvtt/CSSLexer.l"
+#line 106 "codec/webvtt/CSSLexer.l"
 {return *yytext;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 108 "../../modules/codec/webvtt/CSSLexer.l"
+#line 108 "codec/webvtt/CSSLexer.l"
 ECHO;
 	YY_BREAK
 #line 1965 "codec/webvtt/CSSLexer.c"
@@ -3105,4 +3105,4 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 108 "../../modules/codec/webvtt/CSSLexer.l"
+#line 108 "codec/webvtt/CSSLexer.l"

@@ -29,8 +29,6 @@
 #include "EPGItem.hpp"
 
 #include <QDateTime>
-#include <QMatrix>
-#include <QPaintEvent>
 #include <QRectF>
 
 EPGGraphicsScene::EPGGraphicsScene( QObject *parent ) : QGraphicsScene( parent )
@@ -48,7 +46,12 @@ void EPGGraphicsScene::drawBackground( QPainter *painter, const QRectF &rect)
 
     /* day change */
     QDateTime rectstarttime = epgView->startTime().addSecs( rect.left() );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QDateTime nextdaylimit = rectstarttime.date().startOfDay();
+#else
     QDateTime nextdaylimit = QDateTime( rectstarttime.date() );
+#endif
+
     QRectF area( rect );
     while( area.left() < width() )
     {
@@ -95,9 +98,9 @@ EPGView::EPGView( QWidget *parent ) : QGraphicsView( parent )
 void EPGView::setScale( double scaleFactor )
 {
     m_scaleFactor = scaleFactor;
-    QMatrix matrix;
+    QTransform matrix;
     matrix.scale( scaleFactor, 1 );
-    setMatrix( matrix );
+    setTransform( matrix );
 }
 
 const QDateTime& EPGView::startTime() const

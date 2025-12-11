@@ -48,6 +48,7 @@
 #endif
 
 #define HAS_QT56 ( QT_VERSION >= 0x050600 )
+#define HAS_QT57 ( QT_VERSION >= 0x050700 )
 #define HAS_QT510 ( QT_VERSION >= 0x051000 )
 
 enum {
@@ -62,6 +63,9 @@ enum{
     NOTIFICATION_MINIMIZED = 1,
     NOTIFICATION_ALWAYS = 2,
 };
+
+bool isDarkPaletteEnabled(intf_thread_t *);
+void applyDarkPalette();
 
 struct intf_sys_t
 {

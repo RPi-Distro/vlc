@@ -323,7 +323,10 @@ static int ASF_ReadObject_file_properties( stream_t *s, asf_object_t *p_obj )
     p_fp->i_data_packets_count = GetQWLE( p_peek + 56 );
     p_fp->i_play_duration = GetQWLE( p_peek + 64 );
     p_fp->i_send_duration = GetQWLE( p_peek + 72 );
-    p_fp->i_preroll = GetQWLE( p_peek + 80 );
+    uint64_t preroll = GetQWLE( p_peek + 80 );
+    if (unlikely(preroll > INT32_MAX)) // sanity check on "appropriate" value
+        return VLC_EBADVAR;
+    p_fp->i_preroll = VLC_TICK_FROM_MS(preroll);
     p_fp->i_flags = GetDWLE( p_peek + 88 );
     p_fp->i_min_data_packet_size = __MAX( GetDWLE( p_peek + 92 ), (uint32_t) 1 );
     p_fp->i_max_data_packet_size = __MAX( GetDWLE( p_peek + 96 ), (uint32_t) 1 );
@@ -333,13 +336,13 @@ static int ASF_ReadObject_file_properties( stream_t *s, asf_object_t *p_obj )
     msg_Dbg( s,
             "read \"file properties object\" file_id:" GUID_FMT
             " file_size:%"PRId64" creation_date:%"PRId64" data_packets_count:"
-            "%"PRId64" play_duration:%"PRId64" send_duration:%"PRId64" preroll:%"PRId64
+            "%"PRId64" play_duration:%"PRId64" send_duration:%"PRId64" preroll:%"PRIu64
             " flags:%d min_data_packet_size:%d "
             " max_data_packet_size:%d max_bitrate:%d",
             GUID_PRINT( p_fp->i_file_id ), p_fp->i_file_size,
             p_fp->i_creation_date, p_fp->i_data_packets_count,
             p_fp->i_play_duration, p_fp->i_send_duration,
-            p_fp->i_preroll, p_fp->i_flags,
+            preroll, p_fp->i_flags,
             p_fp->i_min_data_packet_size, p_fp->i_max_data_packet_size,
             p_fp->i_max_bitrate );
 #endif
@@ -957,9 +960,9 @@ static int ASF_ReadObject_extended_stream_properties( stream_t *s,
     p_data += 64;
 
     p_esp->pi_stream_name_language = calloc( p_esp->i_stream_name_count,
-                                             sizeof(uint16_t) );
+                                             sizeof(*p_esp->pi_stream_name_language) );
     p_esp->ppsz_stream_name = calloc( p_esp->i_stream_name_count,
-                                      sizeof(char*) );
+                                      sizeof(*p_esp->ppsz_stream_name) );
     if( !p_esp->pi_stream_name_language ||
         !p_esp->ppsz_stream_name )
     {
@@ -1081,7 +1084,7 @@ static int ASF_ReadObject_advanced_mutual_exclusion( stream_t *s,
     ASF_SKIP( 16 );
 
     p_ae->i_stream_number_count = ASF_READ2();
-    p_ae->pi_stream_number = calloc( p_ae->i_stream_number_count, sizeof(uint16_t) );
+    p_ae->pi_stream_number = calloc( p_ae->i_stream_number_count, sizeof(*p_ae->pi_stream_number) );
     if ( !p_ae->pi_stream_number )
     {
         p_ae->i_stream_number_count = 0;
@@ -1134,9 +1137,10 @@ static int ASF_ReadObject_stream_prioritization( stream_t *s,
 
     p_sp->i_priority_count = ASF_READ2();
 
-    p_sp->pi_priority_flag = calloc( p_sp->i_priority_count, sizeof(uint16_t) );
-    p_sp->pi_priority_stream_number =
-                             calloc( p_sp->i_priority_count, sizeof(uint16_t) );
+    p_sp->pi_priority_flag = calloc( p_sp->i_priority_count,
+                                     sizeof(*p_sp->pi_priority_flag) );
+    p_sp->pi_priority_stream_number = calloc( p_sp->i_priority_count,
+                                              sizeof(*p_sp->pi_priority_stream_number) );
 
     if( !p_sp->pi_priority_flag || !p_sp->pi_priority_stream_number )
     {
@@ -1195,7 +1199,7 @@ static int ASF_ReadObject_bitrate_mutual_exclusion( stream_t *s, asf_object_t *p
     ASF_SKIP( 16 );
 
     p_ex->i_stream_number_count = ASF_READ2();
-    p_ex->pi_stream_numbers = calloc( p_ex->i_stream_number_count, sizeof(uint16_t) );
+    p_ex->pi_stream_numbers = calloc( p_ex->i_stream_number_count, sizeof(*p_ex->pi_stream_numbers) );
     if ( ! p_ex->pi_stream_numbers )
     {
         p_ex->i_stream_number_count = 0;
@@ -1454,7 +1458,7 @@ static const struct ASF_Object_Function_entry
       ASF_ReadObject_metadata, ASF_FreeObject_metadata},
     { &asf_object_codec_list_guid, ASF_OBJECT_CODEC_LIST,
       ASF_ReadObject_codec_list, ASF_FreeObject_codec_list },
-    { &asf_object_marker_guid, ASF_OBJECT_MARKER, 
+    { &asf_object_marker_guid, ASF_OBJECT_MARKER,
       ASF_ReadObject_marker, ASF_FreeObject_marker },
     { &asf_object_padding, ASF_OBJECT_PADDING, NULL, NULL },
     { &asf_object_compatibility_guid, ASF_OBJECT_OTHER, NULL, NULL },

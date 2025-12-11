@@ -1,7 +1,7 @@
 # speexdsp
 
 SPEEXDSP_VERSION := 1.2.1
-SPEEXDSP_URL := http://downloads.us.xiph.org/releases/speex/speexdsp-$(SPEEXDSP_VERSION).tar.gz
+SPEEXDSP_URL := $(XIPH)/speex/speexdsp-$(SPEEXDSP_VERSION).tar.gz
 
 PKGS += speexdsp
 ifeq ($(call need_pkg,"speexdsp"),)
@@ -35,7 +35,7 @@ endif
 .speexdsp: speexdsp
 	$(RECONF)
 	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(SPEEXDSP_CONF)
-	cd $< && $(MAKE)
+	$(MAKE) -C $<
 	$(call pkg_static,"speexdsp.pc")
-	cd $< && $(MAKE) install
+	$(MAKE) -C $< install
 	touch $@

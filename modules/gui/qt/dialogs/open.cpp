@@ -29,9 +29,10 @@
 #include "recents.hpp"
 #include "util/qt_dirs.hpp"
 
-#include <QTabWidget>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QMenu>
+
+#include <cstddef>
 
 #ifndef NDEBUG
 # define DEBUG_QT 1
@@ -412,7 +413,7 @@ void OpenDialog::stream( bool b_transcode_only )
     toggleVisible();
 
     /* Dbg and send :D */
-    msg_Dbg( p_intf, "MRL(s) passed to the Sout: %i", soutMRLS.length() );
+    msg_Dbg( p_intf, "MRL(s) passed to the Sout: %zu", static_cast<size_t>( soutMRLS.length() ) );
     for(int i = 0; i < soutMRLS.length(); i++)
     {
         msg_Dbg( p_intf, "MRL(s) passed to the Sout: %s", qtu( soutMRLS[i] ) );
@@ -477,7 +478,7 @@ QStringList OpenDialog::SeparateEntries( const QString& entries )
     int index = 0;
     while( index < entries.count() )
     {
-        int delim_pos = entries.indexOf( QRegExp( "\\s+|\"" ), index );
+        int delim_pos = entries.indexOf( QRegularExpression( "\\s+|\"" ), index );
         if( delim_pos < 0 ) delim_pos = entries.count() - 1;
         entry += entries.mid( index, delim_pos - index + 1 );
         index = delim_pos + 1;

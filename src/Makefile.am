@@ -123,7 +123,7 @@ noinst_HEADERS = \
 
 ../include/vlc_about.h: Makefile.am $(top_srcdir)/COPYING $(top_srcdir)/THANKS $(top_srcdir)/AUTHORS
 	$(AM_V_at)rm -f -- "$@.tmp"
-	$(AM_V_at)mkdir -p -- ../include
+	$(AM_V_at)$(MKDIR_P) "../include"
 	$(AM_V_GEN)(echo "/* Automatically generated file - DO NOT EDIT */" && \
 	echo "static const char psz_license[] =" && \
 	sed 's/"/\\"/g;s/^.*$$/\"&\\n\"/' "$(top_srcdir)/COPYING" && \
@@ -419,6 +419,7 @@ libvlccore_la_SOURCES += \
 	darwin/specific.c \
 	darwin/thread.c
 else
+libvlccore_la_LIBADD += $(LIBEXECINFO)
 libvlccore_la_SOURCES += \
 	posix/dirs.c \
 	posix/error.c \
@@ -562,7 +563,7 @@ $(srcdir)/revision.txt:
 
 stamp-revision:
 	$(AM_V_at)rm -f -- revision.tmp
-	$(AM_V_GEN)if ! git \
+	$(AM_V_GEN)if ! git -c safe.directory='*' \
 			-C "$(top_srcdir)" describe \
 			--tags --long --match '?.*.*' --always; then \
 		cat $(srcdir)/revision.txt ; \

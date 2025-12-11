@@ -19,15 +19,20 @@ endif
 $(TARBALLS)/libmad-$(MAD_VERSION).tar.gz:
 	$(call download,$(MAD_URL))
 
+LIBMAD_VARS :=
+ifdef HAVE_IOS
+LIBMAD_VARS += CCAS="$(AS)"
+endif
+
 .sum-mad: libmad-$(MAD_VERSION).tar.gz
 
 libmad: libmad-$(MAD_VERSION).tar.gz .sum-mad
 	$(UNPACK)
+	$(UPDATE_AUTOCONFIG)
 ifdef HAVE_DARWIN_OS
-	cd $@-$(MAD_VERSION) && sed \
-		-e 's%-march=i486%$(EXTRA_CFLAGS) $(EXTRA_LDFLAGS)%' \
+	sed -e 's%-march=i486%$(EXTRA_CFLAGS) $(EXTRA_LDFLAGS)%' \
 		-e 's%-dynamiclib%-dynamiclib -arch $(ARCH)%' \
-		-i.orig configure
+		-i.orig $(UNPACK_DIR)/configure
 endif
 ifdef HAVE_IOS
 	$(APPLY) $(SRC)/mad/mad-ios-asm.patch
@@ -42,10 +47,6 @@ endif
 .mad: libmad
 	$(REQUIRE_GPL)
 	$(RECONF)
-ifdef HAVE_IOS
-	cd $< && $(HOSTVARS) CCAS="$(AS)" CFLAGS="$(CFLAGS) -O3" ./configure $(HOSTCONF) $(MAD_CONF)
-else
-	cd $< && $(HOSTVARS) CFLAGS="$(CFLAGS) -O3" ./configure $(HOSTCONF) $(MAD_CONF)
-endif
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(LIBMAD_VARS) $(MAD_CONF)
+	$(MAKE) -C $< install
 	touch $@

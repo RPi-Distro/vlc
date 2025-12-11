@@ -54,7 +54,10 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QSignalMapper>
-#include <QStatusBar>
+
+#ifndef QT_NO_STATUSBAR
+# include <QStatusBar>
+#endif
 
 /*
   This file defines the main menus and the pop-up menu (right-click menu)
@@ -531,10 +534,12 @@ QMenu *VLCMenuBar::ViewMenu( intf_thread_t *p_intf, QMenu *current, MainInterfac
         action->setChecked( true );
     action->setEnabled(mi->isAdvancedWidgetAvailable());
 
+#ifndef QT_NO_STATUSBAR
     action = menu->addAction( qtr( "Status Bar" ) );
     action->setCheckable( true );
     action->setChecked( mi->statusBar()->isVisible() );
     CONNECT( action, triggered( bool ), mi, setStatusBarVisibility( bool) );
+#endif
 #if 0 /* For Visualisations. Not yet working */
     adv = menu->addAction( qtr( "Visualizations selector" ), mi,
                            SLOT( visual() ) );
@@ -846,20 +851,20 @@ void VLCMenuBar::PopupMenuPlaylistEntries( QMenu *menu,
     action = addMIMStaticEntry( p_intf, menu, qtr( "Pre&vious" ),
             ":/toolbar/previous_b.svg", SLOT( prev() ), true );
     action->setEnabled( !bPlaylistEmpty );
-    action->setData( ACTION_NO_CLEANUP + ACTION_DELETE_ON_REBUILD );
+    action->setData( static_cast<int>(ACTION_NO_CLEANUP | ACTION_DELETE_ON_REBUILD) );
     CONNECT( THEMIM, playlistNotEmpty(bool), action, setEnabled(bool) );
 
     action = addMIMStaticEntry( p_intf, menu, qtr( "Ne&xt" ),
             ":/toolbar/next_b.svg", SLOT( next() ), true );
     action->setEnabled( !bPlaylistEmpty );
-    action->setData( ACTION_NO_CLEANUP + ACTION_DELETE_ON_REBUILD );
+    action->setData( static_cast<int>(ACTION_NO_CLEANUP | ACTION_DELETE_ON_REBUILD) );
     CONNECT( THEMIM, playlistNotEmpty(bool), action, setEnabled(bool) );
 
     action = menu->addAction( qtr( "Record" ), THEAM, SLOT( record() ) );
     action->setIcon( QIcon( ":/toolbar/record.svg" ) );
     if( !p_input )
         action->setEnabled( false );
-    action->setData( ACTION_NO_CLEANUP + ACTION_DELETE_ON_REBUILD );
+    action->setData( static_cast<int>(ACTION_NO_CLEANUP | ACTION_DELETE_ON_REBUILD) );
     menu->addSeparator();
 }
 
@@ -1438,7 +1443,7 @@ int VLCMenuBar::CreateChoicesMenu( QMenu *submenu, const char *psz_var,
             case VLC_VAR_FLOAT:
                 var_Get( p_object, psz_var, &val );
                 if( CURTEXT ) menutext = qfue( CURTEXT );
-                else menutext.sprintf( "%.2f", CURVAL.f_float );
+                else menutext.setNum(CURVAL.f_float, 'f', 2);
                 CreateAndConnect( submenu, psz_var, menutext, "", RADIO_OR_COMMAND,
                         p_object, CURVAL, i_type,
                         CURVAL.f_float == val.f_float );
@@ -1559,7 +1564,7 @@ void VLCMenuBar::updateAudioDevice( intf_thread_t * p_intf, audio_output_t *p_ao
     for( int i = 0; i < i_result; i++ )
     {
         action = new QAction( qfue( names[i] ), actionGroup );
-        action->setData( ids[i] );
+        action->setData( qfu(ids[i]) );
         action->setCheckable( true );
         if( (selected && !strcmp( ids[i], selected ) ) ||
             (selected == NULL && ids[i] && ids[i][0] == '\0' ) )

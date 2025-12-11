@@ -15,37 +15,22 @@ $(TARBALLS)/musepack_src_r$(MUSE_REV).tar.gz:
 #MUSE_REV := 481
 #MUSE_SVN := http://svn.musepack.net/libmpc/trunk/
 
-#$(TARBALLS)/musepack_src_r$(MUSE_REV).tar.gz:
-#	rm -Rf musepack_src_r$(MUSE_REV)
-#	$(SVN) export $(MUSE_SVN) -r $(MUSE_REV) musepack_src_r$(MUSE_REV)
-#	tar czv musepack_src_r$(MUSE_REV) > $@
-
 .sum-mpcdec: musepack_src_r$(MUSE_REV).tar.gz
-#	$(warning $@ not implemented)
-#	touch $@
 
 musepack: musepack_src_r$(MUSE_REV).tar.gz .sum-mpcdec
 	$(UNPACK)
 	$(APPLY) $(SRC)/mpcdec/musepack-no-cflags-clobber.patch
 	$(APPLY) $(SRC)/mpcdec/musepack-no-binaries.patch
-ifdef HAVE_VISUALSTUDIO
 	$(APPLY) $(SRC)/mpcdec/musepack-asinh-msvc.patch
-endif
-	sed -i.orig \
-		-e 's,^add_subdirectory(mpcgain),,g' \
-		-e 's,^add_subdirectory(mpcchap),,g' \
-		$@_src_r$(MUSE_REV)/CMakeLists.txt
-ifdef HAVE_MACOSX
-	cd musepack_src_r$(MUSE_REV) && \
-	sed -e 's%-O3 -Wall%-O3 -Wall $(CFLAGS)%' CMakeLists.txt
-endif
-	mv $@_src_r$(MUSE_REV) $@
-	touch $@
+	$(APPLY) $(SRC)/mpcdec/0004-libmpcdec-added-install-and-soversion.patch
+	$(APPLY) $(SRC)/mpcdec/0005-If-BUILD_SHARED_LIBS-is-set-and-SHARED-undefined-the.patch
+	$(APPLY) $(SRC)/mpcdec/0006-adapted-patch-0001-shared.patch-from-buildroot.patch
+	$(APPLY) $(SRC)/mpcdec/0007-only-build-libmpcdec.patch
+	$(MOVE)
 
 .mpcdec: musepack toolchain.cmake
-	cd $< && $(HOSTVARS_PIC) $(CMAKE) -DSHARED=OFF .
-	cd $< && $(CMAKEBUILD) . --target install
-	mkdir -p -- "$(PREFIX)/lib"
-	# Use globbing to work around cmake's change of destination file
-	cd $< && cp libmpcdec/*mpcdec_static.* "$(PREFIX)/lib/libmpcdec.a"
+	$(CMAKECLEAN)
+	$(HOSTVARS) $(CMAKE)
+	+$(CMAKEBUILD)
+	$(CMAKEINSTALL)
 	touch $@

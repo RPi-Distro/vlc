@@ -3,10 +3,6 @@
 #include <windows.h>
 #include <assert.h>
 
-#ifdef _MSC_VER
-typedef int ssize_t;
-#endif
-
 #include <vlc/vlc.h>
 
 #define SCREEN_WIDTH  1500
@@ -88,6 +84,10 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
                     else if (strcmp(AspectRatio,"1:1")==0)
                         AspectRatio = NULL;
                     libvlc_video_set_aspect_ratio( ctx->p_mediaplayer, AspectRatio );
+                }
+                if (key == 's')
+                {
+                    libvlc_media_player_stop( ctx->p_mediaplayer );
                 }
                 break;
             }

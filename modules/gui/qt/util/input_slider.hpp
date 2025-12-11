@@ -31,6 +31,7 @@
 #endif
 
 #include "styles/seekstyle.hpp"
+#include "customwidgets.hpp"
 
 #include <QSlider>
 #include <QPainter>
@@ -65,7 +66,11 @@ protected:
     void mousePressEvent( QMouseEvent* event ) Q_DECL_OVERRIDE;
     void mouseReleaseEvent( QMouseEvent *event ) Q_DECL_OVERRIDE;
     void wheelEvent( QWheelEvent *event ) Q_DECL_OVERRIDE;
-    void enterEvent( QEvent * ) Q_DECL_OVERRIDE;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    void enterEvent( QEnterEvent *event ) Q_DECL_OVERRIDE;
+#else
+    void enterEvent( QEvent *event ) Q_DECL_OVERRIDE;
+#endif
     void leaveEvent( QEvent * ) Q_DECL_OVERRIDE;
     void hideEvent( QHideEvent * ) Q_DECL_OVERRIDE;
     void paintEvent(QPaintEvent *ev) Q_DECL_OVERRIDE;
@@ -116,6 +121,8 @@ private:
     QSequentialAnimationGroup *animLoading;
     QTimer *hideHandleTimer;
     QTimer *startAnimLoadingTimer;
+
+    WheelToVLCConverter wheelEventConverter;
 
 public slots:
     void setPosition( float, int64_t, int );
@@ -170,6 +177,8 @@ private:
     QColor foreground;
     QFont textfont;
     QRect textrect;
+
+    WheelToVLCConverter wheelEventConverter;
 
     void changeValue( int x ); /* Function to modify the value from pixel x() */
 };

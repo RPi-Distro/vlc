@@ -10,9 +10,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.13\n"
+"Project-Id-Version: vlc 3.0.22-rc1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2024-06-05 17:42+0200\n"
+"POT-Creation-Date: 2025-11-24 23:15+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Sam A. T. <qamnott@gmail.com>, 2021\n"
 "Language-Team: Khmer (https://app.transifex.com/yaron/teams/16553/km/)\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: include/vlc_common.h:1053
+#: include/vlc_common.h:1055
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -44,8 +44,8 @@ msgstr "ជ្រើស \"ជម្រើស​កម្រិត​ខ្ពស
 
 #: include/vlc_config_cat.h:38
 #: modules/gui/macosx/VLCSimplePrefsController.m:241
-#: modules/gui/qt/components/simple_preferences.cpp:247
-#: modules/gui/qt/menus.cpp:1094
+#: modules/gui/qt/components/simple_preferences.cpp:248
+#: modules/gui/qt/menus.cpp:1099
 msgid "Interface"
 msgstr "ចំណុចប្រទាក់"
 
@@ -85,8 +85,8 @@ msgstr "ការ​កំណត់​គ្រាប់ចុច​រហ័ស
 #: modules/gui/macosx/VLCPlaylistInfo.m:91
 #: modules/gui/macosx/VLCSimplePrefsController.m:243
 #: modules/gui/qt/components/info_panels.cpp:572
-#: modules/gui/qt/components/simple_preferences.cpp:249
-#: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:77
+#: modules/gui/qt/components/simple_preferences.cpp:250
+#: modules/gui/qt/qt.cpp:216 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
 #: modules/gui/qt/ui/profiles.h:719 modules/gui/qt/ui/profiles.h:750
@@ -150,8 +150,8 @@ msgstr "ការ​កំណត់​អូឌីយ៉ូ​ផ្សេងៗ
 #: modules/gui/macosx/VLCSimplePrefsController.m:245
 #: modules/gui/macosx/VLCSimplePrefsController.m:388
 #: modules/gui/qt/components/info_panels.cpp:573
-#: modules/gui/qt/components/simple_preferences.cpp:251
-#: modules/gui/qt/qt.cpp:213 modules/services_discovery/mediadirs.c:70
+#: modules/gui/qt/components/simple_preferences.cpp:252
+#: modules/gui/qt/qt.cpp:216 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
 #: modules/gui/qt/ui/profiles.h:720 modules/gui/qt/ui/profiles.h:724
@@ -358,7 +358,7 @@ msgstr "ការ​ប្រតិបត្តិ​​វីដេអូ​ន
 #: modules/gui/qt/components/controller.hpp:109
 #: modules/gui/qt/components/playlist/playlist.cpp:165
 #: modules/gui/qt/components/playlist/selector.cpp:227
-#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1121
+#: modules/gui/qt/dialogs/playlist.cpp:39 modules/gui/qt/menus.cpp:1126
 msgid "Playlist"
 msgstr "បញ្ជី​ចាក់"
 
@@ -463,7 +463,7 @@ msgstr "អំពី"
 #: modules/gui/macosx/VLCMainMenu.m:1340 modules/gui/macosx/VLCMainMenu.m:1341
 #: modules/gui/macosx/VLCPlaylist.m:223
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:538 modules/gui/qt/ui/open.h:258
+#: modules/gui/qt/dialogs/vlm.cpp:532 modules/gui/qt/ui/open.h:256
 msgid "Play"
 msgstr "ចាក់"
 
@@ -549,7 +549,7 @@ msgid "Save Playlist to &File..."
 msgstr "រក្សាទុក​បញ្ជី​ចាក់​ទៅ​ឯកសារ..."
 
 #: include/vlc_intf_strings.h:91 modules/gui/macosx/VLCMainWindow.m:194
-#: modules/gui/qt/components/preferences_widgets.cpp:1129
+#: modules/gui/qt/components/preferences_widgets.cpp:1133
 msgid "Search"
 msgstr "ស្វែងរក"
 
@@ -573,19 +573,19 @@ msgid ""
 "</p><p>For all the saving, converting, transcoding, encoding, muxing and "
 "streaming tasks, you should find useful information in the <a href=\"http://"
 "wiki.videolan.org/Documentation:Streaming_HowTo\">Streaming Documentation</"
-"a>.</p><p>If you are unsure about terminology, please consult the <a "
-"href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</"
-"p><p>To understand the main keyboard shortcuts, read the <a href=\"http://"
-"wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before "
-"asking any question, please refer yourself to the <a href=\"http://www."
-"videolan.org/support/faq.html\">FAQ</a>.</p><p>You might then get (and give) "
-"help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a "
-"href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC "
-"channel (<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the "
-"project</h3><p>You can help the VideoLAN project giving some of your time to "
-"help the community, to design skins, to translate the documentation, to test "
-"and to code. You can also give funds and material to help us. And of course, "
-"you can <b>promote</b> VLC media player.</p></body></html>"
+"a>.</p><p>If you are unsure about terminology, please consult the <a href="
+"\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</p><p>To "
+"understand the main keyboard shortcuts, read the <a href=\"http://wiki."
+"videolan.org/Hotkeys\">shortcuts</a> page.</p><h3>Help</h3><p>Before asking "
+"any question, please refer yourself to the <a href=\"http://www.videolan.org/"
+"support/faq.html\">FAQ</a>.</p><p>You might then get (and give) help on the "
+"<a href=\"http://forum.videolan.org\">Forums</a>, the <a href=\"http://www."
+"videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC channel "
+"(<em>#videolan</em> on irc.freenode.net).</p><h3>Contribute to the project</"
+"h3><p>You can help the VideoLAN project giving some of your time to help the "
+"community, to design skins, to translate the documentation, to test and to "
+"code. You can also give funds and material to help us. And of course, you "
+"can <b>promote</b> VLC media player.</p></body></html>"
 msgstr ""
 "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; "
 "charset=utf-8\" /></head><body><h2>សូម​ស្វាគមន៍​មកកាន់​ជំនួយ​កម្មវិធី​ចាក់​មេឌៀ VLC​</"
@@ -600,16 +600,16 @@ msgstr ""
 "Documentation:Streaming_HowTo\">ឯកសារ​ការ​ស្ទ្រីម</a> ។</p><p>បើ​អ្នក​មិន​ច្បាស់​ជាមួយ​ប្រជុំ​"
 "សព្ទ​បច្ចេកទេស​សូម​ចូល​មើល <a href=\"http://wiki.videolan.org/Knowledge_Base\">មូលដ្ឋាន​"
 "ចំណេះដឹង</a> ។</p><p>ដើម្បី​ស្វែងយល់​អំពី​ផ្លូវកាត់​គ្រាប់ចុច​មេ សូម​អាន​ទំព័រ <a href=\"http://wiki."
-"videolan.org/Hotkeys\">ផ្លូវកាត់</a> ។</p><h3>ជំនួយ</h3><p> សូម​មើល <a "
-"href=\"http://wiki.videolan.org/Frequently_Asked_Questions\">FAQ (សំណួរ​ដែល​សួរ​"
-"រឿយៗ)</a> មុន​នឹង​សួរ​សំណួរ​ណាមួយ។</p><p>អ្នក​អាច​ទទួល​បាន (និង​ផ្ដល់) ជំនួយ​តាម​រយៈ <a "
-"href=\"http://forum.videolan.org\">វេទិកា</a> <a href=\"http://www.videolan."
-"org/vlc/lists.html\">បញ្ជី​សំបុត្រ​រួម</a> ឬ​ឆានែល IRC ( <a href=\"http://www."
-"videolan.org/webirc/\"><em>#videolan</em></a> irc.freenode.net ) ។</p><h3>ការ​"
-"ចូលរួម​​គម្រោង គឺ</h3><p>អ្នក​អាច​ជួយ​គម្រោង VideoLAN បាន ដោយ​ចំណាយ​ពេលវេលា​ដើម្បី​ជួយ​សហគមន៍ ក្នុង​"
-"ការរចនា​រូបរាង ការ​បកប្រែ​ឯកសារ ការ​ធ្វើ​តេស្ដ និង​ការ​សរសេរ​កូដ​ជា​ដើម។ ឬ​អ្នក​អាច​ផ្ដល់​ជា​ថវិកា និង​"
-"សម្ភារៈ​ដើម្បី​ជួយ​ដល់​ពួក​យើង​ក៏បាន។ ហើយ​ជា​ការ​ពិត​អ្នក​ក៏​អាច​<b>ផ្សព្វផ្សាយ</b>​កម្មវិធី​ចាក់ VLC បាន​ផង​"
-"ដែរ។</p></body></html>"
+"videolan.org/Hotkeys\">ផ្លូវកាត់</a> ។</p><h3>ជំនួយ</h3><p> សូម​មើល <a href="
+"\"http://wiki.videolan.org/Frequently_Asked_Questions\">FAQ (សំណួរ​ដែល​សួរ​រឿយៗ)</"
+"a> មុន​នឹង​សួរ​សំណួរ​ណាមួយ។</p><p>អ្នក​អាច​ទទួល​បាន (និង​ផ្ដល់) ជំនួយ​តាម​រយៈ <a href=\"http://"
+"forum.videolan.org\">វេទិកា</a> <a href=\"http://www.videolan.org/vlc/lists."
+"html\">បញ្ជី​សំបុត្រ​រួម</a> ឬ​ឆានែល IRC ( <a href=\"http://www.videolan.org/webirc/"
+"\"><em>#videolan</em></a> irc.freenode.net ) ។</p><h3>ការ​ចូលរួម​​គម្រោង គឺ</"
+"h3><p>អ្នក​អាច​ជួយ​គម្រោង VideoLAN បាន ដោយ​ចំណាយ​ពេលវេលា​ដើម្បី​ជួយ​សហគមន៍ ក្នុង​ការរចនា​រូបរាង "
+"ការ​បកប្រែ​ឯកសារ ការ​ធ្វើ​តេស្ដ និង​ការ​សរសេរ​កូដ​ជា​ដើម។ ឬ​អ្នក​អាច​ផ្ដល់​ជា​ថវិកា និង​សម្ភារៈ​ដើម្បី​ជួយ​ដល់​"
+"ពួក​យើង​ក៏បាន។ ហើយ​ជា​ការ​ពិត​អ្នក​ក៏​អាច​<b>ផ្សព្វផ្សាយ</b>​កម្មវិធី​ចាក់ VLC បាន​ផង​ដែរ។</p></"
+"body></html>"
 
 #: src/audio_output/filters.c:267
 msgid "Audio filtering failed"
@@ -722,8 +722,8 @@ msgstr "កាស"
 #: modules/access/dtv/access.c:113 modules/access/dtv/access.c:122
 #: modules/access/dtv/access.c:130 modules/access/dtv/access.c:139
 #: modules/access/dtv/access.c:147 modules/access/dtv/access.c:169
-#: modules/access/v4l2/v4l2.c:137 modules/gui/qt/components/open_panels.cpp:991
-#: modules/gui/qt/components/simple_preferences.cpp:394
+#: modules/access/v4l2/v4l2.c:137 modules/gui/qt/components/open_panels.cpp:971
+#: modules/gui/qt/components/simple_preferences.cpp:395
 msgid "Automatic"
 msgstr "ស្វ័យប្រវត្តិ"
 
@@ -916,7 +916,7 @@ msgid "decoder"
 msgstr "ឌិកូឌ័រ"
 
 #: src/input/decoder.c:1922 src/input/decoder.c:2205
-#: modules/codec/avcodec/encoder.c:378 modules/codec/avcodec/encoder.c:918
+#: modules/codec/avcodec/encoder.c:394 modules/codec/avcodec/encoder.c:939
 #: modules/stream_out/es.c:349 modules/stream_out/es.c:362
 msgid "Streaming / Transcoding failed"
 msgstr "បរាជ័យ​ក្នុង​ការ​ស្ទ្រីម / ការ​បម្លែង​ត្រឡប់"
@@ -931,7 +931,7 @@ msgid "VLC could not open the decoder module."
 msgstr "VLC មិន​អាច​បើក​ម៉ូឌុល​ឌិកូឌ័រ​បានទេ ។"
 
 #: src/input/es_out.c:956 src/input/es_out.c:961 src/libvlc-module.c:239
-#: modules/gui/qt/components/open_panels.cpp:547
+#: modules/gui/qt/components/open_panels.cpp:527
 msgid "Track"
 msgstr "បទ"
 
@@ -956,7 +956,7 @@ msgid "Scrambled"
 msgstr "បាន​ច្របល់"
 
 #: src/input/es_out.c:1463 modules/keystore/keychain.m:41
-#: modules/lua/extension.c:1193
+#: modules/lua/extension.c:1199
 msgid "Yes"
 msgstr "បាទ/ចាស"
 
@@ -985,7 +985,7 @@ msgstr "កូដិក"
 #: src/input/es_out.c:3151 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:98
 #: modules/gui/macosx/VLCSimplePrefsController.m:325
-#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:527
+#: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:533
 msgid "Language"
 msgstr "ភាសា"
 
@@ -999,7 +999,7 @@ msgstr "សេចក្ដី​ពណ៌នា"
 #: src/input/es_out.c:3160 src/input/es_out.c:3204 src/input/es_out.c:3394
 #: modules/gui/macosx/VLCAddonsWindowController.m:133
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
-#: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1495
+#: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1494
 msgid "Type"
 msgstr "ប្រភេទ"
 
@@ -1265,8 +1265,8 @@ msgstr "VLC មិន​អាច​បើក MRL '%s' បាន​ទេ ។ �
 #: modules/gui/macosx/VLCOpenWindowController.m:178
 #: modules/gui/macosx/VLCOpenWindowController.m:180
 #: modules/gui/macosx/VLCPlaylist.m:91 modules/gui/macosx/VLCPlaylistInfo.m:59
-#: modules/gui/qt/components/open_panels.cpp:507
-#: modules/gui/qt/components/open_panels.cpp:521
+#: modules/gui/qt/components/open_panels.cpp:487
+#: modules/gui/qt/components/open_panels.cpp:501
 #: modules/gui/qt/dialogs/epg.cpp:70 modules/mux/asf.c:56
 #: modules/gui/qt/ui/open_disk.h:306
 msgid "Title"
@@ -1516,8 +1516,8 @@ msgstr "ម៉ូឌុល​ចំណុច​ប្រទាក់​បន្
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
 "the background in addition to the default interface. Use a colon separated "
-"list of interface modules. (common values are \"rc\" (remote control), "
-"\"http\", \"gestures\" ...)"
+"list of interface modules. (common values are \"rc\" (remote control), \"http"
+"\", \"gestures\" ...)"
 msgstr ""
 "អ្នក​អាច​ជ្រើស​ \"ចំណុច​ប្រទាក់​បន្ថែម\" សម្រាប់ VLC បាន ។ ពួក​វា​នឹង​ត្រូវ​បាន​ចាប់ផ្ដើម​នៅ​ក្នុង​"
 "ផ្ទៃខាងក្រោយ ដើម្បី​បន្ថែម​ទៅកាន់​ចំណុច​ប្រទាក់​លំនាំដើម ។ ប្រើ​បញ្ជី​​ម៉ូឌុល​ចំណុច​ប្រទាក់​ដែល​បំបែក​ដោយ​សញ្ញា​ចុច​"
@@ -1610,7 +1610,7 @@ msgid "Media (player) role for operating system policy."
 msgstr ""
 
 #: src/libvlc-module.c:132 modules/gui/macosx/VLCSimplePrefsController.m:281
-#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:407
+#: modules/stream_out/display.c:40 modules/gui/qt/ui/sprefs_audio.h:408
 msgid "Enable audio"
 msgstr "បើក​អូឌីយ៉ូ"
 
@@ -1730,10 +1730,9 @@ msgstr ""
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:957
 #: modules/audio_output/kai.c:106 modules/codec/subsdec.c:167
 #: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:122
-#: modules/demux/mpeg/ts.c:131 modules/gui/macosx/VLCSimplePrefsController.m:54
-#: modules/gui/qt/components/simple_preferences.cpp:68
+#: modules/demux/mpeg/ts.c:132 modules/gui/macosx/VLCSimplePrefsController.m:54
+#: modules/gui/qt/components/simple_preferences.cpp:69
 #: modules/gui/qt/components/sout/profile_selector.cpp:590
-#: modules/services_discovery/upnp.cpp:82
 #: modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:151 modules/video_output/kva.c:62
 #: modules/video_output/win32/direct3d11.c:88
@@ -1759,8 +1758,8 @@ msgid "Stereo audio output mode"
 msgstr "របៀប​បញ្ចេញ​សំឡេង​ស្តេរ៉េអូ"
 
 #: src/libvlc-module.c:195 src/misc/actions.c:112
-#: modules/gui/qt/components/preferences_widgets.cpp:1417
-#: modules/gui/qt/util/customwidgets.cpp:330
+#: modules/gui/qt/components/preferences_widgets.cpp:1421
+#: modules/gui/qt/util/customwidgets.cpp:328
 msgid "Unset"
 msgstr "មិន​កំណត់"
 
@@ -2490,7 +2489,7 @@ msgstr "លំនាំដើម"
 #: src/libvlc-module.c:540
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:215
 #: modules/gui/macosx/VLCSidebarDataSource.m:209
-#: modules/gui/qt/components/extended_panels.cpp:949
+#: modules/gui/qt/components/extended_panels.cpp:962
 #: modules/gui/qt/ui/equalizer.h:130 modules/gui/qt/ui/vlm.h:286
 msgid "Enable"
 msgstr "បើក"
@@ -2794,10 +2793,10 @@ msgstr "ផ្លាស់ប្ដូរ​ចំណងជើង​ផ្អែ
 
 #: src/libvlc-module.c:690
 msgid ""
-"This option allows you to set the title according to what's being "
-"played<br>$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: "
-"Genre<br>$n: Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: "
-"\"Now playing\" (Fall back on Title - Artist)"
+"This option allows you to set the title according to what's being played<br>"
+"$a: Artist<br>$b: Album<br>$c: Copyright<br>$t: Title<br>$g: Genre<br>$n: "
+"Track num<br>$p: Now playing<br>$A: Date<br>$D: Duration<br>$Z: \"Now playing"
+"\" (Fall back on Title - Artist)"
 msgstr ""
 "ជម្រើស​នេះ​អនុញ្ញាត​ឲ្យ​អ្នក​កំណត់​ចំណងជើង​ដោយ​ផ្អែកលើ​អ្វី​ដែល​វា​កំពុង​ចាក់<br>$a ៖ សិល្បករ<br>$b ៖ "
 "អាល់ប៊ុម<br>$c ៖ រក្សាសិទ្ធិ<br>$t ៖ ចំណងជើង<br>$g ៖ ចង្វាក់<br>$n ៖ លេខ​បទ<br>$p ៖ កំពុង​"
@@ -2816,8 +2815,8 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 "ជម្រើស​នេះ​អនុញ្ញាត​ឲ្យ​អ្នក​ ត្រូវ​កែប្រែ​ឥរិយាបថ​ប្រព័ន្ធ​រង​របស់​រូបភាព​រង។ ឧទាហរណ៍ អ្នក​អាច​បើក​ប្រភព​"
-"រូបភាព​រង (រូប​សញ្ញា។ល។) ។ បើក​តម្រង​ទាំងនេះ​នៅ​ទី​នេះ ហើយ​កំណត់​រចនាសម្ព័ន្ធ​វា​នៅ​ក្នុង \"តម្រង​ប្រភព​"
-"រង\" ជម្រើស​ម៉ូឌុល។ អ្នក​អាច​កំណត់​ជម្រើស​​រូបភាព​រង​ផ្សេងៗទៀត​ជា​ច្រើន។"
+"រូបភាព​រង (រូប​សញ្ញា។ល។) ។ បើក​តម្រង​ទាំងនេះ​នៅ​ទី​នេះ ហើយ​កំណត់​រចនាសម្ព័ន្ធ​វា​នៅ​ក្នុង \"តម្រង​ប្រភព​រង"
+"\" ជម្រើស​ម៉ូឌុល។ អ្នក​អាច​កំណត់​ជម្រើស​​រូបភាព​រង​ផ្សេងៗទៀត​ជា​ច្រើន។"
 
 #: src/libvlc-module.c:705 modules/gui/qt/ui/sprefs_subtitles.h:304
 msgid "Force subtitle position"
@@ -3553,7 +3552,7 @@ msgstr "VLC ត្រូវ​បាន​ចាប់ផ្ដើម​​ច�
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr "ប្រាប់ VLC ថា វា​ត្រូវ​បាន​ចាប់ផ្ដើម​ដោយសារ​​​ឯកសារ​ពាក់ព័ន្ធ​នៅ​ក្នុង​ប្រព័ន្ធ​ប្រតិបត្តិការ"
 
-#: src/libvlc-module.c:1087 modules/gui/qt/ui/sprefs_interface.h:547
+#: src/libvlc-module.c:1087 modules/gui/qt/ui/sprefs_interface.h:554
 msgid "Use only one instance when started from file manager"
 msgstr "ប្រើ​តែ​ធាតុ​មួយ​ប៉ុណ្ណោះ​ពេល​ចាប់ផ្ដើម​ពី​កម្មវិធី​គ្រប់គ្រង​ឯកសារ"
 
@@ -3575,7 +3574,7 @@ msgstr ""
 "ដឹង​ថា ក្នុង​ស្ថានភាព​ជាក់លាក់ (កំហុស) VLC អាច​ប្រើ​ពេលវេលា​​ដំណើរការ​ទាំងអស់ ហើយ​បង្ហាញ​ភាព​មិន​ឆ្លើយតប​"
 "របស់​ប្រព័ន្ធ​ទាំងស្រុង​ដែល​អាច​តម្រូវ​ឲ្យ​ចាប់ផ្ដើម​ម៉ាស៊ីន​របស់​អ្នក​ឡើងវិញ។"
 
-#: src/libvlc-module.c:1099 modules/gui/qt/ui/sprefs_interface.h:550
+#: src/libvlc-module.c:1099 modules/gui/qt/ui/sprefs_interface.h:557
 msgid "Enqueue items into playlist in one instance mode"
 msgstr "ដាក់​ធាតុ​ជា​ជួរ​ក្នុង​បញ្ជី​ចាក់​នៃ​របៀប​ធាតុ​មួយ"
 
@@ -3619,7 +3618,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1126 modules/gui/macosx/VLCSimplePrefsController.m:342
 #: modules/gui/qt/dialogs/firstrun.cpp:95
-#: modules/gui/qt/ui/sprefs_interface.h:562
+#: modules/gui/qt/ui/sprefs_interface.h:569
 msgid "Allow metadata network access"
 msgstr ""
 
@@ -3767,7 +3766,7 @@ msgid ""
 msgstr ""
 "បណ្ណាល័យ​មេឌៀ​ត្រូវ​បាន​រក្សាទុក និង​ផ្ទុក​ឡើងវិញ​ដោយ​ស្វ័យប្រវត្តិ​នៅ​រាល់ពេល​ដែល​អ្នក​ចាប់ផ្ដើម VLC ។"
 
-#: src/libvlc-module.c:1198 modules/gui/qt/ui/sprefs_interface.h:548
+#: src/libvlc-module.c:1198 modules/gui/qt/ui/sprefs_interface.h:555
 msgid "Display playlist tree"
 msgstr "បង្ហាញ​មែកធាង​បញ្ជី​ចាក់"
 
@@ -3889,11 +3888,11 @@ msgstr "អត្រា​ធម្មតា"
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "ជ្រើស​គ្រាប់ចុច​រហ័ស​ដើម្បី​កំណត់​អត្រា​ចាក់​ទៅ​ធម្មតា​វិញ។"
 
-#: src/libvlc-module.c:1242 modules/gui/qt/menus.cpp:884
+#: src/libvlc-module.c:1242 modules/gui/qt/menus.cpp:889
 msgid "Faster (fine)"
 msgstr "លឿន​ជាង (ល្អ)"
 
-#: src/libvlc-module.c:1244 modules/gui/qt/menus.cpp:892
+#: src/libvlc-module.c:1244 modules/gui/qt/menus.cpp:897
 msgid "Slower (fine)"
 msgstr "យឺត​ជាង (ល្អ)"
 
@@ -3904,7 +3903,7 @@ msgstr "យឺត​ជាង (ល្អ)"
 #: modules/gui/macosx/VLCMainMenu.m:396 modules/gui/macosx/VLCMainMenu.m:499
 #: modules/gui/macosx/VLCMainMenu.m:507
 #: modules/gui/qt/components/controller.hpp:112
-#: modules/gui/qt/dialogs/sout.cpp:93 modules/notify/notify.c:335
+#: modules/gui/qt/dialogs/sout.cpp:91 modules/notify/notify.c:335
 #: modules/gui/qt/ui/streampanel.h:179
 msgid "Next"
 msgstr "បន្ទាប់"
@@ -3931,7 +3930,7 @@ msgstr "ជ្រើស​គ្រាប់ចុច​រហ័ស​ដែល
 #: modules/gui/macosx/VLCMainMenu.m:498 modules/gui/macosx/VLCMainMenu.m:505
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:65
 #: modules/gui/qt/components/controller.hpp:107
-#: modules/gui/qt/dialogs/vlm.cpp:544 modules/gui/qt/ui/streampanel.h:178
+#: modules/gui/qt/dialogs/vlm.cpp:538 modules/gui/qt/ui/streampanel.h:178
 msgid "Stop"
 msgstr "ឈប់"
 
@@ -4060,8 +4059,8 @@ msgstr "ប្រវែង​លោត​វែង គិតជា​វិន�
 #: src/libvlc-module.c:1293 modules/control/hotkeys.c:361
 #: modules/gui/macosx/VLCStatusBarIcon.m:116
 #: modules/gui/qt/components/controller.hpp:111
-#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:955
-#: modules/gui/qt/menus.cpp:1141 modules/gui/skins2/commands/cmd_quit.cpp:45
+#: modules/gui/qt/components/controller.hpp:123 modules/gui/qt/menus.cpp:960
+#: modules/gui/qt/menus.cpp:1146 modules/gui/skins2/commands/cmd_quit.cpp:45
 msgid "Quit"
 msgstr "ចេញ"
 
@@ -4369,7 +4368,7 @@ msgid "Select the key to set this playlist bookmark."
 msgstr "ជ្រើស​គ្រាប់ចុច​ដើម្បី​កំណត់​ចំណាំ​បញ្ជី​ចាក់​នេះ។"
 
 #: src/libvlc-module.c:1373
-#: modules/gui/qt/components/playlist/standardpanel.cpp:246
+#: modules/gui/qt/components/playlist/standardpanel.cpp:247
 msgid "Clear the playlist"
 msgstr "សម្អាត​បញ្ជី​ចាក់"
 
@@ -4547,7 +4546,7 @@ msgstr "ថត​រូបថត​វីដេអូ រួច​សរសេ�
 
 #: src/libvlc-module.c:1423 modules/gui/macosx/VLCMainMenu.m:387
 #: modules/gui/qt/components/controller.hpp:110
-#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:858
+#: modules/gui/qt/components/controller.hpp:121 modules/gui/qt/menus.cpp:863
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "កំណត់ត្រា"
@@ -4707,7 +4706,7 @@ msgstr "VLM"
 msgid "Special modules"
 msgstr "ម៉ូឌុល​ពិសេស"
 
-#: src/libvlc-module.c:2031 modules/gui/qt/dialogs/plugins.cpp:90
+#: src/libvlc-module.c:2031 modules/gui/qt/dialogs/plugins.cpp:89
 msgid "Plugins"
 msgstr "កម្មវិធី​ជំនួយ"
 
@@ -4977,7 +4976,7 @@ msgstr "ពេលវេលា​មេឌៀ"
 msgid "Media View"
 msgstr "ទិដ្ឋភាព​មេឌៀ"
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:568
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:577
 msgid "Menu"
 msgstr "ម៉ឺនុយ"
 
@@ -5010,8 +5009,8 @@ msgstr "ទំព័រ​លើ"
 #: modules/gui/macosx/VLCFSPanelController.m:251
 #: modules/gui/macosx/VLCMainMenu.m:1346 modules/gui/macosx/VLCMainMenu.m:1347
 #: modules/gui/macosx/VLCMainMenu.m:1348
-#: modules/gui/qt/components/playlist/standardpanel.cpp:196
-#: modules/gui/qt/menus.cpp:832
+#: modules/gui/qt/components/playlist/standardpanel.cpp:197
+#: modules/gui/qt/menus.cpp:837
 msgid "Pause"
 msgstr "ផ្អាក"
 
@@ -5102,7 +5101,7 @@ msgid "Failed to open \"%s\" for writing"
 msgstr "បាន​បរាជ័យ​ក្នុង​កា​របើក \"%s\" ដើម្បី​សរសេរ"
 
 #: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2827
+#: modules/demux/avi/avi.c:2878
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
@@ -5127,10 +5126,10 @@ msgstr "បាន​បរាជ័យ​ក្នុង​កា​របើក
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:791
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:860
 #: modules/gui/macosx/prefs.m:189
-#: modules/gui/qt/components/open_panels.cpp:1381
-#: modules/gui/qt/components/preferences_widgets.cpp:1416
+#: modules/gui/qt/components/open_panels.cpp:1361
+#: modules/gui/qt/components/preferences_widgets.cpp:1420
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
-#: modules/gui/qt/dialogs/sout.cpp:92
+#: modules/gui/qt/dialogs/sout.cpp:90
 #: modules/stream_out/chromecast/cast.cpp:1197
 msgid "Cancel"
 msgstr "បោះបង់"
@@ -6066,79 +6065,79 @@ msgstr "Blu-ray"
 msgid "Blu-ray Disc support (libbluray)"
 msgstr "គាំទ្រ​ថាស Blu-ray (libbluray)"
 
-#: modules/access/bluray.c:849
+#: modules/access/bluray.c:847
 msgid "Path doesn't appear to be a Blu-ray"
 msgstr ""
 
-#: modules/access/bluray.c:864
+#: modules/access/bluray.c:862
 msgid ""
 "This Blu-ray Disc needs a library for AACS decoding, and your system does "
 "not have it."
 msgstr "ថាស Blu-ray នេះ​ត្រូវការ​បណ្ណាល័យ​សម្រាប់​ការ​ដោះ​លេខ​កូដ AACS ហើយ​ប្រព័ន្ធ​របស់​អ្នក​មិន​មាន។"
 
-#: modules/access/bluray.c:870
+#: modules/access/bluray.c:868
 msgid "Blu-ray Disc is corrupted."
 msgstr "ថាស Blu-ray បាន​ខូច។"
 
-#: modules/access/bluray.c:872
+#: modules/access/bluray.c:870
 msgid "Missing AACS configuration file!"
 msgstr "បាត់​ឯកសារ​កំណត់​រចនាសម្ព័ន្ធ AACS!"
 
-#: modules/access/bluray.c:874
+#: modules/access/bluray.c:872
 msgid "No valid processing key found in AACS config file."
 msgstr "រក​មិន​ឃើញ​គ្រាប់ចុច​ដំណើរការ​ត្រឹមត្រូវ​នៅ​ក្នុង​ឯកសារ​កំណត់ AACS ។"
 
-#: modules/access/bluray.c:876
+#: modules/access/bluray.c:874
 msgid "No valid host certificate found in AACS config file."
 msgstr "រក​មិន​ឃើញ​វិញ្ញាបនបត្រ​ម៉ាស៊ីន​ត្រឹមត្រូវ​នៅ​ក្នុង​ឯកសារ​កំណត់​រចនាសម្ព័ន្ធ AACS ។"
 
-#: modules/access/bluray.c:878
+#: modules/access/bluray.c:876
 msgid "AACS Host certificate revoked."
 msgstr "បាន​ដក​ហូត​វិញ្ញាបនបត្រ​ម៉ាស៊ីន AACS ។"
 
-#: modules/access/bluray.c:880
+#: modules/access/bluray.c:878
 msgid "AACS MMC failed."
 msgstr "AACS MMC បាន​បរាជ័យ។"
 
-#: modules/access/bluray.c:890
+#: modules/access/bluray.c:888
 msgid ""
 "This Blu-ray Disc needs a library for BD+ decoding, and your system does not "
 "have it."
 msgstr "ថាស Blu-ray នេះ​ត្រូវការ​បណ្ណាល័យ​សម្រាប់​ការ​ដោះ​លេខ​កូដ BD+ ហើយ​ប្រព័ន្ធ​របស់​អ្នក​មិន​មាន។"
 
-#: modules/access/bluray.c:893
+#: modules/access/bluray.c:891
 msgid "Your system BD+ decoding library does not work. Missing configuration?"
 msgstr "បណ្ណាល័យ​ឌិកូដ​ប្រព័ន្ធ BD+ របស់​អ្នក​មិន​ដំណើរការ​ទេ។ មិន​បាន​កំណត់​រចនាសម្ព័ន្ធ​ឬ?"
 
-#: modules/access/bluray.c:926
+#: modules/access/bluray.c:924
 msgid "Java required"
 msgstr ""
 
-#: modules/access/bluray.c:927
+#: modules/access/bluray.c:925
 #, c-format
 msgid ""
 "This Blu-ray disc requires Java for menus support.%s\n"
 "The disc will be played without menus."
 msgstr ""
 
-#: modules/access/bluray.c:928
+#: modules/access/bluray.c:926
 msgid "Java was not found on your system."
 msgstr ""
 
-#: modules/access/bluray.c:951
+#: modules/access/bluray.c:949
 msgid "Failed to start bluray playback. Please try without menu support."
 msgstr ""
 
-#: modules/access/bluray.c:992 modules/access/bluray.c:2825
-#: modules/access/bluray.c:2830
+#: modules/access/bluray.c:990 modules/access/bluray.c:2823
+#: modules/access/bluray.c:2828
 msgid "Blu-ray error"
 msgstr "Blu-ray មាន​បញ្ហា"
 
-#: modules/access/bluray.c:2115
+#: modules/access/bluray.c:2113
 msgid "Top Menu"
 msgstr ""
 
-#: modules/access/bluray.c:2118
+#: modules/access/bluray.c:2116
 msgid "First Play"
 msgstr ""
 
@@ -6165,9 +6164,8 @@ msgid "Musicbrainz Server"
 msgstr ""
 
 #: modules/access/cdda.c:1023
-#, fuzzy
 msgid "Address of the musicbrainz server to use."
-msgstr "អាសយដ្ឋាន​ម៉ាស៊ីន​មេ CDDB ដែល​ត្រូវ​ប្រើ។"
+msgstr ""
 
 #: modules/access/cdda.c:1025
 msgid "CDDB Server"
@@ -6344,7 +6342,7 @@ msgstr "ព័ត៌មាន​បញ្ចូល Blackmagic DeckLink SDI"
 msgid "10 bits"
 msgstr "១០ ប៊ីត"
 
-#: modules/access/decklink.cpp:358 modules/demux/ty.c:769
+#: modules/access/decklink.cpp:358 modules/demux/ty.c:783
 msgid "Closed captions 1"
 msgstr "បាន​បិទ​ចំណងជើង ១"
 
@@ -6380,7 +6378,7 @@ msgid "DSS"
 msgstr "DSS"
 
 #: modules/access/dshow/dshow.cpp:130
-#: modules/gui/qt/components/open_panels.cpp:838
+#: modules/gui/qt/components/open_panels.cpp:818
 msgid "Video device name"
 msgstr "ឈ្មោះ​ឧបករណ៍​វីដេអូ"
 
@@ -6393,8 +6391,8 @@ msgstr ""
 "ប្រើ​ឧបករណ៍​លំនាំដើម។"
 
 #: modules/access/dshow/dshow.cpp:135
-#: modules/gui/qt/components/open_panels.cpp:846
-#: modules/gui/qt/components/open_panels.cpp:1067
+#: modules/gui/qt/components/open_panels.cpp:826
+#: modules/gui/qt/components/open_panels.cpp:1047
 msgid "Audio device name"
 msgstr "ឈ្មោះ​ឧបករណ៍​អូឌីយ៉ូ"
 
@@ -6405,7 +6403,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/dshow/dshow.cpp:140
-#: modules/gui/qt/components/open_panels.cpp:813
+#: modules/gui/qt/components/open_panels.cpp:793
 msgid "Video size"
 msgstr "ទំហំ​វីដេអូ"
 
@@ -6484,8 +6482,8 @@ msgid "This overrides the channel. Measured in Hz."
 msgstr "វា​បដិសេធ​ប៉ុស្តិ៍។ បាន​វាស់ស់​គិតជា Hz ។"
 
 #: modules/access/dshow/dshow.cpp:168
-#: modules/gui/qt/components/open_panels.cpp:866
-#: modules/gui/qt/components/open_panels.cpp:1087
+#: modules/gui/qt/components/open_panels.cpp:846
+#: modules/gui/qt/components/open_panels.cpp:1067
 msgid "Video standard"
 msgstr "ស្តង់ដារ​វីដេអូ"
 
@@ -6690,7 +6688,7 @@ msgstr ""
 "ប៉ុស្តិ៍​ទូរទស្សន៍​ត្រូវ​បាន​ដាក់​ជា​ក្រុម​ដោយ​ឧបករណ៍​ទទួល/បញ្ជូន​សញ្ញា (a.k.a. multiplex) នៅ​លើ​​ប្រេកង់​ដែល​"
 "បាន​ផ្ដល់។ វា​ត្រូវ​បាន​ទាមទារ​ឲ្យ​មួល​ឧបករណ៍​ទទួល។"
 
-#: modules/access/dtv/access.c:68 modules/gui/qt/components/open_panels.cpp:987
+#: modules/access/dtv/access.c:68 modules/gui/qt/components/open_panels.cpp:967
 msgid "Modulation / Constellation"
 msgstr "ការ​ប្ដូរ/ការ​ពង្រាយ"
 
@@ -7218,8 +7216,8 @@ msgstr "ឯកសារ​ព័ត៌មាន​បញ្ចូល"
 #: modules/audio_output/file.c:113
 #: modules/gui/macosx/VLCOpenWindowController.m:140
 #: modules/gui/macosx/VLCOutput.m:64 modules/gui/macosx/VLCOutput.m:175
-#: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1429
-#: modules/gui/qt/dialogs/sout.cpp:69 modules/gui/qt/dialogs/sout.cpp:121
+#: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1428
+#: modules/gui/qt/dialogs/sout.cpp:67 modules/gui/qt/dialogs/sout.cpp:119
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
 #: share/lua/http/dialogs/stream_window.html:95
@@ -7245,7 +7243,7 @@ msgstr ""
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
-#: modules/gui/qt/dialogs/external.cpp:203 modules/misc/audioscrobbler.c:114
+#: modules/gui/qt/dialogs/external.cpp:205 modules/misc/audioscrobbler.c:114
 #: modules/stream_out/rtp.c:173
 msgid "Username"
 msgstr "ឈ្មោះ​អ្នក​ប្រើ"
@@ -7264,7 +7262,7 @@ msgstr ""
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
 #: modules/gui/macosx/VLCSimplePrefsController.m:285
 #: modules/gui/macosx/VLCSimplePrefsController.m:348
-#: modules/gui/qt/dialogs/external.cpp:208 modules/lua/vlc.c:54
+#: modules/gui/qt/dialogs/external.cpp:210 modules/lua/vlc.c:54
 #: modules/lua/vlc.c:70 modules/misc/audioscrobbler.c:116
 #: modules/stream_out/rtp.c:176
 msgid "Password"
@@ -7456,7 +7454,7 @@ msgstr "ចំនួន​ឆានែល​របស់​អូឌីយ៉ូ
 #: modules/demux/rawvid.c:47
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:239
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:167
-#: modules/gui/qt/components/extended_panels.cpp:1318 modules/spu/mosaic.c:94
+#: modules/gui/qt/components/extended_panels.cpp:1348 modules/spu/mosaic.c:94
 #: modules/video_output/vmem.c:42 share/lua/http/dialogs/mosaic_window.html:108
 #: modules/gui/qt/ui/profiles.h:741
 msgid "Width"
@@ -7525,7 +7523,7 @@ msgstr "អាសយដ្ឋាន​នៃ​មុខងារ​ហៅ​ត
 
 #: modules/access/imem.c:113
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:236
-#: modules/gui/qt/components/extended_panels.cpp:1317
+#: modules/gui/qt/components/extended_panels.cpp:1347
 msgid "Size"
 msgstr "ទំហំ"
 
@@ -7553,7 +7551,7 @@ msgstr "ល្បឿន"
 msgid "Read the audio stream at VLC pace rather than Jack pace."
 msgstr "អាន​ស្ទ្រីម​អូឌីយ៉ូ​ដោយ​ល្បឿន​របស់ VLC ជំនួស​ឲ្យ​​ល្បឿន​របស់ Jack ។"
 
-#: modules/access/jack.c:62 modules/gui/qt/components/open_panels.cpp:918
+#: modules/access/jack.c:62 modules/gui/qt/components/open_panels.cpp:898
 msgid "Auto connection"
 msgstr "ការ​​តភ្ជាប់​ស្វ័យប្រវត្តិ"
 
@@ -7728,19 +7726,19 @@ msgstr "ច្រក​ធ្យូនែល HTTP"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "ច្រក​ដែល​ត្រូវ​ប្រើ​សម្រាប់​ធ្យូនែល RTSP/RTP តាម HTTP ។"
 
-#: modules/access/live555.cpp:673
+#: modules/access/live555.cpp:677
 msgid "RTSP authentication"
 msgstr "ការ​ផ្ទៀង​ផ្ទាត់ RTSP"
 
-#: modules/access/live555.cpp:674
+#: modules/access/live555.cpp:678
 msgid "Please enter a valid login name and a password."
 msgstr "សូម​បញ្ចូល​ឈ្មោះ​ចូល និង​ពាក្យសម្ងាត់​ដែល​ត្រឹមត្រូវ។"
 
-#: modules/access/live555.cpp:699
+#: modules/access/live555.cpp:703
 msgid "RTSP connection failed"
 msgstr "ការ​តភ្ជាប់ RTSP បាន​បរាជ័យ"
 
-#: modules/access/live555.cpp:700
+#: modules/access/live555.cpp:704
 msgid "Access to the stream is denied by the server configuration."
 msgstr "ការ​ចូល​ដំណើរការ​ស្ទ្រីម​ត្រូវ​បាន​បដិសេធ​ដោយ​ការ​កំណត់​រចនាសម្ព័ន្ធ​ម៉ាស៊ីន​មេ។"
 
@@ -8098,7 +8096,7 @@ msgid "SAT>IP Receiver Plugin"
 msgstr ""
 
 #: modules/access/screen/screen.c:45
-#: modules/gui/qt/components/open_panels.cpp:1124
+#: modules/gui/qt/components/open_panels.cpp:1104
 msgid "Desired frame rate for the capture."
 msgstr "អត្រា​ស៊ុម​ដែល​ចង់បាន​សម្រាប់​ការ​ចាប់​យក។"
 
@@ -8357,9 +8355,8 @@ msgid "Password for stream encryption"
 msgstr ""
 
 #: modules/access/srt.c:446 modules/access_output/srt.c:480
-#, fuzzy
 msgid " SRT Stream ID"
-msgstr "ស្ទ្រីម %d"
+msgstr ""
 
 #: modules/access/srt_common.c:26
 msgid "16 bytes"
@@ -8467,7 +8464,7 @@ msgstr "ឧបករណ៍​វិទ្យុ"
 msgid "Radio tuner device node."
 msgstr "តំណ​ឧបករណ៍​មូល​វិទ្យុ។"
 
-#: modules/access/v4l2/v4l2.c:75 modules/gui/qt/components/open_panels.cpp:1094
+#: modules/access/v4l2/v4l2.c:75 modules/gui/qt/components/open_panels.cpp:1074
 msgid "Frequency"
 msgstr "ប្រេកង់"
 
@@ -8647,7 +8644,7 @@ msgid "50 Hz"
 msgstr "50 Hz"
 
 #: modules/access/v4l2/v4l2.c:137
-#: modules/gui/qt/components/extended_panels.cpp:1107
+#: modules/gui/qt/components/extended_panels.cpp:1132
 msgid "60 Hz"
 msgstr "60 Hz"
 
@@ -8806,7 +8803,7 @@ msgstr ""
 #: modules/control/hotkeys.c:395
 #: modules/gui/macosx/VLCAddonsWindowController.m:100
 #: modules/gui/qt/dialogs/convert.cpp:164
-#: modules/gui/qt/dialogs/plugins.cpp:383
+#: modules/gui/qt/dialogs/plugins.cpp:382
 #: modules/gui/qt/dialogs/preferences.cpp:79
 msgid "All"
 msgstr "ទាំងអស់"
@@ -9174,9 +9171,9 @@ msgstr "ឯកសារ​ដែល vlc អាន key-uri និង keyfile-loca
 
 #: modules/access_output/livehttp.c:98
 msgid ""
-"File is read when segment starts and is assumed to be in format: key-"
-"uri\\nkey-file. File is read on the segment opening and values are used on "
-"that segment."
+"File is read when segment starts and is assumed to be in format: key-uri"
+"\\nkey-file. File is read on the segment opening and values are used on that "
+"segment."
 msgstr ""
 
 #: modules/access_output/livehttp.c:102
@@ -9237,7 +9234,7 @@ msgid ""
 msgstr ""
 
 #: modules/access_output/rist.c:842 modules/access_output/shout.c:64
-#: modules/gui/qt/components/sout/sout_widgets.cpp:385
+#: modules/gui/qt/components/sout/sout_widgets.cpp:386
 #: share/lua/http/dialogs/create_stream.html:139
 msgid "Stream name"
 msgstr "ឈ្មោះ​ស្ទ្រីម"
@@ -9641,7 +9638,7 @@ msgstr "បន្ថែម​បែបផែន​ពន្យារ​ពេល
 
 #: modules/audio_filter/chorus_flanger.c:80
 #: modules/audio_filter/stereo_widen.c:57
-#: modules/gui/qt/components/extended_panels.cpp:1337
+#: modules/gui/qt/components/extended_panels.cpp:1367
 msgid "Delay time"
 msgstr "រយៈពេល​ពន្យារ"
 
@@ -9671,7 +9668,7 @@ msgstr "អត្រា​ផ្លាស់ប្ដូរ​របស់​ជ
 
 #: modules/audio_filter/chorus_flanger.c:89
 #: modules/audio_filter/stereo_widen.c:60
-#: modules/gui/qt/components/extended_panels.cpp:1338
+#: modules/gui/qt/components/extended_panels.cpp:1368
 msgid "Feedback gain"
 msgstr "មតិ​ត្រឡប់​កើន​ឡើង"
 
@@ -9697,7 +9694,7 @@ msgstr "កម្រិត​សញ្ញា​ព័ត៌មាន​បញ្
 
 #: modules/audio_filter/compressor.c:155
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:225
-#: modules/gui/qt/components/extended_panels.cpp:1295
+#: modules/gui/qt/components/extended_panels.cpp:1325
 msgid "RMS/peak"
 msgstr "RMS/peak"
 
@@ -9731,7 +9728,7 @@ msgstr ""
 
 #: modules/audio_filter/compressor.c:167
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:229
-#: modules/gui/qt/components/extended_panels.cpp:1299
+#: modules/gui/qt/components/extended_panels.cpp:1329
 msgid "Ratio"
 msgstr "សមាមាត្រ"
 
@@ -10156,19 +10153,19 @@ msgstr "ទទឹង​បន្ទប់​និម្មិត"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:61
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:241
-#: modules/gui/qt/components/extended_panels.cpp:1319
+#: modules/gui/qt/components/extended_panels.cpp:1349
 msgid "Wet"
 msgstr "សើម"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:64
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:242
-#: modules/gui/qt/components/extended_panels.cpp:1320
+#: modules/gui/qt/components/extended_panels.cpp:1350
 msgid "Dry"
 msgstr "ស្ងួត"
 
 #: modules/audio_filter/spatializer/spatializer.cpp:67
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:243
-#: modules/gui/qt/components/extended_panels.cpp:1321
+#: modules/gui/qt/components/extended_panels.cpp:1351
 msgid "Damp"
 msgstr "សើម"
 
@@ -10206,7 +10203,7 @@ msgstr ""
 "ខាងស្ដាំ និង​ច្រាស​មកវិញ ដែល​ផ្ដល់​នូវ​បែបផែន​ខ្លាំង​ជាង។"
 
 #: modules/audio_filter/stereo_widen.c:64
-#: modules/gui/qt/components/extended_panels.cpp:1339
+#: modules/gui/qt/components/extended_panels.cpp:1369
 msgid "Crossfeed"
 msgstr "ការ​បញ្ចេញ​ខ្វែង"
 
@@ -10220,7 +10217,7 @@ msgstr ""
 "សញ្ញា​ទៅ​ទាំងអស់​ចំពោះ​ឆានែល​ទាំង​ពីរ។"
 
 #: modules/audio_filter/stereo_widen.c:68
-#: modules/gui/qt/components/extended_panels.cpp:1340
+#: modules/gui/qt/components/extended_panels.cpp:1370
 msgid "Dry mix"
 msgstr "ការ​លាយ​ស្ងួត"
 
@@ -10471,7 +10468,7 @@ msgstr "បើក​ជម្រើស​នេះ ប្រសិនបើ​�
 msgid "K Audio Interface audio output"
 msgstr "អូឌីយ៉ូ​ចេញ​របស់​ចំណុច​ប្រទាក់​អូឌីយ៉ូ K"
 
-#: modules/audio_output/mmdevice.c:1472 modules/gui/qt/ui/sprefs_audio.h:416
+#: modules/audio_output/mmdevice.c:1472 modules/gui/qt/ui/sprefs_audio.h:417
 msgid "HDMI/SPDIF audio passthrough"
 msgstr ""
 
@@ -10565,11 +10562,11 @@ msgstr ""
 "ជម្រើស​នេះ​អនុញ្ញាត​ឲ្យ​អ្នក​បើក ឬ​បិទ​របៀប​បង្ហាញ​អូឌីយ៉ូ float32 គុណភាព​ខ្ពស់ (ដែល​មិន​ត្រូវបាន​គាំទ្រ​ដោយ​"
 "កាត​សំឡេង​មួយ​ចំនួន​ទេ) ។"
 
-#: modules/codec/a52.c:70
+#: modules/codec/a52.c:72
 msgid "A/52 dynamic range compression"
 msgstr "ការ​បង្ហាប់​ជួរ​ថាមវន្ដ A/52"
 
-#: modules/codec/a52.c:72 modules/codec/dca.c:63
+#: modules/codec/a52.c:74 modules/codec/dca.c:65
 msgid ""
 "Dynamic range compression makes the loud sounds softer, and the soft sounds "
 "louder, so you can more easily listen to the stream in a noisy environment "
@@ -10580,7 +10577,7 @@ msgstr ""
 "ស្ដាប់​​​ស្ទ្រីម​នៅ​ក្នុង​បរិយាកាស​ដែល​អ៊ូអរ​កាន់​តែ​ងាយស្រួល​ដោយ​មិន​រំខាន​អ្នកណា​ឡើយ ។ ប្រសិន​បើ​អ្នក​បិទ​ការ​បង្ហាប់​"
 "ជួរ​ថាមវន្ដ នោះ​ការ​ចាក់​សារ​ឡើងវិញ​នឹង​ត្រូវ​បាន​សម្រប​ទៅតាម​មហោស្រព​ភាពយន្ត ឬ​បន្ទប់​ស្ដាប់ ។"
 
-#: modules/codec/a52.c:80
+#: modules/codec/a52.c:82
 msgid "ATSC A/52 (AC-3) audio decoder"
 msgstr "ឌិកូឌ័រ​អូឌីយ៉ូ ATSC A/52 (AC-3)"
 
@@ -11097,15 +11094,15 @@ msgstr ""
 "ចម្បង, ទាប, ssr (មិន​គាំទ្រ), ltp, hev1, hev2 (លំនាំដើម៖ ទាប) hev1 ហើយ hev2 គឺ​បច្ចុប្បន្ន​"
 "ត្រូវ​បាន​គាំទ្រ​តែ​ជាមួយ libfdk-aac បាន​បើក libavcodec ប៉ុណ្ណោះ"
 
-#: modules/codec/avcodec/d3d11va.c:63
+#: modules/codec/avcodec/d3d11va.c:67
 msgid "Direct3D11 Video Acceleration"
 msgstr ""
 
-#: modules/codec/avcodec/dxva2.c:51
+#: modules/codec/avcodec/dxva2.c:55
 msgid "DirectX Video Acceleration (DXVA) 2.0"
 msgstr "DirectX Video Acceleration (DXVA) 2.0"
 
-#: modules/codec/avcodec/encoder.c:383
+#: modules/codec/avcodec/encoder.c:399
 #, c-format
 msgid ""
 "It seems your Libav/FFmpeg (libavcodec) installation lacks the following "
@@ -11123,32 +11120,32 @@ msgstr ""
 "នេះ​មិនមែន​ជា​កំហុស​ខាងក្នុង​កម្មវិធី​ចាក់​មេឌៀ VLC ទេ។\n"
 "សូម​កុំ​ទាក់ទង​ម​ក​គម្រោង VideoLAN អំពី​បញ្ហា​នេះ។\n"
 
-#: modules/codec/avcodec/encoder.c:905
+#: modules/codec/avcodec/encoder.c:926
 msgid "unknown"
 msgstr "មិន​ស្គាល់"
 
-#: modules/codec/avcodec/encoder.c:905
+#: modules/codec/avcodec/encoder.c:926
 msgid "video"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:906
+#: modules/codec/avcodec/encoder.c:927
 msgid "audio"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:906
+#: modules/codec/avcodec/encoder.c:927
 msgid "subpicture"
 msgstr ""
 
-#: modules/codec/avcodec/encoder.c:919
+#: modules/codec/avcodec/encoder.c:940
 #, c-format
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr ""
 
-#: modules/codec/avcodec/vaapi.c:354
+#: modules/codec/avcodec/vaapi.c:388
 msgid "VA-API video decoder via DRM"
 msgstr ""
 
-#: modules/codec/avcodec/vaapi.c:359
+#: modules/codec/avcodec/vaapi.c:393
 msgid "VA-API video decoder"
 msgstr ""
 
@@ -11245,15 +11242,23 @@ msgstr ""
 msgid "Max number of threads used for tile decoding, default 0=auto"
 msgstr ""
 
-#: modules/codec/dav1d.c:60
+#: modules/codec/dav1d.c:56
+msgid "All Layers"
+msgstr ""
+
+#: modules/codec/dav1d.c:57
+msgid "Whether or not to display all spatial layers, default false"
+msgstr ""
+
+#: modules/codec/dav1d.c:62
 msgid "Dav1d video decoder"
 msgstr ""
 
-#: modules/codec/dca.c:61
+#: modules/codec/dca.c:63
 msgid "DTS dynamic range compression"
 msgstr "ការ​បង្ហាប់​ជួរ​ថាមវន្ដ DTS"
 
-#: modules/codec/dca.c:73
+#: modules/codec/dca.c:75
 msgid "DTS Coherent Acoustics audio decoder"
 msgstr "ឌិកូឌ័រ​អូឌីយ៉ូ DTS Coherent Acoustics"
 
@@ -11793,7 +11798,7 @@ msgstr ""
 "សូម​រង់ចាំ ខណៈពេល​ដែល​​ឃ្លាំង​សម្ងាត់​ពុម្ពអក្សរ​របស់​អ្នក​ត្រូវ​បាន​ស្ថាបនា ។\n"
 "វា​គួរ​តែ​ចំណាយ​ពេល​តិច​ជាង​មួយ​នាទី ។"
 
-#: modules/codec/libmpeg2.c:137
+#: modules/codec/libmpeg2.c:140
 msgid "MPEG I/II video decoder (using libmpeg2)"
 msgstr "ឌិកូឌ័រ​វីដេអូ MPEG I/II (ដោយប្រើ libmpeg2)"
 
@@ -11813,7 +11818,7 @@ msgstr "អ៊ិនកូឌ័រ​អូឌីយ៉ូ PCM លីនេអ�
 msgid "MPEG audio layer I/II/III decoder"
 msgstr "ឌិកូឌ័រ​ស្រទាប់​អូឌីយ៉ូ MPEG I/II/III"
 
-#: modules/codec/mft.c:62
+#: modules/codec/mft.c:66
 msgid "Media Foundation Transform decoder"
 msgstr ""
 
@@ -12499,7 +12504,7 @@ msgstr "អ៊ិនកូដឌ័រ​អូឌីយ៉ូ​ចំណុច
 msgid "S/PDIF pass-through decoder"
 msgstr ""
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:907
+#: modules/codec/speex.c:59 modules/codec/speex.c:910
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
 #: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
@@ -12827,7 +12832,7 @@ msgstr "កម្មវិធី​ដោះ​លេខ​កូដ​ចំណ
 #.
 #. This MUST be a valid iconv character set. If unsure, please refer
 #. the VideoLAN translators mailing list.
-#: modules/codec/subsdec.c:292 modules/demux/avi/avi.c:98
+#: modules/codec/subsdec.c:292 modules/demux/avi/avi.c:99
 msgctxt "GetACP"
 msgid "CP1252"
 msgstr "CP1252"
@@ -13916,8 +13921,8 @@ msgstr "លឿន​"
 #: modules/codec/x264.c:429 modules/gui/macosx/VLCMainMenu.m:290
 #: modules/gui/macosx/VLCMainMenu.m:392
 #: modules/gui/macosx/VLCSimplePrefsController.m:711
-#: modules/gui/qt/components/simple_preferences.cpp:703
-#: modules/misc/gnutls.c:778 modules/text_renderer/freetype/freetype.c:124
+#: modules/gui/qt/components/simple_preferences.cpp:714
+#: modules/misc/gnutls.c:775 modules/text_renderer/freetype/freetype.c:124
 #: modules/text_renderer/freetype/freetype.c:143
 msgid "Normal"
 msgstr "ធម្មតា"
@@ -13974,7 +13979,7 @@ msgstr ""
 msgid "H.264/MPEG-4 Part 10/AVC encoder (x264)"
 msgstr "ផ្នែក H.264/MPEG-4 កម្មវិធី​ដាក់​លេខ​កូដ 10/AVC (x264)"
 
-#: modules/codec/x265.c:46
+#: modules/codec/x265.c:53
 msgid "H.265/HEVC encoder (x265)"
 msgstr ""
 
@@ -14052,14 +14057,14 @@ msgstr "ចំណុច​ប្រទាក់​ឧបករណ៍​បញ្
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
-#: modules/gui/qt/dialogs/help.cpp:91 modules/gui/qt/main_interface.cpp:1267
-#: modules/gui/qt/main_interface.cpp:1271
-#: modules/gui/qt/main_interface.cpp:1310
-#: modules/gui/qt/main_interface.cpp:1312
-#: modules/gui/qt/main_interface.cpp:1420
-#: modules/gui/qt/main_interface.cpp:1437
-#: modules/gui/qt/main_interface.cpp:1445
-#: modules/gui/qt/main_interface.cpp:1468 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
+#: modules/gui/qt/main_interface.cpp:1306
+#: modules/gui/qt/main_interface.cpp:1343
+#: modules/gui/qt/main_interface.cpp:1345
+#: modules/gui/qt/main_interface.cpp:1453
+#: modules/gui/qt/main_interface.cpp:1470
+#: modules/gui/qt/main_interface.cpp:1478
+#: modules/gui/qt/main_interface.cpp:1501 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -14115,7 +14120,7 @@ msgstr "ចំណុច​ប្រទាក់​គ្រប់គ្រង​
 
 #: modules/control/globalhotkeys/win32.c:47
 #: modules/control/globalhotkeys/xcb.c:50
-#: modules/gui/qt/components/preferences_widgets.cpp:1137
+#: modules/gui/qt/components/preferences_widgets.cpp:1141
 msgid "Global Hotkeys"
 msgstr "គ្រាប់ចុច​រហ័ស​សកល"
 
@@ -14126,8 +14131,8 @@ msgstr "ចំណុច​ប្រទាក់​​គ្រាប់ចុច
 
 #: modules/control/hotkeys.c:100
 #: modules/gui/macosx/VLCSimplePrefsController.m:251
-#: modules/gui/qt/components/preferences_widgets.cpp:1136
-#: modules/gui/qt/components/simple_preferences.cpp:257
+#: modules/gui/qt/components/preferences_widgets.cpp:1140
+#: modules/gui/qt/components/simple_preferences.cpp:258
 msgid "Hotkeys"
 msgstr "គ្រាប់ចុច​រហ័ស"
 
@@ -14828,7 +14833,7 @@ msgid "Connect using HTTP access instead of custom HTTP code"
 msgstr ""
 
 #: modules/demux/adaptive/adaptive.cpp:85
-#: modules/gui/qt/components/simple_preferences.cpp:702
+#: modules/gui/qt/components/simple_preferences.cpp:713
 msgid "Low latency"
 msgstr "ភាព​មើលមិនឃើញ​ទាប"
 
@@ -14880,11 +14885,11 @@ msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស AIFF"
 msgid "ASF/WMV demuxer"
 msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស ASF/WMV"
 
-#: modules/demux/asf/asf.c:277 modules/demux/asf/asf.c:834
+#: modules/demux/asf/asf.c:285 modules/demux/asf/asf.c:836
 msgid "Could not demux ASF stream"
 msgstr "មិន​អាច​មិន​ទ្វេ​ទិស​ស្ទ្រីម ASF បានទេ"
 
-#: modules/demux/asf/asf.c:278
+#: modules/demux/asf/asf.c:286
 msgid "VLC failed to load the ASF header."
 msgstr "VLC បាន​បរាជ័យ​ក្នុង​ការ​ផ្ទុក​បឋមកថា ASF ។"
 
@@ -14928,15 +14933,15 @@ msgstr "ឈ្មោះ​ទ្រង់ទ្រាយ"
 msgid "Internal libavcodec format name"
 msgstr "ឈ្មោះ​ទ្រង់ទ្រាយ libavcodec ខាងក្នុង"
 
-#: modules/demux/avi/avi.c:55
+#: modules/demux/avi/avi.c:56
 msgid "Force interleaved method"
 msgstr "បង្ចំ​វិធីសាស្ត្រ​ដែល​បាន​ដាក់​បញ្ចូល"
 
-#: modules/demux/avi/avi.c:57
+#: modules/demux/avi/avi.c:58
 msgid "Force index creation"
 msgstr "បង្ខំ​ការ​បង្កើត​លិបិក្រម"
 
-#: modules/demux/avi/avi.c:59
+#: modules/demux/avi/avi.c:60
 msgid ""
 "Recreate a index for the AVI file. Use this if your AVI file is damaged or "
 "incomplete (not seekable)."
@@ -14944,27 +14949,27 @@ msgstr ""
 "បង្កើត​លិបិក្រម​សម្រាប់​ឯកសារ AVI ឡើងវិញ ។ ប្រើ​វា ប្រសិន​បើ​ឯកសារ AVI របស់​អ្នក​ខូច ឬ​មិន​បញ្ចប់​"
 "ទាំងស្រុង (មិន​អាច​រក​ឃើញ) ។"
 
-#: modules/demux/avi/avi.c:67
+#: modules/demux/avi/avi.c:68
 msgid "Ask for action"
 msgstr "សួរ​រក​សកម្មភាព"
 
-#: modules/demux/avi/avi.c:68
+#: modules/demux/avi/avi.c:69
 msgid "Always fix"
 msgstr "ជួសជុល​ជា​និច្ច"
 
-#: modules/demux/avi/avi.c:69
+#: modules/demux/avi/avi.c:70
 msgid "Never fix"
 msgstr "កុំ​ជួស​ជុល"
 
-#: modules/demux/avi/avi.c:70
+#: modules/demux/avi/avi.c:71
 msgid "Fix when necessary"
 msgstr "ជួសជុល​នៅ​ពេល​ចាំបាច់"
 
-#: modules/demux/avi/avi.c:74
+#: modules/demux/avi/avi.c:75
 msgid "AVI demuxer"
 msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស AVI"
 
-#: modules/demux/avi/avi.c:902 modules/demux/mp4/mp4.c:4375
+#: modules/demux/avi/avi.c:910 modules/demux/mp4/mp4.c:4374
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -14974,27 +14979,27 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:910
+#: modules/demux/avi/avi.c:918
 msgid "Do not play"
 msgstr "កុំ​ចាក់"
 
-#: modules/demux/avi/avi.c:911
+#: modules/demux/avi/avi.c:919
 msgid "Build index then play"
 msgstr "បង្កើត​លិបិក្រម រួច​ចាក់"
 
-#: modules/demux/avi/avi.c:912
+#: modules/demux/avi/avi.c:920
 msgid "Play as is"
 msgstr "ចាក់"
 
-#: modules/demux/avi/avi.c:913 modules/demux/mp4/mp4.c:4386
+#: modules/demux/avi/avi.c:921 modules/demux/mp4/mp4.c:4385
 msgid "Broken or missing Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2828
+#: modules/demux/avi/avi.c:2879
 msgid "Broken or missing AVI Index"
 msgstr "លិបិក្រម AVI បាន​ខូច ឬ​បាត់"
 
-#: modules/demux/avi/avi.c:2829
+#: modules/demux/avi/avi.c:2880
 msgid "Fixing AVI Index..."
 msgstr "កំពុង​ជួសជុល​លិបិក្រម AVI..."
 
@@ -15156,7 +15161,7 @@ msgstr ""
 "ផ្ទុក​ឯកសារ matroska រួចស្រេច​នៅ​ក្នុង​ថត​ដូចគ្នា​ដើម្បី​រក​ផ្នែក​ដែល​បាន​តភ្ជាប់ (មិន​ល្អ​សម្រាប់​ឯកសារ​ដែល​"
 "ខូច) ។"
 
-#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:112
+#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:113
 msgid "Seek based on percent not time"
 msgstr "ស្វែងរក​ដោយ​ផ្អែក​លើ​ភាគរយ មិនមែន​ពេលវេលា​ទេ"
 
@@ -15408,27 +15413,27 @@ msgstr ""
 msgid "Clean"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:50
+#: modules/demux/mp4/mp4.c:51
 msgid "M4A audio only"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:51
+#: modules/demux/mp4/mp4.c:52
 msgid "Ignore non audio tracks from iTunes audio files"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:56
+#: modules/demux/mp4/mp4.c:57
 msgid "MP4 stream demuxer"
 msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស​ស្ទ្រីម MP4"
 
-#: modules/demux/mp4/mp4.c:57
+#: modules/demux/mp4/mp4.c:58
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4383
+#: modules/demux/mp4/mp4.c:4382
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4384
+#: modules/demux/mp4/mp4.c:4383
 msgid "Build index"
 msgstr ""
 
@@ -15491,62 +15496,62 @@ msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស MPEG-PS"
 msgid "PS"
 msgstr "PS"
 
-#: modules/demux/mpeg/ts.c:83
+#: modules/demux/mpeg/ts.c:84
 msgid "Extra PMT"
 msgstr "PMT បន្ថែម"
 
-#: modules/demux/mpeg/ts.c:85
+#: modules/demux/mpeg/ts.c:86
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr "អនុញ្ញាត​ឲ្យ​អ្នកប្រើ​បញ្ជាក់ pmt បន្ថែម (pmt_pid=pid:stream_type[,...]) ។"
 
-#: modules/demux/mpeg/ts.c:87
+#: modules/demux/mpeg/ts.c:88
 msgid "Set id of ES to PID"
 msgstr "កំណត់​លេខ​សម្គាល់​របស់ ES ទៅកាន់ PID"
 
-#: modules/demux/mpeg/ts.c:88
+#: modules/demux/mpeg/ts.c:89
 msgid ""
 "Set the internal ID of each elementary stream handled by VLC to the same "
 "value as the PID in the TS stream, instead of 1, 2, 3, etc. Useful to do "
 "'#duplicate{..., select=\"es=<pid>\"}'."
 msgstr ""
 "កំណត់​លេខ​សម្គាល់​ខាង​ក្នុង​របស់​ស្ទ្រីម​ចម្បង​នីមួយៗ ដែល​បាន​គ្រប់គ្រង​ដោយ VLC ទៅកាន់​តម្លៃ​ដូចគ្នា​នឹង PID នៅ​"
-"ក្នុង​ស្ទ្រីម TS ជំនួស​ឲ្យ ១ ២ ៣ ។ល។ ទង្វើ​មាន​ប្រយោជន៍ '#duplicate{..., "
-"select=\"es=<pid>\"}' ។"
+"ក្នុង​ស្ទ្រីម TS ជំនួស​ឲ្យ ១ ២ ៣ ។ល។ ទង្វើ​មាន​ប្រយោជន៍ '#duplicate{..., select=\"es=<pid>"
+"\"}' ។"
 
-#: modules/demux/mpeg/ts.c:93 modules/mux/mpeg/ts.c:173
+#: modules/demux/mpeg/ts.c:94 modules/mux/mpeg/ts.c:173
 msgid "CSA Key"
 msgstr "សោ CSA"
 
-#: modules/demux/mpeg/ts.c:94 modules/mux/mpeg/ts.c:174
+#: modules/demux/mpeg/ts.c:95 modules/mux/mpeg/ts.c:174
 msgid ""
 "CSA encryption key. This must be a 16 char string (8 hexadecimal bytes)."
 msgstr "សោ​អ៊ិនគ្រីប CSA ។ វា​ត្រូវតែ​ជា​ខ្សែ​អក្សរ​ ១៦ តួ (គោល​ដប់​ប្រាំមួយ ៨ បៃ) ។"
 
-#: modules/demux/mpeg/ts.c:97 modules/mux/mpeg/ts.c:177
+#: modules/demux/mpeg/ts.c:98 modules/mux/mpeg/ts.c:177
 msgid "Second CSA Key"
 msgstr "សោ CSA ទី ២"
 
-#: modules/demux/mpeg/ts.c:98 modules/mux/mpeg/ts.c:178
+#: modules/demux/mpeg/ts.c:99 modules/mux/mpeg/ts.c:178
 msgid ""
 "The even CSA encryption key. This must be a 16 char string (8 hexadecimal "
 "bytes)."
 msgstr "សោ​អ៊ិនគ្រីប CSA គូ ។ វា​ត្រូវតែ​ជា​តួអក្សរ ១៦ តួ (គោល​ដប់ប្រាំ​មួយ ៨ បៃ) ។"
 
-#: modules/demux/mpeg/ts.c:102
+#: modules/demux/mpeg/ts.c:103
 msgid "Packet size in bytes to decrypt"
 msgstr "ទំហំ​កញ្ចប់​ដែល​ត្រូវ​ឌិគ្រីប គិតជា​បៃ"
 
-#: modules/demux/mpeg/ts.c:103
+#: modules/demux/mpeg/ts.c:104
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
 "subtract the TS-header from the value before decrypting."
 msgstr ""
 
-#: modules/demux/mpeg/ts.c:107
+#: modules/demux/mpeg/ts.c:108
 msgid "Separate sub-streams"
 msgstr "បំបែក​ស្ទ្រី​ម​រង"
 
-#: modules/demux/mpeg/ts.c:109
+#: modules/demux/mpeg/ts.c:110
 msgid ""
 "Separate teletex/dvbs pages into independent ES. It can be useful to turn "
 "off this option when using stream output."
@@ -15554,7 +15559,7 @@ msgstr ""
 "បំបែក​ទំព័រ teletex/dvbs ទៅជា ES ឯករាជ្យ ។ វា​អាច​មាន​ប្រយោជន៍​​ដើម្បី​បិទ​ជម្រើស​នេះ នៅ​ពេល​ប្រើ​"
 "លទ្ធផល​​ស្ទ្រីម ។"
 
-#: modules/demux/mpeg/ts.c:114
+#: modules/demux/mpeg/ts.c:115
 msgid ""
 "Seek and position based on a percent byte position, not a PCR generated time "
 "position. If seeking doesn't work property, turn on this option."
@@ -15562,25 +15567,25 @@ msgstr ""
 "ស្វែងរក និង​កំណត់​ទីតាំង​ដោយ​ផ្អែកលើ​ភាគរយ​នៃ​ទីតាំង​បៃ មិនមែន​ទីតាំង​ពេលវេលា PCR ដែល​បាន​បង្កើត​ទេ ។ "
 "ប្រសិនបើ​ការ​ស្វែងរក​មិន​ដំណើរការ​ល្អ​ទេ សូម​បិទ​ជម្រើស​នេះ ។"
 
-#: modules/demux/mpeg/ts.c:125
+#: modules/demux/mpeg/ts.c:126
 msgid "Trust in-stream PCR"
 msgstr ""
 
-#: modules/demux/mpeg/ts.c:126
+#: modules/demux/mpeg/ts.c:127
 msgid "Use the stream PCR as a reference."
 msgstr ""
 
-#: modules/demux/mpeg/ts.c:133 modules/mux/mpeg/ts.c:100
+#: modules/demux/mpeg/ts.c:134 modules/mux/mpeg/ts.c:100
 msgid "Digital TV Standard"
 msgstr ""
 
-#: modules/demux/mpeg/ts.c:134
+#: modules/demux/mpeg/ts.c:135
 msgid ""
 "Selects mode for digital TV standard. This feature affects EPG information "
 "and subtitles."
 msgstr ""
 
-#: modules/demux/mpeg/ts.c:138
+#: modules/demux/mpeg/ts.c:139
 msgid "MPEG Transport Stream demuxer"
 msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស​ស្ទ្រីម​បញ្ជូន MPEG"
 
@@ -15803,7 +15808,7 @@ msgstr "ផ្ទុក"
 msgid "Total duration"
 msgstr ""
 
-#: modules/demux/pva.c:43
+#: modules/demux/pva.c:44
 msgid "PVA demuxer"
 msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស PVA"
 
@@ -15935,23 +15940,23 @@ msgstr "សេចក្ដី​ពណ៌នា​ចំណង​ជើង​រ
 msgid "TTA demuxer"
 msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស TTA"
 
-#: modules/demux/ty.c:59
+#: modules/demux/ty.c:62
 msgid "TY"
 msgstr "TY"
 
-#: modules/demux/ty.c:60
+#: modules/demux/ty.c:63
 msgid "TY Stream audio/video demux"
 msgstr "ទ្វេ​ទិស​អូឌីយ៉ូ​/​វីដេអូ​ស្ទ្រីម TY"
 
-#: modules/demux/ty.c:770
+#: modules/demux/ty.c:784
 msgid "Closed captions 2"
 msgstr "បាន​បិទ​ចំណងជើង ២"
 
-#: modules/demux/ty.c:771
+#: modules/demux/ty.c:785
 msgid "Closed captions 3"
 msgstr "បាន​បិទ​ចំណងជើង ៣"
 
-#: modules/demux/ty.c:772
+#: modules/demux/ty.c:786
 msgid "Closed captions 4"
 msgstr "បាន​បិទ​​ចំណងជើង ៤"
 
@@ -15967,7 +15972,7 @@ msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស​វីដេ
 msgid "Vobsub subtitles parser"
 msgstr "កម្មវិធី​ញែក​ចំណងជើង​រង Vobsub"
 
-#: modules/demux/voc.c:43
+#: modules/demux/voc.c:45
 msgid "VOC demuxer"
 msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស VOC"
 
@@ -15979,7 +15984,7 @@ msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស WAV"
 msgid "XA demuxer"
 msgstr "ឧបករណ៍​មិន​ទ្វេ​ទិស XA"
 
-#: modules/demux/xiph_metadata.c:588
+#: modules/demux/xiph_metadata.c:571
 msgid "Unknown category"
 msgstr "មិនស្គាល់​ប្រភេទ"
 
@@ -16033,17 +16038,17 @@ msgid "About VLC media player"
 msgstr "អំពី​កម្មវិធី​ចាក់​មេឌៀ VLC"
 
 #: modules/gui/macosx/VLCAboutWindowController.m:97
-#: modules/gui/qt/dialogs/help.cpp:125
+#: modules/gui/qt/dialogs/help.cpp:137
 msgid "Credits"
 msgstr "អ្នកចូលរួម"
 
 #: modules/gui/macosx/VLCAboutWindowController.m:99
-#: modules/gui/macosx/VLCMainMenu.m:490 modules/gui/qt/dialogs/help.cpp:119
+#: modules/gui/macosx/VLCMainMenu.m:490 modules/gui/qt/dialogs/help.cpp:129
 msgid "License"
 msgstr "អាជ្ញាប័ណ្ណ"
 
 #: modules/gui/macosx/VLCAboutWindowController.m:101
-#: modules/gui/qt/dialogs/help.cpp:122
+#: modules/gui/qt/dialogs/help.cpp:133
 msgid "Authors"
 msgstr "អ្នក​និពន្ធ"
 
@@ -16059,9 +16064,9 @@ msgid ""
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
-"DVDs, network streams, capture cards and other media formats!</p><p><a "
-"href=\"https://www.videolan.org/contribute/\"><span style=\" text-"
-"decoration: underline; color:#0057ae;\">Help and join us!</span></a>"
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"https://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>កម្មវិធី​ចាក់​មេឌៀ VLC គឺជា​កម្មវិធី​ស្ទ្រីម កម្មវិធី​ដាក់​លេខ​កូដ និង​ជា​កម្មវិធី​ចាក់​មេឌៀ​កូដ​ចំហ​ឥត​បង់​ថ្លៃ "
 "ដែល​បាន​បង្កើត​ដោយ​អ្នក​ស្ម័គ្រចិត្ត​របស់​សហគមន៍ <a href=\"https://www.videolan.org/\"><span "
@@ -16073,26 +16078,26 @@ msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:105
 #: modules/gui/macosx/VLCAddonsWindowController.m:357
-#: modules/gui/qt/dialogs/plugins.cpp:389
+#: modules/gui/qt/dialogs/plugins.cpp:388
 #: modules/gui/qt/managers/addons_manager.cpp:88
 msgid "Playlist parsers"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:107
 #: modules/gui/macosx/VLCAddonsWindowController.m:359
-#: modules/gui/qt/dialogs/plugins.cpp:393
+#: modules/gui/qt/dialogs/plugins.cpp:392
 #: modules/gui/qt/managers/addons_manager.cpp:90
 msgid "Service Discovery"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:109
-#: modules/gui/qt/dialogs/plugins.cpp:397
+#: modules/gui/qt/dialogs/plugins.cpp:396
 #: modules/gui/qt/managers/addons_manager.cpp:92
 msgid "Interfaces"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:111
-#: modules/gui/qt/dialogs/plugins.cpp:400
+#: modules/gui/qt/dialogs/plugins.cpp:399
 #: modules/gui/qt/managers/addons_manager.cpp:94
 msgid "Art and meta fetchers"
 msgstr ""
@@ -16100,7 +16105,7 @@ msgstr ""
 #: modules/gui/macosx/VLCAddonsWindowController.m:113
 #: modules/gui/macosx/VLCAddonsWindowController.m:361
 #: modules/gui/macosx/VLCMainMenu.m:343 modules/gui/macosx/VLCMainMenu.m:344
-#: modules/gui/qt/dialogs/plugins.cpp:403
+#: modules/gui/qt/dialogs/plugins.cpp:402
 #: modules/gui/qt/managers/addons_manager.cpp:96
 msgid "Extensions"
 msgstr "ផ្នែក​បន្ថែម"
@@ -16110,30 +16115,30 @@ msgid "Show Installed Only"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:118
-#: modules/gui/qt/dialogs/plugins.cpp:431
+#: modules/gui/qt/dialogs/plugins.cpp:430
 msgid "Find more addons online"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:128
-#: modules/gui/macosx/VLCMainMenu.m:345 modules/gui/qt/dialogs/plugins.cpp:86
+#: modules/gui/macosx/VLCMainMenu.m:345 modules/gui/qt/dialogs/plugins.cpp:85
 msgid "Addons Manager"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:130
-#: modules/gui/qt/dialogs/plugins.cpp:1173
-#: modules/gui/qt/dialogs/plugins.cpp:1186
+#: modules/gui/qt/dialogs/plugins.cpp:1172
+#: modules/gui/qt/dialogs/plugins.cpp:1185
 msgid "Installed"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:131
 #: modules/gui/macosx/VLCBookmarksWindowController.m:87
-#: modules/gui/qt/dialogs/plugins.cpp:128 modules/mux/avi.c:54
+#: modules/gui/qt/dialogs/plugins.cpp:127 modules/mux/avi.c:54
 msgid "Name"
 msgstr "ឈ្មោះ"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:132
-#: modules/gui/macosx/VLCPlaylist.m:92 modules/gui/qt/dialogs/plugins.cpp:1405
-#: modules/gui/qt/dialogs/plugins.cpp:1510 modules/mux/asf.c:58
+#: modules/gui/macosx/VLCPlaylist.m:92 modules/gui/qt/dialogs/plugins.cpp:1404
+#: modules/gui/qt/dialogs/plugins.cpp:1509 modules/mux/asf.c:58
 msgid "Author"
 msgstr "អ្នក​និពន្ធ"
 
@@ -16142,7 +16147,7 @@ msgid "Uninstall"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:355
-#: modules/gui/qt/dialogs/plugins.cpp:385
+#: modules/gui/qt/dialogs/plugins.cpp:384
 #: modules/gui/qt/managers/addons_manager.cpp:86
 #: modules/gui/skins2/src/skin_main.cpp:535
 msgid "Skins"
@@ -16159,7 +16164,7 @@ msgid "2 Pass"
 msgstr "2 Pass"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:219
-#: modules/gui/qt/components/extended_panels.cpp:1132
+#: modules/gui/qt/components/extended_panels.cpp:1157
 #: modules/gui/qt/ui/equalizer.h:133
 msgid "Preamp"
 msgstr "អំភ្លី"
@@ -16172,22 +16177,22 @@ msgstr "បើក​កម្មវិធី​បង្ហាប់​ជួរ
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:235
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:49
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:210
-#: modules/gui/qt/dialogs/gototime.cpp:66
+#: modules/gui/qt/dialogs/gototime.cpp:65
 msgid "Reset"
 msgstr "កំណត់​ឡើងវិញ"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:226
-#: modules/gui/qt/components/extended_panels.cpp:1296
+#: modules/gui/qt/components/extended_panels.cpp:1326
 msgid "Attack"
 msgstr "ការ​ប្រយុទ្ធ"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:227
-#: modules/gui/qt/components/extended_panels.cpp:1297
+#: modules/gui/qt/components/extended_panels.cpp:1327
 msgid "Release"
 msgstr "ចេញ​ផ្សាយ"
 
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:228
-#: modules/gui/qt/components/extended_panels.cpp:1298
+#: modules/gui/qt/components/extended_panels.cpp:1328
 msgid "Threshold"
 msgstr "កម្រិត​ពន្លឺ"
 
@@ -16341,7 +16346,7 @@ msgstr "ពេលវេលា"
 #: modules/gui/macosx/VLCOutput.m:60 modules/gui/macosx/VLCPlaylistInfo.m:337
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
-#: modules/gui/qt/components/open_panels.cpp:1380
+#: modules/gui/qt/components/open_panels.cpp:1360
 #: modules/stream_out/chromecast/cast.cpp:1197
 msgid "OK"
 msgstr "យល់ព្រម"
@@ -16366,8 +16371,8 @@ msgstr "បាន​ផ្លាស់ប្ដូរ​ព័ត៌មាន​
 
 #: modules/gui/macosx/VLCBookmarksWindowController.m:213
 msgid ""
-"Input has changed, unable to save bookmark. Suspending playback with "
-"\"Pause\" while editing bookmarks to ensure to keep the same input."
+"Input has changed, unable to save bookmark. Suspending playback with \"Pause"
+"\" while editing bookmarks to ensure to keep the same input."
 msgstr ""
 "ព័ត៌មាន​បញ្ចូល​បាន​ផ្លាស់ប្ដូរ មិន​អាច​រក្សាទុក​ចំណាំបានទេ ។ ផ្អាក​ការ​ចាក់​ឡើងវិញ​ជាមួយ \"ផ្អាក\" នៅ​ពេល​"
 "កំពុង​កែសម្រួល​ចំណាំ ដើម្បី​ប្រាកដ​ថា​បាន​រក្សាទុក​ព័ត៌មាន​បញ្ចូល​ដូចគ្នា ។"
@@ -16458,10 +16463,10 @@ msgstr "ជ្រើស​ទីតាំង​បង្ហាញ"
 #: modules/gui/macosx/VLCSimplePrefsController.m:381
 #: modules/gui/macosx/prefs_widgets.m:1126
 #: modules/gui/qt/components/preferences_widgets.cpp:264
-#: modules/gui/qt/components/simple_preferences.cpp:471
-#: modules/gui/qt/components/sout/sout_widgets.cpp:135
-#: modules/gui/qt/ui/open.h:279 modules/gui/qt/ui/open_disk.h:304
-#: modules/gui/qt/ui/open_file.h:146 modules/gui/qt/ui/sprefs_audio.h:414
+#: modules/gui/qt/components/simple_preferences.cpp:472
+#: modules/gui/qt/components/sout/sout_widgets.cpp:136
+#: modules/gui/qt/ui/open.h:277 modules/gui/qt/ui/open_disk.h:304
+#: modules/gui/qt/ui/open_file.h:146 modules/gui/qt/ui/sprefs_audio.h:415
 #: modules/gui/qt/ui/sprefs_input.h:365 modules/gui/qt/ui/sprefs_video.h:329
 msgid "Browse..."
 msgstr "រក​មើល..."
@@ -16482,7 +16487,7 @@ msgstr "រក្សាទុក​ជា​ឯកសារ"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:149
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:392
 #: modules/gui/macosx/VLCOutput.m:65 modules/gui/macosx/VLCOutput.m:194
-#: modules/gui/macosx/VLCOutput.m:313 modules/gui/qt/dialogs/sout.cpp:94
+#: modules/gui/macosx/VLCOutput.m:313 modules/gui/qt/dialogs/sout.cpp:92
 msgid "Stream"
 msgstr "ស្ទ្រីម"
 
@@ -16557,10 +16562,10 @@ msgstr "ការប្រកាស​ស្ទ្រីម"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:186
 #: modules/gui/macosx/VLCOpenWindowController.m:197
 #: modules/gui/macosx/VLCOutput.m:68
-#: modules/gui/qt/components/sout/sout_widgets.cpp:241
-#: modules/gui/qt/components/sout/sout_widgets.cpp:328
-#: modules/gui/qt/components/sout/sout_widgets.cpp:370
-#: modules/gui/qt/components/sout/sout_widgets.cpp:425
+#: modules/gui/qt/components/sout/sout_widgets.cpp:242
+#: modules/gui/qt/components/sout/sout_widgets.cpp:329
+#: modules/gui/qt/components/sout/sout_widgets.cpp:371
+#: modules/gui/qt/components/sout/sout_widgets.cpp:426
 msgid "Address"
 msgstr "អាសយដ្ឋាន"
 
@@ -16572,11 +16577,11 @@ msgstr "TTL"
 #: modules/gui/macosx/VLCOpenWindowController.m:185
 #: modules/gui/macosx/VLCOpenWindowController.m:187
 #: modules/gui/macosx/VLCOutput.m:69
-#: modules/gui/qt/components/sout/sout_widgets.cpp:187
-#: modules/gui/qt/components/sout/sout_widgets.cpp:242
-#: modules/gui/qt/components/sout/sout_widgets.cpp:283
-#: modules/gui/qt/components/sout/sout_widgets.cpp:329
-#: modules/gui/qt/components/sout/sout_widgets.cpp:426 modules/lua/vlc.c:67
+#: modules/gui/qt/components/sout/sout_widgets.cpp:188
+#: modules/gui/qt/components/sout/sout_widgets.cpp:243
+#: modules/gui/qt/components/sout/sout_widgets.cpp:284
+#: modules/gui/qt/components/sout/sout_widgets.cpp:330
+#: modules/gui/qt/components/sout/sout_widgets.cpp:427 modules/lua/vlc.c:67
 #: modules/stream_out/rtp.c:114
 #: share/lua/http/dialogs/stream_config_window.html:32
 #: share/lua/http/dialogs/stream_window.html:91
@@ -16669,7 +16674,7 @@ msgstr "បាន​ស្នើ​ការ​នាំចេញ SDP ប់ូ�
 #: modules/gui/macosx/VLCSimplePrefsController.m:705
 #: modules/gui/macosx/VLCSimplePrefsController.m:733
 #: modules/gui/macosx/VLCSimplePrefsController.m:1266
-#: modules/gui/qt/components/simple_preferences.cpp:700
+#: modules/gui/qt/components/simple_preferences.cpp:711
 msgid "Custom"
 msgstr "តាម​តម្រូវការ"
 
@@ -16708,7 +16713,7 @@ msgstr ""
 
 #: modules/gui/macosx/VLCFSPanelController.m:140
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:80
-#: modules/gui/qt/dialogs/toolbar.cpp:477 modules/gui/qt/ui/sprefs_audio.h:408
+#: modules/gui/qt/dialogs/toolbar.cpp:477 modules/gui/qt/ui/sprefs_audio.h:409
 msgid "Volume"
 msgstr "កម្រិត​សំឡេង"
 
@@ -16742,7 +16747,7 @@ msgid "VLC media playback"
 msgstr ""
 
 #: modules/gui/macosx/VLCLogWindowController.m:94
-#: modules/gui/qt/dialogs/messages.cpp:80
+#: modules/gui/qt/dialogs/messages.cpp:77
 #: modules/gui/qt/ui/messages_panel.h:136
 #: modules/gui/qt/ui/messages_panel.h:140
 msgid "Messages"
@@ -17106,8 +17111,8 @@ msgstr "កំហុស និង​ការ​ព្រមាន......"
 msgid "Bring All to Front"
 msgstr "នាំទៅ​មុខ​ទាំងអស់"
 
-#: modules/gui/macosx/VLCMainMenu.m:488 modules/gui/qt/dialogs/help.cpp:54
-#: modules/gui/qt/menus.cpp:951 modules/gui/qt/menus.cpp:1138
+#: modules/gui/macosx/VLCMainMenu.m:488 modules/gui/qt/dialogs/help.cpp:52
+#: modules/gui/qt/menus.cpp:956 modules/gui/qt/menus.cpp:1143
 msgid "Help"
 msgstr "ជំនួយ"
 
@@ -17170,13 +17175,13 @@ msgstr ""
 
 #: modules/gui/macosx/VLCMainWindow.m:220
 #: modules/gui/macosx/VLCMainWindow.m:226
-#: modules/gui/qt/components/playlist/selector.cpp:580
+#: modules/gui/qt/components/playlist/selector.cpp:593
 msgid "Subscribe"
 msgstr "ជាវ"
 
 #: modules/gui/macosx/VLCMainWindow.m:221
 #: modules/gui/macosx/VLCMainWindow.m:232
-#: modules/gui/qt/components/playlist/selector.cpp:597
+#: modules/gui/qt/components/playlist/selector.cpp:610
 msgid "Unsubscribe"
 msgstr "ឈប់ជាវ"
 
@@ -17186,7 +17191,7 @@ msgid "Subscribe to a podcast"
 msgstr "ជាវ​ទៅ​ផតខាស"
 
 #: modules/gui/macosx/VLCMainWindow.m:225
-#: modules/gui/qt/components/playlist/selector.cpp:581
+#: modules/gui/qt/components/playlist/selector.cpp:594
 msgid "Enter URL of the podcast to subscribe to:"
 msgstr "បញ្ចូល URL របស់​ផតខាស​ដែល​ត្រូវ​ជាវ​ទៅ ៖"
 
@@ -17223,7 +17228,7 @@ msgid "Show/Hide Playlist"
 msgstr "បង្ហាញ/លាក់​បញ្ជី​ចាក់"
 
 #: modules/gui/macosx/VLCMainWindowControlsBar.m:71
-#: modules/gui/qt/dialogs/vlm.cpp:548 share/lua/http/index.html:259
+#: modules/gui/qt/dialogs/vlm.cpp:542 share/lua/http/index.html:259
 msgid "Repeat"
 msgstr "ចាក់​ឡើងវិញ"
 
@@ -17309,7 +17314,7 @@ msgstr "ចាក់​មេឌៀ​ផ្សេង​ទៀត​ដំណា
 #: modules/gui/macosx/VLCOpenWindowController.m:152
 #: modules/gui/macosx/VLCOpenWindowController.m:349
 #: modules/gui/macosx/VLCSimplePrefsController.m:353
-#: modules/gui/qt/ui/sprefs_interface.h:545
+#: modules/gui/qt/ui/sprefs_interface.h:552
 msgid "Choose..."
 msgstr "ជ្រើស..."
 
@@ -17548,10 +17553,9 @@ msgid "Collapse All"
 msgstr ""
 
 #: modules/gui/macosx/VLCPlaylist.m:231
-#: modules/gui/qt/components/playlist/standardpanel.cpp:273
-#, fuzzy
+#: modules/gui/qt/components/playlist/standardpanel.cpp:274
 msgid "Shuffle playlist"
-msgstr "រក្សាទុក​បញ្ជី​ចាក់"
+msgstr ""
 
 #: modules/gui/macosx/VLCPlaylistInfo.m:54
 #: modules/gui/qt/dialogs/mediainfo.cpp:54
@@ -17621,8 +17625,8 @@ msgstr "កំហុស​ពេល​រក្សាទុក​មេតា"
 msgid "VLC was unable to save the meta data."
 msgstr "VLC មិន​អាច​រក្សាទុក​ទិន្នន័យ​មេតា​បានទេ ។"
 
-#: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:194
-#: modules/gui/qt/ui/sprefs_interface.h:551
+#: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:197
+#: modules/gui/qt/ui/sprefs_interface.h:558
 msgid "Continue playback?"
 msgstr ""
 
@@ -17666,27 +17670,27 @@ msgid "INTERNET"
 msgstr "អ៊ីនធឺណិត"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:241
-#: modules/gui/qt/components/simple_preferences.cpp:247
-#: modules/gui/qt/components/simple_preferences.cpp:727
-#: modules/gui/qt/dialogs/plugins.cpp:383
+#: modules/gui/qt/components/simple_preferences.cpp:248
+#: modules/gui/qt/components/simple_preferences.cpp:738
+#: modules/gui/qt/dialogs/plugins.cpp:382
 msgid "Interface Settings"
 msgstr "ការ​កំណត់​ចំណុច​ប្រទាក់"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:243
-#: modules/gui/qt/components/simple_preferences.cpp:249
-#: modules/gui/qt/components/simple_preferences.cpp:446
+#: modules/gui/qt/components/simple_preferences.cpp:250
+#: modules/gui/qt/components/simple_preferences.cpp:447
 msgid "Audio Settings"
 msgstr "ការ​កំណត់​អូឌីយ៉ូ"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:245
-#: modules/gui/qt/components/simple_preferences.cpp:251
-#: modules/gui/qt/components/simple_preferences.cpp:379
+#: modules/gui/qt/components/simple_preferences.cpp:252
+#: modules/gui/qt/components/simple_preferences.cpp:380
 msgid "Video Settings"
 msgstr "ការ​កំណត់​វីដេអូ"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:247
-#: modules/gui/qt/components/simple_preferences.cpp:253
-#: modules/gui/qt/components/simple_preferences.cpp:868
+#: modules/gui/qt/components/simple_preferences.cpp:254
+#: modules/gui/qt/components/simple_preferences.cpp:894
 msgid "Subtitle & On Screen Display Settings"
 msgstr "ការ​កំណត់​ចំណងជើង​រង និង​ការ​បង្ហាញ​លើ​អេក្រង់"
 
@@ -17715,12 +17719,12 @@ msgid "Keep audio level between sessions"
 msgstr "រក្សាទុក​កម្រិត​អូឌីយ៉ូ​រវាង​សម័យ"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:289
-#: modules/gui/qt/ui/sprefs_audio.h:410
+#: modules/gui/qt/ui/sprefs_audio.h:411
 msgid "Always reset audio start level to:"
 msgstr "តែងតែ​កំណត់​កម្រិត​អូឌីយ៉ូ​ចាប់ផ្ដើម​ឡើងវិញ​ទៅ ៖"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:292
-#: modules/gui/qt/dialogs/vlm.cpp:492
+#: modules/gui/qt/dialogs/vlm.cpp:486
 msgid "Change"
 msgstr "ផ្លាស់ប្ដូរ"
 
@@ -17733,7 +17737,7 @@ msgid "Select an action to change the associated hotkey:"
 msgstr "ជ្រើស​សកម្មភាព​ដើម្បី​ផ្លាស់ប្ដូរ​គ្រាប់ចុច​រហ័ស​ដែល​បាន​ភ្ជាប់ ៖"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:298
-#: modules/gui/qt/components/preferences_widgets.cpp:1141
+#: modules/gui/qt/components/preferences_widgets.cpp:1145
 msgid "Action"
 msgstr "សកម្មភាព"
 
@@ -17759,7 +17763,7 @@ msgid "Default Caching Level"
 msgstr "កម្រិត​ឃ្លាំង​សម្ងាត់​លំនាំដើម"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:307
-#: modules/gui/qt/ui/open.h:263
+#: modules/gui/qt/ui/open.h:261
 msgid "Caching"
 msgstr "ដាក់​ក្នុង​ឃ្លាំង​សម្ងាត់"
 
@@ -17845,7 +17849,7 @@ msgid "Control external music players"
 msgstr ""
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:341
-#: modules/gui/qt/ui/sprefs_interface.h:553
+#: modules/gui/qt/ui/sprefs_interface.h:560
 msgid "Privacy / Network Interaction"
 msgstr "ភាព​ឯកជន/អន្តរកម្ម​បណ្ដាញ"
 
@@ -17920,7 +17924,7 @@ msgid "Show video within the main window"
 msgstr "បង្ហាញ​វីដេអូ​នៅ​ក្នុង​បង្អួច​មេ"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:370
-#: modules/gui/macosx/macosx.m:104 modules/gui/qt/qt.cpp:178
+#: modules/gui/macosx/macosx.m:104 modules/gui/qt/qt.cpp:181
 msgid "Pause the video playback when minimized"
 msgstr "នៅ​ពេល​បង្រួម​អប្បបរមា ផ្អាក​ការ​ចាក់​វីដេអូ​ឡើងវិញ"
 
@@ -18108,12 +18112,12 @@ msgid "sec."
 msgstr "វិនាទី"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:50
-#: modules/gui/qt/components/extended_panels.cpp:1412 modules/gui/qt/qt.cpp:213
+#: modules/gui/qt/components/extended_panels.cpp:1442 modules/gui/qt/qt.cpp:216
 msgid "Audio/Video"
 msgstr "អូឌីយ៉ូ/វីដេអូ"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:51
-#: modules/gui/qt/components/extended_panels.cpp:1416
+#: modules/gui/qt/components/extended_panels.cpp:1446
 msgid "Audio track synchronization:"
 msgstr "សមកាលកម្ម​បទ​អូឌីយ៉ូ ៖"
 
@@ -18122,12 +18126,12 @@ msgid "A positive value means that the audio is ahead of the video"
 msgstr "តម្លៃ​វិជ្ជមាន​មានន័យថា​អូឌីយ៉ូ​​លឿន​ជាង​វីដេអូ"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:54
-#: modules/gui/qt/components/extended_panels.cpp:1424
+#: modules/gui/qt/components/extended_panels.cpp:1454
 msgid "Subtitles/Video"
 msgstr "ចំណងជើង​រង/វីដេអូ"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:55
-#: modules/gui/qt/components/extended_panels.cpp:1428
+#: modules/gui/qt/components/extended_panels.cpp:1458
 msgid "Subtitle track synchronization:"
 msgstr "ការ​ធ្វើ​សមកាលកម្ម​បទ​ចំណងជើង​រង៖"
 
@@ -18136,17 +18140,17 @@ msgid "A positive value means that the subtitles are ahead of the video"
 msgstr "តម្លៃ​វិជ្ជមាន​មានន័យថា​ចំណងជើង​រង​លឿន​ជាង​វីដេអូ"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:58
-#: modules/gui/qt/components/extended_panels.cpp:1435
+#: modules/gui/qt/components/extended_panels.cpp:1465
 msgid "Subtitle speed:"
 msgstr "ល្បឿន​ចំណងជើង​រង៖"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:60
-#: modules/gui/qt/components/extended_panels.cpp:1449
+#: modules/gui/qt/components/extended_panels.cpp:1479
 msgid "Subtitle duration factor:"
 msgstr "កត្តា​ថិរវេលា​ចំណងជើង​រង៖"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:68
-#: modules/gui/qt/components/extended_panels.cpp:1560
+#: modules/gui/qt/components/extended_panels.cpp:1590
 msgid ""
 "Extend subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18155,7 +18159,7 @@ msgstr ""
 "កំណត់​ទៅ ០ ដើម្បី​បិទ។"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:72
-#: modules/gui/qt/components/extended_panels.cpp:1565
+#: modules/gui/qt/components/extended_panels.cpp:1595
 msgid ""
 "Multiply subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18164,7 +18168,7 @@ msgstr ""
 "កំណត់​ទៅ ០ ដើម្បី​បិទ។"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:76
-#: modules/gui/qt/components/extended_panels.cpp:1570
+#: modules/gui/qt/components/extended_panels.cpp:1600
 msgid ""
 "Recalculate subtitle duration according\n"
 "to their content and this value.\n"
@@ -18566,17 +18570,17 @@ msgstr ""
 " - វីដេអូ​នឹង​តម្រូវ​តាម​ទំហំ​ចំណុច​ប្រទាក់​\n"
 " តាម​លំនាំដើម ចំណុច​ប្រទាក់​នឹង​ប្ដូរ​ទំហំ​ទៅតាម​ទំហំ​​វីដេអូ​ដើម ។"
 
-#: modules/gui/macosx/macosx.m:105 modules/gui/qt/qt.cpp:180
+#: modules/gui/macosx/macosx.m:105 modules/gui/qt/qt.cpp:183
 msgid ""
 "With this option enabled, the playback will be automatically paused when "
 "minimizing the window."
 msgstr "​ការ​បើក​ជម្រើស​នេះ នឹង​ធ្វើឲ្យ​ការ​ចាក់​សារ​ថ្មី​ផ្អាក​ដោយ​ស្វ័យប្រវត្តិ​នៅ​ពេល​បង្រួម​បង្អួច​អប្បបរមា ។"
 
-#: modules/gui/macosx/macosx.m:108 modules/gui/qt/qt.cpp:182
+#: modules/gui/macosx/macosx.m:108 modules/gui/qt/qt.cpp:185
 msgid "Allow automatic icon changes"
 msgstr "អនុញ្ញាត​ឲ្យ​ផ្លាស់ប្ដូរ​រូបតំណាង​ស្វ័យ​ប្រវត្តិ"
 
-#: modules/gui/macosx/macosx.m:109 modules/gui/qt/qt.cpp:184
+#: modules/gui/macosx/macosx.m:109 modules/gui/qt/qt.cpp:187
 msgid ""
 "This option allows the interface to change its icon on various occasions."
 msgstr "ជម្រើស​នេះ​​អនុញ្ញាត​ឲ្យ​​ចំណុចប្រទាក់​ផ្លាស់ប្ដូរ​រូបតំណាង​របស់​វា​​តាម​ពេល​វេលា ។"
@@ -18634,21 +18638,21 @@ msgid ""
 "open one of those, playback will continue."
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:206
+#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:209
 msgid "Ask"
 msgstr ""
 
-#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:200
-#: modules/gui/qt/qt.cpp:206 modules/keystore/keychain.m:50
+#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:203
+#: modules/gui/qt/qt.cpp:209 modules/keystore/keychain.m:50
 msgid "Always"
 msgstr "ជានិច្ច"
 
-#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:200
-#: modules/gui/qt/qt.cpp:206 modules/gui/qt/qt.cpp:213
+#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:203
+#: modules/gui/qt/qt.cpp:209 modules/gui/qt/qt.cpp:216
 msgid "Never"
 msgstr "កុំ"
 
-#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:186
+#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:189
 msgid "Maximum Volume displayed"
 msgstr "បាន​បង្ហាញ​កម្រិត​សំឡេង​អតិបរមា"
 
@@ -18992,27 +18996,27 @@ msgstr "បើក៖ %s"
 msgid "Find: %s"
 msgstr "រក៖ %s"
 
-#: modules/gui/qt/components/controller.cpp:343
+#: modules/gui/qt/components/controller.cpp:352
 msgid "Shift+L"
 msgstr "ប្ដូរ+L (Shift+L)"
 
-#: modules/gui/qt/components/controller.cpp:448
+#: modules/gui/qt/components/controller.cpp:457
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr "ចុច​ដើម្បី​បិទ/បើក​ការ​ចាក់​វិល​ជុំ​ទាំងអស់ ការ​ចាក់​វិល​ជុំ​ម្ដង និង​មិន​ចាក់​វិល​ជុំ"
 
-#: modules/gui/qt/components/controller.cpp:549
+#: modules/gui/qt/components/controller.cpp:558
 msgid "Previous Chapter/Title"
 msgstr "ចំណង​ជង/ជំពូក​មុន"
 
-#: modules/gui/qt/components/controller.cpp:555
+#: modules/gui/qt/components/controller.cpp:564
 msgid "Next Chapter/Title"
 msgstr "ចំណង​ជើង/ជំពូក​បន្ទាប់"
 
-#: modules/gui/qt/components/controller.cpp:604
+#: modules/gui/qt/components/controller.cpp:613
 msgid "Teletext Activation"
 msgstr "ការ​ធ្វើ​ឲ្យ​ព័ត៌មាន​ទូរទស្សន៍​សកម្ម"
 
-#: modules/gui/qt/components/controller.cpp:620
+#: modules/gui/qt/components/controller.cpp:629
 msgid "Toggle Transparency"
 msgstr ""
 
@@ -19131,7 +19135,7 @@ msgid "Next media in the playlist"
 msgstr "មេឌៀ​បន្ទាប់​នៅ​ក្នុង​បញ្ជី​ចាក់"
 
 #: modules/gui/qt/components/controller.hpp:126
-#: modules/gui/qt/components/open_panels.cpp:259
+#: modules/gui/qt/components/open_panels.cpp:241
 msgid "Open subtitle file"
 msgstr "បើក​ឯកសារ​ចំណងជើង​រង"
 
@@ -19178,21 +19182,21 @@ msgstr "សមាមាត្រ"
 msgid "No EPG Data Available"
 msgstr ""
 
-#: modules/gui/qt/components/extended_panels.cpp:380
 #: modules/gui/qt/components/extended_panels.cpp:393
+#: modules/gui/qt/components/extended_panels.cpp:406
 msgid "Image Files"
 msgstr ""
 
-#: modules/gui/qt/components/extended_panels.cpp:382 modules/spu/logo.c:49
+#: modules/gui/qt/components/extended_panels.cpp:395 modules/spu/logo.c:49
 msgid "Logo filenames"
 msgstr "ឈ្មោះ​ឯកសារ​រូប​សញ្ញា"
 
-#: modules/gui/qt/components/extended_panels.cpp:395
+#: modules/gui/qt/components/extended_panels.cpp:408
 #: modules/video_filter/erase.c:55
 msgid "Image mask"
 msgstr "របាំង​រូបភាព"
 
-#: modules/gui/qt/components/extended_panels.cpp:645
+#: modules/gui/qt/components/extended_panels.cpp:658
 msgid ""
 "No v4l2 instance found.\n"
 "Please check that the device has been opened with VLC and is playing.\n"
@@ -19204,109 +19208,109 @@ msgstr ""
 "\n"
 "វត្ថុ​បញ្ជា​នឹង​លេចឡើង​ដោយ​ស្វ័យប្រវត្តិ​នៅ​ទីនេះ ។"
 
-#: modules/gui/qt/components/extended_panels.cpp:1107
-#: modules/gui/qt/components/extended_panels.cpp:1108
-#: modules/gui/qt/components/extended_panels.cpp:1109
-#: modules/gui/qt/components/extended_panels.cpp:1110
-#: modules/gui/qt/components/extended_panels.cpp:1111
-#: modules/gui/qt/components/extended_panels.cpp:1112
-#: modules/gui/qt/components/extended_panels.cpp:1113
-#: modules/gui/qt/components/extended_panels.cpp:1114
-#: modules/gui/qt/components/extended_panels.cpp:1115
-#: modules/gui/qt/components/extended_panels.cpp:1116
-#: modules/gui/qt/components/extended_panels.cpp:1120
-#: modules/gui/qt/components/extended_panels.cpp:1121
-#: modules/gui/qt/components/extended_panels.cpp:1122
-#: modules/gui/qt/components/extended_panels.cpp:1123
-#: modules/gui/qt/components/extended_panels.cpp:1124
-#: modules/gui/qt/components/extended_panels.cpp:1125
-#: modules/gui/qt/components/extended_panels.cpp:1126
-#: modules/gui/qt/components/extended_panels.cpp:1127
-#: modules/gui/qt/components/extended_panels.cpp:1128
-#: modules/gui/qt/components/extended_panels.cpp:1129
 #: modules/gui/qt/components/extended_panels.cpp:1132
-#: modules/gui/qt/components/extended_panels.cpp:1298
-#: modules/gui/qt/components/extended_panels.cpp:1300
-#: modules/gui/qt/components/extended_panels.cpp:1301
+#: modules/gui/qt/components/extended_panels.cpp:1133
+#: modules/gui/qt/components/extended_panels.cpp:1134
+#: modules/gui/qt/components/extended_panels.cpp:1135
+#: modules/gui/qt/components/extended_panels.cpp:1136
+#: modules/gui/qt/components/extended_panels.cpp:1137
+#: modules/gui/qt/components/extended_panels.cpp:1138
+#: modules/gui/qt/components/extended_panels.cpp:1139
+#: modules/gui/qt/components/extended_panels.cpp:1140
+#: modules/gui/qt/components/extended_panels.cpp:1141
+#: modules/gui/qt/components/extended_panels.cpp:1145
+#: modules/gui/qt/components/extended_panels.cpp:1146
+#: modules/gui/qt/components/extended_panels.cpp:1147
+#: modules/gui/qt/components/extended_panels.cpp:1148
+#: modules/gui/qt/components/extended_panels.cpp:1149
+#: modules/gui/qt/components/extended_panels.cpp:1150
+#: modules/gui/qt/components/extended_panels.cpp:1151
+#: modules/gui/qt/components/extended_panels.cpp:1152
+#: modules/gui/qt/components/extended_panels.cpp:1153
+#: modules/gui/qt/components/extended_panels.cpp:1154
+#: modules/gui/qt/components/extended_panels.cpp:1157
+#: modules/gui/qt/components/extended_panels.cpp:1328
+#: modules/gui/qt/components/extended_panels.cpp:1330
+#: modules/gui/qt/components/extended_panels.cpp:1331
 msgid "dB"
 msgstr "dB"
 
-#: modules/gui/qt/components/extended_panels.cpp:1108
+#: modules/gui/qt/components/extended_panels.cpp:1133
 msgid "170 Hz"
 msgstr "170 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1109
+#: modules/gui/qt/components/extended_panels.cpp:1134
 msgid "310 Hz"
 msgstr "310 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1110
+#: modules/gui/qt/components/extended_panels.cpp:1135
 msgid "600 Hz"
 msgstr "600 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1111
-#: modules/gui/qt/components/extended_panels.cpp:1125
+#: modules/gui/qt/components/extended_panels.cpp:1136
+#: modules/gui/qt/components/extended_panels.cpp:1150
 msgid "1 KHz"
 msgstr "1 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1112
+#: modules/gui/qt/components/extended_panels.cpp:1137
 msgid "3 KHz"
 msgstr "3 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1113
+#: modules/gui/qt/components/extended_panels.cpp:1138
 msgid "6 KHz"
 msgstr "6 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1114
+#: modules/gui/qt/components/extended_panels.cpp:1139
 msgid "12 KHz"
 msgstr "12 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1115
+#: modules/gui/qt/components/extended_panels.cpp:1140
 msgid "14 KHz"
 msgstr "14 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1116
-#: modules/gui/qt/components/extended_panels.cpp:1129
+#: modules/gui/qt/components/extended_panels.cpp:1141
+#: modules/gui/qt/components/extended_panels.cpp:1154
 msgid "16 KHz"
 msgstr "16 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1120
+#: modules/gui/qt/components/extended_panels.cpp:1145
 msgid "31 Hz"
 msgstr "31 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1121
+#: modules/gui/qt/components/extended_panels.cpp:1146
 msgid "63 Hz"
 msgstr "63 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1122
+#: modules/gui/qt/components/extended_panels.cpp:1147
 msgid "125 Hz"
 msgstr "125 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1123
+#: modules/gui/qt/components/extended_panels.cpp:1148
 msgid "250 Hz"
 msgstr "250 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1124
+#: modules/gui/qt/components/extended_panels.cpp:1149
 msgid "500 Hz"
 msgstr "500 Hz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1126
+#: modules/gui/qt/components/extended_panels.cpp:1151
 msgid "2 KHz"
 msgstr "2 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1127
+#: modules/gui/qt/components/extended_panels.cpp:1152
 msgid "4 KHz"
 msgstr "4 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1128
+#: modules/gui/qt/components/extended_panels.cpp:1153
 msgid "8 KHz"
 msgstr "8 KHz"
 
-#: modules/gui/qt/components/extended_panels.cpp:1296
-#: modules/gui/qt/components/extended_panels.cpp:1297
+#: modules/gui/qt/components/extended_panels.cpp:1326
+#: modules/gui/qt/components/extended_panels.cpp:1327
 msgid "ms"
 msgstr "ms"
 
-#: modules/gui/qt/components/extended_panels.cpp:1300
+#: modules/gui/qt/components/extended_panels.cpp:1330
 msgid ""
 "Knee\n"
 "radius"
@@ -19314,7 +19318,7 @@ msgstr ""
 "ជង្គង់\n"
 "កាំ"
 
-#: modules/gui/qt/components/extended_panels.cpp:1301
+#: modules/gui/qt/components/extended_panels.cpp:1331
 msgid ""
 "Makeup\n"
 "gain"
@@ -19322,19 +19326,19 @@ msgstr ""
 "Makeup\n"
 "gain"
 
-#: modules/gui/qt/components/extended_panels.cpp:1354
+#: modules/gui/qt/components/extended_panels.cpp:1384
 msgid "Adjust pitch"
 msgstr ""
 
-#: modules/gui/qt/components/extended_panels.cpp:1388
+#: modules/gui/qt/components/extended_panels.cpp:1418
 msgid "(Hastened)"
 msgstr "(លឿន)"
 
-#: modules/gui/qt/components/extended_panels.cpp:1390
+#: modules/gui/qt/components/extended_panels.cpp:1420
 msgid "(Delayed)"
 msgstr "(យឺត)"
 
-#: modules/gui/qt/components/extended_panels.cpp:1477
+#: modules/gui/qt/components/extended_panels.cpp:1507
 msgid "Force update of this dialog's values"
 msgstr "បង្ខំ​បច្ចុប្បន្នភាព​នៃ​តម្លៃ​របស់​ប្រអប់​នេះ"
 
@@ -19431,7 +19435,7 @@ msgstr "៦០ វិនាទី​ចុងក្រោយ"
 msgid "Overall"
 msgstr "ទាំងមូល"
 
-#: modules/gui/qt/components/interface_widgets.cpp:676
+#: modules/gui/qt/components/interface_widgets.cpp:683
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
@@ -19439,136 +19443,136 @@ msgstr ""
 "ល្បឿន​ចាក់​ឡើង​វិញ​បច្ចុប្បន្ន ៖ %1\n"
 "ចុច​ដើម្បី​កែសម្រួល"
 
-#: modules/gui/qt/components/interface_widgets.cpp:749
+#: modules/gui/qt/components/interface_widgets.cpp:756
 msgid "Revert to normal play speed"
 msgstr "ត្រឡប់​ទៅ​ល្បឿន​ចាក់​ធម្មតា"
 
-#: modules/gui/qt/components/interface_widgets.cpp:856
+#: modules/gui/qt/components/interface_widgets.cpp:863
 msgid "Download cover art"
 msgstr "ទាញយក​សិល្បៈ​គម្រប"
 
-#: modules/gui/qt/components/interface_widgets.cpp:860
+#: modules/gui/qt/components/interface_widgets.cpp:867
 msgid "Add cover art from file"
 msgstr "បន្ថែម​សិល្បៈ​គម្រប​ពី​ឯកសារ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:926
+#: modules/gui/qt/components/interface_widgets.cpp:933
 msgid "Choose Cover Art"
 msgstr "ជ្រើស​សិល្បៈ​គម្រប"
 
-#: modules/gui/qt/components/interface_widgets.cpp:927
+#: modules/gui/qt/components/interface_widgets.cpp:934
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "ឯកសារ​រូបភាព (*.gif *.jpg *.jpeg *.png)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:954
+#: modules/gui/qt/components/interface_widgets.cpp:961
 #: modules/gui/qt/dialogs/toolbar.cpp:573
 msgid "Elapsed time"
 msgstr "ពេលវេលា​កន្លង​ទៅ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:958
+#: modules/gui/qt/components/interface_widgets.cpp:965
 #: modules/gui/qt/dialogs/toolbar.cpp:577
 msgid "Total/Remaining time"
 msgstr "ពេលវេលា​សរុប/នៅ​សល់"
 
-#: modules/gui/qt/components/interface_widgets.cpp:960
+#: modules/gui/qt/components/interface_widgets.cpp:967
 msgid "Click to toggle between total and remaining time"
 msgstr "ចុច​ដើម្បី​បិទ/បើក​រវាង​ពេលវេលា​សរុប និង​ពេលវេលា​នៅ​សល់"
 
-#: modules/gui/qt/components/interface_widgets.cpp:966
+#: modules/gui/qt/components/interface_widgets.cpp:973
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "ចុច​ដើម្បី​បិទ/បើក​រវាង​ពេលវេលា​កន្លង និង​ពេលវេលា​នៅ​សល់"
 
-#: modules/gui/qt/components/interface_widgets.cpp:968
+#: modules/gui/qt/components/interface_widgets.cpp:975
 msgid "Double click to jump to a chosen time position"
 msgstr "ចុច​ទ្វេដង​ដើម្បី​ទៅកាន់​ទីតាំង​ពេលវេលា​ដែល​បាន​ជ្រើស"
 
-#: modules/gui/qt/components/open_panels.cpp:58
+#: modules/gui/qt/components/open_panels.cpp:55
 msgid "Select a device or a VIDEO_TS directory"
 msgstr "ជ្រើស​ឧបករណ៍​ ឬ​ថត VIDEO_TS"
 
-#: modules/gui/qt/components/open_panels.cpp:59
+#: modules/gui/qt/components/open_panels.cpp:56
 msgid "Select a device or a VIDEO_TS folder"
 msgstr "ជ្រើស​ឧបករណ៍ ឬ​ថត VIDEO_TS"
 
-#: modules/gui/qt/components/open_panels.cpp:145
-#: modules/gui/qt/components/open_panels.cpp:224
+#: modules/gui/qt/components/open_panels.cpp:127
+#: modules/gui/qt/components/open_panels.cpp:206
 msgid "Select one or multiple files"
 msgstr "ជ្រើស​ឯកសារ​មួយ ឬ​ច្រើន"
 
-#: modules/gui/qt/components/open_panels.cpp:160
+#: modules/gui/qt/components/open_panels.cpp:142
 msgid "File names:"
 msgstr "ឈ្មោះ​ឯកសារ ៖"
 
-#: modules/gui/qt/components/open_panels.cpp:162
-#: modules/gui/qt/ui/sprefs_interface.h:558
+#: modules/gui/qt/components/open_panels.cpp:144
+#: modules/gui/qt/ui/sprefs_interface.h:565
 msgid "Filter:"
 msgstr "តម្រង ៖"
 
-#: modules/gui/qt/components/open_panels.cpp:367
+#: modules/gui/qt/components/open_panels.cpp:349
 msgid "Eject the disc"
 msgstr "ច្រាន​ថាស​ចេញ"
 
-#: modules/gui/qt/components/open_panels.cpp:534
+#: modules/gui/qt/components/open_panels.cpp:514
 msgid "Entry"
 msgstr "ធាតុ"
 
-#: modules/gui/qt/components/open_panels.cpp:893
+#: modules/gui/qt/components/open_panels.cpp:873
 msgid "Channels:"
 msgstr "ឆានែល ៖"
 
-#: modules/gui/qt/components/open_panels.cpp:904
+#: modules/gui/qt/components/open_panels.cpp:884
 msgid "Selected ports:"
 msgstr "ច្រក​ដែល​បាន​ជ្រើស ៖"
 
-#: modules/gui/qt/components/open_panels.cpp:907
+#: modules/gui/qt/components/open_panels.cpp:887
 msgid ".*"
 msgstr ".*"
 
-#: modules/gui/qt/components/open_panels.cpp:914
+#: modules/gui/qt/components/open_panels.cpp:894
 msgid "Use VLC pace"
 msgstr "ប្រើ​ជំហាន VLC"
 
-#: modules/gui/qt/components/open_panels.cpp:934
+#: modules/gui/qt/components/open_panels.cpp:914
 msgid "TV - digital"
 msgstr "ទូរទស្សន៍-ឌីជីថល"
 
-#: modules/gui/qt/components/open_panels.cpp:937
+#: modules/gui/qt/components/open_panels.cpp:917
 msgid "Tuner card"
 msgstr "ការ​របស់​ប្រដាប់​រាវ​ប៉ុស្តិ៍"
 
-#: modules/gui/qt/components/open_panels.cpp:938
+#: modules/gui/qt/components/open_panels.cpp:918
 msgid "Delivery system"
 msgstr "ប្រព័ន្ធ​បញ្ជូន"
 
-#: modules/gui/qt/components/open_panels.cpp:968
+#: modules/gui/qt/components/open_panels.cpp:948
 msgid "Transponder/multiplex frequency"
 msgstr "ប្រេកង់ Transponder/multiplex"
 
-#: modules/gui/qt/components/open_panels.cpp:978
+#: modules/gui/qt/components/open_panels.cpp:958
 msgid "Transponder symbol rate"
 msgstr "អត្រា​សញ្ញា​ឧបករណ៍​ទទួល​/​បញ្ជូន​សញ្ញា"
 
-#: modules/gui/qt/components/open_panels.cpp:1011
+#: modules/gui/qt/components/open_panels.cpp:991
 msgid "Bandwidth"
 msgstr "កម្រិត​បញ្ជូន"
 
-#: modules/gui/qt/components/open_panels.cpp:1055
+#: modules/gui/qt/components/open_panels.cpp:1035
 msgid "TV - analog"
 msgstr "ទូរទស្សន៍-អាណាឡូក"
 
-#: modules/gui/qt/components/open_panels.cpp:1058
+#: modules/gui/qt/components/open_panels.cpp:1038
 msgid "Device name"
 msgstr "ឈ្មោះ​ឧបករណ៍"
 
-#: modules/gui/qt/components/open_panels.cpp:1118
+#: modules/gui/qt/components/open_panels.cpp:1098
 msgid "Your display will be opened and played in order to stream or save it."
 msgstr "ការ​បង្ហាញ​របស់​អ្នក​នឹង​ត្រូវ​បាន​បើក​ ហើយ​ចាក់​​ដើម្បី​ស្ទ្រីម ឬ​រក្សាទុក​វា ។"
 
 #. xgettext: frames per second
-#: modules/gui/qt/components/open_panels.cpp:1132
+#: modules/gui/qt/components/open_panels.cpp:1112
 msgid " f/s"
 msgstr " f/s"
 
-#: modules/gui/qt/components/open_panels.cpp:1347
+#: modules/gui/qt/components/open_panels.cpp:1327
 msgid "Advanced Options"
 msgstr "ជម្រើស​កម្រិត​ខ្ពស់"
 
@@ -19600,11 +19604,11 @@ msgstr "បណ្ដាញ​មូលដ្ឋាន"
 msgid "Internet"
 msgstr "អ៊ីនធឺណិត"
 
-#: modules/gui/qt/components/playlist/selector.cpp:443
+#: modules/gui/qt/components/playlist/selector.cpp:456
 msgid "Remove this podcast subscription"
 msgstr "យក​ការ​ជាវ​ផតខាស​នេះ​ចេញ"
 
-#: modules/gui/qt/components/playlist/selector.cpp:594
+#: modules/gui/qt/components/playlist/selector.cpp:607
 msgid "Do you really want to unsubscribe from %1?"
 msgstr "តើ​អ្នក​ពិតជា​ចង់​ឈប់​​ជាវ​ពី %1 មែន​ឬ ?"
 
@@ -19644,35 +19648,35 @@ msgstr ""
 msgid "Enter a new name for the folder:"
 msgstr ""
 
-#: modules/gui/qt/components/playlist/standardpanel.cpp:254
+#: modules/gui/qt/components/playlist/standardpanel.cpp:255
 msgid "Sort by"
 msgstr "តម្រៀប​តាម​"
 
-#: modules/gui/qt/components/playlist/standardpanel.cpp:261
+#: modules/gui/qt/components/playlist/standardpanel.cpp:262
 msgid "Ascending"
 msgstr "លំដាប់​ឡើង"
 
-#: modules/gui/qt/components/playlist/standardpanel.cpp:265
+#: modules/gui/qt/components/playlist/standardpanel.cpp:266
 msgid "Descending"
 msgstr "លំដាប់​ចុះ"
 
-#: modules/gui/qt/components/playlist/standardpanel.cpp:278
+#: modules/gui/qt/components/playlist/standardpanel.cpp:279
 msgid "Display size"
 msgstr "បង្ហាញ​ទំហំ"
 
-#: modules/gui/qt/components/playlist/standardpanel.cpp:279
+#: modules/gui/qt/components/playlist/standardpanel.cpp:280
 msgid "Increase"
 msgstr "បង្កើន"
 
-#: modules/gui/qt/components/playlist/standardpanel.cpp:280
+#: modules/gui/qt/components/playlist/standardpanel.cpp:281
 msgid "Decrease"
 msgstr "បន្ថយ"
 
-#: modules/gui/qt/components/playlist/standardpanel.cpp:413
+#: modules/gui/qt/components/playlist/standardpanel.cpp:414
 msgid "Playlist View Mode"
 msgstr "របៀប​មើល​បញ្ជី​ចាក់"
 
-#: modules/gui/qt/components/playlist/standardpanel.cpp:592
+#: modules/gui/qt/components/playlist/standardpanel.cpp:593
 msgid ""
 "Playlist is currently empty.\n"
 "Drop a file here or select a media source from the left."
@@ -19700,43 +19704,43 @@ msgstr "លំហូរ​រូបភាព"
 msgid "Select File"
 msgstr "ជ្រើស​ឯកសារ"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1125
+#: modules/gui/qt/components/preferences_widgets.cpp:1129
 msgid ""
 "Select or double click an action to change the associated hotkey. Use delete "
 "key to remove hotkeys."
 msgstr ""
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1132
+#: modules/gui/qt/components/preferences_widgets.cpp:1136
 msgid "in"
 msgstr "នៅ​ក្នុង"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1134
+#: modules/gui/qt/components/preferences_widgets.cpp:1138
 msgid "Any field"
 msgstr "វាល​ណាមួយ"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1135
+#: modules/gui/qt/components/preferences_widgets.cpp:1139
 msgid "Actions"
 msgstr "សកម្មភាព"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1142
+#: modules/gui/qt/components/preferences_widgets.cpp:1146
 msgid "Hotkey"
 msgstr "គ្រាប់ចុច​រហ័ស"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1143
+#: modules/gui/qt/components/preferences_widgets.cpp:1147
 msgid "Application level hotkey"
 msgstr "គ្រាប់ចុច​រហ័ស​កម្រិត​សកម្មភាព"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1144
-#: modules/gui/qt/components/preferences_widgets.cpp:1401
+#: modules/gui/qt/components/preferences_widgets.cpp:1148
+#: modules/gui/qt/components/preferences_widgets.cpp:1405
 msgid "Global"
 msgstr "សាកល"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1145
+#: modules/gui/qt/components/preferences_widgets.cpp:1149
 msgid "Desktop level hotkey"
 msgstr "គ្រាប់ចុច​រហ័ស​កម្រិត​ផ្ទៃតុ"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1225
-#: modules/gui/qt/components/preferences_widgets.cpp:1226
+#: modules/gui/qt/components/preferences_widgets.cpp:1229
+#: modules/gui/qt/components/preferences_widgets.cpp:1230
 msgid ""
 "Double click to change.\n"
 "Delete key to remove."
@@ -19744,49 +19748,49 @@ msgstr ""
 "ចុច​ទ្វេដង​ដើម្បី​ប្ដូរ។\n"
 "គ្រាប់ចុច​លុប​ដើម្បី​លុបចេញ។"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1402
+#: modules/gui/qt/components/preferences_widgets.cpp:1406
 msgid "Hotkey change"
 msgstr "ការ​ប្ដូរ​គ្រាប់ចុច​រហ័ស"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1406
+#: modules/gui/qt/components/preferences_widgets.cpp:1410
 msgid "Press the new key or combination for "
 msgstr "ចុច​គ្រាប់ចុច​ថ្មី ឬ​បន្សំ​សម្រាប់"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1415
+#: modules/gui/qt/components/preferences_widgets.cpp:1419
 msgid "Assign"
 msgstr "កំណត់"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1450
+#: modules/gui/qt/components/preferences_widgets.cpp:1454
 msgid "Warning: this key or combination is already assigned to "
 msgstr "ព្រមាន៖ គ្រាប់ចុច ឬ​បន្សំ​នេះ​ត្រូវ​បាន​កំណត់​រួចហើយ"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1462
+#: modules/gui/qt/components/preferences_widgets.cpp:1466
 msgid "Warning: <b>%1</b> is already an application menu shortcut"
 msgstr "ព្រមាន៖ <b>%1</b> គឺជា​ផ្លូវកាត់​មឺនុយ​កម្មវិធី​រួចហើយ"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1485
+#: modules/gui/qt/components/preferences_widgets.cpp:1489
 msgid "Key or combination: "
 msgstr "គ្រាប់ចុច ឬ​បន្សំ៖"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1494
+#: modules/gui/qt/components/preferences_widgets.cpp:1498
 msgid "Key: "
 msgstr "គ្រាប់ចុច ៖ "
 
-#: modules/gui/qt/components/simple_preferences.cpp:255
-#: modules/gui/qt/components/simple_preferences.cpp:628
+#: modules/gui/qt/components/simple_preferences.cpp:256
+#: modules/gui/qt/components/simple_preferences.cpp:636
 msgid "Input & Codecs Settings"
 msgstr "ការ​កំណត់​ព័ត៌មាន​បញ្ចូល និង​កូដិក"
 
-#: modules/gui/qt/components/simple_preferences.cpp:257
-#: modules/gui/qt/components/simple_preferences.cpp:912
+#: modules/gui/qt/components/simple_preferences.cpp:258
+#: modules/gui/qt/components/simple_preferences.cpp:938
 msgid "Configure Hotkeys"
 msgstr "កំណត់​រចនា​សម្ព័ន្ធ​គ្រាប់ចុច​រហ័ស"
 
-#: modules/gui/qt/components/simple_preferences.cpp:454
+#: modules/gui/qt/components/simple_preferences.cpp:455
 msgid "Device:"
 msgstr "ឧបករណ៍ ៖"
 
-#: modules/gui/qt/components/simple_preferences.cpp:633
+#: modules/gui/qt/components/simple_preferences.cpp:641
 msgid ""
 "If this property is blank, different values\n"
 "for DVD, VCD, and CDDA are set.\n"
@@ -19798,57 +19802,57 @@ msgstr ""
 "អ្នក​អាច​កំណត់​ឲ្យ​យូនីក​បាន ឬ​កំណត់​រចនា​សម្ព័ន្ធ​ពួកវា\n"
 "ដាច់​ដោយឡែក​ពី​គ្នា​នៅ​ក្នុង​ចំណូលចិត្ត​កម្រិត​ខ្ពស់ ។"
 
-#: modules/gui/qt/components/simple_preferences.cpp:701
+#: modules/gui/qt/components/simple_preferences.cpp:712
 msgid "Lowest latency"
 msgstr "ភាព​មើល​មិន​ឃើញ​ទាប​បំផុត"
 
-#: modules/gui/qt/components/simple_preferences.cpp:704
+#: modules/gui/qt/components/simple_preferences.cpp:715
 msgid "High latency"
 msgstr "ភាព​មើល​មិន​ឃើញ​ខ្ពស់"
 
-#: modules/gui/qt/components/simple_preferences.cpp:705
+#: modules/gui/qt/components/simple_preferences.cpp:716
 msgid "Higher latency"
 msgstr "ភាព​មើល​មិនឃើញ​ខ្ពស់​ជាង"
 
-#: modules/gui/qt/components/simple_preferences.cpp:753
+#: modules/gui/qt/components/simple_preferences.cpp:764
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr "នេះ​ជា​ចំណុច​ប្រទាក់​របស់ VLC ដែល​អាច​ប្ដូរ​ស្បែក​បាន ។ អ្នក​អាច​ទាញ​យក​ស្បែក​​ផ្សេងទៀត​​នៅ"
 
-#: modules/gui/qt/components/simple_preferences.cpp:755
+#: modules/gui/qt/components/simple_preferences.cpp:766
 msgid "VLC skins website"
 msgstr "តំបន់​បណ្ដាញ​ស្បែក VLC"
 
-#: modules/gui/qt/components/simple_preferences.cpp:779
+#: modules/gui/qt/components/simple_preferences.cpp:794
 msgid "System's default"
 msgstr "លំនាំដើម​របស់​ប្រព័ន្ធ"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1317
+#: modules/gui/qt/components/simple_preferences.cpp:1344
 msgid "File associations"
 msgstr "ឯកសារ​ដែល​ពាក់ព័ន្ធ"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1326
+#: modules/gui/qt/components/simple_preferences.cpp:1353
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "ឯកសារ​អូឌីយ៉ូ"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1327
+#: modules/gui/qt/components/simple_preferences.cpp:1354
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "ឯកសារ​វីដេអូ"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1328
+#: modules/gui/qt/components/simple_preferences.cpp:1355
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "ឯកសារ​បញ្ជី​ចាក់"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1393
+#: modules/gui/qt/components/simple_preferences.cpp:1420
 msgid "&Apply"
 msgstr "អនុវត្ត"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1394
+#: modules/gui/qt/components/simple_preferences.cpp:1421
 #: modules/gui/qt/dialogs/convert.cpp:137
-#: modules/gui/qt/dialogs/gototime.cpp:49 modules/gui/qt/dialogs/open.cpp:108
-#: modules/gui/qt/dialogs/openurl.cpp:60
+#: modules/gui/qt/dialogs/gototime.cpp:48 modules/gui/qt/dialogs/open.cpp:109
+#: modules/gui/qt/dialogs/openurl.cpp:59
 #: modules/gui/qt/dialogs/podcast_configuration.cpp:37
 #: modules/gui/qt/dialogs/preferences.cpp:97
 #: modules/gui/qt/dialogs/toolbar.cpp:198
@@ -19892,85 +19896,85 @@ msgstr " បាត់​ឈ្មោះ​ទម្រង់"
 msgid "You must set a name for the profile."
 msgstr "អ្នក​ត្រូវ​តែ​កំណត់​ឈ្មោះ​សម្រាប់​ទម្រង់ ។"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:40
+#: modules/gui/qt/components/sout/sout_widgets.cpp:41
 msgid "File/Directory"
 msgstr "ឯកសារ/ថត"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:40
+#: modules/gui/qt/components/sout/sout_widgets.cpp:41
 msgid "File/Folder"
 msgstr "ឯកសារ/ថត"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:47
+#: modules/gui/qt/components/sout/sout_widgets.cpp:48
 #: modules/gui/qt/ui/sout.h:199
 msgid "Source"
 msgstr "ប្រភព"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:50
+#: modules/gui/qt/components/sout/sout_widgets.cpp:51
 msgid "Source:"
 msgstr "ប្រភព ៖"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:59
+#: modules/gui/qt/components/sout/sout_widgets.cpp:60
 msgid "Type:"
 msgstr "ប្រភេទ ៖"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:127
+#: modules/gui/qt/components/sout/sout_widgets.cpp:128
 msgid "This module writes the transcoded stream to a file."
 msgstr "ម៉ូឌុល​នេះ​សរសេរ​ស្ទ្រីម​ដែល​បាន​បម្លែង​ត្រឡប់​ទៅកាន់​ឯកសារ ។"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:129
+#: modules/gui/qt/components/sout/sout_widgets.cpp:130
 msgid "Filename"
 msgstr "ឈ្មោះ​ឯកសារ"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:173
+#: modules/gui/qt/components/sout/sout_widgets.cpp:174
 #: modules/gui/qt/dialogs/convert.cpp:161
 msgid "Save file..."
 msgstr "រក្សាទុក​ឯកសារ..."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:174
+#: modules/gui/qt/components/sout/sout_widgets.cpp:175
 msgid ""
 "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)"
 msgstr ""
 "ឧបករណ៍​ផ្ទុក (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:184
+#: modules/gui/qt/components/sout/sout_widgets.cpp:185
 msgid "This module outputs the transcoded stream to a network via HTTP."
 msgstr "​ម៉ូឌុល​នេះ​​បង្ហាញ​ស្ទ្រីម​ដែល​បាន​បម្លែង​តករឡប់​ទៅកាន់​បណ្ដាញ​​តាម HTTP ។"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:186
-#: modules/gui/qt/components/sout/sout_widgets.cpp:282
+#: modules/gui/qt/components/sout/sout_widgets.cpp:187
+#: modules/gui/qt/components/sout/sout_widgets.cpp:283
 msgid "Path"
 msgstr "ផ្លូវ"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:238
+#: modules/gui/qt/components/sout/sout_widgets.cpp:239
 msgid ""
 "This module outputs the transcoded stream to a network via the mms protocol."
 msgstr "ម៉ូឌុល​នេះ​បង្ហាញ​ស្ទ្រីម​ដែល​បាន​បម្លែង​ត្រឡប់​ទៅកាន់​បណ្ដាញ​តាម​ពិធីការ mms ។"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:280
+#: modules/gui/qt/components/sout/sout_widgets.cpp:281
 msgid "This module outputs the transcoded stream to a network via RTSP."
 msgstr "ម៉ូឌុល​នេះ​បង្ហាញ​ស្ទ្រីម​ដែល​បាន​បម្លែង​ត្រឡប់​ទៅកាន់​បណ្ដាញ​តាម RTSP ។"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:326
+#: modules/gui/qt/components/sout/sout_widgets.cpp:327
 msgid "This module outputs the transcoded stream to a network via UDP."
 msgstr "ម៉ូឌុល​នេះ​បញ្ចេញ​ស្ទ្រីម​ដែល​បាន​បម្លែង​ត្រឡប់​ទៅកាន់​បណ្ដាញ​តាម UDP ។"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:368
+#: modules/gui/qt/components/sout/sout_widgets.cpp:369
 msgid "This module outputs the transcoded stream to a network via RTP."
 msgstr "ម៉ូឌុល​នេះ​បង្ហាញ​ស្ទ្រីម​ដែល​បាន​បម្លែង​ត្រឡប់​ទៅកាន់​បណ្ដាញ​តាម RTP ។"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:375
+#: modules/gui/qt/components/sout/sout_widgets.cpp:376
 msgid "Base port"
 msgstr "ច្រក​គោល"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:423
+#: modules/gui/qt/components/sout/sout_widgets.cpp:424
 msgid "This module outputs the transcoded stream to an Icecast server."
 msgstr "ម៉ូឌុល​នេះ​បង្ហាញ​ស្ទ្រីម​ដែល​បាន​បម្លែង​ត្រឡប់​ទៅកាន់​ម៉ាស៊ីន​មេ Icecast ។"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:442
+#: modules/gui/qt/components/sout/sout_widgets.cpp:443
 msgid "Mount Point"
 msgstr "ចំណុច​ម៉ោន"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:443
+#: modules/gui/qt/components/sout/sout_widgets.cpp:444
 msgid "Login:pass"
 msgstr "Login:pass"
 
@@ -19996,13 +20000,13 @@ msgstr "ស្រង់​ចេញ"
 
 #: modules/gui/qt/dialogs/bookmarks.cpp:62 modules/gui/qt/dialogs/epg.cpp:92
 #: modules/gui/qt/dialogs/errors.cpp:49 modules/gui/qt/dialogs/extended.cpp:130
-#: modules/gui/qt/dialogs/help.cpp:66 modules/gui/qt/dialogs/help.cpp:212
+#: modules/gui/qt/dialogs/help.cpp:64 modules/gui/qt/dialogs/help.cpp:223
 #: modules/gui/qt/dialogs/mediainfo.cpp:80
-#: modules/gui/qt/dialogs/messages.cpp:84 modules/gui/qt/dialogs/plugins.cpp:94
-#: modules/gui/qt/dialogs/plugins.cpp:1438
-#: modules/gui/qt/dialogs/plugins.cpp:1551
+#: modules/gui/qt/dialogs/messages.cpp:81 modules/gui/qt/dialogs/plugins.cpp:93
+#: modules/gui/qt/dialogs/plugins.cpp:1437
+#: modules/gui/qt/dialogs/plugins.cpp:1550
 #: modules/gui/qt/dialogs/podcast_configuration.cpp:36
-#: modules/gui/qt/dialogs/vlm.cpp:136
+#: modules/gui/qt/dialogs/vlm.cpp:130
 msgid "&Close"
 msgstr "បិទ"
 
@@ -20022,7 +20026,7 @@ msgstr ""
 msgid "Destination"
 msgstr "ទិសដៅ"
 
-#: modules/gui/qt/dialogs/convert.cpp:71 modules/gui/qt/ui/sprefs_audio.h:413
+#: modules/gui/qt/dialogs/convert.cpp:71 modules/gui/qt/ui/sprefs_audio.h:414
 msgid "Destination file:"
 msgstr "ឯកសារ​ទិសដៅ ៖"
 
@@ -20062,16 +20066,16 @@ msgstr "ចាប់ផ្ដើម"
 msgid "Containers"
 msgstr ""
 
-#: modules/gui/qt/dialogs/epg.cpp:49 modules/gui/qt/menus.cpp:431
+#: modules/gui/qt/dialogs/epg.cpp:49 modules/gui/qt/menus.cpp:434
 msgid "Program Guide"
 msgstr "មគ្គុទ្ទេសក៍​កម្មវិធី"
 
-#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:286
-#: modules/gui/qt/ui/about.h:287
+#: modules/gui/qt/dialogs/epg.cpp:87 modules/gui/qt/ui/about.h:283
+#: modules/gui/qt/ui/about.h:284
 msgid "Update"
 msgstr "ធ្វើ​បច្ចុប្បន្នភាព"
 
-#: modules/gui/qt/dialogs/epg.cpp:161
+#: modules/gui/qt/dialogs/epg.cpp:162
 msgid " (%1+ rated)"
 msgstr ""
 
@@ -20108,7 +20112,7 @@ msgstr "ឧបករណ៍​បញ្ជា v4l2"
 msgid "&Save"
 msgstr "រក្សាទុក"
 
-#: modules/gui/qt/dialogs/external.cpp:216
+#: modules/gui/qt/dialogs/external.cpp:218
 msgid "Store the Password"
 msgstr ""
 
@@ -20139,32 +20143,32 @@ msgstr "គោលការណ៍​ចូល​ដំណើរការ​បណ
 msgid "Regularly check for VLC updates"
 msgstr "ពិនិត្យមើល​បច្ចុប្បន្នភាព VLC យ៉ាង​ទៀតទាត់"
 
-#: modules/gui/qt/dialogs/gototime.cpp:42
+#: modules/gui/qt/dialogs/gototime.cpp:41
 msgid "Go to Time"
 msgstr "ទៅកាន់​ពេលវេលា"
 
-#: modules/gui/qt/dialogs/gototime.cpp:48
+#: modules/gui/qt/dialogs/gototime.cpp:47
 msgid "&Go"
 msgstr "ទៅ"
 
-#: modules/gui/qt/dialogs/gototime.cpp:56
+#: modules/gui/qt/dialogs/gototime.cpp:55
 msgid "Go to time"
 msgstr "ទៅកាន់​ពេលវេលា"
 
-#: modules/gui/qt/dialogs/help.cpp:86 modules/gui/qt/dialogs/plugins.cpp:1376
-#: modules/gui/qt/dialogs/plugins.cpp:1459
+#: modules/gui/qt/dialogs/help.cpp:84 modules/gui/qt/dialogs/plugins.cpp:1375
+#: modules/gui/qt/dialogs/plugins.cpp:1458
 msgid "About"
 msgstr "អំពី"
 
-#: modules/gui/qt/dialogs/help.cpp:94
+#: modules/gui/qt/dialogs/help.cpp:101
 msgid ""
 "<p>VLC media player is a free and open source media player, encoder, and "
 "streamer made by the volunteers of the <a href=\"http://www.videolan.org/"
 "\"><span style=\" text-decoration: underline; color:#0057ae;\">VideoLAN</"
 "span></a> community.</p><p>VLC uses its internal codecs, works on "
 "essentially every popular platform, and can read almost all files, CDs, "
-"DVDs, network streams, capture cards and other media formats!</p><p><a "
-"href=\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
+"DVDs, network streams, capture cards and other media formats!</p><p><a href="
+"\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
 "underline; color:#0057ae;\">Help and join us!</span></a>"
 msgstr ""
 "<p>កម្មវិធី​ចាក់​មេឌៀ VLC គឺជា​កម្មវិធី​ស្ទ្រីម កម្មវិធី​ដាក់​លេខ​កូដ និង​ជា​កម្មវិធី​ចាក់​មេឌៀ​កូដ​ចំហ​ឥត​បង់​ថ្លៃ "
@@ -20175,31 +20179,31 @@ msgstr ""
 "href=\"http://www.videolan.org/contribute/\"><span style=\" text-decoration: "
 "underline; color:#0057ae;\">ជួយ​គាំទ្រ និង​ចូលរួម​ជាមួយ​ពួក​យើង!</span></a>"
 
-#: modules/gui/qt/dialogs/help.cpp:214
+#: modules/gui/qt/dialogs/help.cpp:225
 msgid "&Recheck version"
 msgstr "ពិនិត្យ​មើល​កំណែ​ឡើងវិញ"
 
-#: modules/gui/qt/dialogs/help.cpp:217
+#: modules/gui/qt/dialogs/help.cpp:228
 msgid "&Yes"
 msgstr "បាទ/ចាស"
 
-#: modules/gui/qt/dialogs/help.cpp:219
+#: modules/gui/qt/dialogs/help.cpp:230
 msgid "&No"
 msgstr "ទេ"
 
-#: modules/gui/qt/dialogs/help.cpp:222 modules/gui/qt/ui/update.h:144
+#: modules/gui/qt/dialogs/help.cpp:233 modules/gui/qt/ui/update.h:144
 msgid "VLC media player updates"
 msgstr "ធ្វើ​បច្ចុប្បន្នភាព​កម្មវិធី​ចាក់​មេឌៀ VLC"
 
-#: modules/gui/qt/dialogs/help.cpp:294
+#: modules/gui/qt/dialogs/help.cpp:305
 msgid "A new version of VLC (%1.%2.%3%4) is available."
 msgstr "មាន​កំណែ​ថ្មី​សម្រាប់ VLC (%1.%2.%3%4) ។"
 
-#: modules/gui/qt/dialogs/help.cpp:319
+#: modules/gui/qt/dialogs/help.cpp:330
 msgid "You have the latest version of VLC media player."
 msgstr "អ្នក​មាន​កំណែ​ចុងក្រោយ​បំផុត​របស់​កម្មវិធី​ចាក់​មេឌៀ VLC ។"
 
-#: modules/gui/qt/dialogs/help.cpp:326
+#: modules/gui/qt/dialogs/help.cpp:337
 msgid "An error occurred while checking for updates..."
 msgstr "មាន​កំហុស​កើតឡើង​ពេល​កំពុង​ពិនិត្យ​មើល​បច្ចុប្បន្នភាព..."
 
@@ -20231,23 +20235,23 @@ msgstr "រក្សាទុក​ទិន្នន័យ​មេតា"
 msgid "Location:"
 msgstr "ទីតាំង ៖"
 
-#: modules/gui/qt/dialogs/messages.cpp:91
+#: modules/gui/qt/dialogs/messages.cpp:88
 msgid "Saves all the displayed logs to a file"
 msgstr "រក្សាទុក​កំណត់​ហេតុ​ដែលបានបង្ហាញ​ទាំង​អស់​ទៅ​កាន់​ឯកសារ"
 
-#: modules/gui/qt/dialogs/messages.cpp:259
+#: modules/gui/qt/dialogs/messages.cpp:256
 msgid "Save log file as..."
 msgstr "រក្សាទុក​ឯកសារ​កំណត់ហេតុ​ជា..."
 
-#: modules/gui/qt/dialogs/messages.cpp:261
+#: modules/gui/qt/dialogs/messages.cpp:258
 msgid "Texts/Logs (*.log *.txt);; All (*.*)"
 msgstr ""
 
-#: modules/gui/qt/dialogs/messages.cpp:267
+#: modules/gui/qt/dialogs/messages.cpp:264
 msgid "Application"
 msgstr "កម្មវិធី"
 
-#: modules/gui/qt/dialogs/messages.cpp:268
+#: modules/gui/qt/dialogs/messages.cpp:265
 msgid ""
 "Cannot write to file %1:\n"
 "%2."
@@ -20255,74 +20259,74 @@ msgstr ""
 "មិន​អាច​សរសេរ​ទៅ​កាន់​ឯកសារ %1 ៖\n"
 "%2 ។"
 
-#: modules/gui/qt/dialogs/messages.cpp:334
+#: modules/gui/qt/dialogs/messages.cpp:331
 msgid "Update the tree"
 msgstr "ធ្វើ​បច្ចុប្បន្នភាព​មែកធាង"
 
-#: modules/gui/qt/dialogs/messages.cpp:335
+#: modules/gui/qt/dialogs/messages.cpp:332
 msgid "Clear the messages"
 msgstr "សម្អាត​សារ"
 
-#: modules/gui/qt/dialogs/open.cpp:78 modules/gui/qt/menus.cpp:935
-#: modules/gui/qt/menus.cpp:1132
+#: modules/gui/qt/dialogs/open.cpp:79 modules/gui/qt/menus.cpp:940
+#: modules/gui/qt/menus.cpp:1137
 msgid "Open Media"
 msgstr "បើក​មេឌៀ"
 
-#: modules/gui/qt/dialogs/open.cpp:90
+#: modules/gui/qt/dialogs/open.cpp:91
 msgid "&File"
 msgstr "ឯកសារ"
 
-#: modules/gui/qt/dialogs/open.cpp:92
+#: modules/gui/qt/dialogs/open.cpp:93
 msgid "&Disc"
 msgstr "ថាស"
 
-#: modules/gui/qt/dialogs/open.cpp:94
+#: modules/gui/qt/dialogs/open.cpp:95
 msgid "&Network"
 msgstr "បណ្តាញ"
 
-#: modules/gui/qt/dialogs/open.cpp:96
+#: modules/gui/qt/dialogs/open.cpp:97
 msgid "Capture &Device"
 msgstr "ឧបករណ៍​ចាប់យក"
 
-#: modules/gui/qt/dialogs/open.cpp:111
+#: modules/gui/qt/dialogs/open.cpp:112
 msgid "&Select"
 msgstr "ជ្រើស"
 
-#: modules/gui/qt/dialogs/open.cpp:115 modules/gui/qt/dialogs/open.cpp:210
-#: modules/gui/qt/dialogs/openurl.cpp:57
+#: modules/gui/qt/dialogs/open.cpp:116 modules/gui/qt/dialogs/open.cpp:211
+#: modules/gui/qt/dialogs/openurl.cpp:56
 msgid "&Enqueue"
 msgstr "ដាក់​ជា​ជួរ"
 
-#: modules/gui/qt/dialogs/open.cpp:117 modules/gui/qt/dialogs/open.cpp:214
-#: modules/gui/qt/dialogs/openurl.cpp:54 modules/gui/qt/menus.cpp:824
+#: modules/gui/qt/dialogs/open.cpp:118 modules/gui/qt/dialogs/open.cpp:215
+#: modules/gui/qt/dialogs/openurl.cpp:53 modules/gui/qt/menus.cpp:829
 msgid "&Play"
 msgstr "ចាក់"
 
-#: modules/gui/qt/dialogs/open.cpp:119 modules/gui/qt/dialogs/open.cpp:204
+#: modules/gui/qt/dialogs/open.cpp:120 modules/gui/qt/dialogs/open.cpp:205
 msgid "&Stream"
 msgstr "ស្ទ្រីម"
 
-#: modules/gui/qt/dialogs/open.cpp:121
+#: modules/gui/qt/dialogs/open.cpp:122
 msgid "C&onvert"
 msgstr "បម្លែង"
 
-#: modules/gui/qt/dialogs/open.cpp:207
+#: modules/gui/qt/dialogs/open.cpp:208
 msgid "C&onvert / Save"
 msgstr "បម្លែង/រក្សាទុក"
 
-#: modules/gui/qt/dialogs/openurl.cpp:47
+#: modules/gui/qt/dialogs/openurl.cpp:46
 msgid "Open URL"
 msgstr "បើក URL"
 
-#: modules/gui/qt/dialogs/openurl.cpp:64
+#: modules/gui/qt/dialogs/openurl.cpp:63
 msgid "Enter URL here..."
 msgstr "បញ្ចូល URL នៅ​ទីនេះ..."
 
-#: modules/gui/qt/dialogs/openurl.cpp:67
+#: modules/gui/qt/dialogs/openurl.cpp:66
 msgid "Please enter the URL or path to the media you want to play."
 msgstr "សូម​បញ្ចូល URL ឬ​ផ្លូវ​ទៅកាន់​មេឌៀ​ដែល​អ្នក​ចង់​ចាក់។"
 
-#: modules/gui/qt/dialogs/openurl.cpp:71
+#: modules/gui/qt/dialogs/openurl.cpp:70
 msgid ""
 "If your clipboard contains a valid URL\n"
 "or the path to a file on your computer,\n"
@@ -20332,105 +20336,105 @@ msgstr ""
 "ឬ​មាន​ផ្លូវ​ទៅកាន់​ឯកសារ​នៅ​​ក្នុង​កុំព្យូទ័រ​របស់​អ្នក\n"
 "វា​នឹង​ត្រូវ​បាន​ជ្រើស​ដោយ​ស្វ័យ​ប្រវត្តិ ។"
 
-#: modules/gui/qt/dialogs/plugins.cpp:80
+#: modules/gui/qt/dialogs/plugins.cpp:79
 msgid "Plugins and extensions"
 msgstr "កម្មវិធី​ជំនួយ និង​ផ្នែក​បន្ថែម"
 
-#: modules/gui/qt/dialogs/plugins.cpp:88
+#: modules/gui/qt/dialogs/plugins.cpp:87
 msgid "Active Extensions"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:128
+#: modules/gui/qt/dialogs/plugins.cpp:127
 msgid "Capability"
 msgstr "សមត្ថភាព"
 
-#: modules/gui/qt/dialogs/plugins.cpp:128
+#: modules/gui/qt/dialogs/plugins.cpp:127
 msgid "Score"
 msgstr "ពិន្ទុ"
 
-#: modules/gui/qt/dialogs/plugins.cpp:141
+#: modules/gui/qt/dialogs/plugins.cpp:140
 msgid "&Search:"
 msgstr "ស្វែងរក ៖"
 
-#: modules/gui/qt/dialogs/plugins.cpp:259
-#: modules/gui/qt/dialogs/plugins.cpp:1292
+#: modules/gui/qt/dialogs/plugins.cpp:258
+#: modules/gui/qt/dialogs/plugins.cpp:1291
 msgid "More information..."
 msgstr "ព័ត៌មាន​បន្ថែម..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:267
+#: modules/gui/qt/dialogs/plugins.cpp:266
 msgid "Reload extensions"
 msgstr "ផ្ទុក​ផ្នែក​បន្ថែម​ឡើងវិញ"
 
-#: modules/gui/qt/dialogs/plugins.cpp:386
+#: modules/gui/qt/dialogs/plugins.cpp:385
 msgid ""
 "Skins customize player's appearance. You can activate them through "
 "preferences."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:390
+#: modules/gui/qt/dialogs/plugins.cpp:389
 msgid ""
 "Playlist parsers add new capabilities to read internet streams or extract "
 "meta data."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:394
+#: modules/gui/qt/dialogs/plugins.cpp:393
 msgid ""
 "Service discoveries adds new sources to your playlist such as web radios, "
 "video websites, ..."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:401
+#: modules/gui/qt/dialogs/plugins.cpp:400
 msgid "Retrieves extra info and art for playlist items"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:404
+#: modules/gui/qt/dialogs/plugins.cpp:403
 msgid ""
 "Extensions brings various enhancements. Check descriptions for more details"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:425
+#: modules/gui/qt/dialogs/plugins.cpp:424
 msgid "Only installed"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:531
+#: modules/gui/qt/dialogs/plugins.cpp:530
 msgid "Retrieving addons..."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:542
+#: modules/gui/qt/dialogs/plugins.cpp:541
 msgid "No addons found"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:821
+#: modules/gui/qt/dialogs/plugins.cpp:820
 msgid "This addon has been installed manually. VLC can't manage it by itself."
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:1204
+#: modules/gui/qt/dialogs/plugins.cpp:1203
 msgid "Version %1"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:1232
+#: modules/gui/qt/dialogs/plugins.cpp:1231
 msgid "%1 downloads"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:1301
+#: modules/gui/qt/dialogs/plugins.cpp:1300
 msgid "&Uninstall"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:1304
+#: modules/gui/qt/dialogs/plugins.cpp:1303
 msgid "&Install"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:1399
-#: modules/gui/qt/dialogs/plugins.cpp:1502
+#: modules/gui/qt/dialogs/plugins.cpp:1398
+#: modules/gui/qt/dialogs/plugins.cpp:1501
 msgid "Version"
 msgstr "កំណែ"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1419
-#: modules/gui/qt/dialogs/plugins.cpp:1529
+#: modules/gui/qt/dialogs/plugins.cpp:1418
+#: modules/gui/qt/dialogs/plugins.cpp:1528
 msgid "Website"
 msgstr "តំបន់បណ្ដាញ"
 
-#: modules/gui/qt/dialogs/plugins.cpp:1541 modules/gui/qt/ui/sprefs_input.h:363
+#: modules/gui/qt/dialogs/plugins.cpp:1540 modules/gui/qt/ui/sprefs_input.h:363
 msgid "Files"
 msgstr "ឯកសារ"
 
@@ -20490,11 +20494,11 @@ msgstr "មិន​អាច​រក្សាទុក​ឯកសារ​ច
 msgid "Are you sure you want to reset your VLC media player preferences?"
 msgstr "តើ​អ្នក​ពិតជា​ចង់​កំណត់​ចំណូល​ចិត្ត​កម្មវិធី​ចាក់​មេឌៀ​ VLC របស់​អ្នក​ឡើង​វិញ​មែនឬ ?"
 
-#: modules/gui/qt/dialogs/sout.cpp:45 modules/gui/qt/ui/sout.h:198
+#: modules/gui/qt/dialogs/sout.cpp:43 modules/gui/qt/ui/sout.h:198
 msgid "Stream Output"
 msgstr "លទ្ធផល​ស្ទ្រីម"
 
-#: modules/gui/qt/dialogs/sout.cpp:51
+#: modules/gui/qt/dialogs/sout.cpp:49
 msgid ""
 "This wizard will allow you to stream or convert your media for use locally, "
 "on your private network, or on the Internet.\n"
@@ -20503,10 +20507,10 @@ msgid ""
 msgstr ""
 "អ្នកជំនួយការ​នេះ​នឹង​អនុញ្ញាត​ឲ្យ​អ្នក​ស្ទ្រីម ឬ​បម្លែង​មេឌៀ​របស់​អ្នក​សម្រាប់​ប្រើ​ក្នុង​មូលដ្ឋាន លើ​បណ្ដាញ​ឯកជន​"
 "របស់​អ្នក ឬ​នៅ​លើ​អ៊ីនធឺណិត។\n"
-"អ្នក​គួរតែ​ចាប់ផ្ដើម​ដោយ​ពិនិត្យមើល​ថា​ប្រភព​នោះ​ផ្គូផ្គង​ជាមួយ​អ្វី​ដែល​អ្នក​បញ្ចូល​ដែរ​ឬទេ រួច​ចុច​ប៊ូតុង "
-"\"បន្ទាប់\" ដើម្បី​បន្ត។\n"
+"អ្នក​គួរតែ​ចាប់ផ្ដើម​ដោយ​ពិនិត្យមើល​ថា​ប្រភព​នោះ​ផ្គូផ្គង​ជាមួយ​អ្វី​ដែល​អ្នក​បញ្ចូល​ដែរ​ឬទេ រួច​ចុច​ប៊ូតុង \"បន្ទាប់"
+"\" ដើម្បី​បន្ត។\n"
 
-#: modules/gui/qt/dialogs/sout.cpp:58
+#: modules/gui/qt/dialogs/sout.cpp:56
 msgid ""
 "Stream output string.\n"
 "This is automatically generated when you change the above settings,\n"
@@ -20516,7 +20520,7 @@ msgstr ""
 "វា​ត្រូវ​បាន​បង្កើត​ដោយ​ស្វ័យ​ប្រវត្តិ នៅ​ពេល​អ្នក​ផ្លាស់ប្ដូរ​ការ​កំណត់​ខាង​លើ\n"
 "ប៉ុន្តែ​អ្នក​អាច​ផ្លាស់ប្ដូរ​វា​ដោយ​ដៃ​បាន ។"
 
-#: modules/gui/qt/dialogs/sout.cpp:91
+#: modules/gui/qt/dialogs/sout.cpp:89
 msgid "Back"
 msgstr "ថយក្រោយ"
 
@@ -20648,67 +20652,67 @@ msgstr "ឧបករណ៍​ជ្រើស​សមាមាត្រ"
 msgid "Speed selector"
 msgstr "ឧបករណ៍​ជ្រើស​ល្បឿន"
 
-#: modules/gui/qt/dialogs/vlm.cpp:73
+#: modules/gui/qt/dialogs/vlm.cpp:67
 msgid "Broadcast"
 msgstr "ផ្សាយ"
 
-#: modules/gui/qt/dialogs/vlm.cpp:74
+#: modules/gui/qt/dialogs/vlm.cpp:68
 msgid "Schedule"
 msgstr "កាលវិភាគ"
 
-#: modules/gui/qt/dialogs/vlm.cpp:75
+#: modules/gui/qt/dialogs/vlm.cpp:69
 msgid "Video On Demand ( VOD )"
 msgstr "Video On Demand ( VOD )"
 
-#: modules/gui/qt/dialogs/vlm.cpp:80
+#: modules/gui/qt/dialogs/vlm.cpp:74
 msgid "Hours / Minutes / Seconds:"
 msgstr "ម៉ោង / នាទី / វិនាទី ៖"
 
-#: modules/gui/qt/dialogs/vlm.cpp:82
+#: modules/gui/qt/dialogs/vlm.cpp:76
 msgid "Day / Month / Year:"
 msgstr "ថ្ងៃ / ខែ / ឆ្នាំ ៖"
 
-#: modules/gui/qt/dialogs/vlm.cpp:84
+#: modules/gui/qt/dialogs/vlm.cpp:78
 msgid "Repeat:"
 msgstr "ចាក់​ឡើងវិញ ៖"
 
-#: modules/gui/qt/dialogs/vlm.cpp:86
+#: modules/gui/qt/dialogs/vlm.cpp:80
 msgid "Repeat delay:"
 msgstr "ពន្យារ​ការ​ចាក់​ឡើងវិញ ៖"
 
-#: modules/gui/qt/dialogs/vlm.cpp:111 modules/gui/qt/ui/sprefs_interface.h:555
+#: modules/gui/qt/dialogs/vlm.cpp:105 modules/gui/qt/ui/sprefs_interface.h:562
 msgid " days"
 msgstr " ថ្ងៃ"
 
-#: modules/gui/qt/dialogs/vlm.cpp:130
+#: modules/gui/qt/dialogs/vlm.cpp:124
 msgid "I&mport"
 msgstr "នាំចូល"
 
-#: modules/gui/qt/dialogs/vlm.cpp:133
+#: modules/gui/qt/dialogs/vlm.cpp:127
 msgid "E&xport"
 msgstr "នាំចេញ"
 
-#: modules/gui/qt/dialogs/vlm.cpp:264
+#: modules/gui/qt/dialogs/vlm.cpp:258
 msgid "Save VLM configuration as..."
 msgstr "រក្សាទុក​ការ​កំណត់​រចនាសម្ព័ន្ធ VLM ជា..."
 
-#: modules/gui/qt/dialogs/vlm.cpp:266 modules/gui/qt/dialogs/vlm.cpp:335
+#: modules/gui/qt/dialogs/vlm.cpp:260 modules/gui/qt/dialogs/vlm.cpp:329
 msgid "VLM conf (*.vlm);;All (*)"
 msgstr "VLM conf (*.vlm);;All (*)"
 
-#: modules/gui/qt/dialogs/vlm.cpp:333
+#: modules/gui/qt/dialogs/vlm.cpp:327
 msgid "Open VLM configuration..."
 msgstr "បើក​ការ​កំណត់​រចនាសម្ព័ន្ធ VLM​..."
 
-#: modules/gui/qt/dialogs/vlm.cpp:532
+#: modules/gui/qt/dialogs/vlm.cpp:526
 msgid "Broadcast: "
 msgstr "ផ្សាយ ៖"
 
-#: modules/gui/qt/dialogs/vlm.cpp:605
+#: modules/gui/qt/dialogs/vlm.cpp:599
 msgid "Schedule: "
 msgstr "កាលវិភាគ ៖"
 
-#: modules/gui/qt/dialogs/vlm.cpp:629
+#: modules/gui/qt/dialogs/vlm.cpp:623
 msgid "VOD: "
 msgstr "VOD ៖"
 
@@ -20766,339 +20770,339 @@ msgstr ""
 msgid "Deactivate"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:373
+#: modules/gui/qt/main_interface.cpp:378
 msgid "Do you want to restart the playback where left off?"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:379
+#: modules/gui/qt/main_interface.cpp:384
 msgid "&Continue"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:1421
+#: modules/gui/qt/main_interface.cpp:1454
 msgid "Control menu for the player"
 msgstr "ម៉ឺនុយ​បញ្ជា​សម្រាប់​កម្មវិធី​ចាក់"
 
-#: modules/gui/qt/main_interface.cpp:1465
+#: modules/gui/qt/main_interface.cpp:1498
 msgid "Paused"
 msgstr "បាន​ផ្អាក"
 
-#: modules/gui/qt/menus.cpp:331
+#: modules/gui/qt/menus.cpp:334
 msgid "&Media"
 msgstr "មេឌៀ"
 
-#: modules/gui/qt/menus.cpp:334
+#: modules/gui/qt/menus.cpp:337
 msgid "P&layback"
 msgstr "ចាក់​ឡើងវិញ"
 
-#: modules/gui/qt/menus.cpp:335 modules/gui/qt/menus.cpp:1050
+#: modules/gui/qt/menus.cpp:338 modules/gui/qt/menus.cpp:1055
 msgid "&Audio"
 msgstr "អូឌីយ៉ូ"
 
-#: modules/gui/qt/menus.cpp:336 modules/gui/qt/menus.cpp:1057
+#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1062
 msgid "&Video"
 msgstr "វីដេអូ"
 
-#: modules/gui/qt/menus.cpp:337 modules/gui/qt/menus.cpp:1064
+#: modules/gui/qt/menus.cpp:340 modules/gui/qt/menus.cpp:1069
 msgid "Subti&tle"
 msgstr "ចំណង​ជើង​រង"
 
-#: modules/gui/qt/menus.cpp:339 modules/gui/qt/menus.cpp:1080
+#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1085
 msgid "Tool&s"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:342 modules/gui/qt/menus.cpp:1087
+#: modules/gui/qt/menus.cpp:345 modules/gui/qt/menus.cpp:1092
 msgid "V&iew"
 msgstr "មើល"
 
-#: modules/gui/qt/menus.cpp:344 modules/gui/qt/menus.cpp:788
+#: modules/gui/qt/menus.cpp:347 modules/gui/qt/menus.cpp:793
 msgid "&Help"
 msgstr "ជំនួយ"
 
-#: modules/gui/qt/menus.cpp:357
+#: modules/gui/qt/menus.cpp:360
 msgid "Open &File..."
 msgstr "បើក​ឯកសារ..."
 
-#: modules/gui/qt/menus.cpp:359
+#: modules/gui/qt/menus.cpp:362
 msgid "&Open Multiple Files..."
 msgstr "បើក​ឯកសារ​ច្រើន..."
 
-#: modules/gui/qt/menus.cpp:363 modules/gui/qt/menus.cpp:940
+#: modules/gui/qt/menus.cpp:366 modules/gui/qt/menus.cpp:945
 msgid "Open &Disc..."
 msgstr "បើក​ថាស..."
 
-#: modules/gui/qt/menus.cpp:365
+#: modules/gui/qt/menus.cpp:368
 msgid "Open &Network Stream..."
 msgstr "បើកស្ទ្រីម​បណ្ដាញ..."
 
-#: modules/gui/qt/menus.cpp:367 modules/gui/qt/menus.cpp:944
+#: modules/gui/qt/menus.cpp:370 modules/gui/qt/menus.cpp:949
 msgid "Open &Capture Device..."
 msgstr "បើក​ឧបករណ៍​ចាប់យក..."
 
-#: modules/gui/qt/menus.cpp:370
+#: modules/gui/qt/menus.cpp:373
 msgid "Open &Location from clipboard"
 msgstr "បើក​ទីតាំង​ពី​ក្ដារ​តម្បៀតខ្ទាស់"
 
-#: modules/gui/qt/menus.cpp:374
+#: modules/gui/qt/menus.cpp:377
 msgid "Open &Recent Media"
 msgstr "បើក​មេឌៀ​បច្ចុប្បន្ន"
 
-#: modules/gui/qt/menus.cpp:387
+#: modules/gui/qt/menus.cpp:390
 msgid "Conve&rt / Save..."
 msgstr "បម្លែង / រក្សាទុក..."
 
-#: modules/gui/qt/menus.cpp:389
+#: modules/gui/qt/menus.cpp:392
 msgid "&Stream..."
 msgstr "ស្ទ្រីម..."
 
-#: modules/gui/qt/menus.cpp:394
+#: modules/gui/qt/menus.cpp:397
 msgid "Quit at the end of playlist"
 msgstr "ចេញ​ពេល​ដល់​ចុង​បញ្ជី​ចាក់"
 
-#: modules/gui/qt/menus.cpp:401
+#: modules/gui/qt/menus.cpp:404
 msgid "Close to systray"
 msgstr "បិទ​ទៅ​ថាស​ប្រព័ន្ធ"
 
-#: modules/gui/qt/menus.cpp:405 modules/gui/qt/menus.cpp:1194
+#: modules/gui/qt/menus.cpp:408 modules/gui/qt/menus.cpp:1199
 msgid "&Quit"
 msgstr "បិទ"
 
-#: modules/gui/qt/menus.cpp:415
+#: modules/gui/qt/menus.cpp:418
 msgid "&Effects and Filters"
 msgstr "បែបផែន និង​តម្រង"
 
-#: modules/gui/qt/menus.cpp:418
+#: modules/gui/qt/menus.cpp:421
 msgid "&Track Synchronization"
 msgstr "ការ​ធ្វើសមកាលកម្មវ​បទ"
 
-#: modules/gui/qt/menus.cpp:437
+#: modules/gui/qt/menus.cpp:440
 msgid "Plu&gins and extensions"
 msgstr "កម្មវិធី​ជំនួយ និង​ផ្នែកបន្ថែម"
 
-#: modules/gui/qt/menus.cpp:442
+#: modules/gui/qt/menus.cpp:445
 msgid "Customi&ze Interface..."
 msgstr "ចំណុចប្រទាក់​តាម​តម្រូវការ..."
 
-#: modules/gui/qt/menus.cpp:445
+#: modules/gui/qt/menus.cpp:448
 msgid "&Preferences"
 msgstr "ចំណូល​ចិត្ត"
 
-#: modules/gui/qt/menus.cpp:466
+#: modules/gui/qt/menus.cpp:469
 msgid "&View"
 msgstr "មើល"
 
-#: modules/gui/qt/menus.cpp:487
+#: modules/gui/qt/menus.cpp:490
 msgid "Play&list"
 msgstr "បញ្ជី​ចាក់"
 
-#: modules/gui/qt/menus.cpp:488
+#: modules/gui/qt/menus.cpp:491
 msgid "Ctrl+L"
 msgstr "បញ្ជា (Ctrl+L)"
 
-#: modules/gui/qt/menus.cpp:491
+#: modules/gui/qt/menus.cpp:494
 msgid "Docked Playlist"
 msgstr "បាន​ចត​បញ្ជី​ចាក់"
 
-#: modules/gui/qt/menus.cpp:501
+#: modules/gui/qt/menus.cpp:504
 msgid "Always on &top"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:509
+#: modules/gui/qt/menus.cpp:512
 msgid "Mi&nimal Interface"
 msgstr "ចំណុច​ប្រទាក់​អប្បបរមា"
 
-#: modules/gui/qt/menus.cpp:510
+#: modules/gui/qt/menus.cpp:513
 msgid "Ctrl+H"
 msgstr "បញ្ជា (Ctrl)+H"
 
-#: modules/gui/qt/menus.cpp:519
+#: modules/gui/qt/menus.cpp:522
 msgid "&Fullscreen Interface"
 msgstr "ចំណុច​ប្រទាក់​ពេញ​អេក្រង់"
 
-#: modules/gui/qt/menus.cpp:527
+#: modules/gui/qt/menus.cpp:530
 msgid "&Advanced Controls"
 msgstr "កម្មវិធី​បញ្ជា​កម្រិត​ខ្ពស់"
 
-#: modules/gui/qt/menus.cpp:534
+#: modules/gui/qt/menus.cpp:538
 msgid "Status Bar"
 msgstr "របារ​ស្ថានភាព"
 
-#: modules/gui/qt/menus.cpp:539
+#: modules/gui/qt/menus.cpp:544
 msgid "Visualizations selector"
 msgstr "ឧបករណ៍​ជ្រើស​រូបភាព​មើល​ឃើញ"
 
-#: modules/gui/qt/menus.cpp:597
+#: modules/gui/qt/menus.cpp:602
 msgid "&Increase Volume"
 msgstr "បង្កើន​កម្រិត​សំឡេង"
 
-#: modules/gui/qt/menus.cpp:600
+#: modules/gui/qt/menus.cpp:605
 msgid "D&ecrease Volume"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:603
+#: modules/gui/qt/menus.cpp:608
 msgid "&Mute"
 msgstr "បិទ​សំឡេង"
 
-#: modules/gui/qt/menus.cpp:619
+#: modules/gui/qt/menus.cpp:624
 msgid "Audio &Device"
 msgstr "ឧបករណ៍​អូឌីយ៉ូ"
 
-#: modules/gui/qt/menus.cpp:623
+#: modules/gui/qt/menus.cpp:628
 msgid "Audio &Track"
 msgstr "បទ​អូឌីយ៉ូ"
 
-#: modules/gui/qt/menus.cpp:625
+#: modules/gui/qt/menus.cpp:630
 msgid "&Stereo Mode"
 msgstr "របៀប​ស្តេរេអូ"
 
-#: modules/gui/qt/menus.cpp:628
+#: modules/gui/qt/menus.cpp:633
 msgid "&Visualizations"
 msgstr "រូបភាព​មើល​ឃើញ"
 
-#: modules/gui/qt/menus.cpp:654
+#: modules/gui/qt/menus.cpp:659
 msgid "Add &Subtitle File..."
 msgstr "បន្ថែម​ឯកសារ​ចំណងជើង​រង..."
 
-#: modules/gui/qt/menus.cpp:656
+#: modules/gui/qt/menus.cpp:661
 msgid "Sub &Track"
 msgstr "ចំណងជើង​រង និង​បទ"
 
-#: modules/gui/qt/menus.cpp:678
+#: modules/gui/qt/menus.cpp:683
 msgid "Video &Track"
 msgstr "បទ​វីដេអូ"
 
-#: modules/gui/qt/menus.cpp:682
+#: modules/gui/qt/menus.cpp:687
 msgid "&Fullscreen"
 msgstr "ពេញ​អេក្រង់"
 
-#: modules/gui/qt/menus.cpp:683
+#: modules/gui/qt/menus.cpp:688
 msgid "Always Fit &Window"
 msgstr "សម​ទៅ​នឹង​បង្អួច​ជានិច្ច"
 
-#: modules/gui/qt/menus.cpp:684
+#: modules/gui/qt/menus.cpp:689
 msgid "Set as Wall&paper"
 msgstr "កំណត់​ជា​ផ្ទាំង​រូបភាព"
 
-#: modules/gui/qt/menus.cpp:688
+#: modules/gui/qt/menus.cpp:693
 msgid "&Zoom"
 msgstr "ពង្រីក"
 
-#: modules/gui/qt/menus.cpp:689
+#: modules/gui/qt/menus.cpp:694
 msgid "&Aspect Ratio"
 msgstr "សមាមាត្រ"
 
-#: modules/gui/qt/menus.cpp:690
+#: modules/gui/qt/menus.cpp:695
 msgid "&Crop"
 msgstr "ច្រឹប"
 
-#: modules/gui/qt/menus.cpp:694
+#: modules/gui/qt/menus.cpp:699
 msgid "&Deinterlace"
 msgstr "មិន​ត្របាញ់"
 
-#: modules/gui/qt/menus.cpp:695
+#: modules/gui/qt/menus.cpp:700
 msgid "&Deinterlace mode"
 msgstr "របៀប​មិន​ត្របាញ់"
 
-#: modules/gui/qt/menus.cpp:699
+#: modules/gui/qt/menus.cpp:704
 msgid "Take &Snapshot"
 msgstr "ថតរូប"
 
-#: modules/gui/qt/menus.cpp:718
+#: modules/gui/qt/menus.cpp:723
 msgid "T&itle"
 msgstr "ចំណង​ជើង"
 
-#: modules/gui/qt/menus.cpp:719
+#: modules/gui/qt/menus.cpp:724
 msgid "&Chapter"
 msgstr "ជំពូក"
 
-#: modules/gui/qt/menus.cpp:721
+#: modules/gui/qt/menus.cpp:726
 msgid "&Program"
 msgstr "កម្មវិធី"
 
-#: modules/gui/qt/menus.cpp:725
+#: modules/gui/qt/menus.cpp:730
 msgid "&Manage"
 msgstr "គ្រប់គ្រង"
 
-#: modules/gui/qt/menus.cpp:791
+#: modules/gui/qt/menus.cpp:796
 msgid "Check for &Updates..."
 msgstr "ពិនិត្យមើល​បច្ចុប្បន្នភាព..."
 
-#: modules/gui/qt/menus.cpp:838
+#: modules/gui/qt/menus.cpp:843
 msgid "&Stop"
 msgstr "ឈប់"
 
-#: modules/gui/qt/menus.cpp:846
+#: modules/gui/qt/menus.cpp:851
 msgid "Pre&vious"
 msgstr "មុន"
 
-#: modules/gui/qt/menus.cpp:852
+#: modules/gui/qt/menus.cpp:857
 msgid "Ne&xt"
 msgstr "បន្ទាប់"
 
-#: modules/gui/qt/menus.cpp:870
+#: modules/gui/qt/menus.cpp:875
 msgid "Sp&eed"
 msgstr "ល្បឿន"
 
-#: modules/gui/qt/menus.cpp:876
+#: modules/gui/qt/menus.cpp:881
 msgid "&Faster"
 msgstr "លឿន​ជាង"
 
-#: modules/gui/qt/menus.cpp:888
+#: modules/gui/qt/menus.cpp:893
 msgid "N&ormal Speed"
 msgstr "ល្បឿន​ធម្មតា"
 
-#: modules/gui/qt/menus.cpp:898
+#: modules/gui/qt/menus.cpp:903
 msgid "Slo&wer"
 msgstr "យឺត​ជាង"
 
-#: modules/gui/qt/menus.cpp:913
+#: modules/gui/qt/menus.cpp:918
 msgid "&Jump Forward"
 msgstr "លោត​ទៅ​មុខ"
 
-#: modules/gui/qt/menus.cpp:920
+#: modules/gui/qt/menus.cpp:925
 msgid "Jump Bac&kward"
 msgstr "លោត​ថយ​ក្រោយ"
 
-#: modules/gui/qt/menus.cpp:927
+#: modules/gui/qt/menus.cpp:932
 msgid "Ctrl+T"
 msgstr "បញ្ជា (Ctrl)+T"
 
-#: modules/gui/qt/menus.cpp:942
+#: modules/gui/qt/menus.cpp:947
 msgid "Open &Network..."
 msgstr "បើក​បណ្ដាញ..."
 
-#: modules/gui/qt/menus.cpp:1036
+#: modules/gui/qt/menus.cpp:1041
 msgid "Leave Fullscreen"
 msgstr "ចេញពី​ពេញ​អេក្រង់"
 
-#: modules/gui/qt/menus.cpp:1070
+#: modules/gui/qt/menus.cpp:1075
 msgid "&Playback"
 msgstr "ចាក់​ឡើងវិញ"
 
-#: modules/gui/qt/menus.cpp:1175
+#: modules/gui/qt/menus.cpp:1180
 msgid "&Hide VLC media player in taskbar"
 msgstr "លាក់​កម្មវិធី​ចាក់​មេឌៀ VLC ក្នុង​របារ​ភារកិច្ច"
 
-#: modules/gui/qt/menus.cpp:1181
+#: modules/gui/qt/menus.cpp:1186
 msgid "Sho&w VLC media player"
 msgstr "បង្ហាញ​កម្មវិធី​ចាក់​មេឌៀ VLC"
 
-#: modules/gui/qt/menus.cpp:1192
+#: modules/gui/qt/menus.cpp:1197
 msgid "&Open Media"
 msgstr "បើក​មេឌៀ"
 
-#: modules/gui/qt/menus.cpp:1622
+#: modules/gui/qt/menus.cpp:1627
 msgid "&Clear"
 msgstr "សម្អាត"
 
-#: modules/gui/qt/menus.cpp:1630
+#: modules/gui/qt/menus.cpp:1635
 msgid "&Renderer"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1634
+#: modules/gui/qt/menus.cpp:1639
 msgid "<Local>"
 msgstr ""
 
-#: modules/gui/qt/menus.cpp:1647
+#: modules/gui/qt/menus.cpp:1652
 msgid "Scanning..."
 msgstr ""
 
@@ -21183,42 +21187,50 @@ msgid "Show unimportant error and warnings dialogs"
 msgstr "បង្ហាញ​ប្រអប់​ព្រមាន និង​កំហុស​ដែល​មិន​សំខាន់"
 
 #: modules/gui/qt/qt.cpp:124
+msgid "Enable Dark Mode"
+msgstr ""
+
+#: modules/gui/qt/qt.cpp:125
+msgid "Applies a dark theme to the style."
+msgstr ""
+
+#: modules/gui/qt/qt.cpp:127
 msgid "Activate the updates availability notification"
 msgstr "ធ្វើ​ឲ្យ​ការ​ជូន​ដំណឹង​អំពី​បច្ចុប្បន្នភាព​ដែល​មាន​សកម្ម"
 
-#: modules/gui/qt/qt.cpp:125
+#: modules/gui/qt/qt.cpp:128
 msgid ""
 "Activate the automatic notification of new versions of the software. It runs "
 "once every two weeks."
 msgstr ""
 "ធ្វើ​ឲ្យ​ការ​ជូន​ដំណឹង​ស្វ័យប្រវត្តិ​អំពី​កំណែ​ថ្មី​របស់​កម្មវិធី​សកម្ម ។ វា​ដំណើរការ​នៅ​រៀងរាល់​ពីរ​សប្ដាហ៍​ម្ដង ។"
 
-#: modules/gui/qt/qt.cpp:128
+#: modules/gui/qt/qt.cpp:131
 msgid "Number of days between two update checks"
 msgstr "ចំនួន​ថ្ងៃ​ដែល​នៅ​ចន្លោះ​រវាង​ការ​ពិនិត្យមើល​បច្ចុប្បន្នភាព​ពីរ"
 
-#: modules/gui/qt/qt.cpp:130
+#: modules/gui/qt/qt.cpp:133
 msgid "Ask for network policy at start"
 msgstr "សួរ​រក​គោលការណ៍​បណ្ដាញ​នៅ​ពេល​ចាប់ផ្ដើម"
 
-#: modules/gui/qt/qt.cpp:132
+#: modules/gui/qt/qt.cpp:135
 msgid "Save the recently played items in the menu"
 msgstr "រក្សាទុក​ធាតុ​ដែល​បានចាក់​បច្ចុប្បន្ន​នៅ​ក្នុង​ម៉ឺនុយ"
 
-#: modules/gui/qt/qt.cpp:134
+#: modules/gui/qt/qt.cpp:137
 msgid "List of words separated by | to filter"
 msgstr "បញ្ជី​ពាក្យ​ដែល​បំបែក​ដោយ | ដើម្បី​ត្រង"
 
-#: modules/gui/qt/qt.cpp:135
+#: modules/gui/qt/qt.cpp:138
 msgid ""
 "Regular expression used to filter the recent items played in the player."
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:138
+#: modules/gui/qt/qt.cpp:141
 msgid "Define the colors of the volume slider"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:139
+#: modules/gui/qt/qt.cpp:142
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
@@ -21226,11 +21238,11 @@ msgid ""
 "An alternative can be '30;30;50;40;40;100;50;50;160;150;150;255'"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:144
+#: modules/gui/qt/qt.cpp:147
 msgid "Selection of the starting mode and look"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:145
+#: modules/gui/qt/qt.cpp:148
 msgid ""
 "Start VLC with:\n"
 " - normal mode\n"
@@ -21242,39 +21254,39 @@ msgstr ""
 " - តំបន់​ដែល​តែងតែ​មាន​ដើម្បី​បង្ហាញ​ព័ត៌មាន​ជា​អត្ថបទ​ចម្រៀង សិល្បៈ​អាល់ប៊ុម...\n"
 " - របៀប​អប្បបរមា​ដែល​ឧបករណ៍​បញ្ជា​មាន​ដែន​កំណត់"
 
-#: modules/gui/qt/qt.cpp:151
+#: modules/gui/qt/qt.cpp:154
 msgid "Show a controller in fullscreen mode"
 msgstr "បង្ហាញ​ឧបករណ៍​បញ្ជា​ក្នុង​របៀប​ពេញ​អេក្រង់"
 
-#: modules/gui/qt/qt.cpp:152
+#: modules/gui/qt/qt.cpp:155
 msgid "Embed the file browser in open dialog"
 msgstr "បង្កប់​កម្មវិធី​រុករក​ឯកសារ​ក្នុង​ប្រអប់​ដែល​បាន​បើក"
 
-#: modules/gui/qt/qt.cpp:154
+#: modules/gui/qt/qt.cpp:157
 msgid "Define which screen fullscreen goes"
 msgstr "កំណត់​អេក្រង់​ណាមួយ​ដែល​ភាព​ពេញ​អេក្រង់​ត្រូវ​ទៅ"
 
-#: modules/gui/qt/qt.cpp:155
+#: modules/gui/qt/qt.cpp:158
 msgid "Screennumber of fullscreen, instead of same screen where interface is."
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:158
+#: modules/gui/qt/qt.cpp:161
 msgid "Load extensions on startup"
 msgstr "ផ្ទុក​ផ្នែក​បន្ថែម​នៅ​ពេល​ចាប់ផ្ដើម"
 
-#: modules/gui/qt/qt.cpp:159
+#: modules/gui/qt/qt.cpp:162
 msgid "Automatically load the extensions module on startup."
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:162
+#: modules/gui/qt/qt.cpp:165
 msgid "Start in minimal view (without menus)"
 msgstr "ចាប់ផ្ដើម​ក្នុង​ទិដ្ឋភាព​អប្បបរមា (គ្មាន​ម៉ឺនុយ)"
 
-#: modules/gui/qt/qt.cpp:164
+#: modules/gui/qt/qt.cpp:167
 msgid "Display background cone or art"
 msgstr "បង្ហាញ​សិល្បៈ ឬ​កោណ​ផ្ទៃ​ខាងក្រោយ"
 
-#: modules/gui/qt/qt.cpp:165
+#: modules/gui/qt/qt.cpp:168
 msgid ""
 "Display background cone or current album art when not playing. Can be "
 "disabled to prevent burning screen."
@@ -21282,19 +21294,19 @@ msgstr ""
 "បង្ហាញ​កោណ​ផ្ទៃ​ខាងក្រោយ ឬ​សិល្បៈ​អាល់ប៊ុម​បច្ចុប្បន្ន​នៅ​ពេល​កំពុង​ចាក់ ។ វា​អាច​ត្រូវ​បាន​បិទ​ដើម្បី​ការ​ពារ​ការ​"
 "ឆេះ​អេក្រង់ ។"
 
-#: modules/gui/qt/qt.cpp:168
+#: modules/gui/qt/qt.cpp:171
 msgid "Expanding background cone or art"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:169
+#: modules/gui/qt/qt.cpp:172
 msgid "Background art fits window's size."
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:171
+#: modules/gui/qt/qt.cpp:174
 msgid "Ignore keyboard volume buttons."
 msgstr "មិន​អើពើ​ប៊ូតុង​គ្រាប់ចុច​កម្រិត​សំឡេង ។"
 
-#: modules/gui/qt/qt.cpp:173
+#: modules/gui/qt/qt.cpp:176
 msgid ""
 "With this option checked, the volume up, volume down and mute buttons on "
 "your keyboard will always change your system volume. With this option "
@@ -21305,41 +21317,41 @@ msgstr ""
 "កម្រិត​សំឡេង​របស់​អ្នក​ជានិច្ច ។ ប្រសិនបើ​មិន​បាន​ធីក​ជម្រើស​នេះ​ទេ ប៊ូតុង​សំឡេង​នឹង​ផ្លាស់ប្ដូរ​កម្រិត​សំឡេង​របស់ "
 "VLC នៅ​ពេល​ដែល VLC ត្រូវ​បាន​ជ្រើស និង​ផ្លាស់ប្ដូរ​កម្រិត​សំឡេង​ប្រព័ន្ធ​​នៅ​ពេល​ដែល VLC មិន​ត្រូវ​បាន​ជ្រើស ។"
 
-#: modules/gui/qt/qt.cpp:188
+#: modules/gui/qt/qt.cpp:191
 msgid "When to raise the interface"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:189
+#: modules/gui/qt/qt.cpp:192
 msgid ""
 "This option allows the interface to be raised automatically when a video/"
 "audio playback starts, or never."
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:192
+#: modules/gui/qt/qt.cpp:195
 msgid "Fullscreen controller mouse sensitivity"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:200
+#: modules/gui/qt/qt.cpp:203
 msgid "When minimized"
 msgstr "ពេល​បាន​បង្រួម​អប្បរមា"
 
-#: modules/gui/qt/qt.cpp:218
+#: modules/gui/qt/qt.cpp:221
 msgid "Qt interface"
 msgstr "ចំណុច​ប្រទាក់ Qt"
 
-#: modules/gui/qt/util/customwidgets.cpp:82
+#: modules/gui/qt/util/customwidgets.cpp:80
 msgid "errors"
 msgstr "កំហុស"
 
-#: modules/gui/qt/util/customwidgets.cpp:83
+#: modules/gui/qt/util/customwidgets.cpp:81
 msgid "warnings"
 msgstr "ការ​ព្រមាន"
 
-#: modules/gui/qt/util/customwidgets.cpp:84
+#: modules/gui/qt/util/customwidgets.cpp:82
 msgid "debug"
 msgstr "បំបាត់កំហុស"
 
-#: modules/gui/qt/util/searchlineedit.cpp:49
+#: modules/gui/qt/util/searchlineedit.cpp:50
 msgctxt "Tooltip|Clear"
 msgid "Clear"
 msgstr ""
@@ -21442,12 +21454,12 @@ msgstr "ជ្រើស​ស្បែក"
 msgid "Open skin..."
 msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:86 modules/hw/d3d9/d3d9_filters.c:68
+#: modules/hw/d3d11/d3d11_filters.c:87 modules/hw/d3d9/d3d9_filters.c:68
 #: modules/video_filter/adjust.c:61
 msgid "Brightness threshold"
 msgstr "កម្រិត​ពន្លឺ"
 
-#: modules/hw/d3d11/d3d11_filters.c:87 modules/hw/d3d9/d3d9_filters.c:69
+#: modules/hw/d3d11/d3d11_filters.c:88 modules/hw/d3d9/d3d9_filters.c:69
 #: modules/video_filter/adjust.c:62
 msgid ""
 "When this mode is enabled, pixels will be shown as black or white. The "
@@ -21456,61 +21468,64 @@ msgstr ""
 "នៅ​ពេល​បាន​បើក​របៀប​នេះ ភីកសែល​នឹង​ត្រូវ​បាន​បង្ហាញ​​ជា​ពណ៌ស ឬ​ខ្មៅ ។ តម្លៃ​កម្រិត​ពណ៌​នឹង​ត្រូវ​បាន​កំណត់​ពន្លឺ​ដូច​"
 "ខាងក្រោម ។"
 
-#: modules/hw/d3d11/d3d11_filters.c:90 modules/hw/d3d9/d3d9_filters.c:72
+#: modules/hw/d3d11/d3d11_filters.c:91 modules/hw/d3d9/d3d9_filters.c:72
 #: modules/video_filter/adjust.c:65
 msgid "Image contrast (0-2)"
 msgstr "កម្រិត​ពន្លឺ​រូបភាព (០-២)"
 
-#: modules/hw/d3d11/d3d11_filters.c:91 modules/hw/d3d9/d3d9_filters.c:73
+#: modules/hw/d3d11/d3d11_filters.c:92 modules/hw/d3d9/d3d9_filters.c:73
 #: modules/video_filter/adjust.c:66
 msgid "Set the image contrast, between 0 and 2. Defaults to 1."
 msgstr "កំណត់​​កម្រិត​ពន្លឺ​រូបភាព ចន្លោះ​ពី ០ ទៅ ២ ។ លំនាំដើម​គឺ ១ ។"
 
-#: modules/hw/d3d11/d3d11_filters.c:92 modules/hw/d3d9/d3d9_filters.c:74
+#: modules/hw/d3d11/d3d11_filters.c:93 modules/hw/d3d9/d3d9_filters.c:74
 msgid "Image hue (0-360)"
 msgstr "ពណ៌​លាំៗ​របស់​រូបភាព (០-៣៦០)"
 
-#: modules/hw/d3d11/d3d11_filters.c:93 modules/hw/d3d9/d3d9_filters.c:75
+#: modules/hw/d3d11/d3d11_filters.c:94 modules/hw/d3d9/d3d9_filters.c:75
 msgid "Set the image hue, between 0 and 360. Defaults to 0."
 msgstr "កំណត់​ពណ៌​លាំៗ​របស់​រូបភាព ចន្លោះ​ពី ០ ទៅ ៣៦០ ។ លំនាំដើម​គឺ ០ ។"
 
-#: modules/hw/d3d11/d3d11_filters.c:94 modules/hw/d3d9/d3d9_filters.c:76
+#: modules/hw/d3d11/d3d11_filters.c:95 modules/hw/d3d9/d3d9_filters.c:76
 #: modules/video_filter/adjust.c:69
 msgid "Image saturation (0-3)"
 msgstr "តិត្ថិភាព​រូបភាព (០-៣)"
 
-#: modules/hw/d3d11/d3d11_filters.c:95 modules/hw/d3d9/d3d9_filters.c:77
+#: modules/hw/d3d11/d3d11_filters.c:96 modules/hw/d3d9/d3d9_filters.c:77
 #: modules/video_filter/adjust.c:70
 msgid "Set the image saturation, between 0 and 3. Defaults to 1."
 msgstr "កំណត់​តិត្ថិភាព​រូបភាព ចន្លោះ​ពី ០ ទៅ ៣ ។ លំនាំដើម​គឺ ១ ។"
 
-#: modules/hw/d3d11/d3d11_filters.c:96 modules/hw/d3d9/d3d9_filters.c:78
+#: modules/hw/d3d11/d3d11_filters.c:97 modules/hw/d3d9/d3d9_filters.c:78
 #: modules/video_filter/adjust.c:71
 msgid "Image brightness (0-2)"
 msgstr "ពន្លឺ​រូបភាព (០-២)"
 
-#: modules/hw/d3d11/d3d11_filters.c:97 modules/hw/d3d9/d3d9_filters.c:79
+#: modules/hw/d3d11/d3d11_filters.c:98 modules/hw/d3d9/d3d9_filters.c:79
 #: modules/video_filter/adjust.c:72
 msgid "Set the image brightness, between 0 and 2. Defaults to 1."
 msgstr "កំណត់​ពន្លឺ​រូបភាព ចន្លោះ​ពី ០ ទៅ ២ ។ លំនាំដើម​គឺ ១ ។"
 
-#: modules/hw/d3d11/d3d11_filters.c:98 modules/hw/d3d9/d3d9_filters.c:80
+#: modules/hw/d3d11/d3d11_filters.c:99 modules/hw/d3d9/d3d9_filters.c:80
 #: modules/video_filter/adjust.c:73
 msgid "Image gamma (0-10)"
 msgstr "ហ្កាម៉ា​រូបភាព (០-១០)"
 
-#: modules/hw/d3d11/d3d11_filters.c:99 modules/hw/d3d9/d3d9_filters.c:81
+#: modules/hw/d3d11/d3d11_filters.c:100 modules/hw/d3d9/d3d9_filters.c:81
 #: modules/video_filter/adjust.c:74
 msgid "Set the image gamma, between 0.01 and 10. Defaults to 1."
 msgstr "កំណត់​ហ្កាម៉ា​រូបភាព ចន្លោះ​ពី ០.០១ ទៅ ១០ ។ លំនាំដើម​គឺ ១ ។"
 
-#: modules/hw/d3d11/d3d11_filters.c:670
-#, fuzzy
+#: modules/hw/d3d11/d3d11_filters.c:681
 msgid "AMD VQ Enhancer"
-msgstr "ការ​ធ្វើឲ្យ​ស្តេរ៉េអូ​ប្រសើរ​ឡើង"
+msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:671
-msgid "amf_vqenhancer"
+#: modules/hw/d3d11/d3d11_filters.c:687
+msgid "AMD Frame Rate Doubler"
+msgstr ""
+
+#: modules/hw/d3d11/d3d11_filters.c:690
+msgid "Show indicator"
 msgstr ""
 
 #: modules/hw/d3d9/d3d9_filters.c:454
@@ -21891,11 +21906,11 @@ msgstr ""
 msgid "System logger (syslog)"
 msgstr ""
 
-#: modules/lua/extension.c:1194
+#: modules/lua/extension.c:1200
 msgid "Extension not responding!"
 msgstr ""
 
-#: modules/lua/extension.c:1195
+#: modules/lua/extension.c:1201
 #, c-format
 msgid ""
 "Extension '%s' does not respond.\n"
@@ -21926,8 +21941,8 @@ msgstr "ការ​កំណត់​រចនា​សម្ព័ន្ធ​
 
 #: modules/lua/vlc.c:53
 msgid ""
-"Lua interface configuration string. Format is: '[\"<interface module "
-"name>\"] = { <option> = <value>, ...}, ...'."
+"Lua interface configuration string. Format is: '[\"<interface module name>"
+"\"] = { <option> = <value>, ...}, ...'."
 msgstr ""
 "តួអក្សរ​​ការ​កំណត់​រចនា​សម្ព័ន្ធ​ចំណុចប្រទាក់ Lua ។ ទ្រង់ទ្រាយ ៖ '[\"<ឈ្មោះ​ម៉ូឌុល​ចំណុច​ប្រទាក់>\"] = "
 "{ <option> = <value>, ...}, ...' ។"
@@ -22678,34 +22693,34 @@ msgstr ""
 msgid "Track fingerprinter (based on Acoustid)"
 msgstr ""
 
-#: modules/misc/gnutls.c:485
+#: modules/misc/gnutls.c:482
 msgid ""
 "However, the security certificate presented by the server is unknown and "
 "could not be authenticated by any trusted Certificate Authority."
 msgstr ""
 
-#: modules/misc/gnutls.c:491
+#: modules/misc/gnutls.c:488
 msgid ""
 "However, the security certificate presented by the server changed since the "
 "previous visit and was not authenticated by any trusted Certificate "
 "Authority."
 msgstr ""
 
-#: modules/misc/gnutls.c:502 modules/misc/gnutls.c:523
+#: modules/misc/gnutls.c:499 modules/misc/gnutls.c:520
 #: modules/misc/securetransport.c:346
 msgid "Abort"
 msgstr "បោះបង់"
 
-#: modules/misc/gnutls.c:502
+#: modules/misc/gnutls.c:499
 msgid "View certificate"
 msgstr "មើល​វិញ្ញាបនបត្រ"
 
-#: modules/misc/gnutls.c:503 modules/misc/gnutls.c:524
+#: modules/misc/gnutls.c:500 modules/misc/gnutls.c:521
 #: modules/misc/securetransport.c:348
 msgid "Insecure site"
 msgstr "តំបន់​បណ្ដាញ​គ្មាន​សុវត្ថិភាព"
 
-#: modules/misc/gnutls.c:504
+#: modules/misc/gnutls.c:501
 #, c-format
 msgid ""
 "You attempted to reach %s. %s\n"
@@ -22715,15 +22730,15 @@ msgid ""
 "If in doubt, abort now.\n"
 msgstr ""
 
-#: modules/misc/gnutls.c:523
+#: modules/misc/gnutls.c:520
 msgid "Accept 24 hours"
 msgstr "យល់ព្រម ២៤ ម៉ោង"
 
-#: modules/misc/gnutls.c:523
+#: modules/misc/gnutls.c:520
 msgid "Accept permanently"
 msgstr "យល់ព្រម​រហូត"
 
-#: modules/misc/gnutls.c:525
+#: modules/misc/gnutls.c:522
 #, c-format
 msgid ""
 "This is the certificate presented by %s:\n"
@@ -22736,31 +22751,31 @@ msgstr ""
 "\n"
 "បើ​សង្ស័យ សូម​បោះបង់​វា​ឥឡូវ។\n"
 
-#: modules/misc/gnutls.c:756
+#: modules/misc/gnutls.c:753
 msgid "Use system trust database"
 msgstr ""
 
-#: modules/misc/gnutls.c:758
+#: modules/misc/gnutls.c:755
 msgid ""
 "Trust the root certificates of Certificate Authorities stored in the "
 "operating system trust database to authenticate TLS sessions."
 msgstr ""
 
-#: modules/misc/gnutls.c:761
+#: modules/misc/gnutls.c:758
 msgid "Trust directory"
 msgstr ""
 
-#: modules/misc/gnutls.c:763
+#: modules/misc/gnutls.c:760
 msgid ""
 "Trust the root certificates of Certificate Authorities stored in the "
 "specified directory to authenticate TLS sessions."
 msgstr ""
 
-#: modules/misc/gnutls.c:766
+#: modules/misc/gnutls.c:763
 msgid "TLS cipher priorities"
 msgstr "អាទិភាព​ការ​សរសេរ​ពាក្យ​សម្ងាត់ TLS"
 
-#: modules/misc/gnutls.c:767
+#: modules/misc/gnutls.c:764
 msgid ""
 "Ciphers, key exchange methods, hash functions and compression methods can be "
 "selected. Refer to GNU TLS documentation for detailed syntax."
@@ -22768,23 +22783,23 @@ msgstr ""
 "ការ​សរសេរសម្ងាត់ វិធីសាស្ត្រ​ប្ដូរ​គ្រាប់ចុច មាន​មុខងារ និង​វិធីសាស្ត្រ​បង្ហាប់​ដែល​អាច​ជ្រើស​បាន ។ សម្រាប់​"
 "វាក្យសម្ពន្ធ​លម្អិត សូម​មើល​ឯកសារ GNU TLS ។"
 
-#: modules/misc/gnutls.c:777
+#: modules/misc/gnutls.c:774
 msgid "Performance (prioritize faster ciphers)"
 msgstr "ដំណើរការ (ផ្ដល់​អាទិភាព​ការ​សរសេរ​សម្ងាត់​លឿន)"
 
-#: modules/misc/gnutls.c:779
+#: modules/misc/gnutls.c:776
 msgid "Secure 128-bits (exclude 256-bits ciphers)"
 msgstr "សុវត្ថិភាព 128-bits (មិន​រួម​បញ្ចូល​ការ​សរសេរ​សម្ងាត់ 256-bits)"
 
-#: modules/misc/gnutls.c:780
+#: modules/misc/gnutls.c:777
 msgid "Secure 256-bits (prioritize 256-bits ciphers)"
 msgstr "សុវត្ថិភាព 256-bits (ផ្ដល់​អាទរភាព​ការ​សរសេរ​សម្ងាត់ 256-bits)"
 
-#: modules/misc/gnutls.c:785
+#: modules/misc/gnutls.c:782
 msgid "GNU TLS transport layer security"
 msgstr "សុវត្ថិភាព​ស្រទាប់​ដឹកជញ្ជូន GNU TLS"
 
-#: modules/misc/gnutls.c:799
+#: modules/misc/gnutls.c:796
 msgid "GNU TLS server"
 msgstr "ម៉ាស៊ីន​មេ​របស់ GNU TLS"
 
@@ -23321,7 +23336,7 @@ msgstr "កម្មវិធី​វេច​ខ្ចប់​អូឌីយ
 msgid "avparser packetizer"
 msgstr ""
 
-#: modules/packetizer/av1.c:580
+#: modules/packetizer/av1.c:585
 msgid "AV1 video packetizer"
 msgstr ""
 
@@ -23592,28 +23607,12 @@ msgid "Unknown type"
 msgstr "មិន​ស្គាល់​ប្រភេទ"
 
 #: modules/services_discovery/upnp.cpp:76
-msgid "SAT>IP channel list"
-msgstr ""
-
-#: modules/services_discovery/upnp.cpp:77
 msgid "Custom SAT>IP channel list URL"
 msgstr ""
 
-#: modules/services_discovery/upnp.cpp:82
-msgid "Master List"
-msgstr ""
-
-#: modules/services_discovery/upnp.cpp:82
-msgid "Server List"
-msgstr ""
-
-#: modules/services_discovery/upnp.cpp:82
-msgid "Custom List"
-msgstr ""
-
+#: modules/services_discovery/upnp.cpp:111
 #: modules/services_discovery/upnp.cpp:118
-#: modules/services_discovery/upnp.cpp:125
-#: modules/services_discovery/upnp.cpp:262
+#: modules/services_discovery/upnp.cpp:253
 msgid "Universal Plug'n'Play"
 msgstr "ដោត​ហើយ​ដើរ​ជា​សកល"
 
@@ -27254,39 +27253,32 @@ msgid "Recommended video output for Windows 8 and later versions"
 msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:74
-#, fuzzy
 msgid "Video Upscaling Mode"
-msgstr "ការ​ធ្វើមាត្រដ្ឋាន​វីដេអូ"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:75
-#, fuzzy
 msgid "Select the upscaling mode for video."
-msgstr "ជ្រើស​ពណ៌​មួយ​នៅ​ក្នុង​វីដេអូ"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Linear Sampler"
-msgstr "ប៊ីត​ក្នុង​មួយ​គំរូ"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Point Sampler"
-msgstr "អត្រា​គំរូ"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Video Processor"
-msgstr "កូដិក​​វីដេអូ"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:80
-#, fuzzy
 msgid "Super Resolution"
-msgstr "គុណភាព​បង្ហាញ"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:82
-#, fuzzy
 msgid "HDR Output Mode"
-msgstr "ម៉ូឌុល​បង្ហាញ"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:83
 msgid "Use HDR output even if the source is SDR."
@@ -27297,9 +27289,8 @@ msgid "Never out HDR"
 msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:88
-#, fuzzy
 msgid "Always output HDR"
-msgstr "នៅ​លើ​គេ​ជានិច្ច"
+msgstr ""
 
 #: modules/video_output/win32/direct3d11.c:88
 msgid "Generate HDR from SDR"
@@ -27883,11 +27874,11 @@ msgstr ""
 msgid "The height of the visualization window, in pixels."
 msgstr ""
 
-#: modules/visualization/glspectrum.c:62
+#: modules/visualization/glspectrum.c:64
 msgid "glSpectrum"
 msgstr ""
 
-#: modules/visualization/glspectrum.c:63
+#: modules/visualization/glspectrum.c:65
 msgid "3D OpenGL spectrum visualization"
 msgstr ""
 
@@ -28160,7 +28151,7 @@ msgid "Play List"
 msgstr "បញ្ជី​ចាក់"
 
 #: share/lua/http/dialogs/create_stream.html:156
-#: modules/gui/qt/ui/sprefs_audio.h:411
+#: modules/gui/qt/ui/sprefs_audio.h:412
 msgid "Output"
 msgstr "លទ្ធផល"
 
@@ -28360,15 +28351,15 @@ msgstr "ដើម្បី​បញ្ឈប់​ស្ទ្រីម និ�
 msgid "Are you sure you wish to create the stream?"
 msgstr "តើ​អ្នក​ពិតជា​ចង់​បង្កើត​ស្ទ្រីម​មែន​ឬ?"
 
-#: modules/gui/qt/ui/about.h:285 modules/gui/qt/ui/open.h:257
+#: modules/gui/qt/ui/about.h:282 modules/gui/qt/ui/open.h:255
 #: modules/gui/qt/ui/podcast_configuration.h:98
 msgid "Dialog"
 msgstr "ប្រអប់"
 
 #: modules/gui/qt/ui/equalizer.h:129 modules/gui/qt/ui/open_disk.h:293
-#: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:406
+#: modules/gui/qt/ui/open_net.h:93 modules/gui/qt/ui/sprefs_audio.h:407
 #: modules/gui/qt/ui/sprefs_input.h:353
-#: modules/gui/qt/ui/sprefs_interface.h:526
+#: modules/gui/qt/ui/sprefs_interface.h:532
 #: modules/gui/qt/ui/sprefs_subtitles.h:288
 #: modules/gui/qt/ui/sprefs_video.h:310 modules/gui/qt/ui/streampanel.h:165
 msgid "Form"
@@ -28381,6 +28372,22 @@ msgstr "ការ​កំណត់​ស្រេច"
 #: modules/gui/qt/ui/equalizer.h:134
 msgid "0.00 dB"
 msgstr "0.00 dB"
+
+#: modules/gui/qt/ui/fingerprintdialog.h:147
+msgid "Audio Fingerprinting"
+msgstr ""
+
+#: modules/gui/qt/ui/fingerprintdialog.h:148
+msgid "Select a matching identity"
+msgstr ""
+
+#: modules/gui/qt/ui/fingerprintdialog.h:149
+msgid "No fingerprint has been found"
+msgstr ""
+
+#: modules/gui/qt/ui/fingerprintdialog.h:150
+msgid "Fingerprinting track..."
+msgstr ""
 
 #: modules/gui/qt/ui/messages_panel.h:137
 msgid "&Verbosity:"
@@ -28398,63 +28405,63 @@ msgstr "រក្សាទុក​ជា..."
 msgid "Modules Tree"
 msgstr "មែកធាង​ម៉ូឌុល"
 
-#: modules/gui/qt/ui/open.h:260
+#: modules/gui/qt/ui/open.h:258
 msgid "Show extended options"
 msgstr "បង្ហាញ​ជម្រើស​បន្ថែម"
 
-#: modules/gui/qt/ui/open.h:262
+#: modules/gui/qt/ui/open.h:260
 msgid "Show &more options"
 msgstr "បង្ហាញ​ជម្រើស​ច្រើន​ទៀត"
 
-#: modules/gui/qt/ui/open.h:265
+#: modules/gui/qt/ui/open.h:263
 msgid "Change the caching for the media"
 msgstr "ផ្លាស់ប្ដូរ​ឃ្លាំង​សម្ងាត់​សម្រាប់​មេឌៀ"
 
-#: modules/gui/qt/ui/open.h:267
+#: modules/gui/qt/ui/open.h:265
 msgid " ms"
 msgstr " ms"
 
-#: modules/gui/qt/ui/open.h:268
+#: modules/gui/qt/ui/open.h:266
 msgid "MRL"
 msgstr "MRL"
 
-#: modules/gui/qt/ui/open.h:269
+#: modules/gui/qt/ui/open.h:267
 msgid "Start Time"
 msgstr "ពេលវេលា​ចាប់ផ្ដើម"
 
-#: modules/gui/qt/ui/open.h:270
+#: modules/gui/qt/ui/open.h:268
 msgid "Stop Time"
 msgstr ""
 
-#: modules/gui/qt/ui/open.h:271
+#: modules/gui/qt/ui/open.h:269
 msgid "Edit Options"
 msgstr "ជម្រើស​កែសម្រួល"
 
-#: modules/gui/qt/ui/open.h:272
+#: modules/gui/qt/ui/open.h:270
 msgid "Extra media"
 msgstr "មេឌៀ​បន្ថែម "
 
-#: modules/gui/qt/ui/open.h:274
+#: modules/gui/qt/ui/open.h:272
 msgid "Complete MRL for VLC internal"
 msgstr "បំពេញ MRL សម្រាប់ VLC ខាងក្នុង"
 
-#: modules/gui/qt/ui/open.h:277
+#: modules/gui/qt/ui/open.h:275
 msgid "Select the file"
 msgstr "ជ្រើស​​ឯកសារ"
 
-#: modules/gui/qt/ui/open.h:281
+#: modules/gui/qt/ui/open.h:279
 msgid "Change the start time for the media"
 msgstr "ផ្លាស់ប្ដូរ​ពេលវេលា​ចាប់ផ្ដើម​សម្រាប់​មេឌៀ"
 
-#: modules/gui/qt/ui/open.h:283 modules/gui/qt/ui/open.h:287
+#: modules/gui/qt/ui/open.h:281 modules/gui/qt/ui/open.h:285
 msgid "HH'H':mm'm':ss's'.zzz"
 msgstr "HH'H':mm'm':ss's'.zzz"
 
-#: modules/gui/qt/ui/open.h:285
+#: modules/gui/qt/ui/open.h:283
 msgid "Change the stop time for the media"
 msgstr ""
 
-#: modules/gui/qt/ui/open.h:288
+#: modules/gui/qt/ui/open.h:286
 msgid "Play another media synchronously (extra audio file, ...)"
 msgstr "ចាក់​មេឌៀ​ផ្សេង​ទៀត​ដំណាល​គ្នា (ឯកសារ​អូឌីយ៉ូ​បន្ថែម...)"
 
@@ -28730,55 +28737,55 @@ msgstr "ស្ទ្រីម​នូវ​ស្ទ្រីម​ដំបូ
 msgid "Generated stream output string"
 msgstr "ខ្សែអក្សរ​លទ្ធផល​ស្ទ្រីម​ដែល​បាន​បង្កើត"
 
-#: modules/gui/qt/ui/sprefs_audio.h:409
+#: modules/gui/qt/ui/sprefs_audio.h:410
 msgid " %"
 msgstr " %"
 
-#: modules/gui/qt/ui/sprefs_audio.h:412
+#: modules/gui/qt/ui/sprefs_audio.h:413
 msgid "Output module:"
 msgstr "ម៉ូឌុល​លទ្ធផល ៖"
 
-#: modules/gui/qt/ui/sprefs_audio.h:415
+#: modules/gui/qt/ui/sprefs_audio.h:416
 msgid "Use S/PDIF when available"
 msgstr "ប្រើ S/PDIF នៅ​ពេល​ដែល​អាច​រក​បាន"
 
-#: modules/gui/qt/ui/sprefs_audio.h:417
+#: modules/gui/qt/ui/sprefs_audio.h:418
 msgid "Effects"
 msgstr "បែបផែន"
 
-#: modules/gui/qt/ui/sprefs_audio.h:418
+#: modules/gui/qt/ui/sprefs_audio.h:419
 msgid "Visualization:"
 msgstr "រូបភាព​មើល​ឃើញ ៖"
 
-#: modules/gui/qt/ui/sprefs_audio.h:419
+#: modules/gui/qt/ui/sprefs_audio.h:420
 msgid "Enable Time-Stretching audio"
 msgstr "​​បើក​​អូឌីយ៉ូ​ពេលវេលា​ការ​ប្រមូល​យក"
 
-#: modules/gui/qt/ui/sprefs_audio.h:420
+#: modules/gui/qt/ui/sprefs_audio.h:421
 msgid "Replay gain mode:"
 msgstr "របៀប​ចាក់​កើន​ឡើងវិញ ៖"
 
-#: modules/gui/qt/ui/sprefs_audio.h:421
+#: modules/gui/qt/ui/sprefs_audio.h:422
 msgid "Normalize volume to:"
 msgstr "ធ្វើឲ្យ​កម្រិត​សំឡេង​ធម្មតា​ទៅ ៖"
 
-#: modules/gui/qt/ui/sprefs_audio.h:422
+#: modules/gui/qt/ui/sprefs_audio.h:423
 msgid "Tracks"
 msgstr "បទ"
 
-#: modules/gui/qt/ui/sprefs_audio.h:423
+#: modules/gui/qt/ui/sprefs_audio.h:424
 msgid "Preferred audio language:"
 msgstr "ភាសា​អូឌីយ៉ូ​ដែល​ចូលចិត្ត ៖"
 
-#: modules/gui/qt/ui/sprefs_audio.h:424
+#: modules/gui/qt/ui/sprefs_audio.h:425
 msgid "Password:"
 msgstr "ពាក្យសម្ងាត់ ៖"
 
-#: modules/gui/qt/ui/sprefs_audio.h:425
+#: modules/gui/qt/ui/sprefs_audio.h:426
 msgid "Username:"
 msgstr "ឈ្មោះ​អ្នកប្រើ ៖"
 
-#: modules/gui/qt/ui/sprefs_audio.h:426
+#: modules/gui/qt/ui/sprefs_audio.h:427
 msgid "Submit played tracks stats to Last.fm"
 msgstr "ដាក់​ស្នើ​សភាព​បទ​ចម្រៀង​ដែល​បាន​ចាក់​ទៅ last.fm"
 
@@ -28838,103 +28845,107 @@ msgstr "ការ​បញ្ជូន​ស្ទ្រីម Live555"
 msgid "Default caching policy"
 msgstr "គោលការណ៍​ឃ្លាំង​សម្ងាត់​លំនាំដើម"
 
-#: modules/gui/qt/ui/sprefs_interface.h:528
+#: modules/gui/qt/ui/sprefs_interface.h:534
 msgid "Menus language:"
 msgstr "ភាសា​ម៉ឺនុយ ៖"
 
-#: modules/gui/qt/ui/sprefs_interface.h:529
+#: modules/gui/qt/ui/sprefs_interface.h:535
 msgid "Look and feel"
 msgstr "រូបរាង និង​មុខងារ"
 
-#: modules/gui/qt/ui/sprefs_interface.h:530
+#: modules/gui/qt/ui/sprefs_interface.h:536
 msgid "Use custom skin"
 msgstr "ប្រើ​ស្បែក​ផ្ទាល់ខ្លួន"
 
-#: modules/gui/qt/ui/sprefs_interface.h:532
+#: modules/gui/qt/ui/sprefs_interface.h:538
 msgid "This is VLC's default interface, with a native look and feel."
 msgstr "នេះ​ជា​ចំណុច​ប្រទាក់​លំនាំដើម​របស់ VLC ជាមួយ​រូបរាង និង​មុខងារ​ដើម ។"
 
-#: modules/gui/qt/ui/sprefs_interface.h:534
+#: modules/gui/qt/ui/sprefs_interface.h:540
 msgid "Use native style"
 msgstr "ប្រើ​រចនាប័ទ្ម​ដើម"
 
-#: modules/gui/qt/ui/sprefs_interface.h:535
+#: modules/gui/qt/ui/sprefs_interface.h:541
 msgid "Resize interface to video size"
 msgstr "ប្ដូរ​ទំហំ​ចំណុច​ប្រទាក់​ទៅ​តាម​ទំហំ​វីដេអូ"
 
-#: modules/gui/qt/ui/sprefs_interface.h:536
+#: modules/gui/qt/ui/sprefs_interface.h:542
 msgid "Show controls in full screen mode"
 msgstr "បង្ហាញ​វត្ថុ​បញ្ជា​ក្នុង​របៀប​ពេញ​អេក្រង់"
 
-#: modules/gui/qt/ui/sprefs_interface.h:537
+#: modules/gui/qt/ui/sprefs_interface.h:543
 msgid "Pause playback when minimized"
 msgstr "ផ្អាក​ការ​ចាក់​ឡើងវិញ ពេល​បាន​បង្រួម​អប្បបរមា"
 
-#: modules/gui/qt/ui/sprefs_interface.h:538
+#: modules/gui/qt/ui/sprefs_interface.h:544
 msgid "Show media change popup:"
 msgstr "បង្ហាញ​ប្រអប់​លេចឡើង​នៃ​ការ​ផ្លាស់ប្ដូរ​មេឌៀ៖"
 
-#: modules/gui/qt/ui/sprefs_interface.h:539
+#: modules/gui/qt/ui/sprefs_interface.h:545
 msgid "Start in minimal view mode"
 msgstr "ចាប់ផ្ដើម​ក្នុង​របៀប​ទិដ្ឋភាព​អប្បបរមា"
 
-#: modules/gui/qt/ui/sprefs_interface.h:540
+#: modules/gui/qt/ui/sprefs_interface.h:546
 msgid "Force window style:"
 msgstr "បង្ខំ​រចនាប័ទ្ម​បង្អួច ៖"
 
-#: modules/gui/qt/ui/sprefs_interface.h:541
+#: modules/gui/qt/ui/sprefs_interface.h:547
 msgid "Integrate video in interface"
 msgstr "បញ្ចូល​វីដេអូ​ក្នុង​ចំណុច​ប្រទាក់"
 
-#: modules/gui/qt/ui/sprefs_interface.h:542
+#: modules/gui/qt/ui/sprefs_interface.h:548
 msgid "Show systray icon"
 msgstr "បង្ហាញ​រូបតំណាង​ថាស​ប្រព័ន្ធ"
 
-#: modules/gui/qt/ui/sprefs_interface.h:543
+#: modules/gui/qt/ui/sprefs_interface.h:549
 msgid "Auto raising the interface:"
 msgstr ""
 
-#: modules/gui/qt/ui/sprefs_interface.h:544
+#: modules/gui/qt/ui/sprefs_interface.h:550
+msgid "Use a dark palette"
+msgstr ""
+
+#: modules/gui/qt/ui/sprefs_interface.h:551
 msgid "Skin resource file:"
 msgstr "ឯកសារ​ធនធាន​រូបរាង ៖"
 
-#: modules/gui/qt/ui/sprefs_interface.h:546
+#: modules/gui/qt/ui/sprefs_interface.h:553
 msgid "Playlist and Instances"
 msgstr "ធាតុ និង​បញ្ជី​ចាក់"
 
-#: modules/gui/qt/ui/sprefs_interface.h:549
+#: modules/gui/qt/ui/sprefs_interface.h:556
 msgid "Pause on the last frame of a video"
 msgstr "ផ្អាក​ស៊ុម​វីដេអូ​ចុងក្រោយ"
 
-#: modules/gui/qt/ui/sprefs_interface.h:552
+#: modules/gui/qt/ui/sprefs_interface.h:559
 msgid "Allow only one instance"
 msgstr "អនុញ្ញាត​តែ​វត្ថុមួយ​ប៉ុណ្ណោះ"
 
-#: modules/gui/qt/ui/sprefs_interface.h:554
+#: modules/gui/qt/ui/sprefs_interface.h:561
 msgid "Activate updates notifier"
 msgstr "ធ្វើ​ឲ្យ​កម្មវិធី​ជូនដំណឹង​បច្ចុប្បន្នភាព​សកម្ម"
 
-#: modules/gui/qt/ui/sprefs_interface.h:556
+#: modules/gui/qt/ui/sprefs_interface.h:563
 msgid "Every "
 msgstr "រាល់"
 
-#: modules/gui/qt/ui/sprefs_interface.h:557
+#: modules/gui/qt/ui/sprefs_interface.h:564
 msgid "Save recently played items"
 msgstr "រក្សាទុក​ធាតុ​ដែល​បាន​ចាក់​បច្ចុប្បន្ន"
 
-#: modules/gui/qt/ui/sprefs_interface.h:560
+#: modules/gui/qt/ui/sprefs_interface.h:567
 msgid "Separate words by | (without space)"
 msgstr "បំបែក​ពាក្យ​ដោយ | (មិន​ដកឃ្លា)"
 
-#: modules/gui/qt/ui/sprefs_interface.h:563
+#: modules/gui/qt/ui/sprefs_interface.h:570
 msgid "Operating System Integration"
 msgstr "ការ​បញ្ចូល​ប្រព័ន្ធ​ប្រតិបត្តិការ"
 
-#: modules/gui/qt/ui/sprefs_interface.h:564
+#: modules/gui/qt/ui/sprefs_interface.h:571
 msgid "File extensions association"
 msgstr "កន្ទុយ​ឯកសារ​ដែល​ពាក់ព័ន្ធ"
 
-#: modules/gui/qt/ui/sprefs_interface.h:565
+#: modules/gui/qt/ui/sprefs_interface.h:572
 msgid "Set up associations..."
 msgstr "ការ​កំណត់​ដែល​ពាក់ព័ន្ធ..."
 
