@@ -1,3 +1,9 @@
+vlc (3.0.22-0+deb12u1) bookworm-security; urgency=medium
+
+  * New upstream version 3.0.22
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 13 Dec 2025 23:28:32 +0100
+
 vlc (3.0.21-0+deb12u1) bookworm-security; urgency=medium
 
   * New upstream version 3.0.21
