@@ -10,7 +10,7 @@ This fixes playback of some .avi files that are missing PTSs
 
 --- a/modules/codec/avcodec/video.c
 +++ b/modules/codec/avcodec/video.c
-@@ -61,6 +61,9 @@ struct decoder_sys_t
+@@ -62,6 +62,9 @@ struct decoder_sys_t
      /* Video decoder specific part */
      date_t  pts;
  
@@ -20,7 +20,7 @@ This fixes playback of some .avi files that are missing PTSs
      /* Closed captions for decoders */
      cc_data_t cc;
  
-@@ -587,6 +590,8 @@ static int InitVideoDecCommon( decoder_t
+@@ -585,6 +588,8 @@ static int InitVideoDecCommon( decoder_t
      /* ***** misc init ***** */
      date_Init(&p_sys->pts, 1, 30001);
      date_Set(&p_sys->pts, VLC_TICK_INVALID);
@@ -47,7 +47,7 @@ This fixes playback of some .avi files that are missing PTSs
          cc_Flush( &p_sys->cc );
  
          p_sys->i_late_frames = 0;
-@@ -1215,6 +1224,10 @@ static picture_t *DecodeBlock( decoder_t
+@@ -1220,6 +1229,10 @@ static picture_t *DecodeBlock( decoder_t
              }
              if( b_has_data )
              {
@@ -58,7 +58,7 @@ This fixes playback of some .avi files that are missing PTSs
                  pkt->data = p_block->p_buffer;
                  pkt->size = p_block->i_buffer;
                  pkt->pts = p_block->i_pts > VLC_TICK_INVALID ? p_block->i_pts : AV_NOPTS_VALUE;
-@@ -1321,6 +1334,17 @@ static picture_t *DecodeBlock( decoder_t
+@@ -1326,6 +1339,17 @@ static picture_t *DecodeBlock( decoder_t
          if( i_pts == AV_NOPTS_VALUE )
              i_pts = date_Get( &p_sys->pts );
  

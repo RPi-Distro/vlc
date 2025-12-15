@@ -26,15 +26,55 @@
 
 #include <QWidget>
 #include <QDialog>
-#include <QHBoxLayout>
 #include <QApplication>
 #include <QMainWindow>
 #include <QKeyEvent>
-#include <QDesktopWidget>
+#include <QScreen>
 #include <QSettings>
 #include <QStyle>
 
 #include "qt.hpp"
+
+#ifdef _WIN32
+    #include <QLibrary>
+    #include <dwmapi.h>
+
+    inline bool setImmersiveDarkModeAttribute(HWND hwnd, bool enable) {
+        typedef HRESULT(WINAPI *DwmSetWindowAttributeFunc)(HWND, DWORD, LPCVOID, DWORD);
+        static const auto dwmSetWindowAttributeFunc = []() -> DwmSetWindowAttributeFunc {
+            HMODULE hKernel32 = GetModuleHandle(TEXT("kernel32.dll"));
+            if (GetProcAddress(hKernel32, "GetSystemCpuSetInformation") == NULL)
+                return nullptr;
+
+            QLibrary dwmapidll("dwmapi");
+            return reinterpret_cast<DwmSetWindowAttributeFunc>(dwmapidll.resolve("DwmSetWindowAttribute"));
+        }();
+
+        if (!dwmSetWindowAttributeFunc || !hwnd)
+            return false;
+
+        const BOOL pvAttribute = enable ? TRUE : FALSE;
+
+        enum Attribute : DWORD {
+            DWMWA_USE_IMMERSIVE_DARK_MODE = 20,
+            DWMWA_USE_DARK_MODE_UNDOCUMENTED = 19
+        };
+
+        return SUCCEEDED(dwmSetWindowAttributeFunc(hwnd, Attribute::DWMWA_USE_IMMERSIVE_DARK_MODE, &pvAttribute, sizeof(pvAttribute)))
+            || SUCCEEDED(dwmSetWindowAttributeFunc(hwnd, Attribute::DWMWA_USE_DARK_MODE_UNDOCUMENTED, &pvAttribute, sizeof(pvAttribute)));
+    }
+
+    // Overloaded function to apply dark mode to QWidget*
+    inline bool setImmersiveDarkModeAttribute(QWidget *widget) {
+        if (widget->isWindow()) {
+            widget->ensurePolished();
+            HWND hwnd = (HWND)widget->winId();  // Get native window handle
+            return setImmersiveDarkModeAttribute(hwnd,true);  // Call the HWND version
+        }
+        return false;
+    }
+
+#endif
 
 class QVLCTools
 {
@@ -75,7 +115,7 @@ class QVLCTools
             widget->resize(defSize);
 
             if(defPos.x() == 0 && defPos.y()==0)
-               widget->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, widget->size(), qApp->desktop()->availableGeometry()));
+               widget->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, widget->size(), QGuiApplication::primaryScreen()->availableGeometry()));
             return true;
           }
           return false;
@@ -102,7 +142,12 @@ class QVLCFrame : public QWidget
 {
 public:
     QVLCFrame( intf_thread_t *_p_intf ) : QWidget( NULL ), p_intf( _p_intf )
-    {};
+    {
+#ifdef Q_OS_WIN
+        if (isDarkPaletteEnabled(p_intf))
+            setImmersiveDarkModeAttribute(this);
+#endif
+	};
     virtual ~QVLCFrame()   {};
 
     void toggleVisible()
@@ -155,6 +200,10 @@ public:
     {
         setWindowFlags( Qt::Dialog|Qt::WindowMinMaxButtonsHint|
                         Qt::WindowSystemMenuHint|Qt::WindowCloseButtonHint );
+#ifdef Q_OS_WIN
+        if (isDarkPaletteEnabled(p_intf))
+            setImmersiveDarkModeAttribute(this);
+#endif
     }
     virtual ~QVLCDialog() {};
     void toggleVisible()
@@ -191,7 +240,13 @@ protected:
 class QVLCMW : public QMainWindow
 {
 public:
-    QVLCMW( intf_thread_t *_p_intf ) : QMainWindow( NULL ), p_intf( _p_intf ){}
+    QVLCMW( intf_thread_t *_p_intf ) : QMainWindow( NULL ), p_intf( _p_intf )
+	{
+#ifdef Q_OS_WIN
+        if (isDarkPaletteEnabled(p_intf))
+            setImmersiveDarkModeAttribute(this);
+#endif
+	}
     void toggleVisible()
     {
         if( isVisible() ) hide();

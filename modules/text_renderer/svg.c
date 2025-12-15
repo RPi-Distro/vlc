@@ -80,9 +80,6 @@ vlc_module_begin ()
     set_callbacks( Create, Destroy )
 vlc_module_end ()
 
-static void svg_RescaletoFit  ( filter_t *, int *width, int *height, float * );
-static picture_t * svg_RenderPicture ( filter_t *p_filter, const char * );
-
 static void svg_LoadTemplate( filter_t *p_filter )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
@@ -133,6 +130,7 @@ static void svg_LoadTemplate( filter_t *p_filter )
         {
             msg_Err( p_filter, "'%s' not found in SVG template", SVG_TEMPLATE_BODY_TOKEN );
             free( psz_template );
+            psz_template = NULL;
         }
         else *((char*)p_sys->psz_token) = 0;
     }
@@ -256,6 +254,10 @@ static picture_t * svg_RenderPicture( filter_t *p_filter,
     fmt.i_chroma = VLC_CODEC_BGRA;
     fmt.i_width = fmt.i_visible_width = dim.width;
     fmt.i_height = fmt.i_visible_height = dim.height;
+    fmt.transfer = TRANSFER_FUNC_SRGB;
+    fmt.primaries = COLOR_PRIMARIES_SRGB;
+    fmt.space = COLOR_SPACE_SRGB;
+    fmt.b_color_range_full = true;
 
     picture_t *p_picture = picture_NewFromFormat( &fmt );
     if( !p_picture )

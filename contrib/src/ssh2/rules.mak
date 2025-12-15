@@ -21,6 +21,7 @@ $(TARBALLS)/libssh2-$(LIBSSH2_VERSION).tar.gz:
 
 ssh2: libssh2-$(LIBSSH2_VERSION).tar.gz .sum-ssh2
 	$(UNPACK)
+	$(UPDATE_AUTOCONFIG)
 	$(APPLY) $(SRC)/ssh2/no-tests.patch
 	$(APPLY) $(SRC)/ssh2/0001-fix-gcrypt-linking.patch
 	$(call pkg_static,"libssh2.pc.in")
@@ -31,8 +32,10 @@ endif
 
 DEPS_ssh2 = gcrypt $(DEPS_gcrypt)
 
+SSH2_CONF := --disable-examples-build --with-libgcrypt --without-openssl --without-mbedtls
+
 .ssh2: ssh2
 	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure $(BROKEN_GCC_CFLAGS) $(HOSTCONF) --disable-examples-build --with-libgcrypt --without-openssl --without-mbedtls
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(BROKEN_GCC_CFLAGS) $(HOSTCONF) $(SSH2_CONF)
+	$(MAKE) -C $< install
 	touch $@

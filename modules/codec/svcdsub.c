@@ -116,6 +116,9 @@ static int DecoderOpen( vlc_object_t *p_this )
     decoder_t     *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
+    if( p_dec->fmt_in.i_cat != SPU_ES  )
+        return VLC_EGENERIC;
+
     if( p_dec->fmt_in.i_codec != VLC_CODEC_OGT )
         return VLC_EGENERIC;
 
@@ -176,6 +179,7 @@ static int Decode( decoder_t *p_dec, block_t *p_block )
 
     /* Parse and decode */
     subpicture_t *p_spu = DecodePacket( p_dec, p_block );
+    block_Release( p_block );
     if( p_spu != NULL )
         decoder_QueueSub( p_dec, p_spu );
     return VLCDEC_SUCCESS;
@@ -545,7 +549,7 @@ static void SVCDSubRenderImage( decoder_t *p_dec, block_t *p_data,
                 i_color = bs_read( &bs, 2 );
                 if( i_color == 0 && (i_count = bs_read( &bs, 2 )) )
                 {
-                    i_count = __MIN( i_count, p_sys->i_width - i_column );
+                    i_count = __MIN( i_count, p_sys->i_width - i_column - 1 );
                     memset( &p_dest[i_row * p_region->p_picture->Y_PITCH +
                                     i_column], 0, i_count + 1 );
                     i_column += i_count;

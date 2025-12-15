@@ -55,7 +55,7 @@ Subject: [PATCH 26/41] mmal: Add all the mmal bits
 
 --- a/modules/Makefile.am
 +++ b/modules/Makefile.am
-@@ -10,9 +10,7 @@ EXTRA_SUBDIRS = \
+@@ -11,9 +11,7 @@ EXTRA_SUBDIRS = \
  
  SUBDIRS = .
  DIST_SUBDIRS = . $(EXTRA_SUBDIRS)
@@ -14161,7 +14161,7 @@ Subject: [PATCH 26/41] mmal: Add all the mmal bits
      0,
  };
  
-@@ -762,8 +767,13 @@ static const struct
+@@ -764,8 +769,13 @@ static const struct
      { { VLC_CODEC_VDPAU_VIDEO_420, VLC_CODEC_VDPAU_VIDEO_422,
          VLC_CODEC_VDPAU_VIDEO_444, VLC_CODEC_VDPAU_OUTPUT },
                                                 FAKE_FMT() },

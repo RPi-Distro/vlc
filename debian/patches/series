@@ -13,7 +13,6 @@
 0009-avcodec-va-Add-DRM_PRIME-swfmt-VLC-format-cases.patch
 0010-avcodec-Fake-an-initial-timestamp-if-none-received.patch
 0011-egl-add-queryDmaBufModifiersEXT-to-interface.patch
-0012-adaptive-http-Fix-port-insertion-into-URL-if-on-defa.patch
 0013-configure.ac-Add-DRM-enable-option-test.patch
 0014-configure.ac-Add-Wayland-single-pixel-capability-tes.patch
 0015-configure.ac-Fix-lib-ordering-for-MMAL-libs.patch
@@ -40,6 +39,5 @@
 0036-wayland-shm-Set-priority-to-0-to-use-wl-dmabuf-inste.patch
 0037-xdg-shell-Rename-old-xdg-shall-include-files.patch
 0038-wl_xdg_shell-Create-an-updated-version-of-xdg-shell.patch
-0039-live555-Fix-compile-error.patch
 0040-RPICHANGES-Add-change-log.patch
 0041-avcodec-Add-J420-formats-as-equivalent-to-YUV420-for.patch

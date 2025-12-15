@@ -9,7 +9,7 @@ Subject: [PATCH 08/41] vlc_fourcc: Add DRM_PRIME picture types
 
 --- a/include/vlc_fourcc.h
 +++ b/include/vlc_fourcc.h
-@@ -388,6 +388,13 @@
+@@ -392,6 +392,13 @@
  #define VLC_CODEC_D3D11_OPAQUE          VLC_FOURCC('D','X','1','1') /* 4:2:0  8 bpc */
  #define VLC_CODEC_D3D11_OPAQUE_10B      VLC_FOURCC('D','X','1','0') /* 4:2:0 10 bpc */
  

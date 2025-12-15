@@ -52,8 +52,7 @@
 
 # define HAVE_AVUTIL_CODEC_ATTACHMENT 1
 
-#if LIBAVFORMAT_VERSION_MICRO >= 100 && \
-    LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(59, 0, 100)
+#if LIBAVFORMAT_VERSION_CHECK(59, 0, 100)
 # define AVF_MAYBE_CONST const
 #else
 # define AVF_MAYBE_CONST
@@ -112,18 +111,63 @@ static vlc_fourcc_t CodecTagToFourcc( uint32_t codec_tag )
 #endif
 }
 
+static inline void* GetStreamSideData(const AVStream *s, enum AVPacketSideDataType type)
+{
+#if LIBAVCODEC_VERSION_CHECK( 60, 29, 100 )
+    const AVCodecParameters *cp = s->codecpar;
+    const AVPacketSideData *psd =
+        av_packet_side_data_get(cp->coded_side_data, cp->nb_coded_side_data, type);
+    return psd ? psd->data : NULL;
+#else
+    return av_stream_get_side_data(s, type, NULL);
+#endif
+}
+
 /*****************************************************************************
  * Open
  *****************************************************************************/
 
-static void get_rotation(es_format_t *fmt, AVStream *s)
+static void get_rotation(es_format_t *fmt, const AVStream *s)
 {
     char const *kRotateKey = "rotate";
     AVDictionaryEntry *rotation = av_dict_get(s->metadata, kRotateKey, NULL, 0);
     long angle = 0;
 
-    if( rotation )
-    {
+    int32_t *matrix = GetStreamSideData(s, AV_PKT_DATA_DISPLAYMATRIX);
+    if( matrix ) {
+        bool flipped = (int64_t)matrix[0] * matrix[4] < (int64_t)matrix[1] * matrix[3];
+        if (flipped) {
+            /* Flip the matrix to decouple flip and rotation operations.
+             * Always assume an horizontal flip for simplicity,
+             * it can be changed later if rotation is 180º. */
+            av_display_matrix_flip(matrix, 1, 0);
+        }
+        angle = lround(av_display_rotation_get(matrix));
+
+        if (angle > 45 && angle < 135)
+            fmt->video.orientation = ORIENT_ROTATED_270;
+
+        else if (angle > 135 || angle < -135) {
+            if (flipped)
+                fmt->video.orientation = ORIENT_VFLIPPED;
+            else
+                fmt->video.orientation = ORIENT_ROTATED_180;
+        }
+        else if (angle < -45 && angle > -135)
+            fmt->video.orientation = ORIENT_ROTATED_90;
+
+        else
+            fmt->video.orientation = ORIENT_NORMAL;
+
+        /* Flip is already applied to the 180º case. */
+        if (flipped && !(angle > 135 || angle < -135)) {
+            video_transform_t transform = (video_transform_t)fmt->video.orientation;
+            /* Flip first then rotate */
+            fmt->video.orientation = ORIENT_HFLIPPED;
+            video_format_TransformBy(&fmt->video, transform);
+        }
+
+    } else if( rotation ) {
         angle = strtol(rotation->value, NULL, 10);
 
         if (angle > 45 && angle < 135)
@@ -138,21 +182,18 @@ static void get_rotation(es_format_t *fmt, AVStream *s)
         else
             fmt->video.orientation = ORIENT_NORMAL;
     }
-    int32_t *matrix = (int32_t *)av_stream_get_side_data(s, AV_PKT_DATA_DISPLAYMATRIX, NULL);
-    if( matrix ) {
-        angle = lround(av_display_rotation_get(matrix));
+}
 
-        if (angle > 45 && angle < 135)
-            fmt->video.orientation = ORIENT_ROTATED_270;
-
-        else if (angle > 135 || angle < -135)
-            fmt->video.orientation = ORIENT_ROTATED_180;
-
-        else if (angle < -45 && angle > -135)
-            fmt->video.orientation = ORIENT_ROTATED_90;
-
-        else
-            fmt->video.orientation = ORIENT_NORMAL;
+static void get_palette(es_format_t *fmt, const AVStream *s)
+{
+    const uint8_t *pal = GetStreamSideData(s, AV_PKT_DATA_PALETTE);
+    if (pal) {
+        video_palette_t *p_palette = fmt->video.p_palette;
+        for (size_t i=0; i<ARRAY_SIZE(p_palette->palette); i++)
+        {
+            memcpy(p_palette->palette[i], pal, sizeof(p_palette->palette[0]));
+            pal += sizeof(p_palette->palette[0]);
+        }
     }
 }
 
@@ -401,7 +442,11 @@ int avformat_OpenDemux( vlc_object_t *p_this )
             es_format_Init( &es_fmt, AUDIO_ES, fcc );
             es_fmt.i_original_fourcc = CodecTagToFourcc( cp->codec_tag );
             es_fmt.i_bitrate = cp->bit_rate;
+#if LIBAVCODEC_VERSION_CHECK(59, 24, 100)
+            es_fmt.audio.i_channels = cp->ch_layout.nb_channels;
+#else
             es_fmt.audio.i_channels = cp->channels;
+#endif
             es_fmt.audio.i_rate = cp->sample_rate;
             es_fmt.audio.i_bitspersample = cp->bits_per_coded_sample;
             es_fmt.audio.i_blockalign = cp->block_align;
@@ -447,8 +492,8 @@ int avformat_OpenDemux( vlc_object_t *p_this )
             es_fmt.video.i_visible_height = es_fmt.video.i_height;
 
             get_rotation(&es_fmt, s);
+            get_palette(&es_fmt, s);
 
-# warning FIXME: implement palette transmission
             psz_type = "video";
 
             AVRational rate;

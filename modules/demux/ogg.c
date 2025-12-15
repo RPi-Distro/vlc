@@ -1343,7 +1343,7 @@ static void Ogg_DecodePacket( demux_t *p_demux,
         }
 
         /* Backup the ogg packet (likely an header packet) */
-        if( !b_xiph )
+        if( !b_xiph && p_stream->i_headers )
         {
             uint8_t *p_realloc = realloc( p_stream->p_headers, p_stream->i_headers + p_oggpacket->bytes );
             if( p_realloc )
@@ -1362,6 +1362,7 @@ static void Ogg_DecodePacket( demux_t *p_demux,
         else if( xiph_AppendHeaders( &p_stream->i_headers, &p_stream->p_headers,
                                      p_oggpacket->bytes, p_oggpacket->packet ) )
         {
+            free(p_stream->p_headers);
             p_stream->i_headers = 0;
             p_stream->p_headers = NULL;
         }
@@ -2424,9 +2425,11 @@ static bool Ogg_IsOpusFormatCompatible( const es_format_t *p_new,
         int i_new_stream_count;
         int i_old_coupled_count;
         int i_new_coupled_count;
+        size_t i_old_map_size, i_new_map_size;
         p_old_head = pp_old_data[0];
         i_old_channel_count = i_old_stream_count = i_old_coupled_count = 0;
         p_old_map = default_map;
+        i_old_map_size = ARRAY_SIZE(default_map);
         if( pi_old_size[0] >= 19 && p_old_head[8] <= 15 )
         {
             i_old_channel_count = p_old_head[9];
@@ -2442,6 +2445,7 @@ static bool Ogg_IsOpusFormatCompatible( const es_format_t *p_new,
                         i_old_stream_count = p_old_head[19];
                         i_old_coupled_count = p_old_head[20];
                         p_old_map = p_old_head + 21;
+                        i_old_map_size = i_old_channel_count;
                     }
                     break;
             }
@@ -2449,6 +2453,7 @@ static bool Ogg_IsOpusFormatCompatible( const es_format_t *p_new,
         p_new_head = (unsigned char *)pp_new_data[0];
         i_new_channel_count = i_new_stream_count = i_new_coupled_count = 0;
         p_new_map = default_map;
+        i_new_map_size = ARRAY_SIZE(default_map);
         if( pi_new_size[0] >= 19 && p_new_head[8] <= 15 )
         {
             i_new_channel_count = p_new_head[9];
@@ -2464,6 +2469,7 @@ static bool Ogg_IsOpusFormatCompatible( const es_format_t *p_new,
                         i_new_stream_count = p_new_head[19];
                         i_new_coupled_count = p_new_head[20];
                         p_new_map = p_new_head+21;
+                        i_new_map_size = i_new_channel_count;
                     }
                     break;
             }
@@ -2471,8 +2477,9 @@ static bool Ogg_IsOpusFormatCompatible( const es_format_t *p_new,
         b_match = i_old_channel_count == i_new_channel_count &&
                   i_old_stream_count == i_new_stream_count &&
                   i_old_coupled_count == i_new_coupled_count &&
+                  i_old_map_size == i_new_map_size &&
                   memcmp(p_old_map, p_new_map,
-                      i_new_channel_count*sizeof(*p_new_map)) == 0;
+                      i_new_map_size*sizeof(*p_new_map)) == 0;
     }
 
     return b_match;

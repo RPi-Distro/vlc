@@ -2028,11 +2028,14 @@ static void PMTCallBack( void *data, dvbpsi_pmt_t *p_dvbpsipmt )
     UpdatePESFilters( p_demux, p_demux->p_sys->seltype == PROGRAM_ALL );
 
     /* Probe Boundaries */
-    if( p_sys->b_canfastseek && p_pmt->i_last_dts == -1 )
+    if( p_sys->b_canfastseek && p_pmt->i_last_dts == VLC_TICK_INVALID )
     {
-        p_pmt->i_last_dts = 0;
+        p_pmt->i_last_dts = VLC_TICK_INVALID;
         ProbeStart( p_demux, p_pmt->i_number );
         ProbeEnd( p_demux, p_pmt->i_number );
+        if( p_pmt->i_last_dts != VLC_TICK_INVALID &&
+            p_pmt->i_last_dts < p_pmt->pcr.i_first_dts )
+            p_pmt->i_last_dts = TimeStampWrapAround( p_pmt->pcr.i_first_dts, p_pmt->i_last_dts );
     }
 
     dvbpsi_pmt_delete( p_dvbpsipmt );

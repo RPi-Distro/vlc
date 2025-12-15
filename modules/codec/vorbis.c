@@ -235,6 +235,9 @@ static int OpenDecoder( vlc_object_t *p_this )
     decoder_t *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
+    if( p_dec->fmt_in.i_cat != AUDIO_ES )
+        return VLC_EGENERIC;
+
     if( p_dec->fmt_in.i_codec != VLC_CODEC_VORBIS )
         return VLC_EGENERIC;
 
@@ -859,6 +862,7 @@ static int OpenEncoder( vlc_object_t *p_this )
         if( xiph_AppendHeaders( &p_enc->fmt_out.i_extra, &p_enc->fmt_out.p_extra,
                                 header[i].bytes, header[i].packet ) )
         {
+            free(p_enc->fmt_out.p_extra);
             p_enc->fmt_out.i_extra = 0;
             p_enc->fmt_out.p_extra = NULL;
         }

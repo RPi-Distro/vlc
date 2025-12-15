@@ -15,6 +15,7 @@ $(TARBALLS)/fontconfig-$(FONTCONFIG_VERSION).tar.gz:
 
 fontconfig: fontconfig-$(FONTCONFIG_VERSION).tar.gz .sum-fontconfig
 	$(UNPACK)
+	$(UPDATE_AUTOCONFIG)
 ifdef HAVE_WIN32
 	$(APPLY) $(SRC)/fontconfig/fontconfig-win32.patch
 	$(APPLY) $(SRC)/fontconfig/fontconfig-noxml2.patch
@@ -23,9 +24,7 @@ endif
 	$(call pkg_static, "fontconfig.pc.in")
 	$(MOVE)
 
-FONTCONFIG_CONF := $(HOSTCONF) \
-	--enable-libxml2 \
-	--disable-docs
+FONTCONFIG_CONF := --enable-libxml2 --disable-docs
 FONTCONFIG_ENV := $(HOSTVARS)
 
 # FreeType flags
@@ -54,13 +53,13 @@ DEPS_fontconfig = freetype2 $(DEPS_freetype2) libxml2 $(DEPS_libxml2)
 ifdef HAVE_WIN32
 	$(RECONF)
 endif
-	cd $< && $(FONTCONFIG_ENV) ./configure $(FONTCONFIG_CONF)
-	cd $< && $(MAKE)
+	cd $< && $(FONTCONFIG_ENV) ./configure $(HOSTCONF) $(FONTCONFIG_CONF)
+	$(MAKE) -C $<
 ifndef HAVE_MACOSX
-	cd $< && $(MAKE) install
+	$(MAKE) -C $< install
 else
-	cd $< && $(MAKE) install-exec
-	cd $< && $(MAKE) -C fontconfig install-data
+	$(MAKE) -C $< install-exec
+	$(MAKE) -C $< -C fontconfig install-data
 	sed -e 's%/usr/lib/libiconv.la%%' -i.orig $(PREFIX)/lib/libfontconfig.la
 	cp $</fontconfig.pc $(PREFIX)/lib/pkgconfig/
 endif

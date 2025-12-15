@@ -37,19 +37,20 @@
 
 #include <QDate>
 #include <QLabel>
-#include <QToolButton>
 #include <QPalette>
-#include <QEvent>
-#include <QResizeEvent>
-#include <QDate>
-#include <QMenu>
+#include <QAction>
 #include <QWidgetAction>
-#include <QDesktopWidget>
 #include <QPainter>
 #include <QTimer>
-#include <QSlider>
-#include <QBitmap>
 #include <QUrl>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QRandomGenerator>
+
+static inline int qrand() {
+    auto * q = QRandomGenerator::system();
+    return q->generate();
+}
+#endif
 
 #if defined (QT5_HAS_X11)
 # include <X11/Xlib.h>
@@ -69,7 +70,7 @@
 #endif
 
 #include <math.h>
-#include <assert.h>
+#include <cassert>
 
 #include <vlc_vout.h>
 #include <vlc_vout_window.h>
@@ -89,6 +90,7 @@ VideoWidget::VideoWidget( intf_thread_t *_p_i, QWidget* p_parent )
     layout->setContentsMargins( 0, 0, 0, 0 );
     stable = NULL;
     p_window = NULL;
+    qApp->installNativeEventFilter(this);
     show();
 }
 
@@ -268,7 +270,11 @@ void VideoWidget::setSize( unsigned int w, unsigned int h )
     sync();
 }
 
-bool VideoWidget::nativeEvent( const QByteArray& eventType, void* message, long* )
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+bool VideoWidget::nativeEventFilter(const QByteArray &eventType, void *message, qintptr *)
+#else
+bool VideoWidget::nativeEventFilter(const QByteArray &eventType, void *message, long *)
+#endif
 {
 #if defined(QT5_HAS_X11)
 # if defined(QT5_HAS_XCB)
@@ -558,7 +564,7 @@ void BackgroundWidget::contextMenuEvent( QContextMenuEvent *event )
 EasterEggBackgroundWidget::EasterEggBackgroundWidget( intf_thread_t *p_intf )
     : BackgroundWidget( p_intf )
 {
-    flakes = new QLinkedList<flake *>();
+    flakes = new std::list<flake *>();
     i_rate = 2;
     i_speed = 1;
     b_enabled = false;
@@ -611,7 +617,7 @@ void EasterEggBackgroundWidget::spawnFlakes()
 
     int i_spawn = ( (double) qrand() / RAND_MAX ) * i_rate;
 
-    QLinkedList<flake *>::iterator it = flakes->begin();
+    auto it = flakes->begin();
     while( it != flakes->end() )
     {
         flake *current = *it;
@@ -631,15 +637,16 @@ void EasterEggBackgroundWidget::spawnFlakes()
         flake *f = new flake;
         f->point.setX( qrand() * w );
         f->b_fat = ( qrand() < ( RAND_MAX * .33 ) );
-        flakes->append( f );
+        flakes->push_back( f );
     }
     update();
 }
 
 void EasterEggBackgroundWidget::reset()
 {
-    while ( !flakes->isEmpty() )
-        delete flakes->takeFirst();
+    for(flake* f: *flakes)
+        delete f;
+    flakes->clear();
 }
 
 void EasterEggBackgroundWidget::paintEvent( QPaintEvent *e )
@@ -649,8 +656,8 @@ void EasterEggBackgroundWidget::paintEvent( QPaintEvent *e )
     painter.setBrush( QBrush( QColor(Qt::white) ) );
     painter.setPen( QPen(Qt::white) );
 
-    QLinkedList<flake *>::const_iterator it = flakes->constBegin();
-    while( it != flakes->constEnd() )
+    auto it = flakes->cbegin();
+    while( it != flakes->cend() )
     {
         const flake * const f = *(it++);
         if ( f->b_fat )
@@ -982,7 +989,19 @@ TimeLabel::TimeLabel( intf_thread_t *_p_intf, TimeLabel::Display _displayType  )
     CONNECT( THEMIM->getIM(), remainingTimeChanged( bool ),
               this, setRemainingTime( bool ) );
 
-    setStyleSheet( "QLabel { padding-left: 4px; padding-right: 4px; }" );
+
+    auto updateStyle = [this]() {
+        setStyleSheet( "TimeLabel {  padding-left: 4px; padding-right: 4px; }" );
+    };
+
+    updateStyle();
+
+//same as Qt::AA_UseStyleSheetPropagationInWidgetStyles
+#if !HAS_QT57
+    connect(qApp, &QApplication::paletteChanged, this, [this, updateStyle](){
+        updateStyle();
+    });
+#endif
 }
 
 void TimeLabel::setRemainingTime( bool remainingTime )

@@ -23,9 +23,14 @@ ifdef HAVE_WIN32
 	$(APPLY) $(SRC)/zvbi/zvbi-win32-undefined.patch
 endif
 	$(APPLY) $(SRC)/zvbi/zvbi-fix-clang-support.patch
+	$(APPLY) $(SRC)/zvbi/zvbi-va_copy.patch
 ifdef HAVE_ANDROID
 	$(APPLY) $(SRC)/zvbi/zvbi-android.patch
 endif
+	# hardcode -liconv instead of the full path
+	$(APPLY) $(SRC)/zvbi/0001-configure-hardcode-liconv-instead-of-the-full-path.patch
+	# check for pthread_create in pthreads as well
+	sed -i.orig "s/AC_CHECK_LIB(pthread, pthread_create,,/AC_SEARCH_LIBS([pthread_create], [pthread pthreads],,/" $(UNPACK_DIR)/configure.in
 	$(MOVE)
 
 DEPS_zvbi = png $(DEPS_png) iconv $(DEPS_iconv)
@@ -33,8 +38,12 @@ DEPS_zvbi = png $(DEPS_png) iconv $(DEPS_iconv)
 ZVBICONF := \
 	--disable-dvb --disable-bktr \
 	--disable-nls --disable-proxy \
-	--without-doxygen \
-	$(HOSTCONF)
+	--without-doxygen
+
+ifdef HAVE_ANDROID
+# discard bogus pthread_cancel calls
+ZVBICONF += CFLAGS="$(CFLAGS) -Wno-implicit-function-declaration"
+endif
 
 ifdef HAVE_WIN32
 DEPS_zvbi += pthreads $(DEPS_pthreads)
@@ -43,8 +52,7 @@ endif
 .zvbi: zvbi
 	$(UPDATE_AUTOCONFIG)
 	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure $(ZVBICONF)
-	cd $< && $(MAKE) -C src install
-	cd $< && $(MAKE) SUBDIRS=. install
-	sed -i.orig -e "s/\/[^ ]*libiconv.a/-liconv/" $(PREFIX)/lib/pkgconfig/zvbi-0.2.pc
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(ZVBICONF)
+	$(MAKE) -C $< -C src install
+	$(MAKE) -C $< SUBDIRS=. install
 	touch $@

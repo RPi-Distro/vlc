@@ -31,6 +31,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <limits.h>
+#include <stdckdint.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -431,6 +432,11 @@ static int Open( vlc_object_t * p_this )
                   "found %d stream but %d are declared",
                   i_track, p_avih->i_streams );
     }
+    if( i_track > AVIF_MAX_STREAMS )
+    {
+        msg_Err( p_demux, "Invalid number of streams %u", i_track );
+        goto error;
+    }
     if( i_track == 0 )
     {
         msg_Err( p_demux, "no stream defined!" );
@@ -713,12 +719,13 @@ static int Open( vlc_object_t * p_this )
                 }
                 else
                 {
-                    tk->fmt.i_codec = p_bih->biCompression;
+                    tk->fmt.i_codec = vlc_fourcc_GetCodec(VIDEO_ES, p_bih->biCompression);
                     if( tk->fmt.i_codec == VLC_CODEC_MP4V &&
                         !strncasecmp( (char*)&p_strh->i_handler, "XVID", 4 ) )
                     {
                         tk->fmt.i_codec           =
                         tk->fmt.i_original_fourcc = VLC_FOURCC( 'X', 'V', 'I', 'D' );
+                        tk->fmt.b_packetized = false;
                     }
 
                     /* Shitty files storing chroma in biCompression */
@@ -737,7 +744,8 @@ static int Open( vlc_object_t * p_this )
                 tk->fmt.video.i_width  = p_bih->biWidth;
                 tk->fmt.video.i_visible_height =
                 tk->fmt.video.i_height = p_bih->biHeight;
-                tk->fmt.video.i_bits_per_pixel = p_bih->biBitCount;
+                if( p_bih->biBitCount <= 32 )
+                    tk->fmt.video.i_bits_per_pixel = p_bih->biBitCount;
                 tk->fmt.video.i_frame_rate = tk->i_rate;
                 tk->fmt.video.i_frame_rate_base = tk->i_scale;
 
@@ -1112,7 +1120,21 @@ static void AVI_SendFrame( demux_t *p_demux, avi_track_t *tk, block_t *p_frame )
                 if( *psz_osd != 0 )
                 {
                     psz_osd[23] = 0;
-                    if( !psz_title || strncmp( psz_osd, psz_title, 24 ) )
+                    {
+                        char *str = psz_osd;
+                        ssize_t n;
+                        uint32_t cp;
+
+                        while ((n = vlc_towc(str, &cp)) != 0)
+                            if (likely(n != -1))
+                                str += n;
+                            else
+                            {
+                                *str = '\0';
+                                break;
+                            }
+                    }
+                    if( psz_osd[0] && ( !psz_title || strncmp( psz_osd, psz_title, 24 ) ) )
                     {
                         vlc_meta_Set( p_sys->meta, vlc_meta_Title, psz_osd );
                         p_sys->updates |= INPUT_UPDATE_META;
@@ -1242,7 +1264,7 @@ static int Demux_Seekable( demux_t *p_demux )
         else if ( i_dpts > -2 * CLOCK_FREQ ) /* don't send a too early dts (low fps video) */
         {
             int64_t i_chunks_count = AVI_PTSToChunk( tk, i_dpts );
-            if( i_dpts > 0 && AVI_GetDPTS( tk, i_chunks_count ) < i_dpts )
+            if( i_chunks_count > 0 && AVI_GetDPTS( tk, i_chunks_count ) < i_dpts )
             {
                 /* AVI code is crap. toread is either bytes, or here, chunk count.
                  * That does not even work when reading amount < scale / rate */
@@ -1921,38 +1943,59 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
  * Function to convert pts to chunk or byte
  *****************************************************************************/
 
-static int64_t AVI_Rescale( int64_t i_value, uint32_t i_timescale, uint32_t i_newscale )
+static bool AVI_Rescale( vlc_tick_t *out, vlc_tick_t i_value,
+                         uint32_t i_timescale, uint32_t i_newscale )
 {
     /* TODO: replace (and mp4) with better global helper (recursive checks) */
     if( i_timescale == i_newscale )
-        return i_value;
+    {
+        *out = i_value;
+        return false;
+    }
 
-    if( (i_value >= 0 && i_value <= INT64_MAX / i_newscale) ||
-        (i_value < 0  && i_value >= INT64_MIN / i_newscale) )
-        return i_value * i_newscale / i_timescale;
+    int64_t res;
+    if( !ckd_mul( &res, i_value, i_newscale ) )
+    {
+        *out = res / i_timescale;
+        return false;
+    }
 
-    /* overflow */
+    /* overflow, try: q * i_newscale + r * i_newscale / i_timescale */
     int64_t q = i_value / i_timescale;
     int64_t r = i_value % i_timescale;
-    return q * i_newscale + r * i_newscale / i_timescale;
+
+    int64_t scaled_q, scaled_r;
+    if( ckd_mul( &scaled_q, q, i_newscale ) )
+        return true;
+    if( ckd_mul( &scaled_r, r, i_newscale ) )
+        return true;
+    if( ckd_add( &res, scaled_q, scaled_r / i_timescale ) )
+        return true;
+
+    *out = res;
+    return false;
 }
 
 static int64_t AVI_PTSToChunk( avi_track_t *tk, vlc_tick_t i_pts )
 {
-    if( !tk->i_scale )
-        return 0;
+    if( !tk->i_scale || !tk->i_rate )
+        return -1;
 
-    i_pts = AVI_Rescale( i_pts, tk->i_scale, tk->i_rate );
-    return i_pts / CLOCK_FREQ;
+    vlc_tick_t res;
+    if( AVI_Rescale( &res, i_pts, tk->i_scale, tk->i_rate ) )
+        return -1;
+    return res / CLOCK_FREQ;
 }
 
 static int64_t AVI_PTSToByte( avi_track_t *tk, vlc_tick_t i_pts )
 {
-    if( !tk->i_scale || !tk->i_samplesize )
-        return 0;
+    if( !tk->i_scale || !tk->i_samplesize || !tk->i_rate )
+        return -1;
 
-    i_pts = AVI_Rescale( i_pts, tk->i_scale, tk->i_rate );
-    return i_pts / CLOCK_FREQ * tk->i_samplesize;
+    vlc_tick_t res;
+    if( AVI_Rescale( &res, i_pts, tk->i_scale, tk->i_rate ) )
+        return -1;
+    return res / CLOCK_FREQ * tk->i_samplesize;
 }
 
 static vlc_tick_t AVI_GetDPTS( avi_track_t *tk, int64_t i_count )
@@ -1962,8 +2005,11 @@ static vlc_tick_t AVI_GetDPTS( avi_track_t *tk, int64_t i_count )
     if( !tk->i_rate )
         return i_dpts;
 
-    if( tk->i_scale )
-        i_dpts = AVI_Rescale( CLOCK_FREQ * i_count, tk->i_rate, tk->i_scale );
+    if( !tk->i_scale )
+        return 0;
+
+    if( AVI_Rescale( &i_dpts, CLOCK_FREQ * i_count, tk->i_rate, tk->i_scale ) )
+        return 0;
 
     if( tk->i_samplesize )
     {
@@ -2171,7 +2217,10 @@ static int AVI_TrackSeek( demux_t *p_demux,
 
     if( !tk->i_samplesize )
     {
-        if( AVI_StreamChunkSet( p_demux, tk, AVI_PTSToChunk( tk, i_date ) ) )
+        int64_t idxpos = AVI_PTSToChunk( tk, i_date );
+        if ( unlikely( idxpos < 0 || idxpos > UINT_MAX ) )
+            return VLC_EGENERIC;
+        if( AVI_StreamChunkSet( p_demux, tk, idxpos ) )
         {
             return VLC_EGENERIC;
         }
@@ -2227,7 +2276,10 @@ static int AVI_TrackSeek( demux_t *p_demux,
     }
     else
     {
-        if( AVI_StreamBytesSet( p_demux, tk, AVI_PTSToByte( tk, i_date ) ) )
+        int64_t toread = AVI_PTSToByte( tk, i_date );
+        if ( toread < 0)
+            return VLC_EGENERIC;
+        if( AVI_StreamBytesSet( p_demux, tk, toread ) )
         {
             return VLC_EGENERIC;
         }
@@ -2315,7 +2367,7 @@ static void AVI_ParseStreamHeader( vlc_fourcc_t i_id,
 
     if( c1 < '0' || c1 > '9' || c2 < '0' || c2 > '9' )
     {
-        *pi_number =  100; /* > max stream number */
+        *pi_number = AVIF_MAX_STREAMS; /* > max stream number */
         *pi_type = UNKNOWN_ES;
     }
     else
@@ -2733,7 +2785,6 @@ static void AVI_IndexLoad( demux_t *p_demux )
     demux_sys_t *p_sys = p_demux->p_sys;
 
     /* Load indexes */
-    assert( p_sys->i_track <= 100 );
     avi_index_t p_idx_indx[p_sys->i_track];
     avi_index_t p_idx_idx1[p_sys->i_track];
     for( unsigned i = 0; i < p_sys->i_track; i++ )

@@ -103,6 +103,9 @@ static int OpenDecoder(vlc_object_t* p_this)
     decoder_t* p_dec = (decoder_t*)p_this;
     decoder_sys_t* p_sys;
 
+    if (p_dec->fmt_in.i_cat != VIDEO_ES)
+        return VLC_EGENERIC;
+
     if (p_dec->fmt_in.i_codec != VLC_CODEC_OGGSPOTS) {
         return VLC_EGENERIC;
     }
@@ -348,6 +351,12 @@ static picture_t* DecodePacket(decoder_t* p_dec, block_t* p_block)
     i_img_offset = GetDWLE(p_block->p_buffer);
     if (i_img_offset < 20) {
         msg_Dbg(p_dec, "Invalid byte offset");
+        goto error;
+    }
+
+    if (i_img_offset > p_block->i_buffer) {
+        msg_Dbg(p_dec, "Invalid byte offset: %u exceeds packet size %zu",
+                i_img_offset, p_block->i_buffer);
         goto error;
     }
 

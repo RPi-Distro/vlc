@@ -23,7 +23,7 @@ functions.
 
 --- a/modules/Makefile.am
 +++ b/modules/Makefile.am
-@@ -32,6 +32,7 @@ include demux/Makefile.am
+@@ -33,6 +33,7 @@ include demux/Makefile.am
  include gui/Makefile.am
  include hw/d3d9/Makefile.am
  include hw/d3d11/Makefile.am
@@ -42,7 +42,7 @@ functions.
  #include <vlc_common.h>
  #include <vlc_codec.h>
  #include <vlc_avcodec.h>
-@@ -46,6 +48,8 @@
+@@ -47,6 +49,8 @@
  #include "avcodec.h"
  #include "va.h"
  
@@ -51,7 +51,7 @@ functions.
  #include "../../packetizer/av1_obu.h"
  #include "../../packetizer/av1.h"
  #include "../codec/cc.h"
-@@ -53,6 +57,13 @@
+@@ -54,6 +58,13 @@
  /*****************************************************************************
   * decoder_sys_t : decoder descriptor
   *****************************************************************************/
@@ -65,7 +65,7 @@ functions.
  struct decoder_sys_t
  {
      AVCodecContext *p_context;
-@@ -94,6 +105,7 @@ struct decoder_sys_t
+@@ -95,6 +106,7 @@ struct decoder_sys_t
      /* VA API */
      vlc_va_t *p_va;
      enum PixelFormat pix_fmt;
@@ -73,7 +73,7 @@ functions.
      int profile;
      int level;
  
-@@ -362,6 +374,13 @@ static int lavc_CopyPicture(decoder_t *d
+@@ -360,6 +372,13 @@ static int lavc_CopyPicture(decoder_t *d
  {
      decoder_sys_t *sys = dec->p_sys;
  
@@ -87,7 +87,7 @@ functions.
      vlc_fourcc_t fourcc = FindVlcChroma(frame->format);
      if (!fourcc)
      {
-@@ -426,6 +445,9 @@ static int OpenVideoCodec( decoder_t *p_
+@@ -424,6 +443,9 @@ static int OpenVideoCodec( decoder_t *p_
  
      ctx->bits_per_coded_sample = p_dec->fmt_in.video.i_bits_per_pixel;
      p_sys->pix_fmt = AV_PIX_FMT_NONE;
@@ -97,7 +97,7 @@ functions.
      cc_Init( &p_sys->cc );
  
      set_video_color_settings( &p_dec->fmt_in.video, ctx );
-@@ -465,6 +487,32 @@ static int OpenVideoCodec( decoder_t *p_
+@@ -463,6 +485,32 @@ static int OpenVideoCodec( decoder_t *p_
      return 0;
  }
  
@@ -130,7 +130,7 @@ functions.
  static int InitVideoDecCommon( decoder_t *p_dec )
  {
      decoder_sys_t *p_sys = p_dec->p_sys;
-@@ -615,17 +663,31 @@ static int InitVideoDecCommon( decoder_t
+@@ -613,17 +661,31 @@ static int InitVideoDecCommon( decoder_t
      } else
          p_sys->palette_sent = true;
  
@@ -168,7 +168,7 @@ functions.
  
      p_dec->pf_decode = DecodeVideo;
      p_dec->pf_flush  = Flush;
-@@ -636,6 +698,12 @@ static int InitVideoDecCommon( decoder_t
+@@ -634,6 +696,12 @@ static int InitVideoDecCommon( decoder_t
      if( p_context->level != FF_LEVEL_UNKNOWN )
          p_dec->fmt_in.i_level = p_context->level;
      return VLC_SUCCESS;
@@ -181,7 +181,7 @@ functions.
  }
  
  static int ffmpeg_OpenVa(decoder_t *p_dec, AVCodecContext *p_context,
-@@ -657,7 +725,8 @@ static int ffmpeg_OpenVa(decoder_t *p_de
+@@ -655,7 +723,8 @@ static int ffmpeg_OpenVa(decoder_t *p_de
          return VLC_EGENERIC;
      }
      const AVPixFmtDescriptor *dsc = av_pix_fmt_desc_get(hwfmt);
@@ -191,7 +191,7 @@ functions.
      if (lavc_UpdateVideoFormat(p_dec, p_context, hwfmt, swfmt))
          return VLC_EGENERIC; /* Unsupported brand of hardware acceleration */
  
-@@ -691,6 +760,10 @@ static int ffmpeg_OpenVa(decoder_t *p_de
+@@ -689,6 +758,10 @@ static int ffmpeg_OpenVa(decoder_t *p_de
  
  static const enum PixelFormat hwfmts[] =
  {
@@ -200,9 +200,9 @@ functions.
 +    AV_PIX_FMT_DRM_PRIME,
 +#else
  #ifdef _WIN32
- #if LIBAVUTIL_VERSION_CHECK(54, 13, 1, 24, 100)
+ #if LIBAV_UTIL_VERSION_CHECK(54, 13, 1, 24, 100)
      AV_PIX_FMT_D3D11VA_VLD,
-@@ -701,6 +774,7 @@ static const enum PixelFormat hwfmts[] =
+@@ -699,6 +772,7 @@ static const enum PixelFormat hwfmts[] =
  #if (LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(52, 4, 0))
      AV_PIX_FMT_VDPAU,
  #endif
@@ -252,7 +252,7 @@ functions.
  /*****************************************************************************
   * Flush:
   *****************************************************************************/
-@@ -1397,9 +1492,10 @@ static picture_t *DecodeBlock( decoder_t
+@@ -1402,9 +1497,10 @@ static picture_t *DecodeBlock( decoder_t
          {   /* When direct rendering is not used, get_format() and get_buffer()
               * might not be called. The output video format must be set here
               * then picture buffer can be allocated. */
@@ -265,7 +265,7 @@ functions.
                  p_pic = decoder_NewPicture(p_dec);
  
              if( !p_pic )
-@@ -1792,6 +1888,7 @@ static enum PixelFormat ffmpeg_GetFormat
+@@ -1797,6 +1893,7 @@ static enum PixelFormat ffmpeg_GetFormat
          }
          swfmt = defaultfmt;
      }
@@ -273,7 +273,7 @@ functions.
  
      if (p_sys->pix_fmt == AV_PIX_FMT_NONE)
          goto no_reuse;
-@@ -1845,7 +1942,10 @@ no_reuse:
+@@ -1850,7 +1947,10 @@ no_reuse:
      p_sys->level = p_context->level;
  
      if (!can_hwaccel)
@@ -282,9 +282,9 @@ functions.
          return swfmt;
 +    }
  
- #if (LIBAVCODEC_VERSION_MICRO >= 100) \
-   && (LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 83, 101))
-@@ -1864,11 +1964,23 @@ no_reuse:
+ #if (LIBAVCODEC_VERSION_MICRO >= 100) && !(LIBAVCODEC_VERSION_CHECK(57, 83, 101))
+     if (p_context->active_thread_type)
+@@ -1868,11 +1968,23 @@ no_reuse:
      for( size_t i = 0; hwfmts[i] != AV_PIX_FMT_NONE; i++ )
      {
          enum PixelFormat hwfmt = AV_PIX_FMT_NONE;
@@ -1372,7 +1372,7 @@ functions.
      0,
  };
  
-@@ -777,6 +786,10 @@ static const struct
+@@ -779,6 +788,10 @@ static const struct
                                                 FAKE_FMT() },
      { { VLC_CODEC_D3D11_OPAQUE_10B, VLC_CODEC_D3D9_OPAQUE_10B },
                                                 FAKE_FMT() },

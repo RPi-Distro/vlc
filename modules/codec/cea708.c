@@ -556,7 +556,7 @@ static uint8_t CEA708_Window_MinCol( const cea708_window_t *p_w )
     uint8_t i_min = CEA708_WINDOW_MAX_COLS;
     for( int i=p_w->i_firstrow; i <= p_w->i_lastrow; i++ )
     {
-        const cea708_text_row_t *p_row = p_w->rows[p_w->row];
+        const cea708_text_row_t *p_row = p_w->rows[i];
         if( p_row && p_row->firstcol < i_min )
             i_min = p_row->firstcol;
     }
@@ -568,7 +568,7 @@ static uint8_t CEA708_Window_MaxCol( const cea708_window_t *p_w )
     uint8_t i_max = 0;
     for( int i=p_w->i_firstrow; i <= p_w->i_lastrow; i++ )
     {
-        const cea708_text_row_t *p_row = p_w->rows[p_w->row];
+        const cea708_text_row_t *p_row = p_w->rows[i];
         if( p_row && p_row->lastcol > i_max )
             i_max = p_row->lastcol;
     }
@@ -600,6 +600,8 @@ static void CEA708_Window_Truncate( cea708_window_t *p_w, int i_direction )
             for( int i=p_w->i_firstrow; i <= p_w->i_lastrow; i++ )
             {
                 cea708_text_row_t *row = p_w->rows[i];
+                if (!row)
+                    continue;
                 if( row->lastcol == i_max )
                 {
                     if( row->firstcol >= row->lastcol )
@@ -611,6 +613,12 @@ static void CEA708_Window_Truncate( cea708_window_t *p_w, int i_direction )
                         else if( i == p_w->i_lastrow )
                             p_w->i_lastrow--;
                     }
+                    else
+                    {
+                        /* Drop rightmost column */
+                        row->lastcol--;
+                    }
+                   
                 }
             }
         }
@@ -621,6 +629,8 @@ static void CEA708_Window_Truncate( cea708_window_t *p_w, int i_direction )
             for( int i=p_w->i_firstrow; i <= p_w->i_lastrow; i++ )
             {
                 cea708_text_row_t *row = p_w->rows[i];
+                if (!row)
+                    continue;
                 if( row->firstcol == i_min )
                 {
                     if( row->firstcol >= row->lastcol )
@@ -632,6 +642,12 @@ static void CEA708_Window_Truncate( cea708_window_t *p_w, int i_direction )
                         else if( i == p_w->i_lastrow )
                             p_w->i_lastrow--;
                     }
+                    else
+                    {
+                        /* Drop leftmost column */
+                        row->firstcol++;
+                    }
+                   
                 }
             }
         }
@@ -662,15 +678,20 @@ static void CEA708_Window_Scroll( cea708_window_t *p_w )
     {
         case CEA708_WA_DIRECTION_LTR:
             /* Move RIGHT */
-            if( CEA708_Window_MaxCol( p_w ) == CEA708_WINDOW_MAX_ROWS - 1 )
+            if( CEA708_Window_MaxCol( p_w ) == CEA708_WINDOW_MAX_COLS - 1 )
                 CEA708_Window_Truncate( p_w, CEA708_WA_DIRECTION_LTR );
             for( int i=p_w->i_firstrow; i <= p_w->i_lastrow; i++ )
             {
                 cea708_text_row_t *row = p_w->rows[i];
+                if( !row )
+                    continue;
                 if( row->lastcol < row->firstcol ) /* should not happen */
                     continue;
-                memmove( &row->characters[row->firstcol + 1], &row->characters[row->firstcol],
-                         (row->lastcol - row->firstcol + 1) * 4U );
+
+                size_t start = (size_t) row->firstcol * 4U;
+                size_t count = (size_t) (row->lastcol - row->firstcol + 1) * 4U;
+                memmove( &row->characters[start + 4U], &row->characters[start],
+                         count );
                 memmove( &row->styles[row->firstcol + 1], &row->styles[row->firstcol],
                          (row->lastcol - row->firstcol + 1) * sizeof(cea708_pen_style_t) );
                 row->firstcol++;
@@ -684,14 +705,21 @@ static void CEA708_Window_Scroll( cea708_window_t *p_w )
             for( int i=p_w->i_firstrow; i <= p_w->i_lastrow; i++ )
             {
                 cea708_text_row_t *row = p_w->rows[i];
+                if( !row )
+                    continue;
                 if( row->lastcol < row->firstcol ) /* should not happen */
                     continue;
-                memmove( &row->characters[row->firstcol - 1], &row->characters[row->firstcol],
-                         (row->lastcol - row->firstcol + 1) * 4U );
-                memmove( &row->styles[row->firstcol - 1], &row->styles[row->firstcol],
-                         (row->lastcol - row->firstcol + 1) * sizeof(cea708_pen_style_t) );
-                row->firstcol--;
-                row->lastcol--;
+                if( row->firstcol > 0 )
+                {
+                    size_t start = (size_t) row->firstcol * 4U;
+                    size_t count = (size_t) (row->lastcol - row->firstcol + 1) * 4U;
+                    memmove( &row->characters[start -4U], &row->characters[start],
+                             count );
+                    memmove( &row->styles[row->firstcol - 1], &row->styles[row->firstcol],
+                             (row->lastcol - row->firstcol + 1) * sizeof(cea708_pen_style_t) );
+                    row->firstcol--;
+                    row->lastcol--;
+                }
             }
             break;
         case CEA708_WA_DIRECTION_TB:
@@ -1375,7 +1403,7 @@ static int CEA708_Decode_C1( uint8_t code, cea708_t *p_cea708 )
         case CEA708_C1_DLY:
             REQUIRE_ARGS_AND_POP_COMMAND(1);
             p_cea708->suspended_deadline = p_cea708->i_clock +
-                    cea708_input_buffer_get( ib ) * 100 * 1000;
+                    VLC_TICK_FROM_MS( cea708_input_buffer_get( ib ) * 100 );
             Debug(printf("[DLY]"));
             break;
         case CEA708_C1_DLC:

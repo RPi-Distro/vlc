@@ -18,6 +18,7 @@ $(TARBALLS)/faad2-$(FAAD2_VERSION_FIXED).tar.gz:
 
 faad2: faad2-$(FAAD2_VERSION_FIXED).tar.gz .sum-faad2
 	$(UNPACK)
+	$(UPDATE_AUTOCONFIG)
 ifndef HAVE_FPU
 	$(APPLY) $(SRC)/faad2/faad2-fixed.patch
 endif
@@ -27,10 +28,12 @@ endif
 	cd $(UNPACK_DIR) && $(CC) -iquote . -E - </dev/null || sed -i 's/-iquote /-I/' libfaad/Makefile.am
 	$(MOVE)
 
+FAAD2_CONF := --without-drm
+
 .faad2: faad2
 	$(REQUIRE_GPL)
 	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure --without-drm $(HOSTCONF)
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(FAAD2_CONF)
 	cd $< && sed -i.orig "s/shrext_cmds/shrext/g" libtool
-	cd $< && $(MAKE) -C libfaad install
+	$(MAKE) -C $< -C libfaad install
 	touch $@

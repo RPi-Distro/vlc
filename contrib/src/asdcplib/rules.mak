@@ -25,6 +25,7 @@ $(TARBALLS)/asdcplib-$(ASDCPLIB_VERSION).tar.gz:
 
 asdcplib: asdcplib-$(ASDCPLIB_VERSION).tar.gz .sum-asdcplib
 	$(UNPACK)
+	$(UPDATE_AUTOCONFIG) && cd $(UNPACK_DIR) && mv config.guess config.sub build-aux
 	$(APPLY) $(SRC)/asdcplib/port-to-nettle.patch
 	$(APPLY) $(SRC)/asdcplib/static-programs.patch
 	$(APPLY) $(SRC)/asdcplib/adding-pkg-config-file.patch
@@ -35,8 +36,10 @@ asdcplib: asdcplib-$(ASDCPLIB_VERSION).tar.gz .sum-asdcplib
 
 DEPS_asdcplib = nettle $(DEPS_nettle)
 
+ASDCPLIB_CONF := --enable-freedist --enable-dev-headers --with-nettle=$(PREFIX)
+
 .asdcplib: asdcplib
 	$(RECONF)
-	cd $< && $(HOSTVARS) CXXFLAGS="$(ASDCPLIB_CXXFLAGS)" ./configure $(HOSTCONF) --enable-freedist --enable-dev-headers --with-nettle=$(PREFIX)
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) CXXFLAGS="$(ASDCPLIB_CXXFLAGS)" $(ASDCPLIB_CONF)
+	$(MAKE) -C $< install
 	touch $@

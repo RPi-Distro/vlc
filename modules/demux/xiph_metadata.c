@@ -34,35 +34,11 @@
 #include <vlc_arrays.h>
 #include <vlc_input.h>
 #include "xiph_metadata.h"
+#include "../meta_engine/ID3Pictures.h"
 
 input_attachment_t* ParseFlacPicture( const uint8_t *p_data, size_t size,
     int i_attachments, int *i_cover_score, int *i_cover_idx )
 {
-    /* TODO: Merge with ID3v2 copy in modules/meta_engine/taglib.cpp. */
-    static const char pi_cover_score[] = {
-        0,  /* Other */
-        5,  /* 32x32 PNG image that should be used as the file icon */
-        4,  /* File icon of a different size or format. */
-        20, /* Front cover image of the album. */
-        19, /* Back cover image of the album. */
-        13, /* Inside leaflet page of the album. */
-        18, /* Image from the album itself. */
-        17, /* Picture of the lead artist or soloist. */
-        16, /* Picture of the artist or performer. */
-        14, /* Picture of the conductor. */
-        15, /* Picture of the band or orchestra. */
-        9,  /* Picture of the composer. */
-        8,  /* Picture of the lyricist or text writer. */
-        7,  /* Picture of the recording location or studio. */
-        10, /* Picture of the artists during recording. */
-        11, /* Picture of the artists during performance. */
-        6,  /* Picture from a movie or video related to the track. */
-        1,  /* Picture of a large, coloured fish. */
-        12, /* Illustration related to the track. */
-        3,  /* Logo of the band or performer. */
-        2   /* Logo of the publisher (record company). */
-    };
-
     uint32_t type, len;
 
     if( size < 8 )
@@ -136,11 +112,11 @@ input_attachment_t* ParseFlacPicture( const uint8_t *p_data, size_t size,
     p_attachment = vlc_input_attachment_New( name, mime, description, p_data,
                                              size /* XXX: len instead? */ );
 
-    if( type < ARRAY_SIZE(pi_cover_score) &&
-        *i_cover_score < pi_cover_score[type] )
+    if( type < ARRAY_SIZE(ID3v2_cover_scores) &&
+        *i_cover_score < ID3v2_cover_scores[type] )
     {
         *i_cover_idx = i_attachments;
-        *i_cover_score = pi_cover_score[type];
+        *i_cover_score = ID3v2_cover_scores[type];
     }
 
 error:
@@ -423,11 +399,19 @@ void vorbis_ParseComment( es_format_t *p_fmt, vlc_meta_t **pp_meta,
         hasMetaFlags |= XIPHMETA_##var; \
     }
 
-#define IF_EXTRACT_ONCE(txt,var) \
+#define IF_EXTRACT_ONCE_NUMBER(txt,var) \
     if( !strncasecmp(psz_comment, txt, strlen(txt)) && !(hasMetaFlags & XIPHMETA_##var) ) \
     { \
-        vlc_meta_Set( p_meta, vlc_meta_ ## var, &psz_comment[strlen(txt)] ); \
-        hasMetaFlags |= XIPHMETA_##var; \
+        bool isnum = true; \
+        const char *num_str = &psz_comment[strlen(txt)], *c; \
+        for (c = num_str; isnum && *c != '\0'; c++) { \
+            isnum = *c >= '0' && *c <= '9'; \
+        } \
+        if (isnum) \
+        { \
+            vlc_meta_Set( p_meta, vlc_meta_ ## var, num_str ); \
+            hasMetaFlags |= XIPHMETA_##var; \
+        } \
     }
 
 #define IF_EXTRACT_FMT(txt,var,fmt,target) \
@@ -466,8 +450,8 @@ void vorbis_ParseComment( es_format_t *p_fmt, vlc_meta_t **pp_meta,
                 }
             }
         }
-        else IF_EXTRACT_ONCE("TRACKTOTAL=", TrackTotal )
-        else IF_EXTRACT_ONCE("TOTALTRACKS=", TrackTotal )
+        else IF_EXTRACT_ONCE_NUMBER("TRACKTOTAL=", TrackTotal )
+        else IF_EXTRACT_ONCE_NUMBER("TOTALTRACKS=", TrackTotal )
         else IF_EXTRACT("DESCRIPTION=", Description )
         else IF_EXTRACT("COMMENT=", Description )
         else IF_EXTRACT("COMMENTS=", Description )
@@ -539,8 +523,7 @@ void vorbis_ParseComment( es_format_t *p_fmt, vlc_meta_t **pp_meta,
                 {
                     p_seekpoint = getChapterEntry( i_chapt, &chapters_array );
                     if ( ! p_seekpoint ) goto next_comment;
-                    p_seekpoint->i_time_offset =
-                      (((int64_t)h * 3600 + (int64_t)m * 60 + (int64_t)s) * 1000 + ms) * 1000;
+                    p_seekpoint->i_time_offset = vlc_tick_from_sec(h * 3600 + m * 60 + s) + VLC_TICK_FROM_MS(ms);
                 }
             }
         }
@@ -587,4 +570,3 @@ const char *FindKateCategoryName( const char *psz_tag )
     }
     return N_("Unknown category");
 }
-

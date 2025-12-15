@@ -17,8 +17,8 @@ Subject: [PATCH 28/41] qt: Disable HiDPIScaling if ratio is implausible
  
  #include "qt.hpp"
  
-@@ -529,6 +530,22 @@ static void *ThreadPlatform( void *obj,
-     QApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
+@@ -588,6 +589,22 @@ static void *ThreadPlatform( void *obj,
+     QApplication::setAttribute( Qt::AA_UseStyleSheetPropagationInWidgetStyles, true);
  #endif
  
 +    bool do_disable = false;

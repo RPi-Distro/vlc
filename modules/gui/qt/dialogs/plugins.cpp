@@ -34,7 +34,7 @@
 #include "util/animators.hpp"
 #include "util/imagehelper.hpp"
 
-#include <assert.h>
+#include <cassert>
 
 #include <vlc_modules.h>
 
@@ -48,10 +48,8 @@
 #include <QVBoxLayout>
 #include <QComboBox>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QSpacerItem>
 #include <QListView>
-#include <QListWidget>
 #include <QPainter>
 #include <QStyleOptionViewItem>
 #include <QKeyEvent>
@@ -67,6 +65,7 @@
 #include <QToolButton>
 #include <QStackedWidget>
 #include <QPainterPath>
+#include <QSignalMapper>
 
 //match the image source (width/height)
 #define SCORE_ICON_WIDTH_SCALE 4
@@ -354,7 +353,7 @@ AddonsTab::AddonsTab( intf_thread_t *p_intf_ ) : QVLCFrame( p_intf_ )
     QVBoxLayout *layout = new QVBoxLayout( rightPane );
 
     // Left Pane
-    leftPane->layout()->setMargin(0);
+    leftPane->layout()->setContentsMargins(0, 0, 0, 0);
     leftPane->layout()->setSpacing(0);
 
     SearchLineEdit *searchInput = new SearchLineEdit();
@@ -406,7 +405,7 @@ AddonsTab::AddonsTab( intf_thread_t *p_intf_ ) : QVLCFrame( p_intf_ )
                   ADDON_EXTENSION );
 
     // Right Pane
-    rightPane->layout()->setMargin(0);
+    rightPane->layout()->setContentsMargins(0, 0, 0, 0);
     rightPane->layout()->setSpacing(0);
 
     // Splitter sizes init
@@ -847,7 +846,7 @@ QVariant AddonsListModel::Addon::data( int role ) const
         returnval = QVariant( (int) p_entry->i_score );
         break;
     case VersionRole:
-        returnval = QVariant( p_entry->psz_version );
+        returnval = QVariant( qfu(p_entry->psz_version) );
         break;
     case AuthorRole:
         returnval = qfu( p_entry->psz_author );
@@ -1286,7 +1285,7 @@ QWidget *AddonItemDelegate::createEditor( QWidget *parent,
     QPushButton *infoButton;
 
     editorWidget->setLayout( new QHBoxLayout() );
-    editorWidget->layout()->setMargin( 0 );
+    editorWidget->layout()->setContentsMargins(0, 0, 0, 0);
 
     infoButton = new QPushButton( QIcon( ":/menu/info.svg" ),
                                   qtr( "More information..." ) );

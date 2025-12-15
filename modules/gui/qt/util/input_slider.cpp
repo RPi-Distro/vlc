@@ -34,6 +34,8 @@
 #include "adapters/seekpoints.hpp"
 #include "input_manager.hpp"
 #include "imagehelper.hpp"
+#include "customwidgets.hpp"
+#include <vlc_actions.h>
 
 #include <QPaintEvent>
 #include <QPainter>
@@ -169,6 +171,31 @@ SeekSlider::SeekSlider( intf_thread_t *p_intf, Qt::Orientation q, QWidget *_pare
     CONNECT( hideHandleTimer, timeout(), this, hideHandle() );
     CONNECT( startAnimLoadingTimer, timeout(), this, startAnimLoading() );
     mTimeTooltip->installEventFilter( this );
+
+    connect(&wheelEventConverter, &WheelToVLCConverter::vlcWheelKey, this, [this](int vlcButton){
+        vlc_tick_t i_size = var_InheritInteger( this->p_intf->obj.libvlc, "short-jump-size" );
+        int i_mode = var_InheritInteger( this->p_intf->obj.libvlc, "hotkeys-x-wheel-mode" );
+
+        //ignore modifiers
+        switch (vlcButton & 0x00FF0000) {
+        case KEY_MOUSEWHEELDOWN:
+        case KEY_MOUSEWHEELLEFT:
+            if (i_mode != 3)
+                i_size = - i_size;
+            break;
+        case KEY_MOUSEWHEELUP:
+        case KEY_MOUSEWHEELRIGHT:
+            if (i_mode == 3)
+                i_size = - i_size;
+            break;
+        default:
+            break;
+        }
+
+        float posOffset = static_cast<float>( i_size ) / static_cast<float>( inputLength );
+        setValue( value() + posOffset * maximum() );
+        emit sliderDragged( value() / static_cast<float>( maximum() ) );
+    });
 }
 
 SeekSlider::~SeekSlider()
@@ -281,7 +308,7 @@ void SeekSlider::processReleasedButton()
 
 void SeekSlider::mouseReleaseEvent( QMouseEvent *event )
 {
-    if ( event->button() != Qt::LeftButton && event->button() != Qt::MidButton )
+    if ( event->button() != Qt::LeftButton && event->button() != Qt::MiddleButton )
     {
         QSlider::mouseReleaseEvent( event );
         return;
@@ -294,7 +321,7 @@ void SeekSlider::mousePressEvent( QMouseEvent* event )
 {
     /* Right-click */
     if ( !isEnabled() ||
-         ( event->button() != Qt::LeftButton && event->button() != Qt::MidButton )
+         ( event->button() != Qt::LeftButton && event->button() != Qt::MiddleButton )
        )
     {
         QSlider::mousePressEvent( event );
@@ -348,7 +375,7 @@ void SeekSlider::mousePressEvent( QMouseEvent* event )
 
 void SeekSlider::mouseMoveEvent( QMouseEvent *event )
 {
-    if ( ! ( event->buttons() & ( Qt::LeftButton | Qt::MidButton ) ) )
+    if ( ! ( event->buttons() & ( Qt::LeftButton | Qt::MiddleButton ) ) )
     {
         /* Handle button release when mouserelease has been hijacked by popup */
         processReleasedButton();
@@ -386,7 +413,12 @@ void SeekSlider::mouseMoveEvent( QMouseEvent *event )
             }
         }
 
-        QPoint target( event->globalX() - ( event->x() - posX ),
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        const auto pos = event->globalPosition();
+#else
+        const auto pos = event->globalPos();
+#endif
+        QPoint target( pos.x() - ( event->x() - posX ),
                 QWidget::mapToGlobal( QPoint( 0, 0 ) ).y() );
         if( likely( size().width() > handleLength() ) ) {
             secstotimestr( psz_length, getValuePercentageFromXPos( event->x() ) * inputLength );
@@ -400,19 +432,15 @@ void SeekSlider::wheelEvent( QWheelEvent *event )
 {
     /* Don't do anything if we are for somehow reason sliding */
     if( !isSliding && isEnabled() )
-    {
-        vlc_tick_t i_size = var_InheritInteger( p_intf->obj.libvlc, "short-jump-size" );
-        int i_mode = var_InheritInteger( p_intf->obj.libvlc, "hotkeys-x-wheel-mode" );
-        if ( ( event->delta() < 0 && i_mode != 3 ) || ( event->delta() > 0 && i_mode == 3 ) )
-            i_size = - i_size;
-        float posOffset = static_cast<float>( i_size ) / static_cast<float>( inputLength );
-        setValue( value() + posOffset * maximum() );
-        emit sliderDragged( value() / static_cast<float>( maximum() ) );
-    }
+        wheelEventConverter.wheelEvent(event);
     event->accept();
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+void SeekSlider::enterEvent( QEnterEvent * )
+#else
 void SeekSlider::enterEvent( QEvent * )
+#endif
 {
     /* Cancel the fade-out timer */
     hideHandleTimer->stop();
@@ -670,15 +698,33 @@ SoundSlider::SoundSlider( QWidget *_parent, float _i_step,
 
     pixGradient.setMask( mask );
     pixGradient2.setMask( mask );
+
+    connect(&wheelEventConverter, &WheelToVLCConverter::vlcWheelKey, this, [this](int vlcButton){
+        int newvalue = 0;
+        //ignore modifiers
+        switch (vlcButton & 0x00FF0000) {
+        case KEY_MOUSEWHEELDOWN:
+        case KEY_MOUSEWHEELLEFT:
+            newvalue = value() - f_step;
+            break;
+        case KEY_MOUSEWHEELUP:
+        case KEY_MOUSEWHEELRIGHT:
+            newvalue = value() + f_step;
+            break;
+        default:
+            return;
+        }
+
+        setValue( __MIN( __MAX( minimum(), newvalue ), maximum() ) );
+        emit sliderMoved( value() );
+    });
 }
 
 void SoundSlider::wheelEvent( QWheelEvent *event )
 {
-    int newvalue = value() + event->delta() / ( 8 * 15 ) * f_step;
-    setValue( __MIN( __MAX( minimum(), newvalue ), maximum() ) );
-
+    wheelEventConverter.wheelEvent(event);
+    event->accept();
     emit sliderReleased();
-    emit sliderMoved( value() );
 }
 
 void SoundSlider::mousePressEvent( QMouseEvent *event )

@@ -21,7 +21,7 @@ Subject: [PATCH 41/41] avcodec: Add J420 formats as equivalent to YUV420 for
                  case AV_PIX_FMT_NV12:
 --- a/modules/codec/avcodec/video.c
 +++ b/modules/codec/avcodec/video.c
-@@ -1975,7 +1975,8 @@ no_reuse:
+@@ -1979,7 +1979,8 @@ no_reuse:
          {
              if (swfmt == AV_PIX_FMT_P010)
                  defsw = AV_PIX_FMT_RPI4_10;

@@ -32,10 +32,8 @@
 #include "components/sout/sout_widgets.hpp"
 
 #include <QString>
-#include <QFileDialog>
-#include <QToolButton>
-#include <QSpinBox>
-#include <assert.h>
+
+#include <cassert>
 
 SoutDialog::SoutDialog( QWidget *parent, intf_thread_t *_p_intf, const QString& inputMRL )
            : QWizard( parent )

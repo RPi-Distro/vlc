@@ -35,7 +35,7 @@ typedef struct asf_packet_t
     uint32_t property;
     uint32_t length;
     uint32_t padding_length;
-    uint32_t send_time;
+    vlc_tick_t  send_time;
     bool multiple;
     int length_type;
 
@@ -106,8 +106,7 @@ static int DemuxSubPayload( asf_packet_sys_t *p_packetsys,
 static void ParsePayloadExtensions( asf_packet_sys_t *p_packetsys,
                                     const asf_track_info_t *p_tkinfo,
                                     const uint8_t *p_data, size_t i_data,
-                                    bool *b_keyframe,
-                                    int64_t *pi_extension_pts )
+                                    bool *b_keyframe )
 {
     demux_t *p_demux = p_packetsys->p_demux;
 
@@ -166,9 +165,7 @@ static void ParsePayloadExtensions( asf_packet_sys_t *p_packetsys,
         else if ( guidcmp( &p_ext->i_extension_id, &asf_dvr_sampleextension_timing_rep_data_guid ) )
         {
             if ( i_payload_extensions_size != 48 ) goto sizeerror;
-            const int64_t i_pts = GetQWLE(&p_data[8]);
-            if(i_pts != -1)
-                *pi_extension_pts = i_pts / 10000;
+            /* const int64_t i_pts = GetQWLE(&p_data[8]); */
         }
 #if 0
         else
@@ -210,16 +207,15 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
     if (GetValue2b(&i_replicated_data_length, pkt->p_peek, &pkt->i_skip, pkt->left - pkt->i_skip, pkt->property) < 0)
         return -1;
 
-    int64_t i_pkt_time;
-    uint8_t i_pkt_time_delta = 0;
-    int64_t i_extension_pts = -1;
+    vlc_tick_t i_pkt_time;
+    vlc_tick_t i_pkt_time_delta = 0;
     uint32_t i_payload_data_length = 0;
     uint32_t i_temp_payload_length = 0;
     *p_packetsys->pi_preroll = __MIN( *p_packetsys->pi_preroll, INT64_MAX );
 
     /* First packet, in case we do not have index to guess preroll start time */
     if ( *p_packetsys->pi_preroll_start == ASFPACKET_PREROLL_FROM_CURRENT )
-        *p_packetsys->pi_preroll_start = pkt->send_time * 1000;
+        *p_packetsys->pi_preroll_start = pkt->send_time;
 
     asf_track_info_t *p_tkinfo = p_packetsys->pf_gettrackinfo( p_packetsys, i_stream_number );
     if ( !p_tkinfo )
@@ -234,32 +230,29 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
     if( i_replicated_data_length > 7 ) // should be at least 8 bytes
     {
         /* Followed by 2 optional DWORDS, offset in media and *media* presentation time */
-        i_pkt_time = (vlc_tick_t)GetDWLE( pkt->p_peek + pkt->i_skip + 4 );
+        i_pkt_time = VLC_TICK_FROM_MS(GetDWLE( pkt->p_peek + pkt->i_skip + 4 ));
 
         /* Parsing extensions, See 7.3.1 */
         ParsePayloadExtensions( p_packetsys, p_tkinfo,
                                 &pkt->p_peek[pkt->i_skip + 8],
                                 i_replicated_data_length - 8,
-                                &b_packet_keyframe,
-                                &i_extension_pts );
+                                &b_packet_keyframe );
         i_pkt_time -= *p_packetsys->pi_preroll;
-        if(i_extension_pts != -1)
-            i_extension_pts -= *p_packetsys->pi_preroll;
         pkt->i_skip += i_replicated_data_length;
     }
     else if ( i_replicated_data_length == 0 )
     {
         /* optional DWORDS missing */
-        i_pkt_time = (vlc_tick_t)pkt->send_time;
+        i_pkt_time = pkt->send_time;
     }
     /* Compressed payload */
     else if( i_replicated_data_length == 1 )
     {
         /* i_media_object_offset is *media* presentation time */
         /* Next byte is *media* Presentation Time Delta */
-        i_pkt_time_delta = pkt->p_peek[pkt->i_skip];
+        i_pkt_time_delta = VLC_TICK_FROM_MS(pkt->p_peek[pkt->i_skip]);
         b_ignore_pts = false;
-        i_pkt_time = (vlc_tick_t)i_media_object_offset;
+        i_pkt_time = VLC_TICK_FROM_MS(i_media_object_offset);
         i_pkt_time -= *p_packetsys->pi_preroll;
         pkt->i_skip++;
         i_media_object_offset = 0;
@@ -278,10 +271,9 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
     if( ! pkt->left || pkt->i_skip >= pkt->left )
         return -1;
 
-    bool b_preroll_done = ( pkt->send_time > (*p_packetsys->pi_preroll_start/1000 + *p_packetsys->pi_preroll) );
+    bool b_preroll_done = ( pkt->send_time > (*p_packetsys->pi_preroll_start + *p_packetsys->pi_preroll) );
 
     if (i_pkt_time < 0) i_pkt_time = 0; // FIXME?
-    i_pkt_time *= 1000;
 
     if( pkt->multiple ) {
         if (GetValue2b(&i_temp_payload_length, pkt->p_peek, &pkt->i_skip, pkt->left - pkt->i_skip, pkt->length_type) < 0)
@@ -302,8 +294,8 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
               i_payload + 1, i_stream_number, i_media_object_number,
               i_media_object_offset, i_replicated_data_length, i_payload_data_length );
      msg_Dbg( p_demux,
-              "  extpts=%"PRId64" pkttime=%"PRId64" st=%"PRIu32,
-              (i_extension_pts >= 0) ? i_extension_pts * 1000 : -1, i_pkt_time, pkt->send_time );
+              "  pkttime=%"PRId64" st=%"PRId64,
+              i_pkt_time, MS_FROM_VLC_TICK(pkt->send_time) );
 #endif
 
      if( ! i_payload_data_length || i_payload_data_length > pkt->left )
@@ -325,7 +317,7 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
     }
 
     if( p_packetsys->pf_updatesendtime )
-        p_packetsys->pf_updatesendtime( p_packetsys, INT64_C(1000) * pkt->send_time );
+        p_packetsys->pf_updatesendtime( p_packetsys, pkt->send_time );
 
     uint32_t i_subpayload_count = 0;
     while (i_payload_data_length && pkt->i_skip < pkt->left )
@@ -342,19 +334,9 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
         SkipBytes( p_demux->s, pkt->i_skip );
 
         vlc_tick_t i_payload_pts;
-#if 0
-        if( i_extension_pts != -1 )
-        {
-            i_payload_pts = i_extension_pts * 1000;
-            b_ignore_pts = false;
-        }
-        else
-#endif
-        {
-            i_payload_pts = i_pkt_time + (vlc_tick_t)i_pkt_time_delta * i_subpayload_count * 1000;
-            if ( p_tkinfo->p_sp )
-                i_payload_pts -= p_tkinfo->p_sp->i_time_offset * 10;
-        }
+        i_payload_pts = i_pkt_time + i_pkt_time_delta * i_subpayload_count;
+        if ( p_tkinfo->p_sp )
+            i_payload_pts -= p_tkinfo->p_sp->i_time_offset * 10;
 
         vlc_tick_t i_payload_dts = i_pkt_time;
 
@@ -377,8 +359,8 @@ static int DemuxPayload(asf_packet_sys_t *p_packetsys, asf_packet_t *pkt, int i_
             ssize_t i_return = vlc_stream_Peek( p_demux->s, &pkt->p_peek, pkt->left );
             if ( i_return <= 0 || (size_t) i_return < pkt->left )
             {
-            msg_Warn( p_demux, "cannot peek, EOF ?" );
-            return -1;
+                msg_Warn( p_demux, "unexpected end of file" );
+                return -1;
             }
         }
 
@@ -413,7 +395,7 @@ int DemuxASFPacket( asf_packet_sys_t *p_packetsys,
     ssize_t i_return = vlc_stream_Peek( p_demux->s, &p_peek,i_data_packet_min );
     if( i_return <= 0 || (size_t) i_return < i_data_packet_min )
     {
-        msg_Warn( p_demux, "cannot peek while getting new packet, EOF ?" );
+        msg_Warn( p_demux, "unexpected end of file" );
         return 0;
     }
     unsigned int i_skip = 0;
@@ -474,7 +456,7 @@ int DemuxASFPacket( asf_packet_sys_t *p_packetsys,
     if( i_skip + 4 > i_data_packet_min )
         goto loop_error_recovery;
 
-    pkt.send_time = GetDWLE( p_peek + i_skip ); i_skip += 4;
+    pkt.send_time = VLC_TICK_FROM_MS(GetDWLE( p_peek + i_skip )); i_skip += 4;
     /* uint16_t i_packet_duration = GetWLE( p_peek + i_skip ); */ i_skip += 2;
 
     if( i_data_end &&
@@ -489,7 +471,7 @@ int DemuxASFPacket( asf_packet_sys_t *p_packetsys,
     i_return = vlc_stream_Peek( p_demux->s, &p_peek, pkt.length );
     if( i_return <= 0 || pkt.length == 0 || (size_t)i_return < pkt.length )
     {
-        msg_Warn( p_demux, "cannot peek, EOF ?" );
+        msg_Warn( p_demux, "unexpected end of file" );
         return 0;
     }
 

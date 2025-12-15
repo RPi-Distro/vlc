@@ -61,10 +61,9 @@ void SCTE18_Section_Callback( dvbpsi_t *p_handle, const dvbpsi_psi_section_t* p_
                 continue;
 
             const ts_pmt_t *p_pmt = p_es->p_program;
-            const vlc_tick_t i_date = TimeStampWrapAround( p_pmt->pcr.i_first, p_pmt->pcr.i_current );
             block_t *p_block = block_Alloc( p_section->p_payload_end - p_section->p_payload_start );
             memcpy( p_block->p_buffer, p_section->p_payload_start, i_payload );
-            p_block->i_dts = p_block->i_pts = FROM_SCALE( i_date );
+            p_block->i_dts = p_block->i_pts = p_pmt->pcr.i_current;
 
             es_out_Control( p_demux->out, ES_OUT_SET_ES_STATE, p_es->id, true );
             es_out_Send( p_demux->out, p_es->id, p_block );
@@ -102,16 +101,16 @@ void SCTE27_Section_Callback( demux_t *p_demux,
         bool is_immediate = p_content->p_buffer[i_offset + 3] & 0x40;
         if( !is_immediate )
         {
-            vlc_tick_t i_display_in = GetDWBE( &p_content->p_buffer[i_offset + 4] );
+            vlc_tick_t i_display_in = FROM_SCALE(GetDWBE( &p_content->p_buffer[i_offset + 4] ));
             if( i_display_in < i_date )
-                i_date = i_display_in + (1ll << 32);
+                i_date = i_display_in + FROM_SCALE_NZ(1ll << 32);
             else
                 i_date = i_display_in;
         }
 
     }
 
-    p_content->i_dts = p_content->i_pts = VLC_TICK_0 + i_date * 100 / 9;
+    p_content->i_dts = p_content->i_pts = i_date;
     //PCRFixHandle( p_demux, p_pmt, p_content );
 
     if( p_pes->p_es->id )

@@ -19,6 +19,8 @@ endif
 
 libdsm: libdsm-$(LIBDSM_VERSION).tar.xz .sum-libdsm
 	$(UNPACK)
+	$(APPLY) $(SRC)/libdsm/0001-Avoid-relying-on-implicit-function-declarations.patch
+	$(APPLY) $(SRC)/libdsm/0001-use-GetCurrentProcessId-for-the-process-ID-on-Window.patch
 	$(MOVE)
 
 DEPS_libdsm = libtasn1 iconv
@@ -27,7 +29,7 @@ DEPS_libdsm += pthreads $(DEPS_pthreads)
 endif
 
 .libdsm: libdsm crossfile.meson
-	cd $< && rm -rf ./build
-	cd $< && $(HOSTVARS_MESON) $(MESON) -Dauto_features=disabled -Dbinaries=false build
-	cd $< && cd build && ninja install
+	$(MESONCLEAN)
+	$(MESON) -Dauto_features=disabled -Dbinaries=false
+	+$(MESONBUILD)
 	touch $@

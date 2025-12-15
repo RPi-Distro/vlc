@@ -23,6 +23,7 @@ typedef struct dvbpsi_s dvbpsi_t;
 typedef struct ts_sections_processor_t ts_sections_processor_t;
 
 #include "mpeg4_iod.h"
+#include "timestamps.h"
 
 #include <vlc_common.h>
 #include <vlc_es.h>
@@ -58,7 +59,7 @@ struct ts_pmt_t
     struct
     {
         vlc_tick_t i_current;
-        vlc_tick_t i_first; // seen <> != -1
+        vlc_tick_t i_first; // seen <> != TS_TICK_UNKNOWN
         /* broken PCR handling */
         vlc_tick_t i_first_dts;
         vlc_tick_t i_pcroffset;
@@ -125,7 +126,7 @@ struct ts_stream_t
         block_t     **pp_last;
         uint8_t     saved[5];
         size_t      i_saved;
-        int64_t     i_append_pcr;
+        ts_90khz_t  i_append_pcr;
     } gather;
 
     bool        b_always_receive;
@@ -138,6 +139,8 @@ struct ts_stream_t
         block_t *p_head;
         block_t **pp_last;
     } prepcr;
+
+    vlc_tick_t i_last_dts;
 };
 
 typedef struct ts_si_context_t ts_si_context_t;

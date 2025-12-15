@@ -1,11 +1,11 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 1999-2024 VLC authors and VideoLAN])
+AC_COPYRIGHT([Copyright 1999-2025 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.21)
+AC_INIT(vlc, 3.0.22)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=21
+VERSION_REVISION=22
 VERSION_EXTRA=0
 VERSION_DEV=
 
@@ -14,7 +14,7 @@ AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Vetinari"
-COPYRIGHT_YEARS="1996-2024"
+COPYRIGHT_YEARS="1996-2025"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -144,8 +144,8 @@ case "${host_os}" in
 
     dnl Force gcc "-arch" flag
     ARCH_flag=""
-    case "${host}" in
-      i?86*)
+    case "${host_cpu}" in
+      i?86)
         ARCH_flag="-arch i386"
       ;;
       ppc64*)
@@ -154,7 +154,7 @@ case "${host_os}" in
       ppc*)
         ARCH_flag="-arch ppc"
       ;;
-      x86_64*)
+      x86_64)
         ARCH_flag="-arch x86_64"
       ;;
       arm*)
@@ -203,6 +203,7 @@ case "${host_os}" in
         CC="${CC} -isysroot ${with_macosx_sdk}"
         CXX="${CXX} -isysroot ${with_macosx_sdk}"
         OBJC="${OBJC} -isysroot ${with_macosx_sdk}"
+        CCAS="${CCAS} -isysroot ${with_macosx_sdk}"
         LD="${LD} -syslibroot ${with_macosx_sdk}"
     fi
     AC_ARG_WITH(macosx-version-min,
@@ -213,13 +214,16 @@ case "${host_os}" in
         CC="${CC} -mmacosx-version-min=${with_macosx_version_min}"
         CXX="${CXX} -mmacosx-version-min=${with_macosx_version_min}"
         OBJC="${OBJC} -mmacosx-version-min=${with_macosx_version_min}"
+        CCAS="${CCAS} -mmacosx-version-min=${with_macosx_version_min}"
         LD="${LD} -mmacosx_version_min=${with_macosx_version_min}"
     fi
     ;;
   *mingw32* | *cygwin* | *wince* | *mingwce*)
     dnl Force libtool to not link to (shared) libgcc_s when detecting C++ dependencies
     dnl When doing this test with -static-libgcc it will link on (static) libgcc_eh
-    CXXFLAGS="${CXXFLAGS} -static-libgcc"
+    AC_LANG_PUSH(C++)
+    AX_APPEND_COMPILE_FLAGS([-static-libgcc], [CXXFLAGS], [-Werror])
+    AC_LANG_POP(C++)
     AC_CHECK_TOOL(WINDRES, windres, :)
     AC_CHECK_TOOL(OBJCOPY, objcopy, :)
     AC_PREPROC_IFELSE([AC_LANG_PROGRAM(
@@ -259,6 +263,21 @@ case "${host_os}" in
     AC_DEFINE([_BSD_SOURCE], [1], [ISO C, POSIX, and 4.3BSD things.])
     AC_DEFINE([_SVID_SOURCE], [1], [ISO C, POSIX, and SVID things.])
 
+    AC_ARG_WITH(packagedir,
+      AS_HELP_STRING([--with-packagedir=DIR],
+        [output the packaged VLC files in DIR (default vlc-$PACKAGE_VERSION)]))
+    AS_IF([test "${with_packagedir}" != ""], [
+        AS_IF([test -d "${with_packagedir}"], [
+            PACKAGE_DIR=`cd "${with_packagedir}" && pwd -P`
+        ],[
+            dnl this should be an absolute path
+            PACKAGE_DIR="${with_packagedir}"
+        ])
+    ], [
+        PACKAGE_DIR=`pwd -P`"/vlc-${PACKAGE_VERSION}"
+    ])
+    AC_SUBST([PACKAGE_DIR])
+
     case "${host_os}" in
       *mingw32*)
         SYS=mingw32
@@ -285,16 +304,30 @@ case "${host_os}" in
         dnl
         dnl NSIS/MSI Installer prefix and WIN64
         dnl
-        case "${host}" in
-            amd64*|x86_64*)
+        case "${host_cpu}" in
+            aarch64)
+                HAVE_WIN64="1"
+                WINDOWS_ARCH="arm64"
+                PROGRAMFILES="PROGRAMFILES64"
+                LDFLAGS="${LDFLAGS} -Wl,--high-entropy-va -Wl,--image-base,0x140000000"
+            ;;
+            amd64|x86_64)
                 HAVE_WIN64="1"
                 WINDOWS_ARCH="x64"
                 PROGRAMFILES="PROGRAMFILES64"
                 LDFLAGS="${LDFLAGS} -Wl,--high-entropy-va -Wl,--image-base,0x140000000"
             ;;
-            *)
+            armv7)
+                WINDOWS_ARCH="arm"
+                PROGRAMFILES="PROGRAMFILES"
+            ;;
+            i?86)
                 WINDOWS_ARCH="x86"
                 PROGRAMFILES="PROGRAMFILES"
+                AX_APPEND_FLAG([-Wl,--large-address-aware], [LDFLAGS])
+            ;;
+            *)
+                AC_MSG_ERROR([Unsupported Windows architecture ${host_cpu}])
             ;;
         esac
         AC_SUBST(WINDOWS_ARCH)
@@ -341,9 +374,13 @@ AS_IF([test "${SYS}" = "mingw32"],[
   AS_IF([test "${enable_winstore_app}" = "yes"], [
     vlc_winstore_app=1
     LIBCOM=""
-     VLC_ADD_LIBS([libvlccore], [-lruntimeobject])
-     AC_LIBOBJ([gai_strerror])
-    ],[])
+    AX_APPEND_FLAG([-DWINSTORECOMPAT],[CFLAGS])
+    AX_APPEND_FLAG([-DWINSTORECOMPAT],[CPPFLAGS])
+    AX_APPEND_FLAG([-DWINSTORECOMPAT],[CXXFLAGS])
+    AX_APPEND_FLAG([-lwinstorecompat], [LDFLAGS])
+    VLC_ADD_LIBS([libvlccore], [-lruntimeobject])
+    AC_LIBOBJ([gai_strerror])
+  ],[])
   AC_SUBST(LIBCOM)
   ])
 AC_DEFINE_UNQUOTED(VLC_WINSTORE_APP, ${vlc_winstore_app}, [Define to 1 if you want to build for Windows Store apps])
@@ -355,8 +392,7 @@ AC_ARG_ENABLE([pdb],
 AS_IF([test "${SYS}" = "mingw32"],[
   AS_IF([test "${enable_pdb}" = "yes"], [
     vlc_build_pdb=1
-    AX_APPEND_FLAG([-g -gcodeview],[CFLAGS])
-    AX_APPEND_FLAG([-g -gcodeview],[CXXFLAGS])
+    AX_APPEND_FLAG([-g -gcodeview],[CPPFLAGS])
     LDFLAGS="${LDFLAGS} -Wl,-pdb="
   ],[])
 ])
@@ -632,7 +668,7 @@ need_libc=false
 
 dnl Check for usual libc functions
 AC_CHECK_FUNCS([accept4 daemon fcntl flock fstatvfs fork getenv getmntent_r getpwuid_r isatty lstat memalign mkostemp mmap newlocale open_memstream openat pipe2 pread posix_fadvise posix_madvise posix_memalign setlocale stricmp strnicmp strptime uselocale])
-AC_REPLACE_FUNCS([aligned_alloc atof atoll dirfd fdopendir ffsll flockfile fsync getdelim getpid lfind lldiv memrchr nrand48 poll recvmsg rewind sendmsg setenv strcasecmp strcasestr strdup strlcpy strndup strnlen strnstr strsep strtof strtok_r strtoll swab tdestroy tfind timegm timespec_get strverscmp pathconf])
+AC_REPLACE_FUNCS([aligned_alloc atof atoll dirfd fdopendir flockfile fsync getdelim getpid lfind lldiv memrchr nrand48 poll recvmsg rewind sendmsg setenv strcasecmp strcasestr strdup strlcpy strndup strnlen strnstr strsep strtof strtok_r strtoll swab tdestroy tfind timegm timespec_get strverscmp pathconf])
 AC_REPLACE_FUNCS([gettimeofday])
 AC_CHECK_FUNC(fdatasync,,
   [AC_DEFINE(fdatasync, fsync, [Alias fdatasync() to fsync() if missing.])
@@ -645,6 +681,10 @@ VLC_REPLACE_DECL([asprintf], [#include <stdio.h>])
 VLC_REPLACE_DECL([vasprintf], [#include <stdio.h>])
 VLC_REPLACE_DECL([gmtime_r], [#include <time.h>])
 VLC_REPLACE_DECL([localtime_r], [#include <time.h>])
+
+dnl android 21 implements those as static inline, not functions with C linkage
+VLC_REPLACE_DECL([swab], [#include <unistd.h>])
+VLC_REPLACE_DECL([ffsll], [#include <strings.h>])
 
 dnl C11 static_assert()
 AC_MSG_CHECKING([for static_assert in assert.h])
@@ -835,6 +875,14 @@ AC_SUBST(LIBRT)
 dnl
 dnl Check for headers
 dnl
+
+have_stdckdint="no"
+AC_CHECK_HEADER([stdckdint.h], [
+  have_stdckdint="yes"
+], [
+  CPPFLAGS="${CPPFLAGS} -I\$(top_srcdir)/compat/stdckdint"
+])
+AM_CONDITIONAL([HAVE_STDCKDINT], [test "${have_stdckdint}" = "yes"])
 
 dnl  POSIX
 AC_CHECK_HEADERS([arpa/inet.h pthread.h search.h sys/shm.h sys/socket.h sys/uio.h])
@@ -1229,6 +1277,43 @@ if test "${ac_cv_c_attribute_packed}" != "no"; then
   AC_DEFINE(HAVE_ATTRIBUTE_PACKED, 1, Support for __attribute__((packed)) for structs)
 fi
 
+WIN32_PATH_CMD=
+AS_IF([test "${SYS}" = "mingw32"], [
+    AC_MSG_CHECKING([how to transform windows pathes])
+    win32_path_cmd=no
+    for win_path in "cygpath" "wslpath" "wine winepath"
+    do
+      ac_try="$win_path -u c: >/dev/null"
+      (eval "$ac_try") 2>&5
+      ac_status=$?
+      if test $ac_status = 0; then
+        win32_path_cmd=$win_path
+        break
+      fi
+    done
+    AS_IF([test "${win32_path_cmd}" != "no"],[
+      WIN32_PATH_CMD=${win32_path_cmd}
+      AC_MSG_RESULT([using '${win32_path_cmd}'])
+    ],[
+      AC_MSG_RESULT([not possible])
+    ])
+])
+
+AC_SUBST([WIN32_PATH_CMD])
+
+AC_ARG_WITH([wix],
+    AS_HELP_STRING([--with-wix=DIR], [location of WIX binary (default: contribs)])
+)
+AS_IF([test -z "${with_wix}"], [
+    AS_IF([test -n "${CONTRIB_DIR}"], [
+        with_wix="${CONTRIB_DIR}/bin"
+    ])
+])
+AS_IF([test "${with_wix}" != "no"], [
+    WIXPATH="${with_wix}"
+])
+AC_SUBST([WIXPATH])
+
 dnl
 dnl  Check the CPU
 dnl
@@ -1246,8 +1331,13 @@ case "${host_cpu}" in
 esac
 
 dnl Check for backtrace() support
-AC_CHECK_HEADERS(execinfo.h)
-AC_CHECK_FUNCS(backtrace)
+AC_CHECK_HEADERS([execinfo.h])
+AC_CHECK_FUNCS([backtrace],, [
+  AC_CHECK_LIB([execinfo], [backtrace], [
+    LIBEXECINFO="-lexecinfo"])
+])
+AC_SUBST(LIBEXECINFO)
+
 
 dnl
 dnl  default modules
@@ -1966,6 +2056,17 @@ AS_IF([test "$enable_amf_enhancer" != "no"], [
 ])
 AM_CONDITIONAL([HAVE_AMF_ENHANCER], [test "${have_amf_enhancer}" != "no"])
 
+AC_ARG_ENABLE([amf-frc], AS_HELP_STRING([--disable-amf-frc],
+  [disable AMD FRC (default auto)]))
+have_amf_frc="no"
+AS_IF([test "$enable_amf_frc" != "no"], [
+  AC_CHECK_HEADERS([AMF/core/PropertyStorage.h AMF/components/FRC.h], [
+    have_amf_frc="yes"
+    AC_DEFINE(HAVE_AMF_FRC, 1, AMD Frame Rate Conversion supported)
+  ])
+])
+AM_CONDITIONAL([HAVE_AMF_FRC], [test "${have_amf_frc}" != "no"])
+
 dnl
 dnl special access module for Blackmagic SDI cards
 dnl
@@ -2468,25 +2569,7 @@ AM_CONDITIONAL([HAVE_VAAPI], [test "${have_vaapi}" = "yes"])
 AM_CONDITIONAL([HAVE_VAAPI_DRM], [test "${have_vaapi_drm}" = "yes"])
 AM_CONDITIONAL([HAVE_VAAPI_X11], [test "${have_vaapi_x11}" = "yes"])
 AM_CONDITIONAL([HAVE_VAAPI_WL], [test "${have_vaapi_wl}" = "yes"])
-
-have_avcodec_vaapi="no"
-AS_IF([test "${have_vaapi}" = "yes" -a "${have_avcodec}" = "yes"], [
-  VLC_SAVE_FLAGS
-  CPPFLAGS="${CPPFLAGS} ${AVCODEC_CFLAGS}"
-  CFLAGS="${CFLAGS} ${AVCODEC_CFLAGS}"
-  AC_CHECK_HEADERS([libavcodec/vaapi.h], [
-    AC_MSG_NOTICE([VA API acceleration activated])
-    have_avcodec_vaapi="yes"
-  ],[
-    AS_IF([test -n "${enable_libva}"], [
-      AC_MSG_ERROR([libva is present but libavcodec/vaapi.h is missing])
-    ], [
-      AC_MSG_WARN([libva is present but libavcodec/vaapi.h is missing ])
-    ])
-  ])
-  VLC_RESTORE_FLAGS
-])
-AM_CONDITIONAL([HAVE_AVCODEC_VAAPI], [test "${have_avcodec_vaapi}" = "yes"])
+AM_CONDITIONAL([HAVE_AVCODEC_VAAPI], [test "${have_vaapi}" = "yes" -a "${have_avcodec}" = "yes"])
 
 dnl
 dnl dxva2 needs avcodec
@@ -2726,8 +2809,8 @@ dnl
 dnl A52/AC3 decoder plugin
 dnl
 AC_ARG_ENABLE(a52,
-  [  --enable-a52            A/52 support with liba52 (default enabled)])
-if test "${enable_a52}" != "no"
+  [  --enable-a52            A/52 support with liba52 (default disabled)])
+if test "${enable_a52}" = "yes"
 then
   AC_ARG_WITH(a52,
     [  --with-a52=PATH         a52 headers and libraries])
@@ -2759,7 +2842,7 @@ fi
 dnl
 dnl DTS Coherent Acoustics decoder plugin
 dnl
-PKG_ENABLE_MODULES_VLC([DCA], [dca], [libdca >= 0.0.5], [DTS Coherent Acoustics support with libdca], [auto])
+PKG_ENABLE_MODULES_VLC([DCA], [dca], [libdca >= 0.0.5], [DTS Coherent Acoustics support with libdca], [disabled])
 
 dnl
 dnl  Flac plugin
@@ -2769,7 +2852,7 @@ PKG_ENABLE_MODULES_VLC([FLAC], [], [flac], [libflac decoder/encoder support], [a
 dnl
 dnl  Libmpeg2 plugin
 dnl
-PKG_ENABLE_MODULES_VLC([LIBMPEG2], [], [libmpeg2 > 0.3.2], [libmpeg2 decoder support], [auto])
+PKG_ENABLE_MODULES_VLC([LIBMPEG2], [], [libmpeg2 > 0.3.2], [libmpeg2 decoder support], [disabled])
 
 dnl
 dnl  Vorbis plugin
@@ -2875,7 +2958,7 @@ dnl H262 encoder plugin (lib262)
 dnl
 AC_ARG_ENABLE(x262,
   [  --enable-x262           H262 encoding support with static libx262 (default disabled)])
-if test "${enable_x262}" != "no"; then
+AS_IF([test "${enable_x262}" != "no"], [
     PKG_CHECK_MODULES(X262, x262, [
         VLC_ADD_PLUGIN([x262])
         VLC_ADD_LDFLAGS([x262],[${X262_LIBS}])
@@ -2886,12 +2969,12 @@ if test "${enable_x262}" != "no"; then
         if echo ${X262_LIBS} |grep -q 'pthreadGC2'; then
           VLC_ADD_CFLAGS([x262], [-DPTW32_STATIC_LIB])
         fi
-    ], [
-       if test "${enable_x262}" = "yes"; then
-        AC_MSG_ERROR([x262 module doesn't work without staticly compiled libx262.a])
-       fi
+    ],[
+       AS_IF([test "${enable_x262}" = "yes"], [
+        AC_MSG_ERROR([x262 module does not work without statically compiled libx262.a])
+       ])
     ])
-fi
+])
 
 dnl x265 encoder
 PKG_ENABLE_MODULES_VLC([X265],, [x265], [HEVC/H.265 encoder], [auto])
@@ -2986,25 +3069,6 @@ AS_IF( [test "${enable_zvbi}" != "no"],[
     ])
 AS_IF( [test "${enable_telx}" != "no" ],[
   VLC_ADD_PLUGIN([telx])
-  ])
-
-dnl
-dnl libass subtitle rendering module
-dnl
-AC_ARG_ENABLE(libass,
-  [  --enable-libass         Subtitle support using libass (default enabled)])
-AS_IF( [test "${enable_libass}" != "no"], [
-  PKG_CHECK_MODULES(LIBASS, [libass >= 0.9.8],
-      [
-        VLC_ADD_PLUGIN([libass])
-
-        AC_CHECK_HEADERS(fontconfig/fontconfig.h,
-          [VLC_ADD_CPPFLAGS([libass],[-DHAVE_FONTCONFIG])
-           VLC_ADD_LIBS([libass],[-lfontconfig])
-       ])
-      ],[
-        AC_MSG_WARN([${LIBASS_PKG_ERRORS}.])
-      ])
   ])
 
 dnl
@@ -3346,6 +3410,25 @@ AM_CONDITIONAL([HAVE_FREETYPE], [test "${have_freetype}" = "yes"])
 AM_CONDITIONAL([HAVE_FONTCONFIG], [test "${have_fontconfig}" = "yes"])
 AM_CONDITIONAL([HAVE_FRIBIDI], [test "${have_fribidi}" = "yes"])
 AM_CONDITIONAL([HAVE_HARFBUZZ], [test "${have_harfbuzz}" = "yes"])
+
+dnl
+dnl libass subtitle rendering module
+dnl
+AC_ARG_ENABLE(libass,
+  [  --enable-libass         Subtitle support using libass (default enabled)])
+AS_IF( [test "${enable_libass}" != "no"], [
+  PKG_CHECK_MODULES(LIBASS, [libass >= 0.9.8],
+      [
+        VLC_ADD_PLUGIN([libass])
+
+        if test "${have_fontconfig}" != "no"; then
+            VLC_ADD_CPPFLAGS([libass],[-DHAVE_FONTCONFIG])
+            VLC_ADD_LIBS([libass],[${FONTCONFIG_LIBS}])
+        fi
+      ],[
+        AC_MSG_WARN([${LIBASS_PKG_ERRORS}.])
+      ])
+  ])
 
 dnl
 dnl SAPI (text to Speech renderer for Windows)
@@ -3858,14 +3941,6 @@ AS_IF([test "${enable_skins2}" != "no"], [
 ])
 AM_CONDITIONAL(BUILD_SKINS, [test "${enable_skins2}" = "yes"])
 
-AC_ARG_ENABLE(libtar,
-  [  --enable-libtar         libtar support for skins2 (default auto)])
-AS_IF([test "${enable_skins2}" = "yes" && test "${enable_libtar}" != "no"], [
-  AC_CHECK_HEADERS(libtar.h, [
-    VLC_ADD_LIBS([skins2],[-ltar])
-  ])
-])
-
 dnl
 dnl  MacOS X gui module
 dnl
@@ -4372,7 +4447,7 @@ AC_CONFIG_FILES([
   bin/Makefile
   test/Makefile
   modules/hw/mmal/Makefile
-  share/vlc.appdata.xml.in
+  share/org.videolan.vlc.appdata.xml.in
 ])
 
 AM_COND_IF([HAVE_WIN32], [

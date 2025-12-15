@@ -339,6 +339,9 @@ static int OpenDecoder( vlc_object_t *p_this )
     decoder_t     *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
+    if( p_dec->fmt_in.i_cat != SPU_ES )
+        return VLC_EGENERIC;
+
     if( p_dec->fmt_in.i_codec != VLC_CODEC_KATE )
     {
         return VLC_EGENERIC;
@@ -876,6 +879,10 @@ static void TigerUpdateSubpicture( subpicture_t *p_subpic,
     fmt.i_height         =
     fmt.i_visible_height = p_fmt_src->i_height;
     fmt.i_x_offset       = fmt.i_y_offset = 0;
+    fmt.transfer         = TRANSFER_FUNC_SRGB;
+    fmt.primaries        = COLOR_PRIMARIES_SRGB;
+    fmt.space            = COLOR_SPACE_SRGB;
+    fmt.b_color_range_full = true;
 
     subpicture_region_t *p_r = subpicture_region_New( &fmt );
     if( !p_r )

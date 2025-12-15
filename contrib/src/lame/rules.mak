@@ -23,12 +23,14 @@ endif
 	$(APPLY) $(SRC)/lame/lame-fix-i386-on-aarch64.patch
 	# Avoid relying on iconv.m4 from gettext, when reconfiguring.
 	# This is only used by the frontend which we disable.
-	cd $(UNPACK_DIR) && sed -i.orig 's/^AM_ICONV/#&/' configure.in
+	sed -i.orig 's/^AM_ICONV/#&/' $(UNPACK_DIR)/configure.in
 	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
 
+LAME_CONF := --disable-analyzer-hooks --disable-decoder --disable-gtktest --disable-frontend
+
 .lame: lame
 	$(RECONF)
-	cd $< && $(HOSTVARS) CFLAGS="$(LAME_CFLAGS)" ./configure $(HOSTCONF) --disable-analyzer-hooks --disable-decoder --disable-gtktest --disable-frontend
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) CFLAGS="$(LAME_CFLAGS)" $(LAME_CONF)
+	$(MAKE) -C $< install
 	touch $@

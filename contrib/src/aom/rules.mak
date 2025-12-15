@@ -28,8 +28,6 @@ ifdef HAVE_WIN32
 DEPS_aom += pthreads $(DEPS_pthreads)
 endif
 
-AOM_LDFLAGS := $(LDFLAGS)
-
 AOM_CONF := \
 	-DCONFIG_RUNTIME_CPU_DETECT=1 \
 	-DCONFIG_MULTITHREAD=1 \
@@ -85,10 +83,9 @@ endif
 # libaom doesn't allow in-tree builds
 .aom: aom toolchain.cmake
 	rm -rf $(PREFIX)/include/aom
-	cd $< && rm -rf aom_build && mkdir -p aom_build
-	cd $< && mkdir -p aom_build
-	cd $</aom_build && LDFLAGS="$(AOM_LDFLAGS)" $(HOSTVARS) $(CMAKE) ../ $(AOM_CONF)
-	cd $< && $(CMAKEBUILD) aom_build
-	$(call pkg_static,"aom_build/aom.pc")
-	cd $</aom_build && $(CMAKEBUILD) . --target install
+	$(CMAKECLEAN)
+	$(HOSTVARS) $(CMAKE) $(AOM_CONF)
+	+$(CMAKEBUILD)
+	$(call pkg_static,"$(BUILD_DIRUNPACK)/aom.pc")
+	$(CMAKEINSTALL)
 	touch $@

@@ -58,6 +58,8 @@ static void Close(vlc_object_t *);
 #define HEIGHT_TEXT N_("Video height")
 #define HEIGHT_LONGTEXT N_("The height of the visualization window, in pixels.")
 
+#define LOG_OFFSET 0.1
+
 vlc_module_begin()
     set_shortname(N_("glSpectrum"))
     set_description(N_("3D OpenGL spectrum visualization"))
@@ -381,7 +383,7 @@ static void *Thread( void *p_data )
         float p_output[FFT_BUFFER_SIZE];           /* Raw FFT Result  */
         int16_t p_buffer1[FFT_BUFFER_SIZE];        /* Buffer on which we perform
                                                       the FFT (first channel) */
-        int16_t p_dest[FFT_BUFFER_SIZE];           /* Adapted FFT result */
+        uint16_t p_dest[FFT_BUFFER_SIZE];          /* Adapted FFT result */
         float *p_buffl = (float*)block->p_buffer;  /* Original buffer */
 
         int16_t  *p_buffs;                         /* int16_t converted buffer */
@@ -445,9 +447,11 @@ static void *Thread( void *p_data )
         window_scale_in_place (p_buffer1, &wind_ctx);
         fft_perform (p_buffer1, p_output, p_state);
 
-        for (i = 0; i< FFT_BUFFER_SIZE; ++i)
-            p_dest[i] = p_output[i] *  (2 ^ 16)
-                        / ((FFT_BUFFER_SIZE / 2 * 32768) ^ 2);
+        for( i = 0; i< FFT_BUFFER_SIZE ; i++ )
+        {
+            /* Scale the output between 0 and UINT16MAX */
+            p_dest[i] = p_output[i] * UINT16_MAX / FFT_SCALING_VALUE;
+        }
 
         for (i = 0 ; i < NB_BANDS; i++)
         {
@@ -464,8 +468,9 @@ static void *Thread( void *p_data )
                 if (p_dest[j] > y)
                      y = p_dest[j];
             }
-            /* Calculate the height of the bar */
-            float new_height = y != 0 ? logf(y) * 0.4f : 0;
+            /* Calculate the height of the bar
+               This log_offset makes it possible to display low values */
+            float new_height = y != 0 ? logf( y + LOG_OFFSET ) * 0.4f : 0;
             height[i] = new_height > height[i]
                         ? new_height : height[i];
         }

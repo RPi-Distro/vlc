@@ -42,6 +42,8 @@ FLUIDCONF := \
 	-Denable-readline=0
 
 .fluid: fluidsynth toolchain.cmake
-	cd $< && $(HOSTVARS) CFLAGS="$(CFLAGS) -DFLUIDSYNTH_NOT_A_DLL" $(CMAKE) $(FLUIDCONF)
-	cd $< && $(CMAKEBUILD) . --target install
+	$(CMAKECLEAN)
+	$(HOSTVARS) $(CMAKE) $(FLUIDCONF)
+	+$(CMAKEBUILD)
+	$(CMAKEINSTALL)
 	touch $@
