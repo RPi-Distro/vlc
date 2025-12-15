@@ -73,7 +73,7 @@ Can do HDR setup and mode matching
 
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -187,6 +187,35 @@ vout_LTLIBRARIES += libglx_plugin.la
+@@ -191,6 +191,35 @@ vout_LTLIBRARIES += libglx_plugin.la
  endif
  endif
  

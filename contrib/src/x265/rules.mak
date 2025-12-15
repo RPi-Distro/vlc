@@ -24,18 +24,23 @@ $(TARBALLS)/x265_$(X265_VERSION).tar.gz:
 
 x265: x265_$(X265_VERSION).tar.gz .sum-x265
 	$(UNPACK)
-	$(APPLY) $(SRC)/x265/x265-ldl-linking.patch
-	$(APPLY) $(SRC)/x265/x265-no-pdb-install.patch
-	$(APPLY) $(SRC)/x265/x265-enable-detect512.patch
+	$(APPLY) $(SRC)/x265/0001-fix-ldl-linking-error-of-x265.patch
+	$(APPLY) $(SRC)/x265/0002-do-not-copy-.pdb-files-that-don-t-exist.patch
+	$(APPLY) $(SRC)/x265/0003-add-patch-to-enable-detect512.patch
+	$(APPLY) $(SRC)/x265/0001-Fix-libunwind-static-linking-on-Android-toolchains.patch
 	$(call pkg_static,"source/x265.pc.in")
 ifndef HAVE_WIN32
 	$(APPLY) $(SRC)/x265/x265-pkg-libs.patch
 endif
 	$(MOVE)
 
+X265_CONF := -DENABLE_SHARED=OFF -DCMAKE_SYSTEM_PROCESSOR=$(ARCH) -DENABLE_CLI=OFF
+
 .x265: x265 toolchain.cmake
 	$(REQUIRE_GPL)
-	cd $</source && $(HOSTVARS_PIC) $(CMAKE) -DENABLE_SHARED=OFF -DCMAKE_SYSTEM_PROCESSOR=$(ARCH) -DENABLE_CLI=OFF
-	cd $< && $(CMAKEBUILD) source --target install
+	$(CMAKECLEAN)
+	$(HOSTVARS) $(CMAKE) -S $</source $(X265_CONF)
+	+$(CMAKEBUILD)
+	$(CMAKEINSTALL)
 	sed -e s/'[^ ]*clang_rt[^ ]*'//g -i.orig "$(PREFIX)/lib/pkgconfig/x265.pc"
 	touch $@

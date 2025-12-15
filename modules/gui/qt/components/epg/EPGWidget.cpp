@@ -27,11 +27,11 @@
 #include "input_manager.hpp"
 
 #include <QStackedWidget>
-#include <QVBoxLayout>
+#include <QGridLayout>
 #include <QScrollBar>
 #include <QLabel>
-#include <QStringList>
 #include <QDateTime>
+#include <QTimeZone>
 
 #include "EPGWidget.hpp"
 #include "EPGRuler.hpp"
@@ -111,7 +111,11 @@ void EPGWidget::updateEPG( input_item_t *p_input_item )
     vlc_mutex_lock(  & p_input_item->lock );
     m_epgView->updateEPG( p_input_item->pp_epg, p_input_item->i_epg );
     m_epgView->setEpgTime( ( p_input_item->i_epg_time ) ?
+#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 0)
+                           QDateTime::fromSecsSinceEpoch( p_input_item->i_epg_time, QTimeZone::systemTimeZone() ) :
+#else
                            QDateTime::fromTime_t( p_input_item->i_epg_time ) :
+#endif
                            QDateTime() );
     vlc_mutex_unlock( & p_input_item->lock );
 

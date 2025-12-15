@@ -41,7 +41,7 @@
 #include <QFileDialog>
 #include <QGraphicsScene>
 #include <QPainter>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QApplication>
 #include <QScreen>
 
@@ -60,7 +60,14 @@
 
 static bool filterIsPresent( const QString &filters, const QString &filter )
 {
-    QStringList list = filters.split( ':', QString::SplitBehavior::SkipEmptyParts );
+    QStringList list = filters.split( ':',
+                                      #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                                        Qt::SkipEmptyParts
+                                      #else
+                                        QString::SkipEmptyParts
+                                      #endif
+                                    );
+
     foreach( const QString &filterCmp, list )
     {
         if( filterCmp.compare( filter ) == 0 )
@@ -102,8 +109,8 @@ static QString OptionFromWidgetName( QObject *obj )
 {
     /* Gruik ? ... nah */
     return obj->objectName()
-        .remove( QRegExp( "Slider|Combo|Dial|Check|Spin|Text" ) )
-        .replace( QRegExp( "([A-Z])" ), "-\\1" )
+        .remove( QRegularExpression( "Slider|Combo|Dial|Check|Spin|Text" ) )
+        .replace( QRegularExpression( "([A-Z])" ), "-\\1" )
         .toLower();
 }
 
@@ -296,7 +303,13 @@ static QString ChangeFiltersString( struct intf_thread_t *p_intf, const char *ps
     char* psz_chain = var_GetString( THEPL, psz_filter_type );
 
     QString const chain = QString( psz_chain ? psz_chain : "" );
-    QStringList list = chain.split( ':', QString::SplitBehavior::SkipEmptyParts );
+    QStringList list = chain.split( ':',
+                                    #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                                        Qt::SkipEmptyParts
+                                    #else
+                                        QString::SkipEmptyParts
+                                    #endif
+                                  );
 
     if( b_add && std::find(list.begin(), list.end(), psz_name) == list.end() )
         list << psz_name;
@@ -1034,7 +1047,13 @@ QStringList EqualizerSliderData::getBandsFromAout() const
             char *psz_bands = var_GetString( p_aout, qtu(p_data->name) );
             if ( psz_bands )
             {
-                bands = QString( psz_bands ).split( " ", QString::SkipEmptyParts );
+                bands = QString( psz_bands ).split( " ",
+                                                    #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                                                        Qt::SkipEmptyParts
+                                                    #else
+                                                        QString::SkipEmptyParts
+                                                    #endif
+                                                  );
                 free( psz_bands );
             }
         }
@@ -1050,7 +1069,13 @@ QStringList EqualizerSliderData::getBandsFromAout() const
     char *psz_bands = config_GetPsz( p_intf, qtu(p_data->name) );
     if ( psz_bands )
     {
-        bands = QString( psz_bands ).split( " ", QString::SkipEmptyParts );
+        bands = QString( psz_bands ).split( " ",
+                                            #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                                                Qt::SkipEmptyParts
+                                            #else
+                                                QString::SkipEmptyParts
+                                            #endif
+                                          );
         free( psz_bands );
     }
 
@@ -1154,8 +1179,13 @@ void Equalizer::build()
     connectConfigChanged( preamp );
 
     /* fix sliders spacing accurately */
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+    int i_width = qMax( QFontMetrics( smallFont ).horizontalAdvance( "500 Hz" ),
+                        QFontMetrics( smallFont ).horizontalAdvance( "-20.0 dB" ) );
+#else
     int i_width = qMax( QFontMetrics( smallFont ).width( "500 Hz" ),
                         QFontMetrics( smallFont ).width( "-20.0 dB" ) );
+#endif
     int i = 0;
     foreach( const FilterSliderData::slider_data_t &data, controls )
     {

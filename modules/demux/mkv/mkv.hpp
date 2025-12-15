@@ -117,13 +117,21 @@ enum
 #define MKV_CHECKED_PTR_DECL( name, type, src ) type * name = MKV_IS_ID(src, type) ? static_cast<type*>(src) : NULL
 #define MKV_CHECKED_PTR_DECL_CONST( name, type, src ) const type * name = MKV_IS_ID(src, type) ? static_cast<const type*>(src) : NULL
 
+#if LIBEBML_VERSION < 0x020000
+template <typename Type>
+Type * FindChild(const EbmlMaster & Master)
+{
+  return static_cast<Type *>(Master.FindFirstElt(EBML_INFO(Type)));
+}
+
+template <typename Type>
+Type * FindNextChild(const EbmlMaster & Master, const Type & PastElt)
+{
+  return static_cast<Type *>(Master.FindNextElt(PastElt));
+}
+#endif
 
 using namespace LIBMATROSKA_NAMESPACE;
-
-void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock,
-                  KaxBlockAdditions *additions,
-                  vlc_tick_t i_pts, vlc_tick_t i_duration, bool b_key_picture,
-                  bool b_discardable_picture );
 
 class attachment_c
 {

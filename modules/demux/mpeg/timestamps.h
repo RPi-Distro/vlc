@@ -19,19 +19,32 @@
 #ifndef VLC_MPEG_TIMESTAMPS_H
 #define VLC_MPEG_TIMESTAMPS_H
 
-#define FROM_SCALE_NZ(x) ((x) * 100 / 9)
+#define FROM_SCALE_NZ(x) (((vlc_tick_t)(x) * 100 / 9))
 #define TO_SCALE_NZ(x)   ((x) * 9 / 100)
 
 #define FROM_SCALE(x) (VLC_TICK_0 + FROM_SCALE_NZ(x))
 #define TO_SCALE(x)   TO_SCALE_NZ((x) - VLC_TICK_0)
 
-static inline int64_t TimeStampWrapAround( int64_t i_first_pcr, int64_t i_time )
-{
-    int64_t i_adjust = 0;
-    if( i_first_pcr > 0x0FFFFFFFF && i_time < 0x0FFFFFFFF )
-        i_adjust = 0x1FFFFFFFF;
+typedef int64_t ts_90khz_t;
+#define TS_90KHZ_INVALID -1
 
-    return i_time + i_adjust;
+
+#define TS_33BITS_ROLL_NZ      FROM_SCALE_NZ(0x1FFFFFFFF)
+#define TS_33BITS_HALF_ROLL_NZ FROM_SCALE_NZ(0x0FFFFFFFF)
+
+static inline vlc_tick_t TimeStampWrapAround( vlc_tick_t i_past_pcr, vlc_tick_t i_time )
+{
+    if( i_past_pcr == VLC_TICK_INVALID || i_time >= i_past_pcr )
+        return i_time;
+
+    vlc_tick_t delta = i_past_pcr - i_time;
+    if( delta >= TS_33BITS_HALF_ROLL_NZ )
+    {
+        vlc_tick_t rolls = (delta + TS_33BITS_ROLL_NZ - 1) / TS_33BITS_ROLL_NZ;
+        i_time += rolls * TS_33BITS_ROLL_NZ;
+    }
+
+    return i_time;
 }
 
 #endif

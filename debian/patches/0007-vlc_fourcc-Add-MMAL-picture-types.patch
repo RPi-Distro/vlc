@@ -9,7 +9,7 @@ Subject: [PATCH 07/41] vlc_fourcc: Add MMAL picture types
 
 --- a/include/vlc_fourcc.h
 +++ b/include/vlc_fourcc.h
-@@ -374,6 +374,11 @@
+@@ -378,6 +378,11 @@
  
  /* Broadcom MMAL opaque buffer type */
  #define VLC_CODEC_MMAL_OPAQUE     VLC_FOURCC('M','M','A','L')

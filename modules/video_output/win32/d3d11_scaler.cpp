@@ -444,10 +444,18 @@ int D3D11_UpscalerUpdate(vlc_object_t *vd, d3d11_scaler *scaleProc, d3d11_device
             scaleProc->picsys.processorOutput->Release();
             scaleProc->picsys.processorOutput = NULL;
         }
+        if (scaleProc->picsys.context)
+        {
+            scaleProc->picsys.context->Release();
+            scaleProc->picsys.context = nullptr;
+        }
+
         scaleProc->picsys.texture[0] = upscaled.Get();
         for (size_t i=0; i<ARRAY_SIZE(scaleProc->picsys.resourceView); i++)
             scaleProc->picsys.resourceView[i] = scaleProc->SRVs[i];
         scaleProc->picsys.formatTexture = texDesc.Format;
+        scaleProc->picsys.context = d3d_dev->d3dcontext;
+        scaleProc->picsys.context->AddRef();
     }
 
 #ifdef HAVE_AMF_SCALER
@@ -653,14 +661,17 @@ int D3D11_UpscalerScale(vlc_object_t *vd, d3d11_scaler *scaleProc, picture_sys_t
         auto packedStaging = scaleProc->amfInput->GetPlane(amf::AMF_PLANE_PACKED);
         ID3D11Texture2D *amfStaging = reinterpret_cast<ID3D11Texture2D *>(packedStaging->GetNative());
 
-#ifndef NDEBUG
         D3D11_TEXTURE2D_DESC stagingDesc, inputDesc;
         amfStaging->GetDesc(&stagingDesc);
         p_sys->texture[KNOWN_DXGI_INDEX]->GetDesc(&inputDesc);
-        assert(stagingDesc.Width == inputDesc.Width);
-        assert(stagingDesc.Height == inputDesc.Height);
+        assert(stagingDesc.Width <= inputDesc.Width);
+        assert(stagingDesc.Height <= inputDesc.Height);
         assert(stagingDesc.Format == inputDesc.Format);
-#endif
+
+        D3D11_BOX box = {};
+        box.bottom = stagingDesc.Height,
+        box.right = stagingDesc.Width,
+        box.back = 1,
 
         // copy source into staging as it may not be shared
         d3d11_device_lock( scaleProc->d3d_dev );
@@ -669,7 +680,7 @@ int D3D11_UpscalerScale(vlc_object_t *vd, d3d11_scaler *scaleProc, picture_sys_t
                                                 0, 0, 0,
                                                 p_sys->texture[KNOWN_DXGI_INDEX],
                                                 p_sys->slice_index,
-                                                NULL);
+                                                &box);
         d3d11_device_unlock( scaleProc->d3d_dev );
         submitSurface = scaleProc->amfInput;
 
@@ -718,6 +729,26 @@ int D3D11_UpscalerScale(vlc_object_t *vd, d3d11_scaler *scaleProc, picture_sys_t
         {
             return (-ENOTSUP);
         }
+
+        if (scaleProc->picsys.processorInput)
+        {
+            scaleProc->picsys.processorInput->Release();
+            scaleProc->picsys.processorInput = NULL;
+        }
+        if (scaleProc->picsys.processorOutput)
+        {
+            scaleProc->picsys.processorOutput->Release();
+            scaleProc->picsys.processorOutput = NULL;
+        }
+        if (scaleProc->picsys.context)
+        {
+            scaleProc->picsys.context->Release();
+            scaleProc->picsys.context = nullptr;
+        }
+        scaleProc->picsys.texture[0] = out;
+        scaleProc->picsys.formatTexture = inputDesc.Format;
+        scaleProc->picsys.context = scaleProc->d3d_dev->d3dcontext;
+        scaleProc->picsys.context->AddRef();
 
         amfOutput->Release();
 

@@ -17,7 +17,7 @@ shell. This updates the calls and bindings to work again.
 
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3207,6 +3207,10 @@ have_wayland="no"
+@@ -3289,6 +3289,10 @@ have_wayland="no"
  have_wayland_egl="no"
  have_wayland_single_pixel_buffer="no"
  have_wayland_color_representation="no"
@@ -28,7 +28,7 @@ shell. This updates the calls and bindings to work again.
  
  AS_IF([test "${enable_wayland}" = "yes"], [
    PKG_CHECK_MODULES([WAYLAND_CLIENT], [wayland-client >= 1.5.91], [
-@@ -3228,6 +3232,18 @@ AS_IF([test "${enable_wayland}" = "yes"]
+@@ -3310,6 +3314,18 @@ AS_IF([test "${enable_wayland}" = "yes"]
        ], [
           AC_MSG_RESULT([no])
        ])
@@ -47,7 +47,7 @@ shell. This updates the calls and bindings to work again.
      ], [
        AC_MSG_RESULT([not found])
        AC_MSG_ERROR([$(${PKG_CONFIG} --print-errors 'wayland-protocols >= 1.4')])
-@@ -3263,6 +3279,8 @@ AM_CONDITIONAL([HAVE_WAYLAND], [test "${
+@@ -3345,6 +3361,8 @@ AM_CONDITIONAL([HAVE_WAYLAND], [test "${
  AM_CONDITIONAL([HAVE_WAYLAND_EGL], [test "${have_wayland_egl}" = "yes"])
  AM_CONDITIONAL([HAVE_WAYLAND_SINGLE_PIXEL_BUFFER], [test "${have_wayland_single_pixel_buffer}" = "yes"])
  AM_CONDITIONAL([HAVE_WAYLAND_COLOR_REPRESENTATION], [test "${have_wayland_color_representation}" = "yes"])
@@ -58,7 +58,7 @@ shell. This updates the calls and bindings to work again.
  dnl
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -260,6 +260,14 @@ video_output/wayland/color-representatio
+@@ -264,6 +264,14 @@ video_output/wayland/color-representatio
  		$(WAYLAND_PROTOCOLS)/staging/color-representation/color-representation-v1.xml
  	$(AM_V_GEN)$(WAYLAND_SCANNER) client-header $< $@
  
@@ -73,7 +73,7 @@ shell. This updates the calls and bindings to work again.
  libwl_dmabuf_plugin_la_SOURCES = video_output/wayland/wl_dmabuf.c\
  	video_output/wayland/picpool.c video_output/wayland/picpool.h\
  	video_output/wayland/dmabuf_alloc.c video_output/wayland/dmabuf_alloc.h\
-@@ -327,6 +335,57 @@ video_output/wayland/xdg-shell-unstable-
+@@ -331,6 +339,57 @@ video_output/wayland/xdg-shell-unstable-
  		$(WAYLAND_PROTOCOLS)/unstable/xdg-shell/xdg-shell-unstable-v5.xml
  	$(AM_V_GEN)$(WAYLAND_SCANNER) private-code $< $@
  
@@ -131,7 +131,7 @@ shell. This updates the calls and bindings to work again.
  video_output/wayland/server-decoration-client-protocol.h: \
  		video_output/wayland/server-decoration.xml
  video_output/wayland/server-decoration-protocol.c: \
-@@ -346,6 +405,10 @@ vout_LTLIBRARIES += libwl_dmabuf_plugin.
+@@ -350,6 +409,10 @@ vout_LTLIBRARIES += libwl_dmabuf_plugin.
  vout_LTLIBRARIES += libwl_shell_plugin.la
  BUILT_SOURCES += $(nodist_libxdg_shell_plugin_la_SOURCES)
  vout_LTLIBRARIES += libxdg_shell_plugin.la

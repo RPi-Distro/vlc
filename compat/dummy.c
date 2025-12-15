@@ -1,1 +1,1 @@
-/* Intentionally left empty */
+/* Automatically generated */

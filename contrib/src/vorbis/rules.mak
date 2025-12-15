@@ -1,7 +1,7 @@
 # libvorbis
 
 VORBIS_VERSION := 1.3.6
-VORBIS_URL := http://downloads.xiph.org/releases/vorbis/libvorbis-$(VORBIS_VERSION).tar.xz
+VORBIS_URL := $(XIPH)/vorbis/libvorbis-$(VORBIS_VERSION).tar.xz
 
 ifdef HAVE_FPU
 PKGS += vorbis
@@ -34,10 +34,12 @@ endif
 
 DEPS_vorbis = ogg $(DEPS_ogg)
 
+VORBIS_CONF := --disable-docs --disable-examples --disable-oggtest
+
 .vorbis: libvorbis
 	$(RECONF) -Im4
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) --disable-docs --disable-examples --disable-oggtest
-	cd $< && $(MAKE) install
+	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(VORBIS_CONF)
+	$(MAKE) -C $< install
 	touch $@
 
 .sum-vorbisenc: .sum-vorbis

@@ -52,6 +52,9 @@
 #include <QApplication>
 #include <QWindow>
 #include <QScreen>
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+#include <QDesktopWidget>
+#endif
 
 //#define DEBUG_LAYOUT 1
 
@@ -114,7 +117,13 @@ void AbstractController::setupButton( QAbstractButton *aButton )
 void AbstractController::parseAndCreate( const QString& config,
                                          QBoxLayout *newControlLayout )
 {
-    QStringList list = config.split( ";", QString::SkipEmptyParts ) ;
+    QStringList list = config.split( ";",
+                                      #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+                                        Qt::SkipEmptyParts
+                                      #else
+                                        QString::SkipEmptyParts
+                                      #endif
+                                    );
     for( int i = 0; i < list.count(); i++ )
     {
         QStringList list2 = list.at( i ).split( "-" );
@@ -536,12 +545,12 @@ QFrame *AbstractController::discFrame()
     QFrame *discFrame = new QFrame( this );
 
     QHBoxLayout *discLayout = new QHBoxLayout( discFrame );
-    discLayout->setSpacing( 0 ); discLayout->setMargin( 0 );
+    discLayout->setSpacing( 0 ); discLayout->setContentsMargins( 0, 0, 0, 0 );
 
 
     QFrame *chapFrame = new QFrame( discFrame );
     QHBoxLayout *chapLayout = new QHBoxLayout( chapFrame );
-    chapLayout->setSpacing( 0 ); chapLayout->setMargin( 0 );
+    chapLayout->setSpacing( 0 ); chapLayout->setContentsMargins( 0, 0, 0, 0 );
 
     QToolButton *prevSectionButton = new QToolButton( chapFrame );
     setupButton( prevSectionButton );
@@ -560,7 +569,7 @@ QFrame *AbstractController::discFrame()
 
     QFrame *menuFrame = new QFrame( discFrame );
     QHBoxLayout *menuLayout = new QHBoxLayout( menuFrame );
-    menuLayout->setSpacing( 0 ); menuLayout->setMargin( 0 );
+    menuLayout->setSpacing( 0 ); menuLayout->setContentsMargins( 0, 0, 0, 0 );
 
     QToolButton *menuButton = new QToolButton( menuFrame );
     setupButton( menuButton );
@@ -594,7 +603,7 @@ QFrame *AbstractController::telexFrame()
      **/
     QFrame *telexFrame = new QFrame( this );
     QHBoxLayout *telexLayout = new QHBoxLayout( telexFrame );
-    telexLayout->setSpacing( 0 ); telexLayout->setMargin( 0 );
+    telexLayout->setSpacing( 0 ); telexLayout->setContentsMargins( 0, 0, 0, 0 );
     CONNECT( THEMIM->getIM(), teletextPossible( bool ),
              telexFrame, setVisible( bool ) );
 
@@ -715,19 +724,18 @@ ControlsWidget::ControlsWidget( intf_thread_t *_p_i,
 #ifdef DEBUG_LAYOUT
     setStyleSheet( "background: red ");
 #endif
-    setAttribute( Qt::WA_MacBrushedMetal);
     controlLayout = new QVBoxLayout( this );
     controlLayout->setContentsMargins( 3, 1, 0, 1 );
     controlLayout->setSpacing( 0 );
     QHBoxLayout *controlLayout1 = new QHBoxLayout;
-    controlLayout1->setSpacing( 0 ); controlLayout1->setMargin( 0 );
+    controlLayout1->setSpacing( 0 ); controlLayout1->setContentsMargins( 0, 0, 0, 0 );
 
     QString line1 = getSettings()->value( "MainWindow/MainToolbar1", MAIN_TB1_DEFAULT )
                                         .toString();
     parseAndCreate( line1, controlLayout1 );
 
     QHBoxLayout *controlLayout2 = new QHBoxLayout;
-    controlLayout2->setSpacing( 0 ); controlLayout2->setMargin( 0 );
+    controlLayout2->setSpacing( 0 ); controlLayout2->setContentsMargins( 0, 0, 0, 0 );
     QString line2 = getSettings()->value( "MainWindow/MainToolbar2", MAIN_TB2_DEFAULT )
                                         .toString();
     parseAndCreate( line2, controlLayout2 );
@@ -760,7 +768,7 @@ AdvControlsWidget::AdvControlsWidget( intf_thread_t *_p_i, QWidget *_parent ) :
 {
     RTL_UNAFFECTED_WIDGET
     controlLayout = new QHBoxLayout( this );
-    controlLayout->setMargin( 0 );
+    controlLayout->setContentsMargins( 0, 0, 0, 0 );
     controlLayout->setSpacing( 0 );
 #ifdef DEBUG_LAYOUT
     setStyleSheet( "background: orange ");
@@ -777,7 +785,7 @@ InputControlsWidget::InputControlsWidget( intf_thread_t *_p_i, QWidget *_parent 
 {
     RTL_UNAFFECTED_WIDGET
     controlLayout = new QHBoxLayout( this );
-    controlLayout->setMargin( 0 );
+    controlLayout->setContentsMargins( 0, 0, 0, 0 );
     controlLayout->setSpacing( 0 );
 #ifdef DEBUG_LAYOUT
     setStyleSheet( "background: green ");
@@ -888,7 +896,7 @@ void FullscreenControllerWidget::restoreFSC()
         if ( targetScreen() < 0 )
             return;
 
-        QRect currentRes = QApplication::desktop()->screenGeometry( targetScreen() );
+        QRect currentRes = QGuiApplication::screens()[ targetScreen() ]->geometry();
         QWindow *wh = windowHandle();
         if ( wh != Q_NULLPTR )
         {
@@ -924,7 +932,7 @@ void FullscreenControllerWidget::restoreFSC()
 
 void FullscreenControllerWidget::centerFSC( int number )
 {
-    QRect currentRes = QApplication::desktop()->screenGeometry( number );
+    QRect currentRes = QGuiApplication::screens()[ number ]->geometry();
 
     /* screen has changed, calculate new position */
     QPoint pos = QPoint( currentRes.x() + (currentRes.width() / 2) - (width() / 2),
@@ -998,7 +1006,7 @@ void FullscreenControllerWidget::slowHideFSC()
 
 void FullscreenControllerWidget::updateFullwidthGeometry( int number )
 {
-    QRect screenGeometry = QApplication::desktop()->screenGeometry( number );
+    QRect screenGeometry = QGuiApplication::screens()[ number ]->geometry();
     setMinimumWidth( screenGeometry.width() );
     setGeometry( screenGeometry.x(), screenGeometry.y() + screenGeometry.height() - height(), screenGeometry.width(), height() );
     adjustSize();
@@ -1021,8 +1029,23 @@ void FullscreenControllerWidget::setTargetScreen(int screennumber)
 
 int FullscreenControllerWidget::targetScreen()
 {
-    if( i_screennumber < 0 || i_screennumber >= QApplication::desktop()->screenCount() )
+    if( i_screennumber < 0 || i_screennumber >= QGuiApplication::screens().length() )
+    {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+        auto *screen = QGuiApplication::screenAt( p_intf->p_sys->p_mi->pos() );
+        if (screen != nullptr)
+        {
+            for (qsizetype i = 0; i < QGuiApplication::screens().length(); i++)
+            {
+                if (screen == QGuiApplication::screens()[i])
+                    return i;
+            }
+        }
+        return -1;
+#else
         return QApplication::desktop()->screenNumber( p_intf->p_sys->p_mi );
+#endif
+    }
     return i_screennumber;
 }
 
@@ -1107,18 +1130,23 @@ void FullscreenControllerWidget::mouseMoveEvent( QMouseEvent *event )
         if( i_mouse_last_x == -1 || i_mouse_last_y == -1 )
             return;
 
-        int i_moveX = event->globalX() - i_mouse_last_x;
-        int i_moveY = event->globalY() - i_mouse_last_y;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        const auto pos = event->globalPosition();
+#else
+        const auto pos = event->globalPos();
+#endif
+        int i_moveX = pos.x() - i_mouse_last_x;
+        int i_moveY = pos.y() - i_mouse_last_y;
 
-        const QRect screenRect = QApplication::desktop()->screenGeometry( targetScreen() );
+        const QRect screenRect = QGuiApplication::screens()[ targetScreen() ]->geometry();
 
         const int i_x = qBound( screenRect.left(), x() + i_moveX, screenRect.right() - width() );
         const int i_y = qBound( screenRect.top(),  y() + i_moveY, screenRect.bottom() - height() );
 
         move( i_x, i_y );
 
-        i_mouse_last_x = event->globalX();
-        i_mouse_last_y = event->globalY();
+        i_mouse_last_x = pos.x();
+        i_mouse_last_y = pos.y();
     }
 }
 
@@ -1129,8 +1157,13 @@ void FullscreenControllerWidget::mouseMoveEvent( QMouseEvent *event )
 void FullscreenControllerWidget::mousePressEvent( QMouseEvent *event )
 {
     if( isWideFSC ) return;
-    i_mouse_last_x = event->globalX();
-    i_mouse_last_y = event->globalY();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    auto pos = event->globalPosition();
+#else
+    auto pos = event->globalPos();
+#endif
+    i_mouse_last_x = pos.x();
+    i_mouse_last_y = pos.y();
     event->accept();
 }
 
@@ -1148,7 +1181,11 @@ void FullscreenControllerWidget::mouseReleaseEvent( QMouseEvent *event )
 /**
  * On mouse go above FSC
  */
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+void FullscreenControllerWidget::enterEvent( QEnterEvent *event )
+#else
 void FullscreenControllerWidget::enterEvent( QEvent *event )
+#endif
 {
     b_mouse_over = true;
 

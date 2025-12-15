@@ -273,10 +273,10 @@ void FileConfigControl::fillGrid( QGridLayout *l, int line )
     l->addWidget( label, line, 0 );
     l->setColumnMinimumWidth( 1, 10 );
     QHBoxLayout *textAndButton = new QHBoxLayout();
-    textAndButton->setMargin( 0 );
+    textAndButton->setContentsMargins( 0, 0, 0, 0 );
     textAndButton->addWidget( text, 2 );
     textAndButton->addWidget( browse, 0 );
-    l->addLayout( textAndButton, line, LAST_COLUMN, 0 );
+    l->addLayout( textAndButton, line, LAST_COLUMN );
 }
 
 FileConfigControl::FileConfigControl( vlc_object_t *_p_this,
@@ -524,7 +524,7 @@ ModuleConfigControl::ModuleConfigControl( vlc_object_t *_p_this,
 void ModuleConfigControl::fillGrid( QGridLayout *l, int line )
 {
     l->addWidget( label, line, 0 );
-    l->addWidget( combo, line, LAST_COLUMN, 0 );
+    l->addWidget( combo, line, LAST_COLUMN );
 }
 
 ModuleConfigControl::ModuleConfigControl( vlc_object_t *_p_this,
@@ -622,8 +622,6 @@ void ModuleListConfigControl::fillGrid( QGridLayout *l, int line )
 
 ModuleListConfigControl::~ModuleListConfigControl()
 {
-    foreach ( checkBoxListItem *it, modules )
-        free( it->psz_module );
     qDeleteAll( modules );
     modules.clear();
     delete groupBox;
@@ -632,9 +630,15 @@ ModuleListConfigControl::~ModuleListConfigControl()
 void ModuleListConfigControl::checkbox_lists( module_t *p_parser )
 {
     const char *help = module_get_help( p_parser );
-    checkbox_lists( qtr( module_GetLongName( p_parser ) ),
+    const char *module_name = module_GetLongName( p_parser );
+    const char *module_shortcut = module_get_object( p_parser );
+
+    if ( !strcmp(module_name, "AMD VQ Enhancer"))
+        module_shortcut = "amf_vqenhancer";
+
+    checkbox_lists( qtr( module_name ),
                     help != NULL ? qtr( help ): "",
-                    module_get_object( p_parser ) );
+                    module_shortcut );
 }
 
 void ModuleListConfigControl::checkbox_lists( QString label, QString help, const char* psz_module )
@@ -647,10 +651,10 @@ void ModuleListConfigControl::checkbox_lists( QString label, QString help, const
         cb->setToolTip( formatTooltip( help ) );
     cbl->checkBox = cb;
 
-    cbl->psz_module = strdup( psz_module );
+    cbl->psz_module = qfu( psz_module );
     modules.append( cbl );
 
-    if( p_item->value.psz && strstr( p_item->value.psz, cbl->psz_module ) )
+    if( p_item->value.psz && strstr( p_item->value.psz, psz_module ) )
         cbl->checkBox->setChecked( true );
 }
 
@@ -934,7 +938,7 @@ BoolConfigControl::BoolConfigControl( vlc_object_t *_p_this,
 
 void BoolConfigControl::fillGrid( QGridLayout *l, int line )
 {
-    l->addWidget( checkbox, line, 0, 1, -1, 0 );
+    l->addWidget( checkbox, line, 0, 1, -1 );
 }
 
 BoolConfigControl::BoolConfigControl( vlc_object_t *_p_this,
@@ -1199,7 +1203,7 @@ void KeySelectorControl::finish()
 
     p_config = module_config_get (p_main, &confsize);
 
-    QMap<QString, QString> global_keys;
+    QMultiMap<QString, QString> global_keys;
     for (size_t i = 0; i < confsize; i++)
     {
         module_config_t *p_config_item = p_config + i;
@@ -1224,7 +1228,7 @@ void KeySelectorControl::finish()
             treeItem->setText( HOTKEY_COL, keys );
             treeItem->setToolTip( HOTKEY_COL, qtr("Double click to change.\nDelete key to remove.") );
             treeItem->setToolTip( GLOBAL_HOTKEY_COL, qtr("Double click to change.\nDelete key to remove.") );
-            treeItem->setData( HOTKEY_COL, Qt::UserRole, QVariant( p_config_item->value.psz ) );
+            treeItem->setData( HOTKEY_COL, Qt::UserRole, QVariant( qfu( p_config_item->value.psz ) ) );
             table->addTopLevelItem( treeItem );
             continue;
         }
@@ -1234,11 +1238,11 @@ void KeySelectorControl::finish()
          && !EMPTY_STR( p_config_item->psz_text )
          && !EMPTY_STR( p_config_item->value.psz ) )
         {
-            global_keys.insertMulti( qtr( p_config_item->psz_text ), qfu( p_config_item->value.psz ) );
+            global_keys.insert( qtr( p_config_item->psz_text ), qfu( p_config_item->value.psz ) );
         }
     }
 
-    QMap<QString, QString>::const_iterator i = global_keys.constBegin();
+    auto i = global_keys.constBegin();
     while (i != global_keys.constEnd())
     {
         QList<QTreeWidgetItem *> list =
@@ -1398,7 +1402,7 @@ KeyInputDialog::KeyInputDialog( QTreeWidget *_table,
     existingkeys = NULL;
 
     table = _table;
-    setWindowTitle( ( b_global ? qtr( "Global" ) + QString(" ") : "" )
+    setWindowTitle( ( b_global ? qtr( "Global" ) + QString(" ") : QStringLiteral("") )
                     + qtr( "Hotkey change" ) );
     setWindowRole( "vlc-key-input" );
 

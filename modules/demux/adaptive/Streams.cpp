@@ -462,7 +462,7 @@ AbstractStream::BufferingStatus AbstractStream::doBufferize(Times deadline,
             }
             else
             {
-                msg_Dbg(p_realdemux, "Waiting sync reference for seq %ld", currentSequence);
+                msg_Dbg(p_realdemux, "Waiting sync reference for seq %" PRIu64, currentSequence);
                 vlc_mutex_unlock(&lock);
                 return BufferingStatus::Suspended;
             }
@@ -625,11 +625,14 @@ ChunkInterface * AbstractStream::getNextChunk() const
 {
     const bool b_restarting = fakeEsOut()->restarting();
     ChunkInterface *ck = segmentTracker->getNextChunk(!b_restarting);
+
     if(ck && !fakeEsOut()->hasSegmentStartTimes())
         fakeEsOut()->setSegmentStartTimes(startTimeContext);
 
     if(ck && !fakeEsOut()->hasSynchronizationReference())
     {
+        if(!fakeEsOut()->hasSegmentStartTimes())
+            return ck;
         assert(fakeEsOut()->hasSegmentStartTimes());
         SynchronizationReference r;
         if(segmentTracker->getSynchronizationReference(currentSequence, startTimeContext.media, r))

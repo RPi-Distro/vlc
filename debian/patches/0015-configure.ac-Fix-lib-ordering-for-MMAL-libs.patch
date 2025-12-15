@@ -9,7 +9,7 @@ Subject: [PATCH 15/41] configure.ac: Fix lib ordering for MMAL libs
 
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3480,20 +3480,21 @@ AM_CONDITIONAL([HAVE_KVA], [test "${have
+@@ -3581,20 +3581,21 @@ AM_CONDITIONAL([HAVE_KVA], [test "${have
  dnl
  dnl MMAL plugin
  dnl

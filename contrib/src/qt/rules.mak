@@ -42,6 +42,10 @@ qt: qt-$(QT_VERSION).tar.xz .sum-qt
 	$(APPLY) $(SRC)/qt/0018-Remove-qtypetraits.h-s-contents-altogether.patch
 	$(APPLY) $(SRC)/qt/0019-QFileSystemEngine-only-define-FILE_ID_INFO-for-build.patch
 	$(APPLY) $(SRC)/qt/systray-no-sound.patch
+	# fix forcing the WINVER/_WIN32_WINNT version without NTDDI_VERSION
+	sed -i.orig -e "s/DEFINES += WINVER/DEFINES += NTDDI_VERSION=0x06000000 WINVER/" "$(UNPACK_DIR)/src/network/kernel/kernel.pri"
+	# TOUCHINPUT is properly defined in mingw since v4
+	sed -i.orig -e "s/defined(Q_CC_MINGW) || !defined(TOUCHEVENTF_MOVE)/!defined(TOUCHEVENTF_MOVE)/" "$(UNPACK_DIR)/src/plugins/platforms/windows/qtwindows_additional.h"
 	$(MOVE)
 
 ifdef HAVE_MACOSX
@@ -50,7 +54,8 @@ endif
 ifdef HAVE_WIN32
 # filter out the contrib includes as Qt doesn't ike pthread-GC2 headers
 QT_VARS := CFLAGS="$(shell echo $$CFLAGS | sed 's@ -I$$(PREFIX)/include@@g')" \
-         CXXFLAGS="$(shell echo $$CXXFLAGS | sed 's@ -I$$(PREFIX)/include@@g')"
+         CXXFLAGS="$(shell echo $$CXXFLAGS | sed 's@ -I$$(PREFIX)/include@@g')" \
+         LDFLAGS="-L$(PREFIX)/lib $(EXTRA_LDFLAGS)"
 ifdef HAVE_CLANG
 QT_SPEC := win32-clang-g++
 else
@@ -69,12 +74,12 @@ QT_CONFIG += -release
 .qt: qt
 	cd $< && $(QT_VARS) ./configure $(QT_PLATFORM) $(QT_CONFIG) -prefix $(PREFIX)
 	# Make && Install libraries
-	cd $< && $(MAKE)
-	cd $< && $(MAKE) -C src sub-corelib-install_subtargets sub-gui-install_subtargets sub-widgets-install_subtargets sub-platformsupport-install_subtargets sub-zlib-install_subtargets sub-bootstrap-install_subtargets
+	$(MAKE) -C $<
+	$(MAKE) -C $< -C src sub-corelib-install_subtargets sub-gui-install_subtargets sub-widgets-install_subtargets sub-platformsupport-install_subtargets sub-zlib-install_subtargets sub-bootstrap-install_subtargets
 	# Install tools
-	cd $< && $(MAKE) -C src sub-moc-install_subtargets sub-rcc-install_subtargets sub-uic-install_subtargets
+	$(MAKE) -C $< -C src sub-moc-install_subtargets sub-rcc-install_subtargets sub-uic-install_subtargets
 	# Install plugins
-	cd $< && $(MAKE) -C src/plugins sub-platforms-install_subtargets
+	$(MAKE) -C $< -C src/plugins sub-platforms-install_subtargets
 	mv $(PREFIX)/plugins/platforms/libqwindows.a $(PREFIX)/lib/ && rm -rf $(PREFIX)/plugins
 	# Move includes to match what VLC expects
 	mkdir -p $(PREFIX)/include/QtGui/qpa

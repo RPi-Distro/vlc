@@ -30,7 +30,7 @@ Depends on some files from drmu for DRM format info.
 
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3206,6 +3206,7 @@ AC_ARG_ENABLE(wayland,
+@@ -3288,6 +3288,7 @@ AC_ARG_ENABLE(wayland,
  have_wayland="no"
  have_wayland_egl="no"
  have_wayland_single_pixel_buffer="no"
@@ -38,7 +38,7 @@ Depends on some files from drmu for DRM format info.
  
  AS_IF([test "${enable_wayland}" = "yes"], [
    PKG_CHECK_MODULES([WAYLAND_CLIENT], [wayland-client >= 1.5.91], [
-@@ -3220,6 +3221,13 @@ AS_IF([test "${enable_wayland}" = "yes"]
+@@ -3302,6 +3303,13 @@ AS_IF([test "${enable_wayland}" = "yes"]
        ], [
           AC_MSG_RESULT([no])
        ])
@@ -52,7 +52,7 @@ Depends on some files from drmu for DRM format info.
      ], [
        AC_MSG_RESULT([not found])
        AC_MSG_ERROR([$(${PKG_CONFIG} --print-errors 'wayland-protocols >= 1.4')])
-@@ -3254,6 +3262,7 @@ AC_SUBST([WAYLAND_SCANNER])
+@@ -3336,6 +3344,7 @@ AC_SUBST([WAYLAND_SCANNER])
  AM_CONDITIONAL([HAVE_WAYLAND], [test "${have_wayland}" = "yes"])
  AM_CONDITIONAL([HAVE_WAYLAND_EGL], [test "${have_wayland_egl}" = "yes"])
  AM_CONDITIONAL([HAVE_WAYLAND_SINGLE_PIXEL_BUFFER], [test "${have_wayland_single_pixel_buffer}" = "yes"])
@@ -62,7 +62,7 @@ Depends on some files from drmu for DRM format info.
  dnl
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -234,7 +234,76 @@ video_output/wayland/viewporter-client-p
+@@ -238,7 +238,76 @@ video_output/wayland/viewporter-client-p
  
  video_output/wayland/viewporter-protocol.c: \
  		$(WAYLAND_PROTOCOLS)/stable/viewporter/viewporter.xml
@@ -140,7 +140,7 @@ Depends on some files from drmu for DRM format info.
  
  libwl_shell_plugin_la_SOURCES = video_output/wayland/shell.c
  libwl_shell_plugin_la_CFLAGS = $(WAYLAND_CLIENT_CFLAGS)
-@@ -273,6 +342,8 @@ libegl_wl_plugin_la_LIBADD = $(EGL_LIBS)
+@@ -277,6 +346,8 @@ libegl_wl_plugin_la_LIBADD = $(EGL_LIBS)
  if HAVE_WAYLAND
  BUILT_SOURCES += $(nodist_libwl_shm_plugin_la_SOURCES)
  vout_LTLIBRARIES += libwl_shm_plugin.la

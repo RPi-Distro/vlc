@@ -1,12 +1,11 @@
 WIX_VERSION=314
-WIX_FULL_VERSION=3.14.0.6526
-WIX_URL := https://wixtoolset.org/downloads/v$(WIX_FULL_VERSION)/wix$(WIX_VERSION)-binaries.zip
+WIX_SUB_VERSION=1
+WIX_FULL_VERSION=3.14.1.8722
+WIX_URL := $(GITHUB)/wixtoolset/wix3/releases/download/wix$(WIX_VERSION)$(WIX_SUB_VERSION)rtm/wix$(WIX_VERSION)-binaries.zip
 
 ifdef HAVE_WIN32
 # this requires dotnet 4.0 to be installed when running wix
 PKGS += wix
-# need to be installed when using prebuilt
-PKGS_TOOLS += wix
 endif
 
 .sum-wix: wix$(WIX_FULL_VERSION).zip

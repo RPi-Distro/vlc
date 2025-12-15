@@ -13,7 +13,7 @@ for use with the stable version.
 
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -311,8 +311,8 @@ libwl_shell_plugin_la_LIBADD = $(WAYLAND
+@@ -315,8 +315,8 @@ libwl_shell_plugin_la_LIBADD = $(WAYLAND
  
  libxdg_shell_plugin_la_SOURCES = video_output/wayland/xdg-shell.c
  nodist_libxdg_shell_plugin_la_SOURCES = \
@@ -24,7 +24,7 @@ for use with the stable version.
  	video_output/wayland/server-decoration-client-protocol.h \
  	video_output/wayland/server-decoration-protocol.c
  libxdg_shell_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
-@@ -320,13 +320,12 @@ libxdg_shell_plugin_la_CPPFLAGS = $(AM_C
+@@ -324,13 +324,12 @@ libxdg_shell_plugin_la_CPPFLAGS = $(AM_C
  libxdg_shell_plugin_la_CFLAGS = $(WAYLAND_CLIENT_CFLAGS)
  libxdg_shell_plugin_la_LIBADD = $(WAYLAND_CLIENT_LIBS) $(LIBPTHREAD)
  

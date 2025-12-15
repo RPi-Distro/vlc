@@ -33,12 +33,11 @@
 #include <QDialogButtonBox>
 #include <QApplication>
 #include <QClipboard>
-#include <QMimeData>
-#include <QList>
 #include <QFile>
 #include <QLabel>
+#include <QVBoxLayout>
 
-#include <assert.h>
+#include <cassert>
 
 OpenUrlDialog::OpenUrlDialog( intf_thread_t *_p_intf,
                               bool _bClipboard ) :

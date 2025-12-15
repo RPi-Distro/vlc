@@ -9,7 +9,7 @@ Subject: [PATCH 13/41] configure.ac: Add DRM enable option & test
 
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3092,6 +3092,21 @@ dnl OpenGL ES 2: depends on EGL 1.1
+@@ -3174,6 +3174,21 @@ dnl OpenGL ES 2: depends on EGL 1.1
  PKG_ENABLE_MODULES_VLC([GLES2], [], [glesv2], [OpenGL ES v2 support], [disabled])
  
  dnl

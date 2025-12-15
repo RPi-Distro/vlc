@@ -590,10 +590,7 @@ static int ParseVobSubIDX( demux_t *p_demux )
                     i_sign = -1;
                     h = -h;
                 }
-                i_start = (int64_t) ( h * 3600*1000 +
-                            m * 60*1000 +
-                            s * 1000 +
-                            ms ) * 1000;
+                i_start = vlc_tick_from_sec( h * 3600 + m * 60 + s ) + VLC_TICK_FROM_MS( ms );
                 i_location = loc;
 
                 current_tk->i_subtitles++;
@@ -630,10 +627,7 @@ static int ParseVobSubIDX( demux_t *p_demux )
                     i_sign = -1;
                     h = -h;
                 }
-                i_gap = (int64_t) ( h * 3600*1000 +
-                            m * 60*1000 +
-                            s * 1000 +
-                            ms ) * 1000;
+                i_gap = vlc_tick_from_sec( h * 3600 + m * 60 + s ) + VLC_TICK_FROM_MS( ms );
 
                 current_tk->i_delay = current_tk->i_delay + (i_gap * i_sign);
                 msg_Dbg( p_demux, "sign: %+d gap: %+"PRId64" global delay: %+"PRId64"",
@@ -691,7 +685,7 @@ static int DemuxVobSub( demux_t *p_demux, block_t *p_bk )
         memcpy( p_pkt->p_buffer, p, i_size);
         p += i_size;
 
-        i_id = ps_pkt_id( p_pkt );
+        i_id = ps_pkt_id( p_pkt, PS_SOURCE_VOB );
         if( (i_id&0xffe0) != 0xbd20 ||
             ps_pkt_parse_pes( VLC_OBJECT(p_demux), p_pkt, 1 ) )
         {
@@ -723,4 +717,3 @@ static int DemuxVobSub( demux_t *p_demux, block_t *p_bk )
 
     return VLC_SUCCESS;
 }
-

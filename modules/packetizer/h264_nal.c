@@ -325,6 +325,8 @@ static bool h264_parse_sequence_parameter_set_rbsp( bs_t *p_bs,
                     {
                         /* delta_scale */
                         i_tmp = bs_read_se( p_bs );
+                        if(i_tmp < -128 || i_tmp > 127)
+                          return false;
                         i_nextscale = ( i_lastscale + i_tmp + 256 ) % 256;
                         /* useDefaultScalingMatrixFlag = ... */
                     }
@@ -591,8 +593,11 @@ static bool h264_parse_picture_parameter_set_rbsp( bs_t *p_bs,
         }
     }
 
-    bs_read_ue( p_bs ); /* num_ref_idx_l0_default_active_minus1 */
-    bs_read_ue( p_bs ); /* num_ref_idx_l1_default_active_minus1 */
+    p_pps->num_ref_idx_l01_default_active_minus1[0] = bs_read_ue( p_bs );
+    p_pps->num_ref_idx_l01_default_active_minus1[1] = bs_read_ue( p_bs );
+    if (p_pps->num_ref_idx_l01_default_active_minus1[0] > 31 ||
+        p_pps->num_ref_idx_l01_default_active_minus1[1] > 31)
+        return false;
     p_pps->weighted_pred_flag = bs_read( p_bs, 1 );
     p_pps->weighted_bipred_idc = bs_read( p_bs, 2 );
     bs_read_se( p_bs ); /* pic_init_qp_minus26 */

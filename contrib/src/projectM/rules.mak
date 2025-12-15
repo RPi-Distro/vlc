@@ -13,6 +13,8 @@ ifeq ($(call need_pkg,"libprojectM"),)
 PKGS_FOUND += projectM
 endif
 
+DEPS_projectM = glew $(DEPS_glew)
+
 $(TARBALLS)/projectM-$(PROJECTM_VERSION)-Source.tar.gz:
 	$(call download_pkg,$(PROJECTM_URL),projectM)
 
@@ -29,20 +31,18 @@ endif
 	$(APPLY) $(SRC)/projectM/gcc6.patch
 	$(APPLY) $(SRC)/projectM/clang6.patch
 	$(APPLY) $(SRC)/projectM/missing-includes.patch
+	$(APPLY) $(SRC)/projectM/projectm-cmake-install.patch
 	$(MOVE)
 
-DEPS_projectM = glew $(DEPS_glew)
-
-.projectM: projectM toolchain.cmake
-	cd $< && rm -f CMakeCache.txt
-	cd $< && $(HOSTVARS) $(CMAKE) \
+PROJECTM_CONF := \
 		-DCMAKE_CXX_STANDARD=98 \
-		-DINCLUDE-PROJECTM-LIBVISUAL:BOOL=OFF \
 		-DDISABLE_NATIVE_PRESETS:BOOL=ON \
 		-DUSE_FTGL:BOOL=OFF \
-		-DINCLUDE-PROJECTM-PULSEAUDIO:BOOL=OFF \
-		-DINCLUDE-PROJECTM-QT:BOOL=OFF \
-		-DBUILD_PROJECTM_STATIC:BOOL=ON .
-	cd $< && $(CMAKEBUILD) . --target install
-	-cd $<; cp Renderer/libRenderer.a MilkdropPresetFactory/libMilkdropPresetFactory.a $(PREFIX)/lib
+		-DBUILD_PROJECTM_STATIC:BOOL=ON
+
+.projectM: projectM toolchain.cmake
+	$(CMAKECLEAN)
+	$(HOSTVARS) $(CMAKE) $(PROJECTM_CONF)
+	+$(CMAKEBUILD)
+	$(CMAKEINSTALL)
 	touch $@

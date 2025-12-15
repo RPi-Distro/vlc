@@ -21,7 +21,7 @@ We need Qt 6.5 or later before this is fixed in Qt
 
 --- a/modules/gui/qt/components/controller.cpp
 +++ b/modules/gui/qt/components/controller.cpp
-@@ -812,6 +812,17 @@ FullscreenControllerWidget::FullscreenCo
+@@ -820,6 +820,17 @@ FullscreenControllerWidget::FullscreenCo
  
      vout.clear();
  

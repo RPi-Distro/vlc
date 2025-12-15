@@ -17,7 +17,7 @@ trying to use stale handles which will crash VLC.
 
 --- a/modules/gui/qt/components/interface_widgets.cpp
 +++ b/modules/gui/qt/components/interface_widgets.cpp
-@@ -80,7 +80,8 @@
+@@ -81,7 +81,8 @@ static inline int qrand() {
   **********************************************************************/
  
  VideoWidget::VideoWidget( intf_thread_t *_p_i, QWidget* p_parent )
@@ -27,7 +27,7 @@ trying to use stale handles which will crash VLC.
  {
      /* Set the policy to expand in both directions */
      // setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-@@ -110,6 +111,44 @@ void VideoWidget::sync( void )
+@@ -112,6 +113,44 @@ void VideoWidget::sync( void )
  #endif
  }
  
@@ -72,7 +72,7 @@ trying to use stale handles which will crash VLC.
  /**
   * Request the video to avoid the conflicts
   **/
-@@ -180,6 +219,7 @@ bool VideoWidget::request( struct vout_w
+@@ -182,6 +221,7 @@ bool VideoWidget::request( struct vout_w
                                               window));
              p_wnd->display.wl = static_cast<wl_display*>(
                  qni->nativeResourceForIntegration(QByteArrayLiteral("wl_display")));
@@ -80,7 +80,7 @@ trying to use stale handles which will crash VLC.
              break;
          }
  #endif
-@@ -238,6 +278,8 @@ void VideoWidget::reportSize()
+@@ -240,6 +280,8 @@ void VideoWidget::reportSize()
      if( !p_window )
          return;
  
@@ -89,7 +89,7 @@ trying to use stale handles which will crash VLC.
      QSize size = physicalSize();
      WindowResized(p_window, size);
  }
-@@ -293,6 +335,32 @@ bool VideoWidget::nativeEvent( const QBy
+@@ -299,6 +341,32 @@ bool VideoWidget::nativeEventFilter(cons
      return false;
  }
  
@@ -122,7 +122,7 @@ trying to use stale handles which will crash VLC.
  void VideoWidget::resizeEvent( QResizeEvent *event )
  {
      QWidget::resizeEvent( event );
-@@ -413,6 +481,15 @@ void VideoWidget::release( bool forced )
+@@ -419,6 +487,15 @@ void VideoWidget::release( bool forced )
          layout->removeWidget( stable );
          stable->deleteLater();
          stable = NULL;
@@ -146,10 +146,10 @@ trying to use stale handles which will crash VLC.
  
 +    void hideEvent(QHideEvent *event) Q_DECL_OVERRIDE;
 +    void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
-     bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
-     virtual void resizeEvent(QResizeEvent *) Q_DECL_OVERRIDE;
-     void mousePressEvent(QMouseEvent *) Q_DECL_OVERRIDE;
-@@ -81,6 +83,7 @@ private:
+ #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+     bool nativeEventFilter(const QByteArray &eventType, void *message, qintptr *result) override;
+ #else
+@@ -85,6 +87,7 @@ private:
      int qtMouseButton2VLC( Qt::MouseButton );
      intf_thread_t *p_intf;
      vout_window_t *p_window;
@@ -157,7 +157,7 @@ trying to use stale handles which will crash VLC.
  
      QWidget *stable;
      QLayout *layout;
-@@ -88,6 +91,7 @@ private:
+@@ -92,6 +95,7 @@ private:
      bool enable_mouse_events;
  
      void reportSize();
