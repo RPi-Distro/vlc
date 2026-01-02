@@ -36307,3 +36307,137 @@ Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Sat Jan 2 18:25:07 2016 +0200
 
     test: fix memory leaks (fixes #14730)
+
+commit 41754b7da7806eb11cfda77e44fae4a2dc8b9456
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Fri Jan 1 22:39:45 2016 +0100
+
+    macosx: Remove VLCPlaylist reference from PLModel
+
+commit e66d8e654f78c41a529632e7fa79846b2dcb4839
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Fri Jan 1 22:31:21 2016 +0100
+
+    macosx: Factor code for drop handling of external files
+    
+    Adds helper method createItemsFromExternalPasteboard: returning
+    an array of file items from the pasteboard.
+    performDragOperation: in VLCCoreInteraction is the now only place
+    where we try to add the dropped file as a subtitle.
+
+commit f82f77baff59d1835c5580598f817993416a8d85
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Fri Jan 1 22:19:10 2016 +0100
+
+    macosx: cosmetics
+
+commit bffe61d55f0aa068808d488d7a9b7731b98c78e3
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Jan 1 21:34:44 2016 +0100
+
+    fix overflowing shifts (cid #1346922, cid #1253066)
+
+commit e7f095c2806b0349201d31fd87e9a919ae051f8e
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Fri Jan 1 20:40:45 2016 +0100
+
+    macosx: Clear logs once window is closed
+    
+    Logs are not recorded in background, so do not retain old logs
+    to avoid confusion.
+
+commit c3dad7ffc124cb26b66e11691a4c1864705d70d8
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Fri Jan 1 20:33:53 2016 +0100
+
+    macosx: messages panel: save log as text file instead of rtf
+    
+    Those rtf files were awful to read, and rather unhandy. Switch to
+    plain txt which should make debugging more easy.
+
+commit 6f31dda7037872663809b0c5ad9774ab3f1c7566
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Fri Jan 1 20:21:55 2016 +0100
+
+    macosx: messages panel: create outlets in the new style
+
+commit 80f24bf744d38aa67aa026a25a6cbecbb1f024e1
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Fri Jan 1 20:03:28 2016 +0100
+
+    macosx: Add button to clear the messages panel
+
+commit 001d15f50a67b79ffa6fb5b1ceff1dc21c5a3458
+Author: David Fuhrmann <dfuhrmann@videolan.org>
+Date:   Fri Jan 1 19:55:20 2016 +0100
+
+    macosx: Simplify messages panel code, fix some invalid data accesses
+    
+    Manipulate the data source on the main thread to fix some unprotected
+    accesses to the array.
+    
+    Increase the maximum number of lines, for a more complete log.
+
+commit 1b27ba8c0240044d578fbfc06027aa3aeca09366
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Fri Jan 1 15:57:17 2016 +0100
+
+    Fix spelling of "response"
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit bab8d966c279100dd1992c782b31a51690983a43
+Author: Sebastian Ramacher <sramacher@debian.org>
+Date:   Fri Jan 1 15:57:16 2016 +0100
+
+    Fix spelling of "unknown"
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit e8e468fbbc27a4ed8e71613f289d5969e3ccd305
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Jan 1 18:16:02 2016 +0100
+
+    modules: cache: fix leaking path on error (cid #1048948)
+
+commit f9fcc8bcc9da9845c1ab25c4814dc8c967e823f9
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Jan 1 18:01:40 2016 +0100
+
+    demux: wpl: fix leak on repeated attributes (cid #1313808)
+
+commit 8348ef445cc9da9d682ae0632b4b1f8f98a2bd8d
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Jan 1 17:58:23 2016 +0100
+
+    demux: xspf: fix leaks with unwanted attributes (cid #1253106)
+
+commit 2b24884ff2934f3081a43ecea7ef06bb8b2f8c12
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Jan 1 17:49:46 2016 +0100
+
+    video_filter: rss: fix leak on repeats (cid #1253113)
+
+commit e6801f12213e640774194de3144458f05e074560
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Jan 1 17:46:52 2016 +0100
+
+    demux: xspf: fix leak and broken logic (cid #1253125)
+
+commit 6f78ecc71cb6ada9f09fcf67fb9e0f1ca7865ebf
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Jan 1 17:34:33 2016 +0100
+
+    mux: mp4: fix leaks on failed allocs (cid #1313792, #1313791, #1313790)
+
+commit a9c4efde9589e7bda19afeb0462a7382ad791589
+Author: Francois Cartegnie <fcvlcdev@free.fr>
+Date:   Fri Jan 1 17:10:53 2016 +0100
+
+    demux: mp4: fix off by one write in channels handling (cid #1251054)
+
+commit a2aca1efedf8a619de284e3a2b4fec44451a7a0b
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Jan 1 17:45:43 2016 +0100
+
+    Welcome to 2016
