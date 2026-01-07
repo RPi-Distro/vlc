@@ -2674,3 +2674,16 @@ Date:   Thu Dec 1 16:35:01 2022 +0100
     
     (cherry picked from commit 27009027ab57ea827b871ca73ee9636b383292c3)
     Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+
+commit 65ea8d19d91ac1599a29e8411485a72fe89c45e2
+Author: Niklas Haas <git@haasn.xyz>
+Date:   Wed Dec 28 17:58:47 2022 +0100
+
+    vout_opengl: add compatibility alias for libplacebo v5
+    
+    This fixes compilation for now, albeit with many deprecation warnings.
+    It will probably break again whenever libplacebo v6 drops these
+    deprecated fields as well, but hopefully VLC v4 will be released by
+    then.
+    
+    Fixes: #27624

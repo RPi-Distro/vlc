@@ -279,6 +279,9 @@
 /* Defined if having OpenGL */
 #undef HAVE_GL
 
+/* Define to 1 if you have the <GL/glew.h> header file. */
+#undef HAVE_GL_GLEW_H
+
 /* Define to 1 if you have the <GL/wglew.h> header file. */
 #undef HAVE_GL_WGLEW_H
 

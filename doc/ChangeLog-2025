@@ -1,3 +1,757 @@
+commit 79128878ddb2c280bbb6c89c76a46b31a80ade1c
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Dec 23 07:55:38 2025 +0100
+
+    CI: use newer LLVM UCRT image with python requests
+    
+    Since we don't use Python venv to upload the release symbols, we
+    need this package to use our Python script.
+
+commit b7c75b0c9925847518913a946bc25516e9885ab4
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Dec 16 08:42:14 2025 +0100
+
+    demux: h26x: fix vlc_stream_Peek() read into an unsigned value
+    
+    We need to check errors in vlc_stream_Peek() calls.
+    
+    (cherry picked from commit 1558850135d43cf8fe5a500f31d9250410ee6359)
+
+commit 29801aa47193653ba142eb2a3bba5b52835de05d
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Dec 22 08:19:34 2025 +0100
+
+    CI: use the stripped down tag name for the symbol tarball
+
+commit 67afafc2c94b861a22bd755956fec22a5d25f87a
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Sat Dec 20 07:42:05 2025 +0100
+
+    Revert "CI: call symbol upload in a Python venv"
+    
+    This reverts commit e55793ca30a3b2f6990c339734900d882044db8f.
+    
+    The old winXX-3.0 Docker images don't have python venv. But it's OK
+    because they have python3-requests which is the only requirement we
+    need to use our breakpad script.
+
+commit 578d28f6c9f2379164516e689418f92ac74a3445
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Dec 19 16:45:43 2025 +0100
+
+    CI: let the docker runner guess the user to clone the git repository with
+    
+    In the some runners (builder-release.videolan.org, a Videolabs one) we can't run
+    commands in the git repository:
+    
+    fatal: detected dubious ownership in repository at '/builds/videolan/vlc'
+    To add an exception for this directory, call:
+    
+            git config --global --add safe.directory /builds/videolan/vlc
+    cat: /builds/videolan/vlc/extras/package/win32/../../../src/revision.txt: No such file or directory
+    
+    See https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3538
+
+commit 043d9e7cf47d5db3e8c1796887689102b6192681
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Dec 15 08:06:28 2025 +0100
+
+    bluray: read vlc_stream_Peek() into a signed value
+    
+    Only 2048 is accepted so it does not matter too much if a size_t is used,
+    but it's cleaner.
+    
+    (cherry picked from commit 5aebff101357c14f659c9647d03d9e6a41a8ccc2)
+
+commit 12bf31e06a1fed084f75ab7c968c63ea7d9c18f0
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Dec 15 08:05:36 2025 +0100
+
+    demux: webvtt: fix vlc_stream_Peek() read into an unsigned value
+    
+    We need to check errors in vlc_stream_Peek() calls.
+    
+    (cherry picked from commit 66d7893235329bd53e39bbb60e16def75e6bb94c)
+
+commit f501d7c18ee7ff56ae35cd62d71be6f0fcc1d366
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Dec 15 07:57:02 2025 +0100
+
+    subtitle: fix vlc_stream_Peek() read into an unsigned value
+    
+    We need to check errors in vlc_stream_Peek() calls.
+    
+    Fixes #29377
+    
+    (cherry picked from commit 6bbf8be995e51db335b244b495874dfe12514542)
+
+commit 3697ebcb2716cb4f9c7824b11ce33afefb0212ab
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Sun Dec 14 23:09:00 2025 +0100
+
+    Update NEWS for 3.0.23
+
+commit 12d95db736a623f0e07cb7e5b6e7f280c4310032
+Author: VideoLAN <videolan@videolan.org>
+Date:   Tue Dec 9 09:47:20 2025 +0100
+
+    po: update translations for 3.0.23
+
+commit e688e44321ba33febfd2712d93d2d31da2b242b6
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Dec 9 09:12:30 2025 +0100
+
+    win32: dirs: do not create some system folders on behalf of the user
+    
+    These should not be created by VLC
+    * VLC_HOME_DIR (%userprofile%\Documents)
+    * VLC_MUSIC_DIR (%userprofile%\Music)
+    * VLC_PICTURES_DIR (%userprofile%\Pictures)
+    * VLC_VIDEOS_DIR (%userprofile%\Videos)
+    * VLC_DESKTOP_DIR = VLC_HOME_DIR (%userprofile%\Documents)
+    * VLC_TEMPLATES_DIR = VLC_HOME_DIR (%userprofile%\Documents)
+    * VLC_PUBLICSHARE_DIR = VLC_HOME_DIR (%userprofile%\Documents)
+    * VLC_DOCUMENTS_DIR = VLC_HOME_DIR (%userprofile%\Documents)
+    * VLC_DOWNLOAD_DIR = VLC_HOME_DIR (%userprofile%\Documents)
+    
+    VLC_VIDEOS_DIR/VLC_MUSIC_DIR/VLC_DOWNLOAD_DIR are used by the es_out.
+    But if the system doesn't have them or if they are not usable we should not write in them.
+    The user has the option to set "input-record-path" to set a usable folder.
+    
+    VLC_PICTURES_DIR is used to save the snapshots and there is "snapshot-path"
+    to use a different folder.
+    
+    These should be created by VLC if needed:
+    * VLC_CONFIG_DIR
+    * VLC_DATA_DIR
+    * VLC_CACHE_DIR
+    
+    But they are not actually created during the config_GetAppDir() call.
+    
+    Fixes #29488
+
+commit b5ec4940a4a643d5abbe88b0c729fab7f7f2e9ca
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Sep 30 11:46:33 2025 +0200
+
+    qt: remove unused BUTTON_SET_ACT
+
+commit 085a10f96e3e69ec9f67d299eff7e380f37c4d31
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Sep 30 13:29:27 2025 +0200
+
+    qt: fix index type in ARRAY_SIZE loop
+
+commit f1f9e073568d15e1b4c1d73b127061c98e2c6477
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Sep 30 13:17:40 2025 +0200
+
+    qt: fix missing override on customEvent()
+    
+    'customEvent' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+
+commit 548e797d83b716806fddd0c7fd17abab26632180
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Sep 30 15:00:42 2025 +0200
+
+    qt: remove unused DialogEventTypeOffset
+
+commit d87c28fe0e506475a8edc06a9c0b082a1b485530
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Sep 30 13:13:50 2025 +0200
+
+    qt: fix warning about ambiguous operators
+
+commit ce0c8b05f97fd126ee1cd1b668b8403b84828db6
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Sat Dec 13 10:24:35 2025 +0100
+
+    qt: fix make dist with qt6 qmake files
+
+commit 855d4d364057c3b135063a0e74d91438a236809c
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Dec 12 10:43:32 2025 +0100
+
+    contrib: qtsvg: simplify build calls and use jobserver
+    
+    There are only the plugins and svg subtargets so we can just call the install for all 'src'.
+
+commit b8aad6b62a4ffc7a7d3561e3ac9d43d459bb0b56
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Dec 12 11:27:43 2025 +0100
+
+    contrib: qt: don't rebuild native uic/rcc/moc
+    
+    They are already built and installed a few lines above.
+
+commit 31854254d4c60d156a0ef8bd0ea8e489c029cf71
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Dec 12 10:27:08 2025 +0100
+
+    contrib: qt: always install qmake + mkspecs and use jobserver
+    
+    We don't need to build it again, it's always built as a native tool
+    when running configure.
+    
+    It's needed for QtSvg since 189ca8feb6c784101a879895e8ad7cd793a0f16c.
+
+commit 404aac828d1901bf4880627aeb2f8afe6adb7a80
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Dec 12 10:59:06 2025 +0100
+
+    contrib: qt: only build the folders that we install and use jobserver
+    
+    We don't care about examples, qmake, doc, etc.
+
+commit fc53f681e4a17b8b6a384d5485109d483780d64d
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Dec 12 10:51:38 2025 +0100
+
+    contrib: qt: disable XCB when building for Windows
+
+commit a84629dd60615ba16b6a8eab9afee47701fb8c67
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Dec 12 10:48:49 2025 +0100
+
+    contrib: qt: remove variable hack for pthread-GC2
+    
+    We don't use pthread-GC2 since 0885d5e47aa7b10a0d3e9e8d1162714317705b0b.
+
+commit baa78c390d4ffc34b2131a64f3aaa86ad4ba65a5
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Dec 10 14:22:13 2025 +0100
+
+    access: http: fix status string size warning
+    
+    The asserts checks that the status is below 1000 but if it's bigger
+    in a release build we should not limit the buffer size.
+    
+    (cherry picked from commit dbd22036b067f7a161e2e19810e26a70784bc810)
+
+commit 14e998cd509a48cc856698d9af436932c26956d9
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Dec 10 14:33:51 2025 +0100
+
+    ncurses: disable string format warning
+    
+    gcc claims c can be NULL but it cannot.
+    
+    gui/ncurses.c:401:17: error: '%s' directive argument is null [-Werror=format-overflow=]
+      401 |             if (asprintf(&tmp, "%s%c ", c, last ? ' ' : '|') == -1)
+          |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+commit b4de9310bf6b12db7feac5771dbf1f22c5bb4280
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Jul 11 09:22:23 2018 +0200
+
+    access:http: change the scanf/printf format modifiers when using uintmax_t
+    
+    PRI(uxd)MAX for printf and SCN(uxd)MAX for scanf are supported in C99 and even
+    in MSVC 2013, unlike the j modifier.
+    
+    (cherry picked from commit 06d86ae4088fd49e69ff6e47c2f6f31e4530f975)
+
+commit ce54ec7570af6b440a8bbd48fcd0635c2b3d1f47
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Thu Sep 5 13:37:24 2019 +0200
+
+    mosaic_bridge: fix format-overflow warning
+    
+    Signed-off-by: Thomas Guillem <thomas@gllm.fr>
+    (cherry picked from commit 865d5a931360fba22894ed9c0cecb93abe78de54) (edited)
+
+commit 49b5312bfa6ab4f06a7e65566ac7db4a17370790
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Sun Sep 22 12:21:00 2019 +0200
+
+    skins2: kill compilation warning
+    
+    (cherry picked from commit bdefc284c09d651ff3007d10da9f4e6e3a30903f)
+
+commit db607fb089f86919b6462beb8b6f9d03f10fe7aa
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Mon Jan 8 23:56:13 2024 +0100
+
+    http: avoid using sprintf
+    
+    Use snprintf to avoid a deprecation warning about sprintf on Darwin platforms.
+    
+    (cherry picked from commit b93f201c755284edf78f79fbe6c2709d832b5ed0)
+
+commit a498eaee6348c47d46300255b946402be9cbbb03
+Author: Thomas Guillem <thomas@gllm.fr>
+Date:   Wed Apr 7 14:49:06 2021 +0200
+
+    cdda: fix format-truncation warning
+    
+    (cherry picked from commit 5f24d66c06d6337eda485413bd6867d4572308fd)
+
+commit a504757d3ef8b662302d7d069851d8e756d9b2d0
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Mon Jan 8 23:52:41 2024 +0100
+
+    access: cdda: avoid using sprintf
+    
+    Use snprintf to avoid a deprecation warning about sprintf on Darwin platforms.
+    
+    (cherry picked from commit 8fba6c29bc2bbe20835ba63e11bbef875b446ba7)
+
+commit 02e0b281bfead348b8d53b2fcb5992848e412180
+Author: Alexandre Janniaux <ajanni@videolabs.io>
+Date:   Sat Oct 19 15:11:08 2019 +0200
+
+    mpeg: fix format-overflow warning
+    
+    psz_key can be NULL, which triggers a format-overflow warning.
+    
+    Signed-off-by: Steve Lhomme <robux4@ycbcr.xyz>
+    (cherry picked from commit 56452f2173d31dd970448c6dc2ed9904ad8b3a39)
+
+commit 1fc33b479e228008fd0c384fe395297fd0a31f58
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Oct 10 13:14:36 2023 +0200
+
+    png: fix potential buffer overflow
+    
+    This is the error we have:
+    ../../../modules/codec/png.c:162:49: warning: '%zu' directive output may be truncated writing between 1 and 20 bytes into a region of size between 18 and 37 [-Wformat-truncation=]
+      162 |                   "block size %zu too small for %zu encoded bytes",
+          |                                                 ^~~
+    ../../../modules/codec/png.c:162:19: note: directive argument in the range [1, 18446744073709551615]
+      162 |                   "block size %zu too small for %zu encoded bytes",
+    
+    (cherry picked from commit 59894f24f431e717444bb49331f35624eedc64f7)
+
+commit 41328807c91a9385956f0a3864f27b869d1b5277
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Thu Oct 19 09:59:49 2023 +0200
+
+    actions: match the format string with the buffer size
+    
+    (cherry picked from commit a1f42f8bdb04bd6b32413225009a13f2c594ddee)
+
+commit c41cacc68ed1c8cfeb1c45696b90828d52d6e606
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Dec 17 09:56:09 2024 +0100
+
+    configure: detect Qt6 using QMake
+    
+    This is similar to how it's done in VLC4 before python scripts were used.
+
+commit befe2417444334778b3f07550fe2bec64ae41c74
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Dec 9 11:49:49 2025 +0100
+
+    directx_va: fix detection of mingw-w64 v13 dxva.h
+    
+    If the dxva.h file comes from the contribs, it doesn't match the system
+    __MINGW64_VERSION_MAJOR. But we can detect it another way.
+    
+    Similar to 20227126ef968f966d1b7b202d04f93dc934db04
+
+commit 5bded3240aa643ef9e49b09da053305dce1d34e3
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat Oct 11 10:58:49 2025 +0200
+
+    .tx: add configuration to update po files
+    
+    This is a configuration file for the tx command line tool to
+    automatically pull updated translations from the transifex platform to
+    the correct places.
+    
+    After the pull, it is necessary to correct the headers manually and to
+    perform "msgcat --width=79 po/*.po -o -" to achieve the intended
+    formatting.
+    
+    Perform the pull with "tx pull --use-git-timestamps --force"
+
+commit abc817dac8dd17511b917cd786db2e6730e21e5e
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Dec 9 13:59:36 2025 +0100
+
+    opengl: use pl_shader for the libplacebo shader
+    
+    The pl_context structure was renamed in https://code.videolan.org/videolan/libplacebo/-/commit/dd755a09c4a22deaab82da8b4178ce8a50584b7c
+
+commit 8c4e05bcfbb57a1401b05f6ccbd6f1d52b02a47d
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Dec 9 13:31:00 2025 +0100
+
+    opengl: use pl_log for the libplacebo context
+    
+    The pl_context structure was renamed in https://code.videolan.org/videolan/libplacebo/-/commit/2459200a133d1a0f36f092a32a2d5d443cfbee55
+    
+    It's already initialized with pl_log_create / pl_log_destroy since 65ea8d19d91ac1599a29e8411485a72fe89c45e2
+    Although there were PL_MAJOR_VER == 4 with this change.
+
+commit 88d5825bb4883f60dcbec835ab4214c8346ee5a0
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Dec 9 13:17:59 2025 +0100
+
+    opengl: use pl_shader_obj typedef in newer libplacebo version
+    
+    The plain structure is gone in current version.
+    
+    From https://code.videolan.org/videolan/libplacebo/-/commit/dd755a09c4a22deaab82da8b4178ce8a50584b7c
+
+commit b1231297eca82da6e9465599a81a3431b785ac72
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Dec 9 13:56:04 2025 +0100
+
+    opengl: use tc->pl_sh directly
+    
+    So we don't depend on its actual type.
+
+commit 1089af38fc26293d0b93a9456adf7ae4a5b0b930
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Dec 9 11:42:02 2025 +0100
+
+    avcodec: use AV_LEVEL_xxx instead of FF_LEVEL_xxx
+    
+    This was added in libavcodec 60.26.100 [^1].
+    
+    [^1]:  https://code.ffmpeg.org/FFmpeg/FFmpeg/commit/8238bc0b5e3dba271217b1223a901b3f9713dc6e
+
+commit ffd813653f170702ae52b22a9f3db36bc6b0d997
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Sep 8 13:51:43 2025 +0200
+
+    avcodec: use AV_PROFILE_xxx instead of FF_PROFILE_xxx
+    
+    This was added in libavcodec 60.26.100 [^1]. We require 58.54.100.
+    
+    [^1]:  https://code.ffmpeg.org/FFmpeg/FFmpeg/commit/8238bc0b5e3dba271217b1223a901b3f9713dc6e
+    
+    (cherry picked from commit ff292b650ea0b10c67c9e4ff16327486afe0d8ad) (edited)
+    - the vaapi had less profiles
+    - the direct_va doesn't have HEVC EXT
+    - FF_PROFILE_UNKNOWN was used in more places
+
+commit bde8f7e2eeec9d0b056dfcae0fbce5cd3fbfa0d3
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Jan 14 11:28:21 2025 +0100
+
+    avcodec/video: use frame flags instead of fields
+    
+    The structure fields are deprecated.
+    It was introduced in lavu 58.7.100.
+    
+    (cherry picked from commit c79659bc9cfa2ff14754920a706f89d07d6425e6)
+
+commit b7039d830040a4478ea52008f6a8fc3a976faeae
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Sep 8 13:55:28 2025 +0200
+
+    avcodec: encoder: remove AV_INPUT_BUFFER_MIN_SIZE usage
+    
+    It's not supported in FFMpeg 8.0 since 60.40.100.
+    
+    It used to be used with preallocated packet buffers with
+    the old encode API, but said API is no more and therefore
+    there is no reason for this to be public any more.
+    So deprecate it and use an internal replacement
+    for the encoders using it as an upper bound for the
+    size of their headers.
+    
+    (cherry picked from commit dae7faa0757ee094681c5e7100baca74c007c67c)
+
+commit 6c250ae48a3cef9453f2c56ab4724e91c85dcf16
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Dec 9 11:21:17 2025 +0100
+
+    upnp: include iphlpapi.h to use local structures
+    
+    They used to be included by pupnp. They don't use/need it anymore, but we do.
+    
+    Similar to eacf1bd2b33b82c16d7c6ecc507744e0a70985f0.
+
+commit 30231c06b7b784d4978ce764c38f9004f84a5894
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Dec 8 07:59:15 2025 +0100
+
+    Update PO
+
+commit 174e45e3beeafbb0570c8c47f01f9b28eb6ea45c
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Jan 25 12:17:32 2019 +0100
+
+    configure: include glew.h before wglew.h
+    
+    In recent wglew.h it relies on the DLL export mode defined in glew.h
+    
+    (cherry picked from commit 1f86df44e3b6e86f3af35fbb388793f09d0d7553) (edited)
+    edited:
+    - the 3.0 converter is not in direct3d9.c
+
+commit 9140355a0514a0af1ec7bee50bfb21254449102a
+Author: Sean McGovern <gseanmcg@gmail.com>
+Date:   Mon Dec 1 14:45:36 2025 -0500
+
+    misc/stats: ensure p_pic is non-NULL before calling decoder_QueueVideo()
+    
+    (cherry picked from commit f93a8c5f341a346a93b5dfe4da38873475453352)
+
+commit 841640c3031113bc3d2d1f177c7996a01a40813e
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Dec 8 10:27:06 2025 +0100
+
+    CI: update gcc windows images with wine compatible with the contrib Wix
+    
+    Fixes #29489
+
+commit 92dd4ae3b514bf470ce12d033fad92fb928c4875
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Mon Dec 8 11:37:45 2025 +0100
+
+    contrib: caca: force recognition of all sprint variants tested on Windows
+    
+    The built-in in some mingw-w64 variants require linking for kernel32.
+    
+    configure:18427: i686-w64-mingw32-gcc -o conftest.exe -D__MSVCRT_VERSION__=0x700 -D_WIN32_WINNT=0x0502 -DWINVER=0x0502  -I/home/videolan/vlc/contrib/i686-w64-mingw32/include -g -O0 -D__MSVCRT_VERSION__=0x700 -D_WIN32_WINNT=0x0502 -DWINVER=0x0502 -I/home/videolan/vlc/contrib/i686-w64-mingw32/include -DCACA_STATIC  -L/home/videolan/vlc/contrib/i686-w64-mingw32/lib  conftest.c  >&5
+    conftest.c:47:6: warning: conflicting types for built-in function 'vsnprintf'
+     char vsnprintf ();
+          ^~~~~~~~~
+    /opt/gcc-i686-w64-mingw32/lib/gcc/i686-w64-mingw32/6.4.0/../../../../i686-w64-mingw32/lib/../lib/libmsvcrt.a(lib32_libmsvcrt_extra_a-_vscprintf.o): In function `_mingw_get_msvcrt_handle':
+    /build/mingw-w64/mingw-w64-crt/build/../include/msvcrt.h:9: undefined reference to `_imp__GetModuleHandleW@4'
+    collect2: error: ld returned 1 exit status
+    configure:18427: $? = 1
+
+commit be17eee393bdef371d7aa3965f971986dabdfebd
+Author: François Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Jul 30 16:19:50 2025 +0700
+
+    codec: cc: fix mask size for 708 captions
+    
+    refs #29219
+    
+    (cherry picked from commit 7c5cd6e7361fac223232b5d949c6cf27945c219e)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d3872a83841dd3b452c03b03a151030a7816ddc5
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Dec 5 10:58:06 2025 +0100
+
+    contrib: libarchive: fix build with recent gcc
+
+commit 7dc62530b805c4104f38af1b8308b38f43a238f4
+Author: Pratik Patel <pratikpatel8982@gmail.com>
+Date:   Sat Nov 22 22:15:49 2025 +0530
+
+    qt: adapt volume slider to dark palette
+
+commit 7b5e4180bd1fd1143c8e57f4a06f50c5518156b0
+Author: Pratik Patel <pratikpatel8982@gmail.com>
+Date:   Tue Nov 18 14:29:08 2025 +0530
+
+    qt: update seekstyle for dark palette and accent highlight
+
+commit 72a5f4a08ed572b62d4e02819cae9a5cbc422187
+Author: Pratik Patel <pratikpatel8982@gmail.com>
+Date:   Tue Nov 18 14:25:13 2025 +0530
+
+    qt: Use Windows accent color in dark palette
+
+commit f88c0f283eb2855b2697de4a3cf5388e3e9ecf42
+Author: Pratik Patel <pratikpatel8982@gmail.com>
+Date:   Tue Nov 18 14:11:57 2025 +0530
+
+    qt: Use QColor(r,g,b) instead of string in dark palette definition
+
+commit 38d64f6cb714475f8277a24c9d8316b1c213cecb
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Dec 5 15:25:14 2025 +0100
+
+    package/win32: ensure the NSIS folder we are going to use exists
+    
+    (cherry-picked from 67c201f09f4e6b741ba71c59431a2ca2592bb137)
+
+commit 5b9bc28e4a00d441efaf65b8ed80f3b645010f73
+Author: Marvin Scholz <epirat07@gmail.com>
+Date:   Thu Dec 4 03:28:14 2025 +0100
+
+    demux: image: fix JFIF detection
+    
+    A JFIF does not necessarily has an ICC Profile, and especially
+    not usually directly following the SOI, as the spec requires SOI
+    followed by the APP0 JFIF marker. So while this new detection logic
+    fixes out-of-spec files that have a (small) ICC profile before the
+    APP0 JFIF, it breaks most other properly structured ones.
+    
+    This makes the APP0 ICC profile optional and continues looking for the
+    APP0 JFIF regardless.
+    
+    Regression from 5ffd36ffa26a83ae498373f7d0ace1d82ab952f4
+    
+    (cherry picked from commit 70eb2735e7b47eb082ceb3e299d94f42ac19331b)
+    Signed-off-by: Marvin Scholz <epirat07@gmail.com>
+
+commit 0dc35287ba72cdb16d4ee8dd744930c916406c4a
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Dec 5 15:56:23 2025 +0100
+
+    CI: go back to gcc 6.4 Docker images for Windows builds
+    
+    Newer gcc has some issues with Thread Local Storage (TLS).
+    
+    The difference between the old GCC 6.4 images, that doesn't build VLC 3 anymore:
+    
+    * based on Debian bullseye (was Debian stretch)
+    * openjdk goes from v8 to v11
+    * python goes from 3.5 to 3.9
+    * the old gcc mirror is not available anymore
+    
+    Fixes #29480
+
+commit e09876cc3bf568fce0058a4ead46085415690191
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Thu Dec 4 11:41:16 2025 +0100
+
+    direct3d11: fix ID3D11Resource used by default for picture decoding
+    
+    Bogus copy paste from 833b02552a6d6055f1ed1d5f84827ac213db5774.
+    
+    Fixes #29479
+
+commit 6d049d6702c6ffc3d0faa53bb169e223af55e4ba
+Author: François Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Feb 1 16:07:48 2023 +0100
+
+    es_out: bitrate info is valid for any ES
+    
+    cherry-picked from d568e3d8a4254f3b40ee7af02c1b655d77fe3d0d
+
+commit f5527c0968ffea2f5ba0e02785efa987459d6a61
+Author: François Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Feb 1 16:06:01 2023 +0100
+
+    es_out: make use of initial es description
+    
+    cherry-picked from 977b8e38a1dc35ce84ce5f99a699b34cda0720aa
+
+commit 557873e2683534f4671bb1c582ed250b6ad7a1bc
+Author: François Cartegnie <fcvlcdev@free.fr>
+Date:   Wed Feb 1 16:03:28 2023 +0100
+
+    es_out: use EMPTY_STR macro
+    
+    cherry-picked from a13c388cc25e2ecc45792a0a68367fc90176bf40
+
+commit aa2ec8f5f9b4c57c8e73c8cd360a4b3fa8b19780
+Author: François Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Jan 27 15:15:39 2020 +0100
+
+    input: es_out: differentiate decoded & source audio formats
+    
+    Because users can't get it. Too many invalid bugs.
+    
+    cherry-picked from 8009135e0dcf28f24c34ee5d8251fa2c10488722
+
+commit 767e95da4018121c03666710076e6d349de6caae
+Author: François Cartegnie <fcvlcdev@free.fr>
+Date:   Mon Jan 27 15:14:55 2020 +0100
+
+    input: es_out: refactor codec info
+    
+    cherry-picked from d89a93356dbf4617614898b5ce0cbfe17b48219f
+
+commit 911d96778808be91bc76cd3590ae950906a78e5b
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Tue Aug 5 10:03:50 2025 +0200
+
+    codec: webvtt: fix line: 0% alignment
+    
+    A line: 0% positioning should set the box on top of the video viewport [^1]
+    (when alignment is top-left which is the default).
+    
+    Fixes #29230
+    
+    [^1]: https://www.w3.org/TR/webvtt1/#webvtt-line-cue-setting
+    
+    (cherry picked from commit 0f215cb3cc6b3e4f94571c54a5e69c2d17dacb58)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit b0cbff20e64ca25095442b1ceaa0af5abfffc178
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Tue Sep 16 11:57:08 2025 -0400
+
+    demux: ogg: fix int overflow when parsing daala header
+    
+    (cherry picked from commit dda21a9cd95c78f40d8444543a934e945a0ce348)
+
+commit 07fbef60f837fb36ed066206c3ac13a009e305be
+Author: Tristan Matthews <tmatth@videolan.org>
+Date:   Mon Sep 15 12:51:31 2025 -0400
+
+    demux: ogg: fix undefined shift in theora parsing
+    
+    We can skip the loop since i_granule_shift will always equal the 5-bit value read
+    from the header.
+    
+    Fixes #29304
+    
+    (cherry picked from commit aa26d90296d60833a281adbf31ae2d632e24311f)
+
+commit 84125cb58eb716dd6c79cdb478051bde0cde6c46
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Wed Oct 1 09:35:03 2025 +0200
+
+    taglib: use non-deprecated File constructor
+    
+    The deprecated info was added in 1.5 [^1]. But the constructor was added in 2.0 [^2].
+    The parameters are the same, in a different order and the factory is optional.
+    
+    Fixes #29391
+    
+    [^1]: https://github.com/taglib/taglib/commit/4879eb8e6e6bf46b89a4a67f62cada82478bade5
+    [^2]: https://github.com/taglib/taglib/commit/56fa36934e5633122fcbf305d98f2111caeb5315
+    
+    (cherry picked from commit 98f4a840ec6a8be5d2db735598724652dcdecb6b)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 18ab3e56f0d02564d0de6110c4f16395f7d7771f
+Author: Khalid Masum <khalid.masum.92@gmail.com>
+Date:   Wed Oct 8 07:21:19 2025 +0600
+
+    libass: fix possible nullptr deref
+    
+    vlc_stream_MemoryNew may return NULL. Which could be dereferenced
+    by vlc_stream_ReadLine calls in OldEngineClunkyRollInfoPatch.
+    
+    Fixes: #29363 (Coverity 1666281)
+    (cherry picked from commit 0b7831694bbee4e001aede459f76d1d0da74f2e4)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 64e7f15c694065d9b55f37b327464e609a959282
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Sep 26 12:59:23 2025 +0200
+
+    packetizer: h264: skip all slice group ID's at once
+    
+    (cherry picked from commit 1327a621feed33b5156bcbea701c1023355d5931)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 89c0c3efe8f72feda08e377bf951578c117e82e4
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Sep 26 13:47:11 2025 +0200
+
+    packetizer: h264: simplify sliceGroupSize computation
+    
+    num_slice_groups_minus1 can only be in the [1,7] range when reaching this code.
+    
+    (cherry picked from commit 52e0d1a6ea51f194821d6b3ad9792f1b73c6a0b6)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d4271389cc2d5c78d6ff7eaf1ea0786758c84291
+Author: Steve Lhomme <robux4@ycbcr.xyz>
+Date:   Fri Sep 26 11:54:56 2025 +0200
+
+    packetizer: h264: use num_slice_groups_minus1 as stored
+    
+    And also as the specs compare it. The loop for slice_group_map_type was bogus.
+    
+    (cherry picked from commit 486e2e67ff9ee3db3f11b4da427b946b20fc58fd)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
 commit f9020c4df073c861a28f0cda5c6c5dccb58a49ef
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Mon Nov 24 16:23:58 2025 +0100

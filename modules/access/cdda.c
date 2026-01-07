@@ -408,9 +408,9 @@ static char * BuildMusicbrainzDiscID( const vcddev_toc_t *p_toc,
 
     char buffer[16];
 
-    sprintf( buffer, "%02X", i_first );
+    snprintf( buffer, ARRAY_SIZE(buffer), "%02X", i_first );
     gcry_md_write( hd, buffer, 2 );
-    sprintf( buffer, "%02X", i_last );
+    snprintf( buffer, ARRAY_SIZE(buffer), "%02X", i_last );
     gcry_md_write( hd, buffer, 2 );
     /* LEAD OUT sector info */
 
@@ -422,12 +422,12 @@ static char * BuildMusicbrainzDiscID( const vcddev_toc_t *p_toc,
     else
         i_last_track_end = LBAPregap(p_toc->p_sectors[p_toc->i_tracks].i_lba);
 
-    sprintf( buffer, "%08X", i_last_track_end );
+    snprintf( buffer, ARRAY_SIZE(buffer), "%08X", i_last_track_end );
     gcry_md_write( hd, buffer, 8 );
 
     for( int i = 0; i<i_total; i++ ) /* skip LEAD OUT */
     {
-        sprintf( buffer, "%08X", LBAPregap(p_toc->p_sectors[i].i_lba) );
+        snprintf( buffer, ARRAY_SIZE(buffer), "%08X", LBAPregap(p_toc->p_sectors[i].i_lba) );
         gcry_md_write( hd, buffer, 8 );
     }
 
@@ -664,8 +664,9 @@ static void AccessGetMeta(stream_t *access, vlc_meta_t *meta)
         {
             char yearbuf[5];
 
-            snprintf(yearbuf, sizeof (yearbuf), "%u", year);
-            vlc_meta_SetDate(meta, yearbuf);
+            int ret = snprintf(yearbuf, sizeof (yearbuf), "%u", year);
+            if (ret >= 0 && (size_t) ret < sizeof (yearbuf))
+                vlc_meta_SetDate(meta, yearbuf);
         }
 
         /* Set artist only if identical across tracks */
