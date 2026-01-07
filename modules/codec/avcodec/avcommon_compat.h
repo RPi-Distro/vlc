@@ -75,9 +75,6 @@
 #ifndef AV_CODEC_CAP_SMALL_LAST_FRAME
 # define AV_CODEC_CAP_SMALL_LAST_FRAME CODEC_CAP_SMALL_LAST_FRAME
 #endif
-#ifndef AV_INPUT_BUFFER_MIN_SIZE
-# define AV_INPUT_BUFFER_MIN_SIZE FF_MIN_BUFFER_SIZE
-#endif
 #ifndef  FF_MAX_B_FRAMES
 # define  FF_MAX_B_FRAMES 16 // FIXME: remove this
 #endif
@@ -145,6 +142,18 @@
     ( (LIBAVFORMAT_VERSION_MICRO <  100 && LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT( a, b, c ) ) || \
       (LIBAVFORMAT_VERSION_MICRO >= 100 && LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT( a, d, e ) ) )
 
+#endif
+
+#if LIBAVCODEC_VERSION_CHECK(60,26,100)
+# define AVPROFILE(prof) (AV_PROFILE_##prof)
+#else
+# define AVPROFILE(prof) (FF_PROFILE_##prof)
+#endif
+
+#if LIBAVCODEC_VERSION_CHECK(60,26,100)
+# define AVLEVEL(prof) (AV_LEVEL_##prof)
+#else
+# define AVLEVEL(prof) (FF_LEVEL_##prof)
 #endif
 
 #endif

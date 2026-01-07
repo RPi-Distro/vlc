@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.22-rc1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-11-24 23:15+0000\n"
+"POT-Creation-Date: 2025-12-23 11:04+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Dilip Re, 2021\n"
 "Language-Team: Malayalam (https://app.transifex.com/yaron/teams/16553/ml/)\n"
@@ -81,7 +81,7 @@ msgstr "വിഎല്‍സികളുടെ കണ്‍ട്രോള്�
 msgid "Hotkeys settings"
 msgstr "ഹോട്ട്കീസ് ക്രമീകരണങ്ങള്‍"
 
-#: include/vlc_config_cat.h:53 src/input/es_out.c:3160 src/libvlc-module.c:1492
+#: include/vlc_config_cat.h:53 src/input/es_out.c:3174 src/libvlc-module.c:1492
 #: modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:414 modules/gui/macosx/VLCOutput.m:92
@@ -89,7 +89,7 @@ msgstr "ഹോട്ട്കീസ് ക്രമീകരണങ്ങള്�
 #: modules/gui/macosx/VLCSimplePrefsController.m:243
 #: modules/gui/qt/components/info_panels.cpp:572
 #: modules/gui/qt/components/simple_preferences.cpp:250
-#: modules/gui/qt/qt.cpp:216 modules/services_discovery/mediadirs.c:77
+#: modules/gui/qt/qt.cpp:217 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
 #: modules/gui/qt/ui/profiles.h:719 modules/gui/qt/ui/profiles.h:750
@@ -145,7 +145,7 @@ msgstr "പലതരത്തിലുള്ളവ"
 msgid "Miscellaneous audio settings and modules."
 msgstr "നിരവധി ഓഡിയോ ക്രമീകരണങ്ങളും മോഡ്യൂളുകളും."
 
-#: include/vlc_config_cat.h:73 src/input/es_out.c:3204 src/libvlc-module.c:142
+#: include/vlc_config_cat.h:73 src/input/es_out.c:3246 src/libvlc-module.c:142
 #: src/libvlc-module.c:1551 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:427 modules/gui/macosx/VLCOutput.m:82
@@ -154,7 +154,7 @@ msgstr "നിരവധി ഓഡിയോ ക്രമീകരണങ്ങള�
 #: modules/gui/macosx/VLCSimplePrefsController.m:388
 #: modules/gui/qt/components/info_panels.cpp:573
 #: modules/gui/qt/components/simple_preferences.cpp:252
-#: modules/gui/qt/qt.cpp:216 modules/services_discovery/mediadirs.c:70
+#: modules/gui/qt/qt.cpp:217 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
 #: modules/gui/qt/ui/profiles.h:720 modules/gui/qt/ui/profiles.h:724
@@ -692,7 +692,7 @@ msgstr "ഡോള്‍ബി സറൗണ്ട്"
 msgid "Stereo"
 msgstr "സ്റ്റീരിയോ"
 
-#: src/audio_output/output.c:445 src/input/es_out.c:3301
+#: src/audio_output/output.c:445 src/input/es_out.c:3343
 #: src/libvlc-module.c:197 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: src/misc/actions.c:81 modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -961,11 +961,11 @@ msgstr "DTVCC അടച്ച അടിക്കുറിപ്പുകൾ %u"
 msgid "Closed captions %u"
 msgstr "അടച്ച ശീര്‍ഷകങ്ങള്‍  %u"
 
-#: src/input/es_out.c:3136
+#: src/input/es_out.c:3149
 msgid "Original ID"
 msgstr "യഥാര്‍ത്ഥ ഐഡി"
 
-#: src/input/es_out.c:3144 src/input/es_out.c:3147 modules/access/imem.c:67
+#: src/input/es_out.c:3156 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
 #: modules/gui/qt/ui/profiles.h:726 modules/gui/qt/ui/profiles.h:752
@@ -973,48 +973,21 @@ msgstr "യഥാര്‍ത്ഥ ഐഡി"
 msgid "Codec"
 msgstr "കോഡെക്ക്"
 
-#: src/input/es_out.c:3151 src/input/meta.c:66 modules/access/imem.c:71
+#: src/input/es_out.c:3160 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:98
 #: modules/gui/macosx/VLCSimplePrefsController.m:325
 #: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:533
 msgid "Language"
 msgstr "ഭാഷ"
 
-#: src/input/es_out.c:3154 src/input/meta.c:61
+#: src/input/es_out.c:3163 src/input/meta.c:61
 #: modules/gui/macosx/VLCBookmarksWindowController.m:80
 #: modules/gui/macosx/VLCPlaylist.m:96 modules/gui/qt/dialogs/bookmarks.cpp:75
 #: modules/gui/qt/dialogs/epg.cpp:55
 msgid "Description"
 msgstr "വിവരണം"
 
-#: src/input/es_out.c:3160 src/input/es_out.c:3204 src/input/es_out.c:3394
-#: modules/gui/macosx/VLCAddonsWindowController.m:133
-#: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
-#: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1494
-msgid "Type"
-msgstr "തരം"
-
-#: src/input/es_out.c:3163
-#: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
-#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:754
-msgid "Channels"
-msgstr "ചാനലുകള്‍"
-
-#: src/input/es_out.c:3168 modules/access/alsa.c:39 modules/access/imem.c:75
-#: modules/audio_output/amem.c:47 modules/codec/fluidsynth.c:64
-msgid "Sample rate"
-msgstr "സാംപിള്‍ നിരക്ക്"
-
-#: src/input/es_out.c:3168
-#, c-format
-msgid "%u Hz"
-msgstr "%u എച്ച്സെഡ്"
-
-#: src/input/es_out.c:3178
-msgid "Bits per sample"
-msgstr "പ്രതി സാമ്പിള്‍ ബിറ്റുകള്‍"
-
-#: src/input/es_out.c:3183 modules/access_output/shout.c:92
+#: src/input/es_out.c:3168 modules/access_output/shout.c:92
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
@@ -1022,33 +995,84 @@ msgstr "പ്രതി സാമ്പിള്‍ ബിറ്റുകള്�
 msgid "Bitrate"
 msgstr "ബിറ്റ്റേറ്റ്"
 
-#: src/input/es_out.c:3183
+#: src/input/es_out.c:3168 src/input/es_out.c:3224
 #, c-format
 msgid "%u kb/s"
 msgstr "%u കെബി/എസ്"
 
-#: src/input/es_out.c:3195
+#: src/input/es_out.c:3174 src/input/es_out.c:3246 src/input/es_out.c:3436
+#: modules/gui/macosx/VLCAddonsWindowController.m:133
+#: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
+#: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1494
+msgid "Type"
+msgstr "തരം"
+
+#: src/input/es_out.c:3177
+#: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
+#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:754
+msgid "Channels"
+msgstr "ചാനലുകള്‍"
+
+#: src/input/es_out.c:3182 modules/access/alsa.c:39 modules/access/imem.c:75
+#: modules/audio_output/amem.c:47 modules/codec/fluidsynth.c:64
+msgid "Sample rate"
+msgstr "സാംപിള്‍ നിരക്ക്"
+
+#: src/input/es_out.c:3182 src/input/es_out.c:3212
+#, c-format
+msgid "%u Hz"
+msgstr "%u എച്ച്സെഡ്"
+
+#: src/input/es_out.c:3192
+msgid "Bits per sample"
+msgstr "പ്രതി സാമ്പിള്‍ ബിറ്റുകള്‍"
+
+#: src/input/es_out.c:3200 src/input/es_out.c:3275
+msgid "Decoded format"
+msgstr "ഡീകോഡെഡ് ഘടന"
+
+#: src/input/es_out.c:3207
+#, fuzzy
+msgid "Decoded channels"
+msgstr "ഓഡിയോ ചാനലുകള്‍"
+
+#: src/input/es_out.c:3212
+#, fuzzy
+msgid "Decoded sample rate"
+msgstr "ഓഡിയോ സാംപിള്‍ റേറ്റ്"
+
+#: src/input/es_out.c:3219
+#, fuzzy
+msgid "Decoded bits per sample"
+msgstr "പ്രതി സാംപിള്‍ ഓഡിയോ ബിറ്റുള്‍"
+
+#: src/input/es_out.c:3224
+#, fuzzy
+msgid "Decoded Bitrate"
+msgstr "ഡീകോഡെഡ് ഘടന"
+
+#: src/input/es_out.c:3237
 msgid "Track replay gain"
 msgstr "ട്രാക്ക് റീപ്ലേ നേട്ടം"
 
-#: src/input/es_out.c:3197
+#: src/input/es_out.c:3239
 msgid "Album replay gain"
 msgstr "ആല്‍ബം റീപ്ലേ നേട്ടം"
 
-#: src/input/es_out.c:3198
+#: src/input/es_out.c:3240
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:3208
+#: src/input/es_out.c:3250
 msgid "Video resolution"
 msgstr "വി‍ഡിയോ റെസലൂഷ്യന്‍"
 
-#: src/input/es_out.c:3213
+#: src/input/es_out.c:3255
 msgid "Buffer dimensions"
 msgstr "ബഫർ അളവുകൾ"
 
-#: src/input/es_out.c:3223 src/input/es_out.c:3226 modules/access/imem.c:93
+#: src/input/es_out.c:3265 src/input/es_out.c:3268 modules/access/imem.c:93
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
@@ -1058,91 +1082,87 @@ msgstr "ബഫർ അളവുകൾ"
 msgid "Frame rate"
 msgstr "ഫ്രെയിം റേറ്റ്"
 
-#: src/input/es_out.c:3234
-msgid "Decoded format"
-msgstr "ഡീകോഡെഡ് ഘടന"
-
-#: src/input/es_out.c:3239
+#: src/input/es_out.c:3281
 msgid "Top left"
 msgstr "മുകളില്‍ ഇടതുഭാഗത്ത്"
 
-#: src/input/es_out.c:3239
+#: src/input/es_out.c:3281
 msgid "Left top"
 msgstr "ഇടതുഭാഗത്ത് മുകളില്‍"
 
-#: src/input/es_out.c:3240
+#: src/input/es_out.c:3282
 msgid "Right bottom"
 msgstr "താഴെ വലത് വശത്തു"
 
-#: src/input/es_out.c:3240
+#: src/input/es_out.c:3282
 msgid "Top right"
 msgstr "മുകളിൽ വലത് വശത്തു "
 
-#: src/input/es_out.c:3241
+#: src/input/es_out.c:3283
 msgid "Bottom left"
 msgstr "താഴെ ഇടത് വശത്തു"
 
-#: src/input/es_out.c:3241
+#: src/input/es_out.c:3283
 msgid "Bottom right"
 msgstr "താഴെ വലത് വശത്തു "
 
-#: src/input/es_out.c:3242
+#: src/input/es_out.c:3284
 msgid "Left bottom"
 msgstr "ഇടത് താഴെ "
 
-#: src/input/es_out.c:3242
+#: src/input/es_out.c:3284
 msgid "Right top"
 msgstr "വലത് മുകളിൽ "
 
-#: src/input/es_out.c:3244
+#: src/input/es_out.c:3286
 msgid "Orientation"
 msgstr "ചായ്‌വ് "
 
-#: src/input/es_out.c:3250 src/input/es_out.c:3268 src/input/es_out.c:3286
-#: src/input/es_out.c:3300 src/playlist/tree.c:67
+#: src/input/es_out.c:3292 src/input/es_out.c:3310 src/input/es_out.c:3328
+#: src/input/es_out.c:3342 src/playlist/tree.c:67
 #: modules/access/dtv/access.c:82 modules/access/v4l2/v4l2.c:242
 msgid "Undefined"
 msgstr "നിര്‍വചിക്കാത്തത്"
 
-#: src/input/es_out.c:3252
+#: src/input/es_out.c:3294
 msgid "ITU-R BT.601 (525 lines, 60 Hz)"
 msgstr "ITU-R BT.601 (525 ലൈനുകൾ, 60 Hz)"
 
-#: src/input/es_out.c:3254
+#: src/input/es_out.c:3296
 msgid "ITU-R BT.601 (625 lines, 50 Hz)"
 msgstr "ITU-R BT.601 (625 ലൈനുകൾ, 50 Hz)"
 
-#: src/input/es_out.c:3262
+#: src/input/es_out.c:3304
 msgid "Color primaries"
 msgstr "കളര്‍ പ്രൈമറികള്‍"
 
-#: src/input/es_out.c:3269 src/libvlc-module.c:362
+#: src/input/es_out.c:3311 src/libvlc-module.c:362
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Linear"
 msgstr "ലീനിയര്‍"
 
-#: src/input/es_out.c:3276
+#: src/input/es_out.c:3318
 msgid "Hybrid Log-Gamma"
 msgstr "ഹൈബ്രിഡ് ലോഗ്-ഗാമ"
 
-#: src/input/es_out.c:3280
+#: src/input/es_out.c:3322
 msgid "Color transfer function"
 msgstr "നിറം കൈമാറ്റ ഫങ്ഷൻ "
 
-#: src/input/es_out.c:3293
+#: src/input/es_out.c:3335
 msgid "Color space"
 msgstr "കളര്‍ സ്പേസ്"
 
-#: src/input/es_out.c:3293
+#: src/input/es_out.c:3335
 #, c-format
 msgid "%s Range"
 msgstr "%s ശ്രേണി"
 
-#: src/input/es_out.c:3295
+#: src/input/es_out.c:3337
 msgid "Full"
 msgstr "നിറയെ"
 
-#: src/input/es_out.c:3302 src/libvlc-module.c:295 src/libvlc-module.c:368
+#: src/input/es_out.c:3344 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: modules/audio_filter/channel_mixer/mono.c:91
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -1153,87 +1173,87 @@ msgstr "നിറയെ"
 msgid "Center"
 msgstr "നടുക്ക്"
 
-#: src/input/es_out.c:3303
+#: src/input/es_out.c:3345
 msgid "Top Left"
 msgstr "മുകളിൽ ഇടത് "
 
-#: src/input/es_out.c:3304
+#: src/input/es_out.c:3346
 msgid "Top Center"
 msgstr "മുകളിൽ നടുക്ക് "
 
-#: src/input/es_out.c:3305
+#: src/input/es_out.c:3347
 msgid "Bottom Left"
 msgstr "താഴെ വലത് "
 
-#: src/input/es_out.c:3306
+#: src/input/es_out.c:3348
 msgid "Bottom Center"
 msgstr "താഴെ നടുക്ക് "
 
-#: src/input/es_out.c:3310
+#: src/input/es_out.c:3352
 msgid "Chroma location"
 msgstr "ക്രോമ ലൊക്കേഷൻ"
 
-#: src/input/es_out.c:3319
+#: src/input/es_out.c:3361
 msgid "Rectangular"
 msgstr "ദീർഘചതുരാകൃതിയിലുള്ള"
 
-#: src/input/es_out.c:3322
+#: src/input/es_out.c:3364
 msgid "Equirectangular"
 msgstr "സമചതുരാകൃതി"
 
-#: src/input/es_out.c:3325
+#: src/input/es_out.c:3367
 msgid "Cubemap"
 msgstr "ക്യൂബ് മാപ്പ് "
 
-#: src/input/es_out.c:3331
+#: src/input/es_out.c:3373
 msgid "Projection"
 msgstr "പ്രൊജക്ഷൻ"
 
-#: src/input/es_out.c:3333
+#: src/input/es_out.c:3375
 msgctxt "ViewPoint"
 msgid "Yaw"
 msgstr "യാ "
 
-#: src/input/es_out.c:3335
+#: src/input/es_out.c:3377
 msgctxt "ViewPoint"
 msgid "Pitch"
 msgstr "പിച്ച് "
 
-#: src/input/es_out.c:3337
+#: src/input/es_out.c:3379
 msgctxt "ViewPoint"
 msgid "Roll"
 msgstr "റോൾ "
 
-#: src/input/es_out.c:3340
+#: src/input/es_out.c:3382
 msgctxt "ViewPoint"
 msgid "Field of view"
 msgstr "കാഴ്ചയുടെ ഫീൽഡ്"
 
-#: src/input/es_out.c:3345
+#: src/input/es_out.c:3387
 msgid "Max. luminance"
 msgstr "പരമാവധി ലൂമിനന്സ് "
 
-#: src/input/es_out.c:3350
+#: src/input/es_out.c:3392
 msgid "Min. luminance"
 msgstr "ഏറ്റവും കുറഞ്ഞ ലൂമിനന്സ് "
 
-#: src/input/es_out.c:3358
+#: src/input/es_out.c:3400
 msgid "Primary R"
 msgstr "പ്രാഥമിക ആർ"
 
-#: src/input/es_out.c:3365
+#: src/input/es_out.c:3407
 msgid "Primary G"
 msgstr "പ്രാഥമിക ജി"
 
-#: src/input/es_out.c:3372
+#: src/input/es_out.c:3414
 msgid "Primary B"
 msgstr "പ്രാഥമിക ബി"
 
-#: src/input/es_out.c:3379
+#: src/input/es_out.c:3421
 msgid "White point"
 msgstr "വെളുത്ത പോയിന്റ് "
 
-#: src/input/es_out.c:3394 modules/access/imem.c:64
+#: src/input/es_out.c:3436 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "ഉപശീര്‍ഷകം"
 
@@ -3016,7 +3036,7 @@ msgstr "ഡിവിഡി ഡിവൈസ്"
 msgid "VCD device"
 msgstr "വിസിഡി ഡിവൈസ്"
 
-#: src/libvlc-module.c:764 modules/access/cdda.c:984
+#: src/libvlc-module.c:764 modules/access/cdda.c:985
 msgid "Audio CD device"
 msgstr "ഓഡിയോ സിഡി ഡിവൈസ്"
 
@@ -3036,7 +3056,7 @@ msgstr ""
 "ഇത് ഉപയോഗിക്കാനുള്ള സ്ഥിരസ്ഥിതി വിസിഡി ഡ്രൈവ് (അല്ലെങ്കിൽ ഫയൽ) ആണ്. ഡ്രൈവ് അക്ഷരത്തിന് ശേഷം "
 "കോളൻ മറക്കരുത് (ഉദാ. D:)"
 
-#: src/libvlc-module.c:774 modules/access/cdda.c:987
+#: src/libvlc-module.c:774 modules/access/cdda.c:988
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -3052,7 +3072,7 @@ msgstr "ഉപയോഗിക്കേണ്ട സഹജമായ ഡിവി�
 msgid "This is the default VCD device to use."
 msgstr "ഉപയോഗിക്കേണ്ട സഹജമായ വിസിഡി ഡിവൈസ് ഇതാണ്."
 
-#: src/libvlc-module.c:785 modules/access/cdda.c:992
+#: src/libvlc-module.c:785 modules/access/cdda.c:993
 msgid "This is the default Audio CD device to use."
 msgstr "ഉപയോഗിക്കേണ്ട സഹജമായ ഓഡിയോ സിഡി ഡിവൈസാണ് ഇത്."
 
@@ -6283,45 +6303,45 @@ msgstr "ടോപ് മെനു"
 msgid "First Play"
 msgstr "ആദ്യ കളി"
 
-#: modules/access/cdda.c:716
+#: modules/access/cdda.c:717
 #, c-format
 msgid "Audio CD - Track %02i"
 msgstr "ഓഡിയോ സിഡി - ട്രാക്ക്  %02i"
 
-#: modules/access/cdda.c:1003 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/access/cdda.c:1004 modules/gui/macosx/VLCOpenWindowController.m:169
 #: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "ഓഡിയോ സിഡി"
 
-#: modules/access/cdda.c:1004
+#: modules/access/cdda.c:1005
 msgid "Audio CD input"
 msgstr "ഓഡിയോ സിഡി ഇന്‍പുട്ട്"
 
-#: modules/access/cdda.c:1013
+#: modules/access/cdda.c:1014
 msgid "[cdda:][device][@[track]]"
 msgstr "[cdda:][device][@[track]]"
 
-#: modules/access/cdda.c:1022
+#: modules/access/cdda.c:1023
 msgid "Musicbrainz Server"
 msgstr ""
 
-#: modules/access/cdda.c:1023
+#: modules/access/cdda.c:1024
 msgid "Address of the musicbrainz server to use."
 msgstr ""
 
-#: modules/access/cdda.c:1025
+#: modules/access/cdda.c:1026
 msgid "CDDB Server"
 msgstr "സിഡിഡിബി സര്‍വ്വര്‍"
 
-#: modules/access/cdda.c:1026
+#: modules/access/cdda.c:1027
 msgid "Address of the CDDB server to use."
 msgstr "ഉപയോഗിക്കേണ്ട സിഡിഡിബി സര്‍വ്വറിന്റെ വിലാസം."
 
-#: modules/access/cdda.c:1027
+#: modules/access/cdda.c:1028
 msgid "CDDB port"
 msgstr "സിഡിഡിബി പോര്‍ട്ട്"
 
-#: modules/access/cdda.c:1028
+#: modules/access/cdda.c:1029
 msgid "CDDB Server port to use."
 msgstr "ഉപയോഗിക്കേണ്ട സിഡിഡിബി സര്‍വ്വര്‍ പോര്‍ട്ട്"
 
@@ -13617,6 +13637,7 @@ msgid "CABAC"
 msgstr "സിഎബിഎസി"
 
 #: modules/codec/x264.c:133
+#, fuzzy
 msgid ""
 "CABAC (Context-Adaptive Binary Arithmetic Coding). Slightly slows down "
 "encoding and decoding, but should save 10 to 15% bitrate."
@@ -14463,7 +14484,7 @@ msgstr "ഡി-ബസ് നിയന്ത്രണ പൊതുപ്രതല
 #: modules/gui/macosx/VLCMainWindow.m:581
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
-#: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
+#: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1028
 #: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
 #: modules/gui/qt/main_interface.cpp:1306
 #: modules/gui/qt/main_interface.cpp:1343
@@ -15129,26 +15150,26 @@ msgid_plural "Playlist has only %u elements"
 msgstr[0] "പ്ലേലിസ്റ്റില്‍ %u ഘടകം മാത്രം ഉള്ളൂ"
 msgstr[1] "പ്ലേലിസ്റ്റില്‍ %u ഘടകങ്ങള്‍ മാത്രമേ ഉള്ളൂ"
 
-#: modules/control/oldrc.c:1739 modules/gui/ncurses.c:808
+#: modules/control/oldrc.c:1739 modules/gui/ncurses.c:810
 msgid "+-[Incoming]"
 msgstr "+-[അകത്തോട്ടു]"
 
-#: modules/control/oldrc.c:1740 modules/gui/ncurses.c:810
+#: modules/control/oldrc.c:1740 modules/gui/ncurses.c:812
 #, c-format
 msgid "| input bytes read : %8.0f KiB"
 msgstr "| ഇന്‍പുട്ട് ബയിറ്റ്സ് വായിച്ചു: %8.0f KiB"
 
-#: modules/control/oldrc.c:1742 modules/gui/ncurses.c:812
+#: modules/control/oldrc.c:1742 modules/gui/ncurses.c:814
 #, c-format
 msgid "| input bitrate    :   %6.0f kb/s"
 msgstr "| ഇന്‍പുട്ട് ബിറ്റ്നിരക്ക് : %6.0f kb/s"
 
-#: modules/control/oldrc.c:1744 modules/gui/ncurses.c:814
+#: modules/control/oldrc.c:1744 modules/gui/ncurses.c:816
 #, c-format
 msgid "| demux bytes read : %8.0f KiB"
 msgstr "| ഡിമക്സ് ബയിറ്റ്സ് വായിച്ചു: %8.0f KiB"
 
-#: modules/control/oldrc.c:1746 modules/gui/ncurses.c:816
+#: modules/control/oldrc.c:1746 modules/gui/ncurses.c:818
 #, c-format
 msgid "| demux bitrate    :   %6.0f kb/s"
 msgstr "| ഡിമക്സ് ബിറ്റ്നിരക്ക് : %6.0f kb/s"
@@ -15163,40 +15184,40 @@ msgstr "| ഡിമക്സ് തെറ്റായി : %5<PRIi64>"
 msgid "| discontinuities  :    %5<PRIi64>"
 msgstr "| അവസാനിപ്പികല്‍ :   %5<PRIi64>"
 
-#: modules/control/oldrc.c:1754 modules/gui/ncurses.c:822
+#: modules/control/oldrc.c:1754 modules/gui/ncurses.c:824
 msgid "+-[Video Decoding]"
 msgstr "+-[വീഡിയോ ഡീക്കോഡിംഗ്]"
 
-#: modules/control/oldrc.c:1755 modules/gui/ncurses.c:824
+#: modules/control/oldrc.c:1755 modules/gui/ncurses.c:826
 #, c-format
 msgid "| video decoded    :    %5<PRIi64>"
 msgstr "| വീഡിയോ ഡീകോഡഡ്    :    %5<PRIi64>"
 
-#: modules/control/oldrc.c:1757 modules/gui/ncurses.c:826
+#: modules/control/oldrc.c:1757 modules/gui/ncurses.c:828
 #, c-format
 msgid "| frames displayed :    %5<PRIi64>"
 msgstr "| കാണിക്കുന്ന ഫ്രെയിമുകള്‍:    %5<PRIi64>"
 
-#: modules/control/oldrc.c:1759 modules/gui/ncurses.c:828
+#: modules/control/oldrc.c:1759 modules/gui/ncurses.c:830
 #, c-format
 msgid "| frames lost      :    %5<PRIi64>"
 msgstr "| നഷ്ട്ടപ്പെട്ട ഫ്രെയിമുകള്‍ :   %5<PRIi64>"
 
-#: modules/control/oldrc.c:1763 modules/gui/ncurses.c:834
+#: modules/control/oldrc.c:1763 modules/gui/ncurses.c:836
 msgid "+-[Audio Decoding]"
 msgstr "+-[ഓഡിയോ ഡീക്കോഡിംഗ്]"
 
-#: modules/control/oldrc.c:1764 modules/gui/ncurses.c:836
+#: modules/control/oldrc.c:1764 modules/gui/ncurses.c:838
 #, c-format
 msgid "| audio decoded    :    %5<PRIi64>"
 msgstr "| ഡികോഡ് ചെയ്യപ്പെട്ട ഓഡിയോ :   %5<PRIi64>"
 
-#: modules/control/oldrc.c:1766 modules/gui/ncurses.c:838
+#: modules/control/oldrc.c:1766 modules/gui/ncurses.c:840
 #, c-format
 msgid "| buffers played   :    %5<PRIi64>"
 msgstr "| പ്ലേ ചെയ്ത ബഫറുകള്‍ :   %5<PRIi64>"
 
-#: modules/control/oldrc.c:1768 modules/gui/ncurses.c:840
+#: modules/control/oldrc.c:1768 modules/gui/ncurses.c:842
 #, c-format
 msgid "| buffers lost     :    %5<PRIi64>"
 msgstr "| നഷ്ട്ടപ്പെട്ട ബഫറുകള്‍ :   %5<PRIi64>"
@@ -18086,7 +18107,7 @@ msgstr "മെറ്റാ സംരക്ഷിക്കപ്പെടുമ�
 msgid "VLC was unable to save the meta data."
 msgstr "മെറ്റാ‍ഡാറ്റ സംരക്ഷിക്കുവാന്‍ VLCയ്ക്ക് കഴിയില്ല."
 
-#: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:197
+#: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:198
 #: modules/gui/qt/ui/sprefs_interface.h:558
 msgid "Continue playback?"
 msgstr "പ്ലേബാക്ക് തുടരുക?"
@@ -18385,7 +18406,7 @@ msgid "Show video within the main window"
 msgstr "പ്രധാന ജാലകത്തില്‍ തന്നെ വീഡിയോ കാണിക്കുക"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:370
-#: modules/gui/macosx/macosx.m:104 modules/gui/qt/qt.cpp:181
+#: modules/gui/macosx/macosx.m:104 modules/gui/qt/qt.cpp:182
 msgid "Pause the video playback when minimized"
 msgstr "ചെറുതാക്കുമ്പോള്‍ വീഡിയോ പ്ലേബാക്ക് അല്പ്പം നിര്‍ത്തുക"
 
@@ -18577,7 +18598,7 @@ msgid "sec."
 msgstr "സെക്."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:50
-#: modules/gui/qt/components/extended_panels.cpp:1442 modules/gui/qt/qt.cpp:216
+#: modules/gui/qt/components/extended_panels.cpp:1442 modules/gui/qt/qt.cpp:217
 msgid "Audio/Video"
 msgstr "ഓഡിയോ/വീഡിയോ"
 
@@ -19030,11 +19051,11 @@ msgstr ""
 "ഉപയോഗിക്കുന്നത്. പിന്നീടുള്ള  Mac OS X 10.7 റിലീസുകളില്‍ നിന്നുള്ള തദ്ദേശീയമായ മുഴുവന്‍ സ്ക്രീന്‍ "
 "ശൈലിയും ഇതിന് ഉപയോഗിക്കാന്‍ സാധിയ്ക്കും"
 
-#: modules/gui/macosx/macosx.m:98 modules/gui/qt/qt.cpp:95
+#: modules/gui/macosx/macosx.m:98 modules/gui/qt/qt.cpp:96
 msgid "Resize interface to the native video size"
 msgstr "പൊതുപ്രതലത്തിന്റെ വലിപ്പം  തദ്ദേശീയമായ വീഡിയോസൈസിലേയ്ക്ക് മാറ്റുക "
 
-#: modules/gui/macosx/macosx.m:99 modules/gui/qt/qt.cpp:96
+#: modules/gui/macosx/macosx.m:99 modules/gui/qt/qt.cpp:97
 msgid ""
 "You have two choices:\n"
 " - The interface will resize to the native video size\n"
@@ -19046,7 +19067,7 @@ msgstr ""
 "-പൊതുപ്രതലത്തിന്റെ വലിപ്പത്തിനു പറ്റിയ രീതിയില്‍ വീഡിയോയെ യുക്തമാക്കുകസ്ഥിരസ്ഥിതിയില്‍, "
 "പൊതുപ്രതലം തദ്ദേശീയമായ വീഡിയോ വലിപ്പത്തിലേയ്ക്ക് അതിന്‍റെ വലിപ്പം മാറ്റുന്നു"
 
-#: modules/gui/macosx/macosx.m:105 modules/gui/qt/qt.cpp:183
+#: modules/gui/macosx/macosx.m:105 modules/gui/qt/qt.cpp:184
 msgid ""
 "With this option enabled, the playback will be automatically paused when "
 "minimizing the window."
@@ -19054,11 +19075,11 @@ msgstr ""
 "ഈ ഓപ്ഷന്‍ പ്രാപ്തമാക്കിയിട്ടുണ്ടെങ്കില്‍, വിന്‍ഡോ ചെറുതാകുമ്പോള്‍  പ്ലേബാക്ക് സ്വയമേതന്നെ  അല്‍"
 "പ്പനേരത്തെയ്ക്ക് നിലയ്ക്കുന്നതാണ്"
 
-#: modules/gui/macosx/macosx.m:108 modules/gui/qt/qt.cpp:185
+#: modules/gui/macosx/macosx.m:108 modules/gui/qt/qt.cpp:186
 msgid "Allow automatic icon changes"
 msgstr "സ്വയമേ ഉള്ള ഐക്കണ്‍ വ്യത്യാസങ്ങള്‍ അനുവദിക്കുക"
 
-#: modules/gui/macosx/macosx.m:109 modules/gui/qt/qt.cpp:187
+#: modules/gui/macosx/macosx.m:109 modules/gui/qt/qt.cpp:188
 msgid ""
 "This option allows the interface to change its icon on various occasions."
 msgstr ""
@@ -19123,21 +19144,21 @@ msgstr ""
 "നിങ്ങള്‍ പ്രവര്‍ത്തിപ്പിച്ച അവസാന 30 എണ്ണത്തിന്‍റെ പ്ലേബാക്ക് സ്ഥാനങ്ങള്‍ VLC സൂക്ഷിക്കുന്നു. അതില്‍ "
 "ഏതെങ്കിലും ഒന്ന്‍ നിങ്ങള്‍ വീണ്ടും തുറക്കുകയാണെങ്കില്‍, പ്ലേബാക്ക് തുടരും"
 
-#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:209
+#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:210
 msgid "Ask"
 msgstr "ചോദിക്ക്"
 
-#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:203
-#: modules/gui/qt/qt.cpp:209 modules/keystore/keychain.m:50
+#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:204
+#: modules/gui/qt/qt.cpp:210 modules/keystore/keychain.m:50
 msgid "Always"
 msgstr "(എപ്പോഴും)"
 
-#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:203
-#: modules/gui/qt/qt.cpp:209 modules/gui/qt/qt.cpp:216
+#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:204
+#: modules/gui/qt/qt.cpp:210 modules/gui/qt/qt.cpp:217
 msgid "Never"
 msgstr "ഒരിക്കലും"
 
-#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:189
+#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:190
 msgid "Maximum Volume displayed"
 msgstr "പരമാവധി ശബ്ദം പ്രദര്‍ശിപ്പിച്ചിട്ടുണ്ട്"
 
@@ -19217,267 +19238,267 @@ msgstr ""
 msgid "Ncurses interface"
 msgstr "Ncurses പൊതുപ്രതലം"
 
-#: modules/gui/ncurses.c:771
+#: modules/gui/ncurses.c:773
 #, c-format
 msgid "  [%s]"
 msgstr "  [%s]"
 
-#: modules/gui/ncurses.c:775
+#: modules/gui/ncurses.c:777
 #, c-format
 msgid "      %s: %s"
 msgstr "      %s: %s"
 
-#: modules/gui/ncurses.c:859
+#: modules/gui/ncurses.c:861
 msgid "[Display]"
 msgstr "[പ്രദര്‍ശിപ്പിക്കുക]"
 
-#: modules/gui/ncurses.c:861
+#: modules/gui/ncurses.c:863
 msgid " h,H                    Show/Hide help box"
 msgstr "h,H                  സഹായപ്പെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:862
+#: modules/gui/ncurses.c:864
 msgid " i                      Show/Hide info box"
 msgstr "i                     വിവരപെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:863
+#: modules/gui/ncurses.c:865
 msgid " M                      Show/Hide metadata box"
 msgstr " M                     മെറ്റാഡേറ്റാ പെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:864
+#: modules/gui/ncurses.c:866
 msgid " L                      Show/Hide messages box"
 msgstr " L                     സന്ദേശപ്പെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:865
+#: modules/gui/ncurses.c:867
 msgid " P                      Show/Hide playlist box"
 msgstr " P                      പ്ലേലിസ്റ്റ് പെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:866
+#: modules/gui/ncurses.c:868
 msgid " B                      Show/Hide filebrowser"
 msgstr " B                      ഫയല്‍ ബ്രൌസര്‍ കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:867
+#: modules/gui/ncurses.c:869
 msgid " x                      Show/Hide objects box"
 msgstr " x                     വസ്തുപ്പെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:868
+#: modules/gui/ncurses.c:870
 msgid " S                      Show/Hide statistics box"
 msgstr " S                      സ്ഥിതിവിവരണ പെട്ടി കാണിക്കുക/ഒളിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:869
+#: modules/gui/ncurses.c:871
 msgid " Esc                    Close Add/Search entry"
 msgstr " Esc                    ചേര്‍ക്കല്‍/തിരയല്‍ രേഖപ്പെടുത്തല്‍ അടയ്ക്കുക"
 
-#: modules/gui/ncurses.c:870
+#: modules/gui/ncurses.c:872
 msgid " Ctrl-l                 Refresh the screen"
 msgstr " Ctrl-l                 തിരശ്ശീല പുതുക്കിയെടുക്കുക"
 
-#: modules/gui/ncurses.c:874
+#: modules/gui/ncurses.c:876
 msgid "[Global]"
 msgstr "[ആഗോളം]"
 
-#: modules/gui/ncurses.c:876
+#: modules/gui/ncurses.c:878
 msgid " q, Q, Esc              Quit"
 msgstr " q, Q, Esc              നിര്‍ത്തിപ്പോകുക"
 
-#: modules/gui/ncurses.c:877
+#: modules/gui/ncurses.c:879
 msgid " s                      Stop"
 msgstr "എസ്                     അവസാനിപ്പിക്കുക"
 
-#: modules/gui/ncurses.c:878
+#: modules/gui/ncurses.c:880
 msgid " <space>                Pause/Play"
 msgstr " <space>                അല്‍പംനിര്‍ത്തുക/പ്ലേചെയ്യുക"
 
-#: modules/gui/ncurses.c:879
+#: modules/gui/ncurses.c:881
 msgid " f                      Toggle Fullscreen"
 msgstr " f                      മുഴുവന്‍ സ്ക്രീനും ടോഗ്ഗിള്‍ ചെയ്യുക"
 
-#: modules/gui/ncurses.c:880
+#: modules/gui/ncurses.c:882
 msgid " c                      Cycle through audio tracks"
 msgstr " c                      ഓഡിയോ ട്രാക്കുകളിലൂടെ ആവര്‍ത്തനം ചെയ്യുക"
 
-#: modules/gui/ncurses.c:881
+#: modules/gui/ncurses.c:883
 msgid " v                      Cycle through subtitles tracks"
 msgstr " v                      ഉപശീര്‍ഷകങ്ങളായ ട്രാക്കുകളിലൂടെ ആവര്‍ത്തനം ചെയ്യുക"
 
-#: modules/gui/ncurses.c:882
+#: modules/gui/ncurses.c:884
 msgid " b                      Cycle through video tracks"
 msgstr " b                      വീഡിയോ ട്രാക്കുകളിലൂടെ ആവര്‍ത്തനം ചെയ്യുക"
 
-#: modules/gui/ncurses.c:883
+#: modules/gui/ncurses.c:885
 msgid " n, p                   Next/Previous playlist item"
 msgstr " n, p                  അടുത്തത്/മുമ്പത്തെ പ്ലേലിസ്റ്റ് ഇനം"
 
-#: modules/gui/ncurses.c:884
+#: modules/gui/ncurses.c:886
 msgid " [, ]                   Next/Previous title"
 msgstr " [, ]                    അടുത്തത്/മുമ്പത്തെ ശീര്‍ഷകം"
 
-#: modules/gui/ncurses.c:885
+#: modules/gui/ncurses.c:887
 msgid " <, >                   Next/Previous chapter"
 msgstr " <, >                   അടുത്തത്/മുമ്പത്തെ അധ്യായം"
 
 #. xgettext: You can use ← and → characters
-#: modules/gui/ncurses.c:887
+#: modules/gui/ncurses.c:889
 #, c-format
 msgid " <left>,<right>         Seek -/+ 1%%"
 msgstr " <left>,<right>         Seek -/+ 1%%"
 
-#: modules/gui/ncurses.c:888
+#: modules/gui/ncurses.c:890
 msgid " a, z                   Volume Up/Down"
 msgstr " a, z                   ശബ്ദം ഉയര്‍ത്തുക/താഴ്ത്തുക"
 
-#: modules/gui/ncurses.c:889
+#: modules/gui/ncurses.c:891
 msgid " m                      Mute"
 msgstr "എം                      നിശബ്ദമാക്കുക"
 
 #. xgettext: You can use ↑ and ↓ characters
-#: modules/gui/ncurses.c:891
+#: modules/gui/ncurses.c:893
 msgid " <up>,<down>            Navigate through the box line by line"
 msgstr " <up>,<down>           പെട്ടിയിലൂടെ വരി വരിയായി നാവിഗേറ്റ് ചെയ്യപ്പെടുന്നു"
 
 #. xgettext: You can use ⇞ and ⇟ characters
-#: modules/gui/ncurses.c:893
+#: modules/gui/ncurses.c:895
 msgid " <pageup>,<pagedown>    Navigate through the box page by page"
 msgstr "<pageup>,<pagedown>    പെട്ടിയിലൂടെ താളുകളോരോന്നായി നാവിഗേറ്റ് ചെയ്യപ്പെടുന്നു"
 
 #. xgettext: You can use ↖ and ↘ characters
-#: modules/gui/ncurses.c:895
+#: modules/gui/ncurses.c:897
 msgid " <start>,<end>          Navigate to start/end of box"
 msgstr "<start>,<end>          പെട്ടിയുടെ ആരംഭം/അവസാനം എന്നതിലേയ്ക്ക് നാവിഗേറ്റ് ചെയ്യുക"
 
-#: modules/gui/ncurses.c:899
+#: modules/gui/ncurses.c:901
 msgid "[Playlist]"
 msgstr "[പ്ലേലിസ്റ്റ്]"
 
-#: modules/gui/ncurses.c:901
+#: modules/gui/ncurses.c:903
 msgid " r                      Toggle Random playing"
 msgstr " r                      ക്രമമല്ലാത്ത പ്ലേയിങ്ങ് മാറ്റുക"
 
-#: modules/gui/ncurses.c:902
+#: modules/gui/ncurses.c:904
 msgid " l                      Toggle Loop Playlist"
 msgstr " l                      ലൂപ്പ് പ്ലേലിസ്റ്റ് മാറ്റുക"
 
-#: modules/gui/ncurses.c:903
+#: modules/gui/ncurses.c:905
 msgid " R                      Toggle Repeat item"
 msgstr " R                      ആവര്‍ത്തിക്കുന്ന ഇനം മാറ്റുക"
 
-#: modules/gui/ncurses.c:904
+#: modules/gui/ncurses.c:906
 msgid " o                      Order Playlist by title"
 msgstr " o                      ശീര്‍ഷകത്തിന് അനുസരിച്ച്  പ്ലേലിസ്റ്റ് ക്രമപ്പെടുത്തുക"
 
-#: modules/gui/ncurses.c:905
+#: modules/gui/ncurses.c:907
 msgid " O                      Reverse order Playlist by title"
 msgstr "O                      ശീര്‍ഷകത്തിന് അനുസരിച്ചുള്ള പ്ലേലിസ്റ്റിന്റെ പ്രതിലോമ ക്രമം"
 
-#: modules/gui/ncurses.c:906
+#: modules/gui/ncurses.c:908
 msgid " g                      Go to the current playing item"
 msgstr " g                      നിലവിലുള്ള പ്ലേയിങ്ങ് ഇനത്തിലേയ്ക്ക് പോകുക"
 
-#: modules/gui/ncurses.c:907
+#: modules/gui/ncurses.c:909
 msgid " /                      Look for an item"
 msgstr " /                      ഒരു ഇനത്തിനായ് നോക്കുക"
 
-#: modules/gui/ncurses.c:908
+#: modules/gui/ncurses.c:910
 msgid " ;                      Look for the next item"
 msgstr " ;                      അടുത്ത ഇനത്തിനായി നോക്കുക"
 
-#: modules/gui/ncurses.c:909
+#: modules/gui/ncurses.c:911
 msgid " A                      Add an entry"
 msgstr "എ                      എന്‍ട്രി കൂട്ടിച്ചേര്‍ക്കുക"
 
 #. xgettext: You can use ⌫ character to translate <backspace>
-#: modules/gui/ncurses.c:911
+#: modules/gui/ncurses.c:913
 msgid " D, <backspace>, <del>  Delete an entry"
 msgstr " D, <backspace>, <del>  ഒരു രേഖപ്പെടുത്തല്‍ നീക്കം ചെയ്യുക"
 
-#: modules/gui/ncurses.c:912
+#: modules/gui/ncurses.c:914
 msgid " e                      Eject (if stopped)"
 msgstr " e                      പുറന്തള്ളുക(ഒരുപക്ഷെ നിന്നാല്‍)"
 
-#: modules/gui/ncurses.c:916
+#: modules/gui/ncurses.c:918
 msgid "[Filebrowser]"
 msgstr "[ഫയല്‍ബ്രൌസര്‍]"
 
-#: modules/gui/ncurses.c:918
+#: modules/gui/ncurses.c:920
 msgid " <enter>                Add the selected file to the playlist"
 msgstr " <enter>                പ്ലേലിസ്റ്റിലേയ്ക്ക് തിരഞ്ഞെടുത്ത ഫയല്‍ ചേര്‍ക്കുക"
 
-#: modules/gui/ncurses.c:919
+#: modules/gui/ncurses.c:921
 msgid " <space>                Add the selected directory to the playlist"
 msgstr "<space>                പ്ലേലിസ്റ്റിലേയ്ക്ക് തിരഞ്ഞെടുത്ത ഡയറക്ടറി ചേര്‍ക്കുക"
 
-#: modules/gui/ncurses.c:920
+#: modules/gui/ncurses.c:922
 msgid " .                      Show/Hide hidden files"
 msgstr " .                      ഗുപ്ത ഫയലുകള്‍ കാണിക്കുക/ഒളിപ്പിക്കുക "
 
-#: modules/gui/ncurses.c:924
+#: modules/gui/ncurses.c:926
 msgid "[Player]"
 msgstr "[പ്ലേയര്‍]"
 
 #. xgettext: You can use ↑ and ↓ characters
-#: modules/gui/ncurses.c:927
+#: modules/gui/ncurses.c:929
 #, c-format
 msgid " <up>,<down>            Seek +/-5%%"
 msgstr " <up>,<down>            Seek +/-5%%"
 
-#: modules/gui/ncurses.c:1046
+#: modules/gui/ncurses.c:1048
 msgid "[Repeat]"
 msgstr "[ആവർത്തിച്ച്]"
 
-#: modules/gui/ncurses.c:1047
+#: modules/gui/ncurses.c:1049
 msgid "[Random]"
 msgstr "[ക്രമരഹിതം]"
 
-#: modules/gui/ncurses.c:1048
+#: modules/gui/ncurses.c:1050
 msgid "[Loop]"
 msgstr "[ലൂപ്പ്]"
 
-#: modules/gui/ncurses.c:1057
+#: modules/gui/ncurses.c:1059
 #, c-format
 msgid " Source   : %s"
 msgstr "സ്രോതസ്സ്   : %s"
 
-#: modules/gui/ncurses.c:1090
+#: modules/gui/ncurses.c:1092
 #, c-format
 msgid " Position : %s/%s"
 msgstr "സ്ഥാനം : %s/%s"
 
-#: modules/gui/ncurses.c:1095
+#: modules/gui/ncurses.c:1097
 msgid " Volume   : Mute"
 msgstr "ശബ്ദം   : മ്യൂട്ട്"
 
-#: modules/gui/ncurses.c:1096
+#: modules/gui/ncurses.c:1098
 #, c-format
 msgid " Volume   : %3ld%%"
 msgstr "വോളിയം  : %3ld%%"
 
-#: modules/gui/ncurses.c:1096
+#: modules/gui/ncurses.c:1098
 msgid " Volume   : ----"
 msgstr "ഒച്ച  : ----"
 
-#: modules/gui/ncurses.c:1102
+#: modules/gui/ncurses.c:1104
 #, c-format
 msgid " Title    : %<PRId64>/%d"
 msgstr "ശീര്‍ഷകം    : %<PRId64>/%d"
 
-#: modules/gui/ncurses.c:1108
+#: modules/gui/ncurses.c:1110
 #, c-format
 msgid " Chapter  : %<PRId64>/%d"
 msgstr "അധ്യായം  : %<PRId64>/%d"
 
-#: modules/gui/ncurses.c:1113
+#: modules/gui/ncurses.c:1115
 msgid " Source: <no current item>"
 msgstr "ഉറവിടം:<no current item>"
 
-#: modules/gui/ncurses.c:1115
+#: modules/gui/ncurses.c:1117
 msgid " [ h for help ]"
 msgstr " [ h സഹായത്തിനായി ]"
 
-#: modules/gui/ncurses.c:1136
+#: modules/gui/ncurses.c:1138
 #, c-format
 msgid "Open: %s"
 msgstr "തുറക്കുക: %s"
 
-#: modules/gui/ncurses.c:1138
+#: modules/gui/ncurses.c:1140
 #, c-format
 msgid "Find: %s"
 msgstr "കണ്ടെത്തുക: %s"
@@ -21626,21 +21647,21 @@ msgstr "<Local>"
 msgid "Scanning..."
 msgstr "സ്കാൻ ചെയ്യുന്നു..."
 
-#: modules/gui/qt/qt.cpp:81
+#: modules/gui/qt/qt.cpp:82
 msgid "Show advanced preferences over simple ones"
 msgstr "ലളിതമായ ഒന്നിനു മേല്‍ നൂതനമായ മുന്‍ഗണനകള്‍ കാണിക്കുക"
 
-#: modules/gui/qt/qt.cpp:82
+#: modules/gui/qt/qt.cpp:83
 msgid ""
 "Show advanced preferences and not simple preferences when opening the "
 "preferences dialog."
 msgstr "മുന്‍ഗണനാ ഡയലോഗ് തുറക്കുമ്പോള്‍ ലളിതമായ മുന്‍ഗണനകള്‍ക്ക് പകരം നൂതനമായ മുന്‍ഗണനകള്‍ കാണിക്കുക."
 
-#: modules/gui/qt/qt.cpp:86 modules/gui/skins2/src/skin_main.cpp:499
+#: modules/gui/qt/qt.cpp:87 modules/gui/skins2/src/skin_main.cpp:499
 msgid "Systray icon"
 msgstr "സിസ്ട്രേ ബിംബം"
 
-#: modules/gui/qt/qt.cpp:87
+#: modules/gui/qt/qt.cpp:88
 msgid ""
 "Show an icon in the systray allowing you to control VLC media player for "
 "basic actions."
@@ -21648,27 +21669,27 @@ msgstr ""
 "സാധാരണ പ്രവര്‍ത്തികള്‍ക്ക് VLC മീഡിയാ പ്ലയറിനെ നിയന്ത്രിക്കാന്‍ നിങ്ങളെ അനുവദിക്കുന്നതിനായി "
 "സിസ്ട്രേയില്‍ ഒരു ബിംബം കാണിക്കുക."
 
-#: modules/gui/qt/qt.cpp:91
+#: modules/gui/qt/qt.cpp:92
 msgid "Start VLC with only a systray icon"
 msgstr "ഒരു സിസ്ട്രേ ബിംബത്തോടെ മാത്രം VLC ആരംഭിക്കുക"
 
-#: modules/gui/qt/qt.cpp:92
+#: modules/gui/qt/qt.cpp:93
 msgid "VLC will start with just an icon in your taskbar."
 msgstr "നിങ്ങളുടെ ടാസ്‌ക്ബാറിലെ ഒരു ഐക്കൺ മാത്രം ഉപയോഗിച്ച് വിഎൽസി  ആരംഭിക്കും."
 
-#: modules/gui/qt/qt.cpp:101
+#: modules/gui/qt/qt.cpp:102
 msgid "Show playing item name in window title"
 msgstr "പ്ലേചെയ്യുന്ന ഇനത്തിന്റെ നാമം വിന്‍ഡോ ശീര്‍ഷകത്തില്‍ കാണിക്കുന്നു"
 
-#: modules/gui/qt/qt.cpp:102
+#: modules/gui/qt/qt.cpp:103
 msgid "Show the name of the song or video in the controller window title."
 msgstr "ഗാനത്തിന്റെയോ വീഡിയോയുടെയോ നാമം കണ്‍ട്രോളര്‍‌ വിന്‍ഡോ ശീര്‍ഷകത്തില്‍ കാണിക്കുക."
 
-#: modules/gui/qt/qt.cpp:105
+#: modules/gui/qt/qt.cpp:106
 msgid "Show notification popup on track change"
 msgstr "ട്രാക്ക് മാറ്റത്തിന് സൂചക പോപ്പ്അപ്പുകള്‍ കാണിക്കുക"
 
-#: modules/gui/qt/qt.cpp:107
+#: modules/gui/qt/qt.cpp:108
 msgid ""
 "Show a notification popup with the artist and track name when the current "
 "playlist item changes, when VLC is minimized or hidden."
@@ -21677,11 +21698,11 @@ msgstr ""
 "നിലവിലെ പ്ലേലിസ്റ്റ് ഇനം മാറുന്നത് ആര്‍ട്ടിസ്റ്റ് കൂടാതെ ട്രാക്ക് നാമം എന്നിവയോടൊപ്പം ഒരു സൂചനാ "
 "പോപ്അപ്പ് കാണിക്കണം."
 
-#: modules/gui/qt/qt.cpp:110
+#: modules/gui/qt/qt.cpp:111
 msgid "Windows opacity between 0.1 and 1"
 msgstr "0.1നും 1നും ഇടയ്ക്കുള്ള വിന്‍ഡോസ് അതാര്യത"
 
-#: modules/gui/qt/qt.cpp:111
+#: modules/gui/qt/qt.cpp:112
 msgid ""
 "Sets the windows opacity between 0.1 and 1 for main interface, playlist and "
 "extended panel. This option only works with Windows and X11 with composite "
@@ -21691,11 +21712,11 @@ msgstr ""
 "1നും ഇടയ്ക്ക് ക്രമീകരിക്കുക. ഈ ഐഛികം സംയുക്തമായ വിപുലീകരണങ്ങളുള്ള വിന്‍ഡോസ് കൂടാതെ X11 "
 "എന്നിവയോടൊപ്പം മാത്രമെ പ്രവര്‍ത്തിക്കുകയുള്ളു."
 
-#: modules/gui/qt/qt.cpp:116
+#: modules/gui/qt/qt.cpp:117
 msgid "Fullscreen controller opacity between 0.1 and 1"
 msgstr "0.1നും 1നും ഇടയ്ക്കുള്ള മുഴുവന്‍ സ്ക്രീന്‍ കണ്ട്രോളര്‍ അതാര്യത"
 
-#: modules/gui/qt/qt.cpp:117
+#: modules/gui/qt/qt.cpp:118
 msgid ""
 "Sets the fullscreen controller opacity between 0.1 and 1 for main interface, "
 "playlist and extended panel. This option only works with Windows and X11 "
@@ -21705,23 +21726,23 @@ msgstr ""
 "അതാര്യത 0.1നും 1നും ഇടയ്ക്ക് ക്രമീകരിക്കുക. ഈ ഐഛികം സംയുക്തമായ വിപുലീകരണങ്ങളുള്ള വിന്‍ഡോസ് "
 "കൂടാതെ X11 എന്നിവയോടൊപ്പം മാത്രമെ പ്രവര്‍ത്തിക്കുകയുള്ളു."
 
-#: modules/gui/qt/qt.cpp:122
+#: modules/gui/qt/qt.cpp:123
 msgid "Show unimportant error and warnings dialogs"
 msgstr "അപ്രധാന പിശകും മുന്നറിയിപ്പ് ഡയലോഗുകളും കാണിക്കുക"
 
-#: modules/gui/qt/qt.cpp:124
+#: modules/gui/qt/qt.cpp:125
 msgid "Enable Dark Mode"
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:125
+#: modules/gui/qt/qt.cpp:126
 msgid "Applies a dark theme to the style."
 msgstr ""
 
-#: modules/gui/qt/qt.cpp:127
+#: modules/gui/qt/qt.cpp:128
 msgid "Activate the updates availability notification"
 msgstr "അപ്ഡേറ്റ് ലഭ്യതാ അറിയിപ്പ് സജീവമാക്കുക"
 
-#: modules/gui/qt/qt.cpp:128
+#: modules/gui/qt/qt.cpp:129
 msgid ""
 "Activate the automatic notification of new versions of the software. It runs "
 "once every two weeks."
@@ -21729,32 +21750,32 @@ msgstr ""
 "സോഫ്റ്റ്വെയറിന്റെ പുതിയ പതിപ്പുകളുടെ സ്വയമേവയുള്ള അറിയിപ്പ് സജീവമാക്കുക. അത് രണ്ടാഴ്ചയിലൊരിക്കല്‍ "
 "റണ്‍ ചെയ്യുന്നു."
 
-#: modules/gui/qt/qt.cpp:131
+#: modules/gui/qt/qt.cpp:132
 msgid "Number of days between two update checks"
 msgstr "രണ്ട് അപ്ഡേറ്റ് പരിശോധനയ്ക്ക് ഇടയ്ക്കുള്ള ദിവസങ്ങളുടെ എണ്ണം"
 
-#: modules/gui/qt/qt.cpp:133
+#: modules/gui/qt/qt.cpp:134
 msgid "Ask for network policy at start"
 msgstr "ആരംഭത്തില്‍ തന്നെ നെറ്റ്വര്‍ക്ക് പോളിസി ചോദിക്കുക"
 
-#: modules/gui/qt/qt.cpp:135
+#: modules/gui/qt/qt.cpp:136
 msgid "Save the recently played items in the menu"
 msgstr "മെനുവില്‍ അടുത്തിടെ പ്ലേചെയ്യപ്പട്ട ഇനങ്ങളെ സംരക്ഷിക്കുക"
 
-#: modules/gui/qt/qt.cpp:137
+#: modules/gui/qt/qt.cpp:138
 msgid "List of words separated by | to filter"
 msgstr "അരിപ്പയിലേയ്ക്കുള്ള | നാല്‍ വേര്‍തിരിക്കപ്പെട്ട വാക്കുകളുടെ പട്ടിക"
 
-#: modules/gui/qt/qt.cpp:138
+#: modules/gui/qt/qt.cpp:139
 msgid ""
 "Regular expression used to filter the recent items played in the player."
 msgstr "പ്ലെയറിൽ അടുത്തിടെ പ്ളേ ചെയ്ത ഇനങ്ങൾ ഫിൽട്ടർ ചെയ്യാൻ ഉപയോഗിക്കുന്ന പതിവ് എക്‌സ്‌പ്രഷൻ."
 
-#: modules/gui/qt/qt.cpp:141
+#: modules/gui/qt/qt.cpp:142
 msgid "Define the colors of the volume slider"
 msgstr "വോളിയം സ്ലൈഡറിന്റെ നിറങ്ങൾ നിർവചിക്കുക"
 
-#: modules/gui/qt/qt.cpp:142
+#: modules/gui/qt/qt.cpp:143
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
@@ -21766,11 +21787,11 @@ msgstr ""
 "സ്ഥിരസ്ഥിതി '255; 255; 255; 20; 226; 20; 255; 176; 15; 235; 30; 20'.\n"
 "ഒരു ബദൽ '30; 30; 50; 40; 40; 100; 50; 50; 160; 150; 150; 255 'ആകാം."
 
-#: modules/gui/qt/qt.cpp:147
+#: modules/gui/qt/qt.cpp:148
 msgid "Selection of the starting mode and look"
 msgstr "ആരംഭ മോഡിന്റെയും രൂപത്തിന്റെയും തിരഞ്ഞെടുപ്പ്"
 
-#: modules/gui/qt/qt.cpp:148
+#: modules/gui/qt/qt.cpp:149
 msgid ""
 "Start VLC with:\n"
 " - normal mode\n"
@@ -21783,39 +21804,39 @@ msgstr ""
 "നിലവിലുണ്ട്...\n"
 "- പരിമിതമായ കണ്ട്രോളുകലോട് കൂടിയ അതിസൂക്ഷമമായ മോഡ്"
 
-#: modules/gui/qt/qt.cpp:154
+#: modules/gui/qt/qt.cpp:155
 msgid "Show a controller in fullscreen mode"
 msgstr "മുഴുവന്‍ സ്ക്രീന്‍ മോഡില്‍ ഒരു കണ്ട്രോളറിനെ കാണിക്കുക"
 
-#: modules/gui/qt/qt.cpp:155
+#: modules/gui/qt/qt.cpp:156
 msgid "Embed the file browser in open dialog"
 msgstr "ഒരു തുറന്ന ഡയലോഗുമായി ഫയല്‍ ബ്രൌസറിനെ ഉള്‍ക്കൊള്ളിച്ചിരിക്കുന്നു"
 
-#: modules/gui/qt/qt.cpp:157
+#: modules/gui/qt/qt.cpp:158
 msgid "Define which screen fullscreen goes"
 msgstr "ഏത് സ്ക്രീനാണ് മുഴുവന്‍ സ്ക്രീനുമാകുന്നത് എന്ന് വ്യക്തമാക്കുക"
 
-#: modules/gui/qt/qt.cpp:158
+#: modules/gui/qt/qt.cpp:159
 msgid "Screennumber of fullscreen, instead of same screen where interface is."
 msgstr "ഇന്റർഫേസ് ഉള്ള അതേ സ്‌ക്രീനിന് പകരം പൂർണ്ണസ്‌ക്രീനിന്റെ സ്‌ക്രീൻനമ്പർ."
 
-#: modules/gui/qt/qt.cpp:161
+#: modules/gui/qt/qt.cpp:162
 msgid "Load extensions on startup"
 msgstr "സ്റ്റാര്‍ട്ടപ്പില്‍ തന്നെ വിപുലീകരണങ്ങള്‍ സംഭരിക്കുക"
 
-#: modules/gui/qt/qt.cpp:162
+#: modules/gui/qt/qt.cpp:163
 msgid "Automatically load the extensions module on startup."
 msgstr "സ്റ്റാർട്ടപ്പിൽ വിപുലീകരണ മൊഡ്യൂൾ യാന്ത്രികമായി ലോഡുചെയ്യുക."
 
-#: modules/gui/qt/qt.cpp:165
+#: modules/gui/qt/qt.cpp:166
 msgid "Start in minimal view (without menus)"
 msgstr "അതിസൂക്ഷമമായ കാഴ്ചയില്‍ ആരംഭിക്കുക (മെനു ഇല്ലാതെ)"
 
-#: modules/gui/qt/qt.cpp:167
+#: modules/gui/qt/qt.cpp:168
 msgid "Display background cone or art"
 msgstr "പശ്ചാത്തല വൃത്തസ്തൂപിക അല്ലെങ്കില്‍ ആര്‍ട്ട് പ്രദര്‍ശിപ്പിക്കുക"
 
-#: modules/gui/qt/qt.cpp:168
+#: modules/gui/qt/qt.cpp:169
 msgid ""
 "Display background cone or current album art when not playing. Can be "
 "disabled to prevent burning screen."
@@ -21823,19 +21844,19 @@ msgstr ""
 "പ്ലേ ചെയ്യപ്പെടാതെയിരിക്കുമ്പോള്‍ പശ്ചാത്തല വൃത്തസ്തൂപിക അല്ലെങ്കില്‍ നിലവിലുള്ള ആല്‍ബം ആര്‍ട്ട് പ്രദര്‍"
 "ശിപ്പിക്കുക. പ്രതലം കത്തുന്നതില്‍ നിന്നും സംരക്ഷിക്കുന്നതിന് ക്രിയാത്മകമല്ലാതാക്കുക."
 
-#: modules/gui/qt/qt.cpp:171
+#: modules/gui/qt/qt.cpp:172
 msgid "Expanding background cone or art"
 msgstr "പശ്ചാത്തല കോൺ അല്ലെങ്കിൽ ആർട്ട് വികസിപ്പിക്കുന്നു"
 
-#: modules/gui/qt/qt.cpp:172
+#: modules/gui/qt/qt.cpp:173
 msgid "Background art fits window's size."
 msgstr "പശ്ചാത്തല ചിത്രം വിൻഡോയുടെ വലുപ്പത്തിന് അനുയോജ്യമാണ്."
 
-#: modules/gui/qt/qt.cpp:174
+#: modules/gui/qt/qt.cpp:175
 msgid "Ignore keyboard volume buttons."
 msgstr "കീബോര്‍ഡ് ശബ്ദ ബട്ടണുകള്‍ തിരസ്കരിക്കുക."
 
-#: modules/gui/qt/qt.cpp:176
+#: modules/gui/qt/qt.cpp:177
 msgid ""
 "With this option checked, the volume up, volume down and mute buttons on "
 "your keyboard will always change your system volume. With this option "
@@ -21847,11 +21868,11 @@ msgstr ""
 "ചെയ്യപ്പെടാതെയിരിക്കുമ്പോള്‍, ശബ്ദ ബട്ടണുകള്‍ എപ്പോഴാണോ VLC തിരഞ്ഞെടുക്കപ്പെടുന്നത് അപ്പോള്‍ VLCയുടെ "
 "ശബ്ദം മാറ്റുന്നു കൂടാതെ VLC തിരഞ്ഞെടുക്കാതിരിക്കുമ്പോള്‍ സിസ്റ്റം ശബ്ദം മാറ്റുക."
 
-#: modules/gui/qt/qt.cpp:191
+#: modules/gui/qt/qt.cpp:192
 msgid "When to raise the interface"
 msgstr "സമ്പർക്ക മുഖം എപ്പോൾ ഉയർത്തണം "
 
-#: modules/gui/qt/qt.cpp:192
+#: modules/gui/qt/qt.cpp:193
 msgid ""
 "This option allows the interface to be raised automatically when a video/"
 "audio playback starts, or never."
@@ -21859,15 +21880,15 @@ msgstr ""
 "വീഡിയോ / ശബ്ദ പ്ളേ ബാക്ക് തുടങ്ങുമ്പോഴോ അല്ലെങ്കിൽ ഒരിക്കലും ഇല്ലാത്തപ്പോഴോ സമ്പർക്ക മുഖം "
 "തനിയെ ഉയർത്താൻ ഈ സൗകര്യം അനുവദിക്കുന്നു."
 
-#: modules/gui/qt/qt.cpp:195
+#: modules/gui/qt/qt.cpp:196
 msgid "Fullscreen controller mouse sensitivity"
 msgstr "മുഴുവന്‍ പ്രതല കണ്ട്രോളര്‍ മൌസ് സംവേദനാത്മകം"
 
-#: modules/gui/qt/qt.cpp:203
+#: modules/gui/qt/qt.cpp:204
 msgid "When minimized"
 msgstr "എപ്പോഴാണ് ചെറുതാക്കിയിരിക്കുന്നത്"
 
-#: modules/gui/qt/qt.cpp:221
+#: modules/gui/qt/qt.cpp:222
 msgid "Qt interface"
 msgstr "ക്യുടി ഇന്റര്‍ഫേസ്"
 
@@ -23480,27 +23501,27 @@ msgstr ""
 msgid "Accept certificate temporarily"
 msgstr "സര്‍ട്ടിഫിക്കറ്റ് താല്കാലികമായി അംഗീകരിക്കുക"
 
-#: modules/misc/stats.c:214 modules/stream_out/stats.c:51
+#: modules/misc/stats.c:215 modules/stream_out/stats.c:51
 msgid "Stats"
 msgstr "സ്റ്റാറ്റ്സ്"
 
-#: modules/misc/stats.c:216
+#: modules/misc/stats.c:217
 msgid "Stats encoder function"
 msgstr "എന്‍കോഡര്‍ പ്രവൃത്തിയുടെ അവസ്ഥ"
 
-#: modules/misc/stats.c:222 modules/misc/stats.c:228 modules/misc/stats.c:234
+#: modules/misc/stats.c:223 modules/misc/stats.c:229 modules/misc/stats.c:235
 msgid "Stats decoder"
 msgstr "ഡീകോഡര്‍ അവസ്ഥ"
 
-#: modules/misc/stats.c:223 modules/misc/stats.c:229 modules/misc/stats.c:235
+#: modules/misc/stats.c:224 modules/misc/stats.c:230 modules/misc/stats.c:236
 msgid "Stats decoder function"
 msgstr "ഡീകോഡര്‍ പ്രവൃത്തിയുടെ അവസ്ഥ"
 
-#: modules/misc/stats.c:240
+#: modules/misc/stats.c:241
 msgid "Stats demux"
 msgstr "സ്റ്റാറ്റ്സ് ഡീമക്സ്"
 
-#: modules/misc/stats.c:241
+#: modules/misc/stats.c:242
 msgid "Stats demux function"
 msgstr "ഡീമക്സ് പ്രവൃത്തിയുടെ അവസ്ഥ"
 
@@ -28063,7 +28084,7 @@ msgstr "ഡയറക്ട്എക്സ്(ഡയറക്ട്ഡ്രോ) 
 msgid "Wallpaper"
 msgstr "വാള്‍പേപ്പര്‍"
 
-#: modules/video_output/win32/glwin32.c:52
+#: modules/video_output/win32/glwin32.c:53
 msgid "OpenGL video output for Windows"
 msgstr "വിൻഡോസിനായുള്ള OpenGL വീഡിയോ ഔട്ട്പുട്ട്"
 
@@ -28071,11 +28092,11 @@ msgstr "വിൻഡോസിനായുള്ള OpenGL വീഡിയോ ഔ
 msgid "Windows GDI video output"
 msgstr "വിന്‍ഡോസ് ജിഡിഐ വീഡിയോ ഔട്ട്പുട്ട്"
 
-#: modules/video_output/win32/wgl.c:42
+#: modules/video_output/win32/wgl.c:43
 msgid "GPU affinity"
 msgstr "ജിപിയു അഫിനിറ്റി"
 
-#: modules/video_output/win32/wgl.c:46
+#: modules/video_output/win32/wgl.c:47
 msgid "WGL extension for OpenGL"
 msgstr "OpenGL നായുള്ള WGL വിപുലീകരണം"
 
