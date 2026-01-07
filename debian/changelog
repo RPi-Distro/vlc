@@ -1,3 +1,9 @@
+vlc (3.0.23-0+deb13u1) trixie-security; urgency=medium
+
+  * New upstream version 3.0.23
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 07 Jan 2026 21:01:08 +0100
+
 vlc (3.0.22-0+deb13u1) trixie-security; urgency=medium
 
   * New upstream version 3.0.22
