@@ -1,4 +1,4 @@
-From bc5d50fb29b5fb8c3db7409f241510effe00d85c Mon Sep 17 00:00:00 2001
+From 331eb56fc5013e4fc25d866d95befc6cf6bd051a Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:28:46 +0100
 Subject: [PATCH 07/41] vlc_fourcc: Add MMAL picture types

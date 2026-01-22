@@ -1,4 +1,4 @@
-From 36d2e0e34910758daab5d2ffa9a1b179973443ba Mon Sep 17 00:00:00 2001
+From d319737aa0c6ac6e067be16a5dbccaae1b1b6d1b Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:01:01 +0100
 Subject: [PATCH 02/41] vlc: Upgrade exit timeout to exit() rather than signal

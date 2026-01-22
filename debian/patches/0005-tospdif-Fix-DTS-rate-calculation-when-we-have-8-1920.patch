@@ -1,4 +1,4 @@
-From e03913fe13f8c9a2ed1c27f18d86836b08f67ef5 Mon Sep 17 00:00:00 2001
+From cf019dcd7807e9278a95a09746e5f1fa140a15fa Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:13:54 +0100
 Subject: [PATCH 05/41] tospdif: Fix DTS rate calculation when we have 8*192000

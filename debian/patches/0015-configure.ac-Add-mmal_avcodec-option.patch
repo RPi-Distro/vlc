@@ -1,7 +1,7 @@
-From 2b2e03fc1c5251639ab119d59409297885a22898 Mon Sep 17 00:00:00 2001
+From 84ee2323267f7e08a81e93a33a7059b963f18725 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:01:48 +0100
-Subject: [PATCH 16/41] configure.ac: Add mmal_avcodec option
+Subject: [PATCH 15/41] configure.ac: Add mmal_avcodec option
 
 ---
  configure.ac | 4 ++++
@@ -9,7 +9,7 @@ Subject: [PATCH 16/41] configure.ac: Add mmal_avcodec option
 
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3585,6 +3585,9 @@ have_mmal="no"
+@@ -3588,6 +3588,9 @@ have_mmal="no"
  AC_ARG_ENABLE(mmal,
    AS_HELP_STRING([--enable-mmal],
      [Multi-Media Abstraction Layer (MMAL) hardware plugin (default enable)]))
@@ -19,7 +19,7 @@ Subject: [PATCH 16/41] configure.ac: Add mmal_avcodec option
  if test "${enable_mmal}" != "no"; then
    VLC_SAVE_FLAGS
    LDFLAGS="${LDFLAGS} -L/opt/vc/lib -lvchostif"
-@@ -3607,6 +3610,7 @@ if test "${enable_mmal}" != "no"; then
+@@ -3610,6 +3613,7 @@ if test "${enable_mmal}" != "no"; then
    VLC_RESTORE_FLAGS
  fi
  AM_CONDITIONAL([HAVE_MMAL], [test "${have_mmal}" = "yes"])

@@ -1,0 +1,51 @@
+From ee688c6b128a36270623162647dbe393e422dcfe Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Wed, 14 Jan 2026 17:13:01 +0000
+Subject: [PATCH 21/41] qt wayland: Add a bool if viewports can be used on
+ video surface
+
+Add a wl_surface_do_not_viewport bool to vout_window_t. Qt 6 adds
+a viewport to its window surface which means no other code can do
+so. Add a bool to indicate this.
+Set that bool if Qt6.
+---
+ include/vlc_vout_window.h                       | 6 ++++++
+ modules/gui/qt/components/interface_widgets.cpp | 5 +++++
+ 2 files changed, 11 insertions(+)
+
+--- a/include/vlc_vout_window.h
++++ b/include/vlc_vout_window.h
+@@ -205,6 +205,12 @@ struct vout_window_t {
+      */
+      vlc_mutex_t handle_lock;
+      unsigned int handle_seq;
++     /* If set Qt has already got a viewport on the wl_surface so another
++      * cannot be created by the video code (wayland will crash vlc if that
++      * is tried).
++      */
++     bool wl_surface_do_not_viewport;
++
+      /* Scale factor from reported size to physical, 0/0 if unknown */
+      int scale_num;
+      int scale_den;
+--- a/modules/gui/qt/components/interface_widgets.cpp
++++ b/modules/gui/qt/components/interface_widgets.cpp
+@@ -50,6 +50,10 @@ static inline int qrand() {
+     auto * q = QRandomGenerator::system();
+     return q->generate();
+ }
++
++#define QT_CLAIMS_VIEWPORT (true)
++#else
++#define QT_CLAIMS_VIEWPORT (false)
+ #endif
+ 
+ #if defined (QT5_HAS_X11)
+@@ -222,6 +226,7 @@ bool VideoWidget::request( struct vout_w
+             p_wnd->display.wl = static_cast<wl_display*>(
+                 qni->nativeResourceForIntegration(QByteArrayLiteral("wl_display")));
+             p_wnd->handle_seq = 1;
++            p_wnd->wl_surface_do_not_viewport = QT_CLAIMS_VIEWPORT;
+             break;
+         }
+ #endif
