@@ -1,7 +1,7 @@
-From 7dc565ecb6e84c5ba03e6eeec88b0cdc50e28aa5 Mon Sep 17 00:00:00 2001
+From 989fe9dae07e7e2e7021f1e5b0abdb1b485eaf95 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:54:53 +0100
-Subject: [PATCH 34/41] video_output/drmu: Add DRM video output
+Subject: [PATCH 35/41] video_output/drmu: Add DRM video output
 
 Heavily based on my somewhat independent drmu project
 Can do HDR setup and mode matching

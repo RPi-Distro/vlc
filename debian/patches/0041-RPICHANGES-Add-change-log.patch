@@ -1,4 +1,4 @@
-From 259c8b0791efb93d670d6ef29af7440f3902b360 Mon Sep 17 00:00:00 2001
+From b756708fceb793f9b7520c3e706ce55b7f94ad02 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 22 Oct 2024 15:59:50 +0100
 Subject: [PATCH 41/41] RPICHANGES: Add change log
@@ -6,13 +6,13 @@ Subject: [PATCH 41/41] RPICHANGES: Add change log
 As codebase is now arranged to squash fixes into existing patches
 add a changelog so we know what deltas have occured
 ---
- RPICHANGES | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+ RPICHANGES | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
  create mode 100644 RPICHANGES
 
 --- /dev/null
 +++ b/RPICHANGES
-@@ -0,0 +1,37 @@
+@@ -0,0 +1,44 @@
 +pi/3.0.21/rpi_48
 +----------------
 +Improve wl_xdg_shell so it is actually usable
@@ -50,3 +50,10 @@ add a changelog so we know what deltas have occured
 +fixes a segfault on exit.
 +In wl_dmabuf deal with a a NULL background surface better, fixes a stall on
 +close (terminated by VLC shutdown timeout) when shutting down with Alt-F4.
++
++pi/3.0.22-2/rpi_52
++------------------
++Update to VLC 3.0.23-2
++Support Qt6, but do not enable by default
++Avoid potential issues with wayland output if wayland takes a long time to
++return buffers as has been observed occasionally elsewhere.

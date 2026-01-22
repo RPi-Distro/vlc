@@ -1,7 +1,7 @@
-From f3e2e48bf0fad5327c74e383affc026576bb0b7d Mon Sep 17 00:00:00 2001
+From 74dbc5d0dd5ec4f4952fc238d7ce7f7cfd70f4cf Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 18:43:19 +0100
-Subject: [PATCH 28/41] qt: Disable HiDPIScaling if ratio is implausible
+Subject: [PATCH 29/41] qt: Disable HiDPIScaling if ratio is implausible
 
 ---
  modules/gui/qt/qt.cpp | 17 +++++++++++++++++
@@ -17,7 +17,7 @@ Subject: [PATCH 28/41] qt: Disable HiDPIScaling if ratio is implausible
  
  #include "qt.hpp"
  
-@@ -588,6 +589,22 @@ static void *ThreadPlatform( void *obj,
+@@ -596,6 +597,22 @@ static void *ThreadPlatform( void *obj,
      QApplication::setAttribute( Qt::AA_UseStyleSheetPropagationInWidgetStyles, true);
  #endif
  

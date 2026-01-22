@@ -1,7 +1,7 @@
-From bd490952530b0a564455a71fe9b2ef1e0378467c Mon Sep 17 00:00:00 2001
+From 887cb7c2f2ef7740ab5d8f3e32a67903ae0924f0 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:45:14 +0100
-Subject: [PATCH 22/41] qt/controller: Make fullscreen controller a popup under
+Subject: [PATCH 23/41] qt/controller: Make fullscreen controller a popup under
  Wayland
 
 This fixes positioning both for it and context popups. Slow fade goes

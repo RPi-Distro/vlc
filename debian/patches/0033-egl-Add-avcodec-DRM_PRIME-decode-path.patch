@@ -1,7 +1,7 @@
-From bf644e9724a01eaf946a851411b6cef74f428ae0 Mon Sep 17 00:00:00 2001
+From dfda1f36a1669811c870c820c973b3a509c63516 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:48:19 +0100
-Subject: [PATCH 32/41] egl: Add avcodec DRM_PRIME decode path
+Subject: [PATCH 33/41] egl: Add avcodec DRM_PRIME decode path
 
 Also includes drm_prime based deinterlace and sand30 conversion
 functions.
@@ -169,7 +169,7 @@ functions.
      p_dec->pf_decode = DecodeVideo;
      p_dec->pf_flush  = Flush;
 @@ -634,6 +696,12 @@ static int InitVideoDecCommon( decoder_t
-     if( p_context->level != FF_LEVEL_UNKNOWN )
+     if( p_context->level != AVLEVEL(UNKNOWN) )
          p_dec->fmt_in.i_level = p_context->level;
      return VLC_SUCCESS;
 +
@@ -265,7 +265,7 @@ functions.
                  p_pic = decoder_NewPicture(p_dec);
  
              if( !p_pic )
-@@ -1797,6 +1893,7 @@ static enum PixelFormat ffmpeg_GetFormat
+@@ -1802,6 +1898,7 @@ static enum PixelFormat ffmpeg_GetFormat
          }
          swfmt = defaultfmt;
      }
@@ -273,7 +273,7 @@ functions.
  
      if (p_sys->pix_fmt == AV_PIX_FMT_NONE)
          goto no_reuse;
-@@ -1850,7 +1947,10 @@ no_reuse:
+@@ -1855,7 +1952,10 @@ no_reuse:
      p_sys->level = p_context->level;
  
      if (!can_hwaccel)
@@ -284,7 +284,7 @@ functions.
  
  #if (LIBAVCODEC_VERSION_MICRO >= 100) && !(LIBAVCODEC_VERSION_CHECK(57, 83, 101))
      if (p_context->active_thread_type)
-@@ -1868,11 +1968,23 @@ no_reuse:
+@@ -1873,11 +1973,23 @@ no_reuse:
      for( size_t i = 0; hwfmts[i] != AV_PIX_FMT_NONE; i++ )
      {
          enum PixelFormat hwfmt = AV_PIX_FMT_NONE;

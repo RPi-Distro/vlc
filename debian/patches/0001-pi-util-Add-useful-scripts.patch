@@ -1,20 +1,20 @@
-From 3d04b9bc7c777725938b8b3100797bf15b8500f7 Mon Sep 17 00:00:00 2001
+From 8bd47cc9b6b5765defa68b3ce74ca4f04a2286d0 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Mon, 19 Aug 2024 17:42:02 +0100
 Subject: [PATCH 01/41] pi-util: Add useful scripts
 
 ---
- pi-util/conf_native.sh     | 124 +++++++++++++++++++++++++++++++++++++
- pi-util/genpatch.sh        |  60 ++++++++++++++++++
- pi-util/rebase_liblinks.py |  37 +++++++++++
- 3 files changed, 221 insertions(+)
+ pi-util/conf_native.sh     | 142 +++++++++++++++++++++++++++++++++++++
+ pi-util/genpatch.sh        |  60 ++++++++++++++++
+ pi-util/rebase_liblinks.py |  37 ++++++++++
+ 3 files changed, 239 insertions(+)
  create mode 100755 pi-util/conf_native.sh
  create mode 100755 pi-util/genpatch.sh
  create mode 100755 pi-util/rebase_liblinks.py
 
 --- /dev/null
 +++ b/pi-util/conf_native.sh
-@@ -0,0 +1,124 @@
+@@ -0,0 +1,142 @@
 +set -e
 +BASE=`pwd`
 +OUT_BASE=$BASE/out
@@ -25,6 +25,8 @@ Subject: [PATCH 01/41] pi-util: Add useful scripts
 +SUDO_INSTALL=
 +DO_CONFIGURE=1
 +USR_PREFIX=
++QTOUT=
++QT6REQ=
 +
 +while [ "$1" != "" ] ; do
 +    case $1 in
@@ -40,18 +42,22 @@ Subject: [PATCH 01/41] pi-util: Add useful scripts
 +        --bootstrap)
 +            DO_BOOTSTRAP=1
 +            ;;
-+	--usr)
-+	    USR_PREFIX=/usr
-+	    SUDO_INSTALL=sudo
-+	    ;;
++        --usr)
++            USR_PREFIX=/usr
++            SUDO_INSTALL=sudo
++            ;;
++        --qt6)
++            QT6REQ=1
++            QTOUT=-qt6
++            ;;
 +        *)
 +            echo "Usage $0: [--bootstrap] [--make|--install] [--usr]"
 +            echo "  bootstrap Clean <build dir> then bootstrap before configure"
 +            echo "            Will happen automatically if already clean"
 +            echo "  make      Do make after configure"
 +            echo "  install   Do make and install after configure"
-+	    echo "  usr       Set install dir to /usr"
-+	    echo "            Default is <build dir>/install for testing"
++            echo "  usr       Set install dir to /usr"
++            echo "            Default is <build dir>/install for testing"
 +            exit 1
 +            ;;
 +    esac
@@ -90,7 +96,18 @@ Subject: [PATCH 01/41] pi-util: Add useful scripts
 +  echo "Unknown machine name: $MC"
 +  exit 1
 +fi
-+OUT=$OUT_BASE/$ARM-`lsb_release -sc`-rel
++OUT=$OUT_BASE/$ARM-`lsb_release -sc`$QTOUT-rel
++
++QTCONF_OPT=
++if [ $QT6REQ ]; then
++    QT6CONF_FILE=/usr/lib/$A/qt6/qt6.conf
++    if [ ! -f $QT6CONF_FILE ]; then
++        echo "QT6 config file not found at $QT6CONF_FILE"
++        exit 1
++    fi
++    QTCONF_OPT=--with-qtconf=$QT6CONF_FILE
++    echo "Qt6 selected. Check the config output to be sure configure has found it"
++fi
 +
 +if [ $DO_BOOTSTRAP ]; then
 +    echo "==== Bootstrapping & cleaning $OUT"
@@ -123,6 +140,7 @@ Subject: [PATCH 01/41] pi-util: Add useful scripts
 +     --disable-vdpau\
 +     --enable-wayland\
 +     --enable-gles2\
++     $QTCONF_OPT\
 +     $CONF_MMAL
 +    echo "==== Configured in $OUT"
 +fi

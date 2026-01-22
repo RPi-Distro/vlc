@@ -1,7 +1,7 @@
-From 6002e02ead769e116f2a0dfbe2e4a2517d26aa85 Mon Sep 17 00:00:00 2001
+From 6b2549824d09c52a55a3023cc5822e4cec23a547 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:03:51 +0100
-Subject: [PATCH 30/41] video_chroma/chain: Fix chroma+resize then transform
+Subject: [PATCH 31/41] video_chroma/chain: Fix chroma+resize then transform
 
 * Would be worth finding a test case for this
 ---

@@ -1,4 +1,4 @@
-From e2f1ea3c9ee450c9c6c6af0ac6ca505cbbe10968 Mon Sep 17 00:00:00 2001
+From fb2da9afe58ea5c52826e1b03ac6bb6a0377e0d4 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:05:36 +0100
 Subject: [PATCH 18/41] qt/interface_widgets: Use window locks when handle
@@ -140,15 +140,15 @@ trying to use stale handles which will crash VLC.
  
 --- a/modules/gui/qt/components/interface_widgets.hpp
 +++ b/modules/gui/qt/components/interface_widgets.hpp
-@@ -69,6 +69,8 @@ protected:
-         return NULL;
-     }
- 
+@@ -74,6 +74,8 @@ protected:
+ #else
+     bool nativeEventFilter(const QByteArray &eventType, void *message, long *result) override;
+ #endif
 +    void hideEvent(QHideEvent *event) Q_DECL_OVERRIDE;
 +    void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
- #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-     bool nativeEventFilter(const QByteArray &eventType, void *message, qintptr *result) override;
- #else
+     virtual void resizeEvent(QResizeEvent *) Q_DECL_OVERRIDE;
+     void mousePressEvent(QMouseEvent *) Q_DECL_OVERRIDE;
+     void mouseMoveEvent(QMouseEvent *) Q_DECL_OVERRIDE;
 @@ -85,6 +87,7 @@ private:
      int qtMouseButton2VLC( Qt::MouseButton );
      intf_thread_t *p_intf;

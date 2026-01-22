@@ -1,4 +1,4 @@
-From e7ed4b929377bf28cd3fbf5ebe7f308ac7514c72 Mon Sep 17 00:00:00 2001
+From 2bfd2c65f3f49ef6e31845d2d9e93c6656f91477 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 1 Nov 2023 10:42:57 +0000
 Subject: [PATCH 17/41] video_output/window: Add lock and seq for wayland

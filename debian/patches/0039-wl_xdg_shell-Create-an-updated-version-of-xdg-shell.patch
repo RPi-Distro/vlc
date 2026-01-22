@@ -1,7 +1,7 @@
-From b9fefb75e621246fa13066aaa52e1d0b25e19f88 Mon Sep 17 00:00:00 2001
+From f3fb444448e40b3b75d9d895b36fa44c2fcbd96a Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Mon, 19 Aug 2024 17:34:18 +0100
-Subject: [PATCH 38/41] wl_xdg_shell: Create an updated version of xdg-shell
+Subject: [PATCH 39/41] wl_xdg_shell: Create an updated version of xdg-shell
 
 xdg-shell has moved on since the previous version was written and
 current exported interfaces from labwc do not include the unstable xdg
@@ -9,9 +9,10 @@ shell. This updates the calls and bindings to work again.
 ---
  configure.ac                                  |   18 +
  modules/video_output/Makefile.am              |   63 +
- modules/video_output/wayland/wl_xdg_shell.c   | 1158 +++++++++++++++++
+ modules/video_output/wayland/wl_dmabuf.c      |   78 +-
+ modules/video_output/wayland/wl_xdg_shell.c   | 1159 +++++++++++++++++
  .../wayland/wlr-layer-shell-unstable-v1.xml   |  407 ++++++
- 4 files changed, 1646 insertions(+)
+ 5 files changed, 1720 insertions(+), 5 deletions(-)
  create mode 100644 modules/video_output/wayland/wl_xdg_shell.c
  create mode 100644 modules/video_output/wayland/wlr-layer-shell-unstable-v1.xml
 
@@ -142,9 +143,180 @@ shell. This updates the calls and bindings to work again.
  if HAVE_WAYLAND_EGL
  if HAVE_EGL
  vout_LTLIBRARIES += libegl_wl_plugin.la
+--- a/modules/video_output/wayland/wl_dmabuf.c
++++ b/modules/video_output/wayland/wl_dmabuf.c
+@@ -115,6 +115,11 @@ typedef struct eq_env_ss {
+     struct wl_display *wrapped_display;
+ } eq_env_t;
+ 
++typedef struct shared_count_s
++{
++    atomic_int n;
++} shared_count_t;
++
+ typedef struct video_dmabuf_release_env_ss
+ {
+     void (* dma_rel_fn)(void *);
+@@ -123,6 +128,7 @@ typedef struct video_dmabuf_release_env_
+     unsigned int rel_count;
+     unsigned int pt_count;
+     struct polltask * pt[AV_DRM_MAX_PLANES];
++    shared_count_t * in_flight;
+ #if CHECK_VDRE_COUNTS
+     atomic_int * vdre_check;
+ #endif
+@@ -180,6 +186,7 @@ typedef struct subplane_s {
+ 
+     subpic_ent_t * spe_cur;
+     subpic_ent_t * spe_next;
++    shared_count_t * in_flight;
+ } subplane_t;
+ 
+ typedef struct pres_stats_env_ss {
+@@ -300,6 +307,41 @@ struct vout_display_sys_t
+ static struct wl_surface * bkg_surface_get_lock(vout_display_t * const vd, vout_display_sys_t * const sys);
+ static void bkg_surface_unlock(vout_display_t * const vd, vout_display_sys_t * const sys);
+ 
++static shared_count_t *
++shared_count_new()
++{
++    shared_count_t * const sc = malloc(sizeof(*sc));
++
++    if (sc == NULL)
++        return NULL;
++    atomic_init(&sc->n, 0);
++    return sc;
++}
++
++static int
++shared_count_ref(shared_count_t * const sc)
++{
++    return atomic_fetch_add(&sc->n, 1) + 1;
++}
++
++static void
++shared_count_unref(shared_count_t ** const ppsc)
++{
++    shared_count_t * const sc = *ppsc;
++    if (sc == NULL)
++        return;
++    *ppsc = NULL;
++    if (atomic_fetch_sub(&sc->n, 1) != 0)
++        return;
++    free(sc);
++}
++
++static int
++shared_count_val(const shared_count_t * const sc)
++{
++    return atomic_load(&sc->n);
++}
++
+ static void
+ msg_stats(vout_display_t * const vd, const struct display_stats_s * const s)
+ {
+@@ -910,6 +952,7 @@ vdre_free(video_dmabuf_release_env_t * c
+     for (i = 0; i != vdre->pt_count; ++i)
+         polltask_delete(vdre->pt + i);
+     eq_unref(&vdre->eq);
++    shared_count_unref(&vdre->in_flight);
+ #if CHECK_VDRE_COUNTS
+     if (vdre->vdre_check != NULL)
+         atomic_fetch_sub(vdre->vdre_check, 1);
+@@ -974,6 +1017,13 @@ vdre_eq_ref(video_dmabuf_release_env_t *
+     vdre->eq = eq_ref(eq);
+ }
+ 
++static void
++vdre_in_flight_ref(video_dmabuf_release_env_t * const vdre, shared_count_t * const sc)
++{
++    shared_count_ref(sc);
++    vdre->in_flight = sc;
++}
++
+ #if CHECK_VDRE_COUNTS
+ static void
+ vdre_add_check(video_dmabuf_release_env_t * const vdre, atomic_int * const pa)
+@@ -1287,6 +1337,7 @@ subpic_ent_attach(subplane_t * const pla
+     }
+     else
+     {
++        vdre_in_flight_ref(spe->vdre, plane->in_flight);
+         vdre_eq_ref(spe->vdre, eq);
+         wl_buffer_add_listener(spe->wb, &vdre_buffer_listener, spe->vdre);
+         wl_surface_attach(surface, spe->wb, 0, 0);
+@@ -1405,6 +1456,13 @@ spe_new_pic(vout_display_t * const vd, v
+     return spe;
+ }
+ 
++static void
++spe_free(subpic_ent_t * const spe)
++{
++    polltask_delete(&spe->pt);
++    subpic_ent_flush(spe);
++    free(spe);
++}
+ 
+ static subpic_ent_t *
+ spe_new(vout_display_t * const vd, vout_display_sys_t * const sys,
+@@ -1421,7 +1479,10 @@ spe_new(vout_display_t * const vd, vout_
+ 
+     spe_update_rect(spe, spic, sreg);
+ 
+-    spe->pt = polltask_new_timer(sys->speq, spe_convert_cb, spe);
++    if ((spe->pt = polltask_new_timer(sys->speq, spe_convert_cb, spe)) == NULL) {
++        spe_free(spe);
++        return NULL;
++    }
+ 
+     return spe;
+ }
+@@ -1435,9 +1496,7 @@ spe_delete(subpic_ent_t ** const ppspe)
+         return;
+     *ppspe = NULL;
+ 
+-    polltask_delete(&spe->pt);
+-    subpic_ent_flush(spe);
+-    free(spe);
++    spe_free(spe);
+ }
+ 
+ static int
+@@ -1530,6 +1589,7 @@ plane_destroy(subplane_t * const spl)
+     spl->trans = 0;
+     memset(&spl->src_rect, 0, sizeof(spl->src_rect));
+     memset(&spl->dst_rect, 0, sizeof(spl->dst_rect));
++    shared_count_unref(&spl->in_flight);
+ }
+ 
+ static int
+@@ -1542,7 +1602,8 @@ plane_create(vout_display_sys_t * const
+     plane->commit_parent = commit_parent;
+     if ((plane->surface = wl_compositor_create_surface(video_compositor(sys))) == NULL ||
+         (plane->subsurface = wl_subcompositor_get_subsurface(sys->bound.subcompositor, plane->surface, parent)) == NULL ||
+-        (plane->viewport = wp_viewporter_get_viewport(sys->bound.viewporter, plane->surface)) == NULL)
++        (plane->viewport = wp_viewporter_get_viewport(sys->bound.viewporter, plane->surface)) == NULL ||
++        (plane->in_flight = shared_count_new()) == NULL)
+         return VLC_EGENERIC;
+ #if HAVE_WAYLAND_COLOR_REPRESENTATION
+     if (sys->bound.color_representation_manager_v1 != NULL)
+@@ -2200,6 +2261,13 @@ do_display(vout_display_t * const vd, vo
+ 
+         if (plane->spe_next && atomic_load(&plane->spe_next->ready))
+         {
++            if (shared_count_val(plane->in_flight) > 3)
++            {
++                msg_Warn(vd, "%s discarded due to Wayland congestion", i == PLANE_VID ? "Video" : "Sub");
++                spe_delete(&plane->spe_next);
++                continue;
++            }
++
+             spe_delete(&plane->spe_cur);
+             spe = plane->spe_cur = plane->spe_next;
+             plane->spe_next = NULL;
 --- /dev/null
 +++ b/modules/video_output/wayland/wl_xdg_shell.c
-@@ -0,0 +1,1158 @@
+@@ -0,0 +1,1159 @@
 +/**
 + * @file xdg-shell.c
 + * @brief XDG shell surface provider module for VLC media player
@@ -1187,6 +1359,7 @@ shell. This updates the calls and bindings to work again.
 +    if (surface == NULL)
 +        goto error;
 +    wnd->handle.wl = surface;  // Ensure NULL for error Close
++    wnd->wl_surface_do_not_viewport = false;
 +
 +    sys->req_width = cfg->width;
 +    sys->req_height = cfg->height;

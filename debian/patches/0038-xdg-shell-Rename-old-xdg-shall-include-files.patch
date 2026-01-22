@@ -1,7 +1,7 @@
-From 1a7ddf03dfc183147a115a47095aa67192700fc0 Mon Sep 17 00:00:00 2001
+From 63df04a09142ca1f4b41ef440079f87d2208738a Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Thu, 8 Aug 2024 18:42:59 +0100
-Subject: [PATCH 37/41] xdg-shell: Rename old xdg-shall include files
+Subject: [PATCH 38/41] xdg-shell: Rename old xdg-shall include files
 
 Rename the xdg-shell header files to xdg-shell-unstable-v5 to match
 the name of the XML file they are derived from. This frees up xdg-shell

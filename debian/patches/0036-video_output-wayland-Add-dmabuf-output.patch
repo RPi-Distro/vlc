@@ -1,7 +1,7 @@
-From dccb02593a433ee8b2c44359ec1f2897b624a5d7 Mon Sep 17 00:00:00 2001
+From 4702ab1660b4ad3865547bb6549b7b364ebd9fc6 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:59:10 +0100
-Subject: [PATCH 35/41] video_output/wayland: Add dmabuf output
+Subject: [PATCH 36/41] video_output/wayland: Add dmabuf output
 
 Previously all output was via shm which can be inefficient.
 Depends on some files from drmu for DRM format info.
@@ -16,8 +16,8 @@ Depends on some files from drmu for DRM format info.
  modules/video_output/wayland/rgba_premul.h    |   18 +
  .../wayland/rgba_premul_aarch64.S             |  170 +
  .../wayland/rgba_premul_aarch64.h             |    9 +
- modules/video_output/wayland/wl_dmabuf.c      | 2885 +++++++++++++++++
- 11 files changed, 4374 insertions(+), 1 deletion(-)
+ modules/video_output/wayland/wl_dmabuf.c      | 2891 +++++++++++++++++
+ 11 files changed, 4380 insertions(+), 1 deletion(-)
  create mode 100644 modules/video_output/wayland/dmabuf_alloc.c
  create mode 100644 modules/video_output/wayland/dmabuf_alloc.h
  create mode 100644 modules/video_output/wayland/picpool.c
@@ -1583,7 +1583,7 @@ Depends on some files from drmu for DRM format info.
 +#endif
 --- /dev/null
 +++ b/modules/video_output/wayland/wl_dmabuf.c
-@@ -0,0 +1,2885 @@
+@@ -0,0 +1,2891 @@
 +/**
 + * @file shm.c
 + * @brief Wayland shared memory video output module for VLC media player
@@ -1827,6 +1827,7 @@ Depends on some files from drmu for DRM format info.
 +    bool want_stats;
 +    bool bkg_null;  // Bkg is known null - expect a lack of display (debug)
 +
++    bool bkg_setup;
 +    struct wp_viewport * bkg_viewport;
 +    // Current size of background viewport if we have one
 +    // If not created yet then the size that the viewport should be created
@@ -3060,11 +3061,9 @@ Depends on some files from drmu for DRM format info.
 +        if (bkg_surface != NULL)
 +        {
 +            if (sys->bkg_viewport)
-+            {
 +                wp_viewport_set_destination(sys->bkg_viewport,
 +                                            scale_dst(sys, sys->bkg_w), scale_dst(sys, sys->bkg_h));
-+                wl_surface_commit(bkg_surface);
-+            }
++            wl_surface_commit(bkg_surface);
 +            bkg_surface_unlock(vd, sys);
 +            flush_req = true;
 +        }
@@ -3155,6 +3154,7 @@ Depends on some files from drmu for DRM format info.
 +    for (unsigned int i = MAX_SUBPICS + PLANE_SUB - 1; i >= PLANE_VID; --i)
 +        plane_destroy(sys->planes + i);
 +
++    sys->bkg_setup = false;
 +    viewport_destroy(&sys->bkg_viewport);
 +}
 +
@@ -3227,7 +3227,7 @@ Depends on some files from drmu for DRM format info.
 +    struct wl_buffer * w_buffer = NULL;
 +    struct wl_surface * bkg_surface = NULL;
 +
-+    if (sys->bkg_viewport)
++    if (sys->bkg_setup)
 +        return VLC_SUCCESS;
 +
 +#if HAVE_WAYLAND_SINGLE_PIXEL_BUFFER
@@ -3285,12 +3285,16 @@ Depends on some files from drmu for DRM format info.
 +    if ((bkg_surface = bkg_surface_get_lock(vd, sys)) == NULL)
 +        goto error;
 +
-+    sys->bkg_viewport = wp_viewporter_get_viewport(sys->bound.viewporter, bkg_surface);
-+    if (sys->bkg_viewport == NULL)
++    if (!sys->embed->wl_surface_do_not_viewport)
 +    {
-+        msg_Err(vd, "Failed to create background viewport");
-+        goto err_unlock;
++        sys->bkg_viewport = wp_viewporter_get_viewport(sys->bound.viewporter, bkg_surface);
++        if (sys->bkg_viewport == NULL)
++        {
++            msg_Err(vd, "Failed to create background viewport");
++            goto err_unlock;
++        }
 +    }
++    sys->bkg_setup = true;
 +
 +#if CHECK_VDRE_COUNTS
 +    vdre_add_check(vdre, &sys->vdre_check_bkg);
@@ -3305,8 +3309,9 @@ Depends on some files from drmu for DRM format info.
 +    vdre = NULL;
 +    w_buffer = NULL;
 +
-+    wp_viewport_set_destination(sys->bkg_viewport,
-+                                scale_dst(sys, sys->bkg_w), scale_dst(sys, sys->bkg_h));
++    if (sys->bkg_viewport)
++        wp_viewport_set_destination(sys->bkg_viewport,
++                                    scale_dst(sys, sys->bkg_w), scale_dst(sys, sys->bkg_h));
 +    wl_surface_set_opaque_region(bkg_surface, sys->region_all);
 +
 +    wl_surface_damage(bkg_surface, 0, 0, INT32_MAX, INT32_MAX);
@@ -3654,7 +3659,7 @@ Depends on some files from drmu for DRM format info.
 +static void
 +do_resize(vout_display_t * const vd, vout_display_sys_t * const sys)
 +{
-+    if (!sys->bkg_viewport)
++    if (!sys->bkg_setup)
 +        return;
 +
 +    for (unsigned int i = PLANE_VID; i != PLANE_SUB + MAX_SUBPICS; ++i)
@@ -3665,7 +3670,8 @@ Depends on some files from drmu for DRM format info.
 +        plane_set_rect(sys, plane, spe);
 +    }
 +
-+    if (sys->bkg_viewport != NULL && (vd->cfg->display.width != sys->bkg_w || vd->cfg->display.height != sys->bkg_h))
++    if (sys->bkg_viewport != NULL &&
++        (vd->cfg->display.width != sys->bkg_w || vd->cfg->display.height != sys->bkg_h))
 +    {
 +        msg_Dbg(vd, "Resize background: %dx%d", vd->cfg->display.width, vd->cfg->display.height);
 +        commit_req(sys, PLANE_BKG);

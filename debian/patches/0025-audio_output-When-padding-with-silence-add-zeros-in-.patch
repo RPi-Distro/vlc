@@ -1,7 +1,7 @@
-From 961c7aceea69070509979bed89f67955ba5089cb Mon Sep 17 00:00:00 2001
+From 44af434c22dbaadd7ef0859871df8cc9307ca179 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 25 Apr 2023 16:33:34 +0000
-Subject: [PATCH 24/41] audio_output: When padding with silence add zeros in
+Subject: [PATCH 25/41] audio_output: When padding with silence add zeros in
  multiple small buffers
 
 ---

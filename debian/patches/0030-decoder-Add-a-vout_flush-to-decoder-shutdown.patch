@@ -1,7 +1,7 @@
-From 0c70f6bf0c8bce8b2d6fa4821b24b74c0110af7e Mon Sep 17 00:00:00 2001
+From 990a5938fa463198179c7fdc6e21c4feedc1b22a Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 18:49:22 +0100
-Subject: [PATCH 29/41] decoder: Add a vout_flush to decoder shutdown
+Subject: [PATCH 30/41] decoder: Add a vout_flush to decoder shutdown
 
 Our ffmpeg H265 decode can block waiting for buffers to be returned.
 Trying to shut it down in that state without returning some buffers

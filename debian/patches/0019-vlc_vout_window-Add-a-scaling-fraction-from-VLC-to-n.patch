@@ -1,4 +1,4 @@
-From 3ad07afb89deda179c668bb726d6a17cb73efdc6 Mon Sep 17 00:00:00 2001
+From 4c1adab6019e588739995c596599fcdb16f52e55 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 22 Oct 2024 15:42:27 +0100
 Subject: [PATCH 19/41] vlc_vout_window: Add a scaling fraction from VLC to

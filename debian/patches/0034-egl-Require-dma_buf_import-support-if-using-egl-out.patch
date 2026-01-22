@@ -1,7 +1,7 @@
-From fd6b9b6e1a883c5088f1daa5fb7b26989a76bbde Mon Sep 17 00:00:00 2001
+From 2db8d777b248c1bcf747486c144ddde859e26b68 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:51:42 +0100
-Subject: [PATCH 33/41] egl: Require dma_buf_import support if using egl out
+Subject: [PATCH 34/41] egl: Require dma_buf_import support if using egl out
 
 If egl doesn't support dmabufs then X is faster.
 ---
