@@ -1,7 +1,7 @@
-vlc (1:3.0.23-0+deb13u1+rpt1) UNRELEASED; urgency=medium
+vlc (1:3.0.23-0+deb13u1+rpt1) trixie; urgency=medium
 
   * Update gbp.conf for pios/trixie branch
-  * Add HW acceleration patchset 51
+  * HW acceleration patchset 52
   * Add libavfilter-dev to Build-Depends
   * Enable live555
   * Fix building with newer liblivemedia versions
@@ -13,7 +13,7 @@ vlc (1:3.0.23-0+deb13u1+rpt1) UNRELEASED; urgency=medium
   * Install libwl_xdg_shell_plugin.so
   * d/c: Add qtwayland5 to vlc dependencies
 
- -- Serge Schneider <serge@raspberrypi.com>  Thu, 22 Jan 2026 12:22:51 +0000
+ -- Serge Schneider <serge@raspberrypi.com>  Thu, 22 Jan 2026 13:15:10 +0000
 
 vlc (3.0.23-0+deb13u1) trixie-security; urgency=medium
 
