@@ -3073,6 +3073,19 @@ static int LanguageArrayIndex( char **ppsz_langs, const char *psz_lang )
     return -1;
 }
 
+static void info_category_AddCodecInfo( info_category_t* p_cat,
+                                        const char *psz_info,
+                                        vlc_fourcc_t i_fourcc,
+                                        const char *psz_description )
+{
+    const char *ps_fcc = (const char*)&i_fourcc;
+    if( psz_description && *psz_description )
+        info_category_AddInfo( p_cat, psz_info, "%s (%.4s)",
+                               psz_description, ps_fcc );
+    else if ( i_fourcc != VLC_FOURCC(0,0,0,0) )
+        info_category_AddInfo( p_cat, psz_info, "%.4s", ps_fcc );
+}
+
 /****************************************************************************
  * EsOutUpdateInfo:
  * - add meta info to the playlist item
@@ -3140,51 +3153,80 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
                                p_fmt_es->i_original_fourcc : p_fmt_es->i_codec;
     const char *psz_codec_description =
         vlc_fourcc_GetDescription( p_fmt_es->i_cat, i_codec_fourcc );
-    if( psz_codec_description && *psz_codec_description )
-        info_category_AddInfo( p_cat, _("Codec"), "%s (%.4s)",
-                               psz_codec_description, (char*)&i_codec_fourcc );
-    else if ( i_codec_fourcc != VLC_FOURCC(0,0,0,0) )
-        info_category_AddInfo( p_cat, _("Codec"), "%.4s",
-                               (char*)&i_codec_fourcc );
+    info_category_AddCodecInfo( p_cat, _("Codec"),
+                                i_codec_fourcc, psz_codec_description );
 
-    if( es->psz_language && *es->psz_language )
+    if( !EMPTY_STR(es->psz_language) )
         info_category_AddInfo( p_cat, _("Language"), "%s",
                                es->psz_language );
-    if( fmt->psz_description && *fmt->psz_description )
+    if( !EMPTY_STR(fmt->psz_description) || !EMPTY_STR(p_fmt_es->psz_description) )
         info_category_AddInfo( p_cat, _("Description"), "%s",
-                               fmt->psz_description );
+                               EMPTY_STR(fmt->psz_description) ? p_fmt_es->psz_description
+                                                               : fmt->psz_description );
+
+    if( p_fmt_es->i_bitrate > 0 )
+        info_category_AddInfo( p_cat, _("Bitrate"), _("%u kb/s"),
+                               p_fmt_es->i_bitrate / 1000 );
 
     switch( fmt->i_cat )
     {
     case AUDIO_ES:
         info_category_AddInfo( p_cat, _("Type"), _("Audio") );
 
-        if( fmt->audio.i_physical_channels )
+        if( p_fmt_es->audio.i_physical_channels )
             info_category_AddInfo( p_cat, _("Channels"), "%s",
-                                   _( aout_FormatPrintChannels( &fmt->audio ) ) );
+                vlc_gettext( aout_FormatPrintChannels( &p_fmt_es->audio ) ) );
 
-        if( fmt->audio.i_rate != 0 )
+        if( p_fmt_es->audio.i_rate )
         {
             info_category_AddInfo( p_cat, _("Sample rate"), _("%u Hz"),
-                                   fmt->audio.i_rate );
+                                   p_fmt_es->audio.i_rate );
             /* FIXME that should be removed or improved ! (used by text/strings.c) */
-            var_SetInteger( p_input, "sample-rate", fmt->audio.i_rate );
+            var_SetInteger( p_input, "sample-rate", p_fmt_es->audio.i_rate );
         }
 
-        unsigned int i_bitspersample = fmt->audio.i_bitspersample;
-        if( i_bitspersample == 0 )
-            i_bitspersample = aout_BitsPerSample( p_fmt_es->i_codec );
-        if( i_bitspersample != 0 )
+        unsigned int i_orgbps = p_fmt_es->audio.i_bitspersample;
+        if( i_orgbps == 0 )
+            i_orgbps = aout_BitsPerSample( p_fmt_es->i_codec );
+        if( i_orgbps != 0 )
             info_category_AddInfo( p_cat, _("Bits per sample"), "%u",
-                                   i_bitspersample );
+                                   i_orgbps );
 
-        if( fmt->i_bitrate != 0 )
+        if( fmt->audio.i_format &&
+            fmt->audio.i_format != p_fmt_es->i_codec )
         {
-            info_category_AddInfo( p_cat, _("Bitrate"), _("%u kb/s"),
+            psz_codec_description = vlc_fourcc_GetDescription( AUDIO_ES,
+                                                               fmt->audio.i_format );
+            info_category_AddCodecInfo( p_cat, _("Decoded format"),
+                                        fmt->audio.i_format,
+                                        psz_codec_description );
+        }
+
+        if( fmt->audio.i_physical_channels &&
+            fmt->audio.i_physical_channels != p_fmt_es->audio.i_physical_channels )
+            info_category_AddInfo( p_cat, _("Decoded channels"), "%s",
+                vlc_gettext( aout_FormatPrintChannels( &fmt->audio ) ) );
+
+        if( fmt->audio.i_rate &&
+            fmt->audio.i_rate != p_fmt_es->audio.i_rate )
+            info_category_AddInfo( p_cat, _("Decoded sample rate"), _("%u Hz"),
+                                   fmt->audio.i_rate );
+
+        unsigned i_outbps = fmt->audio.i_bitspersample;
+        if( i_outbps == 0 )
+            i_outbps = aout_BitsPerSample( fmt->i_codec );
+        if( i_outbps != 0 && i_outbps != i_orgbps )
+            info_category_AddInfo( p_cat, _("Decoded bits per sample"), "%u",
+                                   i_outbps );
+
+        if( fmt->i_bitrate > 0 )
+        {
+            info_category_AddInfo( p_cat, _("Decoded Bitrate"), _("%u kb/s"),
                                    fmt->i_bitrate / 1000 );
             /* FIXME that should be removed or improved ! (used by text/strings.c) */
             var_SetInteger( p_input, "bit-rate", fmt->i_bitrate );
         }
+
         for( int i = 0; i < AUDIO_REPLAY_GAIN_MAX; i++ )
         {
             const audio_replay_gain_t *p_rg = &fmt->audio_replay_gain;
@@ -3228,11 +3270,11 @@ static void EsOutUpdateInfo( es_out_t *out, es_out_id_t *es, const es_format_t *
        }
        if( fmt->i_codec != p_fmt_es->i_codec )
        {
-           const char *psz_chroma_description =
-                vlc_fourcc_GetDescription( VIDEO_ES, fmt->i_codec );
-           if( psz_chroma_description )
-               info_category_AddInfo( p_cat, _("Decoded format"), "%s",
-                                      psz_chroma_description );
+           psz_codec_description = vlc_fourcc_GetDescription( VIDEO_ES,
+                                                              fmt->i_codec );
+           info_category_AddCodecInfo( p_cat, _("Decoded format"),
+                                       fmt->i_codec,
+                                       psz_codec_description );
        }
        {
            static const char orient_names[][13] = {

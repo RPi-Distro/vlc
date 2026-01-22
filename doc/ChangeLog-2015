@@ -30010,3 +30010,13 @@ Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Fri Jan 2 12:39:25 2015 +0100
 
     VCD: avoid macro redefinition
+
+commit ee397ea877856bb48d7498b5b857a4a715d905c6
+Author: Sean McGovern <gseanmcg@gmail.com>
+Date:   Thu Jan 1 15:25:03 2015 -0500
+
+    configure: require libarchive 3.1.0 for the archive plugin
+    
+    archive_seek_data() was not introduced until this version.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
