@@ -52,7 +52,6 @@
 #define HAS_QT510 ( QT_VERSION >= 0x051000 )
 
 enum {
-    DialogEventTypeOffset = 0,
     IMEventTypeOffset     = 100,
     PLEventTypeOffset     = 200,
     MsgEventTypeOffset    = 300,
@@ -129,10 +128,6 @@ struct vlc_playlist_locker {
 #define BUTTON_SET( button, text, tooltip )  \
     button->setText( text );                 \
     button->setToolTip( tooltip );
-
-#define BUTTON_SET_ACT( button, text, tooltip, thisslot ) \
-    BUTTON_SET( button, text, tooltip );                  \
-    BUTTONACT( button, thisslot );
 
 #define BUTTON_SET_IMG( button, text, image, tooltip )    \
     BUTTON_SET( button, text, tooltip );                  \

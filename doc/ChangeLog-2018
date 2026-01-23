@@ -23926,3 +23926,18 @@ Date:   Sat Dec 30 13:17:09 2017 +0100
     Signed-off-by: Thomas Guillem <thomas@gllm.fr>
     (cherry picked from commit 16f3fdaa38395360f503fc81e77745764609210b)
     Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit de4a188fcf84f1bdbe6cd23c7fec8b544b451c58
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Jan 1 19:26:52 2018 +0100
+
+    Welcome to 2018!
+
+commit 86788c91f75bf51957c40c2982c1b476fe1c356c
+Author: Marián Hikaník <podnety@mojepreklady.net>
+Date:   Mon Jan 1 17:31:57 2018 +0100
+
+    win32: fix Slovak installer
+    
+    (cherry picked from commit ca5c3c4e8c34ca82143146112279c8a6873e1e64)
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>

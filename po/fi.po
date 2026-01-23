@@ -1,5 +1,5 @@
 # Finnish translation
-# Copyright (C) 2023 VideoLAN
+# Copyright (C) 2025 VideoLAN
 # This file is distributed under the same license as the vlc package.
 #
 # Translators:
@@ -20,13 +20,12 @@
 # Ammuu5, 2020
 # Elias Meyer <elektrovirus@protonmail.com>, 2021
 # Jiri Grönroos <jiri.gronroos@iki.fi>, 2021
-# Kimmo Kujansuu <mrkujansuu@gmail.com>, 2022
-#
+# Kimmo Kujansuu <mrkujansuu@gmail.com>, 2022-2025
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.22-rc1\n"
+"Project-Id-Version: vlc 3.0.22\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-11-24 23:15+0000\n"
+"POT-Creation-Date: 2025-12-23 11:04+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Kimmo Kujansuu <mrkujansuu@gmail.com>, 2025\n"
 "Language-Team: Finnish (https://app.transifex.com/yaron/teams/16553/fi/)\n"
@@ -92,7 +91,7 @@ msgstr "VLC säätimien asetukset"
 msgid "Hotkeys settings"
 msgstr "Pikanäppäinten asetukset"
 
-#: include/vlc_config_cat.h:53 src/input/es_out.c:3160 src/libvlc-module.c:1492
+#: include/vlc_config_cat.h:53 src/input/es_out.c:3174 src/libvlc-module.c:1492
 #: modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:171
 #: modules/gui/macosx/VLCMainMenu.m:414 modules/gui/macosx/VLCOutput.m:92
@@ -100,7 +99,7 @@ msgstr "Pikanäppäinten asetukset"
 #: modules/gui/macosx/VLCSimplePrefsController.m:243
 #: modules/gui/qt/components/info_panels.cpp:572
 #: modules/gui/qt/components/simple_preferences.cpp:250
-#: modules/gui/qt/qt.cpp:216 modules/services_discovery/mediadirs.c:77
+#: modules/gui/qt/qt.cpp:217 modules/services_discovery/mediadirs.c:77
 #: modules/stream_out/es.c:94 modules/stream_out/transcode/transcode.c:182
 #: share/lua/http/dialogs/create_stream.html:150
 #: modules/gui/qt/ui/profiles.h:719 modules/gui/qt/ui/profiles.h:750
@@ -156,7 +155,7 @@ msgstr "Muut"
 msgid "Miscellaneous audio settings and modules."
 msgstr "Muut audio asetukset ja moduulit."
 
-#: include/vlc_config_cat.h:73 src/input/es_out.c:3204 src/libvlc-module.c:142
+#: include/vlc_config_cat.h:73 src/input/es_out.c:3246 src/libvlc-module.c:142
 #: src/libvlc-module.c:1551 modules/access/imem.c:64
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:160
 #: modules/gui/macosx/VLCMainMenu.m:427 modules/gui/macosx/VLCOutput.m:82
@@ -165,7 +164,7 @@ msgstr "Muut audio asetukset ja moduulit."
 #: modules/gui/macosx/VLCSimplePrefsController.m:388
 #: modules/gui/qt/components/info_panels.cpp:573
 #: modules/gui/qt/components/simple_preferences.cpp:252
-#: modules/gui/qt/qt.cpp:216 modules/services_discovery/mediadirs.c:70
+#: modules/gui/qt/qt.cpp:217 modules/services_discovery/mediadirs.c:70
 #: modules/stream_out/es.c:102 modules/stream_out/transcode/transcode.c:153
 #: share/lua/http/dialogs/create_stream.html:147
 #: modules/gui/qt/ui/profiles.h:720 modules/gui/qt/ui/profiles.h:724
@@ -717,7 +716,7 @@ msgstr "Dolby Surround"
 msgid "Stereo"
 msgstr "Stereo"
 
-#: src/audio_output/output.c:445 src/input/es_out.c:3301
+#: src/audio_output/output.c:445 src/input/es_out.c:3343
 #: src/libvlc-module.c:197 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: src/misc/actions.c:81 modules/audio_filter/channel_mixer/mono.c:89
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
@@ -1018,11 +1017,11 @@ msgstr "DTVCC-tekstitykset %u"
 msgid "Closed captions %u"
 msgstr "Suljetut tekstitykset %u"
 
-#: src/input/es_out.c:3136
+#: src/input/es_out.c:3149
 msgid "Original ID"
 msgstr "Alkup. tunniste (ID)"
 
-#: src/input/es_out.c:3144 src/input/es_out.c:3147 modules/access/imem.c:67
+#: src/input/es_out.c:3156 modules/access/imem.c:67
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:162
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:173
 #: modules/gui/qt/ui/profiles.h:726 modules/gui/qt/ui/profiles.h:752
@@ -1030,48 +1029,21 @@ msgstr "Alkup. tunniste (ID)"
 msgid "Codec"
 msgstr "Koodekki"
 
-#: src/input/es_out.c:3151 src/input/meta.c:66 modules/access/imem.c:71
+#: src/input/es_out.c:3160 src/input/meta.c:66 modules/access/imem.c:71
 #: modules/gui/macosx/VLCPlaylist.m:98
 #: modules/gui/macosx/VLCSimplePrefsController.m:325
 #: modules/stream_out/setid.c:49 modules/gui/qt/ui/sprefs_interface.h:533
 msgid "Language"
 msgstr "Kieli"
 
-#: src/input/es_out.c:3154 src/input/meta.c:61
+#: src/input/es_out.c:3163 src/input/meta.c:61
 #: modules/gui/macosx/VLCBookmarksWindowController.m:80
 #: modules/gui/macosx/VLCPlaylist.m:96 modules/gui/qt/dialogs/bookmarks.cpp:75
 #: modules/gui/qt/dialogs/epg.cpp:55
 msgid "Description"
 msgstr "Kuvaus"
 
-#: src/input/es_out.c:3160 src/input/es_out.c:3204 src/input/es_out.c:3394
-#: modules/gui/macosx/VLCAddonsWindowController.m:133
-#: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
-#: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1494
-msgid "Type"
-msgstr "Tyyppi"
-
-#: src/input/es_out.c:3163
-#: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
-#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:754
-msgid "Channels"
-msgstr "Kanavat"
-
-#: src/input/es_out.c:3168 modules/access/alsa.c:39 modules/access/imem.c:75
-#: modules/audio_output/amem.c:47 modules/codec/fluidsynth.c:64
-msgid "Sample rate"
-msgstr "Näytetaajuus"
-
-#: src/input/es_out.c:3168
-#, c-format
-msgid "%u Hz"
-msgstr "%u Hz"
-
-#: src/input/es_out.c:3178
-msgid "Bits per sample"
-msgstr "Bittejä näytettä kohti"
-
-#: src/input/es_out.c:3183 modules/access_output/shout.c:92
+#: src/input/es_out.c:3168 modules/access_output/shout.c:92
 #: modules/demux/playlist/shoutcast.c:327
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:163
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:174
@@ -1079,33 +1051,80 @@ msgstr "Bittejä näytettä kohti"
 msgid "Bitrate"
 msgstr "Siirtonopeus"
 
-#: src/input/es_out.c:3183
+#: src/input/es_out.c:3168 src/input/es_out.c:3224
 #, c-format
 msgid "%u kb/s"
 msgstr "%u kb/s"
 
-#: src/input/es_out.c:3195
+#: src/input/es_out.c:3174 src/input/es_out.c:3246 src/input/es_out.c:3436
+#: modules/gui/macosx/VLCAddonsWindowController.m:133
+#: modules/gui/macosx/VLCConvertAndSaveWindowController.m:185
+#: modules/gui/macosx/VLCOutput.m:75 modules/gui/qt/dialogs/plugins.cpp:1494
+msgid "Type"
+msgstr "Tyyppi"
+
+#: src/input/es_out.c:3177
+#: modules/gui/macosx/VLCConvertAndSaveWindowController.m:175
+#: modules/gui/macosx/VLCOutput.m:98 modules/gui/qt/ui/profiles.h:754
+msgid "Channels"
+msgstr "Kanavat"
+
+#: src/input/es_out.c:3182 modules/access/alsa.c:39 modules/access/imem.c:75
+#: modules/audio_output/amem.c:47 modules/codec/fluidsynth.c:64
+msgid "Sample rate"
+msgstr "Näytetaajuus"
+
+#: src/input/es_out.c:3182 src/input/es_out.c:3212
+#, c-format
+msgid "%u Hz"
+msgstr "%u Hz"
+
+#: src/input/es_out.c:3192
+msgid "Bits per sample"
+msgstr "Bittejä näytettä kohti"
+
+#: src/input/es_out.c:3200 src/input/es_out.c:3275
+msgid "Decoded format"
+msgstr "Purettu formaatti"
+
+#: src/input/es_out.c:3207
+msgid "Decoded channels"
+msgstr "Puretut kanavat"
+
+#: src/input/es_out.c:3212
+msgid "Decoded sample rate"
+msgstr "Purettu näytetaajuus"
+
+#: src/input/es_out.c:3219
+msgid "Decoded bits per sample"
+msgstr "Purettu bittiä per näyte"
+
+#: src/input/es_out.c:3224
+msgid "Decoded Bitrate"
+msgstr "Purettu siirtonopeus"
+
+#: src/input/es_out.c:3237
 msgid "Track replay gain"
 msgstr "Raidan toistonvahvistus"
 
-#: src/input/es_out.c:3197
+#: src/input/es_out.c:3239
 msgid "Album replay gain"
 msgstr "Albumin toistonvahvistus"
 
-#: src/input/es_out.c:3198
+#: src/input/es_out.c:3240
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:3208
+#: src/input/es_out.c:3250
 msgid "Video resolution"
 msgstr "Videon tarkkuus"
 
-#: src/input/es_out.c:3213
+#: src/input/es_out.c:3255
 msgid "Buffer dimensions"
 msgstr "Puskurin koko"
 
-#: src/input/es_out.c:3223 src/input/es_out.c:3226 modules/access/imem.c:93
+#: src/input/es_out.c:3265 src/input/es_out.c:3268 modules/access/imem.c:93
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
@@ -1115,91 +1134,87 @@ msgstr "Puskurin koko"
 msgid "Frame rate"
 msgstr "Kuvataajuus"
 
-#: src/input/es_out.c:3234
-msgid "Decoded format"
-msgstr "Purettu formaatti"
-
-#: src/input/es_out.c:3239
+#: src/input/es_out.c:3281
 msgid "Top left"
 msgstr "Vasen ylänurkka"
 
-#: src/input/es_out.c:3239
+#: src/input/es_out.c:3281
 msgid "Left top"
 msgstr "Vasen yläosa"
 
-#: src/input/es_out.c:3240
+#: src/input/es_out.c:3282
 msgid "Right bottom"
 msgstr "Oikea alaosa"
 
-#: src/input/es_out.c:3240
+#: src/input/es_out.c:3282
 msgid "Top right"
 msgstr "Oikea ylänurkka"
 
-#: src/input/es_out.c:3241
+#: src/input/es_out.c:3283
 msgid "Bottom left"
 msgstr "Vasen alanurkka"
 
-#: src/input/es_out.c:3241
+#: src/input/es_out.c:3283
 msgid "Bottom right"
 msgstr "Oikea alanurkka"
 
-#: src/input/es_out.c:3242
+#: src/input/es_out.c:3284
 msgid "Left bottom"
 msgstr "Vasen alaosa"
 
-#: src/input/es_out.c:3242
+#: src/input/es_out.c:3284
 msgid "Right top"
 msgstr "Oikea yläosa"
 
-#: src/input/es_out.c:3244
+#: src/input/es_out.c:3286
 msgid "Orientation"
 msgstr "Asento"
 
-#: src/input/es_out.c:3250 src/input/es_out.c:3268 src/input/es_out.c:3286
-#: src/input/es_out.c:3300 src/playlist/tree.c:67
+#: src/input/es_out.c:3292 src/input/es_out.c:3310 src/input/es_out.c:3328
+#: src/input/es_out.c:3342 src/playlist/tree.c:67
 #: modules/access/dtv/access.c:82 modules/access/v4l2/v4l2.c:242
 msgid "Undefined"
 msgstr "Määrittelemätön"
 
-#: src/input/es_out.c:3252
+#: src/input/es_out.c:3294
 msgid "ITU-R BT.601 (525 lines, 60 Hz)"
 msgstr "ITU-R BT.601 (525 juovaa, 60 Hz)"
 
-#: src/input/es_out.c:3254
+#: src/input/es_out.c:3296
 msgid "ITU-R BT.601 (625 lines, 50 Hz)"
 msgstr "ITU-R BT.601 (625 juovaa, 50 Hz)"
 
-#: src/input/es_out.c:3262
+#: src/input/es_out.c:3304
 msgid "Color primaries"
 msgstr "Perusvärit"
 
-#: src/input/es_out.c:3269 src/libvlc-module.c:362
+#: src/input/es_out.c:3311 src/libvlc-module.c:362
 #: modules/video_filter/deinterlace/deinterlace.h:58
 msgid "Linear"
 msgstr "Lineaarinen"
 
-#: src/input/es_out.c:3276
+#: src/input/es_out.c:3318
 msgid "Hybrid Log-Gamma"
 msgstr "Hybrid Log-Gamma"
 
-#: src/input/es_out.c:3280
+#: src/input/es_out.c:3322
 msgid "Color transfer function"
 msgstr "Värin siirtotoiminto"
 
-#: src/input/es_out.c:3293
+#: src/input/es_out.c:3335
 msgid "Color space"
 msgstr "Väriavaruus"
 
-#: src/input/es_out.c:3293
+#: src/input/es_out.c:3335
 #, c-format
 msgid "%s Range"
 msgstr "Alue %s"
 
-#: src/input/es_out.c:3295
+#: src/input/es_out.c:3337
 msgid "Full"
 msgstr "Täysi"
 
-#: src/input/es_out.c:3302 src/libvlc-module.c:295 src/libvlc-module.c:368
+#: src/input/es_out.c:3344 src/libvlc-module.c:295 src/libvlc-module.c:368
 #: modules/audio_filter/channel_mixer/mono.c:91
 #: modules/audio_filter/channel_mixer/remap.c:61 modules/codec/dvbsub.c:102
 #: modules/codec/subsdec.c:167 modules/codec/zvbi.c:83
@@ -1210,87 +1225,87 @@ msgstr "Täysi"
 msgid "Center"
 msgstr "Keskellä"
 
-#: src/input/es_out.c:3303
+#: src/input/es_out.c:3345
 msgid "Top Left"
 msgstr "Vasen ylänurkka"
 
-#: src/input/es_out.c:3304
+#: src/input/es_out.c:3346
 msgid "Top Center"
 msgstr "Keskellä yläosa"
 
-#: src/input/es_out.c:3305
+#: src/input/es_out.c:3347
 msgid "Bottom Left"
 msgstr "Vasen alanurkka"
 
-#: src/input/es_out.c:3306
+#: src/input/es_out.c:3348
 msgid "Bottom Center"
 msgstr "Keskellä alaosa"
 
-#: src/input/es_out.c:3310
+#: src/input/es_out.c:3352
 msgid "Chroma location"
 msgstr "Värikylläisyyden sijainti"
 
-#: src/input/es_out.c:3319
+#: src/input/es_out.c:3361
 msgid "Rectangular"
 msgstr "Suorakulmainen"
 
-#: src/input/es_out.c:3322
+#: src/input/es_out.c:3364
 msgid "Equirectangular"
 msgstr "Tasakulmainen"
 
-#: src/input/es_out.c:3325
+#: src/input/es_out.c:3367
 msgid "Cubemap"
 msgstr "Kuutio"
 
-#: src/input/es_out.c:3331
+#: src/input/es_out.c:3373
 msgid "Projection"
 msgstr "Projektio"
 
-#: src/input/es_out.c:3333
+#: src/input/es_out.c:3375
 msgctxt "ViewPoint"
 msgid "Yaw"
 msgstr "Poikkeus"
 
-#: src/input/es_out.c:3335
+#: src/input/es_out.c:3377
 msgctxt "ViewPoint"
 msgid "Pitch"
 msgstr "Sävel"
 
-#: src/input/es_out.c:3337
+#: src/input/es_out.c:3379
 msgctxt "ViewPoint"
 msgid "Roll"
 msgstr "Rulla"
 
-#: src/input/es_out.c:3340
+#: src/input/es_out.c:3382
 msgctxt "ViewPoint"
 msgid "Field of view"
 msgstr "Näkökenttä"
 
-#: src/input/es_out.c:3345
+#: src/input/es_out.c:3387
 msgid "Max. luminance"
 msgstr "Kirkkaus enintään"
 
-#: src/input/es_out.c:3350
+#: src/input/es_out.c:3392
 msgid "Min. luminance"
 msgstr "Kirkkaus vähintään"
 
-#: src/input/es_out.c:3358
+#: src/input/es_out.c:3400
 msgid "Primary R"
 msgstr "Ensisijainen R"
 
-#: src/input/es_out.c:3365
+#: src/input/es_out.c:3407
 msgid "Primary G"
 msgstr "Ensisijainen G"
 
-#: src/input/es_out.c:3372
+#: src/input/es_out.c:3414
 msgid "Primary B"
 msgstr "Ensisijainen B"
 
-#: src/input/es_out.c:3379
+#: src/input/es_out.c:3421
 msgid "White point"
 msgstr "Valkoinen piste"
 
-#: src/input/es_out.c:3394 modules/access/imem.c:64
+#: src/input/es_out.c:3436 modules/access/imem.c:64
 msgid "Subtitle"
 msgstr "Tekstitys"
 
@@ -3103,7 +3118,7 @@ msgstr "DVD laite"
 msgid "VCD device"
 msgstr "VCD laite"
 
-#: src/libvlc-module.c:764 modules/access/cdda.c:984
+#: src/libvlc-module.c:764 modules/access/cdda.c:985
 msgid "Audio CD device"
 msgstr "Audio CD laite"
 
@@ -3123,7 +3138,7 @@ msgstr ""
 "Tämä on oletusarvoisesti käytettävä VCD-laite (tai tiedosto). Muista "
 "kaksoispiste asematunnuksen jälkeen (esim. D:)"
 
-#: src/libvlc-module.c:774 modules/access/cdda.c:987
+#: src/libvlc-module.c:774 modules/access/cdda.c:988
 msgid ""
 "This is the default Audio CD drive (or file) to use. Don't forget the colon "
 "after the drive letter (e.g. D:)"
@@ -3139,7 +3154,7 @@ msgstr "Tämä on oletuksena käytettävä laite DVD:lle."
 msgid "This is the default VCD device to use."
 msgstr "Tämä on oletuksena käytettävä laite VCD:lle."
 
-#: src/libvlc-module.c:785 modules/access/cdda.c:992
+#: src/libvlc-module.c:785 modules/access/cdda.c:993
 msgid "This is the default Audio CD device to use."
 msgstr "Tämä on oletuksena käytettävä laite Audio CD:lle."
 
@@ -6393,45 +6408,45 @@ msgstr "Ylävalikko"
 msgid "First Play"
 msgstr "Ensimmäinen toisto"
 
-#: modules/access/cdda.c:716
+#: modules/access/cdda.c:717
 #, c-format
 msgid "Audio CD - Track %02i"
 msgstr "Audio CD - raita %02i"
 
-#: modules/access/cdda.c:1003 modules/gui/macosx/VLCOpenWindowController.m:169
+#: modules/access/cdda.c:1004 modules/gui/macosx/VLCOpenWindowController.m:169
 #: modules/gui/qt/ui/open_disk.h:297
 msgid "Audio CD"
 msgstr "Audio CD"
 
-#: modules/access/cdda.c:1004
+#: modules/access/cdda.c:1005
 msgid "Audio CD input"
 msgstr "Audio CD sisääntulo"
 
-#: modules/access/cdda.c:1013
+#: modules/access/cdda.c:1014
 msgid "[cdda:][device][@[track]]"
 msgstr "[cdda:][device][@[track]]"
 
-#: modules/access/cdda.c:1022
+#: modules/access/cdda.c:1023
 msgid "Musicbrainz Server"
 msgstr "Musicbrainz palvelin"
 
-#: modules/access/cdda.c:1023
+#: modules/access/cdda.c:1024
 msgid "Address of the musicbrainz server to use."
 msgstr "Käytettävän musicbrainz-palvelimen osoite."
 
-#: modules/access/cdda.c:1025
+#: modules/access/cdda.c:1026
 msgid "CDDB Server"
 msgstr "CDDB-palvelin"
 
-#: modules/access/cdda.c:1026
+#: modules/access/cdda.c:1027
 msgid "Address of the CDDB server to use."
 msgstr "Käytettävän CDDB-palvelimen osoite."
 
-#: modules/access/cdda.c:1027
+#: modules/access/cdda.c:1028
 msgid "CDDB port"
 msgstr "CDDB-portti"
 
-#: modules/access/cdda.c:1028
+#: modules/access/cdda.c:1029
 msgid "CDDB Server port to use."
 msgstr "Käytettävä CDDB-palvelimen portti."
 
@@ -14675,7 +14690,7 @@ msgstr "D-Bus -etäohjauskäyttöliittymä"
 #: modules/gui/macosx/VLCMainWindow.m:581
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
-#: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1026
+#: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1028
 #: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
 #: modules/gui/qt/main_interface.cpp:1306
 #: modules/gui/qt/main_interface.cpp:1343
@@ -15343,26 +15358,26 @@ msgid_plural "Playlist has only %u elements"
 msgstr[0] "Soittolistassa on vain %u elementti"
 msgstr[1] "Soittolistassa on vain %u elementtiä"
 
-#: modules/control/oldrc.c:1739 modules/gui/ncurses.c:808
+#: modules/control/oldrc.c:1739 modules/gui/ncurses.c:810
 msgid "+-[Incoming]"
 msgstr "+-[Sisääntuleva data]"
 
-#: modules/control/oldrc.c:1740 modules/gui/ncurses.c:810
+#: modules/control/oldrc.c:1740 modules/gui/ncurses.c:812
 #, c-format
 msgid "| input bytes read : %8.0f KiB"
 msgstr "| sisääntulosta luettu tavuja      : %8.0f kt"
 
-#: modules/control/oldrc.c:1742 modules/gui/ncurses.c:812
+#: modules/control/oldrc.c:1742 modules/gui/ncurses.c:814
 #, c-format
 msgid "| input bitrate    :   %6.0f kb/s"
 msgstr "| sisääntulon siirtonopeus          : %6.0f kb/s"
 
-#: modules/control/oldrc.c:1744 modules/gui/ncurses.c:814
+#: modules/control/oldrc.c:1744 modules/gui/ncurses.c:816
 #, c-format
 msgid "| demux bytes read : %8.0f KiB"
 msgstr "| kanavoinninpurku: luettu     : %8.0f kt"
 
-#: modules/control/oldrc.c:1746 modules/gui/ncurses.c:816
+#: modules/control/oldrc.c:1746 modules/gui/ncurses.c:818
 #, c-format
 msgid "| demux bitrate    :   %6.0f kb/s"
 msgstr "| kanavointi siirtonopeus : %6.0f kb/s"
@@ -15377,40 +15392,40 @@ msgstr "| kanavoinninpurussa viallisia : %5<PRIi64>"
 msgid "| discontinuities  :    %5<PRIi64>"
 msgstr "| epäjatkuvuuksia              : %5<PRIi64>"
 
-#: modules/control/oldrc.c:1754 modules/gui/ncurses.c:822
+#: modules/control/oldrc.c:1754 modules/gui/ncurses.c:824
 msgid "+-[Video Decoding]"
 msgstr "+-[Videopurku]"
 
-#: modules/control/oldrc.c:1755 modules/gui/ncurses.c:824
+#: modules/control/oldrc.c:1755 modules/gui/ncurses.c:826
 #, c-format
 msgid "| video decoded    :    %5<PRIi64>"
 msgstr "| videota purettu              : %5<PRIi64>"
 
-#: modules/control/oldrc.c:1757 modules/gui/ncurses.c:826
+#: modules/control/oldrc.c:1757 modules/gui/ncurses.c:828
 #, c-format
 msgid "| frames displayed :    %5<PRIi64>"
 msgstr "| ruutuja näytetty             : %5<PRIi64>"
 
-#: modules/control/oldrc.c:1759 modules/gui/ncurses.c:828
+#: modules/control/oldrc.c:1759 modules/gui/ncurses.c:830
 #, c-format
 msgid "| frames lost      :    %5<PRIi64>"
 msgstr "| ruutuja hukattu              : %5<PRIi64>"
 
-#: modules/control/oldrc.c:1763 modules/gui/ncurses.c:834
+#: modules/control/oldrc.c:1763 modules/gui/ncurses.c:836
 msgid "+-[Audio Decoding]"
 msgstr "+-[Audiopurku]"
 
-#: modules/control/oldrc.c:1764 modules/gui/ncurses.c:836
+#: modules/control/oldrc.c:1764 modules/gui/ncurses.c:838
 #, c-format
 msgid "| audio decoded    :    %5<PRIi64>"
 msgstr "| audiota purettu    :    %5<PRIi64>"
 
-#: modules/control/oldrc.c:1766 modules/gui/ncurses.c:838
+#: modules/control/oldrc.c:1766 modules/gui/ncurses.c:840
 #, c-format
 msgid "| buffers played   :    %5<PRIi64>"
 msgstr "| puskureita soitettu          : %5<PRIi64>"
 
-#: modules/control/oldrc.c:1768 modules/gui/ncurses.c:840
+#: modules/control/oldrc.c:1768 modules/gui/ncurses.c:842
 #, c-format
 msgid "| buffers lost     :    %5<PRIi64>"
 msgstr "| puskureita hukattu           : %5<PRIi64>"
@@ -18317,7 +18332,7 @@ msgstr "Metatiedon tallennus epäonnistui"
 msgid "VLC was unable to save the meta data."
 msgstr "VLC ei voinut tallentaa metatietoja."
 
-#: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:197
+#: modules/gui/macosx/VLCResumeDialogController.m:48 modules/gui/qt/qt.cpp:198
 #: modules/gui/qt/ui/sprefs_interface.h:558
 msgid "Continue playback?"
 msgstr "Jatketaanko toistoa?"
@@ -18616,7 +18631,7 @@ msgid "Show video within the main window"
 msgstr "Näytä video pääikkunassa"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:370
-#: modules/gui/macosx/macosx.m:104 modules/gui/qt/qt.cpp:181
+#: modules/gui/macosx/macosx.m:104 modules/gui/qt/qt.cpp:182
 msgid "Pause the video playback when minimized"
 msgstr "Videotoisto tauolle, kun ikkuna pienennetään"
 
@@ -18807,7 +18822,7 @@ msgid "sec."
 msgstr "sek."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:50
-#: modules/gui/qt/components/extended_panels.cpp:1442 modules/gui/qt/qt.cpp:216
+#: modules/gui/qt/components/extended_panels.cpp:1442 modules/gui/qt/qt.cpp:217
 msgid "Audio/Video"
 msgstr "Audio/Video"
 
@@ -19256,11 +19271,11 @@ msgstr ""
 "käyttää myös alkuperäistä koko näytön tilaa Mac OS X 10.7 alkaen ja "
 "uudemmissa."
 
-#: modules/gui/macosx/macosx.m:98 modules/gui/qt/qt.cpp:95
+#: modules/gui/macosx/macosx.m:98 modules/gui/qt/qt.cpp:96
 msgid "Resize interface to the native video size"
 msgstr "Muuta käyttöliittymä natiiviin videokokoon"
 
-#: modules/gui/macosx/macosx.m:99 modules/gui/qt/qt.cpp:96
+#: modules/gui/macosx/macosx.m:99 modules/gui/qt/qt.cpp:97
 msgid ""
 "You have two choices:\n"
 " - The interface will resize to the native video size\n"
@@ -19272,7 +19287,7 @@ msgstr ""
 " - Video mukautuu käyttöliittymän kokoon.\n"
 "Oletuksena käyttöliittymä mukautuu videon kokoon."
 
-#: modules/gui/macosx/macosx.m:105 modules/gui/qt/qt.cpp:183
+#: modules/gui/macosx/macosx.m:105 modules/gui/qt/qt.cpp:184
 msgid ""
 "With this option enabled, the playback will be automatically paused when "
 "minimizing the window."
@@ -19280,11 +19295,11 @@ msgstr ""
 "Mikäli tämä on käytössä, toisto laitetaan automaattiseti tauolle, jos "
 "minimoit VLC:n ikkunan tehtäväpalkkiin."
 
-#: modules/gui/macosx/macosx.m:108 modules/gui/qt/qt.cpp:185
+#: modules/gui/macosx/macosx.m:108 modules/gui/qt/qt.cpp:186
 msgid "Allow automatic icon changes"
 msgstr "Salli automaattiset kuvakkeiden muutokset"
 
-#: modules/gui/macosx/macosx.m:109 modules/gui/qt/qt.cpp:187
+#: modules/gui/macosx/macosx.m:109 modules/gui/qt/qt.cpp:188
 msgid ""
 "This option allows the interface to change its icon on various occasions."
 msgstr ""
@@ -19347,21 +19362,21 @@ msgstr ""
 "VLC voi tallentaa 30 viimeisimmän soitetut toistopaikat. Jos avaat jonkin "
 "näistä, toisto jatkuu."
 
-#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:209
+#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:210
 msgid "Ask"
 msgstr "Kysy"
 
-#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:203
-#: modules/gui/qt/qt.cpp:209 modules/keystore/keychain.m:50
+#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:204
+#: modules/gui/qt/qt.cpp:210 modules/keystore/keychain.m:50
 msgid "Always"
 msgstr "Aina"
 
-#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:203
-#: modules/gui/qt/qt.cpp:209 modules/gui/qt/qt.cpp:216
+#: modules/gui/macosx/macosx.m:142 modules/gui/qt/qt.cpp:204
+#: modules/gui/qt/qt.cpp:210 modules/gui/qt/qt.cpp:217
 msgid "Never"
 msgstr "Ei koskaan"
 
-#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:189
+#: modules/gui/macosx/macosx.m:145 modules/gui/qt/qt.cpp:190
 msgid "Maximum Volume displayed"
 msgstr "Maksimi voimakkuus näytetään"
 
@@ -19440,267 +19455,267 @@ msgstr ""
 msgid "Ncurses interface"
 msgstr "Ncurses käyttöliittymä"
 
-#: modules/gui/ncurses.c:771
+#: modules/gui/ncurses.c:773
 #, c-format
 msgid "  [%s]"
 msgstr "  [%s]"
 
-#: modules/gui/ncurses.c:775
+#: modules/gui/ncurses.c:777
 #, c-format
 msgid "      %s: %s"
 msgstr "      %s: %s"
 
-#: modules/gui/ncurses.c:859
+#: modules/gui/ncurses.c:861
 msgid "[Display]"
 msgstr "[Näyttö]"
 
-#: modules/gui/ncurses.c:861
+#: modules/gui/ncurses.c:863
 msgid " h,H                    Show/Hide help box"
 msgstr " h,H                    Näytä/piilota ohje"
 
-#: modules/gui/ncurses.c:862
+#: modules/gui/ncurses.c:864
 msgid " i                      Show/Hide info box"
 msgstr " i                      Näytä/piilota info"
 
-#: modules/gui/ncurses.c:863
+#: modules/gui/ncurses.c:865
 msgid " M                      Show/Hide metadata box"
 msgstr "M Näytä/Piilota metadataviestit"
 
-#: modules/gui/ncurses.c:864
+#: modules/gui/ncurses.c:866
 msgid " L                      Show/Hide messages box"
 msgstr " L                      Näytä/piilota viestit"
 
-#: modules/gui/ncurses.c:865
+#: modules/gui/ncurses.c:867
 msgid " P                      Show/Hide playlist box"
 msgstr " P                      Näytä/piilota soittolista"
 
-#: modules/gui/ncurses.c:866
+#: modules/gui/ncurses.c:868
 msgid " B                      Show/Hide filebrowser"
 msgstr " B                      Näytä/piilota tiedostoselain"
 
-#: modules/gui/ncurses.c:867
+#: modules/gui/ncurses.c:869
 msgid " x                      Show/Hide objects box"
 msgstr " x                      Näytä/piilota kohteet"
 
-#: modules/gui/ncurses.c:868
+#: modules/gui/ncurses.c:870
 msgid " S                      Show/Hide statistics box"
 msgstr " S                      Näytä/piilota statistiikat"
 
-#: modules/gui/ncurses.c:869
+#: modules/gui/ncurses.c:871
 msgid " Esc                    Close Add/Search entry"
 msgstr " Esc                    Sulje lisääminen/haku"
 
-#: modules/gui/ncurses.c:870
+#: modules/gui/ncurses.c:872
 msgid " Ctrl-l                 Refresh the screen"
 msgstr " Ctrl-l                 Virkistä näyttö"
 
-#: modules/gui/ncurses.c:874
+#: modules/gui/ncurses.c:876
 msgid "[Global]"
 msgstr "[Yleinen]"
 
-#: modules/gui/ncurses.c:876
+#: modules/gui/ncurses.c:878
 msgid " q, Q, Esc              Quit"
 msgstr " q, Q, Esc              Sulje"
 
-#: modules/gui/ncurses.c:877
+#: modules/gui/ncurses.c:879
 msgid " s                      Stop"
 msgstr " s                      Pysäytä"
 
-#: modules/gui/ncurses.c:878
+#: modules/gui/ncurses.c:880
 msgid " <space>                Pause/Play"
 msgstr " <space>                Tauko/jatka"
 
-#: modules/gui/ncurses.c:879
+#: modules/gui/ncurses.c:881
 msgid " f                      Toggle Fullscreen"
 msgstr " f                      Vaihda koko näyttöön"
 
-#: modules/gui/ncurses.c:880
+#: modules/gui/ncurses.c:882
 msgid " c                      Cycle through audio tracks"
 msgstr " c                      Selaa audioraitoja"
 
-#: modules/gui/ncurses.c:881
+#: modules/gui/ncurses.c:883
 msgid " v                      Cycle through subtitles tracks"
 msgstr " v                      Selaa tekstitysraitoja"
 
-#: modules/gui/ncurses.c:882
+#: modules/gui/ncurses.c:884
 msgid " b                      Cycle through video tracks"
 msgstr " b                      Selaa videoraitoja"
 
-#: modules/gui/ncurses.c:883
+#: modules/gui/ncurses.c:885
 msgid " n, p                   Next/Previous playlist item"
 msgstr " n, p                   Ed./seur. soittolistassa"
 
-#: modules/gui/ncurses.c:884
+#: modules/gui/ncurses.c:886
 msgid " [, ]                   Next/Previous title"
 msgstr " [, ]                   Ed./seur. nimi"
 
-#: modules/gui/ncurses.c:885
+#: modules/gui/ncurses.c:887
 msgid " <, >                   Next/Previous chapter"
 msgstr " <, >                   Ed./seur. luku"
 
 #. xgettext: You can use ← and → characters
-#: modules/gui/ncurses.c:887
+#: modules/gui/ncurses.c:889
 #, c-format
 msgid " <left>,<right>         Seek -/+ 1%%"
 msgstr " ←,→                    Kelaa -/+1%%"
 
-#: modules/gui/ncurses.c:888
+#: modules/gui/ncurses.c:890
 msgid " a, z                   Volume Up/Down"
 msgstr " a, z                   Voimakkuus. ylös/alas"
 
-#: modules/gui/ncurses.c:889
+#: modules/gui/ncurses.c:891
 msgid " m                      Mute"
 msgstr " m                      Vaimenna"
 
 #. xgettext: You can use ↑ and ↓ characters
-#: modules/gui/ncurses.c:891
+#: modules/gui/ncurses.c:893
 msgid " <up>,<down>            Navigate through the box line by line"
 msgstr " ↑,↓                    Siirry laatikossa rivi kerrallaan"
 
 #. xgettext: You can use ⇞ and ⇟ characters
-#: modules/gui/ncurses.c:893
+#: modules/gui/ncurses.c:895
 msgid " <pageup>,<pagedown>    Navigate through the box page by page"
 msgstr " ⇞,\f                    Siirry laatikossa sivu kerrallaan"
 
 #. xgettext: You can use ↖ and ↘ characters
-#: modules/gui/ncurses.c:895
+#: modules/gui/ncurses.c:897
 msgid " <start>,<end>          Navigate to start/end of box"
 msgstr " ↖, ↘                  Siirry laatikon alkuun/loppuun"
 
-#: modules/gui/ncurses.c:899
+#: modules/gui/ncurses.c:901
 msgid "[Playlist]"
 msgstr "[Soittolista]"
 
-#: modules/gui/ncurses.c:901
+#: modules/gui/ncurses.c:903
 msgid " r                      Toggle Random playing"
 msgstr " r                      Satunnaistoisto päälle/pois"
 
-#: modules/gui/ncurses.c:902
+#: modules/gui/ncurses.c:904
 msgid " l                      Toggle Loop Playlist"
 msgstr " l                      Vaihda soittolistan silmukka päälle/pois"
 
-#: modules/gui/ncurses.c:903
+#: modules/gui/ncurses.c:905
 msgid " R                      Toggle Repeat item"
 msgstr " R                      Uusi kohde"
 
-#: modules/gui/ncurses.c:904
+#: modules/gui/ncurses.c:906
 msgid " o                      Order Playlist by title"
 msgstr " o                      Järjestä nimen mukaan"
 
-#: modules/gui/ncurses.c:905
+#: modules/gui/ncurses.c:907
 msgid " O                      Reverse order Playlist by title"
 msgstr " O                      Järjestä käänteinen järjestys"
 
-#: modules/gui/ncurses.c:906
+#: modules/gui/ncurses.c:908
 msgid " g                      Go to the current playing item"
 msgstr " g                      Mene toistettavan kohdalle"
 
-#: modules/gui/ncurses.c:907
+#: modules/gui/ncurses.c:909
 msgid " /                      Look for an item"
 msgstr " /                      Etsi kohdetta nimellä"
 
-#: modules/gui/ncurses.c:908
+#: modules/gui/ncurses.c:910
 msgid " ;                      Look for the next item"
 msgstr " ;                      Etsi seuraava"
 
-#: modules/gui/ncurses.c:909
+#: modules/gui/ncurses.c:911
 msgid " A                      Add an entry"
 msgstr " A                      Lisää uusi kohde listaan"
 
 #. xgettext: You can use ⌫ character to translate <backspace>
-#: modules/gui/ncurses.c:911
+#: modules/gui/ncurses.c:913
 msgid " D, <backspace>, <del>  Delete an entry"
 msgstr " D, ⌫, <del>            Poista kohde listasta"
 
-#: modules/gui/ncurses.c:912
+#: modules/gui/ncurses.c:914
 msgid " e                      Eject (if stopped)"
 msgstr " e                     Levy ulos (jos pysäytetty)"
 
-#: modules/gui/ncurses.c:916
+#: modules/gui/ncurses.c:918
 msgid "[Filebrowser]"
 msgstr "[Tiedostoselain]"
 
-#: modules/gui/ncurses.c:918
+#: modules/gui/ncurses.c:920
 msgid " <enter>                Add the selected file to the playlist"
 msgstr " <enter>                Lisää valittu tiedosto soittolistaan"
 
-#: modules/gui/ncurses.c:919
+#: modules/gui/ncurses.c:921
 msgid " <space>                Add the selected directory to the playlist"
 msgstr " <space>                Lisää valittu hakemisto soittolistaan"
 
-#: modules/gui/ncurses.c:920
+#: modules/gui/ncurses.c:922
 msgid " .                      Show/Hide hidden files"
 msgstr " .                      Näytä/piilota piilotiedostot"
 
-#: modules/gui/ncurses.c:924
+#: modules/gui/ncurses.c:926
 msgid "[Player]"
 msgstr "[Soitin]"
 
 #. xgettext: You can use ↑ and ↓ characters
-#: modules/gui/ncurses.c:927
+#: modules/gui/ncurses.c:929
 #, c-format
 msgid " <up>,<down>            Seek +/-5%%"
 msgstr " ↑,↓                    Kelaa +/-5%%"
 
-#: modules/gui/ncurses.c:1046
+#: modules/gui/ncurses.c:1048
 msgid "[Repeat]"
 msgstr "[Uusinta]"
 
-#: modules/gui/ncurses.c:1047
+#: modules/gui/ncurses.c:1049
 msgid "[Random]"
 msgstr "[Satunnainen]"
 
-#: modules/gui/ncurses.c:1048
+#: modules/gui/ncurses.c:1050
 msgid "[Loop]"
 msgstr "[Silmukka]"
 
-#: modules/gui/ncurses.c:1057
+#: modules/gui/ncurses.c:1059
 #, c-format
 msgid " Source   : %s"
 msgstr " Lähde    : %s"
 
-#: modules/gui/ncurses.c:1090
+#: modules/gui/ncurses.c:1092
 #, c-format
 msgid " Position : %s/%s"
 msgstr " Sijainti : %s/%s"
 
-#: modules/gui/ncurses.c:1095
+#: modules/gui/ncurses.c:1097
 msgid " Volume   : Mute"
 msgstr " Voimakkuus   : Vaimennettu"
 
-#: modules/gui/ncurses.c:1096
+#: modules/gui/ncurses.c:1098
 #, c-format
 msgid " Volume   : %3ld%%"
 msgstr " Voimakkuus   : %3ld%%"
 
-#: modules/gui/ncurses.c:1096
+#: modules/gui/ncurses.c:1098
 msgid " Volume   : ----"
 msgstr "Voimakkuus  : ----"
 
-#: modules/gui/ncurses.c:1102
+#: modules/gui/ncurses.c:1104
 #, c-format
 msgid " Title    : %<PRId64>/%d"
 msgstr " Nimi     : %<PRId64>/%d"
 
-#: modules/gui/ncurses.c:1108
+#: modules/gui/ncurses.c:1110
 #, c-format
 msgid " Chapter  : %<PRId64>/%d"
 msgstr " Luku     : %<PRId64>/%d"
 
-#: modules/gui/ncurses.c:1113
+#: modules/gui/ncurses.c:1115
 msgid " Source: <no current item>"
 msgstr " Lähde: <no current item>"
 
-#: modules/gui/ncurses.c:1115
+#: modules/gui/ncurses.c:1117
 msgid " [ h for help ]"
 msgstr " [ ohjeet: h ]"
 
-#: modules/gui/ncurses.c:1136
+#: modules/gui/ncurses.c:1138
 #, c-format
 msgid "Open: %s"
 msgstr "Avaa: %s"
 
-#: modules/gui/ncurses.c:1138
+#: modules/gui/ncurses.c:1140
 #, c-format
 msgid "Find: %s"
 msgstr "Etsi: %s"
@@ -21847,11 +21862,11 @@ msgstr "<Local>"
 msgid "Scanning..."
 msgstr "Haetaan..."
 
-#: modules/gui/qt/qt.cpp:81
+#: modules/gui/qt/qt.cpp:82
 msgid "Show advanced preferences over simple ones"
 msgstr "Näytä lisäasetustila heti"
 
-#: modules/gui/qt/qt.cpp:82
+#: modules/gui/qt/qt.cpp:83
 msgid ""
 "Show advanced preferences and not simple preferences when opening the "
 "preferences dialog."
@@ -21859,11 +21874,11 @@ msgstr ""
 "Näytä lisäasetustila heti yksinkertaisten asetusten sijaan, kun asetusikkuna "
 "avataan."
 
-#: modules/gui/qt/qt.cpp:86 modules/gui/skins2/src/skin_main.cpp:499
+#: modules/gui/qt/qt.cpp:87 modules/gui/skins2/src/skin_main.cpp:499
 msgid "Systray icon"
 msgstr "Kuvake tehtäväpalkissa"
 
-#: modules/gui/qt/qt.cpp:87
+#: modules/gui/qt/qt.cpp:88
 msgid ""
 "Show an icon in the systray allowing you to control VLC media player for "
 "basic actions."
@@ -21871,27 +21886,27 @@ msgstr ""
 "Näytä tehtäväpalkin ilmaisinalueessa kuvake, jonka kautta voit kontrolloida "
 "VLC mediasoittimen toimintoja."
 
-#: modules/gui/qt/qt.cpp:91
+#: modules/gui/qt/qt.cpp:92
 msgid "Start VLC with only a systray icon"
 msgstr "Käynnistä VLC vain kuvakkeena tehtäväpalkkiin"
 
-#: modules/gui/qt/qt.cpp:92
+#: modules/gui/qt/qt.cpp:93
 msgid "VLC will start with just an icon in your taskbar."
 msgstr "VLC käynnistyy pelkkäna kuvakkeena tehtäväpalkiin."
 
-#: modules/gui/qt/qt.cpp:101
+#: modules/gui/qt/qt.cpp:102
 msgid "Show playing item name in window title"
 msgstr "Näytä toistettavan nimi ikkunan otsikossa"
 
-#: modules/gui/qt/qt.cpp:102
+#: modules/gui/qt/qt.cpp:103
 msgid "Show the name of the song or video in the controller window title."
 msgstr "Näytä musiikkin tai videon nimi ikkunan otsikossa."
 
-#: modules/gui/qt/qt.cpp:105
+#: modules/gui/qt/qt.cpp:106
 msgid "Show notification popup on track change"
 msgstr "Näytä ponnahdusikkuna raidan vaihtuessa"
 
-#: modules/gui/qt/qt.cpp:107
+#: modules/gui/qt/qt.cpp:108
 msgid ""
 "Show a notification popup with the artist and track name when the current "
 "playlist item changes, when VLC is minimized or hidden."
@@ -21899,11 +21914,11 @@ msgstr ""
 "Kappaleen vaihtuessa näytetään ponnahdusikkuna, jossa on artistin ja "
 "kappaleen nimi. Tämä näytetään vain, kun VLC-ikkuna on piilotettu."
 
-#: modules/gui/qt/qt.cpp:110
+#: modules/gui/qt/qt.cpp:111
 msgid "Windows opacity between 0.1 and 1"
 msgstr "Ikkunan läpinäkyvyys väliltä 0.1 ja 1"
 
-#: modules/gui/qt/qt.cpp:111
+#: modules/gui/qt/qt.cpp:112
 msgid ""
 "Sets the windows opacity between 0.1 and 1 for main interface, playlist and "
 "extended panel. This option only works with Windows and X11 with composite "
@@ -21914,11 +21929,11 @@ msgstr ""
 "Toimii vain Windows, sekä Linux X11, jossa on koostamisen laajennus "
 "\"composite extensions\"."
 
-#: modules/gui/qt/qt.cpp:116
+#: modules/gui/qt/qt.cpp:117
 msgid "Fullscreen controller opacity between 0.1 and 1"
 msgstr "Koko näytön säädinten läpinäkyvyys väliltä 0.1 ja 1"
 
-#: modules/gui/qt/qt.cpp:117
+#: modules/gui/qt/qt.cpp:118
 msgid ""
 "Sets the fullscreen controller opacity between 0.1 and 1 for main interface, "
 "playlist and extended panel. This option only works with Windows and X11 "
@@ -21929,23 +21944,23 @@ msgstr ""
 "täysin läpinäkymätön. Toimii vain Windows, sekä Linux X11, jossa on "
 "koostamisen laajennus \"composite extensions\"."
 
-#: modules/gui/qt/qt.cpp:122
+#: modules/gui/qt/qt.cpp:123
 msgid "Show unimportant error and warnings dialogs"
 msgstr "Näytä vähemmän tärkeät virhe- ja huomautusikkunat"
 
-#: modules/gui/qt/qt.cpp:124
+#: modules/gui/qt/qt.cpp:125
 msgid "Enable Dark Mode"
 msgstr "Käytä tummaa tilaa"
 
-#: modules/gui/qt/qt.cpp:125
+#: modules/gui/qt/qt.cpp:126
 msgid "Applies a dark theme to the style."
 msgstr "Lisää tyyliin tumman teeman."
 
-#: modules/gui/qt/qt.cpp:127
+#: modules/gui/qt/qt.cpp:128
 msgid "Activate the updates availability notification"
 msgstr "Aktivoi ilmoitukset uusista päivityksistä"
 
-#: modules/gui/qt/qt.cpp:128
+#: modules/gui/qt/qt.cpp:129
 msgid ""
 "Activate the automatic notification of new versions of the software. It runs "
 "once every two weeks."
@@ -21953,34 +21968,34 @@ msgstr ""
 "Aktivoi ilmoitukset uusista ohjelmaversioista. Tarkistus suoritetaan kahden "
 "viikon välein."
 
-#: modules/gui/qt/qt.cpp:131
+#: modules/gui/qt/qt.cpp:132
 msgid "Number of days between two update checks"
 msgstr "Päivitystarkistusten välinen aika päivinä"
 
-#: modules/gui/qt/qt.cpp:133
+#: modules/gui/qt/qt.cpp:134
 msgid "Ask for network policy at start"
 msgstr "Kysy verkon käytäntö käynnistyksen yhteydessä"
 
-#: modules/gui/qt/qt.cpp:135
+#: modules/gui/qt/qt.cpp:136
 msgid "Save the recently played items in the menu"
 msgstr "Muista viimeksi toistetut kohteet valikkoon"
 
-#: modules/gui/qt/qt.cpp:137
+#: modules/gui/qt/qt.cpp:138
 msgid "List of words separated by | to filter"
 msgstr "Sanaluettelo |-merkillä erotettuna"
 
-#: modules/gui/qt/qt.cpp:138
+#: modules/gui/qt/qt.cpp:139
 msgid ""
 "Regular expression used to filter the recent items played in the player."
 msgstr ""
 "Säännöllinen lause, jota käytetään suodattamaan soittimessa viimeiksi "
 "toistetut kohteet."
 
-#: modules/gui/qt/qt.cpp:141
+#: modules/gui/qt/qt.cpp:142
 msgid "Define the colors of the volume slider"
 msgstr "Määritä voimakkuuden liukusäätimen värit"
 
-#: modules/gui/qt/qt.cpp:142
+#: modules/gui/qt/qt.cpp:143
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
@@ -21992,11 +22007,11 @@ msgstr ""
 "Oletus on \"255;255;255;20;226;20;255;176;15;235;30;20\"\n"
 "Vaihtoehto voisi olla \"30;30;50;40;40;100;50;50;160;150;150;255\"."
 
-#: modules/gui/qt/qt.cpp:147
+#: modules/gui/qt/qt.cpp:148
 msgid "Selection of the starting mode and look"
 msgstr "Aloitustilan valinta ja ulkoasu"
 
-#: modules/gui/qt/qt.cpp:148
+#: modules/gui/qt/qt.cpp:149
 msgid ""
 "Start VLC with:\n"
 " - normal mode\n"
@@ -22008,41 +22023,41 @@ msgstr ""
 " - jatkuvasti näkyvä inforuutu, jossa mm. albumin kansikuva, sanat, yms.\n"
 " - minimaalinen näkymä rajoitetuilla säätimillä"
 
-#: modules/gui/qt/qt.cpp:154
+#: modules/gui/qt/qt.cpp:155
 msgid "Show a controller in fullscreen mode"
 msgstr "Näytä säätimet koko näytössä"
 
-#: modules/gui/qt/qt.cpp:155
+#: modules/gui/qt/qt.cpp:156
 msgid "Embed the file browser in open dialog"
 msgstr "Sisällytä tiedostoselain avattuun iikkunaan"
 
-#: modules/gui/qt/qt.cpp:157
+#: modules/gui/qt/qt.cpp:158
 msgid "Define which screen fullscreen goes"
 msgstr "Määritä, mikä näyttö menee koko näytölle"
 
-#: modules/gui/qt/qt.cpp:158
+#: modules/gui/qt/qt.cpp:159
 msgid "Screennumber of fullscreen, instead of same screen where interface is."
 msgstr ""
 "Kokoruudussa toiselle näytölle, sen sijaan että käytettäisiin samaa näyttöä, "
 "jolla käyttöliittymä nyt on."
 
-#: modules/gui/qt/qt.cpp:161
+#: modules/gui/qt/qt.cpp:162
 msgid "Load extensions on startup"
 msgstr "Lataa laajennukset käynnistyessä"
 
-#: modules/gui/qt/qt.cpp:162
+#: modules/gui/qt/qt.cpp:163
 msgid "Automatically load the extensions module on startup."
 msgstr "Lataa laajennuset automaattisesti käynnistyksen yhteydessä."
 
-#: modules/gui/qt/qt.cpp:165
+#: modules/gui/qt/qt.cpp:166
 msgid "Start in minimal view (without menus)"
 msgstr "Käynnistä minimaalisena (ilman valikoita)"
 
-#: modules/gui/qt/qt.cpp:167
+#: modules/gui/qt/qt.cpp:168
 msgid "Display background cone or art"
 msgstr "Näytä taustalla tötterö tai kansikuva"
 
-#: modules/gui/qt/qt.cpp:168
+#: modules/gui/qt/qt.cpp:169
 msgid ""
 "Display background cone or current album art when not playing. Can be "
 "disabled to prevent burning screen."
@@ -22050,19 +22065,19 @@ msgstr ""
 "Näytä taustaa tai albumin kansikuvaa, kun sitä ei toisteta. Voidaan poistaa "
 "käytöstä näytön palamisen estämiseksi."
 
-#: modules/gui/qt/qt.cpp:171
+#: modules/gui/qt/qt.cpp:172
 msgid "Expanding background cone or art"
 msgstr "Skaalautuvalla taustalla tötterö tai kansikuva"
 
-#: modules/gui/qt/qt.cpp:172
+#: modules/gui/qt/qt.cpp:173
 msgid "Background art fits window's size."
 msgstr "Kansikuva skaalataan ikkunan kokoiseksi."
 
-#: modules/gui/qt/qt.cpp:174
+#: modules/gui/qt/qt.cpp:175
 msgid "Ignore keyboard volume buttons."
 msgstr "Älä huomioi voimakkuuden painikkeita"
 
-#: modules/gui/qt/qt.cpp:176
+#: modules/gui/qt/qt.cpp:177
 msgid ""
 "With this option checked, the volume up, volume down and mute buttons on "
 "your keyboard will always change your system volume. With this option "
@@ -22074,11 +22089,11 @@ msgstr ""
 "voimakkuuteen. Mikäli tämä on pois käytöstä, näppäimet vaikuttavat "
 "voimakkuuteen VLC:n sisällä, jos ohjelma on auki."
 
-#: modules/gui/qt/qt.cpp:191
+#: modules/gui/qt/qt.cpp:192
 msgid "When to raise the interface"
 msgstr "Milloin käyttöliittymä nostetaan"
 
-#: modules/gui/qt/qt.cpp:192
+#: modules/gui/qt/qt.cpp:193
 msgid ""
 "This option allows the interface to be raised automatically when a video/"
 "audio playback starts, or never."
@@ -22086,15 +22101,15 @@ msgstr ""
 "Käyttöliittymä voidaan nostaa automaattisesti, kun toisto audio tai video "
 "alkaa tai ei koskaan."
 
-#: modules/gui/qt/qt.cpp:195
+#: modules/gui/qt/qt.cpp:196
 msgid "Fullscreen controller mouse sensitivity"
 msgstr "Koko näytön säätimien hiiren herkkyys"
 
-#: modules/gui/qt/qt.cpp:203
+#: modules/gui/qt/qt.cpp:204
 msgid "When minimized"
 msgstr "Pienennettynä"
 
-#: modules/gui/qt/qt.cpp:221
+#: modules/gui/qt/qt.cpp:222
 msgid "Qt interface"
 msgstr "Qt-käyttöliittymä"
 
@@ -23706,27 +23721,27 @@ msgstr ""
 msgid "Accept certificate temporarily"
 msgstr "Hyväksy sertifikaatti väliaikaisesti"
 
-#: modules/misc/stats.c:214 modules/stream_out/stats.c:51
+#: modules/misc/stats.c:215 modules/stream_out/stats.c:51
 msgid "Stats"
 msgstr "Tilastot"
 
-#: modules/misc/stats.c:216
+#: modules/misc/stats.c:217
 msgid "Stats encoder function"
 msgstr "Tilastotietojen pakkaaja"
 
-#: modules/misc/stats.c:222 modules/misc/stats.c:228 modules/misc/stats.c:234
+#: modules/misc/stats.c:223 modules/misc/stats.c:229 modules/misc/stats.c:235
 msgid "Stats decoder"
 msgstr "Tilastotietojen purkaja"
 
-#: modules/misc/stats.c:223 modules/misc/stats.c:229 modules/misc/stats.c:235
+#: modules/misc/stats.c:224 modules/misc/stats.c:230 modules/misc/stats.c:236
 msgid "Stats decoder function"
 msgstr "Tilastotietojen purkutoiminto"
 
-#: modules/misc/stats.c:240
+#: modules/misc/stats.c:241
 msgid "Stats demux"
 msgstr "Tilastotietojen kanavoinninpurkaja"
 
-#: modules/misc/stats.c:241
+#: modules/misc/stats.c:242
 msgid "Stats demux function"
 msgstr "Tilastotietojen kanavoinninpurkaja"
 
@@ -28324,7 +28339,7 @@ msgstr "DirectX (DirectDraw) videoulostulo"
 msgid "Wallpaper"
 msgstr "Taustakuva"
 
-#: modules/video_output/win32/glwin32.c:52
+#: modules/video_output/win32/glwin32.c:53
 msgid "OpenGL video output for Windows"
 msgstr "OpenGL-videoulostulo Windowsille"
 
@@ -28332,11 +28347,11 @@ msgstr "OpenGL-videoulostulo Windowsille"
 msgid "Windows GDI video output"
 msgstr "Windows GDI videoulostulo"
 
-#: modules/video_output/win32/wgl.c:42
+#: modules/video_output/win32/wgl.c:43
 msgid "GPU affinity"
 msgstr "Grafiikkasuorittimen affiniteetti"
 
-#: modules/video_output/win32/wgl.c:46
+#: modules/video_output/win32/wgl.c:47
 msgid "WGL extension for OpenGL"
 msgstr "WGL-laajennus OpenGL:lle"
 

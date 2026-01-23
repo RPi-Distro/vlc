@@ -1,4 +1,4 @@
-vlc (1:3.0.22-0+deb12u1+rpt1) bookworm; urgency=medium
+vlc (1:3.0.22-0+deb12u1+rpt1) UNRELEASED; urgency=medium
 
   * HW acceleration patchset 50
   * d/c: Add qtwayland5 to vlc dependencies
@@ -23,7 +23,13 @@ vlc (1:3.0.22-0+deb12u1+rpt1) bookworm; urgency=medium
     - mmal/libmmal_xsplitter_plugin.so
     - video_output/libdrm_vout_plugin.so 
 
- -- Serge Schneider <serge@raspberrypi.com>  Mon, 15 Dec 2025 16:45:27 +0000
+ -- Serge Schneider <serge@raspberrypi.com>  Fri, 23 Jan 2026 12:37:53 +0000
+
+vlc (3.0.23-0+deb12u1) bookworm-security; urgency=medium
+
+  * New upstream version 3.0.23
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 07 Jan 2026 21:12:09 +0100
 
 vlc (3.0.22-0+deb12u1) bookworm-security; urgency=medium
 
