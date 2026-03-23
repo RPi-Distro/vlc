@@ -1,7 +1,7 @@
 From 3cfc7e1c94cbd974411727434c2151976e396fd5 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 13 Jan 2026 17:04:04 +0000
-Subject: [PATCH 16/41] configure: If with-qtconf is given then do not look for
+Subject: [PATCH 16/40] configure: If with-qtconf is given then do not look for
  Qt5
 
 ---

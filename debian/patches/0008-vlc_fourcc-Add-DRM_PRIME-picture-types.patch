@@ -1,7 +1,7 @@
 From 1eca31b097ff1d737a74e0a141e646e2944e5012 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:29:03 +0100
-Subject: [PATCH 08/41] vlc_fourcc: Add DRM_PRIME picture types
+Subject: [PATCH 08/40] vlc_fourcc: Add DRM_PRIME picture types
 
 ---
  include/vlc_fourcc.h | 7 +++++++

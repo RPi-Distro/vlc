@@ -1,7 +1,7 @@
-From f3fb444448e40b3b75d9d895b36fa44c2fcbd96a Mon Sep 17 00:00:00 2001
+From 2e944b40a895773bf6f711504386a7468af39de5 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Mon, 19 Aug 2024 17:34:18 +0100
-Subject: [PATCH 39/41] wl_xdg_shell: Create an updated version of xdg-shell
+Subject: [PATCH 38/40] wl_xdg_shell: Create an updated version of xdg-shell
 
 xdg-shell has moved on since the previous version was written and
 current exported interfaces from labwc do not include the unstable xdg
@@ -59,7 +59,7 @@ shell. This updates the calls and bindings to work again.
  dnl
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -264,6 +264,14 @@ video_output/wayland/color-representatio
+@@ -272,6 +272,14 @@ video_output/wayland/color-representatio
  		$(WAYLAND_PROTOCOLS)/staging/color-representation/color-representation-v1.xml
  	$(AM_V_GEN)$(WAYLAND_SCANNER) client-header $< $@
  
@@ -74,7 +74,7 @@ shell. This updates the calls and bindings to work again.
  libwl_dmabuf_plugin_la_SOURCES = video_output/wayland/wl_dmabuf.c\
  	video_output/wayland/picpool.c video_output/wayland/picpool.h\
  	video_output/wayland/dmabuf_alloc.c video_output/wayland/dmabuf_alloc.h\
-@@ -331,6 +339,57 @@ video_output/wayland/xdg-shell-unstable-
+@@ -341,6 +349,57 @@ video_output/wayland/xdg-shell-unstable-
  		$(WAYLAND_PROTOCOLS)/unstable/xdg-shell/xdg-shell-unstable-v5.xml
  	$(AM_V_GEN)$(WAYLAND_SCANNER) private-code $< $@
  
@@ -132,7 +132,7 @@ shell. This updates the calls and bindings to work again.
  video_output/wayland/server-decoration-client-protocol.h: \
  		video_output/wayland/server-decoration.xml
  video_output/wayland/server-decoration-protocol.c: \
-@@ -350,6 +409,10 @@ vout_LTLIBRARIES += libwl_dmabuf_plugin.
+@@ -361,6 +420,10 @@ vout_LTLIBRARIES += libwl_dmabuf_plugin.
  vout_LTLIBRARIES += libwl_shell_plugin.la
  BUILT_SOURCES += $(nodist_libxdg_shell_plugin_la_SOURCES)
  vout_LTLIBRARIES += libxdg_shell_plugin.la
@@ -145,7 +145,7 @@ shell. This updates the calls and bindings to work again.
  vout_LTLIBRARIES += libegl_wl_plugin.la
 --- a/modules/video_output/wayland/wl_dmabuf.c
 +++ b/modules/video_output/wayland/wl_dmabuf.c
-@@ -115,6 +115,11 @@ typedef struct eq_env_ss {
+@@ -116,6 +116,11 @@ typedef struct eq_env_ss {
      struct wl_display *wrapped_display;
  } eq_env_t;
  
@@ -157,7 +157,7 @@ shell. This updates the calls and bindings to work again.
  typedef struct video_dmabuf_release_env_ss
  {
      void (* dma_rel_fn)(void *);
-@@ -123,6 +128,7 @@ typedef struct video_dmabuf_release_env_
+@@ -124,6 +129,7 @@ typedef struct video_dmabuf_release_env_
      unsigned int rel_count;
      unsigned int pt_count;
      struct polltask * pt[AV_DRM_MAX_PLANES];
@@ -165,7 +165,7 @@ shell. This updates the calls and bindings to work again.
  #if CHECK_VDRE_COUNTS
      atomic_int * vdre_check;
  #endif
-@@ -180,6 +186,7 @@ typedef struct subplane_s {
+@@ -181,6 +187,7 @@ typedef struct subplane_s {
  
      subpic_ent_t * spe_cur;
      subpic_ent_t * spe_next;
@@ -173,7 +173,7 @@ shell. This updates the calls and bindings to work again.
  } subplane_t;
  
  typedef struct pres_stats_env_ss {
-@@ -300,6 +307,41 @@ struct vout_display_sys_t
+@@ -301,6 +308,41 @@ struct vout_display_sys_t
  static struct wl_surface * bkg_surface_get_lock(vout_display_t * const vd, vout_display_sys_t * const sys);
  static void bkg_surface_unlock(vout_display_t * const vd, vout_display_sys_t * const sys);
  
@@ -215,7 +215,7 @@ shell. This updates the calls and bindings to work again.
  static void
  msg_stats(vout_display_t * const vd, const struct display_stats_s * const s)
  {
-@@ -910,6 +952,7 @@ vdre_free(video_dmabuf_release_env_t * c
+@@ -928,6 +970,7 @@ vdre_free(video_dmabuf_release_env_t * c
      for (i = 0; i != vdre->pt_count; ++i)
          polltask_delete(vdre->pt + i);
      eq_unref(&vdre->eq);
@@ -223,7 +223,7 @@ shell. This updates the calls and bindings to work again.
  #if CHECK_VDRE_COUNTS
      if (vdre->vdre_check != NULL)
          atomic_fetch_sub(vdre->vdre_check, 1);
-@@ -974,6 +1017,13 @@ vdre_eq_ref(video_dmabuf_release_env_t *
+@@ -992,6 +1035,13 @@ vdre_eq_ref(video_dmabuf_release_env_t *
      vdre->eq = eq_ref(eq);
  }
  
@@ -237,7 +237,7 @@ shell. This updates the calls and bindings to work again.
  #if CHECK_VDRE_COUNTS
  static void
  vdre_add_check(video_dmabuf_release_env_t * const vdre, atomic_int * const pa)
-@@ -1287,6 +1337,7 @@ subpic_ent_attach(subplane_t * const pla
+@@ -1305,6 +1355,7 @@ subpic_ent_attach(subplane_t * const pla
      }
      else
      {
@@ -245,7 +245,7 @@ shell. This updates the calls and bindings to work again.
          vdre_eq_ref(spe->vdre, eq);
          wl_buffer_add_listener(spe->wb, &vdre_buffer_listener, spe->vdre);
          wl_surface_attach(surface, spe->wb, 0, 0);
-@@ -1405,6 +1456,13 @@ spe_new_pic(vout_display_t * const vd, v
+@@ -1454,6 +1505,13 @@ spe_new_pic(vout_display_t * const vd, v
      return spe;
  }
  
@@ -259,7 +259,7 @@ shell. This updates the calls and bindings to work again.
  
  static subpic_ent_t *
  spe_new(vout_display_t * const vd, vout_display_sys_t * const sys,
-@@ -1421,7 +1479,10 @@ spe_new(vout_display_t * const vd, vout_
+@@ -1470,7 +1528,10 @@ spe_new(vout_display_t * const vd, vout_
  
      spe_update_rect(spe, spic, sreg);
  
@@ -271,7 +271,7 @@ shell. This updates the calls and bindings to work again.
  
      return spe;
  }
-@@ -1435,9 +1496,7 @@ spe_delete(subpic_ent_t ** const ppspe)
+@@ -1484,9 +1545,7 @@ spe_delete(subpic_ent_t ** const ppspe)
          return;
      *ppspe = NULL;
  
@@ -282,7 +282,7 @@ shell. This updates the calls and bindings to work again.
  }
  
  static int
-@@ -1530,6 +1589,7 @@ plane_destroy(subplane_t * const spl)
+@@ -1579,6 +1638,7 @@ plane_destroy(subplane_t * const spl)
      spl->trans = 0;
      memset(&spl->src_rect, 0, sizeof(spl->src_rect));
      memset(&spl->dst_rect, 0, sizeof(spl->dst_rect));
@@ -290,7 +290,7 @@ shell. This updates the calls and bindings to work again.
  }
  
  static int
-@@ -1542,7 +1602,8 @@ plane_create(vout_display_sys_t * const
+@@ -1591,7 +1651,8 @@ plane_create(vout_display_sys_t * const
      plane->commit_parent = commit_parent;
      if ((plane->surface = wl_compositor_create_surface(video_compositor(sys))) == NULL ||
          (plane->subsurface = wl_subcompositor_get_subsurface(sys->bound.subcompositor, plane->surface, parent)) == NULL ||
@@ -300,7 +300,7 @@ shell. This updates the calls and bindings to work again.
          return VLC_EGENERIC;
  #if HAVE_WAYLAND_COLOR_REPRESENTATION
      if (sys->bound.color_representation_manager_v1 != NULL)
-@@ -2200,6 +2261,13 @@ do_display(vout_display_t * const vd, vo
+@@ -2249,6 +2310,13 @@ do_display(vout_display_t * const vd, vo
  
          if (plane->spe_next && atomic_load(&plane->spe_next->ready))
          {

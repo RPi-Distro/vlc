@@ -1,18 +1,18 @@
-From b756708fceb793f9b7520c3e706ce55b7f94ad02 Mon Sep 17 00:00:00 2001
+From bd0c19bbbf177b42cdc38fb0d9a2d9c8383e1b8a Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 22 Oct 2024 15:59:50 +0100
-Subject: [PATCH 41/41] RPICHANGES: Add change log
+Subject: [PATCH 40/40] RPICHANGES: Add change log
 
 As codebase is now arranged to squash fixes into existing patches
 add a changelog so we know what deltas have occured
 ---
- RPICHANGES | 44 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ RPICHANGES | 54 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
  create mode 100644 RPICHANGES
 
 --- /dev/null
 +++ b/RPICHANGES
-@@ -0,0 +1,44 @@
+@@ -0,0 +1,54 @@
 +pi/3.0.21/rpi_48
 +----------------
 +Improve wl_xdg_shell so it is actually usable
@@ -57,3 +57,13 @@ add a changelog so we know what deltas have occured
 +Support Qt6, but do not enable by default
 +Avoid potential issues with wayland output if wayland takes a long time to
 +return buffers as has been observed occasionally elsewhere.
++
++pi/3.0.22-2/rpi_53
++------------------
++Improve compile if using ffmpeg 8.
++Improve lookup of format info in drmu.
++Fix protcol error when using RGB surfaces with color representation
++in wl_dmabuf.
++Fix occasional crash on exit in wl_dmabuf where a queue was destroyed from
++its own callback
++Removed MMAL support

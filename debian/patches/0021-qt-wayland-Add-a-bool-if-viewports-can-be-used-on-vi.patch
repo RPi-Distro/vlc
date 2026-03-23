@@ -1,7 +1,7 @@
 From ee688c6b128a36270623162647dbe393e422dcfe Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 14 Jan 2026 17:13:01 +0000
-Subject: [PATCH 21/41] qt wayland: Add a bool if viewports can be used on
+Subject: [PATCH 21/40] qt wayland: Add a bool if viewports can be used on
  video surface
 
 Add a wl_surface_do_not_viewport bool to vout_window_t. Qt 6 adds

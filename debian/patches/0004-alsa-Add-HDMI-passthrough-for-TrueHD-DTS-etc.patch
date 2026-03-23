@@ -1,7 +1,7 @@
 From a57408dc7ca9cea4d4f44ea5177af88aee1c05e1 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:09:44 +0100
-Subject: [PATCH 04/41] alsa: Add HDMI passthrough for TrueHD, DTS etc.
+Subject: [PATCH 04/40] alsa: Add HDMI passthrough for TrueHD, DTS etc.
 
 ---
  modules/audio_output/alsa.c | 268 ++++++++++++++++++++++++++++++++----

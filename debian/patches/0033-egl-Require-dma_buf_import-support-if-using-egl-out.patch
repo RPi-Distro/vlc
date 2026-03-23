@@ -1,23 +1,22 @@
-From 989fe9dae07e7e2e7021f1e5b0abdb1b485eaf95 Mon Sep 17 00:00:00 2001
+From f37afe63ba5d5058acb80a2d899d3e67dc0f62c5 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
-Date: Wed, 12 Jun 2024 10:54:53 +0100
-Subject: [PATCH 35/41] video_output/drmu: Add DRM video output
+Date: Wed, 12 Jun 2024 10:51:42 +0100
+Subject: [PATCH 33/40] egl: Require dma_buf_import support if using egl out
 
-Heavily based on my somewhat independent drmu project
-Can do HDR setup and mode matching
+If egl doesn't support dmabufs then X is faster.
 ---
  modules/video_output/Makefile.am           |   29 +
  modules/video_output/drmu/drm_vout.c       | 1503 ++++++++
- modules/video_output/drmu/drmu.c           | 3922 ++++++++++++++++++++
- modules/video_output/drmu/drmu.h           |  703 ++++
+ modules/video_output/drmu/drmu.c           | 3996 ++++++++++++++++++++
+ modules/video_output/drmu/drmu.h           |  711 ++++
  modules/video_output/drmu/drmu_atomic.c    |  992 +++++
- modules/video_output/drmu/drmu_chroma.h    |   47 +
+ modules/video_output/drmu/drmu_chroma.h    |   45 +
  modules/video_output/drmu/drmu_dmabuf.c    |  206 +
  modules/video_output/drmu/drmu_dmabuf.h    |   47 +
- modules/video_output/drmu/drmu_fmts.c      |  253 ++
- modules/video_output/drmu/drmu_fmts.h      |   31 +
+ modules/video_output/drmu/drmu_fmts.c      |  425 +++
+ modules/video_output/drmu/drmu_fmts.h      |   67 +
  modules/video_output/drmu/drmu_log.h       |   81 +
- modules/video_output/drmu/drmu_math.c      |   43 +
+ modules/video_output/drmu/drmu_math.c      |   29 +
  modules/video_output/drmu/drmu_math.h      |  149 +
  modules/video_output/drmu/drmu_output.c    |  589 +++
  modules/video_output/drmu/drmu_output.h    |  114 +
@@ -27,18 +26,19 @@ Can do HDR setup and mode matching
  modules/video_output/drmu/drmu_pool.h      |   60 +
  modules/video_output/drmu/drmu_scan.c      |   60 +
  modules/video_output/drmu/drmu_scan.h      |   20 +
- modules/video_output/drmu/drmu_util.c      |  199 +
- modules/video_output/drmu/drmu_util.h      |   64 +
- modules/video_output/drmu/drmu_vlc.c       |  381 ++
+ modules/video_output/drmu/drmu_util.c      |  252 ++
+ modules/video_output/drmu/drmu_util.h      |   74 +
+ modules/video_output/drmu/drmu_vlc.c       |  389 ++
  modules/video_output/drmu/drmu_vlc.h       |   81 +
- modules/video_output/drmu/drmu_vlc_fmts.c  |  258 ++
+ modules/video_output/drmu/drmu_vlc_fmts.c  |  281 ++
  modules/video_output/drmu/drmu_vlc_fmts.h  |   57 +
- modules/video_output/drmu/drmu_writeback.c |  429 +++
- modules/video_output/drmu/drmu_writeback.h |   64 +
- modules/video_output/drmu/drmu_xlease.c    |  143 +
+ modules/video_output/drmu/drmu_writeback.c |  441 +++
+ modules/video_output/drmu/drmu_writeback.h |   73 +
+ modules/video_output/drmu/drmu_xlease.c    |  149 +
  modules/video_output/drmu/pollqueue.c      |  716 ++++
  modules/video_output/drmu/pollqueue.h      |  101 +
- 32 files changed, 12278 insertions(+)
+ modules/video_output/opengl/egl.c          |   10 +
+ 33 files changed, 12683 insertions(+)
  create mode 100644 modules/video_output/drmu/drm_vout.c
  create mode 100644 modules/video_output/drmu/drmu.c
  create mode 100644 modules/video_output/drmu/drmu.h
@@ -83,7 +83,7 @@ Can do HDR setup and mode matching
 +	video_output/drmu/drmu_vlc.c video_output/drmu/drmu_vlc.h \
 +	video_output/drmu/drmu_vlc_fmts.c video_output/drmu/drmu_vlc_fmts.h \
 +	video_output/drmu/drmu_fmts.c video_output/drmu/drmu_fmts.h \
-+	video_output/drmu/drmu_chroma.h \
++	video_output/drmu/drmu_chroma.h video_output/drmu/drmu_fourcc.h\
 +	video_output/drmu/drmu_writeback.h video_output/drmu/drmu_writeback.c \
 +	video_output/drmu/drmu_poll.h video_output/drmu/drmu_poll.c \
 +	video_output/drmu/drmu_log.h video_output/drmu/drmu.c \
@@ -1617,13 +1617,14 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu.c
-@@ -0,0 +1,3922 @@
+@@ -0,0 +1,3996 @@
 +// Needed to ensure we get a 64-bit offset to mmap when mapping BOs
 +#undef _FILE_OFFSET_BITS
 +#define _FILE_OFFSET_BITS 64
 +
 +#include "drmu.h"
 +#include "drmu_fmts.h"
++#include "drmu_fourcc.h"
 +#include "drmu_log.h"
 +
 +#include <pthread.h>
@@ -1643,7 +1644,6 @@ Can do HDR setup and mode matching
 +
 +#include <libdrm/drm.h>
 +#include <libdrm/drm_mode.h>
-+#include <libdrm/drm_fourcc.h>
 +#include <xf86drm.h>
 +
 +#include <linux/dma-buf.h>
@@ -1652,10 +1652,6 @@ Can do HDR setup and mode matching
 +
 +#ifndef OPT_IO_CALLOC
 +#define OPT_IO_CALLOC 0
-+#endif
-+
-+#ifndef DRM_FORMAT_P030
-+#define DRM_FORMAT_P030 fourcc_code('P', '0', '3', '0')
 +#endif
 +
 +struct drmu_bo_env_s;
@@ -1962,9 +1958,6 @@ Can do HDR setup and mode matching
 +        unsigned int i = pen->n / 2;
 +        unsigned int a = 0;
 +        unsigned int b = pen->n;
-+
-+        if (name == NULL)
-+            return NULL;
 +
 +        while (a < b) {
 +            const int r = strcmp(name, pen->enums[i].name);
@@ -2903,7 +2896,12 @@ Can do HDR setup and mode matching
 +    dfb->fb.height       = h;
 +    dfb->active          = active;
 +    dfb->crop            = drmu_rect_shl16(active);
++    // This may be later set by _chroma_siting_set but it is good to have defaults
 +    dfb->chroma_siting   = drmu_fmt_info_chroma_siting(dfb->fmt_info);
++    // These may be later set by _color_set but it is good to have defaults
++    dfb->color_encoding  = DRMU_COLOR_ENCODING_BT709;
++    dfb->color_range     = drmu_fmt_info_is_yuv(dfb->fmt_info) ? DRMU_COLOR_RANGE_YCBCR_LIMITED_RANGE : DRMU_COLOR_RANGE_YCBCR_FULL_RANGE;
++    dfb->colorspace      = DRMU_COLORSPACE_DEFAULT;
 +}
 +
 +void
@@ -3028,6 +3026,12 @@ Can do HDR setup and mode matching
 +drmu_fb_colorspace_get(const drmu_fb_t * const dfb)
 +{
 +    return dfb->colorspace;
++}
++
++drmu_color_encoding_t
++drmu_fb_color_encoding_get(const drmu_fb_t * const dfb)
++{
++    return dfb->color_encoding;
 +}
 +
 +const char *
@@ -4144,7 +4148,8 @@ Can do HDR setup and mode matching
 +    drmu_blob_t * hdr_metadata_blob;
 +
 +    uint32_t * writeback_fmts;
-+    size_t writeback_fmts_count;
++    uint32_t * writeback_fmts_sorted;
++    unsigned int writeback_fmts_count;
 +
 +    char name[32];
 +};
@@ -4270,10 +4275,26 @@ Can do HDR setup and mode matching
 +}
 +
 +const uint32_t *
-+drmu_conn_writeback_formats(drmu_conn_t * const dn, size_t * const ppcount)
++drmu_conn_writeback_formats(drmu_conn_t * const dn, unsigned int * const ppcount)
 +{
 +    *ppcount = dn->writeback_fmts_count;
 +    return dn->writeback_fmts;
++}
++
++static int
++wb_fmt_cmp_cb(const void * va, const void * vb)
++{
++    const uint32_t a = *(const uint32_t *)va;
++    const uint32_t b = *(const uint32_t *)vb;
++    return a == b ? 0 : a < b ? -1 : 1;
++}
++
++bool
++drmu_conn_has_writeback_format(drmu_conn_t * const dn, const uint32_t fmt)
++{
++    return dn->writeback_fmts_sorted != NULL &&
++        bsearch(&fmt, dn->writeback_fmts_sorted, dn->writeback_fmts_count,
++                sizeof(*dn->writeback_fmts_sorted), wb_fmt_cmp_cb) != NULL;
 +}
 +
 +const struct drm_mode_modeinfo *
@@ -4339,9 +4360,11 @@ Can do HDR setup and mode matching
 +    free(dn->modes);
 +    free(dn->enc_ids);
 +    free(dn->writeback_fmts);
++    free(dn->writeback_fmts_sorted);
 +    dn->modes = NULL;
 +    dn->enc_ids = NULL;
 +    dn->writeback_fmts = NULL;
++    dn->writeback_fmts_sorted = NULL;
 +    dn->modes_size = 0;
 +    dn->enc_ids_size = 0;
 +    dn->writeback_fmts_count = 0;
@@ -4440,6 +4463,12 @@ Can do HDR setup and mode matching
 +        props_free(props);
 +        dn->writeback_fmts = wb_blob_data;
 +        dn->writeback_fmts_count = wb_blob_len / sizeof(*dn->writeback_fmts);
++        if (dn->writeback_fmts != NULL &&
++            (dn->writeback_fmts_sorted = malloc(wb_blob_len)) != NULL) {
++            memcpy(dn->writeback_fmts_sorted, dn->writeback_fmts, wb_blob_len);
++            qsort(dn->writeback_fmts_sorted, dn->writeback_fmts_count,
++                  sizeof(*dn->writeback_fmts_sorted), wb_fmt_cmp_cb);
++        }
 +
 +        dn->rot_mask = rotation_make_array(dn->pid.rotation, dn->rot_vals);
 +    }
@@ -4539,6 +4568,19 @@ Can do HDR setup and mode matching
 +//
 +// Plane fns
 +
++typedef struct drmu_fmt_idx_s {
++    uint32_t fmt;
++    uint32_t idx;
++} fmt_idx_t;
++
++static int
++fmt_idx_cmp(const void * va, const void * vb)
++{
++    const fmt_idx_t * a = va;
++    const fmt_idx_t * b = vb;
++    return a->fmt == b->fmt ? 0 : a->fmt < b->fmt ? -1 : 1;
++}
++
 +typedef struct drmu_plane_s {
 +    struct drmu_env_s * du;
 +
@@ -4554,6 +4596,7 @@ Can do HDR setup and mode matching
 +    void * formats_in;
 +    size_t formats_in_len;
 +    const struct drm_format_modifier_blob * fmts_hdr;
++    fmt_idx_t * fmt_idxs; // Sorted formats with original index
 +
 +    struct {
 +        uint32_t crtc_id;
@@ -4706,35 +4749,43 @@ Can do HDR setup and mode matching
 +    return drmu_rotation_is_valid(rot) && ((dp->rot_mask >> rot) & 1) != 0;
 +}
 +
++static int
++plane_format_find(const drmu_plane_t * const dp, const uint32_t format)
++{
++    if (dp == NULL || format == 0) {
++        return -1;
++    }
++    else {
++        const fmt_idx_t s = {.fmt = format, .idx = 0};
++        const fmt_idx_t * fmt_idx = bsearch(&s, dp->fmt_idxs, dp->fmts_hdr->count_formats, sizeof(*dp->fmt_idxs), fmt_idx_cmp);
++        return fmt_idx == NULL ? -1 : (int)fmt_idx->idx;
++    }
++}
++
 +bool
 +drmu_plane_format_check(const drmu_plane_t * const dp, const uint32_t format, const uint64_t modifier)
 +{
 +    const struct drm_format_modifier * const mods = (const struct drm_format_modifier *)((const uint8_t *)dp->formats_in + dp->fmts_hdr->modifiers_offset);
-+    const uint32_t * const fmts = (const uint32_t *)((const uint8_t *)dp->formats_in + dp->fmts_hdr->formats_offset);
 +    uint64_t modbase = modifier;
++    int fmt_no = plane_format_find(dp, format);
 +    unsigned int i;
 +
-+    if (!format)
++    if (fmt_no == -1)
 +        return false;
 +
 +    // If broadcom then remove parameters before checking
 +    if ((modbase >> 56) == DRM_FORMAT_MOD_VENDOR_BROADCOM)
 +        modbase = fourcc_mod_broadcom_mod(modbase);
 +
-+    // * Simplistic lookup; Could be made much faster
-+
++    // Probably few enough mods that linear search is OK
 +    for (i = 0; i != dp->fmts_hdr->count_modifiers; ++i) {
 +        const struct drm_format_modifier * const mod = mods + i;
-+        uint64_t fbits;
-+        unsigned int j;
 +
-+        if (mod->modifier != modbase)
-+            continue;
-+
-+        for (fbits = mod->formats, j = mod->offset; fbits; fbits >>= 1, ++j) {
-+            if ((fbits & 1) != 0 && fmts[j] == format)
-+                return true;
-+        }
++        if (mod->modifier == modbase &&
++            (uint32_t)fmt_no >= mod->offset &&
++            (uint32_t)fmt_no < mod->offset + 64 &&
++            ((mod->formats >> (fmt_no - mod->offset)) & 1) != 0)
++            return true;
 +    }
 +    return false;
 +}
@@ -4855,6 +4906,8 @@ Can do HDR setup and mode matching
 +    drmu_prop_enum_delete(&dp->pid.pixel_blend_mode);
 +    drmu_prop_enum_delete(&dp->pid.rotation);
 +    drmu_prop_range_delete(&dp->pid.zpos);
++    free(dp->fmt_idxs);
++    dp->fmt_idxs = NULL;
 +    free(dp->formats_in);
 +    dp->formats_in = NULL;
 +}
@@ -4864,6 +4917,7 @@ Can do HDR setup and mode matching
 +plane_init(drmu_env_t * const du, drmu_plane_t * const dp, const uint32_t plane_id)
 +{
 +    drmu_props_t *props;
++    unsigned int i;
 +    int rv;
 +
 +    memset(dp, 0, sizeof(*dp));
@@ -4897,10 +4951,26 @@ Can do HDR setup and mode matching
 +        props_name_get_blob(props, "IN_FORMATS", &dp->formats_in, &dp->formats_in_len) != 0)
 +    {
 +        drmu_err(du, "%s: failed to find required id", __func__);
-+        props_free(props);
-+        return -EINVAL;
++        goto fail;
 +    }
 +    dp->fmts_hdr = dp->formats_in;
++
++    if ((dp->fmt_idxs = malloc(sizeof(*dp->fmt_idxs) * dp->fmts_hdr->count_formats)) == NULL)
++    {
++        drmu_err(du, "Fmt alloc fail");
++        goto fail;
++    }
++    for (i = 0; i != dp->fmts_hdr->count_formats; ++i)
++        dp->fmt_idxs[i] = (fmt_idx_t){
++            .fmt = ((uint32_t*)((const uint8_t *)dp->formats_in + dp->fmts_hdr->formats_offset))[i],
++            .idx = i};
++    qsort(dp->fmt_idxs, dp->fmts_hdr->count_formats, sizeof(*dp->fmt_idxs), fmt_idx_cmp);
++#if 0
++    for (i = 0; i != dp->fmts_hdr->count_formats; ++i) {
++        drmu_info(du, "Format %s [%d] %s", drmu_log_fourcc(dp->fmt_idxs[i].fmt), dp->fmt_idxs[i].idx,
++                  drmu_fmt_info_name(drmu_fmt_info_find_fmt(dp->fmt_idxs[i].fmt)));
++    }
++#endif
 +
 +    dp->pid.alpha            = drmu_prop_range_new(du, props_name_to_id(props, "alpha"));
 +    dp->pid.color_encoding   = drmu_prop_enum_new(du, props_name_to_id(props, "COLOR_ENCODING"));
@@ -4933,6 +5003,10 @@ Can do HDR setup and mode matching
 +
 +    props_free(props);
 +    return 0;
++
++fail:
++    props_free(props);
++    return -EINVAL;
 +}
 +
 +//----------------------------------------------------------------------------
@@ -5542,7 +5616,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu.h
-@@ -0,0 +1,703 @@
+@@ -0,0 +1,711 @@
 +#ifndef _DRMU_DRMU_H
 +#define _DRMU_DRMU_H
 +
@@ -5550,6 +5624,7 @@ Can do HDR setup and mode matching
 +#include <stdbool.h>
 +#include <stdint.h>
 +#include <stdlib.h>
++#include <string.h>
 +
 +#include "drmu_chroma.h"
 +#include "drmu_math.h"
@@ -5759,12 +5834,15 @@ Can do HDR setup and mode matching
 +#define DRMU_COLOR_ENCODING_BT709               "ITU-R BT.709 YCbCr"
 +#define DRMU_COLOR_ENCODING_BT601               "ITU-R BT.601 YCbCr"
 +static inline bool drmu_color_encoding_is_set(const drmu_color_encoding_t x) {return x != NULL;}
++static inline bool drmu_color_encoding_eq(const drmu_color_encoding_t a, const drmu_color_encoding_t b) {return a != NULL && b != NULL && !strcmp(a, b);}
 +// Note: Color range only applies to YCbCr planes - ignored for RGB
 +typedef const char * drmu_color_range_t;
 +#define DRMU_COLOR_RANGE_UNSET                  NULL
 +#define DRMU_COLOR_RANGE_YCBCR_FULL_RANGE       "YCbCr full range"
 +#define DRMU_COLOR_RANGE_YCBCR_LIMITED_RANGE    "YCbCr limited range"
 +static inline bool drmu_color_range_is_set(const drmu_color_range_t x) {return x != NULL;}
++static inline bool drmu_color_range_is_full(const drmu_color_range_t x) {return x != NULL && strcmp(x, DRMU_COLOR_RANGE_YCBCR_FULL_RANGE) == 0;}
++static inline bool drmu_color_range_is_limited(const drmu_color_range_t x) {return x != NULL && strcmp(x, DRMU_COLOR_RANGE_YCBCR_LIMITED_RANGE) == 0;}
 +typedef const char * drmu_colorspace_t;
 +#define DRMU_COLORSPACE_UNSET                   NULL
 +#define DRMU_COLORSPACE_DEFAULT                 "Default"
@@ -5797,8 +5875,10 @@ Can do HDR setup and mode matching
 +const struct hdr_output_metadata * drmu_fb_hdr_metadata_get(const drmu_fb_t *const dfb);
 +drmu_broadcast_rgb_t drmu_color_range_to_broadcast_rgb(const drmu_color_range_t range);
 +drmu_colorspace_t drmu_fb_colorspace_get(const drmu_fb_t * const dfb);
++drmu_color_encoding_t drmu_fb_color_encoding_get(const drmu_fb_t * const dfb);
 +drmu_color_range_t drmu_fb_color_range_get(const drmu_fb_t * const dfb);
 +const struct drmu_fmt_info_s * drmu_fb_format_info_get(const drmu_fb_t * const dfb);
++#define drmu_fb_fmt_info drmu_fb_format_info_get
 +void drmu_fb_hdr_metadata_set(drmu_fb_t *const dfb, const struct hdr_output_metadata * meta);
 +int drmu_fb_int_make(drmu_fb_t *const dfb);
 +
@@ -5916,7 +5996,9 @@ Can do HDR setup and mode matching
 +
 +// List of supported writeback formats - no modifiers supported
 +// *ppcount receives the count
-+const uint32_t * drmu_conn_writeback_formats(drmu_conn_t * const dn, size_t * const ppcount);
++const uint32_t * drmu_conn_writeback_formats(drmu_conn_t * const dn, unsigned int * const ppcount);
++// Test if fmt is a valid writeback format
++bool drmu_conn_has_writeback_format(drmu_conn_t * const dn, const uint32_t fmt);
 +
 +// Connector might support some rotations - true if given rotation supported
 +bool drmu_conn_has_rotation(const drmu_conn_t * const dn, const unsigned int rotation);
@@ -7243,14 +7325,12 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_chroma.h
-@@ -0,0 +1,47 @@
+@@ -0,0 +1,45 @@
 +#ifndef _DRMU_DRMU_CHROMA_H
 +#define _DRMU_DRMU_CHROMA_H
 +
 +#include <stdbool.h>
 +#include <stdint.h>
-+
-+#include "drmu_chroma.h"
 +
 +#ifdef __cplusplus
 +extern "C" {
@@ -7552,12 +7632,14 @@ Can do HDR setup and mode matching
 +#endif
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_fmts.c
-@@ -0,0 +1,253 @@
+@@ -0,0 +1,425 @@
 +#include "drmu_fmts.h"
 +
 +#include <stddef.h>
++#include <ctype.h>
++#include <string.h>
 +
-+#include <libdrm/drm_fourcc.h>
++#include "drmu_fourcc.h"
 +
 +#ifndef HAS_SORTED_FMTS
 +#define HAS_SORTED_FMTS 0
@@ -7566,33 +7648,131 @@ Can do HDR setup and mode matching
 +#define BUILD_MK_SORTED_FMTS_H 0
 +#endif
 +
-+#ifndef DRM_FORMAT_P030
-+#define DRM_FORMAT_P030 fourcc_code('P', '0', '3', '0')
-+#endif
-+
 +// Format properties
-+
-+typedef struct drmu_fmt_info_s {
-+    uint32_t fourcc;
-+    uint8_t  bpp;  // For dumb BO alloc
-+    uint8_t  bit_depth;  // For display
-+    uint8_t  plane_count;
-+    struct {
-+        uint8_t wdiv;
-+        uint8_t hdiv;
-+    } planes[4];
-+    drmu_chroma_siting_t chroma_siting;  // Default for this format (YUV420 = (0.0, 0.5), otherwise (0, 0)
-+} drmu_fmt_info_t;
 +
 +#if BUILD_MK_SORTED_FMTS_H || !HAS_SORTED_FMTS
 +
-+#define P_ONE       {{.wdiv = 1, .hdiv = 1}}
-+#define P_YC420     {{.wdiv = 1, .hdiv = 1}, {.wdiv = 1, .hdiv = 2}}
-+#define P_YC422     {{.wdiv = 1, .hdiv = 1}, {.wdiv = 1, .hdiv = 1}}
-+#define P_YC444     {{.wdiv = 2, .hdiv = 1}, {.wdiv = 1, .hdiv = 1}}  // Assumes doubled .bpp
-+#define P_YUV420    {{.wdiv = 1, .hdiv = 1}, {.wdiv = 2, .hdiv = 2}, {.wdiv = 2, .hdiv = 2}}
-+#define P_YUV422    {{.wdiv = 1, .hdiv = 1}, {.wdiv = 2, .hdiv = 1}, {.wdiv = 2, .hdiv = 1}}
-+#define P_YUV444    {{.wdiv = 1, .hdiv = 1}, {.wdiv = 1, .hdiv = 1}, {.wdiv = 1, .hdiv = 1}}
++#define C_XY(_sx,_sy)   {{.sx = 1, .sy = 1}, {.sx = (_sx), .sy = (_sy)}, {.sx = (_sx), .sy = (_sy)}, {.sx = 1, .sy = 1}}
++#define C_444           C_XY(1,1)
++#define C_422           C_XY(2,1)
++#define C_420           C_XY(2,2)
++
++#define CHAN_B         0
++#define CHAN_Y         0
++#define CHAN_G         1
++#define CHAN_U         1
++#define CHAN_R         2
++#define CHAN_V         2
++#define CHAN_A         3
++#define CHAN_X         4
++
++#define CTST_B         0
++#define CTST_Y         1
++#define CTST_G         0
++#define CTST_U         1
++#define CTST_R         0
++#define CTST_V         1
++#define CTST_A         0
++#define CTST_X         0
++
++#define SITING_SY_1     DRMU_CHROMA_SITING_TOP_LEFT_I
++#define SITING_SY_2     DRMU_CHROMA_SITING_LEFT_I
++
++#define PEL(_C, _bits, _off) {.chan = CHAN_##_C, .bits = _bits, .off = _off}
++
++#define FMT_ONE_422_NAMED_PKLO(_name, CA, CB, CC, CD, bits, pk)\
++    { .fourcc = DRM_FORMAT_##_name,\
++      .bpp = (pk) * 2,\
++      .bit_depth = (bits),\
++      .plane_count = 1,\
++      .is_yuv = 1,\
++      .chans = C_422,\
++      .planes = {{\
++            .bpg = ((pk) / 8) * 4,\
++            .xdiv = 1, .ydiv = 1,\
++            .pels = {PEL(CA, bits, 0), PEL(CB, bits, (pk)), PEL(CC, bits, (pk) * 2), PEL(CD, bits, (pk) * 3)}}},\
++      .chroma_siting = SITING_SY_1,\
++      .name=#_name,\
++    }
++#define FMT_ONE_422(CA, CB, CC, CD, bits) FMT_ONE_422_NAMED_PKLO(CA##CB##CC##CD, CA, CB, CC, CD, bits, ((bits + 7) & ~7))
++
++#define  FMT_ONE_4_NAMED(_name, CA, CB, CC, CD, NA, NB, NC, ND)\
++    { .fourcc = DRM_FORMAT_##_name,\
++      .bpp = (NA + NB + NC + ND),\
++      .bit_depth = (NA > ND ? NA : ND),\
++      .plane_count = 1,\
++      .is_yuv = CTST_##CA || CTST_##CB || CTST_##CC || CTST_##CD,\
++      .chans = C_444,\
++      .planes = {{\
++            .bpg = (NA + NB + NC + ND) / 8,\
++            .xdiv = 1, .ydiv = 1,\
++            .pels = {PEL(CD, ND, 0), PEL(CC, NC, ND), PEL(CB, NB, ND + NC), PEL(CA, NA, ND + NC + NB)}}},\
++      .chroma_siting = SITING_SY_1,\
++      .name=#_name,\
++    }
++#define  FMT_ONE_4(CA, CB, CC, CD, NA, NB, NC, ND) FMT_ONE_4_NAMED(CA##CB##CC##CD##NA##NB##NC##ND, CA, CB, CC, CD, NA, NB, NC, ND)
++
++#define  FMT_ONE_3_NAMED(_name, CA, CB, CC, NA, NB, NC)\
++    { .fourcc = DRM_FORMAT_##_name,\
++      .bpp = (NA + NB + NC),\
++      .bit_depth = NA,\
++      .plane_count = 1,\
++      .is_yuv = CTST_##CA || CTST_##CB || CTST_##CC,\
++      .chans = C_444,\
++      .planes = {{\
++            .bpg = (NA + NB + NC) / 8,\
++            .xdiv = 1, .ydiv = 1,\
++            .pels = {PEL(CC, NC, 0), PEL(CB, NB, NC), PEL(CA, NA, NC + NB)}}},\
++      .chroma_siting = SITING_SY_1,\
++      .name=#_name,\
++    }
++#define  FMT_ONE_3(CA, CB, CC, NA, NB, NC) FMT_ONE_3_NAMED(CA##CB##CC##NA##NB##NC, CA, CB, CC, NA, NB, NC)
++
++#define  FMT_NV_PKHI(_name, CA, CB, CC, bits, _sx, _sy, pk)\
++    { .fourcc = DRM_FORMAT_##_name,\
++      .bpp = (pk),\
++      .bit_depth = (bits),\
++      .plane_count = 2,\
++      .chans = C_XY((_sx), (_sy)),\
++      .is_yuv = CTST_##CA || CTST_##CB || CTST_##CC,\
++      .planes = {{\
++          .bpg = (pk) / 8,\
++          .xdiv = 1, .ydiv = 1,\
++          .pels = {PEL(CA, (bits), (pk) - (bits))}},\
++      {\
++          .bpg = ((pk) / 8) * 2,\
++          .xdiv = (_sx), .ydiv = (_sy),\
++          .pels = {PEL(CB, (bits), (pk) - (bits)), PEL(CC, (bits), (pk) * 2 - (bits))}}\
++      },\
++      .chroma_siting = SITING_SY_##_sy,\
++      .name=#_name,\
++    }
++#define  FMT_NV(name, CB, CC, bits, SX, SY) FMT_NV_PKHI(name, Y, CB, CC, (bits), SX, SY, (((bits) + 7) & ~7))
++
++#define  FMT_TRI_PKLO(_name, CA, CB, CC, bits, _sx, _sy, pk)\
++    { .fourcc = DRM_FORMAT_##_name,\
++      .bpp = (pk),\
++      .bit_depth = (bits),\
++      .plane_count = 3,\
++      .is_yuv = CTST_##CA || CTST_##CB || CTST_##CC,\
++      .chans = C_XY((_sx), (_sy)),\
++      .planes = {{\
++          .bpg = (pk) / 8,\
++          .xdiv = 1, .ydiv = 1,\
++          .pels = {PEL(CA, (bits), 0)}},\
++      {\
++          .bpg = (pk) / 8,\
++          .xdiv = (_sx), .ydiv = (_sy),\
++          .pels = {PEL(CB, (bits), 0)}},\
++      {\
++          .bpg = (pk) / 8,\
++          .xdiv = (_sx), .ydiv = (_sy),\
++          .pels = {PEL(CC, (bits), 0)}}\
++      },\
++      .chroma_siting = SITING_SY_##_sy,\
++      .name=#_name,\
++    }
++#define  FMT_TRI(name, CA, CB, CC, bits, SX, SY) FMT_TRI_PKLO(name, CA, CB, CC, (bits), SX, SY, (((bits) + 7) & ~7))
 +
 +static
 +// Not const when creating the sorted version 'cos we sort in place
@@ -7600,87 +7780,110 @@ Can do HDR setup and mode matching
 +const
 +#endif
 +drmu_fmt_info_t format_info[] = {
-+    { .fourcc = DRM_FORMAT_XRGB1555, .bpp = 16, .bit_depth = 5, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_XBGR1555, .bpp = 16, .bit_depth = 5, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_RGBX5551, .bpp = 16, .bit_depth = 5, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_BGRX5551, .bpp = 16, .bit_depth = 5, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_ARGB1555, .bpp = 16, .bit_depth = 5, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_ABGR1555, .bpp = 16, .bit_depth = 5, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_RGBA5551, .bpp = 16, .bit_depth = 5, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_BGRA5551, .bpp = 16, .bit_depth = 5, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_BGR565, .bpp = 16, .bit_depth = 5, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_RGB565, .bpp = 16, .bit_depth = 5, .plane_count = 1, .planes = P_ONE},
++    FMT_ONE_4(X, R, G, B, 1, 5, 5, 5),
++    FMT_ONE_4(X, B, G, R, 1, 5, 5, 5),
++    FMT_ONE_4(R, G, B, X, 5, 5, 5, 1),
++    FMT_ONE_4(B, G, R, X, 5, 5, 5, 1),
 +
-+    { .fourcc = DRM_FORMAT_RGB888, .bpp = 24, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_BGR888, .bpp = 24, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
++    FMT_ONE_4(A, R, G, B, 1, 5, 5, 5),
++    FMT_ONE_4(A, B, G, R, 1, 5, 5, 5),
++    FMT_ONE_4(R, G, B, A, 5, 5, 5, 1),
++    FMT_ONE_4(B, G, R, A, 5, 5, 5, 1),
 +
-+    { .fourcc = DRM_FORMAT_XRGB8888, .bpp = 32, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_XBGR8888, .bpp = 32, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_RGBX8888, .bpp = 32, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_BGRX8888, .bpp = 32, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_ARGB8888, .bpp = 32, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_ABGR8888, .bpp = 32, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_RGBA8888, .bpp = 32, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_BGRA8888, .bpp = 32, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
++    FMT_ONE_3(B, G, R, 5, 6, 5),
++    FMT_ONE_3(R, G, B, 5, 6, 5),
 +
-+    { .fourcc = DRM_FORMAT_XRGB2101010, .bpp = 32, .bit_depth = 10, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_XBGR2101010, .bpp = 32, .bit_depth = 10, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_RGBX1010102, .bpp = 32, .bit_depth = 10, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_BGRX1010102, .bpp = 32, .bit_depth = 10, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_ARGB2101010, .bpp = 32, .bit_depth = 10, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_ABGR2101010, .bpp = 32, .bit_depth = 10, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_RGBA1010102, .bpp = 32, .bit_depth = 10, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_BGRA1010102, .bpp = 32, .bit_depth = 10, .plane_count = 1, .planes = P_ONE},
++    FMT_ONE_3(B, G, R, 8, 8, 8),
++    FMT_ONE_3(R, G, B, 8, 8, 8),
 +
-+    { .fourcc = DRM_FORMAT_AYUV,        .bpp = 32, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_XYUV8888,    .bpp = 32, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_VUY888,      .bpp = 24, .bit_depth = 8, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_XVYU2101010, .bpp = 32, .bit_depth = 10, .plane_count = 1, .planes = P_ONE},
++    FMT_ONE_3(B, G, R, 2, 3, 3),
++    FMT_ONE_3(R, G, B, 3, 3, 2),
 +
-+    { .fourcc = DRM_FORMAT_XVYU12_16161616, .bpp = 64, .bit_depth = 12, .plane_count = 1, .planes = P_ONE},
-+    { .fourcc = DRM_FORMAT_XVYU16161616, .bpp = 64, .bit_depth = 16, .plane_count = 1, .planes = P_ONE},
++    FMT_ONE_4(X, R, G, B, 8, 8, 8, 8),
++    FMT_ONE_4(X, B, G, R, 8, 8, 8, 8),
++    FMT_ONE_4(R, G, B, X, 8, 8, 8, 8),
++    FMT_ONE_4(B, G, R, X, 8, 8, 8, 8),
 +
-+    { .fourcc = DRM_FORMAT_YUYV, .bpp = 16, .bit_depth = 8, .plane_count = 1, .planes = P_ONE,
-+        .chroma_siting = DRMU_CHROMA_SITING_TOP_LEFT_I },
-+    { .fourcc = DRM_FORMAT_YVYU, .bpp = 16, .bit_depth = 8, .plane_count = 1, .planes = P_ONE,
-+        .chroma_siting = DRMU_CHROMA_SITING_TOP_LEFT_I },
-+    { .fourcc = DRM_FORMAT_VYUY, .bpp = 16, .bit_depth = 8, .plane_count = 1, .planes = P_ONE,
-+        .chroma_siting = DRMU_CHROMA_SITING_TOP_LEFT_I },
-+    { .fourcc = DRM_FORMAT_UYVY, .bpp = 16, .bit_depth = 8, .plane_count = 1, .planes = P_ONE,
-+        .chroma_siting = DRMU_CHROMA_SITING_TOP_LEFT_I },
++    FMT_ONE_4(A, R, G, B, 8, 8, 8, 8),
++    FMT_ONE_4(A, B, G, R, 8, 8, 8, 8),
++    FMT_ONE_4(R, G, B, A, 8, 8, 8, 8),
++    FMT_ONE_4(B, G, R, A, 8, 8, 8, 8),
 +
-+    { .fourcc = DRM_FORMAT_NV12,   .bpp = 8,  .bit_depth = 8,  .plane_count = 2, .planes = P_YC420,
-+      .chroma_siting = DRMU_CHROMA_SITING_LEFT_I },
-+    { .fourcc = DRM_FORMAT_NV21,   .bpp = 8,  .bit_depth = 8,  .plane_count = 2, .planes = P_YC420,
-+      .chroma_siting = DRMU_CHROMA_SITING_LEFT_I },
-+    { .fourcc = DRM_FORMAT_P010,   .bpp = 16, .bit_depth = 10, .plane_count = 2, .planes = P_YC420,
-+      .chroma_siting = DRMU_CHROMA_SITING_LEFT_I },
-+    { .fourcc = DRM_FORMAT_NV16,   .bpp = 8,  .bit_depth = 8,  .plane_count = 2, .planes = P_YC422,
-+      .chroma_siting = DRMU_CHROMA_SITING_TOP_LEFT_I },
-+    { .fourcc = DRM_FORMAT_NV61,   .bpp = 8,  .bit_depth = 8,  .plane_count = 2, .planes = P_YC422,
-+      .chroma_siting = DRMU_CHROMA_SITING_TOP_LEFT_I },
-+    { .fourcc = DRM_FORMAT_NV24,   .bpp = 16, .bit_depth = 8,  .plane_count = 2, .planes = P_YC444,
-+      .chroma_siting = DRMU_CHROMA_SITING_TOP_LEFT_I },
-+    { .fourcc = DRM_FORMAT_NV42,   .bpp = 16, .bit_depth = 8,  .plane_count = 2, .planes = P_YC444,
-+      .chroma_siting = DRMU_CHROMA_SITING_TOP_LEFT_I },
++    FMT_ONE_4(A, R, G, B, 4, 4, 4, 4),
++    FMT_ONE_4(A, B, G, R, 4, 4, 4, 4),
++    FMT_ONE_4(R, G, B, A, 4, 4, 4, 4),
++    FMT_ONE_4(B, G, R, A, 4, 4, 4, 4),
 +
-+    { .fourcc = DRM_FORMAT_YUV420, .bpp = 8, .bit_depth = 8, .plane_count = 3, .planes = P_YUV420,
-+      .chroma_siting = DRMU_CHROMA_SITING_LEFT_I },
-+    { .fourcc = DRM_FORMAT_YVU420, .bpp = 8, .bit_depth = 8, .plane_count = 3, .planes = P_YUV420,
-+      .chroma_siting = DRMU_CHROMA_SITING_LEFT_I },
-+    { .fourcc = DRM_FORMAT_YUV422, .bpp = 8, .bit_depth = 8, .plane_count = 3, .planes = P_YUV422,
-+      .chroma_siting = DRMU_CHROMA_SITING_TOP_LEFT_I },
-+    { .fourcc = DRM_FORMAT_YUV422, .bpp = 8, .bit_depth = 8, .plane_count = 3, .planes = P_YUV422,
-+      .chroma_siting = DRMU_CHROMA_SITING_TOP_LEFT_I },
-+    { .fourcc = DRM_FORMAT_YUV444, .bpp = 8, .bit_depth = 8, .plane_count = 3, .planes = P_YUV444,
-+      .chroma_siting = DRMU_CHROMA_SITING_TOP_LEFT_I },
-+    { .fourcc = DRM_FORMAT_YUV444, .bpp = 8, .bit_depth = 8, .plane_count = 3, .planes = P_YUV444,
-+      .chroma_siting = DRMU_CHROMA_SITING_TOP_LEFT_I },
++    FMT_ONE_4(X, R, G, B, 4, 4, 4, 4),
++    FMT_ONE_4(X, B, G, R, 4, 4, 4, 4),
++    FMT_ONE_4(R, G, B, X, 4, 4, 4, 4),
++    FMT_ONE_4(B, G, R, X, 4, 4, 4, 4),
 +
-+    // 3 pel in 32 bits. So code as 32bpp with wdiv 3.
-+    { .fourcc = DRM_FORMAT_P030,   .bpp = 32, .bit_depth = 10, .plane_count = 2,
-+      .planes = {{.wdiv = 3, .hdiv = 1}, {.wdiv = 3, .hdiv = 2}},
-+      .chroma_siting = DRMU_CHROMA_SITING_LEFT_I },
++    FMT_ONE_4(X, R, G, B, 2, 10, 10, 10),
++    FMT_ONE_4(X, B, G, R, 2, 10, 10, 10),
++    FMT_ONE_4(R, G, B, X, 10, 10, 10, 2),
++    FMT_ONE_4(B, G, R, X, 10, 10, 10, 2),
++
++    FMT_ONE_4(A, R, G, B, 2, 10, 10, 10),
++    FMT_ONE_4(A, B, G, R, 2, 10, 10, 10),
++    FMT_ONE_4(R, G, B, A, 10, 10, 10, 2),
++    FMT_ONE_4(B, G, R, A, 10, 10, 10, 2),
++
++    FMT_NV(NV12, U, V, 8, 2, 2),
++    FMT_NV(NV21, V, U, 8, 2, 2),
++    FMT_NV(NV16, U, V, 8, 2, 1),
++    FMT_NV(NV61, V, U, 8, 2, 1),
++    FMT_NV(NV24, U, V, 8, 1, 1),
++    FMT_NV(NV42, V, U, 8, 1, 1),
++
++    FMT_NV(P010, U, V, 10, 2, 2),
++    FMT_NV(P012, U, V, 12, 2, 2),
++    FMT_NV(P016, U, V, 16, 2, 2),
++    FMT_NV(P210, U, V, 10, 2, 1),
++    FMT_NV(P212, U, V, 12, 2, 1),
++    FMT_NV(P410, U, V, 10, 1, 1),
++    FMT_NV(P412, U, V, 12, 1, 1),
++
++    FMT_TRI(YUV420, Y, U, V, 8, 2, 2),
++    FMT_TRI(YVU420, Y, V, U, 8, 2, 2),
++    FMT_TRI(YUV422, Y, U, V, 8, 2, 1),
++    FMT_TRI(YVU422, Y, V, U, 8, 2, 1),
++    FMT_TRI(YUV444, Y, U, V, 8, 1, 1),
++    FMT_TRI(YVU444, Y, V, U, 8, 1, 1),
++
++    FMT_TRI(S010, Y, U, V, 10, 2, 2),
++    FMT_TRI(S012, Y, U, V, 12, 2, 2),
++    FMT_TRI(S016, Y, U, V, 12, 2, 2),
++
++    FMT_ONE_4_NAMED(AYUV, A, Y, U, V, 8, 8, 8, 8),
++    FMT_ONE_4(X, Y, U, V, 8, 8, 8, 8),
++    FMT_ONE_3(V, U, Y, 8, 8, 8),
++    FMT_ONE_4(X, V, Y, U, 2, 10, 10, 10),
++    FMT_ONE_4(X, V, Y, U, 16, 16, 16, 16),
++
++    FMT_ONE_422(Y, U, Y, V, 8),
++    FMT_ONE_422(Y, V, Y, U, 8),
++    FMT_ONE_422(V, Y, U, Y, 8),
++    FMT_ONE_422(U, Y, V, Y, 8),
++
++    { .fourcc = DRM_FORMAT_P030,\
++      .bpp = 32,\
++      .bit_depth = 10,\
++      .plane_count = 2,\
++      .is_yuv = 1,\
++      .chans = C_420,\
++      .planes = {{\
++          .bpg = 4,\
++          .xdiv = 3, .ydiv = 1,\
++          .pels = {PEL(Y, 10, 0), PEL(Y, 10, 10), PEL(Y, 10, 20)}},\
++      {\
++          .bpg = 8,\
++          .xdiv = 6, .ydiv = 2,\
++          .pels = {PEL(U, 10, 0), PEL(V, 10, 10), PEL(U, 10, 20), PEL(V, 10, 32), PEL(U, 10, 42), PEL(V, 10, 52)}}\
++      },\
++      .chroma_siting = SITING_SY_2,\
++      .name = "P030",\
++    },
 +
 +    { .fourcc = 0 }
 +};
@@ -7724,12 +7927,22 @@ Can do HDR setup and mode matching
 +    for (i = 0; i != format_count; ++i) {
 +        const drmu_fmt_info_t * x = format_info + i;
 +        unsigned int j;
-+        fprintf(f, "{%#"PRIx32",%d,%d,%d,{", x->fourcc, x->bpp, x->bit_depth, x->plane_count);
++        fprintf(f, "{.fourcc=%#"PRIx32",.bpp=%d,.bit_depth=%d,.plane_count=%d,.is_yuv=%d,.chans={", x->fourcc, x->bpp, x->bit_depth, x->plane_count, x->is_yuv);
 +        for (j = 0; j != sizeof(x->planes)/sizeof(x->planes[0]); ++j) {
-+            fprintf(f, "{%d,%d},", x->planes[j].wdiv, x->planes[j].hdiv);
++            fprintf(f, "{%d,%d},", x->chans[j].sx, x->chans[j].sy);
++        }
++        fprintf(f, "},.planes={");
++        for (j = 0; j != sizeof(x->planes)/sizeof(x->planes[0]); ++j) {
++            unsigned int k;
++            fprintf(f, "{.bpg=%d,.xdiv=%d,.ydiv=%d,.pels={", x->planes[j].bpg, x->planes[j].xdiv, x->planes[j].ydiv);
++            for (k = 0; k != sizeof(x->planes[0].pels)/sizeof(x->planes[0].pels[0]); ++k) {
++                fprintf(f, "{%d,%d,%d},", x->planes[j].pels[k].chan, x->planes[j].pels[k].bits, x->planes[j].pels[k].off);
++            }
++            fprintf(f, "}},");
 +        }
 +        fprintf(f, "},");
-+        fprintf(f, "{%d,%d},", x->chroma_siting.x, x->chroma_siting.y);
++        fprintf(f, ".chroma_siting={%d,%d},", x->chroma_siting.x, x->chroma_siting.y);
++        fprintf(f, ".name=\"%s\",", x->name);
 +        fprintf(f, "},\n");
 +    }
 +    fprintf(f, "{0}\n};\n");
@@ -7774,6 +7987,37 @@ Can do HDR setup and mode matching
 +    return NULL;
 +}
 +
++const drmu_fmt_info_t *
++drmu_fmt_info_find_name(const char * const name)
++{
++    char buf[32];
++    const drmu_fmt_info_t * fi;
++    unsigned int i;
++
++    if (name == NULL || name[0] == 0)
++        return NULL;
++
++    // Uppercase the given name
++    for (i = 0; name[i] != 0 && i < sizeof(buf); ++i)
++        buf[i] = toupper(name[i]);
++    if (i >= sizeof(buf))
++        return NULL;
++    buf[i] = 0;
++
++    // If a 4 char name passed then 1st check it as a 4cc (case sensitive)
++    if (i == 4) {
++        if ((fi = drmu_fmt_info_find_fmt(fourcc_code(name[0], name[1], name[2], name[3]))) != NULL)
++            return fi;
++    }
++
++    // Not a 4cc look for name
++    for (const drmu_fmt_info_t *p = format_info; p->fourcc; ++p) {
++        if (strcmp(p->name, buf) == 0)
++            return p;
++    }
++    return NULL;
++}
++
 +unsigned int
 +drmu_fmt_info_bit_depth(const drmu_fmt_info_t * const fmt_info)
 +{
@@ -7781,7 +8025,11 @@ Can do HDR setup and mode matching
 +}
 +uint32_t drmu_fmt_info_fourcc(const drmu_fmt_info_t * const fmt_info)
 +{
-+    return fmt_info->fourcc;
++    return fmt_info == NULL ? 0 : fmt_info->fourcc;
++}
++const char * drmu_fmt_info_name(const drmu_fmt_info_t * const fmt_info)
++{
++    return fmt_info == NULL ? "????" : fmt_info->name;
 +}
 +unsigned int drmu_fmt_info_pixel_bits(const drmu_fmt_info_t * const fmt_info)
 +{
@@ -7791,13 +8039,17 @@ Can do HDR setup and mode matching
 +{
 +    return !fmt_info ? 0 : fmt_info->plane_count;
 +}
++bool drmu_fmt_info_is_yuv(const drmu_fmt_info_t * const fmt_info)
++{
++    return fmt_info != NULL && fmt_info->is_yuv;
++}
 +unsigned int drmu_fmt_info_wdiv(const drmu_fmt_info_t * const fmt_info, const unsigned int plane_n)
 +{
-+    return fmt_info->planes[plane_n].wdiv;
++    return fmt_info->planes[plane_n].xdiv * fmt_info->planes[0].bpg / fmt_info->planes[plane_n].bpg;
 +}
 +unsigned int drmu_fmt_info_hdiv(const drmu_fmt_info_t * const fmt_info, const unsigned int plane_n)
 +{
-+    return fmt_info->planes[plane_n].hdiv;
++    return fmt_info->planes[plane_n].ydiv;
 +}
 +drmu_chroma_siting_t drmu_fmt_info_chroma_siting(const drmu_fmt_info_t * const fmt_info)
 +{
@@ -7808,7 +8060,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_fmts.h
-@@ -0,0 +1,31 @@
+@@ -0,0 +1,67 @@
 +#ifndef _DRMU_DRMU_FMTS_H
 +#define _DRMU_DRMU_FMTS_H
 +
@@ -7824,12 +8076,48 @@ Can do HDR setup and mode matching
 +struct drmu_fmt_info_s;
 +typedef struct drmu_fmt_info_s drmu_fmt_info_t;
 +
++// Avoid using this structure directly - it is subject to change without notice
++// and will probably disappear once I have a usable full API for plane layout
++typedef struct drmu_fmt_info_s {
++    uint32_t fourcc;
++    uint8_t bpp;  // For dumb BO alloc
++    uint8_t bit_depth;  // For display
++    uint8_t plane_count;
++    uint8_t is_yuv;
++
++    struct {
++        uint8_t sx;
++        uint8_t sy;
++    } chans[4];
++
++    struct drmu_fmt_plane_info_s {
++        uint8_t bpg;    // Bytes per group
++        uint8_t xdiv;   // w / xdiv = groups
++        uint8_t ydiv;
++        struct drmu_fmt_pel_info_s {
++            uint8_t chan;
++            uint8_t bits;
++            uint8_t off;
++        } pels[7];      // Finish with 0,0
++    } planes[4];
++
++    drmu_chroma_siting_t chroma_siting;  // Default for this format (YUV420 = (0.0, 0.5), otherwise (0, 0)
++    const char * name;
++} drmu_fmt_info_t;
++
 +const drmu_fmt_info_t * drmu_fmt_info_find_fmt(const uint32_t fourcc);
++// Look up format info by "name" (intended for user input)
++// 1st checks for a match against 4cc (case sensitive) then checks against
++// the name associated with the format, where "name" is the text after
++// DRM_FORMAT_
++const drmu_fmt_info_t * drmu_fmt_info_find_name(const char * const name);
 +
 +unsigned int drmu_fmt_info_bit_depth(const drmu_fmt_info_t * const fmt_info);
 +uint32_t drmu_fmt_info_fourcc(const drmu_fmt_info_t * const fmt_info);
++const char * drmu_fmt_info_name(const drmu_fmt_info_t * const fmt_info);
 +unsigned int drmu_fmt_info_pixel_bits(const drmu_fmt_info_t * const fmt_info);
 +unsigned int drmu_fmt_info_plane_count(const drmu_fmt_info_t * const fmt_info);
++bool drmu_fmt_info_is_yuv(const drmu_fmt_info_t * const fmt_info);
 +unsigned int drmu_fmt_info_wdiv(const drmu_fmt_info_t * const fmt_info, const unsigned int plane_n);
 +unsigned int drmu_fmt_info_hdiv(const drmu_fmt_info_t * const fmt_info, const unsigned int plane_n);
 +drmu_chroma_siting_t drmu_fmt_info_chroma_siting(const drmu_fmt_info_t * const fmt_info);
@@ -7926,49 +8214,35 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_math.c
-@@ -0,0 +1,43 @@
+@@ -0,0 +1,29 @@
 +#include "drmu_math.h"
 +
-+#include <limits.h>
++// Euclidean Algorithm
++static unsigned int
++gcd(unsigned int a, unsigned int b)
++{
++    do {
++        if ((a %= b) == 0)
++            return b;
++    } while ((b %= a) != 0);
++    return a;
++}
 +
 +drmu_ufrac_t
 +drmu_ufrac_reduce(drmu_ufrac_t x)
 +{
-+    static const unsigned int primes[] = {2,3,5,7,11,13,17,19,23,29,31,UINT_MAX};
-+    const unsigned int * p;
++    unsigned int g;
 +
 +    // Deal with specials
-+    if (x.den == 0) {
-+        x.num = 0;
-+        return x;
-+    }
-+    if (x.num == 0) {
-+        x.den = 1;
-+        return x;
-+    }
++    if (x.den == 0)
++        return (drmu_ufrac_t){0, 0};
 +
-+    // Shortcut the 1:1 common case - also ensures the default loop terminates
-+    if (x.num == x.den) {
-+        x.num = 1;
-+        x.den = 1;
-+        return x;
-+    }
++    g = gcd(x.num, x.den);
 +
-+    // As num != den, (num/UINT_MAX == 0 || den/UINT_MAX == 0) must be true
-+    // so loop will terminate
-+    for (p = primes;; ++p) {
-+        const unsigned int n = *p;
-+        for (;;) {
-+            const unsigned int xd = x.den / n;
-+            const unsigned int xn = x.num / n;
-+            if (xn == 0 || xd == 0)
-+                return x;
-+            if (xn * n != x.num || xd * n != x.den)
-+                break;
-+            x.num = xn;
-+            x.den = xd;
-+        }
-+    }
++    return (drmu_ufrac_t){
++        .num = x.num / g,
++        .den = x.den / g
++    };
 +}
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_math.h
@@ -9170,7 +9444,7 @@ Can do HDR setup and mode matching
 +{
 +    drmu_queue_t * const aq = calloc(1, sizeof(*aq));
 +    pthread_condattr_t condattr;
-+    static atomic_int qcount = ATOMIC_VAR_INIT(0);
++    static atomic_uint qcount = 0;
 +
 +    if (aq == NULL)
 +        return NULL;
@@ -9927,12 +10201,13 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_util.c
-@@ -0,0 +1,199 @@
+@@ -0,0 +1,252 @@
 +#include "drmu_util.h"
 +
 +#include "drmu.h"
 +
 +#include <ctype.h>
++#include <errno.h>
 +#include <error.h>
 +#include <stdio.h>
 +#include <stdlib.h>
@@ -10053,6 +10328,41 @@ Can do HDR setup and mode matching
 +    return r;
 +}
 +
++int
++drmu_parse_rect(const char * s, char ** peos, drmu_rect_t * pRect)
++{
++    char * p;
++
++    *pRect = (drmu_rect_t){0};
++
++    pRect->w = (uint32_t)strtoul(s, &p, 0);
++    if (*p != 'x' || p == s)
++        goto fail;
++    s = p + 1;
++    pRect->h = (uint32_t)strtoul(s, &p, 0);
++
++    if (*p == '@') {
++        s = p + 1;
++        pRect->x = (int32_t)strtol(s, &p, 0);
++        if (*p != ',' || p == s)
++            goto fail;
++        s = p + 1;
++        pRect->y = (int32_t)strtol(s, &p, 0);
++    }
++    if (p == s)
++        goto fail;
++
++    if (peos != NULL)
++        *peos = p;
++    return 0;
++
++fail:
++    *pRect = (drmu_rect_t){0};
++    if (peos != NULL)
++        *peos = p;
++    return -EINVAL;
++}
++
 +unsigned int
 +drmu_util_str_to_rotation(const char * s, char ** peos)
 +{
@@ -10061,6 +10371,7 @@ Can do HDR setup and mode matching
 +        unsigned int rot;
 +    } str_to_rot[] = {
 +        {"0", DRMU_ROTATION_0},
++        {"NONE", DRMU_ROTATION_0},
 +        {"H_FLIP", DRMU_ROTATION_H_FLIP},
 +        {"H", DRMU_ROTATION_H_FLIP},
 +        {"V_FLIP", DRMU_ROTATION_V_FLIP},
@@ -10087,6 +10398,22 @@ Can do HDR setup and mode matching
 +    if (peos != NULL)
 +        *peos = (char*)s;
 +    return DRMU_ROTATION_0;
++}
++
++const char *
++drmu_util_rotation_to_str(const unsigned int rot)
++{
++    static const char *rot_to_str[8] = {
++        [DRMU_ROTATION_0] = "none",
++        [DRMU_ROTATION_H_FLIP] = "H_flip",
++        [DRMU_ROTATION_V_FLIP] = "V_flip",
++        [DRMU_ROTATION_180_TRANSPOSE] = "180_Transpose",
++        [DRMU_ROTATION_180] = "180",
++        [DRMU_ROTATION_TRANSPOSE] = "Transpose",
++        [DRMU_ROTATION_90] = "90",
++        [DRMU_ROTATION_270] = "270"
++    };
++    return rot > 7 ? "???" : rot_to_str[rot];
 +}
 +
 +drmu_ufrac_t
@@ -10129,7 +10456,7 @@ Can do HDR setup and mode matching
 +}
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_util.h
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,74 @@
 +#ifndef _DRMU_DRMU_UTIL_H
 +#define _DRMU_DRMU_UTIL_H
 +
@@ -10160,9 +10487,19 @@ Can do HDR setup and mode matching
 +
 +// Take a string and return a drmu rotation value (DRMU_ROTATION_xxx)
 +// Returns pointer to char after parsed string in *peos (c.f. strtol)
-+// peos may be NULL if not required
++// peos may be NULL if not required. Some rotations have multiple valid
++// strings.
 +// N.B. There is no invalid return, rubbish will return ROTATION_0, *peos = s
 +unsigned int drmu_util_str_to_rotation(const char * s, char ** peos);
++
++// Parse a string of the form "<w>x<h>[@<x>,<y>]"
++// Returns 0 if this appears to be good, -EINVAL if this is bad
++// *pRect will be {0,0,0,0} if bad
++int drmu_parse_rect(const char * s, char ** peos, drmu_rect_t * pRect);
++
++// Rotation to string - guaranteed to return a string that str_to_rotation can
++// ingest
++const char * drmu_util_rotation_to_str(const unsigned int rot);
 +
 +// Given width & height guess par. Spots Likely SD and returns 4:3 otherwise reduced w:h
 +drmu_ufrac_t drmu_util_guess_par(const unsigned int w, const unsigned int h);
@@ -10196,9 +10533,10 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_vlc.c
-@@ -0,0 +1,381 @@
+@@ -0,0 +1,389 @@
 +#include "drmu_vlc.h"
 +#include "drmu_fmts.h"
++#include "drmu_fourcc.h"
 +#include "drmu_log.h"
 +
 +#if HAS_ZC_CMA
@@ -10210,10 +10548,9 @@ Can do HDR setup and mode matching
 +
 +#include <errno.h>
 +
++#include <vlc/libvlc_version.h>
 +#include <libavutil/buffer.h>
 +#include <libavutil/hwcontext_drm.h>
-+
-+#include <libdrm/drm_fourcc.h>
 +
 +typedef struct fb_aux_pic_s {
 +    picture_context_t * pic_ctx;
@@ -10223,8 +10560,16 @@ Can do HDR setup and mode matching
 +pic_fb_delete_cb(void * v)
 +{
 +    fb_aux_pic_t * const aux = v;
++    picture_context_t * const ctx = aux->pic_ctx;
 +
-+    aux->pic_ctx->destroy(aux->pic_ctx);
++#if LIBVLC_VERSION_MAJOR >= 4
++    vlc_video_context *vctx = ctx->vctx;
++    ctx->destroy(ctx);
++    if (vctx)
++        vlc_video_context_Release(vctx);
++#else
++    ctx->destroy(ctx);
++#endif
 +    free(aux);
 +}
 +
@@ -10664,38 +11009,32 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_vlc_fmts.c
-@@ -0,0 +1,258 @@
+@@ -0,0 +1,281 @@
 +#include "drmu_vlc_fmts.h"
 +
++#include "drmu_fourcc.h"
++
 +#include <vlc_picture.h>
-+#include <libdrm/drm_fourcc.h>
-+
-+// These macros not in bullseye
-+
-+#ifndef fourcc_mod_get_vendor
-+#define fourcc_mod_get_vendor(modifier) \
-+	(((modifier) >> 56) & 0xff)
-+#endif
-+
-+#ifndef fourcc_mod_is_vendor
-+#define fourcc_mod_is_vendor(modifier, vendor) \
-+	(fourcc_mod_get_vendor(modifier) == DRM_FORMAT_MOD_VENDOR_## vendor)
-+#endif
-+
-+#ifndef DRM_FORMAT_P030
-+#define DRM_FORMAT_P030 fourcc_code('P', '0', '3', '0')
-+#endif
 +
 +#define DRMU_VLC_FMTS_FLAG_DRMP         1
 +#define DRMU_VLC_FMTS_FLAG_ZC           2
 +#define DRMU_VLC_FMTS_FLAG_FULL_RANGE   4
 +
++// VLC4 after some point removes RGB32 and associated masks
++#ifdef VLC_CODEC_RGB32
++#define HAS_RGB_MASK 1
++#else
++#define HAS_RGB_MASK 0
++#endif
++
 +struct drmu_vlc_fmt_info_ss {
 +    vlc_fourcc_t vlc_chroma;
 +    uint32_t drm_pixelformat;
++#if HAS_RGB_MASK
 +    uint32_t rmask;
 +    uint32_t gmask;
 +    uint32_t bmask;
++#endif
 +    uint64_t drm_modifier;
 +    unsigned int flags;
 +};
@@ -10703,10 +11042,20 @@ Can do HDR setup and mode matching
 +// N.B. DRM seems to order its format descriptor names the opposite way round to VLC
 +// DRM is hi->lo within a little-endian word, VLC is byte order
 +
-+#define I2(vlc, drm) {(vlc), (drm), 0, 0, 0, DRM_FORMAT_MOD_LINEAR, 0 }
-+#define RM(vlc, drm, r, g, b) {(vlc), (drm), (r), (g), (b), DRM_FORMAT_MOD_LINEAR, 0 }
-+#define R2(vlc, drm) RM((vlc), (drm), 0, 0, 0)
++#define X4(vlc, drm, mod, f) {\
++    .vlc_chroma = (vlc),\
++    .drm_pixelformat = (drm),\
++    .drm_modifier = (mod),\
++    .flags = (f)}
++#define I2(vlc, drm) X4((vlc), (drm), DRM_FORMAT_MOD_LINEAR, 0)
++#define R2(vlc, drm) X4((vlc), (drm), DRM_FORMAT_MOD_LINEAR, DRMU_VLC_FMTS_FLAG_FULL_RANGE)
++#ifdef HAS_RGB_MASK
++#define RM(vlc, drm, r, g, b) {(vlc), (drm), (r), (g), (b), DRM_FORMAT_MOD_LINEAR, DRMU_VLC_FMTS_FLAG_FULL_RANGE }
++#endif
 +
++// Format conversion table
++// N.B. Where we have a DRM format that maps to multiple VLC formats ensure
++// that the "default" mapping copmes first.
 +static const drmu_vlc_fmt_info_t fmt_table[] = {
 +    R2(VLC_CODEC_RGBA, DRM_FORMAT_ABGR8888),
 +    R2(VLC_CODEC_BGRA, DRM_FORMAT_ARGB8888),
@@ -10726,26 +11075,19 @@ Can do HDR setup and mode matching
 +    I2(VLC_CODEC_NV42, DRM_FORMAT_NV42),
 +    I2(VLC_CODEC_P010, DRM_FORMAT_P010),
 +    I2(VLC_CODEC_I420, DRM_FORMAT_YUV420),
-+    { VLC_CODEC_J420, DRM_FORMAT_YUV420, 0, 0, 0, DRM_FORMAT_MOD_LINEAR, DRMU_VLC_FMTS_FLAG_FULL_RANGE },
++#ifdef VLC_CODEC_J420
++    X4(VLC_CODEC_J420, DRM_FORMAT_YUV420, DRM_FORMAT_MOD_LINEAR, DRMU_VLC_FMTS_FLAG_FULL_RANGE),
++#endif
 +    I2(VLC_CODEC_YV12, DRM_FORMAT_YVU420),
 +    I2(VLC_CODEC_I422, DRM_FORMAT_YUV422),
-+    { VLC_CODEC_J422, DRM_FORMAT_YUV422, 0, 0, 0, DRM_FORMAT_MOD_LINEAR, DRMU_VLC_FMTS_FLAG_FULL_RANGE },
++#ifdef VLC_CODEC_J422
++    X4(VLC_CODEC_J422, DRM_FORMAT_YUV422, DRM_FORMAT_MOD_LINEAR, DRMU_VLC_FMTS_FLAG_FULL_RANGE),
++#endif
 +    I2(VLC_CODEC_I444, DRM_FORMAT_YUV444),
-+    { VLC_CODEC_J444, DRM_FORMAT_YUV444, 0, 0, 0, DRM_FORMAT_MOD_LINEAR, DRMU_VLC_FMTS_FLAG_FULL_RANGE },
-+#if HAS_DRMPRIME
-+    { VLC_CODEC_DRM_PRIME_I420,   DRM_FORMAT_YUV420,   0, 0, 0, DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_DRMP },
-+    { VLC_CODEC_DRM_PRIME_NV12,   DRM_FORMAT_NV12,     0, 0, 0, DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_DRMP },
-+    { VLC_CODEC_DRM_PRIME_SAND8,  DRM_FORMAT_NV12,     0, 0, 0, DRM_FORMAT_MOD_BROADCOM_SAND128, DRMU_VLC_FMTS_FLAG_DRMP },
-+    { VLC_CODEC_DRM_PRIME_SAND30, DRM_FORMAT_P030,     0, 0, 0, DRM_FORMAT_MOD_BROADCOM_SAND128, DRMU_VLC_FMTS_FLAG_DRMP },
-+    { VLC_CODEC_DRM_PRIME_RGB32,  DRM_FORMAT_XRGB8888, 0, 0, 0, DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_DRMP },
++#ifdef VLC_CODEC_J444
++    X4(VLC_CODEC_J444, DRM_FORMAT_YUV444, DRM_FORMAT_MOD_LINEAR, DRMU_VLC_FMTS_FLAG_FULL_RANGE),
 +#endif
-+#if HAS_ZC_CMA
-+    { VLC_CODEC_MMAL_ZC_I420,     DRM_FORMAT_YUV420,   0, 0, 0, DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_ZC },
-+    { VLC_CODEC_MMAL_ZC_SAND8,    DRM_FORMAT_NV12,     0, 0, 0, DRM_FORMAT_MOD_BROADCOM_SAND128, DRMU_VLC_FMTS_FLAG_ZC },
-+    { VLC_CODEC_MMAL_ZC_SAND30,   DRM_FORMAT_P030,     0, 0, 0, DRM_FORMAT_MOD_BROADCOM_SAND128, DRMU_VLC_FMTS_FLAG_ZC },
-+    { VLC_CODEC_MMAL_ZC_RGB32,    DRM_FORMAT_RGBX8888, 0, 0, 0, DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_ZC },
-+#endif
-+
++#if HAS_RGB_MASK
 +    RM(VLC_CODEC_RGB32, DRM_FORMAT_XRGB8888, 0xff0000, 0xff00, 0xff),
 +    RM(VLC_CODEC_RGB32, DRM_FORMAT_XBGR8888, 0xff, 0xff00, 0xff0000),
 +    RM(VLC_CODEC_RGB32, DRM_FORMAT_RGBX8888, 0xff000000, 0xff0000, 0xff00),
@@ -10755,9 +11097,33 @@ Can do HDR setup and mode matching
 +    RM(VLC_CODEC_RGB24, DRM_FORMAT_RGB888,   0xff, 0xff00, 0xff0000),
 +    RM(VLC_CODEC_RGB16, DRM_FORMAT_RGB565,   0xf800, 0x7e0, 0x1f),
 +    RM(VLC_CODEC_RGB16, DRM_FORMAT_BGR565,   0x1f, 0x7e0, 0xf800),
-+
++#endif
++#ifdef VLC_CODEC_XRGB // VLC4 after some point
++    R2(VLC_CODEC_BGRX, DRM_FORMAT_XRGB8888),
++    R2(VLC_CODEC_RGBX, DRM_FORMAT_XBGR8888),
++    R2(VLC_CODEC_XBGR, DRM_FORMAT_RGBX8888),
++    R2(VLC_CODEC_XRGB, DRM_FORMAT_BGRX8888),
++    R2(VLC_CODEC_BGR24, DRM_FORMAT_BGR888),
++    R2(VLC_CODEC_RGB24, DRM_FORMAT_RGB888),
++    R2(VLC_CODEC_RGB565, DRM_FORMAT_RGB565),
++    R2(VLC_CODEC_BGR565, DRM_FORMAT_BGR565),
++#endif
++#if HAS_DRMPRIME
++    X4(VLC_CODEC_DRM_PRIME_I420,   DRM_FORMAT_YUV420,   DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_DRMP),
++    X4(VLC_CODEC_DRM_PRIME_NV12,   DRM_FORMAT_NV12,     DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_DRMP),
++    X4(VLC_CODEC_DRM_PRIME_SAND8,  DRM_FORMAT_NV12,     DRM_FORMAT_MOD_BROADCOM_SAND128, DRMU_VLC_FMTS_FLAG_DRMP),
++    X4(VLC_CODEC_DRM_PRIME_SAND30, DRM_FORMAT_P030,     DRM_FORMAT_MOD_BROADCOM_SAND128, DRMU_VLC_FMTS_FLAG_DRMP),
++    X4(VLC_CODEC_DRM_PRIME_RGB32,  DRM_FORMAT_XRGB8888, DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_DRMP),
++#endif
++#if HAS_ZC_CMA
++    X4(VLC_CODEC_MMAL_ZC_I420,     DRM_FORMAT_YUV420,   DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_ZC),
++    X4(VLC_CODEC_MMAL_ZC_SAND8,    DRM_FORMAT_NV12,     DRM_FORMAT_MOD_BROADCOM_SAND128, DRMU_VLC_FMTS_FLAG_ZC),
++    X4(VLC_CODEC_MMAL_ZC_SAND30,   DRM_FORMAT_P030,     DRM_FORMAT_MOD_BROADCOM_SAND128, DRMU_VLC_FMTS_FLAG_ZC),
++    X4(VLC_CODEC_MMAL_ZC_RGB32,    DRM_FORMAT_RGBX8888, DRM_FORMAT_MOD_LINEAR,           DRMU_VLC_FMTS_FLAG_ZC),
++#endif
 +    I2(0, 0)
 +};
++#undef X4
 +#undef I2
 +#undef RM
 +#undef R2
@@ -10773,9 +11139,11 @@ Can do HDR setup and mode matching
 +    {
 +        if (f->vlc_chroma != vf_vlc->i_chroma)
 +            continue;
++#if HAS_RGB_MASK
 +        if (f->rmask != 0 && vf_vlc->i_rmask != 0 &&
 +            (f->rmask != vf_vlc->i_rmask || f->gmask != vf_vlc->i_gmask || f->bmask != vf_vlc->i_bmask))
 +            continue;
++#endif
 +        return f;
 +    }
 +    return NULL;
@@ -10804,9 +11172,6 @@ Can do HDR setup and mode matching
 +    {
 +        if (f->drm_pixelformat != pixelformat || f->drm_modifier != cmod)
 +            continue;
-+        // Only return the "base" version
-+        if (f->flags != 0)
-+            continue;
 +        return f;
 +    }
 +    return NULL;
@@ -10827,16 +11192,19 @@ Can do HDR setup and mode matching
 +void
 +drmu_vlc_fmt_info_vlc_rgb_masks(const drmu_vlc_fmt_info_t * const f, uint32_t * r, uint32_t * g, uint32_t * b)
 +{
-+    if (f == NULL)
++#if HAS_RGB_MASK
++    if (f != NULL)
 +    {
-+        *r = 0;
-+        *g = 0;
-+        *b = 0;
-+        return;
++        *r = f->rmask;
++        *g = f->gmask;
++        *b = f->bmask;
 +    }
-+    *r = f->rmask;
-+    *g = f->gmask;
-+    *b = f->bmask;
++#else
++    VLC_UNUSED(f);
++#endif
++    *r = 0;
++    *g = 0;
++    *b = 0;
 +}
 +
 +uint32_t
@@ -10985,10 +11353,9 @@ Can do HDR setup and mode matching
 +#endif
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_writeback.c
-@@ -0,0 +1,429 @@
+@@ -0,0 +1,441 @@
 +#include "drmu_writeback.h"
 +
-+#include <drm_fourcc.h>
 +#include <errno.h>
 +#include <semaphore.h>
 +#include <stdatomic.h>
@@ -10996,6 +11363,7 @@ Can do HDR setup and mode matching
 +#include <unistd.h>
 +
 +#include "drmu.h"
++#include "drmu_fourcc.h"
 +#include "drmu_log.h"
 +#include "drmu_output.h"
 +#include "drmu_pool.h"
@@ -11037,8 +11405,8 @@ Can do HDR setup and mode matching
 +}
 +
 +// Get a "unique" non-zero tag no
-+static unsigned int
-+writeback_env_tag_new(drmu_writeback_env_t * const wbe)
++unsigned int
++drmu_writeback_env_tag_new(drmu_writeback_env_t * const wbe)
 +{
 +    unsigned int n;
 +    while ((n = atomic_fetch_add(&wbe->tag_n, 1)) == 0)
@@ -11140,22 +11508,34 @@ Can do HDR setup and mode matching
 +    return wbe == NULL ? NULL : wbe->dout;
 +}
 +
++struct drmu_queue_s *
++drmu_writeback_env_queue(const drmu_writeback_env_t * const wbe)
++{
++    return wbe == NULL ? NULL : wbe->dq;
++}
++
 +drmu_plane_t *
 +drmu_writeback_env_fmt_plane(drmu_writeback_env_t * const wbe,
 +                             drmu_output_t * const dest_dout, const unsigned int types,
 +                             uint32_t * const pFmt)
 +{
-+    size_t fmt_count = 1;
++    unsigned int fmt_count = 1;
 +    const uint32_t * fmts = drmu_conn_writeback_formats(drmu_output_conn(wbe->dout, 0), &fmt_count);
 +
 +    // This is a simple & stupid search.
 +    // We expect the 1st format we try to be both "good enough" and compatible with the dest dout
-+    for (size_t i = 0; i != fmt_count; ++i) {
++    for (unsigned int i = 0; i != fmt_count; ++i) {
 +        const uint32_t fmt = fmts[i];
 +
 +        // *** Kludge for Pi not supporting rotation on this
 +        if (fmt == DRM_FORMAT_BGR888 || fmt == DRM_FORMAT_RGB888)
 +            continue;
++
++        // If no output given then just fill in the first format found
++        if (dest_dout == NULL) {
++            *pFmt = fmts[i];
++            return NULL;
++        }
 +
 +        drmu_plane_t * const dp = drmu_output_plane_ref_format(dest_dout, types, fmt, 0);
 +
@@ -11285,7 +11665,7 @@ Can do HDR setup and mode matching
 +
 +    wbq->wbe = drmu_writeback_env_ref(wbe);
 +    wbq->pool = drmu_pool_ref(fb_pool);
-+    wbq->q_tag = writeback_env_tag_new(wbe);
++    wbq->q_tag = drmu_writeback_env_tag_new(wbe);
 +    wbq->q_merge = DRMU_QUEUE_MERGE_REPLACE;
 +
 +    return wbq;
@@ -11417,7 +11797,7 @@ Can do HDR setup and mode matching
 +
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_writeback.h
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,73 @@
 +#ifndef _DRMU_WRITEBACK_H
 +#define _DRMU_WRITEBACK_H
 +
@@ -11434,6 +11814,7 @@ Can do HDR setup and mode matching
 +struct drmu_output_s;
 +struct drmu_plane_s;
 +struct drmu_pool_s;
++struct drmu_queue_s;
 +
 +struct drmu_writeback_env_s;
 +typedef struct drmu_writeback_env_s drmu_writeback_env_t;
@@ -11447,11 +11828,19 @@ Can do HDR setup and mode matching
 +// Output associated with Q (and therefore conn & crtc)
 +struct drmu_output_s * drmu_writeback_env_output(const drmu_writeback_env_t * const wbe);
 +
++// Atomic queue used by this env
++struct drmu_queue_s * drmu_writeback_env_queue(const drmu_writeback_env_t * const wbe);
++
++// Get a "unique" non-zero tag no
++unsigned int drmu_writeback_env_tag_new(drmu_writeback_env_t * const wbe);
++
 +// Find and ref a plane in dest_dout that is compatible with a format that the
 +// writeback connector can produce. The format is returned in *pFmt
 +// Types is a bit field of acceptable plane types (DRMU_PLANE_TYPE_xxx), 0 => any
++// If dest_dout is NULL then will return NULL for the plane but will fill in
++// *pFmt with the first usable format on the writeback output.
 +// cf. drmu_output_plane_ref_format
-+// Returns NULL if nothing compatible found
++// Returns NULL, *pFmt == 0 if nothing compatible found
 +struct drmu_plane_s * drmu_writeback_env_fmt_plane(drmu_writeback_env_t * const wbe,
 +                                                   struct drmu_output_s * const dest_dout, const unsigned int types,
 +                                                   uint32_t * const pFmt);
@@ -11484,7 +11873,7 @@ Can do HDR setup and mode matching
 +#endif
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_xlease.c
-@@ -0,0 +1,143 @@
+@@ -0,0 +1,149 @@
 +#include "drmu.h"
 +#include "drmu_log.h"
 +
@@ -11494,8 +11883,7 @@ Can do HDR setup and mode matching
 +static int
 +get_lease_fd(const drmu_log_env_t * const log)
 +{
-+    xcb_generic_error_t *xerr;
-+
++    int fd = -1;
 +    int screen = 0;
 +    xcb_connection_t * const connection = xcb_connect(NULL, &screen);
 +    if (!connection) {
@@ -11511,7 +11899,7 @@ Can do HDR setup and mode matching
 +
 +        if (!rqv_r) {
 +            drmu_warn_log(log, "Failed to get XCB RandR version");
-+            return -1;
++            goto fail;
 +        }
 +
 +        uint32_t major = rqv_r->major_version;
@@ -11520,7 +11908,7 @@ Can do HDR setup and mode matching
 +
 +        if (minor < 6) {
 +            drmu_warn_log(log, "XCB RandR version %d.%d too low for lease support", major, minor);
-+            return -1;
++            goto fail;
 +        }
 +    }
 +
@@ -11536,7 +11924,7 @@ Can do HDR setup and mode matching
 +
 +        if (s_i.rem == 0) {
 +            drmu_err_log(log, "Failed to get root for screen %d", screen);
-+            return -1;
++            goto fail;
 +        }
 +
 +        drmu_debug_log(log, "index %d screen %d rem %d", s_i.index, screen, s_i.rem);
@@ -11555,7 +11943,7 @@ Can do HDR setup and mode matching
 +
 +        if (!gsr_r) {
 +            drmu_err_log(log, "get_screen_resources failed");
-+            return -1;
++            goto fail;
 +        }
 +
 +        xcb_randr_output_t * const ro = xcb_randr_get_screen_resources_outputs(gsr_r);
@@ -11564,6 +11952,9 @@ Can do HDR setup and mode matching
 +            xcb_randr_get_output_info_cookie_t goi_c = xcb_randr_get_output_info(connection, ro[o], gsr_r->config_timestamp);
 +
 +            xcb_randr_get_output_info_reply_t *goi_r = xcb_randr_get_output_info_reply(connection, goi_c, NULL);
++
++            if (goi_r == NULL)
++                continue;
 +
 +            drmu_debug_log(log, "output[%d/%d] %d: conn %d/%d crtc %d", o, gsr_r->num_outputs, ro[o], goi_r->connection, XCB_RANDR_CONNECTION_CONNECTED, goi_r->crtc);
 +
@@ -11581,13 +11972,12 @@ Can do HDR setup and mode matching
 +
 +        if (output == 0) {
 +            drmu_warn_log(log, "Failed to find active output (outputs=%d)", o);
-+            return -1;
++            goto fail;
 +        }
 +    }
 +
-+    int fd = -1;
-+
 +    {
++        xcb_generic_error_t *xerr = NULL;
 +        xcb_randr_lease_t lease = xcb_generate_id(connection);
 +
 +        xcb_randr_create_lease_cookie_t rcl_c = xcb_randr_create_lease(connection,
@@ -11600,8 +11990,11 @@ Can do HDR setup and mode matching
 +        xcb_randr_create_lease_reply_t *rcl_r = xcb_randr_create_lease_reply(connection, rcl_c, &xerr);
 +
 +        if (!rcl_r) {
-+            drmu_err_log(log, "create_lease failed: Xerror %d", xerr->error_code);
-+            return -1;
++            if (xerr != NULL)
++                drmu_err_log(log, "create_lease failed: Xerror %d", xerr->error_code);
++            else
++                drmu_err_log(log, "create_lease failed");
++            goto fail;
 +        }
 +
 +        int *rcl_f = xcb_randr_create_lease_reply_fds(connection, rcl_r);
@@ -11612,6 +12005,9 @@ Can do HDR setup and mode matching
 +    }
 +
 +    drmu_debug_log(log, "%s OK: fd=%d", __func__, fd);
++
++fail:
++    xcb_disconnect(connection);
 +    return fd;
 +}
 +
@@ -11627,7 +12023,6 @@ Can do HDR setup and mode matching
 +    }
 +    return drmu_env_new_fd(fd, log);
 +}
-+
 --- /dev/null
 +++ b/modules/video_output/drmu/pollqueue.c
 @@ -0,0 +1,716 @@
@@ -12451,3 +12846,29 @@ Can do HDR setup and mode matching
 +                        void (* const exit_fn)(void * v), void * v);
 +
 +#endif /* POLLQUEUE_H_ */
+--- a/modules/video_output/opengl/egl.c
++++ b/modules/video_output/opengl/egl.c
+@@ -43,6 +43,8 @@
+ # include "../android/utils.h"
+ #endif
+ 
++#define REQUIRE_DMA_BUF_IMPORT 1
++
+ typedef struct vlc_gl_sys_t
+ {
+     EGLDisplay display;
+@@ -381,6 +383,14 @@ static int Open (vlc_object_t *obj, cons
+         goto error;
+     }
+ 
++#if REQUIRE_DMA_BUF_IMPORT
++    if (!CheckToken(ext, "EGL_EXT_image_dma_buf_import"))
++    {
++        msg_Dbg(obj, "No dma_buf_import - fall back to X");
++        goto error;
++    }
++#endif
++
+     const EGLint conf_attr[] = {
+         EGL_RED_SIZE, 5,
+         EGL_GREEN_SIZE, 5,

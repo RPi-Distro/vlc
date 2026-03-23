@@ -1,7 +1,7 @@
 From 84ee2323267f7e08a81e93a33a7059b963f18725 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:01:48 +0100
-Subject: [PATCH 15/41] configure.ac: Add mmal_avcodec option
+Subject: [PATCH 15/40] configure.ac: Add mmal_avcodec option
 
 ---
  configure.ac | 4 ++++

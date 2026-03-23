@@ -1,13 +1,13 @@
-From 4702ab1660b4ad3865547bb6549b7b364ebd9fc6 Mon Sep 17 00:00:00 2001
+From b8d84d06706ca1cf84449c893047a57cb6d88d06 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:59:10 +0100
-Subject: [PATCH 36/41] video_output/wayland: Add dmabuf output
+Subject: [PATCH 35/40] video_output/wayland: Add dmabuf output
 
 Previously all output was via shm which can be inefficient.
 Depends on some files from drmu for DRM format info.
 ---
  configure.ac                                  |    9 +
- modules/video_output/Makefile.am              |   73 +-
+ modules/video_output/Makefile.am              |   76 +-
  modules/video_output/wayland/dmabuf_alloc.c   |  516 +++
  modules/video_output/wayland/dmabuf_alloc.h   |   59 +
  modules/video_output/wayland/picpool.c        |  369 +++
@@ -16,8 +16,8 @@ Depends on some files from drmu for DRM format info.
  modules/video_output/wayland/rgba_premul.h    |   18 +
  .../wayland/rgba_premul_aarch64.S             |  170 +
  .../wayland/rgba_premul_aarch64.h             |    9 +
- modules/video_output/wayland/wl_dmabuf.c      | 2891 +++++++++++++++++
- 11 files changed, 4380 insertions(+), 1 deletion(-)
+ modules/video_output/wayland/wl_dmabuf.c      | 2945 +++++++++++++++++
+ 11 files changed, 4437 insertions(+), 1 deletion(-)
  create mode 100644 modules/video_output/wayland/dmabuf_alloc.c
  create mode 100644 modules/video_output/wayland/dmabuf_alloc.h
  create mode 100644 modules/video_output/wayland/picpool.c
@@ -62,7 +62,7 @@ Depends on some files from drmu for DRM format info.
  dnl
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -238,7 +238,76 @@ video_output/wayland/viewporter-client-p
+@@ -246,7 +246,78 @@ video_output/wayland/viewporter-client-p
  
  video_output/wayland/viewporter-protocol.c: \
  		$(WAYLAND_PROTOCOLS)/stable/viewporter/viewporter.xml
@@ -98,7 +98,9 @@ Depends on some files from drmu for DRM format info.
 +	video_output/wayland/dmabuf_alloc.c video_output/wayland/dmabuf_alloc.h\
 +	video_output/wayland/rgba_premul.c video_output/wayland/rgba_premul.h\
 +	video_output/drmu/pollqueue.c video_output/drmu/pollqueue.h\
-+	video_output/drmu/drmu_vlc_fmts.c video_output/drmu/drmu_vlc_fmts.h
++	video_output/drmu/drmu_vlc_fmts.c video_output/drmu/drmu_vlc_fmts.h\
++	video_output/drmu/drmu_fmts.c video_output/drmu/drmu_fmts.h\
++	video_output/drmu/drmu_fourcc.h
 +nodist_libwl_dmabuf_plugin_la_SOURCES = \
 +	video_output/wayland/viewporter-client-protocol.h \
 +	video_output/wayland/viewporter-protocol.c \
@@ -109,7 +111,7 @@ Depends on some files from drmu for DRM format info.
 +
 +libwl_dmabuf_plugin_la_CPPFLAGS = $(AM_CPPFLAGS) \
 +	-I$(builddir)/video_output/wayland -pthread
-+libwl_dmabuf_plugin_la_CFLAGS = $(WAYLAND_CLIENT_CFLAGS) -pthread
++libwl_dmabuf_plugin_la_CFLAGS = $(WAYLAND_CLIENT_CFLAGS) -DHAS_SORTED_FMTS=1  -I$(builddir)/video_output/drmu -pthread
 +libwl_dmabuf_plugin_la_LIBADD = $(WAYLAND_CLIENT_LIBS)
 +libwl_dmabuf_plugin_la_LDFLAGS = $(AM_LDFLAGS) -pthread
 +if HAVE_ARM64
@@ -140,11 +142,12 @@ Depends on some files from drmu for DRM format info.
  
  libwl_shell_plugin_la_SOURCES = video_output/wayland/shell.c
  libwl_shell_plugin_la_CFLAGS = $(WAYLAND_CLIENT_CFLAGS)
-@@ -277,6 +346,8 @@ libegl_wl_plugin_la_LIBADD = $(EGL_LIBS)
+@@ -285,6 +356,9 @@ libegl_wl_plugin_la_LIBADD = $(EGL_LIBS)
  if HAVE_WAYLAND
  BUILT_SOURCES += $(nodist_libwl_shm_plugin_la_SOURCES)
  vout_LTLIBRARIES += libwl_shm_plugin.la
 +BUILT_SOURCES += $(nodist_libwl_dmabuf_plugin_la_SOURCES)
++BUILT_SOURCES += $(nodist_libdrm_vout_plugin_la_SOURCES)
 +vout_LTLIBRARIES += libwl_dmabuf_plugin.la
  vout_LTLIBRARIES += libwl_shell_plugin.la
  BUILT_SOURCES += $(nodist_libxdg_shell_plugin_la_SOURCES)
@@ -1583,7 +1586,7 @@ Depends on some files from drmu for DRM format info.
 +#endif
 --- /dev/null
 +++ b/modules/video_output/wayland/wl_dmabuf.c
-@@ -0,0 +1,2891 @@
+@@ -0,0 +1,2945 @@
 +/**
 + * @file shm.c
 + * @brief Wayland shared memory video output module for VLC media player
@@ -1652,6 +1655,7 @@ Depends on some files from drmu for DRM format info.
 +#include "picpool.h"
 +#include "rgba_premul.h"
 +#include "../drmu/drmu_log.h"
++#include "../drmu/drmu_fmts.h"
 +#include "../drmu/drmu_vlc_fmts.h"
 +#include "../drmu/pollqueue.h"
 +#include "../../codec/avcodec/drm_pic.h"
@@ -2224,25 +2228,42 @@ Depends on some files from drmu for DRM format info.
 +    return eq;
 +}
 +
++// Actually delete the Q - do in a pollqueue CB as that is safe
++static void
++eq_delete_cb(void * v, short revents)
++{
++    eq_env_t * const eq = v;
++    (void)revents;
++
++    pollqueue_set_pre_post(eq->pq, 0, 0, NULL);
++    pollqueue_unref(&eq->pq);
++
++    wl_proxy_wrapper_destroy(eq->wrapped_display);
++    wl_event_queue_destroy(eq->q);
++
++    free(eq);
++}
++
 +static void
 +eq_unref(eq_env_t ** const ppeq)
 +{
-+    eq_env_t * eq = *ppeq;
-+    if (eq != NULL)
++    eq_env_t * const eq = *ppeq;
++    int n;
++
++    if (eq == NULL)
++        return;
++    *ppeq = NULL;
++
++    n = atomic_fetch_sub(&eq->eq_count, 1);
++    if (n == 0)
 +    {
-+        int n;
-+        *ppeq = NULL;
-+        n = atomic_fetch_sub(&eq->eq_count, 1);
-+        if (n == 0)
-+        {
-+            pollqueue_set_pre_post(eq->pq, 0, 0, NULL);
-+            pollqueue_unref(&eq->pq);
-+
-+            wl_proxy_wrapper_destroy(eq->wrapped_display);
-+            wl_event_queue_destroy(eq->q);
-+
-+            free(eq);
-+        }
++        // We shouldn't have anything that has a callback left on this Q
++        // but we might have a destroy or the like that it would be good
++        // to flush before killing our Q
++        wl_display_flush(eq->display);
++        // Avoid destroying the Q whilst we might be  in one of its wayland
++        // callbacks (e.g. buffer destroy)
++        pollqueue_callback_once(eq->pq, eq_delete_cb, eq);
 +    }
 +}
 +
@@ -2941,6 +2962,11 @@ Depends on some files from drmu for DRM format info.
 +    VLC_UNUSED(spe);
 +    VLC_UNUSED(fmt);
 +#else
++    uint64_t mod = 0;
++    const uint32_t dfmt = drmu_format_vlc_to_drm_prime(fmt, &mod);
++    const drmu_fmt_info_t * const fi = drmu_fmt_info_find_fmt(dfmt);
++    video_color_primaries_t primaries;
++
 +    static const enum wp_color_representation_surface_v1_chroma_location location_map[CHROMA_LOCATION_MAX + 1] = {
 +        [CHROMA_LOCATION_LEFT] = WP_COLOR_REPRESENTATION_SURFACE_V1_CHROMA_LOCATION_TYPE_1,
 +        [CHROMA_LOCATION_CENTER] = WP_COLOR_REPRESENTATION_SURFACE_V1_CHROMA_LOCATION_TYPE_2,
@@ -2953,17 +2979,43 @@ Depends on some files from drmu for DRM format info.
 +    if (sys->bound.color_representation_manager_v1 == NULL)
 +        return;
 +
-+    spe->coefficients = fmt->primaries < 0 || fmt->primaries >= ARRAY_SIZE(sys->primary_map) ? 0 :
-+        sys->primary_map[fmt->primaries].coefficients;
-+    spe->range = sys->primary_map[fmt->primaries].ranges == 1 ?
++    if (fi == NULL) {
++        // Unknown - let Wayland deal with it in a default manner
++        spe->coefficients = 0;
++        return;
++    }
++
++    if (drmu_fmt_info_is_yuv(fi)) {
++        primaries = fmt->primaries;
++        if (primaries == COLOR_PRIMARIES_UNDEF) {
++            // Apply guesswork (same as drmu)
++            primaries = (fmt->i_visible_width > 1024 || fmt->i_visible_height > 600) ?
++                COLOR_PRIMARIES_BT709 :
++                COLOR_PRIMARIES_BT601_525;
++        }
++    }
++    else {
++        // All RGB for this purpose is mapped onto _PRIMARIES_UNDEF and we must set
++        // coefficients to LINEAR or we get a protocol error and crash
++        primaries = COLOR_PRIMARIES_UNDEF;
++    }
++
++    spe->coefficients = primaries < 0 || primaries >= ARRAY_SIZE(sys->primary_map) ? 0 :
++        sys->primary_map[primaries].coefficients;
++    spe->range = sys->primary_map[primaries].ranges == 1 ?
 +            WP_COLOR_REPRESENTATION_SURFACE_V1_RANGE_FULL :
-+        sys->primary_map[fmt->primaries].ranges == 2 ?
++        sys->primary_map[primaries].ranges == 2 ?
 +            WP_COLOR_REPRESENTATION_SURFACE_V1_RANGE_LIMITED :
 +        fmt->b_color_range_full ?
 +            WP_COLOR_REPRESENTATION_SURFACE_V1_RANGE_FULL :
 +            WP_COLOR_REPRESENTATION_SURFACE_V1_RANGE_LIMITED;
-+    spe->chroma_loc = fmt->chroma_location < 0 || fmt->chroma_location >= ARRAY_SIZE(location_map) ? 0 :
-+            location_map[fmt->chroma_location];
++    // Could have a full conversion between drm & vlc location reps but left &
++    // left-top are the only ones that actually happen here
++    spe->chroma_loc = fmt->chroma_location > 0 && fmt->chroma_location < ARRAY_SIZE(location_map) ?
++            location_map[fmt->chroma_location] :
++        drmu_chroma_siting_eq(drmu_fmt_info_chroma_siting(fi), DRMU_CHROMA_SITING_LEFT) ?
++            WP_COLOR_REPRESENTATION_SURFACE_V1_CHROMA_LOCATION_TYPE_1 :
++            WP_COLOR_REPRESENTATION_SURFACE_V1_CHROMA_LOCATION_TYPE_0;
 +#endif
 +}
 +
@@ -4022,6 +4074,11 @@ Depends on some files from drmu for DRM format info.
 +
 +    switch (coefficients)
 +    {
++        case WP_COLOR_REPRESENTATION_SURFACE_V1_COEFFICIENTS_IDENTITY:
++            // Abuse UNDEF for RGB/IDENTITY
++            sys->primary_map[COLOR_PRIMARIES_UNDEF].coefficients = coefficients;
++            sys->primary_map[COLOR_PRIMARIES_UNDEF].ranges |= rmask;
++            break;
 +        case WP_COLOR_REPRESENTATION_SURFACE_V1_COEFFICIENTS_BT601:
 +            sys->primary_map[COLOR_PRIMARIES_BT601_525].coefficients = coefficients;
 +            sys->primary_map[COLOR_PRIMARIES_BT601_525].ranges |= rmask;
