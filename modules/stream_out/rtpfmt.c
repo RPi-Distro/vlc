@@ -240,6 +240,8 @@ int rtp_get_fmt( vlc_object_t *obj, const es_format_t *p_fmt, const char *mux,
             rtp_fmt->pf_packetize = rtp_packetize_pcm;
             break;
         case VLC_CODEC_MPGA:
+        case VLC_CODEC_MP2:
+        case VLC_CODEC_MP3:
             rtp_fmt->payload_type = 14;
             rtp_fmt->ptname = "MPA";
             rtp_fmt->clock_rate = 90000; /* not 44100 */
@@ -1836,6 +1838,10 @@ static int rtp_packetize_rawvideo( sout_stream_id_sys_t *id, block_t *in, vlc_fo
             }
             else vlc_assert_unreachable();
         }
+
+        /* Block was allocated before knowing how many (partial) lines fit,
+           so trim it to the bytes written. */
+        out->i_buffer = p_outdata - out->p_buffer;
 
         /* rtp common header */
         rtp_packetize_common( id, out, i_line_number >= i_height,

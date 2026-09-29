@@ -20,7 +20,8 @@ DVDCSS_CONF := --disable-doc
 
 .dvdcss: dvdcss
 	$(REQUIRE_GPL)
-	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) $(DVDCSS_CONF)
-	$(MAKE) -C $< install
+	$(MAKEBUILDDIR)
+	$(MAKECONFIGURE) $(DVDCSS_CONF)
+	+$(MAKEBUILD)
+	+$(MAKEBUILD) install
 	touch $@

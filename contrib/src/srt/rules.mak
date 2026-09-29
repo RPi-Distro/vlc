@@ -1,6 +1,6 @@
 # srt
 
-SRT_VERSION := 1.5.3
+SRT_VERSION := 1.5.6
 SRT_URL := $(GITHUB)/Haivision/srt/archive/v$(SRT_VERSION).tar.gz
 
 # gnutls (nettle/gmp) can't be used with the LGPLv2 license
@@ -24,7 +24,7 @@ endif
 
 DEPS_srt = gnutls $(DEPS_gnutls)
 ifdef HAVE_WIN32
-DEPS_srt += pthreads $(DEPS_pthreads)
+DEPS_srt += winpthreads $(DEPS_winpthreads)
 endif
 
 $(TARBALLS)/srt-$(SRT_VERSION).tar.gz:
@@ -38,11 +38,11 @@ srt: srt-$(SRT_VERSION).tar.gz .sum-srt
 	$(call pkg_static,"scripts/srt.pc.in")
 	$(MOVE)
 
-SRT_CONF := -DENABLE_SHARED=OFF -DUSE_ENCLIB=gnutls -DENABLE_CXX11=OFF
+SRT_CONF := -DENABLE_SHARED=OFF -DUSE_ENCLIB=gnutls -DENABLE_CXX11=OFF -DENABLE_APPS=OFF
 
 .srt: srt toolchain.cmake
 	$(CMAKECLEAN)
-	$(HOSTVARS) $(CMAKE) $(SRT_CONF)
+	$(HOSTVARS_CMAKE) $(CMAKE) $(SRT_CONF)
 	+$(CMAKEBUILD)
 	$(CMAKEINSTALL)
 	touch $@

@@ -1,5 +1,5 @@
 # Malayalam translation
-# Copyright (C) 2016 VideoLAN
+# Copyright (C) 2026 VideoLAN
 # This file is distributed under the same license as the vlc package.
 #
 # Translators:
@@ -11,11 +11,12 @@
 # KiranS, 2020
 # akkuvijay <akkuvijay@aol.com>, 2020
 # Dilip Re, 2021
+# Michał Trzebiatowski <michtrz@gmail.com>, 2018
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.22-rc1\n"
+"Project-Id-Version: vlc 3.0.24-beta1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-12-23 11:04+0000\n"
+"POT-Creation-Date: 2026-09-17 12:55+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Dilip Re, 2021\n"
 "Language-Team: Malayalam (https://app.transifex.com/yaron/teams/16553/ml/)\n"
@@ -636,7 +637,7 @@ msgid "The maximum number of filters (%u) was reached."
 msgstr "ഫില്‍റ്ററുകളുടെ കൂടിയ എണ്ണം  (%u)  എത്തി."
 
 #: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:936
-#: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:124
+#: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:126
 #: modules/gui/macosx/VLCMainMenu.m:243
 #: modules/gui/macosx/VLCSidebarDataSource.m:211
 #: modules/video_filter/postproc.c:235
@@ -1032,24 +1033,20 @@ msgid "Decoded format"
 msgstr "ഡീകോഡെഡ് ഘടന"
 
 #: src/input/es_out.c:3207
-#, fuzzy
 msgid "Decoded channels"
-msgstr "ഓഡിയോ ചാനലുകള്‍"
+msgstr ""
 
 #: src/input/es_out.c:3212
-#, fuzzy
 msgid "Decoded sample rate"
-msgstr "ഓഡിയോ സാംപിള്‍ റേറ്റ്"
+msgstr ""
 
 #: src/input/es_out.c:3219
-#, fuzzy
 msgid "Decoded bits per sample"
-msgstr "പ്രതി സാംപിള്‍ ഓഡിയോ ബിറ്റുള്‍"
+msgstr ""
 
 #: src/input/es_out.c:3224
-#, fuzzy
 msgid "Decoded Bitrate"
-msgstr "ഡീകോഡെഡ് ഘടന"
+msgstr ""
 
 #: src/input/es_out.c:3237
 msgid "Track replay gain"
@@ -1076,7 +1073,7 @@ msgstr "ബഫർ അളവുകൾ"
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
-#: modules/access/vdr.c:78 modules/access/vnc.c:60 modules/demux/image.c:66
+#: modules/access/vdr.c:79 modules/access/vnc.c:61 modules/demux/image.c:66
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:164
 #: modules/video_filter/fps.c:42
 msgid "Frame rate"
@@ -1756,8 +1753,8 @@ msgstr ""
 
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:957
 #: modules/audio_output/kai.c:106 modules/codec/subsdec.c:167
-#: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:122
-#: modules/demux/mpeg/ts.c:132 modules/gui/macosx/VLCSimplePrefsController.m:54
+#: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:124
+#: modules/demux/mpeg/ts.c:133 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:69
 #: modules/gui/qt/components/sout/profile_selector.cpp:590
 #: modules/text_renderer/freetype/freetype.c:124
@@ -2527,9 +2524,9 @@ msgstr ""
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
 #: modules/access/dshow/dshow.cpp:2081 modules/audio_output/alsa.c:767
-#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1316
-#: modules/audio_output/mmdevice.c:1445 modules/audio_output/winstore.c:594
-#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:106
+#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1332
+#: modules/audio_output/mmdevice.c:1469 modules/audio_output/winstore.c:600
+#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:108
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
@@ -4031,7 +4028,7 @@ msgstr "പതുക്കെ(ഫൈന്‍)"
 #: modules/gui/macosx/VLCMainMenu.m:396 modules/gui/macosx/VLCMainMenu.m:499
 #: modules/gui/macosx/VLCMainMenu.m:507
 #: modules/gui/qt/components/controller.hpp:112
-#: modules/gui/qt/dialogs/sout.cpp:91 modules/notify/notify.c:335
+#: modules/gui/qt/dialogs/sout.cpp:89 modules/notify/notify.c:335
 #: modules/gui/qt/ui/streampanel.h:179
 msgid "Next"
 msgstr "അടുത്തത്"
@@ -4788,7 +4785,7 @@ msgid "Subpictures"
 msgstr "ഉപചിത്രങ്ങള്‍"
 
 #: src/libvlc-module.c:1683 modules/codec/subsdec.c:182
-#: modules/demux/subtitle.c:71 modules/demux/xiph_metadata.h:49
+#: modules/demux/subtitle.c:72 modules/demux/xiph_metadata.h:49
 #: modules/demux/xiph_metadata.h:62
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:158
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
@@ -5117,7 +5114,7 @@ msgstr "മീഡിയ സമയം"
 msgid "Media View"
 msgstr "മീഡിയ വ്യൂ"
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:577
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:574
 msgid "Menu"
 msgstr "മെനു"
 
@@ -5211,38 +5208,38 @@ msgstr "Meta+"
 msgid "Command+"
 msgstr "Command+"
 
-#: src/misc/update.c:482
+#: src/misc/update.c:490
 #, c-format
 msgid "%.1f GiB"
 msgstr "%.1f GiB"
 
-#: src/misc/update.c:484
+#: src/misc/update.c:492
 #, c-format
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: src/misc/update.c:486 modules/gui/macosx/VLCPlaylistInfo.m:138
+#: src/misc/update.c:494 modules/gui/macosx/VLCPlaylistInfo.m:138
 #: modules/gui/macosx/VLCPlaylistInfo.m:140
 #, c-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
 
-#: src/misc/update.c:488
+#: src/misc/update.c:496
 #, c-format
 msgid "%<PRIu64> B"
 msgstr "%<PRIu64> B"
 
-#: src/misc/update.c:580
+#: src/misc/update.c:588
 msgid "Saving file failed"
 msgstr "ഫയല്‍ സേവ് ചെയ്യുന്നത് പരാജയപ്പെട്ടു"
 
-#: src/misc/update.c:581
+#: src/misc/update.c:589
 #, c-format
 msgid "Failed to open \"%s\" for writing"
 msgstr "റൈറ്റ് ചെയ്യാനായി  \"%s\" തുറക്കുന്നതില്‍ പരാജയപ്പെട്ടു"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2878
+#: src/misc/update.c:604 src/misc/update.c:734 modules/access/dvb/scan.c:826
+#: modules/demux/avi/avi.c:2888
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
@@ -5270,12 +5267,12 @@ msgstr "റൈറ്റ് ചെയ്യാനായി  \"%s\" തുറക�
 #: modules/gui/qt/components/open_panels.cpp:1361
 #: modules/gui/qt/components/preferences_widgets.cpp:1420
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
-#: modules/gui/qt/dialogs/sout.cpp:90
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/gui/qt/dialogs/sout.cpp:88
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "Cancel"
 msgstr "ഉപേക്ഷിക്കുക"
 
-#: src/misc/update.c:598
+#: src/misc/update.c:606
 #, c-format
 msgid ""
 "%s\n"
@@ -5284,11 +5281,11 @@ msgstr ""
 "%s\n"
 "ഡൗണ്‍ലോഡിംഗ്... %s/%s %.1f%% പൂര്‍ത്തിയായി"
 
-#: src/misc/update.c:649
+#: src/misc/update.c:657
 msgid "File could not be verified"
 msgstr "ഫയല്‍ ഉറപ്പുവരുത്താനാകുന്നില്ല"
 
-#: src/misc/update.c:650
+#: src/misc/update.c:658
 #, c-format
 msgid ""
 "It was not possible to download a cryptographic signature for the downloaded "
@@ -5297,11 +5294,11 @@ msgstr ""
 "ഡൌണ്‍ലോഡ് ചെയ്ത \"%s\" ഫയലിന് വേണ്ടിയുള്ള ക്രിപ്റ്റോഗ്രാഫിക് ഒപ്പ് ഡൌണ്‍ലോഡ് ചെയ്യാന്‍ കഴിഞ്ഞില്ല. "
 "അതുകാരണം അത് നീക്കം ചെയ്യപ്പെട്ടു."
 
-#: src/misc/update.c:661 src/misc/update.c:673
+#: src/misc/update.c:669 src/misc/update.c:681
 msgid "Invalid signature"
 msgstr "അസാധുവായ സിഗ്നേച്ചര്‍"
 
-#: src/misc/update.c:662 src/misc/update.c:674
+#: src/misc/update.c:670 src/misc/update.c:682
 #, c-format
 msgid ""
 "The cryptographic signature for the downloaded file \"%s\" was invalid and "
@@ -5310,11 +5307,11 @@ msgstr ""
 "ഡൌണ്‍ലോഡ് ചെയ്ത \"%s\" ഫയലിന് വേണ്ടിയുള്ള ക്രിപ്റ്റോഗ്രാഫിക് ഒപ്പ് അസാധുവാണ് കൂടാതെ അതിനെ "
 "സുരക്ഷിതമായി നിര്‍ണ്ണയിക്കുവാന്‍ ഉപയോഗിക്കുവാന്‍ കഴിഞ്ഞില്ല. അതുകാരണം അത് നീക്കം ചെയ്യപ്പെട്ടു."
 
-#: src/misc/update.c:686
+#: src/misc/update.c:694
 msgid "File not verifiable"
 msgstr "ഫയല്‍ ഉറപ്പുവരുത്താനാവുന്നതല്ല"
 
-#: src/misc/update.c:687
+#: src/misc/update.c:695
 #, c-format
 msgid ""
 "It was not possible to securely verify the downloaded file \"%s\". Thus, it "
@@ -5323,16 +5320,16 @@ msgstr ""
 "ഡൌണ്‍ലോഡ് ചെയ്ത \"%s\" ഫയലിനെ സുരക്ഷിതമായി നിര്‍ണ്ണയിക്കുവാന്‍ ഉപയോഗിക്കുവാന്‍ കഴിഞ്ഞില്ല "
 "അതുകാരണം അത് നീക്കം ചെയ്യപ്പെട്ടു."
 
-#: src/misc/update.c:698 src/misc/update.c:710
+#: src/misc/update.c:706 src/misc/update.c:718
 msgid "File corrupted"
 msgstr "ഫയല്‍ കറപ്റ്റായി"
 
-#: src/misc/update.c:699 src/misc/update.c:711
+#: src/misc/update.c:707 src/misc/update.c:719
 #, c-format
 msgid "Downloaded file \"%s\" was corrupted. Thus, it was deleted."
 msgstr "ഡൌണ്‍ലോഡ് ചെയ്ത \"%s\" ഫയല്‍ ദുഷിച്ചതാണ്,  അതുകാരണം, അത് നീക്കം ചെയ്യപ്പെട്ടു."
 
-#: src/misc/update.c:723
+#: src/misc/update.c:731
 msgid ""
 "The new version was successfully downloaded. Do you want to close VLC and "
 "install it now?"
@@ -5340,11 +5337,11 @@ msgstr ""
 "പുതിയ വേര്‍ഷന്‍ വിജയകരമായി ഡൌണ്‍ലോഡ് ചെയ്യപ്പെട്ടു. വി‌എല്‍‌സി ഇപ്പോള്‍ നിങ്ങള്‍ക്ക് നിര്‍ത്തുകയും കൂടാതെ "
 "അതിനാടെ ഇപ്പോള്‍ ഇന്‍സ്റ്റാള്‍ ചെയ്യണമോ?"
 
-#: src/misc/update.c:726 modules/gui/macosx/VLCAddonsWindowController.m:200
+#: src/misc/update.c:734 modules/gui/macosx/VLCAddonsWindowController.m:200
 msgid "Install"
 msgstr "ഇന്‍സ്റ്റാള്‍ ചെയ്യുക"
 
-#: src/misc/update.c:727
+#: src/misc/update.c:735
 msgid "Update VLC media player"
 msgstr "വിഎല്‍സി മീഡിയ പ്ലേയര്‍ പുതുക്കുക"
 
@@ -6377,11 +6374,11 @@ msgstr "കെഡിഎം ഫയൽ "
 msgid "Path to Key Delivery Message XML file"
 msgstr "കീ ഡെലിവറി സന്ദേശത്തിലേക്കുള്ള എക്സ്എം‌എൽ ഫയലിലേക്കുള്ള പാത"
 
-#: modules/access/dcp/dcp.cpp:77
+#: modules/access/dcp/dcp.cpp:86
 msgid "DCP"
 msgstr "ഡിസിപി"
 
-#: modules/access/dcp/dcp.cpp:79
+#: modules/access/dcp/dcp.cpp:88
 msgid "Digital Cinema Package module"
 msgstr "ഡിജിറ്റല്‍ സിനിമ പാക്കേജ് മോഡ്യൂള്‍"
 
@@ -6511,7 +6508,7 @@ msgstr "ബ്ലാക്ക്മാജിക്ക് ഡെക്ക്ല�
 msgid "10 bits"
 msgstr "10 ബിറ്റുകള്‍"
 
-#: modules/access/decklink.cpp:358 modules/demux/ty.c:783
+#: modules/access/decklink.cpp:358 modules/demux/ty.c:792
 msgid "Closed captions 1"
 msgstr "അടച്ച ശീര്‍ഷകങ്ങള്‍ 1"
 
@@ -7415,7 +7412,7 @@ msgstr "ഫയല്‍ ഇന്‍പുട്ട്"
 #: modules/gui/macosx/VLCOpenWindowController.m:140
 #: modules/gui/macosx/VLCOutput.m:64 modules/gui/macosx/VLCOutput.m:175
 #: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1428
-#: modules/gui/qt/dialogs/sout.cpp:67 modules/gui/qt/dialogs/sout.cpp:119
+#: modules/gui/qt/dialogs/sout.cpp:67 modules/gui/qt/dialogs/sout.cpp:114
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
 #: share/lua/http/dialogs/stream_window.html:95
@@ -7437,7 +7434,7 @@ msgstr "ഡയറക്ടറികൾ ലിസ്റ്റുചെയ്യ�
 
 #: modules/access/ftp.c:69 modules/access/live555.cpp:85
 #: modules/access/rdp.c:65 modules/access/sftp.c:55
-#: modules/access/smb_common.h:21 modules/access/vnc.c:47
+#: modules/access/smb_common.h:21 modules/access/vnc.c:48
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
@@ -7457,7 +7454,7 @@ msgstr ""
 
 #: modules/access/ftp.c:72 modules/access/live555.cpp:88
 #: modules/access/rdp.c:68 modules/access/sftp.c:58
-#: modules/access/smb_common.h:24 modules/access/vnc.c:48
+#: modules/access/smb_common.h:24 modules/access/vnc.c:49
 #: modules/access_output/http.c:55
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
 #: modules/gui/macosx/VLCSimplePrefsController.m:285
@@ -7502,19 +7499,19 @@ msgstr "എഫ്ടിപി ഇന്‍പുട്ട്"
 msgid "FTP upload output"
 msgstr "എഫ്ടിപി അപ്ലോഡ് ഔട്ട്പുട്ട്"
 
-#: modules/access/ftp.c:370 modules/access/ftp.c:386 modules/access/ftp.c:538
+#: modules/access/ftp.c:385 modules/access/ftp.c:401 modules/access/ftp.c:564
 msgid "Network interaction failed"
 msgstr "നെറ്റ്വര്‍ക്ക് ഇന്ററാക്ഷന്‍ പരാജയപ്പെട്ടു"
 
-#: modules/access/ftp.c:371
+#: modules/access/ftp.c:386
 msgid "VLC could not connect with the given server."
 msgstr "വിഎല്‍സിക്കു നല്‍കിയ സര്‍വ്വറുമായി ബന്ധപ്പെടാനാകുന്നില്ല."
 
-#: modules/access/ftp.c:387
+#: modules/access/ftp.c:402
 msgid "VLC's connection to the given server was rejected."
 msgstr "തന്നിരിക്കുന്ന സെര്‍വറിലേക്കുള്ള വി‌എല്‍‌സിയുടെ ബന്ധം നിഷേധിക്കപ്പെട്ടു."
 
-#: modules/access/ftp.c:539
+#: modules/access/ftp.c:565
 msgid "Your account was rejected."
 msgstr "താങ്കളുടെ അക്കൗണ്ട് നിരസിച്ചിരിക്കുന്നു."
 
@@ -7999,7 +7996,7 @@ msgstr "എംടിപി ഇന്‍പുട്ട്"
 msgid "MTP"
 msgstr "എംടിപി"
 
-#: modules/access/mtp.c:167 modules/access/vdr.c:379 modules/access/vdr.c:545
+#: modules/access/mtp.c:167 modules/access/vdr.c:382 modules/access/vdr.c:548
 msgid "File reading failed"
 msgstr "ഫയല്‍ വായിക്കുന്നത് പരാജയപ്പെട്ടു"
 
@@ -8089,77 +8086,45 @@ msgstr "ആര്‍ഡിപി"
 msgid "RDP Remote Desktop"
 msgstr "ആര്‍ഡിപി റിമോട്ട് ഡെസ്ക്ടോപ്പ്"
 
-#: modules/access/rist.c:65
+#: modules/access/rist.c:44
 msgid "Range"
 msgstr "ശ്രേണി"
 
-#: modules/access/rist.c:65
+#: modules/access/rist.c:44
 msgid "Bitmask"
 msgstr "ബിറ്റ്മാസ്ക്"
 
-#: modules/access/rist.c:1127 modules/access_output/rist.c:849
+#: modules/access/rist.c:309
+msgid "Virtual Destination Port Filter"
+msgstr ""
+
+#: modules/access/rist.c:311
+msgid ""
+"Destination port to be used inside the reduced-mode of the main profile to "
+"filter incoming data. Use zero to allow all."
+msgstr ""
+
+#: modules/access/rist.c:317 modules/access_output/rist.c:291
 msgid "RIST"
 msgstr "ആർഐഎസ് ടി "
 
-#: modules/access/rist.c:1128
+#: modules/access/rist.c:318
 msgid "RIST input"
 msgstr "ആർഐഎസ് ടി ഇൻപുട്ട് "
 
-#: modules/access/rist.c:1133
-msgid "RIST maximum packet size (bytes)"
-msgstr "ആർഐഎസ് ടി പരമാവധി പാക്കറ്റ് വലിപ്പം (ബൈറ്റ്സ് )"
-
-#: modules/access/rist.c:1135
+#: modules/access/rist.c:323
 msgid "RIST demux/decode maximum jitter (default is 5ms)"
 msgstr "റിസ്റ്റ് ഡീമാക്സ് / ഡീകോഡ് പരമാവധി എഡിറ്റർ (സ്ഥിരസ്ഥിതി 5 എംഎസ് )"
 
-#: modules/access/rist.c:1136
+#: modules/access/rist.c:324
 msgid ""
 "This controls the maximum jitter that will be passed to the demux/decode "
-"chain. The lower the value, the more CPU cycles the algorithm will consume"
+"chain. The lower the value, the more CPU cycles the module will consume"
 msgstr ""
-"ഇത് ഡെമക്സ് / ഡീകോഡ് ചെയിനിലേക്ക് കൈമാറുന്ന പരമാവധി ഞെട്ടലിനെ നിയന്ത്രിക്കുന്നു. മൂല്യം "
-"കുറയുന്നു, കൂടുതൽ സിപിയു ചക്രങ്ങൾ അൽഗോരിതം ഉപയോഗിക്കും"
 
-#: modules/access/rist.c:1138
-msgid "RIST latency (ms)"
-msgstr "റിസ്റ്റ് ലേറ്റൻസി (എംഎസ് )"
-
-#: modules/access/rist.c:1139
-msgid "RIST nack retry interval (ms)"
-msgstr "റിസ്റ്റ് നാക് വീണ്ടും ശ്രമിക്കാനുള്ള ഇടവേള (എംഎസ് )"
-
-#: modules/access/rist.c:1141
-msgid "RIST reorder buffer (ms)"
-msgstr "റിസ്റ്റ് ബഫർ പുനഃക്രമീകരണം (എംഎസ് )"
-
-#: modules/access/rist.c:1143
-msgid "RIST maximum retry count"
-msgstr "റിസ്റ്റ് പരമാവധി വീണ്ടും ശ്രമിക്കൽ എണ്ണം"
-
-#: modules/access/rist.c:1145
+#: modules/access/rist.c:328
 msgid "RIST nack type, 0 = range, 1 = bitmask. Default is range"
 msgstr "റിസ്റ്റ് നാക് തരം, 0 = ശ്രേണി, 1 = ബിറ്റ്മാസ്ക്. സ്ഥിരസ്ഥിതി ശ്രേണിയാണ്"
-
-#: modules/access/rist.c:1147
-msgid "Disable NACK output packets"
-msgstr "NACK ഔട്ട്പുട്ട് പാക്കറ്റുകൾ അപ്രാപ്‌തമാക്കുക"
-
-#: modules/access/rist.c:1148
-msgid "Use this to disable packet recovery"
-msgstr "പാക്കറ്റ് വീണ്ടെടുക്കൽ അപ്രാപ്തമാക്കാൻ ഇത് ഉപയോഗിക്കുക"
-
-#: modules/access/rist.c:1149
-msgid "Do not check for a valid rtcp message from the encoder"
-msgstr "എൻ‌കോഡറിൽ‌ നിന്നും സാധുവായ ഒരു rtcp സന്ദേശത്തിനായി പരിശോധിക്കരുത്"
-
-#: modules/access/rist.c:1150
-msgid ""
-"Send nack messages even when we have not confirmed that the encoder is on "
-"our local network."
-msgstr ""
-"ഞങ്ങളുടെ പ്രാദേശിക നെറ്റ്‌വർക്കിൽ എൻകോഡർ ഉണ്ടെന്ന് സ്ഥിരീകരിക്കാത്തപ്പോഴും നാക്ക് സന്ദേശങ്ങൾ "
-"അയയ്‌ക്കുക."
 
 #: modules/access/rtp/rtp.c:44
 msgid "RTCP (local) port"
@@ -8410,7 +8375,7 @@ msgid "Screen"
 msgstr "സ്ക്രീന്‍"
 
 #: modules/access/screen/xcb.c:41 modules/access/shm.c:44
-#: modules/access/vnc.c:61
+#: modules/access/vnc.c:62
 msgid "How many times the screen content should be refreshed per second."
 msgstr "ഒരു സെക്കന്‍ഡില്‍ എത്ര തവണ സ്ക്രീനിന്റെ ഉള്ളടക്കം വീണ്ടും പുതുക്കണം."
 
@@ -8442,20 +8407,31 @@ msgstr "എസ്എഫ്ടിപി പോര്‍ട്ട്"
 msgid "SFTP port number to use on the server"
 msgstr "സര്‍വ്വറില്‍ ഉപയോഗിക്കേണ്ട എസ്എഫ്ടിപി പോര്‍ട്ട് നമ്പര്‍"
 
-#: modules/access/sftp.c:64
+#: modules/access/sftp.c:61
+msgid "Private key file"
+msgstr ""
+
+#: modules/access/sftp.c:62
+msgid ""
+"Private-key file used for SSH public key authentication. Public-key file is "
+"assumed to be in the same directory with '.pub' appended. If unset, standard "
+"key paths will be attempted (e.g. '~/.ssh/id_rsa')."
+msgstr ""
+
+#: modules/access/sftp.c:68
 msgid "SFTP input"
 msgstr "എസ്എഫ്ടിപി ഇന്‍പുട്ട്"
 
-#: modules/access/sftp.c:411
+#: modules/access/sftp.c:463
 msgid "SFTP authentication"
 msgstr "എസ്എഫ്ടിപി ഓതന്റിക്കേഷന്‍"
 
-#: modules/access/sftp.c:412
+#: modules/access/sftp.c:464
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr "എസ്‌എഫ്‌ടി‌പി കണക്ഷന്‍ %sനു ദയവായി ഒരു സാധുവായ ലോഗിന്‍ കൂടാതെ രഹസ്യപദം കൊടുക്കുക"
 
-#: modules/access/shm.c:46 modules/access/vnc.c:58
+#: modules/access/shm.c:46 modules/access/vnc.c:59
 msgid "Frame buffer depth"
 msgstr "ഫ്രെയിം ബഫര്‍ ആഴം"
 
@@ -8503,7 +8479,7 @@ msgstr "ഫ്രെയിം ബഫറിന്റെ മെമറി മാപ
 msgid "XWD file (autodetect)"
 msgstr "എക്സ്ഡബ്ല്യുഡി ഫയല്‍ (ഓട്ടോഡിറ്റക്ട്)"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "8 bits"
 msgstr "8 ബിറ്റുകള്‍"
 
@@ -8511,15 +8487,15 @@ msgstr "8 ബിറ്റുകള്‍"
 msgid "15 bits"
 msgstr "15  ബിറ്റുകള്‍"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "16 bits"
 msgstr "16  ബിറ്റുകള്‍"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "24 bits"
 msgstr "24 ബിറ്റുകള്‍"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "32 bits"
 msgstr "32  ബിറ്റുകള്‍"
 
@@ -8562,41 +8538,29 @@ msgstr ""
 "ദയവായി ഒരു ഉപയോക്തൃനാമവും (DOMAIN; username ഫോർമാറ്റ് ഉപയോഗിക്കുന്ന ഒരു ഡൊമെയ്ൻ നാമം) "
 "പിന്നെ ഒരു പാസ്‌വേഡും നൽകുക."
 
-#: modules/access/srt.c:428 modules/access_output/srt.c:457
+#: modules/access/srt.c:550 modules/access_output/srt.c:457
 msgid "SRT"
 msgstr "എസ് ആർ ടി "
 
-#: modules/access/srt.c:429
+#: modules/access/srt.c:551
 msgid "SRT input"
 msgstr "എസ് ആർ ടി ഇൻപുട്ട് "
 
-#: modules/access/srt.c:435 modules/access_output/srt.c:464
+#: modules/access/srt.c:557 modules/access_output/srt.c:464
 msgid "Return poll wait after timeout milliseconds (-1 = infinite)"
 msgstr "കാലഹരണപ്പെട്ട മില്ലിസെക്കൻഡുകൾക്ക് ശേഷം റിട്ടേൺ പോൾ കാത്തിരിപ്പ് (-1 = അനന്തമായത്)"
 
-#: modules/access/srt.c:438 modules/access_output/srt.c:466
+#: modules/access/srt.c:560 modules/access_output/srt.c:466
 msgid "SRT latency (ms)"
 msgstr "എസ് ആർ ടി ലെറ്റെൻസി (മില്ലി സെക്കൻഡ്‌സ് )"
 
-#: modules/access/srt.c:440 modules/access_output/srt.c:468
+#: modules/access/srt.c:562 modules/access_output/srt.c:468
 msgid "Password for stream encryption"
 msgstr "സ്ട്രീം എൻ‌ക്രിപ്ഷനുള്ള പാസ്‌വേഡ്"
 
-#: modules/access/srt.c:446 modules/access_output/srt.c:480
-msgid " SRT Stream ID"
+#: modules/access/srt.c:568
+msgid "SRT Stream ID"
 msgstr ""
-
-#: modules/access/srt_common.c:26
-msgid "16 bytes"
-msgstr "16 bytes"
-
-#: modules/access/srt_common.c:27
-msgid "24 bytes"
-msgstr "24 bytes"
-
-#: modules/access/srt_common.c:27
-msgid "32 bytes"
-msgstr "32 bytes"
 
 #: modules/access/tcp.c:116
 msgid "TCP"
@@ -8980,7 +8944,7 @@ msgid "Vivid"
 msgstr "വിവിഡ്"
 
 #: modules/access/v4l2/v4l2.c:169 modules/audio_output/auhal.c:43
-#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1489
+#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1513
 #: modules/audio_output/waveout.c:145
 msgid "Audio volume"
 msgstr "ഓഡിയോ വോള്യം"
@@ -9046,7 +9010,7 @@ msgstr ""
 #: modules/control/hotkeys.c:395
 #: modules/gui/macosx/VLCAddonsWindowController.m:100
 #: modules/gui/qt/dialogs/convert.cpp:164
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:381
 #: modules/gui/qt/dialogs/preferences.cpp:79
 msgid "All"
 msgstr "എല്ലാം"
@@ -9131,121 +9095,121 @@ msgstr "വിസിഡി ഇന്‍പുട്ട്"
 msgid "[vcd:][device][#[title][,[chapter]]]"
 msgstr "[vcd:][device][#[title][,[chapter]]]"
 
-#: modules/access/vdr.c:72
+#: modules/access/vdr.c:73
 msgid "Support for VDR recordings (http://www.tvdr.de/)."
 msgstr "വിഡിആര്‍ റെക്കോര്‍ഡിംഗുകള്‍ക്കുള്ള പിന്തുണ (http://www.tvdr.de/)."
 
-#: modules/access/vdr.c:74
+#: modules/access/vdr.c:75
 msgid "Chapter offset in ms"
 msgstr "ചാപ്റ്റര്‍ ഓഫ്സെറ്റുകള്‍ എംഎസില്‍"
 
-#: modules/access/vdr.c:76
+#: modules/access/vdr.c:77
 msgid "Move all chapters. This value should be set in milliseconds."
 msgstr "എല്ലാ അദ്ധ്യായങ്ങളും നീക്കുക. ഇതിന്റെ മൂല്യം മില്ലിസെക്കന്‍ഡില്‍ സജ്ജീകരിക്കണം/"
 
-#: modules/access/vdr.c:80
+#: modules/access/vdr.c:81
 msgid "Default frame rate for chapter import."
 msgstr "അധ്യായ ഇറക്കുമതിക്കു സ്വയമേവയുള്ള ഫ്രെയിം നിരക്ക് "
 
-#: modules/access/vdr.c:84
+#: modules/access/vdr.c:85
 msgid "VDR"
 msgstr "വിഡിആര്‍"
 
-#: modules/access/vdr.c:87
+#: modules/access/vdr.c:88
 msgid "VDR recordings"
 msgstr "വിഡിആര്‍ റെക്കോര്‍ഡിംഗുകള്‍"
 
-#: modules/access/vdr.c:380
+#: modules/access/vdr.c:383
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr "വിഎല്‍സിക്ക് ഫയല്‍ വായിക്കാനായില്ല (%s)."
 
-#: modules/access/vdr.c:545
+#: modules/access/vdr.c:548
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr "വിഎല്‍സിക്കു  \"%s\" (%s) ഫയല്‍ തുറക്കാനായില്ല."
 
-#: modules/access/vdr.c:820
+#: modules/access/vdr.c:811
 msgid "VDR Cut Marks"
 msgstr "വിഡിആര്‍ കട്ട് മാര്‍ക്സ്"
 
-#: modules/access/vdr.c:886
+#: modules/access/vdr.c:877
 msgid "Start"
 msgstr "തുടക്കം"
 
-#: modules/access/vnc.c:49
+#: modules/access/vnc.c:50
 msgid "X.509 Certificate Authority"
 msgstr "X.509 സര്‍ട്ടിഫിക്കറ്റ് അതോറിറ്റി"
 
-#: modules/access/vnc.c:50
+#: modules/access/vnc.c:51
 msgid "Certificate of the Authority to verify server's against"
 msgstr "സെര്‍വറുകള്‍ക്ക് എതിരെയുള്ളതു ദൃഡീകരിക്കാനുള്ള അധികാരിയുടെ സര്‍ട്ടിഫിക്കറ്റ്"
 
-#: modules/access/vnc.c:51
+#: modules/access/vnc.c:52
 msgid "X.509 Certificate Revocation List"
 msgstr "X.509 സര്‍ട്ടിഫിക്കറ്റ് റിവോക്കേഷന്‍ ലിസ്റ്റ്"
 
-#: modules/access/vnc.c:52
+#: modules/access/vnc.c:53
 msgid "List of revoked servers certificates"
 msgstr "റിവോക്ക് ചെയ്ത സര്‍വ്വറുകളുടെ സര്‍ട്ടിഫിക്കറ്റുകളുടെ പട്ടിക"
 
-#: modules/access/vnc.c:53
+#: modules/access/vnc.c:54
 msgid "X.509 Client certificate"
 msgstr "X.509 ക്ലയന്റ് സാക്ഷ്യപത്രം"
 
-#: modules/access/vnc.c:54
+#: modules/access/vnc.c:55
 msgid "Certificate for client authentication"
 msgstr "ക്ലയന്റ് പ്രാമാണീകരണത്തിനുള്ള സർ‌ട്ടിഫിക്കറ്റ്"
 
-#: modules/access/vnc.c:55
+#: modules/access/vnc.c:56
 msgid "X.509 Client private key"
 msgstr "X.509 ക്ലയന്റ് സ്വകാര്യ കീ"
 
-#: modules/access/vnc.c:56
+#: modules/access/vnc.c:57
 msgid "Private key for authentication by certificate"
 msgstr "സർട്ടിഫിക്കറ്റ് പ്രകാരമുള്ള പ്രാമാണീകരണത്തിനുള്ള സ്വകാര്യ താക്കോൽ"
 
-#: modules/access/vnc.c:59
+#: modules/access/vnc.c:60
 msgid "RGB chroma (RV32, RV24, RV16, RGB2)"
 msgstr "ആര്‍‌ജി‌ബി ക്രോമ (ആര്‍‌വി32,ആര്‍‌വി24,ആര്‍‌വി16,ആര്‍‌ജി‌ബി2)"
 
-#: modules/access/vnc.c:62
+#: modules/access/vnc.c:63
 msgid "Compression level"
 msgstr "കംപ്രഷന്‍ നില"
 
-#: modules/access/vnc.c:63
+#: modules/access/vnc.c:64
 msgid "Transfer compression level from 0 (none) to 9 (max)"
 msgstr "0  (ഒന്നുമില്ല) മുതല്‍ 9 (കൂടിയ) വരെ മാറ്റുന്ന ചുരുക്കല്‍ നില"
 
-#: modules/access/vnc.c:64
+#: modules/access/vnc.c:65
 msgid "Image quality"
 msgstr "ചിത്ര ക്വാളിറ്റി"
 
-#: modules/access/vnc.c:65
+#: modules/access/vnc.c:66
 msgid "Image quality 1 to 9 (max)"
 msgstr "ചിത്ര ക്വാളിറ്റി 1 മുതല്‍ 9 (കൂടിയ)"
 
-#: modules/access/vnc.c:79
+#: modules/access/vnc.c:80
 msgid "VNC"
 msgstr "വിഎന്‍സി"
 
-#: modules/access/vnc.c:83
+#: modules/access/vnc.c:84
 msgid "VNC client access"
 msgstr "വിഎന്‍സി ക്ലയന്റ് അക്സസ്സ്"
 
-#: modules/access/wasapi.c:485
+#: modules/access/wasapi.c:489
 msgid "Loopback mode"
 msgstr "ലൂപ്പ്ബാക്ക് മോഡ്"
 
-#: modules/access/wasapi.c:486
+#: modules/access/wasapi.c:490
 msgid "Record an audio rendering endpoint."
 msgstr "ഒരു ഓഡിയോ റെൻഡറിംഗ് എൻഡ്‌പോയിന്റ് റെക്കോർഡുചെയ്യുക."
 
-#: modules/access/wasapi.c:489
+#: modules/access/wasapi.c:493
 msgid "WASAPI"
 msgstr "WASAPI"
 
-#: modules/access/wasapi.c:490
+#: modules/access/wasapi.c:494
 msgid "Windows Audio Session API input"
 msgstr "വിൻഡോസ് ഓഡിയോ സെഷൻ എപിഐ ഇൻപുട്ട് "
 
@@ -9449,67 +9413,53 @@ msgstr "എച്ച്ടിടിപി ലൈവ് സ്ട്രീമി�
 msgid "LiveHTTP"
 msgstr "ലൈവ്എച്ച്ടിടിപി"
 
-#: modules/access_output/rist.c:824
-msgid "RIST data output caching size (ms)"
-msgstr "റിസ്റ്റ് ഡാറ്റ ഔട്ട്പുട്ട് കാഷിംഗ് വലുപ്പം (എംഎസ് )"
-
-#: modules/access_output/rist.c:826
-msgid ""
-"Having this cache will guarantee that the packets going out are delivered at "
-"a spacing determined by the chain timestamps thus ensuring a near jitter "
-"free output. Be aware that this setting will also add to the overall latency "
-"of the stream."
+#: modules/access_output/rist.c:266
+msgid "Virtual Source Port"
 msgstr ""
-"ഈ കാഷെ ഉള്ളത് ചെയിൻ ടൈംസ്റ്റാമ്പുകൾ നിർണ്ണയിക്കുന്ന ഒരു സ്പേസിംഗിൽ നിന്ന് പുറത്തുപോകുന്ന "
-"പാക്കറ്റുകൾ വിതരണം ചെയ്യുമെന്ന് ഉറപ്പുനൽകുന്നു, അങ്ങനെ അടുത്തുള്ള സ്വതന്ത്രമായ .ഔട്ട് പുട്ട് "
-"ഉറപ്പാക്കുന്നു. ഈ ക്രമീകരണം സ്ട്രീമിന്റെ മൊത്തത്തിലുള്ള ലേറ്റൻസിയെ വർദ്ധിപ്പിക്കുമെന്നത് "
-"അറിഞ്ഞിരിക്കുക."
 
-#: modules/access_output/rist.c:831
-msgid "RIST retry-buffer queue size (ms)"
-msgstr "റിസ്റ്റ് വീണ്ടും ശ്രമിക്കുക-ബഫർ ക്യൂ വലുപ്പം (എംഎസ് )"
-
-#: modules/access_output/rist.c:833
-msgid ""
-"This must match the buffer size (latency) configured on the server side. If "
-"you are not sure, leave the default of 0 which will set it the maximum value "
-"and will use about 100MB of RAM"
+#: modules/access_output/rist.c:268
+msgid "Source port to be used inside the reduced-mode of the main profile"
 msgstr ""
-"ഇത് സെർവർ ഭാഗത്ത് കോൺഫിഗർ ചെയ്‌തിരിക്കുന്ന ബഫർ വലുപ്പവുമായി (ലേറ്റൻസി) പൊരുത്തപ്പെടണം. "
-"നിങ്ങൾക്ക് ഉറപ്പില്ലെങ്കിൽ, 0 ന്റെ സ്ഥിരസ്ഥിതി ഉപേക്ഷിക്കുക, അത് പരമാവധി മൂല്യം സജ്ജമാക്കുകയും "
-"ഏകദേശം 100MB റാം ഉപയോഗിക്കുകയും ചെയ്യും"
 
-#: modules/access_output/rist.c:837
-msgid "SSRC used in RTP output (default is random, i.e. 0)"
-msgstr "ആർ‌ടി‌പി ഔട്ട് പുട്ടിൽ എസ്എസ്ആർസി ഉപയോഗിക്കുന്നു (സ്ഥിരസ്ഥിതി ക്രമരഹിതമാണ്, അതായത് 0)"
-
-#: modules/access_output/rist.c:839
-msgid ""
-"Use this setting to specify a known SSRC for the RTP header. This is only "
-"useful if your receiver acts on it. When using VLC as receiver, it is not."
+#: modules/access_output/rist.c:270
+msgid "Virtual Destination Port"
 msgstr ""
-"ആർ‌ടി‌പി ഹെഡറിനായി അറിയപ്പെടുന്ന ഒരു SSRC വ്യക്തമാക്കാൻ ഈ ക്രമീകരണം ഉപയോഗിക്കുക. നിങ്ങളുടെ "
-"റിസീവർ അതിൽ പ്രവർത്തിച്ചാൽ മാത്രമേ ഇത് ഉപയോഗപ്രദമാകൂ. വി‌എൽ‌സി റിസീവറായി "
-"ഉപയോഗിക്കുമ്പോൾ, അങ്ങനെയല്ല."
 
-#: modules/access_output/rist.c:842 modules/access_output/shout.c:64
-#: modules/gui/qt/components/sout/sout_widgets.cpp:386
-#: share/lua/http/dialogs/create_stream.html:139
-msgid "Stream name"
-msgstr "സ്ട്രീം നാമം"
+#: modules/access_output/rist.c:272
+msgid "Destination port to be used inside the reduced-mode of the main profile"
+msgstr ""
 
-#: modules/access_output/rist.c:844
+#: modules/access_output/rist.c:279
+msgid "Multipeer mode"
+msgstr ""
+
+#: modules/access_output/rist.c:281
 msgid ""
-"This Stream name will be sent to the receiver using the rist RTCP channel"
-msgstr "റിസ്റ്റ് ആർ‌ടി‌സി‌പി ചാനൽ ഉപയോഗിച്ച് ഈ സ്ട്രീം നാമം റിസീവറിന് അയയ്ക്കും"
+"This allows you to select between duplicate or load balanced modes when "
+"sending data to multiple peers (several network paths)"
+msgstr ""
 
-#: modules/access_output/rist.c:850
+#: modules/access_output/rist.c:285
+msgid "Duplicate"
+msgstr ""
+
+#: modules/access_output/rist.c:285
+msgid "Load balanced"
+msgstr ""
+
+#: modules/access_output/rist.c:292
 msgid "RIST stream output"
 msgstr "റിസ്റ്റ് ഒഴുക്ക് ഔട്ട്പുട്ട് "
 
-#: modules/access_output/rist.c:855
-msgid "RIST target packet size (bytes)"
-msgstr "റിസ്റ്റ് ലക്ഷ്യ പാക്കറ്റ് വലുപ്പം (ബൈറ്റുകൾ)"
+#: modules/access_output/rist.c:297
+msgid "RIST target payload size (bytes)"
+msgstr ""
+
+#: modules/access_output/shout.c:64
+#: modules/gui/qt/components/sout/sout_widgets.cpp:438
+#: share/lua/http/dialogs/create_stream.html:139
+msgid "Stream name"
+msgstr "സ്ട്രീം നാമം"
 
 #: modules/access_output/shout.c:65
 msgid "Name to give to this stream/channel on the shoutcast/icecast server."
@@ -9605,6 +9555,10 @@ msgstr ""
 
 #: modules/access_output/srt.c:475
 msgid "SRT maximum bandwidth ceiling (bytes)"
+msgstr ""
+
+#: modules/access_output/srt.c:480
+msgid " SRT Stream ID"
 msgstr ""
 
 #: modules/access_output/udp.c:62 modules/stream_out/rtp.c:135
@@ -9856,28 +9810,28 @@ msgstr "ഓഡിയോ ചാനല്‍ റീമാപ്പര്‍"
 msgid "Audio filter for simple channel mixing"
 msgstr "സാധാരണ ചാനല്‍ മിക്സിംഗിനുള്ള ഓഡിയോ ഫില്‍റ്റര്‍"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:50
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:67
 msgid "HRTF file for the binauralization"
 msgstr "ബൈനറലൈസേഷനായുള്ള എച്ച്ആർടിഎഫ് ഫയൽ"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:51
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:68
 msgid "Custom HRTF (Head-related transfer function) file in the SOFA format."
 msgstr "SOFA ഫോർമാറ്റിലുള്ള ഇച്ഛാനുസൃത HRTF (ഹെഡുമായി ബന്ധപ്പെട്ട ട്രാൻസ്ഫർ ഫംഗ്ഷൻ) ഫയൽ."
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:54
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:71
 msgid "Headphones mode (binaural)"
 msgstr "ഹെഡ്‌ഫോണുകൾ മോഡ് (ബൈനറൽ)"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:55
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:72
 msgid "If the output is stereo, render ambisonics with the binaural decoder."
 msgstr ""
 "ഔട്ട് പുട്ട് സ്റ്റീരിയോ ആണെങ്കിൽ, ബൈനറൽ ഡീകോഡർ ഉപയോഗിച്ച് ആമ്പിസോണിക്‌സ് റെൻഡർ ചെയ്യുക."
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:65
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:82
 msgid "Ambisonics renderer and binauralizer"
 msgstr "അമ്പിസോണിക്സ് റെൻഡറർ, ബൈനറലൈസർ"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:77
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:94
 msgid "Binauralizer"
 msgstr "ബൈനറലൈസേർ "
 
@@ -10289,12 +10243,12 @@ msgid "Audio filter for band-limited interpolation resampling"
 msgstr "ബാന്‍ഡ്-പരിമിത പ്രക്ഷിപ്ത റിസമ്പ്ളിങിന് വേണ്ടിയുള്ള ഓഡിയോ ഫില്‍റ്റര്‍"
 
 #: modules/audio_filter/resampler/soxr.c:40
-#: modules/audio_filter/resampler/speex.c:34
+#: modules/audio_filter/resampler/speex.c:36
 msgid "Resampling quality"
 msgstr "റീസാംപ്ലിംഗ് ക്വാളിറ്റി"
 
 #: modules/audio_filter/resampler/soxr.c:41
-#: modules/audio_filter/resampler/speex.c:35
+#: modules/audio_filter/resampler/speex.c:37
 msgid "Resampling quality, from worst to best"
 msgstr "റീസാംപ്ലിങ് ഗുണനിലവാരം, മോശം മുതൽ മികച്ചത് വരെ"
 
@@ -10302,8 +10256,8 @@ msgstr "റീസാംപ്ലിങ് ഗുണനിലവാരം, മോ
 msgid "SoX Resampler"
 msgstr "SoX റീസാംപ്ലർ "
 
-#: modules/audio_filter/resampler/speex.c:42
-#: modules/audio_filter/resampler/speex.c:43
+#: modules/audio_filter/resampler/speex.c:44
+#: modules/audio_filter/resampler/speex.c:45
 msgid "Speex resampler"
 msgstr "സ്പീക്സ് റീസാംപ്ലര്‍"
 
@@ -10620,11 +10574,11 @@ msgid ""
 "The selected audio output device is exclusively in use by another program."
 msgstr "തിരഞ്ഞെടുത്ത ഓഡിയോ ഡിവൈസ് മറ്റൊരു പ്രോഗ്രാം തനിയെ ഉപയോഗിച്ചുകൊണ്ടിരിക്കുന്നു"
 
-#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1486
+#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1510
 msgid "Output device"
 msgstr "ഔട്ട്പുട്ട് ഡിവൈസ്"
 
-#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1487
+#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1511
 msgid "Select your audio output device"
 msgstr "താങ്കളുടെ ഓഡിയോ ഔട്ട്പുട്ട് ഡിവൈസ് തിരഞ്ഞെടുക്കുക"
 
@@ -10640,7 +10594,7 @@ msgstr ""
 "നിങ്ങള്‍ക്ക് ഉപയോഗിക്കേണ്ട സ്പീകര്‍ കോണ്‍ഫിഗറേഷന്‍ തിരഞ്ഞെടുക്കുക. ഈ ഐഛികം അപ്പ്മിക്സ് "
 "ചെയ്യപ്പെടില്ല! അതുകൊണ്ടു ഇല്ല ഉദാ. സ്റ്റീരിയോ->5.1 രൂപാന്തരീകരണം."
 
-#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1490
+#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1514
 msgid "Audio volume in hundredths of decibels (dB)."
 msgstr "ഡെസിബെലിന്റെ നൂരിലൊന്നിലുള്ള ഓഡിയോ വോളിയം (ഡി‌ബി)."
 
@@ -10742,11 +10696,11 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "കെ ഓഡിയോ ഇന്റര്‍ഫേസ് ഓഡിയോ ഔട്ട്പുട്ട്"
 
-#: modules/audio_output/mmdevice.c:1472 modules/gui/qt/ui/sprefs_audio.h:417
+#: modules/audio_output/mmdevice.c:1496 modules/gui/qt/ui/sprefs_audio.h:417
 msgid "HDMI/SPDIF audio passthrough"
 msgstr "HDMI/SPDIF ഓഡിയോ പാസ്സ്ത്രു "
 
-#: modules/audio_output/mmdevice.c:1474
+#: modules/audio_output/mmdevice.c:1498
 msgid ""
 "Change this value if you have issue with HD codecs when using a HDMI "
 "receiver."
@@ -10754,27 +10708,27 @@ msgstr ""
 "ഒരു എച്ച്ഡിഎംഐ റിസീവർ ഉപയോഗിക്കുമ്പോൾ എച്ച്ഡി കോഡെക്കുകളിൽ നിങ്ങൾക്ക് പ്രശ്നമുണ്ടെങ്കിൽ ഈ മൂല്യം "
 "മാറ്റുക."
 
-#: modules/audio_output/mmdevice.c:1481
+#: modules/audio_output/mmdevice.c:1505
 msgid "Disabled"
 msgstr "അപ്രാപ്യം "
 
-#: modules/audio_output/mmdevice.c:1482
+#: modules/audio_output/mmdevice.c:1506
 msgid "Enabled (AC3/DTS only)"
 msgstr "പ്രവർത്തനക്ഷമമാക്കി (AC3 / DTS മാത്രം)"
 
-#: modules/audio_output/mmdevice.c:1483
+#: modules/audio_output/mmdevice.c:1507
 msgid "Enabled"
 msgstr "പ്രവർത്തനക്ഷമം "
 
-#: modules/audio_output/mmdevice.c:1494
+#: modules/audio_output/mmdevice.c:1518
 msgid "Windows Multimedia Device output"
 msgstr "വിൻഡോസ് മൾട്ടിമീഡിയ ഉപകരണ ഔട്ട്പുട്ട് "
 
-#: modules/audio_output/mmdevice.c:1500
+#: modules/audio_output/mmdevice.c:1524
 msgid "Output back-end"
 msgstr "ഔട്ട് പുട്ട് പിന്നണി "
 
-#: modules/audio_output/mmdevice.c:1500
+#: modules/audio_output/mmdevice.c:1524
 msgid "Audio output back-end interface."
 msgstr "ശബ്ദ ഔട്ട് പുട്ട് പിന്നണി സമ്പർക്ക മുഖം "
 
@@ -10802,7 +10756,7 @@ msgstr "സോഫ്ട്വെയര്‍ നേട്ടം"
 msgid "This linear gain will be applied in software."
 msgstr "ഈ രേഖീയ നേട്ടം സോഫ്ട്വെയറില്‍ പ്രയോഗിക്കപ്പെടും."
 
-#: modules/audio_output/wasapi.c:652
+#: modules/audio_output/wasapi.c:687
 msgid "Windows Audio Session API output"
 msgstr "വിന്‍ഡോസ് ഓഡിയോ സെഷന്‍ എപിഐ ഔട്ട്പുട്ട്"
 
@@ -10919,8 +10873,8 @@ msgstr "ഉപശീർഷകത്തിൽ കോർ ടെക്സ്റ്�
 msgid "ARIB subtitles decoder"
 msgstr "എആർഐബി സബ്ടൈറ്റിലുകൾ ഡീകോഡർ"
 
-#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1089
-#: modules/demux/mpeg/ts_psi.c:1096
+#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1092
+#: modules/demux/mpeg/ts_psi.c:1099
 msgid "ARIB subtitles"
 msgstr "എആർഐബി സബ്ടൈറ്റിലുകൾ"
 
@@ -10967,9 +10921,8 @@ msgstr "എഫ്എഫ്എംപിഇജി ഓഡിയോ/വീഡിയ�
 msgid "Decoding"
 msgstr "ഡീക്കോഡിംഗ്"
 
-#: modules/codec/avcodec/avcodec.c:152 modules/codec/jpeg.c:119
-#: modules/codec/omxil/omxil.c:171 modules/codec/png.c:99
-#: modules/codec/schroedinger.c:370
+#: modules/codec/avcodec/avcodec.c:152 modules/codec/jpeg.c:120
+#: modules/codec/omxil/omxil.c:171 modules/codec/png.c:100
 msgid "Encoding"
 msgstr "എന്‍കോഡിങ്"
 
@@ -11239,7 +11192,7 @@ msgstr ""
 "നല്ല വീക്ഷണമുള്ള ദൃശ്യ രൂപം നല്കും, നിലവാരമുള്ള എം‌പി‌ഇ‌ജി2  ടീകോഡറുകളോട് പൊരുത്തം ഇത്രത്തോളം "
 "നിലനിര്‍ത്തികൊണ്ട്."
 
-#: modules/codec/avcodec/avcodec.h:173 modules/codec/jpeg.c:51
+#: modules/codec/avcodec/avcodec.h:173 modules/codec/jpeg.c:52
 msgid "Quality level"
 msgstr "ഗുണമേന്മ നില"
 
@@ -11437,11 +11390,11 @@ msgstr "സബ്പിക്ച്ചര്‍"
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr "%4.4s %s എന്‍കോഡര്‍ വി‌എല്‍‌സിക്കു തുറക്കാന്‍ കഴിഞ്ഞില്ല."
 
-#: modules/codec/avcodec/vaapi.c:388
+#: modules/codec/avcodec/vaapi.c:414
 msgid "VA-API video decoder via DRM"
 msgstr "വി‌എ-എ‌പി‌ഐ വീഡിയോ ഡികോഡര്‍ വഴി ഡി‌ആര്‍‌എം"
 
-#: modules/codec/avcodec/vaapi.c:393
+#: modules/codec/avcodec/vaapi.c:419
 msgid "VA-API video decoder"
 msgstr "VA-API വീഡിയോ ഡീകോഡർ"
 
@@ -11514,11 +11467,11 @@ msgstr "Daala വീഡിയോ പാക്കറ്റയിസർ "
 msgid "Daala video encoder"
 msgstr "Daala വീഡിയോ എൻകോഡർ "
 
-#: modules/codec/daala.c:143 modules/codec/schroedinger.c:54
+#: modules/codec/daala.c:143
 msgid "Chroma format"
 msgstr "ക്രോമ ഫോര്‍മാറ്റ്"
 
-#: modules/codec/daala.c:144 modules/codec/schroedinger.c:55
+#: modules/codec/daala.c:144
 msgid ""
 "Picking chroma format will force a conversion of the video into that format"
 msgstr ""
@@ -11640,8 +11593,8 @@ msgstr "എന്‍കോഡ് ചെയ്യപ്പെട്ട ഉപശ�
 msgid "DVB subtitles decoder"
 msgstr "ഡിവിബി ഉപശീര്‍ഷകങ്ങളുടെ ഡീക്കോഡര്‍"
 
-#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:772
-#: modules/demux/mpeg/ts_psi.c:821
+#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:775
+#: modules/demux/mpeg/ts_psi.c:824
 msgid "DVB subtitles"
 msgstr "ഡിവിബി ഉപശീര്‍ഷകങ്ങള്‍"
 
@@ -11653,11 +11606,11 @@ msgstr "ഡിവിബി ഉപശീര്‍ഷകങ്ങളുടെ എ�
 msgid "Dummy encoder"
 msgstr "ഡമ്മി എന്‍കോഡര്‍"
 
-#: modules/codec/faad.c:54
+#: modules/codec/faad.c:59
 msgid "AAC audio decoder (using libfaad2)"
 msgstr "എഎസി ഓഡിയോ ഡീക്കോഡര്‍ (libfaad2 ഉപയോഗിക്കുന്നു)"
 
-#: modules/codec/faad.c:448
+#: modules/codec/faad.c:454
 msgid "AAC extension"
 msgstr "എഎസി അനുബന്ധം"
 
@@ -11787,11 +11740,11 @@ msgstr "ഫ്ലൂയിഡ്സിന്ത് എംഐഡിഐ സിന�
 msgid "FluidSynth"
 msgstr "ഫ്ലൂയിഡ്സിന്ത്"
 
-#: modules/codec/fluidsynth.c:153
+#: modules/codec/fluidsynth.c:160
 msgid "MIDI synthesis not set up"
 msgstr "എംഐഡിഐ സിന്തസിസ് സെറ്റപ്പ് ചെയ്തിട്ടില്ല"
 
-#: modules/codec/fluidsynth.c:154
+#: modules/codec/fluidsynth.c:161
 msgid ""
 "A sound font file (.SF2) is required for MIDI synthesis.\n"
 "Please install a sound font and configure it from the VLC preferences "
@@ -11833,18 +11786,18 @@ msgstr ""
 msgid "GStreamer Based Decoder"
 msgstr "ജിസ്ട്രീമര്‍ അടിസ്ഥാനമായ ഡീക്കോഡര്‍"
 
-#: modules/codec/jpeg.c:52
+#: modules/codec/jpeg.c:53
 msgid ""
 "Quality level for encoding (this can enlarge or reduce output image size)."
 msgstr ""
 "എന്‍കോഡിങിന് വേണ്ടിയുള്ള നിലവാര നില (ഇതിന് ഔട്പുട് ഇമേജിന്റെ വലിപ്പം കൂട്ടാം അല്ലെങ്കില്‍ "
 "കുറയ്ക്കാം)."
 
-#: modules/codec/jpeg.c:111
+#: modules/codec/jpeg.c:112
 msgid "JPEG image decoder"
 msgstr "ജെപിഇജി ചിത്ര ഡീക്കോഡര്‍"
 
-#: modules/codec/jpeg.c:120
+#: modules/codec/jpeg.c:121
 msgid "JPEG image encoder"
 msgstr "ജെപിഇജി ഇമേജ് എന്‍കോഡര്‍"
 
@@ -12192,11 +12145,11 @@ msgstr "ഒപസ്"
 msgid "Opus audio encoder"
 msgstr "ഒപസ് ഓഡിയോ എന്‍കോഡര്‍"
 
-#: modules/codec/png.c:91
+#: modules/codec/png.c:92
 msgid "PNG video decoder"
 msgstr "പിഎന്‍ജി വീഡിയോ ഡീക്കോഡര്‍"
 
-#: modules/codec/png.c:100
+#: modules/codec/png.c:101
 msgid "PNG video encoder"
 msgstr "പിഎന്‍ജി വീഡിയോ എന്‍കോഡര്‍"
 
@@ -12452,387 +12405,6 @@ msgstr "സ്യൂഡോ റോ വീഡിയോ പാക്കറ്റൈ
 msgid "Raw video encoder for RTP"
 msgstr "ആർ‌ടി‌പിക്കായുള്ള അസംസ്കൃത വീഡിയോ എൻ‌കോഡർ"
 
-#: modules/codec/schroedinger.c:60
-msgid "4:2:0"
-msgstr "4:2:0"
-
-#: modules/codec/schroedinger.c:60
-msgid "4:2:2"
-msgstr "4:2:2"
-
-#: modules/codec/schroedinger.c:60
-msgid "4:4:4"
-msgstr "4:4:4"
-
-#: modules/codec/schroedinger.c:63
-msgid "Rate control method"
-msgstr "റേറ്റ് കണ്ട്രോള്‍ രീതി"
-
-#: modules/codec/schroedinger.c:64
-msgid "Method used to encode the video sequence"
-msgstr "വീഡിയോ ക്രമം എന്‍കോഡ് ചെയ്യാന്‍ ഉപയോഗിയ്ക്കുന്ന വഴി"
-
-#: modules/codec/schroedinger.c:77
-msgid "Constant noise threshold mode"
-msgstr "സ്ഥിര നോയിസ് പരിധി രീതി"
-
-#: modules/codec/schroedinger.c:78
-msgid "Constant bitrate mode (CBR)"
-msgstr "സ്ഥിര ബിറ്റ്തോത് രീതി (സി‌ബി‌ആര്‍)"
-
-#: modules/codec/schroedinger.c:79
-msgid "Low Delay mode"
-msgstr "ലോ ഡിലേ മോഡ്"
-
-#: modules/codec/schroedinger.c:80
-msgid "Lossless mode"
-msgstr "ലോസ്ലെസ് രീതി"
-
-#: modules/codec/schroedinger.c:81
-msgid "Constant lambda mode"
-msgstr "കോണ്‍സ്റ്റന്റ് ലാംബഡ മോഡ്"
-
-#: modules/codec/schroedinger.c:82
-msgid "Constant error mode"
-msgstr "കോണ്‍സ്റ്റെന്റ് പിശക് രീതി"
-
-#: modules/codec/schroedinger.c:83
-msgid "Constant quality mode"
-msgstr "സ്ഥിരമായ ഗുണമേന്മ രീതി"
-
-#: modules/codec/schroedinger.c:87
-msgid "GOP structure"
-msgstr "ജിഒപി ഘടന"
-
-#: modules/codec/schroedinger.c:88
-msgid "GOP structure used to encode the video sequence"
-msgstr "വീഡിയോ ക്രമം എന്‍കോഡ് ചെയ്യാന്‍ ഉപയോഗിക്കുന്ന ജി‌ഓ‌പി ഘടന"
-
-#: modules/codec/schroedinger.c:100
-msgid ""
-"No fixed gop structure. A picture can be intra or inter and refer to "
-"previous or future pictures."
-msgstr ""
-"സ്ഥിര ജി‌ഓ‌പി ഘടന ഇല്ല . ഒരു ദൃശ്യരൂപം ഉള്ളില്‍/അന്യോന്യം കൂടാതെ മുമ്പിലത്തെ അല്ലെങ്കില്‍ "
-"വരാനിരിക്കുന്ന ദൃഷ്യരൂപത്തോട് സംബന്ധിച്ച."
-
-#: modules/codec/schroedinger.c:101
-msgid "I-frame only sequence"
-msgstr "ഐ-ഫ്രെയിം മാത്രം സീക്വന്‍സ്"
-
-#: modules/codec/schroedinger.c:102 modules/codec/schroedinger.c:103
-msgid "Inter pictures refere to previous pictures only"
-msgstr "തമ്മിലുള്ള ദൃഷ്യരൂപങ്ങള്‍ മുമ്പിലത്തെ ദൃസ്യരൂപങ്ങളോടെ സംബന്ധിക്കപ്പെട്ടത്"
-
-#: modules/codec/schroedinger.c:104 modules/codec/schroedinger.c:105
-msgid "Inter pictures can refer to previous or future pictures"
-msgstr ""
-"തമ്മിലുള്ള ദൃഷ്യരൂപങ്ങള്‍ മുമ്പിലത്തെ അല്ലെങ്കില്‍ വരാനിരിക്കുന്ന ദൃസ്യരൂപങ്ങളോടെ സംബന്ധിക്കപ്പെട്ടത്"
-
-#: modules/codec/schroedinger.c:109
-msgid "Constant quality factor"
-msgstr "സ്ഥിരമായ ഗുണമേന്മ ഘടകം"
-
-#: modules/codec/schroedinger.c:110
-msgid "Quality factor to use in constant quality mode"
-msgstr "സ്ഥിര ഗുണ രീതിയില്‍ ഉപയോഗികേണ്ട ഗുണ അംശം"
-
-#: modules/codec/schroedinger.c:113
-msgid "Noise Threshold"
-msgstr "നോയിസ് ത്രെഷ്ഹോള്‍ഡ്"
-
-#: modules/codec/schroedinger.c:114
-msgid "Noise threshold to use in constant noise threshold mode"
-msgstr "നോയിസ് പരിധി രീതിയില്‍ ഉപയോഗികേണ്ട നോയിസ് പരിധി"
-
-#: modules/codec/schroedinger.c:117
-msgid "CBR bitrate (kbps)"
-msgstr "സിബിആര്‍ ബിറ്റ്റേറ്റ്(കെബിപിഎസ്)"
-
-#: modules/codec/schroedinger.c:118
-msgid "Target bitrate in kbps when encoding in constant bitrate mode"
-msgstr ""
-"സ്ഥിരമായ ബിറ്റ്റേറ്റ് രീതിയില്‍  എന്‍കോഡ് ചെയ്യുമ്പോള്‍ കെബിപിഎസ്സിലുള്ള ടാര്‍ജറ്റ് ബിറ്റ്റേറ്റ് "
-
-#: modules/codec/schroedinger.c:121
-msgid "Maximum bitrate (kbps)"
-msgstr "കൂടിയ ബിറ്റ്റേറ്റ്(കെബിപിഎസ്)"
-
-#: modules/codec/schroedinger.c:122
-msgid "Maximum bitrate in kbps when encoding in constant bitrate mode"
-msgstr ""
-"സ്ഥിരമായ ബിറ്റ്റേറ്റ് രീതിയില്‍  എന്‍കോഡ് ചെയ്യുമ്പോള്‍ കെബിപിഎസ്സിലുള്ള പരമാവധി ബിറ്റ്റേറ്റ് "
-
-#: modules/codec/schroedinger.c:125
-msgid "Minimum bitrate (kbps)"
-msgstr "കുറഞ്ഞ ബിറ്റ്റേറ്റ്(കെബിപിഎസ്)"
-
-#: modules/codec/schroedinger.c:126
-msgid "Minimum bitrate in kbps when encoding in constant bitrate mode"
-msgstr "സ്ഥിരമായ ബിറ്റ്റേറ്റ് രീതിയില്‍  എന്‍കോഡ് ചെയ്യുമ്പോള്‍ കെബിപിഎസ്സിലുള്ള കുറഞ്ഞ ബിറ്റ്റേറ്റ് "
-
-#: modules/codec/schroedinger.c:129
-msgid "GOP length"
-msgstr "ജിഒപി ദൈര്‍ഘ്യം"
-
-#: modules/codec/schroedinger.c:130
-msgid ""
-"Number of pictures between successive sequence headers i.e. length of the "
-"group of pictures"
-msgstr ""
-"തുടര്‍ച്ചയായുള്ള സീക്വന്‍സ് ഹെഡറുകള്‍ക്കിടയിലുള്ള ചിത്രങ്ങളുടെ എണ്ണം, അതായത് ചിത്രങ്ങളുടെ ഗ്രൂപ്പിന്റെ "
-"നീളം"
-
-#: modules/codec/schroedinger.c:134
-msgid "Prefilter"
-msgstr "പ്രീഫില്‍റ്റര്‍"
-
-#: modules/codec/schroedinger.c:135
-msgid "Enable adaptive prefiltering"
-msgstr "അടാപ്റ്റീവ് പ്രീഫീല്‍റ്റേറിങ് പ്രവര്‍ത്തനക്ഷമമാകുക"
-
-#: modules/codec/schroedinger.c:147
-msgid "No pre-filtering"
-msgstr "പ്രീ-ഫില്‍റ്ററിംഗ് ഇല്ല"
-
-#: modules/codec/schroedinger.c:148
-msgid "Centre Weighted Median"
-msgstr "സെന്റര്‍ വെയിറ്റഡ് മീഡിയന്‍"
-
-#: modules/codec/schroedinger.c:149
-msgid "Gaussian Low Pass Filter"
-msgstr "ഗൗസിയന്‍ ലോ പാസ് ഫില്‍റ്റര്‍"
-
-#: modules/codec/schroedinger.c:150
-msgid "Add Noise"
-msgstr "നോയിസ് ചേര്‍ക്കുക"
-
-#: modules/codec/schroedinger.c:151
-msgid "Gaussian Adaptive Low Pass Filter"
-msgstr "ഗോസ്സിയന്‍ അടാപ്ടീവ് ലോ പാസ് ഫില്‍ട്ടര്‍"
-
-#: modules/codec/schroedinger.c:152
-msgid "Low Pass Filter"
-msgstr "ലോ പാസ് ഫില്‍റ്റര്‍"
-
-#: modules/codec/schroedinger.c:156
-msgid "Amount of prefiltering"
-msgstr "പ്രീഫില്‍റ്ററിംഗ് തുക"
-
-#: modules/codec/schroedinger.c:157
-msgid "Higher value implies more prefiltering"
-msgstr "വലിയ മൂല്യങ്ങള്‍ എന്നുവെച്ചാല്‍ കൂടുതല്‍ പ്രീഫീല്‍റ്ററിങ്"
-
-#: modules/codec/schroedinger.c:160
-msgid "Picture coding mode"
-msgstr "പിക്ച്ചര്‍ കോഡിംഗ് മോഡ്"
-
-#: modules/codec/schroedinger.c:161
-msgid ""
-"Field coding is where interlaced fields are coded separately as opposed to a "
-"pseudo-progressive frame"
-msgstr ""
-"സ്യൂഡോ-പ്രോഗ്രസ്സീവ് ഫ്രെയിമിന് എതിരായി ഇന്റര്‍ലേസ്ഡ്  ഫീല്‍ഡുകള്‍ പ്രത്യേകമായി കോഡ് ചെയ്യുന്നതാണ് ഫീല്‍"
-"ഡ് കോഡിംഗ്."
-
-#: modules/codec/schroedinger.c:166
-msgid "auto - let encoder decide based upon input (Best)"
-msgstr "സ്വയം - ഇന്‍പുട്ട് അനുസരിച്ചു എന്‍കോഡര്‍ തീരുമാനിച്ചുകൊള്ളട്ടെ (നല്ലത്)"
-
-#: modules/codec/schroedinger.c:167
-msgid "force coding frame as single picture"
-msgstr "കോഡിങ് ഫ്രെയിമിനെ ഒരു ദൃശ്യപടമായി നിര്‍ബന്ധപൂര്‍വം മാറ്റുന്നു"
-
-#: modules/codec/schroedinger.c:168
-msgid "force coding frame as separate interlaced fields"
-msgstr "കോഡിങ് ഫ്രെയിമിനെ വേര്‍തിരിച്ച ഇടപിരിഞ്ഞ തലത്തെ നിര്‍ബന്ധപൂര്‍വം മാറ്റുന്നു"
-
-#: modules/codec/schroedinger.c:173
-msgid "Size of motion compensation blocks"
-msgstr "ചലന പ്രതിഫല ബ്ലോക്കുകളുടെ വലിപ്പം"
-
-#: modules/codec/schroedinger.c:182 modules/codec/schroedinger.c:199
-#: modules/codec/schroedinger.c:297 modules/codec/schroedinger.c:338
-msgid "automatic - let encoder decide based upon input (Best)"
-msgstr "സ്വയം - ഇന്‍പുട്ട് അനുസരിച്ചു എന്‍കോഡര്‍ തീരുമാനിച്ചുകൊള്ളട്ടെ (നല്ലത്)"
-
-#: modules/codec/schroedinger.c:183
-msgid "small - use small motion compensation blocks"
-msgstr "ചെറുത് - ചെറിയ ചലന പ്രതിഫല ബ്ലോക്കുകള്‍ ഉപയോഗിക്കുക"
-
-#: modules/codec/schroedinger.c:184
-msgid "medium - use medium motion compensation blocks"
-msgstr "ഇടത്തരം - ഇടത്തര ചലന പ്രതിഫല ബ്ലോക്കുകള്‍ ഉപയോഗിക്കുക"
-
-#: modules/codec/schroedinger.c:185
-msgid "large - use large motion compensation blocks"
-msgstr "വലുത് - വലിയ ചലന പ്രതിഫല ബ്ലോക്കുകള്‍ ഉപയോഗിക്കുക"
-
-#: modules/codec/schroedinger.c:190
-msgid "Overlap of motion compensation blocks"
-msgstr "മേല്‍ക്കുമേലുള്ള ചലന പ്രതിഫല ബ്ലോക്കുകള്‍"
-
-#: modules/codec/schroedinger.c:200
-msgid "none - Motion compensation blocks do not overlap"
-msgstr "ഒന്നുമില്ല - ചലന പ്രതിഫല ബ്ലോക്കുകള്‍ മേല്‍ക്കുമേലല്ല"
-
-#: modules/codec/schroedinger.c:201
-msgid "partial - Motion compensation blocks only partially overlap"
-msgstr "ഭാഗികം - ചലന പ്രതിഫല ബ്ലോക്കുകള്‍ ഭാഗികമായി മേല്‍ക്കുമേല്‍"
-
-#: modules/codec/schroedinger.c:202
-msgid "full - Motion compensation blocks fully overlap"
-msgstr "മുഴുവന്‍ - ചലന പ്രതിഫല ബ്ലോക്കുകള്‍ മുഴുവനും മേല്‍ക്കുമേല്‍"
-
-#: modules/codec/schroedinger.c:207
-msgid "Motion Vector precision"
-msgstr "മോഷന്‍ വെക്ടര്‍ പ്രിസിഷന്‍"
-
-#: modules/codec/schroedinger.c:208
-msgid "Motion Vector precision in pels"
-msgstr "പെല്‍സിലുള്ള ചലന വെക്റ്ററിന്റെ കൃത്യത"
-
-#: modules/codec/schroedinger.c:214
-msgid "Three component motion estimation"
-msgstr "മൂന്നു ഭാഗ ചലന മൂല്യനിര്‍ണ്ണയം"
-
-#: modules/codec/schroedinger.c:215
-msgid "Use chroma as part of the motion estimation process"
-msgstr "ചലന മൂല്യനിര്‍ണയ നടപടിക്രമത്തിന്റെ ഭാഗമായി ക്രോമ ഉപയോഗിക്കുക"
-
-#: modules/codec/schroedinger.c:218
-msgid "Intra picture DWT filter"
-msgstr "ഇന്‍ട്രാ പിക്ച്ചര്‍ ഡിഡബ്ല്യുടി ഫില്‍റ്റര്‍"
-
-#: modules/codec/schroedinger.c:221
-msgid "Inter picture DWT filter"
-msgstr "ഇന്റര്‍ പിക്ച്ചര്‍ ഡിബ്ല്യുടി ഫില്‍റ്റര്‍"
-
-#: modules/codec/schroedinger.c:244
-msgid "Number of DWT iterations"
-msgstr "ഡി‌ഡബ്ല്യു‌ടി ആവര്‍ത്തനത്തിന്റെ എണ്ണം"
-
-#: modules/codec/schroedinger.c:245
-msgid "Also known as DWT levels"
-msgstr "ഡി‌ഡബ്ല്യു‌ടി നിരകളായും അറിയപ്പെടുന്നു"
-
-#: modules/codec/schroedinger.c:250
-msgid "Enable multiple quantizers"
-msgstr "മള്‍ട്ടിപ്പിള്‍ ക്വാണ്ടൈസേഴ്സ് സാധ്യമാക്കകു"
-
-#: modules/codec/schroedinger.c:251
-msgid "Enable multiple quantizers per subband (one per codeblock)"
-msgstr "ഓരോ സബ് ബാന്‍ഡിലും ഒന്നിലധികം ക്വാന്‍ടൈസേര്‍സ് പ്രാപ്തമാക്കുക"
-
-#: modules/codec/schroedinger.c:255
-msgid "Disable arithmetic coding"
-msgstr "അരിതമെറ്റിക് കോഡിംഗ് അസാധ്യമാക്കുക"
-
-#: modules/codec/schroedinger.c:256
-msgid "Use variable length codes instead, useful for very high bitrates"
-msgstr ""
-"പകരംവ്യത്യസ്തനീളമുള്ള കോഡുകള്‍ ഉപയോഗിക്കുക, വളരെ കൂടിയ ബിറ്റ്റേറ്റിന് ഉപയോഗപ്രദമാകുന്ന വിധത്തില്‍"
-
-#: modules/codec/schroedinger.c:261
-msgid "perceptual weighting method"
-msgstr "വ്യക്തമായ തൂക്കുന്ന വഴി"
-
-#: modules/codec/schroedinger.c:272
-msgid "perceptual distance"
-msgstr "പെര്‍സെപ്ച്വല്‍ ദൂരം"
-
-#: modules/codec/schroedinger.c:273
-msgid "perceptual distance to calculate perceptual weight"
-msgstr "വ്യക്തമായ തൂക്കം കണക്കാക്കാനുള്ള വ്യക്തമായ ദൂരം"
-
-#: modules/codec/schroedinger.c:277
-msgid "Horizontal slices per frame"
-msgstr "ഒരു ഫ്രെയിമിലുള്ള തിരശ്ചീനമായ തുണ്ടുകള്‍"
-
-#: modules/codec/schroedinger.c:278
-msgid "Number of horizontal slices per frame in low delay mode"
-msgstr "കുറഞ്ഞ താമസ രീതിയില്‍ ഒരു ഫ്രെയിമിലുള്ള തിരശ്ചീനമായ തുണ്ടുകള്‍"
-
-#: modules/codec/schroedinger.c:282
-msgid "Vertical slices per frame"
-msgstr "ഒരു ഫ്രെയിമിലുള്ള ലംഭമായ തുണ്ടുകള്‍"
-
-#: modules/codec/schroedinger.c:283
-msgid "Number of vertical slices per frame in low delay mode"
-msgstr "കുറഞ്ഞ താമസ രീതിയില്‍ ഒരു ഫ്രെയിമിലുള്ള ലംഭമായ തുണ്ടുകള്‍"
-
-#: modules/codec/schroedinger.c:287
-msgid "Size of code blocks in each subband"
-msgstr "ഓരോ സബ്ബാന്‍റിലുമുള്ള കോഡ് ബ്ലോക്കുകളുടെ വലിപ്പം"
-
-#: modules/codec/schroedinger.c:298
-msgid "small - use small code blocks"
-msgstr "ചെറുത് -  ചെറിയ കോഡ് ബ്ലോക്കുകള്‍ ഉപയോഗിക്കുക"
-
-#: modules/codec/schroedinger.c:299
-msgid "medium - use medium sized code blocks"
-msgstr "ഇടത്തരം -  ഇടത്തര കോഡ് ബ്ലോക്കുകള്‍ ഉപയോഗിക്കുക"
-
-#: modules/codec/schroedinger.c:300
-msgid "large - use large code blocks"
-msgstr "വലുത് -  വലിയ കോഡ് ബ്ലോക്കുകള്‍ ഉപയോഗിക്കുക"
-
-#: modules/codec/schroedinger.c:301
-msgid "full - One code block per subband"
-msgstr "മുഴുവന്‍ - ഒരു സബ്ബാന്‍റില്‍ ഒരു കോഡ് ബ്ലോക്"
-
-#: modules/codec/schroedinger.c:306
-msgid "Enable hierarchical Motion Estimation"
-msgstr "ക്രമമനുസരിച്ചുള്ള ചലന മൂല്യനിര്‍ണ്ണയം പ്രവര്‍ത്തനക്ഷമമാക്കുക"
-
-#: modules/codec/schroedinger.c:310
-msgid "Number of levels of downsampling"
-msgstr "ഡൌണ്‍സംബ്ലിങ്ങുകളുടെ നിരകളുടെ എണ്ണം"
-
-#: modules/codec/schroedinger.c:311
-msgid "Number of levels of downsampling in hierarchical motion estimation mode"
-msgstr "ക്രമമനുസരിച്ചുള്ള ചലന മൂല്യനിര്‍ണ്ണയത്തില്‍ ഡൌണ്‍സംബ്ലിങ്ങുകളുടെ നിരകളുടെ എണ്ണം"
-
-#: modules/codec/schroedinger.c:315
-msgid "Enable Global Motion Estimation"
-msgstr "ആഗോള ചലന മൂല്യനിര്‍ണ്ണയം പ്രവര്‍ത്തനക്ഷമമാക്കുക"
-
-#: modules/codec/schroedinger.c:319
-msgid "Enable Phase Correlation Estimation"
-msgstr "ഫേസ് പരസ്പരബന്ധം മൂല്യനിര്‍ണ്ണയം പ്രവര്‍ത്തനക്ഷമമാക്കുക"
-
-#: modules/codec/schroedinger.c:323
-msgid "Enable Scene Change Detection"
-msgstr "ദൃശ്യ മാറ്റം കണ്ടുപിടിക്കല്‍ പ്രവര്‍ത്തനക്ഷമമാക്കുക"
-
-#: modules/codec/schroedinger.c:327
-msgid "Force Profile"
-msgstr "പ്രൊഫൈല്‍ ഫോഴ്സ് ചെയ്യുക"
-
-#: modules/codec/schroedinger.c:339
-msgid "VC2 Low Delay Profile"
-msgstr "വിസി2 ലോ ഡിലേ പ്രൊഫൈല്‍"
-
-#: modules/codec/schroedinger.c:340
-msgid "VC2 Simple Profile"
-msgstr "വിസി2 സാധാരണ പ്രൊഫൈല്‍"
-
-#: modules/codec/schroedinger.c:341
-msgid "VC2 Main Profile"
-msgstr "വിസി2 പ്രധാന പ്രൊഫൈല്‍"
-
-#: modules/codec/schroedinger.c:342
-msgid "Main Profile"
-msgstr "പ്രധാന പ്രൊഫൈല്‍"
-
-#: modules/codec/schroedinger.c:363
-msgid "Dirac video decoder using libschroedinger"
-msgstr "ലിബ്ശ്ച്രൊഡിങര് ഉപയോഗിച്ചുള്ള ഡിറാക് വീഡിയോ ഡികോഡര്‍"
-
-#: modules/codec/schroedinger.c:371
-msgid "Dirac video encoder using libschroedinger"
-msgstr "ലിബ്ശ്ച്രൊഡിങര് ഉപയോഗിച്ചുള്ള ഡിറാക് വീഡിയോ എന്‍കോഡര്‍"
-
 #: modules/codec/scte18.c:41
 msgid "SCTE-18 decoder"
 msgstr "SCTE-18 ഡീകോഡർ"
@@ -12869,7 +12441,7 @@ msgstr "എംപി3 ഫിക്സഡ് പോയിന്റ് ഓഡി�
 msgid "S/PDIF pass-through decoder"
 msgstr "S / PDIF പാസ്-ത്രൂ ഡീകോഡർ"
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:910
+#: modules/codec/speex.c:59 modules/codec/speex.c:1023
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
 #: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
@@ -13637,7 +13209,6 @@ msgid "CABAC"
 msgstr "സിഎബിഎസി"
 
 #: modules/codec/x264.c:133
-#, fuzzy
 msgid ""
 "CABAC (Context-Adaptive Binary Arithmetic Coding). Slightly slows down "
 "encoding and decoding, but should save 10 to 15% bitrate."
@@ -14485,14 +14056,14 @@ msgstr "ഡി-ബസ് നിയന്ത്രണ പൊതുപ്രതല
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1028
-#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
-#: modules/gui/qt/main_interface.cpp:1306
-#: modules/gui/qt/main_interface.cpp:1343
-#: modules/gui/qt/main_interface.cpp:1345
-#: modules/gui/qt/main_interface.cpp:1453
-#: modules/gui/qt/main_interface.cpp:1470
-#: modules/gui/qt/main_interface.cpp:1478
-#: modules/gui/qt/main_interface.cpp:1501 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1295
+#: modules/gui/qt/main_interface.cpp:1299
+#: modules/gui/qt/main_interface.cpp:1336
+#: modules/gui/qt/main_interface.cpp:1338
+#: modules/gui/qt/main_interface.cpp:1446
+#: modules/gui/qt/main_interface.cpp:1463
+#: modules/gui/qt/main_interface.cpp:1471
+#: modules/gui/qt/main_interface.cpp:1494 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -15230,88 +14801,88 @@ msgstr "WinMsg"
 msgid "Windows messages interface"
 msgstr "വിൻഡോസ് സന്ദേശങ്ങളുടെ ഇന്റർഫേസ്"
 
-#: modules/demux/adaptive/adaptive.cpp:69
+#: modules/demux/adaptive/adaptive.cpp:71
 msgid "Maximum device width"
 msgstr "പരമാവധി ഉപകരണ വീതി"
 
-#: modules/demux/adaptive/adaptive.cpp:70
+#: modules/demux/adaptive/adaptive.cpp:72
 msgid "Maximum device height"
 msgstr "പരമാവധി ഉപകരണ ഉയരം"
 
-#: modules/demux/adaptive/adaptive.cpp:72
+#: modules/demux/adaptive/adaptive.cpp:74
 msgid "Fixed Bandwidth in KiB/s"
 msgstr "നിശ്ചിതമായ ബാൻഡ്‌വിഡ്ത്ത്  KiB/s - ൽ"
 
-#: modules/demux/adaptive/adaptive.cpp:73
+#: modules/demux/adaptive/adaptive.cpp:75
 msgid "Preferred bandwidth for non adaptive streams"
 msgstr "അഡാപ്റ്റീവ് അല്ലാത്ത സ്ട്രീമുകൾക്കായി തിരഞ്ഞെടുത്ത ബാൻഡ്‌വിഡ്ത്ത്"
 
-#: modules/demux/adaptive/adaptive.cpp:75
+#: modules/demux/adaptive/adaptive.cpp:77
 msgid "Live Playback delay (ms)"
 msgstr "തത്സമയ പ്ലേബാക്ക് കാലതാമസം (എം‌എസ്)"
 
-#: modules/demux/adaptive/adaptive.cpp:76
+#: modules/demux/adaptive/adaptive.cpp:78
 msgid "Tradeoff between stability and real time"
 msgstr "സ്ഥിരതയും തത്സമയവും തമ്മിലുള്ള താത്പര്യം"
 
-#: modules/demux/adaptive/adaptive.cpp:78
+#: modules/demux/adaptive/adaptive.cpp:80
 msgid "Max buffering (ms)"
 msgstr "പരമാവധി ബഫറിംഗ് (എം‌എസ്)"
 
-#: modules/demux/adaptive/adaptive.cpp:80
+#: modules/demux/adaptive/adaptive.cpp:82
 msgid "Adaptive Logic"
 msgstr "അഡാപ്റ്റീവ് ലോജിക്"
 
-#: modules/demux/adaptive/adaptive.cpp:82
+#: modules/demux/adaptive/adaptive.cpp:84
 msgid "Use regular HTTP modules"
 msgstr "സാധാരണ എച്ച്ടിടിപി മൊഡ്യൂളുകൾ ഉപയോഗിക്കുക"
 
-#: modules/demux/adaptive/adaptive.cpp:83
+#: modules/demux/adaptive/adaptive.cpp:85
 msgid "Connect using HTTP access instead of custom HTTP code"
 msgstr "ഇഷ്‌ടാനുസൃത HTTP കോഡിന് പകരം HTTP ആക്‌സസ്സ് ഉപയോഗിച്ച് കണക്റ്റുചെയ്യുക"
 
-#: modules/demux/adaptive/adaptive.cpp:85
+#: modules/demux/adaptive/adaptive.cpp:87
 #: modules/gui/qt/components/simple_preferences.cpp:713
 msgid "Low latency"
 msgstr "കുറഞ്ഞ ലാറ്റന്‍സി"
 
-#: modules/demux/adaptive/adaptive.cpp:86
+#: modules/demux/adaptive/adaptive.cpp:88
 msgid "Overrides low latency parameters"
 msgstr "കുറഞ്ഞ ലേറ്റൻസിയുള്ള പാരാമീറ്ററുകൾ അസാധുവാക്കുന്നു"
 
-#: modules/demux/adaptive/adaptive.cpp:107
+#: modules/demux/adaptive/adaptive.cpp:109
 msgid "Predictive"
 msgstr "പ്രവചനാത്മകമായ"
 
-#: modules/demux/adaptive/adaptive.cpp:108
+#: modules/demux/adaptive/adaptive.cpp:110
 msgid "Near Optimal"
 msgstr "ഏകദേശം നല്ലത് "
 
-#: modules/demux/adaptive/adaptive.cpp:109
+#: modules/demux/adaptive/adaptive.cpp:111
 msgid "Bandwidth Adaptive"
 msgstr "ബാൻഡ്‌വിഡ്ത്ത് അഡാപ്റ്റീവ്"
 
-#: modules/demux/adaptive/adaptive.cpp:110
+#: modules/demux/adaptive/adaptive.cpp:112
 msgid "Fixed Bandwidth"
 msgstr "നിശ്ചിതമായ ബാൻഡ്വിഡ്ത്ത് "
 
-#: modules/demux/adaptive/adaptive.cpp:111
+#: modules/demux/adaptive/adaptive.cpp:113
 msgid "Lowest Bandwidth/Quality"
 msgstr "ഏറ്റവും കുറഞ്ഞ ബാൻഡ്‌വിഡ്ത്ത് / ഗുണമേന്മ"
 
-#: modules/demux/adaptive/adaptive.cpp:112
+#: modules/demux/adaptive/adaptive.cpp:114
 msgid "Highest Bandwidth/Quality"
 msgstr "ഏറ്റവും ഉയർന്ന ബാൻഡ്‌വിഡ്ത്ത് / ഗുണമേന്മ"
 
-#: modules/demux/adaptive/adaptive.cpp:123
+#: modules/demux/adaptive/adaptive.cpp:125
 msgid "Force"
 msgstr "നിർബന്ധിക്കുക"
 
-#: modules/demux/adaptive/adaptive.cpp:127
+#: modules/demux/adaptive/adaptive.cpp:129
 msgid "Adaptive"
 msgstr "ചേർന്ന് പോകുന്ന "
 
-#: modules/demux/adaptive/adaptive.cpp:128
+#: modules/demux/adaptive/adaptive.cpp:130
 msgid "Unified adaptive streaming for DASH/HLS"
 msgstr "DASH / HLS നായുള്ള ഏകീകൃത അഡാപ്റ്റീവ് സ്ട്രീമിംഗ്"
 
@@ -15407,7 +14978,7 @@ msgstr "ആവശ്യമുള്ളപ്പോള്‍ ഫിക്സ് �
 msgid "AVI demuxer"
 msgstr "എവിഐ ഡീമക്സര്‍"
 
-#: modules/demux/avi/avi.c:910 modules/demux/mp4/mp4.c:4374
+#: modules/demux/avi/avi.c:920 modules/demux/mp4/mp4.c:4402
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15422,27 +14993,27 @@ msgstr ""
 "ഈ ഘട്ടത്തിൽ വലിയ ഫയൽ നിർമിക്കലും സമയനഷ്ടവും സംഭവിച്ചേക്കാം \n"
 "നിങ്ങൾ എന്താണ് ചെയ്യാൻ ഉദേശിക്കുന്നത്?"
 
-#: modules/demux/avi/avi.c:918
+#: modules/demux/avi/avi.c:928
 msgid "Do not play"
 msgstr "പ്ലേ ചെയ്യരുത്"
 
-#: modules/demux/avi/avi.c:919
+#: modules/demux/avi/avi.c:929
 msgid "Build index then play"
 msgstr "സൂചിക നിര്‍മ്മിച്ചതിന്‍ശേഷം പ്ലേ ചെയ്യുക"
 
-#: modules/demux/avi/avi.c:920
+#: modules/demux/avi/avi.c:930
 msgid "Play as is"
 msgstr "ഉള്ളതുപോലേ പ്ലേ ചെയ്യുക"
 
-#: modules/demux/avi/avi.c:921 modules/demux/mp4/mp4.c:4385
+#: modules/demux/avi/avi.c:931 modules/demux/mp4/mp4.c:4413
 msgid "Broken or missing Index"
 msgstr "സൂചിക കേടാണ് അല്ലെങ്കിൽ കാണുന്നില്ല"
 
-#: modules/demux/avi/avi.c:2879
+#: modules/demux/avi/avi.c:2889
 msgid "Broken or missing AVI Index"
 msgstr "പൊട്ടിപ്പോയ അല്ലെങ്കില്‍ നഷ്ട്ടപ്പെട്ട എ‌വി‌ഐ സൂചിക"
 
-#: modules/demux/avi/avi.c:2880
+#: modules/demux/avi/avi.c:2890
 msgid "Fixing AVI Index..."
 msgstr "എവിഐ ഇന്‍ഡെക്സ് ഫിക്സ് ചെയ്യുന്നു..."
 
@@ -15480,11 +15051,11 @@ msgstr "ഫയല്‍ ഡംപര്‍"
 
 #: modules/demux/dirac.c:41
 msgid "Value to adjust dts by"
-msgstr "ഡി‌ടി‌എസ് മൂല്യം ക്രമീകരിക്കുക ഇത്രയാല്‍"
+msgstr ""
 
 #: modules/demux/dirac.c:54
 msgid "Dirac video demuxer"
-msgstr "ഡിറാക് വീഡിയോ ഡീമക്സര്‍"
+msgstr ""
 
 #: modules/demux/directory.c:94
 msgid "Directory import"
@@ -15560,7 +15131,7 @@ msgstr "ചിത്രം"
 
 #: modules/demux/mjpeg.c:46 modules/demux/mpeg/es.c:53
 #: modules/demux/mpeg/h26x.c:46 modules/demux/rawvid.c:43
-#: modules/demux/subtitle.c:77 modules/demux/vc1.c:43
+#: modules/demux/subtitle.c:78 modules/demux/vc1.c:43
 #: modules/gui/macosx/VLCOpenWindowController.m:208
 msgid "Frames per Second"
 msgstr "പ്രതി സെക്കന്‍ഡ് ഫ്രെയിമുകള്‍"
@@ -15609,7 +15180,7 @@ msgstr ""
 "ബന്ധമുള്ള ഘടകങ്ങള്‍ കണ്ടുപിടിക്കാന്‍ അതേ ഡിറക്ടറിയില്‍ മട്രോസ്ക ഫയലുകള്‍ മുന്നമേ ലോഡ് ചെയ്യുക (മുറിഞ്ഞ "
 "ഫയലുകള്‍ക്ക് നല്ലതല്ല)"
 
-#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:113
+#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:114
 msgid "Seek based on percent not time"
 msgstr "ശതമാനം അനുസരിച്ചു തിരഞ്ഞെടുക്കുക സമയം അല്ല"
 
@@ -15862,27 +15433,27 @@ msgstr "സ്പഷ്ടമായത്"
 msgid "Clean"
 msgstr "വൃത്തിയാക്കുക"
 
-#: modules/demux/mp4/mp4.c:51
+#: modules/demux/mp4/mp4.c:52
 msgid "M4A audio only"
 msgstr "M4A ശബ്ദം മാത്രം"
 
-#: modules/demux/mp4/mp4.c:52
+#: modules/demux/mp4/mp4.c:53
 msgid "Ignore non audio tracks from iTunes audio files"
 msgstr "ഐട്യൂൺസ് ഓഡിയോ ഫയലുകളിൽ നിന്ന് നോൺ ഓഡിയോ ട്രാക്കുകൾ അവഗണിക്കുക"
 
-#: modules/demux/mp4/mp4.c:57
+#: modules/demux/mp4/mp4.c:58
 msgid "MP4 stream demuxer"
 msgstr "എം‌പി4 സ്ട്രീം ടിമക്സര്‍"
 
-#: modules/demux/mp4/mp4.c:58
+#: modules/demux/mp4/mp4.c:59
 msgid "MP4"
 msgstr "എം‌പി4"
 
-#: modules/demux/mp4/mp4.c:4382
+#: modules/demux/mp4/mp4.c:4410
 msgid "Do not seek"
 msgstr "തേടരുത് "
 
-#: modules/demux/mp4/mp4.c:4383
+#: modules/demux/mp4/mp4.c:4411
 msgid "Build index"
 msgstr "സൂചിക നിർമ്മിക്കുക"
 
@@ -15948,21 +15519,21 @@ msgstr "എംപിഇജി-പിഎസ് ഡീമക്സര്‍"
 msgid "PS"
 msgstr "പിഎസ്"
 
-#: modules/demux/mpeg/ts.c:84
+#: modules/demux/mpeg/ts.c:85
 msgid "Extra PMT"
 msgstr "അധിക പിഎംടി"
 
-#: modules/demux/mpeg/ts.c:86
+#: modules/demux/mpeg/ts.c:87
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr ""
 "ഒരു അധിക പി‌എം‌ടി നിര്‍ദ്ദേശിക്കാന്‍ ഉപയോക്താവിനെ അവിവദിക്കുന്നു (പി‌എം‌ടി_പി‌ഐ‌ഡി=പി‌ഐ‌ഡി:"
 "Sട്രീമ്_ഇനം[,...])."
 
-#: modules/demux/mpeg/ts.c:88
+#: modules/demux/mpeg/ts.c:89
 msgid "Set id of ES to PID"
 msgstr "ഇഎസ്സില്‍ നിന്നും പി‌ഐ‌ഡിയിലേക്ക് ഐ‌ഡി സജ്ജീകരിക്കുക"
 
-#: modules/demux/mpeg/ts.c:89
+#: modules/demux/mpeg/ts.c:90
 msgid ""
 "Set the internal ID of each elementary stream handled by VLC to the same "
 "value as the PID in the TS stream, instead of 1, 2, 3, etc. Useful to do "
@@ -15972,32 +15543,32 @@ msgstr ""
 "സജ്ജമാക്കുക, 1, 2, 3, തുടങ്ങിയവയ്ക്ക പകരമായി.  '#duplicate{..., select=\"es=<pid>"
 "\"}' ഉപയോഗിക്കുന്നത് ഉപയോഗപ്രദമായിരിക്കും."
 
-#: modules/demux/mpeg/ts.c:94 modules/mux/mpeg/ts.c:173
+#: modules/demux/mpeg/ts.c:95 modules/mux/mpeg/ts.c:173
 msgid "CSA Key"
 msgstr "സി‌എസ്‌എ കീ"
 
-#: modules/demux/mpeg/ts.c:95 modules/mux/mpeg/ts.c:174
+#: modules/demux/mpeg/ts.c:96 modules/mux/mpeg/ts.c:174
 msgid ""
 "CSA encryption key. This must be a 16 char string (8 hexadecimal bytes)."
 msgstr ""
 "സി‌എസ്‌എ എങ്കൃപ്ഷന്‍ കീ.  ഇതൊരു 16 അക്ഷര സ്ട്രിംഗ് ആയിരിക്കണം (8 ഹെക്സാഡെസിമല്‍ ബൈറ്റുകള്‍)."
 
-#: modules/demux/mpeg/ts.c:98 modules/mux/mpeg/ts.c:177
+#: modules/demux/mpeg/ts.c:99 modules/mux/mpeg/ts.c:177
 msgid "Second CSA Key"
 msgstr "രണ്ടാമത്തെ സി‌എസ്‌എ കീ"
 
-#: modules/demux/mpeg/ts.c:99 modules/mux/mpeg/ts.c:178
+#: modules/demux/mpeg/ts.c:100 modules/mux/mpeg/ts.c:178
 msgid ""
 "The even CSA encryption key. This must be a 16 char string (8 hexadecimal "
 "bytes)."
 msgstr ""
 "ഈവെന്‍ സി‌എസ്‌എ എങ്കൃപ്ഷന്‍ കീ.  ഇതൊരു 16 അക്ഷര സ്ട്രിംഗ് ആയിരിക്കണം (8 ഹെക്സാഡെസിമല്‍ ബൈറ്റുകള്‍)."
 
-#: modules/demux/mpeg/ts.c:103
+#: modules/demux/mpeg/ts.c:104
 msgid "Packet size in bytes to decrypt"
 msgstr "ടിക്രിപ്റ്റ് ചെയ്യാനുള്ള പാക്കറ്റ് വലിപ്പം ബൈറ്റ്സില്‍"
 
-#: modules/demux/mpeg/ts.c:104
+#: modules/demux/mpeg/ts.c:105
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
 "subtract the TS-header from the value before decrypting."
@@ -16005,11 +15576,11 @@ msgstr ""
 "ഡീക്രിപ്റ്റ് ചെയ്യുന്നതിന് ടി‌എസ് പാക്കറ്റിന്റെ വലുപ്പം വ്യക്തമാക്കുക. ഡീക്രിപ്ഷൻ ദിനചര്യകൾ "
 "ഡീക്രിപ്റ്റ് ചെയ്യുന്നതിനുമുമ്പ് ടിഎസ്-ഹെഡർ മൂല്യത്തിൽ നിന്ന് കുറയ്ക്കുക."
 
-#: modules/demux/mpeg/ts.c:108
+#: modules/demux/mpeg/ts.c:109
 msgid "Separate sub-streams"
 msgstr "ഉപ-സ്ട്രീമുകള്‍ വേര്‍തിരിക്കുക"
 
-#: modules/demux/mpeg/ts.c:110
+#: modules/demux/mpeg/ts.c:111
 msgid ""
 "Separate teletex/dvbs pages into independent ES. It can be useful to turn "
 "off this option when using stream output."
@@ -16017,7 +15588,7 @@ msgstr ""
 "ടെലിടെക്സ്/ഡിവിബി പേജുകള്‍ സ്വതന്ത്ര ഇഎസുകളിലേക്ക് വേര്‍തിരിക്കുക. സ്ട്രീം ഔട്ട്പുട്ട് "
 "ഉപയോഗിക്കുമ്പോള്‍ ഈ താല്പര്യം ടേണ്‍ ഓഫ് ചെയ്യുന്നത് ഉപകാരപ്രദമായിരിക്കും."
 
-#: modules/demux/mpeg/ts.c:115
+#: modules/demux/mpeg/ts.c:116
 msgid ""
 "Seek and position based on a percent byte position, not a PCR generated time "
 "position. If seeking doesn't work property, turn on this option."
@@ -16025,19 +15596,19 @@ msgstr ""
 "തേടുകയും ഒരു ശതമാനം ബൈറ്റ് സ്ഥാനം , ഒരു പി.സി.ആർ. ജനറേറ്റ് സമയം സ്ഥാനം അടിസ്ഥാനമാക്കിയുള്ള "
 "സ്ഥാനം . തേടുന്നതും പ്രോപ്പർട്ടി പ്രവർത്തിക്കുന്നില്ലെങ്കിൽ , ഈ ഓപ്ഷൻ ഓൺ ചെയ്യുക."
 
-#: modules/demux/mpeg/ts.c:126
+#: modules/demux/mpeg/ts.c:127
 msgid "Trust in-stream PCR"
 msgstr "അകത്തുള്ള-സ്ട്രീം പി‌സി‌ആറിനെ വിശ്വസിക്കുക"
 
-#: modules/demux/mpeg/ts.c:127
+#: modules/demux/mpeg/ts.c:128
 msgid "Use the stream PCR as a reference."
 msgstr "ഒരു ഉപമക്ക് അകത്തുള്ള-സ്ട്രീം പി‌സി‌ആറിനെ വിശ്വസിക്കുക"
 
-#: modules/demux/mpeg/ts.c:134 modules/mux/mpeg/ts.c:100
+#: modules/demux/mpeg/ts.c:135 modules/mux/mpeg/ts.c:100
 msgid "Digital TV Standard"
 msgstr "ഡിജിറ്റൽ ടിവി മാനദണ്ഡം "
 
-#: modules/demux/mpeg/ts.c:135
+#: modules/demux/mpeg/ts.c:136
 msgid ""
 "Selects mode for digital TV standard. This feature affects EPG information "
 "and subtitles."
@@ -16045,60 +15616,60 @@ msgstr ""
 "ഡിജിറ്റൽ ടിവി നിലവാരത്തിനായി മോഡ് തിരഞ്ഞെടുക്കുന്നു. ഈ സവിശേഷത ഇപിജി വിവരങ്ങളെയും "
 "സബ്ടൈറ്റിലുകളെയും ബാധിക്കുന്നു."
 
-#: modules/demux/mpeg/ts.c:139
+#: modules/demux/mpeg/ts.c:140
 msgid "MPEG Transport Stream demuxer"
 msgstr "എംപേഗ് കടത്തല്‍ സ്ട്രീം ടിമക്സര്‍"
 
-#: modules/demux/mpeg/ts_psi.c:422
+#: modules/demux/mpeg/ts_psi.c:425
 msgid "Main audio"
 msgstr "പ്രധാന ശബ്ദ സൗകര്യം "
 
-#: modules/demux/mpeg/ts_psi.c:423
+#: modules/demux/mpeg/ts_psi.c:426
 msgid "Audio description for the visually impaired"
 msgstr "കാഴ്ചയില്ലാത്തവർക്കുള്ള ശബ്ദ വിവരണം"
 
-#: modules/demux/mpeg/ts_psi.c:424
+#: modules/demux/mpeg/ts_psi.c:427
 msgid "Clean audio for the hearing impaired"
 msgstr "ശ്രവണ വൈകല്യമുള്ളവർക്കായി ശബ്ദം വൃത്തിയാക്കുക"
 
-#: modules/demux/mpeg/ts_psi.c:425
+#: modules/demux/mpeg/ts_psi.c:428
 msgid "Spoken subtitles for the visually impaired"
 msgstr "കാഴ്ചയില്ലാത്തവർക്കായി സംസാരിക്കുന്ന സബ്ടൈറ്റിലുകൾ"
 
-#: modules/demux/mpeg/ts_psi.c:607 modules/gui/macosx/VLCMainMenu.m:465
+#: modules/demux/mpeg/ts_psi.c:610 modules/gui/macosx/VLCMainMenu.m:465
 #: modules/gui/qt/dialogs/toolbar.cpp:541
 msgid "Teletext"
 msgstr "ടെലിടെക്സ്റ്റ്"
 
-#: modules/demux/mpeg/ts_psi.c:608
+#: modules/demux/mpeg/ts_psi.c:611
 msgid "Teletext subtitles"
 msgstr "ടെലിടെക്സ്റ്റ് ഉപശീര്‍ഷകങ്ങള്‍"
 
-#: modules/demux/mpeg/ts_psi.c:609
+#: modules/demux/mpeg/ts_psi.c:612
 msgid "Teletext: additional information"
 msgstr "ടെലിടെക്സ്റ്റ്:അധിക വിവരം"
 
-#: modules/demux/mpeg/ts_psi.c:610
+#: modules/demux/mpeg/ts_psi.c:613
 msgid "Teletext: program schedule"
 msgstr "ടെലിടെക്സ്റ്റ്:പ്രോഗ്രാം ഷെഡ്യൂള്‍"
 
-#: modules/demux/mpeg/ts_psi.c:611
+#: modules/demux/mpeg/ts_psi.c:614
 msgid "Teletext subtitles: hearing impaired"
 msgstr "ടെലിടെക്സ്റ്റ് ഉപശീര്‍ഷകങ്ങള്‍: കേള്‍വിക്കു കോട്ടം വന്നത്"
 
-#: modules/demux/mpeg/ts_psi.c:828
+#: modules/demux/mpeg/ts_psi.c:831
 msgid "DVB subtitles: hearing impaired"
 msgstr "ഡി‌വി‌ബി ഉപശീര്‍ഷകങ്ങള്‍: കേള്‍വിക്കു കോട്ടം വന്നത്"
 
-#: modules/demux/mpeg/ts_psi.c:1337
+#: modules/demux/mpeg/ts_psi.c:1340
 msgid "clean effects"
 msgstr "ശുദ്ധ പ്രതീതി"
 
-#: modules/demux/mpeg/ts_psi.c:1338
+#: modules/demux/mpeg/ts_psi.c:1341
 msgid "hearing impaired"
 msgstr "കേള്‍വിക്കു കോട്ടം വന്നത്"
 
-#: modules/demux/mpeg/ts_psi.c:1339
+#: modules/demux/mpeg/ts_psi.c:1342
 msgid "visual impaired commentary"
 msgstr "കാഴ്ചക്കു കോട്ടം വന്നവര്‍ക്കുള്ള വ്യാഖ്യാനം"
 
@@ -16114,7 +15685,7 @@ msgstr "നള്‍സോഫ്റ്റ് ഡീമക്സര്‍"
 msgid "Nuv demuxer"
 msgstr "എന്‍യുവി ഡീമക്സര്‍"
 
-#: modules/demux/ogg.c:57
+#: modules/demux/ogg.c:58
 msgid "OGG demuxer"
 msgstr "ഒജിജി ഡീമക്സര്‍"
 
@@ -16356,7 +15927,7 @@ msgstr "യഥാര്‍ത്ഥ ഡിമക്സര്‍"
 msgid "C64 sid demuxer"
 msgstr "സി64 സിദ് ടിമക്സര്‍"
 
-#: modules/demux/smf.c:725
+#: modules/demux/smf.c:727
 msgid "SMF demuxer"
 msgstr "എസ്എംഎഫ് ഡീമക്സര്‍"
 
@@ -16364,11 +15935,11 @@ msgstr "എസ്എംഎഫ് ഡീമക്സര്‍"
 msgid "EBU STL subtitles parser"
 msgstr "ഇ‌ബി‌യു എസ്‌ടി‌എല്‍ ഉപശീര്‍ഷകങ്ങളുടെ പാര്‍സര്"
 
-#: modules/demux/subtitle.c:53
+#: modules/demux/subtitle.c:54
 msgid "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
 msgstr "എല്ലാ ഉപശീര്‍ഷകങ്ങള്ക്കും ഒരു താമസം നല്കുക (1/10 സെ-ല്‍ , ഉദാ 100 എന്നുവെച്ചാല്‍ 10 സെ)"
 
-#: modules/demux/subtitle.c:55
+#: modules/demux/subtitle.c:56
 msgid ""
 "Override the normal frames per second settings. This will only work with "
 "MicroDVD and SubRIP (SRT) subtitles."
@@ -16376,7 +15947,7 @@ msgstr ""
 "പ്രതി സെക്കന്‍ഡ് സാധാരാണ ഫ്രെയിം ക്രമീകരണങ്ങളെ ഓവര്‍റൈഡ് ചെയ്യുക. ഇത് മൈക്രോഡിവിഡിയുമായും സബ്ആര്‍"
 "ഐപി(എസ്ആര്‍ടി) ഉപശീര്‍ഷകങ്ങളുമായി മാത്രമേ പ്രവര്‍ത്തിക്കകയുള്ളു."
 
-#: modules/demux/subtitle.c:58
+#: modules/demux/subtitle.c:59
 msgid ""
 "Force the subtitles format. Selecting \"auto\" means autodetection and "
 "should always work."
@@ -16384,23 +15955,23 @@ msgstr ""
 "സബ്ടൈറ്റിലുകളുടെ ഫോർമാറ്റ് നിർബന്ധിക്കുക. \"യാന്ത്രികം\" എന്നത് അർത്ഥമാക്കുന്നത് ഓട്ടോഡെറ്റെക്ഷൻ "
 "എന്നാണ്, എല്ലായ്പ്പോഴും പ്രവർത്തിക്കണം."
 
-#: modules/demux/subtitle.c:60
+#: modules/demux/subtitle.c:61
 msgid "Override the default track description."
 msgstr "സ്വയമേയുള്ള ട്രാക്ക് വിവരണം അസാധുവാക്കുക."
 
-#: modules/demux/subtitle.c:72
+#: modules/demux/subtitle.c:73
 msgid "Text subtitle parser"
 msgstr "ടെക്സ്റ്റ് ഉപശീര്‍ഷക പാര്‍സര്"
 
-#: modules/demux/subtitle.c:80 modules/spu/subsdelay.c:275
+#: modules/demux/subtitle.c:81 modules/spu/subsdelay.c:275
 msgid "Subtitle delay"
 msgstr "ഉപശീര്‍ഷക ഡിലേ"
 
-#: modules/demux/subtitle.c:82
+#: modules/demux/subtitle.c:83
 msgid "Subtitle format"
 msgstr "ഉപശീര്‍ഷക ഘടന"
 
-#: modules/demux/subtitle.c:85
+#: modules/demux/subtitle.c:86
 msgid "Subtitle description"
 msgstr "ഉപശീര്‍ഷക വിവരണം"
 
@@ -16416,15 +15987,15 @@ msgstr "ടിവൈ"
 msgid "TY Stream audio/video demux"
 msgstr "ടി‌വി സ്ട്രീം ഓഡിയോ/വീഡിയോ ടിമാക്സ്"
 
-#: modules/demux/ty.c:784
+#: modules/demux/ty.c:793
 msgid "Closed captions 2"
 msgstr "അടച്ച ശീര്‍ഷകങ്ങള്‍ 2"
 
-#: modules/demux/ty.c:785
+#: modules/demux/ty.c:794
 msgid "Closed captions 3"
 msgstr "അടച്ച ശീര്‍ഷകങ്ങള്‍ 3"
 
-#: modules/demux/ty.c:786
+#: modules/demux/ty.c:795
 msgid "Closed captions 4"
 msgstr "അടച്ച ശീര്‍ഷകങ്ങള്‍ 4"
 
@@ -16547,26 +16118,26 @@ msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:105
 #: modules/gui/macosx/VLCAddonsWindowController.m:357
-#: modules/gui/qt/dialogs/plugins.cpp:388
+#: modules/gui/qt/dialogs/plugins.cpp:387
 #: modules/gui/qt/managers/addons_manager.cpp:88
 msgid "Playlist parsers"
 msgstr "പ്ലേലിസ്റ്റ് പാര്‍സറുകള്‍"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:107
 #: modules/gui/macosx/VLCAddonsWindowController.m:359
-#: modules/gui/qt/dialogs/plugins.cpp:392
+#: modules/gui/qt/dialogs/plugins.cpp:391
 #: modules/gui/qt/managers/addons_manager.cpp:90
 msgid "Service Discovery"
 msgstr "സര്‍വ്വീസ് ഡിസ്കവറി"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:109
-#: modules/gui/qt/dialogs/plugins.cpp:396
+#: modules/gui/qt/dialogs/plugins.cpp:395
 #: modules/gui/qt/managers/addons_manager.cpp:92
 msgid "Interfaces"
 msgstr "ഇൻറ്റർഫേസ്"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:111
-#: modules/gui/qt/dialogs/plugins.cpp:399
+#: modules/gui/qt/dialogs/plugins.cpp:398
 #: modules/gui/qt/managers/addons_manager.cpp:94
 msgid "Art and meta fetchers"
 msgstr "ആർറ്റ് & മെറ്റാ ഫെച്ചര്‍"
@@ -16574,7 +16145,7 @@ msgstr "ആർറ്റ് & മെറ്റാ ഫെച്ചര്‍"
 #: modules/gui/macosx/VLCAddonsWindowController.m:113
 #: modules/gui/macosx/VLCAddonsWindowController.m:361
 #: modules/gui/macosx/VLCMainMenu.m:343 modules/gui/macosx/VLCMainMenu.m:344
-#: modules/gui/qt/dialogs/plugins.cpp:402
+#: modules/gui/qt/dialogs/plugins.cpp:401
 #: modules/gui/qt/managers/addons_manager.cpp:96
 msgid "Extensions"
 msgstr "അനുബന്ധങ്ങള്‍"
@@ -16584,7 +16155,7 @@ msgid "Show Installed Only"
 msgstr "ഇന്‍സ്റ്റാള്‍ ചെയ്തത് മാത്രം കാണിക്കുക"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:118
-#: modules/gui/qt/dialogs/plugins.cpp:430
+#: modules/gui/qt/dialogs/plugins.cpp:429
 msgid "Find more addons online"
 msgstr "കൂടുതല്‍ ആഡ്ഓണുകള്‍ ഒണ്‍ലൈനില്‍ കണ്ടെത്താം"
 
@@ -16616,7 +16187,7 @@ msgid "Uninstall"
 msgstr "അണ്‍ഇന്‍സ്റ്റാള്‍"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:355
-#: modules/gui/qt/dialogs/plugins.cpp:384
+#: modules/gui/qt/dialogs/plugins.cpp:383
 #: modules/gui/qt/managers/addons_manager.cpp:86
 #: modules/gui/skins2/src/skin_main.cpp:535
 msgid "Skins"
@@ -16816,7 +16387,7 @@ msgstr "സമയം"
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1360
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "OK"
 msgstr "ശരി"
 
@@ -16958,7 +16529,7 @@ msgstr "ഫയല്‍ ആയി സംരക്ഷിക്കുക"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:149
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:392
 #: modules/gui/macosx/VLCOutput.m:65 modules/gui/macosx/VLCOutput.m:194
-#: modules/gui/macosx/VLCOutput.m:313 modules/gui/qt/dialogs/sout.cpp:92
+#: modules/gui/macosx/VLCOutput.m:313 modules/gui/qt/dialogs/sout.cpp:90
 msgid "Stream"
 msgstr "സ്ട്രീം"
 
@@ -17033,10 +16604,10 @@ msgstr "സ്ട്രീം വിജ്ഞാപനം"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:186
 #: modules/gui/macosx/VLCOpenWindowController.m:197
 #: modules/gui/macosx/VLCOutput.m:68
-#: modules/gui/qt/components/sout/sout_widgets.cpp:242
-#: modules/gui/qt/components/sout/sout_widgets.cpp:329
-#: modules/gui/qt/components/sout/sout_widgets.cpp:371
-#: modules/gui/qt/components/sout/sout_widgets.cpp:426
+#: modules/gui/qt/components/sout/sout_widgets.cpp:294
+#: modules/gui/qt/components/sout/sout_widgets.cpp:381
+#: modules/gui/qt/components/sout/sout_widgets.cpp:423
+#: modules/gui/qt/components/sout/sout_widgets.cpp:478
 msgid "Address"
 msgstr "മേല്‍വിലാസം"
 
@@ -17048,11 +16619,11 @@ msgstr "ടിടിഎല്‍"
 #: modules/gui/macosx/VLCOpenWindowController.m:185
 #: modules/gui/macosx/VLCOpenWindowController.m:187
 #: modules/gui/macosx/VLCOutput.m:69
-#: modules/gui/qt/components/sout/sout_widgets.cpp:188
-#: modules/gui/qt/components/sout/sout_widgets.cpp:243
-#: modules/gui/qt/components/sout/sout_widgets.cpp:284
-#: modules/gui/qt/components/sout/sout_widgets.cpp:330
-#: modules/gui/qt/components/sout/sout_widgets.cpp:427 modules/lua/vlc.c:67
+#: modules/gui/qt/components/sout/sout_widgets.cpp:240
+#: modules/gui/qt/components/sout/sout_widgets.cpp:295
+#: modules/gui/qt/components/sout/sout_widgets.cpp:336
+#: modules/gui/qt/components/sout/sout_widgets.cpp:382
+#: modules/gui/qt/components/sout/sout_widgets.cpp:479 modules/lua/vlc.c:67
 #: modules/stream_out/rtp.c:114
 #: share/lua/http/dialogs/stream_config_window.html:32
 #: share/lua/http/dialogs/stream_window.html:91
@@ -18154,7 +17725,7 @@ msgstr "ഇന്റര്‍നെറ്റ്"
 #: modules/gui/macosx/VLCSimplePrefsController.m:241
 #: modules/gui/qt/components/simple_preferences.cpp:248
 #: modules/gui/qt/components/simple_preferences.cpp:738
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:381
 msgid "Interface Settings"
 msgstr "പൊതുപ്രതല ക്രമീകരണങ്ങള്‍"
 
@@ -18172,7 +17743,7 @@ msgstr "വീഡിയോ ക്രമീകരണങ്ങള്‍"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:247
 #: modules/gui/qt/components/simple_preferences.cpp:254
-#: modules/gui/qt/components/simple_preferences.cpp:894
+#: modules/gui/qt/components/simple_preferences.cpp:901
 msgid "Subtitle & On Screen Display Settings"
 msgstr "ഉപശീര്‍ഷകം & ഓണ്‍സ്ക്രീന്‍ പ്രദര്‍ശന ക്രമീകരണങ്ങള്‍"
 
@@ -18636,7 +18207,7 @@ msgid "Subtitle duration factor:"
 msgstr "ഉപശീര്‍ഷക കാലയളവ് ഘടകം:"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:68
-#: modules/gui/qt/components/extended_panels.cpp:1590
+#: modules/gui/qt/components/extended_panels.cpp:1588
 msgid ""
 "Extend subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18645,7 +18216,7 @@ msgstr ""
 "പ്രവര്‍ത്തനരഹിതമാക്കാന്‍ 0 ക്രമീകരിക്കുക."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:72
-#: modules/gui/qt/components/extended_panels.cpp:1595
+#: modules/gui/qt/components/extended_panels.cpp:1593
 msgid ""
 "Multiply subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18654,7 +18225,7 @@ msgstr ""
 "പ്രവര്‍ത്തനരഹിതമാക്കാന്‍ 0 ക്രമീകരിക്കുക."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:76
-#: modules/gui/qt/components/extended_panels.cpp:1600
+#: modules/gui/qt/components/extended_panels.cpp:1598
 msgid ""
 "Recalculate subtitle duration according\n"
 "to their content and this value.\n"
@@ -19503,29 +19074,29 @@ msgstr "തുറക്കുക: %s"
 msgid "Find: %s"
 msgstr "കണ്ടെത്തുക: %s"
 
-#: modules/gui/qt/components/controller.cpp:352
+#: modules/gui/qt/components/controller.cpp:347
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt/components/controller.cpp:457
+#: modules/gui/qt/components/controller.cpp:451
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr ""
 "എല്ലാം ലൂപ്പ് ചെയ്യുക, ഒന്നിനെ ലൂപ്പ് ചെയ്യുക കൂടാതെ ലൂപ്പ് ചെയ്യണ്ട എന്നതിന് ഇടയ്ക്കുള്ള മാറ്റുക എന്നത് "
 "അമര്‍ത്തുക"
 
-#: modules/gui/qt/components/controller.cpp:558
+#: modules/gui/qt/components/controller.cpp:555
 msgid "Previous Chapter/Title"
 msgstr "മുന്‍ അധ്യായം/ശീര്‍ഷകം"
 
-#: modules/gui/qt/components/controller.cpp:564
+#: modules/gui/qt/components/controller.cpp:561
 msgid "Next Chapter/Title"
 msgstr "അടുത്ത അധ്യായം/ശീര്‍ഷകം"
 
-#: modules/gui/qt/components/controller.cpp:613
+#: modules/gui/qt/components/controller.cpp:605
 msgid "Teletext Activation"
 msgstr "ടെലിപാഠ സജീവമാക്കല്‍"
 
-#: modules/gui/qt/components/controller.cpp:629
+#: modules/gui/qt/components/controller.cpp:619
 msgid "Toggle Transparency"
 msgstr "സുതാര്യത തമ്മിൽ മാറ്റുക "
 
@@ -19687,7 +19258,7 @@ msgstr "Aയെ B ലൂപ്പിലേയ്ക്ക് തടയുക"
 msgid "Aspect Ratio"
 msgstr "ആസ്പെക്ട് റേഷ്യോ"
 
-#: modules/gui/qt/components/epg/EPGWidget.cpp:65
+#: modules/gui/qt/components/epg/EPGWidget.cpp:66
 msgid "No EPG Data Available"
 msgstr "ഇപിജി ഡാറ്റ ലഭ്യമല്ല"
 
@@ -19847,7 +19418,7 @@ msgstr "(ത്വരിതപ്പെടുത്തിയിരിക്ക�
 msgid "(Delayed)"
 msgstr "(വൈകിപ്പിച്ചിരിക്കുന്നു)"
 
-#: modules/gui/qt/components/extended_panels.cpp:1507
+#: modules/gui/qt/components/extended_panels.cpp:1505
 msgid "Force update of this dialog's values"
 msgstr "ഈ ഡയലോഗുകളുടെ മൂല്യങ്ങളുടെ നിര്‍ബന്ധിത കാലികമാക്കല്‍"
 
@@ -19944,7 +19515,7 @@ msgstr "അവസാന 60 സെക്കന്റുകള്‍"
 msgid "Overall"
 msgstr "ആകെ"
 
-#: modules/gui/qt/components/interface_widgets.cpp:683
+#: modules/gui/qt/components/interface_widgets.cpp:658
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
@@ -19952,45 +19523,45 @@ msgstr ""
 "നിലവിലെ പ്ലേബാക്ക് വേഗം:%1\n"
 "ക്രമപ്പെടുത്തുന്നതിന് അമര്‍ത്തുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:756
+#: modules/gui/qt/components/interface_widgets.cpp:730
 msgid "Revert to normal play speed"
 msgstr "സാധാരണ പ്ലേ വേഗതയിലേയ്ക്ക് തിരിച്ചാക്കുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:863
+#: modules/gui/qt/components/interface_widgets.cpp:827
 msgid "Download cover art"
 msgstr "കവര്‍ ആര്‍ട്ട് ഡൌണ്‍ലോഡ് ചെയ്യുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:867
+#: modules/gui/qt/components/interface_widgets.cpp:831
 msgid "Add cover art from file"
 msgstr "ഫയലില്‍ നിന്നും കവര്‍ ആര്‍ട്ട് ചേര്‍ക്കുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:933
+#: modules/gui/qt/components/interface_widgets.cpp:897
 msgid "Choose Cover Art"
 msgstr "കവര്‍ ആര്‍ട്ട് തിരഞ്ഞെടുക്കുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:934
+#: modules/gui/qt/components/interface_widgets.cpp:898
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "ചിത്ര ഫയലുകള്‍  (*.gif *.jpg *.jpeg *.png)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:961
+#: modules/gui/qt/components/interface_widgets.cpp:925
 #: modules/gui/qt/dialogs/toolbar.cpp:573
 msgid "Elapsed time"
 msgstr "കഴിഞ്ഞ സമയം"
 
-#: modules/gui/qt/components/interface_widgets.cpp:965
+#: modules/gui/qt/components/interface_widgets.cpp:929
 #: modules/gui/qt/dialogs/toolbar.cpp:577
 msgid "Total/Remaining time"
 msgstr "മൊത്തം/അവശേഷിക്കുന്ന സമയം"
 
-#: modules/gui/qt/components/interface_widgets.cpp:967
+#: modules/gui/qt/components/interface_widgets.cpp:931
 msgid "Click to toggle between total and remaining time"
 msgstr "ആകെയുള്ളതും കൂടാതെ ബാക്കിയുള്ളതുമായ സമയത്തിനിടയ്ക്ക് ടോഗ്ഗിള്‍ അമര്‍ത്തുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:973
+#: modules/gui/qt/components/interface_widgets.cpp:937
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "കഴിഞ്ഞതും കൂടാതെ ബാക്കിയുള്ളതുമായ സമയത്തിനിടയ്ക്ക് ടോഗ്ഗിള് അമര്‍ത്തുക"
 
-#: modules/gui/qt/components/interface_widgets.cpp:975
+#: modules/gui/qt/components/interface_widgets.cpp:939
 msgid "Double click to jump to a chosen time position"
 msgstr "തിരഞ്ഞെടുത്ത സമയ സ്ഥാനത്തേയ്ക്ക് കുതിക്കുന്നതിന് രണ്ട്പ്രാവശ്യം അമര്‍ത്തുക"
 
@@ -20195,19 +19766,19 @@ msgstr ""
 "പ്ലേലിസ്റ്റ് നിലവില്‍ ശൂന്യമാണ്.\n"
 "ഒരു ഫയല്‍ ഇവിടെ നിക്ഷേപിക്കുകയോ അല്ലെങ്കില്‍ ഒരു മീഡിയാ ഉറവിടം ഇടതുവശത്ത് നിന്നും തിരഞ്ഞെടുക്കുക."
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:143
+#: modules/gui/qt/components/playlist/standardpanel.hpp:144
 msgid "Icons"
 msgstr "ഐക്കണുകള്‍"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:144
+#: modules/gui/qt/components/playlist/standardpanel.hpp:145
 msgid "Detailed List"
 msgstr "വിശദമായ ലിസ്റ്റ്"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:145
+#: modules/gui/qt/components/playlist/standardpanel.hpp:146
 msgid "List"
 msgstr "ലിസ്റ്റ്"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:146
+#: modules/gui/qt/components/playlist/standardpanel.hpp:147
 msgid "PictureFlow"
 msgstr "പിക്ച്ചര്‍ഫ്ലോ"
 
@@ -20244,7 +19815,6 @@ msgid "Application level hotkey"
 msgstr "ആപ്ലിക്കേഷന്‍ തലത്തിലുള്ള ഹോട്ട്കീ"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1148
-#: modules/gui/qt/components/preferences_widgets.cpp:1405
 msgid "Global"
 msgstr "ആഗോളം"
 
@@ -20261,33 +19831,37 @@ msgstr ""
 "മാറ്റുന്നതിന് രണ്ട്പ്രാവശ്യം അമര്‍ത്തുക.\n"
 "നീക്കം ചെയ്യുന്നതിന് കീ ഇല്ലാതാക്കുക"
 
+#: modules/gui/qt/components/preferences_widgets.cpp:1405
+msgid "Global Hotkey change"
+msgstr ""
+
 #: modules/gui/qt/components/preferences_widgets.cpp:1406
 msgid "Hotkey change"
 msgstr "ഹോട്ട്കീ മാറ്റം"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1410
-msgid "Press the new key or combination for "
-msgstr "പുതിയ കീ അല്ലെങ്കില്‍ സംയോജനം അമര്‍ത്തുക ഇതിന്"
+msgid "Press the new key or combination for <b>%1</b>"
+msgstr ""
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1419
 msgid "Assign"
 msgstr "അസൈന്‍"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1454
-msgid "Warning: this key or combination is already assigned to "
-msgstr "മുന്നറിയിപ്പ്: ഈ കീ അല്ലെങ്കില്‍ സംയോജനം ഇതിനകം നിയോഗിക്കപ്പെട്ടിരിക്കുന്നത്"
+#: modules/gui/qt/components/preferences_widgets.cpp:1455
+msgid "Warning: this key or combination is already assigned to \"<b>%1</b>\""
+msgstr ""
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1466
+#: modules/gui/qt/components/preferences_widgets.cpp:1467
 msgid "Warning: <b>%1</b> is already an application menu shortcut"
 msgstr "മുന്നറിയിപ്പ്: <b>%1</b> എന്നത് ഇതിനകം ഒരു ആപ്ലിക്കേഷന്‍ മെനു കുറുക്കുവഴിയാണ്"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1489
-msgid "Key or combination: "
-msgstr "കീ അല്ലെങ്കില്‍ കോമ്പിനേഷന്‍"
+#: modules/gui/qt/components/preferences_widgets.cpp:1490
+msgid "Key or combination: <b>%1</b>"
+msgstr ""
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1498
-msgid "Key: "
-msgstr "കീ:"
+msgid "Key: <b>%1</b>"
+msgstr ""
 
 #: modules/gui/qt/components/simple_preferences.cpp:256
 #: modules/gui/qt/components/simple_preferences.cpp:636
@@ -20295,7 +19869,7 @@ msgid "Input & Codecs Settings"
 msgstr "ഇന്‍പുട്ട് & കോഡെക് ക്രമീകരണങ്ങള്‍"
 
 #: modules/gui/qt/components/simple_preferences.cpp:258
-#: modules/gui/qt/components/simple_preferences.cpp:938
+#: modules/gui/qt/components/simple_preferences.cpp:945
 msgid "Configure Hotkeys"
 msgstr "ഹോട്ട്കീകള്‍ കോണ്‍ഫിഗര്‍ ചെയ്യുക"
 
@@ -20341,30 +19915,30 @@ msgstr "വിഎല്‍സി സ്കിന്നുകളുടെ വെ�
 msgid "System's default"
 msgstr "സിസ്റ്റ്ത്തിന്റെ സ്ഥിരസ്ഥിതി"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1344
+#: modules/gui/qt/components/simple_preferences.cpp:1351
 msgid "File associations"
 msgstr "ഫയല്‍ അസോസിയേഷനുകള്‍"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1353
+#: modules/gui/qt/components/simple_preferences.cpp:1360
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "ഓഡിയോ ഫയലുകള്‍"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1354
+#: modules/gui/qt/components/simple_preferences.cpp:1361
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "വീഡിയോ ഫയലുകള്‍"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1355
+#: modules/gui/qt/components/simple_preferences.cpp:1362
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "പ്ലേലിസ്റ്റ് ഫയലുകള്‍"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1420
+#: modules/gui/qt/components/simple_preferences.cpp:1427
 msgid "&Apply"
 msgstr "പ്രയോഗിക്കുക(_A)"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1421
+#: modules/gui/qt/components/simple_preferences.cpp:1428
 #: modules/gui/qt/dialogs/convert.cpp:137
 #: modules/gui/qt/dialogs/gototime.cpp:48 modules/gui/qt/dialogs/open.cpp:109
 #: modules/gui/qt/dialogs/openurl.cpp:59
@@ -20451,51 +20025,67 @@ msgid ""
 msgstr ""
 "കണ്ടെയ്നറുകള്‍  (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:185
+#: modules/gui/qt/components/sout/sout_widgets.cpp:184
+msgid "This module outputs the stream using the RIST protocol (TR06)."
+msgstr ""
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:186
+msgid "Destination Address"
+msgstr ""
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:191
+msgid "Destination Port"
+msgstr ""
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:201
+msgid "Stream Name"
+msgstr ""
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:237
 msgid "This module outputs the transcoded stream to a network via HTTP."
 msgstr ""
 "ഈ മോഡ്യൂള്‍ ഒരു ട്രാന്‍സ്കോഡഡ് സ്ട്രീമിനെ HTTPയിലൂടെ ഒരു നെറ്റ്വര്‍ക്കിലേയ്ക്ക് ഔട്ട്പുട്ട് ചെയ്യുന്നു."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:187
-#: modules/gui/qt/components/sout/sout_widgets.cpp:283
+#: modules/gui/qt/components/sout/sout_widgets.cpp:239
+#: modules/gui/qt/components/sout/sout_widgets.cpp:335
 msgid "Path"
 msgstr "പാത"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:239
+#: modules/gui/qt/components/sout/sout_widgets.cpp:291
 msgid ""
 "This module outputs the transcoded stream to a network via the mms protocol."
 msgstr ""
 "ഈ മോഡ്യൂള്‍ ഒരു ട്രാന്‍സ്കോഡഡ് സ്ട്രീമിനെ എംഎംഎസ് പ്രോട്ടോകോളിലൂടെ ഒരു നെറ്റ്വര്‍ക്കിലേയ്ക്ക് ഔട്ട്പുട്ട് "
 "ചെയ്യുന്നു."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:281
+#: modules/gui/qt/components/sout/sout_widgets.cpp:333
 msgid "This module outputs the transcoded stream to a network via RTSP."
 msgstr ""
 "ഈ മോഡ്യൂള്‍ ഒരു ട്രാന്‍സ്കോഡഡ് സ്ട്രീമിനെ RTSPയിലൂടെ ഒരു നെറ്റ്വര്‍ക്കിലേയ്ക്ക് ഔട്ട്പുട്ട് ചെയ്യുന്നു."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:327
+#: modules/gui/qt/components/sout/sout_widgets.cpp:379
 msgid "This module outputs the transcoded stream to a network via UDP."
 msgstr ""
 "ഈ മോഡ്യൂള്‍ ഒരു ട്രാന്‍സ്കോഡഡ് സ്ട്രീമിനെ UDPയിലൂടെ ഒരു നെറ്റ്വര്‍ക്കിലേയ്ക്ക് ഔട്ട്പുട്ട് ചെയ്യുന്നു."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:369
+#: modules/gui/qt/components/sout/sout_widgets.cpp:421
 msgid "This module outputs the transcoded stream to a network via RTP."
 msgstr ""
 "ഈ മോഡ്യൂള്‍ ഒരു ട്രാന്‍സ്കോഡഡ് സ്ട്രീമിനെ RTPയിലൂടെ ഒരു നെറ്റ്വര്‍ക്കിലേയ്ക്ക് ഔട്ട്പുട്ട് ചെയ്യുന്നു."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:376
+#: modules/gui/qt/components/sout/sout_widgets.cpp:428
 msgid "Base port"
 msgstr "അടിസ്ഥാന പോര്‍ട്ട്"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:424
+#: modules/gui/qt/components/sout/sout_widgets.cpp:476
 msgid "This module outputs the transcoded stream to an Icecast server."
 msgstr "ട്രാന്‍സ്കോഡ് ചെയ്ത സ്ട്രീമിനെ ഒരു ഐസ്കാസ്റ്റ് സെര്‍വറിലേയ്ക്ക് ഈ മോഡ്യൂള്‍ ഔട്ട്പുട്ട് ചെയ്യുന്നു."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:443
+#: modules/gui/qt/components/sout/sout_widgets.cpp:495
 msgid "Mount Point"
 msgstr "മൌണ്ട് പോയിന്റ്"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:444
+#: modules/gui/qt/components/sout/sout_widgets.cpp:496
 msgid "Login:pass"
 msgstr "ലോഗിന്‍:പാസ്സ്"
 
@@ -20893,18 +20483,18 @@ msgstr "തിരയുക"
 msgid "More information..."
 msgstr "കൂടുതല്‍ വിവരങ്ങള്‍..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:266
+#: modules/gui/qt/dialogs/plugins.cpp:265
 msgid "Reload extensions"
 msgstr "റീലോഡ് അനുബന്ധങ്ങള്‍"
 
-#: modules/gui/qt/dialogs/plugins.cpp:385
+#: modules/gui/qt/dialogs/plugins.cpp:384
 msgid ""
 "Skins customize player's appearance. You can activate them through "
 "preferences."
 msgstr ""
 "സ്കിന്നുകള്‍ പ്ലെയറിന്റെ ദൃശ്യപരത ഇച്ഛാനുസൃതമാക്കുന്നു. നിങ്ങള്‍ക്ക് അവയെ മുന്‍ഗണനകള്‍ വഴി സജീവമാക്കുന്നു."
 
-#: modules/gui/qt/dialogs/plugins.cpp:389
+#: modules/gui/qt/dialogs/plugins.cpp:388
 msgid ""
 "Playlist parsers add new capabilities to read internet streams or extract "
 "meta data."
@@ -20912,7 +20502,7 @@ msgstr ""
 "ഇന്റര്‍നെറ്റ് സ്ട്രീമുകള്‍ വായിക്കുന്നതിന് അല്ലെങ്കില്‍ മെറ്റാഡാറ്റ വേര്‍തിരിക്കുന്നതിന് പ്ലേലിസ്റ്റ് "
 "പാഴ്സറുകള്‍ പുതിയ ക്ഷമതകള്‍ ചേര്‍ത്തിരിക്കുന്നു."
 
-#: modules/gui/qt/dialogs/plugins.cpp:393
+#: modules/gui/qt/dialogs/plugins.cpp:392
 msgid ""
 "Service discoveries adds new sources to your playlist such as web radios, "
 "video websites, ..."
@@ -20920,17 +20510,17 @@ msgstr ""
 "വെളിപ്പെടുത്തല്‍ സേവനങ്ങള്‍ പുതിയ ഉരവിടങ്ങള്‍ നിങ്ങളുടെ പ്ലേലിസ്റ്റിലേയ്ക്ക് ചേര്‍ത്തരിക്കുന്നു, "
 "ഉദാഹരണത്തിന് വെബ്ബ് റേഡിയോകള്‍, വീഡിയോ വെബ്ബ്സൈറ്റുകള്‍, ..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:400
+#: modules/gui/qt/dialogs/plugins.cpp:399
 msgid "Retrieves extra info and art for playlist items"
 msgstr "അധിക വിവരങ്ങളും ആർറ്റ് ഫോർ പ്ലേലിസ്റ്റ് ഐറ്റമൈസുംവീണ്ടെടുക്കുക"
 
-#: modules/gui/qt/dialogs/plugins.cpp:403
+#: modules/gui/qt/dialogs/plugins.cpp:402
 msgid ""
 "Extensions brings various enhancements. Check descriptions for more details"
 msgstr ""
 "വിപുലീകരണങ്ങള്‍ വിവിധ ഉപോപാധികള്‍ കൊണ്ടുവരുന്നു. കൂടുതല്‍ വിവരങ്ങള്‍ക്ക് വിവരണങ്ങള്‍ പരിശോധിക്കുക"
 
-#: modules/gui/qt/dialogs/plugins.cpp:424
+#: modules/gui/qt/dialogs/plugins.cpp:423
 msgid "Only installed"
 msgstr "സ്ഥാപിക്കപ്പെടുക മാത്രം ചെയ്തു"
 
@@ -21061,7 +20651,7 @@ msgstr ""
 "താഴെപ്പറയുന്ന ക്രമീകരണങ്ങള്‍ നിങ്ങള്‍ മാറ്റുമ്പോഴാണ് ഇത് സ്വയമേവ ഉത്പാദിപ്പിക്കപ്പെടുന്നത്,\n"
 "പക്ഷെ നിങ്ങള്‍ക്കിത് കരകൃതമായി മാറ്റാവുന്നതാണ്."
 
-#: modules/gui/qt/dialogs/sout.cpp:89
+#: modules/gui/qt/dialogs/sout.cpp:87
 msgid "Back"
 msgstr "പുറകോട്ട്"
 
@@ -21311,19 +20901,19 @@ msgstr "ശൂന്യമാണ്"
 msgid "Deactivate"
 msgstr "നിർജ്ജീവമാക്കുക"
 
-#: modules/gui/qt/main_interface.cpp:378
+#: modules/gui/qt/main_interface.cpp:374
 msgid "Do you want to restart the playback where left off?"
 msgstr "പ്ലേബാക്ക് നിര്‍ത്തിയ ഇടത്ത് നിന്ന് പുനരാരംഭിക്കാന്‍ നിങ്ങള്‍ ആഗ്രഹിക്കുന്നുവോ?"
 
-#: modules/gui/qt/main_interface.cpp:384
+#: modules/gui/qt/main_interface.cpp:380
 msgid "&Continue"
 msgstr "തുടരുക(_C)"
 
-#: modules/gui/qt/main_interface.cpp:1454
+#: modules/gui/qt/main_interface.cpp:1447
 msgid "Control menu for the player"
 msgstr "പ്ലെയറിന് വേണ്ടിയുള്ള നിയന്ത്രണ മെനു"
 
-#: modules/gui/qt/main_interface.cpp:1498
+#: modules/gui/qt/main_interface.cpp:1491
 msgid "Paused"
 msgstr "(പോസ്ഡ്)"
 
@@ -22071,15 +21661,15 @@ msgstr "ഇമേജ് ഗാമ (0-10)"
 msgid "Set the image gamma, between 0.01 and 10. Defaults to 1."
 msgstr "ചിത്ര ഗാമ 0.01 നും 10 നും ഇടയ്ക്ക് ക്രമീകരിക്കുക. സ്വമേധയാലുള്ളത് 1."
 
-#: modules/hw/d3d11/d3d11_filters.c:681
+#: modules/hw/d3d11/d3d11_filters.c:683
 msgid "AMD VQ Enhancer"
 msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:687
+#: modules/hw/d3d11/d3d11_filters.c:689
 msgid "AMD Frame Rate Doubler"
 msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:690
+#: modules/hw/d3d11/d3d11_filters.c:692
 msgid "Show indicator"
 msgstr ""
 
@@ -23432,11 +23022,11 @@ msgstr "XSPF പ്ലേലിസ്റ്റ് എക്സ്പോര്‍
 msgid "HTML playlist export"
 msgstr "HTML  പ്ലേലിസ്റ്റ് എക്സ്പോര്‍ട്ട് ചെയ്യുക"
 
-#: modules/misc/rtsp.c:63
+#: modules/misc/rtsp.c:65
 msgid "Maximum number of connections"
 msgstr "കണക്ഷനുകളുടെ പരമാവധി എണ്ണം"
 
-#: modules/misc/rtsp.c:64
+#: modules/misc/rtsp.c:66
 msgid ""
 "This limits the maximum number of clients that can connect to the RTSP VOD. "
 "0 means no limit."
@@ -23444,15 +23034,15 @@ msgstr ""
 "RTSP VOD കണക്ട് ചെയ്യാവുന്ന പരമാവധി ഇടപാടുകാരുടെ എണ്ണം ഇത് പരിമിതപ്പെടുത്തുന്നു. 0 എന്നാല്‍ "
 "പരിധിയില്ല എന്നര്‍ത്ഥം."
 
-#: modules/misc/rtsp.c:67
+#: modules/misc/rtsp.c:69
 msgid "MUX for RAW RTSP transport"
 msgstr "RAW RTSP ട്രാന്‍സ്പോര്‍ട്ടിനുള്ള MUX"
 
-#: modules/misc/rtsp.c:69
+#: modules/misc/rtsp.c:71
 msgid "Sets the timeout option in the RTSP session string"
 msgstr "RTSP സെഷന്‍ സ്ട്രീങ്ങിലുള്ള ടൈംഔട്ട് ക്രമീകരിക്കുക"
 
-#: modules/misc/rtsp.c:71
+#: modules/misc/rtsp.c:73
 msgid ""
 "Defines what timeout option to add to the RTSP session ID string. Setting it "
 "to a negative number removes the timeout option entirely. This is needed by "
@@ -23464,11 +23054,11 @@ msgstr ""
 "അവയാല്‍ ആശയക്കുഴപ്പത്തിലാക്കപ്പെട്ട ചില  IPTV STBകള്‍ (HansunTechനാല്‍ നിര്‍മ്മിക്കപ്പെട്ടത്) "
 "ഇതിന് ആവശ്യമാണ്. സ്വമേധയാലുള്ളത് 5."
 
-#: modules/misc/rtsp.c:77 modules/stream_out/rtp.c:244
+#: modules/misc/rtsp.c:79 modules/stream_out/rtp.c:244
 msgid "RTSP VoD"
 msgstr "ആര്‍ടിഎസ്പി വിഒഡി"
 
-#: modules/misc/rtsp.c:78
+#: modules/misc/rtsp.c:80
 msgid "Legacy RTSP VoD server"
 msgstr "പാരമ്പര്യ RTSP VoD സെര്‍വര്‍"
 
@@ -23501,27 +23091,27 @@ msgstr ""
 msgid "Accept certificate temporarily"
 msgstr "സര്‍ട്ടിഫിക്കറ്റ് താല്കാലികമായി അംഗീകരിക്കുക"
 
-#: modules/misc/stats.c:215 modules/stream_out/stats.c:51
+#: modules/misc/stats.c:221 modules/stream_out/stats.c:51
 msgid "Stats"
 msgstr "സ്റ്റാറ്റ്സ്"
 
-#: modules/misc/stats.c:217
+#: modules/misc/stats.c:223
 msgid "Stats encoder function"
 msgstr "എന്‍കോഡര്‍ പ്രവൃത്തിയുടെ അവസ്ഥ"
 
-#: modules/misc/stats.c:223 modules/misc/stats.c:229 modules/misc/stats.c:235
+#: modules/misc/stats.c:229 modules/misc/stats.c:235 modules/misc/stats.c:241
 msgid "Stats decoder"
 msgstr "ഡീകോഡര്‍ അവസ്ഥ"
 
-#: modules/misc/stats.c:224 modules/misc/stats.c:230 modules/misc/stats.c:236
+#: modules/misc/stats.c:230 modules/misc/stats.c:236 modules/misc/stats.c:242
 msgid "Stats decoder function"
 msgstr "ഡീകോഡര്‍ പ്രവൃത്തിയുടെ അവസ്ഥ"
 
-#: modules/misc/stats.c:241
+#: modules/misc/stats.c:247
 msgid "Stats demux"
 msgstr "സ്റ്റാറ്റ്സ് ഡീമക്സ്"
 
-#: modules/misc/stats.c:242
+#: modules/misc/stats.c:248
 msgid "Stats demux function"
 msgstr "ഡീമക്സ് പ്രവൃത്തിയുടെ അവസ്ഥ"
 
@@ -23579,7 +23169,7 @@ msgstr ""
 msgid "ASF muxer"
 msgstr "ASF മക്സര്‍"
 
-#: modules/mux/asf.c:563
+#: modules/mux/asf.c:564
 msgid "Unknown Video"
 msgstr "അറിയപ്പെടാത്ത വീഡിയോ"
 
@@ -23943,7 +23533,7 @@ msgstr "A/52 ഓഡിയോ പാക്കറ്റൈസര്‍"
 msgid "avparser packetizer"
 msgstr "എവിപാര്‍സര്‍ പാക്കറ്റൈസര്‍"
 
-#: modules/packetizer/av1.c:585
+#: modules/packetizer/av1.c:586
 msgid "AV1 video packetizer"
 msgstr "AV1 വീഡിയോ പാക്കറ്റൈസർ"
 
@@ -23953,7 +23543,7 @@ msgstr "പാക്കറ്റൈസര്‍ പകര്‍ത്തുക"
 
 #: modules/packetizer/dirac.c:87
 msgid "Dirac packetizer"
-msgstr "ഡിറക് പാക്കറ്റൈസര്‍"
+msgstr ""
 
 #: modules/packetizer/dts.c:47
 msgid "DTS audio packetizer"
@@ -24025,7 +23615,7 @@ msgstr "അവാഹി റെൻഡറർ ഡിസ്കവറി"
 
 #: modules/services_discovery/bonjour.m:45
 #: modules/services_discovery/bonjour.m:63
-#: modules/services_discovery/bonjour.m:455
+#: modules/services_discovery/bonjour.m:461
 msgid "Bonjour Network Discovery"
 msgstr "ബോൺജോർ ശ്രിംഘല കണ്ടെത്തൽ"
 
@@ -24057,7 +23647,7 @@ msgstr "എന്റെ ചിത്രങ്ങള്‍"
 
 #: modules/services_discovery/microdns.c:44
 #: modules/services_discovery/microdns.c:57
-#: modules/services_discovery/microdns.c:646
+#: modules/services_discovery/microdns.c:656
 msgid "mDNS Network Discovery"
 msgstr "mDNS ശ്രിംഘല കണ്ടെത്തൽ"
 
@@ -24217,13 +23807,13 @@ msgstr "എച്ച്ഡി ഡിവിഡി"
 msgid "Unknown type"
 msgstr "അറിയാത്ത തരം"
 
-#: modules/services_discovery/upnp.cpp:76
+#: modules/services_discovery/upnp.cpp:81
 msgid "Custom SAT>IP channel list URL"
 msgstr "ഇഷ്‌ടാനുസൃത SAT>IP ചാനൽ പട്ടിക URL"
 
-#: modules/services_discovery/upnp.cpp:111
-#: modules/services_discovery/upnp.cpp:118
-#: modules/services_discovery/upnp.cpp:253
+#: modules/services_discovery/upnp.cpp:116
+#: modules/services_discovery/upnp.cpp:123
+#: modules/services_discovery/upnp.cpp:258
 msgid "Universal Plug'n'Play"
 msgstr "ആഗോള പ്ലഗ്ഗിന്‍ പ്ലേ"
 
@@ -25034,31 +24624,31 @@ msgstr "HTTP ഡൈനാമിക് സ്ട്രീമിംഗ്"
 msgid "Zlib decompression filter"
 msgstr "Zlib ഡീകംപ്രഷൻ അരിപ്പ"
 
-#: modules/stream_filter/prefetch.c:532
+#: modules/stream_filter/prefetch.c:530
 msgid "Stream prefetch filter"
 msgstr "സ്ട്രീം പ്രീഫെച്ച് ഫിൽട്ടർ"
 
-#: modules/stream_filter/prefetch.c:535
+#: modules/stream_filter/prefetch.c:533
 msgid "Buffer size"
 msgstr "ബഫറിന്റെ വലിപ്പം "
 
-#: modules/stream_filter/prefetch.c:536
+#: modules/stream_filter/prefetch.c:534
 msgid "Prefetch buffer size (KiB)"
 msgstr "പ്രീഫെച്ച് ബഫർ വലുപ്പം (KiB)"
 
-#: modules/stream_filter/prefetch.c:538
+#: modules/stream_filter/prefetch.c:536
 msgid "Read size"
 msgstr "വലുപ്പം വായിക്കുക"
 
-#: modules/stream_filter/prefetch.c:539
+#: modules/stream_filter/prefetch.c:537
 msgid "Prefetch background read size (bytes)"
 msgstr "പ്രീഫെച്ച് പശ്ചാത്തല വായനാ വലുപ്പം (ബൈറ്റുകൾ)"
 
-#: modules/stream_filter/prefetch.c:541
+#: modules/stream_filter/prefetch.c:539
 msgid "Seek threshold"
 msgstr "ഉമ്മരപ്പടി അന്വേഷിക്കുക"
 
-#: modules/stream_filter/prefetch.c:542
+#: modules/stream_filter/prefetch.c:540
 msgid "Prefetch forward seek threshold (bytes)"
 msgstr "Prefetch മുന്നോട്ട് കൊണ്ടുപോകുക പരിധി (ബൈറ്റുകൾ)"
 
@@ -25212,7 +24802,7 @@ msgstr ""
 "സജ്ജമാക്കുന്നു."
 
 #: modules/stream_out/chromecast/cast.cpp:192
-#: modules/stream_out/chromecast/cast.cpp:1198
+#: modules/stream_out/chromecast/cast.cpp:1219
 msgid "Performance warning"
 msgstr "പ്രകടന മുന്നറിയിപ്പ്"
 
@@ -25272,11 +24862,11 @@ msgstr "ക്രോംകാസ്റ്റ് "
 msgid "Chromecast stream output"
 msgstr "ക്രോംകാസ്റ്റ് സ്ട്രീം ഔട്ട്പുട്ട് "
 
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "Ok, Don't warn me again"
 msgstr "ശരി, എനിക്ക് വീണ്ടും മുന്നറിയിപ്പ് നൽകരുത്"
 
-#: modules/stream_out/chromecast/cast.cpp:1199
+#: modules/stream_out/chromecast/cast.cpp:1220
 msgid ""
 "Casting this video requires conversion. This conversion can use all the "
 "available power and could quickly drain your battery."
@@ -26237,11 +25827,11 @@ msgstr "Mac OS X- നായുള്ള സംഭാഷണ സമന്വയം
 msgid "Speech synthesis for Windows"
 msgstr "വിൻഡോസിനായുള്ള സംഭാഷണ സമന്വയം"
 
-#: modules/text_renderer/svg.c:70
+#: modules/text_renderer/svg.c:72
 msgid "SVG template file"
 msgstr "എസ്വിജി ടെംപ്ലേറ്റ് ഫയല്‍"
 
-#: modules/text_renderer/svg.c:71
+#: modules/text_renderer/svg.c:73
 msgid ""
 "Location of a file holding a SVG template for automatic string conversion"
 msgstr ""
@@ -26945,11 +26535,11 @@ msgstr "ഫ്രീസിംഗ് ഇന്ററാക്ടീവ് വീ�
 msgid "Freeze"
 msgstr "ഫ്രീസ്"
 
-#: modules/video_filter/gaussianblur.c:50
+#: modules/video_filter/gaussianblur.c:51
 msgid "Gaussian's std deviation"
 msgstr "ഗൗസിയന്റെ സ്റ്റാന്‍ഡേര്‍ഡ് ഡീവിയേഷന്‍"
 
-#: modules/video_filter/gaussianblur.c:52
+#: modules/video_filter/gaussianblur.c:53
 msgid ""
 "Gaussian's standard deviation. The blurring will take into account pixels up "
 "to 3*sigma away in any direction."
@@ -26957,15 +26547,15 @@ msgstr ""
 "Gaussian's  സ്റ്റാന്‍‌ഡേര്‍ഡ് വ്യതിയാനം. അവ്യക്തമാക്കല്‍ അക്കൌണ്ട് പിക്സലുകളെ  3*സിഗ്മ ദൂരം വരെ "
 "ഏത് വശത്തേയ്ക്കും കൊണ്ടുപോകുന്നു."
 
-#: modules/video_filter/gaussianblur.c:55
+#: modules/video_filter/gaussianblur.c:56
 msgid "Add a blurring effect"
 msgstr "ബ്ലറിംഗ് പ്രഭാവം ചേര്‍ക്കുന്നു"
 
-#: modules/video_filter/gaussianblur.c:60
+#: modules/video_filter/gaussianblur.c:61
 msgid "Gaussian blur video filter"
 msgstr "ഗൗസിയന്‍ ബ്ലര്‍ വീഡിയോ ഫില്‍റ്റര്‍"
 
-#: modules/video_filter/gaussianblur.c:61
+#: modules/video_filter/gaussianblur.c:62
 msgid "Gaussian Blur"
 msgstr "ഗൗസിയന്‍ ബ്ലര്‍"
 

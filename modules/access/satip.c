@@ -393,7 +393,7 @@ static void satip_teardown(void *data) {
                     return;
                 }
 
-                ret = send(sys->tcp_sock, msg + sent, len, MSG_NOSIGNAL);
+                ret = send(sys->tcp_sock, msg + sent, len - sent, MSG_NOSIGNAL);
                 if (ret < 0) {
                     msg_Err(access, "Failed to send RTSP teardown: %d\n", ret);
                     free(msg);
@@ -472,7 +472,7 @@ static void *satip_thread(void *data) {
             block_t *block = input_blocks[i];
 
             len = msgs[i].msg_len;
-            if (check_rtp_seq(access, block))
+            if (len < RTP_HEADER_SIZE || check_rtp_seq(access, block))
                 continue;
 
             block->p_buffer += RTP_HEADER_SIZE;

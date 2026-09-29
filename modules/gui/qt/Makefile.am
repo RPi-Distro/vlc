@@ -22,18 +22,17 @@ libqt_plugin_la_LDFLAGS = $(AM_LDFLAGS) -rpath '$(guidir)'
 if HAVE_DARWIN
 libqt_plugin_la_LDFLAGS += -Wl,-framework,Cocoa
 endif
+if HAVE_QT_X11
+libqt_plugin_la_CXXFLAGS += -DQT_HAS_X11
+libqt_plugin_la_LIBADD += $(X_LIBS) $(X_PRE_LIBS) -lX11
+endif
 if HAVE_QT5_X11
-libqt_plugin_la_CXXFLAGS += $(QT5_X11_CFLAGS) -DQT5_HAS_X11
-libqt_plugin_la_LIBADD += $(QT5_X11_LIBS) $(X_LIBS) $(X_PRE_LIB) -lX11
+# Qt5 needs Qt5X11Extras for QX11Info
+libqt_plugin_la_CXXFLAGS += $(QT5_X11_CFLAGS)
+libqt_plugin_la_LIBADD += $(QT5_X11_LIBS)
 endif
 if HAVE_XCB
-libqt_plugin_la_CXXFLAGS += -DQT5_HAS_XCB
-endif
-if HAVE_WAYLAND
-libqt_plugin_la_CPPFLAGS += -DQT5_HAS_WAYLAND \
-	-DQPNI_HEADER=\<$(QT_VERSION)/QtGui/qpa/qplatformnativeinterface.h\>
-libqt_plugin_la_CXXFLAGS += $(WAYLAND_CLIENT_CFLAGS)
-libqt_plugin_la_LIBADD += $(WAYLAND_CLIENT_LIBS)
+libqt_plugin_la_CXXFLAGS += -DQT_HAS_XCB
 endif
 if HAVE_WIN32
 libqt_plugin_la_LIBADD += $(LIBCOM) -lcomctl32 -luuid
@@ -47,7 +46,7 @@ libqt_plugin_la_CPPFLAGS += -DQT_GUI_PRIVATE $(QT_GUI_PRIVATE_CFLAGS)
 endif
 
 libqt_plugin_la_SOURCES = \
-	gui/qt/qt.cpp gui/qt/qt.hpp \
+	gui/qt/qt.cpp gui/qt/qt.hpp gui/qt/qt_x11.hpp \
 	gui/qt/menus.cpp gui/qt/menus.hpp \
 	gui/qt/main_interface.cpp gui/qt/main_interface.hpp \
 	gui/qt/dialogs_provider.cpp gui/qt/dialogs_provider.hpp \

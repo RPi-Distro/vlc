@@ -1,7 +1,6 @@
 #!/bin/sh
 
 OPTIONS="
-      --enable-update-check
       --enable-lua
       --enable-faad
       --enable-flac
@@ -9,8 +8,6 @@ OPTIONS="
       --enable-avcodec --enable-merge-ffmpeg
       --enable-mpc
       --enable-libass
-      --enable-schroedinger
-      --enable-realrtsp
       --enable-live555
       --enable-shout
       --enable-goom

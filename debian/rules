@@ -51,6 +51,7 @@ confflags += \
 	--enable-jack \
 	--enable-kate \
 	--enable-libass \
+	--enable-librist \
 	--enable-libxml2 \
 	--enable-lirc \
 	--enable-live555 \

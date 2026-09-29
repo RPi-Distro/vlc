@@ -54,6 +54,8 @@
 # include <xlocale.h>
 #endif
 
+#include "../packetizer/hxxx_nal.h"
+
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
@@ -215,8 +217,8 @@ typedef struct
 static vod_media_t *MediaNew( vod_t *, const char *, input_item_t * );
 static void         MediaDel( vod_t *, vod_media_t * );
 static void         MediaAskDel ( vod_t *, vod_media_t * );
-static int          MediaAddES( vod_t *, vod_media_t *, es_format_t * );
-static void         MediaDelES( vod_t *, vod_media_t *, es_format_t * );
+static int          MediaAddES( vod_t *, vod_media_t *, const es_format_t * );
+static void         MediaDelES( vod_t *, vod_media_t *, const es_format_t * );
 
 static void* CommandThread( void * );
 static void  CommandPush( vod_t *, rtsp_cmd_type_t, vod_media_t *,
@@ -234,7 +236,7 @@ static int RtspCallbackES( httpd_callback_sys_t *, httpd_client_t *,
 
 static char *SDPGenerate( const vod_media_t *, httpd_client_t *cl );
 
-static void sprintf_hexa( char *s, uint8_t *p_data, int i_data )
+static void sprintf_hexa( char *s, const uint8_t *p_data, int i_data )
 {
     static const char hex[16] = "0123456789abcdef";
 
@@ -468,7 +470,7 @@ static void MediaDel( vod_t *p_vod, vod_media_t *p_media )
     free( p_media );
 }
 
-static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
+static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, const es_format_t *p_fmt )
 {
     char *psz_urlc;
 
@@ -515,6 +517,8 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
             p_es->i_channels = p_fmt->audio.i_channels;
             break;
         case VLC_CODEC_MPGA:
+        case VLC_CODEC_MP2:
+        case VLC_CODEC_MP3:
             p_es->i_payload_type = 14;
             p_es->psz_ptname = "MPA";
             break;
@@ -535,68 +539,29 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
             /* FIXME AAAAAAAAAAAARRRRRRRRGGGG copied from stream_out/rtp.c */
             if( p_fmt->i_extra > 0 )
             {
-                uint8_t *p_buffer = p_fmt->p_extra;
-                int     i_buffer = p_fmt->i_extra;
                 char    *p_64_sps = NULL;
                 char    *p_64_pps = NULL;
                 char    hexa[6+1];
 
-                while( i_buffer > 4 )
+                hxxx_iterator_ctx_t it;
+                hxxx_iterator_init( &it, p_fmt->p_extra, p_fmt->i_extra, 0 );
+
+                const uint8_t *p_nal;
+                size_t i_nal;
+                while( hxxx_annexb_iterate_next( &it, &p_nal, &i_nal ) && i_nal > 0 )
                 {
-                    int i_offset    = 0;
-                    int i_size      = 0;
-
-                    while( p_buffer[0] != 0 || p_buffer[1] != 0 ||
-                           p_buffer[2] != 1 )
-                    {
-                        p_buffer++;
-                        i_buffer--;
-                        if( i_buffer == 0 ) break;
-                    }
-
-                    if( i_buffer < 4 || memcmp(p_buffer, "\x00\x00\x01", 3 ) )
-                    {
-                        /* No startcode found.. */
-                        break;
-                    }
-                    p_buffer += 3;
-                    i_buffer -= 3;
-
-                    const int i_nal_type = p_buffer[0]&0x1f;
-
-                    i_size = i_buffer;
-                    for( i_offset = 0; i_offset+2 < i_buffer ; i_offset++)
-                    {
-                        if( !memcmp(p_buffer + i_offset, "\x00\x00\x01", 3 ) )
-                        {
-                            /* we found another startcode */
-                            while( i_offset > 0 && 0 == p_buffer[ i_offset - 1 ] )
-                                i_offset--;
-                            i_size = i_offset;
-                            break;
-                        }
-                    }
-
-                    if( i_size == 0 )
-                    {
-                        /* No-info found in nal */
-                        continue;
-                    }
-
-                    if( i_nal_type == 7 )
+                    const int i_nal_type = p_nal[0]&0x1f;
+                    if( i_nal_type == 7 && i_nal > 3 )
                     {
                         free( p_64_sps );
-                        p_64_sps = vlc_b64_encode_binary( p_buffer, i_size );
-                        /* XXX: nothing ensures that i_size >= 4 ?? */
-                        sprintf_hexa( hexa, &p_buffer[1], 3 );
+                        p_64_sps = vlc_b64_encode_binary( p_nal, i_nal );
+                        sprintf_hexa( hexa, &p_nal[1], 3 );
                     }
                     else if( i_nal_type == 8 )
                     {
                         free( p_64_pps );
-                        p_64_pps = vlc_b64_encode_binary( p_buffer, i_size );
+                        p_64_pps = vlc_b64_encode_binary( p_nal, i_nal );
                     }
-                    i_buffer -= i_size;
-                    p_buffer += i_size;
                 }
                 /* */
                 if( p_64_sps && p_64_pps )
@@ -624,6 +589,8 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
             if( p_fmt->i_extra > 0 )
             {
                 char *p_hexa = malloc( 2 * p_fmt->i_extra + 1 );
+                if( !p_hexa )
+                    break;
                 sprintf_hexa( p_hexa, p_fmt->p_extra, p_fmt->i_extra );
                 if( asprintf( &p_es->psz_fmtp,
                               "profile-level-id=3; config=%s;", p_hexa ) == -1 )
@@ -637,6 +604,8 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
             if( p_fmt->i_extra > 0 )
             {
                 char *p_hexa = malloc( 2 * p_fmt->i_extra + 1 );
+                if( !p_hexa )
+                    break;
                 sprintf_hexa( p_hexa, p_fmt->p_extra, p_fmt->i_extra );
                 if( asprintf( &p_es->psz_fmtp,
                               "streamtype=5; profile-level-id=15; mode=AAC-hbr; "
@@ -710,7 +679,7 @@ static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
     return VLC_SUCCESS;
 }
 
-static void MediaDelES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt)
+static void MediaDelES( vod_t *p_vod, vod_media_t *p_media, const es_format_t *p_fmt)
 {
     media_es_t *p_es = NULL;
 
@@ -937,7 +906,7 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
     const char *psz_playnow = NULL; /* support option: x-playNow */
     const char *psz_session = NULL;
     const char *psz_cseq = NULL;
-    rtsp_client_t *p_rtsp;
+    rtsp_client_t *p_rtsp = NULL;
     int i_cseq = 0;
 
     if( answer == NULL || query == NULL ) return VLC_SUCCESS;
@@ -966,7 +935,6 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
             if( strstr( psz_transport, "unicast" ) &&
                 strstr( psz_transport, "client_port=" ) )
             {
-                rtsp_client_t *p_rtsp = NULL;
                 char ip[NI_MAXNUMERICHOST];
                 int i_port = atoi( strstr( psz_transport, "client_port=" ) +
                                    strlen("client_port=") );
@@ -1298,7 +1266,6 @@ static int RtspCallbackES( httpd_callback_sys_t *p_args, httpd_client_t *cl,
             if( strstr( psz_transport, "unicast" ) &&
                 strstr( psz_transport, "client_port=" ) )
             {
-                rtsp_client_t *p_rtsp = NULL;
                 rtsp_client_es_t *p_rtsp_es = NULL;
                 char ip[NI_MAXNUMERICHOST];
                 int i_port = atoi( strstr( psz_transport, "client_port=" ) +

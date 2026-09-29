@@ -1,6 +1,6 @@
 # Game Music Emu
 
-GME_VERSION := 0.6.3
+GME_VERSION := 0.6.5
 GME_URL := $(GITHUB)/libgme/game-music-emu/archive/refs/tags/$(GME_VERSION).tar.gz
 
 PKGS += gme
@@ -14,11 +14,7 @@ DEPS_gme = zlib $(DEPS_zlib)
 
 game-music-emu: game-music-emu-$(GME_VERSION).tar.gz .sum-gme
 	$(UNPACK)
-	$(APPLY) $(SRC)/gme/0001-don-t-skip-negative-fixes-14088.patch
-	$(APPLY) $(SRC)/gme/0001-Export-the-proper-C-runtime-library.patch
-	$(APPLY) $(SRC)/gme/0002-link-with-libm-and-set-it-in-pkg-config-when-buildin.patch
-	$(APPLY) $(SRC)/gme/0003-fix-android-toolchain-broken-CMAKE_CXX_IMPLICIT_LINK.patch
-	$(APPLY) $(SRC)/gme/0004-Blip_Buffer-replace-assert-with-a-check.patch
+	$(APPLY) $(SRC)/gme/ae10a8f05479e3c8f80429e7a59759fed06f8c13.patch
 	$(call pkg_static,"gme/libgme.pc.in")
 	$(MOVE)
 
@@ -26,7 +22,7 @@ GME_CONF := -DENABLE_UBSAN=OFF
 
 .gme: game-music-emu toolchain.cmake
 	$(CMAKECLEAN)
-	$(HOSTVARS) $(CMAKE) $(GME_CONF)
+	$(HOSTVARS_CMAKE) $(CMAKE) $(GME_CONF)
 	+$(CMAKEBUILD)
 	$(CMAKEINSTALL)
 	touch $@

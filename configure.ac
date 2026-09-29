@@ -2,19 +2,23 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 1999-2025 VLC authors and VideoLAN])
 
-AC_INIT(vlc, 3.0.23)
+AC_INIT(vlc, 3.0.24)
 VERSION_MAJOR=3
 VERSION_MINOR=0
-VERSION_REVISION=23
+VERSION_REVISION=24
 VERSION_EXTRA=0
 VERSION_DEV=
+
+VERSION_DATE=2026-09-17
+
+AC_SUBST([VERSION_DATE])
 
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Vetinari"
-COPYRIGHT_YEARS="1996-2025"
+COPYRIGHT_YEARS="1996-2026"
 
 AC_CONFIG_SRCDIR(src/libvlc.c)
 AC_CONFIG_AUX_DIR(autotools)
@@ -137,10 +141,15 @@ case "${host_os}" in
     SYS=dragonfly
     ;;
   darwin*)
-    dnl Workaround possible Xcode 11 bug
-    CFLAGS="${CFLAGS} -fno-stack-check"
-    CXXFLAGS="${CXXFLAGS} -fno-stack-check"
-    OBJCFLAGS="${OBJCFLAGS} -fno-stack-check"
+    AC_MSG_CHECKING([if AppleClang requires -fno-stack-check])
+    COMPILER_VERSION_MAJ="$(${CC} -dumpversion | cut -d '.' -f -1)"
+    AS_IF([ test ${COMPILER_VERSION_MAJ} -eq 11 ],[
+      dnl Work around an Xcode 11 bug, fixed in Xcode 11.3.1
+      AC_MSG_RESULT([yes])
+      AX_APPEND_FLAG([-fno-stack-check], [CFLAGS])
+      AX_APPEND_FLAG([-fno-stack-check], [CXXFLAGS])
+      AX_APPEND_FLAG([-fno-stack-check], [OBJCFLAGS])
+    ],[AC_MSG_RESULT([no])])
 
     dnl Force gcc "-arch" flag
     ARCH_flag=""
@@ -379,8 +388,8 @@ AS_IF([test "${SYS}" = "mingw32"],[
     AX_APPEND_FLAG([-DWINSTORECOMPAT],[CXXFLAGS])
     AX_APPEND_FLAG([-lwinstorecompat], [LDFLAGS])
     VLC_ADD_LIBS([libvlccore], [-lruntimeobject])
-    AC_LIBOBJ([gai_strerror])
   ],[])
+  AC_LIBOBJ([gai_strerror])
   AC_SUBST(LIBCOM)
   ])
 AC_DEFINE_UNQUOTED(VLC_WINSTORE_APP, ${vlc_winstore_app}, [Define to 1 if you want to build for Windows Store apps])
@@ -1011,13 +1020,13 @@ AX_APPEND_COMPILE_FLAGS([-pipe], [CFLAGS])
 dnl Checks for socket stuff
 VLC_SAVE_FLAGS
 SOCKET_LIBS=""
-AC_SEARCH_LIBS(connect, [socket], [
-  AS_IF([test "$ac_cv_search_connect" != "none required"], [
-    SOCKET_LIBS="$ac_cv_search_connect"
-  ])
-], [
-  AS_IF([test "${SYS}" = "mingw32"], [
-    SOCKET_LIBS="-lws2_32 -liphlpapi"
+AS_IF([test "${SYS}" = "mingw32"], [
+  SOCKET_LIBS="-lws2_32 -liphlpapi"
+],[
+  AC_SEARCH_LIBS(connect, [socket], [
+    AS_IF([test "$ac_cv_search_connect" != "none required"], [
+      SOCKET_LIBS="$ac_cv_search_connect"
+    ])
   ])
 ])
 
@@ -1238,7 +1247,10 @@ AH_BOTTOM([
   dnl Win32 requires linking to ssp for stack-protection
   AS_IF([test "${SYS}" = "mingw32"], [
       LDFLAGS="${LDFLAGS} -lssp"
-      AS_IF([test "${vlc_winstore_app}" != 1], [LDFLAGS="${LDFLAGS} -ladvapi32"])
+      dnl library for Crypt/BCrypt APIs
+      AS_IF([test "${vlc_winstore_app}" != 1],
+            [LDFLAGS="${LDFLAGS} -ladvapi32"],
+            [LDFLAGS="${LDFLAGS} -lbcrypt"])
   ])
 ])
 
@@ -2226,8 +2238,23 @@ AM_CONDITIONAL(HAVE_AVFOUNDATION, [test "${have_avfoundation}" != "no"])
 dnl
 dnl  DCP plugin (using asdcplib)
 dnl
-PKG_WITH_MODULES([ASDCP], [asdcplib], [have_asdcp="yes"])
-AM_CONDITIONAL(HAVE_ASDCP, [test "${have_asdcp}" = "yes"])
+ASDCPLIB_FACTORY=0
+PKG_WITH_MODULES([ASDCP], [asdcplib])
+AS_IF([test "${enable_asdcp}" = "yes"],[
+    dnl asdcplib does not provide a version define
+    dnl check the factory necessary API from the package version
+    AC_MSG_CHECKING([asdcplib API version])
+    ($PKG_CONFIG --print-errors "asdcplib >= 2.12.2") 2>&1
+    ac_status=$?
+    AS_IF([test $ac_status = 0],[
+        ASDCPLIB_FACTORY=1
+        AC_MSG_RESULT([2.12.2 API])
+    ],[
+        AC_MSG_RESULT([old API])
+    ])
+])
+AC_SUBST([ASDCPLIB_FACTORY])
+AM_CONDITIONAL(HAVE_ASDCP, [test "${enable_asdcp}" = "yes"])
 
 dnl
 dnl  Demux plugins
@@ -2895,6 +2922,12 @@ dnl  Ambisonic channel mixer and binauralizer plugin
 dnl
 PKG_ENABLE_MODULES_VLC([SPATIALAUDIO], [], [spatialaudio], [Ambisonic channel mixer and binauralizer], [auto])
 
+AS_IF([test -n ${SPATIALAUDIO_CFLAGS+set}], [
+  PKG_CHECK_MODULES(SPATIALAUDIO_040, [spatialaudio >= 0.4.0], [
+    AX_APPEND_FLAG([-DHAVE_SPATIALAUDIOVERSION_H=1], [SPATIALAUDIO_CFLAGS])
+  ],[:])
+])
+
 dnl
 dnl  theora decoder plugin
 dnl
@@ -2911,9 +2944,9 @@ dnl
 PKG_ENABLE_MODULES_VLC([DAALA], [], [daaladec daalaenc], [experimental daala codec], [disabled])
 
 dnl
-dnl  schroedinger decoder plugin (for dirac format video)
+dnl  OpenAPV decoder plugin
 dnl
-PKG_ENABLE_MODULES_VLC([SCHROEDINGER], [], [schroedinger-1.0 >= 1.0.10], [dirac decoder and encoder using schroedinger], [auto])
+PKG_ENABLE_MODULES_VLC([OPENAPV], [], [oapv >= 0.3], [OpenAPV decoder], [disabled])
 
 dnl
 dnl  PNG decoder module
@@ -3031,9 +3064,9 @@ fi
 
 
 dnl
-dnl Intel QuickSync (aka MediaSDK) H264/H262 encoder
+dnl Intel Video Processing Library
 dnl
-PKG_ENABLE_MODULES_VLC([MFX], [qsv], [libmfx], [Intel QuickSync MPEG4-Part10/MPEG2 (aka H.264/H.262) encoder], [auto])
+PKG_ENABLE_MODULES_VLC([VPL], [qsv], [vpl], [Intel Video Processing Library encoder], [auto])
 
 dnl
 dnl libfluidsynth (MIDI synthetizer) plugin
@@ -3816,24 +3849,57 @@ m4_popdef([libchromaprint_version])
 dnl
 dnl  Chromecast streaming support
 dnl
-m4_pushdef([protobuf_lite_version], 2.5.0)
-AC_ARG_VAR(PROTOC, [protobuf compiler])
-AC_CHECK_PROGS(PROTOC, protoc, no)
-PKG_WITH_MODULES([CHROMECAST],[protobuf-lite >= protobuf_lite_version], [
-    AS_IF([test "x${PROTOC}" != "xno"], [
-        build_chromecast="yes"
-    ], [
-    AC_MSG_ERROR(protoc compiler needed for [chromecast] was not found)
+PKG_WITH_MODULES([CHROMECAST],[protobuf-lite], [],[
+    AS_IF([test "${enable_chromecast}" = "yes"],[
+        AC_MSG_ERROR(Library protobuf-lite needed for [chromecast] was not found)
+    ],[
+        AC_MSG_WARN(Library protobuf-lite needed for [chromecast] was not found)
     ])
-], [
-    AS_IF([test "${enable_chromecast}" = "yes"],
-        AC_MSG_ERROR(Library [protobuf-lite >= protobuf_lite_version] needed for [chromecast] was not found),
-        AC_MSG_WARN(Library [protobuf-lite >= protobuf_lite_version] needed for [chromecast] was not found)
-    )
-    enable_chromecast="no"
+    enable_chromecast=no
 ], [(Chromecast streaming support)], [auto])
-AM_CONDITIONAL([BUILD_CHROMECAST], [test "${build_chromecast}" = "yes"])
-m4_popdef([protobuf_lite_version])
+
+AC_ARG_VAR(PROTOC, [protobuf compiler])
+AS_IF([test -n "$PKG_CONFIG"],[
+    AC_PATH_PROGS(PROTOC, [protoc], no, ["${CONTRIB_DIR}/../bin:$PATH"])
+    AS_IF([test "${PROTOC}" != "no"], [
+        dnl silently checks the protoc version matches the protobuf library
+        PROTOC_FULL_VERSION="$(eval ${PROTOC} --version 2>/dev/null | head -1 | sed s/'.* '//)"
+        PROTOC_MAJ_VERSION="$(echo ${PROTOC_FULL_VERSION} | cut -d '.' -f -1)"
+        AS_IF([test "${PROTOC_MAJ_VERSION}" -lt "5" ], [
+            dnl protoc x.y.0 is compatible with protobuf x.y.*
+            PROTOBUF_VERSION="$(echo ${PROTOC_FULL_VERSION} | cut -d '.' -f -2)"
+            PROTOBUF_MAX_VERSION="${PROTOBUF_VERSION%.*}.$((${PROTOBUF_VERSION##*.}+1))"
+            PROTOBUF_TEST="protobuf-lite >= ${PROTOBUF_VERSION} protobuf-lite < ${PROTOBUF_MAX_VERSION}"
+        ],[
+          AS_IF([test "${PROTOC_MAJ_VERSION}" -lt "22" ], [
+            dnl protoc x.y.z is compatible with protobuf x.y.z
+            PROTOBUF_VERSION="$(echo ${PROTOC_FULL_VERSION} | cut -d '.' -f -3)"
+            dnl the protoc version is in the x.y.z format but protobuf version is in the x.y.z.r format
+            PROTOBUF_MAX_VERSION="${PROTOBUF_VERSION%.*}.$((${PROTOBUF_VERSION##*.}+1))"
+            PROTOBUF_TEST="protobuf-lite >= ${PROTOBUF_VERSION} protobuf-lite < ${PROTOBUF_MAX_VERSION}"
+          ],[
+            dnl protoc x.y is compatible with protobuf x.y.*
+            PROTOBUF_VERSION="$(echo ${PROTOC_FULL_VERSION} | cut -d '.' -f -2)"
+            PROTOBUF_MAX_VERSION="${PROTOBUF_VERSION%.*}.$((${PROTOBUF_VERSION##*.}+1))"
+            PROTOBUF_TEST="protobuf-lite >= ${PROTOBUF_VERSION} protobuf-lite < ${PROTOBUF_MAX_VERSION}"
+          ])
+        ])
+        AC_MSG_CHECKING([protobuf-lite matches ${PROTOC} version ${PROTOBUF_VERSION}])
+        ($PKG_CONFIG --exists --print-errors "${PROTOBUF_TEST}") 2>&AS_MESSAGE_FD
+        ac_status=$?
+        AS_IF([test $ac_status = 0],[
+            protoc_matching=yes
+            AC_MSG_RESULT([yes])
+        ],[
+            protoc_matching=no
+            AC_MSG_RESULT([no])
+        ])
+    ],[
+        protoc_matching=no
+    ])
+])
+AC_SUBST([PROTOBUF_VERSION])
+AM_CONDITIONAL([BUILD_CHROMECAST], [test "${enable_chromecast}" != "no" -a "${protoc_matching}" = yes])
 
 dnl
 dnl  Interface plugins
@@ -3851,6 +3917,7 @@ AC_ARG_ENABLE(qt, [
   ])
 ])
 have_qt5_x11="no"
+qt6_configured="no"
 AS_IF([test "${enable_qt}" != "no"], [
   PKG_CHECK_MODULES([QT], [Qt5Core >= 5.5.0 Qt5Widgets Qt5Gui Qt5Svg], [
       PKG_CHECK_MODULES([QT5_X11], [Qt5X11Extras], [
@@ -3867,6 +3934,7 @@ AS_IF([test "${enable_qt}" != "no"], [
     ], [
       dnl use any qmake that is available, including from contrib tools
       AC_PATH_PROGS(QMAKE6, [qmake6 qmake], qmake6, ["${CONTRIB_DIR}/../bin:$PATH"])
+      QT_QMAKE_MAJOR="$(${QMAKE6} -query QT_VERSION 2>/dev/null | cut -d. -f1)"
 
       AC_ARG_WITH([qtconf],
         AS_HELP_STRING([--with-qtconf=PATH], [location of Qt6 qt.conf file (auto)])
@@ -3957,6 +4025,8 @@ AS_IF([test "${enable_qt}" != "no"], [
           AC_MSG_RESULT([no])
         ])
         rm -f ${ac_pwd}/modules/gui/qt/qmake-private-gui
+
+        AS_IF([test "${QT_QMAKE_MAJOR}" = "6"], [qt6_configured="yes"])
       ],[
         AS_IF([test -n "${enable_qt}"],[
           AC_MSG_ERROR([${QT_PKG_ERRORS}.])
@@ -3973,6 +4043,18 @@ AS_IF([test "${enable_qt}" != "no"], [
 ])
 AC_SUBST(QT_VERSION)
 AM_CONDITIONAL(ENABLE_QT, [test "$enable_qt" != "no"])
+dnl HAVE_QT_X11 enables the helper code that abstracts Qt5 v Qt6 access to X11
+have_qt_x11="no"
+AS_IF([test "${enable_qt}" != "no"], [
+  AS_IF([test "${qt6_configured}" = "yes"], [
+    AS_IF([test "${no_x}" != "yes"], [
+      have_qt_x11="yes"
+    ])
+  ], [
+    have_qt_x11="${have_qt5_x11}"
+  ])
+])
+AM_CONDITIONAL([HAVE_QT_X11], [test "${have_qt_x11}" = "yes"])
 AM_CONDITIONAL([HAVE_QT5_X11], [test "${have_qt5_x11}" = "yes"])
 AM_CONDITIONAL([HAVE_QT_GUI_PRIVATE], [test "${have_qt_gui_private}" = "yes"])
 
@@ -4194,6 +4276,11 @@ dnl  SRT plugin
 dnl
 PKG_ENABLE_MODULES_VLC([SRT], [access_srt access_output_srt], [srt >= 1.3.0], [SRT input/output plugin], [auto], [], [], [-DENABLE_SRT])
 
+dnl
+dnl  libRIST plugin
+dnl
+PKG_ENABLE_MODULES_VLC([LIBRIST], [rist access_output_rist], [librist >= 0.2.1], [RIST input/output plugin], [auto])
+
 EXTEND_HELP_STRING([Visualisations and Video filter plugins:])
 dnl
 dnl  goom visualization plugin
@@ -4293,6 +4380,11 @@ AS_IF([test "${enable_libgcrypt}" != "no"], [
 
   AS_IF([test "${ac_cv_lib_gcrypt}" = "yes"], [
     AC_DEFINE([HAVE_GCRYPT], 1, [Defined if having gcrypt])
+    PKG_CHECK_MODULES([GPGERROR], [gpg-error], [
+      have_gpg_error="yes"
+    ], [
+      have_gpg_error="no"
+    ])
   ], [
     AS_IF([test "${enable_libgcrypt}" = "yes"], [
       AC_MSG_ERROR([libgcrypt version 1.6.0 or higher not found. Install libgcrypt or pass --disable-libgcrypt.])
@@ -4301,7 +4393,11 @@ AS_IF([test "${enable_libgcrypt}" != "no"], [
 ])
 
 AS_IF([test -z "$GCRYPT_LIBS"], [
-  GCRYPT_LIBS="-lgcrypt -lgpg-error"
+  AS_IF([test "${have_gpg_error}" = "yes"],[
+    GCRYPT_LIBS="-lgcrypt ${GPGERROR_LIBS}"
+  ],[
+    GCRYPT_LIBS="-lgcrypt -lgpg-error"
+  ])
 ])
 
 AC_SUBST(GCRYPT_CFLAGS)

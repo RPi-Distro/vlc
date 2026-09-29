@@ -111,7 +111,7 @@ protected:
     void keyPressEvent( QKeyEvent *) Q_DECL_OVERRIDE;
     void wheelEvent( QWheelEvent * ) Q_DECL_OVERRIDE;
     bool eventFilter(QObject *, QEvent *) Q_DECL_OVERRIDE;
-    virtual void toggleUpdateSystrayMenuWhenVisible();
+    virtual void toggleUpdateSystrayMenuWhenVisible(bool requestActivate = false);
     void resizeWindow(int width, int height);
 
 protected:
@@ -184,9 +184,6 @@ protected:
     bool                 b_pauseOnMinimize;
     bool                 b_maximizedView;
     bool                 b_isWindowTiled;
-#ifdef QT5_HAS_WAYLAND
-    bool                 b_hasWayland;
-#endif
     /* States */
     bool                 playlistVisible;       ///< Is the playlist visible ?
 //    bool                 videoIsActive;       ///< Having a video now / THEMIM->hasV
@@ -203,7 +200,7 @@ public slots:
     void dockPlaylist( bool b_docked = true );
     void toggleMinimalView( bool );
     void togglePlaylist();
-    void toggleUpdateSystrayMenu();
+    void toggleUpdateSystrayMenu(bool requestActivate = false);
     void showUpdateSystrayMenu();
     void hideUpdateSystrayMenu();
     void toggleAdvancedButtons();
@@ -264,6 +261,7 @@ protected slots:
     void hideResumePanel();
     void resumePlayback();
     void onInputChanged( bool );
+    void onVOutChanged( bool );
 
 signals:
     void askGetVideo( struct vout_window_t *, unsigned, unsigned, bool,

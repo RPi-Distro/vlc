@@ -1,0 +1,28 @@
+From 177f99434c4501bd153059071dc03eda362f1b28 Mon Sep 17 00:00:00 2001
+From: Jean-Baptiste Kempf <jb@videolan.org>
+Date: Mon, 29 Jun 2026 11:48:00 +0200
+Subject: [PATCH 16/16] w32-utils: fix init utils syntax
+
+---
+ src/w32-utils.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/w32-utils.c b/src/w32-utils.c
+index 5cf4fbd..afb8cca 100644
+--- a/src/w32-utils.c
++++ b/src/w32-utils.c
+@@ -68,7 +68,11 @@ w32_shgetfolderpath (HWND a, int b, HANDLE c, DWORD d)
+     {
+       void *handle;
+ 
++#if WINAPI_FAMILY_PARTITION (WINAPI_PARTITION_DESKTOP)
+       handle = LoadLibraryEx ("shell32.dll", NULL, 0);
++#else
++      handle = NULL;
++#endif
+       if (!handle)
+         {
+           _gpgrt_w32_set_errno (-1);
+-- 
+2.52.0.windows.1
+

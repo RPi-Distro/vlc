@@ -56,15 +56,17 @@ struct vcddev_s
  *****************************************************************************/
 #if defined( __APPLE__ )
 #define darwin_freeTOC( p ) free( (void*)p )
+#endif
 #define CD_MIN_TRACK_NO 01
 #define CD_MAX_TRACK_NO 99
-#endif
+#define CD_TRACKS_COUNT_MAX (CD_MAX_TRACK_NO - CD_MIN_TRACK_NO + 1)
+#define CD_TRACKS_WITH_LEADOUT_COUNT_MAX (CD_TRACKS_COUNT_MAX + 1 /* Lead-out */)
 
 #if defined( _WIN32 )
 
 /* Win32 DeviceIoControl specifics */
 #ifndef MAXIMUM_NUMBER_TRACKS
-#    define MAXIMUM_NUMBER_TRACKS 100
+#    define MAXIMUM_NUMBER_TRACKS CD_TRACKS_WITH_LEADOUT_COUNT_MAX
 #endif
 typedef struct _TRACK_DATA {
     UCHAR Reserved;

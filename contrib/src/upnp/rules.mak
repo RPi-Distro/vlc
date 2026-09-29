@@ -1,5 +1,5 @@
 # UPNP
-UPNP_VERSION := 1.14.13
+UPNP_VERSION := 1.14.31
 UPNP_URL := $(GITHUB)/pupnp/pupnp/archive/refs/tags/release-$(UPNP_VERSION).tar.gz
 
 ifdef BUILD_NETWORK
@@ -14,53 +14,41 @@ $(TARBALLS)/pupnp-release-$(UPNP_VERSION).tar.gz:
 
 .sum-upnp: pupnp-release-$(UPNP_VERSION).tar.gz
 
-UPNP_CFLAGS := $(CFLAGS) -DUPNP_STATIC_LIB
-UPNP_CXXFLAGS := $(CXXFLAGS) -DUPNP_STATIC_LIB
-UPNP_CONF := --disable-samples --disable-device --disable-webserver
-
 ifdef HAVE_WIN32
-DEPS_upnp += pthreads $(DEPS_pthreads)
+DEPS_upnp += winpthreads $(DEPS_winpthreads)
 endif
-ifdef HAVE_WINSTORE
-UPNP_CONF += --disable-ipv6 --enable-unspecified_server
-else
+
+UPNP_CONF := -DUPNP_BUILD_SHARED=OFF \
+	-DBUILD_TESTING=OFF \
+	-DUPNP_BUILD_SAMPLES=OFF
+
 ifdef HAVE_IOS
-UPNP_CONF += --disable-ipv6 --disable-reuseaddr
+UPNP_CONF += -DUPNP_ENABLE_IPV6=OFF -DUPNP_ENABLE_UNSPECIFIED_SERVER=ON \
+ -DUPNP_MINISERVER_REUSEADDR=OFF
 else
-UPNP_CONF += --enable-ipv6
-endif
-endif
-ifndef WITH_OPTIMIZATION
-UPNP_CONF += --enable-debug
+UPNP_CONF += -DUPNP_ENABLE_IPV6=ON
 endif
 
 upnp: pupnp-release-$(UPNP_VERSION).tar.gz .sum-upnp
 	$(UNPACK)
-ifdef HAVE_WIN32
-	$(APPLY) $(SRC)/upnp/libupnp-pthread-force.patch
-	$(APPLY) $(SRC)/upnp/libupnp-win32-exports.patch
-	$(APPLY) $(SRC)/upnp/libupnp-win32.patch
-	$(APPLY) $(SRC)/upnp/windows-version-inet.patch
-	$(APPLY) $(SRC)/upnp/0001-ThreadPool-Fix-non-UCRT-builds.patch
-	$(APPLY) $(SRC)/upnp/win32-remove-wrong-safe-wrappers.patch
-endif
-ifdef HAVE_LINUX
-ifndef HAVE_ANDROID
-	$(APPLY) $(SRC)/upnp/libupnp-pthread-force.patch
-endif
-endif
 ifdef HAVE_ANDROID
 	$(APPLY) $(SRC)/upnp/revert-ifaddrs.patch
+else
+	# Avoid forcing `-lpthread` on android as it does not provide it and
+	# identifies as 'Linux' in CMake.
+	$(APPLY) $(SRC)/upnp/libtool-nostdlib-workaround.patch
 endif
 	$(APPLY) $(SRC)/upnp/miniserver.patch
 ifdef HAVE_IOS
 	$(APPLY) $(SRC)/upnp/fix-reuseaddr-option.patch
 endif
-	$(UPDATE_AUTOCONFIG)
+	$(APPLY) $(SRC)/upnp/0001-Don-t-assume-strndup-to-be-missing-on-Windows.patch
+	$(APPLY) $(SRC)/upnp/0001-Do-not-use-missing-OnLinkPrefixLength-when-compiling.patch
 	$(MOVE)
 
-.upnp: upnp
-	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) CFLAGS="$(UPNP_CFLAGS)" CXXFLAGS="$(UPNP_CXXFLAGS)" $(UPNP_CONF)
-	$(MAKE) -C $< install
+.upnp: upnp toolchain.cmake
+	$(CMAKECLEAN)
+	$(HOSTVARS_CMAKE) $(CMAKE) $(UPNP_CONF)
+	+$(CMAKEBUILD)
+	+$(CMAKEINSTALL)
 	touch $@
