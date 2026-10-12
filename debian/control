@@ -73,8 +73,6 @@ Build-Depends:
  libpostproc-dev (>= 7:3.0),
  libprotobuf-dev (>= 2.5.0),
  libpulse-dev (>= 1.0),
- libqt5svg5-dev,
- libqt5x11extras5-dev,
  libraw1394-dev (>= 2.0.1) [linux-any],
  libresid-builder-dev,
  librist-dev,
@@ -123,8 +121,9 @@ Build-Depends:
  pkgconf,
  protobuf-compiler,
  python3:native,
- qtbase5-dev (>= 5.6),
- qtbase5-private-dev (>= 5.6),
+ qt6-base-dev,
+ qt6-base-private-dev,
+ qt6-svg-dev,
  wayland-protocols [linux-any],
  zlib1g-dev,
  zsh
@@ -141,7 +140,7 @@ Depends:
  vlc-plugin-base (= ${binary:Version}),
  vlc-plugin-qt (= ${binary:Version}),
  vlc-plugin-video-output (= ${binary:Version}),
- qtwayland5,
+ qt6-wayland,
  ${misc:Depends}
 Recommends:
  vlc-l10n (= ${source:Version}),
@@ -392,6 +391,7 @@ Package: vlc-plugin-qt
 Architecture: any
 Multi-Arch: same
 Depends:
+ qt6-svg-plugins,
  ${misc:Depends},
  ${shlibs:Depends},
  ${vlc:PluginABI}
