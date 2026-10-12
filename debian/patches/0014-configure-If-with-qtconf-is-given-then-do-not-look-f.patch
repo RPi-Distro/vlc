@@ -1,0 +1,30 @@
+From 54758f1e9d8df1b260e2a4529e1f196aa7eb9c69 Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Tue, 13 Jan 2026 17:04:04 +0000
+Subject: [PATCH 14/39] configure: If with-qtconf is given then do not look for
+ Qt5
+
+---
+ configure.ac | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/configure.ac b/configure.ac
+index 469b497083..a4dbb6d85a 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -3957,6 +3957,12 @@ have_qt5_x11="no"
+ qt6_configured="no"
+ AS_IF([test "${enable_qt}" != "no"], [
+   PKG_CHECK_MODULES([QT], [Qt5Core >= 5.5.0 Qt5Widgets Qt5Gui Qt5Svg], [
++      try_qt5="yes"
++  ],[
++      try_qt5="no"
++  ])
++  AS_IF([test -n "${with_qtconf}"], [try_qt5="no"])
++  AS_IF([test "${try_qt5}" != "no"], [
+       PKG_CHECK_MODULES([QT5_X11], [Qt5X11Extras], [
+           have_qt5_x11="yes"
+       ],[
+-- 
+2.53.0
+

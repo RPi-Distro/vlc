@@ -1,0 +1,45 @@
+From b82e18711daf8964ed288ecaed08fd7e9c5f7e1b Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Tue, 11 Jun 2024 17:45:14 +0100
+Subject: [PATCH 21/39] qt/controller: Make fullscreen controller a ToolTip
+ under Wayland
+
+This fixes positioning both for it and context popups. Slow fade goes
+away but that is a small price to pay.
+
+Qt creates Tool windows as xdg_toplevel windows which remove the ability
+to position them and then gets confused when trying to create the
+context popup as it needs to know the position of its transient window
+to create further popups.
+Making it a tooltip means it gets created as an xdg popup which can be
+positioned and is not modal (popups are modal).
+In Qt6.8 they can also be moved.
+---
+ modules/gui/qt/components/controller.cpp | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/modules/gui/qt/components/controller.cpp b/modules/gui/qt/components/controller.cpp
+index ee7793f7ea..77a144fcdf 100644
+--- a/modules/gui/qt/components/controller.cpp
++++ b/modules/gui/qt/components/controller.cpp
+@@ -802,6 +802,17 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
+ 
+     vout.clear();
+ 
++#ifdef QT5_HAS_WAYLAND
++    if( b_hasWayland )
++    {
++        // A Tool window is an xdg_toplevel which the compositor places as it
++        // likes. A ToolTip with a transient parent is an xdg_popup without a
++        // grab, so it is non-modal, can be positioned relative to the parent
++        // and (with xdg_popup.reposition) moved while visible
++        setWindowFlags( Qt::ToolTip | Qt::FramelessWindowHint );
++    }
++    else
++#endif
+     setWindowFlags( Qt::Tool | Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint );
+     setAttribute( Qt::WA_ShowWithoutActivating );
+     setMinimumWidth( FSC_WIDTH );
+-- 
+2.53.0
+

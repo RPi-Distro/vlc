@@ -1,0 +1,34 @@
+From c945a65628f1629d1c7c6e6b69c55d8d7950560e Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Tue, 22 Oct 2024 15:48:45 +0100
+Subject: [PATCH 18/39] qt/interface: Set scale factor in vout_window
+
+---
+ modules/gui/qt/components/interface_widgets.cpp | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/modules/gui/qt/components/interface_widgets.cpp b/modules/gui/qt/components/interface_widgets.cpp
+index 9575cc3c32..05c50f4f65 100644
+--- a/modules/gui/qt/components/interface_widgets.cpp
++++ b/modules/gui/qt/components/interface_widgets.cpp
+@@ -282,6 +282,17 @@ void VideoWidget::reportSize()
+ 
+     refreshHandle();
+ 
++    if (p_window && p_window->type == VOUT_WINDOW_TYPE_WAYLAND && p_window->handle.wl != NULL)
++    {
++#if HAS_QT56
++        qreal dpr = devicePixelRatioF();
++#else
++        qreal dpr = devicePixelRatio();
++#endif
++        p_window->scale_num = (int)(0x10000 * dpr + 0.5);
++        p_window->scale_den = 0x10000;
++    }
++
+     QSize size = physicalSize();
+     WindowResized(p_window, size);
+ }
+-- 
+2.53.0
+

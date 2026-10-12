@@ -1,0 +1,26 @@
+From a22e728224b7d812af1a9d01582bfe4dc0448add Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Tue, 11 Jun 2024 17:53:42 +0100
+Subject: [PATCH 22/39] qt: Disable 1st run dialog
+
+Confuses Wayland so unset the default
+---
+ modules/gui/qt/qt.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/modules/gui/qt/qt.cpp b/modules/gui/qt/qt.cpp
+index deed06b409..57c65b0e06 100644
+--- a/modules/gui/qt/qt.cpp
++++ b/modules/gui/qt/qt.cpp
+@@ -290,7 +290,7 @@ vlc_module_begin ()
+     add_string( "qt-slider-colours", "153;210;153;20;210;20;255;199;15;245;39;29",
+                 SLIDERCOL_TEXT, SLIDERCOL_LONGTEXT, false )
+ 
+-    add_bool( "qt-privacy-ask", true, PRIVACY_TEXT, PRIVACY_TEXT,
++    add_bool( "qt-privacy-ask", false, PRIVACY_TEXT, PRIVACY_TEXT,
+               false )
+         change_private ()
+ 
+-- 
+2.53.0
+

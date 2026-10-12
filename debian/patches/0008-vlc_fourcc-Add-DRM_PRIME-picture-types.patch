@@ -1,15 +1,17 @@
-From 1eca31b097ff1d737a74e0a141e646e2944e5012 Mon Sep 17 00:00:00 2001
+From 485097656347799480ffa1a2a023c3588cab8a52 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:29:03 +0100
-Subject: [PATCH 08/40] vlc_fourcc: Add DRM_PRIME picture types
+Subject: [PATCH 08/39] vlc_fourcc: Add DRM_PRIME picture types
 
 ---
  include/vlc_fourcc.h | 7 +++++++
  1 file changed, 7 insertions(+)
 
+diff --git a/include/vlc_fourcc.h b/include/vlc_fourcc.h
+index 070270e771..c58993ff29 100644
 --- a/include/vlc_fourcc.h
 +++ b/include/vlc_fourcc.h
-@@ -392,6 +392,13 @@
+@@ -391,6 +391,13 @@
  #define VLC_CODEC_D3D11_OPAQUE          VLC_FOURCC('D','X','1','1') /* 4:2:0  8 bpc */
  #define VLC_CODEC_D3D11_OPAQUE_10B      VLC_FOURCC('D','X','1','0') /* 4:2:0 10 bpc */
  
@@ -23,3 +25,6 @@ Subject: [PATCH 08/40] vlc_fourcc: Add DRM_PRIME picture types
  /* CVPixelBuffer opaque buffer type */
  #define VLC_CODEC_CVPX_NV12       VLC_FOURCC('C','V','P','N')
  #define VLC_CODEC_CVPX_UYVY       VLC_FOURCC('C','V','P','Y')
+-- 
+2.53.0
+

@@ -1,0 +1,28 @@
+From 845082248b0d39bd3c2cfef3bf151f31a7acf667 Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Tue, 11 Jun 2024 16:01:01 +0100
+Subject: [PATCH 03/39] vlc: Upgrade exit timeout to exit() rather than signal
+
+---
+ bin/vlc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/bin/vlc.c b/bin/vlc.c
+index 72e0eee428..6d92b95990 100644
+--- a/bin/vlc.c
++++ b/bin/vlc.c
+@@ -106,7 +106,10 @@ static void vlc_kill (void *data)
+ static void exit_timeout (int signum)
+ {
+     (void) signum;
+-    signal (SIGINT, SIG_DFL);
++// This doesn't seem to be strong enough to reliably kill us if we fail to exit
++// in a timely fashion - so upgrade to _exit().
++//    signal (SIGINT, SIG_DFL);
++    _exit(0);
+ }
+ 
+ /*****************************************************************************
+-- 
+2.53.0
+
