@@ -1,0 +1,18 @@
+Origin: vendor
+Reviewed-by: Simon Quigley <tsimonq2@debian.org>
+Last-Update: 2026-10-26
+
+Bookworm's librist 0.2.7 spells this macro LENGHT. 3.0.24 uses the
+corrected LENGTH spelling, which librist gained later.
+
+--- a/modules/access_output/rist.c
++++ b/modules/access_output/rist.c
+@@ -316,7 +316,7 @@ vlc_module_begin()
+     add_integer( RIST_CFG_PREFIX RIST_URL_PARAM_VERBOSE_LEVEL, RIST_DEFAULT_VERBOSE_LEVEL,
+             RIST_VERBOSE_LEVEL_TEXT, RIST_VERBOSE_LEVEL_LONGTEXT, true )
+         change_integer_list( verbose_level_type, verbose_level_type_names )
+-    add_integer( RIST_CFG_PREFIX RIST_CFG_LATENCY, RIST_DEFAULT_RECOVERY_LENGTH_MIN,
++    add_integer( RIST_CFG_PREFIX RIST_CFG_LATENCY, RIST_DEFAULT_RECOVERY_LENGHT_MIN,
+             BUFFER_TEXT, BUFFER_LONGTEXT, true )
+     add_string( RIST_CFG_PREFIX RIST_URL_PARAM_CNAME, NULL, RIST_CNAME_TEXT, 
+             RIST_CNAME_LONGTEXT, true )
