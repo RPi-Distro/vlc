@@ -1,16 +1,17 @@
 # Ukrainian translation
-# Copyright (C) 2023 VideoLAN
+# Copyright (C) 2026 VideoLAN
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
 # Eugene Kutia <fossugn@gmail.com>, 2013
 # Oleksandr Natalenko <oleksandr@natalenko.name>, 2009-2012
 # Андрій Бандура <andriykopanytsia@gmail.com>, 2013-2017, 2021
+# Michał Trzebiatowski <michtrz@gmail.com>, 2018
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.22-rc1\n"
+"Project-Id-Version: vlc 3.0.24-beta1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-12-23 11:04+0000\n"
+"POT-Creation-Date: 2026-09-17 12:55+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Андрій Бандура <andriykopanytsia@gmail.com>, 2021\n"
 "Language-Team: Ukrainian (https://app.transifex.com/yaron/teams/16553/uk/)\n"
@@ -639,7 +640,7 @@ msgid "The maximum number of filters (%u) was reached."
 msgstr "Досягнуто максимальне число фільтрів (%u)."
 
 #: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:936
-#: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:124
+#: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:126
 #: modules/gui/macosx/VLCMainMenu.m:243
 #: modules/gui/macosx/VLCSidebarDataSource.m:211
 #: modules/video_filter/postproc.c:235
@@ -1065,24 +1066,20 @@ msgid "Decoded format"
 msgstr "Декодований формат"
 
 #: src/input/es_out.c:3207
-#, fuzzy
 msgid "Decoded channels"
-msgstr "Канали звуку"
+msgstr ""
 
 #: src/input/es_out.c:3212
-#, fuzzy
 msgid "Decoded sample rate"
-msgstr "Частота дискретизації звуку"
+msgstr ""
 
 #: src/input/es_out.c:3219
-#, fuzzy
 msgid "Decoded bits per sample"
-msgstr "Бітів на звуковий відлік"
+msgstr ""
 
 #: src/input/es_out.c:3224
-#, fuzzy
 msgid "Decoded Bitrate"
-msgstr "Декодований формат"
+msgstr ""
 
 #: src/input/es_out.c:3237
 msgid "Track replay gain"
@@ -1109,7 +1106,7 @@ msgstr "Розміри буферу"
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
-#: modules/access/vdr.c:78 modules/access/vnc.c:60 modules/demux/image.c:66
+#: modules/access/vdr.c:79 modules/access/vnc.c:61 modules/demux/image.c:66
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:164
 #: modules/video_filter/fps.c:42
 msgid "Frame rate"
@@ -1791,8 +1788,8 @@ msgstr ""
 
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:957
 #: modules/audio_output/kai.c:106 modules/codec/subsdec.c:167
-#: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:122
-#: modules/demux/mpeg/ts.c:132 modules/gui/macosx/VLCSimplePrefsController.m:54
+#: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:124
+#: modules/demux/mpeg/ts.c:133 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:69
 #: modules/gui/qt/components/sout/profile_selector.cpp:590
 #: modules/text_renderer/freetype/freetype.c:124
@@ -2572,9 +2569,9 @@ msgstr ""
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
 #: modules/access/dshow/dshow.cpp:2081 modules/audio_output/alsa.c:767
-#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1316
-#: modules/audio_output/mmdevice.c:1445 modules/audio_output/winstore.c:594
-#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:106
+#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1332
+#: modules/audio_output/mmdevice.c:1469 modules/audio_output/winstore.c:600
+#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:108
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
@@ -4089,7 +4086,7 @@ msgstr "Повільніше (точно)"
 #: modules/gui/macosx/VLCMainMenu.m:396 modules/gui/macosx/VLCMainMenu.m:499
 #: modules/gui/macosx/VLCMainMenu.m:507
 #: modules/gui/qt/components/controller.hpp:112
-#: modules/gui/qt/dialogs/sout.cpp:91 modules/notify/notify.c:335
+#: modules/gui/qt/dialogs/sout.cpp:89 modules/notify/notify.c:335
 #: modules/gui/qt/ui/streampanel.h:179
 msgid "Next"
 msgstr "Наступний"
@@ -4856,7 +4853,7 @@ msgid "Subpictures"
 msgstr "Шари"
 
 #: src/libvlc-module.c:1683 modules/codec/subsdec.c:182
-#: modules/demux/subtitle.c:71 modules/demux/xiph_metadata.h:49
+#: modules/demux/subtitle.c:72 modules/demux/xiph_metadata.h:49
 #: modules/demux/xiph_metadata.h:62
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:158
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
@@ -5186,7 +5183,7 @@ msgstr "Медіа: Час"
 msgid "Media View"
 msgstr "Медіа: Перегляд"
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:577
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:574
 msgid "Menu"
 msgstr "Меню"
 
@@ -5280,38 +5277,38 @@ msgstr "Мета+"
 msgid "Command+"
 msgstr "Команда+"
 
-#: src/misc/update.c:482
+#: src/misc/update.c:490
 #, c-format
 msgid "%.1f GiB"
 msgstr "%.1f ГіБ"
 
-#: src/misc/update.c:484
+#: src/misc/update.c:492
 #, c-format
 msgid "%.1f MiB"
 msgstr "%.1f МіБ"
 
-#: src/misc/update.c:486 modules/gui/macosx/VLCPlaylistInfo.m:138
+#: src/misc/update.c:494 modules/gui/macosx/VLCPlaylistInfo.m:138
 #: modules/gui/macosx/VLCPlaylistInfo.m:140
 #, c-format
 msgid "%.1f KiB"
 msgstr "%.1f КіБ"
 
-#: src/misc/update.c:488
+#: src/misc/update.c:496
 #, c-format
 msgid "%<PRIu64> B"
 msgstr "%<PRIu64> B"
 
-#: src/misc/update.c:580
+#: src/misc/update.c:588
 msgid "Saving file failed"
 msgstr "Не вдалося зберегти файл"
 
-#: src/misc/update.c:581
+#: src/misc/update.c:589
 #, c-format
 msgid "Failed to open \"%s\" for writing"
 msgstr "Не вдалося відкрити „%s“ для записування"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2878
+#: src/misc/update.c:604 src/misc/update.c:734 modules/access/dvb/scan.c:826
+#: modules/demux/avi/avi.c:2888
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
@@ -5339,12 +5336,12 @@ msgstr "Не вдалося відкрити „%s“ для записуван�
 #: modules/gui/qt/components/open_panels.cpp:1361
 #: modules/gui/qt/components/preferences_widgets.cpp:1420
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
-#: modules/gui/qt/dialogs/sout.cpp:90
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/gui/qt/dialogs/sout.cpp:88
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: src/misc/update.c:598
+#: src/misc/update.c:606
 #, c-format
 msgid ""
 "%s\n"
@@ -5353,11 +5350,11 @@ msgstr ""
 "%s\n"
 "Триває завантаження… виконано %s/%s %.1f%%"
 
-#: src/misc/update.c:649
+#: src/misc/update.c:657
 msgid "File could not be verified"
 msgstr "Не вдалося перевірити файл"
 
-#: src/misc/update.c:650
+#: src/misc/update.c:658
 #, c-format
 msgid ""
 "It was not possible to download a cryptographic signature for the downloaded "
@@ -5366,11 +5363,11 @@ msgstr ""
 "Не вдалося завантажити криптографічну сигнатуру для завантаженого файлу "
 "„%s“, тому його видалено."
 
-#: src/misc/update.c:661 src/misc/update.c:673
+#: src/misc/update.c:669 src/misc/update.c:681
 msgid "Invalid signature"
 msgstr "Некоректна сигнатура"
 
-#: src/misc/update.c:662 src/misc/update.c:674
+#: src/misc/update.c:670 src/misc/update.c:682
 #, c-format
 msgid ""
 "The cryptographic signature for the downloaded file \"%s\" was invalid and "
@@ -5379,11 +5376,11 @@ msgstr ""
 "Криптографічна сигнатура для завантаженого файлу „%s“ некоректна й не може "
 "використовуватися для безпечної перевірки, тому файл вилучено."
 
-#: src/misc/update.c:686
+#: src/misc/update.c:694
 msgid "File not verifiable"
 msgstr "Файл не можна перевірити"
 
-#: src/misc/update.c:687
+#: src/misc/update.c:695
 #, c-format
 msgid ""
 "It was not possible to securely verify the downloaded file \"%s\". Thus, it "
@@ -5391,27 +5388,27 @@ msgid ""
 msgstr ""
 "Не вдалося безпечно перевірити завантажений файл „%s“, тому його вилучено."
 
-#: src/misc/update.c:698 src/misc/update.c:710
+#: src/misc/update.c:706 src/misc/update.c:718
 msgid "File corrupted"
 msgstr "Файл пошкоджено"
 
-#: src/misc/update.c:699 src/misc/update.c:711
+#: src/misc/update.c:707 src/misc/update.c:719
 #, c-format
 msgid "Downloaded file \"%s\" was corrupted. Thus, it was deleted."
 msgstr "Завантажений файл „%s“ пошкоджено, тому його вилучено."
 
-#: src/misc/update.c:723
+#: src/misc/update.c:731
 msgid ""
 "The new version was successfully downloaded. Do you want to close VLC and "
 "install it now?"
 msgstr ""
 "Нову версію успішно завантажено. Хочете закрити VLC й встановити її зараз?"
 
-#: src/misc/update.c:726 modules/gui/macosx/VLCAddonsWindowController.m:200
+#: src/misc/update.c:734 modules/gui/macosx/VLCAddonsWindowController.m:200
 msgid "Install"
 msgstr "Встановити"
 
-#: src/misc/update.c:727
+#: src/misc/update.c:735
 msgid "Update VLC media player"
 msgstr "Оновити медіапрогравач VLC"
 
@@ -6447,11 +6444,11 @@ msgstr "Файл KDM"
 msgid "Path to Key Delivery Message XML file"
 msgstr "Шлях до файлу XML повідомлення про доставку ключа"
 
-#: modules/access/dcp/dcp.cpp:77
+#: modules/access/dcp/dcp.cpp:86
 msgid "DCP"
 msgstr "DCP"
 
-#: modules/access/dcp/dcp.cpp:79
+#: modules/access/dcp/dcp.cpp:88
 msgid "Digital Cinema Package module"
 msgstr "Модуль пакету цифрової камери"
 
@@ -6584,7 +6581,7 @@ msgstr "Введення з Blackmagic DeckLink SDI"
 msgid "10 bits"
 msgstr "10-бітний"
 
-#: modules/access/decklink.cpp:358 modules/demux/ty.c:783
+#: modules/access/decklink.cpp:358 modules/demux/ty.c:792
 msgid "Closed captions 1"
 msgstr "Приховані субтитри 1"
 
@@ -7501,7 +7498,7 @@ msgstr "Введення з файлів"
 #: modules/gui/macosx/VLCOpenWindowController.m:140
 #: modules/gui/macosx/VLCOutput.m:64 modules/gui/macosx/VLCOutput.m:175
 #: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1428
-#: modules/gui/qt/dialogs/sout.cpp:67 modules/gui/qt/dialogs/sout.cpp:119
+#: modules/gui/qt/dialogs/sout.cpp:67 modules/gui/qt/dialogs/sout.cpp:114
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
 #: share/lua/http/dialogs/stream_window.html:95
@@ -7523,7 +7520,7 @@ msgstr "Включити пристрої та канали, коли  пере�
 
 #: modules/access/ftp.c:69 modules/access/live555.cpp:85
 #: modules/access/rdp.c:65 modules/access/sftp.c:55
-#: modules/access/smb_common.h:21 modules/access/vnc.c:47
+#: modules/access/smb_common.h:21 modules/access/vnc.c:48
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
@@ -7543,7 +7540,7 @@ msgstr ""
 
 #: modules/access/ftp.c:72 modules/access/live555.cpp:88
 #: modules/access/rdp.c:68 modules/access/sftp.c:58
-#: modules/access/smb_common.h:24 modules/access/vnc.c:48
+#: modules/access/smb_common.h:24 modules/access/vnc.c:49
 #: modules/access_output/http.c:55
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
 #: modules/gui/macosx/VLCSimplePrefsController.m:285
@@ -7588,19 +7585,19 @@ msgstr "Введення з FTP"
 msgid "FTP upload output"
 msgstr "Виведення через вивантаження на FTP"
 
-#: modules/access/ftp.c:370 modules/access/ftp.c:386 modules/access/ftp.c:538
+#: modules/access/ftp.c:385 modules/access/ftp.c:401 modules/access/ftp.c:564
 msgid "Network interaction failed"
 msgstr "Сталася помилка під мережевої взаємодії"
 
-#: modules/access/ftp.c:371
+#: modules/access/ftp.c:386
 msgid "VLC could not connect with the given server."
 msgstr "VLC не вдалося з’єднатися із цим сервером."
 
-#: modules/access/ftp.c:387
+#: modules/access/ftp.c:402
 msgid "VLC's connection to the given server was rejected."
 msgstr "У підключенні VLC до цього сервера було відмовлено."
 
-#: modules/access/ftp.c:539
+#: modules/access/ftp.c:565
 msgid "Your account was rejected."
 msgstr "Обліковий запис відхилено."
 
@@ -8082,7 +8079,7 @@ msgstr "Введення з MTP"
 msgid "MTP"
 msgstr "MTP"
 
-#: modules/access/mtp.c:167 modules/access/vdr.c:379 modules/access/vdr.c:545
+#: modules/access/mtp.c:167 modules/access/vdr.c:382 modules/access/vdr.c:548
 msgid "File reading failed"
 msgstr "Сталася помилка читання файлу"
 
@@ -8171,81 +8168,48 @@ msgstr "RDP"
 msgid "RDP Remote Desktop"
 msgstr "Віддалений стільниця RDP"
 
-#: modules/access/rist.c:65
+#: modules/access/rist.c:44
 msgid "Range"
 msgstr "Діапазон"
 
-#: modules/access/rist.c:65
+#: modules/access/rist.c:44
 msgid "Bitmask"
 msgstr "Бітова маска"
 
-#: modules/access/rist.c:1127 modules/access_output/rist.c:849
+#: modules/access/rist.c:309
+msgid "Virtual Destination Port Filter"
+msgstr ""
+
+#: modules/access/rist.c:311
+msgid ""
+"Destination port to be used inside the reduced-mode of the main profile to "
+"filter incoming data. Use zero to allow all."
+msgstr ""
+
+#: modules/access/rist.c:317 modules/access_output/rist.c:291
 msgid "RIST"
 msgstr "RIST"
 
-#: modules/access/rist.c:1128
+#: modules/access/rist.c:318
 msgid "RIST input"
 msgstr "Ввід RIST"
 
-#: modules/access/rist.c:1133
-msgid "RIST maximum packet size (bytes)"
-msgstr "Найбільший розмір пакету RIST (у байтах)"
-
-#: modules/access/rist.c:1135
+#: modules/access/rist.c:323
 msgid "RIST demux/decode maximum jitter (default is 5ms)"
 msgstr ""
 "Максимальне відхилення демультиплексування/декодування RIST (усталено 5 мс)"
 
-#: modules/access/rist.c:1136
+#: modules/access/rist.c:324
 msgid ""
 "This controls the maximum jitter that will be passed to the demux/decode "
-"chain. The lower the value, the more CPU cycles the algorithm will consume"
+"chain. The lower the value, the more CPU cycles the module will consume"
 msgstr ""
-"Цей параметр контролює найбільше відхилення, яке буде передано ланцюгу "
-"демультиплексування/декодування. Чим нижче значення, тим більше циклів "
-"процесора споживає алгоритм"
 
-#: modules/access/rist.c:1138
-msgid "RIST latency (ms)"
-msgstr "Затримка RIST (мс)"
-
-#: modules/access/rist.c:1139
-msgid "RIST nack retry interval (ms)"
-msgstr "Інтервал повторення непідтверджень RIST (мс)"
-
-#: modules/access/rist.c:1141
-msgid "RIST reorder buffer (ms)"
-msgstr "Буфер перевпорядкування RIST (мс)"
-
-#: modules/access/rist.c:1143
-msgid "RIST maximum retry count"
-msgstr "Найбільше число спроб RIST"
-
-#: modules/access/rist.c:1145
+#: modules/access/rist.c:328
 msgid "RIST nack type, 0 = range, 1 = bitmask. Default is range"
 msgstr ""
 "Тип непідтвердження RIST, 0 = діапазон, 1 = бітова маска. Усталеним є "
 "діапазон"
-
-#: modules/access/rist.c:1147
-msgid "Disable NACK output packets"
-msgstr "Вимкнути вихідні пакети NACK"
-
-#: modules/access/rist.c:1148
-msgid "Use this to disable packet recovery"
-msgstr "Використовуйте це, щоб вимкнути відновлення пакетів"
-
-#: modules/access/rist.c:1149
-msgid "Do not check for a valid rtcp message from the encoder"
-msgstr "Не перевіряти на правильність повідомлення rctp від кодера"
-
-#: modules/access/rist.c:1150
-msgid ""
-"Send nack messages even when we have not confirmed that the encoder is on "
-"our local network."
-msgstr ""
-"Відправляти повідомлення непідтвердження, навіть якщо нема впевненості, що "
-"кодувальник перебуває в локальній мережі."
 
 #: modules/access/rtp/rtp.c:44
 msgid "RTCP (local) port"
@@ -8500,7 +8464,7 @@ msgid "Screen"
 msgstr "Екран"
 
 #: modules/access/screen/xcb.c:41 modules/access/shm.c:44
-#: modules/access/vnc.c:61
+#: modules/access/vnc.c:62
 msgid "How many times the screen content should be refreshed per second."
 msgstr "Скільки разів на секунду вміст екрана повинен перемальовуватися."
 
@@ -8532,21 +8496,32 @@ msgstr "Порт SFTP"
 msgid "SFTP port number to use on the server"
 msgstr "Номер використовуваного на сервері порту SFTP"
 
-#: modules/access/sftp.c:64
+#: modules/access/sftp.c:61
+msgid "Private key file"
+msgstr ""
+
+#: modules/access/sftp.c:62
+msgid ""
+"Private-key file used for SSH public key authentication. Public-key file is "
+"assumed to be in the same directory with '.pub' appended. If unset, standard "
+"key paths will be attempted (e.g. '~/.ssh/id_rsa')."
+msgstr ""
+
+#: modules/access/sftp.c:68
 msgid "SFTP input"
 msgstr "Введення з SFTP"
 
-#: modules/access/sftp.c:411
+#: modules/access/sftp.c:463
 msgid "SFTP authentication"
 msgstr "Аутентифікація SFTP"
 
-#: modules/access/sftp.c:412
+#: modules/access/sftp.c:464
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr ""
 "Введіть правильне ім'я користувача і пароль для з’єднання із сервером SFTP %s"
 
-#: modules/access/shm.c:46 modules/access/vnc.c:58
+#: modules/access/shm.c:46 modules/access/vnc.c:59
 msgid "Frame buffer depth"
 msgstr "Глибина буфера кадрів"
 
@@ -8594,7 +8569,7 @@ msgstr "Шлях до відображеного в пам'яті файлу б�
 msgid "XWD file (autodetect)"
 msgstr "Файл XWD (автовиявлення)"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "8 bits"
 msgstr "8-бітний"
 
@@ -8602,15 +8577,15 @@ msgstr "8-бітний"
 msgid "15 bits"
 msgstr "15-бітний"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "16 bits"
 msgstr "16-бітний"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "24 bits"
 msgstr "24-бітний"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "32 bits"
 msgstr "32-бітний"
 
@@ -8654,42 +8629,30 @@ msgstr ""
 "Будь ласка, введіть ім'я користувача (в ідеалі, доменне ім'я з використанням "
 "формату ДОМЕН;ім'я_користувача) та пароля."
 
-#: modules/access/srt.c:428 modules/access_output/srt.c:457
+#: modules/access/srt.c:550 modules/access_output/srt.c:457
 msgid "SRT"
 msgstr "SRT"
 
-#: modules/access/srt.c:429
+#: modules/access/srt.c:551
 msgid "SRT input"
 msgstr "Введення з SRT"
 
-#: modules/access/srt.c:435 modules/access_output/srt.c:464
+#: modules/access/srt.c:557 modules/access_output/srt.c:464
 msgid "Return poll wait after timeout milliseconds (-1 = infinite)"
 msgstr ""
 "Повертати опитування після затримки в мілісекундах (-1 = нескінченність)"
 
-#: modules/access/srt.c:438 modules/access_output/srt.c:466
+#: modules/access/srt.c:560 modules/access_output/srt.c:466
 msgid "SRT latency (ms)"
 msgstr "Затримка SRT (мс)"
 
-#: modules/access/srt.c:440 modules/access_output/srt.c:468
+#: modules/access/srt.c:562 modules/access_output/srt.c:468
 msgid "Password for stream encryption"
 msgstr "Пароль для потокового шифрування"
 
-#: modules/access/srt.c:446 modules/access_output/srt.c:480
-msgid " SRT Stream ID"
+#: modules/access/srt.c:568
+msgid "SRT Stream ID"
 msgstr ""
-
-#: modules/access/srt_common.c:26
-msgid "16 bytes"
-msgstr "16 байтів"
-
-#: modules/access/srt_common.c:27
-msgid "24 bytes"
-msgstr "24 байти"
-
-#: modules/access/srt_common.c:27
-msgid "32 bytes"
-msgstr "32 байти"
 
 #: modules/access/tcp.c:116
 msgid "TCP"
@@ -9074,7 +9037,7 @@ msgid "Vivid"
 msgstr "Яскраве зображення"
 
 #: modules/access/v4l2/v4l2.c:169 modules/audio_output/auhal.c:43
-#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1489
+#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1513
 #: modules/audio_output/waveout.c:145
 msgid "Audio volume"
 msgstr "Гучність звуку"
@@ -9140,7 +9103,7 @@ msgstr ""
 #: modules/control/hotkeys.c:395
 #: modules/gui/macosx/VLCAddonsWindowController.m:100
 #: modules/gui/qt/dialogs/convert.cpp:164
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:381
 #: modules/gui/qt/dialogs/preferences.cpp:79
 msgid "All"
 msgstr "Усі"
@@ -9225,121 +9188,121 @@ msgstr "Введення з VCD"
 msgid "[vcd:][device][#[title][,[chapter]]]"
 msgstr "[vcd:][пристрій][@[заголовок][,[частина]]]"
 
-#: modules/access/vdr.c:72
+#: modules/access/vdr.c:73
 msgid "Support for VDR recordings (http://www.tvdr.de/)."
 msgstr "Підтримка записів VDR (http://www.tvdr.de/)."
 
-#: modules/access/vdr.c:74
+#: modules/access/vdr.c:75
 msgid "Chapter offset in ms"
 msgstr "Зсув частини в мс"
 
-#: modules/access/vdr.c:76
+#: modules/access/vdr.c:77
 msgid "Move all chapters. This value should be set in milliseconds."
 msgstr "Змістити всі частини. Значення вказується в мілісекундах."
 
-#: modules/access/vdr.c:80
+#: modules/access/vdr.c:81
 msgid "Default frame rate for chapter import."
 msgstr "Стандартна частота кадрів імпортування частин."
 
-#: modules/access/vdr.c:84
+#: modules/access/vdr.c:85
 msgid "VDR"
 msgstr "VDR"
 
-#: modules/access/vdr.c:87
+#: modules/access/vdr.c:88
 msgid "VDR recordings"
 msgstr "Записи VDR"
 
-#: modules/access/vdr.c:380
+#: modules/access/vdr.c:383
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr "VLC не вдалося прочитати файл (%s)."
 
-#: modules/access/vdr.c:545
+#: modules/access/vdr.c:548
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr "VLC не вдалося відкрити файл \"%s\" (%s)."
 
-#: modules/access/vdr.c:820
+#: modules/access/vdr.c:811
 msgid "VDR Cut Marks"
 msgstr "Маркери вирізання VDR"
 
-#: modules/access/vdr.c:886
+#: modules/access/vdr.c:877
 msgid "Start"
 msgstr "Початок"
 
-#: modules/access/vnc.c:49
+#: modules/access/vnc.c:50
 msgid "X.509 Certificate Authority"
 msgstr "Джерело сертифікату X.509"
 
-#: modules/access/vnc.c:50
+#: modules/access/vnc.c:51
 msgid "Certificate of the Authority to verify server's against"
 msgstr "Центр сертифікації, який засвідчує справжність сервера"
 
-#: modules/access/vnc.c:51
+#: modules/access/vnc.c:52
 msgid "X.509 Certificate Revocation List"
 msgstr "Список відкликаних сертифікатів X.509"
 
-#: modules/access/vnc.c:52
+#: modules/access/vnc.c:53
 msgid "List of revoked servers certificates"
 msgstr "Список відкликаних серверних сертифікатів"
 
-#: modules/access/vnc.c:53
+#: modules/access/vnc.c:54
 msgid "X.509 Client certificate"
 msgstr "Сертифікат клієнта X.509"
 
-#: modules/access/vnc.c:54
+#: modules/access/vnc.c:55
 msgid "Certificate for client authentication"
 msgstr "Сертифікат для перевірки автентичності клієнта"
 
-#: modules/access/vnc.c:55
+#: modules/access/vnc.c:56
 msgid "X.509 Client private key"
 msgstr "Приватний ключ клієнта X.509"
 
-#: modules/access/vnc.c:56
+#: modules/access/vnc.c:57
 msgid "Private key for authentication by certificate"
 msgstr "Закритий ключ для перевірки достовірності за сертифікатом"
 
-#: modules/access/vnc.c:59
+#: modules/access/vnc.c:60
 msgid "RGB chroma (RV32, RV24, RV16, RGB2)"
 msgstr "Насиченість кольору RGB (RV32, RV24, RV16, RGB2)"
 
-#: modules/access/vnc.c:62
+#: modules/access/vnc.c:63
 msgid "Compression level"
 msgstr "Рівень стиснення"
 
-#: modules/access/vnc.c:63
+#: modules/access/vnc.c:64
 msgid "Transfer compression level from 0 (none) to 9 (max)"
 msgstr "Передача рівня стиснення від 0 (немає) to 9 (макс)"
 
-#: modules/access/vnc.c:64
+#: modules/access/vnc.c:65
 msgid "Image quality"
 msgstr "Якість зображення"
 
-#: modules/access/vnc.c:65
+#: modules/access/vnc.c:66
 msgid "Image quality 1 to 9 (max)"
 msgstr "Якість зображення від 1 до 9 (макс)"
 
-#: modules/access/vnc.c:79
+#: modules/access/vnc.c:80
 msgid "VNC"
 msgstr "VNC"
 
-#: modules/access/vnc.c:83
+#: modules/access/vnc.c:84
 msgid "VNC client access"
 msgstr "Клієнт доступу VNC"
 
-#: modules/access/wasapi.c:485
+#: modules/access/wasapi.c:489
 msgid "Loopback mode"
 msgstr "Цикловий режим"
 
-#: modules/access/wasapi.c:486
+#: modules/access/wasapi.c:490
 msgid "Record an audio rendering endpoint."
 msgstr "Запис точки кінця відтворення аудіо."
 
-#: modules/access/wasapi.c:489
+#: modules/access/wasapi.c:493
 msgid "WASAPI"
 msgstr "WASAPI"
 
-#: modules/access/wasapi.c:490
+#: modules/access/wasapi.c:494
 msgid "Windows Audio Session API input"
 msgstr "Введення API сесії Windows Audio"
 
@@ -9549,68 +9512,53 @@ msgstr "Виведення мовлення HTTP Live"
 msgid "LiveHTTP"
 msgstr "LiveHTTP"
 
-#: modules/access_output/rist.c:824
-msgid "RIST data output caching size (ms)"
-msgstr "Розмір кешування виведення даних RIST (мс)"
-
-#: modules/access_output/rist.c:826
-msgid ""
-"Having this cache will guarantee that the packets going out are delivered at "
-"a spacing determined by the chain timestamps thus ensuring a near jitter "
-"free output. Be aware that this setting will also add to the overall latency "
-"of the stream."
+#: modules/access_output/rist.c:266
+msgid "Virtual Source Port"
 msgstr ""
-"Наявність цього кешу гарантуватиме, що пакети, що виходять, доставляються з "
-"інтервалом, визначеним часовими позначками ланцюга, таким чином забезпечуючи "
-"майже вільний вихід. Пам’ятайте, що це налаштування також збільшить загальну "
-"затримку потоку."
 
-#: modules/access_output/rist.c:831
-msgid "RIST retry-buffer queue size (ms)"
-msgstr "Розмір черги буфера спроб RIST (мс)"
-
-#: modules/access_output/rist.c:833
-msgid ""
-"This must match the buffer size (latency) configured on the server side. If "
-"you are not sure, leave the default of 0 which will set it the maximum value "
-"and will use about 100MB of RAM"
+#: modules/access_output/rist.c:268
+msgid "Source port to be used inside the reduced-mode of the main profile"
 msgstr ""
-"Цей параметр мусить відповідати розміру буфера (затримці), налаштованому на "
-"стороні сервера. Якщо ви не впевнені, залиште типовий 0, який буде задавати "
-"максимальне значення та буде використовуватися приблизно 100МБ з RAM"
 
-#: modules/access_output/rist.c:837
-msgid "SSRC used in RTP output (default is random, i.e. 0)"
-msgstr "SSRC використаний у виводі RTP (усталено випадково, себто 0)"
-
-#: modules/access_output/rist.c:839
-msgid ""
-"Use this setting to specify a known SSRC for the RTP header. This is only "
-"useful if your receiver acts on it. When using VLC as receiver, it is not."
+#: modules/access_output/rist.c:270
+msgid "Virtual Destination Port"
 msgstr ""
-"Використовуйте цей параметр, щоби вказати відомий SSRC для заголовку RTP. Це "
-"корисно лише, якщо ваш одержувач працює на цьому. Коли використовується VLC "
-"як одержувач, цей параметр не потрібний."
 
-#: modules/access_output/rist.c:842 modules/access_output/shout.c:64
-#: modules/gui/qt/components/sout/sout_widgets.cpp:386
-#: share/lua/http/dialogs/create_stream.html:139
-msgid "Stream name"
-msgstr "Назва потоку"
-
-#: modules/access_output/rist.c:844
-msgid ""
-"This Stream name will be sent to the receiver using the rist RTCP channel"
+#: modules/access_output/rist.c:272
+msgid "Destination port to be used inside the reduced-mode of the main profile"
 msgstr ""
-"Ця назва потоку буде надіслана одержувачу, використовуючи канал rist RTCP"
 
-#: modules/access_output/rist.c:850
+#: modules/access_output/rist.c:279
+msgid "Multipeer mode"
+msgstr ""
+
+#: modules/access_output/rist.c:281
+msgid ""
+"This allows you to select between duplicate or load balanced modes when "
+"sending data to multiple peers (several network paths)"
+msgstr ""
+
+#: modules/access_output/rist.c:285
+msgid "Duplicate"
+msgstr ""
+
+#: modules/access_output/rist.c:285
+msgid "Load balanced"
+msgstr ""
+
+#: modules/access_output/rist.c:292
 msgid "RIST stream output"
 msgstr "Потоковий вивід RIST"
 
-#: modules/access_output/rist.c:855
-msgid "RIST target packet size (bytes)"
-msgstr "Розмір цільового пакета RIST (у байтах)"
+#: modules/access_output/rist.c:297
+msgid "RIST target payload size (bytes)"
+msgstr ""
+
+#: modules/access_output/shout.c:64
+#: modules/gui/qt/components/sout/sout_widgets.cpp:438
+#: share/lua/http/dialogs/create_stream.html:139
+msgid "Stream name"
+msgstr "Назва потоку"
 
 #: modules/access_output/shout.c:65
 msgid "Name to give to this stream/channel on the shoutcast/icecast server."
@@ -9706,6 +9654,10 @@ msgstr ""
 
 #: modules/access_output/srt.c:475
 msgid "SRT maximum bandwidth ceiling (bytes)"
+msgstr ""
+
+#: modules/access_output/srt.c:480
+msgid " SRT Stream ID"
 msgstr ""
 
 #: modules/access_output/udp.c:62 modules/stream_out/rtp.c:135
@@ -9960,29 +9912,29 @@ msgstr "Переспрямовувач аудіоканалів"
 msgid "Audio filter for simple channel mixing"
 msgstr "Звуковий фільтр для звичайного мікшування каналів"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:50
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:67
 msgid "HRTF file for the binauralization"
 msgstr "Файл HRTF для стереоакустики"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:51
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:68
 msgid "Custom HRTF (Head-related transfer function) file in the SOFA format."
 msgstr "Власний файл HRTF (функція передачі звуку в голові) у форматі SOFA."
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:54
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:71
 msgid "Headphones mode (binaural)"
 msgstr "Режим навушників (стереоакустичний)"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:55
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:72
 msgid "If the output is stereo, render ambisonics with the binaural decoder."
 msgstr ""
 "Якщо вивід звуку — стерео, то відтворюється об'ємний звук із "
 "стереоакустичним декодером."
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:65
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:82
 msgid "Ambisonics renderer and binauralizer"
 msgstr "Відтворювач об'ємного звуку та стереофон"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:77
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:94
 msgid "Binauralizer"
 msgstr "Стереофон"
 
@@ -10394,12 +10346,12 @@ msgid "Audio filter for band-limited interpolation resampling"
 msgstr "Звуковий фільтр для зміни частоти дискретизації смуговою інтерполяцією"
 
 #: modules/audio_filter/resampler/soxr.c:40
-#: modules/audio_filter/resampler/speex.c:34
+#: modules/audio_filter/resampler/speex.c:36
 msgid "Resampling quality"
 msgstr "Якість передискретизації"
 
 #: modules/audio_filter/resampler/soxr.c:41
-#: modules/audio_filter/resampler/speex.c:35
+#: modules/audio_filter/resampler/speex.c:37
 msgid "Resampling quality, from worst to best"
 msgstr "Якість передискретизації, від найгіршої до найкращої"
 
@@ -10407,8 +10359,8 @@ msgstr "Якість передискретизації, від найгіршо
 msgid "SoX Resampler"
 msgstr "Передискретизатор SoX"
 
-#: modules/audio_filter/resampler/speex.c:42
-#: modules/audio_filter/resampler/speex.c:43
+#: modules/audio_filter/resampler/speex.c:44
+#: modules/audio_filter/resampler/speex.c:45
 msgid "Speex resampler"
 msgstr "Передискретизатор Speex"
 
@@ -10727,11 +10679,11 @@ msgid ""
 msgstr ""
 "Вибраний пристрій виведення звуку використовується виключно іншою програмою."
 
-#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1486
+#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1510
 msgid "Output device"
 msgstr "Пристрій виводу"
 
-#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1487
+#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1511
 msgid "Select your audio output device"
 msgstr "Виберіть пристрій виведення звуку"
 
@@ -10747,7 +10699,7 @@ msgstr ""
 "Оберіть конфігурацію гучномовців, яку хочете використовувати. Цей параметр "
 "не створює псевдобагатоканальності! Тому немає конвертації зі стерео у 5.1."
 
-#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1490
+#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1514
 msgid "Audio volume in hundredths of decibels (dB)."
 msgstr "Гучність звуку у сотих частках децибелів (дб)."
 
@@ -10851,11 +10803,11 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "Виведення звуку K Audio Interface"
 
-#: modules/audio_output/mmdevice.c:1472 modules/gui/qt/ui/sprefs_audio.h:417
+#: modules/audio_output/mmdevice.c:1496 modules/gui/qt/ui/sprefs_audio.h:417
 msgid "HDMI/SPDIF audio passthrough"
 msgstr "аудіо роз'єм HDMI/SPDIF"
 
-#: modules/audio_output/mmdevice.c:1474
+#: modules/audio_output/mmdevice.c:1498
 msgid ""
 "Change this value if you have issue with HD codecs when using a HDMI "
 "receiver."
@@ -10863,27 +10815,27 @@ msgstr ""
 "Змініть це значення, коли у вас виникають неполадки з кодеками HD під час "
 "використання приймача HDMI."
 
-#: modules/audio_output/mmdevice.c:1481
+#: modules/audio_output/mmdevice.c:1505
 msgid "Disabled"
 msgstr "Вимкнено"
 
-#: modules/audio_output/mmdevice.c:1482
+#: modules/audio_output/mmdevice.c:1506
 msgid "Enabled (AC3/DTS only)"
 msgstr "Увімкнено (AC3/DTS лише)"
 
-#: modules/audio_output/mmdevice.c:1483
+#: modules/audio_output/mmdevice.c:1507
 msgid "Enabled"
 msgstr "Увімкнено"
 
-#: modules/audio_output/mmdevice.c:1494
+#: modules/audio_output/mmdevice.c:1518
 msgid "Windows Multimedia Device output"
 msgstr "Вивід пристрою Windows Multimedia Device"
 
-#: modules/audio_output/mmdevice.c:1500
+#: modules/audio_output/mmdevice.c:1524
 msgid "Output back-end"
 msgstr "Сервер виведення"
 
-#: modules/audio_output/mmdevice.c:1500
+#: modules/audio_output/mmdevice.c:1524
 msgid "Audio output back-end interface."
 msgstr "Інтерфейс сервера виведення звуку."
 
@@ -10911,7 +10863,7 @@ msgstr "Програмне підсилення"
 msgid "This linear gain will be applied in software."
 msgstr "Це лінійне підсилення буде застосовуватися у програмі."
 
-#: modules/audio_output/wasapi.c:652
+#: modules/audio_output/wasapi.c:687
 msgid "Windows Audio Session API output"
 msgstr "Вивід API сесії Windows Audio"
 
@@ -11028,8 +10980,8 @@ msgstr "Використовувати відтворювач Core Text у су�
 msgid "ARIB subtitles decoder"
 msgstr "Декодер субтитрів ARIB"
 
-#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1089
-#: modules/demux/mpeg/ts_psi.c:1096
+#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1092
+#: modules/demux/mpeg/ts_psi.c:1099
 msgid "ARIB subtitles"
 msgstr "Субтитри ARIB"
 
@@ -11076,9 +11028,8 @@ msgstr "Звуковий і відеокодувальник FFmpeg"
 msgid "Decoding"
 msgstr "Декодування"
 
-#: modules/codec/avcodec/avcodec.c:152 modules/codec/jpeg.c:119
-#: modules/codec/omxil/omxil.c:171 modules/codec/png.c:99
-#: modules/codec/schroedinger.c:370
+#: modules/codec/avcodec/avcodec.c:152 modules/codec/jpeg.c:120
+#: modules/codec/omxil/omxil.c:171 modules/codec/png.c:100
 msgid "Encoding"
 msgstr "Кодування"
 
@@ -11352,7 +11303,7 @@ msgstr ""
 "краще зображення, однак залишає несумісність зі стандартними декодерами "
 "MPEG2."
 
-#: modules/codec/avcodec/avcodec.h:173 modules/codec/jpeg.c:51
+#: modules/codec/avcodec/avcodec.h:173 modules/codec/jpeg.c:52
 msgid "Quality level"
 msgstr "Рівень якості"
 
@@ -11556,11 +11507,11 @@ msgstr "фрагмент"
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr "VLC не зміг відкрити кодер %4.4s %s."
 
-#: modules/codec/avcodec/vaapi.c:388
+#: modules/codec/avcodec/vaapi.c:414
 msgid "VA-API video decoder via DRM"
 msgstr "Декодео відео VA-API через DRM"
 
-#: modules/codec/avcodec/vaapi.c:393
+#: modules/codec/avcodec/vaapi.c:419
 msgid "VA-API video decoder"
 msgstr "Декодер відео VA-API"
 
@@ -11632,11 +11583,11 @@ msgstr "Відеопакетувальник Daala"
 msgid "Daala video encoder"
 msgstr "Відеокодувальник Daala"
 
-#: modules/codec/daala.c:143 modules/codec/schroedinger.c:54
+#: modules/codec/daala.c:143
 msgid "Chroma format"
 msgstr "Формат кольоровості"
 
-#: modules/codec/daala.c:144 modules/codec/schroedinger.c:55
+#: modules/codec/daala.c:144
 msgid ""
 "Picking chroma format will force a conversion of the video into that format"
 msgstr "Вибір формату кольоровості викличе перетворення відео у цей формат"
@@ -11759,8 +11710,8 @@ msgstr "Координата Y при кодуванні субтитрів"
 msgid "DVB subtitles decoder"
 msgstr "Декодер субтитрів DVB"
 
-#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:772
-#: modules/demux/mpeg/ts_psi.c:821
+#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:775
+#: modules/demux/mpeg/ts_psi.c:824
 msgid "DVB subtitles"
 msgstr "Субтитри DVB"
 
@@ -11772,11 +11723,11 @@ msgstr "Кодувальник субтитрів DVB"
 msgid "Dummy encoder"
 msgstr "Фіктивний кодер"
 
-#: modules/codec/faad.c:54
+#: modules/codec/faad.c:59
 msgid "AAC audio decoder (using libfaad2)"
 msgstr "Декодер звуку AAC (через libfaad2)"
 
-#: modules/codec/faad.c:448
+#: modules/codec/faad.c:454
 msgid "AAC extension"
 msgstr "Розширення AAC"
 
@@ -11903,11 +11854,11 @@ msgstr "MIDI-синтезатор FluidSynth"
 msgid "FluidSynth"
 msgstr "FluidSynth"
 
-#: modules/codec/fluidsynth.c:153
+#: modules/codec/fluidsynth.c:160
 msgid "MIDI synthesis not set up"
 msgstr "Синтез MIDI не налаштовано"
 
-#: modules/codec/fluidsynth.c:154
+#: modules/codec/fluidsynth.c:161
 msgid ""
 "A sound font file (.SF2) is required for MIDI synthesis.\n"
 "Please install a sound font and configure it from the VLC preferences "
@@ -11951,18 +11902,18 @@ msgstr ""
 msgid "GStreamer Based Decoder"
 msgstr "Декодер на основі GStreamer"
 
-#: modules/codec/jpeg.c:52
+#: modules/codec/jpeg.c:53
 msgid ""
 "Quality level for encoding (this can enlarge or reduce output image size)."
 msgstr ""
 "Рівень якості кодування (цей параметр може збільшити або зменшити розмір "
 "вихідного зображення)."
 
-#: modules/codec/jpeg.c:111
+#: modules/codec/jpeg.c:112
 msgid "JPEG image decoder"
 msgstr "Декодер зображень JPEG"
 
-#: modules/codec/jpeg.c:120
+#: modules/codec/jpeg.c:121
 msgid "JPEG image encoder"
 msgstr "Кодер зображень JPEG"
 
@@ -12309,11 +12260,11 @@ msgstr "Opus"
 msgid "Opus audio encoder"
 msgstr "Кодер звуку Opus"
 
-#: modules/codec/png.c:91
+#: modules/codec/png.c:92
 msgid "PNG video decoder"
 msgstr "Відеодекодер PNG"
 
-#: modules/codec/png.c:100
+#: modules/codec/png.c:101
 msgid "PNG video encoder"
 msgstr "Відеокодер PNG"
 
@@ -12569,389 +12520,6 @@ msgstr "Відеопакетувальник псевдо-raw"
 msgid "Raw video encoder for RTP"
 msgstr "Кодувальник сирого відео для RTP"
 
-#: modules/codec/schroedinger.c:60
-msgid "4:2:0"
-msgstr "4:2:0"
-
-#: modules/codec/schroedinger.c:60
-msgid "4:2:2"
-msgstr "4:2:2"
-
-#: modules/codec/schroedinger.c:60
-msgid "4:4:4"
-msgstr "4:4:4"
-
-#: modules/codec/schroedinger.c:63
-msgid "Rate control method"
-msgstr "Метод контролю частоти"
-
-#: modules/codec/schroedinger.c:64
-msgid "Method used to encode the video sequence"
-msgstr "Метод кодування відеопослідовності"
-
-#: modules/codec/schroedinger.c:77
-msgid "Constant noise threshold mode"
-msgstr "Режим постійного порогу шуму"
-
-#: modules/codec/schroedinger.c:78
-msgid "Constant bitrate mode (CBR)"
-msgstr "Кодування з постійним бітрейтом (CBR)"
-
-#: modules/codec/schroedinger.c:79
-msgid "Low Delay mode"
-msgstr "Режим низької затримки"
-
-#: modules/codec/schroedinger.c:80
-msgid "Lossless mode"
-msgstr "Режим без втрати якості"
-
-#: modules/codec/schroedinger.c:81
-msgid "Constant lambda mode"
-msgstr "Режим постійної лямбди"
-
-#: modules/codec/schroedinger.c:82
-msgid "Constant error mode"
-msgstr "Режим постійної кількості помилок"
-
-#: modules/codec/schroedinger.c:83
-msgid "Constant quality mode"
-msgstr "Режим постійної якості"
-
-#: modules/codec/schroedinger.c:87
-msgid "GOP structure"
-msgstr "Структура GOP"
-
-#: modules/codec/schroedinger.c:88
-msgid "GOP structure used to encode the video sequence"
-msgstr "Структура GOP для кодування відеопослідовності"
-
-#: modules/codec/schroedinger.c:100
-msgid ""
-"No fixed gop structure. A picture can be intra or inter and refer to "
-"previous or future pictures."
-msgstr ""
-"Немає фіксованої структури GOP. Зображення може бути внутрішнім або "
-"проміжним і посилатися на попередні або наступні зображення."
-
-#: modules/codec/schroedinger.c:101
-msgid "I-frame only sequence"
-msgstr "Послідовність тільки I-кадрів"
-
-#: modules/codec/schroedinger.c:102 modules/codec/schroedinger.c:103
-msgid "Inter pictures refere to previous pictures only"
-msgstr "Проміжні зображення посилаються тільки на попередні"
-
-#: modules/codec/schroedinger.c:104 modules/codec/schroedinger.c:105
-msgid "Inter pictures can refer to previous or future pictures"
-msgstr "Проміжні зображення можуть посилатися на попередні або наступні"
-
-#: modules/codec/schroedinger.c:109
-msgid "Constant quality factor"
-msgstr "Постійний множник якості"
-
-#: modules/codec/schroedinger.c:110
-msgid "Quality factor to use in constant quality mode"
-msgstr "Показник якості режиму постійної якості"
-
-#: modules/codec/schroedinger.c:113
-msgid "Noise Threshold"
-msgstr "Поріг шуму"
-
-#: modules/codec/schroedinger.c:114
-msgid "Noise threshold to use in constant noise threshold mode"
-msgstr "Поріг шуму в режимі постійного порогу шуму"
-
-#: modules/codec/schroedinger.c:117
-msgid "CBR bitrate (kbps)"
-msgstr "Постійний бітрейт (кб/с)"
-
-#: modules/codec/schroedinger.c:118
-msgid "Target bitrate in kbps when encoding in constant bitrate mode"
-msgstr ""
-"Цільовий бітрейт у кбіт/с під час кодування в режимі постійного бітрейту"
-
-#: modules/codec/schroedinger.c:121
-msgid "Maximum bitrate (kbps)"
-msgstr "Максимальний бітрейт (кбіт/с)"
-
-#: modules/codec/schroedinger.c:122
-msgid "Maximum bitrate in kbps when encoding in constant bitrate mode"
-msgstr ""
-"Максимальний бітрейт у кбіт/с під час кодування в режимі постійного бітрейту"
-
-#: modules/codec/schroedinger.c:125
-msgid "Minimum bitrate (kbps)"
-msgstr "Мінімальний бітрейт (кбіт/с)"
-
-#: modules/codec/schroedinger.c:126
-msgid "Minimum bitrate in kbps when encoding in constant bitrate mode"
-msgstr ""
-"Мінімальний бітрейт у кбіт/с під час кодування в режимі постійного бітрейту"
-
-#: modules/codec/schroedinger.c:129
-msgid "GOP length"
-msgstr "Довжина GOP"
-
-#: modules/codec/schroedinger.c:130
-msgid ""
-"Number of pictures between successive sequence headers i.e. length of the "
-"group of pictures"
-msgstr ""
-"Число зображень між послідовними заголовками, тобто довжина груп зображень"
-
-#: modules/codec/schroedinger.c:134
-msgid "Prefilter"
-msgstr "Попередній фільтр"
-
-#: modules/codec/schroedinger.c:135
-msgid "Enable adaptive prefiltering"
-msgstr "Вмикає адаптивне попереднє фільтрування"
-
-#: modules/codec/schroedinger.c:147
-msgid "No pre-filtering"
-msgstr "Без попереднього фільтрування"
-
-#: modules/codec/schroedinger.c:148
-msgid "Centre Weighted Median"
-msgstr "Середньозважена медіана"
-
-#: modules/codec/schroedinger.c:149
-msgid "Gaussian Low Pass Filter"
-msgstr "Гаусовий фільтр низьких частот"
-
-#: modules/codec/schroedinger.c:150
-msgid "Add Noise"
-msgstr "Додати шум"
-
-#: modules/codec/schroedinger.c:151
-msgid "Gaussian Adaptive Low Pass Filter"
-msgstr "Адаптивний гаусовий фільтр низьких частот"
-
-#: modules/codec/schroedinger.c:152
-msgid "Low Pass Filter"
-msgstr "Фільтр низьких частот"
-
-#: modules/codec/schroedinger.c:156
-msgid "Amount of prefiltering"
-msgstr "Величина попереднього фільтрування"
-
-#: modules/codec/schroedinger.c:157
-msgid "Higher value implies more prefiltering"
-msgstr "Вище значення означає більше попереднього фільтрування"
-
-#: modules/codec/schroedinger.c:160
-msgid "Picture coding mode"
-msgstr "Режим кодування малюнку"
-
-#: modules/codec/schroedinger.c:161
-msgid ""
-"Field coding is where interlaced fields are coded separately as opposed to a "
-"pseudo-progressive frame"
-msgstr ""
-"Поле кодування — це там, де черезрядкові поля кодуються окремо, що "
-"протиставляється псевдопрогресивному кадру"
-
-#: modules/codec/schroedinger.c:166
-msgid "auto - let encoder decide based upon input (Best)"
-msgstr ""
-"автоматично — дозволити кодеру вирішувати, спираючись на вхід (найкраще)"
-
-#: modules/codec/schroedinger.c:167
-msgid "force coding frame as single picture"
-msgstr "примусове кодування кадру як одиничного малюнка"
-
-#: modules/codec/schroedinger.c:168
-msgid "force coding frame as separate interlaced fields"
-msgstr "примусове кодування кадру як окремих черезрядкових полів"
-
-#: modules/codec/schroedinger.c:173
-msgid "Size of motion compensation blocks"
-msgstr "Розмір блоків компенсації руху"
-
-#: modules/codec/schroedinger.c:182 modules/codec/schroedinger.c:199
-#: modules/codec/schroedinger.c:297 modules/codec/schroedinger.c:338
-msgid "automatic - let encoder decide based upon input (Best)"
-msgstr "автоматично — дати змогу кодеру вирішувати на основі вводу (найкраще)"
-
-#: modules/codec/schroedinger.c:183
-msgid "small - use small motion compensation blocks"
-msgstr "малий — використовувати малі блоки компенсації руху"
-
-#: modules/codec/schroedinger.c:184
-msgid "medium - use medium motion compensation blocks"
-msgstr "середній — використовувати середні блоки компенсації руху"
-
-#: modules/codec/schroedinger.c:185
-msgid "large - use large motion compensation blocks"
-msgstr "великий — використовувати великі блоки компенсації руху"
-
-#: modules/codec/schroedinger.c:190
-msgid "Overlap of motion compensation blocks"
-msgstr "Перекривання блоків компенсації руху"
-
-#: modules/codec/schroedinger.c:200
-msgid "none - Motion compensation blocks do not overlap"
-msgstr "жодний— блоки компенсації руху не перекриваються"
-
-#: modules/codec/schroedinger.c:201
-msgid "partial - Motion compensation blocks only partially overlap"
-msgstr "частковий — блоки компенсації руху перекриваються частково"
-
-#: modules/codec/schroedinger.c:202
-msgid "full - Motion compensation blocks fully overlap"
-msgstr "повний — блоки компенсації руху перекриваються повністю"
-
-#: modules/codec/schroedinger.c:207
-msgid "Motion Vector precision"
-msgstr "Точність вектору руху"
-
-#: modules/codec/schroedinger.c:208
-msgid "Motion Vector precision in pels"
-msgstr "Точність вектору руху в пікселях"
-
-#: modules/codec/schroedinger.c:214
-msgid "Three component motion estimation"
-msgstr "Оцінка трійки компонентів руху"
-
-#: modules/codec/schroedinger.c:215
-msgid "Use chroma as part of the motion estimation process"
-msgstr "Використовувати кольоровість як частину процесу оцінки руху"
-
-#: modules/codec/schroedinger.c:218
-msgid "Intra picture DWT filter"
-msgstr "Фільтр дискретного перетворення Уолша усередині малюнку"
-
-#: modules/codec/schroedinger.c:221
-msgid "Inter picture DWT filter"
-msgstr "Фільтр дискретного перетворення Уолша між малюнками"
-
-#: modules/codec/schroedinger.c:244
-msgid "Number of DWT iterations"
-msgstr "Число кроків фільтру дискретного перетворення Уолша"
-
-#: modules/codec/schroedinger.c:245
-msgid "Also known as DWT levels"
-msgstr "Також знаний як рівні фільтру дискретного перетворення Уолша"
-
-#: modules/codec/schroedinger.c:250
-msgid "Enable multiple quantizers"
-msgstr "Увімкнути декілька квантифікаторів"
-
-#: modules/codec/schroedinger.c:251
-msgid "Enable multiple quantizers per subband (one per codeblock)"
-msgstr ""
-"Увімкнути декілька квантифікаторів на одну підгрупу (одна на кодовий блок)"
-
-#: modules/codec/schroedinger.c:255
-msgid "Disable arithmetic coding"
-msgstr "Вимкнути арифметичне кодування"
-
-#: modules/codec/schroedinger.c:256
-msgid "Use variable length codes instead, useful for very high bitrates"
-msgstr ""
-"Використовувати коди змінної довжини, корисно для дуже високих бітрейтів"
-
-#: modules/codec/schroedinger.c:261
-msgid "perceptual weighting method"
-msgstr "метод зваженого сприймання"
-
-#: modules/codec/schroedinger.c:272
-msgid "perceptual distance"
-msgstr "відстань сприймання"
-
-#: modules/codec/schroedinger.c:273
-msgid "perceptual distance to calculate perceptual weight"
-msgstr "відстань сприймання для обчислення ваги сприймання"
-
-#: modules/codec/schroedinger.c:277
-msgid "Horizontal slices per frame"
-msgstr "Число горизонтальних частин на кадр"
-
-#: modules/codec/schroedinger.c:278
-msgid "Number of horizontal slices per frame in low delay mode"
-msgstr "Число горизонтальних частин у кадрі в режимі низької затримки"
-
-#: modules/codec/schroedinger.c:282
-msgid "Vertical slices per frame"
-msgstr "Число вертикальних частин на кадр"
-
-#: modules/codec/schroedinger.c:283
-msgid "Number of vertical slices per frame in low delay mode"
-msgstr "Число вертикальних частин у кадрі в режимі низької затримки"
-
-#: modules/codec/schroedinger.c:287
-msgid "Size of code blocks in each subband"
-msgstr "Розмір кодових блоків у кожній підсмузі"
-
-#: modules/codec/schroedinger.c:298
-msgid "small - use small code blocks"
-msgstr "малий — використовувати малі кодові блоки"
-
-#: modules/codec/schroedinger.c:299
-msgid "medium - use medium sized code blocks"
-msgstr "середній — використовувати середні кодові блоки"
-
-#: modules/codec/schroedinger.c:300
-msgid "large - use large code blocks"
-msgstr "великий — використовувати великі кодові блоки"
-
-#: modules/codec/schroedinger.c:301
-msgid "full - One code block per subband"
-msgstr "повний — один кодовий блок на підсмугу"
-
-#: modules/codec/schroedinger.c:306
-msgid "Enable hierarchical Motion Estimation"
-msgstr "Увімкнути ієрархічне оцінювання руху"
-
-#: modules/codec/schroedinger.c:310
-msgid "Number of levels of downsampling"
-msgstr "Число рівнів передискретизації вниз"
-
-#: modules/codec/schroedinger.c:311
-msgid "Number of levels of downsampling in hierarchical motion estimation mode"
-msgstr ""
-"Число рівнів передискретизації вниз в режимі ієрархічного оцінювання руху"
-
-#: modules/codec/schroedinger.c:315
-msgid "Enable Global Motion Estimation"
-msgstr "Увімкнути глобальне оцінювання руху"
-
-#: modules/codec/schroedinger.c:319
-msgid "Enable Phase Correlation Estimation"
-msgstr "Увімкнути алгоритм оцінювання кореляції фази"
-
-#: modules/codec/schroedinger.c:323
-msgid "Enable Scene Change Detection"
-msgstr "Увімкнути визначення зміни сцени"
-
-#: modules/codec/schroedinger.c:327
-msgid "Force Profile"
-msgstr "Примусово профіль"
-
-#: modules/codec/schroedinger.c:339
-msgid "VC2 Low Delay Profile"
-msgstr "Профіль низької затримки VC2"
-
-#: modules/codec/schroedinger.c:340
-msgid "VC2 Simple Profile"
-msgstr "Простий профіль VC2"
-
-#: modules/codec/schroedinger.c:341
-msgid "VC2 Main Profile"
-msgstr "Головний профіль VC2"
-
-#: modules/codec/schroedinger.c:342
-msgid "Main Profile"
-msgstr "Головний профіль"
-
-#: modules/codec/schroedinger.c:363
-msgid "Dirac video decoder using libschroedinger"
-msgstr "Відеодекодер Dirac, використовуючи бібліотеку libschroedinger"
-
-#: modules/codec/schroedinger.c:371
-msgid "Dirac video encoder using libschroedinger"
-msgstr "Відеокодер Dirac, використовуючи бібліотеку libschroedinger"
-
 #: modules/codec/scte18.c:41
 msgid "SCTE-18 decoder"
 msgstr "Кодувальник SCTE-18"
@@ -12988,7 +12556,7 @@ msgstr "Кодер звуку MP3 з фіксованою комою"
 msgid "S/PDIF pass-through decoder"
 msgstr "Декодер транзитної передачі S/PDIF"
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:910
+#: modules/codec/speex.c:59 modules/codec/speex.c:1023
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
 #: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
@@ -13759,7 +13327,6 @@ msgid "CABAC"
 msgstr "CABAC"
 
 #: modules/codec/x264.c:133
-#, fuzzy
 msgid ""
 "CABAC (Context-Adaptive Binary Arithmetic Coding). Slightly slows down "
 "encoding and decoding, but should save 10 to 15% bitrate."
@@ -14623,14 +14190,14 @@ msgstr "Інтерфейс керування D-Bus"
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1028
-#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
-#: modules/gui/qt/main_interface.cpp:1306
-#: modules/gui/qt/main_interface.cpp:1343
-#: modules/gui/qt/main_interface.cpp:1345
-#: modules/gui/qt/main_interface.cpp:1453
-#: modules/gui/qt/main_interface.cpp:1470
-#: modules/gui/qt/main_interface.cpp:1478
-#: modules/gui/qt/main_interface.cpp:1501 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1295
+#: modules/gui/qt/main_interface.cpp:1299
+#: modules/gui/qt/main_interface.cpp:1336
+#: modules/gui/qt/main_interface.cpp:1338
+#: modules/gui/qt/main_interface.cpp:1446
+#: modules/gui/qt/main_interface.cpp:1463
+#: modules/gui/qt/main_interface.cpp:1471
+#: modules/gui/qt/main_interface.cpp:1494 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -15417,88 +14984,88 @@ msgstr "WinMsg"
 msgid "Windows messages interface"
 msgstr "Інтерфейс повідомлень Windows"
 
-#: modules/demux/adaptive/adaptive.cpp:69
+#: modules/demux/adaptive/adaptive.cpp:71
 msgid "Maximum device width"
 msgstr "Максимальна ширина пристрою"
 
-#: modules/demux/adaptive/adaptive.cpp:70
+#: modules/demux/adaptive/adaptive.cpp:72
 msgid "Maximum device height"
 msgstr "Максимальна висота пристрою"
 
-#: modules/demux/adaptive/adaptive.cpp:72
+#: modules/demux/adaptive/adaptive.cpp:74
 msgid "Fixed Bandwidth in KiB/s"
 msgstr "Фіксована ширина смуги у КіБ/с"
 
-#: modules/demux/adaptive/adaptive.cpp:73
+#: modules/demux/adaptive/adaptive.cpp:75
 msgid "Preferred bandwidth for non adaptive streams"
 msgstr "Бажана ширина смуги для неадаптивних потоків"
 
-#: modules/demux/adaptive/adaptive.cpp:75
+#: modules/demux/adaptive/adaptive.cpp:77
 msgid "Live Playback delay (ms)"
 msgstr "Затримка відтворення наживо (мс)"
 
-#: modules/demux/adaptive/adaptive.cpp:76
+#: modules/demux/adaptive/adaptive.cpp:78
 msgid "Tradeoff between stability and real time"
 msgstr "Компроміс між стійкістю та дійсним часом"
 
-#: modules/demux/adaptive/adaptive.cpp:78
+#: modules/demux/adaptive/adaptive.cpp:80
 msgid "Max buffering (ms)"
 msgstr "Макс. буферизація (мс)"
 
-#: modules/demux/adaptive/adaptive.cpp:80
+#: modules/demux/adaptive/adaptive.cpp:82
 msgid "Adaptive Logic"
 msgstr "Адаптивна логіка"
 
-#: modules/demux/adaptive/adaptive.cpp:82
+#: modules/demux/adaptive/adaptive.cpp:84
 msgid "Use regular HTTP modules"
 msgstr "Використовувати регулярні модулі HTTP"
 
-#: modules/demux/adaptive/adaptive.cpp:83
+#: modules/demux/adaptive/adaptive.cpp:85
 msgid "Connect using HTTP access instead of custom HTTP code"
 msgstr "З'єднувати через доступ HTTP замість особливого коду HTTP"
 
-#: modules/demux/adaptive/adaptive.cpp:85
+#: modules/demux/adaptive/adaptive.cpp:87
 #: modules/gui/qt/components/simple_preferences.cpp:713
 msgid "Low latency"
 msgstr "Низька затримка"
 
-#: modules/demux/adaptive/adaptive.cpp:86
+#: modules/demux/adaptive/adaptive.cpp:88
 msgid "Overrides low latency parameters"
 msgstr "Переписує параметри низької затримки"
 
-#: modules/demux/adaptive/adaptive.cpp:107
+#: modules/demux/adaptive/adaptive.cpp:109
 msgid "Predictive"
 msgstr "Прогнозна"
 
-#: modules/demux/adaptive/adaptive.cpp:108
+#: modules/demux/adaptive/adaptive.cpp:110
 msgid "Near Optimal"
 msgstr "Майже оптимальна"
 
-#: modules/demux/adaptive/adaptive.cpp:109
+#: modules/demux/adaptive/adaptive.cpp:111
 msgid "Bandwidth Adaptive"
 msgstr "Адаптивна ширина смуги"
 
-#: modules/demux/adaptive/adaptive.cpp:110
+#: modules/demux/adaptive/adaptive.cpp:112
 msgid "Fixed Bandwidth"
 msgstr "Фіксована ширина смуги"
 
-#: modules/demux/adaptive/adaptive.cpp:111
+#: modules/demux/adaptive/adaptive.cpp:113
 msgid "Lowest Bandwidth/Quality"
 msgstr "Найнижча ширина смуги/якість"
 
-#: modules/demux/adaptive/adaptive.cpp:112
+#: modules/demux/adaptive/adaptive.cpp:114
 msgid "Highest Bandwidth/Quality"
 msgstr "Найвища ширина смуги/якість"
 
-#: modules/demux/adaptive/adaptive.cpp:123
+#: modules/demux/adaptive/adaptive.cpp:125
 msgid "Force"
 msgstr "Примусово"
 
-#: modules/demux/adaptive/adaptive.cpp:127
+#: modules/demux/adaptive/adaptive.cpp:129
 msgid "Adaptive"
 msgstr "Адаптивна"
 
-#: modules/demux/adaptive/adaptive.cpp:128
+#: modules/demux/adaptive/adaptive.cpp:130
 msgid "Unified adaptive streaming for DASH/HLS"
 msgstr "Об'єднане адаптивне мовлення для DASH/HLS"
 
@@ -15594,7 +15161,7 @@ msgstr "Виправити, коли необхідно"
 msgid "AVI demuxer"
 msgstr "Демультиплексор AVI"
 
-#: modules/demux/avi/avi.c:910 modules/demux/mp4/mp4.c:4374
+#: modules/demux/avi/avi.c:920 modules/demux/mp4/mp4.c:4402
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15610,27 +15177,27 @@ msgstr ""
 "Ця дія може тривати довго, якщо файл великий.\n"
 "Що потрібно зробити?"
 
-#: modules/demux/avi/avi.c:918
+#: modules/demux/avi/avi.c:928
 msgid "Do not play"
 msgstr "Не відтворювати"
 
-#: modules/demux/avi/avi.c:919
+#: modules/demux/avi/avi.c:929
 msgid "Build index then play"
 msgstr "Побудувати індекс, а потім відтворити"
 
-#: modules/demux/avi/avi.c:920
+#: modules/demux/avi/avi.c:930
 msgid "Play as is"
 msgstr "Відтворити як є"
 
-#: modules/demux/avi/avi.c:921 modules/demux/mp4/mp4.c:4385
+#: modules/demux/avi/avi.c:931 modules/demux/mp4/mp4.c:4413
 msgid "Broken or missing Index"
 msgstr "Пошкоджений індекс або його немає"
 
-#: modules/demux/avi/avi.c:2879
+#: modules/demux/avi/avi.c:2889
 msgid "Broken or missing AVI Index"
 msgstr "Пошкоджено індекс AVI або його немає"
 
-#: modules/demux/avi/avi.c:2880
+#: modules/demux/avi/avi.c:2890
 msgid "Fixing AVI Index..."
 msgstr "Виправлення індексу AVI…"
 
@@ -15668,11 +15235,11 @@ msgstr "Дамп у файл"
 
 #: modules/demux/dirac.c:41
 msgid "Value to adjust dts by"
-msgstr "Значення для регулювання DTS"
+msgstr ""
 
 #: modules/demux/dirac.c:54
 msgid "Dirac video demuxer"
-msgstr "Демультиплексор відео Dirac"
+msgstr ""
 
 #: modules/demux/directory.c:94
 msgid "Directory import"
@@ -15748,7 +15315,7 @@ msgstr "Зображення"
 
 #: modules/demux/mjpeg.c:46 modules/demux/mpeg/es.c:53
 #: modules/demux/mpeg/h26x.c:46 modules/demux/rawvid.c:43
-#: modules/demux/subtitle.c:77 modules/demux/vc1.c:43
+#: modules/demux/subtitle.c:78 modules/demux/vc1.c:43
 #: modules/gui/macosx/VLCOpenWindowController.m:208
 msgid "Frames per Second"
 msgstr "Кадрів на секунду"
@@ -15797,7 +15364,7 @@ msgstr ""
 "Попередньо завантажувати файли matroska з того ж каталогу для пошуку "
 "пов’язаних сегментів (неприйнятно для пошкоджених файлів)."
 
-#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:113
+#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:114
 msgid "Seek based on percent not time"
 msgstr "Позиціонування, засноване на відсотках, а не на часі"
 
@@ -16054,27 +15621,27 @@ msgstr "Явний"
 msgid "Clean"
 msgstr "Чистий"
 
-#: modules/demux/mp4/mp4.c:51
+#: modules/demux/mp4/mp4.c:52
 msgid "M4A audio only"
 msgstr "Лише аудіо M4A"
 
-#: modules/demux/mp4/mp4.c:52
+#: modules/demux/mp4/mp4.c:53
 msgid "Ignore non audio tracks from iTunes audio files"
 msgstr "Ігнорувати не аудіо доріжки із звукових файлів iTunes"
 
-#: modules/demux/mp4/mp4.c:57
+#: modules/demux/mp4/mp4.c:58
 msgid "MP4 stream demuxer"
 msgstr "Демультиплексор потоку MP4"
 
-#: modules/demux/mp4/mp4.c:58
+#: modules/demux/mp4/mp4.c:59
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4382
+#: modules/demux/mp4/mp4.c:4410
 msgid "Do not seek"
 msgstr "Не шукати"
 
-#: modules/demux/mp4/mp4.c:4383
+#: modules/demux/mp4/mp4.c:4411
 msgid "Build index"
 msgstr "Побудувати індекс"
 
@@ -16140,19 +15707,19 @@ msgstr "Демультиплексор MPEG-PS"
 msgid "PS"
 msgstr "PS"
 
-#: modules/demux/mpeg/ts.c:84
+#: modules/demux/mpeg/ts.c:85
 msgid "Extra PMT"
 msgstr "Додаткова PMT"
 
-#: modules/demux/mpeg/ts.c:86
+#: modules/demux/mpeg/ts.c:87
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr "Дозволяє вказати додаткову pmt (pmt_pid=pid:тип_потоку[,...])."
 
-#: modules/demux/mpeg/ts.c:88
+#: modules/demux/mpeg/ts.c:89
 msgid "Set id of ES to PID"
 msgstr "Встановити ES ID у PID ID"
 
-#: modules/demux/mpeg/ts.c:89
+#: modules/demux/mpeg/ts.c:90
 msgid ""
 "Set the internal ID of each elementary stream handled by VLC to the same "
 "value as the PID in the TS stream, instead of 1, 2, 3, etc. Useful to do "
@@ -16161,22 +15728,22 @@ msgstr ""
 "Встановити внутрішній ID кожного елементарного потоку рівним PID потоку TS  "
 "замість 1, 2, 3, і т.д. Корисно для '#duplicate{..., select=\"es=<pid>\"}'."
 
-#: modules/demux/mpeg/ts.c:94 modules/mux/mpeg/ts.c:173
+#: modules/demux/mpeg/ts.c:95 modules/mux/mpeg/ts.c:173
 msgid "CSA Key"
 msgstr "Ключ CSA"
 
-#: modules/demux/mpeg/ts.c:95 modules/mux/mpeg/ts.c:174
+#: modules/demux/mpeg/ts.c:96 modules/mux/mpeg/ts.c:174
 msgid ""
 "CSA encryption key. This must be a 16 char string (8 hexadecimal bytes)."
 msgstr ""
 "Ключ шифрування CSA. Це значення рядок довжиною 16 символів (8 "
 "шістнадцяткових байт)."
 
-#: modules/demux/mpeg/ts.c:98 modules/mux/mpeg/ts.c:177
+#: modules/demux/mpeg/ts.c:99 modules/mux/mpeg/ts.c:177
 msgid "Second CSA Key"
 msgstr "Другий ключ CSA"
 
-#: modules/demux/mpeg/ts.c:99 modules/mux/mpeg/ts.c:178
+#: modules/demux/mpeg/ts.c:100 modules/mux/mpeg/ts.c:178
 msgid ""
 "The even CSA encryption key. This must be a 16 char string (8 hexadecimal "
 "bytes)."
@@ -16184,11 +15751,11 @@ msgstr ""
 "Парний ключ шифрування CSA. Це значення — рядок ,довжиною 16 символів (8 "
 "шістнадцяткових байт)."
 
-#: modules/demux/mpeg/ts.c:103
+#: modules/demux/mpeg/ts.c:104
 msgid "Packet size in bytes to decrypt"
 msgstr "Розмір пакета в байтах для розшифрування"
 
-#: modules/demux/mpeg/ts.c:104
+#: modules/demux/mpeg/ts.c:105
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
 "subtract the TS-header from the value before decrypting."
@@ -16196,11 +15763,11 @@ msgstr ""
 "Вкажіть розмір пакета TS для розшифрування. Функції дешифрування віднімають "
 "заголовок TS із цього значення перед розшифруванням. "
 
-#: modules/demux/mpeg/ts.c:108
+#: modules/demux/mpeg/ts.c:109
 msgid "Separate sub-streams"
 msgstr "Окремі підпотоки"
 
-#: modules/demux/mpeg/ts.c:110
+#: modules/demux/mpeg/ts.c:111
 msgid ""
 "Separate teletex/dvbs pages into independent ES. It can be useful to turn "
 "off this option when using stream output."
@@ -16208,7 +15775,7 @@ msgstr ""
 "Розділяє сторінки телетексту/DVB у незалежні ES. Може бути корисним "
 "вимкнення цієї опції при використанні вихідного потоку."
 
-#: modules/demux/mpeg/ts.c:115
+#: modules/demux/mpeg/ts.c:116
 msgid ""
 "Seek and position based on a percent byte position, not a PCR generated time "
 "position. If seeking doesn't work property, turn on this option."
@@ -16216,19 +15783,19 @@ msgstr ""
 "Пошук і позиціювання на основі відсотків байт, а не згенерованої часової "
 "позиції PCR. Якщо позиціювання не працює правильно, вимкніть цю опцію."
 
-#: modules/demux/mpeg/ts.c:126
+#: modules/demux/mpeg/ts.c:127
 msgid "Trust in-stream PCR"
 msgstr "Довіряти PCR у потоці"
 
-#: modules/demux/mpeg/ts.c:127
+#: modules/demux/mpeg/ts.c:128
 msgid "Use the stream PCR as a reference."
 msgstr "Вживати потік PCR як посилання."
 
-#: modules/demux/mpeg/ts.c:134 modules/mux/mpeg/ts.c:100
+#: modules/demux/mpeg/ts.c:135 modules/mux/mpeg/ts.c:100
 msgid "Digital TV Standard"
 msgstr "Стандарт цифрового ТБ"
 
-#: modules/demux/mpeg/ts.c:135
+#: modules/demux/mpeg/ts.c:136
 msgid ""
 "Selects mode for digital TV standard. This feature affects EPG information "
 "and subtitles."
@@ -16236,60 +15803,60 @@ msgstr ""
 "Вибір режиму для стандарту цифрового телебачення. Ця функція впливає на "
 "інформацію про EPG та субтитри."
 
-#: modules/demux/mpeg/ts.c:139
+#: modules/demux/mpeg/ts.c:140
 msgid "MPEG Transport Stream demuxer"
 msgstr "Демультиплексор MPEG TS"
 
-#: modules/demux/mpeg/ts_psi.c:422
+#: modules/demux/mpeg/ts_psi.c:425
 msgid "Main audio"
 msgstr "Основне аудіо"
 
-#: modules/demux/mpeg/ts_psi.c:423
+#: modules/demux/mpeg/ts_psi.c:426
 msgid "Audio description for the visually impaired"
 msgstr "Опис аудіо для людей із вадами зору"
 
-#: modules/demux/mpeg/ts_psi.c:424
+#: modules/demux/mpeg/ts_psi.c:427
 msgid "Clean audio for the hearing impaired"
 msgstr "Чистий звук для людей з вадами слуху"
 
-#: modules/demux/mpeg/ts_psi.c:425
+#: modules/demux/mpeg/ts_psi.c:428
 msgid "Spoken subtitles for the visually impaired"
 msgstr "Вимовлені субтитри для людей із вадами зору"
 
-#: modules/demux/mpeg/ts_psi.c:607 modules/gui/macosx/VLCMainMenu.m:465
+#: modules/demux/mpeg/ts_psi.c:610 modules/gui/macosx/VLCMainMenu.m:465
 #: modules/gui/qt/dialogs/toolbar.cpp:541
 msgid "Teletext"
 msgstr "Телетекст"
 
-#: modules/demux/mpeg/ts_psi.c:608
+#: modules/demux/mpeg/ts_psi.c:611
 msgid "Teletext subtitles"
 msgstr "Субтитри телетексту"
 
-#: modules/demux/mpeg/ts_psi.c:609
+#: modules/demux/mpeg/ts_psi.c:612
 msgid "Teletext: additional information"
 msgstr "Телетекст: додаткова інформація"
 
-#: modules/demux/mpeg/ts_psi.c:610
+#: modules/demux/mpeg/ts_psi.c:613
 msgid "Teletext: program schedule"
 msgstr "Телетекст: розклад програм"
 
-#: modules/demux/mpeg/ts_psi.c:611
+#: modules/demux/mpeg/ts_psi.c:614
 msgid "Teletext subtitles: hearing impaired"
 msgstr "Субтитри телетексту: погіршений слух"
 
-#: modules/demux/mpeg/ts_psi.c:828
+#: modules/demux/mpeg/ts_psi.c:831
 msgid "DVB subtitles: hearing impaired"
 msgstr "Субтитри DVB: погіршений слух"
 
-#: modules/demux/mpeg/ts_psi.c:1337
+#: modules/demux/mpeg/ts_psi.c:1340
 msgid "clean effects"
 msgstr "очистити ефекти"
 
-#: modules/demux/mpeg/ts_psi.c:1338
+#: modules/demux/mpeg/ts_psi.c:1341
 msgid "hearing impaired"
 msgstr "погіршений слух"
 
-#: modules/demux/mpeg/ts_psi.c:1339
+#: modules/demux/mpeg/ts_psi.c:1342
 msgid "visual impaired commentary"
 msgstr "візуально сповільнений коментар"
 
@@ -16305,7 +15872,7 @@ msgstr "Демультиплексор NullSoft"
 msgid "Nuv demuxer"
 msgstr "Демультиплексор Nuv"
 
-#: modules/demux/ogg.c:57
+#: modules/demux/ogg.c:58
 msgid "OGG demuxer"
 msgstr "Демультиплексор OGG"
 
@@ -16550,7 +16117,7 @@ msgstr "Демультиплексор Real"
 msgid "C64 sid demuxer"
 msgstr "Демультиплексор SID C64"
 
-#: modules/demux/smf.c:725
+#: modules/demux/smf.c:727
 msgid "SMF demuxer"
 msgstr "Демультиплексор SMF"
 
@@ -16558,12 +16125,12 @@ msgstr "Демультиплексор SMF"
 msgid "EBU STL subtitles parser"
 msgstr "Парсер субтитрів EBU STL"
 
-#: modules/demux/subtitle.c:53
+#: modules/demux/subtitle.c:54
 msgid "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
 msgstr ""
 "Застосовувати затримку до всіх субтитрів (у 1/10 с, наприклад 100 — це 10 с)."
 
-#: modules/demux/subtitle.c:55
+#: modules/demux/subtitle.c:56
 msgid ""
 "Override the normal frames per second settings. This will only work with "
 "MicroDVD and SubRIP (SRT) subtitles."
@@ -16571,7 +16138,7 @@ msgstr ""
 "Перекриває нормальну кількість кадрів на секунду. Це працює тільки із "
 "субтитрами MicroDVD і SubRIP (SRT)."
 
-#: modules/demux/subtitle.c:58
+#: modules/demux/subtitle.c:59
 msgid ""
 "Force the subtitles format. Selecting \"auto\" means autodetection and "
 "should always work."
@@ -16579,23 +16146,23 @@ msgstr ""
 "Примусове форматування субтитрів. Вибір „автоматино“ означає автовиявлення "
 "та повинно завжди працювати."
 
-#: modules/demux/subtitle.c:60
+#: modules/demux/subtitle.c:61
 msgid "Override the default track description."
 msgstr "Перекриває стандартний опис доріжки."
 
-#: modules/demux/subtitle.c:72
+#: modules/demux/subtitle.c:73
 msgid "Text subtitle parser"
 msgstr "Аналізатор тексту субтитрів"
 
-#: modules/demux/subtitle.c:80 modules/spu/subsdelay.c:275
+#: modules/demux/subtitle.c:81 modules/spu/subsdelay.c:275
 msgid "Subtitle delay"
 msgstr "Затримка субтитрів"
 
-#: modules/demux/subtitle.c:82
+#: modules/demux/subtitle.c:83
 msgid "Subtitle format"
 msgstr "Формат субтитрів"
 
-#: modules/demux/subtitle.c:85
+#: modules/demux/subtitle.c:86
 msgid "Subtitle description"
 msgstr "Опис субтитрів"
 
@@ -16611,15 +16178,15 @@ msgstr "TY"
 msgid "TY Stream audio/video demux"
 msgstr "Демультиплексор потоку звуку/відео TY"
 
-#: modules/demux/ty.c:784
+#: modules/demux/ty.c:793
 msgid "Closed captions 2"
 msgstr "Приховані субтитри 2"
 
-#: modules/demux/ty.c:785
+#: modules/demux/ty.c:794
 msgid "Closed captions 3"
 msgstr "Приховані субтитри 3"
 
-#: modules/demux/ty.c:786
+#: modules/demux/ty.c:795
 msgid "Closed captions 4"
 msgstr "Приховані субтитри 4"
 
@@ -16743,26 +16310,26 @@ msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:105
 #: modules/gui/macosx/VLCAddonsWindowController.m:357
-#: modules/gui/qt/dialogs/plugins.cpp:388
+#: modules/gui/qt/dialogs/plugins.cpp:387
 #: modules/gui/qt/managers/addons_manager.cpp:88
 msgid "Playlist parsers"
 msgstr "Парсери списків"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:107
 #: modules/gui/macosx/VLCAddonsWindowController.m:359
-#: modules/gui/qt/dialogs/plugins.cpp:392
+#: modules/gui/qt/dialogs/plugins.cpp:391
 #: modules/gui/qt/managers/addons_manager.cpp:90
 msgid "Service Discovery"
 msgstr "Пошук служб"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:109
-#: modules/gui/qt/dialogs/plugins.cpp:396
+#: modules/gui/qt/dialogs/plugins.cpp:395
 #: modules/gui/qt/managers/addons_manager.cpp:92
 msgid "Interfaces"
 msgstr "Інтерфейси"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:111
-#: modules/gui/qt/dialogs/plugins.cpp:399
+#: modules/gui/qt/dialogs/plugins.cpp:398
 #: modules/gui/qt/managers/addons_manager.cpp:94
 msgid "Art and meta fetchers"
 msgstr "Отримувачі метаданих та зображень"
@@ -16770,7 +16337,7 @@ msgstr "Отримувачі метаданих та зображень"
 #: modules/gui/macosx/VLCAddonsWindowController.m:113
 #: modules/gui/macosx/VLCAddonsWindowController.m:361
 #: modules/gui/macosx/VLCMainMenu.m:343 modules/gui/macosx/VLCMainMenu.m:344
-#: modules/gui/qt/dialogs/plugins.cpp:402
+#: modules/gui/qt/dialogs/plugins.cpp:401
 #: modules/gui/qt/managers/addons_manager.cpp:96
 msgid "Extensions"
 msgstr "Розширення"
@@ -16780,7 +16347,7 @@ msgid "Show Installed Only"
 msgstr "Показувати лише встановлені"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:118
-#: modules/gui/qt/dialogs/plugins.cpp:430
+#: modules/gui/qt/dialogs/plugins.cpp:429
 msgid "Find more addons online"
 msgstr "Знайти більше доповнень у мережі"
 
@@ -16812,7 +16379,7 @@ msgid "Uninstall"
 msgstr "Видалити"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:355
-#: modules/gui/qt/dialogs/plugins.cpp:384
+#: modules/gui/qt/dialogs/plugins.cpp:383
 #: modules/gui/qt/managers/addons_manager.cpp:86
 #: modules/gui/skins2/src/skin_main.cpp:535
 msgid "Skins"
@@ -17012,7 +16579,7 @@ msgstr "Час"
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1360
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "OK"
 msgstr "Гаразд"
 
@@ -17154,7 +16721,7 @@ msgstr "Зберегти як файл"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:149
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:392
 #: modules/gui/macosx/VLCOutput.m:65 modules/gui/macosx/VLCOutput.m:194
-#: modules/gui/macosx/VLCOutput.m:313 modules/gui/qt/dialogs/sout.cpp:92
+#: modules/gui/macosx/VLCOutput.m:313 modules/gui/qt/dialogs/sout.cpp:90
 msgid "Stream"
 msgstr "Потік"
 
@@ -17229,10 +16796,10 @@ msgstr "Оповіщення про потік"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:186
 #: modules/gui/macosx/VLCOpenWindowController.m:197
 #: modules/gui/macosx/VLCOutput.m:68
-#: modules/gui/qt/components/sout/sout_widgets.cpp:242
-#: modules/gui/qt/components/sout/sout_widgets.cpp:329
-#: modules/gui/qt/components/sout/sout_widgets.cpp:371
-#: modules/gui/qt/components/sout/sout_widgets.cpp:426
+#: modules/gui/qt/components/sout/sout_widgets.cpp:294
+#: modules/gui/qt/components/sout/sout_widgets.cpp:381
+#: modules/gui/qt/components/sout/sout_widgets.cpp:423
+#: modules/gui/qt/components/sout/sout_widgets.cpp:478
 msgid "Address"
 msgstr "Адреса"
 
@@ -17244,11 +16811,11 @@ msgstr "TTL"
 #: modules/gui/macosx/VLCOpenWindowController.m:185
 #: modules/gui/macosx/VLCOpenWindowController.m:187
 #: modules/gui/macosx/VLCOutput.m:69
-#: modules/gui/qt/components/sout/sout_widgets.cpp:188
-#: modules/gui/qt/components/sout/sout_widgets.cpp:243
-#: modules/gui/qt/components/sout/sout_widgets.cpp:284
-#: modules/gui/qt/components/sout/sout_widgets.cpp:330
-#: modules/gui/qt/components/sout/sout_widgets.cpp:427 modules/lua/vlc.c:67
+#: modules/gui/qt/components/sout/sout_widgets.cpp:240
+#: modules/gui/qt/components/sout/sout_widgets.cpp:295
+#: modules/gui/qt/components/sout/sout_widgets.cpp:336
+#: modules/gui/qt/components/sout/sout_widgets.cpp:382
+#: modules/gui/qt/components/sout/sout_widgets.cpp:479 modules/lua/vlc.c:67
 #: modules/stream_out/rtp.c:114
 #: share/lua/http/dialogs/stream_config_window.html:32
 #: share/lua/http/dialogs/stream_window.html:91
@@ -18353,7 +17920,7 @@ msgstr "ІНТЕРНЕТ"
 #: modules/gui/macosx/VLCSimplePrefsController.m:241
 #: modules/gui/qt/components/simple_preferences.cpp:248
 #: modules/gui/qt/components/simple_preferences.cpp:738
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:381
 msgid "Interface Settings"
 msgstr "Параметри інтерфейсу"
 
@@ -18371,7 +17938,7 @@ msgstr "Параметри відео"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:247
 #: modules/gui/qt/components/simple_preferences.cpp:254
-#: modules/gui/qt/components/simple_preferences.cpp:894
+#: modules/gui/qt/components/simple_preferences.cpp:901
 msgid "Subtitle & On Screen Display Settings"
 msgstr "Параметри субтитрів і екранного відображення"
 
@@ -18835,7 +18402,7 @@ msgid "Subtitle duration factor:"
 msgstr "Множник тривалості субтитрів:"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:68
-#: modules/gui/qt/components/extended_panels.cpp:1590
+#: modules/gui/qt/components/extended_panels.cpp:1588
 msgid ""
 "Extend subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18844,7 +18411,7 @@ msgstr ""
 "Установіть 0 для вимкнення."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:72
-#: modules/gui/qt/components/extended_panels.cpp:1595
+#: modules/gui/qt/components/extended_panels.cpp:1593
 msgid ""
 "Multiply subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18853,7 +18420,7 @@ msgstr ""
 "Установіть 0 для вимкнення."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:76
-#: modules/gui/qt/components/extended_panels.cpp:1600
+#: modules/gui/qt/components/extended_panels.cpp:1598
 msgid ""
 "Recalculate subtitle duration according\n"
 "to their content and this value.\n"
@@ -19707,29 +19274,29 @@ msgstr "Відкрити: %s"
 msgid "Find: %s"
 msgstr "Знайти: %s"
 
-#: modules/gui/qt/components/controller.cpp:352
+#: modules/gui/qt/components/controller.cpp:347
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt/components/controller.cpp:457
+#: modules/gui/qt/components/controller.cpp:451
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr ""
 "Клацніть для перемикання між повторенням всіх елементів, одного елемента або "
 "для вимкнення повторювання"
 
-#: modules/gui/qt/components/controller.cpp:558
+#: modules/gui/qt/components/controller.cpp:555
 msgid "Previous Chapter/Title"
 msgstr "Попередній розділ/заголовок"
 
-#: modules/gui/qt/components/controller.cpp:564
+#: modules/gui/qt/components/controller.cpp:561
 msgid "Next Chapter/Title"
 msgstr "Наступний розділ/заголовок"
 
-#: modules/gui/qt/components/controller.cpp:613
+#: modules/gui/qt/components/controller.cpp:605
 msgid "Teletext Activation"
 msgstr "Активація телетексту"
 
-#: modules/gui/qt/components/controller.cpp:629
+#: modules/gui/qt/components/controller.cpp:619
 msgid "Toggle Transparency"
 msgstr "Перемкнути прозорість "
 
@@ -19896,7 +19463,7 @@ msgstr "Зупинити цикл від A до B"
 msgid "Aspect Ratio"
 msgstr "Співвідношення сторін"
 
-#: modules/gui/qt/components/epg/EPGWidget.cpp:65
+#: modules/gui/qt/components/epg/EPGWidget.cpp:66
 msgid "No EPG Data Available"
 msgstr "Дані EPG недоступні"
 
@@ -20056,7 +19623,7 @@ msgstr "(Прискорений)"
 msgid "(Delayed)"
 msgstr "(Затриманий)"
 
-#: modules/gui/qt/components/extended_panels.cpp:1507
+#: modules/gui/qt/components/extended_panels.cpp:1505
 msgid "Force update of this dialog's values"
 msgstr "Примусове поновлення значень цього діалогу"
 
@@ -20153,7 +19720,7 @@ msgstr "Останні 60 секунд"
 msgid "Overall"
 msgstr "Повний"
 
-#: modules/gui/qt/components/interface_widgets.cpp:683
+#: modules/gui/qt/components/interface_widgets.cpp:658
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
@@ -20161,45 +19728,45 @@ msgstr ""
 "Швидкість поточного відтворення: %1\n"
 "Клацніть для налаштування"
 
-#: modules/gui/qt/components/interface_widgets.cpp:756
+#: modules/gui/qt/components/interface_widgets.cpp:730
 msgid "Revert to normal play speed"
 msgstr "Повернути нормальну швидкість відтворення"
 
-#: modules/gui/qt/components/interface_widgets.cpp:863
+#: modules/gui/qt/components/interface_widgets.cpp:827
 msgid "Download cover art"
 msgstr "Завантажити обкладинку альбому"
 
-#: modules/gui/qt/components/interface_widgets.cpp:867
+#: modules/gui/qt/components/interface_widgets.cpp:831
 msgid "Add cover art from file"
 msgstr "Додати обкладинку альбому з файлу"
 
-#: modules/gui/qt/components/interface_widgets.cpp:933
+#: modules/gui/qt/components/interface_widgets.cpp:897
 msgid "Choose Cover Art"
 msgstr "Вибрати обкладинку альбому"
 
-#: modules/gui/qt/components/interface_widgets.cpp:934
+#: modules/gui/qt/components/interface_widgets.cpp:898
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "Файли зображень (*.gif *.jpg *.jpeg *.png)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:961
+#: modules/gui/qt/components/interface_widgets.cpp:925
 #: modules/gui/qt/dialogs/toolbar.cpp:573
 msgid "Elapsed time"
 msgstr "Час, що минув"
 
-#: modules/gui/qt/components/interface_widgets.cpp:965
+#: modules/gui/qt/components/interface_widgets.cpp:929
 #: modules/gui/qt/dialogs/toolbar.cpp:577
 msgid "Total/Remaining time"
 msgstr "Загальний час/час, що залишився"
 
-#: modules/gui/qt/components/interface_widgets.cpp:967
+#: modules/gui/qt/components/interface_widgets.cpp:931
 msgid "Click to toggle between total and remaining time"
 msgstr "Натисніть для перемикання між загальним часом і часом, що лишився"
 
-#: modules/gui/qt/components/interface_widgets.cpp:973
+#: modules/gui/qt/components/interface_widgets.cpp:937
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "Натисніть для перемикання між часом відтворення та часом, що лишився"
 
-#: modules/gui/qt/components/interface_widgets.cpp:975
+#: modules/gui/qt/components/interface_widgets.cpp:939
 msgid "Double click to jump to a chosen time position"
 msgstr "Двічі клацніть для переходу на обрану часову позицію"
 
@@ -20403,19 +19970,19 @@ msgstr ""
 "Список відтворення - порожній.\n"
 "Перетягніть файл сюди або виберіть медіаресурс ліворуч."
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:143
+#: modules/gui/qt/components/playlist/standardpanel.hpp:144
 msgid "Icons"
 msgstr "Піктограми"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:144
+#: modules/gui/qt/components/playlist/standardpanel.hpp:145
 msgid "Detailed List"
 msgstr "Детальний список"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:145
+#: modules/gui/qt/components/playlist/standardpanel.hpp:146
 msgid "List"
 msgstr "Список"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:146
+#: modules/gui/qt/components/playlist/standardpanel.hpp:147
 msgid "PictureFlow"
 msgstr "Галерея"
 
@@ -20452,7 +20019,6 @@ msgid "Application level hotkey"
 msgstr "Гаряча клавіша для програми"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1148
-#: modules/gui/qt/components/preferences_widgets.cpp:1405
 msgid "Global"
 msgstr "Глобальне"
 
@@ -20469,33 +20035,37 @@ msgstr ""
 "Подвійне клацання для зміни.\n"
 "Клавіша Delete для вилучення."
 
+#: modules/gui/qt/components/preferences_widgets.cpp:1405
+msgid "Global Hotkey change"
+msgstr ""
+
 #: modules/gui/qt/components/preferences_widgets.cpp:1406
 msgid "Hotkey change"
 msgstr "Змінити гарячу клавішу"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1410
-msgid "Press the new key or combination for "
-msgstr "Натисніть нову клавішу або комбінацію для "
+msgid "Press the new key or combination for <b>%1</b>"
+msgstr ""
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1419
 msgid "Assign"
 msgstr "Призначити"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1454
-msgid "Warning: this key or combination is already assigned to "
-msgstr "Попередження: клавіша або комбінація вже прив'язані до"
+#: modules/gui/qt/components/preferences_widgets.cpp:1455
+msgid "Warning: this key or combination is already assigned to \"<b>%1</b>\""
+msgstr ""
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1466
+#: modules/gui/qt/components/preferences_widgets.cpp:1467
 msgid "Warning: <b>%1</b> is already an application menu shortcut"
 msgstr "Попередження: <b>%1</b> вже використовується у меню програми"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1489
-msgid "Key or combination: "
-msgstr "Клавіша або комбінація:"
+#: modules/gui/qt/components/preferences_widgets.cpp:1490
+msgid "Key or combination: <b>%1</b>"
+msgstr ""
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1498
-msgid "Key: "
-msgstr "Клавіша: "
+msgid "Key: <b>%1</b>"
+msgstr ""
 
 #: modules/gui/qt/components/simple_preferences.cpp:256
 #: modules/gui/qt/components/simple_preferences.cpp:636
@@ -20503,7 +20073,7 @@ msgid "Input & Codecs Settings"
 msgstr "Параметри введення й кодеків"
 
 #: modules/gui/qt/components/simple_preferences.cpp:258
-#: modules/gui/qt/components/simple_preferences.cpp:938
+#: modules/gui/qt/components/simple_preferences.cpp:945
 msgid "Configure Hotkeys"
 msgstr "Конфігурувати гарячі клавіші"
 
@@ -20547,30 +20117,30 @@ msgstr "Веб-сайт обкладинок VLC"
 msgid "System's default"
 msgstr "Стандартне системи"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1344
+#: modules/gui/qt/components/simple_preferences.cpp:1351
 msgid "File associations"
 msgstr "Файлові асоціації"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1353
+#: modules/gui/qt/components/simple_preferences.cpp:1360
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "Звукові файли"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1354
+#: modules/gui/qt/components/simple_preferences.cpp:1361
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "Відеофайли"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1355
+#: modules/gui/qt/components/simple_preferences.cpp:1362
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "Файли списків відтворення"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1420
+#: modules/gui/qt/components/simple_preferences.cpp:1427
 msgid "&Apply"
 msgstr "Застосувати"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1421
+#: modules/gui/qt/components/simple_preferences.cpp:1428
 #: modules/gui/qt/dialogs/convert.cpp:137
 #: modules/gui/qt/dialogs/gototime.cpp:48 modules/gui/qt/dialogs/open.cpp:109
 #: modules/gui/qt/dialogs/openurl.cpp:59
@@ -20658,49 +20228,65 @@ msgid ""
 msgstr ""
 "Контейнери (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:185
+#: modules/gui/qt/components/sout/sout_widgets.cpp:184
+msgid "This module outputs the stream using the RIST protocol (TR06)."
+msgstr ""
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:186
+msgid "Destination Address"
+msgstr ""
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:191
+msgid "Destination Port"
+msgstr ""
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:201
+msgid "Stream Name"
+msgstr ""
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:237
 msgid "This module outputs the transcoded stream to a network via HTTP."
 msgstr "Цей модуль виводить перекодований потік у мережу через HTTP."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:187
-#: modules/gui/qt/components/sout/sout_widgets.cpp:283
+#: modules/gui/qt/components/sout/sout_widgets.cpp:239
+#: modules/gui/qt/components/sout/sout_widgets.cpp:335
 msgid "Path"
 msgstr "Шлях"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:239
+#: modules/gui/qt/components/sout/sout_widgets.cpp:291
 msgid ""
 "This module outputs the transcoded stream to a network via the mms protocol."
 msgstr ""
 "Цей модуль виводить перекодований потік у мережу за допомогою протоколу MMS."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:281
+#: modules/gui/qt/components/sout/sout_widgets.cpp:333
 msgid "This module outputs the transcoded stream to a network via RTSP."
 msgstr ""
 "Цей модуль виводить перекодований потік у мережу за допомогою протоколу RTSP."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:327
+#: modules/gui/qt/components/sout/sout_widgets.cpp:379
 msgid "This module outputs the transcoded stream to a network via UDP."
 msgstr ""
 "Цей модуль виводить перекодований потік у мережу за допомогою протоколу UDP."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:369
+#: modules/gui/qt/components/sout/sout_widgets.cpp:421
 msgid "This module outputs the transcoded stream to a network via RTP."
 msgstr ""
 "Цей модуль виводить перекодований потік у мережу за допомогою протоколу RTP."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:376
+#: modules/gui/qt/components/sout/sout_widgets.cpp:428
 msgid "Base port"
 msgstr "Базовий порт"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:424
+#: modules/gui/qt/components/sout/sout_widgets.cpp:476
 msgid "This module outputs the transcoded stream to an Icecast server."
 msgstr "Цей модуль виводить перекодований потік на сервер Icecast."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:443
+#: modules/gui/qt/components/sout/sout_widgets.cpp:495
 msgid "Mount Point"
 msgstr "Точка монтування"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:444
+#: modules/gui/qt/components/sout/sout_widgets.cpp:496
 msgid "Login:pass"
 msgstr "Логін:пароль"
 
@@ -21098,11 +20684,11 @@ msgstr "Шукати:"
 msgid "More information..."
 msgstr "Більше інформації…"
 
-#: modules/gui/qt/dialogs/plugins.cpp:266
+#: modules/gui/qt/dialogs/plugins.cpp:265
 msgid "Reload extensions"
 msgstr "Перевантажити розширення"
 
-#: modules/gui/qt/dialogs/plugins.cpp:385
+#: modules/gui/qt/dialogs/plugins.cpp:384
 msgid ""
 "Skins customize player's appearance. You can activate them through "
 "preferences."
@@ -21110,7 +20696,7 @@ msgstr ""
 "Оболонки можуть змінювати зовнішній вигляд програми. Ви можете увімкнути їх "
 "у налаштуваннях."
 
-#: modules/gui/qt/dialogs/plugins.cpp:389
+#: modules/gui/qt/dialogs/plugins.cpp:388
 msgid ""
 "Playlist parsers add new capabilities to read internet streams or extract "
 "meta data."
@@ -21118,7 +20704,7 @@ msgstr ""
 "Аналізатори списку відтворення додають нові можливості для читання потоків у "
 "інтернеті та видобування метаданих."
 
-#: modules/gui/qt/dialogs/plugins.cpp:393
+#: modules/gui/qt/dialogs/plugins.cpp:392
 msgid ""
 "Service discoveries adds new sources to your playlist such as web radios, "
 "video websites, ..."
@@ -21126,18 +20712,18 @@ msgstr ""
 "Пошук сервісів додає у ваш список відтворення такі нові ресурси, як інтернет-"
 "радіо, веб-сторінок з відео, ..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:400
+#: modules/gui/qt/dialogs/plugins.cpp:399
 msgid "Retrieves extra info and art for playlist items"
 msgstr "Отримує додаткові дані та зображення для списку відтворення"
 
-#: modules/gui/qt/dialogs/plugins.cpp:403
+#: modules/gui/qt/dialogs/plugins.cpp:402
 msgid ""
 "Extensions brings various enhancements. Check descriptions for more details"
 msgstr ""
 "Розширення надає кілька поліпшень. Для отримання додаткової інформації "
 "зверніться до описів."
 
-#: modules/gui/qt/dialogs/plugins.cpp:424
+#: modules/gui/qt/dialogs/plugins.cpp:423
 msgid "Only installed"
 msgstr "Лише встановлені"
 
@@ -21265,7 +20851,7 @@ msgstr ""
 "Автоматично генерується, коли ви змінюєте параметри вище,\n"
 "але ви можете змінити це вручну."
 
-#: modules/gui/qt/dialogs/sout.cpp:89
+#: modules/gui/qt/dialogs/sout.cpp:87
 msgid "Back"
 msgstr "Назад"
 
@@ -21515,19 +21101,19 @@ msgstr "Порожньо"
 msgid "Deactivate"
 msgstr "Деактивувати"
 
-#: modules/gui/qt/main_interface.cpp:378
+#: modules/gui/qt/main_interface.cpp:374
 msgid "Do you want to restart the playback where left off?"
 msgstr "Ви хочете відновити відтворення, де зупинилися?"
 
-#: modules/gui/qt/main_interface.cpp:384
+#: modules/gui/qt/main_interface.cpp:380
 msgid "&Continue"
 msgstr "&Продовжити"
 
-#: modules/gui/qt/main_interface.cpp:1454
+#: modules/gui/qt/main_interface.cpp:1447
 msgid "Control menu for the player"
 msgstr "Меню керування програвача"
 
-#: modules/gui/qt/main_interface.cpp:1498
+#: modules/gui/qt/main_interface.cpp:1491
 msgid "Paused"
 msgstr "Призупинено"
 
@@ -22280,15 +21866,15 @@ msgstr "Гама зображення (0-10)"
 msgid "Set the image gamma, between 0.01 and 10. Defaults to 1."
 msgstr "Вкажіть гаму зображення від 0.01 до 10. Стандартно: 1."
 
-#: modules/hw/d3d11/d3d11_filters.c:681
+#: modules/hw/d3d11/d3d11_filters.c:683
 msgid "AMD VQ Enhancer"
 msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:687
+#: modules/hw/d3d11/d3d11_filters.c:689
 msgid "AMD Frame Rate Doubler"
 msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:690
+#: modules/hw/d3d11/d3d11_filters.c:692
 msgid "Show indicator"
 msgstr ""
 
@@ -23645,11 +23231,11 @@ msgstr "Експорт списку відтворення XSPF"
 msgid "HTML playlist export"
 msgstr "Експорт списку відтворення HTML"
 
-#: modules/misc/rtsp.c:63
+#: modules/misc/rtsp.c:65
 msgid "Maximum number of connections"
 msgstr "Максимальне число з'єднань"
 
-#: modules/misc/rtsp.c:64
+#: modules/misc/rtsp.c:66
 msgid ""
 "This limits the maximum number of clients that can connect to the RTSP VOD. "
 "0 means no limit."
@@ -23657,15 +23243,15 @@ msgstr ""
 "Обмежити максимальне число клієнтів, які можуть підключатися до серверу RTSP "
 "VOD. 0 означає без обмежень."
 
-#: modules/misc/rtsp.c:67
+#: modules/misc/rtsp.c:69
 msgid "MUX for RAW RTSP transport"
 msgstr "Мікшер для транпорту RAW RTSP"
 
-#: modules/misc/rtsp.c:69
+#: modules/misc/rtsp.c:71
 msgid "Sets the timeout option in the RTSP session string"
 msgstr "Встановлює параметр таймауту в сесійному рядку RTSP"
 
-#: modules/misc/rtsp.c:71
+#: modules/misc/rtsp.c:73
 msgid ""
 "Defines what timeout option to add to the RTSP session ID string. Setting it "
 "to a negative number removes the timeout option entirely. This is needed by "
@@ -23677,11 +23263,11 @@ msgstr ""
 "IPTV STB (зроблених, наприклад, HansunTech), які цього не сприймають. "
 "Стандартно: 5."
 
-#: modules/misc/rtsp.c:77 modules/stream_out/rtp.c:244
+#: modules/misc/rtsp.c:79 modules/stream_out/rtp.c:244
 msgid "RTSP VoD"
 msgstr "RTSP VoD"
 
-#: modules/misc/rtsp.c:78
+#: modules/misc/rtsp.c:80
 msgid "Legacy RTSP VoD server"
 msgstr "Старий RTSP VoD сервер"
 
@@ -23714,27 +23300,27 @@ msgstr ""
 msgid "Accept certificate temporarily"
 msgstr "Тимчасово прийняти сертифікат"
 
-#: modules/misc/stats.c:215 modules/stream_out/stats.c:51
+#: modules/misc/stats.c:221 modules/stream_out/stats.c:51
 msgid "Stats"
 msgstr "Статистика"
 
-#: modules/misc/stats.c:217
+#: modules/misc/stats.c:223
 msgid "Stats encoder function"
 msgstr "Функція статистики кодувальника"
 
-#: modules/misc/stats.c:223 modules/misc/stats.c:229 modules/misc/stats.c:235
+#: modules/misc/stats.c:229 modules/misc/stats.c:235 modules/misc/stats.c:241
 msgid "Stats decoder"
 msgstr "Статистика декодера"
 
-#: modules/misc/stats.c:224 modules/misc/stats.c:230 modules/misc/stats.c:236
+#: modules/misc/stats.c:230 modules/misc/stats.c:236 modules/misc/stats.c:242
 msgid "Stats decoder function"
 msgstr "Функція статистики декодера"
 
-#: modules/misc/stats.c:241
+#: modules/misc/stats.c:247
 msgid "Stats demux"
 msgstr "Статистика демультиплексора"
 
-#: modules/misc/stats.c:242
+#: modules/misc/stats.c:248
 msgid "Stats demux function"
 msgstr "Функція статистики демультиплексора"
 
@@ -23792,7 +23378,7 @@ msgstr ""
 msgid "ASF muxer"
 msgstr "Мультиплексор ASF"
 
-#: modules/mux/asf.c:563
+#: modules/mux/asf.c:564
 msgid "Unknown Video"
 msgstr "Невідоме відео"
 
@@ -24150,7 +23736,7 @@ msgstr "Пакетувальник звуку A/52"
 msgid "avparser packetizer"
 msgstr "пакетувальник avparser"
 
-#: modules/packetizer/av1.c:585
+#: modules/packetizer/av1.c:586
 msgid "AV1 video packetizer"
 msgstr "Відеопакетувальник AV1"
 
@@ -24160,7 +23746,7 @@ msgstr "Пакетувальник копіюванням"
 
 #: modules/packetizer/dirac.c:87
 msgid "Dirac packetizer"
-msgstr "Пакетувальник Dirac"
+msgstr ""
 
 #: modules/packetizer/dts.c:47
 msgid "DTS audio packetizer"
@@ -24232,7 +23818,7 @@ msgstr "Виявлення відтворювача Avahi"
 
 #: modules/services_discovery/bonjour.m:45
 #: modules/services_discovery/bonjour.m:63
-#: modules/services_discovery/bonjour.m:455
+#: modules/services_discovery/bonjour.m:461
 msgid "Bonjour Network Discovery"
 msgstr "Виявлення мережі Bonjour"
 
@@ -24264,7 +23850,7 @@ msgstr "Мої малюнки"
 
 #: modules/services_discovery/microdns.c:44
 #: modules/services_discovery/microdns.c:57
-#: modules/services_discovery/microdns.c:646
+#: modules/services_discovery/microdns.c:656
 msgid "mDNS Network Discovery"
 msgstr "Виявлення мережі mDNS"
 
@@ -24424,13 +24010,13 @@ msgstr "HD DVD"
 msgid "Unknown type"
 msgstr "Невідомий тип"
 
-#: modules/services_discovery/upnp.cpp:76
+#: modules/services_discovery/upnp.cpp:81
 msgid "Custom SAT>IP channel list URL"
 msgstr "Власний список URL каналів SAT>IP"
 
-#: modules/services_discovery/upnp.cpp:111
-#: modules/services_discovery/upnp.cpp:118
-#: modules/services_discovery/upnp.cpp:253
+#: modules/services_discovery/upnp.cpp:116
+#: modules/services_discovery/upnp.cpp:123
+#: modules/services_discovery/upnp.cpp:258
 msgid "Universal Plug'n'Play"
 msgstr "Універсальний Plug'n'Play"
 
@@ -25254,31 +24840,31 @@ msgstr "HTTP Динамічне мовлення"
 msgid "Zlib decompression filter"
 msgstr "Фільтр стиснення Zlib"
 
-#: modules/stream_filter/prefetch.c:532
+#: modules/stream_filter/prefetch.c:530
 msgid "Stream prefetch filter"
 msgstr "Фільтр попереднього відбору потоку"
 
-#: modules/stream_filter/prefetch.c:535
+#: modules/stream_filter/prefetch.c:533
 msgid "Buffer size"
 msgstr "Розмір буферу"
 
-#: modules/stream_filter/prefetch.c:536
+#: modules/stream_filter/prefetch.c:534
 msgid "Prefetch buffer size (KiB)"
 msgstr "Розмір буфера попереднього відбору (КіБ)"
 
-#: modules/stream_filter/prefetch.c:538
+#: modules/stream_filter/prefetch.c:536
 msgid "Read size"
 msgstr "Розмір читання"
 
-#: modules/stream_filter/prefetch.c:539
+#: modules/stream_filter/prefetch.c:537
 msgid "Prefetch background read size (bytes)"
 msgstr "Розмір читання у фоні для попереднього відбору (байти)"
 
-#: modules/stream_filter/prefetch.c:541
+#: modules/stream_filter/prefetch.c:539
 msgid "Seek threshold"
 msgstr "Поріг пошуку"
 
-#: modules/stream_filter/prefetch.c:542
+#: modules/stream_filter/prefetch.c:540
 msgid "Prefetch forward seek threshold (bytes)"
 msgstr "Поріг прямого пошуку для попереднього відбору (байти)"
 
@@ -25432,7 +25018,7 @@ msgstr ""
 "медіа на Chromecast."
 
 #: modules/stream_out/chromecast/cast.cpp:192
-#: modules/stream_out/chromecast/cast.cpp:1198
+#: modules/stream_out/chromecast/cast.cpp:1219
 msgid "Performance warning"
 msgstr "Застереження про швидкодію"
 
@@ -25493,11 +25079,11 @@ msgstr "Chromecast"
 msgid "Chromecast stream output"
 msgstr "Виведення потоку Chromecast"
 
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "Ok, Don't warn me again"
 msgstr "Гаразд, більше не попереджайте мене"
 
-#: modules/stream_out/chromecast/cast.cpp:1199
+#: modules/stream_out/chromecast/cast.cpp:1220
 msgid ""
 "Casting this video requires conversion. This conversion can use all the "
 "available power and could quickly drain your battery."
@@ -26458,11 +26044,11 @@ msgstr "Синтез мовлення для Mac OS X"
 msgid "Speech synthesis for Windows"
 msgstr "Синтез мовлення для Windows"
 
-#: modules/text_renderer/svg.c:70
+#: modules/text_renderer/svg.c:72
 msgid "SVG template file"
 msgstr "Файл шаблону SVG"
 
-#: modules/text_renderer/svg.c:71
+#: modules/text_renderer/svg.c:73
 msgid ""
 "Location of a file holding a SVG template for automatic string conversion"
 msgstr ""
@@ -27169,11 +26755,11 @@ msgstr "Фільтр заморожування для інтерактивно�
 msgid "Freeze"
 msgstr "Заморозити"
 
-#: modules/video_filter/gaussianblur.c:50
+#: modules/video_filter/gaussianblur.c:51
 msgid "Gaussian's std deviation"
 msgstr "Нормальне Гаусівське відхилення"
 
-#: modules/video_filter/gaussianblur.c:52
+#: modules/video_filter/gaussianblur.c:53
 msgid ""
 "Gaussian's standard deviation. The blurring will take into account pixels up "
 "to 3*sigma away in any direction."
@@ -27181,15 +26767,15 @@ msgstr ""
 "Нормальне гаусове відхилення. Розмиття братиме до уваги пікселі навколо на "
 "відстані трьох сигм."
 
-#: modules/video_filter/gaussianblur.c:55
+#: modules/video_filter/gaussianblur.c:56
 msgid "Add a blurring effect"
 msgstr "Додати ефект розмивання"
 
-#: modules/video_filter/gaussianblur.c:60
+#: modules/video_filter/gaussianblur.c:61
 msgid "Gaussian blur video filter"
 msgstr "Відеофільтр розмиття по Гаусу"
 
-#: modules/video_filter/gaussianblur.c:61
+#: modules/video_filter/gaussianblur.c:62
 msgid "Gaussian Blur"
 msgstr "Розмиття по Гаусу"
 

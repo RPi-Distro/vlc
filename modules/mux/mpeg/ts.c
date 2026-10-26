@@ -1270,8 +1270,9 @@ static bool MuxStreams(sout_mux_t *p_mux )
 
         block_t *p_data;
         if( p_stream == p_pcr_stream || p_sys->b_data_alignment
-             || ((p_input->p_fmt->i_codec != VLC_CODEC_MPGA ) &&
-                 (p_input->p_fmt->i_codec != VLC_CODEC_MP3) ) )
+             || (p_input->p_fmt->i_codec != VLC_CODEC_MPGA &&
+                 p_input->p_fmt->i_codec != VLC_CODEC_MP2 &&
+                 p_input->p_fmt->i_codec != VLC_CODEC_MP3 ) )
         {
             p_data = block_FifoGet( p_input->p_fifo );
             if( p_data->i_dts <= VLC_TICK_INVALID )
@@ -1646,6 +1647,7 @@ static block_t *FixPES( sout_mux_t *p_mux, block_fifo_t *p_fifo )
         }
         i_copy = __MIN( STD_PES_PAYLOAD - i_size, p_next->i_buffer );
 
+        p_data->i_buffer = i_size + i_copy;
         memcpy( &p_data->p_buffer[i_size], p_next->p_buffer, i_copy );
         if( p_next->i_pts )
             p_next->i_pts += p_next->i_length * i_copy / p_next->i_buffer;

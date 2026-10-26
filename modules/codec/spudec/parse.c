@@ -411,7 +411,7 @@ static int ParseControlSeq( decoder_t *p_dec, vlc_tick_t i_pts,
             i_index += 4;
         }
 
-        i_command = p_sys->buffer[i_index];
+        i_command = i_index < p_sys->buffer_size ? p_sys->buffer[i_index] : (SPU_CMD_END - 1);
 
         switch( i_command )
         {
@@ -530,11 +530,11 @@ static int ParseControlSeq( decoder_t *p_dec, vlc_tick_t i_pts,
 
             spu_properties.i_start = i_pts + date;
 
-            if( p_sys->i_spu_size >
-                i_index + 3 + 4 + (p_sys->buffer[i_index+5] >> 4) )
+            uint8_t pcxtli_count = p_sys->buffer[i_index+5] >> 4;
+            if( p_sys->i_spu_size > i_index + 3 + 4 + pcxtli_count )
             {
                 spu_data.p_pxctli = &p_sys->buffer[i_index+3 + 4];
-                spu_data.i_pxclti = p_sys->buffer[i_index+5] >> 4;
+                spu_data.i_pxclti = __MIN(pcxtli_count, (p_sys->i_spu_size - (i_index + 3 + 4)) / 6 );
             }
 
             i_index += 1 + GetWBE(&p_sys->buffer[i_index+1]);

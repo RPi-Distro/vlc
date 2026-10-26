@@ -536,7 +536,7 @@ static int Open( vlc_object_t * p_this )
                 if( p_wf->wFormatTag == WAVE_FORMAT_EXTENSIBLE &&
                     p_wf->cbSize >= sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX) )
                 {
-                    WAVEFORMATEXTENSIBLE *p_wfe = (WAVEFORMATEXTENSIBLE *)p_wf;
+                    WAVEFORMATEXTENSIBLE *p_wfe = container_of(p_wf, WAVEFORMATEXTENSIBLE, Format);
                     tk->fmt.i_codec = AVI_FourccGetCodec( AUDIO_ES, p_wfe->SubFormat.Data1 );
                 }
                 else
@@ -738,6 +738,16 @@ static int Open( vlc_object_t * p_this )
                     tk->fmt.b_packetized = false;
                 }
 
+                if( tk->fmt.i_codec == VLC_CODEC_H264 && tk->fmt.i_extra )
+                {
+                    tk->fmt.i_original_fourcc = VLC_FOURCC('a','v','c','1');
+                }
+
+                /* Store original fourcc for SpeedHQ variants so decoder can distinguish between them */
+                if( tk->fmt.i_codec == VLC_CODEC_SPEEDHQ && tk->fmt.i_original_fourcc == 0 )
+                {
+                    tk->fmt.i_original_fourcc = p_bih->biCompression;
+                }
                 tk->i_samplesize = 0;
 
                 tk->fmt.video.i_visible_width =
@@ -3095,13 +3105,15 @@ static void AVI_ExtractSubtitle( demux_t *p_demux,
     char *psz_description = NULL;
     avi_chunk_indx_t *p_indx = NULL;
 
+    avi_chunk_t ck;
+    AVI_ChunkInit( &ck );
+    int64_t  i_position;
+    unsigned i_size;
+
     if( !p_sys->b_seekable )
         goto exit;
 
     p_indx = AVI_ChunkFind( p_strl, AVIFOURCC_indx, 0, false );
-    avi_chunk_t ck;
-    int64_t  i_position;
-    unsigned i_size;
     if( p_indx )
     {
         if( p_indx->i_indextype == AVI_INDEX_OF_INDEXES &&
@@ -3111,6 +3123,7 @@ static void AVI_ExtractSubtitle( demux_t *p_demux,
                 AVI_ChunkRead( p_demux->s, &ck, NULL  ) ||
                 ck.common.i_chunk_fourcc != AVIFOURCC_indx )
                 goto exit;
+
             p_indx = &ck.indx;
         }
 
@@ -3175,7 +3188,7 @@ static void AVI_ExtractSubtitle( demux_t *p_demux,
         p[4] != 0x00 || GetWLE( &p[5] ) != 0x2 )
         goto exit;
     const unsigned i_name = GetDWLE( &p[7] );
-    if( 11 + i_size <= i_name )
+    if( INT64_C(11) + i_name >= i_size )
         goto exit;
     if( i_name > 0 )
         psz_description = FromCharset( "UTF-16LE", &p[11], i_name );
@@ -3213,8 +3226,7 @@ exit:
     else
         msg_Warn( p_demux, "Failed to load an embedded subtitle" );
 
-    if( p_indx == &ck.indx )
-        AVI_ChunkClean( p_demux->s, &ck );
+    AVI_ChunkClean( p_demux->s, &ck );
 }
 /*****************************************************************************
  * Stream management

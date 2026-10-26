@@ -72,7 +72,10 @@
  * Remaining text is a required description of the update
  */
 
-#if defined( _WIN64 )
+
+#if defined( _WIN32 ) && ( defined( __aarch64__ ) || defined( _M_ARM64 ) )
+# define UPDATE_OS_SUFFIX "-win-arm64"
+#elif defined( _WIN64 )
 # define UPDATE_OS_SUFFIX "-win-x64"
 #elif defined( _WIN32 )
 # define UPDATE_OS_SUFFIX "-win-x86"
@@ -81,9 +84,11 @@
 #endif
 
 #ifndef NDEBUG
-# define UPDATE_VLC_STATUS_URL "http://update-test.videolan.org/vlc/status-win-x86"
+# define UPDATE_VLC_STATUS_URL "http://update-test.videolan.org/vlc/status" UPDATE_OS_SUFFIX
+# define UPDATE_VLC_STATUS_SURL "https://update-test.videolan.org/vlc/status" UPDATE_OS_SUFFIX
 #else
 # define UPDATE_VLC_STATUS_URL "http://update.videolan.org/vlc/status" UPDATE_OS_SUFFIX
+# define UPDATE_VLC_STATUS_SURL "https://update.videolan.org/vlc/status" UPDATE_OS_SUFFIX
 #endif
 
 #define dialog_FatalWait( p_obj, psz_title, psz_fmt, ... ) \
@@ -186,11 +191,14 @@ static bool GetUpdateFile( update_t *p_update )
     char *psz_version_line = NULL;
     char *psz_update_data = NULL;
 
-    p_stream = vlc_stream_NewURL( p_update->p_libvlc, UPDATE_VLC_STATUS_URL );
+    bool use_https = update_use_https();
+    const char *update_status_url = use_https ? UPDATE_VLC_STATUS_SURL : UPDATE_VLC_STATUS_URL;
+
+    p_stream = vlc_stream_NewURL( p_update->p_libvlc, update_status_url );
     if( !p_stream )
     {
         msg_Err( p_update->p_libvlc, "Failed to open %s for reading",
-                 UPDATE_VLC_STATUS_URL );
+                 update_status_url );
         goto error;
     }
 
@@ -209,7 +217,7 @@ static bool GetUpdateFile( update_t *p_update )
                          i_read ) != (ssize_t)i_read )
     {
         msg_Err( p_update->p_libvlc, "Couldn't download update file %s",
-                UPDATE_VLC_STATUS_URL );
+                 update_status_url );
         goto error;
     }
     psz_update_data[i_read] = '\0';
@@ -244,7 +252,7 @@ static bool GetUpdateFile( update_t *p_update )
     if( i_len == 0 )
     {
         msg_Err( p_update->p_libvlc, "Update file %s is corrupted: URL missing",
-                 UPDATE_VLC_STATUS_URL );
+                 update_status_url );
 
         goto error;
     }
@@ -264,7 +272,7 @@ static bool GetUpdateFile( update_t *p_update )
     {
         msg_Err( p_update->p_libvlc,
                 "Update file %s is corrupted: description missing",
-                UPDATE_VLC_STATUS_URL );
+                update_status_url );
         goto error;
     }
 
@@ -277,7 +285,7 @@ static bool GetUpdateFile( update_t *p_update )
      * to authenticate it */
     signature_packet_t sign;
     if( download_signature( VLC_OBJECT( p_update->p_libvlc ), &sign,
-            UPDATE_VLC_STATUS_URL ) != VLC_SUCCESS )
+            update_status_url ) != VLC_SUCCESS )
     {
         msg_Err( p_update->p_libvlc, "Couldn't download signature of status file" );
         goto error;

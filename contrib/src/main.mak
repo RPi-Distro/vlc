@@ -19,10 +19,11 @@ VPATH := $(TARBALLS)
 
 # Common download locations
 GNU ?= http://ftpmirror.gnu.org/gnu
-SF := https://netcologne.dl.sourceforge.net/
+SF := https://downloads.sourceforge.net/project
 VIDEOLAN := http://downloads.videolan.org/pub/videolan
 CONTRIB_VIDEOLAN := http://downloads.videolan.org/pub/contrib
-GITHUB := https://github.com/
+VIDEOLAN_GIT := https://code.videolan.org
+GITHUB := https://github.com
 GNUGPG := https://www.gnupg.org/ftp/gcrypt
 XIPH := https://ftp.osuosl.org/pub/xiph/releases
 
@@ -129,13 +130,6 @@ darwin_min_os_at_least  = $(shell echo false)
 endif
 endif
 
-# -fno-stack-check is a workaround for a possible
-# bug in Xcode 11 or macOS 10.15+
-ifdef HAVE_DARWIN_OS
-EXTRA_CFLAGS += -fno-stack-check
-XCODE_FLAGS += OTHER_CFLAGS=-fno-stack-check
-endif
-
 ifdef HAVE_MACOSX
 EXTRA_CXXFLAGS += -stdlib=libc++
 ifeq ($(ARCH),aarch64)
@@ -147,21 +141,13 @@ endif
 
 CCAS=$(CC) -c
 
-ifdef HAVE_IOS
-ifdef HAVE_NEON
-AS=perl $(abspath $(VLC_TOOLS)/bin/gas-preprocessor.pl) $(CC)
-CCAS=gas-preprocessor.pl $(CC) -c
-endif
-endif
-
 LN_S = ln -s
 ifdef HAVE_WIN32
 MINGW_W64_VERSION := $(shell echo "__MINGW64_VERSION_MAJOR" | $(CC) $(CFLAGS) -E -include _mingw.h - | tail -n 1)
 ifneq ($(MINGW_W64_VERSION),)
 HAVE_MINGW_W64 := 1
-mingw_at_least = $(shell [ $(MINGW_W64_VERSION) -gt $(1) ] && echo true)
+mingw_at_least = $(shell [ $(MINGW_W64_VERSION) -ge $(1) ] && echo true)
 endif
-HAVE_WINPTHREAD := $(shell $(CC) $(CFLAGS) -E -dM -include pthread.h - < /dev/null >/dev/null 2>&1 || echo FAIL)
 ifndef HAVE_CROSS_COMPILE
 LN_S = cp -R
 endif
@@ -182,15 +168,50 @@ EXTRA_CFLAGS += -DWINSTORECOMPAT
 EXTRA_LDFLAGS += -lwinstorecompat
 endif
 
-ifneq ($(findstring clang, $(shell $(CC) --version)),)
+apple_clang_at_least = $(shell echo false)
+apple_clang_at_most  = $(shell echo false)
+apple_clang_major_is = $(shell echo false)
+clang_at_least = $(shell echo false)
+clang_at_most  = $(shell echo false)
+clang_major_is = $(shell echo false)
+gcc_at_least = $(shell echo false)
+gcc_at_most  = $(shell echo false)
+gcc_major_is = $(shell echo false)
+ifeq ($(shell $(CC) --version 2>/dev/null | grep -qi "Apple clang" || echo FAIL),)
+HAVE_APPLE_CLANG := 1
+HAVE_CLANG := 1
+CLANG_VERSION := $(shell $(CC) --version | head -1 | grep -o '[0-9]\+\.' | head -1 | cut -d '.' -f 1)
+apple_clang_at_least = $(shell [ $(CLANG_VERSION) -ge $(1) ] && echo true)
+apple_clang_at_most  = $(shell [ $(CLANG_VERSION) -le $(1) ] && echo true)
+apple_clang_major_is = $(shell [ $(CLANG_VERSION) -eq $(1) ] && echo true)
+else
+ifneq ($(findstring clang, $(shell $(CC) --version 2>/dev/null | grep -qi clang && echo "clang")),)
 HAVE_CLANG := 1
 CLANG_VERSION := $(shell $(CC) --version | head -1 | grep -o '[0-9]\+\.' | head -1 | cut -d '.' -f 1)
 clang_at_least = $(shell [ $(CLANG_VERSION) -ge $(1) ] && echo true)
+clang_at_most  = $(shell [ $(CLANG_VERSION) -le $(1) ] && echo true)
+clang_major_is = $(shell [ $(CLANG_VERSION) -eq $(1) ] && echo true)
 else
-clang_at_least = $(shell echo false)
+ifneq ($(findstring Free Software Foundation, $(shell $(CC) --version 2>/dev/null | head -2 | tail -1)),)
+HAVE_GCC := 1
+GCC_VERSION := $(shell $(CC) --version | head -1 | grep -o '[0-9]\+\.' | head -1 | cut -d '.' -f 1)
+gcc_at_least = $(shell [ $(GCC_VERSION) -ge $(1) ] && echo true)
+gcc_at_most  = $(shell [ $(GCC_VERSION) -le $(1) ] && echo true)
+gcc_major_is = $(shell [ $(GCC_VERSION) -eq $(1) ] && echo true)
+endif
+endif
 endif
 
-cppcheck = $(shell $(CC) $(CFLAGS) -E -dM - < /dev/null | grep -E $(1))
+# -fno-stack-check is a workaround for a possible
+# bug in Xcode 11 or macOS 10.15+
+ifeq ($(call apple_clang_major_is,11), true)
+EXTRA_CFLAGS += -fno-stack-check
+XCODE_FLAGS += OTHER_CFLAGS=-fno-stack-check
+endif
+
+cppcheck = $(shell printf '$(2)' | $(CC) $(CFLAGS) -E -dM - 2>/dev/null | grep -E $(1))
+
+try_cxx_compile = $(shell printf '$(1)' | $(CXX) $(CXXFLAGS) $(2) -x c++ -c - -o /dev/null 2>/dev/null && echo true)
 
 EXTRA_CFLAGS += -I$(PREFIX)/include
 CPPFLAGS := $(CPPFLAGS) $(EXTRA_CFLAGS)
@@ -314,10 +335,23 @@ PIC := -fPIC
 endif
 
 HOSTTOOLS := \
-	CC="$(CC)" CXX="$(CXX)" LD="$(LD)" \
+	CC="$(CC)" CXX="$(CXX)" OBJC="$(OBJC)" OBJCXX="$(OBJCXX)" LD="$(LD)" \
 	AR="$(AR)" CCAS="$(CCAS)" RANLIB="$(RANLIB)" STRIP="$(STRIP)" \
 	PATH="$(PREFIX)/bin:$(PATH)" \
 	PKG_CONFIG="$(PKG_CONFIG)"
+
+ifdef HAVE_BITCODE_ENABLED
+CFLAGS := $(CFLAGS) -fembed-bitcode
+CXXFLAGS := $(CXXFLAGS) -fembed-bitcode
+endif
+
+# Add these flags after CMake consumed the CFLAGS/CXXFLAGS
+# CMake handles the optimization level with CMAKE_BUILD_TYPE
+HOSTVARS_CMAKE := \
+	CPPFLAGS="$(CPPFLAGS)" \
+	CFLAGS="$(CFLAGS)" \
+	CXXFLAGS="$(CXXFLAGS)" \
+	LDFLAGS="$(LDFLAGS)"
 
 # Add these flags after Meson consumed the CFLAGS/CXXFLAGS
 # as when setting those for Meson, it would apply to tests
@@ -329,11 +363,6 @@ CXXFLAGS := $(CXXFLAGS) -g -O0
 else
 CFLAGS := $(CFLAGS) -g -O2
 CXXFLAGS := $(CXXFLAGS) -g -O2
-endif
-
-ifdef HAVE_BITCODE_ENABLED
-CFLAGS := $(CFLAGS) -fembed-bitcode
-CXXFLAGS := $(CXXFLAGS) -fembed-bitcode
 endif
 
 ifdef ENABLE_PDB
@@ -388,10 +417,11 @@ checksum = \
 	(cd $(TARBALLS) && $(1) /dev/stdin) < \
 		"$(SRC)/$(patsubst .sum-%,%,$@)/$(2)SUMS"
 CHECK_SHA512 = $(call checksum,$(SHA512SUM),SHA512)
-UNPACK = $(RM) -R $@ \
+UNPACK = $(RM) -R $@ $(UNPACK_DIR) \
 	$(foreach f,$(filter %.tar.gz %.tgz,$^), && tar $(TAR_VERBOSE)xzfo $(f)) \
 	$(foreach f,$(filter %.tar.bz2,$^), && tar $(TAR_VERBOSE)xjfo $(f)) \
 	$(foreach f,$(filter %.tar.xz,$^), && tar $(TAR_VERBOSE)xJfo $(f)) \
+	$(foreach f,$(filter %.tar.zst,$^), && tar $(TAR_VERBOSE)xfo $(f)) \
 	$(foreach f,$(filter %.zip,$^), && unzip $(ZIP_QUIET) $(f) $(UNZIP_PARAMS))
 UNPACK_DIR = $(patsubst %.tar,%,$(basename $(notdir $<)))
 APPLY = (cd $(UNPACK_DIR) && patch -fp1) <
@@ -414,10 +444,10 @@ endif
 RECONF = mkdir -p -- $(PREFIX)/share/aclocal && \
 	cd $< && $(AUTORECONF) -fiv $(ACLOCAL_AMFLAGS)
 
-BUILD_DIR = $</_build
+BUILD_DIR = $</vlc_build
 BUILD_SRC := ..
 # build directory relative to UNPACK_DIR
-BUILD_DIRUNPACK = _build
+BUILD_DIRUNPACK = vlc_build
 
 
 MAKEBUILDDIR = mkdir -p $(BUILD_DIR) && rm -f $(BUILD_DIR)/config.status
@@ -446,6 +476,9 @@ CMAKE += -DCMAKE_BUILD_TYPE=RelWithDebInfo
 endif
 ifdef HAVE_WIN32
 CMAKE += -DCMAKE_DEBUG_POSTFIX:STRING=
+endif
+ifdef HAVE_DARWIN_OS
+CMAKE += -DCMAKE_REQUIRED_FLAGS="-Werror=partial-availability"
 endif
 ifdef HAVE_ANDROID
 CMAKE += -DANDROID:BOOL=ON
@@ -557,12 +590,12 @@ distclean: clean
 	$(RM) config.mak
 	unlink Makefile
 
-PREBUILT_URL=http://download.videolan.org/pub/videolan/contrib/$(HOST)/vlc-contrib-$(HOST)-latest.tar.bz2
+PREBUILT_URL=http://download.videolan.org/pub/videolan/contrib/$(HOST)/vlc-contrib-$(HOST)-latest.tar.zst
 
-vlc-contrib-$(HOST)-latest.tar.bz2:
+vlc-contrib-$(HOST)-latest.tar.zst:
 	$(call download,$(PREBUILT_URL))
 
-prebuilt: vlc-contrib-$(HOST)-latest.tar.bz2
+prebuilt: vlc-contrib-$(HOST)-latest.tar.zst
 	$(RM) -r $(PREFIX)
 	-$(UNPACK)
 	mv $(HOST) $(PREFIX)
@@ -585,7 +618,7 @@ package: install
 ifneq ($(notdir $(PREFIX)),$(HOST))
 	(cd tmp && mv $(notdir $(PREFIX)) $(HOST))
 endif
-	(cd tmp && tar c $(HOST)/) | bzip2 -c > ../vlc-contrib-$(HOST)-$(DATE).tar.bz2
+	tar -c -C tmp $(HOST)/ | zstd --quiet --force --threads=0 -12 -c > ../vlc-contrib-$(HOST)-$(DATE).tar.zst
 
 list:
 	@echo All packages:
@@ -656,6 +689,18 @@ ifdef HAVE_DARWIN_OS
 	echo "set(CMAKE_CXX_FLAGS \"$(CXXFLAGS)\")" >> $@
 	echo "set(CMAKE_LD_FLAGS \"$(LDFLAGS)\")" >> $@
 	echo "set(CMAKE_AR ar CACHE FILEPATH \"Archiver\")" >> $@
+ifeq ($(ARCH),aarch64)
+	echo "set(CMAKE_OSX_ARCHITECTURES \"arm64\" CACHE STRING \"\")" >> $@
+else
+ifeq ($(ARCH),arm)
+	echo "set(CMAKE_OSX_ARCHITECTURES \"armv7\" CACHE STRING \"\")" >> $@
+else
+	echo "set(CMAKE_OSX_ARCHITECTURES \"$(ARCH)\" CACHE STRING \"\")" >> $@
+endif
+endif
+ifdef VLC_DEPLOYMENT_TARGET
+	echo "set(CMAKE_OSX_DEPLOYMENT_TARGET \"$(VLC_DEPLOYMENT_TARGET)\" CACHE STRING \"\")" >> $@
+endif
 ifdef HAVE_IOS
 	echo "set(CMAKE_OSX_SYSROOT $(IOS_SDK))" >> $@
 else
@@ -664,6 +709,7 @@ endif
 else
 	echo "set(CMAKE_AR $(AR) CACHE FILEPATH \"Archiver\")" >> $@
 endif
+	echo "set(CMAKE_LINKER $(LD))" >> $@
 ifdef HAVE_CROSS_COMPILE
 	echo "set(_CMAKE_TOOLCHAIN_PREFIX $(HOST)-)" >> $@
 ifdef HAVE_ANDROID
@@ -679,6 +725,7 @@ endif
 endif
 	echo "set(CMAKE_C_COMPILER $(CC))" >> $@
 	echo "set(CMAKE_CXX_COMPILER $(CXX))" >> $@
+	echo "set(PKG_CONFIG_EXECUTABLE $(PKG_CONFIG))" >> $@
 ifeq ($(findstring msys,$(BUILD)),msys)
 	echo "set(CMAKE_FIND_ROOT_PATH `cygpath -m $(PREFIX)`)" >> $@
 else
@@ -688,7 +735,9 @@ endif
 ifdef HAVE_CROSS_COMPILE
 	echo "set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)" >> $@
 	echo "set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)" >> $@
+	echo "set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)" >> $@
 endif
+	cat $@
 
 MESON_SYSTEM_NAME =
 ifdef HAVE_WIN32

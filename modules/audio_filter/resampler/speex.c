@@ -23,6 +23,8 @@
 #endif
 
 #include <inttypes.h>
+#include <stdckdint.h>
+#include <limits.h>
 
 #include <vlc_common.h>
 #include <vlc_aout.h>
@@ -118,20 +120,36 @@ static void Close (vlc_object_t *obj)
 static block_t *Resample (filter_t *filter, block_t *in)
 {
     SpeexResamplerState *st = (SpeexResamplerState *)filter->p_sys;
+    block_t *out = NULL;
 
     const size_t framesize = filter->fmt_out.audio.i_bytes_per_frame;
     const unsigned irate = filter->fmt_in.audio.i_rate;
     const unsigned orate = filter->fmt_out.audio.i_rate;
 
-    spx_uint32_t ilen = in->i_nb_samples;
-    spx_uint32_t olen = ((ilen + 2) * orate * UINT64_C(11))
-                      / (irate * UINT64_C(10));
-
-    block_t *out = block_Alloc (olen * framesize);
-    if (unlikely(out == NULL))
+    if( speex_resampler_set_rate (st, irate, orate) != RESAMPLER_ERR_SUCCESS )
         goto error;
 
-    speex_resampler_set_rate (st, irate, orate);
+    unsigned ilen = in->i_nb_samples;
+    unsigned olen;
+
+    // spx_uint32_t olen = ((ilen + 2) * orate * UINT64_C(11))
+    //                   / (irate * UINT64_C(10));
+    uint64_t num, den;
+    if( ckd_add(&olen, ilen, 2U) ||
+        ckd_mul(&num, (uint64_t)orate, UINT64_C(11)) ||
+        ckd_mul(&den, (uint64_t)irate, UINT64_C(10)) ||
+        ckd_mul(&num, (uint64_t)olen, num) ||
+        num / UINT_MAX >= den )
+        goto error;
+
+    olen = num / den;
+
+    if(SIZE_MAX / framesize < olen)
+        goto error;
+
+    out = block_Alloc (olen * framesize);
+    if (unlikely(out == NULL))
+        goto error;
 
     int err;
     if (filter->fmt_in.audio.i_format == VLC_CODEC_FL32)

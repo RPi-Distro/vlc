@@ -1,3 +1,14 @@
+vlc (3.0.24-0+deb12u1) UNRELEASED; urgency=medium
+
+  * New upstream version 3.0.24.
+    - CVE-2026-56711: Fix an integer overflow in picture allocation.
+    - CVE-2026-73324: Fix memory disclosure to a SAT>IP server
+      during RTSP teardown.
+    - CVE-2026-102875: Fix a path traversal when extracting a
+      crafted skin archive.
+
+ -- Simon Quigley <tsimonq2@debian.org>  Mon, 26 Oct 2026 15:20:51 -0500
+
 vlc (3.0.23-0+deb12u1) bookworm-security; urgency=medium
 
   * New upstream version 3.0.23

@@ -161,6 +161,8 @@ struct demux_sys_t
     float rgf_replay_peak[AUDIO_REPLAY_GAIN_MAX];
 
     sync_table_t mllt;
+
+    vlc_meta_t *p_meta;
 };
 
 static int MpgaProbe( demux_t *p_demux, int64_t *pi_offset );
@@ -356,7 +358,10 @@ static int Demux( demux_t *p_demux )
 
 
         p_block_out->p_next = NULL;
-        es_out_Send( p_demux->out, p_sys->p_es, p_block_out );
+        if( likely(p_sys->p_es) )
+            es_out_Send( p_demux->out, p_sys->p_es, p_block_out );
+        else
+            block_Release( p_block_out );
 
         p_block_out = p_next;
     }
@@ -375,6 +380,8 @@ static void Close( vlc_object_t * p_this )
         block_ChainRelease( p_sys->p_packetized_data );
     if( p_sys->mllt.p_bits )
         free( p_sys->mllt.p_bits );
+    if( p_sys->p_meta )
+        vlc_meta_Delete( p_sys->p_meta );
     demux_PacketizerDestroy( p_sys->p_packetizer );
     free( p_sys );
 }
@@ -394,6 +401,12 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         case DEMUX_HAS_UNSUPPORTED_META:
             pb_bool = va_arg( args, bool * );
             *pb_bool = true;
+            return VLC_SUCCESS;
+
+        case DEMUX_GET_META:
+            if( p_sys->p_meta == NULL )
+                return VLC_EGENERIC;
+            vlc_meta_Merge( va_arg( args, vlc_meta_t * ), p_sys->p_meta );
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:
@@ -499,10 +512,22 @@ static bool Parse( demux_t *p_demux, block_t **pp_output )
         if( p_sys->codec.b_use_word && !p_sys->b_big_endian && p_block_in->i_buffer > 0 )
         {
             /* Convert to big endian */
-            swab( p_block_in->p_buffer, p_block_in->p_buffer, p_block_in->i_buffer );
+            block_t *old = p_block_in;
+            p_block_in = block_Alloc( p_block_in->i_buffer );
+            if( p_block_in )
+            {
+                block_CopyProperties( p_block_in, old );
+                swab( old->p_buffer, p_block_in->p_buffer, old->i_buffer );
+            }
+            block_Release( old );
         }
 
-        p_block_in->i_pts = p_block_in->i_dts = p_sys->b_start || p_sys->b_initial_sync_failed ? VLC_TICK_0 : VLC_TICK_INVALID;
+        if( p_block_in )
+        {
+            p_block_in->i_pts =
+            p_block_in->i_dts = (p_sys->b_start || p_sys->b_initial_sync_failed) ?
+                                 VLC_TICK_0 : VLC_TICK_INVALID;
+        }
     }
     p_sys->b_initial_sync_failed = p_sys->b_start; /* Only try to resync once */
 
@@ -741,10 +766,10 @@ static int MpgaCheckSync( const uint8_t *p_peek )
 
 #define MPGA_VERSION( h )   ( 1 - (((h)>>19)&0x01) )
 #define MPGA_MODE(h)        (((h)>> 6)&0x03)
-
+#define MPGA_LAYER(h)       ( 3 - (((h)>>17)&0x03) )
 static int MpgaGetFrameSamples( uint32_t h )
 {
-    const int i_layer = 3 - (((h)>>17)&0x03);
+    const int i_layer = MPGA_LAYER( h );
     switch( i_layer )
     {
     case 0:
@@ -887,6 +912,11 @@ static int ID3TAG_Parse_Handler( uint32_t i_tag, const uint8_t *p_payload, size_
     demux_t *p_demux = (demux_t *) p_priv;
     demux_sys_t *p_sys = p_demux->p_sys;
 
+    if( p_sys->p_meta == NULL )
+        p_sys->p_meta = vlc_meta_New();
+    if( p_sys->p_meta != NULL )
+        ID3HandleTag( p_payload, i_payload, i_tag, p_sys->p_meta, NULL );
+
     if( i_tag == VLC_FOURCC('M', 'L', 'L', 'T') )
     {
         if( i_payload > 20 )
@@ -986,6 +1016,9 @@ static int MpgaInit( demux_t *p_demux )
     const uint32_t header = GetDWBE( p_peek );
     if( !MpgaCheckSync( p_peek ) )
         return VLC_SUCCESS;
+
+    if( MPGA_LAYER( header ) == 2 )
+        p_sys->codec.i_codec = VLC_CODEC_MP3;
 
     /* Xing header */
     const uint8_t *p_xing = p_peek;

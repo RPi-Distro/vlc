@@ -41,6 +41,11 @@
 #include <vlc_cpu.h>
 #include <vlc_aout.h>
 
+#include <faad.h>
+#if !defined(FAAD2_VERSION) // FAAD2_VERSION added in 2.10.1
+# define PATCH_PCA
+#endif
+
 #include <neaacdec.h>
 #include "../packetizer/mpeg4audio.h"
 
@@ -314,7 +319,7 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
                 FlushBuffer( p_sys, i_read );
         }
 
-        if( i_rate == 0 )
+        if( i_rate == 0 || i_channels >= MPEG4_ASC_MAX_INDEXEDPOS )
         {
             /* Can not init decoder at all for now */
             FlushBuffer( p_sys, SIZE_MAX );
@@ -383,7 +388,8 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
                 if( NeAACDecInit( hfaad,
                                   p_sys->p_block->p_buffer,
                                   p_sys->p_block->i_buffer,
-                                  &i_rate,&i_channels ) < 0 )
+                                  &i_rate,&i_channels ) < 0 ||
+                    i_channels >= MPEG4_ASC_MAX_INDEXEDPOS )
                 {
                     /* reinitialization failed */
                     NeAACDecClose( hfaad );
@@ -451,7 +457,7 @@ static int DecodeBlock( decoder_t *p_dec, block_t *p_block )
             p_sys->b_ps = frame.ps;
         }
 
-#ifndef FAAD2_VIDEOLAN_PATCHED
+#ifdef PATCH_PCA
         /* PS Enabled FAAD PCA bug hotfix (contribs has patch) */
         if( frame.channels == 8 )
         {
@@ -647,4 +653,3 @@ static void DoReordering( uint32_t *p_out, uint32_t *p_in, int i_samples,
         }
     }
 }
-

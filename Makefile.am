@@ -60,10 +60,14 @@ EXTRA_DIST += \
 	extras/tools/tools.mak \
 	extras/tools/SHA512SUMS \
 	extras/tools/automake-clang.patch \
-	extras/tools/cmake-enable-ALPN-support-on-macOS-10.14.patch \
+	extras/tools/automake-disable-documentation.patch \
+	extras/tools/gettext-no-iconv.patch \
 	extras/tools/libtool-2.4.7-bitcode.patch \
-	extras/tools/libtool-2.4.7-clang-libs.patch \
-	extras/tools/libtool-2.4.7-response-files.patch
+	extras/tools/libtool-2.4.7-lpthread.patch \
+	extras/tools/libtool-2.6.2-embed-bitcode.patch \
+	extras/tools/libtool-2.5.4-ltmain.in-reference-MAGIC_EXE-in-the-main.patch \
+	extras/tools/libtool-2.5.4-libtool.m4-respect-the-provided-LTCFLAGS-LTCC-during.patch \
+	extras/tools/pkg-config-stdc23-port.patch
 
 ###############################################################################
 # Various utilities ( editor syntax files, D-Bus controller ... )
@@ -214,3 +218,13 @@ include extras/package/macosx/package.mak
 include extras/package/win32/package.mak
 include extras/package/win32/msi.mak
 
+dist-hook:
+	chmod u+w "$(distdir)/configure" "$(distdir)/configure.ac"
+	mtime_ref=$(mktemp)
+#	We keep a copy to have a reference timestamp and restore it,
+#	to avoid triggering automake again
+	cp -p "$(distdir)/configure.ac" "$mtime_ref"
+	sed -i '/^VERSION_DATE=\$$(/,/^)/c\VERSION_DATE='$(VERSION_DATE) \
+		"$(distdir)/configure" "$(distdir)/configure.ac"
+	touch -r "$mtime_ref" "$(distdir)/configure.ac"
+	rm "$mtime_ref"

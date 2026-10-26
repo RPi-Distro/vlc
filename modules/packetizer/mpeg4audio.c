@@ -221,6 +221,9 @@ static int OpenPacketizer(vlc_object_t *p_this)
     block_BytestreamInit(&p_sys->bytestream);
     p_sys->b_latm_cfg = false;
     p_sys->i_warnings = 0;
+    p_sys->i_channels = 0;
+    p_sys->i_rate = 0;
+    p_sys->i_frame_length = 0;
 
     /* Set output properties */
     p_dec->fmt_out.i_codec = VLC_CODEC_MP4A;
@@ -835,7 +838,7 @@ static int LOASParse(decoder_t *p_dec, uint8_t *p_buffer, int i_buffer)
             {
                 if(p_dec->fmt_out.i_extra)
                     free(p_dec->fmt_out.p_extra);
-                p_dec->fmt_out.p_extra = malloc(st->i_extra);
+                p_dec->fmt_out.p_extra = st->i_extra ? malloc(st->i_extra) : NULL;
                 if(p_dec->fmt_out.p_extra)
                 {
                     p_dec->fmt_out.i_extra = st->i_extra;
@@ -1191,6 +1194,10 @@ static block_t *PacketizeStreamBlock(decoder_t *p_dec, block_t **pp_block)
     case STATE_SEND_DATA:
         /* When we reach this point we already know we have enough
          * data available. */
+
+        if (unlikely( block_BytestreamRemaining(&p_sys->bytestream) <
+                      p_sys->i_header_size + p_sys->i_frame_size ))
+            return NULL; // need more data
 
         p_out_buffer = block_Alloc(p_sys->i_frame_size);
         if (!p_out_buffer) {

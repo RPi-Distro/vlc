@@ -473,6 +473,7 @@ ARIBB24_LIBS = @ARIBB24_LIBS@
 ARIBB25_CFLAGS = @ARIBB25_CFLAGS@
 ARIBB25_LIBS = @ARIBB25_LIBS@
 AS = @AS@
+ASDCPLIB_FACTORY = @ASDCPLIB_FACTORY@
 ASDCP_CFLAGS = @ASDCP_CFLAGS@
 ASDCP_LIBS = @ASDCP_LIBS@
 ASM = @ASM@
@@ -502,6 +503,7 @@ CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CFLAGS_access_mtp = @CFLAGS_access_mtp@
+CFLAGS_access_output_rist = @CFLAGS_access_output_rist@
 CFLAGS_access_output_shout = @CFLAGS_access_output_shout@
 CFLAGS_access_output_srt = @CFLAGS_access_output_srt@
 CFLAGS_access_srt = @CFLAGS_access_srt@
@@ -541,13 +543,14 @@ CFLAGS_ogg = @CFLAGS_ogg@
 CFLAGS_oggspots = @CFLAGS_oggspots@
 CFLAGS_omxil = @CFLAGS_omxil@
 CFLAGS_omxil_vout = @CFLAGS_omxil_vout@
+CFLAGS_openapv = @CFLAGS_openapv@
 CFLAGS_opencv_example = @CFLAGS_opencv_example@
 CFLAGS_opencv_wrapper = @CFLAGS_opencv_wrapper@
 CFLAGS_opus = @CFLAGS_opus@
 CFLAGS_qsv = @CFLAGS_qsv@
 CFLAGS_rdp = @CFLAGS_rdp@
+CFLAGS_rist = @CFLAGS_rist@
 CFLAGS_samplerate = @CFLAGS_samplerate@
-CFLAGS_schroedinger = @CFLAGS_schroedinger@
 CFLAGS_secret = @CFLAGS_secret@
 CFLAGS_sftp = @CFLAGS_sftp@
 CFLAGS_shine = @CFLAGS_shine@
@@ -582,6 +585,7 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CPPFLAGS_a52 = @CPPFLAGS_a52@
 CPPFLAGS_access_mtp = @CPPFLAGS_access_mtp@
+CPPFLAGS_access_output_rist = @CPPFLAGS_access_output_rist@
 CPPFLAGS_access_output_shout = @CPPFLAGS_access_output_shout@
 CPPFLAGS_access_output_srt = @CPPFLAGS_access_output_srt@
 CPPFLAGS_access_srt = @CPPFLAGS_access_srt@
@@ -618,13 +622,14 @@ CPPFLAGS_nfs = @CPPFLAGS_nfs@
 CPPFLAGS_notify = @CPPFLAGS_notify@
 CPPFLAGS_ogg = @CPPFLAGS_ogg@
 CPPFLAGS_oggspots = @CPPFLAGS_oggspots@
+CPPFLAGS_openapv = @CPPFLAGS_openapv@
 CPPFLAGS_opencv_example = @CPPFLAGS_opencv_example@
 CPPFLAGS_opencv_wrapper = @CPPFLAGS_opencv_wrapper@
 CPPFLAGS_opus = @CPPFLAGS_opus@
 CPPFLAGS_qsv = @CPPFLAGS_qsv@
 CPPFLAGS_rdp = @CPPFLAGS_rdp@
+CPPFLAGS_rist = @CPPFLAGS_rist@
 CPPFLAGS_samplerate = @CPPFLAGS_samplerate@
-CPPFLAGS_schroedinger = @CPPFLAGS_schroedinger@
 CPPFLAGS_secret = @CPPFLAGS_secret@
 CPPFLAGS_sftp = @CPPFLAGS_sftp@
 CPPFLAGS_shine = @CPPFLAGS_shine@
@@ -726,6 +731,8 @@ GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
 GNUTLS_LIBS = @GNUTLS_LIBS@
 GOOM_CFLAGS = @GOOM_CFLAGS@
 GOOM_LIBS = @GOOM_LIBS@
+GPGERROR_CFLAGS = @GPGERROR_CFLAGS@
+GPGERROR_LIBS = @GPGERROR_LIBS@
 GREP = @GREP@
 GST_APP_CFLAGS = @GST_APP_CFLAGS@
 GST_APP_LIBS = @GST_APP_LIBS@
@@ -779,10 +786,13 @@ LIBOBJS = @LIBOBJS@
 LIBPLACEBO_CFLAGS = @LIBPLACEBO_CFLAGS@
 LIBPLACEBO_LIBS = @LIBPLACEBO_LIBS@
 LIBPTHREAD = @LIBPTHREAD@
+LIBRIST_CFLAGS = @LIBRIST_CFLAGS@
+LIBRIST_LIBS = @LIBRIST_LIBS@
 LIBRT = @LIBRT@
 LIBS = @LIBS@
 LIBS_a52 = @LIBS_a52@
 LIBS_access_mtp = @LIBS_access_mtp@
+LIBS_access_output_rist = @LIBS_access_output_rist@
 LIBS_access_output_shout = @LIBS_access_output_shout@
 LIBS_access_output_srt = @LIBS_access_output_srt@
 LIBS_access_srt = @LIBS_access_srt@
@@ -828,15 +838,16 @@ LIBS_nfs = @LIBS_nfs@
 LIBS_notify = @LIBS_notify@
 LIBS_ogg = @LIBS_ogg@
 LIBS_oggspots = @LIBS_oggspots@
+LIBS_openapv = @LIBS_openapv@
 LIBS_opencv_example = @LIBS_opencv_example@
 LIBS_opencv_wrapper = @LIBS_opencv_wrapper@
 LIBS_opus = @LIBS_opus@
 LIBS_osx_notifications = @LIBS_osx_notifications@
 LIBS_qsv = @LIBS_qsv@
 LIBS_rdp = @LIBS_rdp@
+LIBS_rist = @LIBS_rist@
 LIBS_samplerate = @LIBS_samplerate@
 LIBS_sap = @LIBS_sap@
-LIBS_schroedinger = @LIBS_schroedinger@
 LIBS_secret = @LIBS_secret@
 LIBS_sftp = @LIBS_sftp@
 LIBS_shine = @LIBS_shine@
@@ -890,6 +901,7 @@ LTLIBOBJS = @LTLIBOBJS@
 LTLIBa52 = @LTLIBa52@
 LTLIBaa = @LTLIBaa@
 LTLIBaccess_mtp = @LTLIBaccess_mtp@
+LTLIBaccess_output_rist = @LTLIBaccess_output_rist@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_output_srt = @LTLIBaccess_output_srt@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
@@ -953,6 +965,7 @@ LTLIBogg = @LTLIBogg@
 LTLIBoggspots = @LTLIBoggspots@
 LTLIBomxil = @LTLIBomxil@
 LTLIBomxil_vout = @LTLIBomxil_vout@
+LTLIBopenapv = @LTLIBopenapv@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopensles_android = @LTLIBopensles_android@
@@ -963,8 +976,8 @@ LTLIBpostproc = @LTLIBpostproc@
 LTLIBprojectm = @LTLIBprojectm@
 LTLIBqsv = @LTLIBqsv@
 LTLIBrdp = @LTLIBrdp@
+LTLIBrist = @LTLIBrist@
 LTLIBsamplerate = @LTLIBsamplerate@
-LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
 LTLIBsdl_image = @LTLIBsdl_image@
 LTLIBsecret = @LTLIBsecret@
@@ -1014,8 +1027,6 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MATROSKA_CFLAGS = @MATROSKA_CFLAGS@
 MATROSKA_LIBS = @MATROSKA_LIBS@
-MFX_CFLAGS = @MFX_CFLAGS@
-MFX_LIBS = @MFX_LIBS@
 MICRODNS_CFLAGS = @MICRODNS_CFLAGS@
 MICRODNS_LIBS = @MICRODNS_LIBS@
 MINIZIP_CFLAGS = @MINIZIP_CFLAGS@
@@ -1048,6 +1059,8 @@ OGGSPOTS_CFLAGS = @OGGSPOTS_CFLAGS@
 OGGSPOTS_LIBS = @OGGSPOTS_LIBS@
 OGG_CFLAGS = @OGG_CFLAGS@
 OGG_LIBS = @OGG_LIBS@
+OPENAPV_CFLAGS = @OPENAPV_CFLAGS@
+OPENAPV_LIBS = @OPENAPV_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
 OPUS_CFLAGS = @OPUS_CFLAGS@
@@ -1074,6 +1087,7 @@ POSUB = @POSUB@
 PROGRAMFILES = @PROGRAMFILES@
 PROJECTM_CFLAGS = @PROJECTM_CFLAGS@
 PROJECTM_LIBS = @PROJECTM_LIBS@
+PROTOBUF_VERSION = @PROTOBUF_VERSION@
 PROTOC = @PROTOC@
 PULSE_CFLAGS = @PULSE_CFLAGS@
 PULSE_LIBS = @PULSE_LIBS@
@@ -1090,8 +1104,6 @@ RC = @RC@
 RCC = @RCC@
 SAMPLERATE_CFLAGS = @SAMPLERATE_CFLAGS@
 SAMPLERATE_LIBS = @SAMPLERATE_LIBS@
-SCHROEDINGER_CFLAGS = @SCHROEDINGER_CFLAGS@
-SCHROEDINGER_LIBS = @SCHROEDINGER_LIBS@
 SDL_IMAGE_CFLAGS = @SDL_IMAGE_CFLAGS@
 SDL_IMAGE_LIBS = @SDL_IMAGE_LIBS@
 SECRET_CFLAGS = @SECRET_CFLAGS@
@@ -1116,6 +1128,8 @@ SNDIO_LIBS = @SNDIO_LIBS@
 SOCKET_LIBS = @SOCKET_LIBS@
 SOXR_CFLAGS = @SOXR_CFLAGS@
 SOXR_LIBS = @SOXR_LIBS@
+SPATIALAUDIO_040_CFLAGS = @SPATIALAUDIO_040_CFLAGS@
+SPATIALAUDIO_040_LIBS = @SPATIALAUDIO_040_LIBS@
 SPATIALAUDIO_CFLAGS = @SPATIALAUDIO_CFLAGS@
 SPATIALAUDIO_LIBS = @SPATIALAUDIO_LIBS@
 SPEEXDSP_CFLAGS = @SPEEXDSP_CFLAGS@
@@ -1153,6 +1167,7 @@ USE_NLS = @USE_NLS@
 VDPAU_CFLAGS = @VDPAU_CFLAGS@
 VDPAU_LIBS = @VDPAU_LIBS@
 VERSION = @VERSION@
+VERSION_DATE = @VERSION_DATE@
 VERSION_EXTRA = @VERSION_EXTRA@
 VERSION_MAJOR = @VERSION_MAJOR@
 VERSION_MESSAGE = @VERSION_MESSAGE@
@@ -1162,6 +1177,8 @@ VNC_CFLAGS = @VNC_CFLAGS@
 VNC_LIBS = @VNC_LIBS@
 VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
+VPL_CFLAGS = @VPL_CFLAGS@
+VPL_LIBS = @VPL_LIBS@
 VPX_CFLAGS = @VPX_CFLAGS@
 VPX_LIBS = @VPX_LIBS@
 VSXU_CFLAGS = @VSXU_CFLAGS@
@@ -1306,10 +1323,14 @@ EXTRA_DIST = extras/package/macosx/package.mak \
 	extras/tools/bootstrap extras/tools/packages.mak \
 	extras/tools/tools.mak extras/tools/SHA512SUMS \
 	extras/tools/automake-clang.patch \
-	extras/tools/cmake-enable-ALPN-support-on-macOS-10.14.patch \
+	extras/tools/automake-disable-documentation.patch \
+	extras/tools/gettext-no-iconv.patch \
 	extras/tools/libtool-2.4.7-bitcode.patch \
-	extras/tools/libtool-2.4.7-clang-libs.patch \
-	extras/tools/libtool-2.4.7-response-files.patch \
+	extras/tools/libtool-2.4.7-lpthread.patch \
+	extras/tools/libtool-2.6.2-embed-bitcode.patch \
+	extras/tools/libtool-2.5.4-ltmain.in-reference-MAGIC_EXE-in-the-main.patch \
+	extras/tools/libtool-2.5.4-libtool.m4-respect-the-provided-LTCFLAGS-LTCC-during.patch \
+	extras/tools/pkg-config-stdc23-port.patch \
 	extras/analyser/zsh_completion.sh extras/analyser/zsh.cpp \
 	extras/analyser/emacs.init extras/analyser/vlc.vim \
 	extras/analyser/valgrind.suppressions \
@@ -1429,7 +1450,6 @@ TESTS = test/run_vlc.sh
 @HAVE_DARWIN_TRUE@noinst_DATA = pseudo-bundle
 win32_destdir = @PACKAGE_DIR@
 win32_debugdir = $(abs_top_builddir)/symbols-$(VERSION)
-win32_xpi_destdir = $(abs_top_builddir)/vlc-plugin-$(VERSION)
 7Z_OPTS = -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on
 @HAVE_ARM64_FALSE@@HAVE_WIN64_FALSE@WINVERSION = vlc-$(VERSION)-win32
 @HAVE_ARM64_FALSE@@HAVE_WIN64_TRUE@WINVERSION = vlc-$(VERSION)-win64
@@ -1887,6 +1907,9 @@ distdir-am: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+	$(MAKE) $(AM_MAKEFLAGS) \
+	  top_distdir="$(top_distdir)" distdir="$(distdir)" \
+	  dist-hook
 	-test -n "$(am__skip_mode_fix)" \
 	|| find "$(distdir)" -type d ! -perm -755 \
 		-exec chmod u+rwx,go+rx {} \; -o \
@@ -2144,9 +2167,9 @@ uninstall-am: uninstall-binSCRIPTS
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am \
 	am--refresh check check-TESTS check-am clean clean-cscope \
 	clean-generic clean-libtool cscope cscopelist-am ctags \
-	ctags-am dist dist-all dist-bzip2 dist-gzip dist-lzip \
-	dist-shar dist-tarZ dist-xz dist-zip distcheck distclean \
-	distclean-generic distclean-hdr distclean-libtool \
+	ctags-am dist dist-all dist-bzip2 dist-gzip dist-hook \
+	dist-lzip dist-shar dist-tarZ dist-xz dist-zip distcheck \
+	distclean distclean-generic distclean-hdr distclean-libtool \
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-binSCRIPTS install-data install-data-am install-dvi \
@@ -2285,6 +2308,9 @@ VLC.app: install
 	printf "APPLVLC#" >| $@/Contents/PkgInfo
 	mkdir -p $@/Contents/MacOS/lib
 	find $(prefix)/lib -name 'libvlc*.dylib' -maxdepth 1 -exec cp -a {} $@/Contents/MacOS/lib \;
+	if test "$(host_cpu)" = "x86_64"; then \
+		find $@/Contents/MacOS/lib -name 'libvlccore*.dylib' -maxdepth 1 -type f -exec install_name_tool -change /System/Library/Frameworks/CFNetwork.framework/Versions/A/CFNetwork /System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices {} \; ; \
+	fi
 	mkdir -p $@/Contents/MacOS/plugins
 	find $(prefix)/lib/vlc/plugins -name 'lib*_plugin.dylib' -maxdepth 3 -exec cp -a {} $@/Contents/MacOS/plugins \;
 	find "$(CONTRIB_DIR)/share/java/" -name 'libbluray*.jar' -maxdepth 1 -exec cp -a {} $@/Contents/MacOS/plugins \; || true
@@ -2296,6 +2322,7 @@ VLC.app: install
 	fi
 	find $@ -type d -exec chmod ugo+rx '{}' \;
 	find $@ -type f -exec chmod ugo+r '{}' \;
+	$(srcdir)/extras/package/macosx/codesign.sh -i -
 
 package-macosx: VLC.app
 	rm -f "$(top_builddir)/vlc-$(VERSION).dmg"
@@ -2400,10 +2427,10 @@ package-translations:
 @HAVE_WIN32_TRUE@		PKG_CONFIG="$(PKG_CONFIG)"
 @HAVE_WIN32_TRUE@	touch $@
 
-@HAVE_WIN32_TRUE@npapi-vlc/npapi/npvlc.la: npapi-vlc/Makefile
+@HAVE_WIN32_TRUE@npapi-vlc/activex/axvlc.la: npapi-vlc/Makefile
 @HAVE_WIN32_TRUE@	$(MAKE) -C npapi-vlc
 
-@HAVE_WIN32_TRUE@install-npapi: npapi-vlc/npapi/npvlc.la
+@HAVE_WIN32_TRUE@install-npapi: npapi-vlc/activex/axvlc.la
 @HAVE_WIN32_TRUE@	$(MAKE) -C npapi-vlc \
 @HAVE_WIN32_TRUE@		DESTDIR="$(abs_builddir)/npapi-vlc/installed" install
 
@@ -2450,7 +2477,7 @@ package-win-common: package-win-install package-win-sdk
 	-cp -r $(prefix)/share/locale $(win32_destdir)
 
 # BD-J JAR
-	-cp $(CONTRIB_DIR)/share/java/*.jar $(win32_destdir)/plugins/access/
+	-cp $(CONTRIB_DIR)/share/java/libbluray*.jar $(win32_destdir)/plugins/access/
 
 @BUILD_LUA_TRUE@	mkdir -p $(win32_destdir)/lua/
 @BUILD_LUA_TRUE@	cp -r $(prefix)/lib/vlc/lua/* $(win32_destdir)/lua/
@@ -2465,13 +2492,12 @@ package-win-common: package-win-install package-win-sdk
 # Convert to DOS line endings
 	find $(win32_destdir) -type f \( -name "*xml" -or -name "*html" -or -name '*js' -or -name '*css' -or -name '*hosts' -or -iname '*txt' -or -name '*.cfg' -or -name '*.lua' \) -exec $(U2D) -q {} \;
 
-package-win-npapi: build-npapi
+package-win-activex: build-npapi
 	cp "$(top_builddir)/npapi-vlc/installed/lib/axvlc.dll" "$(win32_destdir)/"
-	cp "$(top_builddir)/npapi-vlc/installed/lib/npvlc.dll" "$(win32_destdir)/"
 	mkdir -p "$(win32_destdir)/sdk/activex/"
 	cp $(top_builddir)/npapi-vlc/activex/README.TXT $(top_builddir)/npapi-vlc/share/test/test.html $(win32_destdir)/sdk/activex/
 
-package-win-strip: package-win-common package-win-npapi
+package-win-strip: package-win-common package-win-activex
 	mkdir -p "$(win32_debugdir)"/
 	find $(win32_destdir) -type f \( -name '*$(LIBEXT)' -or -name '*$(EXEEXT)' \) | while read i; \
 	do if test -n "$$i" ; then \
@@ -2480,21 +2506,6 @@ package-win-strip: package-win-common package-win-npapi
 	    $(OBJCOPY) --add-gnu-debuglink="$(win32_debugdir)/`basename $$i.dbg`" "$$i" ; \
 	  fi ; \
 	done
-
-package-win32-webplugin-common: package-win-strip
-	mkdir -p "$(win32_xpi_destdir)/plugins/"
-	cp -r $(win32_destdir)/plugins/ "$(win32_xpi_destdir)/plugins/"
-	cp "$(win32_destdir)/libvlc.dll" "$(win32_destdir)/libvlccore.dll" "$(win32_destdir)/npvlc.dll" "$(win32_xpi_destdir)/plugins/"
-	rm -rf "$(win32_xpi_destdir)/plugins/plugins/gui/"
-
-package-win32-xpi: package-win32-webplugin-common
-	cp $(top_builddir)/npapi-vlc/npapi/package/install.rdf "$(win32_xpi_destdir)/"
-	zip -r -9 $(WINVERSION).xpi $(win32_xpi_destdir)/install.rdf $(win32_xpi_destdir)/plugins
-
-package-win32-crx: package-win32-webplugin-common
-	cp $(top_builddir)/npapi-vlc/npapi/package/manifest.json "$(win32_xpi_destdir)/"
-	crxmake --pack-extension "$(win32_xpi_destdir)" \
-		--extension-output "$(win32_destdir)/$(WINVERSION).crx" --ignore-file install.rdf
 
 $(win32_destdir)/NSIS/nsProcess.dll: extras/package/win32/NSIS/nsProcess/nsProcess.c extras/package/win32/NSIS/nsProcess/pluginapi.c
 	mkdir -p "$(win32_destdir)/NSIS/"
@@ -2545,9 +2556,9 @@ package-win32-debug-7zip: package-win-common
 	7z a $(7Z_OPTS) $(WINVERSION)-debug.7z vlc-$(VERSION)
 
 package-win32-cleanup:
-	rm -Rf $(win32_destdir) $(win32_debugdir) $(win32_xpi_destdir)
+	rm -Rf $(win32_destdir) $(win32_debugdir)
 
-package-win32: package-win32-zip package-win32-7zip package-win32-exe package-win32-xpi
+package-win32: package-win32-zip package-win32-7zip package-win32-exe
 
 package-win32-debug: package-win32-debug-zip package-win32-debug-7zip
 
@@ -2569,7 +2580,7 @@ package-wince: package-win-strip
 	rm -f -- vlc-$(VERSION)-wince.zip
 	zip -r -9 vlc-$(VERSION)-wince.zip vlc-$(VERSION)
 
-.PHONY: package-win-install package-win-common package-win-strip package-win32-webplugin-common package-win32-xpi package-win32-crx package-win32-src package-win32-exe package-win32-zip package-win32-debug-zip package-win32-7zip package-win32-debug-7zip package-win32-cleanup package-win32 package-win32-debug package-wince
+.PHONY: package-win-install package-win-common package-win-strip package-win32-src package-win32-exe package-win32-zip package-win32-debug-zip package-win32-7zip package-win32-debug-7zip package-win32-cleanup package-win32 package-win32-debug package-wince
 
 heat: package-win-strip
 	$(HEAT) --dir $(VLCDIR)/plugins -cg CompPluginsGroup -gg -scom -sreg -sfrag -dr APPLICATIONFOLDER -out $(MSIBUILDDIR)/Plugins.fragment.wxs
@@ -2599,6 +2610,17 @@ distcleanmsi: cleanmsi
 ###############################################################################
 # OS Packaging rules
 ###############################################################################
+
+dist-hook:
+	chmod u+w "$(distdir)/configure" "$(distdir)/configure.ac"
+	mtime_ref=$(mktemp)
+#	We keep a copy to have a reference timestamp and restore it,
+#	to avoid triggering automake again
+	cp -p "$(distdir)/configure.ac" "$mtime_ref"
+	sed -i '/^VERSION_DATE=\$$(/,/^)/c\VERSION_DATE='$(VERSION_DATE) \
+		"$(distdir)/configure" "$(distdir)/configure.ac"
+	touch -r "$mtime_ref" "$(distdir)/configure.ac"
+	rm "$mtime_ref"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

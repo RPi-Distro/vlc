@@ -36,6 +36,8 @@
 #include "../../adaptive/tools/Helper.h"
 #include "../../adaptive/tools/Conversions.hpp"
 
+#include <new>
+
 using namespace smooth::playlist;
 using namespace adaptive::xml;
 
@@ -89,11 +91,11 @@ static SegmentTimeline *createTimeline(Node *streamIndexNode)
                 cur.duration = Integer<uint64_t>(chunk->getAttributeValue("d"));
                 b_cur_is_repeat &= (cur.duration == prev.duration);
             }
-            else
+            else if((it + 1) != chunks.end())
             {
-                if(it != chunks.end())
+                const Node *nextchunk = *(it + 1);
+                if (nextchunk->hasAttribute("t") && chunk->hasAttribute("t"))
                 {
-                    const Node *nextchunk = *(it + 1);
                     cur.duration = Integer<uint64_t>(nextchunk->getAttributeValue("t"))
                                  - Integer<uint64_t>(chunk->getAttributeValue("t"));
                     b_cur_is_repeat &= (cur.duration == prev.duration);

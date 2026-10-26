@@ -22,10 +22,15 @@ caca: libcaca-$(CACA_VERSION).tar.gz .sum-caca
 	$(UPDATE_AUTOCONFIG) && cd $(UNPACK_DIR) && mv config.guess config.sub .auto
 	$(APPLY) $(SRC)/caca/caca-fix-compilation-llvmgcc.patch
 	$(APPLY) $(SRC)/caca/caca-fix-pkgconfig.patch
+	$(APPLY) $(SRC)/caca/0001-win32-don-t-for-_WIN32_WINNT-to-Win2K.patch
+	$(APPLY) $(SRC)/caca/0002-win32-don-t-redefine-GetCurrentConsoleFont-with-ming.patch
+	$(APPLY) $(SRC)/caca/0003-win32-use-ANSI-calls-explicitly.patch
+	$(APPLY) $(SRC)/caca/0004-win32-use-CreateFile2-when-compiling-for-Win8.patch
+	$(APPLY) $(SRC)/caca/0005-canvas-use-GetCurrentProcessId-on-Windows.patch
+	$(APPLY) $(SRC)/caca/0006-stubs-include-winsock2.h-to-get-htons-htonl-declarat.patch
+	$(APPLY) $(SRC)/caca/fb77acff9ba6bb01d53940da34fb10f20b156a23.patch
 	$(call pkg_static,"caca/caca.pc.in")
-	$(UPDATE_AUTOCONFIG)
 	$(MOVE)
-	mv caca/config.sub caca/config.guess caca/.auto
 
 CACA_CONF := \
 	--disable-gl \
@@ -65,6 +70,6 @@ CACA_CONF += \
 .caca: caca
 	$(MAKEBUILDDIR)
 	$(MAKECONFIGURE) $(CACA_CONF)
-	+$(MAKEBUILD) -C $<
-	+$(MAKEBUILD) -C $< install
+	+$(MAKEBUILD) -C $< noinst_PROGRAMS= bin_PROGRAMS=
+	+$(MAKEBUILD) -C $< noinst_PROGRAMS= bin_PROGRAMS= install
 	touch $@

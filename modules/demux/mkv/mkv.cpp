@@ -489,11 +489,15 @@ static int Seek( demux_t *p_demux, vlc_tick_t i_mk_date, double f_percent, virtu
 /* Needed by matroska_segment::Seek() and Seek */
 static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simpleblock,
                   const KaxBlockAdditions *additions,
-                  vlc_tick_t i_pts, int64_t i_duration, bool b_key_picture,
+                  vlc_tick_t i_pts, uint64_t i_duration, bool b_key_picture,
                   bool b_discardable_picture )
 {
     demux_sys_t        *p_sys = p_demux->p_sys;
     matroska_segment_c *p_segment = p_sys->p_current_vsegment->CurrentSegment();
+
+    KaxInternalBlock& internal_block = simpleblock
+        ? static_cast<KaxInternalBlock&>( *simpleblock )
+        : static_cast<KaxInternalBlock&>( *block );
 
     if( !p_segment ) return;
 
@@ -529,28 +533,14 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simp
     }
 
     size_t frame_size = 0;
-    size_t block_size = 0;
-
-    if( simpleblock != NULL )
-        block_size = simpleblock->GetSize();
-    else
-        block_size = block->GetSize();
-
-    const unsigned int i_number_frames = block != NULL ? block->NumberFrames() :
-            ( simpleblock != NULL ? simpleblock->NumberFrames() : 0 );
+    size_t block_size = internal_block.GetSize();
+    const unsigned i_number_frames = internal_block.NumberFrames();
 
     for( unsigned int i_frame = 0; i_frame < i_number_frames; i_frame++ )
     {
         block_t *p_block;
-        DataBuffer *data;
-        if( simpleblock != NULL )
-        {
-            data = &simpleblock->GetBuffer(i_frame);
-        }
-        else
-        {
-            data = &block->GetBuffer(i_frame);
-        }
+        DataBuffer *data = &internal_block.GetBuffer(i_frame);
+
         frame_size += data->Size();
         if( !data->Buffer() || data->Size() > frame_size || frame_size > block_size  )
         {
@@ -560,7 +550,6 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simp
         size_t extra_data = track.fmt.i_codec == VLC_CODEC_PRORES ? 8 : 0;
 
         if( track.i_compression_type == MATROSKA_COMPRESSION_HEADER &&
-            track.p_compression_data != NULL &&
             track.i_encoding_scope & MATROSKA_ENCODING_SCOPE_ALL_FRAMES )
             p_block = MemToBlock( data->Buffer(), data->Size(), track.p_compression_data->GetSize() + extra_data );
         else if( unlikely( track.fmt.i_codec == VLC_CODEC_WAVPACK ) )
@@ -602,7 +591,7 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simp
             handle_real_audio(p_demux, &track, p_block, i_pts);
             block_Release(p_block);
             i_pts = ( track.i_default_duration )?
-                i_pts + ( vlc_tick_t )track.i_default_duration:
+                i_pts + track.i_default_duration:
                 VLC_TICK_INVALID;
             continue;
          }
@@ -634,8 +623,8 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simp
 
          case VLC_CODEC_OPUS:
             {
-                vlc_tick_t i_length = i_duration * track. f_timecodescale *
-                        (double) p_segment->i_timescale / 1000.0;
+                vlc_tick_t i_length = VLC_TICK_FROM_NS(i_duration * track.f_timecodescale *
+                                                       p_segment->i_timescale);
                 if ( i_length < 0 ) i_length = 0;
                 p_block->i_nb_samples = i_length * track.fmt.audio.i_rate
                         / CLOCK_FREQ;
@@ -668,7 +657,7 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simp
             {
                 // TODO handle the start/stop times of this packet
                 if( p_block->i_size >= sizeof(pci_t))
-                    p_sys->p_ev->SetPci( (const pci_t *)&p_block->p_buffer[1]);
+                    p_sys->p_ev->SetPci( &p_block->p_buffer[1], p_block->i_buffer-1);
                 block_Release( p_block );
                 return;
             }
@@ -696,7 +685,7 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simp
                 else if ( track.i_last_dts == VLC_TICK_INVALID )
                     p_block->i_dts = i_pts;
                 else
-                    p_block->i_dts = std::min( i_pts, track.i_last_dts + ( vlc_tick_t )track.i_default_duration );
+                    p_block->i_dts = std::min( i_pts, track.i_last_dts + track.i_default_duration );
             }
         }
 
@@ -704,7 +693,7 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, KaxSimpleBlock *simp
 
         /* use time stamp only for first block */
         i_pts = ( track.i_default_duration )?
-                 i_pts + ( vlc_tick_t )track.i_default_duration:
+                 i_pts + track.i_default_duration:
                  ( track.fmt.b_packetized ) ? VLC_TICK_INVALID : i_pts + 1;
     }
 }
@@ -725,18 +714,18 @@ static int Demux( demux_t *p_demux)
     if( p_sys->i_pts >= p_sys->i_start_pts )
     {
         if ( p_vsegment->UpdateCurrentToChapter( *p_demux ) )
-            return 1;
+            return VLC_DEMUXER_SUCCESS;
         p_vsegment = p_sys->p_current_vsegment;
     }
 
     matroska_segment_c *p_segment = p_vsegment->CurrentSegment();
     if ( p_segment == NULL )
-        return 0;
+        return VLC_DEMUXER_EOF;
 
     KaxBlock *block;
     KaxSimpleBlock *simpleblock;
     KaxBlockAdditions *additions;
-    int64_t i_block_duration = 0;
+    uint64_t i_block_duration = 0;
     bool b_key_picture;
     bool b_discardable_picture;
 
@@ -754,13 +743,17 @@ static int Demux( demux_t *p_demux)
                 p_sys->i_pts = p_chap->i_mk_virtual_stop_time + VLC_TICK_0;
                 p_sys->i_pts++; // trick to avoid staying on segments with no duration and no content
 
-                return 1;
+                return VLC_DEMUXER_SUCCESS;
             }
         }
 
         msg_Warn( p_demux, "cannot get block EOF?" );
-        return 0;
+        return VLC_DEMUXER_EOF;
     }
+
+    KaxInternalBlock& internal_block = block
+        ? static_cast<KaxInternalBlock&>( *block )
+        : static_cast<KaxInternalBlock&>( *simpleblock );
 
     {
         mkv_track_t *p_track = p_segment->FindTrackByBlock( block, simpleblock );
@@ -770,7 +763,7 @@ static int Demux( demux_t *p_demux)
             msg_Err( p_demux, "invalid track number" );
             delete block;
             delete additions;
-            return 0;
+            return VLC_DEMUXER_EGENERIC;
         }
 
         mkv_track_t &track = *p_track;
@@ -778,16 +771,13 @@ static int Demux( demux_t *p_demux)
 
         if( track.i_skip_until_fpos != std::numeric_limits<uint64_t>::max() ) {
 
-            uint64_t block_fpos = 0;
-
-            if( block ) block_fpos = block->GetElementPosition();
-            else        block_fpos = simpleblock->GetElementPosition();
+            uint64_t block_fpos = internal_block.GetElementPosition();
 
             if ( track.i_skip_until_fpos > block_fpos )
             {
                 delete block;
                 delete additions;
-	        return 1; // this block shall be ignored
+	        return VLC_DEMUXER_SUCCESS; // this block shall be ignored
             }
         }
     }
@@ -803,9 +793,7 @@ static int Demux( demux_t *p_demux)
     /* set pts */
     {
         p_sys->i_pts = p_sys->i_mk_chapter_time + VLC_TICK_0;
-
-        if( simpleblock != NULL ) p_sys->i_pts += simpleblock->GlobalTimecode() / INT64_C( 1000 );
-        else                      p_sys->i_pts +=       block->GlobalTimecode() / INT64_C( 1000 );
+        p_sys->i_pts += VLC_TICK_FROM_NS(internal_block.GlobalTimecode());
     }
 
     if ( p_vsegment->CurrentEdition() &&
@@ -815,7 +803,7 @@ static int Demux( demux_t *p_demux)
         /* nothing left to read in this ordered edition */
         delete block;
         delete additions;
-        return 0;
+        return VLC_DEMUXER_EOF;
     }
 
     BlockDecode( p_demux, block, simpleblock, additions,
@@ -824,7 +812,7 @@ static int Demux( demux_t *p_demux)
     delete block;
     delete additions;
 
-    return 1;
+    return VLC_DEMUXER_SUCCESS;
 }
 
 mkv_track_t::mkv_track_t(enum es_format_category_e es_cat) :
@@ -865,7 +853,7 @@ mkv_track_t::mkv_track_t(enum es_format_category_e es_cat) :
             /* fall through */
         case VIDEO_ES:
         case SPU_ES:
-            fmt.psz_language = strdup("English");
+            fmt.psz_language = strdup("eng");
             break;
         default:
             // no language needed

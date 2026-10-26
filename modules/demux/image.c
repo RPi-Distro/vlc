@@ -405,19 +405,21 @@ static bool IsJfif(stream_t *s)
         uint8_t marker = FindJpegMarker(&position, header, size);
         switch (marker) {
             case 0xe2: { // ICC Profile
-                size_t icc_size = GetWBE(&header[position]);
-                position += 2;
-                if (position + 12 > size)
+                if (position + 14 > size)
                     return false;
+                size_t icc_size = GetWBE(&header[position]);
+                if (icc_size < 2)
+                    return false;
+                position += 2;
                 if (memcmp(&header[position], "ICC_PROFILE\0", 12))
                     return false;
                 position += icc_size - 2;
                 break;
             }
             case 0xe0: { // APP0
-                position += 2;  /* Skip size */
-                if (position + 5 > size)
+                if (position + 7 > size)
                     return false;
+                position += 2;  /* Skip size */
                 return (memcmp(&header[position], "JFIF\0", 5) == 0);
             }
             default:
@@ -741,16 +743,22 @@ static int Open(vlc_object_t *object)
         return VLC_ENOMEM;
     }
 
+    date_Init(&sys->pts, fmt.video.i_frame_rate, fmt.video.i_frame_rate_base);
+    date_Set(&sys->pts, 0);
+    sys->es = es_out_Add(demux->out, &fmt);
+    es_format_Clean(&fmt);
+    if(unlikely(!sys->es))
+    {
+        if (data)
+            block_Release(data);
+        free(sys);
+        return VLC_EGENERIC;
+    }
     sys->data        = data;
-    sys->es          = es_out_Add(demux->out, &fmt);
     sys->duration    = CLOCK_FREQ * var_InheritFloat(demux, "image-duration");
     sys->is_realtime = var_InheritBool(demux, "image-realtime");
     sys->pts_origin  = sys->is_realtime ? mdate() : 0;
     sys->pts_next    = VLC_TICK_INVALID;
-    date_Init(&sys->pts, fmt.video.i_frame_rate, fmt.video.i_frame_rate_base);
-    date_Set(&sys->pts, 0);
-
-    es_format_Clean(&fmt);
 
     demux->pf_demux   = Demux;
     demux->pf_control = Control;

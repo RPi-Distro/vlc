@@ -1,5 +1,5 @@
 # Vietnamese translation
-# Copyright (C) 2023 VideoLAN
+# Copyright (C) 2026 VideoLAN
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
@@ -9,12 +9,15 @@
 # bachien <bachien@ejnu.net>, 2018
 # brad freedom <brad.freedom@gmail.com>, 2020
 # sixtyninefourtwenty <quangtrung02hn16@gmail.com>, 2021
-# IoeCmcomc, 2022
+# IoeCmcomc, 2022,2024
+# Michał Trzebiatowski <michtrz@gmail.com>, 2018
+# Hoàng Ngọc Long <dragonknight192105@yahoo.com>, 2024
+# Phi Huynh <huynhkhaphi2806@socson.org>, 2024
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.22-rc1\n"
+"Project-Id-Version: vlc 3.0.24-beta1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-12-23 11:04+0000\n"
+"POT-Creation-Date: 2026-09-17 12:55+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Phi Huynh <huynhkhaphi2806@socson.org>, 2024\n"
 "Language-Team: Vietnamese (https://app.transifex.com/yaron/teams/16553/vi/)\n"
@@ -682,7 +685,7 @@ msgid "The maximum number of filters (%u) was reached."
 msgstr "Số lượng tối đa bộ lọc (%u) đã đạt giới hạn cho phép."
 
 #: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:936
-#: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:124
+#: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:126
 #: modules/gui/macosx/VLCMainMenu.m:243
 #: modules/gui/macosx/VLCSidebarDataSource.m:211
 #: modules/video_filter/postproc.c:235
@@ -1108,24 +1111,20 @@ msgid "Decoded format"
 msgstr "Định dạng giải mã"
 
 #: src/input/es_out.c:3207
-#, fuzzy
 msgid "Decoded channels"
-msgstr "Kênh audio"
+msgstr ""
 
 #: src/input/es_out.c:3212
-#, fuzzy
 msgid "Decoded sample rate"
-msgstr "Tần số lấy mẫu âm thanh"
+msgstr ""
 
 #: src/input/es_out.c:3219
-#, fuzzy
 msgid "Decoded bits per sample"
-msgstr "Số bit của âm thanh cho từng mẫu"
+msgstr ""
 
 #: src/input/es_out.c:3224
-#, fuzzy
 msgid "Decoded Bitrate"
-msgstr "Định dạng giải mã"
+msgstr ""
 
 #: src/input/es_out.c:3237
 msgid "Track replay gain"
@@ -1152,7 +1151,7 @@ msgstr "Các thông số đệm"
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
-#: modules/access/vdr.c:78 modules/access/vnc.c:60 modules/demux/image.c:66
+#: modules/access/vdr.c:79 modules/access/vnc.c:61 modules/demux/image.c:66
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:164
 #: modules/video_filter/fps.c:42
 msgid "Frame rate"
@@ -1838,8 +1837,8 @@ msgstr ""
 
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:957
 #: modules/audio_output/kai.c:106 modules/codec/subsdec.c:167
-#: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:122
-#: modules/demux/mpeg/ts.c:132 modules/gui/macosx/VLCSimplePrefsController.m:54
+#: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:124
+#: modules/demux/mpeg/ts.c:133 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:69
 #: modules/gui/qt/components/sout/profile_selector.cpp:590
 #: modules/text_renderer/freetype/freetype.c:124
@@ -2649,9 +2648,9 @@ msgstr ""
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
 #: modules/access/dshow/dshow.cpp:2081 modules/audio_output/alsa.c:767
-#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1316
-#: modules/audio_output/mmdevice.c:1445 modules/audio_output/winstore.c:594
-#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:106
+#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1332
+#: modules/audio_output/mmdevice.c:1469 modules/audio_output/winstore.c:600
+#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:108
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
@@ -4217,7 +4216,7 @@ msgstr "Chậm hơn (tốt)"
 #: modules/gui/macosx/VLCMainMenu.m:396 modules/gui/macosx/VLCMainMenu.m:499
 #: modules/gui/macosx/VLCMainMenu.m:507
 #: modules/gui/qt/components/controller.hpp:112
-#: modules/gui/qt/dialogs/sout.cpp:91 modules/notify/notify.c:335
+#: modules/gui/qt/dialogs/sout.cpp:89 modules/notify/notify.c:335
 #: modules/gui/qt/ui/streampanel.h:179
 msgid "Next"
 msgstr "Tiếp theo"
@@ -4979,7 +4978,7 @@ msgid "Subpictures"
 msgstr "Hình ảnh phụ đề"
 
 #: src/libvlc-module.c:1683 modules/codec/subsdec.c:182
-#: modules/demux/subtitle.c:71 modules/demux/xiph_metadata.h:49
+#: modules/demux/subtitle.c:72 modules/demux/xiph_metadata.h:49
 #: modules/demux/xiph_metadata.h:62
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:158
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
@@ -5310,7 +5309,7 @@ msgstr "Thời gian tập tin"
 msgid "Media View"
 msgstr "Xem tập tin"
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:577
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:574
 msgid "Menu"
 msgstr "Bảng chọn"
 
@@ -5404,38 +5403,38 @@ msgstr "Meta+"
 msgid "Command+"
 msgstr "Command+"
 
-#: src/misc/update.c:482
+#: src/misc/update.c:490
 #, c-format
 msgid "%.1f GiB"
 msgstr "%.1f GiB"
 
-#: src/misc/update.c:484
+#: src/misc/update.c:492
 #, c-format
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: src/misc/update.c:486 modules/gui/macosx/VLCPlaylistInfo.m:138
+#: src/misc/update.c:494 modules/gui/macosx/VLCPlaylistInfo.m:138
 #: modules/gui/macosx/VLCPlaylistInfo.m:140
 #, c-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
 
-#: src/misc/update.c:488
+#: src/misc/update.c:496
 #, c-format
 msgid "%<PRIu64> B"
 msgstr "%<PRIu64> B"
 
-#: src/misc/update.c:580
+#: src/misc/update.c:588
 msgid "Saving file failed"
 msgstr "Lưu tập tin thất bại"
 
-#: src/misc/update.c:581
+#: src/misc/update.c:589
 #, c-format
 msgid "Failed to open \"%s\" for writing"
 msgstr "Thất bại khi mở \"%s\" để ghi dữ liệu"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2878
+#: src/misc/update.c:604 src/misc/update.c:734 modules/access/dvb/scan.c:826
+#: modules/demux/avi/avi.c:2888
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
@@ -5463,12 +5462,12 @@ msgstr "Thất bại khi mở \"%s\" để ghi dữ liệu"
 #: modules/gui/qt/components/open_panels.cpp:1361
 #: modules/gui/qt/components/preferences_widgets.cpp:1420
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
-#: modules/gui/qt/dialogs/sout.cpp:90
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/gui/qt/dialogs/sout.cpp:88
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "Cancel"
 msgstr "Hủy bỏ"
 
-#: src/misc/update.c:598
+#: src/misc/update.c:606
 #, c-format
 msgid ""
 "%s\n"
@@ -5477,22 +5476,22 @@ msgstr ""
 "%s\n"
 "Đang tải... %s/%s %.1f%% đã tải xuống"
 
-#: src/misc/update.c:649
+#: src/misc/update.c:657
 msgid "File could not be verified"
 msgstr "Không thể xác nhận được tập tin này"
 
-#: src/misc/update.c:650
+#: src/misc/update.c:658
 #, c-format
 msgid ""
 "It was not possible to download a cryptographic signature for the downloaded "
 "file \"%s\". Thus, it was deleted."
 msgstr "Không thể tải về chữ ký dạng mã hóa với \"%s\". Phần này sẽ bị xóa."
 
-#: src/misc/update.c:661 src/misc/update.c:673
+#: src/misc/update.c:669 src/misc/update.c:681
 msgid "Invalid signature"
 msgstr "Chữ ký không hợp lệ"
 
-#: src/misc/update.c:662 src/misc/update.c:674
+#: src/misc/update.c:670 src/misc/update.c:682
 #, c-format
 msgid ""
 "The cryptographic signature for the downloaded file \"%s\" was invalid and "
@@ -5501,11 +5500,11 @@ msgstr ""
 "Chữ ký dạng mã hóa được tải về dưới dạng tập tin \"%s\" hoàn toàn không hợp "
 "lệ và VLC không thể xác nhận cho chữ ký này. Do đó tập tin này sẽ bị xóa."
 
-#: src/misc/update.c:686
+#: src/misc/update.c:694
 msgid "File not verifiable"
 msgstr "Không xác nhận được tập tin"
 
-#: src/misc/update.c:687
+#: src/misc/update.c:695
 #, c-format
 msgid ""
 "It was not possible to securely verify the downloaded file \"%s\". Thus, it "
@@ -5514,16 +5513,16 @@ msgstr ""
 "Không thể bảo đảm an toàn cho việc xác nhận tải về tập tin \"%s\". Vì thế "
 "tập tin này sẽ bị xóa."
 
-#: src/misc/update.c:698 src/misc/update.c:710
+#: src/misc/update.c:706 src/misc/update.c:718
 msgid "File corrupted"
 msgstr "Tập tin đã bị lỗi"
 
-#: src/misc/update.c:699 src/misc/update.c:711
+#: src/misc/update.c:707 src/misc/update.c:719
 #, c-format
 msgid "Downloaded file \"%s\" was corrupted. Thus, it was deleted."
 msgstr "Việc tải về tập tin \"%s\" bị lỗi. Vì thế thập tin này sẽ bị xóa."
 
-#: src/misc/update.c:723
+#: src/misc/update.c:731
 msgid ""
 "The new version was successfully downloaded. Do you want to close VLC and "
 "install it now?"
@@ -5531,11 +5530,11 @@ msgstr ""
 "Phiên bản mới đã được tải xuống thành công. Bạn có muốn đóng VLC và cài đặt "
 "nó ngay không?"
 
-#: src/misc/update.c:726 modules/gui/macosx/VLCAddonsWindowController.m:200
+#: src/misc/update.c:734 modules/gui/macosx/VLCAddonsWindowController.m:200
 msgid "Install"
 msgstr "Cài đặt"
 
-#: src/misc/update.c:727
+#: src/misc/update.c:735
 msgid "Update VLC media player"
 msgstr "Cập nhật VLC"
 
@@ -6570,11 +6569,11 @@ msgstr "Tệp tin KDM"
 msgid "Path to Key Delivery Message XML file"
 msgstr "Đường dẫn tới tệp XML của tin nhắn phân phối khóa"
 
-#: modules/access/dcp/dcp.cpp:77
+#: modules/access/dcp/dcp.cpp:86
 msgid "DCP"
 msgstr "DCP"
 
-#: modules/access/dcp/dcp.cpp:79
+#: modules/access/dcp/dcp.cpp:88
 msgid "Digital Cinema Package module"
 msgstr "Mô-đun gói chiếu phim kỹ thuật số"
 
@@ -6707,7 +6706,7 @@ msgstr "Blackmagic DeckLink SDI input"
 msgid "10 bits"
 msgstr "10 bits"
 
-#: modules/access/decklink.cpp:358 modules/demux/ty.c:783
+#: modules/access/decklink.cpp:358 modules/demux/ty.c:792
 msgid "Closed captions 1"
 msgstr "Đóng lại đầu đề 1"
 
@@ -7628,7 +7627,7 @@ msgstr "Nhập dữ liệu từ tập tin"
 #: modules/gui/macosx/VLCOpenWindowController.m:140
 #: modules/gui/macosx/VLCOutput.m:64 modules/gui/macosx/VLCOutput.m:175
 #: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1428
-#: modules/gui/qt/dialogs/sout.cpp:67 modules/gui/qt/dialogs/sout.cpp:119
+#: modules/gui/qt/dialogs/sout.cpp:67 modules/gui/qt/dialogs/sout.cpp:114
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
 #: share/lua/http/dialogs/stream_window.html:95
@@ -7650,7 +7649,7 @@ msgstr "Bao gồm các thiết bị và đường ống khi liệt kê các thư
 
 #: modules/access/ftp.c:69 modules/access/live555.cpp:85
 #: modules/access/rdp.c:65 modules/access/sftp.c:55
-#: modules/access/smb_common.h:21 modules/access/vnc.c:47
+#: modules/access/smb_common.h:21 modules/access/vnc.c:48
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
@@ -7670,7 +7669,7 @@ msgstr ""
 
 #: modules/access/ftp.c:72 modules/access/live555.cpp:88
 #: modules/access/rdp.c:68 modules/access/sftp.c:58
-#: modules/access/smb_common.h:24 modules/access/vnc.c:48
+#: modules/access/smb_common.h:24 modules/access/vnc.c:49
 #: modules/access_output/http.c:55
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
 #: modules/gui/macosx/VLCSimplePrefsController.m:285
@@ -7716,19 +7715,19 @@ msgstr "Nhập dữ liệu từ FTP"
 msgid "FTP upload output"
 msgstr "Xuất dữ liệu tải từ FTP"
 
-#: modules/access/ftp.c:370 modules/access/ftp.c:386 modules/access/ftp.c:538
+#: modules/access/ftp.c:385 modules/access/ftp.c:401 modules/access/ftp.c:564
 msgid "Network interaction failed"
 msgstr "Giao tiếp với mạng thất bại"
 
-#: modules/access/ftp.c:371
+#: modules/access/ftp.c:386
 msgid "VLC could not connect with the given server."
 msgstr "VLC không thể kết nối với server mà bạn thiết lập."
 
-#: modules/access/ftp.c:387
+#: modules/access/ftp.c:402
 msgid "VLC's connection to the given server was rejected."
 msgstr "Kết nối của VLC đến server đã cho bị từ chối."
 
-#: modules/access/ftp.c:539
+#: modules/access/ftp.c:565
 msgid "Your account was rejected."
 msgstr "Tài khoản của bạn bị từ chối truy cập."
 
@@ -8216,7 +8215,7 @@ msgstr "Đầu vào MTP"
 msgid "MTP"
 msgstr "MTP"
 
-#: modules/access/mtp.c:167 modules/access/vdr.c:379 modules/access/vdr.c:545
+#: modules/access/mtp.c:167 modules/access/vdr.c:382 modules/access/vdr.c:548
 msgid "File reading failed"
 msgstr "Thao tác với tập tin thất bại"
 
@@ -8304,77 +8303,45 @@ msgstr "RDP"
 msgid "RDP Remote Desktop"
 msgstr "RDP Remote Desktop"
 
-#: modules/access/rist.c:65
+#: modules/access/rist.c:44
 msgid "Range"
 msgstr "Khoảng"
 
-#: modules/access/rist.c:65
+#: modules/access/rist.c:44
 msgid "Bitmask"
 msgstr "Mặt nạ bit"
 
-#: modules/access/rist.c:1127 modules/access_output/rist.c:849
+#: modules/access/rist.c:309
+msgid "Virtual Destination Port Filter"
+msgstr ""
+
+#: modules/access/rist.c:311
+msgid ""
+"Destination port to be used inside the reduced-mode of the main profile to "
+"filter incoming data. Use zero to allow all."
+msgstr ""
+
+#: modules/access/rist.c:317 modules/access_output/rist.c:291
 msgid "RIST"
 msgstr "RIST"
 
-#: modules/access/rist.c:1128
+#: modules/access/rist.c:318
 msgid "RIST input"
 msgstr "Đầu vào RIST"
 
-#: modules/access/rist.c:1133
-msgid "RIST maximum packet size (bytes)"
-msgstr "Kích thước gói tối đa RIST (byte)"
-
-#: modules/access/rist.c:1135
+#: modules/access/rist.c:323
 msgid "RIST demux/decode maximum jitter (default is 5ms)"
 msgstr "RIST tách kênh/giải mã jitter tối đa (mặc định là 5ms)"
 
-#: modules/access/rist.c:1136
+#: modules/access/rist.c:324
 msgid ""
 "This controls the maximum jitter that will be passed to the demux/decode "
-"chain. The lower the value, the more CPU cycles the algorithm will consume"
+"chain. The lower the value, the more CPU cycles the module will consume"
 msgstr ""
-"Điều này kiểm soát jitter tối đa sẽ được chuyển đến chuỗi tách kênh/giải mã. "
-"Giá trị càng thấp thì thuật toán sẽ tiêu thụ càng nhiều chu kỳ CPU"
 
-#: modules/access/rist.c:1138
-msgid "RIST latency (ms)"
-msgstr "Độ trễ RIST (ms)"
-
-#: modules/access/rist.c:1139
-msgid "RIST nack retry interval (ms)"
-msgstr "Khoảng thời gian thử lại RIST nack (ms)"
-
-#: modules/access/rist.c:1141
-msgid "RIST reorder buffer (ms)"
-msgstr "Bộ đệm sắp xếp lại RIST (ms)"
-
-#: modules/access/rist.c:1143
-msgid "RIST maximum retry count"
-msgstr "Số lần thử lại tối đa RIST"
-
-#: modules/access/rist.c:1145
+#: modules/access/rist.c:328
 msgid "RIST nack type, 0 = range, 1 = bitmask. Default is range"
 msgstr "Loại nack RIST, 0 = phạm vi, 1 = bitmask. Mặc định là phạm vi"
-
-#: modules/access/rist.c:1147
-msgid "Disable NACK output packets"
-msgstr "Vô hiệu hóa các gói tin đầu ra NACK"
-
-#: modules/access/rist.c:1148
-msgid "Use this to disable packet recovery"
-msgstr "Sử dụng cái này để vô hiệu quá khám phá gói tin"
-
-#: modules/access/rist.c:1149
-msgid "Do not check for a valid rtcp message from the encoder"
-msgstr "Không kiểm tra thông điệp rtcp hợp lệ từ bộ mã hóa"
-
-#: modules/access/rist.c:1150
-msgid ""
-"Send nack messages even when we have not confirmed that the encoder is on "
-"our local network."
-msgstr ""
-"Gửi thông điệp nack ngay cả khi chúng tôi chưa xác nhận rằng bộ mã hóa có "
-"trên mạng cục bộ của chúng tôi hay không."
 
 #: modules/access/rtp/rtp.c:44
 msgid "RTCP (local) port"
@@ -8635,7 +8602,7 @@ msgid "Screen"
 msgstr "Màn hình"
 
 #: modules/access/screen/xcb.c:41 modules/access/shm.c:44
-#: modules/access/vnc.c:61
+#: modules/access/vnc.c:62
 msgid "How many times the screen content should be refreshed per second."
 msgstr ""
 "Số lần nội dung hiển thị trên màn hình sẽ được tự động cập nhật mỗi giây."
@@ -8672,20 +8639,31 @@ msgstr "Cổng SFTP"
 msgid "SFTP port number to use on the server"
 msgstr "Số hiệu cổng SFTP được dùng trên phía server"
 
-#: modules/access/sftp.c:64
+#: modules/access/sftp.c:61
+msgid "Private key file"
+msgstr ""
+
+#: modules/access/sftp.c:62
+msgid ""
+"Private-key file used for SSH public key authentication. Public-key file is "
+"assumed to be in the same directory with '.pub' appended. If unset, standard "
+"key paths will be attempted (e.g. '~/.ssh/id_rsa')."
+msgstr ""
+
+#: modules/access/sftp.c:68
 msgid "SFTP input"
 msgstr "Đầu vào SFTP"
 
-#: modules/access/sftp.c:411
+#: modules/access/sftp.c:463
 msgid "SFTP authentication"
 msgstr "Xác nhận SFTP"
 
-#: modules/access/sftp.c:412
+#: modules/access/sftp.c:464
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr "Điền vào tên đăng nhập và mật khẩu hợp lệ cho phần kết nối đến %s"
 
-#: modules/access/shm.c:46 modules/access/vnc.c:58
+#: modules/access/shm.c:46 modules/access/vnc.c:59
 msgid "Frame buffer depth"
 msgstr "Độ sâu bộ đệm khung hình"
 
@@ -8734,7 +8712,7 @@ msgstr "Đường dẫn đến tập tin của bộ nhớ được lưu đối v
 msgid "XWD file (autodetect)"
 msgstr "Tập tin XWD (tự động nhận dạng)"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "8 bits"
 msgstr "8 bit"
 
@@ -8742,15 +8720,15 @@ msgstr "8 bit"
 msgid "15 bits"
 msgstr "15 bit"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "16 bits"
 msgstr "16 bit"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "24 bits"
 msgstr "24 bit"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "32 bits"
 msgstr "32 bit"
 
@@ -8793,42 +8771,30 @@ msgstr ""
 "Vui lòng cung cấp tên người dùng (lý tưởng nhất là tên miền sử dụng định "
 "dạng DOMAIN;tên người dùng) và mật khẩu."
 
-#: modules/access/srt.c:428 modules/access_output/srt.c:457
+#: modules/access/srt.c:550 modules/access_output/srt.c:457
 msgid "SRT"
 msgstr "SRT"
 
-#: modules/access/srt.c:429
+#: modules/access/srt.c:551
 msgid "SRT input"
 msgstr "Đầu vào SRT"
 
-#: modules/access/srt.c:435 modules/access_output/srt.c:464
+#: modules/access/srt.c:557 modules/access_output/srt.c:464
 msgid "Return poll wait after timeout milliseconds (-1 = infinite)"
 msgstr ""
 "Trả lại cuộc thăm dò sau khi hết thời gian tính bằng mili giây (-1 = vô hạn)"
 
-#: modules/access/srt.c:438 modules/access_output/srt.c:466
+#: modules/access/srt.c:560 modules/access_output/srt.c:466
 msgid "SRT latency (ms)"
 msgstr "Độ trễ SRT (ms)"
 
-#: modules/access/srt.c:440 modules/access_output/srt.c:468
+#: modules/access/srt.c:562 modules/access_output/srt.c:468
 msgid "Password for stream encryption"
 msgstr "Mật khẩu để mã hoá luồng"
 
-#: modules/access/srt.c:446 modules/access_output/srt.c:480
-msgid " SRT Stream ID"
+#: modules/access/srt.c:568
+msgid "SRT Stream ID"
 msgstr ""
-
-#: modules/access/srt_common.c:26
-msgid "16 bytes"
-msgstr "16 byte"
-
-#: modules/access/srt_common.c:27
-msgid "24 bytes"
-msgstr "24 byte"
-
-#: modules/access/srt_common.c:27
-msgid "32 bytes"
-msgstr "32 byte"
 
 #: modules/access/tcp.c:116
 msgid "TCP"
@@ -9213,7 +9179,7 @@ msgid "Vivid"
 msgstr "Sặc sỡ"
 
 #: modules/access/v4l2/v4l2.c:169 modules/audio_output/auhal.c:43
-#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1489
+#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1513
 #: modules/audio_output/waveout.c:145
 msgid "Audio volume"
 msgstr "Âm lượng audio"
@@ -9280,7 +9246,7 @@ msgstr ""
 #: modules/control/hotkeys.c:395
 #: modules/gui/macosx/VLCAddonsWindowController.m:100
 #: modules/gui/qt/dialogs/convert.cpp:164
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:381
 #: modules/gui/qt/dialogs/preferences.cpp:79
 msgid "All"
 msgstr "Tất cả"
@@ -9365,123 +9331,123 @@ msgstr "Đầu vào VCD"
 msgid "[vcd:][device][#[title][,[chapter]]]"
 msgstr "[vcd:][thiết bị][#[tiêu đề][,[chương]]]"
 
-#: modules/access/vdr.c:72
+#: modules/access/vdr.c:73
 msgid "Support for VDR recordings (http://www.tvdr.de/)."
 msgstr "Hỗ trợ ghi hình VDR  (http://www.tvdr.de/)."
 
-#: modules/access/vdr.c:74
+#: modules/access/vdr.c:75
 msgid "Chapter offset in ms"
 msgstr "Offset chương bằng miligiây"
 
-#: modules/access/vdr.c:76
+#: modules/access/vdr.c:77
 msgid "Move all chapters. This value should be set in milliseconds."
 msgstr ""
 "Di chuyển tất cả các chương. Giá trị này nên được chỉnh ở đơn vị phần nghìn "
 "giây."
 
-#: modules/access/vdr.c:80
+#: modules/access/vdr.c:81
 msgid "Default frame rate for chapter import."
 msgstr "Tỉ lệ khung mặc định cho chương nhập vào."
 
-#: modules/access/vdr.c:84
+#: modules/access/vdr.c:85
 msgid "VDR"
 msgstr "VDR"
 
-#: modules/access/vdr.c:87
+#: modules/access/vdr.c:88
 msgid "VDR recordings"
 msgstr "Ghi hình VDR"
 
-#: modules/access/vdr.c:380
+#: modules/access/vdr.c:383
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr "VLC không thể đọc tệp (%s)."
 
-#: modules/access/vdr.c:545
+#: modules/access/vdr.c:548
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr "VLC không thẻ mở tệp\"%s\" (%s)."
 
-#: modules/access/vdr.c:820
+#: modules/access/vdr.c:811
 msgid "VDR Cut Marks"
 msgstr "Cắt điểm VDR"
 
-#: modules/access/vdr.c:886
+#: modules/access/vdr.c:877
 msgid "Start"
 msgstr "Bắt đầu"
 
-#: modules/access/vnc.c:49
+#: modules/access/vnc.c:50
 msgid "X.509 Certificate Authority"
 msgstr "Xác nhận chứng chỉ X.509"
 
-#: modules/access/vnc.c:50
+#: modules/access/vnc.c:51
 msgid "Certificate of the Authority to verify server's against"
 msgstr "Chứng chỉ cho việc xác nhận đối với phía server"
 
-#: modules/access/vnc.c:51
+#: modules/access/vnc.c:52
 msgid "X.509 Certificate Revocation List"
 msgstr "Danh sách chứng chỉ X.509 bị hủy bỏ"
 
-#: modules/access/vnc.c:52
+#: modules/access/vnc.c:53
 msgid "List of revoked servers certificates"
 msgstr "Danh sách các chứng chỉ server bị thu hồi"
 
-#: modules/access/vnc.c:53
+#: modules/access/vnc.c:54
 msgid "X.509 Client certificate"
 msgstr "Chứng chỉ Client X.509"
 
-#: modules/access/vnc.c:54
+#: modules/access/vnc.c:55
 msgid "Certificate for client authentication"
 msgstr "Chứng chỉ xác thực ứng dụng máy khách"
 
-#: modules/access/vnc.c:55
+#: modules/access/vnc.c:56
 msgid "X.509 Client private key"
 msgstr "Khóa riêng phía Client dạng X.509"
 
-#: modules/access/vnc.c:56
+#: modules/access/vnc.c:57
 msgid "Private key for authentication by certificate"
 msgstr "Khóa riêng để xác thực bằng chứng chỉ"
 
-#: modules/access/vnc.c:59
+#: modules/access/vnc.c:60
 msgid "RGB chroma (RV32, RV24, RV16, RGB2)"
 msgstr "Màu dạng RGB (RV32, RV24, RV16, RGB2)"
 
-#: modules/access/vnc.c:62
+#: modules/access/vnc.c:63
 msgid "Compression level"
 msgstr "Mức độ nén"
 
-#: modules/access/vnc.c:63
+#: modules/access/vnc.c:64
 msgid "Transfer compression level from 0 (none) to 9 (max)"
 msgstr "Chuyển mức nén từ 0 (không) sang 9 (tối đa)"
 
-#: modules/access/vnc.c:64
+#: modules/access/vnc.c:65
 msgid "Image quality"
 msgstr "Chất lượng hình ảnh"
 
-#: modules/access/vnc.c:65
+#: modules/access/vnc.c:66
 msgid "Image quality 1 to 9 (max)"
 msgstr "Chất lượng hình ảnh từ 1 đến 9 (tối đa)"
 
-#: modules/access/vnc.c:79
+#: modules/access/vnc.c:80
 msgid "VNC"
 msgstr "VNC"
 
-#: modules/access/vnc.c:83
+#: modules/access/vnc.c:84
 msgid "VNC client access"
 msgstr "Truy cập client VNC"
 
-#: modules/access/wasapi.c:485
+#: modules/access/wasapi.c:489
 msgid "Loopback mode"
 msgstr "Chế độ lặp lại"
 
-#: modules/access/wasapi.c:486
+#: modules/access/wasapi.c:490
 msgid "Record an audio rendering endpoint."
 msgstr "Ghi lại điểm cuối kết xuất âm thanh."
 
-#: modules/access/wasapi.c:489
+#: modules/access/wasapi.c:493
 msgid "WASAPI"
 msgstr "WASAPI"
 
-#: modules/access/wasapi.c:490
+#: modules/access/wasapi.c:494
 msgid "Windows Audio Session API input"
 msgstr "Đầu vào API phiên âm thanh của Windows"
 
@@ -9692,67 +9658,53 @@ msgstr "Đầu ra luồng trực tiếp HTTP"
 msgid "LiveHTTP"
 msgstr "LiveHTTP"
 
-#: modules/access_output/rist.c:824
-msgid "RIST data output caching size (ms)"
-msgstr "Kích thước bộ nhớ đệm đầu ra dữ liệu RIST (ms)"
-
-#: modules/access_output/rist.c:826
-msgid ""
-"Having this cache will guarantee that the packets going out are delivered at "
-"a spacing determined by the chain timestamps thus ensuring a near jitter "
-"free output. Be aware that this setting will also add to the overall latency "
-"of the stream."
+#: modules/access_output/rist.c:266
+msgid "Virtual Source Port"
 msgstr ""
-"Việc có vùng nhớ đệm này sẽ đảm bảo rằng các gói đi ra ngoài được phân phối "
-"ở khoảng cách được xác định bởi dấu thời gian của chuỗi, do đó đảm bảo đầu "
-"ra gần như không bị giật. Xin lưu ý rằng cài đặt này cũng sẽ làm tăng thêm "
-"độ trễ tổng thể của luồng."
 
-#: modules/access_output/rist.c:831
-msgid "RIST retry-buffer queue size (ms)"
-msgstr "Kích thước hàng đợi bộ đệm thử lại RIST (ms)"
-
-#: modules/access_output/rist.c:833
-msgid ""
-"This must match the buffer size (latency) configured on the server side. If "
-"you are not sure, leave the default of 0 which will set it the maximum value "
-"and will use about 100MB of RAM"
+#: modules/access_output/rist.c:268
+msgid "Source port to be used inside the reduced-mode of the main profile"
 msgstr ""
-"Điều này phải phù hợp với kích thước bộ đệm (độ trễ) được định cấu hình ở "
-"phía máy chủ. Nếu bạn không chắc chắn, hãy để mặc định là 0, giá trị này sẽ "
-"đặt giá trị tối đa và sẽ sử dụng khoảng 100 MB RAM"
 
-#: modules/access_output/rist.c:837
-msgid "SSRC used in RTP output (default is random, i.e. 0)"
-msgstr "SSRC được sử dụng trong đầu ra RTP (mặc định là ngẫu nhiên, tức là 0)"
-
-#: modules/access_output/rist.c:839
-msgid ""
-"Use this setting to specify a known SSRC for the RTP header. This is only "
-"useful if your receiver acts on it. When using VLC as receiver, it is not."
+#: modules/access_output/rist.c:270
+msgid "Virtual Destination Port"
 msgstr ""
-"Sử dụng cài đặt này để chỉ định SSRC đã biết cho tiêu đề RTP. Điều này chỉ "
-"hữu ích nếu người nhận của bạn hành động theo nó. Khi sử dụng VLC làm người "
-"nhận thì không."
 
-#: modules/access_output/rist.c:842 modules/access_output/shout.c:64
-#: modules/gui/qt/components/sout/sout_widgets.cpp:386
-#: share/lua/http/dialogs/create_stream.html:139
-msgid "Stream name"
-msgstr "Tên luồng"
+#: modules/access_output/rist.c:272
+msgid "Destination port to be used inside the reduced-mode of the main profile"
+msgstr ""
 
-#: modules/access_output/rist.c:844
+#: modules/access_output/rist.c:279
+msgid "Multipeer mode"
+msgstr ""
+
+#: modules/access_output/rist.c:281
 msgid ""
-"This Stream name will be sent to the receiver using the rist RTCP channel"
-msgstr "Tên Luồng này sẽ được gửi đến người nhận bằng kênh RTCP rist"
+"This allows you to select between duplicate or load balanced modes when "
+"sending data to multiple peers (several network paths)"
+msgstr ""
 
-#: modules/access_output/rist.c:850
+#: modules/access_output/rist.c:285
+msgid "Duplicate"
+msgstr ""
+
+#: modules/access_output/rist.c:285
+msgid "Load balanced"
+msgstr ""
+
+#: modules/access_output/rist.c:292
 msgid "RIST stream output"
 msgstr "Luồng RIST xuất ra"
 
-#: modules/access_output/rist.c:855
-msgid "RIST target packet size (bytes)"
-msgstr "Kích cỡ gói tin RIST nhắn đến (bytes)"
+#: modules/access_output/rist.c:297
+msgid "RIST target payload size (bytes)"
+msgstr ""
+
+#: modules/access_output/shout.c:64
+#: modules/gui/qt/components/sout/sout_widgets.cpp:438
+#: share/lua/http/dialogs/create_stream.html:139
+msgid "Stream name"
+msgstr "Tên luồng"
 
 #: modules/access_output/shout.c:65
 msgid "Name to give to this stream/channel on the shoutcast/icecast server."
@@ -9848,6 +9800,10 @@ msgstr ""
 
 #: modules/access_output/srt.c:475
 msgid "SRT maximum bandwidth ceiling (bytes)"
+msgstr ""
+
+#: modules/access_output/srt.c:480
+msgid " SRT Stream ID"
 msgstr ""
 
 #: modules/access_output/udp.c:62 modules/stream_out/rtp.c:135
@@ -10110,29 +10066,29 @@ msgstr "Định hình lại kênh audio"
 msgid "Audio filter for simple channel mixing"
 msgstr "Bộ lọc audio cho việc trộn kênh đơn giản"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:50
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:67
 msgid "HRTF file for the binauralization"
 msgstr "Tệp HRTF cho quá trình hai tai"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:51
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:68
 msgid "Custom HRTF (Head-related transfer function) file in the SOFA format."
 msgstr "Tệp HRTF (Head-related transfer function) tùy chỉnh ở định dạng SOFA."
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:54
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:71
 msgid "Headphones mode (binaural)"
 msgstr "Chế độ tai nghe (hai tai)"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:55
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:72
 msgid "If the output is stereo, render ambisonics with the binaural decoder."
 msgstr ""
 "Nếu đầu ra là âm thanh stereo, hãy hiển thị âm thanh xung quanh bằng bộ giải "
 "mã hai bên tai."
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:65
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:82
 msgid "Ambisonics renderer and binauralizer"
 msgstr "Trình kết xuất và âm thanh hai bên tai Ambisonics"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:77
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:94
 msgid "Binauralizer"
 msgstr "Máy nghe hai tai"
 
@@ -10550,12 +10506,12 @@ msgid "Audio filter for band-limited interpolation resampling"
 msgstr "Bộ lọc audio đối với sự thêm vào chuyển đổi nhóm-bị giới hạn"
 
 #: modules/audio_filter/resampler/soxr.c:40
-#: modules/audio_filter/resampler/speex.c:34
+#: modules/audio_filter/resampler/speex.c:36
 msgid "Resampling quality"
 msgstr "Chất lượng chuyển đổi"
 
 #: modules/audio_filter/resampler/soxr.c:41
-#: modules/audio_filter/resampler/speex.c:35
+#: modules/audio_filter/resampler/speex.c:37
 msgid "Resampling quality, from worst to best"
 msgstr "Lấy mẫu lại chất lượng, từ tệ nhất đến tốt nhất"
 
@@ -10563,8 +10519,8 @@ msgstr "Lấy mẫu lại chất lượng, từ tệ nhất đến tốt nhất"
 msgid "SoX Resampler"
 msgstr "Bộ lấy mẫu lại SoX"
 
-#: modules/audio_filter/resampler/speex.c:42
-#: modules/audio_filter/resampler/speex.c:43
+#: modules/audio_filter/resampler/speex.c:44
+#: modules/audio_filter/resampler/speex.c:45
 msgid "Speex resampler"
 msgstr "Bộ lấy mẫu lại speex"
 
@@ -10891,11 +10847,11 @@ msgstr ""
 "Thiết bị audio đầu ra được chọn hoàn toàn bị tiếm quyền sử dụng bởi một "
 "chương trình khác."
 
-#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1486
+#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1510
 msgid "Output device"
 msgstr "Thiết bị đầu ra"
 
-#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1487
+#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1511
 msgid "Select your audio output device"
 msgstr "Chọn thiết bị audio đầu ra của bạn"
 
@@ -10912,7 +10868,7 @@ msgstr ""
 "áp dụng cho việc hòa trộn dữ liệu! Bởi thế ví dụ không thể chuyển đổi Stereo "
 "-> 5.1."
 
-#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1490
+#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1514
 msgid "Audio volume in hundredths of decibels (dB)."
 msgstr "Âm lượng audio tính bằng đơn vị hàng trăm decibel (dB)."
 
@@ -11016,38 +10972,38 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "Giao diệu K Audio với audio đầu ra"
 
-#: modules/audio_output/mmdevice.c:1472 modules/gui/qt/ui/sprefs_audio.h:417
+#: modules/audio_output/mmdevice.c:1496 modules/gui/qt/ui/sprefs_audio.h:417
 msgid "HDMI/SPDIF audio passthrough"
 msgstr "Truyền âm thanh HDMI/SPDIF"
 
-#: modules/audio_output/mmdevice.c:1474
+#: modules/audio_output/mmdevice.c:1498
 msgid ""
 "Change this value if you have issue with HD codecs when using a HDMI "
 "receiver."
 msgstr ""
 "Thay đổi giá trị này nếu bạn gặp vấn đề với codec HD khi sử dụng bộ thu HDMI."
 
-#: modules/audio_output/mmdevice.c:1481
+#: modules/audio_output/mmdevice.c:1505
 msgid "Disabled"
 msgstr "Bị tắt"
 
-#: modules/audio_output/mmdevice.c:1482
+#: modules/audio_output/mmdevice.c:1506
 msgid "Enabled (AC3/DTS only)"
 msgstr "Đã bật (chỉ AC3/DTS)"
 
-#: modules/audio_output/mmdevice.c:1483
+#: modules/audio_output/mmdevice.c:1507
 msgid "Enabled"
 msgstr "Được bật"
 
-#: modules/audio_output/mmdevice.c:1494
+#: modules/audio_output/mmdevice.c:1518
 msgid "Windows Multimedia Device output"
 msgstr "Đầu ra của Thiết bị đa phương tiện Windows"
 
-#: modules/audio_output/mmdevice.c:1500
+#: modules/audio_output/mmdevice.c:1524
 msgid "Output back-end"
 msgstr "Đầu ra ở back-end"
 
-#: modules/audio_output/mmdevice.c:1500
+#: modules/audio_output/mmdevice.c:1524
 msgid "Audio output back-end interface."
 msgstr "Giao diện đầu ra âm thanh."
 
@@ -11075,7 +11031,7 @@ msgstr "Tăng phần mềm"
 msgid "This linear gain will be applied in software."
 msgstr "This linear gain will be applied in software."
 
-#: modules/audio_output/wasapi.c:652
+#: modules/audio_output/wasapi.c:687
 msgid "Windows Audio Session API output"
 msgstr "Đầu ra API phiên âm thanh của Windows"
 
@@ -11194,8 +11150,8 @@ msgstr "Sử dụng trình kết xuất Core Text trong phụ đề."
 msgid "ARIB subtitles decoder"
 msgstr "Bộ giải mã phụ đề ARIB"
 
-#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1089
-#: modules/demux/mpeg/ts_psi.c:1096
+#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1092
+#: modules/demux/mpeg/ts_psi.c:1099
 msgid "ARIB subtitles"
 msgstr "phụ đề ARIB"
 
@@ -11242,9 +11198,8 @@ msgstr "Giải mã audio/video dạng FFmpeg"
 msgid "Decoding"
 msgstr "Giải mã"
 
-#: modules/codec/avcodec/avcodec.c:152 modules/codec/jpeg.c:119
-#: modules/codec/omxil/omxil.c:171 modules/codec/png.c:99
-#: modules/codec/schroedinger.c:370
+#: modules/codec/avcodec/avcodec.c:152 modules/codec/jpeg.c:120
+#: modules/codec/omxil/omxil.c:171 modules/codec/png.c:100
 msgid "Encoding"
 msgstr "Mã hóa"
 
@@ -11518,7 +11473,7 @@ msgstr ""
 "chất lượng hình ảnh tốt hơn, nhưng vẫn duy trì tính tương thích với các "
 "trình giải mã dữ liệu theo chuẩn MPEG2."
 
-#: modules/codec/avcodec/avcodec.h:173 modules/codec/jpeg.c:51
+#: modules/codec/avcodec/avcodec.h:173 modules/codec/jpeg.c:52
 msgid "Quality level"
 msgstr "Mức độ chất lượng"
 
@@ -11722,11 +11677,11 @@ msgstr "hình ảnh phụ"
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr "VLC không thể mở bộ mã hóa %4.4s%s."
 
-#: modules/codec/avcodec/vaapi.c:388
+#: modules/codec/avcodec/vaapi.c:414
 msgid "VA-API video decoder via DRM"
 msgstr "Bộ giải mã video VA-API qua DRM"
 
-#: modules/codec/avcodec/vaapi.c:393
+#: modules/codec/avcodec/vaapi.c:419
 msgid "VA-API video decoder"
 msgstr "Trình giải mã video VA-API"
 
@@ -11798,11 +11753,11 @@ msgstr "Bộ đóng gói video Daala"
 msgid "Daala video encoder"
 msgstr "Trình biên mã video Daala"
 
-#: modules/codec/daala.c:143 modules/codec/schroedinger.c:54
+#: modules/codec/daala.c:143
 msgid "Chroma format"
 msgstr "Định dạng màu sắc"
 
-#: modules/codec/daala.c:144 modules/codec/schroedinger.c:55
+#: modules/codec/daala.c:144
 msgid ""
 "Picking chroma format will force a conversion of the video into that format"
 msgstr "Chọn lựa định dạng màu sắc sẽ buộc chuyển đổi video sang dạng đó"
@@ -11921,8 +11876,8 @@ msgstr "Tọa độ Y của phụ đề được mã hóa"
 msgid "DVB subtitles decoder"
 msgstr "Giải mã phụ đề DVB"
 
-#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:772
-#: modules/demux/mpeg/ts_psi.c:821
+#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:775
+#: modules/demux/mpeg/ts_psi.c:824
 msgid "DVB subtitles"
 msgstr "Phụ đề DVD"
 
@@ -11934,11 +11889,11 @@ msgstr "Trình biên mã phụ đề DVB"
 msgid "Dummy encoder"
 msgstr "Trình biên mã dummy"
 
-#: modules/codec/faad.c:54
+#: modules/codec/faad.c:59
 msgid "AAC audio decoder (using libfaad2)"
 msgstr "Giải mã audio AAC (sử dụng libfaad2)"
 
-#: modules/codec/faad.c:448
+#: modules/codec/faad.c:454
 msgid "AAC extension"
 msgstr "Định dạng AAC"
 
@@ -12068,11 +12023,11 @@ msgstr "Bộ tổng hợp cho FluidSynth MIDI"
 msgid "FluidSynth"
 msgstr "FluidSynth"
 
-#: modules/codec/fluidsynth.c:153
+#: modules/codec/fluidsynth.c:160
 msgid "MIDI synthesis not set up"
 msgstr "Chưa thiết lập bộ tổng hợp cho MIDI"
 
-#: modules/codec/fluidsynth.c:154
+#: modules/codec/fluidsynth.c:161
 msgid ""
 "A sound font file (.SF2) is required for MIDI synthesis.\n"
 "Please install a sound font and configure it from the VLC preferences "
@@ -12115,18 +12070,18 @@ msgstr ""
 msgid "GStreamer Based Decoder"
 msgstr "Bộ giải mã dựa trên GStreamer"
 
-#: modules/codec/jpeg.c:52
+#: modules/codec/jpeg.c:53
 msgid ""
 "Quality level for encoding (this can enlarge or reduce output image size)."
 msgstr ""
 "Mức chất lượng để mã hóa (điều này có thể phóng to hoặc giảm kích thước hình "
 "ảnh đầu ra)."
 
-#: modules/codec/jpeg.c:111
+#: modules/codec/jpeg.c:112
 msgid "JPEG image decoder"
 msgstr "bộ giải mã hình ảnh JPEG"
 
-#: modules/codec/jpeg.c:120
+#: modules/codec/jpeg.c:121
 msgid "JPEG image encoder"
 msgstr "Trình biên mã ảnh JPEG"
 
@@ -12478,11 +12433,11 @@ msgstr "Opus"
 msgid "Opus audio encoder"
 msgstr "Bộ mã hóa âm thanh Opus"
 
-#: modules/codec/png.c:91
+#: modules/codec/png.c:92
 msgid "PNG video decoder"
 msgstr "Giải mã video PNG"
 
-#: modules/codec/png.c:100
+#: modules/codec/png.c:101
 msgid "PNG video encoder"
 msgstr "Bộ mã hóa video PNG"
 
@@ -12741,395 +12696,6 @@ msgstr "Đóng gói video Pseudo raw"
 msgid "Raw video encoder for RTP"
 msgstr "Bộ mã hóa video thô cho RTP"
 
-#: modules/codec/schroedinger.c:60
-msgid "4:2:0"
-msgstr "4:2:0"
-
-#: modules/codec/schroedinger.c:60
-msgid "4:2:2"
-msgstr "4:2:2"
-
-#: modules/codec/schroedinger.c:60
-msgid "4:4:4"
-msgstr "4:4:4"
-
-#: modules/codec/schroedinger.c:63
-msgid "Rate control method"
-msgstr "Phương pháp điều khiển tốc độ"
-
-#: modules/codec/schroedinger.c:64
-msgid "Method used to encode the video sequence"
-msgstr "Phương pháp được sử dụng để mã hóa các chuỗi video liên tiếp"
-
-#: modules/codec/schroedinger.c:77
-msgid "Constant noise threshold mode"
-msgstr "Chế độ hằng số ngưỡng ồn"
-
-#: modules/codec/schroedinger.c:78
-msgid "Constant bitrate mode (CBR)"
-msgstr "Chế độ hằng số bitrate (CBR)"
-
-#: modules/codec/schroedinger.c:79
-msgid "Low Delay mode"
-msgstr "Chế độ độ trễ thấp"
-
-#: modules/codec/schroedinger.c:80
-msgid "Lossless mode"
-msgstr "Chế độ nguyên bản"
-
-#: modules/codec/schroedinger.c:81
-msgid "Constant lambda mode"
-msgstr "Chế độ hằng số lambda"
-
-#: modules/codec/schroedinger.c:82
-msgid "Constant error mode"
-msgstr "Chế độ lỗi liên tục"
-
-#: modules/codec/schroedinger.c:83
-msgid "Constant quality mode"
-msgstr "Chế độ hằng số chất lượng"
-
-#: modules/codec/schroedinger.c:87
-msgid "GOP structure"
-msgstr "Cấu trúc GOP"
-
-#: modules/codec/schroedinger.c:88
-msgid "GOP structure used to encode the video sequence"
-msgstr "Cấu trúc GOP được sử dụng để mã hóa chuỗi các video liên tiếp"
-
-#: modules/codec/schroedinger.c:100
-msgid ""
-"No fixed gop structure. A picture can be intra or inter and refer to "
-"previous or future pictures."
-msgstr ""
-"Không chỉnh sửa cấu trúc gop. Một bức hình có thể được hiện hoặc ẩn và tham "
-"chiếu tới các bức hình trước đó."
-
-#: modules/codec/schroedinger.c:101
-msgid "I-frame only sequence"
-msgstr "Chỉ dành cho chuỗi liên tiếp dạng I-frame"
-
-#: modules/codec/schroedinger.c:102 modules/codec/schroedinger.c:103
-msgid "Inter pictures refere to previous pictures only"
-msgstr "Ẩn hình ảnh chỉ tham chiếu đến hình ảnh trước đó"
-
-#: modules/codec/schroedinger.c:104 modules/codec/schroedinger.c:105
-msgid "Inter pictures can refer to previous or future pictures"
-msgstr "Hiện hình ảnh chỉ tham chiếu đến hình ảnh trước đó hoặc sau đó"
-
-#: modules/codec/schroedinger.c:109
-msgid "Constant quality factor"
-msgstr "Hệ số chất lượng không đổi"
-
-#: modules/codec/schroedinger.c:110
-msgid "Quality factor to use in constant quality mode"
-msgstr "Hệ số chất lượng được sử dụng trong chế độ hằng số chất lượng"
-
-#: modules/codec/schroedinger.c:113
-msgid "Noise Threshold"
-msgstr "Ngưỡng ồn"
-
-#: modules/codec/schroedinger.c:114
-msgid "Noise threshold to use in constant noise threshold mode"
-msgstr "Ngưỡng ồn được sử dụng trong chế độ ngưỡng hằng số ồn"
-
-#: modules/codec/schroedinger.c:117
-msgid "CBR bitrate (kbps)"
-msgstr "bitrate CBR (kbps)"
-
-#: modules/codec/schroedinger.c:118
-msgid "Target bitrate in kbps when encoding in constant bitrate mode"
-msgstr ""
-"Bitrate mong muốn tínhb ằng kbps khi đang mã hóa ở chế độ hằng số bitrate"
-
-#: modules/codec/schroedinger.c:121
-msgid "Maximum bitrate (kbps)"
-msgstr "Bitrate tối đa (kbps)"
-
-#: modules/codec/schroedinger.c:122
-msgid "Maximum bitrate in kbps when encoding in constant bitrate mode"
-msgstr ""
-"Số bitrate tối đa tính bằng kbps khi đang mã hóa trong chế độ hằng số bitrate"
-
-#: modules/codec/schroedinger.c:125
-msgid "Minimum bitrate (kbps)"
-msgstr "Bitrate tối thiểu (kbps)"
-
-#: modules/codec/schroedinger.c:126
-msgid "Minimum bitrate in kbps when encoding in constant bitrate mode"
-msgstr ""
-"Số bitrate tối thiểu tính bằng kbps khi đang mã hóa trong chế độ hằng số "
-"bitrate"
-
-#: modules/codec/schroedinger.c:129
-msgid "GOP length"
-msgstr "Độ dài GOP"
-
-#: modules/codec/schroedinger.c:130
-msgid ""
-"Number of pictures between successive sequence headers i.e. length of the "
-"group of pictures"
-msgstr ""
-"Số lượng hình ảnh của các chuỗi header liên tiếp ví dụ như chiều dài của "
-"nhóm các hình ảnh"
-
-#: modules/codec/schroedinger.c:134
-msgid "Prefilter"
-msgstr "Lọc lại"
-
-#: modules/codec/schroedinger.c:135
-msgid "Enable adaptive prefiltering"
-msgstr "Bật tính năng lọic trước khi gắn kết"
-
-#: modules/codec/schroedinger.c:147
-msgid "No pre-filtering"
-msgstr "Không xử lý trước bằng bộ lọc"
-
-#: modules/codec/schroedinger.c:148
-msgid "Centre Weighted Median"
-msgstr "Trọng lượng trung bình ở giữa"
-
-#: modules/codec/schroedinger.c:149
-msgid "Gaussian Low Pass Filter"
-msgstr "Bộ lộc dạng"
-
-#: modules/codec/schroedinger.c:150
-msgid "Add Noise"
-msgstr "Thêm độ ồn"
-
-#: modules/codec/schroedinger.c:151
-msgid "Gaussian Adaptive Low Pass Filter"
-msgstr "Bộ lọc dạng Gaussian Adaptive Low Pas"
-
-#: modules/codec/schroedinger.c:152
-msgid "Low Pass Filter"
-msgstr "Bộ lọc dạng Low Pass"
-
-#: modules/codec/schroedinger.c:156
-msgid "Amount of prefiltering"
-msgstr "Số lượng các bộ lọc tiền xử lý"
-
-#: modules/codec/schroedinger.c:157
-msgid "Higher value implies more prefiltering"
-msgstr "Giá trị càng cao chỉ rõ mức độ nhiều bộ lọc tiền xử lý"
-
-#: modules/codec/schroedinger.c:160
-msgid "Picture coding mode"
-msgstr "Chế độ mã hóa hình ảnh"
-
-#: modules/codec/schroedinger.c:161
-msgid ""
-"Field coding is where interlaced fields are coded separately as opposed to a "
-"pseudo-progressive frame"
-msgstr ""
-"Khung thông tin mã hóa là nơi các khung thông thin quét mành được viết mã "
-"độc lập để làm đối trọng trong khung hình liên tục dạng mã pseudo"
-
-#: modules/codec/schroedinger.c:166
-msgid "auto - let encoder decide based upon input (Best)"
-msgstr ""
-"auto - cho phep trinh ma hoa quyet dinh dua vao du lieu dau vao (Tot nhat)"
-
-#: modules/codec/schroedinger.c:167
-msgid "force coding frame as single picture"
-msgstr "buoc khung hinh duoc viet ma hien thi dang don hinh anh"
-
-#: modules/codec/schroedinger.c:168
-msgid "force coding frame as separate interlaced fields"
-msgstr "buoc khung hinh duoc viet ma tac biet khoi vung du lieu quet manh"
-
-#: modules/codec/schroedinger.c:173
-msgid "Size of motion compensation blocks"
-msgstr "Kích thước của các khối bù trừ chuyển động"
-
-#: modules/codec/schroedinger.c:182 modules/codec/schroedinger.c:199
-#: modules/codec/schroedinger.c:297 modules/codec/schroedinger.c:338
-msgid "automatic - let encoder decide based upon input (Best)"
-msgstr ""
-"tự động - cho phép trình mã hóa quyết định dựa trên dữ liệu đầu vào (Tốt "
-"nhất)"
-
-#: modules/codec/schroedinger.c:183
-msgid "small - use small motion compensation blocks"
-msgstr "nhỏ - sử dụng cho các khối bù trừ chuyển động dạng nhỏ"
-
-#: modules/codec/schroedinger.c:184
-msgid "medium - use medium motion compensation blocks"
-msgstr "trung bình - sử dụng cho các khối bù trừ chuyển động dạng trung bình"
-
-#: modules/codec/schroedinger.c:185
-msgid "large - use large motion compensation blocks"
-msgstr ""
-"lớn - sử dụng các việc bù trừ cho các khối có chuyển động khối dạng lớn"
-
-#: modules/codec/schroedinger.c:190
-msgid "Overlap of motion compensation blocks"
-msgstr "Độ che phủ của các khối bù trừ chuyển động"
-
-#: modules/codec/schroedinger.c:200
-msgid "none - Motion compensation blocks do not overlap"
-msgstr "không - Các khối bù trừ chuyển động không thực hiện chức năng che phủ"
-
-#: modules/codec/schroedinger.c:201
-msgid "partial - Motion compensation blocks only partially overlap"
-msgstr ""
-"từng phần - Chỉ dựa vào độ che phủ từng phần đối với các khối bù trừ chuyển "
-"động"
-
-#: modules/codec/schroedinger.c:202
-msgid "full - Motion compensation blocks fully overlap"
-msgstr "đầy đủ - Hoàn toàn che phủ dựa vào các khối bù trừ chuyển động"
-
-#: modules/codec/schroedinger.c:207
-msgid "Motion Vector precision"
-msgstr "Dự đoán véttơ chuyển động"
-
-#: modules/codec/schroedinger.c:208
-msgid "Motion Vector precision in pels"
-msgstr "Độ chính xác vétơ chuyển động tính bằng pels"
-
-#: modules/codec/schroedinger.c:214
-msgid "Three component motion estimation"
-msgstr "Ba yếu tố trong việc dự đoán chuyển động"
-
-#: modules/codec/schroedinger.c:215
-msgid "Use chroma as part of the motion estimation process"
-msgstr "Sử dụng màu sắc dưới dạng tiến trình dự đoán chuyển động"
-
-#: modules/codec/schroedinger.c:218
-msgid "Intra picture DWT filter"
-msgstr "Bộ lọc DWT dành cho hình ảnh Intra"
-
-#: modules/codec/schroedinger.c:221
-msgid "Inter picture DWT filter"
-msgstr "Bộ lọc DWT dành cho hình ảnh Inter"
-
-#: modules/codec/schroedinger.c:244
-msgid "Number of DWT iterations"
-msgstr "Số lần lặp lại DWT"
-
-#: modules/codec/schroedinger.c:245
-msgid "Also known as DWT levels"
-msgstr "Hay mức độ DWT"
-
-#: modules/codec/schroedinger.c:250
-msgid "Enable multiple quantizers"
-msgstr "Kích hoạt nhiều bộ lượng tử hóa"
-
-#: modules/codec/schroedinger.c:251
-msgid "Enable multiple quantizers per subband (one per codeblock)"
-msgstr "Bật nhiều phần lượng tử cho mỗi băng con (mỗi khối lệnh)"
-
-#: modules/codec/schroedinger.c:255
-msgid "Disable arithmetic coding"
-msgstr "Tắt phần mã số học"
-
-#: modules/codec/schroedinger.c:256
-msgid "Use variable length codes instead, useful for very high bitrates"
-msgstr "Sử dụng biến số của độ dài codec, hữu dụng cho các bitrate cao"
-
-#: modules/codec/schroedinger.c:261
-msgid "perceptual weighting method"
-msgstr "phương pháp phụ trợ giác quan"
-
-#: modules/codec/schroedinger.c:272
-msgid "perceptual distance"
-msgstr "khoảng cách giác quan"
-
-#: modules/codec/schroedinger.c:273
-msgid "perceptual distance to calculate perceptual weight"
-msgstr "khoảng cách giác quan để tính toán giác quan phụ trợ"
-
-#: modules/codec/schroedinger.c:277
-msgid "Horizontal slices per frame"
-msgstr "Lát ngang trên một khung"
-
-#: modules/codec/schroedinger.c:278
-msgid "Number of horizontal slices per frame in low delay mode"
-msgstr "Số lượng các lát ngang mỗi khung trong chế độ trở ngại thấp"
-
-#: modules/codec/schroedinger.c:282
-msgid "Vertical slices per frame"
-msgstr "Lát cắt dọc trên một khung"
-
-#: modules/codec/schroedinger.c:283
-msgid "Number of vertical slices per frame in low delay mode"
-msgstr "Số lát dọc trên một khung trong chế độ trở ngại thấp"
-
-#: modules/codec/schroedinger.c:287
-msgid "Size of code blocks in each subband"
-msgstr "Kích thước khối mã lệnh cho mỗi băng con"
-
-#: modules/codec/schroedinger.c:298
-msgid "small - use small code blocks"
-msgstr "nhỏ - sử dụng các khối mã nhỏ"
-
-#: modules/codec/schroedinger.c:299
-msgid "medium - use medium sized code blocks"
-msgstr "trung bình - sử dụng các khối mã có kích thước trung bình"
-
-#: modules/codec/schroedinger.c:300
-msgid "large - use large code blocks"
-msgstr "lớn - sử dụng các khối mã lớn"
-
-#: modules/codec/schroedinger.c:301
-msgid "full - One code block per subband"
-msgstr "đầy đủ - Một khối mã lệnh cho mỗi băng con"
-
-#: modules/codec/schroedinger.c:306
-msgid "Enable hierarchical Motion Estimation"
-msgstr "Bật ước lượng chuyển động phân nhánh"
-
-#: modules/codec/schroedinger.c:310
-msgid "Number of levels of downsampling"
-msgstr "Số lượng các cấp độ của"
-
-#: modules/codec/schroedinger.c:311
-msgid "Number of levels of downsampling in hierarchical motion estimation mode"
-msgstr ""
-"Số lượng cấp độ các phần downsampling trong chế độ dự đoán chuyển động phân "
-"nhánh"
-
-#: modules/codec/schroedinger.c:315
-msgid "Enable Global Motion Estimation"
-msgstr "Kích hoạt \"khảo sát chuyển động toàn cục\""
-
-#: modules/codec/schroedinger.c:319
-msgid "Enable Phase Correlation Estimation"
-msgstr "Bật Dự Đoán Chu Kỳ Liên Quan"
-
-#: modules/codec/schroedinger.c:323
-msgid "Enable Scene Change Detection"
-msgstr "Bật Phát Hiện Thay Đổi Cảnh Quan"
-
-#: modules/codec/schroedinger.c:327
-msgid "Force Profile"
-msgstr "Bắt buộc dùng hồ sơ"
-
-#: modules/codec/schroedinger.c:339
-msgid "VC2 Low Delay Profile"
-msgstr "Hồ sơ độ trễ VC2 Low"
-
-#: modules/codec/schroedinger.c:340
-msgid "VC2 Simple Profile"
-msgstr "Hồ sơ VC2 dạng đơn giản"
-
-#: modules/codec/schroedinger.c:341
-msgid "VC2 Main Profile"
-msgstr "Hồ sơ chính VC2"
-
-#: modules/codec/schroedinger.c:342
-msgid "Main Profile"
-msgstr "Hồ sơ chính"
-
-#: modules/codec/schroedinger.c:363
-msgid "Dirac video decoder using libschroedinger"
-msgstr "Trình giải mã video dạng Dirac sử dụng libschroedinger"
-
-#: modules/codec/schroedinger.c:371
-msgid "Dirac video encoder using libschroedinger"
-msgstr "Trình giải mã video dạng Dirac sử dụng libschroedinger"
-
 #: modules/codec/scte18.c:41
 msgid "SCTE-18 decoder"
 msgstr "Bộ giải mã SCTE-18"
@@ -13166,7 +12732,7 @@ msgstr "Mã hóa MP3 fixed point audio"
 msgid "S/PDIF pass-through decoder"
 msgstr "Bộ giải mã truyền qua S/PDIF"
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:910
+#: modules/codec/speex.c:59 modules/codec/speex.c:1023
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
 #: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
@@ -13951,7 +13517,6 @@ msgid "CABAC"
 msgstr "CABAC"
 
 #: modules/codec/x264.c:133
-#, fuzzy
 msgid ""
 "CABAC (Context-Adaptive Binary Arithmetic Coding). Slightly slows down "
 "encoding and decoding, but should save 10 to 15% bitrate."
@@ -14831,14 +14396,14 @@ msgstr "Giao diện điều khiển D-Bus"
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1028
-#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
-#: modules/gui/qt/main_interface.cpp:1306
-#: modules/gui/qt/main_interface.cpp:1343
-#: modules/gui/qt/main_interface.cpp:1345
-#: modules/gui/qt/main_interface.cpp:1453
-#: modules/gui/qt/main_interface.cpp:1470
-#: modules/gui/qt/main_interface.cpp:1478
-#: modules/gui/qt/main_interface.cpp:1501 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1295
+#: modules/gui/qt/main_interface.cpp:1299
+#: modules/gui/qt/main_interface.cpp:1336
+#: modules/gui/qt/main_interface.cpp:1338
+#: modules/gui/qt/main_interface.cpp:1446
+#: modules/gui/qt/main_interface.cpp:1463
+#: modules/gui/qt/main_interface.cpp:1471
+#: modules/gui/qt/main_interface.cpp:1494 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -15582,88 +15147,88 @@ msgstr "WinMsg"
 msgid "Windows messages interface"
 msgstr "Giao diện tin nhắn Windows"
 
-#: modules/demux/adaptive/adaptive.cpp:69
+#: modules/demux/adaptive/adaptive.cpp:71
 msgid "Maximum device width"
 msgstr "Chiều rộng thiết bị tối đa"
 
-#: modules/demux/adaptive/adaptive.cpp:70
+#: modules/demux/adaptive/adaptive.cpp:72
 msgid "Maximum device height"
 msgstr "Chiều cao thiết bị tối đa"
 
-#: modules/demux/adaptive/adaptive.cpp:72
+#: modules/demux/adaptive/adaptive.cpp:74
 msgid "Fixed Bandwidth in KiB/s"
 msgstr "Đã sửa lỗi băng thông tính bằng KiB/s"
 
-#: modules/demux/adaptive/adaptive.cpp:73
+#: modules/demux/adaptive/adaptive.cpp:75
 msgid "Preferred bandwidth for non adaptive streams"
 msgstr "Băng thông ưu tiên cho các luồng không thích ứng"
 
-#: modules/demux/adaptive/adaptive.cpp:75
+#: modules/demux/adaptive/adaptive.cpp:77
 msgid "Live Playback delay (ms)"
 msgstr "Độ trễ phát lại trực tiếp (ms)"
 
-#: modules/demux/adaptive/adaptive.cpp:76
+#: modules/demux/adaptive/adaptive.cpp:78
 msgid "Tradeoff between stability and real time"
 msgstr "Đánh đổi giữa sự ổn định và thời gian thực"
 
-#: modules/demux/adaptive/adaptive.cpp:78
+#: modules/demux/adaptive/adaptive.cpp:80
 msgid "Max buffering (ms)"
 msgstr "Bộ đệm tối đa (ms)"
 
-#: modules/demux/adaptive/adaptive.cpp:80
+#: modules/demux/adaptive/adaptive.cpp:82
 msgid "Adaptive Logic"
 msgstr "Logic thích ứng"
 
-#: modules/demux/adaptive/adaptive.cpp:82
+#: modules/demux/adaptive/adaptive.cpp:84
 msgid "Use regular HTTP modules"
 msgstr "Sử dụng các mô-đun HTTP thông thường"
 
-#: modules/demux/adaptive/adaptive.cpp:83
+#: modules/demux/adaptive/adaptive.cpp:85
 msgid "Connect using HTTP access instead of custom HTTP code"
 msgstr "Kết nối bằng quyền truy cập HTTP thay vì mã HTTP tùy chỉnh"
 
-#: modules/demux/adaptive/adaptive.cpp:85
+#: modules/demux/adaptive/adaptive.cpp:87
 #: modules/gui/qt/components/simple_preferences.cpp:713
 msgid "Low latency"
 msgstr "Độ trễ thấp"
 
-#: modules/demux/adaptive/adaptive.cpp:86
+#: modules/demux/adaptive/adaptive.cpp:88
 msgid "Overrides low latency parameters"
 msgstr "Ghi đè các thông số có độ trễ thấp"
 
-#: modules/demux/adaptive/adaptive.cpp:107
+#: modules/demux/adaptive/adaptive.cpp:109
 msgid "Predictive"
 msgstr "Dự đoán"
 
-#: modules/demux/adaptive/adaptive.cpp:108
+#: modules/demux/adaptive/adaptive.cpp:110
 msgid "Near Optimal"
 msgstr "Gần tối ưu"
 
-#: modules/demux/adaptive/adaptive.cpp:109
+#: modules/demux/adaptive/adaptive.cpp:111
 msgid "Bandwidth Adaptive"
 msgstr "Thích ứng băng thông"
 
-#: modules/demux/adaptive/adaptive.cpp:110
+#: modules/demux/adaptive/adaptive.cpp:112
 msgid "Fixed Bandwidth"
 msgstr "Băng thông cố định"
 
-#: modules/demux/adaptive/adaptive.cpp:111
+#: modules/demux/adaptive/adaptive.cpp:113
 msgid "Lowest Bandwidth/Quality"
 msgstr "Băng thông/Chất lượng thấp nhất"
 
-#: modules/demux/adaptive/adaptive.cpp:112
+#: modules/demux/adaptive/adaptive.cpp:114
 msgid "Highest Bandwidth/Quality"
 msgstr "Băng thông/Chất lượng cao nhất"
 
-#: modules/demux/adaptive/adaptive.cpp:123
+#: modules/demux/adaptive/adaptive.cpp:125
 msgid "Force"
 msgstr "Ép buộc"
 
-#: modules/demux/adaptive/adaptive.cpp:127
+#: modules/demux/adaptive/adaptive.cpp:129
 msgid "Adaptive"
 msgstr "Thích ứng"
 
-#: modules/demux/adaptive/adaptive.cpp:128
+#: modules/demux/adaptive/adaptive.cpp:130
 msgid "Unified adaptive streaming for DASH/HLS"
 msgstr "Truyền phát thích ứng thống nhất cho DASH/HLS"
 
@@ -15759,7 +15324,7 @@ msgstr "Sửa chữa khi cần thiết"
 msgid "AVI demuxer"
 msgstr "Bộ tách kênh AVI"
 
-#: modules/demux/avi/avi.c:910 modules/demux/mp4/mp4.c:4374
+#: modules/demux/avi/avi.c:920 modules/demux/mp4/mp4.c:4402
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15775,27 +15340,27 @@ msgstr ""
 "Bước này có thể mất nhiều thời gian trên một tệp lớn.\n"
 "Bạn muốn làm gì?"
 
-#: modules/demux/avi/avi.c:918
+#: modules/demux/avi/avi.c:928
 msgid "Do not play"
 msgstr "Không phát"
 
-#: modules/demux/avi/avi.c:919
+#: modules/demux/avi/avi.c:929
 msgid "Build index then play"
 msgstr "Lập danh mục thứ tự sau đó phát"
 
-#: modules/demux/avi/avi.c:920
+#: modules/demux/avi/avi.c:930
 msgid "Play as is"
 msgstr "Phát dưới dạng"
 
-#: modules/demux/avi/avi.c:921 modules/demux/mp4/mp4.c:4385
+#: modules/demux/avi/avi.c:931 modules/demux/mp4/mp4.c:4413
 msgid "Broken or missing Index"
 msgstr "Broken or missing Index"
 
-#: modules/demux/avi/avi.c:2879
+#: modules/demux/avi/avi.c:2889
 msgid "Broken or missing AVI Index"
 msgstr "Chỉ số thứ tự AVI bị thiếu hoặc bị lỗi"
 
-#: modules/demux/avi/avi.c:2880
+#: modules/demux/avi/avi.c:2890
 msgid "Fixing AVI Index..."
 msgstr "Đang sửa lại chỉ mục AVI..."
 
@@ -15833,11 +15398,11 @@ msgstr "Trình kết xuất tệp"
 
 #: modules/demux/dirac.c:41
 msgid "Value to adjust dts by"
-msgstr "Giá trị để điều chỉnh dts bằng"
+msgstr ""
 
 #: modules/demux/dirac.c:54
 msgid "Dirac video demuxer"
-msgstr "Bộ tách kênh video Dirac"
+msgstr ""
 
 #: modules/demux/directory.c:94
 msgid "Directory import"
@@ -15913,7 +15478,7 @@ msgstr "Hình ảnh"
 
 #: modules/demux/mjpeg.c:46 modules/demux/mpeg/es.c:53
 #: modules/demux/mpeg/h26x.c:46 modules/demux/rawvid.c:43
-#: modules/demux/subtitle.c:77 modules/demux/vc1.c:43
+#: modules/demux/subtitle.c:78 modules/demux/vc1.c:43
 #: modules/gui/macosx/VLCOpenWindowController.m:208
 msgid "Frames per Second"
 msgstr "Khung hình mỗi giây"
@@ -15962,7 +15527,7 @@ msgstr ""
 "Tải lại tập tin matroska trong cùng thư mục để tìm kiếm các mảnh dữ liệu "
 "được liên kết với nhau ( không hữu hiệu đối với các tập tin bị lỗi)."
 
-#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:113
+#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:114
 msgid "Seek based on percent not time"
 msgstr "Tua dựa trên phần trăm chứ không phải thời gian"
 
@@ -16219,27 +15784,27 @@ msgstr "Rõ ràng"
 msgid "Clean"
 msgstr "Lau dọn"
 
-#: modules/demux/mp4/mp4.c:51
+#: modules/demux/mp4/mp4.c:52
 msgid "M4A audio only"
 msgstr "Chỉ âm thanh M4A"
 
-#: modules/demux/mp4/mp4.c:52
+#: modules/demux/mp4/mp4.c:53
 msgid "Ignore non audio tracks from iTunes audio files"
 msgstr "Bỏ qua các bản âm thanh không phải từ tệp âm thanh iTunes"
 
-#: modules/demux/mp4/mp4.c:57
+#: modules/demux/mp4/mp4.c:58
 msgid "MP4 stream demuxer"
 msgstr "Bộ tách kênh luồng dạng MP4"
 
-#: modules/demux/mp4/mp4.c:58
+#: modules/demux/mp4/mp4.c:59
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4382
+#: modules/demux/mp4/mp4.c:4410
 msgid "Do not seek"
 msgstr "Đừng tua"
 
-#: modules/demux/mp4/mp4.c:4383
+#: modules/demux/mp4/mp4.c:4411
 msgid "Build index"
 msgstr "Xây dựng chỉ mục"
 
@@ -16305,21 +15870,21 @@ msgstr "Bộ tách kênh MPEG-PS"
 msgid "PS"
 msgstr "PS"
 
-#: modules/demux/mpeg/ts.c:84
+#: modules/demux/mpeg/ts.c:85
 msgid "Extra PMT"
 msgstr "Bổ sung PMT"
 
-#: modules/demux/mpeg/ts.c:86
+#: modules/demux/mpeg/ts.c:87
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr ""
 "Cho phép người dùng xác định các pmt bổ sung  (pmt_pid=pid:"
 "stream_type[,...])."
 
-#: modules/demux/mpeg/ts.c:88
+#: modules/demux/mpeg/ts.c:89
 msgid "Set id of ES to PID"
 msgstr "Tạo id của ES thành PID"
 
-#: modules/demux/mpeg/ts.c:89
+#: modules/demux/mpeg/ts.c:90
 msgid ""
 "Set the internal ID of each elementary stream handled by VLC to the same "
 "value as the PID in the TS stream, instead of 1, 2, 3, etc. Useful to do "
@@ -16329,31 +15894,31 @@ msgstr ""
 "PID trong luồng TS, thay vì 1, 2, 3, v.v. Thật hữu ích khi thực hiện "
 "'#duplicate{..., select=\"es=< pid>\"}'."
 
-#: modules/demux/mpeg/ts.c:94 modules/mux/mpeg/ts.c:173
+#: modules/demux/mpeg/ts.c:95 modules/mux/mpeg/ts.c:173
 msgid "CSA Key"
 msgstr "Chìa khóa CSA"
 
-#: modules/demux/mpeg/ts.c:95 modules/mux/mpeg/ts.c:174
+#: modules/demux/mpeg/ts.c:96 modules/mux/mpeg/ts.c:174
 msgid ""
 "CSA encryption key. This must be a 16 char string (8 hexadecimal bytes)."
 msgstr "Khóa mã hóa CSA. Đây phải là chuỗi 16 char (8 byte thập lục phân)."
 
-#: modules/demux/mpeg/ts.c:98 modules/mux/mpeg/ts.c:177
+#: modules/demux/mpeg/ts.c:99 modules/mux/mpeg/ts.c:177
 msgid "Second CSA Key"
 msgstr "Khóa thứ hai của SCA"
 
-#: modules/demux/mpeg/ts.c:99 modules/mux/mpeg/ts.c:178
+#: modules/demux/mpeg/ts.c:100 modules/mux/mpeg/ts.c:178
 msgid ""
 "The even CSA encryption key. This must be a 16 char string (8 hexadecimal "
 "bytes)."
 msgstr ""
 "Khóa mã hóa CSA thậm chí. Đây phải là chuỗi 16 char (8 byte thập lục phân)."
 
-#: modules/demux/mpeg/ts.c:103
+#: modules/demux/mpeg/ts.c:104
 msgid "Packet size in bytes to decrypt"
 msgstr "Kích thước gói tính bằng byte để giải mã"
 
-#: modules/demux/mpeg/ts.c:104
+#: modules/demux/mpeg/ts.c:105
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
 "subtract the TS-header from the value before decrypting."
@@ -16361,11 +15926,11 @@ msgstr ""
 "Chỉ định kích thước của gói TS cần giải mã. Thủ tục giải mã trừ giá trị tiêu "
 "đề TS trước khi giải mã."
 
-#: modules/demux/mpeg/ts.c:108
+#: modules/demux/mpeg/ts.c:109
 msgid "Separate sub-streams"
 msgstr "Các luồng phụ riêng biệt"
 
-#: modules/demux/mpeg/ts.c:110
+#: modules/demux/mpeg/ts.c:111
 msgid ""
 "Separate teletex/dvbs pages into independent ES. It can be useful to turn "
 "off this option when using stream output."
@@ -16373,7 +15938,7 @@ msgstr ""
 "Tách các trang teletex/dvbs thành ES độc lập. Có thể hữu ích nếu tắt tùy "
 "chọn này khi sử dụng đầu ra luồng."
 
-#: modules/demux/mpeg/ts.c:115
+#: modules/demux/mpeg/ts.c:116
 msgid ""
 "Seek and position based on a percent byte position, not a PCR generated time "
 "position. If seeking doesn't work property, turn on this option."
@@ -16382,19 +15947,19 @@ msgstr ""
 "gian được tạo PCR. Nếu tìm kiếm không hoạt động với thuộc tính, hãy bật tùy "
 "chọn này."
 
-#: modules/demux/mpeg/ts.c:126
+#: modules/demux/mpeg/ts.c:127
 msgid "Trust in-stream PCR"
 msgstr "Tin cậy PCR trong luồng"
 
-#: modules/demux/mpeg/ts.c:127
+#: modules/demux/mpeg/ts.c:128
 msgid "Use the stream PCR as a reference."
 msgstr "Sử dụng luồng PCR làm nguồn tham chiếu."
 
-#: modules/demux/mpeg/ts.c:134 modules/mux/mpeg/ts.c:100
+#: modules/demux/mpeg/ts.c:135 modules/mux/mpeg/ts.c:100
 msgid "Digital TV Standard"
 msgstr "Tiêu chuẩn truyền hình kỹ thuật số"
 
-#: modules/demux/mpeg/ts.c:135
+#: modules/demux/mpeg/ts.c:136
 msgid ""
 "Selects mode for digital TV standard. This feature affects EPG information "
 "and subtitles."
@@ -16402,60 +15967,60 @@ msgstr ""
 "Chọn chế độ cho chuẩn TV kỹ thuật số. Tính năng này ảnh hưởng đến thông tin "
 "và phụ đề EPG."
 
-#: modules/demux/mpeg/ts.c:139
+#: modules/demux/mpeg/ts.c:140
 msgid "MPEG Transport Stream demuxer"
 msgstr "Bộ tách kênh luồng vận chuyển MPEG"
 
-#: modules/demux/mpeg/ts_psi.c:422
+#: modules/demux/mpeg/ts_psi.c:425
 msgid "Main audio"
 msgstr "Âm thanh chính"
 
-#: modules/demux/mpeg/ts_psi.c:423
+#: modules/demux/mpeg/ts_psi.c:426
 msgid "Audio description for the visually impaired"
 msgstr "Mô tả âm thanh cho người khiếm thị"
 
-#: modules/demux/mpeg/ts_psi.c:424
+#: modules/demux/mpeg/ts_psi.c:427
 msgid "Clean audio for the hearing impaired"
 msgstr "Âm thanh sạch cho người khiếm thính"
 
-#: modules/demux/mpeg/ts_psi.c:425
+#: modules/demux/mpeg/ts_psi.c:428
 msgid "Spoken subtitles for the visually impaired"
 msgstr "Phụ đề nói dành cho người khiếm thị"
 
-#: modules/demux/mpeg/ts_psi.c:607 modules/gui/macosx/VLCMainMenu.m:465
+#: modules/demux/mpeg/ts_psi.c:610 modules/gui/macosx/VLCMainMenu.m:465
 #: modules/gui/qt/dialogs/toolbar.cpp:541
 msgid "Teletext"
 msgstr "Teletext"
 
-#: modules/demux/mpeg/ts_psi.c:608
+#: modules/demux/mpeg/ts_psi.c:611
 msgid "Teletext subtitles"
 msgstr "Phụ đề Teletext"
 
-#: modules/demux/mpeg/ts_psi.c:609
+#: modules/demux/mpeg/ts_psi.c:612
 msgid "Teletext: additional information"
 msgstr "Teletext: thông tin bổ sung"
 
-#: modules/demux/mpeg/ts_psi.c:610
+#: modules/demux/mpeg/ts_psi.c:613
 msgid "Teletext: program schedule"
 msgstr "Teletext: Thời khóa biểu của VLC"
 
-#: modules/demux/mpeg/ts_psi.c:611
+#: modules/demux/mpeg/ts_psi.c:614
 msgid "Teletext subtitles: hearing impaired"
 msgstr "Phụ đề Teletext: nghe bị lỗi"
 
-#: modules/demux/mpeg/ts_psi.c:828
+#: modules/demux/mpeg/ts_psi.c:831
 msgid "DVB subtitles: hearing impaired"
 msgstr "Phụ đề DVB: nghe bị lỗi"
 
-#: modules/demux/mpeg/ts_psi.c:1337
+#: modules/demux/mpeg/ts_psi.c:1340
 msgid "clean effects"
 msgstr "tắt hiệu ứng"
 
-#: modules/demux/mpeg/ts_psi.c:1338
+#: modules/demux/mpeg/ts_psi.c:1341
 msgid "hearing impaired"
 msgstr "nghe bị lỗi"
 
-#: modules/demux/mpeg/ts_psi.c:1339
+#: modules/demux/mpeg/ts_psi.c:1342
 msgid "visual impaired commentary"
 msgstr "bình luận hiệu ứng bị lỗi"
 
@@ -16471,7 +16036,7 @@ msgstr "Bộ tách kênh NullSoft"
 msgid "Nuv demuxer"
 msgstr "Bộ tách kênh Nuv"
 
-#: modules/demux/ogg.c:57
+#: modules/demux/ogg.c:58
 msgid "OGG demuxer"
 msgstr "Bộ tách kênh OGG"
 
@@ -16719,7 +16284,7 @@ msgstr "Bộ tách kênh thực"
 msgid "C64 sid demuxer"
 msgstr "Bộ tách kênh C64 sid"
 
-#: modules/demux/smf.c:725
+#: modules/demux/smf.c:727
 msgid "SMF demuxer"
 msgstr "Bộ tách kênh SMF"
 
@@ -16727,13 +16292,13 @@ msgstr "Bộ tách kênh SMF"
 msgid "EBU STL subtitles parser"
 msgstr "Bộ chuyển phụ đề dạng EBU STL"
 
-#: modules/demux/subtitle.c:53
+#: modules/demux/subtitle.c:54
 msgid "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
 msgstr ""
 "Áp dụng độ trễ cho tất cả các phụ đề (tính bằng 1/10 giây, ví dụ 100 nghĩa "
 "là 10 giây)."
 
-#: modules/demux/subtitle.c:55
+#: modules/demux/subtitle.c:56
 msgid ""
 "Override the normal frames per second settings. This will only work with "
 "MicroDVD and SubRIP (SRT) subtitles."
@@ -16741,7 +16306,7 @@ msgstr ""
 "Thiết lập về việc ghi đè lên các khung hình mỗi giây. Thao tác này chỉ có "
 "thể hoạt động với các phụ đề dạng MicroDVD và SubRIP (SRT)."
 
-#: modules/demux/subtitle.c:58
+#: modules/demux/subtitle.c:59
 msgid ""
 "Force the subtitles format. Selecting \"auto\" means autodetection and "
 "should always work."
@@ -16749,23 +16314,23 @@ msgstr ""
 "Buộc định dạng phụ đề. Chọn \"tự động\" có nghĩa là tự động phát hiện và sẽ "
 "luôn hoạt động."
 
-#: modules/demux/subtitle.c:60
+#: modules/demux/subtitle.c:61
 msgid "Override the default track description."
 msgstr "Mô tả về track mặc định được ghi đè."
 
-#: modules/demux/subtitle.c:72
+#: modules/demux/subtitle.c:73
 msgid "Text subtitle parser"
 msgstr "Chuyển thông tin văn bản phụ đề"
 
-#: modules/demux/subtitle.c:80 modules/spu/subsdelay.c:275
+#: modules/demux/subtitle.c:81 modules/spu/subsdelay.c:275
 msgid "Subtitle delay"
 msgstr "Độ trễ phụ đề"
 
-#: modules/demux/subtitle.c:82
+#: modules/demux/subtitle.c:83
 msgid "Subtitle format"
 msgstr "Định dạng phụ đề"
 
-#: modules/demux/subtitle.c:85
+#: modules/demux/subtitle.c:86
 msgid "Subtitle description"
 msgstr "Mô tả về phụ đề"
 
@@ -16781,15 +16346,15 @@ msgstr "TY"
 msgid "TY Stream audio/video demux"
 msgstr "Tách kênh audio/video của luồng TY"
 
-#: modules/demux/ty.c:784
+#: modules/demux/ty.c:793
 msgid "Closed captions 2"
 msgstr "Đóng lại đầu đề 2"
 
-#: modules/demux/ty.c:785
+#: modules/demux/ty.c:794
 msgid "Closed captions 3"
 msgstr "Đóng lại đầu đề 3"
 
-#: modules/demux/ty.c:786
+#: modules/demux/ty.c:795
 msgid "Closed captions 4"
 msgstr "Đóng lại đầu đề 4"
 
@@ -16918,26 +16483,26 @@ msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:105
 #: modules/gui/macosx/VLCAddonsWindowController.m:357
-#: modules/gui/qt/dialogs/plugins.cpp:388
+#: modules/gui/qt/dialogs/plugins.cpp:387
 #: modules/gui/qt/managers/addons_manager.cpp:88
 msgid "Playlist parsers"
 msgstr "Trình phân tích danh sách phát"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:107
 #: modules/gui/macosx/VLCAddonsWindowController.m:359
-#: modules/gui/qt/dialogs/plugins.cpp:392
+#: modules/gui/qt/dialogs/plugins.cpp:391
 #: modules/gui/qt/managers/addons_manager.cpp:90
 msgid "Service Discovery"
 msgstr "Khám phá dịch vụ"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:109
-#: modules/gui/qt/dialogs/plugins.cpp:396
+#: modules/gui/qt/dialogs/plugins.cpp:395
 #: modules/gui/qt/managers/addons_manager.cpp:92
 msgid "Interfaces"
 msgstr "Giao diện"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:111
-#: modules/gui/qt/dialogs/plugins.cpp:399
+#: modules/gui/qt/dialogs/plugins.cpp:398
 #: modules/gui/qt/managers/addons_manager.cpp:94
 msgid "Art and meta fetchers"
 msgstr "Trình tìm nạp nghệ thuật và meta"
@@ -16945,7 +16510,7 @@ msgstr "Trình tìm nạp nghệ thuật và meta"
 #: modules/gui/macosx/VLCAddonsWindowController.m:113
 #: modules/gui/macosx/VLCAddonsWindowController.m:361
 #: modules/gui/macosx/VLCMainMenu.m:343 modules/gui/macosx/VLCMainMenu.m:344
-#: modules/gui/qt/dialogs/plugins.cpp:402
+#: modules/gui/qt/dialogs/plugins.cpp:401
 #: modules/gui/qt/managers/addons_manager.cpp:96
 msgid "Extensions"
 msgstr "Phần mở rộng"
@@ -16955,7 +16520,7 @@ msgid "Show Installed Only"
 msgstr "Chỉ hiển thị đã cài đặt"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:118
-#: modules/gui/qt/dialogs/plugins.cpp:430
+#: modules/gui/qt/dialogs/plugins.cpp:429
 msgid "Find more addons online"
 msgstr "Tìm thêm tiện ích bổ sung trực tuyến"
 
@@ -16987,7 +16552,7 @@ msgid "Uninstall"
 msgstr "Gỡ cài đặt"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:355
-#: modules/gui/qt/dialogs/plugins.cpp:384
+#: modules/gui/qt/dialogs/plugins.cpp:383
 #: modules/gui/qt/managers/addons_manager.cpp:86
 #: modules/gui/skins2/src/skin_main.cpp:535
 msgid "Skins"
@@ -17187,7 +16752,7 @@ msgstr "Thời gian"
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1360
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "OK"
 msgstr "Đồng ý"
 
@@ -17330,7 +16895,7 @@ msgstr "Lưu dưới dạng tập tin"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:149
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:392
 #: modules/gui/macosx/VLCOutput.m:65 modules/gui/macosx/VLCOutput.m:194
-#: modules/gui/macosx/VLCOutput.m:313 modules/gui/qt/dialogs/sout.cpp:92
+#: modules/gui/macosx/VLCOutput.m:313 modules/gui/qt/dialogs/sout.cpp:90
 msgid "Stream"
 msgstr "Luồng phát"
 
@@ -17405,10 +16970,10 @@ msgstr "Thông báo về Luồng"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:186
 #: modules/gui/macosx/VLCOpenWindowController.m:197
 #: modules/gui/macosx/VLCOutput.m:68
-#: modules/gui/qt/components/sout/sout_widgets.cpp:242
-#: modules/gui/qt/components/sout/sout_widgets.cpp:329
-#: modules/gui/qt/components/sout/sout_widgets.cpp:371
-#: modules/gui/qt/components/sout/sout_widgets.cpp:426
+#: modules/gui/qt/components/sout/sout_widgets.cpp:294
+#: modules/gui/qt/components/sout/sout_widgets.cpp:381
+#: modules/gui/qt/components/sout/sout_widgets.cpp:423
+#: modules/gui/qt/components/sout/sout_widgets.cpp:478
 msgid "Address"
 msgstr "Địa chỉ"
 
@@ -17420,11 +16985,11 @@ msgstr "TTL"
 #: modules/gui/macosx/VLCOpenWindowController.m:185
 #: modules/gui/macosx/VLCOpenWindowController.m:187
 #: modules/gui/macosx/VLCOutput.m:69
-#: modules/gui/qt/components/sout/sout_widgets.cpp:188
-#: modules/gui/qt/components/sout/sout_widgets.cpp:243
-#: modules/gui/qt/components/sout/sout_widgets.cpp:284
-#: modules/gui/qt/components/sout/sout_widgets.cpp:330
-#: modules/gui/qt/components/sout/sout_widgets.cpp:427 modules/lua/vlc.c:67
+#: modules/gui/qt/components/sout/sout_widgets.cpp:240
+#: modules/gui/qt/components/sout/sout_widgets.cpp:295
+#: modules/gui/qt/components/sout/sout_widgets.cpp:336
+#: modules/gui/qt/components/sout/sout_widgets.cpp:382
+#: modules/gui/qt/components/sout/sout_widgets.cpp:479 modules/lua/vlc.c:67
 #: modules/stream_out/rtp.c:114
 #: share/lua/http/dialogs/stream_config_window.html:32
 #: share/lua/http/dialogs/stream_window.html:91
@@ -18532,7 +18097,7 @@ msgstr "INTERNET"
 #: modules/gui/macosx/VLCSimplePrefsController.m:241
 #: modules/gui/qt/components/simple_preferences.cpp:248
 #: modules/gui/qt/components/simple_preferences.cpp:738
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:381
 msgid "Interface Settings"
 msgstr "Thiết lập giao diện"
 
@@ -18550,7 +18115,7 @@ msgstr "Thiết lập Video"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:247
 #: modules/gui/qt/components/simple_preferences.cpp:254
-#: modules/gui/qt/components/simple_preferences.cpp:894
+#: modules/gui/qt/components/simple_preferences.cpp:901
 msgid "Subtitle & On Screen Display Settings"
 msgstr "Thiết lập cho phụ đề & phần hiển thị trên màn hình"
 
@@ -19015,7 +18580,7 @@ msgid "Subtitle duration factor:"
 msgstr "Hệ số thời gian phụ đề:"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:68
-#: modules/gui/qt/components/extended_panels.cpp:1590
+#: modules/gui/qt/components/extended_panels.cpp:1588
 msgid ""
 "Extend subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -19024,7 +18589,7 @@ msgstr ""
 "0 tương ứng với tắt tính năng này."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:72
-#: modules/gui/qt/components/extended_panels.cpp:1595
+#: modules/gui/qt/components/extended_panels.cpp:1593
 msgid ""
 "Multiply subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -19033,7 +18598,7 @@ msgstr ""
 "0 tương đương với tắt tính năng này."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:76
-#: modules/gui/qt/components/extended_panels.cpp:1600
+#: modules/gui/qt/components/extended_panels.cpp:1598
 msgid ""
 "Recalculate subtitle duration according\n"
 "to their content and this value.\n"
@@ -19890,27 +19455,27 @@ msgstr "Mở:%s"
 msgid "Find: %s"
 msgstr "Tìm:%s"
 
-#: modules/gui/qt/components/controller.cpp:352
+#: modules/gui/qt/components/controller.cpp:347
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt/components/controller.cpp:457
+#: modules/gui/qt/components/controller.cpp:451
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr "Click để chuyển đổi giữa lặp tất cả, lặp một đối tượng và không lặp"
 
-#: modules/gui/qt/components/controller.cpp:558
+#: modules/gui/qt/components/controller.cpp:555
 msgid "Previous Chapter/Title"
 msgstr "Chương/Tiêu đề trước đó"
 
-#: modules/gui/qt/components/controller.cpp:564
+#: modules/gui/qt/components/controller.cpp:561
 msgid "Next Chapter/Title"
 msgstr "Chương/Tiêu đề tiếp theo"
 
-#: modules/gui/qt/components/controller.cpp:613
+#: modules/gui/qt/components/controller.cpp:605
 msgid "Teletext Activation"
 msgstr "Kích hoạt Teletext"
 
-#: modules/gui/qt/components/controller.cpp:629
+#: modules/gui/qt/components/controller.cpp:619
 msgid "Toggle Transparency"
 msgstr "Chuyển đổi tính minh bạch"
 
@@ -20075,7 +19640,7 @@ msgstr "Dừng việc lặp lại từ A đến B"
 msgid "Aspect Ratio"
 msgstr "Tỉ lệ đồng dạng"
 
-#: modules/gui/qt/components/epg/EPGWidget.cpp:65
+#: modules/gui/qt/components/epg/EPGWidget.cpp:66
 msgid "No EPG Data Available"
 msgstr "Không có sẵn dữ liệu EPG"
 
@@ -20235,7 +19800,7 @@ msgstr "(đến gấp)"
 msgid "(Delayed)"
 msgstr "(Bị trễ)"
 
-#: modules/gui/qt/components/extended_panels.cpp:1507
+#: modules/gui/qt/components/extended_panels.cpp:1505
 msgid "Force update of this dialog's values"
 msgstr "Băt buộc thiết lập của giá trị trong phần cập nhật"
 
@@ -20332,7 +19897,7 @@ msgstr "60 giây trước"
 msgid "Overall"
 msgstr "Tổng quan"
 
-#: modules/gui/qt/components/interface_widgets.cpp:683
+#: modules/gui/qt/components/interface_widgets.cpp:658
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
@@ -20340,46 +19905,46 @@ msgstr ""
 "Tốc độ phát lại hiện tại: %1\n"
 "Click để chỉnh sửa"
 
-#: modules/gui/qt/components/interface_widgets.cpp:756
+#: modules/gui/qt/components/interface_widgets.cpp:730
 msgid "Revert to normal play speed"
 msgstr "Quay trở lại tốc độ phát thông thường"
 
-#: modules/gui/qt/components/interface_widgets.cpp:863
+#: modules/gui/qt/components/interface_widgets.cpp:827
 msgid "Download cover art"
 msgstr "Tải về trang bìa"
 
-#: modules/gui/qt/components/interface_widgets.cpp:867
+#: modules/gui/qt/components/interface_widgets.cpp:831
 msgid "Add cover art from file"
 msgstr "Thêm bìa nghệ thuật từ tập tin"
 
-#: modules/gui/qt/components/interface_widgets.cpp:933
+#: modules/gui/qt/components/interface_widgets.cpp:897
 msgid "Choose Cover Art"
 msgstr "Chọn bìa nghệ thuật"
 
-#: modules/gui/qt/components/interface_widgets.cpp:934
+#: modules/gui/qt/components/interface_widgets.cpp:898
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "Tập tin hình ảnh (*.gif *.jpg *.jpeg *.png)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:961
+#: modules/gui/qt/components/interface_widgets.cpp:925
 #: modules/gui/qt/dialogs/toolbar.cpp:573
 msgid "Elapsed time"
 msgstr "Thời gian đã phát"
 
-#: modules/gui/qt/components/interface_widgets.cpp:965
+#: modules/gui/qt/components/interface_widgets.cpp:929
 #: modules/gui/qt/dialogs/toolbar.cpp:577
 msgid "Total/Remaining time"
 msgstr "Thời gian tổng cộng/còn lại"
 
-#: modules/gui/qt/components/interface_widgets.cpp:967
+#: modules/gui/qt/components/interface_widgets.cpp:931
 msgid "Click to toggle between total and remaining time"
 msgstr "Click để chuyển đổi giữa thời gian tổng cộng và thời gian còn lại"
 
-#: modules/gui/qt/components/interface_widgets.cpp:973
+#: modules/gui/qt/components/interface_widgets.cpp:937
 msgid "Click to toggle between elapsed and remaining time"
 msgstr ""
 "Click để chuyển đổi việc hiển thị giữa thời gian đã phát và thời gian còn lại"
 
-#: modules/gui/qt/components/interface_widgets.cpp:975
+#: modules/gui/qt/components/interface_widgets.cpp:939
 msgid "Double click to jump to a chosen time position"
 msgstr "Click chuột hai lần để đi đến vị trí thời gian được lựa chọn"
 
@@ -20584,19 +20149,19 @@ msgstr ""
 "Danh sách phát hiện tại ở trạng thái rỗng.\n"
 "Hãy kéo và thả một tập tin vào đây hoặc chọn một nguồn phát phía bên trái."
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:143
+#: modules/gui/qt/components/playlist/standardpanel.hpp:144
 msgid "Icons"
 msgstr "Biểu tượng"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:144
+#: modules/gui/qt/components/playlist/standardpanel.hpp:145
 msgid "Detailed List"
 msgstr "Danh sách chi tiết"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:145
+#: modules/gui/qt/components/playlist/standardpanel.hpp:146
 msgid "List"
 msgstr "Danh sách"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:146
+#: modules/gui/qt/components/playlist/standardpanel.hpp:147
 msgid "PictureFlow"
 msgstr "Dạng hình ảnh"
 
@@ -20633,7 +20198,6 @@ msgid "Application level hotkey"
 msgstr "Cấp độ phím tắt của ứng dụng"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1148
-#: modules/gui/qt/components/preferences_widgets.cpp:1405
 msgid "Global"
 msgstr "Toàn bộ"
 
@@ -20650,33 +20214,37 @@ msgstr ""
 "Click chuột hai lần để thay đổi.\n"
 "Nhấn phím Delete để xóa."
 
+#: modules/gui/qt/components/preferences_widgets.cpp:1405
+msgid "Global Hotkey change"
+msgstr ""
+
 #: modules/gui/qt/components/preferences_widgets.cpp:1406
 msgid "Hotkey change"
 msgstr "Thay đổi phím tắt"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1410
-msgid "Press the new key or combination for "
-msgstr "Nhấn phím mới trên bàn phím hoặc tổ hợp phím cho "
+msgid "Press the new key or combination for <b>%1</b>"
+msgstr ""
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1419
 msgid "Assign"
 msgstr "Gán"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1454
-msgid "Warning: this key or combination is already assigned to "
-msgstr "Cảnh báo: phím này hoặc tổ hợp phím này đã được gán cho "
+#: modules/gui/qt/components/preferences_widgets.cpp:1455
+msgid "Warning: this key or combination is already assigned to \"<b>%1</b>\""
+msgstr ""
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1466
+#: modules/gui/qt/components/preferences_widgets.cpp:1467
 msgid "Warning: <b>%1</b> is already an application menu shortcut"
 msgstr "Cảnh báo: <b>%1</b> là phím tắt đến bảng chọn của ứng dụng"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1489
-msgid "Key or combination: "
-msgstr "Phím hoặc tổ hợp phím: "
+#: modules/gui/qt/components/preferences_widgets.cpp:1490
+msgid "Key or combination: <b>%1</b>"
+msgstr ""
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1498
-msgid "Key: "
-msgstr "Khóa: "
+msgid "Key: <b>%1</b>"
+msgstr ""
 
 #: modules/gui/qt/components/simple_preferences.cpp:256
 #: modules/gui/qt/components/simple_preferences.cpp:636
@@ -20684,7 +20252,7 @@ msgid "Input & Codecs Settings"
 msgstr "Thiết lập Nhập dữ liệu & Codec"
 
 #: modules/gui/qt/components/simple_preferences.cpp:258
-#: modules/gui/qt/components/simple_preferences.cpp:938
+#: modules/gui/qt/components/simple_preferences.cpp:945
 msgid "Configure Hotkeys"
 msgstr "Chỉnh sửa phím tắt"
 
@@ -20730,30 +20298,30 @@ msgstr "Website cho giao diện của VLC"
 msgid "System's default"
 msgstr "Mặc định theo hệ thống"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1344
+#: modules/gui/qt/components/simple_preferences.cpp:1351
 msgid "File associations"
 msgstr "Mở các tập tin có định dạng"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1353
+#: modules/gui/qt/components/simple_preferences.cpp:1360
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "Tập tin Audio"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1354
+#: modules/gui/qt/components/simple_preferences.cpp:1361
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "Tập tin Video"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1355
+#: modules/gui/qt/components/simple_preferences.cpp:1362
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "Tập tin danh sách"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1420
+#: modules/gui/qt/components/simple_preferences.cpp:1427
 msgid "&Apply"
 msgstr "&Áp dụng"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1421
+#: modules/gui/qt/components/simple_preferences.cpp:1428
 #: modules/gui/qt/dialogs/convert.cpp:137
 #: modules/gui/qt/dialogs/gototime.cpp:48 modules/gui/qt/dialogs/open.cpp:109
 #: modules/gui/qt/dialogs/openurl.cpp:59
@@ -20841,46 +20409,62 @@ msgid ""
 msgstr ""
 "Dạng lưu (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:185
+#: modules/gui/qt/components/sout/sout_widgets.cpp:184
+msgid "This module outputs the stream using the RIST protocol (TR06)."
+msgstr ""
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:186
+msgid "Destination Address"
+msgstr ""
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:191
+msgid "Destination Port"
+msgstr ""
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:201
+msgid "Stream Name"
+msgstr ""
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:237
 msgid "This module outputs the transcoded stream to a network via HTTP."
 msgstr "Mô-đun này xuất luồng được chuyển mã sang mạng thông qua HTTP."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:187
-#: modules/gui/qt/components/sout/sout_widgets.cpp:283
+#: modules/gui/qt/components/sout/sout_widgets.cpp:239
+#: modules/gui/qt/components/sout/sout_widgets.cpp:335
 msgid "Path"
 msgstr "Đường dẫn"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:239
+#: modules/gui/qt/components/sout/sout_widgets.cpp:291
 msgid ""
 "This module outputs the transcoded stream to a network via the mms protocol."
 msgstr ""
 "Mô-đun này xuất luồng được chuyển mã sang mạng thông qua giao thức mms."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:281
+#: modules/gui/qt/components/sout/sout_widgets.cpp:333
 msgid "This module outputs the transcoded stream to a network via RTSP."
 msgstr "Mô-đun này xuất luồng được chuyển mã sang mạng thông qua RTSP."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:327
+#: modules/gui/qt/components/sout/sout_widgets.cpp:379
 msgid "This module outputs the transcoded stream to a network via UDP."
 msgstr "Mô-đun này xuất luồng được chuyển mã sang mạng thông qua UDP."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:369
+#: modules/gui/qt/components/sout/sout_widgets.cpp:421
 msgid "This module outputs the transcoded stream to a network via RTP."
 msgstr "Mô-đun này xuất luồng được chuyển mã sang mạng thông qua RTP."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:376
+#: modules/gui/qt/components/sout/sout_widgets.cpp:428
 msgid "Base port"
 msgstr "Cổng cơ sở"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:424
+#: modules/gui/qt/components/sout/sout_widgets.cpp:476
 msgid "This module outputs the transcoded stream to an Icecast server."
 msgstr "Mô-đun này xuất luồng được chuyển mã tới máy chủ Icecast."
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:443
+#: modules/gui/qt/components/sout/sout_widgets.cpp:495
 msgid "Mount Point"
 msgstr "Điểm Kết Nối"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:444
+#: modules/gui/qt/components/sout/sout_widgets.cpp:496
 msgid "Login:pass"
 msgstr "Đăng nhập:mật khẩu"
 
@@ -21289,11 +20873,11 @@ msgstr "&Tìm kiếm:"
 msgid "More information..."
 msgstr "Thêm thông tin..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:266
+#: modules/gui/qt/dialogs/plugins.cpp:265
 msgid "Reload extensions"
 msgstr "Tải lại tiện ích"
 
-#: modules/gui/qt/dialogs/plugins.cpp:385
+#: modules/gui/qt/dialogs/plugins.cpp:384
 msgid ""
 "Skins customize player's appearance. You can activate them through "
 "preferences."
@@ -21301,7 +20885,7 @@ msgstr ""
 "Skins tùy chỉnh ngoại hình của bộ chơi nhạc. Bạn có thể kích hoạt chúng "
 "thông qua tùy chọn."
 
-#: modules/gui/qt/dialogs/plugins.cpp:389
+#: modules/gui/qt/dialogs/plugins.cpp:388
 msgid ""
 "Playlist parsers add new capabilities to read internet streams or extract "
 "meta data."
@@ -21309,7 +20893,7 @@ msgstr ""
 "Trình phân tích cú pháp danh sách phát bổ sung các khả năng mới để đọc luồng "
 "internet hoặc trích xuất dữ liệu meta."
 
-#: modules/gui/qt/dialogs/plugins.cpp:393
+#: modules/gui/qt/dialogs/plugins.cpp:392
 msgid ""
 "Service discoveries adds new sources to your playlist such as web radios, "
 "video websites, ..."
@@ -21317,18 +20901,18 @@ msgstr ""
 "Khám phá dịch vụ bổ sung thêm các nguồn mới vào danh sách phát của bạn như "
 "web radio, trang web video, ..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:400
+#: modules/gui/qt/dialogs/plugins.cpp:399
 msgid "Retrieves extra info and art for playlist items"
 msgstr "Truy xuất thêm thông tin và hình ảnh cho các mục danh sách phát"
 
-#: modules/gui/qt/dialogs/plugins.cpp:403
+#: modules/gui/qt/dialogs/plugins.cpp:402
 msgid ""
 "Extensions brings various enhancements. Check descriptions for more details"
 msgstr ""
 "Tiện ích mở rộng mang lại nhiều cải tiến khác nhau. Kiểm tra mô tả để biết "
 "thêm chi tiết"
 
-#: modules/gui/qt/dialogs/plugins.cpp:424
+#: modules/gui/qt/dialogs/plugins.cpp:423
 msgid "Only installed"
 msgstr "Chỉ được cài đặt"
 
@@ -21459,7 +21043,7 @@ msgstr ""
 "Phần này sẽ tự động được tạo khi bạn thay đổi các thiết lập bên trên,\n"
 "và bạn cũng có thể tự mình thay đổi chúng."
 
-#: modules/gui/qt/dialogs/sout.cpp:89
+#: modules/gui/qt/dialogs/sout.cpp:87
 msgid "Back"
 msgstr "Quay lại"
 
@@ -21709,19 +21293,19 @@ msgstr "-trống rỗng-"
 msgid "Deactivate"
 msgstr "Vô hiệu hóa"
 
-#: modules/gui/qt/main_interface.cpp:378
+#: modules/gui/qt/main_interface.cpp:374
 msgid "Do you want to restart the playback where left off?"
 msgstr "Bạn có muốn bắt đầu lại quá trình phát lại ở nơi đã dừng lại không?"
 
-#: modules/gui/qt/main_interface.cpp:384
+#: modules/gui/qt/main_interface.cpp:380
 msgid "&Continue"
 msgstr "&Tiếp tục"
 
-#: modules/gui/qt/main_interface.cpp:1454
+#: modules/gui/qt/main_interface.cpp:1447
 msgid "Control menu for the player"
 msgstr "Bảng chọn điều khiển của VLC"
 
-#: modules/gui/qt/main_interface.cpp:1498
+#: modules/gui/qt/main_interface.cpp:1491
 msgid "Paused"
 msgstr "Tạm dừng"
 
@@ -22474,15 +22058,15 @@ msgstr ""
 "Chỉnh độ gamma của hình ảnh, khoảng giá trị từ 0.01 đến 10. Giá trị mặc định "
 "là 1."
 
-#: modules/hw/d3d11/d3d11_filters.c:681
+#: modules/hw/d3d11/d3d11_filters.c:683
 msgid "AMD VQ Enhancer"
 msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:687
+#: modules/hw/d3d11/d3d11_filters.c:689
 msgid "AMD Frame Rate Doubler"
 msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:690
+#: modules/hw/d3d11/d3d11_filters.c:692
 msgid "Show indicator"
 msgstr ""
 
@@ -23836,11 +23420,11 @@ msgstr "Xuất dữ liệu danh sách XSPF"
 msgid "HTML playlist export"
 msgstr "Xuất dữ liệu danh sách HTML"
 
-#: modules/misc/rtsp.c:63
+#: modules/misc/rtsp.c:65
 msgid "Maximum number of connections"
 msgstr "Số lượng tối đa kết nối"
 
-#: modules/misc/rtsp.c:64
+#: modules/misc/rtsp.c:66
 msgid ""
 "This limits the maximum number of clients that can connect to the RTSP VOD. "
 "0 means no limit."
@@ -23848,15 +23432,15 @@ msgstr ""
 "Điều này giới hạn số lượng máy khách tối đa có thể kết nối với RTSP VOD. 0 "
 "có nghĩa là không có giới hạn."
 
-#: modules/misc/rtsp.c:67
+#: modules/misc/rtsp.c:69
 msgid "MUX for RAW RTSP transport"
 msgstr "MUX để vận chuyển RAW RTSP"
 
-#: modules/misc/rtsp.c:69
+#: modules/misc/rtsp.c:71
 msgid "Sets the timeout option in the RTSP session string"
 msgstr "Đặt tùy chọn thời gian chờ trong chuỗi phiên RTSP"
 
-#: modules/misc/rtsp.c:71
+#: modules/misc/rtsp.c:73
 msgid ""
 "Defines what timeout option to add to the RTSP session ID string. Setting it "
 "to a negative number removes the timeout option entirely. This is needed by "
@@ -23868,11 +23452,11 @@ msgstr ""
 "thiết đối với một số STB IPTV (chẳng hạn như các STB do HansunTech sản xuất) "
 "khiến nó bị nhầm lẫn. Mặc định là 5."
 
-#: modules/misc/rtsp.c:77 modules/stream_out/rtp.c:244
+#: modules/misc/rtsp.c:79 modules/stream_out/rtp.c:244
 msgid "RTSP VoD"
 msgstr "RTSP VoD"
 
-#: modules/misc/rtsp.c:78
+#: modules/misc/rtsp.c:80
 msgid "Legacy RTSP VoD server"
 msgstr "Máy chủ RTSP VoD kế thừa"
 
@@ -23906,27 +23490,27 @@ msgstr ""
 msgid "Accept certificate temporarily"
 msgstr "Chấp nhận chứng chỉ tạm thời"
 
-#: modules/misc/stats.c:215 modules/stream_out/stats.c:51
+#: modules/misc/stats.c:221 modules/stream_out/stats.c:51
 msgid "Stats"
 msgstr "Trạng thái"
 
-#: modules/misc/stats.c:217
+#: modules/misc/stats.c:223
 msgid "Stats encoder function"
 msgstr "Chức năng số liệu thống kê bộ mã hóa"
 
-#: modules/misc/stats.c:223 modules/misc/stats.c:229 modules/misc/stats.c:235
+#: modules/misc/stats.c:229 modules/misc/stats.c:235 modules/misc/stats.c:241
 msgid "Stats decoder"
 msgstr "Thống kê bộ giải mã"
 
-#: modules/misc/stats.c:224 modules/misc/stats.c:230 modules/misc/stats.c:236
+#: modules/misc/stats.c:230 modules/misc/stats.c:236 modules/misc/stats.c:242
 msgid "Stats decoder function"
 msgstr "Chức năng số liệu thống kê bộ giải mã"
 
-#: modules/misc/stats.c:241
+#: modules/misc/stats.c:247
 msgid "Stats demux"
 msgstr "Thống kê bộ tách kênh"
 
-#: modules/misc/stats.c:242
+#: modules/misc/stats.c:248
 msgid "Stats demux function"
 msgstr "Chức năng thống kê bộ tách kênh"
 
@@ -23985,7 +23569,7 @@ msgstr ""
 msgid "ASF muxer"
 msgstr "Bộ ghép kênh ASF"
 
-#: modules/mux/asf.c:563
+#: modules/mux/asf.c:564
 msgid "Unknown Video"
 msgstr "Không biết video này"
 
@@ -24350,7 +23934,7 @@ msgstr "Bộ đóng gói âm thanh A/52"
 msgid "avparser packetizer"
 msgstr "trình đóng gói avparser"
 
-#: modules/packetizer/av1.c:585
+#: modules/packetizer/av1.c:586
 msgid "AV1 video packetizer"
 msgstr "Bộ đóng gói video AV1"
 
@@ -24360,7 +23944,7 @@ msgstr "Sao chép gói tin"
 
 #: modules/packetizer/dirac.c:87
 msgid "Dirac packetizer"
-msgstr "Bộ đóng gói Dirac"
+msgstr ""
 
 #: modules/packetizer/dts.c:47
 msgid "DTS audio packetizer"
@@ -24432,7 +24016,7 @@ msgstr "Khám phá trình kết xuất Avahi"
 
 #: modules/services_discovery/bonjour.m:45
 #: modules/services_discovery/bonjour.m:63
-#: modules/services_discovery/bonjour.m:455
+#: modules/services_discovery/bonjour.m:461
 msgid "Bonjour Network Discovery"
 msgstr "Khám phá mạng Bonjour"
 
@@ -24464,7 +24048,7 @@ msgstr "Hình ảnh của tôi"
 
 #: modules/services_discovery/microdns.c:44
 #: modules/services_discovery/microdns.c:57
-#: modules/services_discovery/microdns.c:646
+#: modules/services_discovery/microdns.c:656
 msgid "mDNS Network Discovery"
 msgstr "khám phá mạng mDNS"
 
@@ -24626,13 +24210,13 @@ msgstr "HD DVD"
 msgid "Unknown type"
 msgstr "Loại chưa rõ"
 
-#: modules/services_discovery/upnp.cpp:76
+#: modules/services_discovery/upnp.cpp:81
 msgid "Custom SAT>IP channel list URL"
 msgstr "URL danh sách kênh SAT>IP tùy chỉnh"
 
-#: modules/services_discovery/upnp.cpp:111
-#: modules/services_discovery/upnp.cpp:118
-#: modules/services_discovery/upnp.cpp:253
+#: modules/services_discovery/upnp.cpp:116
+#: modules/services_discovery/upnp.cpp:123
+#: modules/services_discovery/upnp.cpp:258
 msgid "Universal Plug'n'Play"
 msgstr "Universal Plug'n'Play"
 
@@ -25462,31 +25046,31 @@ msgstr "Truyền phát động HTTP"
 msgid "Zlib decompression filter"
 msgstr "Bộ lọc giải nén Zlib"
 
-#: modules/stream_filter/prefetch.c:532
+#: modules/stream_filter/prefetch.c:530
 msgid "Stream prefetch filter"
 msgstr "Bộ lọc luồng nạp trước"
 
-#: modules/stream_filter/prefetch.c:535
+#: modules/stream_filter/prefetch.c:533
 msgid "Buffer size"
 msgstr "Kích thước bộ đệm"
 
-#: modules/stream_filter/prefetch.c:536
+#: modules/stream_filter/prefetch.c:534
 msgid "Prefetch buffer size (KiB)"
 msgstr "Kích thước bộ đệm tải trước (KiB)"
 
-#: modules/stream_filter/prefetch.c:538
+#: modules/stream_filter/prefetch.c:536
 msgid "Read size"
 msgstr "Đọc kích thước"
 
-#: modules/stream_filter/prefetch.c:539
+#: modules/stream_filter/prefetch.c:537
 msgid "Prefetch background read size (bytes)"
 msgstr "Lấy trước kích thước đọc nền (byte)"
 
-#: modules/stream_filter/prefetch.c:541
+#: modules/stream_filter/prefetch.c:539
 msgid "Seek threshold"
 msgstr "Tìm kiếm ngưỡng"
 
-#: modules/stream_filter/prefetch.c:542
+#: modules/stream_filter/prefetch.c:540
 msgid "Prefetch forward seek threshold (bytes)"
 msgstr "Tìm nạp trước ngưỡng tìm kiếm chuyển tiếp (byte)"
 
@@ -25641,7 +25225,7 @@ msgstr ""
 "tiện tới Chromecast."
 
 #: modules/stream_out/chromecast/cast.cpp:192
-#: modules/stream_out/chromecast/cast.cpp:1198
+#: modules/stream_out/chromecast/cast.cpp:1219
 msgid "Performance warning"
 msgstr "Cảnh báo hiệu suất"
 
@@ -25701,11 +25285,11 @@ msgstr "Chromecast"
 msgid "Chromecast stream output"
 msgstr "Đầu ra luồng Chromecast"
 
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "Ok, Don't warn me again"
 msgstr "Được rồi, đừng cảnh báo tôi nữa"
 
-#: modules/stream_out/chromecast/cast.cpp:1199
+#: modules/stream_out/chromecast/cast.cpp:1220
 msgid ""
 "Casting this video requires conversion. This conversion can use all the "
 "available power and could quickly drain your battery."
@@ -26670,11 +26254,11 @@ msgstr "Tổng hợp giọng nói cho Mac OS X"
 msgid "Speech synthesis for Windows"
 msgstr "Tổng hợp giọng nói cho Windows"
 
-#: modules/text_renderer/svg.c:70
+#: modules/text_renderer/svg.c:72
 msgid "SVG template file"
 msgstr "Tập tin mẫu dạng SVG"
 
-#: modules/text_renderer/svg.c:71
+#: modules/text_renderer/svg.c:73
 msgid ""
 "Location of a file holding a SVG template for automatic string conversion"
 msgstr ""
@@ -27384,11 +26968,11 @@ msgstr "Bộ lọc video tương tác đóng băng"
 msgid "Freeze"
 msgstr "Đóng băng"
 
-#: modules/video_filter/gaussianblur.c:50
+#: modules/video_filter/gaussianblur.c:51
 msgid "Gaussian's std deviation"
 msgstr "Độ lệch chuẩn của Gaussian"
 
-#: modules/video_filter/gaussianblur.c:52
+#: modules/video_filter/gaussianblur.c:53
 msgid ""
 "Gaussian's standard deviation. The blurring will take into account pixels up "
 "to 3*sigma away in any direction."
@@ -27396,15 +26980,15 @@ msgstr ""
 "Độ lệch chuẩn Gaussian. Việc làm mờ sẽ tính đến các pixel cách xa tối đa "
 "3*sigma theo bất kỳ hướng nào."
 
-#: modules/video_filter/gaussianblur.c:55
+#: modules/video_filter/gaussianblur.c:56
 msgid "Add a blurring effect"
 msgstr "Thêm hiệu ứng làm mờ"
 
-#: modules/video_filter/gaussianblur.c:60
+#: modules/video_filter/gaussianblur.c:61
 msgid "Gaussian blur video filter"
 msgstr "Bộ lọc video làm mờ Guassian"
 
-#: modules/video_filter/gaussianblur.c:61
+#: modules/video_filter/gaussianblur.c:62
 msgid "Gaussian Blur"
 msgstr "Làm mờ Guassian"
 

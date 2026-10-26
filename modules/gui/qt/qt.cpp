@@ -365,9 +365,9 @@ static void Abort( void *obj )
 }
 #endif
 
-#if defined (QT5_HAS_X11)
+#if defined (QT_HAS_X11)
 # include <vlc_xlib.h>
-# include <QX11Info>
+# include "qt_x11.hpp"
 
 static void *ThreadXCB( void *data )
 {
@@ -385,26 +385,6 @@ static bool HasX11( vlc_object_t *obj )
         return false;
 
     XCloseDisplay( dpy );
-    return true;
-}
-#endif
-
-#ifdef QT5_HAS_WAYLAND
-# include <wayland-client.h>
-
-static void *ThreadWayland( void *data )
-{
-    char platform_name[] = "wayland";
-    return ThreadPlatform( data, platform_name );
-}
-
-static bool HasWayland( void )
-{
-    struct wl_display *dpy = wl_display_connect( NULL );
-    if( dpy == NULL )
-        return false;
-
-    wl_display_disconnect( dpy );
     return true;
 }
 #endif
@@ -473,17 +453,10 @@ static int Open( vlc_object_t *p_this, bool isDialogProvider )
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
     void *(*thread)(void *) = Thread;
 
-#ifdef QT5_HAS_X11
+#ifdef QT_HAS_X11
     if( HasX11( p_this ) )
         thread = ThreadXCB;
     else
-#endif
-#ifdef QT5_HAS_WAYLAND
-    if( HasWayland() )
-        thread = ThreadWayland;
-    else
-#endif
-#if defined (QT5_HAS_X11) || defined (QT5_HAS_WAYLAND)
         return VLC_EGENERIC;
 #endif
 
@@ -699,8 +672,9 @@ static void *ThreadPlatform( void *obj, char *platform_name )
     app.setQuitOnLastWindowClosed( false );
 
     /* Retrieve last known path used in file browsing */
+    const QUrl homeUrl = QUrl::fromLocalFile(QVLCUserDir( VLC_HOME_DIR ));
     p_sys->filepath =
-         getSettings()->value( "filedialog-path", QVLCUserDir( VLC_HOME_DIR ) ).toString();
+         getSettings()->value( "filedialog-path", homeUrl ).toUrl();
 
     /* Loads and tries to apply the preferred QStyle */
     QString s_style = getSettings()->value( "MainWindow/QtStyle", "" ).toString();
@@ -782,7 +756,7 @@ static int WindowControl( vout_window_t *, int i_query, va_list );
 
 typedef struct {
     MainInterface *mi;
-#ifdef QT5_HAS_X11
+#ifdef QT_HAS_X11
     Display *dpy;
 #endif
     QMutex lock;
@@ -823,10 +797,10 @@ static int WindowOpen( vout_window_t *p_wnd, const vout_window_cfg_t *cfg )
     p_wnd->sys = (vout_window_sys_t *)sys;
     msg_Dbg( p_wnd, "requesting video window..." );
 
-#ifdef QT5_HAS_X11
+#ifdef QT_HAS_X11
     Window xid;
 
-    if (QX11Info::isPlatformX11())
+    if (vlcQtIsX11())
     {
         sys->dpy = XOpenDisplay(NULL);
         if (unlikely(sys->dpy == NULL))
@@ -846,16 +820,16 @@ static int WindowOpen( vout_window_t *p_wnd, const vout_window_cfg_t *cfg )
 
     if (!sys->mi->getVideo(p_wnd, cfg->width, cfg->height, cfg->is_fullscreen))
     {
-#ifdef QT5_HAS_X11
-        if (QX11Info::isPlatformX11())
+#ifdef QT_HAS_X11
+        if (vlcQtIsX11())
             XCloseDisplay(sys->dpy);
 #endif
         delete sys;
         return VLC_EGENERIC;
     }
 
-#ifdef QT5_HAS_X11
-    if (QX11Info::isPlatformX11())
+#ifdef QT_HAS_X11
+    if (vlcQtIsX11())
     {
         QMutexLocker locker2(&sys->lock);
 
@@ -872,10 +846,10 @@ static int WindowOpen( vout_window_t *p_wnd, const vout_window_cfg_t *cfg )
 
 void WindowResized(vout_window_t *wnd, const QSize& size)
 {
-#ifdef QT5_HAS_X11
+#ifdef QT_HAS_X11
     vout_window_qt_t *sys = (vout_window_qt_t *)wnd->sys;
 
-    if (QX11Info::isPlatformX11())
+    if (vlcQtIsX11())
     {
         XResizeWindow(sys->dpy, wnd->handle.xid, size.width(), size.height());
         XSync(sys->dpy, True);
@@ -903,8 +877,8 @@ void WindowOrphaned(vout_window_t *wnd)
     QMutexLocker locker(&sys->lock);
 
     msg_Warn(wnd, "orphaned video window");
-#if defined (QT5_HAS_X11)
-    if (QX11Info::isPlatformX11())
+#if defined (QT_HAS_X11)
+    if (vlcQtIsX11())
     {   /* In the unlikely event that WindowOpen() has not yet reparented the
          * window, WindowOpen() will skip reparenting. Then this call will be
          * a no-op.
@@ -939,8 +913,8 @@ static void WindowClose( vout_window_t *p_wnd )
     else
         msg_Warn (p_wnd, "video already released");
 
-#if defined (QT5_HAS_X11)
-    if (QX11Info::isPlatformX11())
+#if defined (QT_HAS_X11)
+    if (vlcQtIsX11())
         XCloseDisplay(sys->dpy);
 #endif
     delete sys;

@@ -105,7 +105,9 @@ check_PROGRAMS = test_libvlc_core$(EXEEXT) \
 	test_src_input_stream_fifo$(EXEEXT) \
 	test_src_interface_dialog$(EXEEXT) test_src_misc_bits$(EXEEXT) \
 	test_src_misc_epg$(EXEEXT) test_src_misc_keystore$(EXEEXT) \
+	test_src_misc_renderer_discovery$(EXEEXT) \
 	test_modules_packetizer_hxxx$(EXEEXT) \
+	test_modules_demux_libmp4$(EXEEXT) \
 	test_modules_demux_timestamps$(EXEEXT) \
 	test_modules_demux_ts_pes$(EXEEXT) \
 	test_modules_keystore$(EXEEXT) $(am__EXEEXT_1) $(am__EXEEXT_2)
@@ -115,8 +117,9 @@ EXTRA_PROGRAMS = test_libvlc_meta$(EXEEXT) \
 	test_libvlc_media_list_player$(EXEEXT) \
 	test_src_input_stream_net$(EXEEXT) vlc-demux-run$(EXEEXT) \
 	vlc-demux-dec-run$(EXEEXT)
-@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_3 = -DHAVE_STATIC_MODULES
-@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_4 = \
+@HAVE_ZLIB_TRUE@am__append_3 = -lz
+@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_4 = -DHAVE_STATIC_MODULES
+@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_5 = \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libxml_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libconsole_logger_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libaiff_plugin.la \
@@ -165,9 +168,9 @@ EXTRA_PROGRAMS = test_libvlc_meta$(EXEEXT) \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libxml_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	-lstdc++
 
-@HAVE_DVBPSI_TRUE@@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_5 = -DHAVE_DVBPSI
-@HAVE_DVBPSI_TRUE@@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_6 = ../modules/libts_plugin.la
-@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_7 = \
+@HAVE_DVBPSI_TRUE@@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_6 = -DHAVE_DVBPSI
+@HAVE_DVBPSI_TRUE@@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_7 = ../modules/libts_plugin.la
+@HAVE_DYNAMIC_PLUGINS_FALSE@am__append_8 = \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libadpcm_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libaes3_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libaraw_plugin.la \
@@ -188,8 +191,8 @@ EXTRA_PROGRAMS = test_libvlc_meta$(EXEEXT) \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libtextst_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libsubstx3g_plugin.la
 
-@HAVE_LIBFUZZER_TRUE@am__append_8 = vlc-demux-libfuzzer vlc-demux-dec-libfuzzer vlc-demux-run vlc-demux-dec-run
-@HAVE_DARWIN_TRUE@@HAVE_OSX_FALSE@am__append_9 = vlccoreios
+@HAVE_LIBFUZZER_TRUE@am__append_9 = vlc-demux-libfuzzer vlc-demux-dec-libfuzzer vlc-demux-run vlc-demux-dec-run
+@HAVE_DARWIN_TRUE@@HAVE_OSX_FALSE@am__append_10 = vlccoreios
 subdir = test
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_append_compile_flags.m4 \
@@ -270,9 +273,9 @@ PROGRAMS = $(noinst_PROGRAMS)
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libfilesystem_plugin.la \
 @HAVE_DYNAMIC_PLUGINS_FALSE@	../modules/libxml_plugin.la
 am__DEPENDENCIES_2 = ../lib/libvlc.la ../src/libvlccore.la \
-	../compat/libcompat.la $(am__DEPENDENCIES_1) $(am__append_6)
+	../compat/libcompat.la $(am__DEPENDENCIES_1) $(am__append_7)
 libvlc_demux_dec_run_la_DEPENDENCIES = $(am__DEPENDENCIES_2) \
-	$(am__append_7)
+	$(am__append_8)
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_1 = src/input/libvlc_demux_dec_run_la-demux-run.lo \
 	src/input/libvlc_demux_dec_run_la-common.lo
@@ -290,7 +293,7 @@ libvlc_demux_dec_run_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(LDFLAGS) -o $@
 libvlc_demux_run_la_DEPENDENCIES = ../lib/libvlc.la \
 	../src/libvlccore.la ../compat/libcompat.la \
-	$(am__DEPENDENCIES_1) $(am__append_6)
+	$(am__DEPENDENCIES_1) $(am__append_7)
 am_libvlc_demux_run_la_OBJECTS =  \
 	src/input/libvlc_demux_run_la-demux-run.lo \
 	src/input/libvlc_demux_run_la-common.lo
@@ -338,6 +341,13 @@ test_libvlc_renderer_discoverer_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_test_libvlc_slaves_OBJECTS = libvlc/slaves.$(OBJEXT)
 test_libvlc_slaves_OBJECTS = $(am_test_libvlc_slaves_OBJECTS)
 test_libvlc_slaves_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3)
+am_test_modules_demux_libmp4_OBJECTS = modules/demux/libmp4.$(OBJEXT) \
+	../modules/demux/mp4/libmp4.$(OBJEXT)
+test_modules_demux_libmp4_OBJECTS =  \
+	$(am_test_modules_demux_libmp4_OBJECTS)
+test_modules_demux_libmp4_DEPENDENCIES = $(am__DEPENDENCIES_3) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_3)
 am_test_modules_demux_timestamps_OBJECTS =  \
 	modules/demux/timestamps.$(OBJEXT)
@@ -407,6 +417,11 @@ am_test_src_misc_keystore_OBJECTS = src/misc/keystore.$(OBJEXT)
 test_src_misc_keystore_OBJECTS = $(am_test_src_misc_keystore_OBJECTS)
 test_src_misc_keystore_DEPENDENCIES = $(am__DEPENDENCIES_3) \
 	$(am__DEPENDENCIES_3)
+am_test_src_misc_renderer_discovery_OBJECTS =  \
+	src/misc/renderer_discovery.$(OBJEXT)
+test_src_misc_renderer_discovery_OBJECTS =  \
+	$(am_test_src_misc_renderer_discovery_OBJECTS)
+test_src_misc_renderer_discovery_DEPENDENCIES = $(am__DEPENDENCIES_3)
 am_test_src_misc_variables_OBJECTS = src/misc/variables.$(OBJEXT)
 test_src_misc_variables_OBJECTS =  \
 	$(am_test_src_misc_variables_OBJECTS)
@@ -453,7 +468,8 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/autotools/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ../modules/demux/mpeg/$(DEPDIR)/ts_pes.Po \
+am__depfiles_remade = ../modules/demux/mp4/$(DEPDIR)/libmp4.Po \
+	../modules/demux/mpeg/$(DEPDIR)/ts_pes.Po \
 	./$(DEPDIR)/vlc-demux-libfuzzer.Po \
 	./$(DEPDIR)/vlc-demux-run.Po ./$(DEPDIR)/vlccoreios-iosvlc.Po \
 	libvlc/$(DEPDIR)/core.Po libvlc/$(DEPDIR)/equalizer.Po \
@@ -462,7 +478,7 @@ am__depfiles_remade = ../modules/demux/mpeg/$(DEPDIR)/ts_pes.Po \
 	libvlc/$(DEPDIR)/media_list_player.Po \
 	libvlc/$(DEPDIR)/media_player.Po libvlc/$(DEPDIR)/meta.Po \
 	libvlc/$(DEPDIR)/renderer_discoverer.Po \
-	libvlc/$(DEPDIR)/slaves.Po \
+	libvlc/$(DEPDIR)/slaves.Po modules/demux/$(DEPDIR)/libmp4.Po \
 	modules/demux/$(DEPDIR)/timestamps.Po \
 	modules/demux/$(DEPDIR)/ts_pes.Po \
 	modules/keystore/$(DEPDIR)/test.Po \
@@ -479,6 +495,7 @@ am__depfiles_remade = ../modules/demux/mpeg/$(DEPDIR)/ts_pes.Po \
 	src/input/$(DEPDIR)/test_src_input_stream_net-stream.Po \
 	src/interface/$(DEPDIR)/dialog.Po src/misc/$(DEPDIR)/bits.Po \
 	src/misc/$(DEPDIR)/epg.Po src/misc/$(DEPDIR)/keystore.Po \
+	src/misc/$(DEPDIR)/renderer_discovery.Po \
 	src/misc/$(DEPDIR)/variables.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -523,6 +540,7 @@ SOURCES = $(libvlc_demux_dec_run_la_SOURCES) \
 	$(test_libvlc_meta_SOURCES) \
 	$(test_libvlc_renderer_discoverer_SOURCES) \
 	$(test_libvlc_slaves_SOURCES) \
+	$(test_modules_demux_libmp4_SOURCES) \
 	$(test_modules_demux_timestamps_SOURCES) \
 	$(test_modules_demux_ts_pes_SOURCES) \
 	$(test_modules_keystore_SOURCES) \
@@ -535,6 +553,7 @@ SOURCES = $(libvlc_demux_dec_run_la_SOURCES) \
 	$(test_src_interface_dialog_SOURCES) \
 	$(test_src_misc_bits_SOURCES) $(test_src_misc_epg_SOURCES) \
 	$(test_src_misc_keystore_SOURCES) \
+	$(test_src_misc_renderer_discovery_SOURCES) \
 	$(test_src_misc_variables_SOURCES) \
 	$(vlc_demux_dec_libfuzzer_SOURCES) \
 	$(vlc_demux_dec_run_SOURCES) vlc-demux-libfuzzer.c \
@@ -549,6 +568,7 @@ DIST_SOURCES = $(libvlc_demux_dec_run_la_SOURCES) \
 	$(test_libvlc_meta_SOURCES) \
 	$(test_libvlc_renderer_discoverer_SOURCES) \
 	$(test_libvlc_slaves_SOURCES) \
+	$(test_modules_demux_libmp4_SOURCES) \
 	$(test_modules_demux_timestamps_SOURCES) \
 	$(test_modules_demux_ts_pes_SOURCES) \
 	$(test_modules_keystore_SOURCES) \
@@ -561,6 +581,7 @@ DIST_SOURCES = $(libvlc_demux_dec_run_la_SOURCES) \
 	$(test_src_interface_dialog_SOURCES) \
 	$(test_src_misc_bits_SOURCES) $(test_src_misc_epg_SOURCES) \
 	$(test_src_misc_keystore_SOURCES) \
+	$(test_src_misc_renderer_discovery_SOURCES) \
 	$(test_src_misc_variables_SOURCES) \
 	$(vlc_demux_dec_libfuzzer_SOURCES) \
 	$(vlc_demux_dec_run_SOURCES) vlc-demux-libfuzzer.c \
@@ -815,6 +836,7 @@ ARIBB24_LIBS = @ARIBB24_LIBS@
 ARIBB25_CFLAGS = @ARIBB25_CFLAGS@
 ARIBB25_LIBS = @ARIBB25_LIBS@
 AS = @AS@
+ASDCPLIB_FACTORY = @ASDCPLIB_FACTORY@
 ASDCP_CFLAGS = @ASDCP_CFLAGS@
 ASDCP_LIBS = @ASDCP_LIBS@
 ASM = @ASM@
@@ -844,6 +866,7 @@ CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CFLAGS_access_mtp = @CFLAGS_access_mtp@
+CFLAGS_access_output_rist = @CFLAGS_access_output_rist@
 CFLAGS_access_output_shout = @CFLAGS_access_output_shout@
 CFLAGS_access_output_srt = @CFLAGS_access_output_srt@
 CFLAGS_access_srt = @CFLAGS_access_srt@
@@ -883,13 +906,14 @@ CFLAGS_ogg = @CFLAGS_ogg@
 CFLAGS_oggspots = @CFLAGS_oggspots@
 CFLAGS_omxil = @CFLAGS_omxil@
 CFLAGS_omxil_vout = @CFLAGS_omxil_vout@
+CFLAGS_openapv = @CFLAGS_openapv@
 CFLAGS_opencv_example = @CFLAGS_opencv_example@
 CFLAGS_opencv_wrapper = @CFLAGS_opencv_wrapper@
 CFLAGS_opus = @CFLAGS_opus@
 CFLAGS_qsv = @CFLAGS_qsv@
 CFLAGS_rdp = @CFLAGS_rdp@
+CFLAGS_rist = @CFLAGS_rist@
 CFLAGS_samplerate = @CFLAGS_samplerate@
-CFLAGS_schroedinger = @CFLAGS_schroedinger@
 CFLAGS_secret = @CFLAGS_secret@
 CFLAGS_sftp = @CFLAGS_sftp@
 CFLAGS_shine = @CFLAGS_shine@
@@ -924,6 +948,7 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CPPFLAGS_a52 = @CPPFLAGS_a52@
 CPPFLAGS_access_mtp = @CPPFLAGS_access_mtp@
+CPPFLAGS_access_output_rist = @CPPFLAGS_access_output_rist@
 CPPFLAGS_access_output_shout = @CPPFLAGS_access_output_shout@
 CPPFLAGS_access_output_srt = @CPPFLAGS_access_output_srt@
 CPPFLAGS_access_srt = @CPPFLAGS_access_srt@
@@ -960,13 +985,14 @@ CPPFLAGS_nfs = @CPPFLAGS_nfs@
 CPPFLAGS_notify = @CPPFLAGS_notify@
 CPPFLAGS_ogg = @CPPFLAGS_ogg@
 CPPFLAGS_oggspots = @CPPFLAGS_oggspots@
+CPPFLAGS_openapv = @CPPFLAGS_openapv@
 CPPFLAGS_opencv_example = @CPPFLAGS_opencv_example@
 CPPFLAGS_opencv_wrapper = @CPPFLAGS_opencv_wrapper@
 CPPFLAGS_opus = @CPPFLAGS_opus@
 CPPFLAGS_qsv = @CPPFLAGS_qsv@
 CPPFLAGS_rdp = @CPPFLAGS_rdp@
+CPPFLAGS_rist = @CPPFLAGS_rist@
 CPPFLAGS_samplerate = @CPPFLAGS_samplerate@
-CPPFLAGS_schroedinger = @CPPFLAGS_schroedinger@
 CPPFLAGS_secret = @CPPFLAGS_secret@
 CPPFLAGS_sftp = @CPPFLAGS_sftp@
 CPPFLAGS_shine = @CPPFLAGS_shine@
@@ -1068,6 +1094,8 @@ GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
 GNUTLS_LIBS = @GNUTLS_LIBS@
 GOOM_CFLAGS = @GOOM_CFLAGS@
 GOOM_LIBS = @GOOM_LIBS@
+GPGERROR_CFLAGS = @GPGERROR_CFLAGS@
+GPGERROR_LIBS = @GPGERROR_LIBS@
 GREP = @GREP@
 GST_APP_CFLAGS = @GST_APP_CFLAGS@
 GST_APP_LIBS = @GST_APP_LIBS@
@@ -1121,10 +1149,13 @@ LIBOBJS = @LIBOBJS@
 LIBPLACEBO_CFLAGS = @LIBPLACEBO_CFLAGS@
 LIBPLACEBO_LIBS = @LIBPLACEBO_LIBS@
 LIBPTHREAD = @LIBPTHREAD@
+LIBRIST_CFLAGS = @LIBRIST_CFLAGS@
+LIBRIST_LIBS = @LIBRIST_LIBS@
 LIBRT = @LIBRT@
 LIBS = @LIBS@
 LIBS_a52 = @LIBS_a52@
 LIBS_access_mtp = @LIBS_access_mtp@
+LIBS_access_output_rist = @LIBS_access_output_rist@
 LIBS_access_output_shout = @LIBS_access_output_shout@
 LIBS_access_output_srt = @LIBS_access_output_srt@
 LIBS_access_srt = @LIBS_access_srt@
@@ -1170,15 +1201,16 @@ LIBS_nfs = @LIBS_nfs@
 LIBS_notify = @LIBS_notify@
 LIBS_ogg = @LIBS_ogg@
 LIBS_oggspots = @LIBS_oggspots@
+LIBS_openapv = @LIBS_openapv@
 LIBS_opencv_example = @LIBS_opencv_example@
 LIBS_opencv_wrapper = @LIBS_opencv_wrapper@
 LIBS_opus = @LIBS_opus@
 LIBS_osx_notifications = @LIBS_osx_notifications@
 LIBS_qsv = @LIBS_qsv@
 LIBS_rdp = @LIBS_rdp@
+LIBS_rist = @LIBS_rist@
 LIBS_samplerate = @LIBS_samplerate@
 LIBS_sap = @LIBS_sap@
-LIBS_schroedinger = @LIBS_schroedinger@
 LIBS_secret = @LIBS_secret@
 LIBS_sftp = @LIBS_sftp@
 LIBS_shine = @LIBS_shine@
@@ -1232,6 +1264,7 @@ LTLIBOBJS = @LTLIBOBJS@
 LTLIBa52 = @LTLIBa52@
 LTLIBaa = @LTLIBaa@
 LTLIBaccess_mtp = @LTLIBaccess_mtp@
+LTLIBaccess_output_rist = @LTLIBaccess_output_rist@
 LTLIBaccess_output_shout = @LTLIBaccess_output_shout@
 LTLIBaccess_output_srt = @LTLIBaccess_output_srt@
 LTLIBaccess_realrtsp = @LTLIBaccess_realrtsp@
@@ -1295,6 +1328,7 @@ LTLIBogg = @LTLIBogg@
 LTLIBoggspots = @LTLIBoggspots@
 LTLIBomxil = @LTLIBomxil@
 LTLIBomxil_vout = @LTLIBomxil_vout@
+LTLIBopenapv = @LTLIBopenapv@
 LTLIBopencv_example = @LTLIBopencv_example@
 LTLIBopencv_wrapper = @LTLIBopencv_wrapper@
 LTLIBopensles_android = @LTLIBopensles_android@
@@ -1305,8 +1339,8 @@ LTLIBpostproc = @LTLIBpostproc@
 LTLIBprojectm = @LTLIBprojectm@
 LTLIBqsv = @LTLIBqsv@
 LTLIBrdp = @LTLIBrdp@
+LTLIBrist = @LTLIBrist@
 LTLIBsamplerate = @LTLIBsamplerate@
-LTLIBschroedinger = @LTLIBschroedinger@
 LTLIBscreen = @LTLIBscreen@
 LTLIBsdl_image = @LTLIBsdl_image@
 LTLIBsecret = @LTLIBsecret@
@@ -1356,8 +1390,6 @@ MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
 MATROSKA_CFLAGS = @MATROSKA_CFLAGS@
 MATROSKA_LIBS = @MATROSKA_LIBS@
-MFX_CFLAGS = @MFX_CFLAGS@
-MFX_LIBS = @MFX_LIBS@
 MICRODNS_CFLAGS = @MICRODNS_CFLAGS@
 MICRODNS_LIBS = @MICRODNS_LIBS@
 MINIZIP_CFLAGS = @MINIZIP_CFLAGS@
@@ -1390,6 +1422,8 @@ OGGSPOTS_CFLAGS = @OGGSPOTS_CFLAGS@
 OGGSPOTS_LIBS = @OGGSPOTS_LIBS@
 OGG_CFLAGS = @OGG_CFLAGS@
 OGG_LIBS = @OGG_LIBS@
+OPENAPV_CFLAGS = @OPENAPV_CFLAGS@
+OPENAPV_LIBS = @OPENAPV_LIBS@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
 OPUS_CFLAGS = @OPUS_CFLAGS@
@@ -1416,6 +1450,7 @@ POSUB = @POSUB@
 PROGRAMFILES = @PROGRAMFILES@
 PROJECTM_CFLAGS = @PROJECTM_CFLAGS@
 PROJECTM_LIBS = @PROJECTM_LIBS@
+PROTOBUF_VERSION = @PROTOBUF_VERSION@
 PROTOC = @PROTOC@
 PULSE_CFLAGS = @PULSE_CFLAGS@
 PULSE_LIBS = @PULSE_LIBS@
@@ -1432,8 +1467,6 @@ RC = @RC@
 RCC = @RCC@
 SAMPLERATE_CFLAGS = @SAMPLERATE_CFLAGS@
 SAMPLERATE_LIBS = @SAMPLERATE_LIBS@
-SCHROEDINGER_CFLAGS = @SCHROEDINGER_CFLAGS@
-SCHROEDINGER_LIBS = @SCHROEDINGER_LIBS@
 SDL_IMAGE_CFLAGS = @SDL_IMAGE_CFLAGS@
 SDL_IMAGE_LIBS = @SDL_IMAGE_LIBS@
 SECRET_CFLAGS = @SECRET_CFLAGS@
@@ -1458,6 +1491,8 @@ SNDIO_LIBS = @SNDIO_LIBS@
 SOCKET_LIBS = @SOCKET_LIBS@
 SOXR_CFLAGS = @SOXR_CFLAGS@
 SOXR_LIBS = @SOXR_LIBS@
+SPATIALAUDIO_040_CFLAGS = @SPATIALAUDIO_040_CFLAGS@
+SPATIALAUDIO_040_LIBS = @SPATIALAUDIO_040_LIBS@
 SPATIALAUDIO_CFLAGS = @SPATIALAUDIO_CFLAGS@
 SPATIALAUDIO_LIBS = @SPATIALAUDIO_LIBS@
 SPEEXDSP_CFLAGS = @SPEEXDSP_CFLAGS@
@@ -1495,6 +1530,7 @@ USE_NLS = @USE_NLS@
 VDPAU_CFLAGS = @VDPAU_CFLAGS@
 VDPAU_LIBS = @VDPAU_LIBS@
 VERSION = @VERSION@
+VERSION_DATE = @VERSION_DATE@
 VERSION_EXTRA = @VERSION_EXTRA@
 VERSION_MAJOR = @VERSION_MAJOR@
 VERSION_MESSAGE = @VERSION_MESSAGE@
@@ -1504,6 +1540,8 @@ VNC_CFLAGS = @VNC_CFLAGS@
 VNC_LIBS = @VNC_LIBS@
 VORBIS_CFLAGS = @VORBIS_CFLAGS@
 VORBIS_LIBS = @VORBIS_LIBS@
+VPL_CFLAGS = @VPL_CFLAGS@
+VPL_LIBS = @VPL_LIBS@
 VPX_CFLAGS = @VPX_CFLAGS@
 VPX_LIBS = @VPX_LIBS@
 VSXU_CFLAGS = @VSXU_CFLAGS@
@@ -1688,6 +1726,8 @@ test_src_misc_epg_SOURCES = src/misc/epg.c
 test_src_misc_epg_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_src_misc_keystore_SOURCES = src/misc/keystore.c
 test_src_misc_keystore_LDADD = $(LIBVLCCORE) $(LIBVLC)
+test_src_misc_renderer_discovery_SOURCES = src/misc/renderer_discovery.c
+test_src_misc_renderer_discovery_LDADD = $(LIBVLCCORE)
 test_src_interface_dialog_SOURCES = src/interface/dialog.c
 test_src_interface_dialog_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_packetizer_hxxx_SOURCES = modules/packetizer/hxxx.c
@@ -1696,6 +1736,12 @@ test_modules_keystore_SOURCES = modules/keystore/test.c
 test_modules_keystore_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_tls_SOURCES = modules/misc/tls.c
 test_modules_tls_LDADD = $(LIBVLCCORE) $(LIBVLC)
+test_modules_demux_libmp4_LDADD = $(LIBVLCCORE) $(LIBVLC) $(LIBM) \
+	$(am__append_3)
+test_modules_demux_libmp4_SOURCES = modules/demux/libmp4.c \
+				../modules/demux/mp4/libmp4.c \
+				../modules/demux/mp4/libmp4.h
+
 test_modules_demux_timestamps_SOURCES = modules/demux/timestamps.c
 test_modules_demux_ts_pes_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_demux_ts_pes_SOURCES = modules/demux/ts_pes.c \
@@ -1707,10 +1753,10 @@ libvlc_demux_run_la_SOURCES = src/input/demux-run.c src/input/demux-run.h \
 
 libvlc_demux_run_la_CPPFLAGS = $(AM_CPPFLAGS) -DTOP_BUILDDIR=\"$$(cd \
 	"$(top_builddir)"; pwd)\" -DTOP_SRCDIR=\"$$(cd \
-	"$(top_srcdir)"; pwd)\" $(am__append_3) $(am__append_5)
+	"$(top_srcdir)"; pwd)\" $(am__append_4) $(am__append_6)
 libvlc_demux_run_la_LDFLAGS = -no-install -static
 libvlc_demux_run_la_LIBADD = ../lib/libvlc.la ../src/libvlccore.la \
-	../compat/libcompat.la $(am__append_4) $(am__append_6)
+	../compat/libcompat.la $(am__append_5) $(am__append_7)
 EXTRA_LTLIBRARIES = libvlc_demux_run.la libvlc_demux_dec_run.la
 libvlc_demux_dec_run_la_SOURCES = $(libvlc_demux_run_la_SOURCES) \
 	src/input/decoder.c src/input/decoder.h
@@ -1718,7 +1764,7 @@ libvlc_demux_dec_run_la_SOURCES = $(libvlc_demux_run_la_SOURCES) \
 libvlc_demux_dec_run_la_CPPFLAGS = $(libvlc_demux_run_la_CPPFLAGS) -DHAVE_DECODERS
 libvlc_demux_dec_run_la_LDFLAGS = $(libvlc_demux_run_la_LDFLAGS)
 libvlc_demux_dec_run_la_LIBADD = $(libvlc_demux_run_la_LIBADD) \
-	$(am__append_7)
+	$(am__append_8)
 
 #
 # Fuzzers
@@ -1882,6 +1928,21 @@ modules/demux/$(am__dirstamp):
 modules/demux/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) modules/demux/$(DEPDIR)
 	@: > modules/demux/$(DEPDIR)/$(am__dirstamp)
+modules/demux/libmp4.$(OBJEXT): modules/demux/$(am__dirstamp) \
+	modules/demux/$(DEPDIR)/$(am__dirstamp)
+../modules/demux/mp4/$(am__dirstamp):
+	@$(MKDIR_P) ../modules/demux/mp4
+	@: > ../modules/demux/mp4/$(am__dirstamp)
+../modules/demux/mp4/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) ../modules/demux/mp4/$(DEPDIR)
+	@: > ../modules/demux/mp4/$(DEPDIR)/$(am__dirstamp)
+../modules/demux/mp4/libmp4.$(OBJEXT):  \
+	../modules/demux/mp4/$(am__dirstamp) \
+	../modules/demux/mp4/$(DEPDIR)/$(am__dirstamp)
+
+test_modules_demux_libmp4$(EXEEXT): $(test_modules_demux_libmp4_OBJECTS) $(test_modules_demux_libmp4_DEPENDENCIES) $(EXTRA_test_modules_demux_libmp4_DEPENDENCIES) 
+	@rm -f test_modules_demux_libmp4$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_modules_demux_libmp4_OBJECTS) $(test_modules_demux_libmp4_LDADD) $(LIBS)
 modules/demux/timestamps.$(OBJEXT): modules/demux/$(am__dirstamp) \
 	modules/demux/$(DEPDIR)/$(am__dirstamp)
 
@@ -2017,6 +2078,12 @@ src/misc/keystore.$(OBJEXT): src/misc/$(am__dirstamp) \
 test_src_misc_keystore$(EXEEXT): $(test_src_misc_keystore_OBJECTS) $(test_src_misc_keystore_DEPENDENCIES) $(EXTRA_test_src_misc_keystore_DEPENDENCIES) 
 	@rm -f test_src_misc_keystore$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(test_src_misc_keystore_OBJECTS) $(test_src_misc_keystore_LDADD) $(LIBS)
+src/misc/renderer_discovery.$(OBJEXT): src/misc/$(am__dirstamp) \
+	src/misc/$(DEPDIR)/$(am__dirstamp)
+
+test_src_misc_renderer_discovery$(EXEEXT): $(test_src_misc_renderer_discovery_OBJECTS) $(test_src_misc_renderer_discovery_DEPENDENCIES) $(EXTRA_test_src_misc_renderer_discovery_DEPENDENCIES) 
+	@rm -f test_src_misc_renderer_discovery$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(test_src_misc_renderer_discovery_OBJECTS) $(test_src_misc_renderer_discovery_LDADD) $(LIBS)
 src/misc/variables.$(OBJEXT): src/misc/$(am__dirstamp) \
 	src/misc/$(DEPDIR)/$(am__dirstamp)
 
@@ -2046,6 +2113,7 @@ vlccoreios$(EXEEXT): $(vlccoreios_OBJECTS) $(vlccoreios_DEPENDENCIES) $(EXTRA_vl
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f ../modules/demux/mp4/*.$(OBJEXT)
 	-rm -f ../modules/demux/mpeg/*.$(OBJEXT)
 	-rm -f libvlc/*.$(OBJEXT)
 	-rm -f modules/demux/*.$(OBJEXT)
@@ -2062,6 +2130,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@../modules/demux/mp4/$(DEPDIR)/libmp4.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../modules/demux/mpeg/$(DEPDIR)/ts_pes.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc-demux-libfuzzer.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vlc-demux-run.Po@am__quote@ # am--include-marker
@@ -2076,6 +2145,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/meta.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/renderer_discoverer.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@libvlc/$(DEPDIR)/slaves.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@modules/demux/$(DEPDIR)/libmp4.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@modules/demux/$(DEPDIR)/timestamps.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@modules/demux/$(DEPDIR)/ts_pes.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@modules/keystore/$(DEPDIR)/test.Po@am__quote@ # am--include-marker
@@ -2095,6 +2165,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/misc/$(DEPDIR)/bits.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/misc/$(DEPDIR)/epg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/misc/$(DEPDIR)/keystore.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/misc/$(DEPDIR)/renderer_discovery.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/misc/$(DEPDIR)/variables.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
@@ -2526,9 +2597,23 @@ test_src_misc_keystore.log: test_src_misc_keystore$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test_src_misc_renderer_discovery.log: test_src_misc_renderer_discovery$(EXEEXT)
+	@p='test_src_misc_renderer_discovery$(EXEEXT)'; \
+	b='test_src_misc_renderer_discovery'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 test_modules_packetizer_hxxx.log: test_modules_packetizer_hxxx$(EXEEXT)
 	@p='test_modules_packetizer_hxxx$(EXEEXT)'; \
 	b='test_modules_packetizer_hxxx'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+test_modules_demux_libmp4.log: test_modules_demux_libmp4$(EXEEXT)
+	@p='test_modules_demux_libmp4$(EXEEXT)'; \
+	b='test_modules_demux_libmp4'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
@@ -2659,6 +2744,8 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f ../modules/demux/mp4/$(DEPDIR)/$(am__dirstamp)
+	-rm -f ../modules/demux/mp4/$(am__dirstamp)
 	-rm -f ../modules/demux/mpeg/$(DEPDIR)/$(am__dirstamp)
 	-rm -f ../modules/demux/mpeg/$(am__dirstamp)
 	-rm -f libvlc/$(DEPDIR)/$(am__dirstamp)
@@ -2692,7 +2779,8 @@ clean-am: clean-checkPROGRAMS clean-generic clean-libtool \
 	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ../modules/demux/mpeg/$(DEPDIR)/ts_pes.Po
+		-rm -f ../modules/demux/mp4/$(DEPDIR)/libmp4.Po
+	-rm -f ../modules/demux/mpeg/$(DEPDIR)/ts_pes.Po
 	-rm -f ./$(DEPDIR)/vlc-demux-libfuzzer.Po
 	-rm -f ./$(DEPDIR)/vlc-demux-run.Po
 	-rm -f ./$(DEPDIR)/vlccoreios-iosvlc.Po
@@ -2706,6 +2794,7 @@ distclean: distclean-am
 	-rm -f libvlc/$(DEPDIR)/meta.Po
 	-rm -f libvlc/$(DEPDIR)/renderer_discoverer.Po
 	-rm -f libvlc/$(DEPDIR)/slaves.Po
+	-rm -f modules/demux/$(DEPDIR)/libmp4.Po
 	-rm -f modules/demux/$(DEPDIR)/timestamps.Po
 	-rm -f modules/demux/$(DEPDIR)/ts_pes.Po
 	-rm -f modules/keystore/$(DEPDIR)/test.Po
@@ -2725,6 +2814,7 @@ distclean: distclean-am
 	-rm -f src/misc/$(DEPDIR)/bits.Po
 	-rm -f src/misc/$(DEPDIR)/epg.Po
 	-rm -f src/misc/$(DEPDIR)/keystore.Po
+	-rm -f src/misc/$(DEPDIR)/renderer_discovery.Po
 	-rm -f src/misc/$(DEPDIR)/variables.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
@@ -2771,7 +2861,8 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ../modules/demux/mpeg/$(DEPDIR)/ts_pes.Po
+		-rm -f ../modules/demux/mp4/$(DEPDIR)/libmp4.Po
+	-rm -f ../modules/demux/mpeg/$(DEPDIR)/ts_pes.Po
 	-rm -f ./$(DEPDIR)/vlc-demux-libfuzzer.Po
 	-rm -f ./$(DEPDIR)/vlc-demux-run.Po
 	-rm -f ./$(DEPDIR)/vlccoreios-iosvlc.Po
@@ -2785,6 +2876,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f libvlc/$(DEPDIR)/meta.Po
 	-rm -f libvlc/$(DEPDIR)/renderer_discoverer.Po
 	-rm -f libvlc/$(DEPDIR)/slaves.Po
+	-rm -f modules/demux/$(DEPDIR)/libmp4.Po
 	-rm -f modules/demux/$(DEPDIR)/timestamps.Po
 	-rm -f modules/demux/$(DEPDIR)/ts_pes.Po
 	-rm -f modules/keystore/$(DEPDIR)/test.Po
@@ -2804,6 +2896,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f src/misc/$(DEPDIR)/bits.Po
 	-rm -f src/misc/$(DEPDIR)/epg.Po
 	-rm -f src/misc/$(DEPDIR)/keystore.Po
+	-rm -f src/misc/$(DEPDIR)/renderer_discovery.Po
 	-rm -f src/misc/$(DEPDIR)/variables.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
