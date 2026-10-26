@@ -7,6 +7,7 @@ vlc (3.0.24-0+deb12u1) UNRELEASED; urgency=medium
     - CVE-2026-102875: Fix a path traversal when extracting a
       crafted skin archive.
   * debian/upstream: Update upstream signing key.
+  * debian/: Add librist-dev for new rist plugin.
 
  -- Simon Quigley <tsimonq2@debian.org>  Mon, 26 Oct 2026 15:20:51 -0500
 

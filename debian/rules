@@ -53,6 +53,7 @@ confflags += \
 	--enable-jack \
 	--enable-kate \
 	--enable-libass \
+	--enable-librist \
 	--enable-libmpeg2 \
 	--enable-libxml2 \
 	--enable-lirc \
