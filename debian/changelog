@@ -9,6 +9,10 @@ vlc (3.0.24-0+deb12u1) UNRELEASED; urgency=medium
   * debian/upstream: Update upstream signing key.
   * debian/: Add librist-dev for new rist plugin.
   * debian/patches: build the RIST output plugin against librist 0.2.7.
+  * debian/: Disable plugins that are no longer supported upstream.
+    - a52
+    - dca
+    - libmpeg2
 
  -- Simon Quigley <tsimonq2@debian.org>  Mon, 26 Oct 2026 15:20:51 -0500
 
