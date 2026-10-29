@@ -1,5 +1,6 @@
-vlc (3.0.24-0+deb12u1) UNRELEASED; urgency=medium
+vlc (3.0.24-0+deb12u1) bookworm-security; urgency=medium
 
+  * Team upload.
   * New upstream version 3.0.24.
     - CVE-2026-56711: Fix an integer overflow in picture allocation.
     - CVE-2026-73324: Fix memory disclosure to a SAT>IP server
@@ -14,7 +15,7 @@ vlc (3.0.24-0+deb12u1) UNRELEASED; urgency=medium
     - dca
     - libmpeg2
 
- -- Simon Quigley <tsimonq2@debian.org>  Mon, 26 Oct 2026 15:20:51 -0500
+ -- Simon Quigley <tsimonq2@debian.org>  Thu, 29 Oct 2026 11:32:46 -0500
 
 vlc (3.0.23-0+deb12u1) bookworm-security; urgency=medium
 
