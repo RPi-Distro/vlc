@@ -1,7 +1,7 @@
-From eb10875d361418739259998029340b6a38ead6e4 Mon Sep 17 00:00:00 2001
+From b10feeda4eaef4495a7c97b56af1461d8ca0f8ea Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Mon, 8 Sep 2025 13:58:45 +0100
-Subject: [PATCH 38/39] avcodec: Add J420 formats as equivalent to YUV420 for
+Subject: [PATCH 38/40] avcodec: Add J420 formats as equivalent to YUV420 for
  rpi h/w
 
 ---
@@ -9,11 +9,9 @@ Subject: [PATCH 38/39] avcodec: Add J420 formats as equivalent to YUV420 for
  modules/codec/avcodec/video.c | 3 ++-
  2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/modules/codec/avcodec/va.c b/modules/codec/avcodec/va.c
-index d58fc829ab..137bdb591a 100644
 --- a/modules/codec/avcodec/va.c
 +++ b/modules/codec/avcodec/va.c
-@@ -60,6 +60,7 @@ vlc_fourcc_t vlc_va_GetChroma(enum PixelFormat hwfmt, enum PixelFormat swfmt)
+@@ -60,6 +60,7 @@ vlc_fourcc_t vlc_va_GetChroma(enum Pixel
          case AV_PIX_FMT_DRM_PRIME:
              switch (swfmt)
              {
@@ -21,8 +19,6 @@ index d58fc829ab..137bdb591a 100644
                  case AV_PIX_FMT_YUV420P:
                      return VLC_CODEC_DRM_PRIME_I420;
                  case AV_PIX_FMT_NV12:
-diff --git a/modules/codec/avcodec/video.c b/modules/codec/avcodec/video.c
-index b9b13720b8..9565294039 100644
 --- a/modules/codec/avcodec/video.c
 +++ b/modules/codec/avcodec/video.c
 @@ -1981,7 +1981,8 @@ no_reuse:
@@ -35,6 +31,3 @@ index b9b13720b8..9565294039 100644
                  defsw = AV_PIX_FMT_RPI4_8;
          }
  #endif
--- 
-2.53.0
-

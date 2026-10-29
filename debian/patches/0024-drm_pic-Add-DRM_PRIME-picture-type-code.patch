@@ -1,7 +1,7 @@
-From 057311d64cd168243bd4bf4baae7b3606a949f3e Mon Sep 17 00:00:00 2001
+From df1cc318f01098a06612513bd58a4feab8116311 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 18:00:33 +0100
-Subject: [PATCH 24/39] drm_pic: Add DRM_PRIME picture type code
+Subject: [PATCH 24/40] drm_pic: Add DRM_PRIME picture type code
 
 ---
  modules/codec/Makefile.am       |  1 +
@@ -11,8 +11,6 @@ Subject: [PATCH 24/39] drm_pic: Add DRM_PRIME picture type code
  create mode 100644 modules/codec/avcodec/drm_pic.c
  create mode 100644 modules/codec/avcodec/drm_pic.h
 
-diff --git a/modules/codec/Makefile.am b/modules/codec/Makefile.am
-index 9fe74ac803..024f22e34b 100644
 --- a/modules/codec/Makefile.am
 +++ b/modules/codec/Makefile.am
 @@ -378,6 +378,7 @@ libavcodec_plugin_la_SOURCES = \
@@ -23,9 +21,6 @@ index 9fe74ac803..024f22e34b 100644
  	codec/avcodec/avcodec.c codec/avcodec/avcodec.h \
  	packetizer/av1_obu.c packetizer/av1_obu.h packetizer/av1.h
  if ENABLE_SOUT
-diff --git a/modules/codec/avcodec/drm_pic.c b/modules/codec/avcodec/drm_pic.c
-new file mode 100644
-index 0000000000..8319c1c210
 --- /dev/null
 +++ b/modules/codec/avcodec/drm_pic.c
 @@ -0,0 +1,62 @@
@@ -91,9 +86,6 @@ index 0000000000..8319c1c210
 +
 +
 +
-diff --git a/modules/codec/avcodec/drm_pic.h b/modules/codec/avcodec/drm_pic.h
-new file mode 100644
-index 0000000000..a15f512c23
 --- /dev/null
 +++ b/modules/codec/avcodec/drm_pic.h
 @@ -0,0 +1,46 @@
@@ -143,6 +135,3 @@ index 0000000000..a15f512c23
 +
 +int drm_prime_attach_buf_to_pic(struct picture_t *pic, struct AVFrame *frame);
 +
--- 
-2.53.0
-

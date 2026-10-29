@@ -1,17 +1,15 @@
-From 88ae46b55f2c756e5f6f739f64d33d065b2e2ce0 Mon Sep 17 00:00:00 2001
+From 38078312b601f826b2503112a3643a8bf8658f87 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:32:50 +0100
-Subject: [PATCH 09/39] avcodec/va: Add DRM_PRIME+swfmt->VLC format cases
+Subject: [PATCH 09/40] avcodec/va: Add DRM_PRIME+swfmt->VLC format cases
 
 ---
  modules/codec/avcodec/va.c | 18 ++++++++++++++++++
  1 file changed, 18 insertions(+)
 
-diff --git a/modules/codec/avcodec/va.c b/modules/codec/avcodec/va.c
-index 06de54ddcf..d58fc829ab 100644
 --- a/modules/codec/avcodec/va.c
 +++ b/modules/codec/avcodec/va.c
-@@ -57,6 +57,24 @@ vlc_fourcc_t vlc_va_GetChroma(enum PixelFormat hwfmt, enum PixelFormat swfmt)
+@@ -57,6 +57,24 @@ vlc_fourcc_t vlc_va_GetChroma(enum Pixel
                      return VLC_CODEC_D3D9_OPAQUE;
              }
              break;
@@ -36,6 +34,3 @@ index 06de54ddcf..d58fc829ab 100644
  
  #if LIBAV_UTIL_VERSION_CHECK(54, 13, 1, 24, 100)
          case AV_PIX_FMT_D3D11VA_VLD:
--- 
-2.53.0
-

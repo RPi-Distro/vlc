@@ -1,7 +1,7 @@
-From 0d5029a84da29b1938f0aab901904c6a536de4c2 Mon Sep 17 00:00:00 2001
+From 23c7c26cbeaa68664b25ef17c38001bd00bdff27 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Mon, 19 Aug 2024 17:34:18 +0100
-Subject: [PATCH 37/39] wl_xdg_shell: Create an updated version of xdg-shell
+Subject: [PATCH 37/40] wl_xdg_shell: Create an updated version of xdg-shell
 
 xdg-shell has moved on since the previous version was written and
 current exported interfaces from labwc do not include the unstable xdg
@@ -16,11 +16,9 @@ shell. This updates the calls and bindings to work again.
  create mode 100644 modules/video_output/wayland/wl_xdg_shell.c
  create mode 100644 modules/video_output/wayland/wlr-layer-shell-unstable-v1.xml
 
-diff --git a/configure.ac b/configure.ac
-index 9b99a63c07..276421930d 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3334,6 +3334,10 @@ have_wayland="no"
+@@ -3322,6 +3322,10 @@ have_wayland="no"
  have_wayland_egl="no"
  have_wayland_single_pixel_buffer="no"
  have_wayland_color_representation="no"
@@ -31,7 +29,7 @@ index 9b99a63c07..276421930d 100644
  
  AS_IF([test "${enable_wayland}" = "yes"], [
    PKG_CHECK_MODULES([WAYLAND_CLIENT], [wayland-client >= 1.5.91], [
-@@ -3355,6 +3359,18 @@ AS_IF([test "${enable_wayland}" = "yes"], [
+@@ -3343,6 +3347,18 @@ AS_IF([test "${enable_wayland}" = "yes"]
        ], [
           AC_MSG_RESULT([no])
        ])
@@ -50,7 +48,7 @@ index 9b99a63c07..276421930d 100644
      ], [
        AC_MSG_RESULT([not found])
        AC_MSG_ERROR([$(${PKG_CONFIG} --print-errors 'wayland-protocols >= 1.4')])
-@@ -3390,6 +3406,8 @@ AM_CONDITIONAL([HAVE_WAYLAND], [test "${have_wayland}" = "yes"])
+@@ -3378,6 +3394,8 @@ AM_CONDITIONAL([HAVE_WAYLAND], [test "${
  AM_CONDITIONAL([HAVE_WAYLAND_EGL], [test "${have_wayland_egl}" = "yes"])
  AM_CONDITIONAL([HAVE_WAYLAND_SINGLE_PIXEL_BUFFER], [test "${have_wayland_single_pixel_buffer}" = "yes"])
  AM_CONDITIONAL([HAVE_WAYLAND_COLOR_REPRESENTATION], [test "${have_wayland_color_representation}" = "yes"])
@@ -59,11 +57,9 @@ index 9b99a63c07..276421930d 100644
  
  
  dnl
-diff --git a/modules/video_output/Makefile.am b/modules/video_output/Makefile.am
-index f0ed94a679..8e4ea457e7 100644
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
-@@ -272,6 +272,14 @@ video_output/wayland/color-representation-v1-client-protocol.h: \
+@@ -272,6 +272,14 @@ video_output/wayland/color-representatio
  		$(WAYLAND_PROTOCOLS)/staging/color-representation/color-representation-v1.xml
  	$(AM_V_GEN)$(WAYLAND_SCANNER) client-header $< $@
  
@@ -78,7 +74,7 @@ index f0ed94a679..8e4ea457e7 100644
  libwl_dmabuf_plugin_la_SOURCES = video_output/wayland/wl_dmabuf.c\
  	video_output/wayland/picpool.c video_output/wayland/picpool.h\
  	video_output/wayland/dmabuf_alloc.c video_output/wayland/dmabuf_alloc.h\
-@@ -341,6 +349,57 @@ video_output/wayland/xdg-shell-unstable-v5-protocol.c: \
+@@ -341,6 +349,57 @@ video_output/wayland/xdg-shell-unstable-
  		$(WAYLAND_PROTOCOLS)/unstable/xdg-shell/xdg-shell-unstable-v5.xml
  	$(AM_V_GEN)$(WAYLAND_SCANNER) private-code $< $@
  
@@ -136,7 +132,7 @@ index f0ed94a679..8e4ea457e7 100644
  video_output/wayland/server-decoration-client-protocol.h: \
  		video_output/wayland/server-decoration.xml
  video_output/wayland/server-decoration-protocol.c: \
-@@ -361,6 +420,10 @@ vout_LTLIBRARIES += libwl_dmabuf_plugin.la
+@@ -361,6 +420,10 @@ vout_LTLIBRARIES += libwl_dmabuf_plugin.
  vout_LTLIBRARIES += libwl_shell_plugin.la
  BUILT_SOURCES += $(nodist_libxdg_shell_plugin_la_SOURCES)
  vout_LTLIBRARIES += libxdg_shell_plugin.la
@@ -147,8 +143,6 @@ index f0ed94a679..8e4ea457e7 100644
  if HAVE_WAYLAND_EGL
  if HAVE_EGL
  vout_LTLIBRARIES += libegl_wl_plugin.la
-diff --git a/modules/video_output/wayland/wl_dmabuf.c b/modules/video_output/wayland/wl_dmabuf.c
-index e841234c9e..a47d07b603 100644
 --- a/modules/video_output/wayland/wl_dmabuf.c
 +++ b/modules/video_output/wayland/wl_dmabuf.c
 @@ -116,6 +116,11 @@ typedef struct eq_env_ss {
@@ -163,7 +157,7 @@ index e841234c9e..a47d07b603 100644
  typedef struct video_dmabuf_release_env_ss
  {
      void (* dma_rel_fn)(void *);
-@@ -124,6 +129,7 @@ typedef struct video_dmabuf_release_env_ss
+@@ -124,6 +129,7 @@ typedef struct video_dmabuf_release_env_
      unsigned int rel_count;
      unsigned int pt_count;
      struct polltask * pt[AV_DRM_MAX_PLANES];
@@ -221,7 +215,7 @@ index e841234c9e..a47d07b603 100644
  static void
  msg_stats(vout_display_t * const vd, const struct display_stats_s * const s)
  {
-@@ -928,6 +970,7 @@ vdre_free(video_dmabuf_release_env_t * const vdre)
+@@ -928,6 +970,7 @@ vdre_free(video_dmabuf_release_env_t * c
      for (i = 0; i != vdre->pt_count; ++i)
          polltask_delete(vdre->pt + i);
      eq_unref(&vdre->eq);
@@ -229,7 +223,7 @@ index e841234c9e..a47d07b603 100644
  #if CHECK_VDRE_COUNTS
      if (vdre->vdre_check != NULL)
          atomic_fetch_sub(vdre->vdre_check, 1);
-@@ -992,6 +1035,13 @@ vdre_eq_ref(video_dmabuf_release_env_t * const vdre, eq_env_t * const eq)
+@@ -992,6 +1035,13 @@ vdre_eq_ref(video_dmabuf_release_env_t *
      vdre->eq = eq_ref(eq);
  }
  
@@ -243,7 +237,7 @@ index e841234c9e..a47d07b603 100644
  #if CHECK_VDRE_COUNTS
  static void
  vdre_add_check(video_dmabuf_release_env_t * const vdre, atomic_int * const pa)
-@@ -1305,6 +1355,7 @@ subpic_ent_attach(subplane_t * const plane, subpic_ent_t * const spe, eq_env_t *
+@@ -1305,6 +1355,7 @@ subpic_ent_attach(subplane_t * const pla
      }
      else
      {
@@ -251,7 +245,7 @@ index e841234c9e..a47d07b603 100644
          vdre_eq_ref(spe->vdre, eq);
          wl_buffer_add_listener(spe->wb, &vdre_buffer_listener, spe->vdre);
          wl_surface_attach(surface, spe->wb, 0, 0);
-@@ -1454,6 +1505,13 @@ spe_new_pic(vout_display_t * const vd, vout_display_sys_t * const sys,
+@@ -1454,6 +1505,13 @@ spe_new_pic(vout_display_t * const vd, v
      return spe;
  }
  
@@ -265,7 +259,7 @@ index e841234c9e..a47d07b603 100644
  
  static subpic_ent_t *
  spe_new(vout_display_t * const vd, vout_display_sys_t * const sys,
-@@ -1470,7 +1528,10 @@ spe_new(vout_display_t * const vd, vout_display_sys_t * const sys,
+@@ -1470,7 +1528,10 @@ spe_new(vout_display_t * const vd, vout_
  
      spe_update_rect(spe, spic, sreg);
  
@@ -296,7 +290,7 @@ index e841234c9e..a47d07b603 100644
  }
  
  static int
-@@ -1591,7 +1651,8 @@ plane_create(vout_display_sys_t * const sys, subplane_t * const plane,
+@@ -1591,7 +1651,8 @@ plane_create(vout_display_sys_t * const
      plane->commit_parent = commit_parent;
      if ((plane->surface = wl_compositor_create_surface(video_compositor(sys))) == NULL ||
          (plane->subsurface = wl_subcompositor_get_subsurface(sys->bound.subcompositor, plane->surface, parent)) == NULL ||
@@ -306,7 +300,7 @@ index e841234c9e..a47d07b603 100644
          return VLC_EGENERIC;
  #if HAVE_WAYLAND_COLOR_REPRESENTATION
      if (sys->bound.color_representation_manager_v1 != NULL)
-@@ -2249,6 +2310,13 @@ do_display(vout_display_t * const vd, vout_display_sys_t * const sys)
+@@ -2249,6 +2310,13 @@ do_display(vout_display_t * const vd, vo
  
          if (plane->spe_next && atomic_load(&plane->spe_next->ready))
          {
@@ -320,9 +314,6 @@ index e841234c9e..a47d07b603 100644
              spe_delete(&plane->spe_cur);
              spe = plane->spe_cur = plane->spe_next;
              plane->spe_next = NULL;
-diff --git a/modules/video_output/wayland/wl_xdg_shell.c b/modules/video_output/wayland/wl_xdg_shell.c
-new file mode 100644
-index 0000000000..3816eab58e
 --- /dev/null
 +++ b/modules/video_output/wayland/wl_xdg_shell.c
 @@ -0,0 +1,1159 @@
@@ -1485,9 +1476,6 @@ index 0000000000..3816eab58e
 +    add_bool(WL_XDG_SHELL_NAME, true, WL_XDG_SHELL_TEXT, WL_XDG_SHELL_LONGTEXT, false)
 +
 +vlc_module_end()
-diff --git a/modules/video_output/wayland/wlr-layer-shell-unstable-v1.xml b/modules/video_output/wayland/wlr-layer-shell-unstable-v1.xml
-new file mode 100644
-index 0000000000..e9f27e4fdb
 --- /dev/null
 +++ b/modules/video_output/wayland/wlr-layer-shell-unstable-v1.xml
 @@ -0,0 +1,407 @@
@@ -1898,6 +1886,3 @@ index 0000000000..e9f27e4fdb
 +    </request>
 +  </interface>
 +</protocol>
--- 
-2.53.0
-

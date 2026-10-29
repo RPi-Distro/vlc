@@ -1,7 +1,7 @@
-From 36780f4d8e905c399e015114539ae4b5978a4c8b Mon Sep 17 00:00:00 2001
+From ba9e26056efb39d4e5f2db8c5dee21b61deaa2d3 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 1 Nov 2023 10:42:57 +0000
-Subject: [PATCH 15/39] video_output/window: Add lock and seq for wayland
+Subject: [PATCH 15/40] video_output/window: Add lock and seq for wayland
  surface handle sync
 
 Qt + Wayland can sometimes change the surface handle. Provide a lock
@@ -17,8 +17,6 @@ but this works and is fairly simple.
  src/video_output/window.c | 18 ++++++++++++++----
  2 files changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/include/vlc_vout_window.h b/include/vlc_vout_window.h
-index 3a613d4e47..90f70abb01 100644
 --- a/include/vlc_vout_window.h
 +++ b/include/vlc_vout_window.h
 @@ -197,6 +197,14 @@ struct vout_window_t {
@@ -36,11 +34,9 @@ index 3a613d4e47..90f70abb01 100644
  };
  
  /**
-diff --git a/src/video_output/window.c b/src/video_output/window.c
-index 36aaa9d046..6e0b5dadf2 100644
 --- a/src/video_output/window.c
 +++ b/src/video_output/window.c
-@@ -51,6 +51,12 @@ static int vout_window_start(void *func, va_list ap)
+@@ -51,6 +51,12 @@ static int vout_window_start(void *func,
      return activate(wnd, cfg);
  }
  
@@ -53,7 +49,7 @@ index 36aaa9d046..6e0b5dadf2 100644
  vout_window_t *vout_window_New(vlc_object_t *obj, const char *module,
                                 const vout_window_cfg_t *cfg,
                                 const vout_window_owner_t *owner)
-@@ -58,10 +64,7 @@ vout_window_t *vout_window_New(vlc_object_t *obj, const char *module,
+@@ -58,10 +64,7 @@ vout_window_t *vout_window_New(vlc_objec
      window_t *w = vlc_custom_create(obj, sizeof(*w), "window");
      vout_window_t *window = &w->wnd;
  
@@ -65,7 +61,7 @@ index 36aaa9d046..6e0b5dadf2 100644
  
      if (owner != NULL)
          window->owner = *owner;
-@@ -87,6 +90,13 @@ vout_window_t *vout_window_New(vlc_object_t *obj, const char *module,
+@@ -87,6 +90,13 @@ vout_window_t *vout_window_New(vlc_objec
      }
      else
          w->inhibit = NULL;
@@ -79,6 +75,3 @@ index 36aaa9d046..6e0b5dadf2 100644
      return window;
  }
  
--- 
-2.53.0
-

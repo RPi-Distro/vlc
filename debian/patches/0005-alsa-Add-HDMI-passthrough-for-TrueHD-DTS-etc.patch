@@ -1,14 +1,12 @@
-From dc8de87fae233f280f90c4d878ae6436fd57b143 Mon Sep 17 00:00:00 2001
+From 4f95a16125feccea2f08535cba22d83e1344c71d Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:09:44 +0100
-Subject: [PATCH 05/39] alsa: Add HDMI passthrough for TrueHD, DTS etc.
+Subject: [PATCH 05/40] alsa: Add HDMI passthrough for TrueHD, DTS etc.
 
 ---
  modules/audio_output/alsa.c | 268 ++++++++++++++++++++++++++++++++----
  1 file changed, 239 insertions(+), 29 deletions(-)
 
-diff --git a/modules/audio_output/alsa.c b/modules/audio_output/alsa.c
-index e10e1eb8c3..61541a8543 100644
 --- a/modules/audio_output/alsa.c
 +++ b/modules/audio_output/alsa.c
 @@ -39,6 +39,8 @@
@@ -41,7 +39,7 @@ index e10e1eb8c3..61541a8543 100644
  
  static int Open (vlc_object_t *);
  static void Close (vlc_object_t *);
-@@ -77,6 +87,22 @@ static const char *const channels_text[] = {
+@@ -77,6 +87,22 @@ static const char *const channels_text[]
      N_("Surround 5.0"), N_("Surround 5.1"), N_("Surround 7.1"),
  };
  
@@ -150,7 +148,7 @@ index e10e1eb8c3..61541a8543 100644
  /** Helper for ALSA -> VLC debugging output */
  static void Dump (vlc_object_t *obj, const char *msg,
                    int (*cb)(void *, snd_output_t *), void *p)
-@@ -285,11 +384,20 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
+@@ -285,11 +384,20 @@ static int Start (audio_output_t *aout,
  {
      aout_sys_t *sys = aout->sys;
      snd_pcm_format_t pcm_format; /* ALSA sample format */
@@ -173,7 +171,7 @@ index e10e1eb8c3..61541a8543 100644
      switch (fmt->i_format)
      {
          case VLC_CODEC_FL64:
-@@ -308,36 +416,86 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
+@@ -308,36 +416,86 @@ static int Start (audio_output_t *aout,
              pcm_format = SND_PCM_FORMAT_U8;
              break;
          default:
@@ -181,8 +179,7 @@ index e10e1eb8c3..61541a8543 100644
 -                spdif = var_InheritBool (aout, "spdif");
 -            if (spdif)
 +            if (AOUT_FMT_SPDIF(fmt) || AOUT_FMT_HDMI(fmt))
-             {
--                fmt->i_format = VLC_CODEC_SPDIFL;
++            {
 +                if (sys->passthrough_types != NULL)
 +                {
 +                    // VLC_CODEC_UNKNOWN used as explicit "all"
@@ -207,7 +204,8 @@ index e10e1eb8c3..61541a8543 100644
 +            }
 +
 +            if (passthrough != PASSTHROUGH_NONE)
-+            {
+             {
+-                fmt->i_format = VLC_CODEC_SPDIFL;
 +                req_format = VLC_CODEC_SPDIFL;
                  pcm_format = SND_PCM_FORMAT_S16;
 +                sys->pause_bytes = 3 * 4;
@@ -268,7 +266,7 @@ index e10e1eb8c3..61541a8543 100644
  
          if (!strncmp (device, "iec958", 6))
              opt = device + 6;
-@@ -357,6 +515,8 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
+@@ -357,6 +515,8 @@ static int Start (audio_output_t *aout,
      {
          unsigned aes3;
  
@@ -277,7 +275,7 @@ index e10e1eb8c3..61541a8543 100644
          switch (fmt->i_rate)
          {
  #define FS(freq) \
-@@ -364,8 +524,12 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
+@@ -364,8 +524,12 @@ static int Start (audio_output_t *aout,
              FS( 44100) /* def. */ FS( 48000) FS( 32000)
              FS( 22050)            FS( 24000)
              FS( 88200) FS(768000) FS( 96000)
@@ -291,7 +289,7 @@ index e10e1eb8c3..61541a8543 100644
              default:
                  aes3 = IEC958_AES3_CON_FS_NOTID;
                  break;
-@@ -430,21 +594,27 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
+@@ -430,21 +594,27 @@ static int Start (audio_output_t *aout,
      if (snd_pcm_hw_params_test_format (pcm, hw, pcm_format) == 0)
          ;
      else
@@ -323,7 +321,7 @@ index e10e1eb8c3..61541a8543 100644
          pcm_format = SND_PCM_FORMAT_S16;
      }
      else
-@@ -459,10 +629,10 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
+@@ -459,10 +629,10 @@ static int Start (audio_output_t *aout,
          msg_Err (aout, "cannot set sample format: %s", snd_strerror (val));
          goto error;
      }
@@ -336,7 +334,7 @@ index e10e1eb8c3..61541a8543 100644
      {
          uint16_t map = var_InheritInteger (aout, "alsa-audio-channels");
  
-@@ -474,7 +644,6 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
+@@ -474,7 +644,6 @@ static int Start (audio_output_t *aout,
      else
      {
          sys->chans_to_reorder = 0;
@@ -344,7 +342,7 @@ index e10e1eb8c3..61541a8543 100644
      }
  
      /* By default, ALSA plug will pad missing channels with zeroes, which is
-@@ -490,14 +659,26 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
+@@ -490,14 +659,26 @@ static int Start (audio_output_t *aout,
      }
  
      /* Set sample rate */
@@ -362,18 +360,18 @@ index e10e1eb8c3..61541a8543 100644
 +        msg_Warn(aout, "Passthrough requires rate %d, got %d", req_rate, sys->rate);
 +        goto error;
 +    }
- 
++
 +    bufferSize    = req_rate / 10;  // 100ms - bigger than this & truehd goes unhappy?
 +    periodSize    = bufferSize / 4;
 +    periodSizeMax = bufferSize / 3;
 +    snd_pcm_hw_params_set_period_size_max(pcm, hw, &periodSizeMax, NULL);
-+
+ 
 +    snd_pcm_hw_params_set_buffer_size_near(pcm, hw, &bufferSize);
 +    snd_pcm_hw_params_set_period_size_near(pcm, hw, &periodSize, NULL);
  #if 1 /* work-around for period-long latency outputs (e.g. PulseAudio): */
      param = AOUT_MIN_PREPARE_TIME;
      val = snd_pcm_hw_params_set_period_time_near (pcm, hw, &param, NULL);
-@@ -579,13 +760,12 @@ static int Start (audio_output_t *aout, audio_sample_format_t *restrict fmt)
+@@ -579,13 +760,12 @@ static int Start (audio_output_t *aout,
      }
  
      /* Setup audio_output_t */
@@ -392,7 +390,7 @@ index e10e1eb8c3..61541a8543 100644
  
      aout->time_get = TimeGet;
      aout->play = Play;
-@@ -616,7 +796,7 @@ static int TimeGet (audio_output_t *aout, vlc_tick_t *restrict delay)
+@@ -616,7 +796,7 @@ static int TimeGet (audio_output_t *aout
          msg_Err (aout, "cannot estimate delay: %s", snd_strerror (val));
          return -1;
      }
@@ -401,7 +399,7 @@ index e10e1eb8c3..61541a8543 100644
      return 0;
  }
  
-@@ -627,6 +807,29 @@ static void Play (audio_output_t *aout, block_t *block)
+@@ -627,6 +807,29 @@ static void Play (audio_output_t *aout,
  {
      aout_sys_t *sys = aout->sys;
  
@@ -431,7 +429,7 @@ index e10e1eb8c3..61541a8543 100644
      if (sys->chans_to_reorder != 0)
          aout_ChannelReorder(block->p_buffer, block->i_buffer,
                             sys->chans_to_reorder, sys->chans_table, sys->format);
-@@ -792,7 +995,7 @@ static int DeviceSelect (audio_output_t *aout, const char *id)
+@@ -792,7 +995,7 @@ static int DeviceSelect (audio_output_t
  static int Open(vlc_object_t *obj)
  {
      audio_output_t *aout = (audio_output_t *)obj;
@@ -461,6 +459,3 @@ index e10e1eb8c3..61541a8543 100644
      free (sys->device);
      free (sys);
  }
--- 
-2.53.0
-

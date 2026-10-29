@@ -1,7 +1,7 @@
-From c4cfb7dd8b3e7cb8935b9b996ee6bcbfe0a2dfaa Mon Sep 17 00:00:00 2001
+From ac050e0b4e8e8cfe1cefb83a499e87ab9f9edfdd Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Thu, 1 Oct 2026 19:26:25 +0100
-Subject: [PATCH 27/39] qt: Improve wayland platform detection
+Subject: [PATCH 26/40] qt: Improve wayland platform detection
 
 Wayland platform string can be wayland-* so match prefix rather
 than entire string
@@ -9,11 +9,9 @@ than entire string
  modules/gui/qt/qt.cpp | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/modules/gui/qt/qt.cpp b/modules/gui/qt/qt.cpp
-index e7233defe2..6ae338a7cc 100644
 --- a/modules/gui/qt/qt.cpp
 +++ b/modules/gui/qt/qt.cpp
-@@ -684,7 +684,8 @@ static void *ThreadPlatform( void *obj, char *platform_name )
+@@ -667,7 +667,8 @@ static void *ThreadPlatform( void *obj,
          QString platform = app.platformName();
          if( platform == qfu("xcb") )
              p_sys->voutWindowType = VOUT_WINDOW_TYPE_XID;
@@ -23,6 +21,3 @@ index e7233defe2..6ae338a7cc 100644
              p_sys->voutWindowType = VOUT_WINDOW_TYPE_WAYLAND;
          else if( platform == qfu("windows") )
              p_sys->voutWindowType = VOUT_WINDOW_TYPE_HWND;
--- 
-2.53.0
-

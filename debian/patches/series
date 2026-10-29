@@ -2,7 +2,7 @@
 0002-Do-not-generate-cache-during-build.patch
 0003-Bump-module-ABI-for-time_t-transition.patch
 
-# Raspberry Pi patchset 54
+# Raspberry Pi patchset 55
 0001-Revert-qt-remove-dysfunctional-Wayland-window.patch
 0002-pi-util-Add-useful-scripts.patch
 0003-vlc-Upgrade-exit-timeout-to-exit-rather-than-signal.patch
@@ -28,17 +28,18 @@
 0023-audio_output-When-padding-with-silence-add-zeros-in-.patch
 0024-drm_pic-Add-DRM_PRIME-picture-type-code.patch
 0025-caca-Set-driver-to-ncurses-avoiding-segfault.patch
-0026-qt-Disable-HiDPIScaling-if-ratio-is-implausible.patch
-0027-qt-Improve-wayland-platform-detection.patch
-0028-decoder-Add-a-vout_flush-to-decoder-shutdown.patch
-0029-video_chroma-chain-Fix-chroma-resize-then-transform.patch
-0030-video_output-Prioritise-GLES-over-GL.patch
-0031-egl-Add-avcodec-DRM_PRIME-decode-path.patch
-0032-egl-Require-dma_buf_import-support-if-using-egl-out.patch
+0026-qt-Improve-wayland-platform-detection.patch
+0027-decoder-Add-a-vout_flush-to-decoder-shutdown.patch
+0028-video_chroma-chain-Fix-chroma-resize-then-transform.patch
+0029-video_output-Prioritise-GLES-over-GL.patch
+0030-egl-Add-avcodec-DRM_PRIME-decode-path.patch
+0031-egl-Require-dma_buf_import-support-if-using-egl-out.patch
+0032-video_output-drmu-Add-drmu-based-DRM-output-module.patch
 0033-drmu_vlc-Rework-version-check-as-libvlc_version-not-.patch
 0034-video_output-wayland-Add-dmabuf-output.patch
 0035-wayland-shm-Set-priority-to-0-to-use-wl-dmabuf-inste.patch
 0036-xdg-shell-Rename-old-xdg-shell-include-files.patch
 0037-wl_xdg_shell-Create-an-updated-version-of-xdg-shell.patch
 0038-avcodec-Add-J420-formats-as-equivalent-to-YUV420-for.patch
-0039-RPICHANGES-Add-change-log.patch
+0039-qt-Prefer-Wayland-to-X11.patch
+0040-RPICHANGES-Add-change-log.patch

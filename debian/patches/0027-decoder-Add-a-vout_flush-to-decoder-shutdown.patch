@@ -1,7 +1,7 @@
-From d2e91e7a663a4c976b9bfa05286aa2b17534d317 Mon Sep 17 00:00:00 2001
+From 53f6a14abbff3e100438647631e4017707bd47fc Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 18:49:22 +0100
-Subject: [PATCH 28/39] decoder: Add a vout_flush to decoder shutdown
+Subject: [PATCH 27/40] decoder: Add a vout_flush to decoder shutdown
 
 Our ffmpeg H265 decode can block waiting for buffers to be returned.
 Trying to shut it down in that state without returning some buffers
@@ -14,11 +14,9 @@ attempting to move on to the next stream.
  src/input/decoder.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/src/input/decoder.c b/src/input/decoder.c
-index 69488a681c..cb88c163d0 100644
 --- a/src/input/decoder.c
 +++ b/src/input/decoder.c
-@@ -2001,6 +2001,11 @@ void input_DecoderDelete( decoder_t *p_dec )
+@@ -2001,6 +2001,11 @@ void input_DecoderDelete( decoder_t *p_d
      p_owner->b_waiting = false;
      vlc_cond_signal( &p_owner->wait_request );
  
@@ -30,6 +28,3 @@ index 69488a681c..cb88c163d0 100644
      /* If the video output is paused or slow, or if the picture pool size was
       * under-estimated (e.g. greedy video filter, buggy decoder...), the
       * the picture pool may be empty, and the decoder thread or any decoder
--- 
-2.53.0
-

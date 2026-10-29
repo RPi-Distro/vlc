@@ -1,21 +1,18 @@
-From da95d63d2e7dfa2142d401469a5d38f877c575fb Mon Sep 17 00:00:00 2001
+From 238f752a7b6575ef4a0c2648dcfe99ccd82d69e2 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 22 Oct 2024 15:59:50 +0100
-Subject: [PATCH 39/39] RPICHANGES: Add change log
+Subject: [PATCH 40/40] RPICHANGES: Add change log
 
 As codebase is now arranged to squash fixes into existing patches
 add a changelog so we know what deltas have occured
 ---
- RPICHANGES | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
+ RPICHANGES | 72 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
  create mode 100644 RPICHANGES
 
-diff --git a/RPICHANGES b/RPICHANGES
-new file mode 100644
-index 0000000000..faa0f88615
 --- /dev/null
 +++ b/RPICHANGES
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,72 @@
 +pi/3.0.21/rpi_48
 +----------------
 +Improve wl_xdg_shell so it is actually usable
@@ -80,6 +77,11 @@ index 0000000000..faa0f88615
 +needed for our wl_dmabuf output (direct video->wayland surface output).
 +Wayland Qt fullscreen controls work better
 +Remove some remaining MMAL vestiges
--- 
-2.53.0
-
++
++pi/3.0.24/rpi_55
++----------------
++Remove obsolete patch that worked around implausible DPI values and crashed
++under KDE plasma
++Restore previous behaviour which preferred Wayland to X11
++Fixed a compile issue with newer compilers in pollqueue
++Check that we actually get Qt6 if requested in the conf_native script

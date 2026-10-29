@@ -1,7 +1,7 @@
-From e356dc6a2aff429b2ffaf854d1309a30c065de9a Mon Sep 17 00:00:00 2001
+From 9f8956dd65589f89a628e88f35def6ef87801d5d Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Mon, 30 Sep 2024 17:30:09 +0100
-Subject: [PATCH 04/39] vlc: Set malloc mmap threshold to avoid fragmentation
+Subject: [PATCH 04/40] vlc: Set malloc mmap threshold to avoid fragmentation
 
 We can end up with unfortunate memory fragmentation that ends up using
 a lot more memory than required when buffer allocations get partially
@@ -16,8 +16,6 @@ Do not override a user threshold
  bin/vlc.c | 14 ++++++++++++++
  1 file changed, 14 insertions(+)
 
-diff --git a/bin/vlc.c b/bin/vlc.c
-index 6d92b95990..b6e5b6957e 100644
 --- a/bin/vlc.c
 +++ b/bin/vlc.c
 @@ -30,6 +30,7 @@
@@ -48,6 +46,3 @@ index 6d92b95990..b6e5b6957e 100644
      /* The so-called POSIX-compliant MacOS X reportedly processes SIGPIPE even
       * if it is blocked in all thread.
       * Note: this is NOT an excuse for not protecting against SIGPIPE. If
--- 
-2.53.0
-

@@ -1,7 +1,7 @@
-From abb53844f8478069bcad0e13fa70f1dc1a5cf957 Mon Sep 17 00:00:00 2001
+From 0b7a59bed1f6367191e7d5f591c46780eac37a01 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:48:19 +0100
-Subject: [PATCH 31/39] egl: Add avcodec DRM_PRIME decode path
+Subject: [PATCH 30/40] egl: Add avcodec DRM_PRIME decode path
 
 Also includes drm_prime based deinterlace and sand30 conversion
 functions.
@@ -21,8 +21,6 @@ functions.
  create mode 100644 modules/hw/drm/drm_avcodec.c
  create mode 100644 modules/hw/drm/drm_gl_conv.c
 
-diff --git a/modules/Makefile.am b/modules/Makefile.am
-index 9f98624c95..d0c6477a22 100644
 --- a/modules/Makefile.am
 +++ b/modules/Makefile.am
 @@ -35,6 +35,7 @@ include demux/Makefile.am
@@ -33,8 +31,6 @@ index 9f98624c95..d0c6477a22 100644
  include hw/vaapi/Makefile.am
  include hw/vdpau/Makefile.am
  include keystore/Makefile.am
-diff --git a/modules/codec/avcodec/video.c b/modules/codec/avcodec/video.c
-index 3f7c9be399..b9b13720b8 100644
 --- a/modules/codec/avcodec/video.c
 +++ b/modules/codec/avcodec/video.c
 @@ -29,6 +29,8 @@
@@ -77,7 +73,7 @@ index 3f7c9be399..b9b13720b8 100644
      int profile;
      int level;
  
-@@ -360,6 +372,13 @@ static int lavc_CopyPicture(decoder_t *dec, picture_t *pic, AVFrame *frame)
+@@ -360,6 +372,13 @@ static int lavc_CopyPicture(decoder_t *d
  {
      decoder_sys_t *sys = dec->p_sys;
  
@@ -91,7 +87,7 @@ index 3f7c9be399..b9b13720b8 100644
      vlc_fourcc_t fourcc = FindVlcChroma(frame->format);
      if (!fourcc)
      {
-@@ -424,6 +443,9 @@ static int OpenVideoCodec( decoder_t *p_dec )
+@@ -424,6 +443,9 @@ static int OpenVideoCodec( decoder_t *p_
  
      ctx->bits_per_coded_sample = p_dec->fmt_in.video.i_bits_per_pixel;
      p_sys->pix_fmt = AV_PIX_FMT_NONE;
@@ -101,7 +97,7 @@ index 3f7c9be399..b9b13720b8 100644
      cc_Init( &p_sys->cc );
  
      set_video_color_settings( &p_dec->fmt_in.video, ctx );
-@@ -463,6 +485,32 @@ static int OpenVideoCodec( decoder_t *p_dec )
+@@ -463,6 +485,32 @@ static int OpenVideoCodec( decoder_t *p_
      return 0;
  }
  
@@ -134,7 +130,7 @@ index 3f7c9be399..b9b13720b8 100644
  static int InitVideoDecCommon( decoder_t *p_dec )
  {
      decoder_sys_t *p_sys = p_dec->p_sys;
-@@ -613,17 +661,31 @@ static int InitVideoDecCommon( decoder_t *p_dec )
+@@ -613,17 +661,31 @@ static int InitVideoDecCommon( decoder_t
      } else
          p_sys->palette_sent = true;
  
@@ -172,7 +168,7 @@ index 3f7c9be399..b9b13720b8 100644
  
      p_dec->pf_decode = DecodeVideo;
      p_dec->pf_flush  = Flush;
-@@ -634,6 +696,12 @@ static int InitVideoDecCommon( decoder_t *p_dec )
+@@ -634,6 +696,12 @@ static int InitVideoDecCommon( decoder_t
      if( p_context->level != AVLEVEL(UNKNOWN) )
          p_dec->fmt_in.i_level = p_context->level;
      return VLC_SUCCESS;
@@ -185,7 +181,7 @@ index 3f7c9be399..b9b13720b8 100644
  }
  
  static int ffmpeg_OpenVa(decoder_t *p_dec, AVCodecContext *p_context,
-@@ -655,7 +723,8 @@ static int ffmpeg_OpenVa(decoder_t *p_dec, AVCodecContext *p_context,
+@@ -655,7 +723,8 @@ static int ffmpeg_OpenVa(decoder_t *p_de
          return VLC_EGENERIC;
      }
      const AVPixFmtDescriptor *dsc = av_pix_fmt_desc_get(hwfmt);
@@ -195,7 +191,7 @@ index 3f7c9be399..b9b13720b8 100644
      if (lavc_UpdateVideoFormat(p_dec, p_context, hwfmt, swfmt))
          return VLC_EGENERIC; /* Unsupported brand of hardware acceleration */
  
-@@ -689,6 +758,10 @@ static int ffmpeg_OpenVa(decoder_t *p_dec, AVCodecContext *p_context,
+@@ -689,6 +758,10 @@ static int ffmpeg_OpenVa(decoder_t *p_de
  
  static const enum PixelFormat hwfmts[] =
  {
@@ -206,14 +202,14 @@ index 3f7c9be399..b9b13720b8 100644
  #ifdef _WIN32
  #if LIBAV_UTIL_VERSION_CHECK(54, 13, 1, 24, 100)
      AV_PIX_FMT_D3D11VA_VLD,
-@@ -698,6 +771,7 @@ static const enum PixelFormat hwfmts[] =
-     AV_PIX_FMT_VAAPI,
+@@ -699,6 +772,7 @@ static const enum PixelFormat hwfmts[] =
  #if (LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(52, 4, 0))
      AV_PIX_FMT_VDPAU,
-+#endif
  #endif
++#endif
      AV_PIX_FMT_NONE,
  };
+ 
 @@ -818,11 +892,11 @@ failed:
   * the ffmpeg codec will be opened, some memory allocated. The vout is not yet
   * opened (done after the first decoded frame).
@@ -256,7 +252,7 @@ index 3f7c9be399..b9b13720b8 100644
  /*****************************************************************************
   * Flush:
   *****************************************************************************/
-@@ -1399,9 +1494,10 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block, bool *error
+@@ -1399,9 +1494,10 @@ static picture_t *DecodeBlock( decoder_t
          {   /* When direct rendering is not used, get_format() and get_buffer()
               * might not be called. The output video format must be set here
               * then picture buffer can be allocated. */
@@ -269,7 +265,7 @@ index 3f7c9be399..b9b13720b8 100644
                  p_pic = decoder_NewPicture(p_dec);
  
              if( !p_pic )
-@@ -1799,6 +1895,7 @@ static enum PixelFormat ffmpeg_GetFormat( AVCodecContext *p_context,
+@@ -1799,6 +1895,7 @@ static enum PixelFormat ffmpeg_GetFormat
          }
          swfmt = defaultfmt;
      }
@@ -313,9 +309,6 @@ index 3f7c9be399..b9b13720b8 100644
              continue;
  
          post_mt(p_sys);
-diff --git a/modules/hw/drm/Makefile.am b/modules/hw/drm/Makefile.am
-new file mode 100644
-index 0000000000..8c3232364e
 --- /dev/null
 +++ b/modules/hw/drm/Makefile.am
 @@ -0,0 +1,26 @@
@@ -345,9 +338,6 @@ index 0000000000..8c3232364e
 + libdrm_conv_sand30_plugin.la \
 + libdrm_gl_conv_plugin.la
 +endif
-diff --git a/modules/hw/drm/conv_sand30.c b/modules/hw/drm/conv_sand30.c
-new file mode 100644
-index 0000000000..c60b5462e5
 --- /dev/null
 +++ b/modules/hw/drm/conv_sand30.c
 @@ -0,0 +1,212 @@
@@ -563,9 +553,6 @@ index 0000000000..c60b5462e5
 +    set_callbacks(OpenConverterToNv12, CloseConverterToNv12)
 +vlc_module_end()
 +
-diff --git a/modules/hw/drm/drm_av_deinterlace.c b/modules/hw/drm/drm_av_deinterlace.c
-new file mode 100644
-index 0000000000..1bc939c540
 --- /dev/null
 +++ b/modules/hw/drm/drm_av_deinterlace.c
 @@ -0,0 +1,335 @@
@@ -904,9 +891,6 @@ index 0000000000..1bc939c540
 +    add_shortcut("deinterlace")
 +vlc_module_end()
 +
-diff --git a/modules/hw/drm/drm_avcodec.c b/modules/hw/drm/drm_avcodec.c
-new file mode 100644
-index 0000000000..b20eaf700e
 --- /dev/null
 +++ b/modules/hw/drm/drm_avcodec.c
 @@ -0,0 +1,80 @@
@@ -990,9 +974,6 @@ index 0000000000..b20eaf700e
 +    set_callbacks(Open, Close)
 +    add_shortcut("drm_prime")
 +vlc_module_end()
-diff --git a/modules/hw/drm/drm_gl_conv.c b/modules/hw/drm/drm_gl_conv.c
-new file mode 100644
-index 0000000000..157d4a9c77
 --- /dev/null
 +++ b/modules/hw/drm/drm_gl_conv.c
 @@ -0,0 +1,425 @@
@@ -1421,11 +1402,9 @@ index 0000000000..157d4a9c77
 +    add_shortcut("drm_gl_converter")
 +vlc_module_end ()
 +
-diff --git a/src/misc/fourcc.c b/src/misc/fourcc.c
-index ca6a43e44f..c3d137f205 100644
 --- a/src/misc/fourcc.c
 +++ b/src/misc/fourcc.c
-@@ -416,6 +416,10 @@ static const vlc_fourcc_t p_D3D11_OPAQUE_10B_fallback[] = {
+@@ -416,6 +416,10 @@ static const vlc_fourcc_t p_D3D11_OPAQUE
      VLC_CODEC_D3D11_OPAQUE_10B, VLC_CODEC_P010, VLC_CODEC_I420_10L, 0,
  };
  
@@ -1436,7 +1415,7 @@ index ca6a43e44f..c3d137f205 100644
  static const vlc_fourcc_t p_I440_fallback[] = {
      VLC_CODEC_I440,
      VLC_CODEC_YUV_PLANAR_420,
-@@ -506,6 +510,7 @@ static const vlc_fourcc_t *pp_YUV_fallback[] = {
+@@ -506,6 +510,7 @@ static const vlc_fourcc_t *pp_YUV_fallba
      p_D3D9_OPAQUE_10B_fallback,
      p_D3D11_OPAQUE_fallback,
      p_D3D11_OPAQUE_10B_fallback,
@@ -1444,7 +1423,7 @@ index ca6a43e44f..c3d137f205 100644
      NULL,
  };
  
-@@ -537,6 +542,10 @@ static const vlc_fourcc_t p_list_YUV[] = {
+@@ -537,6 +542,10 @@ static const vlc_fourcc_t p_list_YUV[] =
      VLC_CODEC_D3D9_OPAQUE_10B,
      VLC_CODEC_D3D11_OPAQUE,
      VLC_CODEC_D3D11_OPAQUE_10B,
@@ -1466,6 +1445,3 @@ index ca6a43e44f..c3d137f205 100644
  
      { { VLC_CODEC_CVPX_NV12, VLC_CODEC_CVPX_UYVY,
          VLC_CODEC_CVPX_I420, VLC_CODEC_CVPX_BGRA },
--- 
-2.53.0
-

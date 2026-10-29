@@ -1,17 +1,15 @@
-From 70de70d9efd6a4a814dd257635bb2b6dd83dbd3a Mon Sep 17 00:00:00 2001
+From 2258e3bdd6bdc85b5d351597a1254521029e1360 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 16:13:54 +0100
-Subject: [PATCH 06/39] tospdif: Fix DTS rate calculation when we have 8*192000
+Subject: [PATCH 06/40] tospdif: Fix DTS rate calculation when we have 8*192000
 
 ---
  modules/audio_filter/converter/tospdif.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/modules/audio_filter/converter/tospdif.c b/modules/audio_filter/converter/tospdif.c
-index 0c725d99e7..8d962d6e81 100644
 --- a/modules/audio_filter/converter/tospdif.c
 +++ b/modules/audio_filter/converter/tospdif.c
-@@ -484,6 +484,7 @@ static int write_buffer_dtshd( filter_t *p_filter, block_t *p_in_buf )
+@@ -484,6 +484,7 @@ static int write_buffer_dtshd( filter_t
                                p_in_buf->i_buffer ) != VLC_SUCCESS )
          return SPDIF_ERROR;
      unsigned i_period = p_filter->fmt_out.audio.i_rate
@@ -19,6 +17,3 @@ index 0c725d99e7..8d962d6e81 100644
                        * core.i_frame_length / core.i_rate;
  
      int i_subtype = dtshd_get_subtype( i_period );
--- 
-2.53.0
-

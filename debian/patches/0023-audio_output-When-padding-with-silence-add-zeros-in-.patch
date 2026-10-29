@@ -1,37 +1,26 @@
-From b88d471f75e0f9401eebf762278f2627eb280d2d Mon Sep 17 00:00:00 2001
+From 0da57cdb122db1f7625d5b63bb011954573653b3 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 25 Apr 2023 16:33:34 +0000
-Subject: [PATCH 23/39] audio_output: When padding with silence add zeros in
+Subject: [PATCH 23/40] audio_output: When padding with silence add zeros in
  multiple small buffers
 
 ---
  src/audio_output/dec.c | 35 +++++++++++++++++++++--------------
  1 file changed, 21 insertions(+), 14 deletions(-)
 
-diff --git a/src/audio_output/dec.c b/src/audio_output/dec.c
-index 7eca0de2fd..67aad79855 100644
 --- a/src/audio_output/dec.c
 +++ b/src/audio_output/dec.c
-@@ -217,20 +217,27 @@ static void aout_DecSilence (audio_output_t *aout, vlc_tick_t length, vlc_tick_t
+@@ -217,20 +217,27 @@ static void aout_DecSilence (audio_outpu
  {
      aout_owner_t *owner = aout_owner (aout);
      const audio_sample_format_t *fmt = &owner->mixer_format;
 -    size_t frames = (fmt->i_rate * length) / CLOCK_FREQ;
--
++    size_t frame_count = (fmt->i_rate * length) / CLOCK_FREQ;
+ 
 -    block_t *block = block_Alloc (frames * fmt->i_bytes_per_frame
 -                                  / fmt->i_frame_length);
 -    if (unlikely(block == NULL))
 -        return; /* uho! */
--
--    msg_Dbg (aout, "inserting %zu zeroes", frames);
--    memset (block->p_buffer, 0, block->i_buffer);
--    block->i_nb_samples = frames;
--    block->i_pts = pts;
--    block->i_dts = pts;
--    block->i_length = length;
--    aout_OutputPlay (aout, block);
-+    size_t frame_count = (fmt->i_rate * length) / CLOCK_FREQ;
-+
 +    msg_Dbg (aout, "inserting %zu zero frames", frame_count);
 +    while (frame_count != 0)
 +    {
@@ -42,7 +31,14 @@ index 7eca0de2fd..67aad79855 100644
 +                                      / fmt->i_frame_length));
 +        if (unlikely(block == NULL))
 +            return; /* uho! */
-+
+ 
+-    msg_Dbg (aout, "inserting %zu zeroes", frames);
+-    memset (block->p_buffer, 0, block->i_buffer);
+-    block->i_nb_samples = frames;
+-    block->i_pts = pts;
+-    block->i_dts = pts;
+-    block->i_length = length;
+-    aout_OutputPlay (aout, block);
 +        memset (block->p_buffer, 0, block->i_buffer);
 +        block->i_nb_samples = frames;
 +        block->i_pts = pts;
@@ -54,6 +50,3 @@ index 7eca0de2fd..67aad79855 100644
  }
  
  static void aout_DecSynchronize (audio_output_t *aout, vlc_tick_t dec_pts,
--- 
-2.53.0
-

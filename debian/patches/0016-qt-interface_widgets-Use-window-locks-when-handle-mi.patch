@@ -1,7 +1,7 @@
-From 6765b8dc1081c8d13d5603bebeb3e481c21e3670 Mon Sep 17 00:00:00 2001
+From cd65eb22bed17c534b5490dd4f9b7f18fe10c669 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:05:36 +0100
-Subject: [PATCH 16/39] qt/interface_widgets: Use window locks when handle
+Subject: [PATCH 16/40] qt/interface_widgets: Use window locks when handle
  might change
 
 Qt/Wayland changes its surface when the window is hidden and then shown.
@@ -15,8 +15,6 @@ trying to use stale handles which will crash VLC.
  .../gui/qt/components/interface_widgets.hpp   |  4 +
  2 files changed, 85 insertions(+), 1 deletion(-)
 
-diff --git a/modules/gui/qt/components/interface_widgets.cpp b/modules/gui/qt/components/interface_widgets.cpp
-index cd16ea90c8..9575cc3c32 100644
 --- a/modules/gui/qt/components/interface_widgets.cpp
 +++ b/modules/gui/qt/components/interface_widgets.cpp
 @@ -81,7 +81,8 @@ static inline int qrand() {
@@ -74,7 +72,7 @@ index cd16ea90c8..9575cc3c32 100644
  /**
   * Request the video to avoid the conflicts
   **/
-@@ -182,6 +221,7 @@ bool VideoWidget::request( struct vout_window_t *p_wnd )
+@@ -182,6 +221,7 @@ bool VideoWidget::request( struct vout_w
                                               window));
              p_wnd->display.wl = static_cast<wl_display*>(
                  qni->nativeResourceForIntegration(QByteArrayLiteral("wl_display")));
@@ -91,7 +89,7 @@ index cd16ea90c8..9575cc3c32 100644
      QSize size = physicalSize();
      WindowResized(p_window, size);
  }
-@@ -299,6 +341,32 @@ bool VideoWidget::nativeEventFilter(const QByteArray &eventType, void *message,
+@@ -299,6 +341,32 @@ bool VideoWidget::nativeEventFilter(cons
      return false;
  }
  
@@ -143,8 +141,6 @@ index cd16ea90c8..9575cc3c32 100644
          p_window = NULL;
      }
  
-diff --git a/modules/gui/qt/components/interface_widgets.hpp b/modules/gui/qt/components/interface_widgets.hpp
-index 995b8e0129..71fee07130 100644
 --- a/modules/gui/qt/components/interface_widgets.hpp
 +++ b/modules/gui/qt/components/interface_widgets.hpp
 @@ -74,6 +74,8 @@ protected:
@@ -172,6 +168,3 @@ index 995b8e0129..71fee07130 100644
  
  signals:
      void sizeChanged( int, int );
--- 
-2.53.0
-

@@ -1,0 +1,36 @@
+From 9fc6dea8128a4dfa97281d4fe9d4069fed37505b Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Mon, 19 Oct 2026 10:55:12 +0100
+Subject: [PATCH 39/40] qt: Prefer Wayland to X11
+
+If WAYLAND_DISPLAY is set try Wayland before X11 otherwise wayland
+based module such as wl_dmabuf will not work.
+---
+ modules/gui/qt/qt.cpp | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+--- a/modules/gui/qt/qt.cpp
++++ b/modules/gui/qt/qt.cpp
+@@ -473,13 +473,21 @@ static int Open( vlc_object_t *p_this, b
+     intf_thread_t *p_intf = (intf_thread_t *)p_this;
+     void *(*thread)(void *) = Thread;
+ 
++#ifdef QT5_HAS_WAYLAND
++    /* Prefer Wayland over Xwayland if we are in a Wayland session */
++    const bool wayland_first = getenv( "WAYLAND_DISPLAY" ) != NULL;
++
++    if( wayland_first && HasWayland() )
++        thread = ThreadWayland;
++    else
++#endif
+ #ifdef QT_HAS_X11
+     if( HasX11( p_this ) )
+         thread = ThreadXCB;
+     else
+ #endif
+ #ifdef QT5_HAS_WAYLAND
+-    if( HasWayland() )
++    if( !wayland_first && HasWayland() )
+         thread = ThreadWayland;
+     else
+ #endif

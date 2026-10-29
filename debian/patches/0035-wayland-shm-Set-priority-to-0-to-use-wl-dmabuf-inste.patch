@@ -1,14 +1,12 @@
-From d14c91ef60949a81afe2d1e16de08263f2b72c78 Mon Sep 17 00:00:00 2001
+From 96459f3cd3e476afe477cba4f02df181ffac5e76 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 11:03:52 +0100
-Subject: [PATCH 35/39] wayland/shm: Set priority to 0 to use wl-dmabuf instead
+Subject: [PATCH 35/40] wayland/shm: Set priority to 0 to use wl-dmabuf instead
 
 ---
  modules/video_output/wayland/shm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/modules/video_output/wayland/shm.c b/modules/video_output/wayland/shm.c
-index 08ad5022f9..b1feb622d8 100644
 --- a/modules/video_output/wayland/shm.c
 +++ b/modules/video_output/wayland/shm.c
 @@ -509,7 +509,7 @@ vlc_module_begin()
@@ -20,6 +18,3 @@ index 08ad5022f9..b1feb622d8 100644
      set_callbacks(Open, Close)
      add_shortcut("wl")
  vlc_module_end()
--- 
-2.53.0
-

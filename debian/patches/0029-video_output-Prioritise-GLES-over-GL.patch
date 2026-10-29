@@ -1,15 +1,13 @@
-From 03912fbcee82f220321ca0ae5524da05c3a5ff52 Mon Sep 17 00:00:00 2001
+From 66ab558332d95f262b322807f244b04e678ba61f Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Wed, 12 Jun 2024 10:16:27 +0100
-Subject: [PATCH 30/39] video_output: Prioritise GLES over GL
+Subject: [PATCH 29/40] video_output: Prioritise GLES over GL
 
 ---
  modules/video_output/opengl/display.c | 2 +-
  modules/video_output/opengl/egl.c     | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/modules/video_output/opengl/display.c b/modules/video_output/opengl/display.c
-index ec671109bc..46f693a13a 100644
 --- a/modules/video_output/opengl/display.c
 +++ b/modules/video_output/opengl/display.c
 @@ -48,7 +48,7 @@ vlc_module_begin ()
@@ -21,8 +19,6 @@ index ec671109bc..46f693a13a 100644
      set_callbacks (Open, Close)
      add_shortcut ("opengles2", "gles2")
      add_module ("gles2", "opengl es2", NULL,
-diff --git a/modules/video_output/opengl/egl.c b/modules/video_output/opengl/egl.c
-index c3bfd7df91..f3a4f359b1 100644
 --- a/modules/video_output/opengl/egl.c
 +++ b/modules/video_output/opengl/egl.c
 @@ -476,7 +476,7 @@ vlc_module_begin ()
@@ -34,6 +30,3 @@ index c3bfd7df91..f3a4f359b1 100644
      set_callbacks (OpenGLES2, Close)
      add_shortcut ("egl")
  
--- 
-2.53.0
-

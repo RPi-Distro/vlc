@@ -1,9 +1,9 @@
-From b35ac319062cbce78432d65f9448494cfd0a4c36 Mon Sep 17 00:00:00 2001
+From 67dfb55597995b5942b3a12e5e3696d978da2348 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
-Date: Wed, 12 Jun 2024 10:51:42 +0100
-Subject: [PATCH 32/39] egl: Require dma_buf_import support if using egl out
+Date: Mon, 19 Oct 2026 16:56:47 +0100
+Subject: [PATCH 32/40] video_output/drmu: Add drmu based DRM output module
 
-If egl doesn't support dmabufs then X is faster.
+Supports direct output of DRM_PRIME frames
 ---
  modules/video_output/Makefile.am           |   29 +
  modules/video_output/drmu/drm_vout.c       | 1503 ++++++++
@@ -37,8 +37,7 @@ If egl doesn't support dmabufs then X is faster.
  modules/video_output/drmu/drmu_xlease.c    |  149 +
  modules/video_output/drmu/pollqueue.c      |  716 ++++
  modules/video_output/drmu/pollqueue.h      |  101 +
- modules/video_output/opengl/egl.c          |   10 +
- 33 files changed, 12683 insertions(+)
+ 32 files changed, 12673 insertions(+)
  create mode 100644 modules/video_output/drmu/drm_vout.c
  create mode 100644 modules/video_output/drmu/drmu.c
  create mode 100644 modules/video_output/drmu/drmu.h
@@ -71,8 +70,6 @@ If egl doesn't support dmabufs then X is faster.
  create mode 100644 modules/video_output/drmu/pollqueue.c
  create mode 100644 modules/video_output/drmu/pollqueue.h
 
-diff --git a/modules/video_output/Makefile.am b/modules/video_output/Makefile.am
-index 6d75a1d865..860974a763 100644
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
 @@ -191,6 +191,35 @@ vout_LTLIBRARIES += libglx_plugin.la
@@ -111,9 +108,6 @@ index 6d75a1d865..860974a763 100644
  
  ### Wayland ###
  libwl_shm_plugin_la_SOURCES = video_output/wayland/shm.c
-diff --git a/modules/video_output/drmu/drm_vout.c b/modules/video_output/drmu/drm_vout.c
-new file mode 100644
-index 0000000000..9642951209
 --- /dev/null
 +++ b/modules/video_output/drmu/drm_vout.c
 @@ -0,0 +1,1503 @@
@@ -1620,9 +1614,6 @@ index 0000000000..9642951209
 +    set_callbacks(OpenDrmVout, CloseDrmVout)
 +vlc_module_end()
 +
-diff --git a/modules/video_output/drmu/drmu.c b/modules/video_output/drmu/drmu.c
-new file mode 100644
-index 0000000000..486c58fea1
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu.c
 @@ -0,0 +1,3996 @@
@@ -5622,9 +5613,6 @@ index 0000000000..486c58fea1
 +}
 +
 +
-diff --git a/modules/video_output/drmu/drmu.h b/modules/video_output/drmu/drmu.h
-new file mode 100644
-index 0000000000..ce42e50f21
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu.h
 @@ -0,0 +1,711 @@
@@ -6339,9 +6327,6 @@ index 0000000000..ce42e50f21
 +
 +#endif
 +
-diff --git a/modules/video_output/drmu/drmu_atomic.c b/modules/video_output/drmu/drmu_atomic.c
-new file mode 100644
-index 0000000000..e971067b7e
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_atomic.c
 @@ -0,0 +1,992 @@
@@ -7337,9 +7322,6 @@ index 0000000000..e971067b7e
 +    return da == NULL || aprop_hdr_props_is_empty(&da->props);
 +}
 +
-diff --git a/modules/video_output/drmu/drmu_chroma.h b/modules/video_output/drmu/drmu_chroma.h
-new file mode 100644
-index 0000000000..46382e90c4
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_chroma.h
 @@ -0,0 +1,45 @@
@@ -7388,9 +7370,6 @@ index 0000000000..46382e90c4
 +
 +#endif
 +
-diff --git a/modules/video_output/drmu/drmu_dmabuf.c b/modules/video_output/drmu/drmu_dmabuf.c
-new file mode 100644
-index 0000000000..7cc3f99a12
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_dmabuf.c
 @@ -0,0 +1,206 @@
@@ -7600,9 +7579,6 @@ index 0000000000..7cc3f99a12
 +                               &fns, drmu_dmabuf_env_ref(dde));
 +}
 +
-diff --git a/modules/video_output/drmu/drmu_dmabuf.h b/modules/video_output/drmu/drmu_dmabuf.h
-new file mode 100644
-index 0000000000..880f4e355d
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_dmabuf.h
 @@ -0,0 +1,47 @@
@@ -7653,9 +7629,6 @@ index 0000000000..880f4e355d
 +#endif
 +
 +#endif
-diff --git a/modules/video_output/drmu/drmu_fmts.c b/modules/video_output/drmu/drmu_fmts.c
-new file mode 100644
-index 0000000000..915a3f1206
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_fmts.c
 @@ -0,0 +1,425 @@
@@ -8084,9 +8057,6 @@ index 0000000000..915a3f1206
 +
 +#endif
 +
-diff --git a/modules/video_output/drmu/drmu_fmts.h b/modules/video_output/drmu/drmu_fmts.h
-new file mode 100644
-index 0000000000..2733d1d983
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_fmts.h
 @@ -0,0 +1,67 @@
@@ -8157,9 +8127,6 @@ index 0000000000..2733d1d983
 +
 +#endif
 +
-diff --git a/modules/video_output/drmu/drmu_log.h b/modules/video_output/drmu/drmu_log.h
-new file mode 100644
-index 0000000000..1d7aee3b48
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_log.h
 @@ -0,0 +1,81 @@
@@ -8244,9 +8211,6 @@ index 0000000000..1d7aee3b48
 +
 +#endif
 +
-diff --git a/modules/video_output/drmu/drmu_math.c b/modules/video_output/drmu/drmu_math.c
-new file mode 100644
-index 0000000000..fc1e28efbf
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_math.c
 @@ -0,0 +1,29 @@
@@ -8279,9 +8243,6 @@ index 0000000000..fc1e28efbf
 +        .den = x.den / g
 +    };
 +}
-diff --git a/modules/video_output/drmu/drmu_math.h b/modules/video_output/drmu/drmu_math.h
-new file mode 100644
-index 0000000000..c64ea88d3b
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_math.h
 @@ -0,0 +1,149 @@
@@ -8434,9 +8395,6 @@ index 0000000000..c64ea88d3b
 +#endif
 +
 +#endif
-diff --git a/modules/video_output/drmu/drmu_output.c b/modules/video_output/drmu/drmu_output.c
-new file mode 100644
-index 0000000000..af4359420e
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_output.c
 @@ -0,0 +1,589 @@
@@ -9029,9 +8987,6 @@ index 0000000000..af4359420e
 +    return dout;
 +}
 +
-diff --git a/modules/video_output/drmu/drmu_output.h b/modules/video_output/drmu/drmu_output.h
-new file mode 100644
-index 0000000000..1729ca8e2e
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_output.h
 @@ -0,0 +1,114 @@
@@ -9149,9 +9104,6 @@ index 0000000000..1729ca8e2e
 +#endif
 +
 +
-diff --git a/modules/video_output/drmu/drmu_poll.c b/modules/video_output/drmu/drmu_poll.c
-new file mode 100644
-index 0000000000..704ec72cd6
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_poll.c
 @@ -0,0 +1,549 @@
@@ -9704,9 +9656,6 @@ index 0000000000..704ec72cd6
 +    return drmu_queue_wait(drmu_env_queue_default(du));
 +}
 +
-diff --git a/modules/video_output/drmu/drmu_poll.h b/modules/video_output/drmu/drmu_poll.h
-new file mode 100644
-index 0000000000..66df8087a3
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_poll.h
 @@ -0,0 +1,80 @@
@@ -9790,9 +9739,6 @@ index 0000000000..66df8087a3
 +#endif
 +#endif
 +
-diff --git a/modules/video_output/drmu/drmu_pool.c b/modules/video_output/drmu/drmu_pool.c
-new file mode 100644
-index 0000000000..d10505d2e5
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_pool.c
 @@ -0,0 +1,307 @@
@@ -10103,9 +10049,6 @@ index 0000000000..d10505d2e5
 +}
 +
 +
-diff --git a/modules/video_output/drmu/drmu_pool.h b/modules/video_output/drmu/drmu_pool.h
-new file mode 100644
-index 0000000000..c1aa786e4c
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_pool.h
 @@ -0,0 +1,60 @@
@@ -10169,9 +10112,6 @@ index 0000000000..c1aa786e4c
 +#endif
 +
 +#endif
-diff --git a/modules/video_output/drmu/drmu_scan.c b/modules/video_output/drmu/drmu_scan.c
-new file mode 100644
-index 0000000000..9cb0d20c90
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_scan.c
 @@ -0,0 +1,60 @@
@@ -10235,9 +10175,6 @@ index 0000000000..9cb0d20c90
 +    return -ENOENT;
 +}
 +
-diff --git a/modules/video_output/drmu/drmu_scan.h b/modules/video_output/drmu/drmu_scan.h
-new file mode 100644
-index 0000000000..4351deec08
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_scan.h
 @@ -0,0 +1,20 @@
@@ -10261,9 +10198,6 @@ index 0000000000..4351deec08
 +#endif
 +#endif
 +
-diff --git a/modules/video_output/drmu/drmu_util.c b/modules/video_output/drmu/drmu_util.c
-new file mode 100644
-index 0000000000..f0c4c7a3aa
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_util.c
 @@ -0,0 +1,252 @@
@@ -10519,9 +10453,6 @@ index 0000000000..f0c4c7a3aa
 +        }
 +    }
 +}
-diff --git a/modules/video_output/drmu/drmu_util.h b/modules/video_output/drmu/drmu_util.h
-new file mode 100644
-index 0000000000..11bff9e5c3
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_util.h
 @@ -0,0 +1,74 @@
@@ -10599,9 +10530,6 @@ index 0000000000..11bff9e5c3
 +
 +#endif
 +
-diff --git a/modules/video_output/drmu/drmu_vlc.c b/modules/video_output/drmu/drmu_vlc.c
-new file mode 100644
-index 0000000000..92251a951b
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_vlc.c
 @@ -0,0 +1,389 @@
@@ -10994,9 +10922,6 @@ index 0000000000..92251a951b
 +                     function_name, fmt + DRMU_LOG_FMT_OFFSET_FMT, vl);
 +}
 +
-diff --git a/modules/video_output/drmu/drmu_vlc.h b/modules/video_output/drmu/drmu_vlc.h
-new file mode 100644
-index 0000000000..5c19141930
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_vlc.h
 @@ -0,0 +1,81 @@
@@ -11081,9 +11006,6 @@ index 0000000000..5c19141930
 +#endif
 +#endif
 +
-diff --git a/modules/video_output/drmu/drmu_vlc_fmts.c b/modules/video_output/drmu/drmu_vlc_fmts.c
-new file mode 100644
-index 0000000000..f10a5d9366
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_vlc_fmts.c
 @@ -0,0 +1,281 @@
@@ -11368,9 +11290,6 @@ index 0000000000..f10a5d9366
 +    return drmu_vlc_fmt_info_drm_pixelformat(f);
 +}
 +
-diff --git a/modules/video_output/drmu/drmu_vlc_fmts.h b/modules/video_output/drmu/drmu_vlc_fmts.h
-new file mode 100644
-index 0000000000..1e7fa4711c
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_vlc_fmts.h
 @@ -0,0 +1,57 @@
@@ -11431,9 +11350,6 @@ index 0000000000..1e7fa4711c
 +}
 +#endif
 +#endif
-diff --git a/modules/video_output/drmu/drmu_writeback.c b/modules/video_output/drmu/drmu_writeback.c
-new file mode 100644
-index 0000000000..5738ca6b46
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_writeback.c
 @@ -0,0 +1,441 @@
@@ -11878,9 +11794,6 @@ index 0000000000..5738ca6b46
 +    return rv;
 +}
 +
-diff --git a/modules/video_output/drmu/drmu_writeback.h b/modules/video_output/drmu/drmu_writeback.h
-new file mode 100644
-index 0000000000..35c3054d1d
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_writeback.h
 @@ -0,0 +1,73 @@
@@ -11957,9 +11870,6 @@ index 0000000000..35c3054d1d
 +#endif
 +
 +#endif
-diff --git a/modules/video_output/drmu/drmu_xlease.c b/modules/video_output/drmu/drmu_xlease.c
-new file mode 100644
-index 0000000000..e1f6ab5307
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_xlease.c
 @@ -0,0 +1,149 @@
@@ -12112,9 +12022,6 @@ index 0000000000..e1f6ab5307
 +    }
 +    return drmu_env_new_fd(fd, log);
 +}
-diff --git a/modules/video_output/drmu/pollqueue.c b/modules/video_output/drmu/pollqueue.c
-new file mode 100644
-index 0000000000..c8a4de0be1
 --- /dev/null
 +++ b/modules/video_output/drmu/pollqueue.c
 @@ -0,0 +1,716 @@
@@ -12588,7 +12495,6 @@ index 0000000000..c8a4de0be1
 +    if (!pq)
 +        return NULL;
 +    *pq = (struct pollqueue){
-+        .ref_count = ATOMIC_VAR_INIT(0),
 +        .lock = PTHREAD_MUTEX_INITIALIZER,
 +        .cond = PTHREAD_COND_INITIALIZER,
 +        .head = NULL,
@@ -12597,6 +12503,7 @@ index 0000000000..c8a4de0be1
 +        .prod_fd = -1
 +    };
 +
++    atomic_init(&pq->ref_count, 0);
 +    pq->prod_fd = eventfd(0, EFD_NONBLOCK);
 +    if (pq->prod_fd == -1)
 +        goto fail1;
@@ -12834,9 +12741,6 @@ index 0000000000..c8a4de0be1
 +fail:
 +    free(ee);
 +}
-diff --git a/modules/video_output/drmu/pollqueue.h b/modules/video_output/drmu/pollqueue.h
-new file mode 100644
-index 0000000000..84888d0865
 --- /dev/null
 +++ b/modules/video_output/drmu/pollqueue.h
 @@ -0,0 +1,101 @@
@@ -12941,34 +12845,3 @@ index 0000000000..84888d0865
 +                        void (* const exit_fn)(void * v), void * v);
 +
 +#endif /* POLLQUEUE_H_ */
-diff --git a/modules/video_output/opengl/egl.c b/modules/video_output/opengl/egl.c
-index f3a4f359b1..dbff2e5efe 100644
---- a/modules/video_output/opengl/egl.c
-+++ b/modules/video_output/opengl/egl.c
-@@ -43,6 +43,8 @@
- # include "../android/utils.h"
- #endif
- 
-+#define REQUIRE_DMA_BUF_IMPORT 1
-+
- typedef struct vlc_gl_sys_t
- {
-     EGLDisplay display;
-@@ -381,6 +383,14 @@ static int Open (vlc_object_t *obj, const struct gl_api *api)
-         goto error;
-     }
- 
-+#if REQUIRE_DMA_BUF_IMPORT
-+    if (!CheckToken(ext, "EGL_EXT_image_dma_buf_import"))
-+    {
-+        msg_Dbg(obj, "No dma_buf_import - fall back to X");
-+        goto error;
-+    }
-+#endif
-+
-     const EGLint conf_attr[] = {
-         EGL_RED_SIZE, 5,
-         EGL_GREEN_SIZE, 5,
--- 
-2.53.0
-

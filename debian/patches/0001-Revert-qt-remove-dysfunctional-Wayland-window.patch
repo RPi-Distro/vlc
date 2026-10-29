@@ -1,7 +1,7 @@
 From 85eeac9b36e2f03c8954da7f099df2dc09fe2627 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Thu, 1 Oct 2026 17:35:57 +0100
-Subject: [PATCH 01/39] Revert "qt: remove dysfunctional Wayland window"
+Subject: [PATCH 01/40] Revert "qt: remove dysfunctional Wayland window"
 
 This reverts commit 04d8fcb923dcab281755c1a8dd07b6c2e1fc2ea1.
 ---
@@ -14,8 +14,6 @@ This reverts commit 04d8fcb923dcab281755c1a8dd07b6c2e1fc2ea1.
  modules/gui/qt/qt.cpp                         | 27 +++++++++++++++++++
  7 files changed, 89 insertions(+)
 
-diff --git a/modules/gui/qt/Makefile.am b/modules/gui/qt/Makefile.am
-index ea0f2cbfc3..2889a5d743 100644
 --- a/modules/gui/qt/Makefile.am
 +++ b/modules/gui/qt/Makefile.am
 @@ -34,6 +34,12 @@ endif
@@ -31,11 +29,9 @@ index ea0f2cbfc3..2889a5d743 100644
  if HAVE_WIN32
  libqt_plugin_la_LIBADD += $(LIBCOM) -lcomctl32 -luuid
  endif
-diff --git a/modules/gui/qt/components/controller.cpp b/modules/gui/qt/components/controller.cpp
-index e1529d2012..ee7793f7ea 100644
 --- a/modules/gui/qt/components/controller.cpp
 +++ b/modules/gui/qt/components/controller.cpp
-@@ -795,6 +795,10 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
+@@ -795,6 +795,10 @@ FullscreenControllerWidget::FullscreenCo
      b_fullscreen        = false;
      i_hide_timeout      = 1;
      i_screennumber      = -1;
@@ -46,7 +42,7 @@ index e1529d2012..ee7793f7ea 100644
  
      vout.clear();
  
-@@ -878,7 +882,12 @@ void FullscreenControllerWidget::restoreFSC()
+@@ -878,7 +882,12 @@ void FullscreenControllerWidget::restore
          QWindow *wh = windowHandle();
          if ( wh != Q_NULLPTR )
          {
@@ -59,8 +55,6 @@ index e1529d2012..ee7793f7ea 100644
          }
  
          if( currentRes == screenRes &&
-diff --git a/modules/gui/qt/components/controller.hpp b/modules/gui/qt/components/controller.hpp
-index cbdd74cb05..3275108cb1 100644
 --- a/modules/gui/qt/components/controller.hpp
 +++ b/modules/gui/qt/components/controller.hpp
 @@ -325,6 +325,10 @@ private:
@@ -74,8 +68,6 @@ index cbdd74cb05..3275108cb1 100644
  };
  
  #endif
-diff --git a/modules/gui/qt/components/interface_widgets.cpp b/modules/gui/qt/components/interface_widgets.cpp
-index cb48dc5881..cd16ea90c8 100644
 --- a/modules/gui/qt/components/interface_widgets.cpp
 +++ b/modules/gui/qt/components/interface_widgets.cpp
 @@ -59,6 +59,10 @@ static inline int qrand() {
@@ -89,7 +81,7 @@ index cb48dc5881..cd16ea90c8 100644
  
  #if defined(_WIN32)
  #include <QWindow>
-@@ -160,6 +164,27 @@ bool VideoWidget::request( struct vout_window_t *p_wnd )
+@@ -160,6 +164,27 @@ bool VideoWidget::request( struct vout_w
          case VOUT_WINDOW_TYPE_NSOBJECT:
              p_wnd->handle.nsobject = (void *)stable->winId();
              break;
@@ -117,11 +109,9 @@ index cb48dc5881..cd16ea90c8 100644
          default:
              vlc_assert_unreachable();
      }
-diff --git a/modules/gui/qt/main_interface.cpp b/modules/gui/qt/main_interface.cpp
-index 8c725f558f..84992237e6 100644
 --- a/modules/gui/qt/main_interface.cpp
 +++ b/modules/gui/qt/main_interface.cpp
-@@ -152,6 +152,11 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
+@@ -152,6 +152,11 @@ MainInterface::MainInterface( intf_threa
      /* Should the UI stays on top of other windows */
      b_interfaceOnTop = var_InheritBool( p_intf, "video-on-top" );
  
@@ -133,7 +123,7 @@ index 8c725f558f..84992237e6 100644
      /**************************
       *  UI and Widgets design
       **************************/
-@@ -895,7 +900,12 @@ void MainInterface::setVideoFullScreen( bool fs )
+@@ -895,7 +900,12 @@ void MainInterface::setVideoFullScreen(
  
              QRect screenres = QGuiApplication::screens()[ numscreen ]->geometry();
              lastWinScreen = windowHandle()->screen();
@@ -146,7 +136,7 @@ index 8c725f558f..84992237e6 100644
  
              /* To be sure window is on proper-screen in xinerama */
              if( !screenres.contains( pos() ) )
-@@ -921,8 +931,13 @@ void MainInterface::setVideoFullScreen( bool fs )
+@@ -921,8 +931,13 @@ void MainInterface::setVideoFullScreen(
      {
          setMinimalView( b_minimalView );
          setInterfaceFullScreen( b_interfaceFullScreen );
@@ -160,8 +150,6 @@ index 8c725f558f..84992237e6 100644
          if( lastWinPosition.isNull() == false )
          {
              move( lastWinPosition );
-diff --git a/modules/gui/qt/main_interface.hpp b/modules/gui/qt/main_interface.hpp
-index 5e3bb07400..405bdf22a5 100644
 --- a/modules/gui/qt/main_interface.hpp
 +++ b/modules/gui/qt/main_interface.hpp
 @@ -184,6 +184,9 @@ protected:
@@ -174,8 +162,6 @@ index 5e3bb07400..405bdf22a5 100644
      /* States */
      bool                 playlistVisible;       ///< Is the playlist visible ?
  //    bool                 videoIsActive;       ///< Having a video now / THEMIM->hasV
-diff --git a/modules/gui/qt/qt.cpp b/modules/gui/qt/qt.cpp
-index f33fdb4f3d..deed06b409 100644
 --- a/modules/gui/qt/qt.cpp
 +++ b/modules/gui/qt/qt.cpp
 @@ -389,6 +389,26 @@ static bool HasX11( vlc_object_t *obj )
@@ -205,7 +191,7 @@ index f33fdb4f3d..deed06b409 100644
  bool isDarkPaletteEnabled(intf_thread_t *p_intf) {
      static const bool darkPalette = var_InheritBool( p_intf, "qt-dark-palette" );
      return darkPalette;
-@@ -457,6 +477,13 @@ static int Open( vlc_object_t *p_this, bool isDialogProvider )
+@@ -457,6 +477,13 @@ static int Open( vlc_object_t *p_this, b
      if( HasX11( p_this ) )
          thread = ThreadXCB;
      else
@@ -219,6 +205,3 @@ index f33fdb4f3d..deed06b409 100644
          return VLC_EGENERIC;
  #endif
  
--- 
-2.53.0
-

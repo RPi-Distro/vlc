@@ -1,7 +1,7 @@
-From b82e18711daf8964ed288ecaed08fd7e9c5f7e1b Mon Sep 17 00:00:00 2001
+From 244ca35e328eb59293294811afe66507aed8f60f Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 11 Jun 2024 17:45:14 +0100
-Subject: [PATCH 21/39] qt/controller: Make fullscreen controller a ToolTip
+Subject: [PATCH 21/40] qt/controller: Make fullscreen controller a ToolTip
  under Wayland
 
 This fixes positioning both for it and context popups. Slow fade goes
@@ -18,11 +18,9 @@ In Qt6.8 they can also be moved.
  modules/gui/qt/components/controller.cpp | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/modules/gui/qt/components/controller.cpp b/modules/gui/qt/components/controller.cpp
-index ee7793f7ea..77a144fcdf 100644
 --- a/modules/gui/qt/components/controller.cpp
 +++ b/modules/gui/qt/components/controller.cpp
-@@ -802,6 +802,17 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWi
+@@ -802,6 +802,17 @@ FullscreenControllerWidget::FullscreenCo
  
      vout.clear();
  
@@ -40,6 +38,3 @@ index ee7793f7ea..77a144fcdf 100644
      setWindowFlags( Qt::Tool | Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint );
      setAttribute( Qt::WA_ShowWithoutActivating );
      setMinimumWidth( FSC_WIDTH );
--- 
-2.53.0
-

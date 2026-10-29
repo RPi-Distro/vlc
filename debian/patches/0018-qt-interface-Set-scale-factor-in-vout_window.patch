@@ -1,14 +1,12 @@
-From c945a65628f1629d1c7c6e6b69c55d8d7950560e Mon Sep 17 00:00:00 2001
+From 610fcc7c061e210da2df8d75af4fad6ede973193 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 22 Oct 2024 15:48:45 +0100
-Subject: [PATCH 18/39] qt/interface: Set scale factor in vout_window
+Subject: [PATCH 18/40] qt/interface: Set scale factor in vout_window
 
 ---
  modules/gui/qt/components/interface_widgets.cpp | 11 +++++++++++
  1 file changed, 11 insertions(+)
 
-diff --git a/modules/gui/qt/components/interface_widgets.cpp b/modules/gui/qt/components/interface_widgets.cpp
-index 9575cc3c32..05c50f4f65 100644
 --- a/modules/gui/qt/components/interface_widgets.cpp
 +++ b/modules/gui/qt/components/interface_widgets.cpp
 @@ -282,6 +282,17 @@ void VideoWidget::reportSize()
@@ -29,6 +27,3 @@ index 9575cc3c32..05c50f4f65 100644
      QSize size = physicalSize();
      WindowResized(p_window, size);
  }
--- 
-2.53.0
-

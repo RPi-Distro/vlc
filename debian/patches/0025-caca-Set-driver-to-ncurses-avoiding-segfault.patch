@@ -1,7 +1,7 @@
-From c3be162b86398b21a386c836c871be4095c68ed0 Mon Sep 17 00:00:00 2001
+From 5c74af35de51deb0ecb0b3788605b69347512e24 Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Fri, 10 Jun 2022 15:32:40 +0000
-Subject: [PATCH 25/39] caca: Set driver to ncurses avoiding segfault
+Subject: [PATCH 25/40] caca: Set driver to ncurses avoiding segfault
 
 For some reason it unloads GL module on error without telling anything
 else and this creates a later segfault. Forcing ncurses stops this.
@@ -9,8 +9,6 @@ else and this creates a later segfault. Forcing ncurses stops this.
  modules/video_output/caca.c | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/modules/video_output/caca.c b/modules/video_output/caca.c
-index 3440401082..9297823267 100644
 --- a/modules/video_output/caca.c
 +++ b/modules/video_output/caca.c
 @@ -160,7 +160,11 @@ static int Open(vlc_object_t *object)
@@ -26,6 +24,3 @@ index 3440401082..9297823267 100644
      // Make sure we don't try to open a window.
      driver = "ncurses";
  #endif
--- 
-2.53.0
-

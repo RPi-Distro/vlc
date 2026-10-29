@@ -1,7 +1,7 @@
-From e8404fc411388f981f3d1d7d5cb85a43990ccd44 Mon Sep 17 00:00:00 2001
+From aa1970caddf6b463c34f574574df9857a97ab82f Mon Sep 17 00:00:00 2001
 From: John Cox <jc@kynesim.co.uk>
 Date: Tue, 17 Mar 2026 17:10:25 +0000
-Subject: [PATCH 33/39] drmu_vlc: Rework version check as libvlc_version not
+Subject: [PATCH 33/40] drmu_vlc: Rework version check as libvlc_version not
  built in time
 
 ---
@@ -14,8 +14,6 @@ Subject: [PATCH 33/39] drmu_vlc: Rework version check as libvlc_version not
  6 files changed, 88 insertions(+), 7 deletions(-)
  create mode 100644 modules/video_output/drmu/drmu_fourcc.h
 
-diff --git a/modules/video_output/Makefile.am b/modules/video_output/Makefile.am
-index 860974a763..07f6efb6f7 100644
 --- a/modules/video_output/Makefile.am
 +++ b/modules/video_output/Makefile.am
 @@ -193,6 +193,12 @@ endif
@@ -31,7 +29,7 @@ index 860974a763..07f6efb6f7 100644
  libdrm_vout_plugin_la_SOURCES = video_output/drmu/drm_vout.c \
  	video_output/drmu/drmu_vlc.c video_output/drmu/drmu_vlc.h \
  	video_output/drmu/drmu_vlc_fmts.c video_output/drmu/drmu_vlc_fmts.h \
-@@ -210,7 +216,8 @@ libdrm_vout_plugin_la_SOURCES = video_output/drmu/drm_vout.c \
+@@ -210,7 +216,8 @@ libdrm_vout_plugin_la_SOURCES = video_ou
  	video_output/drmu/drmu_pool.c video_output/drmu/drmu_pool.h \
  	video_output/drmu/drmu_math.c video_output/drmu/drmu_math.h \
  	video_output/drmu/pollqueue.c video_output/drmu/pollqueue.h
@@ -41,7 +39,7 @@ index 860974a763..07f6efb6f7 100644
  libdrm_vout_plugin_la_LDFLAGS = $(AM_LDFLAGS) -pthread
  libdrm_vout_plugin_la_LIBADD = -ldrm -lxcb-randr -lxcb
  if HAVE_MMAL
-@@ -219,6 +226,7 @@ libdrm_vout_plugin_la_SOURCES += hw/mmal/mmal_cma_pic.h
+@@ -219,6 +226,7 @@ libdrm_vout_plugin_la_SOURCES += hw/mmal
  endif
  if HAVE_DRM
  vout_LTLIBRARIES += libdrm_vout_plugin.la
@@ -49,8 +47,6 @@ index 860974a763..07f6efb6f7 100644
  endif
  
  ### Wayland ###
-diff --git a/modules/video_output/drmu/drmu_fmts.c b/modules/video_output/drmu/drmu_fmts.c
-index 915a3f1206..68c909f795 100644
 --- a/modules/video_output/drmu/drmu_fmts.c
 +++ b/modules/video_output/drmu/drmu_fmts.c
 @@ -218,7 +218,13 @@ drmu_fmt_info_t format_info[] = {
@@ -68,9 +64,6 @@ index 915a3f1206..68c909f795 100644
  
      FMT_ONE_4_NAMED(AYUV, A, Y, U, V, 8, 8, 8, 8),
      FMT_ONE_4(X, Y, U, V, 8, 8, 8, 8),
-diff --git a/modules/video_output/drmu/drmu_fourcc.h b/modules/video_output/drmu/drmu_fourcc.h
-new file mode 100644
-index 0000000000..7d3ef7614c
 --- /dev/null
 +++ b/modules/video_output/drmu/drmu_fourcc.h
 @@ -0,0 +1,62 @@
@@ -136,8 +129,6 @@ index 0000000000..7d3ef7614c
 +#endif
 +
 +#endif
-diff --git a/modules/video_output/drmu/drmu_vlc.c b/modules/video_output/drmu/drmu_vlc.c
-index 92251a951b..5f0b320cd2 100644
 --- a/modules/video_output/drmu/drmu_vlc.c
 +++ b/modules/video_output/drmu/drmu_vlc.c
 @@ -12,7 +12,6 @@
@@ -157,8 +148,6 @@ index 92251a951b..5f0b320cd2 100644
      vlc_video_context *vctx = ctx->vctx;
      ctx->destroy(ctx);
      if (vctx)
-diff --git a/modules/video_output/drmu/drmu_vlc.h b/modules/video_output/drmu/drmu_vlc.h
-index 5c19141930..1a7edeed1c 100644
 --- a/modules/video_output/drmu/drmu_vlc.h
 +++ b/modules/video_output/drmu/drmu_vlc.h
 @@ -1,11 +1,16 @@
@@ -181,11 +170,9 @@ index 5c19141930..1a7edeed1c 100644
  #ifndef HAS_ZC_CMA
  #define HAS_ZC_CMA   0
  #endif
-diff --git a/modules/video_output/drmu/drmu_vlc_fmts.c b/modules/video_output/drmu/drmu_vlc_fmts.c
-index f10a5d9366..21bd47c84b 100644
 --- a/modules/video_output/drmu/drmu_vlc_fmts.c
 +++ b/modules/video_output/drmu/drmu_vlc_fmts.c
-@@ -186,6 +186,7 @@ drmu_vlc_fmt_info_vlc_rgb_masks(const drmu_vlc_fmt_info_t * const f, uint32_t *
+@@ -186,6 +186,7 @@ drmu_vlc_fmt_info_vlc_rgb_masks(const dr
          *r = f->rmask;
          *g = f->gmask;
          *b = f->bmask;
@@ -193,6 +180,3 @@ index f10a5d9366..21bd47c84b 100644
      }
  #else
      VLC_UNUSED(f);
--- 
-2.53.0
-
