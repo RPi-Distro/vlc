@@ -40,7 +40,7 @@ Set that bool if Qt6.
 +#define QT_CLAIMS_VIEWPORT (false)
  #endif
  
- #if defined (QT5_HAS_X11)
+ #if defined (QT_HAS_X11)
 @@ -222,6 +226,7 @@ bool VideoWidget::request( struct vout_w
              p_wnd->display.wl = static_cast<wl_display*>(
                  qni->nativeResourceForIntegration(QByteArrayLiteral("wl_display")));

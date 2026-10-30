@@ -2,6 +2,9 @@
 0002-Do-not-generate-cache-during-build.patch
 0003-librist-0.2.7-recovery-length-macro.patch
 
+# Restore the Qt Wayland window removed in 3.0.24, needed by patchset 52
+0001-Revert-qt-remove-dysfunctional-Wayland-window.patch
+
 # Raspberry Pi patchset 52
 0001-pi-util-Add-useful-scripts.patch
 0002-vlc-Upgrade-exit-timeout-to-exit-rather-than-signal.patch

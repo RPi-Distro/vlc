@@ -1,0 +1,207 @@
+From 85eeac9b36e2f03c8954da7f099df2dc09fe2627 Mon Sep 17 00:00:00 2001
+From: John Cox <jc@kynesim.co.uk>
+Date: Thu, 1 Oct 2026 17:35:57 +0100
+Subject: [PATCH 01/40] Revert "qt: remove dysfunctional Wayland window"
+
+This reverts commit 04d8fcb923dcab281755c1a8dd07b6c2e1fc2ea1.
+---
+ modules/gui/qt/Makefile.am                    |  6 +++++
+ modules/gui/qt/components/controller.cpp      |  9 +++++++
+ modules/gui/qt/components/controller.hpp      |  4 +++
+ .../gui/qt/components/interface_widgets.cpp   | 25 +++++++++++++++++
+ modules/gui/qt/main_interface.cpp             | 15 +++++++++++
+ modules/gui/qt/main_interface.hpp             |  3 +++
+ modules/gui/qt/qt.cpp                         | 27 +++++++++++++++++++
+ 7 files changed, 89 insertions(+)
+
+--- a/modules/gui/qt/Makefile.am
++++ b/modules/gui/qt/Makefile.am
+@@ -34,6 +34,12 @@ endif
+ if HAVE_XCB
+ libqt_plugin_la_CXXFLAGS += -DQT_HAS_XCB
+ endif
++if HAVE_WAYLAND
++libqt_plugin_la_CPPFLAGS += -DQT5_HAS_WAYLAND \
++	-DQPNI_HEADER=\<$(QT_VERSION)/QtGui/qpa/qplatformnativeinterface.h\>
++libqt_plugin_la_CXXFLAGS += $(WAYLAND_CLIENT_CFLAGS)
++libqt_plugin_la_LIBADD += $(WAYLAND_CLIENT_LIBS)
++endif
+ if HAVE_WIN32
+ libqt_plugin_la_LIBADD += $(LIBCOM) -lcomctl32 -luuid
+ endif
+--- a/modules/gui/qt/components/controller.cpp
++++ b/modules/gui/qt/components/controller.cpp
+@@ -795,6 +795,10 @@ FullscreenControllerWidget::FullscreenCo
+     b_fullscreen        = false;
+     i_hide_timeout      = 1;
+     i_screennumber      = -1;
++#ifdef QT5_HAS_WAYLAND
++    b_hasWayland = QGuiApplication::platformName()
++           .startsWith(QLatin1String("wayland"), Qt::CaseInsensitive);
++#endif
+ 
+     vout.clear();
+ 
+@@ -878,7 +882,12 @@ void FullscreenControllerWidget::restore
+         QWindow *wh = windowHandle();
+         if ( wh != Q_NULLPTR )
+         {
++#ifdef QT5_HAS_WAYLAND
++            if ( !b_hasWayland )
++                wh->setScreen(QGuiApplication::screens()[targetScreen()]);
++#else
+             wh->setScreen(QGuiApplication::screens()[targetScreen()]);
++#endif
+         }
+ 
+         if( currentRes == screenRes &&
+--- a/modules/gui/qt/components/controller.hpp
++++ b/modules/gui/qt/components/controller.hpp
+@@ -325,6 +325,10 @@ private:
+ 
+     bool isWideFSC;
+     int i_sensitivity;
++
++#ifdef QT5_HAS_WAYLAND
++    bool b_hasWayland;
++#endif
+ };
+ 
+ #endif
+--- a/modules/gui/qt/components/interface_widgets.cpp
++++ b/modules/gui/qt/components/interface_widgets.cpp
+@@ -59,6 +59,10 @@ static inline int qrand() {
+ #  include <xcb/xproto.h>
+ # endif
+ #endif
++#ifdef QT5_HAS_WAYLAND
++# include QPNI_HEADER
++# include <QWindow>
++#endif
+ 
+ #if defined(_WIN32)
+ #include <QWindow>
+@@ -160,6 +164,27 @@ bool VideoWidget::request( struct vout_w
+         case VOUT_WINDOW_TYPE_NSOBJECT:
+             p_wnd->handle.nsobject = (void *)stable->winId();
+             break;
++#ifdef QT5_HAS_WAYLAND
++        case VOUT_WINDOW_TYPE_WAYLAND:
++        {
++            /* Ensure only the video widget is native (needed for Wayland) */
++            stable->setAttribute( Qt::WA_DontCreateNativeAncestors, true);
++
++            QWindow *window = stable->windowHandle();
++            assert(window != NULL);
++            window->create();
++
++            QPlatformNativeInterface *qni = qApp->platformNativeInterface();
++            assert(qni != NULL);
++
++            p_wnd->handle.wl = static_cast<wl_surface*>(
++                qni->nativeResourceForWindow(QByteArrayLiteral("surface"),
++                                             window));
++            p_wnd->display.wl = static_cast<wl_display*>(
++                qni->nativeResourceForIntegration(QByteArrayLiteral("wl_display")));
++            break;
++        }
++#endif
+         default:
+             vlc_assert_unreachable();
+     }
+--- a/modules/gui/qt/main_interface.cpp
++++ b/modules/gui/qt/main_interface.cpp
+@@ -152,6 +152,11 @@ MainInterface::MainInterface( intf_threa
+     /* Should the UI stays on top of other windows */
+     b_interfaceOnTop = var_InheritBool( p_intf, "video-on-top" );
+ 
++#ifdef QT5_HAS_WAYLAND
++    b_hasWayland = QGuiApplication::platformName()
++        .startsWith(QLatin1String("wayland"), Qt::CaseInsensitive);
++#endif
++
+     /**************************
+      *  UI and Widgets design
+      **************************/
+@@ -895,7 +900,12 @@ void MainInterface::setVideoFullScreen(
+ 
+             QRect screenres = QGuiApplication::screens()[ numscreen ]->geometry();
+             lastWinScreen = windowHandle()->screen();
++#ifdef QT5_HAS_WAYLAND
++            if( !b_hasWayland )
++                windowHandle()->setScreen(QGuiApplication::screens()[numscreen]);
++#else
+             windowHandle()->setScreen(QGuiApplication::screens()[numscreen]);
++#endif
+ 
+             /* To be sure window is on proper-screen in xinerama */
+             if( !screenres.contains( pos() ) )
+@@ -921,8 +931,13 @@ void MainInterface::setVideoFullScreen(
+     {
+         setMinimalView( b_minimalView );
+         setInterfaceFullScreen( b_interfaceFullScreen );
++#ifdef QT5_HAS_WAYLAND
++        if( lastWinScreen != NULL && !b_hasWayland )
++            windowHandle()->setScreen(lastWinScreen);
++#else
+         if( lastWinScreen != NULL )
+             windowHandle()->setScreen(lastWinScreen);
++#endif
+         if( lastWinPosition.isNull() == false )
+         {
+             move( lastWinPosition );
+--- a/modules/gui/qt/main_interface.hpp
++++ b/modules/gui/qt/main_interface.hpp
+@@ -184,6 +184,9 @@ protected:
+     bool                 b_pauseOnMinimize;
+     bool                 b_maximizedView;
+     bool                 b_isWindowTiled;
++#ifdef QT5_HAS_WAYLAND
++    bool                 b_hasWayland;
++#endif
+     /* States */
+     bool                 playlistVisible;       ///< Is the playlist visible ?
+ //    bool                 videoIsActive;       ///< Having a video now / THEMIM->hasV
+--- a/modules/gui/qt/qt.cpp
++++ b/modules/gui/qt/qt.cpp
+@@ -389,6 +389,26 @@ static bool HasX11( vlc_object_t *obj )
+ }
+ #endif
+ 
++#ifdef QT5_HAS_WAYLAND
++# include <wayland-client.h>
++
++static void *ThreadWayland( void *data )
++{
++    char platform_name[] = "wayland";
++    return ThreadPlatform( data, platform_name );
++}
++
++static bool HasWayland( void )
++{
++    struct wl_display *dpy = wl_display_connect( NULL );
++    if( dpy == NULL )
++        return false;
++
++    wl_display_disconnect( dpy );
++    return true;
++}
++#endif
++
+ bool isDarkPaletteEnabled(intf_thread_t *p_intf) {
+     static const bool darkPalette = var_InheritBool( p_intf, "qt-dark-palette" );
+     return darkPalette;
+@@ -457,6 +477,13 @@ static int Open( vlc_object_t *p_this, b
+     if( HasX11( p_this ) )
+         thread = ThreadXCB;
+     else
++#endif
++#ifdef QT5_HAS_WAYLAND
++    if( HasWayland() )
++        thread = ThreadWayland;
++    else
++#endif
++#if defined (QT5_HAS_X11) || defined (QT5_HAS_WAYLAND)
+         return VLC_EGENERIC;
+ #endif
+ 
