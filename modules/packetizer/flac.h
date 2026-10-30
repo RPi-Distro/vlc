@@ -125,6 +125,9 @@ static inline int FLAC_CheckFrameInfo(const struct flac_stream_info *stream_info
              h->i_frame_length < stream_info->min_blocksize) ||
             h->i_frame_length > stream_info->max_blocksize)
             return 0;
+        if(stream_info->max_framesize &&
+           stream_info->min_framesize > stream_info->max_framesize)
+            return 0;
         if (h->i_bits_per_sample != stream_info->bits_per_sample)
             return 0;
         if (h->i_rate != stream_info->sample_rate)
@@ -216,7 +219,7 @@ static inline int FLAC_ParseSyncInfo(const uint8_t *p_buf, unsigned i_buf,
 
     /* Find bits per sample */
     static const int8_t flac_bits_per_sample[8] = {
-        0, 8, 12, -1, 16, 20, 24, -1
+        0, 8, 12, -1, 16, 20, 24, 32
     };
     int bits_per_sample = flac_bits_per_sample[(p_buf[3] & 0x0e) >> 1];
     if (bits_per_sample == 0) {
@@ -246,7 +249,7 @@ static inline int FLAC_ParseSyncInfo(const uint8_t *p_buf, unsigned i_buf,
         return 0;
 
     /* Invalid Sample/Frame number */
-    if (!stream_info || stream_info->total_samples != 0 && i_fsnumber > stream_info->total_samples)
+    if (stream_info && stream_info->total_samples != 0 && i_fsnumber > stream_info->total_samples)
         return 0;
 
     i_header += i_read;

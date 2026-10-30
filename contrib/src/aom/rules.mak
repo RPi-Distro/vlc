@@ -1,5 +1,5 @@
 # aom
-AOM_VERSION := 3.5.0
+AOM_VERSION := 3.15.0
 AOM_URL := https://storage.googleapis.com/aom-releases/libaom-$(AOM_VERSION).tar.gz
 
 PKGS += aom
@@ -14,24 +14,26 @@ $(TARBALLS)/libaom-$(AOM_VERSION).tar.gz:
 
 aom: libaom-$(AOM_VERSION).tar.gz .sum-aom
 	$(UNPACK)
-ifdef HAVE_ANDROID
-	$(APPLY) $(SRC)/aom/aom-android-pthreads.patch
-	$(APPLY) $(SRC)/aom/aom-android-cpufeatures.patch
+	$(APPLY) $(SRC)/aom/0001-Do-not-force-_WIN32_WINNT.patch
+	# do not force C++17, it's not supported by older compilers we support
+	sed -i.orig 's,++17,++14,g' $(UNPACK_DIR)/cmake/aom_configure.cmake
+ifndef HAVE_WINSTORE
+	# disable Windows InitOnceBeginInitialize not compatible with XP
+	sed -i.orig 's,defined(_WIN32),0,' $(UNPACK_DIR)/aom_ports/aom_once.h
 endif
+	$(APPLY) $(SRC)/aom/0001-Work-around-broken-Xcode-12-SDK-which-doesn-t-correc.patch
 	$(MOVE)
-ifdef HAVE_ANDROID
-	cp $(ANDROID_NDK)/sources/android/cpufeatures/cpu-features.c $(ANDROID_NDK)/sources/android/cpufeatures/cpu-features.h aom/aom_ports/
-endif
 
 DEPS_aom =
 ifdef HAVE_WIN32
-DEPS_aom += pthreads $(DEPS_pthreads)
+DEPS_aom += winpthreads $(DEPS_winpthreads)
 endif
 
 AOM_CONF := \
 	-DCONFIG_RUNTIME_CPU_DETECT=1 \
 	-DCONFIG_MULTITHREAD=1 \
 	-DENABLE_DOCS=OFF \
+	-DENABLE_APPS=OFF \
 	-DENABLE_EXAMPLES=OFF \
 	-DENABLE_TOOLS=OFF \
 	-DENABLE_TESTS=OFF
@@ -57,6 +59,9 @@ ifndef HAVE_WIN64
 AOM_CONF += -DENABLE_SSE2=0 -DENABLE_SSE3=0 -DENABLE_SSE=0 -DENABLE_SSSE3=0 -DENABLE_SSE4_1=0
 AOM_CONF += -DENABLE_SSE4_2=0 -DENABLE_AVX=0 -DENABLE_AVX2=0
 endif
+ifeq ($(call gcc_at_most, 7), true)
+AOM_CONF += -DENABLE_AVX2=OFF
+endif
 endif
 
 ifdef HAVE_DARWIN_OS
@@ -73,7 +78,7 @@ endif
 # Force cpu detection
 ifdef HAVE_ANDROID
 ifeq ($(ARCH),arm)
-AOM_CONF += -DAOM_TARGET_CPU=armv7
+AOM_CONF += -DAOM_TARGET_CPU=armv7 -DENABLE_NEON=OFF
 endif
 ifeq ($(ARCH),aarch64)
 AOM_CONF += -DAOM_TARGET_CPU=arm64
@@ -84,7 +89,7 @@ endif
 .aom: aom toolchain.cmake
 	rm -rf $(PREFIX)/include/aom
 	$(CMAKECLEAN)
-	$(HOSTVARS) $(CMAKE) $(AOM_CONF)
+	$(HOSTVARS_CMAKE) $(CMAKE) $(AOM_CONF)
 	+$(CMAKEBUILD)
 	$(call pkg_static,"$(BUILD_DIRUNPACK)/aom.pc")
 	$(CMAKEINSTALL)

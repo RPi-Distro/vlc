@@ -34,50 +34,59 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_YY_CODEC_WEBVTT_CSSGRAMMAR_H_INCLUDED
-# define YY_YY_CODEC_WEBVTT_CSSGRAMMAR_H_INCLUDED
+#ifndef YY_CSS_CODEC_WEBVTT_CSSGRAMMAR_H_INCLUDED
+# define YY_CSS_CODEC_WEBVTT_CSSGRAMMAR_H_INCLUDED
 /* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
+#ifndef CSSDEBUG
+# if defined YYDEBUG
 #if YYDEBUG
-extern int yydebug;
+#   define CSSDEBUG 1
+#  else
+#   define CSSDEBUG 0
+#  endif
+# else /* ! defined YYDEBUG */
+#  define CSSDEBUG 0
+# endif /* ! defined YYDEBUG */
+#endif  /* ! defined CSSDEBUG */
+#if CSSDEBUG
+extern int cssdebug;
 #endif
 
 /* Token type.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
+#ifndef CSSTOKENTYPE
+# define CSSTOKENTYPE
+  enum csstokentype
   {
     TOKEN_EOF = 0,
     LOWEST_PREC = 258,
     UNIMPORTANT_TOK = 259,
     WHITESPACE = 260,
     SGML_CD = 261,
-    INCLUDES = 262,
-    DASHMATCH = 263,
-    BEGINSWITH = 264,
-    ENDSWITH = 265,
-    CONTAINS = 266,
-    STRING = 267,
-    IDENT = 268,
-    IDSEL = 269,
-    HASH = 270,
-    FONT_FACE_SYM = 271,
-    CHARSET_SYM = 272,
-    IMPORTANT_SYM = 273,
-    CDO = 274,
-    CDC = 275,
-    LENGTH = 276,
-    ANGLE = 277,
-    TIME = 278,
-    FREQ = 279,
-    DIMEN = 280,
-    PERCENTAGE = 281,
-    NUMBER = 282,
-    URI = 283,
-    FUNCTION = 284,
-    UNICODERANGE = 285
+    MEMERROR = 262,
+    INCLUDES = 263,
+    DASHMATCH = 264,
+    BEGINSWITH = 265,
+    ENDSWITH = 266,
+    CONTAINS = 267,
+    STRING = 268,
+    IDENT = 269,
+    IDSEL = 270,
+    HASH = 271,
+    FONT_FACE_SYM = 272,
+    CHARSET_SYM = 273,
+    IMPORTANT_SYM = 274,
+    CDO = 275,
+    CDC = 276,
+    LENGTH = 277,
+    ANGLE = 278,
+    TIME = 279,
+    FREQ = 280,
+    DIMEN = 281,
+    PERCENTAGE = 282,
+    NUMBER = 283,
+    URI = 284,
+    FUNCTION = 285,
+    UNICODERANGE = 286
   };
 #endif
 /* Tokens.  */
@@ -86,36 +95,37 @@ extern int yydebug;
 #define UNIMPORTANT_TOK 259
 #define WHITESPACE 260
 #define SGML_CD 261
-#define INCLUDES 262
-#define DASHMATCH 263
-#define BEGINSWITH 264
-#define ENDSWITH 265
-#define CONTAINS 266
-#define STRING 267
-#define IDENT 268
-#define IDSEL 269
-#define HASH 270
-#define FONT_FACE_SYM 271
-#define CHARSET_SYM 272
-#define IMPORTANT_SYM 273
-#define CDO 274
-#define CDC 275
-#define LENGTH 276
-#define ANGLE 277
-#define TIME 278
-#define FREQ 279
-#define DIMEN 280
-#define PERCENTAGE 281
-#define NUMBER 282
-#define URI 283
-#define FUNCTION 284
-#define UNICODERANGE 285
+#define MEMERROR 262
+#define INCLUDES 263
+#define DASHMATCH 264
+#define BEGINSWITH 265
+#define ENDSWITH 266
+#define CONTAINS 267
+#define STRING 268
+#define IDENT 269
+#define IDSEL 270
+#define HASH 271
+#define FONT_FACE_SYM 272
+#define CHARSET_SYM 273
+#define IMPORTANT_SYM 274
+#define CDO 275
+#define CDC 276
+#define LENGTH 277
+#define ANGLE 278
+#define TIME 279
+#define FREQ 280
+#define DIMEN 281
+#define PERCENTAGE 282
+#define NUMBER 283
+#define URI 284
+#define FUNCTION 285
+#define UNICODERANGE 286
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
+#if ! defined CSSSTYPE && ! defined CSSSTYPE_IS_DECLARED
+union CSSSTYPE
 {
-#line 49 "codec/webvtt/CSSGrammar.y"
+#line 53 "codec/webvtt/CSSGrammar.y"
 
     bool boolean;
     char character;
@@ -131,16 +141,16 @@ union YYSTYPE
     vlc_css_selector_t *selector;
     vlc_css_selector_t *selectorList;
 
-#line 135 "codec/webvtt/CSSGrammar.h"
+#line 145 "codec/webvtt/CSSGrammar.h"
 
 };
-typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+typedef union CSSSTYPE CSSSTYPE;
+# define CSSSTYPE_IS_TRIVIAL 1
+# define CSSSTYPE_IS_DECLARED 1
 #endif
 
 
 
-int yyparse (yyscan_t scanner, vlc_css_parser_t *css_parser);
+int cssparse (yyscan_t scanner, vlc_css_parser_t *css_parser);
 
-#endif /* !YY_YY_CODEC_WEBVTT_CSSGRAMMAR_H_INCLUDED  */
+#endif /* !YY_CSS_CODEC_WEBVTT_CSSGRAMMAR_H_INCLUDED  */

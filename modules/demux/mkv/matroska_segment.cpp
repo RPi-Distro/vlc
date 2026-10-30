@@ -133,7 +133,7 @@ void matroska_segment_c::LoadCues( KaxCues *cues )
                         b_invalid_cue = true;
                         break;
                     }
-                    cue_mk_time = static_cast<uint64>( *kct_ptr ) * i_timescale / INT64_C(1000);
+                    cue_mk_time = VLC_TICK_FROM_NS(static_cast<uint64>( *kct_ptr ) * i_timescale);
                 }
                 else if( MKV_IS_ID( el, KaxCueTrackPositions ) )
                 {
@@ -315,7 +315,7 @@ bool matroska_segment_c::ParseSimpleTags( SimpleTag* pout_simple, KaxTagSimple *
                               // the SimpleTag is valid if ParseSimpleTags returns `true`
 
                 if (ParseSimpleTags( &st, kts_ptr, target_type )) {
-                  pout_simple->sub_tags.push_back( st );
+                  pout_simple->sub_tags.push_back( std::move(st) );
                 }
             }
             /*TODO Handle binary tags*/
@@ -439,7 +439,7 @@ void matroska_segment_c::LoadTags( KaxTags *tags )
                     SimpleTag simple;
 
                     if (ParseSimpleTags(&simple, kts_ptr, target_type )) {
-                      tag.simple_tags.push_back( simple );
+                      tag.simple_tags.push_back( std::move(simple) );
                     }
                 }
                 else
@@ -448,7 +448,7 @@ void matroska_segment_c::LoadTags( KaxTags *tags )
                 }
             }
             eparser.Up();
-            this->tags.push_back(tag);
+            this->tags.push_back(std::move(tag));
         }
         else
         {
@@ -1180,7 +1180,7 @@ void matroska_segment_c::ESDestroy( )
 int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_simpleblock,
                                   KaxBlockAdditions * & pp_additions,
                                   bool *pb_key_picture, bool *pb_discardable_picture,
-                                  int64_t *pi_duration )
+                                  uint64_t *pi_duration )
 {
     pp_simpleblock = NULL;
     pp_block = NULL;
@@ -1190,6 +1190,9 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
     *pb_discardable_picture = false;
     *pi_duration = 0;
 
+    uint64_t duration = 0;
+    int64_t duration_padding = 0;
+
     struct BlockPayload {
         matroska_segment_c * const obj;
         EbmlParser         * const ep;
@@ -1198,14 +1201,15 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
         KaxSimpleBlock    *& simpleblock;
         KaxBlockAdditions *& additions;
 
-        int64_t            & i_duration;
+        uint64_t           & i_duration;
+        int64_t            & duration_padding;
         bool               & b_key_picture;
         bool               & b_discardable_picture;
         bool                 b_cluster_timecode;
 
     } payload = {
         this, &ep, &sys.demuxer, pp_block, pp_simpleblock, pp_additions,
-        *pi_duration, *pb_key_picture, *pb_discardable_picture, true
+        duration, duration_padding, *pb_key_picture, *pb_discardable_picture, true
     };
 
     MKV_SWITCH_CREATE( EbmlTypeDispatcher, BlockGetHandler_l1, BlockPayload )
@@ -1266,6 +1270,7 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
             }
             if (read == 0 && ksblock.GetSize() != 0) {
                 msg_Err( vars.p_demuxer,"Error while reading %s",  EBML_NAME(&ksblock) );
+                ksblock.ReleaseFrames();
                 return;
             }
             vars.simpleblock = &ksblock;
@@ -1276,7 +1281,7 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
                 bool const b_valid_track = vars.obj->FindTrackByBlock( NULL, &ksblock ) != NULL;
                 if (b_valid_track)
                     vars.obj->_seeker.add_seekpoint( ksblock.TrackNum(),
-                        SegmentSeeker::Seekpoint( ksblock.GetElementPosition(), ksblock.GlobalTimecode() / 1000 ) );
+                        SegmentSeeker::Seekpoint( ksblock.GetElementPosition(), VLC_TICK_FROM_NS(ksblock.GlobalTimecode()) ) );
             }
         }
     };
@@ -1294,6 +1299,7 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
             }
             if (unlikely(read == 0) && kblock.GetSize() != 0) {
                 msg_Err( vars.p_demuxer,"Error while reading %s",  EBML_NAME(&kblock) );
+                kblock.ReleaseFrames();
                 return;
             }
             vars.block = &kblock;
@@ -1303,7 +1309,7 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
             if( p_track != NULL && p_track->fmt.i_cat == SPU_ES )
             {
                 vars.obj->_seeker.add_seekpoint( kblock.TrackNum(),
-                    SegmentSeeker::Seekpoint( kblock.GetElementPosition(), kblock.GlobalTimecode() / 1000 ) );
+                    SegmentSeeker::Seekpoint( kblock.GetElementPosition(), VLC_TICK_FROM_NS(kblock.GlobalTimecode()) ) );
             }
 
             vars.ep->Keep ();
@@ -1339,12 +1345,7 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
         E_CASE( KaxDiscardPadding, kdiscardp )
         {
             kdiscardp.ReadData( vars.obj->es.I_O() );
-            int64 i_duration = static_cast<int64>( kdiscardp );
-
-            if( vars.i_duration < i_duration )
-                vars.i_duration = 0;
-            else
-                vars.i_duration -= i_duration;
+            vars.duration_padding = static_cast<int64>( kdiscardp );
         }
 #endif
         E_CASE_DEFAULT( element )
@@ -1401,6 +1402,20 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
                         *pb_key_picture = false;
                 }
             }
+
+            /* A negative DiscardPadding designates padding at the start of
+             * the block, which we don't handle; some files in the wild also
+             * carry bogus negative values due to encoder bugs. Never let it
+             * extend the block duration. */
+            if ( duration_padding < 0)
+            {
+                msg_Warn( &sys.demuxer, "ignoring negative DiscardPadding (%" PRId64 ")", duration_padding );
+                *pi_duration = duration;
+            }
+            else if( duration < (uint64_t)duration_padding )
+                *pi_duration = 0;
+            else
+                *pi_duration = duration - duration_padding;
 
             return VLC_SUCCESS;
         }
@@ -1489,7 +1504,7 @@ bool matroska_segment_c::ReadMaster(EbmlMaster & m, ScopeMode scope)
     }
     try
     {
-        EbmlElement *el;
+        EbmlElement *el = nullptr;
         int i_upper_level = 0;
         m.Read( es, EBML_CONTEXT(&m), i_upper_level, el, true, scope );
         if (i_upper_level != 0)

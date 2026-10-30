@@ -8,7 +8,7 @@ PKGS_FOUND += xcb-proto
 endif
 
 $(TARBALLS)/xcb-proto-$(XCB_PROTO_VERSION).tar.bz2:
-	$(call download,$(XCB_PROTO_URL))
+	$(call download_pkg,$(XCB_PROTO_URL),xcp-proto)
 
 .sum-xcb-proto: xcb-proto-$(XCB_PROTO_VERSION).tar.bz2
 
@@ -17,7 +17,8 @@ xcb-proto: xcb-proto-$(XCB_PROTO_VERSION).tar.bz2 .sum-xcb-proto
 	$(MOVE)
 
 .xcb-proto: xcb-proto
-	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF)
-	$(MAKE) -C $< install
+	$(MAKEBUILDDIR)
+	$(MAKECONFIGURE)
+	+$(MAKEBUILD)
+	+$(MAKEBUILD) install
 	touch $@

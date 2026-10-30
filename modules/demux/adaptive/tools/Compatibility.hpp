@@ -25,8 +25,9 @@
 
 #ifdef __APPLE__
 # include <TargetConditionals.h>
+# include <Availability.h>
 # if (TARGET_OS_IPHONE && __IPHONE_OS_VERSION_MIN_REQUIRED < 120000) || \
-     (TARGET_OS_MAC && __MAC_OS_X_VERSION_MIN_REQUIRED < 101400)
+     (TARGET_OS_OSX && __MAC_OS_X_VERSION_MIN_REQUIRED < 101400)
 #  define IOS_INCOMPLETE_CPP17
 # endif
 #endif

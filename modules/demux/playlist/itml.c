@@ -52,9 +52,14 @@ int Import_iTML( vlc_object_t *p_this )
         return VLC_EGENERIC;
 
     const uint8_t *p_peek;
-    const ssize_t i_peek = vlc_stream_Peek( p_demux->p_source, &p_peek, 128 );
+    ssize_t i_peek = vlc_stream_Peek( p_demux->p_source, &p_peek, 128 );
     if ( i_peek < 32 ||
          !strnstr( (const char *) p_peek, "<!DOCTYPE plist ", i_peek ) )
+        return VLC_EGENERIC;
+
+    i_peek = vlc_stream_Peek( p_demux->p_source, &p_peek, 1024 );
+    if( i_peek < 23 ||
+        !strnstr( (const char *) p_peek, "<key>Music Folder</key>", i_peek ) )
         return VLC_EGENERIC;
 
     msg_Dbg( p_demux, "using iTunes Media Library reader" );
@@ -225,7 +230,7 @@ static bool parse_dict( stream_t *p_demux, input_item_node_t *p_input_node,
             if( !strcmp( p_handler->name, "key" ) )
             {
                 free( psz_key );
-                psz_key = strdup( psz_value );
+                psz_key = psz_value ? strdup( psz_value ) : NULL;
             }
             /* call the simple handler */
             else if( p_handler->pf_handler.smpl )

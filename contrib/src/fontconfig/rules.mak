@@ -47,6 +47,13 @@ FONTCONFIG_ENV += LIBXML2_CFLAGS=`xml2-config --cflags`
 FONTCONFIG_ENV += LIBXML2_LIBS=`xml2-config --libs`
 endif
 
+ifdef HAVE_ANDROID
+FONTCONFIG_CONF += \
+	--with-cache-dir=~/.cache/fontconfig \
+	--with-default-fonts=/system/fonts \
+	--with-add-fonts=/product/fonts
+endif
+
 DEPS_fontconfig = freetype2 $(DEPS_freetype2) libxml2 $(DEPS_libxml2)
 
 .fontconfig: fontconfig
@@ -59,6 +66,7 @@ ifndef HAVE_MACOSX
 	$(MAKE) -C $< install
 else
 	$(MAKE) -C $< install-exec
+	$(MAKE) -C $< -C fontconfig
 	$(MAKE) -C $< -C fontconfig install-data
 	sed -e 's%/usr/lib/libiconv.la%%' -i.orig $(PREFIX)/lib/libfontconfig.la
 	cp $</fontconfig.pc $(PREFIX)/lib/pkgconfig/

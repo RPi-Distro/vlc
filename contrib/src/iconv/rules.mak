@@ -22,6 +22,7 @@ $(TARBALLS)/libiconv-$(LIBICONV_VERSION).tar.gz:
 
 iconv: libiconv-$(LIBICONV_VERSION).tar.gz .sum-iconv
 	$(UNPACK)
+	$(UPDATE_AUTOCONFIG)
 	$(APPLY) $(SRC)/iconv/bins.patch
 
 	# use CreateFile2 instead of CreateFile in UWP
@@ -31,12 +32,15 @@ iconv: libiconv-$(LIBICONV_VERSION).tar.gz .sum-iconv
 	# differentiate for winstore, only _WIN32_WINNT
 	$(APPLY) $(SRC)/iconv/0001-do-not-call-GetHandleInformation-in-Winstore-apps.patch
 
-	$(UPDATE_AUTOCONFIG) && cd $(UNPACK_DIR) && mv config.guess config.sub build-aux
-	$(UPDATE_AUTOCONFIG) && cd $(UNPACK_DIR) && mv config.guess config.sub libcharset/build-aux
+	cd $(UNPACK_DIR) && cp config.guess config.sub build-aux \
+	                 && mv config.guess config.sub libcharset/build-aux
 	$(MOVE)
 
+ICONV_CONF := --disable-nls
+
 .iconv: iconv
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF) --disable-nls
-	$(MAKE) -C $<
-	$(MAKE) -C $< install
+	$(MAKEBUILDDIR)
+	$(MAKECONFIGURE) $(ICONV_CONF)
+	+$(MAKEBUILD)
+	+$(MAKEBUILD) install
 	touch $@

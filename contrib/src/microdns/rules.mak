@@ -1,6 +1,6 @@
 # libmicrodns
 
-LIBMICRODNS_VERSION := 0.1.2
+LIBMICRODNS_VERSION := 0.2.0
 LIBMICRODNS_URL := $(GITHUB)/videolabs/libmicrodns/releases/download/$(LIBMICRODNS_VERSION)/microdns-$(LIBMICRODNS_VERSION).tar.xz
 
 ifndef HAVE_DARWIN_OS
@@ -19,6 +19,7 @@ $(TARBALLS)/microdns-$(LIBMICRODNS_VERSION).tar.xz:
 
 microdns: microdns-$(LIBMICRODNS_VERSION).tar.xz .sum-microdns
 	$(UNPACK)
+	$(APPLY) $(SRC)/microdns/0001-mdns-support-XP-Vista-differences-at-runtime.patch
 	$(MOVE)
 
 .microdns: microdns crossfile.meson

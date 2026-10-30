@@ -34,6 +34,7 @@
 # include "config.h"
 #endif
 #include <assert.h>
+#include <limits.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -144,11 +145,14 @@ static rfbBool mallocFrameBufferHandler( rfbClient* p_client )
         p_sys->es = NULL;
     }
 
-    assert(!(p_client->width & ~0xffff)); // fits in 16 bits
-    uint16_t i_width = p_client->width;
-
-    assert(!(p_client->height & ~0xffff)); // fits in 16 bits
-    uint16_t i_height = p_client->height;
+    if ( p_client->width > UINT16_MAX || p_client->height > UINT16_MAX )
+    {
+        assert(p_client->width <= UINT16_MAX); // fits in 16 bits
+        assert(p_client->height <= UINT16_MAX); // fits in 16 bits
+        return FALSE;
+    }
+    unsigned int i_width = p_client->width;
+    unsigned int i_height = p_client->height;
 
     uint8_t i_bits_per_pixel = p_client->format.bitsPerPixel;
     assert((i_bits_per_pixel & 0x7) == 0); // multiple of 8
@@ -186,7 +190,8 @@ static rfbBool mallocFrameBufferHandler( rfbClient* p_client )
     }
 
     /* Set up framebuffer */
-    if (mul_overflow(i_width, i_height * (i_bits_per_pixel / 8), &p_sys->i_framebuffersize)) {
+    if (mul_overflow(i_height, i_bits_per_pixel / 8, &p_sys->i_framebuffersize) ||
+        mul_overflow(i_width, p_sys->i_framebuffersize, &p_sys->i_framebuffersize)) {
         msg_Err(p_demux, "VNC framebuffersize overflow");
         return FALSE;
     }
@@ -366,7 +371,8 @@ static void *DemuxThread( void *p_data )
             if ( ! i_status )
             {
                 msg_Warn( p_demux, "Cannot get announced data. Server closed ?" );
-                es_out_Del( p_demux->out, p_sys->es );
+                if ( p_sys->es )
+                    es_out_Del( p_demux->out, p_sys->es );
                 p_sys->es = NULL;
                 return NULL;
             }
@@ -377,7 +383,10 @@ static void *DemuxThread( void *p_data )
                 {
                     p_sys->p_block->i_dts = p_sys->p_block->i_pts = mdate();
                     es_out_SetPCR( p_demux->out, p_sys->p_block->i_pts );
-                    es_out_Send( p_demux->out, p_sys->es, p_sys->p_block );
+                    if ( p_sys->es )
+                        es_out_Send( p_demux->out, p_sys->es, p_sys->p_block );
+                    else
+                        block_Release( p_sys->p_block );
                     p_sys->p_block = p_block;
                 }
             }

@@ -809,13 +809,12 @@ static uint8_t* download_chunk( stream_t *s,
     free( fragment_url );
 
     int64_t size = stream_Size( download_stream );
-    chunk->data_len = (uint32_t) size;
-
     if( size > MAX_REQUEST_SIZE )
     {
         msg_Err(s, "Strangely-large chunk of %"PRIi64" Bytes", size );
         return NULL;
     }
+    chunk->data_len = (uint32_t) size;
 
     uint8_t* data = malloc( size );
     if( ! data )
@@ -1144,25 +1143,32 @@ static void* live_thread( void* p )
         else
         {
             int64_t size = stream_Size( download_stream );
-            uint8_t* data = malloc( size );
-            int read = vlc_stream_Read( download_stream, data,
-                                    size );
-            if( read < size )
+            if( size == 0 )
             {
-                msg_Err( p_this, "Requested %"PRIi64" bytes, "  \
-                         "but only got %d", size, read );
-
+                msg_Err( s, "Unknown stream size for %s", abst_url );
             }
             else
             {
-                vlc_mutex_lock( & hds_stream->abst_lock );
-                parse_BootstrapData( p_this, hds_stream,
-                                     data, data + read );
-                vlc_mutex_unlock( & hds_stream->abst_lock );
-                maintain_live_chunks( p_this, hds_stream );
-            }
+                uint8_t* data = malloc( size );
+                int read = vlc_stream_Read( download_stream, data,
+                                        size );
+                if( read < size )
+                {
+                    msg_Err( p_this, "Requested %"PRIi64" bytes, "  \
+                             "but only got %d", size, read );
 
-            free( data );
+                }
+                else
+                {
+                    vlc_mutex_lock( & hds_stream->abst_lock );
+                    parse_BootstrapData( p_this, hds_stream,
+                                         data, data + read );
+                    vlc_mutex_unlock( & hds_stream->abst_lock );
+                    maintain_live_chunks( p_this, hds_stream );
+                }
+
+                free( data );
+            }
 
             vlc_stream_Delete( download_stream );
         }

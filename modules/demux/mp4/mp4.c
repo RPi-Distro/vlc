@@ -37,6 +37,7 @@
 #include <vlc_dialog.h>
 #include <assert.h>
 #include <limits.h>
+#include <stdckdint.h>
 #include "../codec/cc.h"
 #include "../av1_unpack.h"
 
@@ -535,61 +536,62 @@ static int CreateTracks( demux_t *p_demux, unsigned i_tracks )
 static block_t * MP4_EIA608_Convert( block_t * p_block )
 {
     /* Rebuild codec data from encap */
-    size_t i_copied = 0;
-    size_t i_remaining = __MIN(p_block->i_buffer, INT64_MAX / 3);
-    uint32_t i_bytes = 0;
-    block_t *p_newblock;
+    block_t *p_newblock = NULL;
 
-    /* always need at least 10 bytes (atom size+header+1pair)*/
-    i_bytes = GetDWBE(p_block->p_buffer);
+    assert(p_block->i_buffer <= SSIZE_MAX);
 
-    if (10 < i_bytes || i_bytes < i_remaining ||
-        memcmp("cdat", &p_block->p_buffer[4], 4) ||
-        (p_newblock = block_Alloc(i_remaining * 3 - 8)) == NULL)
-    {
-        p_block->i_buffer = 0;
-        return p_block;
-    }
+    if (p_block->i_buffer < 8)
+        goto out;
 
-    uint8_t *p_write = p_newblock->p_buffer;
-    uint8_t *p_read = &p_block->p_buffer[8];
-    i_bytes -= 8;
-    i_remaining -= 8;
+    uint_fast32_t atomsize = GetDWBE(p_block->p_buffer);
+    if (atomsize < 8 || atomsize > p_block->i_buffer ||
+        memcmp(&p_block->p_buffer[4], "cdat", 4))
+        goto out;
 
-    do
-    {
-        p_write[i_copied++] = CC_PKT_BYTE0(0); /* cc1 == field 0 */
-        p_write[i_copied++] = p_read[0];
-        p_write[i_copied++] = p_read[1];
-        p_read += 2;
-        i_bytes -= 2;
-        i_remaining -= 2;
-    } while( i_bytes >= 2 );
+    const uint8_t *cdat = p_block->p_buffer + 8;
+    uint_fast32_t cdat_size = (atomsize - 8) & ~1;
+
+    p_block->p_buffer += atomsize;
+    p_block->i_buffer -= atomsize;
 
     /* cdt2 is optional */
-    i_bytes = GetDWBE(p_read);
+    uint_fast32_t cdt2_size = 0;
+    const uint8_t *cdt2 = NULL;
 
-    if (10 <= i_bytes && i_bytes <= i_remaining &&
-        !memcmp("cdt2", &p_read[4], 4))
-    {
-        p_read += 8;
-        i_bytes -= 8;
-        i_remaining -= 8;
-        do
-        {
-            p_write[i_copied++] = CC_PKT_BYTE0(0); /* cc1 == field 0 */
-            p_write[i_copied++] = p_read[0];
-            p_write[i_copied++] = p_read[1];
-            p_read += 2;
-            i_bytes -= 2;
-        } while( i_bytes >= 2 );
+    if (p_block->i_buffer >= 8) {
+        atomsize = GetDWBE(p_block->p_buffer);
+
+        if (atomsize > 8 && atomsize <= p_block->i_buffer &&
+            !memcmp(&p_block->p_buffer[4], "cdt2", 4)) {
+            cdt2 = p_block->p_buffer + 8;
+            cdt2_size = (atomsize - 8) & ~1;
+        }
+    }
+
+    p_newblock = block_Alloc((cdat_size + cdt2_size) / 2 * 3);
+    if (unlikely(p_newblock == NULL))
+        goto out;
+
+    uint8_t *out = p_newblock->p_buffer;
+
+    while (cdat_size >= 2) {
+         *(out++) = CC_PKT_BYTE0(0); /* cc1 == field 0 */
+         *(out++) = *(cdat++);
+         *(out++) = *(cdat++);
+         cdat_size -= 2;
+    }
+
+    while (cdt2_size >= 2) {
+         *(out++) = CC_PKT_BYTE0(1); /* cc2 == field 1 */
+         *(out++) = *(cdt2++);
+         *(out++) = *(cdt2++);
+         cdt2_size -= 2;
     }
 
     p_newblock->i_pts = p_block->i_dts;
-    p_newblock->i_buffer = i_copied;
     p_newblock->i_flags = BLOCK_FLAG_TYPE_P;
+out:
     block_Release( p_block );
-
     return p_newblock;
 }
 
@@ -695,6 +697,18 @@ static block_t * MP4_Block_Convert( demux_t *p_demux, const mp4_track_t *p_track
     else if( p_track->fmt.i_original_fourcc == ATOM_rrtp )
     {
         p_block = MP4_RTPHint_Convert( p_demux, p_block, p_track->fmt.i_codec );
+    }
+    else if ( p_track->fmt.i_codec == VLC_CODEC_APV )
+    {
+        // the APU are preceeded by 4 bytes containing the size of the data
+        // this is not used by decoder like libavcodec or openapv.
+        if( p_block->i_buffer < 4 )
+        {
+            block_Release( p_block );
+            return NULL;
+        }
+        p_block->p_buffer += 4;
+        p_block->i_buffer -= 4;
     }
 
     return p_block;
@@ -805,7 +819,7 @@ static int Open( vlc_object_t * p_this )
     if( LoadInitFrag( p_demux ) != VLC_SUCCESS )
         goto error;
 
-    MP4_BoxDumpStructure( p_demux->s, p_sys->p_root );
+    MP4_BoxDumpStructure( VLC_OBJECT(p_demux), p_sys->p_root );
 
     if( ( p_ftyp = MP4_BoxGet( p_sys->p_root, "/ftyp" ) ) )
     {
@@ -1203,6 +1217,9 @@ static block_t * MP4_RTPHintToFrame( demux_t *p_demux, block_t *p_block, uint32_
         /* skip packet constructor */
         p_slice += CONSTRUCTORSIZE;
 
+        if( sample_cons.length == 0 )
+            continue;
+
         /* check that is RTPsampleconstructor, referencing itself and no weird audio stuff */
         if( sample_cons.type != 2||sample_cons.trackrefindex != -1
             ||sample_cons.samplesperblock != 1||sample_cons.bytesperblock != 1 )
@@ -1212,15 +1229,24 @@ static block_t * MP4_RTPHintToFrame( demux_t *p_demux, block_t *p_block, uint32_
         }
 
         /* slice doesn't fit in buffer */
-        if( sample_cons.sampleoffset + sample_cons.length > p_block->i_buffer)
+        size_t slice_size;
+        if( ckd_add( &slice_size, sample_cons.sampleoffset, sample_cons.length ) ||
+            slice_size > p_block->i_buffer )
         {
             msg_Err(p_demux, "Sample buffer is smaller than sample" );
             goto error;
         }
 
+        size_t realloc_size;
+        if( ckd_add( &realloc_size, i_payload, sample_cons.length ) ||
+            ckd_add( &realloc_size, realloc_size, 4 ) )
+        {
+            goto error;
+        }
+
         block_t *p_realloc = ( p_newblock ) ?
-                             block_Realloc( p_newblock, 0, i_payload + sample_cons.length + 4 ):
-                             block_Alloc( i_payload + sample_cons.length + 4 );
+                             block_TryRealloc( p_newblock, 0, realloc_size ):
+                             block_Alloc( realloc_size );
         if( !p_realloc )
             goto error;
 
@@ -1231,7 +1257,7 @@ static block_t * MP4_RTPHintToFrame( demux_t *p_demux, block_t *p_block, uint32_
         uint8_t i_type = (*p_src) & ((1<<5)-1);
 
         const uint8_t synccode[4] = { 0, 0, 0, 1 };
-        if( memcmp( p_src, synccode, 4 ) )
+        if( sample_cons.length < 4 || memcmp( p_src, synccode, 4 ) )
         {
             if( i_type == 7 || i_type == 8 )
                 *p_dst++=0;
@@ -1278,6 +1304,7 @@ static block_t * MP4_RTPHint_Convert( demux_t *p_demux, block_t *p_block, vlc_fo
         if( i_packets == 1 && i_skip < p_block->i_buffer )
         {
             p_block->p_buffer += i_skip;
+            p_block->i_buffer -= i_skip;
             p_converted = p_block;
         }
         else
@@ -3419,13 +3446,14 @@ static void MP4_TrackSetup( demux_t *p_demux, mp4_track_t *p_track,
             MP4_Box_t *p_sdp;
 
             /* parse the sdp message to find out whether the RTP stream contained audio or video */
-            if( !( p_sdp  = MP4_BoxGet( p_box_trak, "udta/hnti/sdp " ) ) )
+            if( !( p_sdp  = MP4_BoxGet( p_box_trak, "udta/hnti/sdp " ) ) ||
+                !BOXDATA(p_sdp)->psz_text )
             {
                 msg_Warn( p_demux, "Didn't find sdp box to determine stream type" );
                 return;
             }
 
-            memcpy( sdp_media_type, BOXDATA(p_sdp)->psz_text, 7 );
+            strncpy( sdp_media_type, BOXDATA(p_sdp)->psz_text, 7 );
             if( !strcmp(sdp_media_type, "m=audio") )
             {
                 msg_Dbg( p_demux, "Found audio Rtp: %s", sdp_media_type );
@@ -4669,7 +4697,7 @@ static int FragCreateTrunIndex( demux_t *p_demux, MP4_Box_t *p_moof,
             (i_trun_count + p_track->context.runs.i_count) * sizeof(mp4_run_t));
         if(!p_track->context.runs.p_array)
             continue;
-        memset(&p_track->context.runs.p_array[i_trun_count], 0, p_track->context.runs.i_count * sizeof(mp4_run_t));
+        memset(&p_track->context.runs.p_array[p_track->context.runs.i_count], 0, i_trun_count * sizeof(mp4_run_t));
         i_trun_count += p_track->context.runs.i_count;
 
         /* Get defaults for this/these RUN */
@@ -5112,7 +5140,7 @@ static int DemuxFrag( demux_t *p_demux )
             {
                 if( i_pos > p_sys->context.i_post_mdat_offset )
                     msg_Err( p_demux, " Overread mdat by %" PRIu64, i_pos - p_sys->context.i_post_mdat_offset );
-                else
+                else if( !p_sys->b_seekable )
                     msg_Warn( p_demux, "mdat had still %"PRIu64" bytes unparsed as samples",
                                         p_sys->context.i_post_mdat_offset - i_pos );
                 if( MP4_Seek( p_demux->s, p_sys->context.i_post_mdat_offset ) != VLC_SUCCESS )

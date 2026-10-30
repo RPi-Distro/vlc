@@ -16,7 +16,8 @@ xorg-macros: util-macros-$(UTILS_MACROS_VERSION).tar.bz2 .sum-xorg-macros
 	$(MOVE)
 
 .xorg-macros: xorg-macros
-	$(RECONF)
-	cd $< && $(HOSTVARS) ./configure $(HOSTCONF)
-	$(MAKE) -C $< install
+	$(MAKEBUILDDIR)
+	$(MAKECONFIGURE)
+	+$(MAKEBUILD)
+	+$(MAKEBUILD) install
 	touch $@

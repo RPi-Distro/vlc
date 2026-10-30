@@ -1,20 +1,22 @@
 # Japanese translation
-# Copyright (C) 2017 VideoLAN
+# Copyright (C) 2026 VideoLAN
 # This file is distributed under the same license as the VLC package.
 #
 # Translators:
-# Fumio Nakayama <fumio.n6a@gmail.com>, 2002,2009-2025
+# Fumio Nakayama <fumio.n6a@gmail.com>, 2002,2009-2026
 # Tadashi Jokagi <elf@elf.no-ip.org>, 2004-2009
 # ever_green, 2018
 # Tōen Androme Mitani, 2021
+# Michał Trzebiatowski <michtrz@gmail.com>, 2019
+# Felix Paul Kühne <fkuehne@gmail.com>, 2023
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vlc 3.0.22\n"
+"Project-Id-Version: vlc 3.0.24-beta1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-12-23 11:04+0000\n"
+"POT-Creation-Date: 2026-09-17 12:55+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
-"Last-Translator: Fumio Nakayama <fumio.n6a@gmail.com>, 2025\n"
+"Last-Translator: Fumio Nakayama <fumio.n6a@gmail.com>, 2026\n"
 "Language-Team: Japanese (https://app.transifex.com/yaron/teams/16553/ja/)\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -640,7 +642,7 @@ msgid "The maximum number of filters (%u) was reached."
 msgstr "フィルターの最大数(%u)に達しました。"
 
 #: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:936
-#: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:124
+#: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:126
 #: modules/gui/macosx/VLCMainMenu.m:243
 #: modules/gui/macosx/VLCSidebarDataSource.m:211
 #: modules/video_filter/postproc.c:235
@@ -1104,7 +1106,7 @@ msgstr "バッファーの広がり"
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
-#: modules/access/vdr.c:78 modules/access/vnc.c:60 modules/demux/image.c:66
+#: modules/access/vdr.c:79 modules/access/vnc.c:61 modules/demux/image.c:66
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:164
 #: modules/video_filter/fps.c:42
 msgid "Frame rate"
@@ -1783,8 +1785,8 @@ msgstr ""
 
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:957
 #: modules/audio_output/kai.c:106 modules/codec/subsdec.c:167
-#: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:122
-#: modules/demux/mpeg/ts.c:132 modules/gui/macosx/VLCSimplePrefsController.m:54
+#: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:124
+#: modules/demux/mpeg/ts.c:133 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:69
 #: modules/gui/qt/components/sout/profile_selector.cpp:590
 #: modules/text_renderer/freetype/freetype.c:124
@@ -2309,12 +2311,12 @@ msgid ""
 "This forces the cropping of the source video. Accepted formats are x:y (4:3, "
 "16:9, etc.) expressing the global image aspect."
 msgstr ""
-"入力元のビデオのクロッピングをグローバルな画像のアスペクト比を示すX:Y(4:3, "
-"16:9など)の形式で指定します。"
+"ソースビデオのクロッピングをグローバルな画像のアスペクト比を示すX:Y(4:3, 16:9"
+"など)の形式で指定します。"
 
 #: src/libvlc-module.c:427
 msgid "Source aspect ratio"
-msgstr "ソースのアスペクト比"
+msgstr "ソースアスペクト比"
 
 #: src/libvlc-module.c:429
 msgid ""
@@ -2324,10 +2326,10 @@ msgid ""
 "y (4:3, 16:9, etc.) expressing the global image aspect, or a float value "
 "(1.25, 1.3333, etc.) expressing pixel squareness."
 msgstr ""
-"ソースのアスペクト比を固定化します。例えば、いくつかのDVDはアスペクト比が4:3"
-"の場合でも16:9にすることを要求します。この設定は、ムービーがアスペクト比の情"
-"報を保持していない場合のヒントとなります。設定は画像のアスペクト比を表現する"
-"一般的な x:y の形式(4:3, 16:9など)、または縦横の比率を示す浮動小数点の形式"
+"ソースアスペクト比を固定化します。例えば、いくつかのDVDはアスペクト比が4:3の"
+"場合でも16:9にすることを要求します。この設定は、ムービーがアスペクト比の情報"
+"を保持していない場合のヒントとなります。設定は画像のアスペクト比を表現する一"
+"般的な x:y の形式(4:3, 16:9など)、または縦横の比率を示す浮動小数点の形式"
 "(1.25, 1.3333など)で指定します。"
 
 #: src/libvlc-module.c:436
@@ -2545,9 +2547,9 @@ msgstr ""
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
 #: modules/access/dshow/dshow.cpp:2081 modules/audio_output/alsa.c:767
-#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1316
-#: modules/audio_output/mmdevice.c:1445 modules/audio_output/winstore.c:594
-#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:106
+#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1332
+#: modules/audio_output/mmdevice.c:1469 modules/audio_output/winstore.c:600
+#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:108
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
@@ -4036,7 +4038,7 @@ msgstr "少しだけゆっくり"
 #: modules/gui/macosx/VLCMainMenu.m:396 modules/gui/macosx/VLCMainMenu.m:499
 #: modules/gui/macosx/VLCMainMenu.m:507
 #: modules/gui/qt/components/controller.hpp:112
-#: modules/gui/qt/dialogs/sout.cpp:91 modules/notify/notify.c:335
+#: modules/gui/qt/dialogs/sout.cpp:89 modules/notify/notify.c:335
 #: modules/gui/qt/ui/streampanel.h:179
 msgid "Next"
 msgstr "次へ"
@@ -4607,11 +4609,11 @@ msgstr "使用可能な前のプログラムサービスID (SID) を切り替え
 
 #: src/libvlc-module.c:1401
 msgid "Cycle source aspect ratio"
-msgstr "ソースのアスペクト比の切り替え"
+msgstr "ソースアスペクト比の切り替え"
 
 #: src/libvlc-module.c:1402
 msgid "Cycle through a predefined list of source aspect ratios."
-msgstr "事前に定義されたソースのアスペクト比を切り替えます。"
+msgstr "事前に定義されたソースアスペクト比を切り替えます。"
 
 #: src/libvlc-module.c:1403
 msgid "Cycle video crop"
@@ -4787,7 +4789,7 @@ msgid "Subpictures"
 msgstr "サブピクチャー"
 
 #: src/libvlc-module.c:1683 modules/codec/subsdec.c:182
-#: modules/demux/subtitle.c:71 modules/demux/xiph_metadata.h:49
+#: modules/demux/subtitle.c:72 modules/demux/xiph_metadata.h:49
 #: modules/demux/xiph_metadata.h:62
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:158
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
@@ -5114,7 +5116,7 @@ msgstr "メディア 時間"
 msgid "Media View"
 msgstr "メディア ビュー"
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:577
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:574
 msgid "Menu"
 msgstr "メニュー"
 
@@ -5208,38 +5210,38 @@ msgstr "Meta+"
 msgid "Command+"
 msgstr "Command+"
 
-#: src/misc/update.c:482
+#: src/misc/update.c:490
 #, c-format
 msgid "%.1f GiB"
 msgstr "%.1f GiB"
 
-#: src/misc/update.c:484
+#: src/misc/update.c:492
 #, c-format
 msgid "%.1f MiB"
 msgstr "%.1f MiB"
 
-#: src/misc/update.c:486 modules/gui/macosx/VLCPlaylistInfo.m:138
+#: src/misc/update.c:494 modules/gui/macosx/VLCPlaylistInfo.m:138
 #: modules/gui/macosx/VLCPlaylistInfo.m:140
 #, c-format
 msgid "%.1f KiB"
 msgstr "%.1f KiB"
 
-#: src/misc/update.c:488
+#: src/misc/update.c:496
 #, c-format
 msgid "%<PRIu64> B"
 msgstr "%<PRIu64> B"
 
-#: src/misc/update.c:580
+#: src/misc/update.c:588
 msgid "Saving file failed"
 msgstr "ファイルの保存に失敗しました"
 
-#: src/misc/update.c:581
+#: src/misc/update.c:589
 #, c-format
 msgid "Failed to open \"%s\" for writing"
 msgstr "書き込みのために\"%s\"を開けませんでした"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2878
+#: src/misc/update.c:604 src/misc/update.c:734 modules/access/dvb/scan.c:826
+#: modules/demux/avi/avi.c:2888
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
@@ -5267,12 +5269,12 @@ msgstr "書き込みのために\"%s\"を開けませんでした"
 #: modules/gui/qt/components/open_panels.cpp:1361
 #: modules/gui/qt/components/preferences_widgets.cpp:1420
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
-#: modules/gui/qt/dialogs/sout.cpp:90
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/gui/qt/dialogs/sout.cpp:88
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: src/misc/update.c:598
+#: src/misc/update.c:606
 #, c-format
 msgid ""
 "%s\n"
@@ -5281,11 +5283,11 @@ msgstr ""
 "%s\n"
 "ダウンロードしています... %s/%s %.1f%% 完了"
 
-#: src/misc/update.c:649
+#: src/misc/update.c:657
 msgid "File could not be verified"
 msgstr "ファイルは検証できませんでした"
 
-#: src/misc/update.c:650
+#: src/misc/update.c:658
 #, c-format
 msgid ""
 "It was not possible to download a cryptographic signature for the downloaded "
@@ -5294,11 +5296,11 @@ msgstr ""
 "ダウンロードされたファイル\"%s\"の暗号化された署名をダウンロードすることがで"
 "きませんでした。それに伴ってファイルは削除されました。"
 
-#: src/misc/update.c:661 src/misc/update.c:673
+#: src/misc/update.c:669 src/misc/update.c:681
 msgid "Invalid signature"
 msgstr "無効な署名"
 
-#: src/misc/update.c:662 src/misc/update.c:674
+#: src/misc/update.c:670 src/misc/update.c:682
 #, c-format
 msgid ""
 "The cryptographic signature for the downloaded file \"%s\" was invalid and "
@@ -5307,11 +5309,11 @@ msgstr ""
 "ダウンロードされたファイル\"%s\"の暗号化された署名は無効のため、確認に用いら"
 "れませんでした。それに伴ってファイルは削除されました。"
 
-#: src/misc/update.c:686
+#: src/misc/update.c:694
 msgid "File not verifiable"
 msgstr "ファイルが検証可能ではありません"
 
-#: src/misc/update.c:687
+#: src/misc/update.c:695
 #, c-format
 msgid ""
 "It was not possible to securely verify the downloaded file \"%s\". Thus, it "
@@ -5320,16 +5322,16 @@ msgstr ""
 "ダウンロードされたファイル \"%s\" をしっかり確認できなかった可能性がありま"
 "す。それに伴ってファイルは削除されました。"
 
-#: src/misc/update.c:698 src/misc/update.c:710
+#: src/misc/update.c:706 src/misc/update.c:718
 msgid "File corrupted"
 msgstr "ファイルが破損しています"
 
-#: src/misc/update.c:699 src/misc/update.c:711
+#: src/misc/update.c:707 src/misc/update.c:719
 #, c-format
 msgid "Downloaded file \"%s\" was corrupted. Thus, it was deleted."
 msgstr "ダウンロードされたファイル\"%s\"は破損していたため、削除されました。"
 
-#: src/misc/update.c:723
+#: src/misc/update.c:731
 msgid ""
 "The new version was successfully downloaded. Do you want to close VLC and "
 "install it now?"
@@ -5337,11 +5339,11 @@ msgstr ""
 "新しいバージョンは正常にダウンロードされました。今すぐVLCを終了し、インストー"
 "ルしますか?"
 
-#: src/misc/update.c:726 modules/gui/macosx/VLCAddonsWindowController.m:200
+#: src/misc/update.c:734 modules/gui/macosx/VLCAddonsWindowController.m:200
 msgid "Install"
 msgstr "インストール"
 
-#: src/misc/update.c:727
+#: src/misc/update.c:735
 msgid "Update VLC media player"
 msgstr "VLCメディアプレイヤーの更新"
 
@@ -6379,11 +6381,11 @@ msgstr "KDMファイル"
 msgid "Path to Key Delivery Message XML file"
 msgstr "鍵配信メッセージXMLファイルのパス"
 
-#: modules/access/dcp/dcp.cpp:77
+#: modules/access/dcp/dcp.cpp:86
 msgid "DCP"
 msgstr "DCP"
 
-#: modules/access/dcp/dcp.cpp:79
+#: modules/access/dcp/dcp.cpp:88
 msgid "Digital Cinema Package module"
 msgstr "デジタルシネマパッケージモジュール"
 
@@ -6514,7 +6516,7 @@ msgstr "Blackmagic DeckLink SDI入力"
 msgid "10 bits"
 msgstr "10ビット"
 
-#: modules/access/decklink.cpp:358 modules/demux/ty.c:783
+#: modules/access/decklink.cpp:358 modules/demux/ty.c:792
 msgid "Closed captions 1"
 msgstr "クローズドキャプション1"
 
@@ -7425,7 +7427,7 @@ msgstr "ファイル入力"
 #: modules/gui/macosx/VLCOpenWindowController.m:140
 #: modules/gui/macosx/VLCOutput.m:64 modules/gui/macosx/VLCOutput.m:175
 #: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1428
-#: modules/gui/qt/dialogs/sout.cpp:67 modules/gui/qt/dialogs/sout.cpp:119
+#: modules/gui/qt/dialogs/sout.cpp:67 modules/gui/qt/dialogs/sout.cpp:114
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
 #: share/lua/http/dialogs/stream_window.html:95
@@ -7447,7 +7449,7 @@ msgstr "ディレクトリ表示時にデバイスとパイプを含む"
 
 #: modules/access/ftp.c:69 modules/access/live555.cpp:85
 #: modules/access/rdp.c:65 modules/access/sftp.c:55
-#: modules/access/smb_common.h:21 modules/access/vnc.c:47
+#: modules/access/smb_common.h:21 modules/access/vnc.c:48
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
@@ -7467,7 +7469,7 @@ msgstr ""
 
 #: modules/access/ftp.c:72 modules/access/live555.cpp:88
 #: modules/access/rdp.c:68 modules/access/sftp.c:58
-#: modules/access/smb_common.h:24 modules/access/vnc.c:48
+#: modules/access/smb_common.h:24 modules/access/vnc.c:49
 #: modules/access_output/http.c:55
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
 #: modules/gui/macosx/VLCSimplePrefsController.m:285
@@ -7512,19 +7514,19 @@ msgstr "FTP入力"
 msgid "FTP upload output"
 msgstr "FTPアップロード出力"
 
-#: modules/access/ftp.c:370 modules/access/ftp.c:386 modules/access/ftp.c:538
+#: modules/access/ftp.c:385 modules/access/ftp.c:401 modules/access/ftp.c:564
 msgid "Network interaction failed"
 msgstr "ネットワークコミュニケーションに失敗しました"
 
-#: modules/access/ftp.c:371
+#: modules/access/ftp.c:386
 msgid "VLC could not connect with the given server."
 msgstr "VLCは指定されたサーバーに接続できませんでした。"
 
-#: modules/access/ftp.c:387
+#: modules/access/ftp.c:402
 msgid "VLC's connection to the given server was rejected."
 msgstr "指定されたサーバーへのVLCの接続は拒否されました。"
 
-#: modules/access/ftp.c:539
+#: modules/access/ftp.c:565
 msgid "Your account was rejected."
 msgstr "アカウントは拒否されました。"
 
@@ -8005,7 +8007,7 @@ msgstr "MTP入力"
 msgid "MTP"
 msgstr "MTP"
 
-#: modules/access/mtp.c:167 modules/access/vdr.c:379 modules/access/vdr.c:545
+#: modules/access/mtp.c:167 modules/access/vdr.c:382 modules/access/vdr.c:548
 msgid "File reading failed"
 msgstr "ファイルの読み込みに失敗しました"
 
@@ -8093,77 +8095,49 @@ msgstr "RDP"
 msgid "RDP Remote Desktop"
 msgstr "RDPリモートデスクトップ"
 
-#: modules/access/rist.c:65
+#: modules/access/rist.c:44
 msgid "Range"
 msgstr "レンジ"
 
-#: modules/access/rist.c:65
+#: modules/access/rist.c:44
 msgid "Bitmask"
 msgstr "ビットマスク"
 
-#: modules/access/rist.c:1127 modules/access_output/rist.c:849
+#: modules/access/rist.c:309
+msgid "Virtual Destination Port Filter"
+msgstr "仮想宛先ポートフィルター"
+
+#: modules/access/rist.c:311
+msgid ""
+"Destination port to be used inside the reduced-mode of the main profile to "
+"filter incoming data. Use zero to allow all."
+msgstr ""
+"メインプロファイルの削減モードにおいて入力データをフィルターするために内部で"
+"使用される宛先ポート。すべてを許可する場合、０を指定してください。"
+
+#: modules/access/rist.c:317 modules/access_output/rist.c:291
 msgid "RIST"
 msgstr "RIST"
 
-#: modules/access/rist.c:1128
+#: modules/access/rist.c:318
 msgid "RIST input"
 msgstr "RIST入力"
 
-#: modules/access/rist.c:1133
-msgid "RIST maximum packet size (bytes)"
-msgstr "RIST最大パケットサイズ (バイト)"
-
-#: modules/access/rist.c:1135
+#: modules/access/rist.c:323
 msgid "RIST demux/decode maximum jitter (default is 5ms)"
 msgstr "RISTデマルチプレクサ/デコード最大ジッター (デフォルトは5ms)"
 
-#: modules/access/rist.c:1136
+#: modules/access/rist.c:324
 msgid ""
 "This controls the maximum jitter that will be passed to the demux/decode "
-"chain. The lower the value, the more CPU cycles the algorithm will consume"
+"chain. The lower the value, the more CPU cycles the module will consume"
 msgstr ""
-"デマルチプレクサ/デコードのチェーンに受け渡される最大ジッターを制御します。小"
-"さな値はCPUのアルゴリズムサイクルをより消費します。"
+"これはデマルチプレクサ/デコーダーの処理系に渡されるジッターの最大値を制御しま"
+"す。この値が低いほど、モジュールが消費するCPUサイクル数は増加します。"
 
-#: modules/access/rist.c:1138
-msgid "RIST latency (ms)"
-msgstr "RIST遅延 (ms)"
-
-#: modules/access/rist.c:1139
-msgid "RIST nack retry interval (ms)"
-msgstr "RISTナックリトライインターバル (ms)"
-
-#: modules/access/rist.c:1141
-msgid "RIST reorder buffer (ms)"
-msgstr "RISTレコーダーバッファ (ms)"
-
-#: modules/access/rist.c:1143
-msgid "RIST maximum retry count"
-msgstr "RIST最大リトライカウント"
-
-#: modules/access/rist.c:1145
+#: modules/access/rist.c:328
 msgid "RIST nack type, 0 = range, 1 = bitmask. Default is range"
 msgstr "RIST nackタイプ, 0 = レンジ, 1 = ビットマスク。 デフォルトはレンジ"
-
-#: modules/access/rist.c:1147
-msgid "Disable NACK output packets"
-msgstr "NACK出力パケットを無効化"
-
-#: modules/access/rist.c:1148
-msgid "Use this to disable packet recovery"
-msgstr "パケットのリカバリを無効化"
-
-#: modules/access/rist.c:1149
-msgid "Do not check for a valid rtcp message from the encoder"
-msgstr "エンコーダーからのRTCPメッセージの正当性チェックをしない"
-
-#: modules/access/rist.c:1150
-msgid ""
-"Send nack messages even when we have not confirmed that the encoder is on "
-"our local network."
-msgstr ""
-"エンコーダーがローカルネットワークにあるかどうかに関わらずNACKメッセージが送"
-"信されます。"
 
 #: modules/access/rtp/rtp.c:44
 msgid "RTCP (local) port"
@@ -8412,7 +8386,7 @@ msgid "Screen"
 msgstr "スクリーン"
 
 #: modules/access/screen/xcb.c:41 modules/access/shm.c:44
-#: modules/access/vnc.c:61
+#: modules/access/vnc.c:62
 msgid "How many times the screen content should be refreshed per second."
 msgstr "1秒間にスクリーンコンテンツがリフレッシュされる回数を指定します。"
 
@@ -8446,20 +8420,34 @@ msgstr "SFTPポート"
 msgid "SFTP port number to use on the server"
 msgstr "サーバー上で使用するSFTPのポート番号を指定します。"
 
-#: modules/access/sftp.c:64
+#: modules/access/sftp.c:61
+msgid "Private key file"
+msgstr "プライベートキーファイル"
+
+#: modules/access/sftp.c:62
+msgid ""
+"Private-key file used for SSH public key authentication. Public-key file is "
+"assumed to be in the same directory with '.pub' appended. If unset, standard "
+"key paths will be attempted (e.g. '~/.ssh/id_rsa')."
+msgstr ""
+"SSH公開鍵認証に使用する秘密鍵ファイルです。対応する公開鍵ファイルは同じディレ"
+"クトリに拡張子 '.pub' を付加した名前で存在すると見做されます。指定がない場"
+"合、標準的な鍵のパス (例: '~/.ssh/id_rsa') が試行されます。"
+
+#: modules/access/sftp.c:68
 msgid "SFTP input"
 msgstr "SFTP入力"
 
-#: modules/access/sftp.c:411
+#: modules/access/sftp.c:463
 msgid "SFTP authentication"
 msgstr "SFTP認証"
 
-#: modules/access/sftp.c:412
+#: modules/access/sftp.c:464
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr "\"%s\"へのSFTP接続の正しいログイン名とパスワードを入力してください。"
 
-#: modules/access/shm.c:46 modules/access/vnc.c:58
+#: modules/access/shm.c:46 modules/access/vnc.c:59
 msgid "Frame buffer depth"
 msgstr "フレームバッファーの深度"
 
@@ -8512,7 +8500,7 @@ msgstr "フレームバッファーのメモリマップドファイルのパス
 msgid "XWD file (autodetect)"
 msgstr "XWDファイル（自動検出）"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "8 bits"
 msgstr "8ビット"
 
@@ -8520,15 +8508,15 @@ msgstr "8ビット"
 msgid "15 bits"
 msgstr "15ビット"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "16 bits"
 msgstr "16ビット"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "24 bits"
 msgstr "24ビット"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "32 bits"
 msgstr "32ビット"
 
@@ -8571,41 +8559,29 @@ msgstr ""
 "ユーザー名 (ドメイン名;ユーザー名の形式でドメインを指定することが望ましい) と"
 "パスワードを指定してください。"
 
-#: modules/access/srt.c:428 modules/access_output/srt.c:457
+#: modules/access/srt.c:550 modules/access_output/srt.c:457
 msgid "SRT"
 msgstr "SRT"
 
-#: modules/access/srt.c:429
+#: modules/access/srt.c:551
 msgid "SRT input"
 msgstr "SRT入力"
 
-#: modules/access/srt.c:435 modules/access_output/srt.c:464
+#: modules/access/srt.c:557 modules/access_output/srt.c:464
 msgid "Return poll wait after timeout milliseconds (-1 = infinite)"
 msgstr "ポーリングのタイムアウト時間をミリ秒で指定 (-1: 無限)"
 
-#: modules/access/srt.c:438 modules/access_output/srt.c:466
+#: modules/access/srt.c:560 modules/access_output/srt.c:466
 msgid "SRT latency (ms)"
 msgstr "SRT遅延 (ms)"
 
-#: modules/access/srt.c:440 modules/access_output/srt.c:468
+#: modules/access/srt.c:562 modules/access_output/srt.c:468
 msgid "Password for stream encryption"
 msgstr "ストリーム暗号化のパスワード"
 
-#: modules/access/srt.c:446 modules/access_output/srt.c:480
-msgid " SRT Stream ID"
+#: modules/access/srt.c:568
+msgid "SRT Stream ID"
 msgstr " SRTストリームID"
-
-#: modules/access/srt_common.c:26
-msgid "16 bytes"
-msgstr "16バイト"
-
-#: modules/access/srt_common.c:27
-msgid "24 bytes"
-msgstr "24バイト"
-
-#: modules/access/srt_common.c:27
-msgid "32 bytes"
-msgstr "32バイト"
 
 #: modules/access/tcp.c:116
 msgid "TCP"
@@ -8984,7 +8960,7 @@ msgid "Vivid"
 msgstr "ビビッド"
 
 #: modules/access/v4l2/v4l2.c:169 modules/audio_output/auhal.c:43
-#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1489
+#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1513
 #: modules/audio_output/waveout.c:145
 msgid "Audio volume"
 msgstr "オーディオ音量"
@@ -9050,7 +9026,7 @@ msgstr ""
 #: modules/control/hotkeys.c:395
 #: modules/gui/macosx/VLCAddonsWindowController.m:100
 #: modules/gui/qt/dialogs/convert.cpp:164
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:381
 #: modules/gui/qt/dialogs/preferences.cpp:79
 msgid "All"
 msgstr "すべて"
@@ -9135,121 +9111,121 @@ msgstr "VCD入力"
 msgid "[vcd:][device][#[title][,[chapter]]]"
 msgstr "[vcd:][device][#[title][,[chapter]]]"
 
-#: modules/access/vdr.c:72
+#: modules/access/vdr.c:73
 msgid "Support for VDR recordings (http://www.tvdr.de/)."
 msgstr "VDRレコーディングのサポート(http://www.tvdr.de/)"
 
-#: modules/access/vdr.c:74
+#: modules/access/vdr.c:75
 msgid "Chapter offset in ms"
 msgstr "チャプターオフセット(ms)"
 
-#: modules/access/vdr.c:76
+#: modules/access/vdr.c:77
 msgid "Move all chapters. This value should be set in milliseconds."
 msgstr "すべてのチャプターをずらします。この値はミリ秒で指定します。"
 
-#: modules/access/vdr.c:80
+#: modules/access/vdr.c:81
 msgid "Default frame rate for chapter import."
 msgstr "チャプターインポートのデフォルトフレームレートを指定します。"
 
-#: modules/access/vdr.c:84
+#: modules/access/vdr.c:85
 msgid "VDR"
 msgstr "VDR"
 
-#: modules/access/vdr.c:87
+#: modules/access/vdr.c:88
 msgid "VDR recordings"
 msgstr "VDRレコーディング"
 
-#: modules/access/vdr.c:380
+#: modules/access/vdr.c:383
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr "VLCはファイル(%s)を読むことができませんでした。"
 
-#: modules/access/vdr.c:545
+#: modules/access/vdr.c:548
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr "VLCはファイル\"%s\" (%s)を開くことができませんでした。"
 
-#: modules/access/vdr.c:820
+#: modules/access/vdr.c:811
 msgid "VDR Cut Marks"
 msgstr "VDRカットマーク"
 
-#: modules/access/vdr.c:886
+#: modules/access/vdr.c:877
 msgid "Start"
 msgstr "開始"
 
-#: modules/access/vnc.c:49
+#: modules/access/vnc.c:50
 msgid "X.509 Certificate Authority"
 msgstr "X.509証明機関"
 
-#: modules/access/vnc.c:50
+#: modules/access/vnc.c:51
 msgid "Certificate of the Authority to verify server's against"
 msgstr "サーバーを確認する認証証明書"
 
-#: modules/access/vnc.c:51
+#: modules/access/vnc.c:52
 msgid "X.509 Certificate Revocation List"
 msgstr "X.509証明書の廃止リスト"
 
-#: modules/access/vnc.c:52
+#: modules/access/vnc.c:53
 msgid "List of revoked servers certificates"
 msgstr "廃止されたサーバー証明書のリスト"
 
-#: modules/access/vnc.c:53
+#: modules/access/vnc.c:54
 msgid "X.509 Client certificate"
 msgstr "X.509クライアント証明書"
 
-#: modules/access/vnc.c:54
+#: modules/access/vnc.c:55
 msgid "Certificate for client authentication"
 msgstr "クライアント認証の証明書"
 
-#: modules/access/vnc.c:55
+#: modules/access/vnc.c:56
 msgid "X.509 Client private key"
 msgstr "X.509クライアント秘密鍵"
 
-#: modules/access/vnc.c:56
+#: modules/access/vnc.c:57
 msgid "Private key for authentication by certificate"
 msgstr "証明書による認証のための秘密鍵"
 
-#: modules/access/vnc.c:59
+#: modules/access/vnc.c:60
 msgid "RGB chroma (RV32, RV24, RV16, RGB2)"
 msgstr "RGBクロマ (RV32, RV24, RV16, RGB2)"
 
-#: modules/access/vnc.c:62
+#: modules/access/vnc.c:63
 msgid "Compression level"
 msgstr "圧縮レベル"
 
-#: modules/access/vnc.c:63
+#: modules/access/vnc.c:64
 msgid "Transfer compression level from 0 (none) to 9 (max)"
 msgstr "転送圧縮レベルを 0 (なし) から 9 (最大) で指定します。"
 
-#: modules/access/vnc.c:64
+#: modules/access/vnc.c:65
 msgid "Image quality"
 msgstr "画像の品質"
 
-#: modules/access/vnc.c:65
+#: modules/access/vnc.c:66
 msgid "Image quality 1 to 9 (max)"
 msgstr "画像の品質を1から9 (最大) で指定します。"
 
-#: modules/access/vnc.c:79
+#: modules/access/vnc.c:80
 msgid "VNC"
 msgstr "VNC"
 
-#: modules/access/vnc.c:83
+#: modules/access/vnc.c:84
 msgid "VNC client access"
 msgstr "VNCクライアントアクセス"
 
-#: modules/access/wasapi.c:485
+#: modules/access/wasapi.c:489
 msgid "Loopback mode"
 msgstr "ループバックモード"
 
-#: modules/access/wasapi.c:486
+#: modules/access/wasapi.c:490
 msgid "Record an audio rendering endpoint."
 msgstr "オーディオレンダリングエンドポイントの記録"
 
-#: modules/access/wasapi.c:489
+#: modules/access/wasapi.c:493
 msgid "WASAPI"
 msgstr "WASAPI"
 
-#: modules/access/wasapi.c:490
+#: modules/access/wasapi.c:494
 msgid "Windows Audio Session API input"
 msgstr "WindowsオーディオセッションAPI入力"
 
@@ -9460,65 +9436,55 @@ msgstr "HTTPライブストリーミング出力"
 msgid "LiveHTTP"
 msgstr "LiveHTTP"
 
-#: modules/access_output/rist.c:824
-msgid "RIST data output caching size (ms)"
-msgstr "RISTデータ出力キャッシングサイズ (ms)"
+#: modules/access_output/rist.c:266
+msgid "Virtual Source Port"
+msgstr "仮想ソースポート"
 
-#: modules/access_output/rist.c:826
+#: modules/access_output/rist.c:268
+msgid "Source port to be used inside the reduced-mode of the main profile"
+msgstr "メインプロファイルの削減モードにおいて内部で使用されるソースポート"
+
+#: modules/access_output/rist.c:270
+msgid "Virtual Destination Port"
+msgstr "仮想宛先ポート"
+
+#: modules/access_output/rist.c:272
+msgid "Destination port to be used inside the reduced-mode of the main profile"
+msgstr "メインプロファイルの削減モードにおいて内部で使用される宛先ポート"
+
+#: modules/access_output/rist.c:279
+msgid "Multipeer mode"
+msgstr "マルチピアモード"
+
+#: modules/access_output/rist.c:281
 msgid ""
-"Having this cache will guarantee that the packets going out are delivered at "
-"a spacing determined by the chain timestamps thus ensuring a near jitter "
-"free output. Be aware that this setting will also add to the overall latency "
-"of the stream."
+"This allows you to select between duplicate or load balanced modes when "
+"sending data to multiple peers (several network paths)"
 msgstr ""
-"このキャッシュを使用するとタイムスタンプのチェーンによって、ほぼジッターフ"
-"リー出力としてパケットが送出されることが保証されます。ただしストリームの全体"
-"に遅延が付加されるためご注意ください。"
+"複数のピア (複数のネットワークパス) にデータを送信する際、重複モードと負荷分"
+"散モードのいずれかを選択できます。"
 
-#: modules/access_output/rist.c:831
-msgid "RIST retry-buffer queue size (ms)"
-msgstr "RISTリトライバッファキューサイズ (ms)"
+#: modules/access_output/rist.c:285
+msgid "Duplicate"
+msgstr "重複"
 
-#: modules/access_output/rist.c:833
-msgid ""
-"This must match the buffer size (latency) configured on the server side. If "
-"you are not sure, leave the default of 0 which will set it the maximum value "
-"and will use about 100MB of RAM"
-msgstr ""
-"サーバー側で設定されるバッファーサイズ (遅延) と一致させる必要があります。不"
-"明な場合、デフォルトの0のままとしてください。最大値が使用され、100MBのメモリ"
-"が消費されます。"
+#: modules/access_output/rist.c:285
+msgid "Load balanced"
+msgstr "負荷分散"
 
-#: modules/access_output/rist.c:837
-msgid "SSRC used in RTP output (default is random, i.e. 0)"
-msgstr "RTP出力でSSRCを使用 (デフォルトはランダム, 0)"
-
-#: modules/access_output/rist.c:839
-msgid ""
-"Use this setting to specify a known SSRC for the RTP header. This is only "
-"useful if your receiver acts on it. When using VLC as receiver, it is not."
-msgstr ""
-"RTPヘッダーの知られたSSRCを指定するために使用されます。受信者がその値を利用す"
-"る場合のみ有効です。VLCを受信側とする場合は無効です。"
-
-#: modules/access_output/rist.c:842 modules/access_output/shout.c:64
-#: modules/gui/qt/components/sout/sout_widgets.cpp:386
-#: share/lua/http/dialogs/create_stream.html:139
-msgid "Stream name"
-msgstr "ストリーム名"
-
-#: modules/access_output/rist.c:844
-msgid ""
-"This Stream name will be sent to the receiver using the rist RTCP channel"
-msgstr "このストリーム名はRIST RTCPチャンネルの受信者に送信されます"
-
-#: modules/access_output/rist.c:850
+#: modules/access_output/rist.c:292
 msgid "RIST stream output"
 msgstr "RISTストリーム出力"
 
-#: modules/access_output/rist.c:855
-msgid "RIST target packet size (bytes)"
-msgstr "RISTターゲットパケットサイズ (バイト)"
+#: modules/access_output/rist.c:297
+msgid "RIST target payload size (bytes)"
+msgstr "RISTターゲットペーロードサイズ (バイト)"
+
+#: modules/access_output/shout.c:64
+#: modules/gui/qt/components/sout/sout_widgets.cpp:438
+#: share/lua/http/dialogs/create_stream.html:139
+msgid "Stream name"
+msgstr "ストリーム名"
 
 #: modules/access_output/shout.c:65
 msgid "Name to give to this stream/channel on the shoutcast/icecast server."
@@ -9617,6 +9583,10 @@ msgstr "SRT最大ペイロードサイズ (バイト)"
 #: modules/access_output/srt.c:475
 msgid "SRT maximum bandwidth ceiling (bytes)"
 msgstr "SRT最大帯域幅 (バイト)"
+
+#: modules/access_output/srt.c:480
+msgid " SRT Stream ID"
+msgstr " SRTストリームID"
 
 #: modules/access_output/udp.c:62 modules/stream_out/rtp.c:135
 msgid "Caching value (ms)"
@@ -9870,29 +9840,29 @@ msgstr "オーディオチャンネルリマッパー"
 msgid "Audio filter for simple channel mixing"
 msgstr "簡単なチャンネルミキシングのためのオーディオフィルター"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:50
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:67
 msgid "HRTF file for the binauralization"
 msgstr "バイノーラル化のHRTFファイル"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:51
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:68
 msgid "Custom HRTF (Head-related transfer function) file in the SOFA format."
 msgstr "SOFA形式のカスタムHRTF (Head-related transfer function)ファイル"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:54
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:71
 msgid "Headphones mode (binaural)"
 msgstr "ヘッドフォンモード (バイノーラル)"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:55
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:72
 msgid "If the output is stereo, render ambisonics with the binaural decoder."
 msgstr ""
 "ステレオ出力の場合、Ambisonicsレンダラーとバイノーラルデコーダーを併用しま"
 "す。"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:65
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:82
 msgid "Ambisonics renderer and binauralizer"
 msgstr "Ambisonicsレンダラーとバイノーラル"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:77
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:94
 msgid "Binauralizer"
 msgstr "バイノーラライザー"
 
@@ -10300,12 +10270,12 @@ msgid "Audio filter for band-limited interpolation resampling"
 msgstr "帯域制限補完リサンプリングのためのオーディオフィルター"
 
 #: modules/audio_filter/resampler/soxr.c:40
-#: modules/audio_filter/resampler/speex.c:34
+#: modules/audio_filter/resampler/speex.c:36
 msgid "Resampling quality"
 msgstr "リサンプリング品質"
 
 #: modules/audio_filter/resampler/soxr.c:41
-#: modules/audio_filter/resampler/speex.c:35
+#: modules/audio_filter/resampler/speex.c:37
 msgid "Resampling quality, from worst to best"
 msgstr "リサンプリング品質(低品質から最高品質)"
 
@@ -10313,8 +10283,8 @@ msgstr "リサンプリング品質(低品質から最高品質)"
 msgid "SoX Resampler"
 msgstr "SoXリサンプラー"
 
-#: modules/audio_filter/resampler/speex.c:42
-#: modules/audio_filter/resampler/speex.c:43
+#: modules/audio_filter/resampler/speex.c:44
+#: modules/audio_filter/resampler/speex.c:45
 msgid "Speex resampler"
 msgstr "Speexリサンプラー"
 
@@ -10635,11 +10605,11 @@ msgstr ""
 "選択されたオーディオ出力デバイスは、他のプログラムで排他的に使用されていま"
 "す。"
 
-#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1486
+#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1510
 msgid "Output device"
 msgstr "出力デバイス"
 
-#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1487
+#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1511
 msgid "Select your audio output device"
 msgstr "オーディオ出力デバイスを選択します。"
 
@@ -10655,7 +10625,7 @@ msgstr ""
 "使用するスピーカー設定を選択します。このオプションでは、例えば、ステレオ -> "
 "5.1への変換などのアップミックスは行いません！"
 
-#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1490
+#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1514
 msgid "Audio volume in hundredths of decibels (dB)."
 msgstr "オーディオ音量を100分の1デシベル (db) 単位で指定"
 
@@ -10759,11 +10729,11 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "Kオーディオインターフェース オーディオ出力"
 
-#: modules/audio_output/mmdevice.c:1472 modules/gui/qt/ui/sprefs_audio.h:417
+#: modules/audio_output/mmdevice.c:1496 modules/gui/qt/ui/sprefs_audio.h:417
 msgid "HDMI/SPDIF audio passthrough"
 msgstr "HDMI/SPDIFオーディオパススルー"
 
-#: modules/audio_output/mmdevice.c:1474
+#: modules/audio_output/mmdevice.c:1498
 msgid ""
 "Change this value if you have issue with HD codecs when using a HDMI "
 "receiver."
@@ -10771,27 +10741,27 @@ msgstr ""
 "HDMIレシーバーの使用時にHDコーデックの使用に問題がある場合はこの値を変更しま"
 "す。"
 
-#: modules/audio_output/mmdevice.c:1481
+#: modules/audio_output/mmdevice.c:1505
 msgid "Disabled"
 msgstr "無効"
 
-#: modules/audio_output/mmdevice.c:1482
+#: modules/audio_output/mmdevice.c:1506
 msgid "Enabled (AC3/DTS only)"
 msgstr "有効化 (AC3/DTS のみ)"
 
-#: modules/audio_output/mmdevice.c:1483
+#: modules/audio_output/mmdevice.c:1507
 msgid "Enabled"
 msgstr "有効"
 
-#: modules/audio_output/mmdevice.c:1494
+#: modules/audio_output/mmdevice.c:1518
 msgid "Windows Multimedia Device output"
 msgstr "Windowsマルチメディアデバイス出力"
 
-#: modules/audio_output/mmdevice.c:1500
+#: modules/audio_output/mmdevice.c:1524
 msgid "Output back-end"
 msgstr "バックエンド出力"
 
-#: modules/audio_output/mmdevice.c:1500
+#: modules/audio_output/mmdevice.c:1524
 msgid "Audio output back-end interface."
 msgstr "バックエンドインターフェースからオーディオ出力"
 
@@ -10819,7 +10789,7 @@ msgstr "ソフトウェアゲイン"
 msgid "This linear gain will be applied in software."
 msgstr "このリニアゲインはソフトウェアで適用されます。"
 
-#: modules/audio_output/wasapi.c:652
+#: modules/audio_output/wasapi.c:687
 msgid "Windows Audio Session API output"
 msgstr "WindowsオーディオセッションAPI出力"
 
@@ -10936,8 +10906,8 @@ msgstr "字幕のコアテキストレンダラーを使用"
 msgid "ARIB subtitles decoder"
 msgstr "ARIB字幕デコーダー"
 
-#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1089
-#: modules/demux/mpeg/ts_psi.c:1096
+#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1092
+#: modules/demux/mpeg/ts_psi.c:1099
 msgid "ARIB subtitles"
 msgstr "ARIB字幕"
 
@@ -10984,9 +10954,8 @@ msgstr "FFmpegオーディオ/ビデオデコーダー"
 msgid "Decoding"
 msgstr "デコード中"
 
-#: modules/codec/avcodec/avcodec.c:152 modules/codec/jpeg.c:119
-#: modules/codec/omxil/omxil.c:171 modules/codec/png.c:99
-#: modules/codec/schroedinger.c:370
+#: modules/codec/avcodec/avcodec.c:152 modules/codec/jpeg.c:120
+#: modules/codec/omxil/omxil.c:171 modules/codec/png.c:100
 msgid "Encoding"
 msgstr "エンコード中"
 
@@ -11257,7 +11226,7 @@ msgstr ""
 "りよい見栄えの画像をもたらしますが、標準的なMPEG2デコーダーとの互換性も引き続"
 "き保っています。"
 
-#: modules/codec/avcodec/avcodec.h:173 modules/codec/jpeg.c:51
+#: modules/codec/avcodec/avcodec.h:173 modules/codec/jpeg.c:52
 msgid "Quality level"
 msgstr "品質レベル"
 
@@ -11452,11 +11421,11 @@ msgstr "サブピクチャー"
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr "VLCは%4.4s %s エンコーダーを開くことができませんでした。"
 
-#: modules/codec/avcodec/vaapi.c:388
+#: modules/codec/avcodec/vaapi.c:414
 msgid "VA-API video decoder via DRM"
 msgstr "DRM経由のVA-APIビデオデコーダー"
 
-#: modules/codec/avcodec/vaapi.c:393
+#: modules/codec/avcodec/vaapi.c:419
 msgid "VA-API video decoder"
 msgstr "VA-APIビデオデコーダー"
 
@@ -11528,11 +11497,11 @@ msgstr "Daalaビデオパケッタイザー"
 msgid "Daala video encoder"
 msgstr "Daalaビデオエンコーダー"
 
-#: modules/codec/daala.c:143 modules/codec/schroedinger.c:54
+#: modules/codec/daala.c:143
 msgid "Chroma format"
 msgstr "クロマ形式"
 
-#: modules/codec/daala.c:144 modules/codec/schroedinger.c:55
+#: modules/codec/daala.c:144
 msgid ""
 "Picking chroma format will force a conversion of the video into that format"
 msgstr "ビデオの変換で使用されるクロマ形式を指定します。"
@@ -11650,8 +11619,8 @@ msgstr "エンコードされる字幕のY座標を指定します。"
 msgid "DVB subtitles decoder"
 msgstr "DVB字幕デコーダー"
 
-#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:772
-#: modules/demux/mpeg/ts_psi.c:821
+#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:775
+#: modules/demux/mpeg/ts_psi.c:824
 msgid "DVB subtitles"
 msgstr "DVB字幕"
 
@@ -11663,11 +11632,11 @@ msgstr "DVB字幕デコーダー"
 msgid "Dummy encoder"
 msgstr "ダミーのエンコーダー"
 
-#: modules/codec/faad.c:54
+#: modules/codec/faad.c:59
 msgid "AAC audio decoder (using libfaad2)"
 msgstr "AACオーディオデコーダー(libfaad2使用)"
 
-#: modules/codec/faad.c:448
+#: modules/codec/faad.c:454
 msgid "AAC extension"
 msgstr "AAC拡張"
 
@@ -11794,11 +11763,11 @@ msgstr "FluidSynth MIDIシンセサイザー"
 msgid "FluidSynth"
 msgstr "FluidSynth"
 
-#: modules/codec/fluidsynth.c:153
+#: modules/codec/fluidsynth.c:160
 msgid "MIDI synthesis not set up"
 msgstr "MIDIシンセサイザーはセットアップされていません"
 
-#: modules/codec/fluidsynth.c:154
+#: modules/codec/fluidsynth.c:161
 msgid ""
 "A sound font file (.SF2) is required for MIDI synthesis.\n"
 "Please install a sound font and configure it from the VLC preferences "
@@ -11842,16 +11811,16 @@ msgstr ""
 msgid "GStreamer Based Decoder"
 msgstr "GStreamerベースデコーダー"
 
-#: modules/codec/jpeg.c:52
+#: modules/codec/jpeg.c:53
 msgid ""
 "Quality level for encoding (this can enlarge or reduce output image size)."
 msgstr "エンコーディング品質レベル (出力する画像サイズを拡大・縮小可能です)"
 
-#: modules/codec/jpeg.c:111
+#: modules/codec/jpeg.c:112
 msgid "JPEG image decoder"
 msgstr "JPEG画像デコーダー"
 
-#: modules/codec/jpeg.c:120
+#: modules/codec/jpeg.c:121
 msgid "JPEG image encoder"
 msgstr "JPEG画像エンコーダー"
 
@@ -12201,11 +12170,11 @@ msgstr "Opus"
 msgid "Opus audio encoder"
 msgstr "Opusオーディオエンコーダー"
 
-#: modules/codec/png.c:91
+#: modules/codec/png.c:92
 msgid "PNG video decoder"
 msgstr "PNGビデオデコーダー"
 
-#: modules/codec/png.c:100
+#: modules/codec/png.c:101
 msgid "PNG video encoder"
 msgstr "PNGビデオエンコーダー"
 
@@ -12461,386 +12430,6 @@ msgstr "Pseudo Rawビデオのパケッタイザー"
 msgid "Raw video encoder for RTP"
 msgstr "RTP用ロービデオエンコーダー"
 
-#: modules/codec/schroedinger.c:60
-msgid "4:2:0"
-msgstr "4:2:0"
-
-#: modules/codec/schroedinger.c:60
-msgid "4:2:2"
-msgstr "4:2:2"
-
-#: modules/codec/schroedinger.c:60
-msgid "4:4:4"
-msgstr "4:4:4"
-
-#: modules/codec/schroedinger.c:63
-msgid "Rate control method"
-msgstr "レート制御方法"
-
-#: modules/codec/schroedinger.c:64
-msgid "Method used to encode the video sequence"
-msgstr "ビデオシーケンスのエンコードに使用される方法"
-
-#: modules/codec/schroedinger.c:77
-msgid "Constant noise threshold mode"
-msgstr "固定ノイズ閾値モード"
-
-#: modules/codec/schroedinger.c:78
-msgid "Constant bitrate mode (CBR)"
-msgstr "固定ビットレートモード(CBR)"
-
-#: modules/codec/schroedinger.c:79
-msgid "Low Delay mode"
-msgstr "低遅延モード"
-
-#: modules/codec/schroedinger.c:80
-msgid "Lossless mode"
-msgstr "ロスレスモード"
-
-#: modules/codec/schroedinger.c:81
-msgid "Constant lambda mode"
-msgstr "固定ラムダモード"
-
-#: modules/codec/schroedinger.c:82
-msgid "Constant error mode"
-msgstr "固定エラーモード"
-
-#: modules/codec/schroedinger.c:83
-msgid "Constant quality mode"
-msgstr "固定品質モード"
-
-#: modules/codec/schroedinger.c:87
-msgid "GOP structure"
-msgstr "GOP構造"
-
-#: modules/codec/schroedinger.c:88
-msgid "GOP structure used to encode the video sequence"
-msgstr "ビデオシーケンスのエンコードに使用されるGOP構造"
-
-#: modules/codec/schroedinger.c:100
-msgid ""
-"No fixed gop structure. A picture can be intra or inter and refer to "
-"previous or future pictures."
-msgstr ""
-"固定化したGOP構造なし。画像間、または画像内で前、または先の画像を参照すること"
-"が可能"
-
-#: modules/codec/schroedinger.c:101
-msgid "I-frame only sequence"
-msgstr "Iフレームのみのシーケンス"
-
-#: modules/codec/schroedinger.c:102 modules/codec/schroedinger.c:103
-msgid "Inter pictures refere to previous pictures only"
-msgstr "画像間は前の画像のみを参照可能"
-
-#: modules/codec/schroedinger.c:104 modules/codec/schroedinger.c:105
-msgid "Inter pictures can refer to previous or future pictures"
-msgstr "画像間は前、または先の画像を参照可能"
-
-#: modules/codec/schroedinger.c:109
-msgid "Constant quality factor"
-msgstr "品質固定化係数"
-
-#: modules/codec/schroedinger.c:110
-msgid "Quality factor to use in constant quality mode"
-msgstr "固定品質モードで使用される品質係数"
-
-#: modules/codec/schroedinger.c:113
-msgid "Noise Threshold"
-msgstr "ノイズ閾値"
-
-#: modules/codec/schroedinger.c:114
-msgid "Noise threshold to use in constant noise threshold mode"
-msgstr "固定ノイズ閾値モードで使用されるノイズの閾値を指定します。"
-
-#: modules/codec/schroedinger.c:117
-msgid "CBR bitrate (kbps)"
-msgstr "CBR ビットレート(kbps)"
-
-#: modules/codec/schroedinger.c:118
-msgid "Target bitrate in kbps when encoding in constant bitrate mode"
-msgstr ""
-"エンコードが固定ビットレートモードの時のターゲットビットレートをkbpsで指定し"
-"ます。"
-
-#: modules/codec/schroedinger.c:121
-msgid "Maximum bitrate (kbps)"
-msgstr "最大ビットレート(kbps)"
-
-#: modules/codec/schroedinger.c:122
-msgid "Maximum bitrate in kbps when encoding in constant bitrate mode"
-msgstr ""
-"エンコードが固定ビットレートモードの時の最大ビットレートをkbpsで指定します。"
-
-#: modules/codec/schroedinger.c:125
-msgid "Minimum bitrate (kbps)"
-msgstr "最小ビットレート(kbps)"
-
-#: modules/codec/schroedinger.c:126
-msgid "Minimum bitrate in kbps when encoding in constant bitrate mode"
-msgstr ""
-"エンコードが固定ビットレートモードの時の最小ビットレートをkbpsで指定します。"
-
-#: modules/codec/schroedinger.c:129
-msgid "GOP length"
-msgstr "GOP長"
-
-#: modules/codec/schroedinger.c:130
-msgid ""
-"Number of pictures between successive sequence headers i.e. length of the "
-"group of pictures"
-msgstr "連続的なシーケンスヘッダー間の画像数。つまり、画像のグループ数"
-
-#: modules/codec/schroedinger.c:134
-msgid "Prefilter"
-msgstr "プレフィルター"
-
-#: modules/codec/schroedinger.c:135
-msgid "Enable adaptive prefiltering"
-msgstr "アダプティブプレフィルタリングを有効にします。"
-
-#: modules/codec/schroedinger.c:147
-msgid "No pre-filtering"
-msgstr "プレフィルタリングなし"
-
-#: modules/codec/schroedinger.c:148
-msgid "Centre Weighted Median"
-msgstr "中心を重点化したメディア"
-
-#: modules/codec/schroedinger.c:149
-msgid "Gaussian Low Pass Filter"
-msgstr "ガウスローパスフィルター"
-
-#: modules/codec/schroedinger.c:150
-msgid "Add Noise"
-msgstr "ノイズ追加"
-
-#: modules/codec/schroedinger.c:151
-msgid "Gaussian Adaptive Low Pass Filter"
-msgstr "ガウス適応ローパスフィルター"
-
-#: modules/codec/schroedinger.c:152
-msgid "Low Pass Filter"
-msgstr "ローパスフィルター"
-
-#: modules/codec/schroedinger.c:156
-msgid "Amount of prefiltering"
-msgstr "プレフィルタリングの量"
-
-#: modules/codec/schroedinger.c:157
-msgid "Higher value implies more prefiltering"
-msgstr "高い値はよりプレフィルタリングを行うことを意味します。"
-
-#: modules/codec/schroedinger.c:160
-msgid "Picture coding mode"
-msgstr "画像コーディングモード"
-
-#: modules/codec/schroedinger.c:161
-msgid ""
-"Field coding is where interlaced fields are coded separately as opposed to a "
-"pseudo-progressive frame"
-msgstr ""
-"疑似進行フレームに対抗して別にコード化されるインターレス化フィールドのフィー"
-"ルドコーディングを指定します。"
-
-#: modules/codec/schroedinger.c:166
-msgid "auto - let encoder decide based upon input (Best)"
-msgstr "自動:入力を基準としてエンコーダーが決定(最適)"
-
-#: modules/codec/schroedinger.c:167
-msgid "force coding frame as single picture"
-msgstr "単一画像としてコーディングフレームを強制"
-
-#: modules/codec/schroedinger.c:168
-msgid "force coding frame as separate interlaced fields"
-msgstr "別のインターレース化フィールドとしてコーディングフレームを強制"
-
-#: modules/codec/schroedinger.c:173
-msgid "Size of motion compensation blocks"
-msgstr "モーション補正ブロックサイズ"
-
-#: modules/codec/schroedinger.c:182 modules/codec/schroedinger.c:199
-#: modules/codec/schroedinger.c:297 modules/codec/schroedinger.c:338
-msgid "automatic - let encoder decide based upon input (Best)"
-msgstr "自動:入力を基準としてエンコーダーが決定(最適)"
-
-#: modules/codec/schroedinger.c:183
-msgid "small - use small motion compensation blocks"
-msgstr "小:小さなモーション補正ブロックを使用"
-
-#: modules/codec/schroedinger.c:184
-msgid "medium - use medium motion compensation blocks"
-msgstr "中:中間のモーション補正ブロックを使用"
-
-#: modules/codec/schroedinger.c:185
-msgid "large - use large motion compensation blocks"
-msgstr "大:大きなモーション補正ブロックを使用"
-
-#: modules/codec/schroedinger.c:190
-msgid "Overlap of motion compensation blocks"
-msgstr "モーション補正ブロックの重なり"
-
-#: modules/codec/schroedinger.c:200
-msgid "none - Motion compensation blocks do not overlap"
-msgstr "なし:モーション補正ブロックを重ねません"
-
-#: modules/codec/schroedinger.c:201
-msgid "partial - Motion compensation blocks only partially overlap"
-msgstr "部分的:モーション補正ブロックを部分的に重ねます"
-
-#: modules/codec/schroedinger.c:202
-msgid "full - Motion compensation blocks fully overlap"
-msgstr "フル:モーション補正ブロック全体を重ねます"
-
-#: modules/codec/schroedinger.c:207
-msgid "Motion Vector precision"
-msgstr "モーションベクトル精度"
-
-#: modules/codec/schroedinger.c:208
-msgid "Motion Vector precision in pels"
-msgstr "モーションベクトルの精度をピクセルで指定します。"
-
-#: modules/codec/schroedinger.c:214
-msgid "Three component motion estimation"
-msgstr "3コンポーネントモーション予測"
-
-#: modules/codec/schroedinger.c:215
-msgid "Use chroma as part of the motion estimation process"
-msgstr "クロマをモーション予測処理の一部として使用します。"
-
-#: modules/codec/schroedinger.c:218
-msgid "Intra picture DWT filter"
-msgstr "画像内DWTフィルター"
-
-#: modules/codec/schroedinger.c:221
-msgid "Inter picture DWT filter"
-msgstr "画像間DWTフィルター"
-
-#: modules/codec/schroedinger.c:244
-msgid "Number of DWT iterations"
-msgstr "DWT相互作用の数"
-
-#: modules/codec/schroedinger.c:245
-msgid "Also known as DWT levels"
-msgstr "DWTレベルとしても知られています。"
-
-#: modules/codec/schroedinger.c:250
-msgid "Enable multiple quantizers"
-msgstr "複数の量子化を有効化"
-
-#: modules/codec/schroedinger.c:251
-msgid "Enable multiple quantizers per subband (one per codeblock)"
-msgstr "サブバンドごとに複数の量子化を有効化します。(コードブロックごとに一つ)"
-
-#: modules/codec/schroedinger.c:255
-msgid "Disable arithmetic coding"
-msgstr "算術コーディングの無効化"
-
-#: modules/codec/schroedinger.c:256
-msgid "Use variable length codes instead, useful for very high bitrates"
-msgstr ""
-"便利な非常に高いビットレートを使用するのではなく、可変長コードを使用します。"
-
-#: modules/codec/schroedinger.c:261
-msgid "perceptual weighting method"
-msgstr "知覚的重み付け方式"
-
-#: modules/codec/schroedinger.c:272
-msgid "perceptual distance"
-msgstr "知覚的距離"
-
-#: modules/codec/schroedinger.c:273
-msgid "perceptual distance to calculate perceptual weight"
-msgstr "知覚的重みを計算するための知覚的距離"
-
-#: modules/codec/schroedinger.c:277
-msgid "Horizontal slices per frame"
-msgstr "フレームごとの水平スライス"
-
-#: modules/codec/schroedinger.c:278
-msgid "Number of horizontal slices per frame in low delay mode"
-msgstr "低遅延モードでのフレームごとの水平スライス数"
-
-#: modules/codec/schroedinger.c:282
-msgid "Vertical slices per frame"
-msgstr "フレームごとの垂直スライス"
-
-#: modules/codec/schroedinger.c:283
-msgid "Number of vertical slices per frame in low delay mode"
-msgstr "低遅延モードでのフレームごとの垂直スライス数"
-
-#: modules/codec/schroedinger.c:287
-msgid "Size of code blocks in each subband"
-msgstr "個々のサブバンドのコードブロックサイズ"
-
-#: modules/codec/schroedinger.c:298
-msgid "small - use small code blocks"
-msgstr "小 - 小さなコードブロックの使用"
-
-#: modules/codec/schroedinger.c:299
-msgid "medium - use medium sized code blocks"
-msgstr "中 - 中間サイズのコードブロックの使用"
-
-#: modules/codec/schroedinger.c:300
-msgid "large - use large code blocks"
-msgstr "大 - 大きなコードブロックの使用"
-
-#: modules/codec/schroedinger.c:301
-msgid "full - One code block per subband"
-msgstr "フル - サブバンドごとに1つのコードブロック"
-
-#: modules/codec/schroedinger.c:306
-msgid "Enable hierarchical Motion Estimation"
-msgstr "階層的モーション予測の有効化"
-
-#: modules/codec/schroedinger.c:310
-msgid "Number of levels of downsampling"
-msgstr "ダウンサンプリングのレベル数"
-
-#: modules/codec/schroedinger.c:311
-msgid "Number of levels of downsampling in hierarchical motion estimation mode"
-msgstr "階層的モーション予測モードのダウンサンプリングのレベル数"
-
-#: modules/codec/schroedinger.c:315
-msgid "Enable Global Motion Estimation"
-msgstr "グローバルモーション予測の有効化"
-
-#: modules/codec/schroedinger.c:319
-msgid "Enable Phase Correlation Estimation"
-msgstr "フェーズ相関予測の有効化"
-
-#: modules/codec/schroedinger.c:323
-msgid "Enable Scene Change Detection"
-msgstr "シーン変更検出を有効化"
-
-#: modules/codec/schroedinger.c:327
-msgid "Force Profile"
-msgstr "プロファイルを強制"
-
-#: modules/codec/schroedinger.c:339
-msgid "VC2 Low Delay Profile"
-msgstr "VC2低遅延プロファイル"
-
-#: modules/codec/schroedinger.c:340
-msgid "VC2 Simple Profile"
-msgstr "VC2シンプルプロファイル"
-
-#: modules/codec/schroedinger.c:341
-msgid "VC2 Main Profile"
-msgstr "VC2メインプロファイル"
-
-#: modules/codec/schroedinger.c:342
-msgid "Main Profile"
-msgstr "メインプロファイル"
-
-#: modules/codec/schroedinger.c:363
-msgid "Dirac video decoder using libschroedinger"
-msgstr "libschroedinger使用のDiracビデオデコーダー"
-
-#: modules/codec/schroedinger.c:371
-msgid "Dirac video encoder using libschroedinger"
-msgstr "libschroedinger使用のDiracビデオエンコーダー"
-
 #: modules/codec/scte18.c:41
 msgid "SCTE-18 decoder"
 msgstr "SCTE-18デコーダー"
@@ -12877,7 +12466,7 @@ msgstr "MP3固定小数点オーディオエンコーダー"
 msgid "S/PDIF pass-through decoder"
 msgstr "S/PDIFパススルーデコーダー"
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:910
+#: modules/codec/speex.c:59 modules/codec/speex.c:1023
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
 #: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
@@ -14496,14 +14085,14 @@ msgstr "D-Busコントロールインターフェース"
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1028
-#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
-#: modules/gui/qt/main_interface.cpp:1306
-#: modules/gui/qt/main_interface.cpp:1343
-#: modules/gui/qt/main_interface.cpp:1345
-#: modules/gui/qt/main_interface.cpp:1453
-#: modules/gui/qt/main_interface.cpp:1470
-#: modules/gui/qt/main_interface.cpp:1478
-#: modules/gui/qt/main_interface.cpp:1501 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1295
+#: modules/gui/qt/main_interface.cpp:1299
+#: modules/gui/qt/main_interface.cpp:1336
+#: modules/gui/qt/main_interface.cpp:1338
+#: modules/gui/qt/main_interface.cpp:1446
+#: modules/gui/qt/main_interface.cpp:1463
+#: modules/gui/qt/main_interface.cpp:1471
+#: modules/gui/qt/main_interface.cpp:1494 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -15242,88 +14831,88 @@ msgstr "WinMsg"
 msgid "Windows messages interface"
 msgstr "WIndowsメッセージインターフェース"
 
-#: modules/demux/adaptive/adaptive.cpp:69
+#: modules/demux/adaptive/adaptive.cpp:71
 msgid "Maximum device width"
 msgstr "デバイス最大幅"
 
-#: modules/demux/adaptive/adaptive.cpp:70
+#: modules/demux/adaptive/adaptive.cpp:72
 msgid "Maximum device height"
 msgstr "デバイス最大高"
 
-#: modules/demux/adaptive/adaptive.cpp:72
+#: modules/demux/adaptive/adaptive.cpp:74
 msgid "Fixed Bandwidth in KiB/s"
 msgstr "固定帯域幅をKiB/sで指定"
 
-#: modules/demux/adaptive/adaptive.cpp:73
+#: modules/demux/adaptive/adaptive.cpp:75
 msgid "Preferred bandwidth for non adaptive streams"
 msgstr "アダプティブストリーム以外で使用される帯域幅"
 
-#: modules/demux/adaptive/adaptive.cpp:75
+#: modules/demux/adaptive/adaptive.cpp:77
 msgid "Live Playback delay (ms)"
 msgstr "現在の再生遅延(ms)"
 
-#: modules/demux/adaptive/adaptive.cpp:76
+#: modules/demux/adaptive/adaptive.cpp:78
 msgid "Tradeoff between stability and real time"
 msgstr "安定性とリアルタイムをトレードオフ"
 
-#: modules/demux/adaptive/adaptive.cpp:78
+#: modules/demux/adaptive/adaptive.cpp:80
 msgid "Max buffering (ms)"
 msgstr "最大バッファリング(ms)"
 
-#: modules/demux/adaptive/adaptive.cpp:80
+#: modules/demux/adaptive/adaptive.cpp:82
 msgid "Adaptive Logic"
 msgstr "アダプティブロジック"
 
-#: modules/demux/adaptive/adaptive.cpp:82
+#: modules/demux/adaptive/adaptive.cpp:84
 msgid "Use regular HTTP modules"
 msgstr "標準HTTPモジュールを使用"
 
-#: modules/demux/adaptive/adaptive.cpp:83
+#: modules/demux/adaptive/adaptive.cpp:85
 msgid "Connect using HTTP access instead of custom HTTP code"
 msgstr "カスタムHTTPコードではなく、HTTPアクセスで接続"
 
-#: modules/demux/adaptive/adaptive.cpp:85
+#: modules/demux/adaptive/adaptive.cpp:87
 #: modules/gui/qt/components/simple_preferences.cpp:713
 msgid "Low latency"
 msgstr "小さな遅延"
 
-#: modules/demux/adaptive/adaptive.cpp:86
+#: modules/demux/adaptive/adaptive.cpp:88
 msgid "Overrides low latency parameters"
 msgstr "低レイテンシパラメーターの上書き"
 
-#: modules/demux/adaptive/adaptive.cpp:107
+#: modules/demux/adaptive/adaptive.cpp:109
 msgid "Predictive"
 msgstr "予測"
 
-#: modules/demux/adaptive/adaptive.cpp:108
+#: modules/demux/adaptive/adaptive.cpp:110
 msgid "Near Optimal"
 msgstr "近最適"
 
-#: modules/demux/adaptive/adaptive.cpp:109
+#: modules/demux/adaptive/adaptive.cpp:111
 msgid "Bandwidth Adaptive"
 msgstr "アダプティブの帯域幅"
 
-#: modules/demux/adaptive/adaptive.cpp:110
+#: modules/demux/adaptive/adaptive.cpp:112
 msgid "Fixed Bandwidth"
 msgstr "固定帯域幅"
 
-#: modules/demux/adaptive/adaptive.cpp:111
+#: modules/demux/adaptive/adaptive.cpp:113
 msgid "Lowest Bandwidth/Quality"
 msgstr "最低帯域幅/品質"
 
-#: modules/demux/adaptive/adaptive.cpp:112
+#: modules/demux/adaptive/adaptive.cpp:114
 msgid "Highest Bandwidth/Quality"
 msgstr "最高帯域幅/品質"
 
-#: modules/demux/adaptive/adaptive.cpp:123
+#: modules/demux/adaptive/adaptive.cpp:125
 msgid "Force"
 msgstr "強制する"
 
-#: modules/demux/adaptive/adaptive.cpp:127
+#: modules/demux/adaptive/adaptive.cpp:129
 msgid "Adaptive"
 msgstr "アダプティブ"
 
-#: modules/demux/adaptive/adaptive.cpp:128
+#: modules/demux/adaptive/adaptive.cpp:130
 msgid "Unified adaptive streaming for DASH/HLS"
 msgstr "DASH/HLS用統一アダプティブストリーミング"
 
@@ -15419,7 +15008,7 @@ msgstr "必要時に修正"
 msgid "AVI demuxer"
 msgstr "AVIデマルチプレクサー"
 
-#: modules/demux/avi/avi.c:910 modules/demux/mp4/mp4.c:4374
+#: modules/demux/avi/avi.c:920 modules/demux/mp4/mp4.c:4402
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15434,27 +15023,27 @@ msgstr ""
 "この手順は大きなファイルの場合、時間がかかります。\n"
 "どうしますか?"
 
-#: modules/demux/avi/avi.c:918
+#: modules/demux/avi/avi.c:928
 msgid "Do not play"
 msgstr "再生しない"
 
-#: modules/demux/avi/avi.c:919
+#: modules/demux/avi/avi.c:929
 msgid "Build index then play"
 msgstr "インデックスを構築し、再生"
 
-#: modules/demux/avi/avi.c:920
+#: modules/demux/avi/avi.c:930
 msgid "Play as is"
 msgstr "そのまま再生"
 
-#: modules/demux/avi/avi.c:921 modules/demux/mp4/mp4.c:4385
+#: modules/demux/avi/avi.c:931 modules/demux/mp4/mp4.c:4413
 msgid "Broken or missing Index"
 msgstr "インデックスが壊れているか無い"
 
-#: modules/demux/avi/avi.c:2879
+#: modules/demux/avi/avi.c:2889
 msgid "Broken or missing AVI Index"
 msgstr "AVIインデックスが壊れているかありません"
 
-#: modules/demux/avi/avi.c:2880
+#: modules/demux/avi/avi.c:2890
 msgid "Fixing AVI Index..."
 msgstr "AVIインデックスを修正しています..."
 
@@ -15571,7 +15160,7 @@ msgstr "画像"
 
 #: modules/demux/mjpeg.c:46 modules/demux/mpeg/es.c:53
 #: modules/demux/mpeg/h26x.c:46 modules/demux/rawvid.c:43
-#: modules/demux/subtitle.c:77 modules/demux/vc1.c:43
+#: modules/demux/subtitle.c:78 modules/demux/vc1.c:43
 #: modules/gui/macosx/VLCOpenWindowController.m:208
 msgid "Frames per Second"
 msgstr "フレーム数/秒"
@@ -15620,7 +15209,7 @@ msgstr ""
 "同じディレクトリの同じディレクトリからmatroskaのファイルをプリロードします。"
 "(壊れたファイルには適しません)"
 
-#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:113
+#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:114
 msgid "Seek based on percent not time"
 msgstr "時間ではなく、パーセントでシーク"
 
@@ -15874,27 +15463,27 @@ msgstr "明示"
 msgid "Clean"
 msgstr "クリーン"
 
-#: modules/demux/mp4/mp4.c:51
+#: modules/demux/mp4/mp4.c:52
 msgid "M4A audio only"
 msgstr "M4Aオーディオのみ"
 
-#: modules/demux/mp4/mp4.c:52
+#: modules/demux/mp4/mp4.c:53
 msgid "Ignore non audio tracks from iTunes audio files"
 msgstr "iTunesのオーディオファイルからオーディオトラック以外を無視する"
 
-#: modules/demux/mp4/mp4.c:57
+#: modules/demux/mp4/mp4.c:58
 msgid "MP4 stream demuxer"
 msgstr "MP4ストリーム デマルチプレクサー"
 
-#: modules/demux/mp4/mp4.c:58
+#: modules/demux/mp4/mp4.c:59
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4382
+#: modules/demux/mp4/mp4.c:4410
 msgid "Do not seek"
 msgstr "シークしない"
 
-#: modules/demux/mp4/mp4.c:4383
+#: modules/demux/mp4/mp4.c:4411
 msgid "Build index"
 msgstr "インデックス構築"
 
@@ -15960,19 +15549,19 @@ msgstr "MPEG-PSデマルチプレクサー"
 msgid "PS"
 msgstr "PS"
 
-#: modules/demux/mpeg/ts.c:84
+#: modules/demux/mpeg/ts.c:85
 msgid "Extra PMT"
 msgstr "外部PMT"
 
-#: modules/demux/mpeg/ts.c:86
+#: modules/demux/mpeg/ts.c:87
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr "外部PMTを指定することが可能です。(pmt_pid=pid:stream_type[,...])"
 
-#: modules/demux/mpeg/ts.c:88
+#: modules/demux/mpeg/ts.c:89
 msgid "Set id of ES to PID"
 msgstr "ESからPIDのID設定"
 
-#: modules/demux/mpeg/ts.c:89
+#: modules/demux/mpeg/ts.c:90
 msgid ""
 "Set the internal ID of each elementary stream handled by VLC to the same "
 "value as the PID in the TS stream, instead of 1, 2, 3, etc. Useful to do "
@@ -15982,30 +15571,30 @@ msgstr ""
 "トリーム中のPIDと同じ値に設定します。'#duplicate{..., select=\"es=<pid>\"}'の"
 "ように指定するのが便利です。"
 
-#: modules/demux/mpeg/ts.c:94 modules/mux/mpeg/ts.c:173
+#: modules/demux/mpeg/ts.c:95 modules/mux/mpeg/ts.c:173
 msgid "CSA Key"
 msgstr "CSAキー"
 
-#: modules/demux/mpeg/ts.c:95 modules/mux/mpeg/ts.c:174
+#: modules/demux/mpeg/ts.c:96 modules/mux/mpeg/ts.c:174
 msgid ""
 "CSA encryption key. This must be a 16 char string (8 hexadecimal bytes)."
 msgstr "CSA暗号化キーを16文字(8バイト)の16進数表記で指定します。"
 
-#: modules/demux/mpeg/ts.c:98 modules/mux/mpeg/ts.c:177
+#: modules/demux/mpeg/ts.c:99 modules/mux/mpeg/ts.c:177
 msgid "Second CSA Key"
 msgstr "二次CSAキー"
 
-#: modules/demux/mpeg/ts.c:99 modules/mux/mpeg/ts.c:178
+#: modules/demux/mpeg/ts.c:100 modules/mux/mpeg/ts.c:178
 msgid ""
 "The even CSA encryption key. This must be a 16 char string (8 hexadecimal "
 "bytes)."
 msgstr "偶数のCSA暗号化キーを16文字(8バイト)の16進数で指定します。"
 
-#: modules/demux/mpeg/ts.c:103
+#: modules/demux/mpeg/ts.c:104
 msgid "Packet size in bytes to decrypt"
 msgstr "復号化パケットサイズ(単位: バイト)"
 
-#: modules/demux/mpeg/ts.c:104
+#: modules/demux/mpeg/ts.c:105
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
 "subtract the TS-header from the value before decrypting."
@@ -16013,11 +15602,11 @@ msgstr ""
 "複合化するTSパケットのサイズを指定します。複合化ルーチンは複合処理の前にこの"
 "値からTSヘッダーを抜き出します。"
 
-#: modules/demux/mpeg/ts.c:108
+#: modules/demux/mpeg/ts.c:109
 msgid "Separate sub-streams"
 msgstr "サブストリームの分割"
 
-#: modules/demux/mpeg/ts.c:110
+#: modules/demux/mpeg/ts.c:111
 msgid ""
 "Separate teletex/dvbs pages into independent ES. It can be useful to turn "
 "off this option when using stream output."
@@ -16025,7 +15614,7 @@ msgstr ""
 "テレテキスト/dvbsページを独立したESに分割します。ストリーム出力を使用する場"
 "合、このオプションを切った方が便利です。"
 
-#: modules/demux/mpeg/ts.c:115
+#: modules/demux/mpeg/ts.c:116
 msgid ""
 "Seek and position based on a percent byte position, not a PCR generated time "
 "position. If seeking doesn't work property, turn on this option."
@@ -16033,78 +15622,78 @@ msgstr ""
 "PCRの生成時間位置ではなく、バイト位置のパーセンテージでシークと位置決めが行わ"
 "れます。シークが正しく動作しない場合、このオプションを設定してください。"
 
-#: modules/demux/mpeg/ts.c:126
+#: modules/demux/mpeg/ts.c:127
 msgid "Trust in-stream PCR"
 msgstr "インストリームPCRを信頼"
 
-#: modules/demux/mpeg/ts.c:127
+#: modules/demux/mpeg/ts.c:128
 msgid "Use the stream PCR as a reference."
 msgstr "ストリームPCRを参照用に使用"
 
-#: modules/demux/mpeg/ts.c:134 modules/mux/mpeg/ts.c:100
+#: modules/demux/mpeg/ts.c:135 modules/mux/mpeg/ts.c:100
 msgid "Digital TV Standard"
 msgstr "デジタルTV規格"
 
-#: modules/demux/mpeg/ts.c:135
+#: modules/demux/mpeg/ts.c:136
 msgid ""
 "Selects mode for digital TV standard. This feature affects EPG information "
 "and subtitles."
 msgstr "デジタルTV規格を選択します。この設定はEPG情報と字幕に関係します。"
 
-#: modules/demux/mpeg/ts.c:139
+#: modules/demux/mpeg/ts.c:140
 msgid "MPEG Transport Stream demuxer"
 msgstr "MPEGトランスポートストリームデマルチプレクサー"
 
-#: modules/demux/mpeg/ts_psi.c:422
+#: modules/demux/mpeg/ts_psi.c:425
 msgid "Main audio"
 msgstr "メインのオーディオ"
 
-#: modules/demux/mpeg/ts_psi.c:423
+#: modules/demux/mpeg/ts_psi.c:426
 msgid "Audio description for the visually impaired"
 msgstr "表示に障害がある場合のオーディオ説明"
 
-#: modules/demux/mpeg/ts_psi.c:424
+#: modules/demux/mpeg/ts_psi.c:427
 msgid "Clean audio for the hearing impaired"
 msgstr "音声に問題がある場合、オーディオをミュートする"
 
-#: modules/demux/mpeg/ts_psi.c:425
+#: modules/demux/mpeg/ts_psi.c:428
 msgid "Spoken subtitles for the visually impaired"
 msgstr "表示に問題がある場合、字幕を読み上げる"
 
-#: modules/demux/mpeg/ts_psi.c:607 modules/gui/macosx/VLCMainMenu.m:465
+#: modules/demux/mpeg/ts_psi.c:610 modules/gui/macosx/VLCMainMenu.m:465
 #: modules/gui/qt/dialogs/toolbar.cpp:541
 msgid "Teletext"
 msgstr "テレテキスト"
 
-#: modules/demux/mpeg/ts_psi.c:608
+#: modules/demux/mpeg/ts_psi.c:611
 msgid "Teletext subtitles"
 msgstr "テレテキスト字幕"
 
-#: modules/demux/mpeg/ts_psi.c:609
+#: modules/demux/mpeg/ts_psi.c:612
 msgid "Teletext: additional information"
 msgstr "テレテキスト: 追加の情報"
 
-#: modules/demux/mpeg/ts_psi.c:610
+#: modules/demux/mpeg/ts_psi.c:613
 msgid "Teletext: program schedule"
 msgstr "テレテキスト: プログラムスケジュール"
 
-#: modules/demux/mpeg/ts_psi.c:611
+#: modules/demux/mpeg/ts_psi.c:614
 msgid "Teletext subtitles: hearing impaired"
 msgstr "テキスト字幕: 聴覚障害"
 
-#: modules/demux/mpeg/ts_psi.c:828
+#: modules/demux/mpeg/ts_psi.c:831
 msgid "DVB subtitles: hearing impaired"
 msgstr "DVB字幕: 聴覚障害"
 
-#: modules/demux/mpeg/ts_psi.c:1337
+#: modules/demux/mpeg/ts_psi.c:1340
 msgid "clean effects"
 msgstr "エフェクト消去"
 
-#: modules/demux/mpeg/ts_psi.c:1338
+#: modules/demux/mpeg/ts_psi.c:1341
 msgid "hearing impaired"
 msgstr "聴覚障害"
 
-#: modules/demux/mpeg/ts_psi.c:1339
+#: modules/demux/mpeg/ts_psi.c:1342
 msgid "visual impaired commentary"
 msgstr "視力障害解説"
 
@@ -16120,7 +15709,7 @@ msgstr "NullSoftデマルチプレクサー"
 msgid "Nuv demuxer"
 msgstr "Nuvデマルチプレクサー"
 
-#: modules/demux/ogg.c:57
+#: modules/demux/ogg.c:58
 msgid "OGG demuxer"
 msgstr "OGGデマルチプレクサー"
 
@@ -16166,7 +15755,7 @@ msgstr "DVBプレイリストのインポート"
 
 #: modules/demux/playlist/playlist.c:90
 msgid "Podcast parser"
-msgstr "Podcastパーサー"
+msgstr "ポッドキャストパーサー"
 
 #: modules/demux/playlist/playlist.c:95
 msgid "XSPF playlist import"
@@ -16203,55 +15792,55 @@ msgstr "WPLプレイリストのインポート"
 #: modules/demux/playlist/podcast.c:230 modules/demux/playlist/podcast.c:242
 #: modules/demux/playlist/podcast.c:305 modules/demux/playlist/podcast.c:328
 msgid "Podcast Info"
-msgstr "Podcast情報"
+msgstr "ポッドキャストの情報"
 
 #: modules/demux/playlist/podcast.c:232
 msgid "Podcast Link"
-msgstr "Podcast リンク"
+msgstr "ポッドキャストリンク"
 
 #: modules/demux/playlist/podcast.c:233
 msgid "Podcast Copyright"
-msgstr "Podcast Copyright"
+msgstr "ポッドキャストの著作権"
 
 #: modules/demux/playlist/podcast.c:234
 msgid "Podcast Category"
-msgstr "Podcast カテゴリ"
+msgstr "ポッドキャストカテゴリ"
 
 #: modules/demux/playlist/podcast.c:235 modules/demux/playlist/podcast.c:312
 msgid "Podcast Keywords"
-msgstr "Podcast キーワード"
+msgstr "ポッドキャストキーワード"
 
 #: modules/demux/playlist/podcast.c:236 modules/demux/playlist/podcast.c:313
 msgid "Podcast Subtitle"
-msgstr "Podcast サブタイトル"
+msgstr "ポッドキャストサブタイトル"
 
 #: modules/demux/playlist/podcast.c:242 modules/demux/playlist/podcast.c:314
 msgid "Podcast Summary"
-msgstr "Podcastの要約"
+msgstr "ポッドキャストのサマリ"
 
 #: modules/demux/playlist/podcast.c:308
 msgid "Podcast Publication Date"
-msgstr "Podcast 公開日"
+msgstr "ポッドキャストの公開日"
 
 #: modules/demux/playlist/podcast.c:309
 msgid "Podcast Author"
-msgstr "Podcast 作者"
+msgstr "ポッドキャストの作者"
 
 #: modules/demux/playlist/podcast.c:310
 msgid "Podcast Subcategory"
-msgstr "Podcast サブカテゴリ"
+msgstr "ポッドキャストのサブカテゴリ"
 
 #: modules/demux/playlist/podcast.c:311
 msgid "Podcast Duration"
-msgstr "Podcast 長さ"
+msgstr "ポッドキャストの長さ"
 
 #: modules/demux/playlist/podcast.c:315
 msgid "Podcast Type"
-msgstr "Podcast タイプ"
+msgstr "ポッドキャストタイプ"
 
 #: modules/demux/playlist/podcast.c:329
 msgid "Podcast Size"
-msgstr "Podcastサイズ"
+msgstr "ポッドキャストのサイズ"
 
 #: modules/demux/playlist/podcast.c:330
 #, c-format
@@ -16365,7 +15954,7 @@ msgstr "Realデマルチプレクサー"
 msgid "C64 sid demuxer"
 msgstr "C64 sidデマルチプレクサー"
 
-#: modules/demux/smf.c:725
+#: modules/demux/smf.c:727
 msgid "SMF demuxer"
 msgstr "SMFデマルチプレクサー"
 
@@ -16373,13 +15962,13 @@ msgstr "SMFデマルチプレクサー"
 msgid "EBU STL subtitles parser"
 msgstr "EBU STL字幕パーサー"
 
-#: modules/demux/subtitle.c:53
+#: modules/demux/subtitle.c:54
 msgid "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
 msgstr ""
 "すべての字幕に適用する遅延を1/10秒単位で指定します。(例えば、100は10秒を意味"
 "します)"
 
-#: modules/demux/subtitle.c:55
+#: modules/demux/subtitle.c:56
 msgid ""
 "Override the normal frames per second settings. This will only work with "
 "MicroDVD and SubRIP (SRT) subtitles."
@@ -16387,7 +15976,7 @@ msgstr ""
 "通常のフレームレートを上書きします。このオプションは、MicroDVDとSubRIP(SRT)字"
 "幕でのみ有効です。"
 
-#: modules/demux/subtitle.c:58
+#: modules/demux/subtitle.c:59
 msgid ""
 "Force the subtitles format. Selecting \"auto\" means autodetection and "
 "should always work."
@@ -16395,23 +15984,23 @@ msgstr ""
 "字幕のフォーマットを指定します。\"自動\"は自動検出を行うため、常に動作するで"
 "しょう。"
 
-#: modules/demux/subtitle.c:60
+#: modules/demux/subtitle.c:61
 msgid "Override the default track description."
 msgstr "デフォルトのトラックの説明を上書きします。"
 
-#: modules/demux/subtitle.c:72
+#: modules/demux/subtitle.c:73
 msgid "Text subtitle parser"
 msgstr "テキスト字幕パーサー"
 
-#: modules/demux/subtitle.c:80 modules/spu/subsdelay.c:275
+#: modules/demux/subtitle.c:81 modules/spu/subsdelay.c:275
 msgid "Subtitle delay"
 msgstr "字幕の遅延"
 
-#: modules/demux/subtitle.c:82
+#: modules/demux/subtitle.c:83
 msgid "Subtitle format"
 msgstr "字幕の形式"
 
-#: modules/demux/subtitle.c:85
+#: modules/demux/subtitle.c:86
 msgid "Subtitle description"
 msgstr "字幕の説明"
 
@@ -16427,15 +16016,15 @@ msgstr "TY"
 msgid "TY Stream audio/video demux"
 msgstr "TYストリームオーディオ/ビデオ デマルチプレクサー"
 
-#: modules/demux/ty.c:784
+#: modules/demux/ty.c:793
 msgid "Closed captions 2"
 msgstr "クローズドキャプション2"
 
-#: modules/demux/ty.c:785
+#: modules/demux/ty.c:794
 msgid "Closed captions 3"
 msgstr "クローズドキャプション3"
 
-#: modules/demux/ty.c:786
+#: modules/demux/ty.c:795
 msgid "Closed captions 4"
 msgstr "クローズドキャプション4"
 
@@ -16560,26 +16149,26 @@ msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:105
 #: modules/gui/macosx/VLCAddonsWindowController.m:357
-#: modules/gui/qt/dialogs/plugins.cpp:388
+#: modules/gui/qt/dialogs/plugins.cpp:387
 #: modules/gui/qt/managers/addons_manager.cpp:88
 msgid "Playlist parsers"
 msgstr "プレイリストパーサー"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:107
 #: modules/gui/macosx/VLCAddonsWindowController.m:359
-#: modules/gui/qt/dialogs/plugins.cpp:392
+#: modules/gui/qt/dialogs/plugins.cpp:391
 #: modules/gui/qt/managers/addons_manager.cpp:90
 msgid "Service Discovery"
 msgstr "サービスの検出"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:109
-#: modules/gui/qt/dialogs/plugins.cpp:396
+#: modules/gui/qt/dialogs/plugins.cpp:395
 #: modules/gui/qt/managers/addons_manager.cpp:92
 msgid "Interfaces"
 msgstr "インターフェース"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:111
-#: modules/gui/qt/dialogs/plugins.cpp:399
+#: modules/gui/qt/dialogs/plugins.cpp:398
 #: modules/gui/qt/managers/addons_manager.cpp:94
 msgid "Art and meta fetchers"
 msgstr "アートワークとメタ情報取得"
@@ -16587,7 +16176,7 @@ msgstr "アートワークとメタ情報取得"
 #: modules/gui/macosx/VLCAddonsWindowController.m:113
 #: modules/gui/macosx/VLCAddonsWindowController.m:361
 #: modules/gui/macosx/VLCMainMenu.m:343 modules/gui/macosx/VLCMainMenu.m:344
-#: modules/gui/qt/dialogs/plugins.cpp:402
+#: modules/gui/qt/dialogs/plugins.cpp:401
 #: modules/gui/qt/managers/addons_manager.cpp:96
 msgid "Extensions"
 msgstr "エクステンション"
@@ -16597,7 +16186,7 @@ msgid "Show Installed Only"
 msgstr "インストール済みのみ表示"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:118
-#: modules/gui/qt/dialogs/plugins.cpp:430
+#: modules/gui/qt/dialogs/plugins.cpp:429
 msgid "Find more addons online"
 msgstr "オンラインで他のアドオンを探す"
 
@@ -16629,7 +16218,7 @@ msgid "Uninstall"
 msgstr "アンインストール"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:355
-#: modules/gui/qt/dialogs/plugins.cpp:384
+#: modules/gui/qt/dialogs/plugins.cpp:383
 #: modules/gui/qt/managers/addons_manager.cpp:86
 #: modules/gui/skins2/src/skin_main.cpp:535
 msgid "Skins"
@@ -16829,7 +16418,7 @@ msgstr "時間"
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1360
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "OK"
 msgstr "OK"
 
@@ -16971,7 +16560,7 @@ msgstr "名前を付けて保存"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:149
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:392
 #: modules/gui/macosx/VLCOutput.m:65 modules/gui/macosx/VLCOutput.m:194
-#: modules/gui/macosx/VLCOutput.m:313 modules/gui/qt/dialogs/sout.cpp:92
+#: modules/gui/macosx/VLCOutput.m:313 modules/gui/qt/dialogs/sout.cpp:90
 msgid "Stream"
 msgstr "ストリーム"
 
@@ -17046,10 +16635,10 @@ msgstr "ストリームアナウンス"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:186
 #: modules/gui/macosx/VLCOpenWindowController.m:197
 #: modules/gui/macosx/VLCOutput.m:68
-#: modules/gui/qt/components/sout/sout_widgets.cpp:242
-#: modules/gui/qt/components/sout/sout_widgets.cpp:329
-#: modules/gui/qt/components/sout/sout_widgets.cpp:371
-#: modules/gui/qt/components/sout/sout_widgets.cpp:426
+#: modules/gui/qt/components/sout/sout_widgets.cpp:294
+#: modules/gui/qt/components/sout/sout_widgets.cpp:381
+#: modules/gui/qt/components/sout/sout_widgets.cpp:423
+#: modules/gui/qt/components/sout/sout_widgets.cpp:478
 msgid "Address"
 msgstr "アドレス"
 
@@ -17061,11 +16650,11 @@ msgstr "TTL"
 #: modules/gui/macosx/VLCOpenWindowController.m:185
 #: modules/gui/macosx/VLCOpenWindowController.m:187
 #: modules/gui/macosx/VLCOutput.m:69
-#: modules/gui/qt/components/sout/sout_widgets.cpp:188
-#: modules/gui/qt/components/sout/sout_widgets.cpp:243
-#: modules/gui/qt/components/sout/sout_widgets.cpp:284
-#: modules/gui/qt/components/sout/sout_widgets.cpp:330
-#: modules/gui/qt/components/sout/sout_widgets.cpp:427 modules/lua/vlc.c:67
+#: modules/gui/qt/components/sout/sout_widgets.cpp:240
+#: modules/gui/qt/components/sout/sout_widgets.cpp:295
+#: modules/gui/qt/components/sout/sout_widgets.cpp:336
+#: modules/gui/qt/components/sout/sout_widgets.cpp:382
+#: modules/gui/qt/components/sout/sout_widgets.cpp:479 modules/lua/vlc.c:67
 #: modules/stream_out/rtp.c:114
 #: share/lua/http/dialogs/stream_config_window.html:32
 #: share/lua/http/dialogs/stream_window.html:91
@@ -17664,31 +17253,31 @@ msgstr "再生するメディアを選択するダイアログを表示"
 #: modules/gui/macosx/VLCMainWindow.m:226
 #: modules/gui/qt/components/playlist/selector.cpp:593
 msgid "Subscribe"
-msgstr "視聴登録"
+msgstr "サブスクライブ"
 
 #: modules/gui/macosx/VLCMainWindow.m:221
 #: modules/gui/macosx/VLCMainWindow.m:232
 #: modules/gui/qt/components/playlist/selector.cpp:610
 msgid "Unsubscribe"
-msgstr "視聴登録解除"
+msgstr "サブスクライブ解除"
 
 #: modules/gui/macosx/VLCMainWindow.m:224
 #: modules/gui/qt/components/playlist/selector.cpp:279
 msgid "Subscribe to a podcast"
-msgstr "Podcastに登録"
+msgstr "ポッドキャストをサブスクライブ"
 
 #: modules/gui/macosx/VLCMainWindow.m:225
 #: modules/gui/qt/components/playlist/selector.cpp:594
 msgid "Enter URL of the podcast to subscribe to:"
-msgstr "視聴登録するPodcastのURLを入力:"
+msgstr "サブスクライブするPodcastのURLを入力:"
 
 #: modules/gui/macosx/VLCMainWindow.m:230
 msgid "Unsubscribe from a podcast"
-msgstr "Podcastの登録を解除"
+msgstr "ポッドキャストのサブスクライブを解除"
 
 #: modules/gui/macosx/VLCMainWindow.m:231
 msgid "Select the podcast you would like to unsubscribe from:"
-msgstr "登録を解除したいPodcastを選択:"
+msgstr "サブスクライブを解除したいポッドキャストを選択:"
 
 #: modules/gui/macosx/VLCMainWindow.m:257
 msgid "Check for album art and metadata?"
@@ -18169,7 +17758,7 @@ msgstr "インターネット"
 #: modules/gui/macosx/VLCSimplePrefsController.m:241
 #: modules/gui/qt/components/simple_preferences.cpp:248
 #: modules/gui/qt/components/simple_preferences.cpp:738
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:381
 msgid "Interface Settings"
 msgstr "インターフェース設定"
 
@@ -18187,7 +17776,7 @@ msgstr "ビデオ設定"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:247
 #: modules/gui/qt/components/simple_preferences.cpp:254
-#: modules/gui/qt/components/simple_preferences.cpp:894
+#: modules/gui/qt/components/simple_preferences.cpp:901
 msgid "Subtitle & On Screen Display Settings"
 msgstr "字幕とOSDの設定"
 
@@ -18651,7 +18240,7 @@ msgid "Subtitle duration factor:"
 msgstr "字幕の持続係数:"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:68
-#: modules/gui/qt/components/extended_panels.cpp:1590
+#: modules/gui/qt/components/extended_panels.cpp:1588
 msgid ""
 "Extend subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18660,7 +18249,7 @@ msgstr ""
 "0を設定すると無効化します。"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:72
-#: modules/gui/qt/components/extended_panels.cpp:1595
+#: modules/gui/qt/components/extended_panels.cpp:1593
 msgid ""
 "Multiply subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18669,7 +18258,7 @@ msgstr ""
 "0を設定すると無効化します。"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:76
-#: modules/gui/qt/components/extended_panels.cpp:1600
+#: modules/gui/qt/components/extended_panels.cpp:1598
 msgid ""
 "Recalculate subtitle duration according\n"
 "to their content and this value.\n"
@@ -19519,27 +19108,27 @@ msgstr "開く: %s"
 msgid "Find: %s"
 msgstr "検索: %s"
 
-#: modules/gui/qt/components/controller.cpp:352
+#: modules/gui/qt/components/controller.cpp:347
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt/components/controller.cpp:457
+#: modules/gui/qt/components/controller.cpp:451
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr "ループ再生モードの切り替え(すべて, 1項目のみ, ループなし)"
 
-#: modules/gui/qt/components/controller.cpp:558
+#: modules/gui/qt/components/controller.cpp:555
 msgid "Previous Chapter/Title"
 msgstr "前のチャプター/タイトル"
 
-#: modules/gui/qt/components/controller.cpp:564
+#: modules/gui/qt/components/controller.cpp:561
 msgid "Next Chapter/Title"
 msgstr "次のチャプター/タイトル"
 
-#: modules/gui/qt/components/controller.cpp:613
+#: modules/gui/qt/components/controller.cpp:605
 msgid "Teletext Activation"
 msgstr "テレテキストの有効化"
 
-#: modules/gui/qt/components/controller.cpp:629
+#: modules/gui/qt/components/controller.cpp:619
 msgid "Toggle Transparency"
 msgstr "透過度の切り替え"
 
@@ -19702,7 +19291,7 @@ msgstr "AからB間のループを停止する"
 msgid "Aspect Ratio"
 msgstr "アスペクト比"
 
-#: modules/gui/qt/components/epg/EPGWidget.cpp:65
+#: modules/gui/qt/components/epg/EPGWidget.cpp:66
 msgid "No EPG Data Available"
 msgstr "EPGデータがありません"
 
@@ -19862,7 +19451,7 @@ msgstr "(先行)"
 msgid "(Delayed)"
 msgstr "(遅延)"
 
-#: modules/gui/qt/components/extended_panels.cpp:1507
+#: modules/gui/qt/components/extended_panels.cpp:1505
 msgid "Force update of this dialog's values"
 msgstr "このダイアログの値で更新する"
 
@@ -19959,7 +19548,7 @@ msgstr "直近の60秒"
 msgid "Overall"
 msgstr "全体"
 
-#: modules/gui/qt/components/interface_widgets.cpp:683
+#: modules/gui/qt/components/interface_widgets.cpp:658
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
@@ -19967,45 +19556,45 @@ msgstr ""
 "現在の再生速度: %1\n"
 "クリックで調整"
 
-#: modules/gui/qt/components/interface_widgets.cpp:756
+#: modules/gui/qt/components/interface_widgets.cpp:730
 msgid "Revert to normal play speed"
 msgstr "通常の再生速度に戻す"
 
-#: modules/gui/qt/components/interface_widgets.cpp:863
+#: modules/gui/qt/components/interface_widgets.cpp:827
 msgid "Download cover art"
 msgstr "アートワークをダウンロードする"
 
-#: modules/gui/qt/components/interface_widgets.cpp:867
+#: modules/gui/qt/components/interface_widgets.cpp:831
 msgid "Add cover art from file"
 msgstr "ファイルからアートワークを追加"
 
-#: modules/gui/qt/components/interface_widgets.cpp:933
+#: modules/gui/qt/components/interface_widgets.cpp:897
 msgid "Choose Cover Art"
 msgstr "アートワークの選択"
 
-#: modules/gui/qt/components/interface_widgets.cpp:934
+#: modules/gui/qt/components/interface_widgets.cpp:898
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "画像ファイル (*.gif *.jpg *.jpeg *.png)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:961
+#: modules/gui/qt/components/interface_widgets.cpp:925
 #: modules/gui/qt/dialogs/toolbar.cpp:573
 msgid "Elapsed time"
 msgstr "経過時間"
 
-#: modules/gui/qt/components/interface_widgets.cpp:965
+#: modules/gui/qt/components/interface_widgets.cpp:929
 #: modules/gui/qt/dialogs/toolbar.cpp:577
 msgid "Total/Remaining time"
 msgstr "合計時間/残り時間"
 
-#: modules/gui/qt/components/interface_widgets.cpp:967
+#: modules/gui/qt/components/interface_widgets.cpp:931
 msgid "Click to toggle between total and remaining time"
 msgstr "合計時間と残り時間の切り替え(クリック)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:973
+#: modules/gui/qt/components/interface_widgets.cpp:937
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "経過時間と残り時間の切り替え"
 
-#: modules/gui/qt/components/interface_widgets.cpp:975
+#: modules/gui/qt/components/interface_widgets.cpp:939
 msgid "Double click to jump to a chosen time position"
 msgstr "ダブルクリックで指定時間へ移動"
 
@@ -20130,11 +19719,11 @@ msgstr "インターネット"
 
 #: modules/gui/qt/components/playlist/selector.cpp:456
 msgid "Remove this podcast subscription"
-msgstr "このPodcastの視聴申込を削除"
+msgstr "このポッドキャストのサブスクリプションを削除"
 
 #: modules/gui/qt/components/playlist/selector.cpp:607
 msgid "Do you really want to unsubscribe from %1?"
-msgstr "本当に%1からの視聴申込を解除しますか?"
+msgstr "本当に%1からのサブスクライブを解除しますか?"
 
 #: modules/gui/qt/components/playlist/sorting.h:69
 msgid "Cover"
@@ -20209,19 +19798,19 @@ msgstr ""
 "ここにメディアファイルをドロップするか、左からメディアソースを選択してくださ"
 "い。"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:143
+#: modules/gui/qt/components/playlist/standardpanel.hpp:144
 msgid "Icons"
 msgstr "アイコン"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:144
+#: modules/gui/qt/components/playlist/standardpanel.hpp:145
 msgid "Detailed List"
 msgstr "詳細リスト"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:145
+#: modules/gui/qt/components/playlist/standardpanel.hpp:146
 msgid "List"
 msgstr "リスト"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:146
+#: modules/gui/qt/components/playlist/standardpanel.hpp:147
 msgid "PictureFlow"
 msgstr "画像フロー"
 
@@ -20258,7 +19847,6 @@ msgid "Application level hotkey"
 msgstr "アプリケーションレベルのホットキー"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1148
-#: modules/gui/qt/components/preferences_widgets.cpp:1405
 msgid "Global"
 msgstr "[全体]"
 
@@ -20275,34 +19863,40 @@ msgstr ""
 "ダブルクリックで変更。\n"
 "Deleteキーで削除。"
 
+#: modules/gui/qt/components/preferences_widgets.cpp:1405
+msgid "Global Hotkey change"
+msgstr "グローバルホットキー変更"
+
 #: modules/gui/qt/components/preferences_widgets.cpp:1406
 msgid "Hotkey change"
 msgstr "ホットキー変更"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1410
-msgid "Press the new key or combination for "
-msgstr "新しいキーまたは、組み合わせを入力:"
+msgid "Press the new key or combination for <b>%1</b>"
+msgstr ""
+"\"<b>%1</b>\"に割り当てる新しいキーまたは、組み合わせを入力してください"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1419
 msgid "Assign"
 msgstr "割り当て"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1454
-msgid "Warning: this key or combination is already assigned to "
-msgstr "警告: そのキーまたは、組み合わせは既に割り当てられています"
+#: modules/gui/qt/components/preferences_widgets.cpp:1455
+msgid "Warning: this key or combination is already assigned to \"<b>%1</b>\""
+msgstr ""
+"警告: このキーの組み合わせは既に他の \"<b>%1</b>\" に割り当てられています"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1466
+#: modules/gui/qt/components/preferences_widgets.cpp:1467
 msgid "Warning: <b>%1</b> is already an application menu shortcut"
 msgstr ""
 "警告: <b>%1</b> はすでにアプリケーションメニューのショートカットにあります"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1489
-msgid "Key or combination: "
-msgstr "キーまたは、組み合わせ"
+#: modules/gui/qt/components/preferences_widgets.cpp:1490
+msgid "Key or combination: <b>%1</b>"
+msgstr "キーまたは、組み合わせ: <b>%1</b>"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1498
-msgid "Key: "
-msgstr "キー: "
+msgid "Key: <b>%1</b>"
+msgstr "キー: <b>%1</b>"
 
 #: modules/gui/qt/components/simple_preferences.cpp:256
 #: modules/gui/qt/components/simple_preferences.cpp:636
@@ -20310,7 +19904,7 @@ msgid "Input & Codecs Settings"
 msgstr "入力とコーデックの設定"
 
 #: modules/gui/qt/components/simple_preferences.cpp:258
-#: modules/gui/qt/components/simple_preferences.cpp:938
+#: modules/gui/qt/components/simple_preferences.cpp:945
 msgid "Configure Hotkeys"
 msgstr "ホットキーの設定"
 
@@ -20355,30 +19949,30 @@ msgstr "VLCスキンのWebサイト"
 msgid "System's default"
 msgstr "システムのデフォルト"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1344
+#: modules/gui/qt/components/simple_preferences.cpp:1351
 msgid "File associations"
 msgstr "ファイルの関連付け"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1353
+#: modules/gui/qt/components/simple_preferences.cpp:1360
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "オーディオファイル"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1354
+#: modules/gui/qt/components/simple_preferences.cpp:1361
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "ビデオファイル"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1355
+#: modules/gui/qt/components/simple_preferences.cpp:1362
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "プレイリストファイル"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1420
+#: modules/gui/qt/components/simple_preferences.cpp:1427
 msgid "&Apply"
 msgstr "適用 (&A)"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1421
+#: modules/gui/qt/components/simple_preferences.cpp:1428
 #: modules/gui/qt/dialogs/convert.cpp:137
 #: modules/gui/qt/dialogs/gototime.cpp:48 modules/gui/qt/dialogs/open.cpp:109
 #: modules/gui/qt/dialogs/openurl.cpp:59
@@ -20437,11 +20031,11 @@ msgstr "ファイル/フォルダー"
 #: modules/gui/qt/components/sout/sout_widgets.cpp:48
 #: modules/gui/qt/ui/sout.h:199
 msgid "Source"
-msgstr "入力元"
+msgstr "ソース"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:51
 msgid "Source:"
-msgstr "入力元:"
+msgstr "ソース:"
 
 #: modules/gui/qt/components/sout/sout_widgets.cpp:60
 msgid "Type:"
@@ -20468,57 +20062,74 @@ msgid ""
 msgstr ""
 "コンテナー (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:185
+#: modules/gui/qt/components/sout/sout_widgets.cpp:184
+msgid "This module outputs the stream using the RIST protocol (TR06)."
+msgstr ""
+"このモジュールはRISTプロトコル (TR06) を使用してストリームを出力します。"
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:186
+msgid "Destination Address"
+msgstr "宛先アドレス"
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:191
+msgid "Destination Port"
+msgstr "宛先ポート"
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:201
+msgid "Stream Name"
+msgstr "ストリーム名"
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:237
 msgid "This module outputs the transcoded stream to a network via HTTP."
 msgstr ""
 "このモジュールはトランスコーディングされたストリームをHTTP経由でネットワーク"
 "に出力します。"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:187
-#: modules/gui/qt/components/sout/sout_widgets.cpp:283
+#: modules/gui/qt/components/sout/sout_widgets.cpp:239
+#: modules/gui/qt/components/sout/sout_widgets.cpp:335
 msgid "Path"
 msgstr "パス"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:239
+#: modules/gui/qt/components/sout/sout_widgets.cpp:291
 msgid ""
 "This module outputs the transcoded stream to a network via the mms protocol."
 msgstr ""
 "このモジュールはトランスコーディングされたストリームをmmsプロトコルを使用して"
 "ネットワークに出力します。"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:281
+#: modules/gui/qt/components/sout/sout_widgets.cpp:333
 msgid "This module outputs the transcoded stream to a network via RTSP."
 msgstr ""
 "このモジュールはトランスコーディングされたストリームをRTSPを使用してネット"
 "ワークに出力します。"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:327
+#: modules/gui/qt/components/sout/sout_widgets.cpp:379
 msgid "This module outputs the transcoded stream to a network via UDP."
 msgstr ""
 "このモジュールはトランスコーディングされたストリームをUDPを使用してネットワー"
 "クに出力します。"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:369
+#: modules/gui/qt/components/sout/sout_widgets.cpp:421
 msgid "This module outputs the transcoded stream to a network via RTP."
 msgstr ""
 "このモジュールはトランスコーディングされたストリームをRTPを使用してネットワー"
 "クに出力します。"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:376
+#: modules/gui/qt/components/sout/sout_widgets.cpp:428
 msgid "Base port"
 msgstr "ベースポート"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:424
+#: modules/gui/qt/components/sout/sout_widgets.cpp:476
 msgid "This module outputs the transcoded stream to an Icecast server."
 msgstr ""
 "このモジュールはトランスコーディングされたストリームをIcecastサーバーに出力し"
 "ます。"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:443
+#: modules/gui/qt/components/sout/sout_widgets.cpp:495
 msgid "Mount Point"
 msgstr "マウントポイント"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:444
+#: modules/gui/qt/components/sout/sout_widgets.cpp:496
 msgid "Login:pass"
 msgstr "ログイン:パスワード:"
 
@@ -20916,11 +20527,11 @@ msgstr "検索: (&S)"
 msgid "More information..."
 msgstr "追加情報..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:266
+#: modules/gui/qt/dialogs/plugins.cpp:265
 msgid "Reload extensions"
 msgstr "エクステンションの再読み込み"
 
-#: modules/gui/qt/dialogs/plugins.cpp:385
+#: modules/gui/qt/dialogs/plugins.cpp:384
 msgid ""
 "Skins customize player's appearance. You can activate them through "
 "preferences."
@@ -20928,7 +20539,7 @@ msgstr ""
 "スキンはプレイヤーの外観をカスタマイズします。設定からスキンを有効にすること"
 "ができます。"
 
-#: modules/gui/qt/dialogs/plugins.cpp:389
+#: modules/gui/qt/dialogs/plugins.cpp:388
 msgid ""
 "Playlist parsers add new capabilities to read internet streams or extract "
 "meta data."
@@ -20936,7 +20547,7 @@ msgstr ""
 "プレイリストパーサーはインターネットストリームの読み込みまたは、メタデータを"
 "抽出する機能を追加します。"
 
-#: modules/gui/qt/dialogs/plugins.cpp:393
+#: modules/gui/qt/dialogs/plugins.cpp:392
 msgid ""
 "Service discoveries adds new sources to your playlist such as web radios, "
 "video websites, ..."
@@ -20944,18 +20555,18 @@ msgstr ""
 "サービスの検出はWebラジオやビデオのWebサイトなどプレイリストに新しいソースを"
 "追加します。"
 
-#: modules/gui/qt/dialogs/plugins.cpp:400
+#: modules/gui/qt/dialogs/plugins.cpp:399
 msgid "Retrieves extra info and art for playlist items"
 msgstr "プレイリストの項目に関する追加情報とアートワークを取得"
 
-#: modules/gui/qt/dialogs/plugins.cpp:403
+#: modules/gui/qt/dialogs/plugins.cpp:402
 msgid ""
 "Extensions brings various enhancements. Check descriptions for more details"
 msgstr ""
 "エクステンションは様々な機能拡張を実現します。詳細についてはそれぞれの説明を"
 "確認してください。"
 
-#: modules/gui/qt/dialogs/plugins.cpp:424
+#: modules/gui/qt/dialogs/plugins.cpp:423
 msgid "Only installed"
 msgstr "インストール済みのみ"
 
@@ -21085,7 +20696,7 @@ msgstr ""
 "上記の設定を変更すると自動的に生成されます。\n"
 "手動で更新することも可能です。"
 
-#: modules/gui/qt/dialogs/sout.cpp:89
+#: modules/gui/qt/dialogs/sout.cpp:87
 msgid "Back"
 msgstr "戻る"
 
@@ -21335,19 +20946,19 @@ msgstr "空"
 msgid "Deactivate"
 msgstr "無効化"
 
-#: modules/gui/qt/main_interface.cpp:378
+#: modules/gui/qt/main_interface.cpp:374
 msgid "Do you want to restart the playback where left off?"
 msgstr "再生を停止した位置からの再生再開を行いますか?"
 
-#: modules/gui/qt/main_interface.cpp:384
+#: modules/gui/qt/main_interface.cpp:380
 msgid "&Continue"
 msgstr "継続 (&C)"
 
-#: modules/gui/qt/main_interface.cpp:1454
+#: modules/gui/qt/main_interface.cpp:1447
 msgid "Control menu for the player"
 msgstr "プレイヤーの制御メニュー"
 
-#: modules/gui/qt/main_interface.cpp:1498
+#: modules/gui/qt/main_interface.cpp:1491
 msgid "Paused"
 msgstr "一時停止"
 
@@ -22095,15 +21706,15 @@ msgstr "画像のガンマ(0～10)"
 msgid "Set the image gamma, between 0.01 and 10. Defaults to 1."
 msgstr "画像のガンマを0.01～10の範囲で設定します。デフォルトは1です。"
 
-#: modules/hw/d3d11/d3d11_filters.c:681
+#: modules/hw/d3d11/d3d11_filters.c:683
 msgid "AMD VQ Enhancer"
 msgstr "AMD VQエンハンサー"
 
-#: modules/hw/d3d11/d3d11_filters.c:687
+#: modules/hw/d3d11/d3d11_filters.c:689
 msgid "AMD Frame Rate Doubler"
 msgstr "AMDフレームレートダブラー"
 
-#: modules/hw/d3d11/d3d11_filters.c:690
+#: modules/hw/d3d11/d3d11_filters.c:692
 msgid "Show indicator"
 msgstr "インジケーターを表示"
 
@@ -23460,11 +23071,11 @@ msgstr "XSPFプレイリストのエクスポート"
 msgid "HTML playlist export"
 msgstr "HTMLプレイリストのエクスポート"
 
-#: modules/misc/rtsp.c:63
+#: modules/misc/rtsp.c:65
 msgid "Maximum number of connections"
 msgstr "接続最大数"
 
-#: modules/misc/rtsp.c:64
+#: modules/misc/rtsp.c:66
 msgid ""
 "This limits the maximum number of clients that can connect to the RTSP VOD. "
 "0 means no limit."
@@ -23472,15 +23083,15 @@ msgstr ""
 "RTSP VODサーバーに接続できる最大クライアント数を指定します。0は無制限を意味し"
 "ます。"
 
-#: modules/misc/rtsp.c:67
+#: modules/misc/rtsp.c:69
 msgid "MUX for RAW RTSP transport"
 msgstr "RAW RTSPトランスポートのマルチプレクサー"
 
-#: modules/misc/rtsp.c:69
+#: modules/misc/rtsp.c:71
 msgid "Sets the timeout option in the RTSP session string"
 msgstr "RTSPセッションストリングのタイムアウトオプション指定"
 
-#: modules/misc/rtsp.c:71
+#: modules/misc/rtsp.c:73
 msgid ""
 "Defines what timeout option to add to the RTSP session ID string. Setting it "
 "to a negative number removes the timeout option entirely. This is needed by "
@@ -23492,11 +23103,11 @@ msgstr ""
 "を生じるHansunTech製のIPTVセットトップボックスなどでは、オプションを削除する"
 "必要があります。"
 
-#: modules/misc/rtsp.c:77 modules/stream_out/rtp.c:244
+#: modules/misc/rtsp.c:79 modules/stream_out/rtp.c:244
 msgid "RTSP VoD"
 msgstr "RTSP VoD"
 
-#: modules/misc/rtsp.c:78
+#: modules/misc/rtsp.c:80
 msgid "Legacy RTSP VoD server"
 msgstr "レガシーRTSP VoDサーバー"
 
@@ -23529,27 +23140,27 @@ msgstr ""
 msgid "Accept certificate temporarily"
 msgstr "証明書を一時的に受け入れ"
 
-#: modules/misc/stats.c:215 modules/stream_out/stats.c:51
+#: modules/misc/stats.c:221 modules/stream_out/stats.c:51
 msgid "Stats"
 msgstr "統計"
 
-#: modules/misc/stats.c:217
+#: modules/misc/stats.c:223
 msgid "Stats encoder function"
 msgstr "エンコーダー機能の統計"
 
-#: modules/misc/stats.c:223 modules/misc/stats.c:229 modules/misc/stats.c:235
+#: modules/misc/stats.c:229 modules/misc/stats.c:235 modules/misc/stats.c:241
 msgid "Stats decoder"
 msgstr "デコーダー統計"
 
-#: modules/misc/stats.c:224 modules/misc/stats.c:230 modules/misc/stats.c:236
+#: modules/misc/stats.c:230 modules/misc/stats.c:236 modules/misc/stats.c:242
 msgid "Stats decoder function"
 msgstr "デコーダー機能の統計"
 
-#: modules/misc/stats.c:241
+#: modules/misc/stats.c:247
 msgid "Stats demux"
 msgstr "デマルチプレクサー統計"
 
-#: modules/misc/stats.c:242
+#: modules/misc/stats.c:248
 msgid "Stats demux function"
 msgstr "デマルチプレクサー機能の統計"
 
@@ -23607,7 +23218,7 @@ msgstr ""
 msgid "ASF muxer"
 msgstr "ASFマルチプレクサー"
 
-#: modules/mux/asf.c:563
+#: modules/mux/asf.c:564
 msgid "Unknown Video"
 msgstr "不明なビデオ"
 
@@ -23970,7 +23581,7 @@ msgstr "A/52オーディオのパケッタイザー"
 msgid "avparser packetizer"
 msgstr "AVパーサーパケッタイザー"
 
-#: modules/packetizer/av1.c:585
+#: modules/packetizer/av1.c:586
 msgid "AV1 video packetizer"
 msgstr "AV1ビデオパケッタイザー"
 
@@ -24052,7 +23663,7 @@ msgstr "Avahiレンダラー検索"
 
 #: modules/services_discovery/bonjour.m:45
 #: modules/services_discovery/bonjour.m:63
-#: modules/services_discovery/bonjour.m:455
+#: modules/services_discovery/bonjour.m:461
 msgid "Bonjour Network Discovery"
 msgstr "Bonjourネットワーク検索"
 
@@ -24084,7 +23695,7 @@ msgstr "マイピクチャー"
 
 #: modules/services_discovery/microdns.c:44
 #: modules/services_discovery/microdns.c:57
-#: modules/services_discovery/microdns.c:646
+#: modules/services_discovery/microdns.c:656
 msgid "mDNS Network Discovery"
 msgstr "mDNSネットワーク検索"
 
@@ -24118,16 +23729,16 @@ msgstr "ディスク"
 #: modules/services_discovery/podcast.c:62
 #: modules/services_discovery/podcast.c:146
 msgid "Podcasts"
-msgstr "Podcast"
+msgstr "ポッドキャスト"
 
 #: modules/services_discovery/podcast.c:56
 #: modules/gui/qt/ui/podcast_configuration.h:99
 msgid "Podcast URLs list"
-msgstr "Podcast URLリスト"
+msgstr "ポッドキャストURLリスト"
 
 #: modules/services_discovery/podcast.c:57
 msgid "Enter the list of podcasts to retrieve, separated by '|' (pipe)."
-msgstr "取得するPodcastのリストを'|'(パイプ)で区切って指定します。"
+msgstr "取得するポッドキャストのリストを'|'(パイプ)で区切って指定します。"
 
 #: modules/services_discovery/pulse.c:41 modules/services_discovery/pulse.c:44
 #: modules/services_discovery/pulse.c:84 modules/services_discovery/udev.c:67
@@ -24243,13 +23854,13 @@ msgstr "HD DVD"
 msgid "Unknown type"
 msgstr "不明なタイプ"
 
-#: modules/services_discovery/upnp.cpp:76
+#: modules/services_discovery/upnp.cpp:81
 msgid "Custom SAT>IP channel list URL"
 msgstr "カスタムSAT>IPチャンネルリストURL"
 
-#: modules/services_discovery/upnp.cpp:111
-#: modules/services_discovery/upnp.cpp:118
-#: modules/services_discovery/upnp.cpp:253
+#: modules/services_discovery/upnp.cpp:116
+#: modules/services_discovery/upnp.cpp:123
+#: modules/services_discovery/upnp.cpp:258
 msgid "Universal Plug'n'Play"
 msgstr "ユニバーサルプラグ & プレイ"
 
@@ -24724,7 +24335,7 @@ msgstr "オフセット"
 
 #: modules/spu/mosaic.c:176
 msgid "Mosaic video sub source"
-msgstr "モザイクビデオサブフィルター"
+msgstr "モザイクビデオサブソース"
 
 #: modules/spu/mosaic.c:177
 msgid "Mosaic"
@@ -25060,31 +24671,31 @@ msgstr "HTTPダイナミックストリーミング"
 msgid "Zlib decompression filter"
 msgstr "Zlib解凍フィルター"
 
-#: modules/stream_filter/prefetch.c:532
+#: modules/stream_filter/prefetch.c:530
 msgid "Stream prefetch filter"
 msgstr "ストリーム先読みフィルター"
 
-#: modules/stream_filter/prefetch.c:535
+#: modules/stream_filter/prefetch.c:533
 msgid "Buffer size"
 msgstr "バッファーサイズ"
 
-#: modules/stream_filter/prefetch.c:536
+#: modules/stream_filter/prefetch.c:534
 msgid "Prefetch buffer size (KiB)"
 msgstr "先読みバッファーサイズ (KiB)"
 
-#: modules/stream_filter/prefetch.c:538
+#: modules/stream_filter/prefetch.c:536
 msgid "Read size"
 msgstr "読み込みサイズ"
 
-#: modules/stream_filter/prefetch.c:539
+#: modules/stream_filter/prefetch.c:537
 msgid "Prefetch background read size (bytes)"
 msgstr "バックグランドで先読みするサイズ (バイト)"
 
-#: modules/stream_filter/prefetch.c:541
+#: modules/stream_filter/prefetch.c:539
 msgid "Seek threshold"
 msgstr "シーク閾値"
 
-#: modules/stream_filter/prefetch.c:542
+#: modules/stream_filter/prefetch.c:540
 msgid "Prefetch forward seek threshold (bytes)"
 msgstr "先読みするシークの閾値 (バイト)"
 
@@ -25239,7 +24850,7 @@ msgstr ""
 "定します。"
 
 #: modules/stream_out/chromecast/cast.cpp:192
-#: modules/stream_out/chromecast/cast.cpp:1198
+#: modules/stream_out/chromecast/cast.cpp:1219
 msgid "Performance warning"
 msgstr "性能に関する警告"
 
@@ -25299,11 +24910,11 @@ msgstr "Chromecast"
 msgid "Chromecast stream output"
 msgstr "Chromecastストリーム出力"
 
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "Ok, Don't warn me again"
 msgstr "今後、警告しない"
 
-#: modules/stream_out/chromecast/cast.cpp:1199
+#: modules/stream_out/chromecast/cast.cpp:1220
 msgid ""
 "Casting this video requires conversion. This conversion can use all the "
 "available power and could quickly drain your battery."
@@ -26268,11 +25879,11 @@ msgstr "Mac OS X用音声合成"
 msgid "Speech synthesis for Windows"
 msgstr "Windows用音声合成"
 
-#: modules/text_renderer/svg.c:70
+#: modules/text_renderer/svg.c:72
 msgid "SVG template file"
 msgstr "SVGテンプレートファイル"
 
-#: modules/text_renderer/svg.c:71
+#: modules/text_renderer/svg.c:73
 msgid ""
 "Location of a file holding a SVG template for automatic string conversion"
 msgstr ""
@@ -26976,11 +26587,11 @@ msgstr "フリーズインタラクティブビデオフィルター"
 msgid "Freeze"
 msgstr "フリーズ"
 
-#: modules/video_filter/gaussianblur.c:50
+#: modules/video_filter/gaussianblur.c:51
 msgid "Gaussian's std deviation"
 msgstr "ガウスの標準偏差"
 
-#: modules/video_filter/gaussianblur.c:52
+#: modules/video_filter/gaussianblur.c:53
 msgid ""
 "Gaussian's standard deviation. The blurring will take into account pixels up "
 "to 3*sigma away in any direction."
@@ -26988,15 +26599,15 @@ msgstr ""
 "ガウスぼかしの標準偏差を指定します。ぼかしはすべての方向へ最大3*シグマを考慮"
 "します。"
 
-#: modules/video_filter/gaussianblur.c:55
+#: modules/video_filter/gaussianblur.c:56
 msgid "Add a blurring effect"
 msgstr "ぼかし効果を追加します。"
 
-#: modules/video_filter/gaussianblur.c:60
+#: modules/video_filter/gaussianblur.c:61
 msgid "Gaussian blur video filter"
 msgstr "ガウスぼかしフィルター"
 
-#: modules/video_filter/gaussianblur.c:61
+#: modules/video_filter/gaussianblur.c:62
 msgid "Gaussian Blur"
 msgstr "ガウスぼかし"
 

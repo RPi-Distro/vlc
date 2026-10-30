@@ -64,9 +64,9 @@ static int Decode( decoder_t *, block_t * );
 static block_t *Packetize  ( decoder_t *, block_t ** );
 static block_t *Reassemble ( decoder_t *, block_t * );
 static void ParseMetaInfo  ( decoder_t *, block_t * );
-static void ParseHeader    ( decoder_t *, block_t * );
+static int  ParseHeader    ( decoder_t *, block_t * );
 static subpicture_t *DecodePacket( decoder_t *, block_t * );
-static void RenderImage( decoder_t *, block_t *, subpicture_region_t * );
+static int RenderImage( decoder_t *, block_t *, subpicture_region_t * );
 
 #define SUBTITLE_BLOCK_EMPTY 0
 #define SUBTITLE_BLOCK_PARTIAL 1
@@ -250,7 +250,15 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
     p_block->i_buffer -= SPU_HEADER_LEN;
 
     /* First packet in the subtitle block */
-    if( p_sys->i_state == SUBTITLE_BLOCK_EMPTY ) ParseHeader( p_dec, p_block );
+    if( p_sys->i_state == SUBTITLE_BLOCK_EMPTY )
+    {
+        if( ParseHeader( p_dec, p_block ) != VLC_SUCCESS )
+        {
+            msg_Warn( p_dec, "Missing header data");
+            block_Release( p_block );
+            return NULL;
+        }
+    }
 
     block_ChainAppend( &p_sys->p_spu, p_block );
     p_sys->p_spu = block_ChainGather( p_sys->p_spu );
@@ -265,7 +273,7 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
                       p_spu->i_buffer, p_sys->i_spu_size );
         }
 
-        msg_Dbg( p_dec, "subtitle packet complete, size=%zuu", p_spu->i_buffer);
+        msg_Dbg( p_dec, "subtitle packet complete, size=%zu", p_spu->i_buffer);
 
         ParseMetaInfo( p_dec, p_spu );
 
@@ -308,10 +316,12 @@ static block_t *Reassemble( decoder_t *p_dec, block_t *p_block )
   this, so it may be untested.
 */
 
-static void ParseHeader( decoder_t *p_dec, block_t *p_block )
+static int ParseHeader( decoder_t *p_dec, block_t *p_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t *p = p_block->p_buffer;
+    if (p_block->i_buffer < 4)
+        return VLC_EGENERIC; // not enough data
 
     p_sys->i_spu_size = (p[0] << 8) + p[1] + 4; p += 2;
 
@@ -328,6 +338,7 @@ static void ParseHeader( decoder_t *p_dec, block_t *p_block )
     msg_Dbg( p_dec, "total size: %zu  image size: %zu",
              p_sys->i_spu_size, p_sys->i_image_length );
 #endif
+    return VLC_SUCCESS;
 }
 
 /*
@@ -385,8 +396,14 @@ static void ParseMetaInfo( decoder_t *p_dec, block_t *p_spu  )
             int lastx;
             int lasty;
             ExtractXY(lastx, lasty);
-            p_sys->i_width  = lastx - p_sys->i_x_start + 1;
-            p_sys->i_height = lasty - p_sys->i_y_start + 1;
+            if( lastx >= p_sys->i_x_start )
+                p_sys->i_width = lastx - p_sys->i_x_start + 1;
+            else
+                p_sys->i_width = 0;
+            if( lasty >= p_sys->i_y_start )
+                p_sys->i_height = lasty - p_sys->i_y_start + 1;
+            else
+                p_sys->i_height = 0;
 
 #ifdef DEBUG_CVDSUB
             msg_Dbg( p_dec, "end position (%d,%d), w x h: %dx%d",
@@ -468,8 +485,11 @@ static void ParseMetaInfo( decoder_t *p_dec, block_t *p_spu  )
         case 0x47:
             /* offset to start of even rows of interlaced image, we correct
              * to make it relative to i_image_offset (usually 4) */
-            p_sys->first_field_offset =
-                (p[2] << 8) + p[3] - p_sys->i_image_offset;
+            p_sys->first_field_offset = (p[2] << 8) + p[3];
+            if( p_sys->first_field_offset < p_sys->i_image_offset )
+                p_sys->first_field_offset -= p_sys->i_image_offset;
+            else
+                p_sys->first_field_offset = 0;
 #ifdef DEBUG_CVDSUB
             msg_Dbg( p_dec, "1st_field_offset %zu",
                      p_sys->first_field_offset );
@@ -479,8 +499,11 @@ static void ParseMetaInfo( decoder_t *p_dec, block_t *p_spu  )
         case 0x4f:
             /* offset to start of odd rows of interlaced image, we correct
              * to make it relative to i_image_offset (usually 4) */
-            p_sys->second_field_offset =
-                (p[2] << 8) + p[3] - p_sys->i_image_offset;
+            p_sys->second_field_offset = (p[2] << 8) + p[3];
+            if( p_sys->second_field_offset < p_sys->i_image_offset )
+                p_sys->second_field_offset -= p_sys->i_image_offset;
+            else
+                p_sys->second_field_offset = 0;
 #ifdef DEBUG_CVDSUB
             msg_Dbg( p_dec, "2nd_field_offset %zu",
                      p_sys->second_field_offset);
@@ -549,7 +572,12 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
     p_region->i_x = p_region->i_x * 3 / 4; /* FIXME: use aspect ratio for x? */
     p_region->i_y = p_sys->i_y_start;
 
-    RenderImage( p_dec, p_data, p_region );
+    if( RenderImage( p_dec, p_data, p_region ) != VLC_SUCCESS )
+    {
+        msg_Err( p_dec, "cannot render SPU region" );
+        subpicture_Delete( p_spu );
+        return NULL;
+    }
 
     return p_spu;
 }
@@ -577,15 +605,17 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
  a 4-bit alpha (filling 8 bits), and 8-bit y, u, and v entry.
 
  *****************************************************************************/
-static void RenderImage( decoder_t *p_dec, block_t *p_data,
+static int RenderImage( decoder_t *p_dec, block_t *p_data,
                          subpicture_region_t *p_region )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t *p_dest = p_region->p_picture->Y_PIXELS;
     int i_field;            /* The subtitles are interlaced */
-    int i_row, i_column;    /* scanline row/column number */
-    uint8_t i_color, i_count;
+    size_t i_row, i_column; /* scanline row/column number */
     bs_t bs;
+
+    if( p_data->i_buffer <= p_sys->i_image_offset )
+        return VLC_EGENERIC;
 
     bs_init( &bs, p_data->p_buffer + p_sys->i_image_offset,
              p_data->i_buffer - p_sys->i_image_offset );
@@ -597,34 +627,31 @@ static void RenderImage( decoder_t *p_dec, block_t *p_data,
             for( i_column = 0; i_column < p_sys->i_width; i_column++ )
             {
                 uint8_t i_val = bs_read( &bs, 4 );
+                uint8_t *p = &p_dest[i_row * p_region->p_picture->Y_PITCH + i_column];
+                size_t i_count;
+                uint8_t i_color;
 
                 if( i_val == 0 )
                 {
                     /* Fill the rest of the line with next color */
                     i_color = bs_read( &bs, 4 );
-
-                    memset( &p_dest[i_row * p_region->p_picture->Y_PITCH +
-                                    i_column], i_color,
-                            p_sys->i_width - i_column );
+                    i_count = p_sys->i_width - i_column;
                     i_column = p_sys->i_width;
-                    continue;
                 }
                 else
                 {
                     /* Normal case: get color and repeat count */
                     i_count = (i_val >> 2);
                     i_color = i_val & 0x3;
-
                     i_count = __MIN( i_count, p_sys->i_width - i_column );
-
-                    memset( &p_dest[i_row * p_region->p_picture->Y_PITCH +
-                                    i_column], i_color, i_count );
                     i_column += i_count - 1;
-                    continue;
                 }
+
+                memset( p, i_color, i_count );
             }
 
             bs_align( &bs );
         }
     }
+    return VLC_SUCCESS;
 }

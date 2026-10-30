@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 3.0.22-rc1\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2025-12-23 11:04+0000\n"
+"POT-Creation-Date: 2026-09-17 12:55+0000\n"
 "PO-Revision-Date: 2017-12-10 22:48+0000\n"
 "Last-Translator: Michał Trzebiatowski <michtrz@gmail.com>, 2018\n"
 "Language-Team: Maithili (https://app.transifex.com/yaron/teams/16553/mai/)\n"
@@ -620,7 +620,7 @@ msgid "The maximum number of filters (%u) was reached."
 msgstr "फिल्टर क अधिकतम सँख्या (%u) क उपयोग कएल जाए चुकल अछि।"
 
 #: src/audio_output/output.c:263 src/config/core.c:380 src/input/es_out.c:936
-#: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:124
+#: src/libvlc-module.c:540 modules/demux/adaptive/adaptive.cpp:126
 #: modules/gui/macosx/VLCMainMenu.m:243
 #: modules/gui/macosx/VLCSidebarDataSource.m:211
 #: modules/video_filter/postproc.c:235
@@ -1088,7 +1088,7 @@ msgstr ""
 #: modules/access/rdp.c:73 modules/access/screen/screen.c:43
 #: modules/access/screen/xcb.c:39 modules/access/shm.c:42
 #: modules/access/timecode.c:34 modules/access/v4l2/v4l2.c:70
-#: modules/access/vdr.c:78 modules/access/vnc.c:60 modules/demux/image.c:66
+#: modules/access/vdr.c:79 modules/access/vnc.c:61 modules/demux/image.c:66
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:164
 #: modules/video_filter/fps.c:42
 msgid "Frame rate"
@@ -1759,8 +1759,8 @@ msgstr ""
 
 #: src/libvlc-module.c:187 src/libvlc-module.c:361 src/win32/thread.c:957
 #: modules/audio_output/kai.c:106 modules/codec/subsdec.c:167
-#: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:122
-#: modules/demux/mpeg/ts.c:132 modules/gui/macosx/VLCSimplePrefsController.m:54
+#: modules/codec/x264.c:434 modules/demux/adaptive/adaptive.cpp:124
+#: modules/demux/mpeg/ts.c:133 modules/gui/macosx/VLCSimplePrefsController.m:54
 #: modules/gui/qt/components/simple_preferences.cpp:69
 #: modules/gui/qt/components/sout/profile_selector.cpp:590
 #: modules/text_renderer/freetype/freetype.c:124
@@ -2518,9 +2518,9 @@ msgstr ""
 #: src/video_output/vout_intf.c:116 modules/access/dshow/dshow.cpp:92
 #: modules/access/dshow/dshow.cpp:99 modules/access/dshow/dshow.cpp:119
 #: modules/access/dshow/dshow.cpp:2081 modules/audio_output/alsa.c:767
-#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1316
-#: modules/audio_output/mmdevice.c:1445 modules/audio_output/winstore.c:594
-#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:106
+#: modules/audio_output/directsound.c:1048 modules/audio_output/mmdevice.c:1332
+#: modules/audio_output/mmdevice.c:1469 modules/audio_output/winstore.c:600
+#: modules/codec/avcodec/avcodec.c:50 modules/demux/adaptive/adaptive.cpp:108
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:79
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:322
 #: modules/gui/macosx/VLCMainMenu.m:602
@@ -3997,7 +3997,7 @@ msgstr "आओर धीमा (फाइन)"
 #: modules/gui/macosx/VLCMainMenu.m:396 modules/gui/macosx/VLCMainMenu.m:499
 #: modules/gui/macosx/VLCMainMenu.m:507
 #: modules/gui/qt/components/controller.hpp:112
-#: modules/gui/qt/dialogs/sout.cpp:91 modules/notify/notify.c:335
+#: modules/gui/qt/dialogs/sout.cpp:89 modules/notify/notify.c:335
 #: modules/gui/qt/ui/streampanel.h:179
 msgid "Next"
 msgstr "अगिला"
@@ -4746,7 +4746,7 @@ msgid "Subpictures"
 msgstr "सबपिक्चरस"
 
 #: src/libvlc-module.c:1683 modules/codec/subsdec.c:182
-#: modules/demux/subtitle.c:71 modules/demux/xiph_metadata.h:49
+#: modules/demux/subtitle.c:72 modules/demux/xiph_metadata.h:49
 #: modules/demux/xiph_metadata.h:62
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:158
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:178
@@ -5074,7 +5074,7 @@ msgstr "मीडिया क समय"
 msgid "Media View"
 msgstr "मीडिया देखू"
 
-#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:577
+#: src/misc/actions.c:100 modules/gui/qt/components/controller.cpp:574
 msgid "Menu"
 msgstr "मेनू"
 
@@ -5168,38 +5168,38 @@ msgstr "Meta+"
 msgid "Command+"
 msgstr "आदेश+"
 
-#: src/misc/update.c:482
+#: src/misc/update.c:490
 #, c-format
 msgid "%.1f GiB"
 msgstr "%.1f गी.बा."
 
-#: src/misc/update.c:484
+#: src/misc/update.c:492
 #, c-format
 msgid "%.1f MiB"
 msgstr "%.1f मे.बा."
 
-#: src/misc/update.c:486 modules/gui/macosx/VLCPlaylistInfo.m:138
+#: src/misc/update.c:494 modules/gui/macosx/VLCPlaylistInfo.m:138
 #: modules/gui/macosx/VLCPlaylistInfo.m:140
 #, c-format
 msgid "%.1f KiB"
 msgstr "%.1f किबा"
 
-#: src/misc/update.c:488
+#: src/misc/update.c:496
 #, c-format
 msgid "%<PRIu64> B"
 msgstr ""
 
-#: src/misc/update.c:580
+#: src/misc/update.c:588
 msgid "Saving file failed"
 msgstr "फाइलक सहेजब बिफल"
 
-#: src/misc/update.c:581
+#: src/misc/update.c:589
 #, c-format
 msgid "Failed to open \"%s\" for writing"
 msgstr "लिखब क लेल \"% s\" केँ खोलब मे बिफल रहल।"
 
-#: src/misc/update.c:596 src/misc/update.c:726 modules/access/dvb/scan.c:826
-#: modules/demux/avi/avi.c:2878
+#: src/misc/update.c:604 src/misc/update.c:734 modules/access/dvb/scan.c:826
+#: modules/demux/avi/avi.c:2888
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:513
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:571
 #: modules/gui/macosx/VLCAudioEffectsWindowController.m:854
@@ -5227,12 +5227,12 @@ msgstr "लिखब क लेल \"% s\" केँ खोलब मे बि�
 #: modules/gui/qt/components/open_panels.cpp:1361
 #: modules/gui/qt/components/preferences_widgets.cpp:1420
 #: modules/gui/qt/components/sout/profile_selector.cpp:452
-#: modules/gui/qt/dialogs/sout.cpp:90
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/gui/qt/dialogs/sout.cpp:88
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "Cancel"
 msgstr "रद्द करू"
 
-#: src/misc/update.c:598
+#: src/misc/update.c:606
 #, c-format
 msgid ""
 "%s\n"
@@ -5241,11 +5241,11 @@ msgstr ""
 "%s\n"
 "डाउनलोड... %s/%s %.1f%% संपूर्ण"
 
-#: src/misc/update.c:649
+#: src/misc/update.c:657
 msgid "File could not be verified"
 msgstr "फाइल सत्यापित नहि कएल जाए सकल"
 
-#: src/misc/update.c:650
+#: src/misc/update.c:658
 #, c-format
 msgid ""
 "It was not possible to download a cryptographic signature for the downloaded "
@@ -5254,11 +5254,11 @@ msgstr ""
 "डाउनलोडेड फाइल \"% s\" क लेल एकटा क्रिप्टोग्राफिक हस्ताक्षर डाउनलोड कएनाइ संभव नहि "
 "छल। ई प्रकार, एकरा नष्ट कए देब गेल।"
 
-#: src/misc/update.c:661 src/misc/update.c:673
+#: src/misc/update.c:669 src/misc/update.c:681
 msgid "Invalid signature"
 msgstr "अवैध हस्ताक्षर"
 
-#: src/misc/update.c:662 src/misc/update.c:674
+#: src/misc/update.c:670 src/misc/update.c:682
 #, c-format
 msgid ""
 "The cryptographic signature for the downloaded file \"%s\" was invalid and "
@@ -5267,11 +5267,11 @@ msgstr ""
 "डाउनलोड फाइल \"% s\" क लेल क्रिप्टोग्राफिक हस्ताक्षर अमान्य छला आओर सुरक्षित रूप सँ "
 "एकरा सत्यापित करबाक लेल इस्तेमाल नहि कएल जाए सकल। एहि प्रकार, फाइल केँ नष्ट कए देब गेल।"
 
-#: src/misc/update.c:686
+#: src/misc/update.c:694
 msgid "File not verifiable"
 msgstr "फाइल वेरिफियबल नहि अछि"
 
-#: src/misc/update.c:687
+#: src/misc/update.c:695
 #, c-format
 msgid ""
 "It was not possible to securely verify the downloaded file \"%s\". Thus, it "
@@ -5279,26 +5279,26 @@ msgid ""
 msgstr ""
 "डाउनलोडेड फाइल \"% s\" केँ सत्यापित कएनाइ संभव नहि छल।ई प्रकार, एकरा नष्ट कए देब गेल।"
 
-#: src/misc/update.c:698 src/misc/update.c:710
+#: src/misc/update.c:706 src/misc/update.c:718
 msgid "File corrupted"
 msgstr "खराब फाइल"
 
-#: src/misc/update.c:699 src/misc/update.c:711
+#: src/misc/update.c:707 src/misc/update.c:719
 #, c-format
 msgid "Downloaded file \"%s\" was corrupted. Thus, it was deleted."
 msgstr "डाउनलोड फाइल \"% s\" केँ भ्रष्ट छल। एहि प्रकार, एकरा नष्ट कए देब गेल।"
 
-#: src/misc/update.c:723
+#: src/misc/update.c:731
 msgid ""
 "The new version was successfully downloaded. Do you want to close VLC and "
 "install it now?"
 msgstr ""
 
-#: src/misc/update.c:726 modules/gui/macosx/VLCAddonsWindowController.m:200
+#: src/misc/update.c:734 modules/gui/macosx/VLCAddonsWindowController.m:200
 msgid "Install"
 msgstr "संस्थापित करू"
 
-#: src/misc/update.c:727
+#: src/misc/update.c:735
 msgid "Update VLC media player"
 msgstr "वीएलसी मीडिया प्लेयर अद्यतन करू"
 
@@ -6318,11 +6318,11 @@ msgstr ""
 msgid "Path to Key Delivery Message XML file"
 msgstr ""
 
-#: modules/access/dcp/dcp.cpp:77
+#: modules/access/dcp/dcp.cpp:86
 msgid "DCP"
 msgstr "DCP"
 
-#: modules/access/dcp/dcp.cpp:79
+#: modules/access/dcp/dcp.cpp:88
 msgid "Digital Cinema Package module"
 msgstr "डिजिटल सिनेमा पैकेज माड्यूल"
 
@@ -6449,7 +6449,7 @@ msgstr "ब्लैकमैजिक डेकलिंक SDI  इनपु�
 msgid "10 bits"
 msgstr "10 बिट"
 
-#: modules/access/decklink.cpp:358 modules/demux/ty.c:783
+#: modules/access/decklink.cpp:358 modules/demux/ty.c:792
 msgid "Closed captions 1"
 msgstr "बन्न कैप्शन 1"
 
@@ -7334,7 +7334,7 @@ msgstr "फाइल टिप्पणी"
 #: modules/gui/macosx/VLCOpenWindowController.m:140
 #: modules/gui/macosx/VLCOutput.m:64 modules/gui/macosx/VLCOutput.m:175
 #: modules/gui/macosx/VLCOutput.m:301 modules/gui/qt/dialogs/plugins.cpp:1428
-#: modules/gui/qt/dialogs/sout.cpp:67 modules/gui/qt/dialogs/sout.cpp:119
+#: modules/gui/qt/dialogs/sout.cpp:67 modules/gui/qt/dialogs/sout.cpp:114
 #: share/lua/http/dialogs/create_stream.html:204
 #: share/lua/http/dialogs/stream_config_window.html:36
 #: share/lua/http/dialogs/stream_window.html:95
@@ -7356,7 +7356,7 @@ msgstr ""
 
 #: modules/access/ftp.c:69 modules/access/live555.cpp:85
 #: modules/access/rdp.c:65 modules/access/sftp.c:55
-#: modules/access/smb_common.h:21 modules/access/vnc.c:47
+#: modules/access/smb_common.h:21 modules/access/vnc.c:48
 #: modules/access_output/http.c:52
 #: modules/gui/macosx/VLCCoreDialogProvider.m:191
 #: modules/gui/macosx/VLCSimplePrefsController.m:286
@@ -7374,7 +7374,7 @@ msgstr ""
 
 #: modules/access/ftp.c:72 modules/access/live555.cpp:88
 #: modules/access/rdp.c:68 modules/access/sftp.c:58
-#: modules/access/smb_common.h:24 modules/access/vnc.c:48
+#: modules/access/smb_common.h:24 modules/access/vnc.c:49
 #: modules/access_output/http.c:55
 #: modules/gui/macosx/VLCCoreDialogProvider.m:192
 #: modules/gui/macosx/VLCSimplePrefsController.m:285
@@ -7417,19 +7417,19 @@ msgstr "एफ़टीपी इनपुट"
 msgid "FTP upload output"
 msgstr "उत्पादन अपलोड एफ़टीपी"
 
-#: modules/access/ftp.c:370 modules/access/ftp.c:386 modules/access/ftp.c:538
+#: modules/access/ftp.c:385 modules/access/ftp.c:401 modules/access/ftp.c:564
 msgid "Network interaction failed"
 msgstr "संजाल अंतर्क्रिया बिफल रहल"
 
-#: modules/access/ftp.c:371
+#: modules/access/ftp.c:386
 msgid "VLC could not connect with the given server."
 msgstr "वीएलसी देल गेल सर्वर सँ कनेक्ट नहि कए सकल।"
 
-#: modules/access/ftp.c:387
+#: modules/access/ftp.c:402
 msgid "VLC's connection to the given server was rejected."
 msgstr "देल गेल सर्वर क लेल वीएलसी क संबंध केँ अस्वीकार कए देब गेल।"
 
-#: modules/access/ftp.c:539
+#: modules/access/ftp.c:565
 msgid "Your account was rejected."
 msgstr "अहाँक खाइत अस्वीकार कए देब गेल।"
 
@@ -7909,7 +7909,7 @@ msgstr "MTP इनपुट"
 msgid "MTP"
 msgstr "mtp"
 
-#: modules/access/mtp.c:167 modules/access/vdr.c:379 modules/access/vdr.c:545
+#: modules/access/mtp.c:167 modules/access/vdr.c:382 modules/access/vdr.c:548
 msgid "File reading failed"
 msgstr "फाइल पढ़बा मे बिफल रहल"
 
@@ -7997,72 +7997,45 @@ msgstr "RDP"
 msgid "RDP Remote Desktop"
 msgstr "RDP दूरस्थ डेस्कटाप"
 
-#: modules/access/rist.c:65
+#: modules/access/rist.c:44
 msgid "Range"
 msgstr ""
 
-#: modules/access/rist.c:65
+#: modules/access/rist.c:44
 msgid "Bitmask"
 msgstr ""
 
-#: modules/access/rist.c:1127 modules/access_output/rist.c:849
+#: modules/access/rist.c:309
+#, fuzzy
+msgid "Virtual Destination Port Filter"
+msgstr "गंतव्य फाइल:"
+
+#: modules/access/rist.c:311
+msgid ""
+"Destination port to be used inside the reduced-mode of the main profile to "
+"filter incoming data. Use zero to allow all."
+msgstr ""
+
+#: modules/access/rist.c:317 modules/access_output/rist.c:291
 msgid "RIST"
 msgstr ""
 
-#: modules/access/rist.c:1128
+#: modules/access/rist.c:318
 msgid "RIST input"
 msgstr ""
 
-#: modules/access/rist.c:1133
-msgid "RIST maximum packet size (bytes)"
-msgstr ""
-
-#: modules/access/rist.c:1135
+#: modules/access/rist.c:323
 msgid "RIST demux/decode maximum jitter (default is 5ms)"
 msgstr ""
 
-#: modules/access/rist.c:1136
+#: modules/access/rist.c:324
 msgid ""
 "This controls the maximum jitter that will be passed to the demux/decode "
-"chain. The lower the value, the more CPU cycles the algorithm will consume"
+"chain. The lower the value, the more CPU cycles the module will consume"
 msgstr ""
 
-#: modules/access/rist.c:1138
-msgid "RIST latency (ms)"
-msgstr ""
-
-#: modules/access/rist.c:1139
-msgid "RIST nack retry interval (ms)"
-msgstr ""
-
-#: modules/access/rist.c:1141
-msgid "RIST reorder buffer (ms)"
-msgstr ""
-
-#: modules/access/rist.c:1143
-msgid "RIST maximum retry count"
-msgstr ""
-
-#: modules/access/rist.c:1145
+#: modules/access/rist.c:328
 msgid "RIST nack type, 0 = range, 1 = bitmask. Default is range"
-msgstr ""
-
-#: modules/access/rist.c:1147
-msgid "Disable NACK output packets"
-msgstr ""
-
-#: modules/access/rist.c:1148
-msgid "Use this to disable packet recovery"
-msgstr ""
-
-#: modules/access/rist.c:1149
-msgid "Do not check for a valid rtcp message from the encoder"
-msgstr ""
-
-#: modules/access/rist.c:1150
-msgid ""
-"Send nack messages even when we have not confirmed that the encoder is on "
-"our local network."
 msgstr ""
 
 #: modules/access/rtp/rtp.c:44
@@ -8313,7 +8286,7 @@ msgid "Screen"
 msgstr "स्क्रीन"
 
 #: modules/access/screen/xcb.c:41 modules/access/shm.c:44
-#: modules/access/vnc.c:61
+#: modules/access/vnc.c:62
 msgid "How many times the screen content should be refreshed per second."
 msgstr "प्रति सेकंड कतए बेर स्क्रीन सामग्री ताजा क जाएनाइ चाही।"
 
@@ -8345,20 +8318,32 @@ msgstr "SFTP पोर्ट"
 msgid "SFTP port number to use on the server"
 msgstr "सर्वर पर उपयोग क लेल SFTP पोर्ट संख्या"
 
-#: modules/access/sftp.c:64
+#: modules/access/sftp.c:61
+#, fuzzy
+msgid "Private key file"
+msgstr "AES कुँजी फाइल"
+
+#: modules/access/sftp.c:62
+msgid ""
+"Private-key file used for SSH public key authentication. Public-key file is "
+"assumed to be in the same directory with '.pub' appended. If unset, standard "
+"key paths will be attempted (e.g. '~/.ssh/id_rsa')."
+msgstr ""
+
+#: modules/access/sftp.c:68
 msgid "SFTP input"
 msgstr "SFTP इनपुट"
 
-#: modules/access/sftp.c:411
+#: modules/access/sftp.c:463
 msgid "SFTP authentication"
 msgstr "SFTP सत्यापन"
 
-#: modules/access/sftp.c:412
+#: modules/access/sftp.c:464
 #, c-format
 msgid "Please enter a valid login and password for the sftp connexion to %s"
 msgstr "%s सँ sftp क कनेक्शन क लेल एकटा वैध लागिन आओर गुड़किल्ली दर्ज करू"
 
-#: modules/access/shm.c:46 modules/access/vnc.c:58
+#: modules/access/shm.c:46 modules/access/vnc.c:59
 msgid "Frame buffer depth"
 msgstr "फ्रेम बफर गहराइ"
 
@@ -8406,7 +8391,7 @@ msgstr "फ्रेम बफर क मेमोरी मैप्ड फा�
 msgid "XWD file (autodetect)"
 msgstr "XWD फाइल (स्वतः पता लगाया जाइत अछि)"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "8 bits"
 msgstr "8 बिट्स"
 
@@ -8414,15 +8399,15 @@ msgstr "8 बिट्स"
 msgid "15 bits"
 msgstr "15 बिट्स"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "16 bits"
 msgstr "16 बिट्स"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "24 bits"
 msgstr "24 बिट्स"
 
-#: modules/access/shm.c:76 modules/access/vnc.c:69
+#: modules/access/shm.c:76 modules/access/vnc.c:70
 msgid "32 bits"
 msgstr "32 बिट्स"
 
@@ -8462,41 +8447,30 @@ msgid ""
 "username) and a password."
 msgstr ""
 
-#: modules/access/srt.c:428 modules/access_output/srt.c:457
+#: modules/access/srt.c:550 modules/access_output/srt.c:457
 msgid "SRT"
 msgstr ""
 
-#: modules/access/srt.c:429
+#: modules/access/srt.c:551
 msgid "SRT input"
 msgstr ""
 
-#: modules/access/srt.c:435 modules/access_output/srt.c:464
+#: modules/access/srt.c:557 modules/access_output/srt.c:464
 msgid "Return poll wait after timeout milliseconds (-1 = infinite)"
 msgstr ""
 
-#: modules/access/srt.c:438 modules/access_output/srt.c:466
+#: modules/access/srt.c:560 modules/access_output/srt.c:466
 msgid "SRT latency (ms)"
 msgstr ""
 
-#: modules/access/srt.c:440 modules/access_output/srt.c:468
+#: modules/access/srt.c:562 modules/access_output/srt.c:468
 msgid "Password for stream encryption"
 msgstr ""
 
-#: modules/access/srt.c:446 modules/access_output/srt.c:480
-msgid " SRT Stream ID"
-msgstr ""
-
-#: modules/access/srt_common.c:26
-msgid "16 bytes"
-msgstr ""
-
-#: modules/access/srt_common.c:27
-msgid "24 bytes"
-msgstr ""
-
-#: modules/access/srt_common.c:27
-msgid "32 bytes"
-msgstr ""
+#: modules/access/srt.c:568
+#, fuzzy
+msgid "SRT Stream ID"
+msgstr "स्ट्रिम %d"
 
 #: modules/access/tcp.c:116
 msgid "TCP"
@@ -8873,7 +8847,7 @@ msgid "Vivid"
 msgstr "चमकीला"
 
 #: modules/access/v4l2/v4l2.c:169 modules/audio_output/auhal.c:43
-#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1489
+#: modules/audio_output/directsound.c:69 modules/audio_output/mmdevice.c:1513
 #: modules/audio_output/waveout.c:145
 msgid "Audio volume"
 msgstr "आडियो वाल्यूम"
@@ -8935,7 +8909,7 @@ msgstr ""
 #: modules/control/hotkeys.c:395
 #: modules/gui/macosx/VLCAddonsWindowController.m:100
 #: modules/gui/qt/dialogs/convert.cpp:164
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:381
 #: modules/gui/qt/dialogs/preferences.cpp:79
 msgid "All"
 msgstr "सभटा"
@@ -9020,121 +8994,121 @@ msgstr "VC2 इनपुट"
 msgid "[vcd:][device][#[title][,[chapter]]]"
 msgstr "[vcd:][डिवाइस][#[शीर्षक][,[अध्याय]]]"
 
-#: modules/access/vdr.c:72
+#: modules/access/vdr.c:73
 msgid "Support for VDR recordings (http://www.tvdr.de/)."
 msgstr "व्हीडीआर रिकार्डिंग क लेल समर्थन (http://www.tvdr.de/)"
 
-#: modules/access/vdr.c:74
+#: modules/access/vdr.c:75
 msgid "Chapter offset in ms"
 msgstr "एमएस मे चैप्टर आफसेट"
 
-#: modules/access/vdr.c:76
+#: modules/access/vdr.c:77
 msgid "Move all chapters. This value should be set in milliseconds."
 msgstr "सभटा अध्याय केँ घसकाउ। ई मान मिलिसेकेंड मे सेट कएल जएनाइ चाही।"
 
-#: modules/access/vdr.c:80
+#: modules/access/vdr.c:81
 msgid "Default frame rate for chapter import."
 msgstr "चैप्टर आयात क लेल पूर्वनिर्धारित फ्रेम रेट"
 
-#: modules/access/vdr.c:84
+#: modules/access/vdr.c:85
 msgid "VDR"
 msgstr "VDR"
 
-#: modules/access/vdr.c:87
+#: modules/access/vdr.c:88
 msgid "VDR recordings"
 msgstr "व्हीडीआर रिकार्डिंग"
 
-#: modules/access/vdr.c:380
+#: modules/access/vdr.c:383
 #, c-format
 msgid "VLC could not read the file (%s)."
 msgstr "वीएलसी फाइल (%s) केँ खोलि नहि सकल।"
 
-#: modules/access/vdr.c:545
+#: modules/access/vdr.c:548
 #, c-format
 msgid "VLC could not open the file \"%s\" (%s)."
 msgstr "VLC \"%s\" (%s) फाइल नहि खोलि सकल."
 
-#: modules/access/vdr.c:820
+#: modules/access/vdr.c:811
 msgid "VDR Cut Marks"
 msgstr "VDR कट मार्कस"
 
-#: modules/access/vdr.c:886
+#: modules/access/vdr.c:877
 msgid "Start"
 msgstr "प्रारंभ"
 
-#: modules/access/vnc.c:49
+#: modules/access/vnc.c:50
 msgid "X.509 Certificate Authority"
 msgstr "X.509 प्रमाणपत्र प्राधिकरण"
 
-#: modules/access/vnc.c:50
+#: modules/access/vnc.c:51
 msgid "Certificate of the Authority to verify server's against"
 msgstr "सर्वर क विरुद्ध सत्यापित करबाक लेल प्राधिकार क प्रमाणपत्र"
 
-#: modules/access/vnc.c:51
+#: modules/access/vnc.c:52
 msgid "X.509 Certificate Revocation List"
 msgstr "X.509 प्रमाणपत्र निरसन सूची"
 
-#: modules/access/vnc.c:52
+#: modules/access/vnc.c:53
 msgid "List of revoked servers certificates"
 msgstr "रद्द सर्वरों क प्रमाणपत्रक सूची"
 
-#: modules/access/vnc.c:53
+#: modules/access/vnc.c:54
 msgid "X.509 Client certificate"
 msgstr "X.509 ग्राहक प्रमाणपत्र"
 
-#: modules/access/vnc.c:54
+#: modules/access/vnc.c:55
 msgid "Certificate for client authentication"
 msgstr ""
 
-#: modules/access/vnc.c:55
+#: modules/access/vnc.c:56
 msgid "X.509 Client private key"
 msgstr "X.509 ग्राहक निज कुँजी"
 
-#: modules/access/vnc.c:56
+#: modules/access/vnc.c:57
 msgid "Private key for authentication by certificate"
 msgstr ""
 
-#: modules/access/vnc.c:59
+#: modules/access/vnc.c:60
 msgid "RGB chroma (RV32, RV24, RV16, RGB2)"
 msgstr "RGB क्रोमा (RV32, RV24, RV16, RGB2)"
 
-#: modules/access/vnc.c:62
+#: modules/access/vnc.c:63
 msgid "Compression level"
 msgstr "संपीडन स्तर"
 
-#: modules/access/vnc.c:63
+#: modules/access/vnc.c:64
 msgid "Transfer compression level from 0 (none) to 9 (max)"
 msgstr "संपीडन स्तर केँ 0 (किछु नहि) सँ 9 (अधिकतम) मे स्थानांतरित करू"
 
-#: modules/access/vnc.c:64
+#: modules/access/vnc.c:65
 msgid "Image quality"
 msgstr "छवि गुणवत्ता"
 
-#: modules/access/vnc.c:65
+#: modules/access/vnc.c:66
 msgid "Image quality 1 to 9 (max)"
 msgstr "छवि गुणवत्ता 1 सँ 9 (अधिकतम)"
 
-#: modules/access/vnc.c:79
+#: modules/access/vnc.c:80
 msgid "VNC"
 msgstr "VNC"
 
-#: modules/access/vnc.c:83
+#: modules/access/vnc.c:84
 msgid "VNC client access"
 msgstr "VNC ग्राहक पहुंच"
 
-#: modules/access/wasapi.c:485
+#: modules/access/wasapi.c:489
 msgid "Loopback mode"
 msgstr ""
 
-#: modules/access/wasapi.c:486
+#: modules/access/wasapi.c:490
 msgid "Record an audio rendering endpoint."
 msgstr ""
 
-#: modules/access/wasapi.c:489
+#: modules/access/wasapi.c:493
 msgid "WASAPI"
 msgstr ""
 
-#: modules/access/wasapi.c:490
+#: modules/access/wasapi.c:494
 msgid "Windows Audio Session API input"
 msgstr ""
 
@@ -9333,57 +9307,57 @@ msgstr "एचटीटीपी लाइव स्ट्रीमिंग आ
 msgid "LiveHTTP"
 msgstr "http लाइव"
 
-#: modules/access_output/rist.c:824
-msgid "RIST data output caching size (ms)"
+#: modules/access_output/rist.c:266
+msgid "Virtual Source Port"
 msgstr ""
 
-#: modules/access_output/rist.c:826
+#: modules/access_output/rist.c:268
+msgid "Source port to be used inside the reduced-mode of the main profile"
+msgstr ""
+
+#: modules/access_output/rist.c:270
+#, fuzzy
+msgid "Virtual Destination Port"
+msgstr "स्ट्रीम गंतव्य"
+
+#: modules/access_output/rist.c:272
+msgid "Destination port to be used inside the reduced-mode of the main profile"
+msgstr ""
+
+#: modules/access_output/rist.c:279
+#, fuzzy
+msgid "Multipeer mode"
+msgstr "बहुसंकेतक"
+
+#: modules/access_output/rist.c:281
 msgid ""
-"Having this cache will guarantee that the packets going out are delivered at "
-"a spacing determined by the chain timestamps thus ensuring a near jitter "
-"free output. Be aware that this setting will also add to the overall latency "
-"of the stream."
+"This allows you to select between duplicate or load balanced modes when "
+"sending data to multiple peers (several network paths)"
 msgstr ""
 
-#: modules/access_output/rist.c:831
-msgid "RIST retry-buffer queue size (ms)"
-msgstr ""
+#: modules/access_output/rist.c:285
+#, fuzzy
+msgid "Duplicate"
+msgstr "अनुप्रयोग"
 
-#: modules/access_output/rist.c:833
-msgid ""
-"This must match the buffer size (latency) configured on the server side. If "
-"you are not sure, leave the default of 0 which will set it the maximum value "
-"and will use about 100MB of RAM"
-msgstr ""
+#: modules/access_output/rist.c:285
+#, fuzzy
+msgid "Load balanced"
+msgstr "लाल रँग क संतुलन"
 
-#: modules/access_output/rist.c:837
-msgid "SSRC used in RTP output (default is random, i.e. 0)"
-msgstr ""
-
-#: modules/access_output/rist.c:839
-msgid ""
-"Use this setting to specify a known SSRC for the RTP header. This is only "
-"useful if your receiver acts on it. When using VLC as receiver, it is not."
-msgstr ""
-
-#: modules/access_output/rist.c:842 modules/access_output/shout.c:64
-#: modules/gui/qt/components/sout/sout_widgets.cpp:386
-#: share/lua/http/dialogs/create_stream.html:139
-msgid "Stream name"
-msgstr "स्ट्रीम नाम"
-
-#: modules/access_output/rist.c:844
-msgid ""
-"This Stream name will be sent to the receiver using the rist RTCP channel"
-msgstr ""
-
-#: modules/access_output/rist.c:850
+#: modules/access_output/rist.c:292
 msgid "RIST stream output"
 msgstr ""
 
-#: modules/access_output/rist.c:855
-msgid "RIST target packet size (bytes)"
+#: modules/access_output/rist.c:297
+msgid "RIST target payload size (bytes)"
 msgstr ""
+
+#: modules/access_output/shout.c:64
+#: modules/gui/qt/components/sout/sout_widgets.cpp:438
+#: share/lua/http/dialogs/create_stream.html:139
+msgid "Stream name"
+msgstr "स्ट्रीम नाम"
 
 #: modules/access_output/shout.c:65
 msgid "Name to give to this stream/channel on the shoutcast/icecast server."
@@ -9476,6 +9450,10 @@ msgstr ""
 
 #: modules/access_output/srt.c:475
 msgid "SRT maximum bandwidth ceiling (bytes)"
+msgstr ""
+
+#: modules/access_output/srt.c:480
+msgid " SRT Stream ID"
 msgstr ""
 
 #: modules/access_output/udp.c:62 modules/stream_out/rtp.c:135
@@ -9729,27 +9707,27 @@ msgstr "आडियो चैनल पुनःमापक"
 msgid "Audio filter for simple channel mixing"
 msgstr "सरल चैनल मिश्रण क लेल आडियो फिल्टर"
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:50
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:67
 msgid "HRTF file for the binauralization"
 msgstr ""
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:51
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:68
 msgid "Custom HRTF (Head-related transfer function) file in the SOFA format."
 msgstr ""
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:54
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:71
 msgid "Headphones mode (binaural)"
 msgstr ""
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:55
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:72
 msgid "If the output is stereo, render ambisonics with the binaural decoder."
 msgstr ""
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:65
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:82
 msgid "Ambisonics renderer and binauralizer"
 msgstr ""
 
-#: modules/audio_filter/channel_mixer/spatialaudio.cpp:77
+#: modules/audio_filter/channel_mixer/spatialaudio.cpp:94
 msgid "Binauralizer"
 msgstr ""
 
@@ -10159,12 +10137,12 @@ msgid "Audio filter for band-limited interpolation resampling"
 msgstr "बैंड सीमित प्रक्षेप रिसैंप्लिंग क लेल आडियो फिल्टर"
 
 #: modules/audio_filter/resampler/soxr.c:40
-#: modules/audio_filter/resampler/speex.c:34
+#: modules/audio_filter/resampler/speex.c:36
 msgid "Resampling quality"
 msgstr "गुणवत्ता क रिसैंप्लिंग"
 
 #: modules/audio_filter/resampler/soxr.c:41
-#: modules/audio_filter/resampler/speex.c:35
+#: modules/audio_filter/resampler/speex.c:37
 msgid "Resampling quality, from worst to best"
 msgstr ""
 
@@ -10172,8 +10150,8 @@ msgstr ""
 msgid "SoX Resampler"
 msgstr ""
 
-#: modules/audio_filter/resampler/speex.c:42
-#: modules/audio_filter/resampler/speex.c:43
+#: modules/audio_filter/resampler/speex.c:44
+#: modules/audio_filter/resampler/speex.c:45
 msgid "Speex resampler"
 msgstr "Speex रीसेम्प्लर"
 
@@ -10490,11 +10468,11 @@ msgid ""
 "The selected audio output device is exclusively in use by another program."
 msgstr "केवल चयनित आउटपुट डिवाइस क ककरो आन प्रोग्राम द्वारा उपयोग कएल जाइत अछि।"
 
-#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1486
+#: modules/audio_output/directsound.c:62 modules/audio_output/mmdevice.c:1510
 msgid "Output device"
 msgstr "आउटपुट अओजार"
 
-#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1487
+#: modules/audio_output/directsound.c:63 modules/audio_output/mmdevice.c:1511
 msgid "Select your audio output device"
 msgstr "अपन आडियो आउटपुट डिवायस क चयन करू."
 
@@ -10510,7 +10488,7 @@ msgstr ""
 "स्पीकर विन्यास क चयन करू जकर अहाँ उपयोग कएनाइ चाहैत छी। ई विकल्प upmix नहि करैत "
 "अछि! तँ NO उदा. स्टीरियो -> 5.1 रूपांतरण।"
 
-#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1490
+#: modules/audio_output/directsound.c:70 modules/audio_output/mmdevice.c:1514
 msgid "Audio volume in hundredths of decibels (dB)."
 msgstr "सैकड़ासभ डेसिबल (dB) मे आडियो वाल्यूम."
 
@@ -10611,37 +10589,37 @@ msgstr ""
 msgid "K Audio Interface audio output"
 msgstr "K आडियो अंतरफलक आडियो आउटपुट"
 
-#: modules/audio_output/mmdevice.c:1472 modules/gui/qt/ui/sprefs_audio.h:417
+#: modules/audio_output/mmdevice.c:1496 modules/gui/qt/ui/sprefs_audio.h:417
 msgid "HDMI/SPDIF audio passthrough"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1474
+#: modules/audio_output/mmdevice.c:1498
 msgid ""
 "Change this value if you have issue with HD codecs when using a HDMI "
 "receiver."
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1481
+#: modules/audio_output/mmdevice.c:1505
 msgid "Disabled"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1482
+#: modules/audio_output/mmdevice.c:1506
 msgid "Enabled (AC3/DTS only)"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1483
+#: modules/audio_output/mmdevice.c:1507
 msgid "Enabled"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1494
+#: modules/audio_output/mmdevice.c:1518
 msgid "Windows Multimedia Device output"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1500
+#: modules/audio_output/mmdevice.c:1524
 msgid "Output back-end"
 msgstr ""
 
-#: modules/audio_output/mmdevice.c:1500
+#: modules/audio_output/mmdevice.c:1524
 msgid "Audio output back-end interface."
 msgstr ""
 
@@ -10669,7 +10647,7 @@ msgstr "साफ्टवेयर लाभ"
 msgid "This linear gain will be applied in software."
 msgstr "ई रैखिक वृद्धि क प्रयोग साफ्टवेयर मे कएल जएताह."
 
-#: modules/audio_output/wasapi.c:652
+#: modules/audio_output/wasapi.c:687
 msgid "Windows Audio Session API output"
 msgstr "विंडोज आडियो सत्र API आउटपुट"
 
@@ -10785,8 +10763,8 @@ msgstr ""
 msgid "ARIB subtitles decoder"
 msgstr ""
 
-#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1089
-#: modules/demux/mpeg/ts_psi.c:1096
+#: modules/codec/arib/aribsub.c:54 modules/demux/mpeg/ts_psi.c:1092
+#: modules/demux/mpeg/ts_psi.c:1099
 msgid "ARIB subtitles"
 msgstr ""
 
@@ -10833,9 +10811,8 @@ msgstr "FFmpeg आडियो / वीडियो विकोडक"
 msgid "Decoding"
 msgstr "डीकोडिंग"
 
-#: modules/codec/avcodec/avcodec.c:152 modules/codec/jpeg.c:119
-#: modules/codec/omxil/omxil.c:171 modules/codec/png.c:99
-#: modules/codec/schroedinger.c:370
+#: modules/codec/avcodec/avcodec.c:152 modules/codec/jpeg.c:120
+#: modules/codec/omxil/omxil.c:171 modules/codec/png.c:100
 msgid "Encoding"
 msgstr "एनकोडिंग"
 
@@ -11097,7 +11074,7 @@ msgstr ""
 "Mpeg2 इनकोडिंग क लेल MPEG4 परिमाणीकरण मैट्रिक्स क उपयोग करू। मानक mpeg2 क decoders "
 "क सँग संगतता बनाए राखैत हुए ई आम तौर पर, एकटा बेहतर दिखै बला तस्वीर पैदा करैत अछि।"
 
-#: modules/codec/avcodec/avcodec.h:173 modules/codec/jpeg.c:51
+#: modules/codec/avcodec/avcodec.h:173 modules/codec/jpeg.c:52
 msgid "Quality level"
 msgstr "गुणवत्ता स्तर"
 
@@ -11287,11 +11264,11 @@ msgstr "सबपिक्चरस"
 msgid "VLC could not open the %4.4s %s encoder."
 msgstr "वीएलसी %4.4s %s इनकोडर खोलि नहि सकल।"
 
-#: modules/codec/avcodec/vaapi.c:388
+#: modules/codec/avcodec/vaapi.c:414
 msgid "VA-API video decoder via DRM"
 msgstr "VA-API वीडियो विकोडक द्वारा DRM"
 
-#: modules/codec/avcodec/vaapi.c:393
+#: modules/codec/avcodec/vaapi.c:419
 msgid "VA-API video decoder"
 msgstr ""
 
@@ -11363,11 +11340,11 @@ msgstr ""
 msgid "Daala video encoder"
 msgstr ""
 
-#: modules/codec/daala.c:143 modules/codec/schroedinger.c:54
+#: modules/codec/daala.c:143
 msgid "Chroma format"
 msgstr "क्रोमा फ़ॉर्मेट"
 
-#: modules/codec/daala.c:144 modules/codec/schroedinger.c:55
+#: modules/codec/daala.c:144
 msgid ""
 "Picking chroma format will force a conversion of the video into that format"
 msgstr "क्रोमा प्रारूप क चयन वीडियो क ओ प्रारूप मे रूपांतरण क लेल बाध्य करताह"
@@ -11485,8 +11462,8 @@ msgstr "इनकोडेड सबटायटल क Y समन्वय"
 msgid "DVB subtitles decoder"
 msgstr "डीवीबी उपशीर्षक डिकोडर"
 
-#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:772
-#: modules/demux/mpeg/ts_psi.c:821
+#: modules/codec/dvbsub.c:122 modules/demux/mpeg/ts_psi.c:775
+#: modules/demux/mpeg/ts_psi.c:824
 msgid "DVB subtitles"
 msgstr "डीवीबी उपशीर्षक"
 
@@ -11498,11 +11475,11 @@ msgstr "डीवीबी उपशीर्षक एनकोडर"
 msgid "Dummy encoder"
 msgstr "डमी एनकोडर"
 
-#: modules/codec/faad.c:54
+#: modules/codec/faad.c:59
 msgid "AAC audio decoder (using libfaad2)"
 msgstr "AAC आडियो विकोडक (libfaad2 क उपयोग कएक)"
 
-#: modules/codec/faad.c:448
+#: modules/codec/faad.c:454
 msgid "AAC extension"
 msgstr "AAC एक्सटेंशन"
 
@@ -11627,11 +11604,11 @@ msgstr "FluidSynth मिडी सिंथेसाइज़र"
 msgid "FluidSynth"
 msgstr "FluidSynth"
 
-#: modules/codec/fluidsynth.c:153
+#: modules/codec/fluidsynth.c:160
 msgid "MIDI synthesis not set up"
 msgstr "मिडी संश्लेषण क स्थापना नहि भेल अछि"
 
-#: modules/codec/fluidsynth.c:154
+#: modules/codec/fluidsynth.c:161
 msgid ""
 "A sound font file (.SF2) is required for MIDI synthesis.\n"
 "Please install a sound font and configure it from the VLC preferences "
@@ -11673,16 +11650,16 @@ msgstr ""
 msgid "GStreamer Based Decoder"
 msgstr "जीस्ट्रीमर आधारित डिकोडर"
 
-#: modules/codec/jpeg.c:52
+#: modules/codec/jpeg.c:53
 msgid ""
 "Quality level for encoding (this can enlarge or reduce output image size)."
 msgstr "एन्कोडिंगक गुणवत्ता स्तर (ई आउटपुट छवि आकारकेँ पैघ आओर कम कए सकैत अछि)."
 
-#: modules/codec/jpeg.c:111
+#: modules/codec/jpeg.c:112
 msgid "JPEG image decoder"
 msgstr "JPEG छवि डीकोडर"
 
-#: modules/codec/jpeg.c:120
+#: modules/codec/jpeg.c:121
 msgid "JPEG image encoder"
 msgstr "JPEG छवि एन्कोडर"
 
@@ -12025,11 +12002,11 @@ msgstr "ओपस"
 msgid "Opus audio encoder"
 msgstr "ओपस आडियो डीकोडर"
 
-#: modules/codec/png.c:91
+#: modules/codec/png.c:92
 msgid "PNG video decoder"
 msgstr "PNG वीडियो विकोडक"
 
-#: modules/codec/png.c:100
+#: modules/codec/png.c:101
 msgid "PNG video encoder"
 msgstr "PNG वीडियो विकोडक"
 
@@ -12255,381 +12232,6 @@ msgstr "छद्म रॉ वीडियो packetizer"
 msgid "Raw video encoder for RTP"
 msgstr ""
 
-#: modules/codec/schroedinger.c:60
-msgid "4:2:0"
-msgstr "4:2:0"
-
-#: modules/codec/schroedinger.c:60
-msgid "4:2:2"
-msgstr "4:2:2"
-
-#: modules/codec/schroedinger.c:60
-msgid "4:4:4"
-msgstr "4:4:4"
-
-#: modules/codec/schroedinger.c:63
-msgid "Rate control method"
-msgstr "दर नियंत्रण विधि"
-
-#: modules/codec/schroedinger.c:64
-msgid "Method used to encode the video sequence"
-msgstr "वीडियो अनुक्रम इनकोड करबाक लेल प्रयोग क जाएबला विधि"
-
-#: modules/codec/schroedinger.c:77
-msgid "Constant noise threshold mode"
-msgstr "स्थिर शोर सीमा मोड"
-
-#: modules/codec/schroedinger.c:78
-msgid "Constant bitrate mode (CBR)"
-msgstr "स्थिर बिटरेट मोड मोड (सीबीआर)"
-
-#: modules/codec/schroedinger.c:79
-msgid "Low Delay mode"
-msgstr "निम्न विलम्ब मोड"
-
-#: modules/codec/schroedinger.c:80
-msgid "Lossless mode"
-msgstr "दोषरहित मोड"
-
-#: modules/codec/schroedinger.c:81
-msgid "Constant lambda mode"
-msgstr "स्थिर लैम्ब्डा मोड"
-
-#: modules/codec/schroedinger.c:82
-msgid "Constant error mode"
-msgstr "स्थिर त्रुटि मोड"
-
-#: modules/codec/schroedinger.c:83
-msgid "Constant quality mode"
-msgstr "स्थिर गुणवत्ता मोड"
-
-#: modules/codec/schroedinger.c:87
-msgid "GOP structure"
-msgstr "GOP संरचना"
-
-#: modules/codec/schroedinger.c:88
-msgid "GOP structure used to encode the video sequence"
-msgstr "GOP संरचना वीडियो अनुक्रम इनकोड करबाक लेल प्रयोग कएल जाइत अछि"
-
-#: modules/codec/schroedinger.c:100
-msgid ""
-"No fixed gop structure. A picture can be intra or inter and refer to "
-"previous or future pictures."
-msgstr ""
-"कोनो निश्चित gop संरचना नहि। एकटा तस्वीर इंपर अथवा इंट्रा भ' सकैत अछि आओर पछिला "
-"अथवा भविष्य क चित्र केँ रेफर कए सकैत अछि।"
-
-#: modules/codec/schroedinger.c:101
-msgid "I-frame only sequence"
-msgstr "I-frame एकेटा शृंखला"
-
-#: modules/codec/schroedinger.c:102 modules/codec/schroedinger.c:103
-msgid "Inter pictures refere to previous pictures only"
-msgstr "इंटर चित्र केवल पछिला चित्र केँ रेफर करैत अछि"
-
-#: modules/codec/schroedinger.c:104 modules/codec/schroedinger.c:105
-msgid "Inter pictures can refer to previous or future pictures"
-msgstr "इंटर चित्र पछिला अथवा भविष्य क चित्र केँ रेफर कए सकैत अछि"
-
-#: modules/codec/schroedinger.c:109
-msgid "Constant quality factor"
-msgstr "स्थिर गुणवत्ता कारक"
-
-#: modules/codec/schroedinger.c:110
-msgid "Quality factor to use in constant quality mode"
-msgstr "लगातार गुणवत्ता मोड मे उपयोग करबाक लेल गुणवत्ता कारक"
-
-#: modules/codec/schroedinger.c:113
-msgid "Noise Threshold"
-msgstr "शोर सीमा"
-
-#: modules/codec/schroedinger.c:114
-msgid "Noise threshold to use in constant noise threshold mode"
-msgstr "स्थिर शोर थ्रेशहोल्ड मोड मे उपयोग करबाक लेल शोर सीमा"
-
-#: modules/codec/schroedinger.c:117
-msgid "CBR bitrate (kbps)"
-msgstr "CBR बिटरेट(kbps)"
-
-#: modules/codec/schroedinger.c:118
-msgid "Target bitrate in kbps when encoding in constant bitrate mode"
-msgstr "सतत बीटरेट मोड मे इनकोडित करैत समय kbps मे लक्षित बीटरेट "
-
-#: modules/codec/schroedinger.c:121
-msgid "Maximum bitrate (kbps)"
-msgstr "अधिकतम बिटरेट (केबीपीएस)"
-
-#: modules/codec/schroedinger.c:122
-msgid "Maximum bitrate in kbps when encoding in constant bitrate mode"
-msgstr "सतत बीटरेट मोड मे इनकोडित करैत समय kbps मे अधिकतम बीटरेट "
-
-#: modules/codec/schroedinger.c:125
-msgid "Minimum bitrate (kbps)"
-msgstr "न्यूनतम बिटरेट(kbps)"
-
-#: modules/codec/schroedinger.c:126
-msgid "Minimum bitrate in kbps when encoding in constant bitrate mode"
-msgstr "सतत बीटरेट मोड मे इनकोडित करैत समय kbps मे न्यूनतम बीटरेट "
-
-#: modules/codec/schroedinger.c:129
-msgid "GOP length"
-msgstr "GOP नमाइ"
-
-#: modules/codec/schroedinger.c:130
-msgid ""
-"Number of pictures between successive sequence headers i.e. length of the "
-"group of pictures"
-msgstr "लगातार अनुक्रम हेडर क मध्य चित्र क सँख्या यानी चित्र क समूह क नमाइ"
-
-#: modules/codec/schroedinger.c:134
-msgid "Prefilter"
-msgstr "प्रीफिल्टर"
-
-#: modules/codec/schroedinger.c:135
-msgid "Enable adaptive prefiltering"
-msgstr "अनुकूली prefiltering सक्षम करू"
-
-#: modules/codec/schroedinger.c:147
-msgid "No pre-filtering"
-msgstr "कोनो पूर्व फिल्टरिंग नहि"
-
-#: modules/codec/schroedinger.c:148
-msgid "Centre Weighted Median"
-msgstr "केंद्र भारित माध्य"
-
-#: modules/codec/schroedinger.c:149
-msgid "Gaussian Low Pass Filter"
-msgstr "गाऊसी लो पास फिल्टर"
-
-#: modules/codec/schroedinger.c:150
-msgid "Add Noise"
-msgstr "शोर बढाउ"
-
-#: modules/codec/schroedinger.c:151
-msgid "Gaussian Adaptive Low Pass Filter"
-msgstr "गाऊसी अनुकूली लो पास फिल्टर"
-
-#: modules/codec/schroedinger.c:152
-msgid "Low Pass Filter"
-msgstr "लो पास फिल्टर"
-
-#: modules/codec/schroedinger.c:156
-msgid "Amount of prefiltering"
-msgstr "प्रीफिल्टरिंग क मात्रा"
-
-#: modules/codec/schroedinger.c:157
-msgid "Higher value implies more prefiltering"
-msgstr "उच्च मूल्य क अर्थ अछि बेसी प्रीफिल्टरिंग"
-
-#: modules/codec/schroedinger.c:160
-msgid "Picture coding mode"
-msgstr "चित्र मोड कोडिंग"
-
-#: modules/codec/schroedinger.c:161
-msgid ""
-"Field coding is where interlaced fields are coded separately as opposed to a "
-"pseudo-progressive frame"
-msgstr ""
-"छद्म प्रोग्रेसिव फ्रेम क विपरीत क्षेत्र कोडिंग ओतए अछि जतए अंतरायित क्षेत्र केँ अलग सँ कोडित "
-"रहल अछि।"
-
-#: modules/codec/schroedinger.c:166
-msgid "auto - let encoder decide based upon input (Best)"
-msgstr "आटो - इनपुट क आधार पर एनकोडर केँ निर्धारित करब देत अछि(बेस्ट)"
-
-#: modules/codec/schroedinger.c:167
-msgid "force coding frame as single picture"
-msgstr "एकल छवि क रूपेँ कोडिंग फ्रेम केँ बाध्य करू।"
-
-#: modules/codec/schroedinger.c:168
-msgid "force coding frame as separate interlaced fields"
-msgstr "अलग इंटरलेस्ड छवि क रूपेँ कोडिंग फ्रेम केँ बाध्य करू।"
-
-#: modules/codec/schroedinger.c:173
-msgid "Size of motion compensation blocks"
-msgstr "मोशन क्षतिपूर्ति ब्लाक क आकार"
-
-#: modules/codec/schroedinger.c:182 modules/codec/schroedinger.c:199
-#: modules/codec/schroedinger.c:297 modules/codec/schroedinger.c:338
-msgid "automatic - let encoder decide based upon input (Best)"
-msgstr "आटोमेटिक - इनपुट क आधार पर एनकोडर केँ निर्धारित करब देत अछि(बेस्ट)"
-
-#: modules/codec/schroedinger.c:183
-msgid "small - use small motion compensation blocks"
-msgstr "छोट - छोट मोशन क्षतिपूर्ति ब्लाक क आकार क उपयोग करू"
-
-#: modules/codec/schroedinger.c:184
-msgid "medium - use medium motion compensation blocks"
-msgstr "मध्यम - मध्यम मोशन क्षतिपूर्ति ब्लाक क आकार क उपयोग करू"
-
-#: modules/codec/schroedinger.c:185
-msgid "large - use large motion compensation blocks"
-msgstr "पैघ - बड़े मोशन क्षतिपूर्ति ब्लाक क आकार क उपयोग करू"
-
-#: modules/codec/schroedinger.c:190
-msgid "Overlap of motion compensation blocks"
-msgstr "प्रस्ताव क्षतिपूर्ति क ब्लाक क ओवरलैप"
-
-#: modules/codec/schroedinger.c:200
-msgid "none - Motion compensation blocks do not overlap"
-msgstr "कोनो नहि - मोशन क्षतिपूर्ति ब्लाक केँ ओवरलैप नहि करू"
-
-#: modules/codec/schroedinger.c:201
-msgid "partial - Motion compensation blocks only partially overlap"
-msgstr "आंशिक - मोशन क्षतिपूर्ति ब्लाक केँ केवल आंशिक रूप सँ ओवरलैपे करू"
-
-#: modules/codec/schroedinger.c:202
-msgid "full - Motion compensation blocks fully overlap"
-msgstr "पूर्ण - मोशन क्षतिपूर्ति ब्लाक केँ पुरी तरह ओवरलैप करू"
-
-#: modules/codec/schroedinger.c:207
-msgid "Motion Vector precision"
-msgstr "गति वेक्टर परिशुद्धता"
-
-#: modules/codec/schroedinger.c:208
-msgid "Motion Vector precision in pels"
-msgstr "pels मे गति वेक्टर परिशुद्धता"
-
-#: modules/codec/schroedinger.c:214
-msgid "Three component motion estimation"
-msgstr "तीन कंपोनेंट गति आकलन"
-
-#: modules/codec/schroedinger.c:215
-msgid "Use chroma as part of the motion estimation process"
-msgstr "गति आकलन क प्रक्रिया क हिस्सा क रूपेँ क्रोमा क प्रयोग करू।"
-
-#: modules/codec/schroedinger.c:218
-msgid "Intra picture DWT filter"
-msgstr "इंट्रा पिक्चर डीडब्ल्यूटी फिल्टर"
-
-#: modules/codec/schroedinger.c:221
-msgid "Inter picture DWT filter"
-msgstr "इंटर पिक्चर डीडब्ल्यूटी फिल्टर"
-
-#: modules/codec/schroedinger.c:244
-msgid "Number of DWT iterations"
-msgstr "डीडब्ल्यूटी पुनरावृत्ति क संख्या"
-
-#: modules/codec/schroedinger.c:245
-msgid "Also known as DWT levels"
-msgstr "डीडब्ल्यूटी स्तर क रूपेँ सेहो जएनाइ जाइत अछि"
-
-#: modules/codec/schroedinger.c:250
-msgid "Enable multiple quantizers"
-msgstr "बहु क्वांटाइजर सक्षम करू"
-
-#: modules/codec/schroedinger.c:251
-msgid "Enable multiple quantizers per subband (one per codeblock)"
-msgstr "प्रत्येक उपबैंड क लेल कतेक क्वांटाइजर सक्षम करू (प्रत्येक CodeBlock क लेल एक)"
-
-#: modules/codec/schroedinger.c:255
-msgid "Disable arithmetic coding"
-msgstr "अंकगणितीय कोडिंग अक्षम करू"
-
-#: modules/codec/schroedinger.c:256
-msgid "Use variable length codes instead, useful for very high bitrates"
-msgstr "चर नमाइ कोड क प्रयोग करू, बहुत उच्च बिटरेटक लेल उपयोगी"
-
-#: modules/codec/schroedinger.c:261
-msgid "perceptual weighting method"
-msgstr "अनुभविक वेइंग विधि"
-
-#: modules/codec/schroedinger.c:272
-msgid "perceptual distance"
-msgstr "अनुभविक दूरी"
-
-#: modules/codec/schroedinger.c:273
-msgid "perceptual distance to calculate perceptual weight"
-msgstr "अवधारणात्मक वजन क गणना क लेल अवधारणात्मक दूरी"
-
-#: modules/codec/schroedinger.c:277
-msgid "Horizontal slices per frame"
-msgstr "प्रति फ्रेम क्षैतिज स्लाइस"
-
-#: modules/codec/schroedinger.c:278
-msgid "Number of horizontal slices per frame in low delay mode"
-msgstr "निम्न विलम्ब मोड मे क्षैतिज स्लाइस प्रति फ्रेम क संख्या"
-
-#: modules/codec/schroedinger.c:282
-msgid "Vertical slices per frame"
-msgstr "प्रति फ्रेम क्षैतिज स्लाइस"
-
-#: modules/codec/schroedinger.c:283
-msgid "Number of vertical slices per frame in low delay mode"
-msgstr "निम्न विलम्ब मोड मे उर्ध्वाधर स्लाइस प्रति फ्रेम क संख्या"
-
-#: modules/codec/schroedinger.c:287
-msgid "Size of code blocks in each subband"
-msgstr "प्रत्येक सबबैंड मे कोड ब्लाक क आकार"
-
-#: modules/codec/schroedinger.c:298
-msgid "small - use small code blocks"
-msgstr "छोट- छोट कोड खंड क उपयोग करू"
-
-#: modules/codec/schroedinger.c:299
-msgid "medium - use medium sized code blocks"
-msgstr "मध्यम- मध्यम आकार क कोड खंड क उपयोग करू"
-
-#: modules/codec/schroedinger.c:300
-msgid "large - use large code blocks"
-msgstr "पैघ- पैघ कोड खंड क उपयोग करू"
-
-#: modules/codec/schroedinger.c:301
-msgid "full - One code block per subband"
-msgstr "पूर्ण - प्रत्येक सबबैंड पर एकटा कोड ब्लाक"
-
-#: modules/codec/schroedinger.c:306
-msgid "Enable hierarchical Motion Estimation"
-msgstr "श्रेणीबद्ध मोशन आकलन सक्षम करू"
-
-#: modules/codec/schroedinger.c:310
-msgid "Number of levels of downsampling"
-msgstr "डाउनसैंपलिंगक स्तर क संख्या"
-
-#: modules/codec/schroedinger.c:311
-msgid "Number of levels of downsampling in hierarchical motion estimation mode"
-msgstr "श्रेणीबद्ध गति आकलन मोड मे डाउनसैंपलिंगक स्तर क संख्या"
-
-#: modules/codec/schroedinger.c:315
-msgid "Enable Global Motion Estimation"
-msgstr "ग्लोबल मोशन आकलन सक्षम करू"
-
-#: modules/codec/schroedinger.c:319
-msgid "Enable Phase Correlation Estimation"
-msgstr "चरण सहसंबंध आकलन सक्षम करू"
-
-#: modules/codec/schroedinger.c:323
-msgid "Enable Scene Change Detection"
-msgstr "दृश्य परिवर्तन जाँच सक्षम करू"
-
-#: modules/codec/schroedinger.c:327
-msgid "Force Profile"
-msgstr "प्रोफाइल बाध्य करू"
-
-#: modules/codec/schroedinger.c:339
-msgid "VC2 Low Delay Profile"
-msgstr "VC2 लो डिले प्रोफाइल"
-
-#: modules/codec/schroedinger.c:340
-msgid "VC2 Simple Profile"
-msgstr "VC2 सरल प्रोफाइल"
-
-#: modules/codec/schroedinger.c:341
-msgid "VC2 Main Profile"
-msgstr "VC2 मुख्य प्रोफाइल"
-
-#: modules/codec/schroedinger.c:342
-msgid "Main Profile"
-msgstr "मुख्य प्रोफाइल"
-
-#: modules/codec/schroedinger.c:363
-msgid "Dirac video decoder using libschroedinger"
-msgstr "libschroedinger क उपयोग करब बला Dirac वीडियो विकोडक"
-
-#: modules/codec/schroedinger.c:371
-msgid "Dirac video encoder using libschroedinger"
-msgstr "libschroedinger क उपयोग करब बला Dirac वीडियो एनकोडर"
-
 #: modules/codec/scte18.c:41
 msgid "SCTE-18 decoder"
 msgstr ""
@@ -12666,7 +12268,7 @@ msgstr "एमपी 3 नियत बिन्दु आडियो एनक
 msgid "S/PDIF pass-through decoder"
 msgstr ""
 
-#: modules/codec/speex.c:59 modules/codec/speex.c:910
+#: modules/codec/speex.c:59 modules/codec/speex.c:1023
 #: modules/gui/macosx/VLCOpenWindowController.m:195
 #: modules/gui/macosx/VLCVideoEffectsWindowController.m:259
 #: modules/gui/qt/ui/sprefs_video.h:325 modules/gui/qt/ui/video_effects.h:1282
@@ -14230,14 +13832,14 @@ msgstr "डी बस नियंत्रण अंतरफलक"
 #: modules/gui/macosx/VLCMainWindow.m:587
 #: modules/gui/macosx/VLCMainWindow.m:1030
 #: modules/gui/macosx/VLCStatusBarIcon.m:378 modules/gui/ncurses.c:1028
-#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1302
-#: modules/gui/qt/main_interface.cpp:1306
-#: modules/gui/qt/main_interface.cpp:1343
-#: modules/gui/qt/main_interface.cpp:1345
-#: modules/gui/qt/main_interface.cpp:1453
-#: modules/gui/qt/main_interface.cpp:1470
-#: modules/gui/qt/main_interface.cpp:1478
-#: modules/gui/qt/main_interface.cpp:1501 modules/lua/libs/httpd.c:80
+#: modules/gui/qt/dialogs/help.cpp:100 modules/gui/qt/main_interface.cpp:1295
+#: modules/gui/qt/main_interface.cpp:1299
+#: modules/gui/qt/main_interface.cpp:1336
+#: modules/gui/qt/main_interface.cpp:1338
+#: modules/gui/qt/main_interface.cpp:1446
+#: modules/gui/qt/main_interface.cpp:1463
+#: modules/gui/qt/main_interface.cpp:1471
+#: modules/gui/qt/main_interface.cpp:1494 modules/lua/libs/httpd.c:80
 #: modules/notify/osx_notifications.m:302
 #: modules/video_output/wayland/shell.c:348
 #: modules/video_output/wayland/xdg-shell.c:291
@@ -14970,88 +14572,88 @@ msgstr ""
 msgid "Windows messages interface"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:69
+#: modules/demux/adaptive/adaptive.cpp:71
 msgid "Maximum device width"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:70
+#: modules/demux/adaptive/adaptive.cpp:72
 msgid "Maximum device height"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:72
+#: modules/demux/adaptive/adaptive.cpp:74
 msgid "Fixed Bandwidth in KiB/s"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:73
+#: modules/demux/adaptive/adaptive.cpp:75
 msgid "Preferred bandwidth for non adaptive streams"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:75
+#: modules/demux/adaptive/adaptive.cpp:77
 msgid "Live Playback delay (ms)"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:76
+#: modules/demux/adaptive/adaptive.cpp:78
 msgid "Tradeoff between stability and real time"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:78
+#: modules/demux/adaptive/adaptive.cpp:80
 msgid "Max buffering (ms)"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:80
+#: modules/demux/adaptive/adaptive.cpp:82
 msgid "Adaptive Logic"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:82
+#: modules/demux/adaptive/adaptive.cpp:84
 msgid "Use regular HTTP modules"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:83
+#: modules/demux/adaptive/adaptive.cpp:85
 msgid "Connect using HTTP access instead of custom HTTP code"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:85
+#: modules/demux/adaptive/adaptive.cpp:87
 #: modules/gui/qt/components/simple_preferences.cpp:713
 msgid "Low latency"
 msgstr "निम्न विलंबता"
 
-#: modules/demux/adaptive/adaptive.cpp:86
+#: modules/demux/adaptive/adaptive.cpp:88
 msgid "Overrides low latency parameters"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:107
+#: modules/demux/adaptive/adaptive.cpp:109
 msgid "Predictive"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:108
+#: modules/demux/adaptive/adaptive.cpp:110
 msgid "Near Optimal"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:109
+#: modules/demux/adaptive/adaptive.cpp:111
 msgid "Bandwidth Adaptive"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:110
+#: modules/demux/adaptive/adaptive.cpp:112
 msgid "Fixed Bandwidth"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:111
+#: modules/demux/adaptive/adaptive.cpp:113
 msgid "Lowest Bandwidth/Quality"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:112
+#: modules/demux/adaptive/adaptive.cpp:114
 msgid "Highest Bandwidth/Quality"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:123
+#: modules/demux/adaptive/adaptive.cpp:125
 msgid "Force"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:127
+#: modules/demux/adaptive/adaptive.cpp:129
 msgid "Adaptive"
 msgstr ""
 
-#: modules/demux/adaptive/adaptive.cpp:128
+#: modules/demux/adaptive/adaptive.cpp:130
 msgid "Unified adaptive streaming for DASH/HLS"
 msgstr ""
 
@@ -15147,7 +14749,7 @@ msgstr "आवश्यक हए पर ठीक करू"
 msgid "AVI demuxer"
 msgstr "AVI डिम्क्सर"
 
-#: modules/demux/avi/avi.c:910 modules/demux/mp4/mp4.c:4374
+#: modules/demux/avi/avi.c:920 modules/demux/mp4/mp4.c:4402
 msgid ""
 "Because this file index is broken or missing, seeking will not work "
 "correctly.\n"
@@ -15157,27 +14759,27 @@ msgid ""
 "What do you want to do?"
 msgstr ""
 
-#: modules/demux/avi/avi.c:918
+#: modules/demux/avi/avi.c:928
 msgid "Do not play"
 msgstr "बजाउ नहि"
 
-#: modules/demux/avi/avi.c:919
+#: modules/demux/avi/avi.c:929
 msgid "Build index then play"
 msgstr "सूची बनाउ तखन चलाउ"
 
-#: modules/demux/avi/avi.c:920
+#: modules/demux/avi/avi.c:930
 msgid "Play as is"
 msgstr "जहिना अछि वहिना  चलाउ"
 
-#: modules/demux/avi/avi.c:921 modules/demux/mp4/mp4.c:4385
+#: modules/demux/avi/avi.c:931 modules/demux/mp4/mp4.c:4413
 msgid "Broken or missing Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2879
+#: modules/demux/avi/avi.c:2889
 msgid "Broken or missing AVI Index"
 msgstr "AVI सूचकांक टूटल अछि अथवा लापता अछि"
 
-#: modules/demux/avi/avi.c:2880
+#: modules/demux/avi/avi.c:2890
 msgid "Fixing AVI Index..."
 msgstr "AVI क सूचकांक फिक्सिंग ..."
 
@@ -15292,7 +14894,7 @@ msgstr "बिंब"
 
 #: modules/demux/mjpeg.c:46 modules/demux/mpeg/es.c:53
 #: modules/demux/mpeg/h26x.c:46 modules/demux/rawvid.c:43
-#: modules/demux/subtitle.c:77 modules/demux/vc1.c:43
+#: modules/demux/subtitle.c:78 modules/demux/vc1.c:43
 #: modules/gui/macosx/VLCOpenWindowController.m:208
 msgid "Frames per Second"
 msgstr "फ्रेम्स प्रति सेकेंड"
@@ -15341,7 +14943,7 @@ msgstr ""
 "matroska फाइल  केँ लिन्कड सेगमेंट खोजब क लेल वोहै डायरेक्टरी मे प्रीलोड करू (खंडित फाइल क "
 "लेल नीक नहि)।"
 
-#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:113
+#: modules/demux/mkv/mkv.cpp:73 modules/demux/mpeg/ts.c:114
 msgid "Seek based on percent not time"
 msgstr "समय नहि प्रतिशत पर आधारित प्राप्ति"
 
@@ -15593,27 +15195,27 @@ msgstr ""
 msgid "Clean"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:51
+#: modules/demux/mp4/mp4.c:52
 msgid "M4A audio only"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:52
+#: modules/demux/mp4/mp4.c:53
 msgid "Ignore non audio tracks from iTunes audio files"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:57
+#: modules/demux/mp4/mp4.c:58
 msgid "MP4 stream demuxer"
 msgstr "MP4 स्ट्रीम डिमक्सर"
 
-#: modules/demux/mp4/mp4.c:58
+#: modules/demux/mp4/mp4.c:59
 msgid "MP4"
 msgstr "MP4"
 
-#: modules/demux/mp4/mp4.c:4382
+#: modules/demux/mp4/mp4.c:4410
 msgid "Do not seek"
 msgstr ""
 
-#: modules/demux/mp4/mp4.c:4383
+#: modules/demux/mp4/mp4.c:4411
 msgid "Build index"
 msgstr ""
 
@@ -15678,21 +15280,21 @@ msgstr "MPEG-PS डिमक्सर"
 msgid "PS"
 msgstr "PS"
 
-#: modules/demux/mpeg/ts.c:84
+#: modules/demux/mpeg/ts.c:85
 msgid "Extra PMT"
 msgstr "बाइली PMT"
 
-#: modules/demux/mpeg/ts.c:86
+#: modules/demux/mpeg/ts.c:87
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr ""
 "एकटा प्रयोक्ता केँ कोनो बाइली pmt क उपयोग करबाक लेल बाध्य करू (pmt_pid=pid:"
 "stream_type[,...])."
 
-#: modules/demux/mpeg/ts.c:88
+#: modules/demux/mpeg/ts.c:89
 msgid "Set id of ES to PID"
 msgstr "ES क id केँ PID क रूपेँ सेट करू"
 
-#: modules/demux/mpeg/ts.c:89
+#: modules/demux/mpeg/ts.c:90
 msgid ""
 "Set the internal ID of each elementary stream handled by VLC to the same "
 "value as the PID in the TS stream, instead of 1, 2, 3, etc. Useful to do "
@@ -15701,40 +15303,40 @@ msgstr ""
 "VLC क द्वारा संचालित प्रत्येक धारा क आंतरिक आई डी 1, 2, 3, क बजाय टीएस सिस्टम क PID "
 "क समान  वैल्यू सेट करू'#duplicate{..., चयन=\"es=<pid>\"}' करबाक लेल उपयोगी।"
 
-#: modules/demux/mpeg/ts.c:94 modules/mux/mpeg/ts.c:173
+#: modules/demux/mpeg/ts.c:95 modules/mux/mpeg/ts.c:173
 msgid "CSA Key"
 msgstr "CSA कुँजी"
 
-#: modules/demux/mpeg/ts.c:95 modules/mux/mpeg/ts.c:174
+#: modules/demux/mpeg/ts.c:96 modules/mux/mpeg/ts.c:174
 msgid ""
 "CSA encryption key. This must be a 16 char string (8 hexadecimal bytes)."
 msgstr "CSA गोपन कुँजी। ई एकटा 16 वर्ण स्ट्रिंग (8 हेक्साडेसिमल बाइट्स) होनाइ चाही।"
 
-#: modules/demux/mpeg/ts.c:98 modules/mux/mpeg/ts.c:177
+#: modules/demux/mpeg/ts.c:99 modules/mux/mpeg/ts.c:177
 msgid "Second CSA Key"
 msgstr "दोसर CSA क"
 
-#: modules/demux/mpeg/ts.c:99 modules/mux/mpeg/ts.c:178
+#: modules/demux/mpeg/ts.c:100 modules/mux/mpeg/ts.c:178
 msgid ""
 "The even CSA encryption key. This must be a 16 char string (8 hexadecimal "
 "bytes)."
 msgstr "इवेन CSA गोपन कुँजी। ई एकटा 16 वर्ण स्ट्रिंग (8 हेक्साडेसिमल बाइट्स) होनाइ चाही।"
 
-#: modules/demux/mpeg/ts.c:103
+#: modules/demux/mpeg/ts.c:104
 msgid "Packet size in bytes to decrypt"
 msgstr "डिक्रिप्ट करब बाइट्स मे पैकेट आकार"
 
-#: modules/demux/mpeg/ts.c:104
+#: modules/demux/mpeg/ts.c:105
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
 "subtract the TS-header from the value before decrypting."
 msgstr ""
 
-#: modules/demux/mpeg/ts.c:108
+#: modules/demux/mpeg/ts.c:109
 msgid "Separate sub-streams"
 msgstr "सब-स्ट्रीम अलग करू"
 
-#: modules/demux/mpeg/ts.c:110
+#: modules/demux/mpeg/ts.c:111
 msgid ""
 "Separate teletex/dvbs pages into independent ES. It can be useful to turn "
 "off this option when using stream output."
@@ -15742,7 +15344,7 @@ msgstr ""
 "स्वतंत्र ES मे teletex / DVBs पृष्ठसभ केँ अलग करैत अछि। धारा उत्पादन क उपयोग करैत समय "
 "एहि विकल्प केँ बन्न कएनाइ उपयोगी भ' सकैत अछि।"
 
-#: modules/demux/mpeg/ts.c:115
+#: modules/demux/mpeg/ts.c:116
 msgid ""
 "Seek and position based on a percent byte position, not a PCR generated time "
 "position. If seeking doesn't work property, turn on this option."
@@ -15750,78 +15352,78 @@ msgstr ""
 "प्रतिशत बाइट स्थिति पर आधारित सीक आओर स्थिति, पीसीआर सँ उत्पन्न समय स्थिति पर "
 "आधारित नहि। जँ सीकिंग काज नहि करैत अछि, तँ एहि विकल्प क चयन करू।"
 
-#: modules/demux/mpeg/ts.c:126
+#: modules/demux/mpeg/ts.c:127
 msgid "Trust in-stream PCR"
 msgstr "ट्र्स्ट इन स्ट्रीम PCR"
 
-#: modules/demux/mpeg/ts.c:127
+#: modules/demux/mpeg/ts.c:128
 msgid "Use the stream PCR as a reference."
 msgstr "संदर्भ क रूपेँ स्ट्रीम पीसीआरक उपयोग करू."
 
-#: modules/demux/mpeg/ts.c:134 modules/mux/mpeg/ts.c:100
+#: modules/demux/mpeg/ts.c:135 modules/mux/mpeg/ts.c:100
 msgid "Digital TV Standard"
 msgstr ""
 
-#: modules/demux/mpeg/ts.c:135
+#: modules/demux/mpeg/ts.c:136
 msgid ""
 "Selects mode for digital TV standard. This feature affects EPG information "
 "and subtitles."
 msgstr ""
 
-#: modules/demux/mpeg/ts.c:139
+#: modules/demux/mpeg/ts.c:140
 msgid "MPEG Transport Stream demuxer"
 msgstr "MPEG परिवहन धारा डिमक्सर"
 
-#: modules/demux/mpeg/ts_psi.c:422
+#: modules/demux/mpeg/ts_psi.c:425
 msgid "Main audio"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:423
+#: modules/demux/mpeg/ts_psi.c:426
 msgid "Audio description for the visually impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:424
+#: modules/demux/mpeg/ts_psi.c:427
 msgid "Clean audio for the hearing impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:425
+#: modules/demux/mpeg/ts_psi.c:428
 msgid "Spoken subtitles for the visually impaired"
 msgstr ""
 
-#: modules/demux/mpeg/ts_psi.c:607 modules/gui/macosx/VLCMainMenu.m:465
+#: modules/demux/mpeg/ts_psi.c:610 modules/gui/macosx/VLCMainMenu.m:465
 #: modules/gui/qt/dialogs/toolbar.cpp:541
 msgid "Teletext"
 msgstr "टेलीटेक्स्ट"
 
-#: modules/demux/mpeg/ts_psi.c:608
+#: modules/demux/mpeg/ts_psi.c:611
 msgid "Teletext subtitles"
 msgstr "टेलीटेक्स्ट उपशीर्षक"
 
-#: modules/demux/mpeg/ts_psi.c:609
+#: modules/demux/mpeg/ts_psi.c:612
 msgid "Teletext: additional information"
 msgstr "टेलीटेक्स्ट: बाइली जानकारी"
 
-#: modules/demux/mpeg/ts_psi.c:610
+#: modules/demux/mpeg/ts_psi.c:613
 msgid "Teletext: program schedule"
 msgstr "टेलीटेक्स्ट: कार्यक्रम विवरणी"
 
-#: modules/demux/mpeg/ts_psi.c:611
+#: modules/demux/mpeg/ts_psi.c:614
 msgid "Teletext subtitles: hearing impaired"
 msgstr "टेलीटेक्स्ट उपशीर्षक: श्रवण बाध्य"
 
-#: modules/demux/mpeg/ts_psi.c:828
+#: modules/demux/mpeg/ts_psi.c:831
 msgid "DVB subtitles: hearing impaired"
 msgstr "डीवीबी उपशीर्षक: श्रवण बाध्य"
 
-#: modules/demux/mpeg/ts_psi.c:1337
+#: modules/demux/mpeg/ts_psi.c:1340
 msgid "clean effects"
 msgstr "क्लीन प्रभाव"
 
-#: modules/demux/mpeg/ts_psi.c:1338
+#: modules/demux/mpeg/ts_psi.c:1341
 msgid "hearing impaired"
 msgstr "श्रवण बाध्य"
 
-#: modules/demux/mpeg/ts_psi.c:1339
+#: modules/demux/mpeg/ts_psi.c:1342
 msgid "visual impaired commentary"
 msgstr "दृष्टि बाध्य कमेंटरी"
 
@@ -15837,7 +15439,7 @@ msgstr "NullSoft डिमक्सर"
 msgid "Nuv demuxer"
 msgstr "Nuv डिमक्सर"
 
-#: modules/demux/ogg.c:57
+#: modules/demux/ogg.c:58
 msgid "OGG demuxer"
 msgstr "OGG डिमक्सर"
 
@@ -16075,7 +15677,7 @@ msgstr "वास्तविक डिमक्सर"
 msgid "C64 sid demuxer"
 msgstr "C64 sid डिमक्सर"
 
-#: modules/demux/smf.c:725
+#: modules/demux/smf.c:727
 msgid "SMF demuxer"
 msgstr "SMB डिमक्सर"
 
@@ -16083,11 +15685,11 @@ msgstr "SMB डिमक्सर"
 msgid "EBU STL subtitles parser"
 msgstr "EBU STL उपशीर्षक पार्सर"
 
-#: modules/demux/subtitle.c:53
+#: modules/demux/subtitle.c:54
 msgid "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
 msgstr "सभटा उपशीर्षक क लेल विलम्ब लागू करू (1/10s मे, उदाहरण क लेल 100 क मतलब 10s)।"
 
-#: modules/demux/subtitle.c:55
+#: modules/demux/subtitle.c:56
 msgid ""
 "Override the normal frames per second settings. This will only work with "
 "MicroDVD and SubRIP (SRT) subtitles."
@@ -16095,29 +15697,29 @@ msgstr ""
 "ई सामान्य फ्रेम प्रति सेकेन्ड क सेटिंग्स केँ अधिरोहित कए देत अछि। ई केवल MicroDVD तथा "
 "SubRIP (SRT) सबटायटल क सँग काज करैत अछि।"
 
-#: modules/demux/subtitle.c:58
+#: modules/demux/subtitle.c:59
 msgid ""
 "Force the subtitles format. Selecting \"auto\" means autodetection and "
 "should always work."
 msgstr ""
 
-#: modules/demux/subtitle.c:60
+#: modules/demux/subtitle.c:61
 msgid "Override the default track description."
 msgstr "पूर्वनिर्धारित ट्रैक विवरण क अधिरोहण करू"
 
-#: modules/demux/subtitle.c:72
+#: modules/demux/subtitle.c:73
 msgid "Text subtitle parser"
 msgstr "टेक्स्ट उपशीर्षक पार्सर"
 
-#: modules/demux/subtitle.c:80 modules/spu/subsdelay.c:275
+#: modules/demux/subtitle.c:81 modules/spu/subsdelay.c:275
 msgid "Subtitle delay"
 msgstr "उपशीर्षक विलंब"
 
-#: modules/demux/subtitle.c:82
+#: modules/demux/subtitle.c:83
 msgid "Subtitle format"
 msgstr "उपशीर्षक स्वरूप"
 
-#: modules/demux/subtitle.c:85
+#: modules/demux/subtitle.c:86
 msgid "Subtitle description"
 msgstr "उपशीर्षक वर्णन"
 
@@ -16133,15 +15735,15 @@ msgstr "TY"
 msgid "TY Stream audio/video demux"
 msgstr "TY आडियो/वीडियो धारा demux"
 
-#: modules/demux/ty.c:784
+#: modules/demux/ty.c:793
 msgid "Closed captions 2"
 msgstr "बन्न कैप्शन 2"
 
-#: modules/demux/ty.c:785
+#: modules/demux/ty.c:794
 msgid "Closed captions 3"
 msgstr "बन्न कैप्शन 3"
 
-#: modules/demux/ty.c:786
+#: modules/demux/ty.c:795
 msgid "Closed captions 4"
 msgstr "बन्न कैप्शन 4"
 
@@ -16264,26 +15866,26 @@ msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:105
 #: modules/gui/macosx/VLCAddonsWindowController.m:357
-#: modules/gui/qt/dialogs/plugins.cpp:388
+#: modules/gui/qt/dialogs/plugins.cpp:387
 #: modules/gui/qt/managers/addons_manager.cpp:88
 msgid "Playlist parsers"
 msgstr "गीतसूची पार्सर"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:107
 #: modules/gui/macosx/VLCAddonsWindowController.m:359
-#: modules/gui/qt/dialogs/plugins.cpp:392
+#: modules/gui/qt/dialogs/plugins.cpp:391
 #: modules/gui/qt/managers/addons_manager.cpp:90
 msgid "Service Discovery"
 msgstr "सेवा खोज"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:109
-#: modules/gui/qt/dialogs/plugins.cpp:396
+#: modules/gui/qt/dialogs/plugins.cpp:395
 #: modules/gui/qt/managers/addons_manager.cpp:92
 msgid "Interfaces"
 msgstr ""
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:111
-#: modules/gui/qt/dialogs/plugins.cpp:399
+#: modules/gui/qt/dialogs/plugins.cpp:398
 #: modules/gui/qt/managers/addons_manager.cpp:94
 msgid "Art and meta fetchers"
 msgstr ""
@@ -16291,7 +15893,7 @@ msgstr ""
 #: modules/gui/macosx/VLCAddonsWindowController.m:113
 #: modules/gui/macosx/VLCAddonsWindowController.m:361
 #: modules/gui/macosx/VLCMainMenu.m:343 modules/gui/macosx/VLCMainMenu.m:344
-#: modules/gui/qt/dialogs/plugins.cpp:402
+#: modules/gui/qt/dialogs/plugins.cpp:401
 #: modules/gui/qt/managers/addons_manager.cpp:96
 msgid "Extensions"
 msgstr "विस्तार"
@@ -16301,7 +15903,7 @@ msgid "Show Installed Only"
 msgstr "केवल संस्थापित देखाउ"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:118
-#: modules/gui/qt/dialogs/plugins.cpp:430
+#: modules/gui/qt/dialogs/plugins.cpp:429
 msgid "Find more addons online"
 msgstr "बेसी सहयुक्ति आनलाइन देखाउ"
 
@@ -16333,7 +15935,7 @@ msgid "Uninstall"
 msgstr "विसंस्थापित करू"
 
 #: modules/gui/macosx/VLCAddonsWindowController.m:355
-#: modules/gui/qt/dialogs/plugins.cpp:384
+#: modules/gui/qt/dialogs/plugins.cpp:383
 #: modules/gui/qt/managers/addons_manager.cpp:86
 #: modules/gui/skins2/src/skin_main.cpp:535
 msgid "Skins"
@@ -16533,7 +16135,7 @@ msgstr "समय"
 #: modules/gui/macosx/VLCSimplePrefsController.m:295
 #: modules/gui/macosx/VLCTimeSelectionPanelController.m:51
 #: modules/gui/qt/components/open_panels.cpp:1360
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "OK"
 msgstr "ठीक"
 
@@ -16675,7 +16277,7 @@ msgstr "फाइल रूपेँ सहेजू"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:149
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:392
 #: modules/gui/macosx/VLCOutput.m:65 modules/gui/macosx/VLCOutput.m:194
-#: modules/gui/macosx/VLCOutput.m:313 modules/gui/qt/dialogs/sout.cpp:92
+#: modules/gui/macosx/VLCOutput.m:313 modules/gui/qt/dialogs/sout.cpp:90
 msgid "Stream"
 msgstr "स्ट्रीम"
 
@@ -16750,10 +16352,10 @@ msgstr "स्ट्रीम घोषणा"
 #: modules/gui/macosx/VLCConvertAndSaveWindowController.m:186
 #: modules/gui/macosx/VLCOpenWindowController.m:197
 #: modules/gui/macosx/VLCOutput.m:68
-#: modules/gui/qt/components/sout/sout_widgets.cpp:242
-#: modules/gui/qt/components/sout/sout_widgets.cpp:329
-#: modules/gui/qt/components/sout/sout_widgets.cpp:371
-#: modules/gui/qt/components/sout/sout_widgets.cpp:426
+#: modules/gui/qt/components/sout/sout_widgets.cpp:294
+#: modules/gui/qt/components/sout/sout_widgets.cpp:381
+#: modules/gui/qt/components/sout/sout_widgets.cpp:423
+#: modules/gui/qt/components/sout/sout_widgets.cpp:478
 msgid "Address"
 msgstr "पता"
 
@@ -16765,11 +16367,11 @@ msgstr "TTL"
 #: modules/gui/macosx/VLCOpenWindowController.m:185
 #: modules/gui/macosx/VLCOpenWindowController.m:187
 #: modules/gui/macosx/VLCOutput.m:69
-#: modules/gui/qt/components/sout/sout_widgets.cpp:188
-#: modules/gui/qt/components/sout/sout_widgets.cpp:243
-#: modules/gui/qt/components/sout/sout_widgets.cpp:284
-#: modules/gui/qt/components/sout/sout_widgets.cpp:330
-#: modules/gui/qt/components/sout/sout_widgets.cpp:427 modules/lua/vlc.c:67
+#: modules/gui/qt/components/sout/sout_widgets.cpp:240
+#: modules/gui/qt/components/sout/sout_widgets.cpp:295
+#: modules/gui/qt/components/sout/sout_widgets.cpp:336
+#: modules/gui/qt/components/sout/sout_widgets.cpp:382
+#: modules/gui/qt/components/sout/sout_widgets.cpp:479 modules/lua/vlc.c:67
 #: modules/stream_out/rtp.c:114
 #: share/lua/http/dialogs/stream_config_window.html:32
 #: share/lua/http/dialogs/stream_window.html:91
@@ -17866,7 +17468,7 @@ msgstr "इन्टरनेट"
 #: modules/gui/macosx/VLCSimplePrefsController.m:241
 #: modules/gui/qt/components/simple_preferences.cpp:248
 #: modules/gui/qt/components/simple_preferences.cpp:738
-#: modules/gui/qt/dialogs/plugins.cpp:382
+#: modules/gui/qt/dialogs/plugins.cpp:381
 msgid "Interface Settings"
 msgstr "अंतरफलक विन्यास"
 
@@ -17884,7 +17486,7 @@ msgstr "वीडियो विन्यास"
 
 #: modules/gui/macosx/VLCSimplePrefsController.m:247
 #: modules/gui/qt/components/simple_preferences.cpp:254
-#: modules/gui/qt/components/simple_preferences.cpp:894
+#: modules/gui/qt/components/simple_preferences.cpp:901
 msgid "Subtitle & On Screen Display Settings"
 msgstr "उपशीर्षक आओर आन स्क्रीन डिस्प्ले सेटिंग्स"
 
@@ -18345,7 +17947,7 @@ msgid "Subtitle duration factor:"
 msgstr "उपशीर्षक अवधि कारक:"
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:68
-#: modules/gui/qt/components/extended_panels.cpp:1590
+#: modules/gui/qt/components/extended_panels.cpp:1588
 msgid ""
 "Extend subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18354,7 +17956,7 @@ msgstr ""
 "निष्क्रिय करबाक लेल 0 सेट करू."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:72
-#: modules/gui/qt/components/extended_panels.cpp:1595
+#: modules/gui/qt/components/extended_panels.cpp:1593
 msgid ""
 "Multiply subtitle duration by this value.\n"
 "Set 0 to disable."
@@ -18363,7 +17965,7 @@ msgstr ""
 "निष्क्रिय करबाक लेल 0 सेट करू."
 
 #: modules/gui/macosx/VLCTrackSynchronizationWindowController.m:76
-#: modules/gui/qt/components/extended_panels.cpp:1600
+#: modules/gui/qt/components/extended_panels.cpp:1598
 msgid ""
 "Recalculate subtitle duration according\n"
 "to their content and this value.\n"
@@ -19203,27 +18805,27 @@ msgstr "संजाल: %s"
 msgid "Find: %s"
 msgstr "ताकू: %s"
 
-#: modules/gui/qt/components/controller.cpp:352
+#: modules/gui/qt/components/controller.cpp:347
 msgid "Shift+L"
 msgstr "Shift+L"
 
-#: modules/gui/qt/components/controller.cpp:457
+#: modules/gui/qt/components/controller.cpp:451
 msgid "Click to toggle between loop all, loop one and no loop"
 msgstr "लूप आल, लूप वन तथा नो लूप क बीच टागल करू"
 
-#: modules/gui/qt/components/controller.cpp:558
+#: modules/gui/qt/components/controller.cpp:555
 msgid "Previous Chapter/Title"
 msgstr "पछिला अध्याय/शीर्षक"
 
-#: modules/gui/qt/components/controller.cpp:564
+#: modules/gui/qt/components/controller.cpp:561
 msgid "Next Chapter/Title"
 msgstr "अगिला अध्याय/शीर्षक"
 
-#: modules/gui/qt/components/controller.cpp:613
+#: modules/gui/qt/components/controller.cpp:605
 msgid "Teletext Activation"
 msgstr "टेलीटेक्स्ट सक्रियण"
 
-#: modules/gui/qt/components/controller.cpp:629
+#: modules/gui/qt/components/controller.cpp:619
 msgid "Toggle Transparency"
 msgstr ""
 
@@ -19383,7 +18985,7 @@ msgstr "A सँ B क कात लूप रोकू"
 msgid "Aspect Ratio"
 msgstr "पहलू अनुपात"
 
-#: modules/gui/qt/components/epg/EPGWidget.cpp:65
+#: modules/gui/qt/components/epg/EPGWidget.cpp:66
 msgid "No EPG Data Available"
 msgstr ""
 
@@ -19543,7 +19145,7 @@ msgstr "(तेज कएल गेल)"
 msgid "(Delayed)"
 msgstr "(विलंबित)"
 
-#: modules/gui/qt/components/extended_panels.cpp:1507
+#: modules/gui/qt/components/extended_panels.cpp:1505
 msgid "Force update of this dialog's values"
 msgstr "ई समाद वैल्यु क अपडेट बाध्य करू"
 
@@ -19640,51 +19242,51 @@ msgstr "पछिला 60 सेकंड"
 msgid "Overall"
 msgstr "समग्र"
 
-#: modules/gui/qt/components/interface_widgets.cpp:683
+#: modules/gui/qt/components/interface_widgets.cpp:658
 msgid ""
 "Current playback speed: %1\n"
 "Click to adjust"
 msgstr "वर्तमान प्लेबैक गति:% 1 \\ nसमायोजित करबाक लेल क्लिक करू"
 
-#: modules/gui/qt/components/interface_widgets.cpp:756
+#: modules/gui/qt/components/interface_widgets.cpp:730
 msgid "Revert to normal play speed"
 msgstr "सामान्य प्ले क गति केँ वापस आनू"
 
-#: modules/gui/qt/components/interface_widgets.cpp:863
+#: modules/gui/qt/components/interface_widgets.cpp:827
 msgid "Download cover art"
 msgstr "कवर आर्ट डाउनलोड करू"
 
-#: modules/gui/qt/components/interface_widgets.cpp:867
+#: modules/gui/qt/components/interface_widgets.cpp:831
 msgid "Add cover art from file"
 msgstr "फाइल सँ कवर आर्ट जोड़ू "
 
-#: modules/gui/qt/components/interface_widgets.cpp:933
+#: modules/gui/qt/components/interface_widgets.cpp:897
 msgid "Choose Cover Art"
 msgstr "कवर आर्ट चुनू"
 
-#: modules/gui/qt/components/interface_widgets.cpp:934
+#: modules/gui/qt/components/interface_widgets.cpp:898
 msgid "Image Files (*.gif *.jpg *.jpeg *.png)"
 msgstr "छवि फाइल (*.gif *.jpg *.jpeg *.png)"
 
-#: modules/gui/qt/components/interface_widgets.cpp:961
+#: modules/gui/qt/components/interface_widgets.cpp:925
 #: modules/gui/qt/dialogs/toolbar.cpp:573
 msgid "Elapsed time"
 msgstr "बीता समय"
 
-#: modules/gui/qt/components/interface_widgets.cpp:965
+#: modules/gui/qt/components/interface_widgets.cpp:929
 #: modules/gui/qt/dialogs/toolbar.cpp:577
 msgid "Total/Remaining time"
 msgstr "शेष / कुल समय"
 
-#: modules/gui/qt/components/interface_widgets.cpp:967
+#: modules/gui/qt/components/interface_widgets.cpp:931
 msgid "Click to toggle between total and remaining time"
 msgstr "कुल आओर शेष समय क बीच टागल करबाक लेल क्लिक करू"
 
-#: modules/gui/qt/components/interface_widgets.cpp:973
+#: modules/gui/qt/components/interface_widgets.cpp:937
 msgid "Click to toggle between elapsed and remaining time"
 msgstr "बीत चुकल आओर शेष समय क बीच टागल करबाक लेल क्लिक करू"
 
-#: modules/gui/qt/components/interface_widgets.cpp:975
+#: modules/gui/qt/components/interface_widgets.cpp:939
 msgid "Double click to jump to a chosen time position"
 msgstr "केओ चुनू हुए समय क स्थिति पर पहुँचने क लेल डबल क्लिक करू"
 
@@ -19887,19 +19489,19 @@ msgstr ""
 "प्लेलिस्ट अखन खाली अछि.\n"
 "एतए एकटा फाइल डालू अथवा बम्माँ कात सँ एकटा मीडिया स्रोत क चयन करू."
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:143
+#: modules/gui/qt/components/playlist/standardpanel.hpp:144
 msgid "Icons"
 msgstr "आइकन"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:144
+#: modules/gui/qt/components/playlist/standardpanel.hpp:145
 msgid "Detailed List"
 msgstr "विस्तृत सूची"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:145
+#: modules/gui/qt/components/playlist/standardpanel.hpp:146
 msgid "List"
 msgstr "सूची"
 
-#: modules/gui/qt/components/playlist/standardpanel.hpp:146
+#: modules/gui/qt/components/playlist/standardpanel.hpp:147
 msgid "PictureFlow"
 msgstr "चित्रप्रवाह"
 
@@ -19934,7 +19536,6 @@ msgid "Application level hotkey"
 msgstr "एप्लिकेशन स्तरीय हाटकी "
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1148
-#: modules/gui/qt/components/preferences_widgets.cpp:1405
 msgid "Global"
 msgstr "वैश्विक"
 
@@ -19951,33 +19552,41 @@ msgstr ""
 "बदलब क लेल डबल क्लिक करू.\n"
 "निकालब क लेल 'हटाउ' बटन क प्रयोग करू."
 
+#: modules/gui/qt/components/preferences_widgets.cpp:1405
+#, fuzzy
+msgid "Global Hotkey change"
+msgstr "हाटकी परिवर्तन"
+
 #: modules/gui/qt/components/preferences_widgets.cpp:1406
 msgid "Hotkey change"
 msgstr "हाटकी परिवर्तन"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1410
-msgid "Press the new key or combination for "
+#, fuzzy
+msgid "Press the new key or combination for <b>%1</b>"
 msgstr "नव बटन अथवा एकर संयोजन केँ दबाउ"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1419
 msgid "Assign"
 msgstr "असाइन करू"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1454
-msgid "Warning: this key or combination is already assigned to "
+#: modules/gui/qt/components/preferences_widgets.cpp:1455
+#, fuzzy
+msgid "Warning: this key or combination is already assigned to \"<b>%1</b>\""
 msgstr "चेतावनी: ई बटन अथवा संयोजन पहिने सँ एकरा असाइन कएल गेल अछि "
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1466
+#: modules/gui/qt/components/preferences_widgets.cpp:1467
 msgid "Warning: <b>%1</b> is already an application menu shortcut"
 msgstr "चेतावनी: <b>%1</b> पहिने सँ एकटा एप्लिकेशन मेनू शॉर्टकट अछि"
 
-#: modules/gui/qt/components/preferences_widgets.cpp:1489
-msgid "Key or combination: "
+#: modules/gui/qt/components/preferences_widgets.cpp:1490
+#, fuzzy
+msgid "Key or combination: <b>%1</b>"
 msgstr "बटन अथवा संयोजन:"
 
 #: modules/gui/qt/components/preferences_widgets.cpp:1498
-msgid "Key: "
-msgstr "कुँजी: "
+msgid "Key: <b>%1</b>"
+msgstr ""
 
 #: modules/gui/qt/components/simple_preferences.cpp:256
 #: modules/gui/qt/components/simple_preferences.cpp:636
@@ -19985,7 +19594,7 @@ msgid "Input & Codecs Settings"
 msgstr "इनपुट आओर कोडेक सेटिंग्स"
 
 #: modules/gui/qt/components/simple_preferences.cpp:258
-#: modules/gui/qt/components/simple_preferences.cpp:938
+#: modules/gui/qt/components/simple_preferences.cpp:945
 msgid "Configure Hotkeys"
 msgstr "हाटकी विन्यस्त करू"
 
@@ -20029,30 +19638,30 @@ msgstr "वीएलसी स्कीन वेबसाइट"
 msgid "System's default"
 msgstr "सिस्टम पूर्वनिर्धारित"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1344
+#: modules/gui/qt/components/simple_preferences.cpp:1351
 msgid "File associations"
 msgstr "फाइल असोसिएशन"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1353
+#: modules/gui/qt/components/simple_preferences.cpp:1360
 #: modules/gui/qt/dialogs_provider.hpp:42
 msgid "Audio Files"
 msgstr "आडियो फाइल"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1354
+#: modules/gui/qt/components/simple_preferences.cpp:1361
 #: modules/gui/qt/dialogs_provider.hpp:41
 msgid "Video Files"
 msgstr "वीडियो फाइल"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1355
+#: modules/gui/qt/components/simple_preferences.cpp:1362
 #: modules/gui/qt/dialogs_provider.hpp:43
 msgid "Playlist Files"
 msgstr "प्लेलिस्ट फाइल"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1420
+#: modules/gui/qt/components/simple_preferences.cpp:1427
 msgid "&Apply"
 msgstr "लागू करू (&A)"
 
-#: modules/gui/qt/components/simple_preferences.cpp:1421
+#: modules/gui/qt/components/simple_preferences.cpp:1428
 #: modules/gui/qt/dialogs/convert.cpp:137
 #: modules/gui/qt/dialogs/gototime.cpp:48 modules/gui/qt/dialogs/open.cpp:109
 #: modules/gui/qt/dialogs/openurl.cpp:59
@@ -20139,45 +19748,65 @@ msgid ""
 msgstr ""
 "कंटेनर (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv *.webm)"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:185
+#: modules/gui/qt/components/sout/sout_widgets.cpp:184
+#, fuzzy
+msgid "This module outputs the stream using the RIST protocol (TR06)."
+msgstr "ई माड्यूल mms प्रोटोकाल क माध्यम सँ नेटवर्क पर ट्रांसकोडेड धारा प्रसारित करैत अछि।"
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:186
+#, fuzzy
+msgid "Destination Address"
+msgstr "गंतव्य/उपसर्ग"
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:191
+#, fuzzy
+msgid "Destination Port"
+msgstr "गंतव्य"
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:201
+#, fuzzy
+msgid "Stream Name"
+msgstr "स्ट्रीम नाम"
+
+#: modules/gui/qt/components/sout/sout_widgets.cpp:237
 msgid "This module outputs the transcoded stream to a network via HTTP."
 msgstr "ई माड्यूल HTTP क माध्यम सँ संजाल पर ट्रांसकोडेड धारा प्रसारित करैत अछि।"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:187
-#: modules/gui/qt/components/sout/sout_widgets.cpp:283
+#: modules/gui/qt/components/sout/sout_widgets.cpp:239
+#: modules/gui/qt/components/sout/sout_widgets.cpp:335
 msgid "Path"
 msgstr "पथ"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:239
+#: modules/gui/qt/components/sout/sout_widgets.cpp:291
 msgid ""
 "This module outputs the transcoded stream to a network via the mms protocol."
 msgstr "ई माड्यूल mms प्रोटोकाल क माध्यम सँ नेटवर्क पर ट्रांसकोडेड धारा प्रसारित करैत अछि।"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:281
+#: modules/gui/qt/components/sout/sout_widgets.cpp:333
 msgid "This module outputs the transcoded stream to a network via RTSP."
 msgstr "ई माड्यूल RTSP क माध्यम सँ संजाल पर ट्रांसकोडेड धारा प्रसारित करैत अछि।"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:327
+#: modules/gui/qt/components/sout/sout_widgets.cpp:379
 msgid "This module outputs the transcoded stream to a network via UDP."
 msgstr "ई माड्यूल UDP क माध्यम सँ संजाल पर ट्रांसकोडेड धारा प्रसारित करैत अछि।"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:369
+#: modules/gui/qt/components/sout/sout_widgets.cpp:421
 msgid "This module outputs the transcoded stream to a network via RTP."
 msgstr "ई माड्यूल RTP क माध्यम सँ संजाल पर ट्रांसकोडेड धारा प्रसारित करैत अछि।"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:376
+#: modules/gui/qt/components/sout/sout_widgets.cpp:428
 msgid "Base port"
 msgstr "बेस पोर्ट"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:424
+#: modules/gui/qt/components/sout/sout_widgets.cpp:476
 msgid "This module outputs the transcoded stream to an Icecast server."
 msgstr "ई माड्यूल Icecas सर्वर पर ट्रांसकोडेड धारा प्रसारित करैत अछि।"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:443
+#: modules/gui/qt/components/sout/sout_widgets.cpp:495
 msgid "Mount Point"
 msgstr "आरोह बिंदु"
 
-#: modules/gui/qt/components/sout/sout_widgets.cpp:444
+#: modules/gui/qt/components/sout/sout_widgets.cpp:496
 msgid "Login:pass"
 msgstr "Login:pass"
 
@@ -20575,40 +20204,40 @@ msgstr "ताकू (&S)"
 msgid "More information..."
 msgstr "बेसी सूचना..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:266
+#: modules/gui/qt/dialogs/plugins.cpp:265
 msgid "Reload extensions"
 msgstr "एक्सटेंशन फिनु सँ लोड करू"
 
-#: modules/gui/qt/dialogs/plugins.cpp:385
+#: modules/gui/qt/dialogs/plugins.cpp:384
 msgid ""
 "Skins customize player's appearance. You can activate them through "
 "preferences."
 msgstr "मनपसिन्न प्लेयरक प्रकटन स्किन करैछ. अहाँ ओकरा वरीयताक द्वारा सक्रिय कए सकैत छी."
 
-#: modules/gui/qt/dialogs/plugins.cpp:389
+#: modules/gui/qt/dialogs/plugins.cpp:388
 msgid ""
 "Playlist parsers add new capabilities to read internet streams or extract "
 "meta data."
 msgstr ""
 "गीतसूची विश्लेषक नव क्षमता जोडैछ जाहिसँ इंटरनेट स्ट्रीम अथवा मेटा डाटा निकालल जाए सकैछ."
 
-#: modules/gui/qt/dialogs/plugins.cpp:393
+#: modules/gui/qt/dialogs/plugins.cpp:392
 msgid ""
 "Service discoveries adds new sources to your playlist such as web radios, "
 "video websites, ..."
 msgstr ""
 "सेवा खोज अहाँक गीतसूचीमे नव स्रोत जोड़ैत अछि जहिना वेब रेडियो, वीडियो वेबसाइट, ..."
 
-#: modules/gui/qt/dialogs/plugins.cpp:400
+#: modules/gui/qt/dialogs/plugins.cpp:399
 msgid "Retrieves extra info and art for playlist items"
 msgstr ""
 
-#: modules/gui/qt/dialogs/plugins.cpp:403
+#: modules/gui/qt/dialogs/plugins.cpp:402
 msgid ""
 "Extensions brings various enhancements. Check descriptions for more details"
 msgstr "एक्सटेंशन कतेक संवर्द्धनक लाबैछ. बेसी विवरणक लेल विवरण आनू"
 
-#: modules/gui/qt/dialogs/plugins.cpp:424
+#: modules/gui/qt/dialogs/plugins.cpp:423
 msgid "Only installed"
 msgstr "केवल संस्थापित"
 
@@ -20739,7 +20368,7 @@ msgstr ""
 "ई उप्पर क सेटिंग मे बदलाव करब पर स्वत: उत्पन्न होइछ,\n"
 "मुदा अहाँ ओकरा मैनुअली सेहो बदैल सकैत अछि."
 
-#: modules/gui/qt/dialogs/sout.cpp:89
+#: modules/gui/qt/dialogs/sout.cpp:87
 msgid "Back"
 msgstr "पाछाँ"
 
@@ -20989,19 +20618,19 @@ msgstr ""
 msgid "Deactivate"
 msgstr ""
 
-#: modules/gui/qt/main_interface.cpp:378
+#: modules/gui/qt/main_interface.cpp:374
 msgid "Do you want to restart the playback where left off?"
 msgstr "की अहाँ प्लैबैक फेर आरंभ करबाक लेल चाहैत छी जतए अहाँ छोड़लहुँ?"
 
-#: modules/gui/qt/main_interface.cpp:384
+#: modules/gui/qt/main_interface.cpp:380
 msgid "&Continue"
 msgstr "जारी राखू (&C)"
 
-#: modules/gui/qt/main_interface.cpp:1454
+#: modules/gui/qt/main_interface.cpp:1447
 msgid "Control menu for the player"
 msgstr "प्लेयर क लेल नियंत्रण मेनू"
 
-#: modules/gui/qt/main_interface.cpp:1498
+#: modules/gui/qt/main_interface.cpp:1491
 msgid "Paused"
 msgstr "ठहरा"
 
@@ -21737,15 +21366,15 @@ msgstr "छवि गामा (0-10)"
 msgid "Set the image gamma, between 0.01 and 10. Defaults to 1."
 msgstr "छवि गामा .01 आओर 10 क बीच, सेट करू. 1 सँ पूर्वनिर्धारित अछि ."
 
-#: modules/hw/d3d11/d3d11_filters.c:681
+#: modules/hw/d3d11/d3d11_filters.c:683
 msgid "AMD VQ Enhancer"
 msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:687
+#: modules/hw/d3d11/d3d11_filters.c:689
 msgid "AMD Frame Rate Doubler"
 msgstr ""
 
-#: modules/hw/d3d11/d3d11_filters.c:690
+#: modules/hw/d3d11/d3d11_filters.c:692
 msgid "Show indicator"
 msgstr ""
 
@@ -23074,11 +22703,11 @@ msgstr "XSPF गीत-सूची निर्यात"
 msgid "HTML playlist export"
 msgstr "HTML गीत-सूची निर्यात"
 
-#: modules/misc/rtsp.c:63
+#: modules/misc/rtsp.c:65
 msgid "Maximum number of connections"
 msgstr "कनेक्शन क अधिकतम संख्या"
 
-#: modules/misc/rtsp.c:64
+#: modules/misc/rtsp.c:66
 msgid ""
 "This limits the maximum number of clients that can connect to the RTSP VOD. "
 "0 means no limit."
@@ -23086,15 +22715,15 @@ msgstr ""
 "ई RTSP VOD सँ कनेक्ट कए सकबा बला क्लाइंट क अधिकतम सँख्या क सीमा निर्धारित करैत अछि ।0 "
 "क मतलब कोनो सीमा नहि अछि।"
 
-#: modules/misc/rtsp.c:67
+#: modules/misc/rtsp.c:69
 msgid "MUX for RAW RTSP transport"
 msgstr "RAW आरटीएसपी परिवहन क लेल MUX"
 
-#: modules/misc/rtsp.c:69
+#: modules/misc/rtsp.c:71
 msgid "Sets the timeout option in the RTSP session string"
 msgstr "RTSP सत्र स्ट्रिंग मे टाइमआउट विकल्प सेट करैत अछि"
 
-#: modules/misc/rtsp.c:71
+#: modules/misc/rtsp.c:73
 msgid ""
 "Defines what timeout option to add to the RTSP session ID string. Setting it "
 "to a negative number removes the timeout option entirely. This is needed by "
@@ -23106,11 +22735,11 @@ msgstr ""
 "बात सँ भ्रमित भ' जे किछु IPTV STBs (जहिना HansunTech द्वारा बनाएल गेल) केँ एहि क "
 "जरूरत होइत अछि जे एकरासँ भ्रमित भए जाएत  अछि। पूर्वनिर्धारित 5 अछि।"
 
-#: modules/misc/rtsp.c:77 modules/stream_out/rtp.c:244
+#: modules/misc/rtsp.c:79 modules/stream_out/rtp.c:244
 msgid "RTSP VoD"
 msgstr "RTSP VoD"
 
-#: modules/misc/rtsp.c:78
+#: modules/misc/rtsp.c:80
 msgid "Legacy RTSP VoD server"
 msgstr "पुरातन RTSP VoD सर्वर"
 
@@ -23143,27 +22772,27 @@ msgstr ""
 msgid "Accept certificate temporarily"
 msgstr "अस्थाई रूपेँ प्रमाणपत्र स्वीकारू"
 
-#: modules/misc/stats.c:215 modules/stream_out/stats.c:51
+#: modules/misc/stats.c:221 modules/stream_out/stats.c:51
 msgid "Stats"
 msgstr "आँकड़ा"
 
-#: modules/misc/stats.c:217
+#: modules/misc/stats.c:223
 msgid "Stats encoder function"
 msgstr "Stats एनकोडर फंक्शन"
 
-#: modules/misc/stats.c:223 modules/misc/stats.c:229 modules/misc/stats.c:235
+#: modules/misc/stats.c:229 modules/misc/stats.c:235 modules/misc/stats.c:241
 msgid "Stats decoder"
 msgstr "Stats डिकोडर"
 
-#: modules/misc/stats.c:224 modules/misc/stats.c:230 modules/misc/stats.c:236
+#: modules/misc/stats.c:230 modules/misc/stats.c:236 modules/misc/stats.c:242
 msgid "Stats decoder function"
 msgstr "Stats डिकोडर फंक्शन"
 
-#: modules/misc/stats.c:241
+#: modules/misc/stats.c:247
 msgid "Stats demux"
 msgstr "Stats डिमक्स"
 
-#: modules/misc/stats.c:242
+#: modules/misc/stats.c:248
 msgid "Stats demux function"
 msgstr "Stats डिमक्स फंक्शन"
 
@@ -23221,7 +22850,7 @@ msgstr ""
 msgid "ASF muxer"
 msgstr "ASF मक्सर"
 
-#: modules/mux/asf.c:563
+#: modules/mux/asf.c:564
 msgid "Unknown Video"
 msgstr "अज्ञात वीडियो"
 
@@ -23574,7 +23203,7 @@ msgstr "A/52 आडियो पैकेटाइजर"
 msgid "avparser packetizer"
 msgstr "avparser पैकेटाइजर"
 
-#: modules/packetizer/av1.c:585
+#: modules/packetizer/av1.c:586
 msgid "AV1 video packetizer"
 msgstr ""
 
@@ -23656,7 +23285,7 @@ msgstr ""
 
 #: modules/services_discovery/bonjour.m:45
 #: modules/services_discovery/bonjour.m:63
-#: modules/services_discovery/bonjour.m:455
+#: modules/services_discovery/bonjour.m:461
 msgid "Bonjour Network Discovery"
 msgstr ""
 
@@ -23688,7 +23317,7 @@ msgstr "हमर चित्र"
 
 #: modules/services_discovery/microdns.c:44
 #: modules/services_discovery/microdns.c:57
-#: modules/services_discovery/microdns.c:646
+#: modules/services_discovery/microdns.c:656
 msgid "mDNS Network Discovery"
 msgstr ""
 
@@ -23845,13 +23474,13 @@ msgstr "HD DVD"
 msgid "Unknown type"
 msgstr "अज्ञात प्रकार"
 
-#: modules/services_discovery/upnp.cpp:76
+#: modules/services_discovery/upnp.cpp:81
 msgid "Custom SAT>IP channel list URL"
 msgstr ""
 
-#: modules/services_discovery/upnp.cpp:111
-#: modules/services_discovery/upnp.cpp:118
-#: modules/services_discovery/upnp.cpp:253
+#: modules/services_discovery/upnp.cpp:116
+#: modules/services_discovery/upnp.cpp:123
+#: modules/services_discovery/upnp.cpp:258
 msgid "Universal Plug'n'Play"
 msgstr "सार्वभौमिक प्लग एन प्ले"
 
@@ -24655,31 +24284,31 @@ msgstr ""
 msgid "Zlib decompression filter"
 msgstr ""
 
-#: modules/stream_filter/prefetch.c:532
+#: modules/stream_filter/prefetch.c:530
 msgid "Stream prefetch filter"
 msgstr ""
 
-#: modules/stream_filter/prefetch.c:535
+#: modules/stream_filter/prefetch.c:533
 msgid "Buffer size"
 msgstr ""
 
-#: modules/stream_filter/prefetch.c:536
+#: modules/stream_filter/prefetch.c:534
 msgid "Prefetch buffer size (KiB)"
 msgstr ""
 
-#: modules/stream_filter/prefetch.c:538
+#: modules/stream_filter/prefetch.c:536
 msgid "Read size"
 msgstr "पढ़बा क आकार"
 
-#: modules/stream_filter/prefetch.c:539
+#: modules/stream_filter/prefetch.c:537
 msgid "Prefetch background read size (bytes)"
 msgstr ""
 
-#: modules/stream_filter/prefetch.c:541
+#: modules/stream_filter/prefetch.c:539
 msgid "Seek threshold"
 msgstr ""
 
-#: modules/stream_filter/prefetch.c:542
+#: modules/stream_filter/prefetch.c:540
 msgid "Prefetch forward seek threshold (bytes)"
 msgstr ""
 
@@ -24827,7 +24456,7 @@ msgid ""
 msgstr ""
 
 #: modules/stream_out/chromecast/cast.cpp:192
-#: modules/stream_out/chromecast/cast.cpp:1198
+#: modules/stream_out/chromecast/cast.cpp:1219
 msgid "Performance warning"
 msgstr ""
 
@@ -24887,11 +24516,11 @@ msgstr ""
 msgid "Chromecast stream output"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:1197
+#: modules/stream_out/chromecast/cast.cpp:1218
 msgid "Ok, Don't warn me again"
 msgstr ""
 
-#: modules/stream_out/chromecast/cast.cpp:1199
+#: modules/stream_out/chromecast/cast.cpp:1220
 msgid ""
 "Casting this video requires conversion. This conversion can use all the "
 "available power and could quickly drain your battery."
@@ -25828,11 +25457,11 @@ msgstr ""
 msgid "Speech synthesis for Windows"
 msgstr ""
 
-#: modules/text_renderer/svg.c:70
+#: modules/text_renderer/svg.c:72
 msgid "SVG template file"
 msgstr "एसवीजी नमूना फाइल"
 
-#: modules/text_renderer/svg.c:71
+#: modules/text_renderer/svg.c:73
 msgid ""
 "Location of a file holding a SVG template for automatic string conversion"
 msgstr "फाइल क स्थान स्वत: स्ट्रिंग रूपांतरण क लेल एसवीजी नमूना धारण करू"
@@ -26530,26 +26159,26 @@ msgstr "अंतःक्रियात्मक वीडियो फिल�
 msgid "Freeze"
 msgstr "फ्रीज करू"
 
-#: modules/video_filter/gaussianblur.c:50
+#: modules/video_filter/gaussianblur.c:51
 msgid "Gaussian's std deviation"
 msgstr "गौसियन क एसटीडी विचलन"
 
-#: modules/video_filter/gaussianblur.c:52
+#: modules/video_filter/gaussianblur.c:53
 msgid ""
 "Gaussian's standard deviation. The blurring will take into account pixels up "
 "to 3*sigma away in any direction."
 msgstr ""
 "गाऊसिन क मानक विचलन। ब्लरिंग ककरो सेहो दिशा मे 3* सिग्मा पिक्सल दूरी तक जएताह।"
 
-#: modules/video_filter/gaussianblur.c:55
+#: modules/video_filter/gaussianblur.c:56
 msgid "Add a blurring effect"
 msgstr "धुंधला प्रभाव जोड़ू"
 
-#: modules/video_filter/gaussianblur.c:60
+#: modules/video_filter/gaussianblur.c:61
 msgid "Gaussian blur video filter"
 msgstr "गौसियन धुंधला वीडियो फिल्टर"
 
-#: modules/video_filter/gaussianblur.c:61
+#: modules/video_filter/gaussianblur.c:62
 msgid "Gaussian Blur"
 msgstr "गौसियन धुंधला"
 
@@ -29510,3 +29139,290 @@ msgstr "AAAA; "
 #: modules/gui/qt/ui/vlm.h:299
 msgid "Media Manager List"
 msgstr "मीडिया प्रबंधन सूची"
+
+#~ msgid "4:2:0"
+#~ msgstr "4:2:0"
+
+#~ msgid "4:2:2"
+#~ msgstr "4:2:2"
+
+#~ msgid "4:4:4"
+#~ msgstr "4:4:4"
+
+#~ msgid "Rate control method"
+#~ msgstr "दर नियंत्रण विधि"
+
+#~ msgid "Method used to encode the video sequence"
+#~ msgstr "वीडियो अनुक्रम इनकोड करबाक लेल प्रयोग क जाएबला विधि"
+
+#~ msgid "Constant noise threshold mode"
+#~ msgstr "स्थिर शोर सीमा मोड"
+
+#~ msgid "Constant bitrate mode (CBR)"
+#~ msgstr "स्थिर बिटरेट मोड मोड (सीबीआर)"
+
+#~ msgid "Low Delay mode"
+#~ msgstr "निम्न विलम्ब मोड"
+
+#~ msgid "Lossless mode"
+#~ msgstr "दोषरहित मोड"
+
+#~ msgid "Constant lambda mode"
+#~ msgstr "स्थिर लैम्ब्डा मोड"
+
+#~ msgid "Constant error mode"
+#~ msgstr "स्थिर त्रुटि मोड"
+
+#~ msgid "Constant quality mode"
+#~ msgstr "स्थिर गुणवत्ता मोड"
+
+#~ msgid "GOP structure"
+#~ msgstr "GOP संरचना"
+
+#~ msgid "GOP structure used to encode the video sequence"
+#~ msgstr "GOP संरचना वीडियो अनुक्रम इनकोड करबाक लेल प्रयोग कएल जाइत अछि"
+
+#~ msgid ""
+#~ "No fixed gop structure. A picture can be intra or inter and refer to "
+#~ "previous or future pictures."
+#~ msgstr ""
+#~ "कोनो निश्चित gop संरचना नहि। एकटा तस्वीर इंपर अथवा इंट्रा भ' सकैत अछि आओर पछिला "
+#~ "अथवा भविष्य क चित्र केँ रेफर कए सकैत अछि।"
+
+#~ msgid "I-frame only sequence"
+#~ msgstr "I-frame एकेटा शृंखला"
+
+#~ msgid "Inter pictures refere to previous pictures only"
+#~ msgstr "इंटर चित्र केवल पछिला चित्र केँ रेफर करैत अछि"
+
+#~ msgid "Inter pictures can refer to previous or future pictures"
+#~ msgstr "इंटर चित्र पछिला अथवा भविष्य क चित्र केँ रेफर कए सकैत अछि"
+
+#~ msgid "Constant quality factor"
+#~ msgstr "स्थिर गुणवत्ता कारक"
+
+#~ msgid "Quality factor to use in constant quality mode"
+#~ msgstr "लगातार गुणवत्ता मोड मे उपयोग करबाक लेल गुणवत्ता कारक"
+
+#~ msgid "Noise Threshold"
+#~ msgstr "शोर सीमा"
+
+#~ msgid "Noise threshold to use in constant noise threshold mode"
+#~ msgstr "स्थिर शोर थ्रेशहोल्ड मोड मे उपयोग करबाक लेल शोर सीमा"
+
+#~ msgid "CBR bitrate (kbps)"
+#~ msgstr "CBR बिटरेट(kbps)"
+
+#~ msgid "Target bitrate in kbps when encoding in constant bitrate mode"
+#~ msgstr "सतत बीटरेट मोड मे इनकोडित करैत समय kbps मे लक्षित बीटरेट "
+
+#~ msgid "Maximum bitrate (kbps)"
+#~ msgstr "अधिकतम बिटरेट (केबीपीएस)"
+
+#~ msgid "Maximum bitrate in kbps when encoding in constant bitrate mode"
+#~ msgstr "सतत बीटरेट मोड मे इनकोडित करैत समय kbps मे अधिकतम बीटरेट "
+
+#~ msgid "Minimum bitrate (kbps)"
+#~ msgstr "न्यूनतम बिटरेट(kbps)"
+
+#~ msgid "Minimum bitrate in kbps when encoding in constant bitrate mode"
+#~ msgstr "सतत बीटरेट मोड मे इनकोडित करैत समय kbps मे न्यूनतम बीटरेट "
+
+#~ msgid "GOP length"
+#~ msgstr "GOP नमाइ"
+
+#~ msgid ""
+#~ "Number of pictures between successive sequence headers i.e. length of the "
+#~ "group of pictures"
+#~ msgstr "लगातार अनुक्रम हेडर क मध्य चित्र क सँख्या यानी चित्र क समूह क नमाइ"
+
+#~ msgid "Prefilter"
+#~ msgstr "प्रीफिल्टर"
+
+#~ msgid "Enable adaptive prefiltering"
+#~ msgstr "अनुकूली prefiltering सक्षम करू"
+
+#~ msgid "No pre-filtering"
+#~ msgstr "कोनो पूर्व फिल्टरिंग नहि"
+
+#~ msgid "Centre Weighted Median"
+#~ msgstr "केंद्र भारित माध्य"
+
+#~ msgid "Gaussian Low Pass Filter"
+#~ msgstr "गाऊसी लो पास फिल्टर"
+
+#~ msgid "Add Noise"
+#~ msgstr "शोर बढाउ"
+
+#~ msgid "Gaussian Adaptive Low Pass Filter"
+#~ msgstr "गाऊसी अनुकूली लो पास फिल्टर"
+
+#~ msgid "Low Pass Filter"
+#~ msgstr "लो पास फिल्टर"
+
+#~ msgid "Amount of prefiltering"
+#~ msgstr "प्रीफिल्टरिंग क मात्रा"
+
+#~ msgid "Higher value implies more prefiltering"
+#~ msgstr "उच्च मूल्य क अर्थ अछि बेसी प्रीफिल्टरिंग"
+
+#~ msgid "Picture coding mode"
+#~ msgstr "चित्र मोड कोडिंग"
+
+#~ msgid ""
+#~ "Field coding is where interlaced fields are coded separately as opposed "
+#~ "to a pseudo-progressive frame"
+#~ msgstr ""
+#~ "छद्म प्रोग्रेसिव फ्रेम क विपरीत क्षेत्र कोडिंग ओतए अछि जतए अंतरायित क्षेत्र केँ अलग सँ "
+#~ "कोडित रहल अछि।"
+
+#~ msgid "auto - let encoder decide based upon input (Best)"
+#~ msgstr "आटो - इनपुट क आधार पर एनकोडर केँ निर्धारित करब देत अछि(बेस्ट)"
+
+#~ msgid "force coding frame as single picture"
+#~ msgstr "एकल छवि क रूपेँ कोडिंग फ्रेम केँ बाध्य करू।"
+
+#~ msgid "force coding frame as separate interlaced fields"
+#~ msgstr "अलग इंटरलेस्ड छवि क रूपेँ कोडिंग फ्रेम केँ बाध्य करू।"
+
+#~ msgid "Size of motion compensation blocks"
+#~ msgstr "मोशन क्षतिपूर्ति ब्लाक क आकार"
+
+#~ msgid "automatic - let encoder decide based upon input (Best)"
+#~ msgstr "आटोमेटिक - इनपुट क आधार पर एनकोडर केँ निर्धारित करब देत अछि(बेस्ट)"
+
+#~ msgid "small - use small motion compensation blocks"
+#~ msgstr "छोट - छोट मोशन क्षतिपूर्ति ब्लाक क आकार क उपयोग करू"
+
+#~ msgid "medium - use medium motion compensation blocks"
+#~ msgstr "मध्यम - मध्यम मोशन क्षतिपूर्ति ब्लाक क आकार क उपयोग करू"
+
+#~ msgid "large - use large motion compensation blocks"
+#~ msgstr "पैघ - बड़े मोशन क्षतिपूर्ति ब्लाक क आकार क उपयोग करू"
+
+#~ msgid "Overlap of motion compensation blocks"
+#~ msgstr "प्रस्ताव क्षतिपूर्ति क ब्लाक क ओवरलैप"
+
+#~ msgid "none - Motion compensation blocks do not overlap"
+#~ msgstr "कोनो नहि - मोशन क्षतिपूर्ति ब्लाक केँ ओवरलैप नहि करू"
+
+#~ msgid "partial - Motion compensation blocks only partially overlap"
+#~ msgstr "आंशिक - मोशन क्षतिपूर्ति ब्लाक केँ केवल आंशिक रूप सँ ओवरलैपे करू"
+
+#~ msgid "full - Motion compensation blocks fully overlap"
+#~ msgstr "पूर्ण - मोशन क्षतिपूर्ति ब्लाक केँ पुरी तरह ओवरलैप करू"
+
+#~ msgid "Motion Vector precision"
+#~ msgstr "गति वेक्टर परिशुद्धता"
+
+#~ msgid "Motion Vector precision in pels"
+#~ msgstr "pels मे गति वेक्टर परिशुद्धता"
+
+#~ msgid "Three component motion estimation"
+#~ msgstr "तीन कंपोनेंट गति आकलन"
+
+#~ msgid "Use chroma as part of the motion estimation process"
+#~ msgstr "गति आकलन क प्रक्रिया क हिस्सा क रूपेँ क्रोमा क प्रयोग करू।"
+
+#~ msgid "Intra picture DWT filter"
+#~ msgstr "इंट्रा पिक्चर डीडब्ल्यूटी फिल्टर"
+
+#~ msgid "Inter picture DWT filter"
+#~ msgstr "इंटर पिक्चर डीडब्ल्यूटी फिल्टर"
+
+#~ msgid "Number of DWT iterations"
+#~ msgstr "डीडब्ल्यूटी पुनरावृत्ति क संख्या"
+
+#~ msgid "Also known as DWT levels"
+#~ msgstr "डीडब्ल्यूटी स्तर क रूपेँ सेहो जएनाइ जाइत अछि"
+
+#~ msgid "Enable multiple quantizers"
+#~ msgstr "बहु क्वांटाइजर सक्षम करू"
+
+#~ msgid "Enable multiple quantizers per subband (one per codeblock)"
+#~ msgstr "प्रत्येक उपबैंड क लेल कतेक क्वांटाइजर सक्षम करू (प्रत्येक CodeBlock क लेल एक)"
+
+#~ msgid "Disable arithmetic coding"
+#~ msgstr "अंकगणितीय कोडिंग अक्षम करू"
+
+#~ msgid "Use variable length codes instead, useful for very high bitrates"
+#~ msgstr "चर नमाइ कोड क प्रयोग करू, बहुत उच्च बिटरेटक लेल उपयोगी"
+
+#~ msgid "perceptual weighting method"
+#~ msgstr "अनुभविक वेइंग विधि"
+
+#~ msgid "perceptual distance"
+#~ msgstr "अनुभविक दूरी"
+
+#~ msgid "perceptual distance to calculate perceptual weight"
+#~ msgstr "अवधारणात्मक वजन क गणना क लेल अवधारणात्मक दूरी"
+
+#~ msgid "Horizontal slices per frame"
+#~ msgstr "प्रति फ्रेम क्षैतिज स्लाइस"
+
+#~ msgid "Number of horizontal slices per frame in low delay mode"
+#~ msgstr "निम्न विलम्ब मोड मे क्षैतिज स्लाइस प्रति फ्रेम क संख्या"
+
+#~ msgid "Vertical slices per frame"
+#~ msgstr "प्रति फ्रेम क्षैतिज स्लाइस"
+
+#~ msgid "Number of vertical slices per frame in low delay mode"
+#~ msgstr "निम्न विलम्ब मोड मे उर्ध्वाधर स्लाइस प्रति फ्रेम क संख्या"
+
+#~ msgid "Size of code blocks in each subband"
+#~ msgstr "प्रत्येक सबबैंड मे कोड ब्लाक क आकार"
+
+#~ msgid "small - use small code blocks"
+#~ msgstr "छोट- छोट कोड खंड क उपयोग करू"
+
+#~ msgid "medium - use medium sized code blocks"
+#~ msgstr "मध्यम- मध्यम आकार क कोड खंड क उपयोग करू"
+
+#~ msgid "large - use large code blocks"
+#~ msgstr "पैघ- पैघ कोड खंड क उपयोग करू"
+
+#~ msgid "full - One code block per subband"
+#~ msgstr "पूर्ण - प्रत्येक सबबैंड पर एकटा कोड ब्लाक"
+
+#~ msgid "Enable hierarchical Motion Estimation"
+#~ msgstr "श्रेणीबद्ध मोशन आकलन सक्षम करू"
+
+#~ msgid "Number of levels of downsampling"
+#~ msgstr "डाउनसैंपलिंगक स्तर क संख्या"
+
+#~ msgid ""
+#~ "Number of levels of downsampling in hierarchical motion estimation mode"
+#~ msgstr "श्रेणीबद्ध गति आकलन मोड मे डाउनसैंपलिंगक स्तर क संख्या"
+
+#~ msgid "Enable Global Motion Estimation"
+#~ msgstr "ग्लोबल मोशन आकलन सक्षम करू"
+
+#~ msgid "Enable Phase Correlation Estimation"
+#~ msgstr "चरण सहसंबंध आकलन सक्षम करू"
+
+#~ msgid "Enable Scene Change Detection"
+#~ msgstr "दृश्य परिवर्तन जाँच सक्षम करू"
+
+#~ msgid "Force Profile"
+#~ msgstr "प्रोफाइल बाध्य करू"
+
+#~ msgid "VC2 Low Delay Profile"
+#~ msgstr "VC2 लो डिले प्रोफाइल"
+
+#~ msgid "VC2 Simple Profile"
+#~ msgstr "VC2 सरल प्रोफाइल"
+
+#~ msgid "VC2 Main Profile"
+#~ msgstr "VC2 मुख्य प्रोफाइल"
+
+#~ msgid "Main Profile"
+#~ msgstr "मुख्य प्रोफाइल"
+
+#~ msgid "Dirac video decoder using libschroedinger"
+#~ msgstr "libschroedinger क उपयोग करब बला Dirac वीडियो विकोडक"
+
+#~ msgid "Dirac video encoder using libschroedinger"
+#~ msgstr "libschroedinger क उपयोग करब बला Dirac वीडियो एनकोडर"
+
+#~ msgid "Key: "
+#~ msgstr "कुँजी: "

@@ -27,9 +27,9 @@
 #include <math.h>
 
 SkinParser::SkinParser( intf_thread_t *pIntf, const std::string &rFileName,
-                        const std::string &rPath, BuilderData *pData ):
+                        const std::string &rPath, BuilderData *pData, unsigned instance ):
     XMLParser( pIntf, rFileName ), m_path( rPath ), m_pData( pData ),
-    m_ownData( pData == NULL ), m_xOffset( 0 ), m_yOffset( 0 )
+    m_ownData( pData == NULL ), m_xOffset( 0 ), m_yOffset( 0 ), m_instanceCount( instance )
 {
     // Make sure the data is allocated
     if( m_pData == NULL )
@@ -64,6 +64,30 @@ inline bool SkinParser::MissingAttr( AttrList_t &attr, const std::string &name,
     return false;
 }
 
+static bool isSubPath( const std::string &base, const std::string &path, const std::string &dirsep )
+{
+    char *baseReal = realpath( base.c_str(), NULL );
+    char *pathReal = realpath( path.c_str(), NULL );
+
+    if( !baseReal || !pathReal )
+    {
+        free( baseReal );
+        free( pathReal );
+        return false;
+    }
+
+    std::string basePath = baseReal;
+    std::string subPath = pathReal;
+    free( baseReal );
+    free( pathReal );
+
+    if( basePath.size() < dirsep.size() ||
+        basePath.compare( basePath.size() - dirsep.size(), dirsep.size(), dirsep ) )
+        basePath += dirsep;
+
+    return subPath.compare( 0, basePath.size(), basePath ) == 0;
+}
+
 void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr )
 {
 #define RequireAttr( attr, name, a ) \
@@ -71,12 +95,24 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
 
     if( rName == "Include" )
     {
+        if( m_instanceCount >= 4 )
+        {
+            m_errors = true;
+            return;
+        }
         RequireAttr( attr, rName, "file" );
 
         OSFactory *pFactory = OSFactory::instance( getIntf() );
         std::string fullPath = m_path + pFactory->getDirSeparator() + attr["file"];
+        if( !isSubPath( m_path, fullPath, pFactory->getDirSeparator() ) )
+        {
+            msg_Err( getIntf(), "bad theme: Include escapes theme directory: %s",
+                     attr["file"] );
+            m_errors = true;
+            return;
+        }
         msg_Dbg( getIntf(), "opening included XML file: %s", fullPath.c_str() );
-        SkinParser subParser( getIntf(), fullPath.c_str(), m_path, m_pData );
+        SkinParser subParser( getIntf(), fullPath.c_str(), m_path, m_pData, m_instanceCount + 1 );
         subParser.parse();
     }
 
@@ -167,7 +203,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
         m_pData->m_listPopupMenu.push_back( popup );
     }
 
-    else if( rName == "MenuItem" )
+    else if( rName == "MenuItem" && !m_popupPosList.empty() )
     {
         RequireAttr( attr, rName, "label" );
         DefaultAttr( attr, "action", "none" );
@@ -179,7 +215,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
         m_popupPosList.back()++;
     }
 
-    else if( rName == "MenuSeparator" )
+    else if( rName == "MenuSeparator" && !m_popupPosList.empty() )
     {
         const BuilderData::MenuSeparator sep( m_popupPosList.back(),
                                               m_curPopupId );
@@ -187,7 +223,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
         m_popupPosList.back()++;
     }
 
-    else if( rName == "Button" )
+    else if( rName == "Button" && !m_panelStack.empty() )
     {
         RequireAttr( attr, rName, "up" );
         DefaultAttr( attr, "id", "none" );
@@ -220,7 +256,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
         m_pData->m_listButton.push_back( button );
     }
 
-    else if( rName == "Checkbox" )
+    else if( rName == "Checkbox" && !m_panelStack.empty() )
     {
         RequireAttr( attr, rName, "up1" );
         RequireAttr( attr, rName, "up2" );
@@ -283,7 +319,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
         m_yOffsetList.push_back( atoi( attr["y"] ) );
     }
 
-    else if( rName == "Image" )
+    else if( rName == "Image" && !m_panelStack.empty() )
     {
         RequireAttr( attr, rName, "image" );
         DefaultAttr( attr, "id", "none" );
@@ -350,7 +386,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
         m_curLayer = 0;
     }
 
-    else if( rName == "Panel" )
+    else if( rName == "Panel" && !m_panelStack.empty() )
     {
         DefaultAttr( attr, "x", "0" );
         DefaultAttr( attr, "y", "0" );
@@ -391,7 +427,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
         m_panelStack.push_back( panelId );
     }
 
-    else if( rName == "Playlist" )
+    else if( rName == "Playlist" && !m_panelStack.empty() )
     {
         RequireAttr( attr, rName, "id" );
         RequireAttr( attr, rName, "font" );
@@ -452,7 +488,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
         m_curLayer++;
         m_pData->m_listTree.push_back( treeData );
     }
-    else if( rName == "Playtree" )
+    else if( rName == "Playtree" && !m_panelStack.empty() )
     {
         RequireAttr( attr, rName, "id" );
         RequireAttr( attr, rName, "font" );
@@ -512,7 +548,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
         m_pData->m_listTree.push_back( treeData );
     }
 
-    else if( rName == "RadialSlider" )
+    else if( rName == "RadialSlider" && !m_panelStack.empty() )
     {
         RequireAttr( attr, rName, "sequence" );
         RequireAttr( attr, rName, "nbimages" );
@@ -548,7 +584,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
         m_pData->m_listRadialSlider.push_back( radial );
     }
 
-    else if( rName == "Slider" )
+    else if( rName == "Slider" && !m_panelStack.empty() )
     {
         RequireAttr( attr, rName, "up" );
         RequireAttr( attr, rName, "points" );
@@ -595,7 +631,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
         m_pData->m_listSlider.push_back( slider );
     }
 
-    else if( rName == "SliderBackground" )
+    else if( rName == "SliderBackground" && !m_pData->m_listSlider.empty() )
     {
         RequireAttr( attr, rName, "image" );
         DefaultAttr( attr, "nbhoriz", "1" );
@@ -613,7 +649,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
         slider.m_padVert = atoi( attr["padvert"] );
     }
 
-    else if( rName == "Text" )
+    else if( rName == "Text" && !m_panelStack.empty() )
     {
         RequireAttr( attr, rName, "font" );
         DefaultAttr( attr, "id", "none" );
@@ -688,7 +724,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
                   attr["author"] );
     }
 
-    else if( rName == "Video" )
+    else if( rName == "Video" && !m_panelStack.empty() )
     {
         DefaultAttr( attr, "id", "none" );
         DefaultAttr( attr, "visible", "true" );
@@ -767,7 +803,7 @@ void SkinParser::handleBeginElement( const std::string &rName, AttrList_t &attr 
 
 void SkinParser::handleEndElement( const std::string &rName )
 {
-    if( rName == "Group" )
+    if( rName == "Group" && !m_xOffsetList.empty() && !m_yOffsetList.empty() )
     {
         m_xOffset -= m_xOffsetList.back();
         m_yOffset -= m_yOffsetList.back();
@@ -778,12 +814,12 @@ void SkinParser::handleEndElement( const std::string &rName )
     {
         m_curTreeId = "";
     }
-    else if( rName == "Popup" )
+    else if( rName == "Popup" && !m_popupPosList.empty() )
     {
         m_curPopupId = "";
         m_popupPosList.pop_back();
     }
-    else if( rName == "Panel" )
+    else if( rName == "Panel" && !m_panelStack.empty() )
     {
         m_panelStack.pop_back();
     }
@@ -880,7 +916,7 @@ void SkinParser::getRefDimensions( int &rWidth, int &rHeight, bool toScreen )
         return;
     }
 
-    std::string panelId = m_panelStack.back();
+    std::string panelId = m_panelStack.empty() ? "none" : m_panelStack.back();
     if( panelId != "none" )
     {
         std::list<BuilderData::Panel>::const_iterator it;
@@ -895,7 +931,7 @@ void SkinParser::getRefDimensions( int &rWidth, int &rHeight, bool toScreen )
             }
         }
     }
-    else
+    else if( !m_pData->m_listLayout.empty() )
     {
         const BuilderData::Layout layout = m_pData->m_listLayout.back();
         rWidth = layout.m_width;
@@ -1007,6 +1043,9 @@ void SkinParser::convertPosition( std::string position, std::string xOffset,
 
 void SkinParser::updateWindowPos( int width, int height )
 {
+    if( m_pData->m_listWindow.empty() )
+        return;
+
     BuilderData::Window win = m_pData->m_listWindow.back();
     m_pData->m_listWindow.pop_back();
 

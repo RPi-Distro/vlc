@@ -5,16 +5,17 @@ EXTRA_DIST =
 desktopdir = $(datadir)/applications
 if !HAVE_WIN32
 if !HAVE_DARWIN
-desktop_DATA = vlc.desktop
+desktop_DATA = vlc.desktop vlc-openbd.desktop vlc-opendvd.desktop vlc-openvcd.desktop vlc-opencda.desktop
 appdatadir = $(datarootdir)/metainfo
 appdata_DATA = org.videolan.vlc.appdata.xml
 endif
 endif
 
 EXTRA_DIST += vlc.desktop.in vlc.desktop.mimetypes
+EXTRA_DIST += vlc-openbd.desktop.in vlc-opendvd.desktop.in vlc-openvcd.desktop.in vlc-opencda.desktop.in
 CLEANFILES += $(desktop_DATA) $(appdata_DATA)
 
-vlc.desktop: vlc.desktop.in $(top_builddir)/config.status
+%.desktop: %.desktop.in $(top_builddir)/config.status
 	$(AM_V_GEN)mimetypes="$$(sed 's/\s*#.*$$//g' $(srcdir)/vlc.desktop.mimetypes | $(EGREP) -v '^$$' | tr "\n" ';')"; \
 	sed \
 		-e 's,\@bindir\@,$(bindir),g' \
@@ -153,7 +154,6 @@ nobase_vlclib_DATA += \
 	lua/playlist/soundcloud.luac \
 	lua/playlist/vimeo.luac \
 	lua/playlist/vocaroo.luac \
-	lua/playlist/youtube.luac \
 	lua/playlist/twitch.luac \
 	lua/sd/icecast.luac \
 	lua/sd/jamendo.luac \
@@ -173,7 +173,6 @@ nobase_doc_DATA = \
 	lua/meta/reader/filename.lua \
 	lua/playlist/README.txt \
 	lua/playlist/liveleak.lua \
-	lua/playlist/youtube.lua \
 	lua/sd/README.txt \
 	lua/sd/icecast.lua \
 	lua/sd/icast.lua \
@@ -291,7 +290,6 @@ EXTRA_DIST += \
 	lua/playlist/soundcloud.lua \
 	lua/playlist/vimeo.lua \
 	lua/playlist/vocaroo.lua \
-	lua/playlist/youtube.lua \
 	lua/playlist/twitch.lua \
 	lua/playlist/zapiks.lua \
 	lua/sd/README.txt \

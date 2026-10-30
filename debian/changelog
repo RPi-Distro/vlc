@@ -1,4 +1,4 @@
-vlc (1:3.0.23-0+deb12u1+rpt1) bookworm; urgency=medium
+vlc (1:3.0.24-0+deb12u1+rpt1) bookworm; urgency=medium
 
   * HW acceleration patchset 52
   * d/c: Add qtwayland5 to vlc dependencies
@@ -24,6 +24,25 @@ vlc (1:3.0.23-0+deb12u1+rpt1) bookworm; urgency=medium
     - video_output/libdrm_vout_plugin.so 
 
  -- Serge Schneider <serge@raspberrypi.com>  Fri, 23 Jan 2026 13:40:29 +0000
+
+vlc (3.0.24-0+deb12u1) bookworm-security; urgency=medium
+
+  * Team upload.
+  * New upstream version 3.0.24.
+    - CVE-2026-56711: Fix an integer overflow in picture allocation.
+    - CVE-2026-73324: Fix memory disclosure to a SAT>IP server
+      during RTSP teardown.
+    - CVE-2026-102875: Fix a path traversal when extracting a
+      crafted skin archive.
+  * debian/upstream: Update upstream signing key.
+  * debian/: Add librist-dev for new rist plugin.
+  * debian/patches: build the RIST output plugin against librist 0.2.7.
+  * debian/: Disable plugins that are no longer supported upstream.
+    - a52
+    - dca
+    - libmpeg2
+
+ -- Simon Quigley <tsimonq2@debian.org>  Thu, 29 Oct 2026 11:32:46 -0500
 
 vlc (3.0.23-0+deb12u1) bookworm-security; urgency=medium
 

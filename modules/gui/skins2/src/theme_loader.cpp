@@ -135,6 +135,7 @@ bool ThemeLoader::extract( const std::string &fileName )
     if( unarchive( fileName, tempPath ) == false )
     {
         msg_Err( getIntf(), "extraction from %s failed", fileName.c_str() );
+        deleteTempFiles( tempPath );
         return false;
     }
 
@@ -248,6 +249,47 @@ bool ThemeLoader::unarchive( const std::string& fileName, const std::string &tem
                 msg_Err( getIntf(), "unable to open %s for reading", child->psz_name );
                 return false;
             }
+
+#if defined( _WIN32 ) || defined( __OS2__ )
+            if( strchr( child->psz_name, '\\' ) )
+                return false;
+#endif
+
+            auto base = make_cstr_ptr( vlc_path2uri( tempPath.c_str(), "file" ) );
+            if( !base )
+                return false;
+
+            std::string base_uri = base.get();
+            if( base_uri.empty() || base_uri.back() != '/' )
+                base_uri += '/';
+
+            /* URI metacharacters in member names are filename data. */
+            std::string ref;
+            for( const char *component = child->psz_name; *component; )
+            {
+                size_t len = strcspn( component, "/" );
+                auto encoded = make_cstr_ptr( vlc_uri_encode(
+                    std::string( component, len ).c_str() ) );
+                if( !encoded )
+                    return false;
+
+                ref += encoded.get();
+                component += len;
+                if( *component == '/' )
+                    ref += *component++;
+            }
+
+            auto resolved = make_cstr_ptr( vlc_uri_resolve( base_uri.c_str(), ref.c_str() ) );
+            if( !resolved )
+                return false;
+
+            if( std::string( resolved.get() ).compare( 0, base_uri.size(), base_uri ) != 0 )
+            {
+                msg_Err( getIntf(), "Invalid resolved path from archive: %s", resolved.get() );
+                return false;
+            }
+
+            /* Use the path validated through the uri resolution */
 
             auto out_path = tempPath + "/" + child->psz_name;
 

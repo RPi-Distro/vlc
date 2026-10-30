@@ -251,7 +251,9 @@ time_t timegm(struct tm *);
 #endif
 
 #ifndef HAVE_TIMESPEC_GET
+#ifndef TIME_UTC
 #define TIME_UTC 1
+#endif
 struct timespec;
 int timespec_get(struct timespec *, int);
 #endif
@@ -659,7 +661,9 @@ char *realpath(const char * restrict pathname, char * restrict resolved_path);
 
 /* mingw-w64 has a broken IN6_IS_ADDR_MULTICAST macro */
 #if defined(_WIN32) && defined(__MINGW64_VERSION_MAJOR)
+# if __MINGW64_VERSION_MAJOR < 6 /* fixed in 4c2df0d02ed71ae07e85f1b35ac857a148cd2b8f */
 # define IN6_IS_ADDR_MULTICAST IN6_IS_ADDR_MULTICAST
+# endif
 #endif
 
 #ifdef __APPLE__
